@@ -95,7 +95,8 @@ tribe.tickets.block = {
 	 *
 	 * @return void
 	 */
-	$( document ).on( 'change, keyup',
+	$( document ).on(
+		'change, keyup',
 		obj.selector.itemQuantityInput,
 		function( e ) {
 			var $this      = $( this );
@@ -193,7 +194,7 @@ tribe.tickets.block = {
 				$ticketEl.find( obj.selector.itemExtraAvailableQuantity ).html( available );
 			}
 
-		});
+		} );
 	}
 
 	/**
@@ -247,9 +248,8 @@ tribe.tickets.block = {
 		var max      = $input[ 0 ].max ? Number( $input[ 0 ].max ) : -1;
 		var step     = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
 		var increase = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
-		var change   = increase - originalValue;
 
-		if ( typeof $input[ 0 ].stepUp === 'function' ) {
+		if ( 'function' === typeof $input[ 0 ].stepUp ) {
 			try {
 				$input[ 0 ].stepUp();
 			} catch ( ex ) {
@@ -270,9 +270,8 @@ tribe.tickets.block = {
 		var min      = $input[ 0 ].min ? Number( $input[ 0 ].min ) : 0;
 		var step     = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
 		var decrease = ( min <= originalValue - step && 0 < originalValue - step ) ? originalValue - step : min;
-		var change   = originalValue - decrease;
 
-		if ( typeof $input[ 0 ].stepDown === 'function' ) {
+		if ( 'function' === typeof $input[ 0 ].stepDown ) {
 			try {
 				$input[ 0 ].stepDown();
 			} catch ( ex ) {
@@ -312,7 +311,7 @@ tribe.tickets.block = {
 			var new_quantity = parseInt( $(this).val(), 10 );
 			new_quantity     = isNaN( new_quantity ) ? 0 : new_quantity;
 			footerCount      += new_quantity;
-		  });
+		} );
 
 		if ( 0 > footerCount ) {
 			return;
@@ -341,7 +340,7 @@ tribe.tickets.block = {
 			var quantity = parseInt( $(this).val(), 10 );
 			quantity     = isNaN( quantity ) ? 0 : quantity;
 			footerAmount += parseFloat( $price.text() ) * quantity;
-		  });
+		} );
 
 		if ( 0 > footerAmount ) {
 			return;
@@ -402,11 +401,11 @@ tribe.tickets.block = {
 		obj.updateFormTotals( $cart );
 
 		$( '.tribe-block__tickets__item__attendee__fields__container[data-ticket-id="' + ticket.id + '"]' )
-			.removeClass('tribe-block__tickets--has-tickets')
-			.find('.tribe-ticket').remove();
+			.removeClass( 'tribe-block__tickets--has-tickets' )
+			.find( '.tribe-ticket' ).remove();
 	} );
 
-	$(document).on(
+	$( document ).on(
 		'focus',
 		'.tribe-ticket input, .tribe-ticket select, .tribe-ticket textarea',
 		function( e ) {
@@ -416,7 +415,7 @@ tribe.tickets.block = {
 		}
 	);
 
-	$(document).on(
+	$( document ).on(
 		'blur',
 		'.tribe-ticket input, .tribe-ticket select, .tribe-ticket textarea',
 		function( e ) {
@@ -466,9 +465,9 @@ tribe.tickets.block = {
 			var modalCartItem = $( this );
 			var qty = obj.getQty( modalCartItem );
 
-			var total = parseFloat( $( this ).find( obj.modalSelector.itemTotal ).text().replace(',', '') );
+			var total = parseFloat( $( this ).find( obj.modalSelector.itemTotal ).text().replace( ',', '' ) );
 			if ( '.' === obj.getCurrencyFormatting().thousands_sep ) {
-				total = parseFloat( $( this ).find( obj.modalSelector.itemTotal ).text().replace(/\./g,'').replace(',', '.') );
+				total = parseFloat( $( this ).find( obj.modalSelector.itemTotal ).text().replace( /\./g,'' ).replace( ',', '.' ) );
 			}
 
 			total_qty += parseInt( qty, 10 );
@@ -484,7 +483,7 @@ tribe.tickets.block = {
 	obj.appendARFields = function ( $cart ) {
 		$cart.find( obj.selector.item ).each( function () {
 			var $modalCartItem = $( this );
-			if ( $modalCartItem.is(':visible') ) {
+			if ( $modalCartItem.is( ':visible' ) ) {
 				var ticketID = $modalCartItem.closest( '.tribe-block__tickets__item' ).data( 'ticket-id' );
 				var $ticket_container = $( '#tribe-modal__attendee_registration' ).find( '.tribe-block__tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]' );
 				if ( ! $ticket_container.length ) {
@@ -501,9 +500,8 @@ tribe.tickets.block = {
 				}
 
 				if ( $existing.length > qty ) {
-
 					var remove_count = $existing.length - qty;
-					$ticket_container.find( '.tribe-ticket:nth-last-child(-n+' + remove_count + ')' ).remove();
+					$ticket_container.find( '.tribe-ticket:nth-last-child( -n+' + remove_count + ' )' ).remove();
 				} else if ( $existing.length < qty ) {
 					$ticket_container.addClass( 'tribe-block__tickets--has-tickets' );
 					var ticketTemplate = window.wp.template( 'tribe-registration--' + ticketID );
@@ -533,8 +531,7 @@ tribe.tickets.block = {
 			item.id = id;
 
 		if ( $blockCartItem ) {
-
-			item.qty = obj.getQty( $blockCartItem );
+			item.qty   = obj.getQty( $blockCartItem );
 			item.price = obj.getPrice( $modalCartItem );
 
 			$modalCartItem.find( obj.selector.itemQuantityInput ).val( item.qty );
@@ -547,7 +544,7 @@ tribe.tickets.block = {
 			return item;
 		}
 
-		item.qty = obj.getQty( $modalCartItem );
+		item.qty   = obj.getQty( $modalCartItem );
 		item.price = obj.getPrice( $modalCartItem );
 
 		obj.updateTotal( item.qty, item.price, $modalCartItem );
@@ -593,8 +590,6 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @TODO: not working?
-	 *
 	 * @param number qty   The quantity.
 	 * @param number price The price.
 	 * @param obj cartItem The cart item to update.
@@ -603,8 +598,8 @@ tribe.tickets.block = {
 	 */
 	obj.updateTotal = function ( qty, price, $cartItem ) {
 
-		var total_for_item = (qty * price).toFixed( obj.getCurrencyFormatting().number_of_decimals );
-		var $field = $cartItem.find( '.tribe-block__tickets__item__total' )
+		var total_for_item = ( qty * price ).toFixed( obj.getCurrencyFormatting().number_of_decimals );
+		var $field         = $cartItem.find( '.tribe-block__tickets__item__total' )
 		$field.text( obj.numberFormat( total_for_item ) );
 
 		return total_for_item;
@@ -636,35 +631,35 @@ tribe.tickets.block = {
 	 */
 	obj.numberFormat = function ( number ) {
 
-		var decimals = obj.getCurrencyFormatting().number_of_decimals;
-		var dec_point = obj.getCurrencyFormatting().decimal_point;
+		var decimals      = obj.getCurrencyFormatting().number_of_decimals;
+		var dec_point     = obj.getCurrencyFormatting().decimal_point;
 		var thousands_sep = obj.getCurrencyFormatting().thousands_sep;
 
 		var n = !isFinite( +number ) ? 0 : +number,
 			prec = !isFinite( +decimals ) ? 0 : Math.abs( decimals ),
-			sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-			dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+			sep = ( 'undefined' === typeof thousands_sep ) ? ',' : thousands_sep,
+			dec = ( 'undefined' === typeof dec_point ) ? '.' : dec_point,
 			toFixedFix = function ( n, prec ) {
 				// Fix for IE parseFloat(0.55).toFixed(0) = 0;
 				var k = Math.pow( 10, prec );
 				return Math.round( n * k ) / k;
 			},
-			s = (prec ? toFixedFix( n, prec ) : Math.round( n )).toString().split( '.' );
+			s = ( prec ? toFixedFix( n, prec ) : Math.round( n )).toString().split( '.' );
 		if ( s[0].length > 3 ) {
-			s[0] = s[0].replace( /\B(?=(?:\d{3})+(?!\d))/g, sep );
+			s[0] = s[0].replace( /\B(?=(?:\d{3} )+(?!\d))/g, sep );
 		}
-		if ( (s[1] || '').length < prec ) {
+		if ( ( s[1] || '' ).length < prec ) {
 			s[1] = s[1] || '';
 			s[1] += new Array( prec - s[1].length + 1 ).join( '0' );
 		}
 		return s.join( dec );
 	}
 
-	$(document).on( 'click', $( obj.modalSelector ).find('.tribe-modal__close-button'), function (event) {
+	$( document ).on( 'click', $( obj.modalSelector ).find( '.tribe-modal__close-button' ), function ( event ) {
 			var modal = event.target.closest( '.tribe-dialog' );
 			var form = jQuery( '#tribe-modal__cart' );
 			var data = form.serialize();
-			sessionStorage.setItem('tribe_tickets_cart', data);
+			sessionStorage.setItem( 'tribe_tickets_cart', data );
 
 			//console.log(sessionStorage.getItem( 'tribe_tickets_cart' ) );
 		}
