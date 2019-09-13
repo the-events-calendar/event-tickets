@@ -158,7 +158,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 		/**
 		 * Returns the total tickets completed for an event.
 		 *
-		 * @since TBD
+		 * @since 4.10.8
 		 *
 		 * @param int $total_complete          Total number of tickets completed.
 		 * @param int $original_total_complete Original total number of tickets completed.
@@ -210,7 +210,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	/**
 	 * The total number of tickets sold then refunded, for this event.
 	 *
-	 * @since TBD
+	 * @since 4.10.8
 	 *
 	 * @return int Total number of tickets refunded.
 	 */
@@ -218,7 +218,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 		/**
 		 * Returns the total tickets refunded, for an event.
 		 *
-		 * @since TBD
+		 * @since 4.10.8
 		 *
 		 * @param int $total_refunded          Total number of tickets refunded.
 		 * @param int $original_total_refunded Original total number of tickets refunded.

@@ -31,7 +31,7 @@ if ( ! isset( $ticket_id ) ) {
 	/**
 	 * Filters whether we shold disable the ticket - separate from tribe-dependency.
 	 *
-	 * @since TBD
+	 * @since 4.10.8
 	 *
 	 * @param boolean     $disabled Whether the price field is disabled.
 	 * @param WP_Post|int $ticket_id The current ticket object or its ID
