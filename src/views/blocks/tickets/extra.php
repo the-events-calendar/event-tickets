@@ -25,9 +25,7 @@ $context = array(
 $modal = $this->get( 'is_modal' );
 $id = 'tribe__details__content--' . $ticket->ID;
 ?>
-<div
-	class="tribe-block__tickets__item__extra"
->
+<div class="tribe-block__tickets__item__extra" >
 	<?php $this->template( 'blocks/tickets/extra-price', $context ); ?>
 	<?php $this->template( 'blocks/tickets/extra-available', $context ); ?>
 	<?php if ( true !== $modal && $ticket->show_description() && ! empty( $ticket->description ) ) : ?>

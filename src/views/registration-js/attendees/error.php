@@ -6,9 +6,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/attendees/error.php
  *
- * @since 4.9
- * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @version 4.10.1
+ * @since TBD
+ *
+ * @version TBD
  *
  */
 ?>

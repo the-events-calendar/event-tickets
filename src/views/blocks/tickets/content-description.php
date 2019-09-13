@@ -16,13 +16,14 @@
  */
 
 $ticket = $this->get( 'ticket' );
-$modal  = $this->get( 'is_modal' );
-$id = 'tribe__details__content' . ( true === $modal ) ?: '__modal';
-$id .= '--' . $ticket->ID;
 
 if ( ! $ticket->show_description() || empty( $ticket->description ) ) {
 	return false;
 }
+
+$modal  = $this->get( 'is_modal' );
+$id = 'tribe__details__content' . ( true === $modal ) ?: '__modal';
+$id .= '--' . $ticket->ID;
 ?>
 <?php if ( true === $modal && $ticket->show_description() && ! empty( $ticket->description ) ) : ?>
 		<div class="tribe-block__tickets__item__details__summary">

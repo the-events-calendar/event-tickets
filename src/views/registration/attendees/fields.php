@@ -7,12 +7,12 @@
  *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @version 4.10.1
+ * @version TBD
  *
  */
 ?>
 <div class="tribe-common-h7 tribe-common-h6--min-medium tribe-common-h--alt tribe-ticket">
-	<h4 class=""><?php esc_html_e( 'Attendee', 'event-tickets' ); ?> <?php echo esc_html( $key + 1 ); ?></h4>
+	<h4 class="tribe-common-b1"><?php esc_html_e( 'Attendee', 'event-tickets' ); ?> <?php echo esc_html( $key + 1 ); ?></h4>
 	<?php foreach ( $fields as $field ) : ?>
 		<?php
 			$value = ! empty( $saved_meta[ $ticket->ID ][ $key ][ $field->slug ] ) ? $saved_meta[ $ticket->ID ][ $key ][ $field->slug ] : null;

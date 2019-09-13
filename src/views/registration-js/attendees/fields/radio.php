@@ -6,10 +6,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/radio.php
  *
- * @since 4.9
- * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @since 4.10.2 Use md5() for field name slugs
- * @version 4.10.2
+ * @since TBD
+ *
+ * @version TBD
  *
  */
 $field         = $this->get( 'field' );

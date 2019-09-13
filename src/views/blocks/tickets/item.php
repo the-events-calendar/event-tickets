@@ -13,7 +13,7 @@
  * @since 4.9
  * @since TBD add modal only fields
  *
- * @version 4.9.4
+ * @version TBD
  *
  */
 $classes  = [ 'tribe-block__tickets__item' ];
