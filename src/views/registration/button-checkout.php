@@ -8,7 +8,7 @@
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
  * @since 4.10.2 Remove alignright class from submit button
- * @version 4.10.2
+ * @version TBD
  *
  */
 if ( ! $checkout_url ) {

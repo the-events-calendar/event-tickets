@@ -10,7 +10,6 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @since TBD Updated loading logic for including a renamed template.
  *
  * @version TBD
  *

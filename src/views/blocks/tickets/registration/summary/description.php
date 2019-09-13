@@ -3,7 +3,7 @@
  * This template renders the purchase summary description
  *
  * @since 4.9
- * @version 4.9
+ * @version TBD
  */
 ?>
 <div class="tribe-tickets__registration__description">
