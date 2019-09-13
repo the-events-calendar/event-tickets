@@ -34,7 +34,7 @@ $field_name    = 'tribe-tickets-meta[' . $attendee_id . '][' . esc_attr( $field[
 	<?php if ( $multiline ) : ?>
 		<textarea
 			id="<?php echo esc_attr( $option_id ); ?>"
-			name="<?php echo $field_name; ?>"
+			name="<?php echo esc_attr( $field_name ); ?>"
 			class="ticket-metatribe-common-form-control-text__input"
 			<?php tribe_required( $required ); ?>
 			<?php disabled( $is_restricted ); ?>
@@ -43,7 +43,7 @@ $field_name    = 'tribe-tickets-meta[' . $attendee_id . '][' . esc_attr( $field[
 		<input
 			type="text"
 			id="<?php echo esc_attr( $option_id ); ?>"
-			name="<?php echo $field_name; ?>"
+			name="<?php echo esc_attr( $field_name ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
 			<?php tribe_required( $required ); ?>
 			<?php disabled( $is_restricted ); ?>
