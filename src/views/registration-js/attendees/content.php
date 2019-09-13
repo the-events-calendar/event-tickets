@@ -45,12 +45,12 @@ $meta    = tribe( 'tickets-plus.main' )->meta();
 					$fields     = $meta->get_meta_fields_by_ticket( $post->ID );
 					$saved_meta = $storage->get_meta_data_for( $post->ID );
 
-					$args = array(
+					$args = [
 						'event_id'   => $event_id,
 						'ticket'     => $post,
 						'fields'     => $fields,
 						'saved_meta' => $saved_meta,
-					);
+					];
 
 
 					$this->template( 'registration-js/attendees/fields', $args );
