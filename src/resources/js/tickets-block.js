@@ -65,8 +65,8 @@ tribe.tickets.block = {
 
 			var originalValue = Number( $input[ 0 ].value );
 
-			// stepUp or stepDown the input according to the button that was clicked.
-			// Handle IE/Edge.
+			// Step up or Step down the input according to the button that was clicked.
+			// Handles IE/Edge.
 			if ( $( this ).hasClass( 'tribe-block__tickets__item__quantity__add' ) ) {
 				obj.stepUp( $input, originalValue );
 			} else {
