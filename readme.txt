@@ -127,6 +127,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Feature - Prefill ticket quantities based on what is already added to the cart for WooCommerce and EDD Tickets [129446]
 * Tweak - Clean up the way we add options to the ticket settings tab in PHP to make it more readable and maintainable. [133048]
 * Tweak - Add ability to track installed version history. Added `$version_history_slug` and `$latest_version_slug` properties to `Tribe__Tickets_Plus__Main` [133048]
+* Tweak - Added actions to `views/registration/content.php`: `tribe_tickets_registration_content_before_all_events` and `tribe_tickets_registration_content_after_all_events` [131896]
 * Fix - Pass missing 'provider' argument from `views/registration/content.php` to `views/registration/button-cart.php` [131896]
 
 = [4.10.8] 2019-09-10 =
