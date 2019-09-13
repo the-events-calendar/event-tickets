@@ -28,8 +28,10 @@ class CartUpdateCest extends BaseRestCest {
 			return $acc;
 		}, [] );
 
-		$first_post_id   = current( $post_ids );
-		$first_ticket_id = current( $tickets[ $first_post_id ] );
+
+		$first_post_id = current( $post_ids );
+
+		list( $first_ticket_id, $second_ticket_id ) = $tickets[ $first_post_id ];
 
 		$cart_rest_url = $this->cart_url . "/{$first_post_id}";
 
@@ -40,6 +42,10 @@ class CartUpdateCest extends BaseRestCest {
 					'ticket_id' => $first_ticket_id,
 					'quantity'  => 15,
 				],
+				[
+					'ticket_id' => $second_ticket_id,
+					'quantity'  => 5,
+				],
 			],
 		] );
 		$I->seeResponseCodeIs( 200 );
@@ -49,6 +55,11 @@ class CartUpdateCest extends BaseRestCest {
 				[
 					'ticket_id' => $first_ticket_id,
 					'quantity'  => 15,
+					'provider'  => 'tribe-commerce',
+				],
+				[
+					'ticket_id' => $second_ticket_id,
+					'quantity'  => 5,
 					'provider'  => 'tribe-commerce',
 				],
 			],
@@ -76,33 +87,26 @@ class CartUpdateCest extends BaseRestCest {
 			return $acc;
 		}, [] );
 
-		$first_post_id   = current( $post_ids );
-		$first_ticket_id = current( $tickets[ $first_post_id ] );
+		$first_post_id = current( $post_ids );
+
+		list( $first_ticket_id, $second_ticket_id ) = $tickets[ $first_post_id ];
 
 		$cart_rest_url = $this->cart_url . "/{$first_post_id}";
 
-		/** @var \Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
-		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
-
-		$invoice_number = $gateway->set_invoice_number();
-
-		/** @var \Tribe__Tickets__Commerce__PayPal__Cart__Interface $cart */
-		$cart = tribe( 'tickets.commerce.paypal.cart' );
-
-		$cart->set_id( $invoice_number );
-		$cart->add_item( $first_ticket_id, 15 );
-		$cart->save();
-
-		// Save cart cookie.
-		$I->setCookie( $gateway::$invoice_cookie_name, $invoice_number, [
-			'expires' => time() + 900,
-		] );
+		$this->paypal_add_item_to_cart( $I, [
+			$first_ticket_id => 15,
+			$second_ticket_id => 5,
+		], 0, $first_post_id );
 
 		$I->sendPOST( $cart_rest_url, [
 			'provider' => 'tribe-commerce',
 			'tickets'  => [
 				[
 					'ticket_id' => $first_ticket_id,
+					'quantity'  => 0,
+				],
+				[
+					'ticket_id' => $second_ticket_id,
 					'quantity'  => 0,
 				],
 			],

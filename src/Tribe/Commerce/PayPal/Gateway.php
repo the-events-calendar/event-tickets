@@ -449,6 +449,19 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	}
 
 	/**
+	 * Get the PayPal cart API URL.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The PayPal cart API URL.
+	 */
+	public function get_paypal_cart_api_url() {
+
+
+		return '';
+	}
+
+	/**
 	 * Returns the PyaPal base URL
 	 *
 	 * @since 4.7
@@ -515,7 +528,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 *
 	 * @return string
 	 */
-	protected function get_invoice_number() {
+	public function get_invoice_number() {
 		$invoice_length = 12;
 
 		if (
@@ -523,6 +536,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			&& strlen( $_COOKIE[ self::$invoice_cookie_name ] ) === $invoice_length
 		) {
 			$invoice = $_COOKIE[ self::$invoice_cookie_name ];
+
 			$invoice_transient = get_transient( $this->invoice_transient_name( $invoice ) );
 
 			if ( empty( $invoice_transient ) ) {
@@ -533,6 +547,15 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		if ( empty( $invoice ) ) {
 			$invoice = wp_generate_password( $invoice_length, false );
 		}
+
+		/**
+		 * Filters the invoice number used for PayPal.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $invoice Invoice number.
+		 */
+		$invoice = apply_filters( 'tribe_tickets_commerce_paypal_invoice_number', $invoice );
 
 		return $invoice;
 	}

@@ -30,11 +30,17 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	 * {@inheritdoc}
 	 */
 	public function save() {
-		if ( ! $this->has_items() ) {
+		if ( empty( $this->invoice_number ) ) {
 			return;
 		}
 
-		set_transient( self::get_transient_name( $this->invoice_number ), $this->items, 900 );
+		if ( ! $this->has_items() ) {
+			$this->clear();
+
+			return;
+		}
+
+		set_transient( self::get_transient_name( $this->invoice_number ), $this->items, HOUR_IN_SECONDS );
 	}
 
 	/**
@@ -106,8 +112,14 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	 * {@inheritdoc}
 	 */
 	public function clear() {
-		if ( null === $this->invoice_number ) {
-			return;
+		$invoice_number = $this->invoice_number;
+
+		if ( null === $invoice_number ) {
+			if ( ! $this->exists() ) {
+				return;
+			}
+
+			$invoice_number = $this->read_invoice_number();
 		}
 
 		delete_transient( self::get_transient_name( $this->invoice_number ) );
@@ -136,18 +148,28 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	/**
 	 * {@inheritdoc}
 	 */
-	public function remove_item( $item_id, $quantity ) {
-		$this->add_item( $item_id, - abs( (int) $quantity ) );
+	public function remove_item( $item_id, $quantity = null ) {
+		if ( null !== $quantity ) {
+			$this->add_item( $item_id, - abs( (int) $quantity ) );
+		} elseif ( isset( $this->items[ $item_id ] ) ) {
+			unset( $this->items[ $item_id ] );
+		}
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function add_item( $item_id, $quantity ) {
-		$this->items[ $item_id ] = isset( $this->items[ $item_id ] )
+		$new_quantity = isset( $this->items[ $item_id ] )
 			? $this->items[ $item_id ] + (int) $quantity
 			: (int) $quantity;
 
-		$this->items[ $item_id ] = max( $this->items[ $item_id ], 0 );
+		$new_quantity = max( $new_quantity, 0 );
+
+		if ( 0 < $new_quantity ) {
+			$this->items[ $item_id ] = $new_quantity;
+		} else {
+			$this->remove_item( $item_id );
+		}
 	}
 }

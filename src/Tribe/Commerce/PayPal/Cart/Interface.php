@@ -75,10 +75,10 @@ interface Tribe__Tickets__Commerce__PayPal__Cart__Interface {
 	 * Removes an item from the cart.
 	 *
 	 * @since 4.7.3
+	 * @since TBD Added null default for $quantity
 	 *
-	 * @param string $item_id
-	 *
-	 * @param int $quantity The quantity to remove.
+	 * @param string   $item_id  The item ID.
+	 * @param null|int $quantity The quantity to remove.
 	 */
-	public function remove_item( $item_id, $quantity );
+	public function remove_item( $item_id, $quantity = null );
 }

@@ -1984,8 +1984,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return string Tribe Commerce Cart URL.
 	 */
 	public function get_cart_url() {
-		// @todo Set cart URL.
-		$cart_url = '';
+		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
+
+		$cart_url = $gateway->get_paypal_cart_api_url();
 
 		/**
 		 * Allow filtering of the PayPal Cart URL.
@@ -2189,10 +2191,18 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	public function maybe_delete_expired_products() {
 		$delete = tribe_get_request_var( 'clear_product_cache', null );
+
 		if ( empty( $delete ) ) {
 			return;
 		}
-		delete_transient( $this->get_current_cart_transient() );
+
+		$transient_key = $this->get_current_cart_transient();
+
+		if ( false === $transient_key ) {
+			return;
+		}
+
+		delete_transient( $transient_key );
 
 		// Bail if ET+ is not in place
 		if ( ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' ) ) {
@@ -2258,7 +2268,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return array
 	 */
 	public function get_tickets_in_cart( $tickets ) {
-		$contents  = get_transient( $this->get_current_cart_transient() );
+		$transient_key = $this->get_current_cart_transient();
+
+		if ( false === $transient_key ) {
+			return $tickets;
+		}
+
+		$contents = get_transient( $transient_key );
 
 		if ( empty( $contents ) ) {
 			return $tickets;
@@ -2285,14 +2301,31 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param array $tickets List of tickets with their ID and quantity.
 	 */
 	public function update_tickets_in_cart( $tickets ) {
+		/** @var Tribe__Tickets__Commerce__PayPal__Cart__Interface $cart */
+		$cart = tribe( 'tickets.commerce.paypal.cart' );
+
+		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
+
+		$invoice_number = $gateway->set_invoice_number();
+
+		// Enforce invoice number when getting tickets later.
+		add_filter( 'tribe_tickets_commerce_paypal_invoice_number', static function() use ( $invoice_number ) {
+			return $invoice_number;
+		} );
+
+		$cart->set_id( $invoice_number );
+
 		foreach ( $tickets as $ticket ) {
 			// Skip if ticket ID not set.
 			if ( empty( $ticket['ticket_id'] ) ) {
 				continue;
 			}
 
-			$this->add_ticket_to_cart( $ticket['ticket_id'], $ticket['quantity'] );
+			$this->add_ticket_to_cart( $ticket['ticket_id'], $ticket['quantity'], $cart );
 		}
+
+		$cart->save();
 	}
 
 	/**
@@ -2303,31 +2336,20 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param int  $ticket_id Ticket ID.
-	 * @param int  $quantity  Ticket quantity.
-	 * @param bool $increment Whether to increment the quantity if the ticket is already in cart.
+	 * @param int                                               $ticket_id Ticket ID.
+	 * @param int                                               $quantity  Ticket quantity.
+	 * @param Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged $cart      Cart object.
+	 * @param bool                                              $increment Whether to increment the quantity if the ticket is already in cart.
 	 */
-	public function add_ticket_to_cart( $ticket_id, $quantity, $increment = false ) {
-		// @todo Check if item is in cart.
-		if ( 1 === 0 ) {
-			if ( 0 === $quantity ) {
-				// @todo Remove from the cart.
-				// Remove from the cart.
-			} else {
-				// @todo Maybe increment the quantity if the ticket is already in cart.
-				// Maybe increment the quantity if the ticket is already in cart.
-				if ( $increment ) {
-					$existing_quantity = 0;
+	public function add_ticket_to_cart( $ticket_id, $quantity, $cart, $increment = false ) {
+		if ( ! $increment || 0 === $quantity ) {
+			// Remove from the cart if we don't want to increment or zero is quantity.
+			$cart->remove_item( $ticket_id );
+		}
 
-					$quantity += $existing_quantity;
-				}
-
-				// @todo Update quantity if already in the cart.
-				// Update quantity if already in the cart.
-			}
-		} elseif ( 0 < $quantity ) {
-			// @todo Add item to cart.
-			// Add item to cart.
+		if ( 0 < $quantity ) {
+			// Add to / update quantity in cart.
+			$cart->add_item( $ticket_id, $quantity );
 		}
 	}
 
@@ -2336,17 +2358,22 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.9
 	 *
-	 * @return string
+	 * @return string|false Transient key or false if no invoice set.
 	 */
 	private function get_current_cart_transient() {
-		$cart      = tribe( 'tickets.commerce.paypal.cart' );
-		$invoice   = Tribe__Utils__Array::get(
-			$_COOKIE, Tribe__Tickets__Commerce__PayPal__Gateway::$invoice_cookie_name,
-			false
-		);
+		/** @var Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged $cart */
+		$cart = tribe( 'tickets.commerce.paypal.cart' );
 
-		$cart_class = get_class( $cart );
-		return call_user_func( array( $cart_class, 'get_transient_name' ), $invoice );
+		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
+
+		$invoice = $gateway->get_invoice_number();
+
+		if ( false === $invoice ) {
+			return false;
+		}
+
+		return $cart::get_transient_name( $invoice );
 	}
 
 	/**
