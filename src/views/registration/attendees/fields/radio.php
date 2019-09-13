@@ -12,9 +12,9 @@
  * @version TBD
  *
  */
-$field         = $this->get( 'field' );
-$required      = isset( $field->required ) && 'on' === $field->required ? true : false;
-$field         = (array) $field;
+$field    = $this->get( 'field' );
+$required = isset( $field->required ) && 'on' === $field->required ? true : false;
+$field    = (array) $field;
 
 $options = null;
 

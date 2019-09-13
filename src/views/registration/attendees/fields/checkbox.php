@@ -24,7 +24,7 @@ if ( ! $options ) {
 ?>
 <div class="tribe-field tribe-tickets-meta-fieldset tribe-tickets-meta-fieldset__checkbox-radio <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
 	<header class="tribe-tickets-meta-label">
-		<h3 class="tribe-common-b1 tribe-common-b2--min-medium" ><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></h3>
+		<h3 class="tribe-common-b1 tribe-common-b2--min-medium"><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></h3>
 	</header>
 
 	<div class="tribe-common-form-control-checkbox-radio-group">
@@ -45,7 +45,7 @@ if ( ! $options ) {
 				<input
 					class="tribe-common-form-control-checkbox__input"
 					id="<?php echo esc_attr( $option_id ); ?>"
-					name="tribe-tickets-meta[<?php echo $attendee_id ?>][<?php echo esc_attr( $slug ); ?>]"
+					name="tribe-tickets-meta[<?php echo esc_attr( $attendee_id ); ?>][<?php echo esc_attr( $slug ); ?>]"
 					type="checkbox"
 					value="<?php echo esc_attr( $option ); ?>"
 					<?php checked( true, in_array( $slug, $value ) ); ?>
