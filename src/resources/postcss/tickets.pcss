@@ -866,12 +866,14 @@
 	}
 
 	.tribe-block__tickets__item__quantity__number {
+		@mixin mobile-body-2;
 		border: 1px solid var(--color-border-default);
 		border-radius: var(--border-radius-default);
 		height: 40px;
 		width: 44px;
 
 		@media(--viewport-medium) {
+			@mixin desktop-body-2-sup;
 			border: 0;
 			height: 48px;
 			width: 30px;
