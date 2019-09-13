@@ -48,7 +48,7 @@ $meta                  = Tribe__Tickets_Plus__Main::instance()->meta();
 				<button type="submit name="checkout-button"><?php esc_html_e( 'Save and Checkout', 'event-tickets' ); ?></button>
 			<?php else: ?>
 				<button type="submit" class="tribe-common-c-btn-link tribe-common-c-btn--small tribe-block__tickets__item__attendee__fields__footer_submit" name="cart-button"><?php esc_html_e( 'Save and View Cart', 'event-tickets' ); ?></button>
-				<span class="tribe-block__tickets__item__attendee__fields__footer__divider">or</span>
+				<span class="tribe-block__tickets__item__attendee__fields__footer__divider"><?php esc_html_e( 'or', 'event-tickets' ); ?></span>
 				<button type="submit" class="tribe-common-c-btn tribe-common-c-btn--small tribe-block__tickets__item__attendee__fields__footer_submit" name="checkout-button"><?php esc_html_e( 'Checkout Now', 'event-tickets' ); ?></button>
 			<?php endif; ?>
 		</div>
