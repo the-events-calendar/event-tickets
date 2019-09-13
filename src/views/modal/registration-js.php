@@ -25,7 +25,7 @@ $meta                  = Tribe__Tickets_Plus__Main::instance()->meta();
 		id="tribe-modal__attendee_registration"
 		method="post"
 		class="tribe-block__tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?>"
-		name="<?php echo 'event' . esc_attr( $event_id ); ?>"
+		name="event<?php echo esc_attr( $event_id ); ?>"
 		autocomplete="off"
 		novalidate
 	>
