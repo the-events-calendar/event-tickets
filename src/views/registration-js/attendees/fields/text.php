@@ -19,7 +19,7 @@ $field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' 
 $disabled    = false;
 
 ?>
-<div  class="tribe-common-b1 tribe-field tribe-block__tickets__item__attendee__field__text <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
+<div class="tribe-common-b1 tribe-field tribe-block__tickets__item__attendee__field__text <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
 	<label
 		class="tribe-common-b1 tribe-common-b2--min-medium tribe-tickets-meta-label"
 		for="<?php echo esc_attr( $option_id ); ?>"

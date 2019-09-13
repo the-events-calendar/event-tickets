@@ -54,7 +54,7 @@ if ( ! $options ) {
 				<?php echo wp_kses_post( $option ); ?>
 			</label>
 		</div>
-		<?php }?>
+		<?php } ?>
 	</div>
 	<input
 		type="hidden"

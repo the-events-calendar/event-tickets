@@ -1,5 +1,5 @@
 <?php
-	echo '<script type="text/html" id="tmpl-tribe-registration-- " . esc_attr($ticket[\'id\'])>';
+	echo '<script type="text/html" id="tmpl-tribe-registration--' . esc_attr( $ticket['id'] ) . '">';
 		$ticket_qty = $ticket['qty'];
 		$post           = get_post( $ticket['id'] );
 		?>
@@ -19,7 +19,6 @@
 					'fields'     => $fields,
 					'saved_meta' => $saved_meta,
 				);
-
 
 				$this->template( 'registration-js/attendees/fields', $args );
 				$ticket_qty--;

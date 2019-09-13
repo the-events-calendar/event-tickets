@@ -24,7 +24,7 @@ $event_id = get_the_ID();
 	<form
 		method="post"
 		class="tribe-block__tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?>"
-		name="<?php echo 'event' . esc_attr( $event_id ); ?>"
+		name="event<?php echo esc_attr( $event_id ); ?>"
 		novalidate
 	>
 		<?php $template->template( 'registration/attendees/content', [ 'event_id' => $event_id, 'tickets' => $tickets ] ); ?>
