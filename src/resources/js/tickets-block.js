@@ -336,7 +336,7 @@ tribe.tickets.block = {
 
 		$qtys.each(function(){
 			var $price = $( this ).closest( '.tribe-block__tickets__item' ).find( obj.selector.itemPrice );
-			footerAmount += parseFloat( $price.text() ) * parseInt( $(this).val(), 10 );
+			footerAmount += parseFloat( $price.text() ) * parseInt( $( this ).val(), 10 );
 		  });
 
 		if ( 0 > footerAmount ) {
