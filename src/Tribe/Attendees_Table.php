@@ -117,7 +117,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'primary_info' => esc_html_x( 'Primary Information', 'attendee table', 'event-tickets' ),
 			'security'     => esc_html_x( 'Security Code', 'attendee table', 'event-tickets' ),
 			'status'       => esc_html_x( 'Status', 'attendee table', 'event-tickets' ),
-			'check_in'     => esc_html_x( 'Check in', 'attendee table', 'event-tickets' ),''
+			'check_in'     => esc_html_x( 'Check in', 'attendee table', 'event-tickets' ),
 		];
 
 		/** @var Tribe__Tickets__Attendees $attendees */
@@ -968,7 +968,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Get the allowed search types and their descriptions.
 	 *
-	 * @since TBD
+	 * @since 4.10.8
 	 *
 	 * @see   \Tribe__Tickets__Attendee_Repository::__construct() List of valid ORM args.
 	 *

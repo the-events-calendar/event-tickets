@@ -128,7 +128,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Add ability to track installed version history. Added `$version_history_slug` and `$latest_version_slug` properties to `Tribe__Tickets_Plus__Main` [133048]
 * Fix - Pass missing 'provider' argument from `views/registration/content.php` to `views/registration/button-cart.php` [131896]
 
-= [4.10.8] TBD =
+= [4.10.8] 2019-09-10 =
 
 * Tweak - Renamed `src/views/tickets/orders-link.php` to `src/views/tickets/view-link.php` and renamed `src/views/blocks/attendees/order-links.php` to `src/views/blocks/attendees/view-link.php` for improved and consistent naming between Classic and Block Editor templates [130955]
 * Tweak - Tribe Commerce PayPal Tickets now sets Euro currency symbol after amount (postfix/suffix) if WordPress site language is non-English, to match EU's guidelines [128532]
@@ -138,6 +138,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Make the ticket form price field disable-able via a filter and make its description text filterable as well. [132274]
 * Tweak - Allow text to wrap in attendees and orders report tables to avoid text going into other columns. [133195]
 * Tweak - Added Order ID and Product ID search types to Attendees Report and fixed Ticket ID search type to be based on the ticket's Post ID [132248]
+* Tweak - Added filters: `tribe_tickets_get_total_complete`, `tribe_tickets_get_total_refunded`, `tribe_tickets_price_description`, `tribe_tickets_price_disabled`
+* Tweak - Changed views: `blocks/attendees/order-links`, `blocks/rsvp`, `blocks/rsvp/form/submit-login`, `blocks/tickets`, `blocks/tickets/quantity-number`, `registration/attendees/fields/select`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp`, `tickets/orders-link`
 * Fix - Front-end search box (Community Tickets) input name changed to no longer trigger a theme's Search template [132248]
 * Fix - Fix potential issues with query that had no upper limit set when all that's needed is to check if it had one item [133247]
 * Fix - Support refunded attendee counting/handling for Tribe Commerce and Event Tickets Plus WooCommerce orders [126734]
@@ -145,11 +147,13 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Correct the sold count in Attendees Report for unlimited stock Tribe Commerce tickets (was previously showing negative), and improve text to always display quantities sold and remaining for all ticket types [128666]
 * Fix - Correct the docblock and variable names passed to the `tribe_tickets_get_ticket_max_purchase` filter and update RSVP and Tribe Commerce ticket templates to only display the available quantity [119822]
 * Fix - Make the "Tickets" heading not appear on a single event page if there are only past Tribe Commerce tickets [130748]
+* Fix - Fatal error when sending the attendee list by email in WordPress 4.9 or earlier [134061]
 * Fix - The "View your RSVPs and Tickets" link was not appearing when using the Block Editor for Events [128512]
 * Fix - Admin ticket editor was not displaying currency symbol at all if set to display after amount (postfix/suffix) [128532]
 * Fix - Update `\Tribe__Tickets__Tickets_View::get_description_rsvp_ticket()` to determine when to use the appropriate singular or plural texts based on the quantity found for each ticket type and deprecated its third parameter (_bool_ `$plurals`) (props @solepixel for pointing us to the issue) [129582]
 * Fix - Correct two places where the translation domain was incorrect. Thanks to @cfaria for the catch! [128193]
 * Fix - Allow saving RSVP status changes (Going / Not Going) even if tickets have no Attendee Information fields [128629]
+* Language - 5 new strings added, 132 updated, 0 fuzzied, and 3 obsoleted
 
 = [4.10.7.2] 2019-09-03 =
 

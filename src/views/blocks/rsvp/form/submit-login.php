@@ -10,8 +10,10 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since 4.9.3
  * @version 4.9.4
+ *
+ * @since 4.9.3
+ * @since 4.10.8 Fixed text domain for string.
  *
  */
 $event_id  = $this->get( 'event_id' );
