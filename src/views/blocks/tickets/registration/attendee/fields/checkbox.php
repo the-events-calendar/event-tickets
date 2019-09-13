@@ -18,7 +18,7 @@
 $required      = isset( $field->required ) && 'on' === $field->required ? true : false;
 $field         = (array) $field;
 $attendee_id   = $key;
-$options       = Tribe__Utils__Array::get( $field, array( 'extra', 'options' ), null );
+$options       = Tribe__Utils__Array::get( $field, [ 'extra', 'options' ], null );
 $field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . ']';
 $is_restricted = false;
 
