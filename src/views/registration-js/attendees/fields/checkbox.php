@@ -12,7 +12,7 @@
  */
 $required    = isset( $field->required ) && 'on' === $field->required ? true : false;
 $field       = (array) $field;
-$options     = Tribe__Utils__Array::get( $field, array( 'extra', 'options' ), null );
+$options     = Tribe__Utils__Array::get( $field, [ 'extra', 'options' ], null );
 $field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}]';
 $disabled    = false;
 
@@ -22,7 +22,7 @@ if ( ! $options ) {
 ?>
 <div class="tribe-field tribe-tickets-meta-fieldset tribe-tickets-meta-fieldset__checkbox-radio <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
 	<header class="tribe-tickets-meta-label">
-		<h3 class="tribe-common-b1 tribe-common-b2--min-medium" ><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></h3>
+		<h3 class="tribe-common-b1 tribe-common-b2--min-medium"><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></h3>
 	</header>
 
 	<div class="tribe-common-form-control-checkbox-radio-group">
