@@ -382,7 +382,7 @@ tribe.tickets.block = {
 		'change',
 		obj.selector.itemQuantityInput,
 		function ( e ) {
-			var $cart = $(this ).closest( 'form' );
+			var $cart = $( this ).closest( 'form' );
 
 			e.preventDefault();
 			obj.updateFormTotals( $cart );
