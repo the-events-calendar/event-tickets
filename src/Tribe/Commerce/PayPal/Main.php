@@ -1977,26 +1977,45 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Get cart URL for Tribe Commerce.
-	 *
-	 * @since 4.7
-	 *
-	 * @return string Cart URL.
-	 */
-	public function get_cart_url() {
-		return '';
-	}
-
-	/**
-	 * Get checkout URL for Tribe Commerce.
+	 * Get Tribe Commerce Cart URL.
 	 *
 	 * @since TBD
 	 *
-	 * @return string Checkout URL.
+	 * @return string Tribe Commerce Cart URL.
+	 */
+	public function get_cart_url() {
+		// @todo Set cart URL.
+		$cart_url = '';
+
+		/**
+		 * Allow filtering of the PayPal Cart URL.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $cart_url PayPal Cart URL.
+		 */
+		return apply_filters( 'tribe_tickets_tribe-commerce_cart_url', $cart_url );
+	}
+
+	/**
+	 * Get Tribe Commerce Checkout URL.
+	 *
+	 * @since TBD
+	 *
+	 * @return string PayPal Tribe Commerce URL.
 	 */
 	public function get_checkout_url() {
-		// Right now the checkout is the cart.
-		return $this->get_cart_url();
+		// @todo Set checkout URL.
+		$checkout_url = '';
+
+		/**
+		 * Allow filtering of the PayPal Checkout URL.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $checkout_url PayPal Checkout URL.
+		 */
+		return apply_filters( 'tribe_tickets_tribe-commerce_checkout_url', $checkout_url );
 	}
 
 	/**
@@ -2289,24 +2308,26 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param bool $increment Whether to increment the quantity if the ticket is already in cart.
 	 */
 	public function add_ticket_to_cart( $ticket_id, $quantity, $increment = false ) {
-		try {
-			if ( 1 === 0 ) {
-				// Maybe remove cart item if we are not incrementing the quantity if already in cart.
-				if ( ! $increment ) {
-					// @todo Remove item from cart.
+		// @todo Check if item is in cart.
+		if ( 1 === 0 ) {
+			if ( 0 === $quantity ) {
+				// @todo Remove from the cart.
+				// Remove from the cart.
+			} else {
+				// @todo Maybe increment the quantity if the ticket is already in cart.
+				// Maybe increment the quantity if the ticket is already in cart.
+				if ( $increment ) {
+					$existing_quantity = 0;
+
+					$quantity += $existing_quantity;
 				}
 
-				// Update quantity in cart.
-				if ( 0 < $quantity ) {
-					// @todo Update quantity in cart.
-				}
-			} elseif ( 0 < $quantity ) {
-				// Add item to cart.
-
-				// @todo Add item to cart.
+				// @todo Update quantity if already in the cart.
+				// Update quantity if already in the cart.
 			}
-		} catch ( \Exception $exception ) {
-			// Item not added to / removed from cart.
+		} elseif ( 0 < $quantity ) {
+			// @todo Add item to cart.
+			// Add item to cart.
 		}
 	}
 
