@@ -18,6 +18,9 @@ if (
 }
 
 $storage = new Tribe__Tickets_Plus__Meta__Storage();
+/**
+* @var Tribe__Tickets_Plus__Meta $meta
+*/
 $meta    = tribe( 'tickets-plus.main' )->meta();
 ?>
 
@@ -32,18 +35,14 @@ $meta    = tribe( 'tickets-plus.main' )->meta();
 		?>
 		<script type="text/html" id="tmpl-tribe-registration--<?php echo esc_attr( $ticket['id'] ); ?>">
 			<?php
-
 			$ticket_qty = $ticket['qty'];
-			$post           = get_post( $ticket['id'] );
+			$post       = get_post( $ticket['id'] );
+			$fields     = $meta->get_meta_fields_by_ticket( $post->ID );
+			$saved_meta = $storage->get_meta_data_for( $post->ID );
 			?>
 			<?php // go through each attendee ?>
 			<?php while ( 0 < $ticket_qty ) : ?>
 				<?php
-					/**
-					* @var Tribe__Tickets_Plus__Meta $meta
-					*/
-					$fields     = $meta->get_meta_fields_by_ticket( $post->ID );
-					$saved_meta = $storage->get_meta_data_for( $post->ID );
 
 					$args = [
 						'event_id'   => $event_id,
