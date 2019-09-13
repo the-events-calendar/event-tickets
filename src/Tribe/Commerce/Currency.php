@@ -80,7 +80,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 * Get and allow filtering of the currency symbol position
 	 *
 	 * @since 4.7
-	 * @since TBD Set the default position of the Euro currency symbol to 'suffix' if site language is not English.
+	 * @since 4.10.8 Set the default position of the Euro currency symbol to 'suffix' if site language is not English.
 	 *
 	 * @link https://en.wikipedia.org/wiki/Euro_sign#Use EU guideline stating symbol should be placed in front of the
 	 *                                                   amount in English but after in most other languages.
