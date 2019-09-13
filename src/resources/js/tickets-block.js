@@ -275,7 +275,7 @@ tribe.tickets.block = {
 
 		$qtys.each(function(){
 			var $price   = $( this ).closest( '.tribe-block__tickets__item' ).find( obj.selector.itemPrice );
-			var quantity = parseInt( $(this).val(), 10 );
+			var quantity = parseInt( $( this ).val(), 10 );
 			quantity     = isNaN( quantity ) ? 0 : quantity;
 			footerAmount += parseFloat( $price.text() ) * quantity;
 		} );
@@ -699,7 +699,7 @@ tribe.tickets.block = {
 			return Math.round( n * k ) / k;
 		};
 
-		var s          = ( prec ? toFixedFix( n, prec ) : Math.round( n )).toString().split( '.' );
+		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n )).toString().split( '.' );
 
 		if ( s[0].length > 3 ) {
 			s[0] = s[0].replace( /\B(?=(?:\d{3} )+(?!\d))/g, sep );
@@ -720,8 +720,6 @@ tribe.tickets.block = {
 			var form = jQuery( '#tribe-modal__cart' );
 			var data = form.serialize();
 			sessionStorage.setItem( 'tribe_tickets_cart', data );
-
-			//console.log(sessionStorage.getItem( 'tribe_tickets_cart' ) );
 		}
 	);
 } )( jQuery, tribe.tickets.block, tribe_ev.events );
