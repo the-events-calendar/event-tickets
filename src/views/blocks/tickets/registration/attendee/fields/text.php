@@ -23,13 +23,13 @@ $multiline     = isset( $field['extra'] ) && isset( $field['extra']['multiline']
 $value         = '';
 $is_restricted = false;
 $field_name    = 'tribe-tickets-meta[' . $attendee_id . '][' . esc_attr( $field['slug'] ) . ']';
-$classes = [ 'tribe-common-b1', 'tribe-field', 'tribe-block__tickets__item__attendee__field__text' ];
+$classes = [ 'tribe-common-b1', 'tribe-field', 'tribe-tickets__item__attendee__field__text' ];
 if ( $required ) {
 	$classes[] = 'tribe-tickets-meta-required';
 }
 
 if ( $multiline ) {
-	$classes[] = 'tribe-block__tickets__item__attendee__field__textarea';
+	$classes[] = 'tribe-tickets__item__attendee__field__textarea';
 }
 ?>
 <div <?php tribe_classes( $classes ); ?> >

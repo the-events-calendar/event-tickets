@@ -19,7 +19,7 @@ $ticket = $this->get( 'ticket' );
 $classes = [
 	'tribe-common-h7',
 	'tribe-common-h6--min-medium',
-	'tribe-block__tickets__item__content__title',
+	'tribe-tickets__item__content__title',
 ];
 
 if ( ! $ticket->show_description() || empty( $ticket->description ) ) {

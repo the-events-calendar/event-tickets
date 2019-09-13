@@ -28,7 +28,7 @@ if ( ! $options ) {
 
 $option_id = "tribe-tickets-meta_{$slug}_{$ticket->ID}" . ( $attendee_id ? '_' . $attendee_id : '' );
 ?>
-<div class="tribe-field tribe-block__tickets__item__attendee__field__select <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
+<div class="tribe-field tribe-tickets__item__attendee__field__select <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
 	<label class="tribe-common-b1 tribe-common-b2--min-medium tribe-tickets-meta-label" for="<?php echo esc_attr( $option_id ); ?>"><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 	<select
 		<?php tribe_disabled( $disabled ); ?>

@@ -26,7 +26,7 @@ $context = array(
 
 $classes = [
 	'tribe-common-h4',
-	'tribe-block__tickets__item__quantity',
+	'tribe-tickets__item__quantity',
 ];
 ?>
 <div

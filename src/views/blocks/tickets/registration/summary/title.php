@@ -16,7 +16,7 @@
  */
 
 ?>
-<div class="tribe-block__tickets__registration__title">
+<div class="tribe-tickets__registration__title">
 	<header>
 		<h2><?php esc_html_e( 'Ticket Registration', 'event-tickets' ); ?></h2>
 	</header>

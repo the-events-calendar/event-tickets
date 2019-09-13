@@ -11,7 +11,7 @@
  *
  */
 ?>
-<div class="tribe-block__tickets__registration__tickets">
+<div class="tribe-tickets__registration__tickets">
 
 	<?php $this->template( 'registration/summary/tickets-header' ); ?>
 

@@ -15,7 +15,7 @@
  *
  */
 ?>
-<div class="tribe-block__tickets__registration__tickets__item">
+<div class="tribe-tickets__registration__tickets__item">
 
 	<?php $this->template( 'blocks/tickets/registration/summary/ticket-icon', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
 

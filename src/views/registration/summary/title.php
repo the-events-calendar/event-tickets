@@ -11,7 +11,7 @@
  *
  */
 ?>
-<div class="tribe-block__tickets__registration__title">
+<div class="tribe-tickets__registration__title">
 	<header>
 		<h2>
 			<a href="<?php the_permalink( $event_id ); ?>">

@@ -11,11 +11,11 @@
  *
  */
 ?>
-<div class="tribe-block__tickets__registration__tickets__header">
-	<div class="tribe-block__tickets__registration__tickets__header__summary">
+<div class="tribe-tickets__registration__tickets__header">
+	<div class="tribe-tickets__registration__tickets__header__summary">
 		<?php esc_html_e( 'Ticket summary', 'event-tickets' ); ?>
 	</div>
-	<div class="tribe-block__tickets__registration__tickets__header__price">
+	<div class="tribe-tickets__registration__tickets__header__price">
 		<?php esc_html_e( 'Price', 'event-tickets' ); ?>
 	</div>
 </div>

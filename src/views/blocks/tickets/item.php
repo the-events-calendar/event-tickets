@@ -16,7 +16,7 @@
  * @version TBD
  *
  */
-$classes  = [ 'tribe-block__tickets__item' ];
+$classes  = [ 'tribe-tickets__item' ];
 $provider = $this->get( 'provider' );
 $ticket   = $this->get( 'ticket' );
 $modal    = $this->get( 'is_modal' );
@@ -37,7 +37,7 @@ if (
 
 $must_login = ! is_user_logged_in() && $ticket->get_provider()->login_required();
 if ( $must_login ) {
-	$classes[] = 'tribe-block__tickets__item__disabled';
+	$classes[] = 'tribe-tickets__item__disabled';
 }
 ?>
 <div

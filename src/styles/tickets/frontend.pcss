@@ -3,7 +3,7 @@
  *
  * @since  0.3.0-alpha
  */
-.tribe-common.tribe-block__tickets {
+.tribe-common.tribe-tickets {
 	border: 1px solid var(--color-border-secondary);
 	border-radius: 4px;
 	margin-top: 30px;
@@ -13,7 +13,7 @@
 
  .tribe-common {
 
-	.tribe-block__tickets__item {
+	.tribe-tickets__item {
 		display: flex;
 		flex-flow: row wrap;
 		background: var(--color-background);
@@ -26,7 +26,7 @@
 		}
 	}
 
-	.tribe-block__tickets__item__icon {
+	.tribe-tickets__item__icon {
 		background: #f9f9f9;
 		flex: 1 1 70px;
 		text-align: center;
@@ -38,14 +38,14 @@
 		}
 	}
 
-	.tribe-block__tickets__item__content {
+	.tribe-tickets__item__content {
 		align-items: baseline;
 		display: flex;
 		flex: 1 1 calc(100% - 90px);
 		flex-wrap: wrap;
 	}
 
-	.tribe-block__tickets__item__content__title {
+	.tribe-tickets__item__content__title {
 		display: block;
 		flex: 1 1 100%;
 		order: 1;
@@ -55,7 +55,7 @@
 		}
 	}
 
-	.tribe-block__tickets__item__content__description {
+	.tribe-tickets__item__content__description {
 		display: block;
 		flex: 1 1 auto;
 		margin-left: .5em;
@@ -67,7 +67,7 @@
 		}
 	}
 
-	.tribe-block__tickets__item__content__description__more {
+	.tribe-tickets__item__content__description__more {
 		@media(--viewport-medium) {
 			display: none;
 		}
@@ -79,7 +79,7 @@
 		}
 	}
 
-	.tribe-block__tickets__item__content__description__content {
+	.tribe-tickets__item__content__description__content {
 		display: none;
 
 		@media(--viewport-medium) {
@@ -89,7 +89,7 @@
 
 
 
-	.tribe-block__tickets__item__extra {
+	.tribe-tickets__item__extra {
 		align-items: baseline;
 		display: flex;
 		flex: 0 1 auto;
@@ -106,21 +106,21 @@
 		}
 	}
 
-	.tribe-block__tickets__item__extra__price {
+	.tribe-tickets__item__extra__price {
 		color: var(--color-icon-secondary);
 	}
 
-	.tribe-block__tickets__item__extra__available {
+	.tribe-tickets__item__extra__available {
 		margin-left: .5em;
 	}
 
-	.tribe-block__tickets__item__quantity {
+	.tribe-tickets__item__quantity {
 		flex: 0 0 90px;
 		order: 3;
 	}
 
-	.tribe-block__tickets__item__quantity__add,
-	.tribe-block__tickets__item__quantity__remove {
+	.tribe-tickets__item__quantity__add,
+	.tribe-tickets__item__quantity__remove {
 		background-color: transparent;
 		color: var(--color-icon-secondary);
 		display: inline-block;
@@ -132,7 +132,7 @@
 		}
 	}
 
-	.tribe-block__tickets__buy {
+	.tribe-tickets__buy {
 		border: 1px solid #e1e3e6;
 		background-color: #009fd4;
 		color: #fff;
@@ -144,7 +144,7 @@
 		}
 	}
 
-	.tribe-block__tickets__item__quantity__number {
+	.tribe-tickets__item__quantity__number {
 		align-items: center;
 		background-color: transparent;
 		border: none;
@@ -184,7 +184,7 @@
 		Attendee fields
 	*/
 
-	.tribe-block__tickets__item__attendee__fields {
+	.tribe-tickets__item__attendee__fields {
 		.tribe-field {
 			margin-bottom: 40px;
 			clear: both;
@@ -258,7 +258,7 @@
 
 	}
 
-	.tribe-block__tickets__button--next {
+	.tribe-tickets__button--next {
 		align-items: center;
 		border: 1px solid #e1e3e6;
 		background-color: #009fd4;
@@ -277,21 +277,21 @@
 		Tickets Registration/Purchase
 	*/
 
-	.tribe-block__tickets__registration {
+	.tribe-tickets__registration {
 		border: 1px solid #e1e3e6;
 	}
 
-	.tribe-block__tickets__registration__summary {
+	.tribe-tickets__registration__summary {
 	}
 
-	.tribe-block__tickets__registration__description {
+	.tribe-tickets__registration__description {
 		margin-top: 10px;
 	}
 
-	.tribe-block__tickets__registration__tickets {
+	.tribe-tickets__registration__tickets {
 	}
 
-	.tribe-block__tickets__registration__tickets__item {
+	.tribe-tickets__registration__tickets__item {
 		border-bottom: 1px solid #e1e3e6;
 		display: flex;
 		flex-wrap: wrap;
@@ -303,7 +303,7 @@
 		}
 	}
 
-	.tribe-block__tickets__registration__tickets__item__icon {
+	.tribe-tickets__registration__tickets__item__icon {
 		flex: 0 1 50px;
 
 		svg {
@@ -311,15 +311,15 @@
 		}
 	}
 
-	.tribe-block__tickets__registration__tickets__item__quantity {
+	.tribe-tickets__registration__tickets__item__quantity {
 		flex: 0 1 20px;
 	}
 
-	.tribe-block__tickets__registration__tickets__item__title {
+	.tribe-tickets__registration__tickets__item__title {
 		flex: 10 5 230px;
 	}
 
-	.tribe-block__tickets__registration__tickets__item__price {
+	.tribe-tickets__registration__tickets__item__price {
 		flex: 0 1 40px;
 	}
 }

@@ -9,8 +9,8 @@ var tribe_ticket_details = tribe_ticket_details || {};
 	}
 
 	obj.selectors = [
-		'.tribe-block__tickets__item__details__summary--more',
-		'.tribe-block__tickets__item__details__summary--less',
+		'.tribe-tickets__item__details__summary--more',
+		'.tribe-tickets__item__details__summary--less',
 	];
 
 	obj.event_listeners = function() {
@@ -34,14 +34,14 @@ var tribe_ticket_details = tribe_ticket_details || {};
 		var $trigger = $( trigger );
 
 		if (
-			! $trigger.hasClass( 'tribe-block__tickets__item__details__summary--more' ) &&
-			! $trigger.hasClass( 'tribe-block__tickets__item__details__summary--less' )
+			! $trigger.hasClass( 'tribe-tickets__item__details__summary--more' ) &&
+			! $trigger.hasClass( 'tribe-tickets__item__details__summary--less' )
 		) {
 			return;
 		}
 
 
-		var $parent = $trigger.closest( '.tribe-block__tickets__item__details__summary' );
+		var $parent = $trigger.closest( '.tribe-tickets__item__details__summary' );
 		var $target = $( '#' + $trigger.attr( 'aria-controls' ) );
 
 		if ( ! $target || ! $parent ) {
@@ -57,7 +57,7 @@ var tribe_ticket_details = tribe_ticket_details || {};
 
 	$document.ready(
 		function() {
-			var detailsElems = document.querySelectorAll( '.tribe-block__tickets__item__details__summary' );
+			var detailsElems = document.querySelectorAll( '.tribe-tickets__item__details__summary' );
 
 			// details element not present
 			if ( ! detailsElems.length ) {

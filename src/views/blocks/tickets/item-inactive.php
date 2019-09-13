@@ -17,8 +17,8 @@
 
 $sale_past = $this->get( 'sale_past' );
 $classes   = array(
-	'tribe-block__tickets__item',
-	'tribe-block__tickets__item--inactive',
+	'tribe-tickets__item',
+	'tribe-tickets__item--inactive',
 );
 
 $context = array(

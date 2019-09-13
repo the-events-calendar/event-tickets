@@ -22,7 +22,7 @@ if ( -1 === $available ) {
 }
 ?>
 <div
-	class="tribe-common-b3 tribe-block__tickets__item__extra__available"
+	class="tribe-common-b3 tribe-tickets__item__extra__available"
 >
 	<?php if ( -1 !== $ticket->available() ) : ?>
 		<?php $this->template( 'blocks/tickets/extra-available-quantity', [ 'ticket' => $ticket ] ); ?>

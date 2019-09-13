@@ -253,7 +253,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		$provider_classes = apply_filters( 'tribe_attendee_registration_form_classes', [] );
 
 		if ( array_key_exists( $provider, $provider_classes ) ) {
-			$class = 'tribe-block__tickets__item__attendee__fields__form--' . $provider_classes[ $provider ];
+			$class = 'tribe-tickets__item__attendee__fields__form--' . $provider_classes[ $provider ];
 		}
 
 		/**

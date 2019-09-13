@@ -11,6 +11,6 @@
  *
  */
 ?>
-<div class="tribe-block__tickets__registration__toggle__handler">
+<div class="tribe-tickets__registration__toggle__handler">
 	<i class="dashicons dashicons-arrow-up-alt2"></i>
 </div>

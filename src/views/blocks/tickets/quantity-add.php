@@ -23,7 +23,7 @@ $button_title = sprintf(
 );
 ?>
 <button
-	class="tribe-block__tickets__item__quantity__add"
+	class="tribe-tickets__item__quantity__add"
 	title="<?php echo esc_attr( $button_title ); ?>"
 >
 	<span class="screen-reader-text"><?php echo esc_html( $button_title ); ?></span>

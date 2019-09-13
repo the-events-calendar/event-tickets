@@ -21,29 +21,29 @@ $passed_provider_class = $this->get_form_class( $passed_provider );
 		$providers = array_unique( wp_list_pluck( wp_list_pluck( $tickets, 'provider'), 'attendee_object') );
 
 		if (  empty( $provider_class ) && ! empty( $providers[ $event_id ] ) ) {
-			$provider_class = 'tribe-block__tickets__item__attendee__fields__form--' . $providers[ $event_id ];
+			$provider_class = 'tribe-tickets__item__attendee__fields__form--' . $providers[ $event_id ];
 		}
 
 		$has_tpp = Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === $passed_provider || in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers);
 	?>
 	<div
-		class="tribe-block__tickets__registration__event"
+		class="tribe-tickets__registration__event"
 		data-event-id="<?php echo esc_attr( $event_id ); ?>"
 		data-is-meta-up-to-date="<?php echo absint( $is_meta_up_to_date ); ?>"
 	>
 		<?php $this->template( 'registration/summary/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
 
-		<div class="tribe-block__tickets__registration__actions">
+		<div class="tribe-tickets__registration__actions">
 			<?php $this->template( 'registration/button-cart', array( 'event_id' => $event_id ) ); ?>
 		</div>
 
-		<div class="tribe-block__tickets__item__attendee__fields">
+		<div class="tribe-tickets__item__attendee__fields">
 
 			<?php $this->template( 'registration-js/attendees/error', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
 
 			<form
 				method="post"
-				class="tribe-block__tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?>"
+				class="tribe-tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?>"
 				name="event<?php echo esc_attr( $event_id ); ?>"
 				novalidate
 			>

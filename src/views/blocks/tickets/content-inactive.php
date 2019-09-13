@@ -18,7 +18,7 @@
 $message = $this->get( 'is_sale_past' ) ? __( 'Tickets are no longer available', 'event-tickets' ) : __( 'Tickets are not yet available', 'event-tickets' );
 ?>
 <div
-	class="tribe-block__tickets__item__content tribe-block__tickets__item__content--inactive"
+	class="tribe-tickets__item__content tribe-tickets__item__content--inactive"
 >
 	<?php echo esc_html( $message ) ?>
 </div>

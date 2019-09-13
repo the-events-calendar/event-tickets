@@ -15,7 +15,7 @@
  *
  */
 ?>
-<div class="tribe-block__tickets__registration__summary">
+<div class="tribe-tickets__registration__summary">
 
 	<?php $this->template( 'blocks/tickets/registration/summary/title' ); ?>
 

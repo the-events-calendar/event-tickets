@@ -15,6 +15,6 @@
  *
  */
 ?>
-<div class="tribe-block__tickets__registration__tickets__item__icon">
+<div class="tribe-tickets__registration__tickets__item__icon">
 	<?php $this->template( 'blocks/tickets/icon-svg' ); ?>
 </div>

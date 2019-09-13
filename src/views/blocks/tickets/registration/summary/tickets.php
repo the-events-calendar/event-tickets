@@ -16,7 +16,7 @@
  */
 
 ?>
-<div class="tribe-block__tickets__registration__tickets">
+<div class="tribe-tickets__registration__tickets">
 
 	<?php foreach ( $tickets as $key => $ticket ) : ?>
 

@@ -11,6 +11,6 @@
  *
  */
 ?>
-<div class="tribe-block__tickets__registration__status">
+<div class="tribe-tickets__registration__status">
 	<i class="dashicons dashicons-edit"></i>
 </div>

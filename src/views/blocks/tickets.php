@@ -21,7 +21,7 @@
 /** @var Tribe__Tickets__Commerce__Currency $currency */
 $currency        = tribe( 'tickets.commerce.currency' );
 
-$cart_classes        = [ 'tribe-block', 'tribe-block__tickets', 'tribe-common' ];
+$cart_classes        = [ 'tribe-block', 'tribe-tickets', 'tribe-common' ];
 $cart_url            = $this->get( 'cart_url' );
 $has_tickets_on_sale = $this->get( 'has_tickets_on_sale' );
 $is_sale_past        = $this->get( 'is_sale_past' );
@@ -46,7 +46,7 @@ echo $html;
 ?>
 
 <form
-	id="tribe-block__tickets"
+	id="tribe-tickets"
 	action="<?php echo esc_url( $cart_url ) ?>"
 	<?php tribe_classes( $cart_classes ); ?>
 	method="post"
@@ -55,7 +55,7 @@ echo $html;
 	autocomplete="off"
 	novalidate
 >
-	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-block__tickets__title"><?php esc_html_e( 'Tickets', 'event-tickets' ); ?></h2>
+	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title"><?php esc_html_e( 'Tickets', 'event-tickets' ); ?></h2>
 	<?php $this->template( 'blocks/tickets/commerce/fields', [ 'provider' => $provider, 'provider_id' => $provider_id ] ); ?>
 	<?php if ( $has_tickets_on_sale ) : ?>
 		<?php foreach ( $tickets_on_sale as $key => $ticket ) : ?>

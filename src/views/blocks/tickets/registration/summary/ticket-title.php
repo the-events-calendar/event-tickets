@@ -16,6 +16,6 @@
  */
 
 ?>
-<div class="tribe-block__tickets__registration__tickets__item__title">
+<div class="tribe-tickets__registration__tickets__item__title">
 	<?php echo $ticket->name; ?>
 </div>

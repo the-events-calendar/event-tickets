@@ -12,6 +12,6 @@
  *
  */
 ?>
-<div class="tribe-block__tickets__item__attendee__fields__success">
+<div class="tribe-tickets__item__attendee__fields__success">
 	<?php esc_html_e( 'Attendee information has been saved.', 'event-tickets' ); ?>
 </div>

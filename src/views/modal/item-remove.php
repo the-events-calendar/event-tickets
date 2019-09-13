@@ -12,10 +12,10 @@
  */
 ?>
 <div
-	class="tribe-block__tickets__item__remove__wrap"
+	class="tribe-tickets__item__remove__wrap"
 >
 	<button
-		class="tribe-block__tickets__item__remove"
+		class="tribe-tickets__item__remove"
 	>
 		<?php esc_html_e( 'x', 'event-tickets' ); ?>
 	</button>

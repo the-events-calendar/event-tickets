@@ -17,15 +17,15 @@ tribe.tickets.block = {
 	'use strict';
 
 	obj.selector = {
-		container                  : '#tribe-block__tickets',
-		item                       : '.tribe-block__tickets__item',
-		itemExtraAvailable         : '.tribe-block__tickets__item__extra__available',
-		itemExtraAvailableQuantity : '.tribe-block__tickets__item__extra__available_quantity',
-		itemOptOut                 : '.tribe-block__tickets__item__optout',
+		container                  : '#tribe-tickets',
+		item                       : '.tribe-tickets__item',
+		itemExtraAvailable         : '.tribe-tickets__item__extra__available',
+		itemExtraAvailableQuantity : '.tribe-tickets__item__extra__available_quantity',
+		itemOptOut                 : '.tribe-tickets__item__optout',
 		itemPrice                  : '.tribe-amount',
-		itemQuantity               : '.tribe-block__tickets__item__quantity',
+		itemQuantity               : '.tribe-tickets__item__quantity',
 		itemQuantityInput          : '.tribe-tickets-quantity',
-		submit                     : '.tribe-block__tickets__buy',
+		submit                     : '.tribe-tickets__buy',
 	};
 
 	/*
@@ -36,7 +36,7 @@ tribe.tickets.block = {
 	 */
 	obj.modalSelector = {
 		container         : '.tribe-modal__cart',
-		itemRemove        : '.tribe-block__tickets__item__remove',
+		itemRemove        : '.tribe-tickets__item__remove',
 		itemTotal         : '.tribe-tickets__item__total__wrap .tribe-amount',
 	};
 
@@ -76,7 +76,7 @@ tribe.tickets.block = {
 		if ( 0 < new_quantity ) {
 			$form
 				.find( '[data-ticket-id]:not([data-ticket-id="' + ticket_id + '"])' )
-				.closest( 'div.tribe-block__tickets__item' )
+				.closest( 'div.tribe-tickets__item' )
 				.find( 'input, button' )
 				.attr( 'disabled', 'disabled' )
 				.closest( 'div' )
@@ -244,7 +244,7 @@ tribe.tickets.block = {
 	 * @param int    $form The form we're updating.
 	 */
 	obj.footerCount = function( $form ) {
-		var $field      = $form.find( '.tribe-tickets__item__footer__quantity__number' );
+		var $field      = $form.find( '.tribe-tickets__footer__quantity__number' );
 		var footerCount = 0;
 		var $qtys       = $form.find( obj.selector.itemQuantityInput );
 
@@ -269,12 +269,12 @@ tribe.tickets.block = {
 	 * @param int    $form The form we're updating.
 	 */
 	obj.footerAmount = function( $form ) {
-		var $field       = $form.find( '.tribe-tickets__item__footer__total__number' );
+		var $field       = $form.find( '.tribe-tickets__footer__total__number' );
 		var footerAmount = 0;
 		var $qtys        = $form.find( obj.selector.itemQuantityInput );
 
 		$qtys.each(function(){
-			var $price   = $( this ).closest( '.tribe-block__tickets__item' ).find( obj.selector.itemPrice );
+			var $price   = $( this ).closest( '.tribe-tickets__item' ).find( obj.selector.itemPrice );
 			var quantity = parseInt( $(this).val(), 10 );
 			quantity     = isNaN( quantity ) ? 0 : quantity;
 			footerAmount += parseFloat( $price.text() ) * quantity;
@@ -309,7 +309,7 @@ tribe.tickets.block = {
 	 */
 	$( document ).on(
 		'click',
-		'.tribe-block__tickets__item__quantity__remove, .tribe-block__tickets__item__quantity__add',
+		'.tribe-tickets__item__quantity__remove, .tribe-tickets__item__quantity__add',
 		function( e ) {
 			var $input = $( this ).parent().find( 'input[type="number"]' );
 
@@ -324,7 +324,7 @@ tribe.tickets.block = {
 
 			// Step up or Step down the input according to the button that was clicked.
 			// Handles IE/Edge.
-			if ( $( this ).hasClass( 'tribe-block__tickets__item__quantity__add' ) ) {
+			if ( $( this ).hasClass( 'tribe-tickets__item__quantity__add' ) ) {
 				obj.stepUp( $input, originalValue );
 			} else {
 				obj.stepDown( $input, originalValue );
@@ -416,8 +416,8 @@ tribe.tickets.block = {
 			obj.updateTotal( ticket.qty, ticket.price, $cartItem );
 			obj.updateFormTotals( $cart );
 
-			$( '.tribe-block__tickets__item__attendee__fields__container[data-ticket-id="' + ticket.id + '"]' )
-				.removeClass( 'tribe-block__tickets--has-tickets' )
+			$( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticket.id + '"]' )
+				.removeClass( 'tribe-tickets--has-tickets' )
 				.find( '.tribe-ticket' ).remove();
 		}
 	);
@@ -533,8 +533,8 @@ tribe.tickets.block = {
 				var $cartItem = $( this );
 
 				if ( $cartItem.is( ':visible' ) ) {
-					var ticketID          = $cartItem.closest( '.tribe-block__tickets__item' ).data( 'ticket-id' );
-					var $ticket_container = $( '#tribe-modal__attendee_registration' ).find( '.tribe-block__tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]' );
+					var ticketID          = $cartItem.closest( '.tribe-tickets__item' ).data( 'ticket-id' );
+					var $ticket_container = $( '#tribe-modal__attendee_registration' ).find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]' );
 
 					// Ticket does not have meta - no need to jump through hoops (and throw errors).
 					if ( ! $ticket_container.length ) {
@@ -545,7 +545,7 @@ tribe.tickets.block = {
 					var qty       = obj.getQty( $cartItem );
 
 					if ( 0 >= qty ) {
-						$ticket_container.removeClass( 'tribe-block__tickets--has-tickets' );
+						$ticket_container.removeClass( 'tribe-tickets--has-tickets' );
 						$ticket_container.find( '.tribe-ticket' ).remove();
 
 						return;
@@ -559,7 +559,7 @@ tribe.tickets.block = {
 						var ticketTemplate = window.wp.template( 'tribe-registration--' + ticketID );
 						var counter        = 0 < $existing.length ? $existing.length + 1 : 1;
 
-						$ticket_container.addClass( 'tribe-block__tickets--has-tickets' );
+						$ticket_container.addClass( 'tribe-tickets--has-tickets' );
 
 						for ( var i = counter; i <= qty; i++ ) {
 							var data = { 'attendee_id': i };
@@ -654,7 +654,7 @@ tribe.tickets.block = {
 	 */
 	obj.updateTotal = function ( qty, price, $cartItem ) {
 		var total_for_item = ( qty * price ).toFixed( obj.getCurrencyFormatting().number_of_decimals );
-		var $field         = $cartItem.find( '.tribe-block__tickets__item__total' );
+		var $field         = $cartItem.find( '.tribe-tickets__item__total' );
 
 		$field.text( obj.numberFormat( total_for_item ) );
 

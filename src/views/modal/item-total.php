@@ -14,8 +14,8 @@
  * @todo Adjust with #133179
  */
 ?>
-<div class="tribe-common-b2 tribe-block__tickets__item__total__wrap" >
-	<span class="tribe-block__tickets__item__total">
+<div class="tribe-common-b2 tribe-tickets__item__total__wrap" >
+	<span class="tribe-tickets__item__total">
 		<?php echo tribe( 'tickets.commerce.currency' )->get_formatted_currency_with_symbol( 0, $post_id, $provider->class_name ); ?>
 	</span>
 </div>

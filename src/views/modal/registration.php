@@ -19,11 +19,11 @@ $has_tpp               = Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT
 $event_id = get_the_ID();
 ?>
 
-<div class="tribe-block__tickets__item__attendee__fields">
-	<h2 class="tribe-common-h3 tribe-common-h4--min-medium tribe-common-h--alt tribe-block__tickets__item__attendee__fields__title"><?php esc_html_e( 'Attendee Details', 'event-tickets' ); ?></h2>
+<div class="tribe-tickets__item__attendee__fields">
+	<h2 class="tribe-common-h3 tribe-common-h4--min-medium tribe-common-h--alt tribe-tickets__item__attendee__fields__title"><?php esc_html_e( 'Attendee Details', 'event-tickets' ); ?></h2>
 	<form
 		method="post"
-		class="tribe-block__tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?>"
+		class="tribe-tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?>"
 		name="event<?php echo esc_attr( $event_id ); ?>"
 		novalidate
 	>
