@@ -39,7 +39,7 @@ $field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][' 
 
 	<div class="tribe-common-form-control-checkbox-radio-group">
 		<?php
-		foreach ( $options as $option ) {
+		foreach ( $options as $option ) :
 			$option_slug = md5( sanitize_title( $option ) );
 			$field_slug  = $field['slug'];
 			$option_id   = "tribe-tickets-meta_{$field_slug}" . ( $attendee_id ? '_' . $attendee_id : '' ) . "_{$option_slug}";
@@ -65,6 +65,6 @@ $field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][' 
 				<?php echo wp_kses_post( $option ); ?>
 			</label>
 		</div>
-		<?php }?>
+		<?php endforeach; ?>
 	</div>
 </div>
