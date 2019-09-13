@@ -36,7 +36,7 @@ if ( $must_login ) {
 >
 	<input
 		type="number"
-		class="tribe-common-h3 tribe-common-h4--min-medium tribe-ticket-quantity"
+		class="tribe-common-h3 tribe-common-h4--min-medium tribe-tickets-quantity"
 		step="1"
 		min="0"
 		<?php if ( -1 !== $max_quantity ) : ?>

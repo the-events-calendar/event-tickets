@@ -87,7 +87,7 @@ $cart_url       = '';
 					<?php if ( $is_there_any_product_to_sell ) : ?>
 						<input
 							type="number"
-							class="tribe-ticket-quantity qty"
+							class="tribe-tickets-quantity qty"
 							min="0"
 							<?php if ( -1 !== $available ) : ?>
 								max="<?php echo esc_attr( $available ); ?>"

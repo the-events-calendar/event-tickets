@@ -20,7 +20,7 @@ $event_id              = get_the_id();
 $meta                  = Tribe__Tickets_Plus__Main::instance()->meta();
 ?>
 <div class="tribe-block__tickets__item__attendee__fields">
-	<h2 class="tribe-common-h3 tribe-common-h4--min-medium tribe-common-h--alt"><?php esc_html_e( 'Attendee Details', 'event-tickets' ); ?></h2>
+	<h2 class="tribe-common-h3 tribe-common-h4--min-medium tribe-common-h--alt tribe-block__tickets__item__attendee__fields__title"><?php esc_html_e( 'Attendee Details', 'event-tickets' ); ?></h2>
 	<form
 		id="tribe-modal__attendee_registration"
 		method="post"
@@ -39,7 +39,7 @@ $meta                  = Tribe__Tickets_Plus__Main::instance()->meta();
 			}
 			?>
 				<div class="tribe-block__tickets__item__attendee__fields__container" data-ticket-id="<?php echo esc_attr( $ticket['id'] ); ?>">
-					<h3 class="tribe-common-h5 tribe-common-h5--min-medium tribe-common-h--alt tribe-ticket__heading "><?php echo get_the_title( $ticket['id'] ); ?></h3>
+					<h3 class="tribe-common-h5 tribe-common-h5--min-medium tribe-common-h--alt tribe-ticket__heading"><?php echo get_the_title( $ticket['id'] ); ?></h3>
 				</div>
 		<?php endforeach; ?>
 		<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />

@@ -24,7 +24,7 @@ tribe.tickets.block = {
 		itemOptOut                 : '.tribe-block__tickets__item__optout',
 		itemPrice                  : '.tribe-amount',
 		itemQuantity               : '.tribe-block__tickets__item__quantity',
-		itemQuantityInput          : '.tribe-ticket-quantity',
+		itemQuantityInput          : '.tribe-tickets-quantity',
 		submit                     : '.tribe-block__tickets__buy',
 	};
 
@@ -600,7 +600,7 @@ tribe.tickets.block = {
 	obj.updateTotal = function ( qty, price, $cartItem ) {
 
 		var total_for_item = (qty * price).toFixed( obj.getCurrencyFormatting().number_of_decimals );
-		var $field = $cartItem.find( '.tribe-block__tickets__item__total__wrap' )
+		var $field = $cartItem.find( '.tribe-block__tickets__item__total' )
 		$field.text( obj.numberFormat( total_for_item ) );
 
 		return total_for_item;

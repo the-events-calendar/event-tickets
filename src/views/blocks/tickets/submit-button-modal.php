@@ -32,13 +32,20 @@ $content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_
 
 $args = [
 	'append_target'           => 'body',
-	'content_wrapper_classes' => 'tribe-common tribe-dialog__wrapper',
+	'content_wrapper_classes' => 'tribe-common tribe-dialog__wrapper tribe-modal__wrapper--ar',
 	'button_classes'          => [ 'tribe-common-c-btn', 'tribe-common-c-btn--small', 'tribe-block__tickets__submit' ],
 	'button_name'             => $provider_id . '_get_tickets',
 	'button_text'             => $button_text,
 	'button_type'             => 'submit',
 	'show_event'              => 'tribe_dialog_show_ar_modal',
 	'title'                   => $title,
+	'title_classes'           => [
+		'tribe-dialog__title',
+		'tribe-modal__title',
+		'tribe-common-h5',
+		'tribe-common-h--alt',
+		'tribe-modal--ar__title',
+	],
 ];
 
 tribe( 'dialog.view' )->render_modal( $content, $args );

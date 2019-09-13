@@ -81,7 +81,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 					<?php if ( $is_there_any_product_to_sell ) : ?>
 						<input
 							type="number"
-							class="tribe-ticket-quantity"
+							class="tribe-tickets-quantity"
 						        step="1"
 							min="0"
 							<?php if ( -1 !== $available ) : ?>

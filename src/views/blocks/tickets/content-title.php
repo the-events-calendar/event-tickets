@@ -23,11 +23,9 @@ $classes = [
 ];
 
 if ( ! $ticket->show_description() || empty( $ticket->description ) ) {
-	$classes[] = 'tribe-block__tickets--no-description';
+	$classes[] = 'tribe-tickets--no-description';
 }
 ?>
-<div
-	<?php tribe_classes( $classes ); ?>
->
+<div <?php tribe_classes( $classes ); ?> >
 	<?php echo $ticket->name; ?>
 </div>

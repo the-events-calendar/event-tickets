@@ -10,7 +10,7 @@ var tribe_tickets_tpp = {
 		this.$rsvp = $( '.tribe-events-tickets-rsvp' );
 		this.attendee_template = $( document.getElementById( 'tribe-tickets-tpp-tmpl' ) ).html();
 
-		this.$rsvp.on( 'change', '.tribe-ticket-quantity', this.event.quantity_changed );
+		this.$rsvp.on( 'change', '.tribe-tickets-quantity', this.event.quantity_changed );
 
 		this.$rsvp.closest( '.cart' )
 			.on( 'submit', this.event.handle_submission );
