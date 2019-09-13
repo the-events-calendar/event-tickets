@@ -11,7 +11,7 @@
  *
  */
 
-$passed_provider       = tribe_get_request_var('provider');
+$passed_provider       = tribe_get_request_var( 'provider' );
 $passed_provider_class = tribe( 'tickets.attendee_registration.view' )->get_form_class( $passed_provider );
 $provider_class = $passed_provider_class;
 $providers = array_unique( wp_list_pluck( wp_list_pluck( $tickets, 'provider' ), 'attendee_object' ) );
