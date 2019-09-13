@@ -18,11 +18,18 @@ $field       = (array) $field;
 $multiline   = isset( $field['extra'] ) && isset( $field['extra']['multiline'] ) ? $field['extra']['multiline'] : '';
 $field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][' . esc_attr( $field['slug'] ) . ']';
 $disabled    = false;
+$classes = [ 'tribe-common-b1', 'tribe-field', 'tribe-block__tickets__item__attendee__field__text' ];
+if ( $required ) {
+	$classes[] = 'tribe-tickets-meta-required';
+}
 
+if ( $multiline ) {
+	$classes[] = 'tribe-block__tickets__item__attendee__field__textarea';
+}
 ?>
-<div  class="tribe-common-b1 tribe-field tribe-block__tickets__item__attendee__field__text <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
+<div <?php tribe_classes( $classes ); ?> >
 	<label
-		class="tribe-common-b1 tribe-common-b2--min-medium tribe-tickets-meta-label"
+		class="tribe-common-b2--min-medium tribe-tickets-meta-label"
 		for="<?php echo esc_attr( $option_id ); ?>"
 	><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 	<?php if ( $multiline ) : ?>

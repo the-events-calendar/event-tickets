@@ -309,7 +309,9 @@ tribe.tickets.block = {
 		var $qtys = $form.find( obj.selector.itemQuantityInput );
 
 		$qtys.each(function(){
-			footerCount += parseInt( $(this).val(), 10 );
+			var new_quantity = parseInt( $(this).val(), 10 );
+			new_quantity     = isNaN( new_quantity ) ? 0 : new_quantity;
+			footerCount      += new_quantity;
 		  });
 
 		if ( 0 > footerCount ) {
@@ -335,8 +337,10 @@ tribe.tickets.block = {
 		var $qtys = $form.find( obj.selector.itemQuantityInput );
 
 		$qtys.each(function(){
-			var $price = $( this ).closest( '.tribe-block__tickets__item' ).find( obj.selector.itemPrice );
-			footerAmount += parseFloat( $price.text() ) * parseInt( $( this ).val(), 10 );
+			var $price   = $( this ).closest( '.tribe-block__tickets__item' ).find( obj.selector.itemPrice );
+			var quantity = parseInt( $(this).val(), 10 );
+			quantity     = isNaN( quantity ) ? 0 : quantity;
+			footerAmount += parseFloat( $price.text() ) * quantity;
 		  });
 
 		if ( 0 > footerAmount ) {
