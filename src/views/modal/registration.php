@@ -11,11 +11,11 @@
  *
  */
 
-$passed_provider       = tribe_get_request_var('provider');
+$passed_provider       = tribe_get_request_var( 'provider' );
 $passed_provider_class = tribe( 'tickets.attendee_registration.view' )->get_form_class( $passed_provider );
 $provider_class = $passed_provider_class;
-$providers = array_unique( wp_list_pluck( wp_list_pluck( $tickets, 'provider'), 'attendee_object') );
-$has_tpp               = Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === $passed_provider || in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers);
+$providers = array_unique( wp_list_pluck( wp_list_pluck( $tickets, 'provider' ), 'attendee_object' ) );
+$has_tpp               = Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === $passed_provider || in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers, true );
 $event_id = get_the_ID();
 ?>
 
