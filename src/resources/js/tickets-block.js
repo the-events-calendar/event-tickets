@@ -318,7 +318,7 @@ tribe.tickets.block = {
 
 		$field.text( footerCount );
 
-		$form.find( '.tribe-tickets__footer' ).addClass( 'tribe-tickets__footer--active');
+		$form.find( '.tribe-tickets__footer' ).addClass( 'tribe-tickets__footer--active' );
 	}
 
 	/**
