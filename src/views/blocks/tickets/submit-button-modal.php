@@ -49,7 +49,7 @@ $args = [
 ];
 
 tribe( 'dialog.view' )->render_modal( $content, $args );
-$event_id = get_the_id();
+$event_id = get_the_ID();
 /** @var Tribe__Tickets__Editor__Template $template */
 $template = tribe( 'tickets.editor.template' );
 $provider_id = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
