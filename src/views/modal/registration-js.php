@@ -29,7 +29,7 @@ $meta                  = Tribe__Tickets_Plus__Main::instance()->meta();
 		autocomplete="off"
 		novalidate
 	>
-		<?php foreach( $tickets as $ticket ) : ?>
+		<?php foreach ( $tickets as $ticket ) : ?>
 			<?php
 			// Only include tickets with meta
 			$has_meta = get_post_meta( $ticket['id'], '_tribe_tickets_meta_enabled', true );
