@@ -328,8 +328,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_action( 'tickets_tpp_ticket_deleted', [ $this, 'update_stock_after_deletion' ], 10, 3 );
 
 		// REST API hooks.
-		add_filter( 'tribe_tickets_rest_cart_get_cart_url_tribe-commerce', [ $this, 'get_cart_url' ] );
-		add_filter( 'tribe_tickets_rest_cart_get_checkout_url_tribe-commerce', [ $this, 'get_checkout_url' ] );
+		add_filter( 'tribe_tickets_rest_cart_get_cart_url_tribe-commerce', [ $this, 'get_cart_url' ], 10, 3 );
+		add_filter( 'tribe_tickets_rest_cart_get_checkout_url_tribe-commerce', [ $this, 'get_checkout_url' ], 10, 3 );
 		add_filter( 'tribe_tickets_rest_cart_get_tickets_tribe-commerce', [ $this, 'get_tickets_in_cart' ] );
 		add_filter( 'tribe_tickets_rest_cart_update_tickets_tribe-commerce', [ $this, 'update_tickets_in_cart' ] );
 	}
@@ -1981,13 +1981,17 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
+	 * @param string $cart_url Cart URL.
+	 * @param array  $data     REST API response data to be sent.
+	 * @param int    $post_id  Post ID for the cart.
+	 *
 	 * @return string Tribe Commerce Cart URL.
 	 */
-	public function get_cart_url() {
+	public function get_cart_url( $cart_url, $data, $post_id ) {
 		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
-		$cart_url = $gateway->get_paypal_cart_api_url();
+		$cart_url = $gateway->get_paypal_cart_api_url( $post_id );
 
 		/**
 		 * Allow filtering of the PayPal Cart URL.
@@ -2004,11 +2008,14 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
+	 * @param string $checkout_url Checkout URL.
+	 * @param array  $data         REST API response data to be sent.
+	 * @param int    $post_id      Post ID for the cart.
+	 *
 	 * @return string PayPal Tribe Commerce URL.
 	 */
-	public function get_checkout_url() {
-		// @todo Set checkout URL.
-		$checkout_url = '';
+	public function get_checkout_url( $checkout_url, $data, $post_id ) {
+		$checkout_url = $this->get_cart_url( $checkout_url, $data, $post_id );
 
 		/**
 		 * Allow filtering of the PayPal Checkout URL.

@@ -272,8 +272,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			 * @since TBD
 			 *
 			 * @param array $tickets List of tickets with their ID and quantity.
+			 * @param int   $post_id Post ID for the cart.
 			 */
-			do_action( 'tribe_tickets_rest_cart_update_tickets_' . $provider, $tickets );
+			do_action( 'tribe_tickets_rest_cart_update_tickets_' . $provider, $tickets, $post_id );
 
 			/**
 			 * Update tickets in cart.
@@ -282,8 +283,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			 *
 			 * @param array  $tickets  List of tickets with their ID and quantity.
 			 * @param string $provider The cart provider.
+			 * @param int    $post_id  Post ID for the cart.
 			 */
-			do_action( 'tribe_tickets_rest_cart_update_tickets', $tickets, $provider );
+			do_action( 'tribe_tickets_rest_cart_update_tickets', $tickets, $provider, $post_id );
 		}
 
 		// Update ticket meta.
@@ -297,8 +299,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			 *
 			 * @param array $meta    List of meta for each ticket to be saved for Attendee Registration.
 			 * @param array $tickets List of tickets with their ID and quantity.
+			 * @param int   $post_id Post ID for the cart.
 			 */
-			do_action( 'tribe_tickets_rest_cart_update_ticket_meta_' . $provider, $meta, $tickets );
+			do_action( 'tribe_tickets_rest_cart_update_ticket_meta_' . $provider, $meta, $tickets, $post_id );
 
 			/**
 			 * Update ticket meta from Attendee Registration.
@@ -308,8 +311,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			 * @param array  $meta     List of meta for each ticket to be saved for Attendee Registration.
 			 * @param array  $tickets  List of tickets with their ID and quantity.
 			 * @param string $provider The cart provider.
+			 * @param int    $post_id  Post ID for the cart.
 			 */
-			do_action( 'tribe_tickets_rest_cart_update_ticket_meta', $meta, $tickets, $provider );
+			do_action( 'tribe_tickets_rest_cart_update_ticket_meta', $meta, $tickets, $provider, $post_id );
 		}
 
 		// Get the updated cart details.
@@ -332,8 +336,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			 *
 			 * @param string $cart_url Cart URL.
 			 * @param array  $data     REST API response data to be sent.
+			 * @param int    $post_id  Post ID for the cart.
 			 */
-			$cart_url = apply_filters( 'tribe_tickets_rest_cart_get_cart_url_' . $provider, $cart_url, $data );
+			$cart_url = apply_filters( 'tribe_tickets_rest_cart_get_cart_url_' . $provider, $cart_url, $data, $post_id );
 
 			/**
 			 * Get checkout URL for provider.
@@ -344,8 +349,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			 *
 			 * @param string $checkout_url Checkout URL.
 			 * @param array  $data         REST API response data to be sent.
+			 * @param int    $post_id      Post ID for the cart.
 			 */
-			$checkout_url = apply_filters( 'tribe_tickets_rest_cart_get_checkout_url_' . $provider, $checkout_url, $data );
+			$checkout_url = apply_filters( 'tribe_tickets_rest_cart_get_checkout_url_' . $provider, $checkout_url, $data, $post_id );
 
 			// Update cart and checkout URL.
 			$data['cart_url']     = $cart_url;

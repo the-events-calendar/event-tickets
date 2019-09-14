@@ -26,6 +26,17 @@ interface Tribe__Tickets__Commerce__PayPal__Cart__Interface {
 	public function add_item( $item_id, $quantity );
 
 	/**
+	 * Gets the cart items from the cart.
+	 *
+	 * This method should include any persistence by the cart implementation.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_items();
+
+	/**
 	 * Saves the cart.
 	 *
 	 * This method should include any persistence, request and redirection required

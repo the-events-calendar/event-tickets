@@ -17,7 +17,7 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	/**
 	 * @var array
 	 */
-	protected $items = array();
+	protected $items = [];
 
 	/**
 	 * {@inheritdoc}
@@ -46,20 +46,27 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	/**
 	 * {@inheritdoc}
 	 */
-	public function has_items() {
-		if ( null === $this->invoice_number ) {
-			if ( ! $this->exists() ) {
-				return false;
-			}
-
-			$invoice_number = $this->read_invoice_number();
-
-			$transient = (array) get_transient( self::get_transient_name( $invoice_number ) );
-
-			return count( array_filter( $transient ) );
+	public function get_items() {
+		if ( ! $this->exists() ) {
+			return false;
 		}
 
-		return count( array_filter( $this->items ) );
+		$invoice_number = $this->read_invoice_number();
+
+		$items = get_transient( self::get_transient_name( $invoice_number ) );
+
+		if ( is_array( $items ) && ! empty( $items ) ) {
+			$this->items = $items;
+		}
+
+		return $this->items;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function has_items() {
+		return count( $this->items );
 	}
 
 	/**
@@ -89,10 +96,10 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	 * @see Tribe__Tickets__Commerce__PayPal__Gateway::set_invoice_number()
 	 */
 	protected function read_invoice_number() {
-		return Tribe__Utils__Array::get(
-			$_COOKIE, Tribe__Tickets__Commerce__PayPal__Gateway::$invoice_cookie_name,
-			false
-		);
+		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
+
+		return $gateway->get_invoice_number( false );
 	}
 
 	/**
@@ -130,17 +137,7 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	 * {@inheritdoc}
 	 */
 	public function has_item( $item_id ) {
-		if ( null === $this->invoice_number ) {
-			if ( ! $this->exists() ) {
-				return false;
-			}
-
-			$invoice_number = $this->read_invoice_number();
-
-			$items = (array) get_transient( self::get_transient_name( $invoice_number ) );
-		} else {
-			$items = $this->items;
-		}
+		$items = $this->get_items();
 
 		return ! empty( $items[ $item_id ] ) ? (int) $items[ $item_id ] : false;
 	}

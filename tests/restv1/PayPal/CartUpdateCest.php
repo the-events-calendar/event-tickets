@@ -28,6 +28,8 @@ class CartUpdateCest extends BaseRestCest {
 			return $acc;
 		}, [] );
 
+		/** @var \Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
 		$first_post_id = current( $post_ids );
 
@@ -50,22 +52,30 @@ class CartUpdateCest extends BaseRestCest {
 		] );
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
+
+		$response = json_decode( $I->grabResponse(), true );
+
 		$I->assertEquals( [
-			'tickets'      => [
-				[
-					'ticket_id' => $first_ticket_id,
-					'quantity'  => 15,
-					'provider'  => 'tribe-commerce',
-				],
-				[
-					'ticket_id' => $second_ticket_id,
-					'quantity'  => 5,
-					'provider'  => 'tribe-commerce',
-				],
+			[
+				'ticket_id' => $first_ticket_id,
+				'quantity'  => 15,
+				'provider'  => 'tribe-commerce',
 			],
-			'cart_url'     => '',
-			'checkout_url' => '',
-		], json_decode( $I->grabResponse(), true ) );
+			[
+				'ticket_id' => $second_ticket_id,
+				'quantity'  => 5,
+				'provider'  => 'tribe-commerce',
+			],
+		], $response['tickets'] );
+
+		$I->assertContains(
+			'?tribe_tickets_redirect_to=https%3A%2F%2Fwww.sandbox.paypal.com%2Fcgi-bin%2Fwebscr%2F_cart'
+				. '%3Fcmd%3D_cart'
+				. '%26business%3Dmerchant%2540example.com'
+				. '%26bn%3DModernTribe_SP'
+			, $response['cart_url'] );
+
+		$I->assertEquals( $response['cart_url'], $response['checkout_url'] );
 	}
 
 	/**
