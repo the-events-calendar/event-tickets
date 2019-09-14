@@ -47,6 +47,10 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	 * {@inheritdoc}
 	 */
 	public function get_items() {
+		if ( ! empty( $this->items ) ) {
+			return $this->items;
+		}
+
 		if ( ! $this->exists() ) {
 			return false;
 		}
