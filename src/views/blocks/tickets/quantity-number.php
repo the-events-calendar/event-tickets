@@ -11,9 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @since TBD Tweaked logic for unlimited maximum quantity allowed.
+ * @since 4.10.8 Tweaked logic for unlimited maximum quantity allowed.
  *
- * @version TBD
+ * @version 4.10.8
  *
  * @var Tribe__Tickets__Ticket_Object $ticket
  * @var Tribe__Tickets__Editor__Template $this

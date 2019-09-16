@@ -7,10 +7,10 @@
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/view-link.php
  *
  * @since 4.2
- * @since TBD Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated third
+ * @since 4.10.8 Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated third
  *            parameter of `get_description_rsvp_ticket()`
  *
- * @version TBD
+ * @version 4.10.8
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

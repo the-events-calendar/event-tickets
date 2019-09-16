@@ -401,11 +401,11 @@ class Tribe__Tickets__Status__Manager {
 	}
 
 	/**
-	 * Get the Provider Slug from the Module Class
+	 * Get the Provider Slug from the Module Class.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $module_class the string of the module main class
+	 * @param string $module_class The string of the module main class.
 	 */
 	public function get_provider_slug( $module_class ) {
 

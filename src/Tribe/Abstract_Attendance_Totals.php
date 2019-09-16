@@ -94,7 +94,7 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	/**
 	 * Get Attendee Total Refunded Orders Tooltip
 	 *
-	 * @since TBD
+	 * @since 4.10.8
 	 *
 	 * @return string a string of html for the tooltip
 	 */

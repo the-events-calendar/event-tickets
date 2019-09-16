@@ -9,9 +9,9 @@
  *
  * @link  {INSERT_ARTICLE_LINK_HERE}
  *
- * @since TBD
+ * @since 4.10.8 Updated loading logic for including a renamed template.
  *
- * @version TBD
+ * @version 4.10.8
  *
  * @var Tribe__Tickets__Editor__Template $this
  */

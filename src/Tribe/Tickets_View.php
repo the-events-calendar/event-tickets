@@ -489,7 +489,7 @@ class Tribe__Tickets__Tickets_View {
 		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders-link.php' );
 
 		/**
-		 * @since TBD Attempt to load from old location to account for pre-existing theme overrides. If not found,
+		 * @since 4.10.8 Attempt to load from old location to account for pre-existing theme overrides. If not found,
 		 *            go through the motions with the new location.
 		 */
 		if ( empty( $file ) ) {
@@ -543,7 +543,7 @@ class Tribe__Tickets__Tickets_View {
 		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders-link.php' );
 
 		/**
-		 * @since TBD Attempt to load from old location to account for pre-existing theme overrides. If not found,
+		 * @since 4.10.8 Attempt to load from old location to account for pre-existing theme overrides. If not found,
 		 *            go through the motions with the new location.
 		 */
 		if ( empty( $file ) ) {
@@ -781,7 +781,7 @@ class Tribe__Tickets__Tickets_View {
 	 * Gets the name(s) of the type(s) of ticket(s) the specified user (optional) has for the specified event.
 	 *
 	 * @since 4.2
-	 * @since TBD Deprecated the 3rd parameter (whether or not to use 'plurals') in favor of figuring it out per type.
+	 * @since 4.10.8 Deprecated the 3rd parameter (whether or not to use 'plurals') in favor of figuring it out per type.
 	 *
 	 * @param int      $event_id   The Event ID we're checking.
 	 * @param int|null $user_id    An optional User ID.
