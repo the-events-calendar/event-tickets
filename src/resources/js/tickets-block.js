@@ -580,7 +580,7 @@ tribe.tickets.block = {
 	}
 
 	/**
-	 * Prefill the Cart
+	 * Prefill the Cart.
 	 *
 	 * @since TBD
 	 *
@@ -608,7 +608,7 @@ tribe.tickets.block = {
 	};
 
 	/**
-	 * Init the tickets script
+	 * Init the tickets script.
 	 *
 	 * @since 4.9
 	 *
