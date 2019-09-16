@@ -5,6 +5,7 @@ modules:
         - REST
         - WPDb
         - WPBrowser
+        - WPFilesystem
         - WPLoader
         - Asserts
     config:
@@ -23,6 +24,12 @@ modules:
             adminUsername: %WP_ADMIN_USERNAME%
             adminPassword: '%WP_ADMIN_PASSWORD%'
             adminUrl: /wp-admin
+        WPFilesystem:
+            wpRootFolder: '%WP_ROOT_FOLDER%'
+            themes: '/wp-content/themes'
+            plugins: '/wp-content/plugins'
+            mu-plugins: '/wp-content/mu-plugins'
+            uploads: '/wp-content/uploads'
         REST:
             depends: WPBrowser
             url: '%WP_URL%/wp-json/tribe/ticket/v1/'

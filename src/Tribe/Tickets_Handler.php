@@ -944,14 +944,15 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return int|null
 	 */
 	public function get_total_event_capacity( $post = null ) {
-		$post_id            = Tribe__Main::post_id_helper( $post );
-		$total              = 0;
+		$post_id = Tribe__Main::post_id_helper( $post );
+		$total   = 0;
 
 		if ( 0 === $post_id ) {
 			return $total;
 		}
 
 		$has_shared_tickets = 0 !== count( $this->get_event_shared_tickets( $post_id ) );
+
 		if ( $has_shared_tickets ) {
 			$total = tribe_tickets_get_capacity( $post_id );
 		}
@@ -1009,7 +1010,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return $ticket_list;
 		}
 
-		$tickets     = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 
 		if ( empty( $tickets ) ) {
 			return $ticket_list;
@@ -1043,7 +1044,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return $ticket_list;
 		}
 
-		$tickets     = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 
 		if ( empty( $tickets ) ) {
 			return $ticket_list;
@@ -1070,7 +1071,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 *
-	 * @param int|object (null) $post Post or Post ID tickets are attached to
+	 * @param int|object (null) $post Post or Post ID tickets are attached to.
 	 *
 	 * @return array List of RSVPs for an event.
 	 */
@@ -1082,7 +1083,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return $ticket_list;
 		}
 
-		$tickets     = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 
 		if ( empty( $tickets ) ) {
 			return $ticket_list;
@@ -1100,33 +1101,42 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Gets the Maximum Purchase number for a given ticket
+	 * Gets the Maximum Purchase number for a given ticket.
 	 *
 	 * @since  4.8.1
 	 *
-	 * @param  int|string  $ticket_id  Ticket to fetch purchase max from
+	 * @param  int|string $ticket_id Ticket from which to fetch purchase max.
 	 *
 	 * @return int
 	 */
 	public function get_ticket_max_purchase( $ticket_id ) {
-		$event_id = tribe_events_get_ticket_event( $ticket_id );
+		$event = tribe_events_get_ticket_event( $ticket_id );
+
+		if ( ! $event instanceof WP_Post ) {
+			return 0;
+		}
+
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
-		$ticket = $provider->get_ticket( $event_id, $ticket_id );
+
+		/** @var Tribe__Tickets__Ticket_Object $ticket */
+		$ticket = $provider->get_ticket( $event, $ticket_id );
 
 		$available = $ticket->available();
 
 		/**
-		 * Allows filtering of the max input for purchase of this one ticket
+		 * Allows filtering the quantity available displayed below the ticket
+		 * quantity input for purchase of this one ticket.
+		 *
+		 * If less than the maximum quantity available, will restrict that as well.
 		 *
 		 * @since 4.8.1
 		 *
-		 * @param int                           $available Max Purchase number
-		 * @param Tribe__Tickets__Ticket_Object $ticket    Ticket Object
-		 * @param int                           $event_id  Event ID
-		 * @param int                           $ticket_id Ticket Raw ID
-		 *
+		 * @param int                           $available Max purchase quantity.
+		 * @param Tribe__Tickets__Ticket_Object $ticket    Ticket object.
+		 * @param WP_Post                       $event     Event post.
+		 * @param int                           $ticket_id Raw ticket ID.
 		 */
-		return apply_filters( 'tribe_tickets_get_ticket_max_purchase', $available, $ticket, $event_id, $ticket_id );
+		return (int) apply_filters( 'tribe_tickets_get_ticket_max_purchase', $available, $ticket, $event, $ticket_id );
 	}
 
 	/**
@@ -1146,7 +1156,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return $ticket_list;
 		}
 
-		$tickets     = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 
 		if ( empty( $tickets ) ) {
 			return $ticket_list;

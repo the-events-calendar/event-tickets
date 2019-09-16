@@ -55,12 +55,10 @@ class LinksTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function order_link_inputs() {
-		return [
-			[ 'bar', 'foo-bar-some' ],
-			[ 'link', 'foo-bar-some' ],
-			[ 'tag', 'foo-bar-some' ],
-			[ 'tag', 'foo-bar-some', 'See Order' ],
-		];
+		yield[ 'bar', 'foo-bar-some' ];
+		yield[ 'link', 'foo-bar-some' ];
+		yield[ 'tag', 'foo-bar-some' ];
+		yield[ 'tag', 'foo-bar-some', 'See Order' ];
 	}
 
 	/**

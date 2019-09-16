@@ -79,6 +79,12 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get and allow filtering of the currency symbol position
 	 *
+	 * @since 4.7
+	 * @since 4.10.8 Set the default position of the Euro currency symbol to 'suffix' if site language is not English.
+	 *
+	 * @link https://en.wikipedia.org/wiki/Euro_sign#Use EU guideline stating symbol should be placed in front of the
+	 *                                                   amount in English but after in most other languages.
+	 *
 	 * @param int|null $post_id
 	 *
 	 * @return string
@@ -90,7 +96,30 @@ class Tribe__Tickets__Commerce__Currency {
 			$currency_position = $this->currency_code_options_map[ $this->currency_code ]['position'];
 		}
 
-		return apply_filters( 'tribe_commerce_currency_symbol_position', $currency_position, $post_id );
+		if (
+			'prefix' === $currency_position
+			&& 'EUR' === $this->get_currency_code()
+			&& 0 !== strpos( get_locale(), 'en_' ) // site language does not start with 'en_'
+		) {
+			$currency_position = 'postfix';
+		}
+
+		/**
+		 * Whether the currency position should be 'prefix' or 'postfix' (i.e. suffix).
+		 *
+		 * @param string   $currency_position The currency position string.
+		 * @param null|int $post_id           The post ID.
+		 *
+		 * @return string
+		 */
+		$currency_position = apply_filters( 'tribe_commerce_currency_symbol_position', $currency_position, $post_id );
+
+		// Plugin's other code only accounts for one of these two values
+		if ( ! in_array( $currency_position, [ 'prefix', 'postfix' ], true ) ) {
+			$currency_position = 'prefix';
+		}
+
+		return $currency_position;
 	}
 
 	/**
