@@ -130,7 +130,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Added actions to `views/registration/content.php`: `tribe_tickets_registration_content_before_all_events` and `tribe_tickets_registration_content_after_all_events` [131896]
 * Fix - Pass missing 'provider' argument from `views/registration/content.php` to `views/registration/button-cart.php` [131896]
 
-= [4.10.8] 2019-09-10 =
+= [4.10.8] 2019-09-16 =
 
 * Tweak - Renamed `src/views/tickets/orders-link.php` to `src/views/tickets/view-link.php` and renamed `src/views/blocks/attendees/order-links.php` to `src/views/blocks/attendees/view-link.php` for improved and consistent naming between Classic and Block Editor templates [130955]
 * Tweak - Tribe Commerce PayPal Tickets now sets Euro currency symbol after amount (postfix/suffix) if WordPress site language is non-English, to match EU's guidelines [128532]
