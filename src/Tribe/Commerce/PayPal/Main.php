@@ -2211,7 +2211,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		delete_transient( $transient_key );
 
-		// Bail if ET+ is not in place
+		// Bail if ET+ is not in place.
 		if ( ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' ) ) {
 			return;
 		}
