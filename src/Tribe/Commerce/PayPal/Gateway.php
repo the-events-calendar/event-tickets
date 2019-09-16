@@ -499,8 +499,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/Appx_websitestandard_htmlvariables/
 		 *
 		 * @param string $notify_url
-		 * @param WP_Post $post The post tickets are associated with
-		 * @param array $product_ids An array of ticket post IDs that are being added to the cart
+		 * @param WP_Post $post The post tickets are associated with.
+		 * @param array $product_ids An array of ticket post IDs that are being added to the cart.
 		 */
 		$notify_url = apply_filters( 'tribe_tickets_commerce_paypal_notify_url', $notify_url, $post, $product_ids );
 		$notify_url = trim( $notify_url );
@@ -511,8 +511,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 * @since 4.7
 		 *
 		 * @param array   $custom_args
-		 * @param WP_Post $post        The post tickets are associated with
-		 * @param array   $product_ids An array of ticket post IDs that are being added to the cart
+		 * @param WP_Post $post        The post tickets are associated with.
+		 * @param array   $product_ids An array of ticket post IDs that are being added to the cart.
 		 */
 		$custom_args = apply_filters( 'tribe_tickets_commerce_paypal_custom_args', $custom_args, $post, $product_ids );
 
@@ -570,10 +570,10 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			];
 		}
 
-		// If there isn't a quantity at all, then there's nothing to purchase. Redirect with an error
+		// If there isn't a quantity at all, then there's nothing to purchase. Redirect with an error.
 		if ( empty( $cart_items ) ) {
 			/**
-			 * @see Tribe__Tickets__Commerce__PayPal__Errors::error_code_to_message for error codes
+			 * @see Tribe__Tickets__Commerce__PayPal__Errors::error_code_to_message for error codes.
 			 */
 			return add_query_arg( [ 'tpp_error' => 103 ], $post_url );
 		}
@@ -605,13 +605,13 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		}
 
 		/**
-		 * Filters the arguments passed to PayPal while adding items to the cart
+		 * Filters the arguments passed to PayPal while adding items to the cart.
 		 *
 		 * @since 4.7
 		 *
 		 * @param array   $args
-		 * @param array   $data POST data from buy now submission
-		 * @param WP_Post $post Post object that has tickets attached to it
+		 * @param array   $data POST data from buy now submission.
+		 * @param WP_Post $post Post object that has tickets attached to it.
 		 */
 		$args = apply_filters( 'tribe_tickets_commerce_paypal_add_to_cart_args', $args, [], $post );
 
@@ -628,7 +628,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$url = add_query_arg( [ 'tribe_tickets_redirect_to' => rawurlencode( $cart_url ) ], home_url() );
 
 		/**
-		 * Filters the add to cart redirect
+		 * Filters the add to cart redirect.
 		 *
 		 * @since 4.9
 		 *
