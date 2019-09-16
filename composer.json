@@ -10,7 +10,11 @@
   "homepage": "http://tri.be/shop/wordpress-events-calendar/",
   "license": "GPL-2.0",
   "require-dev": {
-    "lucatume/wp-browser": "^2.2.9",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
+    "wp-coding-standards/wpcs": "^2.1",
+    "automattic/vipwpcs": "^2.0",
+    "moderntribe/tribalscents": "dev-master",
+    "lucatume/wp-browser": "2.2.15",
     "codeception/codeception": "^2.5.6",
     "phpunit/phpunit": "^6.5.14",
     "facebook/webdriver": "1.6.0",
@@ -18,11 +22,29 @@
     "lucatume/function-mocker-le": "^1.0.1",
     "spatie/phpunit-snapshot-assertions": "^1.4.2",
     "fzaninotto/faker": "^1.8",
-    "lucatume/wp-snaphot-assertions": "^1.0"
+    "lucatume/wp-snaphot-assertions": "^1.0",
+    "moderntribe/tribe-testing-facilities": "dev-master"
   },
+  "repositories": [
+    {
+      "name": "moderntribe/tribe-testing-facilities",
+      "type": "github",
+      "url": "https://github.com/moderntribe/tribe-testing-facilities",
+      "no-api": true
+    },
+    {
+      "name": "moderntribe/TribalScents",
+      "type": "github",
+      "url": "https://github.com/moderntribe/TribalScents",
+      "no-api": true
+    }
+  ],
   "minimum-stability": "stable",
   "prefer-stable": true,
   "config": {
-    "preferred-install": "dist"
+    "preferred-install": "dist",
+    "platform": {
+      "php": "7.0.33"
+    }
   }
 }
