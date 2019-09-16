@@ -51,4 +51,10 @@ if ( $must_login ) {
 	<?php $this->template( 'blocks/tickets/content', $context ); ?>
 	<?php $this->template( 'blocks/tickets/quantity', $context ); ?>
 	<?php if ( true === $modal ) { $this->template( 'modal/item-total', $context ); } ?>
+	<?php if ( ! $modal) : ?>
+		<?php $this->template( 'blocks/rsvp/form/opt-out', $context ); ?>
+	<?php else: ?>
+		<?php $this->template( 'blocks/tickets/opt-out-hidden', $context ); ?>
+	<?php endif; ?>
+
 </div>

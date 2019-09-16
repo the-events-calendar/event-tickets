@@ -21,7 +21,8 @@ tribe.tickets.block = {
 		item                       : '.tribe-tickets__item',
 		itemExtraAvailable         : '.tribe-tickets__item__extra__available',
 		itemExtraAvailableQuantity : '.tribe-tickets__item__extra__available_quantity',
-		itemOptOut                 : '.tribe-tickets__item__optout',
+		itemOptOut                 : '.tribe-tickets-attendees-list-optout--wrapper',
+		itemOptOutInput            : '#tribe-tickets-attendees-list-optout-',
 		itemPrice                  : '.tribe-amount',
 		itemQuantity               : '.tribe-tickets__item__quantity',
 		itemQuantityInput          : '.tribe-tickets-quantity',
@@ -56,10 +57,11 @@ tribe.tickets.block = {
 	 * @param int new_quantity The new ticket quantity.
 	 */
 	obj.maybeShowOptOut = function( $ticket, new_quantity ) {
-		var $has_optout = $ticket.has( obj.selector.itemOptOut ).length;
+		var has_optout = $ticket.has( obj.selector.itemOptOut ).length;
 
-		if ( $has_optout ) {
-			( 0 < new_quantity ) ? $( obj.selector.itemOptOut ).show() : $( obj.selector.itemOptOut ).hide();
+		if ( has_optout ) {
+			var $optout = $ticket.closest( obj.selector.item ).find( obj.selector.itemOptOut );
+			( 0 < new_quantity ) ? $optout.show() : $optout.hide();
 		}
 	}
 
@@ -352,7 +354,7 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	$( document ).on(
-		'change, keyup',
+		'change keyup',
 		obj.selector.itemQuantityInput,
 		function( e ) {
 			var $this        = $( this );
@@ -588,8 +590,9 @@ tribe.tickets.block = {
 		item.id  = id;
 
 		if ( $blockCartItem ) {
-			item.qty   = obj.getQty( $blockCartItem );
-			item.price = obj.getPrice( $modalCartItem );
+			item.qty     = obj.getQty( $blockCartItem );
+
+			item.price   = obj.getPrice( $modalCartItem );
 
 			$modalCartItem.find( obj.selector.itemQuantityInput ).val( item.qty );
 
@@ -598,6 +601,13 @@ tribe.tickets.block = {
 			}
 
 			obj.updateTotal( item.qty, item.price, $modalCartItem );
+
+			// We force new DOM queries here to be sure we pick up dynamically generated items.
+			item.$optOut = $( obj.selector.itemOptOutInput + $blockCartItem.data('ticket-id') );
+
+			if ( item.$optOut.length && item.$optOut.is(':checked') ) {
+				$( obj.selector.itemOptOutInput + $blockCartItem.data('ticket-id') + '-modal' ).val( '1' );
+			}
 
 			return item;
 		}
