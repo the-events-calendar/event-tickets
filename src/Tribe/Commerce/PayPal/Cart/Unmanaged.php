@@ -17,7 +17,7 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	/**
 	 * @var array
 	 */
-	protected $items = array();
+	protected $items = [];
 
 	/**
 	 * {@inheritdoc}
@@ -30,30 +30,47 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	 * {@inheritdoc}
 	 */
 	public function save() {
-		if ( ! $this->has_items() ) {
+		if ( empty( $this->invoice_number ) ) {
 			return;
 		}
 
-		set_transient( self::get_transient_name( $this->invoice_number ), $this->items, 900 );
+		if ( ! $this->has_items() ) {
+			$this->clear();
+
+			return;
+		}
+
+		set_transient( self::get_transient_name( $this->invoice_number ), $this->items, HOUR_IN_SECONDS );
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_items() {
+		if ( ! empty( $this->items ) ) {
+			return $this->items;
+		}
+
+		if ( ! $this->exists() ) {
+			return false;
+		}
+
+		$invoice_number = $this->read_invoice_number();
+
+		$items = get_transient( self::get_transient_name( $invoice_number ) );
+
+		if ( is_array( $items ) && ! empty( $items ) ) {
+			$this->items = $items;
+		}
+
+		return $this->items;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function has_items() {
-		if ( null === $this->invoice_number ) {
-			if ( ! $this->exists() ) {
-				return false;
-			}
-
-			$invoice_number = $this->read_invoice_number();
-
-			$transient = (array) get_transient( self::get_transient_name( $invoice_number ) );
-
-			return count( array_filter( $transient ) );
-		}
-
-		return count( array_filter( $this->items ) );
+		return count( $this->items );
 	}
 
 	/**
@@ -83,10 +100,10 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	 * @see Tribe__Tickets__Commerce__PayPal__Gateway::set_invoice_number()
 	 */
 	protected function read_invoice_number() {
-		return Tribe__Utils__Array::get(
-			$_COOKIE, Tribe__Tickets__Commerce__PayPal__Gateway::$invoice_cookie_name,
-			false
-		);
+		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
+
+		return $gateway->get_invoice_number( false );
 	}
 
 	/**
@@ -106,8 +123,14 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	 * {@inheritdoc}
 	 */
 	public function clear() {
-		if ( null === $this->invoice_number ) {
-			return;
+		$invoice_number = $this->invoice_number;
+
+		if ( null === $invoice_number ) {
+			if ( ! $this->exists() ) {
+				return;
+			}
+
+			$invoice_number = $this->read_invoice_number();
 		}
 
 		delete_transient( self::get_transient_name( $this->invoice_number ) );
@@ -118,17 +141,7 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	 * {@inheritdoc}
 	 */
 	public function has_item( $item_id ) {
-		if ( null === $this->invoice_number ) {
-			if ( ! $this->exists() ) {
-				return false;
-			}
-
-			$invoice_number = $this->read_invoice_number();
-
-			$items = (array) get_transient( self::get_transient_name( $invoice_number ) );
-		} else {
-			$items = $this->items;
-		}
+		$items = $this->get_items();
 
 		return ! empty( $items[ $item_id ] ) ? (int) $items[ $item_id ] : false;
 	}
@@ -136,18 +149,28 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	/**
 	 * {@inheritdoc}
 	 */
-	public function remove_item( $item_id, $quantity ) {
-		$this->add_item( $item_id, - abs( (int) $quantity ) );
+	public function remove_item( $item_id, $quantity = null ) {
+		if ( null !== $quantity ) {
+			$this->add_item( $item_id, - abs( (int) $quantity ) );
+		} elseif ( isset( $this->items[ $item_id ] ) ) {
+			unset( $this->items[ $item_id ] );
+		}
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function add_item( $item_id, $quantity ) {
-		$this->items[ $item_id ] = isset( $this->items[ $item_id ] )
+		$new_quantity = isset( $this->items[ $item_id ] )
 			? $this->items[ $item_id ] + (int) $quantity
 			: (int) $quantity;
 
-		$this->items[ $item_id ] = max( $this->items[ $item_id ], 0 );
+		$new_quantity = max( $new_quantity, 0 );
+
+		if ( 0 < $new_quantity ) {
+			$this->items[ $item_id ] = $new_quantity;
+		} else {
+			$this->remove_item( $item_id );
+		}
 	}
 }

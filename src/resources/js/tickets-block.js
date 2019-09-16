@@ -16,6 +16,8 @@ tribe.tickets.block = {
 ( function( $, obj, te ) {
 	'use strict';
 
+	obj.document = $( document );
+
 	obj.selector = {
 		container                 : '.tribe-block__tickets',
 		submit                    : '.tribe-block__tickets__buy',
@@ -41,7 +43,7 @@ tribe.tickets.block = {
 	 *
 	 * @return void
 	 */
-	$( document ).on( 'click',
+	obj.document.on( 'click',
 		'.tribe-block__tickets__item__quantity__remove, .tribe-block__tickets__item__quantity__add',
 		function( e ) {
 			e.preventDefault();
@@ -326,7 +328,7 @@ tribe.tickets.block = {
 	 * @since TBD
 	 *
 	 */
-	$( document ).on( 'change', obj.modalSelector.itemQuantity, function ( e ) {
+	obj.document.on( 'change', obj.modalSelector.itemQuantity, function ( e ) {
 			e.preventDefault();
 
 			var $cartItem = $( this ).closest( obj.modalSelector.item );
@@ -344,7 +346,7 @@ tribe.tickets.block = {
 	 * @since TBD
 	 *
 	 */
-	$( document ).on( 'click', obj.modalSelector.itemRemove, function ( e ) {
+	obj.document.on( 'click', obj.modalSelector.itemRemove, function ( e ) {
 			e.preventDefault();
 
 			var $cartItem = $( this ).closest( obj.modalSelector.item );
@@ -527,7 +529,7 @@ tribe.tickets.block = {
 	};
 
 	/**
-	 * Get the Currency Formatting for a Provider
+	 * Get the Currency Formatting for a Provider.
 	 *
 	 * @since TBD
 	 *
@@ -542,12 +544,13 @@ tribe.tickets.block = {
 	};
 
 	/**
-	 * Format the number according to provider settings
+	 * Format the number according to provider settings.
 	 * Based off coding fron https://stackoverflow.com/a/2901136
 	 *
 	 * @since TBD
 	 *
-	 * @param number the number to format
+	 * @param number The number to format.
+	 *
 	 * @returns {string}
 	 */
 	obj.numberFormat = function ( number ) {
@@ -575,5 +578,46 @@ tribe.tickets.block = {
 		}
 		return s.join( dec );
 	}
+
+	/**
+	 * Prefill the Cart.
+	 *
+	 * @since TBD
+	 *
+	 * @returns {*}
+	 */
+	obj.prefillCart = function () {
+
+		var $form = $( obj.selector.container );
+
+		$.ajax( {
+			type: 'GET',
+			data: {'provider': $form.data( 'providerId' )},
+			dataType: 'json',
+			url: $form.data( 'cart' ),
+			success: function ( data ) {
+				$.each( data.tickets, function ( index, value ) {
+					var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
+					if ( $item ) {
+						$item.find( '.tribe-ticket-quantity' ).val( value.quantity );
+					}
+				} );
+			},
+		} );
+
+	};
+
+	/**
+	 * Init the tickets script.
+	 *
+	 * @since 4.9
+	 *
+	 * @return void
+	 */
+	obj.initPrefill = function() {
+		obj.prefillCart();
+	}
+
+	obj.initPrefill();
 
 })( jQuery, tribe.tickets.block, tribe_ev.events );

@@ -106,7 +106,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$cart_url      = $this->get_cart_url( '_cart' );
 		$post_url      = get_permalink( $post );
 		$currency_code = trim( tribe_get_option( 'ticket-commerce-currency-code' ) );
-		$product_ids   = $_POST['product_id'];
+		$product_ids   = (array) $_POST['product_id'];
 
 		$notify_url = tribe_get_option( 'ticket-paypal-notify-url', home_url() );
 
@@ -449,6 +449,199 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	}
 
 	/**
+	 * Get the PayPal cart API URL.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return string The PayPal cart API URL.
+	 */
+	public function get_paypal_cart_api_url( $post_id ) {
+		$cart_url      = $this->get_cart_url( '_cart' );
+		$post          = get_post( $post_id );
+		$post_url      = get_permalink( $post_id );
+		$currency_code = trim( tribe_get_option( 'ticket-commerce-currency-code' ) );
+		$email         = trim( tribe_get_option( 'ticket-paypal-email' ) );
+		$notify_url    = tribe_get_option( 'ticket-paypal-notify-url', home_url() );
+
+		$custom_args = [
+			'user_id'       => get_current_user_id(),
+			'tribe_handler' => 'tpp',
+			'pid'           => $post->ID,
+		];
+
+		$invoice_number = $this->set_invoice_number();
+
+		$custom_args['invoice'] = $invoice_number;
+
+		/** @var Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged $cart */
+		$cart = tribe( 'tickets.commerce.paypal.cart' );
+		$cart->set_id( $invoice_number );
+
+		$items = $cart->get_items();
+
+		if ( empty( $items ) ) {
+			return '';
+		}
+
+		$product_ids = array_keys( $items );
+
+		/**
+		 * Filters the notify URL.
+		 *
+		 * The `notify_url` argument is an IPN only argument specifying the URL PayPal should
+		 * use to POST the payment information.
+		 *
+		 * @since 4.7
+		 *
+		 * @see  Tribe__Tickets__Commerce__PayPal__Handler__IPN::check_response()
+		 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/Appx_websitestandard_htmlvariables/
+		 *
+		 * @param string $notify_url
+		 * @param WP_Post $post The post tickets are associated with.
+		 * @param array $product_ids An array of ticket post IDs that are being added to the cart.
+		 */
+		$notify_url = apply_filters( 'tribe_tickets_commerce_paypal_notify_url', $notify_url, $post, $product_ids );
+		$notify_url = trim( $notify_url );
+
+		/**
+		 * Filters the custom arguments that will be sent ot PayPal.
+		 *
+		 * @since 4.7
+		 *
+		 * @param array   $custom_args
+		 * @param WP_Post $post        The post tickets are associated with.
+		 * @param array   $product_ids An array of ticket post IDs that are being added to the cart.
+		 */
+		$custom_args = apply_filters( 'tribe_tickets_commerce_paypal_custom_args', $custom_args, $post, $product_ids );
+
+		$custom = Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode( $custom_args );
+
+		$args = [
+			'cmd'           => '_cart',
+			'business'      => urlencode( $email ),
+			'bn'            => 'ModernTribe_SP',
+			'notify_url'    => urlencode( $notify_url ),
+			'shopping_url'  => urlencode( $post_url ),
+			'return'        => $this->get_success_page_url(),
+			'currency_code' => $currency_code ?: 'USD',
+			'custom'        => $custom,
+			/*
+			 * We're not sending an invoice anymore.
+			 * It would mess up the cart cookies and we ended up not using it.
+			 */
+		];
+
+		/** @var Tribe__Tickets__Commerce__PayPal__Main $paypal */
+		$paypal = tribe( 'tickets.commerce.paypal' );
+
+		$cart_items = [];
+
+		foreach ( $items as $ticket_id => $quantity ) {
+			$ticket = $paypal->get_ticket( $post_id, $ticket_id );
+
+			// Skip if the ticket in no longer in stock or is not sellable.
+			if (
+				! $ticket->is_in_stock()
+				|| ! $ticket->date_in_range()
+			) {
+				continue;
+			}
+
+			$inventory    = $ticket->inventory();
+			$is_unlimited = -1 === $inventory;
+
+			// If the requested amount is greater than remaining, use remaining instead.
+			if ( ! $is_unlimited && $inventory < $quantity ) {
+				$quantity = $inventory;
+			}
+
+			// If the ticket doesn't have a quantity, skip it.
+			if ( empty( $quantity ) ) {
+				continue;
+			}
+
+			$cart_items[] = [
+				'quantity'    => $quantity,
+				'amount'      => $ticket->price,
+				'item_number' => "{$post_id}:{$ticket_id}",
+				'item_name'   => urlencode( wp_kses_decode_entities( $this->get_product_name( $ticket, $post ) ) ),
+			];
+		}
+
+		// If there isn't a quantity at all, then there's nothing to purchase. Redirect with an error.
+		if ( empty( $cart_items ) ) {
+			/**
+			 * @see Tribe__Tickets__Commerce__PayPal__Errors::error_code_to_message for error codes.
+			 */
+			return add_query_arg( [ 'tpp_error' => 103 ], $post_url );
+		}
+
+		$item_counter = 1;
+
+		$has_multiple_items = 1 < count( $cart_items );
+
+		// Whether we use add or upload depends on if we have multiple items.
+		if ( $has_multiple_items ) {
+			$args['upload'] = 1;
+		} else {
+			$args['add'] = 1;
+		}
+
+		foreach ( $cart_items as $cart_item ) {
+			$arg_modifier = '';
+
+			if ( $has_multiple_items ) {
+				$arg_modifier = '_' . $item_counter;
+			}
+
+			$args[ 'quantity' . $arg_modifier ]    = $cart_item['quantity'];
+			$args[ 'amount' . $arg_modifier ]      = $cart_item['amount'];
+			$args[ 'item_number' . $arg_modifier ] = $cart_item['item_number'];
+			$args[ 'item_name' . $arg_modifier ]   = $cart_item['item_name'];
+
+			$item_counter ++;
+		}
+
+		/**
+		 * Filters the arguments passed to PayPal while adding items to the cart.
+		 *
+		 * @since 4.7
+		 *
+		 * @param array   $args
+		 * @param array   $data POST data from buy now submission.
+		 * @param WP_Post $post Post object that has tickets attached to it.
+		 */
+		$args = apply_filters( 'tribe_tickets_commerce_paypal_add_to_cart_args', $args, [], $post );
+
+		$cart_url = add_query_arg( $args, $cart_url );
+
+		/**
+		 * To allow the Invoice cookie to apply we have to redirect to a page on the same domain
+		 * first.
+		 * The redirection is handled in the `Tribe__Tickets__Redirections::maybe_redirect` class
+		 * on the `wp_loaded` action.
+		 *
+		 * @see Tribe__Tickets__Redirections::maybe_redirect
+		 */
+		$url = add_query_arg( [ 'tribe_tickets_redirect_to' => rawurlencode( $cart_url ) ], home_url() );
+
+		/**
+		 * Filters the add to cart redirect.
+		 *
+		 * @since 4.9
+		 *
+		 * @param string $url
+		 * @param string $cart_url
+		 * @param array  $post_data
+		 */
+		$url = apply_filters( 'tribe_tickets_commerce_paypal_gateway_add_to_cart_redirect', $url, $cart_url, [] );
+
+		return $url;
+	}
+
+	/**
 	 * Returns the PyaPal base URL
 	 *
 	 * @since 4.7
@@ -513,26 +706,40 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 *
 	 * @since 4.7
 	 *
+	 * @param bool $generate Whether to generate a new invoice number if not found.
+	 *
 	 * @return string
 	 */
-	protected function get_invoice_number() {
+	public function get_invoice_number( $generate = true ) {
 		$invoice_length = 12;
+
+		$invoice = null;
 
 		if (
 			! empty( $_COOKIE[ self::$invoice_cookie_name ] )
 			&& strlen( $_COOKIE[ self::$invoice_cookie_name ] ) === $invoice_length
 		) {
 			$invoice = $_COOKIE[ self::$invoice_cookie_name ];
+
 			$invoice_transient = get_transient( $this->invoice_transient_name( $invoice ) );
 
 			if ( empty( $invoice_transient ) ) {
-				$invoice = null;
+				$invoice = false;
 			}
 		}
 
-		if ( empty( $invoice ) ) {
+		if ( empty( $invoice ) && $generate ) {
 			$invoice = wp_generate_password( $invoice_length, false );
 		}
+
+		/**
+		 * Filters the invoice number used for PayPal.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $invoice Invoice number.
+		 */
+		$invoice = apply_filters( 'tribe_tickets_commerce_paypal_invoice_number', $invoice );
 
 		return $invoice;
 	}
@@ -581,7 +788,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 *
 	 * @return string
 	 */
-	protected function get_success_page_url() {
+	public function get_success_page_url() {
 		$success_page_id = tribe_get_option( 'ticket-paypal-success-page', false );
 
 		if ( empty( $success_page_id ) ) {
