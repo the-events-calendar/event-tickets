@@ -49,6 +49,7 @@ class CartUpdateCest extends BaseRestCest {
 					'quantity'  => 5,
 				],
 			],
+			'meta'     => [],
 		] );
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
@@ -120,11 +121,13 @@ class CartUpdateCest extends BaseRestCest {
 					'quantity'  => 0,
 				],
 			],
+			'meta'     => [],
 		] );
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$I->assertEquals( [
 			'tickets'      => [],
+			'meta'         => [],
 			'cart_url'     => '',
 			'checkout_url' => '',
 		], json_decode( $I->grabResponse(), true ) );
@@ -145,6 +148,7 @@ class CartUpdateCest extends BaseRestCest {
 		$I->sendPOST( $cart_rest_url, [
 			'provider' => 'tribe-commerce',
 			'tickets'  => [],
+			'meta'     => [],
 		] );
 		$I->seeResponseCodeIs( 400 );
 		$I->seeResponseIsJson();

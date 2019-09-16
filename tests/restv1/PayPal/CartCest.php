@@ -55,6 +55,7 @@ class CartCest extends BaseRestCest {
 					'provider'  => 'tribe-commerce',
 				],
 			],
+			'meta'    => [],
 		], json_decode( $I->grabResponse(), true ) );
 	}
 
@@ -87,6 +88,7 @@ class CartCest extends BaseRestCest {
 		$I->seeResponseIsJson();
 		$I->assertEquals( [
 			'tickets' => [],
+			'meta'    => [],
 		], json_decode( $I->grabResponse(), true ) );
 	}
 
