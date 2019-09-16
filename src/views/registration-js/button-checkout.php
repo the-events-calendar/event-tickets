@@ -24,7 +24,7 @@ if ( ! $checkout_url ) {
 		type="submit"
 		class="button-primary tribe-tickets__registration__checkout__submit"
 		<?php if ( $cart_has_required_meta && ! $is_meta_up_to_date ) : ?>
-		disabled
+		<?php tribe_disabled( true ); ?>
 		<?php endif; ?>
 	>
 		<?php esc_html_e( 'Checkout', 'event-tickets' ); ?>
