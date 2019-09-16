@@ -2329,7 +2329,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				continue;
 			}
 
-			$this->add_ticket_to_cart( $ticket['ticket_id'], $ticket['quantity'], $cart );
+			$this->add_ticket_to_cart( $ticket['ticket_id'], $ticket['quantity'], false, $cart );
 		}
 
 		$cart->save();
@@ -2345,13 +2345,22 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @param int                                               $ticket_id Ticket ID.
 	 * @param int                                               $quantity  Ticket quantity.
-	 * @param Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged $cart      Cart object.
 	 * @param bool                                              $increment Whether to increment the quantity if the ticket is already in cart.
+	 * @param Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged $cart      Cart object.
 	 */
-	public function add_ticket_to_cart( $ticket_id, $quantity, $cart, $increment = false ) {
+	public function add_ticket_to_cart( $ticket_id, $quantity, $increment = false, $cart = null ) {
+		if ( ! $cart ) {
+			return;
+		}
+
 		if ( ! $increment || 0 === $quantity ) {
 			// Remove from the cart if we don't want to increment or zero is quantity.
 			$cart->remove_item( $ticket_id );
+		}
+
+		// If we want to increment the quantity, add another.
+		if ( $increment ) {
+			// @todo Figure out increment (get current value).
 		}
 
 		if ( 0 < $quantity ) {

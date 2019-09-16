@@ -38,6 +38,10 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 											'type'        => 'array',
 											'description' => __( 'The list of tickets and their quantities in the cart', 'event-tickets' ),
 										],
+										'meta' => [
+											'type'        => 'array',
+											'description' => __( 'The list of meta for each ticket item in the cart', 'event-tickets' ),
+										],
 									],
 								],
 							],
@@ -79,6 +83,10 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 										'tickets'      => [
 											'type'        => 'array',
 											'description' => __( 'The list of tickets and their quantities in the cart', 'event-tickets' ),
+										],
+										'meta'         => [
+											'type'        => 'array',
+											'description' => __( 'The list of meta for each ticket item in the cart', 'event-tickets' ),
 										],
 										'cart_url'     => [
 											'type'        => 'string',
@@ -136,6 +144,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 
 		$data = [
 			'tickets' => [],
+			'meta'    => [],
 		];
 
 		// Confirm post has tickets.
