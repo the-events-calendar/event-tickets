@@ -25,7 +25,7 @@ if ( empty( $event->cost ) ) {
 ?>
 <div class="tribe-events-c-small-cta tribe-events-calendar-list__event-cost">
 	<a href="#" class="tribe-events-c-small-cta__link tribe-common-cta tribe-common-cta--thin-alt">
-		<?php esc_html_e( 'Buy Now', 'the-events-calendar' ); ?>
+		<?php esc_html_e( 'Buy Now', 'event-tickets' ); ?>
 	</a>
 	<span class="tribe-events-c-small-cta__price">
 		<?php echo esc_html( $event->cost ) ?>
