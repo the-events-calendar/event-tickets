@@ -1,6 +1,7 @@
 # /vendor/
 .DS_Store
 .idea
+.code-workspace
 node_modules
 vendor
 
@@ -29,3 +30,6 @@ compiler.jar
 
 # add this yourself to add githoooks
 .huskyrc
+
+# get from translate.wordpress.org as needed
+lang/*.po

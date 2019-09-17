@@ -144,8 +144,12 @@ class Tribe__Tickets__Tickets_View {
 	}
 
 	/**
-	 * Add a new Query Var to allow tickets editing
+	 * Register a new public (URL query parameters can use it) Query Var to allow tickets editing.
+	 *
+	 * @see \WP::parse_request()
+	 *
 	 * @param array $vars
+	 *
 	 * @return array
 	 */
 	public function add_query_vars( $vars ) {
@@ -175,16 +179,25 @@ class Tribe__Tickets__Tickets_View {
 		$is_correct_page = $this->is_edit_page();
 
 		// Now fetch the display and check it
-		$display = get_query_var( 'eventDisplay', false );
-		if ( 'tickets' !== $display && ! $is_correct_page ) {
+		if (
+			'tickets' !== get_query_var( 'eventDisplay', false )
+			&& ! $is_correct_page
+		) {
 			return;
 		}
 
-		if ( empty( $_POST['process-tickets'] ) || ( empty( $_POST['attendee'] ) && empty( $_POST['tribe-tickets-meta'] ) ) ) {
+		if (
+			empty( $_POST['process-tickets'] )
+			|| (
+				empty( $_POST['attendee'] )
+				&& empty( $_POST['tribe-tickets-meta'] )
+			)
+		) {
 			return;
 		}
 
 		$post_id = get_the_ID();
+
 		$attendees = ! empty( $_POST['attendee'] ) ? $_POST['attendee'] : array();
 
 		/**
@@ -202,9 +215,9 @@ class Tribe__Tickets__Tickets_View {
 			/**
 			 * An Action fired for each one of the Attendees that were posted on the Order Tickets page
 			 *
-			 * @var array $data     Infomation that we are trying to save
-			 * @var int   $order_id ID of attendee ticket
-			 * @var int   $post_id  ID of event
+			 * @var array $data     Information that we are trying to save.
+			 * @var int   $order_id ID of attendee ticket.
+			 * @var int   $post_id  ID of event.
 			 */
 			do_action( 'event_tickets_attendee_update', $data, $order_id, $post_id );
 		}
@@ -216,7 +229,7 @@ class Tribe__Tickets__Tickets_View {
 		 */
 		do_action( 'event_tickets_after_attendees_update', $post_id );
 
-		// After Editing the Values we Update the Transient
+		// After editing the values, we update the transient.
 		Tribe__Post_Transient::instance()->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 
 		// If it's not events CPT
@@ -250,9 +263,9 @@ class Tribe__Tickets__Tickets_View {
 				? add_query_arg( 'tribe-edit-orders', 1, untrailingslashit( $event_url ) )
 				: home_url( '/tickets/' . $event_id );
 		}
+
 		return $link;
 	}
-
 
 	/**
 	 * Makes sure only logged users can See the Tickets page.
@@ -276,8 +289,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// Now fetch the display and check it
-		$display = get_query_var( 'eventDisplay', false );
-		if ( 'tickets' !== $display ) {
+		if ( 'tickets' !== get_query_var( 'eventDisplay', false ) ) {
 			return;
 		}
 
@@ -362,12 +374,17 @@ class Tribe__Tickets__Tickets_View {
 		$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
 
 		// Prevents Weird
-		if ( ! $this->is_edit_page() || ! $in_the_loop ) {
+		if (
+			! $this->is_edit_page()
+			|| ! $in_the_loop
+		) {
 			return $content;
 		}
 
 		ob_start();
+
 		include Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders.php' );
+
 		$content = ob_get_clean();
 
 		return $content;
@@ -389,8 +406,7 @@ class Tribe__Tickets__Tickets_View {
 			return;
 		}
 
-		$display = get_query_var( 'eventDisplay', false );
-		if ( 'tickets' !== $display ) {
+		if ( 'tickets' !== get_query_var( 'eventDisplay', false ) ) {
 			return;
 		}
 
@@ -433,7 +449,7 @@ class Tribe__Tickets__Tickets_View {
 			return $old_file;
 		}
 
-		// Fetch the Correct File using the Tickets Hiearchy
+		// Fetch the correct file using the Tickets Hierarchy
 		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders.php' );
 
 		return $file;
@@ -474,6 +490,14 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders-link.php' );
+
+		/**
+		 * @since 4.10.8 Attempt to load from old location to account for pre-existing theme overrides. If not found,
+		 *            go through the motions with the new location.
+		 */
+		if ( empty( $file ) ) {
+			$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/view-link.php' );
+		}
 
 		include $file;
 
@@ -518,7 +542,19 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		ob_start();
-		include Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders-link.php' );
+
+		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders-link.php' );
+
+		/**
+		 * @since 4.10.8 Attempt to load from old location to account for pre-existing theme overrides. If not found,
+		 *            go through the motions with the new location.
+		 */
+		if ( empty( $file ) ) {
+			$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/view-link.php' );
+		}
+
+		include $file;
+
 		$content .= ob_get_clean();
 
 		return $content;
@@ -668,10 +704,11 @@ class Tribe__Tickets__Tickets_View {
 	}
 
 	/**
-	 * Counts the Amount of RSVP attendees
+	 * Counts the amount of RSVP attendees.
 	 *
-	 * @param  int       $event_id     The Event ID it relates to
-	 * @param  int|null  $user_id      An Optional User ID
+	 * @param int      $event_id The Event ID it relates to.
+	 * @param int|null $user_id  An Optional User ID.
+	 *
 	 * @return int
 	 */
 	public function count_rsvp_attendees( $event_id, $user_id = null ) {
@@ -744,30 +781,38 @@ class Tribe__Tickets__Tickets_View {
 	}
 
 	/**
-	 * Gets a String to descript which type of Tickets/RSVP we are dealign with
+	 * Gets the name(s) of the type(s) of ticket(s) the specified user (optional) has for the specified event.
 	 *
-	 * @param  int       $event_id     The Event ID it relates to
-	 * @param  int|null  $user_id      An Optional User ID
-	 * @param  boolean   $plurals      Return the Strings as Plural
-	 * @return int
+	 * @since 4.2
+	 * @since 4.10.8 Deprecated the 3rd parameter (whether or not to use 'plurals') in favor of figuring it out per type.
+	 *
+	 * @param int      $event_id   The Event ID it relates to.
+	 * @param int|null $user_id    An optional User ID.
+	 * @param null     $deprecated Deprecated argument.
+	 *
+	 * @return string
 	 */
-	public function get_description_rsvp_ticket( $event_id, $user_id = null, $plurals = false ) {
-		$what_to_update = array();
+	public function get_description_rsvp_ticket( $event_id, $user_id = null, $deprecated = null ) {
+		$descriptions = [];
 
-		if ( $this->has_rsvp_attendees( $event_id, $user_id ) ) {
-			$what_to_update[] = $plurals ? esc_html__( 'RSVPs', 'event-tickets' ) : esc_html__( 'RSVP', 'event-tickets' );
+		$rsvp_count = $this->count_rsvp_attendees( $event_id, $user_id );
+
+		$ticket_count = $this->count_ticket_attendees( $event_id, $user_id );
+
+		if ( ! empty( $rsvp_count ) ) {
+			$descriptions[] = _nx( 'RSVP', 'RSVPs', $rsvp_count, 'Singular and plural texts for RSVP(s)', 'event-tickets' );
 		}
 
-		if ( $this->has_ticket_attendees( $event_id, $user_id ) ) {
-			$what_to_update[] = $plurals ? esc_html__( 'Tickets', 'event-tickets' ) : esc_html__( 'Ticket', 'event-tickets' );
+		if ( ! empty( $ticket_count ) ) {
+			$descriptions[] = _nx( 'Ticket', 'Tickets', $ticket_count, 'Singular and plural texts for Ticket(s)', 'event-tickets' );
 		}
 
-		// Just Return false if array is empty
-		if ( empty( $what_to_update ) ) {
-			return false;
+		// Just return false if array is empty
+		if ( empty( $descriptions ) ) {
+			return '';
 		}
 
-		return implode( esc_html__( ' and ', 'event-tickets' ), $what_to_update );
+		return implode( esc_html__( ' and ', 'event-tickets' ), $descriptions );
 	}
 
 	/**

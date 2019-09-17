@@ -29,7 +29,8 @@ $show_title = apply_filters( 'tribe_tickets_order_report_show_title', false );
  */
 $show_title = apply_filters( 'tribe_tickets_tpp_order_report_show_title', $show_title );
 
-$title = __( 'Orders Report', 'event-tickets-plus' );
+$title = __( 'Orders Report', 'event-tickets' );
+
 /**
  * Allows filtering of the Tribe Commerce order report title
  *
@@ -38,14 +39,17 @@ $title = __( 'Orders Report', 'event-tickets-plus' );
  * @param  string $title the title.
  */
 $title = apply_filters( 'tribe_tickets_tpp_order_report_title', $title );
+
+if ( $total_sold ) {
+	$total_sold = '(' . $total_sold . ')';
+}
 ?>
 
 <div class="wrap tribe-report-page">
 	<?php if ( $show_title ) : ?>
-	<h1><?php echo esc_html( $title ); ?></h1>
+		<h1><?php echo esc_html( $title ); ?></h1>
 	<?php endif; ?>
 	<div id="icon-edit" class="icon32 icon32-tickets-orders"><br></div>
-
 
 	<div id="tribe-order-summary" class="welcome-panel tribe-report-panel">
 		<div class="welcome-panel-content">
@@ -90,7 +94,7 @@ $title = apply_filters( 'tribe_tickets_tpp_order_report_title', $title );
 				</div>
 				<div class="welcome-panel-column welcome-panel-middle">
 					<h3>
-						<?php esc_html_e( 'Sales by Ticket Type', 'event-tickets-plus' ); ?>
+						<?php esc_html_e( 'Sales by Ticket Type', 'event-tickets' ); ?>
 						<?php echo $order_overview->get_sale_by_ticket_tooltip(); ?>
 					</h3>
 					<?php
@@ -107,19 +111,13 @@ $title = apply_filters( 'tribe_tickets_tpp_order_report_title', $title );
 					?>
 				</div>
 				<div class="welcome-panel-column welcome-panel-last alternate">
-
-					<?php
-					if (  $total_sold ) {
-						$total_sold = '(' . $total_sold . ')';
-					}; ?>
-
 					<div class="totals-header">
 						<h3>
 							<?php
 							$completed_status = $order_overview->get_completed_status_class();
 							$totals_header = sprintf(
 								'%1$s: %2$s (%3$s)',
-								__( 'Total Ticket Sales', 'event-tickets-plus' ),
+								__( 'Total Ticket Sales', 'event-tickets' ),
 								tribe_format_currency( number_format( $completed_status->get_line_total(), 2 ), $post_id ),
 								$completed_status->get_qty()
 							);
@@ -143,21 +141,19 @@ $title = apply_filters( 'tribe_tickets_tpp_order_report_title', $title );
 					</div>
 
 					<ul id="sales_breakdown_wrapper" class="tribe-event-meta-note">
-
 						<?php
 						/**
 						 * Add Completed Status First and Skip in Loop
 						 */
 						?>
 						<li>
-							<strong><?php esc_html_e( 'Completed', 'event-tickets-plus' ); ?>:</strong>
+							<strong><?php esc_html_e( 'Completed', 'event-tickets' ); ?>:</strong>
 							<?php echo esc_html( tribe_format_currency( number_format( $completed_status->get_line_total(), 2 ), $post_id ) ); ?>
 							<span id="total_issued">(<?php echo esc_html( $completed_status->get_qty() ); ?>)</span>
 						</li>
 
 						<?php
 						foreach ( $order_overview->statuses as $provider_key => $status ) {
-
 							// skip the completed order as we always display it above
 							if ( $order_overview->completed_status_id === $provider_key ) {
 								continue;
@@ -169,15 +165,13 @@ $title = apply_filters( 'tribe_tickets_tpp_order_report_title', $title );
 							}
 							?>
 							<li>
-								<strong><?php esc_html_e( $status->name, 'event-tickets-plus' ); ?>:</strong>
+								<strong><?php esc_html_e( $status->name, 'event-tickets' ); ?>:</strong>
 								<?php echo esc_html( tribe_format_currency( number_format( $status->get_line_total(), 2 ), $post_id ) ); ?>
 								<span id="total_issued">(<?php echo esc_html( $status->get_qty() ); ?>)</span>
 							</li>
 							<?php
-
 						}
 						?>
-
 					</ul>
 				</div>
 			</div>
