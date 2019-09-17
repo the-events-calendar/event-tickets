@@ -659,6 +659,78 @@ tribe.tickets.block = {
 	}
 
 	/**
+	 * Hydrates the attendee form from sessionStorage data.
+	 *
+	 * @since TBD
+	 *
+	 * @param object data The attendee data.
+	 *
+	 * @return void
+	 */
+	obj.hydrateAttendeeFormFromLocal = function( data ) {
+		if ( ! data ) {
+			return;
+		}
+
+		var $attendeeForm = $( '#tribe-modal__attendee_registration' );
+		for( var index in data ) {
+			var value  = data[index];
+			var $input = $attendeeForm.find( `[name="${index}"]` );
+
+			if ( $input.is( ':radio' ) ) {
+				$input.prop('checked', true);
+			} else if( $input.is(':checkbox') ) {
+				if ( value === $input.val() ) {
+					$input.prop('checked', true);
+				}
+			} else {
+				$input.val( value );
+			}
+		}
+	}
+
+	/**
+	 * Hydrates the cart form from sessionStorage data.
+	 *
+	 * @since TBD
+	 *
+	 * @param object data The cart data.
+	 *
+	 * @return void
+	 */
+	obj.hydrateCartFormFromLocal = function( data ) {
+		if ( ! data ) {
+			return;
+		}
+
+		var $cartForm = $( '#tribe-modal__cart ' );
+		for( var index in data ) {
+			var item = data[index];
+			if ( isNaN( index ) ) {
+				$cartForm.find( `[name="${index}"]` ).val( item );
+				continue;
+			}
+
+			var $row = $cartForm.find( `.tribe-tickets__item[data-ticket-id="${index}"]` );
+			for ( var key in item ) {
+				if ( 'undefined' === key ) {
+					continue;
+				}
+
+				if ( 'product_id[]' === key ) {
+					$row.fadeIn();
+				}
+
+				var $input = $cartForm.find( `[name="${key}"]` );
+				$input.val( item[ key ] );
+				if ( $input.hasClass( 'tribe-tickets-quantity' ) ) {
+					$input.trigger( 'change' );
+				}
+			}
+		}
+	}
+
+	/**
 	 * Hydrates the attendee and cart forms from sessionStorage data.
 	 *
 	 * @since TBD
@@ -673,49 +745,11 @@ tribe.tickets.block = {
 		}
 
 		if ( data.cartData ) {
-			var $cartForm = $( '#tribe-modal__cart ' );
-			for( var index in data.cartData ) {
-				var item = data.cartData[index];
-				if ( isNaN( index ) ) {
-					$cartForm.find( `[name="${index}"]` ).val( item );
-					continue;
-				}
-
-				var $row = $cartForm.find( `.tribe-tickets__item[data-ticket-id="${index}"]` );
-				for ( var key in item ) {
-					if ( 'undefined' === key ) {
-						continue;
-					}
-
-					if ( 'product_id[]' === key ) {
-						$row.fadeIn();
-					}
-
-					var $input = $cartForm.find( `[name="${key}"]` );
-					$input.val( item[ key ] );
-					if ( $input.hasClass( 'tribe-tickets-quantity' ) ) {
-						$input.trigger( 'change' );
-					}
-				}
-			}
+			obj.hydrateCartFormFromLocal( data.cartData );
 		}
 
 		if ( data.attendeeData ) {
-			var $attendeeForm = $( '#tribe-modal__attendee_registration' );
-			for( var index in data.attendeeData ) {
-				var value  = data.attendeeData[index];
-				var $input = $attendeeForm.find( `[name="${index}"]` );
-
-				if ( $input.is( ':radio' ) ) {
-					$input.prop('checked', true);
-				} else if( $input.is(':checkbox') ) {
-					if ( value === $input.val() ) {
-						$input.prop('checked', true);
-					}
-				} else {
-					$input.val( value );
-				}
-			}
+			obj.hydrateAttendeeFormFromLocal( data.attendeeData );
 		}
 	}
 
