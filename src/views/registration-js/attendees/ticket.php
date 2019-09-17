@@ -16,7 +16,7 @@
 */
 $meta    = tribe( 'tickets-plus.main' )->meta();
 ?>
-<script type="text/html" id="tmpl-tribe-registration--<?PHP echo esc_attr( $ticket['id'] ); ?>">
+<script type="text/html" id="tmpl-tribe-registration--<?php echo esc_attr( $ticket['id'] ); ?>">
 	<?php
 	$ticket_qty = $ticket['qty'];
 	$post       = get_post( $ticket['id'] );
