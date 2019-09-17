@@ -442,7 +442,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 						tribe_get_ticket_label_plural( 'move_tickets_request_error' ),
 						tribe_get_ticket_label_singular( 'move_tickets_request_error' )
 					)
-				)
+				) )
 			) );
 		}
 
