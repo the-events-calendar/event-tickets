@@ -458,7 +458,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 
 		$sold_label = __( 'issued', 'event-tickets' );
 		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
-			$sold_label = esc_html( sprintf( _x( "%s'd going", 'RSVPs going', 'event-tickets' ), tribe_get_rsvp_label_singular() ) );
+			$sold_label = sprintf( _x( "%s'd going", 'RSVPs going', 'event-tickets' ), tribe_get_rsvp_label_singular() );
 		}
 
 		// Message for how many remain available
