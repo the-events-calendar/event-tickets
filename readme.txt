@@ -126,7 +126,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Use unique IDs for tabbed views, correct styles to adapt [131430]
 * Tweak - Add hook under the price description field of the admin ticket editor [128843]
 * Tweak - Modify methods to check for a post id of 0 to prevent PHP notices [128346]
-* Tweak - Allow Admin and Editor users to see Attendees in REST API responses by default [128298]
+* Tweak - Added filters: `tribe_tickets_attendees_table_classes`, `tribe_tickets_commerce_order_table_classes`, `tribe_tickets_order_report_show_title`, `tribe_tickets_tpp_order_report_show_title`, `tribe_tickets_tpp_order_report_title`
+* Tweak - Added actions: `tribe_tickets_price_input_description`
 * Fix - Correct hardcoded table name in `tribe-user-event-confirmations` shortcode [129402]
 * Language - 1 new strings added, 66 updated, 0 fuzzied, and 0 obsoleted
 
