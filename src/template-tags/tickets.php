@@ -495,7 +495,7 @@ if ( ! function_exists( 'tribe_tickets_resource_url' ) ) {
 	 * @param string $root_dir directory to hunt for resource files (src or common)
 	 *
 	 * @return string
-	 **@category Tickets
+	 * @category Tickets
 	 */
 	function tribe_tickets_resource_url( $resource, $echo = false, $root_dir = 'src' ) {
 		$extension = pathinfo( $resource, PATHINFO_EXTENSION );
@@ -552,7 +552,7 @@ if ( ! function_exists( 'tribe_tickets_get_template_part' ) ) {
 	 * @param boolean     $echo (optional) Allows the user to print or return the template
 	 *
 	 * @return string|void It will depend if it's echoing or not
-	 **@uses Tribe__Tickets__Templates::get_template_hierarchy
+	 * @uses Tribe__Tickets__Templates::get_template_hierarchy
 	 *
 	 */
 	function tribe_tickets_get_template_part( $slug, $name = null, array $data = null, $echo = true ) {
@@ -1079,7 +1079,7 @@ if ( ! function_exists( 'tribe_get_rsvp_label_singular' ) ) {
 		 * @param string $label   The singular version of the RSVP label. Defaults to "RSVP".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 		 */
-		return apply_filters( __FUNCTION__, _x( 'RSVP', 'singular label for RSVP', 'event-tickets' ), $context );
+		return apply_filters( 'tribe_get_rsvp_label_singular', _x( 'RSVP', 'singular label for RSVP', 'event-tickets' ), $context );
 	}
 }
 
@@ -1103,7 +1103,7 @@ if ( ! function_exists( 'tribe_get_rsvp_label_singular_lowercase' ) ) {
 		 * @param string $label   The lowercase singular version of the RSVP label. Defaults to "rsvp".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 		 */
-		return apply_filters( __FUNCTION__, _x( 'rsvp', 'lowercase singular label for RSVP', 'event-tickets' ), $context );
+		return apply_filters( 'tribe_get_rsvp_label_singular_lowercase', _x( 'rsvp', 'lowercase singular label for RSVP', 'event-tickets' ), $context );
 	}
 }
 
@@ -1127,7 +1127,7 @@ if ( ! function_exists( 'tribe_get_rsvp_label_plural' ) ) {
 		 * @param string $label   The plural version of the RSVP label, defaults to "RSVPs".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 		 */
-		return apply_filters( __FUNCTION__, _x( 'RSVPs', 'plural label for RSVPs', 'event-tickets' ), $context );
+		return apply_filters( 'tribe_get_rsvp_label_plural', _x( 'RSVPs', 'plural label for RSVPs', 'event-tickets' ), $context );
 	}
 }
 
@@ -1151,7 +1151,7 @@ if ( ! function_exists( 'tribe_get_rsvp_label_plural_lowercase' ) ) {
 		 * @param string $label   The lowercase plural version of the RSVP label, defaults to "rsvps".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 		 */
-		return apply_filters( __FUNCTION__, _x( 'rsvps', 'lowercase plural label for RSVPs', 'event-tickets' ), $context );
+		return apply_filters( 'tribe_get_rsvp_label_plural_lowercase', _x( 'rsvps', 'lowercase plural label for RSVPs', 'event-tickets' ), $context );
 	}
 }
 
@@ -1175,7 +1175,7 @@ if ( ! function_exists( 'tribe_get_ticket_label_singular' ) ) {
 		 * @param string $label   The singular version of the Ticket label, defaults to "Ticket".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 		 */
-		return apply_filters( __FUNCTION__, _x( 'Ticket', 'singular label for Ticket', 'event-tickets' ), $context );
+		return apply_filters( 'tribe_get_ticket_label_singular', _x( 'Ticket', 'singular label for Ticket', 'event-tickets' ), $context );
 	}
 }
 
@@ -1199,7 +1199,7 @@ if ( ! function_exists( 'tribe_get_ticket_label_singular_lowercase' ) ) {
 		 * @param string $label   The lowercase singular version of the Ticket label, defaults to "ticket".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 		 */
-		return apply_filters( __FUNCTION__, _x( 'ticket', 'lowercase singular label for Ticket', 'event-tickets' ), $context );
+		return apply_filters( 'tribe_get_ticket_label_singular_lowercase', _x( 'ticket', 'lowercase singular label for Ticket', 'event-tickets' ), $context );
 	}
 }
 
@@ -1223,7 +1223,7 @@ if ( ! function_exists( 'tribe_get_ticket_label_plural' ) ) {
 		 * @param string $label   The plural version of the Ticket label, defaults to "Tickets".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 		 */
-		return apply_filters( __FUNCTION__, _x( 'Tickets', 'plural label for Tickets', 'event-tickets' ), $context );
+		return apply_filters( 'tribe_get_ticket_label_plural', _x( 'Tickets', 'plural label for Tickets', 'event-tickets' ), $context );
 	}
 }
 
@@ -1247,6 +1247,6 @@ if ( ! function_exists( 'tribe_get_ticket_label_plural_lowercase' ) ) {
 		 * @param string $label   The lowercase plural version of the Ticket label, defaults to "tickets".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 		 */
-		return apply_filters( __FUNCTION__, _x( 'tickets', 'lowercase plural label for Tickets', 'event-tickets' ), $context );
+		return apply_filters( 'tribe_get_ticket_label_plural_lowercase', _x( 'tickets', 'lowercase plural label for Tickets', 'event-tickets' ), $context );
 	}
 }
