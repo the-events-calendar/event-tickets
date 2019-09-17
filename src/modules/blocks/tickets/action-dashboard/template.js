@@ -52,9 +52,9 @@ class TicketsDashboardAction extends PureComponent {
 
 		const actions = [ <SettingsActionButton /> ];
 		if ( hasCreatedTickets ) {
-			if ( hasTicketsPlus ) {
-				actions.push( <AttendeesActionButton /> );
-			}
+
+			actions.push( <AttendeesActionButton /> );
+
 			if ( hasOrdersPage ) {
 				actions.push( <OrdersActionButton /> );
 			}
