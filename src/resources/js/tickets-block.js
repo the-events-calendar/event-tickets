@@ -112,37 +112,6 @@ tribe.tickets.block = {
 	}
 
 	/**
-	 * Handle the number input + and - actions.
-	 *
-	 * @since 4.9
-	 *
-	 * @return void
-	 */
-	obj.document.on( 'click',
-		'.tribe-block__tickets__item__quantity__remove, .tribe-block__tickets__item__quantity__add',
-		function( e ) {
-			e.preventDefault();
-			var $input = $( this ).parent().find( 'input[type="number"]' );
-			if( $input.is( ':disabled' ) ) {
-				return;
-			}
-
-			var add = $( this ).hasClass( 'tribe-block__tickets__item__quantity__add' );
-			var originalValue = Number( $input[ 0 ].value );
-
-
-			// stepUp or stepDown the input according to the button that was clicked
-			// handle IE/Edge
-			if ( add ) {
-				obj.stepUp( $input, originalValue );
-			} else {
-				obj.stepDown( $input, originalValue );
-			}
-
-		}
-	);
-
-	/**
 	 * Make dom updates for the AJAX response.
 	 *
 	 * @since 4.9
@@ -322,207 +291,6 @@ tribe.tickets.block = {
 	}
 
 	/**
-	 * Init the tickets script.
-	 *
-	 * @since 4.9
-	 *
-	 * @return void
-	 */
-	obj.init = function() {
-		obj.checkAvailability();
-	}
-
-	obj.init();
-
-	/**
-	 * Handle the number input + and - actions.
-	 *
-	 * @since 4.9
-	 *
-	 * @return void
-	 */
-	$( document ).on(
-		'click',
-		'.tribe-tickets__item__quantity__remove, .tribe-tickets__item__quantity__add',
-		function( e ) {
-			var $input = $( this ).parent().find( 'input[type="number"]' );
-
-			if( $input.is( ':disabled' ) ) {
-				return;
-			}
-
-			e.preventDefault();
-
-			var originalValue = Number( $input[ 0 ].value );
-			var $modalForm    = $input.closest( obj.modalSelector.container );
-
-			// Step up or Step down the input according to the button that was clicked.
-			// Handles IE/Edge.
-			if ( $( this ).hasClass( 'tribe-tickets__item__quantity__add' ) ) {
-				obj.stepUp( $input, originalValue );
-			} else {
-				obj.stepDown( $input, originalValue );
-			}
-
-			obj.updateFooter( $input.closest( 'form' ) );
-
-			// Trigger the on Change for the input (if it has changed) as it's not handled via stepUp() || stepDown().
-			if ( originalValue !== $input[ 0 ].value ) {
-				$input.trigger( 'change' );
-			}
-
-			if ( $modalForm.length ) {
-				var $item = $input.closest( obj.selector.item );
-				obj.updateTotal( obj.getQty( $item ), obj.getPrice( $item ), $item );
-			}
-		}
-	);
-
-	/**
-	 * Handle the TPP form.
-	 *
-	 * @since 4.9
-	 *
-	 * @return void
-	 */
-	$( document ).on(
-		'change keyup',
-		obj.selector.itemQuantityInput,
-		function( e ) {
-			var $this        = $( this );
-			var $ticket      = $this.closest( obj.selector.item );
-			var $ticket_id   = $ticket.data( 'ticket-id' );
-			var $form        = $this.closest( 'form' );
-			var new_quantity = parseInt( $this.val(), 10 );
-			new_quantity     = isNaN( new_quantity ) ? 0 : new_quantity;
-
-			e.preventDefault();
-			obj.maybeShowOptOut( $ticket, new_quantity );
-			obj.updateFooter( $form );
-
-			// Only disable / enable if is a Tribe Commerce Paypal form.
-			if ( 'Tribe__Tickets__Commerce__PayPal__Main' === $form.data( 'provider' ) ) {
-				obj.tribeCommerceDisable( new_quantity, $form, $ticket_id );
-			}
-		}
-	);
-
-	/**
-	 * On Change of Modal Cart Qty Update Item.
-	 *
-	 * @since TBD
-	 *
-	 */
-	$( document ).on(
-		'change',
-		obj.selector.itemQuantityInput,
-		function ( e ) {
-			var $cart = $( this ).closest( 'form' );
-
-			e.preventDefault();
-			obj.updateFormTotals( $cart );
-		}
-	);
-
-	/**
-	 * Remove Item from Cart Modal.
-	 *
-	 * @since TBD
-	 *
-	 */
-	$( document ).on(
-		'click',
-		obj.modalSelector.itemRemove,
-		function ( e ) {
-			e.preventDefault();
-
-
-			var ticket    = {};
-			var $cart     = $( this ).closest( 'form' );
-			var $cartItem = $( this ).closest( obj.selector.item );
-
-			$cartItem.find( obj.selector.itemQuantity ).val( 0 );
-			$cartItem.fadeOut() ;
-
-			ticket.id    = $cartItem.data( 'ticketId' );
-			ticket.qty   = 0;
-			ticket.price = obj.getPrice( $cartItem );
-
-			obj.updateTotal( ticket.qty, ticket.price, $cartItem );
-			obj.updateFormTotals( $cart );
-
-			$( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticket.id + '"]' )
-				.removeClass( 'tribe-tickets--has-tickets' )
-				.find( '.tribe-ticket' ).remove();
-		}
-	);
-
-	/**
-	 * Adds focus effect to ticket block.
-	 *
-	 * @since TBD
-	 *
-	 */
-	$( document ).on(
-		'focus',
-		'.tribe-ticket input, .tribe-ticket select, .tribe-ticket textarea',
-		function( e ) {
-			var input      = e.target;
-			var $container = $( input ).closest( '.tribe-ticket' );
-
-			$container.addClass( 'tribe-ticket-item--has-focus' );
-		}
-	);
-
-	/**
-	 * Removes focus effect from ticket block.
-	 *
-	 * @since TBD
-	 *
-	 */
-	$( document ).on(
-		'blur',
-		'.tribe-ticket input, .tribe-ticket select, .tribe-ticket textarea',
-		function( e ) {
-			var input      = e.target;
-			var $container = $( input ).closest( '.tribe-ticket' );
-
-			$container.removeClass( 'tribe-ticket-item--has-focus' );
-		}
-	);
-
-	/**
-	 * When "Get Tickets" is clicked, update the modal.
-	 *
-	 * @since TBD
-	 *
-	 */
-	$( te ).on(
-		'tribe_dialog_show_ar_modal',
-		function ( e, dialogEl, event ) {
-			var $cart      = $( obj.selector.container );
-			var $modalCart = $( obj.modalSelector.container );
-			var $cartItems = $cart.find( obj.selector.item );
-
-			$cartItems.each(
-				function () {
-					var $blockCartItem = $( this );
-					var id             = $blockCartItem.data( 'ticketId' );
-					var $modalCartItem = $modalCart.find( '[data-ticket-id="' + id + '"]' );
-
-					if ( ! $modalCartItem ) {
-						return;
-					}
-
-					obj.updateItem( id, $modalCartItem, $blockCartItem );
-				}
-			);
-
-			obj.updateFormTotals( $modalCart );
-		}
-	);
-
-	/**
 	 * Update Cart Totals in Modal.
 	 *
 	 * @since TBD
@@ -622,31 +390,29 @@ tribe.tickets.block = {
 		var item = {};
 		item.id  = id;
 
-		if ( $blockCartItem ) {
-			item.qty     = obj.getQty( $blockCartItem );
-
-			item.price   = obj.getPrice( $modalCartItem );
+		if ( ! $blockCartItem ) {
+			item.qty   = obj.getQty( $modalCartItem );
+			item.price = obj.getPrice( $modalCartItem );
+		} else {
+			item.qty   = obj.getQty( $blockCartItem );
+			item.price = obj.getPrice( $modalCartItem );
 
 			$modalCartItem.find( obj.selector.itemQuantityInput ).val( item.qty );
 
 			if ( item.qty <= 0 ) {
 				$modalCartItem.fadeOut();
+			} else {
+				$modalCartItem.fadeIn();
 			}
-
-			obj.updateTotal( item.qty, item.price, $modalCartItem );
 
 			// We force new DOM queries here to be sure we pick up dynamically generated items.
-			item.$optOut = $( obj.selector.itemOptOutInput + $blockCartItem.data('ticket-id') );
+			var optoutSelector = obj.selector.itemOptOutInput + $blockCartItem.data('ticket-id');
+			item.$optOut = $( optoutSelector );
 
 			if ( item.$optOut.length && item.$optOut.is(':checked') ) {
-				$( obj.selector.itemOptOutInput + $blockCartItem.data('ticket-id') + '-modal' ).val( '1' );
+				$( optoutSelector + '-modal' ).val( '1' );
 			}
-
-			return item;
 		}
-
-		item.qty   = obj.getQty( $modalCartItem );
-		item.price = obj.getPrice( $modalCartItem );
 
 		obj.updateTotal( item.qty, item.price, $modalCartItem );
 
@@ -696,6 +462,7 @@ tribe.tickets.block = {
 	 * @returns {string}
 	 */
 	obj.updateTotal = function ( qty, price, $cartItem ) {
+
 		var total_for_item = ( qty * price ).toFixed( obj.getCurrencyFormatting().number_of_decimals );
 		var $field         = $cartItem.find( '.tribe-tickets__item__total' );
 
@@ -757,16 +524,6 @@ tribe.tickets.block = {
 		return s.join( dec );
 	}
 
-	$( document ).on(
-		'click',
-		$( obj.modalSelector ).find( '.tribe-modal__close-button' ),
-		function ( event ) {
-			var form = jQuery( '#tribe-modal__cart' );
-			var data = form.serialize();
-			sessionStorage.setItem( 'tribe_tickets_cart', data );
-		}
-	);
-
 	/**
 	 * Prefill the Cart.
 	 *
@@ -774,7 +531,7 @@ tribe.tickets.block = {
 	 *
 	 * @returns {*}
 	 */
-	obj.prefillCart = function () {
+	obj.prefillModalCart = function () {
 
 		var $form = $( obj.selector.container );
 
@@ -792,7 +549,6 @@ tribe.tickets.block = {
 				} );
 			},
 		} );
-
 	};
 
 	/**
@@ -803,9 +559,404 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.initPrefill = function() {
-		obj.prefillCart();
+		obj.prefillModalCart();
 	}
 
-	obj.initPrefill();
+	/**
+	 * Stores attendee and cart form data to sessionStorage.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	obj.storeLocal = function() {
+		var $attendeeForm = $( '#tribe-modal__attendee_registration :input' );
 
+		var attendeeData  = {};
+
+		$attendeeForm.each( function( index ) {
+			var $input = $( this );
+			if ( $input.is( ':radio' ) || $input.is(':checkbox') ) {
+				if ( ! $input.prop('checked') ) {
+					return;
+				}
+			}
+
+			attendeeData[ $input.attr('name') ] = $input.val();
+
+		} );
+
+		sessionStorage.setItem( 'tribe_tickets_attendees', window.JSON.stringify( attendeeData ) );
+
+		// The cart form is a bit...weird.
+		var cartData  = obj.parseCartDataFromForm();
+
+		sessionStorage.setItem( 'tribe_tickets_cart', window.JSON.stringify( cartData ) );
+	}
+
+	obj.parseCartDataFromForm = function() {
+		var $cartForm = $( '#tribe-modal__cart ' );
+		var cartData = {};
+		var $wcProcess = $cartForm.find( '#wootickets_process' );
+
+		if ( $wcProcess ) {
+			cartData[ 'wootickets_process' ] = $wcProcess.val();
+		}
+
+		cartData[ 'provider' ] = $cartForm.find( '.tribe-tickets-provider' ).val();
+
+		$cartForm.find( '.tribe-tickets__item:visible' ).each(
+			function( index ) {
+				var $row    = $( this );
+				var id      = $row.data( 'ticketId');
+				var rowData = {};
+				$row.find( ':input' ).each( function() {
+					var $input = $( this );
+					var name = $input.attr('name');
+					if ( ! name || 'undefined' === name ) {
+						return;
+					}
+
+					rowData[ $input.attr('name') ] = $input.val();
+				} );
+
+				if ( null !== rowData ) {
+					cartData[ id ] = rowData;
+				}
+			}
+		);
+
+		return cartData;
+	}
+
+	/**
+	 * Gets attendee and cart form data from sessionStorage.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	obj.getLocal = function() {
+
+		var attendeeData = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees' ) );
+		var cartData     = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart' ) );
+		var ret          = {  attendeeData, cartData };
+
+		return ret;
+	}
+
+	/**
+	 * Clears attendee and cart form data from sessionStorage.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	obj.clearLocal = function() {
+		sessionStorage.removeItem( 'tribe_tickets_attendees' );
+		sessionStorage.removeItem( 'tribe_tickets_cart' );
+	}
+
+	/**
+	 * Hydrates the attendee and cart forms from sessionStorage data.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	obj.hydrateFormFromLocal = function() {
+		var data = obj.getLocal();
+
+		if ( ! data ) {
+			return;
+		}
+
+		if ( data.cartData ) {
+			var $cartForm = $( '#tribe-modal__cart ' );
+			for( var index in data.cartData ) {
+				var item = data.cartData[index];
+				if ( isNaN( index ) ) {
+					$cartForm.find( `[name="${index}"]` ).val( item );
+					continue;
+				}
+
+				var $row = $cartForm.find( `.tribe-tickets__item[data-ticket-id="${index}"]` );
+				for ( var key in item ) {
+					if ( 'undefined' === key ) {
+						continue;
+					}
+
+					if ( 'product_id[]' === key ) {
+						$row.fadeIn();
+					}
+
+					var $input = $cartForm.find( `[name="${key}"]` );
+					$input.val( item[ key ] );
+					if ( $input.hasClass( 'tribe-tickets-quantity' ) ) {
+						$input.trigger( 'change' );
+					}
+				}
+			}
+		}
+
+		if ( data.attendeeData ) {
+			var $attendeeForm = $( '#tribe-modal__attendee_registration' );
+			for( var index in data.attendeeData ) {
+				var value  = data.attendeeData[index];
+				var $input = $attendeeForm.find( `[name="${index}"]` );
+
+				if ( $input.is( ':radio' ) ) {
+					$input.prop('checked', true);
+				} else if( $input.is(':checkbox') ) {
+					if ( value === $input.val() ) {
+						$input.prop('checked', true);
+					}
+				} else {
+					$input.val( value );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Init the tickets script.
+	 *
+	 * @since 4.9
+	 *
+	 * @return void
+	 */
+	obj.init = function() {
+		obj.checkAvailability();
+		obj.initPrefill();
+	}
+
+	/**
+	 * Handle the number input + and - actions.
+	 *
+	 * @since 4.9
+	 *
+	 * @return void
+	 */
+	obj.document.on( 'click',
+		'.tribe-block__tickets__item__quantity__remove, .tribe-block__tickets__item__quantity__add',
+		function( e ) {
+			e.preventDefault();
+			var $input = $( this ).parent().find( 'input[type="number"]' );
+			if( $input.is( ':disabled' ) ) {
+				return;
+			}
+
+			var add = $( this ).hasClass( 'tribe-block__tickets__item__quantity__add' );
+			var originalValue = Number( $input[ 0 ].value );
+
+			// stepUp or stepDown the input according to the button that was clicked
+			// handle IE/Edge
+			if ( add ) {
+				obj.stepUp( $input, originalValue );
+			} else {
+				obj.stepDown( $input, originalValue );
+			}
+		}
+	);
+
+	/**
+	 * Handle the number input + and - actions.
+	 *
+	 * @since 4.9
+	 *
+	 * @return void
+	 */
+	obj.document.on(
+		'click',
+		'.tribe-tickets__item__quantity__remove, .tribe-tickets__item__quantity__add',
+		function( e ) {
+			var $input = $( this ).parent().find( 'input[type="number"]' );
+
+			if( $input.is( ':disabled' ) ) {
+				return;
+			}
+
+			e.preventDefault();
+
+			var originalValue = Number( $input[ 0 ].value );
+			var $modalForm    = $input.closest( obj.modalSelector.container );
+
+			// Step up or Step down the input according to the button that was clicked.
+			// Handles IE/Edge.
+			if ( $( this ).hasClass( 'tribe-tickets__item__quantity__add' ) ) {
+				obj.stepUp( $input, originalValue );
+			} else {
+				obj.stepDown( $input, originalValue );
+			}
+
+			obj.updateFooter( $input.closest( 'form' ) );
+
+			// Trigger the on Change for the input (if it has changed) as it's not handled via stepUp() || stepDown().
+			if ( originalValue !== $input[ 0 ].value ) {
+				$input.trigger( 'change' );
+			}
+
+			if ( $modalForm.length ) {
+				var $item = $input.closest( obj.selector.item );
+				obj.updateTotal( obj.getQty( $item ), obj.getPrice( $item ), $item );
+			}
+		}
+	);
+
+	/**
+	 * Handle the Ticket form.
+	 *
+	 * @since 4.9
+	 *
+	 * @return void
+	 */
+	obj.document.on(
+		'change keyup',
+		obj.selector.itemQuantityInput,
+		function( e ) {
+			var $this        = $( this );
+			var $ticket      = $this.closest( obj.selector.item );
+			var $ticket_id   = $ticket.data( 'ticket-id' );
+			var $form        = $this.closest( 'form' );
+			var new_quantity = parseInt( $this.val(), 10 );
+			new_quantity     = isNaN( new_quantity ) ? 0 : new_quantity;
+
+			e.preventDefault();
+			obj.maybeShowOptOut( $ticket, new_quantity );
+			obj.updateFooter( $form );
+
+			// Only disable / enable if is a Tribe Commerce Paypal form.
+			if ( 'Tribe__Tickets__Commerce__PayPal__Main' === $form.data( 'provider' ) ) {
+				obj.tribeCommerceDisable( new_quantity, $form, $ticket_id );
+			}
+		}
+	);
+
+	/**
+	 * On Change of Modal Cart Qty Update Item.
+	 *
+	 * @since TBD
+	 *
+	 */
+	obj.document.on(
+		'change',
+		obj.selector.itemQuantityInput,
+		function ( e ) {
+			var $cart = $( this ).closest( 'form' );
+
+			e.preventDefault();
+			obj.updateFormTotals( $cart );
+		}
+	);
+
+	/**
+	 * Remove Item from Cart Modal.
+	 *
+	 * @since TBD
+	 *
+	 */
+	obj.document.on(
+		'click',
+		obj.modalSelector.itemRemove,
+		function ( e ) {
+			e.preventDefault();
+
+
+			var ticket    = {};
+			var $cart     = $( this ).closest( 'form' );
+			var $cartItem = $( this ).closest( obj.selector.item );
+
+			$cartItem.find( obj.selector.itemQuantity ).val( 0 );
+			$cartItem.fadeOut() ;
+
+			ticket.id    = $cartItem.data( 'ticketId' );
+			ticket.qty   = 0;
+			ticket.price = obj.getPrice( $cartItem );
+
+			obj.updateTotal( ticket.qty, ticket.price, $cartItem );
+			obj.updateFormTotals( $cart );
+
+			$( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticket.id + '"]' )
+				.removeClass( 'tribe-tickets--has-tickets' )
+				.find( '.tribe-ticket' ).remove();
+		}
+	);
+
+	/**
+	 * Adds focus effect to ticket block.
+	 *
+	 * @since TBD
+	 *
+	 */
+	obj.document.on(
+		'focus',
+		'.tribe-ticket input, .tribe-ticket select, .tribe-ticket textarea',
+		function( e ) {
+			var input      = e.target;
+			var $container = $( input ).closest( '.tribe-ticket' );
+
+			$container.addClass( 'tribe-ticket-item--has-focus' );
+		}
+	);
+
+	/**
+	 * Removes focus effect from ticket block.
+	 *
+	 * @since TBD
+	 *
+	 */
+	obj.document.on(
+		'blur',
+		'.tribe-ticket input, .tribe-ticket select, .tribe-ticket textarea',
+		function( e ) {
+			var input      = e.target;
+			var $container = $( input ).closest( '.tribe-ticket' );
+
+			$container.removeClass( 'tribe-ticket-item--has-focus' );
+		}
+	);
+
+	/**
+	 * When "Get Tickets" is clicked, update the modal.
+	 *
+	 * @since TBD
+	 *
+	 */
+	$( te ).on(
+		'tribe_dialog_show_ar_modal',
+		function ( e, dialogEl, event ) {
+			var $modalCart = $( obj.modalSelector.container );
+			var $cartItems = $( obj.selector.container ).find( obj.selector.item );
+
+			$cartItems.each(
+				function () {
+					var $blockCartItem = $( this );
+					var id             = $blockCartItem.data( 'ticketId' );
+					var $modalCartItem = $modalCart.find( '[data-ticket-id="' + id + '"]' );
+
+					if ( ! $modalCartItem ) {
+						return;
+					}
+
+					obj.updateItem( id, $modalCartItem, $blockCartItem );
+				}
+			);
+
+			obj.hydrateFormFromLocal();
+
+			obj.updateFormTotals( $modalCart );
+		}
+	);
+
+	/**
+	 * Handles storing data to local storage
+	 */
+	$( te ).on(
+		'tribe_dialog_close_ar_modal',
+		function ( e, dialogEl, event ) {
+			obj.storeLocal();
+		}
+	);
+
+	obj.init();
 })( jQuery, tribe.tickets.block, tribe_ev.events );

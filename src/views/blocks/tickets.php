@@ -50,12 +50,9 @@ echo $html;
 	method="post"
 	enctype='multipart/form-data'
 	data-provider="<?php echo esc_attr( $provider->class_name ); ?>"
-<<<<<<< HEAD
 	autocomplete="off"
-=======
 	data-cart="<?php echo esc_url( tribe_tickets_rest_url( '/cart/' ) ) . absint( $post_id ); ?>"
 	data-provider-id="<?php echo esc_attr( $provider->orm_provider ); ?>"
->>>>>>> bucket/ar-modal
 	novalidate
 >
 	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title"><?php esc_html_e( 'Tickets', 'event-tickets' ); ?></h2>
