@@ -163,13 +163,13 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	}
 
 	/**
-	 * Check if any Ticket Products has Attendee Registration Enabled
+	 * Check if any Ticket "Products" has Attendee Registration Enabled.
 	 *
 	 * @since TBD
 	 *
-	 * @param array $tickets an array of tickets to check if registration is enabled
+	 * @param array $tickets An array of tickets to check if registration is enabled.
 	 *
-	 * @return bool return true if any of the ticket products has attendee registration enabled
+	 * @return bool Return true if any of the ticket products has attendee registration enabled.
 	 */
 	public function has_attendee_registration_enabled_in_array_of_tickets( $tickets ) {
 

@@ -22,14 +22,14 @@ $passed_provider_class = $this->get_form_class( $passed_provider );
 
 <?php foreach ( $events as $event_id => $tickets ) :
 
-	// remove an event/post tickets if none have attendee registration
+	// Remove an event/post tickets if none have attendee registration.
 	$show_tickets = tribe( 'tickets.attendee_registration' )->has_attendee_registration_enabled_in_array_of_tickets( $tickets );
 
 	/**
 	 * Filter to show an event/post tickets on Attendee Registration page regardless if they are enabled.
 	 *
-	 * @param boolean $show_tickets true or false to show tickets for an event
-	 * @param array   $tickets      an array of ticket products
+	 * @param boolean $show_tickets Rrue or false to show tickets for an event.
+	 * @param array   $tickets      An array of ticket products.
 	 *
 	 * @since TBD
 	 */
