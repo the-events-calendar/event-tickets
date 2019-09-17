@@ -232,7 +232,7 @@ tribe.tickets.block = {
 	 *
 	 * @return void
 	 */
-	obj.document.on( 'click',
+	obj.document.on( 'click touchend',
 		'.tribe-block__tickets__item__quantity__remove, .tribe-block__tickets__item__quantity__add',
 		function( e ) {
 			e.preventDefault();
