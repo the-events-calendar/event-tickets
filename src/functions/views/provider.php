@@ -4,7 +4,7 @@
  * Checks whether v2 of the Views is enabled or not.
  *
  * In order the function will check the `TRIBE_EVENTS_V2_VIEWS` constant,
- * the `TRIBE_EVENTS_V2_VIEWS` environment variable and, finally, the `Manager::$option_enabled` option.
+ * the `TRIBE_EVENTS_V2_VIEWS` environment variable.
  *
  * @since TBD
  *
