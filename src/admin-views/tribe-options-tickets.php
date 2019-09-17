@@ -179,7 +179,7 @@ $tickets_fields['ticket-paypal-enable'] = array(
 	'attributes'      => array( 'id' => 'ticket-paypal-enable-input' ),
 );
 
-$pages = get_pages( array( 'post_status' => 'publish', 'posts_per_page' => - 1 ) );
+$pages = get_pages( array( 'post_status' => 'publish', 'posts_per_page' => -1 ) );
 
 if ( ! empty( $pages ) ) {
 	$pages = array_combine( wp_list_pluck( $pages, 'ID' ), wp_list_pluck( $pages, 'post_title' ) );
