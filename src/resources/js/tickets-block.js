@@ -571,6 +571,7 @@ tribe.tickets.block = {
 	 */
 	obj.storeLocal = function() {
 		var $attendeeForm = $( '#tribe-modal__attendee_registration :input' );
+		var postId = $( '.status-publish' ).attr('id').replace('post-', '');
 
 		var attendeeData  = {};
 
@@ -586,12 +587,12 @@ tribe.tickets.block = {
 
 		} );
 
-		sessionStorage.setItem( 'tribe_tickets_attendees', window.JSON.stringify( attendeeData ) );
+		sessionStorage.setItem( 'tribe_tickets_attendees-' + postId, window.JSON.stringify( attendeeData ) );
 
 		// The cart form is a bit...weird.
 		var cartData  = obj.parseCartDataFromForm();
 
-		sessionStorage.setItem( 'tribe_tickets_cart', window.JSON.stringify( cartData ) );
+		sessionStorage.setItem( 'tribe_tickets_cart-' + postId, window.JSON.stringify( cartData ) );
 	}
 
 	obj.parseCartDataFromForm = function() {
@@ -637,9 +638,9 @@ tribe.tickets.block = {
 	 * @return array
 	 */
 	obj.getLocal = function() {
-
-		var attendeeData = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees' ) );
-		var cartData     = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart' ) );
+		var postId       = $( '.status-publish' ).attr('id').replace('post-', '');
+		var attendeeData = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + postId ) );
+		var cartData     = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart-' + postId ) );
 		var ret          = {  attendeeData, cartData };
 
 		return ret;
@@ -652,9 +653,9 @@ tribe.tickets.block = {
 	 *
 	 * @return void
 	 */
-	obj.clearLocal = function() {
-		sessionStorage.removeItem( 'tribe_tickets_attendees' );
-		sessionStorage.removeItem( 'tribe_tickets_cart' );
+	obj.clearLocal = function( postId ) {
+		sessionStorage.removeItem( 'tribe_tickets_attendees' + postId );
+		sessionStorage.removeItem( 'tribe_tickets_cart' + postId );
 	}
 
 	/**
@@ -913,6 +914,13 @@ tribe.tickets.block = {
 			var $container = $( input ).closest( '.tribe-ticket' );
 
 			$container.removeClass( 'tribe-ticket-item--has-focus' );
+		}
+	);
+
+	obj.document.on(
+		'beforeunload',
+		function( e ) {
+			obj.storeLocal();
 		}
 	);
 
