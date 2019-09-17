@@ -238,7 +238,7 @@ tribe.tickets.block = {
 			e.preventDefault();
 			var $input = $( this ).parent().find( 'input[type="number"]' );
 			if( $input.is( ':disabled' ) ) {
-				return;
+				return false;
 			}
 
 			var add = $( this ).hasClass( 'tribe-block__tickets__item__quantity__add' );
@@ -252,6 +252,8 @@ tribe.tickets.block = {
 			} else {
 				obj.stepDown( $input, originalValue );
 			}
+
+			return false;
 		}
 	);
 
