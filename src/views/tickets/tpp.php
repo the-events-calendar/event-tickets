@@ -13,7 +13,7 @@
  * @since   4.9.3 Display login link if visitor is logged out and logging in is required to purchase.
  * @since   4.10.8 Removed the date_in_range() check per ticket, since it now happens upstream. Better checking of max quantity available.
  *
- * @version 4.10.8
+ * @version TBD
  *
  * @var bool $must_login
  * @var bool $display_login_link
