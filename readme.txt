@@ -119,6 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.9] TBD =
 
+* Fix - Prevent conflict with Genesis Framework where content or the excerpt does not show in the post archives [125496]
 
 = [4.10.8] 2019-09-16 =
 
@@ -136,7 +137,6 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Fix potential issues with query that had no upper limit set when all that's needed is to check if it had one item [133247]
 * Fix - Support refunded attendee counting/handling for Tribe Commerce and Event Tickets Plus WooCommerce orders [126734]
 * Fix - Correct text domain in Tribe Commerce admin view [127645]
-* Fix - Prevent conflict with Genesis Framework where content or the excerpt does not show in the post archives [125496]
 * Fix - Correct the sold count in Attendees Report for unlimited stock Tribe Commerce tickets (was previously showing negative), and improve text to always display quantities sold and remaining for all ticket types [128666]
 * Fix - Correct the docblock and variable names passed to the `tribe_tickets_get_ticket_max_purchase` filter and update RSVP and Tribe Commerce ticket templates to only display the available quantity [119822]
 * Fix - Make the "Tickets" heading not appear on a single event page if there are only past Tribe Commerce tickets [130748]
