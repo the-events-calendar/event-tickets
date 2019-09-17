@@ -16,7 +16,5 @@
 >
 	<button
 		class="tribe-tickets__item__remove"
-	>
-		<?php esc_html_e( 'x', 'event-tickets' ); ?>
-	</button>
+	></button>
 </div>
