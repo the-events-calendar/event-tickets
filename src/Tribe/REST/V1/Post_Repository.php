@@ -563,7 +563,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		 */
 		$available = $ticket->stock();
 
-		$unlimited = - 1 === $available;
+		$unlimited = -1 === $available;
 		if ( $unlimited ) {
 			$available_percentage = 100;
 		} else {

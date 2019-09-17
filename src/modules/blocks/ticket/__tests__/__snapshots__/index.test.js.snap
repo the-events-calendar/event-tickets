@@ -19,7 +19,7 @@ Object {
   "id": "tickets-item",
   "keywords": Array [
     "event",
-    "events-tickets",
+    "event-tickets",
     "tribe",
   ],
   "parent": Array [
