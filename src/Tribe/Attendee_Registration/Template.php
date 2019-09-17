@@ -304,7 +304,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Hooks into the genesis excerpt filter and forces it "off" on the AR page
 	 *
-	 * @since TBD - return null if not on ar page and true if on ar page
+	 * @since TBD - Return null if not on ar page and true if on ar page.
 	 *
 	 * @param string|null $unused_null Unused variable
 	 * @param string $setting
@@ -317,8 +317,8 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			return null;
 		}
 
-		// return true on AR to get no content
-		return true;
+		// Return true on AR to get no content.
+		return '';
 	}
 
 	/**
