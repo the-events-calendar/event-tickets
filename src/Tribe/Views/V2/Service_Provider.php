@@ -5,7 +5,7 @@ namespace Tribe\Events\Tickets\Views\V2;
  * The main service provider for Event Tickets support and additions to the Views V2 functions.
  *
  * @since   TBD
- * @package Tribe\Events\Filterbar\Views\V2
+ * @package Tribe\Events\Tickets\Views\V2
  */
 class Service_Provider extends \tad_DI52_ServiceProvider {
 
