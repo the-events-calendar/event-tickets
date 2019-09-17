@@ -56,6 +56,8 @@ $template = tribe( 'tickets.editor.template' );
 $provider_id = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 $provider    = call_user_func( [ $provider_id, 'get_instance' ] );
 $obj_tickets = $provider->get_tickets( $event_id );
+$tickets_content = [];
+
 foreach( $obj_tickets as $ticket ) {
 	$ticket_data = [
 		'id'       => $ticket->ID,
