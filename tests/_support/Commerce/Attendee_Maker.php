@@ -86,6 +86,12 @@ trait Attendee_Maker {
 			'email'      => $faker->email,
 		];
 
+		$full_name = Arr::get( $overrides, 'full_name' );
+
+		if ( null !== $full_name ) {
+			$faked['full_name'] = $full_name;
+		}
+
 		foreach ( $faked as $key => $value ) {
 			if ( property_exists( $provider, $key ) ) {
 				$meta[ $provider->{$key} ] = $value;

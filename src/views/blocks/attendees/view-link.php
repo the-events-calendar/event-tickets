@@ -14,10 +14,10 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @since TBD Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated
+ * @since 4.10.8 Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated
  *            third parameter of `get_description_rsvp_ticket()` and to simplify the template's logic.
  *
- * @version TBD
+ * @version 4.10.8
  */
 
 

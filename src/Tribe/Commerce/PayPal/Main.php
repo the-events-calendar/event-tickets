@@ -548,9 +548,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param array $data
-	 * @param int   $order_id
-	 * @param int   $event_id
+	 * @param array  $data
+	 * @param string $order_id
+	 * @param int    $event_id
 	 */
 	public function update_attendee_data( $data, $order_id, $event_id ) {
 		$user_id = get_current_user_id();
@@ -563,23 +563,17 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		$attendee = array();
-
 		// Get the Attendee Data, it's important for testing
 		foreach ( $ticket_orders as $test_attendee ) {
 			if ( $order_id !== $test_attendee['order_id'] ) {
 				continue;
 			}
-
-			$attendee = $test_attendee;
 		}
 
-		$attendee_email        = empty( $data['email'] ) ? null : sanitize_email( $data['email'] );
-		$attendee_email        = is_email( $attendee_email ) ? $attendee_email : null;
-		$attendee_full_name    = empty( $data['full_name'] ) ? null : sanitize_text_field( $data['full_name'] );
-		$attendee_optout       = empty( $data['optout'] ) ? false : (bool) $data['optout'];
-
-		$product_id  = $attendee['product_id'];
+		$attendee_email     = empty( $data['email'] ) ? null : sanitize_email( $data['email'] );
+		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
+		$attendee_full_name = empty( $data['full_name'] ) ? null : sanitize_text_field( $data['full_name'] );
+		$attendee_optout    = empty( $data['optout'] ) ? false : (bool) $data['optout'];
 
 		update_post_meta( $order_id, $this->attendee_optout_key, (bool) $attendee_optout );
 
@@ -787,7 +781,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$inventory = (int) $ticket_type->inventory();
 				$this->ignore_pending_stock_logic( false );
 
-				$inventory_is_not_unlimited = - 1 !== $inventory;
+				$inventory_is_not_unlimited = -1 !== $inventory;
 
 				if ( $inventory_is_not_unlimited && $qty > $inventory ) {
 					if ( ! $order->was_pending() ) {
@@ -913,7 +907,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					 * @since 4.7
 					 *
 					 * @param int    $attendee_id           Attendee post ID
-					 * @param int    $order_id              PayPal Order ID
+					 * @param string $order_id              PayPal Order ID
 					 * @param int    $product_id            PayPal ticket post ID
 					 * @param int    $order_attendee_id     Attendee number in submitted order
 					 * @param string $attendee_order_status The order status for the attendee.
@@ -932,7 +926,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				 * @since 4.7
 				 *
 				 * @param int    $attendee_id           Attendee post ID
-				 * @param int    $order_id              PayPal Order ID
+				 * @param string $order_id              PayPal Order ID
 				 * @param int    $product_id            PayPal ticket post ID
 				 * @param int    $order_attendee_id     Attendee number in submitted order
 				 * @param string $attendee_order_status The order status for the attendee.
@@ -960,9 +954,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				 *
 				 * @since 4.7
 				 *
-				 * @param int $product_id PayPal ticket post ID
-				 * @param int $order_id   ID of the PayPal order
-				 * @param int $qty        Quantity ordered
+				 * @param int    $product_id PayPal ticket post ID
+				 * @param string $order_id   ID of the PayPal order
+				 * @param int    $qty        Quantity ordered
 				 */
 				do_action( 'event_tickets_tpp_tickets_generated_for_product', $product_id, $order_id, $qty );
 			}
@@ -975,12 +969,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			 *
 			 * @since 4.7
 			 *
-			 * @param int $product_id PayPal ticket post ID
-			 * @param int $order_id   ID of the PayPal order
-			 * @param int $qty        Quantity ordered
+			 * @param int    $product_id PayPal ticket post ID
+			 * @param string $order_id   ID of the PayPal order
+			 * @param int    $qty        Quantity ordered
 			 */
 			do_action( 'event_tickets_tpp_tickets_generated_for_product', $product_id, $order_id, $qty );
-
 
 			// After Adding the Values we Update the Transient
 			Tribe__Post_Transient::instance()->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
@@ -993,8 +986,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @since 4.7
 		 *
-		 * @param int    $order_id              ID of the PayPal order
-		 * @param int    $post_id               ID of the post the order was placed for
+		 * @param string $order_id ID of the PayPal order
+		 * @param int    $post_id  ID of the post the order was placed for
 		 */
 		do_action( 'event_tickets_tpp_tickets_generated', $order_id, $post_id );
 
@@ -1034,8 +1027,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7.6 added $post_id parameter
 	 *
-	 * @param int $order_id Order post ID
-	 * @param int $post_id  Parent post ID (optional)
+	 * @param string $order_id Order post ID
+	 * @param int    $post_id  Parent post ID (optional)
 	 */
 	public function send_tickets_email( $order_id, $post_id = null ) {
 		$all_attendees = $this->get_attendees_by_order_id( $order_id );
@@ -1065,10 +1058,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * @since 4.7
 		 * @since 4.7.6 added new parameter $post_id
 		 *
-		 * @param array $to_send        list of tickets to be sent out by email
-		 * @param array $all_attendees  list of all attendees/tickets, including those already sent out
-		 * @param int   $post_id
-		 * @param int   $order_id
+		 * @param array  $to_send        list of tickets to be sent out by email
+		 * @param array  $all_attendees  list of all attendees/tickets, including those already sent out
+		 * @param int    $post_id
+		 * @param string $order_id
 		 *
 		 */
 		$to_send = (array) apply_filters( 'tribe_tickets_tpp_tickets_to_send', $to_send, $all_attendees, $post_id, $order_id );
@@ -1089,9 +1082,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @since 4.7.6 added new parameters $post_id and $order_id
 		 *
-		 * @param string  email content
-		 * @param int     $post_id
-		 * @param int     $order_id
+		 * @param string email content
+		 * @param int    $post_id
+		 * @param string $order_id
 		 */
 		$content = apply_filters( 'tribe_tpp_email_content', $this->generate_tickets_email_content( $to_send ), $post_id, $order_id );
 
@@ -1100,9 +1093,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @since 4.7.6 added new parameters $post_id and $order_id
 		 *
-		 * @param string  email sender name
-		 * @param int     $post_id
-		 * @param int     $order_id
+		 * @param string email sender name
+		 * @param int    $post_id
+		 * @param string $order_id
 		 */
 		$from = apply_filters( 'tribe_tpp_email_from_name', tribe_get_option( 'ticket-paypal-confirmation-email-sender-name', false ), $post_id, $order_id );
 
@@ -1111,9 +1104,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @since 4.7.6 added new parameters $post_id and $order_id
 		 *
-		 * @param string  email sender email
-		 * @param int     $post_id
-		 * @param int     $order_id
+		 * @param string email sender email
+		 * @param int    $post_id
+		 * @param string $order_id
 		 */
 		$from_email = apply_filters( 'tribe_tpp_email_from_email', tribe_get_option( 'ticket-paypal-confirmation-email-sender-email', false ), $post_id, $order_id );
 
@@ -1130,7 +1123,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @param array  email headers
 		 * @param int    $post_id
-		 * @param int    $order_id
+		 * @param string $order_id
 		 */
 		$headers = apply_filters( 'tribe_tpp_email_headers', $headers, $post_id, $order_id );
 
@@ -1141,7 +1134,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @param array  attachments
 		 * @param int    $post_id
-		 * @param int    $order_id
+		 * @param string $order_id
 		 */
 		$attachments = apply_filters( 'tribe_tpp_email_attachments', array(), $post_id, $order_id );
 
@@ -1150,9 +1143,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @since 4.7.6 added new parameters $post_id and $order_id
 		 *
-		 * @param string  $to
-		 * @param int     $event_id
-		 * @param int     $order_id
+		 * @param string $to
+		 * @param int    $event_id
+		 * @param string $order_id
 		 */
 		$to = apply_filters( 'tribe_tpp_email_recipient', $to, $post_id, $order_id );
 
@@ -1164,9 +1157,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @since 4.7.6 added new parameters $post_id and $order_id
 		 *
-		 * @param string  email subject
-		 * @param int     $post_id
-		 * @param int     $order_id
+		 * @param string email subject
+		 * @param int    $post_id
+		 * @param string $order_id
 		 */
 		$subject = apply_filters( 'tribe_tpp_email_subject', tribe_get_option( 'ticket-paypal-confirmation-email-subject', $default_subject ) );
 
@@ -1521,7 +1514,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		// If we don't have a stock value, then stock should be considered 'unlimited'
 		if ( null === $stock ) {
-			$stock = - 1;
+			$stock = -1;
 		}
 
 		$return->manage_stock( 'yes' === get_post_meta( $ticket_id, '_manage_stock', true ) );
@@ -1533,9 +1526,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$return->global_stock_cap( $capped );
 		}
 
-		$return->qty_sold( $qty_sold );
+		$qty_cancelled = $this->get_cancelled( $ticket_id );
 
-		$return->qty_cancelled( $this->get_cancelled( $ticket_id ) );
+		// Manually add cancelled to sold so that we can remove it correctly later when calculating.
+		$return->qty_sold( $qty_sold + $qty_cancelled );
+
+		$return->qty_cancelled( $qty_cancelled );
 
 		$pending = $this->get_qty_pending( $ticket_id );
 
@@ -1638,7 +1634,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param int $order_id
+	 * @param string $order_id
+	 *
 	 * @return array
 	 */
 	public function get_order_data( $order_id ) {
@@ -1661,7 +1658,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @param array  $data     An associative array with the Information of the Order
 		 * @param string $provider What Provider is been used
-		 * @param int    $order_id Order ID
+		 * @param string $order_id Order ID
 		 *
 		 */
 		$data = apply_filters( 'tribe_tickets_order_data', $data, 'tpp', $order_id );
@@ -2010,16 +2007,16 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$instance = self::get_instance();
 		$key      = strtolower( $key );
 
-		$constant_map = array(
+		$constant_map = [
 			'attendee_event_key'   => $instance->attendee_event_key,
 			'attendee_product_key' => $instance->attendee_product_key,
-			'attendee_order_key'   => $instance->attendee_order_key,
+			'attendee_order_key'   => $instance->order_key,
 			'attendee_optout_key'  => $instance->attendee_optout_key,
 			'attendee_tpp_key'     => $instance->attendee_tpp_key,
 			'event_key'            => $instance->event_key,
 			'checkin_key'          => $instance->checkin_key,
 			'order_key'            => $instance->order_key,
-		);
+		];
 
 		return Tribe__Utils__Array::get( $constant_map, $key, '' );
 	}
@@ -2091,9 +2088,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		if ( ! empty( $orders ) ) {
 			/** @var Tribe__Tickets__Commerce__PayPal__Order $order */
 			foreach ( $orders as $order ) {
-				$order_id                        = $order->paypal_id();
-				$status                          = $order->get_status();
-				$attendees                       = $order->get_attendees();
+				$order_id        = $order->paypal_id();
+				$status          = $order->get_status();
+				$attendees       = $order->get_attendees();
 				$refund_order_id = $order->get_refund_order_id();
 
 				$found[ $order_id ] = array(
@@ -2255,13 +2252,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Returns all the tickets for an event
+	 * {@inheritDoc}
 	 *
 	 * @since 4.7
-	 *
-	 * @param int $post_id
-	 *
-	 * @return array
 	 */
 	public function get_tickets( $post_id ) {
 		$ticket_ids = $this->get_tickets_ids( $post_id );
@@ -2579,14 +2572,14 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		$checkin      = get_post_meta( $attendee->ID, $this->checkin_key, true );
-		$security     = get_post_meta( $attendee->ID, $this->security_code, true );
-		$order_id     = get_post_meta( $attendee->ID, $this->order_key, true );
-		$product_id   = get_post_meta( $attendee->ID, $this->attendee_product_key, true );
-		$optout       = (bool) get_post_meta( $attendee->ID, $this->attendee_optout_key, true );
-		$status       = get_post_meta( $attendee->ID, $this->attendee_tpp_key, true );
-		$user_id      = get_post_meta( $attendee->ID, $this->attendee_user_id, true );
-		$ticket_sent  = (bool) get_post_meta( $attendee->ID, $this->attendee_ticket_sent, true );
+		$checkin     = get_post_meta( $attendee->ID, $this->checkin_key, true );
+		$security    = get_post_meta( $attendee->ID, $this->security_code, true );
+		$order_id    = get_post_meta( $attendee->ID, $this->order_key, true );
+		$product_id  = get_post_meta( $attendee->ID, $this->attendee_product_key, true );
+		$optout      = (bool) get_post_meta( $attendee->ID, $this->attendee_optout_key, true );
+		$status      = get_post_meta( $attendee->ID, $this->attendee_tpp_key, true );
+		$user_id     = get_post_meta( $attendee->ID, $this->attendee_user_id, true );
+		$ticket_sent = (bool) get_post_meta( $attendee->ID, $this->attendee_ticket_sent, true );
 
 		if ( empty( $product_id ) ) {
 			return false;

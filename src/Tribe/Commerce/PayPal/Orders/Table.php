@@ -49,6 +49,33 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	}
 
 	/**
+	 * Overrides the list of CSS classes for the WP_List_Table table tag.
+	 * This function is not hookable in core, so it needs to be overridden!
+	 *
+	 * @since 4.10.7
+	 *
+	 * @return array List of CSS classes for the table tag.
+	 */
+	protected function get_table_classes() {
+		$classes = [ 'widefat', 'striped', 'orders', 'tribe-commerce-orders' ];
+
+		if ( is_admin() ) {
+			$classes[] = 'fixed';
+		}
+
+		/**
+		 * Filters the default classes added to the TCC order report `WP_List_Table`.
+		 *
+		 * @since 4.10.7
+		 *
+		 * @param array $classes The array of classes to be applied.
+		 */
+		$classes = apply_filters( 'tribe_tickets_commerce_order_table_classes', $classes );
+
+		return $classes;
+	}
+
+	/**
 	 * Checks the current user's permissions
 	 *
 	 * @since 4.7
@@ -301,7 +328,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 			return $items;
 		}
 
-		$search_keys = array( 'number', 'status', 'status_label', 'purchaser_name', 'purchaser_email', 'purchase_time' );
+		$search_keys = [ 'number', 'status', 'status_label', 'purchaser_name', 'purchaser_email', 'purchase_time' ];
 
 		/**
 		 * Filters the item keys that should be used to filter orders while searching them.
@@ -314,7 +341,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 		 */
 		$search_keys = apply_filters( 'tribe_tickets_commerce_paypal_search_orders_by', $search_keys, $items, $search );
 
-		$filtered = array();
+		$filtered = [];
 		foreach ( $items as $order_number => $order_data ) {
 			$keys = array_intersect( array_keys( $order_data ), $search_keys );
 			foreach ( $keys as $key ) {
