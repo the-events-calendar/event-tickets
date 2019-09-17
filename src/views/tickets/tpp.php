@@ -11,9 +11,9 @@
  * @since   4.7.6 Add support for showing description option.
  * @since   4.8.2 Add date_in_range() logic so past tickets do not show.
  * @since   4.9.3 Display login link if visitor is logged out and logging in is required to purchase.
- * @since   TBD Removed the date_in_range() check per ticket, since it now happens upstream. Better checking of max quantity available.
+ * @since   4.10.8 Removed the date_in_range() check per ticket, since it now happens upstream. Better checking of max quantity available.
  *
- * @version TBD
+ * @version 4.10.8
  *
  * @var bool $must_login
  * @var bool $display_login_link

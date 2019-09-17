@@ -16,6 +16,8 @@ tribe.tickets.block = {
 ( function( $, obj, te ) {
 	'use strict';
 
+	obj.document = $( document );
+
 	obj.selector = {
 		container                  : '#tribe-tickets',
 		item                       : '.tribe-tickets__item',
@@ -224,6 +226,36 @@ tribe.tickets.block = {
 	}
 
 	/**
+	 * Handle the number input + and - actions.
+	 *
+	 * @since 4.9
+	 *
+	 * @return void
+	 */
+	obj.document.on( 'click',
+		'.tribe-block__tickets__item__quantity__remove, .tribe-block__tickets__item__quantity__add',
+		function( e ) {
+			e.preventDefault();
+			var $input = $( this ).parent().find( 'input[type="number"]' );
+			if( $input.is( ':disabled' ) ) {
+				return;
+			}
+
+			var add = $( this ).hasClass( 'tribe-block__tickets__item__quantity__add' );
+			var originalValue = Number( $input[ 0 ].value );
+
+
+			// stepUp or stepDown the input according to the button that was clicked
+			// handle IE/Edge
+			if ( add ) {
+				obj.stepUp( $input, originalValue );
+			} else {
+				obj.stepDown( $input, originalValue );
+			}
+		}
+	);
+
+	/**
 	 * Update all the footer info.
 	 *
 	 * @since TBD
@@ -351,7 +383,7 @@ tribe.tickets.block = {
 	 *
 	 * @return void
 	 */
-	$( document ).on(
+	obj.document.on(
 		'change, keyup',
 		obj.selector.itemQuantityInput,
 		function( e ) {
@@ -395,7 +427,7 @@ tribe.tickets.block = {
 	 * @since TBD
 	 *
 	 */
-	$( document ).on(
+	obj.document.on(
 		'click',
 		obj.modalSelector.itemRemove,
 		function ( e ) {
@@ -682,6 +714,7 @@ tribe.tickets.block = {
 	 * @since TBD
 	 *
 	 * @param number The number to format.
+	 *
 	 * @returns {string}
 	 */
 	obj.numberFormat = function ( number ) {
@@ -722,4 +755,46 @@ tribe.tickets.block = {
 			sessionStorage.setItem( 'tribe_tickets_cart', data );
 		}
 	);
-} )( jQuery, tribe.tickets.block, tribe_ev.events );
+
+	/**
+	 * Prefill the Cart.
+	 *
+	 * @since TBD
+	 *
+	 * @returns {*}
+	 */
+	obj.prefillCart = function () {
+
+		var $form = $( obj.selector.container );
+
+		$.ajax( {
+			type: 'GET',
+			data: {'provider': $form.data( 'providerId' )},
+			dataType: 'json',
+			url: $form.data( 'cart' ),
+			success: function ( data ) {
+				$.each( data.tickets, function ( index, value ) {
+					var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
+					if ( $item ) {
+						$item.find( '.tribe-ticket-quantity' ).val( value.quantity );
+					}
+				} );
+			},
+		} );
+
+	};
+
+	/**
+	 * Init the tickets script.
+	 *
+	 * @since 4.9
+	 *
+	 * @return void
+	 */
+	obj.initPrefill = function() {
+		obj.prefillCart();
+	}
+
+	obj.initPrefill();
+
+})( jQuery, tribe.tickets.block, tribe_ev.events );

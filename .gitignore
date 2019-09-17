@@ -1,6 +1,7 @@
 # /vendor/
 .DS_Store
 .idea
+.code-workspace
 node_modules
 vendor
 

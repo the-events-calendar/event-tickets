@@ -257,7 +257,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		}
 
 		/**
-		 * Allows filterting the class before returning it.
+		 * Allows filtering the class before returning it.
 		 *
 		 * @since 4.10.4
 		 *

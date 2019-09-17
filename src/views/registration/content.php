@@ -7,24 +7,37 @@
  *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @since TBD Add docblocks and pass missing 'provider' arg to registration/button-cart template.
+ * @since TBD Add docblocks, pass missing 'provider' arg to registration/button-cart template, and add action hooks.
  *
  * @version TBD
  *
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */
+
+$passed_provider = tribe_get_request_var( 'provider' );
+
+$passed_provider_class = $this->get_form_class( $passed_provider );
+
+/**
+ * Before the output, whether or not $events is empty.
+ *
+ * @since TBD
+ *
+ * @param string $passed_provider       The 'provider' $_REQUEST var.
+ * @param string $passed_provider_class The class string or empty string if ticket provider is not found.
+ * @param array  $events                The array of events, which might be empty.
+ */
+do_action( 'tribe_tickets_registration_content_before_all_events', $passed_provider, $passed_provider_class, $events );
+
 // If there are no events with tickets in cart, print the empty cart template
 if ( empty( $events ) ) {
 	$this->template( 'registration/cart-empty' );
 	return;
 }
 
-$passed_provider = tribe_get_request_var('provider');
-
-$passed_provider_class = $this->get_form_class( $passed_provider );
-
 foreach ( $events as $event_id => $tickets ) :
 	$provider_class = $passed_provider_class;
+
 	$providers = array_unique( wp_list_pluck( wp_list_pluck( $tickets, 'provider'), 'attendee_object') );
 
 	if (
@@ -92,3 +105,14 @@ foreach ( $events as $event_id => $tickets ) :
 		'is_meta_up_to_date'     => $is_meta_up_to_date,
 	]
 );
+
+/**
+ * After the output, only if $events is not empty.
+ *
+ * @since TBD
+ *
+ * @param string $passed_provider       The 'provider' $_REQUEST var.
+ * @param string $passed_provider_class The class string or empty string if ticket provider is not found.
+ * @param array  $events                The non-empty array of events.
+ */
+do_action( 'tribe_tickets_registration_content_after_all_events', $passed_provider, $passed_provider_class, $events );

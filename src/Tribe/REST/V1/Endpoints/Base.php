@@ -278,16 +278,16 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	}
 
 	/**
-	 * Returns the ticket data accessible to the current user.
+	 * Determine whether the ticket is accessible to the current user.
 	 *
-	 * @since 4.8
+	 * @since TBD
 	 *
-	 * @param int $ticket_id
+	 * @param int $ticket_id Ticket ID.
 	 *
-	 * @return array|WP_Error An array of ticket data accessible by the current user or a `WP_Error` if the user
-	 *                        cannot access the current ticket at all.
+	 * @return true|WP_Error True if the ticket is accessible or a `WP_Error` if the user cannot access
+	 *                       the current ticket at all.
 	 */
-	protected function get_readable_ticket_data( $ticket_id ) {
+	protected function is_ticket_readable( $ticket_id ) {
 		$ticket_post = get_post( $ticket_id );
 
 		if ( ! $ticket_post instanceof WP_Post ) {
@@ -328,7 +328,55 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 			return new WP_Error( 'ticket-not-accessible', $message, array( 'status' => 401 ) );
 		}
 
+		return true;
+	}
+
+	/**
+	 * Returns the ticket data accessible to the current user.
+	 *
+	 * @since 4.8
+	 *
+	 * @param int $ticket_id
+	 *
+	 * @return array|WP_Error An array of ticket data accessible by the current user or a `WP_Error` if the user
+	 *                        cannot access the current ticket at all.
+	 */
+	protected function get_readable_ticket_data( $ticket_id ) {
+		$is_ticket_readable = $this->is_ticket_readable( $ticket_id );
+
+		if ( true !== $is_ticket_readable ) {
+			return $is_ticket_readable;
+		}
+
 		return $this->post_repository->get_ticket_data( $ticket_id );
+	}
+
+	/**
+	 * Filters the found tickets to only return those the current user can access and formats
+	 * the ticket data depending on the current user access rights.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object[]|int[] $found List of ticket objects or ticket IDs that were found.
+	 *
+	 * @return array[] List of ticket objects that are readable.
+	 */
+	protected function filter_readable_tickets( array $found ) {
+		$readable = array();
+
+		foreach ( $found as $ticket ) {
+			$ticket_id   = $ticket->ID;
+			$ticket_data = $this->get_readable_ticket_data( $ticket_id );
+
+			if ( $ticket_data instanceof WP_Error ) {
+				continue;
+			}
+
+			$readable[] = $ticket_data;
+		}
+
+
+		return $readable;
 	}
 
 	/**
