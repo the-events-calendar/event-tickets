@@ -309,7 +309,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @param string|null $unused_null Unused variable
 	 * @param string $setting
 	 *
-	 * @return null|boolean
+	 * @return null|string
 	 */
 	public function override_genesis_limit( $unused_null, $setting ) {
 		// Bail if we're not on the attendee info page
@@ -317,7 +317,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			return null;
 		}
 
-		// Return true on AR to get no content.
+		// Return empty string on AR to get no content.
 		return '';
 	}
 
