@@ -53,19 +53,6 @@ tribe( 'dialog.view' )->render_modal( $content, $args );
 $event_id = get_the_ID();
 /** @var Tribe__Tickets__Editor__Template $template */
 $template = tribe( 'tickets.editor.template' );
-$provider_id = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
-$provider    = call_user_func( [ $provider_id, 'get_instance' ] );
-$obj_tickets = $provider->get_tickets( $event_id );
-$tickets_content = [];
+$tickets = $this->get( 'tickets' );
 
-foreach( $obj_tickets as $ticket ) {
-	$ticket_data = [
-		'id'       => $ticket->ID,
-		'qty'      => 1,
-		'provider' => $provider,
-	];
-
-	$tickets_content[] = $ticket_data;
-}
-
-$template->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets_content ) );
+$template->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) );
