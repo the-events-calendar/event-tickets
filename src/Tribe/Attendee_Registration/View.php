@@ -167,7 +167,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		if ( empty( $provider ) ) {
 			/**
-			 * Allows filterting the class before returning it in the case of no provider.
+			 * Allows filtering the class before returning it in the case of no provider.
 			 *
 			 * @since 4.10.4
 			 *

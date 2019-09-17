@@ -696,7 +696,10 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
 	 * @return bool|object
 	 */
 	function tribe_tickets_get_ticket_provider( $id ) {
-		return tribe( 'tickets.data_api' )->get_ticket_provider( $id );
+		/** @var Tribe__Tickets__Data_API $data_api */
+		$data_api = tribe( 'tickets.data_api' );
+
+		return $data_api->get_ticket_provider( $id );
 	}
 }
 
@@ -818,34 +821,48 @@ function tribe_tickets_update_capacity( $object, $capacity ) {
 }
 
 /**
- * Returns the capacity for a given Post
+ * Returns the capacity for a given post.
  *
  * Note while we can send a post/event we do not store capacity on events
  * so the return values will always be null.
  *
- * @since  4.6
+ * @since 4.6
  *
  * @param int|WP_Post $post Post we are trying to fetch capacity for.
  *
  * @return int|null
  */
 function tribe_tickets_get_capacity( $post ) {
-	// When not dealing with a Instance of Post try to set it up
+	// When not dealing with a instance of Post try to set it up.
 	if ( ! $post instanceof WP_Post ) {
 		$post = get_post( $post );
 	}
 
 	// Bail when it's not a post or ID is 0
-	if ( ! $post instanceof WP_Post || 0 === $post->ID ) {
+	if (
+		! $post instanceof WP_Post
+		|| empty( $post->ID )
+	) {
 		return null;
 	}
 
 	$event_types = Tribe__Tickets__Main::instance()->post_types();
-	$key = tribe( 'tickets.handler' )->key_capacity;
+
+	/**
+	 * @var Tribe__Tickets__Tickets_Handler $handler
+	 * @var Tribe__Tickets__Version $version
+	 */
+	$handler = tribe( 'tickets.handler' );
+	$version = tribe( 'tickets.version' );
+
+	$key = $handler->key_capacity;
 
 	// When we have a legacy ticket we migrate it
-	if ( ! in_array( $post->post_type, $event_types ) && tribe( 'tickets.version' )->is_legacy( $post->ID ) ) {
-		$legacy_capacity = tribe( 'tickets.handler' )->filter_capacity_support( null, $post->ID, $key );
+	if (
+		! in_array( $post->post_type, $event_types )
+		&& $version->is_legacy( $post->ID )
+	) {
+		$legacy_capacity = $handler->filter_capacity_support( null, $post->ID, $key );
 
 		// Cast as integer as it might be returned as numeric string on some cases
 		return (int) $legacy_capacity;
@@ -857,7 +874,8 @@ function tribe_tickets_get_capacity( $post ) {
 	// Return Null for when we don't have the Capacity Data
 	if ( ! metadata_exists( 'post', $post->ID, $key ) ) {
 		$mode = get_post_meta( $post->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
-		$shared_modes = array( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE );
+
+		$shared_modes = [ Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE ];
 
 		// When we are in a Ticket Post Type update where we get the value from Event
 		if (
@@ -887,24 +905,28 @@ function tribe_tickets_get_capacity( $post ) {
 }
 
 /**
- * Turns a Stock, Remaining or Capacity into a Human Readable Format
+ * Turns a Stock, Remaining, or Capacity number into a human-readable format.
  *
  * @since  4.6
  *
- * @param string|int $number Which you are trying to convert.
- * @param string     $mode   Mode this post is on.
+ * @param string|int $number  Which you are trying to convert.
+ * @param string     $mode    Mode this post is on.
+ * @param bool       $display Whether or not to echo.
  *
  * @return string
  */
 function tribe_tickets_get_readable_amount( $number, $mode = 'own', $display = false ) {
-	$html = array();
+	$html = [];
 
 	$show_parens = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode;
 	if ( $show_parens ) {
 		$html[] = '(';
 	}
 
-	if ( -1 === (int) $number || Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $number ) {
+	if (
+		-1 === (int) $number
+		|| Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $number
+	) {
 		/** @var Tribe__Tickets__Tickets_Handler $handler */
 		$handler = tribe( 'tickets.handler' );
 

@@ -8,8 +8,8 @@ trait Ticket_Maker {
 	/**
 	 * Generates an RSVP ticket for a post.
 	 *
-	 * @param       int $post_id   The ID of the post this ticket should be related to.
-	 * @param array     $overrides An array of values to override the default and random generation arguments.
+	 * @param int   $post_id   The ID of the post this ticket should be related to.
+	 * @param array $overrides An array of values to override the default and random generation arguments.
 	 *
 	 * @return int The generated ticket post ID.
 	 */

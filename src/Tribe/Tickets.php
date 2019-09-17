@@ -23,7 +23,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	 *
 	 *
 	 * @since  4.5.0.1 Due to a fatal between Event Ticket Plus extending commerces and this class,
-	 *                 we changed this from an Abstract to a normal parent Class
+	 *                 we changed this from an Abstract to a normal parent class.
 	 */
 	class Tribe__Tickets__Tickets {
 
@@ -324,7 +324,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$args = array(
 				'post_type'      => array( $this->ticket_object ),
-				'posts_per_page' => - 1,
+				'posts_per_page' => -1,
 				'fields'         => 'ids',
 				'post_status'    => 'publish',
 				'orderby'        => 'menu_order',
@@ -485,6 +485,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
+			// Make sure Thickbox is available regardless of which admin page we're on.
+			add_thickbox();
+
 			$move_link = sprintf( '<a href="%1$s" class="thickbox tribe-ticket-move-link">' . esc_html( $button_text ) . '</a>', $move_url );
 
 			return $move_link;
@@ -605,13 +608,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function save_ticket( $post_id, $ticket, $raw_data = [] ) {}
 
 		/**
-		 * Returns all the tickets for an event
+		 * Returns all the tickets for an event.
 		 *
 		 * @abstract
 		 *
-		 * @param int $post_id ID of parent "event" post
+		 * @param int $post_id ID of parent "event" post.
 		 *
-		 * @return array mixed
+		 * @return Tribe__Tickets__Ticket_Object[] List of ticket objects.
 		 */
 		protected function get_tickets( $post_id ) {}
 
@@ -1808,8 +1811,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$tickets = [];
 
 			foreach ( self::modules() as $class => $module ) {
-				$obj              = call_user_func( array( $class, 'get_instance' ) );
+				/** @var Tribe__Tickets__Tickets $obj */
+				$obj = call_user_func( array( $class, 'get_instance' ) );
+
 				$provider_tickets = $obj->get_tickets( $post_id );
+
 				if ( ! empty( $provider_tickets ) && is_array( $provider_tickets ) ) {
 					$tickets[] = $provider_tickets;
 				}
@@ -2471,7 +2477,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// set the default capacity to that of the event, if set, or to unlimited
-			$default_capacity = Tribe__Utils__Array::get( $data, 'event_capacity', - 1 );
+			$default_capacity = Tribe__Utils__Array::get( $data, 'event_capacity', -1 );
 
 			// Fetch capacity field, if we don't have it use default (defined above)
 			$data['capacity'] = trim( Tribe__Utils__Array::get( $data, 'capacity', $default_capacity ) );
@@ -2483,7 +2489,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// The only available value lower than zero is -1 which is unlimited
 			if ( 0 > $data['capacity'] ) {
-				$data['capacity'] = - 1;
+				$data['capacity'] = -1;
 			}
 
 			// Fetch the stock if defined, otherwise use Capacity field
@@ -2496,10 +2502,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// The only available value lower than zero is -1 which is unlimited
 			if ( 0 > $data['stock'] ) {
-				$data['stock'] = - 1;
+				$data['stock'] = -1;
 			}
 
-			if ( - 1 !== $data['capacity'] ) {
+			if ( -1 !== $data['capacity'] ) {
 				if ( 'update' === $save_type ) {
 					$totals        = tribe( 'tickets.handler' )->get_ticket_totals( $ticket->ID );
 					$data['stock'] -= $totals['pending'] + $totals['sold'];

@@ -1,4 +1,4 @@
-#tribe-attendees-summary {
+.tribe-report-panel {
 	overflow: visible;
 	padding: 0;
 	position: relative;
@@ -7,7 +7,6 @@
 		overflow: visible;
 	}
 
-	h3,
 	.about-description {
 		width: 66%;
 	}
@@ -32,14 +31,12 @@
 		padding: 20px 10px;
 
 		@media screen and (max-width: 768px) {
-			float: none;
 			padding: 20px 0;
 			width: 100%;
 		}
 
 		@media screen and (min-width: 1024px) {
 			display: inline-block;
-			float: left;
 			padding: 20px 2%;
 			width: 29%;
 			min-width: 29%;
@@ -103,10 +100,10 @@
 		}
 
 		.totals-header {
-			    flex: 0 0 100%;
+			flex: 0 0 100%;
 
 			h3 {
-    			display: inline-block;
+				display: inline-block;
 				width: auto;
 			}
 
@@ -144,7 +141,7 @@
 	}
 }
 
-.tribe-attendees-page {
+.tribe-report-page {
 	.welcome-panel-content h3 {
 		margin-top: 0;
 	}
@@ -156,6 +153,7 @@
 	.tickets_checkin {
 		min-width: 87px;
 		text-align: center;
+		white-space: nowrap;
 	}
 
 	.tickets_uncheckin {
@@ -201,6 +199,10 @@
 	.column-attendee_id,
 	.column-order_id {
 		width: 70px;
+	}
+
+	td[class*='column'] {
+		word-break: break-word;
 	}
 
 	td.column-status {
@@ -284,6 +286,7 @@
 }
 
 .wp-list-table {
+	font-size: 14px;
 	td.check_in {
 		.delete {
 			text-align: center;

@@ -17,7 +17,7 @@ _(note: if you copy/paste this, make sure it's using spaces and not tabs!)_
 
 ```yaml
 params:
-  - .env.local
+  - .env.testing
 ```
 
 Codeception will process configuration files in a cascading way, think of CSS, so the `codeception.dist.yml` file will be read first and whatever you set in `codeception.yml` will be applied on top of it.
