@@ -27,16 +27,16 @@ $meta    = tribe( 'tickets-plus.main' )->meta();
 <?php foreach ( $tickets as $ticket ) : ?>
 		<?php
 		// Only include tickets with meta
-		$has_meta = get_post_meta( $ticket['id'], '_tribe_tickets_meta_enabled', true );
+		$has_meta = get_post_meta( $ticket->ID, '_tribe_tickets_meta_enabled', true );
 
 		if ( empty( $has_meta ) || ! tribe_is_truthy( $has_meta ) ) {
 			continue;
 		}
 		?>
-		<script type="text/html" id="tmpl-tribe-registration--<?php echo esc_attr( $ticket['id'] ); ?>">
+		<script type="text/html" id="tmpl-tribe-registration--<?php echo esc_attr( $ticket->ID ); ?>">
 			<?php
-			$ticket_qty = $ticket['qty'];
-			$post       = get_post( $ticket['id'] );
+			$ticket_qty = 1;
+			$post       = get_post( $ticket->ID );
 			$fields     = $meta->get_meta_fields_by_ticket( $post->ID );
 			$saved_meta = $storage->get_meta_data_for( $post->ID );
 			?>

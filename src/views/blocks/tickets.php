@@ -12,7 +12,7 @@
  * @since 4.9
  * @since 4.10.8 Updated loading logic for including a renamed template.
  *
- * @version 4.10.8
+ * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
@@ -65,7 +65,7 @@ echo $html;
 		<?php
 		// We're assuming that all the currency is the same here.
 		$currency_symbol     = $currency->get_currency_symbol( $tickets[0]->ID, true );
-		$this->template( 'blocks/tickets/footer', [ 'currency_symbol' => $currency_symbol ] );
+		$this->template( 'blocks/tickets/footer', [ 'tickets' => $tickets, 'currency_symbol' => $currency_symbol ] );
 		?>
 	<?php else : ?>
 		<?php $this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] ); ?>

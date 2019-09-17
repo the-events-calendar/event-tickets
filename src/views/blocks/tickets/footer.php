@@ -15,14 +15,14 @@
  *
  */
 
-$modal  = $this->get( 'is_modal' );
-$ticket = $this->get( 'ticket' );
+$modal           = $this->get( 'is_modal' );
+$tickets         = $this->get( 'tickets' );
 $currency_symbol = $this->get( 'currency_symbol' );
 ?>
 <div class="tribe-tickets__footer" >
 	<?php $this->template( 'blocks/tickets/footer-quantity' ); ?>
 	<?php $this->template( 'blocks/tickets/footer-total' ); ?>
 	<?php if ( true !== $modal ) : ?>
-		<?php $this->template( 'blocks/tickets/submit', [ 'ticket' => $ticket ] ); ?>
+		<?php $this->template( 'blocks/tickets/submit', [ 'tickets' => $tickets ] ); ?>
 	<?php endif; ?>
 </div>

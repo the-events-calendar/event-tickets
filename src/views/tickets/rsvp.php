@@ -8,7 +8,7 @@
  *
  * @since 4.10.8 More similar display format to that of other ticket types, including better checking of max quantity available.
  *
- * @version 4.10.8
+ * @version TBD
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool $must_login
