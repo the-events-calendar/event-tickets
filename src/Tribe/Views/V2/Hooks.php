@@ -17,8 +17,6 @@
 
 namespace Tribe\Events\Tickets\Views\V2;
 
-use Tribe\Events\Tickets\Views\V2\Partials\List_Tickets;
-
 /**
  * Class Hooks.
  *
