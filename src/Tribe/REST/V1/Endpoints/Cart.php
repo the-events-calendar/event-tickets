@@ -188,8 +188,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			 * @since TBD
 			 *
 			 * @param array $cart_tickets List of tickets in the cart.
+			 * @param int   $post_id      The current post ID for the tickets.
 			 */
-			$cart_tickets = apply_filters( 'tribe_tickets_rest_cart_get_tickets_' . $provider_key, $cart_tickets );
+			$cart_tickets = apply_filters( 'tribe_tickets_rest_cart_get_tickets_' . $provider_key, $cart_tickets, $post_id );
 
 			foreach ( $cart_tickets as $ticket_id => $quantity ) {
 				// Skip ticket if it has no quantity or is not accessible.
@@ -204,6 +205,22 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 				];
 			}
 		}
+
+		// Fetch meta for cart.
+		$cart_meta = [];
+
+		/**
+		 * Get list of ticket meta in the cart.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $cart_meta List of ticket meta in the cart.
+		 * @param array $tickets   List of tickets in the cart.
+		 * @param int   $post_id   The current post ID for the tickets.
+		 */
+		$cart_meta = apply_filters( 'tribe_tickets_rest_cart_get_ticket_meta', $cart_meta, $data['tickets'], $post_id );
+
+		$data['meta'] = $cart_meta;
 
 		return new WP_REST_Response( $data );
 	}
@@ -268,22 +285,53 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 
 		// Update cart quantities.
 		if ( null !== $tickets ) {
+			$providers = [];
+
+			// Setup tickets.
 			foreach ( $tickets as $k => $ticket ) {
-				$tickets[ $k ]['ticket_id'] = absint( $tickets[ $k ]['ticket_id'] );
-				$tickets[ $k ]['quantity']  = absint( $tickets[ $k ]['quantity'] );
+				$defaults = [
+					'ticket_id' => 0,
+					'quantity'  => 0,
+					'provider'  => $provider,
+				];
+
+				$ticket = array_merge( $defaults, $ticket );
+
+				$ticket['ticket_id'] = absint( $ticket['ticket_id'] );
+				$ticket['quantity']  = absint( $ticket['quantity'] );
+
+				// Skip ticket if ticket_id is not set.
+				if ( 0 === $ticket['ticket_id'] ) {
+					unset( $tickets[ $k ] );
+
+					continue;
+				}
+
+				// Update ticket in array for use later.
+				$tickets[ $k ] = $ticket;
+
+				// Add provider if not yet added.
+				if ( ! isset( $providers[ $ticket['provider'] ] ) ) {
+					$providers[ $ticket['provider'] ] = [];
+				}
+
+				// Add ticket to provider.
+				$providers[ $ticket['provider'] ][] = $ticket;
 			}
 
-			/**
-			 * Update tickets in cart for provider.
-			 *
-			 * The dynamic portion of the hook name, `$provider`, refers to the cart provider.
-			 *
-			 * @since TBD
-			 *
-			 * @param array $tickets List of tickets with their ID and quantity.
-			 * @param int   $post_id Post ID for the cart.
-			 */
-			do_action( 'tribe_tickets_rest_cart_update_tickets_' . $provider, $tickets, $post_id );
+			foreach ( $providers as $provider_tickets ) {
+				/**
+				 * Update tickets in cart for provider.
+				 *
+				 * The dynamic portion of the hook name, `$provider`, refers to the cart provider.
+				 *
+				 * @since TBD
+				 *
+				 * @param array $provider_tickets List of tickets with their ID and quantity.
+				 * @param int   $post_id          Post ID for the cart.
+				 */
+				do_action( 'tribe_tickets_rest_cart_update_tickets_' . $provider, $provider_tickets, $post_id );
+			}
 
 			/**
 			 * Update tickets in cart.
@@ -299,18 +347,20 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 
 		// Update ticket meta.
 		if ( null !== $meta ) {
-			/**
-			 * Update ticket meta from Attendee Registration for provider.
-			 *
-			 * The dynamic portion of the hook name, `$provider`, refers to the cart provider.
-			 *
-			 * @since TBD
-			 *
-			 * @param array $meta    List of meta for each ticket to be saved for Attendee Registration.
-			 * @param array $tickets List of tickets with their ID and quantity.
-			 * @param int   $post_id Post ID for the cart.
-			 */
-			do_action( 'tribe_tickets_rest_cart_update_ticket_meta_' . $provider, $meta, $tickets, $post_id );
+			// Setup meta.
+			foreach ( $meta as $k => $ticket_meta ) {
+				$defaults = [
+					'ticket_id' => 0,
+					'provider'  => $provider,
+					'items'     => [],
+				];
+
+				$ticket_meta = array_merge( $defaults, $ticket_meta );
+
+				$ticket_meta['ticket_id'] = absint( $ticket_meta['ticket_id'] );
+
+				$meta[ $k ] = $ticket_meta;
+			}
 
 			/**
 			 * Update ticket meta from Attendee Registration.
