@@ -453,7 +453,7 @@
 				top: -1px;
 			}
 
-			&.tribe-ticket-item--has-focus {
+			&.tribe-ticket-item__has-focus {
 				border-left-color: var(--color-icon-focus);
 
 				&:after,
@@ -462,12 +462,12 @@
 				}
 			}
 
-			&.tribe-ticket-item--has-error {
-				border-left-color: var(--color-icon-error);
+			&.tribe-ticket-item__has-error {
+				border-left-color: var(--color-icon-error) ! important;
 
 				&:after,
 				&:before {
-					background: var(--color-icon-error);
+					background: var(--color-icon-error) ! important;
 				}
 			}
 		}
@@ -573,6 +573,12 @@
 
 			@media(--viewport-medium) {
 				max-width: 600px;
+			}
+
+
+
+			&.ticket-meta__has-error {
+				border-color: var(--color-icon-error) ! important;
 			}
 		}
 

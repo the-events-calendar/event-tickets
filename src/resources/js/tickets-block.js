@@ -411,10 +411,10 @@ tribe.tickets.block = {
 			}
 
 			// We force new DOM queries here to be sure we pick up dynamically generated items.
-			var optoutSelector = obj.selector.itemOptOutInput + $blockCartItem.data('ticket-id');
+			var optoutSelector = obj.selector.itemOptOutInput + $blockCartItem.data( 'ticket-id' );
 			item.$optOut = $( optoutSelector );
 
-			if ( item.$optOut.length && item.$optOut.is(':checked') ) {
+			if ( item.$optOut.length && item.$optOut.is( ':checked' ) ) {
 				$( optoutSelector + '-modal' ).val( '1' );
 			}
 		}
@@ -576,19 +576,21 @@ tribe.tickets.block = {
 	 */
 	obj.storeLocal = function() {
 		var $attendeeForm = $( obj.modalSelector.arForm ).find( ':input' );
-		var postId = $( '.status-publish' ).attr('id').replace('post-', '');
+		var postId = $( '.status-publish' ).attr( 'id' ).replace( 'post-', '' );
 
 		var attendeeData  = {};
 
 		$attendeeForm.each( function( index ) {
 			var $input = $( this );
-			if ( $input.is( ':radio' ) || $input.is(':checkbox') ) {
-				if ( ! $input.prop('checked') ) {
+
+			// Skip unchecked radio/checkboxes.
+			if ( $input.is( ':radio' ) || $input.is( ':checkbox' ) ) {
+				if ( ! $input.prop( 'checked' ) ) {
 					return;
 				}
 			}
 
-			attendeeData[ $input.attr('name') ] = $input.val();
+			attendeeData[ $input.attr( 'name' ) ] = $input.val();
 
 		} );
 
@@ -600,6 +602,13 @@ tribe.tickets.block = {
 		sessionStorage.setItem( 'tribe_tickets_cart-' + postId, window.JSON.stringify( cartData ) );
 	}
 
+	/**
+	 * Parse the cart data from the form for sessionStorage
+	 *
+	 * @since TBD
+	 *
+	 * @return obj The data object.
+	 */
 	obj.parseCartDataFromForm = function() {
 		var $cartForm = $( '#tribe-modal__cart ' );
 		var cartData = {};
@@ -614,16 +623,16 @@ tribe.tickets.block = {
 		$cartForm.find( '.tribe-tickets__item:visible' ).each(
 			function( index ) {
 				var $row    = $( this );
-				var id      = $row.data( 'ticketId');
+				var id      = $row.data( 'ticketId' );
 				var rowData = {};
 				$row.find( ':input' ).each( function() {
 					var $input = $( this );
-					var name = $input.attr('name');
+					var name = $input.attr( 'name' );
 					if ( ! name || 'undefined' === name ) {
 						return;
 					}
 
-					rowData[ $input.attr('name') ] = $input.val();
+					rowData[ $input.attr( 'name' ) ] = $input.val();
 				} );
 
 				if ( null !== rowData ) {
@@ -643,7 +652,7 @@ tribe.tickets.block = {
 	 * @return array
 	 */
 	obj.getLocal = function() {
-		var postId       = $( '.status-publish' ).attr('id').replace('post-', '');
+		var postId       = $( '.status-publish' ).attr( 'id' ).replace( 'post-', '' );
 		var attendeeData = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + postId ) );
 		var cartData     = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart-' + postId ) );
 		var ret          = {  attendeeData, cartData };
@@ -685,7 +694,7 @@ tribe.tickets.block = {
 			return;
 		}
 
-		$newBlocks.find('.ticket-meta').each(
+		$newBlocks.find( '.ticket-meta' ).each(
 			function() {
 				var $this     = $( this );
 				var name      = $this.attr( 'name' );
@@ -741,25 +750,28 @@ tribe.tickets.block = {
 		}
 
 		var $cartForm = $( '#tribe-modal__cart ' );
+
 		for( var index in data ) {
-			var item = data[index];
 			if ( isNaN( index ) ) {
-				$cartForm.find( `[name="${index}"]` ).val( item );
 				continue;
 			}
 
-			var $row = $cartForm.find( `.tribe-tickets__item[data-ticket-id="${index}"]` );
+			var item = data[index];
+
 			for ( var key in item ) {
 				if ( 'undefined' === key ) {
 					continue;
 				}
 
 				if ( 'product_id[]' === key ) {
+					var $row = $cartForm.find( `.tribe-tickets__item[data-ticket-id="${index}"]` );
 					$row.fadeIn();
 				}
 
 				var $input = $cartForm.find( `[name="${key}"]` );
+
 				$input.val( item[ key ] );
+
 				if ( $input.hasClass( 'tribe-tickets-quantity' ) ) {
 					$input.trigger( 'change' );
 				}
@@ -801,6 +813,191 @@ tribe.tickets.block = {
 		if ( data.cartData && override ) {
 			obj.hydrateCartFormFromLocal( data.cartData );
 		}
+	}
+
+	/**
+	 * Adds focus effect to ticket block.
+	 *
+	 * @since TBD
+	 *
+	 */
+	obj.focusTicketBlock = function( input ) {
+		$( input ).closest( '.tribe-ticket' ).addClass( 'tribe-ticket-item__has-focus' );
+	}
+
+	/**
+	 * Remove focus effect from ticket block.
+	 *
+	 * @since TBD
+	 *
+	 */
+	obj.unfocusTicketBlock = function( input ) {
+		$( input ).closest( '.tribe-ticket' ).removeClass( 'tribe-ticket-item__has-focus' );
+	}
+
+	/**
+	 * Validates the eniter meta form.
+	 *
+	 * @since TBD
+	 *
+	 * @param $form jQuery object that is the form we are validating.
+	 *
+	 * @return boolean True if all fields validate, false otherwise.
+	 */
+	obj.checkIfFormValid = function( $form ) {
+		var $containers     = $form.find( '.tribe-ticket' );
+		var containersValid = true;
+
+		$containers.each(
+			function() {
+				var $container     = $( this );
+				var validContainer = obj.checkIfBlockValid( $container );
+
+				if ( ! validContainer ) {
+					containersValid = false;
+				}
+			}
+		);
+
+		return containersValid;
+	}
+
+	/**
+	 * Validates a single ticket meta block.
+	 *
+	 * @since TBD
+	 *
+	 * @param $container jQuery object that is the block we are validating.
+	 *
+	 * @return boolean True if all fields validate, false otherwise.
+	 */
+	obj.checkIfBlockValid = function( $container ) {
+		var $fields = $container.find( '.ticket-meta' );
+		var validBlock = true;
+		$fields.each(
+			function() {
+				var $field = $( this );
+				var isValidfield = obj.checkFieldValid( $field[0] );
+
+				if ( ! isValidfield ) {
+					validBlock = false;
+				}
+			}
+		);
+
+		return validBlock;
+	}
+
+	/**
+	 * Adds/removes error classes from a ticket meta block.
+	 *
+	 * @since TBD
+	 *
+	 * @param $container jQuery object that is the block we are validating.
+	 *
+	 * @return boolean True if all fields validate, false otherwise.
+	 */
+	obj.checkIfItemValid = function( $container ) {
+		var validContainer = obj.checkIfBlockValid( $container );
+
+		if ( validContainer ) {
+			$container.removeClass( 'tribe-ticket-item__has-error' );
+			return true;
+		}
+
+		$container.addClass( 'tribe-ticket-item__has-error' );
+		return false;
+	}
+
+	/**
+	 * Validates a single ticket meta field.
+	 *
+	 * @since TBD
+	 *
+	 * @param input DOM Object that is the field we are validating.
+	 *
+	 * @return boolean
+	 */
+	obj.checkFieldValid = function( input ) {
+		var isValidfield = input.checkValidity();
+
+		if ( ! isValidfield ) {
+			var $input = $( input );
+			// Got to be careful of required checkbox groups...
+			if ( $input.is( ':checkbox') || $input.is( ':radio') ) {
+				var $group = $input.closest( '.tribe-common-form-control-checkbox-radio-group' );
+
+				if ( $group.length ) {
+					return obj.checkboxRadioGroupValid( $group );
+				}
+			}
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validate Checkbox group.
+	 * We operate under the assumption that you must check _at least_ one,
+	 * but not necessarily all. Also that the checkboxes are all required.
+	 *
+	 * @since TBD
+	 *
+	 * @param $group The jQuery object for the checkbox group.
+	 *
+	 * @return boolean
+	 */
+	obj.checkboxRadioGroupValid = function( $group ) {
+		var $checkboxes   = $group.find( '.ticket-meta' );
+		var checkboxValid = false;
+		var required      = true;
+
+		$checkboxes.each(
+			function() {
+				var $this = $( this );
+				$this.css( 'background-color', 'red ! important' );
+				if ( $this.is( ':checked' ) ) {
+					$this.css( 'background-color', 'green ! important' );
+					checkboxValid = true;
+				}
+
+				if ( ! $this.prop('required') ) {
+					required = false;
+				}
+			}
+		);
+
+		var valid = ! required || checkboxValid;
+
+		return valid;
+	}
+
+	/**
+	 * Adds/removes error classes from a single field.
+	 *
+	 * @since TBD
+	 *
+	 * @param input DOM Object that is the field we are validating.
+	 *
+	 * @return boolean
+	 */
+	obj.checkIfFieldValid = function( input ) {
+		var isValidfield = obj.checkFieldValid( input );
+		var $input       = $( input );
+
+		if ( ! isValidfield ) {
+			$input.addClass( 'ticket-meta__has-error' );
+		} else {
+			$input.removeClass( 'ticket-meta__has-error' );
+		}
+
+		var $container = $input.closest( '.tribe-ticket' );
+		obj.checkIfItemValid( $container );
+
+		return isValidfield;
+
 	}
 
 	/**
@@ -913,29 +1110,36 @@ tribe.tickets.block = {
 	 */
 	obj.document.on(
 		'focus',
-		'.tribe-ticket input, .tribe-ticket select, .tribe-ticket textarea',
+		'.tribe-ticket .ticket-meta',
 		function( e ) {
 			var input      = e.target;
-			var $container = $( input ).closest( '.tribe-ticket' );
-
-			$container.addClass( 'tribe-ticket-item--has-focus' );
+			obj.focusTicketBlock( input );
 		}
 	);
 
 	/**
-	 * Removes focus effect from ticket block.
+	 * handles input blur.
 	 *
 	 * @since TBD
 	 *
 	 */
 	obj.document.on(
 		'blur',
-		'.tribe-ticket input, .tribe-ticket select, .tribe-ticket textarea',
+		'.tribe-ticket .ticket-meta',
 		function( e ) {
 			var input      = e.target;
-			var $container = $( input ).closest( '.tribe-ticket' );
+			obj.unfocusTicketBlock( input );
 
-			$container.removeClass( 'tribe-ticket-item--has-focus' );
+			obj.checkIfFieldValid( input );
+
+			var $form     = $( input ).closest( 'form' );
+			var formValid = obj.checkIfFormValid( $form );
+			var $buttons = $( '.tribe-block__tickets__item__attendee__fields__footer_submit' );
+			if ( formValid ) {
+				$buttons.prop( 'disabled', false );
+			} else {
+				$buttons.prop( 'disabled', true );
+			}
 		}
 	);
 

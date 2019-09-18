@@ -43,7 +43,7 @@ $passed_provider_class = $this->get_form_class( $passed_provider );
 
 			<form
 				method="post"
-				class="tribe-tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?>"
+				class="tribe-tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?> tribe-validation"
 				name="event<?php echo esc_attr( $event_id ); ?>"
 				novalidate
 			>

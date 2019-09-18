@@ -24,7 +24,7 @@ $meta                  = Tribe__Tickets_Plus__Main::instance()->meta();
 	<form
 		id="tribe-modal__attendee_registration"
 		method="post"
-		class="tribe-tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?>"
+		class="tribe-tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?> tribe-validation"
 		name="event<?php echo esc_attr( $event_id ); ?>"
 		autocomplete="off"
 		novalidate
@@ -51,14 +51,14 @@ $meta                  = Tribe__Tickets_Plus__Main::instance()->meta();
 			<?php else: ?>
 				<button
 					type="submit"
-					class="tribe-common-c-btn-link tribe-common-c-btn--small tribe-block__tickets__item__attendee__fields__footer_submit"
+					class="tribe-common-c-btn-link tribe-common-c-btn--small tribe-block__tickets__item__attendee__fields__footer_submit tribe-validation-submit"
 					name="cart-button"
 					<?php tribe_disabled( true ); ?>
 					><?php esc_html_e( 'Save and View Cart', 'event-tickets' ); ?></button>
 				<span class="tribe-block__tickets__item__attendee__fields__footer__divider"><?php esc_html_e( 'or', 'event-tickets' ); ?></span>
 				<button
 					type="submit"
-					class="tribe-common-c-btn tribe-common-c-btn--small tribe-block__tickets__item__attendee__fields__footer_submit"
+					class="tribe-common-c-btn tribe-common-c-btn--small tribe-block__tickets__item__attendee__fields__footer_submit tribe-validation-submit"
 					name="checkout-button"
 					<?php tribe_disabled( true ); ?>
 					><?php esc_html_e( 'Checkout Now', 'event-tickets' ); ?></button>
