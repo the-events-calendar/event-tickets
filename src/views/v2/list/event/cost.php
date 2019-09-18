@@ -17,7 +17,7 @@
  *
  */
 
-if ( empty( $event->cost ) ) {
+if ( empty( $event->tickets_data ) ) {
 	return;
 }
 

@@ -70,6 +70,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		$event_id = $event->ID;
 
 		if ( ! tribe_events_has_tickets_on_sale( $event_id ) ) {
+			$event->tickets_data = false;
 			return $event;
 		}
 
@@ -78,6 +79,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 
 		// if no rsvp or tickets return
 		if ( ! $types ) {
+			$event->tickets_data = false;
 			return $event;
 		}
 
