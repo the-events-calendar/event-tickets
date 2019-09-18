@@ -668,8 +668,8 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.clearLocal = function( postId ) {
-		sessionStorage.removeItem( 'tribe_tickets_attendees' + postId );
-		sessionStorage.removeItem( 'tribe_tickets_cart' + postId );
+		sessionStorage.removeItem( 'tribe_tickets_attendees-' + postId );
+		sessionStorage.removeItem( 'tribe_tickets_cart-' + postId );
 	}
 
 	/**
