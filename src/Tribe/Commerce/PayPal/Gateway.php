@@ -458,6 +458,10 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 * @return string The PayPal cart API URL.
 	 */
 	public function get_paypal_cart_api_url( $post_id ) {
+		if ( empty( $post_id ) ) {
+			return home_url();
+		}
+
 		$cart_url      = $this->get_cart_url( '_cart' );
 		$post          = get_post( $post_id );
 		$post_url      = get_permalink( $post_id );

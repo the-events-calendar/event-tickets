@@ -108,12 +108,11 @@ class BaseRestCest {
 	 * @param Restv1Tester $I          REST tester.
 	 * @param int|array    $product_id Product to add to the cart or list of products/quantities.
 	 * @param int          $quantity   Quantity of product to add to the cart.
-	 * @param int          $post_id    Which post ID for the cart.
 	 *
 	 * @throws \Exception
 	 */
-	protected function paypal_add_item_to_cart( $I, $product_id, $quantity, $post_id ) {
-		$cart_rest_url = $this->cart_url . "/{$post_id}";
+	protected function paypal_add_item_to_cart( $I, $product_id, $quantity ) {
+		$cart_rest_url = $this->cart_url;
 
 		$tickets = [];
 
