@@ -174,6 +174,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_template_path_list', [ $this, 'filter_template_path_list' ] );
-		add_filter( 'tribe_post_type_events__properties', [ $this, 'add_tickets_data' ], 20, 2 );
+		add_filter( 'tribe_post_type_events_properties', [ $this, 'add_tickets_data' ], 20, 2 );
 	}
 }
