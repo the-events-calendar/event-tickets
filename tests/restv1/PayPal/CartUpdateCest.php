@@ -28,9 +28,6 @@ class CartUpdateCest extends BaseRestCest {
 			return $acc;
 		}, [] );
 
-		/** @var \Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
-		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
-
 		$first_post_id = current( $post_ids );
 
 		list( $first_ticket_id, $second_ticket_id ) = $tickets[ $first_post_id ];
