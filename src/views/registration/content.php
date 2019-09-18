@@ -30,10 +30,11 @@ $passed_provider_class = $this->get_form_class( $passed_provider );
 	 *
 	 * @param boolean $show_tickets Rrue or false to show tickets for an event.
 	 * @param array   $tickets      An array of ticket products.
+	 * @param int     $event_id     The event/post ID.
 	 *
 	 * @since TBD
 	 */
-	$show_tickets = apply_filters( 'tribe_tickets_filter_showing_tickets_on_attendee_registration', $show_tickets, $tickets );
+	$show_tickets = apply_filters( 'tribe_tickets_filter_showing_tickets_on_attendee_registration', $show_tickets, $tickets, $event_id );
 
 	if ( ! $show_tickets ) {
 		continue;
