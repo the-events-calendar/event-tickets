@@ -328,7 +328,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 			return $items;
 		}
 
-		$search_keys = array( 'number', 'status', 'status_label', 'purchaser_name', 'purchaser_email', 'purchase_time' );
+		$search_keys = [ 'number', 'status', 'status_label', 'purchaser_name', 'purchaser_email', 'purchase_time' ];
 
 		/**
 		 * Filters the item keys that should be used to filter orders while searching them.
@@ -341,7 +341,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 		 */
 		$search_keys = apply_filters( 'tribe_tickets_commerce_paypal_search_orders_by', $search_keys, $items, $search );
 
-		$filtered = array();
+		$filtered = [];
 		foreach ( $items as $order_number => $order_data ) {
 			$keys = array_intersect( array_keys( $order_data ), $search_keys );
 			foreach ( $keys as $key ) {

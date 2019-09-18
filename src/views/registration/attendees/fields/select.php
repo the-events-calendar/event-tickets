@@ -36,7 +36,7 @@ $option_id = "tribe-tickets-meta_{$slug}_{$ticket->ID}" . ( $attendee_id ? '_' .
 		class="ticket-meta"
 		name="<?php echo esc_attr( $field_name ); ?>"
 		<?php echo $required ? 'required' : ''; ?>>
-		<option value=""><?php esc_html_e( 'Select an option', 'events-tickets' ); ?></option>
+		<option value=""><?php esc_html_e( 'Select an option', 'event-tickets' ); ?></option>
 		<?php foreach ( $options as $option => $label ) : ?>
 			<option <?php selected( $label, $value ); ?> value="<?php echo esc_attr( $label ); ?>"><?php echo esc_html( $label ); ?></option>
 		<?php endforeach; ?>

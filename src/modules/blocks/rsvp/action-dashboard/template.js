@@ -53,13 +53,14 @@ class RSVPActionDashboard extends PureComponent {
 
 	getActions = () => {
 		const {
+			created,
 			hasTicketsPlus,
 			hasRecurrenceRules,
 			isLoading,
 		} = this.props;
 
 		const actions = [ <SettingsActionButton /> ];
-		if ( hasTicketsPlus ) {
+		if ( created ) {
 			actions.push( <AttendeesActionButton /> );
 		}
 		if ( hasRecurrenceRules ) {

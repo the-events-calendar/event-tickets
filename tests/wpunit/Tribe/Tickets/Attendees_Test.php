@@ -83,7 +83,7 @@ class Attendees_Test extends \Codeception\TestCase\WPTestCase {
 		$items = $sut->sanitize_csv_rows( $items );
 
 		// Get the 'Customer Name' column from the arrays.
-		$full_names = wp_list_pluck( $items, 7 );
+		$full_names = wp_list_pluck( $items, 6 );
 
 		$this->assertEquals( [
 			'Customer Name',

@@ -20,7 +20,7 @@
 		name='tribe-ticket[capacity]'
 		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
 		size='7'
-		value='<?php echo esc_attr( - 1 === (int) $ticket_capacity ? '' : $ticket_capacity ); ?>'
+		value='<?php echo esc_attr( -1 === (int) $ticket_capacity ? '' : $ticket_capacity ); ?>'
 	/>
 	<span class="tribe_soft_note ticket_form_right"><?php esc_html_e( 'Leave blank for unlimited', 'event-tickets' ); ?></span>
 </div>

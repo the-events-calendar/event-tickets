@@ -45,7 +45,7 @@ describe( 'Details reducer', () => {
 	it( 'should set the currency position', () => {
 		expect( reducer(
 			DEFAULT_STATE,
-			actions.setTicketCurrencyPosition( 'block-id', 'suffix' ),
+			actions.setTicketCurrencyPosition( 'block-id', 'postfix' ),
 		) ).toMatchSnapshot();
 	} );
 
