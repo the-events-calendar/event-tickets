@@ -10,8 +10,8 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since 4.9
- * @version 4.9.4
+ * @since TBD
+ * @version TBD
  *
  */
 $ticket   = $this->get( 'ticket' );
