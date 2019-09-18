@@ -106,7 +106,7 @@ class RSVPManagerTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertSame( 'Going', $options['yes']['label'] );
 		$this->assertSame( 1, $options['yes']['decrease_stock_by'] );
-		$this->assertSame( 'Not Going', $options['no']['label'] );
+		$this->assertSame( 'Not going', $options['no']['label'] );
 		$this->assertSame( 0, $options['no']['decrease_stock_by'] );
 
 	}
