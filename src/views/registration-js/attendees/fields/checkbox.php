@@ -41,7 +41,7 @@ if ( ! $options ) {
 				for="<?php echo esc_attr( $option_id ); ?>"
 			>
 				<input
-					class="tribe-common-form-control-checkbox__input"
+					class="tribe-common-form-control-checkbox__input ticket-meta"
 					id="<?php echo esc_attr( $option_id ); ?>"
 					name="tribe-tickets-meta[{{data.attendee_id}}][<?php echo esc_attr( $slug ); ?>]"
 					type="checkbox"
