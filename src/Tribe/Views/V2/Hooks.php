@@ -55,6 +55,108 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
+	 * Add tickets data to the event object.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $post   The event post object, decorated with a set of custom properties.
+	 * @param string  $output The output format to use.
+	 * @param string  $filter The filter, or context of the fetch.
+	 *
+	 * @return WP_Post $post  The event post object, decorated with a set of custom properties.
+	 */
+	public function add_tickets_data( $event, $output, $filter ) {
+
+		$event_id = $event->ID;
+
+		if ( ! tribe_events_has_tickets_on_sale( $event_id ) ) {
+			return $event;
+		}
+
+		// get an array for ticket and rsvp counts
+		$types = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
+		// if no rsvp or tickets return
+		if ( ! $types ) {
+			return $event;
+		}
+
+		$html  = [];
+		$parts = [];
+
+		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out message
+		foreach ( $types as $type => $data ) {
+
+			if ( ! $data['count'] ) {
+				continue;
+			}
+
+			if ( ! $data['available'] ) {
+				$parts[ $type . '_stock' ] = esc_html_x( 'Sold out', 'list view stock sold out', 'event-tickets' );
+
+				// Only re-apply if we don't have a stock yet
+				if ( empty( $html['stock'] ) ) {
+					$html['stock'] = $parts[ $type . '_stock' ];
+				}
+			} else {
+				$stock = $data['stock'];
+				if ( $data['unlimited'] || ! $data['stock'] ) {
+					// if unlimited tickets, tickets with no stock and rsvp, or no tickets and rsvp unlimited - hide the remaining count
+					$stock = false;
+				}
+
+				$stock_html = '';
+
+				if ( $stock ) {
+					$threshold = \Tribe__Settings_Manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
+
+					/**
+					 * Overwrites the threshold to display "# tickets left".
+					 *
+					 * @param int   $threshold Stock threshold to trigger display of "# tickets left"
+					 * @param array $data      Ticket data.
+					 * @param int   $event_id  Event ID.
+					 *
+					 * @since 4.10.1
+					 */
+					$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $event_id ) );
+
+					if ( ! $threshold || $stock <= $threshold ) {
+
+						$number = number_format_i18n( $stock );
+						if ( 'rsvp' === $type ) {
+							$text = _n( '%s spot left', '%s spots left', $stock, 'event-tickets' );
+						} else {
+							$text = _n( '%s ticket left', '%s tickets left', $stock, 'event-tickets' );
+						}
+
+						$stock_html = esc_html( sprintf( $text, $number ) );
+					}
+				}
+
+				$parts[ $type . '_stock' ] = $html['stock'] = $stock_html;
+
+				if ( 'rsvp' === $type ) {
+					$button_label  = esc_html_x( 'RSVP Now!', 'list view rsvp now ticket button', 'event-tickets' );
+					$button_anchor = '#rsvp-now';
+				} else {
+					$button_label  = esc_html_x( 'Buy Now!', 'list view buy now ticket button', 'event-tickets' );
+					$button_anchor = '#buy-tickets';
+				}
+
+				$parts[ $type . '_button' ] = (object) [ 'anchor' => $button_anchor, 'label' => $button_label ];
+
+			}
+		}
+
+		$tickets_data = array_merge( $parts, $html );
+
+		$event->tickets_data = (object) $tickets_data;
+
+		return $event;
+	}
+
+	/**
 	 * Adds the actions required by each Tickets Views v2 component.
 	 *
 	 * @since TBD
@@ -70,5 +172,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_template_path_list', [ $this, 'filter_template_path_list' ] );
+		add_filter( 'tribe_get_event', [ $this, 'add_tickets_data' ], 20, 3 );
 	}
 }

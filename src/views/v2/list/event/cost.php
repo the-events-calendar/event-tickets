@@ -16,9 +16,15 @@
  * @see tribe_get_event() For the format of the event object.
  *
  */
+
 if ( empty( $event->cost ) ) {
 	return;
 }
+
+/*
+	Here we do what we want with
+	$event->tickets_data
+*/
 
 // @TODO @fe @juanfra: Come back to this when there's a decision about template tags.
 
