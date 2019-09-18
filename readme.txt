@@ -121,6 +121,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - The attendee link in the ticket and RSVP block so it shows after the creation of a ticket or RSVP. [128521]
 * Fix - Prevent conflict with Genesis Framework where content or the excerpt does not show in the post archives [125496]
+* Fix - Prevent tickets that do not have attendee meta from showing on the attendee registration page [125021]
 
 = [4.10.8] 2019-09-16 =
 
