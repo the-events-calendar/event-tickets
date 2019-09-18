@@ -59,19 +59,19 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_Post $post   The event post object, decorated with a set of custom properties.
-	 * @param string  $output The output format to use.
-	 * @param string  $filter The filter, or context of the fetch.
+	 * @param array    $props An associative array of all the properties that will be set on the "decorated" post
+	 *                        object.
+	 * @param \WP_Post $post  The post object handled by the class.
 	 *
-	 * @return WP_Post $post  The event post object, decorated with a set of custom properties.
+	 * @return array The model properties. This value might be cached.
 	 */
-	public function add_tickets_data( $event, $output, $filter ) {
+	public function add_tickets_data( $props, $event ) {
 
 		$event_id = $event->ID;
 
 		if ( ! tribe_events_has_tickets_on_sale( $event_id ) ) {
-			$event->tickets_data = false;
-			return $event;
+			$props['tickets_data'] = false;
+			return $props;
 		}
 
 		// get an array for ticket and rsvp counts
@@ -79,8 +79,8 @@ class Hooks extends \tad_DI52_ServiceProvider {
 
 		// if no rsvp or tickets return
 		if ( ! $types ) {
-			$event->tickets_data = false;
-			return $event;
+			$props['tickets_data'] = false;
+			return $props;
 		}
 
 		$html  = [];
@@ -153,9 +153,9 @@ class Hooks extends \tad_DI52_ServiceProvider {
 
 		$tickets_data = array_merge( $parts, $html );
 
-		$event->tickets_data = (object) $tickets_data;
+		$props['tickets_data'] = (object) $tickets_data;
 
-		return $event;
+		return $props;
 	}
 
 	/**
@@ -174,6 +174,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_template_path_list', [ $this, 'filter_template_path_list' ] );
-		add_filter( 'tribe_get_event', [ $this, 'add_tickets_data' ], 20, 3 );
+		add_filter( 'tribe_post_type_events__properties', [ $this, 'add_tickets_data' ], 20, 2 );
 	}
 }
