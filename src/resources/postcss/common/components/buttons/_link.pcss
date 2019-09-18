@@ -1,0 +1,38 @@
+.tribe-common {
+	/* -----------------------------------------------------------------------------
+	 *
+	 * Button: Link
+	 *
+	 * Example:
+	 * <button class="tribe-common-c-btn-link">...</button>
+	 * <a href="#" class="tribe-common-c-btn-link">...</a>
+	 *
+	 * ----------------------------------------------------------------------------- */
+
+	.tribe-common-c-btn-link,
+	a.tribe-common-c-btn-link {
+		@mixin button-link;
+
+		color: var(--color-accent-primary);
+		padding: 11px 20px;
+		width: 100%;
+
+		@media (--viewport-medium) {
+			width: auto;
+		}
+
+		&:focus,
+		&:hover {
+			color: var(--color-accent-primary-hover);
+		}
+
+		&:active {
+			color: var(--color-accent-primary-active);
+		}
+
+		&:disabled {
+			color: var(--color-accent-primary-background);
+		}
+	}
+}
+

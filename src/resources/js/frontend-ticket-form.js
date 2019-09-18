@@ -31,7 +31,6 @@ var tribe_tickets_ticket_form = {};
 		}
 
 		var $form = $this.closest( 'form' );
-		var parent = $this.parent( '.tribe-block__tickets__item__quantity__number' ).addClass( 'tribe-block__tickets__item__quantity__number--active' );
 
 		// Only disable / enable if is a Tribe Commerce Paypal form.
 		if ( ! $form.hasClass( 'tribe-tickets-tpp' ) ) {
@@ -157,9 +156,9 @@ var tribe_tickets_ticket_form = {};
 				 * Quantity Fields
 				 * WooCommerce - .input-text.qty
 				 * EDD - input.edd-input
-				 * Tribe Commerce - input.tribe-ticket-quantity
+				 * Tribe Commerce - input.tribe-tickets-quantity
 				 */
-				var qty_input = $( '[data-product-id=' + ticket_id + ']' ).find( 'input.tribe-ticket-quantity, .input-text.qty, input.edd-input' );
+				var qty_input = $( '[data-product-id=' + ticket_id + ']' ).find( 'input.tribe-tickets-quantity, .input-text.qty, input.edd-input' );
 				var requested_stock = parseInt( qty_input.val(), 10 );
 				requested_stock = isNaN( requested_stock ) ? 0 : requested_stock;
 				var remaining_under_cap = ticket.cap - requested_stock;

@@ -11,14 +11,21 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @version TBD
  *
  */
 
 $ticket = $this->get( 'ticket' );
+$classes = [
+	'tribe-common-h7',
+	'tribe-common-h6--min-medium',
+	'tribe-tickets__item__content__title',
+];
+
+if ( ! $ticket->show_description() || empty( $ticket->description ) ) {
+	$classes[] = 'tribe-tickets--no-description';
+}
 ?>
-<div
-	class="tribe-block__tickets__item__content__title tribe-common-h7 tribe-common-h6--min-medium"
->
+<div <?php tribe_classes( $classes ); ?> >
 	<?php echo $ticket->name; ?>
 </div>

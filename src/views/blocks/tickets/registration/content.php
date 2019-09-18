@@ -11,12 +11,12 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @version TBD
  *
  */
 
 ?>
-<div class="tribe-block__tickets__registration">
+<div class="tribe-tickets__registration">
 
 	<?php $this->template( 'blocks/tickets/registration/summary/content' ); ?>
 	<?php $this->template( 'blocks/tickets/registration/attendee/content' ); ?>

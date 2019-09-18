@@ -44,19 +44,19 @@ foreach ( $events as $event_id => $tickets ) :
 		empty( $provider_class )
 		&& ! empty( $providers[ $event_id ] )
 	) {
-		$provider_class = 'tribe-block__tickets__item__attendee__fields__form--' . $providers[ $event_id ];
+		$provider_class = 'tribe-tickets__item__attendee__fields__form--' . $providers[ $event_id ];
 	}
 
 	$has_tpp = Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === $passed_provider || in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers );
 	?>
 	<div
-		class="tribe-block__tickets__registration__event"
+		class="tribe-tickets__registration__event"
 		data-event-id="<?php echo esc_attr( $event_id ); ?>"
 		data-is-meta-up-to-date="<?php echo absint( $is_meta_up_to_date ); ?>"
 	>
 		<?php $this->template( 'registration/summary/content', [ 'event_id' => $event_id, 'tickets' => $tickets ] ); ?>
 
-		<div class="tribe-block__tickets__registration__actions">
+		<div class="tribe-tickets__registration__actions">
 			<?php $this->template(
 				'registration/button-cart',
 				[
@@ -66,13 +66,13 @@ foreach ( $events as $event_id => $tickets ) :
 			); ?>
 		</div>
 
-		<div class="tribe-block__tickets__item__attendee__fields">
+		<div class="tribe-tickets__item__attendee__fields">
 
 			<?php $this->template( 'registration/attendees/error', [ 'event_id' => $event_id, 'tickets' => $tickets ] ); ?>
 
 			<form
 				method="post"
-				class="tribe-block__tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?>"
+				class="tribe-tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?>"
 				name="<?php echo 'event' . esc_attr( $event_id ); ?>"
 				novalidate
 			>

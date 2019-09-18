@@ -39,8 +39,8 @@ body.page-tribe-attendee-registration {
 	}
 }
 
-.tribe-block__tickets__registration__toggle__handler,
-.tribe-block__tickets__registration__status {
+.tribe-tickets__registration__toggle__handler,
+.tribe-tickets__registration__status {
 	position: absolute;
 	right: 40px;
 	top: 40px;
@@ -56,7 +56,7 @@ body.page-tribe-attendee-registration {
 	}
 }
 
-.tribe-block__tickets__registration__toggle__handler {
+.tribe-tickets__registration__toggle__handler {
 	cursor: pointer;
 	background: #c9c9c9;
 
@@ -69,7 +69,7 @@ body.page-tribe-attendee-registration {
 	}
 }
 
-.tribe-block__tickets__registration__status {
+.tribe-tickets__registration__status {
 	right: 75px;
 	background: #222;
 
@@ -80,169 +80,20 @@ body.page-tribe-attendee-registration {
 }
 
 /*
-	Attendee fields
-*/
-
-.tribe-block__tickets__item__attendee__fields {
-	background: #f9f9f9;
-	padding: 60px;
-
-	.tribe-ticket {
-		border-bottom: 1px solid #e1e3e6;
-		clear: both;
-		margin-bottom: 40px;
-		padding-bottom: 40px;
-		&:last-of-type {
-			margin-bottom: 0;
-			border-bottom: 0;
-		}
-	}
-
-	.tribe-field {
-		margin-bottom: 40px;
-		clear: both;
-		&:last-child {
-			margin-bottom: 0;
-		}
-	}
-
-	label {
-		color: #545d66;
-		display: block;
-		font-weight: 500;
-		margin-bottom: .8em;
-
-		&.tribe-tickets-meta-field-header {
-			cursor: pointer;
-			display: inline-block;
-			float: left;
-			font-size: 15px;
-			margin-right: 20px;
-		}
-	}
-
-	.tribe-tickets-meta-label {
-
-		display: block;
-		margin-bottom: .8em;
-
-		&,
-		& h3 {
-			font-size: 16px;
-			font-weight: 500;
-			color: #545d66;
-			float: left;
-		}
-	}
-
-	input[type="text"],
-	input[type="email"],
-	input[type="url"],
-	input[type="password"],
-	input[type="search"],
-	input[type="number"],
-	input[type="tel"],
-	input[type="range"],
-	input[type="date"],
-	input[type="month"],
-	input[type="week"],
-	input[type="time"],
-	input[type="datetime"],
-	input[type="datetime-local"],
-	input[type="color"],
-	select,
-	textarea {
-		border: 1px solid #e1e3e6;
-		max-width: 400px;
-		padding: 0.7em;
-
-		&:focus {
-			border: 1px solid #e1e3e6;
-		}
-	}
-
-	select {
-		appearance: none;
-		background: #fff;
-		height: auto;
-		min-width: 400px;
-		padding: 0.7em;
-		background-image: url('../images/select.png');
-		background-repeat: no-repeat;
-		background-position: right center;
-		background-size: 33px 33px;
-	}
-
-	.tribe-options {
-		overflow:hidden;
-		width: 100%;
-	}
-
-}
-
-.tribe-block__tickets__item__attendee__fields__error {
-	color: red;
-	display: none;
-	padding: 30px 0 0 0;
-}
-
-.tribe-block__tickets__item__attendee__fields__success {
-	color: rgb(24, 217, 0);
-	display: none;
-	padding: 30px 0 0 0;
-}
-
-.tribe-block__tickets__item__attendee__fields__loader {
-	background: rgba( 255, 255, 255, .7 );
-	display: none;
-	height: 100%;
-	left: 0;
-	position: absolute;
-	top: 0;
-	width: 100%;
-	z-index: 99;
-
-	svg {
-		left: 50%;
-		max-width: 70px;
-		position: absolute;
-		transform: translateX(-50%);
-		top: 35%;
-	}
-}
-
-.tribe-block__tickets__button--next {
-	align-items: center;
-	border: 1px solid #e1e3e6;
-	background-color: #009fd4;
-	color: #fff;
-	display: inline-flex;
-	font-size: 1.125rem;
-	justify-content: center;
-	min-height: 54px;
-	padding: 0 20px;
-	max-width: 100%;
-
-	&:hover {
-		color: #fff;
-	}
-}
-
-/*
 	Tickets Registration/Purchase
 */
 
-.tribe-block__tickets__registration__event {
+.tribe-tickets__registration__event {
 	border: 1px solid #d4d4d5;
 	margin-bottom: 30px;
 	position: relative;
 }
 
-.tribe-block__tickets__registration__summary {
+.tribe-tickets__registration__summary {
 	padding: 40px;
 }
 
-.tribe-block__tickets__registration__title {
+.tribe-tickets__registration__title {
 	h2 {
 		font-size: 22px;
 		font-weight: 500;
@@ -251,15 +102,15 @@ body.page-tribe-attendee-registration {
 	}
 }
 
-.tribe-block__tickets__registration__description {
+.tribe-tickets__registration__description {
 	margin-top: 10px;
 }
 
-.tribe-block__tickets__registration__tickets {
+.tribe-tickets__registration__tickets {
 	padding: 20px 0;
 }
 
-.tribe-block__tickets__registration__tickets__item {
+.tribe-tickets__registration__tickets__item {
 	border-bottom: 1px solid #e1e3e6;
 	display: flex;
 	flex-wrap: wrap;
@@ -272,7 +123,7 @@ body.page-tribe-attendee-registration {
 	}
 }
 
-.tribe-block__tickets__registration__tickets__item__icon {
+.tribe-tickets__registration__tickets__item__icon {
 	flex: 0 1 50px;
 	padding: 15px 10px;
 
@@ -281,26 +132,26 @@ body.page-tribe-attendee-registration {
 	}
 }
 
-.tribe-block__tickets__registration__tickets__item__quantity {
+.tribe-tickets__registration__tickets__item__quantity {
 	flex: 0 1 20px;
 	padding: 20px;
 }
 
-.tribe-block__tickets__registration__tickets__item__title {
+.tribe-tickets__registration__tickets__item__title {
 	flex: 10 5 230px;
 	padding: 20px 10px;
 }
 
-.tribe-block__tickets__registration__tickets__item__price {
+.tribe-tickets__registration__tickets__item__price {
 	flex: 0 1 40px;
 	padding: 20px 0 20px 10px;
 }
 
-.tribe-block__tickets__registration__actions {
+.tribe-tickets__registration__actions {
 	padding: 0px 40px 40px 40px;
 }
 
-.tribe-block__tickets__registration__back__to__cart {
+.tribe-tickets__registration__back__to__cart {
 	color: #888;
 	box-shadow: initial;
 	border: 0;
@@ -316,18 +167,18 @@ body.page-tribe-attendee-registration {
 	}
 }
 
-.tribe-block__tickets__registration__tickets__header {
+.tribe-tickets__registration__tickets__header {
 	color: #545B65;
 	display: flex;
 	font-size: 13px;
 	padding: 15px 0;
 }
 
-.tribe-block__tickets__registration__tickets__header__summary {
+.tribe-tickets__registration__tickets__header__summary {
 	flex: 80%;
 }
 
-.tribe-block__tickets__registration__tickets__header__price {
+.tribe-tickets__registration__tickets__header__price {
 	flex: 20%;
 	text-align: right;
 }
@@ -335,12 +186,12 @@ body.page-tribe-attendee-registration {
 /*
  * Attendee Registration Checkout Form
  */
- .tribe-block__tickets__registration__checkout {
+ .tribe-tickets__registration__checkout {
 	 margin-bottom: 30px;
 	 text-align: right;
  }
 
-.tribe-block__tickets__registration__checkout__submit {
+.tribe-tickets__registration__checkout__submit {
 	&:disabled {
 		background-color: #eeeff1;
 		color: #8b959f;

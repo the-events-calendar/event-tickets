@@ -11,13 +11,14 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since TBD
+ *
  * @version TBD
  *
  */
 
 /* translators: %s is the event or post title the tickets are attached to. */
 $title       = sprintf( _x( '%s Tickets', 'Modal title. %s: event name', 'event-tickets' ), get_the_title() );
-$button_text = _x( 'Get Tickets!', 'Get selected tickets.', 'event-tickets');
+$button_text = _x( 'Get Tickets', 'Get selected tickets.', 'event-tickets' );
 $content     = apply_filters( 'tribe_events_tickets_edd_attendee_registration_modal_content', '<p>Tickets modal needs content, badly.</p>' );
 
 /**
@@ -31,12 +32,27 @@ $content     = apply_filters( 'tribe_events_tickets_edd_attendee_registration_mo
 $content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Ticket Modal</p>', $this );
 
 $args = [
-	'button_classes' => [ 'tribe-common-c-btn--small tribe-block__tickets__submit' ],
-	'button_name'    => $provider_id . '_get_tickets',
-	'button_text'    => $button_text,
-	'button_type'    => 'submit',
-	'show_event'  => 'tribe_dialog_show_ar_modal',
-	'title'          => $title,
+	'append_target'           => 'body',
+	'content_wrapper_classes' => 'tribe-common tribe-dialog__wrapper tribe-modal__wrapper--ar',
+	'button_classes'          => [ 'tribe-common-c-btn', 'tribe-common-c-btn--small', 'tribe-tickets__submit' ],
+	'button_name'             => $provider_id . '_get_tickets',
+	'button_text'             => $button_text,
+	'button_type'             => 'submit',
+	'show_event'              => 'tribe_dialog_show_ar_modal',
+	'title'                   => $title,
+	'title_classes'           => [
+		'tribe-dialog__title',
+		'tribe-modal__title',
+		'tribe-common-h5',
+		'tribe-common-h--alt',
+		'tribe-modal--ar__title',
+	],
 ];
 
 tribe( 'dialog.view' )->render_modal( $content, $args );
+$event_id = get_the_ID();
+/** @var Tribe__Tickets__Editor__Template $template */
+$template = tribe( 'tickets.editor.template' );
+$tickets = $this->get( 'tickets' );
+
+$template->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) );

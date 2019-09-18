@@ -11,14 +11,14 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @version 4.9.4
+ * @version TBD
  *
  */
 
 $ticket = $this->get( 'ticket' );
 ?>
 <div
-	class="tribe-block__tickets__item__quantity__unavailable"
+	class="tribe-tickets__item__quantity__unavailable"
 >
 	<?php echo esc_html_x( 'Sold Out', 'Tickets are sold out.', 'event-tickets' ); ?>
 </div>

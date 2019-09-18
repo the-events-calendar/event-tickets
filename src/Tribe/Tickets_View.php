@@ -965,7 +965,7 @@ class Tribe__Tickets__Tickets_View {
 			'provider_id'         => $provider_id,
 			'tickets'             => $tickets,
 			'cart_url'            => $provider->get_cart_url( $post_id ),
-			'cart_classes'        => [ 'tribe-block', 'tribe-block__tickets' ],
+			'cart_classes'        => [ 'tribe-block', 'tribe-tickets' ],
 			'tickets_on_sale'     => $blocks_tickets->get_tickets_on_sale( $tickets ),
 			'has_tickets_on_sale' => tribe_events_has_tickets_on_sale( $post_id ),
 			'is_sale_past'        => $blocks_tickets->get_is_sale_past( $tickets ),

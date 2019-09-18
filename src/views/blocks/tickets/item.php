@@ -13,10 +13,10 @@
  * @since 4.9
  * @since TBD add modal only fields
  *
- * @version 4.9.4
+ * @version TBD
  *
  */
-$classes  = [ 'tribe-block__tickets__item' ];
+$classes  = [ 'tribe-tickets__item' ];
 $provider = $this->get( 'provider' );
 $ticket   = $this->get( 'ticket' );
 $modal    = $this->get( 'is_modal' );
@@ -37,12 +37,12 @@ if (
 
 $must_login = ! is_user_logged_in() && $ticket->get_provider()->login_required();
 if ( $must_login ) {
-	$classes[] = 'tribe-block__tickets__item__disabled';
+	$classes[] = 'tribe-tickets__item__disabled';
 }
 ?>
 <div
-	id="tribe-block-tickets-item-<?php echo esc_attr( $ticket->ID ); ?>"
-	class="<?php echo esc_attr( implode( ' ', get_post_class( $classes, $ticket->ID ) ) ); ?>"
+	id="tribe-block-tickets<?php echo $modal ? '-modal' : ''; ?>-item-<?php echo esc_attr( $ticket->ID ); ?>"
+	<?php tribe_classes( get_post_class( $classes, $ticket->ID ) ); ?>
 	data-ticket-id="<?php echo esc_attr( $ticket->ID ); ?>"
 	data-available="<?php echo ( 0 === $ticket->available() ) ? 'false' : 'true'; ?>"
 >

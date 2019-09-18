@@ -11,7 +11,7 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @version TBD
  *
  */
 
@@ -25,15 +25,13 @@ $context = array(
 $modal = $this->get( 'is_modal' );
 $id = 'tribe__details__content--' . $ticket->ID;
 ?>
-<div
-	class="tribe-block__tickets__item__extra"
->
+<div class="tribe-tickets__item__extra">
 	<?php $this->template( 'blocks/tickets/extra-price', $context ); ?>
 	<?php $this->template( 'blocks/tickets/extra-available', $context ); ?>
 	<?php if ( true !== $modal && $ticket->show_description() && ! empty( $ticket->description ) ) : ?>
-		<div class="tribe-block__tickets__item__details__summary">
+		<div class="tribe-tickets__item__details__summary">
 			<button
-				class="tribe-common-b3 tribe-block__tickets__item__details__summary--more"
+				class="tribe-common-b3 tribe-tickets__item__details__summary--more"
 				aria-controls="<?php echo esc_attr( $id ); ?>"
 				tabindex="0"
 			>
@@ -41,7 +39,7 @@ $id = 'tribe__details__content--' . $ticket->ID;
 				<?php echo esc_html_x( 'More', 'Opens the ticket description', 'event-tickets' ); ?>
 			</button>
 			<button
-				class="tribe-common-b3 tribe-block__tickets__item__details__summary--less"
+				class="tribe-common-b3 tribe-tickets__item__details__summary--less"
 				aria-controls="<?php echo esc_attr( $id ); ?>"
 				tabindex="0"
 			>

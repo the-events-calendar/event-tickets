@@ -11,12 +11,12 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @version 4.9.4
+ * @version TBD
  *
  */
 
 ?>
-<div class="tribe-block__tickets__registration__title">
+<div class="tribe-tickets__registration__title">
 	<header>
 		<h2><?php esc_html_e( 'Ticket Registration', 'event-tickets' ); ?></h2>
 	</header>

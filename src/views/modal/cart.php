@@ -30,10 +30,11 @@ $currency        = tribe( 'tickets.commerce.currency' );
 <form
 	id="tribe-modal__cart"
 	action="<?php echo esc_url( $cart_url ) ?>"
-	class="<?php echo esc_attr( implode( ' ', $cart_classes ) ); ?>"
+	<?php tribe_classes( $cart_classes ); ?>
 	method="post"
 	enctype='multipart/form-data'
 	data-provider="<?php echo esc_attr( $provider->class_name ); ?>"
+	autocomplete="off"
 	novalidate
 >
 	<?php $template_obj->template( 'blocks/tickets/commerce/fields', [ 'provider' => $provider, 'provider_id' => $provider_id ] ); ?>
@@ -44,6 +45,5 @@ $currency        = tribe( 'tickets.commerce.currency' );
 			<?php $template_obj->template( 'blocks/tickets/item', [ 'ticket' => $ticket, 'key' => $key, 'is_modal' => true, 'currency_symbol' => $currency_symbol ] ); ?>
 		<?php endforeach; ?>
 	<?php endif; ?>
-
 	<?php $template_obj->template( 'blocks/tickets/footer', [ 'is_modal' => true ] ); ?>
 </form>

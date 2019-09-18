@@ -11,7 +11,7 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @version TBD
  *
  */
 
@@ -23,10 +23,6 @@ $context = array(
 	'is_modal' => $this->get( 'is_modal' ),
 );
 ?>
-<div
-	class="tribe-block__tickets__item__content"
->
-	<?php $this->template( 'blocks/tickets/content-title', $context ); ?>
-	<?php $this->template( 'blocks/tickets/content-description', $context ); ?>
-	<?php $this->template( 'blocks/tickets/extra', $context ); ?>
-</div>
+<?php $this->template( 'blocks/tickets/content-title', $context ); ?>
+<?php $this->template( 'blocks/tickets/content-description', $context ); ?>
+<?php $this->template( 'blocks/tickets/extra', $context ); ?>

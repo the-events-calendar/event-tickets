@@ -11,7 +11,7 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @version 4.9.4
+ * @version TBD
  *
  */
 
@@ -22,7 +22,7 @@ $button_title = sprintf(
 );
 ?>
 <button
-	class="tribe-block__tickets__item__quantity__remove"
+	class="tribe-tickets__item__quantity__remove"
 	title="<?php echo esc_attr( $button_title ); ?>"
 >
 	<span class="screen-reader-text"><?php echo esc_html( $button_title ); ?></span>

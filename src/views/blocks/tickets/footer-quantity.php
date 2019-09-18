@@ -14,13 +14,10 @@
  * @version TBD
  *
  */
-
-
 ?>
-<div
-	class="tribe-block__tickets__item__footer__quantity tribe-common-b2"
->
-	<?php echo esc_html_x( 'Quantity:', 'Total selected tickets count.', 'event-tickets' ); ?>
-	&nbsp;
-	<span class="tribe-block__tickets__item__footer__quantity__number">0</span>
+<div class="tribe-common-b2 tribe-tickets__footer__quantity" >
+	<span class="tribe-tickets__footer__quantity__label">
+		<?php echo esc_html_x( 'Quantity:', 'Total selected tickets count.', 'event-tickets' ); ?>
+	</span>
+	<span class="tribe-tickets__footer__quantity__number">0</span>
 </div>

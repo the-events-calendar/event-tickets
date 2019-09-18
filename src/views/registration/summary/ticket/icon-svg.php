@@ -7,6 +7,7 @@
  *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
+ * @deprecated TBD
  * @version 4.10.1
  *
  */

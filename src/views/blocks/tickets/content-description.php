@@ -11,23 +11,24 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @version TBD
  *
  */
 
 $ticket = $this->get( 'ticket' );
-$modal  = $this->get( 'is_modal' );
-$id = 'tribe__details__content' . ( true === $modal ) ?: '__modal';
-$id .= '--' . $ticket->ID;
 
 if ( ! $ticket->show_description() || empty( $ticket->description ) ) {
 	return false;
 }
+
+$modal  = $this->get( 'is_modal' );
+$id = 'tribe__details__content' . ( true === $modal ) ?: '__modal';
+$id .= '--' . $ticket->ID;
 ?>
 <?php if ( true === $modal && $ticket->show_description() && ! empty( $ticket->description ) ) : ?>
-		<div class="tribe-block__tickets__item__details__summary">
+		<div class="tribe-tickets__item__details__summary">
 			<button
-				class="tribe-common-b3 tribe-block__tickets__item__details__summary--more"
+				class="tribe-common-b3 tribe-tickets__item__details__summary--more"
 				aria-controls="<?php echo esc_attr( $id ); ?>"
 				tabindex="0"
 			>
@@ -35,7 +36,7 @@ if ( ! $ticket->show_description() || empty( $ticket->description ) ) {
 				<?php echo esc_html_x( 'More', 'Opens the ticket description', 'event-tickets' ); ?>
 			</button>
 			<button
-				class="tribe-common-b3 tribe-block__tickets__item__details__summary--less"
+				class="tribe-common-b3 tribe-tickets__item__details__summary--less"
 				aria-controls="<?php echo esc_attr( $id ); ?>"
 				tabindex="0"
 			>
@@ -44,6 +45,6 @@ if ( ! $ticket->show_description() || empty( $ticket->description ) ) {
 			</button>
 	</div>
 <?php endif; ?>
-<div id="<?php echo esc_attr( $id ); ?>" class="tribe-common-b3 tribe-block__tickets__item__details__content">
+<div id="<?php echo esc_attr( $id ); ?>" class="tribe-common-b3 tribe-tickets__item__details__content">
 	<?php echo $ticket->description; ?>
 </div>

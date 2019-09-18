@@ -11,12 +11,12 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ *
+ * @version TBD
  *
  */
-
-
-$must_login = ! is_user_logged_in() && tribe( 'tickets.main' )->login_required();
+$provider = $this->get( 'provider' );
+$must_login = ! is_user_logged_in() && $provider->login_required();
 ?>
 <?php if ( $must_login ) : ?>
 	<?php $this->template( 'blocks/tickets/submit-login' ); ?>

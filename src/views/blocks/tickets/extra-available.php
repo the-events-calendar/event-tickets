@@ -11,18 +11,18 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @version 4.9.4
+ * @version TBD
  *
  */
 
 $ticket    = $this->get( 'ticket' );
-if ( -1 === $ticket->available() ) {
+$available = $ticket->available();
+if ( -1 === $available ) {
 	return;
 }
-$available = $ticket->available();
 ?>
 <div
-	class="tribe-common-b3 tribe-block__tickets__item__extra__available"
+	class="tribe-common-b3 tribe-tickets__item__extra__available"
 >
 	<?php if ( -1 !== $ticket->available() ) : ?>
 		<?php $this->template( 'blocks/tickets/extra-available-quantity', [ 'ticket' => $ticket ] ); ?>

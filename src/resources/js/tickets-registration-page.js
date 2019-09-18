@@ -15,29 +15,29 @@ tribe.tickets.registration = {};
     obj.hasChanges = {};
 
     obj.formClasses = {
-        woo: 'tribe-block__tickets__item__attendee__fields__form--woo',
-        edd: 'tribe-block__tickets__item__attendee__fields__form--edd',
+        woo: 'tribe-tickets__item__attendee__fields__form--woo',
+        edd: 'tribe-tickets__item__attendee__fields__form--edd',
     }
 
     obj.selector = {
-        container: '.tribe-block__tickets__registration__event',
-        fields: '.tribe-block__tickets__item__attendee__fields',
-        fieldsError: '.tribe-block__tickets__item__attendee__fields__error',
-        fieldsErrorRequired: '.tribe-block__tickets__item__attendee__fields__error--required',
-        fieldsErrorAjax: '.tribe-block__tickets__item__attendee__fields__error--ajax',
-        fieldsSuccess: '.tribe-block__tickets__item__attendee__fields__success',
-        loader: '.tribe-block__tickets__item__attendee__fields__loader',
-        form: '.tribe-block__tickets__item__attendee__fields__form',
-        toggler: '.tribe-block__tickets__registration__toggle__handler',
-        status: '.tribe-block__tickets__registration__status',
+        container: '.tribe-tickets__registration__event',
+        fields: '.tribe-tickets__item__attendee__fields',
+        fieldsError: '.tribe-tickets__item__attendee__fields__error',
+        fieldsErrorRequired: '.tribe-tickets__item__attendee__fields__error--required',
+        fieldsErrorAjax: '.tribe-tickets__item__attendee__fields__error--ajax',
+        fieldsSuccess: '.tribe-tickets__item__attendee__fields__success',
+        loader: '.tribe-tickets__item__attendee__fields__loader',
+        form: '.tribe-tickets__item__attendee__fields__form',
+        toggler: '.tribe-tickets__registration__toggle__handler',
+        status: '.tribe-tickets__registration__status',
         field: {
-            text: '.tribe-block__tickets__item__attendee__field__text',
-            checkbox: '.tribe-block__tickets__item__attendee__field__checkbox',
-            select: '.tribe-block__tickets__item__attendee__field__select',
-            radio: '.tribe-block__tickets__item__attendee__field__radio',
+            text: '.tribe-tickets__item__attendee__field__text',
+            checkbox: '.tribe-tickets__item__attendee__field__checkbox',
+            select: '.tribe-tickets__item__attendee__field__select',
+            radio: '.tribe-tickets__item__attendee__field__radio',
         },
-        checkout: '.tribe-block__tickets__registration__checkout',
-        checkoutButton: '.tribe-block__tickets__registration__checkout__submit'
+        checkout: '.tribe-tickets__registration__checkout',
+        checkoutButton: '.tribe-tickets__registration__checkout__submit'
     };
 
     var $tribe_registration = $(obj.selector.container);

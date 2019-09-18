@@ -81,16 +81,26 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return void
 	 */
 	public function assets() {
-		$plugin = Tribe__Tickets__Main::instance();
-
+		$plugin    = Tribe__Tickets__Main::instance();
 		$providers = tribe( 'tickets.data_api' )->get_providers_for_post( null );
-		$currency = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $providers, null );
+		$currency  = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $providers, null );
+
+
+		wp_register_script(
+			'wp-utils',
+			includes_url( '/js/wp-util.js' ),
+			[ 'jquery', 'underscore' ],
+			false,
+			false
+		);
+
+		wp_enqueue_script('wp-utils');
 
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-tickets',
 			'tickets-block.js',
-			[ 'jquery', 'jquery-ui-datepicker' ],
+			array( 'jquery', 'jquery-ui-datepicker', 'wp-utils' ),
 			null,
 			[
 				'type'         => 'js',

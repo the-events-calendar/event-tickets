@@ -11,12 +11,12 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @version 4.9.4
+ * @version TBD
  *
  */
 
 
-$ticket    = $this->get( 'ticket' );
+$ticket = $this->get( 'ticket' );
 ?>
-<span class="tribe-block__tickets__item__extra__available_quantity"><?php echo esc_html( $ticket->available() ); ?></span>
+<span class="tribe-tickets__item__extra__available_quantity"><?php echo esc_html( $ticket->available() ); ?></span>
 <?php esc_html_e( 'available', 'event-tickets' );

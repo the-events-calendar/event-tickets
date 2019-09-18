@@ -7,10 +7,10 @@
  *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @version 4.10.1
+ * @version TBD
  *
  */
 ?>
-<div class="tribe-block__tickets__registration__tickets__item__price">
+<div class="tribe-tickets__registration__tickets__item__price">
 	<?php echo $ticket['provider']->get_price_html( $ticket['id'] ); ?>
 </div>
