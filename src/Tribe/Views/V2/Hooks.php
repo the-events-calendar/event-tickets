@@ -139,14 +139,14 @@ class Hooks extends \tad_DI52_ServiceProvider {
 				$parts[ $type . '_stock' ] = $html['stock'] = $stock_html;
 
 				if ( 'rsvp' === $type ) {
-					$button_label  = esc_html_x( 'RSVP Now!', 'list view rsvp now ticket button', 'event-tickets' );
-					$button_anchor = '#rsvp-now';
+					$link_label  = esc_html_x( 'RSVP Now', 'list view rsvp now ticket button', 'event-tickets' );
+					$link_anchor = '#rsvp-now';
 				} else {
-					$button_label  = esc_html_x( 'Buy Now!', 'list view buy now ticket button', 'event-tickets' );
-					$button_anchor = '#buy-tickets';
+					$link_label  = esc_html_x( 'Get Tickets', 'list view buy now ticket button', 'event-tickets' );
+					$link_anchor = '#buy-tickets';
 				}
 
-				$parts[ $type . '_button' ] = (object) [ 'anchor' => $button_anchor, 'label' => $button_label ];
+				$parts[ $type . '_link' ] = (object) [ 'anchor' => get_the_permalink( $event->ID ) . $link_anchor, 'label' => $link_label ];
 
 			}
 		}

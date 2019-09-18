@@ -17,23 +17,26 @@
  *
  */
 
-if ( empty( $event->tickets_data ) ) {
+if ( empty( $event->cost ) ) {
 	return;
 }
-
-/*
-	Here we do what we want with
-	$event->tickets_data
-*/
 
 // @TODO @fe @juanfra: Come back to this when there's a decision about template tags.
 
 ?>
 <div class="tribe-events-c-small-cta tribe-events-calendar-list__event-cost">
-	<a href="#" class="tribe-events-c-small-cta__link tribe-common-cta tribe-common-cta--thin-alt">
-		<?php esc_html_e( 'Buy Now', 'event-tickets' ); ?>
-	</a>
+	<?php if ( isset( $event->tickets_data->tickets_link ) ) : ?>
+		<a
+			href="<?php echo esc_url( $event->tickets_data->tickets_link->anchor ); ?>"
+			class="tribe-events-c-small-cta__link tribe-common-cta tribe-common-cta--thin-alt"
+		>
+			<?php echo esc_html( $event->tickets_data->tickets_link->label ); ?>
+		</a>
+	<?php endif; ?>
 	<span class="tribe-events-c-small-cta__price">
 		<?php echo esc_html( $event->cost ) ?>
+	</span>
+	<span class="tribe-events-c-small-cta__price">
+		<?php echo esc_html( $event->tickets_data->stock ) ?>
 	</span>
 </div>
