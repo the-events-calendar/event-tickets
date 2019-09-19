@@ -955,7 +955,7 @@ tribe.tickets.block = {
 					checkboxValid = true;
 				}
 
-				if ( ! $this.prop('required') ) {
+				if ( ! $this.prop( 'required' ) ) {
 					required = false;
 				}
 			}
@@ -983,7 +983,7 @@ tribe.tickets.block = {
 		if ( ! isValidfield ) {
 			var $input = $( input );
 			// Got to be careful of required checkbox/radio groups...
-			if ( $input.is( ':checkbox') || $input.is( ':radio') ) {
+			if ( $input.is( ':checkbox' ) || $input.is( ':radio' ) ) {
 				var $group = $input.closest( '.tribe-common-form-control-checkbox-radio-group' );
 
 				if ( $group.length ) {
@@ -1015,7 +1015,7 @@ tribe.tickets.block = {
 
 		$.ajax({
 			type: 'GET',
-			url: '/wp-json/tribe/tickets/v1/cart/' + post_id,
+			url: '/wp-json/tribe/tickets/v1/cart',
 			data: {},
 			success: function( response ) {
 				var tickets = response.tickets;
@@ -1094,10 +1094,10 @@ tribe.tickets.block = {
 				$fields.each(
 					function() {
 						var $field = $( this );
-						var name   = $field.attr('name');
+						var name   = $field.attr( 'name' );
 						// Grab everything after the last bracket `[`.
 						name       = name.split( '[' );
-						name       = name.pop().replace(']', '');
+						name       = name.pop().replace( ']', '' );
 						var value  = $field.val();
 
 						// Skip blank fields.
@@ -1338,7 +1338,7 @@ tribe.tickets.block = {
 			var isValidForm = obj.validateForm( $arForm );
 
 			if ( ! isValidForm ) {
-				$( obj.modalSelector.container ).animate({ scrollTop : 0 }, 'slow');
+				$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
 
 				return false;
 			}
