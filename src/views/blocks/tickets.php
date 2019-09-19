@@ -56,7 +56,9 @@ echo $html;
 	novalidate
 >
 	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title"><?php esc_html_e( 'Tickets', 'event-tickets' ); ?></h2>
-	<p id="tribe-tickets__notice__tickets-in-cart" class="tribe-common-b3 tribe-notice">Tickets are already in your cart. You can update your ticket quantities on this page, then click “Get Tickets” to edit any existing Attendee Information.</p>
+	<p id="tribe-tickets__notice__tickets-in-cart" class="tribe-common-b3 tribe-notice">
+	The numbers below include tickets already in your cart. You can update your ticket quantities on this page to the number of tickets you want in the cart. Clicking "Get Tickets" will allow you to edit/adjust any existing Attendee Information.
+	</p>
 	<?php $this->template( 'blocks/tickets/commerce/fields', [ 'provider' => $provider, 'provider_id' => $provider_id ] ); ?>
 	<?php if ( $has_tickets_on_sale ) : ?>
 		<?php foreach ( $tickets_on_sale as $key => $ticket ) : ?>
