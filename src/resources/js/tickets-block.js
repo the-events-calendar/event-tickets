@@ -1059,12 +1059,10 @@ tribe.tickets.block = {
 					data['ticket_id'] = ticket_id;
 					data['quantity']  = qty;
 					data['optout']    = optout;
-					console.log(data);
 					tickets.push( data );
 				}
 			}
 		);
-console.log(tickets);
 		return tickets;
 	}
 
