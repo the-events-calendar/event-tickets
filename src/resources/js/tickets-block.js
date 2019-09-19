@@ -868,54 +868,42 @@ tribe.tickets.block = {
 
 	/**
 	 * Validates the entire meta form.
-	 *
-	 * @since TBD
-	 *
-	 * @param $form jQuery object that is the form we are validating.
-	 *
-	 * @return boolean True if all fields validate, false otherwise.
-	 */
-	obj.checkIfFormValid = function( $form ) {
-		var $containers     = $form.find( obj.modalSelector.arItem );
-		var containersValid = true;
-
-		$containers.each(
-			function() {
-				var $container     = $( this );
-				var validContainer = obj.checkIfBlockValid( $container );
-
-				if ( ! validContainer ) {
-					containersValid = false;
-				}
-			}
-		);
-
-		return containersValid;
-	}
-
-	/**
-	 * Validates the entire meta form.
 	 * Then disable/enables the submit buttons
 	 *
 	 * @since TBD
 	 *
 	 * @param $form jQuery object that is the form we are validating.
 	 *
-	 * @return void
+	 * @return boolean If the form validates.
 	 */
 	obj.validateForm = function( $form ) {
-		var formValid = obj.checkIfFormValid( $form );
+		var $containers     = $form.find( obj.modalSelector.arItem );
+		var formValid       = true;
+
+		$containers.each(
+			function() {
+				var $container     = $( this );
+				var validContainer = obj.validateBlock( $container );
+
+				if ( ! validContainer ) {
+					formValid = false;
+				}
+			}
+		);
+
 		var $buttons  = $( obj.modalSelector.submit );
 
-		if ( formValid ) {
-			$buttons.prop( 'disabled', false );
-		} else {
+		if ( ! formValid ) {
 			$buttons.prop( 'disabled', true );
+			return false;
 		}
+
+		$buttons.prop( 'disabled', false );
+		return true;
 	}
 
 	/**
-	 * Validates a single ticket meta block.
+	 * Validates and adds/removes error classes from a ticket meta block.
 	 *
 	 * @since TBD
 	 *
@@ -923,13 +911,13 @@ tribe.tickets.block = {
 	 *
 	 * @return boolean True if all fields validate, false otherwise.
 	 */
-	obj.checkIfBlockValid = function( $container ) {
+	obj.validateBlock = function( $container ) {
 		var $fields = $container.find( obj.modalSelector.metaField );
 		var validBlock = true;
 		$fields.each(
 			function() {
 				var $field = $( this );
-				var isValidfield = obj.checkFieldValid( $field[0] );
+				var isValidfield = obj.validateField( $field[0] );
 
 				if ( ! isValidfield ) {
 					validBlock = false;
@@ -937,57 +925,13 @@ tribe.tickets.block = {
 			}
 		);
 
-		return validBlock;
-	}
-
-	/**
-	 * Adds/removes error classes from a ticket meta block.
-	 *
-	 * @since TBD
-	 *
-	 * @param $container jQuery object that is the block we are validating.
-	 *
-	 * @return boolean True if all fields validate, false otherwise.
-	 */
-	obj.checkIfItemValid = function( $container ) {
-		var validContainer = obj.checkIfBlockValid( $container );
-
-		if ( validContainer ) {
+		if ( validBlock ) {
 			$container.removeClass( 'tribe-ticket-item__has-error' );
-			return true;
+		} else {
+			$container.addClass( 'tribe-ticket-item__has-error' );
 		}
 
-		$container.addClass( 'tribe-ticket-item__has-error' );
-		return false;
-	}
-
-	/**
-	 * Validates a single ticket meta field.
-	 *
-	 * @since TBD
-	 *
-	 * @param input DOM Object that is the field we are validating.
-	 *
-	 * @return boolean
-	 */
-	obj.checkFieldValid = function( input ) {
-		var isValidfield = input.checkValidity();
-
-		if ( ! isValidfield ) {
-			var $input = $( input );
-			// Got to be careful of required checkbox groups...
-			if ( $input.is( ':checkbox') || $input.is( ':radio') ) {
-				var $group = $input.closest( '.tribe-common-form-control-checkbox-radio-group' );
-
-				if ( $group.length ) {
-					return obj.checkboxRadioGroupValid( $group );
-				}
-			}
-
-			return false;
-		}
-
-		return true;
+		return validBlock;
 	}
 
 	/**
@@ -1001,7 +945,7 @@ tribe.tickets.block = {
 	 *
 	 * @return boolean
 	 */
-	obj.checkboxRadioGroupValid = function( $group ) {
+	obj.validateCheckboxRadioGroup = function( $group ) {
 		var $checkboxes   = $group.find( obj.modalSelector.metaField );
 		var checkboxValid = false;
 		var required      = true;
@@ -1009,9 +953,7 @@ tribe.tickets.block = {
 		$checkboxes.each(
 			function() {
 				var $this = $( this );
-				$this.css( 'background-color', 'red ! important' );
 				if ( $this.is( ':checked' ) ) {
-					$this.css( 'background-color', 'green ! important' );
 					checkboxValid = true;
 				}
 
@@ -1035,9 +977,24 @@ tribe.tickets.block = {
 	 *
 	 * @return boolean
 	 */
-	obj.checkIfFieldValid = function( input ) {
-		var isValidfield = obj.checkFieldValid( input );
+	obj.validateField = function( input ) {
+		var isValidfield = true;
 		var $input       = $( input );
+		var isValidfield = input.checkValidity();
+
+		if ( ! isValidfield ) {
+			var $input = $( input );
+			// Got to be careful of required checkbox/radio groups...
+			if ( $input.is( ':checkbox') || $input.is( ':radio') ) {
+				var $group = $input.closest( '.tribe-common-form-control-checkbox-radio-group' );
+
+				if ( $group.length ) {
+					isValidfield = obj.validateCheckboxRadioGroup( $group );
+				}
+			} else {
+				isValidfield = false;
+			}
+		}
 
 		if ( ! isValidfield ) {
 			$input.addClass( 'ticket-meta__has-error' );
@@ -1045,11 +1002,7 @@ tribe.tickets.block = {
 			$input.removeClass( 'ticket-meta__has-error' );
 		}
 
-		var $container = $input.closest( obj.modalSelector.arItem );
-		obj.checkIfItemValid( $container );
-
 		return isValidfield;
-
 	}
 
 	/**
@@ -1064,19 +1017,12 @@ tribe.tickets.block = {
 
 		$.ajax({
 			type: 'GET',
-			url: '/wp-json/tribe/tickets/v1/cart',
+			url: '/wp-json/tribe/tickets/v1/cart/' + post_id,
 			data: {},
-			complete: function( response ) {
-				var success = response.success;
+			success: function( response ) {
+				var tickets = response.tickets;
 
-				// Bail if we don't get a successful response.
-				if ( ! success ) {
-					return;
-				}
-
-				var tickets = response.responseJSON.tickets;
-
-				if ( ! tickets.length ) {
+				if ( ! tickets ) {
 					return;
 				}
 
@@ -1324,11 +1270,6 @@ tribe.tickets.block = {
 		function( e ) {
 			var input      = e.target;
 			obj.unfocusTicketBlock( input );
-
-			obj.checkIfFieldValid( input );
-
-			var $form     = $( input ).closest( 'form' );
-			obj.validateForm( $form );
 		}
 	);
 
@@ -1393,6 +1334,17 @@ tribe.tickets.block = {
 		function( e ) {
 			e.preventDefault();
 			var $button    = $( this );
+
+
+			var $arForm = $( obj.modalSelector.arForm );
+			var isValidForm = obj.validateForm( $arForm );
+
+			if ( ! isValidForm ) {
+				$( obj.modalSelector.container ).animate({ scrollTop : 0 }, 'slow');
+
+				return false;
+			}
+
 			var post_id  = $( '.status-publish' ).attr( 'id' ).replace( 'post-', '' );
 			var provider = $tribe_ticket.data( 'provider' );
 
@@ -1409,7 +1361,7 @@ tribe.tickets.block = {
 				url: '/wp-json/tribe/tickets/v1/cart',
 				data: params,
 				success: function( response ) {
-					//redirect
+					//redirect url
 					var url = response.checkout_url;
 
 					if( 'cart-button' === $button.attr( 'name' ) ) {
@@ -1421,7 +1373,7 @@ tribe.tickets.block = {
 					} else if ( 'edd' === obj.commerceSelector[provider] ) {
 						url += '&eddtickets_process=1'
 					}
-					// Clear sessionStorage bfore redirecting them user.
+					// Clear sessionStorage before redirecting the user.
 					obj.clearLocal();
 					// Set a var so we don't save what we just erased.
 					tribe.tickets.modal_redirect = true;
@@ -1429,7 +1381,6 @@ tribe.tickets.block = {
 					window.location.href = url;
 				},
 				fail: function( response ) {
-					console.log(response);
 					// @TODO: add messaging on error?
 					return;
 				}
@@ -1448,7 +1399,6 @@ tribe.tickets.block = {
 		function ( e, dialogEl, event ) {
 			var $modalCart = $( obj.modalSelector.cartForm );
 			var $cartItems = $tribe_ticket.find( obj.selector.item );
-			var $arForm = $( obj.modalSelector.arForm );
 
 			$cartItems.each(
 				function () {
@@ -1467,8 +1417,6 @@ tribe.tickets.block = {
 			obj.maybeHydrateCartFormFromLocal();
 
 			obj.updateFormTotals( $modalCart );
-
-			obj.validateForm( $arForm );
 		}
 	);
 
