@@ -1356,7 +1356,7 @@ tribe.tickets.block = {
 
 			$.ajax({
 				type: 'POST',
-				url: '/wp-json/tribe/tickets/v1/cart/' + post_id,
+				url: '/wp-json/tribe/tickets/v1/cart',
 				data: params,
 				success: function( response ) {
 					//redirect url
