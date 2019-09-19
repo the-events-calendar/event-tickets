@@ -1063,6 +1063,7 @@ tribe.tickets.block = {
 				}
 			}
 		);
+
 		return tickets;
 	}
 
