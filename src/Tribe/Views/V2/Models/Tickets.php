@@ -109,15 +109,93 @@ class Tickets implements \ArrayAccess, \Serializable{
 			return $this->data;
 		}
 
-		// @todo @juanfra this needs to be refined; here is where we set all the values.
+
+		if ( ! tribe_events_has_tickets_on_sale( $this->post_id ) ) {
+			return [];
+		}
+
+		// Get an array for ticket and rsvp counts.
+		$types = \Tribe__Tickets__Tickets::get_ticket_counts( $this->post_id );
+
+		// If no rsvp or tickets return.
+		if ( ! $types ) {
+			return [];
+		}
+
+		$html  = [];
+		$parts = [];
+
+		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out message.
+		foreach ( $types as $type => $data ) {
+
+			if ( ! $data['count'] ) {
+				continue;
+			}
+
+			if ( ! $data['available'] ) {
+				$parts[ $type . '_stock' ] = esc_html_x( 'Sold out', 'list view stock sold out', 'event-tickets' );
+
+				// Only re-apply if we don't have a stock yet
+				if ( empty( $html['stock'] ) ) {
+					$html['stock'] = $parts[ $type . '_stock' ];
+				}
+			} else {
+				$stock = $data['stock'];
+				if ( $data['unlimited'] || ! $data['stock'] ) {
+					// If unlimited tickets, tickets with no stock and rsvp, or no tickets and rsvp unlimited - hide the remaining count.
+					$stock = false;
+				}
+
+				$stock_html = '';
+
+				if ( $stock ) {
+					$threshold = \Tribe__Settings_Manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
+
+					/**
+					 * Overwrites the threshold to display "# tickets left".
+					 *
+					 * @param int   $threshold Stock threshold to trigger display of "# tickets left"
+					 * @param array $data      Ticket data.
+					 * @param int   $event_id  Event ID.
+					 *
+					 * @since 4.10.1
+					 */
+					$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $this->post_id  ) );
+
+					if ( ! $threshold || $stock <= $threshold ) {
+
+						$number = number_format_i18n( $stock );
+
+						if ( 'rsvp' === $type ) {
+							$text = _n( '%s spot left', '%s spots left', $stock, 'event-tickets' );
+						} else {
+							$text = _n( '%s ticket left', '%s tickets left', $stock, 'event-tickets' );
+						}
+
+						$stock_html = esc_html( sprintf( $text, $number ) );
+					}
+				}
+
+				$parts[ $type . '_stock' ] = $html['stock'] = $stock_html;
+
+				if ( 'rsvp' === $type ) {
+					$link_label  = esc_html_x( 'RSVP Now', 'list view rsvp now ticket button', 'event-tickets' );
+					$link_anchor = '#rsvp-now';
+				} else {
+					$link_label  = esc_html_x( 'Get Tickets', 'list view buy now ticket button', 'event-tickets' );
+					$link_anchor = '#buy-tickets';
+				}
+
+			}
+		}
 
 		$this->data['link'] = (object) [
-			'anchor' => '#',
-			'label'  => 'Test',
+			'anchor' => esc_url( get_the_permalink( $this->post_id ) . $link_anchor ),
+			'label'  => $link_label,
 		];
 
 		$this->data['stock'] = (object) [
-			'available' => 23,
+			'available' => $stock_html,
 		];
 
 		return $this->data;
