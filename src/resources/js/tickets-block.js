@@ -1366,12 +1366,6 @@ tribe.tickets.block = {
 						url = response.cart_url
 					}
 
-					if ( 'woo' === obj.commerceSelector[provider]) {
-						url += '&wootickets_process=1'
-					} else if ( 'edd' === obj.commerceSelector[provider] ) {
-						url += '&eddtickets_process=1'
-					}
-
 					// Clear sessionStorage before redirecting the user.
 					obj.clearLocal();
 					// Set a var so we don't save what we just erased.
