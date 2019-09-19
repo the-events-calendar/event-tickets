@@ -11,7 +11,7 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @version TBD
  *
  */
 $modal    = $this->get( 'is_modal' );
