@@ -11,6 +11,7 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
+ * @since TBD Updated the optout markup and classes used.
  * @version TBD
  *
  */
