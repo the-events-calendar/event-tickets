@@ -2,6 +2,7 @@
 
 namespace Tribe\Events\Tickets\Views\V2\Views;
 
+use Spatie\Snapshots\MatchesSnapshots;
 use Tribe\Events\Views\V2\View;
 use Tribe\Events\Views\V2\Views\List_View;
 use Tribe\Test\Products\WPBrowser\Views\V2\ViewTestCase;
