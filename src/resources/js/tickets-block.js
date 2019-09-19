@@ -1064,7 +1064,7 @@ tribe.tickets.block = {
 
 		$.ajax({
 			type: 'GET',
-			url: '/wp-json/tribe/tickets/v1/cart/' + post_id,
+			url: '/wp-json/tribe/tickets/v1/cart',
 			data: {},
 			complete: function( response ) {
 				var success = response.success;
@@ -1081,7 +1081,7 @@ tribe.tickets.block = {
 				}
 
 				tickets.forEach(function(ticket) {
-					var $ticketRow = $( `.tribe-tickets__item[data-ticket-id="${ticket.ticket_id}"]`);
+					var $ticketRow = $( `.tribe-tickets__item[data-ticket-id="${ticket.ticket_id}"]` );
 					var $field = $ticketRow.find( obj.selector.itemQuantityInput );
 					$field.val( ticket.quantity );
 					$field.trigger( 'change' );
@@ -1401,11 +1401,12 @@ tribe.tickets.block = {
 				provider: obj.commerceSelector[provider],
 				tickets : obj.getTicketsForCart(),
 				meta    : obj.getMetaForSave(),
+				post_id : post_id,
 			};
 
 			$.ajax({
 				type: 'POST',
-				url: '/wp-json/tribe/tickets/v1/cart/' + post_id,
+				url: '/wp-json/tribe/tickets/v1/cart',
 				data: params,
 				success: function( response ) {
 					//redirect
