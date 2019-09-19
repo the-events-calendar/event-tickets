@@ -26,7 +26,7 @@ class Tickets implements \ArrayAccess, \Serializable{
 	/**
 	 * The post ID this tickets model is for.
 	 *
-	 * @since 4.9.14
+	 * @since TBD
 	 *
 	 * @var int
 	 */
@@ -35,7 +35,7 @@ class Tickets implements \ArrayAccess, \Serializable{
 	/**
 	 * The post thumbnail data.
 	 *
-	 * @since 4.9.14
+	 * @since TBD
 	 *
 	 * @var array
 	 */
@@ -44,7 +44,7 @@ class Tickets implements \ArrayAccess, \Serializable{
 	/**
 	 * A flag property indicating whether the post thumbnail for the post exists or not.
 	 *
-	 * @since 4.9.16
+	 * @since TBD
 	 *
 	 * @var bool
 	 */
@@ -94,9 +94,9 @@ class Tickets implements \ArrayAccess, \Serializable{
 	}
 
 	/**
-	 * Returns the data about the post thumbnail, if any.
+	 * Returns the data about the event tickets, if any.
 	 *
-	 * @since 4.9.14
+	 * @since TBD
 	 *
 	 * @return array An array of objects containing the post thumbnail data.
 	 */
@@ -162,12 +162,12 @@ class Tickets implements \ArrayAccess, \Serializable{
 	}
 
 	/**
-	 * Returns an array representation of the post thumbnail data.
+	 * Returns an array representation of the event tickets data.
 	 *
-	 * @since 4.9.14
+	 * @since TBD
 	 *
 	 *
-	 * @return array An array representation of the post thumbnail data.
+	 * @return array An array representation of the event tickets data.
 	 */
 	public function to_array() {
 		$this->data = $this->fetch_data();
