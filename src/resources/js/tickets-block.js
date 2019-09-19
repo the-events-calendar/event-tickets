@@ -586,6 +586,13 @@ tribe.tickets.block = {
 		obj.prefillModalCart();
 	}
 
+	/**
+	 * Parses the attendee form and formats the data for storage.
+	 *
+	 * @since TBD
+	 *
+	 * @return obj Attendee data object.
+	 */
 	obj.parseAttendeeFormForStorage = function() {
 		var $attendeeForm = $( obj.modalSelector.arForm ).find( ':input' );
 		var postId = $( '.status-publish' ).attr( 'id' ).replace( 'post-', '' );
