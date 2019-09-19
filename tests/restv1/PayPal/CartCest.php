@@ -40,7 +40,7 @@ class CartCest extends BaseRestCest {
 		$this->paypal_add_item_to_cart( $I, [
 			$first_ticket_id  => 15,
 			$second_ticket_id => 5,
-		], 0 );
+		], 0, $first_post_id );
 
 		$I->sendGET( $cart_rest_url, [ 'provider' => 'tribe-commerce' ] );
 		$I->seeResponseCodeIs( 200 );
