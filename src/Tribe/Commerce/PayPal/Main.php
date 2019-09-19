@@ -2306,6 +2306,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @since TBD
 	 *
 	 * @param array $tickets List of tickets with their ID and quantity.
+	 *
+	 * @throws Tribe__REST__Exceptions__Exception When ticket does not exist or capacity is not enough.
 	 */
 	public function update_tickets_in_cart( $tickets ) {
 		/** @var Tribe__Tickets__Commerce__PayPal__Cart__Interface $cart */
@@ -2327,6 +2329,22 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			// Skip if ticket ID not set.
 			if ( empty( $ticket['ticket_id'] ) ) {
 				continue;
+			}
+
+			// Get the ticket object.
+			$ticket_object = $this->get_ticket( 0, $ticket['ticket_id'] );
+
+			// Bail if ticket does not exist.
+			if ( ! $ticket_object ) {
+				throw new Tribe__REST__Exceptions__Exception( sprintf( __( 'The ticket #%d does not exist.', 'event-tickets' ), $ticket['ticket_id'] ), 'ticket-does-not-exist', 500 );
+			}
+
+			// Get the number of available tickets.
+			$available = $ticket_object->available();
+
+			// Bail if ticket does not have enough available capacity.
+			if ( -1 !== $available && $available < $ticket['quantity'] ) {
+				throw new Tribe__REST__Exceptions__Exception( sprintf( __( 'The ticket "%s" does not have that many available for purchase.', 'event-tickets' ), $ticket_object->name ), 'ticket-capacity-not-available', 500 );
 			}
 
 			$this->add_ticket_to_cart( $ticket['ticket_id'], $ticket['quantity'], $cart );

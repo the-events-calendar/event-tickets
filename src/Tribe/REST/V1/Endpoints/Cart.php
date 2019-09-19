@@ -247,6 +247,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 				$defaults = [
 					'ticket_id' => 0,
 					'quantity'  => 0,
+					'optout'    => 0,
 					'provider'  => $provider,
 				];
 
@@ -274,30 +275,34 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 				$providers[ $ticket['provider'] ][] = $ticket;
 			}
 
-			foreach ( $providers as $provider_tickets ) {
+			try {
+				foreach ( $providers as $provider_tickets ) {
+					/**
+					 * Update tickets in cart for provider.
+					 *
+					 * The dynamic portion of the hook name, `$provider`, refers to the cart provider.
+					 *
+					 * @since TBD
+					 *
+					 * @param array $provider_tickets List of tickets with their ID and quantity.
+					 * @param int   $post_id          Post ID for the cart.
+					 */
+					do_action( 'tribe_tickets_rest_cart_update_tickets_' . $provider, $provider_tickets, $post_id );
+				}
+
 				/**
-				 * Update tickets in cart for provider.
-				 *
-				 * The dynamic portion of the hook name, `$provider`, refers to the cart provider.
+				 * Update tickets in cart.
 				 *
 				 * @since TBD
 				 *
-				 * @param array $provider_tickets List of tickets with their ID and quantity.
-				 * @param int   $post_id          Post ID for the cart.
+				 * @param array  $tickets  List of tickets with their ID and quantity.
+				 * @param string $provider The cart provider.
+				 * @param int    $post_id  Post ID for the cart.
 				 */
-				do_action( 'tribe_tickets_rest_cart_update_tickets_' . $provider, $provider_tickets, $post_id );
+				do_action( 'tribe_tickets_rest_cart_update_tickets', $tickets, $provider, $post_id );
+			} catch ( Tribe__REST__Exceptions__Exception $exception ) {
+				return new WP_Error( $exception->getCode(), esc_html( $exception->getMessage() ), [ 'status' => $exception->getStatus() ] );
 			}
-
-			/**
-			 * Update tickets in cart.
-			 *
-			 * @since TBD
-			 *
-			 * @param array  $tickets  List of tickets with their ID and quantity.
-			 * @param string $provider The cart provider.
-			 * @param int    $post_id  Post ID for the cart.
-			 */
-			do_action( 'tribe_tickets_rest_cart_update_tickets', $tickets, $provider, $post_id );
 		}
 
 		// Update ticket meta.
@@ -317,17 +322,21 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 				$meta[ $k ] = $ticket_meta;
 			}
 
-			/**
-			 * Update ticket meta from Attendee Registration.
-			 *
-			 * @since TBD
-			 *
-			 * @param array  $meta     List of meta for each ticket to be saved for Attendee Registration.
-			 * @param array  $tickets  List of tickets with their ID and quantity.
-			 * @param string $provider The cart provider.
-			 * @param int    $post_id  Post ID for the cart.
-			 */
-			do_action( 'tribe_tickets_rest_cart_update_ticket_meta', $meta, $tickets, $provider, $post_id );
+			try {
+				/**
+				 * Update ticket meta from Attendee Registration.
+				 *
+				 * @since TBD
+				 *
+				 * @param array  $meta     List of meta for each ticket to be saved for Attendee Registration.
+				 * @param array  $tickets  List of tickets with their ID and quantity.
+				 * @param string $provider The cart provider.
+				 * @param int    $post_id  Post ID for the cart.
+				 */
+				do_action( 'tribe_tickets_rest_cart_update_ticket_meta', $meta, $tickets, $provider, $post_id );
+			} catch ( Tribe__REST__Exceptions__Exception $exception ) {
+				return new WP_Error( $exception->getCode(), esc_html( $exception->getMessage() ), [ 'status' => $exception->getStatus() ] );
+			}
 		}
 
 		// Get the updated cart details.
