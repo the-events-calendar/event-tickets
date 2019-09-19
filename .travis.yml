@@ -139,6 +139,7 @@ script:
   - codecept run functional
   - codecept run restv1
   - codecept run acceptance
+  - codecept run -f views_integration
 
 after_failure:
   # if the build failed let's see why
