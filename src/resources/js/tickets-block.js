@@ -868,7 +868,6 @@ tribe.tickets.block = {
 
 	/**
 	 * Validates the entire meta form.
-	 * Then disable/enables the submit buttons
 	 *
 	 * @since TBD
 	 *
@@ -891,15 +890,7 @@ tribe.tickets.block = {
 			}
 		);
 
-		var $buttons  = $( obj.modalSelector.submit );
-
-		if ( ! formValid ) {
-			$buttons.prop( 'disabled', true );
-			return false;
-		}
-
-		$buttons.prop( 'disabled', false );
-		return true;
+		return formValid;
 	}
 
 	/**
@@ -1358,7 +1349,7 @@ tribe.tickets.block = {
 
 			$.ajax({
 				type: 'POST',
-				url: '/wp-json/tribe/tickets/v1/cart',
+				url: '/wp-json/tribe/tickets/v1/cart/' + post_id,
 				data: params,
 				success: function( response ) {
 					//redirect url
@@ -1373,6 +1364,7 @@ tribe.tickets.block = {
 					} else if ( 'edd' === obj.commerceSelector[provider] ) {
 						url += '&eddtickets_process=1'
 					}
+
 					// Clear sessionStorage before redirecting the user.
 					obj.clearLocal();
 					// Set a var so we don't save what we just erased.
