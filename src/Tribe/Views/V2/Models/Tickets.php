@@ -190,7 +190,7 @@ class Tickets implements \ArrayAccess, \Serializable{
 		}
 
 		$this->data['link'] = (object) [
-			'anchor' => esc_url( get_the_permalink( $this->post_id ) . $link_anchor ),
+			'anchor' => get_permalink( $this->post_id ) . $link_anchor,
 			'label'  => $link_label,
 		];
 
