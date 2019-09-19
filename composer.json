@@ -51,5 +51,11 @@
     "psr-4": {
       "Tribe\\Events\\Tickets\\": "src/Tribe"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tribe\\Tests\\Tickets\\":  "tests/_support",
+      "Tribe\\Events\\Tickets\\Views\\": "tests/views_integration/Tribe/Events/Tickets/Views"
+    }
   }
 }
