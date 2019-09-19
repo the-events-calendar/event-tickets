@@ -1372,6 +1372,10 @@ tribe.tickets.block = {
 	obj.document.on(
 		'beforeunload',
 		function( e ) {
+			if ( tribe.tickets.modal_redirect ) {
+				return;
+			}
+
 			obj.storeLocal();
 		}
 	);
@@ -1416,6 +1420,10 @@ tribe.tickets.block = {
 					} else if ( 'edd' === obj.commerceSelector[provider] ) {
 						url += '&eddtickets_process=1'
 					}
+					// Clear sessionStorage bfore redirecting them user.
+					obj.clearLocal();
+					// Set a var so we don't save what we just erased.
+					tribe.tickets.modal_redirect = true;
 
 					window.location.href = url;
 				},

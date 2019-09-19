@@ -18,8 +18,7 @@
  */
 
 /** @var Tribe__Tickets__Commerce__Currency $currency */
-$currency        = tribe( 'tickets.commerce.currency' );
-
+$currency            = tribe( 'tickets.commerce.currency' );
 $cart_classes        = [ 'tribe-block', 'tribe-tickets', 'tribe-common' ];
 $cart_url            = $this->get( 'cart_url' );
 $has_tickets_on_sale = $this->get( 'has_tickets_on_sale' );
