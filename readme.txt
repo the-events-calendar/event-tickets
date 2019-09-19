@@ -123,6 +123,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Prevent conflict with Genesis Framework where content or the excerpt does not show in the post archives [125496]
 * Fix - Prevent tickets that do not have attendee meta from showing on the attendee registration page [125021]
 * Fix - Prevent multiple clicks on `Confirm RSVP` from submitting entries [132961]
+* Fix - Make 'Not going' available to translate in RSVP dropdown [134358]
 
 = [4.10.8] 2019-09-16 =
 
