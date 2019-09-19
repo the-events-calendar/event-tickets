@@ -178,7 +178,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 
 	/**
-	 * Undocumented function
+	 * Get the cart provider class/object.
 	 *
 	 * @since TBD
 	 *

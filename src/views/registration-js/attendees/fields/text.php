@@ -34,7 +34,7 @@ if ( $multiline ) {
 	<?php if ( $multiline ) : ?>
 		<textarea
 			id="<?php echo esc_attr( $option_id ); ?>"
-			class="tribe-common-form-control-text__input"
+			class="tribe-common-form-control-text__input ticket-meta"
 			name="<?php echo esc_attr( $field_name ); ?>"
 			<?php tribe_required( $required ); ?>
 			<?php tribe_disabled( $disabled ); ?>
@@ -43,7 +43,7 @@ if ( $multiline ) {
 		<input
 			type="text"
 			id="<?php echo esc_attr( $option_id ); ?>"
-			class="tribe-common-form-control-text__input"
+			class="tribe-common-form-control-text__input ticket-meta"
 			name="<?php echo esc_attr( $field_name ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
 			<?php tribe_required( $required ); ?>

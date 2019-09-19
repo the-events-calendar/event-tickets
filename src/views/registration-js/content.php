@@ -43,7 +43,7 @@ $passed_provider_class = $this->get_form_class( $passed_provider );
 
 			<form
 				method="post"
-				class="tribe-tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?>"
+				class="tribe-tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?> tribe-validation"
 				name="event<?php echo esc_attr( $event_id ); ?>"
 				novalidate
 			>
@@ -53,18 +53,10 @@ $passed_provider_class = $this->get_form_class( $passed_provider );
 				<?php else: ?>
 					<button type="submit"><?php esc_html_e( 'Save Attendee Info', 'event-tickets' ); ?></button>
 				<?php endif; ?>
-
 			</form>
-
-			<?php $this->template( 'registration-js/attendees/error', array() ); ?>
-			<?php $this->template( 'registration-js/attendees/success', array() ); ?>
-
-			<?php $this->template( 'registration-js/attendees/loader', array() ); ?>
 
 		</div>
 
 	</div>
 
 <?php endforeach; ?>
-
-<?php $this->template( 'registration/button-checkout', array( 'checkout_url' => $checkout_url, 'cart_has_required_meta' => $cart_has_required_meta, 'is_meta_up_to_date' => $is_meta_up_to_date ) );

@@ -18,8 +18,7 @@
  */
 
 /** @var Tribe__Tickets__Commerce__Currency $currency */
-$currency        = tribe( 'tickets.commerce.currency' );
-
+$currency            = tribe( 'tickets.commerce.currency' );
 $cart_classes        = [ 'tribe-block', 'tribe-tickets', 'tribe-common' ];
 $cart_url            = $this->get( 'cart_url' );
 $has_tickets_on_sale = $this->get( 'has_tickets_on_sale' );
@@ -56,6 +55,9 @@ echo $html;
 	novalidate
 >
 	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title"><?php esc_html_e( 'Tickets', 'event-tickets' ); ?></h2>
+	<p id="tribe-tickets__notice__tickets-in-cart" class="tribe-common-b3 tribe-notice">
+		<?php esc_html_e( 'The numbers below include tickets already in your cart. You can update your ticket quantities on this page to the number of tickets you want in the cart. Clicking "Get Tickets" will allow you to edit/adjust any existing Attendee Information.', 'event-tickets' ); ?>
+	</p>
 	<?php $this->template( 'blocks/tickets/commerce/fields', [ 'provider' => $provider, 'provider_id' => $provider_id ] ); ?>
 	<?php if ( $has_tickets_on_sale ) : ?>
 		<?php foreach ( $tickets_on_sale as $key => $ticket ) : ?>

@@ -50,7 +50,7 @@ foreach ( $events as $event_id => $tickets ) :
 	$has_tpp = Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === $passed_provider || in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers );
 	?>
 	<div
-		class="tribe-tickets__registration__event"
+		class="tribe-common tribe-tickets__registration__event"
 		data-event-id="<?php echo esc_attr( $event_id ); ?>"
 		data-is-meta-up-to-date="<?php echo absint( $is_meta_up_to_date ); ?>"
 	>

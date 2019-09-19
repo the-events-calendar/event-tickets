@@ -51,7 +51,7 @@ $field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' 
 				for="<?php echo esc_attr( $option_id ); ?>"
 			>
 				<input
-					class="tribe-common-form-control-radio__input"
+					class="tribe-common-form-control-radio__input ticket-meta"
 					id="<?php echo esc_attr( $option_id ); ?>"
 					name="<?php echo esc_attr( $field_name ); ?>"
 					type="radio"
