@@ -119,6 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.9] TBD =
 
+* Tweak - Notify Promoter if an event with tickets is deleted [134113]
 
 = [4.10.8] 2019-09-16 =
 
