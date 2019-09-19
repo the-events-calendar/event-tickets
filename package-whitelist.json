@@ -7,5 +7,9 @@
   "license.txt",
   "readme.txt",
   "site_owner_data_collection_statement.html",
-  "src/**/*"
+  "src/**/*",
+  "vendor/autoload.php",
+  "vendor/autoload_commands.php",
+  "vendor/autoload_framework.php",
+  "vendor/composer/*"
 ]
