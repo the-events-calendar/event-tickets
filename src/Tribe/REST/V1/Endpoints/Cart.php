@@ -47,26 +47,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 							],
 						],
 					],
-					'400' => [
-						'description' => __( 'The post ID is invalid.', 'ticket-tickets' ),
-						'content'     => [
-							'application/json' => [
-								'schema' => [
-									'type' => 'object',
-								],
-							],
-						],
-					],
-					'404' => [
-						'description' => __( 'The post ID was not found.', 'event-tickets' ),
-						'content'     => [
-							'application/json' => [
-								'schema' => [
-									'type' => 'object',
-								],
-							],
-						],
-					],
 				],
 			],
 			'post' => [
@@ -114,16 +94,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 					'403' => [
 						'description' => __( 'The post does not have any tickets', 'the-events-calendar' ),
 					],
-					'404' => [
-						'description' => __( 'The post ID was not found.', 'event-tickets' ),
-						'content'     => [
-							'application/json' => [
-								'schema' => [
-									'type' => 'object',
-								],
-							],
-						],
-					],
 				],
 			],
 		];
@@ -135,7 +105,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 	 * @since TBD
 	 */
 	public function get( WP_REST_Request $request ) {
-		$post_id  = (int) $request->get_param( 'post_id' );
 		$provider = $request->get_param( 'provider' );
 
 		if ( null !== $provider ) {
@@ -146,13 +115,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			'tickets' => [],
 			'meta'    => [],
 		];
-
-		// Confirm post has tickets.
-		$has_tickets = ! empty( Tribe__Tickets__Tickets::get_all_event_tickets( $post_id ) );
-
-		if ( ! $has_tickets ) {
-			return new WP_REST_Response( $data );
-		}
 
 		/** @var Tribe__Tickets__Editor__Configuration $editor_config */
 		$editor_config = tribe( 'tickets.editor.configuration' );
@@ -188,9 +150,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			 * @since TBD
 			 *
 			 * @param array $cart_tickets List of tickets in the cart.
-			 * @param int   $post_id      The current post ID for the tickets.
 			 */
-			$cart_tickets = apply_filters( 'tribe_tickets_rest_cart_get_tickets_' . $provider_key, $cart_tickets, $post_id );
+			$cart_tickets = apply_filters( 'tribe_tickets_rest_cart_get_tickets_' . $provider_key, $cart_tickets );
 
 			foreach ( $cart_tickets as $ticket_id => $quantity ) {
 				// Skip ticket if it has no quantity or is not accessible.
@@ -216,9 +177,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 		 *
 		 * @param array $cart_meta List of ticket meta in the cart.
 		 * @param array $tickets   List of tickets in the cart.
-		 * @param int   $post_id   The current post ID for the tickets.
 		 */
-		$cart_meta = apply_filters( 'tribe_tickets_rest_cart_get_ticket_meta', $cart_meta, $data['tickets'], $post_id );
+		$cart_meta = apply_filters( 'tribe_tickets_rest_cart_get_ticket_meta', $cart_meta, $data['tickets'] );
 
 		$data['meta'] = $cart_meta;
 
@@ -232,13 +192,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 	 */
 	public function READ_args() {
 		return [
-			'post_id'  => [
-				'in'                => 'path',
-				'required'          => true,
-				'type'              => 'integer',
-				'description'       => __( 'The post ID', 'event-tickets' ),
-				'validate_callback' => [ $this->validator, 'is_post_id' ],
-			],
 			'provider' => [
 				'required'          => false,
 				'description'       => __( 'Limit results to tickets provided by one of the providers specified in the CSV list or array; defaults to all available.', 'event-tickets' ),
@@ -269,18 +222,20 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 	 * @since TBD
 	 */
 	public function update( WP_REST_Request $request ) {
-		$post_id  = (int) $request->get_param( 'post_id' );
+		$post_id  = $request->get_param( 'post_id' );
 		$provider = $request->get_param( 'provider' );
 		$tickets  = $request->get_param( 'tickets' );
 		$meta     = $request->get_param( 'meta' );
 
-		// Confirm post has tickets.
-		$has_tickets = ! empty( Tribe__Tickets__Tickets::get_all_event_tickets( $post_id ) );
+		if ( 0 < $post_id ) {
+			// Confirm post has tickets.
+			$has_tickets = ! empty( Tribe__Tickets__Tickets::get_all_event_tickets( $post_id ) );
 
-		if ( ! $has_tickets ) {
-			$message = $this->messages->get_message( 'post-has-no-tickets' );
+			if ( ! $has_tickets ) {
+				$message = $this->messages->get_message( 'post-has-no-tickets' );
 
-			return new WP_Error( 'post-has-no-tickets', $message, [ 'status' => 403 ] );
+				return new WP_Error( 'post-has-no-tickets', $message, [ 'status' => 403 ] );
+			}
 		}
 
 		// Update cart quantities.
@@ -430,13 +385,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 	 */
 	public function EDIT_args() {
 		return [
-			'post_id'  => [
-				'in'                => 'path',
-				'required'          => true,
-				'type'              => 'integer',
-				'description'       => __( 'The post ID', 'event-tickets' ),
-				'validate_callback' => [ $this->validator, 'is_post_id' ],
-			],
 			'provider' => [
 				'required'    => true,
 				'type'        => 'string',
@@ -453,6 +401,12 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 				'default'      => null,
 				'swagger_type' => 'array',
 				'description'  => __( 'List of meta for each ticket to be saved for Attendee Registration', 'event-tickets' ),
+			],
+			'post_id'  => [
+				'required'          => false,
+				'type'              => 'integer',
+				'description'       => __( 'The post ID', 'event-tickets' ),
+				'validate_callback' => [ $this->validator, 'is_post_id' ],
 			],
 		];
 	}

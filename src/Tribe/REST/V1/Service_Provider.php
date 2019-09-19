@@ -189,7 +189,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		/** @var Tribe__Tickets__REST__V1__Endpoints__Cart $endpoint */
 		$endpoint = tribe( 'tickets.rest-v1.endpoints.cart' );
 
-		register_rest_route( $this->namespace, '/cart/(?P<post_id>\\d+)', [
+		register_rest_route( $this->namespace, '/cart', [
 			[
 				'methods'  => WP_REST_Server::READABLE,
 				'args'     => $endpoint->READ_args(),
@@ -203,7 +203,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 			],
 		] );
 
-		tribe( 'tickets.rest-v1.endpoints.documentation' )->register_documentation_provider( '/cart/{id}', $endpoint );
+		tribe( 'tickets.rest-v1.endpoints.documentation' )->register_documentation_provider( '/cart', $endpoint );
 
 		return $endpoint;
 	}
