@@ -25,18 +25,18 @@ if ( empty( $event->cost ) ) {
 
 ?>
 <div class="tribe-events-c-small-cta tribe-events-calendar-list__event-cost">
-	<?php if ( isset( $event->tickets_data->tickets_link ) ) : ?>
+	<?php if ( $event->tickets->exist ) : ?>
 		<a
-			href="<?php echo esc_url( $event->tickets_data->tickets_link->anchor ); ?>"
+			href="<?php echo esc_url( $event->tickets->link->anchor ); ?>"
 			class="tribe-events-c-small-cta__link tribe-common-cta tribe-common-cta--thin-alt"
 		>
-			<?php echo esc_html( $event->tickets_data->tickets_link->label ); ?>
+			<?php echo esc_html( $event->tickets->link->label ); ?>
 		</a>
 	<?php endif; ?>
 	<span class="tribe-events-c-small-cta__price">
 		<?php echo esc_html( $event->cost ) ?>
 	</span>
 	<span class="tribe-events-c-small-cta__price">
-		<?php echo esc_html( $event->tickets_data->stock ) ?>
+		<?php echo esc_html( $event->tickets->stock->available ) ?>
 	</span>
 </div>

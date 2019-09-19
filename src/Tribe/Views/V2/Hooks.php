@@ -17,6 +17,8 @@
 
 namespace Tribe\Events\Tickets\Views\V2;
 
+use Tribe\Events\Tickets\Views\V2\Models\Tickets;
+
 /**
  * Class Hooks.
  *
@@ -66,6 +68,10 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @return array The model properties. This value might be cached.
 	 */
 	public function add_tickets_data( $props, $event ) {
+		$props['tickets'] = new Tickets( $event->ID );
+
+		// @todo @juanfra move all this stuff below, if still relevant, to the Tickets class.
+		return $props;
 
 		$event_id = $event->ID;
 
