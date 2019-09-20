@@ -50,11 +50,15 @@ class CartCest extends BaseRestCest {
 				[
 					'ticket_id' => $first_ticket_id,
 					'quantity'  => 15,
+					'post_id'   => $first_post_id,
+					'optout'    => 1,
 					'provider'  => 'tribe-commerce',
 				],
 				[
 					'ticket_id' => $second_ticket_id,
 					'quantity'  => 5,
+					'post_id'   => $first_post_id,
+					'optout'    => 1,
 					'provider'  => 'tribe-commerce',
 				],
 			],

@@ -15,23 +15,26 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 	 *
 	 */
 	public function __construct() {
-		$this->messages = array(
-			'missing-attendee-id'         => __( 'The attendee ID is missing from the request', 'event-tickets' ),
-			'attendee-not-found'          => __( 'The requested post ID does not exist or is not an attendee', 'event-tickets' ),
-			'attendee-not-accessible'     => __( 'The requested attendee is not accessible', 'event-tickets' ),
-			'attendee-check-in-not-found' => __( 'The requested attendee check in is not available', 'event-tickets' ),
-			'ticket-not-found'            => __( 'The requested ticket post could not be found', 'event-tickets' ),
-			'ticket-provider-not-found'   => __( 'The ticket provider for the requested ticket is not available', 'event-tickets' ),
-			'ticket-post-not-found'       => __( 'The post associated with the requested ticket was not found', 'event-tickets' ),
-			'ticket-object-not-found'     => __( 'The requested ticket object could not be built or found', 'event-tickets' ),
-			'ticket-not-accessible'       => __( 'The requested ticket is not accessible', 'event-tickets' ),
-			'error-global-id-generation'  => __( 'The ticket global id could not be generated', 'event-tickets' ),
+		$this->messages = [
+			'missing-attendee-id'           => __( 'The attendee ID is missing from the request', 'event-tickets' ),
+			'attendee-not-found'            => __( 'The requested post ID does not exist or is not an attendee', 'event-tickets' ),
+			'attendee-not-accessible'       => __( 'The requested attendee is not accessible', 'event-tickets' ),
+			'attendee-check-in-not-found'   => __( 'The requested attendee check in is not available', 'event-tickets' ),
+			'ticket-not-found'              => __( 'The requested ticket post could not be found', 'event-tickets' ),
+			'ticket-provider-not-found'     => __( 'The ticket provider for the requested ticket is not available', 'event-tickets' ),
+			'ticket-post-not-found'         => __( 'The post associated with the requested ticket was not found', 'event-tickets' ),
+			'ticket-object-not-found'       => __( 'The requested ticket object could not be built or found', 'event-tickets' ),
+			'ticket-not-accessible'         => __( 'The requested ticket is not accessible', 'event-tickets' ),
+			'error-global-id-generation'    => __( 'The ticket global id could not be generated', 'event-tickets' ),
+			'error-global-id-generation'    => __( 'The ticket #%d does not exist.', 'event-tickets' ),
+			'ticket-does-not-exist'         => __( 'The ticket #%d does not exist.', 'event-tickets' ),
+			'ticket-capacity-not-available' => __( 'The ticket "%s" does not have that many available for purchase.', 'event-tickets' ),
 			// this is an internal error, not same as the `ticket-not-found` one
-			'error-ticket-post'           => __( 'There was a problem while fetching the requested ticket post', 'event-tickets' ),
-			'error-attendee-post'         => __( 'There was a problem while fetching the requested attendee post', 'event-tickets' ),
+			'error-ticket-post'             => __( 'There was a problem while fetching the requested ticket post', 'event-tickets' ),
+			'error-attendee-post'           => __( 'There was a problem while fetching the requested attendee post', 'event-tickets' ),
 			// same as WordPress REST API
-			'invalid-page-number'         => __( 'The page number requested is larger than the number of pages available.', 'default' ),
-		);
+			'invalid-page-number'           => __( 'The page number requested is larger than the number of pages available.', 'default' ),
+		];
 	}
 
 	/**

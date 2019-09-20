@@ -29,12 +29,17 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * @var array
 	 */
-	protected $raw_transaction_data = array();
+	protected $raw_transaction_data = [];
 
 	/**
 	 * @var array
 	 */
 	protected $transaction_data;
+
+	/**
+	 * @var array
+	 */
+	protected $optouts = [];
 
 	/**
 	 * @var string
@@ -473,6 +478,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'user_id'       => get_current_user_id(),
 			'tribe_handler' => 'tpp',
 			'pid'           => $post->ID,
+			'oo'            => [],
 		];
 
 		$invoice_number = $this->set_invoice_number();
@@ -520,8 +526,6 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 */
 		$custom_args = apply_filters( 'tribe_tickets_commerce_paypal_custom_args', $custom_args, $post, $product_ids );
 
-		$custom = Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode( $custom_args );
-
 		$args = [
 			'cmd'           => '_cart',
 			'business'      => urlencode( $email ),
@@ -530,7 +534,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'shopping_url'  => urlencode( $post_url ),
 			'return'        => $this->get_success_page_url(),
 			'currency_code' => $currency_code ?: 'USD',
-			'custom'        => $custom,
+			'custom'        => $custom_args,
 			/*
 			 * We're not sending an invoice anymore.
 			 * It would mess up the cart cookies and we ended up not using it.
@@ -542,7 +546,16 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 		$cart_items = [];
 
-		foreach ( $items as $ticket_id => $quantity ) {
+		foreach ( $items as $ticket_id => $item ) {
+			$optout = false;
+
+			if ( is_array( $item ) ) {
+				$quantity = $item['quantity'];
+				$optout   = $item['optout'];
+			} else {
+				$quantity = $item;
+			}
+
 			$ticket = $paypal->get_ticket( $post_id, $ticket_id );
 
 			// Skip if the ticket in no longer in stock or is not sellable.
@@ -565,6 +578,10 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			if ( empty( $quantity ) ) {
 				continue;
 			}
+
+			// @todo Figure out logic for storing optout for PP.
+
+			$args['custom']['oo'][ 'ticket_' . $ticket->ticket_id ] = $optout;
 
 			$cart_items[] = [
 				'quantity'    => $quantity,
@@ -607,6 +624,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 			$item_counter ++;
 		}
+
+		$args['custom'] = Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode( $args['custom'] );
 
 		/**
 		 * Filters the arguments passed to PayPal while adding items to the cart.

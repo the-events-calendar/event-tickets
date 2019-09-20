@@ -143,7 +143,7 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	public function has_item( $item_id ) {
 		$items = $this->get_items();
 
-		return ! empty( $items[ $item_id ] ) ? (int) $items[ $item_id ] : false;
+		return ! empty( $items[ $item_id ] ) ? (int) $items[ $item_id ]['quantity'] : false;
 	}
 
 	/**
@@ -160,7 +160,7 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	/**
 	 * {@inheritdoc}
 	 */
-	public function add_item( $item_id, $quantity ) {
+	public function add_item( $item_id, $quantity, $optout = false ) {
 		$new_quantity = isset( $this->items[ $item_id ] )
 			? $this->items[ $item_id ] + (int) $quantity
 			: (int) $quantity;
@@ -168,7 +168,13 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 		$new_quantity = max( $new_quantity, 0 );
 
 		if ( 0 < $new_quantity ) {
-			$this->items[ $item_id ] = $new_quantity;
+			$optout = filter_var( $optout, FILTER_VALIDATE_BOOLEAN );
+			$optout = $optout ? 'yes' : 'no';
+
+			$this->items[ $item_id ] = [
+				'quantity' => $new_quantity,
+				'optout'   => $optout,
+			];
 		} else {
 			$this->remove_item( $item_id );
 		}

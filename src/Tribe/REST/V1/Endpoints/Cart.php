@@ -153,17 +153,31 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			 */
 			$cart_tickets = apply_filters( 'tribe_tickets_rest_cart_get_tickets_' . $provider_key, $cart_tickets );
 
-			foreach ( $cart_tickets as $ticket_id => $quantity ) {
+			$default_ticket = [
+				'ticket_id' => 0,
+				'quantity'  => 0,
+				'post_id'   => 0,
+				'optout'    => 0,
+			];
+
+			foreach ( $cart_tickets as $ticket ) {
+				$ticket = array_merge( $default_ticket, $ticket );
+
+				// Enforce types.
+				$ticket['ticket_id'] = absint( $ticket['ticket_id'] );
+				$ticket['quantity']  = absint( $ticket['quantity'] );
+				$ticket['post_id']   = absint( $ticket['post_id'] );
+				$ticket['optout']    = (int) filter_var( $ticket['optout'], FILTER_VALIDATE_BOOLEAN );
+
+				$ticket_id = $ticket['ticket_id'];
+				$quantity  = $ticket['quantity'];
+
 				// Skip ticket if it has no quantity or is not accessible.
 				if ( $quantity < 1 || ! $this->is_ticket_readable( $ticket_id ) ) {
 					continue;
 				}
 
-				$data['tickets'][] = [
-					'ticket_id' => $ticket_id,
-					'quantity'  => $quantity,
-					'provider'  => $provider_key,
-				];
+				$data['tickets'][] = $ticket;
 			}
 		}
 

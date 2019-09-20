@@ -117,17 +117,17 @@ class BaseRestCest {
 
 		$tickets = [];
 
-		if ( is_array( $product_id ) ) {
-			foreach ( $product_id as $ticket_id => $ticket_quantity ) {
-				$tickets[] = [
-					'ticket_id' => $ticket_id,
-					'quantity'  => $ticket_quantity,
-				];
-			}
-		} else {
+		if ( ! is_array( $product_id ) ) {
+			$product_id = [
+				$product_id => $quantity,
+			];
+		}
+
+		foreach ( $product_id as $ticket_id => $ticket_quantity ) {
 			$tickets[] = [
-				'ticket_id' => $product_id,
-				'quantity'  => $quantity,
+				'ticket_id' => $ticket_id,
+				'quantity'  => $ticket_quantity,
+				'optout'    => 1,
 			];
 		}
 
