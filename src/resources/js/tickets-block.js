@@ -434,6 +434,8 @@ tribe.tickets.block = {
 
 			if ( item.$optOut.length && item.$optOut.is( ':checked' ) ) {
 				$( optoutSelector + '-modal' ).val( '1' );
+			} else {
+				$( optoutSelector + '-modal' ).val( '0' );
 			}
 		}
 
@@ -1011,8 +1013,6 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.prefillTicketsBlock = function() {
-		var post_id = $( '.status-publish' ).attr( 'id' ).replace( 'post-', '' );
-
 		$.ajax({
 			type: 'GET',
 			url: '/wp-json/tribe/tickets/v1/cart',
@@ -1050,13 +1050,15 @@ tribe.tickets.block = {
 
 		$ticketRows.each(
 			function() {
-				var $this         = $( this );
+				var $this     = $( this );
 				var ticket_id = $this.data( 'ticketId' );
-				var qty = $this.find( obj.selector.itemQuantityInput ).val();
+				var qty       = $this.find( obj.selector.itemQuantityInput ).val();
+				var optout    = $this.find( '[name="attendee[optout]"]' ).val();
 				if ( 0 < qty ) {
 					var data          = {};
 					data['ticket_id'] = ticket_id;
 					data['quantity']  = qty;
+					data['optout']    = optout;
 					tickets.push( data );
 				}
 			}
@@ -1343,7 +1345,7 @@ tribe.tickets.block = {
 				return false;
 			}
 
-			var post_id  = $( '.status-publish' ).attr( 'id' ).replace( 'post-', '' );
+			var postId  = $( '.status-publish' ).attr( 'id' ).replace( 'post-', '' );
 			var provider = $tribe_ticket.data( 'provider' );
 
 			// save meta and cart
@@ -1351,7 +1353,7 @@ tribe.tickets.block = {
 				provider: obj.commerceSelector[provider],
 				tickets : obj.getTicketsForCart(),
 				meta    : obj.getMetaForSave(),
-				post_id : post_id,
+				post_id : postId,
 			};
 
 			$.ajax({
