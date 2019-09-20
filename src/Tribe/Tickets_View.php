@@ -875,7 +875,7 @@ class Tribe__Tickets__Tickets_View {
 	public function get_restriction_attr( $event_id = null, $ticket_id = null ) {
 		$is_disabled = '';
 		if ( $this->is_rsvp_restricted( $event_id, $ticket_id ) ) {
-			$is_disabled = 'disabled title="' . esc_attr__( 'This RSVP is no longer active.', 'event-tickets' ) . '"';
+			$is_disabled = 'disabled title="' . esc_attr( sprintf( __( 'This %s is no longer active.', 'event-tickets' ), tribe_get_rsvp_label_singular( 'rsvp_restricted_title_text' ) ) ) . '"';
 		}
 
 		return $is_disabled;
