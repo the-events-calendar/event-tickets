@@ -402,7 +402,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			$button_text = ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) ? __( 'Delete RSVP', 'event-tickets' ) : __( 'Delete Ticket', 'event-tickets' ) ;
+			$button_text = ( 'Tribe__Tickets__RSVP' === $ticket->provider_class )
+				? sprintf( _x( 'Delete %s', 'delete link', 'event-tickets' ), tribe_get_rsvp_label_singular( 'delete_link' ) )
+				: sprintf( _x( 'Delete %s', 'delete link', 'event-tickets' ), tribe_get_ticket_label_singular( 'delete_link' ) );
 
 			/**
 			 * Allows for the filtering and testing if a user can delete tickets

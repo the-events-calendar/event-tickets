@@ -13,14 +13,15 @@
  *
  * @since 4.9
  * @since 4.10.8 Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated
- *            third parameter of `get_description_rsvp_ticket()` and to simplify the template's logic.
- *            Uses new functions to get singular and plural texts.
+ *               third parameter of `get_description_rsvp_ticket()` and to simplify the template's logic.
+ *               Uses new functions to get singular and plural texts.
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @version 4.10.8
+ *
+ * @var Tribe__Tickets__Editor__Template $this
  */
-
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
@@ -46,9 +47,9 @@ if ( 1 === $rsvp_count ) {
 }
 
 if ( 1 === $ticket_count ) {
-	$counters[] = sprintf( _x( '%d %s', 'Ticket count singular', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_singular( basename( __FILE__ ) ) );
+	$counters[] = sprintf( _x( '%1d %2s', 'Ticket count singular', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_singular( basename( __FILE__ ) ) );
 } elseif ( 1 < $ticket_count ) {
-	$counters[] = sprintf( _x( '%d %s', 'Ticket count plural', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_plural( basename( __FILE__ ) ) );
+	$counters[] = sprintf( _x( '%1d %2s', 'Ticket count plural', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_plural( basename( __FILE__ ) ) );
 }
 
 if ( empty( $counters ) ) {
@@ -57,7 +58,7 @@ if ( empty( $counters ) ) {
 
 $link = $view->get_tickets_page_url( $event_id, $is_event_page );
 
-$message = esc_html( sprintf( __( 'You have %s for this %s.', 'event-tickets' ), implode( _x( ' and ', 'separator if there are both RSVPs and Tickets', 'event-tickets' ), $counters ), $events_label_singular ) );
+$message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' ), implode( _x( ' and ', 'separator if there are both RSVPs and Tickets', 'event-tickets' ), $counters ), $events_label_singular ) );
 ?>
 
 <div class="tribe-link-view-attendee">

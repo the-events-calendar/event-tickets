@@ -982,8 +982,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'order_status'    => __( 'Search by Order Status', 'event-tickets' ),
 			'order'           => __( 'Search by Order ID', 'event-tickets' ),
 			'security_code'   => __( 'Search by Security Code', 'event-tickets' ),
-			'ID'              => __( 'Search by Ticket ID', 'event-tickets' ),
 			'product_id'      => esc_html( sprintf( __( 'Search by %s ID', 'event-tickets' ), tribe_get_ticket_label_singular( 'attendees_table_search_box_product_id' ) ) ),
+			'ID'              => esc_html( sprintf( _x( 'Search by %s ID', 'Attendees Table search options', 'event-tickets' ), tribe_get_ticket_label_singular( 'attendees_table_search_box_ticket_id' ) ) ),
 		];
 	}
 
