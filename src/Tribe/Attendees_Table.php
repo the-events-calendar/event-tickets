@@ -976,14 +976,14 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	private function get_search_options() {
 		return [
-			'purchaser_name'  => __( 'Search by Purchaser Name', 'event-tickets' ),
-			'purchaser_email' => __( 'Search by Purchaser Email', 'event-tickets' ),
-			'user'            => __( 'Search by User ID', 'event-tickets' ),
-			'order_status'    => __( 'Search by Order Status', 'event-tickets' ),
-			'order'           => __( 'Search by Order ID', 'event-tickets' ),
-			'security_code'   => __( 'Search by Security Code', 'event-tickets' ),
-			'product_id'      => esc_html( sprintf( __( 'Search by %s ID', 'event-tickets' ), tribe_get_ticket_label_singular( 'attendees_table_search_box_product_id' ) ) ),
+			'purchaser_name'  => esc_html_x( 'Search by Purchaser Name', 'Attendees Table search options', 'event-tickets' ),
+			'purchaser_email' => esc_html_x( 'Search by Purchaser Email', 'Attendees Table search options', 'event-tickets' ),
+			'user'            => esc_html_x( 'Search by User ID', 'Attendees Table search options', 'event-tickets' ),
+			'order_status'    => esc_html_x( 'Search by Order Status', 'Attendees Table search options', 'event-tickets' ),
+			'order'           => esc_html_x( 'Search by Order ID', 'Attendees Table search options', 'event-tickets' ),
+			'security_code'   => esc_html_x( 'Search by Security Code', 'Attendees Table search options', 'event-tickets' ),
 			'ID'              => esc_html( sprintf( _x( 'Search by %s ID', 'Attendees Table search options', 'event-tickets' ), tribe_get_ticket_label_singular( 'attendees_table_search_box_ticket_id' ) ) ),
+			'product_id'      => esc_html_x( 'Search by Product ID', 'Attendees Table search options', 'event-tickets' ),
 		];
 	}
 
