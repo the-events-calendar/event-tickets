@@ -152,7 +152,6 @@ tribe.tickets.block = {
 				$ticketEl.removeClass( 'purchasable' );
 
 				// Update HTML elements with the "Out of Stock" messages.
-				//$ticketEl.find( obj.selector.itemExtraAvailable ).remove();
 				$ticketEl.find( obj.selector.itemQuantity ).html( unavailableHtml );
 			}
 
@@ -1354,13 +1353,9 @@ tribe.tickets.block = {
 			var $errorNotice = $( '.tribe-tickets-notice--error' );
 
 			if ( ! isValidForm[ 0 ] ) {
-				var countText = 'one ticket has';
 				$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
-				if( 1 < isValidForm[ 1 ] ) {
-					countText = `${isValidForm[1]} tickets have`;
-				}
 
-				$( '.tribe-tickets-notice--error__count' ).text( countText );
+				$( '.tribe-tickets-notice--error__count' ).text( isValidForm[ 1 ] );
 				$errorNotice.show();
 				return false;
 			}
