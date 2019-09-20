@@ -2343,7 +2343,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$available = $ticket_object->available();
 
 			// Bail if ticket does not have enough available capacity.
-			if ( -1 !== $available && $available < $ticket['quantity'] ) {
+			if ( ( -1 !== $available && $available < $ticket['quantity'] ) || ! $ticket_object->date_in_range() ) {
 				throw new Tribe__REST__Exceptions__Exception( sprintf( __( 'The ticket "%s" does not have that many available for purchase.', 'event-tickets' ), $ticket_object->name ), 'ticket-capacity-not-available', 500 );
 			}
 
