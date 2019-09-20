@@ -41,17 +41,13 @@ $ticket_count          = $view->count_ticket_attendees( $event_id, $user_id );
 
 if ( 1 === $rsvp_count ) {
 	$counters[] = sprintf( _x( '%d %s', 'RSVP count singular', 'event-tickets' ), $rsvp_count, tribe_get_rsvp_label_singular( basename( __FILE__ ) ) );
-}
-
-if ( 1 < $rsvp_count ) {
+} elseif ( 1 < $rsvp_count ) {
 	$counters[] = sprintf( _x( '%d %s', 'RSVP count plural', 'event-tickets' ), $rsvp_count, tribe_get_rsvp_label_plural( basename( __FILE__ ) ) );
 }
 
 if ( 1 === $ticket_count ) {
 	$counters[] = sprintf( _x( '%d %s', 'Ticket count singular', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_singular( basename( __FILE__ ) ) );
-}
-
-if ( 1 < $ticket_count ) {
+} elseif ( 1 < $ticket_count ) {
 	$counters[] = sprintf( _x( '%d %s', 'Ticket count plural', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_plural( basename( __FILE__ ) ) );
 }
 

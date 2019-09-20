@@ -785,17 +785,13 @@ class Tribe__Tickets__Tickets_View {
 
 		if ( 1 === $rsvp_count ) {
 			$descriptions[] = tribe_get_rsvp_label_singular( 'tickets_view_description' );
-		}
-
-		if ( 1 < $rsvp_count ) {
+		} elseif ( 1 < $rsvp_count ) {
 			$descriptions[] = tribe_get_rsvp_label_plural( 'tickets_view_description' );
 		}
 
 		if ( 1 === $ticket_count ) {
 			$descriptions[] = tribe_get_ticket_label_singular( 'tickets_view_description' );
-		}
-
-		if ( 1 < $ticket_count ) {
+		} elseif ( 1 < $ticket_count ) {
 			$descriptions[] = tribe_get_ticket_label_plural( 'tickets_view_description' );
 		}
 
