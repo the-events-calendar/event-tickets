@@ -23,8 +23,19 @@ $non_meta_count        = 0;
 <div class="tribe-tickets__item__attendee__fields">
 	<h2 class="tribe-common-h3 tribe-common-h4--min-medium tribe-common-h--alt tribe-tickets__item__attendee__fields__title"><?php esc_html_e( 'Attendee Details', 'event-tickets' ); ?></h2>
 	<div class="tribe-tickets-notice tribe-tickets-notice--error">
-		<h3 class="tribe-common-h7 tribe-tickets-notice__title">Whoops</h3>
-		<p>You have <span class="tribe-tickets-notice--error__count">one ticket has</span> a field that requires information.</p>
+		<h3 class="tribe-common-h7 tribe-tickets-notice__title"><?php esc_html_e( 'Whoops', 'event-tickets' ); ?></h3>
+		<p>
+			<?php
+				echo sprintf(
+					_x(
+						'You have %s ticket(s) with a field that requires information.',
+						'Note about missing required fields, %s is the html-wrapped number of tickets.',
+						'event-tickets'
+					),
+					'<span class="tribe-tickets-notice--error__count">1</span>'
+				);
+			?>
+		</p>
 	</div>
 	<form
 		id="tribe-modal__attendee_registration"
@@ -50,7 +61,18 @@ $non_meta_count        = 0;
 					</h3>
 				</div>
 		<?php endforeach; ?>
-		<p class="tribe-tickets-notice tribe-tickets-notice--non-ar">There are <span id="tribe-tickets__non-ar-count"><php echo absint( $non_meta_count ); ?></span> other tickets in your cart that do not require attendee information.</p>
+		<p class="tribe-tickets-notice tribe-tickets-notice--non-ar">
+			<?php
+				echo sprintf(
+					_x(
+						'There are %s other tickets in your cart that do not require attendee information.',
+						'Note that there are more tickets in the cart, %s is the html-wrapped number.',
+						'event-tickets'
+					),
+					'<span id="tribe-tickets__non-ar-count">' . absint( $non_meta_count ) . '</span>'
+				);
+			?>
+		</p>
 		<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
 		<div  class="tribe-tickets__item__attendee__fields__footer">
 			<?php if ( $has_tpp ) : ?>
