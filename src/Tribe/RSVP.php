@@ -1042,11 +1042,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Returns all the tickets for an event
+	 * {@inheritDoc}
 	 *
-	 * @param int $post_id
-	 *
-	 * @return array
+	 * @since 4.7
 	 */
 	public function get_tickets( $post_id ) {
 		$ticket_ids = $this->get_tickets_ids( $post_id );

@@ -301,9 +301,9 @@ class Tribe__Tickets__Attendees {
 
 		$resources_url = plugins_url( 'src/resources', dirname( dirname( __FILE__ ) ) );
 
-		wp_enqueue_style( $this->slug(), $resources_url . '/css/tickets-attendees.css', array(), Tribe__Tickets__Main::instance()->css_version() );
-		wp_enqueue_style( $this->slug() . '-print', $resources_url . '/css/tickets-attendees-print.css', array(), Tribe__Tickets__Main::instance()->css_version(), 'print' );
-		wp_enqueue_script( $this->slug(), $resources_url . '/js/tickets-attendees.js', array( 'jquery' ), Tribe__Tickets__Main::instance()->js_version() );
+		wp_enqueue_style( 'tickets-report-css', $resources_url . '/css/tickets-report.css', array(), Tribe__Tickets__Main::instance()->css_version() );
+		wp_enqueue_style( 'tickets-report-print-css', $resources_url . '/css/tickets-report-print.css', array(), Tribe__Tickets__Main::instance()->css_version(), 'print' );
+		wp_enqueue_script( $this->slug() . '-js', $resources_url . '/js/tickets-attendees.js', array( 'jquery' ), Tribe__Tickets__Main::instance()->js_version() );
 
 		add_thickbox();
 
@@ -322,7 +322,7 @@ class Tribe__Tickets__Attendees {
 			) ),
 		);
 
-		wp_localize_script( $this->slug(), 'Attendees', $mail_data );
+		wp_localize_script( $this->slug() . '-js', 'Attendees', $mail_data );
 	}
 
 	/**
@@ -353,7 +353,7 @@ class Tribe__Tickets__Attendees {
 			wp_enqueue_style( 'wp-pointer' );
 		}
 
-		wp_localize_script( $this->slug(), 'AttendeesPointer', $pointer );
+		wp_localize_script( $this->slug() . '-js', 'AttendeesPointer', $pointer );
 	}
 
 	/**
@@ -554,6 +554,46 @@ class Tribe__Tickets__Attendees {
 	}
 
 	/**
+	 * Sanitize rows for CSV usage.
+	 *
+	 * @since 4.10.7.2
+	 *
+	 * @param array $rows Rows to be sanitized.
+	 *
+	 * @return array Sanitized rows.
+	 */
+	public function sanitize_csv_rows( array $rows ) {
+		foreach ( $rows as &$row ) {
+			$row = array_map( [ $this, 'sanitize_csv_value' ], $row );
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * Sanitize a value for CSV usage.
+	 *
+	 * @since 4.10.7.2
+	 *
+	 * @param mixed $value Value to be sanitized.
+	 *
+	 * @return string Sanitized value.
+	 */
+	public function sanitize_csv_value( $value ) {
+		if (
+			0 === mb_strpos( $value, '=' )
+			|| 0 === mb_strpos( $value, '+' )
+			|| 0 === mb_strpos( $value, '-' )
+			|| 0 === mb_strpos( $value, '@' )
+		) {
+			// Prefix the value with a single quote to prevent formula from being processed.
+			$value = '\'' . $value;
+		}
+
+		return $value;
+	}
+
+	/**
 	 * Checks if the user requested a CSV export from the attendees list.
 	 * If so, generates the download and finishes the execution.
 	 *
@@ -565,18 +605,36 @@ class Tribe__Tickets__Attendees {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) || ! $this->user_can( 'edit_posts', $_GET['event_id'] ) ) {
+		$event_id = absint( $_GET['event_id'] );
+
+		// Verify event ID is a valid integer and the nonce is accepted.
+		if ( empty( $event_id ) || ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) ) {
 			return;
 		}
+
+		$event = get_post( $event_id );
+
+		// Verify event exists and current user has access to it.
+		if (
+			! $event instanceof WP_Post
+			|| ! $this->user_can( 'edit_posts', $event_id )
+		) {
+			return;
+		}
+
+		// Generate filtered list of attendees.
+		$items = $this->generate_filtered_list( $event_id );
+
+		// Sanitize items for CSV usage.
+		$items = $this->sanitize_csv_rows( $items );
 
 		/**
 		 * Allow for filtering and modifying the list of attendees that will be exported via CSV for a given event.
 		 *
-		 * @param array $items The array of attendees that will be exported in this CSV file.
-		 * @param int $event_id The ID of the event these attendees are associated with.
+		 * @param array $items    The array of attendees that will be exported in this CSV file.
+		 * @param int   $event_id The ID of the event these attendees are associated with.
 		 */
-		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $this->generate_filtered_list( $_GET['event_id'] ), $_GET['event_id'] );
-		$event = get_post( $_GET['event_id'] );
+		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $items, $event_id );
 
 		if ( ! empty( $items ) ) {
 			$charset  = get_option( 'blog_charset' );

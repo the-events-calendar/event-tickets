@@ -7,16 +7,15 @@
  *     [your-theme]/tribe-events/tickets/rsvp.php
  *
  * @since 4.0
- * @since TBD Uses new functions to get singular and plural texts.
+ * @since 4.10.8 More similar display format to that of other ticket types, including better checking of max quantity available.
  *
- * @version TBD
+ * @version 4.10.8
  *
- * @var bool $must_login
+ * @var Tribe__Tickets__RSVP $this
+ * @var bool                 $must_login
  */
 
-$is_there_any_product         = false;
 $is_there_any_product_to_sell = false;
-$are_products_available       = false;
 
 ob_start();
 $messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
@@ -57,6 +56,10 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 	<table class="tribe-events-tickets tribe-events-tickets-rsvp">
 		<?php
 		foreach ( $tickets as $ticket ) {
+			if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+				continue;
+			}
+
 			// if the ticket isn't an RSVP ticket, then let's skip it
 			if (
 				! $ticket instanceof Tribe__Tickets__Ticket_Object
@@ -69,14 +72,12 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 				continue;
 			}
 
-			$is_there_any_product = true;
-			$is_there_any_product_to_sell = $ticket->is_in_stock();
-			$remaining = $ticket->remaining();
+			/** @var Tribe__Tickets__Tickets_Handler $handler */
+			$handler = tribe( 'tickets.handler' );
 
-			if ( $is_there_any_product_to_sell ) {
-				$are_products_available = true;
-			}
+			$available = $handler->get_ticket_max_purchase( $ticket->ID );
 
+			$is_there_any_product_to_sell = 0 !== $available;
 			?>
 			<tr>
 				<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket->ID ); ?>">
@@ -87,17 +88,20 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 							class="tribe-ticket-quantity"
 						        step="1"
 							min="0"
-							<?php if ( -1 !== $remaining ) : ?>
-								max="<?php echo esc_attr( $remaining ); ?>"
+							<?php if ( -1 !== $available ) : ?>
+								max="<?php echo esc_attr( $available ); ?>"
 							<?php endif; ?>
 							name="quantity_<?php echo absint( $ticket->ID ); ?>"
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>
-						<?php if ( $ticket->managing_stock() ) : ?>
+						<?php if ( -1 !== $available ) : ?>
 							<span class="tribe-tickets-remaining">
-					<?php echo sprintf( esc_html__( '%1$s out of %2$s available', 'event-tickets' ), $ticket->available(), $ticket->capacity() ); ?>
-				</span>
+							<?php
+							$readable_amount = tribe_tickets_get_readable_amount( $available, null, false );
+							echo sprintf( esc_html__( '%1$s available', 'event-tickets' ), '<span class="available-stock" data-product-id="' . esc_attr( $ticket->ID ) . '">' . esc_html( $readable_amount ) . '</span>' );
+							?>
+							</span>
 						<?php endif; ?>
 					<?php else: ?>
 						<span class="tickets_nostock"><?php esc_html_e( 'Out of stock!', 'event-tickets' ); ?></span>
@@ -124,7 +128,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 		}
 		?>
 
-		<?php if ( $are_products_available ) : ?>
+		<?php if ( $is_there_any_product_to_sell ) : ?>
 			<tr class="tribe-tickets-meta-row">
 				<td colspan="4" class="tribe-tickets-attendees">
 					<header><?php esc_html_e( 'Send RSVP confirmation to:', 'event-tickets' ); ?></header>
@@ -244,7 +248,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 $content = ob_get_clean();
 echo $content;
 
-if ( $is_there_any_product ) {
+if ( $is_there_any_product_to_sell ) {
 	// If we have available tickets there is generally no need to display a 'tickets unavailable' message
 	// for this post
 	$this->do_not_show_tickets_unavailable_message();

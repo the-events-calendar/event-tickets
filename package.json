@@ -1,6 +1,6 @@
 {
   "name": "event-tickets",
-  "version": "4.10.7",
+  "version": "4.10.9",
   "repository": "git@github.com:moderntribe/event-tickets.git",
   "_zipname": "event-tickets",
   "_zipfoldername": "event-tickets",
@@ -87,6 +87,7 @@
     "node-sass": "^4.12.0",
     "postcss-hexrgba": "^1.0.0",
     "postcss-import": "^11.0.0",
+    "postcss-inline-svg": "^4.1.0",
     "postcss-loader": "2.0.6",
     "postcss-mixins": "^4.0.1",
     "postcss-nested": "^1.0.0",

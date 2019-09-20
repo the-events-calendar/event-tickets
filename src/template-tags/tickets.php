@@ -718,7 +718,10 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
 	 * @return bool|object
 	 */
 	function tribe_tickets_get_ticket_provider( $id ) {
-		return tribe( 'tickets.data_api' )->get_ticket_provider( $id );
+		/** @var Tribe__Tickets__Data_API $data_api */
+		$data_api = tribe( 'tickets.data_api' );
+
+		return $data_api->get_ticket_provider( $id );
 	}
 }
 
@@ -871,11 +874,21 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 		}
 
 		$event_types = Tribe__Tickets__Main::instance()->post_types();
-		$key         = tribe( 'tickets.handler' )->key_capacity;
+			/**
+		 * @var Tribe__Tickets__Tickets_Handler $handler
+		 * @var Tribe__Tickets__Version $version
+		 */
+		$handler = tribe( 'tickets.handler' );
+		$version = tribe( 'tickets.version' );
+
+		$key = $handler->key_capacity;
 
 		// When we have a legacy ticket we migrate it
-		if ( ! in_array( $post->post_type, $event_types ) && tribe( 'tickets.version' )->is_legacy( $post->ID ) ) {
-			$legacy_capacity = tribe( 'tickets.handler' )->filter_capacity_support( null, $post->ID, $key );
+		if (
+			! in_array( $post->post_type, $event_types )
+			&& $version->is_legacy( $post->ID )
+		) {
+			$legacy_capacity = $handler->filter_capacity_support( null, $post->ID, $key );
 
 			// Cast as integer as it might be returned as numeric string on some cases
 			return (int) $legacy_capacity;
@@ -910,7 +923,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 
 		// When dealing with an empty string we assume it's unlimited
 		if ( '' === $value ) {
-			$value = - 1;
+			$value = -1;
 		}
 
 		return (int) $value;
@@ -920,24 +933,25 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 if ( ! function_exists( 'tribe_tickets_get_readable_amount' ) ) {
 
 	/**
-	 * Turns a Stock, Remaining or Capacity into a Human Readable Format
+	 * Turns a Stock, Remaining, or Capacity number into a human-readable format.
 	 *
 	 * @since  4.6
 	 *
-	 * @param string|int $number Which you are trying to convert.
-	 * @param string     $mode   Mode this post is on.
+	 * @param string|int $number  Which you are trying to convert.
+	 * @param string     $mode    Mode this post is on.
+	 * @param bool       $display Whether or not to echo.
 	 *
 	 * @return string
 	 */
 	function tribe_tickets_get_readable_amount( $number, $mode = 'own', $display = false ) {
-		$html = array();
+		$html = [];
 
 		$show_parens = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode;
 		if ( $show_parens ) {
 			$html[] = '(';
 		}
 
-		if ( - 1 === (int) $number || Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $number ) {
+		if ( -1 === (int) $number || Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $number ) {
 			/** @var Tribe__Tickets__Tickets_Handler $handler */
 			$handler = tribe( 'tickets.handler' );
 
@@ -978,8 +992,8 @@ if ( ! function_exists( 'tribe_tickets_ticket_in_wc_membership_for_user' ) ) {
 	function tribe_tickets_ticket_in_wc_membership_for_user( $ticket_id, $user_id = 0 ) {
 
 		if (
-			! function_exists( 'wc_memberships_get_user_active_memberships' ) ||
-			! function_exists( 'wc_memberships_product_has_member_discount' )
+			! function_exists( 'wc_memberships_get_user_active_memberships' )
+			|| ! function_exists( 'wc_memberships_product_has_member_discount' )
 		) {
 			return false;
 		}
