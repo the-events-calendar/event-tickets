@@ -866,14 +866,16 @@ class Tribe__Tickets__Tickets_View {
 	}
 
 	/**
-	 * Gets a HTML Attribute for input/select/textarea to be disabled
+	 * Gets a HTML Attribute for input/select/textarea to be disabled.
 	 *
-	 * @param  int  $event_id   The Event/Post ID (optional)
-	 * @param  int  $ticket_id  The Ticket/RSVP ID (optional)
-	 * @return boolean
+	 * @param int $event_id  The Event/Post ID (optional).
+	 * @param int $ticket_id The Ticket/RSVP ID (optional).
+	 *
+	 * @return bool
 	 */
 	public function get_restriction_attr( $event_id = null, $ticket_id = null ) {
 		$is_disabled = '';
+
 		if ( $this->is_rsvp_restricted( $event_id, $ticket_id ) ) {
 			$is_disabled = 'disabled title="' . esc_attr( sprintf( __( 'This %s is no longer active.', 'event-tickets' ), tribe_get_rsvp_label_singular( 'rsvp_restricted_title_text' ) ) ) . '"';
 		}
