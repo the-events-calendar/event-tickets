@@ -18,9 +18,14 @@ $providers             = array_unique( wp_list_pluck( wp_list_pluck( $tickets, '
 $has_tpp               = Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === $passed_provider || in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers, true );
 $event_id              = get_the_ID();
 $meta                  = Tribe__Tickets_Plus__Main::instance()->meta();
+$non_meta_count        = 0;
 ?>
 <div class="tribe-tickets__item__attendee__fields">
 	<h2 class="tribe-common-h3 tribe-common-h4--min-medium tribe-common-h--alt tribe-tickets__item__attendee__fields__title"><?php esc_html_e( 'Attendee Details', 'event-tickets' ); ?></h2>
+	<div class="tribe-tickets-notice tribe-tickets-notice--error">
+		<h3 class="tribe-common-h7 tribe-tickets-notice__title">Whoops</h3>
+		<p>You have <span class="tribe-tickets-notice--error__count">one ticket has</span> a field that requires information.</p>
+	</div>
 	<form
 		id="tribe-modal__attendee_registration"
 		method="post"
@@ -35,6 +40,7 @@ $meta                  = Tribe__Tickets_Plus__Main::instance()->meta();
 			$has_meta = get_post_meta( $ticket['id'], '_tribe_tickets_meta_enabled', true );
 
 			if ( empty( $has_meta ) || ! tribe_is_truthy( $has_meta ) ) {
+				$non_meta_count++;
 				continue;
 			}
 			?>
@@ -44,6 +50,7 @@ $meta                  = Tribe__Tickets_Plus__Main::instance()->meta();
 					</h3>
 				</div>
 		<?php endforeach; ?>
+		<p class="tribe-tickets-notice tribe-tickets-notice--non-ar">There are <span id="tribe-tickets__non-ar-count"><php echo absint( $non_meta_count ); ?></span> other tickets in your cart that do not require attendee information.</p>
 		<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
 		<div  class="tribe-tickets__item__attendee__fields__footer">
 			<?php if ( $has_tpp ) : ?>
