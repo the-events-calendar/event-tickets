@@ -816,7 +816,7 @@ class Tribe__Tickets__Tickets_View {
 			return '';
 		}
 
-		return implode( esc_html_x( ' and ', 'separator if there are both RSVPs and Tickets', 'event-tickets' ), $descriptions );
+		return esc_html( implode( _x( ' and ', 'separator if there are both RSVPs and Tickets', 'event-tickets' ), $descriptions ) );
 	}
 
 	/**
