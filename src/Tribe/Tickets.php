@@ -402,9 +402,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
+			$delete_text = _x( 'Delete %s', 'delete link', 'event-tickets' );
+
 			$button_text = ( 'Tribe__Tickets__RSVP' === $ticket->provider_class )
-				? sprintf( _x( 'Delete %s', 'delete link', 'event-tickets' ), tribe_get_rsvp_label_singular( 'delete_link' ) )
-				: sprintf( _x( 'Delete %s', 'delete link', 'event-tickets' ), tribe_get_ticket_label_singular( 'delete_link' ) );
+				? sprintf( $delete_text, tribe_get_rsvp_label_singular( 'delete_link' ) )
+				: sprintf( $delete_text, tribe_get_ticket_label_singular( 'delete_link' ) );
 
 			/**
 			 * Allows for the filtering and testing if a user can delete tickets
@@ -479,7 +481,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			$button_text = ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) ? sprintf( __( 'Move %s', 'event-tickets' ), tribe_get_rsvp_label_singular( 'move_ticket_button_text' ) ) : sprintf( __( 'Move %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'move_ticket_button_text' ) ) ;
+			$move_text = __( 'Move %s', 'event-tickets' );
+
+			$button_text = ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) ? sprintf( $move_text, tribe_get_rsvp_label_singular( 'move_ticket_button_text' ) ) : sprintf( $move_text, tribe_get_ticket_label_singular( 'move_ticket_button_text' ) ) ;
 
 			$move_url = $this->get_ticket_move_url( $post_id, $ticket );
 
