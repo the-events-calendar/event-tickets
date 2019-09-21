@@ -197,7 +197,7 @@ trait Attendee_Maker {
 	 * @param      int $attendee_id
 	 * @param bool     $optout
 	 */
-	protected function optout_attendee( int $attendee_id, bool $optout = true ) {
+	protected function optout_attendee( int $attendee_id, $optout = true ) {
 		$attendee_post = get_post( $attendee_id );
 
 		if ( ! $attendee_post instanceof \WP_Post ) {
@@ -210,7 +210,10 @@ trait Attendee_Maker {
 			throw new \RuntimeException( "Provider for attendee {$attendee_id} could not be found" );
 		}
 
-		$optout_string = tribe_is_truthy( $optout ) ? 'yes' : 'no';
+		$optout = filter_var( $optout, FILTER_VALIDATE_BOOLEAN );
+
+		$optout_string = $optout ? 'yes' : 'no';
+
 		update_post_meta( $attendee_post->ID, $provider->attendee_optout_key, $optout_string );
 	}
 }

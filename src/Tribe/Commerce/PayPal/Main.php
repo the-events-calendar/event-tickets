@@ -2325,7 +2325,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 			if ( is_array( $item ) ) {
 				$ticket_quantity = $item['quantity'];
-				$optout          = $item['optout'];
+				$optout          = $item[ $this->attendee_optout_key ];
 			} else {
 				$ticket_quantity = $item;
 			}
@@ -2454,8 +2454,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$optout = filter_var( $optout, FILTER_VALIDATE_BOOLEAN );
 			$optout = $optout ? 'yes' : 'no';
 
+			$extra_item_data = [
+				$this->attendee_optout_key => $optout,
+			];
+
 			// Add to / update quantity in cart.
-			$cart->add_item( $ticket_id, $quantity, $optout );
+			$cart->add_item( $ticket_id, $quantity, $extra_item_data );
 		}
 	}
 
