@@ -7,13 +7,14 @@
  *     [your-theme]/tribe-events/tickets/tpp.php
  *
  * @since   4.5
- * @since   4.7   Make the ticket form more readable.
- * @since   4.7.6 Add support for showing description option.
- * @since   4.8.2 Add date_in_range() logic so past tickets do not show.
- * @since   4.9.3 Display login link if visitor is logged out and logging in is required to purchase.
+ * @since   4.7    Make the ticket form more readable.
+ * @since   4.7.6  Add support for showing description option.
+ * @since   4.8.2  Add date_in_range() logic so past tickets do not show.
+ * @since   4.9.3  Display login link if visitor is logged out and logging in is required to purchase.
  * @since   4.10.8 Removed the date_in_range() check per ticket, since it now happens upstream. Better checking of max quantity available.
+ * @since   TBD  Use customizable ticket name functions.
  *
- * @version 4.10.8
+ * @version TBD
  *
  * @var bool $must_login
  * @var bool $display_login_link
