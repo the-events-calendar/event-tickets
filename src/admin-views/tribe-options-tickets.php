@@ -148,7 +148,7 @@ $tickets_fields['ticket-paypal-heading'] = array(
 if ( ! $is_tickets_plus_available ) {
 	$plus_link = sprintf(
 		'<a href="http://m.tri.be/19zl" target="_blank">%s</a>',
-		__( 'Events Tickets Plus', 'tribe-common' )
+		__( 'Event Tickets Plus', 'tribe-common' )
 	);
 
 	$plus_link_2 = sprintf(
