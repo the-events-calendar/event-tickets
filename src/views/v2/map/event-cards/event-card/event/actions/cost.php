@@ -16,7 +16,7 @@
  * @see tribe_get_event() For the format of the event object.
  *
  */
-if ( empty( if ( $event->tickets->exist ) ) ) {
+if ( empty( $event->tickets->exist ) ) {
 	return;
 }
 ?>
