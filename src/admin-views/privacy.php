@@ -44,10 +44,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<li><?php echo esc_html(
 				sprintf(
 					__( '%1$s information (%2$s and %3$s): name, email address, and %4$s number/SKU (via check-in page)', 'event-tickets' ),
-				tribe_get_ticket_label_singular( basename( __FILE__ ) ),
-				tribe_get_rsvp_label_plural( basename( __FILE__ ) ),
-				tribe_get_ticket_label_plural( basename( __FILE__ ) ),
-				tribe_get_ticket_label_singular_lowercase( basename( __FILE__ ) )
+					tribe_get_ticket_label_singular( basename( __FILE__ ) ),
+					tribe_get_rsvp_label_plural( basename( __FILE__ ) ),
+					tribe_get_ticket_label_plural( basename( __FILE__ ) ),
+					tribe_get_ticket_label_singular_lowercase( basename( __FILE__ ) )
 				)
 			); ?></li>
 		<li><?php echo esc_html( sprintf( __( '%s purchaser information: name and email address', 'event-tickets' ), tribe_get_ticket_label_singular( basename( __FILE__ ) ) ) ); ?></li>
