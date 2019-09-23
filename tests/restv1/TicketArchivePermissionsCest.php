@@ -59,7 +59,7 @@ class TicketArchivePermissionsCest extends BaseRestCest {
 
 		$I->seeResponseContainsJson(
 			[
-				'rest_url'  => $this->tickets_url,
+				'rest_url'  => trailingslashit( $this->tickets_url ),
 				'tickets'   => $expected_tickets,
 			]
 		);
@@ -88,7 +88,7 @@ class TicketArchivePermissionsCest extends BaseRestCest {
 
 		$I->seeResponseContainsJson(
 			[
-				'rest_url'  => $this->tickets_url,
+				'rest_url'  => trailingslashit( $this->tickets_url ),
 				'tickets'   => $expected_tickets,
 			]
 		);
