@@ -17,6 +17,8 @@
 
 namespace Tribe\Events\Tickets\Views\V2;
 
+use Tribe\Events\Tickets\Views\V2\Models\Tickets;
+
 /**
  * Class Hooks.
  *
@@ -55,6 +57,23 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
+	 * Add tickets data to the event object.
+	 *
+	 * @since TBD
+	 *
+	 * @param array    $props An associative array of all the properties that will be set on the "decorated" post
+	 *                        object.
+	 * @param \WP_Post $post  The post object handled by the class.
+	 *
+	 * @return array The model properties. This value might be cached.
+	 */
+	public function add_tickets_data( $props, $event ) {
+		$props['tickets'] = new Tickets( $event->ID );
+
+		return $props;
+	}
+
+	/**
 	 * Adds the actions required by each Tickets Views v2 component.
 	 *
 	 * @since TBD
@@ -70,5 +89,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_template_path_list', [ $this, 'filter_template_path_list' ] );
+		add_filter( 'tribe_post_type_events_properties', [ $this, 'add_tickets_data' ], 20, 2 );
 	}
 }

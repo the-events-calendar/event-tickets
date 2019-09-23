@@ -1,9 +1,9 @@
 <?php
 /**
- * View: List Single Event Cost
+ * View: Month View - Mobile Event Cost
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/events/views/v2/list/event/cost.php
+ * [your-theme]/tribe/events/views/v2/month/mobile-events/mobile-day/mobile-event/cost.php
  *
  * See more documentation about our views templating system.
  *
@@ -17,12 +17,15 @@
  *
  */
 
-if ( empty( $event->cost ) ) {
+if ( ! $event->featured ) {
 	return;
 }
 
+if ( empty( $event->cost ) ) {
+	return;
+}
 ?>
-<div class="tribe-events-c-small-cta tribe-common-b3 tribe-events-calendar-list__event-cost">
+<div class="tribe-events-c-small-cta tribe-common-b3 tribe-events-calendar-month-mobile-events__mobile-event-cost">
 	<?php if ( $event->tickets->exist ) : ?>
 		<a
 			href="<?php echo esc_url( $event->tickets->link->anchor ); ?>"
@@ -34,7 +37,9 @@ if ( empty( $event->cost ) ) {
 	<span class="tribe-events-c-small-cta__price">
 		<?php echo esc_html( $event->cost ) ?>
 	</span>
-	<span class="tribe-events-c-small-cta__stock">
-		<?php echo esc_html( $event->tickets->stock->available ) ?>
-	</span>
+	<?php if ( ! empty( $event->tickets->stock->available ) ) : ?>
+		<span class="tribe-events-c-small-cta__stock">
+			<?php echo esc_html( $event->tickets->stock->available ) ?>
+		</span>
+	<?php endif; ?>
 </div>

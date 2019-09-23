@@ -1,9 +1,9 @@
 <?php
 /**
- * View: List Single Event Cost
+ * View: Day Single Event Cost
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/events/views/v2/list/event/cost.php
+ * [your-theme]/tribe/events/views/v2/day/event/cost.php
  *
  * See more documentation about our views templating system.
  *
@@ -34,7 +34,9 @@ if ( empty( $event->cost ) ) {
 	<span class="tribe-events-c-small-cta__price">
 		<?php echo esc_html( $event->cost ) ?>
 	</span>
-	<span class="tribe-events-c-small-cta__stock">
-		<?php echo esc_html( $event->tickets->stock->available ) ?>
-	</span>
+	<?php if ( ! empty( $event->tickets->stock->available ) ) : ?>
+		<span class="tribe-events-c-small-cta__stock">
+			<?php echo esc_html( $event->tickets->stock->available ) ?>
+		</span>
+	<?php endif; ?>
 </div>

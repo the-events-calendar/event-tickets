@@ -11,13 +11,15 @@
  * @return bool Whether v2 of the Views are enabled or not.
  */
 function tribe_events_tickets_views_v2_is_enabled() {
+	$enabled = false;
+
 	if ( defined( 'TRIBE_EVENTS_V2_VIEWS' ) ) {
-		return (bool) TRIBE_EVENTS_V2_VIEWS;
+		$enabled = (bool) TRIBE_EVENTS_V2_VIEWS;
 	}
 
 	$env_var = getenv( 'TRIBE_EVENTS_V2_VIEWS' );
 	if ( false !== $env_var ) {
-		return (bool) $env_var;
+		$enabled = (bool) $env_var;
 	}
 
 	/**
