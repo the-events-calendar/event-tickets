@@ -1,0 +1,65 @@
+.tribe-common {
+
+	.tribe-tickets-notice {
+		padding: var(--spacer-3);
+		background-color: var(--color-background-secondary);
+		border-radius: var(--border-radius-default);
+		margin: var(--spacer-4) 0;
+
+		> *:last-child {
+			padding-bottom: 0;
+			margin-bottom: 0;
+		}
+	}
+
+	.tribe-tickets-notice__title {
+		margin: 0;
+		position: relative;
+	}
+
+	/*
+		Error Notices
+	*/
+	.tribe-tickets-notice--error {
+		background-color: var(--color-background-error);
+		padding-left: 50px;
+	}
+
+	.tribe-tickets-notice--error .tribe-tickets-notice__title {
+		position: relative;
+
+		&:before {
+			background-image: svg-inline( 'error' );
+			background-size: contain;
+			content: '';
+			height: var(--spacer-3);
+			left: calc( -1 * var(--spacer-7) );
+			position: absolute;
+			top: 2px;
+			width: var(--spacer-3);
+		}
+	}
+
+	/*
+		"Barred" Notices (visible side borders)
+	*/
+	.tribe-tickets-notice--barred {
+		background-color: var(--color-background);
+		border: var(--spacer-0) solid var(--color-border-secondary);
+		border-bottom: 0;
+		border-radius: 0;
+		border-top: 0;
+		padding: 0 var(--spacer-2);
+	}
+
+	.tribe-tickets-notice--barred-left {
+		border-right: 0;
+		padding: 0 0 0 var(--spacer-2);
+	}
+
+	.tribe-tickets-notice--barred-right {
+		border-left: 0;
+		padding: 0 var(--spacer-2) 0 0;
+	}
+
+}

@@ -152,7 +152,6 @@ tribe.tickets.block = {
 				$ticketEl.removeClass( 'purchasable' );
 
 				// Update HTML elements with the "Out of Stock" messages.
-				$ticketEl.find( obj.selector.itemExtraAvailable ).replaceWith( unavailableHtml );
 				$ticketEl.find( obj.selector.itemQuantity ).html( unavailableHtml );
 			}
 
@@ -351,6 +350,7 @@ tribe.tickets.block = {
 	 * @param obj $form The for m we are updating.
 	 */
 	obj.appendARFields = function ( $form ) {
+		var nonMetaCount = 0;
 		$form.find( obj.selector.item ).each(
 			function () {
 				var $cartItem = $( this );
@@ -361,6 +361,7 @@ tribe.tickets.block = {
 
 					// Ticket does not have meta - no need to jump through hoops (and throw errors).
 					if ( ! $ticket_container.length ) {
+						nonMetaCount += obj.getQty( $cartItem );
 						return;
 					}
 
@@ -394,6 +395,14 @@ tribe.tickets.block = {
 				}
 			}
 		);
+
+		var $notice = $( '.tribe-tickets-notice--non-ar' );
+		if ( nonMetaCount ) {
+			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
+			$notice.show();
+		} else {
+			$notice.hide();
+		}
 
 		obj.document.trigger( 'tribe-ar-fields-appended' );
 	}
@@ -877,6 +886,7 @@ tribe.tickets.block = {
 
 	/**
 	 * Validates the entire meta form.
+	 * Adds errors to the top of the modal.
 	 *
 	 * @since TBD
 	 *
@@ -887,6 +897,7 @@ tribe.tickets.block = {
 	obj.validateForm = function( $form ) {
 		var $containers     = $form.find( obj.modalSelector.arItem );
 		var formValid       = true;
+		var invalidTickets  = 0;
 
 		$containers.each(
 			function() {
@@ -894,12 +905,13 @@ tribe.tickets.block = {
 				var validContainer = obj.validateBlock( $container );
 
 				if ( ! validContainer ) {
+					invalidTickets++;
 					formValid = false;
 				}
 			}
 		);
 
-		return formValid;
+		return [formValid, invalidTickets];
 	}
 
 	/**
@@ -1024,14 +1036,22 @@ tribe.tickets.block = {
 					return;
 				}
 
+				var $eventCount = 0;
+
 				tickets.forEach(function(ticket) {
 					var $ticketRow = $( `.tribe-tickets__item[data-ticket-id="${ticket.ticket_id}"]` );
 					var $field = $ticketRow.find( obj.selector.itemQuantityInput );
-					$field.val( ticket.quantity );
-					$field.trigger( 'change' );
+					if ( $field.length ) {
+						$field.val( ticket.quantity );
+						$field.trigger( 'change' );
+						$eventCount++;
+					}
+
 				});
 
-				$( '#tribe-tickets__notice__tickets-in-cart' ).show();
+				if ( 0 < $eventCount ) {
+					$( '#tribe-tickets__notice__tickets-in-cart' ).show();
+				}
 			}
 		});
 	}
@@ -1338,12 +1358,17 @@ tribe.tickets.block = {
 
 			var $arForm = $( obj.modalSelector.arForm );
 			var isValidForm = obj.validateForm( $arForm );
+			var $errorNotice = $( '.tribe-tickets-notice--error' );
 
-			if ( ! isValidForm ) {
+			if ( ! isValidForm[ 0 ] ) {
 				$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
 
+				$( '.tribe-tickets-notice--error__count' ).text( isValidForm[ 1 ] );
+				$errorNotice.show();
 				return false;
 			}
+
+			$errorNotice.hide();
 
 			var postId  = $( '.status-publish' ).attr( 'id' ).replace( 'post-', '' );
 			var provider = $tribe_ticket.data( 'provider' );
