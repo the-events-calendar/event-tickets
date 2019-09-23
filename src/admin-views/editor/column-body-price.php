@@ -13,7 +13,7 @@ if ( method_exists( $provider_obj, 'get_price_value' ) ) {
 		echo $provider_obj->get_price_html( $ticket->ID );
 	} else {
 		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
-			esc_html_e( 'RSVP', 'event-tickets' );
+			echo esc_html( tribe_get_rsvp_label_singular( basename( __FILE__ ) ) );
 		} else {
 			esc_html_e( 'Free', 'event-tickets' );
 		}

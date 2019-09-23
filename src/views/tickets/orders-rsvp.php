@@ -5,8 +5,11 @@
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-rsvp.php
  *
  * @package TribeEventsCalendar
- * @version 4.5.5
  *
+ * @since 4.2
+ * @since TBD Uses new functions to get singular and plural texts.
+ *
+ * @version TBD
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,7 +29,7 @@ if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user_id );
 ?>
 <div class="tribe-rsvp">
-	<h2><?php printf( esc_html__( 'My RSVPs for This %s', 'event-tickets' ), $post_type->labels->singular_name ); ?></h2>
+	<h2><?php echo esc_html( sprintf( __( 'My %1$s for this %2$s', 'event-tickets' ), tribe_get_rsvp_label_plural( basename( __FILE__ ) ), $post_type->labels->singular_name ) ); ?></h2>
 	<?php foreach ( $attendee_groups as $attendee_group ): ?>
 		<?php
 		$first_attendee = reset( $attendee_group );

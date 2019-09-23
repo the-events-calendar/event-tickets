@@ -27,7 +27,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 	<table id="tribe_ticket_list_table" class="tribe-tickets-editor-table eventtable ticket_list eventForm widefat fixed">
 		<thead>
 			<tr class="table-header">
-				<th class="ticket_name column-primary"><?php esc_html_e( 'Tickets', 'event-tickets' ); ?></th>
+				<th class="ticket_name column-primary"><?php echo esc_html( tribe_get_ticket_label_plural( basename( __FILE__ ) ) ); ?></th>
 				<?php
 				/**
 				 * Allows for the insertion of additional columns into the ticket table header
