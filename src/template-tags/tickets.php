@@ -259,16 +259,16 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 				$parts[ $type . '-stock' ] = $html['stock'] = $stock_html;
 
 				if ( 'rsvp' === $type ) {
-					$button_label  = esc_html( sprintf( _x( '%s Now!', 'list view rsvp now ticket button', 'event-tickets' ), tribe_get_rsvp_label_singular( 'list_view_rsvp_now_button' ) ) );
+					$button_label  = sprintf( _x( '%s Now!', 'list view rsvp now ticket button', 'event-tickets' ), tribe_get_rsvp_label_singular( 'list_view_rsvp_now_button' ) );
 					$button_anchor = '#rsvp-now';
 				} else {
-					$button_label  = esc_html_x( 'Buy Now!', 'list view buy now ticket button', 'event-tickets' );
+					$button_label  = _x( 'Buy Now!', 'list view buy now ticket button', 'event-tickets' );
 					$button_anchor = '#buy-tickets';
 				}
 
 				$permalink = get_the_permalink( $event_id );
 				$query_string = parse_url( $permalink, PHP_URL_QUERY );
-				$query_params = empty( $query_string ) ? array() : (array) explode( '&', $query_string );
+				$query_params = empty( $query_string ) ? [] : (array) explode( '&', $query_string );
 
 				$button = '<form method="get" action="' . esc_url( $permalink . $button_anchor ) . '">';
 
@@ -283,7 +283,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					}
 				}
 
-				$button	.= '<button type="submit" name="tickets_process" class="tribe-button">' . $button_label . '</button></form>';
+				$button	.= '<button type="submit" name="tickets_process" class="tribe-button">' . esc_html( $button_label ) . '</button></form>';
 
 				$parts[ $type . '-button' ] = $html['button'] = $button;
 			}
