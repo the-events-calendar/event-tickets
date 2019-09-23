@@ -2,7 +2,6 @@
 
 use Tribe\Events\Views\V2\Service_Provider as Events_Provider;
 use Tribe\Events\Tickets\Views\V2\Service_Provider as Tickets_Provider;
-use Codeception\Util\Autoload;
 
 $tec_tests_dir = __DIR__ . '/../../../the-events-calendar/tests';
 
@@ -30,4 +29,15 @@ tribe_register_provider( Tickets_Provider::class );
 global $wp_rewrite;
 $wp_rewrite->permalink_structure = '/%postname%/';
 $wp_rewrite->rewrite_rules();
+
+/**
+ * Codeception will regenerate snapshots on `--debug`, while the `spatie/snapshot-assertions`
+ * library will do the same on `--update-snapshots`.
+ * Since Codeception has strict check on the CLI arguments appending `--update-snapshots` to the
+ * `vendor/bin/codecept run` command will throw an error.
+ * We handle that intention here.
+ */
+if ( in_array( '--debug', $_SERVER['argv'], true ) ) {
+	$_SERVER['argv'][] = '--update-snapshots';
+}
 
