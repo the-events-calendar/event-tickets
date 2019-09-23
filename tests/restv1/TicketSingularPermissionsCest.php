@@ -35,15 +35,17 @@ class TicketSingularPermissionsCest extends BaseRestCest {
 		$I->sendGET( $this_ticket_url );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
-		$expected_tickets   = tribe_tickets( 'restv1' )->all();
 		$expected_attendees = tribe_attendees( 'restv1' )->all();
 		$I->seeResponseContainsJson(
 			[
 				'rest_url'  => $this_ticket_url,
-				'tickets'   => $expected_tickets,
+				'id'        => $ticket_id,
 				'attendees' => $expected_attendees,
 			]
 		);
+
+		// 'tickets' only appears in archives
+		$I->cantSeeResponseContainsJson( [ 'tickets' ] );
 	}
 
 	/**
@@ -61,13 +63,15 @@ class TicketSingularPermissionsCest extends BaseRestCest {
 		$I->sendGET( $this_ticket_url );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
-		$expected_tickets = tribe_tickets( 'restv1' )->all();
 		$I->canSeeResponseContainsJson(
 			[
 				'rest_url'  => $this_ticket_url,
-				'tickets'   => $expected_tickets,
+				'id'        => $ticket_id,
 				'attendees' => [], // property should be present as an empty array
 			]
 		);
+
+		// 'tickets' only appears in archives
+		$I->cantSeeResponseContainsJson( [ 'tickets' ] );
 	}
 }
