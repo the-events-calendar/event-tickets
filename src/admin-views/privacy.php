@@ -27,9 +27,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<p><?php echo esc_html(
 			sprintf(
 				__( 'If you create, submit, import, save, or publish event %1$s information, as well as obtain %2$s or purchase %3$s to events, such information is retained in the local database:', 'event-tickets' ),
-			tribe_get_ticket_label_singular_lowercase( basename( __FILE__ ) ),
-			tribe_get_rsvp_label_plural( basename( __FILE__ ) ),
-			tribe_get_ticket_label_plural_lowercase( basename( __FILE__ ) )
+				tribe_get_ticket_label_singular_lowercase( basename( __FILE__ ) ),
+				tribe_get_rsvp_label_plural( basename( __FILE__ ) ),
+				tribe_get_ticket_label_plural_lowercase( basename( __FILE__ ) )
 			)
 		); ?></p>
 
