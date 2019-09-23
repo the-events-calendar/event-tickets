@@ -669,7 +669,10 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 			// Return if event is not showing attendees.
 			if (
-				( ! function_exists( 'has_block' ) || ! has_block( 'tribe/attendees', $event ) )
+				(
+					! function_exists( 'has_block' )
+					|| ! has_block( 'tribe/attendees', $event )
+				)
 				&& ! has_shortcode( $event->post_content, 'tribe_attendees_list' )
 				// In case has_shortcode does not work.
 				&& false === strpos( $event->post_content, '[tribe_attendees_list]' )
