@@ -4,6 +4,7 @@ namespace Tribe\Tickets\Test\REST\V1;
 
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
+use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 
 /**
@@ -15,6 +16,7 @@ use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
  */
 class TicketArchivePermissionsCest extends BaseRestCest {
 	use RSVP_Ticket_Maker;
+	use PayPal_Ticket_Maker;
 	use Attendee_Maker;
 
 	private function get_multi_posts_with_multi_tickets_with_multi_attendees( Restv1Tester $I ) {
