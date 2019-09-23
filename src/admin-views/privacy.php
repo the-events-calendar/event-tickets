@@ -37,8 +37,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<li><?php echo esc_html(
 				sprintf(
 					__( 'Attendees information (%1$s and %2$s): name and email address', 'event-tickets' ),
-				tribe_get_rsvp_label_plural( basename( __FILE__ ) ),
-				tribe_get_ticket_label_plural( basename( __FILE__ ) )
+					tribe_get_rsvp_label_plural( basename( __FILE__ ) ),
+					tribe_get_ticket_label_plural( basename( __FILE__ ) )
 				)
 			); ?></li>
 		<li><?php echo esc_html(
