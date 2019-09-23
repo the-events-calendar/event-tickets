@@ -1036,14 +1036,22 @@ tribe.tickets.block = {
 					return;
 				}
 
+				var $eventCount = 0;
+
 				tickets.forEach(function(ticket) {
 					var $ticketRow = $( `.tribe-tickets__item[data-ticket-id="${ticket.ticket_id}"]` );
 					var $field = $ticketRow.find( obj.selector.itemQuantityInput );
-					$field.val( ticket.quantity );
-					$field.trigger( 'change' );
+					if ( $field.length ) {
+						$field.val( ticket.quantity );
+						$field.trigger( 'change' );
+						$eventCount++;
+					}
+
 				});
 
-				$( '#tribe-tickets__notice__tickets-in-cart' ).show();
+				if ( 0 < $eventCount ) {
+					$( '#tribe-tickets__notice__tickets-in-cart' ).show();
+				}
 			}
 		});
 	}
