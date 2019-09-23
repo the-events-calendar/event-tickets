@@ -330,8 +330,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		// REST API hooks.
 		add_filter( 'tribe_tickets_rest_cart_get_cart_url_tribe-commerce', [ $this, 'get_cart_url' ], 10, 3 );
 		add_filter( 'tribe_tickets_rest_cart_get_checkout_url_tribe-commerce', [ $this, 'get_checkout_url' ], 10, 3 );
-		add_filter( 'tribe_tickets_rest_cart_get_tickets_tribe-commerce', [ $this, 'get_tickets_in_cart' ] );
-		add_filter( 'tribe_tickets_rest_cart_update_tickets_tribe-commerce', [ $this, 'update_tickets_in_cart' ] );
+		add_filter( 'tribe_tickets_rest_cart_get_tickets_tribe-commerce', [ $this, 'rest_get_tickets_in_cart' ] );
+		add_filter( 'tribe_tickets_rest_cart_update_tickets_tribe-commerce', [ $this, 'rest_update_tickets_in_cart' ] );
 	}
 
 	/**
@@ -736,7 +736,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @see \Tribe__Tickets_Plus__Commerce__PayPal__Attendees::register_optout_choice()
 		 */
-		$attendee_optouts = Tribe__Utils__Array::list_to_array( Tribe__Utils__Array::get( $custom, 'oo', array() ), ',' );
+		$attendee_optouts = Tribe__Utils__Array::get( $custom, 'oo', [] );
 
 		if ( ! $attendee_email || ! $attendee_full_name ) {
 			$this->redirect_after_error( 101, $redirect, $post_id );
@@ -887,12 +887,15 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$attendee_order_status = trim( strtolower( $payment_status ) );
 
 				if ( ! $updating_attendee ) {
+					$optout = Tribe__Utils__Array::get( $attendee_optouts, 'ticket_' . $product_id, false );
+					$optout = filter_var( $optout, FILTER_VALIDATE_BOOLEAN );
+					$optout = $optout ? 'yes' : 'no';
+
 					update_post_meta( $attendee_id, $this->attendee_product_key, $product_id );
 					update_post_meta( $attendee_id, $this->attendee_event_key, $post_id );
 					update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
 					update_post_meta( $attendee_id, $this->order_key, $order_id );
-					$attendee_optout = Tribe__Utils__Array::get( $attendee_optouts, $product_id, false );
-					update_post_meta( $attendee_id, $this->attendee_optout_key, (bool) $attendee_optout );
+					update_post_meta( $attendee_id, $this->attendee_optout_key, $optout );
 					update_post_meta( $attendee_id, $this->email, $attendee_email );
 					update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
 					update_post_meta( $attendee_id, '_paid_price', get_post_meta( $product_id, '_price', true ) );
@@ -2270,44 +2273,94 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.9
 	 *
-	 * @param array $tickets
+	 * @param array $tickets List of tickets.
 	 *
-	 * @return array
+	 * @return array List of tickets.
 	 */
 	public function get_tickets_in_cart( $tickets ) {
-		$transient_key = $this->get_current_cart_transient();
+		$rest_tickets = $this->rest_get_tickets_in_cart( $tickets );
 
-		if ( false === $transient_key ) {
-			return $tickets;
-		}
-
-		$contents = get_transient( $transient_key );
-
-		if ( empty( $contents ) ) {
-			return $tickets;
-		}
-
-		foreach ( $contents as $id => $quantity ) {
-			$event_check = get_post_meta( $id, $this->event_key, true );
-
-			if ( empty( $event_check ) ) {
-				continue;
-			}
-
-			$tickets[ $id ] = $quantity;
+		foreach ( $rest_tickets as $ticket ) {
+			$tickets[ $ticket['ticket_id'] ] = $ticket['quantity'];
 		}
 
 		return $tickets;
 	}
 
 	/**
-	 * Update tickets in Tribe Commerce cart.
+	 * Get all tickets currently in the cart from REST API.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $tickets List of tickets.
+	 *
+	 * @return array List of tickets.
+	 */
+	public function rest_get_tickets_in_cart( $tickets ) {
+		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
+
+		$invoice_number = $gateway->get_invoice_number();
+
+		if ( empty( $invoice_number ) ) {
+			return $tickets;
+		}
+
+		/** @var Tribe__Tickets__Commerce__PayPal__Cart__Interface $cart */
+		$cart = tribe( 'tickets.commerce.paypal.cart' );
+
+		$cart->set_id( $invoice_number );
+
+		$contents = $cart->get_items();
+
+		if ( empty( $contents ) ) {
+			return $tickets;
+		}
+
+		$event_key  = $this->event_key;
+		$optout_key = $this->attendee_optout_key;
+
+		foreach ( $contents as $ticket_id => $item ) {
+			$optout = false;
+
+			if ( is_array( $item ) ) {
+				$ticket_quantity = $item['quantity'];
+				$optout          = $item[ $this->attendee_optout_key ];
+			} else {
+				$ticket_quantity = $item;
+			}
+
+			$post_id = (int) get_post_meta( $ticket_id, $event_key, true );
+
+			if ( empty( $post_id ) ) {
+				continue;
+			}
+
+			$optout = filter_var( $optout, FILTER_VALIDATE_BOOLEAN );
+			$optout = $optout ? 'yes' : 'no';
+
+			$tickets[] = [
+				'ticket_id' => $ticket_id,
+				'quantity'  => $ticket_quantity,
+				'post_id'   => $post_id,
+				'optout'    => $optout,
+				'provider'  => 'tribe-commerce',
+			];
+		}
+
+		return $tickets;
+	}
+
+	/**
+	 * Update tickets in Tribe Commerce cart from REST API.
 	 *
 	 * @since TBD
 	 *
 	 * @param array $tickets List of tickets with their ID and quantity.
+	 *
+	 * @throws Tribe__REST__Exceptions__Exception When ticket does not exist or capacity is not enough.
 	 */
-	public function update_tickets_in_cart( $tickets ) {
+	public function rest_update_tickets_in_cart( $tickets ) {
 		/** @var Tribe__Tickets__Commerce__PayPal__Cart__Interface $cart */
 		$cart = tribe( 'tickets.commerce.paypal.cart' );
 
@@ -2323,13 +2376,49 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$cart->set_id( $invoice_number );
 
+		$optout_key = $this->attendee_optout_key;
+
+		/** @var Tribe__Tickets__REST__V1__Messages $messages */
+		$messages = tribe( 'tickets.rest-v1.messages' );
+
 		foreach ( $tickets as $ticket ) {
 			// Skip if ticket ID not set.
 			if ( empty( $ticket['ticket_id'] ) ) {
 				continue;
 			}
 
-			$this->add_ticket_to_cart( $ticket['ticket_id'], $ticket['quantity'], $cart );
+			$ticket_id       = $ticket['ticket_id'];
+			$ticket_quantity = $ticket['quantity'];
+
+			// Get the ticket object.
+			$ticket_object = $this->get_ticket( 0, $ticket_id );
+
+			// Bail if ticket does not exist.
+			if ( ! $ticket_object ) {
+				$error_code = 'ticket-does-not-exist';
+
+				throw new Tribe__REST__Exceptions__Exception( sprintf( $messages->get_message( $error_code ), $ticket_id ), $error_code, 500 );
+			}
+
+			// Get the number of available tickets.
+			$available = $ticket_object->available();
+
+			// Bail if ticket does not have enough available capacity.
+			if ( ( -1 !== $available && $available < $ticket_quantity ) || ! $ticket_object->date_in_range() ) {
+				$error_code = 'ticket-capacity-not-available';
+
+				throw new Tribe__REST__Exceptions__Exception( sprintf( $messages->get_message( $error_code ), $ticket_object->name ), $error_code, 500 );
+			}
+
+			$optout = filter_var( $ticket['optout'], FILTER_VALIDATE_BOOLEAN );
+			$optout = $optout ? 'yes' : 'no';
+
+			$extra_data = [
+				'cart'      => $cart,
+				$optout_key => $optout,
+			];
+
+			$this->add_ticket_to_cart( $ticket_id, $ticket_quantity, $extra_data );
 		}
 
 		$cart->save();
@@ -2343,21 +2432,34 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param int                                               $ticket_id Ticket ID.
-	 * @param int                                               $quantity  Ticket quantity.
-	 * @param Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged $cart      Cart object.
+	 * @param int   $ticket_id  Ticket ID.
+	 * @param int   $quantity   Ticket quantity.
+	 * @param array $extra_data Extra data to send to the cart item.
 	 */
-	public function add_ticket_to_cart( $ticket_id, $quantity, $cart = null ) {
-		if ( ! $cart ) {
+	public function add_ticket_to_cart( $ticket_id, $quantity, array $extra_data = [] ) {
+		if ( empty( $extra_data['cart'] ) ) {
 			return;
 		}
+
+		$optout_key = $this->attendee_optout_key;
+
+		/** @var Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged $cart */
+		$cart = $extra_data['cart'];
 
 		// Remove from the cart so we can replace it below (add_item is additive).
 		$cart->remove_item( $ticket_id );
 
 		if ( 0 < $quantity ) {
+			$optout = isset( $extra_data[ $optout_key ] ) ? $extra_data[ $optout_key ] : false;
+			$optout = filter_var( $optout, FILTER_VALIDATE_BOOLEAN );
+			$optout = $optout ? 'yes' : 'no';
+
+			$extra_item_data = [
+				$this->attendee_optout_key => $optout,
+			];
+
 			// Add to / update quantity in cart.
-			$cart->add_item( $ticket_id, $quantity );
+			$cart->add_item( $ticket_id, $quantity, $extra_item_data );
 		}
 	}
 
