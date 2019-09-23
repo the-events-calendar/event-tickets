@@ -46,9 +46,7 @@ class TicketArchivePermissionsCest extends BaseRestCest {
 
 		$this->get_multi_posts_with_multi_tickets_with_multi_attendees( $I );
 
-		$request_url = esc_url( $this->tickets_url );
-
-		$I->sendGET( $request_url );
+		$I->sendGET( $this->tickets_url );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
 
@@ -61,7 +59,7 @@ class TicketArchivePermissionsCest extends BaseRestCest {
 
 		$I->seeResponseContainsJson(
 			[
-				'rest_url'  => $request_url,
+				'rest_url'  => $this->tickets_url,
 				'tickets'   => $expected_tickets,
 			]
 		);
@@ -77,9 +75,7 @@ class TicketArchivePermissionsCest extends BaseRestCest {
 
 		$this->get_multi_posts_with_multi_tickets_with_multi_attendees( $I );
 
-		$request_url = esc_url( $this->tickets_url );
-
-		$I->sendGET( $request_url );
+		$I->sendGET( $this->tickets_url );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
 
@@ -92,7 +88,7 @@ class TicketArchivePermissionsCest extends BaseRestCest {
 
 		$I->seeResponseContainsJson(
 			[
-				'rest_url'  => $request_url,
+				'rest_url'  => $this->tickets_url,
 				'tickets'   => $expected_tickets,
 			]
 		);
