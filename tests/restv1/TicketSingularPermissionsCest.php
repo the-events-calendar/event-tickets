@@ -11,11 +11,11 @@ class TicketSingularPermissionsCest extends BaseRestCest {
 	use Attendee_Maker;
 
 	private function get_a_single_rsvp_id_having_attendees( Restv1Tester $I ) {
-		$event_id = $I->haveEventInDatabase();
+		$post_id = $I->havePostInDatabase();
 
-		$ticket_id = $this->create_rsvp_ticket( $event_id );
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
 
-		$this->create_many_attendees_for_ticket( 5, $ticket_id, $event_id );
+		$this->create_many_attendees_for_ticket( 5, $ticket_id, $post_id );
 
 		return $ticket_id;
 	}
