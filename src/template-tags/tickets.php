@@ -900,7 +900,10 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 		// Return Null for when we don't have the Capacity Data
 		if ( ! metadata_exists( 'post', $post->ID, $key ) ) {
 			$mode         = get_post_meta( $post->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
-			$shared_modes = array( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE );
+			$shared_modes = [
+				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE,
+				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE,
+			];
 
 			// When we are in a Ticket Post Type update where we get the value from Event
 			if (
