@@ -30,7 +30,7 @@ class TicketSingularPermissionsCest extends BaseRestCest {
 
 		$ticket_id = $this->get_a_single_rsvp_id_having_attendees( $I );
 
-		$this_ticket_url = esc_url( add_query_arg( 'id', $ticket_id, trailingslashit( $this->tickets_url ) ) );
+		$this_ticket_url = esc_url( trailingslashit( $this->tickets_url ) . $ticket_id );
 
 		$I->sendGET( $this_ticket_url );
 		$I->seeResponseIsJson();
@@ -58,7 +58,7 @@ class TicketSingularPermissionsCest extends BaseRestCest {
 
 		$ticket_id = $this->get_a_single_rsvp_id_having_attendees( $I );
 
-		$this_ticket_url = esc_url( add_query_arg( 'id', $ticket_id, trailingslashit( $this->tickets_url ) ) );
+		$this_ticket_url = esc_url( trailingslashit( $this->tickets_url ) . $ticket_id );
 
 		$I->sendGET( $this_ticket_url );
 		$I->seeResponseIsJson();
