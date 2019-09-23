@@ -6,6 +6,13 @@ use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 
+/**
+ * Class TicketSingularPermissionsCest
+ *
+ * Single ticket ID testing if correct information is returned based on user permissions.
+ *
+ * @package Tribe\Tickets\Test\REST\V1
+ */
 class TicketSingularPermissionsCest extends BaseRestCest {
 	use RSVP_Ticket_Maker;
 	use Attendee_Maker;
