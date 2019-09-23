@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.10.9] TBD =
 
 * Tweak - Allow Admin and Editor users to see Attendees in REST API responses by default [128298]
+* Tweak - Notify Promoter if an event with tickets is deleted [134113]
 * Fix - The attendee link in the ticket and RSVP block so it shows after the creation of a ticket or RSVP. [128521]
 * Fix - Prevent conflict with Genesis Framework where content or the excerpt does not show in the post archives [125496]
 * Fix - Prevent tickets that do not have attendee meta from showing on the attendee registration page [125021]
