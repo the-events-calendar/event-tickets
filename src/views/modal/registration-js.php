@@ -28,7 +28,7 @@ $non_meta_count        = 0;
 		<p>
 			<?php
 				echo sprintf(
-					_x(
+					esc_html_x(
 						'You have %s ticket(s) with a field that requires information.',
 						'Note about missing required fields, %s is the html-wrapped number of tickets.',
 						'event-tickets'
@@ -65,7 +65,7 @@ $non_meta_count        = 0;
 		<p class="tribe-tickets-notice tribe-tickets-notice--non-ar">
 			<?php
 				echo sprintf(
-					_x(
+					esc_html_x(
 						'There are %s other tickets in your cart that do not require attendee information.',
 						'Note that there are more tickets in the cart, %s is the html-wrapped number.',
 						'event-tickets'
