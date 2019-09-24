@@ -11,20 +11,23 @@
  *
  */
 
+/** @var Tribe__Tickets__Editor__Template $template */
+$template = tribe( 'tickets.editor.template' );
+
 $passed_provider = tribe_get_request_var( 'provider' );
 $passed_provider_class = $this->get_form_class( $passed_provider );
 ?>
 <?php foreach ( $events as $event_id => $tickets ) : ?>
-
 	<?php
 		$provider_class = $passed_provider_class;
-		$providers = array_unique( wp_list_pluck( wp_list_pluck( $tickets, 'provider' ), 'attendee_object' ) );
+		$providers = wp_list_pluck( $tickets, 'provider' );
+		$providers_arr = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
 
-		if (  empty( $provider_class ) && ! empty( $providers[ $event_id ] ) ) {
-			$provider_class = 'tribe-tickets__item__attendee__fields__form--' . $providers[ $event_id ];
-		}
+		if (  empty( $provider_class ) && ! empty( $providers_arr[ $event_id ] ) ) :
+			$provider_class = 'tribe-tickets__item__attendee__fields__form--' . $providers_arr[ $event_id ];
+		endif;
 
-		$has_tpp = Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === $passed_provider || in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers, true );
+		$has_tpp = Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === $passed_provider || in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers_arr, true );
 	?>
 	<div
 		class="tribe-tickets__registration__event"
@@ -34,7 +37,7 @@ $passed_provider_class = $this->get_form_class( $passed_provider );
 		<?php $this->template( 'registration/summary/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
 
 		<div class="tribe-tickets__registration__actions">
-			<?php $this->template( 'registration/button-cart', array( 'event_id' => $event_id ) ); ?>
+			<?php $this->template( 'registration/button-cart', array( 'event_id' => $event_id, 'provider' => $passed_provider ) ); ?>
 		</div>
 
 		<div class="tribe-tickets__item__attendee__fields">
@@ -50,13 +53,26 @@ $passed_provider_class = $this->get_form_class( $passed_provider );
 				<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
 				<?php if ( $has_tpp ) : ?>
 					<button type="submit"><?php esc_html_e( 'Save and Checkout', 'event-tickets' ); ?></button>
-				<?php else: ?>
-					<button type="submit"><?php esc_html_e( 'Save Attendee Info', 'event-tickets' ); ?></button>
 				<?php endif; ?>
 			</form>
-
 		</div>
+		<?php
+		$non_meta_count = 0;
+		foreach ( $tickets as $ticket ) :
+			// Only include tickets with meta
+			$has_meta = get_post_meta( $ticket['id'], '_tribe_tickets_meta_enabled', true );
 
+			if ( empty( $has_meta ) || ! tribe_is_truthy( $has_meta ) ) {
+				$non_meta_count++;
+				continue;
+			}
+			?>
+				<div class="tribe-tickets__item__attendee__fields__container" data-ticket-id="<?php echo esc_attr( $ticket['id'] ); ?>">
+					<h3 class="tribe-common-h5 tribe-common-h5--min-medium tribe-common-h--alt tribe-ticket__heading">
+						<?php echo esc_html( get_the_title( $ticket['id'] ) ); ?>
+					</h3>
+				</div>
+		<?php endforeach; ?>
 	</div>
-
-<?php endforeach; ?>
+	<?php $template->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets, 'provider' => $providers[0] ) ); ?>
+<?php endforeach;

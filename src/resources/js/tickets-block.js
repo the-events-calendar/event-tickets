@@ -558,6 +558,35 @@ tribe.tickets.block = {
 		return s.join( dec );
 	}
 
+	obj.prefillModalAR = function( $form, meta ) {
+		if ( ! meta ) {
+			return;
+		}
+		console.log( meta );
+		/*
+		var $attendeeFields = $( obj.modalSelector.metaField );
+		$attendeeFields.each(
+			function() {
+				var $field     = $( this );
+				var name      = $field.attr( 'name' );
+				var storedVal = data[ name ];
+
+				if ( storedVal ) {
+					if ( $field.is( ':radio' ) || $field.is( ':checkbox' ) ) {
+						if ( $field.val() === storedVal ) {
+							$field.prop( 'checked', true );
+						}
+					} else {
+						$field.val( storedVal );
+					}
+				}
+
+
+			}
+		);
+		*/
+	}
+
 	/**
 	 * Prefill the Cart.
 	 *
@@ -565,24 +594,14 @@ tribe.tickets.block = {
 	 *
 	 * @returns {*}
 	 */
-	obj.prefillModalCart = function () {
-
-		var $form = $tribe_ticket;
-
-		$.ajax( {
-			type: 'GET',
-			data: {'provider': $form.data( 'providerId' )},
-			dataType: 'json',
-			url: $form.data( 'cart' ),
-			success: function ( data ) {
-				$.each( data.tickets, function ( index, value ) {
-					var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
-					if ( $item ) {
-						$item.find( '.tribe-ticket-quantity' ).val( value.quantity );
-					}
-				} );
-			},
+	obj.prefillModalCart = function ( $form, tickets ) {
+		$.each( tickets, function ( index, value ) {
+			var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
+			if ( $item ) {
+				$item.find( '.tribe-ticket-quantity' ).val( value.quantity );
+			}
 		} );
+
 	};
 
 	/**
@@ -594,7 +613,19 @@ tribe.tickets.block = {
 	 */
 	obj.initPrefill = function() {
 		obj.prefillTicketsBlock();
-		obj.prefillModalCart();
+
+		var $form = $tribe_ticket;
+
+		$.ajax( {
+			type: 'GET',
+			data: {'provider': $form.data( 'providerId' )},
+			dataType: 'json',
+			url: $form.data( 'cart' ),
+			success: function ( data ) {
+				obj.prefillModalCart( $form, data.tickets );
+				obj.prefillModalAR( $form, data.meta );
+			},
+		} );
 	}
 
 	/**

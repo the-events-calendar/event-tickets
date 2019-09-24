@@ -21,11 +21,19 @@ $storage = new Tribe__Tickets_Plus__Meta__Storage();
 /**
 * @var Tribe__Tickets_Plus__Meta $meta
 */
-$meta    = tribe( 'tickets-plus.main' )->meta();
+$meta     = tribe( 'tickets-plus.main' )->meta();
+$provider = $this->get( 'provider' );
+$event_id = $this->get( 'event_id' );
+$tickets  = $this->get( 'tickets' );
 ?>
 
 <?php foreach ( $tickets as $ticket ) : ?>
 		<?php
+		// Sometimes we get an array - let's handle that.
+		if ( is_array( $ticket ) ) {
+			$ticket = $provider->get_ticket( $event_id, $ticket[ 'id' ] );
+		}
+
 		// Only include tickets with meta
 		$has_meta = get_post_meta( $ticket->ID, '_tribe_tickets_meta_enabled', true );
 

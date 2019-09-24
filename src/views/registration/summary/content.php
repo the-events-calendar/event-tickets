@@ -21,6 +21,6 @@
 
 	<?php $this->template( 'registration/summary/description', array( 'event_id' => $event_id ) ); ?>
 
-	<?php $this->template( 'registration/summary/tickets', array( 'tickets' => $tickets ) ); ?>
+	<?php //$this->template( 'registration/summary/tickets', array( 'tickets' => $tickets ) ); ?>
 
 </div>
