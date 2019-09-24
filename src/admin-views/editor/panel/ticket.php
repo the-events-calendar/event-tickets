@@ -187,7 +187,7 @@ $default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id
 					id="rsvp_form_save"
 					class="button-primary tribe-dependent tribe-validation-submit"
 					name="ticket_form_save"
-					value="<?php esc_attr_e( 'Save RSVP', 'event-tickets' ); ?>"
+					value="<?php echo esc_attr( sprintf( _x( 'Save %s', 'RSVP form save value', 'event-tickets' ), tribe_get_rsvp_label_singular( 'form_save_value' ) ) ); ?>"
 					data-depends="#Tribe__Tickets__RSVP_radio"
 					data-condition-is-checked
 				/>
