@@ -109,7 +109,6 @@ class Tickets implements \ArrayAccess, \Serializable{
 			return $this->data;
 		}
 
-
 		if ( ! tribe_events_has_tickets_on_sale( $this->post_id ) ) {
 			return [];
 		}
@@ -122,8 +121,11 @@ class Tickets implements \ArrayAccess, \Serializable{
 			return [];
 		}
 
-		$html  = [];
-		$parts = [];
+		$html        = [];
+		$parts       = [];
+		$stock_html  = '';
+		$link_label  = '';
+		$link_anchor = '';
 
 		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out message.
 		foreach ( $types as $type => $data ) {
@@ -145,8 +147,6 @@ class Tickets implements \ArrayAccess, \Serializable{
 					// If unlimited tickets, tickets with no stock and rsvp, or no tickets and rsvp unlimited - hide the remaining count.
 					$stock = false;
 				}
-
-				$stock_html = '';
 
 				if ( $stock ) {
 					$threshold = \Tribe__Settings_Manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
