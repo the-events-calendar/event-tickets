@@ -581,7 +581,6 @@ tribe.tickets.block = {
 					if ( ! $field.is( ':radio' ) && ! $field.is( ':checkbox' ) ) {
 						$field.val( value);
 					} else {
-
 						$field.each( function( index ) {
 							var $item = $( this );
 							if ( value === $item.val() ) {
