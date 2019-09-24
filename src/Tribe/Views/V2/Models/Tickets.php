@@ -33,7 +33,7 @@ class Tickets implements \ArrayAccess, \Serializable{
 	protected $post_id;
 
 	/**
-	 * The post thumbnail data.
+	 * The tickets data.
 	 *
 	 * @since TBD
 	 *
@@ -42,7 +42,7 @@ class Tickets implements \ArrayAccess, \Serializable{
 	protected $data;
 
 	/**
-	 * A flag property indicating whether the post thumbnail for the post exists or not.
+	 * A flag property indicating whether tickets for the post exists or not.
 	 *
 	 * @since TBD
 	 *
