@@ -81,7 +81,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	}
 
 	/**
-	 * Add AR Template to Modal
+	 * Add Footer Template to Modal
 	 *
 	 * @since TBD
 	 *

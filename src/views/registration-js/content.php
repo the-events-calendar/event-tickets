@@ -16,6 +16,7 @@ $template = tribe( 'tickets.editor.template' );
 
 $passed_provider = tribe_get_request_var( 'provider' );
 $passed_provider_class = $this->get_form_class( $passed_provider );
+$this->template( 'registration-js/mini-cart', [ 'provider' => $passed_provider ] );
 ?>
 <?php foreach ( $events as $event_id => $tickets ) : ?>
 	<?php

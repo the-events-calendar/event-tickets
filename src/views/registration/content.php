@@ -36,7 +36,7 @@ if ( empty( $events ) ) {
 }
 
 ?>
-<div class="tribe-common tribe-tickets__registration default">
+<div class="tribe-common tribe-tickets__registration">
 	<div class="tribe-tickets__registration__actions">
 	<?php $this->template(
 		'registration/button-cart',
@@ -67,7 +67,7 @@ if ( empty( $events ) ) {
 		>
 			<?php $this->template( 'registration/summary/content', [ 'event_id' => $event_id, 'tickets' => $tickets ] ); ?>
 
-			<div class="tribe-tickets__item__attendee__fields boo">
+			<div class="tribe-tickets__item__attendee__fields">
 
 				<?php $this->template( 'registration/attendees/error', [ 'event_id' => $event_id, 'tickets' => $tickets ] ); ?>
 

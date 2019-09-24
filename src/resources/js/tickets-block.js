@@ -745,7 +745,7 @@ tribe.tickets.block = {
 	}
 
 	/**
-	 * Attempts top hydrate a dynamically-created attendee form "section" or "block" from sessionStorage data.
+	 * Attempts to hydrate a dynamically-created attendee form "section" or "block" from sessionStorage data.
 	 *
 	 * @since TBD
 	 *
