@@ -622,6 +622,7 @@ tribe.tickets.block = {
 			dataType: 'json',
 			url: $form.data( 'cart' ),
 			success: function ( data ) {
+				console.log(data);
 				obj.prefillModalCart( $form, data.tickets );
 				obj.prefillModalAR( $form, data.meta );
 			},
@@ -1129,7 +1130,7 @@ tribe.tickets.block = {
 		var $arForm     = $( obj.modalSelector.arForm );
 		var $ticketRows = $arForm.find( obj.modalSelector.arItem );
 		var meta    = [];
-		var tempMeta    = {};
+		var tempMeta    = [];
 		$ticketRows.each(
 			function() {
 				var data      = [];
@@ -1169,16 +1170,15 @@ tribe.tickets.block = {
 					}
 				);
 
-				tempMeta[ ticket_id ]['items'].push( [data] );
+				tempMeta[ ticket_id ]['items'] = [data];
 			}
 		);
 
 		Object.keys(tempMeta).forEach( function( index ) {
 			var newArr = {
 				'ticket_id': index,
-				'items': []
+				'items': tempMeta[index]['items']
 			};
-			newArr['items'] = tempMeta[index]['items'];
 			meta.push( newArr );
 		});
 
@@ -1411,7 +1411,7 @@ tribe.tickets.block = {
 				meta    : obj.getMetaForSave(),
 				post_id : postId,
 			};
-
+			console.log(params);
 			$.ajax({
 				type: 'POST',
 				url: '/wp-json/tribe/tickets/v1/cart',
@@ -1428,7 +1428,7 @@ tribe.tickets.block = {
 					obj.clearLocal();
 					// Set a var so we don't save what we just erased.
 					tribe.tickets.modal_redirect = true;
-
+return;
 					window.location.href = url;
 				},
 				fail: function( response ) {

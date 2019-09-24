@@ -10,15 +10,15 @@
  * @version TBD
  *
  */
-
+$provider = $this->get( 'provider' );
+$tickets = $this->get( 'tickets' );
 // We don't display anything if there is no provider or tickets
 if ( ! $provider || empty( $tickets ) ) {
 	return false;
 }
 
 $cart_classes = [
-	'tribe-modal-cart',
-	'tribe-modal__cart',
+	'tribe-mini-cart',
 	'tribe-common',
 ];
 
@@ -42,8 +42,8 @@ $currency = tribe( 'tickets.commerce.currency' );
 	<?php if ( $has_tickets_on_sale ) : ?>
 		<?php foreach ( $tickets_on_sale as $key => $ticket ) : ?>
 		<?php $currency_symbol     = $currency->get_currency_symbol( $ticket->ID, true ); ?>
-			<?php $template_obj->template( 'blocks/tickets/item', [ 'ticket' => $ticket, 'key' => $key, 'is_modal' => true, 'currency_symbol' => $currency_symbol ] ); ?>
+			<?php $template_obj->template( 'blocks/tickets/item', [ 'ticket' => $ticket, 'key' => $key, 'is_mini' => true, 'currency_symbol' => $currency_symbol ] ); ?>
 		<?php endforeach; ?>
 	<?php endif; ?>
-	<?php $template_obj->template( 'blocks/tickets/footer', [ 'is_modal' => true ] ); ?>
+	<?php $template_obj->template( 'blocks/tickets/footer', [ 'is_mini' => true ] ); ?>
 </form>

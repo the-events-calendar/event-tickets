@@ -50,7 +50,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			$ticket = tribe( 'tickets.handler' )->get_object_connections( $ticket_id );
 
 			// If we've got a provider and it doesn't match, skip the ticket
-			if ( $q_provider && $q_provider !== $ticket->provider->attendee_object ) {
+			if ( empty( $ticket->provider ) || ( $q_provider && $q_provider !== $ticket->provider->attendee_object ) ) {
 				continue;
 			}
 

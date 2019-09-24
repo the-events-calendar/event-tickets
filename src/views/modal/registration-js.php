@@ -14,9 +14,9 @@
 // There should be only one!
 $providers             = wp_list_pluck( $tickets, 'provider' );
 $providers_arr         = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
-$has_tpp               = in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers, true );
 $provider              = $providers[0];
 $provider_class        = tribe( 'tickets.attendee_registration.view' )->get_form_class( $providers_arr[0] );
+$has_tpp               = in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers, true );
 $event_id              = get_the_ID();
 $meta                  = Tribe__Tickets_Plus__Main::instance()->meta();
 $non_meta_count        = 0;
@@ -99,7 +99,6 @@ $non_meta_count        = 0;
 	</form>
 </div>
 <?php
-$event_id = get_the_ID();
 /** @var Tribe__Tickets__Editor__Template $template */
 $template = tribe( 'tickets.editor.template' );
-$template->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets, 'provider' => $provider ) );
+$template->template( 'registration-js/attendees/content', [ 'event_id' => $event_id, 'tickets' => $tickets, 'provider' => $provider ] );

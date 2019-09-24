@@ -14,13 +14,16 @@
 /** @var Tribe__Tickets__Editor__Template $template */
 $template = tribe( 'tickets.editor.template' );
 
-$passed_provider = tribe_get_request_var( 'provider' );
-$passed_provider_class = $this->get_form_class( $passed_provider );
-$this->template( 'registration-js/mini-cart', [ 'provider' => $passed_provider ] );
+$provider       = tribe_get_request_var( 'provider' );
+$provider_class = $this->get_form_class( $provider );
+$all_tickets    = [];
 ?>
+<div class="tribe-tickets__registration__actions">
+<?php $this->template( 'registration/button-cart', array( 'provider' => $provider ) ); ?>
+</div>
 <?php foreach ( $events as $event_id => $tickets ) : ?>
 	<?php
-		$provider_class = $passed_provider_class;
+		$provider_class = $provider_class;
 		$providers = wp_list_pluck( $tickets, 'provider' );
 		$providers_arr = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
 
@@ -28,7 +31,7 @@ $this->template( 'registration-js/mini-cart', [ 'provider' => $passed_provider ]
 			$provider_class = 'tribe-tickets__item__attendee__fields__form--' . $providers_arr[ $event_id ];
 		endif;
 
-		$has_tpp = Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === $passed_provider || in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers_arr, true );
+		$has_tpp = Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === $provider || in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers_arr, true );
 	?>
 	<div
 		class="tribe-tickets__registration__event"
@@ -36,10 +39,6 @@ $this->template( 'registration-js/mini-cart', [ 'provider' => $passed_provider ]
 		data-is-meta-up-to-date="<?php echo absint( $is_meta_up_to_date ); ?>"
 	>
 		<?php $this->template( 'registration/summary/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
-
-		<div class="tribe-tickets__registration__actions">
-			<?php $this->template( 'registration/button-cart', array( 'event_id' => $event_id, 'provider' => $passed_provider ) ); ?>
-		</div>
 
 		<div class="tribe-tickets__item__attendee__fields">
 
@@ -60,6 +59,7 @@ $this->template( 'registration-js/mini-cart', [ 'provider' => $passed_provider ]
 		<?php
 		$non_meta_count = 0;
 		foreach ( $tickets as $ticket ) :
+			$all_tickets[] = $ticket;
 			// Only include tickets with meta
 			$has_meta = get_post_meta( $ticket['id'], '_tribe_tickets_meta_enabled', true );
 
@@ -77,3 +77,16 @@ $this->template( 'registration-js/mini-cart', [ 'provider' => $passed_provider ]
 	</div>
 	<?php $template->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets, 'provider' => $providers[0] ) ); ?>
 <?php endforeach;
+$args = [
+	'cart_url'            => $template->get( 'cart_url' ),
+	'has_tickets_on_sale' => $template->get( 'has_tickets_on_sale' ),
+	'is_sale_past'        => $template->get( 'is_sale_past' ),
+	'post_id'             => $template->get( 'post_id' ),
+	'provider_id'         => $template->get( 'provider_id' ),
+	'provider'            => $provider,
+	'tickets_on_sale'     => $template->get( 'tickets_on_sale' ),
+	'tickets'             => $all_tickets,
+	'tickets'             => $template->get( 'tickets', [] ),
+];
+
+$template->template( 'registration-js/mini-cart', $args );

@@ -159,7 +159,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 				'post_id'   => 0,
 				'optout'    => 0,
 			];
-bdump($cart_tickets);
+
 			foreach ( $cart_tickets as $ticket ) {
 				$ticket = array_merge( $default_ticket, $ticket );
 
@@ -323,6 +323,10 @@ bdump($cart_tickets);
 		if ( null !== $meta ) {
 			// Setup meta.
 			foreach ( $meta as $k => $ticket_meta ) {
+				bdump(
+					$k,
+					$ticket_meta
+				);
 				$defaults = [
 					'ticket_id' => 0,
 					'provider'  => $provider,
