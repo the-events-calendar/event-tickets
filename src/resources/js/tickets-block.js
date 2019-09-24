@@ -558,33 +558,43 @@ tribe.tickets.block = {
 		return s.join( dec );
 	}
 
-	obj.prefillModalAR = function( $form, meta ) {
+	obj.prefillModalAR = function( meta ) {
 		if ( ! meta ) {
 			return;
 		}
-		console.log( meta );
-		/*
-		var $attendeeFields = $( obj.modalSelector.metaField );
-		$attendeeFields.each(
-			function() {
-				var $field     = $( this );
-				var name      = $field.attr( 'name' );
-				var storedVal = data[ name ];
+		var $form = $( obj.modalSelector.arForm );
+		var $containers = $form.find( '.tribe-tickets__item__attendee__fields__container' );
 
-				if ( storedVal ) {
-					if ( $field.is( ':radio' ) || $field.is( ':checkbox' ) ) {
-						if ( $field.val() === storedVal ) {
-							$field.prop( 'checked', true );
-						}
-					} else {
-						$field.val( storedVal );
-					}
+		$.each( meta, function( index, ticket ) {
+			var $current_containers = $containers.find( obj.modalSelector.arItem ).filter( `[data-ticket-id="${ticket.ticket_id}"]` );
+			if ( ! $current_containers.length ) {
+				return;
+			}
+			var current = 0;
+			$.each( ticket.items, function( index, data ) {
+				if ( 'object' !== typeof data ) {
+					return;
 				}
 
+				$.each( data, function( index, value ) {
+					var $field = $current_containers.eq( current ).find( `[name*="${index}"]`);
+					if ( ! $field.is( ':radio' ) && ! $field.is( ':checkbox' ) ) {
+						$field.val( value);
+					} else {
 
-			}
-		);
-		*/
+						$field.each( function( index ) {
+							var $item = $( this );
+							if ( value === $item.val() ) {
+								$item.prop( 'checked', true );
+							}
+						});
+					}
+				});
+
+				current++;
+			});
+		});
+
 	}
 
 	/**
@@ -613,7 +623,9 @@ tribe.tickets.block = {
 	 */
 	obj.initPrefill = function() {
 		obj.prefillTicketsBlock();
+	}
 
+	obj.initModalPrefill = function() {
 		var $form = $tribe_ticket;
 
 		$.ajax( {
@@ -624,7 +636,7 @@ tribe.tickets.block = {
 			success: function ( data ) {
 				console.log(data);
 				obj.prefillModalCart( $form, data.tickets );
-				obj.prefillModalAR( $form, data.meta );
+				obj.prefillModalAR( data.meta );
 			},
 		} );
 	}
@@ -1133,17 +1145,22 @@ tribe.tickets.block = {
 		var tempMeta    = [];
 		$ticketRows.each(
 			function() {
-				var data      = [];
+				var data      = {};
 				var $row      = $( this );
 				var ticket_id = $row.data( 'ticketId' );
 
-				if ( ! tempMeta[ ticket_id ] ) {
-					tempMeta[ ticket_id ] = [];
-					tempMeta[ ticket_id ]['ticket_id'] = ticket_id;
-					tempMeta[ ticket_id ]['items'] = [];
+				var $fields = $row.find( obj.modalSelector.metaField );
+
+				// Skip tickets with no meta fields
+				if ( ! $fields.length ) {
+					return;
 				}
 
-				var $fields = $row.find( obj.modalSelector.metaField );
+				if ( ! tempMeta[ ticket_id ] ) {
+					tempMeta[ ticket_id ] = {};
+					tempMeta[ ticket_id ]['ticket_id'] = ticket_id;
+					tempMeta[ ticket_id ][ 'items' ] = [];
+				}
 
 				$fields.each(
 					function() {
@@ -1170,7 +1187,7 @@ tribe.tickets.block = {
 					}
 				);
 
-				tempMeta[ ticket_id ]['items'] = [data];
+				tempMeta[ ticket_id ]['items'].push(data);
 			}
 		);
 
@@ -1466,6 +1483,8 @@ return;
 			);
 
 			obj.maybeHydrateCartFormFromLocal();
+
+			obj.initModalPrefill();
 
 			obj.updateFormTotals( $modalCart );
 		}
