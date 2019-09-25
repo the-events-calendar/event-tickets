@@ -630,13 +630,22 @@ tribe.tickets.block = {
 				}
 
 				if ( data.meta ) {
-					obj.prefillModalAR( data.meta );
-				} else {
-					// If we didn't get meta from the cart, let's fill with sessionStorage.
-					var local = obj.getLocal();
-					if ( local.meta ) {
-						obj.prefillModalAR( local.meta );
-					}
+					var count = false;
+					$.each( data.meta, function( ticket ) {
+						var $matches = $tribe_ticket.find( `[data-ticket-id="${ticket.ticket_id}"]`);
+						if ( $matches.length ) {
+							obj.prefillModalAR( data.meta );
+							return;
+						}
+					});
+				}
+console.log('local?');
+				// If we didn't get meta from the cart, let's fill with sessionStorage.
+				var local = obj.getLocal();
+				console.log('local');
+				console.log(local);
+				if ( local.meta ) {
+					obj.prefillModalAR( local.meta );
 				}
 			}
 		} );
@@ -764,11 +773,11 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.storeLocal = function() {
-		var attendeeData  = obj.getMetaForSave();
-		sessionStorage.setItem( 'tribe_tickets_attendees-' + obj.postId, window.JSON.stringify( attendeeData ) );
+		var meta  = obj.getMetaForSave();
+		sessionStorage.setItem( 'tribe_tickets_attendees-' + obj.postId, window.JSON.stringify( meta ) );
 
-		var cartData  = obj.getTicketsForCart();
-		sessionStorage.setItem( 'tribe_tickets_cart-' + obj.postId, window.JSON.stringify( cartData ) );
+		var tickets  = obj.getTicketsForCart();
+		sessionStorage.setItem( 'tribe_tickets_cart-' + obj.postId, window.JSON.stringify( tickets ) );
 	}
 
 	/**
@@ -783,9 +792,9 @@ tribe.tickets.block = {
 			var postId = obj.postId;
 		}
 
-		var attendeeData = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + postId ) );
-		var cartData     = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart-' + postId ) );
-		var ret          = {  attendeeData, cartData };
+		var meta = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + postId ) );
+		var tickets     = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart-' + postId ) );
+		var ret          = {  meta, tickets };
 
 		return ret;
 	}
