@@ -40,7 +40,7 @@ if (
 
 ?>
 <tr class="<?php echo esc_attr( $provider ); ?> is-expanded" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
-	<td class="column-primary ticket_name <?php echo esc_attr( $provider ); ?>" data-label="<?php esc_html_e( 'Ticket Type:', 'event-tickets' ); ?>">
+	<td class="column-primary ticket_name <?php echo esc_attr( $provider ); ?>" data-label="<?php echo esc_html( sprintf( _x( '%s Type:', 'ticket type label', 'event-tickets' ), tribe_get_ticket_label_singular( 'ticket_type_label' ) ) ); ?>">
 		<span class="dashicons dashicons-screenoptions tribe-handle"></span>
 		<input
 			type="hidden"
@@ -104,7 +104,11 @@ if (
 			"<button data-provider='%s' data-ticket-id='%s' title='%s' class='ticket_edit_button'><span class='ticket_edit_text'>%s</span></a>",
 			esc_attr( $ticket->provider_class ),
 			esc_attr( $ticket->ID ),
-			esc_attr( sprintf( __( '( Ticket ID: %d )', 'tribe-tickets' ), $ticket->ID ) ),
+			esc_attr( sprintf(
+				_x( '%s ID: %d', 'ticket ID title attribute', 'event-tickets' ),
+				tribe_get_ticket_label_singular( 'ticket_id_title_attribute' ),
+				$ticket->ID
+			) ),
 			esc_html( $ticket->name )
 		);
 		?>
