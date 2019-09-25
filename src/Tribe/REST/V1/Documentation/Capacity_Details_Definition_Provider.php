@@ -12,31 +12,31 @@ class Tribe__Tickets__REST__V1__Documentation__Capacity_Details_Definition_Provi
 	 * {@inheritdoc}
 	 */
 	public function get_documentation() {
-		$documentation = array(
+		$documentation = [
 			'type'       => 'object',
-			'properties' => array(
-				'available_percentage' => array(
+			'properties' => [
+				'available_percentage' => [
 					'type'        => 'integer',
 					'description' => esc_html( sprintf( __( 'The %s available capacity percentage', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'capacity_details_documentation_available_percentage' ) ) ),
-				),
-				'max'                  => array(
+				],
+				'max'                  => [
 					'type'        => 'integer',
 					'description' => esc_html( sprintf( __( 'The %s max capacity', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'capacity_details_documentation_max' ) ) ),
-				),
-				'available'            => array(
+				],
+				'available'            => [
 					'type'        => 'integer',
 					'description' => esc_html( sprintf( __( 'The %s current available capacity', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'capacity_details_documentation_available' ) ) ),
-				),
-				'sold'                 => array(
+				],
+				'sold'                 => [
 					'type'        => 'integer',
 					'description' => esc_html( sprintf( __( 'The %s sale count', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'capacity_details_documentation_sold' ) ) ),
-				),
-				'pending'              => array(
+				],
+				'pending'              => [
 					'type'        => 'integer',
 					'description' => esc_html( sprintf( __( 'The %s pending count', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'capacity_details_documentation_pending' ) ) ),
-				),
-			),
-		);
+				],
+			],
+		];
 
 		/**
 		 * Filters the Swagger documentation generated for capacity details in the Event Tickets REST API.
