@@ -792,9 +792,9 @@ console.log('local?');
 			var postId = obj.postId;
 		}
 
-		var meta = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + postId ) );
-		var tickets     = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart-' + postId ) );
-		var ret          = {  meta, tickets };
+		var meta    = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + postId ) );
+		var tickets = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart-' + postId ) );
+		var ret     = {  meta, tickets };
 
 		return ret;
 	}
