@@ -399,7 +399,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function get_ticket_delete_link( $ticket = null ) {
 			if ( empty( $ticket ) ) {
-				return;
+				return '';
 			}
 
 			$delete_text = _x( 'Delete %s', 'delete link', 'event-tickets' );
@@ -449,7 +449,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function get_ticket_move_url( $post_id, $ticket = null ) {
 			if ( empty( $ticket ) || empty( $post_id ) ) {
-				return;
+				return '';
 			}
 
 			$post_url = get_edit_post_link( $post_id, 'admin' );
@@ -478,7 +478,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function get_ticket_move_link( $post_id, $ticket = null ) {
 			if ( empty( $ticket ) ) {
-				return;
+				return '';
 			}
 
 			$move_text = __( 'Move %s', 'event-tickets' );
@@ -488,7 +488,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$move_url = $this->get_ticket_move_url( $post_id, $ticket );
 
 			if ( empty( $move_url ) ) {
-				return;
+				return '';
 			}
 
 			// Make sure Thickbox is available regardless of which admin page we're on.
