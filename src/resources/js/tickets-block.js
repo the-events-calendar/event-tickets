@@ -614,13 +614,13 @@ tribe.tickets.block = {
 	}
 
 	/**
-	 * Init the modal block prefill.
+	 * Init the form prefills (cart and AR forms).
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
-	obj.initModalPrefill = function() {
+	obj.initFormPrefills = function() {
 		$.ajax( {
 			type: 'GET',
 			data: {'provider': $tribe_ticket.data( 'providerId' )},
@@ -628,17 +628,25 @@ tribe.tickets.block = {
 			url: $tribe_ticket.data( 'cart' ),
 			success: function ( data ) {
 				if ( data.tickets ) {
-					obj.prefillModalCart( $tribe_ticket, data.tickets );
+					obj.prefillCartForm( $tribe_ticket, data.tickets );
 				}
 
 				if ( data.meta ) {
-					obj.prefillModalAR( data.meta );
-				} else {
-					// If we didn't get meta from the cart, let's fill with sessionStorage.
-					var local = obj.getLocal();
-					if ( local.meta ) {
-						obj.prefillModalAR( local.meta );
-					}
+					var count = false;
+					$.each( data.meta, function( ticket ) {
+						var $matches = $tribe_ticket.find( `[data-ticket-id="${ticket.ticket_id}"]`);
+						if ( $matches.length ) {
+							obj.prefillARForm( data.meta );
+							return;
+						}
+					});
+				}
+
+				// If we didn't get meta from the cart, let's fill with sessionStorage.
+				var local = obj.getLocal();
+
+				if ( local.meta ) {
+					obj.prefillARForm( local.meta );
 				}
 			}
 		} );
@@ -654,7 +662,7 @@ tribe.tickets.block = {
 	 *
 	 * @return void
 	 */
-	obj.prefillModalAR = function( meta, length ) {
+	obj.prefillARForm = function( meta, length ) {
 		if ( undefined === meta || 0 >= meta.length ) {
 			return;
 		}
@@ -707,7 +715,7 @@ tribe.tickets.block = {
 	 *
 	 * @returns {*}
 	 */
-	obj.prefillModalCart = function ( $form, tickets ) {
+	obj.prefillCartForm = function ( $form, tickets ) {
 		$.each( tickets, function ( index, value ) {
 			var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
 			if ( $item ) {
@@ -766,11 +774,11 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.storeLocal = function() {
-		var attendeeData  = obj.getMetaForSave();
-		sessionStorage.setItem( 'tribe_tickets_attendees-' + obj.postId, window.JSON.stringify( attendeeData ) );
+		var meta  = obj.getMetaForSave();
+		sessionStorage.setItem( 'tribe_tickets_attendees-' + obj.postId, window.JSON.stringify( meta ) );
 
-		var cartData  = obj.getTicketsForCart();
-		sessionStorage.setItem( 'tribe_tickets_cart-' + obj.postId, window.JSON.stringify( cartData ) );
+		var tickets  = obj.getTicketsForCart();
+		sessionStorage.setItem( 'tribe_tickets_cart-' + obj.postId, window.JSON.stringify( tickets ) );
 	}
 
 	/**
@@ -785,9 +793,9 @@ tribe.tickets.block = {
 			var postId = obj.postId;
 		}
 
-		var attendeeData = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + postId ) );
-		var cartData     = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart-' + postId ) );
-		var ret          = {  attendeeData, cartData };
+		var meta    = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + postId ) );
+		var tickets = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart-' + postId ) );
+		var ret     = {  meta, tickets };
 
 		return ret;
 	}
@@ -829,7 +837,7 @@ tribe.tickets.block = {
 			success: function ( data ) {
 				var cartSkip = data.meta.length;
 				if (length < cartSkip ) {
-					obj.prefillModalAR( data.meta, length );
+					obj.prefillARForm( data.meta, length );
 
 					return;
 				} else {
@@ -1341,7 +1349,7 @@ tribe.tickets.block = {
 				}
 			);
 
-			obj.initModalPrefill();
+			obj.initFormPrefills();
 
 			obj.updateFormTotals( $modalCart );
 		}
