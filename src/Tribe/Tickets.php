@@ -395,7 +395,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since 4.6
 		 *
 		 * @param object $ticket Ticket object
-		 * @return string HTMl link
+		 *
+		 * @return string HTML link
 		 */
 		public function get_ticket_delete_link( $ticket = null ) {
 			if ( empty( $ticket ) ) {
@@ -415,6 +416,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * @param bool true
 			 * @param int ticket post ID
+			 *
 			 * @return string HTML link | void HTML link
 			 */
 			if ( apply_filters( 'tribe_tickets_current_user_can_delete_ticket', true, $ticket->ID, $ticket->provider_class ) ) {
@@ -443,8 +445,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 4.6
 		 *
-		 * @param int $post_id ID of parent "event" post
-		 * @param object $ticket Ticket object
+		 * @param int    $post_id ID of parent "event" post
+		 * @param object $ticket  Ticket object
+		 *
 		 * @return string HTML link | void HTML link
 		 */
 		public function get_ticket_move_url( $post_id, $ticket = null ) {
@@ -472,8 +475,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 4.6
 		 *
-		 * @param int $post_id ID of parent "event" post
-		 * @param object $ticket Ticket object
+		 * @param int    $post_id ID of parent "event" post
+		 * @param object $ticket  Ticket object
+		 *
 		 * @return string HTML link | void HTML link
 		 */
 		public function get_ticket_move_link( $post_id, $ticket = null ) {
@@ -1533,8 +1537,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Returns an array of standard stock mode options that can be
-		 * reused by implementations.
+		 * Returns an array of standard stock mode options that can be reused by implementations.
 		 *
 		 * Format is: ['identifier' => 'Localized name', ... ]
 		 *
