@@ -5,7 +5,9 @@
  *
  * @since 4.7
  * @since 4.10.2 Update tooltip text for Confirmation email sender address and allow it to be saved as empty
- * @version 4.10.2
+ * @since TBD Use function for text.
+ *
+ * @version TBD
  */
 $post_types_to_ignore = apply_filters( 'tribe_tickets_settings_post_type_ignore_list', [
 	'attachment',
@@ -50,8 +52,8 @@ $is_tickets_plus_available = array_key_exists( $tickets_plus_plugin, $available_
  * @param array $ticket_systems
  */
 $ticket_addons = apply_filters( 'tribe_tickets_settings_systems_supporting_login_requirements', [
-	'event-tickets_rsvp' => __( 'Require users to log in before they RSVP', 'event-tickets' ),
-	'event-tickets_all'  => __( 'Require users to log in before they purchase tickets', 'event-tickets' ),
+	'event-tickets_rsvp' => sprintf( _x( 'Require users to log in before they %s', 'login requirement setting', 'event-tickets' ), tribe_get_rsvp_label_singular( 'require_login_to_rsvp_setting' ) ),
+	'event-tickets_all'  => sprintf( _x( 'Require users to log in before they purchase %s', 'login requirement setting', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'require_login_to_purchase_setting' ) ),
 ]
 );
 
@@ -67,7 +69,7 @@ $tickets_fields = [
 	'ticket-enabled-post-types' => [
 		'type'            => 'checkbox_list',
 		'label'           => esc_html__( 'Post types that can have tickets', 'event-tickets' ),
-		// only set the default to tribe_events if the ticket-endabled-post-types index has never been saved
+		// only set the default to tribe_events if the ticket-enabled-post-types index has never been saved
 		'default'         => array_key_exists( 'ticket-enabled-post-types', $options ) ? false : 'tribe_events',
 		'options'         => $all_post_types,
 		'can_be_empty'    => true,
@@ -90,7 +92,7 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 
 	$tickets_fields['ticket-rsvp-form-location'] = [
 		'type'            => 'dropdown',
-		'label'           => esc_html__( 'Location of RSVP form', 'event-tickets' ),
+		'label'           => esc_html( sprintf( _x( 'Location of %s form', 'form location setting', 'event-tickets' ), tribe_get_rsvp_label_singular( 'form_location_setting' ) ) ),
 		'tooltip'         => esc_html__( 'This setting only impacts events made with the classic editor.', 'event-tickets' ),
 		'options'         => $ticket_form_location_options,
 		'validation_type' => 'options',
@@ -100,7 +102,7 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 
 	$tickets_fields['ticket-commerce-form-location'] = [
 		'type'            => 'dropdown',
-		'label'           => esc_html__( 'Location of Tickets form', 'event-tickets' ),
+		'label'           => esc_html( sprintf( _x( 'Location of %s form', 'form location setting', 'event-tickets' ), tribe_get_ticket_label_plural( 'form_location_setting' ) ) ),
 		'tooltip'         => esc_html__( 'This setting only impacts events made with the classic editor.', 'event-tickets' ),
 		'options'         => $ticket_form_location_options,
 		'validation_type' => 'options',
@@ -110,8 +112,8 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 
 	$tickets_fields['ticket-display-tickets-left-threshold'] = [
 		'type'            => 'text',
-		'label'           => esc_html__( 'Display # tickets left threshold', 'event-tickets' ),
-		'tooltip'         => esc_html__( 'If this number is less than the number of tickets left for sale on your event, this will prevent the "# of tickets left" text from showing on your website. You can leave this blank if you would like to always show the text.', 'event-tickets' ),
+		'label'           => esc_html( sprintf( _x( 'Display # %s left threshold', 'tickets remaining threshold label', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'remaining_threshold_setting_label' ) ) ),
+		'tooltip'         => esc_html( sprintf( _x( 'If this number is less than the number of %1$s left for sale on your event, this will prevent the "# of %1$s left" text from showing on your website. You can leave this blank if you would like to always show the text.', 'tickets remaining threshold tooltip', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'remaining_threshold_setting_tooltip' ) ) ),
 		'validation_type' => 'int',
 		'size'            => 'small',
 		'can_be_empty'    => true,
@@ -126,10 +128,16 @@ $tickets_fields = array_merge( $tickets_fields, [
 		],
 		'ticket-authentication-requirements-advice'  => [
 			'type' => 'html',
-			'html' => '<p>'
-			          . sprintf( __( 'You can require that users log into your site before they are able to RSVP (or buy tickets). Please review your WordPress Membership option (via the General Settings admin screen) before adjusting this setting.',
-					'event-tickets' ), '<a href="' . esc_url( get_admin_url( null, 'options-general.php' ) ) . '" target="_blank">', '</a>' )
-			          . '</p>',
+			'html' => '<p>' . sprintf(
+					_x( 'You can require that users log into your site before they are able to %1$s (or buy %2$s). Please review your WordPress Membership option (via the %3$sGeneral Settings admin screen%4$s) before adjusting this setting.',
+					'ticket authentication requirements',
+					'event-tickets'
+					),
+				tribe_get_rsvp_label_singular( 'authentication_requirements_advice' ),
+				tribe_get_ticket_label_plural_lowercase( 'authentication_requirements_advice' ),
+				'<a href="' . esc_url( get_admin_url( null, 'options-general.php' ) ) . '" target="_blank">',
+				'</a>'
+				) . '</p>',
 		],
 		'ticket-authentication-requirements'         => [
 			'type'            => 'checkbox_list',
