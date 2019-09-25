@@ -36,6 +36,8 @@ tribe.tickets.block = {
 		itemPrice                  : '.tribe-amount',
 		itemQuantity               : '.tribe-tickets__item__quantity',
 		itemQuantityInput          : '.tribe-tickets-quantity',
+		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
+		blockFooterAmount          : '.tribe-tickets__footer__total .tribe-amount',
 		submit                     : '.tribe-tickets__buy',
 	};
 
@@ -52,7 +54,7 @@ tribe.tickets.block = {
 		cartForm   : '.tribe-modal__wrapper--ar #tribe-modal__cart',
 		arForm     : '.tribe-modal__wrapper--ar #tribe-modal__attendee_registration',
 		itemRemove : '.tribe-tickets__item__remove',
-		itemTotal  : '.tribe-tickets__item__total__wrap .tribe-amount',
+		itemTotal  : '.tribe-tickets__item__total .tribe-amount',
 		arItem     : '.tribe-ticket',
 		metaField  : '.ticket-meta',
 		submit     : '.tribe-block__tickets__item__attendee__fields__footer_submit',
@@ -141,7 +143,7 @@ tribe.tickets.block = {
 	 * @param int    $form The form we're updating.
 	 */
 	obj.updateFooterCount = function( $form ) {
-		var $field      = $form.find( '.tribe-tickets__footer__quantity__number' );
+		var $field      = $form.find( obj.selector.blockFooterQuantity );
 		var footerCount = 0;
 		var $qtys       = $form.find( obj.selector.itemQuantityInput );
 
@@ -166,7 +168,7 @@ tribe.tickets.block = {
 	 * @param int    $form The form we're updating.
 	 */
 	obj.updateFooterAmount = function( $form ) {
-		var $field       = $form.find( '.tribe-tickets__footer__total__number' );
+		var $field       = $form.find( obj.selector.blockFooterAmount );
 		var footerAmount = 0;
 		var $qtys        = $form.find( obj.selector.itemQuantityInput );
 
@@ -278,7 +280,7 @@ tribe.tickets.block = {
 	obj.updateTotal = function ( qty, price, $cartItem ) {
 
 		var total_for_item = ( qty * price ).toFixed( obj.getCurrencyFormatting().number_of_decimals );
-		var $field         = $cartItem.find( '.tribe-tickets__item__total' );
+		var $field         = $cartItem.find( obj.modalSelector.itemTotal );
 
 		$field.text( obj.numberFormat( total_for_item ) );
 
