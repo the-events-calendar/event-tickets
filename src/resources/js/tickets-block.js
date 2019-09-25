@@ -612,13 +612,13 @@ tribe.tickets.block = {
 	}
 
 	/**
-	 * Init the modal block prefill.
+	 * Init the form prefills (cart and AR forms).
 	 *
 	 * @since TBD
 	 *
 	 * @return void
 	 */
-	obj.initModalPrefill = function() {
+	obj.initFormPrefills = function() {
 		$.ajax( {
 			type: 'GET',
 			data: {'provider': $tribe_ticket.data( 'providerId' )},
@@ -626,7 +626,7 @@ tribe.tickets.block = {
 			url: $tribe_ticket.data( 'cart' ),
 			success: function ( data ) {
 				if ( data.tickets ) {
-					obj.prefillModalCart( $tribe_ticket, data.tickets );
+					obj.prefillCartForm( $tribe_ticket, data.tickets );
 				}
 
 				if ( data.meta ) {
@@ -634,7 +634,7 @@ tribe.tickets.block = {
 					$.each( data.meta, function( ticket ) {
 						var $matches = $tribe_ticket.find( `[data-ticket-id="${ticket.ticket_id}"]`);
 						if ( $matches.length ) {
-							obj.prefillModalAR( data.meta );
+							obj.prefillARForm( data.meta );
 							return;
 						}
 					});
@@ -644,7 +644,7 @@ tribe.tickets.block = {
 				var local = obj.getLocal();
 
 				if ( local.meta ) {
-					obj.prefillModalAR( local.meta );
+					obj.prefillARForm( local.meta );
 				}
 			}
 		} );
@@ -660,7 +660,7 @@ tribe.tickets.block = {
 	 *
 	 * @return void
 	 */
-	obj.prefillModalAR = function( meta, length ) {
+	obj.prefillARForm = function( meta, length ) {
 		if ( undefined === meta || 0 >= meta.length ) {
 			return;
 		}
@@ -713,7 +713,7 @@ tribe.tickets.block = {
 	 *
 	 * @returns {*}
 	 */
-	obj.prefillModalCart = function ( $form, tickets ) {
+	obj.prefillCartForm = function ( $form, tickets ) {
 		$.each( tickets, function ( index, value ) {
 			var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
 			if ( $item ) {
@@ -835,7 +835,7 @@ tribe.tickets.block = {
 			success: function ( data ) {
 				var cartSkip = data.meta.length;
 				if (length < cartSkip ) {
-					obj.prefillModalAR( data.meta, length );
+					obj.prefillARForm( data.meta, length );
 
 					return;
 				} else {
@@ -1347,7 +1347,7 @@ tribe.tickets.block = {
 				}
 			);
 
-			obj.initModalPrefill();
+			obj.initFormPrefills();
 
 			obj.updateFormTotals( $modalCart );
 		}
