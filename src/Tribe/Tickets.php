@@ -455,12 +455,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$post_url = get_edit_post_link( $post_id, 'admin' );
 
 			$move_type_url = add_query_arg(
-				array(
+				[
 					'dialog'         => Tribe__Tickets__Main::instance()->move_ticket_types()->dialog_name(),
 					'ticket_type_id' => $ticket->ID,
 					'check'          => wp_create_nonce( 'move_tickets' ),
 					'TB_iframe'      => 'true',
-				),
+				],
 				$post_url
 			);
 
@@ -1590,19 +1590,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * This order is important so that tickets overwrite RSVP on
 			 * the Buy Now Button on the front-end
 			 */
-			$types['rsvp']    = array(
+			$types['rsvp']    = [
 				'count'     => 0,
 				'stock'     => 0,
 				'unlimited' => 0,
 				'available' => 0,
-			);
-			$types['tickets'] = array(
+			];
+			$types['tickets'] = [
 				'count'     => 0, // count of ticket types currently for sale
 				'stock'     => 0, // current stock of tickets available for sale
 				'global'    => 0, // global stock ticket
 				'unlimited' => 0, // unlimited stock tickets
 				'available' => 0, // are tickets available for sale right now
-			);
+			];
 
 			foreach ( $tickets as $ticket ) {
 				// If a ticket is not current for sale do not count it
@@ -1705,10 +1705,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Takes any global stock data and makes it available via a wp_localize_script() call.
 		 */
 		public static function enqueue_frontend_stock_data() {
-			$data = array(
+			$data = [
 				'tickets' => [],
 				'events'  => [],
-			);
+			];
 
 			foreach ( self::$frontend_ticket_data as $ticket ) {
 				$post = $ticket->get_event();
@@ -1731,9 +1731,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					$ticket_data['stock'] = $ticket->available();
 				}
 
-				$data['events'][ $post_id ] = array(
+				$data['events'][ $post_id ] = [
 					'stock' => $global_stock->get_stock_level(),
-				);
+				];
 
 				$data['tickets'][ $ticket->ID ] = $ticket_data;
 			}
