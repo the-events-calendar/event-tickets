@@ -1544,10 +1544,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		protected function global_stock_mode_options() {
-			return array(
-				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE => __( 'Shared capacity with other tickets', 'event-tickets' ),
-				Tribe__Tickets__Global_Stock::OWN_STOCK_MODE    => __( 'Set capacity for this ticket only', 'event-tickets' ),
-			);
+			return [
+				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE => sprintf( _x( 'Shared capacity with other %s', 'global stock mode option', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'global_stock_mode_options' ) ),
+				Tribe__Tickets__Global_Stock::OWN_STOCK_MODE    => sprintf( _x( 'Set capacity for this %s only', 'global stock mode option', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'global_stock_mode_options' ) )
+			];
 		}
 
 		/**
