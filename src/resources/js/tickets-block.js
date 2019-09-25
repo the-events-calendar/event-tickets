@@ -639,11 +639,10 @@ tribe.tickets.block = {
 						}
 					});
 				}
-console.log('local?');
+
 				// If we didn't get meta from the cart, let's fill with sessionStorage.
 				var local = obj.getLocal();
-				console.log('local');
-				console.log(local);
+
 				if ( local.meta ) {
 					obj.prefillModalAR( local.meta );
 				}
