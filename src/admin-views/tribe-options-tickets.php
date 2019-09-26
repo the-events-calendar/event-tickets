@@ -208,7 +208,7 @@ $paypal_setup_kb_url = class_exists( 'Tribe__Tickets_Plus__Main' )
 	? 'http://m.tri.be/19yk'
 	: 'http://m.tri.be/19yj';
 $paypal_setup_kb_link = '<a href="' . esc_url( $paypal_setup_kb_url ) . '" target="_blank">' . esc_html__( 'these instructions', 'event-tickets' ) . '</a>';
-$paypal_setup_note    = sprintf( esc_html_x( 'In order to use Tribe Commerce to sell %1$s, you must configure your PayPal account to communicate with your WordPress site. If you need help getting set up, follow %2$s', 'tickets fields settings PayPal setup', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_setup' ), $paypal_setup_kb_link );
+$paypal_setup_note    = sprintf( esc_html_x( 'In order to use Tribe Commerce to sell %1$s, you must configure your PayPal account to communicate with your WordPress site. If you need help getting set up, follow %2$s', 'tickets fields settings PayPal setup', 'event-tickets' ), esc_html( tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_setup' ) ), $paypal_setup_kb_link );
 
 $ipn_setup_line           = sprintf(
 	'<span class="clear">%s</span><span class="clear">%s</span>',
