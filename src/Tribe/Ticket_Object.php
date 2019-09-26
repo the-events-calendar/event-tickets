@@ -409,16 +409,35 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function date_is_earlier( $datetime = null ) {
 			if ( empty( $datetime ) ) {
-				$timestamp = time();
-			} elseif ( is_numeric( $datetime ) ) {
-				$timestamp = $datetime;
-			} else {
-				$timestamp = strtotime( $datetime );
+				$datetime = time();
 			}
 
-			$start_date = $this->start_date();
+			// Attempt to convert the timestamp to a Date object.
+			try {
+				$timezone = $this->get_event_timezone();
 
-			return empty( $start_date ) || $timestamp < $start_date;
+				$date = Tribe__Date_Utils::build_date_object( $datetime, $timezone );
+
+				if ( Tribe__Date_Utils::is_timestamp( $datetime ) ) {
+					$date = Tribe__Date_Utils::build_date_object( $date->format( Tribe__Date_Utils::DBDATETIMEFORMAT ), $timezone );
+				}
+			} catch ( Exception $exception ) {
+				return false;
+			}
+
+			$start = $this->start_date( false );
+
+			if ( ! $start instanceof DateTime || ! $date instanceof DateTime ) {
+				if ( is_numeric( $datetime ) ) {
+					$date = $datetime;
+				} else {
+					$date = strtotime( $datetime );
+				}
+
+				$start = $this->start_date();
+			}
+
+			return empty( $start ) || $date < $start;
 		}
 
 		/**
@@ -430,16 +449,37 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function date_is_later( $datetime = null ) {
 			if ( empty( $datetime ) ) {
-				$timestamp = time();
-			} elseif ( is_numeric( $datetime ) ) {
-				$timestamp = $datetime;
-			} else {
-				$timestamp = strtotime( $datetime );
+				$datetime = time();
 			}
 
-			$end_date = $this->end_date();
+			// Attempt to convert the timestamp to a Date object.
+			try {
+				$timezone = $this->get_event_timezone();
 
-			return empty( $end_date ) || $timestamp > $end_date;
+				$date = Tribe__Date_Utils::build_date_object( $datetime, $timezone );
+
+				if ( Tribe__Date_Utils::is_timestamp( $datetime ) ) {
+					$date = Tribe__Date_Utils::build_date_object( $date->format( Tribe__Date_Utils::DBDATETIMEFORMAT ), $timezone );
+				}
+			} catch ( Exception $exception ) {
+				return false;
+			}
+
+			$end = $this->end_date( false );
+
+			if ( ! $end instanceof DateTime || ! $date instanceof DateTime ) {
+				if ( empty( $datetime ) ) {
+					$date = time();
+				} elseif ( is_numeric( $datetime ) ) {
+					$date = $datetime;
+				} else {
+					$date = strtotime( $datetime );
+				}
+
+				$end = $this->end_date();
+			}
+
+			return empty( $end ) || $date > $end;
 		}
 
 		/**
