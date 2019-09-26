@@ -21,7 +21,7 @@ $event_id              = get_the_ID();
 $meta                  = Tribe__Tickets_Plus__Main::instance()->meta();
 $non_meta_count        = 0;
 ?>
-<div class="tribe-tickets__item__attendee__fields foo">
+<div class="tribe-tickets__item__attendee__fields">
 	<h2 class="tribe-common-h3 tribe-common-h4--min-medium tribe-common-h--alt tribe-tickets__item__attendee__fields__title"><?php esc_html_e( 'Attendee Details', 'event-tickets' ); ?></h2>
 	<div class="tribe-tickets-notice tribe-tickets-notice--error">
 		<h3 class="tribe-common-h7 tribe-tickets-notice__title"><?php esc_html_e( 'Whoops', 'event-tickets' ); ?></h3>

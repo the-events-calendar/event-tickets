@@ -4,8 +4,18 @@
 */
 
 body.page-tribe-attendee-registration {
+
+	header.entry-header,
+	header.entry-meta,
+	header.page-header,
+	footer.entry-header,
 	span.edit-link {
 		display: none;
+	}
+
+	.entry-content,
+	.entry-header {
+		width: 98%;
 	}
 
 	/* compatibility with ET+ styles */
@@ -73,12 +83,12 @@ body.page-tribe-attendee-registration {
 	*/
 
 	.tribe-tickets__registration__event {
-		margin-bottom: 30px;
+		border-radius: 0;
+		margin: 0 auto 30px;
+		max-width: 100vw;
+		padding: 16px 24px;
 		position: relative;
-	}
-
-	.tribe-tickets__registration__summary {
-		padding: 40px;
+		width: 800px;
 	}
 
 	.tribe-tickets__registration__title {

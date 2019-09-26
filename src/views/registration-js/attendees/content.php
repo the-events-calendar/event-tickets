@@ -25,6 +25,11 @@ $meta     = tribe( 'tickets-plus.main' )->meta();
 $provider = $this->get( 'provider' );
 $event_id = $this->get( 'event_id' );
 $tickets  = $this->get( 'tickets' );
+
+if ( empty( $tickets ) ) {
+	// Nothing to see here!
+	return;
+}
 ?>
 
 <?php foreach ( $tickets as $ticket ) : ?>

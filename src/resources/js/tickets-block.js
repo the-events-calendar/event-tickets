@@ -39,38 +39,52 @@ tribe.tickets.block = {
 		submit                     : '.tribe-tickets__buy',
 	};
 
-	/*
-	 * AR Cart Modal Selectors.
-	 * Note: some of these have the modal class as well,
-	 * as the js can pick up the tempalte in the DOM and grab the wrong data.
-	 *
-	 * @since TBD
-	 *
-	 */
-	obj.modalSelector = {
-		container  : '.tribe-modal__wrapper--ar',
-		cartForm   : '.tribe-modal__wrapper--ar #tribe-modal__cart',
-		arForm     : '.tribe-modal__wrapper--ar #tribe-modal__attendee_registration',
-		itemRemove : '.tribe-tickets__item__remove',
-		itemTotal  : '.tribe-tickets__item__total__wrap .tribe-amount',
-		arItem     : '.tribe-ticket',
-		metaField  : '.ticket-meta',
-		submit     : '.tribe-block__tickets__item__attendee__fields__footer_submit',
-	};
-
-	obj.commerceSelector = {
-		Tribe__Tickets_Plus__Commerce__EDD__Main         : 'edd',
-		Tribe__Tickets__RSVP                             : 'rsvp',
-		Tribe__Tickets__Commerce__PayPal__Main           : 'tribe-commerce',
-		Tribe__Tickets_Plus__Commerce__WooCommerce__Main : 'woo',
-	};
-
 	var $tribe_ticket = $( obj.selector.container );
 
 	// Bail if there are no tickets on the current event/page/post.
 	if ( 0 === $tribe_ticket.length ) {
 		return;
 	}
+
+	/*
+	 * AR Cart Modal Selectors.
+	 *
+	 * Note: some of these have the modal class as well, as the js can
+	 * pick up the class from elsewhere in the DOM and grab the wrong data.
+	 *
+	 * @since TBD
+	 *
+	 */
+	obj.modalSelector = {
+		cartForm  : '.tribe-modal__wrapper--ar #tribe-modal__cart',
+		container : '.tribe-modal__wrapper--ar',
+		itemRemove: '.tribe-tickets__item__remove',
+		itemTotal : '.tribe-tickets__item__total__wrap .tribe-amount',
+		metaField : '.ticket-meta',
+		metaForm  : '.tribe-modal__wrapper--ar #tribe-modal__attendee_registration',
+		metaItem  : '.tribe-ticket',
+		submit    : '.tribe-block__tickets__item__attendee__fields__footer_submit',
+	};
+
+	/*
+	 * Commerce Provider Selectors.
+	 *
+	 * @since TBD
+	 *
+	 */
+	obj.commerceSelector = {
+		edd                                              : 'Tribe__Tickets_Plus__Commerce__EDD__Main',
+		rsvp                                             : 'Tribe__Tickets__RSVP',
+		tpp                                              : 'Tribe__Tickets__Commerce__PayPal__Main',
+		Tribe__Tickets__Commerce__PayPal__Main           : 'tribe-commerce',
+		Tribe__Tickets__RSVP                             : 'rsvp',
+		Tribe__Tickets_Plus__Commerce__EDD__Main         : 'edd',
+		Tribe__Tickets_Plus__Commerce__WooCommerce__Main : 'woo',
+		tribe_eddticket                                  : 'Tribe__Tickets_Plus__Commerce__EDD__Main',
+		tribe_tpp_attendees                              : 'Tribe__Tickets__Commerce__PayPal__Main',
+		tribe_wooticket                                  : 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
+		woo                                              : 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
+	};
 
 	obj.tribe_ticket_provider = $tribe_ticket.data( 'provider' );
 	obj.postId = $( '.status-publish' ).attr( 'id' ).replace( 'post-', '' );
@@ -363,7 +377,7 @@ tribe.tickets.block = {
 
 				if ( $cartItem.is( ':visible' ) ) {
 					var ticketID          = $cartItem.closest( obj.selector.item ).data( 'ticket-id' );
-					var $ticket_container = $( obj.modalSelector.arForm ).find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]' );
+					var $ticket_container = $( obj.modalSelector.metaForm ).find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]' );
 
 					// Ticket does not have meta - no need to jump through hoops (and throw errors).
 					if ( ! $ticket_container.length ) {
@@ -371,12 +385,12 @@ tribe.tickets.block = {
 						return;
 					}
 
-					var $existing = $ticket_container.find( obj.modalSelector.arItem );
+					var $existing = $ticket_container.find( obj.modalSelector.metaItem );
 					var qty       = obj.getQty( $cartItem );
 
 					if ( 0 >= qty ) {
 						$ticket_container.removeClass( 'tribe-tickets--has-tickets' );
-						$ticket_container.find( obj.modalSelector.arItem ).remove();
+						$ticket_container.find( obj.modalSelector.metaItem ).remove();
 
 						return;
 					}
@@ -585,7 +599,7 @@ tribe.tickets.block = {
 	 *
 	 */
 	obj.focusTicketBlock = function( input ) {
-		$( input ).closest( obj.modalSelector.arItem ).addClass( 'tribe-ticket-item__has-focus' );
+		$( input ).closest( obj.modalSelector.metaItem ).addClass( 'tribe-ticket-item__has-focus' );
 	}
 
 	/**
@@ -595,7 +609,7 @@ tribe.tickets.block = {
 	 *
 	 */
 	obj.unfocusTicketBlock = function( input ) {
-		$( input ).closest( obj.modalSelector.arItem ).removeClass( 'tribe-ticket-item__has-focus' );
+		$( input ).closest( obj.modalSelector.metaItem ).removeClass( 'tribe-ticket-item__has-focus' );
 	}
 
 	/* Prefill Handling */
@@ -634,17 +648,17 @@ tribe.tickets.block = {
 					$.each( data.meta, function( ticket ) {
 						var $matches = $tribe_ticket.find( `[data-ticket-id="${ticket.ticket_id}"]`);
 						if ( $matches.length ) {
-							obj.prefillARForm( data.meta );
+							obj.prefillmetaForm( data.meta );
 							return;
 						}
 					});
 				}
 
-				// If we didn't get meta from the cart, let's fill with sessionStorage.
+				// If we didn't get meta from the API, let's fill with sessionStorage.
 				var local = obj.getLocal();
 
 				if ( local.meta ) {
-					obj.prefillARForm( local.meta );
+					obj.prefillmetaForm( local.meta );
 				}
 			}
 		} );
@@ -660,7 +674,7 @@ tribe.tickets.block = {
 	 *
 	 * @return void
 	 */
-	obj.prefillARForm = function( meta, length ) {
+	obj.prefillmetaForm = function( meta, length ) {
 		if ( undefined === meta || 0 >= meta.length ) {
 			return;
 		}
@@ -669,7 +683,7 @@ tribe.tickets.block = {
 			var length = 0;
 		}
 
-		var $form = $( obj.modalSelector.arForm );
+		var $form = $( obj.modalSelector.metaForm );
 		var $containers = $form.find( '.tribe-tickets__item__attendee__fields__container' );
 
 		if ( 0 < length ) {
@@ -677,7 +691,7 @@ tribe.tickets.block = {
 		}
 
 		$.each( meta, function( index, ticket ) {
-			var $current_containers = $containers.find( obj.modalSelector.arItem ).filter( `[data-ticket-id="${ticket.ticket_id}"]` );
+			var $current_containers = $containers.find( obj.modalSelector.metaItem ).filter( `[data-ticket-id="${ticket.ticket_id}"]` );
 			if ( ! $current_containers.length ) {
 				return;
 			}
@@ -835,12 +849,12 @@ tribe.tickets.block = {
 			success: function ( data ) {
 				var cartSkip = data.meta.length;
 				if (length < cartSkip ) {
-					obj.prefillARForm( data.meta, length );
+					obj.prefillmetaForm( data.meta, length );
 
 					return;
 				} else {
-					var $attendeeForm = $( obj.modalSelector.arForm );
-					var $newBlocks     = $attendeeForm.find( obj.modalSelector.arItem ).slice( length - 1 );
+					var $attendeeForm = $( obj.modalSelector.metaForm );
+					var $newBlocks     = $attendeeForm.find( obj.modalSelector.metaItem ).slice( length - 1 );
 					if ( ! $newBlocks ) {
 						return;
 					}
@@ -902,8 +916,8 @@ tribe.tickets.block = {
 	 * @return obj Meta data object.
 	 */
 	obj.getMetaForSave = function() {
-		var $arForm     = $( obj.modalSelector.arForm );
-		var $ticketRows = $arForm.find( obj.modalSelector.arItem );
+		var $metaForm     = $( obj.modalSelector.metaForm );
+		var $ticketRows = $metaForm.find( obj.modalSelector.metaItem );
 		var meta    = [];
 		var tempMeta    = [];
 		$ticketRows.each(
@@ -978,7 +992,7 @@ tribe.tickets.block = {
 	 * @return boolean If the form validates.
 	 */
 	obj.validateForm = function( $form ) {
-		var $containers     = $form.find( obj.modalSelector.arItem );
+		var $containers     = $form.find( obj.modalSelector.metaItem );
 		var formValid       = true;
 		var invalidTickets  = 0;
 
@@ -1175,7 +1189,7 @@ tribe.tickets.block = {
 
 			$( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticket.id + '"]' )
 				.removeClass( 'tribe-tickets--has-tickets' )
-				.find( obj.modalSelector.arItem ).remove();
+				.find( obj.modalSelector.metaItem ).remove();
 		}
 	);
 
@@ -1272,8 +1286,8 @@ tribe.tickets.block = {
 			var $button    = $( this );
 
 
-			var $arForm = $( obj.modalSelector.arForm );
-			var isValidForm = obj.validateForm( $arForm );
+			var $metaForm = $( obj.modalSelector.metaForm );
+			var isValidForm = obj.validateForm( $metaForm );
 			var $errorNotice = $( '.tribe-tickets-notice--error' );
 
 			if ( ! isValidForm[ 0 ] ) {

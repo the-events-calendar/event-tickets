@@ -323,10 +323,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 		if ( null !== $meta ) {
 			// Setup meta.
 			foreach ( $meta as $k => $ticket_meta ) {
-				bdump(
-					$k,
-					$ticket_meta
-				);
 				$defaults = [
 					'ticket_id' => 0,
 					'provider'  => $provider,

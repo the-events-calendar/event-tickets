@@ -17,7 +17,7 @@
 
 ?>
 <div
-	class="tribe-tickets__item__attendee__fields block"
+	class="tribe-tickets__item__attendee__fields"
 >
 	<?php foreach ( $tickets as $key => $ticket ) : ?>
 		<?php $this->template( 'blocks/tickets/registration/attendee/fields', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
