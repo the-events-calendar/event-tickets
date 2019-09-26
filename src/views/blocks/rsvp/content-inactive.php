@@ -17,7 +17,7 @@
  */
 
 $message = $this->get( 'all_past' )
-	? sprintf( _x( '%s are no longer available', 'RSVP block inactive content', 'event-tickets' ), tribe_get_rsvp_label_plural( 'block_inactive_content' ) )
+	? sprintf( _x( '%s are no longer available', 'RSVP block inactive content in the past', 'event-tickets' ), tribe_get_rsvp_label_plural( 'block_inactive_content_past' ) )
 	: sprintf( _x( '%s are not yet available', 'RSVP block inactive content', 'event-tickets' ), tribe_get_rsvp_label_plural( 'block_inactive_content' ) );
 ?>
 <div class="tribe-block__rsvp__content tribe-block__rsvp__content--inactive">
