@@ -300,20 +300,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			try {
 				$timezone = $this->get_event_timezone();
 
-				if ( is_string( $datetime ) && ! is_numeric( $datetime ) ) {
-					$now = new DateTime( $datetime, $timezone );
-				} else {
-					$now = new DateTime( '@' . $datetime, $timezone );
+				$now = Tribe__Date_Utils::build_date_object( $datetime, $timezone );
 
-					/*
-					 * Convert timestamp to UTC timezone because all timestamps assume UTC
-					 * but we assume timestamp is coming in relative to event timezone.
-					 */
-					$now->setTimezone( new DateTimeZone( 'UTC' ) );
-
-					$utc_datetime = $now->format( Tribe__Date_Utils::DBDATETIMEFORMAT );
-
-					$now = new DateTime( $utc_datetime, $timezone );
+				if ( Tribe__Date_Utils::is_timestamp( $datetime ) ) {
+					$now = Tribe__Date_Utils::build_date_object( $now->format( Tribe__Date_Utils::DBDATETIMEFORMAT ), $timezone );
 				}
 			} catch ( Exception $exception ) {
 				return false;
@@ -366,21 +356,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			try {
 				$timezone = $this->get_event_timezone();
 
-				if ( is_string( $date ) && ! is_numeric( $date ) ) {
-					return new DateTime( $date, $timezone );
-				} else {
-					$datetime = new DateTime( '@' . $date, $timezone );
+				$datetime = Tribe__Date_Utils::build_date_object( $date, $timezone );
 
-					/*
-					 * Convert timestamp to UTC timezone because all timestamps assume UTC
-					 * but we assume timestamp is coming in relative to event timezone.
-					 */
-					$datetime->setTimezone( new DateTimeZone( 'UTC' ) );
-
-					$utc_datetime = $datetime->format( Tribe__Date_Utils::DBDATETIMEFORMAT );
-
-					return new DateTime( $utc_datetime, $timezone );
+				if ( Tribe__Date_Utils::is_timestamp( $datetime ) ) {
+					$datetime = Tribe__Date_Utils::build_date_object( $datetime->format( Tribe__Date_Utils::DBDATETIMEFORMAT ), new DateTimeZone( 'UTC' ) );
 				}
+
+				return $datetime;
 			} catch ( Exception $exception ) {
 				return strtotime( $date );
 			}
