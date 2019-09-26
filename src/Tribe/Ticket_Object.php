@@ -328,19 +328,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$end   = $this->end_date();
 			}
 
-			/*codecept_debug( '-------------' );
-			codecept_debug( 'Now format: ' . var_export( $now->format( 'Y-m-d H:i:s' ), true ) );
-			codecept_debug( 'Now timezone: ' . var_export( $now->getTimezone(), true ) );
-			codecept_debug( 'Now timestamp: ' . var_export( $now->getTimestamp(), true ) );
-			codecept_debug( '-------------' );
-			codecept_debug( 'Start format: ' . var_export( $start->format( 'Y-m-d H:i:s' ), true ) );
-			codecept_debug( 'Start timezone: ' . var_export( $start->getTimezone(), true ) );
-			codecept_debug( 'Start timestamp: ' . var_export( $start->getTimestamp(), true ) );
-			codecept_debug( '-------------' );
-			codecept_debug( 'End format: ' . var_export( $end->format( 'Y-m-d H:i:s' ), true ) );
-			codecept_debug( 'End timezone: ' . var_export( $end->getTimezone(), true ) );
-			codecept_debug( 'End timestamp: ' . var_export( $end->getTimestamp(), true ) );*/
-
 			// Bail if we don't have an end date and the event has passed
 			// Check if the event has passed in case we're using TEC
 			$is_past_event = function_exists( 'tribe_is_past_event' )
@@ -374,19 +361,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			if ( $as_timestamp ) {
 				return strtotime( $date );
-
-				$datetime = $this->get_date( $date, false );
-
-				if ( is_int( $datetime ) ) {
-					return $datetime;
-				}
-
-				/*
-				 * Convert timestamp to UTC timezone because we assume UTC return here historically.
-				 */
-				$datetime->setTimezone( new DateTimeZone( 'UTC' ) );
-
-				return $datetime->getTimestamp();
 			}
 
 			try {
