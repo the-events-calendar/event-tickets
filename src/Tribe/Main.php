@@ -816,7 +816,7 @@ class Tribe__Tickets__Main {
 		if ( ! array_key_exists( 'ticket-enabled-post-types', $options ) ) {
 			$defaults                             = [ 'tribe_events' ];
 			$options['ticket-enabled-post-types'] = $defaults;
-			tribe_update_option( 'ticket-enabled-post-types', (string) $defaults );
+			tribe_update_option( 'ticket-enabled-post-types', $defaults );
 		}
 
 		// Remove WooCommerce Product and EDD post types to prevent recursion fatal error on save.
