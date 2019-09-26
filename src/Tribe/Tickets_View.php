@@ -50,7 +50,7 @@ class Tribe__Tickets__Tickets_View {
 
 		// Intercept Template file for Tickets
 		add_action( 'tribe_events_pre_get_posts', array( $myself, 'modify_ticket_display_query' ) );
-		add_filter( 'tribe_events_template', array( $myself, 'intercept_template' ), 20, 2 );
+		add_filter( 'tribe_events_template_single-event.php', array( $myself, 'intercept_template' ), 20, 2 );
 
 		// We will inject on the Priority 4, to be happen before RSVP
 		add_action( 'tribe_events_single_event_after_the_meta', array( $myself, 'inject_link_template' ), 4 );
@@ -414,13 +414,13 @@ class Tribe__Tickets__Tickets_View {
 	}
 
 	/**
-	 * We need to intercept the template loading and load the correct file
+	 * We need to intercept the template loading and load the correct file.
 	 *
-	 * @param  string $old_file Non important variable with the previous path
-	 * @param  string $template Which template we are dealing with
-	 * @return string           The correct File path for the tickets endpoint
+	 * @param string $old_file Non important variable with the previous path.
+	 *
+	 * @return string The correct File path for the tickets endpoint.
 	 */
-	public function intercept_template( $old_file, $template ) {
+	public function intercept_template( $old_file ) {
 		global $wp_query;
 
 		/**
@@ -440,12 +440,8 @@ class Tribe__Tickets__Tickets_View {
 
 		// Now fetch the display and check it
 		$display = get_query_var( 'eventDisplay', false );
-		if ( 'tickets' !== $display ) {
-			return $old_file;
-		}
 
-		// If for some reason it's not `single-event.php` we don't care either
-		if ( 'single-event.php' !== $template ) {
+		if ( 'tickets' !== $display ) {
 			return $old_file;
 		}
 
