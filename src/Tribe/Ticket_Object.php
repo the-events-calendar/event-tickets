@@ -296,17 +296,24 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return boolean Whether or not the provided date/time falls within the start/end date range
 		 */
 		public function date_in_range( $datetime = 'now' ) {
-			$timestamp = is_numeric( $datetime ) ? $datetime : strtotime( $datetime );
 			// Attempt to convert the timestamp to a Date object.
 			try {
 				$timezone = $this->get_event_timezone();
-				if ( 'now' === $datetime ) {
-					$now = new DateTime( 'now', $timezone  );
+
+				if ( is_string( $datetime ) && ! is_numeric( $datetime ) ) {
+					$now = new DateTime( $datetime, $timezone );
 				} else {
-					$now = new DateTime( '@' . $timestamp );
-					if ( $timezone instanceof DateTimeZone ) {
-						$now->setTimezone( $timezone );
-					}
+					$now = new DateTime( '@' . $datetime, $timezone );
+
+					/*
+					 * Convert timestamp to UTC timezone because all timestamps assume UTC
+					 * but we assume timestamp is coming in relative to event timezone.
+					 */
+					$now->setTimezone( new DateTimeZone( 'UTC' ) );
+
+					$utc_datetime = $now->format( Tribe__Date_Utils::DBDATETIMEFORMAT );
+
+					$now = new DateTime( $utc_datetime, $timezone );
 				}
 			} catch ( Exception $exception ) {
 				return false;
@@ -316,10 +323,23 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$end   = $this->end_date( false );
 
 			if ( ! $start instanceof DateTime || ! $end instanceof DateTime || ! $now instanceof DateTime ) {
-				$now   = $timestamp;
+				$now   = time();
 				$start = $this->start_date();
 				$end   = $this->end_date();
 			}
+
+			/*codecept_debug( '-------------' );
+			codecept_debug( 'Now format: ' . var_export( $now->format( 'Y-m-d H:i:s' ), true ) );
+			codecept_debug( 'Now timezone: ' . var_export( $now->getTimezone(), true ) );
+			codecept_debug( 'Now timestamp: ' . var_export( $now->getTimestamp(), true ) );
+			codecept_debug( '-------------' );
+			codecept_debug( 'Start format: ' . var_export( $start->format( 'Y-m-d H:i:s' ), true ) );
+			codecept_debug( 'Start timezone: ' . var_export( $start->getTimezone(), true ) );
+			codecept_debug( 'Start timestamp: ' . var_export( $start->getTimestamp(), true ) );
+			codecept_debug( '-------------' );
+			codecept_debug( 'End format: ' . var_export( $end->format( 'Y-m-d H:i:s' ), true ) );
+			codecept_debug( 'End timezone: ' . var_export( $end->getTimezone(), true ) );
+			codecept_debug( 'End timestamp: ' . var_export( $end->getTimestamp(), true ) );*/
 
 			// Bail if we don't have an end date and the event has passed
 			// Check if the event has passed in case we're using TEC
@@ -348,13 +368,45 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return DateTime|false|int
 		 */
 		public function get_date( $date = '', $as_timestamp = true ) {
+			if ( '' === $date ) {
+				return false;
+			}
+
 			if ( $as_timestamp ) {
 				return strtotime( $date );
+
+				$datetime = $this->get_date( $date, false );
+
+				if ( is_int( $datetime ) ) {
+					return $datetime;
+				}
+
+				/*
+				 * Convert timestamp to UTC timezone because we assume UTC return here historically.
+				 */
+				$datetime->setTimezone( new DateTimeZone( 'UTC' ) );
+
+				return $datetime->getTimestamp();
 			}
 
 			try {
 				$timezone = $this->get_event_timezone();
-				return new DateTime( $date, $timezone );
+
+				if ( is_string( $date ) && ! is_numeric( $date ) ) {
+					return new DateTime( $date, $timezone );
+				} else {
+					$datetime = new DateTime( '@' . $date, $timezone );
+
+					/*
+					 * Convert timestamp to UTC timezone because all timestamps assume UTC
+					 * but we assume timestamp is coming in relative to event timezone.
+					 */
+					$datetime->setTimezone( new DateTimeZone( 'UTC' ) );
+
+					$utc_datetime = $datetime->format( Tribe__Date_Utils::DBDATETIMEFORMAT );
+
+					return new DateTime( $utc_datetime, $timezone );
+				}
 			} catch ( Exception $exception ) {
 				return strtotime( $date );
 			}
@@ -395,12 +447,14 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Determines if the given date is smaller than the ticket's start date
 		 *
-		 * @param string $datetime The date/time that we want to determine if it is smaller than the ticket's start date
+		 * @param null|string $datetime The date/time that we want to determine if it is smaller than the ticket's start date
 		 *
 		 * @return boolean Whether or not the provided date/time is smaller than the ticket's start date
 		 */
-		public function date_is_earlier( $datetime ) {
-			if ( is_numeric( $datetime ) ) {
+		public function date_is_earlier( $datetime = null ) {
+			if ( empty( $datetime ) ) {
+				$timestamp = time();
+			} elseif ( is_numeric( $datetime ) ) {
 				$timestamp = $datetime;
 			} else {
 				$timestamp = strtotime( $datetime );
@@ -414,12 +468,14 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Determines if the given date is greater than the ticket's end date
 		 *
-		 * @param string $datetime The date/time that we want to determine if it is smaller than the ticket's start date
+		 * @param null|string $datetime The date/time that we want to determine if it is smaller than the ticket's start date
 		 *
 		 * @return boolean Whether or not the provided date/time is greater than the ticket's end date
 		 */
-		public function date_is_later( $datetime ) {
-			if ( is_numeric( $datetime ) ) {
+		public function date_is_later( $datetime = null ) {
+			if ( empty( $datetime ) ) {
+				$timestamp = time();
+			} elseif ( is_numeric( $datetime ) ) {
 				$timestamp = $datetime;
 			} else {
 				$timestamp = strtotime( $datetime );
@@ -441,19 +497,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return string
 		 */
 		public function availability_slug( $datetime = null ) {
-			if ( is_numeric( $datetime ) ) {
-				$timestamp = $datetime;
-			} elseif ( $datetime ) {
-				$timestamp = strtotime( $datetime );
-			} else {
-				$timestamp = current_time( 'timestamp' );
-			}
-
 			$slug = 'available';
 
-			if ( $this->date_is_earlier( $timestamp ) ) {
+			if ( $this->date_is_earlier( $datetime ) ) {
 				$slug = 'availability-future';
-			} elseif ( $this->date_is_later( $timestamp ) ) {
+			} elseif ( $this->date_is_later( $datetime ) ) {
 				$slug = 'availability-past';
 			}
 
