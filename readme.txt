@@ -127,6 +127,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Prevent tickets that do not have attendee meta from showing on the attendee registration page [125021]
 * Fix - Prevent multiple clicks on `Confirm RSVP` from submitting entries [132961]
 * Fix - Make 'Not going' available to translate in RSVP dropdown [134358]
+* Fix - Update how we intercept the singular event template when The Events Calendar is active, on events created using the Block editor so that you can view 'My Tickets' correctly [134583]
 
 = [4.10.8] 2019-09-16 =
 
