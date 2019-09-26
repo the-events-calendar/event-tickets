@@ -289,7 +289,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// Now fetch the display and check it
-		if ( 'tickets' !== get_query_var( 'eventDisplay', false ) ) {
+		if ( 'tickets' !== get_query_var( 'eventDisplay', false ) && ! $this->is_edit_page() ) {
 			return;
 		}
 
@@ -373,10 +373,15 @@ class Tribe__Tickets__Tickets_View {
 		// Prevents firing more then it needs too outside of the loop
 		$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
 
-		// Prevents Weird
+		// Now fetch the display and check it
+		$display = get_query_var( 'eventDisplay', false );
+
 		if (
-			! $this->is_edit_page()
-			|| ! $in_the_loop
+			! $in_the_loop
+			|| (
+				'tickets' !== $display
+				&& ! $this->is_edit_page()
+			)
 		) {
 			return $content;
 		}
@@ -441,7 +446,7 @@ class Tribe__Tickets__Tickets_View {
 		// Now fetch the display and check it
 		$display = get_query_var( 'eventDisplay', false );
 
-		if ( 'tickets' !== $display ) {
+		if ( 'tickets' !== $display && ! $this->is_edit_page() ) {
 			return $old_file;
 		}
 
