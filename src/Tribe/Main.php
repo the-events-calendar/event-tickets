@@ -153,10 +153,10 @@ class Tribe__Tickets__Main {
 
 		$this->maybe_set_common_lib_info();
 
-		add_action( 'plugins_loaded', array( $this, 'maybe_bail_if_old_tec_is_present' ), -1 );
-		add_action( 'plugins_loaded', array( $this, 'maybe_bail_if_invalid_wp_or_php' ), -1 );
-		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), 0 );
-		register_activation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, array( $this, 'on_activation' ) );
+		add_action( 'plugins_loaded', [ $this, 'maybe_bail_if_old_tec_is_present' ], -1 );
+		add_action( 'plugins_loaded', [ $this, 'maybe_bail_if_invalid_wp_or_php' ], -1 );
+		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 0 );
+		register_activation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, [ $this, 'on_activation' ] );
 	}
 
 	/**
@@ -178,7 +178,7 @@ class Tribe__Tickets__Main {
 
 		// if there isn't a tribe-common version, bail
 		if ( ! preg_match( $this->common_version_regex, $common_version, $matches ) ) {
-			add_action( 'admin_head', array( $this, 'missing_common_libs' ) );
+			add_action( 'admin_head', [ $this, 'missing_common_libs' ] );
 
 			return;
 		}
@@ -193,10 +193,10 @@ class Tribe__Tickets__Main {
 			empty( $GLOBALS['tribe-common-info'] )
 			|| version_compare( $GLOBALS['tribe-common-info']['version'], $common_version, '<' )
 		) {
-			$GLOBALS['tribe-common-info'] = array(
+			$GLOBALS['tribe-common-info'] = [
 				'dir'     => "{$this->plugin_path}common/src/Tribe",
 				'version' => $common_version,
-			);
+			];
 		}
 	}
 
@@ -266,8 +266,8 @@ class Tribe__Tickets__Main {
 			return;
 		}
 
-		add_action( 'admin_notices', array( $this, 'not_supported_error' ) );
-		add_action( 'network_admin_notices', array( $this, 'not_supported_error' ) );
+		add_action( 'admin_notices', [ $this, 'not_supported_error' ] );
+		add_action( 'network_admin_notices', [ $this, 'not_supported_error' ] );
 
 		// if we get in here, we need to reset the global common to TEC's version so that we don't cause a fatal
 		$this->reset_common_lib_info_back_to_tec();
@@ -296,7 +296,7 @@ class Tribe__Tickets__Main {
 		// Start Up Common
 		Tribe__Main::instance();
 
-		add_action( 'tribe_common_loaded', array( $this, 'bootstrap' ), 0 );
+		add_action( 'tribe_common_loaded', [ $this, 'bootstrap' ], 0 );
 	}
 
 	/**
@@ -343,7 +343,7 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.main', $this );
 
 		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
-		tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', array( 'hook' ) );
+		tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', [ 'hook' ] );
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
 
@@ -362,7 +362,7 @@ class Tribe__Tickets__Main {
 		tribe_register_provider( 'Tribe__Tickets__Editor__Provider' );
 
 		// Privacy
-		tribe_singleton( 'tickets.privacy', 'Tribe__Tickets__Privacy', array( 'hook' ) );
+		tribe_singleton( 'tickets.privacy', 'Tribe__Tickets__Privacy', [ 'hook' ] );
 
 		// Views V2
 		if ( class_exists( 'Tribe__Events__Main' ) ) {
@@ -395,10 +395,10 @@ class Tribe__Tickets__Main {
 
 		$upgrade_path = wp_nonce_url(
 			add_query_arg(
-				array(
+				[
 					'action' => 'upgrade-plugin',
 					'plugin' => $plugin_short_path,
-				), get_admin_url() . 'update.php'
+				], get_admin_url() . 'update.php'
 			), 'upgrade-plugin_' . $plugin_short_path
 		);
 
@@ -481,7 +481,7 @@ class Tribe__Tickets__Main {
 		if ( version_compare( Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' ), self::VERSION, '<' ) ) {
 			$previous_versions = Tribe__Settings_Manager::get_option( 'previous_event_tickets_versions' )
 				? Tribe__Settings_Manager::get_option( 'previous_event_tickets_versions' )
-				: array();
+				: [];
 
 			$previous_versions[] = Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' )
 				? Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' )
@@ -514,38 +514,38 @@ class Tribe__Tickets__Main {
 	 * set up hooks for this class
 	 */
 	public function hooks() {
-		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'init', [ $this, 'init' ] );
 
 		// connect upgrade script
-		add_action( 'init', array( $this, 'run_updates' ), 0, 0 );
+		add_action( 'init', [ $this, 'run_updates' ], 0, 0 );
 
-		add_filter( 'tribe_post_types', array( $this, 'inject_post_types' ) );
+		add_filter( 'tribe_post_types', [ $this, 'inject_post_types' ] );
 
 		// Setup Help Tab texting
-		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_support_content' ) );
-		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_featured_content' ) );
-		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_extra_content' ) );
-		add_filter( 'tribe_support_registered_template_systems', array( $this, 'add_template_updates_check' ) );
-		add_action( 'tribe_tickets_plugin_loaded', array( 'Tribe__Support', 'getInstance' ) );
+		add_action( 'tribe_help_pre_get_sections', [ $this, 'add_help_section_support_content' ] );
+		add_action( 'tribe_help_pre_get_sections', [ $this, 'add_help_section_featured_content' ] );
+		add_action( 'tribe_help_pre_get_sections', [ $this, 'add_help_section_extra_content' ] );
+		add_filter( 'tribe_support_registered_template_systems', [ $this, 'add_template_updates_check' ] );
+		add_action( 'tribe_tickets_plugin_loaded', [ 'Tribe__Support', 'getInstance' ] );
 
 		// Setup Front End Display
 		add_action( 'tribe_events_inside_cost', 'tribe_tickets_buy_button', 10, 0 );
 
 		// Hook to oembeds
-		add_action( 'tribe_events_embed_after_the_cost_value', array( $this, 'inject_buy_button_into_oembed' ) );
-		add_action( 'embed_head', array( $this, 'embed_head' ) );
+		add_action( 'tribe_events_embed_after_the_cost_value', [ $this, 'inject_buy_button_into_oembed' ] );
+		add_action( 'embed_head', [ $this, 'embed_head' ] );
 
 		// Attendee screen enhancements
-		add_action( 'tribe_events_tickets_attendees_event_details_top', array( $this, 'setup_attendance_totals' ), 20 );
+		add_action( 'tribe_events_tickets_attendees_event_details_top', [ $this, 'setup_attendance_totals' ], 20 );
 
 		// CSV Import options
 		if ( class_exists( 'Tribe__Events__Main' ) ) {
-			add_filter( 'tribe_events_import_options_rows', array( Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_import_options_rows' ) );
-			add_filter( 'tribe_aggregator_csv_post_types', array( Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_csv_post_types' ) );
-			add_filter( 'tribe_aggregator_csv_column_mapping', array( Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_mapping' ) );
-			add_filter( 'tribe_event_import_rsvp_tickets_column_names', array( Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ) );
-			add_filter( 'tribe_events_import_rsvp_tickets_importer', array( 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ), 10, 2 );
-			add_action( 'tribe_tickets_ticket_deleted', array( 'Tribe__Tickets__Attendance', 'delete_attendees_caches' ) );
+			add_filter( 'tribe_events_import_options_rows', [ Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_import_options_rows' ] );
+			add_filter( 'tribe_aggregator_csv_post_types', [ Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_csv_post_types' ] );
+			add_filter( 'tribe_aggregator_csv_column_mapping', [ Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_mapping' ] );
+			add_filter( 'tribe_event_import_rsvp_tickets_column_names', [ Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ] );
+			add_filter( 'tribe_events_import_rsvp_tickets_importer', [ 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ], 10, 2 );
+			add_action( 'tribe_tickets_ticket_deleted', [ 'Tribe__Tickets__Attendance', 'delete_attendees_caches' ] );
 
 			/**
 			 * Hooking to "rsvp" to fetch an importer to fetch Column names is deprecated
@@ -556,8 +556,8 @@ class Tribe__Tickets__Main {
 			 *
 			 * @todo remove these two hooks when the old CSV interface is retired, maybe 5.0?
 			 */
-			add_filter( 'tribe_events_import_rsvp_importer', array( 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ), 10, 2 );
-			add_filter( 'tribe_event_import_rsvp_column_names', array( Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ) );
+			add_filter( 'tribe_events_import_rsvp_importer', [ 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ], 10, 2 );
+			add_filter( 'tribe_event_import_rsvp_column_names', [ Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ] );
 		}
 
 		// Load our assets
@@ -579,12 +579,12 @@ class Tribe__Tickets__Main {
 	 */
 	public function add_help_section_support_content( $help ) {
 		$help->add_section_content( 'support', '<strong>' . esc_html__( 'Support for Event Tickets', 'event-tickets' ) . '</strong>', 20 );
-		$help->add_section_content( 'support', array(
+		$help->add_section_content( 'support', [
 			'<strong><a href="http://m.tri.be/18ne" target="_blank">' . esc_html__( 'Settings overview', 'event-tickets' ) . '</a></strong>',
 			'<strong><a href="http://m.tri.be/18nf" target="_blank">' . esc_html__( 'Features overview', 'event-tickets' ) . '</a></strong>',
 			'<strong><a href="http://m.tri.be/18jb" target="_blank">' . esc_html__( 'Troubleshooting common problems', 'event-tickets' ) . '</a></strong>',
 			'<strong><a href="http://m.tri.be/18ng" target="_blank">' . esc_html__( 'Customizing Event Tickets', 'event-tickets' ) . '</a></strong>',
-		), 20 );
+		], 20 );
 	}
 
 	/**
@@ -602,7 +602,7 @@ class Tribe__Tickets__Main {
 
 		$link = '<a href="http://m.tri.be/18nd" target="_blank">' . esc_html__( 'New User Primer', 'event-tickets' ) . '</a>';
 
-		$help->add_section_content( 'feature-box', sprintf( __( 'We are committed to helping you sell tickets for your event. Check out our handy %s to get started.', 'event-tickets' ), $link ), 20 );
+		$help->add_section_content( 'feature-box', sprintf( _x( 'We are committed to helping you sell %1$s for your event. Check out our handy %2$s to get started.', 'help feature box section', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'help_feature_box_section' ), $link ), 20 );
 	}
 
 	/**
@@ -613,7 +613,7 @@ class Tribe__Tickets__Main {
 	 * @return void
 	 */
 	public function add_help_section_extra_content( $help ) {
-		if ( ! $help->is_active( array( 'events-calendar-pro', 'event-tickets-plus' ) ) && $help->is_active( 'the-events-calendar' ) ) {
+		if ( ! $help->is_active( [ 'events-calendar-pro', 'event-tickets-plus' ] ) && $help->is_active( 'the-events-calendar' ) ) {
 			// We just skip because it's treated on TEC
 			return;
 		} elseif ( ! $help->is_active( 'the-events-calendar' ) ) {
@@ -646,11 +646,11 @@ class Tribe__Tickets__Main {
 	 * @return array
 	 */
 	public function add_template_updates_check( $plugins ) {
-		$plugins[ __( 'Event Tickets', 'event-tickets' ) ] = array(
+		$plugins[ __( 'Event Tickets', 'event-tickets' ) ] = [
 			self::VERSION,
 			$this->plugin_path . 'src/views/tickets',
 			trailingslashit( get_stylesheet_directory() ) . 'tribe-events/tickets',
-		);
+		];
 
 		return $plugins;
 	}
@@ -727,7 +727,7 @@ class Tribe__Tickets__Main {
 	 */
 	public function activation_page() {
 		if ( empty( $this->activation_page ) ) {
-			$this->activation_page = new Tribe__Admin__Activation_Page( array(
+			$this->activation_page = new Tribe__Admin__Activation_Page( [
 				'slug'                  => 'event-tickets',
 				'version'               => self::VERSION,
 				'activation_transient'  => '_tribe_tickets_activation_redirect',
@@ -735,7 +735,7 @@ class Tribe__Tickets__Main {
 				'version_history_slug'  => 'previous_event_tickets_versions',
 				'welcome_page_title'    => esc_html__( 'Welcome to Event Tickets!', 'event-tickets' ),
 				'welcome_page_template' => $this->plugin_path . 'src/admin-views/admin-welcome-message.php',
-			) );
+			] );
 		}
 
 		return $this->activation_page;
@@ -810,13 +810,13 @@ class Tribe__Tickets__Main {
 	 * Returns the supported post types for tickets
 	 */
 	public function post_types() {
-		$options = (array) get_option( Tribe__Main::OPTIONNAME, array() );
+		$options = (array) get_option( Tribe__Main::OPTIONNAME, [] );
 
 		// if the ticket-enabled-post-types index has never been set, default it to tribe_events
 		if ( ! array_key_exists( 'ticket-enabled-post-types', $options ) ) {
-			$defaults                             = array( 'tribe_events' );
+			$defaults                             = [ 'tribe_events' ];
 			$options['ticket-enabled-post-types'] = $defaults;
-			tribe_update_option( 'ticket-enabled-post-types', $defaults );
+			tribe_update_option( 'ticket-enabled-post-types', (string) $defaults );
 		}
 
 		// Remove WooCommerce Product and EDD post types to prevent recursion fatal error on save.
@@ -839,7 +839,7 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * Injects a buy/RSVP button into oembeds for events when necessary
+	 * Injects a buy/RSVP button into oEmbeds for events when necessary
 	 */
 	public function inject_buy_button_into_oembed() {
 		$event_id = get_the_ID();
@@ -981,9 +981,9 @@ class Tribe__Tickets__Main {
 	 * @since 4.10.6
 	 */
 	public function register_plugin_autoload_paths() {
-		$prefixes = array(
+		$prefixes = [
 			'Tribe__Tickets__' => $this->plugin_path . 'src/Tribe',
-		);
+		];
 
 		$this->get_autoloader_instance()->register_prefixes( $prefixes );
 	}
