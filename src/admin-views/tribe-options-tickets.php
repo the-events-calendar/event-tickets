@@ -64,11 +64,11 @@ $tickets_fields = [
 	],
 	'tickets-title'             => [
 		'type' => 'html',
-		'html' => '<h3>' . esc_html__( 'Ticket Settings', 'event-tickets' ) . '</h3>',
+		'html' => '<h3>' . esc_html( sprintf( _x( '%s Settings', 'tickets fields settings title', 'event-tickets' ), tribe_get_ticket_label_singular( 'tickets_fields_settings_title' ) ) ) . '</h3>',
 	],
 	'ticket-enabled-post-types' => [
 		'type'            => 'checkbox_list',
-		'label'           => esc_html__( 'Post types that can have tickets', 'event-tickets' ),
+		'label'           => esc_html( sprintf( _x( 'Post types that can have %s', 'tickets fields settings enabled post types', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_enabled_post_types' ) ) ),
 		// only set the default to tribe_events if the ticket-enabled-post-types index has never been saved
 		'default'         => array_key_exists( 'ticket-enabled-post-types', $options ) ? false : 'tribe_events',
 		'options'         => $all_post_types,
@@ -76,7 +76,6 @@ $tickets_fields = [
 		'validation_type' => 'options_multi',
 	],
 ];
-
 
 /**
  * If The Events Calendar is active let's add an option to control the position
@@ -153,7 +152,6 @@ $tickets_fields['ticket-paypal-heading'] = [
 	'html' => '<h3>' . __( 'Tribe Commerce', 'event-tickets' ) . '</h3>',
 ];
 
-
 if ( ! $is_tickets_plus_available ) {
 	$plus_link = sprintf(
 		'<a href="http://m.tri.be/19zl" target="_blank">%s</a>',
@@ -166,8 +164,9 @@ if ( ! $is_tickets_plus_available ) {
 	);
 
 	$plus_message = sprintf(
-		__( 'Tribe Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check users in via QR codes, and share stock between tickets. %2$s', 'event-tickets' ),
+		_x( 'Tribe Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check users in via QR codes, and share stock between %2$s. %3$s', 'about Tribe Commerce', 'event-tickets' ),
 		$plus_link,
+		tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_about_tribe_commerce' ),
 		$plus_link_2
 	);
 
@@ -209,10 +208,7 @@ $paypal_setup_kb_url = class_exists( 'Tribe__Tickets_Plus__Main' )
 	? 'http://m.tri.be/19yk'
 	: 'http://m.tri.be/19yj';
 $paypal_setup_kb_link = '<a href="' . esc_url( $paypal_setup_kb_url ) . '" target="_blank">' . esc_html__( 'these instructions', 'event-tickets' ) . '</a>';
-$paypal_setup_note    = sprintf(
-	esc_html__( 'In order to use Tribe Commerce to sell tickets, you must configure your PayPal account to communicate with your WordPress site. If you need help getting set up, follow %s', 'event-tickets' ),
-	$paypal_setup_kb_link
-);
+$paypal_setup_note    = sprintf( esc_html_x( 'In order to use Tribe Commerce to sell %1$s, you must configure your PayPal account to communicate with your WordPress site. If you need help getting set up, follow %2$s', 'tickets fields settings PayPal setup', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_setup' ), $paypal_setup_kb_link );
 
 $ipn_setup_line           = sprintf(
 	'<span class="clear">%s</span><span class="clear">%s</span>',
@@ -294,7 +290,7 @@ $paypal_fields            = [
 	'ticket-paypal-stock-handling'           => [
 		'type'            => 'radio',
 		'label'           => esc_html__( 'Stock Handling', 'event-tickets' ),
-		'tooltip'         => esc_html__( 'When a customer purchases a ticket, PayPal might flag the order as Pending. The order will be Complete once payment is confirmed by PayPal.', 'event-tickets' ),
+		'tooltip'         => esc_html( sprintf( _x( 'When a customer purchases a %s, PayPal might flag the order as Pending. The order will be Complete once payment is confirmed by PayPal.', 'tickets fields settings paypal stock handling', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_stock_handling' ) ) ),
 		'default'         => 'on-pending',
 		'validation_type' => 'options',
 		'options'         => [
@@ -320,7 +316,7 @@ $paypal_fields            = [
 	'ticket-paypal-confirmation-email-sender-email' => [
 		'type'            => 'email',
 		'label'           => esc_html__( 'Confirmation email sender address', 'event-tickets' ),
-		'tooltip'         => esc_html__( 'Email address PayPal tickets customers will receive confirmation from. Leave empty to use the default WordPress site email address.', 'event-tickets' ),
+		'tooltip'         => esc_html( sprintf( _x( 'Email address PayPal %s customers will receive confirmation from. Leave empty to use the default WordPress site email address.', 'tickets fields settings paypal confirmation email', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_paypal_confirmation_email' ) ) ),
 		'size'            => 'medium',
 		'default'         => $current_user->user_email,
 		'validation_type' => 'email',
@@ -329,7 +325,7 @@ $paypal_fields            = [
 	'ticket-paypal-confirmation-email-sender-name' => [
 		'type'                => 'text',
 		'label'               => esc_html__( 'Confirmation email sender name', 'event-tickets' ),
-		'tooltip'             => esc_html__( 'Sender name of the confirmation email sent to customers when confirming a ticket purchase.', 'event-tickets' ),
+		'tooltip'             => esc_html( sprintf( _x( 'Sender name of the confirmation email sent to customers when confirming a %s purchase.', 'tickets fields settings paypal email sender', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_email_sender' ) ) ),
 		'size'                => 'medium',
 		'default'             => $current_user->user_nicename,
 		'validation_callback' => 'is_string',
@@ -338,9 +334,9 @@ $paypal_fields            = [
 	'ticket-paypal-confirmation-email-subject' => [
 		'type'                => 'text',
 		'label'               => esc_html__( 'Confirmation email subject', 'event-tickets' ),
-		'tooltip'             => esc_html__( 'Subject of the confirmation email sent to customers when confirming a ticket purchase.', 'event-tickets' ),
+		'tooltip'             => esc_html( sprintf( _x( 'Subject of the confirmation email sent to customers when confirming a %s purchase.', 'tickets fields settings paypal email subject', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_email_subject' ) ) ),
 		'size'                => 'large',
-		'default'             => esc_html__( 'You have tickets!', 'event-tickets' ),
+		'default'             => esc_html( sprintf( _x( 'You have %s!', 'tickets fields settings paypal email subject', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_paypal_email_subject' ) ) ),
 		'validation_callback' => 'is_string',
 		'validation_type'     => 'textarea',
 	],

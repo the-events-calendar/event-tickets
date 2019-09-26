@@ -31,7 +31,7 @@ $tribe_my_tickets_have_meta = false;
  * Display a notice if the user doesn't have tickets
  */
 if ( ! $view->has_ticket_attendees( $event_id, $user_id ) && ! $view->has_rsvp_attendees( $event_id, $user_id ) ) {
-	Tribe__Notices::set_notice( 'ticket-no-results', esc_html__( "You don't have tickets for this event", 'event-tickets' ) );
+	Tribe__Notices::set_notice( 'ticket-no-results', esc_html( sprintf( _x( "You don't have %s for this event", 'notice if user does not have tickets', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'notice_user_does_not_have_tickets' ) ) ) );
 }
 
 $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type;
