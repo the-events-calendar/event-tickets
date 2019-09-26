@@ -15,7 +15,15 @@
  *                              'ticket_id'
  *                              'security_code')
  *
- * @version 4.7.6
+ * @since 4.0
+ * @since 4.5.11 Ability to remove display of event date.
+ * @since 4.7.4  Change event date to display by default.
+ *               Display WooCommerce featured image.
+ *               Current ticket action hook before output.
+ * @since 4.7.6  Ability to filter ticket image.
+ * @since TBD Use function for text.
+ *
+ * @version TBD
  *
  * @var array $tickets An array of tickets in the format documented above.
  */

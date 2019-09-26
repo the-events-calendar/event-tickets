@@ -9,8 +9,9 @@
  * @since 4.7.4
  * @since 4.10.2 Only show Update button if ticket has meta.
  * @since 4.10.8 Show Update button if current user has either RSVP or Ticket with meta. Do not use the now-deprecated third parameter of `get_description_rsvp_ticket()`.
+ * @since TBD Use function for text.
  *
- * @version 4.10.8
+ * @version TBD
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
