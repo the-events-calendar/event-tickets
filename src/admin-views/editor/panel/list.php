@@ -63,7 +63,7 @@ $add_new_ticket_label = count( $ticket_providing_modules ) > 0
 			aria-label="<?php echo $add_new_ticket_label ?>"
 			"<?php echo disabled( count( $ticket_providing_modules ) === 0 ) ?>"
 		>
-			<?php esc_html_e( 'New ticket', 'event-tickets' ); ?>
+			<?php echo esc_html( sprintf( _x( 'New %s', 'admin editor panel list button label', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'admin_editor_panel_list_button_label' ) ) ); ?>
 		</button>
 
 		<button

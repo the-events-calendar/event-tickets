@@ -50,7 +50,7 @@ $default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id
 					data-depends="#ticket_id"
 					data-condition-is-empty
 				>
-					<?php esc_html_e( 'Add new ticket', 'event-tickets' ); ?>
+					<?php echo esc_html( sprintf( _x( 'Add new %s', 'admin edit ticket panel heading', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'admin_edit_ticket_panel_heading' ) ) ); ?>
 				</h4>
 				<h4
 					id="ticket_title_edit"
@@ -58,7 +58,7 @@ $default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id
 					data-depends="#ticket_id"
 					data-condition-is-not-empty
 				>
-					<?php esc_html_e( 'Edit ticket', 'event-tickets' ); ?>
+					<?php echo esc_html( sprintf( _x( 'Edit %s', 'admin edit ticket panel heading', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'admin_edit_ticket_panel_heading' ) ) ); ?>
 				</h4>
 			</div>
 			<div
@@ -72,7 +72,7 @@ $default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id
 					data-depends="#ticket_id"
 					data-condition-is-empty
 				>
-					<?php esc_html_e( 'Add new RSVP', 'event-tickets' ); ?>
+					<?php echo esc_html( sprintf( _x( 'Add new %s', 'admin edit ticket panel heading', 'event-tickets' ), tribe_get_rsvp_label_singular( 'admin_edit_ticket_panel_heading' ) ) ); ?>
 				</h4>
 				<h4
 					id="rsvp_title_edit"
@@ -80,7 +80,7 @@ $default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id
 					data-depends="#ticket_id"
 					data-condition-is-not-empty
 				>
-					<?php esc_html_e( 'Edit RSVP', 'event-tickets' ); ?>
+					<?php echo esc_html( sprintf( _x( 'Edit %s', 'admin edit ticket panel heading', 'event-tickets' ), tribe_get_rsvp_label_singular( 'admin_edit_ticket_panel_heading' ) ) ); ?>
 				</h4>
 			</div>
 			<section id="ticket_form_main" class="main">
@@ -94,9 +94,13 @@ $default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id
 						size='25'
 						value="<?php echo esc_attr( $ticket ? $ticket->name : null ); ?>"
 						data-validation-is-required
-						data-validation-error="<?php esc_attr_e( 'Ticket Type is a required field.', 'event-tickets' ); ?>"
+						data-validation-error="<?php echo esc_attr( sprintf( _x( '%s type is a required field', 'admin edit ticket panel error', 'event-tickets' ), tribe_get_rsvp_label_singular( 'admin_edit_ticket_panel_error' ) ) ); ?>"
 					/>
-					<span class="tribe_soft_note ticket_form_right"><?php esc_html_e( 'Ticket type name shows on the front end and emailed tickets', 'event-tickets' ); ?></span>
+					<span class="tribe_soft_note ticket_form_right"><?php echo esc_html( sprintf(
+						_x( '%1$s type name shows on the front end and emailed %2$s', 'admin edit ticket panel note', 'event-tickets' ),
+						tribe_get_rsvp_label_singular( 'admin_edit_ticket_panel_note' ),
+						tribe_get_ticket_label_plural_lowercase( 'admin_edit_ticket_panel_note' )
+					) ); ?></span>
 				</div>
 				<fieldset id="tribe_ticket_provider_wrapper" class="input_block" aria-hidden="true" >
 					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></legend>
@@ -137,9 +141,9 @@ $default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id
 			</section>
 
 			<div class="accordion">
-				<?php tribe( 'tickets.admin.views' )->template( 'editor/fieldset/advanced', array( 'post_id' => $post_id, 'ticket_id' => $ticket_id ) ); ?>
+				<?php tribe( 'tickets.admin.views' )->template( 'editor/fieldset/advanced', [ 'post_id' => $post_id, 'ticket_id' => $ticket_id ] ); ?>
 
-				<?php tribe( 'tickets.admin.views' )->template( 'editor/fieldset/history', array( 'post_id' => $post_id, 'ticket_id' => $ticket_id ) ); ?>
+				<?php tribe( 'tickets.admin.views' )->template( 'editor/fieldset/history', [ 'post_id' => $post_id, 'ticket_id' => $ticket_id ] ); ?>
 
 				<?php
 				/**
@@ -178,7 +182,7 @@ $default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id
 					id="ticket_form_save"
 					class="button-primary tribe-dependent tribe-validation-submit"
 					name="ticket_form_save"
-					value="<?php esc_attr_e( 'Save ticket', 'event-tickets' ); ?>"
+					value="<?php echo esc_attr( sprintf( _x( 'Save %s', 'meta box ticket form button text', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'meta_box_ticket_form_button_text' ) ) ); ?>"
 					data-depends="#Tribe__Tickets__RSVP_radio"
 					data-condition-is-not-checked
 				/>

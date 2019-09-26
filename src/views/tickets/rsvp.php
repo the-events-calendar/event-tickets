@@ -229,7 +229,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 							value="1"
 							class="tribe-button tribe-button--rsvp"
 						>
-							<?php esc_html_e( 'Confirm RSVP', 'event-tickets' );?>
+							<?php echo esc_html( sprintf( _x( 'Confirm %s', 'tickets process button text', 'event-tickets' ), tribe_get_rsvp_label_singular( 'tickets_process_button_text' ) ) );?>
 						</button>
 					<?php endif; ?>
 				</td>
