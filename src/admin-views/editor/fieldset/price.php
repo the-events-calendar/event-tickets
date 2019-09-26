@@ -33,7 +33,7 @@ if ( ! isset( $ticket_id ) ) {
 	 *
 	 * @since 4.10.8
 	 *
-	 * @param boolean     $$disabled The boolean value tested against
+	 * @param boolean     $disabled  The boolean value tested against
 	 * @param WP_Post|int $ticket_id The current ticket object or its ID
 	 */
 	$disabled = apply_filters( 'tribe_tickets_price_disabled', false, $ticket_id );
