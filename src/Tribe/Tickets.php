@@ -395,11 +395,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since 4.6
 		 *
 		 * @param object $ticket Ticket object
-		 * @return string HTMl link
+		 *
+		 * @return string HTML link
 		 */
 		public function get_ticket_delete_link( $ticket = null ) {
 			if ( empty( $ticket ) ) {
-				return;
+				return '';
 			}
 
 			$delete_text = _x( 'Delete %s', 'delete link', 'event-tickets' );
@@ -415,6 +416,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * @param bool true
 			 * @param int ticket post ID
+			 *
 			 * @return string HTML link | void HTML link
 			 */
 			if ( apply_filters( 'tribe_tickets_current_user_can_delete_ticket', true, $ticket->ID, $ticket->provider_class ) ) {
@@ -443,24 +445,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 4.6
 		 *
-		 * @param int $post_id ID of parent "event" post
-		 * @param object $ticket Ticket object
+		 * @param int    $post_id ID of parent "event" post
+		 * @param object $ticket  Ticket object
+		 *
 		 * @return string HTML link | void HTML link
 		 */
 		public function get_ticket_move_url( $post_id, $ticket = null ) {
 			if ( empty( $ticket ) || empty( $post_id ) ) {
-				return;
+				return '';
 			}
 
 			$post_url = get_edit_post_link( $post_id, 'admin' );
 
 			$move_type_url = add_query_arg(
-				array(
+				[
 					'dialog'         => Tribe__Tickets__Main::instance()->move_ticket_types()->dialog_name(),
 					'ticket_type_id' => $ticket->ID,
 					'check'          => wp_create_nonce( 'move_tickets' ),
 					'TB_iframe'      => 'true',
-				),
+				],
 				$post_url
 			);
 
@@ -472,13 +475,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 4.6
 		 *
-		 * @param int $post_id ID of parent "event" post
-		 * @param object $ticket Ticket object
+		 * @param int    $post_id ID of parent "event" post
+		 * @param object $ticket  Ticket object
+		 *
 		 * @return string HTML link | void HTML link
 		 */
 		public function get_ticket_move_link( $post_id, $ticket = null ) {
 			if ( empty( $ticket ) ) {
-				return;
+				return '';
 			}
 
 			$move_text = __( 'Move %s', 'event-tickets' );
@@ -488,7 +492,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$move_url = $this->get_ticket_move_url( $post_id, $ticket );
 
 			if ( empty( $move_url ) ) {
-				return;
+				return '';
 			}
 
 			// Make sure Thickbox is available regardless of which admin page we're on.
@@ -1533,18 +1537,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Returns an array of standard stock mode options that can be
-		 * reused by implementations.
+		 * Returns an array of standard stock mode options that can be reused by implementations.
 		 *
 		 * Format is: ['identifier' => 'Localized name', ... ]
 		 *
 		 * @return array
 		 */
 		protected function global_stock_mode_options() {
-			return array(
-				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE => __( 'Shared capacity with other tickets', 'event-tickets' ),
-				Tribe__Tickets__Global_Stock::OWN_STOCK_MODE    => __( 'Set capacity for this ticket only', 'event-tickets' ),
-			);
+			return [
+				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE => sprintf( _x( 'Shared capacity with other %s', 'global stock mode option', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'global_stock_mode_options' ) ),
+				Tribe__Tickets__Global_Stock::OWN_STOCK_MODE    => sprintf( _x( 'Set capacity for this %s only', 'global stock mode option (individual)', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'global_stock_mode_options_individual' ) )
+			];
 		}
 
 		/**
@@ -1590,19 +1593,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * This order is important so that tickets overwrite RSVP on
 			 * the Buy Now Button on the front-end
 			 */
-			$types['rsvp']    = array(
+			$types['rsvp']    = [
 				'count'     => 0,
 				'stock'     => 0,
 				'unlimited' => 0,
 				'available' => 0,
-			);
-			$types['tickets'] = array(
+			];
+			$types['tickets'] = [
 				'count'     => 0, // count of ticket types currently for sale
 				'stock'     => 0, // current stock of tickets available for sale
 				'global'    => 0, // global stock ticket
 				'unlimited' => 0, // unlimited stock tickets
 				'available' => 0, // are tickets available for sale right now
-			);
+			];
 
 			foreach ( $tickets as $ticket ) {
 				// If a ticket is not current for sale do not count it
@@ -1705,10 +1708,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Takes any global stock data and makes it available via a wp_localize_script() call.
 		 */
 		public static function enqueue_frontend_stock_data() {
-			$data = array(
+			$data = [
 				'tickets' => [],
 				'events'  => [],
-			);
+			];
 
 			foreach ( self::$frontend_ticket_data as $ticket ) {
 				$post = $ticket->get_event();
@@ -1731,9 +1734,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					$ticket_data['stock'] = $ticket->available();
 				}
 
-				$data['events'][ $post_id ] = array(
+				$data['events'][ $post_id ] = [
 					'stock' => $global_stock->get_stock_level(),
-				);
+				];
 
 				$data['tickets'][ $ticket->ID ] = $ticket_data;
 			}

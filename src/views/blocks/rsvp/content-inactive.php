@@ -11,11 +11,14 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @since TBD Use function for text.
  *
+ * @version TBD
  */
 
-$message = $this->get( 'all_past' ) ? __( 'RSVPs are no longer available', 'event-tickets' ) : __( 'RSVPs are not yet available', 'event-tickets' );
+$message = $this->get( 'all_past' )
+	? sprintf( _x( '%s are no longer available', 'RSVP block inactive content in the past', 'event-tickets' ), tribe_get_rsvp_label_plural( 'block_inactive_content_past' ) )
+	: sprintf( _x( '%s are not yet available', 'RSVP block inactive content', 'event-tickets' ), tribe_get_rsvp_label_plural( 'block_inactive_content' ) );
 ?>
 <div class="tribe-block__rsvp__content tribe-block__rsvp__content--inactive">
 	<div class="tribe-block__rsvp__details__status">

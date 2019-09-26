@@ -11,7 +11,7 @@ if ( ! empty( $header_id ) ) {
 ?>
 
 <div id="tribe_panel_settings" class="ticket_panel panel_settings" aria-hidden="true" >
-	<h4><?php esc_html_e( 'Ticket Settings', 'event-tickets' ); ?></h4>
+	<h4><?php echo esc_html( sprintf( _x( '%s Settings', 'meta box ticket form heading', 'event-tickets' ), tribe_get_ticket_label_singular( 'meta_box_ticket_form_heading' ) ) ); ?></h4>
 
 	<section class="settings_main">
 		<?php
@@ -19,6 +19,7 @@ if ( ! empty( $header_id ) ) {
 		 * Allows for the insertion of additional elements into the ticket settings admin panel above the ticket table
 		 *
 		 * @param int Post ID
+		 *
 		 * @since 4.6
 		 */
 		do_action( 'tribe_events_tickets_settings_content_before', $post_id );
