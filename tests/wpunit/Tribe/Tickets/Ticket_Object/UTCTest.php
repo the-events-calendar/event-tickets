@@ -319,6 +319,26 @@ class UTCTest extends Ticket_Object_TestCase {
 
 	/**
 	 * @test
+	 * it should return correct availability slug with date string
+	 *
+	 * @covers availability_slug
+	 */
+	public function it_should_return_correct_availability_slug_with_date_string() {
+		$rsvp = $this->make_rsvp();
+
+		$this->assertEquals( 'available', $rsvp->availability_slug( date( 'Y-m-d H:i:s' ) ), 'Failed to get correct availability slug on RSVP (available).' );
+		$this->assertEquals( 'availability-future', $rsvp->availability_slug( date( 'Y-m-d H:i:s', $this->earlier_date - MINUTE_IN_SECONDS ) ), 'Failed to get correct availability slug on RSVP (availability-future).' );
+		$this->assertEquals( 'availability-past', $rsvp->availability_slug( date( 'Y-m-d H:i:s', $this->later_date + MINUTE_IN_SECONDS ) ), 'Failed to get correct availability slug on RSVP (availability-past).' );
+
+		$ticket = $this->make_ticket();
+
+		$this->assertEquals( 'available', $ticket->availability_slug( date( 'Y-m-d H:i:s' ) ), 'Failed to get correct availability slug on Ticket (available).' );
+		$this->assertEquals( 'availability-future', $ticket->availability_slug( date( 'Y-m-d H:i:s', $this->earlier_date - MINUTE_IN_SECONDS ) ), 'Failed to get correct availability slug on Ticket (availability-future).' );
+		$this->assertEquals( 'availability-past', $ticket->availability_slug( date( 'Y-m-d H:i:s', $this->later_date + MINUTE_IN_SECONDS ) ), 'Failed to get correct availability slug on Ticket (availability-past).' );
+	}
+
+	/**
+	 * @test
 	 * it should allow filtering the availability slug
 	 *
 	 * @covers availability_slug
