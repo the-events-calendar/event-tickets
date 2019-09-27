@@ -76,7 +76,7 @@ tribe.tickets.registration = {};
 	};
 
 	// Get the current provider & ID.
-	obj.provider = $( obj.selector.container ).data( 'provider' );
+	obj.provider = $tribe_registration.data( 'provider' );
 	obj.providerId = obj.commerceSelector[ obj.provider ];
 
 
@@ -347,7 +347,7 @@ tribe.tickets.registration = {};
 			var ticket_meta       = meta.filter( obj => { return obj.ticket_id === ticket.ticket_id; } );
 			var tickets_length    = ticket_meta[0].items.length;
 			var ticketTemplate    = window.wp.template( 'tribe-registration--' + ticket.ticket_id );
-			var $ticket_container = $( obj.selector.container ).find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticket.ticket_id + '"]' );
+			var $ticket_container = $tribe_registration.find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticket.ticket_id + '"]' );
 			var counter           = 1;
 
 			$ticket_container.addClass( 'tribe-tickets--has-tickets' );
@@ -389,7 +389,7 @@ tribe.tickets.registration = {};
 			var length = 0;
 		}
 
-		var $form = $( obj.selector.container );
+		var $form = $tribe_registration;
 		var $containers = $form.find( '.tribe-tickets__item__attendee__fields__container' );
 		var meta = data.meta;
 		if ( 0 < length ) {
