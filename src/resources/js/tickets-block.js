@@ -552,7 +552,7 @@ tribe.tickets.block = {
 	obj.getCurrencyFormatting = function () {
 		var currency = JSON.parse( TribeCurrency.formatting );
 
-		return currency[obj.tribe_ticket_provider];
+		return currency[ obj.tribe_ticket_provider ];
 	};
 
 	/**
@@ -648,7 +648,7 @@ tribe.tickets.block = {
 				if ( data.meta ) {
 					var count = false;
 					$.each( data.meta, function( ticket ) {
-						var $matches = $tribe_ticket.find( `[data-ticket-id="${ticket.ticket_id}"]`);
+						var $matches = $tribe_ticket.find( `[data-ticket-id="${ticket.ticket_id}"]` );
 						if ( $matches.length ) {
 							obj.prefillmetaForm( data.meta );
 							return;
@@ -704,7 +704,7 @@ tribe.tickets.block = {
 				}
 
 				$.each( data, function( index, value ) {
-					var $field = $current_containers.eq( current ).find( `[name*="${index}"]`);
+					var $field = $current_containers.eq( current ).find( `[name*="${index}"]` );
 					if ( ! $field.is( ':radio' ) && ! $field.is( ':checkbox' ) ) {
 						$field.val( value);
 					} else {
@@ -1304,7 +1304,7 @@ tribe.tickets.block = {
 
 			// save meta and cart
 			var params = {
-				provider: obj.commerceSelector[obj.tribe_ticket_provider],
+				provider: obj.commerceSelector[ obj.tribe_ticket_provider ],
 				tickets : obj.getTicketsForCart(),
 				meta    : obj.getMetaForSave(),
 				post_id : obj.postId,
