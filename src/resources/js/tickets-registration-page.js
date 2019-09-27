@@ -478,7 +478,7 @@ tribe.tickets.registration = {};
 	 */
 	obj.getCurrencyFormatting = function () {
 		var currency = JSON.parse( TribeCurrency.formatting );
-		var format = currency[ obj.commerceSelector[obj.providerId] ];
+		var format   = currency[ obj.commerceSelector[obj.providerId] ];
 		return format;
 	};
 
@@ -630,7 +630,7 @@ tribe.tickets.registration = {};
 					} else {
 					}
 
-					//window.location.href = url;
+					window.location.href = url;
 				},
 				fail: function( response ) {
 					// @TODO: add messaging on error?
