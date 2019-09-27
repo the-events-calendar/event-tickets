@@ -478,7 +478,7 @@ tribe.tickets.registration = {};
 	 */
 	obj.getCurrencyFormatting = function () {
 		var currency = JSON.parse( TribeCurrency.formatting );
-		var format   = currency[ obj.commerceSelector[obj.providerId] ];
+		var format   = currency[ obj.commerceSelector[ obj.providerId ] ];
 		return format;
 	};
 
