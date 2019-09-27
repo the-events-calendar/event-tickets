@@ -23,7 +23,7 @@ $provider        = $this->get( 'provider' );
 ?>
 <div class="tribe-tickets__footer" >
 	<?php if ( $is_mini ) : ?>
-		<a class="tribe-common-b2 tribe-tickets__footer__back-link" href="<?php echo esc_url( $provider->get_cart_url() ); ?>">Return to Cart</a>
+		<a class="tribe-common-b2 tribe-tickets__footer__back-link" href="<?php echo esc_url( $provider->get_cart_url() ); ?>"><?php esc_html_e( 'Return to Cart', 'event-tickets' ); ?></a>
 	<?php endif; ?>
 	<?php $this->template( 'blocks/tickets/footer-quantity' ); ?>
 	<?php $this->template( 'blocks/tickets/footer-total', [ 'event_id' => $event_id, 'provider' => $provider ] ); ?>
