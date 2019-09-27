@@ -59,7 +59,9 @@ if ( $must_login ) {
 	<?php else: ?>
 	<div class="tribe-ticket-quantity">0</div>
 	<?php endif; ?>
-	<?php if ( true === $modal || true === $mini ) { $this->template( 'modal/item-total', $context ); } ?>
+	<?php if ( true === $modal || true === $mini ) : ?>
+		<?php $this->template( 'modal/item-total', $context ); ?>
+	<?php endif; ?>
 	<?php if ( ! $modal && ! $mini ) : ?>
 		<?php $this->template( 'blocks/rsvp/form/opt-out', $context ); ?>
 	<?php elseif( true === $modal ): ?>

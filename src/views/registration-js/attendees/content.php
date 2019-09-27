@@ -36,7 +36,7 @@ if ( empty( $tickets ) ) {
 		<?php
 		// Sometimes we get an array - let's handle that.
 		if ( is_array( $ticket ) ) {
-			$ticket = $provider->get_ticket( $event_id, $ticket[ 'id' ] );
+			$ticket = $provider->get_ticket( $event_id, $ticket['id'] );
 		}
 
 		// Only include tickets with meta

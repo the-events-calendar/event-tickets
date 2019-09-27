@@ -540,11 +540,11 @@ tribe.tickets.registration = {};
 		function(e) {
 			e.preventDefault();
 
-			var $this = $(this);
-			var $event = $this.closest(obj.selector.eventContainer);
+			var $this = $( this );
+			var $event = $this.closest( obj.selector.eventContainer );
 
-			$event.find(obj.selector.fields).toggle();
-			$this.toggleClass('open');
+			$event.find( obj.selector.fields ).toggle();
+			$this.toggleClass( 'open' );
 
 	});
 
