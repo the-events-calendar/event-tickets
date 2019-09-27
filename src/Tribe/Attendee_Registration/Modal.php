@@ -66,20 +66,11 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 			$ticket_data = array(
 				'id'       => $ticket->ID,
 				'qty'      => 1,
-				'provider' => $ticket->provider,
+				'provider' => $ticket->get_provider(),
 			);
 
 			$tickets[] = $ticket_data;
 		}
-
-		$template            = $template_obj;
-		$post_id             = $template_obj->get( 'post_id' );
-		$provider            = $template_obj->get( 'provider' );
-		$provider_id         = $template_obj->get( 'provider_id' );
-		$cart_url            = $template_obj->get( 'cart_url' );
-		$tickets_on_sale     = $template_obj->get( 'tickets_on_sale' );
-		$has_tickets_on_sale = $template_obj->get( 'has_tickets_on_sale' );
-		$is_sale_past        = $template_obj->get( 'is_sale_past' );
 
 		ob_start();
 
@@ -90,7 +81,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	}
 
 	/**
-	 * Add AR Template to Modal
+	 * Add Footer Template to Modal
 	 *
 	 * @since TBD
 	 *

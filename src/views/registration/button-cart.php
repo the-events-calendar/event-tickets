@@ -13,6 +13,7 @@
  *
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */
+$provider = $this->get( 'provider' );
 $cart_url = $this->get_cart_url( $provider );
 ?>
 <?php if ( $cart_url ) : ?>

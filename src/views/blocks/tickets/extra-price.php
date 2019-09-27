@@ -16,6 +16,7 @@
  */
 
 $ticket = $this->get( 'ticket' );
+$provider = $this->get( 'provider' );
 ?>
 <div
 	class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__item__extra__price"

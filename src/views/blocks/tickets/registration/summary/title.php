@@ -18,7 +18,7 @@
 ?>
 <div class="tribe-tickets__registration__title">
 	<header>
-		<h2><?php esc_html_e( 'Ticket Registration', 'event-tickets' ); ?></h2>
+		<h2 class="tribe-common-h4 tribe-common-h3--min-medium"><?php esc_html_e( 'Ticket Registration', 'event-tickets' ); ?></h2>
 	</header>
 </div>
 

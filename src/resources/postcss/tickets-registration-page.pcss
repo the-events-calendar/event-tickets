@@ -1,21 +1,18 @@
+@import "tickets-common.pcss";
 /**
  * Compatibility
 */
 
-.tribe-events-single {
-	max-width: 1000px;
-	margin: 0 auto;
-}
-
 body.page-tribe-attendee-registration {
+	* {
+		-moz-osx-font-smoothing: grayscale;
+		-webkit-font-smoothing: antialiased;
+	}
 
 	header.entry-header,
 	header.entry-meta,
 	header.page-header,
-	footer.entry-header {
-		display: none;
-	}
-
+	footer.entry-header,
 	span.edit-link {
 		display: none;
 	}
@@ -24,182 +21,261 @@ body.page-tribe-attendee-registration {
 	.entry-header {
 		width: 98%;
 	}
+}
 
-	/* compatibility with ET+ styles */
-	.tribe-tickets-meta-required {
-		.tribe-options {
-			label {
-				&:first-child {
-					&::after {
-						content: '';
-					}
+.tribe-common {
+	.tribe-events-single {
+		max-width: 1000px;
+		margin: 0 auto;
+	}
+
+	/*
+		Tickets Registration/Purchase
+	*/
+
+	.tribe-tickets__registration__event {
+		border-radius: 0;
+		margin: var(--spacer-8) auto var(--spacer-7);
+		max-width: 800px;
+		width: 100%;
+
+		@media(--viewport-full) {
+			padding: 0 var(--spacer-5) var(--spacer-3);
+			margin: 0;
+			max-width: calc(100% - 220px);
+		}
+
+		@media(min-width: 1440px) {
+			max-width: 100%;
+		}
+	}
+
+	.tribe-tickets__registration__actions {
+		margin: var(--spacer-7) auto var(--spacer-1);
+
+		@media(--viewport-medium) {
+			margin: var(--spacer-13) auto var(--spacer-6);
+		}
+	}
+
+	.tribe-tickets__registration__back__to__cart {
+		color: var(--color-text-primary);
+		box-shadow: initial;
+		border: 0;
+		&:before {
+			font-family: 'dashicons';
+			margin-right: var(--spacer-0);
+			content: '\f341';
+			vertical-align: middle;
+		}
+
+		body.tribe-theme-twentyseventeen & {
+			box-shadow: initial;
+		}
+	}
+
+	.tribe-tickets__registration__page-title {
+		margin: var(--spacer-1) 0 var(--spacer-5);
+		padding: 0;
+
+		@media(--viewport-medium) {
+			margin: var(--spacer-6) 0 var(--spacer-7);
+		}
+	}
+
+	.tribe-tickets__registration__grid {
+		display: grid;
+		grid-template-columns: auto;
+		grid-template-rows: auto;
+
+		@media(--viewport-full) {
+			border-top: 1px solid var(--color-border-secondary);
+			grid-template-columns: calc(100% - 360px) 360px;
+			grid-template-rows: auto;
+			padding-top: var(--spacer-10);
+		}
+	}
+
+	.tribe-tickets__registration__content {
+		grid-column: 1;
+		grid-row: 2;
+
+		@media(--viewport-full) {
+			grid-column: 1;
+			grid-row: 1;
+		}
+	}
+
+
+	/* Mini-Cart Styles */
+	.tribe-tickets__mini-cart {
+		background-color: white;
+		border-top:  1px solid var(--color-border-secondary);
+		grid-column: 1;
+		grid-row: 1;
+		margin: auto auto;
+		max-width: 800px;
+		padding-top: var(--spacer-5);
+		width: 100%;
+
+		@media(--viewport-full) {
+			align-self: baseline;
+			border-radius: var(--border-radius-default);
+			border: 1px solid var(--color-border-secondary);
+			grid-column: 2;
+			grid-row: 1;
+			margin: 0;
+			padding: var(--spacer-5) var(--spacer-3);
+			position: sticky;
+			top: var(--spacer-3);
+			width: 360px;
+		}
+
+		.tribe-tickets__footer__total,
+		.tribe-tickets__footer__quantity {
+			display: block;
+		}
+	}
+
+	.tribe-tickets__mini-cart__title {
+		margin-bottom: var(--spacer-3);
+
+		@media(--viewport-medium) {
+			border: 0;
+		}
+	}
+
+	.tribe-tickets__registration__summary {
+		margin-bottom: var(--spacer-4);
+
+		@media(--viewport-medium) {
+			margin-bottom: var(--spacer-7);
+		}
+	}
+
+	.tribe-tickets__registration__description {
+		margin: 0;
+	}
+
+	.tribe-tickets__registration__title {
+		margin: 0;
+
+		h2 {
+			margin: 0;
+		}
+	}
+
+	.tribe-ticket__heading {
+		font-size: var(--font-size-3);
+		margin-bottom: var(--spacer-3);
+
+		@media(--viewport-medium) {
+			font-size: var(--font-size-4);
+			margin-bottom: var(--spacer-4);
+		}
+	}
+
+	.tribe-tickets__item__attendee__fields {
+		margin: 0;
+
+		 .tribe-ticket {
+			padding-bottom: var(--spacer-5);
+			padding-top: 0;
+
+			h4 {
+				margin: var(--spacer-3) 0 var(--spacer-2);
+
+				@media(--viewport-medium) {
+					margin: var(--spacer-3) 0;
 				}
 			}
 		}
 	}
-}
 
-.tribe-tickets__registration__toggle__handler,
-.tribe-tickets__registration__status {
-	position: absolute;
-	right: 40px;
-	top: 40px;
-	width: 30px;
-	height: 30px;
-	border-radius: 100%;
-	color: #fff;
-	text-align: center;
-	line-height: 40px;
+	.tribe-field {
+		margin-top: var(--spacer-2);
 
-	i {
-		line-height: 30px;
-	}
-}
-
-.tribe-tickets__registration__toggle__handler {
-	cursor: pointer;
-	background: #c9c9c9;
-
-	&.open {
-		transform: rotate(180deg);
-	}
-
-	i {
-		font-size: 14px;
-	}
-}
-
-.tribe-tickets__registration__status {
-	right: 75px;
-	background: #222;
-
-	&.incomplete {
-		background: transparent;
-		color: #333;
-	}
-}
-
-/*
-	Tickets Registration/Purchase
-*/
-
-.tribe-tickets__registration__event {
-	margin-bottom: 30px;
-	position: relative;
-}
-
-.tribe-tickets__registration__summary {
-	padding: 40px;
-}
-
-.tribe-tickets__registration__title {
-	h2 {
-		font-size: 22px;
-		font-weight: 500;
-		padding-right: 80px;
-		a {}
-	}
-}
-
-.tribe-tickets__registration__description {
-	margin-top: 10px;
-}
-
-.tribe-tickets__registration__tickets {
-	padding: 20px 0;
-}
-
-.tribe-tickets__registration__tickets__item {
-	border-bottom: 1px solid #e1e3e6;
-	display: flex;
-	flex-wrap: wrap;
-	font-size: 18px;
-	align-items: center;
-	justify-content: center;
-
-	&:last-child {
-		border: none;
-	}
-}
-
-.tribe-tickets__registration__tickets__item__icon {
-	flex: 0 1 50px;
-	padding: 15px 10px;
-
-	svg {
-		max-width: 45px;
-	}
-}
-
-.tribe-tickets__registration__tickets__item__quantity {
-	flex: 0 1 20px;
-	padding: 20px;
-}
-
-.tribe-tickets__registration__tickets__item__title {
-	flex: 10 5 230px;
-	padding: 20px 10px;
-}
-
-.tribe-tickets__registration__tickets__item__price {
-	flex: 0 1 40px;
-	padding: 20px 0 20px 10px;
-}
-
-.tribe-tickets__registration__actions {
-	padding: 0px 40px 40px 40px;
-}
-
-.tribe-tickets__registration__back__to__cart {
-	color: #888;
-	box-shadow: initial;
-	border: 0;
-	&:before {
-		font-family: 'dashicons';
-		margin-right: 5px;
-		content: '\f341';
-		vertical-align: middle;
-	}
-
-	body.tribe-theme-twentyseventeen & {
-		box-shadow: initial;
-	}
-}
-
-.tribe-tickets__registration__tickets__header {
-	color: #545B65;
-	display: flex;
-	font-size: 13px;
-	padding: 15px 0;
-}
-
-.tribe-tickets__registration__tickets__header__summary {
-	flex: 80%;
-}
-
-.tribe-tickets__registration__tickets__header__price {
-	flex: 20%;
-	text-align: right;
-}
-
-/*
-	Attendee Registration Checkout Form
-*/
-.tribe-tickets__registration__checkout {
-	 margin-bottom: 30px;
-	 text-align: right;
- }
-
-.tribe-tickets__registration__checkout__submit {
-	&:disabled {
-		background-color: #eeeff1;
-		color: #8b959f;
-		cursor: default;
-
-		&:hover,
-		&:focus {
-			background-color: #eeeff1;
-			color: #8b959f;
+		@media(--viewport-medium) {
+			margin-top: var(--spacer-3);
 		}
 	}
+
+	.tribe-tickets__registration__footer {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: flex-end;
+		margin-bottom: var(--spacer-8);
+
+		@media(--viewport-medium) {
+			margin-bottom: var(--spacer-13);
+		}
+
+		.tribe-tickets-notice {
+			width: 100%;
+		}
+	}
+
+	/* AR override styles */
+	.tribe-tickets__item {
+		grid-template-columns: 4fr 1fr 1fr 1fr;
+	}
+
+	.tribe-tickets__item__extra {
+		grid-row: 1;
+	}
+
+	.tribe-ticket-quantity,
+	.tribe-tickets__item__extra,
+	.tribe-tickets__item__total__wrap {
+		text-align: right;
+	}
+
+	.tribe-ticket-quantity,
+	.tribe-tickets__item__total,
+	.tribe-tickets__item__extra__price {
+		font-size: var(--font-size-2);
+
+		@media(--viewport-medium) {
+			font-size: var(--font-size-2);
+		}
+	}
+
+	.tribe-tickets__item__content__subtitle {
+		color: var(--color-text-secondary);
+
+		@media(--viewport-medium) {
+			font-size: var(--font-size-0);
+		}
+	}
+
+	.tribe-tickets__footer {
+		padding-top: var(--spacer-5);
+	}
+
+	.tribe-tickets__footer__back-link {
+		display: none;
+		margin-right: auto;
+
+		@media(--viewport-medium) {
+			display: block;
+		}
+	}
+
+	.tribe-tickets__footer__total,
+	.tribe-tickets__footer__quantity {
+		font-size: var(--font-size-2);
+	}
+
+	.tribe-tickets__footer__total__label {
+		display: none;
+	}
+
+	.tribe-tickets__footer__total__wrap {
+		font-weight: var(--font-weight-bold);
+	}
+}
+/* Theme overrides */
+.page-tribe-attendee-registration .wrap {
+	padding-left: var(--spacer-4);
+	padding-right: var(--spacer-4);
 }

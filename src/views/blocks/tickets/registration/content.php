@@ -16,7 +16,7 @@
  */
 
 ?>
-<div class="tribe-tickets__registration">
+<div class="tribe-common tribe-tickets__registration">
 
 	<?php $this->template( 'blocks/tickets/registration/summary/content' ); ?>
 	<?php $this->template( 'blocks/tickets/registration/attendee/content' ); ?>

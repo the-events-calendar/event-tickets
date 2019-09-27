@@ -41,24 +41,24 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 * @param array  $cart_tickets The array containing the cart elements. Format array( 'ticket_id' => 'quantity' );
 		 * @param string $q_provider   Current ticket provider.
 		 */
-		$cart_tickets = apply_filters( 'tribe_tickets_tickets_in_cart', array(), $q_provider );
-		$events       = array();
-		$providers    = array();
+		$cart_tickets = apply_filters( 'tribe_tickets_tickets_in_cart', [], $q_provider );
+		$events       = [];
+		$providers    = [];
 
 		foreach ( $cart_tickets as $ticket_id => $quantity ) {
 			// Load the tickets in cart for each event, with their ID, quantity and provider.
 			$ticket = tribe( 'tickets.handler' )->get_object_connections( $ticket_id );
 
 			// If we've got a provider and it doesn't match, skip the ticket
-			if ( $q_provider && $q_provider !== $ticket->provider->attendee_object ) {
+			if ( empty( $ticket->provider ) || ( $q_provider && $q_provider !== $ticket->provider->attendee_object ) ) {
 				continue;
 			}
 
-			$ticket_data = array(
+			$ticket_data = [
 				'id'       => $ticket_id,
 				'qty'      => $quantity,
 				'provider' => $ticket->provider,
-			);
+			];
 
 			/**
 			 * Flag for event form to flag TPP. This is used for the AJAX
@@ -111,7 +111,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		/**
 		 *  Set all the template variables
 		 */
-		$args = array(
+		$args = [
 			'events'                 => $events,
 			'checkout_url'           => $checkout_url,
 			'is_meta_up_to_date'     => $is_meta_up_to_date,
@@ -119,9 +119,9 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			'providers'              => $providers,
 			'context'                => $context,
 			'original_content'       => $content,
-		);
+		];
 
-		// enqueue styles and scripts for this page
+		// Enqueue styles and scripts specific to this page.
 		tribe_asset_enqueue( 'event-tickets-registration-page-styles' );
 		tribe_asset_enqueue( 'event-tickets-registration-page-scripts' );
 
@@ -129,7 +129,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		$this->add_template_globals( $args );
 
-		return $this->template( 'registration/content', $args, false );
+		return $this->template( 'registration-js/content', $args, false );
 	}
 
 	/**

@@ -56,7 +56,7 @@ echo $html;
 >
 	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title"><?php esc_html_e( 'Tickets', 'event-tickets' ); ?></h2>
 	<p id="tribe-tickets__notice__tickets-in-cart" class="tribe-common-b3 tribe-tickets-notice tribe-tickets-notice--barred tribe-tickets-notice--barred-left">
-		<?php esc_html_e( 'The numbers below include tickets already in your cart. You can update your ticket quantities on this page to the number of tickets you want in the cart. Clicking "Get Tickets" will allow you to edit/adjust any existing Attendee Information.', 'event-tickets' ); ?>
+		<?php esc_html_e( 'The numbers below include tickets for this event already in your cart. Clicking "Get Tickets" will allow you to edit any existing attendee information as well as change ticket quantities.', 'event-tickets' ); ?>
 	</p>
 	<?php $this->template( 'blocks/tickets/commerce/fields', [ 'provider' => $provider, 'provider_id' => $provider_id ] ); ?>
 	<?php if ( $has_tickets_on_sale ) : ?>
