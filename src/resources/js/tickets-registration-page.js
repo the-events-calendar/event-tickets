@@ -299,8 +299,11 @@ tribe.tickets.registration = {};
 			var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
 
 			if ( $item ) {
+				var pricePer = parseFloat( $item.find( '.tribe-tickets__item__extra__price .tribe-amount').text() );
 				$item.find( '.tribe-ticket-quantity' ).html( value.quantity );
-				$item.find( '.tribe-tickets__item__total.tribe-amount' ).html( value.quantity * value.price );
+				var price = value.quantity * pricePer;
+				price = obj.numberFormat( price);
+				$item.find( '.tribe-tickets__item__total .tribe-amount' ).html( price );
 			}
 		} );
 
@@ -466,6 +469,61 @@ tribe.tickets.registration = {};
 
 	/* Utility */
 
+	/**
+	 * Get the Currency Formatting for a Provider.
+	 *
+	 * @since TBD
+	 *
+	 * @returns {*}
+	 */
+	obj.getCurrencyFormatting = function () {
+		var currency = JSON.parse( TribeCurrency.formatting );
+		var format = currency[ obj.commerceSelector[obj.providerId] ];
+		return format;
+	};
+
+	/**
+	 * Format the number according to provider settings.
+	 * Based off coding fron https://stackoverflow.com/a/2901136.
+	 *
+	 * @since TBD
+	 *
+	 * @param number The number to format.
+	 *
+	 * @returns {string}
+	 */
+	obj.numberFormat = function ( number ) {
+		var format = obj.getCurrencyFormatting();
+		if ( ! format ) {
+			return false;
+		}
+		var decimals      = format.number_of_decimals;
+		var dec_point     = format.decimal_point;
+		var thousands_sep = format.thousands_sep;
+
+		var n          = !isFinite( +number ) ? 0 : +number;
+		var prec       = !isFinite( +decimals ) ? 0 : Math.abs( decimals );
+		var sep        = ( 'undefined' === typeof thousands_sep ) ? ',' : thousands_sep;
+		var dec        = ( 'undefined' === typeof dec_point ) ? '.' : dec_point;
+		var toFixedFix = function ( n, prec ) {
+			// Fix for IE parseFloat(0.55).toFixed(0) = 0;
+			var k = Math.pow( 10, prec );
+			return Math.round( n * k ) / k;
+		};
+
+		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n )).toString().split( '.' );
+
+		if ( s[0].length > 3 ) {
+			s[0] = s[0].replace( /\B(?=(?:\d{3} )+(?!\d))/g, sep );
+		}
+
+		if ( ( s[1] || '' ).length < prec ) {
+			s[1] = s[1] || '';
+			s[1] += new Array( prec - s[1].length + 1 ).join( '0' );
+		}
+
+		return s.join( dec );
+	}
 
 	/* Event Handlers */
 
@@ -546,14 +604,16 @@ tribe.tickets.registration = {};
 
 				$( '.tribe-tickets-notice--error__count' ).text( isValidForm[ 1 ] );
 				$errorNotice.show();
+
 				return false;
 			}
 
 			$errorNotice.hide();
 
-			// save meta and cart
+			// save meta
 			var params = {
-				provider: obj.commerceSelector[obj.tribe_ticket_provider],
+				provider: obj.providerId,
+				tickets : {},
 				meta    : obj.getMetaForSave(),
 				post_id : obj.postId,
 			};
@@ -565,17 +625,12 @@ tribe.tickets.registration = {};
 				success: function( response ) {
 					//redirect url
 					var url = response.checkout_url;
-
-					if( 'cart-button' === $button.attr( 'name' ) ) {
-						url = response.cart_url
+					if ( undefined === url || ! url ) {
+						return false;
+					} else {
 					}
 
-					// Clear sessionStorage before redirecting the user.
-					obj.clearLocal();
-					// Set a var so we don't save what we just erased.
-					tribe.tickets.modal_redirect = true;
-
-					window.location.href = url;
+					//window.location.href = url;
 				},
 				fail: function( response ) {
 					// @TODO: add messaging on error?
