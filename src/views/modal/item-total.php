@@ -11,7 +11,6 @@
  * @since TBD
  *
  * @version TBD
- * @todo Adjust with #133179
  */
 ?>
 <div class="tribe-common-b2 tribe-tickets__item__total__wrap" >

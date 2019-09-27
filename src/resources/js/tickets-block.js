@@ -36,6 +36,8 @@ tribe.tickets.block = {
 		itemPrice                  : '.tribe-amount',
 		itemQuantity               : '.tribe-tickets__item__quantity',
 		itemQuantityInput          : '.tribe-tickets-quantity',
+		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
+		blockFooterAmount          : '.tribe-tickets__footer__total .tribe-amount',
 		submit                     : '.tribe-tickets__buy',
 	};
 
@@ -59,7 +61,7 @@ tribe.tickets.block = {
 		cartForm  : '.tribe-modal__wrapper--ar #tribe-modal__cart',
 		container : '.tribe-modal__wrapper--ar',
 		itemRemove: '.tribe-tickets__item__remove',
-		itemTotal : '.tribe-tickets__item__total__wrap .tribe-amount',
+		itemTotal : '.tribe-tickets__item__total .tribe-amount',
 		metaField : '.ticket-meta',
 		metaForm  : '.tribe-modal__wrapper--ar #tribe-modal__attendee_registration',
 		metaItem  : '.tribe-ticket',
@@ -67,7 +69,7 @@ tribe.tickets.block = {
 	};
 
 	/*
-	 * Commerce Provider Selectors.
+	 * Commerce Provider "lookup table".
 	 *
 	 * @since TBD
 	 *
@@ -155,7 +157,7 @@ tribe.tickets.block = {
 	 * @param int    $form The form we're updating.
 	 */
 	obj.updateFooterCount = function( $form ) {
-		var $field      = $form.find( '.tribe-tickets__footer__quantity__number' );
+		var $field      = $form.find( obj.selector.blockFooterQuantity );
 		var footerCount = 0;
 		var $qtys       = $form.find( obj.selector.itemQuantityInput );
 
@@ -180,7 +182,7 @@ tribe.tickets.block = {
 	 * @param int    $form The form we're updating.
 	 */
 	obj.updateFooterAmount = function( $form ) {
-		var $field       = $form.find( '.tribe-tickets__footer__total__number' );
+		var $field       = $form.find( obj.selector.blockFooterAmount );
 		var footerAmount = 0;
 		var $qtys        = $form.find( obj.selector.itemQuantityInput );
 
@@ -292,7 +294,7 @@ tribe.tickets.block = {
 	obj.updateTotal = function ( qty, price, $cartItem ) {
 
 		var total_for_item = ( qty * price ).toFixed( obj.getCurrencyFormatting().number_of_decimals );
-		var $field         = $cartItem.find( '.tribe-tickets__item__total' );
+		var $field         = $cartItem.find( obj.modalSelector.itemTotal );
 
 		$field.text( obj.numberFormat( total_for_item ) );
 

@@ -25,7 +25,7 @@ tribe.tickets.registration = {};
 
 	obj.selector = {
 		checkout           : '.tribe-tickets__registration__checkout',
-		checkoutButton     : '.tribe-tickets__registration__checkout__submit',
+		checkoutButton     : '.tribe-tickets__item__registration__submit',
 		container          : '.tribe-tickets__registration',
 		eventContainer     : '.tribe-tickets__registration__event',
 		field              : {
@@ -43,6 +43,7 @@ tribe.tickets.registration = {};
 		loader             : '.tribe-tickets__item__attendee__fields__loader',
 		metaField          : '.ticket-meta',
 		metaItem           : '.tribe-ticket',
+		miniCart           : '#tribe-tickets__mini-cart',
 		status             : '.tribe-tickets__registration__status',
 		toggler            : '.tribe-tickets__registration__toggle__handler',
 	};
@@ -319,7 +320,7 @@ tribe.tickets.registration = {};
 			url     : '/wp-json/tribe/tickets/v1/cart',
 			success : function ( data ) {
 				if ( data.tickets ) {
-					obj.prefillCartForm( $tribe_registration, data.tickets );
+					obj.prefillCartForm( $(obj.selector.miniCart), data.tickets );
 				}
 
 				if ( data.meta ) {
@@ -437,15 +438,17 @@ tribe.tickets.registration = {};
 	obj.prefillCartForm = function ( $form, tickets ) {
 		$.each( tickets, function ( index, value ) {
 			var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
+			console.log($item.length);
 			if ( $item ) {
-				$item.find( '.tribe-ticket-quantity' ).val( value.quantity );
+				$item.find( '.tribe-ticket-quantity' ).html( value.quantity );
+console.log(value);
+				$item.find( '.tribe-tickets__item__total.tribe-amount' ).html( value.quantity * value.price );
 			}
 		} );
 
 	};
 
 	/* DOM Manipulation */
-
 
 	/**
 	 * Adds focus effect to ticket block.

@@ -13,7 +13,7 @@
  */
 ?>
 <?php if ( class_exists( 'Tribe__Events__Main' ) ) : ?>
-<div class="tribe-tickets__registration__description">
+<div class="tribe-common-b2 tribe-tickets__registration__description">
 	<?php echo tribe_events_event_schedule_details( $event_id ); ?>
 </div>
 <?php endif;

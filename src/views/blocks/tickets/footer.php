@@ -14,15 +14,21 @@
  * @version TBD
  *
  */
-
-$modal           = $this->get( 'is_modal' );
+$event_id        = $this->get( 'event_id' );
+$is_modal        = $this->get( 'is_modal' );
+$is_mini         = $this->get( 'is_mini' );
 $tickets         = $this->get( 'tickets' );
 $currency_symbol = $this->get( 'currency_symbol' );
+$provider        = $this->get( 'provider' );
 ?>
 <div class="tribe-tickets__footer" >
+	<?php if ( $is_mini ) : ?>
+		<a class="tribe-common-b2 tribe-tickets__footer__back-link" href="<?php echo esc_url( $provider->get_cart_url() ); ?>">Return to Cart</a>
+	<?php endif; ?>
 	<?php $this->template( 'blocks/tickets/footer-quantity' ); ?>
-	<?php $this->template( 'blocks/tickets/footer-total' ); ?>
-	<?php if ( true !== $modal ) : ?>
+	<?php $this->template( 'blocks/tickets/footer-total', [ 'event_id' => $event_id, 'provider' => $provider ] ); ?>
+
+	<?php if ( true !== $is_modal ) : ?>
 		<?php $this->template( 'blocks/tickets/submit', [ 'tickets' => $tickets ] ); ?>
 	<?php endif; ?>
 </div>

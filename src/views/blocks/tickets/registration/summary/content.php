@@ -17,9 +17,9 @@
 ?>
 <div class="tribe-tickets__registration__summary">
 
-	<?php $this->template( 'blocks/tickets/registration/summary/title' ); ?>
-
 	<?php $this->template( 'blocks/tickets/registration/summary/description' ); ?>
+
+	<?php $this->template( 'blocks/tickets/registration/summary/title' ); ?>
 
 	<?php $this->template( 'blocks/tickets/registration/summary/tickets' ); ?>
 
