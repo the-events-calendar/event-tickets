@@ -24,7 +24,6 @@ $ticket     = $this->get( 'ticket' );
 
 /** @var Tribe__Tickets__Tickets_Handler $handler */
 $handler      = tribe( 'tickets.handler' );
-bdump($ticket->ID);
 $max_quantity = $handler->get_ticket_max_purchase( $ticket->ID );
 
 $classes = [ 'tribe-tickets__item__quantity__number' ];
