@@ -15,10 +15,15 @@
  * @version TBD
  *
  */
+$button_name = apply_filters( 'tribe_tickets_submit', 'cart-button' );
 ?>
 <button
 	class="tribe-common-c-btn tribe-common-c-btn--small tribe-tickets__buy"
 	type="submit"
+	<?php if ( $button_name ) : ?>
+		name="<?php echo esc_html( $button_name ); ?>"
+	<?php endif; ?>
+
 >
 	<?php echo esc_html_x( 'Get Tickets', 'Add tickets to cart.', 'event-tickets' ); ?>
 </button>

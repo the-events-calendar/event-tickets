@@ -889,6 +889,12 @@ tribe.tickets.block = {
 	obj.getTicketsForCart = function() {
 		var tickets     = [];
 		var $cartForm   = $( obj.modalSelector.cartForm );
+
+		// Handle non-modal instances
+		if ( ! $cartForm.length ) {
+			$cartForm   = $( obj.selector.container );
+		}
+
 		var $ticketRows = $cartForm.find( obj.selector.item );
 
 		$ticketRows.each(
@@ -1307,6 +1313,55 @@ tribe.tickets.block = {
 				provider: obj.commerceSelector[obj.tribe_ticket_provider],
 				tickets : obj.getTicketsForCart(),
 				meta    : obj.getMetaForSave(),
+				post_id : obj.postId,
+			};
+
+			$.ajax({
+				type: 'POST',
+				url: '/wp-json/tribe/tickets/v1/cart',
+				data: params,
+				success: function( response ) {
+					//redirect url
+					var url = response.checkout_url;
+
+					if( 'cart-button' === $button.attr( 'name' ) ) {
+						url = response.cart_url
+					}
+
+					// Clear sessionStorage before redirecting the user.
+					obj.clearLocal();
+					// Set a var so we don't save what we just erased.
+					tribe.tickets.modal_redirect = true;
+
+					window.location.href = url;
+				},
+				fail: function( response ) {
+					// @TODO: add messaging on error?
+					return;
+				}
+			});
+		}
+	);
+
+	/**
+	 * Handle Non-modal submission.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	obj.document.on(
+		'click',
+		obj.selector.submit,
+		function( e ) {
+			e.preventDefault();
+			var $button    = $( this );
+
+			// save meta and cart
+			var params = {
+				provider: obj.commerceSelector[obj.tribe_ticket_provider],
+				tickets : obj.getTicketsForCart(),
+				meta    : {},
 				post_id : obj.postId,
 			};
 
