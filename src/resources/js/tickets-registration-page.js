@@ -167,7 +167,7 @@ tribe.tickets.registration = {};
 			type    : 'GET',
 			data    : { 'provider': obj.providerId },
 			dataType: 'json',
-			url     : '/wp-json/tribe/tickets/v1/cart',
+			url     : obj.getRestEndpoint(),
 			success : function ( data ) {
 				if ( data.tickets ) {
 					obj.prefillCartForm( $(obj.selector.miniCart), data.tickets );
@@ -470,6 +470,15 @@ tribe.tickets.registration = {};
 	/* Utility */
 
 	/**
+	 * Get the REST endpoint
+	 *
+	 * @since TBD
+	 */
+	obj.getRestEndpoint = function() {
+		var url = TribeCartEndpoint.url;
+		return url;
+	}
+	/**
 	 * Get the Currency Formatting for a Provider.
 	 *
 	 * @since TBD
@@ -620,7 +629,7 @@ tribe.tickets.registration = {};
 
 			$.ajax({
 				type: 'POST',
-				url: '/wp-json/tribe/tickets/v1/cart',
+				url: obj.getRestEndpoint(),
 				data: params,
 				success: function( response ) {
 					//redirect url

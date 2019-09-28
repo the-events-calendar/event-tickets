@@ -107,15 +107,21 @@ extends Tribe__Editor__Blocks__Abstract {
 				'localize'     => [
 					[
 						'name' => 'TribeTickets',
-						'data' => array(
+						'data' => [
 							'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-						),
+						],
 					],
 					[
 						'name' => 'TribeCurrency',
-						'data' => array(
+						'data' => [
 							'formatting' => json_encode( $currency ),
-						),
+						],
+					],
+					[
+						'name' => 'TribeCartEndpoint',
+						'data' => [
+							'url' => '/' . tribe_tickets_rest_url_prefix() . '/cart'
+						],
 					],
 				],
 			]

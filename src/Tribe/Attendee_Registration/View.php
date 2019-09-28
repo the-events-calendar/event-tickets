@@ -134,7 +134,21 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		// One provder per instance
 		$currency  = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $default_provider, null );
-		wp_localize_script( 'event-tickets-registration-page-scripts', 'TribeCurrency', [ 'formatting' => json_encode( $currency ) ] );
+		wp_localize_script(
+			'event-tickets-registration-page-scripts',
+			'TribeCurrency',
+			[
+				'formatting' => json_encode( $currency )
+			]
+		);
+		wp_localize_script(
+			'event-tickets-registration-page-scripts',
+			'TribeCartEndpoint',
+			[
+				'url' => '/' . tribe_tickets_rest_url_prefix() .  '/cart'
+			]
+		);
+
 
 		wp_enqueue_style( 'dashicons' );
 
