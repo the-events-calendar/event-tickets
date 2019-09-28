@@ -478,6 +478,7 @@ tribe.tickets.registration = {};
 		var url = TribeCartEndpoint.url;
 		return url;
 	}
+
 	/**
 	 * Get the Currency Formatting for a Provider.
 	 *

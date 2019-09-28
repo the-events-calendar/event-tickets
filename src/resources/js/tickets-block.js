@@ -304,6 +304,16 @@ tribe.tickets.block = {
 	/* Utility */
 
 	/**
+	 * Get the REST endpoint
+	 *
+	 * @since TBD
+	 */
+	obj.getRestEndpoint = function() {
+		var url = TribeCartEndpoint.url;
+		return url;
+	}
+
+	/**
 	 * Get the tickets IDs.
 	 *
 	 * @since 4.9
@@ -639,7 +649,7 @@ tribe.tickets.block = {
 			type: 'GET',
 			data: {'provider': $tribe_ticket.data( 'providerId' )},
 			dataType: 'json',
-			url: $tribe_ticket.data( 'cart' ),
+			url: obj.getRestEndpoint(),
 			success: function ( data ) {
 				if ( data.tickets ) {
 					obj.prefillCartForm( $tribe_ticket, data.tickets );
@@ -749,7 +759,7 @@ tribe.tickets.block = {
 	obj.prefillTicketsBlock = function() {
 		$.ajax({
 			type: 'GET',
-			url: '/wp-json/tribe/tickets/v1/cart',
+			url: obj.getRestEndpoint(),
 			data: {},
 			success: function( response ) {
 				var tickets = response.tickets;
@@ -847,7 +857,7 @@ tribe.tickets.block = {
 			type: 'GET',
 			data: {'provider': $tribe_ticket.data( 'providerId' )},
 			dataType: 'json',
-			url: $tribe_ticket.data( 'cart' ),
+			url: obj.getRestEndpoint(),
 			success: function ( data ) {
 				var cartSkip = data.meta.length;
 				if (length < cartSkip ) {
@@ -1318,7 +1328,7 @@ tribe.tickets.block = {
 
 			$.ajax({
 				type: 'POST',
-				url: '/wp-json/tribe/tickets/v1/cart',
+				url: obj.getRestEndpoint(),
 				data: params,
 				success: function( response ) {
 					//redirect url
@@ -1367,7 +1377,7 @@ tribe.tickets.block = {
 
 			$.ajax({
 				type: 'POST',
-				url: '/wp-json/tribe/tickets/v1/cart',
+				url: obj.getRestEndpoint(),
 				data: params,
 				success: function( response ) {
 					//redirect url

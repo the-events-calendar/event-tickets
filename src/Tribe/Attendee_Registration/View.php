@@ -145,7 +145,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			'event-tickets-registration-page-scripts',
 			'TribeCartEndpoint',
 			[
-				'url' => '/' . tribe_tickets_rest_url_prefix() .  '/cart'
+				'url' => tribe_tickets_rest_url( '/cart/' )
 			]
 		);
 

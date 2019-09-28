@@ -120,7 +120,7 @@ extends Tribe__Editor__Blocks__Abstract {
 					[
 						'name' => 'TribeCartEndpoint',
 						'data' => [
-							'url' => '/' . tribe_tickets_rest_url_prefix() . '/cart'
+							'url' => tribe_tickets_rest_url( '/cart/' )
 						],
 					],
 				],
