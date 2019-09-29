@@ -69,25 +69,37 @@ class ORMTestCase extends Test_Case {
 	 */
 	public function get_attendee_test_matrix() {
 		// Event
-		yield 'event match' => [ 'get_test_matrix_event_match' ];
-		yield 'event mismatch' => [ 'get_test_matrix_event_mismatch' ];
+		yield 'event match single' => [ 'get_test_matrix_single_event_match' ];
+		yield 'event match multi' => [ 'get_test_matrix_multi_event_match' ];
+		yield 'event mismatch single' => [ 'get_test_matrix_single_event_mismatch' ];
+		////yield 'event mismatch multi' => [ 'get_test_matrix_multi_event_mismatch' ];
 		// Event Not In
-		yield 'event not in match' => [ 'get_test_matrix_event_not_in_match' ];
-		yield 'event not in mismatch' => [ 'get_test_matrix_event_not_in_mismatch' ];
+		yield 'event not in match single' => [ 'get_test_matrix_single_event_not_in_match' ];
+		////yield 'event not in match multi' => [ 'get_test_matrix_multi_event_not_in_match' ];
+		yield 'event not in mismatch single' => [ 'get_test_matrix_single_event_not_in_mismatch' ];
+		////yield 'event not in mismatch multi' => [ 'get_test_matrix_multi_event_not_in_mismatch' ];
 
 		// RSVP
-		yield 'rsvp match' => [ 'get_test_matrix_rsvp_match' ];
-		yield 'rsvp mismatch' => [ 'get_test_matrix_rsvp_mismatch' ];
+		yield 'rsvp match single' => [ 'get_test_matrix_single_rsvp_match' ];
+		////yield 'rsvp match multi' => [ 'get_test_matrix_multi_rsvp_match' ];
+		yield 'rsvp mismatch single' => [ 'get_test_matrix_single_rsvp_mismatch' ];
+		////yield 'rsvp mismatch multi' => [ 'get_test_matrix_multi_rsvp_mismatch' ];
 		// RSVP Not In
-		yield 'rsvp not in match' => [ 'get_test_matrix_rsvp_not_in_match' ];
-		yield 'rsvp not in mismatch' => [ 'get_test_matrix_rsvp_not_in_mismatch' ];
+		yield 'rsvp not in match single' => [ 'get_test_matrix_single_rsvp_not_in_match' ];
+		////yield 'rsvp not in match multi' => [ 'get_test_matrix_multi_rsvp_not_in_match' ];
+		yield 'rsvp not in mismatch single' => [ 'get_test_matrix_single_rsvp_not_in_mismatch' ];
+		////yield 'rsvp not in mismatch multi' => [ 'get_test_matrix_multi_rsvp_not_in_mismatch' ];
 
 		// Tribe Commerce PayPal
-		yield 'paypal match' => [ 'get_test_matrix_paypal_match' ];
-		yield 'paypal mismatch' => [ 'get_test_matrix_paypal_mismatch' ];
+		yield 'paypal match single' => [ 'get_test_matrix_single_paypal_match' ];
+		////yield 'paypal match multi' => [ 'get_test_matrix_multi_paypal_match' ];
+		yield 'paypal mismatch single' => [ 'get_test_matrix_single_paypal_mismatch' ];
+		////yield 'paypal mismatch multi' => [ 'get_test_matrix_multi_paypal_mismatch' ];
 		// Tribe Commerce PayPal Not In
-		yield 'paypal not in match' => [ 'get_test_matrix_paypal_not_in_match' ];
-		yield 'paypal not in mismatch' => [ 'get_test_matrix_paypal_not_in_mismatch' ];
+		yield 'paypal not in match single' => [ 'get_test_matrix_single_paypal_not_in_match' ];
+		////yield 'paypal not in match multi' => [ 'get_test_matrix_multi_paypal_not_in_match' ];
+		yield 'paypal not in mismatch single' => [ 'get_test_matrix_single_paypal_not_in_mismatch' ];
+		////yield 'paypal not in mismatch multi' => [ 'get_test_matrix_multi_paypal_not_in_mismatch' ];
 	}
 
 	/**
@@ -112,7 +124,7 @@ class ORMTestCase extends Test_Case {
 	/**
 	 * Get test matrix for Event match.
 	 */
-	public function get_test_matrix_event_match() {
+	public function get_test_matrix_single_event_match() {
 		return [
 			// Repository
 			'default',
@@ -128,9 +140,28 @@ class ORMTestCase extends Test_Case {
 	}
 
 	/**
+	 * Get test matrix for multiple Event match.
+	 */
+	public function get_test_matrix_multi_event_match() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'event',
+			// Filter arguments to use.
+			[
+				$this->get_event_id( 0 ), // TODO, generate more than 1 event to have attendees
+				$this->get_event_id( 1 ),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $this->test_data['attendees'] ),
+		];
+	}
+
+	/**
 	 * Get test matrix for Event mismatch.
 	 */
-	public function get_test_matrix_event_mismatch() {
+	public function get_test_matrix_single_event_mismatch() {
 		return [
 			// Repository
 			'default',
@@ -148,7 +179,7 @@ class ORMTestCase extends Test_Case {
 	/**
 	 * Get test matrix for Event Not In match.
 	 */
-	public function get_test_matrix_event_not_in_match() {
+	public function get_test_matrix_single_event_not_in_match() {
 		return [
 			// Repository
 			'default',
@@ -166,7 +197,7 @@ class ORMTestCase extends Test_Case {
 	/**
 	 * Get test matrix for Event Not In mismatch.
 	 */
-	public function get_test_matrix_event_not_in_mismatch() {
+	public function get_test_matrix_single_event_not_in_mismatch() {
 		return [
 			// Repository
 			'default',
@@ -188,7 +219,7 @@ class ORMTestCase extends Test_Case {
 	/**
 	 * Get test matrix for RSVP match.
 	 */
-	public function get_test_matrix_rsvp_match() {
+	public function get_test_matrix_single_rsvp_match() {
 		$expected = [
 			$this->get_attendee_id( 0 ), // User2
 			$this->get_attendee_id( 1 ), // User3
@@ -213,7 +244,7 @@ class ORMTestCase extends Test_Case {
 	/**
 	 * Get test matrix for RSVP mismatch.
 	 */
-	public function get_test_matrix_rsvp_mismatch() {
+	public function get_test_matrix_single_rsvp_mismatch() {
 		return [
 			// Repository
 			'rsvp',
@@ -231,7 +262,7 @@ class ORMTestCase extends Test_Case {
 	/**
 	 * Get test matrix for RSVP Not In match.
 	 */
-	public function get_test_matrix_rsvp_not_in_match() {
+	public function get_test_matrix_single_rsvp_not_in_match() {
 		$expected = [
 			$this->get_attendee_id( 0 ), // User2
 			$this->get_attendee_id( 1 ), // User3
@@ -256,7 +287,7 @@ class ORMTestCase extends Test_Case {
 	/**
 	 * Get test matrix for RSVP Not In mismatch.
 	 */
-	public function get_test_matrix_rsvp_not_in_mismatch() {
+	public function get_test_matrix_single_rsvp_not_in_mismatch() {
 		return [
 			// Repository
 			'rsvp',
@@ -278,7 +309,7 @@ class ORMTestCase extends Test_Case {
 	/**
 	 * Get test matrix for Tribe Commerce PayPal match.
 	 */
-	public function get_test_matrix_paypal_match() {
+	public function get_test_matrix_single_paypal_match() {
 		$expected = [
 			$this->get_attendee_id( 4 ), // User3
 			$this->get_attendee_id( 5 ), // User4
@@ -303,7 +334,7 @@ class ORMTestCase extends Test_Case {
 	/**
 	 * Get test matrix for Tribe Commerce PayPal mismatch.
 	 */
-	public function get_test_matrix_paypal_mismatch() {
+	public function get_test_matrix_single_paypal_mismatch() {
 		return [
 			// Repository
 			'tribe-commerce',
@@ -321,7 +352,7 @@ class ORMTestCase extends Test_Case {
 	/**
 	 * Get test matrix for Tribe Commerce PayPal Not In match.
 	 */
-	public function get_test_matrix_paypal_not_in_match() {
+	public function get_test_matrix_single_paypal_not_in_match() {
 		$expected = [
 			$this->get_attendee_id( 4 ), // User3
 			$this->get_attendee_id( 5 ), // User4
@@ -346,7 +377,7 @@ class ORMTestCase extends Test_Case {
 	/**
 	 * Get test matrix for Tribe Commerce PayPal Not In mismatch.
 	 */
-	public function get_test_matrix_paypal_not_in_mismatch() {
+	public function get_test_matrix_single_paypal_not_in_mismatch() {
 		return [
 			// Repository
 			'tribe-commerce',
