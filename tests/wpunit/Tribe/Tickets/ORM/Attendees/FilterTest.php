@@ -28,11 +28,7 @@ class FilterTest extends ORMTestCase {
 		$attendees->set_found_rows( true );
 
 		// Do the filtering.
-		$args = [
-			$filter_name,
-		];
-
-		$args = array_merge( $args, $filter_arguments );
+		$args = array_merge( [ $filter_name ], $filter_arguments );
 
 		$attendees->by( ...$args );
 
@@ -42,5 +38,4 @@ class FilterTest extends ORMTestCase {
 		$this->assertEquals( $assertions['count'], $attendees->count(), $method );
 		$this->assertEquals( $assertions['found'], $attendees->found(), $method );
 	}
-
 }
