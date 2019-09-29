@@ -505,4 +505,16 @@ class ORMTestCase extends Test_Case {
 		// Save test data to reference.
 		$this->test_data = $test_data;
 	}
+
+	private function get_assertions_array( array $attendee_ids ) {
+		// Assume 'count' and 'found' will always be the same, since ORM defaults to unlimited (-1) results.
+		$total = count( $attendee_ids );
+
+		return [
+			'get_ids' => $attendee_ids,
+			'all'     => array_map( 'get_post', $attendee_ids ),
+			'count'   => $total,
+			'found'   => $total,
+		];
+	}
 }
