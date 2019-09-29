@@ -84,9 +84,20 @@ class ORMTestCase extends Test_Case {
 	}
 
 	/**
+	 * EVENTS
+	 */
+
+	/**
 	 * Get test matrix for Event match.
 	 */
 	public function get_test_matrix_event_match() {
+		$expected = [
+			$this->get_attendee_id( 0 ),
+			$this->get_attendee_id( 1 ),
+			$this->get_attendee_id( 2 ),
+			$this->get_attendee_id( 3 ),
+		];
+
 		return [
 			// Repository
 			'default',
@@ -97,22 +108,7 @@ class ORMTestCase extends Test_Case {
 				$this->get_event_id( 0 ),
 			],
 			// Assertions to make.
-			[
-				'get_ids' => [
-					$this->get_attendee_id( 0 ),
-					$this->get_attendee_id( 1 ),
-					$this->get_attendee_id( 2 ),
-					$this->get_attendee_id( 3 ),
-				],
-				'all'     => [
-					get_post( $this->get_attendee_id( 0 ) ),
-					get_post( $this->get_attendee_id( 1 ) ),
-					get_post( $this->get_attendee_id( 2 ) ),
-					get_post( $this->get_attendee_id( 3 ) ),
-				],
-				'count'   => 4,
-				'found'   => 4,
-			],
+			$this->get_assertions_array( $expected ),
 		];
 	}
 
@@ -120,6 +116,8 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for Event mismatch.
 	 */
 	public function get_test_matrix_event_mismatch() {
+		$expected = [];
+
 		return [
 			// Repository
 			'default',
@@ -130,12 +128,7 @@ class ORMTestCase extends Test_Case {
 				$this->get_event_id( 1 ),
 			],
 			// Assertions to make.
-			[
-				'get_ids' => [],
-				'all'     => [],
-				'count'   => 0,
-				'found'   => 0,
-			],
+			$this->get_assertions_array( $expected ),
 		];
 	}
 
@@ -143,6 +136,13 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for Event Not In match.
 	 */
 	public function get_test_matrix_event_not_in_match() {
+		$expected = [
+			$this->get_attendee_id( 0 ),
+			$this->get_attendee_id( 1 ),
+			$this->get_attendee_id( 2 ),
+			$this->get_attendee_id( 3 ),
+		];
+
 		return [
 			// Repository
 			'default',
@@ -153,22 +153,7 @@ class ORMTestCase extends Test_Case {
 				$this->get_event_id( 1 ),
 			],
 			// Assertions to make.
-			[
-				'get_ids' => [
-					$this->get_attendee_id( 0 ),
-					$this->get_attendee_id( 1 ),
-					$this->get_attendee_id( 2 ),
-					$this->get_attendee_id( 3 ),
-				],
-				'all'     => [
-					get_post( $this->get_attendee_id( 0 ) ),
-					get_post( $this->get_attendee_id( 1 ) ),
-					get_post( $this->get_attendee_id( 2 ) ),
-					get_post( $this->get_attendee_id( 3 ) ),
-				],
-				'count'   => 4,
-				'found'   => 4,
-			],
+			$this->get_assertions_array( $expected ),
 		];
 	}
 
@@ -176,6 +161,8 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for Event Not In mismatch.
 	 */
 	public function get_test_matrix_event_not_in_mismatch() {
+		$expected = [];
+
 		return [
 			// Repository
 			'default',
@@ -186,19 +173,23 @@ class ORMTestCase extends Test_Case {
 				$this->get_event_id( 0 ),
 			],
 			// Assertions to make.
-			[
-				'get_ids' => [],
-				'all'     => [],
-				'count'   => 0,
-				'found'   => 0,
-			],
+			$this->get_assertions_array( $expected ),
 		];
 	}
+
+	/**
+	 * RSVPS
+	 */
 
 	/**
 	 * Get test matrix for RSVP match.
 	 */
 	public function get_test_matrix_rsvp_match() {
+		$expected = [
+			$this->get_attendee_id( 0 ),
+			$this->get_attendee_id( 1 ),
+		];
+
 		return [
 			// Repository
 			'rsvp',
@@ -209,18 +200,7 @@ class ORMTestCase extends Test_Case {
 				$this->get_rsvp_id( 0 ),
 			],
 			// Assertions to make.
-			[
-				'get_ids' => [
-					$this->get_attendee_id( 0 ),
-					$this->get_attendee_id( 1 ),
-				],
-				'all'     => [
-					get_post( $this->get_attendee_id( 0 ) ),
-					get_post( $this->get_attendee_id( 1 ) ),
-				],
-				'count'   => 2,
-				'found'   => 2,
-			],
+			$this->get_assertions_array( $expected ),
 		];
 	}
 
@@ -228,6 +208,8 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for RSVP mismatch.
 	 */
 	public function get_test_matrix_rsvp_mismatch() {
+		$expected = [];
+
 		return [
 			// Repository
 			'rsvp',
@@ -238,12 +220,7 @@ class ORMTestCase extends Test_Case {
 				$this->get_rsvp_id( 1 ),
 			],
 			// Assertions to make.
-			[
-				'get_ids' => [],
-				'all'     => [],
-				'count'   => 0,
-				'found'   => 0,
-			],
+			$this->get_assertions_array( $expected ),
 		];
 	}
 
@@ -251,6 +228,11 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for RSVP Not In match.
 	 */
 	public function get_test_matrix_rsvp_not_in_match() {
+		$expected = [
+			$this->get_attendee_id( 0 ),
+			$this->get_attendee_id( 1 ),
+		];
+
 		return [
 			// Repository
 			'rsvp',
@@ -261,18 +243,7 @@ class ORMTestCase extends Test_Case {
 				$this->get_rsvp_id( 1 ),
 			],
 			// Assertions to make.
-			[
-				'get_ids' => [
-					$this->get_attendee_id( 0 ),
-					$this->get_attendee_id( 1 ),
-				],
-				'all'     => [
-					get_post( $this->get_attendee_id( 0 ) ),
-					get_post( $this->get_attendee_id( 1 ) ),
-				],
-				'count'   => 2,
-				'found'   => 2,
-			],
+			$this->get_assertions_array( $expected ),
 		];
 	}
 
@@ -280,6 +251,8 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for RSVP Not In mismatch.
 	 */
 	public function get_test_matrix_rsvp_not_in_mismatch() {
+		$expected = [];
+
 		return [
 			// Repository
 			'rsvp',
@@ -290,19 +263,23 @@ class ORMTestCase extends Test_Case {
 				$this->get_rsvp_id( 0 ),
 			],
 			// Assertions to make.
-			[
-				'get_ids' => [],
-				'all'     => [],
-				'count'   => 0,
-				'found'   => 0,
-			],
+			$this->get_assertions_array( $expected ),
 		];
 	}
+
+	/**
+	 * Tribe Commerce
+	 */
 
 	/**
 	 * Get test matrix for Tribe Commerce PayPal match.
 	 */
 	public function get_test_matrix_paypal_match() {
+		$expected = [
+			$this->get_attendee_id( 2 ),
+			$this->get_attendee_id( 3 ),
+		];
+
 		return [
 			// Repository
 			'tribe-commerce',
@@ -313,18 +290,7 @@ class ORMTestCase extends Test_Case {
 				$this->get_paypal_tickets_id( 0 ),
 			],
 			// Assertions to make.
-			[
-				'get_ids' => [
-					$this->get_attendee_id( 2 ),
-					$this->get_attendee_id( 3 ),
-				],
-				'all'     => [
-					get_post( $this->get_attendee_id( 2 ) ),
-					get_post( $this->get_attendee_id( 3 ) ),
-				],
-				'count'   => 2,
-				'found'   => 2,
-			],
+			$this->get_assertions_array( $expected ),
 		];
 	}
 
@@ -332,6 +298,8 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for Tribe Commerce PayPal mismatch.
 	 */
 	public function get_test_matrix_paypal_mismatch() {
+		$expected = [];
+
 		return [
 			// Repository
 			'tribe-commerce',
@@ -342,12 +310,7 @@ class ORMTestCase extends Test_Case {
 				$this->get_paypal_tickets_id( 1 ),
 			],
 			// Assertions to make.
-			[
-				'get_ids' => [],
-				'all'     => [],
-				'count'   => 0,
-				'found'   => 0,
-			],
+			$this->get_assertions_array( $expected ),
 		];
 	}
 
@@ -355,6 +318,11 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for Tribe Commerce PayPal Not In match.
 	 */
 	public function get_test_matrix_paypal_not_in_match() {
+		$expected = [
+			$this->get_attendee_id( 2 ),
+			$this->get_attendee_id( 3 ),
+		];
+
 		return [
 			// Repository
 			'tribe-commerce',
@@ -365,18 +333,7 @@ class ORMTestCase extends Test_Case {
 				$this->get_paypal_tickets_id( 1 ),
 			],
 			// Assertions to make.
-			[
-				'get_ids' => [
-					$this->get_attendee_id( 2 ),
-					$this->get_attendee_id( 3 ),
-				],
-				'all'     => [
-					get_post( $this->get_attendee_id( 2 ) ),
-					get_post( $this->get_attendee_id( 3 ) ),
-				],
-				'count'   => 2,
-				'found'   => 2,
-			],
+			$this->get_assertions_array( $expected ),
 		];
 	}
 
@@ -384,6 +341,8 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for Tribe Commerce PayPal Not In mismatch.
 	 */
 	public function get_test_matrix_paypal_not_in_mismatch() {
+		$expected = [];
+
 		return [
 			// Repository
 			'tribe-commerce',
@@ -394,14 +353,13 @@ class ORMTestCase extends Test_Case {
 				$this->get_paypal_tickets_id( 0 ),
 			],
 			// Assertions to make.
-			[
-				'get_ids' => [],
-				'all'     => [],
-				'count'   => 0,
-				'found'   => 0,
-			],
+			$this->get_assertions_array( $expected ),
 		];
 	}
+
+	/**
+	 * Helpers
+	 */
 
 	protected function get_event_id( $index ) {
 		if ( isset( $this->test_data['events'][ $index ] ) ) {
