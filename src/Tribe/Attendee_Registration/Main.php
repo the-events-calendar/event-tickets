@@ -68,6 +68,24 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	}
 
 	/**
+	 * Returns whether the user is on the /cart/ REST API endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the user is on the /cart/ REST API endpoint.
+	 */
+	public function is_cart_rest() {
+		if ( ! defined( 'REST_REQUEST' ) || ! REST_REQUEST || empty( $GLOBALS['wp']->query_vars['rest_route'] ) ) {
+			return false;
+		}
+
+		/** @var Tribe__Tickets__REST__V1__Endpoints__Cart $cart */
+		$cart = tribe( 'tickets.rest-v1.endpoints.cart' );
+
+		return $cart->is_active;
+	}
+
+	/**
 	 * Returns whether or not the user is on a page using the attendee registration shortcode
 	 *
 	 * @since 4.10.2
