@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.10.9] TBD =
+= [4.10.9] 2019-10-01 =
 
 * Feature - New functions to easily rename ticket types and ensure consistent wording: `tribe_get_rsvp_label_singular()`, `tribe_get_rsvp_label_singular_lowercase()`, `tribe_get_rsvp_label_plural()`, `tribe_get_rsvp_label_plural_lowercase()`, `tribe_get_ticket_label_singular()`, `tribe_get_ticket_label_singular_lowercase()`, `tribe_get_ticket_label_plural()`, and `tribe_get_ticket_label_plural_lowercase()` [130897]
 * Tweak - Allow Admin and Editor users to see Attendees in REST API responses by default [128298]
@@ -128,6 +128,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Prevent multiple clicks on `Confirm RSVP` from submitting entries [132961]
 * Fix - Make 'Not going' available to translate in RSVP dropdown [134358]
 * Fix - Update how we intercept the singular event template when The Events Calendar is active, on events created using the Block editor so that you can view 'My Tickets' correctly [134583]
+* Language: 101 new strings added, 158 updated, 48 fuzzied, and 104 obsoleted
 
 = [4.10.8] 2019-09-16 =
 

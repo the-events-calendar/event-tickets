@@ -11,9 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @since TBD Uses new functions to get singular and plural texts.
+ * @since 4.10.9 Uses new functions to get singular and plural texts.
  *
- * @version TBD
+ * @version 4.10.9
  */
 
 ?>

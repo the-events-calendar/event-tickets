@@ -415,7 +415,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	/**
 	 * Listens for and handles requests to reassign tickets from one ticket type to another.
 	 *
-	 * @since TBD Use customizable ticket name functions.
+	 * @since 4.10.9 Use customizable ticket name functions.
 	 */
 	public function move_tickets_request() {
 		if ( ! wp_verify_nonce( $_POST['check'], 'move_tickets' ) ) {
