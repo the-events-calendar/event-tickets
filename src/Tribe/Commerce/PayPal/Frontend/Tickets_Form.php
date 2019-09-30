@@ -34,7 +34,7 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 	 * Modifies the passed content to inject the front-end tickets form.
 	 *
 	 * @since 4.7
-	 * @since TBD Use customizable ticket name functions.
+	 * @since 4.10.9 Use customizable ticket name functions.
 	 *
 	 * @return void The method will echo in the context of a buffered output.
 	 *

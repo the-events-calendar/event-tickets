@@ -21,9 +21,9 @@
  *               Display WooCommerce featured image.
  *               Current ticket action hook before output.
  * @since 4.7.6  Ability to filter ticket image.
- * @since TBD Use function for text.
+ * @since 4.10.9 Use function for text.
  *
- * @version TBD
+ * @version 4.10.9
  *
  * @var array $tickets An array of tickets in the format documented above.
  */

@@ -70,7 +70,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	 * Prints an HTML (unordered) list of attendance totals.
 	 *
 	 * @since 4.7
-	 * @since TBD Use customizable ticket name functions.
+	 * @since 4.10.9 Use customizable ticket name functions.
 	 */
 	public function print_totals() {
 		$args = [

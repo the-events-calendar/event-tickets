@@ -12,7 +12,7 @@ class Tribe__Tickets__Promoter__Observer {
 	/**
 	 * Holding the reference to the event post type
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @var string
 	 */
@@ -97,7 +97,7 @@ class Tribe__Tickets__Promoter__Observer {
 	/**
 	 * Check if the Event post type has support for tickets
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @return bool
 	 */
@@ -140,7 +140,7 @@ class Tribe__Tickets__Promoter__Observer {
 	/**
 	 * Notify the connector of changes when the event was deleted
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @param $post_id
 	 */

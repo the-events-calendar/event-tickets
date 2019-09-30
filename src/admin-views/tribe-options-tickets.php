@@ -5,7 +5,7 @@
  *
  * @since 4.7
  * @since 4.10.2 Update tooltip text for Confirmation email sender address and allow it to be saved as empty
- * @since TBD Use function for text.
+ * @since 4.10.9 Use function for text.
  *
  * @version TBD
  */

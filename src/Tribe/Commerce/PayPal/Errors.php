@@ -13,7 +13,7 @@ class Tribe__Tickets__Commerce__PayPal__Errors {
 	 * Casts a numeric error code related to PayPal tickets to a localized string.
 	 *
 	 * @since 4.7
-	 * @since TBD Use customizable ticket name functions.
+	 * @since 4.10.9 Use customizable ticket name functions.
 	 *
 	 * @param string|int $error_code
 	 *

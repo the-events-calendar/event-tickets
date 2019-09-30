@@ -117,17 +117,20 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.10.9] TBD =
+= [4.10.9] 2019-10-01 =
 
 * Feature - New functions to easily rename ticket types and ensure consistent wording: `tribe_get_rsvp_label_singular()`, `tribe_get_rsvp_label_singular_lowercase()`, `tribe_get_rsvp_label_plural()`, `tribe_get_rsvp_label_plural_lowercase()`, `tribe_get_ticket_label_singular()`, `tribe_get_ticket_label_singular_lowercase()`, `tribe_get_ticket_label_plural()`, and `tribe_get_ticket_label_plural_lowercase()` [130897]
 * Tweak - Allow Admin and Editor users to see Attendees in REST API responses by default [128298]
 * Tweak - Notify Promoter if an event with tickets is deleted [134113]
+* Tweak - Added filters: `tribe_display_tickets_left_threshold`, `tribe_events_tickets_views_v2_is_enabled`, `tribe_get_rsvp_label_singular`, `tribe_get_rsvp_label_singular_lowercase`, `tribe_get_rsvp_label_plural`, `tribe_get_rsvp_label_plural_lowercase`, `tribe_get_ticket_label_singular`, `tribe_get_ticket_label_singular_lowercase`, `tribe_get_ticket_label_plural`, `tribe_get_ticket_label_plural_lowercase`, `tribe_tickets_filter_showing_tickets_on_attendee_registration`
+* Tweak - Changed views: `blocks/attendees/view-link`, `blocks/rsvp/content-inactive`, `blocks/rsvp/form/error`, `blocks/rsvp/form/quantity`, `blocks/rsvp/form/submit-button`, `blocks/rsvp/icon`, `blocks/rsvp/messages/success`, `blocks/rsvp/status/full`, `blocks/tickets/registration/summary/title`, `registration/content`, `tickets/email`, `tickets/orders-pp-tickets`, `tickets/orders-rsvp`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp-success`, `tickets/tpp`, `tickets/view-link`, `v2/day/event/cost`, `v2/list/event/cost`, `v2/map/event-cards/event-card/event/actions/cost`, `v2/month/calendar-body/day/calendar-events/calendar-event/tooltip/cost`, `v2/month/mobile-events/mobile-day/mobile-event/cost`, `v2/photo/event/cost`, `v2/week/grid-body/events-day/event/tooltip/cost`, `v2/week/mobile-events/day/event/cost`
 * Fix - The attendee link in the ticket and RSVP block so it shows after the creation of a ticket or RSVP. [128521]
 * Fix - Prevent conflict with Genesis Framework where content or the excerpt does not show in the post archives [125496]
 * Fix - Prevent tickets that do not have attendee meta from showing on the attendee registration page [125021]
 * Fix - Prevent multiple clicks on `Confirm RSVP` from submitting entries [132961]
 * Fix - Make 'Not going' available to translate in RSVP dropdown [134358]
 * Fix - Update how we intercept the singular event template when The Events Calendar is active, on events created using the Block editor so that you can view 'My Tickets' correctly [134583]
+* Language: 101 new strings added, 158 updated, 48 fuzzied, and 104 obsoleted
 
 = [4.10.8] 2019-09-16 =
 

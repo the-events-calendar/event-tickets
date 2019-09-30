@@ -6,7 +6,7 @@
  * In order the function will check the `TRIBE_EVENTS_V2_VIEWS` constant,
  * the `TRIBE_EVENTS_V2_VIEWS` environment variable.
  *
- * @since TBD
+ * @since 4.10.9
  *
  * @return bool Whether v2 of the Views are enabled or not.
  */
@@ -26,7 +26,7 @@ function tribe_events_tickets_views_v2_is_enabled() {
 	 * Allows filtering of the Events Views V2 provider, doing so will render
 	 * the methods and classes no longer load-able so keep that in mind.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @param boolean $enabled Determining if V2 Views is enabled.
 	 */
