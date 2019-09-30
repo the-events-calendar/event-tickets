@@ -7,6 +7,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 	Tribe__Documentation__Swagger__Provider_Interface {
 
 	/**
+	 * @var bool Whether this endpoint is currently active.
+	 */
+	public $is_active = false;
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * @since TBD
@@ -105,6 +110,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 	 * @since TBD
 	 */
 	public function get( WP_REST_Request $request ) {
+		$this->is_active = true;
+
 		$provider = $request->get_param( 'provider' );
 
 		if ( null !== $provider ) {
@@ -236,6 +243,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 	 * @since TBD
 	 */
 	public function update( WP_REST_Request $request ) {
+		$this->is_active = true;
+
 		$post_id  = $request->get_param( 'post_id' );
 		$provider = $request->get_param( 'provider' );
 		$tickets  = $request->get_param( 'tickets' );
