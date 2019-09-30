@@ -179,7 +179,7 @@ class Tribe__Tickets__Metabox {
 	 * Sanitizes the data for the new/edit ticket ajax call, and calls the child save_ticket function.
 	 *
 	 * @since 4.6.2
-	 * @since TBD Use customizable ticket name functions.
+	 * @since 4.10.9 Use customizable ticket name functions.
 	 */
 	public function ajax_ticket_add() {
 		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
@@ -238,7 +238,7 @@ class Tribe__Tickets__Metabox {
 	 * Returns the data from a single ticket to populate the edit form.
 	 *
 	 * @since 4.6.2
-	 * @since TBD Use customizable ticket name functions.
+	 * @since 4.10.9 Use customizable ticket name functions.
 	 */
 	public function ajax_ticket_edit() {
 		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );

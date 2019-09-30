@@ -95,7 +95,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	 * Returns the notice header HTML.
 	 *
 	 * @since 4.7
-	 * @since TBD Use customizable ticket name functions.
+	 * @since 4.10.9 Use customizable ticket name functions.
 	 *
 	 * @param int $qty
 	 * @param int $inventory

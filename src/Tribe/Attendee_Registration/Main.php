@@ -165,7 +165,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Check if any Ticket "Products" has Attendee Registration Enabled.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @param array $tickets An array of tickets to check if registration is enabled.
 	 *

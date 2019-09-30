@@ -8,9 +8,9 @@
  *
  * @since 4.0
  * @since 4.10.8 More similar display format to that of other ticket types, including better checking of max quantity available.
- * @since TBD  Use customizable ticket name functions.
+ * @since 4.10.9  Use customizable ticket name functions.
  *
- * @version TBD
+ * @version 4.10.9
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login

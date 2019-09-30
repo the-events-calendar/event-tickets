@@ -11,9 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @since TBD Use function for text.
+ * @since 4.10.9 Use function for text.
  *
- * @version TBD
+ * @version 4.10.9
  */
 
 echo esc_html( sprintf( _x( '%s Full', 'blocks rsvp status full', 'event-tickets' ), tribe_get_rsvp_label_singular( 'blocks_rsvp_status_full' ) ) );

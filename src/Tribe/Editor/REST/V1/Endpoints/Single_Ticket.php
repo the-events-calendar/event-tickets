@@ -203,7 +203,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	 * Add ticket callback executed to update / add a new ticket.
 	 *
 	 * @since 4.9
-	 * @since TBD Use customizable ticket name functions.
+	 * @since 4.10.9 Use customizable ticket name functions.
 	 *
 	 * @param WP_REST_Request $request
 	 * @param $nonce_action
