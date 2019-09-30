@@ -1369,7 +1369,7 @@ tribe.tickets.block = {
 
 			// save meta and cart
 			var params = {
-				provider: obj.commerceSelector[obj.tribe_ticket_provider],
+				provider: obj.commerceSelector[ obj.tribe_ticket_provider ],
 				tickets : obj.getTicketsForCart(),
 				meta    : {},
 				post_id : obj.postId,
