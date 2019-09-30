@@ -7,7 +7,9 @@
  *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @version 4.10.4
+ * @since 4.10.9 Add Filter to show an event/post tickets on AR Page
+ *
+ * @version 4.10.9
  *
  */
 // If there are no events with tickets in cart, print the empty cart template
