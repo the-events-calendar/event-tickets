@@ -66,19 +66,11 @@ class ORMTestCase extends Test_Case {
 	 * "Match" means the filter finds what we expect it to with the created data.
 	 * "Mismatch" means the filter should not find anything because we don't have a matching ID to find anything for,
 	 * such as User2 is an attendee so NOT finding an attendee for them is an expected "mismatch".
+	 *
+	 * @see \Tribe__Tickets__Attendee_Repository::__construct() These tests are in the schema's order added
+	 *                                                          so we know we got them all.
 	 */
 	public function get_attendee_test_matrix() {
-		// User
-		yield 'user match single' => [ 'get_test_matrix_single_user_match' ];
-		yield 'user match multi' => [ 'get_test_matrix_multi_user_match' ];
-		yield 'user mismatch single' => [ 'get_test_matrix_single_user_mismatch' ];
-		////yield 'user mismatch multi' => [ 'get_test_matrix_multi_user_mismatch' ];
-		// User Not In
-		yield 'user not in match single' => [ 'get_test_matrix_single_user_not_in_match' ];
-		////yield 'user not in match multi' => [ 'get_test_matrix_multi_user_not_in_match' ];
-		yield 'user not in mismatch single' => [ 'get_test_matrix_single_user_not_in_mismatch' ];
-		////yield 'user not in mismatch multi' => [ 'get_test_matrix_multi_user_not_in_mismatch' ];
-
 		// Event
 		yield 'event match single' => [ 'get_test_matrix_single_event_match' ];
 		yield 'event match multi' => [ 'get_test_matrix_multi_event_match' ];
@@ -89,6 +81,17 @@ class ORMTestCase extends Test_Case {
 		////yield 'event not in match multi' => [ 'get_test_matrix_multi_event_not_in_match' ];
 		yield 'event not in mismatch single' => [ 'get_test_matrix_single_event_not_in_mismatch' ];
 		////yield 'event not in mismatch multi' => [ 'get_test_matrix_multi_event_not_in_mismatch' ];
+
+		// User
+		yield 'user match single' => [ 'get_test_matrix_single_user_match' ];
+		yield 'user match multi' => [ 'get_test_matrix_multi_user_match' ];
+		yield 'user mismatch single' => [ 'get_test_matrix_single_user_mismatch' ];
+		////yield 'user mismatch multi' => [ 'get_test_matrix_multi_user_mismatch' ];
+		// User Not In
+		yield 'user not in match single' => [ 'get_test_matrix_single_user_not_in_match' ];
+		////yield 'user not in match multi' => [ 'get_test_matrix_multi_user_not_in_match' ];
+		yield 'user not in mismatch single' => [ 'get_test_matrix_single_user_not_in_mismatch' ];
+		////yield 'user not in mismatch multi' => [ 'get_test_matrix_multi_user_not_in_mismatch' ];
 
 		// RSVP
 		yield 'rsvp match single' => [ 'get_test_matrix_single_rsvp_match' ];
@@ -111,6 +114,101 @@ class ORMTestCase extends Test_Case {
 		////yield 'paypal not in match multi' => [ 'get_test_matrix_multi_paypal_not_in_match' ];
 		yield 'paypal not in mismatch single' => [ 'get_test_matrix_single_paypal_not_in_mismatch' ];
 		////yield 'paypal not in mismatch multi' => [ 'get_test_matrix_multi_paypal_not_in_mismatch' ];
+	}
+
+	/**
+	 * EVENTS
+	 */
+
+	/**
+	 * Get test matrix for Event match.
+	 */
+	public function get_test_matrix_single_event_match() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'event',
+			// Filter arguments to use.
+			[
+				$this->get_event_id( 0 ),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $this->test_data['attendees'] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Event match.
+	 */
+	public function get_test_matrix_multi_event_match() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'event',
+			// Filter arguments to use.
+			[
+				$this->get_event_id( 0 ), // TODO, generate more than 1 event to have attendees
+				$this->get_event_id( 1 ),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $this->test_data['attendees'] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for Event mismatch.
+	 */
+	public function get_test_matrix_single_event_mismatch() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'event',
+			// Filter arguments to use.
+			[
+				$this->get_event_id( 1 ),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for Event Not In match.
+	 */
+	public function get_test_matrix_single_event_not_in_match() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'event__not_in',
+			// Filter arguments to use.
+			[
+				$this->get_event_id( 1 ),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $this->test_data['attendees'] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for Event Not In mismatch.
+	 */
+	public function get_test_matrix_single_event_not_in_mismatch() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'event__not_in',
+			// Filter arguments to use.
+			[
+				$this->get_event_id( 0 ),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
 	}
 
 	/**
@@ -231,101 +329,6 @@ class ORMTestCase extends Test_Case {
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $expected ),
-		];
-	}
-
-	/**
-	 * EVENTS
-	 */
-
-	/**
-	 * Get test matrix for Event match.
-	 */
-	public function get_test_matrix_single_event_match() {
-		return [
-			// Repository
-			'default',
-			// Filter name.
-			'event',
-			// Filter arguments to use.
-			[
-				$this->get_event_id( 0 ),
-			],
-			// Assertions to make.
-			$this->get_assertions_array( $this->test_data['attendees'] ),
-		];
-	}
-
-	/**
-	 * Get test matrix for multiple Event match.
-	 */
-	public function get_test_matrix_multi_event_match() {
-		return [
-			// Repository
-			'default',
-			// Filter name.
-			'event',
-			// Filter arguments to use.
-			[
-				$this->get_event_id( 0 ), // TODO, generate more than 1 event to have attendees
-				$this->get_event_id( 1 ),
-			],
-			// Assertions to make.
-			$this->get_assertions_array( $this->test_data['attendees'] ),
-		];
-	}
-
-	/**
-	 * Get test matrix for Event mismatch.
-	 */
-	public function get_test_matrix_single_event_mismatch() {
-		return [
-			// Repository
-			'default',
-			// Filter name.
-			'event',
-			// Filter arguments to use.
-			[
-				$this->get_event_id( 1 ),
-			],
-			// Assertions to make.
-			$this->get_assertions_array( [] ),
-		];
-	}
-
-	/**
-	 * Get test matrix for Event Not In match.
-	 */
-	public function get_test_matrix_single_event_not_in_match() {
-		return [
-			// Repository
-			'default',
-			// Filter name.
-			'event__not_in',
-			// Filter arguments to use.
-			[
-				$this->get_event_id( 1 ),
-			],
-			// Assertions to make.
-			$this->get_assertions_array( $this->test_data['attendees'] ),
-		];
-	}
-
-	/**
-	 * Get test matrix for Event Not In mismatch.
-	 */
-	public function get_test_matrix_single_event_not_in_mismatch() {
-		return [
-			// Repository
-			'default',
-			// Filter name.
-			'event__not_in',
-			// Filter arguments to use.
-			[
-				$this->get_event_id( 0 ),
-			],
-			// Assertions to make.
-			$this->get_assertions_array( [] ),
 		];
 	}
 
