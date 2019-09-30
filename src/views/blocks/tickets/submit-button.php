@@ -15,10 +15,22 @@
  * @version TBD
  *
  */
+/**
+ * Allow filtering of the button name for the tickets block.
+ *
+ * @since TBD
+ *
+ * @param string $button_name The button name. Set to cart-button to send to cart on submit, or set to checkout-button to send to checkout on submit.
+ */
+$button_name = apply_filters( 'tribe_tickets_ticket_block_submit', 'cart-button' );
 ?>
 <button
 	class="tribe-common-c-btn tribe-common-c-btn--small tribe-tickets__buy"
 	type="submit"
+	<?php if ( $button_name ) : ?>
+		name="<?php echo esc_html( $button_name ); ?>"
+	<?php endif; ?>
+
 >
 	<?php echo esc_html_x( 'Get Tickets', 'Add tickets to cart.', 'event-tickets' ); ?>
 </button>

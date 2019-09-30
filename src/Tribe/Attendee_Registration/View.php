@@ -44,6 +44,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		$cart_tickets = apply_filters( 'tribe_tickets_tickets_in_cart', [], $q_provider );
 		$events       = [];
 		$providers    = [];
+		$default_provider = [];
 
 		foreach ( $cart_tickets as $ticket_id => $quantity ) {
 			// Load the tickets in cart for each event, with their ID, quantity and provider.
@@ -70,6 +71,12 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			 *        payment providers.
 			 */
 			$provider = '';
+
+			if ( empty( $default_provider ) ) {
+				// One provder per instance
+				$default_provider[ $q_provider ] = $ticket->provider->class_name;
+			}
+
 			switch ( $ticket->provider->class_name ) {
 				case 'Tribe__Tickets__Commerce__PayPal__Main':
 					$provider = 'tpp';
@@ -124,6 +131,24 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		// Enqueue styles and scripts specific to this page.
 		tribe_asset_enqueue( 'event-tickets-registration-page-styles' );
 		tribe_asset_enqueue( 'event-tickets-registration-page-scripts' );
+
+		// One provder per instance
+		$currency  = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $default_provider, null );
+		wp_localize_script(
+			'event-tickets-registration-page-scripts',
+			'TribeCurrency',
+			[
+				'formatting' => json_encode( $currency )
+			]
+		);
+		wp_localize_script(
+			'event-tickets-registration-page-scripts',
+			'TribeCartEndpoint',
+			[
+				'url' => tribe_tickets_rest_url( '/cart/' )
+			]
+		);
+
 
 		wp_enqueue_style( 'dashicons' );
 

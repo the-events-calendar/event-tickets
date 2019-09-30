@@ -28,7 +28,25 @@ $classes              = [
 	</div>
 	<h1 class="tribe-common-h2 tribe-common-h3--min-medium tribe-common-h--alt tribe-tickets__registration__page-title"><?php esc_html_e( 'Attendee Registration', 'event-tickets'); ?></h1>
 
+
 	<div class="tribe-tickets__registration__grid">
+
+		<div class="tribe-tickets-notice tribe-tickets-notice--error tribe-tickets__validation-notice">
+			<h3 class="tribe-common-h7 tribe-tickets-notice__title"><?php esc_html_e( 'Whoops', 'event-tickets' ); ?></h3>
+			<p>
+				<?php
+					echo sprintf(
+						esc_html_x(
+							'You have %s ticket(s) with a field that requires information.',
+							'Note about missing required fields, %s is the html-wrapped number of tickets.',
+							'event-tickets'
+						),
+						'<span class="tribe-tickets-notice--error__count">1</span>'
+					);
+				?>
+			</p>
+		</div>
+
 		<?php
 			$args = [
 				'cart_url'            => $template->get( 'cart_url' ),

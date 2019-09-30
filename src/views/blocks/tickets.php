@@ -50,7 +50,6 @@ echo $html;
 	enctype='multipart/form-data'
 	data-provider="<?php echo esc_attr( $provider->class_name ); ?>"
 	autocomplete="off"
-	data-cart="<?php echo esc_url( tribe_tickets_rest_url( '/cart/' ) ); ?>"
 	data-provider-id="<?php echo esc_attr( $provider->orm_provider ); ?>"
 	novalidate
 >

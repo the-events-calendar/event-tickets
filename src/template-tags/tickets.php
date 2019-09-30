@@ -1036,3 +1036,25 @@ function tribe_attendees( $repository = 'default' ) {
 
 	return tribe( Tribe__Utils__Array::get( $map, $repository, $map['default'] ) );
 }
+
+/**
+ * Allows us to test a post ID to see if it is an event page.
+ *
+ * @since TBD
+ *
+ * @param int|WP_Post|null $post The post (or its ID) we're testing. Default is global post.
+ * @return boolean
+ */
+function tribe_tickets_is_event_page( $post = null ) {
+	// Tribe__Events__Main must exist.
+	if ( ! class_exists( 'Tribe__Events__Main' ) ) {
+		return false;
+	}
+
+	// Must be the correct post type.
+	if ( Tribe__Events__Main::POSTTYPE !== get_post_type( $post ) ) {
+		return false;
+	}
+
+	return  true;
+}

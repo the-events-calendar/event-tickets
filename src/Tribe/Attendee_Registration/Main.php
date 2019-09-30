@@ -22,6 +22,14 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	public $default_page_slug = 'attendee-registration';
 
 	/**
+	 * The attendee modal option slug
+	 *
+	 * @since TBD
+	 *
+	 */
+	public $modal_option_slug = 'ticket-attendee-modal';
+
+	/**
 	 * Retrieve the attendee registration slug
 	 *
 	 * @since 4.9
@@ -178,5 +186,28 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-slug', false );
 
 		return get_page_by_path( $slug );
+	}
+
+	/**
+	 * Check if the modal is enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|WP_Post|null $post The post (or its ID) we're testing. Defaults to null.
+	 *
+	 * @return boolean
+	 */
+	public function is_modal_enabled( $post = null ) {
+		$option = tribe( 'settings.manager' )::get_option( 'ticket-attendee-modal' );
+
+		/**
+		 * Allow filtering of the modal setting, on a post-by-post basis if desired.
+		 *
+		 * @since TBD
+		 *
+		 * @param boolean $option The option value from ticket settings.
+		 * @param int|WP_Post|null $post The passed post or null if none passed.
+		 */
+		return apply_filters( 'tribe_tickets_modal_setting', $option, $post );
 	}
 }

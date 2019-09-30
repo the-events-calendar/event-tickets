@@ -685,13 +685,16 @@ class Tribe__Tickets__Main {
 	 * @since TBD
 	 */
 	public function maybe_set_options_for_old_installs() {
+		/** @var \Tribe__Tickets__Attendee_Registration__Main $ar_reg */
+		$ar_reg = tribe( 'tickets.attendee_registration' );
+
 		// If the (boolean) option is not set, and this install predated the modal, let's set the option to false.
-		$modal_option = Tribe__Settings_Manager::get_option( 'ticket-attendee-modal' );
+		$modal_option = $ar_reg->is_modal_enabled();
 
 		if ( ! $modal_option && $modal_option !== false ) {
 			$modal_version_check = tribe_installed_after( Tribe__Tickets__Main::instance(), '4.11.0' );
 			if ( ! $modal_version_check ) {
-				Tribe__Settings_Manager::set_option( 'ticket-attendee-modal', false );
+				tribe( 'settings.manager' )::set_option( 'ticket-attendee-modal', false );
 			}
 		}
 	}
