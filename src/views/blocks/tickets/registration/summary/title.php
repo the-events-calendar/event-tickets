@@ -11,14 +11,15 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @version 4.9.4
+ * @since 4.10.9 Uses new functions to get singular and plural texts.
  *
+ * @version 4.10.9
  */
 
 ?>
 <div class="tribe-block__tickets__registration__title">
 	<header>
-		<h2><?php esc_html_e( 'Ticket Registration', 'event-tickets' ); ?></h2>
+		<h2><?php echo esc_html( sprintf( __( '%s Registration', 'event-tickets' ), tribe_get_ticket_label_singular( basename( __FILE__ ) ) ) ); ?></h2>
 	</header>
 </div>
 

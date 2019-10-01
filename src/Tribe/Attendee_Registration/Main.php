@@ -161,4 +161,35 @@ class Tribe__Tickets__Attendee_Registration__Main {
 
 		return get_page_by_path( $slug );
 	}
+
+	/**
+	 * Check if any Ticket "Products" has Attendee Registration Enabled.
+	 *
+	 * @since 4.10.9
+	 *
+	 * @param array $tickets An array of tickets to check if registration is enabled.
+	 *
+	 * @return bool Return true if any of the ticket products has attendee registration enabled.
+	 */
+	public function has_attendee_registration_enabled_in_array_of_tickets( $tickets ) {
+
+		if ( ! is_array( $tickets ) ) {
+			return false;
+		}
+
+		foreach ( $tickets as $ticket ) {
+
+			if ( ! isset( $ticket['id'] ) ) {
+				continue;
+			}
+
+			if ( tribe( 'tickets.data_api' )->ticket_has_meta_fields( $ticket['id'] ) ) {
+				return true;
+			}
+		}
+
+		return false;
+
+	}
+
 }

@@ -17,11 +17,11 @@ class Tribe__Tickets__REST__V1__Documentation__RSVP_Report_Definition_Provider
 			'properties' => array(
 				'rsvp_going'     => array(
 					'type'        => 'integer',
-					'description' => __( 'How many attendees are “Going”', 'event-tickets' ),
+					'description' => __( 'How many attendees are "Going"', 'event-tickets' ),
 				),
 				'rsvp_not_going' => array(
 					'type'        => 'integer',
-					'description' => __( 'How many attendees are “Not going”', 'event-tickets' ),
+					'description' => __( 'How many attendees are "Not going"', 'event-tickets' ),
 				),
 			),
 		);

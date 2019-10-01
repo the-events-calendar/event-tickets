@@ -50,19 +50,40 @@ var tribe_tickets_tpp = {
 		my.quantity_changed( $( this ) );
 	};
 
-	my.event.handle_submission = function( e ) {
+	/**
+	 * Handle Submission of RSVP
+	 *
+	 * @since 4.10.9 - Prevent multiple clicks on "Confirm RSVP" from submitting.
+	 *
+	 * @param e The event passed to the method.
+	 * @returns {my.event|boolean}
+	 */
+	my.event.handle_submission = function ( e ) {
+
+		var $form = $( this ).closest( 'form' );
+
 		if ( ! my.validate_submission() ) {
 			e.preventDefault();
-			var $form = $( this ).closest( 'form' );
 
 			$form.addClass( 'tribe-tpp-message-display' );
 			$form.find( '.tribe-tpp-message-confirmation-error' ).show();
 
-			$( 'html, body').animate({
+			$( 'html, body' ).animate( {
 				scrollTop: $form.offset().top
 			}, 300 );
+
 			return false;
 		}
+
+		// Check if Form is Submitted Already.
+		if ( $form.data( 'submitted' ) === true ) {
+			e.preventDefault();
+		} else {
+			$form.data( 'submitted', true );
+		}
+
+		// Keep chainability.
+		return this;
 	};
 
 	$( function() {

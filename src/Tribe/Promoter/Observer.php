@@ -10,6 +10,15 @@
 class Tribe__Tickets__Promoter__Observer {
 
 	/**
+	 * Holding the reference to the event post type
+	 *
+	 * @since 4.10.9
+	 *
+	 * @var string
+	 */
+	protected $event_type = 'tribe_events';
+
+	/**
 	 * Hooks on which this observer notifies promoter.
 	 *
 	 * @since 4.10.1.1
@@ -20,6 +29,13 @@ class Tribe__Tickets__Promoter__Observer {
 
 		if ( ! $pue->has_license_key() ) {
 			return;
+		}
+
+		/**
+		 * In case the class for TEC is defined we use the value defined there
+		 */
+		if ( class_exists( 'Tribe__Events__Main' ) ) {
+			$this->event_type = Tribe__Events__Main::POSTTYPE;
 		}
 
 		$this->registered_types();
@@ -61,23 +77,34 @@ class Tribe__Tickets__Promoter__Observer {
 	}
 
 	/**
-	 * Attach support to the registered types, right now only has support for events, in order
-	 * to attach a hook to `save_post_tribe_events` only attaches the action
-	 * if the post has support for tickets or if the support has been enabled for this type.
+	 * Attach hooks only if events has support for tickets, to the following actions:
+	 *
+	 * - `save_post_tribe_events`
+	 * - `delete_post`
 	 *
 	 * @since 4.10.1.1
 	 */
 	public function registered_types() {
-		$event_type = class_exists( 'Tribe__Events__Main' ) ? Tribe__Events__Main::POSTTYPE : 'tribe_events';
-		$post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 
-		$events_support_tickets = in_array( $event_type, $post_types, true );
-
-		if ( ! $events_support_tickets ) {
+		if ( ! $this->event_support_tickets() ) {
 			return;
 		}
 
-		add_action( 'save_post_' . $event_type, [ $this, 'notify' ], 10, 1 );
+		add_action( 'save_post_' . $this->event_type, [ $this, 'notify' ], 10, 1 );
+		add_action( 'delete_post', [ $this, 'delete_post' ], 10, 1 );
+	}
+
+	/**
+	 * Check if the Event post type has support for tickets
+	 *
+	 * @since 4.10.9
+	 *
+	 * @return bool
+	 */
+	private function event_support_tickets() {
+		$post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+
+		return in_array( $this->event_type, $post_types, true );
 	}
 
 	/**
@@ -107,6 +134,19 @@ class Tribe__Tickets__Promoter__Observer {
 		// Prevent to send the same response twice if the ID's are the same.
 		if ( $source_id !== $destination_id ) {
 			$this->notify( $destination_id );
+		}
+	}
+
+	/**
+	 * Notify the connector of changes when the event was deleted
+	 *
+	 * @since 4.10.9
+	 *
+	 * @param $post_id
+	 */
+	public function delete_post( $post_id ) {
+		if ( $this->event_type === get_post_type( $post_id ) ) {
+			$this->notify( $post_id );
 		}
 	}
 

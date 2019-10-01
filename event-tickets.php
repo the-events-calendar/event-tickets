@@ -3,7 +3,7 @@
 Plugin Name: Event Tickets
 Plugin URI:  http://m.tri.be/1acb
 Description: Event Tickets allows you to sell basic tickets and collect RSVPs from any post, page, or event.
-Version: 4.10.8
+Version: 4.10.9
 Author: Modern Tribe, Inc.
 Author URI: http://m.tri.be/28
 License: GPLv2 or later
@@ -39,6 +39,9 @@ define( 'EVENT_TICKETS_MAIN_PLUGIN_FILE', __FILE__ );
 
 // Load the required php min version functions
 require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/src/functions/php-min-version.php';
+
+// Load the Composer autoload file.
+require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/vendor/autoload.php';
 
 /**
  * Verifies if we need to warn the user about min PHP version and bail to avoid fatals

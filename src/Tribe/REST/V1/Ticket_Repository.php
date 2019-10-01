@@ -32,7 +32,7 @@ class Tribe__Tickets__REST__V1__Ticket_Repository
 		$this->decorated->set_query_builder( $this );
 		$this->decorated->set_default_args( array_merge(
 			$this->decorated->get_default_args(),
-			array( 'order' => 'ASC', 'orderby' => array( 'id', 'title' ) )
+			[ 'order' => 'ASC', 'orderby' => [ 'id', 'title' ] ]
 		) );
 	}
 
@@ -100,7 +100,7 @@ class Tribe__Tickets__REST__V1__Ticket_Repository
 			ON {$wpdb->posts}.ID != related_event.ID" );
 		$this->decorated->join_clause( "JOIN {$wpdb->postmeta} related_event_meta
 			ON {$wpdb->posts}.ID = related_event_meta.post_id" );
-		$keys = array();
+		$keys = [];
 		foreach ( $this->decorated->ticket_to_event_keys() as $key ) {
 			$keys[] = $wpdb->prepare( '%s', $key );
 		}

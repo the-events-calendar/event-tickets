@@ -11,7 +11,7 @@ if ( ! empty( $header_id ) ) {
 ?>
 
 <div id="tribe_panel_settings" class="ticket_panel panel_settings" aria-hidden="true" >
-	<h4><?php esc_html_e( 'Ticket Settings', 'event-tickets' ); ?></h4>
+	<h4><?php echo esc_html( sprintf( _x( '%s Settings', 'meta box ticket form heading', 'event-tickets' ), tribe_get_ticket_label_singular( 'meta_box_ticket_form_heading' ) ) ); ?></h4>
 
 	<section class="settings_main">
 		<?php
@@ -19,6 +19,7 @@ if ( ! empty( $header_id ) ) {
 		 * Allows for the insertion of additional elements into the ticket settings admin panel above the ticket table
 		 *
 		 * @param int Post ID
+		 *
 		 * @since 4.6
 		 */
 		do_action( 'tribe_events_tickets_settings_content_before', $post_id );
@@ -38,9 +39,9 @@ if ( ! empty( $header_id ) ) {
 	<section id="tribe-tickets-image">
 		<div class="tribe-tickets-image-upload">
 			<div class="input_block">
-				<span class="ticket_form_label tribe-strong-label"><?php esc_html_e( 'Ticket header image:', 'event-tickets' ); ?></span>
+				<span class="ticket_form_label tribe-strong-label"><?php echo esc_html( sprintf( _x( '%s header image:', 'ticket image upload label', 'event-tickets' ), tribe_get_ticket_label_singular( 'ticket_image_upload_label' ) ) ); ?></span>
 				<p class="description">
-					<?php esc_html_e( 'Select an image from your Media Library to display on emailed tickets. For best results, use a .jpg, .png, or .gif at least 1160px wide.', 'event-tickets' ); ?>
+					<?php echo esc_html( sprintf( _x( 'Select an image from your Media Library to display on emailed %s. For best results, use a .jpg, .png, or .gif at least 1160px wide.', 'ticket image upload label description', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'ticket_image_upload_label_description' ) ) ); ?>
 				</p>
 			</div>
 			<input

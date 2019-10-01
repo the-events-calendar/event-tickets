@@ -6,12 +6,14 @@
  *
  *     [your-theme]/tribe-events/tickets/rsvp.php
  *
+ * @since 4.0
  * @since 4.10.8 More similar display format to that of other ticket types, including better checking of max quantity available.
+ * @since 4.10.9  Use customizable ticket name functions.
  *
- * @version 4.10.8
+ * @version 4.10.9
  *
  * @var Tribe__Tickets__RSVP $this
- * @var bool $must_login
+ * @var bool                 $must_login
  */
 
 $is_there_any_product_to_sell = false;
@@ -29,7 +31,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 	enctype='multipart/form-data'
 >
 	<h2 class="tribe-events-tickets-title tribe--rsvp">
-		<?php echo esc_html_x( 'RSVP', 'form heading', 'event-tickets' ) ?>
+		<?php echo esc_html( tribe_get_rsvp_label_singular( 'form_heading' ) ); ?>
 	</h2>
 
 
@@ -60,7 +62,10 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 			}
 
 			// if the ticket isn't an RSVP ticket, then let's skip it
-			if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
+			if (
+				! $ticket instanceof Tribe__Tickets__Ticket_Object
+				|| 'Tribe__Tickets__RSVP' !== $ticket->provider_class
+			) {
 				continue;
 			}
 
@@ -174,7 +179,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 
 						<tr class="tribe-tickets-order_status-row">
 							<td>
-								<label for="tribe-tickets-order_status"><?php echo esc_html_x( 'RSVP', 'order status label', 'event-tickets' ); ?>:</label>
+								<label for="tribe-tickets-order_status"><?php echo esc_html( tribe_get_rsvp_label_singular( 'order_status_label' ) ); ?>:</label>
 							</td>
 							<td colspan="3">
 								<?php Tribe__Tickets__Tickets_View::instance()->render_rsvp_selector( 'attendee[order_status]', '' ); ?>
@@ -224,7 +229,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 							value="1"
 							class="tribe-button tribe-button--rsvp"
 						>
-							<?php esc_html_e( 'Confirm RSVP', 'event-tickets' );?>
+							<?php echo esc_html( sprintf( _x( 'Confirm %s', 'tickets process button text', 'event-tickets' ), tribe_get_rsvp_label_singular( 'tickets_process_button_text' ) ) );?>
 						</button>
 					<?php endif; ?>
 				</td>
