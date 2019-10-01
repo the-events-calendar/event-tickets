@@ -7,6 +7,7 @@
  *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
+ * @since 4.10.9 Add Filter to show an event/post tickets on AR Page
  * @since TBD Add docblocks, pass missing 'provider' arg to registration/button-cart template, and add action hooks.
  *
  * @version TBD
@@ -47,6 +48,25 @@ if ( empty( $events ) ) {
 	</div>
 	<?php
 	foreach ( $events as $event_id => $tickets ) :
+
+		// Remove an event/post tickets if none have attendee registration.
+		$show_tickets = tribe( 'tickets.attendee_registration' )->has_attendee_registration_enabled_in_array_of_tickets( $tickets );
+
+		/**
+		 * Filter to show an event/post tickets on Attendee Registration page regardless if they are enabled.
+		 *
+		 * @param boolean $show_tickets Rrue or false to show tickets for an event.
+		 * @param array   $tickets      An array of ticket products.
+		 * @param int     $event_id     The event/post ID.
+		 *
+		 * @since 4.10.9
+		 */
+		$show_tickets = apply_filters( 'tribe_tickets_filter_showing_tickets_on_attendee_registration', $show_tickets, $tickets, $event_id );
+
+		if ( ! $show_tickets ) {
+			continue;
+		}
+
 		$provider_class = $passed_provider_class;
 
 		$providers = array_unique( wp_list_pluck( wp_list_pluck( $tickets, 'provider'), 'attendee_object') );

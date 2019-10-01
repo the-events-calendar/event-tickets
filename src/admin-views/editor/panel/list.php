@@ -63,15 +63,15 @@ $add_new_ticket_label = count( $ticket_providing_modules ) > 0
 			aria-label="<?php echo $add_new_ticket_label ?>"
 			"<?php echo disabled( count( $ticket_providing_modules ) === 0 ) ?>"
 		>
-			<?php esc_html_e( 'New ticket', 'event-tickets' ); ?>
+			<?php echo esc_html( sprintf( _x( 'New %s', 'admin editor panel list button label', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'admin_editor_panel_list_button_label' ) ) ); ?>
 		</button>
 
 		<button
 			id="rsvp_form_toggle"
 			class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
-			aria-label="<?php esc_attr_e( 'Add a new RSVP', 'event-tickets' ); ?>"
+			aria-label="<?php echo esc_attr( sprintf( _x( 'Add a new %s', 'RSVP form toggle button label', 'event-tickets' ), tribe_get_rsvp_label_singular( 'rsvp_form_toggle_button_label' ) ) ); ?>"
 		>
-			<?php esc_html_e( 'New RSVP', 'event-tickets' ); ?>
+			<?php echo esc_html( sprintf( _x( 'New %s', 'RSVP form toggle button text', 'event-tickets' ), tribe_get_rsvp_label_singular( 'rsvp_form_toggle_button_text' ) ) ); ?>
 		</button>
 
 

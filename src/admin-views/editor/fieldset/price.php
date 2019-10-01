@@ -3,9 +3,9 @@
 if ( ! isset( $post_id ) ) {
 	$post_id = get_the_ID();
 }
-$validation_attrs = array(
-	'data-validation-error="' . esc_attr__( 'Ticket Price must be greater than zero.', 'event-tickets' ) . '"'
-);
+$validation_attrs = [
+	'data-validation-error="' . esc_attr( sprintf( _x( '%s price must be greater than zero.', 'ticket price validation error', 'event-tickets' ), tribe_get_ticket_label_singular( 'ticket_price_validation_error' ) ) ) . '"'
+];
 
 if ( ! isset( $ticket_id ) ) {
 	$provider           = null;
@@ -18,7 +18,7 @@ if ( ! isset( $ticket_id ) ) {
 	$provider           = tribe_tickets_get_ticket_provider( $ticket_id );
 	$is_paypal_ticket   = $provider instanceof Tribe__Tickets__Commerce__PayPal__Main;
 
-	$description_string = __( 'Leave blank for free tickets', 'event-tickets' );
+	$description_string = sprintf( _x( 'Leave blank for free %s', 'price description', 'event-tickets' ), tribe_get_ticket_label_singular( 'price_description' ) );
 	$description_string = esc_html( apply_filters( 'tribe_tickets_price_description', $description_string, $ticket_id ) );
 	$price_description  = $is_paypal_ticket ? '' : $description_string;
 
@@ -29,7 +29,7 @@ if ( ! isset( $ticket_id ) ) {
 	}
 
 	/**
-	 * Filters whether we shold disable the ticket - separate from tribe-dependency.
+	 * Filters whether we should disable the ticket - separate from tribe-dependency.
 	 *
 	 * @since 4.10.8
 	 *

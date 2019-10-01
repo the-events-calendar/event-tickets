@@ -28,7 +28,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 		?>
 		<tr>
 			<td colspan="2" class="tribe_sectionheader updated">
-				<p class="error-message"><?php esc_html_e( 'This event was created using Community Events. Are you sure you want to sell tickets for it?', 'event-tickets' ); ?></p>
+				<p class="error-message"><?php echo esc_html( sprintf( _x( 'This event was created using Community Events. Are you sure you want to sell %s for it?', 'meta box ticket form CE warning', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'meta_box_ticket_form_ce_warning' ) ) ); ?></p>
 			</td>
 		</tr>
 	<?php
@@ -39,7 +39,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 			<table class="eventtable ticket_list eventForm">
 				<tr class="tribe-tickets-image-upload">
 					<td>
-						<?php esc_html_e( 'Upload image for the ticket header.', 'event-tickets' ); ?>
+						<?php echo esc_html( sprintf( _x( 'Upload image for the %s header.', 'meta box ticket form image', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'meta_box_ticket_form_image' ) ) ); ?>
 						<p class="description"><?php esc_html_e( 'The maximum image size in the email will be 580px wide by any height, and then scaled for mobile. If you would like "retina" support use an image sized to 1160px wide.', 'event-tickets' ); ?></p>
 					</td>
 					<td>
@@ -95,7 +95,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 	/**
 	 * Fired to allow for the insertion of additional content into the ticket admin form before the tickets listing
 	 *
-	 * @param Post ID
+	 * @param int Post ID
 	 */
 	do_action( 'tribe_events_tickets_metabox_pre', get_the_ID() ); ?>
 
@@ -109,7 +109,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 	<tr>
 		<td colspan="2" class="tribe_sectionheader">
 			<a href="#" class="button-secondary"
-			   id="ticket_form_toggle"><?php esc_html_e( 'Add new ticket', 'event-tickets' ); ?></a>
+			   id="ticket_form_toggle"><?php echo esc_html( sprintf( _x( 'Add new %s', 'meta box ticket form toggle', 'event-tickets' ), tribe_get_ticket_label_singular( 'meta_box_ticket_form_toggle' ) ) ); ?></a>
 		</td>
 	</tr>
 	<tr id="ticket_form" class="ticket_form">
@@ -142,14 +142,14 @@ $modules = Tribe__Tickets__Tickets::modules();
 					</td>
 				</tr>
 				<tr class="ticket">
-					<td><label for="ticket_name"><?php esc_html_e( 'Ticket Name:', 'event-tickets' ); ?></label></td>
+					<td><label for="ticket_name"><?php echo esc_html( sprintf( _x( '%s Name:', 'meta box ticket form', 'event-tickets' ), tribe_get_ticket_label_singular( 'meta_box_ticket_form' ) ) ); ?></label></td>
 					<td>
 						<input type='text' id='ticket_name' name='ticket_name' class="ticket_field" size='25' value='' />
 					</td>
 				</tr>
 				<tr class="ticket">
 					<td><label
-							for="ticket_description"><?php esc_html_e( 'Ticket Description:', 'event-tickets' ); ?></label>
+							for="ticket_description"><?php echo esc_html( sprintf( _x( '%s Description:', 'meta box ticket form', 'event-tickets' ), tribe_get_ticket_label_singular( 'meta_box_ticket_form' ) ) ); ?></label>
 					</td>
 					<td>
 						<textarea rows="5" cols="40" name="ticket_description" class="ticket_field"
@@ -227,7 +227,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 				/**
 				 * Fired to allow for the insertion of additional content into the ticket admin form
 				 *
-				 * @var Post ID
+				 * @var int  Post ID
 				 * @var null Ticket ID
 				 */
 				do_action( 'tribe_events_tickets_metabox_advanced', get_the_ID(), null ); ?>
@@ -236,7 +236,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 					<td></td>
 					<td>
 						<input type="hidden" name="ticket_id" id="ticket_id" class="ticket_field" value="" />
-						<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save this ticket', 'event-tickets' ); ?>" class="button-primary" />
+						<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php echo esc_attr( sprintf( _x( 'Save this %s', 'meta box form save button', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'meta_box_form_save_button' ) ) ); ?>" class="button-primary" />
 						<input type="button" id="ticket_form_cancel" name="ticket_form_cancel" value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>" class="button-secondary" />
 					</td>
 				</tr>

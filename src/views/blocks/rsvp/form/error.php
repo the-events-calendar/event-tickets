@@ -11,12 +11,13 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @version 4.9.4
+ * @since 4.10.9 Uses new functions to get singular and plural texts.
  *
+ * @version 4.10.9
  */
 ?>
 <div class="tribe-block__rsvp__message__error">
 
-	<?php esc_html_e( 'Please fill in the RSVP confirmation name and email fields.', 'event-tickets' ); ?>
+	<?php echo esc_html( sprintf( __( 'Please fill in the %s confirmation name and email fields.', 'event-tickets' ), tribe_get_rsvp_label_singular( basename( __FILE__ ) ) ) ); ?>
 
 </div>
