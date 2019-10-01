@@ -52,7 +52,7 @@ class Tribe__Tickets__Tickets_View {
 		add_action( 'tribe_events_pre_get_posts', [ $myself, 'modify_ticket_display_query' ] );
 		add_filter( 'tribe_events_template', [ $myself, 'intercept_template' ], 20, 2 );
 
-		add_action( 'wp_footer', [ $myself, 'show_footer_spinner' ], 1 );
+		add_action( 'wp_footer', [ $myself, 'maybe_show_footer_spinner' ], 1 );
 
 		return $myself;
 	}
@@ -388,8 +388,22 @@ class Tribe__Tickets__Tickets_View {
 		return $content;
 	}
 
-	public function show_footer_spinner() {
-		$this->spinner( true );
+	/**
+	 * Add spinner to event pages.
+	 *
+	 * @return void
+	 */
+	public function maybe_show_footer_spinner() {
+		/** @var \Tribe__Tickets__Attendee_Registration__Main $attendee_registration */
+		$attendee_registration = tribe( 'tickets.attendee_registration' );
+
+		if (
+			tribe_tickets_is_event_page()
+			|| $attendee_registration->is_on_page()
+			|| $attendee_registration->is_using_shortcode()
+		) {
+			$this->spinner( true );
+		}
 	}
 
 	/**

@@ -18,7 +18,7 @@ if ( empty( $text ) ) {
 ?>
 <div class="tribe-common">
 	<div
-		class="tribe-loader"
+		class="tribe-loader tribe-common-a11y-hidden"
 		role="alert"
 		aria-live="assertive"
 	>
