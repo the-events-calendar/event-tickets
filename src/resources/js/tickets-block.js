@@ -187,10 +187,10 @@ tribe.tickets.block = {
 		var $qtys        = $form.find( obj.selector.itemQuantityInput );
 
 		$qtys.each(function(){
-			var $price   = $( this ).closest( obj.selector.item ).find( obj.selector.itemPrice );
+			var $price   = $( this ).closest( obj.selector.item ).find( obj.selector.itemPrice ).first();
 			var quantity = parseInt( $( this ).val(), 10 );
 			quantity     = isNaN( quantity ) ? 0 : quantity;
-			footerAmount += parseFloat( $price.text() ) * quantity;
+			footerAmount += obj.numberFormat( $price.text() ) * quantity;
 		} );
 
 		if ( 0 > footerAmount ) {
@@ -216,7 +216,7 @@ tribe.tickets.block = {
 				var modalCartItem = $( this );
 				var qty           = obj.getQty( modalCartItem );
 
-				var total = parseFloat( $( this ).find( obj.modalSelector.itemTotal ).text().replace( ',', '' ) );
+				var total = parseFloat( $( this ).find( obj.modalSelector.itemTotal ).first().text().replace( ',', '' ) );
 
 				if ( '.' === obj.getCurrencyFormatting().thousands_sep ) {
 					total = parseFloat( $( this ).find( obj.modalSelector.itemTotal ).text().replace( /\./g,'' ).replace( ',', '.' ) );
@@ -547,7 +547,7 @@ tribe.tickets.block = {
 	 * @returns {number}
 	 */
 	obj.getPrice = function ( $cartItem ) {
-		var price = parseFloat( $cartItem.find( obj.selector.itemPrice ).text() );
+		var price = parseFloat( $cartItem.find( obj.selector.itemPrice ).first().text() );
 
 		return isNaN( price ) ? 0 : price;
 	};
@@ -576,9 +576,14 @@ tribe.tickets.block = {
 	 * @returns {string}
 	 */
 	obj.numberFormat = function ( number ) {
-		var decimals      = obj.getCurrencyFormatting().number_of_decimals;
-		var dec_point     = obj.getCurrencyFormatting().decimal_point;
-		var thousands_sep = obj.getCurrencyFormatting().thousands_sep;
+		var format = obj.getCurrencyFormatting();
+		if ( ! format ) {
+			return false;
+		}
+
+		var decimals      = format.number_of_decimals;
+		var dec_point     = format.decimal_point;
+		var thousands_sep = format.thousands_sep;
 
 		var n          = !isFinite( +number ) ? 0 : +number;
 		var prec       = !isFinite( +decimals ) ? 0 : Math.abs( decimals );
