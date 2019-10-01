@@ -1261,8 +1261,13 @@ tribe.tickets.block = {
 			var $ticket      = $this.closest( obj.selector.item );
 			var $ticket_id   = $ticket.data( 'ticket-id' );
 			var $form        = $this.closest( 'form' );
+			var max = $this.attr('max');
 			var new_quantity = parseInt( $this.val(), 10 );
 			new_quantity     = isNaN( new_quantity ) ? 0 : new_quantity;
+			if ( max < new_quantity ) {
+				new_quantity = max;
+				$this.val( max );
+			}
 
 			e.preventDefault();
 			obj.maybeShowOptOut( $ticket, new_quantity );
