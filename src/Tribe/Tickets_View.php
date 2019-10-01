@@ -52,6 +52,8 @@ class Tribe__Tickets__Tickets_View {
 		add_action( 'tribe_events_pre_get_posts', [ $myself, 'modify_ticket_display_query' ] );
 		add_filter( 'tribe_events_template', [ $myself, 'intercept_template' ], 20, 2 );
 
+		add_action( 'wp_footer', [ $myself, 'show_footer_spinner' ], 1 );
+
 		return $myself;
 	}
 
@@ -384,6 +386,38 @@ class Tribe__Tickets__Tickets_View {
 		$content = ob_get_clean();
 
 		return $content;
+	}
+
+	public function show_footer_spinner() {
+		$this->spinner( true );
+	}
+
+	/**
+	 * Inserts the spinner in the footer for use as needed.
+	 *
+	 * @since TBD
+	 *
+	 * @param boolean $echo (true) Whether to echo or return the HTML.
+	 * @return string|void
+	 */
+	public function spinner( $echo = true ) {
+		bdump(func_get_args());
+		ob_start();
+
+		$text = apply_filters( 'tribe_tickets_loader_text', 'Loading...' );
+
+		include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' );
+
+		$content = ob_get_clean();
+
+		bdump($echo);
+		if ( $echo ) {
+			bdump('echo');
+			echo $content;
+		} else {
+			bdump('return');
+			return $content;
+		}
 	}
 
 

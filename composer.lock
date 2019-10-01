@@ -718,9 +718,9 @@
             "authors": [
                 {
                     "name": "Franck Nijhof",
-                    "role": "Developer",
                     "email": "f.nijhof@dealerdirect.nl",
-                    "homepage": "http://workingatdealerdirect.eu"
+                    "homepage": "http://workingatdealerdirect.eu",
+                    "role": "Developer"
                 }
             ],
             "description": "PHP_CodeSniffer Standards Composer Installer Plugin",
@@ -746,16 +746,16 @@
         },
         {
             "name": "dg/mysql-dump",
-            "version": "v1.5.0",
+            "version": "v1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dg/MySQL-dump.git",
-                "reference": "6c9cf07092bcc4a140bef01c64d883ebfccfccfa"
+                "reference": "e0e287b715b43293773a8b0edf8514f606e01780"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dg/MySQL-dump/zipball/6c9cf07092bcc4a140bef01c64d883ebfccfccfa",
-                "reference": "6c9cf07092bcc4a140bef01c64d883ebfccfccfa",
+                "url": "https://api.github.com/repos/dg/MySQL-dump/zipball/e0e287b715b43293773a8b0edf8514f606e01780",
+                "reference": "e0e287b715b43293773a8b0edf8514f606e01780",
                 "shasum": ""
             },
             "require": {
@@ -782,7 +782,7 @@
             "keywords": [
                 "mysql"
             ],
-            "time": "2018-10-31T00:31:09+00:00"
+            "time": "2019-09-10T21:36:25+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -4097,16 +4097,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.4.2",
+            "version": "3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "b8a7362af1cc1aadb5bd36c3defc4dda2cf5f0a8"
+                "reference": "0afebf16a2e7f1e434920fa976253576151effe9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/b8a7362af1cc1aadb5bd36c3defc4dda2cf5f0a8",
-                "reference": "b8a7362af1cc1aadb5bd36c3defc4dda2cf5f0a8",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/0afebf16a2e7f1e434920fa976253576151effe9",
+                "reference": "0afebf16a2e7f1e434920fa976253576151effe9",
                 "shasum": ""
             },
             "require": {
@@ -4144,7 +4144,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2019-04-10T23:49:02+00:00"
+            "time": "2019-09-26T23:12:26+00:00"
         },
         {
             "name": "symfony/browser-kit",
@@ -5369,16 +5369,16 @@
         },
         {
             "name": "wp-cli/db-command",
-            "version": "v2.0.3",
+            "version": "v2.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-cli/db-command.git",
-                "reference": "dc0f8e4d5783d8a4ee01da1119b8fe8038fe1aa0"
+                "reference": "0cce781beb00c9dd4c4992464b324da7b96486a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-cli/db-command/zipball/dc0f8e4d5783d8a4ee01da1119b8fe8038fe1aa0",
-                "reference": "dc0f8e4d5783d8a4ee01da1119b8fe8038fe1aa0",
+                "url": "https://api.github.com/repos/wp-cli/db-command/zipball/0cce781beb00c9dd4c4992464b324da7b96486a9",
+                "reference": "0cce781beb00c9dd4c4992464b324da7b96486a9",
                 "shasum": ""
             },
             "require": {
@@ -5435,7 +5435,7 @@
             ],
             "description": "Performs basic database operations using credentials stored in wp-config.php.",
             "homepage": "https://github.com/wp-cli/db-command",
-            "time": "2019-04-25T00:28:40+00:00"
+            "time": "2019-09-25T14:14:43+00:00"
         },
         {
             "name": "wp-cli/embed-command",
@@ -6152,16 +6152,16 @@
         },
         {
             "name": "wp-cli/media-command",
-            "version": "v2.0.4",
+            "version": "v2.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-cli/media-command.git",
-                "reference": "29050e15fc985da54fd1ad109760aefd6a220316"
+                "reference": "98102a52d0102fbda6644f100cebbd96f0e9199a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-cli/media-command/zipball/29050e15fc985da54fd1ad109760aefd6a220316",
-                "reference": "29050e15fc985da54fd1ad109760aefd6a220316",
+                "url": "https://api.github.com/repos/wp-cli/media-command/zipball/98102a52d0102fbda6644f100cebbd96f0e9199a",
+                "reference": "98102a52d0102fbda6644f100cebbd96f0e9199a",
                 "shasum": ""
             },
             "require": {
@@ -6169,6 +6169,7 @@
             },
             "require-dev": {
                 "wp-cli/entity-command": "^1.3 || ^2",
+                "wp-cli/extension-command": "^2.0",
                 "wp-cli/wp-cli-tests": "^2.1"
             },
             "type": "wp-cli-package",
@@ -6205,7 +6206,7 @@
             ],
             "description": "Imports files as attachments, regenerates thumbnails, or lists registered image sizes.",
             "homepage": "https://github.com/wp-cli/media-command",
-            "time": "2019-08-13T13:11:27+00:00"
+            "time": "2019-09-25T14:13:32+00:00"
         },
         {
             "name": "wp-cli/mustangostang-spyc",

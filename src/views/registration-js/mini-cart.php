@@ -34,6 +34,9 @@ $view = tribe( 'tickets.attendee_registration.view' );
 //$post_id             = $this->get( 'post_id' );
 $tickets             = $this->get( 'tickets', [] );
 $provider            = $this->get( 'provider' );
+if ( empty( $provider ) || ! is_string( $provider ) ) {
+	$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( array_key_first( $events ) );
+}
 $provider_obj        = $view->get_cart_provider( $provider );
 $cart_url            = $this->get( 'cart_url' );
 ?>

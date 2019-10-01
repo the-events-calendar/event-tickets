@@ -39,6 +39,7 @@ tribe.tickets.block = {
 		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
 		blockFooterAmount          : '.tribe-tickets__footer__total .tribe-amount',
 		submit                     : '.tribe-tickets__buy',
+		loader                     : '.tribe-loader',
 	};
 
 	var $tribe_ticket = $( obj.selector.container );
@@ -99,6 +100,7 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.init = function() {
+		obj.loaderShow();
 		obj.checkAvailability();
 		obj.initPrefill();
 	}
@@ -629,6 +631,24 @@ tribe.tickets.block = {
 		$( input ).closest( obj.modalSelector.metaItem ).removeClass( 'tribe-ticket-item__has-focus' );
 	}
 
+	/**
+	 * Show the loader/spinner.
+	 *
+	 * @since TBD
+	 */
+	obj.loaderShow = function() {
+		$( obj.selector.loader ).removeClass( 'tribe-common-a11y-hidden' );
+	}
+
+	/**
+	 * Hide the loader/spinner.
+	 *
+	 * @since TBD
+	 */
+	obj.loaderHide = function() {
+		$( obj.selector.loader ).addClass( 'tribe-common-a11y-hidden' );
+	}
+
 	/* Prefill Handling */
 
 	/**
@@ -769,26 +789,27 @@ tribe.tickets.block = {
 			success: function( response ) {
 				var tickets = response.tickets;
 
-				if ( ! tickets ) {
-					return;
-				}
+				if ( tickets.length ) {
+					var $eventCount = 0;
 
-				var $eventCount = 0;
+					tickets.forEach(function(ticket) {
+						var $ticketRow = $( `.tribe-tickets__item[data-ticket-id="${ticket.ticket_id}"]` );
+						var $field = $ticketRow.find( obj.selector.itemQuantityInput );
+						if ( $field.length ) {
+							$field.val( ticket.quantity );
+							$field.trigger( 'change' );
+							$eventCount++;
+						}
 
-				tickets.forEach(function(ticket) {
-					var $ticketRow = $( `.tribe-tickets__item[data-ticket-id="${ticket.ticket_id}"]` );
-					var $field = $ticketRow.find( obj.selector.itemQuantityInput );
-					if ( $field.length ) {
-						$field.val( ticket.quantity );
-						$field.trigger( 'change' );
-						$eventCount++;
+					});
+
+					if ( 0 < $eventCount ) {
+						$( '#tribe-tickets__notice__tickets-in-cart' ).show();
 					}
-
-				});
-
-				if ( 0 < $eventCount ) {
-					$( '#tribe-tickets__notice__tickets-in-cart' ).show();
 				}
+			},
+			complete: function() {
+				obj.loaderHide();
 			}
 		});
 	}

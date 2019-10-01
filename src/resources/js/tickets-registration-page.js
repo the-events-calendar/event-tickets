@@ -45,7 +45,7 @@ tribe.tickets.registration = {};
 		item               : '.tribe-tickets__item',
 		itemPrice          : '.tribe-amount',
 		itemQuantity       : '.tribe-ticket-quantity',
-		loader             : '.tribe-tickets__item__attendee__fields__loader',
+		loader             : '.tribe-loader',
 		metaField          : '.ticket-meta',
 		metaItem           : '.tribe-ticket',
 		metaForm           : '.tribe-tickets__registration__content',
@@ -182,6 +182,10 @@ tribe.tickets.registration = {};
 					obj.appendARFields( data );
 					obj.prefillMetaForm( data );
 				}
+			},
+			complete: function() {
+				console.log('complete');
+				obj.loaderHide();
 			}
 		} );
 	}
@@ -292,8 +296,6 @@ tribe.tickets.registration = {};
 			});
 		});
 	}
-
-
 
 	/**
 	 * Update all the footer info.
@@ -541,6 +543,24 @@ tribe.tickets.registration = {};
 	 */
 	obj.unfocusTicketBlock = function( input ) {
 		$( input ).closest( obj.selector.metaItem ).removeClass( 'tribe-ticket-item__has-focus' );
+	}
+
+	/**
+	 * Show the loader/spinner.
+	 *
+	 * @since TBD
+	 */
+	obj.loaderShow = function() {
+		$( obj.selector.loader ).removeClass( 'tribe-common-a11y-hidden' );
+	}
+
+	/**
+	 * Hide the loader/spinner.
+	 *
+	 * @since TBD
+	 */
+	obj.loaderHide = function() {
+		$( obj.selector.loader ).addClass( 'tribe-common-a11y-hidden' );
 	}
 
 	/* Utility */
