@@ -48,5 +48,5 @@ $field_id = implode( '-', $field_id );
 			id="<?php echo esc_attr( $field_id ); ?>"
 			name="attendee[optout]"
 			type="checkbox"
-		/><?php esc_html_e( "Don't list me on public lists", 'event-tickets' ); ?></label>
+		/><?php esc_html_e( "Don't show me on public attendee lists.", 'event-tickets' ); ?></label>
 </div>
