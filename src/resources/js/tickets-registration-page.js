@@ -282,7 +282,7 @@ tribe.tickets.registration = {};
 
 				var $ticket_containers = $current_containers.find( '.tribe-ticket' );
 				$.each( data, function( index, value ) {
-					var $field = $ticket_containers.eq( current ).find( `[name*="${index}"]`);
+					var $field = $ticket_containers.eq( current ).find( `[name*="${index}"]` );
 					if ( ! $field.is( ':radio' ) && ! $field.is( ':checkbox' ) ) {
 						$field.val( value);
 					} else {
