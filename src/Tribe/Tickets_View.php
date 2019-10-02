@@ -417,7 +417,21 @@ class Tribe__Tickets__Tickets_View {
 	public function spinner( $echo = true ) {
 		ob_start();
 
+		/**
+		 * Allows filtering of text used in the loader
+		 *
+		 * @since  TBD
+		 *
+		 * @param  string $value     The value that will be filtered.
+		 */
 		$text = apply_filters( 'tribe_tickets_loader_text', 'Loading...' );
+		/**
+		 * Allows filtering of extra classes used on the loader
+		 *
+		 * @since  TBD
+		 *
+		 * @param  array $classes The array of classes that will be filtered.
+		 */
 		$classes = apply_filters( 'tribe_tickets_loader_classes', [ 'tribe-loader__default' ] );
 
 		include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' );
