@@ -63,7 +63,7 @@ $cart_url            = $this->get( 'cart_url' );
 
 <?php foreach ( $events as $event_id => $tickets ) : ?>
 	<?php
-	if (  $provider !== $ticket['provider']->attendee_object ) {
+	if ( $provider !== $ticket['provider']->attendee_object ) {
 		continue;
 	}
 
