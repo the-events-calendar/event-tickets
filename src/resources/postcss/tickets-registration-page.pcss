@@ -1,3 +1,4 @@
+@import "reset.pcss";
 @import "tickets-common.pcss";
 /**
  * Compatibility
@@ -7,6 +8,11 @@ body.page-tribe-attendee-registration {
 	* {
 		-moz-osx-font-smoothing: grayscale;
 		-webkit-font-smoothing: antialiased;
+		max-width: none;
+
+		@media(--viewport-medium) {
+			max-width: none;
+		}
 	}
 
 	header.entry-header,
@@ -15,12 +21,27 @@ body.page-tribe-attendee-registration {
 	footer.entry-header,
 	span.edit-link {
 		display: none;
+
+		@media(--viewport-medium) {
+			display: none;
+		}
 	}
 
 	.entry-content,
 	.entry-header {
+		-moz-osx-font-smoothing: grayscale;
+		-webkit-font-smoothing: antialiased;
 		width: 98%;
+
+		* {
+			max-width: none;
+
+			@media(--viewport-medium) {
+				max-width: none;
+			}
+		}
 	}
+
 }
 
 .tribe-common {
