@@ -11,9 +11,23 @@
  *
  */
 $provider = $this->get( 'provider' );
+
 if ( empty( $provider ) ) {
 	$provider = tribe_get_request_var( 'provider' );
 }
+
+/** @var Tribe__Tickets__Attendee_Registration__View $view */
+$view = tribe( 'tickets.attendee_registration.view' );
+
+$provider_obj        = $view->get_cart_provider( $provider );
+
+if ( empty( $provider ) ) {
+	$provider     = Tribe__Tickets__Tickets::get_event_ticket_provider( array_key_first( $events ) );
+	$provider_obj = $view->get_cart_provider( $provider::ATTENDEE_OBJECT );
+}
+
+
+
 $tickets = $this->get( 'tickets' );
 // We don't display anything if there is no provider or tickets
 if ( ! $provider || empty( $tickets ) ) {
@@ -25,25 +39,18 @@ $cart_classes = [
 	'tribe-tickets__mini-cart',
 ];
 
-
 /** @var Tribe__Tickets__Commerce__Currency $currency */
 $currency = tribe( 'tickets.commerce.currency' );
-/** @var Tribe__Tickets__Attendee_Registration__View $view */
-$view = tribe( 'tickets.attendee_registration.view' );
-
-//$post_id             = $this->get( 'post_id' );
 $tickets             = $this->get( 'tickets', [] );
-$provider            = $this->get( 'provider' );
-if ( empty( $provider ) || ! is_string( $provider ) ) {
-	$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( array_key_first( $events ) );
-}
-$provider_obj        = $view->get_cart_provider( $provider );
 $cart_url            = $this->get( 'cart_url' );
 ?>
 <aside id="tribe-tickets__mini-cart" <?php tribe_classes( $cart_classes ); ?> data-provider="<?php echo esc_attr( $provider_obj->class_name ); ?>">
 	<h3 class="tribe-common-h6 tribe-common-h5--min-medium tribe-common-h--alt tribe-tickets__mini-cart__title"><?php echo esc_html_x( 'Ticket Summary', 'Attendee registration mini-cart/ticket summary title.', 'event-tickets'); ?></h3>
 		<?php foreach ( $events as $event_id => $tickets ) : ?>
 			<?php foreach ( $tickets as $key => $ticket ) : ?>
+			<?php if (  $provider::ATTENDEE_OBJECT !== $ticket[ 'provider' ]->attendee_object ) : ?>
+				<?php continue; ?>
+			<?php endif; ?>
 			<?php $currency_symbol     = $currency->get_currency_symbol( $ticket['id'], true ); ?>
 				<?php $this->template(
 					'blocks/tickets/item',
@@ -63,6 +70,10 @@ $cart_url            = $this->get( 'cart_url' );
 
 <?php foreach ( $events as $event_id => $tickets ) : ?>
 	<?php
+	if (  $provider::ATTENDEE_OBJECT !== $ticket[ 'provider' ]->attendee_object ) {
+		continue;
+	}
+
 	$this->template(
 		'registration-js/attendees/content',
 		[
