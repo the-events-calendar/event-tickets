@@ -30,7 +30,7 @@ tribe.tickets.block = {
 		container                  : '#tribe-tickets',
 		item                       : '.tribe-tickets__item',
 		itemExtraAvailable         : '.tribe-tickets__item__extra__available',
-		itemExtraAvailableQuantity : '.tribe-tickets__item__extra__available_quantity',
+		itemExtraAvailableQuantity : '.tribe-tickets__item__extra__available__quantity',
 		itemOptOut                 : '.tribe-tickets-attendees-list-optout--wrapper',
 		itemOptOutInput            : '#tribe-tickets-attendees-list-optout-',
 		itemPrice                  : '.tribe-amount',
@@ -129,6 +129,7 @@ tribe.tickets.block = {
 
 				// Update HTML elements with the "Out of Stock" messages.
 				$ticketEl.find( obj.selector.itemQuantity ).html( unavailableHtml );
+				$ticketEl.find( obj.selector.itemExtraAvailable ).html( '' );
 			}
 
 			if ( 1 < available ) { // Ticket in stock, we may want to update values.
@@ -311,7 +312,6 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.maybeShowNonMetaNotice = function( $form ) {
-		console.log('maybeShowNonMetaNotice');
 		var nonMetaCount = 0;
 		var $cartItems =  $form.find( obj.selector.item ).filter( ':visible' );
 
@@ -334,7 +334,6 @@ tribe.tickets.block = {
 		);
 
 		var $notice = $( '.tribe-tickets-notice--non-ar' );
-		console.log(nonMetaCount);
 		if ( 0 < nonMetaCount ) {
 			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
 			$notice.fadeIn();
@@ -481,18 +480,28 @@ tribe.tickets.block = {
 	 */
 	obj.stepUp = function( $input, originalValue ) {
 		// We use 0 here as a shorthand for no maximum.
-		var max      = $input[ 0 ].max ? Number( $input[ 0 ].max ) : -1;
-		var step     = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
-		var increase = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
+		var max       = $input[ 0 ].max ? Number( $input[ 0 ].max ) : -1;
+		var step      = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
+		var new_value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
+		new_value     = obj.checkSharedCapacity( new_value );
+
+		if ( 0 === new_value ) {
+			return;
+		}
+
+		if ( 0 > new_value ) {
+			$input[ 0 ].value = originalValue + new_value;
+			return;
+		}
 
 		if ( 'function' === typeof $input[ 0 ].stepUp ) {
 			try {
 				$input[ 0 ].stepUp();
 			} catch ( ex ) {
-				$input[ 0 ].value = increase;
+				$input[ 0 ].value = new_value;
 			}
 		} else {
-			$input[ 0 ].value = increase;
+			$input[ 0 ].value = new_value;
 		}
 	}
 
@@ -554,6 +563,44 @@ tribe.tickets.block = {
 
 		// Repeat every 15 seconds
 		setTimeout( obj.checkAvailability, 15000 );
+	}
+
+	/**
+	 * Check if we're updating the qty of a shared cap ticket and
+	 * limits it to the shared cap minus any tickets in cart.
+	 *
+	 * @since TBD
+	 *
+	 * @param integer qty The quantity we desire.
+	 *
+	 * @return integer The quantity, limited by exisitng shared cap tickets.
+	 */
+	obj.checkSharedCapacity = function ( qty ) {
+		var sharedCap         = [];
+		var currentLoad       = [];
+		var $sharedTickets    = $( obj.selector.item ).filter( '[data-shared-cap="true"]' );
+		var $sharedCapFields  = $sharedTickets.find( obj.selector.itemExtraAvailableQuantity );
+		var $sharedCapTickets = $sharedTickets.find( obj.selector.itemQuantityInput );
+		$sharedCapFields.each(
+			function() {
+				sharedCap.push( parseInt( $( this ).text(), 10 ) );
+			}
+		);
+
+		$sharedCapTickets.each(
+			function() {
+				currentLoad.push( parseInt( $( this ).val(), 10 ) );
+			}
+		);
+
+		sharedCap = Math.max( ...sharedCap );
+		currentLoad = currentLoad.reduce(function(a,b){
+			return a + b
+		  }, 0);
+
+		var currentAvailable = sharedCap - currentLoad;
+
+		return Math.min( currentAvailable, qty );
 	}
 
 	/**
@@ -833,7 +880,7 @@ tribe.tickets.block = {
 
 					tickets.forEach(function(ticket) {
 						var $ticketRow = $( `.tribe-tickets__item[data-ticket-id="${ticket.ticket_id}"]` );
-						if ( ! $ticketRow.hasClass( 'outofstock' ) ) {
+						if ( 'true' === $ticketRow.attr( 'data-available' ) ) {
 							var $field = $ticketRow.find( obj.selector.itemQuantityInput );
 
 							if ( $field.length ) {
@@ -845,9 +892,17 @@ tribe.tickets.block = {
 					});
 
 					if ( 0 < $eventCount ) {
-						$( '#tribe-tickets__notice__tickets-in-cart' ).show();
+						$( '#tribe-tickets__notice__tickets-in-cart' ).fadeIn();
 					}
 				}
+			},
+			error: function( response ) {
+				$errorNotice =  $( '#tribe-tickets__notice__tickets-in-cart' );
+				$errorNotice.removeClass( 'tribe-tickets-notice--barred tribe-tickets-notice--barred-left' );
+				$errorNotice.addClass( 'tribe-tickets-notice--error' );
+				$errorNotice.find( '.tribe-tickets-notice__title' ).text( `API Connection Error (${response.responseJSON.code})` );
+				$errorNotice.find( 'p' ).html( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.' );
+				$errorNotice.fadeIn();
 			},
 			complete: function() {
 				obj.loaderHide();
@@ -1329,9 +1384,17 @@ tribe.tickets.block = {
 			var max = $this.attr('max');
 			var new_quantity = parseInt( $this.val(), 10 );
 			new_quantity     = isNaN( new_quantity ) ? 0 : new_quantity;
+
 			if ( max < new_quantity ) {
 				new_quantity = max;
 				$this.val( max );
+			}
+
+			var maxQty = obj.checkSharedCapacity( new_quantity );
+
+			if ( 0 > maxQty ) {
+				new_quantity +=  maxQty;
+				$this.val( new_quantity );
 			}
 
 			e.preventDefault();
@@ -1382,10 +1445,13 @@ tribe.tickets.block = {
 			var $metaForm = $( obj.modalSelector.metaForm );
 			var isValidForm = obj.validateForm( $metaForm );
 			var $errorNotice = $( '.tribe-tickets-notice--error' );
+			var validationErrorTitle = 'Whoops';
+			var validationErrorContent = `<p>You have <span class="tribe-tickets-notice--error__count">0</span> ticket(s) with a field that requires information.</p>`
 
 			if ( ! isValidForm[ 0 ] ) {
 				$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
-
+				$errorNotice.find( '.tribe-tickets-notice__title' ).text( validationErrorTitle );
+				$errorNotice.find( 'p' ).html( validationErrorContent );
 				$( '.tribe-tickets-notice--error__count' ).text( isValidForm[ 1 ] );
 				$errorNotice.show();
 				return false;
@@ -1403,9 +1469,10 @@ tribe.tickets.block = {
 
 			$.ajax({
 				type: 'POST',
-				url: obj.getRestEndpoint(),
+				url: obj.getRestEndpoint() + '/11/',
 				data: params,
 				success: function( response ) {
+					$errorNotice.hide();
 					//redirect url
 					var url = response.checkout_url;
 
@@ -1420,9 +1487,11 @@ tribe.tickets.block = {
 
 					window.location.href = url;
 				},
-				fail: function( response ) {
-					// @TODO: add messaging on error?
-					return;
+				error: function( response ) {
+					$errorNotice.find( '.tribe-tickets-notice__title' ).text( `API Connection Error (${response.responseJSON.code})` );
+					$errorNotice.find( 'p' ).html( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.' );
+					$errorNotice.fadeIn();
+					$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
 				}
 			});
 		}
@@ -1469,8 +1538,12 @@ tribe.tickets.block = {
 
 					window.location.href = url;
 				},
-				fail: function( response ) {
-					// @TODO: add messaging on error?
+				error: function( response ) {
+					var $errorNotice = $( '.tribe-tickets-notice--error' );
+					$errorNotice.find( '.tribe-tickets-notice__title' ).text( `API Connection Error (${response.responseJSON.code})` );
+					$errorNotice.find( 'p' ).html( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.' );
+					$errorNotice.fadeIn();
+					$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
 					return;
 				}
 			});

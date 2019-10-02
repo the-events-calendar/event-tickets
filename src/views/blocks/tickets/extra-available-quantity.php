@@ -17,6 +17,9 @@
 
 
 $ticket = $this->get( 'ticket' );
+if ( empty( $ticket->available() ) ) {
+	return;
+}
 ?>
-<span class="tribe-tickets__item__extra__available_quantity"><?php echo esc_html( $ticket->available() ); ?><?php echo $ticket->global_stock_mode() ?></span>
+<span class="tribe-tickets__item__extra__available__quantity"><?php echo esc_html( $ticket->available() ); ?></span>
 <?php esc_html_e( 'available', 'event-tickets' );

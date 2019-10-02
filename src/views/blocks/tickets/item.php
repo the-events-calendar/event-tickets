@@ -50,7 +50,7 @@ if ( $must_login ) {
 	<?php tribe_classes( get_post_class( $classes, $ticket->ID ) ); ?>
 	data-ticket-id="<?php echo esc_attr( $ticket->ID ); ?>"
 	data-available="<?php echo ( 0 === $ticket->available() ) ? 'false' : 'true'; ?>"
-	data-shared-cap="<?php echo ( empty( $ticket->global_stock_mode() ) || Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $ticket->global_stock_mode() ) ? 'false' : 'true'; ?>"
+	data-shared-cap="<?php echo ( tribe( 'tickets.handler' )->has_shared_capacity( $ticket ) ) ? 'true' : 'false'; ?>"
 >
 	<input type="hidden" name="product_id[]" value="<?php echo esc_attr( $ticket->ID ); ?>" />
 	<?php if ( true === $modal ) { $this->template( 'modal/item-remove', $context ); } ?>
