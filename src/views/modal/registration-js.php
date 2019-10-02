@@ -62,7 +62,12 @@ $non_meta_count        = 0;
 					</h3>
 				</div>
 		<?php endforeach; ?>
-		<p class="tribe-tickets-notice tribe-tickets-notice--non-ar">
+		<p
+			class="tribe-tickets-notice tribe-tickets-notice--non-ar"
+			<?php if ( empty( $non_meta_count ) ) : ?>
+				style="display: none;"
+			<?php endif; ?>
+		>
 			<?php
 				echo sprintf(
 					esc_html_x(

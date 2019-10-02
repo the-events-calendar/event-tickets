@@ -135,7 +135,12 @@ $classes              = [
 		</div>
 	</div>
 	<div class="tribe-tickets__registration__footer">
-		<p class="tribe-tickets-notice tribe-tickets-notice--non-ar">
+		<p
+			class="tribe-tickets-notice tribe-tickets-notice--non-ar"
+			<?php if ( empty( $non_meta_count ) ) : ?>
+				style="display: none;"
+			<?php endif; ?>
+		>
 			<?php
 				echo sprintf(
 					esc_html_x(
