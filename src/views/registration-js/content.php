@@ -14,7 +14,15 @@
 /** @var Tribe__Tickets__Editor__Template $template */
 $template = tribe( 'tickets.editor.template' );
 
-$provider             = tribe_get_request_var( 'provider' );
+$provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
+
+if ( empty( $provider ) ) {
+	$provider_name     = Tribe__Tickets__Tickets::get_event_ticket_provider( array_key_first( $events ) );
+	$provider = $provider_name::ATTENDEE_OBJECT;
+}
+
+
+$non_meta_count       = 0;
 $provider_class       = $this->get_form_class( $provider );
 $all_tickets          = [];
 $classes              = [
@@ -65,6 +73,9 @@ $classes              = [
 		?>
 		<div class="tribe-tickets__registration__content">
 			<?php foreach ( $events as $event_id => $tickets ) : ?>
+				<?php if (  $provider !== Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id )::ATTENDEE_OBJECT ) : ?>
+					<?php continue; ?>
+				<?php endif; ?>
 				<?php
 					$provider_class = $provider_class;
 					$providers = wp_list_pluck( $tickets, 'provider' );
@@ -96,7 +107,6 @@ $classes              = [
 							<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
 
 							<?php
-							$non_meta_count = 0;
 							foreach ( $tickets as $ticket ) :
 								$all_tickets[] = $ticket;
 								// Only include tickets with meta
