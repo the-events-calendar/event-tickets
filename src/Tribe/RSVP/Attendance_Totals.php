@@ -38,7 +38,7 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 	public function print_totals() {
 		//Note this now uses the `attendees-totals-list` template, so the array values don't quite logically line up
 		$args = [
-			'total_sold_label'        => _x( 'Total RSVPs:', 'attendee summary', 'event-tickets' ),
+			'total_sold_label'        => esc_html( sprintf( _x( 'Total %s:', 'attendee summary', 'event-tickets' ), tribe_get_rsvp_label_plural( 'total_sold_label' ) ) ),
 			'total_complete_label'    => _x( 'Going:', 'attendee summary', 'event-tickets' ),
 			'total_cancelled_label'   => _x( 'Not Going:', 'attendee summary', 'event-tickets' ),
 			'total_sold'              => $this->get_total_rsvps(),

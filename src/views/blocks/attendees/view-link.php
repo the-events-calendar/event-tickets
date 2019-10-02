@@ -7,19 +7,21 @@
  * the Message that Will link to the Tickets Page
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/blocks/attendees/view-link.php
+ * [your-theme]/tribe/tickets/blocks/attendees/description.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
- *
  * @since 4.9
  * @since 4.10.8 Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated
- *            third parameter of `get_description_rsvp_ticket()` and to simplify the template's logic.
+ *               third parameter of `get_description_rsvp_ticket()` and to simplify the template's logic.
+ * @since 4.10.9 Uses new functions to get singular and plural texts.
  *
- * @version 4.10.8
+ * @link {INSERT_ARTICLE_LINK_HERE}
+ *
+ * @version 4.10.9
+ *
+ * @var Tribe__Tickets__Editor__Template $this
  */
-
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
@@ -34,16 +36,20 @@ $user_id   = get_current_user_id();
 $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type;
 
 $events_label_singular = $post_type->labels->singular_name;
-$counters              = array();
+$counters              = [];
 $rsvp_count            = $view->count_rsvp_attendees( $event_id, $user_id );
 $ticket_count          = $view->count_ticket_attendees( $event_id, $user_id );
 
-if ( 0 !== $rsvp_count ) {
-	$counters[] = sprintf( _n( '%d %s', '%d %s', $rsvp_count, 'event-tickets' ), $rsvp_count, _nx( 'RSVP', 'RSVPs', $rsvp_count, 'Singular and plural texts for RSVP(s)', 'event-tickets' ) );
+if ( 1 === $rsvp_count ) {
+	$counters[] = sprintf( _x( '%1d %2s', 'RSVP count singular', 'event-tickets' ), $rsvp_count, tribe_get_rsvp_label_singular( basename( __FILE__ ) ) );
+} elseif ( 1 < $rsvp_count ) {
+	$counters[] = sprintf( _x( '%1d %2s', 'RSVP count plural', 'event-tickets' ), $rsvp_count, tribe_get_rsvp_label_plural( basename( __FILE__ ) ) );
 }
 
-if ( 0 !== $ticket_count ) {
-	$counters[] = sprintf( _n( '%d %s', '%d %s', $ticket_count, 'event-tickets' ), $ticket_count, _nx( 'Ticket', 'Tickets', $ticket_count, 'Singular and plural texts for Ticket(s)', 'event-tickets' ) );
+if ( 1 === $ticket_count ) {
+	$counters[] = sprintf( _x( '%1d %2s', 'Ticket count singular', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_singular( basename( __FILE__ ) ) );
+} elseif ( 1 < $ticket_count ) {
+	$counters[] = sprintf( _x( '%1d %2s', 'Ticket count plural', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_plural( basename( __FILE__ ) ) );
 }
 
 if ( empty( $counters ) ) {
@@ -52,7 +58,7 @@ if ( empty( $counters ) ) {
 
 $link = $view->get_tickets_page_url( $event_id, $is_event_page );
 
-$message = sprintf( esc_html__( 'You have %s for this %s.', 'event-tickets' ), implode( __( ' and ', 'event-tickets' ), $counters ), $events_label_singular );
+$message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' ), implode( _x( ' and ', 'separator if there are both RSVPs and Tickets', 'event-tickets' ), $counters ), $events_label_singular ) );
 ?>
 
 <div class="tribe-link-view-attendee">

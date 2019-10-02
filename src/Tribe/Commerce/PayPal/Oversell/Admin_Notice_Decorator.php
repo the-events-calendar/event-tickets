@@ -95,6 +95,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	 * Returns the notice header HTML.
 	 *
 	 * @since 4.7
+	 * @since 4.10.9 Use customizable ticket name functions.
 	 *
 	 * @param int $qty
 	 * @param int $inventory
@@ -121,8 +122,8 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 		$links             = tribe( 'tickets.commerce.paypal.links' );
 		$order_paypal_link = $links->order_link( 'tag', $this->get_order_id(), __( 'in your PayPal account', 'event-tickets' ) );
 
-		$message = esc_html__(
-			'%1$s is oversold: there are more tickets sold than the available capacity. This can occur when the PayPal transaction is not completed immediately, delaying the decrease in ticket availability. Order %2$s includes %3$s ticket(s). There are only %4$s ticket(s) left. Ticket emails have not yet been sent for this order. Choose how to process this order from the options below.',
+		$message = __(
+			'%1$s is oversold: there are more %2$s sold than the available capacity. This can occur when the PayPal transaction is not completed immediately, delaying the decrease in %3$s availability. Order %4$s includes %5$s %3$s(s). There are only %6$s %3$s(s) left. %7$s emails have not yet been sent for this order. Choose how to process this order from the options below.',
 			'event-tickets'
 		);
 
@@ -132,11 +133,14 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 		return sprintf(
 			'<p class="tribe-tickets-paypal-oversell-header">%s</p>',
 			sprintf(
-				$message,
-				$post_title,
+				esc_html( $message ),
+				esc_html( $post_title ),
+				esc_html( tribe_get_ticket_label_plural_lowercase( 'oversold_message' ) ),
+				esc_html( tribe_get_ticket_label_singular_lowercase( 'oversold_message' ) ),
 				esc_html( $this->get_order_id() ),
 				"<strong>{$qty}</strong>",
-				"<strong>{$inventory}</strong>"
+				"<strong>{$inventory}</strong>",
+				esc_html( tribe_get_ticket_label_singular( 'oversold_message' ) )
 			)
 		);
 	}

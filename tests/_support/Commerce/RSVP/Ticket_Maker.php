@@ -2,7 +2,6 @@
 
 namespace Tribe\Tickets\Test\Commerce\RSVP;
 
-
 trait Ticket_Maker {
 
 	/**
@@ -18,7 +17,7 @@ trait Ticket_Maker {
 
 		$meta_input = isset( $overrides['meta_input'] ) && \is_array( $overrides['meta_input'] )
 			? $overrides['meta_input']
-			: array();
+			: [];
 
 		unset( $overrides['meta_input'] );
 

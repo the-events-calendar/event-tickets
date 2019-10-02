@@ -24,7 +24,7 @@ class Tribe__Tickets__REST__V1__Documentation__Checkin_Details_Definition_Provid
 				),
 				'source'       => array(
 					'type'        => 'string',
-					'description' => __( 'The check-in source for the attendee; e.g. “kiosk” or “site”', 'event-tickets' ),
+					'description' => __( 'The check-in source for the attendee; e.g. "kiosk" or "site"', 'event-tickets' ),
 				),
 				'author'       => array(
 					'type'        => 'string',

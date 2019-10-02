@@ -13,6 +13,7 @@ class Tribe__Tickets__Commerce__PayPal__Errors {
 	 * Casts a numeric error code related to PayPal tickets to a localized string.
 	 *
 	 * @since 4.7
+	 * @since 4.10.9 Use customizable ticket name functions.
 	 *
 	 * @param string|int $error_code
 	 *
@@ -22,16 +23,16 @@ class Tribe__Tickets__Commerce__PayPal__Errors {
 		$map = array(
 			'-1'  => __( 'There was an error', 'event-tickets' ),
 			'1'   => __( 'Attendee email and/or full name is missing', 'event-tickets' ),
-			'2'   => __( 'Trying to oversell a ticket but the current oversell policy does not allow it', 'event-tickets' ),
-			'3'   => __( 'Ticket quantity is 0', 'event-tickets' ),
+			'2'   => esc_html( sprintf( __( 'Trying to oversell a %s but the current oversell policy does not allow it', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'paypal_error_oversell_policy' ) ) ),
+			'3'   => esc_html( sprintf( __( '%s quantity is 0', 'event-tickets' ), tribe_get_ticket_label_singular( 'paypal_error_zero_quantity' ) ) ),
 
 			// a numeric namespace reserved for front-end errors
-			'101' => __( 'In order to purchase tickets, you must enter your name and a valid email address.', 'event-tickets' ),
-			'102' => __( 'You can\'t add more tickets than the total remaining tickets.', 'event-tickets' ),
-			'103' => __( 'You should add at least one ticket.', 'event-tickets' ),
+			'101' => esc_html( sprintf( __( 'In order to purchase %s, you must enter your name and a valid email address.', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'paypal_error_missing_name_or_email' ) ) ),
+			'102' => esc_html( sprintf( __( 'You can\'t add more %1$s than the total remaining %1$s.', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'paypal_error_added_too_many' ) ) ),
+			'103' => esc_html( sprintf( __( 'You should add at least one %s.', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'paypal_error_zero_added' ) ) ),
 
 			// a numeric namespace reserved for front-end messages
-			'201' => __( "Your order is currently processing. Once completed, you'll receive your ticket(s) in an email.", 'event-tickets' ),
+			'201' => esc_html( sprintf( __( "Your order is currently processing. Once completed, you'll receive your %s(s) in an email.", 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'paypal_error_order_processing' ) ) ),
 		);
 
 		/**

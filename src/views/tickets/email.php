@@ -15,7 +15,15 @@
  *                              'ticket_id'
  *                              'security_code')
  *
- * @version 4.7.6
+ * @since 4.0
+ * @since 4.5.11 Ability to remove display of event date.
+ * @since 4.7.4  Change event date to display by default.
+ *               Display WooCommerce featured image.
+ *               Current ticket action hook before output.
+ * @since 4.7.6  Ability to filter ticket image.
+ * @since 4.10.9 Use function for text.
+ *
+ * @version 4.10.9
  *
  * @var array $tickets An array of tickets in the format documented above.
  */
@@ -399,7 +407,7 @@
 													<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:15px;"><?php echo $ticket['ticket_id']; ?></span>
 												</td>
 												<td class="ticket-details" valign="top" align="left" width="120" style="padding: 0; width:120px; margin:0 !important;">
-													<h6 style="color:#909090 !important; margin:0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php esc_html_e( 'Ticket Type', 'event-tickets' ); ?></h6>
+													<h6 style="color:#909090 !important; margin:0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php echo esc_html( sprintf( _x( '%s Type', 'ticket type email heading', 'event-tickets' ), tribe_get_ticket_label_singular( 'ticket_type_email_heading' ) ) ); ?></h6>
 													<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:15px;"><?php echo $ticket['ticket_name']; ?></span>
 												</td>
 												<td class="ticket-details" valign="top" align="left" width="120" style="padding: 0 !important; width:120px; margin:0 !important;">
