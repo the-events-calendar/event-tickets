@@ -52,7 +52,7 @@ $ticket_addons = apply_filters( 'tribe_tickets_settings_systems_supporting_login
 );
 
 $tickets_fields = [
-	'tribe-form-content-start'  => array(
+	'tribe-form-content-start'  => [
 		'type' => 'html',
 		'html' => '<div class="tribe-settings-form-wrap">',
 	],
@@ -68,7 +68,7 @@ $tickets_fields = [
 		'options'         => $all_post_types,
 		'can_be_empty'    => true,
 		'validation_type' => 'options_multi',
-	),
+	],
 ];
 
 $tec_fields = [];
