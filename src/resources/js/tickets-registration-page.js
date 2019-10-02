@@ -550,7 +550,6 @@ tribe.tickets.registration = {};
 	 * @since TBD
 	 */
 	obj.loaderShow = function() {
-		console.log('show');
 		$( obj.selector.loader ).removeClass( 'tribe-common-a11y-hidden' );
 	}
 
@@ -560,7 +559,6 @@ tribe.tickets.registration = {};
 	 * @since TBD
 	 */
 	obj.loaderHide = function() {
-		console.log('hide');
 		$( obj.selector.loader ).addClass( 'tribe-common-a11y-hidden' );
 	}
 

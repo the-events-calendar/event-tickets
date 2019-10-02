@@ -13,12 +13,26 @@
  *
  */
 if ( empty( $text ) ) {
-	$text = 'Loading...';
+	$text = $this->get( 'text' ) ?: 'Loading...';
 }
+
+if ( empty( $classes ) ) {
+	$classes = $this->get( 'classes' ) ?: [];
+}
+
+$spinner_classes = [
+	'tribe-loader',
+	'tribe-common-a11y-hidden',
+];
+
+if ( ! empty( $classes ) ) {
+	$spinner_classes = array_merge( $spinner_classes, (array) $classes );
+}
+
 ?>
 <div class="tribe-common">
 	<div
-		class="tribe-loader tribe-common-a11y-hidden"
+	<?php tribe_classes( $spinner_classes ); ?>
 		role="alert"
 		aria-live="assertive"
 	>

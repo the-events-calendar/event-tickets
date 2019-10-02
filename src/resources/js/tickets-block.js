@@ -635,9 +635,12 @@ tribe.tickets.block = {
 	 * Show the loader/spinner.
 	 *
 	 * @since TBD
+	 *
+	 * @param string $class A class for targeting a specific loader.
+	 * @return void
 	 */
-	obj.loaderShow = function() {
-		$( obj.selector.loader ).removeClass( 'tribe-common-a11y-hidden' );
+	obj.loaderShow = function( $class= '.tribe-loader__default' ) {
+		$( obj.selector.loader ).filter( $class ).removeClass( 'tribe-common-a11y-hidden' );
 	}
 
 	/**
@@ -670,6 +673,8 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.initFormPrefills = function() {
+		obj.loaderShow( '.tribe-loader__modal' );
+
 		$.ajax( {
 			type: 'GET',
 			data: {'provider': $tribe_ticket.data( 'providerId' )},
@@ -755,6 +760,8 @@ tribe.tickets.block = {
 				current++;
 			});
 		});
+
+		obj.loaderHide();
 	}
 
 	/**

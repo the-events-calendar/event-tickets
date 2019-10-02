@@ -77,6 +77,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 		include $file;
 
 		$content .= ob_get_clean();
+
 		return $content;
 	}
 

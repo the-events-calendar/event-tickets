@@ -415,21 +415,18 @@ class Tribe__Tickets__Tickets_View {
 	 * @return string|void
 	 */
 	public function spinner( $echo = true ) {
-		bdump(func_get_args());
 		ob_start();
 
 		$text = apply_filters( 'tribe_tickets_loader_text', 'Loading...' );
+		$classes = apply_filters( 'tribe_tickets_loader_classes', [ 'tribe-loader__default' ] );
 
 		include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' );
 
 		$content = ob_get_clean();
 
-		bdump($echo);
 		if ( $echo ) {
-			bdump('echo');
 			echo $content;
 		} else {
-			bdump('return');
 			return $content;
 		}
 	}
