@@ -303,6 +303,46 @@ tribe.tickets.block = {
 		return total_for_item;
 	};
 
+	/**
+	 * Shows/hides the non-ar notice based on the number of tickets passed.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	obj.maybeShowNonMetaNotice = function( $form ) {
+		console.log('maybeShowNonMetaNotice');
+		var nonMetaCount = 0;
+		var $cartItems =  $form.find( obj.selector.item ).filter( ':visible' );
+
+		if ( ! $cartItems.length ) {
+			return;
+		}
+
+		$cartItems.each(
+			function() {
+				var $cartItem = $( this );
+
+				var ticketID          = $cartItem.closest( obj.selector.item ).data( 'ticket-id' );
+				var $ticket_container = $( obj.modalSelector.metaForm ).find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]' );
+
+				// Ticket does not have meta - no need to jump through hoops (and throw errors).
+				if ( ! $ticket_container.length ) {
+					nonMetaCount += obj.getQty( $cartItem );
+				}
+			}
+		);
+
+		var $notice = $( '.tribe-tickets-notice--non-ar' );
+		console.log(nonMetaCount);
+		if ( 0 < nonMetaCount ) {
+			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
+			$notice.fadeIn();
+		} else {
+			$notice.fadeOut();
+		}
+	}
+
 	/* Utility */
 
 	/**
@@ -384,7 +424,6 @@ tribe.tickets.block = {
 	 * @param obj $form The form we are updating.
 	 */
 	obj.appendARFields = function ( $form ) {
-		var nonMetaCount = 0;
 		$form.find( obj.selector.item ).each(
 			function () {
 				var $cartItem = $( this );
@@ -395,7 +434,6 @@ tribe.tickets.block = {
 
 					// Ticket does not have meta - no need to jump through hoops (and throw errors).
 					if ( ! $ticket_container.length ) {
-						nonMetaCount += obj.getQty( $cartItem );
 						return;
 					}
 
@@ -430,13 +468,7 @@ tribe.tickets.block = {
 			}
 		);
 
-		var $notice = $( '.tribe-tickets-notice--non-ar' );
-		if ( nonMetaCount ) {
-			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
-			$notice.show();
-		} else {
-			$notice.hide();
-		}
+		obj.maybeShowNonMetaNotice( $form );
 
 		obj.document.trigger( 'tribe-ar-fields-appended' );
 	}
@@ -1241,6 +1273,9 @@ tribe.tickets.block = {
 			$( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticket.id + '"]' )
 				.removeClass( 'tribe-tickets--has-tickets' )
 				.find( obj.modalSelector.metaItem ).remove();
+
+				// short delay to ensure the fadeOut has finished
+			var timeoutID = window.setTimeout(obj.maybeShowNonMetaNotice, 500, $cart);
 		}
 	);
 

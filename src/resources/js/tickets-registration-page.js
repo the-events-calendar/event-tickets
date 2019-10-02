@@ -228,6 +228,10 @@ tribe.tickets.registration = {};
 			nonMetaCount -= tickets_length;
 		} );
 
+		obj.maybeShowNonMetaNotice( nonMetaCount );
+	}
+
+	obj.maybeShowNonMetaNotice = function( nonMetaCount ) {
 		var $notice = $( '.tribe-tickets-notice--non-ar' );
 		if ( nonMetaCount ) {
 			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
