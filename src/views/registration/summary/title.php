@@ -11,9 +11,9 @@
  *
  */
 ?>
-<div class="tribe-common-h4 tribe-common-h3--min-medium tribe-tickets__registration__title">
+<div class="tribe-tickets__registration__title">
 	<header>
-		<h2>
+		<h2 class="tribe-common-h4 tribe-common-h3--min-medium">
 			<a href="<?php the_permalink( $event_id ); ?>">
 				<?php echo get_the_title( $event_id ); ?>
 			</a>
