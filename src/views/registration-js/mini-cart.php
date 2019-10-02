@@ -63,7 +63,7 @@ $cart_url            = $this->get( 'cart_url' );
 
 <?php foreach ( $events as $event_id => $tickets ) : ?>
 	<?php
-	if ( $provider !== $ticket['provider']->attendee_object ) {
+	if ( $provider !== Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id )::ATTENDEE_OBJECT ) {
 		continue;
 	}
 

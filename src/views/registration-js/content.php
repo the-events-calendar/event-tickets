@@ -72,7 +72,7 @@ $classes              = [
 		?>
 		<div class="tribe-tickets__registration__content">
 			<?php foreach ( $events as $event_id => $tickets ) : ?>
-				<?php if (  $provider !== Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id )::ATTENDEE_OBJECT ) : ?>
+				<?php if ( $provider !== Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id )::ATTENDEE_OBJECT ) : ?>
 					<?php continue; ?>
 				<?php endif; ?>
 				<?php
