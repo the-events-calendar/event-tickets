@@ -2773,10 +2773,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			/** @var \Tribe__Tickets__Attendee_Registration__Main $attendee_reg */
-			$attendee_reg = tribe( 'tickets.attendee_registration' );
+			/** @var \Tribe__Tickets__Attendee_Registration__Main $attendee_registration */
+			$attendee_registration = tribe( 'tickets.attendee_registration' );
 
-			if ( $attendee_reg->is_on_page() || $attendee_reg->is_cart_rest() || $attendee_reg->is_using_shortcode() ) {
+			if ( $attendee_registration->is_on_page() || $attendee_registration->is_cart_rest() || $attendee_registration->is_using_shortcode() ) {
 				return;
 			}
 
