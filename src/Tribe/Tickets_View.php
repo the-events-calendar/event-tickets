@@ -391,7 +391,7 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Add spinner to event pages.
 	 *
-	 * @return void
+	 * @since TBD
 	 */
 	public function maybe_show_footer_spinner() {
 		/** @var \Tribe__Tickets__Attendee_Registration__Main $attendee_registration */
