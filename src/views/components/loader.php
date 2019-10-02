@@ -13,7 +13,7 @@
  *
  */
 if ( empty( $text ) ) {
-	$text = $this->get( 'text' ) ?: 'Loading...';
+	$text = $this->get( 'text' ) ?: __( 'Loading...', 'event-tickets' );
 }
 
 if ( empty( $classes ) ) {

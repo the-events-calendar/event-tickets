@@ -21,7 +21,6 @@ if ( empty( $provider ) ) {
 	$provider = $provider_name::ATTENDEE_OBJECT;
 }
 
-
 $non_meta_count       = 0;
 $provider_class       = $this->get_form_class( $provider );
 $all_tickets          = [];
