@@ -833,13 +833,15 @@ tribe.tickets.block = {
 
 					tickets.forEach(function(ticket) {
 						var $ticketRow = $( `.tribe-tickets__item[data-ticket-id="${ticket.ticket_id}"]` );
-						var $field = $ticketRow.find( obj.selector.itemQuantityInput );
-						if ( $field.length ) {
-							$field.val( ticket.quantity );
-							$field.trigger( 'change' );
-							$eventCount++;
-						}
+						if ( ! $ticketRow.hasClass( 'outofstock' ) ) {
+							var $field = $ticketRow.find( obj.selector.itemQuantityInput );
 
+							if ( $field.length ) {
+								$field.val( ticket.quantity );
+								$field.trigger( 'change' );
+								$eventCount++;
+							}
+						}
 					});
 
 					if ( 0 < $eventCount ) {
