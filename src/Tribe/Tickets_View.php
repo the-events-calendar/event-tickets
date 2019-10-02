@@ -50,7 +50,7 @@ class Tribe__Tickets__Tickets_View {
 
 		// Intercept Template file for Tickets
 		add_action( 'tribe_events_pre_get_posts', [ $myself, 'modify_ticket_display_query' ] );
-		add_filter( 'tribe_events_template_single-event.php', [ $myself, 'intercept_template' ], 20, 2 );
+		add_filter( 'tribe_events_template_single-event.php', [ $myself, 'intercept_template' ], 20 );
 
 		return $myself;
 	}
