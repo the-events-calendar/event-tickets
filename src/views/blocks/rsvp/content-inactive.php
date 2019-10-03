@@ -11,9 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @since TBD Use function for text.
+ * @since 4.10.9 Use function for text.
  *
- * @version TBD
+ * @version 4.10.9
  */
 
 $message = $this->get( 'all_past' )

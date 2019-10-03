@@ -53,7 +53,7 @@ var tribe_tickets_tpp = {
 	/**
 	 * Handle Submission of RSVP
 	 *
-	 * @since TBD - Prevent multiple clicks on "Confirm RSVP" from submitting.
+	 * @since 4.10.9 - Prevent multiple clicks on "Confirm RSVP" from submitting.
 	 *
 	 * @param e The event passed to the method.
 	 * @returns {my.event|boolean}

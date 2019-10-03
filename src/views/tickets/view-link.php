@@ -9,9 +9,9 @@
  * @since 4.2
  * @since 4.10.8 Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated third
  *               parameter of `get_description_rsvp_ticket()`.
- * @since TBD  Use customizable ticket name functions.
+ * @since 4.10.9  Use customizable ticket name functions.
  *
- * @version TBD
+ * @version 4.10.9
  *
  * @var Tribe__Tickets__Tickets_View $this
  */

@@ -2,7 +2,7 @@
 /**
  * Event Tickets Privacy
  *
- * @since TBD Use customizable ticket name functions.
+ * @since 4.10.9 Use customizable ticket name functions.
  */
 
 // Don't load directly

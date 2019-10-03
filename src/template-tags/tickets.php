@@ -419,7 +419,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket to analyze
 	 *
-	 * @since TBD Use customizable ticket name functions.
+	 * @since 4.10.9 Use customizable ticket name functions.
 	 *
 	 * @return string
 	 */
@@ -1081,7 +1081,7 @@ if ( ! function_exists( 'tribe_get_rsvp_label_singular' ) ) {
 	/**
 	 * Get the singular version of the RSVP label. May also be used as a verb.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
 	 *
@@ -1091,7 +1091,7 @@ if ( ! function_exists( 'tribe_get_rsvp_label_singular' ) ) {
 		/**
 		 * Allows customization of the singular version of the RSVP label.
 		 *
-		 * @since TBD
+		 * @since 4.10.9
 		 *
 		 * @param string $label   The singular version of the RSVP label. Defaults to "RSVP".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
@@ -1105,7 +1105,7 @@ if ( ! function_exists( 'tribe_get_rsvp_label_singular_lowercase' ) ) {
 	/**
 	 * Get the lowercase singular version of the RSVP label. May also be used as a verb.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
 	 *
@@ -1115,7 +1115,7 @@ if ( ! function_exists( 'tribe_get_rsvp_label_singular_lowercase' ) ) {
 		/**
 		 * Allows customization of the lowercase singular version of the RSVP label.
 		 *
-		 * @since TBD
+		 * @since 4.10.9
 		 *
 		 * @param string $label   The lowercase singular version of the RSVP label. Defaults to "rsvp".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
@@ -1129,7 +1129,7 @@ if ( ! function_exists( 'tribe_get_rsvp_label_plural' ) ) {
 	/**
 	 * Get the plural version of the RSVP label. May also be used as a verb.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
 	 *
@@ -1139,7 +1139,7 @@ if ( ! function_exists( 'tribe_get_rsvp_label_plural' ) ) {
 		/**
 		 * Allows customization of the plural version of the RSVP label.
 		 *
-		 * @since TBD
+		 * @since 4.10.9
 		 *
 		 * @param string $label   The plural version of the RSVP label, defaults to "RSVPs".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
@@ -1153,7 +1153,7 @@ if ( ! function_exists( 'tribe_get_rsvp_label_plural_lowercase' ) ) {
 	/**
 	 * Get the lowercase plural version of the RSVP label. May also be used as a verb.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
 	 *
@@ -1163,7 +1163,7 @@ if ( ! function_exists( 'tribe_get_rsvp_label_plural_lowercase' ) ) {
 		/**
 		 * Allows customization of the lowercase plural version of the RSVP label.
 		 *
-		 * @since TBD
+		 * @since 4.10.9
 		 *
 		 * @param string $label   The lowercase plural version of the RSVP label, defaults to "rsvps".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
@@ -1177,7 +1177,7 @@ if ( ! function_exists( 'tribe_get_ticket_label_singular' ) ) {
 	/**
 	 * Get the singular version of the Ticket label. May also be used as a verb.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
 	 *
@@ -1187,7 +1187,7 @@ if ( ! function_exists( 'tribe_get_ticket_label_singular' ) ) {
 		/**
 		 * Allows customization of the singular version of the Ticket label.
 		 *
-		 * @since TBD
+		 * @since 4.10.9
 		 *
 		 * @param string $label   The singular version of the Ticket label, defaults to "Ticket".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
@@ -1201,7 +1201,7 @@ if ( ! function_exists( 'tribe_get_ticket_label_singular_lowercase' ) ) {
 	/**
 	 * Get the lowercase singular version of the Ticket label. May also be used as a verb.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
 	 *
@@ -1211,7 +1211,7 @@ if ( ! function_exists( 'tribe_get_ticket_label_singular_lowercase' ) ) {
 		/**
 		 * Allows customization of the lowercase singular version of the Ticket label.
 		 *
-		 * @since TBD
+		 * @since 4.10.9
 		 *
 		 * @param string $label   The lowercase singular version of the Ticket label, defaults to "ticket".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
@@ -1225,7 +1225,7 @@ if ( ! function_exists( 'tribe_get_ticket_label_plural' ) ) {
 	/**
 	 * Get the plural version of the Ticket label. May also be used as a verb.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
 	 *
@@ -1235,7 +1235,7 @@ if ( ! function_exists( 'tribe_get_ticket_label_plural' ) ) {
 		/**
 		 * Allows customization of the plural version of the Ticket label.
 		 *
-		 * @since TBD
+		 * @since 4.10.9
 		 *
 		 * @param string $label   The plural version of the Ticket label, defaults to "Tickets".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
@@ -1249,7 +1249,7 @@ if ( ! function_exists( 'tribe_get_ticket_label_plural_lowercase' ) ) {
 	/**
 	 * Get the lowercase plural version of the Ticket label. May also be used as a verb.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
 	 *
@@ -1259,7 +1259,7 @@ if ( ! function_exists( 'tribe_get_ticket_label_plural_lowercase' ) ) {
 		/**
 		 * Allows customization of the lowercase plural version of the Ticket label.
 		 *
-		 * @since TBD
+		 * @since 4.10.9
 		 *
 		 * @param string $label   The lowercase plural version of the Ticket label, defaults to "tickets".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.

@@ -10,7 +10,7 @@
  * remove_action( 'some_action', [ tribe( Tribe\Events\Tickets\Views\V2\Hooks::class ), 'some_method' ] );
  * remove_action( 'some_action', [ tribe( 'tickets.views.v2.hooks' ), 'some_method' ] );
  *
- * @since TBD
+ * @since 4.10.9
  *
  * @package Tribe\Events\Tickets\Views\V2
  */
@@ -22,7 +22,7 @@ use Tribe\Events\Tickets\Views\V2\Models\Tickets;
 /**
  * Class Hooks.
  *
- * @since TBD
+ * @since 4.10.9
  *
  * @package Tribe\Events\Tickets\Views\V2
  */
@@ -30,7 +30,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 */
 	public function register() {
 		$this->add_actions();
@@ -40,7 +40,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Filters the list of folders TEC will look up to find templates to add the ones defined by Tickets.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @param array $folders The current list of folders that will be searched template files.
 	 *
@@ -59,7 +59,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Add tickets data to the event object.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @param array    $props An associative array of all the properties that will be set on the "decorated" post
 	 *                        object.
@@ -76,7 +76,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Adds the actions required by each Tickets Views v2 component.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 */
 	protected function add_actions() {
 		// silence is golden
@@ -85,7 +85,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Adds the filters required by each Tickets Views v2 component.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_template_path_list', [ $this, 'filter_template_path_list' ] );

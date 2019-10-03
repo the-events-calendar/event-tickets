@@ -26,7 +26,7 @@ class Tickets implements \ArrayAccess, \Serializable{
 	/**
 	 * The post ID this tickets model is for.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @var int
 	 */
@@ -35,7 +35,7 @@ class Tickets implements \ArrayAccess, \Serializable{
 	/**
 	 * The tickets data.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @var array
 	 */
@@ -44,7 +44,7 @@ class Tickets implements \ArrayAccess, \Serializable{
 	/**
 	 * A flag property indicating whether tickets for the post exists or not.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @var bool
 	 */
@@ -53,7 +53,7 @@ class Tickets implements \ArrayAccess, \Serializable{
 	/**
 	 * An array of all the tickets for this event.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @var array
 	 */
@@ -96,7 +96,7 @@ class Tickets implements \ArrayAccess, \Serializable{
 	/**
 	 * Returns the data about the event tickets, if any.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @return array An array of objects containing the post thumbnail data.
 	 */
@@ -242,7 +242,7 @@ class Tickets implements \ArrayAccess, \Serializable{
 	/**
 	 * Returns an array representation of the event tickets data.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 *
 	 * @return array An array representation of the event tickets data.
@@ -276,7 +276,7 @@ class Tickets implements \ArrayAccess, \Serializable{
 	/**
 	 * Returns whether an event has tickets at all or not.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 *
 	 * @return bool Whether an event has tickets at all or not.
 	 */

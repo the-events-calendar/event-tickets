@@ -7,7 +7,9 @@
  *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @version 4.10.4
+ * @since 4.10.9 Add Filter to show an event/post tickets on AR Page
+ *
+ * @version 4.10.9
  *
  */
 // If there are no events with tickets in cart, print the empty cart template
@@ -32,7 +34,7 @@ $passed_provider_class = $this->get_form_class( $passed_provider );
 	 * @param array   $tickets      An array of ticket products.
 	 * @param int     $event_id     The event/post ID.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 */
 	$show_tickets = apply_filters( 'tribe_tickets_filter_showing_tickets_on_attendee_registration', $show_tickets, $tickets, $event_id );
 

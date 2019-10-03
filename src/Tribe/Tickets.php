@@ -2172,7 +2172,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns a tickets unavailable message based on the availability slug of a collection of tickets
 		 *
 		 * @since 4.2
-		 * @since TBD Use customizable ticket name functions.
+		 * @since 4.10.9 Use customizable ticket name functions.
 		 *
 		 * @param array $tickets Collection of tickets
 		 * @return string

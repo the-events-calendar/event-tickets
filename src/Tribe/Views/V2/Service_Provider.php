@@ -12,7 +12,7 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 */
 	public function register() {
 
@@ -32,7 +32,7 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for Views v2.
 	 *
-	 * @since TBD
+	 * @since 4.10.9
 	 */
 	protected function register_hooks() {
 		$hooks = new Hooks( $this->container );
