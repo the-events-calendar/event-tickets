@@ -166,9 +166,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		$sold = $ticket_sold['completed'] ? $ticket_sold['completed'] : $ticket_sold['sold'];
 
-		$sold_message = ! $ticket_sold['has_stock'] ?
-			$sold_message = sprintf( '%s %d', esc_attr__( 'Sold', 'event-tickets' ), esc_html( $sold ) ) :
-			'';
+		$sold_message = sprintf( '%s %d', esc_attr__( 'Sold', 'event-tickets' ), esc_html( $sold ) );
 
 		$price = $ticket_sold['ticket']->price ?
 			' (' . tribe_format_currency( number_format( $ticket_sold['ticket']->price, 2 ), $post_id ) . ')' :
@@ -197,18 +195,30 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 * @return string The available and/or incomplete counts for a ticket.
 	 */
 	public function get_available_incomplete_counts_for_ticket( $ticket_sold ) {
-		if (  $ticket_sold['ticket']->available() > 0 ) {
-			$availability['available'] = sprintf( '%s %s%s',
-				esc_html( $ticket_sold['ticket']->available() ),
-				esc_html__( 'available', 'event-tickets' ),
-				$this->get_availability_by_ticket_tooltip( $ticket_sold )
-			);
 		/** @var Tribe__Tickets__Ticket_Object $ticket_object */
 		$ticket_object = $ticket_sold['ticket'];
 
+		if (
+			-1 === (int) $ticket_object->available()
+			|| $ticket_object::UNLIMITED_STOCK === $ticket_object->available()
+		) {
+			/** @var Tribe__Tickets__Tickets_Handler $handler */
+			$handler = tribe( 'tickets.handler' );
+
+			$available_text = $handler->unlimited_term;
+		} else {
+			$available_text = $ticket_object->available();
 		}
-		if (  $ticket_sold['incomplete'] > 0 ) {
+
 		$availability = [];
+
+		$availability['available'] = sprintf( '%s %s%s',
+			esc_html( $available_text ),
+			esc_html__( 'available', 'event-tickets' ),
+			$this->get_availability_by_ticket_tooltip( $ticket_sold )
+		);
+
+		if ( $ticket_sold['incomplete'] > 0 ) {
 			$availability['incomplete'] = sprintf( '%s %s%s',
 				 $ticket_sold['incomplete'],
 				 esc_html__( 'pending order completion', 'event-tickets' ),
