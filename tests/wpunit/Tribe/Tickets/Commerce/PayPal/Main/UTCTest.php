@@ -112,11 +112,11 @@ class UTCTest extends Ticket_Object_TestCase {
 	}
 
 	/**
-	 * It should allow decreasing inventory for older pending attendee.
+	 * It should allow decreasing inventory for newer pending attendee.
 	 *
 	 * @test
 	 */
-	public function it_should_allow_decreasing_inventory_for_older_pending_attendee() {
+	public function it_should_allow_decreasing_inventory_for_newer_pending_attendee() {
 		add_filter( 'tribe_tickets_tpp_pending_stock_ignore', '__return_false' );
 
 		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal_provider */
@@ -137,8 +137,10 @@ class UTCTest extends Ticket_Object_TestCase {
 
 		$paypal_attendees = $paypal_provider->get_attendees_by_id( $post_id );
 
+		$date = new \DateTime( '-29 minutes', new \DateTimeZone( $this->timezone ) );
+
 		foreach ( $paypal_attendees as $k => $attendee ) {
-			$paypal_attendees[ $k ]['purchase_time'] = date( 'Y-m-d H:i:s', strtotime( '-29 minutes' ) );
+			$paypal_attendees[ $k ]['purchase_time'] = $date->format( \Tribe__Date_Utils::DBDATETIMEFORMAT );
 		}
 
 		$first_attendee = current( $paypal_attendees );
@@ -151,11 +153,11 @@ class UTCTest extends Ticket_Object_TestCase {
 	}
 
 	/**
-	 * It should allow decreasing inventory for newer pending attendee.
+	 * It should allow decreasing inventory for older pending attendee.
 	 *
 	 * @test
 	 */
-	public function it_should_allow_decreasing_inventory_for_newer_pending_attendee() {
+	public function it_should_allow_decreasing_inventory_for_older_pending_attendee() {
 		add_filter( 'tribe_tickets_tpp_pending_stock_ignore', '__return_false' );
 
 		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal_provider */
@@ -176,8 +178,10 @@ class UTCTest extends Ticket_Object_TestCase {
 
 		$paypal_attendees = $paypal_provider->get_attendees_by_id( $post_id );
 
+		$date = new \DateTime( '-31 minutes', new \DateTimeZone( $this->timezone ) );
+
 		foreach ( $paypal_attendees as $k => $attendee ) {
-			$paypal_attendees[ $k ]['purchase_time'] = date( 'Y-m-d H:i:s', strtotime( '-31 minutes' ) );
+			$paypal_attendees[ $k ]['purchase_time'] = $date->format( \Tribe__Date_Utils::DBDATETIMEFORMAT );
 		}
 
 		$first_attendee = current( $paypal_attendees );

@@ -2458,8 +2458,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		if ( $purchase_time ) {
-			$order_creation_timestamp = strtotime( $purchase_time );
+			$date = Tribe__Date_Utils::build_date_object( $purchase_time );
 
+			$date->setTimezone( new DateTimeZone( 'UTC' ) );
+
+			$order_creation_timestamp = $date->getTimestamp();
 
 			/**
 			 * Filters the amount of time a part of the stock will be reserved by a pending Order.
