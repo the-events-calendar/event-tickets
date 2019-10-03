@@ -1332,7 +1332,7 @@ tribe.tickets.block = {
 				.find( obj.modalSelector.metaItem ).remove();
 
 				// short delay to ensure the fadeOut has finished
-			var timeoutID = window.setTimeout(obj.maybeShowNonMetaNotice, 500, $cart);
+			var timeoutID = window.setTimeout( obj.maybeShowNonMetaNotice, 500, $cart );
 		}
 	);
 
@@ -1381,7 +1381,7 @@ tribe.tickets.block = {
 			var $ticket      = $this.closest( obj.selector.item );
 			var $ticket_id   = $ticket.data( 'ticket-id' );
 			var $form        = $this.closest( 'form' );
-			var max = $this.attr('max');
+			var max = $this.attr( 'max' );
 			var new_quantity = parseInt( $this.val(), 10 );
 			new_quantity     = isNaN( new_quantity ) ? 0 : new_quantity;
 
@@ -1393,7 +1393,7 @@ tribe.tickets.block = {
 			var maxQty = obj.checkSharedCapacity( new_quantity );
 
 			if ( 0 > maxQty ) {
-				new_quantity +=  maxQty;
+				new_quantity += maxQty;
 				$this.val( new_quantity );
 			}
 
