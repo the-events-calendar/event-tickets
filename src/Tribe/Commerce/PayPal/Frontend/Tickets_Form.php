@@ -34,6 +34,7 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 	 * Modifies the passed content to inject the front-end tickets form.
 	 *
 	 * @since 4.7
+	 * @since 4.10.9 Use customizable ticket name functions.
 	 *
 	 * @return void The method will echo in the context of a buffered output.
 	 *
@@ -73,7 +74,7 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 		$ticket_sent = empty( $_GET['tpp_sent'] ) ? false : true;
 
 		if ( $ticket_sent ) {
-			$this->main->add_message( __( 'Your PayPal Ticket has been received! Check your email for your PayPal Ticket confirmation.', 'event-tickets' ), 'success' );
+			$this->main->add_message( esc_html( sprintf( __( 'Your PayPal %1$s has been received! Check your email for your PayPal %1$s confirmation.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ticket_sent' ) ) ), 'success' );
 		}
 
 		$ticket_error = empty( $_GET['tpp_error'] ) ? false : (int) $_GET['tpp_error'];

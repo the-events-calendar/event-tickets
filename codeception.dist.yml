@@ -4,6 +4,7 @@ paths:
     log: tests/_output
     data: tests/_data
     helpers: tests/_support
+    wp_root: "%WP_ROOT_FOLDER%"
 settings:
     bootstrap: _bootstrap.php
     colors: true
@@ -20,3 +21,9 @@ extensions:
         - 'Codeception\Command\GenerateWPAjax'
         - 'Codeception\Command\GenerateWPCanonical'
         - 'Codeception\Command\GenerateWPXMLRPC'
+    enabled:
+      - Tribe\Test\Codeception\Extensions\Function_Mocker
+    config:
+      Tribe\Test\Codeception\Extensions\Function_Mocker:
+        suites: [ 'views_integration' ]
+        initFile: tests/_function-mocker-bootstrap.php

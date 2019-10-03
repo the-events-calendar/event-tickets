@@ -55,7 +55,7 @@ $currency        = tribe( 'tickets.commerce.currency' );
 	 *
 	 * @param  string $value     The value that will be filtered.
 	 */
-	$text    = apply_filters( 'tribe_tickets_loader_text', 'One Moment...' );
+	$text    = apply_filters( 'tribe_tickets_loader_text', __( 'One Moment...', 'event-tickets' ) );
 	/**
 	 * Allows filtering of extra classes used on the loader
 	 *

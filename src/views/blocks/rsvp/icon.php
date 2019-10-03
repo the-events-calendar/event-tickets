@@ -11,12 +11,13 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @version 4.9.4
+ * @since 4.10.9 Uses new functions to get singular and plural texts.
  *
+ * @version 4.10.9
  */
 
 ?>
 <div class="tribe-block__rsvp__icon">
 	<?php $this->template( 'blocks/rsvp/icon-svg' ); ?>
-	<?php esc_html_e( 'RSVP', 'event-tickets' ) ?>
+	<?php echo esc_html( tribe_get_rsvp_label_singular( basename( __FILE__ ) ) ); ?>
 </div>

@@ -50,7 +50,7 @@ class Tribe__Tickets__Tickets_View {
 
 		// Intercept Template file for Tickets
 		add_action( 'tribe_events_pre_get_posts', [ $myself, 'modify_ticket_display_query' ] );
-		add_filter( 'tribe_events_template', [ $myself, 'intercept_template' ], 20, 2 );
+		add_filter( 'tribe_events_template_single-event.php', [ $myself, 'intercept_template' ], 20 );
 
 		add_action( 'wp_footer', [ $myself, 'maybe_show_footer_spinner' ], 1 );
 
@@ -287,7 +287,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// Now fetch the display and check it
-		if ( 'tickets' !== get_query_var( 'eventDisplay', false ) ) {
+		if ( 'tickets' !== get_query_var( 'eventDisplay', false ) && ! $this->is_edit_page() ) {
 			return;
 		}
 
@@ -371,10 +371,15 @@ class Tribe__Tickets__Tickets_View {
 		// Prevents firing more then it needs too outside of the loop
 		$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
 
-		// Prevents Weird
+		// Now fetch the display and check it
+		$display = get_query_var( 'eventDisplay', false );
+
 		if (
-			! $this->is_edit_page()
-			|| ! $in_the_loop
+			! $in_the_loop
+			|| (
+				'tickets' !== $display
+				&& ! $this->is_edit_page()
+			)
 		) {
 			return $content;
 		}
@@ -424,7 +429,7 @@ class Tribe__Tickets__Tickets_View {
 		 *
 		 * @param  string $value     The value that will be filtered.
 		 */
-		$text = apply_filters( 'tribe_tickets_loader_text', 'Loading...' );
+		$text = apply_filters( 'tribe_tickets_loader_text', __( 'Loading...', 'event-tickets' ) );
 		/**
 		 * Allows filtering of extra classes used on the loader
 		 *
@@ -475,7 +480,7 @@ class Tribe__Tickets__Tickets_View {
 	 * @param  string $template Which template we are dealing with.
 	 * @return string           The correct File path for the tickets endpoint.
 	 */
-	public function intercept_template( $old_file, $template ) {
+	public function intercept_template( $old_file ) {
 		global $wp_query;
 
 		/**
@@ -495,12 +500,8 @@ class Tribe__Tickets__Tickets_View {
 
 		// Now fetch the display and check it
 		$display = get_query_var( 'eventDisplay', false );
-		if ( 'tickets' !== $display ) {
-			return $old_file;
-		}
 
-		// If for some reason it's not `single-event.php` we don't care either
-		if ( 'single-event.php' !== $template ) {
+		if ( 'tickets' !== $display && ! $this->is_edit_page() ) {
 			return $old_file;
 		}
 
@@ -855,12 +856,16 @@ class Tribe__Tickets__Tickets_View {
 
 		$ticket_count = $this->count_ticket_attendees( $event_id, $user_id );
 
-		if ( ! empty( $rsvp_count ) ) {
-			$descriptions[] = _nx( 'RSVP', 'RSVPs', $rsvp_count, 'Singular and plural texts for RSVP(s)', 'event-tickets' );
+		if ( 1 === $rsvp_count ) {
+			$descriptions[] = tribe_get_rsvp_label_singular( 'tickets_view_description' );
+		} elseif ( 1 < $rsvp_count ) {
+			$descriptions[] = tribe_get_rsvp_label_plural( 'tickets_view_description' );
 		}
 
-		if ( ! empty( $ticket_count ) ) {
-			$descriptions[] = _nx( 'Ticket', 'Tickets', $ticket_count, 'Singular and plural texts for Ticket(s)', 'event-tickets' );
+		if ( 1 === $ticket_count ) {
+			$descriptions[] = tribe_get_ticket_label_singular( 'tickets_view_description' );
+		} elseif ( 1 < $ticket_count ) {
+			$descriptions[] = tribe_get_ticket_label_plural( 'tickets_view_description' );
 		}
 
 		// Just return false if array is empty
@@ -868,7 +873,7 @@ class Tribe__Tickets__Tickets_View {
 			return '';
 		}
 
-		return implode( esc_html__( ' and ', 'event-tickets' ), $descriptions );
+		return esc_html( implode( _x( ' and ', 'separator if there are both RSVPs and Tickets', 'event-tickets' ), $descriptions ) );
 	}
 
 	/**
@@ -918,7 +923,7 @@ class Tribe__Tickets__Tickets_View {
 	}
 
 	/**
-	 * Gets a HTML Attribute for input/select/textarea to be disabled
+	 * Gets a HTML Attribute for input/select/textarea to be disabled.
 	 *
 	 * @param  int  $event_id   The Event/Post ID (optional).
 	 * @param  int  $ticket_id  The Ticket/RSVP ID (optional).
@@ -926,8 +931,9 @@ class Tribe__Tickets__Tickets_View {
 	 */
 	public function get_restriction_attr( $event_id = null, $ticket_id = null ) {
 		$is_disabled = '';
+
 		if ( $this->is_rsvp_restricted( $event_id, $ticket_id ) ) {
-			$is_disabled = 'disabled title="' . esc_attr__( 'This RSVP is no longer active.', 'event-tickets' ) . '"';
+			$is_disabled = 'disabled title="' . esc_attr( sprintf( __( 'This %s is no longer active.', 'event-tickets' ), tribe_get_rsvp_label_singular( 'rsvp_restricted_title_text' ) ) ) . '"';
 		}
 
 		return $is_disabled;

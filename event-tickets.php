@@ -40,6 +40,9 @@ define( 'EVENT_TICKETS_MAIN_PLUGIN_FILE', __FILE__ );
 // Load the required php min version functions
 require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/src/functions/php-min-version.php';
 
+// Load the Composer autoload file.
+require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/vendor/autoload.php';
+
 /**
  * Verifies if we need to warn the user about min PHP version and bail to avoid fatals
  */

@@ -102,7 +102,7 @@ class Tribe__Tickets__REST__V1__Documentation__Attendee_Definition_Provider
 				),
 				'rsvp_going'        => array(
 					'type'        => 'boolean',
-					'description' => __( 'If the attendee is for an RSVP ticket, this will be set to true if he/she is “Going”, false otherwise', 'event-tickets' ),
+					'description' => __( 'If the attendee is for an RSVP ticket, this will be set to true if he/she is "Going", false otherwise', 'event-tickets' ),
 				),
 				'payment'           => array(
 					'$ref' => '#/components/schemas/PaymentDetails',
