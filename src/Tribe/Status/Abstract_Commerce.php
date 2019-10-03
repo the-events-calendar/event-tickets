@@ -47,7 +47,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 *
 	 * @since 4.10
 	 *
-	 * @return int
+	 * @return Tribe__Tickets__Status__Abstract|false
 	 */
 	public function get_completed_status_class() {
 
