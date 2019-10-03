@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [TBD] TBD =
 
 * Fix - Attendees Report's "Orders" tab displays amount sold and available regardless of amount, including for unlimited and zero remaining [134108]
+* Fix - Prevent fatal errors when hosting environment does not support multibyte functionality by using new `tribe_strpos()` function [135202]
 
 = [4.10.9] 2019-10-01 =
 
