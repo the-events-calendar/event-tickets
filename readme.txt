@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Attendees Report's "Orders" tab displays amount sold and available regardless of amount, including for unlimited and zero remaining [134108]
+
 = [4.10.9] 2019-10-01 =
 
 * Feature - New functions to easily rename ticket types and ensure consistent wording: `tribe_get_rsvp_label_singular()`, `tribe_get_rsvp_label_singular_lowercase()`, `tribe_get_rsvp_label_plural()`, `tribe_get_rsvp_label_plural_lowercase()`, `tribe_get_ticket_label_singular()`, `tribe_get_ticket_label_singular_lowercase()`, `tribe_get_ticket_label_plural()`, and `tribe_get_ticket_label_plural_lowercase()` [130897]
