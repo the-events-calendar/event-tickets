@@ -11,7 +11,8 @@ class Tribe__Tickets__Assets {
 		tribe_assets(
 			$tickets_main,
 			[
-				[ 'event-tickets-tickets-css', 'tickets.css', [ 'dashicons' ] ],
+				[ 'event-tickets-reset-css', 'reset.css' ],
+				[ 'event-tickets-tickets-css', 'tickets.css', [ 'dashicons', 'event-tickets-reset-css' ] ],
 				[ 'event-tickets-tickets-rsvp-css', 'rsvp.css', [] ],
 				[ 'event-tickets-tickets-rsvp-js', 'rsvp.js', [ 'jquery', 'jquery-ui-datepicker' ] ],
 				[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],

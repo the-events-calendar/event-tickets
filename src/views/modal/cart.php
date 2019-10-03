@@ -45,5 +45,26 @@ $currency        = tribe( 'tickets.commerce.currency' );
 			<?php $template_obj->template( 'blocks/tickets/item', [ 'ticket' => $ticket, 'key' => $key, 'is_modal' => true, 'currency_symbol' => $currency_symbol ] ); ?>
 		<?php endforeach; ?>
 	<?php endif; ?>
+
+
+	<?php
+	/**
+	 * Allows filtering of text used in the loader
+	 *
+	 * @since  TBD
+	 *
+	 * @param  string $value     The value that will be filtered.
+	 */
+	$text    = apply_filters( 'tribe_tickets_loader_text', __( 'One Moment...', 'event-tickets' ) );
+	/**
+	 * Allows filtering of extra classes used on the loader
+	 *
+	 * @since  TBD
+	 *
+	 * @param  array $classes The array of classes that will be filtered.
+	 */
+	$classes = apply_filters( 'tribe_tickets_modal_loader_classes', [ 'tribe-loader__modal' ] );
+	include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' );
+	?>
 	<?php $template_obj->template( 'blocks/tickets/footer', [ 'is_modal' => true ] ); ?>
 </form>

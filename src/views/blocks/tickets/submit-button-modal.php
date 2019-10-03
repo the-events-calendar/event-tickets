@@ -32,7 +32,7 @@ $content     = apply_filters( 'tribe_events_tickets_edd_attendee_registration_mo
 $content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Ticket Modal</p>', $this );
 
 $args = [
-	'append_target'           => 'body',
+	'append_target'           => '',
 	'button_classes'          => [ 'tribe-common-c-btn', 'tribe-common-c-btn--small', 'tribe-tickets__submit' ],
 	'button_name'             => $provider_id . '_get_tickets',
 	'button_text'             => $button_text,

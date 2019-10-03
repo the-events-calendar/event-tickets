@@ -24,6 +24,8 @@ tribe.tickets.registration = {};
 	}
 
 	obj.selector = {
+		footerQuantity     : '.tribe-tickets__footer__quantity__number',
+		footerAmount       : '.tribe-tickets__footer__total .tribe-amount',
 		checkout           : '.tribe-tickets__registration__checkout',
 		checkoutButton     : '.tribe-tickets__item__registration__submit',
 		container          : '.tribe-tickets__registration',
@@ -40,7 +42,10 @@ tribe.tickets.registration = {};
 		fieldsErrorRequired: '.tribe-tickets__item__attendee__fields__error--required',
 		fieldsSuccess      : '.tribe-tickets__item__attendee__fields__success',
 		form               : '.tribe-tickets__item__attendee__fields__form',
-		loader             : '.tribe-tickets__item__attendee__fields__loader',
+		item               : '.tribe-tickets__item',
+		itemPrice          : '.tribe-amount',
+		itemQuantity       : '.tribe-ticket-quantity',
+		loader             : '.tribe-loader',
 		metaField          : '.ticket-meta',
 		metaItem           : '.tribe-ticket',
 		metaForm           : '.tribe-tickets__registration__content',
@@ -177,6 +182,9 @@ tribe.tickets.registration = {};
 					obj.appendARFields( data );
 					obj.prefillMetaForm( data );
 				}
+			},
+			complete: function() {
+				obj.loaderHide();
 			}
 		} );
 	}
@@ -220,6 +228,10 @@ tribe.tickets.registration = {};
 			nonMetaCount -= tickets_length;
 		} );
 
+		obj.maybeShowNonMetaNotice( nonMetaCount );
+	}
+
+	obj.maybeShowNonMetaNotice = function( nonMetaCount ) {
 		var $notice = $( '.tribe-tickets-notice--non-ar' );
 		if ( nonMetaCount ) {
 			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
@@ -268,8 +280,9 @@ tribe.tickets.registration = {};
 					return;
 				}
 
+				var $ticket_containers = $current_containers.find( '.tribe-ticket' );
 				$.each( data, function( index, value ) {
-					var $field = $current_containers.eq( current ).find( `[name*="${index}"]`);
+					var $field = $ticket_containers.eq( current ).find( `[name*="${index}"]`);
 					if ( ! $field.is( ':radio' ) && ! $field.is( ':checkbox' ) ) {
 						$field.val( value);
 					} else {
@@ -285,6 +298,72 @@ tribe.tickets.registration = {};
 				current++;
 			});
 		});
+	}
+
+	/**
+	 * Update all the footer info.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $form The form we're updating.
+	 */
+	obj.updateFooter = function() {
+		obj.updateFooterCount();
+		obj.updateFooterAmount();
+	}
+
+	/**
+	 * Adjust the footer count for +/-.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	obj.updateFooterCount = function() {
+		var $form       = $( obj.selector.miniCart );
+		var $field      = $form.find( obj.selector.footerQuantity );
+		var footerCount = 0;
+		var $qtys       = $form.find( obj.selector.itemQuantity );
+
+		$qtys.each(function(){
+			var new_quantity = parseInt( $(this).text(), 10 );
+			new_quantity     = isNaN( new_quantity ) ? 0 : new_quantity;
+			footerCount      += new_quantity;
+		} );
+
+		if ( 0 > footerCount ) {
+			return;
+		}
+
+		$field.text( footerCount );
+	}
+
+	/**
+	 * Adjust the footer total/amount for +/-.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	obj.updateFooterAmount = function() {
+		var $form        = $( obj.selector.miniCart );
+		var $field       = $form.find( obj.selector.footerAmount );
+		var footerAmount = 0;
+		var $qtys        = $form.find( obj.selector.itemQuantity );
+
+		$qtys.each(function(){
+			var $qty = $( this );
+			var $price   = $qty.closest( obj.selector.item ).find( obj.selector.itemPrice ).first(0);
+			var quantity = parseInt( $qty.text(), 10 );
+			quantity     = isNaN( quantity ) ? 0 : quantity;
+			footerAmount += obj.numberFormat( $price.text() ) * quantity;
+		} );
+
+		if ( 0 > footerAmount ) {
+			return;
+		}
+
+		$field.text( obj.numberFormat ( footerAmount ) );
 	}
 
 	/**
@@ -306,6 +385,8 @@ tribe.tickets.registration = {};
 				$item.find( '.tribe-tickets__item__total .tribe-amount' ).html( price );
 			}
 		} );
+
+		obj.updateFooter();
 
 	};
 
@@ -465,6 +546,24 @@ tribe.tickets.registration = {};
 	 */
 	obj.unfocusTicketBlock = function( input ) {
 		$( input ).closest( obj.selector.metaItem ).removeClass( 'tribe-ticket-item__has-focus' );
+	}
+
+	/**
+	 * Show the loader/spinner.
+	 *
+	 * @since TBD
+	 */
+	obj.loaderShow = function() {
+		$( obj.selector.loader ).removeClass( 'tribe-common-a11y-hidden' );
+	}
+
+	/**
+	 * Hide the loader/spinner.
+	 *
+	 * @since TBD
+	 */
+	obj.loaderHide = function() {
+		$( obj.selector.loader ).addClass( 'tribe-common-a11y-hidden' );
 	}
 
 	/* Utility */
@@ -658,6 +757,7 @@ tribe.tickets.registration = {};
 	 * @return void
 	 */
 	obj.init = function() {
+		obj.loaderShow();
 		obj.initFormPrefills();
 	}
 
