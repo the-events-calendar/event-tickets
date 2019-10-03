@@ -424,7 +424,7 @@ class Tribe__Tickets__Tickets_View {
 		 *
 		 * @param  string $value     The value that will be filtered.
 		 */
-		$text = apply_filters( 'tribe_tickets_loader_text', 'Loading...' );
+		$text = apply_filters( 'tribe_tickets_loader_text', __( 'Loading...', 'event-tickets' ) );
 		/**
 		 * Allows filtering of extra classes used on the loader
 		 *
