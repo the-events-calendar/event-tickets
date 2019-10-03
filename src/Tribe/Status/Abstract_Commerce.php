@@ -134,13 +134,12 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 *
 	 * @return string a string Ticket name, sold, and availability
 	 */
-	public function get_ticket_sale_infomation( $ticket_sold, $event_id ) {
-
+	public function get_ticket_sale_infomation( $ticket_sold, $post_id ) {
 		ob_start();
 		?>
 		<div class="tribe-event-meta tribe-event-meta-tickets-sold-itemized">
 			<?php
-				echo $this->get_name_and_sold_for_ticket( $ticket_sold, $event_id );
+				echo $this->get_name_and_sold_for_ticket( $ticket_sold, $post_id );
 				echo $this->get_available_incomplete_counts_for_ticket( $ticket_sold );
 			?>
 		</div>
