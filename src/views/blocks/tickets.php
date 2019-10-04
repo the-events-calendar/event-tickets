@@ -28,7 +28,7 @@ $is_sale_past        = $this->get( 'is_sale_past' );
 $cart_classes        = array( 'tribe-block', 'tribe-block__tickets' );
 
 // We don't display anything if there is no provider or tickets
-if ( ! $provider || empty( $tickets ) ) {
+if ( ! $provider ) {
 	return false;
 }
 
