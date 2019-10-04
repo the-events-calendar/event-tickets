@@ -480,10 +480,13 @@ tribe.tickets.block = {
 	 */
 	obj.stepUp = function( $input, originalValue ) {
 		// We use 0 here as a shorthand for no maximum.
-		var max       = $input[ 0 ].max ? Number( $input[ 0 ].max ) : -1;
-		var step      = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
+		var max       = $input.attr( 'max' ) ? Number( $input.attr( 'max' ) ) : -1;
+		var step      = $input.attr( 'step' ) ? Number( $input.attr( 'step' ) ) : 1;
 		var new_value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
-		new_value     = obj.checkSharedCapacity( new_value );
+		$parent = $input.closest( obj.selector.item );
+		if ( 'true' === $parent.attr( 'data-shared-cap' ) ) {
+			new_value     = obj.checkSharedCapacity( new_value );
+		}
 
 		if ( 0 === new_value ) {
 			return;
@@ -498,10 +501,10 @@ tribe.tickets.block = {
 			try {
 				$input[ 0 ].stepUp();
 			} catch ( ex ) {
-				$input[ 0 ].value = new_value;
+				$input.val( new_value );
 			}
 		} else {
-			$input[ 0 ].value = new_value;
+			$input.val( new_value );
 		}
 	}
 
@@ -512,8 +515,8 @@ tribe.tickets.block = {
 	 * @since TBD
 	 */
 	obj.stepDown = function( $input, originalValue ) {
-		var min      = $input[ 0 ].min ? Number( $input[ 0 ].min ) : 0;
-		var step     = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
+		var min      = $input.attr( 'min' ) ? Number( $input.attr( 'min' ) ) : 0;
+		var step     = $input.attr( 'step' ) ? Number( $input.attr( 'step' ) ) : 1;
 		var decrease = ( min <= originalValue - step && 0 < originalValue - step ) ? originalValue - step : min;
 
 		if ( 'function' === typeof $input[ 0 ].stepDown ) {
@@ -581,6 +584,11 @@ tribe.tickets.block = {
 		var $sharedTickets    = $( obj.selector.item ).filter( '[data-shared-cap="true"]' );
 		var $sharedCapFields  = $sharedTickets.find( obj.selector.itemExtraAvailableQuantity );
 		var $sharedCapTickets = $sharedTickets.find( obj.selector.itemQuantityInput );
+
+		if ( ! $sharedTickets.length ) {
+			return qty;
+		}
+
 		$sharedCapFields.each(
 			function() {
 				sharedCap.push( parseInt( $( this ).text(), 10 ) );
@@ -1390,7 +1398,9 @@ tribe.tickets.block = {
 				$this.val( max );
 			}
 
-			var maxQty = obj.checkSharedCapacity( new_quantity );
+			if ( 'true' === $ticket.attr( 'data-shared-cap' ) ) {
+				var maxQty = obj.checkSharedCapacity( new_quantity );
+			}
 
 			if ( 0 > maxQty ) {
 				new_quantity += maxQty;
