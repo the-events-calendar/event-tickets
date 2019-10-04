@@ -1,12 +1,7 @@
 // @TODO: Take this line off once we actually have the tribe object
-if ( 'undefined' === typeof tribe ) {
-	tribe = {};
-}
-
-// Define the tickets object if not defined.
-if ( 'undefined' === typeof tribe.tickets ) {
-	tribe.tickets = {};
-}
+var tribe = tribe || {};
+var tribe_ev = tribe_ev || {};
+tribe.tickets = tribe.tickets || {};
 
 tribe.tickets.block = {
 	num_attendees: 0,
