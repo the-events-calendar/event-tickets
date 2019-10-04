@@ -198,7 +198,10 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 * @return boolean
 	 */
 	public function is_modal_enabled( $post = null ) {
-		$option = tribe( 'settings.manager' )::get_option( 'ticket-attendee-modal' );
+		/** @var $settings_manager Tribe__Settings_Manager */
+		$settings_manager = tribe( 'settings.manager' );
+
+		$option = $settings_manager::get_option( 'ticket-attendee-modal' );
 
 		/**
 		 * Allow filtering of the modal setting, on a post-by-post basis if desired.

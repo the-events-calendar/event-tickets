@@ -17,14 +17,14 @@ $template = tribe( 'tickets.editor.template' );
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 
 if ( empty( $provider ) ) {
-	$provider_name     = Tribe__Tickets__Tickets::get_event_ticket_provider( array_key_first( $events ) );
-	$provider = $provider_name::ATTENDEE_OBJECT;
+	$provider_name = Tribe__Tickets__Tickets::get_event_ticket_provider( array_key_first( $events ) );
+	$provider      = $provider_name->attendee_object;
 }
 
-$non_meta_count       = 0;
-$provider_class       = $this->get_form_class( $provider );
-$all_tickets          = [];
-$classes              = [
+$non_meta_count = 0;
+$provider_class = $this->get_form_class( $provider );
+$all_tickets    = [];
+$classes        = [
 	'tribe-common',
 	'tribe-tickets__registration',
 ];
@@ -72,7 +72,7 @@ $classes              = [
 		?>
 		<div class="tribe-tickets__registration__content">
 			<?php foreach ( $events as $event_id => $tickets ) : ?>
-				<?php if (  $provider !== Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id )::ATTENDEE_OBJECT ) : ?>
+				<?php if ( $provider !== Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id )->attendee_object ) : ?>
 					<?php continue; ?>
 				<?php endif; ?>
 				<?php
@@ -80,7 +80,7 @@ $classes              = [
 					$providers = wp_list_pluck( $tickets, 'provider' );
 					$providers_arr = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
 
-					if (  empty( $provider_class ) && ! empty( $providers_arr[ $event_id ] ) ) :
+					if ( empty( $provider_class ) && ! empty( $providers_arr[ $event_id ] ) ) :
 						$provider_class = 'tribe-tickets__item__attendee__fields__form--' . $providers_arr[ $event_id ];
 					endif;
 
