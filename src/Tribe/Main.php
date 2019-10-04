@@ -702,7 +702,7 @@ class Tribe__Tickets__Main {
 				/** @var $settings_manager Tribe__Settings_Manager */
 				$settings_manager = tribe( 'settings.manager' );
 
-				$settings_manager->set_option( 'ticket-attendee-modal', false );
+				$settings_manager::set_option( 'ticket-attendee-modal', false );
 			}
 		}
 	}
