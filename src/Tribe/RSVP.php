@@ -11,7 +11,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @var string
 	 */
-	const ATTENDEE_OBJECT   = 'tribe_rsvp_attendees';
+	const ATTENDEE_OBJECT = 'tribe_rsvp_attendees';
+
+	/**
+	 * Name of the CPT that holds Attendees (tickets holders).
+	 *
+	 * @var string
+	 */
+	public $attendee_object = 'tribe_rsvp_attendees';
 
 	/**
 	 * Name of the CPT that holds Orders
