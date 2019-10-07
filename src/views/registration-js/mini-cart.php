@@ -13,7 +13,9 @@
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 
 if ( empty( $provider ) ) {
-	$provider_name     = Tribe__Tickets__Tickets::get_event_ticket_provider( array_key_first( $events ) );
+	$event_keys = array_keys( $events );
+	$event_key = array_shift( $event_keys );
+	$provider_name     = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_key );
 	$provider = $provider_name::ATTENDEE_OBJECT;
 }
 

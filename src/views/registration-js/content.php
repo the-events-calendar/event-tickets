@@ -17,8 +17,14 @@ $template = tribe( 'tickets.editor.template' );
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 
 if ( empty( $provider ) ) {
-	$provider_name = Tribe__Tickets__Tickets::get_event_ticket_provider( array_key_first( $events ) );
-	$provider      = $provider_name->attendee_object;
+	$event_keys    = array_keys( $events );
+	$event_key     = array_shift( $event_keys );
+	$provider_name = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_key );
+	$provider_obj  = new $provider_name;
+	$provider      = $provider_obj->attendee_object;
+} elseif ( is_string( $provider ) ) {
+	$provider_obj = tribe( 'tickets.attendee_registration.view' )->get_cart_provider( $provider );
+	$provider      = $provider_obj->attendee_object;
 }
 
 $non_meta_count = 0;
@@ -72,7 +78,10 @@ $classes        = [
 		?>
 		<div class="tribe-tickets__registration__content">
 			<?php foreach ( $events as $event_id => $tickets ) : ?>
-				<?php if ( $provider !== Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id )->attendee_object ) : ?>
+				<?php
+					$provider_name = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
+					$provider_obj  = new $provider_name; ?>
+				<?php if ( $provider !== $provider_obj->attendee_object ) : ?>
 					<?php continue; ?>
 				<?php endif; ?>
 				<?php

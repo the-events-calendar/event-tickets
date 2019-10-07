@@ -22,7 +22,10 @@ tribe.tickets.block = {
 	 *
 	 */
 	obj.selector = {
+		blockFooterAmount          : '.tribe-tickets__footer__total .tribe-amount',
+		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
 		container                  : '#tribe-tickets',
+		validationNotice           : '.tribe-tickets-notice--error',
 		item                       : '.tribe-tickets__item',
 		itemExtraAvailable         : '.tribe-tickets__item__extra__available',
 		itemExtraAvailableQuantity : '.tribe-tickets__item__extra__available__quantity',
@@ -31,10 +34,8 @@ tribe.tickets.block = {
 		itemPrice                  : '.tribe-amount',
 		itemQuantity               : '.tribe-tickets__item__quantity',
 		itemQuantityInput          : '.tribe-tickets-quantity',
-		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
-		blockFooterAmount          : '.tribe-tickets__footer__total .tribe-amount',
-		submit                     : '.tribe-tickets__buy',
 		loader                     : '.tribe-loader',
+		submit                     : '.tribe-tickets__buy',
 	};
 
 	var $tribe_ticket = $( obj.selector.container );
@@ -1449,7 +1450,7 @@ tribe.tickets.block = {
 
 			var $metaForm = $( obj.modalSelector.metaForm );
 			var isValidForm = obj.validateForm( $metaForm );
-			var $errorNotice = $( '.tribe-tickets-notice--error' );
+			var $errorNotice = $( obj.selector.validationNotice );
 			var validationErrorTitle = 'Whoops';
 			var validationErrorContent = `<p>You have <span class="tribe-tickets-notice--error__count">0</span> ticket(s) with a field that requires information.</p>`
 
@@ -1457,7 +1458,7 @@ tribe.tickets.block = {
 				$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
 				$errorNotice.find( '.tribe-tickets-notice__title' ).text( validationErrorTitle );
 				$errorNotice.find( 'p' ).html( validationErrorContent );
-				$( '.tribe-tickets-notice--error__count' ).text( isValidForm[ 1 ] );
+				$( obj.selector.validationNotice + '__count' ).text( isValidForm[ 1 ] );
 				$errorNotice.show();
 				return false;
 			}
@@ -1544,7 +1545,7 @@ tribe.tickets.block = {
 					window.location.href = url;
 				},
 				error: function( response ) {
-					var $errorNotice = $( '.tribe-tickets-notice--error' );
+					var $errorNotice = $( obj.selector.validationNotice );
 					$errorNotice.find( '.tribe-tickets-notice__title' ).text( `API Connection Error (${response.responseJSON.code})` );
 					$errorNotice.find( 'p' ).html( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.' );
 					$errorNotice.fadeIn();

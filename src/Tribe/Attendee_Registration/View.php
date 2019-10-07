@@ -90,8 +90,9 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 				default:
 					break;
 			}
+
 			$providers[ $ticket->event ] = $provider;
-			$events[ $ticket->event ][] = $ticket_data;
+			$events[ $ticket->event ][]  = $ticket_data;
 		}
 
 		/**
@@ -170,7 +171,6 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		if ( is_numeric( $provider ) ) {
 			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 			$tickets_handler = tribe( 'tickets.handler' );
-
 			$provider = get_post_meta( absint( $provider ), $tickets_handler->key_provider_field, true );
 		}
 
