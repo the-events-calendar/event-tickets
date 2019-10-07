@@ -478,7 +478,7 @@ tribe.tickets.block = {
 		var max       = $input.attr( 'max' ) ? Number( $input.attr( 'max' ) ) : -1;
 		var step      = $input.attr( 'step' ) ? Number( $input.attr( 'step' ) ) : 1;
 		var new_value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
-		$parent = $input.closest( obj.selector.item );
+		var $parent = $input.closest( obj.selector.item );
 		if ( 'true' === $parent.attr( 'data-shared-cap' ) ) {
 			new_value     = obj.checkSharedCapacity( new_value );
 		}
