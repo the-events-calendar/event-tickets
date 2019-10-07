@@ -3,15 +3,17 @@
 namespace Tribe\Tickets\Ticket_Object;
 
 use Tribe\Tickets\Test\Testcases\Ticket_Object_TestCase;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 class UTCTest extends Ticket_Object_TestCase {
+
 	protected $timezone = 'UTC';
 
 	/**
 	 * @test
 	 * it should return the correct start date
 	 *
-	 * @covers start_date
+	 * @covers Ticket_Object::start_date
 	 */
 	public function it_should_return_the_correct_start_date() {
 		$start_date = strtotime( '-10 minutes' );
@@ -34,7 +36,7 @@ class UTCTest extends Ticket_Object_TestCase {
 	 * @test
 	 * it should return the correct end date
 	 *
-	 * @covers end_date
+	 * @covers Ticket_Object::end_date
 	 */
 	public function it_should_return_the_correct_end_date() {
 		$end_date = strtotime( '-10 minutes' );
@@ -57,7 +59,7 @@ class UTCTest extends Ticket_Object_TestCase {
 	 * @test
 	 * it returns false when given no params
 	 *
-	 * @covers get_date
+	 * @covers Ticket_Object::get_date
 	 */
 	public function it_returns_false_when_given_no_params() {
 		$rsvp = $this->make_rsvp();
@@ -73,7 +75,7 @@ class UTCTest extends Ticket_Object_TestCase {
 	 * @test
 	 * it returns timestamp when given no second param
 	 *
-	 * @covers get_date
+	 * @covers Ticket_Object::get_date
 	 */
 	public function it_returns_timestamp_when_given_no_second_param() {
 		$rsvp = $this->make_rsvp();
@@ -89,7 +91,7 @@ class UTCTest extends Ticket_Object_TestCase {
 	 * @test
 	 * it returns DateTime when second param is false
 	 *
-	 * @covers get_date
+	 * @covers Ticket_Object::get_date
 	 */
 	public function it_returns_datetime_when_second_param_is_false() {
 		$rsvp = $this->make_rsvp();
@@ -108,7 +110,7 @@ class UTCTest extends Ticket_Object_TestCase {
 	 * @test
 	 * it should get the correct timezone
 	 *
-	 * @covers get_event_timezone
+	 * @covers Ticket_Object::get_event_timezone
 	 */
 	public function it_should_get_the_correct_timezone() {
 		$rsvp = $this->make_rsvp();
@@ -209,6 +211,31 @@ class UTCTest extends Ticket_Object_TestCase {
 
 	/**
 	 * @test
+	 * it should return true when date is before event date in future
+	 *
+	 * @covers Ticket_Object::date_is_earlier
+	 */
+	public function it_should_return_true_when_date_is_before_event_date_in_future() {
+		$args = [
+			'meta_input' => [
+				'_ticket_start_date' => date( 'Y-m-d H:i:s', $this->later_date ),
+				'_ticket_end_date'   => date( 'Y-m-d H:i:s', $this->later_date + HOUR_IN_SECONDS ),
+			],
+		];
+
+		$rsvp         = $this->make_rsvp( $args );
+		$date_earlier = $rsvp->date_is_earlier( $this->earlier_date - MINUTE_IN_SECONDS );
+
+		$this->assertTrue( $date_earlier, 'Misidentified RSVP date earlier than event.' );
+
+		$ticket       = $this->make_ticket( 1, $args );
+		$date_earlier = $ticket->date_is_earlier( $this->earlier_date - MINUTE_IN_SECONDS );
+
+		$this->assertTrue( $date_earlier, 'Misidentified Ticket date earlier than event.' );
+	}
+
+	/**
+	 * @test
 	 * it should return false when date is equal to event start date
 	 *
 	 * @covers Ticket_Object::date_is_earlier
@@ -245,6 +272,31 @@ class UTCTest extends Ticket_Object_TestCase {
 
 	/**
 	 * @test
+	 * it should return false when date is not before event date in past
+	 *
+	 * @covers Ticket_Object::date_is_earlier
+	 */
+	public function it_should_return_false_when_date_is_not_before_event_date_in_past() {
+		$args = [
+			'meta_input' => [
+				'_ticket_start_date' => date( 'Y-m-d H:i:s', $this->earlier_date - HOUR_IN_SECONDS ),
+				'_ticket_end_date'   => date( 'Y-m-d H:i:s', $this->earlier_date ),
+			],
+		];
+
+		$rsvp         = $this->make_rsvp( $args );
+		$date_earlier = $rsvp->date_is_earlier( $this->later_date );
+
+		$this->assertFalse( $date_earlier, 'Misidentified RSVP date earlier than event.' );
+
+		$ticket       = $this->make_ticket( 1, $args );
+		$date_earlier = $ticket->date_is_earlier( $this->later_date );
+
+		$this->assertFalse( $date_earlier, 'Misidentified Ticket date earlier than event.' );
+	}
+
+	/**
+	 * @test
 	 * it should return true when date is after event date
 	 *
 	 * @covers Ticket_Object::date_is_later
@@ -257,6 +309,31 @@ class UTCTest extends Ticket_Object_TestCase {
 
 		$ticket     = $this->make_ticket();
 		$date_later = $ticket->date_is_later( $this->later_date + MINUTE_IN_SECONDS );
+
+		$this->assertTrue( $date_later, 'Misidentified Ticket date later than event.' );
+	}
+
+	/**
+	 * @test
+	 * it should return true when date is after event date in past
+	 *
+	 * @covers Ticket_Object::date_is_later
+	 */
+	public function it_should_return_true_when_date_is_after_event_date_in_past() {
+		$args = [
+			'meta_input' => [
+				'_ticket_start_date' => date( 'Y-m-d H:i:s', $this->earlier_date - HOUR_IN_SECONDS ),
+				'_ticket_end_date'   => date( 'Y-m-d H:i:s', $this->earlier_date ),
+			],
+		];
+
+		$rsvp       = $this->make_rsvp( $args );
+		$date_later = $rsvp->date_is_later();
+
+		$this->assertTrue( $date_later, 'Misidentified RSVP date later than event.' );
+
+		$ticket     = $this->make_ticket( 1, $args );
+		$date_later = $ticket->date_is_later();
 
 		$this->assertTrue( $date_later, 'Misidentified Ticket date later than event.' );
 	}
@@ -299,9 +376,34 @@ class UTCTest extends Ticket_Object_TestCase {
 
 	/**
 	 * @test
+	 * it should return false when date is not after event date in future
+	 *
+	 * @covers Ticket_Object::date_is_later
+	 */
+	public function it_should_return_false_when_date_is_not_after_event_date_in_future() {
+		$args = [
+			'meta_input' => [
+				'_ticket_start_date' => date( 'Y-m-d H:i:s', $this->later_date ),
+				'_ticket_end_date'   => date( 'Y-m-d H:i:s', $this->later_date + HOUR_IN_SECONDS ),
+			],
+		];
+
+		$rsvp         = $this->make_rsvp( $args );
+		$date_earlier = $rsvp->date_is_later();
+
+		$this->assertFalse( $date_earlier, 'Misidentified RSVP date later than event.' );
+
+		$ticket       = $this->make_ticket( 1, $args );
+		$date_earlier = $ticket->date_is_later();
+
+		$this->assertFalse( $date_earlier, 'Misidentified Ticket date later than event.' );
+	}
+
+	/**
+	 * @test
 	 * it should return correct availability slug
 	 *
-	 * @covers availability_slug
+	 * @covers Ticket_Object::availability_slug
 	 */
 	public function it_should_return_correct_availability_slug() {
 		$rsvp = $this->make_rsvp();
@@ -319,9 +421,55 @@ class UTCTest extends Ticket_Object_TestCase {
 
 	/**
 	 * @test
+	 * it should return correct availability slug in past
+	 *
+	 * @covers Ticket_Object::availability_slug
+	 */
+	public function it_should_return_correct_availability_slug_in_past() {
+		$args = [
+			'meta_input' => [
+				'_ticket_start_date' => date( 'Y-m-d H:i:s', $this->earlier_date - HOUR_IN_SECONDS ),
+				'_ticket_end_date'   => date( 'Y-m-d H:i:s', $this->earlier_date ),
+			],
+		];
+
+		$rsvp = $this->make_rsvp( $args );
+
+		$this->assertEquals( 'availability-past', $rsvp->availability_slug(), 'Failed to get correct availability slug on RSVP (availability-past).' );
+
+		$ticket = $this->make_ticket( 1, $args );
+
+		$this->assertEquals( 'availability-past', $ticket->availability_slug(), 'Failed to get correct availability slug on Ticket (availability-past).' );
+	}
+
+	/**
+	 * @test
+	 * it should return correct availability slug in future
+	 *
+	 * @covers Ticket_Object::availability_slug
+	 */
+	public function it_should_return_correct_availability_slug_in_future() {
+		$args = [
+			'meta_input' => [
+				'_ticket_start_date' => date( 'Y-m-d H:i:s', $this->later_date ),
+				'_ticket_end_date'   => date( 'Y-m-d H:i:s', $this->later_date + HOUR_IN_SECONDS ),
+			],
+		];
+
+		$rsvp = $this->make_rsvp( $args );
+
+		$this->assertEquals( 'availability-future', $rsvp->availability_slug(), 'Failed to get correct availability slug on RSVP (availability-future).' );
+
+		$ticket = $this->make_ticket( 1, $args );
+
+		$this->assertEquals( 'availability-future', $ticket->availability_slug(), 'Failed to get correct availability slug on Ticket (availability-future).' );
+	}
+
+	/**
+	 * @test
 	 * it should return correct availability slug with date string
 	 *
-	 * @covers availability_slug
+	 * @covers Ticket_Object::availability_slug
 	 */
 	public function it_should_return_correct_availability_slug_with_date_string() {
 		$rsvp = $this->make_rsvp();
@@ -341,10 +489,10 @@ class UTCTest extends Ticket_Object_TestCase {
 	 * @test
 	 * it should allow filtering the availability slug
 	 *
-	 * @covers availability_slug
+	 * @covers Ticket_Object::availability_slug
 	 */
 	public function it_should_allow_filtering_the_availability_slug() {
-		add_filter( 'event_tickets_availability_slug', function () {
+		add_filter( 'event_tickets_availability_slug', static function () {
 			return 'slug_test';
 		} );
 		$rsvp = $this->make_rsvp();
