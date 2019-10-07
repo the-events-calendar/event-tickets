@@ -1900,8 +1900,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendee_optout       = $attendee_details['optout'];
 		$order_id              = $attendee_details['order_id'];
 
-		$order_attendee_id = 0;
-
 		// Get the event this tickets is for
 		$post_id = get_post_meta( $product_id, $this->event_key, true );
 
@@ -1989,10 +1987,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			 * @param int $product_id RSVP ticket post ID
 			 * @param int $order_attendee_id Attendee # for order
 			 */
-			do_action( 'event_tickets_rsvp_ticket_created', $attendee_id, $post_id, $product_id, $order_attendee_id );
+			do_action( 'event_tickets_rsvp_ticket_created', $attendee_id, $post_id, $product_id, $i );
 
 			$this->record_attendee_user_id( $attendee_id );
-			$order_attendee_id++;
 		}
 
 		/**
