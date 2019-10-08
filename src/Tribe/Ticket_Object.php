@@ -291,31 +291,22 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Determines if the given date is within the ticket's start/end date range
 		 *
-		 * @param string $datetime The date/time that we want to determine if it falls within the start/end date range
+		 * @param string|int|null $datetime The date/time that we want to determine if it falls within the start/end date range.
 		 *
 		 * @return boolean Whether or not the provided date/time falls within the start/end date range
 		 */
-		public function date_in_range( $datetime = 'now' ) {
-			// Attempt to convert the timestamp to a Date object.
-			try {
-				$timezone = $this->get_event_timezone();
-
-				$now = Tribe__Date_Utils::build_date_object( $datetime, $timezone );
-
-				if ( Tribe__Date_Utils::is_timestamp( $datetime ) ) {
-					$now = Tribe__Date_Utils::build_date_object( $now->format( Tribe__Date_Utils::DBDATETIMEFORMAT ), $timezone );
-				}
-			} catch ( Exception $exception ) {
-				return false;
-			}
+		public function date_in_range( $datetime = null ) {
+			$date = $this->get_date( $datetime, false );
 
 			$start = $this->start_date( false );
 			$end   = $this->end_date( false );
 
-			if ( ! $start instanceof DateTime || ! $end instanceof DateTime || ! $now instanceof DateTime ) {
-				$now   = time();
+			if ( ! $start instanceof DateTime ) {
 				$start = $this->start_date();
-				$end   = $this->end_date();
+			}
+
+			if ( ! $end instanceof DateTime ) {
+				$end = $this->end_date();
 			}
 
 			// Bail if we don't have an end date and the event has passed
@@ -328,7 +319,16 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return false;
 			}
 
-			return ( empty( $start ) || $now >= $start ) && ( empty( $end ) || $now <= $end );
+			return (
+				(
+					empty( $start )
+					|| $start <= $date
+				)
+				&& (
+					empty( $end )
+					|| $date <= $end
+				)
+			);
 		}
 
 
@@ -349,8 +349,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return false;
 			}
 
-			if ( $as_timestamp ) {
-				return strtotime( $date );
+			if ( null === $date ) {
+				$date = time();
 			}
 
 			try {
@@ -359,13 +359,17 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$datetime = Tribe__Date_Utils::build_date_object( $date, $timezone );
 
 				if ( Tribe__Date_Utils::is_timestamp( $datetime ) ) {
-					$datetime = Tribe__Date_Utils::build_date_object( $datetime->format( Tribe__Date_Utils::DBDATETIMEFORMAT ), new DateTimeZone( 'UTC' ) );
+					$datetime = Tribe__Date_Utils::build_date_object( $datetime->format( Tribe__Date_Utils::DBDATETIMEFORMAT ), $timezone );
 				}
-
-				return $datetime;
 			} catch ( Exception $exception ) {
 				return strtotime( $date );
 			}
+
+			if ( $as_timestamp ) {
+				return $datetime->getTimestamp();
+			}
+
+			return $datetime;
 		}
 
 
@@ -408,32 +412,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return boolean Whether or not the provided date/time is smaller than the ticket's start date
 		 */
 		public function date_is_earlier( $datetime = null ) {
-			if ( empty( $datetime ) ) {
-				$datetime = time();
-			}
-
-			// Attempt to convert the timestamp to a Date object.
-			try {
-				$timezone = $this->get_event_timezone();
-
-				$date = Tribe__Date_Utils::build_date_object( $datetime, $timezone );
-
-				if ( Tribe__Date_Utils::is_timestamp( $datetime ) ) {
-					$date = Tribe__Date_Utils::build_date_object( $date->format( Tribe__Date_Utils::DBDATETIMEFORMAT ), $timezone );
-				}
-			} catch ( Exception $exception ) {
-				return false;
-			}
+			$date = $this->get_date( $datetime, false );
 
 			$start = $this->start_date( false );
 
-			if ( ! $start instanceof DateTime || ! $date instanceof DateTime ) {
-				if ( is_numeric( $datetime ) ) {
-					$date = $datetime;
-				} else {
-					$date = strtotime( $datetime );
-				}
-
+			if ( ! $start instanceof DateTime ) {
 				$start = $this->start_date();
 			}
 
@@ -448,34 +431,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return boolean Whether or not the provided date/time is greater than the ticket's end date
 		 */
 		public function date_is_later( $datetime = null ) {
-			if ( empty( $datetime ) ) {
-				$datetime = time();
-			}
-
-			// Attempt to convert the timestamp to a Date object.
-			try {
-				$timezone = $this->get_event_timezone();
-
-				$date = Tribe__Date_Utils::build_date_object( $datetime, $timezone );
-
-				if ( Tribe__Date_Utils::is_timestamp( $datetime ) ) {
-					$date = Tribe__Date_Utils::build_date_object( $date->format( Tribe__Date_Utils::DBDATETIMEFORMAT ), $timezone );
-				}
-			} catch ( Exception $exception ) {
-				return false;
-			}
+			$date = $this->get_date( $datetime, false );
 
 			$end = $this->end_date( false );
 
-			if ( ! $end instanceof DateTime || ! $date instanceof DateTime ) {
-				if ( empty( $datetime ) ) {
-					$date = time();
-				} elseif ( is_numeric( $datetime ) ) {
-					$date = $datetime;
-				} else {
-					$date = strtotime( $datetime );
-				}
-
+			if ( ! $end instanceof DateTime ) {
 				$end = $this->end_date();
 			}
 

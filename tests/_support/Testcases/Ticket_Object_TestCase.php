@@ -7,6 +7,7 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker as Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\Test_Case;
+use Tribe__Date_Utils as Date_Utils;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Ticket_Object as RSVP;
@@ -115,8 +116,8 @@ class Ticket_Object_TestCase extends Test_Case {
 	 */
 	protected function make_rsvp( $args = [], $event_id = null ) {
 		$defaults = [
-			'_ticket_start_date' => date( 'Y-m-d H:i:s', $this->earlier_date ),
-			'_ticket_end_date'   => date( 'Y-m-d H:i:s', $this->later_date ),
+			'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( $this->earlier_date ),
+			'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( $this->later_date ),
 		];
 
 		/*codecept_debug( '----------------' );
@@ -153,8 +154,8 @@ class Ticket_Object_TestCase extends Test_Case {
 	 */
 	protected function make_ticket( $cost = 1, $args = [], $event_id = null ) {
 		$defaults = [
-			'_ticket_start_date' => date( 'Y-m-d H:i:s', $this->earlier_date ),
-			'_ticket_end_date'   => date( 'Y-m-d H:i:s', $this->later_date ),
+			'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( $this->earlier_date ),
+			'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( $this->later_date ),
 		];
 
 		if ( isset( $args['meta_input'] ) ) {
@@ -216,5 +217,43 @@ class Ticket_Object_TestCase extends Test_Case {
 		$ticket_id = $this->create_paypal_ticket( $event_id, $cost, $args );
 
 		return $this->get_ticket( $event_id, $ticket_id );
+	}
+
+	protected function get_local_datetime_string_from_utc_time( $time = null ) {
+		if ( null === $time ) {
+			$time = time();
+		}
+
+		$utc_timezone = new \DateTimeZone( 'UTC' );
+		$date         = Date_Utils::build_date_object( $time, $utc_timezone );
+
+		codecept_debug( $date->format( Date_Utils::DBDATETIMEFORMAT ) );
+
+		if ( 'UTC' !== $this->timezone ) {
+			$timezone = new \DateTimeZone( $this->timezone );
+			$date->setTimezone( $timezone );
+		}
+
+		codecept_debug( $date->format( Date_Utils::DBDATETIMEFORMAT ) );
+		return $date->format( Date_Utils::DBDATETIMEFORMAT );
+	}
+
+	protected function get_timestamp_from_utc_time( $time = null ) {
+		if ( null === $time ) {
+			$time = time();
+		}
+
+		$utc_timezone = new \DateTimeZone( 'UTC' );
+		$date         = Date_Utils::build_date_object( $time, $utc_timezone );
+
+		codecept_debug( $date->format( Date_Utils::DBDATETIMEFORMAT ) );
+
+		if ( 'UTC' !== $this->timezone ) {
+			$timezone = new \DateTimeZone( $this->timezone );
+			$date->setTimezone( $timezone );
+		}
+
+		codecept_debug( $date->format( Date_Utils::DBDATETIMEFORMAT ) );
+		return $date->format( Date_Utils::DBDATETIMEFORMAT );
 	}
 }

@@ -21,8 +21,8 @@ class UTCTest extends Ticket_Object_TestCase {
 
 		$overrides = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '-10 minutes' ) ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '+10 minutes' ) ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( strtotime( '-10 minutes' ) ),
+				'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( strtotime( '+10 minutes' ) ),
 			],
 		];
 
@@ -77,8 +77,8 @@ class UTCTest extends Ticket_Object_TestCase {
 
 		$overrides = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', $this->earlier_date ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', $this->later_date ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( $this->earlier_date ),
+				'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( $this->later_date ),
 			],
 		];
 

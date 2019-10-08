@@ -38,8 +38,8 @@ class UTCTest extends Ticket_Object_TestCase {
 
 		$args = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '+10 minutes' ) ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '+20 minutes' ) ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( strtotime( '+10 minutes' ) ),
+				'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( strtotime( '+20 minutes' ) ),
 			],
 		];
 
@@ -66,8 +66,8 @@ class UTCTest extends Ticket_Object_TestCase {
 
 		$args = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '-20 minutes' ) ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '-10 minutes' ) ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( strtotime( '-20 minutes' ) ),
+				'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( strtotime( '-10 minutes' ) ),
 			],
 		];
 
@@ -94,15 +94,15 @@ class UTCTest extends Ticket_Object_TestCase {
 
 		$args = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '-20 minutes' ) ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '-10 minutes' ) ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( strtotime( '-20 minutes' ) ),
+				'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( strtotime( '-10 minutes' ) ),
 			],
 		];
 
 		$args2 = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '+10 minutes' ) ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '+20 minutes' ) ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( strtotime( '+10 minutes' ) ),
+				'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( strtotime( '+20 minutes' ) ),
 			],
 		];
 
@@ -133,15 +133,15 @@ class UTCTest extends Ticket_Object_TestCase {
 
 		$args = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '-20 minutes' ) ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '-10 minutes' ) ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( strtotime( '-20 minutes' ) ),
+				'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( strtotime( '-10 minutes' ) ),
 			],
 		];
 
 		$args2 = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '+10 minutes' ) ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '+20 minutes' ) ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( strtotime( '+10 minutes' ) ),
+				'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( strtotime( '+20 minutes' ) ),
 			],
 		];
 
@@ -172,15 +172,15 @@ class UTCTest extends Ticket_Object_TestCase {
 
 		$args = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '-20 minutes' ) ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '-10 minutes' ) ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( strtotime( '-20 minutes' ) ),
+				'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( strtotime( '-10 minutes' ) ),
 			],
 		];
 
 		$args2 = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '+10 minutes' ) ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '+20 minutes' ) ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( strtotime( '+10 minutes' ) ),
+				'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( strtotime( '+20 minutes' ) ),
 			],
 		];
 

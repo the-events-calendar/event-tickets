@@ -19,7 +19,7 @@ class UTCTest extends Ticket_Object_TestCase {
 		$start_date = strtotime( '-10 minutes' );
 		$meta       = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', $start_date ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( $start_date ),
 			],
 		];
 
@@ -42,7 +42,7 @@ class UTCTest extends Ticket_Object_TestCase {
 		$end_date = strtotime( '-10 minutes' );
 		$meta     = [
 			'meta_input' => [
-				'_ticket_end_date' => date( 'Y-m-d H:i:s', $end_date ),
+				'_ticket_end_date' => $this->get_local_datetime_string_from_utc_time( $end_date ),
 			],
 		];
 
@@ -127,12 +127,12 @@ class UTCTest extends Ticket_Object_TestCase {
 	 */
 	public function it_correctly_identifies_a_date_in_range_with_string() {
 		$rsvp          = $this->make_rsvp();
-		$date_in_range = $rsvp->date_in_range( date( 'Y-m-d H:i:s', $this->now_date ) );
+		$date_in_range = $rsvp->date_in_range( $this->get_local_datetime_string_from_utc_time( $this->now_date ) );
 
 		$this->assertTrue( $date_in_range, 'Misidentified RSVP date in range as out of range.' );
 
 		$ticket        = $this->make_ticket();
-		$date_in_range = $ticket->date_in_range( date( 'Y-m-d H:i:s', $this->now_date ) );
+		$date_in_range = $ticket->date_in_range( $this->get_local_datetime_string_from_utc_time( $this->now_date ) );
 
 		$this->assertTrue( $date_in_range, 'Misidentified Ticket date in range as out of range.' );
 	}
@@ -218,8 +218,8 @@ class UTCTest extends Ticket_Object_TestCase {
 	public function it_should_return_true_when_date_is_before_event_date_in_future() {
 		$args = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', $this->later_date ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', $this->later_date + HOUR_IN_SECONDS ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( $this->later_date ),
+				'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( $this->later_date + HOUR_IN_SECONDS ),
 			],
 		];
 
@@ -279,8 +279,8 @@ class UTCTest extends Ticket_Object_TestCase {
 	public function it_should_return_false_when_date_is_not_before_event_date_in_past() {
 		$args = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', $this->earlier_date - HOUR_IN_SECONDS ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', $this->earlier_date ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( $this->earlier_date - HOUR_IN_SECONDS ),
+				'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( $this->earlier_date ),
 			],
 		];
 
@@ -322,8 +322,8 @@ class UTCTest extends Ticket_Object_TestCase {
 	public function it_should_return_true_when_date_is_after_event_date_in_past() {
 		$args = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', $this->earlier_date - HOUR_IN_SECONDS ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', $this->earlier_date ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( $this->earlier_date - HOUR_IN_SECONDS ),
+				'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( $this->earlier_date ),
 			],
 		];
 
@@ -383,8 +383,8 @@ class UTCTest extends Ticket_Object_TestCase {
 	public function it_should_return_false_when_date_is_not_after_event_date_in_future() {
 		$args = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', $this->later_date ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', $this->later_date + HOUR_IN_SECONDS ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( $this->later_date ),
+				'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( $this->later_date + HOUR_IN_SECONDS ),
 			],
 		];
 
@@ -428,8 +428,8 @@ class UTCTest extends Ticket_Object_TestCase {
 	public function it_should_return_correct_availability_slug_in_past() {
 		$args = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', $this->earlier_date - HOUR_IN_SECONDS ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', $this->earlier_date ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( $this->earlier_date - HOUR_IN_SECONDS ),
+				'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( $this->earlier_date ),
 			],
 		];
 
@@ -451,10 +451,12 @@ class UTCTest extends Ticket_Object_TestCase {
 	public function it_should_return_correct_availability_slug_in_future() {
 		$args = [
 			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', $this->later_date ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', $this->later_date + HOUR_IN_SECONDS ),
+				'_ticket_start_date' => $this->get_local_datetime_string_from_utc_time( $this->later_date ),
+				'_ticket_end_date'   => $this->get_local_datetime_string_from_utc_time( $this->later_date + HOUR_IN_SECONDS ),
 			],
 		];
+
+		codecept_debug( var_export( $args, true ) );
 
 		$rsvp = $this->make_rsvp( $args );
 
@@ -474,15 +476,15 @@ class UTCTest extends Ticket_Object_TestCase {
 	public function it_should_return_correct_availability_slug_with_date_string() {
 		$rsvp = $this->make_rsvp();
 
-		$this->assertEquals( 'available', $rsvp->availability_slug( date( 'Y-m-d H:i:s' ) ), 'Failed to get correct availability slug on RSVP (available).' );
-		$this->assertEquals( 'availability-future', $rsvp->availability_slug( date( 'Y-m-d H:i:s', $this->earlier_date - MINUTE_IN_SECONDS ) ), 'Failed to get correct availability slug on RSVP (availability-future).' );
-		$this->assertEquals( 'availability-past', $rsvp->availability_slug( date( 'Y-m-d H:i:s', $this->later_date + MINUTE_IN_SECONDS ) ), 'Failed to get correct availability slug on RSVP (availability-past).' );
+		$this->assertEquals( 'available', $rsvp->availability_slug( $this->get_local_datetime_string_from_utc_time() ), 'Failed to get correct availability slug on RSVP (available).' );
+		$this->assertEquals( 'availability-future', $rsvp->availability_slug( $this->get_local_datetime_string_from_utc_time( $this->earlier_date - MINUTE_IN_SECONDS ) ), 'Failed to get correct availability slug on RSVP (availability-future).' );
+		$this->assertEquals( 'availability-past', $rsvp->availability_slug( $this->get_local_datetime_string_from_utc_time( $this->later_date + MINUTE_IN_SECONDS ) ), 'Failed to get correct availability slug on RSVP (availability-past).' );
 
 		$ticket = $this->make_ticket();
 
-		$this->assertEquals( 'available', $ticket->availability_slug( date( 'Y-m-d H:i:s' ) ), 'Failed to get correct availability slug on Ticket (available).' );
-		$this->assertEquals( 'availability-future', $ticket->availability_slug( date( 'Y-m-d H:i:s', $this->earlier_date - MINUTE_IN_SECONDS ) ), 'Failed to get correct availability slug on Ticket (availability-future).' );
-		$this->assertEquals( 'availability-past', $ticket->availability_slug( date( 'Y-m-d H:i:s', $this->later_date + MINUTE_IN_SECONDS ) ), 'Failed to get correct availability slug on Ticket (availability-past).' );
+		$this->assertEquals( 'available', $ticket->availability_slug( $this->get_local_datetime_string_from_utc_time() ), 'Failed to get correct availability slug on Ticket (available).' );
+		$this->assertEquals( 'availability-future', $ticket->availability_slug( $this->get_local_datetime_string_from_utc_time( $this->earlier_date - MINUTE_IN_SECONDS ) ), 'Failed to get correct availability slug on Ticket (availability-future).' );
+		$this->assertEquals( 'availability-past', $ticket->availability_slug( $this->get_local_datetime_string_from_utc_time( $this->later_date + MINUTE_IN_SECONDS ) ), 'Failed to get correct availability slug on Ticket (availability-past).' );
 	}
 
 	/**
