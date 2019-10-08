@@ -28,6 +28,7 @@ tribe.tickets.block = {
 	 */
 	obj.selector = {
 		container                  : '#tribe-tickets',
+		hidden                     : 'tribe-common-a11y-hidden',
 		item                       : '.tribe-tickets__item',
 		itemExtraAvailable         : '.tribe-tickets__item__extra__available',
 		itemExtraAvailableQuantity : '.tribe-tickets__item__extra__available_quantity',
@@ -39,7 +40,8 @@ tribe.tickets.block = {
 		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
 		blockFooterAmount          : '.tribe-tickets__footer__total .tribe-amount',
 		submit                     : '.tribe-tickets__buy',
-		loader                     : '.tribe-loader',
+		loader                     : '.tribe-common-c-loader',
+		ticketLoader               : '.tribe-tickets-loader__tickets-block',
 	};
 
 	var $tribe_ticket = $( obj.selector.container );
@@ -59,14 +61,15 @@ tribe.tickets.block = {
 	 *
 	 */
 	obj.modalSelector = {
-		cartForm  : '.tribe-modal__wrapper--ar #tribe-modal__cart',
-		container : '.tribe-modal__wrapper--ar',
-		itemRemove: '.tribe-tickets__item__remove',
-		itemTotal : '.tribe-tickets__item__total .tribe-amount',
-		metaField : '.ticket-meta',
-		metaForm  : '.tribe-modal__wrapper--ar #tribe-modal__attendee_registration',
-		metaItem  : '.tribe-ticket',
-		submit    : '.tribe-block__tickets__item__attendee__fields__footer_submit',
+		cartForm   : '.tribe-modal__wrapper--ar #tribe-modal__cart',
+		container  : '.tribe-modal__wrapper--ar',
+		itemRemove : '.tribe-tickets__item__remove',
+		itemTotal  : '.tribe-tickets__item__total .tribe-amount',
+		metaField  : '.ticket-meta',
+		metaForm   : '.tribe-modal__wrapper--ar #tribe-modal__attendee_registration',
+		metaItem   : '.tribe-ticket',
+		submit     : '.tribe-block__tickets__item__attendee__fields__footer_submit',
+		loader     : '.tribe-tickets-loader__modal',
 	};
 
 	/*
@@ -666,38 +669,33 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $class A class for targeting a specific loader.
+	 * @param string loaderClass A class for targeting a specific loader.
 	 * @return void
 	 */
-	obj.loaderShow = function( classes ) {
-		var $loader = $( obj.selector.loader );
-
-		if ( 'undefined' === typeof classes ) {
-			classes = '.tribe-loader__default';
-			$loader.appendTo( obj.selector.container );
-			$loader.css( 'position', 'absolute');
+	obj.loaderShow = function( loaderClass ) {
+		if ( 'undefined' === typeof loaderClass ) {
+			loaderClass = obj.selector.ticketLoader;
 		}
 
-		$loader.filter( classes ).removeClass( 'tribe-common-a11y-hidden' );
+		var $loader = $( obj.selector.loader ).filter( loaderClass );
+		$loader.removeClass( obj.selector.hidden );
 	}
 
 	/**
 	 * Hide the loader/spinner.
 	 *
 	 * @since TBD
+	 *
+	 * @param string loaderClass A class for targeting a specific loader.
+	 * @return void
 	 */
-	obj.loaderHide = function(classes ) {
-		if ( 'undefined' === typeof classes ) {
-			classes = '.tribe-loader__default';
+	obj.loaderHide = function(loaderClass ) {
+		if ( 'undefined' === typeof loaderClass ) {
+			loaderClass = obj.selector.ticketLoader;
 		}
 
-		var $loader = $( obj.selector.loader ).filter( classes );
-		$loader.addClass( 'tribe-common-a11y-hidden' );
-
-		if ( '.tribe-loader__default' === classes  ) {
-			$loader.appendTo( $( '.tribe-loader__wrapper:empty' ) );
-			$loader.css( 'position', 'fixed');
-		}
+		var $loader = $( obj.selector.loader ).filter( loaderClass );
+		$loader.addClass( obj.selector.hidden );
 	}
 
 	/* Prefill Handling */
@@ -721,7 +719,7 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.initFormPrefills = function() {
-		obj.loaderShow( '.tribe-loader__modal' );
+		obj.loaderShow( obj.modalSelector.loader );
 		$.when(
 			obj.getData()
 		).then(
@@ -806,7 +804,7 @@ tribe.tickets.block = {
 			});
 		});
 
-		obj.loaderHide( '.tribe-loader__modal' );
+		obj.loaderHide( obj.modalSelector.loader );
 	}
 
 	/**

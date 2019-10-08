@@ -27,6 +27,7 @@ $cart_classes = [
 $currency        = tribe( 'tickets.commerce.currency' );
 
 ?>
+<!-- modal cart -->
 <form
 	id="tribe-modal__cart"
 	action="<?php echo esc_url( $cart_url ) ?>"
@@ -57,14 +58,15 @@ $currency        = tribe( 'tickets.commerce.currency' );
 	 */
 	$text    = apply_filters( 'tribe_tickets_loader_text', __( 'One Moment...', 'event-tickets' ) );
 	/**
-	 * Allows filtering of extra classes used on the loader
+	 * Allows filtering of extra classes used on the modal loader
 	 *
 	 * @since  TBD
 	 *
 	 * @param  array $classes The array of classes that will be filtered.
 	 */
-	$classes = apply_filters( 'tribe_tickets_modal_loader_classes', [ 'tribe-loader__modal' ] );
+	$classes = apply_filters( 'tribe_tickets_modal_loader_classes', [ 'tribe-tickets-loader__modal' ] );
 	include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' );
 	?>
 	<?php $template_obj->template( 'blocks/tickets/footer', [ 'is_modal' => true ] ); ?>
 </form>
+<!-- end modal cart -->

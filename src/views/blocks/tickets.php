@@ -59,8 +59,9 @@ echo $html;
 	</p>
 	<?php $this->template( 'blocks/tickets/commerce/fields', [ 'provider' => $provider, 'provider_id' => $provider_id ] ); ?>
 	<?php if ( $has_tickets_on_sale ) : ?>
+	<!-- begin tickets_on_sale -->
 		<?php foreach ( $tickets_on_sale as $key => $ticket ) : ?>
-		<?php $ticket_symbol = $currency->get_currency_symbol( $ticket->ID, true ); ?>
+			<?php $ticket_symbol = $currency->get_currency_symbol( $ticket->ID, true ); ?>
 			<?php $this->template( 'blocks/tickets/item', [ 'ticket' => $ticket, 'key' => $key, 'currency_symbol' => $ticket_symbol ] ); ?>
 		<?php endforeach; ?>
 		<?php
@@ -68,7 +69,24 @@ echo $html;
 		$currency_symbol     = $currency->get_currency_symbol( $tickets[0]->ID, true );
 		$this->template( 'blocks/tickets/footer', [ 'tickets' => $tickets, 'currency_symbol' => $currency_symbol ] );
 		?>
+		<!-- end tickets_on_sale -->
 	<?php else : ?>
-		<?php $this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] ); ?>
+		<?php echo $this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] ); ?>
 	<?php endif; ?>
+	<?php
+		ob_start();
+		/**
+		 * Allows filtering of extra classes used on the tickets-block loader
+		 *
+		 * @since  TBD
+		 *
+		 * @param  array $classes The array of classes that will be filtered.
+		 */
+		$classes = apply_filters( 'tribe_tickets_block_loader_classes', [ 'tribe-tickets-loader__tickets-block' ] );
+		include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' );
+		$html = ob_get_contents();
+		ob_end_clean();
+		echo $html;
+	?>
+	<!-- end #tribe-tickets -->
 </form>
