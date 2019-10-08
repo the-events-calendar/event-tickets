@@ -227,4 +227,13 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( 2, Tickets::get_event_checkedin_attendees_count( $post_id2 ) );
 	}
 
+	/**
+	 * It should allow getting availability slug by collection.
+	 *
+	 * @test
+	 */
+	public function should_allow_getting_availability_slug_by_collection() {
+		//
+	}
+
 }

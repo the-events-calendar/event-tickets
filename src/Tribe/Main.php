@@ -851,7 +851,7 @@ class Tribe__Tickets__Main {
 		$tickets      = Tribe__Tickets__Tickets::get_all_event_tickets( $event_id );
 		$has_non_rsvp = false;
 		$available    = false;
-		$now          = current_time( 'timestamp' );
+		$now          = time();
 
 		foreach ( $tickets as $ticket ) {
 			if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {

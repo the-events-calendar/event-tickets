@@ -301,7 +301,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		// the input is a UTC date or timestamp
 		$utc_date_string = is_numeric( $date ) ? "@{$date}" : $date;
 		$utc_date        = new DateTime( $utc_date_string, new DateTimeZone( 'UTC' ) );
-		$from            = Tribe__Timezones::to_tz( $utc_date->format( 'Y-m-d H:i:s' ), Tribe__Timezones::wp_timezone_string() );
+		$from            = Tribe__Timezones::to_tz( $utc_date->format( Tribe__Date_Utils::DBDATETIMEFORMAT ), Tribe__Timezones::wp_timezone_string() );
 
 		return [
 			'meta_query' => [
@@ -334,7 +334,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		// the input is a UTC date or timestamp
 		$utc_date_string = is_numeric( $date ) ? "@{$date}" : $date;
 		$utc_date        = new DateTime( $utc_date_string, new DateTimeZone( 'UTC' ) );
-		$until           = Tribe__Timezones::to_tz( $utc_date->format( 'Y-m-d H:i:s' ), Tribe__Timezones::wp_timezone_string() );
+		$until           = Tribe__Timezones::to_tz( $utc_date->format( Tribe__Date_Utils::DBDATETIMEFORMAT ), Tribe__Timezones::wp_timezone_string() );
 
 		return [
 			'meta_query' => [
