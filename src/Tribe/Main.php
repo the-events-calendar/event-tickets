@@ -697,8 +697,8 @@ class Tribe__Tickets__Main {
 		$modal_option = $ar_reg->is_modal_enabled();
 
 		if ( ! $modal_option && $modal_option !== false ) {
-			$modal_version_check = tribe_installed_after( Tribe__Tickets__Main::instance(), '4.10.10' );
-			if ( ! $modal_version_check ) {
+			$modal_version_check = tribe_installed_before( Tribe__Tickets__Main::instance(), '4.11.0' );
+			if ( $modal_version_check ) {
 				/** @var $settings_manager Tribe__Settings_Manager */
 				$settings_manager = tribe( 'settings.manager' );
 
