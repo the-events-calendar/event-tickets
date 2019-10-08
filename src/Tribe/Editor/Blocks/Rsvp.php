@@ -242,9 +242,10 @@ extends Tribe__Editor__Blocks__Abstract {
 			wp_send_json_error( $response );
 		}
 
-		$has_tickets = false;
-		$post_id     = get_the_id();
-		$ticket      = tribe( 'tickets.rsvp' )->get_ticket( $post_id, $ticket_id );
+        $has_tickets    = false;
+        $event          = tribe( 'tickets.rsvp' )->get_event_for_ticket( $ticket_id );
+        $post_id        = $event->ID;
+		$ticket         = tribe( 'tickets.rsvp' )->get_ticket( $post_id, $ticket_id );
 
 		/**
 		 * RSVP specific action fired just before a RSVP-driven attendee tickets for an order are generated
