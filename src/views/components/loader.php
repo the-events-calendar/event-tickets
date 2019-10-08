@@ -30,7 +30,7 @@ if ( ! empty( $classes ) ) {
 }
 
 ?>
-<div class="tribe-common">
+<div class="tribe-common tribe-loader__wrapper">
 	<div
 	<?php tribe_classes( $spinner_classes ); ?>
 		role="alert"

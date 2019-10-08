@@ -669,8 +669,17 @@ tribe.tickets.block = {
 	 * @param string $class A class for targeting a specific loader.
 	 * @return void
 	 */
-	obj.loaderShow = function( $class= '.tribe-loader__default' ) {
-		$( obj.selector.loader ).filter( $class ).removeClass( 'tribe-common-a11y-hidden' );
+	obj.loaderShow = function( classes ) {
+		var $loader = $( obj.selector.loader );
+
+		if ( 'undefined' === typeof classes ) {
+			console.log('move!');
+			classes = '.tribe-loader__default';
+			$loader.appendTo( obj.selector.container );
+			$loader.css( 'position', 'absolute');
+		}
+
+		$loader.filter( classes ).removeClass( 'tribe-common-a11y-hidden' );
 	}
 
 	/**
@@ -679,7 +688,15 @@ tribe.tickets.block = {
 	 * @since TBD
 	 */
 	obj.loaderHide = function() {
-		$( obj.selector.loader ).addClass( 'tribe-common-a11y-hidden' );
+		var $loader = $( obj.selector.loader );
+		$loader.addClass( 'tribe-common-a11y-hidden' );
+		var $parent = $loader.closest( obj.selector.container );
+
+		if ( $parent.length ) {
+			console.log('move back!');
+			$loader.appendTo( $( '.tribe-loader__wrapper:empty' ) );
+			$loader.css( 'position', 'fixed');
+		}
 	}
 
 	/* Prefill Handling */
