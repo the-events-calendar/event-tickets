@@ -673,7 +673,6 @@ tribe.tickets.block = {
 		var $loader = $( obj.selector.loader );
 
 		if ( 'undefined' === typeof classes ) {
-			console.log('move!');
 			classes = '.tribe-loader__default';
 			$loader.appendTo( obj.selector.container );
 			$loader.css( 'position', 'absolute');
@@ -687,13 +686,15 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 */
-	obj.loaderHide = function() {
-		var $loader = $( obj.selector.loader );
-		$loader.addClass( 'tribe-common-a11y-hidden' );
-		var $parent = $loader.closest( obj.selector.container );
+	obj.loaderHide = function(classes ) {
+		if ( 'undefined' === typeof classes ) {
+			classes = '.tribe-loader__default';
+		}
 
-		if ( $parent.length ) {
-			console.log('move back!');
+		var $loader = $( obj.selector.loader ).filter( classes );
+		$loader.addClass( 'tribe-common-a11y-hidden' );
+
+		if ( '.tribe-loader__default' === classes  ) {
 			$loader.appendTo( $( '.tribe-loader__wrapper:empty' ) );
 			$loader.css( 'position', 'fixed');
 		}
@@ -805,7 +806,7 @@ tribe.tickets.block = {
 			});
 		});
 
-		obj.loaderHide();
+		obj.loaderHide( '.tribe-loader__modal' );
 	}
 
 	/**
