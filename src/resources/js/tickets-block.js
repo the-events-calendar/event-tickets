@@ -311,7 +311,6 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.maybeShowNonMetaNotice = function( $form ) {
-		console.log('maybeShowNonMetaNotice');
 		var nonMetaCount = 0;
 		var $cartItems =  $form.find( obj.selector.item ).filter( ':visible' );
 
@@ -334,7 +333,6 @@ tribe.tickets.block = {
 		);
 
 		var $notice = $( '.tribe-tickets-notice--non-ar' );
-		console.log(nonMetaCount);
 		if ( 0 < nonMetaCount ) {
 			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
 			$notice.fadeIn();
@@ -706,13 +704,10 @@ tribe.tickets.block = {
 	 */
 	obj.initFormPrefills = function() {
 		obj.loaderShow( '.tribe-loader__modal' );
-
-		$.ajax( {
-			type: 'GET',
-			data: {'provider': $tribe_ticket.data( 'providerId' )},
-			dataType: 'json',
-			url: obj.getRestEndpoint(),
-			success: function ( data ) {
+		$.when(
+			obj.getData()
+		).then(
+			function( data ) {
 				if ( data.tickets ) {
 					obj.prefillCartForm( $tribe_ticket, data.tickets );
 				}
@@ -735,7 +730,7 @@ tribe.tickets.block = {
 					obj.prefillmetaForm( local.meta );
 				}
 			}
-		} );
+		);
 	}
 
 	/**
@@ -821,12 +816,12 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.prefillTicketsBlock = function() {
-		$.ajax({
-			type: 'GET',
-			url: obj.getRestEndpoint(),
-			data: {},
-			success: function( response ) {
-				var tickets = response.tickets;
+
+		$.when(
+			obj.getData()
+		).then(
+			function( data ) {
+				var tickets = data.tickets;
 
 				if ( tickets.length ) {
 					var $eventCount = 0;
@@ -848,11 +843,10 @@ tribe.tickets.block = {
 						$( '#tribe-tickets__notice__tickets-in-cart' ).show();
 					}
 				}
-			},
-			complete: function() {
+
 				obj.loaderHide();
 			}
-		});
+		);
 	}
 
 	/* sessionStorage ("local") */
@@ -864,7 +858,7 @@ tribe.tickets.block = {
 	 *
 	 * @return void
 	 */
-	obj.storeLocal = function() {
+	obj.storeLocal = function( data ) {
 		var meta  = obj.getMetaForSave();
 		sessionStorage.setItem( 'tribe_tickets_attendees-' + obj.postId, window.JSON.stringify( meta ) );
 
@@ -904,6 +898,53 @@ tribe.tickets.block = {
 	}
 
 	/**
+	 * Get cart & meta data from sessionStorage, otherwise make an ajax call.
+	 *
+	 * @since TBD
+	 */
+	obj.getData = function() {
+		var deferred = $.Deferred();
+		var postId   = obj.postId;
+		var meta     = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_api_attendees-' + postId ) );
+		var tickets  = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets__api_cart-' + postId ) );
+
+		// We've got all the data, so skip the ajax call.
+		if (
+			'undefined' !== typeof( meta )
+			&& null !== meta
+			&& 'undefined' !== typeof( tickets )
+			&& null !== tickets
+		) {
+			var ret = {
+				meta: meta,
+				tickets: tickets
+			};
+			deferred.resolve( ret );
+			return deferred.promise();
+		}
+
+		$.ajax( {
+			type: 'GET',
+			data: {'provider': $tribe_ticket.data( 'providerId' )},
+			dataType: 'json',
+			url: obj.getRestEndpoint(),
+			success: function ( data ) {
+				var ret = {
+					meta: data.meta,
+					tickets: data.tickets
+				};
+
+				deferred.resolve( ret );
+			},
+			error: function() {
+				deferred.reject( false );
+			}
+		} );
+
+		return deferred.promise();
+	}
+
+	/**
 	 * Attempts to hydrate a dynamically-created attendee form "block" from sessionStorage data.
 	 *
 	 * @since TBD
@@ -913,19 +954,10 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.maybeHydrateAttendeeBlockFromLocal = function( length ) {
-		var local = obj.getLocal();
-
-		if ( ! local ) {
-			return;
-		}
-
-		var data = local.meta;
-		$.ajax( {
-			type: 'GET',
-			data: {'provider': $tribe_ticket.data( 'providerId' )},
-			dataType: 'json',
-			url: obj.getRestEndpoint(),
-			success: function ( data ) {
+		$.when(
+			obj.getData()
+		).then(
+			function( data ) {
 				var cartSkip = data.meta.length;
 				if (length < cartSkip ) {
 					obj.prefillmetaForm( data.meta, length );
@@ -951,7 +983,7 @@ tribe.tickets.block = {
 					);
 				}
 			}
-		} );
+		);
 	}
 
 	/* Data Formatting / API Handling */
