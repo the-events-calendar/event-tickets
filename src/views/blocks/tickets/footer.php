@@ -25,16 +25,9 @@ $provider        = $this->get( 'provider' );
 	<?php if ( $is_mini ) : ?>
 		<a class="tribe-common-b2 tribe-tickets__footer__back-link" href="<?php echo esc_url( $provider->get_cart_url() ); ?>"><?php esc_html_e( 'Return to Cart', 'event-tickets' ); ?></a>
 	<?php endif; ?>
-	<!-- blocks/tickets/footer-quantity -->
 	<?php $this->template( 'blocks/tickets/footer-quantity' ); ?>
-	<!-- end blocks/tickets/footer-quantity -->
-	<!-- blocks/tickets/footer-total -->
 	<?php $this->template( 'blocks/tickets/footer-total', [ 'event_id' => $event_id, 'provider' => $provider ] ); ?>
-	<!-- end blocks/tickets/footer-total -->
-	<!-- blocks/tickets/submit -->
 	<?php if ( true !== $is_modal ) : ?>
 		<?php $this->template( 'blocks/tickets/submit', [ 'tickets' => $tickets ] ); ?>
 	<?php endif; ?>
-	<!-- end blocks/tickets/submit -->
-	<!-- end tribe-tickets__footer -->
 </div>

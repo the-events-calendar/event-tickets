@@ -27,7 +27,6 @@ $cart_classes = [
 $currency        = tribe( 'tickets.commerce.currency' );
 
 ?>
-<!-- modal cart -->
 <form
 	id="tribe-modal__cart"
 	action="<?php echo esc_url( $cart_url ) ?>"
@@ -69,4 +68,3 @@ $currency        = tribe( 'tickets.commerce.currency' );
 	?>
 	<?php $template_obj->template( 'blocks/tickets/footer', [ 'is_modal' => true ] ); ?>
 </form>
-<!-- end modal cart -->

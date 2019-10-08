@@ -69,4 +69,3 @@ if ( $must_login ) {
 	<?php endif; ?>
 
 </div>
-<!-- end .tribe-block-tickets -->

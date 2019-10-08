@@ -1,4 +1,3 @@
-<!-- pre-modal -->
 <?php
 /**
  * Block: Tickets
@@ -51,14 +50,11 @@ $args = [
 ];
 
 tribe( 'dialog.view' )->render_modal( $content, $args );
-?>
-<!-- post-modal -->
-<?php
+
 $event_id = get_the_ID();
 /** @var Tribe__Tickets__Editor__Template $template */
 $template = tribe( 'tickets.editor.template' );
-$tickets = $this->get( 'tickets' );
-?><!-- attendees-content --><?php
+$tickets  = $this->get( 'tickets' );
 $template->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) );
-?><!-- end attendees-content --><?php
+
 

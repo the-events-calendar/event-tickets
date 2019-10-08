@@ -59,7 +59,6 @@ echo $html;
 	</p>
 	<?php $this->template( 'blocks/tickets/commerce/fields', [ 'provider' => $provider, 'provider_id' => $provider_id ] ); ?>
 	<?php if ( $has_tickets_on_sale ) : ?>
-	<!-- begin tickets_on_sale -->
 		<?php foreach ( $tickets_on_sale as $key => $ticket ) : ?>
 			<?php $ticket_symbol = $currency->get_currency_symbol( $ticket->ID, true ); ?>
 			<?php $this->template( 'blocks/tickets/item', [ 'ticket' => $ticket, 'key' => $key, 'currency_symbol' => $ticket_symbol ] ); ?>
@@ -69,7 +68,6 @@ echo $html;
 		$currency_symbol     = $currency->get_currency_symbol( $tickets[0]->ID, true );
 		$this->template( 'blocks/tickets/footer', [ 'tickets' => $tickets, 'currency_symbol' => $currency_symbol ] );
 		?>
-		<!-- end tickets_on_sale -->
 	<?php else : ?>
 		<?php echo $this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] ); ?>
 	<?php endif; ?>
@@ -88,5 +86,4 @@ echo $html;
 		ob_end_clean();
 		echo $html;
 	?>
-	<!-- end #tribe-tickets -->
 </form>
