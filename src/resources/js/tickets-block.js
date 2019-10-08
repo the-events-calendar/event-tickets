@@ -1499,7 +1499,7 @@ tribe.tickets.block = {
 					window.location.href = url;
 				},
 				error: function( response ) {
-					$errorNotice.find( '.tribe-tickets-notice__title' ).text( `API Connection Error (${response.responseJSON.code})` );
+					$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.api_error_title + ` (${response.responseJSON.code})` );
 					$errorNotice.find( 'p' ).html( TribeMessages.connection_error );
 					$errorNotice.fadeIn();
 					$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
@@ -1551,7 +1551,7 @@ tribe.tickets.block = {
 				},
 				error: function( response ) {
 					var $errorNotice = $( obj.selector.validationNotice );
-					$errorNotice.find( '.tribe-tickets-notice__title' ).text( `API Connection Error (${response.responseJSON.code})` );
+					$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.api_error_title + ` (${response.responseJSON.code})` );
 					$errorNotice.find( 'p' ).html( TribeMessages.connection_error );
 					$errorNotice.fadeIn();
 					$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
