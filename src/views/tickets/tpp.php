@@ -27,7 +27,7 @@ $commerce = tribe( 'tickets.commerce.paypal' );
 
 $messages       = $commerce->get_messages();
 $messages_class = $messages ? 'tribe-tpp-message-display' : '';
-$now            = current_time( 'timestamp' );
+$now            = time();
 $cart_url       = '';
 ?>
 <form

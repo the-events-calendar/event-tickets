@@ -967,7 +967,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 					/** @var Tribe__Tickets__Commerce__Currency $currency */
 					$currency                 = tribe( 'tickets.commerce.currency' );
 					$ticket_object            = $this->get_ticket_object( $attendee['product_id'] );
-					$purchase_time            = Tribe__Utils__Array::get( $order_data, 'purchase_time', get_post_time( 'Y-m-d H:i:s', false, $attendee_id ) );
+					$purchase_time            = Tribe__Utils__Array::get( $order_data, 'purchase_time', get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee_id ) );
 					$attendee_data['payment'] = array(
 						'provider'     => Tribe__Utils__Array::get( $order_data, 'provider_slug', $this->get_provider_slug( $provider ) ),
 						'price'        => $ticket_object->price,
