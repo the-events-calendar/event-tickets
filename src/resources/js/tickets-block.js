@@ -818,7 +818,7 @@ tribe.tickets.block = {
 	obj.prefillTicketsBlock = function() {
 
 		$.when(
-			obj.getData()
+			obj.getData( true )
 		).then(
 			function( data ) {
 				var tickets = data.tickets;
@@ -895,53 +895,6 @@ tribe.tickets.block = {
 	obj.clearLocal = function( postId ) {
 		sessionStorage.removeItem( 'tribe_tickets_attendees-' + postId );
 		sessionStorage.removeItem( 'tribe_tickets_cart-' + postId );
-	}
-
-	/**
-	 * Get cart & meta data from sessionStorage, otherwise make an ajax call.
-	 *
-	 * @since TBD
-	 */
-	obj.getData = function() {
-		var deferred = $.Deferred();
-		var postId   = obj.postId;
-		var meta     = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_api_attendees-' + postId ) );
-		var tickets  = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets__api_cart-' + postId ) );
-
-		// We've got all the data, so skip the ajax call.
-		if (
-			'undefined' !== typeof( meta )
-			&& null !== meta
-			&& 'undefined' !== typeof( tickets )
-			&& null !== tickets
-		) {
-			var ret = {
-				meta: meta,
-				tickets: tickets
-			};
-			deferred.resolve( ret );
-			return deferred.promise();
-		}
-
-		$.ajax( {
-			type: 'GET',
-			data: {'provider': $tribe_ticket.data( 'providerId' )},
-			dataType: 'json',
-			url: obj.getRestEndpoint(),
-			success: function ( data ) {
-				var ret = {
-					meta: data.meta,
-					tickets: data.tickets
-				};
-
-				deferred.resolve( ret );
-			},
-			error: function() {
-				deferred.reject( false );
-			}
-		} );
-
-		return deferred.promise();
 	}
 
 	/**
@@ -1094,6 +1047,75 @@ tribe.tickets.block = {
 		});
 
 		return meta;
+	}
+
+	/**
+	 * Get cart & meta data from sessionStorage, otherwise make an ajax call.
+	 * Always loads tickets from API on page load to be sure we keep up to date with the cart.
+	 *
+	 * This returns a deferred data object (promise) So when calling you need to use something like
+	 * jQuery's $.when()
+	 *
+	 * Example:
+	 * 	$.when(
+	 * 		obj.getData()
+	 * 	).then(
+	 * 		function( data ) {
+	 * 			// Do stuff with the data.
+	 * 		}
+	 * 	);
+	 *
+	 * @since TBD
+	 *
+	 * @return obj Deferred data object.
+	 */
+	obj.getData = function( pageLoad ) {
+		var ret      = {};
+		var deferred = $.Deferred();
+		var meta     = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + obj.postId ) );
+
+		if ( null !== meta ) {
+			ret.meta = meta;
+		}
+
+		// If we haven't reloaded the page, assume the cart hasn't changed since we did.
+		if ( ! pageLoad ) {
+			var tickets = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart-' + obj.postId ) );
+
+			if ( null !== tickets ) {
+				ret.tickets = tickets;
+			}
+
+			deferred.resolve( ret );
+		}
+
+		if ( ! ret.tickets || ! ret.meta ) {
+			$.ajax( {
+				type: 'GET',
+				data: {'provider': $tribe_ticket.data( 'providerId' )},
+				dataType: 'json',
+				url: obj.getRestEndpoint(),
+				success: function ( data ) {
+					// Store for future use.
+					if ( null === meta ) {
+						sessionStorage.setItem( 'tribe_tickets_attendees-' + obj.postId, window.JSON.stringify( data.meta ) );
+					}
+					sessionStorage.setItem( 'tribe_tickets_cart-' + obj.postId, window.JSON.stringify( data.tickets ) );
+
+					var ret = {
+						meta: data.meta,
+						tickets: data.tickets
+					};
+
+					deferred.resolve( ret );
+				},
+				error: function() {
+					deferred.reject( false );
+				}
+			} );
+		}
+
+		return deferred.promise();
 	}
 
 	/* Validation */
