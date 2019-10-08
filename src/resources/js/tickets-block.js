@@ -88,6 +88,9 @@ tribe.tickets.block = {
 	obj.tribe_ticket_provider = $tribe_ticket.data( 'provider' );
 	obj.postId = $( '.status-publish' ).attr( 'id' ).replace( 'post-', '' );
 
+	// Translations - for future use.
+	var { __, _x, _n, _nx } = wp.i18n;
+
 	/**
 	 * Init the tickets script.
 	 *
@@ -438,7 +441,6 @@ tribe.tickets.block = {
 					if ( 0 >= qty ) {
 						$ticket_container.removeClass( 'tribe-tickets--has-tickets' );
 						$ticket_container.find( obj.modalSelector.metaItem ).remove();
-
 						return;
 					}
 
@@ -464,7 +466,7 @@ tribe.tickets.block = {
 		);
 
 		obj.maybeShowNonMetaNotice( $form );
-
+		obj.loaderHide();
 		obj.document.trigger( 'tribe-ar-fields-appended' );
 	}
 
@@ -878,19 +880,23 @@ tribe.tickets.block = {
 			data: {},
 			success: function( response ) {
 				var tickets = response.tickets;
-
 				if ( tickets.length ) {
 					var $eventCount = 0;
 
 					tickets.forEach(function(ticket) {
 						var $ticketRow = $( `.tribe-tickets__item[data-ticket-id="${ticket.ticket_id}"]` );
 						if ( 'true' === $ticketRow.attr( 'data-available' ) ) {
-							var $field = $ticketRow.find( obj.selector.itemQuantityInput );
+							var $field  = $ticketRow.find( obj.selector.itemQuantityInput );
+							var $optout = $ticketRow.find( obj.selector.itemOptOutInput + ticket.ticket_id );
 
 							if ( $field.length ) {
 								$field.val( ticket.quantity );
 								$field.trigger( 'change' );
-								$eventCount++;
+								$eventCount += ticket.quantity;
+								if ( 1 == parseInt( ticket.optout, 10 ) ) {
+									$optout.prop( 'checked', 'true' );
+								}
+
 							}
 						}
 					});
@@ -905,7 +911,7 @@ tribe.tickets.block = {
 				$errorNotice.removeClass( 'tribe-tickets-notice--barred tribe-tickets-notice--barred-left' );
 				$errorNotice.addClass( 'tribe-tickets-notice--error' );
 				$errorNotice.find( '.tribe-tickets-notice__title' ).text( `API Connection Error (${response.responseJSON.code})` );
-				$errorNotice.find( 'p' ).html( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.' );
+				$errorNotice.find( 'p' ).html( TribeMessages.api_connection_error );
 				$errorNotice.fadeIn();
 			},
 			complete: function() {
@@ -1039,6 +1045,7 @@ tribe.tickets.block = {
 				var ticket_id = $this.data( 'ticketId' );
 				var qty       = $this.find( obj.selector.itemQuantityInput ).val();
 				var optout    = $this.find( '[name="attendee[optout]"]' ).val();
+
 				if ( 0 < qty ) {
 					var data          = {};
 					data['ticket_id'] = ticket_id;
@@ -1452,7 +1459,7 @@ tribe.tickets.block = {
 			var isValidForm = obj.validateForm( $metaForm );
 			var $errorNotice = $( obj.selector.validationNotice );
 			var validationErrorTitle = 'Whoops';
-			var validationErrorContent = `<p>You have <span class="tribe-tickets-notice--error__count">0</span> ticket(s) with a field that requires information.</p>`
+			var validationErrorContent = TribeMessages.required_ari_error;
 
 			if ( ! isValidForm[ 0 ] ) {
 				$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
@@ -1495,7 +1502,7 @@ tribe.tickets.block = {
 				},
 				error: function( response ) {
 					$errorNotice.find( '.tribe-tickets-notice__title' ).text( `API Connection Error (${response.responseJSON.code})` );
-					$errorNotice.find( 'p' ).html( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.' );
+					$errorNotice.find( 'p' ).html( TribeMessages.api_connection_error );
 					$errorNotice.fadeIn();
 					$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
 				}
@@ -1547,7 +1554,7 @@ tribe.tickets.block = {
 				error: function( response ) {
 					var $errorNotice = $( obj.selector.validationNotice );
 					$errorNotice.find( '.tribe-tickets-notice__title' ).text( `API Connection Error (${response.responseJSON.code})` );
-					$errorNotice.find( 'p' ).html( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.' );
+					$errorNotice.find( 'p' ).html( TribeMessages.api_connection_error );
 					$errorNotice.fadeIn();
 					$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
 					return;
