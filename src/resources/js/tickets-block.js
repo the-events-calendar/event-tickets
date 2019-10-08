@@ -911,7 +911,7 @@ tribe.tickets.block = {
 				$errorNotice.removeClass( 'tribe-tickets-notice--barred tribe-tickets-notice--barred-left' );
 				$errorNotice.addClass( 'tribe-tickets-notice--error' );
 				$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.api_error_title + ` (${response.responseJSON.code})` );
-				$errorNotice.find( 'p' ).html( TribeMessages.api_connection_error );
+				$errorNotice.find( 'p' ).html( TribeMessages.connection_error );
 				$errorNotice.fadeIn();
 			},
 			complete: function() {
@@ -1458,13 +1458,11 @@ tribe.tickets.block = {
 			var $metaForm = $( obj.modalSelector.metaForm );
 			var isValidForm = obj.validateForm( $metaForm );
 			var $errorNotice = $( obj.selector.validationNotice );
-			var validationErrorTitle = 'Whoops';
-			var validationErrorContent = TribeMessages.required_ari_error;
 
 			if ( ! isValidForm[ 0 ] ) {
 				$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
-				$errorNotice.find( '.tribe-tickets-notice__title' ).text( validationErrorTitle );
-				$errorNotice.find( 'p' ).html( validationErrorContent );
+				$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.validation_error_title );
+				$errorNotice.find( 'p' ).html( TribeMessages.validation_error );
 				$( obj.selector.validationNotice + '__count' ).text( isValidForm[ 1 ] );
 				$errorNotice.show();
 				return false;
@@ -1502,7 +1500,7 @@ tribe.tickets.block = {
 				},
 				error: function( response ) {
 					$errorNotice.find( '.tribe-tickets-notice__title' ).text( `API Connection Error (${response.responseJSON.code})` );
-					$errorNotice.find( 'p' ).html( TribeMessages.api_connection_error );
+					$errorNotice.find( 'p' ).html( TribeMessages.connection_error );
 					$errorNotice.fadeIn();
 					$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
 				}
@@ -1554,7 +1552,7 @@ tribe.tickets.block = {
 				error: function( response ) {
 					var $errorNotice = $( obj.selector.validationNotice );
 					$errorNotice.find( '.tribe-tickets-notice__title' ).text( `API Connection Error (${response.responseJSON.code})` );
-					$errorNotice.find( 'p' ).html( TribeMessages.api_connection_error );
+					$errorNotice.find( 'p' ).html( TribeMessages.connection_error );
 					$errorNotice.fadeIn();
 					$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
 					return;
