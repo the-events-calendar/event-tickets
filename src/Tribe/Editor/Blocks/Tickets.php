@@ -275,6 +275,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 */
 	public function set_messages() {
 		$messages = [
+			'api_error_title'      => _x( 'API Connection Error', 'Error message title, will be followed by the error code.', 'event-tickets' ),
 			'api_connection_error' => __( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.', 'event-tickets' ),
 			'required_ari_error'   => _x( '<p>You have <span class="tribe-tickets-notice--error__count">0</span> ticket(s) with a field that requires information.</p>', 'The 0 will change based on the error produced.', 'event-tickets' ),
 		];

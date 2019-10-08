@@ -910,7 +910,7 @@ tribe.tickets.block = {
 				$errorNotice =  $( '#tribe-tickets__notice__tickets-in-cart' );
 				$errorNotice.removeClass( 'tribe-tickets-notice--barred tribe-tickets-notice--barred-left' );
 				$errorNotice.addClass( 'tribe-tickets-notice--error' );
-				$errorNotice.find( '.tribe-tickets-notice__title' ).text( `API Connection Error (${response.responseJSON.code})` );
+				$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.api_error_title + ` (${response.responseJSON.code})` );
 				$errorNotice.find( 'p' ).html( TribeMessages.api_connection_error );
 				$errorNotice.fadeIn();
 			},
