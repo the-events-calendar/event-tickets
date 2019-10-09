@@ -37,7 +37,7 @@ $all_post_types = apply_filters( 'tribe_tickets_settings_post_types', $all_post_
 
 $options = get_option( Tribe__Main::OPTIONNAME, [] );
 
-$modal_version_check = tribe_installed_after( 'Tribe__Tickets__Main', '4.11.0' );
+$modal_version_check = ! tribe_installed_before( 'Tribe__Tickets__Main', '4.11.0' );
 
 /**
  * List of ticketing solutions that support login requirements (ie, disabling or

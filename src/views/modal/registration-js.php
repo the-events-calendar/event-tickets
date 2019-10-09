@@ -103,7 +103,3 @@ $non_meta_count        = 0;
 		</div>
 	</form>
 </div>
-<?php
-/** @var Tribe__Tickets__Editor__Template $template */
-$template = tribe( 'tickets.editor.template' );
-$template->template( 'registration-js/attendees/content', [ 'event_id' => $event_id, 'tickets' => $tickets, 'provider' => $provider ] );

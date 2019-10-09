@@ -19,7 +19,6 @@
 /* translators: %s is the event or post title the tickets are attached to. */
 $title       = sprintf( _x( '%s Tickets', 'Modal title. %s: event name', 'event-tickets' ), get_the_title() );
 $button_text = _x( 'Get Tickets', 'Get selected tickets.', 'event-tickets' );
-$content     = apply_filters( 'tribe_events_tickets_edd_attendee_registration_modal_content', '<p>Tickets modal needs content, badly.</p>' );
 
 /**
  * Filter Modal Content
@@ -51,9 +50,11 @@ $args = [
 ];
 
 tribe( 'dialog.view' )->render_modal( $content, $args );
+
 $event_id = get_the_ID();
 /** @var Tribe__Tickets__Editor__Template $template */
 $template = tribe( 'tickets.editor.template' );
-$tickets = $this->get( 'tickets' );
-
+$tickets  = $this->get( 'tickets' );
 $template->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) );
+
+

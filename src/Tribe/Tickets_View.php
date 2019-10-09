@@ -52,8 +52,6 @@ class Tribe__Tickets__Tickets_View {
 		add_action( 'tribe_events_pre_get_posts', [ $myself, 'modify_ticket_display_query' ] );
 		add_filter( 'tribe_events_template_single-event.php', [ $myself, 'intercept_template' ], 20 );
 
-		add_action( 'wp_footer', [ $myself, 'maybe_show_footer_spinner' ], 1 );
-
 		return $myself;
 	}
 
@@ -392,64 +390,6 @@ class Tribe__Tickets__Tickets_View {
 
 		return $content;
 	}
-
-	/**
-	 * Add spinner to event pages.
-	 *
-	 * @since TBD
-	 */
-	public function maybe_show_footer_spinner() {
-		/** @var \Tribe__Tickets__Attendee_Registration__Main $attendee_registration */
-		$attendee_registration = tribe( 'tickets.attendee_registration' );
-
-		if (
-			tribe_tickets_is_event_page()
-			|| $attendee_registration->is_on_page()
-			|| $attendee_registration->is_using_shortcode()
-		) {
-			$this->spinner( true );
-		}
-	}
-
-	/**
-	 * Inserts the spinner in the footer for use as needed.
-	 *
-	 * @since TBD
-	 *
-	 * @param boolean $echo (true) Whether to echo or return the HTML.
-	 * @return string|void
-	 */
-	public function spinner( $echo = true ) {
-		ob_start();
-
-		/**
-		 * Allows filtering of text used in the loader
-		 *
-		 * @since  TBD
-		 *
-		 * @param  string $value     The value that will be filtered.
-		 */
-		$text = apply_filters( 'tribe_tickets_loader_text', __( 'Loading...', 'event-tickets' ) );
-		/**
-		 * Allows filtering of extra classes used on the loader
-		 *
-		 * @since  TBD
-		 *
-		 * @param  array $classes The array of classes that will be filtered.
-		 */
-		$classes = apply_filters( 'tribe_tickets_loader_classes', [ 'tribe-loader__default' ] );
-
-		include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' );
-
-		$content = ob_get_clean();
-
-		if ( $echo ) {
-			echo $content;
-		} else {
-			return $content;
-		}
-	}
-
 
 	/**
 	 * Modify the front end ticket list display for it to always display

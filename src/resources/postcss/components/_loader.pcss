@@ -1,25 +1,26 @@
-.tribe-loader {
-		align-items: center;
-		display: flex;
-		justify-content: center;
-		position: fixed;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		z-index: var(--z-index-spinner-container);
-		background: var(--color-background-transparent);
+.tribe-common-c-loader {
+		&.tribe-tickets-loader__tickets-block,
+		&.tribe-tickets-loader__modal {
+			align-items: center;
+			background: var(--color-background-transparent);
+			display: flex;
+			height: 100%;
+			justify-content: center;
+			left: 0;
+			padding: 0;
+			position: absolute;
+			top: 0;
+			width: 100%;
+			z-index: var(--z-index-spinner-container);
 
-		.tribe-loader__spinner {
-			background-image: url(../images/tribe-loading.gif);
-			background-position: left center;
-			background-repeat: no-repeat;
-			background-size: contain;
-			height: auto;
-			min-height: var(--spacer-11);
-			min-width: var(--spacer-11);
-			padding: var(--spacer-4);
-			padding-left: var(--spacer-12);
-			width: auto;
+			@media (--viewport-medium) {
+				padding: 0;
+			}
+		}
+
+		&.tribe-tickets-loader__modal {
+			height: 100vh;
+			position: fixed;
+			width: 100vw;
 		}
 	}

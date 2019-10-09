@@ -147,4 +147,4 @@ $view      = Tribe__Tickets__Tickets_View::instance();
 			</tbody>
 		</table>
 	<?php endif; ?>
-</div><!-- #tribe-events-content -->
+</div>

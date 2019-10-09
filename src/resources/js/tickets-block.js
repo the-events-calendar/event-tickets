@@ -23,9 +23,11 @@ tribe.tickets.block = {
 	 */
 	obj.selector = {
 		blockFooterAmount          : '.tribe-tickets__footer__total .tribe-amount',
+		blockFooterAmount          : '.tribe-tickets__footer__total .tribe-amount',
+		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
 		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
 		container                  : '#tribe-tickets',
-		validationNotice           : '.tribe-tickets-notice--error',
+		hidden                     : 'tribe-common-a11y-hidden',
 		item                       : '.tribe-tickets__item',
 		itemExtraAvailable         : '.tribe-tickets__item__extra__available',
 		itemExtraAvailableQuantity : '.tribe-tickets__item__extra__available__quantity',
@@ -34,8 +36,10 @@ tribe.tickets.block = {
 		itemPrice                  : '.tribe-amount',
 		itemQuantity               : '.tribe-tickets__item__quantity',
 		itemQuantityInput          : '.tribe-tickets-quantity',
-		loader                     : '.tribe-loader',
+		loader                     : '.tribe-common-c-loader',
 		submit                     : '.tribe-tickets__buy',
+		ticketLoader               : '.tribe-tickets-loader__tickets-block',
+		validationNotice           : '.tribe-tickets-notice--error',
 	};
 
 	var $tribe_ticket = $( obj.selector.container );
@@ -55,14 +59,15 @@ tribe.tickets.block = {
 	 *
 	 */
 	obj.modalSelector = {
-		cartForm  : '.tribe-modal__wrapper--ar #tribe-modal__cart',
-		container : '.tribe-modal__wrapper--ar',
-		itemRemove: '.tribe-tickets__item__remove',
-		itemTotal : '.tribe-tickets__item__total .tribe-amount',
-		metaField : '.ticket-meta',
-		metaForm  : '.tribe-modal__wrapper--ar #tribe-modal__attendee_registration',
-		metaItem  : '.tribe-ticket',
-		submit    : '.tribe-block__tickets__item__attendee__fields__footer_submit',
+		cartForm   : '.tribe-modal__wrapper--ar #tribe-modal__cart',
+		container  : '.tribe-modal__wrapper--ar',
+		itemRemove : '.tribe-tickets__item__remove',
+		itemTotal  : '.tribe-tickets__item__total .tribe-amount',
+		metaField  : '.ticket-meta',
+		metaForm   : '.tribe-modal__wrapper--ar #tribe-modal__attendee_registration',
+		metaItem   : '.tribe-ticket',
+		submit     : '.tribe-block__tickets__item__attendee__fields__footer_submit',
+		loader     : '.tribe-tickets-loader__modal',
 	};
 
 	/*
@@ -721,20 +726,33 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $class A class for targeting a specific loader.
+	 * @param string loaderClass A class for targeting a specific loader.
 	 * @return void
 	 */
-	obj.loaderShow = function( $class= '.tribe-loader__default' ) {
-		$( obj.selector.loader ).filter( $class ).removeClass( 'tribe-common-a11y-hidden' );
+	obj.loaderShow = function( loaderClass ) {
+		if ( 'undefined' === typeof loaderClass ) {
+			loaderClass = obj.selector.ticketLoader;
+		}
+
+		var $loader = $( obj.selector.loader ).filter( loaderClass );
+		$loader.removeClass( obj.selector.hidden );
 	}
 
 	/**
 	 * Hide the loader/spinner.
 	 *
 	 * @since TBD
+	 *
+	 * @param string loaderClass A class for targeting a specific loader.
+	 * @return void
 	 */
-	obj.loaderHide = function() {
-		$( obj.selector.loader ).addClass( 'tribe-common-a11y-hidden' );
+	obj.loaderHide = function(loaderClass ) {
+		if ( 'undefined' === typeof loaderClass ) {
+			loaderClass = obj.selector.ticketLoader;
+		}
+
+		var $loader = $( obj.selector.loader ).filter( loaderClass );
+		$loader.addClass( obj.selector.hidden );
 	}
 
 	/* Prefill Handling */
@@ -758,14 +776,11 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.initFormPrefills = function() {
-		obj.loaderShow( '.tribe-loader__modal' );
-
-		$.ajax( {
-			type: 'GET',
-			data: {'provider': $tribe_ticket.data( 'providerId' )},
-			dataType: 'json',
-			url: obj.getRestEndpoint(),
-			success: function ( data ) {
+		obj.loaderShow( obj.modalSelector.loader );
+		$.when(
+			obj.getData()
+		).then(
+			function( data ) {
 				if ( data.tickets ) {
 					obj.prefillCartForm( $tribe_ticket, data.tickets );
 				}
@@ -788,7 +803,7 @@ tribe.tickets.block = {
 					obj.prefillmetaForm( local.meta );
 				}
 			}
-		} );
+		);
 	}
 
 	/**
@@ -846,7 +861,7 @@ tribe.tickets.block = {
 			});
 		});
 
-		obj.loaderHide();
+		obj.loaderHide( obj.modalSelector.loader );
 	}
 
 	/**
@@ -874,12 +889,25 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.prefillTicketsBlock = function() {
-		$.ajax({
-			type: 'GET',
-			url: obj.getRestEndpoint(),
-			data: {},
-			success: function( response ) {
-				var tickets = response.tickets;
+
+		$.when(
+			obj.getData( true )
+		).then(
+			function( data ) {
+				if ( ! data ) {
+					$errorNotice =  $( '#tribe-tickets__notice__tickets-in-cart' );
+					$errorNotice.removeClass( 'tribe-tickets-notice--barred tribe-tickets-notice--barred-left' );
+					$errorNotice.addClass( 'tribe-tickets-notice--error' );
+					$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.api_error_title );
+					$errorNotice.find( 'p' ).html( TribeMessages.connection_error );
+					$errorNotice.fadeIn();
+
+					obj.loaderHide();
+					return;
+				}
+
+				var tickets = data.tickets;
+
 				if ( tickets.length ) {
 					var $eventCount = 0;
 
@@ -896,7 +924,6 @@ tribe.tickets.block = {
 								if ( 1 == parseInt( ticket.optout, 10 ) ) {
 									$optout.prop( 'checked', 'true' );
 								}
-
 							}
 						}
 					});
@@ -905,19 +932,10 @@ tribe.tickets.block = {
 						$( '#tribe-tickets__notice__tickets-in-cart' ).fadeIn();
 					}
 				}
-			},
-			error: function( response ) {
-				$errorNotice =  $( '#tribe-tickets__notice__tickets-in-cart' );
-				$errorNotice.removeClass( 'tribe-tickets-notice--barred tribe-tickets-notice--barred-left' );
-				$errorNotice.addClass( 'tribe-tickets-notice--error' );
-				$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.api_error_title + ` (${response.responseJSON.code})` );
-				$errorNotice.find( 'p' ).html( TribeMessages.connection_error );
-				$errorNotice.fadeIn();
-			},
-			complete: function() {
+
 				obj.loaderHide();
 			}
-		});
+		);
 	}
 
 	/* sessionStorage ("local") */
@@ -929,7 +947,7 @@ tribe.tickets.block = {
 	 *
 	 * @return void
 	 */
-	obj.storeLocal = function() {
+	obj.storeLocal = function( data ) {
 		var meta  = obj.getMetaForSave();
 		sessionStorage.setItem( 'tribe_tickets_attendees-' + obj.postId, window.JSON.stringify( meta ) );
 
@@ -964,6 +982,10 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.clearLocal = function( postId ) {
+		if ( ! postId ) {
+			var postId = obj.postId;
+		}
+
 		sessionStorage.removeItem( 'tribe_tickets_attendees-' + postId );
 		sessionStorage.removeItem( 'tribe_tickets_cart-' + postId );
 	}
@@ -978,19 +1000,10 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.maybeHydrateAttendeeBlockFromLocal = function( length ) {
-		var local = obj.getLocal();
-
-		if ( ! local ) {
-			return;
-		}
-
-		var data = local.meta;
-		$.ajax( {
-			type: 'GET',
-			data: {'provider': $tribe_ticket.data( 'providerId' )},
-			dataType: 'json',
-			url: obj.getRestEndpoint(),
-			success: function ( data ) {
+		$.when(
+			obj.getData()
+		).then(
+			function( data ) {
 				var cartSkip = data.meta.length;
 				if (length < cartSkip ) {
 					obj.prefillmetaForm( data.meta, length );
@@ -1016,7 +1029,7 @@ tribe.tickets.block = {
 					);
 				}
 			}
-		} );
+		);
 	}
 
 	/* Data Formatting / API Handling */
@@ -1128,6 +1141,75 @@ tribe.tickets.block = {
 		});
 
 		return meta;
+	}
+
+	/**
+	 * Get cart & meta data from sessionStorage, otherwise make an ajax call.
+	 * Always loads tickets from API on page load to be sure we keep up to date with the cart.
+	 *
+	 * This returns a deferred data object (promise) So when calling you need to use something like
+	 * jQuery's $.when()
+	 *
+	 * Example:
+	 * 	$.when(
+	 * 		obj.getData()
+	 * 	).then(
+	 * 		function( data ) {
+	 * 			// Do stuff with the data.
+	 * 		}
+	 * 	);
+	 *
+	 * @since TBD
+	 *
+	 * @return obj Deferred data object.
+	 */
+	obj.getData = function( pageLoad ) {
+		var ret      = {};
+		var deferred = $.Deferred();
+		var meta     = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + obj.postId ) );
+
+		if ( null !== meta ) {
+			ret.meta = meta;
+		}
+
+		// If we haven't reloaded the page, assume the cart hasn't changed since we did.
+		if ( ! pageLoad ) {
+			var tickets = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart-' + obj.postId ) );
+
+			if ( null !== tickets ) {
+				ret.tickets = tickets;
+			}
+
+			deferred.resolve( ret );
+		}
+
+		if ( ! ret.tickets || ! ret.meta ) {
+			$.ajax( {
+				type: 'GET',
+				data: {'provider': $tribe_ticket.data( 'providerId' )},
+				dataType: 'json',
+				url: obj.getRestEndpoint(),
+				success: function ( data ) {
+					// Store for future use.
+					if ( null === meta ) {
+						sessionStorage.setItem( 'tribe_tickets_attendees-' + obj.postId, window.JSON.stringify( data.meta ) );
+					}
+					sessionStorage.setItem( 'tribe_tickets_cart-' + obj.postId, window.JSON.stringify( data.tickets ) );
+
+					var ret = {
+						meta: data.meta,
+						tickets: data.tickets
+					};
+
+					deferred.resolve( ret );
+				},
+				error: function() {
+					deferred.reject( false );
+				}
+			} );
+		}
+
+		return deferred.promise();
 	}
 
 	/* Validation */
