@@ -31,7 +31,6 @@ if ( empty( $tickets ) ) {
 	return;
 }
 ?>
-
 <?php foreach ( $tickets as $ticket ) : ?>
 		<?php
 		// Sometimes we get an array - let's handle that.
@@ -46,7 +45,7 @@ if ( empty( $tickets ) ) {
 			continue;
 		}
 		?>
-		<script type="text/html" id="tmpl-tribe-registration--<?php echo esc_attr( $ticket->ID ); ?>">
+		<script type="text/html" class="registration-js-attendees-content" id="tmpl-tribe-registration--<?php echo esc_attr( $ticket->ID ); ?>">
 			<?php
 			$ticket_qty = 1;
 			$post       = get_post( $ticket->ID );

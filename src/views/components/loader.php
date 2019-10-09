@@ -21,7 +21,8 @@ if ( empty( $classes ) ) {
 }
 
 $spinner_classes = [
-	'tribe-loader',
+	'tribe-tickets-loader__dots',
+	'tribe-common-c-loader',
 	'tribe-common-a11y-hidden',
 ];
 
@@ -31,13 +32,9 @@ if ( ! empty( $classes ) ) {
 
 ?>
 <div class="tribe-common">
-	<div
-	<?php tribe_classes( $spinner_classes ); ?>
-		role="alert"
-		aria-live="assertive"
-	>
-		<div class="tribe-loader__spinner">
-			<?php echo esc_html( $text ); ?>
-		</div>
+	<div <?php tribe_classes( $spinner_classes ); ?> >
+		<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--first"></div>
+		<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--second"></div>
+		<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--third"></div>
 	</div>
 </div>
