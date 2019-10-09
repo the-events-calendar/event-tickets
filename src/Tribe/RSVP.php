@@ -1937,7 +1937,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		do_action( 'tribe_tickets_rsvp_before_attendee_ticket_creation', $post_id, $ticket_type, $_POST );
 
 		// Iterate over all the amount of tickets purchased (for this product)
-		for ( $i = 0; $i < $qty; $i ++ ) {
+		for ( $i = 0; $i < $qty; $i++ ) {
 
 			$attendee           = array(
 				'post_status' => 'publish',
@@ -1970,7 +1970,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			update_post_meta( $attendee_id, '_paid_price', 0 );
 
 			/**
-			 * RSVP specific action fired when a RSVP-driven attendee ticket for an event is generated
+			 * RSVP specific action fired when a RSVP-driven attendee ticket for an event is generated.
+			 * Used to assign a unique ID to the attendee.
 			 *
 			 * @param int $attendee_id ID of attendee ticket
 			 * @param int $post_id ID of event
@@ -1980,7 +1981,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			do_action( 'event_tickets_rsvp_attendee_created', $attendee_id, $post_id, $order_id );
 
 			/**
-			 * Action fired when an RSVP attendee ticket is created
+			 * Action fired when an RSVP attendee ticket is created.
+			 * Used to store attendee meta.
 			 *
 			 * @param int $attendee_id ID of the attendee post
 			 * @param int $post_id Event post ID
