@@ -13,7 +13,9 @@
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 
 if ( empty( $provider ) ) {
-	$provider_name     = Tribe__Tickets__Tickets::get_event_ticket_provider( array_key_first( $events ) );
+	$event_keys = array_keys( $events );
+	$event_key = array_shift( $event_keys );
+	$provider_name     = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_key );
 	$provider = $provider_name::ATTENDEE_OBJECT;
 }
 
@@ -41,7 +43,7 @@ $cart_url            = $this->get( 'cart_url' );
 	<h3 class="tribe-common-h6 tribe-common-h5--min-medium tribe-common-h--alt tribe-tickets__mini-cart__title"><?php echo esc_html_x( 'Ticket Summary', 'Attendee registration mini-cart/ticket summary title.', 'event-tickets'); ?></h3>
 		<?php foreach ( $events as $event_id => $tickets ) : ?>
 			<?php foreach ( $tickets as $key => $ticket ) : ?>
-				<?php if (  $provider !== $ticket[ 'provider' ]->attendee_object ) : ?>
+				<?php if ( $provider !== $ticket['provider']->attendee_object ) : ?>
 					<?php continue; ?>
 				<?php endif; ?>
 				<?php $currency_symbol     = $currency->get_currency_symbol( $ticket['id'], true ); ?>
@@ -63,7 +65,7 @@ $cart_url            = $this->get( 'cart_url' );
 
 <?php foreach ( $events as $event_id => $tickets ) : ?>
 	<?php
-	if (  $provider !== $ticket[ 'provider' ]->attendee_object ) {
+	if ( $provider !== Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id )->attendee_object ) {
 		continue;
 	}
 

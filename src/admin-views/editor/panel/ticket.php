@@ -98,7 +98,7 @@ $default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id
 					/>
 					<span class="tribe_soft_note ticket_form_right"><?php echo esc_html( sprintf(
 						_x( '%1$s type name shows on the front end and emailed %2$s', 'admin edit ticket panel note', 'event-tickets' ),
-						tribe_get_rsvp_label_singular( 'admin_edit_ticket_panel_note' ),
+						tribe_get_ticket_label_singular( 'admin_edit_ticket_panel_note' ),
 						tribe_get_ticket_label_plural_lowercase( 'admin_edit_ticket_panel_note' )
 					) ); ?></span>
 				</div>

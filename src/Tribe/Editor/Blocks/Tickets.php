@@ -100,7 +100,7 @@ extends Tribe__Editor__Blocks__Abstract {
 			$plugin,
 			'tribe-tickets-gutenberg-tickets',
 			'tickets-block.js',
-			array( 'jquery', 'jquery-ui-datepicker', 'wp-utils' ),
+			array( 'jquery', 'jquery-ui-datepicker', 'wp-utils', 'wp-i18n' ),
 			null,
 			[
 				'type'         => 'js',
@@ -123,6 +123,10 @@ extends Tribe__Editor__Blocks__Abstract {
 							'url' => tribe_tickets_rest_url( '/cart/' )
 						],
 					],
+					[
+						'name' => 'TribeMessages',
+						'data' => $this->set_messages(),
+					]
 				],
 			]
 		);
@@ -259,5 +263,24 @@ extends Tribe__Editor__Blocks__Abstract {
 		}
 
 		return $is_sale_past;
+	}
+
+	/**
+	 * Localized messages for errors, etc in javascript. Added in assets() above.
+	 * Set up this way to amke it easier to add messages as needed.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function set_messages() {
+		$messages = [
+			'api_error_title'        => _x( 'API Connection Error', 'Error message title, will be followed by the error code.', 'event-tickets' ),
+			'connection_error'       => __( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.', 'event-tickets' ),
+			'validation_error_title' => __( 'Whoops!', 'event-tickets' ),
+			'validation_error'       => '<p>' . sprintf( _x( 'You have %s ticket(s) with a field that requires information.', 'The %s will change based on the error produced.', 'event-tickets' ), '<span class="tribe-tickets-notice--error__count">0</span>' ) . '</p>',
+		];
+
+		return $messages;
 	}
 }

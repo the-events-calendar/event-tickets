@@ -1,12 +1,7 @@
 // @TODO: Take this line off once we actually have the tribe object
-if ( 'undefined' === typeof tribe ) {
-	tribe = {};
-}
-
-// Define the tickets object if not defined.
-if ( 'undefined' === typeof tribe.tickets ) {
-	tribe.tickets = {};
-}
+var tribe = tribe || {};
+var tribe_ev = tribe_ev || {};
+tribe.tickets = tribe.tickets || {};
 
 tribe.tickets.block = {
 	num_attendees: 0,
@@ -27,21 +22,24 @@ tribe.tickets.block = {
 	 *
 	 */
 	obj.selector = {
+		blockFooterAmount          : '.tribe-tickets__footer__total .tribe-amount',
+		blockFooterAmount          : '.tribe-tickets__footer__total .tribe-amount',
+		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
+		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
 		container                  : '#tribe-tickets',
 		hidden                     : 'tribe-common-a11y-hidden',
 		item                       : '.tribe-tickets__item',
 		itemExtraAvailable         : '.tribe-tickets__item__extra__available',
-		itemExtraAvailableQuantity : '.tribe-tickets__item__extra__available_quantity',
+		itemExtraAvailableQuantity : '.tribe-tickets__item__extra__available__quantity',
 		itemOptOut                 : '.tribe-tickets-attendees-list-optout--wrapper',
 		itemOptOutInput            : '#tribe-tickets-attendees-list-optout-',
 		itemPrice                  : '.tribe-amount',
 		itemQuantity               : '.tribe-tickets__item__quantity',
 		itemQuantityInput          : '.tribe-tickets-quantity',
-		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
-		blockFooterAmount          : '.tribe-tickets__footer__total .tribe-amount',
-		submit                     : '.tribe-tickets__buy',
 		loader                     : '.tribe-common-c-loader',
+		submit                     : '.tribe-tickets__buy',
 		ticketLoader               : '.tribe-tickets-loader__tickets-block',
+		validationNotice           : '.tribe-tickets-notice--error',
 	};
 
 	var $tribe_ticket = $( obj.selector.container );
@@ -95,6 +93,9 @@ tribe.tickets.block = {
 	obj.tribe_ticket_provider = $tribe_ticket.data( 'provider' );
 	obj.postId = $( '.status-publish' ).attr( 'id' ).replace( 'post-', '' );
 
+	// Translations - for future use.
+	var { __, _x, _n, _nx } = wp.i18n;
+
 	/**
 	 * Init the tickets script.
 	 *
@@ -132,6 +133,7 @@ tribe.tickets.block = {
 
 				// Update HTML elements with the "Out of Stock" messages.
 				$ticketEl.find( obj.selector.itemQuantity ).html( unavailableHtml );
+				$ticketEl.find( obj.selector.itemExtraAvailable ).html( '' );
 			}
 
 			if ( 1 < available ) { // Ticket in stock, we may want to update values.
@@ -444,7 +446,6 @@ tribe.tickets.block = {
 					if ( 0 >= qty ) {
 						$ticket_container.removeClass( 'tribe-tickets--has-tickets' );
 						$ticket_container.find( obj.modalSelector.metaItem ).remove();
-
 						return;
 					}
 
@@ -470,7 +471,7 @@ tribe.tickets.block = {
 		);
 
 		obj.maybeShowNonMetaNotice( $form );
-
+		obj.loaderHide();
 		obj.document.trigger( 'tribe-ar-fields-appended' );
 	}
 
@@ -482,18 +483,31 @@ tribe.tickets.block = {
 	 */
 	obj.stepUp = function( $input, originalValue ) {
 		// We use 0 here as a shorthand for no maximum.
-		var max      = $input[ 0 ].max ? Number( $input[ 0 ].max ) : -1;
-		var step     = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
-		var increase = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
+		var max       = $input.attr( 'max' ) ? Number( $input.attr( 'max' ) ) : -1;
+		var step      = $input.attr( 'step' ) ? Number( $input.attr( 'step' ) ) : 1;
+		var new_value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
+		var $parent = $input.closest( obj.selector.item );
+		if ( 'true' === $parent.attr( 'data-shared-cap' ) ) {
+			new_value     = obj.checkSharedCapacity( new_value );
+		}
+
+		if ( 0 === new_value ) {
+			return;
+		}
+
+		if ( 0 > new_value ) {
+			$input[ 0 ].value = originalValue + new_value;
+			return;
+		}
 
 		if ( 'function' === typeof $input[ 0 ].stepUp ) {
 			try {
 				$input[ 0 ].stepUp();
 			} catch ( ex ) {
-				$input[ 0 ].value = increase;
+				$input.val( new_value );
 			}
 		} else {
-			$input[ 0 ].value = increase;
+			$input.val( new_value );
 		}
 	}
 
@@ -504,8 +518,8 @@ tribe.tickets.block = {
 	 * @since TBD
 	 */
 	obj.stepDown = function( $input, originalValue ) {
-		var min      = $input[ 0 ].min ? Number( $input[ 0 ].min ) : 0;
-		var step     = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
+		var min      = $input.attr( 'min' ) ? Number( $input.attr( 'min' ) ) : 0;
+		var step     = $input.attr( 'step' ) ? Number( $input.attr( 'step' ) ) : 1;
 		var decrease = ( min <= originalValue - step && 0 < originalValue - step ) ? originalValue - step : min;
 
 		if ( 'function' === typeof $input[ 0 ].stepDown ) {
@@ -555,6 +569,49 @@ tribe.tickets.block = {
 
 		// Repeat every 15 seconds
 		setTimeout( obj.checkAvailability, 15000 );
+	}
+
+	/**
+	 * Check if we're updating the qty of a shared cap ticket and
+	 * limits it to the shared cap minus any tickets in cart.
+	 *
+	 * @since TBD
+	 *
+	 * @param integer qty The quantity we desire.
+	 *
+	 * @return integer The quantity, limited by exisitng shared cap tickets.
+	 */
+	obj.checkSharedCapacity = function ( qty ) {
+		var sharedCap         = [];
+		var currentLoad       = [];
+		var $sharedTickets    = $( obj.selector.item ).filter( '[data-shared-cap="true"]' );
+		var $sharedCapFields  = $sharedTickets.find( obj.selector.itemExtraAvailableQuantity );
+		var $sharedCapTickets = $sharedTickets.find( obj.selector.itemQuantityInput );
+
+		if ( ! $sharedTickets.length ) {
+			return qty;
+		}
+
+		$sharedCapFields.each(
+			function() {
+				sharedCap.push( parseInt( $( this ).text(), 10 ) );
+			}
+		);
+
+		$sharedCapTickets.each(
+			function() {
+				currentLoad.push( parseInt( $( this ).val(), 10 ) );
+			}
+		);
+
+		sharedCap = Math.max( ...sharedCap );
+		currentLoad = currentLoad.reduce(function(a,b){
+			return a + b
+		  }, 0);
+
+		var currentAvailable = sharedCap - currentLoad;
+
+		return Math.min( currentAvailable, qty );
 	}
 
 	/**
@@ -837,6 +894,18 @@ tribe.tickets.block = {
 			obj.getData( true )
 		).then(
 			function( data ) {
+				if ( ! data ) {
+					$errorNotice =  $( '#tribe-tickets__notice__tickets-in-cart' );
+					$errorNotice.removeClass( 'tribe-tickets-notice--barred tribe-tickets-notice--barred-left' );
+					$errorNotice.addClass( 'tribe-tickets-notice--error' );
+					$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.api_error_title );
+					$errorNotice.find( 'p' ).html( TribeMessages.connection_error );
+					$errorNotice.fadeIn();
+
+					obj.loaderHide();
+					return;
+				}
+
 				var tickets = data.tickets;
 
 				if ( tickets.length ) {
@@ -844,19 +913,23 @@ tribe.tickets.block = {
 
 					tickets.forEach(function(ticket) {
 						var $ticketRow = $( `.tribe-tickets__item[data-ticket-id="${ticket.ticket_id}"]` );
-						if ( ! $ticketRow.hasClass( 'outofstock' ) ) {
-							var $field = $ticketRow.find( obj.selector.itemQuantityInput );
+						if ( 'true' === $ticketRow.attr( 'data-available' ) ) {
+							var $field  = $ticketRow.find( obj.selector.itemQuantityInput );
+							var $optout = $ticketRow.find( obj.selector.itemOptOutInput + ticket.ticket_id );
 
 							if ( $field.length ) {
 								$field.val( ticket.quantity );
 								$field.trigger( 'change' );
-								$eventCount++;
+								$eventCount += ticket.quantity;
+								if ( 1 == parseInt( ticket.optout, 10 ) ) {
+									$optout.prop( 'checked', 'true' );
+								}
 							}
 						}
 					});
 
 					if ( 0 < $eventCount ) {
-						$( '#tribe-tickets__notice__tickets-in-cart' ).show();
+						$( '#tribe-tickets__notice__tickets-in-cart' ).fadeIn();
 					}
 				}
 
@@ -909,6 +982,10 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.clearLocal = function( postId ) {
+		if ( ! postId ) {
+			var postId = obj.postId;
+		}
+
 		sessionStorage.removeItem( 'tribe_tickets_attendees-' + postId );
 		sessionStorage.removeItem( 'tribe_tickets_cart-' + postId );
 	}
@@ -981,6 +1058,7 @@ tribe.tickets.block = {
 				var ticket_id = $this.data( 'ticketId' );
 				var qty       = $this.find( obj.selector.itemQuantityInput ).val();
 				var optout    = $this.find( '[name="attendee[optout]"]' ).val();
+
 				if ( 0 < qty ) {
 					var data          = {};
 					data['ticket_id'] = ticket_id;
@@ -1347,7 +1425,7 @@ tribe.tickets.block = {
 				.find( obj.modalSelector.metaItem ).remove();
 
 				// short delay to ensure the fadeOut has finished
-			var timeoutID = window.setTimeout(obj.maybeShowNonMetaNotice, 500, $cart);
+			var timeoutID = window.setTimeout( obj.maybeShowNonMetaNotice, 500, $cart );
 		}
 	);
 
@@ -1396,12 +1474,22 @@ tribe.tickets.block = {
 			var $ticket      = $this.closest( obj.selector.item );
 			var $ticket_id   = $ticket.data( 'ticket-id' );
 			var $form        = $this.closest( 'form' );
-			var max = $this.attr('max');
+			var max = $this.attr( 'max' );
 			var new_quantity = parseInt( $this.val(), 10 );
 			new_quantity     = isNaN( new_quantity ) ? 0 : new_quantity;
+
 			if ( max < new_quantity ) {
 				new_quantity = max;
 				$this.val( max );
+			}
+
+			if ( 'true' === $ticket.attr( 'data-shared-cap' ) ) {
+				var maxQty = obj.checkSharedCapacity( new_quantity );
+			}
+
+			if ( 0 > maxQty ) {
+				new_quantity += maxQty;
+				$this.val( new_quantity );
 			}
 
 			e.preventDefault();
@@ -1451,12 +1539,13 @@ tribe.tickets.block = {
 
 			var $metaForm = $( obj.modalSelector.metaForm );
 			var isValidForm = obj.validateForm( $metaForm );
-			var $errorNotice = $( '.tribe-tickets-notice--error' );
+			var $errorNotice = $( obj.selector.validationNotice );
 
 			if ( ! isValidForm[ 0 ] ) {
 				$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
-
-				$( '.tribe-tickets-notice--error__count' ).text( isValidForm[ 1 ] );
+				$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.validation_error_title );
+				$errorNotice.find( 'p' ).html( TribeMessages.validation_error );
+				$( obj.selector.validationNotice + '__count' ).text( isValidForm[ 1 ] );
 				$errorNotice.show();
 				return false;
 			}
@@ -1476,6 +1565,7 @@ tribe.tickets.block = {
 				url: obj.getRestEndpoint(),
 				data: params,
 				success: function( response ) {
+					$errorNotice.hide();
 					//redirect url
 					var url = response.checkout_url;
 
@@ -1490,9 +1580,11 @@ tribe.tickets.block = {
 
 					window.location.href = url;
 				},
-				fail: function( response ) {
-					// @TODO: add messaging on error?
-					return;
+				error: function( response ) {
+					$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.api_error_title + ` (${response.responseJSON.code})` );
+					$errorNotice.find( 'p' ).html( TribeMessages.connection_error );
+					$errorNotice.fadeIn();
+					$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
 				}
 			});
 		}
@@ -1539,8 +1631,12 @@ tribe.tickets.block = {
 
 					window.location.href = url;
 				},
-				fail: function( response ) {
-					// @TODO: add messaging on error?
+				error: function( response ) {
+					var $errorNotice = $( obj.selector.validationNotice );
+					$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.api_error_title + ` (${response.responseJSON.code})` );
+					$errorNotice.find( 'p' ).html( TribeMessages.connection_error );
+					$errorNotice.fadeIn();
+					$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
 					return;
 				}
 			});

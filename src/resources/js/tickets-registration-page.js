@@ -282,7 +282,7 @@ tribe.tickets.registration = {};
 
 				var $ticket_containers = $current_containers.find( '.tribe-ticket' );
 				$.each( data, function( index, value ) {
-					var $field = $ticket_containers.eq( current ).find( `[name*="${index}"]`);
+					var $field = $ticket_containers.eq( current ).find( `[name*="${index}"]` );
 					if ( ! $field.is( ':radio' ) && ! $field.is( ':checkbox' ) ) {
 						$field.val( value);
 					} else {
@@ -351,7 +351,7 @@ tribe.tickets.registration = {};
 		var footerAmount = 0;
 		var $qtys        = $form.find( obj.selector.itemQuantity );
 
-		$qtys.each(function(){
+		$qtys.each( function() {
 			var $qty = $( this );
 			var $price   = $qty.closest( obj.selector.item ).find( obj.selector.itemPrice ).first(0);
 			var quantity = parseInt( $qty.text(), 10 );
