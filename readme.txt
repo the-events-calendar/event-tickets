@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.10.10] 2019-10-10 =
+= [4.10.10] 2019-10-14 =
 
 * Tweak - Changed views: `blocks/tickets`, `tickets/tpp`
 * Fix - Attendees Report's "Orders" tab now displays amount sold and available regardless of amount, including for unlimited and zero remaining for Tribe Commerce attendees [134108]
