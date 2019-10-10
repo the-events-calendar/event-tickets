@@ -23,21 +23,25 @@ $non_meta_count        = 0;
 ?>
 <div class="tribe-tickets__item__attendee__fields">
 	<h2 class="tribe-common-h3 tribe-common-h4--min-medium tribe-common-h--alt tribe-tickets__item__attendee__fields__title"><?php esc_html_e( 'Attendee Details', 'event-tickets' ); ?></h2>
-	<div class="tribe-tickets-notice tribe-tickets-notice--error">
-		<h3 class="tribe-common-h7 tribe-tickets-notice__title"><?php esc_html_e( 'Whoops', 'event-tickets' ); ?></h3>
-		<p>
-			<?php
-				echo sprintf(
-					esc_html_x(
-						'You have %s ticket(s) with a field that requires information.',
-						'Note about missing required fields, %s is the html-wrapped number of tickets.',
-						'event-tickets'
-					),
-					'<span class="tribe-tickets-notice--error__count">1</span>'
-				);
-			?>
-		</p>
-	</div>
+	<?php tribe( 'tickets.editor.template' )->template(
+		'components/notice',
+		[
+			'id' => 'tribe-tickets__notice__attendee-modal',
+			'notice_classes' => [
+				'tribe-tickets__notice--error',
+				'tribe-tickets__validation-notice',
+			],
+			'title' => __( 'Whoops', 'event-tickets' ),
+			'content' => sprintf(
+				esc_html_x(
+					'You have %s ticket(s) with a field that requires information.',
+					'Note about missing required fields, %s is the html-wrapped number of tickets.',
+					'event-tickets'
+				),
+				'<span class="tribe-tickets__notice--error__count">1</span>'
+		)
+		]
+	); ?>
 	<form
 		id="tribe-modal__attendee_registration"
 		method="post"

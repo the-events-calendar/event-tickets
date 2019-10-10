@@ -54,9 +54,19 @@ echo $html;
 	novalidate
 >
 	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title"><?php esc_html_e( 'Tickets', 'event-tickets' ); ?></h2>
-	<p id="tribe-tickets__notice__tickets-in-cart" class="tribe-common-b3 tribe-tickets-notice tribe-tickets-notice--barred tribe-tickets-notice--barred-left">
-		<?php esc_html_e( 'The numbers below include tickets for this event already in your cart. Clicking "Get Tickets" will allow you to edit any existing attendee information as well as change ticket quantities.', 'event-tickets' ); ?>
-	</p>
+	<div>
+	<?php $this->template(
+		'components/notice',
+		[
+			'id' => 'tribe-tickets__notice__tickets-in-cart',
+			'notice_classes' => [
+				'tribe-common-b3',
+				'tribe-tickets__notice--barred',
+				'tribe-tickets__notice--barred-left',
+			],
+			'content' => __( 'The numbers below include tickets for this event already in your cart. Clicking "Get Tickets" will allow you to edit any existing attendee information as well as change ticket quantities.', 'event-tickets' )
+		]
+	); ?>
 	<?php $this->template( 'blocks/tickets/commerce/fields', [ 'provider' => $provider, 'provider_id' => $provider_id ] ); ?>
 	<?php if ( $has_tickets_on_sale ) : ?>
 		<?php foreach ( $tickets_on_sale as $key => $ticket ) : ?>

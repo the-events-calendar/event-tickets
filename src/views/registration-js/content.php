@@ -43,38 +43,41 @@ $classes        = [
 
 
 	<div class="tribe-tickets__registration__grid">
-
-		<div class="tribe-tickets-notice tribe-tickets-notice--error tribe-tickets__validation-notice">
-			<h3 class="tribe-common-h7 tribe-tickets-notice__title"><?php esc_html_e( 'Whoops', 'event-tickets' ); ?></h3>
-			<p>
-				<?php
-					echo sprintf(
-						esc_html_x(
-							'You have %s ticket(s) with a field that requires information.',
-							'Note about missing required fields, %s is the html-wrapped number of tickets.',
-							'event-tickets'
-						),
-						'<span class="tribe-tickets-notice--error__count">1</span>'
-					);
-				?>
-			</p>
-		</div>
-
 		<?php
-			$args = [
-				'cart_url'            => $template->get( 'cart_url' ),
-				'events'              => $events,
-				'has_tickets_on_sale' => $template->get( 'has_tickets_on_sale' ),
-				'is_sale_past'        => $template->get( 'is_sale_past' ),
-				'post_id'             => $template->get( 'post_id' ),
-				'provider_id'         => $template->get( 'provider_id' ),
-				'provider'            => $provider,
-				'tickets_on_sale'     => $template->get( 'tickets_on_sale' ),
-				'tickets'             => $all_tickets,
-				'tickets'             => $template->get( 'tickets', [] ),
-			];
+		$this->template(
+			'components/notice',
+			[
+				'id' => 'tribe-tickets__notice__attendee-modal',
+				'notice_classes' => [
+					'tribe-tickets__notice--error',
+					'tribe-tickets__validation-notice',
+				],
+				'title' => __( 'Whoops', 'event-tickets' ),
+				'content' => sprintf(
+					esc_html_x(
+						'You have %s ticket(s) with a field that requires information.',
+						'Note about missing required fields, %s is the html-wrapped number of tickets.',
+						'event-tickets'
+					),
+					'<span class="tribe-tickets__notice--error__count">1</span>'
+			)
+			]
+		);
 
-			$template->template( 'registration-js/mini-cart', $args );
+		$args = [
+			'cart_url'            => $template->get( 'cart_url' ),
+			'events'              => $events,
+			'has_tickets_on_sale' => $template->get( 'has_tickets_on_sale' ),
+			'is_sale_past'        => $template->get( 'is_sale_past' ),
+			'post_id'             => $template->get( 'post_id' ),
+			'provider_id'         => $template->get( 'provider_id' ),
+			'provider'            => $provider,
+			'tickets_on_sale'     => $template->get( 'tickets_on_sale' ),
+			'tickets'             => $all_tickets,
+			'tickets'             => $template->get( 'tickets', [] ),
+		];
+
+		$template->template( 'registration-js/mini-cart', $args );
 		?>
 		<div class="tribe-tickets__registration__content">
 			<?php foreach ( $events as $event_id => $tickets ) : ?>
@@ -144,7 +147,7 @@ $classes        = [
 	</div>
 	<div class="tribe-tickets__registration__footer">
 		<p
-			class="tribe-tickets-notice tribe-tickets-notice--non-ar"
+			class="tribe-tickets__notice tribe-tickets__notice--non-ar"
 			<?php if ( empty( $non_meta_count ) ) : ?>
 				style="display: none;"
 			<?php endif; ?>

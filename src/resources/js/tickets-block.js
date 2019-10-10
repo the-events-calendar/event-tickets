@@ -1,14 +1,15 @@
 // @TODO: Take this line off once we actually have the tribe object
 var tribe = tribe || {};
-var tribe_ev = tribe_ev || {};
 tribe.tickets = tribe.tickets || {};
+tribe.dialogs = tribe.dialogs || {};
+tribe.dialogs.events = tribe.dialogs.events || {};
 
 tribe.tickets.block = {
 	num_attendees: 0,
 	event        : {}
 };
 
-( function( $, obj, te ) {
+( function( $, obj, tde ) {
 	'use strict';
 
 	/* Variables */
@@ -39,7 +40,8 @@ tribe.tickets.block = {
 		loader                     : '.tribe-common-c-loader',
 		submit                     : '.tribe-tickets__buy',
 		ticketLoader               : '.tribe-tickets-loader__tickets-block',
-		validationNotice           : '.tribe-tickets-notice--error',
+		validationNotice           : '.tribe-tickets__notice--error',
+		ticketInCartNotice         : '#tribe-tickets__notice__tickets-in-cart'
 	};
 
 	var $tribe_ticket = $( obj.selector.container );
@@ -337,7 +339,7 @@ tribe.tickets.block = {
 			}
 		);
 
-		var $notice = $( '.tribe-tickets-notice--non-ar' );
+		var $notice = $( '.tribe-tickets__notice--non-ar' );
 		if ( 0 < nonMetaCount ) {
 			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
 			$notice.fadeIn();
@@ -783,6 +785,7 @@ tribe.tickets.block = {
 			function( data ) {
 				if ( data.tickets ) {
 					obj.prefillCartForm( $tribe_ticket, data.tickets );
+				} else {
 				}
 
 				if ( data.meta ) {
@@ -889,22 +892,10 @@ tribe.tickets.block = {
 	 * @return void
 	 */
 	obj.prefillTicketsBlock = function() {
-
 		$.when(
 			obj.getData( true )
 		).then(
 			function( data ) {
-				if ( ! data ) {
-					$errorNotice =  $( '#tribe-tickets__notice__tickets-in-cart' );
-					$errorNotice.removeClass( 'tribe-tickets-notice--barred tribe-tickets-notice--barred-left' );
-					$errorNotice.addClass( 'tribe-tickets-notice--error' );
-					$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.api_error_title );
-					$errorNotice.find( 'p' ).html( TribeMessages.connection_error );
-					$errorNotice.fadeIn();
-
-					obj.loaderHide();
-					return;
-				}
 
 				var tickets = data.tickets;
 
@@ -929,9 +920,20 @@ tribe.tickets.block = {
 					});
 
 					if ( 0 < $eventCount ) {
-						$( '#tribe-tickets__notice__tickets-in-cart' ).fadeIn();
+						$( obj.selector.ticketInCartNotice ).fadeIn();
 					}
 				}
+
+				obj.loaderHide();
+			},
+			function() {
+				var $errorNotice =  $( obj.selector.ticketInCartNotice );
+				$errorNotice
+					.removeClass( 'tribe-tickets__notice--barred tribe-tickets__notice--barred-left' )
+					.addClass( 'tribe-tickets__notice--error' );
+				$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.api_error_title );
+				$errorNotice.find( '.tribe-tickets-notice__content' ).text( TribeMessages.connection_error );
+				$errorNotice.fadeIn();
 
 				obj.loaderHide();
 			}
@@ -1634,9 +1636,8 @@ tribe.tickets.block = {
 				error: function( response ) {
 					var $errorNotice = $( obj.selector.validationNotice );
 					$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.api_error_title + ` (${response.responseJSON.code})` );
-					$errorNotice.find( 'p' ).html( TribeMessages.connection_error );
+					$errorNotice.find( 'p' ).text( TribeMessages.connection_error );
 					$errorNotice.fadeIn();
-					$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
 					return;
 				}
 			});
@@ -1649,7 +1650,7 @@ tribe.tickets.block = {
 	 * @since TBD
 	 *
 	 */
-	$( te ).on(
+	$( tde ).on(
 		'tribe_dialog_show_ar_modal',
 		function ( e, dialogEl, event ) {
 			var $modalCart = $( obj.modalSelector.cartForm );
@@ -1678,7 +1679,7 @@ tribe.tickets.block = {
 	/**
 	 * Handles storing data to local storage
 	 */
-	$( te ).on(
+	$( tde ).on(
 		'tribe_dialog_close_ar_modal',
 		function ( e, dialogEl, event ) {
 			obj.storeLocal();
@@ -1686,4 +1687,4 @@ tribe.tickets.block = {
 	);
 
 	obj.init();
-})( jQuery, tribe.tickets.block, tribe_ev.events );
+})( jQuery, tribe.tickets.block, tribe.dialogs.events );
