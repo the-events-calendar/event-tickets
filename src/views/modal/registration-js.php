@@ -66,23 +66,30 @@ $non_meta_count        = 0;
 					</h3>
 				</div>
 		<?php endforeach; ?>
-		<p
-			class="tribe-tickets-notice tribe-tickets-notice--non-ar"
-			<?php if ( empty( $non_meta_count ) ) : ?>
-				style="display: none;"
-			<?php endif; ?>
-		>
-			<?php
-				echo sprintf(
+
+		<?php
+		$notice_classes = [
+			'tribe-tickets__notice--non-ar',
+		];
+
+		if ( ! empty( $non_meta_count ) ) {
+			$notice_classes[] = 'tribe-common-a11y-hidden';
+		}
+
+		tribe( 'tickets.editor.template' )->template(
+			'components/notice',
+			[
+				'notice_classes' => $notice_classes,
+				'content' => sprintf(
 					esc_html_x(
 						'There are %s other tickets in your cart that do not require attendee information.',
 						'Note that there are more tickets in the cart, %s is the html-wrapped number.',
 						'event-tickets'
 					),
 					'<span id="tribe-tickets__non-ar-count">' . absint( $non_meta_count ) . '</span>'
-				);
-			?>
-		</p>
+				)
+			]
+		); ?>
 		<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
 		<div  class="tribe-tickets__item__attendee__fields__footer">
 			<?php if ( $has_tpp ) : ?>

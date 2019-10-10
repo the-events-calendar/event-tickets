@@ -27,5 +27,7 @@ $provider        = $this->get( 'provider' );
 	<?php endif; ?>
 	<?php $this->template( 'blocks/tickets/footer-quantity' ); ?>
 	<?php $this->template( 'blocks/tickets/footer-total', [ 'event_id' => $event_id, 'provider' => $provider ] ); ?>
-	<?php $this->template( 'blocks/tickets/submit', [ 'tickets' => $tickets, 'is_modal' => $is_modal ] ); ?>
+	<?php if ( ! $is_mini && ! $is_modal ) : ?>
+		<?php $this->template( 'blocks/tickets/submit', [ 'tickets' => $tickets ] ); ?>
+	<?php endif; ?>
 </div>

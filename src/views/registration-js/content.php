@@ -39,7 +39,7 @@ $classes        = [
 	<div class="tribe-common-h8 tribe-common-h--alt tribe-tickets__registration__actions">
 		<?php $this->template( 'registration/button-cart', array( 'provider' => $provider ) ); ?>
 	</div>
-	<h1 class="tribe-common-h2 tribe-common-h3--min-medium tribe-common-h--alt tribe-tickets__registration__page-title"><?php esc_html_e( 'Attendee Registration', 'event-tickets'); ?></h1>
+	<h1 class="tribe-common-h2 tribe-common-h1--min-medium tribe-common-h--alt tribe-tickets__registration__page-title"><?php esc_html_e( 'Attendee Registration', 'event-tickets'); ?></h1>
 
 
 	<div class="tribe-tickets__registration__grid">
@@ -146,24 +146,29 @@ $classes        = [
 		</div>
 	</div>
 	<div class="tribe-tickets__registration__footer">
-		<p
-			class="tribe-tickets__notice tribe-tickets__notice--non-ar"
-			<?php if ( empty( $non_meta_count ) ) : ?>
-				style="display: none;"
-			<?php endif; ?>
-		>
-			<?php
-				echo sprintf(
+		<?php
+		$notice_classes = [
+			'tribe-tickets__notice--non-ar',
+		];
+
+		if ( ! empty( $non_meta_count ) ) {
+			$notice_classes[] = 'tribe-common-a11y-hidden';
+		}
+
+		tribe( 'tickets.editor.template' )->template(
+			'components/notice',
+			[
+				'notice_classes' => $notice_classes,
+				'content' => sprintf(
 					esc_html_x(
 						'There are %s other tickets in your cart that do not require attendee information.',
 						'Note that there are more tickets in the cart, %s is the html-wrapped number.',
 						'event-tickets'
 					),
 					'<span id="tribe-tickets__non-ar-count">' . absint( $non_meta_count ) . '</span>'
-				);
-			?>
-		</p>
-
+				)
+			]
+		); ?>
 		<?php $this->template( 'blocks/tickets/registration/attendee/submit' ); ?>
 	</div>
 </div>

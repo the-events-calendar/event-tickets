@@ -342,9 +342,9 @@ tribe.tickets.block = {
 		var $notice = $( '.tribe-tickets__notice--non-ar' );
 		if ( 0 < nonMetaCount ) {
 			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
-			$notice.fadeIn();
+			$notice.removeClass( 'tribe-common-a11y-hidden' );
 		} else {
-			$notice.fadeOut();
+			$notice.addClass( 'tribe-common-a11y-hidden' );
 		}
 	}
 

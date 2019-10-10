@@ -235,9 +235,9 @@ tribe.tickets.registration = {};
 		var $notice = $( '.tribe-tickets__notice--non-ar' );
 		if ( nonMetaCount ) {
 			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
-			$notice.show();
+			$notice.removeClass( 'tribe-common-a11y-hidden' );
 		} else {
-			$notice.hide();
+			$notice.addClass( 'tribe-common-a11y-hidden' );
 		}
 	}
 

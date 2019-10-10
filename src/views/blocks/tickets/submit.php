@@ -15,12 +15,6 @@
  * @version TBD
  *
  */
-$is_modal = $this->get( 'is_modal' );
-// No submit button in the modal cart.
-if ( ! empty( $is_modal ) ) {
-	return;
-}
-
 $provider   = $this->get( 'provider' );
 $must_login = ! is_user_logged_in() && $provider->login_required();
 $event_id   = $this->get( 'event_id' );
