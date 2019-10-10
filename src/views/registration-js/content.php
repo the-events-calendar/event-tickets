@@ -158,7 +158,7 @@ $classes        = [
 		tribe( 'tickets.editor.template' )->template(
 			'components/notice',
 			[
-				'notice_classes' => $notice_classes,
+				'notice_classes'  => $notice_classes,
 				'content' => sprintf(
 					esc_html_x(
 						'There are %s other tickets in your cart that do not require attendee information.',

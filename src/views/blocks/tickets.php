@@ -60,9 +60,12 @@ echo $html;
 		[
 			'id' => 'tribe-tickets__notice__tickets-in-cart',
 			'notice_classes' => [
-				'tribe-common-b3',
 				'tribe-tickets__notice--barred',
 				'tribe-tickets__notice--barred-left',
+			],
+
+			'content_classes' => [
+				'tribe-common-b3',
 			],
 			'content' => __( 'The numbers below include tickets for this event already in your cart. Clicking "Get Tickets" will allow you to edit any existing attendee information as well as change ticket quantities.', 'event-tickets' )
 		]
