@@ -47,7 +47,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 *
 	 * @since 4.10
 	 *
-	 * @return int
+	 * @return Tribe__Tickets__Status__Abstract|false
 	 */
 	public function get_completed_status_class() {
 
@@ -129,25 +129,23 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 *
 	 * @since 4.10
 	 *
-	 * @param $ticket_sold object an object of the ticket to get counts
-	 * @param $post_id int an ID of the post the ticket is attached to
+	 * @param array $ticket_sold An object of the ticket to get counts.
+	 * @param int   $post_id     An ID of the post the ticket is attached to.
 	 *
 	 * @return string a string Ticket name, sold, and availability
 	 */
-	public function get_ticket_sale_infomation( $ticket_sold, $event_id ) {
-
+	public function get_ticket_sale_infomation( $ticket_sold, $post_id ) {
 		ob_start();
 		?>
 		<div class="tribe-event-meta tribe-event-meta-tickets-sold-itemized">
 			<?php
-				echo $this->get_name_and_sold_for_ticket( $ticket_sold, $event_id );
+				echo $this->get_name_and_sold_for_ticket( $ticket_sold, $post_id );
 				echo $this->get_available_incomplete_counts_for_ticket( $ticket_sold );
 			?>
 		</div>
 		<?php
 
 		return ob_get_clean();
-
 	}
 
 	/**
@@ -155,18 +153,19 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 *
 	 * @since 4.10
 	 *
-	 * @param $ticket_sold object an object of the ticket to get counts
-	 * @param $post_id int an ID of the post the ticket is attached to
+	 * @param array $ticket_sold The ticket to get counts.
+	 * @param int   $post_id int An ID of the post the ticket is attached to.
 	 *
 	 * @return string a string of the ticket name and sold
 	 */
 	public function get_name_and_sold_for_ticket( $ticket_sold, $post_id ) {
+		if ( ! $ticket_sold['ticket'] instanceof Tribe__Tickets__Ticket_Object ) {
+			return '';
+		}
 
 		$sold = $ticket_sold['completed'] ? $ticket_sold['completed'] : $ticket_sold['sold'];
 
-		$sold_message = ! $ticket_sold['has_stock'] ?
-			$sold_message = sprintf( '%s %d', esc_attr__( 'Sold', 'event-tickets' ), esc_html( $sold ) ) :
-			'';
+		$sold_message = sprintf( '%s %d', esc_attr__( 'Sold', 'event-tickets' ), esc_html( $sold ) );
 
 		$price = $ticket_sold['ticket']->price ?
 			' (' . tribe_format_currency( number_format( $ticket_sold['ticket']->price, 2 ), $post_id ) . ')' :
@@ -183,29 +182,42 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		echo esc_html( $sold_message );
 
 		return ob_get_clean();
-
 	}
 
 	/**
-	 * Get the Available and Incomplete Counts for a Ticket
+	 * Get the available and incomplete counts for a Ticket.
 	 *
 	 * @since 4.10
 	 *
-	 * @param $ticket_sold object an object of the ticket to get counts
+	 * @param array $ticket_sold Ticket array to get counts.
 	 *
-	 * @return bool|string a string of available and/or incomplete counts for a ticket
+	 * @return string The available and/or incomplete counts for a ticket.
 	 */
 	public function get_available_incomplete_counts_for_ticket( $ticket_sold ) {
+		/** @var Tribe__Tickets__Ticket_Object $ticket_object */
+		$ticket_object = $ticket_sold['ticket'];
 
-		$availability = array();
-		if (  $ticket_sold['ticket']->available() > 0 ) {
-			$availability['available'] = sprintf( '%s %s%s',
-				esc_html( $ticket_sold['ticket']->available() ),
-				esc_html__( 'available', 'event-tickets' ),
-				$this->get_availability_by_ticket_tooltip( $ticket_sold )
-			);
+		if (
+			-1 === (int) $ticket_object->available()
+			|| $ticket_object::UNLIMITED_STOCK === $ticket_object->available()
+		) {
+			/** @var Tribe__Tickets__Tickets_Handler $handler */
+			$handler = tribe( 'tickets.handler' );
+
+			$available_text = $handler->unlimited_term;
+		} else {
+			$available_text = $ticket_object->available();
 		}
-		if (  $ticket_sold['incomplete'] > 0 ) {
+
+		$availability = [];
+
+		$availability['available'] = sprintf( '%s %s%s',
+			esc_html( $available_text ),
+			esc_html__( 'available', 'event-tickets' ),
+			$this->get_availability_by_ticket_tooltip( $ticket_sold )
+		);
+
+		if ( $ticket_sold['incomplete'] > 0 ) {
 			$availability['incomplete'] = sprintf( '%s %s%s',
 				 $ticket_sold['incomplete'],
 				 esc_html__( 'pending order completion', 'event-tickets' ),
@@ -214,7 +226,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		}
 
 		if ( empty( $availability ) ) {
-			return false;
+			return '';
 		}
 
 		return '<div>' . implode( '- ', $availability ) . '</div>';

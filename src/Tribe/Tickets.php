@@ -2130,20 +2130,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			if ( is_numeric( $datetime ) ) {
-				$timestamp = $datetime;
-			} elseif ( $datetime ) {
-				$timestamp = strtotime( $datetime );
-			} else {
-				$timestamp = current_time( 'timestamp' );
-			}
-
 			$collection_availability_slug = 'available';
 			$tickets_available = false;
 			$slugs = [];
 
+			/** @var Tribe__Tickets__Ticket_Object $ticket */
+
 			foreach ( $tickets as $ticket ) {
-				$availability_slug = $ticket->availability_slug( $timestamp );
+				$availability_slug = $ticket->availability_slug( $datetime );
 
 				// if any ticket is available for this event, consider the availability slug as 'available'
 				if ( 'available' === $availability_slug ) {
@@ -2153,7 +2147,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 
 				// track unique availability slugs
-				if ( ! in_array( $availability_slug, $slugs ) ) {
+				if ( ! in_array( $availability_slug, $slugs, true ) ) {
 					$slugs[] = $availability_slug;
 				}
 			}
@@ -2304,7 +2298,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$post_id = (int) get_the_ID();
 
 			// So long as at least one ticket provider has tickets available, do not show an unavailability message
-			if ( in_array( $post_id, self::$posts_with_available_tickets ) ) {
+			if ( in_array( $post_id, self::$posts_with_available_tickets, true ) ) {
 				return;
 			}
 
