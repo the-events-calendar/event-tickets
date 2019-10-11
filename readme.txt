@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.11] TBD =
+= [4.11] 2019-10-28 =
 
 * Feature - Add Easy Digital Downloads cart via shortcode to `get_cart_url()`. Ensure button returns cart URL if present for provider. [129450]
 * Feature - Add ability to utilize the block ticket template outside of Gutenberg views [132568]
@@ -129,6 +129,15 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Add ability to track installed version history. Added `$version_history_slug` and `$latest_version_slug` properties to `Tribe__Tickets_Plus__Main` [133048]
 * Tweak - Added actions to `views/registration/content.php`: `tribe_tickets_registration_content_before_all_events` and `tribe_tickets_registration_content_after_all_events` [131896]
 * Fix - Pass missing 'provider' argument from `views/registration/content.php` to `views/registration/button-cart.php` [131896]
+
+= [4.10.10] 2019-10-14 =
+
+* Tweak - Changed views: `blocks/tickets`, `tickets/tpp`
+* Fix - Attendees Report's "Orders" tab now displays amount sold and available regardless of amount, including for unlimited and zero remaining for Tribe Commerce attendees [134108]
+* Fix - Prevent fatal errors when hosting environment does not support multibyte functionality by using new `tribe_strpos()` function [135202]
+* Fix - Prevent Attendee Registration saving from storing only the last attendee's information for all RSVP attendees [134408]
+* Fix - Remove check for tickets in beginning of `/src/views/blocks/tickets.php` as it prevents showing the "tickets unavailable" message [134821]
+* Language - 2 new strings added, 19 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.10.9] 2019-10-01 =
 

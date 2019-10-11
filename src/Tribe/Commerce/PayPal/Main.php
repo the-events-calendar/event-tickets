@@ -2660,6 +2660,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	public function attendee_decreases_inventory( array $attendee ) {
 		$order_status = Tribe__Utils__Array::get( $attendee, 'order_status', 'undefined' );
 		$order_id = Tribe__Utils__Array::get( $attendee, 'order_id', false );
+		$attendee_id = Tribe__Utils__Array::get( $attendee, 'attendee_id', false );
 
 		/**
 		 * Whether the pending Order stock reserve logic should be ignored completely or not.
@@ -2674,15 +2675,29 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 */
 		$ignore_pending = apply_filters( 'tribe_tickets_tpp_pending_stock_ignore', $this->ignore_pending_stock_logic );
 
+		$purchase_time = false;
+		$order         = false;
+
 		if (
 			'on-pending' === tribe_get_option( 'ticket-paypal-stock-handling', 'on-complete' )
 			&& ! $ignore_pending
 			&& Tribe__Tickets__Commerce__PayPal__Stati::$pending === $order_status
 			&& false !== $order_id
-			&& false !== $order = Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id( $order_id )
 		) {
-			/** @var \Tribe__Tickets__Commerce__PayPal__Order $order */
-			$order_creation_timestamp = Tribe__Date_Utils::wp_strtotime( $order->get_creation_date() );
+			$purchase_time = Tribe__Utils__Array::get( $attendee, 'purchase_time', false );
+
+			if ( false !== $order = Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id( $attendee_id ) ) {
+				/** @var \Tribe__Tickets__Commerce__PayPal__Order $order */
+				$purchase_time = $order->get_creation_date();
+			}
+		}
+
+		if ( $purchase_time ) {
+			$date = Tribe__Date_Utils::build_date_object( $purchase_time );
+
+			$date->setTimezone( new DateTimeZone( 'UTC' ) );
+
+			$order_creation_timestamp = $date->getTimestamp();
 
 			/**
 			 * Filters the amount of time a part of the stock will be reserved by a pending Order.
@@ -2702,7 +2717,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			 */
 			$pending_stock_reservation_time = (int) apply_filters( 'tribe_tickets_tpp_pending_stock_reserve_time', 30 * 60, $attendee, $order );
 
-			return current_time( 'timestamp' ) <= ( $order_creation_timestamp + $pending_stock_reservation_time );
+			return time() <= ( $order_creation_timestamp + $pending_stock_reservation_time );
 		}
 
 		return Tribe__Tickets__Commerce__PayPal__Stati::$completed === $order_status;
