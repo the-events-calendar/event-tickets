@@ -54,8 +54,8 @@ echo $html;
 	novalidate
 >
 	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title"><?php esc_html_e( 'Tickets', 'event-tickets' ); ?></h2>
-	<div>
-	<?php $this->template(
+
+`	<?php $this->template(
 		'components/notice',
 		[
 			'id' => 'tribe-tickets__notice__tickets-in-cart',

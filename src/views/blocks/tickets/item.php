@@ -68,5 +68,4 @@ if ( $must_login ) {
 	<?php elseif( true === $modal ): ?>
 		<?php $this->template( 'blocks/tickets/opt-out-hidden', $context ); ?>
 	<?php endif; ?>
-
 </div>
