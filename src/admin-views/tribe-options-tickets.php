@@ -7,7 +7,7 @@
  * @since 4.10.2 Update tooltip text for Confirmation email sender address and allow it to be saved as empty
  * @since 4.10.9 Use function for text.
  *
- * @version TBD
+ * @version 4.10.10
  */
 $post_types_to_ignore = apply_filters( 'tribe_tickets_settings_post_type_ignore_list', [
 	'attachment',

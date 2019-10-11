@@ -891,7 +891,6 @@ class Tribe__Tickets__Main {
 		$tickets      = Tribe__Tickets__Tickets::get_all_event_tickets( $event_id );
 		$has_non_rsvp = false;
 		$available    = false;
-		$now          = current_time( 'timestamp' );
 
 		foreach ( $tickets as $ticket ) {
 			if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
@@ -899,7 +898,7 @@ class Tribe__Tickets__Main {
 			}
 
 			if (
-				$ticket->date_in_range( $now )
+				$ticket->date_in_range()
 				&& $ticket->is_in_stock()
 			) {
 				$available = true;

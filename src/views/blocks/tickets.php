@@ -11,6 +11,7 @@
  *
  * @since 4.9
  * @since 4.10.8 Updated loading logic for including a renamed template.
+ * @since 4.10.10 - Removed initial check for tickets.
  *
  * @version TBD
  *
@@ -29,7 +30,7 @@ $tickets             = $this->get( 'tickets', [] );
 $tickets_on_sale     = $this->get( 'tickets_on_sale' );
 
 // We don't display anything if there is no provider or tickets
-if ( ! $provider || empty( $tickets ) ) {
+if ( ! $provider ) {
 	return false;
 }
 
