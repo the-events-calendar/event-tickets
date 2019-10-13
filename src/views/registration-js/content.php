@@ -39,7 +39,7 @@ $classes        = [
 	<div class="tribe-common-h8 tribe-common-h--alt tribe-tickets__registration__actions">
 		<?php $this->template( 'registration/button-cart', array( 'provider' => $provider ) ); ?>
 	</div>
-	<h1 class="tribe-common-h2 tribe-common-h1--min-medium tribe-common-h--alt tribe-tickets__registration__page-title"><?php esc_html_e( 'Attendee Registration', 'event-tickets'); ?></h1>
+	<h1 class="tribe-common-h2 tribe-common-h1--min-medium tribe-common-h--alt tribe-tickets__registration__page-title"><?php esc_html_e( 'Attendee Registration', 'event-tickets' ); ?></h1>
 
 
 	<div class="tribe-tickets__registration__grid">
