@@ -581,10 +581,10 @@ class Tribe__Tickets__Attendees {
 	 */
 	public function sanitize_csv_value( $value ) {
 		if (
-			0 === mb_strpos( $value, '=' )
-			|| 0 === mb_strpos( $value, '+' )
-			|| 0 === mb_strpos( $value, '-' )
-			|| 0 === mb_strpos( $value, '@' )
+			0 === tribe_strpos( $value, '=' )
+			|| 0 === tribe_strpos( $value, '+' )
+			|| 0 === tribe_strpos( $value, '-' )
+			|| 0 === tribe_strpos( $value, '@' )
 		) {
 			// Prefix the value with a single quote to prevent formula from being processed.
 			$value = '\'' . $value;
