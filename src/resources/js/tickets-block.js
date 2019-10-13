@@ -1046,6 +1046,9 @@ tribe.tickets.block = {
 	obj.getTicketsForCart = function() {
 		var tickets     = [];
 		var $cartForm   = $( obj.modalSelector.cartForm );
+		if ( ! $cartForm.length ) {
+			$cartForm   = $( obj.selector.container );
+		}
 
 		// Handle non-modal instances
 		if ( ! $cartForm.length ) {
@@ -1056,10 +1059,15 @@ tribe.tickets.block = {
 
 		$ticketRows.each(
 			function() {
-				var $this     = $( this );
-				var ticket_id = $this.data( 'ticketId' );
-				var qty       = $this.find( obj.selector.itemQuantityInput ).val();
-				var optout    = $this.find( '[name="attendee[optout]"]' ).val();
+				var $this       = $( this );
+				var ticket_id   = $this.data( 'ticketId' );
+				var qty         = $this.find( obj.selector.itemQuantityInput ).val();
+				var $optoutInput = $this.find( '[name="attendee[optout]"]' );
+				var optout       = $optoutInput.val();
+
+				if ( $optoutInput.is( ':checkbox' ) ) {
+					optout = $optoutInput.prop( 'checked' ) ? 1 : 0;
+				}
 
 				if ( 0 < qty ) {
 					var data          = {};
@@ -1628,6 +1636,7 @@ tribe.tickets.block = {
 
 					// Clear sessionStorage before redirecting the user.
 					obj.clearLocal();
+
 					// Set a var so we don't save what we just erased.
 					tribe.tickets.modal_redirect = true;
 
