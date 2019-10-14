@@ -241,10 +241,10 @@ extends Tribe__Editor__Blocks__Abstract {
 		if ( 0 === $ticket_id ) {
 			wp_send_json_error( $response );
 		}
-
-        $has_tickets    = false;
-        $event          = tribe( 'tickets.rsvp' )->get_event_for_ticket( $ticket_id );
-        $post_id        = $event->ID;
+		
+		$has_tickets    = false;
+		$event          = tribe( 'tickets.rsvp' )->get_event_for_ticket( $ticket_id );
+		$post_id        = $event->ID;
 		$ticket         = tribe( 'tickets.rsvp' )->get_ticket( $post_id, $ticket_id );
 
 		/**
