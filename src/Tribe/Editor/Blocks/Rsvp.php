@@ -148,10 +148,9 @@ extends Tribe__Editor__Blocks__Abstract {
 		}
 
 		$all_past = true;
-		$current  = current_time( 'timestamp' );
 
 		foreach ( $tickets as $ticket ) {
-			$all_past = $all_past && $ticket->date_is_later( $current );
+			$all_past = $all_past && $ticket->date_is_later();
 		}
 
 		return $all_past;
