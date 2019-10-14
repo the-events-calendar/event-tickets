@@ -93,7 +93,8 @@ $non_meta_count        = 0;
 					'<span id="tribe-tickets__non-ar-count">' . absint( $non_meta_count ) . '</span>'
 				)
 			]
-		); ?>
+		);
+		?>
 		<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
 		<div  class="tribe-tickets__item__attendee__fields__footer">
 			<?php if ( $has_tpp ) : ?>
