@@ -233,10 +233,9 @@ extends Tribe__Editor__Blocks__Abstract {
 	 */
 	public function get_is_sale_past( $tickets ) {
 		$is_sale_past = ! empty( $tickets );
-		$timestamp = current_time( 'timestamp' );
 
 		foreach ( $tickets as $ticket ) {
-			$is_sale_past = ( $is_sale_past && $ticket->date_is_later( $timestamp ) );
+			$is_sale_past = ( $is_sale_past && $ticket->date_is_later() );
 		}
 
 		return $is_sale_past;

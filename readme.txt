@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
 Tested up to: 5.2
-Stable tag: 4.10.9
+Stable tag: 4.10.10
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -116,6 +116,15 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.10.10] 2019-10-14 =
+
+* Tweak - Changed views: `blocks/tickets`, `tickets/tpp`
+* Fix - Attendees Report's "Orders" tab now displays amount sold and available regardless of amount, including for unlimited and zero remaining for Tribe Commerce attendees [134108]
+* Fix - Prevent fatal errors when hosting environment does not support multibyte functionality by using new `tribe_strpos()` function [135202]
+* Fix - Prevent Attendee Registration saving from storing only the last attendee's information for all RSVP attendees [134408]
+* Fix - Remove check for tickets in beginning of `/src/views/blocks/tickets.php` as it prevents showing the "tickets unavailable" message [134821]
+* Language - 2 new strings added, 19 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.10.9] 2019-10-01 =
 
