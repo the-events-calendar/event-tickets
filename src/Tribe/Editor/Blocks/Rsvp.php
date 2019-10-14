@@ -241,11 +241,13 @@ extends Tribe__Editor__Blocks__Abstract {
 		if ( 0 === $ticket_id ) {
 			wp_send_json_error( $response );
 		}
-		
+
+        /** @var Tribe__Tickets__RSVP $rsvp */
+        $rsvp           = tribe( 'tickets.rsvp' );
 		$has_tickets    = false;
-		$event          = tribe( 'tickets.rsvp' )->get_event_for_ticket( $ticket_id );
+		$event          = $rsvp->get_event_for_ticket( $ticket_id );
 		$post_id        = $event->ID;
-		$ticket         = tribe( 'tickets.rsvp' )->get_ticket( $post_id, $ticket_id );
+		$ticket         = $rsvp->get_ticket( $post_id, $ticket_id );
 
 		/**
 		 * RSVP specific action fired just before a RSVP-driven attendee tickets for an order are generated
@@ -254,7 +256,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		 */
 		do_action( 'tribe_tickets_rsvp_before_order_processing' );
 
-		$attendee_details = tribe( 'tickets.rsvp' )->parse_attendee_details();
+		$attendee_details = $rsvp->parse_attendee_details();
 
 		if ( false === $attendee_details ) {
 			wp_send_json_error( $response );
@@ -264,12 +266,12 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		// Iterate over each product
 		foreach ( $products as $product_id ) {
-			if ( ! $ticket_qty = tribe( 'tickets.rsvp' )->parse_ticket_quantity( $product_id ) ) {
+			if ( ! $ticket_qty = $rsvp->parse_ticket_quantity( $product_id ) ) {
 				// if there were no RSVP tickets for the product added to the cart, continue
 				continue;
 			}
 
-			$has_tickets |= tribe( 'tickets.rsvp' )->generate_tickets_for( $product_id, $ticket_qty, $attendee_details );
+			$has_tickets |= $rsvp->generate_tickets_for( $product_id, $ticket_qty, $attendee_details );
 		}
 
 		$order_id              = $attendee_details['order_id'];
@@ -316,9 +318,9 @@ extends Tribe__Editor__Blocks__Abstract {
 
 			// No point sending tickets if their current intention is not to attend
 			if ( $has_tickets && in_array( $attendee_order_status, $send_mail_stati ) ) {
-				tribe( 'tickets.rsvp' )->send_tickets_email( $order_id, $post_id );
+				$rsvp->send_tickets_email( $order_id, $post_id );
 			} elseif ( $has_tickets ) {
-				tribe( 'tickets.rsvp' )->send_non_attendance_confirmation( $order_id, $post_id );
+				$rsvp->send_non_attendance_confirmation( $order_id, $post_id );
 			}
 		}
 
