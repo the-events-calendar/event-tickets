@@ -2820,7 +2820,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$cart_has_required_meta = $meta->cart_has_required_meta( $tickets_in_cart );
-			$up_to_date             = tribe( 'tickets-plus.meta.contents' )->is_stored_meta_up_to_date( $tickets_in_cart );
+			/** @var \Tribe__Tickets_Plus__Meta__Contents $meta_contents */
+			$meta_contents = tribe( 'tickets-plus.meta.contents' );
+			$up_to_date             = $meta_contents->is_stored_meta_up_to_date( $tickets_in_cart );
 
 			// If WooCommerce or EDD
 			if ( ! $is_paypal ) {
