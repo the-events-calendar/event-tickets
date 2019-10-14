@@ -232,12 +232,12 @@ tribe.tickets.registration = {};
 	}
 
 	obj.maybeShowNonMetaNotice = function( nonMetaCount ) {
-		var $notice = $( '.tribe-tickets-notice--non-ar' );
+		var $notice = $( '.tribe-tickets__notice--non-ar' );
 		if ( nonMetaCount ) {
 			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
-			$notice.show();
+			$notice.removeClass( 'tribe-common-a11y-hidden' );
 		} else {
-			$notice.hide();
+			$notice.addClass( 'tribe-common-a11y-hidden' );
 		}
 	}
 
@@ -701,7 +701,7 @@ tribe.tickets.registration = {};
 			e.preventDefault();
 			var $button      = $( this );
 			var $metaForm    = $( obj.selector.metaForm );
-			var $errorNotice = $( '.tribe-tickets-notice--error' );
+			var $errorNotice = $( '.tribe-tickets__notice--error' );
 			var isValidForm  = obj.validateForm( $metaForm );
 
 			if ( ! isValidForm[ 0 ] ) {
@@ -711,7 +711,7 @@ tribe.tickets.registration = {};
 				);
 
 
-				$( '.tribe-tickets-notice--error__count' ).text( isValidForm[ 1 ] );
+				$( '.tribe-tickets__notice--error__count' ).text( isValidForm[ 1 ] );
 				$errorNotice.show();
 
 				return false;

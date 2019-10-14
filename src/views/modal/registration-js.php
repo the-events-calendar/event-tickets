@@ -10,12 +10,16 @@
  * @version TBD
  *
  */
+/** @var Tribe__Tickets__Attendee_Registration__View $view */
+$view = tribe( 'tickets.attendee_registration.view' );
+/** @var Tribe__Tickets__Editor__Template $template */
+$template = tribe( 'tickets.editor.template' );
 
 // There should be only one!
 $providers             = wp_list_pluck( $tickets, 'provider' );
 $providers_arr         = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
 $provider              = $providers[0];
-$provider_class        = tribe( 'tickets.attendee_registration.view' )->get_form_class( $providers_arr[0] );
+$provider_class        = $view->get_form_class( $providers_arr[0] );
 $has_tpp               = in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers, true );
 $event_id              = get_the_ID();
 $meta                  = Tribe__Tickets_Plus__Main::instance()->meta();
@@ -23,21 +27,25 @@ $non_meta_count        = 0;
 ?>
 <div class="tribe-tickets__item__attendee__fields">
 	<h2 class="tribe-common-h3 tribe-common-h4--min-medium tribe-common-h--alt tribe-tickets__item__attendee__fields__title"><?php esc_html_e( 'Attendee Details', 'event-tickets' ); ?></h2>
-	<div class="tribe-tickets-notice tribe-tickets-notice--error">
-		<h3 class="tribe-common-h7 tribe-tickets-notice__title"><?php esc_html_e( 'Whoops', 'event-tickets' ); ?></h3>
-		<p>
-			<?php
-				echo sprintf(
-					esc_html_x(
-						'You have %s ticket(s) with a field that requires information.',
-						'Note about missing required fields, %s is the html-wrapped number of tickets.',
-						'event-tickets'
-					),
-					'<span class="tribe-tickets-notice--error__count">1</span>'
-				);
-			?>
-		</p>
-	</div>
+	<?php $template->template(
+		'components/notice',
+		[
+			'id' => 'tribe-tickets__notice__attendee-modal',
+			'notice_classes' => [
+				'tribe-tickets__notice--error',
+				'tribe-tickets__validation-notice',
+			],
+			'title' => __( 'Whoops', 'event-tickets' ),
+			'content' => sprintf(
+				esc_html_x(
+					'You have %s ticket(s) with a field that requires information.',
+					'Note about missing required fields, %s is the html-wrapped number of tickets.',
+					'event-tickets'
+				),
+				'<span class="tribe-tickets__notice--error__count">1</span>'
+		)
+		]
+	); ?>
 	<form
 		id="tribe-modal__attendee_registration"
 		method="post"
@@ -62,23 +70,31 @@ $non_meta_count        = 0;
 					</h3>
 				</div>
 		<?php endforeach; ?>
-		<p
-			class="tribe-tickets-notice tribe-tickets-notice--non-ar"
-			<?php if ( empty( $non_meta_count ) ) : ?>
-				style="display: none;"
-			<?php endif; ?>
-		>
-			<?php
-				echo sprintf(
+
+		<?php
+		$notice_classes = [
+			'tribe-tickets__notice--non-ar',
+		];
+
+		if ( ! empty( $non_meta_count ) ) {
+			$notice_classes[] = 'tribe-common-a11y-hidden';
+		}
+
+		$template->template(
+			'components/notice',
+			[
+				'notice_classes' => $notice_classes,
+				'content' => sprintf(
 					esc_html_x(
 						'There are %s other tickets in your cart that do not require attendee information.',
 						'Note that there are more tickets in the cart, %s is the html-wrapped number.',
 						'event-tickets'
 					),
 					'<span id="tribe-tickets__non-ar-count">' . absint( $non_meta_count ) . '</span>'
-				);
-			?>
-		</p>
+				)
+			]
+		);
+		?>
 		<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
 		<div  class="tribe-tickets__item__attendee__fields__footer">
 			<?php if ( $has_tpp ) : ?>

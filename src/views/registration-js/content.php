@@ -10,10 +10,6 @@
  * @version TBD
  *
  */
-
-/** @var Tribe__Tickets__Editor__Template $template */
-$template = tribe( 'tickets.editor.template' );
-
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 
 if ( empty( $provider ) ) {
@@ -39,42 +35,45 @@ $classes        = [
 	<div class="tribe-common-h8 tribe-common-h--alt tribe-tickets__registration__actions">
 		<?php $this->template( 'registration/button-cart', array( 'provider' => $provider ) ); ?>
 	</div>
-	<h1 class="tribe-common-h2 tribe-common-h3--min-medium tribe-common-h--alt tribe-tickets__registration__page-title"><?php esc_html_e( 'Attendee Registration', 'event-tickets'); ?></h1>
+	<h1 class="tribe-common-h2 tribe-common-h1--min-medium tribe-common-h--alt tribe-tickets__registration__page-title"><?php esc_html_e( 'Attendee Registration', 'event-tickets' ); ?></h1>
 
 
 	<div class="tribe-tickets__registration__grid">
-
-		<div class="tribe-tickets-notice tribe-tickets-notice--error tribe-tickets__validation-notice">
-			<h3 class="tribe-common-h7 tribe-tickets-notice__title"><?php esc_html_e( 'Whoops', 'event-tickets' ); ?></h3>
-			<p>
-				<?php
-					echo sprintf(
-						esc_html_x(
-							'You have %s ticket(s) with a field that requires information.',
-							'Note about missing required fields, %s is the html-wrapped number of tickets.',
-							'event-tickets'
-						),
-						'<span class="tribe-tickets-notice--error__count">1</span>'
-					);
-				?>
-			</p>
-		</div>
-
 		<?php
-			$args = [
-				'cart_url'            => $template->get( 'cart_url' ),
-				'events'              => $events,
-				'has_tickets_on_sale' => $template->get( 'has_tickets_on_sale' ),
-				'is_sale_past'        => $template->get( 'is_sale_past' ),
-				'post_id'             => $template->get( 'post_id' ),
-				'provider_id'         => $template->get( 'provider_id' ),
-				'provider'            => $provider,
-				'tickets_on_sale'     => $template->get( 'tickets_on_sale' ),
-				'tickets'             => $all_tickets,
-				'tickets'             => $template->get( 'tickets', [] ),
-			];
+		$this->template(
+			'components/notice',
+			[
+				'id' => 'tribe-tickets__notice__attendee-modal',
+				'notice_classes' => [
+					'tribe-tickets__notice--error',
+					'tribe-tickets__validation-notice',
+				],
+				'title' => __( 'Whoops', 'event-tickets' ),
+				'content' => sprintf(
+					esc_html_x(
+						'You have %s ticket(s) with a field that requires information.',
+						'Note about missing required fields, %s is the html-wrapped number of tickets.',
+						'event-tickets'
+					),
+					'<span class="tribe-tickets__notice--error__count">1</span>'
+			)
+			]
+		);
 
-			$template->template( 'registration-js/mini-cart', $args );
+		$args = [
+			'cart_url'            => $this->get( 'cart_url' ),
+			'events'              => $events,
+			'has_tickets_on_sale' => $this->get( 'has_tickets_on_sale' ),
+			'is_sale_past'        => $this->get( 'is_sale_past' ),
+			'post_id'             => $this->get( 'post_id' ),
+			'provider_id'         => $this->get( 'provider_id' ),
+			'provider'            => $provider,
+			'tickets_on_sale'     => $this->get( 'tickets_on_sale' ),
+			'tickets'             => $all_tickets,
+			'tickets'             => $this->get( 'tickets', [] ),
+		];
+
+		$this->template( 'registration-js/mini-cart', $args );
 		?>
 		<div class="tribe-tickets__registration__content">
 			<?php foreach ( $events as $event_id => $tickets ) : ?>
@@ -138,29 +137,34 @@ $classes        = [
 						</form>
 					</div>
 				</div>
-				<?php $template->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets, 'provider' => $providers[0] ) ); ?>
+				<?php $this->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets, 'provider' => $providers[0] ) ); ?>
 			<?php endforeach; ?>
 		</div>
 	</div>
 	<div class="tribe-tickets__registration__footer">
-		<p
-			class="tribe-tickets-notice tribe-tickets-notice--non-ar"
-			<?php if ( empty( $non_meta_count ) ) : ?>
-				style="display: none;"
-			<?php endif; ?>
-		>
-			<?php
-				echo sprintf(
+		<?php
+		$notice_classes = [
+			'tribe-tickets__notice--non-ar',
+		];
+
+		if ( ! empty( $non_meta_count ) ) {
+			$notice_classes[] = 'tribe-common-a11y-hidden';
+		}
+
+		$this->template(
+			'components/notice',
+			[
+				'notice_classes'  => $notice_classes,
+				'content' => sprintf(
 					esc_html_x(
 						'There are %s other tickets in your cart that do not require attendee information.',
 						'Note that there are more tickets in the cart, %s is the html-wrapped number.',
 						'event-tickets'
 					),
 					'<span id="tribe-tickets__non-ar-count">' . absint( $non_meta_count ) . '</span>'
-				);
-			?>
-		</p>
-
+				)
+			]
+		); ?>
 		<?php $this->template( 'blocks/tickets/registration/attendee/submit' ); ?>
 	</div>
 </div>
