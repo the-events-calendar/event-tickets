@@ -175,9 +175,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 				$ticket['quantity']  = absint( $ticket['quantity'] );
 				$ticket['post_id']   = absint( $ticket['post_id'] );
 				$ticket['optout']    = (int) filter_var( $ticket['optout'], FILTER_VALIDATE_BOOLEAN );
-
-				$ticket_id = $ticket['ticket_id'];
-				$quantity  = $ticket['quantity'];
+				$ticket_id           = $ticket['ticket_id'];
+				$quantity            = $ticket['quantity'];
 
 				// Skip ticket if it has no quantity or is not accessible.
 				if ( $quantity < 1 || ! $this->is_ticket_readable( $ticket_id ) ) {
@@ -264,18 +263,16 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 		// Update cart quantities.
 		if ( null !== $tickets ) {
 			$providers = [];
+			$defaults = [
+				'ticket_id' => 0,
+				'quantity'  => 0,
+				'optout'    => 0,
+				'provider'  => $provider,
+			];
 
 			// Setup tickets.
 			foreach ( $tickets as $k => $ticket ) {
-				$defaults = [
-					'ticket_id' => 0,
-					'quantity'  => 0,
-					'optout'    => 0,
-					'provider'  => $provider,
-				];
-
 				$ticket = array_merge( $defaults, $ticket );
-
 				$ticket['ticket_id'] = absint( $ticket['ticket_id'] );
 				$ticket['quantity']  = absint( $ticket['quantity'] );
 
@@ -288,7 +285,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 
 				// Update ticket in array for use later.
 				$tickets[ $k ] = $ticket;
-
 				// Add provider if not yet added.
 				if ( ! isset( $providers[ $ticket['provider'] ] ) ) {
 					$providers[ $ticket['provider'] ] = [];
@@ -331,13 +327,13 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 		// Update ticket meta.
 		if ( null !== $meta ) {
 			// Setup meta.
-			foreach ( $meta as $k => $ticket_meta ) {
-				$defaults = [
-					'ticket_id' => 0,
-					'provider'  => $provider,
-					'items'     => [],
-				];
+			$defaults = [
+				'ticket_id' => 0,
+				'provider'  => $provider,
+				'items'     => [],
+			];
 
+			foreach ( $meta as $k => $ticket_meta ) {
 				$ticket_meta = array_merge( $defaults, $ticket_meta );
 
 				$ticket_meta['ticket_id'] = absint( $ticket_meta['ticket_id'] );

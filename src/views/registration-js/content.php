@@ -10,10 +10,6 @@
  * @version TBD
  *
  */
-
-/** @var Tribe__Tickets__Editor__Template $template */
-$template = tribe( 'tickets.editor.template' );
-
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 
 if ( empty( $provider ) ) {
@@ -65,19 +61,19 @@ $classes        = [
 		);
 
 		$args = [
-			'cart_url'            => $template->get( 'cart_url' ),
+			'cart_url'            => $this->get( 'cart_url' ),
 			'events'              => $events,
-			'has_tickets_on_sale' => $template->get( 'has_tickets_on_sale' ),
-			'is_sale_past'        => $template->get( 'is_sale_past' ),
-			'post_id'             => $template->get( 'post_id' ),
-			'provider_id'         => $template->get( 'provider_id' ),
+			'has_tickets_on_sale' => $this->get( 'has_tickets_on_sale' ),
+			'is_sale_past'        => $this->get( 'is_sale_past' ),
+			'post_id'             => $this->get( 'post_id' ),
+			'provider_id'         => $this->get( 'provider_id' ),
 			'provider'            => $provider,
-			'tickets_on_sale'     => $template->get( 'tickets_on_sale' ),
+			'tickets_on_sale'     => $this->get( 'tickets_on_sale' ),
 			'tickets'             => $all_tickets,
-			'tickets'             => $template->get( 'tickets', [] ),
+			'tickets'             => $this->get( 'tickets', [] ),
 		];
 
-		$template->template( 'registration-js/mini-cart', $args );
+		$this->template( 'registration-js/mini-cart', $args );
 		?>
 		<div class="tribe-tickets__registration__content">
 			<?php foreach ( $events as $event_id => $tickets ) : ?>
@@ -141,7 +137,7 @@ $classes        = [
 						</form>
 					</div>
 				</div>
-				<?php $template->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets, 'provider' => $providers[0] ) ); ?>
+				<?php $this->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets, 'provider' => $providers[0] ) ); ?>
 			<?php endforeach; ?>
 		</div>
 	</div>
@@ -155,7 +151,7 @@ $classes        = [
 			$notice_classes[] = 'tribe-common-a11y-hidden';
 		}
 
-		tribe( 'tickets.editor.template' )->template(
+		$this->template(
 			'components/notice',
 			[
 				'notice_classes'  => $notice_classes,
