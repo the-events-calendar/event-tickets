@@ -27,6 +27,7 @@ tribe.tickets.block = {
 		blockFooterAmount          : '.tribe-tickets__footer__total .tribe-amount',
 		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
 		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
+		blockSubmit                : '.tribe-tickets__submit',
 		container                  : '#tribe-tickets',
 		hidden                     : 'tribe-common-a11y-hidden',
 		item                       : '.tribe-tickets__item',
@@ -175,6 +176,10 @@ tribe.tickets.block = {
 			new_quantity     = isNaN( new_quantity ) ? 0 : new_quantity;
 			footerCount      += new_quantity;
 		} );
+
+		var disabled = 0 >= footerCount ? true : false ;
+
+		$( obj.selector.blockSubmit ).prop( 'disabled', disabled );
 
 		if ( 0 > footerCount ) {
 			return;
@@ -785,7 +790,6 @@ tribe.tickets.block = {
 			function( data ) {
 				if ( data.tickets ) {
 					obj.prefillCartForm( $tribe_ticket, data.tickets );
-				} else {
 				}
 
 				if ( data.meta ) {
@@ -794,6 +798,7 @@ tribe.tickets.block = {
 						var $matches = $tribe_ticket.find( `[data-ticket-id="${ticket.ticket_id}"]` );
 						if ( $matches.length ) {
 							obj.prefillmetaForm( data.meta );
+
 							return;
 						}
 					});
@@ -805,6 +810,8 @@ tribe.tickets.block = {
 				if ( local.meta ) {
 					obj.prefillmetaForm( local.meta );
 				}
+
+				var timeoutID = window.setTimeout( obj.loaderHide, 500, obj.modalSelector.loader );
 			}
 		);
 	}
@@ -879,9 +886,11 @@ tribe.tickets.block = {
 			var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
 			if ( $item ) {
 				$item.find( '.tribe-ticket-quantity' ).val( value.quantity );
+				$item.fadeIn();
 			}
 		} );
 
+		obj.loaderHide( obj.modalSelector.loader );
 	};
 
 	/**
@@ -1186,7 +1195,7 @@ tribe.tickets.block = {
 		if ( ! pageLoad ) {
 			var tickets = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart-' + obj.postId ) );
 
-			if ( null !== tickets ) {
+			if ( null !== tickets && tickets.length ) {
 				ret.tickets = tickets;
 			}
 
@@ -1434,8 +1443,25 @@ tribe.tickets.block = {
 				.removeClass( 'tribe-tickets--has-tickets' )
 				.find( obj.modalSelector.metaItem ).remove();
 
-				// short delay to ensure the fadeOut has finished
+				// Short delay to ensure the fadeOut has finished.
 			var timeoutID = window.setTimeout( obj.maybeShowNonMetaNotice, 500, $cart );
+
+			// Close then modal if we remove the last item
+			// Again, short delay to ensure the fadeOut has finished.
+			var maybeCloseModal = window.setTimeout(
+				function() {
+					var $items = $cart.find( obj.selector.item ).filter( ':visible' );
+					if ( 0 >= $items.length ) {
+						// Get the object ID
+						var id = $( obj.selector.blockSubmit ).attr( 'data-content' );
+						var result = 'dialog_obj_' + id.substring( id.lastIndexOf('-') + 1 );
+
+						// Clsoe the dialog
+						window[ result ].hide();
+					}
+				},
+				500,
+			);
 		}
 	);
 
@@ -1612,6 +1638,8 @@ tribe.tickets.block = {
 		obj.selector.submit,
 		function( e ) {
 			e.preventDefault();
+			e.stopPropagation();
+
 			var $button    = $( this );
 
 			// save meta and cart
