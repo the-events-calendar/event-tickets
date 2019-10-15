@@ -328,12 +328,16 @@
 	.tribe-common-form-control-radio__input.tribe-common-form-control-radio__input,
 	.tribe-common-form-control-checkbox__input.tribe-common-form-control-checkbox__input {
 		border-color: var(--form-color-border-secondary);
+		border-width: 1px;
 		margin-right: var(--spacer-3);
 
 		&:active,
 		&:hover {
 			border-color: var(--form-color-border-secondary);
-			border-width: 1px;
+		}
+
+		&:focus {
+			border-color: var(--form-color-border-primary);
 		}
 
 		&:checked {
