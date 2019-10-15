@@ -207,12 +207,9 @@ tribe.tickets.block = {
 			var quantity = parseInt( $( this ).val(), 10 );
 			quantity     = isNaN( quantity ) ? 0 : quantity;
 			var price = parseFloat( $price.text() );
-			console.log(price);
 			price = price * quantity;
-			console.log(price);
 			footerAmount += price;
 		} );
-		console.log(footerAmount);
 		if ( 0 > footerAmount ) {
 			return;
 		}
