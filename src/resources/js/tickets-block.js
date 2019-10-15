@@ -177,9 +177,11 @@ tribe.tickets.block = {
 			footerCount      += new_quantity;
 		} );
 
-		var disabled = 0 >= footerCount ? true : false ;
+		if ( $form.hasClass( 'tribe-tickets' ) ) {
+			var disabled = 0 >= footerCount ? true : false ;
 
-		$( obj.selector.blockSubmit ).prop( 'disabled', disabled );
+			$( obj.selector.blockSubmit ).prop( 'disabled', disabled );
+		}
 
 		if ( 0 > footerCount ) {
 			return;
@@ -204,9 +206,13 @@ tribe.tickets.block = {
 			var $price   = $( this ).closest( obj.selector.item ).find( obj.selector.itemPrice ).first();
 			var quantity = parseInt( $( this ).val(), 10 );
 			quantity     = isNaN( quantity ) ? 0 : quantity;
-			footerAmount += obj.numberFormat( $price.text() ) * quantity;
+			var price = parseFloat( $price.text() );
+			console.log(price);
+			price = price * quantity;
+			console.log(price);
+			footerAmount += price;
 		} );
-
+		console.log(footerAmount);
 		if ( 0 > footerAmount ) {
 			return;
 		}
