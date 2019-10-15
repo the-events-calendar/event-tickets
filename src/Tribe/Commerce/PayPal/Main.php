@@ -579,9 +579,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$attendee_email     = empty( $data['email'] ) ? null : sanitize_email( $data['email'] );
 		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
 		$attendee_full_name = empty( $data['full_name'] ) ? null : sanitize_text_field( $data['full_name'] );
-		$attendee_optout    = empty( $data['optout'] ) ? false : (bool) $data['optout'];
+		$attendee_optout    = empty( $data['optout'] ) ? 0 : max( 0, (int) $data['optout'] );
 
-		update_post_meta( $order_id, $this->attendee_optout_key, (bool) $attendee_optout );
+		update_post_meta( $order_id, $this->attendee_optout_key, (int) $attendee_optout );
 
 		if ( ! is_null( $attendee_full_name ) ) {
 			update_post_meta( $order_id, $this->full_name, $attendee_full_name );
@@ -2826,7 +2826,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$security    = get_post_meta( $attendee->ID, $this->security_code, true );
 		$order_id    = get_post_meta( $attendee->ID, $this->order_key, true );
 		$product_id  = get_post_meta( $attendee->ID, $this->attendee_product_key, true );
-		$optout      = (bool) get_post_meta( $attendee->ID, $this->attendee_optout_key, true );
+		$optout      = get_post_meta( $attendee->ID, $this->attendee_optout_key, true );
 		$status      = get_post_meta( $attendee->ID, $this->attendee_tpp_key, true );
 		$user_id     = get_post_meta( $attendee->ID, $this->attendee_user_id, true );
 		$ticket_sent = (bool) get_post_meta( $attendee->ID, $this->attendee_ticket_sent, true );
@@ -2834,6 +2834,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		if ( empty( $product_id ) ) {
 			return false;
 		}
+
+		$optout = filter_var( $optout, FILTER_VALIDATE_BOOLEAN );
 
 		$product       = get_post( $product_id );
 		$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product, true ) . ' ' . __( '(deleted)', 'event-tickets' );
