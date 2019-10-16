@@ -158,7 +158,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'bn'            => 'ModernTribe_SP',
 			'notify_url'    => urlencode( trim( $notify_url ) ),
 			'shopping_url'  => urlencode( $post_url ),
-			'return'        => $this->get_success_page_url(),
+			'return'        => $this->get_success_page_url( $invoice_number ),
 			'currency_code' => $currency_code ? $currency_code : 'USD',
 			'custom'        => $custom,
 			/*
@@ -532,7 +532,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'bn'            => 'ModernTribe_SP',
 			'notify_url'    => urlencode( $notify_url ),
 			'shopping_url'  => urlencode( $post_url ),
-			'return'        => $this->get_success_page_url(),
+			'return'        => $this->get_success_page_url( $invoice_number ),
 			'currency_code' => $currency_code ?: 'USD',
 			'custom'        => $custom_args,
 			/*
@@ -808,21 +808,28 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 * Will default to the `home_url` if the Success page is not set or wrong.
 	 *
 	 * @since 4.7
+	 * @since TBD Added $invoice_number parameter to add to success page.
+	 *
+	 * @param string|null $invoice_number Invoice number.
 	 *
 	 * @return string
 	 */
-	public function get_success_page_url() {
+	public function get_success_page_url( $invoice_number = null ) {
 		$success_page_id = tribe_get_option( 'ticket-paypal-success-page', false );
 
-		if ( empty( $success_page_id ) ) {
-			return home_url();
-		}
-		$success_page = get_post( $success_page_id );
-		if ( ! $success_page instanceof WP_Post || 'page' !== $success_page->post_type ) {
-			return home_url();
+		$success_page_url = home_url();
+
+		if ( ! empty( $success_page_id ) ) {
+			$success_page = get_post( $success_page_id );
+
+			if ( $success_page instanceof WP_Post && 'page' === $success_page->post_type ) {
+				$success_page_url = get_permalink( $success_page->ID );
+			}
 		}
 
-		return get_permalink( $success_page->ID );
+		$success_page_url = add_query_arg( 'tribe-tpp-order', $invoice_number, $success_page_url );
+
+		return $success_page_url;
 	}
 
 	/**
