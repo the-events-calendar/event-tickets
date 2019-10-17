@@ -1471,11 +1471,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		foreach( $tickets as $index => $ticket ) {
 			if ( __CLASS__ !== $ticket->provider_class ) {
-				unset( $tickets[$index]);
+				unset( $tickets[ $index ] );
 			}
 		}
 
-		if ( empty ( $tickets ) ) {
+		if ( empty( $tickets ) ) {
 			return;
 		}
 
