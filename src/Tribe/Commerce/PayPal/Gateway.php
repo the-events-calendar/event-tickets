@@ -546,12 +546,17 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 		$cart_items = [];
 
+		$optout_key = $paypal->attendee_optout_key;
+
 		foreach ( $items as $ticket_id => $item ) {
 			$optout = false;
 
 			if ( is_array( $item ) ) {
 				$quantity = $item['quantity'];
-				$optout   = $item['optout'];
+
+				if ( ! empty( $item[ $optout_key ] ) ) {
+					$optout = $item[ $optout_key ];
+				}
 			} else {
 				$quantity = $item;
 			}
