@@ -279,8 +279,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 		 *
 		 * @param array $data      Cart response data.
 		 * @param array $providers List of cart providers.
+		 * @param int   $post_id   Post ID for cart.
 		 */
-		$data = apply_filters( 'tribe_tickets_rest_cart_get_data', $data, $providers );
+		$data = apply_filters( 'tribe_tickets_rest_cart_get_data', $data, $providers, $post_id );
 
 		return new WP_REST_Response( $data );
 	}
