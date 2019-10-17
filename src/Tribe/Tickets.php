@@ -2763,9 +2763,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 4.9
 		 *
-		 * @param string $redirect
+		 * @param string   $redirect URL to redirect to.
+		 * @param null|int $post_id  Post ID for cart.
 		 */
-		public function maybe_redirect_to_attendees_registration_screen( $redirect = null ) {
+		public function maybe_redirect_to_attendees_registration_screen( $redirect = null, $post_id = null ) {
 
 			// Bail if the meta storage class doesn't exist
 			if ( ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' ) ) {
@@ -2879,10 +2880,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$url = add_query_arg(
 					[
 						'event_tickets_redirect_to' => $key,
-						'provider' => $commerce_paypal->attendee_object,
+						'provider'                  => $commerce_paypal->attendee_object,
 					],
 					$url
 				);
+			}
+
+			// Pass post ID to URL if set.
+			if ( null !== $post_id ) {
+				$url = add_query_arg( 'tribe_tickets_post_id', $post_id, $url );
 			}
 
 			wp_safe_redirect( $url, 307 );

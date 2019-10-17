@@ -2285,7 +2285,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$redirect = tribe_get_request_var( 'tribe_tickets_redirect_to', null );
 		$redirect = base64_encode( $redirect );
 
-		parent::maybe_redirect_to_attendees_registration_screen( $redirect );
+		$post_id = tribe_get_request_var( 'tribe_tickets_post_id', null );
+
+		parent::maybe_redirect_to_attendees_registration_screen( $redirect, $post_id );
 	}
 
 	/**
