@@ -75,15 +75,14 @@ class CartUpdateCest extends BaseRestCest {
 				'provider'  => 'tribe-commerce',
 			],
 		], $response['tickets'] );
-
+		$I->assertEquals( [], $response['meta'] );
 		$I->assertContains(
-			'?tribe_tickets_redirect_to=https%3A%2F%2Fwww.sandbox.paypal.com%2Fcgi-bin%2Fwebscr%2F_cart'
-				. '%3Fcmd%3D_cart'
-				. '%26business%3Dmerchant%2540example.com'
-				. '%26bn%3DModernTribe_SP',
+			'https://www.sandbox.paypal.com/cgi-bin/webscr/_cart'
+				. '?cmd=_cart'
+				. '&business=merchant%40example.com'
+				. '&bn=ModernTribe_SP',
 			$response['cart_url']
 		);
-
 		$I->assertEquals( $response['cart_url'], $response['checkout_url'] );
 	}
 
@@ -197,8 +196,8 @@ class CartUpdateCest extends BaseRestCest {
 			],
 		], $response['tickets'] );
 
-		$I->assertEquals( home_url(), $response['cart_url'] );
-		$I->assertEquals( home_url(), $response['checkout_url'] );
+		$I->assertEquals( '', $response['cart_url'] );
+		$I->assertEquals( '', $response['checkout_url'] );
 	}
 
 	/**
