@@ -1208,7 +1208,10 @@ tribe.tickets.block = {
 		if ( ! ret.tickets || ! ret.meta ) {
 			$.ajax( {
 				type: 'GET',
-				data: {'provider': $tribe_ticket.data( 'providerId' )},
+				data: {
+					provider: $tribe_ticket.data( 'providerId' ),
+					post_id: obj.postId
+				},
 				dataType: 'json',
 				url: obj.getRestEndpoint(),
 				success: function ( data ) {

@@ -1462,9 +1462,24 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return void
 	 */
 	public function front_end_tickets_form( $content ) {
-		/** @var Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form $form */
-		$form = tribe( 'tickets.commerce.paypal.frontend.tickets-form' );
-		$form->render( $content );
+		if ( tribe_get_option( 'toggle_blocks_editor', false ) ) {
+			return;
+		}
+
+		$post    = $GLOBALS['post'];
+		$tickets = self::get_tickets( $post->ID );
+
+		foreach( $tickets as $index => $ticket ) {
+			if ( __CLASS__ !== $ticket->provider_class ) {
+				unset( $tickets[$index]);
+			}
+		}
+
+		if ( empty ( $tickets ) ) {
+			return;
+		}
+
+		Tribe__Tickets__Tickets_View::instance()->get_tickets_block( $post->ID );
 	}
 
 	/**
@@ -2537,7 +2552,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$tickets = array();
 
 		foreach ( $ticket_ids as $post ) {
-			$tickets[] = $this->get_ticket( $post_id, $post );
+			$ticket = $this->get_ticket( $post_id, $post );
+
+			if ( __CLASS__ !== $ticket->provider_class ) {
+				continue;
+			}
+
+			$tickets[] = $ticket;
 		}
 
 		return $tickets;

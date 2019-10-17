@@ -381,7 +381,7 @@ class Tribe__Tickets__Status__Manager {
 	}
 
 	/**
-	 * Add addition names a status might be known as
+	 * Add additional names a status might be known as
 	 *
 	 * @since 4.10.5
 	 *
