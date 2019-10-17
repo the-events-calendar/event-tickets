@@ -2820,9 +2820,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$cart_has_required_meta = $meta->cart_has_required_meta( $tickets_in_cart );
+
 			/** @var \Tribe__Tickets_Plus__Meta__Contents $meta_contents */
 			$meta_contents = tribe( 'tickets-plus.meta.contents' );
-			$up_to_date             = $meta_contents->is_stored_meta_up_to_date( $tickets_in_cart );
+
+			$up_to_date = $meta_contents->is_stored_meta_up_to_date( $tickets_in_cart );
 
 			// If WooCommerce or EDD
 			if ( ! $is_paypal ) {
@@ -2855,11 +2857,22 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			$url = tribe( 'tickets.attendee_registration' )->get_url();
+			/** @var Tribe__Tickets__Attendee_Registration__Main $attendee_reg */
+			$attendee_reg = tribe( 'tickets.attendee_registration' );
 
-			$storage = new Tribe__Tickets_Plus__Meta__Storage();
+			$url = $attendee_reg->get_url();
+
+			$provider = tribe_get_request_var( 'provider' );
+
+			if ( ! empty( $provider ) ) {
+				$url = add_query_arg( 'provider', $provider, $url );
+			}
+
 			if ( ! empty( $redirect ) ) {
+				$storage = new Tribe__Tickets_Plus__Meta__Storage();
+
 				$key = $storage->store_temporary_data( $redirect );
+
 				/** @var \Tribe__Tickets__Commerce__PayPal__Main $commerce_paypal */
 				$commerce_paypal = tribe( 'tickets.commerce.paypal' );
 
