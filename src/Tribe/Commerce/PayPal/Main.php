@@ -2267,18 +2267,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.9
 	 *
-	 * @param string $redirect
+	 * @param string   $redirect URL to redirect to.
+	 * @param null|int $post_id  Post ID for cart.
 	 */
-	public function maybe_redirect_to_attendees_registration_screen( $redirect = null ) {
-		if ( ! $this->is_checkout_page() ) {
-			return;
-		}
-
-		if ( tribe( 'tickets.attendee_registration' )->is_on_page() ) {
-			return;
-		}
-
-		if ( $_POST ) {
+	public function maybe_redirect_to_attendees_registration_screen( $redirect = null, $post_id = null ) {
+		if ( ! empty( $_POST ) ) {
 			return;
 		}
 
