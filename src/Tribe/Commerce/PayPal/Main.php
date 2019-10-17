@@ -328,8 +328,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_action( 'tickets_tpp_ticket_deleted', [ $this, 'update_stock_after_deletion' ], 10, 3 );
 
 		// REST API hooks.
-		add_filter( 'tribe_tickets_rest_cart_get_cart_url_tribe-commerce', [ $this, 'get_cart_url' ], 10, 3 );
-		add_filter( 'tribe_tickets_rest_cart_get_checkout_url_tribe-commerce', [ $this, 'get_checkout_url' ], 10, 3 );
+		add_filter( 'tribe_tickets_rest_cart_get_cart_url_tribe-commerce', [ $this, 'rest_get_cart_url' ], 10, 3 );
+		add_filter( 'tribe_tickets_rest_cart_get_checkout_url_tribe-commerce', [ $this, 'rest_get_checkout_url' ], 10, 3 );
 		add_filter( 'tribe_tickets_rest_cart_get_tickets_tribe-commerce', [ $this, 'rest_get_tickets_in_cart' ] );
 		add_filter( 'tribe_tickets_rest_cart_update_tickets_tribe-commerce', [ $this, 'rest_update_tickets_in_cart' ] );
 	}
@@ -1984,13 +1984,16 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $cart_url Cart URL.
-	 * @param array  $data     REST API response data to be sent.
-	 * @param int    $post_id  Post ID for the cart.
+	 * @param null|int $post_id Post ID for the cart.
 	 *
 	 * @return string Tribe Commerce Cart URL.
 	 */
-	public function get_cart_url( $cart_url, $data, $post_id ) {
+	public function get_cart_url( $post_id = null ) {
+		if ( empty( $post_id ) ) {
+			// There is currently no non-post specific cart.
+			return '';
+		}
+
 		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
@@ -2007,18 +2010,36 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Get Tribe Commerce Cart URL for REST API.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $cart_url Cart URL.
+	 * @param array  $data     REST API response data to be sent.
+	 * @param int    $post_id  Post ID for the cart.
+	 *
+	 * @return string Tribe Commerce Cart URL.
+	 */
+	public function rest_get_cart_url( $cart_url, $data, $post_id ) {
+		return $this->get_cart_url( $post_id );
+	}
+
+	/**
 	 * Get Tribe Commerce Checkout URL.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $checkout_url Checkout URL.
-	 * @param array  $data         REST API response data to be sent.
-	 * @param int    $post_id      Post ID for the cart.
+	 * @param null|int $post_id Post ID for the cart.
 	 *
-	 * @return string PayPal Tribe Commerce URL.
+	 * @return string Tribe Commerce Checkout URL.
 	 */
-	public function get_checkout_url( $checkout_url, $data, $post_id ) {
-		$checkout_url = $this->get_cart_url( $checkout_url, $data, $post_id );
+	public function get_checkout_url( $post_id = null ) {
+		if ( empty( $post_id ) ) {
+			// There is currently no non-post specific checkout.
+			return '';
+		}
+
+		$checkout_url = $this->get_cart_url( $post_id );
 
 		/**
 		 * Allow filtering of the PayPal Checkout URL.
@@ -2028,6 +2049,21 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * @param string $checkout_url PayPal Checkout URL.
 		 */
 		return apply_filters( 'tribe_tickets_tribe-commerce_checkout_url', $checkout_url );
+	}
+
+	/**
+	 * Get Tribe Commerce Checkout URL for REST API.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $checkout_url Checkout URL.
+	 * @param array  $data         REST API response data to be sent.
+	 * @param int    $post_id      Post ID for the cart.
+	 *
+	 * @return string Tribe Commerce Checkout URL.
+	 */
+	public function rest_get_checkout_url( $checkout_url, $data, $post_id ) {
+		return $this->get_checkout_url( $post_id );
 	}
 
 	/**
