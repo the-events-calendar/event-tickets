@@ -237,38 +237,42 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 		 */
 		$cart_meta = apply_filters( 'tribe_tickets_rest_cart_get_ticket_meta', $cart_meta, $data['tickets'] );
 
-		$data['meta'] = $cart_meta;
+		$data['meta']         = $cart_meta;
+		$data['cart_url']     = '';
+		$data['checkout_url'] = '';
 
-		foreach ( $providers as $cart_provider ) {
-			/**
-			 * Get cart URL for provider.
-			 *
-			 * The dynamic portion of the hook name, `$cart_provider`, refers to the cart provider.
-			 *
-			 * @since TBD
-			 *
-			 * @param string $cart_url Cart URL.
-			 * @param array  $data     REST API response data to be sent.
-			 * @param int    $post_id  Post ID for the cart.
-			 */
-			$data['cart_url'] = apply_filters( 'tribe_tickets_rest_cart_get_cart_url_' . $cart_provider, '', $data, $post_id );
+		if ( ! empty( $data['tickets'] ) ) {
+			foreach ( $providers as $cart_provider ) {
+				/**
+				 * Get cart URL for provider.
+				 *
+				 * The dynamic portion of the hook name, `$cart_provider`, refers to the cart provider.
+				 *
+				 * @since TBD
+				 *
+				 * @param string $cart_url Cart URL.
+				 * @param array  $data     REST API response data to be sent.
+				 * @param int    $post_id  Post ID for the cart.
+				 */
+				$data['cart_url'] = apply_filters( 'tribe_tickets_rest_cart_get_cart_url_' . $cart_provider, '', $data, $post_id );
 
-			/**
-			 * Get checkout URL for provider.
-			 *
-			 * The dynamic portion of the hook name, `$cart_provider`, refers to the cart provider.
-			 *
-			 * @since TBD
-			 *
-			 * @param string $checkout_url Checkout URL.
-			 * @param array  $data         REST API response data to be sent.
-			 * @param int    $post_id      Post ID for the cart.
-			 */
-			$data['checkout_url'] = apply_filters( 'tribe_tickets_rest_cart_get_checkout_url_' . $cart_provider, '', $data, $post_id );
+				/**
+				 * Get checkout URL for provider.
+				 *
+				 * The dynamic portion of the hook name, `$cart_provider`, refers to the cart provider.
+				 *
+				 * @since TBD
+				 *
+				 * @param string $checkout_url Checkout URL.
+				 * @param array  $data         REST API response data to be sent.
+				 * @param int    $post_id      Post ID for the cart.
+				 */
+				$data['checkout_url'] = apply_filters( 'tribe_tickets_rest_cart_get_checkout_url_' . $cart_provider, '', $data, $post_id );
 
-			// Stop after first provider URLs are set.
-			if ( '' !== $data['cart_url'] || '' !== $data['checkout_url'] ) {
-				break;
+				// Stop after first provider URLs are set.
+				if ( '' !== $data['cart_url'] || '' !== $data['checkout_url'] ) {
+					break;
+				}
 			}
 		}
 
