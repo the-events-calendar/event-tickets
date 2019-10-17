@@ -664,7 +664,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 * @param string $cart_url
 		 * @param array  $post_data
 		 */
-		$url = apply_filters( 'tribe_tickets_commerce_paypal_gateway_add_to_cart_redirect', $url, $cart_url, [] );
+		$url = apply_filters( 'tribe_tickets_commerce_paypal_gateway_add_to_cart_redirect', $cart_url, $cart_url, [] );
 
 		return $url;
 	}
