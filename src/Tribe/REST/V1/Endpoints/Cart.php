@@ -202,6 +202,15 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 
 		$data['meta'] = $cart_meta;
 
+		/**
+		 * Get response data for the cart.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $data Cart response data.
+		 */
+		$data = apply_filters( 'tribe_tickets_rest_cart_get_data', $data );
+
 		return new WP_REST_Response( $data );
 	}
 
