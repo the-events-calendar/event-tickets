@@ -102,7 +102,7 @@ $non_meta_count        = 0;
 			<?php else: ?>
 				<button
 					type="submit"
-					class="tribe-common-c-btn-link tribe-common-c-btn--small tribe-block__tickets__item__attendee__fields__footer_submit tribe-validation-submit"
+					class="tribe-common-c-btn-link tribe-common-c-btn--small tribe-block__tickets__item__attendee__fields__footer_submit tribe-tickets__attendee__fields__footer_cart-button tribe-validation-submit"
 					name="cart-button"
 					>
 						<?php esc_html_e( 'Save and View Cart', 'event-tickets' ); ?>
@@ -110,7 +110,7 @@ $non_meta_count        = 0;
 				<span class="tribe-block__tickets__item__attendee__fields__footer__divider"><?php esc_html_e( 'or', 'event-tickets' ); ?></span>
 				<button
 					type="submit"
-					class="tribe-common-c-btn tribe-common-c-btn--small tribe-block__tickets__item__attendee__fields__footer_submit tribe-validation-submit"
+					class="tribe-common-c-btn tribe-common-c-btn--small tribe-block__tickets__item__attendee__fields__footer_submit tribe-tickets__attendee__fields__footer_cehckout-button tribe-validation-submit"
 					name="checkout-button"
 					>
 						<?php esc_html_e( 'Checkout Now', 'event-tickets' ); ?>

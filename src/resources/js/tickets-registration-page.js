@@ -58,7 +58,7 @@ tribe.tickets.registration = {};
 
 	// Bail if there are no tickets on the current event/page/post
 	if ( ! $( obj.selector.eventContainer ).length ) {
-		return;
+		//return;
 	}
 
 	/*
@@ -170,7 +170,10 @@ tribe.tickets.registration = {};
 	obj.initFormPrefills = function() {
 		$.ajax( {
 			type    : 'GET',
-			data    : { 'provider': obj.providerId },
+			data    : {
+				provider: obj.providerId,
+				post_id: obj.postId,
+			},
 			dataType: 'json',
 			url     : obj.getRestEndpoint(),
 			success : function ( data ) {

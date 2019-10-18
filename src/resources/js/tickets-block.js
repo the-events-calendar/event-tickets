@@ -272,7 +272,7 @@ tribe.tickets.block = {
 			item.qty   = obj.getQty( $blockCartItem );
 			item.price = obj.getPrice( $modalCartItem );
 
-			$modalCartItem.find( obj.selector.itemQuantityInput ).val( item.qty );
+			$modalCartItem.find( obj.selector.itemQuantityInput ).val( item.qty ).trigger( 'change' );
 
 			if ( item.qty <= 0 ) {
 				$modalCartItem.fadeOut();
@@ -327,6 +327,7 @@ tribe.tickets.block = {
 	 */
 	obj.maybeShowNonMetaNotice = function( $form ) {
 		var nonMetaCount = 0;
+		var metaCount    = 0;
 		var $cartItems =  $form.find( obj.selector.item ).filter( ':visible' );
 
 		if ( ! $cartItems.length ) {
@@ -343,16 +344,21 @@ tribe.tickets.block = {
 				// Ticket does not have meta - no need to jump through hoops (and throw errors).
 				if ( ! $ticket_container.length ) {
 					nonMetaCount += obj.getQty( $cartItem );
+				} else {
+					metaCount += obj.getQty( $cartItem );
 				}
 			}
 		);
 
 		var $notice = $( '.tribe-tickets__notice--non-ar' );
-		if ( 0 < nonMetaCount ) {
+		var $title  = $( '.tribe-tickets__item__attendee__fields__title' );
+		if ( 0 < nonMetaCount && 0 !== metaCount ) {
 			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
 			$notice.removeClass( 'tribe-common-a11y-hidden' );
+			$title.show();
 		} else {
 			$notice.addClass( 'tribe-common-a11y-hidden' );
+			$title.hide();
 		}
 	}
 
@@ -454,6 +460,7 @@ tribe.tickets.block = {
 					var qty       = obj.getQty( $cartItem );
 
 					if ( 0 >= qty ) {
+						$cartItem.fadeOut();
 						$ticket_container.removeClass( 'tribe-tickets--has-tickets' );
 						$ticket_container.find( obj.modalSelector.metaItem ).remove();
 						return;
@@ -785,22 +792,20 @@ tribe.tickets.block = {
 	 *
 	 * @return void
 	 */
-	obj.initFormPrefills = function() {
+	obj.initModalFormPrefills = function() {
 		obj.loaderShow( obj.modalSelector.loader );
 		$.when(
 			obj.getData()
 		).then(
 			function( data ) {
-				if ( data.tickets ) {
-					obj.prefillCartForm( $tribe_ticket, data.tickets );
-				}
+				obj.prefillModalCartForm( $( obj.modalSelector.cartForm ) );
 
 				if ( data.meta ) {
 					var count = false;
 					$.each( data.meta, function( ticket ) {
 						var $matches = $tribe_ticket.find( `[data-ticket-id="${ticket.ticket_id}"]` );
 						if ( $matches.length ) {
-							obj.prefillmetaForm( data.meta );
+							obj.prefillModalMetaForm( data.meta );
 
 							return;
 						}
@@ -811,7 +816,7 @@ tribe.tickets.block = {
 				var local = obj.getLocal();
 
 				if ( local.meta ) {
-					obj.prefillmetaForm( local.meta );
+					obj.prefillModalMetaForm( local.meta );
 				}
 
 				var timeoutID = window.setTimeout( obj.loaderHide, 500, obj.modalSelector.loader );
@@ -829,7 +834,7 @@ tribe.tickets.block = {
 	 *
 	 * @return void
 	 */
-	obj.prefillmetaForm = function( meta, length ) {
+	obj.prefillModalMetaForm = function( meta, length ) {
 		if ( undefined === meta || 0 >= meta.length ) {
 			return;
 		}
@@ -884,14 +889,26 @@ tribe.tickets.block = {
 	 *
 	 * @returns {*}
 	 */
-	obj.prefillCartForm = function ( $form, tickets ) {
-		$.each( tickets, function ( index, value ) {
-			var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
+	obj.prefillModalCartForm = function ( $form ) {
+		$form.find( obj.selector.item ).hide();
+
+		var $items = $tribe_ticket.children( obj.selector.item );
+
+		// Override the data with what's in the tickets block.
+		$.each( $items, function( index, item ) {
+			var $this = $( item );
+			var $item = $form.find( '[data-ticket-id="' + $this.attr( 'data-ticket-id' ) + '"]' );
+
 			if ( $item ) {
-				$item.find( '.tribe-ticket-quantity' ).val( value.quantity );
-				$item.fadeIn();
+				var quantity  = $this.find( '.tribe-tickets-quantity' ).val();
+				if ( 0 < quantity ) {
+					$item.find( '.tribe-ticket-quantity' ).val( quantity );
+					$item.fadeIn();
+				}
 			}
-		} );
+		});
+
+		obj.appendARFields($form);
 
 		obj.loaderHide( obj.modalSelector.loader );
 	};
@@ -1020,7 +1037,7 @@ tribe.tickets.block = {
 			function( data ) {
 				var cartSkip = data.meta.length;
 				if (length < cartSkip ) {
-					obj.prefillmetaForm( data.meta, length );
+					obj.prefillModalMetaForm( data.meta, length );
 
 					return;
 				} else {
@@ -1462,7 +1479,7 @@ tribe.tickets.block = {
 						var id = $( obj.selector.blockSubmit ).attr( 'data-content' );
 						var result = 'dialog_obj_' + id.substring( id.lastIndexOf('-') + 1 );
 
-						// Clsoe the dialog
+						// Close the dialog
 						window[ result ].hide();
 					}
 				},
@@ -1601,7 +1618,6 @@ tribe.tickets.block = {
 				meta    : obj.getMetaForSave(),
 				post_id : obj.postId,
 			};
-
 			$.ajax({
 				type: 'POST',
 				url: obj.getRestEndpoint(),
@@ -1611,15 +1627,16 @@ tribe.tickets.block = {
 					//redirect url
 					var url = response.checkout_url;
 
-					if( 'cart-button' === $button.attr( 'name' ) ) {
+					if ( 'cart-button' === $button.attr( 'name' ) ) {
 						url = response.cart_url
+					} else if ( 0 === response.is_stored_meta_up_to_date ) {
+						url = response = response.attendee_registration_url
 					}
 
 					// Clear sessionStorage before redirecting the user.
 					obj.clearLocal();
 					// Set a var so we don't save what we just erased.
 					tribe.tickets.modal_redirect = true;
-
 					window.location.href = url;
 				},
 				error: function( response ) {
@@ -1713,7 +1730,7 @@ tribe.tickets.block = {
 				}
 			);
 
-			obj.initFormPrefills();
+			obj.initModalFormPrefills();
 
 			obj.updateFormTotals( $modalCart );
 		}

@@ -11,7 +11,8 @@
  *
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
-
+$events = $this->get( 'events' );
+bdump($events);
 if ( empty( $provider ) ) {
 	$event_keys    = array_keys( $events );
 	$event_key     = array_shift( $event_keys );
@@ -43,7 +44,7 @@ $classes        = [
 		$this->template(
 			'components/notice',
 			[
-				'id' => 'tribe-tickets__notice__attendee-modal',
+				'id' => 'tribe-tickets__notice__attendee-registration',
 				'notice_classes' => [
 					'tribe-tickets__notice--error',
 					'tribe-tickets__validation-notice',
