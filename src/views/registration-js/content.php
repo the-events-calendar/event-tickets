@@ -12,7 +12,7 @@
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 $events = $this->get( 'events' );
-bdump($events);
+
 if ( empty( $provider ) ) {
 	$event_keys    = array_keys( $events );
 	$event_key     = array_shift( $event_keys );
