@@ -21,7 +21,6 @@
 /** @var Tribe__Tickets__Commerce__Currency $currency */
 $currency            = tribe( 'tickets.commerce.currency' );
 $cart_classes        = [ 'tribe-block', 'tribe-tickets', 'tribe-common' ];
-$cart_url            = $this->get( 'cart_url' );
 $has_tickets_on_sale = $this->get( 'has_tickets_on_sale' );
 $is_sale_past        = $this->get( 'is_sale_past' );
 $provider            = $this->get( 'provider' );
@@ -61,7 +60,7 @@ if ( ! $already_rendered ) {
 
 <form
 	id="tribe-tickets"
-	action="<?php echo esc_url( $cart_url ) ?>"
+	action=""
 	<?php tribe_classes( $cart_classes ); ?>
 	method="post"
 	enctype='multipart/form-data'
@@ -96,7 +95,7 @@ if ( ! $already_rendered ) {
 		<?php endforeach; ?>
 		<?php
 		// We're assuming that all the currency is the same here.
-		$currency_symbol     = $currency->get_currency_symbol( $tickets[0]->ID, true );
+		$currency_symbol     = $currency->get_currency_symbol( $ticket->ID, true );
 		$this->template( 'blocks/tickets/footer', [ 'tickets' => $tickets, 'currency_symbol' => $currency_symbol ] );
 		?>
 	<?php else : ?>
