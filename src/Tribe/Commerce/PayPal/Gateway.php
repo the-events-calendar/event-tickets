@@ -158,7 +158,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'bn'            => 'ModernTribe_SP',
 			'notify_url'    => urlencode( trim( $notify_url ) ),
 			'shopping_url'  => urlencode( $post_url ),
-			'return'        => $this->get_success_page_url(),
+			'return'        => $this->get_success_page_url( $invoice_number ),
 			'currency_code' => $currency_code ? $currency_code : 'USD',
 			'custom'        => $custom,
 			/*
@@ -532,7 +532,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'bn'            => 'ModernTribe_SP',
 			'notify_url'    => urlencode( $notify_url ),
 			'shopping_url'  => urlencode( $post_url ),
-			'return'        => $this->get_success_page_url(),
+			'return'        => $this->get_success_page_url( $invoice_number ),
 			'currency_code' => $currency_code ?: 'USD',
 			'custom'        => $custom_args,
 			/*
@@ -546,12 +546,17 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 		$cart_items = [];
 
+		$optout_key = $paypal->attendee_optout_key;
+
 		foreach ( $items as $ticket_id => $item ) {
 			$optout = false;
 
 			if ( is_array( $item ) ) {
 				$quantity = $item['quantity'];
-				$optout   = $item['optout'];
+
+				if ( ! empty( $item[ $optout_key ] ) ) {
+					$optout = $item[ $optout_key ];
+				}
 			} else {
 				$quantity = $item;
 			}
@@ -648,7 +653,12 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 *
 		 * @see Tribe__Tickets__Redirections::maybe_redirect
 		 */
-		$url = add_query_arg( [ 'tribe_tickets_redirect_to' => rawurlencode( $cart_url ) ], home_url() );
+		$url_args = [
+			'tribe_tickets_post_id'     => $post_id,
+			'tribe_tickets_redirect_to' => rawurlencode( $cart_url ),
+		];
+
+		$url = add_query_arg( $url_args, home_url() );
 
 		/**
 		 * Filters the add to cart redirect.
@@ -659,7 +669,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 * @param string $cart_url
 		 * @param array  $post_data
 		 */
-		$url = apply_filters( 'tribe_tickets_commerce_paypal_gateway_add_to_cart_redirect', $url, $cart_url, [] );
+		$url = apply_filters( 'tribe_tickets_commerce_paypal_gateway_add_to_cart_redirect', $cart_url, $cart_url, [] );
 
 		return $url;
 	}
@@ -808,21 +818,28 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 * Will default to the `home_url` if the Success page is not set or wrong.
 	 *
 	 * @since 4.7
+	 * @since TBD Added $invoice_number parameter to add to success page.
+	 *
+	 * @param string|null $invoice_number Invoice number.
 	 *
 	 * @return string
 	 */
-	public function get_success_page_url() {
+	public function get_success_page_url( $invoice_number = null ) {
 		$success_page_id = tribe_get_option( 'ticket-paypal-success-page', false );
 
-		if ( empty( $success_page_id ) ) {
-			return home_url();
-		}
-		$success_page = get_post( $success_page_id );
-		if ( ! $success_page instanceof WP_Post || 'page' !== $success_page->post_type ) {
-			return home_url();
+		$success_page_url = home_url();
+
+		if ( ! empty( $success_page_id ) ) {
+			$success_page = get_post( $success_page_id );
+
+			if ( $success_page instanceof WP_Post && 'page' === $success_page->post_type ) {
+				$success_page_url = get_permalink( $success_page->ID );
+			}
 		}
 
-		return get_permalink( $success_page->ID );
+		$success_page_url = add_query_arg( 'tribe-tpp-order', $invoice_number, $success_page_url );
+
+		return $success_page_url;
 	}
 
 	/**

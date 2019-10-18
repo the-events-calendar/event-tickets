@@ -47,10 +47,21 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 											'type'        => 'array',
 											'description' => __( 'The list of meta for each ticket item in the cart', 'event-tickets' ),
 										],
+										'cart_url'     => [
+											'type'        => 'string',
+											'description' => __( 'The provider cart URL', 'event-tickets' ),
+										],
+										'checkout_url' => [
+											'type'        => 'string',
+											'description' => __( 'The provider checkout URL', 'event-tickets' ),
+										],
 									],
 								],
 							],
 						],
+					],
+					'403' => [
+						'description' => __( 'The post does not have any tickets', 'event-tickets' ),
 					],
 				],
 			],
@@ -97,7 +108,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 						],
 					],
 					'403' => [
-						'description' => __( 'The post does not have any tickets', 'the-events-calendar' ),
+						'description' => __( 'The post does not have any tickets', 'event-tickets' ),
 					],
 				],
 			],
@@ -112,11 +123,25 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 	public function get( WP_REST_Request $request ) {
 		$this->is_active = true;
 
-		$provider = $request->get_param( 'provider' );
+		$post_id   = $request->get_param( 'post_id' );
+		$providers = $request->get_param( 'provider' );
 
-		if ( null !== $provider ) {
-			$provider = (array) $provider;
+		if ( 0 < $post_id ) {
+			// Confirm post has tickets.
+			$has_tickets = ! empty( Tribe__Tickets__Tickets::get_all_event_tickets( $post_id ) );
+
+			if ( ! $has_tickets ) {
+				$message = $this->messages->get_message( 'post-has-no-tickets' );
+
+				return new WP_Error( 'post-has-no-tickets', $message, [ 'status' => 403 ] );
+			}
 		}
+
+		if ( null === $providers ) {
+			$providers = [];
+		}
+
+		$providers = (array) $providers;
 
 		$data = [
 			'tickets' => [],
@@ -127,10 +152,12 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 		$editor_config = tribe( 'tickets.editor.configuration' );
 
 		// Get list of providers.
-		$providers = $editor_config->get_providers();
+		$all_providers = $editor_config->get_providers();
+
+		$found_providers = [];
 
 		// Fetch tickets for cart providers.
-		foreach ( $providers as $provider_data ) {
+		foreach ( $all_providers as $provider_data ) {
 			/** @var Tribe__Tickets__Tickets $provider_object */
 			$provider_object = call_user_func( [ $provider_data['class'], 'get_instance' ] );
 
@@ -139,9 +166,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 
 			// Skip provider if we only want specific ones.
 			if (
-				null !== $provider
-				&& ! in_array( $provider_key, $provider, true )
-				&& ! in_array( $provider_attendee_object, $provider, true )
+				[] !== $providers
+				&& ! in_array( $provider_key, $providers, true )
+				&& ! in_array( $provider_attendee_object, $providers, true )
 			) {
 				continue;
 			}
@@ -152,7 +179,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			/**
 			 * Get list of tickets in the cart for provider.
 			 *
-			 * The dynamic portion of the hook name, `$provider`, refers to the cart provider.
+			 * The dynamic portion of the hook name, `$provider_key`, refers to the cart provider.
 			 *
 			 * @since TBD
 			 *
@@ -175,8 +202,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 				$ticket['quantity']  = absint( $ticket['quantity'] );
 				$ticket['post_id']   = absint( $ticket['post_id'] );
 				$ticket['optout']    = (int) filter_var( $ticket['optout'], FILTER_VALIDATE_BOOLEAN );
-				$ticket_id           = $ticket['ticket_id'];
-				$quantity            = $ticket['quantity'];
+
+				$ticket_id = $ticket['ticket_id'];
+				$quantity  = $ticket['quantity'];
 
 				// Skip ticket if it has no quantity or is not accessible.
 				if ( $quantity < 1 || ! $this->is_ticket_readable( $ticket_id ) ) {
@@ -184,7 +212,16 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 				}
 
 				$data['tickets'][] = $ticket;
+
+				if ( ! in_array( $provider_key, $found_providers, true ) ) {
+					$found_providers[] = $provider_key;
+				}
 			}
+		}
+
+		// Set providers as the ones we found tickets for.
+		if ( [] === $providers ) {
+			$providers = $found_providers;
 		}
 
 		// Fetch meta for cart.
@@ -200,7 +237,55 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 		 */
 		$cart_meta = apply_filters( 'tribe_tickets_rest_cart_get_ticket_meta', $cart_meta, $data['tickets'] );
 
-		$data['meta'] = $cart_meta;
+		$data['meta']         = $cart_meta;
+		$data['cart_url']     = '';
+		$data['checkout_url'] = '';
+
+		if ( ! empty( $data['tickets'] ) ) {
+			foreach ( $providers as $cart_provider ) {
+				/**
+				 * Get cart URL for provider.
+				 *
+				 * The dynamic portion of the hook name, `$cart_provider`, refers to the cart provider.
+				 *
+				 * @since TBD
+				 *
+				 * @param string $cart_url Cart URL.
+				 * @param array  $data     REST API response data to be sent.
+				 * @param int    $post_id  Post ID for the cart.
+				 */
+				$data['cart_url'] = apply_filters( 'tribe_tickets_rest_cart_get_cart_url_' . $cart_provider, '', $data, $post_id );
+
+				/**
+				 * Get checkout URL for provider.
+				 *
+				 * The dynamic portion of the hook name, `$cart_provider`, refers to the cart provider.
+				 *
+				 * @since TBD
+				 *
+				 * @param string $checkout_url Checkout URL.
+				 * @param array  $data         REST API response data to be sent.
+				 * @param int    $post_id      Post ID for the cart.
+				 */
+				$data['checkout_url'] = apply_filters( 'tribe_tickets_rest_cart_get_checkout_url_' . $cart_provider, '', $data, $post_id );
+
+				// Stop after first provider URLs are set.
+				if ( '' !== $data['cart_url'] || '' !== $data['checkout_url'] ) {
+					break;
+				}
+			}
+		}
+
+		/**
+		 * Get response data for the cart.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $data      Cart response data.
+		 * @param array $providers List of cart providers.
+		 * @param int   $post_id   Post ID for cart.
+		 */
+		$data = apply_filters( 'tribe_tickets_rest_cart_get_data', $data, $providers, $post_id );
 
 		return new WP_REST_Response( $data );
 	}
@@ -232,6 +317,12 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 						],
 					],
 				],
+			],
+			'post_id'  => [
+				'required'          => false,
+				'type'              => 'integer',
+				'description'       => __( 'The post ID', 'event-tickets' ),
+				'validate_callback' => [ $this->validator, 'is_post_id' ],
 			],
 		];
 	}
@@ -273,6 +364,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			// Setup tickets.
 			foreach ( $tickets as $k => $ticket ) {
 				$ticket = array_merge( $defaults, $ticket );
+
 				$ticket['ticket_id'] = absint( $ticket['ticket_id'] );
 				$ticket['quantity']  = absint( $ticket['quantity'] );
 
@@ -285,6 +377,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 
 				// Update ticket in array for use later.
 				$tickets[ $k ] = $ticket;
+
 				// Add provider if not yet added.
 				if ( ! isset( $providers[ $ticket['provider'] ] ) ) {
 					$providers[ $ticket['provider'] ] = [];
@@ -359,51 +452,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 		}
 
 		// Get the updated cart details.
-		$response = $this->get( $request );
-
-		// Update response with correct cart URLs.
-		if ( $response instanceof WP_REST_Response ) {
-			/** @var WP_REST_Response $response */
-			$data = $response->get_data();
-
-			$cart_url = '';
-			$checkout_url = '';
-
-			/**
-			 * Get cart URL for provider.
-			 *
-			 * The dynamic portion of the hook name, `$provider`, refers to the cart provider.
-			 *
-			 * @since TBD
-			 *
-			 * @param string $cart_url Cart URL.
-			 * @param array  $data     REST API response data to be sent.
-			 * @param int    $post_id  Post ID for the cart.
-			 */
-			$cart_url = apply_filters( 'tribe_tickets_rest_cart_get_cart_url_' . $provider, $cart_url, $data, $post_id );
-
-			/**
-			 * Get checkout URL for provider.
-			 *
-			 * The dynamic portion of the hook name, `$provider`, refers to the cart provider.
-			 *
-			 * @since TBD
-			 *
-			 * @param string $checkout_url Checkout URL.
-			 * @param array  $data         REST API response data to be sent.
-			 * @param int    $post_id      Post ID for the cart.
-			 */
-			$checkout_url = apply_filters( 'tribe_tickets_rest_cart_get_checkout_url_' . $provider, $checkout_url, $data, $post_id );
-
-			// Update cart and checkout URL.
-			$data['cart_url']     = $cart_url;
-			$data['checkout_url'] = $checkout_url;
-
-			// Update response data.
-			$response->set_data( $data );
-		}
-
-		return $response;
+		return $this->get( $request );
 	}
 
 	/**

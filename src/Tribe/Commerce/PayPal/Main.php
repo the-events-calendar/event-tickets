@@ -328,8 +328,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_action( 'tickets_tpp_ticket_deleted', [ $this, 'update_stock_after_deletion' ], 10, 3 );
 
 		// REST API hooks.
-		add_filter( 'tribe_tickets_rest_cart_get_cart_url_tribe-commerce', [ $this, 'get_cart_url' ], 10, 3 );
-		add_filter( 'tribe_tickets_rest_cart_get_checkout_url_tribe-commerce', [ $this, 'get_checkout_url' ], 10, 3 );
+		add_filter( 'tribe_tickets_rest_cart_get_cart_url_tribe-commerce', [ $this, 'rest_get_cart_url' ], 10, 3 );
+		add_filter( 'tribe_tickets_rest_cart_get_checkout_url_tribe-commerce', [ $this, 'rest_get_checkout_url' ], 10, 3 );
 		add_filter( 'tribe_tickets_rest_cart_get_tickets_tribe-commerce', [ $this, 'rest_get_tickets_in_cart' ] );
 		add_filter( 'tribe_tickets_rest_cart_update_tickets_tribe-commerce', [ $this, 'rest_update_tickets_in_cart' ] );
 	}
@@ -579,9 +579,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$attendee_email     = empty( $data['email'] ) ? null : sanitize_email( $data['email'] );
 		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
 		$attendee_full_name = empty( $data['full_name'] ) ? null : sanitize_text_field( $data['full_name'] );
-		$attendee_optout    = empty( $data['optout'] ) ? false : (bool) $data['optout'];
+		$attendee_optout    = empty( $data['optout'] ) ? 0 : max( 0, (int) $data['optout'] );
 
-		update_post_meta( $order_id, $this->attendee_optout_key, (bool) $attendee_optout );
+		update_post_meta( $order_id, $this->attendee_optout_key, (int) $attendee_optout );
 
 		if ( ! is_null( $attendee_full_name ) ) {
 			update_post_meta( $order_id, $this->full_name, $attendee_full_name );
@@ -1462,9 +1462,24 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return void
 	 */
 	public function front_end_tickets_form( $content ) {
-		/** @var Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form $form */
-		$form = tribe( 'tickets.commerce.paypal.frontend.tickets-form' );
-		$form->render( $content );
+		if ( tribe_get_option( 'toggle_blocks_editor', false ) ) {
+			return;
+		}
+
+		$post    = $GLOBALS['post'];
+		$tickets = self::get_tickets( $post->ID );
+
+		foreach( $tickets as $index => $ticket ) {
+			if ( __CLASS__ !== $ticket->provider_class ) {
+				unset( $tickets[ $index ] );
+			}
+		}
+
+		if ( empty( $tickets ) ) {
+			return;
+		}
+
+		Tribe__Tickets__Tickets_View::instance()->get_tickets_block( $post->ID );
 	}
 
 	/**
@@ -1504,6 +1519,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$return->description      = $product->post_excerpt;
 		$return->ID               = $ticket_id;
 		$return->name             = $product->post_title;
+		$return->menu_order       = $product->menu_order;
 		$return->post_type        = $product->post_type;
 		$return->price            = get_post_meta( $ticket_id, '_price', true );
 		$return->provider_class   = get_class( $this );
@@ -1984,13 +2000,16 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $cart_url Cart URL.
-	 * @param array  $data     REST API response data to be sent.
-	 * @param int    $post_id  Post ID for the cart.
+	 * @param null|int $post_id Post ID for the cart.
 	 *
 	 * @return string Tribe Commerce Cart URL.
 	 */
-	public function get_cart_url( $cart_url, $data, $post_id ) {
+	public function get_cart_url( $post_id = null ) {
+		if ( empty( $post_id ) ) {
+			// There is currently no non-post specific cart.
+			return '';
+		}
+
 		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
@@ -2007,18 +2026,36 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Get Tribe Commerce Cart URL for REST API.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $cart_url Cart URL.
+	 * @param array  $data     REST API response data to be sent.
+	 * @param int    $post_id  Post ID for the cart.
+	 *
+	 * @return string Tribe Commerce Cart URL.
+	 */
+	public function rest_get_cart_url( $cart_url, $data, $post_id ) {
+		return $this->get_cart_url( $post_id );
+	}
+
+	/**
 	 * Get Tribe Commerce Checkout URL.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $checkout_url Checkout URL.
-	 * @param array  $data         REST API response data to be sent.
-	 * @param int    $post_id      Post ID for the cart.
+	 * @param null|int $post_id Post ID for the cart.
 	 *
-	 * @return string PayPal Tribe Commerce URL.
+	 * @return string Tribe Commerce Checkout URL.
 	 */
-	public function get_checkout_url( $checkout_url, $data, $post_id ) {
-		$checkout_url = $this->get_cart_url( $checkout_url, $data, $post_id );
+	public function get_checkout_url( $post_id = null ) {
+		if ( empty( $post_id ) ) {
+			// There is currently no non-post specific checkout.
+			return '';
+		}
+
+		$checkout_url = $this->get_cart_url( $post_id );
 
 		/**
 		 * Allow filtering of the PayPal Checkout URL.
@@ -2028,6 +2065,21 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * @param string $checkout_url PayPal Checkout URL.
 		 */
 		return apply_filters( 'tribe_tickets_tribe-commerce_checkout_url', $checkout_url );
+	}
+
+	/**
+	 * Get Tribe Commerce Checkout URL for REST API.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $checkout_url Checkout URL.
+	 * @param array  $data         REST API response data to be sent.
+	 * @param int    $post_id      Post ID for the cart.
+	 *
+	 * @return string Tribe Commerce Checkout URL.
+	 */
+	public function rest_get_checkout_url( $checkout_url, $data, $post_id ) {
+		return $this->get_checkout_url( $post_id );
 	}
 
 	/**
@@ -2230,25 +2282,20 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.9
 	 *
-	 * @param string $redirect
+	 * @param string   $redirect URL to redirect to.
+	 * @param null|int $post_id  Post ID for cart.
 	 */
-	public function maybe_redirect_to_attendees_registration_screen( $redirect = null ) {
-		if ( ! $this->is_checkout_page() ) {
-			return;
-		}
-
-		if ( tribe( 'tickets.attendee_registration' )->is_on_page() ) {
-			return;
-		}
-
-		if ( $_POST ) {
+	public function maybe_redirect_to_attendees_registration_screen( $redirect = null, $post_id = null ) {
+		if ( ! empty( $_POST ) ) {
 			return;
 		}
 
 		$redirect = tribe_get_request_var( 'tribe_tickets_redirect_to', null );
 		$redirect = base64_encode( $redirect );
 
-		parent::maybe_redirect_to_attendees_registration_screen( $redirect );
+		$post_id = tribe_get_request_var( 'tribe_tickets_post_id', null );
+
+		parent::maybe_redirect_to_attendees_registration_screen( $redirect, $post_id );
 	}
 
 	/**
@@ -2501,7 +2548,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$tickets = array();
 
 		foreach ( $ticket_ids as $post ) {
-			$tickets[] = $this->get_ticket( $post_id, $post );
+			$ticket = $this->get_ticket( $post_id, $post );
+
+			if ( __CLASS__ !== $ticket->provider_class ) {
+				continue;
+			}
+
+			$tickets[] = $ticket;
 		}
 
 		return $tickets;
@@ -2826,7 +2879,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$security    = get_post_meta( $attendee->ID, $this->security_code, true );
 		$order_id    = get_post_meta( $attendee->ID, $this->order_key, true );
 		$product_id  = get_post_meta( $attendee->ID, $this->attendee_product_key, true );
-		$optout      = (bool) get_post_meta( $attendee->ID, $this->attendee_optout_key, true );
+		$optout      = get_post_meta( $attendee->ID, $this->attendee_optout_key, true );
 		$status      = get_post_meta( $attendee->ID, $this->attendee_tpp_key, true );
 		$user_id     = get_post_meta( $attendee->ID, $this->attendee_user_id, true );
 		$ticket_sent = (bool) get_post_meta( $attendee->ID, $this->attendee_ticket_sent, true );
@@ -2834,6 +2887,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		if ( empty( $product_id ) ) {
 			return false;
 		}
+
+		$optout = filter_var( $optout, FILTER_VALIDATE_BOOLEAN );
 
 		$product       = get_post( $product_id );
 		$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product, true ) . ' ' . __( '(deleted)', 'event-tickets' );
