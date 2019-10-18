@@ -35,22 +35,26 @@ class Tribe__Tickets__Tickets_View {
 		add_action( 'template_redirect', [ $myself, 'authorization_redirect' ] );
 		add_action( 'template_redirect', [ $myself, 'update_tickets' ] );
 
-		// Generate Non TEC Permalink
+		// Generate Non TEC Permalink.
 		add_action( 'generate_rewrite_rules', [ $myself, 'add_non_event_permalinks' ] );
 		add_filter( 'query_vars', [ $myself, 'add_query_vars' ] );
 		add_action( 'parse_request', [ $myself, 'prevent_page_redirect' ] );
 		add_filter( 'the_content', [ $myself, 'intercept_content' ] );
 		add_action( 'parse_request', [ $myself, 'maybe_regenerate_rewrite_rules' ] );
 
-		// Only Applies this to TEC users
+		// Only Applies this to TEC users.
 		if ( class_exists( 'Tribe__Events__Rewrite' ) ) {
 			add_action( 'tribe_events_pre_rewrite', [ $myself, 'add_permalink' ] );
 			add_filter( 'tribe_events_rewrite_base_slugs', [ $myself, 'add_rewrite_base_slug' ] );
 		}
 
-		// Intercept Template file for Tickets
+		// Intercept Template file for Tickets.
 		add_action( 'tribe_events_pre_get_posts', [ $myself, 'modify_ticket_display_query' ] );
 		add_filter( 'tribe_events_template_single-event.php', [ $myself, 'intercept_template' ], 20 );
+
+		// We will inject on the Priority 4, to be happen before RSVP.
+		add_action( 'tribe_events_single_event_after_the_meta', [ $myself, 'inject_link_template' ], 4 );
+		add_filter( 'the_content', [ $myself, 'inject_link_template_the_content' ], 9 );
 
 		return $myself;
 	}
@@ -463,7 +467,7 @@ class Tribe__Tickets__Tickets_View {
 		 *
 		 * @since 4.5.6
 		 *
-		 * @param boolean $already_rendered
+		 * @param boolean $already_rendered Whether the order link template has already been rendered.
 		 */
 		$already_rendered = apply_filters( 'tribe_tickets_order_link_template_already_rendered', false );
 
