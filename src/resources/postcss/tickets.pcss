@@ -26,7 +26,8 @@
 	}
 }
 
- .tribe-common {
+ .tribe-common,
+ .entry .entry-content .tribe-common {
 
 	 .tribe-tickets__title {
 		 color: var(--color-text-primary);
@@ -785,7 +786,7 @@
 /*
 	Modal-cart specific styles
 */
-.tribe-common.tribe-modal__wrapper--ar {
+ .entry .entry-content .tribe-common.tribe-modal__wrapper--ar {
 	border-radius: 0;
 	max-width: 100vw;
 	padding: var(--spacer-3) var(--spacer-5);
@@ -1014,6 +1015,7 @@
 
 		@media(--viewport-medium) {
 			display: inline-block;
+			margin-bottom: 0;
 		}
 	}
 

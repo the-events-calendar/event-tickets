@@ -15,6 +15,7 @@
  * @since   4.10.10  Use customizable ticket name functions.
  *
  * @version TBD
+ * @deprecated TBD
  *
  * @var bool $must_login
  * @var bool $display_login_link
