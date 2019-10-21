@@ -16,9 +16,9 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	protected $invoice_number;
 
 	/**
-	 * @var array
+	 * @var array|null The list of items, null if not retrieved from transient yet.
 	 */
-	protected $items = [];
+	protected $items = null;
 
 	/**
 	 * {@inheritdoc}
@@ -48,13 +48,15 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	 * {@inheritdoc}
 	 */
 	public function get_items() {
-		if ( ! empty( $this->items ) ) {
+		if ( null !== $this->items ) {
 			return $this->items;
 		}
 
 		if ( ! $this->exists() ) {
 			return false;
 		}
+
+		$this->items = [];
 
 		$invoice_number = $this->read_invoice_number();
 
@@ -105,7 +107,9 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	 * {@inheritdoc}
 	 */
 	public function has_items() {
-		return count( $this->items );
+		$items = $this->get_items();
+
+		return count( $items );
 	}
 
 	/**
@@ -125,7 +129,7 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 
 		$new_quantity = (int) $quantity;
 
-		if ( $current_quantity ) {
+		if ( 0 < $current_quantity ) {
 			$new_quantity += (int) $current_quantity;
 		}
 
@@ -148,7 +152,11 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	public function remove_item( $item_id, $quantity = null ) {
 		if ( null !== $quantity ) {
 			$this->add_item( $item_id, - abs( (int) $quantity ) );
-		} elseif ( isset( $this->items[ $item_id ] ) ) {
+
+			return;
+		}
+
+		if ( $this->has_item( $item_id ) ) {
 			unset( $this->items[ $item_id ] );
 		}
 	}
