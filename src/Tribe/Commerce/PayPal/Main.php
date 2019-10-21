@@ -324,6 +324,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_action( 'wp_loaded', [ $this, 'maybe_delete_expired_products' ], 0 );
 
 		add_filter( 'tribe_attendee_registration_form_classes', [ $this, 'tribe_attendee_registration_form_class' ] );
+		add_filter( 'tribe_attendee_registration_cart_provider', [ $this, 'tribe_attendee_registration_cart_provider' ], 10, 2 );
+
 
 		add_action( 'tickets_tpp_ticket_deleted', [ $this, 'update_stock_after_deletion' ], 10, 3 );
 
@@ -2260,19 +2262,28 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$transient_key = $this->get_current_cart_transient();
 
+		// Bail if we have no data key.
 		if ( false === $transient_key ) {
 			return;
 		}
 
-		delete_transient( $transient_key );
+		$transient = get_transient( $transient_key );
+
+		// Bail if we have no data to delete.
+		if ( empty( $transient ) ) {
+			return;
+		}
 
 		// Bail if ET+ is not in place.
 		if ( ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' ) ) {
 			return;
 		}
-
 		$storage = new Tribe__Tickets_Plus__Meta__Storage();
-		$storage->delete_cookie();
+
+		foreach ( $transient as $ticket_id => $data ) {
+			$storage->delete_cookie( $ticket_id );
+		}
+
 	}
 
 	/**
@@ -3063,5 +3074,30 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$classes[ $this->attendee_object ] = 'tpp';
 
 		return $classes;
+	}
+
+	/**
+	 * Filter the provider object to return this class if tickets are for this provider.
+	 *
+	 * @since TBD
+	 *
+	 * @param object $provider_obj
+	 * @param string $provider
+	 *
+	 * @return object
+	 */
+	function tribe_attendee_registration_cart_provider( $provider_obj, $provider ) {
+		$options = [
+			'tpp',
+			'tribe_tpp_attendees',
+			'tribe-commerce',
+			__CLASS__,
+		];
+
+		if ( in_array( $provider, $options, true ) ) {
+			return $this;
+		}
+
+		return $provider_obj;
 	}
 }
