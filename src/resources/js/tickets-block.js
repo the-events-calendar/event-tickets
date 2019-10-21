@@ -1784,4 +1784,17 @@ tribe.tickets.block  = {
 	);
 
 	obj.init();
+
+	window.addEventListener( 'pageshow', function ( event ) {
+		if (
+			event.persisted
+			|| (
+				typeof window.performance != 'undefined'
+				&& window.performance.navigation.type === 2
+			)
+		) {
+			obj.init();
+		}
+	} );
+
 } )( jQuery, tribe.tickets.block, tribe.dialogs.events );
