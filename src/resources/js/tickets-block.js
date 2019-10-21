@@ -452,7 +452,10 @@ tribe.tickets.block  = {
 					var qty       = obj.getQty( $cartItem );
 
 					if ( 0 >= qty ) {
-						$cartItem.fadeOut();
+						if ( $form.hasClass( 'tribe-modal-cart' ) ) {
+							$cartItem.fadeOut();
+						}
+
 						$ticket_container.removeClass( 'tribe-tickets--has-tickets' );
 						$ticket_container.find( obj.modalSelector.metaItem ).remove();
 
