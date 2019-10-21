@@ -58,7 +58,7 @@ tribe.tickets.registration = {};
 
 	// Bail if there are no tickets on the current event/page/post
 	if ( ! $( obj.selector.eventContainer ).length ) {
-		//return;
+		return;
 	}
 
 	/*
