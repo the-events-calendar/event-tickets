@@ -908,7 +908,7 @@ tribe.tickets.block  = {
 		$.each( $items, function( index, item ) {
 			var $block_item = $( item );
 			var $item = $form.find( '[data-ticket-id="' + $block_item.attr( 'data-ticket-id' ) + '"]' );
-console.log($item.length);
+
 			if ( $item ) {
 				var quantity  = $block_item.find( '.tribe-tickets-quantity' ).val();
 				if ( 0 < quantity ) {
