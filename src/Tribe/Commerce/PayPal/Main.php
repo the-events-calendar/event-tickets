@@ -3094,7 +3094,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			__CLASS__,
 		];
 
-		if ( in_array( $provider, $options) ) {
+		if ( in_array( $provider, $options, true ) ) {
 			return $this;
 		}
 
