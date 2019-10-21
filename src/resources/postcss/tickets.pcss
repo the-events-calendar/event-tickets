@@ -822,10 +822,6 @@
 		}
 	}
 
-	.tribe-tickets__item__total__label {
-
-	}
-
 	.tribe-tickets__item__total__wrap {
 		align-self: stretch;
 		display: flex;
@@ -1044,6 +1040,14 @@
 
 		@media (--viewport-medium) {
 			@mixin desktop-body-1-sup;
+		}
+	}
+
+	/* Hide the cart button and divider text for TC */
+	.tribe-tickets__item__attendee__fields__form--tpp {
+		.tribe-tickets__attendee__fields__footer_cart-button,
+		.tribe-block__tickets__item__attendee__fields__footer__divider {
+			display: none;
 		}
 	}
 }

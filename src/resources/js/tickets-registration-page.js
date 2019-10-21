@@ -170,7 +170,10 @@ tribe.tickets.registration = {};
 	obj.initFormPrefills = function() {
 		$.ajax( {
 			type    : 'GET',
-			data    : { 'provider': obj.providerId },
+			data    : {
+				provider: obj.providerId,
+				post_id: obj.postId,
+			},
 			dataType: 'json',
 			url     : obj.getRestEndpoint(),
 			success : function ( data ) {
@@ -199,16 +202,11 @@ tribe.tickets.registration = {};
 	obj.appendARFields = function ( data ) {
 		var tickets      = data.tickets;
 		var meta         = data.meta;
-		var nonMetaCount = tickets.length;
+		var nonMetaCount = 0;
 
 		$.each( tickets, function( index, ticket ) {
 			var ticket_meta       = meta.filter( obj => { return obj.ticket_id === ticket.ticket_id; } );
-			var tickets_length    = ticket_meta[0].items.length;
 			var ticketTemplate    = window.wp.template( 'tribe-registration--' + ticket.ticket_id );
-
-			if ( ! ticketTemplate ) {
-				return;
-			}
 			var $ticket_container = $tribe_registration.find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticket.ticket_id + '"]' );
 			var counter           = 1;
 
@@ -218,14 +216,13 @@ tribe.tickets.registration = {};
 				var data = { 'attendee_id': i };
 				try {
 					$ticket_container.append( ticketTemplate( data ) );
-				  }
-				  catch(error) {
-					// template doesn't exist  -the ticket has no meta.
-				  }
+				} catch(error) {
+					nonMetaCount += ticket.quantity;
+					// template doesn't exist - the ticket has no meta.
+				}
 
 			}
 
-			nonMetaCount -= tickets_length;
 		} );
 
 		obj.maybeShowNonMetaNotice( nonMetaCount );
@@ -233,7 +230,7 @@ tribe.tickets.registration = {};
 
 	obj.maybeShowNonMetaNotice = function( nonMetaCount ) {
 		var $notice = $( '.tribe-tickets__notice--non-ar' );
-		if ( nonMetaCount ) {
+		if ( nonMetaCount && nonMetaCount> 0 ) {
 			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
 			$notice.removeClass( 'tribe-common-a11y-hidden' );
 		} else {

@@ -217,24 +217,6 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		$provider_obj = false;
 
-		switch ( $provider ) {
-			case 'woo':
-			case 'tribe_wooticket':
-			case 'Tribe__Events__Tickets__Woo__Main':
-				$provider_obj = tribe( 'tickets-plus.commerce.woo' );
-				break;
-			case 'edd':
-			case 'tribe_eddticket':
-			case 'Tribe__Events__Tickets__EDD__Main':
-				$provider_obj = tribe( 'tickets-plus.commerce.edd' );
-				break;
-			case 'tpp':
-			case 'tribe_tpp_attendees':
-			case 'Tribe__Tickets__Commerce__PayPal__Main':
-				$provider_obj = tribe( 'tickets.commerce.paypal' );
-				break;
-		}
-
 		/**
 		 * Allow providers to include themselves if they are not in the above.
 		 *
@@ -243,7 +225,9 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 * @return boolean|object The provider object or boolean false if none found above.
 		 * @param string $provider A string indicating the desired provider.
 		 */
-		return apply_filters( 'tribe_attendee_registration_cart_provider', $provider_obj, $provider );
+		$provider_obj = apply_filters( 'tribe_attendee_registration_cart_provider', $provider_obj, $provider );
+
+		return $provider_obj;
 	}
 
 	/**
