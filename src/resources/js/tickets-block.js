@@ -280,7 +280,7 @@ tribe.tickets.block  = {
 			// We force new DOM queries here to be sure we pick up dynamically generated items.
 			var optoutSelector = obj.selector.itemOptOutInput + $blockCartItem.data( 'ticket-id' );
 			item.$optOut = $( optoutSelector );
-			$optoutInput = $( optoutSelector + '-modal' );
+			var $optoutInput = $( optoutSelector + '-modal' );
 
 			( item.$optOut.length && item.$optOut.is( ':checked' ) ) ? $optoutInput.val( '1' ) : $optoutInput.val( '0' );
 		}
@@ -906,11 +906,11 @@ tribe.tickets.block  = {
 
 		// Override the data with what's in the tickets block.
 		$.each( $items, function( index, item ) {
-			var $this = $( item );
-			var $item = $form.find( '[data-ticket-id="' + $this.attr( 'data-ticket-id' ) + '"]' );
-
+			var $block_item = $( item );
+			var $item = $form.find( '[data-ticket-id="' + $block_item.attr( 'data-ticket-id' ) + '"]' );
+console.log($item.length);
 			if ( $item ) {
-				var quantity  = $this.find( '.tribe-tickets-quantity' ).val();
+				var quantity  = $block_item.find( '.tribe-tickets-quantity' ).val();
 				if ( 0 < quantity ) {
 					$item.find( '.tribe-ticket-quantity' ).val( quantity );
 					$item.fadeIn();
