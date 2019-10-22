@@ -1630,12 +1630,15 @@ tribe.tickets.block  = {
 			var isValidForm  = obj.validateForm( $metaForm );
 			var $errorNotice = $( obj.selector.validationNotice );
 
+			obj.loaderShow( obj.modalSelector.loader );
+
 			if ( ! isValidForm[ 0 ] ) {
-				$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
 				$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.validation_error_title );
 				$errorNotice.find( 'p' ).html( TribeMessages.validation_error );
 				$( obj.selector.validationNotice + '__count' ).text( isValidForm[ 1 ] );
 				$errorNotice.show();
+				obj.loaderHide( obj.modalSelector.loader );
+				document.getElementById( 'tribe-tickets__notice__attendee-modal' ).scrollIntoView({ behavior: 'smooth', block: 'start' });
 				return false;
 			}
 
@@ -1651,7 +1654,7 @@ tribe.tickets.block  = {
 
 			$.ajax( {
 				type: 'POST',
-				url: obj.getRestEndpoint(),
+				url: obj.getRestEndpoint() + '/11',
 				data: params,
 				success: function( response ) {
 					$errorNotice.hide();
@@ -1675,6 +1678,7 @@ tribe.tickets.block  = {
 					$errorNotice.find( 'p' ).html( TribeMessages.connection_error );
 					$errorNotice.fadeIn();
 					$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
+					obj.loaderHide( obj.modalSelector.loader );
 				}
 			} );
 		}
