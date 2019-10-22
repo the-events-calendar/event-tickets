@@ -120,22 +120,24 @@ tribe.tickets.registration = {};
 
 				$fields.each(
 					function() {
-						var $field = $( this );
-						var name   = $field.attr( 'name' );
-						// Grab everything after the last bracket `[`.
-						name       = name.split( '[' );
-						name       = name.pop().replace( ']', '' );
-						var value  = $field.val();
+						var $field  = $( this );
+						var value   = $field.val();
+						var isRadio = $field.is( ':radio' );
+						var name    = $field.attr( 'name' );
 
-						// Skip blank fields.
-						if ( ! value ) {
-							return;
-						}
+						// Grab everything after the last bracket `[`.
+						name = name.split( '[' );
+						name = name.pop().replace( ']', '' );
 
 						// Skip unchecked radio/checkboxes.
-						if ( $field.is( ':radio' ) || $field.is( ':checkbox' ) ) {
+						if ( isRadio || $field.is( ':checkbox' ) ) {
 							if ( ! $field.prop( 'checked' ) ) {
-								return;
+								// If empty radio field, if field already has a value, skip setting it as empty.
+								if ( isRadio && '' !== data[name] ) {
+									return;
+								}
+
+								value = '';
 							}
 						}
 
