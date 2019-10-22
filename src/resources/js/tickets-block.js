@@ -1174,11 +1174,6 @@ tribe.tickets.block  = {
 						name       = name.pop().replace( ']', '' );
 						var value  = $field.val();
 
-						// Skip blank fields.
-						if ( ! value ) {
-							return;
-						}
-
 						// Skip unchecked radio/checkboxes.
 						if ( $field.is( ':radio' ) || $field.is( ':checkbox' ) ) {
 							if ( ! $field.prop( 'checked' ) ) {
@@ -1668,7 +1663,7 @@ tribe.tickets.block  = {
 					obj.clearLocal();
 					// Set a var so we don't save what we just erased.
 					tribe.tickets.modal_redirect = true;
-					window.location.href = url;
+					// window.location.href = url;
 				},
 				error: function( response ) {
 					$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.api_error_title + ` (${response.responseJSON.code} )` );
