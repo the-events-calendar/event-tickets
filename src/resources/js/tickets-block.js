@@ -1654,7 +1654,7 @@ tribe.tickets.block  = {
 
 			$.ajax( {
 				type: 'POST',
-				url: obj.getRestEndpoint() + '/11',
+				url: obj.getRestEndpoint(),
 				data: params,
 				success: function( response ) {
 					$errorNotice.hide();
