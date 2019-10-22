@@ -558,6 +558,8 @@ class Tribe__Tickets__Tickets_View {
 
 		$content .= ob_get_clean();
 
+		add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
+
 		return $content;
 	}
 
