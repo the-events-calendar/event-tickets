@@ -107,11 +107,6 @@ tribe.tickets.registration = {};
 
 				var $fields = $row.find( obj.selector.metaField );
 
-				// Skip tickets with no meta fields
-				if ( ! $fields.length ) {
-					return;
-				}
-
 				if ( ! tempMeta[ ticket_id ] ) {
 					tempMeta[ ticket_id ] = {};
 					tempMeta[ ticket_id ]['ticket_id'] = ticket_id;
