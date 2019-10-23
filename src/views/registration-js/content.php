@@ -33,11 +33,26 @@ $classes        = [
 ];
 ?>
 <div <?php tribe_classes( $classes ); ?> data-provider="<?php echo esc_attr( $provider ); ?>">
+	<?php
+	/**
+	 * Before the output, whether or not $events is empty.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $provider       The 'provider' $_REQUEST var.
+	 * @param string $provider_class The class string or empty string if ticket provider is not found.
+	 * @param array  $events         The array of events, which might be empty.
+	 */
+	do_action( 'tribe_tickets_registration_content_before_all_events', $provider, $provider_class, $events );
+	?>
+
 	<div class="tribe-common-h8 tribe-common-h--alt tribe-tickets__registration__actions">
 		<?php $this->template( 'registration/button-cart', array( 'provider' => $provider ) ); ?>
 	</div>
-	<h1 class="tribe-common-h2 tribe-common-h1--min-medium tribe-common-h--alt tribe-tickets__registration__page-title"><?php esc_html_e( 'Attendee Registration', 'event-tickets' ); ?></h1>
 
+	<h1 class="tribe-common-h2 tribe-common-h1--min-medium tribe-common-h--alt tribe-tickets__registration__page-title">
+		<?php esc_html_e( 'Attendee Registration', 'event-tickets' ); ?>
+	</h1>
 
 	<div class="tribe-tickets__registration__grid">
 		<?php
@@ -80,7 +95,8 @@ $classes        = [
 			<?php foreach ( $events as $event_id => $tickets ) : ?>
 				<?php
 					$provider_name = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
-					$provider_obj  = new $provider_name; ?>
+					$provider_obj  = new $provider_name;
+				?>
 				<?php if ( $provider !== $provider_obj->attendee_object ) : ?>
 					<?php continue; ?>
 				<?php endif; ?>
