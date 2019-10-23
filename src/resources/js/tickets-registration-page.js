@@ -45,7 +45,7 @@ tribe.tickets.registration = {};
 		item               : '.tribe-tickets__item',
 		itemPrice          : '.tribe-amount',
 		itemQuantity       : '.tribe-ticket-quantity',
-		loader             : '.tribe-loader',
+		loader             : '.tribe-common-c-loader',
 		metaField          : '.ticket-meta',
 		metaItem           : '.tribe-ticket',
 		metaForm           : '.tribe-tickets__registration__content',
@@ -718,6 +718,8 @@ tribe.tickets.registration = {};
 
 			$errorNotice.hide();
 
+			obj.loaderShow();
+
 			// save meta
 			var params = {
 				provider: obj.providerId,
@@ -733,14 +735,15 @@ tribe.tickets.registration = {};
 				success: function( response ) {
 					//redirect url
 					var url = response.checkout_url;
+
 					if ( undefined === url || ! url ) {
 						return false;
-					} else {
 					}
 
 					window.location.href = url;
 				},
 				fail: function( response ) {
+					obj.loaderHide();
 					// @TODO: add messaging on error?
 					return;
 				}

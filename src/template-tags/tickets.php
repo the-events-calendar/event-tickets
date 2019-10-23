@@ -410,7 +410,7 @@ if ( ! function_exists( 'tribe_events_has_tickets_on_sale' ) ) {
 			$ticket_provider = $ticket->get_provider();
 
 			// Skip tickets that are for a different provider than the event provider.
-			if( $default_provider !== $ticket_provider->class_name ) {
+			if ( $default_provider !== $ticket_provider->class_name ) {
 				continue;
 			}
 
