@@ -110,7 +110,7 @@ if ( ! $already_rendered ) {
 		 *
 		 * @param  array $classes The array of classes that will be filtered.
 		 */
-		$classes = apply_filters( 'tribe_tickets_block_loader_classes', [ 'tribe-tickets-loader__tickets-block' ] );
+		$loader_classes = apply_filters( 'tribe_tickets_block_loader_classes', [ 'tribe-tickets-loader__tickets-block' ] );
 		include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' );
 		$html = ob_get_contents();
 		ob_end_clean();

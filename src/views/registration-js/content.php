@@ -169,3 +169,4 @@ $classes        = [
 		<?php $this->template( 'blocks/tickets/registration/attendee/submit' ); ?>
 	</div>
 </div>
+<?php include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' ); ?>
