@@ -1646,6 +1646,8 @@ tribe.tickets.block  = {
 
 			$errorNotice.hide();
 
+			obj.loaderShow( obj.modalSelector.loader );
+
 			// save meta and cart
 			var params = {
 				provider: obj.commerceSelector[ obj.tribe_ticket_provider ],
@@ -1673,6 +1675,9 @@ tribe.tickets.block  = {
 					obj.clearLocal();
 					// Set a var so we don't save what we just erased.
 					tribe.tickets.modal_redirect = true;
+
+					obj.loaderHide( obj.modalSelector.loader );
+
 					window.location.href = url;
 				},
 				error: function( response ) {
@@ -1756,6 +1761,8 @@ tribe.tickets.block  = {
 	$( tde ).on(
 		'tribe_dialog_show_ar_modal',
 		function ( e, dialogEl, event ) {
+			obj.loaderShow();
+			obj.loaderShow( obj.modalSelector.loader );
 			var $modalCart = $( obj.modalSelector.cartForm );
 			var $cartItems = $tribe_ticket.find( obj.selector.item );
 
@@ -1776,6 +1783,8 @@ tribe.tickets.block  = {
 			obj.initModalFormPrefills();
 
 			obj.updateFormTotals( $modalCart );
+			obj.loaderHide();
+			obj.loaderHide( obj.modalSelector.loader );
 		}
 	);
 

@@ -53,16 +53,22 @@ if ( $must_login ) {
 	data-shared-cap="<?php echo ( tribe( 'tickets.handler' )->has_shared_capacity( $ticket ) ) ? 'true' : 'false'; ?>"
 >
 	<input type="hidden" name="product_id[]" value="<?php echo esc_attr( $ticket->ID ); ?>" />
-	<?php if ( true === $modal ) { $this->template( 'modal/item-remove', $context ); } ?>
+	<?php if ( true === $modal ) : ?>
+		<?php $this->template( 'modal/item-remove', $context ); ?>
+	<?php endif ?>
+
 	<?php $this->template( 'blocks/tickets/content', $context ); ?>
+
 	<?php if ( true !== $mini ) : ?>
 		<?php $this->template( 'blocks/tickets/quantity', $context ); ?>
 	<?php else: ?>
-	<div class="tribe-ticket-quantity">0</div>
+		<div class="tribe-ticket-quantity">0</div>
 	<?php endif; ?>
+
 	<?php if ( true === $modal || true === $mini ) : ?>
 		<?php $this->template( 'modal/item-total', $context ); ?>
 	<?php endif; ?>
+
 	<?php if ( ! $modal && ! $mini ) : ?>
 		<?php $this->template( 'blocks/rsvp/form/opt-out', $context ); ?>
 	<?php elseif( true === $modal ): ?>

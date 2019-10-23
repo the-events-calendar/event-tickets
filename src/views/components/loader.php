@@ -16,8 +16,8 @@ if ( empty( $text ) ) {
 	$text = $this->get( 'text' ) ?: __( 'Loading...', 'event-tickets' );
 }
 
-if ( empty( $classes ) ) {
-	$classes = $this->get( 'classes' ) ?: [];
+if ( empty( $loader_classes ) ) {
+	$loader_classes = $this->get( 'classes' ) ?: [];
 }
 
 $spinner_classes = [
@@ -26,8 +26,8 @@ $spinner_classes = [
 	'tribe-common-a11y-hidden',
 ];
 
-if ( ! empty( $classes ) ) {
-	$spinner_classes = array_merge( $spinner_classes, (array) $classes );
+if ( ! empty( $loader_classes ) ) {
+	$spinner_classes = array_merge( $spinner_classes, (array) $loader_classes );
 }
 
 ?>
