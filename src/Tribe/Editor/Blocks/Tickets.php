@@ -62,6 +62,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		$args['tickets_on_sale']     = $this->get_tickets_on_sale( $tickets );
 		$args['has_tickets_on_sale'] = ! empty( $args['tickets_on_sale'] );
 		$args['is_sale_past']        = $this->get_is_sale_past( $tickets );
+		$args['is_sale_future']      = $this->get_is_sale_future( $tickets );
 
 		// Add the rendering attributes into global context
 		$template->add_template_globals( $args );
@@ -262,6 +263,25 @@ extends Tribe__Editor__Blocks__Abstract {
 		}
 
 		return $is_sale_past;
+	}
+
+	/**
+	 * Get whether no ticket sales have started yet
+	 *
+	 * @since TBD
+	 *
+	 * @param  array $tickets Array of all tickets
+	 *
+	 * @return bool
+	 */
+	public function get_is_sale_future( $tickets ) {
+		$is_sale_future = ! empty( $tickets );
+
+		foreach ( $tickets as $ticket ) {
+			$is_sale_future = ( $is_sale_future && $ticket->date_is_earlier() );
+		}
+
+		return $is_sale_future;
 	}
 
 	/**
