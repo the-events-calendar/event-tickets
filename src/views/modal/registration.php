@@ -24,6 +24,7 @@ $event_id = get_the_ID();
 
 	<form
 		method="post"
+		id="tribe-tickets__item__attendee__fields__form"
 		class="tribe-tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?>"
 		name="event<?php echo esc_attr( $event_id ); ?>"
 		novalidate
