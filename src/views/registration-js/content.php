@@ -31,6 +31,18 @@ $classes        = [
 	'tribe-common',
 	'tribe-tickets__registration',
 ];
+
+/**
+ * Before the output, whether or not $events is empty.
+ *
+ * @since TBD
+ *
+ * @param string $provider       The 'provider' $_REQUEST var.
+ * @param string $provider_obj The class string or empty string if ticket provider is not found.
+ * @param array  $events                The array of events, which might be empty.
+ */
+do_action( 'tribe_tickets_registration_content_before_all_events', $provider, $provider_obj, $events );
+
 ?>
 <div <?php tribe_classes( $classes ); ?> data-provider="<?php echo esc_attr( $provider ); ?>">
 	<div class="tribe-common-h8 tribe-common-h--alt tribe-tickets__registration__actions">
