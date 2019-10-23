@@ -22,14 +22,18 @@
 $currency            = tribe( 'tickets.commerce.currency' );
 $cart_classes        = [ 'tribe-block', 'tribe-tickets', 'tribe-common' ];
 $has_tickets_on_sale = $this->get( 'has_tickets_on_sale' );
+$is_sale_future      = $this->get( 'is_sale_future' );
 $is_sale_past        = $this->get( 'is_sale_past' );
+$post_id             = $this->get( 'post_id' );
 $provider            = $this->get( 'provider' );
 $provider_id         = $this->get( 'provider_id' );
 $tickets             = $this->get( 'tickets', [] );
 $tickets_on_sale     = $this->get( 'tickets_on_sale' );
 
-// We don't display anything if there is no provider or tickets
-if ( ! $provider ) {
+$event_tickets       = $provider->get_tickets( $post_id );
+
+// We don't display anything if there is no provider or tickets.
+if ( ! $is_sale_future && ( ! $provider || ! $event_tickets ) ) {
 	return false;
 }
 
@@ -57,7 +61,6 @@ if ( ! $already_rendered ) {
 	add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
 }
 ?>
-
 <form
 	id="tribe-tickets"
 	action=""
