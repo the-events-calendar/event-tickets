@@ -2097,12 +2097,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/moderntribe/tribe-testing-facilities",
-                "reference": "01032a032c51273096219d756e68a8ca2f863f16"
+                "reference": "9fc3e76b464591f203edacf8e2fc19e840acd430"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/moderntribe/tribe-testing-facilities/zipball/01032a032c51273096219d756e68a8ca2f863f16",
-                "reference": "01032a032c51273096219d756e68a8ca2f863f16",
+                "url": "https://api.github.com/repos/moderntribe/tribe-testing-facilities/zipball/9fc3e76b464591f203edacf8e2fc19e840acd430",
+                "reference": "9fc3e76b464591f203edacf8e2fc19e840acd430",
                 "shasum": ""
             },
             "require": {
@@ -2164,7 +2164,7 @@
                 }
             ],
             "description": "Testing facilities, helpers and examples.",
-            "time": "2019-10-23T15:00:43+00:00"
+            "time": "2019-10-24T08:47:57+00:00"
         },
         {
             "name": "mustache/mustache",
@@ -4016,16 +4016,16 @@
         },
         {
             "name": "seld/jsonlint",
-            "version": "1.7.1",
+            "version": "1.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/jsonlint.git",
-                "reference": "d15f59a67ff805a44c50ea0516d2341740f81a38"
+                "reference": "e2e5d290e4d2a4f0eb449f510071392e00e10d19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/d15f59a67ff805a44c50ea0516d2341740f81a38",
-                "reference": "d15f59a67ff805a44c50ea0516d2341740f81a38",
+                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/e2e5d290e4d2a4f0eb449f510071392e00e10d19",
+                "reference": "e2e5d290e4d2a4f0eb449f510071392e00e10d19",
                 "shasum": ""
             },
             "require": {
@@ -4061,7 +4061,7 @@
                 "parser",
                 "validator"
             ],
-            "time": "2018-01-24T12:46:19+00:00"
+            "time": "2019-10-24T14:27:39+00:00"
         },
         {
             "name": "seld/phar-utils",

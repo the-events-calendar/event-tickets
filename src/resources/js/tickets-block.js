@@ -206,7 +206,9 @@ tribe.tickets.block  = {
 			var $price   = $( this ).closest( obj.selector.item ).find( obj.selector.itemPrice ).first();
 			var quantity = parseInt( $( this ).val(), 10 );
 			quantity     = isNaN( quantity ) ? 0 : quantity;
-			var price    = parseFloat( $price.text() );
+			var text     = $price.text();
+			text         = obj.cleanNumber( text );
+			var price    = obj.numberFormat ( text );
 			price        = price * quantity;
 			footerAmount += price;
 		} );
@@ -675,6 +677,23 @@ tribe.tickets.block  = {
 	};
 
 	/**
+	 * Removes separator characters and converts deciaml character to '.'
+	 * So they play nice with other functions.
+	 *
+	 * @since TBD
+	 *
+	 * @param number The number to clean.
+	 * @returns {string}
+	 */
+	obj.cleanNumber = function( number ) {
+		var format = obj.getCurrencyFormatting();
+		number     = number.split(format.thousands_sep).join('');
+		number     = number.split(format.decimal_point).join('.');
+
+		return number;
+	}
+
+	/**
 	 * Format the number according to provider settings.
 	 * Based off coding fron https://stackoverflow.com/a/2901136.
 	 *
@@ -686,7 +705,6 @@ tribe.tickets.block  = {
 	 */
 	obj.numberFormat = function ( number ) {
 		var format = obj.getCurrencyFormatting();
-
 		if ( ! format ) {
 			return false;
 		}
@@ -715,7 +733,6 @@ tribe.tickets.block  = {
 			s[1] = s[1] || '';
 			s[1] += new Array( prec - s[1].length + 1 ).join( '0' );
 		}
-
 		return s.join( dec );
 	}
 
