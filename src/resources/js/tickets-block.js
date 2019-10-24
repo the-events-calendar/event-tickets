@@ -206,7 +206,9 @@ tribe.tickets.block  = {
 			var $price   = $( this ).closest( obj.selector.item ).find( obj.selector.itemPrice ).first();
 			var quantity = parseInt( $( this ).val(), 10 );
 			quantity     = isNaN( quantity ) ? 0 : quantity;
-			var price    = parseFloat( $price.text() );
+			var text     = $price.text();
+			text         = obj.cleanNumber( text );
+			var price    = obj.numberFormat ( text );
 			price        = price * quantity;
 			footerAmount += price;
 		} );
@@ -275,7 +277,7 @@ tribe.tickets.block  = {
 
 			$modalCartItem.find( obj.selector.itemQuantityInput ).val( item.qty ).trigger( 'change' );
 
-			( item.qty <= 0 ) ? $modalCartItem.fadeOut() : $modalCartItem.fadeIn();
+			//( item.qty <= 0 ) ? $modalCartItem.fadeOut() : $modalCartItem.fadeIn();
 
 			// We force new DOM queries here to be sure we pick up dynamically generated items.
 			var optoutSelector = obj.selector.itemOptOutInput + $blockCartItem.data( 'ticket-id' );
@@ -320,7 +322,11 @@ tribe.tickets.block  = {
 	obj.maybeShowNonMetaNotice = function( $form ) {
 		var nonMetaCount = 0;
 		var metaCount    = 0;
-		var $cartItems   =  $form.find( obj.selector.item ).filter( ':visible' );
+		var $cartItems   =  $form.find( obj.selector.item ).filter(
+			function( index ) {
+				return $( this ).find( obj.selector.itemQuantityInput ).val() > 0;
+			}
+		);
 
 		if ( ! $cartItems.length ) {
 			return;
@@ -344,7 +350,9 @@ tribe.tickets.block  = {
 		var $notice = $( '.tribe-tickets__notice--non-ar' );
 		var $title  = $( '.tribe-tickets__item__attendee__fields__title' );
 
-		if ( 0 < nonMetaCount && 0 !== metaCount ) {
+		// If there are no non-meta tickets, we don't need the notice
+		// Likewise, if there are no tickets with meta the notice seems redundant.
+		if ( 0 < nonMetaCount && 0 < metaCount ) {
 			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
 			$notice.removeClass( 'tribe-common-a11y-hidden' );
 			$title.show();
@@ -675,6 +683,23 @@ tribe.tickets.block  = {
 	};
 
 	/**
+	 * Removes separator characters and converts deciaml character to '.'
+	 * So they play nice with other functions.
+	 *
+	 * @since TBD
+	 *
+	 * @param number The number to clean.
+	 * @returns {string}
+	 */
+	obj.cleanNumber = function( number ) {
+		var format = obj.getCurrencyFormatting();
+		number     = number.split(format.thousands_sep).join('');
+		number     = number.split(format.decimal_point).join('.');
+
+		return number;
+	}
+
+	/**
 	 * Format the number according to provider settings.
 	 * Based off coding fron https://stackoverflow.com/a/2901136.
 	 *
@@ -915,7 +940,7 @@ tribe.tickets.block  = {
 			if ( $item ) {
 				var quantity  = $block_item.find( '.tribe-tickets-quantity' ).val();
 				if ( 0 < quantity ) {
-					$item.find( '.tribe-ticket-quantity' ).val( quantity );
+
 					$item.fadeIn();
 				}
 			}
@@ -1096,10 +1121,6 @@ tribe.tickets.block  = {
 		var tickets   = [];
 		var $cartForm = $( obj.modalSelector.cartForm );
 
-		if ( ! $cartForm.length ) {
-			$cartForm = $( obj.selector.container );
-		}
-
 		// Handle non-modal instances
 		if ( ! $cartForm.length ) {
 			$cartForm = $( obj.selector.container );
@@ -1119,14 +1140,12 @@ tribe.tickets.block  = {
 					optout = $optoutInput.prop( 'checked' ) ? 1 : 0;
 				}
 
-				if ( 0 < qty ) {
-					var data          = {};
-					data['ticket_id'] = ticket_id;
-					data['quantity']  = qty;
-					data['optout']    = optout;
+				var data          = {};
+				data['ticket_id'] = ticket_id;
+				data['quantity']  = qty;
+				data['optout']    = optout;
 
-					tickets.push( data );
-				}
+				tickets.push( data );
 			}
 		);
 
@@ -1491,6 +1510,7 @@ tribe.tickets.block  = {
 
 			ticket.id    = $cartItem.data( 'ticketId' );
 			ticket.qty   = 0;
+			$cartItem.find( obj.selector.itemQuantityInput ).val( ticket.qty );
 			ticket.price = obj.getPrice( $cartItem );
 
 			obj.updateTotal( ticket.qty, ticket.price, $cartItem );
@@ -1500,7 +1520,7 @@ tribe.tickets.block  = {
 				.removeClass( 'tribe-tickets--has-tickets' )
 				.find( obj.modalSelector.metaItem ).remove();
 
-				// Short delay to ensure the fadeOut has finished.
+			// Short delay to ensure the fadeOut has finished.
 			var timeoutID = window.setTimeout( obj.maybeShowNonMetaNotice, 500, $cart );
 
 			// Close then modal if we remove the last item
