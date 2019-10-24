@@ -705,6 +705,7 @@ tribe.tickets.block  = {
 	 */
 	obj.numberFormat = function ( number ) {
 		var format = obj.getCurrencyFormatting();
+
 		if ( ! format ) {
 			return false;
 		}
@@ -733,6 +734,7 @@ tribe.tickets.block  = {
 			s[1] = s[1] || '';
 			s[1] += new Array( prec - s[1].length + 1 ).join( '0' );
 		}
+
 		return s.join( dec );
 	}
 
