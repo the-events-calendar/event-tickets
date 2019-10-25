@@ -963,10 +963,10 @@ class Tribe__Tickets__Tickets_View {
 		$provider    = call_user_func( [ $provider_id, 'get_instance' ] );
 
 		/** @var \Tribe__Tickets__Editor__Template $template */
-		$template       = tribe( 'tickets.editor.template' );
+		$template       = new \Tribe__Tickets__Editor__Template;
 
 		/** @var \Tribe__Tickets__Editor__Blocks__Tickets $blocks_tickets */
-		$blocks_tickets = tribe( 'tickets.editor.blocks.tickets' );
+		$blocks_tickets = new \Tribe__Tickets__Editor__Blocks__Tickets;
 
 		$tickets = $provider->get_tickets( $post_id );
 
