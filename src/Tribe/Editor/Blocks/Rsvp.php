@@ -241,8 +241,8 @@ extends Tribe__Editor__Blocks__Abstract {
 			wp_send_json_error( $response );
 		}
 
-		/** @var Tribe__Tickets__RSVP $rsvp */
-		$rsvp        = tribe( 'tickets.rsvp' );
+        /** @var Tribe__Tickets__RSVP $rsvp */
+        $rsvp        = tribe( 'tickets.rsvp' );
 		$has_tickets = false;
 		$event       = $rsvp->get_event_for_ticket( $ticket_id );
 		$post_id     = $event->ID;
@@ -316,7 +316,7 @@ extends Tribe__Editor__Blocks__Abstract {
 			);
 
 			// No point sending tickets if their current intention is not to attend
-			if ( $has_tickets && in_array( $attendee_order_status, $send_mail_stati ) ) {
+			if ( $has_tickets && in_array( $attendee_order_status, $send_mail_stati, true ) ) {
 				$rsvp->send_tickets_email( $order_id, $post_id );
 			} elseif ( $has_tickets ) {
 				$rsvp->send_non_attendance_confirmation( $order_id, $post_id );
