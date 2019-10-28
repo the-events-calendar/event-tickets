@@ -1692,8 +1692,6 @@ tribe.tickets.block  = {
 				url: obj.getRestEndpoint(),
 				data: params,
 				success: function( response ) {
-					console.log('success');
-					console.log(response);
 					$errorNotice.hide();
 					//redirect url
 					var url = response.checkout_url;
@@ -1714,8 +1712,6 @@ tribe.tickets.block  = {
 					window.location.href = url;
 				},
 				error: function( response ) {
-					console.log('fail');
-					console.log(response);
 					var title   = TribeMessages.api_error_title;
 					var message = TribeMessages.connection_error;
 
