@@ -1716,7 +1716,7 @@ tribe.tickets.block  = {
 					var message = TribeMessages.connection_error;
 
 					if ( response.responseJSON.code ) {
-						title = TribeMessages.api_error_title + ` (${response.responseJSON.code} )`;
+						title = TribeMessages.api_error_title + ` ( ${response.responseJSON.code} )`;
 					}
 
 					if (
