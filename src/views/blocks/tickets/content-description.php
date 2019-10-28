@@ -45,6 +45,6 @@ $id .= '--' . $ticket->ID;
 			</button>
 	</div>
 <?php endif; ?>
-<div id="<?php echo esc_attr( $id ); ?>" class="tribe-common-b3 tribe-tickets__item__details__content">
+<div id="<?php echo esc_attr( $id ); ?>" class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__item__details__content">
 	<?php echo $ticket->description; ?>
 </div>
