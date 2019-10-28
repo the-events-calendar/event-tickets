@@ -1692,6 +1692,8 @@ tribe.tickets.block  = {
 				url: obj.getRestEndpoint(),
 				data: params,
 				success: function( response ) {
+					console.log('success');
+					console.log(response);
 					$errorNotice.hide();
 					//redirect url
 					var url = response.checkout_url;
@@ -1712,8 +1714,27 @@ tribe.tickets.block  = {
 					window.location.href = url;
 				},
 				error: function( response ) {
-					$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.api_error_title + ` (${response.responseJSON.code} )` );
-					$errorNotice.find( 'p' ).html( TribeMessages.connection_error );
+					console.log('fail');
+					console.log(response);
+					var title   = TribeMessages.api_error_title;
+					var message = TribeMessages.connection_error;
+
+					if ( response.responseJSON.code ) {
+						title = TribeMessages.api_error_title + ` (${response.responseJSON.code} )`;
+					}
+
+					if (
+						response.responseJSON.code
+						&& (
+							'ticket-capacity-not-available' === response.responseJSON.code
+							|| 'error-ticket-post' === response.responseJSON.code
+						)
+					) {
+						message = TribeMessages.capacity_error;
+					}
+
+					$errorNotice.find( '.tribe-tickets-notice__title' ).text(  title );
+					$errorNotice.find( '.tribe-tickets-notice__content' ).html( message );
 					$errorNotice.fadeIn();
 					$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
 					obj.loaderHide( obj.modalSelector.loader );
