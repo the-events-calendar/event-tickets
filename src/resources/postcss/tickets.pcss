@@ -102,12 +102,7 @@
 		-ms-grid-row: 3;
 		grid-row: 3;
 		line-height: 1;
-		margin-bottom: var(--spacer-2);
 		margin-top: var(--spacer-0);
-
-		@media(--viewport-medium) {
-			margin-bottom: 0;
-		}
 
 		&.tribe__details--open {
 			display: block;
@@ -430,6 +425,11 @@
 
 			@media(--viewport-medium) {
 				margin-left: var(--spacer-6);
+			}
+
+			&:disabled {
+				background-color: var(--color-accent-primary);
+				cursor: not-allowed;
 			}
 		}
 	}
@@ -787,6 +787,14 @@
 
 	.tribe-tickets__registration__tickets__item__price {
 		flex: 0 1 40px;
+	}
+
+	.tribe-ticket__heading {
+		margin-bottom: var(--spacer-3);
+
+		@media (--viewport-medium) {
+			margin-bottom: var(--spacer-4);
+		}
 	}
 
 	/*
