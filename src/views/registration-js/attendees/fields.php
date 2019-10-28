@@ -16,7 +16,7 @@ $required    = $meta->ticket_has_required_meta( $ticket->ID );
 <div
 	class="tribe-common-h7 tribe-common-h6--min-medium tribe-common-h--alt tribe-ticket <?php echo $required ? 'tribe-ticket--has-required-meta' : ''; ?>"
 	data-ticket-id="<?php echo esc_attr($ticket->ID); ?>">
-	<h4 class="tribe-common-b1 tribe-common-b1--bold"><?php esc_html_e( 'Attendee', 'event-tickets' ); ?> {{data.attendee_id}}</h4>
+	<h4 class="tribe-common-b1 tribe-common-b1--bold tribe-tickets__attendee__title"><?php esc_html_e( 'Attendee', 'event-tickets' ); ?> {{data.attendee_id}}</h4>
 	<?php foreach ( $fields as $field ) : ?>
 		<?php
 			$value = null;
