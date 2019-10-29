@@ -939,6 +939,7 @@ if ( ! function_exists( 'tribe_tickets_get_readable_amount' ) ) {
 	 * Turns a Stock, Remaining, or Capacity number into a human-readable format.
 	 *
 	 * @since  4.6
+	 * @since  TBD Run number through formatting, such as commas to separate thousands.
 	 *
 	 * @param string|int $number  Which you are trying to convert.
 	 * @param string     $mode    Mode this post is on.
@@ -960,7 +961,7 @@ if ( ! function_exists( 'tribe_tickets_get_readable_amount' ) ) {
 
 			$html[] = esc_html( $handler->unlimited_term );
 		} else {
-			$html[] = esc_html( $number );
+			$html[] = number_format_i18n( $number );
 		}
 
 		if ( $show_parens ) {
