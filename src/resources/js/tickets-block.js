@@ -408,34 +408,6 @@ tribe.tickets.block  = {
 	}
 
 	/**
-	 * En/disable the ticket fields for Tribe Commerce.
-	 *
-	 * @since TBD
-	 *
-	 * @param int new_quantity The new ticket quantity.
-	 * @param obj $form The form element.
-	 * @param int ticket_id The ticket ID.
-	 */
-	obj.tribeCommerceDisable = function( new_quantity, $form, ticket_id ) {
-		if ( 0 < new_quantity ) {
-			$form
-				.find( '[data-ticket-id]:not([data-ticket-id="' + ticket_id + '"])' )
-				.closest( obj.selector.item )
-				.find( 'input, button' )
-				.attr( 'disabled', 'disabled' )
-				.closest( 'div' )
-				.addClass( 'tribe-tickets-purchase-disabled' );
-
-		} else {
-			$form
-				.find( 'input, button' )
-				.removeAttr( 'disabled' )
-				.closest( 'div' )
-				.removeClass( 'tribe-tickets-purchase-disabled' );
-		}
-	}
-
-	/**
 	 * Appends AR fields when modal cart quantities are changed.
 	 *
 	 * @since TBD
@@ -1620,11 +1592,6 @@ tribe.tickets.block  = {
 			obj.maybeShowOptOut( $ticket, new_quantity );
 			obj.updateFooter( $form );
 			obj.updateFormTotals( $form );
-
-			// Only disable / enable if is a Tribe Commerce Paypal form.
-			if ( 'Tribe__Tickets__Commerce__PayPal__Main' === $form.data( 'provider' ) ) {
-				obj.tribeCommerceDisable( new_quantity, $form, $ticket_id );
-			}
 		}
 	);
 
