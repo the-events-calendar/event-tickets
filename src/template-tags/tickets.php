@@ -959,7 +959,7 @@ if ( ! function_exists( 'tribe_tickets_get_readable_amount' ) ) {
 			/** @var Tribe__Tickets__Tickets_Handler $handler */
 			$handler = tribe( 'tickets.handler' );
 
-			$html[] = esc_html( $handler->unlimited_term );
+			$html[] = $handler->unlimited_term;
 		} else {
 			$html[] = number_format_i18n( $number );
 		}
@@ -968,7 +968,7 @@ if ( ! function_exists( 'tribe_tickets_get_readable_amount' ) ) {
 			$html[] = ')';
 		}
 
-		$html = implode( '', $html );
+		$html = esc_html( implode( '', $html ) );
 
 		if ( true === $display ) {
 			echo $html;
