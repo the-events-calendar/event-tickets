@@ -1694,8 +1694,7 @@ tribe.tickets.block  = {
 						}
 					}
 
-
-					$errorNotice.find( '.tribe-tickets-notice__title' ).text(  title );
+					$errorNotice.find( '.tribe-tickets-notice__title' ).text( title );
 					$errorNotice.find( '.tribe-tickets-notice__content' ).html( message );
 					$errorNotice.fadeIn();
 					$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
