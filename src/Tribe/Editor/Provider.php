@@ -12,6 +12,10 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	 *
 	 */
 	public function register() {
+		// Register these all the time - as we now use them in most of the tempaltes, blocks or otherwise.
+		$this->container->singleton( 'tickets.editor.template', 'Tribe__Tickets__Editor__Template' );
+		$this->container->singleton( 'tickets.editor.blocks.tickets', 'Tribe__Tickets__Editor__Blocks__Tickets' );
+
 		if (
 			! tribe( 'editor' )->should_load_blocks()
 			|| ! class_exists( 'Tribe__Tickets__Main' )
@@ -19,7 +23,6 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 			return;
 		}
 
-		$this->container->singleton( 'tickets.editor.template', 'Tribe__Tickets__Editor__Template' );
 		$this->container->singleton( 'tickets.editor.template.overwrite', 'Tribe__Tickets__Editor__Template__Overwrite', array( 'hook' ) );
 
 		$this->container->singleton(
@@ -30,7 +33,6 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 
 		$this->container->singleton( 'tickets.editor.assets', 'Tribe__Tickets__Editor__Assets', array( 'register' ) );
 
-		$this->container->singleton( 'tickets.editor.blocks.tickets', 'Tribe__Tickets__Editor__Blocks__Tickets' );
 		$this->container->singleton( 'tickets.editor.blocks.tickets-item', 'Tribe__Tickets__Editor__Blocks__Tickets_Item' );
 		$this->container->singleton( 'tickets.editor.blocks.rsvp', 'Tribe__Tickets__Editor__Blocks__Rsvp' );
 		$this->container->singleton( 'tickets.editor.blocks.attendees', 'Tribe__Tickets__Editor__Blocks__Attendees' );
