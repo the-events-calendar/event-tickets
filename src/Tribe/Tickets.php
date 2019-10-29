@@ -1607,6 +1607,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'available' => 0, // are tickets available for sale right now
 			];
 
+			/** @var Tribe__Tickets__Ticket_Object $ticket */
 			foreach ( $tickets as $ticket ) {
 				// If a ticket is not current for sale do not count it
 				if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
@@ -2626,7 +2627,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket->end_date         = null;
 			$ticket->menu_order       = isset( $data['ticket_menu_order'] ) ? intval( $data['ticket_menu_order'] ) : null;
 
-			tribe( 'tickets.handler' )->toggle_manual_update_flag( true );
+			/** @var Tribe__Tickets__Tickets_Handler $handler */
+			$handler = tribe( 'tickets.handler' );
+
+			$handler->toggle_manual_update_flag( true );
 
 			if ( ! empty( $ticket->price ) ) {
 				// remove non-money characters
@@ -2667,7 +2671,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Pass the control to the child object
 			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
 
-			tribe( 'tickets.handler' )->toggle_manual_update_flag( false );
+			/** @var Tribe__Tickets__Tickets_Handler $handler */
+			$handler = tribe( 'tickets.handler' );
+
+			$handler->toggle_manual_update_flag( false );
 
 			$post = get_post( $post_id );
 			if ( empty( $data['ticket_start_date'] ) ) {

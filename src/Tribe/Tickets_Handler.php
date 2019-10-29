@@ -717,19 +717,19 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		if ( ! $ticket instanceof WP_Post ) {
-			return false;
+			return [];
 		}
 
 		$provider = tribe_tickets_get_ticket_provider( $ticket->ID );
 
-		$totals = array(
+		$totals = [
 			'stock'   => get_post_meta( $ticket->ID, '_stock', true ),
 			'sold'    => 0,
 			'pending' => 0,
-		);
+		];
 
 		if ( $provider instanceof Tribe__Tickets_Plus__Commerce__EDD__Main ) {
-			$totals['sold']    = $provider->stock()->get_purchased_inventory( $ticket->ID, array( 'publish' ) );
+			$totals['sold']    = $provider->stock()->get_purchased_inventory( $ticket->ID, [ 'publish' ] );
 			$totals['pending'] = $provider->stock()->count_incomplete_order_items( $ticket->ID );
 		} elseif ( $provider instanceof Tribe__Tickets_Plus__Commerce__WooCommerce__Main ) {
 			$totals['sold']    = get_post_meta( $ticket->ID, 'total_sales', true );
@@ -762,18 +762,18 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		if ( ! $post instanceof WP_Post ) {
-			return false;
+			return [];
 		}
 
 		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post->ID );
-		$totals  = array(
+		$totals  = [
 			'has_unlimited' => false,
 			'tickets' => count( $tickets ),
 			'capacity' => $this->get_total_event_capacity( $post ),
 			'sold' => 0,
 			'pending' => 0,
 			'stock' => 0,
-		);
+		];
 
 		foreach ( $tickets as $ticket ) {
 			$ticket_totals = $this->get_ticket_totals( $ticket->ID );
