@@ -26,7 +26,6 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 			'ticket-object-not-found'       => __( 'The requested ticket object could not be built or found', 'event-tickets' ),
 			'ticket-not-accessible'         => __( 'The requested ticket is not accessible', 'event-tickets' ),
 			'error-global-id-generation'    => __( 'The ticket global id could not be generated', 'event-tickets' ),
-			'error-global-id-generation'    => __( 'The ticket #%d does not exist.', 'event-tickets' ),
 			'ticket-does-not-exist'         => __( 'The ticket #%d does not exist.', 'event-tickets' ),
 			'ticket-capacity-not-available' => __( 'The ticket "%s" does not have that many available for purchase.', 'event-tickets' ),
 			// this is an internal error, not same as the `ticket-not-found` one
