@@ -61,7 +61,7 @@ class Tribe__Tickets__Assets {
 			'add_ticket_nonce'    => wp_create_nonce( 'add_ticket_nonce' ),
 			'edit_ticket_nonce'   => wp_create_nonce( 'edit_ticket_nonce' ),
 			'remove_ticket_nonce' => wp_create_nonce( 'remove_ticket_nonce' ),
-			'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+			'ajaxurl'             => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 		];
 
 		$locale  = localeconv();
@@ -116,7 +116,9 @@ class Tribe__Tickets__Assets {
 					],
 					[
 						'name' => 'tribe_ticket_vars',
-						'data' => [ 'stock_mode' => $global_stock_mode ],
+						'data' => [
+							'stock_mode' => $global_stock_mode
+						],
 					],
 					[
 						'name' => 'tribe_ticket_notices',

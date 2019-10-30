@@ -105,9 +105,15 @@ tribe.tickets.block  = {
 	 * @return void
 	 */
 	obj.init = function() {
-		obj.loaderShow();
-		obj.checkAvailability();
-		obj.initPrefill();
+		if ( 0 < TribeTicketOptions.availability_check_interval) {
+			obj.checkAvailability();
+		}
+
+		if ( TribeTicketOptions.ajax_preload_ticket_form ) {
+			obj.loaderShow();
+			obj.initPrefill();
+		}
+
 	}
 
 	/* DOM Updates */
@@ -536,7 +542,7 @@ tribe.tickets.block  = {
 		};
 
 		$.post(
-			TribeTickets.ajaxurl,
+			TribeTicketOptions.ajaxurl,
 			params,
 			function( response ) {
 				var success = response.success;
@@ -555,8 +561,10 @@ tribe.tickets.block  = {
 			}
 		);
 
-		// Repeat every 15 seconds
-		setTimeout( obj.checkAvailability, 15000 );
+		// Repeat every 60 (filterable via tribe_tickets_availability_check_interval ) seconds
+		if ( 0 < TribeTicketOptions.availability_check_interval) {
+			setTimeout( obj.checkAvailability, TribeTicketOptions.availability_check_interval );
+		}
 	}
 
 	/**
