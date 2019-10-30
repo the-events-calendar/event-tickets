@@ -1570,13 +1570,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Returns Ticket and RSVP Count for an Event
+		 * Get RSVP and Ticket counts for an event if tickets are currently available.
 		 *
 		 * @param int $post_id ID of parent "event" post
+		 *
 		 * @return array
 		 */
 		public static function get_ticket_counts( $post_id ) {
-
 			// if no post id return empty array
 			if ( empty( $post_id ) ) {
 				return [];
@@ -1602,9 +1602,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$types['tickets'] = [
 				'count'     => 0, // count of ticket types currently for sale
 				'stock'     => 0, // current stock of tickets available for sale
-				'global'    => 0, // global stock ticket
-				'unlimited' => 0, // unlimited stock tickets
-				'available' => 0, // are tickets available for sale right now
+				'global'    => 0, // numeric boolean if tickets share global stock
+				'unlimited' => 0, // numeric boolean if any ticket has unlimited stock
+				'available' => 0, // numeric boolean if tickets are available for sale right now
 			];
 
 			/** @var Tribe__Tickets__Ticket_Object $ticket */
@@ -1620,9 +1620,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 					$global_stock_mode = $ticket->global_stock_mode();
 
-					if ( $global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE && 0 === $types['tickets']['global'] ) {
+					if (
+						$global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE
+						&& 0 === $types['tickets']['global']
+					) {
 						$types['tickets']['global'] ++;
-					} elseif ( $global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE && 1 === $types['tickets']['global'] ) {
+					} elseif (
+						$global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE
+						&& 1 === $types['tickets']['global']
+					) {
 						continue;
 					}
 
@@ -1650,6 +1656,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					$types['rsvp']['count'] ++;
 
 					$types['rsvp']['stock'] += $ticket->stock;
+
 					if ( 0 !== $types['rsvp']['stock'] ) {
 						$types['rsvp']['available'] ++;
 					}
@@ -1815,6 +1822,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @static
 		 *
 		 * @param int $post_id ID of parent "event" post
+		 *
 		 * @return array
 		 */
 		final public static function get_event_tickets( $post_id ) {

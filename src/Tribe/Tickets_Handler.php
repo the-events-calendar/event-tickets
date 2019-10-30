@@ -22,7 +22,7 @@ class Tribe__Tickets__Tickets_Handler {
 	public $key_provider_field = '_tribe_default_ticket_provider';
 
 	/**
-	 * Post meta key for the ticket capacty
+	 * Post meta key for the ticket capacity
 	 *
 	 * @since  4.6
 	 *
@@ -162,7 +162,7 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Allow us to Toggle flaging the update of Date Meta
+	 * Allow us to Toggle flagging the update of Date Meta
 	 *
 	 * @since   4.6
 	 *
@@ -860,7 +860,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since   4.6.2
 	 *
-	 * @param   int|WP_Post  $ticket
+	 * @param   int|WP_Post  $post
 	 * @param   mixed        $provider
 	 *
 	 * @return  bool
@@ -913,6 +913,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$post_id = Tribe__Main::post_id_helper( $post );
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 
+		/** @var Tribe__Tickets__Ticket_Object $ticket */
 		foreach ( $tickets as $index => $ticket ) {
 			// Eliminate tickets by stock mode
 			if ( ! is_null( $stock_mode ) && $ticket->global_stock_mode() !== $stock_mode ) {
@@ -969,6 +970,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return $total;
 		}
 
+		/** @var Tribe__Tickets__Ticket_Object $ticket */
 		foreach ( $tickets as $ticket ) {
 			// Skip shared cap Tickets as it's added when we fetch the total
 			if (

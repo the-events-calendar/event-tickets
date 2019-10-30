@@ -179,7 +179,7 @@ class Tribe__Tickets__Global_Stock {
 	}
 
 	/**
-	 * Returns the post's global stock.
+	 * Returns the post's global stock--the shared maximum available, not the remaining available.
 	 *
 	 * @since  4.1
 	 *
