@@ -20,9 +20,8 @@ tribe.tickets.block  = {
 	 *
 	 */
 	obj.selector = {
-		blockFooterAmount          : '.tribe-tickets__footer__total .tribe-amount',
-		blockFooterAmount          : '.tribe-tickets__footer__total .tribe-amount',
-		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
+		blockFooter                : '.tribe-tickets__footer',
+		blockFooterAmount          : '.tribe-amount',
 		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
 		blockSubmit                : '.tribe-tickets__submit',
 		container                  : '#tribe-tickets',
@@ -65,11 +64,11 @@ tribe.tickets.block  = {
 		container  : '.tribe-modal__wrapper--ar',
 		itemRemove : '.tribe-tickets__item__remove',
 		itemTotal  : '.tribe-tickets__item__total .tribe-amount',
+		loader     : '.tribe-tickets-loader__modal',
 		metaField  : '.ticket-meta',
 		metaForm   : '.tribe-modal__wrapper--ar #tribe-modal__attendee_registration',
 		metaItem   : '.tribe-ticket',
 		submit     : '.tribe-block__tickets__item__attendee__fields__footer_submit',
-		loader     : '.tribe-tickets-loader__modal',
 	};
 
 	/*
@@ -167,9 +166,9 @@ tribe.tickets.block  = {
 	 * @param int    $form The form we're updating.
 	 */
 	obj.updateFooterCount = function( $form ) {
-		var $field      = $form.find( obj.selector.blockFooterQuantity );
+		var $field      = $form.children( obj.selector.blockFooter ).find( obj.selector.blockFooterQuantity );
 		var footerCount = 0;
-		var $qtys       = $form.find( obj.selector.itemQuantityInput );
+		var $qtys       = $form.children( obj.selector.item ).find( obj.selector.itemQuantityInput );
 
 		$qtys.each( function() {
 			var new_quantity = parseInt( $(this).val(), 10 );
@@ -198,9 +197,9 @@ tribe.tickets.block  = {
 	 * @param int    $form The form we're updating.
 	 */
 	obj.updateFooterAmount = function( $form ) {
-		var $field       = $form.find( obj.selector.blockFooterAmount );
+		var $field       = $form.children( obj.selector.blockFooter ).find( obj.selector.blockFooterAmount );
 		var footerAmount = 0;
-		var $qtys        = $form.find( obj.selector.itemQuantityInput );
+		var $qtys        = $form.children( obj.selector.item ).find( obj.selector.itemQuantityInput );
 
 		$qtys.each( function() {
 			var $price   = $( this ).closest( obj.selector.item ).find( obj.selector.itemPrice ).first();
@@ -277,8 +276,6 @@ tribe.tickets.block  = {
 
 			$modalCartItem.find( obj.selector.itemQuantityInput ).val( item.qty ).trigger( 'change' );
 
-			//( item.qty <= 0 ) ? $modalCartItem.fadeOut() : $modalCartItem.fadeIn();
-
 			// We force new DOM queries here to be sure we pick up dynamically generated items.
 			var optoutSelector = obj.selector.itemOptOutInput + $blockCartItem.data( 'ticket-id' );
 			item.$optOut = $( optoutSelector );
@@ -322,7 +319,7 @@ tribe.tickets.block  = {
 	obj.maybeShowNonMetaNotice = function( $form ) {
 		var nonMetaCount = 0;
 		var metaCount    = 0;
-		var $cartItems   =  $form.find( obj.selector.item ).filter(
+		var $cartItems   =  $form.children( obj.selector.item ).filter(
 			function( index ) {
 				return $( this ).find( obj.selector.itemQuantityInput ).val() > 0;
 			}
@@ -432,10 +429,6 @@ tribe.tickets.block  = {
 					var qty       = obj.getQty( $cartItem );
 
 					if ( 0 >= qty ) {
-						if ( $form.hasClass( 'tribe-modal-cart' ) ) {
-							$cartItem.fadeOut();
-						}
-
 						$ticket_container.removeClass( 'tribe-tickets--has-tickets' );
 						$ticket_container.find( obj.modalSelector.metaItem ).remove();
 
@@ -482,7 +475,8 @@ tribe.tickets.block  = {
 		var $parent = $input.closest( obj.selector.item );
 
 		if ( 'true' === $parent.attr( 'data-shared-cap' ) ) {
-			new_value = obj.checkSharedCapacity( new_value );
+			var $form        = $parent.closest( 'form' );
+			new_value = obj.checkSharedCapacity( $form, new_value );
 		}
 
 		if ( 0 === new_value ) {
@@ -575,10 +569,10 @@ tribe.tickets.block  = {
 	 *
 	 * @return integer The quantity, limited by exisitng shared cap tickets.
 	 */
-	obj.checkSharedCapacity = function ( qty ) {
+	obj.checkSharedCapacity = function ( $form, qty ) {
 		var sharedCap         = [];
 		var currentLoad       = [];
-		var $sharedTickets    = $( obj.selector.item ).filter( '[data-shared-cap="true"]' );
+		var $sharedTickets    = $form.children( obj.selector.item ).filter( '[data-shared-cap="true"]' );
 		var $sharedCapFields  = $sharedTickets.find( obj.selector.itemExtraAvailableQuantity );
 		var $sharedCapTickets = $sharedTickets.find( obj.selector.itemQuantityInput );
 
@@ -1113,10 +1107,10 @@ tribe.tickets.block  = {
 
 		$ticketRows.each(
 			function() {
-				var $this        = $( this );
-				var ticket_id    = $this.data( 'ticketId' );
-				var qty          = $this.find( obj.selector.itemQuantityInput ).val();
-				var $optoutInput = $this.find( '[name="attendee[optout]"]' );
+				var $row        = $( this );
+				var ticket_id    = $row.data( 'ticketId' );
+				var qty          = $row.find( obj.selector.itemQuantityInput ).val();
+				var $optoutInput = $row.find( '[name="attendee[optout]"]' );
 				var optout       = $optoutInput.val();
 
 				if ( $optoutInput.is( ':checkbox' ) ) {
@@ -1580,7 +1574,7 @@ tribe.tickets.block  = {
 			}
 
 			if ( 'true' === $ticket.attr( 'data-shared-cap' ) ) {
-				var maxQty = obj.checkSharedCapacity( new_quantity );
+				var maxQty = obj.checkSharedCapacity( $form, new_quantity );
 			}
 
 			if ( 0 > maxQty ) {
