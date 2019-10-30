@@ -1,6 +1,12 @@
 <?php
-$attendees_url = tribe( 'tickets.attendees' )->get_report_link( get_post( $post_id ) );
-$total_tickets = tribe( 'tickets.handler' )->get_total_event_capacity( $post_id );
+/** @var Tribe__Tickets__Attendees $tickets_attendees */
+$tickets_attendees = tribe( 'tickets.attendees' );
+$attendees_url = $tickets_attendees->get_report_link( get_post( $post_id ) );
+
+/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+$tickets_handler = tribe( 'tickets.handler' );
+$total_tickets = $tickets_handler->get_total_event_capacity( $post_id );
+
 $container_class = 'tribe_sectionheader ticket_list_container';
 $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '';
 $ticket_providing_modules = array_diff_key( Tribe__Tickets__Tickets::modules(), array( 'Tribe__Tickets__RSVP' => true ) );

@@ -201,8 +201,12 @@ class Tribe__Tickets__Global_Stock {
 	 */
 	public function tickets_sold( $pending = false ) {
 		$sales = 0;
-		$tickets = tribe( 'tickets.handler' )->get_event_shared_tickets( $this->post_id );
 
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+		$tickets = $tickets_handler->get_event_shared_tickets( $this->post_id );
+
+		/** @var Tribe__Tickets__Ticket_Object $ticket */
 		foreach ( $tickets as $ticket ) {
 			$sales += (int) $ticket->qty_sold();
 

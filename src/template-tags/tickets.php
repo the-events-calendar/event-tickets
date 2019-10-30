@@ -793,7 +793,10 @@ if ( ! function_exists( 'tribe_tickets_delete_capacity' ) ) {
 			return false;
 		}
 
-		$deleted = delete_post_meta( $object->ID, tribe( 'tickets.handler' )->key_capacity );
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$deleted = delete_post_meta( $object->ID, $tickets_handler->key_capacity );
 
 		if ( ! $deleted ) {
 			return $deleted;
@@ -843,7 +846,11 @@ if ( ! function_exists( 'tribe_tickets_update_capacity' ) ) {
 		}
 
 		// Do the actual Updating of the Meta value
-		return update_post_meta( $object->ID, tribe( 'tickets.handler' )->key_capacity, $capacity );
+
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		return update_post_meta( $object->ID, $tickets_handler->key_capacity, $capacity );
 	}
 }
 
@@ -873,21 +880,22 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 		}
 
 		$event_types = Tribe__Tickets__Main::instance()->post_types();
+
 		/**
-		 * @var Tribe__Tickets__Tickets_Handler $handler
+		 * @var Tribe__Tickets__Tickets_Handler $tickets_handler
 		 * @var Tribe__Tickets__Version $version
 		 */
-		$handler = tribe( 'tickets.handler' );
-		$version = tribe( 'tickets.version' );
+		$tickets_handler = tribe( 'tickets.handler' );
+		$version         = tribe( 'tickets.version' );
 
-		$key = $handler->key_capacity;
+		$key = $tickets_handler->key_capacity;
 
 		// When we have a legacy ticket we migrate it
 		if (
 			! in_array( $post->post_type, $event_types )
 			&& $version->is_legacy( $post->ID )
 		) {
-			$legacy_capacity = $handler->filter_capacity_support( null, $post->ID, $key );
+			$legacy_capacity = $tickets_handler->filter_capacity_support( null, $post->ID, $key );
 
 			// Cast as integer as it might be returned as numeric string on some cases
 			return (int) $legacy_capacity;
@@ -953,11 +961,14 @@ if ( ! function_exists( 'tribe_tickets_get_readable_amount' ) ) {
 			$html[] = '(';
 		}
 
-		if ( -1 === (int) $number || Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $number ) {
-			/** @var Tribe__Tickets__Tickets_Handler $handler */
-			$handler = tribe( 'tickets.handler' );
+		if (
+			-1 === (int) $number
+			|| Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $number
+		) {
+			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
 
-			$html[] = esc_html( $handler->unlimited_term );
+			$html[] = esc_html( $tickets_handler->unlimited_term );
 		} else {
 			$html[] = esc_html( $number );
 		}
