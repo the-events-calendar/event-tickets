@@ -253,7 +253,11 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 
 		$min = $this->prepare_value( $capacity_min, '%d' );
 		$this->join_clause( "JOIN {$wpdb->postmeta} capacity_min ON {$wpdb->posts}.ID = capacity_min.post_id" );
-		$capacity_meta_key = $this->prepare_value( tribe( 'tickets.handler' )->key_capacity, '%s' );
+
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$capacity_meta_key = $this->prepare_value( $tickets_handler->key_capacity, '%s' );
 		$this->where_clause( "capacity_min.meta_key = {$capacity_meta_key} AND (capacity_min.meta_value >= {$min} OR capacity_min.meta_value < 0)" );
 	}
 
@@ -265,12 +269,15 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @param int $capacity_max
 	 */
 	public function filter_by_capacity_max( $capacity_max ) {
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
 		/**
 		 * Tickets with unlimited capacity will have a `_capacity` meta of `-1`
 		 * but they should not satisfy any maximum capacity requirement
 		 * so we need to use a BETWEEN query.
 		 */
-		$this->by( 'meta_between', tribe( 'tickets.handler' )->key_capacity, [ 0, $capacity_max ], 'NUMERIC' );
+		$this->by( 'meta_between', $tickets_handler->key_capacity, [ 0, $capacity_max ], 'NUMERIC' );
 	}
 
 	/**
@@ -282,7 +289,10 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @param int $capacity_max
 	 */
 	public function filter_by_capacity_between( $capacity_min, $capacity_max ) {
-		$this->by( 'meta_between', tribe( 'tickets.handler' )->key_capacity, [
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$this->by( 'meta_between', $tickets_handler->key_capacity, [
 			(int) $capacity_min,
 			(int) $capacity_max,
 		], 'NUMERIC' );
@@ -294,6 +304,8 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @since 4.8
 	 *
 	 * @param string|int $date
+	 *
+	 * @throws Exception
 	 *
 	 * @return array
 	 */
@@ -327,6 +339,8 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @since 4.8
 	 *
 	 * @param string|int $date
+	 *
+	 * @throws Exception
 	 *
 	 * @return array
 	 */

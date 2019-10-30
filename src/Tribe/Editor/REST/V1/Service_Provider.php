@@ -43,10 +43,10 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 	 * @since 4.9
 	 */
 	private function hooks() {
-		add_action( 'rest_api_init', array( $this, 'register_endpoints' ) );
+		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
 		add_filter(
 			'tribe_rest_single_ticket_data',
-			array( $this, 'filter_single_ticket_data' ),
+			[ $this, 'filter_single_ticket_data' ],
 			10,
 			2
 		);
@@ -74,18 +74,19 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 	private function register_single_ticket_endpoint() {
 		/** @var Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket $endpoint */
 		$endpoint = tribe( 'tickets.editor.rest-v1.endpoints.tickets-single' );
-		register_rest_route( $this->namespace, '/tickets/(?P<id>\\d+)', array(
-			array(
+		register_rest_route( $this->namespace, '/tickets/(?P<id>\\d+)', [
+			[
 				'methods' => WP_REST_Server::EDITABLE,
 				'args' => $endpoint->EDIT_args(),
-				'callback' => array( $endpoint, 'update' ),
-			),
-			array(
+				'callback' => [ $endpoint, 'update' ],
+			],
+			[
 				'methods' => WP_REST_Server::DELETABLE,
 				'args' => $endpoint->DELETE_args(),
-				'callback' => array( $endpoint, 'delete' ),
-			),
-		) );
+				'callback' => [ $endpoint, 'delete' ],
+			],
+		] );
+
 		return $endpoint;
 	}
 
@@ -100,11 +101,12 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 	private function register_ticket_archive_endpoint() {
 		/** @var Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket $endpoint */
 		$endpoint = tribe( 'tickets.editor.rest-v1.endpoints.tickets-single' );
-		register_rest_route( $this->namespace, '/tickets', array(
+		register_rest_route( $this->namespace, '/tickets', [
 			'methods' => WP_REST_Server::CREATABLE,
 			'args' => $endpoint->CREATE_args(),
-			'callback' => array( $endpoint, 'create' ),
-		) );
+			'callback' => [ $endpoint, 'create' ],
+		] );
+
 		return $endpoint;
 	}
 
@@ -146,7 +148,7 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 			return $data;
 		}
 
-		$capacity_details = empty( $data['capacity_details'] ) ? array() : $data['capacity_details'];
+		$capacity_details = empty( $data['capacity_details'] ) ? [] : $data['capacity_details'];
 		$available        = empty( $capacity_details['available'] ) ? 0 : $capacity_details['available'];
 		$capacity_type    = $ticket->global_stock_mode();
 
@@ -161,7 +163,10 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 		$data['available_from_start_time'] = $ticket->start_time;
 		$data['available_from_end_time']   = $ticket->end_time;
 
-		$data['totals'] = tribe( 'tickets.handler' )->get_ticket_totals( $ticket_id );
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$data['totals'] = $tickets_handler->get_ticket_totals( $ticket_id );
 
 		return $data;
 	}

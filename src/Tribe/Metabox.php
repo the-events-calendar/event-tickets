@@ -118,10 +118,13 @@ class Tribe__Tickets__Metabox {
 
 		$data = Tribe__Utils__Array::get( $data, array( 'tribe-tickets' ), null );
 
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
 		// Save if the info was passed
 		if ( ! empty( $data ) ) {
-			tribe( 'tickets.handler' )->save_order( $post->ID, isset( $data['list'] ) ? $data['list'] : null );
-			tribe( 'tickets.handler' )->save_form_settings( $post->ID, isset( $data['settings'] ) ? $data['settings'] : null );
+			$tickets_handler->save_order( $post->ID, isset( $data['list'] ) ? $data['list'] : null );
+			$tickets_handler->save_form_settings( $post->ID, isset( $data['settings'] ) ? $data['settings'] : null );
 		}
 
 		$return = $this->get_panels( $post );
@@ -508,15 +511,20 @@ class Tribe__Tickets__Metabox {
 	 * @return boolean
 	 */
 	public function user_can( $generic_cap, $attendee_id ) {
-		$connections = tribe( 'tickets.handler' )->get_object_connections( $attendee_id );
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$connections = $tickets_handler->get_object_connections( $attendee_id );
 
 		if ( ! $connections->event ) {
 			return false;
 		}
 
-		return tribe( 'tickets.attendees' )->user_can( $generic_cap, $connections->event );
-	}
+		/** @var Tribe__Tickets__Attendees $tickets_attendees */
+		$tickets_attendees = tribe( 'tickets.attendees' );
 
+		return $tickets_attendees->user_can( $generic_cap, $connections->event );
+	}
 
 	/**
 	 * Returns whether a class name is a valid active module/provider.

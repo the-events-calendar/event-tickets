@@ -2524,7 +2524,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			if ( -1 !== $data['capacity'] ) {
 				if ( 'update' === $save_type ) {
-					$totals        = tribe( 'tickets.handler' )->get_ticket_totals( $ticket->ID );
+					/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+					$tickets_handler = tribe( 'tickets.handler' );
+
+					$totals = $tickets_handler->get_ticket_totals( $ticket->ID );
+
 					$data['stock'] -= $totals['pending'] + $totals['sold'];
 				}
 
@@ -2635,10 +2639,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket->end_date         = null;
 			$ticket->menu_order       = isset( $data['ticket_menu_order'] ) ? intval( $data['ticket_menu_order'] ) : null;
 
-			/** @var Tribe__Tickets__Tickets_Handler $handler */
-			$handler = tribe( 'tickets.handler' );
+			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
 
-			$handler->toggle_manual_update_flag( true );
+			$tickets_handler->toggle_manual_update_flag( true );
 
 			if ( ! empty( $ticket->price ) ) {
 				// remove non-money characters
@@ -2680,21 +2684,20 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
 
 			/** @var Tribe__Tickets__Tickets_Handler $handler */
-			$handler = tribe( 'tickets.handler' );
-
-			$handler->toggle_manual_update_flag( false );
+			$tickets_handler = tribe( 'tickets.handler' );
+			$tickets_handler->toggle_manual_update_flag( false );
 
 			$post = get_post( $post_id );
 			if ( empty( $data['ticket_start_date'] ) ) {
 				$date = strtotime( $post->post_date );
 				$date = date( 'Y-m-d 00:00:00', $date );
 
-				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_start_date, $date );
+				update_post_meta( $ticket->ID, $tickets_handler->key_start_date, $date );
 			}
 
 			if ( empty( $data['ticket_end_date'] ) && 'tribe_events' === $post->post_type ) {
 				$event_end = get_post_meta( $post_id, '_EventEndDate', true );
-				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_end_date, $event_end );
+				update_post_meta( $ticket->ID, $tickets_handler->key_end_date, $event_end );
 			}
 
 			tribe( 'tickets.version' )->update( $ticket->ID );
@@ -2712,10 +2715,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string ticket module class name
 		 */
 		public static function get_event_ticket_provider( $event_id = null ) {
+			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
 
 			// if  post ID is set, and a value has been saved, return the saved value
 			if ( ! empty( $event_id ) ) {
-				$saved = get_post_meta( $event_id, tribe( 'tickets.handler' )->key_provider_field, true );
+				$saved = get_post_meta( $event_id, $tickets_handler->key_provider_field, true );
 
 				if ( ! empty( $saved ) ) {
 					return $saved;
