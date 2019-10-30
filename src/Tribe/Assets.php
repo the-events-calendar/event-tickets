@@ -116,9 +116,7 @@ class Tribe__Tickets__Assets {
 					],
 					[
 						'name' => 'tribe_ticket_vars',
-						'data' => [
-							'stock_mode' => $global_stock_mode
-						],
+						'data' => [ 'stock_mode' => $global_stock_mode ],
 					],
 					[
 						'name' => 'tribe_ticket_notices',
