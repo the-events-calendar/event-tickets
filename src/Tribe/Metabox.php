@@ -203,7 +203,15 @@ class Tribe__Tickets__Metabox {
 		}
 
 		// Get the Provider
-		$module = call_user_func( array( $data['ticket_provider'], 'get_instance' ) );
+		$module = call_user_func( [ $data['ticket_provider'], 'get_instance' ] );
+
+		if ( ! $module instanceof Tribe__Tickets__Tickets ) {
+			return new WP_Error(
+				'bad_request',
+				__( 'Commerce Module invalid', 'event-tickets' ),
+				[ 'status' => 400 ]
+			);
+		}
 
 		// Do the actual adding
 		$ticket_id = $module->ticket_add( $post_id, $data );

@@ -134,12 +134,11 @@ if ( ! function_exists( 'tribe_events_partially_soldout' ) ) {
 if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 
 	/**
-	 * Counts the total number of tickets still available for sale for a
-	 * specific event.
+	 * Counts the total number of tickets still available for sale for a specific event.
 	 *
 	 * @param null $event
 	 *
-	 * @return int
+	 * @return int `0` if no tickets available, `-1` if Unlimited, else integer value.
 	 */
 	function tribe_events_count_available_tickets( $event = null ) {
 
@@ -874,7 +873,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 		}
 
 		$event_types = Tribe__Tickets__Main::instance()->post_types();
-			/**
+		/**
 		 * @var Tribe__Tickets__Tickets_Handler $handler
 		 * @var Tribe__Tickets__Version $version
 		 */
