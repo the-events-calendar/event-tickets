@@ -224,7 +224,10 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 			return $this;
 		}
 
-		$status = tribe( 'tickets.commerce.paypal' )->get_order_statuses();
+		/** @var Tribe__Tickets__Commerce__PayPal__Main $paypal */
+		$paypal = tribe( 'tickets.commerce.paypal' );
+		$status = $paypal->get_order_statuses();
+
 		$this->paypal_order_id = $order_post->post_title;
 		$this->post_id         = $order_post_id;
 		$this->status          = $order_post->post_status;
