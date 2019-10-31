@@ -25,13 +25,13 @@ trait Attendee_Maker {
 			$overrides['order_id'] = md5( time() );
 		}
 
-		$attendes = [];
+		$attendees = [];
 
 		for ( $i = 0; $i < $count; $i ++ ) {
-			$attendes[] = $this->create_attendee_for_ticket( $ticket_id, $post_id, $overrides );
+			$attendees[] = $this->create_attendee_for_ticket( $ticket_id, $post_id, $overrides );
 		}
 
-		return $attendes;
+		return $attendees;
 	}
 
 	/**
