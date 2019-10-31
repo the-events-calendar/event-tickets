@@ -271,7 +271,7 @@ extends Tribe__Editor__Blocks__Abstract {
 			}
 
 			$has_tickets |= $rsvp->generate_tickets_for( $product_id, $ticket_qty, $attendee_details );
-		}
+        }
 
 		$order_id              = $attendee_details['order_id'];
 		$attendee_order_status = $attendee_details['order_status'];
@@ -296,7 +296,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		 */
 		$send_mail = apply_filters( 'tribe_tickets_rsvp_send_mail', true );
 
-		if ( $send_mail ) {
+		if ( $send_mail && $has_tickets) {
 			/**
 			 * Filters the attendee order stati that should trigger an attendance confirmation.
 			 *
@@ -316,9 +316,9 @@ extends Tribe__Editor__Blocks__Abstract {
 			);
 
 			// No point sending tickets if their current intention is not to attend
-			if ( $has_tickets && in_array( $attendee_order_status, $send_mail_stati, true ) ) {
+			if ( in_array( $attendee_order_status, $send_mail_stati, true ) ) {
 				$rsvp->send_tickets_email( $order_id, $post_id );
-			} elseif ( $has_tickets ) {
+			} else {
 				$rsvp->send_non_attendance_confirmation( $order_id, $post_id );
 			}
 		}
