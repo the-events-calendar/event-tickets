@@ -1175,7 +1175,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 * @param array                         $raw_data
 	 *
-	 * @return int The updated/created ticket post ID
+	 * @return int|false The updated/created ticket post ID or false if no ticket ID.
 	 */
 	public function save_ticket( $post_id, $ticket, $raw_data = array() ) {
 		// assume we are updating until we find out otherwise
@@ -2132,9 +2132,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return array An associative array in the [ <slug> => <label> ] format.
 	 */
 	public function get_order_statuses() {
+		/** @var Tribe__Tickets__Status__Manager $tickets_status */
+		$tickets_status = tribe( 'tickets.status' );
 
-		$statuses       = tribe( 'tickets.status' )->get_all_provider_statuses( 'tpp' );
-		$order_statuses = array();
+		$statuses       = $tickets_status->get_all_provider_statuses( 'tpp' );
+		$order_statuses = [];
 		foreach ( $statuses as $status ) {
 			$order_statuses[ $status->provider_name ] = _x( $status->name, 'a PayPal ticket order status', 'event-tickets' );
 		}

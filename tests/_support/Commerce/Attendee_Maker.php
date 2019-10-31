@@ -130,7 +130,7 @@ trait Attendee_Maker {
 			$meta['_price_currency_symbol'] = $currency->get_currency_symbol( $ticket_id, true );
 		}
 
-		$explicit_keys        = [
+		$explicit_keys = [
 			'checkin',
 			'checkin_details',
 			'security_code',
@@ -143,6 +143,7 @@ trait Attendee_Maker {
 			'order_id',
 			'sku',
 		];
+
 		$meta_input_overrides = array_diff_key( $overrides, array_combine( $explicit_keys, $explicit_keys ) );
 
 		$postarr = [
