@@ -105,7 +105,7 @@ tribe.tickets.block  = {
 	 * @return void
 	 */
 	obj.init = function() {
-		if ( 0 < TribeTicketOptions.availability_check_interval) {
+		if ( 0 < TribeTicketOptions.availability_check_interval ) {
 			obj.checkAvailability();
 		}
 
@@ -562,7 +562,7 @@ tribe.tickets.block  = {
 		);
 
 		// Repeat every 60 (filterable via tribe_tickets_availability_check_interval ) seconds
-		if ( 0 < TribeTicketOptions.availability_check_interval) {
+		if ( 0 < TribeTicketOptions.availability_check_interval ) {
 			setTimeout( obj.checkAvailability, TribeTicketOptions.availability_check_interval );
 		}
 	}

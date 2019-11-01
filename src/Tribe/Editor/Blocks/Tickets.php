@@ -110,7 +110,7 @@ extends Tribe__Editor__Blocks__Abstract {
 				'type'         => 'js',
 				'localize'     => [
 					[
-						'name' =>'TribeTicketOptions',
+						'name' => 'TribeTicketOptions',
 						'data' => [
 							'ajaxurl'                     => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 							'ajax_preload_ticket_form'    => $ajax_preload,
