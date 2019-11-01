@@ -117,6 +117,9 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] TBD =
+* Tweak - Add a check for empty tickets to `ticket_availability()` method to avoid notices. [122334]
+
 = [4.10.10] 2019-10-14 =
 
 * Tweak - Changed views: `blocks/tickets`, `tickets/tpp`
