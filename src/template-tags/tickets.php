@@ -148,6 +148,7 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 			return 0;
 		}
 
+		/** @var Tribe__Tickets__Ticket_Object $ticket */
 		foreach ( Tribe__Tickets__Tickets::get_all_event_tickets( $event->ID ) as $ticket ) {
 
 			$global_stock_mode = $ticket->global_stock_mode();
@@ -159,7 +160,10 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 			$stock_level = $global_stock_mode === Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ? $ticket->global_stock_cap : $ticket->stock;
 
 			// If we find an unlimited ticket, just return unlimited (-1) so we don't use -1 or an empty string as a numeric stock and try to do math with it
-			if ( Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $stock_level || -1 === (int) $stock_level ) {
+			if (
+				$ticket::UNLIMITED_STOCK === $stock_level
+				|| -1 === (int) $stock_level
+			) {
 				return -1;
 			}
 
@@ -703,7 +707,10 @@ if ( ! function_exists( 'tribe_tickets_get_event_ids' ) ) {
 	 * @return array
 	 */
 	function tribe_tickets_get_event_ids( $id ) {
-		return tribe( 'tickets.data_api' )->get_event_ids( $id );
+		/** @var Tribe__Tickets__Data_API $data_api */
+		$data_api = tribe( 'tickets.data_api' );
+
+		return $data_api->get_event_ids( $id );
 	}
 }
 

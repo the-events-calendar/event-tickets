@@ -752,7 +752,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since  4.6.2
 	 *
-	 * @param  int|WP_Post  $post  Which ticket
+	 * @param  int|WP_Post $post Which ticket
 	 *
 	 * @return array
 	 */
@@ -942,7 +942,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @param  int|object (null) $post Post or Post ID tickets are attached to
 	 *
-	 * @return int|null
+	 * @return int
 	 */
 	public function get_total_event_capacity( $post = null ) {
 		$post_id = Tribe__Main::post_id_helper( $post );
@@ -992,7 +992,7 @@ class Tribe__Tickets__Tickets_Handler {
 			$total += $capacity;
 		}
 
-		return apply_filters( 'tribe_tickets_total_event_capacity', $total, $post_id );
+		return (int) apply_filters( 'tribe_tickets_total_event_capacity', $total, $post_id );
 	}
 
 	/**
