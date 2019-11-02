@@ -37,6 +37,8 @@ trait Attendee_Maker {
 	/**
 	 * Generates an attendee for a ticket.
 	 *
+	 * @todo Adding RSVP tickets should update 'total_sales' count without having to hard-code it here and in other situations
+	 *
 	 * @param int   $ticket_id
 	 * @param int   $post_id
 	 * @param array $overrides See code for overrides possibilities.
