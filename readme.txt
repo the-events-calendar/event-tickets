@@ -118,7 +118,9 @@ Currently, the following add-ons are available for Event Tickets:
 == Changelog ==
 
 = [TBD] TBD =
+
 * Tweak - Add a check for empty tickets to `ticket_availability()` method to avoid notices. [122334]
+* Fix - Update filters to not have second parameter duplicating its first: `tribe_tickets_rsvp_get_total_rsvps`, `tribe_tickets_rsvp_get_total_going`, `tribe_tickets_rsvp_get_total_not_going` [73766]
 
 = [4.10.10] 2019-10-14 =
 

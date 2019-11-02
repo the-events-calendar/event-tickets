@@ -77,11 +77,13 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 		/**
 		 * Returns the total RSVP count for an event.
 		 *
+		 * @since TBD Second parameter corrected to not be duplicate of first parameter.
+		 *
 		 * @param int $total_rsvps
-		 * @param int $original_total_rsvps
+		 * @param int $total_going
 		 * @param int $event_id
 		 */
-		return (int) apply_filters( 'tribe_tickets_rsvp_get_total_rsvps', $this->total_rsvps, $this->total_rsvps, $this->event_id );
+		return (int) apply_filters( 'tribe_tickets_rsvp_get_total_rsvps', $this->total_rsvps, $this->total_going, $this->event_id );
 	}
 
 	/**
@@ -94,11 +96,13 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 		/**
 		 * Returns the total going count for an event.
 		 *
+		 * @since TBD Second parameter corrected to not be duplicate of first parameter.
+		 *
 		 * @param int $total_going
-		 * @param int $original_total_going
+		 * @param int $total_rsvps
 		 * @param int $event_id
 		 */
-		return (int) apply_filters( 'tribe_tickets_rsvp_get_total_going', $this->total_going, $this->total_going, $this->event_id );
+		return (int) apply_filters( 'tribe_tickets_rsvp_get_total_going', $this->total_going, $this->total_rsvps, $this->event_id );
 	}
 
 	/**
@@ -111,10 +115,12 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 		/**
 		 * Returns the total not going count for an event.
 		 *
+		 * @since TBD Second parameter corrected to not be duplicate of first parameter.
+		 *
 		 * @param int $total_not_going
-		 * @param int $original_total_not_going
+		 * @param int $total_rsvps
 		 * @param int $event_id
 		 */
-		return (int) apply_filters( 'tribe_tickets_rsvp_get_total_not_going', $this->total_not_going, $this->total_not_going, $this->event_id );
+		return (int) apply_filters( 'tribe_tickets_rsvp_get_total_not_going', $this->total_not_going, $this->total_rsvps, $this->event_id );
 	}
 }
