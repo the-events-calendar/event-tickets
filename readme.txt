@@ -118,7 +118,9 @@ Currently, the following add-ons are available for Event Tickets:
 == Changelog ==
 
 = [TBD] TBD =
+
 * Tweak - Add a check for empty tickets to `ticket_availability()` method to avoid notices. [122334]
+* Fix - Correctly get the event id within the `rsvp_process` method in `/src/Tribe/Editor/Blocks/Rsvp.php` [135409]
 
 = [4.10.10] 2019-10-14 =
 
