@@ -2683,8 +2683,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Pass the control to the child object
 			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
 
-			/** @var Tribe__Tickets__Tickets_Handler $handler */
-			$tickets_handler = tribe( 'tickets.handler' );
 			$tickets_handler->toggle_manual_update_flag( false );
 
 			$post = get_post( $post_id );
