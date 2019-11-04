@@ -296,7 +296,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		 */
 		$send_mail = apply_filters( 'tribe_tickets_rsvp_send_mail', true );
 
-		if ( $send_mail && $has_tickets) {
+		if ( $send_mail && $has_tickets ) {
 			/**
 			 * Filters the attendee order stati that should trigger an attendance confirmation.
 			 *
