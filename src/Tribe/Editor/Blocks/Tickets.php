@@ -97,6 +97,9 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		wp_enqueue_script('wp-utils');
 
+		$ajax_preload               = apply_filters( 'tribe_tickets_preload_cart_in_ticket_form', false );
+		$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 0 );
+
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-tickets',
@@ -107,9 +110,11 @@ extends Tribe__Editor__Blocks__Abstract {
 				'type'         => 'js',
 				'localize'     => [
 					[
-						'name' => 'TribeTickets',
+						'name' => 'TribeTicketOptions',
 						'data' => [
-							'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+							'ajaxurl'                     => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+							'ajax_preload_ticket_form'    => $ajax_preload,
+							'availability_check_interval' => $availability_check_interval,
 						],
 					],
 					[
