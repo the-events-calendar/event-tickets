@@ -330,9 +330,9 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 
 		if (
 			isset( $cache[ $cache_key ] )
-			&& false !== $cached = $cache[ $cache_key ]
+			&& false !== $cache[ $cache_key ]
 		) {
-			return $cached;
+			return $cache[ $cache_key ];
 		}
 
 		$meta_query = isset( $args['meta_query'] )
