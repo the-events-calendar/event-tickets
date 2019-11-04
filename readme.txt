@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
 Tested up to: 5.2
-Stable tag: 4.10.10
+Stable tag: 4.10.11
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -121,6 +121,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Tweak - Add a check for empty tickets to `ticket_availability()` method to avoid notices. [122334]
 * Fix - Update filters to not have second parameter duplicating its first: `tribe_tickets_rsvp_get_total_rsvps`, `tribe_tickets_rsvp_get_total_going`, `tribe_tickets_rsvp_get_total_not_going` [73766]
+* Fix - Correctly get the event id within the `rsvp_process` method in `/src/Tribe/Editor/Blocks/Rsvp.php` [135409]
 
 = [4.10.10] 2019-10-14 =
 
