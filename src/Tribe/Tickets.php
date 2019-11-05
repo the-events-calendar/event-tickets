@@ -1604,7 +1604,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'stock'     => 0, // current stock of tickets available for sale
 				'global'    => 0, // numeric boolean if tickets share global stock
 				'unlimited' => 0, // numeric boolean if any ticket has unlimited stock
-				'available' => 0, // numeric boolean if tickets are available for sale right now
+				'available' => 0,
 			];
 
 			/** @var Tribe__Tickets__Ticket_Object $ticket */
