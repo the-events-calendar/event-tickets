@@ -98,7 +98,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		wp_enqueue_script('wp-utils');
 
 		$ajax_preload               = apply_filters( 'tribe_tickets_preload_cart_in_ticket_form', false );
-		$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 0 );
+		$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 60000 );
 
 		tribe_asset(
 			$plugin,
