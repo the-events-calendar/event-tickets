@@ -889,7 +889,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 		$event_types = Tribe__Tickets__Main::instance()->post_types();
 
 		/**
-		 * @var Tribe__Tickets__Tickets_Handler $handler
+		 * @var Tribe__Tickets__Tickets_Handler $tickets_handler
 		 * @var Tribe__Tickets__Version $version
 		 */
 		$tickets_handler = tribe( 'tickets.handler' );
@@ -969,11 +969,14 @@ if ( ! function_exists( 'tribe_tickets_get_readable_amount' ) ) {
 			$html[] = '(';
 		}
 
-		if ( -1 === (int) $number || Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $number ) {
-			/** @var Tribe__Tickets__Tickets_Handler $handler */
-			$handler = tribe( 'tickets.handler' );
+		if (
+			-1 === (int) $number
+			|| Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $number
+		) {
+			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
 
-			$html[] = $handler->unlimited_term;
+			$html[] = esc_html( $tickets_handler->unlimited_term );
 		} else {
 			$html[] = number_format_i18n( $number );
 		}
