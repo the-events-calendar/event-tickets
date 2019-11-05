@@ -122,7 +122,10 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 *                post tickets has unlimited stock.
 	 */
 	protected function get_percentage_string( $post_id, $deprecated = null, $total = null, $not_going = null ) {
-		$ticket    = tribe( 'tickets.handler' )->get_post_totals( $post_id );
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$ticket = $tickets_handler->get_post_totals( $post_id );
 
 		if ( null === $total ) {
 			$total = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );

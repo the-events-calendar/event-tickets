@@ -25,17 +25,19 @@ trait Attendee_Maker {
 			$overrides['order_id'] = md5( time() );
 		}
 
-		$attendes = [];
+		$attendees = [];
 
 		for ( $i = 0; $i < $count; $i ++ ) {
-			$attendes[] = $this->create_attendee_for_ticket( $ticket_id, $post_id, $overrides );
+			$attendees[] = $this->create_attendee_for_ticket( $ticket_id, $post_id, $overrides );
 		}
 
-		return $attendes;
+		return $attendees;
 	}
 
 	/**
 	 * Generates an attendee for a ticket.
+	 *
+	 * @todo Adding RSVP tickets should update 'total_sales' count without having to hard-code it here and in other situations
 	 *
 	 * @param int   $ticket_id
 	 * @param int   $post_id
@@ -130,7 +132,7 @@ trait Attendee_Maker {
 			$meta['_price_currency_symbol'] = $currency->get_currency_symbol( $ticket_id, true );
 		}
 
-		$explicit_keys        = [
+		$explicit_keys = [
 			'checkin',
 			'checkin_details',
 			'security_code',
@@ -143,6 +145,7 @@ trait Attendee_Maker {
 			'order_id',
 			'sku',
 		];
+
 		$meta_input_overrides = array_diff_key( $overrides, array_combine( $explicit_keys, $explicit_keys ) );
 
 		$postarr = [

@@ -2,7 +2,6 @@
 
 namespace Tribe\Tickets\Test\Commerce\PayPal;
 
-
 trait Ticket_Maker {
 
 	/**

@@ -39,8 +39,11 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 	 * @return null
 	 */
 	public function trigger_update_capacity( $meta_id, $object_id, $meta_key, $capacity ) {
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
 		// Bail if not capacity
-		if ( tribe( 'tickets.handler' )->key_capacity !== $meta_key ) {
+		if ( $tickets_handler->key_capacity !== $meta_key ) {
 			return;
 		}
 
@@ -65,7 +68,7 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 		}
 
 		if ( -1 !== $capacity ) {
-			$totals = tribe( 'tickets.handler' )->get_ticket_totals( $object_id );
+			$totals = $tickets_handler->get_ticket_totals( $object_id );
 
 			// update stock by taking capacity - pending and sold tickets
 			$stock  = $capacity - ( $totals['pending'] + $totals['sold'] );

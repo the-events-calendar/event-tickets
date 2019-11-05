@@ -134,12 +134,11 @@ if ( ! function_exists( 'tribe_events_partially_soldout' ) ) {
 if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 
 	/**
-	 * Counts the total number of tickets still available for sale for a
-	 * specific event.
+	 * Counts the total number of tickets still available for sale for a specific event.
 	 *
 	 * @param null $event
 	 *
-	 * @return int
+	 * @return int `0` if no tickets available, `-1` if Unlimited, else integer value.
 	 */
 	function tribe_events_count_available_tickets( $event = null ) {
 
@@ -149,6 +148,7 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 			return 0;
 		}
 
+		/** @var Tribe__Tickets__Ticket_Object $ticket */
 		foreach ( Tribe__Tickets__Tickets::get_all_event_tickets( $event->ID ) as $ticket ) {
 
 			$global_stock_mode = $ticket->global_stock_mode();
@@ -160,7 +160,10 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 			$stock_level = $global_stock_mode === Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ? $ticket->global_stock_cap : $ticket->stock;
 
 			// If we find an unlimited ticket, just return unlimited (-1) so we don't use -1 or an empty string as a numeric stock and try to do math with it
-			if ( Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $stock_level || -1 === (int) $stock_level ) {
+			if (
+				$ticket::UNLIMITED_STOCK === $stock_level
+				|| -1 === (int) $stock_level
+			) {
 				return -1;
 			}
 
@@ -704,7 +707,10 @@ if ( ! function_exists( 'tribe_tickets_get_event_ids' ) ) {
 	 * @return array
 	 */
 	function tribe_tickets_get_event_ids( $id ) {
-		return tribe( 'tickets.data_api' )->get_event_ids( $id );
+		/** @var Tribe__Tickets__Data_API $data_api */
+		$data_api = tribe( 'tickets.data_api' );
+
+		return $data_api->get_event_ids( $id );
 	}
 }
 
@@ -794,7 +800,10 @@ if ( ! function_exists( 'tribe_tickets_delete_capacity' ) ) {
 			return false;
 		}
 
-		$deleted = delete_post_meta( $object->ID, tribe( 'tickets.handler' )->key_capacity );
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$deleted = delete_post_meta( $object->ID, $tickets_handler->key_capacity );
 
 		if ( ! $deleted ) {
 			return $deleted;
@@ -844,7 +853,11 @@ if ( ! function_exists( 'tribe_tickets_update_capacity' ) ) {
 		}
 
 		// Do the actual Updating of the Meta value
-		return update_post_meta( $object->ID, tribe( 'tickets.handler' )->key_capacity, $capacity );
+
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		return update_post_meta( $object->ID, $tickets_handler->key_capacity, $capacity );
 	}
 }
 
@@ -874,21 +887,22 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 		}
 
 		$event_types = Tribe__Tickets__Main::instance()->post_types();
-			/**
-		 * @var Tribe__Tickets__Tickets_Handler $handler
+
+		/**
+		 * @var Tribe__Tickets__Tickets_Handler $tickets_handler
 		 * @var Tribe__Tickets__Version $version
 		 */
-		$handler = tribe( 'tickets.handler' );
-		$version = tribe( 'tickets.version' );
+		$tickets_handler = tribe( 'tickets.handler' );
+		$version         = tribe( 'tickets.version' );
 
-		$key = $handler->key_capacity;
+		$key = $tickets_handler->key_capacity;
 
 		// When we have a legacy ticket we migrate it
 		if (
 			! in_array( $post->post_type, $event_types )
 			&& $version->is_legacy( $post->ID )
 		) {
-			$legacy_capacity = $handler->filter_capacity_support( null, $post->ID, $key );
+			$legacy_capacity = $tickets_handler->filter_capacity_support( null, $post->ID, $key );
 
 			// Cast as integer as it might be returned as numeric string on some cases
 			return (int) $legacy_capacity;
@@ -939,6 +953,7 @@ if ( ! function_exists( 'tribe_tickets_get_readable_amount' ) ) {
 	 * Turns a Stock, Remaining, or Capacity number into a human-readable format.
 	 *
 	 * @since  4.6
+	 * @since  TBD Run number through formatting, such as commas to separate thousands.
 	 *
 	 * @param string|int $number  Which you are trying to convert.
 	 * @param string     $mode    Mode this post is on.
@@ -954,20 +969,23 @@ if ( ! function_exists( 'tribe_tickets_get_readable_amount' ) ) {
 			$html[] = '(';
 		}
 
-		if ( -1 === (int) $number || Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $number ) {
-			/** @var Tribe__Tickets__Tickets_Handler $handler */
-			$handler = tribe( 'tickets.handler' );
+		if (
+			-1 === (int) $number
+			|| Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $number
+		) {
+			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
 
-			$html[] = esc_html( $handler->unlimited_term );
+			$html[] = esc_html( $tickets_handler->unlimited_term );
 		} else {
-			$html[] = esc_html( $number );
+			$html[] = number_format_i18n( $number );
 		}
 
 		if ( $show_parens ) {
 			$html[] = ')';
 		}
 
-		$html = implode( '', $html );
+		$html = esc_html( implode( '', $html ) );
 
 		if ( true === $display ) {
 			echo $html;

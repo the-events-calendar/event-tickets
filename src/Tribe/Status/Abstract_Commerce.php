@@ -201,10 +201,10 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 			-1 === (int) $ticket_object->available()
 			|| $ticket_object::UNLIMITED_STOCK === $ticket_object->available()
 		) {
-			/** @var Tribe__Tickets__Tickets_Handler $handler */
-			$handler = tribe( 'tickets.handler' );
+			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
 
-			$available_text = $handler->unlimited_term;
+			$available_text = $tickets_handler->unlimited_term;
 		} else {
 			$available_text = $ticket_object->available();
 		}
