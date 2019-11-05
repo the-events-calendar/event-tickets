@@ -207,6 +207,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 * to update the Order information on the database.
 	 *
 	 * @since 4.7
+	 * @since TBD Avoid fatal when trying to set class status property.
 	 *
 	 * @param int $order_post_id The Order post ID.
 	 *
@@ -231,7 +232,11 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 		$this->paypal_order_id = $order_post->post_title;
 		$this->post_id         = $order_post_id;
 		$this->status          = $order_post->post_status;
-		$this->status_label    = $status[ $order_post->post_status ];
+
+		if ( ! empty( $status[ $order_post->post_status ] ) ) {
+			$this->status_label = $status[ $order_post->post_status ];
+		}
+
 		$this->created         = $order_post->post_date;
 		$this->modified        = $order_post->post_modified;
 
@@ -323,8 +328,11 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 		$cache     = new Tribe__Cache;
 		$cache_key = self::cache_prefix( 'find_by_' . $cache->make_key( $args ) );
 
-		if ( false !== $cached = $cache[ $cache_key ] ) {
-			return $cached;
+		if (
+			isset( $cache[ $cache_key ] )
+			&& false !== $cache[ $cache_key ]
+		) {
+			return $cache[ $cache_key ];
 		}
 
 		$meta_query = isset( $args['meta_query'] )
@@ -359,13 +367,13 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 
 		$found = get_posts( $args );
 
+		$orders = [];
+
 		if ( $found ) {
 			foreach ( $found as $order_post_id ) {
 				$order    = new self();
 				$orders[] = $order->hydrate_from_post( $order_post_id );
 			}
-		} else {
-			$orders = array();
 		}
 
 		$cache[ $cache_key ] = $orders;

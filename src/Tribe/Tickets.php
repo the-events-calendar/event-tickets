@@ -1607,6 +1607,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'available' => 0, // numeric boolean if tickets are available for sale right now
 			];
 
+			/** @var Tribe__Tickets__Ticket_Object $ticket */
 			foreach ( $tickets as $ticket ) {
 				// If a ticket is not current for sale do not count it
 				if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
@@ -1635,7 +1636,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 						continue;
 					}
 
-					$stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ? $ticket->global_stock_cap : $ticket->available();
+					$stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ? $ticket->global_stock_cap() : $ticket->available();
 
 					// whether the stock level is negative because it represents unlimited stock (`-1`)
 					// or because it's oversold we normalize to `0` for the sake of displaying
