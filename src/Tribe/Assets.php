@@ -68,12 +68,11 @@ class Tribe__Tickets__Assets {
 		$decimal = isset( $locale['decimal_point'] ) ? $locale['decimal_point'] : '.';
 
 		/**
-		 * Filter the decimal point character used in the price
-		 * @param string $decimal the decimal character to filter
+		 * Filter the decimal point character used in the price.
 		 *
 		 * @since 4.6
 		 *
-		 * @param string $decimal
+		 * @param string $decimal the decimal character to filter
 		 */
 		$decimal = apply_filters( 'tribe_event_ticket_decimal_point', $decimal );
 
