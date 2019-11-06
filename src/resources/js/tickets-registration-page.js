@@ -18,11 +18,6 @@ tribe.tickets.registration = {};
 
 	obj.hasChanges = {};
 
-	obj.formClasses = {
-		woo: 'tribe-tickets__item__attendee__fields__form--woo',
-		edd: 'tribe-tickets__item__attendee__fields__form--edd',
-	}
-
 	obj.selector = {
 		footerQuantity     : '.tribe-tickets__footer__quantity__number',
 		footerAmount       : '.tribe-tickets__footer__total .tribe-amount',

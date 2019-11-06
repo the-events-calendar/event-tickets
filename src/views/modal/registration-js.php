@@ -46,7 +46,7 @@ $non_meta_count        = 0;
 		)
 		]
 	); ?>
-	<form
+	<div
 		id="tribe-modal__attendee_registration"
 		method="post"
 		class="tribe-tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?> tribe-validation"

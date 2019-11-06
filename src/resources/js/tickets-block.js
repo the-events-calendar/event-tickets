@@ -1064,10 +1064,13 @@ tribe.tickets.block  = {
 			obj.getData()
 		).then(
 			function( data ) {
+				if ( ! data.meta ) {
+					return;
+				}
+
 				var cartSkip = data.meta.length;
 				if (length < cartSkip ) {
 					obj.prefillModalMetaForm( data.meta, length );
-
 					return;
 				} else {
 					var $attendeeForm = $( obj.modalSelector.metaForm );
@@ -1233,6 +1236,8 @@ tribe.tickets.block  = {
 	 */
 	obj.getData = function( pageLoad ) {
 		var ret      = {};
+		ret.meta = {};
+		ret.tickets = {};
 		var deferred = $.Deferred();
 		var meta     = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + obj.postId ) );
 
