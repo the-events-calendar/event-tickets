@@ -31,6 +31,7 @@ class Tribe__Tickets__Commerce__Cart {
 			'provider' => $provider,
 			'tickets'  => $tickets,
 			'meta'     => $meta,
+			'additive' => true,
 		] );
 
 		if ( 'tribe-commerce' === $provider ) {
@@ -238,6 +239,7 @@ class Tribe__Tickets__Commerce__Cart {
 		$provider = isset( $args['provider'] ) ? $args['provider'] : null;
 		$tickets  = isset( $args['tickets'] ) ? $args['tickets'] : null;
 		$meta     = isset( $args['meta'] ) ? $args['meta'] : null;
+		$additive = isset( $args['additive'] ) ? (boolean) $args['additive'] : true;
 
 		// Update cart quantities.
 		if ( null !== $tickets ) {
@@ -284,10 +286,11 @@ class Tribe__Tickets__Commerce__Cart {
 					 *
 					 * @since TBD
 					 *
-					 * @param array $provider_tickets List of tickets with their ID and quantity.
-					 * @param int   $post_id          Post ID for the cart.
+					 * @param array   $provider_tickets List of tickets with their ID and quantity.
+					 * @param int     $post_id          Post ID for the cart.
+					 * @param boolean $additive         Whether to add or replace tickets.
 					 */
-					do_action( 'tribe_tickets_commerce_cart_update_tickets_' . $provider, $provider_tickets, $post_id );
+					do_action( 'tribe_tickets_commerce_cart_update_tickets_' . $provider, $provider_tickets, $post_id, $additive );
 				}
 
 				/**
@@ -295,11 +298,12 @@ class Tribe__Tickets__Commerce__Cart {
 				 *
 				 * @since TBD
 				 *
-				 * @param array  $tickets  List of tickets with their ID and quantity.
-				 * @param string $provider The cart provider.
-				 * @param int    $post_id  Post ID for the cart.
+				 * @param array   $tickets  List of tickets with their ID and quantity.
+				 * @param string  $provider The cart provider.
+				 * @param int     $post_id  Post ID for the cart.
+				 * @param boolean $additive Whether to add or replace tickets.
 				 */
-				do_action( 'tribe_tickets_commerce_cart_update_tickets', $tickets, $provider, $post_id );
+				do_action( 'tribe_tickets_commerce_cart_update_tickets', $tickets, $provider, $post_id, $additive );
 			} catch ( Tribe__REST__Exceptions__Exception $exception ) {
 				return new WP_Error( $exception->getCode(), esc_html( $exception->getMessage() ), [ 'status' => $exception->getStatus() ] );
 			}
@@ -328,12 +332,13 @@ class Tribe__Tickets__Commerce__Cart {
 				 *
 				 * @since TBD
 				 *
-				 * @param array  $meta     List of meta for each ticket to be saved for Attendee Registration.
-				 * @param array  $tickets  List of tickets with their ID and quantity.
-				 * @param string $provider The cart provider.
-				 * @param int    $post_id  Post ID for the cart.
+				 * @param array   $meta     List of meta for each ticket to be saved for Attendee Registration.
+				 * @param array   $tickets  List of tickets with their ID and quantity.
+				 * @param string  $provider The cart provider.
+				 * @param int     $post_id  Post ID for the cart.
+				 * @param boolean $additive Whether to add or replace meta.
 				 */
-				do_action( 'tribe_tickets_commerce_cart_update_ticket_meta', $meta, $tickets, $provider, $post_id );
+				do_action( 'tribe_tickets_commerce_cart_update_ticket_meta', $meta, $tickets, $provider, $post_id, $additive );
 			} catch ( Tribe__REST__Exceptions__Exception $exception ) {
 				return new WP_Error( $exception->getCode(), esc_html( $exception->getMessage() ), [ 'status' => $exception->getStatus() ] );
 			}

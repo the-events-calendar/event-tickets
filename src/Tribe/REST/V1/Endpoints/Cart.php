@@ -223,6 +223,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			'provider' => $provider,
 			'tickets'  => $tickets,
 			'meta'     => $meta,
+			'additive' => false,
 		] );
 
 		if ( is_wp_error( $response ) ) {

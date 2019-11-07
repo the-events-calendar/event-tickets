@@ -333,7 +333,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_filter( 'tribe_tickets_commerce_cart_get_cart_url_tribe-commerce', [ $this, 'commerce_get_cart_url' ], 10, 3 );
 		add_filter( 'tribe_tickets_commerce_cart_get_checkout_url_tribe-commerce', [ $this, 'commerce_get_checkout_url' ], 10, 3 );
 		add_filter( 'tribe_tickets_commerce_cart_get_tickets_tribe-commerce', [ $this, 'commerce_get_tickets_in_cart' ] );
-		add_filter( 'tribe_tickets_commerce_cart_update_tickets_tribe-commerce', [ $this, 'commerce_update_tickets_in_cart' ] );
+		add_filter( 'tribe_tickets_commerce_cart_update_tickets_tribe-commerce', [ $this, 'commerce_update_tickets_in_cart' ], 10, 3 );
 	}
 
 	/**
@@ -2414,11 +2414,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $tickets List of tickets with their ID and quantity.
+	 * @param array   $tickets  List of tickets with their ID and quantity.
+	 * @param int     $post_id  Post ID for the cart.
+	 * @param boolean $additive Whether to add or replace tickets.
 	 *
 	 * @throws Tribe__REST__Exceptions__Exception When ticket does not exist or capacity is not enough.
 	 */
-	public function commerce_update_tickets_in_cart( $tickets ) {
+	public function commerce_update_tickets_in_cart( $tickets, $post_id, $additive ) {
 		/** @var Tribe__Tickets__Commerce__PayPal__Cart__Interface $cart */
 		$cart = tribe( 'tickets.commerce.paypal.cart' );
 
@@ -2476,7 +2478,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$optout_key => $optout,
 			];
 
-			$this->add_ticket_to_cart( $ticket_id, $ticket_quantity, $extra_data );
+			$this->add_ticket_to_cart( $ticket_id, $ticket_quantity, $extra_data, $additive );
 		}
 
 		$cart->save();
@@ -2490,11 +2492,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $ticket_id  Ticket ID.
-	 * @param int   $quantity   Ticket quantity.
-	 * @param array $extra_data Extra data to send to the cart item.
+	 * @param int     $ticket_id  Ticket ID.
+	 * @param int     $quantity   Ticket quantity.
+	 * @param array   $extra_data Extra data to send to the cart item.
+	 * @param boolean $additive   Whether to add or replace tickets.
 	 */
-	public function add_ticket_to_cart( $ticket_id, $quantity, array $extra_data = [] ) {
+	public function add_ticket_to_cart( $ticket_id, $quantity, array $extra_data = [], $additive = true ) {
 		if ( empty( $extra_data['cart'] ) ) {
 			return;
 		}
@@ -2504,8 +2507,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/** @var Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged $cart */
 		$cart = $extra_data['cart'];
 
-		// Remove from the cart so we can replace it below (add_item is additive).
-		$cart->remove_item( $ticket_id );
+		if ( ! $additive ) {
+			// Remove from the cart so we can replace it below (add_item is additive).
+			$cart->remove_item( $ticket_id );
+		}
 
 		if ( 0 < $quantity ) {
 			$optout = isset( $extra_data[ $optout_key ] ) ? $extra_data[ $optout_key ] : false;
