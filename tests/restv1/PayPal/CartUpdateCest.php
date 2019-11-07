@@ -76,13 +76,7 @@ class CartUpdateCest extends BaseRestCest {
 			],
 		], $response['tickets'] );
 		$I->assertEquals( [], $response['meta'] );
-		$I->assertContains(
-			'https://www.sandbox.paypal.com/cgi-bin/webscr/_cart'
-				. '?cmd=_cart'
-				. '&business=merchant%40example.com'
-				. '&bn=ModernTribe_SP',
-			$response['cart_url']
-		);
+		$I->assertContains( 'https://www.sandbox.paypal.com/cgi-bin/webscr/_cart?cmd=_cart', $response['cart_url'] );
 		$I->assertEquals( $response['cart_url'], $response['checkout_url'] );
 	}
 

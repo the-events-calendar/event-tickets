@@ -278,60 +278,6 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	}
 
 	/**
-	 * Determine whether the ticket is accessible to the current user.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $ticket_id Ticket ID.
-	 *
-	 * @return true|WP_Error True if the ticket is accessible or a `WP_Error` if the user cannot access
-	 *                       the current ticket at all.
-	 */
-	protected function is_ticket_readable( $ticket_id ) {
-		$ticket_post = get_post( $ticket_id );
-
-		if ( ! $ticket_post instanceof WP_Post ) {
-			return new WP_Error( 'ticket-not-found', $this->messages->get_message( 'ticket-not-found' ), array( 'status' => 404 ) );
-		}
-
-		$ticket_post_type_object = get_post_type_object( $ticket_post->post_type );
-
-		if ( null === $ticket_post_type_object ) {
-			return new WP_Error( 'ticket-provider-not-found', $this->messages->get_message( 'ticket-provider-not-found' ), array( 'status' => 500 ) );
-		}
-
-		$read_cap = $ticket_post_type_object->cap->read_post;
-
-		if ( ! ( 'publish' === $ticket_post->post_status || current_user_can( $read_cap, $ticket_id ) ) ) {
-			$message = $this->messages->get_message( 'ticket-not-accessible' );
-
-			return new WP_Error( 'ticket-not-accessible', $message, array( 'status' => 401 ) );
-		}
-
-		/**
-		 * Not only the ticket should be accessible by the user but the event too should be.
-		 */
-		$event = tribe_events_get_ticket_event( $ticket_id );
-
-		if ( ! $event instanceof WP_Post ) {
-			$message = $this->messages->get_message( 'ticket-not-accessible' );
-
-			return new WP_Error( 'ticket-not-accessible', $message, array( 'status' => 401 ) );
-		}
-
-		$event_post_type_object = get_post_type_object( $event->post_type );
-		$read_cap               = $event_post_type_object->cap->read_post;
-
-		if ( ! ( 'publish' === $event->post_status || current_user_can( $read_cap, $event->ID ) ) ) {
-			$message = $this->messages->get_message( 'ticket-not-accessible' );
-
-			return new WP_Error( 'ticket-not-accessible', $message, array( 'status' => 401 ) );
-		}
-
-		return true;
-	}
-
-	/**
 	 * Returns the ticket data accessible to the current user.
 	 *
 	 * @since 4.8
@@ -342,7 +288,10 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	 *                        cannot access the current ticket at all.
 	 */
 	protected function get_readable_ticket_data( $ticket_id ) {
-		$is_ticket_readable = $this->is_ticket_readable( $ticket_id );
+		/** @var Tribe__Tickets__Tickets_Handler $handler */
+		$handler = tribe( 'tickets.handler' );
+
+		$is_ticket_readable = $handler->is_ticket_readable( $ticket_id );
 
 		if ( true !== $is_ticket_readable ) {
 			return $is_ticket_readable;
