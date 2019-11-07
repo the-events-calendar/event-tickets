@@ -120,6 +120,6 @@ if ( ! $already_rendered ) {
 		echo $html;
 	?>
 </form>
-<div  class="tribe-common">
+<div class="tribe-common">
 	<span id="tribe-tickets__modal_target"></span>
 </div>
