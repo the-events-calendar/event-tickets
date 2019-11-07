@@ -31,7 +31,7 @@ $button_text = _x( 'Get Tickets', 'Get selected tickets.', 'event-tickets' );
 $content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Ticket Modal</p>', $this );
 
 $args = [
-	'append_target'           => '',
+	'append_target'           => '#tribe-tickets__modal_target',
 	'button_classes'          => [ 'tribe-common-c-btn', 'tribe-common-c-btn--small', 'tribe-tickets__submit' ],
 	'button_disabled'         => true,
 	'button_name'             => $provider_id . '_get_tickets',

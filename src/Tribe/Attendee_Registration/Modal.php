@@ -41,10 +41,23 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 		$is_sale_past        = $template_obj->get( 'is_sale_past' );
 
 		ob_start();
-		?><form><?php
-		include $file;
-		$this->append_modal_ar_template( $content, $template_obj );
-		?></form><?php
+		?>
+		<form
+			id="tribe-tickets__modal-form"
+			action=""
+			method="post"
+			enctype='multipart/form-data'
+			data-provider="<?php echo esc_attr( $provider->class_name ); ?>"
+			autocomplete="off"
+			data-provider-id="<?php echo esc_attr( $provider->orm_provider ); ?>"
+			novalidate
+		>
+			<?php
+			include $file;
+			$this->append_modal_ar_template( $content, $template_obj );
+			?>
+		</form>
+		<?php
 		return ob_get_clean();
 	}
 
