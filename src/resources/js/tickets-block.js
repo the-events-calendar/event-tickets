@@ -176,7 +176,6 @@ tribe.tickets.block  = {
 		var $field      = $form.find( obj.selector.blockFooter ).find( obj.selector.blockFooterQuantity );
 		var footerCount = 0;
 		var $qtys       = $form.find( obj.selector.item ).find( obj.selector.itemQuantityInput );
-		console.log($qtys);
 
 		$qtys.each( function() {
 			var new_quantity = parseInt( $(this).val(), 10 );
