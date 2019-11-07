@@ -100,6 +100,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 0 );
 
 		$checkout_urls = [];
+
 		/**
 		 * Allow providers to add their own checkout URL to the localized list.
 		 *
@@ -110,6 +111,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		$checkout_urls = apply_filters( 'tribe_tickets_checkout_urls', $checkout_urls );
 
 		$cart_urls = [];
+
 		/**
 		 * Allow providers to add their own cart URL to the localized list.
 		 *
@@ -157,8 +159,8 @@ extends Tribe__Editor__Blocks__Abstract {
 						'data' => [
 							'cart'     => $cart_urls,
 							'checkout' => $checkout_urls,
-						]
 						],
+					],
 				],
 			]
 		);

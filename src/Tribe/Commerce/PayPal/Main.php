@@ -2096,7 +2096,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return array
 	 */
 	public function add_cart_url( $urls = [] ) {
-		$cart_url = '';
+		$cart_url = site_url();
 		$urls[ __CLASS__ ]   = $cart_url;
 
 		return $urls;
@@ -2111,7 +2111,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return array
 	 */
 	public function add_checkout_url( $urls = [] ) {
-		$checkout_url = '';
+		$checkout_url = site_url();
 		$urls[ __CLASS__ ]       = $checkout_url;
 
 		return $urls;
