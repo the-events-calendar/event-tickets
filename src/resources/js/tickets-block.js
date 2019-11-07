@@ -174,7 +174,6 @@ tribe.tickets.block  = {
 	 */
 	obj.updateFooterCount = function( $form ) {
 		var $field      = $form.find( obj.selector.blockFooter ).find( obj.selector.blockFooterQuantity );
-		console.log($field);
 		var footerCount = 0;
 		var $qtys       = $form.find( obj.selector.item ).find( obj.selector.itemQuantityInput );
 		console.log($qtys);
