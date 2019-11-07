@@ -173,9 +173,9 @@ tribe.tickets.block  = {
 	 * @param int    $form The form we're updating.
 	 */
 	obj.updateFooterCount = function( $form ) {
-		var $field      = $form.children( obj.selector.blockFooter ).find( obj.selector.blockFooterQuantity );
+		var $field      = $form.find( obj.selector.blockFooter + ' ' + obj.selector.blockFooterQuantity );
 		var footerCount = 0;
-		var $qtys       = $form.children( obj.selector.item ).find( obj.selector.itemQuantityInput );
+		var $qtys       = $form.find( obj.selector.item + ' ' + obj.selector.itemQuantityInput );
 
 		$qtys.each( function() {
 			var new_quantity = parseInt( $(this).val(), 10 );
@@ -204,9 +204,9 @@ tribe.tickets.block  = {
 	 * @param int    $form The form we're updating.
 	 */
 	obj.updateFooterAmount = function( $form ) {
-		var $field       = $form.children( obj.selector.blockFooter ).find( obj.selector.blockFooterAmount );
+		var $field       = $form.find( obj.selector.blockFooter + ' ' + obj.selector.blockFooterAmount );
 		var footerAmount = 0;
-		var $qtys        = $form.children( obj.selector.item ).find( obj.selector.itemQuantityInput );
+		var $qtys        = $form.find( obj.selector.item + ' ' + obj.selector.itemQuantityInput );
 
 		$qtys.each( function() {
 			var $price   = $( this ).closest( obj.selector.item ).find( obj.selector.itemPrice ).first();
@@ -326,7 +326,7 @@ tribe.tickets.block  = {
 	obj.maybeShowNonMetaNotice = function( $form ) {
 		var nonMetaCount = 0;
 		var metaCount    = 0;
-		var $cartItems   =  $form.children( obj.selector.item ).filter(
+		var $cartItems   =  $form.find( obj.selector.item ).filter(
 			function( index ) {
 				return $( this ).find( obj.selector.itemQuantityInput ).val() > 0;
 			}
@@ -581,7 +581,7 @@ tribe.tickets.block  = {
 	obj.checkSharedCapacity = function ( $form, qty ) {
 		var sharedCap         = [];
 		var currentLoad       = [];
-		var $sharedTickets    = $form.children( obj.selector.item ).filter( '[data-shared-cap="true"]' );
+		var $sharedTickets    = $form.find( obj.selector.item ).filter( '[data-shared-cap="true"]' );
 		var $sharedCapFields  = $sharedTickets.find( obj.selector.itemExtraAvailableQuantity );
 		var $sharedCapTickets = $sharedTickets.find( obj.selector.itemQuantityInput );
 
@@ -916,7 +916,7 @@ tribe.tickets.block  = {
 	obj.prefillModalCartForm = function ( $form ) {
 		$form.find( obj.selector.item ).hide();
 
-		var $items = $tribe_ticket.children( obj.selector.item );
+		var $items = $tribe_ticket.find( obj.selector.item );
 
 		// Override the data with what's in the tickets block.
 		$.each( $items, function( index, item ) {
@@ -1447,7 +1447,6 @@ tribe.tickets.block  = {
 		'.tribe-tickets__item__quantity__remove, .tribe-tickets__item__quantity__add',
 		function( e ) {
 			var $input = $( this ).parent().find( 'input[type="number"]' );
-
 			if ( $input.is( ':disabled' ) ) {
 				return;
 			}
