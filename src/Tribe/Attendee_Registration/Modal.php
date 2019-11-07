@@ -12,9 +12,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	 * @since TBD
 	 */
 	public function hook() {
-
 		add_filter( 'tribe_events_tickets_attendee_registration_modal_content', [ $this, 'modal_cart_template' ], 10, 2 );
-		// add_filter( 'tribe_events_tickets_attendee_registration_modal_content', [ $this, 'append_modal_ar_template' ], 11, 2 );
 	}
 
 	/**
