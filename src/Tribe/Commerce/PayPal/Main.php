@@ -334,6 +334,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_filter( 'tribe_tickets_rest_cart_get_checkout_url_tribe-commerce', [ $this, 'rest_get_checkout_url' ], 10, 3 );
 		add_filter( 'tribe_tickets_rest_cart_get_tickets_tribe-commerce', [ $this, 'rest_get_tickets_in_cart' ] );
 		add_filter( 'tribe_tickets_rest_cart_update_tickets_tribe-commerce', [ $this, 'rest_update_tickets_in_cart' ] );
+
+		add_filter( 'tribe_tickets_cart_urls', [ $this, 'add_cart_url' ], 10, 2 );
+		add_filter( 'tribe_tickets_checkout_urls', [ $this, 'add_checkout_url' ], 10, 2 );
 	}
 
 	/**
@@ -2082,6 +2085,36 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	public function rest_get_checkout_url( $checkout_url, $data, $post_id ) {
 		return $this->get_checkout_url( $post_id );
+	}
+
+	/**
+	 * Adds cart url to list used for localized variables.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $urls The original array.
+	 * @return array
+	 */
+	public function add_cart_url( $urls = [] ) {
+		$cart_url = site_url();
+		$urls[ __CLASS__ ]   = $cart_url;
+
+		return $urls;
+	}
+
+	/**
+	 * Adds checkout url to list used for localized variables.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $urls The original array.
+	 * @return array
+	 */
+	public function add_checkout_url( $urls = [] ) {
+		$checkout_url = site_url();
+		$urls[ __CLASS__ ]       = $checkout_url;
+
+		return $urls;
 	}
 
 	/**

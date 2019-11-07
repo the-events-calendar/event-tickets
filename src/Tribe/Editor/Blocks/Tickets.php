@@ -86,7 +86,6 @@ extends Tribe__Editor__Blocks__Abstract {
 		$providers = tribe( 'tickets.data_api' )->get_providers_for_post( null );
 		$currency  = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $providers, null );
 
-
 		wp_register_script(
 			'wp-utils',
 			includes_url( '/js/wp-util.js' ),
@@ -97,8 +96,30 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		wp_enqueue_script('wp-utils');
 
-		$ajax_preload               = apply_filters( 'tribe_tickets_preload_cart_in_ticket_form', false );
+		// $ticket_block_preload               = apply_filters( 'tribe_tickets_preload_cart_in_ticket_form', false );
 		$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 60000 );
+
+		$checkout_urls = [];
+
+		/**
+		 * Allow providers to add their own checkout URL to the localized list.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $checkout_urls An array to add urls to.
+		 */
+		$checkout_urls = apply_filters( 'tribe_tickets_checkout_urls', $checkout_urls );
+
+		$cart_urls = [];
+
+		/**
+		 * Allow providers to add their own cart URL to the localized list.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $cart_urls An array to add urls to.
+		 */
+		$cart_urls = apply_filters( 'tribe_tickets_cart_urls', $cart_urls );
 
 		tribe_asset(
 			$plugin,
@@ -113,7 +134,7 @@ extends Tribe__Editor__Blocks__Abstract {
 						'name' => 'TribeTicketOptions',
 						'data' => [
 							'ajaxurl'                     => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-							'ajax_preload_ticket_form'    => $ajax_preload,
+							// 'ajax_preload_ticket_form'    => $ticket_block_preload,
 							'availability_check_interval' => $availability_check_interval,
 						],
 					],
@@ -132,7 +153,14 @@ extends Tribe__Editor__Blocks__Abstract {
 					[
 						'name' => 'TribeMessages',
 						'data' => $this->set_messages(),
-					]
+					],
+					[
+						'name' => 'TribeTicketsURLs',
+						'data' => [
+							'cart'     => $cart_urls,
+							'checkout' => $checkout_urls,
+						],
+					],
 				],
 			]
 		);
