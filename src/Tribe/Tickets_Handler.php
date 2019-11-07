@@ -1411,21 +1411,19 @@ class Tribe__Tickets__Tickets_Handler {
 		$ticket_post = get_post( $ticket_id );
 
 		if ( ! $ticket_post instanceof WP_Post ) {
-			return new WP_Error( 'ticket-not-found', $this->messages->get_message( 'ticket-not-found' ), array( 'status' => 404 ) );
+			return new WP_Error( 'ticket-not-found', 'ticket-not-found', array( 'status' => 404 ) );
 		}
 
 		$ticket_post_type_object = get_post_type_object( $ticket_post->post_type );
 
 		if ( null === $ticket_post_type_object ) {
-			return new WP_Error( 'ticket-provider-not-found', $this->messages->get_message( 'ticket-provider-not-found' ), array( 'status' => 500 ) );
+			return new WP_Error( 'ticket-provider-not-found', 'ticket-provider-not-found', array( 'status' => 500 ) );
 		}
 
 		$read_cap = $ticket_post_type_object->cap->read_post;
 
 		if ( ! ( 'publish' === $ticket_post->post_status || current_user_can( $read_cap, $ticket_id ) ) ) {
-			$message = $this->messages->get_message( 'ticket-not-accessible' );
-
-			return new WP_Error( 'ticket-not-accessible', $message, array( 'status' => 401 ) );
+			return new WP_Error( 'ticket-not-accessible', 'ticket-not-accessible', array( 'status' => 401 ) );
 		}
 
 		/**
@@ -1434,18 +1432,14 @@ class Tribe__Tickets__Tickets_Handler {
 		$event = tribe_events_get_ticket_event( $ticket_id );
 
 		if ( ! $event instanceof WP_Post ) {
-			$message = $this->messages->get_message( 'ticket-not-accessible' );
-
-			return new WP_Error( 'ticket-not-accessible', $message, array( 'status' => 401 ) );
+			return new WP_Error( 'ticket-not-accessible', 'ticket-not-accessible', array( 'status' => 401 ) );
 		}
 
 		$event_post_type_object = get_post_type_object( $event->post_type );
 		$read_cap               = $event_post_type_object->cap->read_post;
 
 		if ( ! ( 'publish' === $event->post_status || current_user_can( $read_cap, $event->ID ) ) ) {
-			$message = $this->messages->get_message( 'ticket-not-accessible' );
-
-			return new WP_Error( 'ticket-not-accessible', $message, array( 'status' => 401 ) );
+			return new WP_Error( 'ticket-not-accessible', 'ticket-not-accessible', array( 'status' => 401 ) );
 		}
 
 		return true;

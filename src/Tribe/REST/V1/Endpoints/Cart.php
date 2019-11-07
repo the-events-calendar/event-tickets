@@ -146,12 +146,23 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 		/** @var Tribe__Tickets__Commerce__Cart $cart */
 		$cart = tribe( 'tickets.commerce.cart' );
 
-		$data = $cart->get( [
+		$response = $cart->get( [
 			'post_id'   => $post_id,
 			'providers' => $providers,
 		] );
 
-		return new WP_REST_Response( $data );
+		if ( is_wp_error( $response ) ) {
+			$error_code = $response->get_error_code();
+
+			// Use message using error code if message is not yet set.
+			if ( $error_code === $response->get_error_message() ) {
+				$response->errors[ $error_code ] = $this->messages->get_message( $error_code );
+			}
+
+			return $response;
+		}
+
+		return new WP_REST_Response( $response );
 	}
 
 	/**
@@ -227,6 +238,13 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 		] );
 
 		if ( is_wp_error( $response ) ) {
+			$error_code = $response->get_error_code();
+
+			// Use message using error code if message is not yet set.
+			if ( $error_code === $response->get_error_message() ) {
+				$response->errors[ $error_code ] = $this->messages->get_message( $error_code );
+			}
+
 			return $response;
 		}
 
