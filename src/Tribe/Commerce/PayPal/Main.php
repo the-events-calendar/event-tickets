@@ -329,11 +329,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		add_action( 'tickets_tpp_ticket_deleted', [ $this, 'update_stock_after_deletion' ], 10, 3 );
 
-		// REST API hooks.
-		add_filter( 'tribe_tickets_rest_cart_get_cart_url_tribe-commerce', [ $this, 'rest_get_cart_url' ], 10, 3 );
-		add_filter( 'tribe_tickets_rest_cart_get_checkout_url_tribe-commerce', [ $this, 'rest_get_checkout_url' ], 10, 3 );
-		add_filter( 'tribe_tickets_rest_cart_get_tickets_tribe-commerce', [ $this, 'rest_get_tickets_in_cart' ] );
-		add_filter( 'tribe_tickets_rest_cart_update_tickets_tribe-commerce', [ $this, 'rest_update_tickets_in_cart' ] );
+		// Commerce hooks.
+		add_filter( 'tribe_tickets_commerce_cart_get_cart_url_tribe-commerce', [ $this, 'commerce_get_cart_url' ], 10, 3 );
+		add_filter( 'tribe_tickets_commerce_cart_get_checkout_url_tribe-commerce', [ $this, 'commerce_get_checkout_url' ], 10, 3 );
+		add_filter( 'tribe_tickets_commerce_cart_get_tickets_tribe-commerce', [ $this, 'commerce_get_tickets_in_cart' ] );
+		add_filter( 'tribe_tickets_commerce_cart_update_tickets_tribe-commerce', [ $this, 'commerce_update_tickets_in_cart' ] );
 	}
 
 	/**
@@ -2028,17 +2028,17 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Get Tribe Commerce Cart URL for REST API.
+	 * Get Tribe Commerce Cart URL for Commerce.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $cart_url Cart URL.
-	 * @param array  $data     REST API response data to be sent.
+	 * @param array  $data     Commerce response data to be sent.
 	 * @param int    $post_id  Post ID for the cart.
 	 *
 	 * @return string Tribe Commerce Cart URL.
 	 */
-	public function rest_get_cart_url( $cart_url, $data, $post_id ) {
+	public function commerce_get_cart_url( $cart_url, $data, $post_id ) {
 		return $this->get_cart_url( $post_id );
 	}
 
@@ -2070,17 +2070,17 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Get Tribe Commerce Checkout URL for REST API.
+	 * Get Tribe Commerce Checkout URL for Commerce.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $checkout_url Checkout URL.
-	 * @param array  $data         REST API response data to be sent.
+	 * @param array  $data         Commerce response data to be sent.
 	 * @param int    $post_id      Post ID for the cart.
 	 *
 	 * @return string Tribe Commerce Checkout URL.
 	 */
-	public function rest_get_checkout_url( $checkout_url, $data, $post_id ) {
+	public function commerce_get_checkout_url( $checkout_url, $data, $post_id ) {
 		return $this->get_checkout_url( $post_id );
 	}
 
@@ -2336,9 +2336,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return array List of tickets.
 	 */
 	public function get_tickets_in_cart( $tickets ) {
-		$rest_tickets = $this->rest_get_tickets_in_cart( $tickets );
+		$commerce_tickets = $this->commerce_get_tickets_in_cart( $tickets );
 
-		foreach ( $rest_tickets as $ticket ) {
+		foreach ( $commerce_tickets as $ticket ) {
 			$tickets[ $ticket['ticket_id'] ] = $ticket['quantity'];
 		}
 
@@ -2346,7 +2346,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Get all tickets currently in the cart from REST API.
+	 * Get all tickets currently in the cart for Commerce.
 	 *
 	 * @since TBD
 	 *
@@ -2354,7 +2354,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @return array List of tickets.
 	 */
-	public function rest_get_tickets_in_cart( $tickets ) {
+	public function commerce_get_tickets_in_cart( $tickets ) {
 		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
@@ -2410,7 +2410,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Update tickets in Tribe Commerce cart from REST API.
+	 * Update tickets in Tribe Commerce cart for Commerce.
 	 *
 	 * @since TBD
 	 *
@@ -2418,7 +2418,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @throws Tribe__REST__Exceptions__Exception When ticket does not exist or capacity is not enough.
 	 */
-	public function rest_update_tickets_in_cart( $tickets ) {
+	public function commerce_update_tickets_in_cart( $tickets ) {
 		/** @var Tribe__Tickets__Commerce__PayPal__Cart__Interface $cart */
 		$cart = tribe( 'tickets.commerce.paypal.cart' );
 
