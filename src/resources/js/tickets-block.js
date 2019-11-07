@@ -12,7 +12,7 @@ tribe.tickets.block  = {
 	'use strict';
 
 	/* Variables */
-	// added as a check - remove when we actually use this in #136609
+	// @todo Added as a check - remove when we actually use this in #136609
 	console.log( TribeTicketsURLs );
 	/*
 	 * Ticket Block Selectors.
