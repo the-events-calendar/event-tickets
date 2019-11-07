@@ -31,6 +31,7 @@ class Tribe__Tickets__Commerce__Cart {
 
 			// Attempt to JSON decode data if needed.
 			if ( ! is_array( $data ) ) {
+				$data = stripslashes( $data );
 				$data = json_decode( $data, true );
 			}
 		}
