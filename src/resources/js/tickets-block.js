@@ -173,9 +173,9 @@ tribe.tickets.block  = {
 	 * @param int    $form The form we're updating.
 	 */
 	obj.updateFooterCount = function( $form ) {
-		var $field      = $form.find( obj.selector.blockFooter ).find( obj.selector.blockFooterQuantity );
+		var $field      = $form.find( obj.selector.blockFooter + ' ' + obj.selector.blockFooterQuantity );
 		var footerCount = 0;
-		var $qtys       = $form.find( obj.selector.item ).find( obj.selector.itemQuantityInput );
+		var $qtys       = $form.find( obj.selector.item + ' ' + obj.selector.itemQuantityInput );
 
 		$qtys.each( function() {
 			var new_quantity = parseInt( $(this).val(), 10 );
@@ -204,9 +204,9 @@ tribe.tickets.block  = {
 	 * @param int    $form The form we're updating.
 	 */
 	obj.updateFooterAmount = function( $form ) {
-		var $field       = $form.find( obj.selector.blockFooter ).find( obj.selector.blockFooterAmount );
+		var $field       = $form.find( obj.selector.blockFooter + ' ' + obj.selector.blockFooterAmount );
 		var footerAmount = 0;
-		var $qtys        = $form.find( obj.selector.item ).find( obj.selector.itemQuantityInput );
+		var $qtys        = $form.find( obj.selector.item + ' ' + obj.selector.itemQuantityInput );
 
 		$qtys.each( function() {
 			var $price   = $( this ).closest( obj.selector.item ).find( obj.selector.itemPrice ).first();
