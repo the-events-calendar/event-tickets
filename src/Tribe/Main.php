@@ -357,7 +357,7 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.main', $this );
 
 		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
-		tribe_singleton( 'tickets.commerce.cart', 'Tribe__Tickets__Commerce__Cart', [ 'hook' ] );
+		tribe_singleton( 'tickets.commerce.cart', 'Tribe__Tickets__Commerce__Cart' );
 		tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', [ 'hook' ] );
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
@@ -583,6 +583,9 @@ class Tribe__Tickets__Main {
 
 		// Redirections
 		add_action( 'wp_loaded', tribe_callback( 'tickets.redirections', 'maybe_redirect' ) );
+
+		// Cart handling.
+		add_action( 'init', tribe_callback( 'tickets.commerce.cart', 'hook' ) );
 	}
 
 	/**
