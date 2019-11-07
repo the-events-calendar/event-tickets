@@ -357,6 +357,7 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.main', $this );
 
 		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
+		tribe_singleton( 'tickets.commerce.cart', 'Tribe__Tickets__Commerce__Cart', [ 'hook' ] );
 		tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', [ 'hook' ] );
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
