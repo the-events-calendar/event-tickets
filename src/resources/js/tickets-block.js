@@ -12,8 +12,7 @@ tribe.tickets.block  = {
 	'use strict';
 
 	/* Variables */
-	// @todo Added as a check - remove when we actually use this in #136609
-	console.log( TribeTicketsURLs );
+
 	/*
 	 * Ticket Block Selectors.
 	 *
@@ -63,6 +62,7 @@ tribe.tickets.block  = {
 	obj.modalSelector = {
 		cartForm   : '.tribe-modal__wrapper--ar #tribe-modal__cart',
 		container  : '.tribe-modal__wrapper--ar',
+		form       : '#tribe-tickets__modal-form',
 		itemRemove : '.tribe-tickets__item__remove',
 		itemTotal  : '.tribe-tickets__item__total .tribe-amount',
 		loader     : '.tribe-tickets-loader__modal',
@@ -1065,10 +1065,13 @@ tribe.tickets.block  = {
 			obj.getData()
 		).then(
 			function( data ) {
+				if ( ! data.meta ) {
+					return;
+				}
+
 				var cartSkip = data.meta.length;
 				if (length < cartSkip ) {
 					obj.prefillModalMetaForm( data.meta, length );
-
 					return;
 				} else {
 					var $attendeeForm = $( obj.modalSelector.metaForm );
@@ -1234,6 +1237,8 @@ tribe.tickets.block  = {
 	 */
 	obj.getData = function( pageLoad ) {
 		var ret      = {};
+		ret.meta = {};
+		ret.tickets = {};
 		var deferred = $.Deferred();
 		var meta     = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + obj.postId ) );
 
@@ -1629,9 +1634,12 @@ tribe.tickets.block  = {
 		function( e ) {
 			e.preventDefault();
 			var $button      = $( this );
+			var $form        = $( obj.modalSelector.form );
 			var $metaForm    = $( obj.modalSelector.metaForm );
 			var isValidForm  = obj.validateForm( $metaForm );
 			var $errorNotice = $( obj.selector.validationNotice );
+			var button       = $( e.target ).attr( 'name' );
+			var provider     = $form.data( 'provider' );
 
 			obj.loaderShow( obj.modalSelector.loader );
 
@@ -1648,62 +1656,27 @@ tribe.tickets.block  = {
 			$errorNotice.hide();
 
 			obj.loaderShow( obj.modalSelector.loader );
+			// default to checkout
+			var action = TribeTicketsURLs['checkout'][provider];
+
+			if ( -1 !== button.indexOf('cart') ) {
+
+				action = TribeTicketsURLs['cart'][provider];
+			}
+			$( obj.modalSelector.form ).attr( 'action', action );
 
 			// save meta and cart
 			var params = {
-				provider: obj.commerceSelector[ obj.tribe_ticket_provider ],
-				tickets : obj.getTicketsForCart(),
-				meta    : obj.getMetaForSave(),
-				post_id : obj.postId,
+				tribe_tickets_provider: obj.commerceSelector[ obj.tribe_ticket_provider ],
+				tribe_tickets_tickets : obj.getTicketsForCart(),
+				tribe_tickets_meta    : obj.getMetaForSave(),
+				tribe_tickets_post_id : obj.postId,
 			};
 
-			$.ajax( {
-				type: 'POST',
-				url: obj.getRestEndpoint(),
-				data: params,
-				success: function( response ) {
-					$errorNotice.hide();
-					//redirect url
-					var url = response.checkout_url;
+			$( '#tribe_tickets_ar_data' ).val( JSON.stringify( params ) );
 
-					if ( 'cart-button' === $button.attr( 'name' ) ) {
-						url = response.cart_url;
-					} else if ( 0 === response.is_stored_meta_up_to_date ) {
-						url = response.attendee_registration_url;
-					}
-
-					// Clear sessionStorage before redirecting the user.
-					obj.clearLocal();
-					// Set a var so we don't save what we just erased.
-					tribe.tickets.modal_redirect = true;
-
-					obj.loaderHide( obj.modalSelector.loader );
-
-					window.location.href = url;
-				},
-				error: function( response ) {
-					// Defaults.
-					var title   = TribeMessages.api_error_title;
-					var message = TribeMessages.connection_error;
-
-					if ( response.responseJSON && response.responseJSON.code ) {
-						title = TribeMessages.api_error_title + ` ( ${response.responseJSON.code} )`;
-
-						if (
-							'ticket-capacity-not-available' === response.responseJSON.code
-							|| 'error-ticket-post' === response.responseJSON.code
-						) {
-							message = TribeMessages.capacity_error;
-						}
-					}
-
-					$errorNotice.find( '.tribe-tickets-notice__title' ).text( title );
-					$errorNotice.find( '.tribe-tickets-notice__content' ).html( message );
-					$errorNotice.fadeIn();
-					$( obj.modalSelector.container ).animate( { scrollTop : 0 }, 'slow' );
-					obj.loaderHide( obj.modalSelector.loader );
-				}
-			} );
+			// Submit the form.
+			$form.submit();
 		}
 	);
 
