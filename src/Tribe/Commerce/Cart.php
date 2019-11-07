@@ -41,16 +41,6 @@ class Tribe__Tickets__Commerce__Cart {
 		$tickets  = isset( $data['tribe_tickets_tickets'] ) ? $data['tribe_tickets_tickets'] : null;
 		$meta     = isset( $data['tribe_tickets_meta'] ) ? $data['tribe_tickets_meta'] : null;
 
-		// Attempt to JSON decode tickets if needed.
-		if ( null !== $tickets && ! is_array( $tickets ) ) {
-			$tickets = json_decode( $tickets, true );
-		}
-
-		// Attempt to JSON decode meta if needed.
-		if ( null !== $meta && ! is_array( $meta ) ) {
-			$meta = json_decode( $meta, true );
-		}
-
 		$response = $this->update( [
 			'post_id'  => $post_id,
 			'provider' => $provider,
