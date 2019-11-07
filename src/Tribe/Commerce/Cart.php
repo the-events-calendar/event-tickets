@@ -24,10 +24,21 @@ class Tribe__Tickets__Commerce__Cart {
 			return;
 		}
 
-		$post_id  = isset( $_POST['tribe_tickets_post_id'] ) ? $_POST['tribe_tickets_post_id'] : null;
-		$provider = isset( $_POST['tribe_tickets_provider'] ) ? $_POST['tribe_tickets_provider'] : null;
-		$tickets  = isset( $_POST['tribe_tickets_tickets'] ) ? $_POST['tribe_tickets_tickets'] : null;
-		$meta     = isset( $_POST['tribe_tickets_meta'] ) ? $_POST['tribe_tickets_meta'] : null;
+		$data = $_POST;
+
+		if ( ! empty( $data['tribe_tickets_ar_data'] ) ) {
+			$data = $data['tribe_tickets_ar_data'];
+
+			// Attempt to JSON decode data if needed.
+			if ( ! is_array( $data ) ) {
+				$data = json_decode( $data, true );
+			}
+		}
+
+		$post_id  = isset( $data['tribe_tickets_post_id'] ) ? $data['tribe_tickets_post_id'] : null;
+		$provider = isset( $data['tribe_tickets_provider'] ) ? $data['tribe_tickets_provider'] : null;
+		$tickets  = isset( $data['tribe_tickets_tickets'] ) ? $data['tribe_tickets_tickets'] : null;
+		$meta     = isset( $data['tribe_tickets_meta'] ) ? $data['tribe_tickets_meta'] : null;
 
 		// Attempt to JSON decode tickets if needed.
 		if ( null !== $tickets && ! is_array( $tickets ) ) {
@@ -47,7 +58,8 @@ class Tribe__Tickets__Commerce__Cart {
 			'additive' => true,
 		] );
 
-		if ( 'tribe-commerce' === $provider ) {
+		// Tribe Commerce needs to be redirected to the checkout URL from here.
+		if ( in_array( $provider, [ 'tribe-commerce', 'Tribe__Tickets__Commerce__PayPal__Main' ], true ) ) {
 			$data = $this->get( [
 				'post_id'  => $post_id,
 				'provider' => $provider,
@@ -110,7 +122,12 @@ class Tribe__Tickets__Commerce__Cart {
 			$provider_attendee_object = $provider_object->attendee_object;
 
 			// Skip provider if we only want specific ones.
-			if ( [] !== $providers && ! in_array( $provider_key, $providers, true ) && ! in_array( $provider_attendee_object, $providers, true ) ) {
+			if (
+				[] !== $providers
+				&& ! in_array( $provider_key, $providers, true )
+				&& ! in_array( $provider_attendee_object, $providers, true )
+				&& ! in_array( $provider_data['class'], $providers, true )
+			) {
 				continue;
 			}
 
