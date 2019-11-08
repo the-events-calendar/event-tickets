@@ -236,6 +236,7 @@ tribe.tickets.registration = {};
 		var tickets      = data.tickets;
 		var meta         = data.meta;
 		var nonMetaCount = 0;
+		var metaCount    = 0;
 
 		$.each( tickets, function( index, ticket ) {
 			var ticket_meta       = meta.filter( obj => { return obj.ticket_id === ticket.ticket_id; } );
@@ -243,14 +244,19 @@ tribe.tickets.registration = {};
 			var $ticket_container = $tribe_registration.find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticket.ticket_id + '"]' );
 			var counter           = 1;
 
+			if ( ! $ticket_container.length ) {
+				nonMetaCount += ticket.quantity;
+			} else {
+				metaCount += ticket.quantity;
+			}
+
 			$ticket_container.addClass( 'tribe-tickets--has-tickets' );
 
 			for ( var i = counter; i <= ticket.quantity; ++i ) {
 				var data = { 'attendee_id': i };
 				try {
 					$ticket_container.append( ticketTemplate( data ) );
-				} catch(error) {
-					nonMetaCount += ticket.quantity;
+				} catch( error ) {
 					// template doesn't exist - the ticket has no meta.
 				}
 
@@ -258,12 +264,12 @@ tribe.tickets.registration = {};
 
 		} );
 
-		obj.maybeShowNonMetaNotice( nonMetaCount );
+		obj.maybeShowNonMetaNotice( nonMetaCount, metaCount );
 	}
 
-	obj.maybeShowNonMetaNotice = function( nonMetaCount ) {
+	obj.maybeShowNonMetaNotice = function( nonMetaCount, metaCount ) {
 		var $notice = $( '.tribe-tickets__notice--non-ar' );
-		if ( nonMetaCount && nonMetaCount> 0 ) {
+		if ( 0 < nonMetaCount && 0 < metaCount ) {
 			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
 			$notice.removeClass( 'tribe-common-a11y-hidden' );
 		} else {
@@ -728,7 +734,6 @@ tribe.tickets.registration = {};
 
 			obj.loaderShow();
 
-			// save meta
 			// save meta and cart
 			var params = {
 				tribe_tickets_provider: obj.commerceSelector[ obj.tribe_ticket_provider ],
