@@ -63,7 +63,7 @@ if ( ! $already_rendered ) {
 ?>
 <form
 	id="tribe-tickets"
-	action=""
+	action="<?php echo esc_url( $provider->get_cart_url() ); ?>"
 	<?php tribe_classes( $cart_classes ); ?>
 	method="post"
 	enctype='multipart/form-data'
@@ -73,7 +73,9 @@ if ( ! $already_rendered ) {
 	novalidate
 >
 	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title"><?php esc_html_e( 'Tickets', 'event-tickets' ); ?></h2>
-
+	<input type="hidden" name="tribe_tickets_saving_attendees" value="1"/>
+	<input type="hidden" name="tribe_tickets_ar" value="1"/>
+	<input type="hidden" name="tribe_tickets_ar_data" value="" id="tribe_tickets_block_ar_data"/>
 	<?php $this->template(
 		'components/notice',
 		[
