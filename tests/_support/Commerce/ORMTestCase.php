@@ -149,8 +149,10 @@ class ORMTestCase extends Test_Case {
 			'event',
 			// Filter arguments to use.
 			[
-				$this->get_event_id( 0 ), // TODO, generate more than 1 event to have attendees
-				$this->get_event_id( 1 ),
+				[
+					$this->get_event_id( 0 ), // TODO, generate more than 1 event to have attendees
+					$this->get_event_id( 1 ),
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $this->test_data['attendees'] ),
@@ -257,9 +259,11 @@ class ORMTestCase extends Test_Case {
 			'user',
 			// Filter arguments to use.
 			[
-				$this->get_user_id( 1 ),
-				$this->get_user_id( 2 ),
-				$this->get_user_id( 3 ),
+				[
+					$this->get_user_id( 1 ),
+					$this->get_user_id( 2 ),
+					$this->get_user_id( 3 ),
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $expected ),
