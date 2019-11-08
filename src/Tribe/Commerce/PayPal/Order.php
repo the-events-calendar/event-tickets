@@ -207,7 +207,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 * to update the Order information on the database.
 	 *
 	 * @since 4.7
-	 * @since TBD Avoid fatal when trying to set class status property.
+	 * @since 4.10.11 Avoid fatal when trying to set class status property.
 	 *
 	 * @param int $order_post_id The Order post ID.
 	 *
