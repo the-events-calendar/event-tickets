@@ -20,7 +20,7 @@ class Tribe__Tickets__Commerce__Cart {
 	 * @since TBD
 	 */
 	public function process_cart() {
-		if ( empty( $_POST['tribe_tickets_ar'] ) || ! is_admin() ) {
+		if ( empty( $_POST['tribe_tickets_ar'] ) || is_admin() ) {
 			return;
 		}
 
