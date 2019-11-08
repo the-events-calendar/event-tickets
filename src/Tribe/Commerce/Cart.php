@@ -41,12 +41,20 @@ class Tribe__Tickets__Commerce__Cart {
 		$tickets  = isset( $data['tribe_tickets_tickets'] ) ? $data['tribe_tickets_tickets'] : null;
 		$meta     = isset( $data['tribe_tickets_meta'] ) ? $data['tribe_tickets_meta'] : null;
 
+		// On AR Page, we use replace logic, not additive.
+		$is_ar_modal = empty( $data['tribe_tickets_ar_page'] );
+
+		// We only update tickets from the modal, not the AR page right now.
+		if ( ! $is_ar_modal ) {
+			$tickets = null;
+		}
+
 		$response = $this->update( [
 			'post_id'  => $post_id,
 			'provider' => $provider,
 			'tickets'  => $tickets,
 			'meta'     => $meta,
-			'additive' => true,
+			'additive' => $is_ar_modal,
 		] );
 
 		// Tribe Commerce needs to be redirected to the checkout URL from here.
@@ -55,6 +63,16 @@ class Tribe__Tickets__Commerce__Cart {
 				'post_id'  => $post_id,
 				'provider' => $provider,
 			] );
+
+			// Redirect to AR page if we need to.
+			if (
+				isset( $data['is_stored_meta_up_to_date'] )
+				&& empty( $data['is_stored_meta_up_to_date'] )
+				&& ! empty( $data['attendee_registration_url'] )
+			) {
+				wp_redirect( $data['attendee_registration_url'] );
+				die();
+			}
 
 			// Redirect to Tribe Commerce checkout URL.
 			if ( ! empty( $data['checkout_url'] ) ) {
