@@ -36,7 +36,7 @@ tribe.tickets.registration = {};
 		fieldsErrorAjax    : '.tribe-tickets__item__attendee__fields__error--ajax',
 		fieldsErrorRequired: '.tribe-tickets__item__attendee__fields__error--required',
 		fieldsSuccess      : '.tribe-tickets__item__attendee__fields__success',
-		form               : '.tribe-tickets__item__attendee__fields__form',
+		form               : '#tribe-tickets__registration__form',
 		item               : '.tribe-tickets__item',
 		itemPrice          : '.tribe-amount',
 		itemQuantity       : '.tribe-ticket-quantity',
@@ -153,6 +153,42 @@ tribe.tickets.registration = {};
 		});
 
 		return meta;
+	}
+
+
+	/**
+	 * Get ticket data to send to cart.
+	 *
+	 * @since TBD
+	 *
+	 * @return obj Tickets data object.
+	 */
+	obj.getTicketsForSave = function() {
+		var tickets   = [];
+		var $cartForm = $( obj.selector.miniCart );
+
+		// Handle non-modal instances
+		if ( ! $cartForm.length ) {
+			$cartForm = $( obj.selector.container );
+		}
+
+		var $ticketRows = $cartForm.find( obj.selector.item );
+
+		$ticketRows.each(
+			function() {
+				var $row        = $( this );
+				var ticket_id    = $row.data( 'ticketId' );
+				var qty          = $row.find( obj.selector.itemQuantity ).text();
+
+				var data          = {};
+				data['ticket_id'] = ticket_id;
+				data['quantity']  = qty;
+
+				tickets.push( data );
+			}
+		);
+
+		return tickets;
 	}
 
 	/* Prefill Functions */
@@ -298,8 +334,6 @@ tribe.tickets.registration = {};
 	 * Update all the footer info.
 	 *
 	 * @since TBD
-	 *
-	 * @param int    $form The form we're updating.
 	 */
 	obj.updateFooter = function() {
 		obj.updateFooterCount();
@@ -631,27 +665,6 @@ tribe.tickets.registration = {};
 	/* Event Handlers */
 
 	/**
-	 * Handle the toggle for each event
-	 *
-	 * @since 4.9
-	 *
-	 * @return void
-	 */
-	$(obj.selector.eventContainer).on(
-		'click',
-		obj.selector.toggler,
-		function(e) {
-			e.preventDefault();
-
-			var $this = $( this );
-			var $event = $this.closest( obj.selector.eventContainer );
-
-			$event.find( obj.selector.fields ).toggle();
-			$this.toggleClass( 'open' );
-
-	});
-
-	/**
 	 * Adds focus effect to ticket block.
 	 *
 	 * @since TBD
@@ -716,33 +729,18 @@ tribe.tickets.registration = {};
 			obj.loaderShow();
 
 			// save meta
+			// save meta and cart
 			var params = {
-				provider: obj.providerId,
-				tickets : {},
-				meta    : obj.getMetaForSave(),
-				post_id : obj.postId,
+				tribe_tickets_provider: obj.commerceSelector[ obj.tribe_ticket_provider ],
+				tribe_tickets_tickets : obj.getTicketsForSave(),
+				tribe_tickets_meta    : obj.getMetaForSave(),
+				tribe_tickets_post_id : obj.postId,
 			};
 
-			$.ajax({
-				type: 'POST',
-				url: obj.getRestEndpoint(),
-				data: params,
-				success: function( response ) {
-					//redirect url
-					var url = response.checkout_url;
+			$( '#tribe_tickets_ar_data' ).val( JSON.stringify( params ) );
 
-					if ( undefined === url || ! url ) {
-						return false;
-					}
-
-					window.location.href = url;
-				},
-				fail: function( response ) {
-					obj.loaderHide();
-					// @TODO: add messaging on error?
-					return;
-				}
-			});
+			// Submit the form.
+			$( obj.selector.form ).submit();
 		}
 	);
 

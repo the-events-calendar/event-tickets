@@ -95,9 +95,9 @@ $non_meta_count        = 0;
 			]
 		);
 		?>
-		<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
-		<input type="hidden" name="tribe_tickets_ar" value="1" />
-		<input id="tribe_tickets_ar_data" type="hidden" name="tribe_tickets_ar_data" value="" />
+		<input type="hidden" name="tribe_tickets_saving_attendees" value="1"/>
+		<input type="hidden" name="tribe_tickets_ar" value="1"/>
+		<input type="hidden" name="tribe_tickets_ar_data" value="" id="tribe_tickets_ar_data"/>
 		<div  class="tribe-tickets__item__attendee__fields__footer">
 			<?php if ( $has_tpp ) : ?>
 				<button type="submit name="checkout-button"><?php esc_html_e( 'Save and Checkout', 'event-tickets' ); ?></button>
