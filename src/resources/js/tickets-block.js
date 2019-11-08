@@ -1637,7 +1637,7 @@ tribe.tickets.block  = {
 			var $metaForm    = $( obj.modalSelector.metaForm );
 			var isValidForm  = obj.validateForm( $metaForm );
 			var $errorNotice = $( obj.selector.validationNotice );
-			var button       = $( e.target ).attr( 'name' );
+			var button_text  = $button.attr( 'name' );
 			var provider     = $form.data( 'provider' );
 
 			obj.loaderShow( obj.modalSelector.loader );
@@ -1658,7 +1658,7 @@ tribe.tickets.block  = {
 			// default to checkout
 			var action = TribeTicketsURLs['checkout'][provider];
 
-			if ( -1 !== button.indexOf('cart') ) {
+			if ( -1 !== button_text.indexOf('cart') ) {
 
 				action = TribeTicketsURLs['cart'][provider];
 			}
@@ -1691,52 +1691,25 @@ tribe.tickets.block  = {
 		obj.selector.submit,
 		function( e ) {
 			e.preventDefault();
-			e.stopPropagation();
 
 			var $button    = $( this );
+			var $form       = $( obj.selector.container );
+			var button_text = $button.attr( 'name' );
+			var provider    = $form.data( 'provider' );
+
+			obj.loaderShow( obj.selector.loader );
 
 			// save meta and cart
 			var params = {
-				provider: obj.commerceSelector[ obj.tribe_ticket_provider ],
-				tickets : obj.getTicketsForCart(),
-				meta    : {},
-				post_id : obj.postId,
+				tribe_tickets_provider: obj.commerceSelector[ obj.tribe_ticket_provider ],
+				tribe_tickets_tickets : obj.getTicketsForCart(),
+				tribe_tickets_meta    : {},
+				tribe_tickets_post_id : obj.postId,
 			};
 
-			$.ajax( {
-				type: 'POST',
-				url: obj.getRestEndpoint(),
-				data: params,
-				success: function( response ) {
-					//redirect url
-					var url = response.checkout_url;
+			$( '#tribe_tickets_block_ar_data' ).val( JSON.stringify( params ) );
 
-					if ( 'cart-button' === $button.attr( 'name' ) ) {
-						// EDD IS A SPECIAL KITTY
-						if ( 'edd' !== obj.commerceSelector[ $tribe_ticket.data( 'provider' ) ]) {
-							url = response.cart_url;
-						}
-
-					} else if ( 0 === response.is_stored_meta_up_to_date ) {
-						url = response.attendee_registration_url;
-					}
-
-					// Clear sessionStorage before redirecting the user.
-					obj.clearLocal();
-
-					// Set a var so we don't save what we just erased.
-					tribe.tickets.modal_redirect = true;
-
-					window.location.href = url;
-				},
-				error: function( response ) {
-					var $errorNotice = $( obj.selector.validationNotice );
-					$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.api_error_title + ` (${response.responseJSON.code} )` );
-					$errorNotice.find( 'p' ).text( TribeMessages.connection_error );
-					$errorNotice.fadeIn();
-					return;
-				}
-			} );
+			$form.submit();
 		}
 	);
 
