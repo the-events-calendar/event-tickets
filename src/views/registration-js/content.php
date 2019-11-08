@@ -53,7 +53,12 @@ $classes        = [
 	<h1 class="tribe-common-h2 tribe-common-h1--min-medium tribe-common-h--alt tribe-tickets__registration__page-title">
 		<?php esc_html_e( 'Attendee Registration', 'event-tickets' ); ?>
 	</h1>
-
+	<form
+		method="post"
+		id="tribe-tickets__registration__form"
+		action="<?php echo esc_url( $provider_obj->get_checkout_url() ); ?>"
+		data-provider="<?php echo esc_attr( $provider ); ?>"
+	>
 	<div class="tribe-tickets__registration__grid">
 		<?php
 		$this->template(
@@ -122,13 +127,15 @@ $classes        = [
 
 						<?php $this->template( 'registration-js/attendees/error', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
 
-						<form
-							method="post"
+						<div
 							class="tribe-tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?> tribe-validation"
 							name="event<?php echo esc_attr( $event_id ); ?>"
 							novalidate
 						>
 							<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
+							<input type="hidden" name="tribe_tickets_ar" value="1" />
+							<input type="hidden" name="tribe_tickets_ar_page" value="1" />
+							<input type="hidden" name="tribe_tickets_ar_data" value="" id="tribe_tickets_ar_data"  />
 
 							<?php
 							foreach ( $tickets as $ticket ) :
@@ -151,7 +158,7 @@ $classes        = [
 							<?php if ( $has_tpp ) : ?>
 								<button type="submit"><?php esc_html_e( 'Save and Checkout', 'event-tickets' ); ?></button>
 							<?php endif; ?>
-						</form>
+						</div>
 					</div>
 				</div>
 				<?php $this->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets, 'provider' => $providers[0] ) ); ?>
@@ -184,5 +191,6 @@ $classes        = [
 		); ?>
 		<?php $this->template( 'blocks/tickets/registration/attendee/submit' ); ?>
 	</div>
+	</form>
 </div>
 <?php include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' ); ?>
