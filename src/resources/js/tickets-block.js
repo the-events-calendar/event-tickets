@@ -214,9 +214,8 @@ tribe.tickets.block  = {
 			quantity     = isNaN( quantity ) ? 0 : quantity;
 			var text     = $price.text();
 			text         = obj.cleanNumber( text );
-			var price    = obj.numberFormat ( text );
-			price        = price * quantity;
-			footerAmount += price;
+			var cost     = text * quantity;
+			footerAmount += cost;
 		} );
 
 		if ( 0 > footerAmount ) {
