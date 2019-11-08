@@ -64,14 +64,17 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	public function is_on_page() {
 		global $wp_query;
 
-		$ar_page_slug         = tribe( 'tickets.attendee_registration' )->get_slug();
+		$ar_page_slug = tribe( 'tickets.attendee_registration' )->get_slug();
+
 		// Check for original redirect vars.
 		$on_original_redirect = ! empty( $wp_query->query_vars[ $this->key_query_var ] );
+
 		// Check for custom AR slug.
-		$on_custom_slug       = tribe_get_request_var( 'pagename', '' ) === $ar_page_slug;
+		$on_custom_slug = tribe_get_request_var( 'pagename', '' ) === $ar_page_slug;
+
 		// Check for custom AR page.
-		$on_custom_page       = ! empty( $wp_query->query_vars[ 'pagename' ] )
-			&& $ar_page_slug === $wp_query->query_vars[ 'pagename' ];
+		$on_custom_page = ! empty( $wp_query->query_vars['pagename'] )
+			&& $ar_page_slug === $wp_query->query_vars['pagename'];
 
 		return  $on_original_redirect || $on_custom_slug || $on_custom_page;
 	}
