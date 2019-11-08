@@ -246,7 +246,12 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 
 					if ( ! $threshold || $stock <= $threshold ) {
 
-						$number = number_format_i18n( $stock );
+						if ( is_numeric( $stock ) ) {
+							$number = number_format_i18n( (float) $stock );
+						} else {
+							$number = $stock;
+						}
+
 						if ( 'rsvp' === $type ) {
 							$text = _n( '%s spot left', '%s spots left', $stock, 'event-tickets' );
 						} else {
@@ -978,7 +983,11 @@ if ( ! function_exists( 'tribe_tickets_get_readable_amount' ) ) {
 
 			$html[] = esc_html( $tickets_handler->unlimited_term );
 		} else {
-			$html[] = number_format_i18n( $number );
+			if ( is_numeric( $number ) ) {
+				$html[] = number_format_i18n( (float) $number );
+			} else {
+				$html[] = (string) $number; // might be "Unlimited"
+			}
 		}
 
 		if ( $show_parens ) {
