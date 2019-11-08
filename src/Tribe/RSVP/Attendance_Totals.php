@@ -36,7 +36,15 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 	 * Prints an HTML (unordered) list of attendance totals.
 	 */
 	public function print_totals() {
-		//Note this now uses the `attendees-totals-list` template, so the array values don't quite logically line up
+		// Skip output if there are no RSVP attendees going/not going AND if there are no current RSVP tickets.
+		if (
+			false === $this->has_rsvp_enabled
+			&& 0 === $this->get_total_rsvps()
+		) {
+			return;
+		}
+
+		// Note this now uses the `attendees-totals-list` template, so the array values don't quite logically line up
 		$args = [
 			'total_sold_label'        => esc_html( sprintf( _x( 'Total %s:', 'attendee summary', 'event-tickets' ), tribe_get_rsvp_label_plural( 'total_sold_label' ) ) ),
 			'total_complete_label'    => _x( 'Going:', 'attendee summary', 'event-tickets' ),
@@ -50,11 +58,6 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 			'total_cancelled_tooltip' => '',
 			'total_refunded_tooltip'  => '',
 		];
-
-		// Skip output if there are no RSVP attendees going/not going AND if there are no current RSVP tickets.
-		if ( false === $this->has_rsvp_enabled && 0 === $this->get_total_rsvps() && 0 === $this->get_total_going() && 0 === $this->get_total_not_going() ) {
-			return;
-		}
 
 		$html = tribe( 'tickets.admin.views' )->template( 'attendees-totals-list', $args, false );
 
