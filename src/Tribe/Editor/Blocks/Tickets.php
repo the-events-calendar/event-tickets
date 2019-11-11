@@ -163,6 +163,8 @@ extends Tribe__Editor__Blocks__Abstract {
 					],
 				]
 			);
+
+			Tribe__Tickets__Tickets::$frontend_script_enqueued = true;
 		}
 	}
 

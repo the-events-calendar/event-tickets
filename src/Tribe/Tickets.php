@@ -64,7 +64,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var bool
 		 */
-		protected static $frontend_script_enqueued = false;
+		public static $frontend_script_enqueued = false;
 
 		/**
 		 * Collection of ticket objects for which we wish to make global stock data available
