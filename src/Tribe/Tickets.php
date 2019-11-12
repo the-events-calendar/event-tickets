@@ -64,7 +64,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var bool
 		 */
-		protected static $frontend_script_enqueued = false;
+		public static $frontend_script_enqueued = false;
 
 		/**
 		 * Collection of ticket objects for which we wish to make global stock data available
@@ -1557,16 +1557,84 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param array $tickets
 		 */
 		public static function add_frontend_stock_data( array $tickets ) {
+			wp_enqueue_script( 'wp-util' );
+
 			// Add the frontend ticket form script as needed (we do this lazily since right now
 			// it's only required for certain combinations of event/ticket
+			$plugin                      = Tribe__Tickets__Main::instance();
+			$providers                   = tribe( 'tickets.data_api' )->get_providers_for_post( null );
+			$currency                    = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $providers, null );
+			$cart_urls                   = [];
+			$checkout_urls               = [];
+			$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 60000 );
+
 			if ( ! self::$frontend_script_enqueued ) {
-				$url = Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/js/frontend-ticket-form.js';
-				$url = Tribe__Template_Factory::getMinFile( $url, true );
-				wp_enqueue_script( 'tribe_tickets_frontend_tickets', $url, [ 'jquery' ], Tribe__Tickets__Main::VERSION, true );
+				if ( ! is_admin() ) {
+					/**
+					 * Allow providers to add their own checkout URL to the localized list.
+					 *
+					 * @since TBD
+					 *
+					 * @param array $checkout_urls An array to add urls to.
+					 */
+					$checkout_urls = apply_filters( 'tribe_tickets_checkout_urls', $checkout_urls );
+
+					/**
+					 * Allow providers to add their own cart URL to the localized list.
+					 *
+					 * @since TBD
+					 *
+					 * @param array $cart_urls An array to add urls to.
+					 */
+					$cart_urls = apply_filters( 'tribe_tickets_cart_urls', $cart_urls );
+				}
+
+				tribe_asset(
+					$plugin,
+					'tribe_tickets_frontend_tickets',
+					'frontend-ticket-form.js',
+					[ 'jquery' ],
+					null,
+					[
+						'type'         => 'js',
+						'localize'     => [
+							[
+								'name' => 'TribeTicketOptions',
+								'data' => [
+									'ajaxurl'                     => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+									'availability_check_interval' => $availability_check_interval,
+								],
+							],
+							[
+								'name' => 'TribeCurrency',
+								'data' => [
+									'formatting' => json_encode( $currency ),
+								],
+							],
+							[
+								'name' => 'TribeCartEndpoint',
+								'data' => [
+									'url' => tribe_tickets_rest_url( '/cart/' ),
+								],
+							],
+							[
+								'name' => 'TribeMessages',
+								'data' => self::set_messages(),
+							],
+							[
+								'name' => 'TribeTicketsURLs',
+								'data' => [
+									'cart'     => $cart_urls,
+									'checkout' => $checkout_urls,
+								],
+							],
+						],
+					]
+				);
 			}
 
-			self::$frontend_ticket_data = array_filter( array_merge( self::$frontend_ticket_data, $tickets ) );
-			add_action( 'wp_footer', [ __CLASS__, 'enqueue_frontend_stock_data' ] );
+			tribe_asset_enqueue( 'tribe_tickets_frontend_tickets' );
+			self::$frontend_script_enqueued = true;
 		}
 
 		/**
@@ -1706,6 +1774,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		/**
 		 * Takes any global stock data and makes it available via a wp_localize_script() call.
+		 *
+		 * @deprecated TBD
 		 */
 		public static function enqueue_frontend_stock_data() {
 			$data = [
@@ -2893,6 +2963,26 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			wp_safe_redirect( $url, 307 );
 			exit;
+		}
+
+		/**
+		 * Localized messages for errors, etc in javascript. Added in assets() above.
+		 * Set up this way to amke it easier to add messages as needed.
+		 *
+		 * @since TBD
+		 *
+		 * @return void
+		 */
+		public static function set_messages() {
+			$messages = [
+				'api_error_title'        => _x( 'API Error', 'Error message title, will be followed by the error code.', 'event-tickets' ),
+				'connection_error'       => __( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.', 'event-tickets' ),
+				'capacity_error'         => __( 'The ticket for this event has sold out and has been removed from your cart.', 'event-tickets'),
+				'validation_error_title' => __( 'Whoops!', 'event-tickets' ),
+				'validation_error'       => '<p>' . sprintf( esc_html_x( 'You have %s ticket(s) with a field that requires information.', 'The %s will change based on the error produced.', 'event-tickets' ), '<span class="tribe-tickets__notice--error__count">0</span>' ) . '</p>',
+			];
+
+			return $messages;
 		}
 
 		/************************

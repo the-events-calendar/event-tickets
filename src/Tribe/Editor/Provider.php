@@ -15,6 +15,7 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 		// Register these all the time - as we now use them in most of the tempaltes, blocks or otherwise.
 		$this->container->singleton( 'tickets.editor.template', 'Tribe__Tickets__Editor__Template' );
 		$this->container->singleton( 'tickets.editor.blocks.tickets', 'Tribe__Tickets__Editor__Blocks__Tickets' );
+		$this->container->singleton( 'tickets.editor.configuration', 'Tribe__Tickets__Editor__Configuration', array( 'hook' ) );
 
 		if (
 			! tribe( 'editor' )->should_load_blocks()
@@ -41,7 +42,7 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( 'tickets.editor.rest.compatibility', 'Tribe__Tickets__Editor__REST__Compatibility', array( 'hook' ) );
 		$this->container->singleton( 'tickets.editor.attendee_registration', 'Tribe__Tickets__Editor__Attendee_Registration' );
 		$this->container->singleton( 'tickets.editor.attendees_table', 'Tribe__Tickets__Attendees_Table' );
-		$this->container->singleton( 'tickets.editor.configuration', 'Tribe__Tickets__Editor__Configuration', array( 'hook' ) );
+
 
 		$this->hook();
 		/**

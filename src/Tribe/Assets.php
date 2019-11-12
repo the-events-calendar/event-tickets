@@ -36,7 +36,7 @@ class Tribe__Tickets__Assets {
 			$tickets_main,
 			'event-tickets-registration-page-scripts',
 			'tickets-registration-page.js',
-			[],
+			[ 'jquery', 'wp-util' ],
 			null,
 			[]
 		);

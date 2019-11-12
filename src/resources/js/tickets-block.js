@@ -1445,9 +1445,10 @@ tribe.tickets.block  = {
 		'click touchend',
 		'.tribe-tickets__item__quantity__remove, .tribe-tickets__item__quantity__add',
 		function( e ) {
+			e.preventDefault();
 			var $input = $( this ).parent().find( 'input[type="number"]' );
 			if ( $input.is( ':disabled' ) ) {
-				return;
+				return false;
 			}
 
 			e.preventDefault();
