@@ -596,10 +596,10 @@ class ORMTestCase extends Test_Case {
 			// 4 total: 1 = 4 Attendees (users 2 & 3 + 2 guests); 2, 3, & 4 = no Attendees
 			'paypal_tickets' => [],
 			// 4 total: 1 = 4 Attendees (users 3 & 4 + 2 guests); 2, 3, & 4 = no Attendees
-			'attendees_all'    => [],
+			'attendees_all'  => [],
 			// 9 total (5 by logged in): 1 & 2 = RSVP by logged in; 3 & 4 = RSVP by logged out; 5 & 6 = PayPal by logged in; 7 & 8: PayPal by logged out; 9 by User2 on Event3
-			'attendees_1'      => [], // Event1's
-			'attendees_3'      => [], // Event3's
+			'attendees_1'    => [], // Event1's
+			'attendees_3'    => [], // Event3's
 		];
 
 		// Create User1, author of Event1 and Event3.
