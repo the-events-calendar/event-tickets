@@ -26,7 +26,9 @@ class ORMTestCase extends Test_Case {
 	protected $test_data = [
 		'users',
 		'events',
-		'attendees',
+		'attendees_all', // all events' attendees
+		'attendees_1', // Event1's attendees
+		'attendees_3', // Event3's attendees
 		'rsvps',
 		'paypal_tickets',
 	];
@@ -134,7 +136,7 @@ class ORMTestCase extends Test_Case {
 				$this->get_event_id( 0 ),
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $this->test_data['attendees'] ),
+			$this->get_assertions_array( $this->test_data['attendees_1'] ),
 		];
 	}
 
@@ -150,12 +152,13 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[
 				[
-					$this->get_event_id( 0 ), // TODO, generate more than 1 event to have attendees
+					$this->get_event_id( 0 ),
 					$this->get_event_id( 1 ),
+					$this->get_event_id( 2 ),
 				],
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $this->test_data['attendees'] ),
+			$this->get_assertions_array( $this->test_data['attendees_all'] ),
 		];
 	}
 
@@ -191,7 +194,7 @@ class ORMTestCase extends Test_Case {
 				$this->get_event_id( 1 ),
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $this->test_data['attendees'] ),
+			$this->get_assertions_array( $this->test_data['attendees_all'] ),
 		];
 	}
 
@@ -209,7 +212,7 @@ class ORMTestCase extends Test_Case {
 				$this->get_event_id( 0 ),
 			],
 			// Assertions to make.
-			$this->get_assertions_array( [] ),
+			$this->get_assertions_array( $this->test_data['attendees_3'] ),
 		];
 	}
 
@@ -222,7 +225,8 @@ class ORMTestCase extends Test_Case {
 	 */
 	public function get_test_matrix_single_user_match() {
 		$expected = [
-			$this->get_attendee_id( 0 ), // User2
+			$this->get_attendee_id( 0 ), // User2 on Event1
+			$this->get_attendee_id( 8 ), // User2 on Event3
 		];
 
 		return [
@@ -232,7 +236,7 @@ class ORMTestCase extends Test_Case {
 			'user',
 			// Filter arguments to use.
 			[
-				$this->get_user_id( 1 ),
+				$this->get_user_id( 1 ), // User2
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $expected ),
@@ -250,6 +254,7 @@ class ORMTestCase extends Test_Case {
 			$this->get_attendee_id( 1 ), // User3
 			$this->get_attendee_id( 4 ), // User3
 			$this->get_attendee_id( 5 ), // User4
+			$this->get_attendee_id( 8 ), // User2 on Event3
 		];
 
 		return [
@@ -260,9 +265,9 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[
 				[
-					$this->get_user_id( 1 ),
-					$this->get_user_id( 2 ),
-					$this->get_user_id( 3 ),
+					$this->get_user_id( 1 ), // User2
+					$this->get_user_id( 2 ), // User3
+					$this->get_user_id( 3 ), // User4
 				],
 			],
 			// Assertions to make.
@@ -281,7 +286,7 @@ class ORMTestCase extends Test_Case {
 			'user',
 			// Filter arguments to use.
 			[
-				$this->get_user_id( 0 ),
+				$this->get_user_id( 0 ), // User1
 			],
 			// Assertions to make.
 			$this->get_assertions_array( [] ),
@@ -299,10 +304,10 @@ class ORMTestCase extends Test_Case {
 			'user__not_in',
 			// Filter arguments to use.
 			[
-				$this->get_user_id( 0 ),
+				$this->get_user_id( 0 ), // User1
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $this->test_data['attendees'] ),
+			$this->get_assertions_array( $this->test_data['attendees_all'] ),
 		];
 	}
 
@@ -329,7 +334,7 @@ class ORMTestCase extends Test_Case {
 			'user__not_in',
 			// Filter arguments to use.
 			[
-				$this->get_user_id( 1 ),
+				$this->get_user_id( 1 ), // User2
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $expected ),
@@ -392,6 +397,7 @@ class ORMTestCase extends Test_Case {
 			$this->get_attendee_id( 1 ), // User3
 			$this->get_attendee_id( 2 ), // Guest
 			$this->get_attendee_id( 3 ), // Guest
+			$this->get_attendee_id( 8 ), // User2 on Event3
 		];
 
 		return [
@@ -422,7 +428,7 @@ class ORMTestCase extends Test_Case {
 				$this->get_rsvp_id( 0 ),
 			],
 			// Assertions to make.
-			$this->get_assertions_array( [] ),
+			$this->get_assertions_array( $this->test_data['attendees_3'] ),
 		];
 	}
 
@@ -529,8 +535,8 @@ class ORMTestCase extends Test_Case {
 	}
 
 	protected function get_attendee_id( $index ) {
-		if ( isset( $this->test_data['attendees'][ $index ] ) ) {
-			return $this->test_data['attendees'][ $index ];
+		if ( isset( $this->test_data['attendees_all'][ $index ] ) ) {
+			return $this->test_data['attendees_all'][ $index ];
 		}
 
 		return 0;
@@ -563,8 +569,8 @@ class ORMTestCase extends Test_Case {
 	/**
 	 * Setup list of test data.
 	 *
-	 * We create 2 events, one having an author and various types of tickets that have attendees,
-	 * and the other having neither an author nor tickets (and therefore no attendees).
+	 * We create 3 events, 1st and 3rd having same author, and various types of tickets that have attendees,
+	 * and 2nd having neither an author nor tickets (and therefore no attendees).
 	 * Some ticket purchases are by valid users and others are by non-users (site guests as attendees).
 	 * Event 1 has:
 	 * - User1 is author
@@ -575,6 +581,9 @@ class ORMTestCase extends Test_Case {
 	 *   for a total of 8 attendees
 	 * - And 3 RSVP tickets and 3 PayPal tickets, each having zero attendees
 	 * Event 2 has: no author, no tickets (therefore no attendees)
+	 * Event 3 has:
+	 * - User1 is author
+	 * - User2 is RSVP attendee
 	 * Note that guest purchasers will still have User ID# zero saved to `_tribe_tickets_attendee_user_id` meta field.
 	 */
 	protected function setup_test_data() {
@@ -582,16 +591,18 @@ class ORMTestCase extends Test_Case {
 			'users'          => [],
 			// 4 total: 1 = Event author, not Attendee; 2 = only RSVP attendee; 3 = RSVP & PayPal attendee; 4 = only PayPal attendee
 			'events'         => [],
-			// 2 total: 1 = has Author, Tickets, and Attendees; 2 = Author ID of zero and no Tickets (so no Attendees)
+			// 3 total: 1&3 = has Author, Tickets, and Attendees; 2 = Author ID of zero and no Tickets (so no Attendees)
 			'rsvps'          => [],
 			// 4 total: 1 = 4 Attendees (users 2 & 3 + 2 guests); 2, 3, & 4 = no Attendees
 			'paypal_tickets' => [],
 			// 4 total: 1 = 4 Attendees (users 3 & 4 + 2 guests); 2, 3, & 4 = no Attendees
-			'attendees'      => [],
-			// 8 total (4 by logged in): 1 & 2 = RSVP by logged in; 3 & 4 = RSVP by logged out; 5 & 6 = PayPal by logged in; 7 & 8: PayPal by logged out
+			'attendees_all'    => [],
+			// 9 total (5 by logged in): 1 & 2 = RSVP by logged in; 3 & 4 = RSVP by logged out; 5 & 6 = PayPal by logged in; 7 & 8: PayPal by logged out; 9 by User2 on Event3
+			'attendees_1'      => [], // Event1's
+			'attendees_3'      => [], // Event3's
 		];
 
-		// Create test user 1. Author of one of the two Events.
+		// Create User1, author of Event1 and Event3.
 		$test_data['users'][] = $user_id_one = $this->factory()->user->create( [ 'role' => 'author' ] );
 
 		// Create test users 2, 3, and 4 as Attendees
@@ -599,47 +610,74 @@ class ORMTestCase extends Test_Case {
 		$test_data['users'][] = $user_id_three = $this->factory()->user->create();
 		$test_data['users'][] = $user_id_four = $this->factory()->user->create();
 
-		// Create test event 1, having tickets
-		$event_id = $this->factory()->event->create( [
+		//
+		// Event1: RSVP and PayPal by User2, User3, and guests
+		//
+		$event_id_one = $this->factory()->event->create( [
 			'post_title'  => 'Test event 1',
 			'post_author' => $user_id_one,
 		] );
 
-		$test_data['events'][] = $event_id;
+		$test_data['events'][] = $event_id_one;
 
-		// Create test event 2, having no assigned author nor tickets
+		// Create RSVP1 ticket on Event1
+		$rsvp_id_one = $this->create_rsvp_ticket( $event_id_one );
+
+		// Add User2 and User3 as RSVP1 attendees on Event1
+		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $rsvp_id_one, $event_id_one, [ 'user_id' => $user_id_two ] );
+		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $rsvp_id_one, $event_id_one, [ 'user_id' => $user_id_three ] );
+
+		// Add 2 guest purchasers to RSVP1 Ticket already having other Attendees
+		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $rsvp_id_one, $event_id_one );
+		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $rsvp_id_one, $event_id_one );
+
+		// Create 3 more RSVP tickets that will never have any attendees
+		$test_data['rsvps'] = array_merge( [ $rsvp_id_one ], $this->create_many_rsvp_tickets( 3, $event_id_one ) );
+
+		// Create test PayPal1 ticket
+		$paypal_id_one = $this->create_paypal_ticket( $event_id_one, 5 );
+
+		// Add User3 and User4 as Tribe Commerce PayPal Ticket attendees
+		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $paypal_id_one, $event_id_one, [ 'user_id' => $user_id_three ] );
+		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $paypal_id_one, $event_id_one, [ 'user_id' => $user_id_four ] );
+
+		// Add 2 guest purchasers to the PayPal Ticket already having other Attendees
+		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $paypal_id_one, $event_id_one );
+		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $paypal_id_one, $event_id_one );
+
+		// Create 3 more PayPal tickets that will never have any attendees
+		$test_data['paypal_tickets'] = array_merge( [ $paypal_id_one ], $this->create_many_paypal_tickets( 3, $event_id_one ) );
+
+		//
+		// Event2: No author nor tickets (and therefore no attendees)
+		//
 		$test_data['events'][] = $this->factory()->event->create( [
 			'post_title'  => 'Test event 2',
 			'post_author' => 0,
 		] );
 
-		// Create test RSVP ticket on Event1
-		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id );
+		//
+		// Event3: User2 as Attendee9 (RSVP5) for User2
+		//
 
-		// Add User2 and User3 as RSVP attendees
-		$test_data['attendees'][] = $this->create_attendee_for_ticket( $rsvp_ticket_id, $event_id, [ 'user_id' => $user_id_two ] );
-		$test_data['attendees'][] = $this->create_attendee_for_ticket( $rsvp_ticket_id, $event_id, [ 'user_id' => $user_id_three ] );
+		// Create Event3, having tickets
+		$event_id_three = $this->factory()->event->create( [
+			'post_title'  => 'Test event 3',
+			'post_author' => $user_id_one,
+		] );
 
-		// Add 2 guest purchasers to RSVP Ticket already having other Attendees
-		$test_data['attendees'][] = $this->create_attendee_for_ticket( $rsvp_ticket_id, $event_id );
-		$test_data['attendees'][] = $this->create_attendee_for_ticket( $rsvp_ticket_id, $event_id );
+		$test_data['events'][] = $event_id_three;
 
-		// Create more RSVP tickets that will never have any attendees
-		$test_data['rsvps'] = array_merge( [ $rsvp_ticket_id ], $this->create_many_rsvp_tickets( 3, $event_id ) );
+		$rsvp_id_five = $this->create_rsvp_ticket( $event_id_three );
 
-		// Create test PayPal ticket
-		$paypal_ticket_id = $this->create_paypal_ticket( $event_id, 5 );
+		// Add User2 (not User3) as Attendee9 (RSVP5) on Event3
+		$test_data['attendees_3'][] = $this->create_attendee_for_ticket( $rsvp_id_five, $event_id_three, [ 'user_id' => $user_id_two ] );
 
-		// Add User3 and User4 as Tribe Commerce PayPal Ticket attendees
-		$test_data['attendees'][] = $this->create_attendee_for_ticket( $paypal_ticket_id, $event_id, [ 'user_id' => $user_id_three ] );
-		$test_data['attendees'][] = $this->create_attendee_for_ticket( $paypal_ticket_id, $event_id, [ 'user_id' => $user_id_four ] );
-
-		// Add 2 guest purchasers to the PayPal Ticket already having other Attendees
-		$test_data['attendees'][] = $this->create_attendee_for_ticket( $paypal_ticket_id, $event_id );
-		$test_data['attendees'][] = $this->create_attendee_for_ticket( $paypal_ticket_id, $event_id );
-
-		// Create more PayPal tickets that will never have any attendees
-		$test_data['paypal_tickets'] = array_merge( [ $paypal_ticket_id ], $this->create_many_paypal_tickets( 3, $event_id ) );
+		// Merge all attendees
+		$test_data['attendees_all'] = array_unique( array_merge(
+			$test_data['attendees_1'], // Event1
+			$test_data['attendees_3'] // Event 3
+		) );
 
 		// Save test data to reference.
 		$this->test_data = $test_data;
