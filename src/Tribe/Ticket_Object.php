@@ -1016,7 +1016,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return boolean
 		 */
 		public function show_description() {
-			$key = tribe( 'tickets.handler' )->key_show_description;
+			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
+
+			$key = $tickets_handler->key_show_description;
 
 			$show = true;
 			if ( metadata_exists( 'post', $this->ID, $key ) ) {

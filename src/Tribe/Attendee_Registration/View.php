@@ -42,8 +42,9 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 * @param string $q_provider   Current ticket provider.
 		 */
 		$cart_tickets = apply_filters( 'tribe_tickets_tickets_in_cart', [], $q_provider );
-		$events       = [];
-		$providers    = [];
+
+		$events           = [];
+		$providers        = [];
 		$default_provider = [];
 
 		foreach ( $cart_tickets as $ticket_id => $quantity ) {
@@ -196,6 +197,10 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			$provider = tribe( 'tickets-plus.commerce.edd' );
 		} else {
 			return;
+		}
+
+		if ( ! $provider instanceof Tribe__Tickets__Tickets ) {
+			return false;
 		}
 
 		return $provider->get_cart_url();

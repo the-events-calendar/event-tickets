@@ -76,7 +76,9 @@ class Tribe__Tickets__Assets {
 		 */
 		$decimal = apply_filters( 'tribe_event_ticket_decimal_point', $decimal );
 
-		$global_stock_mode = tribe( 'tickets.handler' )->get_default_capacity_mode();
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+		$global_stock_mode = $tickets_handler->get_default_capacity_mode();
 
 		tribe_assets(
 			Tribe__Tickets__Main::instance(),

@@ -1,12 +1,12 @@
 <?php
 /**
- * Management for Global Stock for tickets
+ * Management for Global Stock on events and tickets
  *
  * @since  4.1
  */
 class Tribe__Tickets__Global_Stock {
 	/**
-	 * Post meta key used to store the global stock flag.
+	 * Post meta key used to store the global stock flag on events.
 	 *
 	 * @since 4.1
 	 *
@@ -15,7 +15,7 @@ class Tribe__Tickets__Global_Stock {
 	const GLOBAL_STOCK_ENABLED = '_tribe_ticket_use_global_stock';
 
 	/**
-	 * Post meta key used to store the actual global stock level.
+	 * Post meta key used to store the actual global stock level on events.
 	 *
 	 * @since 4.1
 	 *
@@ -179,7 +179,7 @@ class Tribe__Tickets__Global_Stock {
 	}
 
 	/**
-	 * Returns the post's global stock.
+	 * Returns the post's global stock--the shared maximum available, not the remaining available.
 	 *
 	 * @since  4.1
 	 *
@@ -201,8 +201,12 @@ class Tribe__Tickets__Global_Stock {
 	 */
 	public function tickets_sold( $pending = false ) {
 		$sales = 0;
-		$tickets = tribe( 'tickets.handler' )->get_event_shared_tickets( $this->post_id );
 
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+		$tickets = $tickets_handler->get_event_shared_tickets( $this->post_id );
+
+		/** @var Tribe__Tickets__Ticket_Object $ticket */
 		foreach ( $tickets as $ticket ) {
 			$sales += (int) $ticket->qty_sold();
 
