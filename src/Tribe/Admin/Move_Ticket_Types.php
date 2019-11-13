@@ -183,6 +183,9 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 
 		$src_mode = get_post_meta( $ticket_type_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
 		// When the Mode is not `own` we have to check and modify some stuff
 		if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $src_mode ) {
 			// If we have Source cap and not on Target, we set it up
@@ -196,7 +199,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 				$tgt_event_cap->set_stock_level( $src_event_capacity );
 
 				// Update the Target event with the Capacity from the Source
-				update_post_meta( $destination_post_id, tribe( 'tickets.handler' )->key_capacity, $src_event_capacity );
+				update_post_meta( $destination_post_id, $tickets_handler->key_capacity, $src_event_capacity );
 			} elseif ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $src_mode ) {
 				// Check if we have capped to avoid ticket cap over event cap
 				$src_ticket_capacity = tribe_tickets_get_capacity( $ticket_type_id );
@@ -204,7 +207,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 
 				// Don't allow ticket capacity to be bigger than Target Event Cap
 				if ( $src_ticket_capacity > $tgt_event_capacity ) {
-					update_post_meta( $ticket_type_id, tribe( 'tickets.handler' )->key_capacity, $tgt_event_capacity );
+					update_post_meta( $ticket_type_id, $tickets_handler->key_capacity, $tgt_event_capacity );
 				}
 			}
 		}
@@ -221,10 +224,10 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 			get_the_title( $src_post_id )
 		);
 
-		$history_data = array(
+		$history_data = [
 			'src_event_id' => $src_post_id,
 			'tgt_event_id' => $destination_post_id,
-		);
+		];
 
 		Tribe__Post_History::load( $ticket_type_id )->add_entry( $history_message, $history_data );
 

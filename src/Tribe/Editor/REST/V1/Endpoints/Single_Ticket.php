@@ -215,7 +215,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 
 		// Merge the defaults to avoid usage of `empty` values
 		$body = array_merge(
-			array( 'tribe-ticket' => array() ),
+			[ 'tribe-ticket' => [] ],
 			$request->get_default_params(),
 			$request->get_body_params()
 		);
@@ -227,27 +227,27 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			return new WP_Error(
 				'forbidden',
 				__( 'Invalid nonce', 'event-tickets' ),
-				array( 'status' => 403 )
+				[ 'status' => 403 ]
 			);
 		}
 
 		if ( $ticket_id === null && $provider_name !== null ) {
-			$provider = call_user_func( array( $provider_name, 'get_instance' ) );
+			$provider = call_user_func( [ $provider_name, 'get_instance' ] );
 		} else {
 			$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 		}
 
-		if ( ! $provider ) {
+		if ( ! $provider instanceof Tribe__Tickets__Tickets ) {
 			return new WP_Error(
 				'bad_request',
 				__( 'Commerce Module invalid', 'event-tickets' ),
-				array( 'status' => 400 )
+				[ 'status' => 400 ]
 			);
 		}
 
 		$ticket_args = $this->ticket_args();
 
-		$ticket_data = array(
+		$ticket_data = [
 			'ticket_name' => $body['name'],
 			'ticket_description' => $body['description'],
 			'ticket_price' => $body['price'],
@@ -259,7 +259,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			'ticket_sku' => $body['sku'],
 			'ticket_menu_order' => $body['menu_order'],
 			'tribe-ticket' => $body['ticket'],
-		);
+		];
 
 		if ( $ticket_id !== null ) {
 			$ticket_data['ticket_id'] = $ticket_id;
@@ -272,7 +272,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			return new WP_Error(
 				'not_acceptable',
 				esc_html( sprintf( __( '%s was not able to be updated', 'event-tickets' ), tribe_get_ticket_label_singular( 'rest_add_ticket_error' ) ) ),
-				array( 'status' => 406 )
+				[ 'status' => 406 ]
 			);
 		}
 

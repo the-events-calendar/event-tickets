@@ -1,12 +1,15 @@
 <?php
-$header_id = get_post_meta( $post_id, tribe( 'tickets.handler' )->key_image_header, true );
-$header_id = ! empty( $header_id ) ? $header_id : '';
-$header_img = '';
+/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+$tickets_handler = tribe( 'tickets.handler' );
+
+$header_id       = get_post_meta( $post_id, $tickets_handler->key_image_header, true );
+$header_id       = ! empty( $header_id ) ? $header_id : '';
+$header_img      = '';
 $header_filename = '';
 
 if ( ! empty( $header_id ) ) {
-	$header_img = wp_get_attachment_image( $header_id, 'full' );
-	$header_filename = basename ( get_attached_file( $header_id ) );
+	$header_img      = wp_get_attachment_image( $header_id, 'full' );
+	$header_filename = basename( get_attached_file( $header_id ) );
 }
 ?>
 

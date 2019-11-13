@@ -574,7 +574,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		$details = array(
 			'available_percentage' => $available_percentage,
-			'available'            => (int) $ticket->stock(), // see not above about why we use this
+			'available'            => (int) $ticket->stock(), // see note above about why we use this
 		);
 
 		if ( current_user_can( 'read_private_posts' ) ) {
