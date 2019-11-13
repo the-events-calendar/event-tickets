@@ -96,11 +96,24 @@ $default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id
 						data-validation-is-required
 						data-validation-error="<?php echo esc_attr( sprintf( _x( '%s type is a required field', 'admin edit ticket panel error', 'event-tickets' ), tribe_get_rsvp_label_singular( 'admin_edit_ticket_panel_error' ) ) ); ?>"
 					/>
-					<span class="tribe_soft_note ticket_form_right"><?php echo esc_html( sprintf(
+					<span
+						class="tribe_soft_note ticket_form_right"
+						data-depends="#Tribe__Tickets__RSVP_radio"
+						data-condition-not-checked
+					><?php echo esc_html( sprintf(
 						_x( '%1$s type name shows on the front end and emailed %2$s', 'admin edit ticket panel note', 'event-tickets' ),
 						tribe_get_ticket_label_singular( 'admin_edit_ticket_panel_note' ),
 						tribe_get_ticket_label_plural_lowercase( 'admin_edit_ticket_panel_note' )
 					) ); ?></span>
+					<span
+						class="tribe_soft_note ticket_form_right"
+						data-depends="#Tribe__Tickets__RSVP_radio"
+						data-condition-is-checked
+					><?php echo esc_html( sprintf(
+						_x( '%1$s type name shows on the front end and emailed %2$s', 'admin edit ticket panel note', 'event-tickets' ),
+						tribe_get_rsvp_label_singular( 'admin_edit_rsvp_panel_note' ),
+						tribe_get_rsvp_label_plural_lowercase( 'admin_edit_ticket_panel_note' )
+				) ); ?></span>
 				</div>
 				<fieldset id="tribe_ticket_provider_wrapper" class="input_block" aria-hidden="true" >
 					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></legend>

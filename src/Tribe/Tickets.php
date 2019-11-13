@@ -1638,13 +1638,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Returns Ticket and RSVP Count for an Event
+		 * Get RSVP and Ticket counts for an event if tickets are currently available.
 		 *
 		 * @param int $post_id ID of parent "event" post
+		 *
 		 * @return array
 		 */
 		public static function get_ticket_counts( $post_id ) {
-
 			// if no post id return empty array
 			if ( empty( $post_id ) ) {
 				return [];
@@ -1670,11 +1670,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$types['tickets'] = [
 				'count'     => 0, // count of ticket types currently for sale
 				'stock'     => 0, // current stock of tickets available for sale
-				'global'    => 0, // global stock ticket
-				'unlimited' => 0, // unlimited stock tickets
-				'available' => 0, // are tickets available for sale right now
+				'global'    => 0, // numeric boolean if tickets share global stock
+				'unlimited' => 0, // numeric boolean if any ticket has unlimited stock
+				'available' => 0,
 			];
 
+			/** @var Tribe__Tickets__Ticket_Object $ticket */
 			foreach ( $tickets as $ticket ) {
 				// If a ticket is not current for sale do not count it
 				if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
@@ -1687,9 +1688,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 					$global_stock_mode = $ticket->global_stock_mode();
 
-					if ( $global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE && 0 === $types['tickets']['global'] ) {
+					if (
+						$global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE
+						&& 0 === $types['tickets']['global']
+					) {
 						$types['tickets']['global'] ++;
-					} elseif ( $global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE && 1 === $types['tickets']['global'] ) {
+					} elseif (
+						$global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE
+						&& 1 === $types['tickets']['global']
+					) {
 						continue;
 					}
 
@@ -1697,7 +1704,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 						continue;
 					}
 
-					$stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ? $ticket->global_stock_cap : $ticket->available();
+					$stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ? $ticket->global_stock_cap() : $ticket->available();
 
 					// whether the stock level is negative because it represents unlimited stock (`-1`)
 					// or because it's oversold we normalize to `0` for the sake of displaying
@@ -1717,6 +1724,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					$types['rsvp']['count'] ++;
 
 					$types['rsvp']['stock'] += $ticket->stock;
+
 					if ( 0 !== $types['rsvp']['stock'] ) {
 						$types['rsvp']['available'] ++;
 					}
@@ -1884,6 +1892,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @static
 		 *
 		 * @param int $post_id ID of parent "event" post
+		 *
 		 * @return array
 		 */
 		final public static function get_event_tickets( $post_id ) {
@@ -2585,7 +2594,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			if ( -1 !== $data['capacity'] ) {
 				if ( 'update' === $save_type ) {
-					$totals        = tribe( 'tickets.handler' )->get_ticket_totals( $ticket->ID );
+					/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+					$tickets_handler = tribe( 'tickets.handler' );
+
+					$totals = $tickets_handler->get_ticket_totals( $ticket->ID );
+
 					$data['stock'] -= $totals['pending'] + $totals['sold'];
 				}
 
@@ -2696,7 +2709,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket->end_date         = null;
 			$ticket->menu_order       = isset( $data['ticket_menu_order'] ) ? intval( $data['ticket_menu_order'] ) : null;
 
-			tribe( 'tickets.handler' )->toggle_manual_update_flag( true );
+			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
+
+			$tickets_handler->toggle_manual_update_flag( true );
 
 			if ( ! empty( $ticket->price ) ) {
 				// remove non-money characters
@@ -2737,19 +2753,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Pass the control to the child object
 			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
 
-			tribe( 'tickets.handler' )->toggle_manual_update_flag( false );
+			$tickets_handler->toggle_manual_update_flag( false );
 
 			$post = get_post( $post_id );
 			if ( empty( $data['ticket_start_date'] ) ) {
 				$date = strtotime( $post->post_date );
 				$date = date( 'Y-m-d 00:00:00', $date );
 
-				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_start_date, $date );
+				update_post_meta( $ticket->ID, $tickets_handler->key_start_date, $date );
 			}
 
 			if ( empty( $data['ticket_end_date'] ) && 'tribe_events' === $post->post_type ) {
 				$event_end = get_post_meta( $post_id, '_EventEndDate', true );
-				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_end_date, $event_end );
+				update_post_meta( $ticket->ID, $tickets_handler->key_end_date, $event_end );
 			}
 
 			tribe( 'tickets.version' )->update( $ticket->ID );
@@ -2767,10 +2783,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string ticket module class name
 		 */
 		public static function get_event_ticket_provider( $event_id = null ) {
+			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
 
 			// if  post ID is set, and a value has been saved, return the saved value
 			if ( ! empty( $event_id ) ) {
-				$saved = get_post_meta( $event_id, tribe( 'tickets.handler' )->key_provider_field, true );
+				$saved = get_post_meta( $event_id, $tickets_handler->key_provider_field, true );
 
 				if ( ! empty( $saved ) ) {
 					return $saved;

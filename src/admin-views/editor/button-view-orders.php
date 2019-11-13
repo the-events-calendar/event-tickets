@@ -1,6 +1,9 @@
 <?php
 $post_id = get_the_ID();
-$total_tickets = tribe( 'tickets.handler' )->get_total_event_capacity( $post_id );
+
+/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+$tickets_handler = tribe( 'tickets.handler' );
+$total_tickets   = $tickets_handler->get_total_event_capacity( $post_id );
 
 // only show if there are tickets
 if ( empty( $total_tickets ) ) {
@@ -8,12 +11,12 @@ if ( empty( $total_tickets ) ) {
 }
 $post = get_post( $post_id );
 
-$args = array(
+$args = [
 	'post_type' => $post->post_type,
 	// by default try to show PayPal tickets orders
 	'page' => 'tpp-orders',
 	'event_id' => $post->ID,
-);
+];
 $url = add_query_arg( $args, admin_url( 'edit.php' ) );
 
 /**
