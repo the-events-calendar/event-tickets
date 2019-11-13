@@ -20,10 +20,12 @@ $is_mini         = $this->get( 'is_mini' );
 $tickets         = $this->get( 'tickets' );
 $currency_symbol = $this->get( 'currency_symbol' );
 $provider        = $this->get( 'provider' );
+$cart_url        = $provider->get_cart_url();
+$checkout_url    = $provider->get_checkout_url();
 ?>
 <div class="tribe-tickets__footer" >
-	<?php if ( $is_mini ) : ?>
-		<a class="tribe-common-b2 tribe-tickets__footer__back-link" href="<?php echo esc_url( $provider->get_cart_url() ); ?>"><?php esc_html_e( 'Return to Cart', 'event-tickets' ); ?></a>
+	<?php if ( $is_mini && strtok( $cart_url, '?' ) !== strtok( $checkout_url, '?' ) ) : ?>
+		<a class="tribe-common-b2 tribe-tickets__footer__back-link" href="<?php echo esc_url( $cart_url ); ?>"><?php esc_html_e( 'Return to Cart', 'event-tickets' ); ?></a>
 	<?php endif; ?>
 	<?php $this->template( 'blocks/tickets/footer-quantity' ); ?>
 	<?php $this->template( 'blocks/tickets/footer-total', [ 'event_id' => $event_id, 'provider' => $provider ] ); ?>

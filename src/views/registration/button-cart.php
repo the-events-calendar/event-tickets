@@ -13,14 +13,20 @@
  *
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */
-$provider = $this->get( 'provider' );
-$cart_url = $this->get_cart_url( $provider );
+$provider     = $this->get( 'provider' );
+$cart_url     = $this->get_cart_url( $provider );
+$provider_obj = $this->get_cart_provider( $provider );
+$checkout_url = $provider_obj->get_checkout_url();
+
+// If the cart and checkout urls are the same, don't display.
+if ( strtok( $cart_url, '?' ) === strtok( $checkout_url, '?' ) ) {
+	return;
+}
+
 ?>
 <?php if ( $cart_url ) : ?>
 	<a
 		href="<?php echo esc_url( $cart_url ); ?>"
 		class="tribe-tickets__registration__back__to__cart"
-	>
-		<?php esc_html_e( 'Back to cart', 'event-tickets' ); ?>
-	</a>
+	><?php esc_html_e( 'Back to cart', 'event-tickets' ); ?></a>
 <?php endif;

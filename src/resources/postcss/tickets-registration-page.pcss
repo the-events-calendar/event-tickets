@@ -90,7 +90,7 @@ body.page-tribe-attendee-registration {
 			&:before {
 				margin-right: var(--spacer-0);
 				content: svg-inline(arrow);
-				vertical-align: middle;
+				vertical-align: baseline;
 			}
 
 			body.tribe-theme-twentyseventeen & {
@@ -226,6 +226,8 @@ body.page-tribe-attendee-registration {
 				color: var(--color-text-secondary);
 				display: none;
 				margin-right: auto;
+				box-shadow: inset 0 -1px 0 0 var(--color-text-secondary);
+				text-decoration: none;
 
 				@media(--viewport-medium) {
 					display: block;
