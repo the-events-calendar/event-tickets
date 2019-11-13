@@ -518,6 +518,9 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'in' => $ticket_ids,
 		];
 
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
 		$attendee_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $src_event_id, $args );
 
 		foreach ( $attendee_data['attendees'] as $issued_ticket ) {
@@ -587,7 +590,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 					$tgt_event_cap->set_stock_level( $src_event_capacity );
 
 					// Update the Target event with the Capacity from the Source
-					update_post_meta( $tgt_event_id, tribe( 'tickets.handler' )->key_capacity, $src_event_capacity );
+					update_post_meta( $tgt_event_id, $tickets_handler->key_capacity, $src_event_capacity );
 				} elseif ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $src_mode || Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $src_mode ) {
 					// Check if we have capped to avoid ticket cap over event cap
 					$src_ticket_capacity = tribe_tickets_get_capacity( $product_id );
@@ -595,7 +598,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 					// Don't allow ticket capacity to be bigger than Target Event Cap
 					if ( $src_ticket_capacity > $tgt_event_capacity ) {
-						update_post_meta( $ticket_id, tribe( 'tickets.handler' )->key_capacity, $tgt_event_capacity );
+						update_post_meta( $ticket_id, $tickets_handler->key_capacity, $tgt_event_capacity );
 					}
 				}
 			}

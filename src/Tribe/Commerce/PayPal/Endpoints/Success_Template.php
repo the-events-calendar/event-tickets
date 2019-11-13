@@ -37,7 +37,7 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 	 *
 	 * @return string
 	 */
-	public function render( array $template_data = array() ) {
+	public function render( array $template_data = [] ) {
 		$template_data = $this->get_template_data( $template_data );
 
 		$is_just_visiting       = $template_data['is_just_visiting'];
@@ -75,7 +75,7 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 	 *
 	 * @return array
 	 */
-	public function get_template_data( array $template_data = array() ) {
+	public function get_template_data( array $template_data = [] ) {
 		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
 		$paypal                                  = tribe( 'tickets.commerce.paypal' );
 		$template_data['is_just_visiting']       = false;
@@ -113,7 +113,7 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 		$template_data['purchaser_email'] = Tribe__Utils__Array::get( $first, 'purchaser_email', '' );
 
 		$order_quantity = $order_total = 0;
-		$tickets        = array();
+		$tickets        = [];
 
 		foreach ( $attendees as $attendee ) {
 			$order_quantity ++;
@@ -126,17 +126,20 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 
 			$raw_ticket_price = get_post_meta( $ticket_id, '_price', true );
 			$ticket_price     = (float) $raw_ticket_price;
-			$order_total  += $ticket_price;
+			$order_total      += $ticket_price;
+
+			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
 
 			if ( array_key_exists( $ticket_id, $tickets ) ) {
 				$tickets[ $ticket_id ]['quantity'] += 1;
 				$tickets[ $ticket_id ]['subtotal'] = $tickets[ $ticket_id ]['quantity'] * $ticket_price;
 			} else {
 				$header_image_id = ! empty( $post_id )
-					? get_post_meta( $post_id, tribe( 'tickets.handler' )->key_image_header, true )
+					? get_post_meta( $post_id, $tickets_handler->key_image_header, true )
 					: false;
 
-				$tickets[ $ticket_id ] = array(
+				$tickets[ $ticket_id ] = [
 					'name'            => get_the_title( $ticket_id ),
 					'price'           => $ticket_price,
 					'quantity'        => 1,
@@ -144,11 +147,11 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 					'post_id'         => $post_id,
 					'is_event'        => function_exists( 'tribe_is_event' ) && tribe_is_event( $post_id ),
 					'header_image_id' => $header_image_id,
-				);
+				];
 			}
 		}
 
-		$template_data['order']   = array( 'quantity' => $order_quantity, 'total' => $order_total );
+		$template_data['order']   = [ 'quantity' => $order_quantity, 'total' => $order_total ];
 		$template_data['tickets'] = $tickets;
 
 		return $template_data;

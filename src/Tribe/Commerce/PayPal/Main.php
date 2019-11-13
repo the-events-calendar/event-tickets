@@ -1175,7 +1175,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 * @param array                         $raw_data
 	 *
-	 * @return int The updated/created ticket post ID
+	 * @return int|false The updated/created ticket post ID or false if no ticket ID.
 	 */
 	public function save_ticket( $post_id, $ticket, $raw_data = array() ) {
 		// assume we are updating until we find out otherwise
@@ -1216,7 +1216,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		// Updates if we should show Description
 		$ticket->show_description = isset( $ticket->show_description ) && tribe_is_truthy( $ticket->show_description ) ? 'yes' : 'no';
-		update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_show_description, $ticket->show_description );
+
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		update_post_meta( $ticket->ID, $tickets_handler->key_show_description, $ticket->show_description );
 
 		// let's make sure float price values are formatted to "0.xyz"
 		if ( is_numeric( $ticket->price ) ) {
@@ -1282,7 +1286,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$event_stock->set_stock_level( $data['event_capacity'] );
 
 				// Update Event capacity
-				update_post_meta( $post_id, tribe( 'tickets.handler' )->key_capacity, $data['event_capacity'] );
+				update_post_meta( $post_id, $tickets_handler->key_capacity, $data['event_capacity'] );
 			}
 		} else {
 			// If the Global Stock is configured we pull it from the Event
@@ -1329,7 +1333,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		if ( '' !== $mode ) {
 			if ( 'update' === $save_type ) {
-				$totals = tribe( 'tickets.handler' )->get_ticket_totals( $ticket->ID );
+				$totals = $tickets_handler->get_ticket_totals( $ticket->ID );
 				$data['stock'] -= $totals['pending'] + $totals['sold'];
 			}
 
@@ -1366,7 +1370,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		if ( '' !== $data['capacity'] ) {
 			// Update Ticket capacity
-			update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_capacity, $data['capacity'] );
+			update_post_meta( $ticket->ID, $tickets_handler->key_capacity, $data['capacity'] );
 		}
 
 		/**
@@ -1743,11 +1747,15 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	public function do_metabox_sku_options( $post_id, $ticket_id = null ) {
 		$sku = '';
-		$is_correct_provider = tribe( 'tickets.handler' )->is_correct_provider( $post_id, $this );
+
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$is_correct_provider = $tickets_handler->is_correct_provider( $post_id, $this );
 
 		if ( ! empty( $ticket_id ) ) {
 			$ticket = $this->get_ticket( $post_id, $ticket_id );
-			$is_correct_provider = tribe( 'tickets.handler' )->is_correct_provider( $ticket_id, $this );
+			$is_correct_provider = $tickets_handler->is_correct_provider( $ticket_id, $this );
 
 			if ( ! empty( $ticket ) ) {
 				$sku = get_post_meta( $ticket_id, '_sku', true );
@@ -2124,9 +2132,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return array An associative array in the [ <slug> => <label> ] format.
 	 */
 	public function get_order_statuses() {
+		/** @var Tribe__Tickets__Status__Manager $tickets_status */
+		$tickets_status = tribe( 'tickets.status' );
 
-		$statuses       = tribe( 'tickets.status' )->get_all_provider_statuses( 'tpp' );
-		$order_statuses = array();
+		$statuses       = $tickets_status->get_all_provider_statuses( 'tpp' );
+		$order_statuses = [];
 		foreach ( $statuses as $status ) {
 			$order_statuses[ $status->provider_name ] = _x( $status->name, 'a PayPal ticket order status', 'event-tickets' );
 		}
@@ -2285,11 +2295,14 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return mixed
 	 */
 	public function do_metabox_capacity_options( $post_id, $ticket_id ) {
-		$is_correct_provider = tribe( 'tickets.handler' )->is_correct_provider( $post_id, $this );
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$is_correct_provider = $tickets_handler->is_correct_provider( $post_id, $this );
 
 		$url               = '';
 		$stock             = '';
-		$global_stock_mode = tribe( 'tickets.handler' )->get_default_capacity_mode();
+		$global_stock_mode = $tickets_handler->get_default_capacity_mode();
 		$global_stock_cap  = 0;
 		$ticket_capacity   = null;
 		$post_capacity     = null;
@@ -2302,7 +2315,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		if ( ! empty( $ticket_id ) ) {
 			$ticket              = $this->get_ticket( $post_id, $ticket_id );
-			$is_correct_provider = tribe( 'tickets.handler' )->is_correct_provider( $ticket_id, $this );
+			$is_correct_provider = $tickets_handler->is_correct_provider( $ticket_id, $this );
 
 			if ( ! empty( $ticket ) ) {
 				$stock             = $ticket->managing_stock() ? $ticket->stock() : '';

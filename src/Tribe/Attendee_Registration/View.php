@@ -142,14 +142,20 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 * @return bool|string
 	 */
 	public function get_cart_url( $post_id ) {
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
 
-		$post_provider = get_post_meta( $post_id, tribe( 'tickets.handler' )->key_provider_field, true );
+		$post_provider = get_post_meta( $post_id, $tickets_handler->key_provider_field, true );
 
 		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' !== $post_provider ) {
 			return false;
 		}
 
 		$provider = new $post_provider;
+
+		if ( ! $provider instanceof Tribe__Tickets__Tickets ) {
+			return false;
+		}
 
 		return $provider->get_cart_url();
 	}

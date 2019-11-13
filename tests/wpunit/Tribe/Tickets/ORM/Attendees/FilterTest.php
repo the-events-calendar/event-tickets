@@ -28,19 +28,42 @@ class FilterTest extends ORMTestCase {
 		$attendees->set_found_rows( true );
 
 		// Do the filtering.
-		$args = [
-			$filter_name,
-		];
-
-		$args = array_merge( $args, $filter_arguments );
+		$args = array_merge( [ $filter_name ], $filter_arguments );
 
 		$attendees->by( ...$args );
 
 		// Assert that we get what we expected.
+
+		/**
+		 * Same as `all()` except only an array of Post IDs, not full Post objects.
+		 * Is affected by pagination, but ORM defaults to unlimited.
+		 *
+		 * @see \Tribe__Repository::get_ids()
+		 */
 		$this->assertEquals( $assertions['get_ids'], $attendees->get_ids(), $method );
+
+		/**
+		 * The total number of posts found matching the current query parameters.
+		 * Is affected by pagination, but ORM defaults to unlimited.
+		 *
+		 * @see \Tribe__Repository::all() Runs get_posts() then format_item().
+		 * @see \WP_Query::get_posts()
+		 * @see \Tribe__Repository::format_item()
+		 */
 		$this->assertEquals( $assertions['all'], $attendees->all(), $method );
+
+		/**
+		 * @see \Tribe__Repository::count() WP_Query's `post_count`:
+		 *      The number of posts being displayed. Is affected by pagination but ORM defaults to unlimited.
+		 */
 		$this->assertEquals( $assertions['count'], $attendees->count(), $method );
+
+		/**
+		 * The total number of posts found matching the current query parameters.
+		 * Is NOT affected by pagination.
+		 *
+		 * @see \Tribe__Repository::found() WP_Query's `found_posts`.
+		 */
 		$this->assertEquals( $assertions['found'], $attendees->found(), $method );
 	}
-
 }

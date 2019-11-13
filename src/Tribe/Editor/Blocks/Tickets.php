@@ -131,8 +131,12 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		// Parse the tickets and create the array for the response
 		foreach ( $tickets as $ticket_id ) {
-
 			$ticket    = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
+
+			if ( empty( $ticket ) ) {
+				continue;
+			}
+
 			$available = $ticket->available();
 			$response['tickets'][ $ticket_id ]['available'] = $available;
 
