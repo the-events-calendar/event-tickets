@@ -133,7 +133,9 @@ class ORMTestCase extends Test_Case {
 			'event',
 			// Filter arguments to use.
 			[
-				$this->get_event_id( 0 ),
+				[
+					$this->get_event_id( 0 ),
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $this->test_data['attendees_1'] ),
@@ -173,7 +175,9 @@ class ORMTestCase extends Test_Case {
 			'event',
 			// Filter arguments to use.
 			[
-				$this->get_event_id( 1 ),
+				[
+					$this->get_event_id( 1 ),
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( [] ),
@@ -212,7 +216,9 @@ class ORMTestCase extends Test_Case {
 			'event__not_in',
 			// Filter arguments to use.
 			[
-				$this->get_event_id( 1 ),
+				[
+					$this->get_event_id( 1 ),
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $this->test_data['attendees_all'] ),
@@ -230,8 +236,10 @@ class ORMTestCase extends Test_Case {
 			'event__not_in',
 			// Filter arguments to use.
 			[
-				$this->get_event_id( 1 ),
-				$this->get_event_id( 4 ),
+				[
+					$this->get_event_id( 1 ),
+					$this->get_event_id( 4 ),
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $this->test_data['attendees_all'] ),
@@ -249,7 +257,9 @@ class ORMTestCase extends Test_Case {
 			'event__not_in',
 			// Filter arguments to use.
 			[
-				$this->get_event_id( 0 ),
+				[
+					$this->get_event_id( 0 ),
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $this->test_data['attendees_3'] ),
@@ -297,7 +307,9 @@ class ORMTestCase extends Test_Case {
 			'user',
 			// Filter arguments to use.
 			[
-				$this->get_user_id( 1 ), // User2
+				[
+					$this->get_user_id( 1 ), // User2
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $expected ),
@@ -347,7 +359,9 @@ class ORMTestCase extends Test_Case {
 			'user',
 			// Filter arguments to use.
 			[
-				$this->get_user_id( 0 ), // User1
+				[
+					$this->get_user_id( 0 ), // User1
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( [] ),
@@ -386,7 +400,9 @@ class ORMTestCase extends Test_Case {
 			'user__not_in',
 			// Filter arguments to use.
 			[
-				$this->get_user_id( 0 ), // User1
+				[
+					$this->get_user_id( 0 ), // User1
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $this->test_data['attendees_all'] ),
@@ -437,7 +453,9 @@ class ORMTestCase extends Test_Case {
 			'user__not_in',
 			// Filter arguments to use.
 			[
-				$this->get_user_id( 1 ), // User2
+				[
+					$this->get_user_id( 1 ), // User2
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $expected ),
@@ -498,7 +516,9 @@ class ORMTestCase extends Test_Case {
 			'ticket',
 			// Filter arguments to use.
 			[
-				$this->get_rsvp_id( 0 ),
+				[
+					$this->get_rsvp_id( 0 ),
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $expected ),
@@ -516,7 +536,9 @@ class ORMTestCase extends Test_Case {
 			'ticket',
 			// Filter arguments to use.
 			[
-				$this->get_rsvp_id( 1 ),
+				[
+					$this->get_rsvp_id( 1 ),
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( [] ),
@@ -542,7 +564,9 @@ class ORMTestCase extends Test_Case {
 			'ticket__not_in',
 			// Filter arguments to use.
 			[
-				$this->get_rsvp_id( 1 ),
+				[
+					$this->get_rsvp_id( 1 ),
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $expected ),
@@ -560,7 +584,9 @@ class ORMTestCase extends Test_Case {
 			'ticket__not_in',
 			// Filter arguments to use.
 			[
-				$this->get_rsvp_id( 0 ),
+				[
+					$this->get_rsvp_id( 0 ),
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $this->test_data['attendees_3'] ),
@@ -589,7 +615,9 @@ class ORMTestCase extends Test_Case {
 			'ticket',
 			// Filter arguments to use.
 			[
-				$this->get_paypal_tickets_id( 0 ),
+				[
+					$this->get_paypal_tickets_id( 0 ),
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $expected ),
@@ -607,7 +635,9 @@ class ORMTestCase extends Test_Case {
 			'ticket',
 			// Filter arguments to use.
 			[
-				$this->get_paypal_tickets_id( 1 ),
+				[
+					$this->get_paypal_tickets_id( 1 ),
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( [] ),
@@ -632,7 +662,9 @@ class ORMTestCase extends Test_Case {
 			'ticket__not_in',
 			// Filter arguments to use.
 			[
-				$this->get_paypal_tickets_id( 1 ),
+				[
+					$this->get_paypal_tickets_id( 1 ),
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $expected ),
@@ -650,7 +682,9 @@ class ORMTestCase extends Test_Case {
 			'ticket__not_in',
 			// Filter arguments to use.
 			[
-				$this->get_paypal_tickets_id( 0 ),
+				[
+					$this->get_paypal_tickets_id( 0 ),
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( [] ),
