@@ -88,7 +88,7 @@ class ORMTestCase extends Test_Case {
 		yield 'user match single' => [ 'get_test_matrix_single_user_match' ];
 		yield 'user match multi' => [ 'get_test_matrix_multi_user_match' ];
 		yield 'user mismatch single' => [ 'get_test_matrix_single_user_mismatch' ];
-		////yield 'user mismatch multi' => [ 'get_test_matrix_multi_user_mismatch' ];
+		yield 'user mismatch multi' => [ 'get_test_matrix_multi_user_mismatch' ];
 		// User Not In
 		yield 'user not in match single' => [ 'get_test_matrix_single_user_not_in_match' ];
 		////yield 'user not in match multi' => [ 'get_test_matrix_multi_user_not_in_match' ];
@@ -348,6 +348,27 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[
 				$this->get_user_id( 0 ), // User1
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Users mismatch.
+	 */
+	public function get_test_matrix_multi_user_mismatch() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'user',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_user_id( 0 ), // User1
+					$this->get_user_id( 4 ), // User5
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( [] ),
@@ -645,13 +666,13 @@ class ORMTestCase extends Test_Case {
 	 * Event 3 has:
 	 * - User1 is author
 	 * - User2 is RSVP attendee
-	 * Event 4 has: no author, no tickets (therefore no attendees)
+	 * Event 4 has: User5 as author, no tickets (therefore no attendees)
 	 * Note that guest purchasers will still have User ID# zero saved to `_tribe_tickets_attendee_user_id` meta field.
 	 */
 	protected function setup_test_data() {
 		$test_data = [
 			'users'          => [],
-			// 4 total: 1 = Event author, not Attendee; 2 = only RSVP attendee; 3 = RSVP & PayPal attendee; 4 = only PayPal attendee
+			// 5 total: 1&5 = Event author, not Attendee; 2 = only RSVP attendee; 3 = RSVP & PayPal attendee; 4 = only PayPal attendee
 			'events'         => [],
 			// 4 total: 1&3 = has Author, Tickets, and Attendees; 2&4 = Author ID of zero and no Tickets (so no Attendees)
 			'rsvps'          => [],
@@ -664,7 +685,7 @@ class ORMTestCase extends Test_Case {
 			'attendees_3'    => [], // Event3's
 		];
 
-		// Create User1, author of Event1 and Event3.
+		// Create User1, author of Event1.
 		$test_data['users'][] = $user_id_one = $this->factory()->user->create( [ 'role' => 'author' ] );
 
 		// Create test users 2, 3, and 4 as Attendees
@@ -741,12 +762,15 @@ class ORMTestCase extends Test_Case {
 			$test_data['attendees_3'] // Event 3
 		) );
 
+		// Create User5, author of Event3.
+		$test_data['users'][] = $user_id_five = $this->factory()->user->create( [ 'role' => 'author' ] );
+
 		//
 		// Event4: No author nor tickets (and therefore no attendees)
 		//
 		$test_data['events'][] = $this->factory()->event->create( [
 			'post_title'  => 'Test event 4',
-			'post_author' => 0,
+			'post_author' => $user_id_five,
 		] );
 
 		// Save test data to reference.
