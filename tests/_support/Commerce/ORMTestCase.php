@@ -91,9 +91,9 @@ class ORMTestCase extends Test_Case {
 		yield 'user mismatch multi' => [ 'get_test_matrix_multi_user_mismatch' ];
 		// User Not In
 		yield 'user not in match single' => [ 'get_test_matrix_single_user_not_in_match' ];
-		////yield 'user not in match multi' => [ 'get_test_matrix_multi_user_not_in_match' ];
+		yield 'user not in match multi' => [ 'get_test_matrix_multi_user_not_in_match' ];
 		yield 'user not in mismatch single' => [ 'get_test_matrix_single_user_not_in_mismatch' ];
-		////yield 'user not in mismatch multi' => [ 'get_test_matrix_multi_user_not_in_mismatch' ];
+		yield 'user not in mismatch multi' => [ 'get_test_matrix_multi_user_not_in_mismatch' ];
 
 		// RSVP
 		yield 'rsvp match single' => [ 'get_test_matrix_single_rsvp_match' ];
@@ -394,9 +394,30 @@ class ORMTestCase extends Test_Case {
 	}
 
 	/**
+	 * Get test matrix for multiple Users Not In match.
+	 */
+	public function get_test_matrix_multi_user_not_in_match() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'user__not_in',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_user_id( 0 ), // User1
+					$this->get_user_id( 4 ), // User5
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $this->test_data['attendees_all'] ),
+		];
+	}
+
+	/**
 	 * Get test matrix for User Not In mismatch.
 	 *
-	 * Get all the attendees that weren't purchased by User1.
+	 * Get all the attendees that weren't purchased by User2.
 	 */
 	public function get_test_matrix_single_user_not_in_mismatch() {
 		$expected = [
@@ -417,6 +438,38 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[
 				$this->get_user_id( 1 ), // User2
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Users Not In mismatch.
+	 *
+	 * Get all the attendees that weren't purchased by User2 nor User4.
+	 */
+	public function get_test_matrix_multi_user_not_in_mismatch() {
+		$expected = [
+			$this->get_attendee_id( 1 ), // User3
+			$this->get_attendee_id( 2 ), // Guest
+			$this->get_attendee_id( 3 ), // Guest
+			$this->get_attendee_id( 4 ), // User3
+			$this->get_attendee_id( 6 ), // Guest
+			$this->get_attendee_id( 7 ), // Guest
+		];
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'user__not_in',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_user_id( 1 ), // User2
+					$this->get_user_id( 3 ), // User4
+				],
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $expected ),
