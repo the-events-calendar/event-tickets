@@ -80,9 +80,9 @@ class ORMTestCase extends Test_Case {
 		yield 'event mismatch multi' => [ 'get_test_matrix_multi_event_mismatch' ];
 		// Event Not In
 		yield 'event not in match single' => [ 'get_test_matrix_single_event_not_in_match' ];
-		////yield 'event not in match multi' => [ 'get_test_matrix_multi_event_not_in_match' ];
+		yield 'event not in match multi' => [ 'get_test_matrix_multi_event_not_in_match' ];
 		yield 'event not in mismatch single' => [ 'get_test_matrix_single_event_not_in_mismatch' ];
-		////yield 'event not in mismatch multi' => [ 'get_test_matrix_multi_event_not_in_mismatch' ];
+		yield 'event not in mismatch multi' => [ 'get_test_matrix_multi_event_not_in_mismatch' ];
 
 		// User
 		yield 'user match single' => [ 'get_test_matrix_single_user_match' ];
@@ -181,7 +181,7 @@ class ORMTestCase extends Test_Case {
 	}
 
 	/**
-	 * Get test matrix for multiple Event mismatch.
+	 * Get test matrix for multiple Events mismatch.
 	 */
 	public function get_test_matrix_multi_event_mismatch() {
 		return [
@@ -220,6 +220,25 @@ class ORMTestCase extends Test_Case {
 	}
 
 	/**
+	 * Get test matrix for multiple Events Not In match.
+	 */
+	public function get_test_matrix_multi_event_not_in_match() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'event__not_in',
+			// Filter arguments to use.
+			[
+				$this->get_event_id( 1 ),
+				$this->get_event_id( 4 ),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $this->test_data['attendees_all'] ),
+		];
+	}
+
+	/**
 	 * Get test matrix for Event Not In mismatch.
 	 */
 	public function get_test_matrix_single_event_not_in_mismatch() {
@@ -234,6 +253,27 @@ class ORMTestCase extends Test_Case {
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $this->test_data['attendees_3'] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Events Not In mismatch.
+	 */
+	public function get_test_matrix_multi_event_not_in_mismatch() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'event__not_in',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_event_id( 0 ),
+					$this->get_event_id( 2 ),
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
 		];
 	}
 
