@@ -46,7 +46,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 		register_meta(
 			'post',
 			$handler->key_capacity,
-			$this->text()
+			$this->text_or_null()
 		);
 
 		register_meta(
@@ -73,7 +73,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 		register_meta(
 			'post',
 			'_tribe_ticket_show_not_going',
-			$this->boolean()
+			$this->boolean_or_null()
 		);
 
 		// Global Stock
@@ -132,8 +132,52 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 		register_meta(
 			'post',
 			'_tribe_ticket_has_attendee_info_fields',
-			$this->boolean()
+			$this->boolean_or_null()
 		);
+	}
+
+	/**
+	 * Default definition for an attribute of type text
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	protected function text_or_null() {
+		$args = $this->text();
+
+		if ( ! function_exists( 'is_wp_version_compatible' ) || ! is_wp_version_compatible( '5.3' ) ) {
+			return $args;
+		}
+
+		$args['type'] = [
+			$args['type'],
+			'null',
+		];
+
+		return $args;
+	}
+
+	/**
+	 * Default definition for an attribute of boolean text
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	protected function boolean_or_null() {
+		$args = $this->boolean();
+
+		if ( ! function_exists( 'is_wp_version_compatible' ) || ! is_wp_version_compatible( '5.3' ) ) {
+			return $args;
+		}
+
+		$args['type'] = [
+			$args['type'],
+			'null',
+		];
+
+		return $args;
 	}
 
 	/**
@@ -183,6 +227,69 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 			}
 			$list_of_tickets[] = $ticket->ID;
 		}
+
 		return $list_of_tickets;
+	}
+
+	/**
+	 * Don't delete virtual meta.
+	 *
+	 * @since 4.10.11.1
+	 *
+	 * @param null|bool $delete            Whether to allow metadata deletion of the given type.
+	 * @param int       $unused_object_id  Object ID.
+	 * @param string    $meta_key          Meta key.
+	 * @param mixed     $unused_meta_value Meta value. Must be serializable if non-scalar.
+	 * @param bool      $unused_delete_all Whether to delete the matching metadata entries
+	 *                                     for all objects, ignoring the specified $object_id.
+	 *                                     Default false.
+	 *
+	 * @return bool
+	 */
+	public function delete_tickets_list_in_rest( $delete, $unused_object_id, $meta_key, $unused_meta_value, $unused_delete_all ) {
+		if ( in_array( $meta_key, $this->get_ghost_meta_fields(), true ) ) {
+			return true;
+		}
+
+		return $delete;
+	}
+
+	/**
+	 * Don't update virtual meta.
+	 *
+	 * @since 4.10.11.1
+	 *
+	 * @param null|bool $check             Whether to allow updating metadata for the given type.
+	 * @param int       $unused_object_id  Object ID.
+	 * @param string    $meta_key          Meta key.
+	 * @param mixed     $unused_meta_value Meta value. Must be serializable if non-scalar.
+	 * @param mixed     $unused_prev_value Optional. If specified, only update existing
+	 *                                     metadata entries with the specified value.
+	 *                                     Otherwise, update all entries.
+	 *
+	 * @return bool
+	 */
+	public function update_tickets_list_in_rest( $check, $unused_object_id, $meta_key, $unused_meta_value, $unused_prev_value ) {
+		if ( in_array( $meta_key, $this->get_ghost_meta_fields(), true ) ) {
+			return true;
+		}
+
+		return $check;
+	}
+
+	/**
+	 * Get ghost meta fields that we don't actually store/update/delete.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_ghost_meta_fields() {
+		return [
+			'_tribe_tickets_list',
+			'_tribe_ticket_going_count',
+			'_tribe_ticket_not_going_count',
+			'_tribe_ticket_has_attendee_info_fields',
+		];
 	}
 }
