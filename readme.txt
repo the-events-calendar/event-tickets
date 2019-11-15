@@ -117,6 +117,11 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.10.11.1] 2019-11-15 =
+
+* Fix - Handle the onRequestClose action in element.js to prevent modal closing on clicks within. [137394]
+
+
 = [4.10.11] 2019-11-13 =
 
 * Fix - Add a check for empty tickets to `Tribe__Tickets__Editor__Blocks__Tickets::ticket_availability()` method to avoid PHP error notices showing [122334]
