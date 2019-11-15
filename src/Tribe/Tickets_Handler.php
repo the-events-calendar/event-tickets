@@ -488,9 +488,9 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
-		// We don't accept any non-numeric values here, so set to 0.
-		if ( ! is_numeric( $event_capacity ) && ! is_null( $event_capacity ) ) {
-			$event_capacity = 0;
+		// We don't accept any non-numeric values here.
+		if ( ! is_numeric( $event_capacity ) ) {
+			return false;
 		}
 
 		// Make sure we are updating the Shared Stock when we update it's capacity
