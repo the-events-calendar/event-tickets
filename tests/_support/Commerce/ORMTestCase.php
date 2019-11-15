@@ -84,17 +84,6 @@ class ORMTestCase extends Test_Case {
 		yield 'event not in mismatch single' => [ 'get_test_matrix_single_event_not_in_mismatch' ];
 		yield 'event not in mismatch multi' => [ 'get_test_matrix_multi_event_not_in_mismatch' ];
 
-		// User
-		yield 'user match single' => [ 'get_test_matrix_single_user_match' ];
-		yield 'user match multi' => [ 'get_test_matrix_multi_user_match' ];
-		yield 'user mismatch single' => [ 'get_test_matrix_single_user_mismatch' ];
-		yield 'user mismatch multi' => [ 'get_test_matrix_multi_user_mismatch' ];
-		// User Not In
-		yield 'user not in match single' => [ 'get_test_matrix_single_user_not_in_match' ];
-		yield 'user not in match multi' => [ 'get_test_matrix_multi_user_not_in_match' ];
-		yield 'user not in mismatch single' => [ 'get_test_matrix_single_user_not_in_mismatch' ];
-		yield 'user not in mismatch multi' => [ 'get_test_matrix_multi_user_not_in_mismatch' ];
-
 		// RSVP
 		yield 'rsvp match single' => [ 'get_test_matrix_single_rsvp_match' ];
 		yield 'rsvp match multi' => [ 'get_test_matrix_multi_rsvp_match' ];
@@ -116,6 +105,17 @@ class ORMTestCase extends Test_Case {
 		yield 'paypal not in match multi' => [ 'get_test_matrix_multi_paypal_not_in_match' ];
 		yield 'paypal not in mismatch single' => [ 'get_test_matrix_single_paypal_not_in_mismatch' ];
 		yield 'paypal not in mismatch multi' => [ 'get_test_matrix_multi_paypal_not_in_mismatch' ];
+
+		// User
+		yield 'user match single' => [ 'get_test_matrix_single_user_match' ];
+		yield 'user match multi' => [ 'get_test_matrix_multi_user_match' ];
+		yield 'user mismatch single' => [ 'get_test_matrix_single_user_mismatch' ];
+		yield 'user mismatch multi' => [ 'get_test_matrix_multi_user_mismatch' ];
+		// User Not In
+		yield 'user not in match single' => [ 'get_test_matrix_single_user_not_in_match' ];
+		yield 'user not in match multi' => [ 'get_test_matrix_multi_user_not_in_match' ];
+		yield 'user not in mismatch single' => [ 'get_test_matrix_single_user_not_in_mismatch' ];
+		yield 'user not in mismatch multi' => [ 'get_test_matrix_multi_user_not_in_mismatch' ];
 	}
 
 	/**
@@ -284,213 +284,6 @@ class ORMTestCase extends Test_Case {
 			],
 			// Assertions to make.
 			$this->get_assertions_array( [] ),
-		];
-	}
-
-	/**
-	 * USERS
-	 */
-
-	/**
-	 * Get test matrix for User match. 2nd user is first attendee.
-	 */
-	public function get_test_matrix_single_user_match() {
-		$expected = [
-			$this->get_attendee_id( 0 ), // User2 on Event1
-			$this->get_attendee_id( 8 ), // User2 on Event3
-		];
-
-		return [
-			// Repository
-			'default',
-			// Filter name.
-			'user',
-			// Filter arguments to use.
-			[
-				[
-					$this->get_user_id( 1 ), // User2
-				],
-			],
-			// Assertions to make.
-			$this->get_assertions_array( $expected ),
-		];
-	}
-
-	/**
-	 * Get test matrix for multiple User match.
-	 *
-	 * 2nd user is first attendee. 3rd user is 2nd and 3rd attendee. 4th user is 4th attendee.
-	 */
-	public function get_test_matrix_multi_user_match() {
-		$expected = [
-			$this->get_attendee_id( 0 ), // User2
-			$this->get_attendee_id( 1 ), // User3
-			$this->get_attendee_id( 4 ), // User3
-			$this->get_attendee_id( 5 ), // User4
-			$this->get_attendee_id( 8 ), // User2 on Event3
-		];
-
-		return [
-			// Repository
-			'default',
-			// Filter name.
-			'user',
-			// Filter arguments to use.
-			[
-				[
-					$this->get_user_id( 1 ), // User2
-					$this->get_user_id( 2 ), // User3
-					$this->get_user_id( 3 ), // User4
-				],
-			],
-			// Assertions to make.
-			$this->get_assertions_array( $expected ),
-		];
-	}
-
-	/**
-	 * Get test matrix for User mismatch.
-	 */
-	public function get_test_matrix_single_user_mismatch() {
-		return [
-			// Repository
-			'default',
-			// Filter name.
-			'user',
-			// Filter arguments to use.
-			[
-				[
-					$this->get_user_id( 0 ), // User1
-				],
-			],
-			// Assertions to make.
-			$this->get_assertions_array( [] ),
-		];
-	}
-
-	/**
-	 * Get test matrix for multiple Users mismatch.
-	 */
-	public function get_test_matrix_multi_user_mismatch() {
-		return [
-			// Repository
-			'default',
-			// Filter name.
-			'user',
-			// Filter arguments to use.
-			[
-				[
-					$this->get_user_id( 0 ), // User1
-					$this->get_user_id( 4 ), // User5
-				],
-			],
-			// Assertions to make.
-			$this->get_assertions_array( [] ),
-		];
-	}
-
-	/**
-	 * Get test matrix for User Not In match.
-	 */
-	public function get_test_matrix_single_user_not_in_match() {
-		return [
-			// Repository
-			'default',
-			// Filter name.
-			'user__not_in',
-			// Filter arguments to use.
-			[
-				[
-					$this->get_user_id( 0 ), // User1
-				],
-			],
-			// Assertions to make.
-			$this->get_assertions_array( $this->test_data['attendees_all'] ),
-		];
-	}
-
-	/**
-	 * Get test matrix for multiple Users Not In match.
-	 */
-	public function get_test_matrix_multi_user_not_in_match() {
-		return [
-			// Repository
-			'default',
-			// Filter name.
-			'user__not_in',
-			// Filter arguments to use.
-			[
-				[
-					$this->get_user_id( 0 ), // User1
-					$this->get_user_id( 4 ), // User5
-				],
-			],
-			// Assertions to make.
-			$this->get_assertions_array( $this->test_data['attendees_all'] ),
-		];
-	}
-
-	/**
-	 * Get test matrix for User Not In mismatch.
-	 *
-	 * Get all the attendees that weren't purchased by User2.
-	 */
-	public function get_test_matrix_single_user_not_in_mismatch() {
-		$expected = [
-			$this->get_attendee_id( 1 ), // User3
-			$this->get_attendee_id( 2 ), // Guest
-			$this->get_attendee_id( 3 ), // Guest
-			$this->get_attendee_id( 4 ), // User3
-			$this->get_attendee_id( 5 ), // User4
-			$this->get_attendee_id( 6 ), // Guest
-			$this->get_attendee_id( 7 ), // Guest
-		];
-
-		return [
-			// Repository
-			'default',
-			// Filter name.
-			'user__not_in',
-			// Filter arguments to use.
-			[
-				[
-					$this->get_user_id( 1 ), // User2
-				],
-			],
-			// Assertions to make.
-			$this->get_assertions_array( $expected ),
-		];
-	}
-
-	/**
-	 * Get test matrix for multiple Users Not In mismatch.
-	 *
-	 * Get all the attendees that weren't purchased by User2 nor User4.
-	 */
-	public function get_test_matrix_multi_user_not_in_mismatch() {
-		$expected = [
-			$this->get_attendee_id( 1 ), // User3
-			$this->get_attendee_id( 2 ), // Guest
-			$this->get_attendee_id( 3 ), // Guest
-			$this->get_attendee_id( 4 ), // User3
-			$this->get_attendee_id( 6 ), // Guest
-			$this->get_attendee_id( 7 ), // Guest
-		];
-
-		return [
-			// Repository
-			'default',
-			// Filter name.
-			'user__not_in',
-			// Filter arguments to use.
-			[
-				[
-					$this->get_user_id( 1 ), // User2
-					$this->get_user_id( 3 ), // User4
-				],
-			],
-			// Assertions to make.
-			$this->get_assertions_array( $expected ),
 		];
 	}
 
@@ -877,6 +670,213 @@ class ORMTestCase extends Test_Case {
 					$this->get_paypal_tickets_id( 1 ),
 					$this->get_paypal_tickets_id( 2 ),
 					$this->get_paypal_tickets_id( 3 ),
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * USERS
+	 */
+
+	/**
+	 * Get test matrix for User match. 2nd user is first attendee.
+	 */
+	public function get_test_matrix_single_user_match() {
+		$expected = [
+			$this->get_attendee_id( 0 ), // User2 on Event1
+			$this->get_attendee_id( 8 ), // User2 on Event3
+		];
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'user',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_user_id( 1 ), // User2
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple User match.
+	 *
+	 * 2nd user is first attendee. 3rd user is 2nd and 3rd attendee. 4th user is 4th attendee.
+	 */
+	public function get_test_matrix_multi_user_match() {
+		$expected = [
+			$this->get_attendee_id( 0 ), // User2
+			$this->get_attendee_id( 1 ), // User3
+			$this->get_attendee_id( 4 ), // User3
+			$this->get_attendee_id( 5 ), // User4
+			$this->get_attendee_id( 8 ), // User2 on Event3
+		];
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'user',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_user_id( 1 ), // User2
+					$this->get_user_id( 2 ), // User3
+					$this->get_user_id( 3 ), // User4
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for User mismatch.
+	 */
+	public function get_test_matrix_single_user_mismatch() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'user',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_user_id( 0 ), // User1
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Users mismatch.
+	 */
+	public function get_test_matrix_multi_user_mismatch() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'user',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_user_id( 0 ), // User1
+					$this->get_user_id( 4 ), // User5
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for User Not In match.
+	 */
+	public function get_test_matrix_single_user_not_in_match() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'user__not_in',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_user_id( 0 ), // User1
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $this->test_data['attendees_all'] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Users Not In match.
+	 */
+	public function get_test_matrix_multi_user_not_in_match() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'user__not_in',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_user_id( 0 ), // User1
+					$this->get_user_id( 4 ), // User5
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $this->test_data['attendees_all'] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for User Not In mismatch.
+	 *
+	 * Get all the attendees that weren't purchased by User2.
+	 */
+	public function get_test_matrix_single_user_not_in_mismatch() {
+		$expected = [
+			$this->get_attendee_id( 1 ), // User3
+			$this->get_attendee_id( 2 ), // Guest
+			$this->get_attendee_id( 3 ), // Guest
+			$this->get_attendee_id( 4 ), // User3
+			$this->get_attendee_id( 5 ), // User4
+			$this->get_attendee_id( 6 ), // Guest
+			$this->get_attendee_id( 7 ), // Guest
+		];
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'user__not_in',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_user_id( 1 ), // User2
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Users Not In mismatch.
+	 *
+	 * Get all the attendees that weren't purchased by User2 nor User4.
+	 */
+	public function get_test_matrix_multi_user_not_in_mismatch() {
+		$expected = [
+			$this->get_attendee_id( 1 ), // User3
+			$this->get_attendee_id( 2 ), // Guest
+			$this->get_attendee_id( 3 ), // Guest
+			$this->get_attendee_id( 4 ), // User3
+			$this->get_attendee_id( 6 ), // Guest
+			$this->get_attendee_id( 7 ), // Guest
+		];
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'user__not_in',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_user_id( 1 ), // User2
+					$this->get_user_id( 3 ), // User4
 				],
 			],
 			// Assertions to make.
