@@ -120,8 +120,8 @@ class ORMTestCase extends Test_Case {
 		// Price Paid, Paid Min, and Paid Max
 		yield 'price match single' => [ 'get_test_matrix_single_price_match' ];
 		yield 'price mismatch single' => [ 'get_test_matrix_single_price_mismatch' ];
-		////yield 'price minimum match single' => [ 'get_test_matrix_single_price_min_match' ];
-		////yield 'price minimum mismatch single' => [ 'get_test_matrix_single_price_min_mismatch' ];
+		yield 'price minimum match single' => [ 'get_test_matrix_single_price_min_match' ];
+		yield 'price minimum mismatch single' => [ 'get_test_matrix_single_price_min_mismatch' ];
 		////yield 'price maximum match single' => [ 'get_test_matrix_single_price_max_match' ];
 		////yield 'price maximum mismatch single' => [ 'get_test_matrix_single_price_max_mismatch' ];
 		// Price Paid, Paid Min, and Paid Max Not In
@@ -944,6 +944,42 @@ class ORMTestCase extends Test_Case {
 			'tribe-commerce',
 			// Filter name.
 			'price',
+			// Filter arguments to use.
+			[ 79 ],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for minimum Price Paid match.
+	 */
+	public function get_test_matrix_single_price_min_match() {
+		$expected = [
+			$this->get_attendee_id( 8 ),
+		];
+
+		return [
+			// Repository
+			'tribe-commerce',
+			// Filter name.
+			'price_min',
+			// Filter arguments to use.
+			[ 6 ],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for minimum Price Paid mismatch.
+	 */
+	public function get_test_matrix_single_price_min_mismatch() {
+		return [
+			// Repository
+			'tribe-commerce',
+			// Filter name.
+			'price_min',
 			// Filter arguments to use.
 			[ 79 ],
 			// Assertions to make.
