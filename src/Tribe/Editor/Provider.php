@@ -80,6 +80,22 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 			4
 		);
 
+		// Don't delete virtual meta.
+		add_filter(
+			'delete_post_metadata',
+			tribe_callback( 'tickets.editor.meta', 'delete_tickets_list_in_rest' ),
+			15,
+			5
+		);
+
+		// Don't update virtual meta.
+		add_filter(
+			'update_post_metadata',
+			tribe_callback( 'tickets.editor.meta', 'update_tickets_list_in_rest' ),
+			15,
+			5
+		);
+
 		// Setup the Rest compatibility layer for WP
 		tribe( 'tickets.editor.rest.compatibility' );
 

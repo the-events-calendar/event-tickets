@@ -184,6 +184,53 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 			}
 			$list_of_tickets[] = $ticket->ID;
 		}
+
 		return $list_of_tickets;
+	}
+
+	/**
+	 * Don't delete virtual meta.
+	 *
+	 * @since TBD
+	 *
+	 * @param null|bool $delete            Whether to allow metadata deletion of the given type.
+	 * @param int       $unused_object_id  Object ID.
+	 * @param string    $meta_key          Meta key.
+	 * @param mixed     $unused_meta_value Meta value. Must be serializable if non-scalar.
+	 * @param bool      $unused_delete_all Whether to delete the matching metadata entries
+	 *                              for all objects, ignoring the specified $object_id.
+	 *                              Default false.
+	 *
+	 * @return bool
+	 */
+	public function delete_tickets_list_in_rest( $delete, $unused_object_id, $meta_key, $unused_meta_value, $unused_delete_all ) {
+		if ( '_tribe_tickets_list' === $meta_key ) {
+			return true;
+		}
+
+		return $delete;
+	}
+
+	/**
+	 * Don't update virtual meta.
+	 *
+	 * @since TBD
+	 *
+	 * @param null|bool $check      Whether to allow updating metadata for the given type.
+	 * @param int       $object_id  Object ID.
+	 * @param string    $meta_key   Meta key.
+	 * @param mixed     $meta_value Meta value. Must be serializable if non-scalar.
+	 * @param mixed     $prev_value Optional. If specified, only update existing
+	 *                              metadata entries with the specified value.
+	 *                              Otherwise, update all entries.
+	 *
+	 * @return bool
+	 */
+	public function update_tickets_list_in_rest( $check, $unused_object_id, $meta_key, $unused_meta_value, $unused_prev_value ) {
+		if ( '_tribe_tickets_list' === $meta_key ) {
+			return true;
+		}
+
+		return $check;
 	}
 }
