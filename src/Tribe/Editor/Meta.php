@@ -214,6 +214,8 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Don't update virtual meta.
 	 *
+	 * @since TBD
+	 *
 	 * @param null|bool $check      Whether to allow updating metadata for the given type.
 	 * @param int       $object_id  Object ID.
 	 * @param string    $meta_key   Meta key.
