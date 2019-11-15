@@ -191,6 +191,8 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Don't delete virtual meta.
 	 *
+	 * @since TBD
+	 *
 	 * @param null|bool $delete            Whether to allow metadata deletion of the given type.
 	 * @param int       $unused_object_id  Object ID.
 	 * @param string    $meta_key          Meta key.
