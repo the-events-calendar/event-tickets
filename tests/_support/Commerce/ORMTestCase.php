@@ -110,12 +110,12 @@ class ORMTestCase extends Test_Case {
 		yield 'paypal match single' => [ 'get_test_matrix_single_paypal_match' ];
 		yield 'paypal match multi' => [ 'get_test_matrix_multi_paypal_match' ];
 		yield 'paypal mismatch single' => [ 'get_test_matrix_single_paypal_mismatch' ];
-		////yield 'paypal mismatch multi' => [ 'get_test_matrix_multi_paypal_mismatch' ];
+		yield 'paypal mismatch multi' => [ 'get_test_matrix_multi_paypal_mismatch' ];
 		// Tribe Commerce PayPal Not In
 		yield 'paypal not in match single' => [ 'get_test_matrix_single_paypal_not_in_match' ];
-		////yield 'paypal not in match multi' => [ 'get_test_matrix_multi_paypal_not_in_match' ];
+		yield 'paypal not in match multi' => [ 'get_test_matrix_multi_paypal_not_in_match' ];
 		yield 'paypal not in mismatch single' => [ 'get_test_matrix_single_paypal_not_in_mismatch' ];
-		////yield 'paypal not in mismatch multi' => [ 'get_test_matrix_multi_paypal_not_in_mismatch' ];
+		yield 'paypal not in mismatch multi' => [ 'get_test_matrix_multi_paypal_not_in_mismatch' ];
 	}
 
 	/**
@@ -710,6 +710,34 @@ class ORMTestCase extends Test_Case {
 	}
 
 	/**
+	 * Get test matrix for multiple Tribe Commerce PayPal match.
+	 */
+	public function get_test_matrix_multi_paypal_match() {
+		$expected = [
+			$this->get_attendee_id( 4 ), // User3
+			$this->get_attendee_id( 5 ), // User4
+			$this->get_attendee_id( 6 ), // Guest
+			$this->get_attendee_id( 7 ), // Guest
+		];
+
+		return [
+			// Repository
+			'tribe-commerce',
+			// Filter name.
+			'ticket',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_paypal_tickets_id( 0 ),
+					$this->get_paypal_tickets_id( 0 ),
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
 	 * Get test matrix for Tribe Commerce PayPal mismatch.
 	 */
 	public function get_test_matrix_single_paypal_mismatch() {
@@ -722,6 +750,28 @@ class ORMTestCase extends Test_Case {
 			[
 				[
 					$this->get_paypal_tickets_id( 1 ),
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Tribe Commerce PayPal mismatch.
+	 */
+	public function get_test_matrix_multi_paypal_mismatch() {
+		return [
+			// Repository
+			'tribe-commerce',
+			// Filter name.
+			'ticket',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_paypal_tickets_id( 1 ),
+					$this->get_paypal_tickets_id( 2 ),
+					$this->get_paypal_tickets_id( 3 ),
 				],
 			],
 			// Assertions to make.
@@ -757,6 +807,35 @@ class ORMTestCase extends Test_Case {
 	}
 
 	/**
+	 * Get test matrix for multiple Tribe Commerce PayPal Not In match.
+	 */
+	public function get_test_matrix_multi_paypal_not_in_match() {
+		$expected = [
+			$this->get_attendee_id( 4 ), // User3
+			$this->get_attendee_id( 5 ), // User4
+			$this->get_attendee_id( 6 ), // Guest
+			$this->get_attendee_id( 7 ), // Guest
+		];
+
+		return [
+			// Repository
+			'tribe-commerce',
+			// Filter name.
+			'ticket__not_in',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_paypal_tickets_id( 1 ),
+					$this->get_paypal_tickets_id( 2 ),
+					$this->get_paypal_tickets_id( 3 ),
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
 	 * Get test matrix for Tribe Commerce PayPal Not In mismatch.
 	 */
 	public function get_test_matrix_single_paypal_not_in_mismatch() {
@@ -773,6 +852,35 @@ class ORMTestCase extends Test_Case {
 			],
 			// Assertions to make.
 			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Tribe Commerce PayPal Not In mismatch.
+	 */
+	public function get_test_matrix_multi_paypal_not_in_mismatch() {
+		$expected = [
+			$this->get_attendee_id( 4 ), // User3
+			$this->get_attendee_id( 5 ), // User4
+			$this->get_attendee_id( 6 ), // Guest
+			$this->get_attendee_id( 7 ), // Guest
+		];
+
+		return [
+			// Repository
+			'tribe-commerce',
+			// Filter name.
+			'ticket__not_in',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_paypal_tickets_id( 1 ),
+					$this->get_paypal_tickets_id( 2 ),
+					$this->get_paypal_tickets_id( 3 ),
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
 		];
 	}
 
