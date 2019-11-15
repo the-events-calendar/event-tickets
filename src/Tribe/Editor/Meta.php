@@ -191,15 +191,15 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Don't delete virtual meta.
 	 *
-	 * @since TBD
+	 * @since 4.10.11.1
 	 *
 	 * @param null|bool $delete            Whether to allow metadata deletion of the given type.
 	 * @param int       $unused_object_id  Object ID.
 	 * @param string    $meta_key          Meta key.
 	 * @param mixed     $unused_meta_value Meta value. Must be serializable if non-scalar.
 	 * @param bool      $unused_delete_all Whether to delete the matching metadata entries
-	 *                              for all objects, ignoring the specified $object_id.
-	 *                              Default false.
+	 *                                     for all objects, ignoring the specified $object_id.
+	 *                                     Default false.
 	 *
 	 * @return bool
 	 */
@@ -214,15 +214,15 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Don't update virtual meta.
 	 *
-	 * @since TBD
+	 * @since 4.10.11.1
 	 *
-	 * @param null|bool $check      Whether to allow updating metadata for the given type.
-	 * @param int       $object_id  Object ID.
-	 * @param string    $meta_key   Meta key.
-	 * @param mixed     $meta_value Meta value. Must be serializable if non-scalar.
-	 * @param mixed     $prev_value Optional. If specified, only update existing
-	 *                              metadata entries with the specified value.
-	 *                              Otherwise, update all entries.
+	 * @param null|bool $check             Whether to allow updating metadata for the given type.
+	 * @param int       $unused_object_id  Object ID.
+	 * @param string    $meta_key          Meta key.
+	 * @param mixed     $unused_meta_value Meta value. Must be serializable if non-scalar.
+	 * @param mixed     $unused_prev_value Optional. If specified, only update existing
+	 *                                     metadata entries with the specified value.
+	 *                                     Otherwise, update all entries.
 	 *
 	 * @return bool
 	 */
