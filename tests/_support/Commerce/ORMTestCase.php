@@ -66,8 +66,8 @@ class ORMTestCase extends Test_Case {
 	 *
 	 * Method naming:
 	 * "Match" means the filter finds what we expect it to with the created data.
-	 * "Mismatch" means the filter should not find anything because we don't have a matching ID to find anything for,
-	 * such as User2 is an attendee so NOT finding an attendee for them is an expected "mismatch".
+	 * "Mismatch" is for filtering ones we expect to match an empty array (in most cases), such as matching the
+	 * attendees for an RSVP ticket without any. It is to confirm we don't get results when we shouldn't.
 	 *
 	 * @see \Tribe__Tickets__Attendee_Repository::__construct() These tests are in the schema's order added
 	 *                                                          so we know we got them all.
@@ -97,18 +97,18 @@ class ORMTestCase extends Test_Case {
 
 		// RSVP
 		yield 'rsvp match single' => [ 'get_test_matrix_single_rsvp_match' ];
-		////yield 'rsvp match multi' => [ 'get_test_matrix_multi_rsvp_match' ];
+		yield 'rsvp match multi' => [ 'get_test_matrix_multi_rsvp_match' ];
 		yield 'rsvp mismatch single' => [ 'get_test_matrix_single_rsvp_mismatch' ];
-		////yield 'rsvp mismatch multi' => [ 'get_test_matrix_multi_rsvp_mismatch' ];
+		yield 'rsvp mismatch multi' => [ 'get_test_matrix_multi_rsvp_mismatch' ];
 		// RSVP Not In
 		yield 'rsvp not in match single' => [ 'get_test_matrix_single_rsvp_not_in_match' ];
-		////yield 'rsvp not in match multi' => [ 'get_test_matrix_multi_rsvp_not_in_match' ];
+		yield 'rsvp not in match multi' => [ 'get_test_matrix_multi_rsvp_not_in_match' ];
 		yield 'rsvp not in mismatch single' => [ 'get_test_matrix_single_rsvp_not_in_mismatch' ];
-		////yield 'rsvp not in mismatch multi' => [ 'get_test_matrix_multi_rsvp_not_in_mismatch' ];
+		yield 'rsvp not in mismatch multi' => [ 'get_test_matrix_multi_rsvp_not_in_mismatch' ];
 
 		// Tribe Commerce PayPal
 		yield 'paypal match single' => [ 'get_test_matrix_single_paypal_match' ];
-		////yield 'paypal match multi' => [ 'get_test_matrix_multi_paypal_match' ];
+		yield 'paypal match multi' => [ 'get_test_matrix_multi_paypal_match' ];
 		yield 'paypal mismatch single' => [ 'get_test_matrix_single_paypal_mismatch' ];
 		////yield 'paypal mismatch multi' => [ 'get_test_matrix_multi_paypal_mismatch' ];
 		// Tribe Commerce PayPal Not In
@@ -197,7 +197,7 @@ class ORMTestCase extends Test_Case {
 			[
 				[
 					$this->get_event_id( 1 ),
-					$this->get_event_id( 4 ),
+					$this->get_event_id( 3 ),
 				]
 			],
 			// Assertions to make.
@@ -526,6 +526,35 @@ class ORMTestCase extends Test_Case {
 	}
 
 	/**
+	 * Get test matrix for multiple RSVPs match.
+	 */
+	public function get_test_matrix_multi_rsvp_match() {
+		$expected = [
+			$this->get_attendee_id( 0 ), // User2
+			$this->get_attendee_id( 1 ), // User3
+			$this->get_attendee_id( 2 ), // Guest
+			$this->get_attendee_id( 3 ), // Guest
+			$this->get_attendee_id( 8 ), // User2 on Event 3
+		];
+
+		return [
+			// Repository
+			'rsvp',
+			// Filter name.
+			'ticket',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_rsvp_id( 0 ),
+					$this->get_rsvp_id( 4 ),
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
 	 * Get test matrix for RSVP mismatch.
 	 */
 	public function get_test_matrix_single_rsvp_mismatch() {
@@ -546,17 +575,31 @@ class ORMTestCase extends Test_Case {
 	}
 
 	/**
+	 * Get test matrix for multiple RSVPs mismatch.
+	 */
+	public function get_test_matrix_multi_rsvp_mismatch() {
+		return [
+			// Repository
+			'rsvp',
+			// Filter name.
+			'ticket',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_rsvp_id( 1 ),
+					$this->get_rsvp_id( 2 ),
+					$this->get_rsvp_id( 3 ),
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
 	 * Get test matrix for RSVP Not In match.
 	 */
 	public function get_test_matrix_single_rsvp_not_in_match() {
-		$expected = [
-			$this->get_attendee_id( 0 ), // User2
-			$this->get_attendee_id( 1 ), // User3
-			$this->get_attendee_id( 2 ), // Guest
-			$this->get_attendee_id( 3 ), // Guest
-			$this->get_attendee_id( 8 ), // User2 on Event3
-		];
-
 		return [
 			// Repository
 			'rsvp',
@@ -565,11 +608,32 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[
 				[
-					$this->get_rsvp_id( 1 ),
+					$this->get_rsvp_id( 0 ),
 				],
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $expected ),
+			$this->get_assertions_array( $this->test_data['attendees_3'] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple RSVPs Not In match.
+	 */
+	public function get_test_matrix_multi_rsvp_not_in_match() {
+		return [
+			// Repository
+			'rsvp',
+			// Filter name.
+			'ticket__not_in',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_rsvp_id( 0 ),
+					$this->get_rsvp_id( 4 ),
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
 		];
 	}
 
@@ -590,6 +654,27 @@ class ORMTestCase extends Test_Case {
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $this->test_data['attendees_3'] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple RSVPs Not In mismatch.
+	 */
+	public function get_test_matrix_multi_rsvp_not_in_mismatch() {
+		return [
+			// Repository
+			'rsvp',
+			// Filter name.
+			'ticket__not_in',
+			// Filter arguments to use.
+			[
+				[
+					$this->get_rsvp_id( 0 ),
+					$this->get_rsvp_id( 4 ),
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
 		];
 	}
 
@@ -838,16 +923,10 @@ class ORMTestCase extends Test_Case {
 
 		$test_data['events'][] = $event_id_three;
 
-		$rsvp_id_five = $this->create_rsvp_ticket( $event_id_three );
+		$test_data['rsvps'][] = $rsvp_id_five = $this->create_rsvp_ticket( $event_id_three );
 
 		// Add User2 (not User3) as Attendee9 (RSVP5) on Event3
 		$test_data['attendees_3'][] = $this->create_attendee_for_ticket( $rsvp_id_five, $event_id_three, [ 'user_id' => $user_id_two ] );
-
-		// Merge all attendees
-		$test_data['attendees_all'] = array_unique( array_merge(
-			$test_data['attendees_1'], // Event1
-			$test_data['attendees_3'] // Event 3
-		) );
 
 		// Create User5, author of Event3.
 		$test_data['users'][] = $user_id_five = $this->factory()->user->create( [ 'role' => 'author' ] );
@@ -859,6 +938,14 @@ class ORMTestCase extends Test_Case {
 			'post_title'  => 'Test event 4',
 			'post_author' => $user_id_five,
 		] );
+
+		// Merge all attendees
+		$test_data['attendees_all'] = array_unique(
+			array_merge(
+				$test_data['attendees_1'], // Event1
+				$test_data['attendees_3'] // Event3
+			)
+		);
 
 		// Save test data to reference.
 		$this->test_data = $test_data;
