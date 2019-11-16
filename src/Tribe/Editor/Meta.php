@@ -139,7 +139,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Default definition for an attribute of type text
 	 *
-	 * @since TBD
+	 * @since 4.10.11.1
 	 *
 	 * @return array
 	 */
@@ -161,7 +161,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Default definition for an attribute of boolean text
 	 *
-	 * @since TBD
+	 * @since 4.10.11.1
 	 *
 	 * @return array
 	 */
@@ -280,7 +280,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Get ghost meta fields that we don't actually store/update/delete.
 	 *
-	 * @since TBD
+	 * @since 4.10.11.1
 	 *
 	 * @return array
 	 */
