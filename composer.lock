@@ -1049,16 +1049,16 @@
         },
         {
             "name": "gettext/gettext",
-            "version": "v4.8.0",
+            "version": "v4.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-gettext/Gettext.git",
-                "reference": "207719c6eae36f5ac7c2c9542f6a4d4b76307e5a"
+                "reference": "494237c1315438e13777f327271a0dd99fbb6e09"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-gettext/Gettext/zipball/207719c6eae36f5ac7c2c9542f6a4d4b76307e5a",
-                "reference": "207719c6eae36f5ac7c2c9542f6a4d4b76307e5a",
+                "url": "https://api.github.com/repos/php-gettext/Gettext/zipball/494237c1315438e13777f327271a0dd99fbb6e09",
+                "reference": "494237c1315438e13777f327271a0dd99fbb6e09",
                 "shasum": ""
             },
             "require": {
@@ -1107,7 +1107,7 @@
                 "po",
                 "translation"
             ],
-            "time": "2019-11-04T18:03:29+00:00"
+            "time": "2019-11-14T23:28:55+00:00"
         },
         {
             "name": "gettext/languages",
