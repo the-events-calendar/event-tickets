@@ -511,6 +511,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		if ( null !== $attendee_email ) {
 			update_post_meta( $order_id, $this->email, $attendee_email );
 		}
+
+		/**
+		 * An Action fired when an RSVP is updated.
+		 *
+		 * @since TBD
+		 *
+		 * @param int    $order_id              refers to the attendee or ticket ID per this methods $order_id parameter.
+		 * @param int    $event_id              the ID of an event.
+		 * @param string $attendee_order_status The status of the attendee, either yes or no.
+		 */
+		do_action( 'event_tickets_rsvp_after_attendee_update', $order_id, $event_id, $attendee_order_status );
 	}
 
 	/**
