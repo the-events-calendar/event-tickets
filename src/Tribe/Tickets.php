@@ -1568,7 +1568,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$checkout_urls               = [];
 			$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 60000 );
 
-			if ( ! self::$frontend_script_enqueued ) {
+			if ( empty( self::$frontend_script_enqueued ) ) {
 				if ( ! is_admin() ) {
 					/**
 					 * Allow providers to add their own checkout URL to the localized list.
