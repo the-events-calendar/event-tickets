@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Events\Tickets\Views\V2\Partials\Day_View\Event;
+namespace Tribe\Tickets\Events\Views\V2\Partials\List_View\Event;
 
 use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
 use Tribe\Test\Products\WPBrowser\Views\V2\HtmlPartialTestCase;
@@ -9,12 +9,13 @@ class CostTest extends HtmlPartialTestCase
 {
 	use With_Post_Remapping;
 
-	protected $partial_path = 'day/event/cost';
+	protected $partial_path = 'list/event/cost';
 
 	/**
-	 * Test render with cost.
+	 * Test render with cost
 	 */
 	public function test_render_with_cost() {
+
 		$event = $this->get_mock_event( 'events/single/1.json', [] );
 		$event->cost = '$10';
 
@@ -22,7 +23,7 @@ class CostTest extends HtmlPartialTestCase
 	}
 
 	/**
-	 * Test render without cost.
+	 * Test render without cost
 	 */
 	public function test_render_without_cost() {
 		$event = $this->get_mock_event( 'events/single/1.json', [] );

@@ -1,11 +1,11 @@
 <?php
-namespace Tribe\Events\Tickets\Views\V2;
+namespace Tribe\Tickets\Events\Views\V2;
 
 /**
  * The main service provider for Event Tickets support and additions to the Views V2 functions.
  *
  * @since   4.10.9
- * @package Tribe\Events\Tickets\Views\V2
+ * @package Tribe\Tickets\Events\Views\V2
  */
 class Service_Provider extends \tad_DI52_ServiceProvider {
 
@@ -42,6 +42,4 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 		$this->container->singleton( Hooks::class, $hooks );
 		$this->container->singleton( 'tickets.views.v2.hooks', $hooks );
 	}
-
-
 }

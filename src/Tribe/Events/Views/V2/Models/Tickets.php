@@ -3,13 +3,14 @@
  * The Tickets abstraction objece, used to add tickets-related properties to the event object crated by the
  * `trib_get_event` function.
  *
+ * @todo  @sc0ttkclark This model class needs to move into `src/Tribe` when Tickets model is implemented by Green Team
+ *
  * @since   4.10.9
  *
- * @package Tribe\Events\Tickets\Views\V2\Models
+ * @package Tribe\Tickets\Events\Views\V2\Models
  */
 
-namespace Tribe\Events\Tickets\Views\V2\Models;
-
+namespace Tribe\Tickets\Events\Views\V2\Models;
 
 use Tribe\Utils\Lazy_Events;
 
@@ -18,9 +19,9 @@ use Tribe\Utils\Lazy_Events;
  *
  * @since   4.10.9
  *
- * @package Tribe\Events\Tickets\Views\V2\Models
+ * @package Tribe\Tickets\Events\Views\V2\Models
  */
-class Tickets implements \ArrayAccess, \Serializable{
+class Tickets implements \ArrayAccess, \Serializable {
 	use Lazy_Events;
 
 	/**
@@ -185,7 +186,6 @@ class Tickets implements \ArrayAccess, \Serializable{
 					$link_label  = esc_html( sprintf( _x( 'Get %s', 'list view buy now ticket button', 'event-tickets' ), tribe_get_ticket_label_plural( 'list_view_buy_now_button' ) ) );
 					$link_anchor = '#buy-tickets';
 				}
-
 			}
 		}
 

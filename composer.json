@@ -49,14 +49,14 @@
   },
   "autoload": {
     "psr-4": {
-      "Tribe\\Events\\Tickets\\": "src/Tribe"
+      "Tribe\\Tickets\\": "src/Tribe"
     }
   },
   "autoload-dev": {
     "psr-4": {
       "Tribe\\Tests\\Modules\\Tickets\\": "tests/_support/Modules",
       "Tribe\\Tests\\Tickets\\":  "tests/_support",
-      "Tribe\\Events\\Tickets\\Views\\": "tests/views_integration/Tribe/Events/Tickets/Views"
+      "Tribe\\Tickets\\Events\\Views\\": "tests/views_integration/Tribe/Tickets/Events/Views"
     }
   }
 }
