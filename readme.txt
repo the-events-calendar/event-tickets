@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
 Tested up to: 5.3
-Stable tag: 4.11.0
+Stable tag: 4.10.11.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.11] 2019-11-20 =
+= [4.11] TBD =
 
 * Feature - Add Easy Digital Downloads cart via shortcode to `get_cart_url()`. Ensure button returns cart URL if present for provider. [129450]
 * Feature - Add ability to utilize the block ticket template outside of Gutenberg views [132568]
@@ -129,6 +129,13 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Add ability to track installed version history. Added `$version_history_slug` and `$latest_version_slug` properties to `Tribe__Tickets_Plus__Main` [133048]
 * Tweak - Added actions to `views/registration/content.php`: `tribe_tickets_registration_content_before_all_events` and `tribe_tickets_registration_content_after_all_events` [131896]
 * Fix - Pass missing 'provider' argument from `views/registration/content.php` to `views/registration/button-cart.php` [131896]
+
+= [4.10.11.1] 2019-11-18 =
+
+* Fix - Force null values to 0 for `_tribe_ticket_capacity` so RSVPs save correctly in 5.3 block editor. [137383]
+* Fix - Bypass REST update/delete of virtual meta key `_tribe_tickets_list` so events will save in WP 5.3. [137383]
+* Fix - Allow `null` to be sent for REST API updates in WP 5.3 for certain meta fields that we intentionally send null for but don't match the registered schema type. [137383]
+* Fix - Handle the onRequestClose action in element.js to prevent Attendee Information modal closing when clicking within the modal. [137394]
 
 = [4.10.11] 2019-11-13 =
 
