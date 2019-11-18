@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
 Tested up to: 5.3
-Stable tag: 4.10.11
+Stable tag: 4.10.11.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -116,6 +116,13 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.10.11.1] 2019-11-18 =
+
+* Fix - Force null values to 0 for `_tribe_ticket_capacity` so RSVPs save correctly in 5.3 block editor. [137383]
+* Fix - Bypass REST update/delete of virtual meta key `_tribe_tickets_list` so events will save in WP 5.3. [137383]
+* Fix - Allow `null` to be sent for REST API updates in WP 5.3 for certain meta fields that we intentionally send null for but don't match the registered schema type. [137383]
+* Fix - Handle the onRequestClose action in element.js to prevent Attendee Information modal closing when clicking within the modal. [137394]
 
 = [4.10.11] 2019-11-13 =
 
