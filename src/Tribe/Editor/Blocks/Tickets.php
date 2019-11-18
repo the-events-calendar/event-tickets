@@ -100,7 +100,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		$checkout_urls               = [];
 		$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 60000 );
 
-		if ( empty(  Tribe__Tickets__Tickets::$frontend_script_enqueued ) ) {
+		if ( empty( Tribe__Tickets__Tickets::$frontend_script_enqueued ) ) {
 			if ( ! is_admin() ) {
 				/**
 				 * Allow providers to add their own checkout URL to the localized list.
