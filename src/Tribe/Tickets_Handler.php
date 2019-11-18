@@ -488,7 +488,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
-		// We don't accept any non-numeric values here
+		// We don't accept any non-numeric values here.
 		if ( ! is_numeric( $event_capacity ) ) {
 			return false;
 		}
