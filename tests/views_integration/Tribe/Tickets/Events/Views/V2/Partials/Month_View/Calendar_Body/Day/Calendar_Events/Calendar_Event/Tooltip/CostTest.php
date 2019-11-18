@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Events\Views\V2\Partials\List_View\Event;
+namespace Tribe\Tickets\Events\Views\V2\Partials\Month_View\Calendar_Body\Day\Calendar_Events\Calendar_Event\Tooltip;
 
 use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
 use Tribe\Test\Products\WPBrowser\Views\V2\HtmlPartialTestCase;
@@ -9,7 +9,7 @@ class CostTest extends HtmlPartialTestCase
 {
 	use With_Post_Remapping;
 
-	protected $partial_path = 'list/event/cost';
+	protected $partial_path = 'month/calendar-body/day/calendar-events/calendar-event/tooltip/cost';
 
 	/**
 	 * Test render with cost

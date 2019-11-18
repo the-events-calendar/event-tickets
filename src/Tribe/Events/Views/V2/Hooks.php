@@ -15,9 +15,10 @@
  * @package Tribe\Events\Tickets\Views\V2
  */
 
-namespace Tribe\Events\Tickets\Views\V2;
+namespace Tribe\Tickets\Events\Views\V2;
 
 use Tribe\Events\Tickets\Views\V2\Models\Tickets;
+use Tribe__Tickets__Main as Plugin;
 
 /**
  * Class Hooks.
@@ -50,7 +51,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		$folders[] = [
 			'id'       => 'event-tickets',
 			'priority' => 17,
-			'path'     => \Tribe__Tickets__Main::instance()->plugin_path . 'src/views/v2',
+			'path'     => Plugin::instance()->plugin_path . 'src/views/v2',
 		];
 
 		return $folders;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Events\Views\V2\Partials\Month_View\Mobile_Events\Mobile_Day\Mobile_Event;
+namespace Tribe\Tickets\Events\Views\V2\Partials\Month_View\Mobile_Events\Mobile_Day\Mobile_Event;
 
 use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
 use Tribe\Test\Products\WPBrowser\Views\V2\HtmlPartialTestCase;
