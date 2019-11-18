@@ -19,7 +19,7 @@ use Tribe\Utils\Lazy_Events;
  *
  * @since   4.10.9
  *
- * @package Tribe\Events\Tickets\Views\V2\Models
+ * @package Tribe\Tickets\Events\Views\V2\Models
  */
 class Tickets implements \ArrayAccess, \Serializable {
 	use Lazy_Events;

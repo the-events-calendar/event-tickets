@@ -3,21 +3,21 @@
  * Handles hooking all the actions and filters used by the module.
  *
  * To remove a filter:
- * remove_filter( 'some_filter', [ tribe( Tribe\Events\Tickets\Views\V2\Hooks::class ), 'some_filtering_method' ] );
+ * remove_filter( 'some_filter', [ tribe( Tribe\Tickets\Events\Views\V2\Hooks::class ), 'some_filtering_method' ] );
  * remove_filter( 'some_filter', [ tribe( 'tickets.views.v2.hooks' ), 'some_filtering_method' ] );
  *
  * To remove an action:
- * remove_action( 'some_action', [ tribe( Tribe\Events\Tickets\Views\V2\Hooks::class ), 'some_method' ] );
+ * remove_action( 'some_action', [ tribe( Tribe\Tickets\Events\Views\V2\Hooks::class ), 'some_method' ] );
  * remove_action( 'some_action', [ tribe( 'tickets.views.v2.hooks' ), 'some_method' ] );
  *
  * @since 4.10.9
  *
- * @package Tribe\Events\Tickets\Views\V2
+ * @package Tribe\Tickets\Events\Views\V2
  */
 
 namespace Tribe\Tickets\Events\Views\V2;
 
-use Tribe\Events\Tickets\Views\V2\Models\Tickets;
+use Tribe\Tickets\Events\Views\V2\Models\Tickets;
 use Tribe__Tickets__Main as Plugin;
 
 /**
@@ -25,7 +25,7 @@ use Tribe__Tickets__Main as Plugin;
  *
  * @since 4.10.9
  *
- * @package Tribe\Events\Tickets\Views\V2
+ * @package Tribe\Tickets\Events\Views\V2
  */
 class Hooks extends \tad_DI52_ServiceProvider {
 	/**
