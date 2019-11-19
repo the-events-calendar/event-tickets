@@ -75,7 +75,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			$provider = '';
 
 			if ( empty( $default_provider ) ) {
-				// One provder per instance
+				// One provider per instance.
 				$default_provider[ $q_provider ] = $ticket->provider->class_name;
 			}
 

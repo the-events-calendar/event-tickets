@@ -2910,8 +2910,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$is_paypal = (bool) $redirect;
 
+			/** @var Tribe__Tickets_Plus__Main $tickets_plus_main */
+			$tickets_plus_main = tribe( 'tickets-plus.main' );
+
 			/** @var Tribe__Tickets_Plus__Meta $meta */
-			$meta = tribe( 'tickets-plus.main' )->meta();
+			$meta = $tickets_plus_main->meta();
 
 			$cart_has_meta = true;
 
@@ -2920,40 +2923,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$cart_has_meta = $meta->cart_has_meta( $tickets_in_cart );
 			}
 
-			$cart_has_required_meta = $meta->cart_has_required_meta( $tickets_in_cart );
+			// There are no meta fields on the cart tickets.
+			if ( ! $cart_has_meta ) {
+				return;
+			}
 
 			/** @var \Tribe__Tickets_Plus__Meta__Contents $meta_contents */
 			$meta_contents = tribe( 'tickets-plus.meta.contents' );
 
 			$up_to_date = $meta_contents->is_stored_meta_up_to_date( $tickets_in_cart );
 
-			// If WooCommerce or EDD
-			if ( ! $is_paypal ) {
-				// Bail if there are no required fields in cart or the stored data is up to date
-				// And they're submitting the Attendee Registration page
-				if (
-					isset( $_REQUEST['tribe_tickets_checkout'] )
-						&& ( ! $cart_has_required_meta || $up_to_date )
-				) {
-					return;
-				}
-
-				// Bail If things are up to date and they haven't submitted the form
-				// to access the registration page.
-				if (
-					$up_to_date
-						&& ! isset( $_REQUEST['wootickets_process'] )
-						&& ! isset( $_REQUEST['eddtickets_process'] )
-				) {
-					return;
-				}
-
-				// Bail if processing checkout for WooCommerce
-				if ( isset( $_REQUEST['key'] ) ) {
-					return;
-				}
-			} elseif ( ! $cart_has_meta ) {
-				// If PayPal and cart does not have meta
+			// There are no updates to perform on ticket meta.
+			if ( $up_to_date ) {
 				return;
 			}
 
@@ -2963,6 +2944,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$url = $attendee_reg->get_url();
 
 			$provider = tribe_get_request_var( 'provider' );
+
+			if ( empty( $provider ) ) {
+				$provider = $this->attendee_object;
+			}
 
 			if ( ! empty( $provider ) ) {
 				$url = add_query_arg( 'provider', $provider, $url );
@@ -2990,7 +2975,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$url = add_query_arg( 'tribe_tickets_post_id', $post_id, $url );
 			}
 
-			wp_safe_redirect( $url, 307 );
+			wp_safe_redirect( $url );
 			exit;
 		}
 
