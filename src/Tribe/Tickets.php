@@ -2964,6 +2964,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$provider = tribe_get_request_var( 'provider' );
 
+			if ( empty( $provider ) ) {
+				$provider = $this->attendee_object;
+			}
+
 			if ( ! empty( $provider ) ) {
 				$url = add_query_arg( 'provider', $provider, $url );
 			}
