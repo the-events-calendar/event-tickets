@@ -1442,7 +1442,7 @@ tribe.tickets.block  = {
 	 * @return void
 	 */
 	obj.document.on(
-		'click touchend',
+		'click',
 		'.tribe-tickets__item__quantity__remove, .tribe-tickets__item__quantity__add',
 		function( e ) {
 			e.preventDefault();
@@ -1450,8 +1450,6 @@ tribe.tickets.block  = {
 			if ( $input.is( ':disabled' ) ) {
 				return false;
 			}
-
-			e.preventDefault();
 
 			var originalValue = Number( $input[ 0 ].value );
 			var $modalForm    = $input.closest( obj.modalSelector.cartForm );

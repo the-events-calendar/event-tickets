@@ -678,8 +678,6 @@
                 "performance"
             ],
             "time": "2019-11-06T16:40:04+00:00"
-<<<<<<< HEAD
-=======
         },
         {
             "name": "cweagans/composer-patches",
@@ -724,7 +722,6 @@
             ],
             "description": "Provides a way to patch Composer packages.",
             "time": "2019-08-29T20:11:49+00:00"
->>>>>>> master
         },
         {
             "name": "dealerdirect/phpcodesniffer-composer-installer",
@@ -6260,18 +6257,6 @@
         },
         {
             "name": "wp-cli/media-command",
-<<<<<<< HEAD
-            "version": "v2.0.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/wp-cli/media-command.git",
-                "reference": "38eae38958af3bc3ce89acb2b8db0f63454b5e98"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/wp-cli/media-command/zipball/38eae38958af3bc3ce89acb2b8db0f63454b5e98",
-                "reference": "38eae38958af3bc3ce89acb2b8db0f63454b5e98",
-=======
             "version": "v2.0.7",
             "source": {
                 "type": "git",
@@ -6282,7 +6267,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/wp-cli/media-command/zipball/0b7fbee4c4aa9335b83fd5c65183808949ba1c8e",
                 "reference": "0b7fbee4c4aa9335b83fd5c65183808949ba1c8e",
->>>>>>> master
                 "shasum": ""
             },
             "require": {
@@ -6327,11 +6311,7 @@
             ],
             "description": "Imports files as attachments, regenerates thumbnails, or lists registered image sizes.",
             "homepage": "https://github.com/wp-cli/media-command",
-<<<<<<< HEAD
-            "time": "2019-11-08T20:45:24+00:00"
-=======
             "time": "2019-11-12T11:32:15+00:00"
->>>>>>> master
         },
         {
             "name": "wp-cli/mustangostang-spyc",

@@ -46,7 +46,7 @@ if ( $must_login ) {
 }
 ?>
 <div
-	id="tribe-block-tickets<?php echo $modal ? '-modal' : ''; ?>-item-<?php echo esc_attr( $ticket->ID ); ?>"
+	id="tribe-<?php echo $modal ? 'modal' : 'block'; ?>-tickets-item-<?php echo esc_attr( $ticket->ID ); ?>"
 	<?php tribe_classes( get_post_class( $classes, $ticket->ID ) ); ?>
 	data-ticket-id="<?php echo esc_attr( $ticket->ID ); ?>"
 	data-available="<?php echo ( 0 === $ticket->available() ) ? 'false' : 'true'; ?>"
