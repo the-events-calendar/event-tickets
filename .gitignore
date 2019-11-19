@@ -12,7 +12,7 @@ Makefile
 codeception.yml
 tests/*.suite.yml
 phpunit.xml
-.env.testing.local
+.env.*
 
 # Tests - local output files
 tests/_output
