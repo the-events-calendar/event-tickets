@@ -80,7 +80,7 @@ class Tribe__Tickets__Assets {
 		$tickets_handler = tribe( 'tickets.handler' );
 		$global_stock_mode = $tickets_handler->get_default_capacity_mode();
 		$assets = [
-				[ 'event-tickets-admin-css', 'tickets.css', [ 'tribe-validation-style', 'tribe-jquery-timepicker-css', 'tribe-common-admin' ] ],
+				[ 'event-tickets-admin-css', 'tickets-admin.css', [ 'tribe-validation-style', 'tribe-jquery-timepicker-css', 'tribe-common-admin' ] ],
 				[ 'event-tickets-admin-refresh-css', 'tickets-refresh.css', [ 'event-tickets-admin-css', 'tribe-common-admin' ] ],
 				[ 'event-tickets-admin-tables-css', 'tickets-tables.css', [ 'event-tickets-admin-css' ] ],
 				[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
