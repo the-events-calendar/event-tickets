@@ -64,7 +64,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	public function is_on_page() {
 		global $wp_query;
 
-		$ar_page_slug = tribe( 'tickets.attendee_registration' )->get_slug();
+		$ar_page_slug = $this->get_slug();
 
 		// Check for original redirect vars.
 		$on_original_redirect = ! empty( $wp_query->query_vars[ $this->key_query_var ] );
