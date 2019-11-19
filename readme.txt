@@ -2,7 +2,7 @@
 
 Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
-Requires at least: 4.7
+Requires at least: 4.9
 Tested up to: 5.3
 Stable tag: 4.11.0
 Requires PHP: 5.6
@@ -117,14 +117,13 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.11] TBD =
+= [4.11] 2019-11-21 =
 
 * Feature - Add Easy Digital Downloads cart via shortcode to `get_cart_url()`. Ensure button returns cart URL if present for provider. [129450]
 * Feature - Add ability to utilize the block ticket template outside of Gutenberg views [132568]
-* Feature - Use the block template for the "classic" editor [132568]
+* Feature - Use the block template view for the "classic" editor so they look the same now on the frontend [132568]
 * Feature - Implement a copy of tribe-common-styles and restyle the front end tickets block [131117]
 * Feature - Add currency formatting by commerce [133179]
-* Feature - Prefill ticket quantities based on what is already added to the cart for WooCommerce and EDD Tickets [129446]
 * Tweak - Clean up the way we add options to the ticket settings tab in PHP to make it more readable and maintainable. [133048]
 * Tweak - Add ability to track installed version history. Added `$version_history_slug` and `$latest_version_slug` properties to `Tribe__Tickets_Plus__Main` [133048]
 * Tweak - Added actions to `views/registration/content.php`: `tribe_tickets_registration_content_before_all_events` and `tribe_tickets_registration_content_after_all_events` [131896]
