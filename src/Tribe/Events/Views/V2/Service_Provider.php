@@ -15,14 +15,9 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 	 * @since 4.10.9
 	 */
 	public function register() {
-
 		require_once tribe( 'tickets.main' )->plugin_path . 'src/functions/views/provider.php';
 
-		if ( ! tribe_events_tickets_views_v2_is_enabled() ) {
-			return;
-		}
-
-		$this->register_hooks();
+		add_action( 'tribe_events_bound_implementations', [ $this, 'register_hooks' ] );
 
 		// Register the SP on the container
 		$this->container->singleton( 'tickets.views.v2.provider', $this );
@@ -34,7 +29,11 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since 4.10.9
 	 */
-	protected function register_hooks() {
+	public function register_hooks() {
+		if ( ! tribe_events_tickets_views_v2_is_enabled() ) {
+			return;
+		}
+
 		$hooks = new Hooks( $this->container );
 		$hooks->register();
 
