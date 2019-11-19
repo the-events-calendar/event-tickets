@@ -42,7 +42,6 @@ if ( $must_login ) {
 		<?php if ( -1 !== $max_quantity ) : ?>
 			max="<?php echo esc_attr( $max_quantity ); ?>"
 		<?php endif; ?>
-		name="quantity_<?php echo absint( $ticket->ID ); ?>"
 		value="0"
 		autocomplete="off"
 		<?php disabled( $must_login ); ?>
