@@ -36,18 +36,19 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		/**
 		 * Filter to add/remove tickets from the global cart
 		 *
-		 * @since TDB
+		 * @since 4.9
+		 * @since TBD Added $q_provider to allow context of current provider.
 		 *
-		 * @param array  $cart_tickets The array containing the cart elements. Format array( 'ticket_id' => 'quantity' );
-		 * @param string $q_provider   Current ticket provider.
+		 * @param array  $tickets_in_cart The array containing the cart elements. Format array( 'ticket_id' => 'quantity' ).
+		 * @param string $q_provider      Current ticket provider.
 		 */
-		$cart_tickets = apply_filters( 'tribe_tickets_tickets_in_cart', [], $q_provider );
+		$tickets_in_cart = apply_filters( 'tribe_tickets_tickets_in_cart', [], $q_provider );
 
 		$events           = [];
 		$providers        = [];
 		$default_provider = [];
 
-		foreach ( $cart_tickets as $ticket_id => $quantity ) {
+		foreach ( $tickets_in_cart as $ticket_id => $quantity ) {
 			// Load the tickets in cart for each event, with their ID, quantity and provider.
 			$ticket = tribe( 'tickets.handler' )->get_object_connections( $ticket_id );
 
@@ -101,9 +102,10 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 *
 		 * @since TDB
 		 *
-		 * @param array  The array containing the cart elements. Format arrat( 'ticket_id' => 'quantity' );
+		 * @param boolean $cart_has_required_meta Whether the cart has required meta.
+		 * @param array   $tickets_in_cart        The array containing the cart elements. Format array( 'ticket_id' => 'quantity' ).
 		 */
-		$cart_has_required_meta = (bool) apply_filters( 'tribe_tickets_attendee_registration_has_required_meta', $cart_tickets );
+		$cart_has_required_meta = (bool) apply_filters( 'tribe_tickets_attendee_registration_has_required_meta', ! empty( $tickets_in_cart ), $tickets_in_cart );
 
 		// Get the checkout URL, it'll be added to the checkout button
 		$checkout_url = tribe( 'tickets.attendee_registration' )->get_checkout_url();
