@@ -1471,9 +1471,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return void
 	 */
 	public function front_end_tickets_form( $content ) {
-		if ( tribe_get_option( 'toggle_blocks_editor', false ) ) {
-			return;
-		}
 
 		$post    = $GLOBALS['post'];
 		$tickets = self::get_tickets( $post->ID );

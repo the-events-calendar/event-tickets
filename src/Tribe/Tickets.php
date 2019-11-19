@@ -2506,6 +2506,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
+			// Blocks and ticket form merge - bail if we have toiggled blocks on.
+			/** @var \Tribe__Events__Editor__Compatibility $compatibility */
+			$compatibility = tribe( 'events.editor.compatibility' );
+			$option = tribe_get_option( $compatibility->get_toggle_blocks_editor_key(), false );
+			if ( ! empty( $option ) ) {
+				return false;
+			}
+
 			return true;
 		}
 
