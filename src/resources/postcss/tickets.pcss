@@ -6,6 +6,7 @@
  * @since  0.3.0-alpha
  */
 .tribe-common.tribe-tickets {
+	background-color: var(--color-background);
 	border-radius: var(--border-radius-default);
 	border: 1px solid var(--color-border-secondary);
 	-moz-osx-font-smoothing: grayscale;
@@ -45,7 +46,6 @@
 
 	.tribe-tickets__item {
 		align-items: center;
-		background: var(--color-background);
 		border-top: 1px solid var(--color-border-secondary);
 		display: -ms-grid;
 		display: grid;
@@ -141,6 +141,7 @@
 	.tribe-tickets__item__details__summary--less {
 		@mixin mobile-body-2;
 
+		background-color: transparent;
 		color: var(--color-text-secondary);
 		position: relative;
 		white-space: nowrap;
@@ -279,6 +280,10 @@
 		}
 	}
 
+	.tribe-tickets__item__quantity__add {
+		padding-top: var(--spacer-0);
+	}
+
 	.tribe-tickets__item__quantity__number {
 		appearance: none;
 		align-items: center;
@@ -362,6 +367,14 @@
 		display: none;
 		grid-column: 1/span all;
 		grid-row: 4;
+
+		label {
+			font-size: var(--font-size-1);
+
+			@media(--viewport-medium) {
+				font-size: var(--font-size-2);
+			}
+		}
 	}
 
 	/*
@@ -833,13 +846,13 @@
 
 		.tribe-modal__content {
 			.tribe-tickets__item {
-				-ms-grid-columns:  5fr 1fr 1fr 1fr;
-				grid-template-columns: 5fr 1fr 1fr 1fr;
+				-ms-grid-columns:  5fr 1fr 1fr 2fr;
+				grid-template-columns: 5fr 1fr 1fr 2fr;
 				padding-top: var(--spacer-3);
 
 				@media(--viewport-medium) {
-					-ms-grid-columns:  .5fr 8fr 2fr 1fr 1fr;
-					grid-template-columns: .5fr 8fr 2fr 1fr 1fr;
+					-ms-grid-columns:  1fr 11fr 2fr 2fr 2fr;
+					grid-template-columns: 1fr 11fr 2fr 2fr 2fr;
 					padding-top: var(--spacer-2);
 				}
 			}
@@ -876,6 +889,7 @@
 			}
 
 			.tribe-tickets__item__remove {
+				background-color: transparent;
 				background-image: svg-inline(remove-secondary);
 				background-position: center center;
 				background-repeat: no-repeat;
@@ -1003,7 +1017,7 @@
 				border: 1px solid var(--color-border-default);
 				border-radius: var(--border-radius-default);
 				height: 40px;
-				margin: 0 0 0 var(--spacer-2);
+				margin: 0 var(--spacer-2);
 				width: 44px;
 
 				@media(--viewport-medium) {
