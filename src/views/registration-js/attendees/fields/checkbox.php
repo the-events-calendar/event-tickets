@@ -43,7 +43,7 @@ if ( ! $options ) {
 				<input
 					class="tribe-common-form-control-checkbox__input ticket-meta"
 					id="<?php echo esc_attr( $option_id ); ?>"
-					name="tribe-tickets-meta[{{data.attendee_id}}][<?php echo esc_attr( $slug ); ?>]"
+					name="<?php echo esc_attr( $field_name ); ?>[<?php echo esc_attr( $slug ); ?>]"
 					type="checkbox"
 					value="<?php echo esc_attr( $option ); ?>"
 					<?php checked( true, in_array( $slug, $value ) ); ?>
