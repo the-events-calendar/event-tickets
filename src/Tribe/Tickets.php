@@ -2975,7 +2975,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$url = add_query_arg( 'tribe_tickets_post_id', $post_id, $url );
 			}
 
-			wp_safe_redirect( $url, 307 );
+			wp_safe_redirect( $url );
 			exit;
 		}
 
