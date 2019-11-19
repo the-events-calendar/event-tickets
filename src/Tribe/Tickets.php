@@ -2882,14 +2882,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
+			$q_provider = tribe_get_request_var( 'provider', false );
+
 			/**
-	 		 * Modify the tickets in cart, useful to
-	 		 * change the contents for each vendor
-			 * @since 4.9
+			 * Filter to add/remove tickets from the global cart
 			 *
-			 * @param array
-			*/
-			$tickets_in_cart = apply_filters( 'tribe_tickets_tickets_in_cart', [] );
+			 * @since 4.9
+			 * @since TBD Added $q_provider to allow context of current provider.
+			 *
+			 * @param array  $tickets_in_cart The array containing the cart elements. Format array( 'ticket_id' => 'quantity' ).
+			 * @param string $q_provider      Current ticket provider.
+			 */
+			$tickets_in_cart = apply_filters( 'tribe_tickets_tickets_in_cart', [], $q_provider );
 
 			// Bail if there are no tickets
 			if ( empty( $tickets_in_cart ) ) {
@@ -2940,9 +2944,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				if ( isset( $_REQUEST['key'] ) ) {
 					return;
 				}
-			}
-			// If PayPal and cart does not have meta
-			elseif ( ! $cart_has_meta ) {
+			} elseif ( ! $cart_has_meta ) {
+				// If PayPal and cart does not have meta
 				return;
 			}
 
