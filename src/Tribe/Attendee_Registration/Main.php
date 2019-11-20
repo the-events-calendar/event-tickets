@@ -213,7 +213,11 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		/** @var $settings_manager Tribe__Settings_Manager */
 		$settings_manager = tribe( 'settings.manager' );
 
+		$event_tickets_plus = apply_filters( 'event_tickets_plus_active', false );
+
 		$option = $settings_manager::get_option( 'ticket-attendee-modal' );
+
+		$activate_modal = $event_tickets_plus && $option;
 
 		/**
 		 * Allow filtering of the modal setting, on a post-by-post basis if desired.
@@ -223,7 +227,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		 * @param boolean $option The option value from ticket settings.
 		 * @param int|WP_Post|null $post The passed post or null if none passed.
 		 */
-		return apply_filters( 'tribe_tickets_modal_setting', $option, $post );
+		return apply_filters( 'tribe_tickets_modal_setting', $activate_modal, $post );
 	}
 
 	/**

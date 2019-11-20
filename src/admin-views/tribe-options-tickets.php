@@ -37,8 +37,6 @@ $all_post_types = apply_filters( 'tribe_tickets_settings_post_types', $all_post_
 
 $options = get_option( Tribe__Main::OPTIONNAME, [] );
 
-$modal_version_check = ! tribe_installed_before( 'Tribe__Tickets__Main', '4.11.0' );
-
 /**
  * List of ticketing solutions that support login requirements (ie, disabling or
  * enabling the ticket form according to whether a user is logged in or not).
@@ -115,30 +113,6 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		],
 	];
 }
-
-$attendee_fields = [
-	'ticket-attendee-heading'       => [
-		'type' => 'html',
-		'html' => '<h3>' . __( 'Attendee Registration', 'event-tickets-plus' ) . '</h3>',
-	],
-	'ticket-attendee-modal'         => [
-		'type'            => 'checkbox_bool',
-		'label'           => esc_html__( 'Attendee Registration Modal ', 'event-tickets-plus' ),
-		'tooltip' => sprintf(
-			esc_html_x(
-				'Enabling the Attendee Registration Modal provides a new sales flow for purchasing tickets that include Attendee Registration. [%1$sLearn more%2$s]',
-				'checkbox to enable Attendee Registration Modal',
-				'event-tickets-plus'
-			),
-			'<a href="http://m.tri.be/attendee-registration" target="_blank">',
-			'</a>'
-		),
-		'size'            => 'medium',
-		'default'         => $modal_version_check,
-		'validation_type' => 'boolean',
-		'attributes'      => array( 'id' => 'ticket-attendee-enable-modal' ),
-	],
-];
 
 $authentication_fields = [
 	'ticket-authentication-requirements-heading' => [
@@ -418,7 +392,6 @@ $ticket_fields_end = [
 $tickets_fields = array_merge(
 	$tickets_fields,
 	$tec_fields,
-	$attendee_fields,
 	$authentication_fields,
 	$paypal_fields,
 	$paypal_subfields,
