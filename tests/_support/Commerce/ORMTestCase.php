@@ -1026,6 +1026,13 @@ class ORMTestCase extends Test_Case {
 	 * Helpers
 	 */
 
+	/**
+	 * Given an array index key, get its value from the array of Events.
+	 *
+	 * @param int $index
+	 *
+	 * @return int
+	 */
 	protected function get_event_id( $index ) {
 		if ( isset( $this->test_data['events'][ $index ] ) ) {
 			return $this->test_data['events'][ $index ];
@@ -1034,6 +1041,13 @@ class ORMTestCase extends Test_Case {
 		return 0;
 	}
 
+	/**
+	 * Given an array index key, get its value from the array of Attendees.
+	 *
+	 * @param int $index
+	 *
+	 * @return int
+	 */
 	protected function get_attendee_id( $index ) {
 		if ( isset( $this->test_data['attendees_all'][ $index ] ) ) {
 			return $this->test_data['attendees_all'][ $index ];
@@ -1042,6 +1056,13 @@ class ORMTestCase extends Test_Case {
 		return 0;
 	}
 
+	/**
+	 * Given an array index key, get its value from the array of Users.
+	 *
+	 * @param int $index
+	 *
+	 * @return int
+	 */
 	protected function get_user_id( $index ) {
 		if ( isset( $this->test_data['users'][ $index ] ) ) {
 			return $this->test_data['users'][ $index ];
@@ -1050,14 +1071,28 @@ class ORMTestCase extends Test_Case {
 		return 0;
 	}
 
-	protected function get_rsvp_id( $index ) {
-		if ( isset( $this->test_data['rsvps'][ $index ] ) ) {
-			return $this->test_data['rsvps'][ $index ];
+	/**
+	 * Given an array index key, get its value from the array of RSVP Tickets.
+	 *
+	 * @param int $index
+	 *
+	 * @return int
+	 */
+	protected function get_rsvp_ticket_id( $index ) {
+		if ( isset( $this->test_data['rsvp_tickets'][ $index ] ) ) {
+			return $this->test_data['rsvp_tickets'][ $index ];
 		}
 
 		return 0;
 	}
 
+	/**
+	 * Given an array index key, get its value from the array of PayPal Tickets.
+	 *
+	 * @param int $index
+	 *
+	 * @return int
+	 */
 	protected function get_paypal_tickets_id( $index ) {
 		if ( isset( $this->test_data['paypal_tickets'][ $index ] ) ) {
 			return $this->test_data['paypal_tickets'][ $index ];
