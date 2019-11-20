@@ -127,7 +127,7 @@ trait Attendee_Maker {
 			$meta['_paid_price'] = (int) get_post_meta( $ticket_id, '_price', true );
 		}
 		if ( ! isset( $meta['_price_currency_symbol'] ) ) {
-			/** @var Tribe__Tickets__Commerce__Currency $currency */
+			/** @var \Tribe__Tickets__Commerce__Currency $currency */
 			$currency                       = tribe( 'tickets.commerce.currency' );
 			$meta['_price_currency_symbol'] = $currency->get_currency_symbol( $ticket_id, true );
 		}
