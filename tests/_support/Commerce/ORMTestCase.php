@@ -19,19 +19,13 @@ class ORMTestCase extends Test_Case {
 	use Attendee_Maker;
 
 	/**
-	 * The array of generated data, initiated with keys to hint what we do in this file and to avoid any fatal error.
+	 * The array of generated data.
+	 *
+	 * @see setup_test_data()
 	 *
 	 * @var array
 	 */
-	protected $test_data = [
-		'users',
-		'events',
-		'attendees_all', // all events' attendees
-		'attendees_1', // Event1's attendees
-		'attendees_3', // Event3's attendees
-		'rsvps',
-		'paypal_tickets',
-	];
+	protected $test_data = [];
 
 	public function setUp() {
 		parent::setUp();
@@ -1207,6 +1201,14 @@ class ORMTestCase extends Test_Case {
 
 		// Save test data to reference.
 		$this->test_data = $test_data;
+				}
+			}
+		}
+
+		// Save test data to class property after running each through array_unique()
+		foreach ( $test_data as $key => $value ) {
+			$this->test_data[ $key ] = array_unique( (array) $value );
+		}
 	}
 
 	private function get_assertions_array( array $attendee_ids ) {
