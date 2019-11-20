@@ -2452,7 +2452,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string The updated content.
 		 */
 		public function front_end_tickets_form_in_content( $content ) {
+			$post_id  = get_the_id();
+			$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+
+			if ( $provider !== get_called_class() && $provider !== 'Tribe__Tickets__RSVP' ) {
+				return $content;
+			}
+
 			if ( ! $this->should_inject_ticket_form_into_post_content() ) {
+				return $content;
+			}
+
+			/** @var Tribe__Tickets__Editor__Template__Overwrite $template_overwrite */
+			$template_overwrite = tribe( 'tickets.editor.template.overwrite' );
+
+
+			// Prevemnts dup.icated ticket blocks on ticketed pages
+			if ( is_page() && ! $template_overwrite->has_classic_editor( $post_id ) ) {
 				return $content;
 			}
 
@@ -2506,7 +2522,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
-			// Blocks and ticket form merge - bail if we have toiggled blocks on.
+			// Blocks and ticket form merge - bail if we have toggled blocks on.
 			/** @var \Tribe__Events__Editor__Compatibility $compatibility */
 			$compatibility = tribe( 'events.editor.compatibility' );
 			$option = tribe_get_option( $compatibility->get_toggle_blocks_editor_key(), false );

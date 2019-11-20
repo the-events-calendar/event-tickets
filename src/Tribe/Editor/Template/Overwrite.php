@@ -48,11 +48,15 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	 */
 	public function include_blocks_in_other_types() {
 		$post_id = get_the_ID();
+		$has_blocks = has_blocks( $post_id );
+		$should_inject_tickets_in_other_types = $this->should_inject_tickets_in_other_types( $post_id );
+		$has_classic_editor = $this->has_classic_editor( $post_id );
+
 		if (
 			false === $post_id
-			|| ! has_blocks( $post_id )
-			|| ! $this->should_inject_tickets_in_other_types( $post_id )
-			|| $this->has_classic_editor( $post_id )
+			|| ! $has_blocks
+			|| ! $should_inject_tickets_in_other_types
+			|| $has_classic_editor
 		) {
 			return;
 		}
@@ -77,6 +81,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 		) {
 			return;
 		}
+
 		$this->setup_template( $post_id );
 	}
 
@@ -90,13 +95,13 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	 * @return bool
 	 */
 	public function has_classic_editor( $post_id ) {
+
 		$is_event = function_exists( 'tribe_is_event' ) && tribe_is_event( $post_id );
 		if ( $is_event && $this->has_early_access_to_blocks() ) {
 			return false;
 		}
 		/** @var Tribe__Editor $editor */
 		$editor = tribe( 'editor' );
-
 		return $editor->is_classic_editor();
 	}
 
@@ -130,13 +135,15 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	 */
 	public function should_inject_tickets_in_other_types( $post_id ) {
 		// Make sure this executed inside of the loop to prevent multiple requests and false positives of IDs
-		$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
+		$in_the_loop = in_the_loop();
 
-		if ( empty( $post_id ) || is_admin() || ! $in_the_loop ) {
+		if ( empty( $post_id ) || is_admin() ) { //|| ! $in_the_loop ) {
 			return false;
 		}
 
-		return $this->has_tickets_support( $post_id );
+		$should_inject_tickets_in_other_types = $this->has_tickets_support( $post_id );
+
+		return $should_inject_tickets_in_other_types;
 	}
 
 	/**
