@@ -17,7 +17,7 @@
  * @see tribe_get_event() For the format of the event object.
  *
  */
-if ( empty( $event->tickets->exist() ) && tribe_events_has_tickets_on_sale( $event->ID ) ) {
+if ( empty( $event->tickets->exist() ) || ! tribe_events_has_tickets_on_sale( $event->ID ) ) {
 	return;
 }
 ?>
