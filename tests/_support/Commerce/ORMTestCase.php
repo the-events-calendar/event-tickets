@@ -1089,18 +1089,29 @@ class ORMTestCase extends Test_Case {
 	 */
 	protected function setup_test_data() {
 		$test_data = [
-			'users'          => [],
 			// 5 total: 1&5 = Event author, not Attendee; 2 = only RSVP attendee; 3 = RSVP & PayPal attendee; 4 = only PayPal attendee
-			'events'         => [],
+			'events'                  => [],
+			// '_tribe_rsvp_product' values
+			'tickets_products_rsvp'   => [],
+			// '_tribe_tpp_product' values
+			'tickets_products_paypal' => [],
+			// 4 total: 1&3 = Event author, 2&4 = Attendees
+			'users'                   => [],
 			// 4 total: 1&3 = has Author, Tickets, and Attendees; 2&4 = Author ID of zero and no Tickets (so no Attendees)
-			'rsvps'          => [],
+			'rsvp_tickets'            => [],
 			// 4 total: 1 = 4 Attendees (users 2 & 3 + 2 guests); 2, 3, & 4 = no Attendees
-			'paypal_tickets' => [],
+			'paypal_tickets'          => [],
 			// 4 total: 1 = 4 Attendees (users 3 & 4 + 2 guests); 2, 3, & 4 = no Attendees
-			'attendees_all'  => [],
+			'attendees_all'           => [],
 			// 9 total (5 by logged in): 1 & 2 = RSVP by logged in; 3 & 4 = RSVP by logged out; 5 & 6 = PayPal by logged in; 7 & 8: PayPal by logged out; 9 by User2 on Event3
-			'attendees_1'    => [], // Event1's
-			'attendees_3'    => [], // Event3's
+			'attendees_event_1'       => [], // Event1's
+			'attendees_event_3'       => [], // Event3's
+			'attendees_rsvp'          => [], // All RSVP Ticket attendees
+			'attendees_rsvp_1'        => [], // All RSVP Ticket ID 1's attendees: 1,2,3,4
+			'attendees_rsvp_5'        => [], // All RSVP Ticket ID 5's attendees: 10
+			'attendees_paypal'        => [], // All PayPal Ticket attendees
+			'attendees_paypal_1'      => [], // All PayPal Ticket ID 1's attendees: 5,6,7,8
+			'attendees_paypal_5'      => [], // All PayPal Ticket ID 5's attendees: 9
 		];
 
 		// Create User1, author of Event1.
@@ -1125,35 +1136,77 @@ class ORMTestCase extends Test_Case {
 		$rsvp_id_one = $this->create_rsvp_ticket( $event_id_one );
 
 		// Add User2 (Attendee1) and User3 (Attendee2) as RSVP1 attendees on Event1
-		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $rsvp_id_one, $event_id_one, [ 'user_id' => $user_id_two ] );
-		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $rsvp_id_one, $event_id_one, [ 'user_id' => $user_id_three ] );
+		$test_data['attendees_event_1'][] =
+		$test_data['attendees_rsvp'][] =
+		$test_data['attendees_rsvp_1'][] =
+		$attendee_id_1 =
+			$this->create_attendee_for_ticket( $rsvp_id_one, $event_id_one, [ 'user_id' => $user_id_two ] );
+
+		$test_data['attendees_event_1'][] =
+		$test_data['attendees_rsvp'][] =
+		$test_data['attendees_rsvp_1'][] =
+		$attendee_id_2 =
+			$this->create_attendee_for_ticket( $rsvp_id_one, $event_id_one, [ 'user_id' => $user_id_three ] );
 
 		// Add 2 guest purchasers (Attendees 3 & 4) to RSVP1 Ticket already having other Attendees
-		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $rsvp_id_one, $event_id_one );
-		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $rsvp_id_one, $event_id_one );
+		$test_data['attendees_event_1'][] =
+		$test_data['attendees_rsvp'][] =
+		$test_data['attendees_rsvp_1'][] =
+		$attendee_id_3 =
+			$this->create_attendee_for_ticket( $rsvp_id_one, $event_id_one );
+
+		$test_data['attendees_event_1'][] =
+		$test_data['attendees_rsvp'][] =
+		$test_data['attendees_rsvp_1'][] =
+		$attendee_id_4 =
+			$this->create_attendee_for_ticket( $rsvp_id_one, $event_id_one );
 
 		// Create 3 more RSVP tickets that will never have any attendees
-		$test_data['rsvps'] = array_merge( [ $rsvp_id_one ], $this->create_many_rsvp_tickets( 3, $event_id_one ) );
+		$test_data['rsvp_tickets'] = array_merge( [ $rsvp_id_one ], $this->create_many_rsvp_tickets( 3, $event_id_one ) );
 
 		// Create test PayPal1 ticket
 		$paypal_id_one = $this->create_paypal_ticket( $event_id_one, 5 );
 
 		// Add User3 (Attendee5) and User4 (Attendee6) as Tribe Commerce PayPal Ticket attendees
-		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $paypal_id_one, $event_id_one, [ 'user_id' => $user_id_three ] );
-		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $paypal_id_one, $event_id_one, [ 'user_id' => $user_id_four ] );
+
+		$test_data['attendees_event_1'][] =
+		$test_data['attendees_paypal'][] =
+		$test_data['attendees_paypal_1'][] =
+		$attendee_id_5 =
+			$this->create_attendee_for_ticket( $paypal_id_one, $event_id_one, [ 'user_id' => $user_id_three ] );
+
+		$test_data['attendees_event_1'][] =
+		$test_data['attendees_paypal'][] =
+		$test_data['attendees_paypal_1'][] =
+		$attendee_id_6 =
+			$this->create_attendee_for_ticket( $paypal_id_one, $event_id_one, [ 'user_id' => $user_id_four ] );
 
 		// Add 2 guest purchasers (Attendees 7 & 8) to the PayPal Ticket already having other Attendees
-		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $paypal_id_one, $event_id_one );
-		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $paypal_id_one, $event_id_one );
+
+		$test_data['attendees_event_1'][] =
+		$test_data['attendees_paypal'][] =
+		$test_data['attendees_paypal_1'][] =
+		$attendee_id_7 =
+			$this->create_attendee_for_ticket( $paypal_id_one, $event_id_one );
+
+		$test_data['attendees_event_1'][] =
+		$test_data['attendees_paypal'][] =
+		$test_data['attendees_paypal_1'][] =
+		$attendee_id_8 =
+			$this->create_attendee_for_ticket( $paypal_id_one, $event_id_one );
 
 		// Create 3 more PayPal tickets that will never have any attendees
 		$test_data['paypal_tickets'] = array_merge( [ $paypal_id_one ], $this->create_many_paypal_tickets( 3, $event_id_one ) );
 
-		// Create test PayPal1 ticket
-		$paypal_id_two = $this->create_paypal_ticket( $event_id_one, 12 );
+		// Create test PayPal5 ticket
+		$paypal_id_five = $this->create_paypal_ticket( $event_id_one, 12 );
 
 		// Add User2 (Attendee9) as Tribe Commerce PayPal Ticket attendee
-		$test_data['attendees_1'][] = $this->create_attendee_for_ticket( $paypal_id_two, $event_id_one, [ 'user_id' => $user_id_two ] );
+		$test_data['attendees_event_1'][] =
+		$test_data['attendees_paypal'][] =
+		$test_data['attendees_paypal_5'][] =
+		$attendee_id_9 =
+			$this->create_attendee_for_ticket( $paypal_id_five, $event_id_one, [ 'user_id' => $user_id_two ] );
 
 		//
 		// Event2: No author nor tickets (and therefore no attendees)
@@ -1175,10 +1228,16 @@ class ORMTestCase extends Test_Case {
 
 		$test_data['events'][] = $event_id_three;
 
-		$test_data['rsvps'][] = $rsvp_id_five = $this->create_rsvp_ticket( $event_id_three );
+		$test_data['rsvp_tickets'][] =
+		$rsvp_id_five =
+			$this->create_rsvp_ticket( $event_id_three );
 
 		// Add User2 (Attendee10) on RSVP5 ticket on Event3
-		$test_data['attendees_3'][] = $this->create_attendee_for_ticket( $rsvp_id_five, $event_id_three, [ 'user_id' => $user_id_two ] );
+		$test_data['attendees_event_3'][] =
+		$test_data['attendees_rsvp'][] =
+		$test_data['attendees_rsvp_5'][] =
+		$attendee_id_10 =
+			$this->create_attendee_for_ticket( $rsvp_id_five, $event_id_three, [ 'user_id' => $user_id_two ] );
 
 		// Create User5, author of Event3.
 		$test_data['users'][] = $user_id_five = $this->factory()->user->create( [ 'role' => 'author' ] );
@@ -1194,13 +1253,26 @@ class ORMTestCase extends Test_Case {
 		// Merge all attendees
 		$test_data['attendees_all'] = array_unique(
 			array_merge(
-				$test_data['attendees_1'], // Event1
-				$test_data['attendees_3'] // Event3
+				$test_data['attendees_event_1'], // Event1
+				$test_data['attendees_event_3'] // Event3
 			)
 		);
 
-		// Save test data to reference.
-		$this->test_data = $test_data;
+		// Get the post_meta so we can filter by it
+		foreach ( $test_data['attendees_all'] as $attendee_id ) {
+			$meta = get_post_meta( $attendee_id );
+
+			foreach ( $meta as $k => $v ) {
+				if (
+					'_tribe_rsvp_product' === $k
+					&& ! empty( $meta[ $k ][0] )
+				) {
+					$test_data['tickets_products_rsvp'][] = $meta[ $k ][0];
+				} elseif (
+					'_tribe_tpp_product' === $k
+					&& ! empty( $meta[ $k ][0] )
+				) {
+					$test_data['tickets_products_paypal'][] = $meta[ $k ][0];
 				}
 			}
 		}
