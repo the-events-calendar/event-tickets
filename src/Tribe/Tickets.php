@@ -2991,7 +2991,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$messages = [
 				'api_error_title'        => _x( 'API Error', 'Error message title, will be followed by the error code.', 'event-tickets' ),
 				'connection_error'       => __( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.', 'event-tickets' ),
-				'capacity_error'         => __( 'The ticket for this event has sold out and has been removed from your cart.', 'event-tickets'),
+				'capacity_error'         => __( 'The ticket for this event has sold out and has been removed from your cart.', 'event-tickets' ),
 				'validation_error_title' => __( 'Whoops!', 'event-tickets' ),
 				'validation_error'       => '<p>' . sprintf( esc_html_x( 'You have %s ticket(s) with a field that requires information.', 'The %s will change based on the error produced.', 'event-tickets' ), '<span class="tribe-tickets__notice--error__count">0</span>' ) . '</p>',
 			];
