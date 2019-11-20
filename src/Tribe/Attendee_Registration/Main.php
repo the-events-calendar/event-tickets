@@ -213,7 +213,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		/** @var $settings_manager Tribe__Settings_Manager */
 		$settings_manager = tribe( 'settings.manager' );
 
-		$event_tickets_plus = apply_filters( 'event_tickets_plus_active', false );
+		$event_tickets_plus = class_exists( 'Tribe__Tickets_Plus__Main' );
 
 		$option = $settings_manager::get_option( 'ticket-attendee-modal' );
 
