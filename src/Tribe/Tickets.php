@@ -2455,7 +2455,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$post_id  = get_the_id();
 			$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 
-			if ( $provider !== get_called_class() && $provider !== 'Tribe__Tickets__RSVP' ) {
+			if ( 'Tribe__Tickets__RSVP' !== $provider && get_called_class() !== $provider ) {
 				return $content;
 			}
 
@@ -2466,8 +2466,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var Tribe__Tickets__Editor__Template__Overwrite $template_overwrite */
 			$template_overwrite = tribe( 'tickets.editor.template.overwrite' );
 
-
-			// Prevemnts dup.icated ticket blocks on ticketed pages
+			// Prevents duplicated ticket blocks on ticketed pages.
 			if ( is_page() && ! $template_overwrite->has_classic_editor( $post_id ) ) {
 				return $content;
 			}
