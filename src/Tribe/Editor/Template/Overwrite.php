@@ -134,10 +134,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	 * @return bool
 	 */
 	public function should_inject_tickets_in_other_types( $post_id ) {
-		// Make sure this executed inside of the loop to prevent multiple requests and false positives of IDs
-		$in_the_loop = in_the_loop();
-
-		if ( empty( $post_id ) || is_admin() ) { //|| ! $in_the_loop ) {
+		if ( empty( $post_id ) || is_admin()  ) {
 			return false;
 		}
 
