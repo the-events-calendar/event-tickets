@@ -2506,11 +2506,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
-			// Blocks and ticket form merge - bail if we have toiggled blocks on.
-			/** @var \Tribe__Events__Editor__Compatibility $compatibility */
-			$compatibility = tribe( 'events.editor.compatibility' );
-			$option = tribe_get_option( $compatibility->get_toggle_blocks_editor_key(), false );
-			if ( ! empty( $option ) ) {
+			// Blocks and ticket templates merged - bail if we should be seeing blocks.
+			if ( has_blocks( $post->ID ) && tribe( 'editor' )->should_load_blocks() && ! tribe( 'editor' )->is_classic_editor() ) {
 				return false;
 			}
 
