@@ -319,7 +319,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_action( 'admin_init', tribe_callback( 'tickets.commerce.paypal.oversell.request', 'handle' ) );
 		add_filter( 'tribe_tickets_get_default_module', [ $this, 'deprioritize_module' ], 5, 2 );
 
-		add_filter( 'tribe_tickets_tickets_in_cart', [ $this, 'get_tickets_in_cart' ], 10, 1 );
+		add_filter( 'tribe_tickets_tickets_in_cart', [ $this, 'get_tickets_in_cart' ], 10, 2 );
 		add_action( 'wp_loaded', [ $this, 'maybe_redirect_to_attendees_registration_screen' ], 1 );
 		add_action( 'wp_loaded', [ $this, 'maybe_delete_expired_products' ], 0 );
 
@@ -1471,9 +1471,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return void
 	 */
 	public function front_end_tickets_form( $content ) {
-		if ( tribe_get_option( 'toggle_blocks_editor', false ) ) {
-			return;
-		}
 
 		$post    = $GLOBALS['post'];
 		$tickets = self::get_tickets( $post->ID );
@@ -2374,11 +2371,23 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.9
 	 *
-	 * @param array $tickets List of tickets.
+	 * @param array  $tickets  List of tickets.
+	 * @param string $provider Provider of tickets to get (if set).
 	 *
 	 * @return array List of tickets.
 	 */
-	public function get_tickets_in_cart( $tickets ) {
+	public function get_tickets_in_cart( $tickets = [], $provider = null ) {
+		$providers = [
+			'tribe-commerce',
+			'tribe_tpp_tickets',
+			'Tribe__Tickets__Commerce__PayPal__Main',
+		];
+
+		// Determine if this provider is being requested or not.
+		if ( ! empty( $provider ) && ! in_array( $provider, $providers, true ) ) {
+			return $tickets;
+		}
+
 		$commerce_tickets = $this->commerce_get_tickets_in_cart( $tickets );
 
 		foreach ( $commerce_tickets as $ticket ) {

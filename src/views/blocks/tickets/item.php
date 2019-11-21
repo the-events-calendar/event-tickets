@@ -52,7 +52,6 @@ if ( $must_login ) {
 	data-available="<?php echo ( 0 === $ticket->available() ) ? 'false' : 'true'; ?>"
 	data-shared-cap="<?php echo ( tribe( 'tickets.handler' )->has_shared_capacity( $ticket ) ) ? 'true' : 'false'; ?>"
 >
-	<input type="hidden" name="product_id[]" value="<?php echo esc_attr( $ticket->ID ); ?>" />
 	<?php if ( true === $modal ) : ?>
 		<?php $this->template( 'modal/item-remove', $context ); ?>
 	<?php endif ?>

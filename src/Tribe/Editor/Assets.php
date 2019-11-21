@@ -77,10 +77,17 @@ class Tribe__Tickets__Editor__Assets {
 			$plugin,
 			'tribe-tickets-gutenberg-blocks',
 			'app/blocks.js',
-			/**
-			 * @todo revise this dependencies
-			 */
-			array(),
+			[
+				'react',
+				'react-dom',
+				'wp-components',
+				'wp-api',
+				'wp-api-request',
+				'wp-blocks',
+				'wp-i18n',
+				'wp-element',
+				'wp-editor',
+			],
 			'enqueue_block_editor_assets',
 			array(
 				'in_footer'    => false,

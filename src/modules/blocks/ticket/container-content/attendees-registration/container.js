@@ -42,8 +42,14 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 		onClick: () => {
 			dispatch( actions.setTicketIsModalOpen( ownProps.clientId, true ) );
 		},
-		onClose: () => {
-			dispatch( actions.setTicketIsModalOpen( ownProps.clientId, false ) );
+		onClose: ( e ) => {
+			if ( ! e.target.classList.contains( 'components-modal__content' ) ) {
+				dispatch( actions.setTicketIsModalOpen( ownProps.clientId, false ) );
+			}
+
+			if ( e.type === 'click' && e.target.classList.contains( 'components-modal__screen-overlay' ) ) {
+				dispatch( actions.setTicketIsModalOpen( ownProps.clientId, false ) );
+			}
 		},
 		onIframeLoad: ( iframe ) => {
 			const iframeWindow = iframe.contentWindow;
@@ -55,7 +61,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 
 			// add event listener for form submit
 			const form = iframeWindow.document.querySelector( '#event-tickets-attendee-information' );
-			form.addEventListener( 'submit', showOverlay )
+			form.addEventListener( 'submit', showOverlay );
 
 			// remove listeners
 			const removeListeners = () => {

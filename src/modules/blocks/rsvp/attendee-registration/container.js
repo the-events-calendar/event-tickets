@@ -44,8 +44,10 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 		onClick: () => {
 			dispatch( actions.setRSVPIsModalOpen( true ) );
 		},
-		onClose: () => {
-			dispatch( actions.setRSVPIsModalOpen( false ) );
+		onClose: ( e ) => {
+			if ( ! e.target.classList.contains( 'components-modal__content' ) ) {
+				dispatch( actions.setRSVPIsModalOpen( ownProps.clientId, false ) );
+			}
 		},
 		onIframeLoad: ( iframe ) => {
 			const iframeWindow = iframe.contentWindow;
@@ -57,7 +59,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 
 			// add event listener for form submit
 			const form = iframeWindow.document.querySelector( '#event-tickets-attendee-information' );
-			form.addEventListener( 'submit', showOverlay )
+			form.addEventListener( 'submit', showOverlay );
 
 			// remove listeners
 			const removeListeners = () => {

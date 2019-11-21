@@ -39,7 +39,7 @@ class Tribe__Tickets__Main {
 	*
 	* @since 4.10
 	*/
-	protected $min_wordpress = '4.7';
+	protected $min_wordpress = '4.9';
 
 	/**
 	* Min Version of PHP

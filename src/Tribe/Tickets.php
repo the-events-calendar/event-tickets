@@ -1568,7 +1568,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$checkout_urls               = [];
 			$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 60000 );
 
-			if ( ! self::$frontend_script_enqueued ) {
+			if ( empty( self::$frontend_script_enqueued ) ) {
 				if ( ! is_admin() ) {
 					/**
 					 * Allow providers to add their own checkout URL to the localized list.
@@ -2506,6 +2506,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
+			// Blocks and ticket templates merged - bail if we should be seeing blocks.
+			if (
+				has_blocks( $post->ID )
+				&& tribe( 'editor' )->should_load_blocks()
+				&& ! tribe( 'editor' )->is_classic_editor()
+			) {
+				return false;
+			}
+
 			return true;
 		}
 
@@ -2882,14 +2891,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
+			$q_provider = tribe_get_request_var( 'provider', false );
+
 			/**
-	 		 * Modify the tickets in cart, useful to
-	 		 * change the contents for each vendor
-			 * @since 4.9
+			 * Filter to add/remove tickets from the global cart
 			 *
-			 * @param array
-			*/
-			$tickets_in_cart = apply_filters( 'tribe_tickets_tickets_in_cart', [] );
+			 * @since 4.9
+			 * @since TBD Added $q_provider to allow context of current provider.
+			 *
+			 * @param array  $tickets_in_cart The array containing the cart elements. Format array( 'ticket_id' => 'quantity' ).
+			 * @param string $q_provider      Current ticket provider.
+			 */
+			$tickets_in_cart = apply_filters( 'tribe_tickets_tickets_in_cart', [], $q_provider );
 
 			// Bail if there are no tickets
 			if ( empty( $tickets_in_cart ) ) {
@@ -2898,8 +2911,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$is_paypal = (bool) $redirect;
 
+			/** @var Tribe__Tickets_Plus__Main $tickets_plus_main */
+			$tickets_plus_main = tribe( 'tickets-plus.main' );
+
 			/** @var Tribe__Tickets_Plus__Meta $meta */
-			$meta = tribe( 'tickets-plus.main' )->meta();
+			$meta = $tickets_plus_main->meta();
 
 			$cart_has_meta = true;
 
@@ -2908,41 +2924,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$cart_has_meta = $meta->cart_has_meta( $tickets_in_cart );
 			}
 
-			$cart_has_required_meta = $meta->cart_has_required_meta( $tickets_in_cart );
+			// There are no meta fields on the cart tickets.
+			if ( ! $cart_has_meta ) {
+				return;
+			}
 
 			/** @var \Tribe__Tickets_Plus__Meta__Contents $meta_contents */
 			$meta_contents = tribe( 'tickets-plus.meta.contents' );
 
 			$up_to_date = $meta_contents->is_stored_meta_up_to_date( $tickets_in_cart );
 
-			// If WooCommerce or EDD
-			if ( ! $is_paypal ) {
-				// Bail if there are no required fields in cart or the stored data is up to date
-				// And they're submitting the Attendee Registration page
-				if (
-					isset( $_REQUEST['tribe_tickets_checkout'] )
-						&& ( ! $cart_has_required_meta || $up_to_date )
-				) {
-					return;
-				}
-
-				// Bail If things are up to date and they haven't submitted the form
-				// to access the registration page.
-				if (
-					$up_to_date
-						&& ! isset( $_REQUEST['wootickets_process'] )
-						&& ! isset( $_REQUEST['eddtickets_process'] )
-				) {
-					return;
-				}
-
-				// Bail if processing checkout for WooCommerce
-				if ( isset( $_REQUEST['key'] ) ) {
-					return;
-				}
-			}
-			// If PayPal and cart does not have meta
-			elseif ( ! $cart_has_meta ) {
+			// There are no updates to perform on ticket meta.
+			if ( $up_to_date ) {
 				return;
 			}
 
@@ -2952,6 +2945,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$url = $attendee_reg->get_url();
 
 			$provider = tribe_get_request_var( 'provider' );
+
+			if ( empty( $provider ) ) {
+				$provider = $this->attendee_object;
+			}
 
 			if ( ! empty( $provider ) ) {
 				$url = add_query_arg( 'provider', $provider, $url );
@@ -2979,7 +2976,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$url = add_query_arg( 'tribe_tickets_post_id', $post_id, $url );
 			}
 
-			wp_safe_redirect( $url, 307 );
+			wp_safe_redirect( $url );
 			exit;
 		}
 
@@ -2995,7 +2992,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$messages = [
 				'api_error_title'        => _x( 'API Error', 'Error message title, will be followed by the error code.', 'event-tickets' ),
 				'connection_error'       => __( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.', 'event-tickets' ),
-				'capacity_error'         => __( 'The ticket for this event has sold out and has been removed from your cart.', 'event-tickets'),
+				'capacity_error'         => __( 'The ticket for this event has sold out and has been removed from your cart.', 'event-tickets' ),
 				'validation_error_title' => __( 'Whoops!', 'event-tickets' ),
 				'validation_error'       => '<p>' . sprintf( esc_html_x( 'You have %s ticket(s) with a field that requires information.', 'The %s will change based on the error produced.', 'event-tickets' ), '<span class="tribe-tickets__notice--error__count">0</span>' ) . '</p>',
 			];

@@ -79,29 +79,19 @@ class Tribe__Tickets__Assets {
 		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
 		$global_stock_mode = $tickets_handler->get_default_capacity_mode();
-
-		tribe_assets(
-			Tribe__Tickets__Main::instance(),
-			[
+		$assets = [
 				[ 'event-tickets-admin-css', 'tickets-admin.css', [ 'tribe-validation-style', 'tribe-jquery-timepicker-css', 'tribe-common-admin' ] ],
+				[ 'event-tickets-admin-refresh-css', 'tickets-refresh.css', [ 'event-tickets-admin-css', 'tribe-common-admin' ] ],
 				[ 'event-tickets-admin-tables-css', 'tickets-tables.css', [ 'event-tickets-admin-css' ] ],
 				[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
 				[ 'event-tickets-admin-accordion-js', 'accordion.js', [] ],
-				[
-					'event-tickets-admin-js',
-					'tickets.js',
-					[
-						'jquery-ui-datepicker',
-						'tribe-bumpdown',
-						'tribe-attrchange',
-						'tribe-moment',
-						'underscore',
-						'tribe-validation',
-						'event-tickets-admin-accordion-js',
-						'tribe-timepicker'
-					]
-				],
-			],
+				[ 'event-tickets-admin-accordion-css', 'accordion.css', [] ],
+				[ 'event-tickets-admin-js', 'tickets.js', [ 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'tribe-moment', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'tribe-timepicker' ] ],
+		];
+
+		tribe_assets(
+			Tribe__Tickets__Main::instance(),
+			$assets,
 			'admin_enqueue_scripts',
 			[
 				'groups'       => 'event-tickets-admin',
