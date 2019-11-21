@@ -78,6 +78,17 @@ class ORMTestCase extends Test_Case {
 		yield 'event not in mismatch single' => [ 'get_test_matrix_single_event_not_in_mismatch' ];
 		yield 'event not in mismatch multi' => [ 'get_test_matrix_multi_event_not_in_mismatch' ];
 
+		// Ticket
+		yield 'ticket match single' => [ 'get_test_matrix_single_ticket_match' ];
+		yield 'ticket match multi' => [ 'get_test_matrix_multi_ticket_match' ];
+		////yield 'ticket mismatch single' => [ 'get_test_matrix_single_ticket_mismatch' ];
+		////yield 'ticket mismatch multi' => [ 'get_test_matrix_multi_ticket_mismatch' ];
+		// Ticket Not In
+		////yield 'ticket not in match single' => [ 'get_test_matrix_single_ticket_not_in_match' ];
+		////yield 'ticket not in match multi' => [ 'get_test_matrix_multi_ticket_not_in_match' ];
+		////yield 'ticket not in mismatch single' => [ 'get_test_matrix_single_ticket_not_in_mismatch' ];
+		////yield 'ticket not in mismatch multi' => [ 'get_test_matrix_multi_ticket_not_in_mismatch' ];
+
 		// RSVP
 		yield 'rsvp match single' => [ 'get_test_matrix_single_rsvp_match' ];
 		yield 'rsvp match multi' => [ 'get_test_matrix_multi_rsvp_match' ];
@@ -293,6 +304,46 @@ class ORMTestCase extends Test_Case {
 			],
 			// Assertions to make.
 			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * TICKETS
+	 */
+
+	/**
+	 * Get test matrix for Ticket match.
+	 */
+	public function get_test_matrix_single_ticket_match() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'ticket',
+			// Filter arguments to use.
+			[
+				$this->test_data['tickets_products_rsvp'][0]
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $this->test_data['attendees_rsvp_1'] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Ticket match.
+	 */
+	public function get_test_matrix_multi_ticket_match() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'ticket',
+			// Filter arguments to use.
+			[
+				$this->test_data['tickets_products_rsvp']
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $this->test_data['attendees_rsvp'] ),
 		];
 	}
 
