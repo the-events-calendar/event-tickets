@@ -81,8 +81,8 @@ class ORMTestCase extends Test_Case {
 		// Ticket
 		yield 'ticket match single' => [ 'get_test_matrix_single_ticket_match' ];
 		yield 'ticket match multi' => [ 'get_test_matrix_multi_ticket_match' ];
-		////yield 'ticket mismatch single' => [ 'get_test_matrix_single_ticket_mismatch' ];
-		////yield 'ticket mismatch multi' => [ 'get_test_matrix_multi_ticket_mismatch' ];
+		yield 'ticket mismatch single' => [ 'get_test_matrix_single_ticket_mismatch' ];
+		yield 'ticket mismatch multi' => [ 'get_test_matrix_multi_ticket_mismatch' ];
 		// Ticket Not In
 		////yield 'ticket not in match single' => [ 'get_test_matrix_single_ticket_not_in_match' ];
 		////yield 'ticket not in match multi' => [ 'get_test_matrix_multi_ticket_not_in_match' ];
@@ -344,6 +344,47 @@ class ORMTestCase extends Test_Case {
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $this->test_data['attendees_rsvp'] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for Ticket mismatch.
+	 */
+	public function get_test_matrix_single_ticket_mismatch() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'ticket',
+			// Filter arguments to use.
+			[
+				[
+					88888,
+				],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Tickets mismatch.
+	 */
+	public function get_test_matrix_multi_ticket_mismatch() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'ticket',
+			// Filter arguments to use.
+			[
+				[
+					88888,
+					99999,
+				]
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
 		];
 	}
 
