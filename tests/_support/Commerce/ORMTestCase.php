@@ -147,7 +147,7 @@ class ORMTestCase extends Test_Case {
 				],
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $this->test_data['attendees_1'] ),
+			$this->get_assertions_array( $this->test_data['attendees_event_1'] ),
 		];
 	}
 
@@ -271,7 +271,7 @@ class ORMTestCase extends Test_Case {
 				],
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $this->test_data['attendees_3'] ),
+			$this->get_assertions_array( $this->test_data['attendees_event_3'] ),
 		];
 	}
 
@@ -304,13 +304,6 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for RSVP match.
 	 */
 	public function get_test_matrix_single_rsvp_match() {
-		$expected = [
-			$this->get_attendee_id( 0 ), // User2
-			$this->get_attendee_id( 1 ), // User3
-			$this->get_attendee_id( 2 ), // Guest
-			$this->get_attendee_id( 3 ), // Guest
-		];
-
 		return [
 			// Repository
 			'rsvp',
@@ -319,11 +312,11 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[
 				[
-					$this->get_rsvp_id( 0 ),
+					$this->get_rsvp_ticket_id( 0 ),
 				],
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $expected ),
+			$this->get_assertions_array( $this->test_data['attendees_rsvp_1'] ),
 		];
 	}
 
@@ -331,14 +324,6 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for multiple RSVPs match.
 	 */
 	public function get_test_matrix_multi_rsvp_match() {
-		$expected = [
-			$this->get_attendee_id( 0 ), // User2
-			$this->get_attendee_id( 1 ), // User3
-			$this->get_attendee_id( 2 ), // Guest
-			$this->get_attendee_id( 3 ), // Guest
-			$this->get_attendee_id( 9 ), // User2 on Event 3
-		];
-
 		return [
 			// Repository
 			'rsvp',
@@ -347,12 +332,12 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[
 				[
-					$this->get_rsvp_id( 0 ),
-					$this->get_rsvp_id( 4 ),
+					$this->get_rsvp_ticket_id( 0 ),
+					$this->get_rsvp_ticket_id( 4 ),
 				],
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $expected ),
+			$this->get_assertions_array( $this->test_data['attendees_rsvp'] ),
 		];
 	}
 
@@ -368,7 +353,7 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[
 				[
-					$this->get_rsvp_id( 1 ),
+					$this->get_rsvp_ticket_id( 1 ),
 				],
 			],
 			// Assertions to make.
@@ -388,9 +373,9 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[
 				[
-					$this->get_rsvp_id( 1 ),
-					$this->get_rsvp_id( 2 ),
-					$this->get_rsvp_id( 3 ),
+					$this->get_rsvp_ticket_id( 1 ),
+					$this->get_rsvp_ticket_id( 2 ),
+					$this->get_rsvp_ticket_id( 3 ),
 				],
 			],
 			// Assertions to make.
@@ -410,11 +395,11 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[
 				[
-					$this->get_rsvp_id( 0 ),
+					$this->get_rsvp_ticket_id( 0 ),
 				],
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $this->test_data['attendees_3'] ),
+			$this->get_assertions_array( $this->test_data['attendees_event_3'] ),
 		];
 	}
 
@@ -430,8 +415,8 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[
 				[
-					$this->get_rsvp_id( 0 ),
-					$this->get_rsvp_id( 4 ),
+					$this->get_rsvp_ticket_id( 0 ),
+					$this->get_rsvp_ticket_id( 4 ),
 				],
 			],
 			// Assertions to make.
@@ -451,11 +436,11 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[
 				[
-					$this->get_rsvp_id( 0 ),
+					$this->get_rsvp_ticket_id( 0 ),
 				],
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $this->test_data['attendees_3'] ),
+			$this->get_assertions_array( $this->test_data['attendees_event_3'] ),
 		];
 	}
 
@@ -471,8 +456,8 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[
 				[
-					$this->get_rsvp_id( 0 ),
-					$this->get_rsvp_id( 4 ),
+					$this->get_rsvp_ticket_id( 0 ),
+					$this->get_rsvp_ticket_id( 4 ),
 				],
 			],
 			// Assertions to make.
@@ -488,13 +473,6 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for Tribe Commerce PayPal match.
 	 */
 	public function get_test_matrix_single_paypal_match() {
-		$expected = [
-			$this->get_attendee_id( 4 ), // User3
-			$this->get_attendee_id( 5 ), // User4
-			$this->get_attendee_id( 6 ), // Guest
-			$this->get_attendee_id( 7 ), // Guest
-		];
-
 		return [
 			// Repository
 			'tribe-commerce',
@@ -507,7 +485,7 @@ class ORMTestCase extends Test_Case {
 				],
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $expected ),
+			$this->get_assertions_array( $this->test_data['attendees_paypal_1'] ),
 		];
 	}
 
@@ -515,13 +493,6 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for multiple Tribe Commerce PayPal match.
 	 */
 	public function get_test_matrix_multi_paypal_match() {
-		$expected = [
-			$this->get_attendee_id( 4 ), // User3
-			$this->get_attendee_id( 5 ), // User4
-			$this->get_attendee_id( 6 ), // Guest
-			$this->get_attendee_id( 7 ), // Guest
-		];
-
 		return [
 			// Repository
 			'tribe-commerce',
@@ -531,11 +502,11 @@ class ORMTestCase extends Test_Case {
 			[
 				[
 					$this->get_paypal_tickets_id( 0 ),
-					$this->get_paypal_tickets_id( 0 ),
+					$this->get_paypal_tickets_id( 4 ),
 				],
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $expected ),
+			$this->get_assertions_array( $this->test_data['attendees_paypal'] ),
 		];
 	}
 
@@ -585,14 +556,6 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for Tribe Commerce PayPal Not In match.
 	 */
 	public function get_test_matrix_single_paypal_not_in_match() {
-		$expected = [
-			$this->get_attendee_id( 4 ), // User3
-			$this->get_attendee_id( 5 ), // User4
-			$this->get_attendee_id( 6 ), // Guest
-			$this->get_attendee_id( 7 ), // Guest
-			$this->get_attendee_id( 8 ), // User2 on Event1
-		];
-
 		return [
 			// Repository
 			'tribe-commerce',
@@ -605,7 +568,7 @@ class ORMTestCase extends Test_Case {
 				],
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $expected ),
+			$this->get_assertions_array( $this->test_data['attendees_paypal'] ),
 		];
 	}
 
@@ -613,14 +576,6 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for multiple Tribe Commerce PayPal Not In match.
 	 */
 	public function get_test_matrix_multi_paypal_not_in_match() {
-		$expected = [
-			$this->get_attendee_id( 4 ), // User3
-			$this->get_attendee_id( 5 ), // User4
-			$this->get_attendee_id( 6 ), // Guest
-			$this->get_attendee_id( 7 ), // Guest
-			$this->get_attendee_id( 8 ), // User2 on Event1
-		];
-
 		return [
 			// Repository
 			'tribe-commerce',
@@ -635,7 +590,7 @@ class ORMTestCase extends Test_Case {
 				],
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $expected ),
+			$this->get_assertions_array( $this->test_data['attendees_paypal'] ),
 		];
 	}
 
@@ -643,10 +598,6 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for Tribe Commerce PayPal Not In mismatch.
 	 */
 	public function get_test_matrix_single_paypal_not_in_mismatch() {
-		$expected = [
-			$this->get_attendee_id( 8 ), // User2 on Event1
-		];
-
 		return [
 			// Repository
 			'tribe-commerce',
@@ -659,7 +610,7 @@ class ORMTestCase extends Test_Case {
 				],
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $expected ),
+			$this->get_assertions_array( $this->test_data['attendees_paypal_5'] ),
 		];
 	}
 
@@ -667,14 +618,6 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for multiple Tribe Commerce PayPal Not In mismatch.
 	 */
 	public function get_test_matrix_multi_paypal_not_in_mismatch() {
-		$expected = [
-			$this->get_attendee_id( 4 ), // User3
-			$this->get_attendee_id( 5 ), // User4
-			$this->get_attendee_id( 6 ), // Guest
-			$this->get_attendee_id( 7 ), // Guest
-			$this->get_attendee_id( 8 ), // User2 on Event1
-		];
-
 		return [
 			// Repository
 			'tribe-commerce',
@@ -689,7 +632,7 @@ class ORMTestCase extends Test_Case {
 				],
 			],
 			// Assertions to make.
-			$this->get_assertions_array( $expected ),
+			$this->get_assertions_array( $this->test_data['attendees_paypal'] ),
 		];
 	}
 
@@ -910,13 +853,6 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for Price Paid match.
 	 */
 	public function get_test_matrix_single_price_match() {
-		$expected = [
-			$this->get_attendee_id( 4 ),
-			$this->get_attendee_id( 5 ),
-			$this->get_attendee_id( 6 ),
-			$this->get_attendee_id( 7 ),
-		];
-
 		return [
 			// Repository
 			'tribe-commerce',
@@ -925,7 +861,7 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[ 5 ],
 			// Assertions to make.
-			$this->get_assertions_array( $expected ),
+			$this->get_assertions_array( $this->test_data['attendees_paypal_1'] ),
 		];
 	}
 
@@ -949,11 +885,6 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for minimum Price Paid match.
 	 */
 	public function get_test_matrix_single_price_min_match() {
-		// Everyone who bought a $12 ticket, not $5 ticket
-		$expected = [
-			$this->get_attendee_id( 8 ),
-		];
-
 		return [
 			// Repository
 			'tribe-commerce',
@@ -962,7 +893,7 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[ 6 ],
 			// Assertions to make.
-			$this->get_assertions_array( $expected ),
+			$this->get_assertions_array( $this->test_data['attendees_paypal_5'] ),
 		];
 	}
 
@@ -986,14 +917,6 @@ class ORMTestCase extends Test_Case {
 	 * Get test matrix for maximum Price Paid match.
 	 */
 	public function get_test_matrix_single_price_max_match() {
-		// Everyone who bought a $5 ticket, not $12 ticket
-		$expected = [
-			$this->get_attendee_id( 4 ),
-			$this->get_attendee_id( 5 ),
-			$this->get_attendee_id( 6 ),
-			$this->get_attendee_id( 7 ),
-		];
-
 		return [
 			// Repository
 			'tribe-commerce',
@@ -1002,7 +925,7 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[ 6 ],
 			// Assertions to make.
-			$this->get_assertions_array( $expected ),
+			$this->get_assertions_array( $this->test_data['attendees_paypal_1'] ),
 		];
 	}
 
@@ -1234,7 +1157,9 @@ class ORMTestCase extends Test_Case {
 		$test_data['paypal_tickets'] = array_merge( [ $paypal_id_one ], $this->create_many_paypal_tickets( 3, $event_id_one ) );
 
 		// Create test PayPal5 ticket
-		$paypal_id_five = $this->create_paypal_ticket( $event_id_one, 12 );
+		$test_data['paypal_tickets'][] =
+		$paypal_id_five =
+			$this->create_paypal_ticket( $event_id_one, 12 );
 
 		// Add User2 (Attendee9) as Tribe Commerce PayPal Ticket attendee
 		$test_data['attendees_event_1'][] =
@@ -1318,6 +1243,25 @@ class ORMTestCase extends Test_Case {
 		}
 	}
 
+	private function get_assertions_array( array $attendee_ids ) {
+		// Assume 'count' and 'found' will always be the same, since ORM defaults to unlimited (-1) results.
+		$total = count( $attendee_ids );
+
+		return [
+			'get_ids' => $attendee_ids,
+			'all'     => array_map( 'get_post', $attendee_ids ),
+			'count'   => $total,
+			'found'   => $total,
+		];
+	}
+
+	/**
+	 * Given an array of Attendee IDs, get the assertions array that flows through to the test.
+	 *
+	 * @param array $attendee_ids
+	 *
+	 * @return array
+	 */
 	private function get_assertions_array( array $attendee_ids ) {
 		// Assume 'count' and 'found' will always be the same, since ORM defaults to unlimited (-1) results.
 		$total = count( $attendee_ids );
