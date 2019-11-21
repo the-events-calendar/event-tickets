@@ -1612,6 +1612,7 @@ tribe.tickets.block  = {
 		'beforeunload',
 		function( e ) {
 			if ( tribe.tickets.modal_redirect ) {
+				obj.clearLocal();
 				return;
 			}
 
@@ -1672,6 +1673,9 @@ tribe.tickets.block  = {
 			};
 
 			$( '#tribe_tickets_ar_data' ).val( JSON.stringify( params ) );
+			// Set a flag to clear sessionStorage
+			tribe.tickets.modal_redirect = true;
+			obj.clearLocal();
 
 			// Submit the form.
 			$form.submit();
