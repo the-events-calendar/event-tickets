@@ -163,15 +163,33 @@ trait Attendee_Maker {
 			throw new \RuntimeException( 'There was an error while generating the attendee, data: ' . json_encode( $postarr, JSON_PRETTY_PRINT ) );
 		}
 
-		if ( ! $provider instanceof \Tribe__Tickets__RSVP ) {
-			$order_key = ! empty( $provider->attendee_order_key )
-				? $provider->attendee_order_key
-				: $provider_reflection->getConstant( 'ATTENDEE_ORDER_KEY' );
-			$order     = $provider instanceof \Tribe__Tickets__RSVP
-				? $attendee_id
-				: \Tribe__Utils__Array::get( $overrides, 'order_id', md5( time() ) );
-			update_post_meta( $attendee_id, $order_key, $order );
+		$order_key = ! empty( $provider->order_key )
+			? $provider->order_key
+			: '';
+
+		if (
+			empty( $order_key )
+			&& ! empty( $provider->attendee_order_key )
+		) {
+			$order_key = $provider->attendee_order_key;
 		}
+
+		if (
+			empty( $order_key )
+			&& ! empty( $provider_reflection->getConstant( 'ATTENDEE_ORDER_KEY' ) )
+		) {
+			$order_key = $provider_reflection->getConstant( 'ATTENDEE_ORDER_KEY' );
+		}
+
+		if ( empty( $order_key ) ) {
+			throw new \RuntimeException( 'There was an error while generating the attendee, lacking an Order Key, data: ' . json_encode( $postarr, JSON_PRETTY_PRINT ) );
+		}
+
+		$order = $provider instanceof \Tribe__Tickets__RSVP
+			? $attendee_id
+			: \Tribe__Utils__Array::get( $overrides, 'order_id', md5( time()) );
+
+		update_post_meta( $attendee_id, $order_key, $order );
 
 		return $attendee_id;
 	}
