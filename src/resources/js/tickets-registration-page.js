@@ -413,7 +413,7 @@ tribe.tickets.registration = {};
 			var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
 
 			if ( $item ) {
-				var pricePer = $item.find( '.tribe-tickets__item__extra__price .tribe-amount').text();
+				var pricePer = $item.find( '.tribe-tickets__item__extra__price .tribe-amount' ).text();
 				$item.find( '.tribe-ticket-quantity' ).html( value.quantity );
 				var price = value.quantity * obj.cleanNumber( pricePer );
 				price = obj.numberFormat( price);
@@ -688,7 +688,7 @@ tribe.tickets.registration = {};
 		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
 
 		if ( s[0].length > 3 ) {
-			s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep );
+			s[0] = s[0].replace( /\B(?=(?:\d{3})+(?!\d))/g, sep );
 		}
 
 		if ( ( s[1] || '' ).length < prec ) {
