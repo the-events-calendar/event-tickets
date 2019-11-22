@@ -8,7 +8,7 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import RSVPHeaderImage from './template';
-import { selectors, actions } from '@moderntribe/tickets/data/blocks/rsvp';
+import { actions, selectors } from '@moderntribe/tickets/data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 
 /**
@@ -24,16 +24,15 @@ const mapStateToProps = ( state ) => ( {
 	isSettingsLoading: selectors.getRSVPIsSettingsLoading( state ),
 } );
 
-const mapDispatchToProps = ( dispatch ) => {
-	return {
-		onRemove: () => dispatch( actions.deleteRSVPHeaderImage() ),
-		/**
-		 * Full payload from gutenberg media upload is not used,
-		 * only id, alt, and medium src are used for this specific case.
-		 */
-		onSelect: ( image ) => dispatch( actions.updateRSVPHeaderImage( image ) ),
-	};
-};
+const mapDispatchToProps = ( dispatch ) => ( {
+	/**
+	 * Full payload from gutenberg media upload is not used,
+	 * only id, alt, and medium src are used for this specific case.
+	 */
+	onSelect: ( image ) => dispatch( actions.updateRSVPHeaderImage( image ) ),
+	onRemove: () => dispatch( actions.deleteRSVPHeaderImage() ),
+
+} );
 
 export default compose(
 	withStore(),
