@@ -2765,6 +2765,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$tickets_handler->toggle_manual_update_flag( false );
 
 			$post = get_post( $post_id );
+			// If ticket start date is not set, set it to the post date.
 			if ( empty( $data['ticket_start_date'] ) ) {
 				$date = strtotime( $post->post_date );
 				$date = date( 'Y-m-d 00:00:00', $date );
@@ -2772,9 +2773,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				update_post_meta( $ticket->ID, $tickets_handler->key_start_date, $date );
 			}
 
+			// If the ticket end date has not been set and we have an event,
+			// set the ticket end date to the event start date.
 			if ( empty( $data['ticket_end_date'] ) && 'tribe_events' === $post->post_type ) {
-				$event_end = get_post_meta( $post_id, '_EventEndDate', true );
-				update_post_meta( $ticket->ID, $tickets_handler->key_end_date, $event_end );
+				$event_start = get_post_meta( $post_id, '_EventStartDate', true );
+				update_post_meta( $ticket->ID, $tickets_handler->key_end_date, $event_start );
 			}
 
 			tribe( 'tickets.version' )->update( $ticket->ID );
