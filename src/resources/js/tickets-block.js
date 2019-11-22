@@ -638,7 +638,7 @@ tribe.tickets.block  = {
 	 * @returns {number}
 	 */
 	obj.getPrice = function ( $cartItem ) {
-		var price = parseFloat( $cartItem.find( obj.selector.itemPrice ).first().text() );
+		var price = obj.cleanNumber( $cartItem.find( obj.selector.itemPrice ).first().text() );
 
 		return isNaN( price ) ? 0 : price;
 	};
@@ -716,7 +716,7 @@ tribe.tickets.block  = {
 			return Math.round( n * k ) / k;
 		};
 
-		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
+		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n )).toString().split( dec );
 
 		if ( s[0].length > 3 ) {
 			s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep );
