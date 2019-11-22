@@ -1424,6 +1424,39 @@ class ORMTestCase extends Test_Case {
 		foreach ( $test_data as $key => $value ) {
 			$this->test_data[ $key ] = array_unique( (array) $value );
 		}
+
+		// Debugging (only works for failing tests)
+		$debug = $this->get_attendee_data( 550 );
+
+		if ( ! empty( $debug ) ) {
+			codecept_debug( $debug );
+		}
+	}
+
+	/**
+	 * Given an Attendee ID, such as from Codeception saying one was missing, get the info about that Attendee to help
+	 * point you in the right direction to get the test running correctly.
+	 *
+	 * @param int $id
+	 *
+	 * @return array|false
+	 */
+	private function get_attendee_data( int $id = 0 ) {
+		$result = [];
+
+		$post = get_post( $id, ARRAY_A );
+
+		if (
+			empty( $id )
+			|| empty( $post )
+		) {
+			return false;
+		}
+
+		$result['post'] = $post;
+		$result['meta'] = get_post_meta( $id );
+
+		return $result;
 	}
 
 	/**
