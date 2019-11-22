@@ -638,7 +638,7 @@ tribe.tickets.block  = {
 	 * @returns {number}
 	 */
 	obj.getPrice = function ( $cartItem ) {
-		var price = parseFloat( $cartItem.find( obj.selector.itemPrice ).first().text() );
+		var price = obj.cleanNumber( $cartItem.find( obj.selector.itemPrice ).first().text() );
 
 		return isNaN( price ) ? 0 : price;
 	};
@@ -669,16 +669,16 @@ tribe.tickets.block  = {
 		var format = obj.getCurrencyFormatting();
 		// we run into issue when the two symbols are the same -
 		// which appears to happen by default with some providers.
-		var same   = format.thousands_sep === format.decimal_point;
+		var same = format.thousands_sep === format.decimal_point;
 
 		if ( ! same ) {
-			number = number.split(format.thousands_sep).join('');
-			number = number.split(format.decimal_point).join('.');
+			number = number.split( format.thousands_sep ).join( '' );
+			number = number.split( format.decimal_point ).join( '.' );
 		} else {
 			var dec_place = number.length - ( format.number_of_decimals + 1 );
-			number = number.substr( 0, dec_place ) + '_' + number.substr( dec_place + 1);
-			number = number.split(format.thousands_sep).join('');
-			number = number.split('_').join('.');
+			number = number.substr( 0, dec_place ) + '_' + number.substr( dec_place + 1 );
+			number = number.split(format.thousands_sep).join( '' );
+			number = number.split( '_' ).join( '.' );
 		}
 
 		return number;
@@ -716,7 +716,7 @@ tribe.tickets.block  = {
 			return Math.round( n * k ) / k;
 		};
 
-		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
+		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n )).toString().split( dec );
 
 		if ( s[0].length > 3 ) {
 			s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep );

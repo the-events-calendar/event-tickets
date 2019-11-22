@@ -413,7 +413,7 @@ tribe.tickets.registration = {};
 			var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
 
 			if ( $item ) {
-				var pricePer = $item.find( '.tribe-tickets__item__extra__price .tribe-amount').text();
+				var pricePer = $item.find( '.tribe-tickets__item__extra__price .tribe-amount' ).text();
 				$item.find( '.tribe-ticket-quantity' ).html( value.quantity );
 				var price = value.quantity * obj.cleanNumber( pricePer );
 				price = obj.numberFormat( price);
@@ -639,16 +639,16 @@ tribe.tickets.registration = {};
 		var format = obj.getCurrencyFormatting();
 		// we run into issue when the two symbols are the same -
 		// which appears to happen by default with some providers.
-		var same   = format.thousands_sep === format.decimal_point;
+		var same = format.thousands_sep === format.decimal_point;
 
 		if ( ! same ) {
-			number = number.split(format.thousands_sep).join('');
-			number = number.split(format.decimal_point).join('.');
+			number = number.split( format.thousands_sep ).join( '' );
+			number = number.split( format.decimal_point ).join( '.' );
 		} else {
 			var dec_place = number.length - ( format.number_of_decimals + 1 );
-			number = number.substr( 0, dec_place ) + '_' + number.substr( dec_place + 1);
-			number = number.split(format.thousands_sep).join('');
-			number = number.split('_').join('.');
+			number = number.substr( 0, dec_place ) + '_' + number.substr( dec_place + 1 );
+			number = number.split( format.thousands_sep ).join( '' );
+			number = number.split( '_' ).join( '.' );
 		}
 
 		return number;
@@ -688,7 +688,7 @@ tribe.tickets.registration = {};
 		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
 
 		if ( s[0].length > 3 ) {
-			s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep );
+			s[0] = s[0].replace( /\B(?=(?:\d{3})+(?!\d))/g, sep );
 		}
 
 		if ( ( s[1] || '' ).length < prec ) {
