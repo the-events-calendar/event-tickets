@@ -678,7 +678,6 @@ tribe.tickets.registration = {};
 		var prec          = !isFinite( +decimals ) ? 0 : Math.abs( decimals );
 		var sep           = ( 'undefined' === typeof thousands_sep ) ? ',' : thousands_sep;
 		var dec           = ( 'undefined' === typeof dec_point ) ? '.' : dec_point;
-
 		var toFixedFix    = function ( n, prec ) {
 			// Fix for IE parseFloat(0.55).toFixed(0) = 0;
 			var k = Math.pow( 10, prec );
