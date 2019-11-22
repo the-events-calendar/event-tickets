@@ -89,6 +89,17 @@ class ORMTestCase extends Test_Case {
 		yield 'ticket not in mismatch single' => [ 'get_test_matrix_single_ticket_not_in_mismatch' ];
 		yield 'ticket not in mismatch multi' => [ 'get_test_matrix_multi_ticket_not_in_mismatch' ];
 
+		// Order
+		yield 'order match single' => [ 'get_test_matrix_single_order_match' ];
+		yield 'order match multi' => [ 'get_test_matrix_multi_order_match' ];
+		yield 'order mismatch single' => [ 'get_test_matrix_single_order_mismatch' ];
+		yield 'order mismatch multi' => [ 'get_test_matrix_multi_order_mismatch' ];
+		// Order Not In
+		yield 'order not in match single' => [ 'get_test_matrix_single_order_not_in_match' ];
+		yield 'order not in match multi' => [ 'get_test_matrix_multi_order_not_in_match' ];
+		yield 'order not in mismatch single' => [ 'get_test_matrix_single_order_not_in_mismatch' ];
+		yield 'order not in mismatch multi' => [ 'get_test_matrix_multi_order_not_in_mismatch' ];
+
 		// RSVP
 		yield 'rsvp match single' => [ 'get_test_matrix_single_rsvp_match' ];
 		yield 'rsvp match multi' => [ 'get_test_matrix_multi_rsvp_match' ];
@@ -439,7 +450,7 @@ class ORMTestCase extends Test_Case {
 	public function get_test_matrix_single_ticket_not_in_mismatch() {
 		$expected = array_merge(
 			$this->test_data['attendees_rsvp'],
-			$this->test_data['attendees_paypal_5']
+			$this->test_data['attendees_paypal']
 		);
 
 		return [
@@ -449,7 +460,7 @@ class ORMTestCase extends Test_Case {
 			'ticket__not_in',
 			// Filter arguments to use.
 			[
-				$this->test_data['tickets_products_paypal'][0],
+				$this->get_fake_ids( 0 ),
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $expected ),
@@ -470,6 +481,180 @@ class ORMTestCase extends Test_Case {
 			'default',
 			// Filter name.
 			'ticket__not_in',
+			// Filter arguments to use.
+			[
+				$filter,
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * ORDERS
+	 */
+
+	/**
+	 * Get test matrix for Order match.
+	 */
+	public function get_test_matrix_single_order_match() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'order',
+			// Filter arguments to use.
+			[
+				[
+					$this->test_data['tickets_orders_rsvp'][0]
+				]
+			],
+			// Assertions to make.
+			$this->get_assertions_array( (array) $this->test_data['attendees_rsvp'][0] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Order match.
+	 */
+	public function get_test_matrix_multi_order_match() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'order',
+			// Filter arguments to use.
+			[
+				$this->test_data['tickets_orders_rsvp']
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $this->test_data['attendees_rsvp'] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for Order mismatch.
+	 */
+	public function get_test_matrix_single_order_mismatch() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'order',
+			// Filter arguments to use.
+			[
+				$this->get_fake_ids( 0 ),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Orders mismatch.
+	 */
+	public function get_test_matrix_multi_order_mismatch() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'order',
+			// Filter arguments to use.
+			[
+				$this->get_fake_ids(),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for Order Not In match.
+	 */
+	public function get_test_matrix_single_order_not_in_match() {
+		$expected = array_merge(
+			$this->test_data['attendees_paypal'],
+			$this->test_data['attendees_rsvp']
+		);
+
+		array_shift( $expected );
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'order__not_in',
+			// Filter arguments to use.
+			[
+				[
+					$this->test_data['tickets_orders_paypal'][0],
+				]
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Orders Not In match.
+	 */
+	public function get_test_matrix_multi_order_not_in_match() {
+		$expected = array_merge(
+			$this->test_data['attendees_rsvp'],
+			$this->test_data['attendees_paypal']
+		);
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'order__not_in',
+			// Filter arguments to use.
+			[
+				$this->get_fake_ids(),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for Order Not In mismatch.
+	 */
+	public function get_test_matrix_single_order_not_in_mismatch() {
+		$expected = array_merge(
+			$this->test_data['attendees_paypal'],
+			$this->test_data['attendees_rsvp']
+		);
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'order__not_in',
+			// Filter arguments to use.
+			[
+				$this->get_fake_ids( 0 ),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Orders Not In mismatch.
+	 */
+	public function get_test_matrix_multi_order_not_in_mismatch() {
+		$filter = array_merge(
+			$this->test_data['tickets_orders_rsvp'],
+			$this->test_data['tickets_orders_paypal']
+		);
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'order__not_in',
 			// Filter arguments to use.
 			[
 				$filter,
@@ -1236,6 +1421,10 @@ class ORMTestCase extends Test_Case {
 			'tickets_products_rsvp'   => [],
 			// '_tribe_tpp_product' values
 			'tickets_products_paypal' => [],
+			// '_tribe_rsvp_order' values
+			'tickets_orders_rsvp'     => [],
+			// '_tribe_tpp_order' values
+			'tickets_orders_paypal'   => [],
 			// 4 total: 1&3 = Event author, 2&4 = Attendees
 			'users'                   => [],
 			// 4 total: 1&3 = has Author, Tickets, and Attendees; 2&4 = Author ID of zero and no Tickets (so no Attendees)
@@ -1406,6 +1595,7 @@ class ORMTestCase extends Test_Case {
 			$meta = get_post_meta( $attendee_id );
 
 			foreach ( $meta as $k => $v ) {
+				// Tickets
 				if (
 					'_tribe_rsvp_product' === $k
 					&& ! empty( $meta[ $k ][0] )
@@ -1416,6 +1606,17 @@ class ORMTestCase extends Test_Case {
 					&& ! empty( $meta[ $k ][0] )
 				) {
 					$test_data['tickets_products_paypal'][] = $meta[ $k ][0];
+				} // Orders
+				elseif (
+					\Tribe__Tickets__RSVP::get_instance()->order_key === $k
+					&& ! empty( $meta[ $k ][0] )
+				) {
+					$test_data['tickets_orders_rsvp'][] = $meta[ $k ][0];
+				} elseif (
+					\Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_ORDER_KEY === $k
+					&& ! empty( $meta[ $k ][0] )
+				) {
+					$test_data['tickets_orders_paypal'][] = $meta[ $k ][0];
 				}
 			}
 		}
