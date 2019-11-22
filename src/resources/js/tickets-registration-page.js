@@ -1,9 +1,9 @@
 // For compatibility purposes we add this
-if ('undefined' === typeof tribe) {
+if ( 'undefined' === typeof tribe ) {
 	tribe = {};
 }
 
-if ('undefined' === typeof tribe.tickets) {
+if ( 'undefined' === typeof tribe.tickets ) {
 	tribe.tickets = {};
 }
 
@@ -49,7 +49,7 @@ tribe.tickets.registration = {};
 		toggler            : '.tribe-tickets__registration__toggle__handler',
 	};
 
-	var $tribe_registration = $(obj.selector.container);
+	var $tribe_registration = $( obj.selector.container );
 
 	// Bail if there are no tickets on the current event/page/post
 	if ( ! $( obj.selector.eventContainer ).length ) {
@@ -140,17 +140,17 @@ tribe.tickets.registration = {};
 					}
 				);
 
-				tempMeta[ ticket_id ]['items'].push(data);
+				tempMeta[ ticket_id ]['items'].push( data );
 			}
 		);
 
-		Object.keys(tempMeta).forEach( function( index ) {
+		Object.keys( tempMeta ).forEach( function( index ) {
 			var newArr = {
 				'ticket_id': index,
 				'items': tempMeta[index]['items']
 			};
 			meta.push( newArr );
-		});
+		} );
 
 		return meta;
 	}
@@ -194,7 +194,7 @@ tribe.tickets.registration = {};
 	/* Prefill Functions */
 
 	/**
-	 * Init the form prefills (cart and AR forms).
+	 * Init the form prefills ( cart and AR forms ).
 	 *
 	 * @since TBD
 	 *
@@ -211,7 +211,7 @@ tribe.tickets.registration = {};
 			url     : obj.getRestEndpoint(),
 			success : function ( data ) {
 				if ( data.tickets ) {
-					obj.prefillCartForm( $(obj.selector.miniCart), data.tickets );
+					obj.prefillCartForm( $( obj.selector.miniCart ), data.tickets );
 				}
 
 				if ( data.meta ) {
@@ -320,20 +320,20 @@ tribe.tickets.registration = {};
 				$.each( data, function( index, value ) {
 					var $field = $ticket_containers.eq( current ).find( `[name*="${index}"]` );
 					if ( ! $field.is( ':radio' ) && ! $field.is( ':checkbox' ) ) {
-						$field.val( value);
+						$field.val( value );
 					} else {
 						$field.each( function( index ) {
 							var $item = $( this );
 							if ( value === $item.val() ) {
 								$item.prop( 'checked', true );
 							}
-						});
+						} );
 					}
-				});
+				} );
 
 				current++;
-			});
-		});
+			} );
+		} );
 	}
 
 	/**
@@ -359,8 +359,8 @@ tribe.tickets.registration = {};
 		var footerCount = 0;
 		var $qtys       = $form.find( obj.selector.itemQuantity );
 
-		$qtys.each(function(){
-			var new_quantity = parseInt( $(this).text(), 10 );
+		$qtys.each( function(){
+			var new_quantity = parseInt( $( this ).text(), 10 );
 			new_quantity     = isNaN( new_quantity ) ? 0 : new_quantity;
 			footerCount      += new_quantity;
 		} );
@@ -387,7 +387,7 @@ tribe.tickets.registration = {};
 
 		$qtys.each( function() {
 			var $qty = $( this );
-			var $price   = $qty.closest( obj.selector.item ).find( obj.selector.itemPrice ).first(0);
+			var $price   = $qty.closest( obj.selector.item ).find( obj.selector.itemPrice ).first( 0 );
 			var quantity = parseInt( $qty.text(), 10 );
 			quantity     = isNaN( quantity ) ? 0 : quantity;
 			var cost     = obj.cleanNumber( $price.text() ) * quantity;
@@ -413,10 +413,10 @@ tribe.tickets.registration = {};
 			var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
 
 			if ( $item ) {
-				var pricePer = $item.find( '.tribe-tickets__item__extra__price .tribe-amount').text();
+				var pricePer = $item.find( '.tribe-tickets__item__extra__price .tribe-amount' ).text();
 				$item.find( '.tribe-ticket-quantity' ).html( value.quantity );
 				var price = value.quantity * obj.cleanNumber( pricePer );
-				price = obj.numberFormat( price);
+				price = obj.numberFormat( price );
 				$item.find( '.tribe-tickets__item__total .tribe-amount' ).html( price );
 			}
 		} );
@@ -688,7 +688,7 @@ tribe.tickets.registration = {};
 		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
 
 		if ( s[0].length > 3 ) {
-			s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep );
+			s[0] = s[0].replace(/\B(?=(?:\d{3} )+(?!\d))/g, sep );
 		}
 
 		if ( ( s[1] || '' ).length < prec ) {
@@ -749,7 +749,7 @@ tribe.tickets.registration = {};
 			var isValidForm  = obj.validateForm( $metaForm );
 
 			if ( ! isValidForm[ 0 ] ) {
-				$([document.documentElement, document.body]).animate(
+				$( [document.documentElement, document.body] ).animate(
 					{ scrollTop: $( '.tribe-tickets__registration' ).offset().top },
 					'slow'
 				);
@@ -794,6 +794,6 @@ tribe.tickets.registration = {};
 
 	obj.document.on( 'ready', function( $ ) {
 		obj.init();
-	});
+	} );
 
-})(jQuery, tribe.tickets.registration);
+} )( jQuery, tribe.tickets.registration );

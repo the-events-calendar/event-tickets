@@ -178,7 +178,7 @@ tribe.tickets.block  = {
 		var $qtys       = $form.find( obj.selector.item + ' ' + obj.selector.itemQuantityInput );
 
 		$qtys.each( function() {
-			var new_quantity = parseInt( $(this).val(), 10 );
+			var new_quantity = parseInt( $( this ).val(), 10 );
 			new_quantity     = isNaN( new_quantity ) ? 0 : new_quantity;
 			footerCount      += new_quantity;
 		} );
@@ -341,7 +341,7 @@ tribe.tickets.block  = {
 				var ticketID          = $cartItem.closest( obj.selector.item ).data( 'ticket-id' );
 				var $ticket_container = $( obj.modalSelector.metaForm ).find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]' );
 
-				// Ticket does not have meta - no need to jump through hoops (and throw errors).
+				// Ticket does not have meta - no need to jump through hoops ( and throw errors ).
 				if ( ! $ticket_container.length ) {
 					nonMetaCount += obj.getQty( $cartItem );
 				} else {
@@ -426,7 +426,7 @@ tribe.tickets.block  = {
 					var ticketID          = $cartItem.closest( obj.selector.item ).data( 'ticket-id' );
 					var $ticket_container = $( obj.modalSelector.metaForm ).find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]' );
 
-					// Ticket does not have meta - no need to jump through hoops (and throw errors).
+					// Ticket does not have meta - no need to jump through hoops ( and throw errors ).
 					if ( ! $ticket_container.length ) {
 						return;
 					}
@@ -561,7 +561,7 @@ tribe.tickets.block  = {
 			}
 		);
 
-		// Repeat every 60 (filterable via tribe_tickets_availability_check_interval ) seconds
+		// Repeat every 60 ( filterable via tribe_tickets_availability_check_interval ) seconds
 		if ( 0 < TribeTicketOptions.availability_check_interval ) {
 			setTimeout( obj.checkAvailability, TribeTicketOptions.availability_check_interval );
 		}
@@ -677,7 +677,7 @@ tribe.tickets.block  = {
 		} else {
 			var dec_place = number.length - ( format.number_of_decimals + 1 );
 			number = number.substr( 0, dec_place ) + '_' + number.substr( dec_place + 1 );
-			number = number.split(format.thousands_sep).join( '' );
+			number = number.split( format.thousands_sep ).join( '' );
 			number = number.split( '_' ).join( '.' );
 		}
 
@@ -716,7 +716,7 @@ tribe.tickets.block  = {
 			return Math.round( n * k ) / k;
 		};
 
-		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n )).toString().split( dec );
+		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
 
 		if ( s[0].length > 3 ) {
 			s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep );
@@ -780,7 +780,7 @@ tribe.tickets.block  = {
 	 * @param string loaderClass A class for targeting a specific loader.
 	 * @return void
 	 */
-	obj.loaderHide = function(loaderClass ) {
+	obj.loaderHide = function( loaderClass ) {
 		if ( 'undefined' === typeof loaderClass ) {
 			loaderClass = obj.selector.ticketLoader;
 		}
@@ -804,7 +804,7 @@ tribe.tickets.block  = {
 	}
 
 	/**
-	 * Init the form prefills (cart and AR forms).
+	 * Init the form prefills ( cart and AR forms ).
 	 *
 	 * @since TBD
 	 *
@@ -887,7 +887,7 @@ tribe.tickets.block  = {
 					var $field = $current_containers.eq( current ).find( `[name*="${index}"]` );
 
 					if ( ! $field.is( ':radio' ) && ! $field.is( ':checkbox' ) ) {
-						$field.val( value);
+						$field.val( value );
 					} else {
 						$field.each( function( index ) {
 							var $item = $( this );
@@ -932,7 +932,7 @@ tribe.tickets.block  = {
 			}
 		} );
 
-		obj.appendARFields($form);
+		obj.appendARFields( $form );
 
 		obj.loaderHide( obj.modalSelector.loader );
 	};
@@ -993,7 +993,7 @@ tribe.tickets.block  = {
 		);
 	}
 
-	/* sessionStorage ("local") */
+	/* sessionStorage ( "local" ) */
 
 	/**
 	 * Stores attendee and cart form data to sessionStorage.
@@ -1070,7 +1070,7 @@ tribe.tickets.block  = {
 				}
 
 				var cartSkip = data.meta.length;
-				if (length < cartSkip ) {
+				if ( length < cartSkip ) {
 					obj.prefillModalMetaForm( data.meta, length );
 					return;
 				} else {
@@ -1200,14 +1200,14 @@ tribe.tickets.block  = {
 					}
 				);
 
-				tempMeta[ ticket_id ]['items'].push(data);
+				tempMeta[ ticket_id ]['items'].push( data );
 			}
 		);
 
-		Object.keys(tempMeta).forEach( function( index ) {
+		Object.keys( tempMeta ).forEach( function( index ) {
 			var newArr = {
 				'ticket_id': index,
-				'items': tempMeta[index]['items']
+				'items': tempMeta[ index ]['items']
 			};
 			meta.push( newArr );
 		} );
@@ -1219,7 +1219,7 @@ tribe.tickets.block  = {
 	 * Get cart & meta data from sessionStorage, otherwise make an ajax call.
 	 * Always loads tickets from API on page load to be sure we keep up to date with the cart.
 	 *
-	 * This returns a deferred data object (promise) So when calling you need to use something like
+	 * This returns a deferred data object ( promise ) So when calling you need to use something like
 	 * jQuery's $.when()
 	 *
 	 * Example:
@@ -1465,7 +1465,7 @@ tribe.tickets.block  = {
 
 			obj.updateFooter( $input.closest( 'form' ) );
 
-			// Trigger the on Change for the input (if it has changed) as it's not handled via stepUp() || stepDown().
+			// Trigger the on Change for the input ( if it has changed ) as it's not handled via stepUp() || stepDown().
 			if ( originalValue !== $input[ 0 ].value ) {
 				$input.trigger( 'change' );
 			}
@@ -1520,7 +1520,7 @@ tribe.tickets.block  = {
 					if ( 0 >= $items.length ) {
 						// Get the object ID
 						var id     = $( obj.selector.blockSubmit ).attr( 'data-content' );
-						var result = 'dialog_obj_' + id.substring( id.lastIndexOf('-') + 1 );
+						var result = 'dialog_obj_' + id.substring( id.lastIndexOf( '-' ) + 1 );
 
 						// Close the dialog
 						window[ result ].hide();
@@ -1648,7 +1648,7 @@ tribe.tickets.block  = {
 				$( obj.selector.validationNotice + '__count' ).text( isValidForm[ 1 ] );
 				$errorNotice.show();
 				obj.loaderHide( obj.modalSelector.loader );
-				document.getElementById( 'tribe-tickets__notice__attendee-modal' ).scrollIntoView({ behavior: 'smooth', block: 'start' });
+				document.getElementById( 'tribe-tickets__notice__attendee-modal' ).scrollIntoView( { behavior: 'smooth', block: 'start' } );
 				return false;
 			}
 
@@ -1658,7 +1658,7 @@ tribe.tickets.block  = {
 			// default to checkout
 			var action = TribeTicketsURLs['checkout'][provider];
 
-			if ( -1 !== button_text.indexOf('cart') ) {
+			if ( -1 !== button_text.indexOf( 'cart' ) ) {
 
 				action = TribeTicketsURLs['cart'][provider];
 			}
