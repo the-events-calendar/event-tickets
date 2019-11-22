@@ -97,6 +97,11 @@ $classes        = [
 		$this->template( 'registration-js/mini-cart', $args );
 		?>
 		<div class="tribe-tickets__registration__content">
+			<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
+			<input type="hidden" name="tribe_tickets_ar" value="1" />
+			<input type="hidden" name="tribe_tickets_ar_page" value="1" />
+			<input type="hidden" name="tribe_tickets_ar_data" value="" id="tribe_tickets_ar_data"  />
+
 			<?php foreach ( $events as $event_id => $tickets ) : ?>
 				<?php
 					$provider_name = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
@@ -132,11 +137,6 @@ $classes        = [
 							name="event<?php echo esc_attr( $event_id ); ?>"
 							novalidate
 						>
-							<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
-							<input type="hidden" name="tribe_tickets_ar" value="1" />
-							<input type="hidden" name="tribe_tickets_ar_page" value="1" />
-							<input type="hidden" name="tribe_tickets_ar_data" value="" id="tribe_tickets_ar_data"  />
-
 							<?php
 							foreach ( $tickets as $ticket ) :
 								$all_tickets[] = $ticket;
