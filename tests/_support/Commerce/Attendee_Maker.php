@@ -22,7 +22,7 @@ trait Attendee_Maker {
 	protected function create_many_attendees_for_ticket( int $count, int $ticket_id, int $post_id, array $overrides = [] ): array {
 		// If not set let's make sure to set an order ID to ensure all attendees will be part of the same order.
 		if ( ! isset( $overrides['order_id'] ) ) {
-			$overrides['order_id'] = md5( time() );
+			$overrides['order_id'] = md5( uniqid() );
 		}
 
 		$attendees = [];
@@ -72,7 +72,7 @@ trait Attendee_Maker {
 		$meta = [
 			$provider->checkin_key              => (bool) Arr::get( $overrides, 'checkin', false ),
 			$provider->checkin_key . '_details' => Arr::get( $overrides, 'checkin_details', false ),
-			$provider->security_code            => Arr::get( $overrides, 'security_code', md5( time() ) ),
+			$provider->security_code            => Arr::get( $overrides, 'security_code', md5( uniqid() ) ),
 			$post_key                           => $post_id,
 			$product_key                        => $ticket_id,
 			$optout_key                         => Arr::get( $overrides, 'optout', false ),
@@ -187,7 +187,7 @@ trait Attendee_Maker {
 
 		$order = $provider instanceof \Tribe__Tickets__RSVP
 			? $attendee_id
-			: \Tribe__Utils__Array::get( $overrides, 'order_id', md5( time()) );
+			: \Tribe__Utils__Array::get( $overrides, 'order_id', md5( uniqid()) );
 
 		update_post_meta( $attendee_id, $order_key, $order );
 
