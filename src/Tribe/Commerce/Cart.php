@@ -42,7 +42,7 @@ class Tribe__Tickets__Commerce__Cart {
 		$meta     = isset( $data['tribe_tickets_meta'] ) ? $data['tribe_tickets_meta'] : null;
 
 		// On AR Page, we use replace logic, not additive.
-		$is_ar_modal = empty( $data['tribe_tickets_ar_page'] );
+		$is_ar_modal = empty( $_POST['tribe_tickets_ar_page'] );
 
 		// We only update tickets from the modal, not the AR page right now.
 		if ( ! $is_ar_modal ) {
