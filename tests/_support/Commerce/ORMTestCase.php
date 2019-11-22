@@ -1597,12 +1597,12 @@ class ORMTestCase extends Test_Case {
 			foreach ( $meta as $k => $v ) {
 				// Tickets
 				if (
-					'_tribe_rsvp_product' === $k
+					\Tribe__Tickets__RSVP::ATTENDEE_PRODUCT_KEY === $k
 					&& ! empty( $meta[ $k ][0] )
 				) {
 					$test_data['tickets_products_rsvp'][] = $meta[ $k ][0];
 				} elseif (
-					'_tribe_tpp_product' === $k
+					\Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_PRODUCT_KEY === $k
 					&& ! empty( $meta[ $k ][0] )
 				) {
 					$test_data['tickets_products_paypal'][] = $meta[ $k ][0];
