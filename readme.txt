@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Fix the header-image attachement for RSVP blocks [137243]
+
 = [4.11] 2019-11-21 =
 
 * Feature - Add ability to utilize the block ticket template outside of Gutenberg views [132568]
