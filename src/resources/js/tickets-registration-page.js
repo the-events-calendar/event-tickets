@@ -390,7 +390,8 @@ tribe.tickets.registration = {};
 			var $price   = $qty.closest( obj.selector.item ).find( obj.selector.itemPrice ).first(0);
 			var quantity = parseInt( $qty.text(), 10 );
 			quantity     = isNaN( quantity ) ? 0 : quantity;
-			footerAmount += obj.numberFormat( $price.text() ) * quantity;
+			var cost     = obj.cleanNumber( $price.text() ) * quantity;
+			footerAmount += cost;
 		} );
 
 		if ( 0 > footerAmount ) {
@@ -412,9 +413,9 @@ tribe.tickets.registration = {};
 			var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
 
 			if ( $item ) {
-				var pricePer = parseFloat( $item.find( '.tribe-tickets__item__extra__price .tribe-amount').text() );
+				var pricePer = $item.find( '.tribe-tickets__item__extra__price .tribe-amount').text();
 				$item.find( '.tribe-ticket-quantity' ).html( value.quantity );
-				var price = value.quantity * pricePer;
+				var price = value.quantity * obj.cleanNumber( pricePer );
 				price = obj.numberFormat( price);
 				$item.find( '.tribe-tickets__item__total .tribe-amount' ).html( price );
 			}
@@ -626,6 +627,34 @@ tribe.tickets.registration = {};
 	};
 
 	/**
+	 * Removes separator characters and converts deciaml character to '.'
+	 * So they play nice with other functions.
+	 *
+	 * @since TBD
+	 *
+	 * @param number The number to clean.
+	 * @returns {string}
+	 */
+	obj.cleanNumber = function( number ) {
+		var format = obj.getCurrencyFormatting();
+		// we run into issue when the two symbols are the same -
+		// which appears to happen by default with some providers.
+		var same   = format.thousands_sep === format.decimal_point;
+
+		if ( ! same ) {
+			number = number.split(format.thousands_sep).join('');
+			number = number.split(format.decimal_point).join('.');
+		} else {
+			var dec_place = number.length - ( format.number_of_decimals + 1 );
+			number = number.substr( 0, dec_place ) + '_' + number.substr( dec_place + 1);
+			number = number.split(format.thousands_sep).join('');
+			number = number.split('_').join('.');
+		}
+
+		return number;
+	}
+
+	/**
 	 * Format the number according to provider settings.
 	 * Based off coding fron https://stackoverflow.com/a/2901136.
 	 *
@@ -637,27 +666,30 @@ tribe.tickets.registration = {};
 	 */
 	obj.numberFormat = function ( number ) {
 		var format = obj.getCurrencyFormatting();
+
 		if ( ! format ) {
 			return false;
 		}
+
 		var decimals      = format.number_of_decimals;
 		var dec_point     = format.decimal_point;
 		var thousands_sep = format.thousands_sep;
+		var n             = !isFinite( +number ) ? 0 : +number;
+		var prec          = !isFinite( +decimals ) ? 0 : Math.abs( decimals );
+		var sep           = ( 'undefined' === typeof thousands_sep ) ? ',' : thousands_sep;
+		var dec           = ( 'undefined' === typeof dec_point ) ? '.' : dec_point;
 
-		var n          = !isFinite( +number ) ? 0 : +number;
-		var prec       = !isFinite( +decimals ) ? 0 : Math.abs( decimals );
-		var sep        = ( 'undefined' === typeof thousands_sep ) ? ',' : thousands_sep;
-		var dec        = ( 'undefined' === typeof dec_point ) ? '.' : dec_point;
-		var toFixedFix = function ( n, prec ) {
+		var toFixedFix    = function ( n, prec ) {
 			// Fix for IE parseFloat(0.55).toFixed(0) = 0;
 			var k = Math.pow( 10, prec );
+
 			return Math.round( n * k ) / k;
 		};
 
-		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n )).toString().split( '.' );
+		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
 
 		if ( s[0].length > 3 ) {
-			s[0] = s[0].replace( /\B(?=(?:\d{3} )+(?!\d))/g, sep );
+			s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep );
 		}
 
 		if ( ( s[1] || '' ).length < prec ) {
