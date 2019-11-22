@@ -84,10 +84,10 @@ class ORMTestCase extends Test_Case {
 		yield 'ticket mismatch single' => [ 'get_test_matrix_single_ticket_mismatch' ];
 		yield 'ticket mismatch multi' => [ 'get_test_matrix_multi_ticket_mismatch' ];
 		// Ticket Not In
-		////yield 'ticket not in match single' => [ 'get_test_matrix_single_ticket_not_in_match' ];
-		////yield 'ticket not in match multi' => [ 'get_test_matrix_multi_ticket_not_in_match' ];
-		////yield 'ticket not in mismatch single' => [ 'get_test_matrix_single_ticket_not_in_mismatch' ];
-		////yield 'ticket not in mismatch multi' => [ 'get_test_matrix_multi_ticket_not_in_mismatch' ];
+		yield 'ticket not in match single' => [ 'get_test_matrix_single_ticket_not_in_match' ];
+		yield 'ticket not in match multi' => [ 'get_test_matrix_multi_ticket_not_in_match' ];
+		yield 'ticket not in mismatch single' => [ 'get_test_matrix_single_ticket_not_in_mismatch' ];
+		yield 'ticket not in mismatch multi' => [ 'get_test_matrix_multi_ticket_not_in_mismatch' ];
 
 		// RSVP
 		yield 'rsvp match single' => [ 'get_test_matrix_single_rsvp_match' ];
@@ -322,7 +322,9 @@ class ORMTestCase extends Test_Case {
 			'ticket',
 			// Filter arguments to use.
 			[
-				$this->test_data['tickets_products_rsvp'][0]
+				[
+					$this->test_data['tickets_products_rsvp'][0]
+				]
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $this->test_data['attendees_rsvp_1'] ),
@@ -358,9 +360,7 @@ class ORMTestCase extends Test_Case {
 			'ticket',
 			// Filter arguments to use.
 			[
-				[
-					88888,
-				],
+				$this->get_fake_ids( 0 ),
 			],
 			// Assertions to make.
 			$this->get_assertions_array( [] ),
@@ -378,10 +378,101 @@ class ORMTestCase extends Test_Case {
 			'ticket',
 			// Filter arguments to use.
 			[
+				$this->get_fake_ids(),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for Ticket Not In match.
+	 */
+	public function get_test_matrix_single_ticket_not_in_match() {
+		$expected = array_merge(
+			$this->test_data['attendees_rsvp'],
+			$this->test_data['attendees_paypal_5']
+		);
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'ticket__not_in',
+			// Filter arguments to use.
+			[
 				[
-					88888,
-					99999,
+					$this->test_data['tickets_products_paypal'][0],
 				]
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Tickets Not In match.
+	 */
+	public function get_test_matrix_multi_ticket_not_in_match() {
+		$expected = array_merge(
+			$this->test_data['attendees_rsvp'],
+			$this->test_data['attendees_paypal']
+		);
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'ticket__not_in',
+			// Filter arguments to use.
+			[
+				$this->get_fake_ids(),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for Ticket Not In mismatch.
+	 */
+	public function get_test_matrix_single_ticket_not_in_mismatch() {
+		$expected = array_merge(
+			$this->test_data['attendees_rsvp'],
+			$this->test_data['attendees_paypal_5']
+		);
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'ticket__not_in',
+			// Filter arguments to use.
+			[
+				$this->test_data['tickets_products_paypal'][0],
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Tickets Not In mismatch.
+	 */
+	public function get_test_matrix_multi_ticket_not_in_mismatch() {
+		$filter = array_merge(
+			$this->test_data['tickets_products_rsvp'],
+			$this->test_data['tickets_products_paypal']
+		);
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'ticket__not_in',
+			// Filter arguments to use.
+			[
+				$filter,
 			],
 			// Assertions to make.
 			$this->get_assertions_array( [] ),
@@ -1335,16 +1426,28 @@ class ORMTestCase extends Test_Case {
 		}
 	}
 
-	private function get_assertions_array( array $attendee_ids ) {
-		// Assume 'count' and 'found' will always be the same, since ORM defaults to unlimited (-1) results.
-		$total = count( $attendee_ids );
-
-		return [
-			'get_ids' => $attendee_ids,
-			'all'     => array_map( 'get_post', $attendee_ids ),
-			'count'   => $total,
-			'found'   => $total,
+	/**
+	 * Get an array of IDs that would not ever match any Attendee IDs.
+	 *
+	 * @param int $key Optionally get just 1 value from the array (still returns an array).
+	 *
+	 * @return array
+	 */
+	private function get_fake_ids( int $key = -1 ) {
+		$array = [
+			-1,
+			888888,
+			999999,
+			PHP_INT_MAX,
 		];
+
+		shuffle( $array );
+
+		if ( array_key_exists( $key, $array ) ) {
+			return (array) $array[ $key ];
+		}
+
+		return $array;
 	}
 
 	/**
@@ -1355,6 +1458,9 @@ class ORMTestCase extends Test_Case {
 	 * @return array
 	 */
 	private function get_assertions_array( array $attendee_ids ) {
+		// ORM will return sorted results, but we may not enter them that way
+		sort( $attendee_ids );
+
 		// Assume 'count' and 'found' will always be the same, since ORM defaults to unlimited (-1) results.
 		$total = count( $attendee_ids );
 
