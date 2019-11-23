@@ -46,8 +46,6 @@ trait Attendee_Maker {
 	 * @return int The generated attendee
 	 */
 	protected function create_attendee_for_ticket( int $ticket_id, int $post_id, array $overrides = array() ): int {
-		$faker = \Faker\Factory::create();
-
 		/** @var \Tribe__Tickets__Tickets $provider */
 		$provider            = tribe_tickets_get_ticket_provider( $ticket_id );
 		$provider_reflection = new \ReflectionClass( $provider );
@@ -69,6 +67,10 @@ trait Attendee_Maker {
 
 		$default_sku = $provider instanceof \Tribe__Tickets__RSVP ? '' : 'test-attnd' . self::$generated;
 
+		$user_id = absint( Arr::get( $overrides, 'user_id', 0 ) );
+
+		$user_info = $this->get_data_for_name_props( $user_id );
+
 		$meta = [
 			$provider->checkin_key              => (bool) Arr::get( $overrides, 'checkin', false ),
 			$provider->checkin_key . '_details' => Arr::get( $overrides, 'checkin_details', false ),
@@ -76,25 +78,12 @@ trait Attendee_Maker {
 			$post_key                           => $post_id,
 			$product_key                        => $ticket_id,
 			$optout_key                         => Arr::get( $overrides, 'optout', false ),
-			$user_id_key                        => Arr::get( $overrides, 'user_id', 0 ),
+			$user_id_key                        => $user_id,
 			$ticket_sent_key                    => Arr::get( $overrides, 'ticket_sent', true ),
 			'_sku'                              => \Tribe__Utils__Array::get( $overrides, 'sku', $default_sku ),
 		];
 
-		$faked = [
-			'first_name' => $faker->firstName,
-			'last_name'  => $faker->lastName,
-			'full_name'  => $faker->name,
-			'email'      => $faker->email,
-		];
-
-		$full_name = Arr::get( $overrides, 'full_name' );
-
-		if ( null !== $full_name ) {
-			$faked['full_name'] = $full_name;
-		}
-
-		foreach ( $faked as $key => $value ) {
+		foreach ( $user_info as $key => $value ) {
 			if ( property_exists( $provider, $key ) ) {
 				$meta[ $provider->{$key} ] = $value;
 			}
@@ -118,9 +107,9 @@ trait Attendee_Maker {
 			}
 
 			$meta[ $provider->attendee_order_key ] = $overrides['order_id'];
-			$meta['_billing_first_name']           = $faker->firstName;
-			$meta['_billing_last_name']            = $faker->lastName;
-			$meta['_billing_email']                = $faker->email;
+			$meta['_billing_first_name']           = $user_info['first_name'];
+			$meta['_billing_last_name']            = $user_info['last_name'];
+			$meta['_billing_email']                = $user_info['email'];
 		}
 
 		if ( ! isset( $meta['_paid_price'] ) ) {
@@ -233,5 +222,61 @@ trait Attendee_Maker {
 
 		$optout_string = tribe_is_truthy( $optout ) ? 'yes' : 'no';
 		update_post_meta( $attendee_post->ID, $provider->attendee_optout_key, $optout_string );
+	}
+
+	/**
+	 * Given a User ID, get the user's data, possibly updating existing User.
+	 *
+	 * If user does not exist, generate faked info (allowed to be manually overridden).
+	 * If user exists, get existing user data and fake (allowing overrides for) any data points that are missing,
+	 * then update the existing user.
+	 *
+	 * @param int $user_id
+	 *
+	 * @return array The keys should match the Ticket Provider property.
+	 *               All values are expected unless overridden for non-existing user to empty string.
+	 */
+	private function get_data_for_name_props( int $user_id = 0, array $overrides = [] ) {
+		$faker = \Faker\Factory::create();
+
+		$result = [
+			'first_name' => Arr::get( $overrides, 'first_name', $faker->firstName ),
+			'last_name'  => Arr::get( $overrides, 'last_name', $faker->lastName ),
+			'full_name'  => Arr::get( $overrides, 'full_name', $faker->name ),
+			'email'      => Arr::get( $overrides, 'email', $faker->email ),
+		];
+
+		$user = get_userdata( $user_id );
+
+		if ( $user instanceof \WP_User ) {
+			// First Name
+			$first = get_user_meta( $user_id, 'first_name', true );
+			if ( $first ) {
+				$result['first_name'] = $first;
+			} else {
+				update_user_meta( $user_id, 'first_name', $result['first_name'] );
+			}
+
+			// Last Name
+			$last = get_user_meta( $user_id, 'last_name', true );
+			if ( $last ) {
+				$result['last_name'] = $last;
+			} else {
+				update_user_meta( $user_id, 'last_name', $result['last_name'] );
+			}
+
+			// Full Name when user exists is just First Name + Last Name, since we know both exist
+			$result['full_name'] = $result['first_name'] . ' ' . $result['last_name'];
+
+			// Email
+			$email = get_user_meta( $user_id, 'email', true );
+			if ( $email ) {
+				$result['email'] = $email;
+			} else {
+				update_user_meta( $user_id, 'email', $result['email'] );
+			}
+		}
+
+		return $result;
 	}
 }
