@@ -100,6 +100,22 @@ class ORMTestCase extends Test_Case {
 		yield 'order not in mismatch single' => [ 'get_test_matrix_single_order_not_in_mismatch' ];
 		yield 'order not in mismatch multi' => [ 'get_test_matrix_multi_order_not_in_mismatch' ];
 
+		// Purchaser Name
+		yield 'purchaser_name match single' => [ 'get_test_matrix_single_purchaser_name_match' ];
+		yield 'purchaser_name match multi' => [ 'get_test_matrix_multi_purchaser_name_match' ];
+		yield 'purchaser_name mismatch single' => [ 'get_test_matrix_single_purchaser_name_mismatch' ];
+		yield 'purchaser_name mismatch multi' => [ 'get_test_matrix_multi_purchaser_name_mismatch' ];
+		// Purchaser Name Not In
+		yield 'purchaser_name not in match single' => [ 'get_test_matrix_single_purchaser_name_not_in_match' ];
+		yield 'purchaser_name not in match multi' => [ 'get_test_matrix_multi_purchaser_name_not_in_match' ];
+		yield 'purchaser_name not in mismatch single' => [ 'get_test_matrix_single_purchaser_name_not_in_mismatch' ];
+		yield 'purchaser_name not in mismatch multi' => [ 'get_test_matrix_multi_purchaser_name_not_in_mismatch' ];
+		// Purchaser Name Like
+		//// @todo not working - yield 'purchaser_name like match single' => [ 'get_test_matrix_single_purchaser_name_like_match' ];
+		//// @todo not working - yield 'purchaser_name like match multi' => [ 'get_test_matrix_multi_purchaser_name_like_match' ];
+		yield 'purchaser_name like mismatch single' => [ 'get_test_matrix_single_purchaser_name_like_mismatch' ];
+		yield 'purchaser_name like mismatch multi' => [ 'get_test_matrix_multi_purchaser_name_like_mismatch' ];
+
 		// RSVP
 		yield 'rsvp match single' => [ 'get_test_matrix_single_rsvp_match' ];
 		yield 'rsvp match multi' => [ 'get_test_matrix_multi_rsvp_match' ];
@@ -655,6 +671,303 @@ class ORMTestCase extends Test_Case {
 			'default',
 			// Filter name.
 			'order__not_in',
+			// Filter arguments to use.
+			[
+				$filter,
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * PURCHASER NAMES
+	 */
+
+	/**
+	 * Get test matrix for Purchaser Name match.
+	 */
+	public function get_test_matrix_single_purchaser_name_match() {
+		$expected = [
+			$this->get_attendee_id( 0 ), // User2 on Event1
+			$this->get_attendee_id( 8 ), // User2 on Event1
+			$this->get_attendee_id( 9 ), // User2 on Event3
+		];
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'purchaser_name',
+			// Filter arguments to use.
+			[
+				[
+					$this->test_data['tickets_purchaser_names_rsvp'][0],
+				]
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Purchaser Name match.
+	 */
+	public function get_test_matrix_multi_purchaser_name_match() {
+		$expected = [
+			$this->get_attendee_id( 0 ), // User2 on Event1
+			$this->get_attendee_id( 5 ), // User4
+			$this->get_attendee_id( 8 ), // User2 on Event1
+			$this->get_attendee_id( 9 ), // User2 on Event3
+		];
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'purchaser_name',
+			// Filter arguments to use.
+			[
+				[
+					$this->test_data['user_2_details']['first_name']
+					. ' '
+					. $this->test_data['user_2_details']['last_name'],
+
+					$this->test_data['user_4_details']['first_name']
+					. ' '
+					. $this->test_data['user_4_details']['last_name'],
+				]
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for Purchaser Name mismatch.
+	 */
+	public function get_test_matrix_single_purchaser_name_mismatch() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'purchaser_name',
+			// Filter arguments to use.
+			[
+				$this->get_fake_names( 0 ),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Purchaser Names mismatch.
+	 */
+	public function get_test_matrix_multi_purchaser_name_mismatch() {
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'purchaser_name',
+			// Filter arguments to use.
+			[
+				$this->get_fake_names(),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for Purchaser Name Not In match.
+	 */
+	public function get_test_matrix_single_purchaser_name_not_in_match() {
+		$expected = [
+			$this->get_attendee_id( 1 ), // User3
+			$this->get_attendee_id( 2 ), // Guest
+			$this->get_attendee_id( 3 ), // Guest
+			$this->get_attendee_id( 4 ), // User3
+			$this->get_attendee_id( 5 ), // User4
+			$this->get_attendee_id( 6 ), // Guest
+			$this->get_attendee_id( 7 ), // Guest
+		];
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'purchaser_name__not_in',
+			// Filter arguments to use.
+			[
+				[
+					$this->test_data['user_2_details']['first_name']
+					. ' '
+					. $this->test_data['user_2_details']['last_name'],
+				]
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Purchaser Names Not In match.
+	 */
+	public function get_test_matrix_multi_purchaser_name_not_in_match() {
+		$expected = array_merge(
+			$this->test_data['attendees_rsvp'],
+			$this->test_data['attendees_paypal']
+		);
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'purchaser_name__not_in',
+			// Filter arguments to use.
+			[
+				$this->get_fake_names(),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for Purchaser Name Not In mismatch.
+	 */
+	public function get_test_matrix_single_purchaser_name_not_in_mismatch() {
+		$expected = array_merge(
+			$this->test_data['attendees_paypal'],
+			$this->test_data['attendees_rsvp']
+		);
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'purchaser_name__not_in',
+			// Filter arguments to use.
+			[
+				$this->get_fake_names( 0 ),
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Purchaser Names Not In mismatch.
+	 */
+	public function get_test_matrix_multi_purchaser_name_not_in_mismatch() {
+		$filter = array_merge(
+			$this->test_data['tickets_purchaser_names_rsvp'],
+			$this->test_data['tickets_purchaser_names_paypal']
+		);
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'purchaser_name__not_in',
+			// Filter arguments to use.
+			[
+				$filter,
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for Purchaser Name Like match.
+	 */
+	public function get_test_matrix_single_purchaser_name_like_match() {
+		$expected = [
+			$this->get_attendee_id( 0 ), // User2 on Event1
+			$this->get_attendee_id( 8 ), // User2 on Event1
+			$this->get_attendee_id( 9 ), // User2 on Event3
+		];
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'purchaser_name__like',
+			// Filter arguments to use.
+			[
+				[
+					$this->test_data['user_2_details']['first_name'] . '%',
+				]
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Purchaser Names Like match.
+	 */
+	public function get_test_matrix_multi_purchaser_name_like_match() {
+		$expected = [
+			$this->get_attendee_id( 0 ), // User2 on Event1
+			$this->get_attendee_id( 5 ), // User4
+			$this->get_attendee_id( 8 ), // User2 on Event1
+			$this->get_attendee_id( 9 ), // User2 on Event3
+		];
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'purchaser_name__like',
+			// Filter arguments to use.
+			[
+				[
+					$this->test_data['user_2_details']['first_name'] . '%',
+					$this->test_data['user_4_details']['first_name'] . '%',
+				]
+			],
+			// Assertions to make.
+			$this->get_assertions_array( $expected ),
+		];
+	}
+
+	/**
+	 * Get test matrix for Purchaser Name Like mismatch.
+	 */
+	public function get_test_matrix_single_purchaser_name_like_mismatch() {
+		$name = $this->get_fake_names( 0 );
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'purchaser_name__like',
+			// Filter arguments to use.
+			[
+				$name[0] . '%',
+			],
+			// Assertions to make.
+			$this->get_assertions_array( [] ),
+		];
+	}
+
+	/**
+	 * Get test matrix for multiple Purchaser Names Like mismatch.
+	 */
+	public function get_test_matrix_multi_purchaser_name_like_mismatch() {
+		$filter = array_merge(
+			$this->test_data['tickets_purchaser_names_rsvp'],
+			$this->test_data['tickets_purchaser_names_paypal']
+		);
+
+		return [
+			// Repository
+			'default',
+			// Filter name.
+			'purchaser_name__like',
 			// Filter arguments to use.
 			[
 				$filter,
@@ -1422,41 +1735,55 @@ class ORMTestCase extends Test_Case {
 
 		$test_data = [
 			// 5 total: 1&5 = Event author, not Attendee; 2 = only RSVP attendee; 3 = RSVP & PayPal attendee; 4 = only PayPal attendee
-			'events'                  => [],
+			'events'                         => [],
 			// '_tribe_rsvp_product' values
-			'tickets_products_rsvp'   => [],
+			'tickets_products_rsvp'          => [],
 			// '_tribe_tpp_product' values
-			'tickets_products_paypal' => [],
+			'tickets_products_paypal'        => [],
 			// '_tribe_rsvp_order' values
-			'tickets_orders_rsvp'     => [],
+			'tickets_orders_rsvp'            => [],
 			// '_tribe_tpp_order' values
-			'tickets_orders_paypal'   => [],
+			'tickets_orders_paypal'          => [],
+			// '_tribe_rsvp_full_name' values
+			'tickets_purchaser_names_rsvp'   => [],
+			// '_tribe_tpp_full_name' values
+			'tickets_purchaser_names_paypal' => [],
 			// 4 total: 1&3 = Event author, 2&4 = Attendees
-			'users'                   => [],
+			'users'                          => [],
+			'user_2_details'                 => [
+				'first_name' => 'Female',
+				'last_name'  => 'Blue',
+				'email'      => 'user2@tri.be',
+			],
+			'user_4_details'                 => [
+				'first_name' => 'Male',
+				'last_name'  => 'Brown',
+				'email'      => 'user4@tri.be',
+			],
 			// 4 total: 1&3 = has Author, Tickets, and Attendees; 2&4 = Author ID of zero and no Tickets (so no Attendees)
-			'rsvp_tickets'            => [],
+			'rsvp_tickets'                   => [],
 			// 4 total: 1 = 4 Attendees (users 2 & 3 + 2 guests); 2, 3, & 4 = no Attendees
-			'paypal_tickets'          => [],
+			'paypal_tickets'                 => [],
 			// 4 total: 1 = 4 Attendees (users 3 & 4 + 2 guests); 2, 3, & 4 = no Attendees
-			'attendees_all'           => [],
+			'attendees_all'                  => [],
 			// 9 total (5 by logged in): 1 & 2 = RSVP by logged in; 3 & 4 = RSVP by logged out; 5 & 6 = PayPal by logged in; 7 & 8: PayPal by logged out; 9 by User2 on Event3
-			'attendees_event_1'       => [], // Event1's
-			'attendees_event_3'       => [], // Event3's
-			'attendees_rsvp'          => [], // All RSVP Ticket attendees
-			'attendees_rsvp_1'        => [], // All RSVP Ticket ID 1's attendees: 1,2,3,4
-			'attendees_rsvp_5'        => [], // All RSVP Ticket ID 5's attendees: 10
-			'attendees_paypal'        => [], // All PayPal Ticket attendees
-			'attendees_paypal_1'      => [], // All PayPal Ticket ID 1's attendees: 5,6,7,8
-			'attendees_paypal_5'      => [], // All PayPal Ticket ID 5's attendees: 9
+			'attendees_event_1'              => [], // Event1's
+			'attendees_event_3'              => [], // Event3's
+			'attendees_rsvp'                 => [], // All RSVP Ticket attendees
+			'attendees_rsvp_1'               => [], // All RSVP Ticket ID 1's attendees: 1,2,3,4
+			'attendees_rsvp_5'               => [], // All RSVP Ticket ID 5's attendees: 10
+			'attendees_paypal'               => [], // All PayPal Ticket attendees
+			'attendees_paypal_1'             => [], // All PayPal Ticket ID 1's attendees: 5,6,7,8
+			'attendees_paypal_5'             => [], // All PayPal Ticket ID 5's attendees: 9
 		];
 
 		// Create User1, author of Event1.
 		$test_data['users'][] = $user_id_one = $this->factory()->user->create( [ 'role' => 'author' ] );
 
 		// Create test users 2, 3, and 4 as Attendees
-		$test_data['users'][] = $user_id_two = $this->factory()->user->create();
+		$test_data['users'][] = $user_id_two = $this->factory()->user->create( $test_data['user_2_details'] );
 		$test_data['users'][] = $user_id_three = $this->factory()->user->create();
-		$test_data['users'][] = $user_id_four = $this->factory()->user->create();
+		$test_data['users'][] = $user_id_four = $this->factory()->user->create( $test_data['user_4_details'] );
 
 		//
 		// Event1: RSVP and PayPal by User2, User3, and guests
@@ -1623,6 +1950,17 @@ class ORMTestCase extends Test_Case {
 					&& ! empty( $meta[ $k ][0] )
 				) {
 					$test_data['tickets_orders_paypal'][] = $meta[ $k ][0];
+				} // Purchaser Names
+				elseif (
+					$rsvp->full_name === $k
+					&& ! empty( $meta[ $k ][0] )
+				) {
+					$test_data['tickets_purchaser_names_rsvp'][] = $meta[ $k ][0];
+				} elseif (
+					$paypal->full_name === $k
+					&& ! empty( $meta[ $k ][0] )
+				) {
+					$test_data['tickets_purchaser_names_paypal'][] = $meta[ $k ][0];
 				}
 			}
 		}
@@ -1681,7 +2019,7 @@ class ORMTestCase extends Test_Case {
 	}
 
 	/**
-	 * Get an array of IDs that would not ever match any Attendee IDs.
+	 * Get an array of IDs that would never match for any Attendees.
 	 *
 	 * @param int $key Optionally get just 1 value from the array (still returns an array).
 	 *
@@ -1693,6 +2031,30 @@ class ORMTestCase extends Test_Case {
 			888888,
 			999999,
 			PHP_INT_MAX,
+		];
+
+		shuffle( $array );
+
+		if ( array_key_exists( $key, $array ) ) {
+			return (array) $array[ $key ];
+		}
+
+		return $array;
+	}
+
+	/**
+	 * Get an array of names that would never match for any Attendees.
+	 *
+	 * @param int $key Optionally get just 1 value from the array (still returns an array).
+	 *
+	 * @return array
+	 */
+	private function get_fake_names( int $key = - 1 ) {
+		$array = [
+			'aaaaaaaaa',
+			'bbbbbbbbb',
+			'CCCCCCCCC',
+			'DDDDDDDDD',
 		];
 
 		shuffle( $array );
