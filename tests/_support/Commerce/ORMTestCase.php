@@ -1633,7 +1633,21 @@ class ORMTestCase extends Test_Case {
 		}
 
 		// Debugging (only works for failing tests)
-		$debug = $this->get_attendee_data( 550 );
+		$debug = $this->get_attendee_data( 807 );
+
+		global $wpdb;
+		$all_metas = $wpdb->get_col(
+			$wpdb->prepare(
+				"
+			SELECT pm.meta_value FROM {$wpdb->postmeta} pm
+			LEFT JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+			WHERE pm.meta_key = %s 
+			AND p.post_type = %s
+			",
+				'_tribe_rsvp_full_name',
+				'tribe_rsvp_attendees'
+			)
+		);
 
 		if ( ! empty( $debug ) ) {
 			codecept_debug( $debug );
