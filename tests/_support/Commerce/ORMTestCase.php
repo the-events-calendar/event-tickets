@@ -1414,6 +1414,12 @@ class ORMTestCase extends Test_Case {
 	 * Note that guest purchasers will still have User ID# zero saved to `_tribe_tickets_attendee_user_id` meta field.
 	 */
 	protected function setup_test_data() {
+		/** @var \Tribe__Tickets__RSVP $rsvp */
+		$rsvp = tribe( 'tickets.rsvp' );
+
+		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
+		$paypal = tribe( 'tickets.commerce.paypal' );
+
 		$test_data = [
 			// 5 total: 1&5 = Event author, not Attendee; 2 = only RSVP attendee; 3 = RSVP & PayPal attendee; 4 = only PayPal attendee
 			'events'                  => [],
@@ -1597,23 +1603,23 @@ class ORMTestCase extends Test_Case {
 			foreach ( $meta as $k => $v ) {
 				// Tickets
 				if (
-					\Tribe__Tickets__RSVP::ATTENDEE_PRODUCT_KEY === $k
+					$rsvp::ATTENDEE_PRODUCT_KEY === $k
 					&& ! empty( $meta[ $k ][0] )
 				) {
 					$test_data['tickets_products_rsvp'][] = $meta[ $k ][0];
 				} elseif (
-					\Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_PRODUCT_KEY === $k
+					$paypal::ATTENDEE_PRODUCT_KEY === $k
 					&& ! empty( $meta[ $k ][0] )
 				) {
 					$test_data['tickets_products_paypal'][] = $meta[ $k ][0];
 				} // Orders
 				elseif (
-					\Tribe__Tickets__RSVP::get_instance()->order_key === $k
+					$rsvp->order_key === $k
 					&& ! empty( $meta[ $k ][0] )
 				) {
 					$test_data['tickets_orders_rsvp'][] = $meta[ $k ][0];
 				} elseif (
-					\Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_ORDER_KEY === $k
+					$paypal::ATTENDEE_ORDER_KEY === $k
 					&& ! empty( $meta[ $k ][0] )
 				) {
 					$test_data['tickets_orders_paypal'][] = $meta[ $k ][0];
