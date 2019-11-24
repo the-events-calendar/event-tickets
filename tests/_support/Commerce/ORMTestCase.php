@@ -110,11 +110,9 @@ class ORMTestCase extends Test_Case {
 		yield 'purchaser_name not in match multi' => [ 'get_test_matrix_multi_purchaser_name_not_in_match' ];
 		yield 'purchaser_name not in mismatch single' => [ 'get_test_matrix_single_purchaser_name_not_in_mismatch' ];
 		yield 'purchaser_name not in mismatch multi' => [ 'get_test_matrix_multi_purchaser_name_not_in_mismatch' ];
-		// Purchaser Name Like
-		//// @todo not working - yield 'purchaser_name like match single' => [ 'get_test_matrix_single_purchaser_name_like_match' ];
-		//// @todo not working - yield 'purchaser_name like match multi' => [ 'get_test_matrix_multi_purchaser_name_like_match' ];
+		// Purchaser Name Like (does not support Multi)
+		yield 'purchaser_name like match single' => [ 'get_test_matrix_single_purchaser_name_like_match' ];
 		yield 'purchaser_name like mismatch single' => [ 'get_test_matrix_single_purchaser_name_like_mismatch' ];
-		yield 'purchaser_name like mismatch multi' => [ 'get_test_matrix_multi_purchaser_name_like_mismatch' ];
 
 		// RSVP
 		yield 'rsvp match single' => [ 'get_test_matrix_single_rsvp_match' ];
@@ -897,37 +895,7 @@ class ORMTestCase extends Test_Case {
 			'purchaser_name__like',
 			// Filter arguments to use.
 			[
-				[
-					$this->test_data['user_2_details']['first_name'] . '%',
-				]
-			],
-			// Assertions to make.
-			$this->get_assertions_array( $expected ),
-		];
-	}
-
-	/**
-	 * Get test matrix for multiple Purchaser Names Like match.
-	 */
-	public function get_test_matrix_multi_purchaser_name_like_match() {
-		$expected = [
-			$this->get_attendee_id( 0 ), // User2 on Event1
-			$this->get_attendee_id( 5 ), // User4
-			$this->get_attendee_id( 8 ), // User2 on Event1
-			$this->get_attendee_id( 9 ), // User2 on Event3
-		];
-
-		return [
-			// Repository
-			'default',
-			// Filter name.
-			'purchaser_name__like',
-			// Filter arguments to use.
-			[
-				[
-					$this->test_data['user_2_details']['first_name'] . '%',
-					$this->test_data['user_4_details']['first_name'] . '%',
-				]
+				$this->test_data['user_2_details']['first_name'] . '%',
 			],
 			// Assertions to make.
 			$this->get_assertions_array( $expected ),
@@ -948,29 +916,6 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[
 				$name[0] . '%',
-			],
-			// Assertions to make.
-			$this->get_assertions_array( [] ),
-		];
-	}
-
-	/**
-	 * Get test matrix for multiple Purchaser Names Like mismatch.
-	 */
-	public function get_test_matrix_multi_purchaser_name_like_mismatch() {
-		$filter = array_merge(
-			$this->test_data['tickets_purchaser_names_rsvp'],
-			$this->test_data['tickets_purchaser_names_paypal']
-		);
-
-		return [
-			// Repository
-			'default',
-			// Filter name.
-			'purchaser_name__like',
-			// Filter arguments to use.
-			[
-				$filter,
 			],
 			// Assertions to make.
 			$this->get_assertions_array( [] ),
