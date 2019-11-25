@@ -117,6 +117,13 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.10.11.1] 2019-11-18 =
+
+* Fix - Force null values to 0 for `_tribe_ticket_capacity` so RSVPs save correctly in 5.3 block editor. [137383]
+* Fix - Bypass REST update/delete of virtual meta key `_tribe_tickets_list` so events will save in WP 5.3. [137383]
+* Fix - Allow `null` to be sent for REST API updates in WP 5.3 for certain meta fields that we intentionally send null for but don't match the registered schema type. [137383]
+* Fix - Handle the onRequestClose action in element.js to prevent Attendee Information modal closing when clicking within the modal. [137394]
+
 = [4.10.11] 2019-11-13 =
 
 * Fix - Add a check for empty tickets to `Tribe__Tickets__Editor__Blocks__Tickets::ticket_availability()` method to avoid PHP error notices showing [122334]
