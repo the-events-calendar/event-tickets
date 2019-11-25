@@ -119,7 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.11.1] TBD =
 
-* Feature - Use the same loading icon for the RSVP block that we're using for the tickets block [135660]
+* Feature - Use the same loading icon for the RSVP block that we're using for the tickets block. [135660]
 
 = [4.11] 2019-11-21 =
 
