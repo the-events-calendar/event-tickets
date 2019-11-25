@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.11.1] TBD =
+
+* Feature - Use the same loading icon for the RSVP block that we're using for the tickets block [135660]
+
 = [4.11] 2019-11-21 =
 
 * Feature - Add ability to utilize the block ticket template outside of Gutenberg views [132568]
