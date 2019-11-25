@@ -17,7 +17,7 @@
  */
 class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	protected $shortcode_name = 'tribe-user-event-confirmations';
-	protected $params = array();
+	protected $params = [];
 
 	/**
 	 * Registers a user event confirmation list shortcode
@@ -34,7 +34,7 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 		 */
 		$this->shortcode_name = apply_filters( 'tribe_tickets_shortcodes_attendee_list_name', $this->shortcode_name );
 
-		add_shortcode( $this->shortcode_name, array( $this, 'generate' ) );
+		add_shortcode( $this->shortcode_name, [ $this, 'generate' ] );
 	}
 
 	/**
@@ -65,10 +65,10 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	 * @param $params
 	 */
 	protected function set_params( $params ) {
-		$this->params = shortcode_atts( array(
+		$this->params = shortcode_atts( [
 			'limit' => -1,
 			'user'  => get_current_user_id()
-		), $params, $this->shortcode_name );
+		], $params, $this->shortcode_name );
 	}
 
 	/**
@@ -144,7 +144,7 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	 * @return array
 	 */
 	protected function get_event_keys() {
-		$event_keys = array();
+		$event_keys = [];
 
 		foreach ( Tribe__Tickets__Tickets::modules() as $module_class => $module_instance ) {
 			/**
@@ -156,7 +156,7 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 			if ( defined( "$module_class::ATTENDEE_EVENT_KEY" ) ) {
 				$event_keys[] = constant( "$module_class::ATTENDEE_EVENT_KEY" );
 			} else {
-				$event_keys[] = call_user_func( array( $module_class, 'get_key' ), 'ATTENDEE_EVENT_KEY' );
+				$event_keys[] = call_user_func( [ $module_class, 'get_key' ], 'ATTENDEE_EVENT_KEY' );
 			}
 		}
 
