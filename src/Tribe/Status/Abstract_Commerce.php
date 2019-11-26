@@ -244,7 +244,10 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		$message = esc_html__( 'Sold counts tickets from completed orders only.', 'event-tickets' );
 
-		return tribe( 'tooltip.view' )->render_tooltip( $message );
+		/** @var Tribe__Tooltip__View $tooltip */
+		$tooltip = tribe( 'tooltip.view' );
+
+		return $tooltip->render_tooltip( $message );
 	}
 
 	/**
@@ -255,10 +258,12 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 * @return string a string of html for the tooltip
 	 */
 	public function get_total_sale_tooltip() {
+		/** @var Tribe__Tooltip__View $tooltip */
+		$tooltip = tribe( 'tooltip.view' );
 
 		$message = esc_html__( 'Total Sales counts tickets from all completed orders.', 'event-tickets' );
 
-		return tribe( 'tooltip.view' )->render_tooltip( $message );
+		return $tooltip->render_tooltip( $message );
 	}
 
 	/**
@@ -272,7 +277,10 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		$message = esc_html__( 'Total Ordered counts tickets from orders of any status, including pending and refunded.', 'event-tickets' );
 
-		return tribe( 'tooltip.view' )->render_tooltip( $message );
+		/** @var Tribe__Tooltip__View $tooltip */
+		$tooltip = tribe( 'tooltip.view' );
+
+		return $tooltip->render_tooltip( $message );
 	}
 
 	/**
@@ -285,13 +293,22 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 * @return string a string of html for the tooltip
 	 */
 	public function get_pending_by_ticket_tooltip( $ticket_sold ) {
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
 
 		$args = [
-			'incomplete_statuses'        => (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_incomplete', $ticket_sold['ticket']->provider_class, null, true ),
+			'incomplete_statuses' => (array) $status_mgr->get_statuses_by_action( 'count_incomplete', $ticket_sold['ticket']->provider_class, null, true ),
 		];
-		$message = tribe( 'tickets.admin.views' )->template( 'order-pending-completion', $args, false );
 
-		return tribe( 'tooltip.view' )->render_tooltip( $message );
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
+
+		$message = $admin_views->template( 'order-pending-completion', $args, false );
+
+		/** @var Tribe__Tooltip__View $tooltip */
+		$tooltip = tribe( 'tooltip.view' );
+
+		return $tooltip->render_tooltip( $message );
 	}
 
 
@@ -317,7 +334,10 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		$args    = [ 'wrap_classes' => 'large' ];
 
-		return tribe( 'tooltip.view' )->render_tooltip( $message, $args );
+		/** @var Tribe__Tooltip__View $tooltip */
+		$tooltip = tribe( 'tooltip.view' );
+
+		return $tooltip->render_tooltip( $message, $args );
 
 	}
 

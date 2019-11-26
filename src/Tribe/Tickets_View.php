@@ -661,8 +661,10 @@ class Tribe__Tickets__Tickets_View {
 	 *                    option data or `false` if the selected option does not exist.
 	 */
 	public function get_rsvp_options( $selected = null, $just_labels = true ) {
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
 
-		$options = tribe( 'tickets.status' )->get_status_options( 'rsvp' );
+		$options = $status_mgr->get_status_options( 'rsvp' );
 
 		/**
 		 * Allow users to add more RSVP options.

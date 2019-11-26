@@ -62,7 +62,10 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 		$message = _x( 'Includes all ticketed attendees regardless of order status.', 'total sold tooltip', 'event-tickets' );
 		$args = [ 'classes' => 'required' ];
 
-		return tribe( 'tooltip.view' )->render_tooltip( $message, $args  );
+		/** @var Tribe__Tooltip__View $tooltip */
+		$tooltip = tribe( 'tooltip.view' );
+
+		return $tooltip->render_tooltip( $message, $args  );
 	}
 
 	/**
@@ -76,7 +79,10 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 		$message = _x( 'Includes ticketed attendees with orders marked Completed.', 'total complete tooltip', 'event-tickets' );
 		$args    = [ 'classes' => 'required' ];
 
-		return tribe( 'tooltip.view' )->render_tooltip( $message, $args );
+		/** @var Tribe__Tooltip__View $tooltip */
+		$tooltip = tribe( 'tooltip.view' );
+
+		return $tooltip->render_tooltip( $message, $args );
 	}
 
 	/**
