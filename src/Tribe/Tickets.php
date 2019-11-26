@@ -2765,6 +2765,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$tickets_handler->toggle_manual_update_flag( false );
 
 			$post = get_post( $post_id );
+
 			// If ticket start date is not set, set it to the post date.
 			if ( empty( $data['ticket_start_date'] ) ) {
 				$date = strtotime( $post->post_date );

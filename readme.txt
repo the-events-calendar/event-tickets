@@ -121,7 +121,6 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Ensure that tickets without an end date set in the Classic editor get set to end at the start of an event per the tooltip [125969]
 
-
 = [4.11] 2019-11-21 =
 
 * Feature - Add ability to utilize the block ticket template outside of Gutenberg views [132568]
