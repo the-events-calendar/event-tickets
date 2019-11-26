@@ -593,7 +593,7 @@ if ( ! function_exists( 'tribe_tickets_get_template_part' ) ) {
 		/**
 		 * Allow users to filter which templates can be included
 		 *
-		 * @param string $template The Template file(s), which is a relative path from the Folder we are dealing with
+		 * @param string $template The Template file(s), which is a relative path from the Folder we are dealing with.
 		 * @param string $slug     Slug for this template
 		 * @param string $name     Template name
 		 * @param array  $data     The Data that will be used on this template
@@ -753,7 +753,7 @@ if ( ! function_exists( 'tribe_tickets_get_attendees' ) ) {
 	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or event id
 	 * @param null $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
 	 *
-	 * @return array an array of all attendee(s) data including custom attendee meta for a given id
+	 * @return array List of all attendee(s) data including custom attendee meta for a given ID.
 	 */
 	function tribe_tickets_get_attendees( $id, $context = null ) {
 		return tribe( 'tickets.data_api' )->get_attendees_by_id( $id, $context );

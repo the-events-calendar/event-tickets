@@ -19,7 +19,7 @@
 <?php
 	ob_start();
 	/**
-	 * Allows filtering of extra classes used on the rsvp-block loader
+	 * Allows filtering of extra classes used on the rsvp-block loader.
 	 *
 	 * @since  TBD
 	 *
