@@ -119,7 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.11.1] TBD =
 
-* Fix - Fix the header-image attachement for RSVP blocks [137243]
+* Fix - Fix the header image attachment handling for RSVP blocks [137243]
 
 = [4.11] 2019-11-21 =
 
