@@ -1,4 +1,7 @@
 <?php
+
+use Tribe\Tooltip\View as Tooltip_View;
+
 abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	protected $event_id = 0;
 	protected $relative_priority = 10;
@@ -62,7 +65,7 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 		$message = _x( 'Includes all ticketed attendees regardless of order status.', 'total sold tooltip', 'event-tickets' );
 		$args = [ 'classes' => 'required' ];
 
-		/** @var Tribe__Tooltip__View $tooltip */
+		/** @var Tooltip_View $tooltip */
 		$tooltip = tribe( 'tooltip.view' );
 
 		return $tooltip->render_tooltip( $message, $args  );
@@ -79,7 +82,7 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 		$message = _x( 'Includes ticketed attendees with orders marked Completed.', 'total complete tooltip', 'event-tickets' );
 		$args    = [ 'classes' => 'required' ];
 
-		/** @var Tribe__Tooltip__View $tooltip */
+		/** @var Tooltip_View $tooltip */
 		$tooltip = tribe( 'tooltip.view' );
 
 		return $tooltip->render_tooltip( $message, $args );
