@@ -43,6 +43,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 			$this->decorated->by( 'optout', 'no' );
 			$this->decorated->by( 'post_status', 'publish' );
 			$this->decorated->by( 'rsvp_status__or_none', 'yes' );
+			$this->decorated->by( 'event__show_attendees' );
 		}
 
 		$this->decorated->set_query_builder( null );
