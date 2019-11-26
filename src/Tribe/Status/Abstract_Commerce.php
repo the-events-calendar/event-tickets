@@ -1,5 +1,6 @@
 <?php
 
+use Tribe\Tooltip\View as Tooltip_View;
 
 /**
  * Class Tribe__Tickets__Status__Abstract_Commerce
@@ -244,7 +245,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		$message = esc_html__( 'Sold counts tickets from completed orders only.', 'event-tickets' );
 
-		/** @var Tribe__Tooltip__View $tooltip */
+		/** @var Tooltip_View $tooltip */
 		$tooltip = tribe( 'tooltip.view' );
 
 		return $tooltip->render_tooltip( $message );
@@ -258,7 +259,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 * @return string a string of html for the tooltip
 	 */
 	public function get_total_sale_tooltip() {
-		/** @var Tribe__Tooltip__View $tooltip */
+		/** @var Tooltip_View $tooltip */
 		$tooltip = tribe( 'tooltip.view' );
 
 		$message = esc_html__( 'Total Sales counts tickets from all completed orders.', 'event-tickets' );
@@ -277,7 +278,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		$message = esc_html__( 'Total Ordered counts tickets from orders of any status, including pending and refunded.', 'event-tickets' );
 
-		/** @var Tribe__Tooltip__View $tooltip */
+		/** @var Tooltip_View $tooltip */
 		$tooltip = tribe( 'tooltip.view' );
 
 		return $tooltip->render_tooltip( $message );
@@ -305,7 +306,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		$message = $admin_views->template( 'order-pending-completion', $args, false );
 
-		/** @var Tribe__Tooltip__View $tooltip */
+		/** @var Tooltip_View $tooltip */
 		$tooltip = tribe( 'tooltip.view' );
 
 		return $tooltip->render_tooltip( $message );
@@ -334,7 +335,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		$args    = [ 'wrap_classes' => 'large' ];
 
-		/** @var Tribe__Tooltip__View $tooltip */
+		/** @var Tooltip_View $tooltip */
 		$tooltip = tribe( 'tooltip.view' );
 
 		return $tooltip->render_tooltip( $message, $args );
