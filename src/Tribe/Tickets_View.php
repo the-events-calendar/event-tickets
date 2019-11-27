@@ -947,15 +947,18 @@ class Tribe__Tickets__Tickets_View {
 	 */
 	public function get_tickets_block( $post ) {
 		if ( empty( $post ) ) {
-			return;
+			return '';
 		}
 
 		if ( is_numeric( $post ) ) {
 			$post = get_post( $post );
 		}
 
-		if ( empty( $post ) || ! ( $post instanceof WP_Post ) ) {
-			return;
+		if (
+			empty( $post )
+			|| ! ( $post instanceof WP_Post )
+		) {
+			return '';
 		}
 
 		$post_id     = $post->ID;
