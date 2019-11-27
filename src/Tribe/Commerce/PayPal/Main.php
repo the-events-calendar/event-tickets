@@ -1484,7 +1484,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		if ( empty( $tickets ) ) {
 			return;
 		}
-
+		bdump('tpp');
 		Tribe__Tickets__Tickets_View::instance()->get_tickets_block( $post->ID );
 	}
 
@@ -2607,13 +2607,20 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @since 4.7
 	 */
 	public function get_tickets( $post_id ) {
+		$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+
+		// If the event provider is set to something else, let's save some time, shall we?
+		if ( ! is_admin() && __CLASS__ !== $default_provider ) {
+			return [];
+		}
+
 		$ticket_ids = $this->get_tickets_ids( $post_id );
 
 		if ( ! $ticket_ids ) {
-			return array();
+			return [];
 		}
 
-		$tickets = array();
+		$tickets = [];
 
 		foreach ( $ticket_ids as $post ) {
 			$ticket = $this->get_ticket( $post_id, $post );
