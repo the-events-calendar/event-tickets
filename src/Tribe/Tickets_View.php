@@ -963,7 +963,13 @@ class Tribe__Tickets__Tickets_View {
 
 		$post_id     = $post->ID;
 		$provider_id = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
-		$provider    = call_user_func( [ $provider_id, 'get_instance' ] );
+
+		// Protect against ticket that exists but is of a type that is not enabled
+		if ( ! method_exists( $provider_id, 'get_instance' ) ) {
+			return '';
+		}
+
+		$provider = call_user_func( [ $provider_id, 'get_instance' ] );
 
 		/** @var \Tribe__Tickets__Editor__Template $template */
 		$template       = tribe( 'tickets.editor.template' );
