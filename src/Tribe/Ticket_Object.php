@@ -635,6 +635,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @todo   Create a way to get the Available for an Event (currently impossible)
 		 *
+		 * @see \Tribe__Tickets__Tickets_Handler::get_ticket_max_purchase() Use instead to get the front-end quantity.
+		 *
 		 * @since  4.6
 		 *
 		 * @return int

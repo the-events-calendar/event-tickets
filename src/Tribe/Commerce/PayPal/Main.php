@@ -2513,7 +2513,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			}
 
 			// Get the number of available tickets.
-			$available = $ticket_object->available();
+			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
+
+			$available = $tickets_handler->get_ticket_max_purchase( $ticket['ticket_id'] );
 
 			// Bail if ticket does not have enough available capacity.
 			if ( ( -1 !== $available && $available < $ticket_quantity ) || ! $ticket_object->date_in_range() ) {
