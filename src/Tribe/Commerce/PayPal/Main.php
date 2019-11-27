@@ -1484,7 +1484,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		if ( empty( $tickets ) ) {
 			return;
 		}
-		bdump('tpp');
+
 		Tribe__Tickets__Tickets_View::instance()->get_tickets_block( $post->ID );
 	}
 
