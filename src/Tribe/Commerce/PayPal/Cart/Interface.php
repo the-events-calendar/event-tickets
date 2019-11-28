@@ -6,6 +6,7 @@
  * @since 4.7.3
  */
 interface Tribe__Tickets__Commerce__PayPal__Cart__Interface {
+
 	/**
 	 * Sets the cart id.
 	 *
@@ -16,14 +17,15 @@ interface Tribe__Tickets__Commerce__PayPal__Cart__Interface {
 	public function set_id( $id );
 
 	/**
-	 * Adds a specified quantity of the item to the cart.
+	 * Gets the cart items from the cart.
 	 *
-	 * @since 4.7.3
+	 * This method should include any persistence by the cart implementation.
 	 *
-	 * @param int $item_id
-	 * @param int $quantity
+	 * @since TBD
+	 *
+	 * @return array
 	 */
-	public function add_item( $item_id, $quantity );
+	public function get_items();
 
 	/**
 	 * Saves the cart.
@@ -50,7 +52,7 @@ interface Tribe__Tickets__Commerce__PayPal__Cart__Interface {
 	 *
 	 * @param array $criteria
 	 */
-	public function exists( array $criteria = array() );
+	public function exists( array $criteria = [] );
 
 	/**
 	 * Whether the cart contains items or not.
@@ -72,13 +74,24 @@ interface Tribe__Tickets__Commerce__PayPal__Cart__Interface {
 	public function has_item( $item_id );
 
 	/**
-	 * Removes an item from the cart.
+	 * Adds a specified quantity of the item to the cart.
 	 *
 	 * @since 4.7.3
 	 *
-	 * @param string $item_id
-	 *
-	 * @param int $quantity The quantity to remove.
+	 * @param int|string $item_id   The item ID.
+	 * @param int        $quantity  The quantity to remove.
+	 * @param array      $extra_dat Extra data to save to the item.
 	 */
-	public function remove_item( $item_id, $quantity );
+	public function add_item( $item_id, $quantity, array $extra_data = [] );
+
+	/**
+	 * Removes an item from the cart.
+	 *
+	 * @since 4.7.3
+	 * @since TBD Added null default for $quantity
+	 *
+	 * @param int|string $item_id  The item ID.
+	 * @param null|int   $quantity The quantity to remove.
+	 */
+	public function remove_item( $item_id, $quantity = null );
 }

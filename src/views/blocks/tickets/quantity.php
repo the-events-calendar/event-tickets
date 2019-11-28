@@ -11,7 +11,7 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @version TBD
  *
  */
 
@@ -24,9 +24,13 @@ $context = array(
 	'key' => $this->get( 'key' ),
 );
 
+$classes = [
+	'tribe-common-h4',
+	'tribe-tickets__item__quantity',
+];
 ?>
 <div
-	class="tribe-block__tickets__item__quantity"
+	<?php tribe_classes( $classes ); ?>
 >
 	<?php if ( $is_available ) : ?>
 		<?php $this->template( 'blocks/tickets/quantity-remove', $context ); ?>

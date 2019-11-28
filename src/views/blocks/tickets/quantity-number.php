@@ -13,33 +13,35 @@
  * @since 4.9
  * @since 4.10.8 Tweaked logic for unlimited maximum quantity allowed.
  *
- * @version 4.10.8
+ * @version TBD
  *
  * @var Tribe__Tickets__Ticket_Object $ticket
  * @var Tribe__Tickets__Editor__Template $this
  */
 
 $must_login = ! is_user_logged_in() && $ticket->get_provider()->login_required();
-
-$ticket = $this->get( [ 'ticket' ] );
+$ticket     = $this->get( 'ticket' );
 
 /** @var Tribe__Tickets__Tickets_Handler $handler */
-$handler = tribe( 'tickets.handler' );
-
+$handler      = tribe( 'tickets.handler' );
 $max_quantity = $handler->get_ticket_max_purchase( $ticket->ID );
+
+$classes = [ 'tribe-tickets__item__quantity__number' ];
+if ( $must_login ) {
+	$classes[] = 'tribe-tickets__disabled';
+}
 ?>
 <div
-	class="tribe-block__tickets__item__quantity__number"
+<?php tribe_classes( $classes ); ?>
 >
 	<input
 		type="number"
-		class="tribe-ticket-quantity"
+		class="tribe-common-h3 tribe-common-h4--min-medium tribe-tickets-quantity"
 		step="1"
 		min="0"
 		<?php if ( -1 !== $max_quantity ) : ?>
 			max="<?php echo esc_attr( $max_quantity ); ?>"
 		<?php endif; ?>
-		name="quantity_<?php echo absint( $ticket->ID ); ?>"
 		value="0"
 		autocomplete="off"
 		<?php disabled( $must_login ); ?>

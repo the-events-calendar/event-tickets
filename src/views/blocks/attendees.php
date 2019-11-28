@@ -10,7 +10,8 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ *
+ * @version TBD
  *
  */
 
@@ -24,7 +25,7 @@ if ( ! is_array( $attendees ) ) {
 ?>
 <div
 	id="tribe-block__attendees"
-	class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
+	<?php tribe_classes( $classes ); ?>
 
 	<?php $this->template( 'blocks/attendees/title', array( 'title' => $title ) ); ?>
 

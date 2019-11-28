@@ -94,4 +94,4 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 	unset( $tribe_my_tickets_have_meta );
 	?>
 	</form>
-</div><!-- #tribe-events-content -->
+</div>

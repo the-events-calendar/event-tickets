@@ -37,14 +37,6 @@ $all_post_types = apply_filters( 'tribe_tickets_settings_post_types', $all_post_
 
 $options = get_option( Tribe__Main::OPTIONNAME, [] );
 
-
-include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-
-$tickets_plus_plugin       = 'event-tickets-plus/event-tickets-plus.php';
-$available_plugins         = get_plugins();
-$is_tickets_plus_available = array_key_exists( $tickets_plus_plugin, $available_plugins );
-
-
 /**
  * List of ticketing solutions that support login requirements (ie, disabling or
  * enabling the ticket form according to whether a user is logged in or not).
@@ -77,6 +69,8 @@ $tickets_fields = [
 	],
 ];
 
+$tec_fields = [];
+
 /**
  * If The Events Calendar is active let's add an option to control the position
  * of the ticket forms in the events view.
@@ -89,7 +83,8 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		'tribe_events_single_event_before_the_content' => __( 'Above the event description', 'event-tickets' ),
 	];
 
-	$tickets_fields['ticket-rsvp-form-location'] = [
+	$tec_fields = [
+		'ticket-rsvp-form-location'             => [
 		'type'            => 'dropdown',
 		'label'           => esc_html( sprintf( _x( 'Location of %s form', 'form location setting', 'event-tickets' ), tribe_get_rsvp_label_singular( 'form_location_setting' ) ) ),
 		'tooltip'         => esc_html__( 'This setting only impacts events made with the classic editor.', 'event-tickets' ),
@@ -97,9 +92,8 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		'validation_type' => 'options',
 		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
 		'default'         => reset( $ticket_form_location_options ),
-	];
-
-	$tickets_fields['ticket-commerce-form-location'] = [
+		],
+		'ticket-commerce-form-location'         => [
 		'type'            => 'dropdown',
 		'label'           => esc_html( sprintf( _x( 'Location of %s form', 'form location setting', 'event-tickets' ), tribe_get_ticket_label_plural( 'form_location_setting' ) ) ),
 		'tooltip'         => esc_html__( 'This setting only impacts events made with the classic editor.', 'event-tickets' ),
@@ -107,9 +101,8 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		'validation_type' => 'options',
 		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
 		'default'         => reset( $ticket_form_location_options ),
-	];
-
-	$tickets_fields['ticket-display-tickets-left-threshold'] = [
+		],
+		'ticket-display-tickets-left-threshold' => [
 		'type'            => 'text',
 		'label'           => esc_html( sprintf( _x( 'Display # %s left threshold', 'tickets remaining threshold label', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'remaining_threshold_setting_label' ) ) ),
 		'tooltip'         => esc_html( sprintf( _x( 'If this number is less than the number of %1$s left for sale on your event, this will prevent the "# of %1$s left" text from showing on your website. You can leave this blank if you would like to always show the text.', 'tickets remaining threshold tooltip', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'remaining_threshold_setting_tooltip' ) ) ),
@@ -117,75 +110,53 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		'size'            => 'small',
 		'can_be_empty'    => true,
 		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
+		],
 	];
 }
 
-$tickets_fields = array_merge( $tickets_fields, [
-		'ticket-authentication-requirements-heading' => [
-			'type' => 'html',
-			'html' => '<h3>' . __( 'Login Requirements', 'event-tickets' ) . '</h3>',
-		],
-		'ticket-authentication-requirements-advice'  => [
-			'type' => 'html',
-			'html' => '<p>' . sprintf(
-					_x( 'You can require that users log into your site before they are able to %1$s (or buy %2$s). Please review your WordPress Membership option (via the %3$sGeneral Settings admin screen%4$s) before adjusting this setting.',
-					'ticket authentication requirements',
-					'event-tickets'
-					),
-				tribe_get_rsvp_label_singular( 'authentication_requirements_advice' ),
-				tribe_get_ticket_label_plural_lowercase( 'authentication_requirements_advice' ),
-				'<a href="' . esc_url( get_admin_url( null, 'options-general.php' ) ) . '" target="_blank">',
-				'</a>'
-				) . '</p>',
-		],
-		'ticket-authentication-requirements'         => [
-			'type'            => 'checkbox_list',
-			'options'         => $ticket_addons,
-			'validation_type' => 'options_multi',
-			'can_be_empty'    => true,
-		],
-	]
+$authentication_fields = [
+	'ticket-authentication-requirements-heading' => [
+		'type' => 'html',
+		'html' => '<h3>' . __( 'Login Requirements', 'event-tickets' ) . '</h3>',
+	],
+	'ticket-authentication-requirements-advice'  => [
+		'type' => 'html',
+		'html' => '<p>' . sprintf(
+				_x( 'You can require that users log into your site before they are able to %1$s (or buy %2$s). Please review your WordPress Membership option (via the %3$sGeneral Settings admin screen%4$s) before adjusting this setting.',
+				'ticket authentication requirements',
+				'event-tickets'
+				),
+			tribe_get_rsvp_label_singular( 'authentication_requirements_advice' ),
+			tribe_get_ticket_label_plural_lowercase( 'authentication_requirements_advice' ),
+			'<a href="' . esc_url( get_admin_url( null, 'options-general.php' ) ) . '" target="_blank">',
+			'</a>'
+			) . '</p>',
+	],
+	'ticket-authentication-requirements'         => [
+		'type'            => 'checkbox_list',
+		'options'         => $ticket_addons,
+		'validation_type' => 'options_multi',
+		'can_be_empty'    => true,
+	],
+];
+
+
+$plus_link = sprintf(
+	'<a href="http://m.tri.be/19zl" target="_blank">%s</a>',
+	__( 'Event Tickets Plus', 'tribe-common' )
 );
 
-$tickets_fields['ticket-paypal-heading'] = [
-	'type' => 'html',
-	'html' => '<h3>' . __( 'Tribe Commerce', 'event-tickets' ) . '</h3>',
-];
+$plus_link_2 = sprintf(
+	'<a href="http://m.tri.be/19zl" target="_blank">%s</a>',
+	__( 'Check it out!', 'tribe-common' )
+);
 
-if ( ! $is_tickets_plus_available ) {
-	$plus_link = sprintf(
-		'<a href="http://m.tri.be/19zl" target="_blank">%s</a>',
-		__( 'Event Tickets Plus', 'tribe-common' )
-	);
-
-	$plus_link_2 = sprintf(
-		'<a href="http://m.tri.be/19zl" target="_blank">%s</a>',
-		__( 'Check it out!', 'tribe-common' )
-	);
-
-	$plus_message = sprintf(
-		_x( 'Tribe Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check users in via QR codes, and share stock between %2$s. %3$s', 'about Tribe Commerce', 'event-tickets' ),
-		$plus_link,
-		tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_about_tribe_commerce' ),
-		$plus_link_2
-	);
-
-	$tickets_fields['ticket-paypal-et-plus-header'] = [
-		'type' => 'html',
-		'html' => '<p>' . $plus_message . '</p>',
-	];
-}
-
-//@todo clicking this should hide/show the settings
-$tickets_fields['ticket-paypal-enable'] = [
-	'type'            => 'checkbox_bool',
-	'label'           => esc_html__( 'Enable Tribe Commerce ', 'event-tickets' ),
-	'tooltip'         => esc_html__( 'Check this box if you wish to turn on Tribe Commerce functionality', 'event-tickets' ),
-	'size'            => 'medium',
-	'default'         => false,
-	'validation_type' => 'boolean',
-	'attributes'      => [ 'id' => 'ticket-paypal-enable-input' ],
-];
+$plus_message = sprintf(
+	_x( 'Tribe Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check users in via QR codes, and share stock between %2$s. %3$s', 'about Tribe Commerce', 'event-tickets' ),
+	$plus_link,
+	tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_about_tribe_commerce' ),
+	$plus_link_2
+);
 
 $pages = get_pages( [ 'post_status' => 'publish', 'posts_per_page' => -1 ] );
 
@@ -219,7 +190,29 @@ $ipn_setup_line           = sprintf(
 	)
 );
 
-$paypal_fields            = [
+$paypal_fields = [
+	'ticket-paypal-heading'                         => [
+		'type' => 'html',
+		'html' => '<h3>' . __( 'Tribe Commerce', 'event-tickets' ) . '</h3>',
+	],
+	'ticket-paypal-et-plus-header'                  => [
+		'type' => 'html',
+		'html' => '<p>' . $plus_message . '</p>',
+	],
+	'ticket-paypal-enable'                          => [
+		'type'            => 'checkbox_bool',
+		'label'           => esc_html__( 'Enable Tribe Commerce ', 'event-tickets' ),
+		'tooltip'         => esc_html__( 'Check this box if you wish to turn on Tribe Commerce functionality.', 'event-tickets' ),
+		'size'            => 'medium',
+		'default'         => false,
+		'validation_type' => 'boolean',
+		'attributes'      => [
+			'id' => 'ticket-paypal-enable-input',
+		],
+	],
+];
+
+$paypal_subfields = [
 	'ticket-paypal-configure'         => [
 		'type'            => 'wrapped_html',
 		'label'           => esc_html__( 'Configure PayPal:', 'event-tickets' ),
@@ -368,11 +361,11 @@ if ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) {
 		],
 	];
 
-	$paypal_fields = Tribe__Main::array_insert_after_key( 'ticket-paypal-ipn-config-status', $paypal_fields, $ipn_fields );
+	$paypal_subfields = Tribe__Main::array_insert_after_key( 'ticket-paypal-ipn-config-status', $paypal_subfields, $ipn_fields );
 }
 
-foreach ( $paypal_fields as $key => &$commerce_field ) {
-	$field_classes = (array) Tribe__Utils__Array::get( $commerce_field, 'class', [] );
+foreach ( $paypal_subfields as $key => &$commerce_field ) {
+	$field_classes = (array) Tribe__Utils__Array::get( $commerce_field, 'class', array() );
 	array_push( $field_classes, 'tribe-dependent' );
 	$commerce_field['class']               = implode( ' ', $field_classes );
 	$existing_field_attributes             = Tribe__Utils__Array::get( $commerce_field, 'fieldset_attributes', [] );
@@ -389,17 +382,20 @@ foreach ( $paypal_fields as $key => &$commerce_field ) {
 
 unset( $commerce_field );
 
-$tickets_fields  = array_merge(
-	$tickets_fields,
-	$paypal_fields
-);
-
-$tickets_fields = array_merge( $tickets_fields, [
+$ticket_fields_end = [
 	'tribe-form-content-end' => [
 		'type' => 'html',
 		'html' => '</div>',
 	],
-]
+];
+
+$tickets_fields = array_merge(
+	$tickets_fields,
+	$tec_fields,
+	$authentication_fields,
+	$paypal_fields,
+	$paypal_subfields,
+	$ticket_fields_end
 );
 
 /**

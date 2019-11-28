@@ -288,47 +288,44 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	 *                        cannot access the current ticket at all.
 	 */
 	protected function get_readable_ticket_data( $ticket_id ) {
-		$ticket_post = get_post( $ticket_id );
+		/** @var Tribe__Tickets__Tickets_Handler $handler */
+		$handler = tribe( 'tickets.handler' );
 
-		if ( ! $ticket_post instanceof WP_Post ) {
-			return new WP_Error( 'ticket-not-found', $this->messages->get_message( 'ticket-not-found' ), array( 'status' => 404 ) );
-		}
+		$is_ticket_readable = $handler->is_ticket_readable( $ticket_id );
 
-		$ticket_post_type_object = get_post_type_object( $ticket_post->post_type );
-
-		if ( null === $ticket_post_type_object ) {
-			return new WP_Error( 'ticket-provider-not-found', $this->messages->get_message( 'ticket-provider-not-found' ), array( 'status' => 500 ) );
-		}
-
-		$read_cap = $ticket_post_type_object->cap->read_post;
-
-		if ( ! ( 'publish' === $ticket_post->post_status || current_user_can( $read_cap, $ticket_id ) ) ) {
-			$message = $this->messages->get_message( 'ticket-not-accessible' );
-
-			return new WP_Error( 'ticket-not-accessible', $message, array( 'status' => 401 ) );
-		}
-
-		/**
-		 * Not only the ticket should be accessible by the user but the event too should be.
-		 */
-		$event = tribe_events_get_ticket_event( $ticket_id );
-
-		if ( ! $event instanceof WP_Post ) {
-			$message = $this->messages->get_message( 'ticket-not-accessible' );
-
-			return new WP_Error( 'ticket-not-accessible', $message, array( 'status' => 401 ) );
-		}
-
-		$event_post_type_object = get_post_type_object( $event->post_type );
-		$read_cap               = $event_post_type_object->cap->read_post;
-
-		if ( ! ( 'publish' === $event->post_status || current_user_can( $read_cap, $event->ID ) ) ) {
-			$message = $this->messages->get_message( 'ticket-not-accessible' );
-
-			return new WP_Error( 'ticket-not-accessible', $message, array( 'status' => 401 ) );
+		if ( true !== $is_ticket_readable ) {
+			return $is_ticket_readable;
 		}
 
 		return $this->post_repository->get_ticket_data( $ticket_id );
+	}
+
+	/**
+	 * Filters the found tickets to only return those the current user can access and formats
+	 * the ticket data depending on the current user access rights.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object[]|int[] $found List of ticket objects or ticket IDs that were found.
+	 *
+	 * @return array[] List of ticket objects that are readable.
+	 */
+	protected function filter_readable_tickets( array $found ) {
+		$readable = array();
+
+		foreach ( $found as $ticket ) {
+			$ticket_id   = $ticket->ID;
+			$ticket_data = $this->get_readable_ticket_data( $ticket_id );
+
+			if ( $ticket_data instanceof WP_Error ) {
+				continue;
+			}
+
+			$readable[] = $ticket_data;
+		}
+
+
+		return $readable;
 	}
 
 	/**

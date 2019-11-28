@@ -55,7 +55,14 @@ class UnmanagedTest extends \Codeception\TestCase\WPTestCase {
 
 		$cart->save();
 
-		$this->assertEqualSets( [ 'bar' => 23, 'baz' => 89 ], get_transient( Cart::get_transient_name( 'foo' ) ) );
+		$this->assertEqualSets( [
+			'bar' => [
+				'quantity' => 23,
+			],
+			'baz' => [
+				'quantity' => 89,
+			],
+		], get_transient( Cart::get_transient_name( 'foo' ) ) );
 
 		$cart->clear();
 
@@ -69,6 +76,7 @@ class UnmanagedTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function should_allow_asserting_the_existence_of_the_cart_in_the_db() {
 		$cart = new Cart();
+		$cart->set_id( 'foo' );
 
 		$this->assertFalse( $cart->exists() );
 

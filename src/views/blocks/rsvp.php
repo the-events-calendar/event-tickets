@@ -10,8 +10,9 @@
  * @link  {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.10.8 Updated loading logic for including a renamed template.
+ * @since TBD Added tribe_tickets_order_link_template_already_rendered hook usage to template to prevent duplicate links.
  *
- * @version 4.10.8
+ * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
@@ -27,13 +28,29 @@ if ( ! $has_rsvps ) {
 	return false;
 }
 
-$html = $this->template( 'blocks/attendees/order-links', [], false );
+/**
+ * A flag we can set via filter, e.g. at the end of this method, to ensure this template only shows once.
+ *
+ * @since 4.5.6
+ *
+ * @param boolean $already_rendered Whether the order link template has already been rendered.
+ *
+ * @see Tribe__Tickets__Tickets_View::inject_link_template()
+ */
+$already_rendered = apply_filters( 'tribe_tickets_order_link_template_already_rendered', false );
 
-if ( empty( $html ) ) {
-	$html = $this->template( 'blocks/attendees/view-link', [], false );;
+// Output order links / view link if we haven't already (for RSVPs).
+if ( ! $already_rendered ) {
+	$html = $this->template( 'blocks/attendees/order-links', [], false );
+
+	if ( empty( $html ) ) {
+		$html = $this->template( 'blocks/attendees/view-link', [], false );;
+	}
+
+	echo $html;
+
+	add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
 }
-
-echo $html;
 ?>
 
 <div class="tribe-block tribe-block__rsvp">

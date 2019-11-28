@@ -18,7 +18,7 @@ class TicketArchiveByCurrencyCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_filtering_tickets_by_currency( Restv1Tester $I ) {
-		// 3 posts, 2 tickets per post = 6 ticktets
+		// 3 posts, 2 tickets per post = 6 tickets
 		// 2 w/ USD currency, 3 w/o currency
 		$post_ids       = $I->haveManyPostsInDatabase( 3 );
 		$rsvp_tickets   = [];
