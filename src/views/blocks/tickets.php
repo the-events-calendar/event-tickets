@@ -104,7 +104,7 @@ if ( ! $already_rendered ) {
 		$this->template( 'blocks/tickets/footer', [ 'tickets' => $tickets, 'currency_symbol' => $currency_symbol ] );
 		?>
 	<?php else : ?>
-		<?php echo $this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] ); ?>
+		<?php $this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] ); ?>
 	<?php endif; ?>
 	<?php
 		ob_start();
