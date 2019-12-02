@@ -31,7 +31,7 @@ $available = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
 	<?php if ( ! $ticket->is_in_stock() ) : ?>
 		<span class="tribe-block__rsvp__no-stock"><?php esc_html_e( 'Out of stock!', 'event-tickets' ); ?></span>
 	<?php elseif ( -1 !== $available ) : ?>
-		<span class="tribe-block__rsvp__quantity"><?php echo $available; ?> </span>
+		<span class="tribe-block__rsvp__quantity"><?php echo esc_html( $available ); ?> </span>
 		<?php esc_html_e( 'remaining', 'event-tickets' ) ?>
 	<?php else : ?>
 		<span class="tribe-block__rsvp__unlimited"><?php esc_html_e( 'Unlimited', 'event-tickets' ); ?></span>
