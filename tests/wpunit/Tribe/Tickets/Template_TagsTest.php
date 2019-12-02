@@ -944,7 +944,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_delete_capacity_from_a_post() {
 		$this->allow_posts();
-		$post_id   = $this->factory()->post->create();
+		$post_id   = (int) $this->factory()->post->create();
 		$ticket_id = $this->create_paypal_ticket( $post_id, 1, [
 			'meta_input' => [
 				'_capacity'   => 10,
@@ -1025,7 +1025,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_update_capacity_for_a_post() {
 		$this->allow_posts();
 		$post_id   = $this->factory()->post->create();
-		$ticket_id = $this->create_paypal_ticket( $post_id, 1, [
+		$ticket_id = (int) $this->create_paypal_ticket( $post_id, 1, [
 			'meta_input' => [
 				'_capacity'   => 10,
 			],
