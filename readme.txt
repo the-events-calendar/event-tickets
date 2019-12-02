@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.11.1] TBD =
 
 * Feature - Use the same loading icon for the RSVP block that we're using for the tickets block. [135660]
+* Fix - Fix the header image attachment handling for RSVP blocks [137243]
 * Fix - Ensure that tickets without an end date set in the Classic editor get set to end at the start of an event per the tooltip [125969]
 
 = [4.11] 2019-11-21 =
