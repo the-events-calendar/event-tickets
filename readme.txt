@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.9
 Tested up to: 5.3
-Stable tag: 4.11.0
+Stable tag: 4.11.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -116,6 +116,12 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.11.1] TBD =
+
+* Feature - Use the same loading icon for the RSVP block that we're using for the tickets block. [135660]
+* Fix - Fix the header image attachment handling for RSVP blocks [137243]
+* Fix - Ensure that tickets without an end date set in the Classic editor get set to end at the start of an event per the tooltip [125969]
 
 = [4.11] 2019-11-21 =
 
