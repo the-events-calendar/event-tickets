@@ -137,7 +137,10 @@ class Tribe__Tickets__Commerce__Cart {
 				&& ! in_array( $provider_attendee_object, $providers, true )
 				&& ! in_array( $provider_data['class'], $providers, true )
 			) {
-				continue;
+				// Backcompat for tpp usage.
+				if ( 'tribe-commerce' !== $provider_key || ! in_array( 'tpp', $providers, true ) ) {
+					continue;
+				}
 			}
 
 			// Fetch tickets for provider cart.
@@ -317,11 +320,11 @@ class Tribe__Tickets__Commerce__Cart {
 			}
 
 			try {
-				foreach ( $providers as $provider_tickets ) {
+				foreach ( $providers as $ticket_provider => $provider_tickets ) {
 					/**
 					 * Update tickets in cart for provider.
 					 *
-					 * The dynamic portion of the hook name, `$provider`, refers to the cart provider.
+					 * The dynamic portion of the hook name, `$ticket_provider`, refers to the ticket provider.
 					 *
 					 * @since TBD
 					 *
@@ -329,7 +332,7 @@ class Tribe__Tickets__Commerce__Cart {
 					 * @param int     $post_id          Post ID for the cart.
 					 * @param boolean $additive         Whether to add or replace tickets.
 					 */
-					do_action( 'tribe_tickets_commerce_cart_update_tickets_' . $provider, $provider_tickets, $post_id, $additive );
+					do_action( 'tribe_tickets_commerce_cart_update_tickets_' . $ticket_provider, $provider_tickets, $post_id, $additive );
 				}
 
 				/**
