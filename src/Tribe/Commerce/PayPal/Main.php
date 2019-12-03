@@ -335,6 +335,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_filter( 'tribe_tickets_commerce_cart_get_tickets_tribe-commerce', [ $this, 'commerce_get_tickets_in_cart' ] );
 		add_filter( 'tribe_tickets_commerce_cart_update_tickets_tribe-commerce', [ $this, 'commerce_update_tickets_in_cart' ], 10, 3 );
 
+		// Backcompat hook.
+		add_filter( 'tribe_tickets_commerce_cart_update_tickets_tpp', [ $this, 'commerce_update_tickets_in_cart' ], 10, 3 );
+
 		add_filter( 'tribe_tickets_cart_urls', [ $this, 'add_cart_url' ], 10, 2 );
 		add_filter( 'tribe_tickets_checkout_urls', [ $this, 'add_checkout_url' ], 10, 2 );
 	}
@@ -2015,6 +2018,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return string Tribe Commerce Cart URL.
 	 */
 	public function get_cart_url( $post_id = null ) {
+		if ( empty( $post_id ) && is_singular() ) {
+			$post_id = get_the_ID();
+		}
+
 		if ( empty( $post_id ) ) {
 			// There is currently no non-post specific cart.
 			return '';
@@ -2378,6 +2385,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	public function get_tickets_in_cart( $tickets = [], $provider = null ) {
 		$providers = [
+			'tpp',
 			'tribe-commerce',
 			'tribe_tpp_tickets',
 			'Tribe__Tickets__Commerce__PayPal__Main',
@@ -2410,7 +2418,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
-		$invoice_number = $gateway->get_invoice_number();
+		$invoice_number = $gateway->get_invoice_number( false );
 
 		if ( empty( $invoice_number ) ) {
 			return $tickets;
