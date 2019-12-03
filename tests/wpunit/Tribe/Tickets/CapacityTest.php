@@ -67,18 +67,18 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * get_post_totals() should return the correct numbers of tickets initially
+	 * get_post_totals() should return the correct number of tickets initially
 	 *
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
-	public function get_post_totals_should_return_the_correct_numbers_of_tickets_initially() {
+	public function get_post_totals_should_return_the_correct_number_of_tickets_initially() {
 		$num_tickets = 5;
 		$capacity    = 5;
 		$stock       = 3;
 		$sales       = 2;
 
 		// create 5 tickets
-		$ticket_a_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets(
 			$num_tickets,
 			$this->event_id,
 			[
@@ -90,31 +90,27 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertNotEmpty( $ticket_a_ids, $ticket_a_ids );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
 
-		$test_data_a = $this->handler->get_post_totals( $this->event_id );
+		$test_data = $this->handler->get_post_totals( $this->event_id );
 
-		$this->assertEquals( 0, $test_data_a['pending'], 'Incorrect total pending.' );
-		$this->assertEquals( $num_tickets, $test_data_a['tickets'], 'Incorrect number of tickets.' );
-		$this->assertEquals( ( $num_tickets * $capacity ), $test_data_a['capacity'], 'Incorrect total capacity.' );
-		$this->assertEquals( ( $num_tickets * $stock ), $test_data_a['stock'], 'Incorrect total stock.' );
-		$this->assertEquals( ( $num_tickets * $sales ), $test_data_a['sold'], 'Incorrect total sales.' );
+		$this->assertEquals( $num_tickets, $test_data['tickets'], 'Incorrect number of tickets.' );
 	}
 
 	/**
 	 * @test
-	 * get_post_totals() should return the correct numbers of tickets
+	 * get_post_totals() should return the correct number of pending tickets initially
 	 *
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
-	public function get_post_totals_should_return_the_correct_numbers_of_tickets_on_change() {
+	public function get_post_totals_should_return_the_correct_number_of_pending_tickets_initially() {
 		$num_tickets = 5;
 		$capacity    = 5;
 		$stock       = 3;
 		$sales       = 2;
 
 		// create 5 tickets
-		$ticket_a_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets(
 			$num_tickets,
 			$this->event_id,
 			[
@@ -126,12 +122,29 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$test_data_a = $this->handler->get_post_totals( $this->event_id );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
 
-		// add one more ticket
-		$ticket_b_id = $this->create_paypal_ticket(
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		$this->assertEquals( 0, $test_data['pending'], 'Incorrect total pending.' );
+	}
+
+	/**
+	 * @test
+	 * get_post_totals() should return the correct total capacity initially
+	 *
+	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
+	 */
+	public function get_post_totals_should_return_the_correct_total_capacity_initially() {
+		$num_tickets = 5;
+		$capacity    = 5;
+		$stock       = 3;
+		$sales       = 2;
+
+		// create 5 tickets
+		$ticket_ids = $this->create_many_paypal_tickets(
+			$num_tickets,
 			$this->event_id,
-			1,
 			[
 				'meta_input' => [
 					'_capacity'   => $capacity,
@@ -141,17 +154,75 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->invalidate_cache( $this->event_id );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
 
-		$test_data_b = $this->handler->get_post_totals( $this->event_id );
+		$test_data = $this->handler->get_post_totals( $this->event_id );
 
-		$num_tickets++;
+		$this->assertEquals( ( $num_tickets * $capacity ), $test_data['capacity'], 'Incorrect total capacity.' );
+	}
 
-		$this->assertEquals( 0, $test_data_b['pending'], 'Incorrect total pending.' );
-		$this->assertEquals( $num_tickets, $test_data_b['tickets'], 'Incorrect number of tickets.' . json_encode( $test_data_b ) );
-		$this->assertEquals( ( $num_tickets * $capacity ), $test_data_b['capacity'], 'Incorrect total capacity.' );
-		$this->assertEquals( ( $num_tickets * $stock ), $test_data_b['stock'], 'Incorrect total stock.' );
-		$this->assertEquals( ( $num_tickets * $sales ), $test_data_b['sold'], 'Incorrect total sales.' );
+	/**
+	 * @test
+	 * get_post_totals() should return the correct total stock initially
+	 *
+	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
+	 */
+	public function get_post_totals_should_return_the_correct_total_stock_initially() {
+		$num_tickets = 5;
+		$capacity    = 5;
+		$stock       = 3;
+		$sales       = 2;
+
+		// create 5 tickets
+		$ticket_ids = $this->create_many_paypal_tickets(
+			$num_tickets,
+			$this->event_id,
+			[
+				'meta_input' => [
+					'_capacity'   => $capacity,
+					'_stock'      => $stock,
+					'total_sales' => $sales,
+				],
+			]
+		);
+
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		$this->assertEquals( ( $num_tickets * $stock ), $test_data['stock'], 'Incorrect total stock.' );
+	}
+
+	/**
+	 * @test
+	 * get_post_totals() should return the correct total sales initially
+	 *
+	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
+	 */
+	public function get_post_totals_should_return_the_correct_total_sales_initially() {
+		$num_tickets = 5;
+		$capacity    = 5;
+		$stock       = 3;
+		$sales       = 2;
+
+		// create 5 tickets
+		$ticket_ids = $this->create_many_paypal_tickets(
+			$num_tickets,
+			$this->event_id,
+			[
+				'meta_input' => [
+					'_capacity'   => $capacity,
+					'_stock'      => $stock,
+					'total_sales' => $sales,
+				],
+			]
+		);
+
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		$this->assertEquals( ( $num_tickets * $sales ), $test_data['sold'], 'Incorrect total sales.' );
 	}
 
 	/**
@@ -161,6 +232,56 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
 	public function get_post_totals_should_detect_unlimited_tickets_appropriately_initially() {
+		$ticket_id = $this->create_paypal_ticket(
+			$this->event_id,
+			1,
+			[
+				'meta_input' => [
+					'_capacity'     => - 1,
+					'_manage_stock' => 'no',
+					'total_sales'   => 2,
+				],
+			]
+		);
+
+		$this->invalidate_cache( $this->event_id );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		// Test for existing unlimited ticket
+		$this->assertTrue( $test_data['has_unlimited'], 'Incorrect nondetection of existing unlimited tickets.' );
+	}
+
+	/**
+	 * @test
+	 * get_post_totals() should return the correct number of tickets on change
+	 *
+	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
+	 */
+	public function get_post_totals_should_return_the_correct_number_of_tickets_on_change() {
+		$num_tickets = 5;
+		$capacity    = 5;
+		$stock       = 3;
+		$sales       = 2;
+
+		// create 5 tickets
+		$ticket_ids = $this->create_many_paypal_tickets(
+			$num_tickets,
+			$this->event_id,
+			[
+				'meta_input' => [
+					'_capacity'   => $capacity,
+					'_stock'      => $stock,
+					'total_sales' => $sales,
+				],
+			]
+		);
+
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		// Add another ticket.
 		$ticket_b_id = $this->create_paypal_ticket(
 			$this->event_id,
 			1,
@@ -175,10 +296,205 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->invalidate_cache( $this->event_id );
 
-		$test_data_b = $this->handler->get_post_totals( $this->event_id );
+		$test_data = $this->handler->get_post_totals( $this->event_id );
 
-		// Test for existing unlimited ticket
-		$this->assertTrue( $test_data_b['has_unlimited'], 'Incorrect detection of existing unlimited tickets.' );
+		$this->assertEquals( $num_tickets, $test_data['tickets'], 'Incorrect number of tickets.' );
+	}
+
+	/**
+	 * @test
+	 * get_post_totals() should return the correct number of pending tickets on change
+	 *
+	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
+	 */
+	public function get_post_totals_should_return_the_correct_number_of_pending_tickets_on_change() {
+		$num_tickets = 5;
+		$capacity    = 5;
+		$stock       = 3;
+		$sales       = 2;
+
+		// create 5 tickets
+		$ticket_ids = $this->create_many_paypal_tickets(
+			$num_tickets,
+			$this->event_id,
+			[
+				'meta_input' => [
+					'_capacity'   => $capacity,
+					'_stock'      => $stock,
+					'total_sales' => $sales,
+				],
+			]
+		);
+
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		// Add another ticket.
+		$ticket_b_id = $this->create_paypal_ticket(
+			$this->event_id,
+			1,
+			[
+				'meta_input' => [
+					'_capacity'     => - 1,
+					'_manage_stock' => 'no',
+					'total_sales'   => 2,
+				],
+			]
+		);
+
+		$this->invalidate_cache( $this->event_id );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		$this->assertEquals( 0, $test_data['pending'], 'Incorrect total pending.' );
+	}
+
+	/**
+	 * @test
+	 * get_post_totals() should return the correct total capacity on change
+	 *
+	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
+	 */
+	public function get_post_totals_should_return_the_correct_total_capacity_on_change() {
+		$num_tickets = 5;
+		$capacity    = 5;
+		$stock       = 3;
+		$sales       = 2;
+
+		// create 5 tickets
+		$ticket_ids = $this->create_many_paypal_tickets(
+			$num_tickets,
+			$this->event_id,
+			[
+				'meta_input' => [
+					'_capacity'   => $capacity,
+					'_stock'      => $stock,
+					'total_sales' => $sales,
+				],
+			]
+		);
+
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		// Add another ticket.
+		$ticket_b_id = $this->create_paypal_ticket(
+			$this->event_id,
+			1,
+			[
+				'meta_input' => [
+					'_capacity'     => - 1,
+					'_manage_stock' => 'no',
+					'total_sales'   => 2,
+				],
+			]
+		);
+
+		$this->invalidate_cache( $this->event_id );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		$this->assertEquals( ( $num_tickets * $capacity ), $test_data['capacity'], 'Incorrect total capacity.' );
+	}
+
+	/**
+	 * @test
+	 * get_post_totals() should return the correct total stock on change
+	 *
+	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
+	 */
+	public function get_post_totals_should_return_the_correct_total_stock_on_change() {
+		$num_tickets = 5;
+		$capacity    = 5;
+		$stock       = 3;
+		$sales       = 2;
+
+		// create 5 tickets
+		$ticket_ids = $this->create_many_paypal_tickets(
+			$num_tickets,
+			$this->event_id,
+			[
+				'meta_input' => [
+					'_capacity'   => $capacity,
+					'_stock'      => $stock,
+					'total_sales' => $sales,
+				],
+			]
+		);
+
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		// Add another ticket.
+		$ticket_b_id = $this->create_paypal_ticket(
+			$this->event_id,
+			1,
+			[
+				'meta_input' => [
+					'_capacity'     => - 1,
+					'_manage_stock' => 'no',
+					'total_sales'   => 2,
+				],
+			]
+		);
+
+		$this->invalidate_cache( $this->event_id );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		$this->assertEquals( ( $num_tickets * $stock ), $test_data['stock'], 'Incorrect total stock.' );
+	}
+
+	/**
+	 * @test
+	 * get_post_totals() should return the correct total sales on change
+	 *
+	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
+	 */
+	public function get_post_totals_should_return_the_correct_total_sales_on_change() {
+		$num_tickets = 5;
+		$capacity    = 5;
+		$stock       = 3;
+		$sales       = 2;
+
+		// create 5 tickets
+		$ticket_ids = $this->create_many_paypal_tickets(
+			$num_tickets,
+			$this->event_id,
+			[
+				'meta_input' => [
+					'_capacity'   => $capacity,
+					'_stock'      => $stock,
+					'total_sales' => $sales,
+				],
+			]
+		);
+
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		// Add another ticket.
+		$ticket_b_id = $this->create_paypal_ticket(
+			$this->event_id,
+			1,
+			[
+				'meta_input' => [
+					'_capacity'     => - 1,
+					'_manage_stock' => 'no',
+					'total_sales'   => 2,
+				],
+			]
+		);
+
+		$this->invalidate_cache( $this->event_id );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		$this->assertEquals( ( $num_tickets * $sales ), $test_data['sold'], 'Incorrect total sales.' );
 	}
 
 	/**
@@ -188,22 +504,24 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
 	public function get_post_totals_should_detect_unlimited_tickets_appropriately_on_change() {
-		$ticket_a_id = $this->create_paypal_ticket(
+		$ticket_id = $this->create_paypal_ticket(
 			$this->event_id,
 			1,
 			[
 				'meta_input' => [
-					'_capacity'   => 5,
-					'_stock'      => 3,
-					'total_sales' => 2,
+					'_capacity'     => -1,
+					'_manage_stock' => 'no',
+					'total_sales'   => 2,
 				],
 			]
 		);
 
-		$test_data_a = $this->handler->get_post_totals( $this->event_id );
+		$this->invalidate_cache( $this->event_id );
 
-		// No unlimited tickets - yet
-		$this->assertFalse( $test_data_a['has_unlimited'], 'Incorrect detection of non-existent unlimited tickets.' );
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		// Test for existing unlimited ticket
+		$this->assertFalse( $test_data['has_unlimited'], 'Incorrect nondetection of existing unlimited tickets.' );
 
 		$ticket_b_id = $this->create_paypal_ticket(
 			$this->event_id,
@@ -219,35 +537,10 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->invalidate_cache( $this->event_id );
 
-		$test_data_b = $this->handler->get_post_totals( $this->event_id );
+		$test_data = $this->handler->get_post_totals( $this->event_id );
 
 		// Test for existing unlimited ticket
-		$this->assertTrue( $test_data_b['has_unlimited'], 'Incorrect detection of existing unlimited tickets.' );
+		$this->assertTrue( $test_data['has_unlimited'], 'Incorrect detection of existing unlimited tickets.' );
 	}
 
-	/**
-	 * @test
-	 * get_total_event_capacity() should return correct own cap amounts
-	 *
-	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
-	 */
-	public function get_total_event_capacity_should_return_correct_own_cap_amounts() {
-
-	}
-
-	/**
-	 * @test
-	 * get_total_event_capacity() should return correct shared cap amounts
-	 *
-	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
-	 */
-	public function get_total_event_capacity_should_return_correct_shared_cap_amounts() {}
-
-	/**
-	 * @test
-	 * get_total_event_capacity() should return correct unlimited amounts
-	 *
-	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
-	 */
-	public function get_total_event_capacity_should_return_correct_unlimited_amounts() {}
 }
