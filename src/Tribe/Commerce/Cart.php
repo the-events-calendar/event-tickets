@@ -324,7 +324,7 @@ class Tribe__Tickets__Commerce__Cart {
 					/**
 					 * Update tickets in cart for provider.
 					 *
-					 * The dynamic portion of the hook name, `$ticket_provider`, refers to the cart provider.
+					 * The dynamic portion of the hook name, `$ticket_provider`, refers to the ticket provider.
 					 *
 					 * @since TBD
 					 *
