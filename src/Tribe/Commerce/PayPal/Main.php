@@ -2443,7 +2443,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 			if ( is_array( $item ) ) {
 				$ticket_quantity = $item['quantity'];
-				$optout          = $item[ $this->attendee_optout_key ];
+
+				if ( isset( $item[ $this->attendee_optout_key ] ) ) {
+					$optout = $item[ $this->attendee_optout_key ];
+				}
 			} else {
 				$ticket_quantity = $item;
 			}
