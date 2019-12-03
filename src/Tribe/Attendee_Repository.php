@@ -403,8 +403,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @since TBD
 	 */
 	public function filter_by_show_attendees() {
-		$can_read_private_posts = current_user_can( 'read_private_posts' );
-
 		$this->where_meta_related_by_meta(
 			$this->attendee_to_event_keys(),
 			'=',
