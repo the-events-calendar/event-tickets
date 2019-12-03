@@ -768,11 +768,11 @@ class Tribe__Tickets__Tickets_Handler {
 		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post->ID );
 		$totals  = [
 			'has_unlimited' => false,
-			'tickets' => count( $tickets ),
-			'capacity' => $this->get_total_event_capacity( $post ),
-			'sold' => 0,
-			'pending' => 0,
-			'stock' => 0,
+			'tickets'       => count( $tickets ),
+			'capacity'      => $this->get_total_event_capacity( $post ),
+			'sold'          => 0,
+			'pending'       => 0,
+			'stock'         => 0,
 		];
 
 		foreach ( $tickets as $ticket ) {
