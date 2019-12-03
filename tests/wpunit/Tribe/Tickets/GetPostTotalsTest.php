@@ -12,7 +12,7 @@ use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__Tickets_Handler as Handler;
 use Tribe__Cache as Cache;
 
-class CapacityTest extends \Codeception\TestCase\WPTestCase {
+class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 	use RSVP_Ticket_Maker;
 	use PayPal_Ticket_Maker;
@@ -509,7 +509,7 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 			1,
 			[
 				'meta_input' => [
-					'_capacity'     => -1,
+					'_capacity'     => 3,
 					'_manage_stock' => 'no',
 					'total_sales'   => 2,
 				],
@@ -528,9 +528,8 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 			1,
 			[
 				'meta_input' => [
-					'_capacity'     => - 1,
+					'_capacity'     => -1,
 					'_manage_stock' => 'no',
-					'total_sales'   => 2,
 				],
 			]
 		);
