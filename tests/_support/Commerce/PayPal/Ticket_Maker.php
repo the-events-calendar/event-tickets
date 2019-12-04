@@ -21,6 +21,7 @@ trait Ticket_Maker {
 			: array();
 
 		$capacity = \Tribe__Utils__Array::get( $meta_input, '_capacity', 100 );
+
 		$sales = empty( $overrides['meta_input']['total_sales'] ) ? 0 : $overrides['meta_input']['total_sales'];
 
 		// We don't set stock for unlimited tickets, take sales into account when setting stock.
@@ -43,7 +44,7 @@ trait Ticket_Maker {
 		];
 
 		// We don't set stock for unlimited tickets
-		if ( ! is_null( $stock ) ) {
+		if ( ! is_null( $stock ) && -1 !== $capacity ) {
 			$default_meta_input['_stock' ] = $stock;
 		}
 
@@ -60,7 +61,9 @@ trait Ticket_Maker {
 			'meta_input'   => array_merge( $default_meta_input, $meta_input )
 		];
 
+
 		$ticket_id = $factory->post->create( array_merge( $defaults, $overrides ) );
+
 
 		return $ticket_id;
 	}

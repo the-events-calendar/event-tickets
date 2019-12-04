@@ -918,7 +918,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 		) {
 			$legacy_capacity = $tickets_handler->filter_capacity_support( null, $post->ID, $key );
 
-			// Cast as integer as it might be returned as numeric string on some cases
+			// Cast as integer as it might be returned as numeric string in some cases
 			return (int) $legacy_capacity;
 		}
 

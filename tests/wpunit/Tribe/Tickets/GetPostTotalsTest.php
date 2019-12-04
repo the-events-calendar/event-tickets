@@ -7,8 +7,6 @@ use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker as Attendee_Maker;
 use Tribe__Tickets__Data_API as Data_API;
-use Tribe__Tickets__RSVP as RSVP;
-use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__Tickets_Handler as Handler;
 use Tribe__Cache as Cache;
 
@@ -42,7 +40,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function tearDown() {
-		// your tear down methods here
+		// refresh the event ID for each test.
 		unset( $this->event_id );
 
 		// then
@@ -83,9 +81,9 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			$this->event_id,
 			[
 				'meta_input' => [
-					'_capacity'   => $capacity,
-					'_stock'      => $stock,
-					'total_sales' => $sales,
+					tribe( 'tickets.handler' )->key_capacity => $capacity,
+					'_stock'                                 => $stock,
+					'total_sales'                            => $sales,
 				],
 			]
 		);
@@ -115,9 +113,9 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			$this->event_id,
 			[
 				'meta_input' => [
-					'_capacity'   => $capacity,
-					'_stock'      => $stock,
-					'total_sales' => $sales,
+					tribe( 'tickets.handler' )->key_capacity => $capacity,
+					'_stock'                                 => $stock,
+					'total_sales'                            => $sales,
 				],
 			]
 		);
@@ -147,9 +145,9 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			$this->event_id,
 			[
 				'meta_input' => [
-					'_capacity'   => $capacity,
-					'_stock'      => $stock,
-					'total_sales' => $sales,
+					tribe( 'tickets.handler' )->key_capacity => $capacity,
+					'_stock'                                 => $stock,
+					'total_sales'                            => $sales,
 				],
 			]
 		);
@@ -237,19 +235,47 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			1,
 			[
 				'meta_input' => [
-					'_capacity'     => - 1,
-					'_manage_stock' => 'no',
-					'total_sales'   => 2,
+					tribe( 'tickets.handler' )->key_capacity => '-1',
+					'total_sales'                            => 2,
 				],
 			]
 		);
-
-		$this->invalidate_cache( $this->event_id );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
 		// Test for existing unlimited ticket
 		$this->assertTrue( $test_data['has_unlimited'], 'Incorrect nondetection of existing unlimited tickets.' );
+	}
+
+	/**
+	 * @test
+	 * get_post_totals() should not detect unlimited tickets if there are none
+	 *
+	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
+	 */
+	public function get_post_totals_should_not_detect_unlimited_tickets_if_there_are_none() {
+		$num_tickets = 5;
+		$capacity    = 5;
+		$stock       = 3;
+		$sales       = 2;
+
+		// create 5 tickets
+		$ticket_ids = $this->create_many_paypal_tickets(
+			$num_tickets,
+			$this->event_id,
+			[
+				'meta_input' => [
+					tribe( 'tickets.handler' )->key_capacity => $capacity,
+					'_stock'                                 => $stock,
+					'total_sales'                            => $sales,
+				],
+			]
+		);
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		// Test for existing unlimited ticket
+		$this->assertFalse( $test_data['has_unlimited'], 'Incorrect nondetection of existing unlimited tickets.' );
 	}
 
 	/**
@@ -270,9 +296,9 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			$this->event_id,
 			[
 				'meta_input' => [
-					'_capacity'   => $capacity,
-					'_stock'      => $stock,
-					'total_sales' => $sales,
+					tribe( 'tickets.handler' )->key_capacity => $capacity,
+					'_stock'                                 => $stock,
+					'total_sales'                            => $sales,
 				],
 			]
 		);
@@ -287,9 +313,8 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			1,
 			[
 				'meta_input' => [
-					'_capacity'     => - 1,
-					'_manage_stock' => 'no',
-					'total_sales'   => 2,
+					tribe( 'tickets.handler' )->key_capacity=> - 1,
+					'total_sales'                           => 2,
 				],
 			]
 		);
@@ -319,9 +344,9 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			$this->event_id,
 			[
 				'meta_input' => [
-					'_capacity'   => $capacity,
-					'_stock'      => $stock,
-					'total_sales' => $sales,
+					tribe( 'tickets.handler' )->key_capacity => $capacity,
+					'_stock'                                 => $stock,
+					'total_sales'                            => $sales,
 				],
 			]
 		);
@@ -336,9 +361,8 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			1,
 			[
 				'meta_input' => [
-					'_capacity'     => - 1,
-					'_manage_stock' => 'no',
-					'total_sales'   => 2,
+					tribe( 'tickets.handler' )->key_capacity => - 1,
+					'total_sales'                            => 2,
 				],
 			]
 		);
@@ -368,9 +392,9 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			$this->event_id,
 			[
 				'meta_input' => [
-					'_capacity'   => $capacity,
-					'_stock'      => $stock,
-					'total_sales' => $sales,
+					tribe( 'tickets.handler' )->key_capacity => $capacity,
+					'_stock'                                 => $stock,
+					'total_sales'                            => $sales,
 				],
 			]
 		);
@@ -385,9 +409,8 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			1,
 			[
 				'meta_input' => [
-					'_capacity'     => - 1,
-					'_manage_stock' => 'no',
-					'total_sales'   => 2,
+					tribe( 'tickets.handler' )->key_capacity => - 1,
+					'total_sales'                            => 2,
 				],
 			]
 		);
@@ -417,9 +440,9 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			$this->event_id,
 			[
 				'meta_input' => [
-					'_capacity'   => $capacity,
-					'_stock'      => $stock,
-					'total_sales' => $sales,
+					tribe( 'tickets.handler' )->key_capacity => $capacity,
+					'_stock'                                 => $stock,
+					'total_sales'                            => $sales,
 				],
 			]
 		);
@@ -435,7 +458,6 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			[
 				'meta_input' => [
 					'_capacity'     => - 1,
-					'_manage_stock' => 'no',
 					'total_sales'   => 2,
 				],
 			]
@@ -484,7 +506,6 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			[
 				'meta_input' => [
 					'_capacity'     => - 1,
-					'_manage_stock' => 'no',
 					'total_sales'   => 2,
 				],
 			]
@@ -510,36 +531,25 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			[
 				'meta_input' => [
 					'_capacity'     => 3,
-					'_manage_stock' => 'no',
 					'total_sales'   => 2,
 				],
 			]
 		);
 
-		$this->invalidate_cache( $this->event_id );
-
-		$test_data = $this->handler->get_post_totals( $this->event_id );
-
-		// Test for existing unlimited ticket
-		$this->assertFalse( $test_data['has_unlimited'], 'Incorrect nondetection of existing unlimited tickets.' );
-
-		$ticket_b_id = $this->create_paypal_ticket(
+		$ticket_id_b = $this->create_paypal_ticket(
 			$this->event_id,
 			1,
 			[
 				'meta_input' => [
-					'_capacity'     => -1,
-					'_manage_stock' => 'no',
+					tribe( 'tickets.handler' )->key_capacity => '-1',
+					'total_sales'                            => 2,
 				],
 			]
 		);
-
-		$this->invalidate_cache( $this->event_id );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
 		// Test for existing unlimited ticket
 		$this->assertTrue( $test_data['has_unlimited'], 'Incorrect detection of existing unlimited tickets.' );
 	}
-
 }
