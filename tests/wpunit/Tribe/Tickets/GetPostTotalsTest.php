@@ -84,7 +84,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
@@ -116,7 +116,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
@@ -148,7 +148,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
@@ -180,7 +180,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
@@ -212,7 +212,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
@@ -301,7 +301,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
@@ -349,7 +349,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
@@ -397,7 +397,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
@@ -445,7 +445,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
@@ -493,7 +493,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
@@ -578,7 +578,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
@@ -617,7 +617,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
@@ -656,7 +656,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
@@ -695,7 +695,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
@@ -734,7 +734,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
