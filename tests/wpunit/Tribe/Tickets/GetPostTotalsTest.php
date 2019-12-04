@@ -3,18 +3,14 @@
 namespace Tribe\Tickets;
 
 use Tribe\Events\Test\Factories\Event;
-use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
-use Tribe\Tickets\Test\Commerce\Attendee_Maker as Attendee_Maker;
 use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Tickets_Handler as Handler;
 use Tribe__Cache as Cache;
 
 class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 
-	use RSVP_Ticket_Maker;
 	use PayPal_Ticket_Maker;
-	use Attendee_Maker;
 
 	public function setUp() {
 		// before
