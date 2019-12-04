@@ -48,7 +48,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 * which is called by many of these functions.
 	 * Note this cached value currently has _no_ expiration - and is never unset/deleted!
 	 *
-	 * @param [type] $event_id
+	 * @param int $event_id
 	 * @return void
 	 */
 	protected function invalidate_cache( $event_id ) {
@@ -274,13 +274,15 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertFalse( $test_data['has_unlimited'], 'Incorrect nondetection of existing unlimited tickets.' );
 	}
 
+	/* Add Ticket Tests */
+
 	/**
 	 * @test
-	 * get_post_totals() should return the correct number of tickets on change
+	 * get_post_totals() should return the correct number of tickets after adding a ticket
 	 *
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
-	public function get_post_totals_should_return_the_correct_number_of_tickets_on_change() {
+	public function get_post_totals_should_return_the_correct_number_of_tickets_on_add() {
 		$num_tickets = 5;
 		$capacity    = 5;
 		$stock       = 3;
@@ -324,11 +326,11 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * get_post_totals() should return the correct number of pending tickets on change
+	 * get_post_totals() should return the correct number of pending tickets after adding a ticket
 	 *
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
-	public function get_post_totals_should_return_the_correct_number_of_pending_tickets_on_change() {
+	public function get_post_totals_should_return_the_correct_number_of_pending_tickets_on_add() {
 		$num_tickets = 5;
 		$capacity    = 5;
 		$stock       = 3;
@@ -372,11 +374,11 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * get_post_totals() should return the correct total capacity on change
+	 * get_post_totals() should return the correct total capacity after adding a ticket
 	 *
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
-	public function get_post_totals_should_return_the_correct_total_capacity_on_change() {
+	public function get_post_totals_should_return_the_correct_total_capacity_on_add() {
 		$num_tickets = 5;
 		$capacity    = 5;
 		$stock       = 3;
@@ -420,11 +422,11 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * get_post_totals() should return the correct total stock on change
+	 * get_post_totals() should return the correct total stock after adding a ticket
 	 *
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
-	public function get_post_totals_should_return_the_correct_total_stock_on_change() {
+	public function get_post_totals_should_return_the_correct_total_stock_on_add() {
 		$num_tickets = 5;
 		$capacity    = 5;
 		$stock       = 3;
@@ -468,11 +470,11 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * get_post_totals() should return the correct total sales on change
+	 * get_post_totals() should return the correct total sales after adding a ticket
 	 *
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
-	public function get_post_totals_should_return_the_correct_total_sales_on_change() {
+	public function get_post_totals_should_return_the_correct_total_sales_on_add() {
 		$num_tickets = 5;
 		$capacity    = 5;
 		$stock       = 3;
@@ -516,11 +518,11 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * get_post_totals() should detect unlimited tickets appropriately on change
+	 * get_post_totals() should detect unlimited tickets appropriately after adding a ticket
 	 *
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
-	public function get_post_totals_should_detect_unlimited_tickets_appropriately_on_change() {
+	public function get_post_totals_should_detect_unlimited_tickets_appropriately_on_add() {
 		$ticket_id = $this->create_paypal_ticket(
 			$this->event_id,
 			1,
@@ -542,6 +544,241 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 				],
 			]
 		);
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		// Test for existing unlimited ticket
+		$this->assertTrue( $test_data['has_unlimited'], 'Incorrect detection of existing unlimited tickets.' );
+	}
+
+	/* Delete Ticket Tests */
+
+	/**
+	 * @test
+	 * get_post_totals() should return the correct number of tickets after deleting a ticket
+	 *
+	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
+	 */
+	public function get_post_totals_should_return_the_correct_number_of_tickets_on_delete() {
+		$num_tickets = 5;
+		$capacity    = 5;
+		$stock       = 3;
+		$sales       = 2;
+
+		// create 5 tickets
+		$ticket_ids = $this->create_many_paypal_tickets(
+			$num_tickets,
+			$this->event_id,
+			[
+				'meta_input' => [
+					tribe( 'tickets.handler' )->key_capacity => $capacity,
+					'_stock'                                 => $stock,
+					'total_sales'                            => $sales,
+				],
+			]
+		);
+
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		// Remove a ticket.
+		tribe( 'tickets.commerce.paypal' )->delete_ticket( $this->event_id, $ticket_ids[0] );
+
+		$this->invalidate_cache( $this->event_id );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		$this->assertEquals( --$num_tickets, $test_data['tickets'], 'Incorrect number of tickets.' );
+	}
+
+	/**
+	 * @test
+	 * get_post_totals() should return the correct number of pending tickets after deleting a ticket
+	 *
+	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
+	 */
+	public function get_post_totals_should_return_the_correct_number_of_pending_tickets_on_delete() {
+		$num_tickets = 5;
+		$capacity    = 5;
+		$stock       = 3;
+		$sales       = 2;
+
+		// create 5 tickets
+		$ticket_ids = $this->create_many_paypal_tickets(
+			$num_tickets,
+			$this->event_id,
+			[
+				'meta_input' => [
+					tribe( 'tickets.handler' )->key_capacity => $capacity,
+					'_stock'                                 => $stock,
+					'total_sales'                            => $sales,
+				],
+			]
+		);
+
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		// Remove a ticket.
+		tribe( 'tickets.commerce.paypal' )->delete_ticket( $this->event_id, $ticket_ids[0] );
+
+		$this->invalidate_cache( $this->event_id );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		$this->assertEquals( 0, $test_data['pending'], 'Incorrect total pending.' );
+	}
+
+	/**
+	 * @test
+	 * get_post_totals() should return the correct total capacity after deleting a ticket
+	 *
+	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
+	 */
+	public function get_post_totals_should_return_the_correct_total_capacity_on_delete() {
+		$num_tickets = 5;
+		$capacity    = 5;
+		$stock       = 3;
+		$sales       = 2;
+
+		// create 5 tickets
+		$ticket_ids = $this->create_many_paypal_tickets(
+			$num_tickets,
+			$this->event_id,
+			[
+				'meta_input' => [
+					tribe( 'tickets.handler' )->key_capacity => $capacity,
+					'_stock'                                 => $stock,
+					'total_sales'                            => $sales,
+				],
+			]
+		);
+
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		// Remove a ticket.
+		tribe( 'tickets.commerce.paypal' )->delete_ticket( $this->event_id, $ticket_ids[0] );
+
+		$this->invalidate_cache( $this->event_id );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		$this->assertEquals( ( --$num_tickets * $capacity ), $test_data['capacity'], 'Incorrect total capacity.' );
+	}
+
+	/**
+	 * @test
+	 * get_post_totals() should return the correct total stock after deleting a ticket
+	 *
+	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
+	 */
+	public function get_post_totals_should_return_the_correct_total_stock_on_delete() {
+		$num_tickets = 5;
+		$capacity    = 5;
+		$stock       = 3;
+		$sales       = 2;
+
+		// create 5 tickets
+		$ticket_ids = $this->create_many_paypal_tickets(
+			$num_tickets,
+			$this->event_id,
+			[
+				'meta_input' => [
+					tribe( 'tickets.handler' )->key_capacity => $capacity,
+					'_stock'                                 => $stock,
+					'total_sales'                            => $sales,
+				],
+			]
+		);
+
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		// Remove a ticket.
+		tribe( 'tickets.commerce.paypal' )->delete_ticket( $this->event_id, $ticket_ids[0] );
+
+		$this->invalidate_cache( $this->event_id );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		$this->assertEquals( ( --$num_tickets * $stock ), $test_data['stock'], 'Incorrect total stock.' );
+	}
+
+	/**
+	 * @test
+	 * get_post_totals() should return the correct total sales after deleting a ticket
+	 *
+	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
+	 */
+	public function get_post_totals_should_return_the_correct_total_sales_on_delete() {
+		$num_tickets = 5;
+		$capacity    = 5;
+		$stock       = 3;
+		$sales       = 2;
+
+		// create 5 tickets
+		$ticket_ids = $this->create_many_paypal_tickets(
+			$num_tickets,
+			$this->event_id,
+			[
+				'meta_input' => [
+					'_capacity'   => $capacity,
+					'_stock'      => $stock,
+					'total_sales' => $sales,
+				],
+			]
+		);
+
+		$this->assertNotEmpty( $ticket_ids, 'Tickets not created!' );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		// Remove a ticket.
+		tribe( 'tickets.commerce.paypal' )->delete_ticket( $this->event_id, $ticket_ids[0] );
+
+		$this->invalidate_cache( $this->event_id );
+
+		$test_data = $this->handler->get_post_totals( $this->event_id );
+
+		$this->assertEquals( ( --$num_tickets * $sales ), $test_data['sold'], 'Incorrect total sales.' );
+	}
+
+	/**
+	 * @test
+	 * get_post_totals() should detect unlimited tickets appropriately after deleting a ticket
+	 *
+	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
+	 */
+	public function get_post_totals_should_detect_unlimited_tickets_appropriately_on_delete() {
+		$ticket_id = $this->create_paypal_ticket(
+			$this->event_id,
+			1,
+			[
+				'meta_input' => [
+					'_capacity'     => 3,
+					'total_sales'   => 2,
+				],
+			]
+		);
+
+		$ticket_id_b = $this->create_paypal_ticket(
+			$this->event_id,
+			1,
+			[
+				'meta_input' => [
+					tribe( 'tickets.handler' )->key_capacity => '-1',
+					'total_sales'                            => 2,
+				],
+			]
+		);
+
+		// Remove a ticket.
+		tribe( 'tickets.commerce.paypal' )->delete_ticket( $this->event_id, $ticket_id );
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
