@@ -594,26 +594,29 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return bool|string
 	 */
 	protected function init_order_statuses() {
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
+
 		if ( empty( self::$order_statuses ) ) {
 			// For RSVP tickets the order status is the going status
 			$statuses = [ 'yes', 'no' ];
 
 			if ( Tribe__Tickets__Commerce__PayPal__Main::get_instance()->is_active() ) {
-				$statuses = array_merge( $statuses, tribe( 'tickets.status' )->get_statuses_by_action( 'all', 'tpp' ) );
+				$statuses = array_merge( $statuses, $status_mgr->get_statuses_by_action( 'all', 'tpp' ) );
 			}
 
 			if (
 				class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' )
 				&& function_exists( 'wc_get_order_statuses' )
 			) {
-				$statuses = array_merge( $statuses, tribe( 'tickets.status' )->get_statuses_by_action( 'all', 'woo' ) );
+				$statuses = array_merge( $statuses, $status_mgr->get_statuses_by_action( 'all', 'woo' ) );
 			}
 
 			if (
 				class_exists( 'Tribe__Tickets_Plus__Commerce__EDD__Main' )
 				&& function_exists( 'edd_get_payment_statuses' )
 			) {
-				$statuses = array_merge( $statuses, array_keys( tribe( 'tickets.status' )->get_statuses_by_action( 'all', 'edd' ) ) );
+				$statuses = array_merge( $statuses, array_keys( $status_mgr->get_statuses_by_action( 'all', 'edd' ) ) );
 			}
 
 			self::$order_statuses         = $statuses;

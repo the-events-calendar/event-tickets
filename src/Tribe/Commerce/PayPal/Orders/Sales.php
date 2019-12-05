@@ -88,7 +88,10 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 * @return array
 	 */
 	protected function get_revenue_generating_order_statuses() {
-		$revenue_generating_order_statuses = tribe( 'tickets.status' )->get_statuses_by_action( 'count_completed', 'tpp' );
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
+
+		$revenue_generating_order_statuses = $status_mgr->get_statuses_by_action( 'count_completed', 'tpp' );
 
 		/**
 		 * Filters the list of ticket statuses that should be taken into account when calculating revenue.
@@ -391,20 +394,22 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 * @return array an array of order objects
 	 */
 	public function get_all_orders_by_product_id( $ID ) {
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
 
-		$all_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'all', 'tpp' );
-		$args = array(
+		$all_statuses = (array) $status_mgr->get_statuses_by_action( 'all', 'tpp' );
+		$args = [
 			'post_type'      => 'tribe_tpp_orders',
 			'posts_per_page' => -1,
 			'post_status'    => $all_statuses,
-			'meta_query'     => array(
-				array(
+			'meta_query'     => [
+				[
 					'key'   => '_tribe_paypal_ticket',
 					'value' => $ID,
-				),
-			),
+				],
+			],
 			'fields'         => 'ids',
-		);
+		];
 
 		$all_order_ids_for_ticket  = new WP_Query( $args );
 		$order_ids = $all_order_ids_for_ticket->posts;

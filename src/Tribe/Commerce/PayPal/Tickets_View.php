@@ -137,9 +137,11 @@ class Tribe__Tickets__Commerce__PayPal__Tickets_View extends Tribe__Tickets__Tic
 		$ticket_status = __( 'unavailable', 'event-tickets' );
 
 		if ( ! empty( $status ) ) {
+			/** @var Tribe__Tickets__Status__Manager $status_mgr */
+			$status_mgr = tribe( 'tickets.status' );
 
-			$statuses       = tribe( 'tickets.status' )->get_all_provider_statuses( 'tpp' );
-			$status_strings = array();
+			$statuses       = $status_mgr->get_all_provider_statuses( 'tpp' );
+			$status_strings = [];
 			foreach ( $statuses as $s ) {
 				$status_strings[ $s->provider_name ] = _x( $s->name, 'a PayPal ticket order status', 'event-tickets' );
 			}
