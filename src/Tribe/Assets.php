@@ -4,9 +4,13 @@ class Tribe__Tickets__Assets {
 	 * Enqueue scripts for front end
 	 *
 	 * @since 4.6
+	 * @since TBD Only load if in a tickets-enabled post context.
+	 *
+	 * @see   \is_tickets_enabled_post_context()
 	 */
 	public function enqueue_scripts() {
-		$tickets_main = Tribe__Tickets__Main::instance();
+		/** @var Tribe__Tickets__Main $tickets_main */
+		$tickets_main = tribe( 'tickets.main' );
 
 		tribe_assets(
 			$tickets_main,
@@ -18,7 +22,10 @@ class Tribe__Tickets__Assets {
 				[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
 				[ 'event-tickets-details-js', 'ticket-details.js', [] ],
 			],
-			'wp_enqueue_scripts'
+			'wp_enqueue_scripts',
+			[
+				'conditionals' => 'is_tickets_enabled_post_context',
+			]
 		);
 
 		// Tickets registration page styles
