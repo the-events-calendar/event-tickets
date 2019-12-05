@@ -735,7 +735,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
 	 *
 	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or product id
 	 *
-	 * @return bool|object
+	 * @return bool|Tribe__Tickets__Tickets
 	 */
 	function tribe_tickets_get_ticket_provider( $id ) {
 		/** @var Tribe__Tickets__Data_API $data_api */
