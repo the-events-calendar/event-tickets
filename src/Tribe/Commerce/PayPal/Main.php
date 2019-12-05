@@ -2265,10 +2265,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return array An associative array in the [ <slug> => <label> ] format.
 	 */
 	public function get_order_statuses() {
-		/** @var Tribe__Tickets__Status__Manager $tickets_status */
-		$tickets_status = tribe( 'tickets.status' );
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
 
-		$statuses       = $tickets_status->get_all_provider_statuses( 'tpp' );
+		$statuses       = $status_mgr->get_all_provider_statuses( 'tpp' );
 		$order_statuses = [];
 		foreach ( $statuses as $status ) {
 			$order_statuses[ $status->provider_name ] = _x( $status->name, 'a PayPal ticket order status', 'event-tickets' );
