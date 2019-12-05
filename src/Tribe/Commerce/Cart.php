@@ -69,7 +69,7 @@ class Tribe__Tickets__Commerce__Cart {
 		$is_ar_modal = empty( $_POST['tribe_tickets_ar_page'] );
 		$additive    = $is_ar_modal && ! $is_tribe_commerce;
 
-		if ( $is_tribe_commerce && null === $post_id ) {
+		if ( $is_tribe_commerce ) {
 			if ( null === $post_id ) {
 				if ( ! empty( $_GET['tribe_tickets_post_id'] ) ) {
 					// Get post ID from current URL parameter.
