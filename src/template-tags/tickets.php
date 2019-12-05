@@ -1329,7 +1329,7 @@ if ( ! function_exists( 'tribe_tickets_is_event_page' ) ) {
 	}
 }
 
-if ( ! function_exists( 'is_tickets_enabled_post_context' ) ) {
+if ( ! function_exists( 'tribe_is_tickets_enabled_post_context' ) ) {
 	/**
 	 * If we are in the front-end or back-end (e.g. currently editing or creating) context for a tickets-enabled post.
 	 *
@@ -1341,7 +1341,7 @@ if ( ! function_exists( 'is_tickets_enabled_post_context' ) ) {
 	 *
 	 * @return bool True if creating/editing (back-end) or viewing single or archive (front-end) of enabled post type.
 	 */
-	function is_tickets_enabled_post_context( $post = null ) {
+	function tribe_is_tickets_enabled_post_context( $post = null ) {
 		/** @var Tribe__Context $context */
 		$context = tribe( 'context' );
 
@@ -1370,6 +1370,15 @@ if ( ! function_exists( 'is_tickets_enabled_post_context' ) ) {
 			return true;
 		}
 
-		return false;
+		/**
+		 * Whether or not we are in tickets-enabled context, such as determining if we should load plugin assets.
+		 *
+		 * @param bool           $result
+		 * @param array          $post_types The post types with tickets enabled.
+		 * @param Tribe__Context $context
+		 *
+		 * @return bool
+		 */
+		return apply_filters( 'tribe_is_tickets_enabled_post_context', false, $post_types, $context );
 	}
 }
