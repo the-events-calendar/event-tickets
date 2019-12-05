@@ -173,10 +173,13 @@ class Tribe__Tickets__Assets {
 	 * @return bool
 	 */
 	protected function is_editing_ticketable_post() {
-		$context    = tribe( 'context' );
-		$post_types = tribe( 'tickets.main' )->post_types();
+		/** @var Tribe__Context $context */
+		$context = tribe( 'context' );
 
-		return $context->is_editing_post( $post_types );
+		/** @var Tribe__Tickets__Main $main */
+		$main = tribe( 'tickets.main' );
+
+		return $context->is_editing_post( $main->post_types() );
 	}
 
 	/**
