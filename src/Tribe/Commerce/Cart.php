@@ -34,15 +34,59 @@ class Tribe__Tickets__Commerce__Cart {
 				$data = stripslashes( $data );
 				$data = json_decode( $data, true );
 			}
+
+			$data = array_merge( $_POST, $data );
 		}
 
-		$post_id  = isset( $data['tribe_tickets_post_id'] ) ? $data['tribe_tickets_post_id'] : null;
-		$provider = isset( $data['tribe_tickets_provider'] ) ? $data['tribe_tickets_provider'] : null;
+		$post_id  = isset( $data['tribe_tickets_post_id'] ) ? absint( $data['tribe_tickets_post_id'] ) : null;
+		$provider = isset( $data['tribe_tickets_provider'] ) ? sanitize_text_field( $data['tribe_tickets_provider'] ) : tribe_get_request_var( 'provider' );
 		$tickets  = isset( $data['tribe_tickets_tickets'] ) ? $data['tribe_tickets_tickets'] : null;
 		$meta     = isset( $data['tribe_tickets_meta'] ) ? $data['tribe_tickets_meta'] : null;
 
+		$tribe_commerce_providers = [
+			'tpp',
+			'tribe-commerce',
+			'tribe_tpp_attendees',
+			'Tribe__Tickets__Commerce__PayPal__Main',
+		];
+
+		$is_tribe_commerce = in_array( $provider, $tribe_commerce_providers, true );
+
+		// Simplify provider for Tribe Commerce.
+		if ( $is_tribe_commerce ) {
+			$provider = 'tribe-commerce';
+		}
+
 		// On AR Page, we use replace logic, not additive.
 		$is_ar_modal = empty( $_POST['tribe_tickets_ar_page'] );
+		$additive    = $is_ar_modal && ! $is_tribe_commerce;
+
+		if ( $is_tribe_commerce ) {
+			if ( null === $post_id ) {
+				if ( ! empty( $_GET['tribe_tickets_post_id'] ) ) {
+					// Get post ID from current URL parameter.
+					$post_id = absint( $_GET['tribe_tickets_post_id'] );
+				} else {
+					// Detect post ID for Tribe Commerce from the first ticket (no cart, we only support one post at a time).
+					$ticket_ids = wp_list_pluck( $tickets, 'ticket_id' );
+					$ticket_ids = array_filter( array_unique( $ticket_ids ) );
+
+					if ( ! empty( $ticket_ids ) ) {
+						$ticket_id = current( $ticket_ids );
+
+						$ticket = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
+
+						if ( $ticket ) {
+							$post_id = $ticket->get_event_id();
+						}
+					}
+				}
+			}
+
+			if ( null === $meta && $is_ar_modal ) {
+				$meta = [];
+			}
+		}
 
 		// We only update tickets from the modal, not the AR page right now.
 		if ( ! $is_ar_modal ) {
@@ -54,11 +98,11 @@ class Tribe__Tickets__Commerce__Cart {
 			'provider' => $provider,
 			'tickets'  => $tickets,
 			'meta'     => $meta,
-			'additive' => $is_ar_modal,
+			'additive' => $additive,
 		] );
 
 		// Tribe Commerce needs to be redirected to the checkout URL from here.
-		if ( in_array( $provider, [ 'tribe-commerce', 'Tribe__Tickets__Commerce__PayPal__Main' ], true ) ) {
+		if ( $is_tribe_commerce ) {
 			$data = $this->get( [
 				'post_id'  => $post_id,
 				'provider' => $provider,
