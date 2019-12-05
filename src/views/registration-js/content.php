@@ -101,6 +101,7 @@ $classes        = [
 			<input type="hidden" name="tribe_tickets_ar" value="1" />
 			<input type="hidden" name="tribe_tickets_ar_page" value="1" />
 			<input type="hidden" name="tribe_tickets_ar_data" value="" id="tribe_tickets_ar_data"  />
+			<input type="hidden" name="tribe_tickets_provider" value="<?php echo esc_attr( $provider ); ?>"  />
 
 			<?php foreach ( $events as $event_id => $tickets ) : ?>
 				<?php
