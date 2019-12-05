@@ -1329,7 +1329,7 @@ if ( ! function_exists( 'tribe_tickets_is_event_page' ) ) {
 	}
 }
 
-if ( ! function_exists( 'tribe_is_tickets_enabled_post_context' ) ) {
+if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
 	/**
 	 * If we are in the front-end or back-end (e.g. currently editing or creating) context for a tickets-enabled post.
 	 *
@@ -1341,7 +1341,7 @@ if ( ! function_exists( 'tribe_is_tickets_enabled_post_context' ) ) {
 	 *
 	 * @return bool True if creating/editing (back-end) or viewing single or archive (front-end) of enabled post type.
 	 */
-	function tribe_is_tickets_enabled_post_context( $post = null ) {
+	function tribe_tickets_is_enabled_post_context( $post = null ) {
 		/** @var Tribe__Context $context */
 		$context = tribe( 'context' );
 
@@ -1379,6 +1379,6 @@ if ( ! function_exists( 'tribe_is_tickets_enabled_post_context' ) ) {
 		 *
 		 * @return bool
 		 */
-		return apply_filters( 'tribe_is_tickets_enabled_post_context', false, $post_types, $context );
+		return apply_filters( 'tribe_tickets_is_enabled_post_context', false, $post_types, $context );
 	}
 }

@@ -6,7 +6,7 @@ class Tribe__Tickets__Assets {
 	 * @since 4.6
 	 * @since TBD Only load if in a tickets-enabled post context.
 	 *
-	 * @see   \tribe_is_tickets_enabled_post_context()
+	 * @see   \tribe_tickets_is_enabled_post_context()
 	 */
 	public function enqueue_scripts() {
 		/** @var Tribe__Tickets__Main $tickets_main */
@@ -24,7 +24,7 @@ class Tribe__Tickets__Assets {
 			],
 			'wp_enqueue_scripts',
 			[
-				'conditionals' => 'tribe_is_tickets_enabled_post_context',
+				'conditionals' => 'tribe_tickets_is_enabled_post_context',
 			]
 		);
 
