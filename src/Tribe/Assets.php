@@ -162,7 +162,7 @@ class Tribe__Tickets__Assets {
 		$modules = Tribe__Tickets__Tickets::modules();
 
 		// For the metabox
-		return ! empty( $post ) && ! empty( $modules ) && in_array( $post->post_type, tribe( 'tickets.main' )->post_types() );
+		return ! empty( $post ) && ! empty( $modules ) && in_array( $post->post_type, tribe( 'tickets.main' )->post_types(), true );
 	}
 
 	/**
