@@ -1328,3 +1328,48 @@ if ( ! function_exists( 'tribe_tickets_is_event_page' ) ) {
 		return true;
 	}
 }
+
+if ( ! function_exists( 'is_tickets_enabled_post_context' ) ) {
+	/**
+	 * If we are in the front-end or back-end (e.g. currently editing or creating) context for a tickets-enabled post.
+	 *
+	 * @since TBD
+	 *
+	 * @see   \Tribe__Tickets__Main::post_types()
+	 *
+	 * @param null|int|WP_Post $post Post ID or object, `null` to get the ID of the global/current post object.
+	 *
+	 * @return bool True if creating/editing (back-end) or viewing single or archive (front-end) of enabled post type.
+	 */
+	function is_tickets_enabled_post_context( $post = null ) {
+		/** @var Tribe__Context $context */
+		$context = tribe( 'context' );
+
+		/** @var Tribe__Tickets__Main $main */
+		$main = tribe( 'tickets.main' );
+
+		$post_types = $main->post_types();
+
+		// Back-end
+		if ( $context->is_editing_post( $post_types ) ) {
+			return true;
+		}
+
+		// Front-end singular
+		$post = Tribe__Main::post_id_helper( $post );
+
+		if (
+			! empty( $post )
+			&& in_array( get_post_type( $post ), $post_types, true )
+		) {
+			return true;
+		}
+
+		// Front-end archive
+		if ( is_post_type_archive( $post_types ) ) {
+			return true;
+		}
+
+		return false;
+	}
+}
