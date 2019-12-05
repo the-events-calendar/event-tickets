@@ -30,6 +30,19 @@ $messages       = $commerce->get_messages();
 $messages_class = $messages ? 'tribe-tpp-message-display' : '';
 $now            = time();
 $cart_url       = '';
+
+$threshold = tribe( 'settings.manager' )::get_option( 'ticket-display-tickets-left-threshold', 0 );
+
+/**
+ * Overwrites the threshold to display "# tickets left".
+ *
+ * @param int   $threshold Stock threshold to trigger display of "# tickets left"
+ * @param array $data      Ticket data.
+ * @param int   $post_id   WP_Post/Event ID.
+ *
+ * @since TBD
+ */
+$threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_threshold', $threshold, tribe_events_get_ticket_event( $ticket ) ) );
 ?>
 <form
 	id="tpp-buy-tickets"
@@ -101,7 +114,7 @@ $cart_url       = '';
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>
-						<?php if ( -1 !== $available ) : ?>
+						<?php if ( -1 !== $available && $threshold >= $available ) : ?>
 							<span class="tribe-tickets-remaining">
 							<?php
 							$readable_amount = tribe_tickets_get_readable_amount( $available, null, false );

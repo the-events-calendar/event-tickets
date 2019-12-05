@@ -23,6 +23,20 @@ ob_start();
 $messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
 $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 
+
+$threshold = tribe( 'settings.manager' )::get_option( 'ticket-display-tickets-left-threshold', 0 );
+
+/**
+ * Overwrites the threshold to display "# tickets left".
+ *
+ * @param int   $threshold Stock threshold to trigger display of "# tickets left"
+ * @param array $data      Ticket data.
+ * @param int   $post_id   WP_Post/Event ID.
+ *
+ * @since TBD
+ */
+$threshold = absint( apply_filters( 'tribe_display_rsvp_block_tickets_left_threshold', $threshold, tribe_events_get_ticket_event( $ticket ) ) );
+
 /**
  * A flag we can set via filter, e.g. at the end of this method, to ensure this template only shows once.
  *
@@ -114,7 +128,7 @@ if ( ! $already_rendered ) {
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>
-						<?php if ( -1 !== $available ) : ?>
+						<?php if ( -1 !== $available && $threshold >= $available ) : ?>
 							<span class="tribe-tickets-remaining">
 							<?php
 							$readable_amount = tribe_tickets_get_readable_amount( $available, null, false );

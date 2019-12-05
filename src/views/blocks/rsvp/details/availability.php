@@ -15,16 +15,29 @@
  *
  */
 
+$threshold = tribe( 'settings.manager' )::get_option( 'ticket-display-tickets-left-threshold', 0 );
+
+/**
+ * Overwrites the threshold to display "# tickets left".
+ *
+ * @param int   $threshold Stock threshold to trigger display of "# tickets left"
+ * @param array $data      Ticket data.
+ * @param int   $event_id  Event ID.
+ *
+ * @since TBD
+ */
+$threshold = absint( apply_filters( 'tribe_display_rsvp_block_tickets_left_threshold', $threshold, tribe_events_get_ticket_event( $ticket ) ) );
+
 $remaining_tickets = $ticket->remaining();
 $is_unlimited = -1 === $remaining_tickets;
 ?>
 <div class="tribe-block__rsvp__availability">
 	<?php if ( ! $ticket->is_in_stock() ) : ?>
 		<span class="tribe-block__rsvp__no-stock"><?php esc_html_e( 'Out of stock!', 'event-tickets' ); ?></span>
-	<?php elseif ( ! $is_unlimited ) : ?>
-		<span class="tribe-block__rsvp__quantity"><?php echo $ticket->remaining(); ?> </span>
+	<?php elseif ( ! $is_unlimited && $threshold >= $remaining_tickets ) : ?>
+		<span class="tribe-block__rsvp__quantity"><?php echo $remaining_tickets; ?> </span>
 		<?php esc_html_e( 'remaining', 'event-tickets' ) ?>
-	<?php else : ?>
+	<?php elseif ( $is_unlimited ) : ?>
 		<span class="tribe-block__rsvp__unlimited"><?php esc_html_e( 'Unlimited', 'event-tickets' ); ?></span>
 	<?php endif; ?>
 </div>
