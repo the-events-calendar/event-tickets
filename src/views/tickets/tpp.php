@@ -115,13 +115,15 @@ $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_th
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>
-						<?php if ( $show_unlimited && $available <= $threshold ) : ?>
+						<?php if ( -1 !== $available && $available <= $threshold ) : ?>
 							<span class="tribe-tickets-remaining">
 							<?php
 							$readable_amount = tribe_tickets_get_readable_amount( $available, null, false );
 							echo sprintf( esc_html__( '%1$s available', 'event-tickets' ), '<span class="available-stock" data-product-id="' . esc_attr( $ticket->ID ) . '">' . esc_html( $readable_amount ) . '</span>' );
 							?>
 							</span>
+						<?php elseif ( $show_unlimited ): ?>
+							<?php echo sprintf( esc_html_-( '%1$s', 'event-tickets' ), '<span class="available-stock" data-product-id="' . esc_attr( $ticket->ID ) . '">' . esc_html( $readable_amount ) . '</span>' ); ?>
 						<?php endif; ?>
 					<?php else: ?>
 						<span class="tickets_nostock"><?php esc_html_e( 'Out of stock!', 'event-tickets' ); ?></span>
