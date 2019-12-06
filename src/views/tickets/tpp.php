@@ -114,7 +114,7 @@ $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_th
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>
-						<?php if ( -1 !== $available && $threshold >= $available ) : ?>
+						<?php if ( -1 !== $available && $available <= $threshold ) : ?>
 							<span class="tribe-tickets-remaining">
 							<?php
 							$readable_amount = tribe_tickets_get_readable_amount( $available, null, false );
