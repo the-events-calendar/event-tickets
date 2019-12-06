@@ -59,7 +59,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * @var int The invoice number expiration time in seconds.
 	 */
-	protected $invoice_expiration_time = 900;
+	protected $invoice_expiration_time;
 
 	/**
 	 * Tribe__Tickets__Commerce__PayPal__Gateway constructor.
@@ -71,6 +71,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	public function __construct( Tribe__Tickets__Commerce__PayPal__Notices $notices ) {
 		$this->identity_token = tribe_get_option( 'ticket-paypal-identity-token' );
 		$this->notices = $notices;
+
+		$this->invoice_expiration_time = DAY_IN_SECONDS;
 	}
 
 	/**
@@ -463,7 +465,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 * @return string The PayPal cart API URL.
 	 */
 	public function get_paypal_cart_api_url( $post_id ) {
-		if ( empty( $post_id ) ) {
+		if ( empty( $post_id ) || headers_sent() ) {
 			return home_url();
 		}
 
