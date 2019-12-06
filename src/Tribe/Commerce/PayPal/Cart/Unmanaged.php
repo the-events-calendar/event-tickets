@@ -41,7 +41,7 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 			return;
 		}
 
-		set_transient( self::get_transient_name( $this->invoice_number ), $this->items, HOUR_IN_SECONDS );
+		set_transient( self::get_transient_name( $this->invoice_number ), $this->items, DAY_IN_SECONDS );
 	}
 
 	/**
@@ -170,7 +170,7 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	 *
 	 * @see   Tribe__Tickets__Commerce__PayPal__Gateway::set_invoice_number()
 	 */
-	protected function read_invoice_number() {
+	public function read_invoice_number() {
 		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
