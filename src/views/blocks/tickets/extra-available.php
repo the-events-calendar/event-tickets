@@ -8,12 +8,14 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @since   4.9.3
+ * @since   TBD Corrected amount of available/remaining tickets.
  *
- * @since 4.9.3
- * @since TBD Corrected amount of available/remaining tickets.
+ * @link    {INSERT_ARTICLE_LINK_HERE}
  *
  * @version TBD
+ *
+ * @var Tribe__Tickets__Editor__Template $this
  */
 
 /** @var Tribe__Tickets__Ticket_Object $ticket */
@@ -35,5 +37,5 @@ if ( -1 === $available ) {
 <div
 	class="tribe-common-b3 tribe-tickets__item__extra__available"
 >
-	<?php $this->template( 'blocks/tickets/extra-available-quantity', [ 'ticket' => $ticket ] ); ?>
+	<?php $this->template( 'blocks/tickets/extra-available-quantity', [ 'ticket' => $ticket, 'available' => $available ] ); ?>
 </div>
