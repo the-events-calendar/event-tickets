@@ -11,6 +11,8 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
+ * @since TBD Changed some HTML class names.
+ *
  * @version TBD
  *
  */
