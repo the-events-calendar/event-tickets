@@ -1373,6 +1373,8 @@ if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
 		/**
 		 * Whether or not we are in tickets-enabled context, such as determining if we should load plugin assets.
 		 *
+		 * @since TBD
+		 *
 		 * @param bool           $result
 		 * @param array          $post_types The post types with tickets enabled.
 		 * @param Tribe__Context $context
