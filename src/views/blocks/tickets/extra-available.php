@@ -23,7 +23,7 @@ if ( -1 === $available ) {
 }
 
 $post_id   = $this->get( 'post_id' );
-$threshold = tribe( 'settings.manager' )::get_option( 'ticket-display-tickets-left-threshold', 0 );
+$threshold = tribe( 'settings.manager' )::get_option( 'ticket-display-tickets-left-threshold', null );
 
 /**
  * Overwrites the threshold to display "# tickets left".
@@ -36,11 +36,14 @@ $threshold = tribe( 'settings.manager' )::get_option( 'ticket-display-tickets-le
  */
 $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_threshold', $threshold, $post_id ) );
 $available = $ticket->available();
+$show_unlimited = apply_filters( 'tribe_tickets_block_show_unlimited_availability', false, $available );
 ?>
 <div
 	class="tribe-common-b3 tribe-tickets__item__extra__available"
 >
-	<?php if ( -1 !== $available && $available <= $threshold ) : ?>
+	<?php if ( $show_unlimited ) : ?>
+		<?php $this->template( 'blocks/tickets/extra-available-unlimited', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
+	<?php elseif ( null === $threshold || $available <= $threshold ) : ?>
 		<?php $this->template( 'blocks/tickets/extra-available-quantity', [ 'ticket' => $ticket ] ); ?>
 	<?php endif; ?>
 </div>

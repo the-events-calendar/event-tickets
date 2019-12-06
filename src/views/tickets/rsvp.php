@@ -109,6 +109,7 @@ if ( ! $already_rendered ) {
 			$handler = tribe( 'tickets.handler' );
 
 			$available = $handler->get_ticket_max_purchase( $ticket->ID );
+			$show_unlimited = apply_filters( 'tribe_rsvp_block_show_unlimited_availability', false, $available );
 
 			$is_there_any_product_to_sell = 0 !== $available;
 			?>
@@ -128,7 +129,7 @@ if ( ! $already_rendered ) {
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>
-						<?php if ( -1 !== $available && $available <= $threshold ) : ?>
+						<?php if ( $show_unlimited && $available <= $threshold ) : ?>
 							<span class="tribe-tickets-remaining">
 							<?php
 							$readable_amount = tribe_tickets_get_readable_amount( $available, null, false );
