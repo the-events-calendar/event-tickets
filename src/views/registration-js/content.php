@@ -101,19 +101,15 @@ $classes        = [
 			<input type="hidden" name="tribe_tickets_ar" value="1" />
 			<input type="hidden" name="tribe_tickets_ar_page" value="1" />
 			<input type="hidden" name="tribe_tickets_ar_data" value="" id="tribe_tickets_ar_data"  />
+			<input type="hidden" name="tribe_tickets_provider" value="<?php echo esc_attr( $provider ); ?>"  />
 
 			<?php foreach ( $events as $event_id => $tickets ) : ?>
 				<?php
-					$provider_name = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
-					$provider_obj  = new $provider_name;
-				?>
-				<?php if ( $provider !== $provider_obj->attendee_object ) : ?>
-					<?php continue; ?>
-				<?php endif; ?>
-				<?php
+					$provider_name  = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
+					$provider_obj   = new $provider_name;
 					$provider_class = $provider_class;
-					$providers = wp_list_pluck( $tickets, 'provider' );
-					$providers_arr = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
+					$providers      = wp_list_pluck( $tickets, 'provider' );
+					$providers_arr  = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
 
 					if ( empty( $provider_class ) && ! empty( $providers_arr[ $event_id ] ) ) :
 						$provider_class = 'tribe-tickets__item__attendee__fields__form--' . $providers_arr[ $event_id ];
