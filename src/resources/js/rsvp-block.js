@@ -63,7 +63,7 @@ var tribe_tickets_rsvp_block = {
 		};
 
 		// Show the loader for this RSVP
-		my.tribe_rsvp_loader_start( $ticket );
+		my.tribe_rsvp_loader_start();
 
 		$.post(
 			TribeRsvp.ajaxurl,
@@ -81,7 +81,7 @@ var tribe_tickets_rsvp_block = {
 					$submit.attr( 'disabled', true );
 					my.state.submitActive = false;
 				}
-				my.tribe_rsvp_loader_end( $ticket );
+				my.tribe_rsvp_loader_end();
 			}
 		);
 	};
@@ -157,7 +157,10 @@ var tribe_tickets_rsvp_block = {
 	 * @param {obj} $ticket ticket object
 	 */
 	my.tribe_rsvp_loader_start = function( $ticket ) {
-		$ticket.find( '.tribe-block__rsvp__loading' ).show();
+		var loader_class = '.tribe-block__rsvp__loading';
+		var $loader = $( '.tribe-block__rsvp' ).find( loader_class );
+
+		$loader.removeClass( 'tribe-common-a11y-hidden' );
 	};
 
 	/**
@@ -168,7 +171,10 @@ var tribe_tickets_rsvp_block = {
 	 * @param {obj} $ticket ticket object
 	 */
 	my.tribe_rsvp_loader_end = function( $ticket ) {
-		$ticket.find( '.tribe-block__rsvp__loading' ).hide();
+		var loader_class = '.tribe-block__rsvp__loading';
+		var $loader = $( '.tribe-block__rsvp' ).find( loader_class );
+
+		$loader.addClass( 'tribe-common-a11y-hidden' );
 	};
 
 
@@ -234,7 +240,7 @@ var tribe_tickets_rsvp_block = {
 			params.push( { name: 'action', value: 'rsvp-process' } );
 			params.push( { name: 'ticket_id', value: ticket_id } );
 
-			my.tribe_rsvp_loader_start( $ticket );
+			my.tribe_rsvp_loader_start();
 
 			$.post(
 				TribeRsvp.ajaxurl,
@@ -253,7 +259,7 @@ var tribe_tickets_rsvp_block = {
 						$ticket.find( '.tribe-block__rsvp__status' ).replaceWith( response.data.status_html );
 					}
 
-					my.tribe_rsvp_loader_end( $ticket );
+					my.tribe_rsvp_loader_end();
 				}
 			);
 		}
