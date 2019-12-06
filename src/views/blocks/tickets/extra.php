@@ -15,9 +15,12 @@
  *
  * @version TBD
  *
+ * @var Tribe__Tickets__Editor__Template $this
  */
 
+/** @var Tribe__Tickets__Ticket_Object $ticket */
 $ticket = $this->get( 'ticket' );
+
 $is_mini = $this->get( 'is_mini' );
 
 $context = [
