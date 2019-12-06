@@ -11,9 +11,12 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @since TBD Updated the optout markup and classes used.
+ * @version TBD
  *
  */
+$modal    = $this->get( 'is_modal' );
+$ticket   = $this->get( 'ticket' );
 /**
  * Use this filter to hide the Attendees List Optout
  *
@@ -21,21 +24,29 @@
  *
  * @param bool
  */
-$hide_attendee_list_optout = apply_filters( 'tribe_tickets_plus_hide_attendees_list_optout', false );
+$hide_attendee_list_optout = apply_filters( 'tribe_tickets_plus_hide_attendees_list_optout', $modal );
 if ( $hide_attendee_list_optout
 	 && ! class_exists( 'Tribe__Tickets_Plus__Attendees_List' )
 	 && Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $this->get( 'post_id' ) )
 ) {
 	return;
 }
+$field_id = [
+	'tribe-tickets-attendees-list-optout',
+	$ticket->ID
+];
+
+$field_id = implode( '-', $field_id );
 ?>
-<label for="tribe-tickets-attendees-list-optout">
-	<input
-		type="checkbox"
-		name="attendee[optout]"
-		id="tribe-tickets-attendees-list-optout"
+<div class="tribe-common-form-control-checkbox tribe-tickets-attendees-list-optout--wrapper">
+	<label
+		class="tribe-common-form-control-checkbox__label"
+		for="<?php echo esc_attr( $field_id ); ?>"
 	>
-	<span class="tribe-tickets-meta-option-label">
-		<?php esc_html_e( "Don't show my information on public attendee lists", 'event-tickets' ); ?>
-	</span>
-</label>
+		<input
+			class="tribe-common-form-control-checkbox__input tribe-tickets__item__optout"
+			id="<?php echo esc_attr( $field_id ); ?>"
+			name="attendee[optout]"
+			type="checkbox"
+		/><?php esc_html_e( "Don't show me on public attendee lists.", 'event-tickets' ); ?></label>
+</div>

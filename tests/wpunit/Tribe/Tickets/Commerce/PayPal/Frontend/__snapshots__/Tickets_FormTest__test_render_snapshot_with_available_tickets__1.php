@@ -23,7 +23,7 @@
 					<input type="hidden" name="product_id[]" value="142">
 											<input
 							type="number"
-							class="tribe-ticket-quantity qty"
+							class="tribe-tickets-quantity qty"
 							min="0"
 							max="100"							name="quantity_142"
 							value="0"
@@ -46,7 +46,7 @@
 					<input type="hidden" name="product_id[]" value="143">
 											<input
 							type="number"
-							class="tribe-ticket-quantity qty"
+							class="tribe-tickets-quantity qty"
 							min="0"
 							max="100"							name="quantity_143"
 							value="0"
@@ -69,7 +69,7 @@
 					<input type="hidden" name="product_id[]" value="144">
 											<input
 							type="number"
-							class="tribe-ticket-quantity qty"
+							class="tribe-tickets-quantity qty"
 							min="0"
 							max="100"							name="quantity_144"
 							value="0"

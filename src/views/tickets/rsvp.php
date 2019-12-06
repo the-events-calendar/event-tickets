@@ -8,9 +8,10 @@
  *
  * @since 4.0
  * @since 4.10.8 More similar display format to that of other ticket types, including better checking of max quantity available.
- * @since 4.10.9  Use customizable ticket name functions.
+ * @since 4.10.9 Use customizable ticket name functions.
+ * @since TBD Added RSVP/ticket view link to template.
  *
- * @version 4.10.9
+ * @version TBD
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login
@@ -21,6 +22,24 @@ $is_there_any_product_to_sell = false;
 ob_start();
 $messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
 $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
+
+/**
+ * A flag we can set via filter, e.g. at the end of this method, to ensure this template only shows once.
+ *
+ * @since 4.5.6
+ *
+ * @param boolean $already_rendered Whether the order link template has already been rendered.
+ *
+ * @see Tribe__Tickets__Tickets_View::inject_link_template()
+ */
+$already_rendered = apply_filters( 'tribe_tickets_order_link_template_already_rendered', false );
+
+// Output order links / view link if we haven't already (for RSVPs).
+if ( ! $already_rendered ) {
+	include $this->getTemplateHierarchy( 'tickets/view-link' );
+
+	add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
+}
 ?>
 
 <form
@@ -33,7 +52,6 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 	<h2 class="tribe-events-tickets-title tribe--rsvp">
 		<?php echo esc_html( tribe_get_rsvp_label_singular( 'form_heading' ) ); ?>
 	</h2>
-
 
 	<div class="tribe-rsvp-messages">
 		<?php
@@ -86,7 +104,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 					<?php if ( $is_there_any_product_to_sell ) : ?>
 						<input
 							type="number"
-							class="tribe-ticket-quantity"
+							class="tribe-tickets-quantity"
 						        step="1"
 							min="0"
 							<?php if ( -1 !== $available ) : ?>

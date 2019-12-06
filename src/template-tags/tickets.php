@@ -205,8 +205,8 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 			return null;
 		}
 
-		$html = array();
-		$parts = array();
+		$html = [];
+		$parts = [];
 
 		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out message
 		foreach ( $types as $type => $data ) {
@@ -411,8 +411,17 @@ if ( ! function_exists( 'tribe_events_has_tickets_on_sale' ) ) {
 	 */
 	function tribe_events_has_tickets_on_sale( $event_id ) {
 		$has_tickets_on_sale = false;
-		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $event_id );
+		$tickets             = Tribe__Tickets__Tickets::get_all_event_tickets( $event_id );
+		$default_provider    = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
+
 		foreach ( $tickets as $ticket ) {
+			$ticket_provider = $ticket->get_provider();
+
+			// Skip tickets that are for a different provider than the event provider.
+			if ( $default_provider !== $ticket_provider->class_name ) {
+				continue;
+			}
+
 			$has_tickets_on_sale = ( $has_tickets_on_sale || tribe_events_ticket_is_on_sale( $ticket ) );
 		}
 
@@ -455,7 +464,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		$pending       = (int) $ticket->qty_pending();
 		$refunded      = (int) $ticket->qty_refunded();
 		$status        = '';
-		$status_counts = array();
+		$status_counts = [];
 
 		$is_global = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled();
 		$is_capped = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled();
@@ -575,7 +584,7 @@ if ( ! function_exists( 'tribe_tickets_get_template_part' ) ) {
 		do_action( 'tribe_tickets_pre_get_template_part', $slug, $name, $data );
 
 		// Setup possible parts
-		$templates = array();
+		$templates = [];
 		if ( isset( $name ) ) {
 			$templates[] = $slug . '-' . $name . '.php';
 		}
@@ -584,7 +593,7 @@ if ( ! function_exists( 'tribe_tickets_get_template_part' ) ) {
 		/**
 		 * Allow users to filter which templates can be included
 		 *
-		 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
+		 * @param string $template The Template file(s), which is a relative path from the Folder we are dealing with.
 		 * @param string $slug     Slug for this template
 		 * @param string $name     Template name
 		 * @param array  $data     The Data that will be used on this template
@@ -726,7 +735,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
 	 *
 	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or product id
 	 *
-	 * @return bool|object
+	 * @return bool|Tribe__Tickets__Tickets
 	 */
 	function tribe_tickets_get_ticket_provider( $id ) {
 		/** @var Tribe__Tickets__Data_API $data_api */
@@ -744,7 +753,7 @@ if ( ! function_exists( 'tribe_tickets_get_attendees' ) ) {
 	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or event id
 	 * @param null $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
 	 *
-	 * @return array() an array of all attendee(s) data including custom attendee meta for a given id
+	 * @return array List of all attendee(s) data including custom attendee meta for a given ID.
 	 */
 	function tribe_tickets_get_attendees( $id, $context = null ) {
 		return tribe( 'tickets.data_api' )->get_attendees_by_id( $id, $context );
@@ -1292,5 +1301,29 @@ if ( ! function_exists( 'tribe_get_ticket_label_plural_lowercase' ) ) {
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 		 */
 		return apply_filters( 'tribe_get_ticket_label_plural_lowercase', _x( 'tickets', 'lowercase plural label for Tickets', 'event-tickets' ), $context );
+	}
+}
+
+if ( ! function_exists( 'function tribe_tickets_is_event_page' ) ) {
+	/**
+	 * Allows us to test a post ID to see if it is an event page.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|WP_Post|null $post The post (or its ID) we're testing. Default is global post.
+	 * @return boolean
+	 */
+	function tribe_tickets_is_event_page( $post = null ) {
+		// Tribe__Events__Main must exist.
+		if ( ! class_exists( 'Tribe__Events__Main' ) ) {
+			return false;
+		}
+
+		// Must be the correct post type.
+		if ( Tribe__Events__Main::POSTTYPE !== get_post_type( $post ) ) {
+			return false;
+		}
+
+		return  true;
 	}
 }

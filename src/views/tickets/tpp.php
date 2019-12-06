@@ -14,7 +14,8 @@
  * @since   4.10.8 Removed the date_in_range() check per ticket, since it now happens upstream. Better checking of max quantity available.
  * @since   4.10.10  Use customizable ticket name functions.
  *
- * @version 4.10.9
+ * @version TBD
+ * @deprecated TBD
  *
  * @var bool $must_login
  * @var bool $display_login_link
@@ -91,7 +92,7 @@ $cart_url       = '';
 					<?php if ( $is_there_any_product_to_sell ) : ?>
 						<input
 							type="number"
-							class="tribe-ticket-quantity qty"
+							class="tribe-tickets-quantity qty"
 							min="0"
 							<?php if ( -1 !== $available ) : ?>
 								max="<?php echo esc_attr( $available ); ?>"

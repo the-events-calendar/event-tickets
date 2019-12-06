@@ -11,11 +11,11 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @version TBD
  *
  */
 
 ?>
-<div class="tribe-block__tickets__registration__tickets__item__title">
+<div class="tribe-tickets__registration__tickets__item__title">
 	<?php echo $ticket->name; ?>
 </div>

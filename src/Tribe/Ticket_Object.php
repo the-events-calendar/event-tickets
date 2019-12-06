@@ -311,9 +311,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			// Bail if we don't have an end date and the event has passed
 			// Check if the event has passed in case we're using TEC
-			$is_past_event = function_exists( 'tribe_is_past_event' )
-				? tribe_is_past_event( tribe_events_get_event( $this->event_id ) )
-				: false;
+			$is_past_event = false;
+
+			$event = $this->get_event();
+
+			if ( function_exists( 'tribe_is_past_event' ) && $event instanceof WP_Post ) {
+				$is_past_event = tribe_is_past_event( $event );
+			}
 
 			if ( empty( $end ) && $is_past_event ) {
 				return false;
@@ -405,11 +409,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Determines if the given date is smaller than the ticket's start date
+		 * Determines if the given date is before the ticket's start date
 		 *
-		 * @param null|string $datetime The date/time that we want to determine if it is smaller than the ticket's start date
+		 * @param null|string $datetime The date/time that we want to compare to the ticket's start date
 		 *
-		 * @return boolean Whether or not the provided date/time is smaller than the ticket's start date
+		 * @return boolean Whether or not the provided date/time is before than the ticket's start date
 		 */
 		public function date_is_earlier( $datetime = null ) {
 			$date = $this->get_date( $datetime, false );
@@ -424,11 +428,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Determines if the given date is greater than the ticket's end date
+		 * Determines if the given date is after the ticket's end date
 		 *
-		 * @param null|string $datetime The date/time that we want to determine if it is smaller than the ticket's start date
+		 * @param null|string $datetime The date/time that we want to compare to the ticket's start date
 		 *
-		 * @return boolean Whether or not the provided date/time is greater than the ticket's end date
+		 * @return boolean Whether or not the provided date/time is after than the ticket's end date
 		 */
 		public function date_is_later( $datetime = null ) {
 			$date = $this->get_date( $datetime, false );
@@ -553,10 +557,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return -1;
 			}
 
+			/** @var Tribe__Tickets__Status__Manager $status_mgr */
+			$status_mgr = tribe( 'tickets.status' );
+
 			// Fetch the Attendees
 			$attendees = $this->provider->get_attendees_by_id( $this->ID );
 			$attendees_count = 0;
-			$not_going_arr = tribe( 'tickets.status' )->get_statuses_by_action( 'count_not_going', 'rsvp' );
+			$not_going_arr = $status_mgr->get_statuses_by_action( 'count_not_going', 'rsvp' );
 
 			// Loop on All the attendees, allowing for some filtering of which will be removed or not
 			foreach ( $attendees as $attendee ) {

@@ -37,6 +37,11 @@ class BaseRestCest {
 	/**
 	 * @var string
 	 */
+	protected $cart_url;
+
+	/**
+	 * @var string
+	 */
 	protected $documentation_url;
 
 	/**
@@ -61,6 +66,7 @@ class BaseRestCest {
 		$this->tec_rest_url      = $this->site_url . '/wp-json/tribe/events/v1/';
 		$this->tickets_url       = $this->rest_url . 'tickets';
 		$this->attendees_url     = $this->rest_url . 'attendees';
+		$this->cart_url          = $this->rest_url . 'cart';
 		$this->documentation_url = $this->rest_url . 'doc';
 		$this->factory           = $I->factory();
 
@@ -94,5 +100,41 @@ class BaseRestCest {
 
 		// reset the user to visitor before each test
 		wp_set_current_user( 0 );
+	}
+
+	/**
+	 * Add item to Tribe Commerce cart.
+	 *
+	 * @param Restv1Tester $I          REST tester.
+	 * @param int|array    $product_id Product to add to the cart or list of products/quantities.
+	 * @param int          $quantity   Quantity of product to add to the cart.
+	 * @param int          $post_id    Which post ID for the cart.
+	 *
+	 * @throws \Exception
+	 */
+	protected function paypal_add_item_to_cart( $I, $product_id, $quantity, $post_id ) {
+		$cart_rest_url = $this->cart_url;
+
+		$tickets = [];
+
+		if ( ! is_array( $product_id ) ) {
+			$product_id = [
+				$product_id => $quantity,
+			];
+		}
+
+		foreach ( $product_id as $ticket_id => $ticket_quantity ) {
+			$tickets[] = [
+				'ticket_id' => $ticket_id,
+				'quantity'  => $ticket_quantity,
+				'optout'    => 1,
+			];
+		}
+
+		$I->sendPOST( $cart_rest_url, [
+			'provider' => 'tribe-commerce',
+			'tickets'  => $tickets,
+			'post_id'  => $post_id,
+		] );
 	}
 }
