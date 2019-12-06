@@ -187,6 +187,11 @@ extends Tribe__Editor__Blocks__Abstract {
 			wp_send_json_error( $response );
 		}
 
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		/** @var Tribe__Tickets__Editor__Template $tickets_editor */
+		$tickets_editor = tribe( 'tickets.editor.template' );
 
 		// Parse the tickets and create the array for the response
 		foreach ( $tickets as $ticket_id ) {
@@ -199,15 +204,9 @@ extends Tribe__Editor__Blocks__Abstract {
 				continue;
 			}
 
-			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
-			$tickets_handler = tribe( 'tickets.handler' );
-
 			$available = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
 
 			$response['tickets'][ $ticket_id ]['available'] = $available;
-
-			/** @var Tribe__Tickets__Editor__Template $tickets_editor */
-			$tickets_editor = tribe( 'tickets.editor.template' );
 
 			// If there are no more available we will send the template part HTML to update the DOM
 			if ( 0 === $available ) {
