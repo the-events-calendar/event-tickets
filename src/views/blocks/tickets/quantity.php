@@ -41,11 +41,18 @@ $classes = [
 <div
 	<?php tribe_classes( $classes ); ?>
 >
-	<?php if ( 0 !== $available ) : ?>
+	<?php
+	// Available is positive or Unlimited (-1)
+	if (
+		0 !== $available
+		&& -1 <= $available
+	) : ?>
 		<?php $this->template( 'blocks/tickets/quantity-remove', $context ); ?>
 		<?php $this->template( 'blocks/tickets/quantity-number', $context ); ?>
 		<?php $this->template( 'blocks/tickets/quantity-add', $context ); ?>
-	<?php else : ?>
+	<?php
+	// Unavailable
+	else : ?>
 		<?php $this->template( 'blocks/tickets/quantity-unavailable', $context ); ?>
 	<?php endif; ?>
 </div>

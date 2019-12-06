@@ -23,6 +23,8 @@
 if (
 	empty( $ticket->ID )
 	|| ! isset( $available )
+	|| 0 === $available
+	|| -1 > $available
 ) {
 	return;
 }
