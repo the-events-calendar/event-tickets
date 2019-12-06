@@ -34,7 +34,7 @@ $is_unlimited = -1 === $remaining_tickets;
 <div class="tribe-block__rsvp__availability">
 	<?php if ( ! $ticket->is_in_stock() ) : ?>
 		<span class="tribe-block__rsvp__no-stock"><?php esc_html_e( 'Out of stock!', 'event-tickets' ); ?></span>
-	<?php elseif ( ! $is_unlimited && $threshold >= $remaining_tickets ) : ?>
+	<?php elseif ( ! $is_unlimited && $remaining_tickets <= $threshold ) : ?>
 		<span class="tribe-block__rsvp__quantity"><?php echo $remaining_tickets; ?> </span>
 		<?php esc_html_e( 'remaining', 'event-tickets' ) ?>
 	<?php elseif ( $is_unlimited ) : ?>

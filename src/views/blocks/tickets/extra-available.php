@@ -40,7 +40,7 @@ $available = $ticket->available();
 <div
 	class="tribe-common-b3 tribe-tickets__item__extra__available"
 >
-	<?php if ( -1 !== $available && $threshold >= $available ) : ?>
+	<?php if ( -1 !== $available && $available <= $threshold ) : ?>
 		<?php $this->template( 'blocks/tickets/extra-available-quantity', [ 'ticket' => $ticket ] ); ?>
 	<?php endif; ?>
 </div>

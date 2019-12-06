@@ -424,7 +424,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return array an array of statuses
 	 */
 	public function get_statuses_by_action( $action ) {
-		return tribe( 'tickets.status' )->get_statuses_by_action( $action, 'rsvp' );
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
+
+		return $status_mgr->get_statuses_by_action( $action, 'rsvp' );
 	}
 
 	/**
@@ -605,7 +608,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 */
 		do_action( 'event_tickets_rsvp_tickets_generated', $order_id, $post_id, $attendee_order_status );
 
-		$send_mail_stati = tribe( 'tickets.status' )->get_statuses_by_action( 'attendee_dispatch', 'rsvp' );
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
+
+		$send_mail_stati = $status_mgr->get_statuses_by_action( 'attendee_dispatch', 'rsvp' );
 
 		/**
 		 * Filters whether a confirmation email should be sent or not for RSVP tickets.
@@ -1877,8 +1883,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return array The original array plus the 'yes' status.
 	 */
 	public function filter_event_tickets_attendees_rsvp_checkin_stati( array $stati = array() ) {
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
 
-		$merged_array = array_merge( $stati, ( tribe( 'tickets.status' )->get_statuses_by_action( 'count_completed', 'rsvp' ) ) );
+		$merged_array = array_merge( $stati, ( $status_mgr->get_statuses_by_action( 'count_completed', 'rsvp' ) ) );
 
 		return array_unique( $merged_array );
 	}

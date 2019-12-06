@@ -255,11 +255,14 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 			$paypal_tickets = $filtered;
 		}
 
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
+
 		$total_sold          = $sales->get_sales_for_tickets( $tickets );
-		$order_overview      = tribe( 'tickets.status' )->get_providers_status_classes( 'tpp' );
-		$complete_statuses   = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_completed', 'tpp' );
-		$incomplete_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_incomplete', 'tpp' );
-		$tickets_sold        = array();
+		$order_overview      = $status_mgr->get_providers_status_classes( 'tpp' );
+		$complete_statuses   = (array) $status_mgr->get_statuses_by_action( 'count_completed', 'tpp' );
+		$incomplete_statuses = (array) $status_mgr->get_statuses_by_action( 'count_incomplete', 'tpp' );
+		$tickets_sold        = [];
 
 		//update ticket item counts by order status
 		foreach ( $paypal_tickets as $ticket ) {
