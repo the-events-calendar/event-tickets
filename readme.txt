@@ -120,6 +120,8 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.11.1] TBD =
 
 * Feature - Use the same loading icon for the RSVP block that we're using for the tickets block. [135660]
+* Tweak - Added `tribe_tickets_is_enabled_post_context()` function [124403]
+* Tweak - Avoid loading plugin assets on post types that are not tickets-enabled post types [124403]
 * Fix - Fix the header image attachment handling for RSVP blocks [137243]
 * Fix - Ensure that tickets without an end date set in the Classic editor get set to end at the start of an event per the tooltip [125969]
 * Fix - Overriding the maximum purchase quantity (the `tribe_tickets_get_ticket_max_purchase` filter) now works in all contexts [133432]
