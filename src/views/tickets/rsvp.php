@@ -137,9 +137,9 @@ if ( ! $already_rendered ) {
 			<?php
 
 			/**
-			 * Allows injection of HTML after an RSVP ticket table row
+			 * Allows injection of HTML after an RSVP ticket table row.
 			 *
-			 * @var Event ID
+			 * @var bool|WP_Post                  Event ID
 			 * @var Tribe__Tickets__Ticket_Object
 			 */
 			do_action( 'event_tickets_rsvp_after_ticket_row', tribe_events_get_ticket_event( $ticket->id ), $ticket );
