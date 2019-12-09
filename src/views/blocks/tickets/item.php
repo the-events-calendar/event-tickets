@@ -11,7 +11,7 @@
  * @link    {INSERT_ARTICLE_LINK_HERE}
  *
  * @since   4.9
- * @since   TBD Add modal-only fields.
+ * @since   4.11.0 Add modal only fields
  * @since   TBD Corrected amount of available/remaining tickets.
  *
  * @version TBD

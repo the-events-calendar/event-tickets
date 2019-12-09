@@ -12,7 +12,7 @@
  *
  * @since 4.9
  *
- * @version TBD
+ * @version 4.11.0
  *
  */
 $provider   = $this->get( 'provider' );
