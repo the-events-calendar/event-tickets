@@ -123,6 +123,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Fix the header image attachment handling for RSVP blocks [137243]
 * Fix - Ensure that tickets without an end date set in the Classic editor get set to end at the start of an event per the tooltip [125969]
 * Fix - Make "Show attendees list on event page" checkbox apply to the REST API as well. [133333]
+* Fix - Overriding the maximum purchase quantity (the `tribe_tickets_get_ticket_max_purchase` filter) now works in all contexts [133432]
 * Fix - Prevent duplicate blocks on provider change. Add logic to test current provider against event default provider. [137925]
 
 = [4.11] 2019-11-21 =
