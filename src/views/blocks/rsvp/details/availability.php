@@ -8,14 +8,18 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link  {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @version 4.9.4
+ * @since TBD Corrected amount of available/remaining tickets.
  *
+ * @version TBD
  */
 
-$threshold = tribe( 'settings.manager' )::get_option( 'ticket-display-tickets-left-threshold', 0 );
+/** @var Tribe__Settings_Manager $settings_manager */
+$settings_manager = tribe( 'settings.manager' );
+
+$threshold = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
 
 /**
  * Overwrites the threshold to display "# tickets left".

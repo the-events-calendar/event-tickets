@@ -149,7 +149,10 @@ class Tickets implements \ArrayAccess, \Serializable{
 				}
 
 				if ( $stock ) {
-					$threshold = \Tribe__Settings_Manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
+					/** @var Tribe__Settings_Manager $settings_manager */
+					$settings_manager = tribe( 'settings.manager' );
+
+					$threshold = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
 
 					/**
 					 * Overwrites the threshold to display "# tickets left".

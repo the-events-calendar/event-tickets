@@ -23,8 +23,10 @@ ob_start();
 $messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
 $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 
+/** @var Tribe__Settings_Manager $settings_manager */
+$settings_manager = tribe( 'settings.manager' );
 
-$threshold = tribe( 'settings.manager' )::get_option( 'ticket-display-tickets-left-threshold', 0 );
+$threshold = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
 
 /**
  * Overwrites the threshold to display "# tickets left".
@@ -154,9 +156,9 @@ if ( ! $already_rendered ) {
 			<?php
 
 			/**
-			 * Allows injection of HTML after an RSVP ticket table row
+			 * Allows injection of HTML after an RSVP ticket table row.
 			 *
-			 * @var Event ID
+			 * @var bool|WP_Post                  Event ID
 			 * @var Tribe__Tickets__Ticket_Object
 			 */
 			do_action( 'event_tickets_rsvp_after_ticket_row', tribe_events_get_ticket_event( $ticket->id ), $ticket );

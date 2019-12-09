@@ -31,7 +31,10 @@ $messages_class = $messages ? 'tribe-tpp-message-display' : '';
 $now            = time();
 $cart_url       = '';
 
-$threshold = tribe( 'settings.manager' )::get_option( 'ticket-display-tickets-left-threshold', 0 );
+/** @var Tribe__Settings_Manager $settings_manager */
+$settings_manager = tribe( 'settings.manager' );
+
+$threshold = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
 
 /**
  * Overwrites the threshold to display "# tickets left".
