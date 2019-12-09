@@ -119,7 +119,6 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.11] 2019-12-09 =
 
-* Feature - Add Easy Digital Downloads cart via shortcode to `get_cart_url()`. Ensure button returns cart URL if present for provider. [129450]
 * Feature - Add ability to utilize the block ticket template outside of Gutenberg views [132568]
 * Feature - Use the block template view for the "classic" editor so they look the same now on the frontend [132568]
 * Feature - Implement a copy of tribe-common-styles and restyle the front end tickets block [131117]
