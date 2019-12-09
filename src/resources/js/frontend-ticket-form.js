@@ -16,7 +16,7 @@ tribe.tickets.block  = {
 	/*
 	 * Ticket Block Selectors.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 */
 	obj.selector = {
@@ -56,7 +56,7 @@ tribe.tickets.block  = {
 	 * Note: some of these have the modal class as well, as the js can
 	 * pick up the class from elsewhere in the DOM and grab the wrong data.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 */
 	obj.modalSelector = {
@@ -75,7 +75,7 @@ tribe.tickets.block  = {
 	/*
 	 * Commerce Provider "lookup table".
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 */
 	obj.commerceSelector = {
@@ -152,7 +152,7 @@ tribe.tickets.block  = {
 	/**
 	 * Update all the footer info.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param int    $form The form we're updating.
 	 */
@@ -165,7 +165,7 @@ tribe.tickets.block  = {
 	/**
 	 * Adjust the footer count for +/-.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param int    $form The form we're updating.
 	 */
@@ -196,7 +196,7 @@ tribe.tickets.block  = {
 	/**
 	 * Adjust the footer total/amount for +/-.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param int    $form The form we're updating.
 	 */
@@ -225,7 +225,7 @@ tribe.tickets.block  = {
 	/**
 	 * Update Cart Totals in Modal.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param $cart The jQuery form object to update totals.
 	 */
@@ -258,7 +258,7 @@ tribe.tickets.block  = {
 	/**
 	 * Possibly Update an Items Qty and always update the Total.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param int id            The id of the ticket/product.
 	 * @param obj $modalCartItem The cart item to update.
@@ -295,7 +295,7 @@ tribe.tickets.block  = {
 	/**
 	 * Update the Price for the Given Cart Item.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param number qty   The quantity.
 	 * @param number price The price.
@@ -315,7 +315,7 @@ tribe.tickets.block  = {
 	/**
 	 * Shows/hides the non-ar notice based on the number of tickets passed.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @return void
 	 */
@@ -367,7 +367,7 @@ tribe.tickets.block  = {
 	/**
 	 * Get the REST endpoint
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 */
 	obj.getRestEndpoint = function() {
 		var url = TribeCartEndpoint.url;
@@ -394,7 +394,7 @@ tribe.tickets.block  = {
 	/**
 	 * Maybe display the Opt Out.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param obj $ticket The ticket item element.
 	 * @param int new_quantity The new ticket quantity.
@@ -410,7 +410,7 @@ tribe.tickets.block  = {
 	/**
 	 * Appends AR fields when modal cart quantities are changed.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param obj $form The form we are updating.
 	 */
@@ -468,7 +468,7 @@ tribe.tickets.block  = {
 	 * Step up the input according to the button that was clicked.
 	 * Handles IE/Edge.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 */
 	obj.stepUp = function( $input, originalValue ) {
 		// We use 0 here as a shorthand for no maximum.
@@ -506,7 +506,7 @@ tribe.tickets.block  = {
 	 * Step down the input according to the button that was clicked.
 	 * Handles IE/Edge.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 */
 	obj.stepDown = function( $input, originalValue ) {
 		var min      = $input.attr( 'min' ) ? Number( $input.attr( 'min' ) ) : 0;
@@ -568,7 +568,7 @@ tribe.tickets.block  = {
 	 * Check if we're updating the qty of a shared cap ticket and
 	 * limits it to the shared cap minus any tickets in cart.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param integer qty The quantity we desire.
 	 *
@@ -613,7 +613,7 @@ tribe.tickets.block  = {
 	/**
 	 * Get the Quantity.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param obj cartItem The cart item to update.
 	 *
@@ -643,7 +643,7 @@ tribe.tickets.block  = {
 	/**
 	 * Get the Currency Formatting for a Provider.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @returns {*}
 	 */
@@ -657,7 +657,7 @@ tribe.tickets.block  = {
 	 * Removes separator characters and converts deciaml character to '.'
 	 * So they play nice with other functions.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param number The number to clean.
 	 * @returns {string}
@@ -685,7 +685,7 @@ tribe.tickets.block  = {
 	 * Format the number according to provider settings.
 	 * Based off coding fron https://stackoverflow.com/a/2901136.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param number The number to format.
 	 *
@@ -729,7 +729,7 @@ tribe.tickets.block  = {
 	/**
 	 * Adds focus effect to ticket block.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 */
 	obj.focusTicketBlock = function( input ) {
@@ -741,7 +741,7 @@ tribe.tickets.block  = {
 	/**
 	 * Remove focus effect from ticket block.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 */
 	obj.unfocusTicketBlock = function( input ) {
@@ -753,7 +753,7 @@ tribe.tickets.block  = {
 	/**
 	 * Show the loader/spinner.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param string loaderClass A class for targeting a specific loader.
 	 * @return void
@@ -771,7 +771,7 @@ tribe.tickets.block  = {
 	/**
 	 * Hide the loader/spinner.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param string loaderClass A class for targeting a specific loader.
 	 * @return void
@@ -802,7 +802,7 @@ tribe.tickets.block  = {
 	/**
 	 * Init the form prefills (cart and AR forms).
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @return void
 	 */
@@ -843,7 +843,7 @@ tribe.tickets.block  = {
 	/**
 	 * Prefills the modal AR fields from supplied data.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param meta Data to fill the form in with.
 	 * @param length Starting pointer for partial fill-ins.
@@ -905,7 +905,7 @@ tribe.tickets.block  = {
 	/**
 	 * Prefill the Cart.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @returns {*}
 	 */
@@ -936,7 +936,7 @@ tribe.tickets.block  = {
 	/**
 	 * Prefill tickets block from cart.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @return void
 	 */
@@ -994,7 +994,7 @@ tribe.tickets.block  = {
 	/**
 	 * Stores attendee and cart form data to sessionStorage.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @return void
 	 */
@@ -1015,7 +1015,7 @@ tribe.tickets.block  = {
 	/**
 	 * Gets attendee and cart form data from sessionStorage.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @return array
 	 */
@@ -1034,7 +1034,7 @@ tribe.tickets.block  = {
 	/**
 	 * Clears attendee and cart form data for this event from sessionStorage.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @return void
 	 */
@@ -1050,7 +1050,7 @@ tribe.tickets.block  = {
 	/**
 	 * Attempts to hydrate a dynamically-created attendee form "block" from sessionStorage data.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param object data The attendee data.
 	 *
@@ -1098,7 +1098,7 @@ tribe.tickets.block  = {
 	/**
 	 * Get ticket data to send to cart.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @return obj Tickets data object.
 	 */
@@ -1140,7 +1140,7 @@ tribe.tickets.block  = {
 	/**
 	 *
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @return obj Meta data object.
 	 */
@@ -1227,7 +1227,7 @@ tribe.tickets.block  = {
 	 * 		}
 	 * 	);
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @return obj Deferred data object.
 	 */
@@ -1298,7 +1298,7 @@ tribe.tickets.block  = {
 	 * Validates the entire meta form.
 	 * Adds errors to the top of the modal.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param $form jQuery object that is the form we are validating.
 	 *
@@ -1327,7 +1327,7 @@ tribe.tickets.block  = {
 	/**
 	 * Validates and adds/removes error classes from a ticket meta block.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param $container jQuery object that is the block we are validating.
 	 *
@@ -1362,7 +1362,7 @@ tribe.tickets.block  = {
 	 * We operate under the assumption that you must check _at least_ one,
 	 * but not necessarily all. Also that the checkboxes are all required.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param $group The jQuery object for the checkbox group.
 	 *
@@ -1395,7 +1395,7 @@ tribe.tickets.block  = {
 	/**
 	 * Adds/removes error classes from a single field.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param input DOM Object that is the field we are validating.
 	 *
@@ -1478,7 +1478,7 @@ tribe.tickets.block  = {
 	/**
 	 * Remove Item from Cart Modal.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 */
 	obj.document.on(
@@ -1532,7 +1532,7 @@ tribe.tickets.block  = {
 	/**
 	 * Adds focus effect to ticket block.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 */
 	obj.document.on(
@@ -1547,7 +1547,7 @@ tribe.tickets.block  = {
 	/**
 	 * handles input blur.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 */
 	obj.document.on(
@@ -1602,7 +1602,7 @@ tribe.tickets.block  = {
 	/**
 	 * Stores to sessionStorage onbeforeunload for accidental refreshes, etc.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @return void
 	 */
@@ -1621,7 +1621,7 @@ tribe.tickets.block  = {
 	/**
 	 * Handle Modal submission.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @return void
 	 */
@@ -1684,7 +1684,7 @@ tribe.tickets.block  = {
 	/**
 	 * Handle Non-modal submission.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @return void
 	 */
@@ -1718,7 +1718,7 @@ tribe.tickets.block  = {
 	/**
 	 * When "Get Tickets" is clicked, update the modal.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 */
 	$( tde ).on(

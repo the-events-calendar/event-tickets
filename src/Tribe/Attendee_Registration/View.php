@@ -37,7 +37,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 * Filter to add/remove tickets from the global cart
 		 *
 		 * @since 4.9
-		 * @since 4.11 Added $q_provider to allow context of current provider.
+		 * @since TBD Added $q_provider to allow context of current provider.
 		 *
 		 * @param array  $tickets_in_cart The array containing the cart elements. Format array( 'ticket_id' => 'quantity' ).
 		 * @param string $q_provider      Current ticket provider.
@@ -225,7 +225,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	/**
 	 * Get the cart provider class/object.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param string $provider A string indicating the desired provider.
 	 * @return boolean|object The provider object or boolean false if none found.
@@ -240,7 +240,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		/**
 		 * Allow providers to include themselves if they are not in the above.
 		 *
-		 * @since 4.11
+		 * @since TBD
 		 *
 		 * @return boolean|object The provider object or boolean false if none found above.
 		 * @param string $provider A string indicating the desired provider.

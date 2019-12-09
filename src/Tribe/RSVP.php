@@ -515,7 +515,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * An Action fired when an RSVP is updated.
 		 *
-		 * @since 4.11
+		 * @since TBD
 		 *
 		 * @param int    $order_id              refers to the attendee or ticket ID per this methods $order_id parameter.
 		 * @param int    $event_id              the ID of an event.

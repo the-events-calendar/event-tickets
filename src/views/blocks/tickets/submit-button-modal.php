@@ -10,9 +10,9 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since 4.11
+ * @since TBD
  *
- * @version 4.11
+ * @version TBD
  *
  */
 
@@ -23,7 +23,7 @@ $button_text = _x( 'Get Tickets', 'Get selected tickets.', 'event-tickets' );
 /**
  * Filter Modal Content
  *
- * @since 4.11
+ * @since TBD
  *
  * @param string $content a string of default content
  * @param Tribe__Tickets__Editor__Template $template_obj the Template objec

@@ -1402,7 +1402,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Determine whether the ticket is accessible to the current user.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param int $ticket_id Ticket ID.
 	 *

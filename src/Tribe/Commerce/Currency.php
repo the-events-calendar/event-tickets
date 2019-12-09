@@ -584,7 +584,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Currency Decimal Point for a Provider.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param string|null $provider The ticket provider class name.
 	 *
@@ -610,7 +610,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Currency Thousands Separator for a Provider.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param string|null $provider The ticket provider class name.
 	 *
@@ -636,7 +636,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Number of Decimals by provider or default.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param string|null $provider The ticket provider class name.
 	 *
@@ -656,7 +656,7 @@ class Tribe__Tickets__Commerce__Currency {
 			/**
 			 * Filter the Amount of Decimals for EDD.
 			 *
-			 * @since 4.11
+			 * @since TBD
 			 *
 			 * @param int The default number of decimals.
 			 */
@@ -671,7 +671,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Default Amount of Decimals.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @return int The amount of decimals.
 	 */
@@ -680,7 +680,7 @@ class Tribe__Tickets__Commerce__Currency {
 		/**
 		 * Filter the Amount of Decimals.
 		 *
-		 * @since 4.11
+		 * @since TBD
 		 *
 		 * @param int The default number of decimals.
 		 */
@@ -692,7 +692,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Currency Configuration for all Passed Providers.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param string $provider The ticket provider class name.
 	 * @param int    $post_id  The id of the post with tickets.
@@ -717,7 +717,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Currency Formatting Information for a Provider.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param int         $post_id  The id of the post with tickets.
 	 * @param string|null $provider The ticket provider class name.
@@ -737,7 +737,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get Formatted Currency According to a Provider.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param int|string  $amount   The amount to format.
 	 * @param int         $post_id  The id of the post with tickets.
@@ -772,7 +772,7 @@ class Tribe__Tickets__Commerce__Currency {
 		/**
 		 * Filter the Formatted Currency.
 		 *
-		 * @since 4.11
+		 * @since TBD
 		 *
 		 * @param string $formatted The formatted amount.
 		 * @param int    $amount    The original amount to be formatted.
@@ -784,7 +784,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get Formatted Currency According to a Provider with Symbol
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param int         $amount   The amount to format.
 	 * @param int         $post_id  The id of the post with tickets.
@@ -827,7 +827,7 @@ class Tribe__Tickets__Commerce__Currency {
 		/**
 		 * Filter the Formatted Currency with Symbol
 		 *
-		 * @since 4.11
+		 * @since TBD
 		 *
 		 * @param string  $formatted The formatted amount.
 		 * @param int     $amount    The original amount to be formatted.

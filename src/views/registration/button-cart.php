@@ -7,9 +7,9 @@
  *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @since 4.11 Add docblock for `$this`.
+ * @since TBD Add docblock for `$this`.
  *
- * @version 4.11
+ * @version TBD
  *
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */

@@ -5,9 +5,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/modal/registration-js.php
  *
- * @since 4.11
+ * @since TBD
  *
- * @version 4.11
+ * @version TBD
  *
  */
 /** @var Tribe__Tickets__Attendee_Registration__View $view */

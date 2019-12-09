@@ -403,7 +403,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Get the Provider Slug from the Module Class.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param string $module_class The string of the module main class.
 	 */

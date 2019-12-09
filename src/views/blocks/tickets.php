@@ -13,7 +13,7 @@
  * @since 4.10.8 Updated loading logic for including a renamed template.
  * @since 4.10.10 - Removed initial check for tickets.
  *
- * @version 4.11
+ * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
@@ -111,7 +111,7 @@ if ( ! $already_rendered ) {
 		/**
 		 * Allows filtering of extra classes used on the tickets-block loader
 		 *
-		 * @since  4.11
+		 * @since  TBD
 		 *
 		 * @param  array $classes The array of classes that will be filtered.
 		 */

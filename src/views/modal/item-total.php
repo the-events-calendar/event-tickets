@@ -8,9 +8,9 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since 4.11
+ * @since TBD
  *
- * @version 4.11
+ * @version TBD
  */
 ?>
 <div class="tribe-common-b2 tribe-tickets__item__total__wrap" >

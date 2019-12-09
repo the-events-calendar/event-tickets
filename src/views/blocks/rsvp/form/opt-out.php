@@ -11,8 +11,8 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @since 4.11 Updated the optout markup and classes used.
- * @version 4.11
+ * @since TBD Updated the optout markup and classes used.
+ * @version TBD
  *
  */
 $modal    = $this->get( 'is_modal' );

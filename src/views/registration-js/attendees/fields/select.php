@@ -5,9 +5,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/select.php
  *
- * @since 4.11
+ * @since TBD
  *
- * @version 4.11
+ * @version TBD
  *
  */
 $required    = isset( $field->required ) && 'on' === $field->required ? true : false;

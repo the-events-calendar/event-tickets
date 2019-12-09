@@ -5,9 +5,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/content.php
  *
- * @since 4.11
+ * @since TBD
  *
- * @version 4.11
+ * @version TBD
  *
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
@@ -37,7 +37,7 @@ $classes        = [
 	/**
 	 * Before the output, whether or not $events is empty.
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param string $provider       The 'provider' $_REQUEST var.
 	 * @param string $provider_class The class string or empty string if ticket provider is not found.

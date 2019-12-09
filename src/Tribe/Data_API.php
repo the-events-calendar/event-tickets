@@ -202,7 +202,7 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Get the Providers for a Post
 	 *
-	 * @since 4.11
+	 * @since TBD
 	 *
 	 * @param int $post_id the id of the post
 	 *

@@ -11,7 +11,7 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.11
+ * @version TBD
  *
  */
 $is_mini = $this->get( 'is_mini' );

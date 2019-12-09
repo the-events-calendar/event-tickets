@@ -7,7 +7,7 @@
  * [your-theme]/tribe/tickets/registration/attendees/success.php
  *
  * @since 4.10.1
- * @version 4.11
+ * @version TBD
  *
  */
 ?>
