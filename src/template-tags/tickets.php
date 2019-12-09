@@ -1304,13 +1304,14 @@ if ( ! function_exists( 'tribe_get_ticket_label_plural_lowercase' ) ) {
 	}
 }
 
-if ( ! function_exists( 'function tribe_tickets_is_event_page' ) ) {
+if ( ! function_exists( 'tribe_tickets_is_event_page' ) ) {
 	/**
 	 * Allows us to test a post ID to see if it is an event page.
 	 *
 	 * @since TBD
 	 *
 	 * @param int|WP_Post|null $post The post (or its ID) we're testing. Default is global post.
+	 *
 	 * @return boolean
 	 */
 	function tribe_tickets_is_event_page( $post = null ) {
@@ -1324,6 +1325,62 @@ if ( ! function_exists( 'function tribe_tickets_is_event_page' ) ) {
 			return false;
 		}
 
-		return  true;
+		return true;
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
+	/**
+	 * If we are in the front-end or back-end (e.g. currently editing or creating) context for a tickets-enabled post.
+	 *
+	 * @since TBD
+	 *
+	 * @see   \Tribe__Tickets__Main::post_types()
+	 *
+	 * @param null|int|WP_Post $post Post ID or object, `null` to get the ID of the global/current post object.
+	 *
+	 * @return bool True if creating/editing (back-end) or viewing single or archive (front-end) of enabled post type.
+	 */
+	function tribe_tickets_is_enabled_post_context( $post = null ) {
+		/** @var Tribe__Context $context */
+		$context = tribe( 'context' );
+
+		/** @var Tribe__Tickets__Main $main */
+		$main = tribe( 'tickets.main' );
+
+		$post_types = $main->post_types();
+
+		// Back-end
+		if ( $context->is_editing_post( $post_types ) ) {
+			return true;
+		}
+
+		// Front-end singular
+		$post = Tribe__Main::post_id_helper( $post );
+
+		if (
+			! empty( $post )
+			&& in_array( get_post_type( $post ), $post_types, true )
+		) {
+			return true;
+		}
+
+		// Front-end archive
+		if ( is_post_type_archive( $post_types ) ) {
+			return true;
+		}
+
+		/**
+		 * Whether or not we are in tickets-enabled context, such as determining if we should load plugin assets.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool           $result
+		 * @param array          $post_types The post types with tickets enabled.
+		 * @param Tribe__Context $context
+		 *
+		 * @return bool
+		 */
+		return apply_filters( 'tribe_tickets_is_enabled_post_context', false, $post_types, $context );
 	}
 }
