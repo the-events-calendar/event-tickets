@@ -105,7 +105,7 @@ extends Tribe__Editor__Blocks__Abstract {
 				/**
 				 * Allow providers to add their own checkout URL to the localized list.
 				 *
-				 * @since TBD
+				 * @since 4.11.0
 				 *
 				 * @param array $checkout_urls An array to add urls to.
 				 */
@@ -114,7 +114,7 @@ extends Tribe__Editor__Blocks__Abstract {
 				/**
 				 * Allow providers to add their own cart URL to the localized list.
 				 *
-				 * @since TBD
+				 * @since 4.11.0
 				 *
 				 * @param array $cart_urls An array to add urls to.
 				 */
@@ -316,7 +316,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Get whether no ticket sales have started yet
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param  array $tickets Array of all tickets
 	 *
@@ -336,7 +336,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * Localized messages for errors, etc in javascript. Added in assets() above.
 	 * Set up this way to amke it easier to add messages as needed.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @return void
 	 */

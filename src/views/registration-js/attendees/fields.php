@@ -5,9 +5,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/attendees/fields.php
  *
- * @since TBD
+ * @since 4.11.0
  *
- * @version TBD
+ * @version 4.11.0
  *
  */
 $meta        = Tribe__Tickets_Plus__Main::instance()->meta();

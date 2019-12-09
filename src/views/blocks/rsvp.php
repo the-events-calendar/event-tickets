@@ -10,9 +10,9 @@
  * @link  {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.10.8 Updated loading logic for including a renamed template.
- * @since TBD Added tribe_tickets_order_link_template_already_rendered hook usage to template to prevent duplicate links.
+ * @since 4.11.0 Added tribe_tickets_order_link_template_already_rendered hook usage to template to prevent duplicate links.
  *
- * @version TBD
+ * @version 4.11.0
  *
  * @var Tribe__Tickets__Editor__Template $this
  */

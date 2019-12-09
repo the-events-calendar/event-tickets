@@ -13,7 +13,7 @@
  * @since 4.9.3
  * @since 4.10.9 Uses new functions to get singular and plural texts.
  *
- * @version TBD
+ * @version 4.11.0
  */
 
 ?>

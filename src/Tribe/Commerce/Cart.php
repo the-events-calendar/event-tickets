@@ -8,7 +8,7 @@ class Tribe__Tickets__Commerce__Cart {
 	/**
 	 * Add hooks needed for cart to function.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 */
 	public function hook() {
 		add_action( 'wp', [ $this, 'process_cart' ] );
@@ -17,7 +17,7 @@ class Tribe__Tickets__Commerce__Cart {
 	/**
 	 * Process cart on any given (non-admin) page.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 */
 	public function process_cart() {
 		if ( empty( $_POST['tribe_tickets_ar'] ) || is_admin() ) {
@@ -129,7 +129,7 @@ class Tribe__Tickets__Commerce__Cart {
 	/**
 	 * Get cart data.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param array $args {
 	 *      List of arguments for getting cart.
@@ -195,7 +195,7 @@ class Tribe__Tickets__Commerce__Cart {
 			 *
 			 * The dynamic portion of the hook name, `$provider_key`, refers to the cart provider.
 			 *
-			 * @since TBD
+			 * @since 4.11.0
 			 *
 			 * @param array $cart_tickets List of tickets in the cart.
 			 */
@@ -244,7 +244,7 @@ class Tribe__Tickets__Commerce__Cart {
 		/**
 		 * Get list of ticket meta in the cart.
 		 *
-		 * @since TBD
+		 * @since 4.11.0
 		 *
 		 * @param array $cart_meta List of ticket meta in the cart.
 		 * @param array $tickets   List of tickets in the cart.
@@ -262,7 +262,7 @@ class Tribe__Tickets__Commerce__Cart {
 				 *
 				 * The dynamic portion of the hook name, `$cart_provider`, refers to the cart provider.
 				 *
-				 * @since TBD
+				 * @since 4.11.0
 				 *
 				 * @param string $cart_url Cart URL.
 				 * @param array  $data     Commerce response data to be sent.
@@ -275,7 +275,7 @@ class Tribe__Tickets__Commerce__Cart {
 				 *
 				 * The dynamic portion of the hook name, `$cart_provider`, refers to the cart provider.
 				 *
-				 * @since TBD
+				 * @since 4.11.0
 				 *
 				 * @param string $checkout_url Checkout URL.
 				 * @param array  $data         Commerce response data to be sent.
@@ -293,7 +293,7 @@ class Tribe__Tickets__Commerce__Cart {
 		/**
 		 * Get response data for the cart.
 		 *
-		 * @since TBD
+		 * @since 4.11.0
 		 *
 		 * @param array $data      Cart response data.
 		 * @param array $providers List of cart providers.
@@ -307,7 +307,7 @@ class Tribe__Tickets__Commerce__Cart {
 	/**
 	 * Update cart data.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param array $args {
 	 *      List of arguments for updating cart.
@@ -370,7 +370,7 @@ class Tribe__Tickets__Commerce__Cart {
 					 *
 					 * The dynamic portion of the hook name, `$ticket_provider`, refers to the ticket provider.
 					 *
-					 * @since TBD
+					 * @since 4.11.0
 					 *
 					 * @param array   $provider_tickets List of tickets with their ID and quantity.
 					 * @param int     $post_id          Post ID for the cart.
@@ -382,7 +382,7 @@ class Tribe__Tickets__Commerce__Cart {
 				/**
 				 * Update tickets in cart.
 				 *
-				 * @since TBD
+				 * @since 4.11.0
 				 *
 				 * @param array   $tickets  List of tickets with their ID and quantity.
 				 * @param string  $provider The cart provider.
@@ -416,7 +416,7 @@ class Tribe__Tickets__Commerce__Cart {
 				/**
 				 * Update ticket meta from Attendee Registration.
 				 *
-				 * @since TBD
+				 * @since 4.11.0
 				 *
 				 * @param array   $meta     List of meta for each ticket to be saved for Attendee Registration.
 				 * @param array   $tickets  List of tickets with their ID and quantity.

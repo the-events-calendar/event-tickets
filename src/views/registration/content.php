@@ -8,9 +8,9 @@
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
  * @since 4.10.9 Add Filter to show an event/post tickets on AR Page
- * @since TBD Add docblocks, pass missing 'provider' arg to registration/button-cart template, and add action hooks.
+ * @since 4.11.0 Add docblocks, pass missing 'provider' arg to registration/button-cart template, and add action hooks.
  *
- * @version TBD
+ * @version 4.11.0
  *
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */
@@ -22,7 +22,7 @@ $passed_provider_class = $this->get_form_class( $passed_provider );
 /**
  * Before the output, whether or not $events is empty.
  *
- * @since TBD
+ * @since 4.11.0
  *
  * @param string $passed_provider       The 'provider' $_REQUEST var.
  * @param string $passed_provider_class The class string or empty string if ticket provider is not found.
@@ -130,7 +130,7 @@ if ( empty( $events ) ) {
 	/**
 	 * After the output, only if $events is not empty.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param string $passed_provider       The 'provider' $_REQUEST var.
 	 * @param string $passed_provider_class The class string or empty string if ticket provider is not found.

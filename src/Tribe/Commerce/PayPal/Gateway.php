@@ -458,7 +458,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Get the PayPal cart API URL.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param int $post_id The post ID.
 	 *
@@ -770,7 +770,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		/**
 		 * Filters the invoice number used for PayPal.
 		 *
-		 * @since TBD
+		 * @since 4.11.0
 		 *
 		 * @param string $invoice Invoice number.
 		 */
@@ -820,7 +820,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 * Will default to the `home_url` if the Success page is not set or wrong.
 	 *
 	 * @since 4.7
-	 * @since TBD Added $invoice_number parameter to add to success page.
+	 * @since 4.11.0 Added $invoice_number parameter to add to success page.
 	 *
 	 * @param string|null $invoice_number Invoice number.
 	 *
