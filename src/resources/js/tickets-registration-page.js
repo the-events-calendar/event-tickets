@@ -1,9 +1,9 @@
 // For compatibility purposes we add this
-if ('undefined' === typeof tribe) {
+if ( 'undefined' === typeof tribe ) {
 	tribe = {};
 }
 
-if ('undefined' === typeof tribe.tickets) {
+if ( 'undefined' === typeof tribe.tickets ) {
 	tribe.tickets = {};
 }
 
@@ -49,7 +49,7 @@ tribe.tickets.registration = {};
 		toggler            : '.tribe-tickets__registration__toggle__handler',
 	};
 
-	var $tribe_registration = $(obj.selector.container);
+	var $tribe_registration = $( obj.selector.container );
 
 	// Bail if there are no tickets on the current event/page/post
 	if ( ! $( obj.selector.eventContainer ).length ) {
@@ -59,7 +59,7 @@ tribe.tickets.registration = {};
 	/*
 	 * Commerce Provider Selectors.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 */
 	obj.commerceSelector = {
@@ -85,7 +85,7 @@ tribe.tickets.registration = {};
 	/**
 	 *
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @return obj Meta data object.
 	 */
@@ -140,17 +140,17 @@ tribe.tickets.registration = {};
 					}
 				);
 
-				tempMeta[ ticket_id ]['items'].push(data);
+				tempMeta[ ticket_id ]['items'].push( data );
 			}
 		);
 
-		Object.keys(tempMeta).forEach( function( index ) {
+		Object.keys( tempMeta ).forEach( function( index ) {
 			var newArr = {
 				'ticket_id': index,
 				'items': tempMeta[index]['items']
 			};
 			meta.push( newArr );
-		});
+		} );
 
 		return meta;
 	}
@@ -159,7 +159,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Get ticket data to send to cart.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @return obj Tickets data object.
 	 */
@@ -194,9 +194,9 @@ tribe.tickets.registration = {};
 	/* Prefill Functions */
 
 	/**
-	 * Init the form prefills (cart and AR forms).
+	 * Init the form prefills ( cart and AR forms ).
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @return void
 	 */
@@ -211,7 +211,7 @@ tribe.tickets.registration = {};
 			url     : obj.getRestEndpoint(),
 			success : function ( data ) {
 				if ( data.tickets ) {
-					obj.prefillCartForm( $(obj.selector.miniCart), data.tickets );
+					obj.prefillCartForm( $( obj.selector.miniCart ), data.tickets );
 				}
 
 				if ( data.meta ) {
@@ -228,7 +228,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Appends AR fields on page load.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param obj meta The ticket meta we are usign to add "blocks".
 	 */
@@ -280,7 +280,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Prefills the AR fields from supplied data.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param meta Data to fill the form in with.
 	 * @param length Starting pointer for partial fill-ins.
@@ -320,26 +320,26 @@ tribe.tickets.registration = {};
 				$.each( data, function( index, value ) {
 					var $field = $ticket_containers.eq( current ).find( `[name*="${index}"]` );
 					if ( ! $field.is( ':radio' ) && ! $field.is( ':checkbox' ) ) {
-						$field.val( value);
+						$field.val( value );
 					} else {
 						$field.each( function( index ) {
 							var $item = $( this );
 							if ( value === $item.val() ) {
 								$item.prop( 'checked', true );
 							}
-						});
+						} );
 					}
-				});
+				} );
 
 				current++;
-			});
-		});
+			} );
+		} );
 	}
 
 	/**
 	 * Update all the footer info.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 */
 	obj.updateFooter = function() {
 		obj.updateFooterCount();
@@ -349,7 +349,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Adjust the footer count for +/-.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @return void
 	 */
@@ -359,8 +359,8 @@ tribe.tickets.registration = {};
 		var footerCount = 0;
 		var $qtys       = $form.find( obj.selector.itemQuantity );
 
-		$qtys.each(function(){
-			var new_quantity = parseInt( $(this).text(), 10 );
+		$qtys.each( function(){
+			var new_quantity = parseInt( $( this ).text(), 10 );
 			new_quantity     = isNaN( new_quantity ) ? 0 : new_quantity;
 			footerCount      += new_quantity;
 		} );
@@ -375,7 +375,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Adjust the footer total/amount for +/-.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @return void
 	 */
@@ -387,10 +387,11 @@ tribe.tickets.registration = {};
 
 		$qtys.each( function() {
 			var $qty = $( this );
-			var $price   = $qty.closest( obj.selector.item ).find( obj.selector.itemPrice ).first(0);
+			var $price   = $qty.closest( obj.selector.item ).find( obj.selector.itemPrice ).first( 0 );
 			var quantity = parseInt( $qty.text(), 10 );
 			quantity     = isNaN( quantity ) ? 0 : quantity;
-			footerAmount += obj.numberFormat( $price.text() ) * quantity;
+			var cost     = obj.cleanNumber( $price.text() ) * quantity;
+			footerAmount += cost;
 		} );
 
 		if ( 0 > footerAmount ) {
@@ -403,7 +404,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Prefill the Mini-Cart.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @returns {*}
 	 */
@@ -412,10 +413,10 @@ tribe.tickets.registration = {};
 			var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
 
 			if ( $item ) {
-				var pricePer = parseFloat( $item.find( '.tribe-tickets__item__extra__price .tribe-amount').text() );
+				var pricePer = $item.find( '.tribe-tickets__item__extra__price .tribe-amount' ).text();
 				$item.find( '.tribe-ticket-quantity' ).html( value.quantity );
-				var price = value.quantity * pricePer;
-				price = obj.numberFormat( price);
+				var price = value.quantity * obj.cleanNumber( pricePer );
+				price = obj.numberFormat( price );
 				$item.find( '.tribe-tickets__item__total .tribe-amount' ).html( price );
 			}
 		} );
@@ -431,7 +432,7 @@ tribe.tickets.registration = {};
 	 * Validates the entire meta form.
 	 * Adds errors to the top of the modal.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param $form jQuery object that is the form we are validating.
 	 *
@@ -460,7 +461,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Validates and adds/removes error classes from a ticket meta block.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param $container jQuery object that is the block we are validating.
 	 *
@@ -494,7 +495,7 @@ tribe.tickets.registration = {};
 	 * We operate under the assumption that you must check _at least_ one,
 	 * but not necessarily all. Also that the checkboxes are all required.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param $group The jQuery object for the checkbox group.
 	 *
@@ -526,7 +527,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Adds/removes error classes from a single field.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param input DOM Object that is the field we are validating.
 	 *
@@ -565,7 +566,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Adds focus effect to ticket block.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 */
 	obj.focusTicketBlock = function( input ) {
@@ -575,7 +576,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Remove focus effect from ticket block.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 */
 	obj.unfocusTicketBlock = function( input ) {
@@ -585,7 +586,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Show the loader/spinner.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 */
 	obj.loaderShow = function() {
 		$( obj.selector.loader ).removeClass( 'tribe-common-a11y-hidden' );
@@ -594,7 +595,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Hide the loader/spinner.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 */
 	obj.loaderHide = function() {
 		$( obj.selector.loader ).addClass( 'tribe-common-a11y-hidden' );
@@ -605,7 +606,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Get the REST endpoint
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 */
 	obj.getRestEndpoint = function() {
 		var url = TribeCartEndpoint.url;
@@ -615,7 +616,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Get the Currency Formatting for a Provider.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @returns {*}
 	 */
@@ -626,10 +627,38 @@ tribe.tickets.registration = {};
 	};
 
 	/**
+	 * Removes separator characters and converts deciaml character to '.'
+	 * So they play nice with other functions.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param number The number to clean.
+	 * @returns {string}
+	 */
+	obj.cleanNumber = function( number ) {
+		var format = obj.getCurrencyFormatting();
+		// we run into issue when the two symbols are the same -
+		// which appears to happen by default with some providers.
+		var same = format.thousands_sep === format.decimal_point;
+
+		if ( ! same ) {
+			number = number.split( format.thousands_sep ).join( '' );
+			number = number.split( format.decimal_point ).join( '.' );
+		} else {
+			var dec_place = number.length - ( format.number_of_decimals + 1 );
+			number = number.substr( 0, dec_place ) + '_' + number.substr( dec_place + 1 );
+			number = number.split( format.thousands_sep ).join( '' );
+			number = number.split( '_' ).join( '.' );
+		}
+
+		return number;
+	}
+
+	/**
 	 * Format the number according to provider settings.
 	 * Based off coding fron https://stackoverflow.com/a/2901136.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param number The number to format.
 	 *
@@ -637,24 +666,26 @@ tribe.tickets.registration = {};
 	 */
 	obj.numberFormat = function ( number ) {
 		var format = obj.getCurrencyFormatting();
+
 		if ( ! format ) {
 			return false;
 		}
+
 		var decimals      = format.number_of_decimals;
 		var dec_point     = format.decimal_point;
 		var thousands_sep = format.thousands_sep;
-
-		var n          = !isFinite( +number ) ? 0 : +number;
-		var prec       = !isFinite( +decimals ) ? 0 : Math.abs( decimals );
-		var sep        = ( 'undefined' === typeof thousands_sep ) ? ',' : thousands_sep;
-		var dec        = ( 'undefined' === typeof dec_point ) ? '.' : dec_point;
-		var toFixedFix = function ( n, prec ) {
+		var n             = !isFinite( +number ) ? 0 : +number;
+		var prec          = !isFinite( +decimals ) ? 0 : Math.abs( decimals );
+		var sep           = ( 'undefined' === typeof thousands_sep ) ? ',' : thousands_sep;
+		var dec           = ( 'undefined' === typeof dec_point ) ? '.' : dec_point;
+		var toFixedFix    = function ( n, prec ) {
 			// Fix for IE parseFloat(0.55).toFixed(0) = 0;
 			var k = Math.pow( 10, prec );
+
 			return Math.round( n * k ) / k;
 		};
 
-		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n )).toString().split( '.' );
+		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
 
 		if ( s[0].length > 3 ) {
 			s[0] = s[0].replace( /\B(?=(?:\d{3} )+(?!\d))/g, sep );
@@ -673,7 +704,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Adds focus effect to ticket block.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 */
 	obj.document.on(
@@ -688,7 +719,7 @@ tribe.tickets.registration = {};
 	/**
 	 * handles input blur.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 */
 	obj.document.on(
@@ -703,7 +734,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Handle AR submission.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @return void
 	 */
@@ -718,7 +749,7 @@ tribe.tickets.registration = {};
 			var isValidForm  = obj.validateForm( $metaForm );
 
 			if ( ! isValidForm[ 0 ] ) {
-				$([document.documentElement, document.body]).animate(
+				$( [document.documentElement, document.body] ).animate(
 					{ scrollTop: $( '.tribe-tickets__registration' ).offset().top },
 					'slow'
 				);
@@ -763,6 +794,6 @@ tribe.tickets.registration = {};
 
 	obj.document.on( 'ready', function( $ ) {
 		obj.init();
-	});
+	} );
 
-})(jQuery, tribe.tickets.registration);
+} )( jQuery, tribe.tickets.registration );

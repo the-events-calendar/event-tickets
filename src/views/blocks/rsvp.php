@@ -10,9 +10,9 @@
  * @link  {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.10.8 Updated loading logic for including a renamed template.
- * @since TBD Added tribe_tickets_order_link_template_already_rendered hook usage to template to prevent duplicate links.
+ * @since 4.11.0 Added tribe_tickets_order_link_template_already_rendered hook usage to template to prevent duplicate links.
  *
- * @version TBD
+ * @version 4.11.0
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
@@ -59,7 +59,6 @@ if ( ! $already_rendered ) {
 			<div class="tribe-block__rsvp__ticket" data-rsvp-id="<?php echo absint( $rsvp->ID ); ?>">
 				<?php $this->template( 'blocks/rsvp/icon' ); ?>
 				<?php $this->template( 'blocks/rsvp/content', array( 'ticket' => $rsvp ) ); ?>
-				<?php $this->template( 'blocks/rsvp/loader' ); ?>
 			</div>
 		<?php endforeach; ?>
 	<?php else : ?>
@@ -68,4 +67,19 @@ if ( ! $already_rendered ) {
 			<?php $this->template( 'blocks/rsvp/content-inactive', array( 'all_past' => $all_past ) ); ?>
 		</div>
 	<?php endif; ?>
+	<?php
+		ob_start();
+		/**
+		 * Allows filtering of extra classes used on the rsvp-block loader.
+		 *
+		 * @since  TBD
+		 *
+		 * @param  array $classes The array of classes that will be filtered.
+		 */
+		$loader_classes = apply_filters( 'tribe_rsvp_block_loader_classes', [ 'tribe-block__rsvp__loading' ] );
+		include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' );
+		$html = ob_get_contents();
+		ob_end_clean();
+		echo $html;
+	?>
 </div>

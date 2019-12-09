@@ -9,9 +9,9 @@
  * @since 4.0
  * @since 4.10.8 More similar display format to that of other ticket types, including better checking of max quantity available.
  * @since 4.10.9 Use customizable ticket name functions.
- * @since TBD Added RSVP/ticket view link to template.
+ * @since 4.11.0 Added RSVP/ticket view link to template.
  *
- * @version TBD
+ * @version 4.11.0
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login
@@ -137,9 +137,9 @@ if ( ! $already_rendered ) {
 			<?php
 
 			/**
-			 * Allows injection of HTML after an RSVP ticket table row
+			 * Allows injection of HTML after an RSVP ticket table row.
 			 *
-			 * @var Event ID
+			 * @var bool|WP_Post                  Event ID
 			 * @var Tribe__Tickets__Ticket_Object
 			 */
 			do_action( 'event_tickets_rsvp_after_ticket_row', tribe_events_get_ticket_event( $ticket->id ), $ticket );

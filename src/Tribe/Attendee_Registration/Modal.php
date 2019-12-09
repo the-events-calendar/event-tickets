@@ -2,14 +2,14 @@
 /**
  * Attendee Registration Modal class
  *
- * @since TBD
+ * @since 4.11.0
  */
 class Tribe__Tickets__Attendee_Registration__Modal {
 
 	/**
 	 * Setup Modal Cart Template
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 */
 	public function hook() {
 		add_filter( 'tribe_events_tickets_attendee_registration_modal_content', [ $this, 'modal_cart_template' ], 10, 2 );
@@ -18,7 +18,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	/**
 	 * Add Cart Template for Modal
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param string $content a string of default content
 	 * @param Tribe__Tickets__Editor__Template $template_obj the Template object
@@ -62,7 +62,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	/**
 	 * Add AR Template to Modal
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param string $content The content string
 	 * @param Tribe__Tickets__Editor__Template $template_obj the Template object
@@ -96,7 +96,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	/**
 	 * Add Footer Template to Modal
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param string $content The content string
 	 * @param Tribe__Tickets__Editor__Template $template_obj the Template object
@@ -155,7 +155,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 		/**
 		 * Filter Modal Template
 		 *
-		 * @since TBD
+		 * @since 4.11.0
 		 *
 		 * @param string $template Relative path to template file.
 		 * @param string $file The template location.

@@ -37,7 +37,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 * Filter to add/remove tickets from the global cart
 		 *
 		 * @since 4.9
-		 * @since TBD Added $q_provider to allow context of current provider.
+		 * @since 4.11.0 Added $q_provider to allow context of current provider.
 		 *
 		 * @param array  $tickets_in_cart The array containing the cart elements. Format array( 'ticket_id' => 'quantity' ).
 		 * @param string $q_provider      Current ticket provider.
@@ -53,7 +53,20 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			$ticket = tribe( 'tickets.handler' )->get_object_connections( $ticket_id );
 
 			// If we've got a provider and it doesn't match, skip the ticket
-			if ( empty( $ticket->provider ) || ( $q_provider && $q_provider !== $ticket->provider->attendee_object ) ) {
+			if ( empty( $ticket->provider ) ) {
+				continue;
+			}
+
+			$ticket_providers = [
+				$ticket->provider->attendee_object,
+			];
+
+			if ( ! empty( $ticket->provider->orm_provider ) ) {
+				$ticket_providers[] = $ticket->provider->orm_provider;
+			}
+
+			// If we've got a provider and it doesn't match, skip the ticket
+			if ( ! in_array( $q_provider, $ticket_providers, true ) ) {
 				continue;
 			}
 
@@ -212,7 +225,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	/**
 	 * Get the cart provider class/object.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param string $provider A string indicating the desired provider.
 	 * @return boolean|object The provider object or boolean false if none found.
@@ -227,7 +240,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		/**
 		 * Allow providers to include themselves if they are not in the above.
 		 *
-		 * @since TBD
+		 * @since 4.11.0
 		 *
 		 * @return boolean|object The provider object or boolean false if none found above.
 		 * @param string $provider A string indicating the desired provider.

@@ -13,7 +13,7 @@
  * @since 4.10.8 Updated loading logic for including a renamed template.
  * @since 4.10.10 - Removed initial check for tickets.
  *
- * @version TBD
+ * @version 4.11.0
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
@@ -104,14 +104,14 @@ if ( ! $already_rendered ) {
 		$this->template( 'blocks/tickets/footer', [ 'tickets' => $tickets, 'currency_symbol' => $currency_symbol ] );
 		?>
 	<?php else : ?>
-		<?php echo $this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] ); ?>
+		<?php $this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] ); ?>
 	<?php endif; ?>
 	<?php
 		ob_start();
 		/**
 		 * Allows filtering of extra classes used on the tickets-block loader
 		 *
-		 * @since  TBD
+		 * @since  4.11.0
 		 *
 		 * @param  array $classes The array of classes that will be filtered.
 		 */

@@ -251,7 +251,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'tickets.commerce.paypal.view', 'Tribe__Tickets__Commerce__PayPal__Tickets_View' );
 		tribe_singleton( 'tickets.commerce.paypal.handler.ipn', 'Tribe__Tickets__Commerce__PayPal__Handler__IPN', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.handler.pdt', 'Tribe__Tickets__Commerce__PayPal__Handler__PDT', array( 'hook' ) );
-		tribe_singleton( 'tickets.commerce.paypal.gateway', 'Tribe__Tickets__Commerce__PayPal__Gateway', array( 'hook', 'build_handler' ) );
+		tribe_singleton( 'tickets.commerce.paypal.gateway', 'Tribe__Tickets__Commerce__PayPal__Gateway', array( 'build_handler' ) );
 		tribe_singleton( 'tickets.commerce.paypal.notices', 'Tribe__Tickets__Commerce__PayPal__Notices' );
 		tribe_singleton( 'tickets.commerce.paypal.endpoints', 'Tribe__Tickets__Commerce__PayPal__Endpoints', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.endpoints.templates.success', 'Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template' );
@@ -334,6 +334,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_filter( 'tribe_tickets_commerce_cart_get_checkout_url_tribe-commerce', [ $this, 'commerce_get_checkout_url' ], 10, 3 );
 		add_filter( 'tribe_tickets_commerce_cart_get_tickets_tribe-commerce', [ $this, 'commerce_get_tickets_in_cart' ] );
 		add_filter( 'tribe_tickets_commerce_cart_update_tickets_tribe-commerce', [ $this, 'commerce_update_tickets_in_cart' ], 10, 3 );
+
+		// Backcompat hook.
+		add_filter( 'tribe_tickets_commerce_cart_update_tickets_tpp', [ $this, 'commerce_update_tickets_in_cart' ], 10, 3 );
 
 		add_filter( 'tribe_tickets_cart_urls', [ $this, 'add_cart_url' ], 10, 2 );
 		add_filter( 'tribe_tickets_checkout_urls', [ $this, 'add_checkout_url' ], 10, 2 );
@@ -2008,13 +2011,17 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Get Tribe Commerce Cart URL.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param null|int $post_id Post ID for the cart.
 	 *
 	 * @return string Tribe Commerce Cart URL.
 	 */
 	public function get_cart_url( $post_id = null ) {
+		if ( empty( $post_id ) && is_singular() ) {
+			$post_id = get_the_ID();
+		}
+
 		if ( empty( $post_id ) ) {
 			// There is currently no non-post specific cart.
 			return '';
@@ -2028,7 +2035,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Allow filtering of the PayPal Cart URL.
 		 *
-		 * @since TBD
+		 * @since 4.11.0
 		 *
 		 * @param string $cart_url PayPal Cart URL.
 		 */
@@ -2038,7 +2045,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Get Tribe Commerce Cart URL for Commerce.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param string $cart_url Cart URL.
 	 * @param array  $data     Commerce response data to be sent.
@@ -2053,7 +2060,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Get Tribe Commerce Checkout URL.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param null|int $post_id Post ID for the cart.
 	 *
@@ -2070,7 +2077,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Allow filtering of the PayPal Checkout URL.
 		 *
-		 * @since TBD
+		 * @since 4.11.0
 		 *
 		 * @param string $checkout_url PayPal Checkout URL.
 		 */
@@ -2080,7 +2087,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Get Tribe Commerce Checkout URL for Commerce.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param string $checkout_url Checkout URL.
 	 * @param array  $data         Commerce response data to be sent.
@@ -2095,7 +2102,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Adds cart url to list used for localized variables.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param array $urls The original array.
 	 * @return array
@@ -2110,7 +2117,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Adds checkout url to list used for localized variables.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param array $urls The original array.
 	 * @return array
@@ -2265,10 +2272,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return array An associative array in the [ <slug> => <label> ] format.
 	 */
 	public function get_order_statuses() {
-		/** @var Tribe__Tickets__Status__Manager $tickets_status */
-		$tickets_status = tribe( 'tickets.status' );
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
 
-		$statuses       = $tickets_status->get_all_provider_statuses( 'tpp' );
+		$statuses       = $status_mgr->get_all_provider_statuses( 'tpp' );
 		$order_statuses = [];
 		foreach ( $statuses as $status ) {
 			$order_statuses[ $status->provider_name ] = _x( $status->name, 'a PayPal ticket order status', 'event-tickets' );
@@ -2378,6 +2385,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	public function get_tickets_in_cart( $tickets = [], $provider = null ) {
 		$providers = [
+			'tpp',
 			'tribe-commerce',
 			'tribe_tpp_tickets',
 			'Tribe__Tickets__Commerce__PayPal__Main',
@@ -2400,7 +2408,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Get all tickets currently in the cart for Commerce.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param array $tickets List of tickets.
 	 *
@@ -2410,7 +2418,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
-		$invoice_number = $gateway->get_invoice_number();
+		$invoice_number = $gateway->get_invoice_number( false );
 
 		if ( empty( $invoice_number ) ) {
 			return $tickets;
@@ -2435,7 +2443,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 			if ( is_array( $item ) ) {
 				$ticket_quantity = $item['quantity'];
-				$optout          = $item[ $this->attendee_optout_key ];
+
+				if ( isset( $item[ $this->attendee_optout_key ] ) ) {
+					$optout = $item[ $this->attendee_optout_key ];
+				}
 			} else {
 				$ticket_quantity = $item;
 			}
@@ -2464,7 +2475,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Update tickets in Tribe Commerce cart for Commerce.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param array   $tickets  List of tickets with their ID and quantity.
 	 * @param int     $post_id  Post ID for the cart.
@@ -2513,7 +2524,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			}
 
 			// Get the number of available tickets.
-			$available = $ticket_object->available();
+			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
+
+			$available = $tickets_handler->get_ticket_max_purchase( $ticket['ticket_id'] );
 
 			// Bail if ticket does not have enough available capacity.
 			if ( ( -1 !== $available && $available < $ticket_quantity ) || ! $ticket_object->date_in_range() ) {
@@ -2542,7 +2556,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * If the cart contains a line item for the product, this will replace the previous quantity.
 	 * If the quantity is zero and the cart contains a line item for the product, this will remove it.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param int     $ticket_id  Ticket ID.
 	 * @param int     $quantity   Ticket quantity.
@@ -2607,13 +2621,20 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @since 4.7
 	 */
 	public function get_tickets( $post_id ) {
+		$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+
+		// If the event provider is set to something else, let's save some time, shall we?
+		if ( ! is_admin() && __CLASS__ !== $default_provider ) {
+			return [];
+		}
+
 		$ticket_ids = $this->get_tickets_ids( $post_id );
 
 		if ( ! $ticket_ids ) {
-			return array();
+			return [];
 		}
 
-		$tickets = array();
+		$tickets = [];
 
 		foreach ( $ticket_ids as $post ) {
 			$ticket = $this->get_ticket( $post_id, $post );
@@ -3139,7 +3160,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Filter the provider object to return this class if tickets are for this provider.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param object $provider_obj
 	 * @param string $provider

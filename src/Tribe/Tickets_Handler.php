@@ -179,7 +179,7 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * On update of the Event End date we update the ticket end date
+	 * On update of the event start date we update the ticket end date
 	 * if it wasn't manually updated
 	 *
 	 * @since  4.6
@@ -193,7 +193,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function update_meta_date( $meta_id, $object_id, $meta_key, $date ) {
 		$meta_map = array(
-			'_EventEndDate' => $this->key_end_date,
+			'_EventStartDate' => $this->key_end_date,
 		);
 
 		// Bail when it's not on the Map Meta
@@ -1402,7 +1402,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Determine whether the ticket is accessible to the current user.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param int $ticket_id Ticket ID.
 	 *

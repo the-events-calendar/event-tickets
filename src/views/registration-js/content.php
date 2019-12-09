@@ -5,9 +5,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/content.php
  *
- * @since TBD
+ * @since 4.11.0
  *
- * @version TBD
+ * @version 4.11.0
  *
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
@@ -37,7 +37,7 @@ $classes        = [
 	/**
 	 * Before the output, whether or not $events is empty.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param string $provider       The 'provider' $_REQUEST var.
 	 * @param string $provider_class The class string or empty string if ticket provider is not found.
@@ -97,18 +97,19 @@ $classes        = [
 		$this->template( 'registration-js/mini-cart', $args );
 		?>
 		<div class="tribe-tickets__registration__content">
+			<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
+			<input type="hidden" name="tribe_tickets_ar" value="1" />
+			<input type="hidden" name="tribe_tickets_ar_page" value="1" />
+			<input type="hidden" name="tribe_tickets_ar_data" value="" id="tribe_tickets_ar_data"  />
+			<input type="hidden" name="tribe_tickets_provider" value="<?php echo esc_attr( $provider ); ?>"  />
+
 			<?php foreach ( $events as $event_id => $tickets ) : ?>
 				<?php
-					$provider_name = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
-					$provider_obj  = new $provider_name;
-				?>
-				<?php if ( $provider !== $provider_obj->attendee_object ) : ?>
-					<?php continue; ?>
-				<?php endif; ?>
-				<?php
+					$provider_name  = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
+					$provider_obj   = new $provider_name;
 					$provider_class = $provider_class;
-					$providers = wp_list_pluck( $tickets, 'provider' );
-					$providers_arr = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
+					$providers      = wp_list_pluck( $tickets, 'provider' );
+					$providers_arr  = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
 
 					if ( empty( $provider_class ) && ! empty( $providers_arr[ $event_id ] ) ) :
 						$provider_class = 'tribe-tickets__item__attendee__fields__form--' . $providers_arr[ $event_id ];
@@ -132,11 +133,6 @@ $classes        = [
 							name="event<?php echo esc_attr( $event_id ); ?>"
 							novalidate
 						>
-							<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
-							<input type="hidden" name="tribe_tickets_ar" value="1" />
-							<input type="hidden" name="tribe_tickets_ar_page" value="1" />
-							<input type="hidden" name="tribe_tickets_ar_data" value="" id="tribe_tickets_ar_data"  />
-
 							<?php
 							foreach ( $tickets as $ticket ) :
 								$all_tickets[] = $ticket;

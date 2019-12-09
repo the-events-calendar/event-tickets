@@ -117,8 +117,10 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	 * @return array
 	 */
 	public static function all_statuses() {
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
 
-		return tribe( 'tickets.status' )->get_statuses_by_action( 'all', 'tpp' );
+		return $status_mgr->get_statuses_by_action( 'all', 'tpp' );
 	}
 
 	/**
@@ -134,7 +136,10 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	 * @return bool
 	 */
 	public function is_complete_transaction_status( $payment_status ) {
-		$statuses = tribe( 'tickets.status' )->get_statuses_by_action( array( 'count_completed', 'count_refunded' ), 'tpp', 'OR' );
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
+
+		$statuses = $status_mgr->get_statuses_by_action( array( 'count_completed', 'count_refunded' ), 'tpp', 'OR' );
 
 		/**
 		 * Filters the statuses that will mark a PayPal transaction as completed.
@@ -159,7 +164,10 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	 * @return bool
 	 */
 	public function is_revenue_generating_status( $payment_status ) {
-		$statuses = tribe( 'tickets.status' )->get_statuses_by_action( 'count_completed', 'tpp' );
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
+
+		$statuses = $status_mgr->get_statuses_by_action( 'count_completed', 'tpp' );
 
 		/**
 		 * Filters the statuses that will mark a PayPal transaction as generating

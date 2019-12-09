@@ -661,8 +661,10 @@ class Tribe__Tickets__Tickets_View {
 	 *                    option data or `false` if the selected option does not exist.
 	 */
 	public function get_rsvp_options( $selected = null, $just_labels = true ) {
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
 
-		$options = tribe( 'tickets.status' )->get_status_options( 'rsvp' );
+		$options = $status_mgr->get_status_options( 'rsvp' );
 
 		/**
 		 * Allow users to add more RSVP options.
@@ -947,20 +949,29 @@ class Tribe__Tickets__Tickets_View {
 	 */
 	public function get_tickets_block( $post ) {
 		if ( empty( $post ) ) {
-			return;
+			return '';
 		}
 
 		if ( is_numeric( $post ) ) {
 			$post = get_post( $post );
 		}
 
-		if ( empty( $post ) || ! ( $post instanceof WP_Post ) ) {
-			return;
+		if (
+			empty( $post )
+			|| ! ( $post instanceof WP_Post )
+		) {
+			return '';
 		}
 
 		$post_id     = $post->ID;
 		$provider_id = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
-		$provider    = call_user_func( [ $provider_id, 'get_instance' ] );
+
+		// Protect against ticket that exists but is of a type that is not enabled
+		if ( ! method_exists( $provider_id, 'get_instance' ) ) {
+			return '';
+		}
+
+		$provider = call_user_func( [ $provider_id, 'get_instance' ] );
 
 		/** @var \Tribe__Tickets__Editor__Template $template */
 		$template       = tribe( 'tickets.editor.template' );

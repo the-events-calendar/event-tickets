@@ -205,8 +205,8 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 			return null;
 		}
 
-		$html = array();
-		$parts = array();
+		$html = [];
+		$parts = [];
 
 		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out message
 		foreach ( $types as $type => $data ) {
@@ -464,7 +464,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		$pending       = (int) $ticket->qty_pending();
 		$refunded      = (int) $ticket->qty_refunded();
 		$status        = '';
-		$status_counts = array();
+		$status_counts = [];
 
 		$is_global = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled();
 		$is_capped = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled();
@@ -584,7 +584,7 @@ if ( ! function_exists( 'tribe_tickets_get_template_part' ) ) {
 		do_action( 'tribe_tickets_pre_get_template_part', $slug, $name, $data );
 
 		// Setup possible parts
-		$templates = array();
+		$templates = [];
 		if ( isset( $name ) ) {
 			$templates[] = $slug . '-' . $name . '.php';
 		}
@@ -593,7 +593,7 @@ if ( ! function_exists( 'tribe_tickets_get_template_part' ) ) {
 		/**
 		 * Allow users to filter which templates can be included
 		 *
-		 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
+		 * @param string $template The Template file(s), which is a relative path from the Folder we are dealing with.
 		 * @param string $slug     Slug for this template
 		 * @param string $name     Template name
 		 * @param array  $data     The Data that will be used on this template
@@ -735,7 +735,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
 	 *
 	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or product id
 	 *
-	 * @return bool|object
+	 * @return bool|Tribe__Tickets__Tickets
 	 */
 	function tribe_tickets_get_ticket_provider( $id ) {
 		/** @var Tribe__Tickets__Data_API $data_api */
@@ -753,7 +753,7 @@ if ( ! function_exists( 'tribe_tickets_get_attendees' ) ) {
 	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or event id
 	 * @param null $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
 	 *
-	 * @return array() an array of all attendee(s) data including custom attendee meta for a given id
+	 * @return array List of all attendee(s) data including custom attendee meta for a given ID.
 	 */
 	function tribe_tickets_get_attendees( $id, $context = null ) {
 		return tribe( 'tickets.data_api' )->get_attendees_by_id( $id, $context );
@@ -1304,24 +1304,83 @@ if ( ! function_exists( 'tribe_get_ticket_label_plural_lowercase' ) ) {
 	}
 }
 
-/**
- * Allows us to test a post ID to see if it is an event page.
- *
- * @since TBD
- *
- * @param int|WP_Post|null $post The post (or its ID) we're testing. Default is global post.
- * @return boolean
- */
-function tribe_tickets_is_event_page( $post = null ) {
-	// Tribe__Events__Main must exist.
-	if ( ! class_exists( 'Tribe__Events__Main' ) ) {
-		return false;
-	}
+if ( ! function_exists( 'tribe_tickets_is_event_page' ) ) {
+	/**
+	 * Allows us to test a post ID to see if it is an event page.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param int|WP_Post|null $post The post (or its ID) we're testing. Default is global post.
+	 *
+	 * @return boolean
+	 */
+	function tribe_tickets_is_event_page( $post = null ) {
+		// Tribe__Events__Main must exist.
+		if ( ! class_exists( 'Tribe__Events__Main' ) ) {
+			return false;
+		}
 
-	// Must be the correct post type.
-	if ( Tribe__Events__Main::POSTTYPE !== get_post_type( $post ) ) {
-		return false;
-	}
+		// Must be the correct post type.
+		if ( Tribe__Events__Main::POSTTYPE !== get_post_type( $post ) ) {
+			return false;
+		}
 
-	return  true;
+		return true;
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
+	/**
+	 * If we are in the front-end or back-end (e.g. currently editing or creating) context for a tickets-enabled post.
+	 *
+	 * @since TBD
+	 *
+	 * @see   \Tribe__Tickets__Main::post_types()
+	 *
+	 * @param null|int|WP_Post $post Post ID or object, `null` to get the ID of the global/current post object.
+	 *
+	 * @return bool True if creating/editing (back-end) or viewing single or archive (front-end) of enabled post type.
+	 */
+	function tribe_tickets_is_enabled_post_context( $post = null ) {
+		/** @var Tribe__Context $context */
+		$context = tribe( 'context' );
+
+		/** @var Tribe__Tickets__Main $main */
+		$main = tribe( 'tickets.main' );
+
+		$post_types = $main->post_types();
+
+		// Back-end
+		if ( $context->is_editing_post( $post_types ) ) {
+			return true;
+		}
+
+		// Front-end singular
+		$post = Tribe__Main::post_id_helper( $post );
+
+		if (
+			! empty( $post )
+			&& in_array( get_post_type( $post ), $post_types, true )
+		) {
+			return true;
+		}
+
+		// Front-end archive
+		if ( is_post_type_archive( $post_types ) ) {
+			return true;
+		}
+
+		/**
+		 * Whether or not we are in tickets-enabled context, such as determining if we should load plugin assets.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool           $result
+		 * @param array          $post_types The post types with tickets enabled.
+		 * @param Tribe__Context $context
+		 *
+		 * @return bool
+		 */
+		return apply_filters( 'tribe_tickets_is_enabled_post_context', false, $post_types, $context );
+	}
 }
