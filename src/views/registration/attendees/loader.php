@@ -6,7 +6,7 @@
  * [your-theme]/tribe/tickets/registration/attendees/loader.php
  *
  * @since 4.10.1
- * @version TBD
+ * @version 4.11.0
  *
  */
 

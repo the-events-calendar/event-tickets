@@ -11,9 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @since TBD add modal only fields
+ * @since 4.11.0 add modal only fields
  *
- * @version TBD
+ * @version 4.11.0
  *
  */
 $classes  = [ 'tribe-tickets__item' ];

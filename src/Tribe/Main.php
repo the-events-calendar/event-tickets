@@ -23,14 +23,14 @@ class Tribe__Tickets__Main {
 	/**
 	 * Used to store the version history.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 */
 	public $version_history_slug = 'previous_event_tickets_versions';
 
 	/**
 	 * Used to store the latest version.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 */
 	public $latest_version_slug = 'latest_event_tickets_version';
 
@@ -691,7 +691,7 @@ class Tribe__Tickets__Main {
 	 * Also a good place for things that need to be changed
 	 * or set if they are missing (like meta keys).
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 */
 	public function maybe_set_options_for_old_installs() {
 		/** @var \Tribe__Tickets__Attendee_Registration__Main $ar_reg */
