@@ -12,7 +12,7 @@
  *
  * @since 4.9.3
  * @deprecated 4.11.0
- * @version 4.9.4
+ * @version 4.11.0
  *
  */
 
