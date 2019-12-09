@@ -11,18 +11,27 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version TBD
+ * @since TBD Corrected amount of available/remaining tickets.
  *
+ * @version TBD
  */
 
+/** @var Tribe__Tickets__Ticket_Object $ticket */
 $ticket = $this->get( 'ticket' );
-$available = $ticket->available();
-$is_available = 0 !== $available;
 
-$context = array(
+if ( empty( $ticket->ID ) ) {
+	return;
+}
+
+/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+$tickets_handler = tribe( 'tickets.handler' );
+
+$available = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
+
+$context = [
 	'ticket' => $ticket,
 	'key' => $this->get( 'key' ),
-);
+];
 
 $classes = [
 	'tribe-common-h4',
@@ -32,7 +41,7 @@ $classes = [
 <div
 	<?php tribe_classes( $classes ); ?>
 >
-	<?php if ( $is_available ) : ?>
+	<?php if ( 0 !== $available ) : ?>
 		<?php $this->template( 'blocks/tickets/quantity-remove', $context ); ?>
 		<?php $this->template( 'blocks/tickets/quantity-number', $context ); ?>
 		<?php $this->template( 'blocks/tickets/quantity-add', $context ); ?>
