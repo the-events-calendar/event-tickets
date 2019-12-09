@@ -21,7 +21,7 @@ interface Tribe__Tickets__Commerce__PayPal__Cart__Interface {
 	 *
 	 * This method should include any persistence by the cart implementation.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @return array
 	 */
@@ -88,7 +88,7 @@ interface Tribe__Tickets__Commerce__PayPal__Cart__Interface {
 	 * Removes an item from the cart.
 	 *
 	 * @since 4.7.3
-	 * @since TBD Added null default for $quantity
+	 * @since 4.11.0 Added null default for $quantity
 	 *
 	 * @param int|string $item_id  The item ID.
 	 * @param null|int   $quantity The quantity to remove.

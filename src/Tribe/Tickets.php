@@ -1573,7 +1573,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					/**
 					 * Allow providers to add their own checkout URL to the localized list.
 					 *
-					 * @since TBD
+					 * @since 4.11.0
 					 *
 					 * @param array $checkout_urls An array to add urls to.
 					 */
@@ -1582,7 +1582,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					/**
 					 * Allow providers to add their own cart URL to the localized list.
 					 *
-					 * @since TBD
+					 * @since 4.11.0
 					 *
 					 * @param array $cart_urls An array to add urls to.
 					 */
@@ -1783,7 +1783,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Takes any global stock data and makes it available via a wp_localize_script() call.
 		 *
-		 * @deprecated TBD
+		 * @deprecated 4.11.0
 		 */
 		public static function enqueue_frontend_stock_data() {
 			$data = [
@@ -2903,7 +2903,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * Filter to add/remove tickets from the global cart
 			 *
 			 * @since 4.9
-			 * @since TBD Added $q_provider to allow context of current provider.
+			 * @since 4.11.0 Added $q_provider to allow context of current provider.
 			 *
 			 * @param array  $tickets_in_cart The array containing the cart elements. Format array( 'ticket_id' => 'quantity' ).
 			 * @param string $q_provider      Current ticket provider.
@@ -2990,7 +2990,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Localized messages for errors, etc in javascript. Added in assets() above.
 		 * Set up this way to amke it easier to add messages as needed.
 		 *
-		 * @since TBD
+		 * @since 4.11.0
 		 *
 		 * @return void
 		 */
