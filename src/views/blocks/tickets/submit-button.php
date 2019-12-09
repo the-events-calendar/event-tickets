@@ -12,13 +12,13 @@
  *
  * @since 4.9.3
  *
- * @version TBD
+ * @version 4.11
  *
  */
 /**
  * Allow filtering of the button name for the tickets block.
  *
- * @since TBD
+ * @since 4.11
  *
  * @param string $button_name The button name. Set to cart-button to send to cart on submit, or set to checkout-button to send to checkout on submit.
  */

@@ -5,9 +5,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/mini-cart.php
  *
- * @since TBD
+ * @since 4.11
  *
- * @version TBD
+ * @version 4.11
  *
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );

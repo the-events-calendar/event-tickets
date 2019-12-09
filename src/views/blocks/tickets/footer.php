@@ -10,8 +10,8 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since TBD
- * @version TBD
+ * @since 4.11
+ * @version 4.11
  *
  */
 $event_id        = $this->get( 'event_id' );

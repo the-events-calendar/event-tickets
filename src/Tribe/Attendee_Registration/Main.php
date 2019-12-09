@@ -24,7 +24,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * The attendee modal option slug
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 */
 	public $modal_option_slug = 'ticket-attendee-modal';
@@ -82,7 +82,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Returns whether the user is on the /cart/ REST API endpoint.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @return bool Whether the user is on the /cart/ REST API endpoint.
 	 */
@@ -203,7 +203,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Check if the modal is enabled.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @param int|WP_Post|null $post The post (or its ID) we're testing. Defaults to null.
 	 *
@@ -218,7 +218,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		/**
 		 * Allow filtering of the modal setting, on a post-by-post basis if desired.
 		 *
-		 * @since TBD
+		 * @since 4.11
 		 *
 		 * @param boolean $option The option value from ticket settings.
 		 * @param int|WP_Post|null $post The passed post or null if none passed.

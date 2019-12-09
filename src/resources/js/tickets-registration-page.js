@@ -59,7 +59,7 @@ tribe.tickets.registration = {};
 	/*
 	 * Commerce Provider Selectors.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 */
 	obj.commerceSelector = {
@@ -85,7 +85,7 @@ tribe.tickets.registration = {};
 	/**
 	 *
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @return obj Meta data object.
 	 */
@@ -159,7 +159,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Get ticket data to send to cart.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @return obj Tickets data object.
 	 */
@@ -196,7 +196,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Init the form prefills (cart and AR forms).
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @return void
 	 */
@@ -228,7 +228,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Appends AR fields on page load.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @param obj meta The ticket meta we are usign to add "blocks".
 	 */
@@ -280,7 +280,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Prefills the AR fields from supplied data.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @param meta Data to fill the form in with.
 	 * @param length Starting pointer for partial fill-ins.
@@ -339,7 +339,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Update all the footer info.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 */
 	obj.updateFooter = function() {
 		obj.updateFooterCount();
@@ -349,7 +349,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Adjust the footer count for +/-.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @return void
 	 */
@@ -375,7 +375,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Adjust the footer total/amount for +/-.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @return void
 	 */
@@ -403,7 +403,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Prefill the Mini-Cart.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @returns {*}
 	 */
@@ -431,7 +431,7 @@ tribe.tickets.registration = {};
 	 * Validates the entire meta form.
 	 * Adds errors to the top of the modal.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @param $form jQuery object that is the form we are validating.
 	 *
@@ -460,7 +460,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Validates and adds/removes error classes from a ticket meta block.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @param $container jQuery object that is the block we are validating.
 	 *
@@ -494,7 +494,7 @@ tribe.tickets.registration = {};
 	 * We operate under the assumption that you must check _at least_ one,
 	 * but not necessarily all. Also that the checkboxes are all required.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @param $group The jQuery object for the checkbox group.
 	 *
@@ -526,7 +526,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Adds/removes error classes from a single field.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @param input DOM Object that is the field we are validating.
 	 *
@@ -565,7 +565,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Adds focus effect to ticket block.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 */
 	obj.focusTicketBlock = function( input ) {
@@ -575,7 +575,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Remove focus effect from ticket block.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 */
 	obj.unfocusTicketBlock = function( input ) {
@@ -585,7 +585,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Show the loader/spinner.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 */
 	obj.loaderShow = function() {
 		$( obj.selector.loader ).removeClass( 'tribe-common-a11y-hidden' );
@@ -594,7 +594,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Hide the loader/spinner.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 */
 	obj.loaderHide = function() {
 		$( obj.selector.loader ).addClass( 'tribe-common-a11y-hidden' );
@@ -605,7 +605,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Get the REST endpoint
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 */
 	obj.getRestEndpoint = function() {
 		var url = TribeCartEndpoint.url;
@@ -615,7 +615,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Get the Currency Formatting for a Provider.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @returns {*}
 	 */
@@ -629,7 +629,7 @@ tribe.tickets.registration = {};
 	 * Format the number according to provider settings.
 	 * Based off coding fron https://stackoverflow.com/a/2901136.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @param number The number to format.
 	 *
@@ -673,7 +673,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Adds focus effect to ticket block.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 */
 	obj.document.on(
@@ -688,7 +688,7 @@ tribe.tickets.registration = {};
 	/**
 	 * handles input blur.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 */
 	obj.document.on(
@@ -703,7 +703,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Handle AR submission.
 	 *
-	 * @since TBD
+	 * @since 4.11
 	 *
 	 * @return void
 	 */
