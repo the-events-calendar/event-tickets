@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.11] 2019-12-09 =
+= [4.11] 2019-12-10 =
 
 * Feature - Add ability to utilize the block ticket template outside of Gutenberg views [132568]
 * Feature - Use the block template view for the "classic" editor so they look the same now on the frontend [132568]
