@@ -111,6 +111,15 @@ if ( ! $already_rendered ) {
 			$handler = tribe( 'tickets.handler' );
 
 			$available = $handler->get_ticket_max_purchase( $ticket->ID );
+
+
+			/**
+			 * Allows hiding of "unlimited" to be toggled on/off conditionally.
+			 *
+			 * @param int   $show_unlimited allow showing of "unlimited".
+			 *
+			 * @since TBD
+			 */
 			$show_unlimited = apply_filters( 'tribe_rsvp_block_show_unlimited_availability', false, $available );
 
 			$is_there_any_product_to_sell = 0 !== $available;

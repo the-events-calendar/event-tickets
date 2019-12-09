@@ -34,6 +34,14 @@ $threshold = absint( apply_filters( 'tribe_display_rsvp_block_tickets_left_thres
 
 $remaining_tickets = $ticket->remaining();
 $is_unlimited = -1 === $remaining_tickets;
+
+/**
+ * Allows hiding of "unlimited" to be toggled on/off conditionally.
+ *
+ * @param int   $show_unlimited allow showing of "unlimited".
+ *
+ * @since TBD
+ */
 $show_unlimited = apply_filters( 'tribe_rsvp_block_show_unlimited_availability', false, $is_unlimited );
 ?>
 <div class="tribe-block__rsvp__availability">

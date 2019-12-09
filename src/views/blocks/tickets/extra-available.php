@@ -52,6 +52,14 @@ $threshold = $settings_manager::get_option( 'ticket-display-tickets-left-thresho
  */
 $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_threshold', $threshold, $post_id ) );
 $available = $ticket->available();
+
+/**
+ * Allows hiding of "unlimited" to be toggled on/off conditionally.
+ *
+ * @param int   $show_unlimited allow showing of "unlimited".
+ *
+ * @since TBD
+ */
 $show_unlimited = apply_filters( 'tribe_tickets_block_show_unlimited_availability', false, $available );
 ?>
 <div
