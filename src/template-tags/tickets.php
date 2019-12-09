@@ -1311,7 +1311,7 @@ if ( ! function_exists( 'tribe_tickets_is_event_page' ) ) {
 	/**
 	 * Allows us to test a post ID to see if it is an event page.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param int|WP_Post|null $post The post (or its ID) we're testing. Default is global post.
 	 *

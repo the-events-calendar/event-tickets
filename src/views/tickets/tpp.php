@@ -14,8 +14,8 @@
  * @since   4.10.8 Removed the date_in_range() check per ticket, since it now happens upstream. Better checking of max quantity available.
  * @since   4.10.10  Use customizable ticket name functions.
  *
- * @version TBD
- * @deprecated TBD
+ * @version 4.11.0
+ * @deprecated 4.11.0
  *
  * @var bool $must_login
  * @var bool $display_login_link

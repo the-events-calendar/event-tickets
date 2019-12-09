@@ -10,9 +10,9 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since TBD
+ * @since 4.11.0
  *
- * @version TBD
+ * @version 4.11.0
  *
  */
 
