@@ -2506,11 +2506,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
-			// Blocks and ticket form merge - bail if we have toiggled blocks on.
-			/** @var \Tribe__Events__Editor__Compatibility $compatibility */
-			$compatibility = tribe( 'events.editor.compatibility' );
-			$option = tribe_get_option( $compatibility->get_toggle_blocks_editor_key(), false );
-			if ( ! empty( $option ) ) {
+			// Blocks and ticket form merge - bail if we have toggled blocks on.
+			try {
+				/** @var Tribe__Events__Editor__Compatibility $editor_compatibility */
+				$editor_compatibility = tribe( 'events.editor.compatibility' );
+
+				$on = $editor_compatibility->is_blocks_editor_toggled_on();
+			} catch ( Exception $e ) {
+				$on = false;
+			}
+
+			if ( $on ) {
 				return false;
 			}
 
