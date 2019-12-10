@@ -151,7 +151,7 @@ if ( ! $already_rendered ) {
 						<?php elseif ( $show_unlimited ): ?>
 							<span class="available-stock" data-product-id="<?php echo esc_attr( $ticket_id ); ?>"><?php echo esc_html( $handler->unlimited_term ); ?></span>
 						<?php endif; ?>
-					<?php elseif( ! $ticket->is_in_stock() ): ?>
+					<?php elseif ( ! $ticket->is_in_stock() ) : ?>
 						<span class="tickets_nostock"><?php esc_html_e( 'Out of stock!', 'event-tickets' ); ?></span>
 					<?php endif; ?>
 				</td>
