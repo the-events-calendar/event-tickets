@@ -150,6 +150,13 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 			return $args;
 		}
 
+		// REST API needs more help because it doesn't like 'type' being an array (yet).
+		$args['show_in_rest'] = [
+			'schema' => [
+				'type' => $args['type'],
+			],
+		];
+
 		$args['type'] = [
 			$args['type'],
 			'null',
@@ -171,6 +178,15 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 		if ( ! function_exists( 'is_wp_version_compatible' ) || ! is_wp_version_compatible( '5.3' ) ) {
 			return $args;
 		}
+
+		// REST API needs more help because it doesn't like 'type' being an array (yet).
+		$args['show_in_rest'] = [
+			// Especially for boolean, if 'type' isn't reasserted on this next line it throws 500 errors.
+			'type'   => $args['type'],
+			'schema' => [
+				'type' => $args['type'],
+			],
+		];
 
 		$args['type'] = [
 			$args['type'],
