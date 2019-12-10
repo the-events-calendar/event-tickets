@@ -127,6 +127,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Make "Show attendees list on event page" checkbox apply to the REST API as well. [133333]
 * Fix - Overriding the maximum purchase quantity (the `tribe_tickets_get_ticket_max_purchase` filter) now works in all contexts [133432]
 * Fix - Prevent duplicate blocks on provider change. Add logic to test current provider against event default provider. [137925]
+* Fix - If running WP 5.3+, add `show_in_rest` as an array configuration for capacity and the RSVP not going fields so that they save properly. [137875]
 
 = [4.11] 2019-12-10 =
 
