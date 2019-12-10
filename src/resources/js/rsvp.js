@@ -10,7 +10,7 @@ var tribe_tickets_rsvp = {
 		this.$rsvp = $( '.tribe-events-tickets-rsvp' );
 		this.attendee_template = $( document.getElementById( 'tribe-tickets-rsvp-tmpl' ) ).html();
 
-		this.$rsvp.on( 'change input keyup', '.tribe-ticket-quantity', this.event.quantity_changed );
+		this.$rsvp.on( 'change input keyup', '.tribe-tickets-quantity', this.event.quantity_changed );
 
 		this.$rsvp.closest( '.cart' )
 			.on( 'submit', this.event.handle_submission );
@@ -26,7 +26,7 @@ var tribe_tickets_rsvp = {
 	my.quantity_changed = function( $quantity ) {
 
 		var $rsvp = $quantity.closest( '.tribe-events-tickets-rsvp' );
-		var $rsvp_qtys = $rsvp.find( '.tribe-ticket-quantity' );
+		var $rsvp_qtys = $rsvp.find( '.tribe-tickets-quantity' );
 		var rsvp_qty = 0;
 		$rsvp_qtys.each( function () {
 			rsvp_qty = rsvp_qty + parseInt( $( this ).val() );
@@ -40,7 +40,7 @@ var tribe_tickets_rsvp = {
 	};
 
 	my.validate_submission = function( $form ) {
-		var $rsvp = $form.find( '.tribe-ticket-quantity' );
+		var $rsvp = $form.find( '.tribe-tickets-quantity' );
 		var rsvp_qty = 0;
 		var $name = $( document.getElementById( 'tribe-tickets-full-name' ) );
 		var $email = $( document.getElementById( 'tribe-tickets-email' ) );

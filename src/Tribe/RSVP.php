@@ -11,7 +11,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @var string
 	 */
-	const ATTENDEE_OBJECT   = 'tribe_rsvp_attendees';
+	const ATTENDEE_OBJECT = 'tribe_rsvp_attendees';
+
+	/**
+	 * Name of the CPT that holds Attendees (tickets holders).
+	 *
+	 * @var string
+	 */
+	public $attendee_object = 'tribe_rsvp_attendees';
 
 	/**
 	 * Name of the CPT that holds Orders
@@ -463,7 +470,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendee_email     = empty( $data['email'] ) ? null : sanitize_email( $data['email'] );
 		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
 		$attendee_full_name = empty( $data['full_name'] ) ? null : sanitize_text_field( $data['full_name'] );
-		$attendee_optout    = empty( $data['optout'] ) ? false : (bool) $data['optout'];
+		$attendee_optout    = empty( $data['optout'] ) ? 0 : $data['optout'];
+
+		$attendee_optout = filter_var( $attendee_optout, FILTER_VALIDATE_BOOLEAN );
+		$attendee_optout = (int) $attendee_optout;
 
 		if ( empty( $data['order_status'] ) || ! $this->tickets_view->is_valid_rsvp_option( $data['order_status'] ) ) {
 			$attendee_order_status = null;
@@ -492,7 +502,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			update_post_meta( $order_id, self::ATTENDEE_RSVP_KEY, $attendee_order_status );
 		}
 
-		update_post_meta( $order_id, self::ATTENDEE_OPTOUT_KEY, (bool) $attendee_optout );
+		update_post_meta( $order_id, self::ATTENDEE_OPTOUT_KEY, $attendee_optout );
 
 		if ( null !== $attendee_full_name ) {
 			update_post_meta( $order_id, $this->full_name, $attendee_full_name );
@@ -501,6 +511,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		if ( null !== $attendee_email ) {
 			update_post_meta( $order_id, $this->email, $attendee_email );
 		}
+
+		/**
+		 * An Action fired when an RSVP is updated.
+		 *
+		 * @since 4.11.0
+		 *
+		 * @param int    $order_id              refers to the attendee or ticket ID per this methods $order_id parameter.
+		 * @param int    $event_id              the ID of an event.
+		 * @param string $attendee_order_status The status of the attendee, either yes or no.
+		 */
+		do_action( 'event_tickets_rsvp_after_attendee_update', $order_id, $event_id, $attendee_order_status );
 	}
 
 	/**
@@ -1199,6 +1220,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->description      = $product->post_excerpt;
 		$return->ID               = $ticket_id;
 		$return->name             = $product->post_title;
+		$return->menu_order       = $product->menu_order;
 		$return->post_type        = $product->post_type;
 		$return->price            = get_post_meta( $ticket_id, '_price', true );
 		$return->provider_class   = get_class( $this );
@@ -1365,7 +1387,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$checkin      = get_post_meta( $attendee->ID, $this->checkin_key, true );
 		$security     = get_post_meta( $attendee->ID, $this->security_code, true );
 		$product_id   = get_post_meta( $attendee->ID, self::ATTENDEE_PRODUCT_KEY, true );
-		$optout       = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_OPTOUT_KEY, true );
+		$optout       = get_post_meta( $attendee->ID, self::ATTENDEE_OPTOUT_KEY, true );
 		$status       = get_post_meta( $attendee->ID, self::ATTENDEE_RSVP_KEY, true );
 		$status_label = $this->tickets_view->get_rsvp_options( $status );
 		$user_id      = get_post_meta( $attendee->ID, self::ATTENDEE_USER_ID, true );
@@ -1374,6 +1396,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		if ( empty( $product_id ) ) {
 			return false;
 		}
+
+		$optout = filter_var( $optout, FILTER_VALIDATE_BOOLEAN );
 
 		$product       = get_post( $product_id );
 		$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product, true ) . ' ' . __( '(deleted)', 'event-tickets' );
@@ -1900,6 +1924,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendee_optout       = $attendee_details['optout'];
 		$order_id              = $attendee_details['order_id'];
 
+		$attendee_optout = filter_var( $attendee_optout, FILTER_VALIDATE_BOOLEAN );
+		$attendee_optout = (int) $attendee_optout;
+
 		// Get the event this tickets is for
 		$post_id = get_post_meta( $product_id, $this->event_key, true );
 
@@ -1964,7 +1991,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			update_post_meta( $attendee_id, self::ATTENDEE_RSVP_KEY, $attendee_order_status );
 			update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
 			update_post_meta( $attendee_id, $this->order_key, $order_id );
-			update_post_meta( $attendee_id, self::ATTENDEE_OPTOUT_KEY, (bool) $attendee_optout );
+			update_post_meta( $attendee_id, self::ATTENDEE_OPTOUT_KEY, $attendee_optout );
 			update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
 			update_post_meta( $attendee_id, $this->email, $attendee_email );
 			update_post_meta( $attendee_id, '_paid_price', 0 );
@@ -2020,7 +2047,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendee_email     = empty( $_POST['attendee']['email'] ) ? null : sanitize_email( $_POST['attendee']['email'] );
 		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
 		$attendee_full_name = empty( $_POST['attendee']['full_name'] ) ? null : sanitize_text_field( $_POST['attendee']['full_name'] );
-		$attendee_optout    = empty( $_POST['attendee']['optout'] ) ? false : (bool) $_POST['attendee']['optout'];
+		$attendee_optout    = empty( $_POST['attendee']['optout'] ) ? 0 : $_POST['attendee']['optout'];
+
+		$attendee_optout = filter_var( $attendee_optout, FILTER_VALIDATE_BOOLEAN );
 
 		if (
 			empty( $_POST['attendee']['order_status'] )

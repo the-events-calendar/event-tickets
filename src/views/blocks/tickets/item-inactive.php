@@ -11,21 +11,20 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @version 4.11.0
  *
  */
 
 $sale_past = $this->get( 'sale_past' );
 $classes   = array(
-	'tribe-block__tickets__item',
-	'tribe-block__tickets__item--inactive',
+	'tribe-tickets__item',
+	'tribe-tickets__item--inactive',
 );
 
 $context = array(
 	'sale_past' => $sale_past,
 );
 ?>
-<div class="<?php echo esc_attr( implode( ' ', get_post_class( $classes ) ) ); ?>">
-	<?php $this->template( 'blocks/tickets/icon', $context ); ?>
+<div <?php tribe_classes( get_post_class( $classes ) ); ?>>
 	<?php $this->template( 'blocks/tickets/content-inactive', $context ); ?>
 </div>

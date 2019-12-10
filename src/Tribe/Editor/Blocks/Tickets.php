@@ -62,6 +62,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		$args['tickets_on_sale']     = $this->get_tickets_on_sale( $tickets );
 		$args['has_tickets_on_sale'] = ! empty( $args['tickets_on_sale'] );
 		$args['is_sale_past']        = $this->get_is_sale_past( $tickets );
+		$args['is_sale_future']      = $this->get_is_sale_future( $tickets );
 
 		// Add the rendering attributes into global context
 		$template->add_template_globals( $args );
@@ -81,32 +82,90 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return void
 	 */
 	public function assets() {
-		$plugin = Tribe__Tickets__Main::instance();
+		$plugin    = Tribe__Tickets__Main::instance();
+		$providers = tribe( 'tickets.data_api' )->get_providers_for_post( null );
+		$currency  = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $providers, null );
 
-		tribe_asset(
-			$plugin,
-			'tribe-tickets-gutenberg-tickets',
-			'tickets-block.js',
-			array( 'jquery', 'jquery-ui-datepicker' ),
-			null,
-			array(
-				'type'         => 'js',
-				'localize'     => array(
-					'name' => 'TribeTickets',
-					'data' => array(
-						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-					),
-				),
-			)
+		wp_register_script(
+			'wp-utils',
+			includes_url( '/js/wp-util.js' ),
+			[ 'jquery', 'underscore' ],
+			false,
+			false
 		);
 
-		tribe_asset(
-			$plugin,
-			'tribe-tickets-gutenberg-block-tickets-style',
-			'app/tickets/frontend.css',
-			array(),
-			null
-		);
+		wp_enqueue_script( 'wp-utils' );
+
+		$cart_urls                   = [];
+		$checkout_urls               = [];
+		$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 60000 );
+
+		if ( empty( Tribe__Tickets__Tickets::$frontend_script_enqueued ) ) {
+			if ( ! is_admin() ) {
+				/**
+				 * Allow providers to add their own checkout URL to the localized list.
+				 *
+				 * @since 4.11.0
+				 *
+				 * @param array $checkout_urls An array to add urls to.
+				 */
+				$checkout_urls = apply_filters( 'tribe_tickets_checkout_urls', $checkout_urls );
+
+				/**
+				 * Allow providers to add their own cart URL to the localized list.
+				 *
+				 * @since 4.11.0
+				 *
+				 * @param array $cart_urls An array to add urls to.
+				 */
+				$cart_urls = apply_filters( 'tribe_tickets_cart_urls', $cart_urls );
+			}
+
+			tribe_asset(
+				$plugin,
+				'tribe-tickets-gutenberg-tickets',
+				'tickets-block.js',
+				[ 'jquery', 'jquery-ui-datepicker', 'wp-utils', 'wp-i18n' ],
+				null,
+				[
+					'type'         => 'js',
+					'localize'     => [
+						[
+							'name' => 'TribeTicketOptions',
+							'data' => [
+								'ajaxurl'                     => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+								'availability_check_interval' => $availability_check_interval,
+							],
+						],
+						[
+							'name' => 'TribeCurrency',
+							'data' => [
+								'formatting' => json_encode( $currency ),
+							],
+						],
+						[
+							'name' => 'TribeCartEndpoint',
+							'data' => [
+								'url' => tribe_tickets_rest_url( '/cart/' ),
+							],
+						],
+						[
+							'name' => 'TribeMessages',
+							'data' => $this->set_messages(),
+						],
+						[
+							'name' => 'TribeTicketsURLs',
+							'data' => [
+								'cart'     => $cart_urls,
+								'checkout' => $checkout_urls,
+							],
+						],
+					],
+				]
+			);
+
+			Tribe__Tickets__Tickets::$frontend_script_enqueued = true;
+		}
 	}
 
 	/**
@@ -243,5 +302,44 @@ extends Tribe__Editor__Blocks__Abstract {
 		}
 
 		return $is_sale_past;
+	}
+
+	/**
+	 * Get whether no ticket sales have started yet
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param  array $tickets Array of all tickets
+	 *
+	 * @return bool
+	 */
+	public function get_is_sale_future( $tickets ) {
+		$is_sale_future = ! empty( $tickets );
+
+		foreach ( $tickets as $ticket ) {
+			$is_sale_future = ( $is_sale_future && $ticket->date_is_earlier() );
+		}
+
+		return $is_sale_future;
+	}
+
+	/**
+	 * Localized messages for errors, etc in javascript. Added in assets() above.
+	 * Set up this way to amke it easier to add messages as needed.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @return void
+	 */
+	public function set_messages() {
+		$messages = [
+			'api_error_title'        => _x( 'API Error', 'Error message title, will be followed by the error code.', 'event-tickets' ),
+			'connection_error'       => __( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.', 'event-tickets' ),
+			'capacity_error'         => __( 'The ticket for this event has sold out and has been removed from your cart.', 'event-tickets'),
+			'validation_error_title' => __( 'Whoops!', 'event-tickets' ),
+			'validation_error'       => '<p>' . sprintf( _x( 'You have %s ticket(s) with a field that requires information.', 'The %s will change based on the error produced.', 'event-tickets' ), '<span class="tribe-tickets__notice--error__count">0</span>' ) . '</p>',
+		];
+
+		return $messages;
 	}
 }

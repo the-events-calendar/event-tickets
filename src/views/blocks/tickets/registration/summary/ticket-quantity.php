@@ -11,10 +11,10 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @version 4.9.4
+ * @version 4.11.0
  *
  */
 ?>
-<div class="tribe-block__tickets__registration__tickets__item__quantity">
+<div class="tribe-tickets__registration__tickets__item__quantity">
 	<?php esc_html_e( '1', 'event-tickets' ); ?>
 </div>

@@ -7,11 +7,11 @@
  *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @version 4.10.1
+ * @version 4.11.0
  *
  */
 $ticket_data = Tribe__Tickets__Tickets::load_ticket_object( $ticket['id'] );
 ?>
-<div class="tribe-block__tickets__registration__tickets__item__title">
+<div class="tribe-tickets__registration__tickets__item__title">
 	<?php echo $ticket_data->name; ?>
 </div>

@@ -411,8 +411,17 @@ if ( ! function_exists( 'tribe_events_has_tickets_on_sale' ) ) {
 	 */
 	function tribe_events_has_tickets_on_sale( $event_id ) {
 		$has_tickets_on_sale = false;
-		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $event_id );
+		$tickets             = Tribe__Tickets__Tickets::get_all_event_tickets( $event_id );
+		$default_provider    = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
+
 		foreach ( $tickets as $ticket ) {
+			$ticket_provider = $ticket->get_provider();
+
+			// Skip tickets that are for a different provider than the event provider.
+			if ( $default_provider !== $ticket_provider->class_name ) {
+				continue;
+			}
+
 			$has_tickets_on_sale = ( $has_tickets_on_sale || tribe_events_ticket_is_on_sale( $ticket ) );
 		}
 
@@ -726,7 +735,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
 	 *
 	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or product id
 	 *
-	 * @return bool|object
+	 * @return bool|Tribe__Tickets__Tickets
 	 */
 	function tribe_tickets_get_ticket_provider( $id ) {
 		/** @var Tribe__Tickets__Data_API $data_api */
@@ -1293,4 +1302,26 @@ if ( ! function_exists( 'tribe_get_ticket_label_plural_lowercase' ) ) {
 		 */
 		return apply_filters( 'tribe_get_ticket_label_plural_lowercase', _x( 'tickets', 'lowercase plural label for Tickets', 'event-tickets' ), $context );
 	}
+}
+
+/**
+ * Allows us to test a post ID to see if it is an event page.
+ *
+ * @since 4.11.0
+ *
+ * @param int|WP_Post|null $post The post (or its ID) we're testing. Default is global post.
+ * @return boolean
+ */
+function tribe_tickets_is_event_page( $post = null ) {
+	// Tribe__Events__Main must exist.
+	if ( ! class_exists( 'Tribe__Events__Main' ) ) {
+		return false;
+	}
+
+	// Must be the correct post type.
+	if ( Tribe__Events__Main::POSTTYPE !== get_post_type( $post ) ) {
+		return false;
+	}
+
+	return  true;
 }

@@ -7,20 +7,11 @@
  *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @version 4.10.1
+ * @version 4.11.0
  *
  */
 ?>
-<div class="tribe-block__tickets__registration__summary">
-
-	<?php $this->template( 'registration/summary/toggle-handler' ); ?>
-
-	<?php $this->template( 'registration/summary/registration-status' ); ?>
-
-	<?php $this->template( 'registration/summary/title', array( 'event_id' => $event_id ) ); ?>
-
+<div class="tribe-tickets__registration__summary">
 	<?php $this->template( 'registration/summary/description', array( 'event_id' => $event_id ) ); ?>
-
-	<?php $this->template( 'registration/summary/tickets', array( 'tickets' => $tickets ) ); ?>
-
+	<?php $this->template( 'registration/summary/title', array( 'event_id' => $event_id ) ); ?>
 </div>

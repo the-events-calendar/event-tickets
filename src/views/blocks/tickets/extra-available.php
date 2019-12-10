@@ -11,19 +11,20 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @version 4.9.4
+ * @version 4.11.0
  *
  */
 
 $ticket    = $this->get( 'ticket' );
-$available = -1 === $ticket->available() ? esc_html__( 'Unlimited', 'event-tickets' ) : $ticket->available();
+$available = $ticket->available();
+if ( -1 === $available ) {
+	return;
+}
 ?>
 <div
-	class="tribe-block__tickets__item__extra__available"
+	class="tribe-common-b3 tribe-tickets__item__extra__available"
 >
-	<?php if ( -1 === $ticket->available() ) : ?>
-		<?php $this->template( 'blocks/tickets/extra-available-unlimited', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
-	<?php else: ?>
-		<?php $this->template( 'blocks/tickets/extra-available-quantity', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
+	<?php if ( -1 !== $ticket->available() ) : ?>
+		<?php $this->template( 'blocks/tickets/extra-available-quantity', [ 'ticket' => $ticket ] ); ?>
 	<?php endif; ?>
 </div>

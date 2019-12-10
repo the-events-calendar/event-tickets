@@ -7,10 +7,10 @@
  * [your-theme]/tribe/tickets/registration/attendees/success.php
  *
  * @since 4.10.1
- * @version 4.10.1
+ * @version 4.11.0
  *
  */
 ?>
-<div class="tribe-block__tickets__item__attendee__fields__success">
+<div class="tribe-tickets__item__attendee__fields__success">
 	<?php esc_html_e( 'Attendee information has been saved.', 'event-tickets' ); ?>
 </div>

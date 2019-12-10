@@ -11,20 +11,21 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @version 4.11.0
  *
  */
-
-$ticket = $this->get( 'ticket' );
-
-$context = array(
-	'ticket' => $ticket,
+$is_mini = $this->get( 'is_mini' );
+$context = [
+	'ticket' => $this->get( 'ticket' ),
 	'key' => $this->get( 'key' ),
-);
+	'is_modal' => $this->get( 'is_modal' ),
+	'is_mini' => $is_mini,
+	'post_id' => $this->get( 'post_id' ),
+	'provider' => $this->get( 'provider' ),
+];
 ?>
-<div
-	class="tribe-block__tickets__item__content"
->
-	<?php $this->template( 'blocks/tickets/content-title', $context ); ?>
+<?php $this->template( 'blocks/tickets/content-title', $context ); ?>
+<?php if ( ! $is_mini ) : ?>
 	<?php $this->template( 'blocks/tickets/content-description', $context ); ?>
-</div>
+<?php endif; ?>
+<?php $this->template( 'blocks/tickets/extra', $context ); ?>

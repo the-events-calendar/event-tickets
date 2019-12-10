@@ -22,6 +22,14 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	public $default_page_slug = 'attendee-registration';
 
 	/**
+	 * The attendee modal option slug
+	 *
+	 * @since 4.11.0
+	 *
+	 */
+	public $modal_option_slug = 'ticket-attendee-modal';
+
+	/**
 	 * Retrieve the attendee registration slug
 	 *
 	 * @since 4.9
@@ -56,7 +64,37 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	public function is_on_page() {
 		global $wp_query;
 
-		return ! empty( $wp_query->query_vars[ $this->key_query_var ] ) ;
+		$ar_page_slug = $this->get_slug();
+
+		// Check for original redirect vars.
+		$on_original_redirect = ! empty( $wp_query->query_vars[ $this->key_query_var ] );
+
+		// Check for custom AR slug.
+		$on_custom_slug = tribe_get_request_var( 'pagename', '' ) === $ar_page_slug;
+
+		// Check for custom AR page.
+		$on_custom_page = ! empty( $wp_query->query_vars['pagename'] )
+			&& $ar_page_slug === $wp_query->query_vars['pagename'];
+
+		return  $on_original_redirect || $on_custom_slug || $on_custom_page;
+	}
+
+	/**
+	 * Returns whether the user is on the /cart/ REST API endpoint.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @return bool Whether the user is on the /cart/ REST API endpoint.
+	 */
+	public function is_cart_rest() {
+		if ( ! defined( 'REST_REQUEST' ) || ! REST_REQUEST || empty( $GLOBALS['wp']->query_vars['rest_route'] ) ) {
+			return false;
+		}
+
+		/** @var Tribe__Tickets__REST__V1__Endpoints__Cart $cart */
+		$cart = tribe( 'tickets.rest-v1.endpoints.cart' );
+
+		return $cart->is_active;
 	}
 
 	/**
@@ -160,6 +198,36 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-slug', false );
 
 		return get_page_by_path( $slug );
+	}
+
+	/**
+	 * Check if the modal is enabled.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param int|WP_Post|null $post The post (or its ID) we're testing. Defaults to null.
+	 *
+	 * @return boolean
+	 */
+	public function is_modal_enabled( $post = null ) {
+		/** @var $settings_manager Tribe__Settings_Manager */
+		$settings_manager = tribe( 'settings.manager' );
+
+		$event_tickets_plus = class_exists( 'Tribe__Tickets_Plus__Main' );
+
+		$option = $settings_manager::get_option( 'ticket-attendee-modal' );
+
+		$activate_modal = $event_tickets_plus && $option;
+
+		/**
+		 * Allow filtering of the modal setting, on a post-by-post basis if desired.
+		 *
+		 * @since 4.11.0
+		 *
+		 * @param boolean $option The option value from ticket settings.
+		 * @param int|WP_Post|null $post The passed post or null if none passed.
+		 */
+		return apply_filters( 'tribe_tickets_modal_setting', $activate_modal, $post );
 	}
 
 	/**
