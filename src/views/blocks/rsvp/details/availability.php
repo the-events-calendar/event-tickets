@@ -52,7 +52,7 @@ $show_unlimited = apply_filters( 'tribe_rsvp_block_show_unlimited_availability',
 		<span class="tribe-block__rsvp__no-stock"><?php esc_html_e( 'Out of stock!', 'event-tickets' ); ?></span>
 	<?php elseif ( $is_unlimited ) : ?>
 		<?php if ( $show_unlimited) : ?>
-			<span class="tribe-block__rsvp__unlimited"><?php esc_html_e( $handler->unlimited_term, 'event-tickets' ); ?></span>
+			<span class="tribe-block__rsvp__unlimited"><?php esc_html( $handler->unlimited_term ); ?></span>
 		<?php endif; ?>
 	<?php elseif ( $remaining_tickets <= $threshold ) : ?>
 		<span class="tribe-block__rsvp__quantity"><?php echo esc_html( $remaining_tickets ); ?> </span>
