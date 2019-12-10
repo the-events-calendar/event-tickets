@@ -107,10 +107,12 @@ if ( ! $already_rendered ) {
 				continue;
 			}
 
+			$ticket_id = $ticket->ID;
+
 			/** @var Tribe__Tickets__Tickets_Handler $handler */
 			$handler = tribe( 'tickets.handler' );
 
-			$available = $handler->get_ticket_max_purchase( $ticket->ID );
+			$available = $handler->get_ticket_max_purchase( $ticket_id );
 
 
 			/**
@@ -125,8 +127,8 @@ if ( ! $already_rendered ) {
 			$is_there_any_product_to_sell = 0 !== $available;
 			?>
 			<tr>
-				<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket->ID ); ?>">
-					<input type="hidden" name="product_id[]" value="<?php echo absint( $ticket->ID ); ?>">
+				<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket_id ); ?>">
+					<input type="hidden" name="product_id[]" value="<?php echo absint( $ticket_id ); ?>">
 					<?php if ( $is_there_any_product_to_sell ) : ?>
 						<input
 							type="number"
@@ -136,21 +138,21 @@ if ( ! $already_rendered ) {
 							<?php if ( -1 !== $available ) : ?>
 								max="<?php echo esc_attr( $available ); ?>"
 							<?php endif; ?>
-							name="quantity_<?php echo absint( $ticket->ID ); ?>"
+							name="quantity_<?php echo absint( $ticket_id ); ?>"
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>
 						<?php if ( -1 !== $available && $available <= $threshold ) : ?>
 							<span class="tribe-tickets-remaining">
-							<?php
-							$readable_amount = tribe_tickets_get_readable_amount( $available, null, false );
-							echo sprintf( esc_html__( '%1$s available', 'event-tickets' ), '<span class="available-stock" data-product-id="' . esc_attr( $ticket->ID ) . '">' . esc_html( $readable_amount ) . '</span>' );
-							?>
+								<?php $readable_amount = tribe_tickets_get_readable_amount( $available, null, false ); ?>
+								<span class="available-stock" data-product-id="<?php echo esc_attr( $ticket_id ); ?>">
+									<?php echo sprintf( esc_html__( '%1$s available', 'event-tickets' ), esc_html( $readable_amount ) ); ?>
+								</span>
 							</span>
 						<?php elseif ( $show_unlimited ): ?>
-							<?php echo sprintf( esc_html__( 'Unlimited', 'event-tickets' ), '<span class="available-stock" data-product-id="' . esc_attr( $ticket->ID ) . '">' . esc_html( $readable_amount ) . '</span>' ); ?>
+							<span class="available-stock" data-product-id="<?php echo esc_attr( $ticket_id ); ?>"><?php echo esc_html( $handler->unlimited_term ); ?></span>
 						<?php endif; ?>
-					<?php else: ?>
+					<?php elseif( ! $ticket->is_in_stock() ): ?>
 						<span class="tickets_nostock"><?php esc_html_e( 'Out of stock!', 'event-tickets' ); ?></span>
 					<?php endif; ?>
 				</td>
@@ -170,7 +172,7 @@ if ( ! $already_rendered ) {
 			 * @var bool|WP_Post                  Event ID
 			 * @var Tribe__Tickets__Ticket_Object
 			 */
-			do_action( 'event_tickets_rsvp_after_ticket_row', tribe_events_get_ticket_event( $ticket->id ), $ticket );
+			do_action( 'event_tickets_rsvp_after_ticket_row', tribe_events_get_ticket_event( $ticket_id ), $ticket );
 
 		}
 		?>
