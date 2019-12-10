@@ -134,7 +134,7 @@ $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_th
 							?>
 							</span>
 						<?php elseif ( $show_unlimited ): ?>
-							<?php echo sprintf( esc_html_-( '%1$s', 'event-tickets' ), '<span class="available-stock" data-product-id="' . esc_attr( $ticket->ID ) . '">' . esc_html( $readable_amount ) . '</span>' ); ?>
+							<span class="available-stock" data-product-id="<?php echo esc_attr( $ticket->ID ); ?>"><?php echo esc_html( $readable_amount ); ?></span>
 						<?php endif; ?>
 					<?php else: ?>
 						<span class="tickets_nostock"><?php esc_html_e( 'Out of stock!', 'event-tickets' ); ?></span>
