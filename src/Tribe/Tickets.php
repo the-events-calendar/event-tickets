@@ -1573,7 +1573,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			];
 
 			if ( ! is_admin() ) {
-				$ticket_urls = [ Tribe__Tickets__Tickets, 'get_asset_localize_data_for_cart_checkout_urls' ];
+				$ticket_urls = [ __CLASS__, 'get_asset_localize_data_for_cart_checkout_urls' ];
 			}
 
 			tribe_asset(

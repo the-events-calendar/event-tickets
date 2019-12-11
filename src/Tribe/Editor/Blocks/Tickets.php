@@ -109,11 +109,11 @@ extends Tribe__Editor__Blocks__Abstract {
 				'localize'     => [
 					[
 						'name' => 'TribeTicketOptions',
-						'data' => [ __CLASS__, 'get_asset_localize_data_for_ticket_options' ],
+						'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_ticket_options' ],
 					],
 					[
 						'name' => 'TribeCurrency',
-						'data' => [ Tribe__Tickets__Tickets, 'get_asset_localize_data_for_currencies' ],
+						'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_currencies' ],
 					],
 					[
 						'name' => 'TribeCartEndpoint',
@@ -127,7 +127,7 @@ extends Tribe__Editor__Blocks__Abstract {
 					],
 					[
 						'name' => 'TribeTicketsURLs',
-						'data' => [ Tribe__Tickets__Tickets, 'get_asset_localize_data_for_cart_checkout_urls' ],
+						'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_cart_checkout_urls' ],
 					],
 				],
 			]
