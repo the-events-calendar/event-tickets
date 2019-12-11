@@ -82,90 +82,58 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return void
 	 */
 	public function assets() {
-		$plugin    = Tribe__Tickets__Main::instance();
-		$providers = tribe( 'tickets.data_api' )->get_providers_for_post( null );
-		$currency  = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $providers, null );
+		$plugin = Tribe__Tickets__Main::instance();
 
 		wp_register_script(
-			'wp-utils',
+			'wp-util-not-in-footer',
 			includes_url( '/js/wp-util.js' ),
 			[ 'jquery', 'underscore' ],
 			false,
 			false
 		);
 
-		wp_enqueue_script( 'wp-utils' );
+		wp_enqueue_script( 'wp-util-not-in-footer' );
 
-		$cart_urls                   = [];
-		$checkout_urls               = [];
-		$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 60000 );
+		if ( ! empty( Tribe__Tickets__Tickets::$frontend_script_enqueued ) ) {
+			return;
+		}
 
-		if ( empty( Tribe__Tickets__Tickets::$frontend_script_enqueued ) ) {
-			if ( ! is_admin() ) {
-				/**
-				 * Allow providers to add their own checkout URL to the localized list.
-				 *
-				 * @since 4.11.0
-				 *
-				 * @param array $checkout_urls An array to add urls to.
-				 */
-				$checkout_urls = apply_filters( 'tribe_tickets_checkout_urls', $checkout_urls );
-
-				/**
-				 * Allow providers to add their own cart URL to the localized list.
-				 *
-				 * @since 4.11.0
-				 *
-				 * @param array $cart_urls An array to add urls to.
-				 */
-				$cart_urls = apply_filters( 'tribe_tickets_cart_urls', $cart_urls );
-			}
-
-			tribe_asset(
-				$plugin,
-				'tribe-tickets-gutenberg-tickets',
-				'tickets-block.js',
-				[ 'jquery', 'jquery-ui-datepicker', 'wp-utils', 'wp-i18n' ],
-				null,
-				[
-					'type'         => 'js',
-					'localize'     => [
-						[
-							'name' => 'TribeTicketOptions',
-							'data' => [
-								'ajaxurl'                     => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-								'availability_check_interval' => $availability_check_interval,
-							],
-						],
-						[
-							'name' => 'TribeCurrency',
-							'data' => [
-								'formatting' => json_encode( $currency ),
-							],
-						],
-						[
-							'name' => 'TribeCartEndpoint',
-							'data' => [
-								'url' => tribe_tickets_rest_url( '/cart/' ),
-							],
-						],
-						[
-							'name' => 'TribeMessages',
-							'data' => $this->set_messages(),
-						],
-						[
-							'name' => 'TribeTicketsURLs',
-							'data' => [
-								'cart'     => $cart_urls,
-								'checkout' => $checkout_urls,
-							],
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-gutenberg-tickets',
+			'tickets-block.js',
+			[ 'jquery', 'jquery-ui-datepicker', 'wp-util-not-in-footer', 'wp-i18n' ],
+			null,
+			[
+				'type'         => 'js',
+				'localize'     => [
+					[
+						'name' => 'TribeTicketOptions',
+						'data' => [ __CLASS__, 'get_asset_localize_data_for_ticket_options' ],
+					],
+					[
+						'name' => 'TribeCurrency',
+						'data' => [ Tribe__Tickets__Tickets, 'get_asset_localize_data_for_currencies' ],
+					],
+					[
+						'name' => 'TribeCartEndpoint',
+						'data' => [
+							'url' => tribe_tickets_rest_url( '/cart/' ),
 						],
 					],
-				]
-			);
+					[
+						'name' => 'TribeMessages',
+						'data' => $this->set_messages(),
+					],
+					[
+						'name' => 'TribeTicketsURLs',
+						'data' => [ Tribe__Tickets__Tickets, 'get_asset_localize_data_for_cart_checkout_urls' ],
+					],
+				],
+			]
+		);
 
-			Tribe__Tickets__Tickets::$frontend_script_enqueued = true;
-		}
+		Tribe__Tickets__Tickets::$frontend_script_enqueued = true;
 	}
 
 	/**
