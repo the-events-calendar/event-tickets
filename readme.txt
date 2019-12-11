@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.11.0.1] 2019-12-11 =
+
+* Fix - Make get_tickets() protected to avoid errors with it not being public before upgrading ET+ [138385]
+
 = [4.11] 2019-12-10 =
 
 * Feature - Add ability to utilize the block ticket template outside of Gutenberg views [132568]
