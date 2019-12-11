@@ -16,6 +16,8 @@ class AttendeeArchiveSearchCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_searching_attendees( Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'editor' );
+
 		$titles    = [
 			'foo',
 			'foo bar',

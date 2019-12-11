@@ -17,6 +17,8 @@ class AttendeeArchiveByOrderStatusCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_filtering_attendees_by_order_status( \Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'editor' );
+
 		$rsvp_post                     = $I->havePostInDatabase();
 		$rsvp_ticket                   = $this->create_rsvp_ticket( $rsvp_post );
 		$rsvp_yes_attendee             = $this->create_attendee_for_ticket( $rsvp_ticket, $rsvp_post, [ 'rsvp_status' => 'yes' ] );

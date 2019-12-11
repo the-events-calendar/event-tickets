@@ -18,6 +18,8 @@ class AttendeeArchiveByEventStatusCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_filtering_attendees_by_related_post_status( \Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'editor' );
+
 		$public         = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'publish' ] );
 		$private        = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'private' ] );
 		$draft          = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'draft' ] );
@@ -85,6 +87,8 @@ class AttendeeArchiveByEventStatusCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_users_that_can_read_private_posts_to_read_attendees_from_any_post_status( \Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'editor' );
+
 		$public         = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'publish' ] );
 		$private        = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'private' ] );
 		$draft          = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'draft' ] );

@@ -16,6 +16,8 @@ class AttendeeArchiveCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_getting_all_attendees( Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'editor' );
+
 		$code = file_get_contents( codecept_data_dir( 'REST/V1/mu-plugins/test-attendees.php' ) );
 		$I->haveMuPlugin( 'test-attendees.php', $code );
 		$post_ids = $I->haveManyPostsInDatabase( 2 );
@@ -67,6 +69,8 @@ class AttendeeArchiveCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_return_empty_array_if_no_attendees_are_found( Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'editor' );
+
 		$code = file_get_contents( codecept_data_dir( 'REST/V1/mu-plugins/test-attendees.php' ) );
 		$I->haveMuPlugin( 'test-attendees.php', $code );
 
@@ -93,6 +97,8 @@ class AttendeeArchiveCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_show_private_attendees_to_users_that_can_read_private_posts( Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'editor' );
+
 		$code = file_get_contents( codecept_data_dir( 'REST/V1/mu-plugins/test-attendees.php' ) );
 		$I->haveMuPlugin( 'test-attendees.php', $code );
 		// 2 posts, 1 ticket per post, 4 attendees per ticket = 8 attendees (2 public, 6 private)

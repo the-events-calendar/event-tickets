@@ -17,6 +17,8 @@ class AttendeeArchiveByPriceCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_getting_attendees_by_include_price( \Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'editor' );
+
 		$post_id            = $I->havePostInDatabase();
 		$rsvp_ticket_id     = $this->create_rsvp_ticket( $post_id );
 		$paypal_ticket_id_1 = $this->create_paypal_ticket( 2, 3 );
