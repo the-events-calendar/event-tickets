@@ -69,7 +69,7 @@ trait Attendee_Maker {
 
 		$user_id = absint( Arr::get( $overrides, 'user_id', 0 ) );
 
-		$user_info = $this->get_data_for_name_props( $user_id );
+		$user_info = $this->get_data_for_name_props( $user_id, $overrides );
 
 		$meta = [
 			$provider->checkin_key              => (bool) Arr::get( $overrides, 'checkin', false ),
