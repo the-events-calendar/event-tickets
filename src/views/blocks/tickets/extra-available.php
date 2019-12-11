@@ -33,9 +33,41 @@ $available = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
 if ( -1 === $available ) {
 	return;
 }
+
+$post_id   = $this->get( 'post_id' );
+
+/** @var Tribe__Settings_Manager $settings_manager */
+$settings_manager = tribe( 'settings.manager' );
+
+$threshold = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', null );
+
+/**
+ * Overwrites the threshold to display "# tickets left".
+ *
+ * @param int   $threshold Stock threshold to trigger display of "# tickets left"
+ * @param array $data      Ticket data.
+ * @param int   $post_id   WP_Post/Event ID.
+ *
+ * @since TBD
+ */
+$threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_threshold', $threshold, $post_id ) );
+$available = $ticket->available();
+
+/**
+ * Allows hiding of "unlimited" to be toggled on/off conditionally.
+ *
+ * @param int   $show_unlimited allow showing of "unlimited".
+ *
+ * @since TBD
+ */
+$show_unlimited = apply_filters( 'tribe_tickets_block_show_unlimited_availability', false, $available );
 ?>
 <div
 	class="tribe-common-b3 tribe-tickets__item__extra__available"
 >
-	<?php $this->template( 'blocks/tickets/extra-available-quantity', [ 'ticket' => $ticket, 'available' => $available ] ); ?>
+	<?php if ( $show_unlimited ) : ?>
+		<?php $this->template( 'blocks/tickets/extra-available-unlimited', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
+	<?php elseif ( null === $threshold || $available <= $threshold ) : ?>
+		<?php $this->template( 'blocks/tickets/extra-available-quantity', [ 'ticket' => $ticket, 'available' => $available ] ); ?>
+	<?php endif; ?>
 </div>

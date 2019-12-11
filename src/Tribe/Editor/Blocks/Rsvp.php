@@ -241,8 +241,8 @@ extends Tribe__Editor__Blocks__Abstract {
 			wp_send_json_error( $response );
 		}
 
-        /** @var Tribe__Tickets__RSVP $rsvp */
-        $rsvp        = tribe( 'tickets.rsvp' );
+		/** @var Tribe__Tickets__RSVP $rsvp */
+		$rsvp        = tribe( 'tickets.rsvp' );
 		$has_tickets = false;
 		$event       = $rsvp->get_event_for_ticket( $ticket_id );
 		$post_id     = $event->ID;
@@ -271,7 +271,7 @@ extends Tribe__Editor__Blocks__Abstract {
 			}
 
 			$has_tickets |= $rsvp->generate_tickets_for( $product_id, $ticket_qty, $attendee_details );
-        }
+		}
 
 		$order_id              = $attendee_details['order_id'];
 		$attendee_order_status = $attendee_details['order_status'];
