@@ -130,6 +130,11 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Add filter for `ticket-display-tickets-left-threshold` to tickets and RSVP block. Added new filters to allow showing "Unlimited" on unlimited tickets [130660]
 * Fix - If running WP 5.3+, add `show_in_rest` as an array configuration for capacity and the RSVP not going fields so that they save properly. [137875]
 
+= [4.11.0.1] 2019-12-11 =
+
+* Fix - Avoid running extra unnecessary queries when registering assets [138390]
+* Fix - Make get_tickets() protected to avoid errors with it not being public before upgrading ET+ [138385]
+
 = [4.11] 2019-12-10 =
 
 * Feature - Add ability to utilize the block ticket template outside of Gutenberg views [132568]
