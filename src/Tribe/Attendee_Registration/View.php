@@ -200,17 +200,17 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			return false;
 		}
 
-		if (
-			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === get_class( $post_provider )
-		) {
-			/** @var \Tribe__Tickets_Plus__Commerce__WooCommerce__Main $provider */
-			$provider = tribe( 'tickets-plus.commerce.woo' );
-		} elseif (
-			'Tribe__Tickets_Plus__Commerce__EDD__Main' === get_class( $post_provider )
-		) {
-			/** @var \Tribe__Tickets_Plus__Commerce__EDD__Main $provider */
-			$provider = tribe( 'tickets-plus.commerce.edd' );
-		} else {
+		try {
+			if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === get_class( $post_provider ) ) {
+				/** @var \Tribe__Tickets_Plus__Commerce__WooCommerce__Main $provider */
+				$provider = tribe( 'tickets-plus.commerce.woo' );
+			} elseif ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === get_class( $post_provider ) ) {
+				/** @var \Tribe__Tickets_Plus__Commerce__EDD__Main $provider */
+				$provider = tribe( 'tickets-plus.commerce.edd' );
+			} else {
+				return;
+			}
+		} catch ( RuntimeException $exception ) {
 			return;
 		}
 
