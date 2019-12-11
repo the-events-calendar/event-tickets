@@ -626,7 +626,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return Tribe__Tickets__Ticket_Object[] List of ticket objects.
 		 */
-		public function get_tickets( $post_id ) {}
+		protected function get_tickets( $post_id ) {}
 
 		/**
 		 * Get attendees for a Post ID / Post type.
