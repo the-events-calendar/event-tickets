@@ -18,11 +18,9 @@ class AttendeeArchiveByEventStatusCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_filtering_attendees_by_related_post_status( \Restv1Tester $I ) {
-		$I->generate_nonce_for_role( 'editor' );
-
-		$public         = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'publish' ] );
-		$private        = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'private' ] );
-		$draft          = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'draft' ] );
+		$public         = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'publish', 'meta' => [ '_tribe_hide_attendees_list' => 1 ] ] );
+		$private        = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'private', 'meta' => [ '_tribe_hide_attendees_list' => 1 ] ] );
+		$draft          = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'draft', 'meta' => [ '_tribe_hide_attendees_list' => 1 ] ] );
 		$i              = 0;
 		$attendee_maker = function ( $acc, $post_id ) use ( &$i ) {
 			$ticket_id = $i ++ % 2 === 0
@@ -87,8 +85,6 @@ class AttendeeArchiveByEventStatusCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_users_that_can_read_private_posts_to_read_attendees_from_any_post_status( \Restv1Tester $I ) {
-		$I->generate_nonce_for_role( 'editor' );
-
 		$public         = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'publish' ] );
 		$private        = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'private' ] );
 		$draft          = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'draft' ] );
