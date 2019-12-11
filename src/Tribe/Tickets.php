@@ -1557,6 +1557,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param array $tickets
 		 */
 		public static function add_frontend_stock_data( array $tickets ) {
+			if ( is_admin() ) {
+				return;
+			}
+
 			/*
 			 * Add the frontend ticket form script as needed (we do this lazily since right now),
 			 * it's only required for certain combinations of event/ticket.
@@ -1567,20 +1571,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$plugin = Tribe__Tickets__Main::instance();
 
-			$ticket_urls = [
-				'cart'     => [],
-				'checkout' => [],
-			];
-
-			if ( ! is_admin() ) {
-				$ticket_urls = [ __CLASS__, 'get_asset_localize_data_for_cart_checkout_urls' ];
-			}
+			wp_enqueue_script( 'wp-util' );
 
 			tribe_asset(
 				$plugin,
 				'tribe_tickets_frontend_tickets',
 				'frontend-ticket-form.js',
-				[ 'jquery', 'wp-util' ],
+				[ 'jquery' ],
 				null,
 				[
 					'type'         => 'js',
@@ -1605,7 +1602,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 						],
 						[
 							'name' => 'TribeTicketsURLs',
-							'data' => $ticket_urls,
+							'data' => [ __CLASS__, 'get_asset_localize_data_for_cart_checkout_urls' ],
 						],
 					],
 				]

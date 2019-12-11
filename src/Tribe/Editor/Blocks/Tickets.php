@@ -94,10 +94,6 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		wp_enqueue_script( 'wp-util-not-in-footer' );
 
-		if ( ! empty( Tribe__Tickets__Tickets::$frontend_script_enqueued ) ) {
-			return;
-		}
-
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-tickets',
@@ -154,7 +150,6 @@ extends Tribe__Editor__Blocks__Abstract {
 		if ( empty( $tickets ) ) {
 			wp_send_json_error( $response );
 		}
-
 
 		// Parse the tickets and create the array for the response
 		foreach ( $tickets as $ticket_id ) {
