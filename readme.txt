@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.9
 Tested up to: 5.3
-Stable tag: 4.11.0
+Stable tag: 4.11.0.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -116,6 +116,11 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.11.0.1] 2019-12-11 =
+
+* Fix - Avoid running extra unnecessary queries when registering assets [138390]
+* Fix - Make `Tribe__Tickets__Tickets::get_tickets()` protected to avoid errors with it not being public before upgrading ET+ [138385]
 
 = [4.11] 2019-12-10 =
 

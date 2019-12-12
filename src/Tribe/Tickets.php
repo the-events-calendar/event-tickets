@@ -626,7 +626,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return Tribe__Tickets__Ticket_Object[] List of ticket objects.
 		 */
-		public function get_tickets( $post_id ) {}
+		protected function get_tickets( $post_id ) {}
 
 		/**
 		 * Get attendees for a Post ID / Post type.
@@ -1557,84 +1557,136 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param array $tickets
 		 */
 		public static function add_frontend_stock_data( array $tickets ) {
-			wp_enqueue_script( 'wp-util' );
-
-			// Add the frontend ticket form script as needed (we do this lazily since right now
-			// it's only required for certain combinations of event/ticket
-			$plugin                      = Tribe__Tickets__Main::instance();
-			$providers                   = tribe( 'tickets.data_api' )->get_providers_for_post( null );
-			$currency                    = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $providers, null );
-			$cart_urls                   = [];
-			$checkout_urls               = [];
-			$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 60000 );
-
-			if ( empty( self::$frontend_script_enqueued ) ) {
-				if ( ! is_admin() ) {
-					/**
-					 * Allow providers to add their own checkout URL to the localized list.
-					 *
-					 * @since 4.11.0
-					 *
-					 * @param array $checkout_urls An array to add urls to.
-					 */
-					$checkout_urls = apply_filters( 'tribe_tickets_checkout_urls', $checkout_urls );
-
-					/**
-					 * Allow providers to add their own cart URL to the localized list.
-					 *
-					 * @since 4.11.0
-					 *
-					 * @param array $cart_urls An array to add urls to.
-					 */
-					$cart_urls = apply_filters( 'tribe_tickets_cart_urls', $cart_urls );
-				}
-
-				tribe_asset(
-					$plugin,
-					'tribe_tickets_frontend_tickets',
-					'frontend-ticket-form.js',
-					[ 'jquery' ],
-					null,
-					[
-						'type'         => 'js',
-						'localize'     => [
-							[
-								'name' => 'TribeTicketOptions',
-								'data' => [
-									'ajaxurl'                     => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-									'availability_check_interval' => $availability_check_interval,
-								],
-							],
-							[
-								'name' => 'TribeCurrency',
-								'data' => [
-									'formatting' => json_encode( $currency ),
-								],
-							],
-							[
-								'name' => 'TribeCartEndpoint',
-								'data' => [
-									'url' => tribe_tickets_rest_url( '/cart/' ),
-								],
-							],
-							[
-								'name' => 'TribeMessages',
-								'data' => self::set_messages(),
-							],
-							[
-								'name' => 'TribeTicketsURLs',
-								'data' => [
-									'cart'     => $cart_urls,
-									'checkout' => $checkout_urls,
-								],
-							],
-						],
-					]
-				);
+			if ( is_admin() ) {
+				return;
 			}
 
+			/*
+			 * Add the frontend ticket form script as needed (we do this lazily since right now),
+			 * it's only required for certain combinations of event/ticket.
+			 */
+			if ( ! empty( self::$frontend_script_enqueued ) ) {
+				return;
+			}
+
+			$plugin = Tribe__Tickets__Main::instance();
+
+			wp_enqueue_script( 'wp-util' );
+
+			tribe_asset(
+				$plugin,
+				'tribe_tickets_frontend_tickets',
+				'frontend-ticket-form.js',
+				[ 'jquery' ],
+				null,
+				[
+					'type'         => 'js',
+					'localize'     => [
+						[
+							'name' => 'TribeTicketOptions',
+							'data' => [ __CLASS__, 'get_asset_localize_data_for_ticket_options' ],
+						],
+						[
+							'name' => 'TribeCurrency',
+							'data' => [ __CLASS__, 'get_asset_localize_data_for_currencies' ],
+						],
+						[
+							'name' => 'TribeCartEndpoint',
+							'data' => [
+								'url' => tribe_tickets_rest_url( '/cart/' ),
+							],
+						],
+						[
+							'name' => 'TribeMessages',
+							'data' => self::set_messages(),
+						],
+						[
+							'name' => 'TribeTicketsURLs',
+							'data' => [ __CLASS__, 'get_asset_localize_data_for_cart_checkout_urls' ],
+						],
+					],
+				]
+			);
+
 			tribe_asset_enqueue( 'tribe_tickets_frontend_tickets' );
+
 			self::$frontend_script_enqueued = true;
+		}
+
+		/**
+		 * Get JS localize data for ticket options.
+		 *
+		 * @since 4.11.0.1
+		 *
+		 * @return array JS localize data for ticket options.
+		 */
+		public static function get_asset_localize_data_for_ticket_options() {
+			/**
+			 * Allow filtering how often tickets availability is checked.
+			 *
+			 * @since 4.11.0
+			 *
+			 * @param int $availability_check_interval How often to check availability for tickets.
+			 */
+			$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 60000 );
+
+			return [
+				'ajaxurl'                     => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+				'availability_check_interval' => $availability_check_interval,
+			];
+		}
+
+		/**
+		 * Get JS localize data for currencies.
+		 *
+		 * @since 4.11.0.1
+		 *
+		 * @return array JS localize data for currencies.
+		 */
+		public static function get_asset_localize_data_for_currencies() {
+			/** @var Tribe__Tickets__Commerce__Currency $currency */
+			$currency = tribe( 'tickets.commerce.currency' );
+
+			$currencies = $currency->get_currency_config_for_providers();
+
+			return [
+				'formatting' => json_encode( $currencies ),
+			];
+		}
+
+		/**
+		 * Get JS localize data for cart/checkout URLs.
+		 *
+		 * @since 4.11.0.1
+		 *
+		 * @return array JS localize data for cart/checkout URLs.
+		 */
+		public static function get_asset_localize_data_for_cart_checkout_urls() {
+			$cart_urls     = [];
+			$checkout_urls = [];
+
+			/**
+			 * Allow providers to add their own checkout URL to the localized list.
+			 *
+			 * @since 4.11.0
+			 *
+			 * @param array $checkout_urls An array to add urls to.
+			 */
+			$checkout_urls = apply_filters( 'tribe_tickets_checkout_urls', $checkout_urls );
+
+			/**
+			 * Allow providers to add their own cart URL to the localized list.
+			 *
+			 * @since 4.11.0
+			 *
+			 * @param array $cart_urls An array to add urls to.
+			 */
+			$cart_urls = apply_filters( 'tribe_tickets_cart_urls', $cart_urls );
+
+			return [
+				'cart'     => $cart_urls,
+				'checkout' => $checkout_urls,
+			];
 		}
 
 		/**
