@@ -4,7 +4,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.11.0.1';
+	const VERSION = '4.11.1';
 
 	/**
 	 * Min required The Events Calendar version
@@ -317,13 +317,11 @@ class Tribe__Tickets__Main {
 	 * Load Text Domain on tribe_common_loaded as it requires common
 	 *
 	 * @since 4.10
-	 *
 	 */
 	public function bootstrap() {
-
 		Tribe__Main::instance( $this )->load_text_domain( 'event-tickets', $this->plugin_dir . 'lang/' );
 
-		// Intialize the Service Provider for Tickets
+		// Initialize the Service Provider for Tickets
 		tribe_register_provider( 'Tribe__Tickets__Service_Provider' );
 
 		$this->hooks();
@@ -339,13 +337,13 @@ class Tribe__Tickets__Main {
 		Tribe__Tickets__JSON_LD__Order::hook();
 		Tribe__Tickets__JSON_LD__Type::hook();
 
+		/** @var Tribe__Tickets__Privacy */
 		tribe( 'tickets.privacy' );
 
 		/**
 		 * Fires once Event Tickets has completed basic setup.
 		 */
 		do_action( 'tribe_tickets_plugin_loaded' );
-
 	}
 
 	/**
@@ -546,7 +544,7 @@ class Tribe__Tickets__Main {
 		// Setup Front End Display
 		add_action( 'tribe_events_inside_cost', 'tribe_tickets_buy_button', 10, 0 );
 
-		// Hook to oembeds
+		// Hook to oEmbeds
 		add_action( 'tribe_events_embed_after_the_cost_value', [ $this, 'inject_buy_button_into_oembed' ] );
 		add_action( 'embed_head', [ $this, 'embed_head' ] );
 
@@ -575,7 +573,15 @@ class Tribe__Tickets__Main {
 			add_filter( 'tribe_event_import_rsvp_column_names', [ Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ] );
 		}
 
-		// Load our assets
+		/**
+		 * Load our assets.
+		 *
+		 * @see \Tribe__Tickets__Assets::enqueue_scripts()
+		 * @see \Tribe__Tickets__Assets::admin_enqueue_scripts()
+		 * @see \Tribe__Tickets__Assets::enqueue_editor_scripts()
+		 * @see \Tribe__Tickets__Assets::add_data_strings()
+		 */
+
 		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'enqueue_scripts' ) );
 		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'admin_enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', tribe_callback( 'tickets.assets', 'enqueue_editor_scripts' ) );
@@ -916,7 +922,7 @@ class Tribe__Tickets__Main {
 
 		$button_text = $has_non_rsvp ? __( 'Buy', 'event-tickets' ) : tribe_get_rsvp_label_singular( 'button_text' );
 		/**
-		 * Filters the text that appears in the buy/rsvp button on event oembeds
+		 * Filters the text that appears in the buy/rsvp button on event oEmbeds
 		 *
 		 * @var string The button text
 		 * @var int Event ID
@@ -930,7 +936,7 @@ class Tribe__Tickets__Main {
 		$buy_button = ob_get_clean();
 
 		/**
-		 * Filters the buy button that appears on event oembeds
+		 * Filters the buy button that appears on event oEmbeds
 		 *
 		 * @var string The button markup
 		 * @var int Event ID

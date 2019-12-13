@@ -4,9 +4,13 @@ class Tribe__Tickets__Assets {
 	 * Enqueue scripts for front end
 	 *
 	 * @since 4.6
+	 * @since TBD Only load if in a tickets-enabled post context.
+	 *
+	 * @see   \tribe_tickets_is_enabled_post_context()
 	 */
 	public function enqueue_scripts() {
-		$tickets_main = Tribe__Tickets__Main::instance();
+		/** @var Tribe__Tickets__Main $tickets_main */
+		$tickets_main = tribe( 'tickets.main' );
 
 		tribe_assets(
 			$tickets_main,
@@ -18,7 +22,10 @@ class Tribe__Tickets__Assets {
 				[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
 				[ 'event-tickets-details-js', 'ticket-details.js', [] ],
 			],
-			'wp_enqueue_scripts'
+			'wp_enqueue_scripts',
+			[
+				'conditionals' => 'tribe_tickets_is_enabled_post_context',
+			]
 		);
 
 		// Tickets registration page styles
@@ -155,7 +162,7 @@ class Tribe__Tickets__Assets {
 		$modules = Tribe__Tickets__Tickets::modules();
 
 		// For the metabox
-		return ! empty( $post ) && ! empty( $modules ) && in_array( $post->post_type, tribe( 'tickets.main' )->post_types() );
+		return ! empty( $post ) && ! empty( $modules ) && in_array( $post->post_type, tribe( 'tickets.main' )->post_types(), true );
 	}
 
 	/**
@@ -166,10 +173,13 @@ class Tribe__Tickets__Assets {
 	 * @return bool
 	 */
 	protected function is_editing_ticketable_post() {
-		$context    = tribe( 'context' );
-		$post_types = tribe( 'tickets.main' )->post_types();
+		/** @var Tribe__Context $context */
+		$context = tribe( 'context' );
 
-		return $context->is_editing_post( $post_types );
+		/** @var Tribe__Tickets__Main $main */
+		$main = tribe( 'tickets.main' );
+
+		return $context->is_editing_post( $main->post_types() );
 	}
 
 	/**

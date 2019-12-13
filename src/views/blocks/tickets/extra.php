@@ -11,11 +11,16 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.11.0
+ * @since TBD Changed some HTML class names.
  *
+ * @version TBD
+ *
+ * @var Tribe__Tickets__Editor__Template $this
  */
 
+/** @var Tribe__Tickets__Ticket_Object $ticket */
 $ticket = $this->get( 'ticket' );
+
 $is_mini = $this->get( 'is_mini' );
 
 $context = [

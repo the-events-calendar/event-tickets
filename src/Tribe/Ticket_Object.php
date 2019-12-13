@@ -557,10 +557,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return -1;
 			}
 
+			/** @var Tribe__Tickets__Status__Manager $status_mgr */
+			$status_mgr = tribe( 'tickets.status' );
+
 			// Fetch the Attendees
 			$attendees = $this->provider->get_attendees_by_id( $this->ID );
 			$attendees_count = 0;
-			$not_going_arr = tribe( 'tickets.status' )->get_statuses_by_action( 'count_not_going', 'rsvp' );
+			$not_going_arr = $status_mgr->get_statuses_by_action( 'count_not_going', 'rsvp' );
 
 			// Loop on All the attendees, allowing for some filtering of which will be removed or not
 			foreach ( $attendees as $attendee ) {
@@ -634,6 +637,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Provides the quantity of Available tickets based on the Attendees number
 		 *
 		 * @todo   Create a way to get the Available for an Event (currently impossible)
+		 *
+		 * @see \Tribe__Tickets__Tickets_Handler::get_ticket_max_purchase() Use instead to get the front-end quantity.
 		 *
 		 * @since  4.6
 		 *
