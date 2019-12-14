@@ -18,9 +18,9 @@ class AttendeeArchiveByEventStatusCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_filtering_attendees_by_related_post_status( \Restv1Tester $I ) {
-		$public         = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'publish', 'meta' => [ '_tribe_hide_attendees_list' => 1 ] ] );
-		$private        = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'private', 'meta' => [ '_tribe_hide_attendees_list' => 1 ] ] );
-		$draft          = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'draft', 'meta' => [ '_tribe_hide_attendees_list' => 1 ] ] );
+		$public         = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'publish' ] );
+		$private        = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'private' ] );
+		$draft          = $I->haveManyPostsInDatabase( 2, [ 'post_status' => 'draft' ] );
 		$i              = 0;
 		$attendee_maker = function ( $acc, $post_id ) use ( &$i ) {
 			$ticket_id = $i ++ % 2 === 0

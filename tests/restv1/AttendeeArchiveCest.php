@@ -18,7 +18,7 @@ class AttendeeArchiveCest extends BaseRestCest {
 	public function should_allow_getting_all_attendees( Restv1Tester $I ) {
 		$code = file_get_contents( codecept_data_dir( 'REST/V1/mu-plugins/test-attendees.php' ) );
 		$I->haveMuPlugin( 'test-attendees.php', $code );
-		$post_ids = $I->haveManyPostsInDatabase( 2, [ 'meta' => [ '_tribe_hide_attendees_list' => 1 ] ] );
+		$post_ids = $I->haveManyPostsInDatabase( 2 );
 		// 2 posts, 2 tickets per post, 2 attendees per ticket => 4 tickets, 8 attendees
 		$attendees_and_tickets = array_reduce( $post_ids, function ( array $acc, int $post_id ) {
 			$acc[ $post_id ]['tickets']   = $ticket_ids = $this->create_many_rsvp_tickets( 2, $post_id );
@@ -96,7 +96,7 @@ class AttendeeArchiveCest extends BaseRestCest {
 		$code = file_get_contents( codecept_data_dir( 'REST/V1/mu-plugins/test-attendees.php' ) );
 		$I->haveMuPlugin( 'test-attendees.php', $code );
 		// 2 posts, 1 ticket per post, 4 attendees per ticket = 8 attendees (2 public, 6 private)
-		$post_ids  = $I->haveManyPostsInDatabase( 2, [ 'meta' => [ '_tribe_hide_attendees_list' => 1 ] ] );
+		$post_ids  = $I->haveManyPostsInDatabase( 2 );
 		$public    = [];
 		$private   = [];
 		$attendees = array_reduce( $post_ids, function ( array $acc, $post_id ) use ( &$public, &$private ) {

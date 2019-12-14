@@ -17,11 +17,11 @@ class AttendeeArchiveByOrderStatusCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_filtering_attendees_by_order_status( \Restv1Tester $I ) {
-		$rsvp_post                     = $I->havePostInDatabase( [ 'meta' => [ '_tribe_hide_attendees_list' => 1 ] ] );
+		$rsvp_post                     = $I->havePostInDatabase();
 		$rsvp_ticket                   = $this->create_rsvp_ticket( $rsvp_post );
 		$rsvp_yes_attendee             = $this->create_attendee_for_ticket( $rsvp_ticket, $rsvp_post, [ 'rsvp_status' => 'yes' ] );
 		$rsvp_no_attendee              = $this->create_attendee_for_ticket( $rsvp_ticket, $rsvp_post, [ 'rsvp_status' => 'no' ] );
-		$paypal_post                   = $I->havePostInDatabase( [ 'meta' => [ '_tribe_hide_attendees_list' => 1 ] ] );
+		$paypal_post                   = $I->havePostInDatabase();
 		$paypal_ticket                 = $this->create_paypal_ticket( $paypal_post, 2 );
 		$paypal_completed_attendee     = $this->create_attendee_for_ticket( $paypal_ticket, $paypal_post, [ '_tribe_tpp_status' => 'completed' ] );
 		$paypal_not_completed_attendee = $this->create_attendee_for_ticket( $paypal_ticket, $paypal_post, [ '_tribe_tpp_status' => 'not-completed' ] );
