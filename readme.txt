@@ -122,12 +122,13 @@ Currently, the following add-ons are available for Event Tickets:
 * Feature - Use the same loading icon for the RSVP block that we're using for the tickets block. [135660]
 * Tweak - Added `tribe_tickets_is_enabled_post_context()` function [124403]
 * Tweak - Avoid loading plugin assets on post types that are not tickets-enabled post types [124403]
+* Tweak - Add filter for `ticket-display-tickets-left-threshold` to tickets and RSVP block. Added new filters to allow showing "Unlimited" on unlimited tickets [130660]
 * Fix - Fix the header image attachment handling for RSVP blocks [137243]
 * Fix - Ensure that tickets without an end date set in the Classic editor get set to end at the start of an event per the tooltip [125969]
 * Fix - Overriding the maximum purchase quantity (the `tribe_tickets_get_ticket_max_purchase` filter) now works in all contexts [133432]
 * Fix - Prevent duplicate blocks on provider change. Add logic to test current provider against event default provider. [137925]
-* Tweak - Add filter for `ticket-display-tickets-left-threshold` to tickets and RSVP block. Added new filters to allow showing "Unlimited" on unlimited tickets [130660]
 * Fix - If running WP 5.3+, add `show_in_rest` as an array configuration for capacity and the RSVP not going fields so that they save properly. [137875]
+* Fix - Gracefully handle enter key in modal form to prevent missing data when submitting. [136595]
 
 = [4.11.0.1] 2019-12-11 =
 
