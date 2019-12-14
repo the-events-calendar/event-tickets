@@ -407,7 +407,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			$this->attendee_to_event_keys(),
 			'=',
 			'_tribe_hide_attendees_list',
-			1
+			1,
+			true
 		);
 	}
 
