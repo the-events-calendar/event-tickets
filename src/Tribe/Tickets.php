@@ -1616,7 +1616,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get JS localize data for ticket options.
 		 *
-		 * @since TBD
+		 * @since 4.11.0.1
 		 *
 		 * @return array JS localize data for ticket options.
 		 */
@@ -1639,7 +1639,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get JS localize data for currencies.
 		 *
-		 * @since TBD
+		 * @since 4.11.0.1
 		 *
 		 * @return array JS localize data for currencies.
 		 */
@@ -1657,7 +1657,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get JS localize data for cart/checkout URLs.
 		 *
-		 * @since TBD
+		 * @since 4.11.0.1
 		 *
 		 * @return array JS localize data for cart/checkout URLs.
 		 */

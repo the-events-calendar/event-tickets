@@ -133,7 +133,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.11.0.1] 2019-12-11 =
 
 * Fix - Avoid running extra unnecessary queries when registering assets [138390]
-* Fix - Make get_tickets() protected to avoid errors with it not being public before upgrading ET+ [138385]
+* Fix - Make `Tribe__Tickets__Tickets::get_tickets()` protected to avoid errors with it not being public before upgrading ET+ [138385]
 
 = [4.11] 2019-12-10 =
 
