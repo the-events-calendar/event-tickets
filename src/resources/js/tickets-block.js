@@ -1572,7 +1572,7 @@ tribe.tickets.block  = {
 		'change keyup',
 		obj.selector.itemQuantityInput,
 		function( e ) {
-			var $this        = $( this );
+			var $this        = $( e.target );
 			var $ticket      = $this.closest( obj.selector.item );
 			var $ticket_id   = $ticket.data( 'ticket-id' );
 			var $form        = $this.closest( 'form' );
@@ -1617,6 +1617,26 @@ tribe.tickets.block  = {
 			}
 
 			obj.storeLocal();
+		}
+	);
+
+	obj.document.on(
+		'keypress',
+		obj.modalSelector.form,
+		function( e ) {
+
+			if ( e.keyCode == 13 ) {
+				var $form   = $( e.target ).closest( obj.modalSelector.form );
+				// Ensure we're on the modal form
+				if ( 'undefined' === $form ) {
+					return;
+				}
+
+				e.preventDefault();
+				e.stopPropagation();
+				// Submit to cart. This will trigger validation as well.
+				$form.find('[name="cart-button"]').click();
+			}
 		}
 	);
 
