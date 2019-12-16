@@ -47,6 +47,11 @@ extends Tribe__Editor__Blocks__Abstract {
 			return;
 		}
 
+		// No need to handle RSVPs here
+		if ( 'Tribe__Tickets__RSVP' === $provider ) {
+			return;
+		}
+
 		// If Provider is not active return
 		if ( ! array_key_exists( $provider, Tribe__Tickets__Tickets::modules() ) ) {
 			return;
