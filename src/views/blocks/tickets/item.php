@@ -67,7 +67,7 @@ $has_shared_cap = $tickets_handler->has_shared_capacity( $ticket );
 	data-available="<?php echo ( 0 === $tickets_handler->get_ticket_max_purchase( $ticket->ID ) ) ? 'false' : 'true'; ?>"
 	data-has-shared-cap="<?php echo $has_shared_cap ? 'true' : 'false'; ?>"
 	<?php if ( $has_shared_cap) : ?>
-		data-shared-cap="<?php echo $ticket->capacity(); ?>"
+		data-shared-cap="<?php echo esc_attr( $ticket->capacity() ); ?>"
 	<?php endif; ?>
 
 >
