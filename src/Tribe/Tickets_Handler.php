@@ -856,6 +856,17 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
+	 * Get the sahred capacity of a ticket object.
+	 */
+	public function get_shared_capacity( Tribe__Tickets__Ticket_Object $ticket ) {
+		if ( ! $this->has_shared_capacity( $ticket ) ) {
+			return false;
+		}
+
+		return $ticket->capacity();
+	}
+
+	/**
 	 * Returns whether a given object has the correct Provider for a Post or Ticket
 	 *
 	 * @since   4.6.2

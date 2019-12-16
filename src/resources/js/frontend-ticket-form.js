@@ -477,7 +477,7 @@ tribe.tickets.block  = {
 		var new_value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
 		var $parent = $input.closest( obj.selector.item );
 
-		if ( 'true' === $parent.attr( 'data-shared-cap' ) ) {
+		if ( 'true' === $parent.attr( 'data-has-shared-cap' ) ) {
 			var $form        = $parent.closest( 'form' );
 			new_value = obj.checkSharedCapacity( $form, new_value );
 		}
@@ -577,7 +577,7 @@ tribe.tickets.block  = {
 	obj.checkSharedCapacity = function ( $form, qty ) {
 		var sharedCap         = [];
 		var currentLoad       = [];
-		var $sharedTickets    = $form.find( obj.selector.item ).filter( '[data-shared-cap="true"]' );
+		var $sharedTickets    = $form.find( obj.selector.item ).filter( '[data-has-shared-cap="true"]' );
 		var $sharedCapFields  = $sharedTickets.find( obj.selector.itemExtraAvailableQuantity );
 		var $sharedCapTickets = $sharedTickets.find( obj.selector.itemQuantityInput );
 
@@ -1583,7 +1583,7 @@ tribe.tickets.block  = {
 				$this.val( max );
 			}
 
-			if ( 'true' === $ticket.attr( 'data-shared-cap' ) ) {
+			if ( 'true' === $ticket.attr( 'data-has-shared-cap' ) ) {
 				var maxQty = obj.checkSharedCapacity( $form, new_quantity );
 			}
 
