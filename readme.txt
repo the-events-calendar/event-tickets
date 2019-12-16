@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - correct shared cap handling when tickets left threshold is set. [138620]
+
 = [4.11.1] TBD =
 
 * Feature - Use the same loading icon for the RSVP block that we're using for the tickets block. [135660]
