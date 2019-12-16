@@ -57,13 +57,19 @@ if ( $must_login ) {
 	$classes[] = 'tribe-tickets__item__disabled';
 }
 
+$has_shared_cap = $tickets_handler->has_shared_capacity( $ticket );
+
 ?>
 <div
 	id="tribe-<?php echo $modal ? 'modal' : 'block'; ?>-tickets-item-<?php echo esc_attr( $ticket->ID ); ?>"
 	<?php tribe_classes( get_post_class( $classes, $ticket->ID ) ); ?>
 	data-ticket-id="<?php echo esc_attr( $ticket->ID ); ?>"
 	data-available="<?php echo ( 0 === $tickets_handler->get_ticket_max_purchase( $ticket->ID ) ) ? 'false' : 'true'; ?>"
-	data-shared-cap="<?php echo $tickets_handler->has_shared_capacity( $ticket ) ? 'true' : 'false'; ?>"
+	data-has-shared-cap="<?php echo $has_shared_cap ? 'true' : 'false'; ?>"
+	<?php if ( $has_shared_cap) : ?>
+		data-shared-cap="<?php echo esc_attr( $ticket->capacity() ); ?>"
+	<?php endif; ?>
+
 >
 	<?php if ( true === $modal ) : ?>
 		<?php $this->template( 'modal/item-remove', $context ); ?>
