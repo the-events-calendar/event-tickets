@@ -484,7 +484,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$event_types = Tribe__Tickets__Main::instance()->post_types();
 
 		// Bail on non event like post type
-		if ( ! in_array( get_post_type( $object_id ), $event_types ) ) {
+		if ( ! in_array( get_post_type( $object_id ), $event_types, true ) ) {
 			return false;
 		}
 
@@ -585,6 +585,12 @@ class Tribe__Tickets__Tickets_Handler {
 
 		// Do the migration
 		$capacity = $this->migrate_object_capacity( $object_id );
+
+		if ( false === $capacity ) {
+			$capacity = '';
+		} elseif ( is_int( $capacity ) ) {
+			$capacity = (string) $capacity;
+		}
 
 		// Hook it back up
 		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 4 );
