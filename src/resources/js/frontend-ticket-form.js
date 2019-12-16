@@ -578,16 +578,15 @@ tribe.tickets.block  = {
 		var sharedCap         = [];
 		var currentLoad       = [];
 		var $sharedTickets    = $form.find( obj.selector.item ).filter( '[data-has-shared-cap="true"]' );
-		var $sharedCapFields  = $sharedTickets.find( obj.selector.itemExtraAvailableQuantity );
 		var $sharedCapTickets = $sharedTickets.find( obj.selector.itemQuantityInput );
 
 		if ( ! $sharedTickets.length ) {
 			return qty;
 		}
 
-		$sharedCapFields.each(
+		$sharedTickets.each(
 			function() {
-				sharedCap.push( parseInt( $( this ).text(), 10 ) );
+				sharedCap.push( parseInt( $( this ).attr( 'data-shared-cap' ), 10 ) );
 			}
 		);
 
