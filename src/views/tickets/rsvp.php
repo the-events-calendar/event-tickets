@@ -10,8 +10,9 @@
  * @since 4.10.8 More similar display format to that of other ticket types, including better checking of max quantity available.
  * @since 4.10.9 Use customizable ticket name functions.
  * @since 4.11.0 Added RSVP/ticket view link to template.
+ * @since TBD    Corrected amount of available/remaining tickets when threshold is empty.
  *
- * @version 4.11.0
+ * @version TBD
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login
@@ -142,7 +143,7 @@ if ( ! $already_rendered ) {
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>
-						<?php if ( -1 !== $available && $available <= $threshold ) : ?>
+						<?php if ( -1 !== $available && ( 0 === $threshold || $available <= $threshold ) ) : ?>
 							<span class="tribe-tickets-remaining">
 								<span class="available-stock" data-product-id="<?php echo esc_attr( $ticket_id ); ?>">
 									<?php echo sprintf( esc_html__( '%1$s available', 'event-tickets' ), esc_html( $readable_amount ) ); ?>

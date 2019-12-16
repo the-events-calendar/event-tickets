@@ -13,8 +13,9 @@
  * @since   4.9.3  Display login link if visitor is logged out and logging in is required to purchase.
  * @since   4.10.8 Removed the date_in_range() check per ticket, since it now happens upstream. Better checking of max quantity available.
  * @since   4.10.10  Use customizable ticket name functions.
+ * @since   TBD    Corrected amount of available/remaining tickets when threshold is empty.
  *
- * @version 4.11.0
+ * @version TBD
  * @deprecated 4.11.0
  *
  * @var bool $must_login
@@ -126,7 +127,7 @@ $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_th
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>
-						<?php if ( -1 !== $available && $available <= $threshold ) : ?>
+						<?php if ( -1 !== $available && ( 0 === $threshold || $available <= $threshold ) ) : ?>
 							<span class="tribe-tickets-remaining">
 							<?php
 							$readable_amount = tribe_tickets_get_readable_amount( $available, null, false );

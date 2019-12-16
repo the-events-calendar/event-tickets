@@ -54,7 +54,7 @@ $show_unlimited = apply_filters( 'tribe_rsvp_block_show_unlimited_availability',
 		<?php if ( $show_unlimited) : ?>
 			<span class="tribe-block__rsvp__unlimited"><?php echo esc_html( $handler->unlimited_term ); ?></span>
 		<?php endif; ?>
-	<?php elseif ( $remaining_tickets <= $threshold ) : ?>
+	<?php elseif ( 0 === $threshold || $remaining_tickets <= $threshold ) : ?>
 		<span class="tribe-block__rsvp__quantity"><?php echo esc_html( $remaining_tickets ); ?> </span>
 		<?php esc_html_e( 'remaining', 'event-tickets' ) ?>
 	<?php endif; ?>
