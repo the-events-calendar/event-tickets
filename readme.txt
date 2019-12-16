@@ -131,6 +131,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - If running WP 5.3+, add `show_in_rest` as an array configuration for capacity and the RSVP not going fields so that they save properly. [137875]
 * Fix - Gracefully handle enter key in modal form to prevent missing data when submitting. [136595]
 * Fix - Increase size of -/+ signs for decreasing/increasing quantity on tickets. [138558]
+* Fix - Handle special characters for Event Ticket field labels like single quotes and colons so they don't break the saving. [136451]
 
 = [4.11.0.1] 2019-12-11 =
 
