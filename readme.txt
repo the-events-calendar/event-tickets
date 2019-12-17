@@ -136,6 +136,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Handle special characters for Event Ticket field labels like single quotes and colons so they don't break the saving. [136451]
 * Fix - Don't try to load RSVPs with the Tickets block `render()`. [138646]
 * Fix - Correct shared capacity handling when tickets left threshold is set. [138620]
+* Language - 0 new strings added, 131 updated, 1 fuzzied, and 0 obsoleted
 
 = [4.11.0.1] 2019-12-11 =
 
