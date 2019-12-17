@@ -400,7 +400,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * Filters attendee to only get those related to posts with "Show attendees list on event page" set to true.
 	 *
 	 *
-	 * @since TBD
+	 * @since 4.11.1
 	 */
 	public function filter_by_show_attendees() {
 		$this->where_meta_related_by_meta(

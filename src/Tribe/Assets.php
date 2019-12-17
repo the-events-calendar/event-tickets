@@ -4,7 +4,7 @@ class Tribe__Tickets__Assets {
 	 * Enqueue scripts for front end
 	 *
 	 * @since 4.6
-	 * @since TBD Only load if in a tickets-enabled post context.
+	 * @since 4.11.1 Only load if in a tickets-enabled post context.
 	 *
 	 * @see   \tribe_tickets_is_enabled_post_context()
 	 */

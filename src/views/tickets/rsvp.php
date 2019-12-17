@@ -10,9 +10,9 @@
  * @since 4.10.8 More similar display format to that of other ticket types, including better checking of max quantity available.
  * @since 4.10.9 Use customizable ticket name functions.
  * @since 4.11.0 Added RSVP/ticket view link to template.
- * @since TBD    Corrected amount of available/remaining tickets when threshold is empty.
+ * @since 4.11.1    Corrected amount of available/remaining tickets when threshold is empty.
  *
- * @version TBD
+ * @version 4.11.1
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login
@@ -36,7 +36,7 @@ $threshold = $settings_manager::get_option( 'ticket-display-tickets-left-thresho
  * @param array $data      Ticket data.
  * @param int   $post_id   WP_Post/Event ID.
  *
- * @since TBD
+ * @since 4.11.1
  */
 $threshold = absint( apply_filters( 'tribe_display_rsvp_block_tickets_left_threshold', $threshold, tribe_events_get_ticket_event( $ticket ) ) );
 
@@ -121,7 +121,7 @@ if ( ! $already_rendered ) {
 			 *
 			 * @param int   $show_unlimited allow showing of "unlimited".
 			 *
-			 * @since TBD
+			 * @since 4.11.1
 			 */
 			$show_unlimited = apply_filters( 'tribe_rsvp_block_show_unlimited_availability', false, $available );
 

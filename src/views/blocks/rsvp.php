@@ -72,7 +72,7 @@ if ( ! $already_rendered ) {
 		/**
 		 * Allows filtering of extra classes used on the rsvp-block loader.
 		 *
-		 * @since  TBD
+		 * @since  4.11.1
 		 *
 		 * @param  array $classes The array of classes that will be filtered.
 		 */

@@ -11,9 +11,9 @@
  * @link  {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @since TBD Corrected amount of available/remaining tickets.
+ * @since 4.11.1 Corrected amount of available/remaining tickets.
  *
- * @version TBD
+ * @version 4.11.1
  */
 
 /** @var Tribe__Settings_Manager $settings_manager */
@@ -28,7 +28,7 @@ $threshold = $settings_manager::get_option( 'ticket-display-tickets-left-thresho
  * @param array $data      Ticket data.
  * @param int   $event_id  Event ID.
  *
- * @since TBD
+ * @since 4.11.1
  */
 $threshold = absint( apply_filters( 'tribe_display_rsvp_block_tickets_left_threshold', $threshold, tribe_events_get_ticket_event( $ticket ) ) );
 
@@ -43,7 +43,7 @@ $handler = tribe( 'tickets.handler' );
  *
  * @param int   $show_unlimited allow showing of "unlimited".
  *
- * @since TBD
+ * @since 4.11.1
  */
 $show_unlimited = apply_filters( 'tribe_rsvp_block_show_unlimited_availability', false, $is_unlimited );
 ?>

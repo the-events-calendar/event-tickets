@@ -117,12 +117,14 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.11.1] TBD =
+= [4.11.1] 2019-12-19 =
 
 * Feature - Use the same loading icon for the RSVP block that we're using for the tickets block. [135660]
 * Tweak - Added `tribe_tickets_is_enabled_post_context()` function [124403]
 * Tweak - Avoid loading plugin assets on post types that are not tickets-enabled post types [124403]
 * Tweak - Add filter for `ticket-display-tickets-left-threshold` to tickets and RSVP block. Added new filters to allow showing "Unlimited" on unlimited tickets [130660]
+* Tweak - Added filters: `tribe_tickets_is_enabled_post_context`, `tribe_rsvp_block_loader_classes`, `tribe_display_rsvp_block_tickets_left_threshold`, `tribe_rsvp_block_show_unlimited_availability`, `tribe_rsvp_block_loader_classes`, `tribe_display_tickets_block_tickets_left_threshold`, `tribe_tickets_block_show_unlimited_availability`, `tribe_display_rsvp_block_tickets_left_threshold`, `tribe_rsvp_block_show_unlimited_availability`, `tribe_display_tickets_block_tickets_left_threshold`, `tribe_tickets_block_show_unlimited_availability`
+* Tweak - Changed views: `blocks/rsvp`, `blocks/rsvp/details/availability`, `blocks/rsvp/form/quantity-input`, `blocks/rsvp/loader`, `blocks/tickets`, `blocks/tickets/extra-available-quantity`, `blocks/tickets/extra-available`, `blocks/tickets/extra`, `blocks/tickets/item`, `blocks/tickets/quantity`, `blocks/tickets/registration/attendee/submit`, `tickets/rsvp`, `tickets/tpp`
 * Fix - Fix the header image attachment handling for RSVP blocks [137243]
 * Fix - Ensure that tickets without an end date set in the Classic editor get set to end at the start of an event per the tooltip [125969]
 * Fix - Make "Show attendees list on event page" checkbox apply to the REST API as well. [133333]

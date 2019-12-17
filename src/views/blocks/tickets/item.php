@@ -12,9 +12,9 @@
  *
  * @since   4.9
  * @since   4.11.0 Add modal only fields
- * @since   TBD Corrected amount of available/remaining tickets.
+ * @since   4.11.1 Corrected amount of available/remaining tickets.
  *
- * @version TBD
+ * @version 4.11.1
  */
 $classes  = [ 'tribe-tickets__item' ];
 

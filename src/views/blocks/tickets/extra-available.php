@@ -9,11 +9,11 @@
  * See more documentation about our Blocks Editor templating system.
  *
  * @since   4.9.3
- * @since   TBD Corrected amount of available/remaining tickets.
+ * @since   4.11.1 Corrected amount of available/remaining tickets.
  *
  * @link    {INSERT_ARTICLE_LINK_HERE}
  *
- * @version TBD
+ * @version 4.11.1
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
@@ -48,7 +48,7 @@ $threshold = $settings_manager::get_option( 'ticket-display-tickets-left-thresho
  * @param array $data      Ticket data.
  * @param int   $post_id   WP_Post/Event ID.
  *
- * @since TBD
+ * @since 4.11.1
  */
 $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_threshold', $threshold, $post_id ) );
 $available = $ticket->available();
@@ -58,7 +58,7 @@ $available = $ticket->available();
  *
  * @param int   $show_unlimited allow showing of "unlimited".
  *
- * @since TBD
+ * @since 4.11.1
  */
 $show_unlimited = apply_filters( 'tribe_tickets_block_show_unlimited_availability', false, $available );
 ?>

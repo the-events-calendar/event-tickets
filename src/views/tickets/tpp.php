@@ -13,9 +13,9 @@
  * @since   4.9.3  Display login link if visitor is logged out and logging in is required to purchase.
  * @since   4.10.8 Removed the date_in_range() check per ticket, since it now happens upstream. Better checking of max quantity available.
  * @since   4.10.10  Use customizable ticket name functions.
- * @since   TBD    Corrected amount of available/remaining tickets when threshold is empty.
+ * @since   4.11.1    Corrected amount of available/remaining tickets when threshold is empty.
  *
- * @version TBD
+ * @version 4.11.1
  * @deprecated 4.11.0
  *
  * @var bool $must_login
@@ -44,7 +44,7 @@ $threshold = $settings_manager::get_option( 'ticket-display-tickets-left-thresho
  * @param array $data      Ticket data.
  * @param int   $post_id   WP_Post/Event ID.
  *
- * @since TBD
+ * @since 4.11.1
  */
 $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_threshold', $threshold, tribe_events_get_ticket_event( $ticket ) ) );
 ?>
@@ -106,7 +106,7 @@ $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_th
 			 *
 			 * @param int   $show_unlimited allow showing of "unlimited".
 			 *
-			 * @since TBD
+			 * @since 4.11.1
 			 */
 			$show_unlimited = apply_filters( 'tribe_tickets_block_show_unlimited_availability', false, $available );
 

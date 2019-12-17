@@ -1336,7 +1336,7 @@ if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
 	/**
 	 * If we are in the front-end or back-end (e.g. currently editing or creating) context for a tickets-enabled post.
 	 *
-	 * @since TBD
+	 * @since 4.11.1
 	 *
 	 * @see   \Tribe__Tickets__Main::post_types()
 	 *
@@ -1376,7 +1376,7 @@ if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
 		/**
 		 * Whether or not we are in tickets-enabled context, such as determining if we should load plugin assets.
 		 *
-		 * @since TBD
+		 * @since 4.11.1
 		 *
 		 * @param bool           $result
 		 * @param array          $post_types The post types with tickets enabled.
