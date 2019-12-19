@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.11.2] TBD =
+
+* Tweak - Adding support for The Events Calendar 5.0.0
+
 = [4.11.1] 2019-12-19 =
 
 * Feature - Use the same loading icon for the RSVP block that we're using for the tickets block. [135660]
