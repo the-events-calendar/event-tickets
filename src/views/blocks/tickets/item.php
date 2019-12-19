@@ -8,29 +8,41 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link    {INSERT_ARTICLE_LINK_HERE}
  *
- * @since 4.9
- * @since 4.11.0 add modal only fields
+ * @since   4.9
+ * @since   4.11.0 Add modal only fields
+ * @since   4.11.1 Corrected amount of available/remaining tickets.
  *
- * @version 4.11.0
- *
+ * @version 4.11.1
  */
 $classes  = [ 'tribe-tickets__item' ];
+
+/** @var Tribe__Tickets__Tickets $provider */
 $provider = $this->get( 'provider' );
-$ticket   = $this->get( 'ticket' );
-$modal    = $this->get( 'is_modal' );
-$mini    = $this->get( 'is_mini' );
-$post_id    = $this->get( 'post_id' );
+
+/** @var Tribe__Tickets__Ticket_Object $ticket */
+$ticket = $this->get( 'ticket' );
+
+if ( empty( $ticket->ID ) ) {
+	return;
+}
+
+/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+$tickets_handler = tribe( 'tickets.handler' );
+
+$modal           = $this->get( 'is_modal' );
+$mini            = $this->get( 'is_mini' );
+$post_id         = $this->get( 'post_id' );
 $currency_symbol = $this->get( 'currency_symbol' );
-$context  = [
-	'ticket'  => $ticket,
-	'key'     => $this->get( 'key' ),
-	'is_modal' => $modal,
-	'is_mini' => $mini,
+$context         = [
+	'ticket'          => $ticket,
+	'key'             => $this->get( 'key' ),
+	'is_modal'        => $modal,
+	'is_mini'         => $mini,
 	'currency_symbol' => $currency_symbol,
-	'post_id' => $post_id,
-	'provider' => $provider
+	'post_id'         => $post_id,
+	'provider'        => $provider,
 ];
 
 if (
@@ -44,13 +56,20 @@ $must_login = ! is_user_logged_in() && $ticket->get_provider()->login_required()
 if ( $must_login ) {
 	$classes[] = 'tribe-tickets__item__disabled';
 }
+
+$has_shared_cap = $tickets_handler->has_shared_capacity( $ticket );
+
 ?>
 <div
 	id="tribe-<?php echo $modal ? 'modal' : 'block'; ?>-tickets-item-<?php echo esc_attr( $ticket->ID ); ?>"
 	<?php tribe_classes( get_post_class( $classes, $ticket->ID ) ); ?>
 	data-ticket-id="<?php echo esc_attr( $ticket->ID ); ?>"
-	data-available="<?php echo ( 0 === $ticket->available() ) ? 'false' : 'true'; ?>"
-	data-shared-cap="<?php echo ( tribe( 'tickets.handler' )->has_shared_capacity( $ticket ) ) ? 'true' : 'false'; ?>"
+	data-available="<?php echo ( 0 === $tickets_handler->get_ticket_max_purchase( $ticket->ID ) ) ? 'false' : 'true'; ?>"
+	data-has-shared-cap="<?php echo $has_shared_cap ? 'true' : 'false'; ?>"
+	<?php if ( $has_shared_cap) : ?>
+		data-shared-cap="<?php echo esc_attr( $ticket->capacity() ); ?>"
+	<?php endif; ?>
+
 >
 	<?php if ( true === $modal ) : ?>
 		<?php $this->template( 'modal/item-remove', $context ); ?>
@@ -70,7 +89,7 @@ if ( $must_login ) {
 
 	<?php if ( ! $modal && ! $mini ) : ?>
 		<?php $this->template( 'blocks/rsvp/form/opt-out', $context ); ?>
-	<?php elseif( true === $modal ): ?>
+	<?php elseif ( true === $modal ): ?>
 		<?php $this->template( 'blocks/tickets/opt-out-hidden', $context ); ?>
 	<?php endif; ?>
 </div>

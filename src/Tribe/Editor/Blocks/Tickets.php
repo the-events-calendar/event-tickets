@@ -47,6 +47,11 @@ extends Tribe__Editor__Blocks__Abstract {
 			return;
 		}
 
+		// No need to handle RSVPs here
+		if ( 'Tribe__Tickets__RSVP' === $provider ) {
+			return;
+		}
+
 		// If Provider is not active return
 		if ( ! array_key_exists( $provider, Tribe__Tickets__Tickets::modules() ) ) {
 			return;
@@ -151,20 +156,30 @@ extends Tribe__Editor__Blocks__Abstract {
 			wp_send_json_error( $response );
 		}
 
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		/** @var Tribe__Tickets__Editor__Template $tickets_editor */
+		$tickets_editor = tribe( 'tickets.editor.template' );
+
 		// Parse the tickets and create the array for the response
 		foreach ( $tickets as $ticket_id ) {
-			$ticket    = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
+			$ticket = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
 
-			if ( empty( $ticket ) ) {
+			if (
+				! $ticket instanceof Tribe__Tickets__Ticket_Object
+				|| empty( $ticket->ID )
+			) {
 				continue;
 			}
 
-			$available = $ticket->available();
+			$available = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
+
 			$response['tickets'][ $ticket_id ]['available'] = $available;
 
 			// If there are no more available we will send the template part HTML to update the DOM
 			if ( 0 === $available ) {
-				$response['tickets'][ $ticket_id ]['unavailable_html'] = tribe( 'tickets.editor.template' )->template( 'blocks/tickets/quantity-unavailable', $ticket, false );
+				$response['tickets'][ $ticket_id ]['unavailable_html'] = $tickets_editor->template( 'blocks/tickets/quantity-unavailable', $ticket, false );
 			}
 		}
 

@@ -17,6 +17,8 @@ class AttendeeArchiveByProviderCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_getting_attendees_by_provider( \Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'editor' );
+
 		$paypal_post_id   = $I->havePostInDatabase();
 		$paypal_ticket_id = $this->create_paypal_ticket( $paypal_post_id, 2 );
 		$paypal_attendees = $this->create_many_attendees_for_ticket( 2, $paypal_ticket_id, $paypal_post_id );

@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.9
 Tested up to: 5.3
-Stable tag: 4.11.0.1
+Stable tag: 4.11.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -116,6 +116,27 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.11.1] 2019-12-19 =
+
+* Feature - Use the same loading icon for the RSVP block that we're using for the tickets block. [135660]
+* Tweak - Added `tribe_tickets_is_enabled_post_context()` function [124403]
+* Tweak - Avoid loading plugin assets on post types that are not tickets-enabled post types [124403]
+* Tweak - Add filter for `ticket-display-tickets-left-threshold` to tickets and RSVP block. Added new filters to allow showing "Unlimited" on unlimited tickets [130660]
+* Tweak - Added filters: `tribe_tickets_is_enabled_post_context`, `tribe_rsvp_block_loader_classes`, `tribe_display_rsvp_block_tickets_left_threshold`, `tribe_rsvp_block_show_unlimited_availability`, `tribe_rsvp_block_loader_classes`, `tribe_display_tickets_block_tickets_left_threshold`, `tribe_tickets_block_show_unlimited_availability`, `tribe_display_rsvp_block_tickets_left_threshold`, `tribe_rsvp_block_show_unlimited_availability`, `tribe_display_tickets_block_tickets_left_threshold`, `tribe_tickets_block_show_unlimited_availability`
+* Tweak - Changed views: `blocks/rsvp`, `blocks/rsvp/details/availability`, `blocks/rsvp/form/quantity-input`, `blocks/rsvp/loader`, `blocks/tickets`, `blocks/tickets/extra-available-quantity`, `blocks/tickets/extra-available`, `blocks/tickets/extra`, `blocks/tickets/item`, `blocks/tickets/quantity`, `blocks/tickets/registration/attendee/submit`, `tickets/rsvp`, `tickets/tpp`
+* Fix - Fix the header image attachment handling for RSVP blocks [137243]
+* Fix - Ensure that tickets without an end date set in the Classic editor get set to end at the start of an event per the tooltip [125969]
+* Fix - Make "Show attendees list on event page" checkbox apply to the REST API as well. [133333]
+* Fix - Overriding the maximum purchase quantity (the `tribe_tickets_get_ticket_max_purchase` filter) now works in all contexts [133432]
+* Fix - Prevent duplicate blocks on provider change. Add logic to test current provider against event default provider. [137925]
+* Fix - If running WP 5.3+, add `show_in_rest` as an array configuration for capacity and the RSVP not going fields so that they save properly. [137875]
+* Fix - Gracefully handle enter key in modal form to prevent missing data when submitting. [136595]
+* Fix - Increase size of -/+ signs for decreasing/increasing quantity on tickets. [138558]
+* Fix - Handle special characters for Event Ticket field labels like single quotes and colons so they don't break the saving. [136451]
+* Fix - Don't try to load RSVPs with the Tickets block `render()`. [138646]
+* Fix - Correct shared capacity handling when tickets left threshold is set. [138620]
+* Language - 0 new strings added, 131 updated, 1 fuzzied, and 0 obsoleted
 
 = [4.11.0.1] 2019-12-11 =
 

@@ -480,7 +480,7 @@ tribe.tickets.block  = {
 		var new_value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
 		var $parent = $input.closest( obj.selector.item );
 
-		if ( 'true' === $parent.attr( 'data-shared-cap' ) ) {
+		if ( 'true' === $parent.attr( 'data-has-shared-cap' ) ) {
 			var $form        = $parent.closest( 'form' );
 			new_value = obj.checkSharedCapacity( $form, new_value );
 		}
@@ -580,17 +580,16 @@ tribe.tickets.block  = {
 	obj.checkSharedCapacity = function ( $form, qty ) {
 		var sharedCap         = [];
 		var currentLoad       = [];
-		var $sharedTickets    = $form.find( obj.selector.item ).filter( '[data-shared-cap="true"]' );
-		var $sharedCapFields  = $sharedTickets.find( obj.selector.itemExtraAvailableQuantity );
+		var $sharedTickets    = $form.find( obj.selector.item ).filter( '[data-has-shared-cap="true"]' );
 		var $sharedCapTickets = $sharedTickets.find( obj.selector.itemQuantityInput );
 
 		if ( ! $sharedTickets.length ) {
 			return qty;
 		}
 
-		$sharedCapFields.each(
+		$sharedTickets.each(
 			function() {
-				sharedCap.push( parseInt( $( this ).text(), 10 ) );
+				sharedCap.push( parseInt( $( this ).attr( 'data-shared-cap' ), 10 ) );
 			}
 		);
 
@@ -1572,7 +1571,7 @@ tribe.tickets.block  = {
 		'change keyup',
 		obj.selector.itemQuantityInput,
 		function( e ) {
-			var $this        = $( this );
+			var $this        = $( e.target );
 			var $ticket      = $this.closest( obj.selector.item );
 			var $ticket_id   = $ticket.data( 'ticket-id' );
 			var $form        = $this.closest( 'form' );
@@ -1585,7 +1584,7 @@ tribe.tickets.block  = {
 				$this.val( max );
 			}
 
-			if ( 'true' === $ticket.attr( 'data-shared-cap' ) ) {
+			if ( 'true' === $ticket.attr( 'data-has-shared-cap' ) ) {
 				var maxQty = obj.checkSharedCapacity( $form, new_quantity );
 			}
 
@@ -1617,6 +1616,26 @@ tribe.tickets.block  = {
 			}
 
 			obj.storeLocal();
+		}
+	);
+
+	obj.document.on(
+		'keypress',
+		obj.modalSelector.form,
+		function( e ) {
+
+			if ( e.keyCode == 13 ) {
+				var $form   = $( e.target ).closest( obj.modalSelector.form );
+				// Ensure we're on the modal form
+				if ( 'undefined' === $form ) {
+					return;
+				}
+
+				e.preventDefault();
+				e.stopPropagation();
+				// Submit to cart. This will trigger validation as well.
+				$form.find('[name="cart-button"]').click();
+			}
 		}
 	);
 

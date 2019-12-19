@@ -2272,10 +2272,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return array An associative array in the [ <slug> => <label> ] format.
 	 */
 	public function get_order_statuses() {
-		/** @var Tribe__Tickets__Status__Manager $tickets_status */
-		$tickets_status = tribe( 'tickets.status' );
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
 
-		$statuses       = $tickets_status->get_all_provider_statuses( 'tpp' );
+		$statuses       = $status_mgr->get_all_provider_statuses( 'tpp' );
 		$order_statuses = [];
 		foreach ( $statuses as $status ) {
 			$order_statuses[ $status->provider_name ] = _x( $status->name, 'a PayPal ticket order status', 'event-tickets' );
@@ -2524,7 +2524,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			}
 
 			// Get the number of available tickets.
-			$available = $ticket_object->available();
+			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
+
+			$available = $tickets_handler->get_ticket_max_purchase( $ticket['ticket_id'] );
 
 			// Bail if ticket does not have enough available capacity.
 			if ( ( -1 !== $available && $available < $ticket_quantity ) || ! $ticket_object->date_in_range() ) {
@@ -2618,13 +2621,20 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @since 4.7
 	 */
 	public function get_tickets( $post_id ) {
+		$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+
+		// If the event provider is set to something else, let's save some time, shall we?
+		if ( ! is_admin() && __CLASS__ !== $default_provider ) {
+			return [];
+		}
+
 		$ticket_ids = $this->get_tickets_ids( $post_id );
 
 		if ( ! $ticket_ids ) {
-			return array();
+			return [];
 		}
 
-		$tickets = array();
+		$tickets = [];
 
 		foreach ( $ticket_ids as $post ) {
 			$ticket = $this->get_ticket( $post_id, $post );

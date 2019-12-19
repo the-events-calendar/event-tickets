@@ -18,6 +18,8 @@ class AttendeeArchiveByIdsCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_getting_attendees_by_id( \Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'editor' );
+
 		$post_ids = $I->haveManyPostsInDatabase( 3 );
 		// 3 posts, 1 ticket per post, 2 attendees per ticket => 6 attendees
 		$attendees = array_reduce( $post_ids, function ( array $attendees, $post_id ) {
@@ -62,6 +64,8 @@ class AttendeeArchiveByIdsCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_return_400_if_not_all_ids_are_valid( \Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'editor' );
+
 		$post_id     = $I->havePostInDatabase();
 		$ticket_id   = $this->create_rsvp_ticket( $post_id );
 		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $post_id );
