@@ -18,7 +18,7 @@ class Tribe__Tickets__Main {
 	 *
 	 * @deprecated 4.10
 	 */
-	const MIN_COMMON_VERSION = '4.9.14';
+	const MIN_COMMON_VERSION = '4.11.0-RC1';
 
 	/**
 	 * Used to store the version history.
