@@ -109,7 +109,16 @@ class Tickets implements \ArrayAccess, \Serializable{
 			return $this->data;
 		}
 
-		if ( ! tribe_events_has_tickets_on_sale( $this->post_id ) ) {
+		$num_ticket_types_available = 0;
+		foreach( $this->all_tickets as $ticket ) {
+			if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
+				continue;
+			}
+
+			$num_ticket_types_available++;
+		}
+
+		if ( ! $num_ticket_types_available ) {
 			return [];
 		}
 

@@ -26,7 +26,7 @@ if ( empty( $event->cost ) ) {
 }
 ?>
 <div class="tribe-events-c-small-cta tribe-common-b3 tribe-events-calendar-month-mobile-events__mobile-event-cost">
-	<?php if ( ! empty( $event->tickets->exist ) ) : ?>
+	<?php if ( $event->tickets->exist() ) : ?>
 		<a
 			href="<?php echo esc_url( $event->tickets->link->anchor ); ?>"
 			class="tribe-events-c-small-cta__link tribe-common-cta tribe-common-cta--thin-alt"
