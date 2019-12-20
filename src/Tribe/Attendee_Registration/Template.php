@@ -20,34 +20,37 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	public function hook() {
 
 		// Spoof the context
-		add_filter( 'the_posts', array( $this, 'setup_context' ), -10 );
+		add_filter( 'the_posts', [ $this, 'setup_context' ], -10 );
 
 		// Set and remove the required body classes
-		add_action( 'wp', array( $this, 'set_body_classes' ) );
+		add_action( 'wp', [ $this, 'set_body_classes' ] );
 
 		/*
 		 * Choose the theme template to use. It has to have a higher priority than the
 		 * TEC filters (at 10) to ensure they do not usurp our rewrite here.
 		 */
-		add_filter( 'template_include', array( $this, 'set_page_template' ), 15 );
+		add_filter( 'template_include', [ $this, 'set_page_template' ], 15 );
+
+		add_action( 'tribe_events_editor_assets_should_enqueue_frontend', [ $this, 'should_enqueue_frontend' ] );
+		add_action( 'tribe_events_views_v2_assets_should_enqueue_frontend', [ $this, 'should_enqueue_frontend' ] );
 
 		/*
 		 * Set the content of the page. Again, it has to have a higher priority than the
 		 * TEC filters (at 10) to ensure they do not usurp our rewrite here.
 		 */
-		add_action( 'loop_start', array( $this, 'set_page_content' ), 15 );
+		add_action( 'loop_start', [ $this, 'set_page_content' ], 15 );
 
 		// Modify the link for the edit post link
-		add_filter( 'edit_post_link', array( $this, 'set_edit_post_link' ) );
+		add_filter( 'edit_post_link', [ $this, 'set_edit_post_link' ] );
 
 		// Switcheroo for Genesis using the excerpt as we're saying we're on an archive
-		add_filter( 'genesis_pre_get_option_content_archive', array( $this, 'override_genesis_archive' ), 10, 2 );
+		add_filter( 'genesis_pre_get_option_content_archive', [ $this, 'override_genesis_archive' ], 10, 2 );
 		// Also keep content limit from truncating the form
-		add_filter( 'genesis_pre_get_option_content_archive_limit', array( $this, 'override_genesis_limit' ), 10, 2 );
+		add_filter( 'genesis_pre_get_option_content_archive_limit', [ $this, 'override_genesis_limit' ], 10, 2 );
 
 		// Modify the page title
-		add_filter( 'document_title_parts', array( $this, 'modify_page_title' ), 1000 );
-		add_filter( 'get_the_archive_title', array( $this, 'modify_archive_title' ), 1000 );
+		add_filter( 'document_title_parts', [ $this, 'modify_page_title' ], 1000 );
+		add_filter( 'get_the_archive_title', [ $this, 'modify_archive_title' ], 1000 );
 	}
 
 	/**
@@ -150,6 +153,14 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		$template = apply_filters( 'tribe_tickets_attendee_registration_page_template', $template );
 
 		return $template;
+	}
+
+	public function should_enqueue_frontend( $enqueue ) {
+		if ( $this->is_on_ar_page() ) {
+			return true;
+		}
+
+		return $enqueue;
 	}
 
 	/**
