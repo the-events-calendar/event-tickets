@@ -195,7 +195,7 @@ class Tickets implements \ArrayAccess, \Serializable{
 					$link_anchor = '#rsvp-now';
 				} else {
 					$link_label  = esc_html( sprintf( _x( 'Get %s', 'list view buy now ticket button', 'event-tickets' ), tribe_get_ticket_label_plural( 'list_view_buy_now_button' ) ) );
-					$link_anchor = '#buy-tickets';
+					$link_anchor = '#tribe-tickets';
 				}
 
 			}
