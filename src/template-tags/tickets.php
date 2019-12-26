@@ -181,31 +181,31 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 
 	/**
-	 * Echos Remaining Ticket Count and Purchase Buttons for an Event
+	 * Echos Remaining Ticket Count and Purchase Buttons for an Event.
 	 *
 	 * @since  4.5
+	 * @since  TBD Now displays for posts having only RSVPs.
 	 *
 	 * @param bool $echo Whether or not we should print
 	 *
 	 * @return string
 	 */
 	function tribe_tickets_buy_button( $echo = true ) {
-		$event_id = get_the_ID();
+		$event = get_post();
 
-		// check if there are any tickets on sale
-		if ( ! tribe_events_has_tickets_on_sale( $event_id ) ) {
-			return null;
+		if ( ! $event instanceof WP_Post ) {
+			return '';
 		}
 
 		// get an array for ticket and rsvp counts
-		$types = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+		$types = Tribe__Tickets__Tickets::get_ticket_counts( $event->ID );
 
 		// if no rsvp or tickets return
 		if ( ! $types ) {
-			return null;
+			return '';
 		}
 
-		$html = [];
+		$html  = [];
 		$parts = [];
 
 		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out message
@@ -239,13 +239,14 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					/**
 					 * Overwrites the threshold to display "# tickets left".
 					 *
-					 * @param int   $threshold Stock threshold to trigger display of "# tickets left"
+					 * @since 4.10.1
+					 *
 					 * @param array $data      Ticket data.
 					 * @param int   $event_id  Event ID.
 					 *
-					 * @since 4.10.1
+					 * @param int   $threshold Stock threshold to trigger display of "# tickets left"
 					 */
-					$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $event_id ) );
+					$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $event->ID ) );
 
 					if ( ! $threshold || $stock <= $threshold ) {
 
@@ -277,7 +278,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					$button_anchor = '#buy-tickets';
 				}
 
-				$permalink = get_the_permalink( $event_id );
+				$permalink    = get_the_permalink( $event->ID );
 				$query_string = parse_url( $permalink, PHP_URL_QUERY );
 				$query_params = empty( $query_string ) ? [] : (array) explode( '&', $query_string );
 
@@ -310,7 +311,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 		 * @param array $types    Ticket and RSVP count array for event
 		 * @param int   $event_id Post Event ID
 		 */
-		$html = apply_filters( 'tribe_tickets_buy_button', $html, $parts, $types, $event_id );
+		$html = apply_filters( 'tribe_tickets_buy_button', $html, $parts, $types, $event->ID );
 		$html = implode( "\n", $html );
 
 		if ( $echo ) {
