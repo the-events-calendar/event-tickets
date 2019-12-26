@@ -278,24 +278,11 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					$button_anchor = '#buy-tickets';
 				}
 
-				$permalink    = get_the_permalink( $event->ID );
-				$query_string = parse_url( $permalink, PHP_URL_QUERY );
-				$query_params = empty( $query_string ) ? [] : (array) explode( '&', $query_string );
-
-				$button = '<form method="get" action="' . esc_url( $permalink . $button_anchor ) . '">';
-
-				// Add any query attribute as a hidden input as the action of the form is GET
-				foreach ( $query_params as $param ) {
-					$parts = explode( '=', $param );
-
-					// a query string must be 2 parts only a name and a value
-					if ( is_array( $parts ) && 2 === count( $parts ) ) {
-						list( $name, $value ) = $parts;
-						$button .= '<input type="hidden" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '">';
-					}
-				}
-
-				$button	.= '<button type="submit" name="tickets_process" class="tribe-button">' . esc_html( $button_label ) . '</button></form>';
+				$button = sprintf(
+					'<a class="tribe-button" href="%s">%s</a>',
+					esc_url( get_the_permalink( $event->ID ) . $button_anchor ),
+					esc_html( $button_label )
+				);
 
 				$parts[ $type . '-button' ] = $html['button'] = $button;
 			}
