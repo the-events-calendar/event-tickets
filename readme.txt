@@ -119,7 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [TBD] TBD =
 
-* Fix - List View "Buy Now" / "RSVP Now" button now displays for posts having only RSVP tickets [138725]
+* Fix - The Events Calendar's List View "RSVP Now!" button again displays for Events having only RSVP tickets, and the Tickets Block's Form ID was restored back to `#buy-tickets` from `#tribe-tickets` [138725]
 
 = [4.11.1] 2019-12-19 =
 
