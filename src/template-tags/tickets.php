@@ -181,7 +181,7 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 
 	/**
-	 * Echos Remaining Ticket Count and Purchase Buttons for an Event.
+	 * Echo remaining ticket count and purchase/rsvp buttons for a post.
 	 *
 	 * @since  4.5
 	 * @since  TBD Now displays for posts having only RSVPs.
