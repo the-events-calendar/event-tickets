@@ -22,7 +22,7 @@ trait Attendee_Maker {
 	protected function create_many_attendees_for_ticket( int $count, int $ticket_id, int $post_id, array $overrides = [] ): array {
 		// If not set let's make sure to set an order ID to ensure all attendees will be part of the same order.
 		if ( ! isset( $overrides['order_id'] ) ) {
-			$overrides['order_id'] = md5( time() );
+			$overrides['order_id'] = md5( uniqid() );
 		}
 
 		$attendees = [];
@@ -46,8 +46,6 @@ trait Attendee_Maker {
 	 * @return int The generated attendee
 	 */
 	protected function create_attendee_for_ticket( int $ticket_id, int $post_id, array $overrides = array() ): int {
-		$faker = \Faker\Factory::create();
-
 		/** @var \Tribe__Tickets__Tickets $provider */
 		$provider            = tribe_tickets_get_ticket_provider( $ticket_id );
 		$provider_reflection = new \ReflectionClass( $provider );
@@ -69,32 +67,23 @@ trait Attendee_Maker {
 
 		$default_sku = $provider instanceof \Tribe__Tickets__RSVP ? '' : 'test-attnd' . self::$generated;
 
+		$user_id = absint( Arr::get( $overrides, 'user_id', 0 ) );
+
+		$user_info = $this->get_data_for_name_props( $user_id, $overrides );
+
 		$meta = [
 			$provider->checkin_key              => (bool) Arr::get( $overrides, 'checkin', false ),
 			$provider->checkin_key . '_details' => Arr::get( $overrides, 'checkin_details', false ),
-			$provider->security_code            => Arr::get( $overrides, 'security_code', md5( time() ) ),
+			$provider->security_code            => Arr::get( $overrides, 'security_code', md5( uniqid() ) ),
 			$post_key                           => $post_id,
 			$product_key                        => $ticket_id,
 			$optout_key                         => Arr::get( $overrides, 'optout', false ),
-			$user_id_key                        => Arr::get( $overrides, 'user_id', 0 ),
+			$user_id_key                        => $user_id,
 			$ticket_sent_key                    => Arr::get( $overrides, 'ticket_sent', true ),
 			'_sku'                              => \Tribe__Utils__Array::get( $overrides, 'sku', $default_sku ),
 		];
 
-		$faked = [
-			'first_name' => $faker->firstName,
-			'last_name'  => $faker->lastName,
-			'full_name'  => $faker->name,
-			'email'      => $faker->email,
-		];
-
-		$full_name = Arr::get( $overrides, 'full_name' );
-
-		if ( null !== $full_name ) {
-			$faked['full_name'] = $full_name;
-		}
-
-		foreach ( $faked as $key => $value ) {
+		foreach ( $user_info as $key => $value ) {
 			if ( property_exists( $provider, $key ) ) {
 				$meta[ $provider->{$key} ] = $value;
 			}
@@ -118,16 +107,16 @@ trait Attendee_Maker {
 			}
 
 			$meta[ $provider->attendee_order_key ] = $overrides['order_id'];
-			$meta['_billing_first_name']           = $faker->firstName;
-			$meta['_billing_last_name']            = $faker->lastName;
-			$meta['_billing_email']                = $faker->email;
+			$meta['_billing_first_name']           = $user_info['first_name'];
+			$meta['_billing_last_name']            = $user_info['last_name'];
+			$meta['_billing_email']                = $user_info['email'];
 		}
 
 		if ( ! isset( $meta['_paid_price'] ) ) {
 			$meta['_paid_price'] = (int) get_post_meta( $ticket_id, '_price', true );
 		}
 		if ( ! isset( $meta['_price_currency_symbol'] ) ) {
-			/** @var Tribe__Tickets__Commerce__Currency $currency */
+			/** @var \Tribe__Tickets__Commerce__Currency $currency */
 			$currency                       = tribe( 'tickets.commerce.currency' );
 			$meta['_price_currency_symbol'] = $currency->get_currency_symbol( $ticket_id, true );
 		}
@@ -163,15 +152,33 @@ trait Attendee_Maker {
 			throw new \RuntimeException( 'There was an error while generating the attendee, data: ' . json_encode( $postarr, JSON_PRETTY_PRINT ) );
 		}
 
-		if ( ! $provider instanceof \Tribe__Tickets__RSVP ) {
-			$order_key = ! empty( $provider->attendee_order_key )
-				? $provider->attendee_order_key
-				: $provider_reflection->getConstant( 'ATTENDEE_ORDER_KEY' );
-			$order     = $provider instanceof \Tribe__Tickets__RSVP
-				? $attendee_id
-				: \Tribe__Utils__Array::get( $overrides, 'order_id', md5( time() ) );
-			update_post_meta( $attendee_id, $order_key, $order );
+		$order_key = ! empty( $provider->order_key )
+			? $provider->order_key
+			: '';
+
+		if (
+			empty( $order_key )
+			&& ! empty( $provider->attendee_order_key )
+		) {
+			$order_key = $provider->attendee_order_key;
 		}
+
+		if (
+			empty( $order_key )
+			&& ! empty( $provider_reflection->getConstant( 'ATTENDEE_ORDER_KEY' ) )
+		) {
+			$order_key = $provider_reflection->getConstant( 'ATTENDEE_ORDER_KEY' );
+		}
+
+		if ( empty( $order_key ) ) {
+			throw new \RuntimeException( 'There was an error while generating the attendee, lacking an Order Key, data: ' . json_encode( $postarr, JSON_PRETTY_PRINT ) );
+		}
+
+		$order = $provider instanceof \Tribe__Tickets__RSVP
+			? $attendee_id
+			: \Tribe__Utils__Array::get( $overrides, 'order_id', md5( uniqid()) );
+
+		update_post_meta( $attendee_id, $order_key, $order );
 
 		return $attendee_id;
 	}
@@ -200,7 +207,7 @@ trait Attendee_Maker {
 	 * @param      int $attendee_id
 	 * @param bool     $optout
 	 */
-	protected function optout_attendee( int $attendee_id, bool $optout = true ) {
+	protected function optout_attendee( int $attendee_id, $optout = true ) {
 		$attendee_post = get_post( $attendee_id );
 
 		if ( ! $attendee_post instanceof \WP_Post ) {
@@ -213,7 +220,66 @@ trait Attendee_Maker {
 			throw new \RuntimeException( "Provider for attendee {$attendee_id} could not be found" );
 		}
 
-		$optout_string = tribe_is_truthy( $optout ) ? 'yes' : 'no';
+		$optout = filter_var( $optout, FILTER_VALIDATE_BOOLEAN );
+
+		$optout_string = $optout ? 'yes' : 'no';
+
 		update_post_meta( $attendee_post->ID, $provider->attendee_optout_key, $optout_string );
+	}
+
+	/**
+	 * Given a User ID, get the user's data, possibly updating existing User.
+	 *
+	 * If user does not exist, generate faked info (allowed to be manually overridden).
+	 * If user exists, get existing user data and fake (allowing overrides for) any data points that are missing,
+	 * then update the existing user.
+	 *
+	 * @param int $user_id
+	 *
+	 * @return array The keys should match the Ticket Provider property.
+	 *               All values are expected unless overridden for non-existing user to empty string.
+	 */
+	private function get_data_for_name_props( int $user_id = 0, array $overrides = [] ) {
+		$faker = \Faker\Factory::create();
+
+		$result = [
+			'first_name' => Arr::get( $overrides, 'first_name', $faker->firstName ),
+			'last_name'  => Arr::get( $overrides, 'last_name', $faker->lastName ),
+			'full_name'  => Arr::get( $overrides, 'full_name', $faker->name ),
+			'email'      => Arr::get( $overrides, 'email', $faker->email ),
+		];
+
+		$user = get_userdata( $user_id );
+
+		if ( $user instanceof \WP_User ) {
+			// First Name
+			$first = get_user_meta( $user_id, 'first_name', true );
+			if ( $first ) {
+				$result['first_name'] = $first;
+			} else {
+				update_user_meta( $user_id, 'first_name', $result['first_name'] );
+			}
+
+			// Last Name
+			$last = get_user_meta( $user_id, 'last_name', true );
+			if ( $last ) {
+				$result['last_name'] = $last;
+			} else {
+				update_user_meta( $user_id, 'last_name', $result['last_name'] );
+			}
+
+			// Full Name when user exists is just First Name + Last Name, since we know both exist
+			$result['full_name'] = $result['first_name'] . ' ' . $result['last_name'];
+
+			// Email
+			$email = get_user_meta( $user_id, 'email', true );
+			if ( $email ) {
+				$result['email'] = $email;
+			} else {
+				update_user_meta( $user_id, 'email', $result['email'] );
+			}
+		}
+
+		return $result;
 	}
 }

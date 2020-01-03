@@ -7,11 +7,11 @@
  *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @version 4.10.1
+ * @version 4.11.0
  *
  */
 ?>
-<div class="tribe-block__tickets__registration__tickets">
+<div class="tribe-tickets__registration__tickets">
 
 	<?php $this->template( 'registration/summary/tickets-header' ); ?>
 

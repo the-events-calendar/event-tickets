@@ -381,7 +381,7 @@ class Tribe__Tickets__Status__Manager {
 	}
 
 	/**
-	 * Add addition names a status might be known as
+	 * Add additional names a status might be known as
 	 *
 	 * @since 4.10.5
 	 *
@@ -398,5 +398,21 @@ class Tribe__Tickets__Status__Manager {
 
 		return $trigger_statuses;
 
+	}
+
+	/**
+	 * Get the Provider Slug from the Module Class.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param string $module_class The string of the module main class.
+	 */
+	public function get_provider_slug( $module_class ) {
+
+		if ( ! isset( $this->module_slugs[ $module_class ] ) || ! isset( $this->active_modules[ $module_class ] ) ) {
+			return false;
+		}
+
+		return $this->active_modules[ $module_class ];
 	}
 }

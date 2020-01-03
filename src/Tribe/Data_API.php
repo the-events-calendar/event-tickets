@@ -22,6 +22,9 @@ class Tribe__Tickets__Data_API {
 	 * Setup activate ticket classes and field for data api
 	 */
 	protected function setup_data() {
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
+
 		foreach ( Tribe__Tickets__Tickets::modules() as $module_class => $module_instance ) {
 			$provider = call_user_func( array( $module_class, 'get_instance' ) );
 
@@ -50,6 +53,7 @@ class Tribe__Tickets__Data_API {
 			$this->ticket_class[ $module_class ]['tribe_for_event'] = $provider->event_key;
 			$this->ticket_class[ $module_class ]['event_id_key'] = constant( "$module_class::ATTENDEE_EVENT_KEY" );
 			$this->ticket_class[ $module_class ]['order_id_key'] = constant( "$module_class::ATTENDEE_ORDER_KEY" );
+			$this->ticket_class[ $module_class ]['slug'] = $status_mgr->get_provider_slug( $module_class );
 		}
 
 		$this->ticket_types['events'][] = class_exists( 'Tribe__Events__Main' ) ? Tribe__Events__Main::POSTTYPE : '';
@@ -196,6 +200,31 @@ class Tribe__Tickets__Data_API {
 		}
 
 		return call_user_func( [ $services['class'], 'get_instance' ] );
+	}
+
+	/**
+	 * Get the Providers for a Post
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param int $post_id the id of the post
+	 *
+	 * @return array an array of providers
+	 */
+	public function get_providers_for_post( $post_id ) {
+		$providers = [];
+		$modules = $this->ticket_class;
+
+		foreach ( $modules as $class => $module ) {
+			$obj              = call_user_func( [ $class, 'get_instance' ] );
+			$provider_tickets = $obj->get_tickets( $post_id );
+
+			if ( ! empty( $provider_tickets ) ) {
+				$providers[ $module['slug'] ] = $class;
+			}
+		}
+
+		return $providers;
 	}
 
 	/**

@@ -11,7 +11,8 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @deprecated 4.11.0
+ * @version 4.11.0
  *
  */
 ?>

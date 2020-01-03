@@ -2,9 +2,9 @@
 
 Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
-Requires at least: 4.7
+Requires at least: 4.9
 Tested up to: 5.3
-Stable tag: 4.10.12-beta2
+Stable tag: 4.11.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -116,6 +116,47 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.11.1] 2019-12-19 =
+
+* Feature - Use the same loading icon for the RSVP block that we're using for the tickets block. [135660]
+* Tweak - Added `tribe_tickets_is_enabled_post_context()` function [124403]
+* Tweak - Avoid loading plugin assets on post types that are not tickets-enabled post types [124403]
+* Tweak - Add filter for `ticket-display-tickets-left-threshold` to tickets and RSVP block. Added new filters to allow showing "Unlimited" on unlimited tickets [130660]
+* Tweak - Added filters: `tribe_tickets_is_enabled_post_context`, `tribe_rsvp_block_loader_classes`, `tribe_display_rsvp_block_tickets_left_threshold`, `tribe_rsvp_block_show_unlimited_availability`, `tribe_rsvp_block_loader_classes`, `tribe_display_tickets_block_tickets_left_threshold`, `tribe_tickets_block_show_unlimited_availability`, `tribe_display_rsvp_block_tickets_left_threshold`, `tribe_rsvp_block_show_unlimited_availability`, `tribe_display_tickets_block_tickets_left_threshold`, `tribe_tickets_block_show_unlimited_availability`
+* Tweak - Changed views: `blocks/rsvp`, `blocks/rsvp/details/availability`, `blocks/rsvp/form/quantity-input`, `blocks/rsvp/loader`, `blocks/tickets`, `blocks/tickets/extra-available-quantity`, `blocks/tickets/extra-available`, `blocks/tickets/extra`, `blocks/tickets/item`, `blocks/tickets/quantity`, `blocks/tickets/registration/attendee/submit`, `tickets/rsvp`, `tickets/tpp`
+* Fix - Fix the header image attachment handling for RSVP blocks [137243]
+* Fix - Ensure that tickets without an end date set in the Classic editor get set to end at the start of an event per the tooltip [125969]
+* Fix - Make "Show attendees list on event page" checkbox apply to the REST API as well. [133333]
+* Fix - Overriding the maximum purchase quantity (the `tribe_tickets_get_ticket_max_purchase` filter) now works in all contexts [133432]
+* Fix - Prevent duplicate blocks on provider change. Add logic to test current provider against event default provider. [137925]
+* Fix - If running WP 5.3+, add `show_in_rest` as an array configuration for capacity and the RSVP not going fields so that they save properly. [137875]
+* Fix - Gracefully handle enter key in modal form to prevent missing data when submitting. [136595]
+* Fix - Increase size of -/+ signs for decreasing/increasing quantity on tickets. [138558]
+* Fix - Handle special characters for Event Ticket field labels like single quotes and colons so they don't break the saving. [136451]
+* Fix - Don't try to load RSVPs with the Tickets block `render()`. [138646]
+* Fix - Correct shared capacity handling when tickets left threshold is set. [138620]
+* Language - 0 new strings added, 131 updated, 1 fuzzied, and 0 obsoleted
+
+= [4.11.0.1] 2019-12-11 =
+
+* Fix - Avoid running extra unnecessary queries when registering assets [138390]
+* Fix - Make `Tribe__Tickets__Tickets::get_tickets()` protected to avoid errors with it not being public before upgrading ET+ [138385]
+
+= [4.11] 2019-12-10 =
+
+* Feature - Add ability to utilize the block ticket template outside of Gutenberg views [132568]
+* Feature - Use the block template view for the "classic" editor so they look the same now on the frontend [132568]
+* Feature - Implement a copy of tribe-common-styles and restyle the front end tickets block [131117]
+* Feature - Add currency formatting by commerce [133179]
+* Tweak - Clean up the way we add options to the ticket settings tab in PHP to make it more readable and maintainable. [133048]
+* Tweak - Add ability to track installed version history. Added `$version_history_slug` and `$latest_version_slug` properties to `Tribe__Tickets_Plus__Main` [133048]
+* Tweak - Minimum required WordPress version updated to WordPress 4.9
+* Tweak - Added filters: `tribe_tickets_modal_setting`, `tribe_events_tickets_template_`, `tribe_attendee_registration_cart_provider`, `tribe_tickets_commerce_cart_get_tickets_`, `tribe_tickets_commerce_cart_get_ticket_meta`, `tribe_tickets_commerce_cart_get_cart_url_`, `tribe_tickets_commerce_cart_get_checkout_url_`, `tribe_tickets_commerce_cart_get_data`, `tribe_edd_format_amount_decimals`, `tribe_format_amount_decimals`, `tribe_format_amount`, `tribe_format_amount_with_symbol`, `tribe_tickets_commerce_paypal_notify_url`, `tribe_tickets_commerce_paypal_custom_args`, `tribe_tickets_commerce_paypal_add_to_cart_args`, `tribe_tickets_commerce_paypal_gateway_add_to_cart_redirect`, `tribe_tickets_commerce_paypal_invoice_number`, `tribe_tickets_tribe-commerce_cart_url`, `tribe_tickets_tribe-commerce_checkout_url`, `tribe_tickets_availability_check_interval`, `tribe_tickets_checkout_urls`, `tribe_tickets_cart_urls`, `tribe_tickets_availability_check_interval`, `tribe_tickets_checkout_urls`, `tribe_tickets_cart_urls`, `tribe_tickets_order_link_template_already_rendered`, `tribe_tickets_order_link_template_already_rendered`, `tribe_tickets_block_loader_classes`, `tribe_events_tickets_attendee_registration_modal_content`, `tribe_tickets_ticket_block_submit`, `tribe_tickets_loader_text`, `tribe_tickets_modal_loader_classes`, `tribe_tickets_order_link_template_already_rendered`
+* Tweak - Added actions: `tribe_tickets_commerce_cart_update_tickets_`, `tribe_tickets_commerce_cart_update_tickets`, `tribe_tickets_commerce_cart_update_ticket_meta`, `event_tickets_rsvp_after_attendee_update`, `tribe_tickets_registration_content_before_all_events`, `tribe_tickets_registration_content_before_all_events`, `tribe_tickets_registration_content_after_all_events`
+* Tweak - Changed views: `blocks/attendees`, `blocks/rsvp`, `blocks/rsvp/form/opt-out`, `blocks/tickets`, `blocks/tickets/content-description`, `blocks/tickets/content-inactive`, `blocks/tickets/content-title`, `blocks/tickets/content`, `blocks/tickets/extra-available-quantity`, `blocks/tickets/extra-available-unlimited`, `blocks/tickets/extra-available`, `blocks/tickets/extra-price`, `blocks/tickets/extra`, `blocks/tickets/footer-quantity`, `blocks/tickets/footer-total`, `blocks/tickets/footer`, `blocks/tickets/icon-svg`, `blocks/tickets/icon`, `blocks/tickets/item-inactive`, `blocks/tickets/item`, `blocks/tickets/opt-out-hidden`, `blocks/tickets/quantity-add`, `blocks/tickets/quantity-number`, `blocks/tickets/quantity-remove`, `blocks/tickets/quantity-unavailable`, `blocks/tickets/quantity`, `blocks/tickets/registration/attendee/content`, `blocks/tickets/registration/attendee/fields/checkbox`, `blocks/tickets/registration/attendee/fields/radio`, `blocks/tickets/registration/attendee/fields/select`, `blocks/tickets/registration/attendee/fields/text`, `blocks/tickets/registration/attendee/submit`, `blocks/tickets/registration/content`, `blocks/tickets/registration/summary/content`, `blocks/tickets/registration/summary/description`, `blocks/tickets/registration/summary/ticket-icon`, `blocks/tickets/registration/summary/ticket-price`, `blocks/tickets/registration/summary/ticket-quantity`, `blocks/tickets/registration/summary/ticket-title`, `blocks/tickets/registration/summary/ticket`, `blocks/tickets/registration/summary/tickets`, `blocks/tickets/registration/summary/title`, `blocks/tickets/submit-button-modal`, `blocks/tickets/submit-button`, `blocks/tickets/submit-login`, `blocks/tickets/submit`, `components/loader`, `components/notice`, `modal/cart`, `modal/item-remove`, `modal/item-total`, `modal/registration-js`, `modal/registration`, `registration-js/attendees/content`, `registration-js/attendees/fields`, `registration-js/attendees/fields/checkbox`, `registration-js/attendees/fields/radio`, `registration-js/attendees/fields/select`, `registration-js/attendees/fields/text`, `registration-js/attendees/ticket`, `registration-js/content`, `registration-js/mini-cart`, `registration/attendees/content`, `registration/attendees/error`, `registration/attendees/fields`, `registration/attendees/fields/checkbox`, `registration/attendees/fields/radio`, `registration/attendees/fields/select`, `registration/attendees/fields/text`, `registration/attendees/loader`, `registration/attendees/success`, `registration/button-cart`, `registration/button-checkout`, `registration/content`, `registration/summary/content`, `registration/summary/description`, `registration/summary/registration-status`, `registration/summary/ticket/content`, `registration/summary/ticket/icon-svg`, `registration/summary/ticket/icon`, `registration/summary/ticket/price`, `registration/summary/ticket/quantity`, `registration/summary/ticket/title`, `registration/summary/tickets-header`, `registration/summary/tickets`, `registration/summary/title`, `registration/summary/toggle-handler`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp-success`, `tickets/tpp`, `tickets/view-link`
+* Fix - Pass missing 'provider' argument from `views/registration/content.php` to `views/registration/button-cart.php` [131896]
+* Language - 0 new strings added, 75 updated, 0 fuzzied, and 2 obsoleted
 
 = [4.10.11.1] 2019-11-18 =
 

@@ -1,351 +1,799 @@
 // For compatibility purposes we add this
-if ('undefined' === typeof tribe) {
-    tribe = {};
+if ( 'undefined' === typeof tribe ) {
+	tribe = {};
 }
 
-if ('undefined' === typeof tribe.tickets) {
-    tribe.tickets = {};
+if ( 'undefined' === typeof tribe.tickets ) {
+	tribe.tickets = {};
 }
 
 tribe.tickets.registration = {};
 
-(function($, obj) {
-    'use strict';
+( function( $, obj ) {
+	'use strict';
 
-    obj.hasChanges = {};
+	/* Variables */
 
-    obj.formClasses = {
-        woo: 'tribe-block__tickets__item__attendee__fields__form--woo',
-        edd: 'tribe-block__tickets__item__attendee__fields__form--edd',
-    }
+	obj.document = $( document );
 
-    obj.selector = {
-        container: '.tribe-block__tickets__registration__event',
-        fields: '.tribe-block__tickets__item__attendee__fields',
-        fieldsError: '.tribe-block__tickets__item__attendee__fields__error',
-        fieldsErrorRequired: '.tribe-block__tickets__item__attendee__fields__error--required',
-        fieldsErrorAjax: '.tribe-block__tickets__item__attendee__fields__error--ajax',
-        fieldsSuccess: '.tribe-block__tickets__item__attendee__fields__success',
-        loader: '.tribe-block__tickets__item__attendee__fields__loader',
-        form: '.tribe-block__tickets__item__attendee__fields__form',
-        toggler: '.tribe-block__tickets__registration__toggle__handler',
-        status: '.tribe-block__tickets__registration__status',
-        field: {
-            text: '.tribe-block__tickets__item__attendee__field__text',
-            checkbox: '.tribe-block__tickets__item__attendee__field__checkbox',
-            select: '.tribe-block__tickets__item__attendee__field__select',
-            radio: '.tribe-block__tickets__item__attendee__field__radio',
-        },
-        checkout: '.tribe-block__tickets__registration__checkout',
-        checkoutButton: '.tribe-block__tickets__registration__checkout__submit'
-    };
+	obj.hasChanges = {};
 
-    var $tribe_registration = $(obj.selector.container);
+	obj.selector = {
+		footerQuantity     : '.tribe-tickets__footer__quantity__number',
+		footerAmount       : '.tribe-tickets__footer__total .tribe-amount',
+		checkout           : '.tribe-tickets__registration__checkout',
+		checkoutButton     : '.tribe-tickets__item__registration__submit',
+		container          : '.tribe-tickets__registration',
+		eventContainer     : '.tribe-tickets__registration__event',
+		field              : {
+			text    : '.tribe-tickets__item__attendee__field__text',
+			checkbox: '.tribe-tickets__item__attendee__field__checkbox',
+			select  : '.tribe-tickets__item__attendee__field__select',
+			radio   : '.tribe-tickets__item__attendee__field__radio',
+		},
+		fields             : '.tribe-tickets__item__attendee__fields',
+		fieldsError        : '.tribe-tickets__item__attendee__fields__error',
+		fieldsErrorAjax    : '.tribe-tickets__item__attendee__fields__error--ajax',
+		fieldsErrorRequired: '.tribe-tickets__item__attendee__fields__error--required',
+		fieldsSuccess      : '.tribe-tickets__item__attendee__fields__success',
+		form               : '#tribe-tickets__registration__form',
+		item               : '.tribe-tickets__item',
+		itemPrice          : '.tribe-amount',
+		itemQuantity       : '.tribe-ticket-quantity',
+		loader             : '.tribe-common-c-loader',
+		metaField          : '.ticket-meta',
+		metaItem           : '.tribe-ticket',
+		metaForm           : '.tribe-tickets__registration__content',
+		miniCart           : '#tribe-tickets__mini-cart',
+		status             : '.tribe-tickets__registration__status',
+		toggler            : '.tribe-tickets__registration__toggle__handler',
+	};
 
-    // Bail if there are no tickets on the current event/page/post
-    if (0 === $tribe_registration.length) {
-        return;
-    }
+	var $tribe_registration = $( obj.selector.container );
 
-    /**
-     * Handle the toggle for each event
-     *
-     * @since 4.9
-     *
-     * @return void
-     */
-    $(obj.selector.container).on(
-        'click',
-        obj.selector.toggler,
-        function(e) {
-            e.preventDefault();
+	// Bail if there are no tickets on the current event/page/post
+	if ( ! $( obj.selector.eventContainer ).length ) {
+		return;
+	}
 
-            var $this = $(this);
-            var $event = $this.closest(obj.selector.container);
+	/*
+	 * Commerce Provider Selectors.
+	 *
+	 * @since 4.11.0
+	 *
+	 */
+	obj.commerceSelector = {
+		edd                                              : 'Tribe__Tickets_Plus__Commerce__EDD__Main',
+		rsvp                                             : 'Tribe__Tickets__RSVP',
+		tpp                                              : 'Tribe__Tickets__Commerce__PayPal__Main',
+		Tribe__Tickets__Commerce__PayPal__Main           : 'tribe-commerce',
+		Tribe__Tickets__RSVP                             : 'rsvp',
+		Tribe__Tickets_Plus__Commerce__EDD__Main         : 'edd',
+		Tribe__Tickets_Plus__Commerce__WooCommerce__Main : 'woo',
+		tribe_eddticket                                  : 'edd',
+		tribe_tpp_attendees                              : 'tpp',
+		tribe_wooticket                                  : 'woo',
+		woo                                              : 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
+	};
 
-            $event.find(obj.selector.fields).toggle();
-            $this.toggleClass('open');
+	// Get the current provider & ID.
+	obj.provider = $tribe_registration.data( 'provider' );
+	obj.providerId = obj.commerceSelector[ obj.provider ];
 
-        });
+	/* Data Formatting / API Handling */
 
-    /**
-     * Check if the required fields have data
-     *
-     * @since 4.9
-     *
-     * @return void
-     */
-    obj.validateEventAttendees = function($form) {
-        var is_valid = true;
-        var $fields = $form.find('.tribe-tickets-meta-required');
+	/**
+	 *
+	 *
+	 * @since 4.11.0
+	 *
+	 * @return obj Meta data object.
+	 */
+	obj.getMetaForSave = function() {
+		var $metaForm     = $( obj.selector.metaForm );
+		var $ticketRows = $metaForm.find( obj.selector.metaItem );
+		var meta    = [];
+		var tempMeta    = [];
+		$ticketRows.each(
+			function() {
+				var data      = {};
+				var $row      = $( this );
+				var ticket_id = $row.data( 'ticketId' );
 
-        $fields.each(function() {
-            var $field = $(this);
-            var val = '';
+				var $fields = $row.find( obj.selector.metaField );
 
-            if (
-                $field.is(obj.selector.field.radio) ||
-                $field.is(obj.selector.field.checkbox)
-            ) {
-                val = $field.find('input:checked').length ? 'checked' : '';
-            } else if ($field.is(obj.selector.field.select)) {
-                val = $field.find('select').val();
-            } else {
-                val = $field.find('input, textarea').val().trim();
-            }
+				// Skip tickets with no meta fields
+				if ( ! $fields.length ) {
+					return;
+				}
 
-            if (0 === val.length) {
-                is_valid = false;
-            }
+				if ( ! tempMeta[ ticket_id ] ) {
+					tempMeta[ ticket_id ] = {};
+					tempMeta[ ticket_id ]['ticket_id'] = ticket_id;
+					tempMeta[ ticket_id ][ 'items' ] = [];
+				}
 
-        });
+				$fields.each(
+					function() {
+						var $field  = $( this );
+						var value   = $field.val();
+						var isRadio = $field.is( ':radio' );
+						var name    = $field.attr( 'name' );
 
-        return is_valid;
-    };
+						// Grab everything after the last bracket `[`.
+						name = name.split( '[' );
+						name = name.pop().replace( ']', '' );
 
-    /**
-     * Update container status to complete
-     *
-     * @since 4.10.1
-     *
-     * @return void
-     */
-    obj.updateStatusToComplete = function($event) {
-        $event.find(obj.selector.status).removeClass('incomplete');
-        $event.find(obj.selector.status).find('i').removeClass('dashicons-edit');
-        $event.find(obj.selector.status).find('i').addClass('dashicons-yes');
-    };
+						// Skip unchecked radio/checkboxes.
+						if ( isRadio || $field.is( ':checkbox' ) ) {
+							if ( ! $field.prop( 'checked' ) ) {
+								// If empty radio field, if field already has a value, skip setting it as empty.
+								if ( isRadio && '' !== data[name] ) {
+									return;
+								}
 
-    /**
-     * Update container status to incomplete
-     *
-     * @since 4.10.1
-     *
-     * @return void
-     */
-    obj.updateStatusToIncomplete = function($event) {
-        $event.find(obj.selector.status).addClass('incomplete');
-        $event.find(obj.selector.status).find('i').addClass('dashicons-edit');
-        $event.find(obj.selector.status).find('i').removeClass('dashicons-yes');
-    };
+								value = '';
+							}
+						}
 
-    obj.handleTppSaveSubmission = function(e) {
-        var $form = $(this);
-        var $fields = $form.closest(obj.selector.fields);
+						data[name] = value;
+					}
+				);
 
-        // hide all messages
-        $fields.find(obj.selector.fieldsErrorRequired).hide();
+				tempMeta[ ticket_id ]['items'].push( data );
+			}
+		);
 
-        if (!obj.validateEventAttendees($form)) {
-            e.preventDefault();
-            $fields.find(obj.selector.fieldsErrorRequired).show();
-        }
-    };
+		Object.keys( tempMeta ).forEach( function( index ) {
+			var newArr = {
+				'ticket_id': index,
+				'items': tempMeta[index]['items']
+			};
+			meta.push( newArr );
+		} );
 
-    /**
-     * Handle save attendees info form submission via ajax.
-     * Display a message if there are required fields missing.
-     *
-     * @since 4.9
-     *
-     * @return void
-     */
-    obj.handleSaveSubmission = function(e) {
-        e.preventDefault();
-        var $form = $(this);
-        var $fields = $form.closest(obj.selector.fields);
-        var $event = $fields.closest(obj.selector.container);
-
-        // hide all messages
-        $fields.find(obj.selector.fieldsErrorRequired).hide();
-        $fields.find(obj.selector.fieldsErrorAjax).hide();
-        $fields.find(obj.selector.fieldsSuccess).hide();
-
-        if (!obj.validateEventAttendees($form)) {
-            $fields.find(obj.selector.fieldsErrorRequired).show();
-            obj.updateStatusToIncomplete($event)
-        } else {
-            $fields.find(obj.selector.loader).show();
-
-            var ajaxurl = '';
-            var nonce = '';
-
-            if (typeof TribeTicketsPlus === 'object') {
-                ajaxurl = TribeTicketsPlus.ajaxurl;
-                nonce = TribeTicketsPlus.save_attendee_info_nonce;
-            }
-
-            var eventId = $event.data('event-id');
-            var params = $form.serializeArray();
-            params.push({ name: 'event_id', value: eventId });
-            params.push({ name: 'action', value: 'tribe-tickets-save-attendee-info' });
-            params.push({ name: 'nonce', value: nonce });
-
-            $.post(
-                ajaxurl,
-                params,
-                function(response) {
-                    if (response.success) {
-                        obj.updateStatusToComplete($event)
-                        obj.hasChanges[eventId] = false;
-                        $fields.find(obj.selector.fieldsSuccess).show();
-
-                        if (response.data.meta_up_to_date) {
-                            $(obj.selector.checkoutButton).removeAttr('disabled');
-                        }
-                    }
-                }
-            ).fail(function() {
-                $fields.find(obj.selector.fieldsErrorAjax).show();
-            }).always(function() {
-                $fields.find(obj.selector.loader).hide();
-            });
-        }
-    };
-
-    /**
-     * Handle checkout form submission.
-     * Display a confirm if there are any changes to the attendee info that have not been saved
-     *
-     * @since 4.9
-     *
-     * @return void
-     */
-    obj.handleCheckoutSubmission = function(e) {
-        var eventIds = Object.keys(obj.hasChanges);
-        var hasChanges = eventIds.reduce(function(hasChanges, eventId) {
-            return hasChanges || obj.hasChanges[eventId];
-        }, false);
-
-        if (hasChanges && !confirm(tribe_l10n_datatables.registration_prompt)) {
-            e.preventDefault();
-            return;
-        }
-    };
-
-    /**
-     * Sets hasChanges flag to true for given eventId
-     *
-     * @since 4.9
-     *
-     * @return void
-     */
-    obj.setHasChanges = function(eventId) {
-        return function() {
-            obj.hasChanges[eventId] = true;
-        };
-    };
-
-    /**
-     * Bind event handlers to each form field
-     *
-     * @since 4.9
-     *
-     * @return void
-     */
-    obj.bindFormFields = function($event) {
-        // set up hasChanges flag for event
-        var eventId = $event.data('event-id');
-        obj.hasChanges[eventId] = false;
-
-        var $fields = [
-            $event.find(obj.selector.field.text),
-            $event.find(obj.selector.field.checkbox),
-            $event.find(obj.selector.field.radio),
-            $event.find(obj.selector.field.select),
-        ];
-
-        $fields.forEach(function($field) {
-            var $formElement;
-
-            if (
-                $field.is(obj.selector.field.radio) ||
-                $field.is(obj.selector.field.checkbox)
-            ) {
-                $formElement = $field.find('input');
-            } else if ($field.is(obj.selector.field.select)) {
-                $formElement = $field.find('select');
-            } else {
-                $formElement = $field.find('input, textarea');
-            }
-
-            $formElement.change(obj.setHasChanges(eventId));
-        });
-    };
-
-    /**
-     * Bind event handlers to checkout form
-     */
-    obj.bindCheckout = function() {
-        $(obj.selector.checkout).submit(obj.handleCheckoutSubmission);
-    };
-
-    /**
-     * Bind event handlers
-     *
-     * @since 4.9
-     *
-     * @return void
-     */
-    obj.bindEvents = function() {
-        obj.bindCheckout();
-    };
-
-    /**
-     * Init containers for each event
-     *
-     * @since 4.10.1
-     *
-     * @return void
-     */
-    obj.initContainers = function() {
-        $(obj.selector.container).each(function() {
-            var $event = $(this);
-            var allRequired = obj.validateEventAttendees($event);
-
-            allRequired
-                ?
-                obj.updateStatusToComplete($event) :
-                obj.updateStatusToIncomplete($event);
-
-            // bind submission handler to each form
-            var $form = $event.find(obj.selector.form);
-            if ($form.hasClass(obj.formClasses.woo) || $form.hasClass(obj.formClasses.edd)) {
-                $($form).on('submit', obj.handleSaveSubmission);
-            } else {
-                $($form).on('submit', obj.handleTppSaveSubmission);
-            }
-
-            // bind form fields to update hasChanges flag
-            obj.bindFormFields($event);
-        });
-    };
-
-    /**
-     * Init the page, set a flag for those events that need to fill inputs
-     * Toggle down those who are ready
-     *
-     * @since 4.9
-     *
-     * @return void
-     */
-    obj.initPage = function() {
-        obj.initContainers();
-        obj.bindEvents();
-    };
-
-    /**
-     * Init the tickets registration script
-     *
-     * @since 4.9
-     *
-     * @return void
-     */
-    obj.init = function() {
-        obj.initPage();
-    }
-
-    obj.init();
+		return meta;
+	}
 
 
-})(jQuery, tribe.tickets.registration);
+	/**
+	 * Get ticket data to send to cart.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @return obj Tickets data object.
+	 */
+	obj.getTicketsForSave = function() {
+		var tickets   = [];
+		var $cartForm = $( obj.selector.miniCart );
+
+		// Handle non-modal instances
+		if ( ! $cartForm.length ) {
+			$cartForm = $( obj.selector.container );
+		}
+
+		var $ticketRows = $cartForm.find( obj.selector.item );
+
+		$ticketRows.each(
+			function() {
+				var $row        = $( this );
+				var ticket_id    = $row.data( 'ticketId' );
+				var qty          = $row.find( obj.selector.itemQuantity ).text();
+
+				var data          = {};
+				data['ticket_id'] = ticket_id;
+				data['quantity']  = qty;
+
+				tickets.push( data );
+			}
+		);
+
+		return tickets;
+	}
+
+	/* Prefill Functions */
+
+	/**
+	 * Init the form prefills ( cart and AR forms ).
+	 *
+	 * @since 4.11.0
+	 *
+	 * @return void
+	 */
+	obj.initFormPrefills = function() {
+		$.ajax( {
+			type    : 'GET',
+			data    : {
+				provider: obj.providerId,
+				post_id: obj.postId,
+			},
+			dataType: 'json',
+			url     : obj.getRestEndpoint(),
+			success : function ( data ) {
+				if ( data.tickets ) {
+					obj.prefillCartForm( $( obj.selector.miniCart ), data.tickets );
+				}
+
+				if ( data.meta ) {
+					obj.appendARFields( data );
+					obj.prefillMetaForm( data );
+				}
+			},
+			complete: function() {
+				obj.loaderHide();
+			}
+		} );
+	}
+
+	/**
+	 * Appends AR fields on page load.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param obj meta The ticket meta we are usign to add "blocks".
+	 */
+	obj.appendARFields = function ( data ) {
+		var tickets      = data.tickets;
+		var meta         = data.meta;
+		var nonMetaCount = 0;
+		var metaCount    = 0;
+
+		$.each( tickets, function( index, ticket ) {
+			var ticket_meta       = meta.filter( obj => { return obj.ticket_id === ticket.ticket_id; } );
+			var ticketTemplate    = window.wp.template( 'tribe-registration--' + ticket.ticket_id );
+			var $ticket_container = $tribe_registration.find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticket.ticket_id + '"]' );
+			var counter           = 1;
+
+			if ( ! $ticket_container.length ) {
+				nonMetaCount += ticket.quantity;
+			} else {
+				metaCount += ticket.quantity;
+			}
+
+			$ticket_container.addClass( 'tribe-tickets--has-tickets' );
+
+			for ( var i = counter; i <= ticket.quantity; ++i ) {
+				var data = { 'attendee_id': i };
+				try {
+					$ticket_container.append( ticketTemplate( data ) );
+				} catch( error ) {
+					// template doesn't exist - the ticket has no meta.
+				}
+
+			}
+
+		} );
+
+		obj.maybeShowNonMetaNotice( nonMetaCount, metaCount );
+	}
+
+	obj.maybeShowNonMetaNotice = function( nonMetaCount, metaCount ) {
+		var $notice = $( '.tribe-tickets__notice--non-ar' );
+		if ( 0 < nonMetaCount && 0 < metaCount ) {
+			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
+			$notice.removeClass( 'tribe-common-a11y-hidden' );
+		} else {
+			$notice.addClass( 'tribe-common-a11y-hidden' );
+		}
+	}
+
+	/**
+	 * Prefills the AR fields from supplied data.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param meta Data to fill the form in with.
+	 * @param length Starting pointer for partial fill-ins.
+	 *
+	 * @return void
+	 */
+	obj.prefillMetaForm = function( data, length ) {
+		if ( undefined === data || 0 >= data.length ) {
+			return;
+		}
+
+		if ( undefined === length ) {
+			var length = 0;
+		}
+
+		var $form = $tribe_registration;
+		var $containers = $form.find( '.tribe-tickets__item__attendee__fields__container' );
+		var meta = data.meta;
+		if ( 0 < length ) {
+			var meta = meta.splice( 0, length - 1 );
+		}
+
+		$.each( meta, function( index, ticket ) {
+			var $current_containers = $containers.filter( `[data-ticket-id="${ticket.ticket_id}"]` );
+
+			if ( ! $current_containers.length ) {
+				return;
+			}
+
+			var current = 0;
+			$.each( ticket.items, function( index, data ) {
+				if ( 'object' !== typeof data ) {
+					return;
+				}
+
+				var $ticket_containers = $current_containers.find( '.tribe-ticket' );
+				$.each( data, function( index, value ) {
+					var $field = $ticket_containers.eq( current ).find( `[name*="${index}"]` );
+					if ( ! $field.is( ':radio' ) && ! $field.is( ':checkbox' ) ) {
+						$field.val( value );
+					} else {
+						$field.each( function( index ) {
+							var $item = $( this );
+							if ( value === $item.val() ) {
+								$item.prop( 'checked', true );
+							}
+						} );
+					}
+				} );
+
+				current++;
+			} );
+		} );
+	}
+
+	/**
+	 * Update all the footer info.
+	 *
+	 * @since 4.11.0
+	 */
+	obj.updateFooter = function() {
+		obj.updateFooterCount();
+		obj.updateFooterAmount();
+	}
+
+	/**
+	 * Adjust the footer count for +/-.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @return void
+	 */
+	obj.updateFooterCount = function() {
+		var $form       = $( obj.selector.miniCart );
+		var $field      = $form.find( obj.selector.footerQuantity );
+		var footerCount = 0;
+		var $qtys       = $form.find( obj.selector.itemQuantity );
+
+		$qtys.each( function(){
+			var new_quantity = parseInt( $( this ).text(), 10 );
+			new_quantity     = isNaN( new_quantity ) ? 0 : new_quantity;
+			footerCount      += new_quantity;
+		} );
+
+		if ( 0 > footerCount ) {
+			return;
+		}
+
+		$field.text( footerCount );
+	}
+
+	/**
+	 * Adjust the footer total/amount for +/-.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @return void
+	 */
+	obj.updateFooterAmount = function() {
+		var $form        = $( obj.selector.miniCart );
+		var $field       = $form.find( obj.selector.footerAmount );
+		var footerAmount = 0;
+		var $qtys        = $form.find( obj.selector.itemQuantity );
+
+		$qtys.each( function() {
+			var $qty = $( this );
+			var $price   = $qty.closest( obj.selector.item ).find( obj.selector.itemPrice ).first( 0 );
+			var quantity = parseInt( $qty.text(), 10 );
+			quantity     = isNaN( quantity ) ? 0 : quantity;
+			var cost     = obj.cleanNumber( $price.text() ) * quantity;
+			footerAmount += cost;
+		} );
+
+		if ( 0 > footerAmount ) {
+			return;
+		}
+
+		$field.text( obj.numberFormat ( footerAmount ) );
+	}
+
+	/**
+	 * Prefill the Mini-Cart.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @returns {*}
+	 */
+	obj.prefillCartForm = function ( $form, tickets ) {
+		$.each( tickets, function ( index, value ) {
+			var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
+
+			if ( $item ) {
+				var pricePer = $item.find( '.tribe-tickets__item__extra__price .tribe-amount' ).text();
+				$item.find( '.tribe-ticket-quantity' ).html( value.quantity );
+				var price = value.quantity * obj.cleanNumber( pricePer );
+				price = obj.numberFormat( price );
+				$item.find( '.tribe-tickets__item__total .tribe-amount' ).html( price );
+			}
+		} );
+
+		obj.updateFooter();
+
+	};
+
+
+	/* Validation */
+
+	/**
+	 * Validates the entire meta form.
+	 * Adds errors to the top of the modal.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param $form jQuery object that is the form we are validating.
+	 *
+	 * @return boolean If the form validates.
+	 */
+	obj.validateForm = function( $form ) {
+		var $containers     = $form.find( obj.selector.metaItem );
+		var formValid       = true;
+		var invalidTickets  = 0;
+
+		$containers.each(
+			function() {
+				var $container     = $( this );
+				var validContainer = obj.validateBlock( $container );
+
+				if ( ! validContainer ) {
+					invalidTickets++;
+					formValid = false;
+				}
+			}
+		);
+
+		return [formValid, invalidTickets];
+	}
+
+	/**
+	 * Validates and adds/removes error classes from a ticket meta block.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param $container jQuery object that is the block we are validating.
+	 *
+	 * @return boolean True if all fields validate, false otherwise.
+	 */
+	obj.validateBlock = function( $container ) {
+		var $fields = $container.find( obj.selector.metaField );
+		var validBlock = true;
+		$fields.each(
+			function() {
+				var $field = $( this );
+				var isValidfield = obj.validateField( $field[0] );
+
+				if ( ! isValidfield ) {
+					validBlock = false;
+				}
+			}
+		);
+
+		if ( validBlock ) {
+			$container.removeClass( 'tribe-ticket-item__has-error' );
+		} else {
+			$container.addClass( 'tribe-ticket-item__has-error' );
+		}
+
+		return validBlock;
+	}
+
+	/**
+	 * Validate Checkbox/Radio group.
+	 * We operate under the assumption that you must check _at least_ one,
+	 * but not necessarily all. Also that the checkboxes are all required.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param $group The jQuery object for the checkbox group.
+	 *
+	 * @return boolean
+	 */
+	obj.validateCheckboxRadioGroup = function( $group ) {
+		var $checkboxes   = $group.find( obj.selector.metaField );
+		var checkboxValid = false;
+		var required      = true;
+
+		$checkboxes.each(
+			function() {
+				var $this = $( this );
+				if ( $this.is( ':checked' ) ) {
+					checkboxValid = true;
+				}
+
+				if ( ! $this.prop( 'required' ) ) {
+					required = false;
+				}
+			}
+		);
+
+		var valid = ! required || checkboxValid;
+
+		return valid;
+	}
+
+	/**
+	 * Adds/removes error classes from a single field.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param input DOM Object that is the field we are validating.
+	 *
+	 * @return boolean
+	 */
+	obj.validateField = function( input ) {
+		var isValidfield = true;
+		var $input       = $( input );
+		var isValidfield = input.checkValidity();
+
+		if ( ! isValidfield ) {
+			var $input = $( input );
+			// Got to be careful of required checkbox/radio groups...
+			if ( $input.is( ':checkbox' ) || $input.is( ':radio' ) ) {
+				var $group = $input.closest( '.tribe-common-form-control-checkbox-radio-group' );
+
+				if ( $group.length ) {
+					isValidfield = obj.validateCheckboxRadioGroup( $group );
+				}
+			} else {
+				isValidfield = false;
+			}
+		}
+
+		if ( ! isValidfield ) {
+			$input.addClass( 'ticket-meta__has-error' );
+		} else {
+			$input.removeClass( 'ticket-meta__has-error' );
+		}
+
+		return isValidfield;
+	}
+
+	/* DOM Manipulation */
+
+	/**
+	 * Adds focus effect to ticket block.
+	 *
+	 * @since 4.11.0
+	 *
+	 */
+	obj.focusTicketBlock = function( input ) {
+		$( input ).closest( obj.selector.metaItem ).addClass( 'tribe-ticket-item__has-focus' );
+	}
+
+	/**
+	 * Remove focus effect from ticket block.
+	 *
+	 * @since 4.11.0
+	 *
+	 */
+	obj.unfocusTicketBlock = function( input ) {
+		$( input ).closest( obj.selector.metaItem ).removeClass( 'tribe-ticket-item__has-focus' );
+	}
+
+	/**
+	 * Show the loader/spinner.
+	 *
+	 * @since 4.11.0
+	 */
+	obj.loaderShow = function() {
+		$( obj.selector.loader ).removeClass( 'tribe-common-a11y-hidden' );
+	}
+
+	/**
+	 * Hide the loader/spinner.
+	 *
+	 * @since 4.11.0
+	 */
+	obj.loaderHide = function() {
+		$( obj.selector.loader ).addClass( 'tribe-common-a11y-hidden' );
+	}
+
+	/* Utility */
+
+	/**
+	 * Get the REST endpoint
+	 *
+	 * @since 4.11.0
+	 */
+	obj.getRestEndpoint = function() {
+		var url = TribeCartEndpoint.url;
+		return url;
+	}
+
+	/**
+	 * Get the Currency Formatting for a Provider.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @returns {*}
+	 */
+	obj.getCurrencyFormatting = function () {
+		var currency = JSON.parse( TribeCurrency.formatting );
+		var format   = currency[ obj.commerceSelector[ obj.providerId ] ];
+		return format;
+	};
+
+	/**
+	 * Removes separator characters and converts deciaml character to '.'
+	 * So they play nice with other functions.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param number The number to clean.
+	 * @returns {string}
+	 */
+	obj.cleanNumber = function( number ) {
+		var format = obj.getCurrencyFormatting();
+		// we run into issue when the two symbols are the same -
+		// which appears to happen by default with some providers.
+		var same = format.thousands_sep === format.decimal_point;
+
+		if ( ! same ) {
+			number = number.split( format.thousands_sep ).join( '' );
+			number = number.split( format.decimal_point ).join( '.' );
+		} else {
+			var dec_place = number.length - ( format.number_of_decimals + 1 );
+			number = number.substr( 0, dec_place ) + '_' + number.substr( dec_place + 1 );
+			number = number.split( format.thousands_sep ).join( '' );
+			number = number.split( '_' ).join( '.' );
+		}
+
+		return number;
+	}
+
+	/**
+	 * Format the number according to provider settings.
+	 * Based off coding fron https://stackoverflow.com/a/2901136.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param number The number to format.
+	 *
+	 * @returns {string}
+	 */
+	obj.numberFormat = function ( number ) {
+		var format = obj.getCurrencyFormatting();
+
+		if ( ! format ) {
+			return false;
+		}
+
+		var decimals      = format.number_of_decimals;
+		var dec_point     = format.decimal_point;
+		var thousands_sep = format.thousands_sep;
+		var n             = !isFinite( +number ) ? 0 : +number;
+		var prec          = !isFinite( +decimals ) ? 0 : Math.abs( decimals );
+		var sep           = ( 'undefined' === typeof thousands_sep ) ? ',' : thousands_sep;
+		var dec           = ( 'undefined' === typeof dec_point ) ? '.' : dec_point;
+		var toFixedFix    = function ( n, prec ) {
+			// Fix for IE parseFloat(0.55).toFixed(0) = 0;
+			var k = Math.pow( 10, prec );
+
+			return Math.round( n * k ) / k;
+		};
+
+		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
+
+		if ( s[0].length > 3 ) {
+			s[0] = s[0].replace( /\B(?=(?:\d{3} )+(?!\d))/g, sep );
+		}
+
+		if ( ( s[1] || '' ).length < prec ) {
+			s[1] = s[1] || '';
+			s[1] += new Array( prec - s[1].length + 1 ).join( '0' );
+		}
+
+		return s.join( dec );
+	}
+
+	/* Event Handlers */
+
+	/**
+	 * Adds focus effect to ticket block.
+	 *
+	 * @since 4.11.0
+	 *
+	 */
+	obj.document.on(
+		'focus',
+		'.tribe-ticket .ticket-meta',
+		function( e ) {
+			var input      = e.target;
+			obj.focusTicketBlock( input );
+		}
+	);
+
+	/**
+	 * handles input blur.
+	 *
+	 * @since 4.11.0
+	 *
+	 */
+	obj.document.on(
+		'blur',
+		'.tribe-ticket .ticket-meta',
+		function( e ) {
+			var input      = e.target;
+			obj.unfocusTicketBlock( input );
+		}
+	);
+
+	/**
+	 * Handle AR submission.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @return void
+	 */
+	obj.document.on(
+		'click',
+		obj.selector.checkoutButton,
+		function( e ) {
+			e.preventDefault();
+			var $button      = $( this );
+			var $metaForm    = $( obj.selector.metaForm );
+			var $errorNotice = $( '.tribe-tickets__notice--error' );
+			var isValidForm  = obj.validateForm( $metaForm );
+
+			if ( ! isValidForm[ 0 ] ) {
+				$( [document.documentElement, document.body] ).animate(
+					{ scrollTop: $( '.tribe-tickets__registration' ).offset().top },
+					'slow'
+				);
+
+
+				$( '.tribe-tickets__notice--error__count' ).text( isValidForm[ 1 ] );
+				$errorNotice.show();
+
+				return false;
+			}
+
+			$errorNotice.hide();
+
+			obj.loaderShow();
+
+			// save meta and cart
+			var params = {
+				tribe_tickets_provider: obj.commerceSelector[ obj.tribe_ticket_provider ],
+				tribe_tickets_tickets : obj.getTicketsForSave(),
+				tribe_tickets_meta    : obj.getMetaForSave(),
+				tribe_tickets_post_id : obj.postId,
+			};
+
+			$( '#tribe_tickets_ar_data' ).val( JSON.stringify( params ) );
+
+			// Submit the form.
+			$( obj.selector.form ).submit();
+		}
+	);
+
+	/**
+	 * Init the tickets registration script
+	 *
+	 * @since 4.9
+	 *
+	 * @return void
+	 */
+	obj.init = function() {
+		obj.loaderShow();
+		obj.initFormPrefills();
+	}
+
+	obj.document.on( 'ready', function( $ ) {
+		obj.init();
+	} );
+
+} )( jQuery, tribe.tickets.registration );

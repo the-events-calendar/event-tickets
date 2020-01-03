@@ -13,8 +13,10 @@
  * @since   4.9.3  Display login link if visitor is logged out and logging in is required to purchase.
  * @since   4.10.8 Removed the date_in_range() check per ticket, since it now happens upstream. Better checking of max quantity available.
  * @since   4.10.10  Use customizable ticket name functions.
+ * @since   4.11.1    Corrected amount of available/remaining tickets when threshold is empty.
  *
- * @version 4.10.9
+ * @version 4.11.1
+ * @deprecated 4.11.0
  *
  * @var bool $must_login
  * @var bool $display_login_link
@@ -29,6 +31,22 @@ $messages       = $commerce->get_messages();
 $messages_class = $messages ? 'tribe-tpp-message-display' : '';
 $now            = time();
 $cart_url       = '';
+
+/** @var Tribe__Settings_Manager $settings_manager */
+$settings_manager = tribe( 'settings.manager' );
+
+$threshold = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
+
+/**
+ * Overwrites the threshold to display "# tickets left".
+ *
+ * @param int   $threshold Stock threshold to trigger display of "# tickets left"
+ * @param array $data      Ticket data.
+ * @param int   $post_id   WP_Post/Event ID.
+ *
+ * @since 4.11.1
+ */
+$threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_threshold', $threshold, tribe_events_get_ticket_event( $ticket ) ) );
 ?>
 <form
 	id="tpp-buy-tickets"
@@ -83,6 +101,15 @@ $cart_url       = '';
 
 			$available = $handler->get_ticket_max_purchase( $ticket->ID );
 
+			/**
+			 * Allows hiding of "unlimited" to be toggled on/off conditionally.
+			 *
+			 * @param int   $show_unlimited allow showing of "unlimited".
+			 *
+			 * @since 4.11.1
+			 */
+			$show_unlimited = apply_filters( 'tribe_tickets_block_show_unlimited_availability', false, $available );
+
 			$is_there_any_product_to_sell = 0 !== $available;
 			?>
 			<tr>
@@ -91,7 +118,7 @@ $cart_url       = '';
 					<?php if ( $is_there_any_product_to_sell ) : ?>
 						<input
 							type="number"
-							class="tribe-ticket-quantity qty"
+							class="tribe-tickets-quantity qty"
 							min="0"
 							<?php if ( -1 !== $available ) : ?>
 								max="<?php echo esc_attr( $available ); ?>"
@@ -100,13 +127,15 @@ $cart_url       = '';
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>
-						<?php if ( -1 !== $available ) : ?>
+						<?php if ( -1 !== $available && ( 0 === $threshold || $available <= $threshold ) ) : ?>
 							<span class="tribe-tickets-remaining">
 							<?php
 							$readable_amount = tribe_tickets_get_readable_amount( $available, null, false );
 							echo sprintf( esc_html__( '%1$s available', 'event-tickets' ), '<span class="available-stock" data-product-id="' . esc_attr( $ticket->ID ) . '">' . esc_html( $readable_amount ) . '</span>' );
 							?>
 							</span>
+						<?php elseif ( $show_unlimited ): ?>
+							<span class="available-stock" data-product-id="<?php echo esc_attr( $ticket->ID ); ?>"><?php echo esc_html( $readable_amount ); ?></span>
 						<?php endif; ?>
 					<?php else: ?>
 						<span class="tickets_nostock"><?php esc_html_e( 'Out of stock!', 'event-tickets' ); ?></span>

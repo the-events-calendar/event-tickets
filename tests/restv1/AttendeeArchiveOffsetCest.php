@@ -18,6 +18,8 @@ class AttendeeArchiveOffsetCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_getting_attendees_by_id( \Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'editor' );
+
 		$post_ids = $I->haveManyPostsInDatabase( 3 );
 		// 3 posts, 1 ticket per post, 2 attendees per ticket => 6 attendees
 		$attendees = array_reduce( $post_ids, function ( array $attendees, $post_id ) {

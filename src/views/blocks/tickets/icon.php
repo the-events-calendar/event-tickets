@@ -11,12 +11,11 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @deprecated 4.11.0
+ * @version 4.11.0
  *
  */
 ?>
-<div
-	class="tribe-block__tickets__item__icon"
->
+<div class="tribe-tickets__item__icon">
 	<?php $this->template( 'blocks/tickets/icon-svg' ); ?>
 </div>

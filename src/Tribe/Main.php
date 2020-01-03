@@ -4,7 +4,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.10.12-beta2';
+	const VERSION = '4.11.1';
 
 	/**
 	 * Min required The Events Calendar version
@@ -21,11 +21,25 @@ class Tribe__Tickets__Main {
 	const MIN_COMMON_VERSION = '4.9.14';
 
 	/**
+	 * Used to store the version history.
+	 *
+	 * @since 4.11.0
+	 */
+	public $version_history_slug = 'previous_event_tickets_versions';
+
+	/**
+	 * Used to store the latest version.
+	 *
+	 * @since 4.11.0
+	 */
+	public $latest_version_slug = 'latest_event_tickets_version';
+
+	/**
 	* Min Version of WordPress
 	*
 	* @since 4.10
 	*/
-	protected $min_wordpress = '4.7';
+	protected $min_wordpress = '4.9';
 
 	/**
 	* Min Version of PHP
@@ -303,13 +317,11 @@ class Tribe__Tickets__Main {
 	 * Load Text Domain on tribe_common_loaded as it requires common
 	 *
 	 * @since 4.10
-	 *
 	 */
 	public function bootstrap() {
-
 		Tribe__Main::instance( $this )->load_text_domain( 'event-tickets', $this->plugin_dir . 'lang/' );
 
-		// Intialize the Service Provider for Tickets
+		// Initialize the Service Provider for Tickets
 		tribe_register_provider( 'Tribe__Tickets__Service_Provider' );
 
 		$this->hooks();
@@ -325,13 +337,13 @@ class Tribe__Tickets__Main {
 		Tribe__Tickets__JSON_LD__Order::hook();
 		Tribe__Tickets__JSON_LD__Type::hook();
 
+		/** @var Tribe__Tickets__Privacy */
 		tribe( 'tickets.privacy' );
 
 		/**
 		 * Fires once Event Tickets has completed basic setup.
 		 */
 		do_action( 'tribe_tickets_plugin_loaded' );
-
 	}
 
 	/**
@@ -343,6 +355,7 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.main', $this );
 
 		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
+		tribe_singleton( 'tickets.commerce.cart', 'Tribe__Tickets__Commerce__Cart' );
 		tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', [ 'hook' ] );
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
@@ -476,17 +489,17 @@ class Tribe__Tickets__Main {
 	 * Set the Event Tickets version in the options table if it's not already set.
 	 */
 	public function maybe_set_et_version() {
-		if ( version_compare( Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' ), self::VERSION, '<' ) ) {
-			$previous_versions = Tribe__Settings_Manager::get_option( 'previous_event_tickets_versions' )
-				? Tribe__Settings_Manager::get_option( 'previous_event_tickets_versions' )
+		if ( version_compare( Tribe__Settings_Manager::get_option( $this->latest_version_slug ), self::VERSION, '<' ) ) {
+			$previous_versions = Tribe__Settings_Manager::get_option( $this->version_history_slug )
+				? Tribe__Settings_Manager::get_option( $this->version_history_slug )
 				: [];
 
-			$previous_versions[] = Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' )
-				? Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' )
+			$previous_versions[] = Tribe__Settings_Manager::get_option( $this->latest_version_slug )
+				? Tribe__Settings_Manager::get_option( $this->latest_version_slug )
 				: '0';
 
-			Tribe__Settings_Manager::set_option( 'previous_event_tickets_versions', $previous_versions );
-			Tribe__Settings_Manager::set_option( 'latest_event_tickets_version', self::VERSION );
+			Tribe__Settings_Manager::set_option( $this->version_history_slug, $previous_versions );
+			Tribe__Settings_Manager::set_option( $this->latest_version_slug, self::VERSION );
 		}
 	}
 
@@ -529,7 +542,7 @@ class Tribe__Tickets__Main {
 		// Setup Front End Display
 		add_action( 'tribe_events_inside_cost', 'tribe_tickets_buy_button', 10, 0 );
 
-		// Hook to oembeds
+		// Hook to oEmbeds
 		add_action( 'tribe_events_embed_after_the_cost_value', [ $this, 'inject_buy_button_into_oembed' ] );
 		add_action( 'embed_head', [ $this, 'embed_head' ] );
 
@@ -558,7 +571,15 @@ class Tribe__Tickets__Main {
 			add_filter( 'tribe_event_import_rsvp_column_names', [ Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ] );
 		}
 
-		// Load our assets
+		/**
+		 * Load our assets.
+		 *
+		 * @see \Tribe__Tickets__Assets::enqueue_scripts()
+		 * @see \Tribe__Tickets__Assets::admin_enqueue_scripts()
+		 * @see \Tribe__Tickets__Assets::enqueue_editor_scripts()
+		 * @see \Tribe__Tickets__Assets::add_data_strings()
+		 */
+
 		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'enqueue_scripts' ) );
 		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'admin_enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', tribe_callback( 'tickets.assets', 'enqueue_editor_scripts' ) );
@@ -566,6 +587,9 @@ class Tribe__Tickets__Main {
 
 		// Redirections
 		add_action( 'wp_loaded', tribe_callback( 'tickets.redirections', 'maybe_redirect' ) );
+
+		// Cart handling.
+		add_action( 'init', tribe_callback( 'tickets.commerce.cart', 'hook' ) );
 	}
 
 	/**
@@ -663,6 +687,32 @@ class Tribe__Tickets__Main {
 		$this->tickets_view();
 		Tribe__Credits::init();
 		$this->maybe_set_et_version();
+		$this->maybe_set_options_for_old_installs();
+	}
+
+	/**
+	 * Allows us to set options based on installed version.
+	 * Also a good place for things that need to be changed
+	 * or set if they are missing (like meta keys).
+	 *
+	 * @since 4.11.0
+	 */
+	public function maybe_set_options_for_old_installs() {
+		/** @var \Tribe__Tickets__Attendee_Registration__Main $ar_reg */
+		$ar_reg = tribe( 'tickets.attendee_registration' );
+
+		// If the (boolean) option is not set, and this install predated the modal, let's set the option to false.
+		$modal_option = $ar_reg->is_modal_enabled();
+
+		if ( ! $modal_option && $modal_option !== false ) {
+			$modal_version_check = tribe_installed_before( Tribe__Tickets__Main::instance(), '4.11.0' );
+			if ( $modal_version_check ) {
+				/** @var $settings_manager Tribe__Settings_Manager */
+				$settings_manager = tribe( 'settings.manager' );
+
+				$settings_manager::set_option( 'ticket-attendee-modal', false );
+			}
+		}
 	}
 
 	/**
@@ -730,7 +780,7 @@ class Tribe__Tickets__Main {
 				'version'               => self::VERSION,
 				'activation_transient'  => '_tribe_tickets_activation_redirect',
 				'plugin_path'           => $this->plugin_dir . 'event-tickets.php',
-				'version_history_slug'  => 'previous_event_tickets_versions',
+				'version_history_slug'  => $this->version_history_slug,
 				'welcome_page_title'    => esc_html__( 'Welcome to Event Tickets!', 'event-tickets' ),
 				'welcome_page_template' => $this->plugin_path . 'src/admin-views/admin-welcome-message.php',
 			] );
@@ -849,7 +899,6 @@ class Tribe__Tickets__Main {
 		$tickets      = Tribe__Tickets__Tickets::get_all_event_tickets( $event_id );
 		$has_non_rsvp = false;
 		$available    = false;
-		$now          = time();
 
 		foreach ( $tickets as $ticket ) {
 			if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
@@ -857,7 +906,7 @@ class Tribe__Tickets__Main {
 			}
 
 			if (
-				$ticket->date_in_range( $now )
+				$ticket->date_in_range()
 				&& $ticket->is_in_stock()
 			) {
 				$available = true;
@@ -871,7 +920,7 @@ class Tribe__Tickets__Main {
 
 		$button_text = $has_non_rsvp ? __( 'Buy', 'event-tickets' ) : tribe_get_rsvp_label_singular( 'button_text' );
 		/**
-		 * Filters the text that appears in the buy/rsvp button on event oembeds
+		 * Filters the text that appears in the buy/rsvp button on event oEmbeds
 		 *
 		 * @var string The button text
 		 * @var int Event ID
@@ -885,7 +934,7 @@ class Tribe__Tickets__Main {
 		$buy_button = ob_get_clean();
 
 		/**
-		 * Filters the buy button that appears on event oembeds
+		 * Filters the buy button that appears on event oEmbeds
 		 *
 		 * @var string The button markup
 		 * @var int Event ID

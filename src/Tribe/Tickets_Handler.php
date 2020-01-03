@@ -179,7 +179,7 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * On update of the Event End date we update the ticket end date
+	 * On update of the event start date we update the ticket end date
 	 * if it wasn't manually updated
 	 *
 	 * @since  4.6
@@ -193,7 +193,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function update_meta_date( $meta_id, $object_id, $meta_key, $date ) {
 		$meta_map = array(
-			'_EventEndDate' => $this->key_end_date,
+			'_EventStartDate' => $this->key_end_date,
 		);
 
 		// Bail when it's not on the Map Meta
@@ -484,7 +484,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$event_types = Tribe__Tickets__Main::instance()->post_types();
 
 		// Bail on non event like post type
-		if ( ! in_array( get_post_type( $object_id ), $event_types ) ) {
+		if ( ! in_array( get_post_type( $object_id ), $event_types, true ) ) {
 			return false;
 		}
 
@@ -585,6 +585,12 @@ class Tribe__Tickets__Tickets_Handler {
 
 		// Do the migration
 		$capacity = $this->migrate_object_capacity( $object_id );
+
+		if ( false === $capacity ) {
+			$capacity = '';
+		} elseif ( is_int( $capacity ) ) {
+			$capacity = (string) $capacity;
+		}
 
 		// Hook it back up
 		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 4 );
@@ -1119,6 +1125,9 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+		if ( empty( $provider ) ) {
+			return 0;
+		}
 
 		/** @var Tribe__Tickets__Ticket_Object $ticket */
 		$ticket = $provider->get_ticket( $event, $ticket_id );
@@ -1394,6 +1403,54 @@ class Tribe__Tickets__Tickets_Handler {
 		usort( $tickets, array( $this, 'sort_by_menu_order' ) );
 
 		return $tickets;
+	}
+
+	/**
+	 * Determine whether the ticket is accessible to the current user.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param int $ticket_id Ticket ID.
+	 *
+	 * @return true|WP_Error True if the ticket is accessible or a `WP_Error` if the user cannot access
+	 *                       the current ticket at all.
+	 */
+	public function is_ticket_readable( $ticket_id ) {
+		$ticket_post = get_post( $ticket_id );
+
+		if ( ! $ticket_post instanceof WP_Post ) {
+			return new WP_Error( 'ticket-not-found', 'ticket-not-found', array( 'status' => 404 ) );
+		}
+
+		$ticket_post_type_object = get_post_type_object( $ticket_post->post_type );
+
+		if ( null === $ticket_post_type_object ) {
+			return new WP_Error( 'ticket-provider-not-found', 'ticket-provider-not-found', array( 'status' => 500 ) );
+		}
+
+		$read_cap = $ticket_post_type_object->cap->read_post;
+
+		if ( ! ( 'publish' === $ticket_post->post_status || current_user_can( $read_cap, $ticket_id ) ) ) {
+			return new WP_Error( 'ticket-not-accessible', 'ticket-not-accessible', array( 'status' => 401 ) );
+		}
+
+		/**
+		 * Not only the ticket should be accessible by the user but the event too should be.
+		 */
+		$event = tribe_events_get_ticket_event( $ticket_id );
+
+		if ( ! $event instanceof WP_Post ) {
+			return new WP_Error( 'ticket-not-accessible', 'ticket-not-accessible', array( 'status' => 401 ) );
+		}
+
+		$event_post_type_object = get_post_type_object( $event->post_type );
+		$read_cap               = $event_post_type_object->cap->read_post;
+
+		if ( ! ( 'publish' === $event->post_status || current_user_can( $read_cap, $event->ID ) ) ) {
+			return new WP_Error( 'ticket-not-accessible', 'ticket-not-accessible', array( 'status' => 401 ) );
+		}
+
+		return true;
 	}
 
 	/**

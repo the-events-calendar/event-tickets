@@ -1,6 +1,6 @@
 {
   "name": "event-tickets",
-  "version": "4.10.12-beta2",
+  "version": "4.11.1",
   "repository": "git@github.com:moderntribe/event-tickets.git",
   "_zipname": "event-tickets",
   "_zipfoldername": "event-tickets",
@@ -30,7 +30,7 @@
     "dev": "cross-env NODE_ENV=development webpack -d --watch",
     "gettext-strings": "cross-env BABEL_ENV=gettext webpack",
     "preanalyze": "cross-env NODE_ENV=production webpack -p --profile --json > stats.json",
-    "rebuild": "rm -rf node_modules && npm install && npm run build",
+    "rebuild": "rm -rf node_modules && composer update && npm install && npm run build",
     "lint": "eslint --quiet --parser=babel-eslint 'src/modules/**/*.js'",
     "lint:fix": "npm run lint -- --fix",
     "test": "TZ=UTC jest --config jest.config.json",

@@ -11,7 +11,7 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @version 4.11.0
  *
  */
 
@@ -23,25 +23,35 @@ $multiline     = isset( $field['extra'] ) && isset( $field['extra']['multiline']
 $value         = '';
 $is_restricted = false;
 $field_name    = 'tribe-tickets-meta[' . $attendee_id . '][' . esc_attr( $field['slug'] ) . ']';
+$classes = [ 'tribe-common-b1', 'tribe-field', 'tribe-tickets__item__attendee__field__text' ];
+if ( $required ) {
+	$classes[] = 'tribe-tickets-meta-required';
+}
+
+if ( $multiline ) {
+	$classes[] = 'tribe-tickets__item__attendee__field__textarea';
+}
 ?>
-<div
-	class="tribe-field tribe-block__tickets__item__attendee__field__text <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>"
->
-	<label for="<?php echo esc_attr( $option_id ); ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>
+<div <?php tribe_classes( $classes ); ?> >
+	<label
+		class="tribe-common-b2--min-medium tribe-tickets-meta-label"
+		for="<?php echo esc_attr( $option_id ); ?>"
+	><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 	<?php if ( $multiline ) : ?>
 		<textarea
 			id="<?php echo esc_attr( $option_id ); ?>"
-			name="<?php echo $field_name; ?>"
-			<?php echo $required ? 'required' : ''; ?>
+			name="<?php echo esc_attr( $field_name ); ?>"
+			class="ticket-metatribe-common-form-control-text__input"
+			<?php tribe_required( $required ); ?>
 			<?php disabled( $is_restricted ); ?>
 		><?php echo esc_textarea( $value ); ?></textarea>
 	<?php else : ?>
 		<input
 			type="text"
 			id="<?php echo esc_attr( $option_id ); ?>"
-			name="<?php echo $field_name; ?>"
+			name="<?php echo esc_attr( $field_name ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
-			<?php echo $required ? 'required' : ''; ?>
+			<?php tribe_required( $required ); ?>
 			<?php disabled( $is_restricted ); ?>
 		>
 	<?php endif; ?>

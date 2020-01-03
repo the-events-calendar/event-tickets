@@ -17,6 +17,8 @@ class AttendeeArchiveByCheckedinCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_getting_attendees_by_checkedin_status( \Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'editor' );
+
 		$rsvp_post                             = $I->havePostInDatabase();
 		$rsvp_ticket                           = $this->create_rsvp_ticket( $rsvp_post );
 		$rsvp_checked_in_attendees       = $this->create_many_attendees_for_ticket( 2, $rsvp_ticket, $rsvp_post, [

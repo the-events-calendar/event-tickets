@@ -47,6 +47,11 @@ extends Tribe__Editor__Blocks__Abstract {
 			return;
 		}
 
+		// No need to handle RSVPs here
+		if ( 'Tribe__Tickets__RSVP' === $provider ) {
+			return;
+		}
+
 		// If Provider is not active return
 		if ( ! array_key_exists( $provider, Tribe__Tickets__Tickets::modules() ) ) {
 			return;
@@ -62,6 +67,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		$args['tickets_on_sale']     = $this->get_tickets_on_sale( $tickets );
 		$args['has_tickets_on_sale'] = ! empty( $args['tickets_on_sale'] );
 		$args['is_sale_past']        = $this->get_is_sale_past( $tickets );
+		$args['is_sale_future']      = $this->get_is_sale_future( $tickets );
 
 		// Add the rendering attributes into global context
 		$template->add_template_globals( $args );
@@ -83,30 +89,52 @@ extends Tribe__Editor__Blocks__Abstract {
 	public function assets() {
 		$plugin = Tribe__Tickets__Main::instance();
 
+		wp_register_script(
+			'wp-util-not-in-footer',
+			includes_url( '/js/wp-util.js' ),
+			[ 'jquery', 'underscore' ],
+			false,
+			false
+		);
+
+		wp_enqueue_script( 'wp-util-not-in-footer' );
+
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-tickets',
 			'tickets-block.js',
-			array( 'jquery', 'jquery-ui-datepicker' ),
+			[ 'jquery', 'jquery-ui-datepicker', 'wp-util-not-in-footer', 'wp-i18n' ],
 			null,
-			array(
+			[
 				'type'         => 'js',
-				'localize'     => array(
-					'name' => 'TribeTickets',
-					'data' => array(
-						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-					),
-				),
-			)
+				'localize'     => [
+					[
+						'name' => 'TribeTicketOptions',
+						'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_ticket_options' ],
+					],
+					[
+						'name' => 'TribeCurrency',
+						'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_currencies' ],
+					],
+					[
+						'name' => 'TribeCartEndpoint',
+						'data' => [
+							'url' => tribe_tickets_rest_url( '/cart/' ),
+						],
+					],
+					[
+						'name' => 'TribeMessages',
+						'data' => $this->set_messages(),
+					],
+					[
+						'name' => 'TribeTicketsURLs',
+						'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_cart_checkout_urls' ],
+					],
+				],
+			]
 		);
 
-		tribe_asset(
-			$plugin,
-			'tribe-tickets-gutenberg-block-tickets-style',
-			'app/tickets/frontend.css',
-			array(),
-			null
-		);
+		Tribe__Tickets__Tickets::$frontend_script_enqueued = true;
 	}
 
 	/**
@@ -128,21 +156,30 @@ extends Tribe__Editor__Blocks__Abstract {
 			wp_send_json_error( $response );
 		}
 
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		/** @var Tribe__Tickets__Editor__Template $tickets_editor */
+		$tickets_editor = tribe( 'tickets.editor.template' );
 
 		// Parse the tickets and create the array for the response
 		foreach ( $tickets as $ticket_id ) {
-			$ticket    = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
+			$ticket = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
 
-			if ( empty( $ticket ) ) {
+			if (
+				! $ticket instanceof Tribe__Tickets__Ticket_Object
+				|| empty( $ticket->ID )
+			) {
 				continue;
 			}
 
-			$available = $ticket->available();
+			$available = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
+
 			$response['tickets'][ $ticket_id ]['available'] = $available;
 
 			// If there are no more available we will send the template part HTML to update the DOM
 			if ( 0 === $available ) {
-				$response['tickets'][ $ticket_id ]['unavailable_html'] = tribe( 'tickets.editor.template' )->template( 'blocks/tickets/quantity-unavailable', $ticket, false );
+				$response['tickets'][ $ticket_id ]['unavailable_html'] = $tickets_editor->template( 'blocks/tickets/quantity-unavailable', $ticket, false );
 			}
 		}
 
@@ -243,5 +280,44 @@ extends Tribe__Editor__Blocks__Abstract {
 		}
 
 		return $is_sale_past;
+	}
+
+	/**
+	 * Get whether no ticket sales have started yet
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param  array $tickets Array of all tickets
+	 *
+	 * @return bool
+	 */
+	public function get_is_sale_future( $tickets ) {
+		$is_sale_future = ! empty( $tickets );
+
+		foreach ( $tickets as $ticket ) {
+			$is_sale_future = ( $is_sale_future && $ticket->date_is_earlier() );
+		}
+
+		return $is_sale_future;
+	}
+
+	/**
+	 * Localized messages for errors, etc in javascript. Added in assets() above.
+	 * Set up this way to amke it easier to add messages as needed.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @return void
+	 */
+	public function set_messages() {
+		$messages = [
+			'api_error_title'        => _x( 'API Error', 'Error message title, will be followed by the error code.', 'event-tickets' ),
+			'connection_error'       => __( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.', 'event-tickets' ),
+			'capacity_error'         => __( 'The ticket for this event has sold out and has been removed from your cart.', 'event-tickets'),
+			'validation_error_title' => __( 'Whoops!', 'event-tickets' ),
+			'validation_error'       => '<p>' . sprintf( _x( 'You have %s ticket(s) with a field that requires information.', 'The %s will change based on the error produced.', 'event-tickets' ), '<span class="tribe-tickets__notice--error__count">0</span>' ) . '</p>',
+		];
+
+		return $messages;
 	}
 }
