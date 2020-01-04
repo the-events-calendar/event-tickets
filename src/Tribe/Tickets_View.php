@@ -365,7 +365,7 @@ class Tribe__Tickets__Tickets_View {
 	}
 
 	/**
-	 * Filter to make sure Tickets eventDisplay to properly display Tickets page.
+	 * Filter to make sure Tickets eventDisplay properly displays the Tickets page.
 	 *
 	 * @since TBD
 	 *
