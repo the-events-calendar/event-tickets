@@ -9,14 +9,15 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version 4.10.9
+ * @since   4.10.9
+ * @version TBD
  *
  * @var WP_Post $event The event post object with properties added by the `tribe_get_event` function.
  *
  * @see tribe_get_event() For the format of the event object.
  *
  */
-if ( empty( $event->tickets->exist ) ) {
+if ( empty( $event->tickets->exist() ) || ! tribe_events_has_tickets_on_sale( $event->ID ) ) {
 	return;
 }
 ?>

@@ -378,9 +378,7 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.privacy', 'Tribe__Tickets__Privacy', [ 'hook' ] );
 
 		// Views V2
-		if ( class_exists( 'Tribe__Events__Main' ) ) {
-			tribe_register_provider( Tribe\Events\Tickets\Views\V2\Service_Provider::class );
-		}
+		tribe_register_provider( Tribe\Tickets\Events\Views\V2\Service_Provider::class );
 	}
 
 	/**
