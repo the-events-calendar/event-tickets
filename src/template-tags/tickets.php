@@ -410,7 +410,7 @@ if ( ! function_exists( 'tribe_tickets_is_current_time_in_date_window' ) ) {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id Post (or event) to check for ticket availability
+	 * @param int $post_id Post (or event) to check for ticket availability.
 	 *
 	 * @return bool
 	 */
