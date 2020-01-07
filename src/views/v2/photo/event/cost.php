@@ -22,7 +22,7 @@ if ( empty( $event->cost ) ) {
 }
 ?>
 <div class="tribe-events-c-small-cta tribe-common-b3 tribe-events-pro-photo__event-cost">
-	<?php if ( ! empty( $event->tickets->exist() ) && tribe_events_has_tickets_on_sale( $event->ID )  ) : ?>
+	<?php if ( $event->tickets->exist() && tribe_events_has_tickets_on_sale( $event->ID )  ) : ?>
 		<a
 			href="<?php echo esc_url( $event->tickets->link->anchor ); ?>"
 			class="tribe-events-c-small-cta__link tribe-common-cta tribe-common-cta--thin-alt"

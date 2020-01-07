@@ -4,21 +4,21 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.11.1';
+	const VERSION = '4.11.2-RC1';
 
 	/**
 	 * Min required The Events Calendar version
 	 *
 	 * @deprecated 4.10
 	 */
-	const MIN_TEC_VERSION = '4.9.4';
+	const MIN_TEC_VERSION = '5.0.0-RC1';
 
 	/**
 	 * Min required version of Tribe Common
 	 *
 	 * @deprecated 4.10
 	 */
-	const MIN_COMMON_VERSION = '4.9.14';
+	const MIN_COMMON_VERSION = '4.11.0-RC1';
 
 	/**
 	 * Used to store the version history.
