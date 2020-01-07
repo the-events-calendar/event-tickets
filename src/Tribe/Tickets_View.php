@@ -979,6 +979,12 @@ class Tribe__Tickets__Tickets_View {
 		/** @var \Tribe__Tickets__Editor__Blocks__Tickets $blocks_tickets */
 		$blocks_tickets = tribe( 'tickets.editor.blocks.tickets' );
 
+		// load assets if classic editor is active
+		$option = get_option( 'classic-editor-replace' );
+		if ( 'classic' === $option ) {
+			$blocks_tickets->assets();
+		}
+
 		$tickets = $provider->get_tickets( $post_id );
 
 		$args = [
@@ -998,6 +1004,8 @@ class Tribe__Tickets__Tickets_View {
 		// Enqueue assets.
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-tickets' );
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-tickets-style' );
+
+		log_me('ticket block');
 
 		return $template->template( 'blocks/tickets', $args );
 	}
