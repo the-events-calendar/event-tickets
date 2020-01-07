@@ -408,14 +408,16 @@ if ( ! function_exists( 'tribe_tickets_is_current_time_in_date_window' ) ) {
 	/**
 	 * Checks if the post has tickets that are available in the current date range set on the ticket.
 	 *
-	 * @param int $event_id
+	 * @since TBD
+	 *
+	 * @param int $post_id Post (or event) to check for ticket availability
 	 *
 	 * @return bool
 	 */
-	function tribe_tickets_is_current_time_in_date_window( $event_id ) {
+	function tribe_tickets_is_current_time_in_date_window( $post_id ) {
 		$has_tickets_available = false;
-		$tickets               = Tribe__Tickets__Tickets::get_all_event_tickets( $event_id );
-		$default_provider      = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
+		$tickets               = Tribe__Tickets__Tickets::get_all_event_tickets( $post_id );
+		$default_provider      = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 
 		foreach ( $tickets as $ticket ) {
 			$ticket_provider = $ticket->get_provider();
