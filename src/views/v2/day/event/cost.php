@@ -24,7 +24,7 @@ if ( empty( $event->cost ) ) {
 
 ?>
 <div class="tribe-events-c-small-cta tribe-common-b3 tribe-events-calendar-list__event-cost">
-	<?php if ( $event->tickets->exist() && tribe_tickets_is_current_time_in_date_window( $event->ID )  ) : ?>
+	<?php if ( $event->tickets->exist() && tribe_tickets_is_current_time_in_date_window( $event->ID ) ) : ?>
 		<a
 			href="<?php echo esc_url( $event->tickets->link->anchor ); ?>"
 			class="tribe-events-c-small-cta__link tribe-common-cta tribe-common-cta--thin-alt"
@@ -35,7 +35,7 @@ if ( empty( $event->cost ) ) {
 	<span class="tribe-events-c-small-cta__price">
 		<?php echo esc_html( $event->cost ) ?>
 	</span>
-	<?php if ( ! empty( $event->tickets->stock->available ) && tribe_tickets_is_current_time_in_date_window( $event->ID )  ) : ?>
+	<?php if ( ! empty( $event->tickets->stock->available ) && tribe_tickets_is_current_time_in_date_window( $event->ID ) ) : ?>
 		<span class="tribe-events-c-small-cta__stock">
 			<?php echo esc_html( $event->tickets->stock->available ) ?>
 		</span>

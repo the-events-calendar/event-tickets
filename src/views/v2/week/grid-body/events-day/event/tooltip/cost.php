@@ -22,7 +22,7 @@ if ( empty( $event->cost ) ) {
 }
 ?>
 <div class="tribe-events-c-small-cta tribe-common-b3 tribe-events-pro-week-grid__event-tooltip-cost">
-	<?php if ( $event->tickets->exist() && tribe_tickets_is_current_time_in_date_window( $event->ID )  ) : ?>
+	<?php if ( $event->tickets->exist() && tribe_tickets_is_current_time_in_date_window( $event->ID ) ) : ?>
 		<a
 			href="<?php echo esc_url( $event->tickets->link->anchor ); ?>"
 			class="tribe-events-c-small-cta__link tribe-common-cta tribe-common-cta--thin-alt"
