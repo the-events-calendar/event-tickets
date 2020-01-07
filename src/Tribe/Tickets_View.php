@@ -1005,8 +1005,6 @@ class Tribe__Tickets__Tickets_View {
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-tickets' );
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-tickets-style' );
 
-		log_me('ticket block');
-
 		return $template->template( 'blocks/tickets', $args );
 	}
 }
