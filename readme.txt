@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.11.2] TBD =
 
 * Tweak - Adding support for The Events Calendar 5.0.0
+* Tweak - Added new `tribe_events_is_current_time_in_date_window()` function that checks if the current datetime is within a post's ticket availability window [TEC-3033]
 
 = [4.11.1] 2019-12-19 =
 

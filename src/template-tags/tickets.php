@@ -403,6 +403,38 @@ if ( ! function_exists( 'tribe_events_ticket_is_on_sale' ) ) {
 	}
 }//end if
 
+if ( ! function_exists( 'tribe_tickets_is_current_time_in_date_window' ) ) {
+
+	/**
+	 * Checks if the post has tickets that are available in the current date range set on the ticket.
+	 *
+	 * @param int $event_id
+	 *
+	 * @return bool
+	 */
+	function tribe_tickets_is_current_time_in_date_window( $event_id ) {
+		$has_tickets_available = false;
+		$tickets               = Tribe__Tickets__Tickets::get_all_event_tickets( $event_id );
+		$default_provider      = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
+
+		foreach ( $tickets as $ticket ) {
+			$ticket_provider = $ticket->get_provider();
+
+			// Skip tickets that are for a different provider than the event provider.
+			if (
+				$default_provider !== $ticket_provider->class_name
+				&& Tribe__Tickets__RSVP::class !== $ticket_provider->class_name
+			) {
+				continue;
+			}
+
+			$has_tickets_available = ( $has_tickets_available || tribe_events_ticket_is_on_sale( $ticket ) );
+		}
+
+		return $has_tickets_available;
+	}
+}
+
 if ( ! function_exists( 'tribe_events_has_tickets_on_sale' ) ) {
 
 	/**
