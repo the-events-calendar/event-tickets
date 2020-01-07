@@ -110,7 +110,16 @@ class Tickets implements \ArrayAccess, \Serializable {
 			return $this->data;
 		}
 
-		if ( ! tribe_events_has_tickets_on_sale( $this->post_id ) ) {
+		$num_ticket_types_available = 0;
+		foreach( $this->all_tickets as $ticket ) {
+			if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
+				continue;
+			}
+
+			$num_ticket_types_available++;
+		}
+
+		if ( ! $num_ticket_types_available ) {
 			return [];
 		}
 
@@ -187,7 +196,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 					$link_anchor = '#rsvp-now';
 				} else {
 					$link_label  = esc_html( sprintf( _x( 'Get %s', 'list view buy now ticket button', 'event-tickets' ), tribe_get_ticket_label_plural( 'list_view_buy_now_button' ) ) );
-					$link_anchor = '#buy-tickets';
+					$link_anchor = '#tribe-tickets';
 				}
 			}
 		}
