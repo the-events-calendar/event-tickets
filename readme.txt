@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.11.3] TBD =
 
 * Fix - Load JavaScript assets with Ticket Block when using Classic Editor [ET-587]
+* Fix - Disable ticket block when password protected is enabled on posts and pages [ETP-59]
 
 = [4.11.1] 2019-12-19 =
 
