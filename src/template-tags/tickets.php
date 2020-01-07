@@ -415,6 +415,12 @@ if ( ! function_exists( 'tribe_tickets_is_current_time_in_date_window' ) ) {
 	 * @return bool
 	 */
 	function tribe_tickets_is_current_time_in_date_window( $post_id ) {
+		static $ticket_availability;
+
+		if ( isset( $ticket_availability[ $post_id ] ) ) {
+			return $ticket_availability[ $post_id ];
+		}
+
 		$has_tickets_available = false;
 		$tickets               = Tribe__Tickets__Tickets::get_all_event_tickets( $post_id );
 		$default_provider      = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
@@ -433,7 +439,9 @@ if ( ! function_exists( 'tribe_tickets_is_current_time_in_date_window' ) ) {
 			$has_tickets_available = ( $has_tickets_available || tribe_events_ticket_is_on_sale( $ticket ) );
 		}
 
-		return $has_tickets_available;
+		$ticket_availability[ $post_id ] = $has_tickets_available;
+
+		return $ticket_availability[ $post_id ];
 	}
 }
 
