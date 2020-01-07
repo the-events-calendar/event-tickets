@@ -1,5 +1,5 @@
 {
   "hooks": {
-    "post-checkout": "npm run rebuild"
+    "pre-push": "sh dev/husky/pre-push.sh"
   }
 }
