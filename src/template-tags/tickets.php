@@ -415,7 +415,7 @@ if ( ! function_exists( 'tribe_tickets_is_current_time_in_date_window' ) ) {
 	 * @return bool
 	 */
 	function tribe_tickets_is_current_time_in_date_window( $post_id ) {
-		static $ticket_availability;
+		static $ticket_availability = [];
 
 		if ( isset( $ticket_availability[ $post_id ] ) ) {
 			return $ticket_availability[ $post_id ];
