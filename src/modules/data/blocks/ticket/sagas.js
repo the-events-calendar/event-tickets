@@ -659,8 +659,12 @@ export function* updateTicketsHeaderImage( action ) {
 		 */
 		yield put( actions.setTicketsIsSettingsLoading( true ) );
 		yield put( rsvpActions.setRSVPIsSettingsLoading( true ) );
+
+		const post_type = wpSelect('core/editor').getCurrentPostType();
+		const rest_base = ( 'tribe_events' === post_type ) ? 'tribe_events' : 'posts';
+
 		const { response } = yield call( wpREST, {
-			path: `tribe_events/${ postId }`,
+			path: `${ rest_base }/${ postId }`,
 			headers: {
 				'Content-Type': 'application/json',
 			},
@@ -709,8 +713,12 @@ export function* deleteTicketsHeaderImage() {
 		 */
 		yield put( actions.setTicketsIsSettingsLoading( true ) );
 		yield put( rsvpActions.setRSVPIsSettingsLoading( true ) );
-		const { response } = yield call( wpREST, {
-			path: `tribe_events/${ postId }`,
+
+		const post_type = wpSelect('core/editor').getCurrentPostType();
+		const rest_base = ( 'tribe_events' === post_type ) ? 'tribe_events' : 'posts';
+
+		const { response } = yield call( api.wpREST, {
+			path: `${ rest_base }/${ postId }`,
 			headers: {
 				'Content-Type': 'application/json',
 			},
