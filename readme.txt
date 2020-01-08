@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.11.3] TBD =
+= [4.11.2] TBD =
 
 * Fix - Load JavaScript assets with Ticket Block when using Classic Editor [ET-587]
 
