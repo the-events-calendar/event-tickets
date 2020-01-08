@@ -37,7 +37,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 * Filter to add/remove tickets from the global cart
 		 *
 		 * @since 4.9
-		 * @since TBD Added $q_provider to allow context of current provider.
+		 * @since 4.11.0 Added $q_provider to allow context of current provider.
 		 *
 		 * @param array  $tickets_in_cart The array containing the cart elements. Format array( 'ticket_id' => 'quantity' ).
 		 * @param string $q_provider      Current ticket provider.
@@ -200,17 +200,17 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			return false;
 		}
 
-		if (
-			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === get_class( $post_provider )
-		) {
-			/** @var \Tribe__Tickets_Plus__Commerce__WooCommerce__Main $provider */
-			$provider = tribe( 'tickets-plus.commerce.woo' );
-		} elseif (
-			'Tribe__Tickets_Plus__Commerce__EDD__Main' === get_class( $post_provider )
-		) {
-			/** @var \Tribe__Tickets_Plus__Commerce__EDD__Main $provider */
-			$provider = tribe( 'tickets-plus.commerce.edd' );
-		} else {
+		try {
+			if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === get_class( $post_provider ) ) {
+				/** @var \Tribe__Tickets_Plus__Commerce__WooCommerce__Main $provider */
+				$provider = tribe( 'tickets-plus.commerce.woo' );
+			} elseif ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === get_class( $post_provider ) ) {
+				/** @var \Tribe__Tickets_Plus__Commerce__EDD__Main $provider */
+				$provider = tribe( 'tickets-plus.commerce.edd' );
+			} else {
+				return;
+			}
+		} catch ( RuntimeException $exception ) {
 			return;
 		}
 
@@ -225,7 +225,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	/**
 	 * Get the cart provider class/object.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param string $provider A string indicating the desired provider.
 	 * @return boolean|object The provider object or boolean false if none found.
@@ -240,7 +240,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		/**
 		 * Allow providers to include themselves if they are not in the above.
 		 *
-		 * @since TBD
+		 * @since 4.11.0
 		 *
 		 * @return boolean|object The provider object or boolean false if none found above.
 		 * @param string $provider A string indicating the desired provider.

@@ -22,6 +22,9 @@ class Tribe__Tickets__Data_API {
 	 * Setup activate ticket classes and field for data api
 	 */
 	protected function setup_data() {
+		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		$status_mgr = tribe( 'tickets.status' );
+
 		foreach ( Tribe__Tickets__Tickets::modules() as $module_class => $module_instance ) {
 			$provider = call_user_func( array( $module_class, 'get_instance' ) );
 
@@ -50,7 +53,7 @@ class Tribe__Tickets__Data_API {
 			$this->ticket_class[ $module_class ]['tribe_for_event'] = $provider->event_key;
 			$this->ticket_class[ $module_class ]['event_id_key'] = constant( "$module_class::ATTENDEE_EVENT_KEY" );
 			$this->ticket_class[ $module_class ]['order_id_key'] = constant( "$module_class::ATTENDEE_ORDER_KEY" );
-			$this->ticket_class[ $module_class ]['slug'] = tribe( 'tickets.status' )->get_provider_slug( $module_class );
+			$this->ticket_class[ $module_class ]['slug'] = $status_mgr->get_provider_slug( $module_class );
 		}
 
 		$this->ticket_types['events'][] = class_exists( 'Tribe__Events__Main' ) ? Tribe__Events__Main::POSTTYPE : '';
@@ -202,7 +205,7 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Get the Providers for a Post
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param int $post_id the id of the post
 	 *

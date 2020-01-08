@@ -47,6 +47,11 @@ extends Tribe__Editor__Blocks__Abstract {
 			return;
 		}
 
+		// No need to handle RSVPs here
+		if ( 'Tribe__Tickets__RSVP' === $provider ) {
+			return;
+		}
+
 		// If Provider is not active return
 		if ( ! array_key_exists( $provider, Tribe__Tickets__Tickets::modules() ) ) {
 			return;
@@ -82,90 +87,54 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return void
 	 */
 	public function assets() {
-		$plugin    = Tribe__Tickets__Main::instance();
-		$providers = tribe( 'tickets.data_api' )->get_providers_for_post( null );
-		$currency  = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $providers, null );
+		$plugin = Tribe__Tickets__Main::instance();
 
 		wp_register_script(
-			'wp-utils',
+			'wp-util-not-in-footer',
 			includes_url( '/js/wp-util.js' ),
 			[ 'jquery', 'underscore' ],
 			false,
 			false
 		);
 
-		wp_enqueue_script( 'wp-utils' );
+		wp_enqueue_script( 'wp-util-not-in-footer' );
 
-		$cart_urls                   = [];
-		$checkout_urls               = [];
-		$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 60000 );
-
-		if ( empty( Tribe__Tickets__Tickets::$frontend_script_enqueued ) ) {
-			if ( ! is_admin() ) {
-				/**
-				 * Allow providers to add their own checkout URL to the localized list.
-				 *
-				 * @since TBD
-				 *
-				 * @param array $checkout_urls An array to add urls to.
-				 */
-				$checkout_urls = apply_filters( 'tribe_tickets_checkout_urls', $checkout_urls );
-
-				/**
-				 * Allow providers to add their own cart URL to the localized list.
-				 *
-				 * @since TBD
-				 *
-				 * @param array $cart_urls An array to add urls to.
-				 */
-				$cart_urls = apply_filters( 'tribe_tickets_cart_urls', $cart_urls );
-			}
-
-			tribe_asset(
-				$plugin,
-				'tribe-tickets-gutenberg-tickets',
-				'tickets-block.js',
-				[ 'jquery', 'jquery-ui-datepicker', 'wp-utils', 'wp-i18n' ],
-				null,
-				[
-					'type'         => 'js',
-					'localize'     => [
-						[
-							'name' => 'TribeTicketOptions',
-							'data' => [
-								'ajaxurl'                     => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-								'availability_check_interval' => $availability_check_interval,
-							],
-						],
-						[
-							'name' => 'TribeCurrency',
-							'data' => [
-								'formatting' => json_encode( $currency ),
-							],
-						],
-						[
-							'name' => 'TribeCartEndpoint',
-							'data' => [
-								'url' => tribe_tickets_rest_url( '/cart/' ),
-							],
-						],
-						[
-							'name' => 'TribeMessages',
-							'data' => $this->set_messages(),
-						],
-						[
-							'name' => 'TribeTicketsURLs',
-							'data' => [
-								'cart'     => $cart_urls,
-								'checkout' => $checkout_urls,
-							],
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-gutenberg-tickets',
+			'tickets-block.js',
+			[ 'jquery', 'jquery-ui-datepicker', 'wp-util-not-in-footer', 'wp-i18n' ],
+			null,
+			[
+				'type'         => 'js',
+				'localize'     => [
+					[
+						'name' => 'TribeTicketOptions',
+						'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_ticket_options' ],
+					],
+					[
+						'name' => 'TribeCurrency',
+						'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_currencies' ],
+					],
+					[
+						'name' => 'TribeCartEndpoint',
+						'data' => [
+							'url' => tribe_tickets_rest_url( '/cart/' ),
 						],
 					],
-				]
-			);
+					[
+						'name' => 'TribeMessages',
+						'data' => $this->set_messages(),
+					],
+					[
+						'name' => 'TribeTicketsURLs',
+						'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_cart_checkout_urls' ],
+					],
+				],
+			]
+		);
 
-			Tribe__Tickets__Tickets::$frontend_script_enqueued = true;
-		}
+		Tribe__Tickets__Tickets::$frontend_script_enqueued = true;
 	}
 
 	/**
@@ -187,21 +156,30 @@ extends Tribe__Editor__Blocks__Abstract {
 			wp_send_json_error( $response );
 		}
 
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		/** @var Tribe__Tickets__Editor__Template $tickets_editor */
+		$tickets_editor = tribe( 'tickets.editor.template' );
 
 		// Parse the tickets and create the array for the response
 		foreach ( $tickets as $ticket_id ) {
-			$ticket    = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
+			$ticket = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
 
-			if ( empty( $ticket ) ) {
+			if (
+				! $ticket instanceof Tribe__Tickets__Ticket_Object
+				|| empty( $ticket->ID )
+			) {
 				continue;
 			}
 
-			$available = $ticket->available();
+			$available = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
+
 			$response['tickets'][ $ticket_id ]['available'] = $available;
 
 			// If there are no more available we will send the template part HTML to update the DOM
 			if ( 0 === $available ) {
-				$response['tickets'][ $ticket_id ]['unavailable_html'] = tribe( 'tickets.editor.template' )->template( 'blocks/tickets/quantity-unavailable', $ticket, false );
+				$response['tickets'][ $ticket_id ]['unavailable_html'] = $tickets_editor->template( 'blocks/tickets/quantity-unavailable', $ticket, false );
 			}
 		}
 
@@ -307,7 +285,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Get whether no ticket sales have started yet
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param  array $tickets Array of all tickets
 	 *
@@ -327,7 +305,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * Localized messages for errors, etc in javascript. Added in assets() above.
 	 * Set up this way to amke it easier to add messages as needed.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @return void
 	 */

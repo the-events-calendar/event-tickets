@@ -17,7 +17,7 @@ class AttendeeArchiveByPriceCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_getting_attendees_by_include_price( \Restv1Tester $I ) {
-		$post_id            = $I->havePostInDatabase();
+		$post_id            = $I->havePostInDatabase( [ 'meta' => [ '_tribe_hide_attendees_list' => 1 ] ] );
 		$rsvp_ticket_id     = $this->create_rsvp_ticket( $post_id );
 		$paypal_ticket_id_1 = $this->create_paypal_ticket( 2, 3 );
 		$paypal_ticket_id_2 = $this->create_paypal_ticket( 2, 5 );

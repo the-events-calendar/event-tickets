@@ -10,9 +10,9 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since TBD
+ * @since 4.11.0
  *
- * @version TBD
+ * @version 4.11.0
  *
  */
 
@@ -21,5 +21,5 @@
 	class="tribe-common-c-btn tribe-common-c-btn--small tribe-tickets__item__registration__submit"
 	type="submit"
 >
-	<?php echo esc_html_x( 'Save & Check Out', 'Save attendee meta and proceed to checkout.', 'event-tickets' ); ?>
+	<?php echo esc_html_x( 'Save & Checkout', 'Save attendee meta and proceed to checkout.', 'event-tickets' ); ?>
 </button>

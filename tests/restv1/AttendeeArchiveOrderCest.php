@@ -20,6 +20,8 @@ class AttendeeArchiveOrderCest extends BaseRestCest {
 	public function should_allow_getting_attendees_by_include_order( \Restv1Tester $I ) {
 		Assert::markTestSkipped( 'This order criteria still needs scoping' );
 
+		$I->generate_nonce_for_role( 'editor' );
+
 		$post_id    = $I->havePostInDatabase();
 		$ticket_ids = $this->create_many_rsvp_tickets( 2, $post_id );
 

@@ -13,6 +13,9 @@ codeception.yml
 tests/*.suite.yml
 phpunit.xml
 .env.*
+*.local
+*.test
+*.testing
 
 # Tests - local output files
 tests/_output
@@ -27,7 +30,7 @@ src/resources/js/**/*.min.js
 compiler.jar
 *.ps1
 
-# add this yourself to add githoooks
+# add this yourself to add githoooks - see .huskyrc.sample
 .huskyrc
 
 # get from translate.wordpress.org as needed

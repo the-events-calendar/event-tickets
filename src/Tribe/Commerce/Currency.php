@@ -129,7 +129,6 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @return string
 	 */
 	public function reverse_currency_symbol_position( $unused_reverse_position, $post_id = null ) {
-
 		return $this->get_currency_symbol_position( $post_id ) !== 'prefix';
 	}
 
@@ -584,7 +583,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Currency Decimal Point for a Provider.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param string|null $provider The ticket provider class name.
 	 *
@@ -610,7 +609,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Currency Thousands Separator for a Provider.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param string|null $provider The ticket provider class name.
 	 *
@@ -636,7 +635,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Number of Decimals by provider or default.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param string|null $provider The ticket provider class name.
 	 *
@@ -656,7 +655,7 @@ class Tribe__Tickets__Commerce__Currency {
 			/**
 			 * Filter the Amount of Decimals for EDD.
 			 *
-			 * @since TBD
+			 * @since 4.11.0
 			 *
 			 * @param int The default number of decimals.
 			 */
@@ -671,7 +670,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Default Amount of Decimals.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @return int The amount of decimals.
 	 */
@@ -680,7 +679,7 @@ class Tribe__Tickets__Commerce__Currency {
 		/**
 		 * Filter the Amount of Decimals.
 		 *
-		 * @since TBD
+		 * @since 4.11.0
 		 *
 		 * @param int The default number of decimals.
 		 */
@@ -692,17 +691,17 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Currency Configuration for all Passed Providers.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
-	 * @param string $provider The ticket provider class name.
-	 * @param int    $post_id  The id of the post with tickets.
+	 * @param string   $providers The ticket provider class name.
+	 * @param int|null $post_id   The id of the post with tickets.
 	 *
 	 * @return array
 	 */
-	public function get_currency_config_for_provider( $providers, $post_id ) {
+	public function get_currency_config_for_provider( $providers, $post_id = null ) {
 
 		if ( ! is_array( $providers ) ) {
-			$providers[] = $providers;
+			$providers = (array) $providers;
 		}
 
 		$currency = [];
@@ -715,11 +714,28 @@ class Tribe__Tickets__Commerce__Currency {
 	}
 
 	/**
+	 * Get the Currency Configuration for all Providers.
+	 *
+	 * @since 4.11.1
+	 *
+	 * @return array
+	 */
+	public function get_currency_config_for_providers() {
+		// Get active providers.
+		$providers = Tribe__Tickets__Tickets::modules();
+
+		// Get provider class names.
+		$providers = array_keys( $providers );
+
+		return $this->get_currency_config_for_provider( $providers );
+	}
+
+	/**
 	 * Get the Currency Formatting Information for a Provider.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
-	 * @param int         $post_id  The id of the post with tickets.
+	 * @param int|null    $post_id  The id of the post with tickets.
 	 * @param string|null $provider The ticket provider class name.
 	 *
 	 * @return array an array of formatting details
@@ -737,7 +753,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get Formatted Currency According to a Provider.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param int|string  $amount   The amount to format.
 	 * @param int         $post_id  The id of the post with tickets.
@@ -772,7 +788,7 @@ class Tribe__Tickets__Commerce__Currency {
 		/**
 		 * Filter the Formatted Currency.
 		 *
-		 * @since TBD
+		 * @since 4.11.0
 		 *
 		 * @param string $formatted The formatted amount.
 		 * @param int    $amount    The original amount to be formatted.
@@ -784,7 +800,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get Formatted Currency According to a Provider with Symbol
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param int         $amount   The amount to format.
 	 * @param int         $post_id  The id of the post with tickets.
@@ -827,7 +843,7 @@ class Tribe__Tickets__Commerce__Currency {
 		/**
 		 * Filter the Formatted Currency with Symbol
 		 *
-		 * @since TBD
+		 * @since 4.11.0
 		 *
 		 * @param string  $formatted The formatted amount.
 		 * @param int     $amount    The original amount to be formatted.

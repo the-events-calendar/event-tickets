@@ -8,7 +8,7 @@
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
  * @since 4.10.2 Use md5() for field name slugs
- * @version TBD
+ * @version 4.11.0
  *
  */
 $required    = isset( $field->required ) && 'on' === $field->required ? true : false;

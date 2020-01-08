@@ -65,6 +65,12 @@ trait Ticket_Maker {
 		$ticket_id = $factory->post->create( array_merge( $defaults, $overrides ) );
 
 
+		// Get provider key name.
+		$provider_key = tribe( 'tickets.handler' )->key_provider_field;
+
+		// Update provider key for post.
+		update_post_meta( $post_id, $provider_key, 'Tribe__Tickets__Commerce__PayPal__Main' );
+
 		return $ticket_id;
 	}
 

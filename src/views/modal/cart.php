@@ -5,9 +5,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/modal/cart.php
  *
- * @since TBD
+ * @since 4.11.0
  *
- * @version TBD
+ * @version 4.11.0
  *
  */
 
@@ -51,7 +51,7 @@ $currency        = tribe( 'tickets.commerce.currency' );
 	/**
 	 * Allows filtering of text used in the loader
 	 *
-	 * @since  TBD
+	 * @since  4.11.0
 	 *
 	 * @param  string $value     The value that will be filtered.
 	 */
@@ -59,7 +59,7 @@ $currency        = tribe( 'tickets.commerce.currency' );
 	/**
 	 * Allows filtering of extra classes used on the modal loader
 	 *
-	 * @since  TBD
+	 * @since  4.11.0
 	 *
 	 * @param  array $classes The array of classes that will be filtered.
 	 */
