@@ -184,21 +184,21 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 	 * Echo remaining ticket count and purchase/rsvp buttons for a post.
 	 *
 	 * @since  4.5
-	 * @since  TBD Now displays for posts having only RSVPs.
+	 * @since  TBD Now also displays for posts having only RSVPs.
 	 *
 	 * @param bool $echo Whether or not we should print
 	 *
 	 * @return string
 	 */
 	function tribe_tickets_buy_button( $echo = true ) {
-		$event = get_post();
+		$event_id = get_the_ID();
 
-		if ( ! $event instanceof WP_Post ) {
+		if ( empty( $event_id ) ) {
 			return '';
 		}
 
 		// get an array for ticket and rsvp counts
-		$types = Tribe__Tickets__Tickets::get_ticket_counts( $event->ID );
+		$types = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 
 		// if no rsvp or tickets return
 		if ( ! $types ) {
@@ -246,7 +246,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					 *
 					 * @param int   $threshold Stock threshold to trigger display of "# tickets left"
 					 */
-					$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $event->ID ) );
+					$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $event_id ) );
 
 					if ( ! $threshold || $stock <= $threshold ) {
 
@@ -278,7 +278,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					$button_anchor = '#buy-tickets';
 				}
 
-				$permalink    = get_the_permalink( $event->ID );
+				$permalink    = get_the_permalink( $event_id );
 				$query_string = parse_url( $permalink, PHP_URL_QUERY );
 				$query_params = empty( $query_string ) ? [] : (array) explode( '&', $query_string );
 
@@ -311,7 +311,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 		 * @param array $types    Ticket and RSVP count array for event
 		 * @param int   $event_id Post Event ID
 		 */
-		$html = apply_filters( 'tribe_tickets_buy_button', $html, $parts, $types, $event->ID );
+		$html = apply_filters( 'tribe_tickets_buy_button', $html, $parts, $types, $event_id );
 		$html = implode( "\n", $html );
 
 		if ( $echo ) {
