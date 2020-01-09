@@ -197,6 +197,11 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 			return '';
 		}
 
+		// check if there are any tickets available
+		if ( ! tribe_tickets_is_current_time_in_date_window( $event_id ) ) {
+			return '';
+		}
+
 		// get an array for ticket and rsvp counts
 		$types = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 
