@@ -121,6 +121,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Tweak - Adding support for The Events Calendar 5.0.0
 * Tweak - Added new `tribe_events_is_current_time_in_date_window()` function that checks if the current datetime is within a post's ticket availability window [TEC-3033]
+* Fix - The Events Calendar's List View "RSVP Now!" button again displays for Events having only RSVP tickets, and the Tickets Block's Form ID was restored back to `#buy-tickets` from `#tribe-tickets` [138725]
 
 = [4.11.1] 2019-12-19 =
 
