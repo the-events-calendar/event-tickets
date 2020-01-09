@@ -660,8 +660,8 @@ export function* updateTicketsHeaderImage( action ) {
 		yield put( actions.setTicketsIsSettingsLoading( true ) );
 		yield put( rsvpActions.setRSVPIsSettingsLoading( true ) );
 
-		const slug = wpSelect('core/editor').getCurrentPostType();
-		const postType = wpSelect('core').getPostType(slug);
+		const slug = wpSelect( 'core/editor' ).getCurrentPostType();
+		const postType = wpSelect( 'core' ).getPostType( slug );
 		const restBase = postType.rest_base;
 
 		const { response } = yield call( wpREST, {
@@ -715,8 +715,8 @@ export function* deleteTicketsHeaderImage() {
 		yield put( actions.setTicketsIsSettingsLoading( true ) );
 		yield put( rsvpActions.setRSVPIsSettingsLoading( true ) );
 
-		const slug = wpSelect('core/editor').getCurrentPostType();
-		const postType = wpSelect('core').getPostType(slug);
+		const slug = wpSelect( 'core/editor' ).getCurrentPostType();
+		const postType = wpSelect( 'core' ).getPostType( slug );
 		const restBase = postType.rest_base;
 
 		const { response } = yield call( api.wpREST, {
