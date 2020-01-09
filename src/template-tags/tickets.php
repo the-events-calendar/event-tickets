@@ -184,7 +184,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 	 * Echo remaining ticket count and purchase/rsvp buttons for a post.
 	 *
 	 * @since  4.5
-	 * @since  TBD Now also displays for posts having only RSVPs.
+	 * @since  TBD Now also displays for posts having only RSVPs. Also changed from <form> to <button>.
 	 *
 	 * @param bool $echo Whether or not we should print
 	 *
@@ -283,24 +283,11 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					$button_anchor = '#buy-tickets';
 				}
 
-				$permalink    = get_the_permalink( $event_id );
-				$query_string = parse_url( $permalink, PHP_URL_QUERY );
-				$query_params = empty( $query_string ) ? [] : (array) explode( '&', $query_string );
-
-				$button = '<form method="get" action="' . esc_url( $permalink . $button_anchor ) . '">';
-
-				// Add any query attribute as a hidden input as the action of the form is GET
-				foreach ( $query_params as $param ) {
-					$parts = explode( '=', $param );
-
-					// a query string must be 2 parts only a name and a value
-					if ( is_array( $parts ) && 2 === count( $parts ) ) {
-						list( $name, $value ) = $parts;
-						$button .= '<input type="hidden" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '">';
-					}
-				}
-
-				$button	.= '<button type="submit" name="tickets_process" class="tribe-button">' . esc_html( $button_label ) . '</button></form>';
+				$button = sprintf(
+					'<div class="tribe-common"><a class="tribe-common-c-btn" href="%s"><button class="tribe-common-c-btn">%s</button></a></div>',
+					esc_url( get_the_permalink( $event_id ) . $button_anchor ),
+					esc_html( $button_label )
+				);
 
 				$parts[ $type . '-button' ] = $html['button'] = $button;
 			}
