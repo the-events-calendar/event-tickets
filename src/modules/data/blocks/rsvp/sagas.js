@@ -458,7 +458,19 @@ export function* updateRSVPHeaderImage( action ) {
 		yield put( ticketActions.setTicketsIsSettingsLoading( true ) );
 
 		const post_type = wpSelect('core/editor').getCurrentPostType();
-		const rest_base = ( 'tribe_events' === post_type ) ? 'tribe_events' : 'posts';
+		let rest_base = post_type;
+
+		switch ( post_type ) {
+			case 'post':
+				rest_base = 'posts';
+				break;
+			case 'page':
+				rest_base = 'pages';
+				break;
+			default:
+				rest_base = post_type;
+				break;
+		}
 
 		const { response } = yield call( api.wpREST, {
 			path: `${ rest_base }/${ postId }`,
@@ -512,7 +524,19 @@ export function* deleteRSVPHeaderImage() {
 		yield put( ticketActions.setTicketsIsSettingsLoading( true ) );
 
 		const post_type = wpSelect('core/editor').getCurrentPostType();
-		const rest_base = ( 'tribe_events' === post_type ) ? 'tribe_events' : 'posts';
+		let rest_base = post_type;
+
+		switch ( post_type ) {
+			case 'post':
+				rest_base = 'posts';
+				break;
+			case 'page':
+				rest_base = 'pages';
+				break;
+			default:
+				rest_base = post_type;
+				break;
+		}
 
 		const { response } = yield call( api.wpREST, {
 			path: `${ rest_base }/${ postId }`,
