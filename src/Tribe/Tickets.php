@@ -971,7 +971,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			do_action( 'tribe_tickets_tickets_hook', $this );
 		}
 
-
 		/**
 		 * Remove the attendees transient when a Ticket change its state
 		 *
@@ -1446,6 +1445,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$cache->set( $cache_key, $tickets, Tribe__Cache::NO_EXPIRATION );
 
 			return $tickets;
+		}
+
+		/**
+		 * Expires (deletes) the cache key as needed as it is set to
+		 * never expire - which is sometimes an issue.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $post_id WP post ID we're clearing the cache for
+		 *
+		 * @return boolean
+		 */
+		public static function expire_get_all_tickets_cache( $post_id ) {
+			$cache_key = self::$cache_key_prefix . $post_id;
+			$cache     = new Tribe__Cache();
+
+			return $cache->delete( $cache_key );
 		}
 
 		/**
