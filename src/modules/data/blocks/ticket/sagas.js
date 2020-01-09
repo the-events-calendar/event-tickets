@@ -660,23 +660,12 @@ export function* updateTicketsHeaderImage( action ) {
 		yield put( actions.setTicketsIsSettingsLoading( true ) );
 		yield put( rsvpActions.setRSVPIsSettingsLoading( true ) );
 
-		const post_type = wpSelect('core/editor').getCurrentPostType();
-		let rest_base = post_type;
-
-		switch ( post_type ) {
-			case 'post':
-				rest_base = 'posts';
-				break;
-			case 'page':
-				rest_base = 'pages';
-				break;
-			default:
-				rest_base = post_type;
-				break;
-		}
+		const slug = wpSelect('core/editor').getCurrentPostType();
+		const postType = wpSelect('core').getPostType(slug);
+		const restBase = postType.rest_base;
 
 		const { response } = yield call( wpREST, {
-			path: `${ rest_base }/${ postId }`,
+			path: `${ restBase }/${ postId }`,
 			headers: {
 				'Content-Type': 'application/json',
 			},
@@ -726,23 +715,12 @@ export function* deleteTicketsHeaderImage() {
 		yield put( actions.setTicketsIsSettingsLoading( true ) );
 		yield put( rsvpActions.setRSVPIsSettingsLoading( true ) );
 
-		const post_type = wpSelect('core/editor').getCurrentPostType();
-		let rest_base = post_type;
-
-		switch ( post_type ) {
-			case 'post':
-				rest_base = 'posts';
-				break;
-			case 'page':
-				rest_base = 'pages';
-				break;
-			default:
-				rest_base = post_type;
-				break;
-		}
+		const slug = wpSelect('core/editor').getCurrentPostType();
+		const postType = wpSelect('core').getPostType(slug);
+		const restBase = postType.rest_base;
 
 		const { response } = yield call( api.wpREST, {
-			path: `${ rest_base }/${ postId }`,
+			path: `${ restBase }/${ postId }`,
 			headers: {
 				'Content-Type': 'application/json',
 			},
