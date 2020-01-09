@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.11.2] TBD =
+
+* Fix - Ensure that attendee images display horizontally in the frontend for Twenty Nineteen and Twenty Twenty themes. [ET-590]
+
 = [4.11.1] 2019-12-19 =
 
 * Feature - Use the same loading icon for the RSVP block that we're using for the tickets block. [135660]
