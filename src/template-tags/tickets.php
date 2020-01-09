@@ -181,10 +181,9 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 
 	/**
-	 * Echo remaining ticket count and purchase/rsvp buttons for a post.
+	 * Echos Remaining Ticket Count and Purchase Buttons for an Event
 	 *
 	 * @since  4.5
-	 * @since  TBD Now also displays for posts having only RSVPs. Also changed from <form> to <button>.
 	 *
 	 * @param bool $echo Whether or not we should print
 	 *
@@ -193,13 +192,9 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 	function tribe_tickets_buy_button( $echo = true ) {
 		$event_id = get_the_ID();
 
-		if ( empty( $event_id ) ) {
-			return '';
-		}
-
-		// Check if there are any tickets available.
-		if ( ! tribe_tickets_is_current_time_in_date_window( $event_id ) ) {
-			return '';
+		// check if there are any tickets on sale
+		if ( ! tribe_events_has_tickets_on_sale( $event_id ) ) {
+			return null;
 		}
 
 		// get an array for ticket and rsvp counts
@@ -207,10 +202,10 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 
 		// if no rsvp or tickets return
 		if ( ! $types ) {
-			return '';
+			return null;
 		}
 
-		$html  = [];
+		$html = [];
 		$parts = [];
 
 		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out message
@@ -244,12 +239,11 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					/**
 					 * Overwrites the threshold to display "# tickets left".
 					 *
-					 * @since 4.10.1
-					 *
+					 * @param int   $threshold Stock threshold to trigger display of "# tickets left"
 					 * @param array $data      Ticket data.
 					 * @param int   $event_id  Event ID.
 					 *
-					 * @param int   $threshold Stock threshold to trigger display of "# tickets left" text.
+					 * @since 4.10.1
 					 */
 					$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $event_id ) );
 
@@ -283,11 +277,24 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					$button_anchor = '#buy-tickets';
 				}
 
-				$button = sprintf(
-					'<div class="tribe-common"><a class="tribe-common-c-btn" href="%1$s"><button class="tribe-common-c-btn">%2$s</button></a></div>',
-					esc_url( get_the_permalink( $event_id ) . $button_anchor ),
-					esc_html( $button_label )
-				);
+				$permalink = get_the_permalink( $event_id );
+				$query_string = parse_url( $permalink, PHP_URL_QUERY );
+				$query_params = empty( $query_string ) ? [] : (array) explode( '&', $query_string );
+
+				$button = '<form method="get" action="' . esc_url( $permalink . $button_anchor ) . '">';
+
+				// Add any query attribute as a hidden input as the action of the form is GET
+				foreach ( $query_params as $param ) {
+					$parts = explode( '=', $param );
+
+					// a query string must be 2 parts only a name and a value
+					if ( is_array( $parts ) && 2 === count( $parts ) ) {
+						list( $name, $value ) = $parts;
+						$button .= '<input type="hidden" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '">';
+					}
+				}
+
+				$button	.= '<button type="submit" name="tickets_process" class="tribe-button">' . esc_html( $button_label ) . '</button></form>';
 
 				$parts[ $type . '-button' ] = $html['button'] = $button;
 			}
