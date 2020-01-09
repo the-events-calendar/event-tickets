@@ -103,7 +103,7 @@ extends Tribe__Editor__Blocks__Abstract {
 			$plugin,
 			'tribe-tickets-gutenberg-tickets',
 			'tickets-block.js',
-			[ 'jquery', 'jquery-ui-datepicker', 'wp-util-not-in-footer', 'wp-i18n' ],
+			[ 'jquery', 'wp-util-not-in-footer', 'wp-i18n' ],
 			null,
 			[
 				'type'         => 'js',

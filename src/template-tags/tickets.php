@@ -404,6 +404,48 @@ if ( ! function_exists( 'tribe_events_ticket_is_on_sale' ) ) {
 	}
 }//end if
 
+if ( ! function_exists( 'tribe_tickets_is_current_time_in_date_window' ) ) {
+
+	/**
+	 * Checks if the post has tickets that are available in the current date range set on the ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id Post (or event) to check for ticket availability.
+	 *
+	 * @return bool
+	 */
+	function tribe_tickets_is_current_time_in_date_window( $post_id ) {
+		static $ticket_availability = [];
+
+		if ( isset( $ticket_availability[ $post_id ] ) ) {
+			return $ticket_availability[ $post_id ];
+		}
+
+		$has_tickets_available = false;
+		$tickets               = Tribe__Tickets__Tickets::get_all_event_tickets( $post_id );
+		$default_provider      = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+
+		foreach ( $tickets as $ticket ) {
+			$ticket_provider = $ticket->get_provider();
+
+			// Skip tickets that are for a different provider than the event provider.
+			if (
+				$default_provider !== $ticket_provider->class_name
+				&& Tribe__Tickets__RSVP::class !== $ticket_provider->class_name
+			) {
+				continue;
+			}
+
+			$has_tickets_available = ( $has_tickets_available || tribe_events_ticket_is_on_sale( $ticket ) );
+		}
+
+		$ticket_availability[ $post_id ] = $has_tickets_available;
+
+		return $ticket_availability[ $post_id ];
+	}
+}
+
 if ( ! function_exists( 'tribe_events_has_tickets_on_sale' ) ) {
 
 	/**
