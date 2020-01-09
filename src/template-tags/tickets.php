@@ -197,7 +197,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 			return '';
 		}
 
-		// check if there are any tickets available
+		// Check if there are any tickets available.
 		if ( ! tribe_tickets_is_current_time_in_date_window( $event_id ) ) {
 			return '';
 		}
@@ -249,7 +249,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					 * @param array $data      Ticket data.
 					 * @param int   $event_id  Event ID.
 					 *
-					 * @param int   $threshold Stock threshold to trigger display of "# tickets left"
+					 * @param int   $threshold Stock threshold to trigger display of "# tickets left" text.
 					 */
 					$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $event_id ) );
 
@@ -284,7 +284,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 				}
 
 				$button = sprintf(
-					'<div class="tribe-common"><a class="tribe-common-c-btn" href="%s"><button class="tribe-common-c-btn">%s</button></a></div>',
+					'<div class="tribe-common"><a class="tribe-common-c-btn" href="%1$s"><button class="tribe-common-c-btn">%2$s</button></a></div>',
 					esc_url( get_the_permalink( $event_id ) . $button_anchor ),
 					esc_html( $button_label )
 				);
