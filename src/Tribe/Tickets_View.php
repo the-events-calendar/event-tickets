@@ -366,19 +366,21 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Intercepts the_content from the posts to include the orders structure.
 	 *
+	 * @since TBD Avoid running when it shouldn't by bailing if not in main query loop on a single post.
+	 *
 	 * @param string $content Normally the_content of a post.
 	 *
 	 * @return string
 	 */
 	public function intercept_content( $content = '' ) {
-		// Prevents firing more then it needs too outside of the loop
-		$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
-
 		// Now fetch the display and check it
 		$display = get_query_var( 'eventDisplay', false );
 
+		// Prevents firing more than it needs to outside of the loop
 		if (
-			! $in_the_loop
+			! is_single()
+			|| ! in_the_loop()
+			|| ! is_main_query()
 			|| (
 				'tickets' !== $display
 				&& ! $this->is_edit_page()
