@@ -10,8 +10,9 @@
  * @since 4.10.2 Only show Update button if ticket has meta.
  * @since 4.10.8 Show Update button if current user has either RSVP or Ticket with meta. Do not use the now-deprecated third parameter of `get_description_rsvp_ticket()`.
  * @since 4.10.9 Use function for text.
+ * @since TBD Correct getting `$event_id` when using The Events Calendar's "Default Page Template" display template.
  *
- * @version 4.11.0
+ * @version TBD
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
