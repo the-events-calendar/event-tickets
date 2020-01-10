@@ -10,9 +10,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
+ * @since TBD Fix malformed opening `<div>` tag.
  *
- * @version 4.11.0
- *
+ * @version TBD
  */
 
 $title     = $this->attr( 'title' );
@@ -23,8 +23,7 @@ if ( ! is_array( $attendees ) ) {
 	return;
 }
 ?>
-<div
-	id="tribe-block__attendees"
+<div id="tribe-block__attendees">
 	<?php tribe_classes( $classes ); ?>
 
 	<?php $this->template( 'blocks/attendees/title', array( 'title' => $title ) ); ?>

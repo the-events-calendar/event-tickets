@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.11.2] TBD =
 
 * Fix - Ensure that attendee images display horizontally in the frontend for Twenty Nineteen and Twenty Twenty themes. [ET-590]
+* Fix - Opening `<div>` is now fixed in `blocks/attendees.php` template [ET-589]
 
 = [4.11.1] 2019-12-19 =
 
