@@ -31,6 +31,7 @@ $context = [
 ];
 
 $modal = $this->get( 'is_modal' );
+
 $id = 'tribe__details__content--' . $ticket->ID;
 ?>
 <div class="tribe-tickets__item__extra">
