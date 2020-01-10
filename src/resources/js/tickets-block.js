@@ -221,8 +221,7 @@ tribe.tickets.block  = {
 		if ( 0 > footerAmount ) {
 			return;
 		}
-		//TODO CONFIRM THIS IS ALWAYS SENT WITH PERIOD AS DECIMAL AND NO THOUSDAND SEPARATOR
-		console.log('$field.text( obj.numberFormat1 ', footerAmount);
+
 		$field.text( obj.numberFormat( footerAmount ) );
 	}
 
@@ -311,8 +310,6 @@ tribe.tickets.block  = {
 		var total_for_item = ( qty * price ).toFixed( obj.getCurrencyFormatting().number_of_decimals );
 		var $field         = $cartItem.find( obj.modalSelector.itemTotal );
 
-		//TODO CONFIRM THIS IS ALWAYS SENT WITH PERIOD AS DECIMAL AND NO THOUSDAND SEPARATOR
-		console.log('$field.text( obj.numberFormat2 ', total_for_item);
 		$field.text( obj.numberFormat( total_for_item ) );
 
 		return total_for_item;
