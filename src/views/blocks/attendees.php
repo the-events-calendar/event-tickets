@@ -17,7 +17,7 @@
 
 $title     = $this->attr( 'title' );
 $attendees = $this->get( 'attendees', null );
-$classes   = array( 'tribe-block', 'tribe-block__attendees' );
+$classes   = [ 'tribe-block', 'tribe-block__attendees' ];
 
 if ( ! is_array( $attendees ) ) {
 	return;
@@ -26,15 +26,13 @@ if ( ! is_array( $attendees ) ) {
 <div id="tribe-block__attendees">
 	<?php tribe_classes( $classes ); ?>
 
-	<?php $this->template( 'blocks/attendees/title', array( 'title' => $title ) ); ?>
+	<?php $this->template( 'blocks/attendees/title', [ 'title' => $title ] ); ?>
 
-	<?php $this->template( 'blocks/attendees/description', array( 'attendees' => $attendees ) ); ?>
+	<?php $this->template( 'blocks/attendees/description', [ 'attendees' => $attendees ] ); ?>
 
 	<?php foreach ( $attendees as $key => $attendee ) : ?>
 
-		<?php $this->template( 'blocks/attendees/gravatar', array( 'attendee' => $attendee ) ); ?>
+		<?php $this->template( 'blocks/attendees/gravatar', [ 'attendee' => $attendee ] ); ?>
 
 	<?php endforeach; ?>
-
 </div>
-
