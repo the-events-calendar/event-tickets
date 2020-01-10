@@ -982,6 +982,9 @@ class Tribe__Tickets__Tickets_View {
 		/** @var \Tribe__Tickets__Editor__Blocks__Tickets $blocks_tickets */
 		$blocks_tickets = tribe( 'tickets.editor.blocks.tickets' );
 
+		// Load assets manually.
+		$blocks_tickets->assets();
+
 		$tickets = $provider->get_tickets( $post_id );
 
 		$args = [
