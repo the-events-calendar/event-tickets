@@ -802,7 +802,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param int         $amount   The amount to format.
+	 * @param int|float   $amount   The amount to format.
 	 * @param int         $post_id  The id of the post with tickets.
 	 * @param string|null $provider The ticket provider class name.
 	 * @param boolean     $html     Whether to return with html wrap.
@@ -813,6 +813,7 @@ class Tribe__Tickets__Commerce__Currency {
 
 		$amount   = $this->get_formatted_currency( $amount, $post_id, $provider );
 		$currency = $this->get_currency_by_provider( $post_id, $provider );
+		$suffix   = $this->get_amount_suffix_html( $amount, $provider );
 
 		$format = '%1$s%2$s';
 
@@ -838,19 +839,43 @@ class Tribe__Tickets__Commerce__Currency {
 			}
 		}
 
-		$formatted = sprintf( $format, $currency['symbol'], $amount );
+		$formatted = sprintf( $format, $currency['symbol'], $amount ) . $suffix;
 
 		/**
 		 * Filter the Formatted Currency with Symbol
 		 *
 		 * @since 4.11.0
+		 * @since TBD Added $suffix param.
 		 *
 		 * @param string  $formatted The formatted amount.
 		 * @param int     $amount    The original amount to be formatted.
 		 * @param array   $currency  An array of currency formatting details.
 		 * @param boolean $html      Whether to return with html wrap.
+		 * @param string  $suffix    String to append to formatted amount.
 		 */
-		return apply_filters( 'tribe_format_amount_with_symbol', $formatted, $amount, $currency, $html );
+		return apply_filters( 'tribe_format_amount_with_symbol', $formatted, $amount, $currency, $html, $suffix );
 	}
 
+	/**
+	 * Get the amount suffix, such as for WooCommerce's taxation suffix.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|string  $amount
+	 * @param string|null $provider
+	 *
+	 * @return string
+	 */
+	private function get_amount_suffix_html( $amount, $provider = null ) {
+		$suffix = '';
+
+		if (
+			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider
+			&& method_exists( 'WC_Product', 'get_price_suffix' )
+		) {
+			$suffix = ( new WC_Product() )->get_price_suffix( $amount );
+		}
+
+		return $suffix;
+	}
 }
