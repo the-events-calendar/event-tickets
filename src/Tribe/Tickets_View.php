@@ -39,6 +39,7 @@ class Tribe__Tickets__Tickets_View {
 		add_action( 'generate_rewrite_rules', [ $myself, 'add_non_event_permalinks' ] );
 		add_filter( 'query_vars', [ $myself, 'add_query_vars' ] );
 		add_action( 'parse_request', [ $myself, 'prevent_page_redirect' ] );
+		add_filter( 'the_content', [ $myself, 'intercept_content' ] );
 		add_action( 'parse_request', [ $myself, 'maybe_regenerate_rewrite_rules' ] );
 
 		// Only Applies this to TEC users.
@@ -365,14 +366,11 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Intercepts the_content from the posts to include the orders structure.
 	 *
-	 * @deprecated TBD `intercept_template()` is running already so this one is not needed.
+	 * @param string $content Normally the_content of a post.
 	 *
-	 * @param  string $content Normally the_content of a post.
 	 * @return string
 	 */
 	public function intercept_content( $content = '' ) {
-		_deprecated_function( __METHOD__, 'TBD', '[ $myself, intercept_template() ]' );
-
 		// Prevents firing more then it needs too outside of the loop
 		$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
 
