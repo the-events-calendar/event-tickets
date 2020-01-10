@@ -423,9 +423,9 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * We need to intercept the template loading and load the correct file.
 	 *
-	 * @param  string $old_file Non important variable with the previous path.
-	 * @param  string $template Which template we are dealing with.
-	 * @return string           The correct File path for the tickets endpoint.
+	 * @param string $old_file Non important variable with the previous path.
+	 *
+	 * @return string          The correct File path for the tickets endpoint.
 	 */
 	public function intercept_template( $old_file ) {
 		global $wp_query;
