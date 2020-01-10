@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $tribe_my_tickets_have_meta;
 
 $view = Tribe__Tickets__Tickets_View::instance();
-$event_id = get_the_ID();
+$event_id = get_queried_object_id();
 $event = get_post( $event_id );
 $post_type = get_post_type_object( $event->post_type );
 $user_id = get_current_user_id();
