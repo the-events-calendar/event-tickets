@@ -221,7 +221,8 @@ tribe.tickets.block  = {
 		if ( 0 > footerAmount ) {
 			return;
 		}
-
+		//TODO CONFIRM THIS IS ALWAYS SENT WITH PERIOD AS DECIMAL AND NO THOUSDAND SEPARATOR
+		console.log('$field.text( obj.numberFormat1 ', footerAmount);
 		$field.text( obj.numberFormat( footerAmount ) );
 	}
 
@@ -310,6 +311,8 @@ tribe.tickets.block  = {
 		var total_for_item = ( qty * price ).toFixed( obj.getCurrencyFormatting().number_of_decimals );
 		var $field         = $cartItem.find( obj.modalSelector.itemTotal );
 
+		//TODO CONFIRM THIS IS ALWAYS SENT WITH PERIOD AS DECIMAL AND NO THOUSDAND SEPARATOR
+		console.log('$field.text( obj.numberFormat2 ', total_for_item);
 		$field.text( obj.numberFormat( total_for_item ) );
 
 		return total_for_item;
@@ -716,6 +719,11 @@ tribe.tickets.block  = {
 		};
 
 		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
+
+		// if period is the thousands_sep we have to spilt using the decimal and not the comma as we work with numbers using the period as the decimal in JavaScript
+		if ( '.' === format.thousands_sep ) {
+			s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( '.' );
+		}
 
 		if ( s[0].length > 3 ) {
 			s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep );
