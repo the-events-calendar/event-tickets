@@ -376,7 +376,7 @@ class Tribe__Tickets__Tickets_View {
 		// Now fetch the display and check it
 		$display = get_query_var( 'eventDisplay', false );
 
-		// Prevents firing more than it needs to outside of the loop
+		// Prevents firing more than it needs to outside of the loop.
 		if (
 			! is_single()
 			|| ! in_the_loop()
