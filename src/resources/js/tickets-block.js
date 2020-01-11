@@ -115,7 +115,7 @@ tribe.tickets.block  = {
 			obj.initPrefill();
 		}
 
-	}
+	};
 
 	/* DOM Updates */
 
@@ -150,27 +150,27 @@ tribe.tickets.block  = {
 				$ticketEl.find( obj.selector.itemExtraAvailableQuantity ).html( available );
 			}
 		} );
-	}
+	};
 
 	/**
 	 * Update all the footer info.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param int    $form The form we're updating.
+	 * @param {int} $form The form we're updating.
 	 */
 	obj.updateFooter = function( $form ) {
 		obj.updateFooterCount( $form );
 		obj.updateFooterAmount( $form );
 		$form.find( '.tribe-tickets__footer' ).addClass( 'tribe-tickets__footer--active' );
-	}
+	};
 
 	/**
 	 * Adjust the footer count for +/-.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param int    $form The form we're updating.
+	 * @param {int} $form The form we're updating.
 	 */
 	obj.updateFooterCount = function( $form ) {
 		var $field      = $form.find( obj.selector.blockFooter + ' ' + obj.selector.blockFooterQuantity );
@@ -194,14 +194,14 @@ tribe.tickets.block  = {
 		}
 
 		$field.text( footerCount );
-	}
+	};
 
 	/**
 	 * Adjust the footer total/amount for +/-.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param int    $form The form we're updating.
+	 * @param {int} $form The form we're updating.
 	 */
 	obj.updateFooterAmount = function( $form ) {
 		var $field       = $form.find( obj.selector.blockFooter + ' ' + obj.selector.blockFooterAmount );
@@ -223,7 +223,7 @@ tribe.tickets.block  = {
 		}
 
 		$field.text( obj.numberFormat( footerAmount ) );
-	}
+	};
 
 	/**
 	 * Update Cart Totals in Modal.
@@ -263,9 +263,9 @@ tribe.tickets.block  = {
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param int id            The id of the ticket/product.
-	 * @param obj $modalCartItem The cart item to update.
-	 * @param obj $blockCartItem The optional ticket block cart item.
+	 * @param {int} id             The id of the ticket/product.
+	 * @param {obj} $modalCartItem The cart item to update.
+	 * @param {obj} $blockCartItem The optional ticket block cart item.
 	 *
 	 * @returns {number}
 	 */
@@ -300,9 +300,9 @@ tribe.tickets.block  = {
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param number qty   The quantity.
-	 * @param number price The price.
-	 * @param obj cartItem The cart item to update.
+	 * @param {number} qty       The quantity.
+	 * @param {number} price     The price.
+	 * @param {obj}    $cartItem The cart item to update.
 	 *
 	 * @returns {string}
 	 */
@@ -363,7 +363,7 @@ tribe.tickets.block  = {
 			$notice.addClass( 'tribe-common-a11y-hidden' );
 			$title.hide();
 		}
-	}
+	};
 
 	/* Utility */
 
@@ -375,7 +375,7 @@ tribe.tickets.block  = {
 	obj.getRestEndpoint = function() {
 		var url = TribeCartEndpoint.url;
 		return url;
-	}
+	};
 
 	/**
 	 * Get the tickets IDs.
@@ -392,15 +392,15 @@ tribe.tickets.block  = {
 		).get();
 
 		return $tickets;
-	}
+	};
 
 	/**
 	 * Maybe display the Opt Out.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param obj $ticket The ticket item element.
-	 * @param int new_quantity The new ticket quantity.
+	 * @param {obj} $ticket The ticket item element.
+	 * @param {int} new_quantity The new ticket quantity.
 	 */
 	obj.maybeShowOptOut = function( $ticket, new_quantity ) {
 		var has_optout = $ticket.has( obj.selector.itemOptOut ).length;
@@ -408,14 +408,14 @@ tribe.tickets.block  = {
 			var $optout = $ticket.closest( obj.selector.item ).find( obj.selector.itemOptOut );
 			( 0 < new_quantity ) ? $optout.show() : $optout.hide();
 		}
-	}
+	};
 
 	/**
 	 * Appends AR fields when modal cart quantities are changed.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param obj $form The form we are updating.
+	 * @param {obj} $form The form we are updating.
 	 */
 	obj.appendARFields = function ( $form ) {
 		$form.find( obj.selector.item ).each(
@@ -465,7 +465,7 @@ tribe.tickets.block  = {
 		obj.maybeShowNonMetaNotice( $form );
 		obj.loaderHide();
 		obj.document.trigger( 'tribe-ar-fields-appended' );
-	}
+	};
 
 	/**
 	 * Step up the input according to the button that was clicked.
@@ -503,7 +503,7 @@ tribe.tickets.block  = {
 		} else {
 			$input.val( new_value );
 		}
-	}
+	};
 
 	/**
 	 * Step down the input according to the button that was clicked.
@@ -525,7 +525,7 @@ tribe.tickets.block  = {
 		} else {
 			$input[ 0 ].value = decrease;
 		}
-	}
+	};
 
 	/**
 	 * Check tickets availability.
@@ -565,7 +565,7 @@ tribe.tickets.block  = {
 		if ( 0 < TribeTicketOptions.availability_check_interval ) {
 			setTimeout( obj.checkAvailability, TribeTicketOptions.availability_check_interval );
 		}
-	}
+	};
 
 	/**
 	 * Check if we're updating the qty of a shared cap ticket and
@@ -573,9 +573,10 @@ tribe.tickets.block  = {
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param integer qty The quantity we desire.
+	 * @param       $form
+	 * @param {int} qty   The quantity we desire.
 	 *
-	 * @return integer The quantity, limited by exisitng shared cap tickets.
+	 * @return integer The quantity, limited by existing shared cap tickets.
 	 */
 	obj.checkSharedCapacity = function ( $form, qty ) {
 		var sharedCap         = [];
@@ -610,14 +611,14 @@ tribe.tickets.block  = {
 		var currentAvailable = sharedCap - currentLoad;
 
 		return Math.min( currentAvailable, qty );
-	}
+	};
 
 	/**
 	 * Get the Quantity.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param obj cartItem The cart item to update.
+	 * @param {obj} $cartItem The cart item to update.
 	 *
 	 * @returns {number}
 	 */
@@ -631,7 +632,7 @@ tribe.tickets.block  = {
 	 * Get the Price.
 	 *
 	 *
-	 * @param obj cartItem     The cart item to update.
+	 * @param {obj} $cartItem The cart item to update.
 	 * @params string cssClass The string of the class to get the price from.
 	 *
 	 * @returns {number}
@@ -681,7 +682,7 @@ tribe.tickets.block  = {
 		}
 
 		return number;
-	}
+	};
 
 	/**
 	 * Format the number according to provider settings.
@@ -727,7 +728,7 @@ tribe.tickets.block  = {
 		}
 
 		return s.join( dec );
-	}
+	};
 
 	/**
 	 * Adds focus effect to ticket block.
@@ -739,7 +740,7 @@ tribe.tickets.block  = {
 		$( input )
 			.closest( obj.modalSelector.metaItem )
 			.addClass( 'tribe-ticket-item__has-focus' );
-	}
+	};
 
 	/**
 	 * Remove focus effect from ticket block.
@@ -751,14 +752,14 @@ tribe.tickets.block  = {
 		$( input )
 			.closest( obj.modalSelector.metaItem )
 			.removeClass( 'tribe-ticket-item__has-focus' );
-	}
+	};
 
 	/**
 	 * Show the loader/spinner.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param string loaderClass A class for targeting a specific loader.
+	 * @param {string} loaderClass A class for targeting a specific loader.
 	 * @return void
 	 */
 	obj.loaderShow = function( loaderClass ) {
@@ -769,14 +770,14 @@ tribe.tickets.block  = {
 		var $loader = $( obj.selector.loader ).filter( loaderClass );
 
 		$loader.removeClass( obj.selector.hidden );
-	}
+	};
 
 	/**
 	 * Hide the loader/spinner.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param string loaderClass A class for targeting a specific loader.
+	 * @param {string} loaderClass A class for targeting a specific loader.
 	 * @return void
 	 */
 	obj.loaderHide = function( loaderClass ) {
@@ -787,7 +788,7 @@ tribe.tickets.block  = {
 		var $loader = $( obj.selector.loader ).filter( loaderClass );
 
 		$loader.addClass( obj.selector.hidden );
-	}
+	};
 
 	/* Prefill Handling */
 
@@ -800,7 +801,7 @@ tribe.tickets.block  = {
 	 */
 	obj.initPrefill = function() {
 		obj.prefillTicketsBlock();
-	}
+	};
 
 	/**
 	 * Init the form prefills ( cart and AR forms ).
@@ -841,14 +842,14 @@ tribe.tickets.block  = {
 				var timeoutID = window.setTimeout( obj.loaderHide, 500, obj.modalSelector.loader );
 			}
 		);
-	}
+	};
 
 	/**
 	 * Prefills the modal AR fields from supplied data.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param meta Data to fill the form in with.
+	 * @param meta   Data to fill the form in with.
 	 * @param length Starting pointer for partial fill-ins.
 	 *
 	 * @return void
@@ -903,7 +904,7 @@ tribe.tickets.block  = {
 		} );
 
 		obj.loaderHide( obj.modalSelector.loader );
-	}
+	};
 
 	/**
 	 * Prefill the Cart.
@@ -979,7 +980,7 @@ tribe.tickets.block  = {
 				obj.loaderHide();
 			},
 			function() {
-				var $errorNotice =  $( obj.selector.ticketInCartNotice );
+				var $errorNotice = $( obj.selector.ticketInCartNotice );
 				$errorNotice
 					.removeClass( 'tribe-tickets__notice--barred tribe-tickets__notice--barred-left' )
 					.addClass( 'tribe-tickets__notice--error' );
@@ -990,7 +991,7 @@ tribe.tickets.block  = {
 				obj.loaderHide();
 			}
 		);
-	}
+	};
 
 	/* sessionStorage ( "local" ) */
 
@@ -1013,12 +1014,14 @@ tribe.tickets.block  = {
 			'tribe_tickets_cart-' + obj.postId,
 			window.JSON.stringify( tickets )
 		);
-	}
+	};
 
 	/**
 	 * Gets attendee and cart form data from sessionStorage.
 	 *
 	 * @since 4.11.0
+	 *
+	 * @param postId
 	 *
 	 * @return array
 	 */
@@ -1032,12 +1035,14 @@ tribe.tickets.block  = {
 		var ret     = {  meta, tickets };
 
 		return ret;
-	}
+	};
 
 	/**
 	 * Clears attendee and cart form data for this event from sessionStorage.
 	 *
 	 * @since 4.11.0
+	 *
+	 * @param postId
 	 *
 	 * @return void
 	 */
@@ -1048,14 +1053,14 @@ tribe.tickets.block  = {
 
 		sessionStorage.removeItem( 'tribe_tickets_attendees-' + postId );
 		sessionStorage.removeItem( 'tribe_tickets_cart-' + postId );
-	}
+	};
 
 	/**
 	 * Attempts to hydrate a dynamically-created attendee form "block" from sessionStorage data.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param object data The attendee data.
+	 * @param length
 	 *
 	 * @return void
 	 */
@@ -1094,7 +1099,7 @@ tribe.tickets.block  = {
 				}
 			}
 		);
-	}
+	};
 
 	/* Data Formatting / API Handling */
 
@@ -1138,7 +1143,7 @@ tribe.tickets.block  = {
 		);
 
 		return tickets;
-	}
+	};
 
 	/**
 	 *
@@ -1212,7 +1217,7 @@ tribe.tickets.block  = {
 		} );
 
 		return meta;
-	}
+	};
 
 	/**
 	 * Get cart & meta data from sessionStorage, otherwise make an ajax call.
@@ -1293,7 +1298,7 @@ tribe.tickets.block  = {
 		}
 
 		return deferred.promise();
-	}
+	};
 
 	/* Validation */
 
@@ -1325,7 +1330,7 @@ tribe.tickets.block  = {
 		);
 
 		return [formValid, invalidTickets];
-	}
+	};
 
 	/**
 	 * Validates and adds/removes error classes from a ticket meta block.
@@ -1358,7 +1363,7 @@ tribe.tickets.block  = {
 		}
 
 		return validBlock;
-	}
+	};
 
 	/**
 	 * Validate Checkbox/Radio group.
@@ -1393,7 +1398,7 @@ tribe.tickets.block  = {
 		var valid = ! required || checkboxValid;
 
 		return valid;
-	}
+	};
 
 	/**
 	 * Adds/removes error classes from a single field.
@@ -1430,7 +1435,7 @@ tribe.tickets.block  = {
 		}
 
 		return isValidfield;
-	}
+	};
 
 	/* Event Handling */
 
@@ -1487,7 +1492,6 @@ tribe.tickets.block  = {
 		obj.modalSelector.itemRemove,
 		function ( e ) {
 			e.preventDefault();
-
 
 			var ticket    = {};
 			var $cart     = $( this ).closest( 'form' );
