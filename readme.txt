@@ -122,6 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Ensure that attendee images display horizontally in the frontend for Twenty Nineteen and Twenty Twenty themes. [ET-590]
 * Fix - Load JavaScript assets with Ticket Block when using Classic Editor [ET-587]
 * Fix - Tickets Block quantity +/- buttons set to 'button' type to avoid submitting Add to Cart form in IE11 [ETP-34]
+* Fix - JavaScript updated to remove IE11 console errors [ETP-34]
 
 = [4.11.1] 2019-12-19 =
 
