@@ -965,7 +965,7 @@ tribe.tickets.block  = {
 								$field.val( ticket.quantity );
 								$field.trigger( 'change' );
 								$eventCount += ticket.quantity;
-								if ( 1 == parseInt( ticket.optout, 10 ) ) {
+								if ( 1 === parseInt( ticket.optout, 10 ) ) {
 									$optout.prop( 'checked', 'true' );
 								}
 							}
@@ -1628,7 +1628,7 @@ tribe.tickets.block  = {
 		obj.modalSelector.form,
 		function( e ) {
 
-			if ( e.keyCode == 13 ) {
+			if ( e.keyCode === 13 ) {
 				var $form   = $( e.target ).closest( obj.modalSelector.form );
 				// Ensure we're on the modal form
 				if ( 'undefined' === $form ) {
