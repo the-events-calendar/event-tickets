@@ -65,6 +65,14 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	 * @param $params
 	 */
 	protected function set_params( $params ) {
+		/**
+		 * Allow filtering of the default limit for the [tribe-user-event-confirmations] shortcode.
+		 * @since TBD
+		 *
+		 * @param int $default_limit The default limit to use.
+		 */
+		$default_limit = apply_filters( 'tribe_tickets_shortcodes_attendee_list_limit', 100 );
+
 		$this->params = shortcode_atts( [
 			'limit' => -1,
 			'user'  => get_current_user_id()
