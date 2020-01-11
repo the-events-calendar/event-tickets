@@ -11,9 +11,9 @@
  * @link    {INSERT_ARTICLE_LINK_HERE}
  *
  * @since   4.9.3
- * @since   TBD Corrected amount of available/remaining tickets.
+ * @since   4.11.1 Corrected amount of available/remaining tickets.
  *
- * @version TBD
+ * @version 4.11.1
  *
  * @var Tribe__Tickets__Editor__Template $this
  * @var Tribe__Tickets__Ticket_Object    $ticket    // From the 'extra-available' template including this template

@@ -17,6 +17,8 @@ class AttendeeArchiveByAttendeeMetaCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_getting_attendees_by_attendee_meta( \Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'editor' );
+
 		$post_id        = $I->havePostInDatabase();
 		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
 

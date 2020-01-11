@@ -2011,7 +2011,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Get Tribe Commerce Cart URL.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param null|int $post_id Post ID for the cart.
 	 *
@@ -2035,7 +2035,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Allow filtering of the PayPal Cart URL.
 		 *
-		 * @since TBD
+		 * @since 4.11.0
 		 *
 		 * @param string $cart_url PayPal Cart URL.
 		 */
@@ -2045,7 +2045,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Get Tribe Commerce Cart URL for Commerce.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param string $cart_url Cart URL.
 	 * @param array  $data     Commerce response data to be sent.
@@ -2060,7 +2060,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Get Tribe Commerce Checkout URL.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param null|int $post_id Post ID for the cart.
 	 *
@@ -2077,7 +2077,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Allow filtering of the PayPal Checkout URL.
 		 *
-		 * @since TBD
+		 * @since 4.11.0
 		 *
 		 * @param string $checkout_url PayPal Checkout URL.
 		 */
@@ -2087,7 +2087,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Get Tribe Commerce Checkout URL for Commerce.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param string $checkout_url Checkout URL.
 	 * @param array  $data         Commerce response data to be sent.
@@ -2102,7 +2102,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Adds cart url to list used for localized variables.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param array $urls The original array.
 	 * @return array
@@ -2117,7 +2117,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Adds checkout url to list used for localized variables.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param array $urls The original array.
 	 * @return array
@@ -2408,7 +2408,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Get all tickets currently in the cart for Commerce.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param array $tickets List of tickets.
 	 *
@@ -2475,7 +2475,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Update tickets in Tribe Commerce cart for Commerce.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param array   $tickets  List of tickets with their ID and quantity.
 	 * @param int     $post_id  Post ID for the cart.
@@ -2556,7 +2556,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * If the cart contains a line item for the product, this will replace the previous quantity.
 	 * If the quantity is zero and the cart contains a line item for the product, this will remove it.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param int     $ticket_id  Ticket ID.
 	 * @param int     $quantity   Ticket quantity.
@@ -3160,7 +3160,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Filter the provider object to return this class if tickets are for this provider.
 	 *
-	 * @since TBD
+	 * @since 4.11.0
 	 *
 	 * @param object $provider_obj
 	 * @param string $provider

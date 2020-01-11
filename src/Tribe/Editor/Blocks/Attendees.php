@@ -46,7 +46,7 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 			$gutenberg,
 			'tribe-tickets-gutenberg-block-attendees-style',
 			'app/attendees/frontend.css',
-			[ 'event-tickets-tickets-common' ],
+			[],
 			null
 		);
 	}
