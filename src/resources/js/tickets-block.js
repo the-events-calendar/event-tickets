@@ -184,7 +184,7 @@ tribe.tickets.block  = {
 		} );
 
 		if ( $form.hasClass( 'tribe-tickets' ) ) {
-			var disabled = 0 >= footerCount ? true : false ;
+			var disabled = 0 >= footerCount ;
 
 			$( obj.selector.blockSubmit ).prop( 'disabled', disabled );
 		}
