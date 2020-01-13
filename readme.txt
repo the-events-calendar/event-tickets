@@ -123,6 +123,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Remove inaccurate display of "You don't have tickets for this event" notice at single event page's list of current user's RSVPs and/or Tickets [ETP-50]
 * Fix - Close opening `<div>` in `blocks/attendees.php` [ET-589]
 * Fix - Load JavaScript assets with Ticket Block when using Classic Editor [ET-587]
+* Tweak - Refine logic for the notice on the "my tickets" page. [ETP-151]
 
 = [4.11.1] 2019-12-19 =
 

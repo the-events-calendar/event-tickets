@@ -1348,7 +1348,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Get total count of attendees marked as going for this provider.
+	 * Get total count of attendees marked as not going for this provider.
 	 *
 	 * @since 4.10.6
 	 *
@@ -1361,6 +1361,38 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$repository = tribe_attendees( $this->orm_provider );
 
 		return $repository->by( 'event', $post_id )->by( 'rsvp_status', 'no' )->found();
+	}
+
+	/**
+	 * Get total count of attendees marked as going for this provider and user.
+	 *
+	 * @since 4.10.6
+	 *
+	 * @param int $post_id Post or Event ID.
+	 *
+	 * @return int Total count of attendees marked as going.
+	 */
+	public function get_attendees_count_going_for_user( $post_id, $user_id ) {
+		/** @var Tribe__Tickets__Attendee_Repository $repository */
+		$repository = tribe_attendees( $this->orm_provider );
+
+		return $repository->by( 'event', $post_id )->by( 'user', $user_id )->by( 'rsvp_status', 'yes' )->found();
+	}
+
+	/**
+	 * Get total count of attendees marked as not going for this provider.
+	 *
+	 * @since 4.10.6
+	 *
+	 * @param int $post_id Post or Event ID.
+	 *
+	 * @return int Total count of attendees marked as going.
+	 */
+	public function get_attendees_count_not_going_for_user( $post_id, $user_id ) {
+		/** @var Tribe__Tickets__Attendee_Repository $repository */
+		$repository = tribe_attendees( $this->orm_provider );
+
+		return $repository->by( 'event', $post_id )->by( 'user', $user_id )->by( 'rsvp_status', 'no' )->found();
 	}
 
 	/**

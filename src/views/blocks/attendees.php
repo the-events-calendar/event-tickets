@@ -23,8 +23,7 @@ if ( ! is_array( $attendees ) ) {
 	return;
 }
 ?>
-<div id="tribe-block__attendees">
-	<?php tribe_classes( $classes ); ?>
+<div id="tribe-block__attendees" <?php tribe_classes( $classes ); ?>>
 
 	<?php $this->template( 'blocks/attendees/title', [ 'title' => $title ] ); ?>
 
