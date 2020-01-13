@@ -284,7 +284,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 				}
 
 				$button = sprintf(
-					'<div class="tribe-common"><a class="tribe-common-c-btn" href="%1$s"><button class="tribe-common-c-btn">%2$s</button></a></div>',
+					'<div class="tribe-common"><a class="tribe-common-c-btn" href="%1$s">%2$s</a></div>',
 					esc_url( get_the_permalink( $event_id ) . $button_anchor ),
 					esc_html( $button_label )
 				);
