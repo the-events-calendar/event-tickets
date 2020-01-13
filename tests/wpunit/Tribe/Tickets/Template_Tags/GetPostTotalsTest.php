@@ -908,11 +908,11 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * get_post_totals() should return the correct number of tickets initially
+	 * get_post_totals()  should return the correct number of tickets initially with tickets and rsvps
 	 *
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
-	 public function get_post_totals_should_return_the_correct_number_of_tickets_initially() {
+	 public function get_post_totals_should_return_the_correct_number_of_tickets_initially_with_tickets_and_rsvps() {
 		// create 5 tickets
 		$ticket_ids = $this->create_many_paypal_tickets(
 			$this->num_tickets,

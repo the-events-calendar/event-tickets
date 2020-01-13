@@ -76,11 +76,6 @@ trait Ticket_Maker {
 				], $overrides )
 		);
 
-		bdump(
-			'set capacity',
-			get_post_meta( $ticket_id, tribe( 'tickets.handler' )->key_capacity, true )
-		);
-
 		return $ticket_id;
 	}
 

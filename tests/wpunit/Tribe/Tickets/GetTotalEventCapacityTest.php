@@ -151,7 +151,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
 
-		$this->assertEquals( $this->global_cap, $test_data, 'Incorrect capacity with own tickets.' );
+		$this->assertEquals( $this->global_cap, $test_data, 'Incorrect capacity with global tickets.' );
 	}
 
 	/**
@@ -187,7 +187,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
 
-		$this->assertEquals( $this->global_cap, $test_data, 'Incorrect capacity with own tickets.' );
+		$this->assertEquals( $this->global_cap, $test_data, 'Incorrect capacity with capped tickets.' );
 	}
 
 	/**
@@ -240,7 +240,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
 
-		$this->assertEquals( $this->global_cap + 10, $test_data, 'Incorrect capacity with own tickets.' );
+		$this->assertEquals( $this->global_cap + 10, $test_data, 'Incorrect capacity with mixed tickets.' );
 	}
 
 	/**
@@ -304,7 +304,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
 
-		$this->assertEquals( -1, $test_data, 'Incorrect capacity with own tickets.' );
+		$this->assertEquals( -1, $test_data, 'Incorrect capacity with mixed unlimited tickets.' );
 	}
 
 }
