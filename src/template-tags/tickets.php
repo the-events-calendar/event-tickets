@@ -192,9 +192,13 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 	function tribe_tickets_buy_button( $echo = true ) {
 		$event_id = get_the_ID();
 
-		// check if there are any tickets on sale
-		if ( ! tribe_events_has_tickets_on_sale( $event_id ) ) {
-			return null;
+		if ( empty( $event_id ) ) {
+			return '';
+		}
+
+		// Check if there are any tickets available.
+		if ( ! tribe_tickets_is_current_time_in_date_window( $event_id ) ) {
+			return '';
 		}
 
 		// get an array for ticket and rsvp counts
