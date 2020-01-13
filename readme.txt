@@ -123,6 +123,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Added new `tribe_events_is_current_time_in_date_window()` function that checks if the current datetime is within a post's ticket availability window [TEC-3033]
 * Fix - The Events Calendar's List View "RSVP Now!" button again displays for Events having only RSVP tickets, and the Tickets Block's Form ID was restored back to `#buy-tickets` from `#tribe-tickets` [138725]
 * Fix - Ensure that attendee images display horizontally in the frontend for Twenty Nineteen and Twenty Twenty themes. [ET-590]
+* Fix - Close opening `<div>` in `blocks/attendees.php` [ET-589]
+* Fix - Load JavaScript assets with Ticket Block when using Classic Editor [ET-587]
 
 = [4.11.1] 2019-12-19 =
 
