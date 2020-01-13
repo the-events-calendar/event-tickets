@@ -324,7 +324,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$args = [
 				'post_type'      => [ $this->ticket_object ],
-				'posts_per_page' => - 1,
+				'posts_per_page' => -1,
 				'fields'         => 'ids',
 				'post_status'    => 'publish',
 				'orderby'        => 'menu_order',
@@ -384,7 +384,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$query = new WP_Query( $args );
-			$cache->set( $cache_key, $query, Tribe__Cache::NO_EXPIRATION );
+			$cache->set( $cache_key, $query, Tribe__Cache::NO_EXPIRATION, 'event_tickets_after_create_ticket' );
 
 			return $query->posts;
 		}
@@ -1421,7 +1421,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function get_all_event_tickets( $post_id ) {
-
 			$cache_key = self::$cache_key_prefix . $post_id;
 			$cache = new Tribe__Cache();
 			$tickets = $cache->get( $cache_key );
@@ -1436,32 +1435,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			foreach ( $modules as $class => $module ) {
 				$obj              = call_user_func( [ $class, 'get_instance' ] );
 				$provider_tickets = $obj->get_tickets( $post_id );
-				if ( is_array( $provider_tickets ) ) {
+				if ( is_array( $provider_tickets ) && !empty( $provider_tickets)  ) {
 					$tickets[] = $provider_tickets;
 				}
 			}
 
 			$tickets = empty( $tickets ) ? [] : call_user_func_array( 'array_merge', $tickets );
-			$cache->set( $cache_key, $tickets, Tribe__Cache::NO_EXPIRATION );
+			$cache->set( $cache_key, $tickets, Tribe__Cache::NO_EXPIRATION, 'event_tickets_after_create_ticket' );
 
 			return $tickets;
-		}
-
-		/**
-		 * Expires (deletes) the cache key as needed as it is set to
-		 * never expire - which is sometimes an issue.
-		 *
-		 * @since TBD
-		 *
-		 * @param int $post_id WP post ID we're clearing the cache for
-		 *
-		 * @return boolean
-		 */
-		public static function expire_get_all_tickets_cache( $post_id ) {
-			$cache_key = self::$cache_key_prefix . $post_id;
-			$cache     = new Tribe__Cache();
-
-			return $cache->delete( $cache_key );
 		}
 
 		/**

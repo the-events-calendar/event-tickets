@@ -857,7 +857,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$capacity = tribe_tickets_get_capacity( $rsvp_ticket_id );
 
-		$this->assertEquals( '10', $capacity );
+		$this->assertEquals( 10, $capacity );
 	}
 
 	/**
@@ -879,7 +879,200 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$capacity = tribe_tickets_get_capacity( $ticket_id );
 
-		$this->assertEquals( '10', $capacity );
+		$this->assertEquals( 10, $capacity );
+	}
+
+	/**
+	 * @test
+	 * it should not get capacity from an event
+	 *
+	 * @covers tribe_tickets_get_capacity
+	 */
+
+	public function it_should_not_get_capacity_from_an_event() {
+		$event_id = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => 10,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_tickets_get_capacity( $event_id );
+
+		$this->assertNUll( $capacity, 'tribe_tickets_get_capacity() should not get capacity from an event or post!' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct capacity for an RSVP
+	 *
+	 * @covers tribe_get_event_capacity
+	 */
+	public function it_should_get_the_correct_capacity_for_an_rsvp() {
+		$event_id = $this->factory()->event->create();
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'   => 10,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_get_event_capacity( $event_id );
+
+		$this->assertEquals( 10, $capacity, 'Incorrect event capacity for a single RSVP.' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct capacity for an unlimited RSVP
+	 *
+	 * @covers tribe_get_event_capacity
+	 */
+	public function it_should_get_the_correct_capacity_for_an_unlimited_rsvp() {
+		$event_id = $this->factory()->event->create();
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'   => -1,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_get_event_capacity( $event_id );
+
+		$this->assertEquals( -1, $capacity, 'Incorrect event capacity for a single unlimited RSVP.' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct capacity when one RSVP is unlimited
+	 *
+	 * @covers tribe_get_event_capacity
+	 */
+	public function it_should_get_the_correct_capacity_when_one_rsvp_is_unlimited() {
+		$event_id = $this->factory()->event->create();
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'   => 10,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$rsvp_ticket_id_b = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'   => -1,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_get_event_capacity( $event_id );
+
+		$this->assertEquals( -1, $capacity, 'Incorrect event capacity for a single unlimited RSVP.' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct capacity for a ticket
+	 *
+	 * @covers tribe_get_event_capacity
+	 */
+	public function it_should_get_the_correct_capacity_for_a_ticket() {
+		$event_id = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => 10,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_get_event_capacity( $event_id );
+
+		$this->assertEquals( 10, $capacity, 'Incorrect event capacity for a single ticket.' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct capacity for an unlimited ticket
+	 *
+	 * @covers tribe_get_event_capacity
+	 */
+	public function it_should_get_the_correct_capacity_for_an_unlimited_ticket() {
+		$event_id = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => -1,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_get_event_capacity( $event_id );
+
+		$this->assertEquals( -1, $capacity, 'Incorrect event capacity for a single unlimited ticket.' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct capacity when one ticket is unlimited
+	 *
+	 * @covers tribe_get_event_capacity
+	 */
+	public function it_should_get_the_correct_capacity_when_one_ticket_is_unlimited() {
+		$event_id = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => 10,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$ticket_id_b = $this->create_paypal_ticket( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => -1,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_get_event_capacity( $event_id );
+
+		$this->assertEquals( -1, $capacity, 'Incorrect event capacity for a single unlimited ticket.' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct capacity for a mix of RSVPs and tickets
+	 *
+	 * @covers tribe_get_event_capacity
+	 */
+	public function it_should_get_the_correct_capacity_for_a_mix_of_rsvps_and_tickets() {
+		$event_id = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => 10,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'   => 10,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_get_event_capacity( $event_id );
+
+		$this->assertEquals( '20', $capacity, 'Incorrect event capacity for a mix of rsvps and tickets.' );
 	}
 
 	/**
