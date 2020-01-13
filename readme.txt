@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.11.2] TBD =
 
 * Fix - Ensure that attendee images display horizontally in the frontend for Twenty Nineteen and Twenty Twenty themes. [ET-590]
+* Fix - Remove inaccurate display of "You don't have tickets for this event" notice at single event page's list of current user's RSVPs and/or Tickets [ETP-50]
 * Fix - Close opening `<div>` in `blocks/attendees.php` [ET-589]
 * Fix - Load JavaScript assets with Ticket Block when using Classic Editor [ET-587]
 
