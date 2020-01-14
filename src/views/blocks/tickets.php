@@ -10,7 +10,7 @@
  * @since 4.9
  * @since 4.10.8 Updated loading logic for including a renamed template.
  * @since 4.10.10 Removed initial check for tickets.
- * @since TBD Restored Form ID from #tribe-tickets back to #buy-tickets.
+ * @since TBD Restored Form ID from #tribe-tickets back to #tribe-tickets.
  *
  * @link  {INSERT_ARTICLE_LINK_HERE}
  *
@@ -63,7 +63,7 @@ if ( ! $already_rendered ) {
 }
 ?>
 <form
-	id="buy-tickets"
+	id="tribe-tickets"
 	action="<?php echo esc_url( $provider->get_cart_url() ); ?>"
 	<?php tribe_classes( $cart_classes ); ?>
 	method="post"

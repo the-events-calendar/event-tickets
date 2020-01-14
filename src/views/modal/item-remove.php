@@ -15,6 +15,7 @@
 	class="tribe-tickets__item__remove__wrap"
 >
 	<button
+		type="button"
 		class="tribe-tickets__item__remove"
 	></button>
 </div>

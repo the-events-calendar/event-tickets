@@ -91,7 +91,14 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 			)
 		) : ?>
 			<div class="tribe-submit-tickets-form">
-				<button type="submit" name="process-tickets" value="1" class="button alt"><?php echo sprintf( esc_html__( 'Update %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, get_current_user_id() ) ); ?></button>
+				<button
+					type="submit"
+					name="process-tickets"
+					value="1"
+					class="button alt"
+				>
+					<?php echo sprintf( esc_html__( 'Update %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, get_current_user_id() ) ); ?>
+				</button>
 			</div>
 		<?php endif;
 		// unset our global since we don't need it any more

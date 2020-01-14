@@ -15,4 +15,7 @@
  *
  */
 ?>
-<button class="tribe-block__rsvp__number-input-button tribe-block__rsvp__number-input-button--minus"></button>
+<button
+	type="button"
+	class="tribe-block__rsvp__number-input-button tribe-block__rsvp__number-input-button--minus"
+></button>

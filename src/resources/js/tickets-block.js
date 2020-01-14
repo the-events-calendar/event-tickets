@@ -23,7 +23,8 @@ tribe.tickets.block  = {
 		blockFooter                : '.tribe-tickets__footer',
 		blockFooterAmount          : '.tribe-amount',
 		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
-		blockSubmit                : '.tribe-tickets__submit',
+		blockSubmit                : '#tribe-tickets__submit',
+		classicSubmit              : '#tribe-tickets__buy',
 		container                  : '#tribe-tickets',
 		hidden                     : 'tribe-common-a11y-hidden',
 		item                       : '.tribe-tickets__item',
@@ -115,6 +116,7 @@ tribe.tickets.block  = {
 			obj.initPrefill();
 		}
 
+		obj.disable( $( obj.selector.submit ), true );
 	}
 
 	/* DOM Updates */
@@ -183,11 +185,8 @@ tribe.tickets.block  = {
 			footerCount      += new_quantity;
 		} );
 
-		if ( $form.hasClass( 'tribe-tickets' ) ) {
 			var disabled = 0 >= footerCount ? true : false ;
-
-			$( obj.selector.blockSubmit ).prop( 'disabled', disabled );
-		}
+			obj.disable( $( obj.selector.submit ), disabled );
 
 		if ( 0 > footerCount ) {
 			return;
@@ -787,6 +786,20 @@ tribe.tickets.block  = {
 		var $loader = $( obj.selector.loader ).filter( loaderClass );
 
 		$loader.addClass( obj.selector.hidden );
+	}
+
+	obj.disable = function( $element, isDisabled ) {
+		if ( isDisabled ) {
+			$element.prop( 'disabled', true )
+					.attr( {
+						disabled: 'true',
+						'aria-disabled': "true"
+					} );
+		} else {
+			$element.prop( 'disabled', false )
+					.removeProp( 'disabled' )
+					.removeAttr( 'disabled aria-disabled' );
+		}
 	}
 
 	/* Prefill Handling */
@@ -1511,7 +1524,7 @@ tribe.tickets.block  = {
 			// Short delay to ensure the fadeOut has finished.
 			var timeoutID = window.setTimeout( obj.maybeShowNonMetaNotice, 500, $cart );
 
-			// Close then modal if we remove the last item
+			// Close the modal if we remove the last item
 			// Again, short delay to ensure the fadeOut has finished.
 			var maybeCloseModal = window.setTimeout(
 				function() {
@@ -1523,6 +1536,7 @@ tribe.tickets.block  = {
 
 						// Close the dialog
 						window[ result ].hide();
+						obj.disable( $( obj.selector.submit ), false );
 					}
 				},
 				500,
@@ -1710,7 +1724,7 @@ tribe.tickets.block  = {
 	 */
 	obj.document.on(
 		'click',
-		obj.selector.submit,
+		obj.selector.classicSubmit,
 		function( e ) {
 			e.preventDefault();
 

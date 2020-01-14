@@ -41,6 +41,7 @@ $id = 'tribe__details__content--' . $ticket->ID;
 	<?php if ( true !== $modal && true !== $is_mini && $ticket->show_description() && ! empty( $ticket->description ) ) : ?>
 		<div class="tribe-tickets__item__details__summary">
 			<button
+			type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--more"
 				aria-controls="<?php echo esc_attr( $id ); ?>"
 				tabindex="0"
@@ -49,6 +50,7 @@ $id = 'tribe__details__content--' . $ticket->ID;
 				<?php echo esc_html_x( 'More', 'Opens the ticket description', 'event-tickets' ); ?>
 			</button>
 			<button
+				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--less"
 				aria-controls="<?php echo esc_attr( $id ); ?>"
 				tabindex="0"
