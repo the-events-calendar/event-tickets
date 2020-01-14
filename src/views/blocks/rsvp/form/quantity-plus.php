@@ -11,7 +11,8 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @since TBD Updated the button to include a type - helps avoid submitting forms unintentionally.
+ * @version TBD
  *
  */
 

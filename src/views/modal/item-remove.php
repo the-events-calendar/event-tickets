@@ -6,8 +6,9 @@
  * [your-theme]/tribe/tickets/modal/item-remove.php
  *
  * @since 4.11.0
+ * @since TBD Updated the button to include a type - helps avoid submitting forms unintentionally.
  *
- * @version 4.11.0
+ * @version TBD
  *
  */
 ?>
