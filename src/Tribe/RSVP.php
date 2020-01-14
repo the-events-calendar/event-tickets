@@ -1366,7 +1366,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Get total count of attendees marked as going for this provider and user.
 	 *
-	 * @since 4.10.6
+	 * @since TBD
 	 *
 	 * @param int $post_id Post or Event ID.
 	 *
@@ -1382,7 +1382,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Get total count of attendees marked as not going for this provider.
 	 *
-	 * @since 4.10.6
+	 * @since TBD
 	 *
 	 * @param int $post_id Post or Event ID.
 	 *
