@@ -972,7 +972,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 
 	/**
-	 * Returns the capacity for a given Post/Event
+	 * Returns the capacity for a given Post/Event.
 	 *
 	 * @since  TBD
 	 *
@@ -981,22 +981,22 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 	 * @return int|null
 	 */
 	function tribe_get_event_capacity( $post ) {
-		// When not dealing with a Instance of Post try to set it up
+		// When not dealing with a Instance of Post try to set it up.
 		if ( ! $post instanceof WP_Post ) {
 			$post = get_post( $post );
 		}
 
-		// Bail when it's not a post or ID is 0
+		// Bail when it's not a post or ID is 0.
 		if ( ! $post instanceof WP_Post || 0 === $post->ID ) {
 			return null;
 		}
 
 		$post_id = $post->ID;
 
-		// This is really "post types that allow tickets"
+		// This is really "post types that allow tickets".
 		$event_types = Tribe__Tickets__Main::instance()->post_types();
 
-		// Bail when it's not an allowed post type
+		// Bail when it's not an allowed post type.
 		if ( ! in_array( $post->post_type, $event_types ) ) {
 			return null;
 		}
@@ -1017,7 +1017,8 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 		}
 
 		$provider_id = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
-		// Protect against ticket that exists but is of a type that is not enabled
+
+		// Protect against ticket that exists but is of a type that is not enabled.
 		if ( ! method_exists( $provider_id, 'get_instance' ) ) {
 			return null;
 		}
@@ -1025,7 +1026,7 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 		$provider           = call_user_func( [ $provider_id, 'get_instance' ] );
 		$tickets            = $provider->get_tickets_ids( $post_id );
 
-		// We only have RSVPs
+		// We only have RSVPs.
 		if ( empty( $tickets ) ) {
 			return (int) $rsvp_cap;
 		}
@@ -1037,7 +1038,7 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 		$added_global_stock = false;
 
 		foreach ( $tickets as $ticket ) {
-			// handle global stock
+			// Handle global stock.
 			$mode = get_post_meta( $ticket, $global_stock::TICKET_STOCK_MODE, true );
 			if (
 				$global_stock::GLOBAL_STOCK_MODE !== $mode
