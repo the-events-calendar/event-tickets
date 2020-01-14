@@ -117,11 +117,17 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.11.3] TBD =
+= [4.11.2] TBD =
 
 * Fix - Load JavaScript assets with Ticket Block when using Classic Editor [ET-587]
 * Fix - Disable ticket block when password protected is enabled on posts and pages [ETP-59]
 * Fix - WooCommerce Mini-Cart widget checkout link to use the custom page for attendee registration if it is setup [ETP-41]
+* Fix - Ensure that attendee images display horizontally in the frontend for Twenty Nineteen and Twenty Twenty themes. [ET-590]
+* Fix - Remove inaccurate display of "You don't have tickets for this event" notice at single event page's list of current user's RSVPs and/or Tickets. [ETP-50]
+* Fix - Close opening `<div>` in `blocks/attendees.php`. [ET-589]
+* Fix - Load JavaScript assets with Ticket Block when using Classic Editor. [ET-587]
+* Fix - Disable ticket block when password protected is enabled on posts and pages. [ETP-59]
+* Fix - The Events Calendar's List View "RSVP Now!" button again displays for Events having only RSVP tickets, and the Tickets Block's Form ID was restored back to `#buy-tickets` from `#tribe-tickets`. [ETP-51]
 
 = [4.11.1] 2019-12-19 =
 
