@@ -1023,8 +1023,8 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 			return null;
 		}
 
-		$provider           = call_user_func( [ $provider_id, 'get_instance' ] );
-		$tickets            = $provider->get_tickets_ids( $post_id );
+		$provider = call_user_func( [ $provider_id, 'get_instance' ] );
+		$tickets  = $provider->get_tickets_ids( $post_id );
 
 		// We only have RSVPs.
 		if ( empty( $tickets ) ) {
@@ -1057,8 +1057,6 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 				$tickets_cap += $global_cap;
 				$added_global_stock = true;
 			}
-
-
 		}
 
 		// If either is unlimited, it's all unlimited.
