@@ -7,13 +7,14 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
- *
  * @since 4.9
  * @since 4.10.8 Updated loading logic for including a renamed template.
- * @since 4.10.10 - Removed initial check for tickets.
+ * @since 4.10.10 Removed initial check for tickets.
+ * @since TBD Restored Form ID from #tribe-tickets back to #buy-tickets.
  *
- * @version 4.11.0
+ * @link  {INSERT_ARTICLE_LINK_HERE}
+ *
+ * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
@@ -62,7 +63,7 @@ if ( ! $already_rendered ) {
 }
 ?>
 <form
-	id="tribe-tickets"
+	id="buy-tickets"
 	action="<?php echo esc_url( $provider->get_cart_url() ); ?>"
 	<?php tribe_classes( $cart_classes ); ?>
 	method="post"
