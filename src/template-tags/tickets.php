@@ -418,6 +418,7 @@ if ( ! function_exists( 'tribe_tickets_is_current_time_in_date_window' ) ) {
 		$tickets               = Tribe__Tickets__Tickets::get_all_event_tickets( $post_id );
 		$default_provider      = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 
+		/** @var Tribe__Tickets__Ticket_Object $ticket */
 		foreach ( $tickets as $ticket ) {
 			$ticket_provider = $ticket->get_provider();
 
