@@ -881,7 +881,7 @@ if ( ! function_exists( 'tribe_tickets_update_capacity' ) ) {
 if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 
 	/**
-	 * Returns the capacity for a given Ticket/RSVP
+	 * Returns the capacity for a given Ticket/RSVP.
 	 *
 	 * Note while we can send a post/event we only store capacity on tickets/rsvps
 	 * so when provided an event it will hand off to tribe_get_event_capacity().
@@ -910,6 +910,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 		if ( in_array( $post->post_type, $event_types ) ) {
 			return tribe_get_event_capacity( $post );
 		}
+
 		/**
 		 * @var Tribe__Tickets__Tickets_Handler $tickets_handler
 		 * @var Tribe__Tickets__Version $version
@@ -925,7 +926,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 		) {
 			$legacy_capacity = $tickets_handler->filter_capacity_support( null, $post->ID, $key );
 
-			// Cast as integer as it might be returned as numeric string in some cases
+			// Cast as integer as it might be returned as numeric string in some cases.
 			return (int) $legacy_capacity;
 		}
 
