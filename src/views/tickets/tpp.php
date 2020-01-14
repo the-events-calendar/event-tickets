@@ -15,9 +15,10 @@
  * @since 4.10.10 Use customizable ticket name functions.
  * @since 4.11.1 Corrected amount of available/remaining tickets when threshold is empty.
  * @since TBD Updated the button to include a type - helps avoid submitting forms unintentionally.
+ * @since TBD Changed button ID to match the format of the non-tpp buttons. (`tribe-tickets` instead of `buy-tickets`)
  *
  * @version TBD
- * @deprecated 4.11.2
+ * @deprecated 4.11.0
  *
  * @var bool $must_login
  * @var bool $display_login_link

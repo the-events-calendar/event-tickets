@@ -13,6 +13,7 @@
  * @since 4.11.0
  * @since TBD Updated the button to include a type - helps avoid submitting forms unintentionally.
  * @since TBD Allow filtering of the button classes.
+ * @since TBD Added button ID for better JS targeting.
  *
  * @version TBD
  *
