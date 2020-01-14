@@ -35,7 +35,7 @@ $button_name = apply_filters( 'tribe_tickets_ticket_block_submit', 'cart-button'
 $button_classes = apply_filters( 'tribe_tickets_ticket_block_submit_classes', [
 	'tribe-common-c-btn',
 	'tribe-common-c-btn--small',
-	'tribe-tickets__buy'
+	'tribe-tickets__buy',
 ] );
 
 ?>
