@@ -966,6 +966,11 @@ class Tribe__Tickets__Tickets_View {
 			return '';
 		}
 
+		// if password protected then do not display content
+		if ( post_password_required() ) {
+			return '';
+		}
+
 		$post_id     = $post->ID;
 		$provider_id = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 
