@@ -280,7 +280,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					$button_anchor = '#rsvp-now';
 				} else {
 					$button_label  = _x( 'Buy Now!', 'list view buy now ticket button', 'event-tickets' );
-					$button_anchor = '#buy-tickets';
+					$button_anchor = '#tribe-tickets';
 				}
 
 				$button = sprintf(
