@@ -873,7 +873,9 @@ class Tribe__Tickets__Commerce__Currency {
 			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider
 			&& method_exists( 'WC_Product', 'get_price_suffix' )
 		) {
-			$suffix = ( new WC_Product() )->get_price_suffix( $amount );
+			$product = new WC_Product();
+			
+			$suffix = $product->get_price_suffix( $amount );
 		}
 
 		return $suffix;
