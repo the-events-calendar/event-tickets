@@ -859,10 +859,13 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the amount suffix, such as for WooCommerce's taxation suffix.
 	 *
+	 * Regardless of passed $amount, depending on commerce settings, could return a suffix of
+	 * `<small class="woocommerce-price-suffix">excl. VAT</small>`
+	 *
 	 * @since TBD
 	 *
-	 * @param int|string  $amount
-	 * @param string|null $provider
+	 * @param int|string  $amount   Price amount for which to get the formatted result.
+	 * @param string|null $provider Ticket provider class name. Currently defaults to and only supports Woo's.
 	 *
 	 * @return string
 	 */
@@ -874,7 +877,7 @@ class Tribe__Tickets__Commerce__Currency {
 			&& method_exists( 'WC_Product', 'get_price_suffix' )
 		) {
 			$product = new WC_Product();
-			
+
 			$suffix = $product->get_price_suffix( $amount );
 		}
 
