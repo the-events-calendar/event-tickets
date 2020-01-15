@@ -7,11 +7,13 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
+ * @link {INSERT_ARTICLE_LINK_HERE}
+ *
  * @since 4.9
  * @since 4.10.8 Updated loading logic for including a renamed template.
- * @since 4.10.10 Removed initial check for tickets.
+ * @since 4.10.10 - Removed initial check for tickets.
  *
- * @link  {INSERT_ARTICLE_LINK_HERE}
+ * @version 4.11.0
  *
  * @var Tribe__Tickets__Editor__Template $this
  */

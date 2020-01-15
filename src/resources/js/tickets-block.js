@@ -124,7 +124,7 @@ tribe.tickets.block = {
 	obj.updateAvailability = function( tickets ) {
 		Object.keys( tickets ).forEach( function( ticketId ) {
 			const available = tickets[ ticketId ].available;
-			const $ticketEl = $( obj.selector.item + `[ data-ticket-id="${ ticketId }" ]` );
+			const $ticketEl = $( obj.selector.item + '[ data-ticket-id="' + ticketId + '" ]' );
 
 			if ( 0 === available ) { // Ticket is out of stock.
 				const unavailableHtml = tickets[ ticketId ].unavailable_html;
@@ -642,7 +642,6 @@ tribe.tickets.block = {
 	 * @returns {string} - The cleaned number.
 	 */
 	obj.cleanNumber = function( passedNumber ) {
-		/* eslint-disable camelcase */
 		let number = passedNumber;
 		const format = obj.getCurrencyFormatting();
 		// we run into issue when the two symbols are the same -
@@ -653,12 +652,12 @@ tribe.tickets.block = {
 			number = number.split( format.thousands_sep ).join( '' );
 			number = number.split( format.decimal_point ).join( '.' );
 		} else {
-			const dec_place = number.length - ( format.number_of_decimals + 1 );
-			number = number.substr( 0, dec_place ) + '_' + number.substr( dec_place + 1 );
+			const decPlace = number.length - ( format.number_of_decimals + 1 );
+			number = number.substr( 0, decPlace ) + '_' + number.substr( decPlace + 1 );
 			number = number.split( format.thousands_sep ).join( '' );
 			number = number.split( '_' ).join( '.' );
 		}
-		/* eslint-enable camelcase */
+
 		return number;
 	};
 
@@ -673,7 +672,6 @@ tribe.tickets.block = {
 	 * @returns {string} - The formatted number.
 	 */
 	obj.numberFormat = function( number ) {
-		/* eslint-disable camelcase */
 		const format = obj.getCurrencyFormatting();
 
 		if ( ! format ) {
@@ -682,10 +680,10 @@ tribe.tickets.block = {
 
 		const decimals = format.number_of_decimals;
 		const decPoint = format.decimal_point;
-		const thousands_sep = format.thousands_sep;
+		const thousandsSep = format.thousands_sep;
 		const n = ! isFinite( +number ) ? 0 : +number;
 		const prec = ! isFinite( +decimals ) ? 0 : Math.abs( decimals );
-		const sep = ( 'undefined' === typeof thousands_sep ) ? ',' : thousands_sep;
+		const sep = ( 'undefined' === typeof thousandsSep ) ? ',' : thousandsSep;
 		const dec = ( 'undefined' === typeof decPoint ) ? '.' : decPoint;
 
 		const toFixedFix = function( num, precision ) {
@@ -707,7 +705,6 @@ tribe.tickets.block = {
 		}
 
 		return s.join( dec );
-		/* eslint-enable camelcase */
 	};
 
 	/**
@@ -805,7 +802,7 @@ tribe.tickets.block = {
 
 				if ( data.meta ) {
 					$.each( data.meta, function( ticket ) {
-						const $matches = $tribeTicket.find( `[ data-ticket-id="${ ticket.ticket_id }" ]` );
+						const $matches = $tribeTicket.find( '[ data-ticket-id="' + ticket.ticket_id + '" ]' );
 
 						if ( $matches.length ) {
 							obj.prefillModalMetaForm( data.meta );
@@ -845,7 +842,7 @@ tribe.tickets.block = {
 
 		$.each( meta, function( idx, ticket ) {
 			let current = 0;
-			const $currentContainers = $containers.find( obj.modalSelector.metaItem ).filter( `[ data-ticket-id="${ ticket.ticket_id }" ]` );
+			const $currentContainers = $containers.find( obj.modalSelector.metaItem ).filter( '[ data-ticket-id="' + ticket.ticket_id + '" ]' );
 
 			if ( ! $currentContainers.length ) {
 				return;
@@ -857,7 +854,7 @@ tribe.tickets.block = {
 				}
 
 				$.each( data, function( index, value ) {
-					const $field = $currentContainers.eq( current ).find( `[ name*="${ index }" ]` );
+					const $field = $currentContainers.eq( current ).find( '[ name*="' + index + '" ]' );
 
 					if ( ! $field.is( ':radio' ) && ! $field.is( ':checkbox' ) ) {
 						$field.val( value );
@@ -925,7 +922,7 @@ tribe.tickets.block = {
 					let $eventCount = 0;
 
 					tickets.forEach( function( ticket ) {
-						const $ticketRow = $( `.tribe-tickets__item[ data-ticket-id="${ ticket.ticket_id }" ]` );
+						const $ticketRow = $( '.tribe-tickets__item[ data-ticket-id="' + ticket.ticket_id + '" ]' );
 						if ( 'true' === $ticketRow.attr( 'data-available' ) ) {
 							const $field = $ticketRow.find( obj.selector.itemQuantityInput );
 							const $optout = $ticketRow.find( obj.selector.itemOptOutInput + ticket.ticket_id );
