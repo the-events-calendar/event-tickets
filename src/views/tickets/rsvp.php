@@ -109,6 +109,7 @@ if ( ! $already_rendered ) {
 			}
 
 			$ticket_id = $ticket->ID;
+			$is_there_any_rsvp_stock = false;
 
 			/** @var Tribe__Tickets__Tickets_Handler $handler */
 			$handler = tribe( 'tickets.handler' );
@@ -125,12 +126,13 @@ if ( ! $already_rendered ) {
 			 */
 			$show_unlimited = apply_filters( 'tribe_rsvp_block_show_unlimited_availability', false, $available );
 
-			$is_there_any_product_to_sell = 0 !== $available;
+			$is_there_any_rsvp_stock      = 0 !== $available;
+			$is_there_any_product_to_sell = $is_there_any_rsvp_stock || $is_there_any_product_to_sell;
 			?>
 			<tr>
 				<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket_id ); ?>">
 					<input type="hidden" name="product_id[]" value="<?php echo absint( $ticket_id ); ?>">
-					<?php if ( $is_there_any_product_to_sell ) : ?>
+					<?php if ( $is_there_any_rsvp_stock ) : ?>
 						<input
 							type="number"
 							class="tribe-tickets-quantity"
