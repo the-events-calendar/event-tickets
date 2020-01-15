@@ -10,32 +10,28 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
+ * @since TBD Fix malformed opening `<div>` tag.
  *
- * @version 4.11.0
- *
+ * @version TBD
  */
 
 $title     = $this->attr( 'title' );
 $attendees = $this->get( 'attendees', null );
-$classes   = array( 'tribe-block', 'tribe-block__attendees' );
+$classes   = [ 'tribe-block', 'tribe-block__attendees' ];
 
 if ( ! is_array( $attendees ) ) {
 	return;
 }
 ?>
-<div
-	id="tribe-block__attendees"
-	<?php tribe_classes( $classes ); ?>
+<div id="tribe-block__attendees" <?php tribe_classes( $classes ); ?> >
 
-	<?php $this->template( 'blocks/attendees/title', array( 'title' => $title ) ); ?>
+	<?php $this->template( 'blocks/attendees/title', [ 'title' => $title ] ); ?>
 
-	<?php $this->template( 'blocks/attendees/description', array( 'attendees' => $attendees ) ); ?>
+	<?php $this->template( 'blocks/attendees/description', [ 'attendees' => $attendees ] ); ?>
 
 	<?php foreach ( $attendees as $key => $attendee ) : ?>
 
-		<?php $this->template( 'blocks/attendees/gravatar', array( 'attendee' => $attendee ) ); ?>
+		<?php $this->template( 'blocks/attendees/gravatar', [ 'attendee' => $attendee ] ); ?>
 
 	<?php endforeach; ?>
-
 </div>
-
