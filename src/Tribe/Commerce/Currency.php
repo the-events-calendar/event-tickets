@@ -866,7 +866,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @return string
 	 */
-	private function get_amount_suffix_html( $amount, $provider = null ) {
+	public function get_amount_suffix_html( $amount, $provider = null ) {
 		$suffix = '';
 
 		if (
