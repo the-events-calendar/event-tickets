@@ -717,7 +717,8 @@ tribe.tickets.block  = {
 
 		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
 
-		// if period is the thousands_sep we have to spilt using the decimal and not the comma as we work with numbers using the period as the decimal in JavaScript
+		// if period is the thousands_sep we have to spilt using the decimal and not the comma as we work
+		// with numbers using the period as the decimal in JavaScript
 		if ( '.' === format.thousands_sep ) {
 			s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( '.' );
 		}
