@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "timeoutID" }]*/
 /* global TribeTicketOptions, TribeCartEndpoint, TribeCurrency, TribeMessages, TribeTicketsURLs */
 // @TODO: Take this line off once we _know_ actually have the tribe object
 const tribe = tribe || {}; // eslint-disable-line no-use-before-define
@@ -124,7 +123,7 @@ tribe.tickets.block = {
 	obj.updateAvailability = function( tickets ) {
 		Object.keys( tickets ).forEach( function( ticketId ) {
 			const available = tickets[ ticketId ].available;
-			const $ticketEl = $( obj.selector.item + '[ data-ticket-id="' + ticketId + '" ]' );
+			const $ticketEl = $( obj.selector.item + '[data-ticket-id="' + ticketId + '"]' );
 
 			if ( 0 === available ) { // Ticket is out of stock.
 				const unavailableHtml = tickets[ ticketId ].unavailable_html;
@@ -310,7 +309,7 @@ tribe.tickets.block = {
 			function() {
 				const $cartItem = $( this );
 				const ticketID = $cartItem.closest( obj.selector.item ).data( 'ticket-id' );
-				const $ticketContainer = $( obj.modalSelector.metaForm ).find( '.tribe-tickets__item__attendee__fields__container[ data-ticket-id="' + ticketID + '" ]' );
+				const $ticketContainer = $( obj.modalSelector.metaForm ).find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]' );
 
 				// Ticket does not have meta - no need to jump through hoops ( and throw errors ).
 				if ( ! $ticketContainer.length ) {
@@ -397,7 +396,7 @@ tribe.tickets.block = {
 
 				if ( $cartItem.is( ':visible' ) ) {
 					const ticketID = $cartItem.closest( obj.selector.item ).data( 'ticket-id' );
-					const $ticketContainer = $( obj.modalSelector.metaForm ).find( '.tribe-tickets__item__attendee__fields__container[ data-ticket-id="' + ticketID + '" ]' );
+					const $ticketContainer = $( obj.modalSelector.metaForm ).find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]' );
 
 					// Ticket does not have meta - no need to jump through hoops ( and throw errors ).
 					if ( ! $ticketContainer.length ) {
@@ -557,7 +556,7 @@ tribe.tickets.block = {
 	obj.checkSharedCapacity = function( $form, qty ) {
 		let sharedCap = [];
 		let currentLoad = [];
-		const $sharedTickets = $form.find( obj.selector.item ).filter( '[ data-has-shared-cap="true" ]' );
+		const $sharedTickets = $form.find( obj.selector.item ).filter( '[data-has-shared-cap="true"]' );
 		const $sharedCapTickets = $sharedTickets.find( obj.selector.itemQuantityInput );
 
 		if ( ! $sharedTickets.length ) {
@@ -802,7 +801,7 @@ tribe.tickets.block = {
 
 				if ( data.meta ) {
 					$.each( data.meta, function( ticket ) {
-						const $matches = $tribeTicket.find( '[ data-ticket-id="' + ticket.ticket_id + '" ]' );
+						const $matches = $tribeTicket.find( '[data-ticket-id="' + ticket.ticket_id + '"]' );
 
 						if ( $matches.length ) {
 							obj.prefillModalMetaForm( data.meta );
@@ -819,7 +818,7 @@ tribe.tickets.block = {
 					obj.prefillModalMetaForm( local.meta );
 				}
 
-				const timeoutID = window.setTimeout( obj.loaderHide, 500, obj.modalSelector.loader );
+				window.setTimeout( obj.loaderHide, 500, obj.modalSelector.loader );
 			}
 		);
 	};
@@ -842,7 +841,7 @@ tribe.tickets.block = {
 
 		$.each( meta, function( idx, ticket ) {
 			let current = 0;
-			const $currentContainers = $containers.find( obj.modalSelector.metaItem ).filter( '[ data-ticket-id="' + ticket.ticket_id + '" ]' );
+			const $currentContainers = $containers.find( obj.modalSelector.metaItem ).filter( '[data-ticket-id="' + ticket.ticket_id + '"]' );
 
 			if ( ! $currentContainers.length ) {
 				return;
@@ -854,7 +853,7 @@ tribe.tickets.block = {
 				}
 
 				$.each( data, function( index, value ) {
-					const $field = $currentContainers.eq( current ).find( '[ name*="' + index + '" ]' );
+					const $field = $currentContainers.eq( current ).find( '[name*="' + index + '"]' );
 
 					if ( ! $field.is( ':radio' ) && ! $field.is( ':checkbox' ) ) {
 						$field.val( value );
@@ -891,7 +890,7 @@ tribe.tickets.block = {
 		// Override the data with what's in the tickets block.
 		$.each( $items, function( index, item ) {
 			const $blockItem = $( item );
-			const $item = $form.find( '[ data-ticket-id="' + $blockItem.attr( 'data-ticket-id' ) + '" ]' );
+			const $item = $form.find( '[data-ticket-id="' + $blockItem.attr( 'data-ticket-id' ) + '"]' );
 
 			if ( $item ) {
 				const quantity = $blockItem.find( '.tribe-tickets-quantity' ).val();
@@ -922,7 +921,7 @@ tribe.tickets.block = {
 					let $eventCount = 0;
 
 					tickets.forEach( function( ticket ) {
-						const $ticketRow = $( '.tribe-tickets__item[ data-ticket-id="' + ticket.ticket_id + '" ]' );
+						const $ticketRow = $( '.tribe-tickets__item[data-ticket-id="' + ticket.ticket_id + '"]' );
 						if ( 'true' === $ticketRow.attr( 'data-available' ) ) {
 							const $field = $ticketRow.find( obj.selector.itemQuantityInput );
 							const $optout = $ticketRow.find( obj.selector.itemOptOutInput + ticket.ticket_id );
@@ -1080,7 +1079,7 @@ tribe.tickets.block = {
 				const $row = $( this );
 				const ticketId = $row.data( 'ticketId' );
 				const qty = $row.find( obj.selector.itemQuantityInput ).val();
-				const $optoutInput = $row.find( '[ name="attendee[ optout ]" ]' );
+				const $optoutInput = $row.find( '[name="attendee[optout]"]' );
 				let optout = $optoutInput.val();
 
 				if ( $optoutInput.is( ':checkbox' ) ) {
@@ -1139,8 +1138,8 @@ tribe.tickets.block = {
 						let name = $field.attr( 'name' );
 
 						// Grab everything after the last bracket `[ `.
-						name = name.split( '[ ' );
-						name = name.pop().replace( ' ]', '' );
+						name = name.split( '[' );
+						name = name.pop().replace( ']', '' );
 
 						// Skip unchecked radio/checkboxes.
 						if ( isRadio || $field.is( ':checkbox' ) ) {
@@ -1404,7 +1403,7 @@ tribe.tickets.block = {
 		'.tribe-tickets__item__quantity__remove, .tribe-tickets__item__quantity__add',
 		function( e ) {
 			e.preventDefault();
-			const $input = $( this ).parent().find( 'input[ type="number" ]' );
+			const $input = $( this ).parent().find( 'input[type="number"]' );
 			if ( $input.is( ':disabled' ) ) {
 				return false;
 			}
@@ -1460,16 +1459,16 @@ tribe.tickets.block = {
 			obj.updateTotal( ticket.qty, ticket.price, $cartItem );
 			obj.updateFormTotals( $cart );
 
-			$( '.tribe-tickets__item__attendee__fields__container[ data-ticket-id="' + ticket.id + '" ]' )
+			$( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticket.id + '"]' )
 				.removeClass( 'tribe-tickets--has-tickets' )
 				.find( obj.modalSelector.metaItem ).remove();
 
 			// Short delay to ensure the fadeOut has finished.
-			const timeoutID = window.setTimeout( obj.maybeShowNonMetaNotice, 500, $cart );
+			window.setTimeout( obj.maybeShowNonMetaNotice, 500, $cart );
 
 			// Close the modal if we remove the last item
 			// Again, short delay to ensure the fadeOut has finished.
-			const timeoutIDModal = window.setTimeout(
+			window.setTimeout(
 				function() {
 					const $items = $cart.find( obj.selector.item ).filter( ':visible' );
 					if ( 0 >= $items.length ) {
@@ -1584,7 +1583,7 @@ tribe.tickets.block = {
 				e.preventDefault();
 				e.stopPropagation();
 				// Submit to cart. This will trigger validation as well.
-				$form.find( '[ name="cart-button" ]' ).click();
+				$form.find( '[name="cart-button"]' ).click();
 			}
 		}
 	);
@@ -1694,7 +1693,7 @@ tribe.tickets.block = {
 				function() {
 					const $blockCartItem = $( this );
 					const id = $blockCartItem.data( 'ticketId' );
-					const $modalCartItem = $modalCart.find( '[ data-ticket-id="' + id + '" ]' );
+					const $modalCartItem = $modalCart.find( '[data-ticket-id="' + id + '"]' );
 
 					if ( ! $modalCartItem ) {
 						return;
