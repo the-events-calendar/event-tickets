@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.11.2] TBD =
 
 * Fix - Price formatting method now correctly prevents incorrect display when a comma is used as the decimal separator. [ETP-53]
+* Fix - Display WooCommerce price taxation suffix, if applicable. [ETP-33]
 * Fix - Override checkout link in WooCommerce Mini-Cart widget so it uses the custom page for attendee registration if it is setup. [ETP-41]
 * Fix - Ensure that attendee images display horizontally in the frontend for Twenty Nineteen and Twenty Twenty themes. [ET-590]
 * Fix - Load JavaScript assets with Ticket Block when using Classic Editor [ET-587]
