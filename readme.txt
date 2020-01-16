@@ -119,6 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.11.2] TBD =
 
+* Fix - Display WooCommerce price taxation suffix, if applicable. [ETP-33]
 * Fix - Override checkout link in WooCommerce Mini-Cart widget so it uses the custom page for attendee registration if it is setup. [ETP-41]
 * Fix - Ensure that attendee images display horizontally in the frontend for Twenty Nineteen and Twenty Twenty themes. [ET-590]
 * Fix - Load JavaScript assets with Ticket Block when using Classic Editor [ET-587]
@@ -128,6 +129,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Load JavaScript assets with Ticket Block when using Classic Editor. [ET-587]
 * Fix - Disable ticket block when password protected is enabled on posts and pages. [ETP-59]
 * Fix - The Events Calendar's List View "RSVP Now!" button again displays for Events having only RSVP tickets and has the correct anchor link. [ETP-51]
+* Fix - Correct logic so selling out of one RSVP doesn't prevent "purchasing" another. [ETP-603]
+* Tweak - Refine logic for the no results notice on the "My Tickets" page. [ETP-151]
 
 = [4.11.1] 2019-12-19 =
 
