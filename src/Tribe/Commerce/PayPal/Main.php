@@ -1304,6 +1304,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 				// Update Event capacity
 				update_post_meta( $post_id, $tickets_handler->key_capacity, $data['event_capacity'] );
+				update_post_meta( $post_id, $event_stock::GLOBAL_STOCK_LEVEL, $data['event_capacity'] );
 			}
 		} else {
 			// If the Global Stock is configured we pull it from the Event
