@@ -867,7 +867,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @param int|string  $amount   Price amount for which to get the formatted result.
 	 * @param string|null $provider Ticket provider class name. Currently defaults to and only supports Woo's.
 	 *
-	 * @return string
+	 * @return string Amount suffix, if any is given by the Commerce provider.
 	 */
 	public function get_amount_suffix_html( $amount, $provider = null ) {
 		$suffix = '';
