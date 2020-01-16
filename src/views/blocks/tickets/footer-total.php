@@ -11,13 +11,15 @@
  * @link    {INSERT_ARTICLE_LINK_HERE}
  *
  * @since   4.11.0
+ * @since   TBD Updated code comments.
  *
- * @version 4.11.0
+ * @version TBD
  */
 $post_id = $this->get( 'event_id' );
 
 $currency_symbol = $this->get( 'currency_symbol' );
 
+/** @var Tribe__Tickets__Commerce__Currency $tribe_commerce_currency */
 $tribe_commerce_currency = tribe( 'tickets.commerce.currency' );
 ?>
 <div class="tribe-common-b2 tribe-tickets__footer__total">

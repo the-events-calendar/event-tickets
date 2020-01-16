@@ -11,8 +11,9 @@
  * @link    {INSERT_ARTICLE_LINK_HERE}
  *
  * @since   4.9
+ * @since   TBD Updated code comments and array formatting.
  *
- * @version 4.11.0
+ * @version TBD
  */
 
 /** @var Tribe__Tickets__Ticket_Object $ticket */
