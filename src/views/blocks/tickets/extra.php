@@ -12,7 +12,7 @@
  *
  * @since 4.9
  * @since 4.11.1 Changed some HTML class names.
- * @since TBD Updated the button to include a type - helps avoid submitting forms unintentionally.
+ * @since TBD Updated the button to include a type - helps avoid submitting forms unintentionally. Updated comments and array formatting.
  *
  * @version TBD
  *
@@ -32,6 +32,7 @@ $context = [
 ];
 
 $modal = $this->get( 'is_modal' );
+
 $id = 'tribe__details__content--' . $ticket->ID;
 ?>
 <div class="tribe-tickets__item__extra">
