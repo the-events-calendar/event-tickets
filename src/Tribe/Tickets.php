@@ -2530,6 +2530,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
+			if ( ! is_singular() ) {
+				return false;
+			}
+
 			// if this isn't a post for some reason, bail
 			if ( ! $post instanceof WP_Post ) {
 				return false;

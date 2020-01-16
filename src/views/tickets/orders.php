@@ -23,21 +23,48 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Event Tickets Plus would set this from its own injected template to let us know about editable values
 global $tribe_my_tickets_have_meta;
 
+$rsvp                       = Tribe__Tickets__RSVP::get_instance();
 $view                       = Tribe__Tickets__Tickets_View::instance();
 $event_id                   = get_queried_object_id();
 $event                      = get_post( $event_id );
 $post_type                  = get_post_type_object( $event->post_type );
 $user_id                    = get_current_user_id();
+$provider_id                = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
+$provider                   = call_user_func( array( $provider_id, 'get_instance' ) );
+$event_has_tickets          = ! empty( $provider->get_tickets( $event_id ) );
+$event_has_rsvp             = ! empty( $rsvp->get_tickets( $event ) );
+$user_has_tickets           = $view->has_ticket_attendees( $event_id, $user_id );
+$user_has_rsvp              = $rsvp->get_attendees_count_going_for_user( $event_id, $user_id );
 $tribe_my_tickets_have_meta = false;
 
 /**
  * Display a notice if the user doesn't have tickets
  */
 if (
-	! $view->has_ticket_attendees( $event_id, $user_id )
-	&& ! $view->has_rsvp_attendees( $event_id, $user_id )
+	(
+		$event_has_tickets
+		|| $event_has_rsvp
+	)
+	&& ! $user_has_tickets
+	&& ! $user_has_rsvp
 ) {
-	Tribe__Notices::set_notice( 'ticket-no-results', esc_html( sprintf( _x( "You don't have %s for this event", 'notice if user does not have tickets', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'notice_user_does_not_have_tickets' ) ) ) );
+
+	if ( $event_has_tickets ) {
+		$no_ticket_message = sprintf(
+			_x( "You don't have %s for this event", 'notice if user does not have tickets', 'event-tickets' ),
+			tribe_get_ticket_label_plural_lowercase( 'notice_user_does_not_have_tickets' )
+		);
+	} else {
+		$no_ticket_message = sprintf(
+			_x( "You don't have %s for this event", 'notice if user does not have rsvps', 'event-tickets' ),
+			tribe_get_rsvp_label_plural_lowercase( 'notice_user_does_not_have_rsvps' )
+		);
+	}
+
+	Tribe__Notices::set_notice(
+		'ticket-no-results',
+		esc_html( $no_ticket_message )
+	);
 }
 
 $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type;

@@ -121,14 +121,18 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Allow adding ticket header image on non-event posts. [ETP-54]
 * Fix - Close opening `<div>` in `blocks/attendees.php`. [ET-589]
+* Fix - Correct logic so selling out of one RSVP doesn't prevent "purchasing" another. [ETP-603]
 * Fix - Correct total calculations for `Tribe__Tickets__Tickets_Handler::get_post_totals()` and `tribe_tickets_get_capacity`. [ETP-48]
 * Fix - Create new function `tribe_get_event_capacity` for checking the capacity of an entire event. Have `tribe_tickets_get_capacity` pass off to it as when given an event. [ETP-48]
 * Fix - Disable ticket block when password protected is enabled on posts and pages. [ETP-59]
+* Fix - Display WooCommerce price taxation suffix, if applicable. [ETP-33]
 * Fix - Ensure that attendee images display horizontally in the frontend for Twenty Nineteen and Twenty Twenty themes. [ET-590]
-* Fix - Load JavaScript assets with Ticket Block when using Classic Editor. [ET-587]
+* Fix - Ensure we update the correct event meta for global stock on ticket creation. [ET-614]
+* Fix - Load JavaScript assets with Ticket Block when using Classic Editor [ET-587]
 * Fix - Override checkout link in WooCommerce Mini-Cart widget so it uses the custom page for attendee registration if it is setup. [ETP-41]
 * Fix - Remove inaccurate display of "You don't have tickets for this event" notice at single event page's list of current user's RSVPs and/or Tickets. [ETP-50]
 * Fix - The Events Calendar's List View "RSVP Now!" button again displays for Events having only RSVP tickets and has the correct anchor link. [ETP-51]
+* Tweak - Refine logic for the no results notice on the "My Tickets" page. [ETP-151]
 
 = [4.11.1] 2019-12-19 =
 
