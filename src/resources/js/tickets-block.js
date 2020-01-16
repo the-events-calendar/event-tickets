@@ -692,7 +692,7 @@ tribe.tickets.block = {
 			return Math.round( num * k ) / k;
 		};
 
-		const s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
+		let s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
 
 		// if period is the thousands_sep we have to spilt using the decimal and not the comma as we work
 		// with numbers using the period as the decimal in JavaScript
