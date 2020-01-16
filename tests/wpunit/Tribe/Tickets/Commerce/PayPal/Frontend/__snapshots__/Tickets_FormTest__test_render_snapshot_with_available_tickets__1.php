@@ -1,5 +1,5 @@
 <?php return '<form
-	id="tpp-buy-tickets"
+	id="tpp-tribe-tickets"
 	action=""
 	class="tribe-tickets-tpp cart "
 	method="post"
