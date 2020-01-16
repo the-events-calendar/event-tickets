@@ -119,7 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.11.2.1] 2020-01-29 =
 
-* Tweak - Remove duplicate ticket script to prevent conflicts  [ET-596]
+* Tweak - Remove duplicate ticket script to prevent conflicts. [ET-596]
 
 = [4.11.2] 2020-01-27 =
 
