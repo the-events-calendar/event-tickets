@@ -1778,6 +1778,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param array $tickets
 		 */
 		public static function add_frontend_stock_data( array $tickets ) {
+
+			_deprecated_function( __METHOD__, 'TBD', 'tribe( "tickets.editor.blocks.tickets" )->assets()' );
+
 			if ( is_admin() ) {
 				return;
 			}
@@ -1792,13 +1795,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$plugin = Tribe__Tickets__Main::instance();
 
-			wp_enqueue_script( 'wp-util' );
+			wp_register_script(
+				'wp-util-not-in-footer',
+				includes_url( '/js/wp-util.js' ),
+				[ 'jquery', 'underscore' ],
+				false,
+				false
+			);
+
+			wp_enqueue_script( 'wp-util-not-in-footer' );
 
 			tribe_asset(
 				$plugin,
 				'tribe_tickets_frontend_tickets',
-				'frontend-ticket-form.js',
-				[ 'jquery' ],
+				'tickets-block.js',
+				[ 'jquery', 'jquery-ui-datepicker', 'wp-util-not-in-footer', 'wp-i18n' ],
 				null,
 				[
 					'type'         => 'js',
