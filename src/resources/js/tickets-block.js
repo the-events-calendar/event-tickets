@@ -1,7 +1,10 @@
 /* eslint-disable max-len */
-/* global TribeTicketOptions, TribeCartEndpoint, TribeCurrency, TribeMessages, TribeTicketsURLs */
+/* global tribe, TribeTicketOptions, TribeCartEndpoint, TribeCurrency, TribeMessages, TribeTicketsURLs */
 // @TODO: Take this line off once we _know_ actually have the tribe object
-const tribe = tribe || {}; // eslint-disable-line no-use-before-define
+if ( ! tribe ) {
+	const tribe = {}; // eslint-disable-line no-unused-vars
+}
+
 tribe.tickets = tribe.tickets || {};
 tribe.dialogs = tribe.dialogs || {};
 tribe.dialogs.events = tribe.dialogs.events || {};
