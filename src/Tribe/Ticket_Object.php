@@ -748,10 +748,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				&& isset( $this->get_event()->ID )
 			) {
 				$stock[] = (int) get_post_meta( $this->get_event()->ID, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true );
-				bdump(
-					$this->get_event()->ID,
-					get_post_meta( $this->get_event()->ID, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true )
-				);
 			}
 
 			// return the new Stock
