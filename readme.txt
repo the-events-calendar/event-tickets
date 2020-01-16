@@ -119,20 +119,21 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.11.2] TBD =
 
-* Fix - Display WooCommerce price taxation suffix, if applicable. [ETP-33]
-* Fix - Override checkout link in WooCommerce Mini-Cart widget so it uses the custom page for attendee registration if it is setup. [ETP-41]
-* Fix - Ensure that attendee images display horizontally in the frontend for Twenty Nineteen and Twenty Twenty themes. [ET-590]
 * Fix - Allow adding ticket header image on non-event posts. [ETP-54]
-* Fix - Remove inaccurate display of "You don't have tickets for this event" notice at single event page's list of current user's RSVPs and/or Tickets. [ETP-50]
 * Fix - Close opening `<div>` in `blocks/attendees.php`. [ET-589]
-* Fix - Load JavaScript assets with Ticket Block when using Classic Editor. [ET-587]
+* Fix - Correct logic so selling out of one RSVP doesn't prevent "purchasing" another. [ETP-603]
 * Fix - Disable ticket block when password protected is enabled on posts and pages. [ETP-59]
+* Fix - Display WooCommerce price taxation suffix, if applicable. [ETP-33]
+* Fix - Ensure that attendee images display horizontally in the frontend for Twenty Nineteen and Twenty Twenty themes. [ET-590]
+* Fix - Ensure we update the correct event meta for global stock on ticket creation. [ET-614]
+* Fix - JavaScript updated to remove IE11 console errors. [ETP-34]
+* Fix - Load JavaScript assets with Ticket Block when using Classic Editor. [ET-587]
+* Fix - Override checkout link in WooCommerce Mini-Cart widget so it uses the custom page for attendee registration if it is setup. [ETP-41]
+* Fix - Remove inaccurate display of "You don't have tickets for this event" notice at single event page's list of current user's RSVPs and/or Tickets. [ETP-50]
 * Fix - The Events Calendar's List View "RSVP Now!" button again displays for Events having only RSVP tickets and has the correct anchor link. [ETP-51]
 * Fix - Tickets Block quantity +/- buttons set to 'button' type to avoid submitting Add to Cart form in IE11. [ETP-34]
-* Fix - JavaScript updated to remove IE11 console errors. [ETP-34]
-* Fix - Ensure we update the correct event meta for global stock on ticket creation. [ET-614]
-* Fix - Correct logic so selling out of one RSVP doesn't prevent "purchasing" another. [ETP-603]
 * Tweak - Refine logic for the no results notice on the "My Tickets" page. [ETP-151]
+* Tweak - Remove duplicate ticket script to prevent conflicts. [ET-596]
 
 = [4.11.1] 2019-12-19 =
 
