@@ -597,7 +597,8 @@ tribe.tickets.block  = {
 		);
 
 		// IE doesn't allow spread operator
-		sharedCap   = Math.max.apply( this, sharedCap );
+		sharedCap = Math.max.apply( this, sharedCap );
+
 		currentLoad = currentLoad.reduce(
 			function( a, b ) {
 				return a + b;
