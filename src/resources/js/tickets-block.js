@@ -94,7 +94,7 @@ tribe.tickets.block = {
 	};
 
 	obj.tribe_ticket_provider = $tribeTicket.data( 'provider' );
-	obj.postId = $( '.status-publish' ).attr( 'id' ).replace( 'post-', '' );
+	obj.postId = TribeTicketOptions.post_id;
 
 	/**
 	 * Init the tickets script.
