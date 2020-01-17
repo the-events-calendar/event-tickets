@@ -51,18 +51,32 @@
 		display: grid;
 		-ms-grid-columns:  10fr 1fr;
 		grid-template-columns: 10fr 1fr;
-		-ms-grid-rows: auto;
+		-ms-grid-rows: 1fr 1.5fr;
 		grid-template-rows: auto;
 		margin: 0;
 		padding: 12px 0 16px;
 
 		@media(--viewport-medium) {
-			-ms-grid-columns:  6.5fr 2fr 1fr;
-			grid-template-columns: 6.5fr 2fr 1fr;
+			-ms-grid-columns:  6.5fr 2fr;
+			grid-template-columns: 6.5fr 2fr;
+			-ms-grid-rows: 1fr 1.5fr 1fr;
 		}
 
 		&[data-available="false"] {
 			opacity: .5;
+		}
+
+		&.show-optout {
+			-ms-grid-columns:  10fr 1fr;
+			grid-template-columns: 10fr 1fr;
+			-ms-grid-rows: 1fr 1.5fr 1fr 1fr;
+			grid-template-rows: auto;
+
+			@media(--viewport-medium) {
+				-ms-grid-columns:  6.5fr 2fr 1fr;
+				grid-template-columns: 6.5fr 2fr 1fr;
+				-ms-grid-rows: 1fr 1.5fr 1fr;
+			}
 		}
 	}
 
@@ -365,8 +379,16 @@
 
 	.tribe-tickets-attendees-list-optout--wrapper {
 		display: none;
+		-ms-grid-column: 1;
+		-ms-grid-column-span: 3;
 		grid-column: 1/span all;
+		-ms-grid-row: 4;
 		grid-row: 4;
+
+		@media(--viewport-medium) {
+			-ms-grid-row: 3;
+			grid-row: 3;
+		}
 
 		label {
 			font-size: var(--font-size-1);
@@ -374,6 +396,13 @@
 			@media(--viewport-medium) {
 				font-size: var(--font-size-2);
 			}
+		}
+	}
+
+	.tribe-tickets__item.show-optout {
+
+		.tribe-tickets-attendees-list-optout--wrapper {
+			display: block;
 		}
 	}
 

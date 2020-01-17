@@ -380,8 +380,15 @@ tribe.tickets.block = {
 	obj.maybeShowOptOut = function( $ticket, newQuantity ) {
 		const hasOptout = $ticket.has( obj.selector.itemOptOut ).length;
 		if ( hasOptout ) {
-			const $optout = $ticket.closest( obj.selector.item ).find( obj.selector.itemOptOut );
-			( 0 < newQuantity ) ? $optout.show() : $optout.hide();
+			const $item = $ticket.closest( obj.selector.item );
+			const $optout = $item.find( obj.selector.itemOptOut );
+			if ( 0 < newQuantity ) {
+				//$optout.show();
+				$item.addClass( 'show-optout');
+			} else {
+				//$optout.hide();
+				$item.removeClass( 'show-optout' );
+			}
 		}
 	};
 
