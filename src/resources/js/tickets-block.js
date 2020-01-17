@@ -1,7 +1,10 @@
 /* eslint-disable max-len */
-/* global TribeTicketOptions, TribeCartEndpoint, TribeCurrency, TribeMessages, TribeTicketsURLs */
+/* global tribe, TribeTicketOptions, TribeCartEndpoint, TribeCurrency, TribeMessages, TribeTicketsURLs */
 // @TODO: Take this line off once we _know_ actually have the tribe object
-const tribe = tribe || {}; // eslint-disable-line no-use-before-define
+if ( ! tribe ) {
+	const tribe = {}; // eslint-disable-line no-unused-vars
+}
+
 tribe.tickets = tribe.tickets || {};
 tribe.dialogs = tribe.dialogs || {};
 tribe.dialogs.events = tribe.dialogs.events || {};
@@ -91,7 +94,7 @@ tribe.tickets.block = {
 	};
 
 	obj.tribe_ticket_provider = $tribeTicket.data( 'provider' );
-	obj.postId = $( '.status-publish' ).attr( 'id' ).replace( 'post-', '' );
+	obj.postId = TribeTicketOptions.post_id;
 
 	/**
 	 * Init the tickets script.
@@ -692,7 +695,13 @@ tribe.tickets.block = {
 			return Math.round( num * k ) / k;
 		};
 
-		const s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
+		let s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
+
+		// if period is the thousands_sep we have to spilt using the decimal and not the comma as we work
+		// with numbers using the period as the decimal in JavaScript
+		if ( '.' === format.thousands_sep ) {
+			s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( '.' );
+		}
 
 		if ( s[ 0 ].length > 3 ) {
 			s[ 0 ] = s[ 0 ].replace( /\B(?=(?:\d{3})+(?!\d))/g, sep );
@@ -1399,7 +1408,7 @@ tribe.tickets.block = {
 	 * @since 4.9
 	 */
 	obj.document.on(
-		'click',
+		'click touchend',
 		'.tribe-tickets__item__quantity__remove, .tribe-tickets__item__quantity__add',
 		function( e ) {
 			e.preventDefault();
