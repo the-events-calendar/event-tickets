@@ -1003,7 +1003,10 @@ tribe.tickets.block = {
 		const postId = eventId || obj.postId;
 		const meta = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + postId ) );
 		const tickets = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart-' + postId ) );
-		const ret = { meta, tickets };
+		let ret = {};
+		ret.meta = meta;
+		ret.tickets = tickets;
+
 
 		return ret;
 	};
@@ -1410,9 +1413,10 @@ tribe.tickets.block = {
 	 * @since 4.9
 	 */
 	obj.document.on(
-		'click touchend',
+		'click',
 		'.tribe-tickets__item__quantity__remove, .tribe-tickets__item__quantity__add',
 		function( e ) {
+			console.log('click!');
 			e.preventDefault();
 			const $input = $( this ).parent().find( 'input[type="number"]' );
 			if ( $input.is( ':disabled' ) ) {
@@ -1492,7 +1496,7 @@ tribe.tickets.block = {
 						obj.disable( $( obj.selector.submit ), false );
 					}
 				},
-				500,
+				500
 			);
 		}
 	);
