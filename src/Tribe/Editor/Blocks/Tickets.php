@@ -6,8 +6,8 @@ class Tribe__Tickets__Editor__Blocks__Tickets
 extends Tribe__Editor__Blocks__Abstract {
 
 	public function hook() {
-		add_action( 'wp_ajax_ticket_availability_check', array( $this, 'ticket_availability' ) );
-		add_action( 'wp_ajax_nopriv_ticket_availability_check', array( $this, 'ticket_availability' ) );
+		add_action( 'wp_ajax_ticket_availability_check', [ $this, 'ticket_availability' ] );
+		add_action( 'wp_ajax_nopriv_ticket_availability_check', [ $this, 'ticket_availability' ] );
 	}
 
 	/**
@@ -30,7 +30,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @return string
 	 */
-	public function render( $attributes = array() ) {
+	public function render( $attributes = [] ) {
 		/** @var Tribe__Tickets__Editor__Template $template */
 		$template           = tribe( 'tickets.editor.template' );
 		$args['post_id']    = $post_id = $template->get( 'post_id', null, false );
@@ -57,7 +57,7 @@ extends Tribe__Editor__Blocks__Abstract {
 			return;
 		}
 
-		$provider    = call_user_func( array( $provider, 'get_instance' ) );
+		$provider    = call_user_func( [ $provider, 'get_instance' ] );
 		$provider_id = $this->get_provider_id( $provider );
 		$tickets     = $this->get_tickets( $post_id );
 
@@ -76,7 +76,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-tickets' );
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-tickets-style' );
 
-		return $template->template( array( 'blocks', $this->slug() ), $args, false );
+		return $template->template( [ 'blocks', $this->slug() ], $args, false );
 	}
 
 	/**
