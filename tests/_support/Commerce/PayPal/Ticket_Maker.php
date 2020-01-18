@@ -166,8 +166,7 @@ trait Ticket_Maker {
 
 		return $this->create_distinct_paypal_tickets(
 			$post_id,
-			$ticket_data,
-			$this->global_cap
+			$ticket_data
 		);
 	}
 }
