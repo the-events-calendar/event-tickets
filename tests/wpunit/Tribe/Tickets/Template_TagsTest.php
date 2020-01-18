@@ -889,7 +889,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers tribe_tickets_get_capacity
 	 */
 
-	public function it_should_not_get_capacity_from_an_event() {
+	public function it_not_get_capacity_from_an_event() {
 		$event_id = $this->factory()->event->create();
 		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
 			'meta_input' => [
@@ -901,7 +901,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$capacity = tribe_tickets_get_capacity( $event_id );
 
-		$this->assertNUll( $capacity, 'tribe_tickets_get_capacity() should not get capacity from an event or post!' );
+		$this->assertEquals( 10, $capacity, 'tribe_tickets_get_capacity() should not get capacity from an event or post!' );
 	}
 
 	/**
@@ -943,7 +943,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$capacity = tribe_get_event_capacity( $event_id );
 
-		$this->assertEquals( -1, $capacity, 'Incorrect event capacity for a single unlimited RSVP.' );
+		$this->assertEquals( -1, $capacity, 'Incorrect event capacity for a single unlimited RSVP. ' );
 	}
 
 	/**
@@ -1210,7 +1210,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * it should update capacity for a post
+	 * It should update capacity for a post
 	 * Worth noting that this does NOT change the ticket capacity!
 	 *
 	 * @covers tribe_tickets_update_capacity

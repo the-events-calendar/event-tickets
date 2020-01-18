@@ -27,12 +27,13 @@ trait Ticket_Maker {
 		$rsvp             = tribe( 'tickets.rsvp' );
 		$capacity         = Utils_Array::get( $meta_input, '_capacity', 100 );
 		$sales            = Utils_Array::get( $meta_input, 'total_sales', 0 );
+
 		$calculated_stock = -1 === $capacity ? null : ( $capacity - $sales );
 		$manage_stock     = -1 === $capacity ? 'no' : 'yes';
 
 		// Unlike tickets, we don't store '-1' for unlimited RSVP.
 		if ( -1 === $capacity || '' === $capacity ) {
-			$capacity = '';
+			$capacity = '-1';
 		}
 
 		unset( $meta_input['_capacity'], $meta_input['_stock'] );
@@ -54,8 +55,8 @@ trait Ticket_Maker {
 		}
 
 		// if we have sales, set them
-		if ( ! empty( $calculated_stock ) ) {
-			$merged_meta_input['total_sales' ] = $calculated_stock;
+		if ( ! empty( $sales ) ) {
+			$merged_meta_input['total_sales' ] = $sales;
 		}
 
 		// if the ticket start and/or end date(s) are set to empty values they should

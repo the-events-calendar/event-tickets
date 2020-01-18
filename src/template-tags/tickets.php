@@ -157,7 +157,7 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 				continue;
 			}
 
-			$stock_level = $global_stock_mode === Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ? $ticket->global_stock_cap : $ticket->stock;
+			$stock_level = $global_stock_mode === Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ? $ticket->global_stock_cap() : $ticket->available();
 
 			// If we find an unlimited ticket, just return unlimited (-1) so we don't use -1 or an empty string as a numeric stock and try to do math with it
 			if (
@@ -977,10 +977,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 			];
 
 			// When we are in a Ticket Post Type update where we get the value from Event
-			if (
-				! in_array( $post->post_type, $event_types )
-				&& in_array( $mode, $shared_modes )
-			) {
+			if ( in_array( $mode, $shared_modes ) ) {
 				$event_id = tribe_tickets_get_event_ids( $post->ID );
 
 				// It will return an array of Events

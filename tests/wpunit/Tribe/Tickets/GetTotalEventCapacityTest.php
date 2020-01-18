@@ -132,19 +132,24 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$capacity    = $global_cap / $num_tickets;
 		$stock       = 3;
 		$sales       = 2;
+		$ticket_data = [];
 
-		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
-			$num_tickets,
-			$this->event_id,
-			[
+		for ( $i = 0; $i < $num_tickets; $i++ ) {
+			$ticket_data[] = [
 				'meta_input' => [
 					'_capacity'    => $capacity,
 					'_stock'       => $stock,
 					'total_sales'  => $sales,
 					$this->cap_key => $this->global_mode
 				],
-			]
+			];
+		}
+
+		// create 5 tickets
+		$ticket_ids = $this->create_distinct_paypal_tickets(
+			$this->event_id,
+			$ticket_data,
+			$this->global_cap
 		);
 
 		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
@@ -161,26 +166,27 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
 	 */
 	public function it_should_get_correct_capacity_with_capped_tickets() {
-		$global_cap = 25;
-		$this->setupGlobalStock();
-
 		$num_tickets = 5;
-		$capacity    = $global_cap / $num_tickets;
+		$capacity    = $this->global_cap / $num_tickets;
 		$stock       = 3;
 		$sales       = 2;
+		$ticket_data = [];
 
-		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
-			$num_tickets,
-			$this->event_id,
-			[
+		for ( $i = 0; $i < $num_tickets; $i++ ) {
+			$ticket_data[] = [
 				'meta_input' => [
 					'_capacity'    => $capacity,
 					'_stock'       => $stock,
 					'total_sales'  => $sales,
 					$this->cap_key => $this->capped_mode
 				],
-			]
+			];
+		}
+
+		$ticket_ids = $this->create_distinct_paypal_tickets(
+			$this->event_id,
+			$ticket_data,
+			$this->global_cap
 		);
 
 		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
@@ -197,50 +203,39 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
 	 */
 	public function it_should_get_correct_capacity_with_mixed_tickets() {
-		$global_cap = 25;
-		$this->setupGlobalStock();
+		$capacity    = 10;
+		$sales       = 2;
 
-		// Add a "standard" ticket.
-		$ticket_a_id = $this->create_paypal_ticket(
+		$ticket_ids = $this->create_distinct_paypal_tickets(
 			$this->event_id,
-			1,
 			[
-				'meta_input' => [
-					'_capacity'     => 10,
-					'total_sales'   => 2,
+				[
+					'meta_input' => [
+						'_capacity'    => $capacity,
+						'total_sales'  => $sales,
+					],
 				],
-			]
-		);
-
-		// Add a "global" ticket.
-		$ticket_a_id = $this->create_paypal_ticket(
-			$this->event_id,
-			1,
-			[
-				'meta_input' => [
-					'_capacity'     => 10,
-					'total_sales'   => 2,
-					$this->cap_key => $this->global_mode
+				[
+					'meta_input' => [
+						'_capacity'    => $capacity,
+						'total_sales'  => $sales,
+						$this->cap_key => $this->global_mode,
+					],
 				],
-			]
-		);
-
-		// Add a "capped" ticket.
-		$ticket_a_id = $this->create_paypal_ticket(
-			$this->event_id,
-			1,
-			[
-				'meta_input' => [
-					'_capacity'     => 10,
-					'total_sales'   => 2,
-					$this->cap_key => $this->capped_mode
-				],
-			]
+				[
+					'meta_input' => [
+						'_capacity'    => $capacity,
+						'total_sales'  => $sales,
+						$this->cap_key => $this->capped_mode,
+					],
+				]
+			],
+			$capacity
 		);
 
 		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
 
-		$this->assertEquals( $this->global_cap + 10, $test_data, 'Incorrect capacity with mixed tickets.' );
+		$this->assertEquals( ( $capacity * 3 ), $test_data, 'Incorrect capacity with mixed tickets.' );
 	}
 
 	/**

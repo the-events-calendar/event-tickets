@@ -89,11 +89,12 @@ trait Ticket_Maker {
 	 *                             Any data in the array will override the defaults.
 	 *                             This should be in the same format as the "overrides" you
 	 *                             would send to create_paypal_ticket() above.
+	 * @param       int $global_qty The global quantity to set, if needed. Will attempt to set
+	 *                              intelligently if not provided when there are shared tickets.
 	 *
 	 * @return array An array of the generated ticket post IDs.
 	 */
-	protected function create_distinct_paypal_tickets( int $post_id, array $tickets ) {
-		$global_qty         = 0;
+	protected function create_distinct_paypal_tickets( int $post_id, array $tickets, $global_qty = 0 ) {
 		$global_sales       = 0;
 		$global_stock       = new Global_Stock( $post_id );
 		$has_global_tickets = false;
@@ -156,10 +157,17 @@ trait Ticket_Maker {
 	 * @return array An array of the generated ticket post IDs.
 	 */
 	protected function create_many_paypal_tickets( int $count, int $post_id, array $overrides = [] ) {
-		return array_map( function () use ( $post_id, $overrides ) {
-			$price = $overrides['price'] ?? random_int( 1, 5 );
 
-			return $this->create_paypal_ticket( $post_id, $price, $overrides );
-		}, range( 1, $count ) );
+		$ticket_data = [];
+
+		for ( $i = 0; $i < $count; $i++ ) {
+			$ticket_data[] = $overrides;
+		}
+
+		return $this->create_distinct_paypal_tickets(
+			$post_id,
+			$ticket_data,
+			$this->global_cap
+		);
 	}
 }

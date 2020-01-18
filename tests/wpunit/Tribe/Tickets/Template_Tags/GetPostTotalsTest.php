@@ -23,6 +23,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 		// your set up methods here
 		$this->factory()->event = new Event();
 		$this->event_id         = $this->factory()->event->create();
+
 		// Set up some reused vars.
 		$this->num_tickets = 5;
 		$this->capacity    = 5;
@@ -942,6 +943,6 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
-		$this->assertEquals( $this->num_tickets, $test_data['tickets'], 'Incorrect number of tickets.' );
+		$this->assertEquals( $this->num_tickets * 2, $test_data['tickets'], 'Incorrect number of tickets.' );
 	}
 }
