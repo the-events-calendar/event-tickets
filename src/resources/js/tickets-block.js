@@ -1423,7 +1423,6 @@ tribe.tickets.block = {
 		'click',
 		'.tribe-tickets__item__quantity__remove, .tribe-tickets__item__quantity__add',
 		function( e ) {
-			console.log('click!');
 			e.preventDefault();
 			const $input = $( this ).parent().find( 'input[type="number"]' );
 			if ( $input.is( ':disabled' ) ) {
