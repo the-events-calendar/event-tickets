@@ -381,10 +381,9 @@ tribe.tickets.block = {
 		const hasOptout = $ticket.has( obj.selector.itemOptOut ).length;
 		if ( hasOptout ) {
 			const $item = $ticket.closest( obj.selector.item );
-			const $optout = $item.find( obj.selector.itemOptOut );
 			if ( 0 < newQuantity ) {
 				//$optout.show();
-				$item.addClass( 'show-optout');
+				$item.addClass( 'show-optout' );
 			} else {
 				//$optout.hide();
 				$item.removeClass( 'show-optout' );
@@ -1010,10 +1009,9 @@ tribe.tickets.block = {
 		const postId = eventId || obj.postId;
 		const meta = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + postId ) );
 		const tickets = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart-' + postId ) );
-		let ret = {};
+		const ret = {};
 		ret.meta = meta;
 		ret.tickets = tickets;
-
 
 		return ret;
 	};
