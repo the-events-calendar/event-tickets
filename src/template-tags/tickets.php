@@ -943,7 +943,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 		$event_types = Tribe__Tickets__Main::instance()->post_types();
 
 		// Hand off when it's an event we're checking.
-		if ( in_array( $post->post_type, $event_types ) ) {
+		if ( in_array( $post->post_type, $event_types, true ) ) {
 			return tribe_get_event_capacity( $post );
 		}
 
@@ -977,7 +977,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 			];
 
 			// When we are in a Ticket Post Type update where we get the value from Event
-			if ( in_array( $mode, $shared_modes ) ) {
+			if ( in_array( $mode, $shared_modes, true ) ) {
 				$event_id = tribe_tickets_get_event_ids( $post->ID );
 
 				// It will return an array of Events
@@ -1030,7 +1030,7 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 		$event_types = Tribe__Tickets__Main::instance()->post_types();
 
 		// Bail when it's not an allowed post type.
-		if ( ! in_array( $post->post_type, $event_types ) ) {
+		if ( ! in_array( $post->post_type, $event_types, true ) ) {
 			return null;
 		}
 
