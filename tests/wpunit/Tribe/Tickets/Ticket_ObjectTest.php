@@ -126,33 +126,40 @@ class Ticket_ObjectTest extends Ticket_Object_TestCase {
 
 	/**
 	 * @test
-	 * it should return correct "unlimited" capacity
+	 * it should return correct "unlimited" capacity and inventory.
+	 * capacity() tests for managing stock first -
+	 * and if not (unlimited do not) it returns an empty string
+	 * Thus the tests against inventory() as well.
 	 *
 	 * @covers capacity
 	 */
 	public function it_should_return_correct_unlimited_capacity() {
 		$rsvp = $this->make_rsvp( [
 				'meta_input' => [
-					'_capacity' => - 1,
+					'_capacity' => -1,
 				],
 			] );
 
-		$this->assertEquals( - 1, $rsvp->capacity(), 'Incorrect capacity reported for new unlimited capacity RSVP.' );
+		$this->assertEquals( -1, $rsvp->capacity(), 'Incorrect capacity reported for new unlimited capacity RSVP.' );
+		$this->assertEquals( -1, $rsvp->inventory(), 'Incorrect inventory reported for new unlimited capacity RSVP.' );
 
 		$this->create_many_attendees_for_ticket( 5, $rsvp->ID, $rsvp->get_event_id() );
 
-		$this->assertEquals( - 1, $rsvp->capacity(), 'Incorrect capacity reported for unlimited capacity  RSVP with attendees.' );
+		$this->assertEquals( -1, $rsvp->capacity(), 'Incorrect capacity reported for unlimited capacity RSVP with attendees.' );
+		$this->assertEquals( -1, $rsvp->capacity(), 'Incorrect capacity reported for unlimited capacity RSVP with attendees.' );
 
 		$ticket = $this->make_ticket( 1, [
 				'meta_input' => [
-					'_capacity' => - 1,
+					'_capacity' => -1,
 				],
 			] );
 
-		$this->assertEquals( - 1, $ticket->capacity(), 'Incorrect capacity reported for new unlimited capacity ticket.' );
+		$this->assertEquals( '', $ticket->capacity(), 'Incorrect capacity reported for new unlimited capacity ticket.' );
+		$this->assertEquals( '-1', $ticket->inventory(), 'Incorrect inventory reported for new unlimited capacity ticket.' );
 
 		$this->create_many_attendees_for_ticket( 5, $ticket->ID, $ticket->get_event_id() );
 
-		$this->assertEquals( - 1, $ticket->capacity(), 'Incorrect capacity reported for unlimited capacity ticket with attendees.' );
+		$this->assertEquals( '', $ticket->capacity(), 'Incorrect capacity reported for unlimited capacity ticket with attendees.' );
+		$this->assertEquals( '-1', $ticket->inventory(), 'Incorrect inventory reported for unlimited capacity ticket with attendees.' );
 	}
 }

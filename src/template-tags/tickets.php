@@ -157,7 +157,7 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 				continue;
 			}
 
-			$stock_level = $global_stock_mode === Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ? $ticket->global_stock_cap : $ticket->stock;
+			$stock_level = $global_stock_mode === Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ? $ticket->global_stock_cap() : $ticket->available();
 
 			// If we find an unlimited ticket, just return unlimited (-1) so we don't use -1 or an empty string as a numeric stock and try to do math with it
 			if (
@@ -917,14 +917,14 @@ if ( ! function_exists( 'tribe_tickets_update_capacity' ) ) {
 if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 
 	/**
-	 * Returns the capacity for a given Post
+	 * Returns the capacity for a given Ticket/RSVP.
 	 *
-	 * Note while we can send a post/event we do not store capacity on events
-	 * so the return values will always be null.
+	 * Note while we can send a post/event we only store capacity on tickets/rsvps
+	 * so when provided an event it will hand off to tribe_get_event_capacity().
 	 *
 	 * @since  4.6
 	 *
-	 * @param int|WP_Post $post Post we are trying to fetch capacity for.
+	 * @param int|WP_Post $post Post (ticket!) we are trying to fetch capacity for.
 	 *
 	 * @return int|null
 	 */
@@ -939,7 +939,13 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 			return null;
 		}
 
+		// This is really "post types that allow tickets"
 		$event_types = Tribe__Tickets__Main::instance()->post_types();
+
+		// Hand off when it's an event we're checking.
+		if ( in_array( $post->post_type, $event_types, true ) ) {
+			return tribe_get_event_capacity( $post );
+		}
 
 		/**
 		 * @var Tribe__Tickets__Tickets_Handler $tickets_handler
@@ -952,19 +958,17 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 
 		// When we have a legacy ticket we migrate it
 		if (
-			! in_array( $post->post_type, $event_types )
-			&& $version->is_legacy( $post->ID )
+			$version->is_legacy( $post->ID )
 		) {
 			$legacy_capacity = $tickets_handler->filter_capacity_support( null, $post->ID, $key );
 
-			// Cast as integer as it might be returned as numeric string on some cases
+			// Cast as integer as it might be returned as numeric string in some cases.
 			return (int) $legacy_capacity;
 		}
 
 		// Defaults to the ticket ID
 		$post_id = $post->ID;
 
-		// Return Null for when we don't have the Capacity Data
 		if ( ! metadata_exists( 'post', $post->ID, $key ) ) {
 			$mode         = get_post_meta( $post->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 			$shared_modes = [
@@ -973,10 +977,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 			];
 
 			// When we are in a Ticket Post Type update where we get the value from Event
-			if (
-				! in_array( $post->post_type, $event_types )
-				&& in_array( $mode, $shared_modes )
-			) {
+			if ( in_array( $mode, $shared_modes, true ) ) {
 				$event_id = tribe_tickets_get_event_ids( $post->ID );
 
 				// It will return an array of Events
@@ -984,6 +985,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 					$post_id = current( $event_id );
 				}
 			} else {
+				// Return Null for when we don't have the Capacity Data
 				return null;
 			}
 		}
@@ -995,6 +997,107 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 		if ( '' === $value ) {
 			$value = -1;
 		}
+
+		return (int) $value;
+	}
+}
+
+if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
+
+	/**
+	 * Returns the capacity for a given Post/Event.
+	 *
+	 * @since  TBD
+	 *
+	 * @param int|WP_Post $post Post (event) we are trying to fetch capacity for.
+	 *
+	 * @return int|null
+	 */
+	function tribe_get_event_capacity( $post ) {
+		// When not dealing with a Instance of Post try to set it up.
+		if ( ! $post instanceof WP_Post ) {
+			$post = get_post( $post );
+		}
+
+		// Bail when it's not a post or ID is 0.
+		if ( ! $post instanceof WP_Post || 0 === $post->ID ) {
+			return null;
+		}
+
+		$post_id = $post->ID;
+
+		// This is really "post types that allow tickets".
+		$event_types = Tribe__Tickets__Main::instance()->post_types();
+
+		// Bail when it's not an allowed post type.
+		if ( ! in_array( $post->post_type, $event_types, true ) ) {
+			return null;
+		}
+
+		$rsvp         = Tribe__Tickets__RSVP::get_instance();
+		$rsvp_tickets = $rsvp->get_tickets_ids( $post_id );
+		$rsvp_cap     = 0;
+
+		foreach ( $rsvp_tickets as $rsvp_ticket ) {
+			$cap = tribe_tickets_get_capacity( $rsvp_ticket );
+
+			if ( -1 === $cap || '' === $cap ) {
+				$rsvp_cap = -1;
+				break;
+			}
+
+			$rsvp_cap += $cap;
+		}
+
+		$provider_id = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+
+		// Protect against ticket that exists but is of a type that is not enabled.
+		if ( ! method_exists( $provider_id, 'get_instance' ) ) {
+			return null;
+		}
+
+		$provider = call_user_func( [ $provider_id, 'get_instance' ] );
+		$tickets  = $provider->get_tickets_ids( $post_id );
+
+		// We only have RSVPs.
+		if ( empty( $tickets ) ) {
+			return (int) $rsvp_cap;
+		}
+
+		$global_stock       = new \Tribe__Tickets__Global_Stock( $post_id );
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+		$tickets_cap        = 0;
+		$added_global_stock = false;
+
+		foreach ( $tickets as $ticket ) {
+			// Handle global stock.
+			$mode = get_post_meta( $ticket, $global_stock::TICKET_STOCK_MODE, true );
+			if (
+				$global_stock::GLOBAL_STOCK_MODE !== $mode
+				&& $global_stock::CAPPED_STOCK_MODE !== $mode
+			) {
+				$cap = tribe_tickets_get_capacity( $ticket );
+
+				if ( -1 === $cap ) {
+					$tickets_cap = -1;
+					break;
+				}
+
+				$tickets_cap += $cap;
+			} elseif ( ! $added_global_stock ) {
+				$global_cap = (int) get_post_meta( $post_id, $tickets_handler->key_capacity, true );
+				$tickets_cap += $global_cap;
+				$added_global_stock = true;
+			}
+		}
+
+		// If either is unlimited, it's all unlimited.
+		if ( -1 === $tickets_cap || -1 === $rsvp_cap) {
+			return -1;
+		}
+
+		$value = (int) $rsvp_cap + (int) $tickets_cap;
 
 		return (int) $value;
 	}

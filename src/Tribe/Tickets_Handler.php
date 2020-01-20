@@ -772,25 +772,41 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post->ID );
+		$global  = new Tribe__Tickets__Global_Stock( $post->ID );
+
 		$totals  = [
 			'has_unlimited' => false,
-			'tickets' => count( $tickets ),
-			'capacity' => $this->get_total_event_capacity( $post ),
-			'sold' => 0,
-			'pending' => 0,
-			'stock' => 0,
+			'has_shared'    => $global->is_enabled(),
+			'tickets'       => count( $tickets ),
+			'capacity'      => $this->get_total_event_capacity( $post ),
+			'sold'          => 0,
+			'pending'       => 0,
+			'stock'         => 0,
 		];
 
 		foreach ( $tickets as $ticket ) {
 			$ticket_totals = $this->get_ticket_totals( $ticket->ID );
 			$totals['sold'] += $ticket_totals['sold'];
 			$totals['pending'] += $ticket_totals['pending'];
-			$totals['stock'] += $ticket_totals['stock'];
 
-			// check if we have any unlimited tickets
-			if ( ! $totals['has_unlimited'] ) {
-				$totals['has_unlimited'] = -1 === tribe_tickets_get_capacity( $ticket->ID );
+			if ( ! $this->has_shared_capacity( $ticket ) && ! $this->is_unlimited_ticket( $ticket ) ) {
+				$totals['stock'] += $ticket_totals['stock'];
 			}
+
+			// Check if we have any unlimited tickets. Only have to do this once.
+			if ( ! $totals['has_unlimited'] && $this->is_unlimited_ticket( $ticket ) ) {
+				$totals['has_unlimited'] = true;
+			}
+		}
+
+		// We only want to do this once per event.
+		if ( $totals['has_shared'] ) {
+			$totals['stock'] += $global->get_stock_level();
+			$totals['has_shared'] = true;
+		}
+
+		if ( $totals['has_unlimited'] ) {
+			$totals['stock'] = -1;
 		}
 
 		return $totals;
@@ -856,9 +872,9 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
-		$mode = get_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+		$stock_mode = get_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
-		return Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode || Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode;
+		return Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $stock_mode || Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $stock_mode;
 	}
 
 	/**
@@ -961,7 +977,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$has_shared_tickets = 0 !== count( $this->get_event_shared_tickets( $post_id ) );
 
 		if ( $has_shared_tickets ) {
-			$total = tribe_tickets_get_capacity( $post_id );
+			$total = tribe_get_event_capacity( $post_id );
 		}
 
 		// short circuit unlimited stock
