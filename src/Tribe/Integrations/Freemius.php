@@ -148,10 +148,6 @@ class Tribe__Tickets__Integrations__Freemius {
 			'has_paid_plans' => false,
 		] );
 
-		if ( $this->instance->is_on() ) {
-			return;
-		}
-
 		$this->instance->add_filter( 'connect_url', [ $this, 'redirect_settings_url' ] );
 		$this->instance->add_filter( 'after_skip_url', [ $this, 'redirect_settings_url' ] );
 		$this->instance->add_filter( 'after_connect_url', [ $this, 'redirect_settings_url' ] );
@@ -166,6 +162,10 @@ class Tribe__Tickets__Integrations__Freemius {
 		add_action( 'admin_init', [ $this->instance, '_hook_action_links_and_register_account_hooks' ] );
 		add_action( 'admin_init', [ $this, 'action_skip_activation' ] );
 
+		$this->instance->add_filter( 'connect_message', [
+			$this,
+			'filter_connect_message_on_update',
+		], 11, 6 );
 		$this->instance->add_filter( 'connect_message_on_update', [
 			$this,
 			'filter_connect_message_on_update',
