@@ -4,7 +4,9 @@ namespace Tribe\Tickets;
 
 use Prophecy\Argument;
 use Tribe__Tickets__RSVP as RSVP;
+use Tribe\Events\Test\Factories\Event;
 use Tribe__Tickets__Tickets_View as Tickets_View;
+use Tribe__Tickets__Tickets_Handler as Handler;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 
@@ -25,6 +27,13 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		// your set up methods here
 		$this->tickets_view = new Tickets_View();
 
+		// we always need an event, build it during setup.
+		$this->factory()->event = new Event();
+		$this->event_id         = $this->factory()->event->create();
+
+		// Tribe__Tickets__Tickets_Handler handler for easier access
+		$this->handler = new Handler;
+
 		// let's avoid die()s
 		add_filter( 'tribe_exit', function () {
 			return [ $this, 'dont_die' ];
@@ -42,6 +51,9 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
 	public function tearDown() {
 		// your tear down methods here
+		// refresh the event ID for each test.
+		wp_delete_post( $this->event_id, true );
+		unset( $this->event_id );
 
 		// then
 		parent::tearDown();
@@ -71,9 +83,8 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @since 4.7.4
 	 */
-	public function it_should_decrease_stock_by_1_when_an_attendee_is_going() {
-		$post_id   = $this->factory->post->create();
-		$ticket_id = $this->make_stock_ticket( 10, $post_id );
+	public function it_should_decrease_stock_by_1_when_an_attendee_is_going() {;
+		$ticket_id = $this->make_stock_ticket( 10, $this->event_id );
 
 		$sut = $this->make_instance();
 		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
@@ -85,9 +96,8 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should increase sales by 1 when an attendee is going
 	 */
-	public function it_should_increase_sales_by_1_when_an_attendee_is_going() {
-		$post_id   = $this->factory->post->create();
-		$ticket_id = $this->make_sales_ticket( 10, $post_id );
+	public function it_should_increase_sales_by_1_when_an_attendee_is_going() {;
+		$ticket_id = $this->make_sales_ticket( 10, $this->event_id );
 
 		$sut = $this->make_instance();
 		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
@@ -99,9 +109,8 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should not increase sales when an attendee is not going
 	 */
-	public function it_should_not_increase_sales_when_an_attendee_is_not_going() {
-		$post_id   = $this->factory->post->create();
-		$ticket_id = $this->make_sales_ticket( 10, $post_id );
+	public function it_should_not_increase_sales_when_an_attendee_is_not_going() {;
+		$ticket_id = $this->make_sales_ticket( 10, $this->event_id );
 
 		$sut = $this->make_instance();
 		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'no' ] ) );
@@ -115,9 +124,8 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @since 4.7.4
 	 */
-	public function it_should_not_decrease_stock_when_an_attendee_is_not_going() {
-		$post_id   = $this->factory->post->create();
-		$ticket_id = $this->make_stock_ticket( 10, $post_id );
+	public function it_should_not_decrease_stock_when_an_attendee_is_not_going() {;
+		$ticket_id = $this->make_stock_ticket( 10, $this->event_id );
 
 		$sut = $this->make_instance();
 		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'no' ] ) );
@@ -148,13 +156,16 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should decrease sales by 1 when attendee status changes from going to not going
 	 */
-	public function it_should_decrease_sales_by_1_when_attendee_status_changes_from_going_to_not_going() {
-		list( $data, $ticket_id, $order_id, $post_id ) = $this->make_data( 'yes', 'no', 10 );
+	public function it_should_decrease_sales_by_1_when_attendee_status_changes_from_going_to_not_going() {;
+		$ticket_id = $this->make_stock_ticket( 10, $this->event_id );
+
+		list( $data, $ticket_id, $order_id, $this->event_id ) = $this->make_data( 'yes', 'no', 10 );
 
 		$sut = $this->make_instance();
-		$sut->update_attendee_data( $data, $order_id, $post_id );
+		$sut->update_attendee_data( $data, $order_id, $this->event_id );
+		$total_sales = get_post_meta( $ticket_id, 'total_sales', true );
 
-		$this->assertEquals( 9, get_post_meta( $ticket_id, 'total_sales', true ) );
+		$this->assertEquals( 9, $total_sales );
 	}
 
 	/**
@@ -164,10 +175,10 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * @since 4.7.4
 	 */
 	public function it_should_increase_stock_by_1_when_attendee_status_changes_from_going_to_not_going() {
-		list( $data, $ticket_id, $order_id, $post_id ) = $this->make_data( 'yes', 'no', 1, 9 );
+		list( $data, $ticket_id, $order_id, $this->event_id ) = $this->make_data( 'yes', 'no', 1, 9 );
 
 		$sut = $this->make_instance();
-		$sut->update_attendee_data( $data, $order_id, $post_id );
+		$sut->update_attendee_data( $data, $order_id, $this->event_id );
 
 		$this->assertEquals( 10, get_post_meta( $ticket_id, '_stock', true ) );
 	}
@@ -176,11 +187,15 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should increase sales by 1 when attendee status changes from not going to going
 	 */
-	public function it_should_increase_sales_by_1_when_attendee_status_changes_from_not_going_to_going() {
-		list( $data, $ticket_id, $order_id, $post_id ) = $this->make_data( 'no', 'yes', 0, 10 );
+	public function it_should_increase_sales_by_1_when_attendee_status_changes_from_not_going_to_going() {;
+		$ticket_id = $this->make_stock_ticket( 0, $this->event_id );
+
+
+		list( $data, $ticket_id, $order_id, $this->event_id ) = $this->make_data( 'no', 'yes', 0, 10 );
 
 		$sut = $this->make_instance();
-		$sut->update_attendee_data( $data, $order_id, $post_id );
+		$sut->update_attendee_data( $data, $order_id, $this->event_id );
+		// checking things
 
 		$this->assertEquals( 1, get_post_meta( $ticket_id, 'total_sales', true ) );
 	}
@@ -192,10 +207,10 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * @since 4.7.4
 	 */
 	public function it_should_decrease_stock_by_1_when_attendee_status_changes_from_not_going_to_going() {
-		list( $data, $ticket_id, $order_id, $post_id ) = $this->make_data( 'no', 'yes', 0, 10 );
+		list( $data, $ticket_id, $order_id, $this->event_id ) = $this->make_data( 'no', 'yes', 0, 10 );
 
 		$sut = $this->make_instance();
-		$sut->update_attendee_data( $data, $order_id, $post_id );
+		$sut->update_attendee_data( $data, $order_id, $this->event_id );
 
 		$this->assertEquals( 9, get_post_meta( $ticket_id, '_stock', true ) );
 	}
@@ -232,10 +247,10 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			return array_merge( $options, $stati );
 		} );
 
-		list( $data, $ticket_id, $order_id, $post_id ) = $this->make_data( $old_status, $new_status, 10 );
+		list( $data, $ticket_id, $order_id, $this->event_id ) = $this->make_data( $old_status, $new_status, 10 );
 
 		$sut = $this->make_instance();
-		$sut->update_attendee_data( $data, $order_id, $post_id );
+		$sut->update_attendee_data( $data, $order_id, $this->event_id );
 
 		$this->assertEquals( 10 + $diff, get_post_meta( $ticket_id, 'total_sales', true ) );
 	}
@@ -255,10 +270,10 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			return array_merge( $options, $stati );
 		} );
 
-		list( $data, $ticket_id, $order_id, $post_id ) = $this->make_data( $old_status, $new_status, 0, 10 );
+		list( $data, $ticket_id, $order_id, $this->event_id ) = $this->make_data( $old_status, $new_status, 0, 10 );
 
 		$sut = $this->make_instance();
-		$sut->update_attendee_data( $data, $order_id, $post_id );
+		$sut->update_attendee_data( $data, $order_id, $this->event_id );
 
 		// stock cannot exceed capacity
 		$expected_stock = min( 10, 10 - $diff );
@@ -559,9 +574,8 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		// quantity_ID not relevant
 	}
 
-	protected function make_data( $previous_status, $status, $sales, $stock = 0 ) {
+	protected function make_data( $previous_status, $status, $sales = 0, $stock = 0 ) {
 		$base_data = $this->make_base_data( $sales, $stock );
-
 		$post_id   = $base_data['post_id'];
 		$ticket_id = $base_data['ticket_id'];
 		$user_id   = $base_data['user_id'];
@@ -643,8 +657,9 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	protected function make_stock_ticket( $stock, $post_id ) {
 		$ticket_id = $this->create_rsvp_ticket( $post_id, [
 			'meta_input' => [
-				'_capacity' => $stock,
-				'_stock'    => $stock,
+				'_capacity'   => $stock,
+				'_stock'      => $stock,
+				'total_sales' => 0,
 			],
 		] );
 

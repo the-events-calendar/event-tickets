@@ -366,18 +366,21 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Intercepts the_content from the posts to include the orders structure.
 	 *
-	 * @param  string $content Normally the_content of a post.
+	 * @since TBD Avoid running when it shouldn't by bailing if not in main query loop on a single post.
+	 *
+	 * @param string $content Normally the_content of a post.
+	 *
 	 * @return string
 	 */
 	public function intercept_content( $content = '' ) {
-		// Prevents firing more then it needs too outside of the loop
-		$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
-
 		// Now fetch the display and check it
 		$display = get_query_var( 'eventDisplay', false );
 
+		// Prevents firing more than it needs to outside of the loop.
 		if (
-			! $in_the_loop
+			! is_single()
+			|| ! in_the_loop()
+			|| ! is_main_query()
 			|| (
 				'tickets' !== $display
 				&& ! $this->is_edit_page()
@@ -420,9 +423,9 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * We need to intercept the template loading and load the correct file.
 	 *
-	 * @param  string $old_file Non important variable with the previous path.
-	 * @param  string $template Which template we are dealing with.
-	 * @return string           The correct File path for the tickets endpoint.
+	 * @param string $old_file Non important variable with the previous path.
+	 *
+	 * @return string          The correct File path for the tickets endpoint.
 	 */
 	public function intercept_template( $old_file ) {
 		global $wp_query;
@@ -963,6 +966,11 @@ class Tribe__Tickets__Tickets_View {
 			return '';
 		}
 
+		// if password protected then do not display content
+		if ( post_password_required() ) {
+			return '';
+		}
+
 		$post_id     = $post->ID;
 		$provider_id = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 
@@ -974,7 +982,7 @@ class Tribe__Tickets__Tickets_View {
 		$provider = call_user_func( [ $provider_id, 'get_instance' ] );
 
 		/** @var \Tribe__Tickets__Editor__Template $template */
-		$template       = tribe( 'tickets.editor.template' );
+		$template = tribe( 'tickets.editor.template' );
 
 		/** @var \Tribe__Tickets__Editor__Blocks__Tickets $blocks_tickets */
 		$blocks_tickets = tribe( 'tickets.editor.blocks.tickets' );
