@@ -626,6 +626,6 @@ class Tribe__Tickets__Privacy {
 		 *
 		 * @param $content string The default text.
 		 */
-		 return apply_filters( 'tribe_tickets_default_opt_out_text', $this->opt_in_text );
+		 return apply_filters( 'tribe_tickets_default_opt_in_text', $this->opt_in_text );
 	}
 }
