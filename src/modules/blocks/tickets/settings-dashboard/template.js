@@ -34,7 +34,7 @@ const TicketsSettingsDashboard = ( {
 			<Fragment>
 				{ hasTicketsPlus && <CapacityTable /> }
 				<HeaderImage />
-				<p>__( 'A note about the attendee list being optional.', 'event-tickets' )</p>
+				<p>A note about the attendee list being optional.</p>
 				{ isSettingsLoading && <Spinner /> }
 			</Fragment>
 		) }
