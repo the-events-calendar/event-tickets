@@ -49,25 +49,8 @@ class Tribe__Tickets__Integrations__Manager {
 	 * Loads our Freemius integration
 	 *
 	 * @since TBD
-	 *
-	 * @return bool Whether the integration was loaded.
 	 */
 	private function load_freemius() {
-		/**
-		 * Allows third-party disabling of Event Tickets and Freemius integration.
-		 *
-		 * @since  TBD
-		 *
-		 * @param bool $should_load Whether the Freemius integration should load.
-		 */
-		$should_load = apply_filters( 'tribe_tickets_integrations_should_load_freemius', true );
-
-		if ( ! $should_load ) {
-			return false;
-		}
-
 		tribe_singleton( 'tickets.integrations.freemius', new Tribe__Tickets__Integrations__Freemius );
-
-		return true;
 	}
 }

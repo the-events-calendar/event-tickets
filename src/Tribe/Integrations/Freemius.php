@@ -17,13 +17,22 @@ class Tribe__Tickets__Integrations__Freemius {
 	private $instance;
 
 	/**
+	 * The object class used for assets.
+	 *
+	 * @since  TBD
+	 *
+	 * @var string
+	 */
+	private $object_class = 'Tribe__Tickets__Main';
+
+	/**
 	 * Stores the public key for Freemius.
 	 *
 	 * @since  TBD
 	 *
 	 * @var string
 	 */
-	private $public_key = 'pk_e32061abc28cfedf231f3e5c4e626';
+	private $public_key = 'pk_6dd9310b57c62871c59e58b8e739e';
 
 	/**
 	 * Stores the ID for the Freemius application.
@@ -59,14 +68,32 @@ class Tribe__Tickets__Integrations__Freemius {
 	 *
 	 * @var string
 	 */
-	private $page = '';
+	private $page;
+
+	/**
+	 * Store the value from the 'tab' in the request.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private $tab;
+
+	/**
+	 * Tribe__Tickets__Integrations__Freemius constructor.
+	 *
+	 * @since TBD
+	 */
+	public function __construct() {
+		$this->setup();
+	}
 
 	/**
 	 * Performs setup for the Freemius integration singleton.
 	 *
 	 * @since  TBD
 	 */
-	public function __construct() {
+	public function setup() {
 		if ( ! is_admin() ) {
 			return;
 		}
@@ -80,6 +107,10 @@ class Tribe__Tickets__Integrations__Freemius {
 			Tribe__App_Shop::MENU_SLUG,
 			'tribe-help',
 		];
+
+		if ( class_exists( 'Tribe__Events__Aggregator__Page' ) ) {
+			$valid_page[] = Tribe__Events__Aggregator__Page::$slug;
+		}
 
 		if ( 'plugins.php' !== $pagenow && ! in_array( $this->page, $valid_page, true ) ) {
 			return;
@@ -97,13 +128,16 @@ class Tribe__Tickets__Integrations__Freemius {
 		 *
 		 * @param bool $should_load Whether the Freemius integration should load.
 		 */
-		$should_load = apply_filters( 'tribe_tickets_integrations_should_load_freemius', $this->should_load( 50 ) );
+		$should_load = apply_filters( 'tribe_tickets_integrations_should_load_freemius', true );
 
 		if ( ! $should_load ) {
 			return;
 		}
 
-		$this->instance = tribe( 'freemius' )->initialize( $this->slug, $this->freemius_id, $this->public_key, [
+		/** @var Tribe__Freemius $freemius */
+		$freemius = tribe( 'freemius' );
+
+		$this->instance = $freemius->initialize( $this->slug, $this->freemius_id, $this->public_key, [
 			'menu'           => [
 				'slug'    => $this->page,
 				'account' => true,
@@ -114,12 +148,16 @@ class Tribe__Tickets__Integrations__Freemius {
 			'has_paid_plans' => false,
 		] );
 
+		if ( $this->instance->is_on() ) {
+			return;
+		}
+
 		$this->instance->add_filter( 'connect_url', [ $this, 'redirect_settings_url' ] );
 		$this->instance->add_filter( 'after_skip_url', [ $this, 'redirect_settings_url' ] );
 		$this->instance->add_filter( 'after_connect_url', [ $this, 'redirect_settings_url' ] );
 		$this->instance->add_filter( 'after_pending_connect_url', [ $this, 'redirect_settings_url' ] );
 
-		tribe_asset( Tribe__Events__Main::instance(), 'tribe-tickets-freemius', 'freemius.css', [], 'admin_enqueue_scripts' );
+		tribe_asset( $this->object_class, 'tribe-tickets-freemius', 'freemius.css', [], 'admin_enqueue_scripts' );
 
 		/*
 		 * Freemius typically hooks this action–which bootstraps the deactivation dialog–during plugins_loaded, but we
@@ -131,7 +169,7 @@ class Tribe__Tickets__Integrations__Freemius {
 		$this->instance->add_filter( 'connect_message_on_update', [
 			$this,
 			'filter_connect_message_on_update',
-		], 10, 6 );
+		], 11, 6 );
 
 		add_action( 'admin_init', [ $this, 'maybe_remove_activation_complete_notice' ] );
 	}
@@ -144,67 +182,13 @@ class Tribe__Tickets__Integrations__Freemius {
 	 * @return mixed
 	 */
 	public function redirect_settings_url() {
-		$url = sprintf( 'edit.php?post_type=%s&page=%s', Tribe__Events__Main::POSTTYPE, $this->page );
+		if ( class_exists( 'Tribe__Events__Main' ) ) {
+			$url = sprintf( 'edit.php?post_type=%s&page=%s', Tribe__Events__Main::POSTTYPE, $this->page );
+		} else {
+			$url = sprintf( 'admin.php?page=%s', $this->page );
+		}
 
 		return admin_url( $url );
-	}
-
-	/**
-	 * When should we load Freemius to users.
-	 *
-	 * @since  TBD
-	 *
-	 * @param integer $threshold Percentage of which we will load Freemius.
-	 *
-	 * @return boolean
-	 */
-	public function should_load( $threshold = 10 ) {
-		if ( defined( 'TRIBE_TICKETS_INTEGRATIONS_SHOULD_LOAD_FREEMIUS' ) && TRIBE_TICKETS_INTEGRATIONS_SHOULD_LOAD_FREEMIUS ) {
-			return TRIBE_TICKETS_INTEGRATIONS_SHOULD_LOAD_FREEMIUS;
-		}
-
-		// If we have the option we use it.
-		$seed                  = tribe_get_option( 'freemius_random_seed', null );
-		$seed_misses_threshold = null === $seed || $threshold < $seed;
-
-		/**
-		 * Should only if it a new install.
-		 *
-		 * @see Tribe__Admin__Activation_Page::is_new_install Based on protected method from Common.
-		 */
-		$previous_versions     = Tribe__Settings_Manager::get_option( 'previous_ecp_versions', [] );
-		$has_previous_versions = ! empty( $previous_versions ) && '0' !== end( $previous_versions );
-
-		if ( $has_previous_versions && $seed_misses_threshold ) {
-			return false;
-		}
-
-		if ( ! $seed ) {
-			$seed = rand( 1, 100 );
-
-			// On PHP 7.2 and above we have access to a better random method.
-			if ( function_exists( 'random_int' ) ) {
-				try {
-					// Attempt to run random_int() to see if it causes an exception.
-					$the_seed = random_int( 1, 100 );
-
-					$seed = $the_seed;
-				} catch ( Exception $exception ) {
-					// Cannot use random_int(), let's keep the original $seed.
-				}
-			}
-
-			// After getting a new seed save it to the DB.
-			tribe_update_option( 'freemius_random_seed', $seed );
-		}
-
-		// If the seed falls in the threshold we should load.
-		if ( $seed <= $threshold ) {
-			return true;
-		}
-
-		// If we got here we shouldn't load.
-		return false;
 	}
 
 	/**
