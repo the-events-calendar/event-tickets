@@ -121,6 +121,16 @@ class Tribe__Tickets__Integrations__Freemius {
 			return;
 		}
 
+		$should_load = true;
+
+		// Check if Freemius integration is disabled.
+		if (
+			( defined( 'TRIBE_NO_FREEMIUS' ) && true === TRIBE_NO_FREEMIUS )
+			|| true === (bool) getenv( 'TRIBE_NO_FREEMIUS' )
+		) {
+			$should_load = false;
+		}
+
 		/**
 		 * Allows third-party disabling of the integration.
 		 *
@@ -128,7 +138,7 @@ class Tribe__Tickets__Integrations__Freemius {
 		 *
 		 * @param bool $should_load Whether the Freemius integration should load.
 		 */
-		$should_load = apply_filters( 'tribe_tickets_integrations_should_load_freemius', true );
+		$should_load = apply_filters( 'tribe_tickets_integrations_should_load_freemius', $should_load );
 
 		if ( ! $should_load ) {
 			return;
