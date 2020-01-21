@@ -4,6 +4,21 @@
  * Class Tribe__Tickets__Privacy
  */
 class Tribe__Tickets__Privacy {
+	/**
+	 * Text used for the opt-out checkbox
+	 *
+	 * @var string
+	 * @since TBD
+	 */
+	public $opt_out_text = "";
+
+	/**
+	 * Text used for the (future) opt-in checkbox
+	 *
+	 * @var string
+	 * @since TBD
+	 */
+	public $opt_in_text = "";
 
 	/**
 	 * Class initialization
@@ -11,10 +26,16 @@ class Tribe__Tickets__Privacy {
 	 * @since 4.7.5
 	 */
 	public function hook() {
-		add_action( 'admin_init', array( $this, 'privacy_policy_content' ), 20 );
+		add_action( 'admin_init', [ $this, 'privacy_policy_content' ], 20 );
+		add_action( 'init', [ $this, 'init_text' ] );
 
-		add_filter( 'wp_privacy_personal_data_exporters', array( $this, 'register_exporters' ), 10 );
-		add_filter( 'wp_privacy_personal_data_erasers', array( $this, 'register_erasers' ), 10 );
+		add_filter( 'wp_privacy_personal_data_exporters', [ $this, 'register_exporters' ], 10 );
+		add_filter( 'wp_privacy_personal_data_erasers', [ $this, 'register_erasers' ], 10 );
+	}
+
+	public function init_text() {
+		$this->opt_out_text = __( "Hide my attendee data from public view.", 'event-tickets' );
+		$this->opt_in_text = __( "Allow use of my attendee data publicly on this site.", 'event-tickets' );
 	}
 
 	/**
@@ -34,8 +55,6 @@ class Tribe__Tickets__Privacy {
 
 	/**
 	 * Return the default suggested privacy policy content.
-	 *
-	 * @param bool $descr Whether to include the descriptions under the section headings. Default false.
 	 *
 	 * @since 4.7.5
 	 *
@@ -67,20 +86,20 @@ class Tribe__Tickets__Privacy {
 	 * @return array
 	 */
 	public function register_exporters( $exporters ) {
-		$exporters[] = array(
+		$exporters[] = [
 			'exporter_friendly_name' => __( 'Event Tickets RSVP Attendee', 'event-tickets' ),
-			'callback'               => array( $this, 'rsvp_exporter' ),
-		);
+			'callback'               => [ $this, 'rsvp_exporter' ],
+		];
 
-		$exporters[] = array(
+		$exporters[] = [
 			'exporter_friendly_name' => __( 'Event Tickets TribeCommerce Attendee', 'event-tickets' ),
-			'callback'               => array( $this, 'tpp_attendee_exporter' ),
-		);
+			'callback'               => [ $this, 'tpp_attendee_exporter' ],
+		];
 
-		$exporters[] = array(
+		$exporters[] = [
 			'exporter_friendly_name' => __( 'Event Tickets TribeCommerce Order', 'event-tickets' ),
-			'callback'               => array( $this, 'tpp_order_exporter' ),
-		);
+			'callback'               => [ $this, 'tpp_order_exporter' ],
+		];
 
 		return $exporters;
 	}
@@ -94,20 +113,20 @@ class Tribe__Tickets__Privacy {
 	 * @return array
 	 */
 	public function register_erasers( $erasers ) {
-		$erasers[] = array(
+		$erasers[] = [
 			'eraser_friendly_name' => __( 'Event Tickets RSVP Attendee', 'event-tickets' ),
-			'callback'             => array( $this, 'rsvp_eraser' ),
-		);
+			'callback'             => [ $this, 'rsvp_eraser' ],
+		];
 
-		$erasers[] = array(
+		$erasers[] = [
 			'eraser_friendly_name' => __( 'Event Tickets TribeCommerce Attendee', 'event-tickets' ),
-			'callback'             => array( $this, 'tpp_attendee_eraser' ),
-		);
+			'callback'             => [ $this, 'tpp_attendee_eraser' ],
+		];
 
-		$erasers[] = array(
+		$erasers[] = [
 			'eraser_friendly_name' => __( 'Event Tickets TribeCommerce Order', 'event-tickets' ),
-			'callback'             => array( $this, 'tpp_order_eraser' ),
-		);
+			'callback'             => [ $this, 'tpp_order_eraser' ],
+		];
 
 		return $erasers;
 	}
@@ -125,10 +144,10 @@ class Tribe__Tickets__Privacy {
 		$number = 500; // Limit us to avoid timing out
 		$page   = (int) $page;
 
-		$export_items = array();
+		$export_items = [];
 
 		// Get the attendees RSVPs for the given email.
-		$rsvp_attendees = new WP_Query( array(
+		$rsvp_attendees = new WP_Query( [
 			'post_type'      => Tribe__Tickets__RSVP::ATTENDEE_OBJECT,
 			'meta_key'       => '_tribe_rsvp_email',
 			'meta_value'     => $email_address,
@@ -136,7 +155,7 @@ class Tribe__Tickets__Privacy {
 			'posts_per_page' => $number,
 			'orderby'        => 'ID',
 			'order'          => 'ASC',
-		) );
+		] );
 
 		foreach ( $rsvp_attendees->posts as $attendee ) {
 
@@ -148,27 +167,27 @@ class Tribe__Tickets__Privacy {
 			// Set a label for the group
 			$group_label = __( 'Event Tickets RSVP Attendee Data', 'event-tickets' );
 
-			$data = array();
+			$data = [];
 
-			$data[] = array(
+			$data[] = [
 				'name'  => __( 'RSVP Title', 'event-tickets' ),
 				'value' => get_the_title( $attendee->ID ),
-			);
+			];
 
-			$data[] = array(
+			$data[] = [
 				'name'  => __( 'Full Name', 'event-tickets' ),
 				'value' => get_post_meta( $attendee->ID, '_tribe_rsvp_full_name', true ),
-			);
+			];
 
-			$data[] = array(
+			$data[] = [
 				'name'  => __( 'Email', 'event-tickets' ),
 				'value' => get_post_meta( $attendee->ID, '_tribe_rsvp_email', true ),
-			);
+			];
 
-			$data[] = array(
+			$data[] = [
 				'name'  => __( 'Date', 'event-tickets' ),
 				'value' => $attendee->post_date,
-			);
+			];
 
 			/**
 			 * Allow filtering for the rsvp attendee data export.
@@ -179,21 +198,21 @@ class Tribe__Tickets__Privacy {
 			 */
 			$data = apply_filters( 'tribe_tickets_personal_data_export_rsvp', $data, $attendee );
 
-			$export_items[] = array(
+			$export_items[] = [
 				'group_id'    => $group_id,
 				'group_label' => $group_label,
 				'item_id'     => $item_id,
 				'data'        => $data,
-			);
+			];
 		}
 
 		// Tell core if we have more comments to work on still
 		$done = count( $rsvp_attendees->posts ) < $number;
 
-		return array(
+		return [
 			'data' => $export_items,
 			'done' => $done,
-		);
+		];
 	}
 
 	/**
@@ -207,23 +226,23 @@ class Tribe__Tickets__Privacy {
 	 */
 	public function rsvp_eraser( $email_address, $page = 1 ) {
 		if ( empty( $email_address ) ) {
-			return array(
+			return [
 				'items_removed'  => false,
 				'items_retained' => false,
-				'messages'       => array(),
+				'messages'       => [],
 				'done'           => true,
-			);
+			];
 		}
 
-		$messages       = array();
+		$messages       = [];
 		$items_removed  = false;
 		$items_retained = false;
 
 		$number = 500; // Limit us to avoid timing out
 		$page   = (int) $page;
 
-		// Get the attendees RSVPs for the given email.
-		$rsvp_attendees = new WP_Query( array(
+		// Get the attendees RSVP's for the given email.
+		$rsvp_attendees = new WP_Query( [
 			'post_type'      => Tribe__Tickets__RSVP::ATTENDEE_OBJECT,
 			'meta_key'       => '_tribe_rsvp_email',
 			'meta_value'     => $email_address,
@@ -231,7 +250,7 @@ class Tribe__Tickets__Privacy {
 			'posts_per_page' => $number,
 			'orderby'        => 'ID',
 			'order'          => 'ASC',
-		) );
+		] );
 
 		foreach ( $rsvp_attendees->posts as $rsvp ) {
 
@@ -252,12 +271,12 @@ class Tribe__Tickets__Privacy {
 		// Tell core if we have more elements to work on still
 		$done = count( $rsvp_attendees->posts ) < $number;
 
-		return array(
+		return [
 			'items_removed'  => $items_removed,
 			'items_retained' => $items_retained,
 			'messages'       => $messages,
 			'done'           => $done,
-		);
+		];
 	}
 
 	/**
@@ -271,15 +290,15 @@ class Tribe__Tickets__Privacy {
 	 */
 	public function tpp_attendee_eraser( $email_address, $page = 1 ) {
 		if ( empty( $email_address ) ) {
-			return array(
+			return [
 				'items_removed'  => false,
 				'items_retained' => false,
-				'messages'       => array(),
+				'messages'       => [],
 				'done'           => true,
-			);
+			];
 		}
 
-		$messages       = array();
+		$messages       = [];
 		$items_removed  = false;
 		$items_retained = false;
 
@@ -287,7 +306,7 @@ class Tribe__Tickets__Privacy {
 		$page   = (int) $page;
 
 		// Get the tribe commerce attendees/orders
-		$tpp_attendees = new WP_Query( array(
+		$tpp_attendees = new WP_Query( [
 			'post_type'      => 'tribe_tpp_attendees',
 			'meta_key'       => '_tribe_tpp_email',
 			'meta_value'     => $email_address,
@@ -295,7 +314,7 @@ class Tribe__Tickets__Privacy {
 			'posts_per_page' => $number,
 			'orderby'        => 'ID',
 			'order'          => 'ASC',
-		) );
+		] );
 
 		foreach ( $tpp_attendees->posts as $attendee ) {
 
@@ -316,12 +335,12 @@ class Tribe__Tickets__Privacy {
 		// Tell core if we have more elements to work on still
 		$done = count( $tpp_attendees->posts ) < $number;
 
-		return array(
+		return [
 			'items_removed'  => $items_removed,
 			'items_retained' => $items_retained,
 			'messages'       => $messages,
 			'done'           => $done,
-		);
+		];
 	}
 
 	/**
@@ -335,15 +354,15 @@ class Tribe__Tickets__Privacy {
 	 */
 	public function tpp_order_eraser( $email_address, $page = 1 ) {
 		if ( empty( $email_address ) ) {
-			return array(
+			return [
 				'items_removed'  => false,
 				'items_retained' => false,
-				'messages'       => array(),
+				'messages'       => [],
 				'done'           => true,
-			);
+			];
 		}
 
-		$messages       = array();
+		$messages       = [];
 		$items_removed  = false;
 		$items_retained = false;
 
@@ -351,7 +370,7 @@ class Tribe__Tickets__Privacy {
 		$page   = (int) $page;
 
 		// Get the tribe commerce orders
-		$tpp_orders = new WP_Query( array(
+		$tpp_orders = new WP_Query( [
 			'post_type'      => 'tribe_tpp_orders',
 			'meta_key'       => '_tribe_paypal_payer_email',
 			'meta_value'     => $email_address,
@@ -359,7 +378,7 @@ class Tribe__Tickets__Privacy {
 			'posts_per_page' => $number,
 			'orderby'        => 'ID',
 			'order'          => 'ASC',
-		) );
+		] );
 
 		foreach ( $tpp_orders->posts as $order ) {
 
@@ -385,12 +404,12 @@ class Tribe__Tickets__Privacy {
 		// Tell core if we have more elements to work on still
 		$done = count( $tpp_orders->posts ) < $number;
 
-		return array(
+		return [
 			'items_removed'  => $items_removed,
 			'items_retained' => $items_retained,
 			'messages'       => $messages,
 			'done'           => $done,
-		);
+		];
 	}
 
 	/**
@@ -406,10 +425,10 @@ class Tribe__Tickets__Privacy {
 		$number = 500; // Limit us to avoid timing out
 		$page   = (int) $page;
 
-		$export_items = array();
+		$export_items = [];
 
 		// Get the tribe commerce attendees/orders
-		$tpp_attendees = new WP_Query( array(
+		$tpp_attendees = new WP_Query( [
 			'post_type'      => 'tribe_tpp_attendees',
 			'meta_key'       => '_tribe_tpp_email',
 			'meta_value'     => $email_address,
@@ -417,7 +436,7 @@ class Tribe__Tickets__Privacy {
 			'posts_per_page' => $number,
 			'orderby'        => 'ID',
 			'order'          => 'ASC',
-		) );
+		] );
 
 		foreach ( $tpp_attendees->posts as $attendee ) {
 
@@ -429,27 +448,27 @@ class Tribe__Tickets__Privacy {
 			// Set a label for the group
 			$group_label = __( 'Event Tickets TribeCommerce Attendee Data', 'event-tickets' );
 
-			$data = array();
+			$data = [];
 
-			$data[] = array(
+			$data[] = [
 				'name'  => __( 'Order Title', 'event-tickets' ),
 				'value' => get_the_title( $attendee->ID ),
-			);
+			];
 
-			$data[] = array(
+			$data[] = [
 				'name'  => __( 'Full Name', 'event-tickets' ),
 				'value' => get_post_meta( $attendee->ID, '_tribe_tpp_full_name', true ),
-			);
+			];
 
-			$data[] = array(
+			$data[] = [
 				'name'  => __( 'Email', 'event-tickets' ),
 				'value' => get_post_meta( $attendee->ID, '_tribe_tpp_email', true ),
-			);
+			];
 
-			$data[] = array(
+			$data[] = [
 				'name'  => __( 'Date', 'event-tickets' ),
 				'value' => $attendee->post_date,
-			);
+			];
 
 			/**
 			 * Allow filtering for the tribecommerce attendee data export.
@@ -460,21 +479,21 @@ class Tribe__Tickets__Privacy {
 			 */
 			$data = apply_filters( 'tribe_tickets_personal_data_export_tpp', $data, $attendee );
 
-			$export_items[] = array(
+			$export_items[] = [
 				'group_id'    => $group_id,
 				'group_label' => $group_label,
 				'item_id'     => $item_id,
 				'data'        => $data,
-			);
+			];
 		}
 
 		// Tell core if we have more comments to work on still
 		$done = count( $tpp_attendees->posts ) < $number;
 
-		return array(
+		return [
 			'data' => $export_items,
 			'done' => $done,
-		);
+		];
 	}
 
 	/**
@@ -490,10 +509,10 @@ class Tribe__Tickets__Privacy {
 		$number = 500; // Limit us to avoid timing out
 		$page   = (int) $page;
 
-		$export_items = array();
+		$export_items = [];
 
 		// Get the tribe commerce orders
-		$tpp_orders = new WP_Query( array(
+		$tpp_orders = new WP_Query( [
 			'post_type'      => 'tribe_tpp_orders',
 			'meta_key'       => '_tribe_paypal_payer_email',
 			'meta_value'     => $email_address,
@@ -501,7 +520,7 @@ class Tribe__Tickets__Privacy {
 			'posts_per_page' => $number,
 			'orderby'        => 'ID',
 			'order'          => 'ASC',
-		) );
+		] );
 
 		foreach ( $tpp_orders->posts as $order ) {
 
@@ -513,17 +532,17 @@ class Tribe__Tickets__Privacy {
 			// Set a label for the group
 			$group_label = __( 'Event Tickets TribeCommerce Order Data', 'event-tickets' );
 
-			$data = array();
+			$data = [];
 
-			$data[] = array(
+			$data[] = [
 				'name'  => __( 'Order Number', 'event-tickets' ),
 				'value' => $order->ID,
-			);
+			];
 
-			$data[] = array(
+			$data[] = [
 				'name'  => __( 'Order Total', 'event-tickets' ),
 				'value' => get_post_meta( $order->ID, '_tribe_paypal_mc_gross', true ),
-			);
+			];
 
 			$meta     = get_post_meta( $order->ID, '_paypal_hashed_meta', true );
 			$address  = isset( $meta['address_name'] ) ? $meta['address_name'] : '';
@@ -532,20 +551,20 @@ class Tribe__Tickets__Privacy {
 			$address .= isset( $meta['address_zip'] ) ? ', ' . $meta['address_zip'] : '';
 			$address .= isset( $meta['address_country'] ) ? ', ' . $meta['address_country'] : '';
 
-			$data[] = array(
+			$data[] = [
 				'name'  => __( 'Billing Address', 'event-tickets' ),
 				'value' => $address,
-			);
+			];
 
-			$data[] = array(
+			$data[] = [
 				'name'  => __( 'Email', 'event-tickets' ),
 				'value' => get_post_meta( $order->ID, '_tribe_paypal_payer_email', true ),
-			);
+			];
 
-			$data[] = array(
+			$data[] = [
 				'name'  => __( 'Date', 'event-tickets' ),
 				'value' => get_post_meta( $order->ID, '_tribe_paypal_payment_date', true ),
-			);
+			];
 
 			/**
 			 * Allow filtering for the tribecommerce order data export.
@@ -556,21 +575,57 @@ class Tribe__Tickets__Privacy {
 			 */
 			$data = apply_filters( 'tribe_tickets_personal_data_export_tpp_order', $data, $order );
 
-			$export_items[] = array(
+			$export_items[] = [
 				'group_id'    => $group_id,
 				'group_label' => $group_label,
 				'item_id'     => $item_id,
 				'data'        => $data,
-			);
+			];
 		}
 
 		// Tell core if we have more orders to work on still
 		$done = count( $tpp_orders->posts ) < $number;
 
-		return array(
+		return [
 			'data' => $export_items,
 			'done' => $done,
-		);
+		];
 	}
 
+	/**
+	 * Get and filter the opt-out text.
+	 * @TODO: deprecate when we convert to opt-in and convert all uses to $this->get_opt_in_text()
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_opt_out_text() {
+		/**
+		 * Filters the default text for the opt-out checkbox.
+		 *
+		 * @since TBD
+		 *
+		 * @param $content string The default text.
+		 */
+		 return apply_filters( 'tribe_tickets_default_opt_out_text', $this->opt_out_text );
+	}
+
+	/**
+	 * Placeholder for when we change to opt-in.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_opt_in_text() {
+		/**
+		 * Filters the default text for the opt-in checkbox.
+		 *
+		 * @since TBD
+		 *
+		 * @param $content string The default text.
+		 */
+		 return apply_filters( 'tribe_tickets_default_opt_out_text', $this->opt_in_text );
+	}
 }

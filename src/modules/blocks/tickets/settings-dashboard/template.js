@@ -9,6 +9,7 @@ import classNames from 'classnames';
  * Wordpress dependencies
  */
 import { Spinner } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -33,6 +34,7 @@ const TicketsSettingsDashboard = ( {
 			<Fragment>
 				{ hasTicketsPlus && <CapacityTable /> }
 				<HeaderImage />
+				<p>__( 'A note about the attendee list being optional.', 'event-tickets' )</p>
 				{ isSettingsLoading && <Spinner /> }
 			</Fragment>
 		) }
