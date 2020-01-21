@@ -119,6 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.11.2] TBD =
 
+* Feature - Include Freemius integration on to allow opt-in information collection. [ET-595]
 * Fix - Create new function `tribe_get_event_capacity` for checking the capacity of an entire event. Have `tribe_tickets_get_capacity` pass off to it as when given an event. [ETP-48]
 * Fix - Price formatting method now correctly prevents incorrect display when a comma is used as the decimal separator. [ETP-53]
 * Fix - Display WooCommerce price taxation suffix, if applicable. [ETP-33]
@@ -133,6 +134,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Ensure we update the correct event meta for global stock on ticket creation. [ET-614]
 * Fix - Correct logic so selling out of one RSVP doesn't prevent "purchasing" another. [ETP-603]
 * Fix - Correct broken javascript for themes that change the base post classes. [ET-614]
+* Tweak - Add filter to allow deactivating Freemius `tribe_tickets_integrations_should_load_freemius`. [ET-595]
 * Tweak - Refine logic for the no results notice on the "My Tickets" page. [ETP-151]
 * Tweak - Remove duplicate ticket script to prevent conflicts. [ET-596]
 
