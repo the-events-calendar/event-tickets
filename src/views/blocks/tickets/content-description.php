@@ -9,7 +9,7 @@
  * See more documentation about our Blocks Editor templating system.
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
-
+ * 
  * @since 4.9
  * @since TBD Updated the button to include a type - helps avoid submitting forms unintentionally.
  *
