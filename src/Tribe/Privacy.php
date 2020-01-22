@@ -35,7 +35,7 @@ class Tribe__Tickets__Privacy {
 
 	public function init_text() {
 		$this->opt_out_text = __( "Hide my attendee data from public view.", 'event-tickets' );
-		$this->opt_in_text = __( "Allow use of my attendee data publicly on this site.", 'event-tickets' );
+		$this->opt_in_text = __( 'Allow use of my attendee data publicly on this site.', 'event-tickets' );
 	}
 
 	/**
