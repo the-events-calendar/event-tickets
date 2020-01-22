@@ -5,12 +5,11 @@ if ( 'undefined' === typeof window.tribe ) {
 	window.tribe = {}; // eslint-disable-line no-unused-vars
 }
 
-let tribe = window.tribe;
 
-tribe.tickets = tribe.tickets || {};
-tribe.dialogs = tribe.dialogs || {};
-tribe.dialogs.events = tribe.dialogs.events || {};
-tribe.tickets.block = {
+window.tribe.tickets = window.tribe.tickets || {};
+window.tribe.dialogs = window.tribe.dialogs || {};
+window.tribe.dialogs.events = window.tribe.dialogs.events || {};
+window.tribe.tickets.block = {
 	num_attendees: 0,
 	event: {},
 };
@@ -1571,7 +1570,7 @@ tribe.tickets.block = {
 	obj.document.on(
 		'beforeunload',
 		function() {
-			if ( tribe.tickets.modal_redirect ) {
+			if ( window.tribe.tickets.modal_redirect ) {
 				obj.clearLocal();
 				return;
 			}
@@ -1650,7 +1649,7 @@ tribe.tickets.block = {
 
 			$( '#tribe_tickets_ar_data' ).val( JSON.stringify( params ) );
 			// Set a flag to clear sessionStorage
-			tribe.tickets.modal_redirect = true;
+			window.tribe.tickets.modal_redirect = true;
 			obj.clearLocal();
 
 			// Submit the form.
@@ -1745,5 +1744,5 @@ tribe.tickets.block = {
 			obj.init();
 		}
 	} );
-} )( jQuery, tribe.tickets.block, tribe.dialogs.events );
+} )( jQuery, window.tribe.tickets.block, window.tribe.dialogs.events );
 /* eslint-enable max-len */
