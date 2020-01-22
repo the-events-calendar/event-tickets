@@ -119,6 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.11.2] TBD =
 
+* Feature - Show original price on ticket block if ticket on sale. Allow turning off via the `tribe_tickets_show_original_price_on_sale` filter. [ETP-47]
 * Fix - Create new function `tribe_get_event_capacity` for checking the capacity of an entire event. Have `tribe_tickets_get_capacity` pass off to it as when given an event. [ETP-48]
 * Fix - Price formatting method now correctly prevents incorrect display when a comma is used as the decimal separator. [ETP-53]
 * Fix - Display WooCommerce price taxation suffix, if applicable. [ETP-33]
