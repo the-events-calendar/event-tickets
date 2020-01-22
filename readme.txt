@@ -122,7 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Feature - Show original price on ticket block if ticket on sale. Allow turning off via the `tribe_tickets_show_original_price_on_sale` filter. [ETP-47]
 * Fix - Create new function `tribe_get_event_capacity` for checking the capacity of an entire event. Have `tribe_tickets_get_capacity` pass off to it as when given an event. [ETP-48]
 * Fix - Price formatting method now correctly prevents incorrect display when a comma is used as the decimal separator. [ETP-53]
-* Fix - Display WooCommerce price taxation suffix, if applicable. [ETP-33]
+* Fix - Re-implement displaying price suffix, if applicable, via new `tribe_tickets_commerce_currency_suffix` filter. [ET-620]
 * Fix - Override checkout link in WooCommerce Mini-Cart widget so it uses the custom page for attendee registration if it is setup. [ETP-41]
 * Fix - Ensure that attendee images display horizontally in the frontend for Twenty Nineteen and Twenty Twenty themes. [ET-590]
 * Fix - Load JavaScript assets with Ticket Block when using Classic Editor. [ET-587]
