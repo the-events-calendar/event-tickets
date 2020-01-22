@@ -34,14 +34,17 @@ $button_name = apply_filters( 'tribe_tickets_ticket_block_submit', 'cart-button'
  *
  * @param array $button_name The button classes.
  */
-$button_classes = apply_filters( 'tribe_tickets_ticket_block_submit_classes', [
-	'tribe-common-c-btn',
-	'tribe-common-c-btn--small',
-	'tribe-tickets__buy',
-] );
+$button_classes = apply_filters(
+	'tribe_tickets_ticket_block_submit_classes',
+	[
+		'tribe-common-c-btn',
+		'tribe-common-c-btn--small',
+		'tribe-tickets__buy',
+	]
+);
 ?>
 <button
-	<?php tribe_classes( $button_classes ) ?>
+	<?php tribe_classes( $button_classes ); ?>
 	id="tribe-tickets__buy"
 	<?php if ( $button_name ) : ?>
 		name="<?php echo esc_html( $button_name ); ?>"
