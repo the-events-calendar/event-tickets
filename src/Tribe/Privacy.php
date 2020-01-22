@@ -33,8 +33,14 @@ class Tribe__Tickets__Privacy {
 		add_filter( 'wp_privacy_personal_data_erasers', [ $this, 'register_erasers' ], 10 );
 	}
 
+	/**
+	 * Initialize the opt-out/opt-in text default values.
+	 *
+	 * @since TBD
+	 *
+	 */
 	public function init_text() {
-		$this->opt_out_text = __( "Hide my attendee data from public view.", 'event-tickets' );
+		$this->opt_out_text = __( 'Hide my attendee data from public view.', 'event-tickets' );
 		$this->opt_in_text = __( 'Allow use of my attendee data publicly on this site.', 'event-tickets' );
 	}
 

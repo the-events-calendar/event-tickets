@@ -65,7 +65,7 @@ $show_unlimited = apply_filters( 'tribe_tickets_block_show_unlimited_availabilit
 <div
 	class="tribe-common-b3 tribe-tickets__item__extra__available"
 >
-	<?php if ( $show_unlimited -1 && $available ) : ?>
+	<?php if ( $show_unlimited && -1 === $available ) : ?>
 		<?php $this->template( 'blocks/tickets/extra-available-unlimited', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
 	<?php elseif ( 0 === $threshold || $available <= $threshold ) : ?>
 		<?php $this->template( 'blocks/tickets/extra-available-quantity', [ 'ticket' => $ticket, 'available' => $available ] ); ?>
