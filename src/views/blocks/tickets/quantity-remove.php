@@ -24,6 +24,7 @@ $button_title = sprintf(
 );
 ?>
 <button
+	type="submit"
 	class="tribe-tickets__item__quantity__remove"
 	title="<?php echo esc_attr( $button_title ); ?>"
 >
