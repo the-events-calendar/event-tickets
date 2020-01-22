@@ -1,9 +1,11 @@
 /* eslint-disable max-len */
 /* global tribe, TribeTicketOptions, TribeCartEndpoint, TribeCurrency, TribeMessages, TribeTicketsURLs */
 // @TODO: Take this line off once we _know_ actually have the tribe object
-if ( 'undefined' === typeof tribe ) {
-	const tribe = {}; // eslint-disable-line no-unused-vars
+if ( 'undefined' === typeof window.tribe ) {
+	window.tribe = {}; // eslint-disable-line no-unused-vars
 }
+
+let tribe = window.tribe;
 
 tribe.tickets = tribe.tickets || {};
 tribe.dialogs = tribe.dialogs || {};

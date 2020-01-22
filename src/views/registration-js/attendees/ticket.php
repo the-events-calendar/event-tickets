@@ -10,7 +10,12 @@
  * @version 4.11.0
  *
  */
-
+ if (
+	! class_exists( 'Tribe__Tickets_Plus__Meta' )
+	|| ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' )
+) {
+	return;
+}
 /**
 * @var Tribe__Tickets_Plus__Meta $meta
 */
