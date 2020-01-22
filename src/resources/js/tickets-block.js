@@ -24,6 +24,7 @@ tribe.tickets.block  = {
 		blockFooterAmount          : '.tribe-amount',
 		blockFooterQuantity        : '.tribe-tickets__footer__quantity__number',
 		blockSubmit                : '.tribe-tickets__submit',
+		classicSubmit              : '#tribe-tickets__buy',
 		container                  : '#tribe-tickets',
 		hidden                     : 'tribe-common-a11y-hidden',
 		item                       : '.tribe-tickets__item',
@@ -115,6 +116,7 @@ tribe.tickets.block  = {
 			obj.initPrefill();
 		}
 
+		obj.disable( $( obj.selector.submit ), true );
 	}
 
 	/* DOM Updates */
@@ -788,6 +790,21 @@ tribe.tickets.block  = {
 
 		$loader.addClass( obj.selector.hidden );
 	}
+
+
+	obj.disable = function( $element, isDisabled ) {
+		if ( isDisabled ) {
+			$element.prop( 'disabled', true )
+				.attr( {
+					'disabled': 'true',
+					'aria-disabled': 'true',
+				} );
+		} else {
+			$element.prop( 'disabled', false )
+				.removeProp( 'disabled' )
+				.removeAttr( 'disabled aria-disabled' );
+		}
+	};
 
 	/* Prefill Handling */
 
@@ -1648,7 +1665,7 @@ tribe.tickets.block  = {
 	 */
 	obj.document.on(
 		'click',
-		obj.modalSelector.submit,
+		obj.modalSelector.classicSubmit,
 		function( e ) {
 			e.preventDefault();
 			var $button      = $( this );

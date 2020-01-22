@@ -10,8 +10,9 @@
  * @since 4.10.2 Only show Update button if ticket has meta.
  * @since 4.10.8 Show Update button if current user has either RSVP or Ticket with meta. Do not use the now-deprecated third parameter of `get_description_rsvp_ticket()`.
  * @since 4.10.9 Use function for text.
+ * @since TBD Reformat a bit of the code around the button - no functional changes.
  *
- * @version 4.11.0
+ * @version TBD
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -87,7 +88,14 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 		)
 	) : ?>
 		<div class="tribe-submit-tickets-form">
-			<button type="submit" name="process-tickets" value="1" class="button alt"><?php echo sprintf( esc_html__( 'Update %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, get_current_user_id() ) ); ?></button>
+			<button
+				type="submit"
+				name="process-tickets"
+				value="1"
+				class="button alt"
+			>
+				<?php echo sprintf( esc_html__( 'Update %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, get_current_user_id() ) ); ?>
+			</button>
 		</div>
 	<?php endif;
 	// unset our global since we don't need it any more
