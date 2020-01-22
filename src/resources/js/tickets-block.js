@@ -1665,7 +1665,7 @@ tribe.tickets.block  = {
 	 */
 	obj.document.on(
 		'click',
-		obj.modalSelector.classicSubmit,
+		obj.modalSelector.submit,
 		function( e ) {
 			e.preventDefault();
 			var $button      = $( this );
@@ -1727,14 +1727,11 @@ tribe.tickets.block  = {
 	 */
 	obj.document.on(
 		'click',
-		obj.selector.submit,
+		obj.selector.classicSubmit,
 		function( e ) {
 			e.preventDefault();
 
-			var $button    = $( this );
-			var $form       = $( obj.selector.container );
-			var button_text = $button.attr( 'name' );
-			var provider    = $form.data( 'provider' );
+			var $form = $( obj.selector.container );
 
 			obj.loaderShow( obj.selector.loader );
 
