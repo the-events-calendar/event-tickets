@@ -11,6 +11,8 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.11.0
+ * @since TBD Ensure we always show the optout by default.
+ *
  * @version 4.11.0
  *
  */

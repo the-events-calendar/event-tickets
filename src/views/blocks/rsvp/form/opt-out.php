@@ -12,7 +12,9 @@
  *
  * @since 4.9
  * @since 4.11.0 Updated the optout markup and classes used.
- * @version 4.11.0
+ * @since TBD Ensure we always show the optout by default.
+ *
+ * @version TBD
  *
  */
 $modal    = $this->get( 'is_modal' );
