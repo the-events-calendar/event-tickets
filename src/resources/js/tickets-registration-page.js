@@ -38,7 +38,7 @@ tribe.tickets.registration = {};
 		fieldsSuccess      : '.tribe-tickets__item__attendee__fields__success',
 		form               : '#tribe-tickets__registration__form',
 		item               : '.tribe-tickets__item',
-		itemPrice          : '.tribe-amount',
+		itemPrice          : '.tribe-tickets__sale_price .tribe-amount',
 		itemQuantity       : '.tribe-ticket-quantity',
 		loader             : '.tribe-common-c-loader',
 		metaField          : '.ticket-meta',
@@ -413,7 +413,7 @@ tribe.tickets.registration = {};
 			var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
 
 			if ( $item ) {
-				var pricePer = $item.find( '.tribe-tickets__item__extra__price .tribe-amount' ).text();
+				var pricePer = $item.find( '.tribe-tickets__sale_price .tribe-amount' ).text();
 				$item.find( '.tribe-ticket-quantity' ).html( value.quantity );
 				var price = value.quantity * obj.cleanNumber( pricePer );
 				price = obj.numberFormat( price );
