@@ -100,7 +100,7 @@ class Tribe__Tickets__Integrations__Freemius {
 		];
 
 		if ( class_exists( 'Tribe__Events__Aggregator__Page' ) ) {
-			$valid_page[] = Tribe__Events__Aggregator__Page::$slug;
+			$valid_page[ Tribe__Events__Aggregator__Page::$slug ] = true;
 		}
 
 		if ( isset( $valid_page[ $page ] ) ) {
