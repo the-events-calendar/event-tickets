@@ -73,7 +73,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Includes Tcikets into the path namespace mapping, allowing for a better namespacing when loading files.
+	 * Includes Tickets into the path namespace mapping, allowing for a better namespacing when loading files.
 	 *
 	 * @since TBD
 	 *
