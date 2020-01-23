@@ -24,6 +24,9 @@ ob_start();
 $messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
 $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 
+/* var Tribe__Tickets__Privacy $privacy  */
+$privacy = tribe( 'tickets.privacy' );
+
 /** @var Tribe__Settings_Manager $settings_manager */
 $settings_manager = tribe( 'settings.manager' );
 
@@ -255,9 +258,10 @@ if ( ! $already_rendered ) {
 										type="checkbox"
 										name="attendee[optout]"
 										id="tribe-tickets-attendees-list-optout"
+										<?php checked( true ); ?>
 									>
 									<label for="tribe-tickets-attendees-list-optout">
-										<?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?>
+										<?php echo $privacy->get_opt_out_text(); ?>
 									</label>
 								</td>
 							</tr>

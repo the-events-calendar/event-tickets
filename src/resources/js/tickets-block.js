@@ -380,8 +380,14 @@ window.tribe.tickets.block = {
 	obj.maybeShowOptOut = function( $ticket, newQuantity ) {
 		const hasOptout = $ticket.has( obj.selector.itemOptOut ).length;
 		if ( hasOptout ) {
-			const $optout = $ticket.closest( obj.selector.item ).find( obj.selector.itemOptOut );
-			( 0 < newQuantity ) ? $optout.show() : $optout.hide();
+			const $item = $ticket.closest( obj.selector.item );
+			if ( 0 < newQuantity ) {
+				//$optout.show();
+				$item.addClass( 'show-optout' );
+			} else {
+				//$optout.hide();
+				$item.removeClass( 'show-optout' );
+			}
 		}
 	};
 
@@ -578,7 +584,9 @@ window.tribe.tickets.block = {
 			}
 		);
 
-		sharedCap = Math.max( ...sharedCap );
+		// IE doesn't allow spread operator
+		sharedCap = Math.max.apply( this, sharedCap );
+
 		currentLoad = currentLoad.reduce(
 			function( a, b ) {
 				return a + b;
@@ -1001,7 +1009,9 @@ window.tribe.tickets.block = {
 		const postId = eventId || obj.postId;
 		const meta = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + postId ) );
 		const tickets = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart-' + postId ) );
-		const ret = { meta, tickets };
+		const ret = {};
+		ret.meta = meta;
+		ret.tickets = tickets;
 
 		return ret;
 	};
@@ -1408,7 +1418,7 @@ window.tribe.tickets.block = {
 	 * @since 4.9
 	 */
 	obj.document.on(
-		'click touchend',
+		'click',
 		'.tribe-tickets__item__quantity__remove, .tribe-tickets__item__quantity__add',
 		function( e ) {
 			e.preventDefault();
@@ -1490,7 +1500,7 @@ window.tribe.tickets.block = {
 						obj.disable( $( obj.selector.submit ), false );
 					}
 				},
-				500,
+				500
 			);
 		}
 	);

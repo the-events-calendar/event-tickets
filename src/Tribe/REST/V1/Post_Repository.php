@@ -768,7 +768,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	}
 
 	/**
-	 * Returns an attendee Global ID.jA
+	 * Returns an attendee Global ID.
 	 *
 	 * If not set/updated for the attendee than the method will generate/update it.
 	 *
