@@ -1537,6 +1537,7 @@ tribe.tickets.block  = {
 
 						// Close the dialog
 						window[ result ].hide();
+						obj.disable( $( obj.selector.submit ), false );
 					}
 				},
 				500,
