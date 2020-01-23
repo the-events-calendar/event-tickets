@@ -243,6 +243,7 @@
 	}
 
 	.tribe-tickets__item__extra__price {
+		font-weight: var(--font-weight-bold);
 		white-space: nowrap;
 
 		@media(--viewport-medium) {
@@ -250,6 +251,12 @@
 			grid-column: 1;
 			-ms-grid-row: 1;
 			grid-row: 1;
+		}
+
+		.tribe-tickets__original_price {
+			color: var(--color-text-secondary);
+			font-weight: var(--font-weight-regular);
+			text-decoration: line-through;
 		}
 	}
 
@@ -284,6 +291,8 @@
 		background-color: transparent;
 		color: var(--color-icon-secondary);
 		display: inline-block;
+		font-size: 24px;
+		font-weight: var(--font-weight-regular);
 		margin-bottom: var(--spacer-0);
 		width: 12px;
 
@@ -984,6 +993,7 @@
 
 			.tribe-tickets__item__extra__price {
 				@mixin mobile-body-1;
+				font-weight: var(--font-weight-bold);
 
 				@media (--viewport-medium) {
 					@mixin desktop-body-1-sup;
@@ -1060,7 +1070,7 @@
 
 			.tribe-tickets-quantity {
 				@mixin mobile-body-2;
-					font-weight: var(--font-weight-bold);
+				font-weight: var(--font-weight-regular);
 
 				@media (--viewport-medium) {
 					@mixin desktop-body-1-sup;

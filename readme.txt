@@ -119,6 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.11.2] TBD =
 
+* Feature - Show original price on ticket block if ticket on sale. Allow turning off via the `tribe_tickets_show_original_price_on_sale` filter. [ETP-47]
 * Fix - Allow adding ticket header image on non-event posts. [ETP-54]
 * Fix - Close opening `<div>` in `blocks/attendees.php`. [ET-589]
 * Fix - Correct broken javascript for themes that change the base post classes. [ET-640]
