@@ -68,7 +68,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	 *
 	 * @var string
 	 */
-	private $page;
+	private $page = 'tribe-common';
 
 	/**
 	 * Store the value from the 'tab' in the request.
@@ -100,19 +100,21 @@ class Tribe__Tickets__Integrations__Freemius {
 
 		global $pagenow;
 
-		$this->page = tribe_get_request_var( 'page' );
+		$page = tribe_get_request_var( 'page' );
 
 		$valid_page = [
-			Tribe__Settings::$parent_slug,
-			Tribe__App_Shop::MENU_SLUG,
-			'tribe-help',
+			Tribe__Settings::$parent_slug => true,
+			Tribe__App_Shop::MENU_SLUG    => true,
+			'tribe-help'                  => true,
 		];
 
 		if ( class_exists( 'Tribe__Events__Aggregator__Page' ) ) {
 			$valid_page[] = Tribe__Events__Aggregator__Page::$slug;
 		}
 
-		if ( 'plugins.php' !== $pagenow && ! in_array( $this->page, $valid_page, true ) ) {
+		if ( isset( $valid_page[ $page ] ) ) {
+			$this->page = $page;
+		} elseif ( 'plugins.php' !== $pagenow && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
 			return;
 		}
 
@@ -124,10 +126,7 @@ class Tribe__Tickets__Integrations__Freemius {
 		$should_load = true;
 
 		// Check if Freemius integration is disabled.
-		if (
-			( defined( 'TRIBE_NO_FREEMIUS' ) && true === TRIBE_NO_FREEMIUS )
-			|| true === (bool) getenv( 'TRIBE_NO_FREEMIUS' )
-		) {
+		if ( ( defined( 'TRIBE_NO_FREEMIUS' ) && true === TRIBE_NO_FREEMIUS ) || true === (bool) getenv( 'TRIBE_NO_FREEMIUS' ) ) {
 			$should_load = false;
 		}
 
@@ -149,9 +148,10 @@ class Tribe__Tickets__Integrations__Freemius {
 
 		$this->instance = $freemius->initialize( $this->slug, $this->freemius_id, $this->public_key, [
 			'menu'           => [
-				'slug'    => $this->page,
-				'account' => true,
-				'support' => false,
+				'slug'       => $this->page,
+				'first-path' => $this->redirect_settings_path(),
+				'account'    => true,
+				'support'    => false,
 			],
 			'is_premium'     => false,
 			'has_addons'     => false,
@@ -162,8 +162,6 @@ class Tribe__Tickets__Integrations__Freemius {
 		$this->instance->add_filter( 'after_skip_url', [ $this, 'redirect_settings_url' ] );
 		$this->instance->add_filter( 'after_connect_url', [ $this, 'redirect_settings_url' ] );
 		$this->instance->add_filter( 'after_pending_connect_url', [ $this, 'redirect_settings_url' ] );
-
-		tribe_asset( $this->object_class, 'tribe-tickets-freemius', 'freemius.css', [], 'admin_enqueue_scripts' );
 
 		/*
 		 * Freemius typically hooks this action–which bootstraps the deactivation dialog–during plugins_loaded, but we
@@ -192,13 +190,24 @@ class Tribe__Tickets__Integrations__Freemius {
 	 * @return mixed
 	 */
 	public function redirect_settings_url() {
+		return admin_url( $this->redirect_settings_path() );
+	}
+
+	/**
+	 * Redirect path for the settings page.
+	 *
+	 * @since TBD
+	 *
+	 * @return mixed
+	 */
+	public function redirect_settings_path() {
 		if ( class_exists( 'Tribe__Events__Main' ) ) {
 			$url = sprintf( 'edit.php?post_type=%s&page=%s', Tribe__Events__Main::POSTTYPE, $this->page );
 		} else {
 			$url = sprintf( 'admin.php?page=%s', $this->page );
 		}
 
-		return admin_url( $url );
+		return $url;
 	}
 
 	/**
@@ -247,6 +256,8 @@ class Tribe__Tickets__Integrations__Freemius {
 	public function filter_connect_message_on_update(
 		$message, $user_first_name, $product_title, $user_login, $site_link, $freemius_link
 	) {
+		wp_enqueue_style( 'tribe-tickets-freemius', Tribe__Tickets__Main::instance()->plugin_url . '/src/resources/css/freemius.css' );
+
 		// Add the heading HTML.
 		$plugin_name = $this->name;
 		$title       = '<h3>' . sprintf( esc_html__( 'We hope you love %1$s', 'event-tickets' ), $plugin_name ) . '</h3>';
