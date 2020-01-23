@@ -71,15 +71,6 @@ class Tribe__Tickets__Integrations__Freemius {
 	private $page = 'tribe-common';
 
 	/**
-	 * Store the value from the 'tab' in the request.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	private $tab;
-
-	/**
 	 * Tribe__Tickets__Integrations__Freemius constructor.
 	 *
 	 * @since TBD
@@ -149,8 +140,9 @@ class Tribe__Tickets__Integrations__Freemius {
 		$this->instance = $freemius->initialize( $this->slug, $this->freemius_id, $this->public_key, [
 			'menu'           => [
 				'slug'       => $this->page,
-				'first-path' => $this->redirect_settings_path(),
-				'account'    => true,
+				'first-path' => $this->get_settings_path(),
+				'account'    => false,
+				'contact'    => false,
 				'support'    => false,
 			],
 			'is_premium'     => false,
@@ -158,10 +150,11 @@ class Tribe__Tickets__Integrations__Freemius {
 			'has_paid_plans' => false,
 		] );
 
-		$this->instance->add_filter( 'connect_url', [ $this, 'redirect_settings_url' ] );
-		$this->instance->add_filter( 'after_skip_url', [ $this, 'redirect_settings_url' ] );
-		$this->instance->add_filter( 'after_connect_url', [ $this, 'redirect_settings_url' ] );
-		$this->instance->add_filter( 'after_pending_connect_url', [ $this, 'redirect_settings_url' ] );
+		$this->instance->add_filter( 'connect_url', [ $this, 'get_connect_url' ], 10, 10 );
+		$this->instance->add_filter( 'after_skip_url', [ $this, 'get_settings_url' ] );
+		$this->instance->add_filter( 'after_connect_url', [ $this, 'get_settings_url' ] );
+		$this->instance->add_filter( 'after_pending_connect_url', [ $this, 'get_settings_url' ] );
+		$this->instance->add_filter( 'plugin_icon', [ $this, 'get_plugin_icon_url' ] );
 
 		/*
 		 * Freemius typically hooks this action–which bootstraps the deactivation dialog–during plugins_loaded, but we
@@ -173,34 +166,71 @@ class Tribe__Tickets__Integrations__Freemius {
 		$this->instance->add_filter( 'connect_message', [
 			$this,
 			'filter_connect_message_on_update',
-		], 11, 6 );
+		], 10, 6 );
 		$this->instance->add_filter( 'connect_message_on_update', [
 			$this,
 			'filter_connect_message_on_update',
-		], 11, 6 );
+		], 10, 6 );
 
 		add_action( 'admin_init', [ $this, 'maybe_remove_activation_complete_notice' ] );
 	}
 
 	/**
-	 * Redirect URL after the Freemius actions.
+	 * Get the connect page URL.
 	 *
 	 * @since TBD
 	 *
-	 * @return mixed
+	 * @param string $connect_url Current connect page URL.
+	 *
+	 * @return string The connect page URL.
 	 */
-	public function redirect_settings_url() {
-		return admin_url( $this->redirect_settings_path() );
+	public function get_connect_url( $connect_url ) {
+		$settings_url = $this->get_settings_url();
+
+		if ( false !== strpos( $connect_url, 'fs_action' ) ) {
+			$action = $this->slug . '_reconnect';
+
+			$settings_url = add_query_arg( [
+				'nonce'     => wp_create_nonce( $action ),
+				'fs_action' => $action,
+			], $settings_url );
+		}
+
+		return $settings_url;
 	}
 
 	/**
-	 * Redirect path for the settings page.
+	 * Get the Settings page URL.
 	 *
 	 * @since TBD
 	 *
-	 * @return mixed
+	 * @return string The Settings page URL.
 	 */
-	public function redirect_settings_path() {
+	public function get_settings_url() {
+		return admin_url( $this->get_settings_path() );
+	}
+
+	/**
+	 * Get the plugin icon URL.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The plugin icon URL.
+	 */
+	public function get_plugin_icon_url() {
+		$class = $this->object_class;
+
+		return $class::instance()->plugin_url . '/src/resources/images/' . $this->slug . '.svg';
+	}
+
+	/**
+	 * Get the Settings page path.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The Settings page path.
+	 */
+	public function get_settings_path() {
 		if ( class_exists( 'Tribe__Events__Main' ) ) {
 			$url = sprintf( 'edit.php?post_type=%s&page=%s', Tribe__Events__Main::POSTTYPE, $this->page );
 		} else {
@@ -256,7 +286,9 @@ class Tribe__Tickets__Integrations__Freemius {
 	public function filter_connect_message_on_update(
 		$message, $user_first_name, $product_title, $user_login, $site_link, $freemius_link
 	) {
-		wp_enqueue_style( 'tribe-tickets-freemius', Tribe__Tickets__Main::instance()->plugin_url . '/src/resources/css/freemius.css' );
+		$class = $this->object_class;
+
+		wp_enqueue_style( 'tribe-' . $this->slug . '-freemius', $class::instance()->plugin_url . '/src/resources/css/freemius.css' );
 
 		// Add the heading HTML.
 		$plugin_name = $this->name;
