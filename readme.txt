@@ -138,6 +138,9 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Tickets Block quantity +/- buttons set to 'button' type to avoid submitting Add to Cart form in IE11 or when js is disabled. [ET-619]
 * Tweak - Refine logic for the no results notice on the "My Tickets" page. [ETP-151]
 * Tweak - Remove duplicate ticket script to prevent conflicts. [ET-596]
+* Tweak - Change the Attendee List opt-out checkbox to be checked by default. [ET-615]
+* Tweak - Change the Attendee List opt-out checkbox wording, centralize where we handle it and create a function to retreive it. [ET-615]
+* Tweak - Add some code for future implementation around converting opt-outs to opt-ins. [ET-615]
 
 = [4.11.1] 2019-12-19 =
 
