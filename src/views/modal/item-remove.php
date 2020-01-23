@@ -6,8 +6,9 @@
  * [your-theme]/tribe/tickets/modal/item-remove.php
  *
  * @since 4.11.0
+ * @since TBD Reformat a bit of the code around the button - no functional changes.
  *
- * @version 4.11.0
+ * @version TBD
  *
  */
 ?>
@@ -15,6 +16,8 @@
 	class="tribe-tickets__item__remove__wrap"
 >
 	<button
+		type="button"
 		class="tribe-tickets__item__remove"
-	></button>
+	>
+	</button>
 </div>
