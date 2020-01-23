@@ -25,12 +25,18 @@ $ticket   = $this->get( 'ticket' );
  * @param bool
  */
 $hide_attendee_list_optout = apply_filters( 'tribe_tickets_plus_hide_attendees_list_optout', $modal );
-if ( $hide_attendee_list_optout
-	 && ! class_exists( 'Tribe__Tickets_Plus__Attendees_List' )
-	 && Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $this->get( 'post_id' ) )
+
+if (
+	$hide_attendee_list_optout
+	 || ! class_exists( 'Tribe__Tickets_Plus__Attendees_List' )
+	 || Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $this->get( 'post_id' ) )
 ) {
 	return;
 }
+
+/* var Tribe__Tickets__Privacy $privacy  */
+$privacy = tribe( 'tickets.privacy' );
+
 $field_id = [
 	'tribe-tickets-attendees-list-optout',
 	$ticket->ID
@@ -48,5 +54,6 @@ $field_id = implode( '-', $field_id );
 			id="<?php echo esc_attr( $field_id ); ?>"
 			name="attendee[optout]"
 			type="checkbox"
-		/><?php esc_html_e( "Don't show me on public attendee lists.", 'event-tickets' ); ?></label>
+			<?php checked( true ); ?>
+		/><?php echo $privacy->get_opt_out_text(); ?></label>
 </div>
