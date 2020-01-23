@@ -15,8 +15,8 @@
  *
  * @version TBD
  *
+ * @var $this Tribe__Tickets__Editor__Template
  */
-
 
 $ticket = $this->get( 'ticket' );
 $button_title = sprintf(
