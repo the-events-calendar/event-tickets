@@ -7208,6 +7208,7 @@
             ],
             "description": "Handlebars processor for php",
             "homepage": "https://github.com/XaminProject/handlebars.php",
+            "abandoned": true,
             "time": "2016-12-12T13:51:02+00:00"
         },
         {
