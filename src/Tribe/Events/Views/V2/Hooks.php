@@ -19,6 +19,7 @@ namespace Tribe\Tickets\Events\Views\V2;
 
 use Tribe\Tickets\Events\Views\V2\Models\Tickets;
 use Tribe__Tickets__Main as Plugin;
+use Tribe__Template;
 
 /**
  * Class Hooks.
@@ -43,18 +44,50 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since 4.10.9
 	 *
-	 * @param array $folders The current list of folders that will be searched template files.
+	 * @param array           $folders  The current list of folders that will be searched template files.
+	 * @param Tribe__Template $template Which template instance we are dealing with.
 	 *
 	 * @return array The filtered list of folders that will be searched for the templates.
 	 */
-	public function filter_template_path_list( array $folders = [] ) {
-		$folders[] = [
-			'id'       => 'event-tickets',
-			'priority' => 17,
-			'path'     => Plugin::instance()->plugin_path . 'src/views/v2',
+	public function filter_template_path_list( array $folders, Tribe__Template $template ) {
+		/** @var Plugin $main */
+		$main = tribe( 'tickets.main' );
+
+		$path = (array) rtrim( $main->plugin_path, '/' );
+
+		// Pick up if the folder needs to be added to the public template path.
+		$folder = $template->get_template_folder();
+
+		if ( ! empty( $folder ) ) {
+			$path = array_merge( $path, $folder );
+		}
+
+		$folders['event-tickets'] = [
+			'id'        => 'event-tickets',
+			'namespace' => $main->template_namespace,
+			'priority'  => 17,
+			'path'      => implode( DIRECTORY_SEPARATOR, $path ),
 		];
 
 		return $folders;
+	}
+
+	/**
+	 * Includes Tickets into the path namespace mapping, allowing for a better namespacing when loading files.
+	 *
+	 * @since TBD
+	 *
+	 * @param array            $namespace_map Indexed array containing the namespace as the key and path to `strpos`.
+	 * @param string           $path          Path we will do the `strpos` to validate a given namespace.
+	 * @param Tribe__Template  $template      Current instance of the template class.
+	 *
+	 * @return array  Namespace map after adding Pro to the list.
+	 */
+	public function filter_add_template_origin_namespace( $namespace_map, $path, $template ) {
+		/** @var Plugin $main */
+		$main = tribe( 'tickets.main' );
+		$namespace_map[ $main->template_namespace ] = $main->plugin_path;
+		return $namespace_map;
 	}
 
 	/**
@@ -89,7 +122,8 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @since 4.10.9
 	 */
 	protected function add_filters() {
-		add_filter( 'tribe_template_path_list', [ $this, 'filter_template_path_list' ] );
+		add_filter( 'tribe_template_path_list', [ $this, 'filter_template_path_list' ], 15, 2 );
+		add_filter( 'tribe_template_origin_namespace_map', [ $this, 'filter_add_template_origin_namespace' ], 15, 3 );
 		add_filter( 'tribe_post_type_events_properties', [ $this, 'add_tickets_data' ], 20, 2 );
 	}
 }
