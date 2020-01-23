@@ -17,6 +17,7 @@
  */
 $modal    = $this->get( 'is_modal' );
 $ticket   = $this->get( 'ticket' );
+
 /**
  * Use this filter to hide the Attendees List Optout
  *
@@ -24,7 +25,7 @@ $ticket   = $this->get( 'ticket' );
  *
  * @param bool
  */
-$hide_attendee_list_optout = apply_filters( 'tribe_tickets_plus_hide_attendees_list_optout', $modal );
+$hide_attendee_list_optout = apply_filters( 'tribe_tickets_plus_hide_attendees_list_optout', false );
 
 if ( $hide_attendee_list_optout ) {
 	return;
