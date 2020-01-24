@@ -137,6 +137,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Remove inaccurate display of "You don't have tickets for this event" notice at single event page's list of current user's RSVPs and/or Tickets. [ETP-50]
 * Fix - The Events Calendar's List View "RSVP Now!" button again displays for Events having only RSVP tickets and has the correct anchor link. [ETP-51]
 * Fix - Tickets Block quantity +/- buttons set to 'button' type to avoid submitting Add to Cart form in IE11 or when js is disabled. [ET-619]
+* Fix - Ensure that the first ticket with global stock added to a post/event updates the parent to indicate global stock is in use. [ET-614]
 * Tweak - Refine logic for the no results notice on the "My Tickets" page. [ETP-151]
 * Tweak - Remove duplicate ticket script to prevent conflicts. [ET-596]
 * Tweak - Change the Attendee List opt-out checkbox to be checked by default. [ET-615]

@@ -1,6 +1,6 @@
 <?php
 /**
- * Block: RSVP
+ * Block: Tickets
  * Form Opt-Out
  *
  * Override this template in your own theme by creating a file at:
