@@ -33,8 +33,10 @@ $tribe_commerce_currency = tribe( 'tickets.commerce.currency' );
 >
 	<?php if ( ! empty( $ticket->on_sale ) ) : ?>
 		<span class="tribe-common-b2 tribe-tickets__original_price">
-		<?php echo $tribe_commerce_currency->get_formatted_currency_with_symbol( $ticket->regular_price, $post_id, $provider_class ) ?>
+			<?php echo $tribe_commerce_currency->get_formatted_currency_with_symbol( $ticket->regular_price, $post_id, $provider_class ); ?>
 		</span>
 	<?php endif; ?>
-	<?php echo $tribe_commerce_currency->get_formatted_currency_with_symbol( $ticket->price, $post_id, $provider_class ) ?>
+	<span class="tribe-tickets__sale_price">
+		<?php echo $tribe_commerce_currency->get_formatted_currency_with_symbol( $ticket->price, $post_id, $provider_class ); ?>
+	</span>
 </div>
