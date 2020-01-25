@@ -1,7 +1,7 @@
 <?php
 
 use Tribe\Events\Views\V2\Service_Provider as Events_Provider;
-use Tribe\Events\Tickets\Views\V2\Service_Provider as Tickets_Provider;
+use Tribe\Tickets\Events\Views\V2\Service_Provider as Tickets_Provider;
 
 $tec_tests_dir = __DIR__ . '/../../../the-events-calendar/tests';
 

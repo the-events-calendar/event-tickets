@@ -296,7 +296,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		wp_register_script(
 			'event-tickets-rsvp',
 			$js_url,
-			array( 'jquery', 'jquery-ui-datepicker' ),
+			array( 'jquery' ),
 			apply_filters( 'tribe_tickets_rsvp_js_version', Tribe__Tickets__Main::VERSION ),
 			true
 		);
