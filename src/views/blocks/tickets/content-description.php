@@ -14,7 +14,6 @@
  * @since TBD Updated the button to include a type - helps avoid submitting forms unintentionally.
  *
  * @version TBD
- *
  */
 
 $ticket = $this->get( 'ticket' );

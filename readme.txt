@@ -3,8 +3,8 @@
 Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.9
-Tested up to: 5.3
-Stable tag: 4.11.1
+Tested up to: 5.3.2
+Stable tag: 4.11.2
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.11.2] TBD =
+= [4.11.3] TBD =
 
 * Feature - Show original price on ticket block if ticket on sale. Allow turning off via the `tribe_tickets_show_original_price_on_sale` filter. [ETP-47]
 * Fix - Allow adding ticket header image on non-event posts. [ETP-54]
@@ -142,6 +142,12 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Change the Attendee List opt-out checkbox to be checked by default. [ET-615]
 * Tweak - Change the Attendee List opt-out checkbox wording, centralize where we handle it and create a function to retreive it. [ET-615]
 * Tweak - Add some code for future implementation around converting opt-outs to opt-ins. [ET-615]
+
+= [4.11.2] 2020-01-27 =
+
+* Tweak - Adding support for The Events Calendar 5.0.0
+* Tweak - Added new `tribe_events_is_current_time_in_date_window()` function that checks if the current datetime is within a post's ticket availability window [TEC-3033]
+* Language - 0 new strings added, 94 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.11.1] 2019-12-19 =
 
