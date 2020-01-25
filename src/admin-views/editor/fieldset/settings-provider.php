@@ -29,18 +29,24 @@ $fieldset_class   = $multiple_modules ? 'input_block' : 'screen-reader-text';
 			<?php endforeach; ?>
 		<?php else : ?>
 			<section style="margin-bottom: 0;">
-				<legend id="default_ticket_provider_legend" class="ticket_form_left"><?php printf(
-						esc_html__( 'Sell %s using:', 'event-tickets' ),
+				<legend id="default_ticket_provider_legend" class="ticket_form_left"><?php
+					echo esc_html( sprintf(
+						__( 'Sell %s using:', 'event-tickets' ),
 						tribe_get_ticket_label_plural_lowercase( 'default_ticket_provider' )
-					); ?></legend>
-				<p class="ticket_form_right"><?php printf(
-						esc_attr__( 'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell %s for this event.', 'event-tickets' ),
+					) );
+					?></legend>
+				<p class="ticket_form_right"><?php
+					echo esc_attr( sprintf(
+						__( 'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell %s for this event.', 'event-tickets' ),
 						tribe_get_ticket_label_plural_lowercase( 'multiple_providers' )
-					); ?>
-					<em><?php printf(
-						esc_attr__( 'Note: adjusting this setting will only impact new %1$s. Existing %1$s will not change. We highly recommend that all %1$s for one event use the same ecommerce plugin.', 'event-tickets' ),
+					) );
+					?>
+					<em><?php
+					echo esc_attr( sprintf(
+						__( 'Note: adjusting this setting will only impact new %1$s. Existing %1$s will not change. We highly recommend that all %1$s for one event use the same ecommerce plugin.', 'event-tickets' ),
 						tribe_get_ticket_label_plural_lowercase( 'multiple_providers' )
-					); ?></em>
+					) );
+					?></em>
 				</p>
 				<?php foreach ( $modules as $class => $module ) : ?>
 					<label class="ticket_form_right" for="provider_<?php echo esc_attr( $class . '_radio' ); ?>">

@@ -94,10 +94,12 @@ if ( $total_sold ) {
 				</div>
 				<div class="welcome-panel-column welcome-panel-middle">
 					<h3>
-						<?php printf(
-							esc_html__( 'Sales by %s Type', 'event-tickets' ),
+						<?php
+						echo esc_html( sprintf(
+							__( 'Sales by %s Type', 'event-tickets' ),
 							tribe_get_ticket_label_singular( 'sales_by_type' )
-						); ?>
+						) );
+						?>
 						<?php echo $order_overview->get_sale_by_ticket_tooltip(); ?>
 					</h3>
 					<?php
