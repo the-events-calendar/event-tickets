@@ -122,7 +122,7 @@ class Tribe__Tickets__Integrations__Freemius {
 		}
 
 		/**
-		 * Allows third-party disabling of the integration.
+		 * Allows third-party enabling/disabling of the integration.
 		 *
 		 * @since  TBD
 		 *
