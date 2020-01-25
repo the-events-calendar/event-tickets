@@ -94,7 +94,10 @@ if ( $total_sold ) {
 				</div>
 				<div class="welcome-panel-column welcome-panel-middle">
 					<h3>
-						<?php esc_html_e( 'Sales by Ticket Type', 'event-tickets' ); ?>
+						<?php printf(
+							esc_html__( 'Sales by %s Type', 'event-tickets' ),
+							tribe_get_ticket_label_singular( 'sales_by_type' )
+						); ?>
 						<?php echo $order_overview->get_sale_by_ticket_tooltip(); ?>
 					</h3>
 					<?php
@@ -115,9 +118,15 @@ if ( $total_sold ) {
 						<h3>
 							<?php
 							$completed_status = $order_overview->get_completed_status_class();
+
+							$text_total_sales = sprintf(
+								esc_html__( 'Total %s Sales', 'event-tickets' ),
+								tribe_get_ticket_label_singular( 'total_sales' )
+							);
+
 							$totals_header = sprintf(
 								'%1$s: %2$s (%3$s)',
-								__( 'Total Ticket Sales', 'event-tickets' ),
+								$text_total_sales,
 								tribe_format_currency( number_format( $completed_status->get_line_total(), 2 ), $post_id ),
 								$completed_status->get_qty()
 							);
@@ -128,9 +137,14 @@ if ( $total_sold ) {
 
 						<div class="order-total">
 							<?php
+							$text_total_ordered = sprintf(
+								esc_html__( 'Total %s Ordered', 'event-tickets' ),
+								tribe_get_ticket_label_plural( 'total_ordered' )
+							);
+
 							$totals_header = sprintf(
 								'%1$s: %2$s (%3$s)',
-								__( 'Total Tickets Ordered', 'event-tickets' ),
+								$text_total_ordered,
 								tribe_format_currency( number_format( $order_overview->get_line_total(), 2 ), $post_id ),
 								$order_overview->get_qty()
 							);

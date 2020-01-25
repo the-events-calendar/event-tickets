@@ -62,7 +62,10 @@ $start_date_errors = array(
 					class="ticket_field ticket_form_left"
 					<?php checked( true, $ticket ? $ticket->show_description : true ); ?>
 				>
-				<?php esc_html_e( 'Show description on front end ticket form.', 'event-tickets' ); ?>
+				<?php printf(
+					esc_html__( 'Show description on front end %s form.', 'event-tickets' ),
+					tribe_get_ticket_label_singular_lowercase( 'default_ticket_provider' )
+				); ?>
 			</label>
 		</div>
 	</div>
