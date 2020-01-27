@@ -1,14 +1,14 @@
 /* eslint-disable max-len */
-/* global tribe, TribeTicketOptions, TribeCartEndpoint, TribeCurrency, TribeMessages, TribeTicketsURLs */
+/* global TribeTicketOptions, TribeCartEndpoint, TribeCurrency, TribeMessages, TribeTicketsURLs */
 // @TODO: Take this line off once we _know_ actually have the tribe object
-if ( ! tribe ) {
-	const tribe = {}; // eslint-disable-line no-unused-vars
+if ( 'undefined' === typeof window.tribe ) {
+	window.tribe = {}; // eslint-disable-line no-unused-vars
 }
 
-tribe.tickets = tribe.tickets || {};
-tribe.dialogs = tribe.dialogs || {};
-tribe.dialogs.events = tribe.dialogs.events || {};
-tribe.tickets.block = {
+window.tribe.tickets = window.tribe.tickets || {};
+window.tribe.dialogs = window.tribe.dialogs || {};
+window.tribe.dialogs.events = window.tribe.dialogs.events || {};
+window.tribe.tickets.block = {
 	num_attendees: 0,
 	event: {},
 };
@@ -34,7 +34,7 @@ tribe.tickets.block = {
 		itemExtraAvailableQuantity: '.tribe-tickets__item__extra__available__quantity',
 		itemOptOut: '.tribe-tickets-attendees-list-optout--wrapper',
 		itemOptOutInput: '#tribe-tickets-attendees-list-optout-',
-		itemPrice: '.tribe-amount',
+		itemPrice: '.tribe-tickets__sale_price .tribe-amount',
 		itemQuantity: '.tribe-tickets__item__quantity',
 		itemQuantityInput: '.tribe-tickets-quantity',
 		loader: '.tribe-common-c-loader',
@@ -380,8 +380,14 @@ tribe.tickets.block = {
 	obj.maybeShowOptOut = function( $ticket, newQuantity ) {
 		const hasOptout = $ticket.has( obj.selector.itemOptOut ).length;
 		if ( hasOptout ) {
-			const $optout = $ticket.closest( obj.selector.item ).find( obj.selector.itemOptOut );
-			( 0 < newQuantity ) ? $optout.show() : $optout.hide();
+			const $item = $ticket.closest( obj.selector.item );
+			if ( 0 < newQuantity ) {
+				//$optout.show();
+				$item.addClass( 'show-optout' );
+			} else {
+				//$optout.hide();
+				$item.removeClass( 'show-optout' );
+			}
 		}
 	};
 
@@ -578,7 +584,9 @@ tribe.tickets.block = {
 			}
 		);
 
-		sharedCap = Math.max( ...sharedCap );
+		// IE doesn't allow spread operator
+		sharedCap = Math.max.apply( this, sharedCap );
+
 		currentLoad = currentLoad.reduce(
 			function( a, b ) {
 				return a + b;
@@ -1001,7 +1009,9 @@ tribe.tickets.block = {
 		const postId = eventId || obj.postId;
 		const meta = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + postId ) );
 		const tickets = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart-' + postId ) );
-		const ret = { meta, tickets };
+		const ret = {};
+		ret.meta = meta;
+		ret.tickets = tickets;
 
 		return ret;
 	};
@@ -1408,7 +1418,7 @@ tribe.tickets.block = {
 	 * @since 4.9
 	 */
 	obj.document.on(
-		'click touchend',
+		'click',
 		'.tribe-tickets__item__quantity__remove, .tribe-tickets__item__quantity__add',
 		function( e ) {
 			e.preventDefault();
@@ -1490,7 +1500,7 @@ tribe.tickets.block = {
 						obj.disable( $( obj.selector.submit ), false );
 					}
 				},
-				500,
+				500
 			);
 		}
 	);
@@ -1569,7 +1579,7 @@ tribe.tickets.block = {
 	obj.document.on(
 		'beforeunload',
 		function() {
-			if ( tribe.tickets.modal_redirect ) {
+			if ( window.tribe.tickets.modal_redirect ) {
 				obj.clearLocal();
 				return;
 			}
@@ -1648,7 +1658,7 @@ tribe.tickets.block = {
 
 			$( '#tribe_tickets_ar_data' ).val( JSON.stringify( params ) );
 			// Set a flag to clear sessionStorage
-			tribe.tickets.modal_redirect = true;
+			window.tribe.tickets.modal_redirect = true;
 			obj.clearLocal();
 
 			// Submit the form.
@@ -1743,5 +1753,5 @@ tribe.tickets.block = {
 			obj.init();
 		}
 	} );
-} )( jQuery, tribe.tickets.block, tribe.dialogs.events );
+} )( jQuery, window.tribe.tickets.block, window.tribe.dialogs.events );
 /* eslint-enable max-len */

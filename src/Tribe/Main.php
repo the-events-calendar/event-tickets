@@ -4,21 +4,21 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.11.1';
+	const VERSION = '4.11.3';
 
 	/**
 	 * Min required The Events Calendar version
 	 *
 	 * @deprecated 4.10
 	 */
-	const MIN_TEC_VERSION = '4.9.4';
+	const MIN_TEC_VERSION = '5.0.0-dev';
 
 	/**
 	 * Min required version of Tribe Common
 	 *
 	 * @deprecated 4.10
 	 */
-	const MIN_COMMON_VERSION = '4.9.14';
+	const MIN_COMMON_VERSION = '4.11.0-dev';
 
 	/**
 	 * Used to store the version history.
@@ -53,7 +53,7 @@ class Tribe__Tickets__Main {
 	*
 	* @since 4.10
 	*/
-	protected $min_tec_version = '4.9.4';
+	protected $min_tec_version = '5.0.0';
 
 	/**
 	 * Name of the provider
@@ -378,9 +378,7 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.privacy', 'Tribe__Tickets__Privacy', [ 'hook' ] );
 
 		// Views V2
-		if ( class_exists( 'Tribe__Events__Main' ) ) {
-			tribe_register_provider( Tribe\Events\Tickets\Views\V2\Service_Provider::class );
-		}
+		tribe_register_provider( Tribe\Tickets\Events\Views\V2\Service_Provider::class );
 	}
 
 	/**

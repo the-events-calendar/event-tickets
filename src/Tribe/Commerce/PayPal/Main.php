@@ -371,7 +371,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					'tpp.js',
 					array(
 						'jquery',
-						'jquery-ui-datepicker',
 					),
 				),
 			),

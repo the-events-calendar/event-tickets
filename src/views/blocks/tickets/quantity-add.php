@@ -15,8 +15,8 @@
  *
  * @version TBD
  *
+ * @var $this Tribe__Tickets__Editor__Template
  */
-
 
 $ticket = $this->get( 'ticket' );
 $button_title = sprintf(
@@ -25,6 +25,7 @@ $button_title = sprintf(
 );
 ?>
 <button
+	type="button"
 	class="tribe-tickets__item__quantity__add"
 	title="<?php echo esc_attr( $button_title ); ?>"
 	type="button"

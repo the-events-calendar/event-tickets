@@ -857,29 +857,38 @@ class Tribe__Tickets__Commerce__Currency {
 	}
 
 	/**
-	 * Get the amount suffix, such as for WooCommerce's taxation suffix.
+	 * Get the amount suffix, such as for text about taxes being included or excluded in the displayed price.
 	 *
-	 * Regardless of passed $amount, depending on commerce settings, could return a suffix of
+	 * Example suffix from WooCommerce's implementation:
 	 * `<small class="woocommerce-price-suffix">excl. VAT</small>`
 	 *
 	 * @since TBD
 	 *
-	 * @param int|string  $amount   Price amount for which to get the formatted result.
-	 * @param string|null $provider Ticket provider class name. Currently defaults to and only supports Woo's.
+	 * @param int|string  $amount   Price amount for which to determine the suffix.
+	 * @param string|null $provider Ticket provider class name.
 	 *
-	 * @return string Amount suffix, if any is given by the Commerce provider.
+	 * @return string The suffix HTML, if any.
 	 */
 	public function get_amount_suffix_html( $amount, $provider = null ) {
 		$suffix = '';
 
-		if (
-			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider
-			&& method_exists( 'WC_Product', 'get_price_suffix' )
-		) {
-			$product = new WC_Product();
-
-			$suffix = $product->get_price_suffix( $amount );
-		}
+		/**
+		 * The suffix, including any HTML.
+		 *
+		 * @since TBD
+		 *
+		 * @param string      $suffix   The HTML suffix.
+		 * @param int|string  $amount   Price amount for which to get the formatted result.
+		 * @param string|null $provider Ticket provider class name. Currently defaults to and only supports Woo's.
+		 *
+		 * @return string Amount suffix, if any.
+		 */
+		$suffix = apply_filters(
+			'tribe_tickets_commerce_currency_suffix',
+			$suffix,
+			$amount,
+			$provider
+		);
 
 		return $suffix;
 	}

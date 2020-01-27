@@ -6,11 +6,17 @@
  * [your-theme]/tribe/tickets/registration-js/attendees/ticket.php
  *
  * @since 4.11.0
+ * @since TBD Require Event Tickets Plus for the template.
  *
- * @version 4.11.0
+ * @version TBD
  *
  */
-
+ if (
+	! class_exists( 'Tribe__Tickets_Plus__Meta' )
+	|| ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' )
+) {
+	return;
+}
 /**
 * @var Tribe__Tickets_Plus__Meta $meta
 */
