@@ -424,7 +424,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$start = $this->start_date();
 			}
 
-			return empty( $start ) || $date < $start;
+			return ! empty( $start ) && $date < $start;
 		}
 
 		/**
@@ -443,7 +443,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$end = $this->end_date();
 			}
 
-			return empty( $end ) || $date > $end;
+			return ! empty( $end ) && $date > $end;
 		}
 
 		/**
