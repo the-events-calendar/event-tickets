@@ -30,10 +30,12 @@ $fieldset_class   = $multiple_modules ? 'input_block' : 'screen-reader-text';
 		<?php else : ?>
 			<section style="margin-bottom: 0;">
 				<legend id="default_ticket_provider_legend" class="ticket_form_left"><?php
-					echo esc_html( sprintf(
-						__( 'Sell %s using:', 'event-tickets' ),
-						tribe_get_ticket_label_plural_lowercase( 'default_ticket_provider' )
-					) );
+					echo esc_html(
+						sprintf(
+							__( 'Sell %s using:', 'event-tickets' ),
+							tribe_get_ticket_label_plural_lowercase( 'default_ticket_provider' )
+						)
+					);
 					?></legend>
 				<p class="ticket_form_right"><?php
 					echo esc_attr( sprintf(

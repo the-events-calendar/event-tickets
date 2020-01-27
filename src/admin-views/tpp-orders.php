@@ -56,7 +56,14 @@ if ( $total_sold ) {
 			<div class="welcome-panel-column-container">
 
 				<div class="welcome-panel-column welcome-panel-first">
-					<h3><?php echo esc_html( sprintf( _x( '%s Details', 'post type details', 'event-tickets' ), $post_singular_label ) ); ?></h3>
+					<h3><?php
+						echo esc_html(
+							sprintf(
+								_x( '%s Details', 'post type details', 'event-tickets' ),
+								$post_singular_label
+							)
+						); ?>
+					</h3>
 					<ul>
 						<?php
 						/**

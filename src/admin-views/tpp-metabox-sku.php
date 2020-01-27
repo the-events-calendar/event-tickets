@@ -27,10 +27,13 @@ if ( ! $display_sku ) {
 		value="<?php echo esc_attr( $sku ); ?>"
 	>
 	<p class="description ticket_form_right">
-		<?php echo esc_html( sprintf(
-			__( 'A unique identifying code for each %s type you\'re selling', 'event-tickets' ),
-			tribe_get_ticket_label_singular_lowercase( 'sku' )
-		) );
+		<?php
+		echo esc_html(
+			sprintf(
+				__( 'A unique identifying code for each %s type you\'re selling', 'event-tickets' ),
+				tribe_get_ticket_label_singular_lowercase( 'sku' )
+			)
+		);
 		?>
 	</p>
 </div>
