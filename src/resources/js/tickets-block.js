@@ -34,7 +34,7 @@ window.tribe.tickets.block = {
 		itemExtraAvailableQuantity: '.tribe-tickets__item__extra__available__quantity',
 		itemOptOut: '.tribe-tickets-attendees-list-optout--wrapper',
 		itemOptOutInput: '#tribe-tickets-attendees-list-optout-',
-		itemPrice: '.tribe-amount',
+		itemPrice: '.tribe-tickets__sale_price .tribe-amount',
 		itemQuantity: '.tribe-tickets__item__quantity',
 		itemQuantityInput: '.tribe-tickets-quantity',
 		loader: '.tribe-common-c-loader',

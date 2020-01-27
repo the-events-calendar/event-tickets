@@ -9,7 +9,8 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version 4.10.9
+ * @since   4.10.9
+ * @version TBD
  *
  * @var WP_Post $event The event post object with properties added by the `tribe_get_event` function.
  *
@@ -26,7 +27,7 @@ if ( empty( $event->cost ) ) {
 }
 ?>
 <div class="tribe-events-c-small-cta tribe-common-b3 tribe-events-calendar-month-mobile-events__mobile-event-cost">
-	<?php if ( ! empty( $event->tickets->exist ) ) : ?>
+	<?php if ( $event->tickets->exist() && tribe_tickets_is_current_time_in_date_window( $event->ID ) ) : ?>
 		<a
 			href="<?php echo esc_url( $event->tickets->link->anchor ); ?>"
 			class="tribe-events-c-small-cta__link tribe-common-cta tribe-common-cta--thin-alt"
@@ -37,7 +38,7 @@ if ( empty( $event->cost ) ) {
 	<span class="tribe-events-c-small-cta__price">
 		<?php echo esc_html( $event->cost ) ?>
 	</span>
-	<?php if ( ! empty( $event->tickets->stock->available ) ) : ?>
+	<?php if ( ! empty( $event->tickets->stock->available ) && tribe_tickets_is_current_time_in_date_window( $event->ID ) ) : ?>
 		<span class="tribe-events-c-small-cta__stock">
 			<?php echo esc_html( $event->tickets->stock->available ) ?>
 		</span>
