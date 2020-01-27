@@ -11,7 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @version 4.11.0
+ * @since TBD Updated the button to include a type - helps avoid submitting forms unintentionally.
+ *
+ * @version TBD
  *
  */
 
@@ -22,6 +24,7 @@ $button_title = sprintf(
 );
 ?>
 <button
+	type="submit"
 	class="tribe-tickets__item__quantity__remove"
 	title="<?php echo esc_attr( $button_title ); ?>"
 >

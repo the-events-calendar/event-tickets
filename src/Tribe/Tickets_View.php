@@ -41,6 +41,7 @@ class Tribe__Tickets__Tickets_View {
 		add_action( 'parse_request', [ $myself, 'prevent_page_redirect' ] );
 		add_filter( 'the_content', [ $myself, 'intercept_content' ] );
 		add_action( 'parse_request', [ $myself, 'maybe_regenerate_rewrite_rules' ] );
+		add_filter( 'tribe_events_views_v2_bootstrap_should_display_single', [ $myself, 'intercept_views_v2_single_display' ], 15, 4 );
 
 		// Only Applies this to TEC users.
 		if ( class_exists( 'Tribe__Events__Rewrite' ) ) {
@@ -361,6 +362,24 @@ class Tribe__Tickets__Tickets_View {
 			]
 		);
 
+	}
+
+	/**
+	 * Filter to make sure Tickets eventDisplay properly displays the Tickets page.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool   $should_display_single If we should display single or not.
+	 * @param string $view_slug             Which view slug we are working with.
+	 *
+	 * @return bool
+	 */
+	public function intercept_views_v2_single_display( $should_display_single, $view_slug ) {
+		if ( 'tickets' === $view_slug ) {
+			return true;
+		}
+
+		return $should_display_single;
 	}
 
 	/**
@@ -978,6 +997,9 @@ class Tribe__Tickets__Tickets_View {
 
 		/** @var \Tribe__Tickets__Editor__Blocks__Tickets $blocks_tickets */
 		$blocks_tickets = tribe( 'tickets.editor.blocks.tickets' );
+
+		// Load assets manually.
+		$blocks_tickets->assets();
 
 		$tickets = $provider->get_tickets( $post_id );
 

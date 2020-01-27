@@ -1551,69 +1551,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Tries to make data about global stock levels and global stock-enabled ticket objects
-		 * available to frontend scripts.
-		 *
-		 * @param array $tickets
-		 */
-		public static function add_frontend_stock_data( array $tickets ) {
-			if ( is_admin() ) {
-				return;
-			}
-
-			/*
-			 * Add the frontend ticket form script as needed (we do this lazily since right now),
-			 * it's only required for certain combinations of event/ticket.
-			 */
-			if ( ! empty( self::$frontend_script_enqueued ) ) {
-				return;
-			}
-
-			$plugin = Tribe__Tickets__Main::instance();
-
-			wp_enqueue_script( 'wp-util' );
-
-			tribe_asset(
-				$plugin,
-				'tribe_tickets_frontend_tickets',
-				'frontend-ticket-form.js',
-				[ 'jquery' ],
-				null,
-				[
-					'type'         => 'js',
-					'localize'     => [
-						[
-							'name' => 'TribeTicketOptions',
-							'data' => [ __CLASS__, 'get_asset_localize_data_for_ticket_options' ],
-						],
-						[
-							'name' => 'TribeCurrency',
-							'data' => [ __CLASS__, 'get_asset_localize_data_for_currencies' ],
-						],
-						[
-							'name' => 'TribeCartEndpoint',
-							'data' => [
-								'url' => tribe_tickets_rest_url( '/cart/' ),
-							],
-						],
-						[
-							'name' => 'TribeMessages',
-							'data' => self::set_messages(),
-						],
-						[
-							'name' => 'TribeTicketsURLs',
-							'data' => [ __CLASS__, 'get_asset_localize_data_for_cart_checkout_urls' ],
-						],
-					],
-				]
-			);
-
-			tribe_asset_enqueue( 'tribe_tickets_frontend_tickets' );
-
-			self::$frontend_script_enqueued = true;
-		}
-
-		/**
 		 * Get JS localize data for ticket options.
 		 *
 		 * @since 4.11.0.1
@@ -1830,6 +1767,82 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return true;
+		}
+
+		/**
+		 * Tries to make data about global stock levels and global stock-enabled ticket objects
+		 * available to frontend scripts.
+		 *
+		 * @deprecated TBD
+		 *
+		 * @param array $tickets
+		 */
+		public static function add_frontend_stock_data( array $tickets ) {
+
+			_deprecated_function( __METHOD__, 'TBD', 'tribe( "tickets.editor.blocks.tickets" )->assets()' );
+
+			if ( is_admin() ) {
+				return;
+			}
+
+			/*
+			 * Add the frontend ticket form script as needed (we do this lazily since right now),
+			 * it's only required for certain combinations of event/ticket.
+			 */
+			if ( ! empty( self::$frontend_script_enqueued ) ) {
+				return;
+			}
+
+			$plugin = Tribe__Tickets__Main::instance();
+
+			wp_register_script(
+				'wp-util-not-in-footer',
+				includes_url( '/js/wp-util.js' ),
+				[ 'jquery', 'underscore' ],
+				false,
+				false
+			);
+
+			wp_enqueue_script( 'wp-util-not-in-footer' );
+
+			tribe_asset(
+				$plugin,
+				'tribe_tickets_frontend_tickets',
+				'tickets-block.js',
+				[ 'jquery', 'jquery-ui-datepicker', 'wp-util-not-in-footer', 'wp-i18n' ],
+				null,
+				[
+					'type'         => 'js',
+					'localize'     => [
+						[
+							'name' => 'TribeTicketOptions',
+							'data' => [ __CLASS__, 'get_asset_localize_data_for_ticket_options' ],
+						],
+						[
+							'name' => 'TribeCurrency',
+							'data' => [ __CLASS__, 'get_asset_localize_data_for_currencies' ],
+						],
+						[
+							'name' => 'TribeCartEndpoint',
+							'data' => [
+								'url' => tribe_tickets_rest_url( '/cart/' ),
+							],
+						],
+						[
+							'name' => 'TribeMessages',
+							'data' => self::set_messages(),
+						],
+						[
+							'name' => 'TribeTicketsURLs',
+							'data' => [ __CLASS__, 'get_asset_localize_data_for_cart_checkout_urls' ],
+						],
+					],
+				]
+			);
+
+			tribe_asset_enqueue( 'tribe_tickets_frontend_tickets' );
+
+			self::$frontend_script_enqueued = true;
 		}
 
 		/**
