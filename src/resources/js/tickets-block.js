@@ -1696,6 +1696,23 @@ window.tribe.tickets.block = {
 	);
 
 	/**
+	 * Handle Enter/Return on the main tickets form.
+	 *
+	 * @since TBD
+	 */
+	obj.document.on(
+		'keypress',
+		obj.selector.container,
+		function( e ) {
+			if ( e.keyCode === 13 ) {
+				e.preventDefault();
+				e.stopPropagation();
+				return;
+			}
+		}
+	);
+
+	/**
 	 * When "Get Tickets" is clicked, update the modal.
 	 *
 	 * @since 4.11.0
