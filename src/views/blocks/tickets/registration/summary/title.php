@@ -19,6 +19,13 @@
 ?>
 <div class="tribe-tickets__registration__title">
 	<header>
-		<h2 class="tribe-common-h4 tribe-common-h3--min-medium"><?php echo esc_html( sprintf( __( '%s Registration', 'event-tickets' ), tribe_get_ticket_label_singular( basename( __FILE__ ) ) ) ); ?></h2>
+		<h2 class="tribe-common-h4 tribe-common-h3--min-medium"><?php
+			echo esc_html(
+				sprintf(
+					__( '%s Registration', 'event-tickets' ),
+					tribe_get_ticket_label_singular( basename( __FILE__ ) )
+				)
+			); ?>
+		</h2>
 	</header>
 </div>

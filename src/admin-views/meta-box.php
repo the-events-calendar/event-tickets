@@ -28,7 +28,14 @@ $modules = Tribe__Tickets__Tickets::modules();
 		?>
 		<tr>
 			<td colspan="2" class="tribe_sectionheader updated">
-				<p class="error-message"><?php echo esc_html( sprintf( _x( 'This event was created using Community Events. Are you sure you want to sell %s for it?', 'meta box ticket form CE warning', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'meta_box_ticket_form_ce_warning' ) ) ); ?></p>
+				<p class="error-message"><?php
+					echo esc_html(
+						sprintf(
+							_x( 'This event was created using Community Events. Are you sure you want to sell %s for it?', 'meta box ticket form CE warning', 'event-tickets' ),
+							tribe_get_ticket_label_plural_lowercase( 'meta_box_ticket_form_ce_warning' )
+						)
+					); ?>
+				</p>
 			</td>
 		</tr>
 	<?php
@@ -39,7 +46,17 @@ $modules = Tribe__Tickets__Tickets::modules();
 			<table class="eventtable ticket_list eventForm">
 				<tr class="tribe-tickets-image-upload">
 					<td>
-						<?php echo esc_html( sprintf( _x( 'Upload image for the %s header.', 'meta box ticket form image', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'meta_box_ticket_form_image' ) ) ); ?>
+						<?php
+						echo esc_html(
+							sprintf(
+								_x(
+									'Upload image for the %s header.',
+									'meta box ticket form image',
+									'event-tickets'
+								),
+								tribe_get_ticket_label_singular_lowercase( 'meta_box_ticket_form_image' )
+							)
+						); ?>
 						<p class="description"><?php esc_html_e( 'The maximum image size in the email will be 580px wide by any height, and then scaled for mobile. If you would like "retina" support use an image sized to 1160px wide.', 'event-tickets' ); ?></p>
 					</td>
 					<td>
@@ -82,7 +99,18 @@ $modules = Tribe__Tickets__Tickets::modules();
 						<td>
 							<input type="number" name="tribe-tickets-global-stock" id="tribe-tickets-global-stock" value="<?php echo esc_attr( $global_stock->get_stock_level() ); ?>" />
 							<span class="tribe-tickets-global-sales">
-								<?php echo esc_html( sprintf( _n( '(%s sold)', '(%s sold)', $global_stock->tickets_sold(), 'event-tickets' ), $global_stock->tickets_sold() ) ); ?>
+								<?php
+								echo esc_html(
+									sprintf(
+										_n(
+											'(%s sold)',
+											'(%s sold)',
+											$global_stock->tickets_sold(),
+											'event-tickets'
+										),
+										$global_stock->tickets_sold()
+									)
+								); ?>
 							</span>
 						</td>
 					</tr>
@@ -109,7 +137,18 @@ $modules = Tribe__Tickets__Tickets::modules();
 	<tr>
 		<td colspan="2" class="tribe_sectionheader">
 			<a href="#" class="button-secondary"
-			   id="ticket_form_toggle"><?php echo esc_html( sprintf( _x( 'Add new %s', 'meta box ticket form toggle', 'event-tickets' ), tribe_get_ticket_label_singular( 'meta_box_ticket_form_toggle' ) ) ); ?></a>
+			   id="ticket_form_toggle"><?php
+				echo esc_html(
+					sprintf(
+						_x(
+							'Add new %s',
+							'meta box ticket form toggle',
+							'event-tickets'
+						),
+						tribe_get_ticket_label_singular( 'meta_box_ticket_form_toggle' )
+					)
+				); ?>
+			</a>
 		</td>
 	</tr>
 	<tr id="ticket_form" class="ticket_form">
@@ -142,14 +181,39 @@ $modules = Tribe__Tickets__Tickets::modules();
 					</td>
 				</tr>
 				<tr class="ticket">
-					<td><label for="ticket_name"><?php echo esc_html( sprintf( _x( '%s Name:', 'meta box ticket form', 'event-tickets' ), tribe_get_ticket_label_singular( 'meta_box_ticket_form' ) ) ); ?></label></td>
 					<td>
-						<input type='text' id='ticket_name' name='ticket_name' class="ticket_field" size='25' value='' />
+						<label for="ticket_name"><?php
+							echo esc_html(
+								sprintf(
+									_x(
+										'%s Name:',
+										'meta box ticket form',
+										'event-tickets'
+									),
+									tribe_get_ticket_label_singular( 'meta_box_ticket_form' )
+								)
+							); ?>
+						</label>
+					</td>
+					<td>
+					<input type='text' id='ticket_name' name='ticket_name' class="ticket_field" size='25' value='' />
 					</td>
 				</tr>
 				<tr class="ticket">
-					<td><label
-							for="ticket_description"><?php echo esc_html( sprintf( _x( '%s Description:', 'meta box ticket form', 'event-tickets' ), tribe_get_ticket_label_singular( 'meta_box_ticket_form' ) ) ); ?></label>
+					<td>
+						<label
+							for="ticket_description"><?php
+							echo esc_html(
+								sprintf(
+									_x(
+										'%s Description:',
+										'meta box ticket form',
+										'event-tickets'
+									),
+									tribe_get_ticket_label_singular( 'meta_box_ticket_form' )
+								)
+							); ?>
+						</label>
 					</td>
 					<td>
 						<textarea rows="5" cols="40" name="ticket_description" class="ticket_field"
