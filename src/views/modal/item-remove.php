@@ -8,8 +8,6 @@
  * @since 4.11.0
  * @since TBD Updated the button to include a type - helps avoid submitting forms unintentionally.
  *
- * @version TBD
- *
  */
 ?>
 <div
@@ -18,5 +16,6 @@
 	<button
 		type="button"
 		class="tribe-tickets__item__remove"
-	></button>
+	>
+	</button>
 </div>
