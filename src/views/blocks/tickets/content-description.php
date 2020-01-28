@@ -11,8 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.11.0
+ * @since TBD Updated the button to include a type - helps avoid submitting forms unintentionally.
  *
+ * @version TBD
  */
 
 $ticket = $this->get( 'ticket' );
@@ -28,6 +29,7 @@ $id .= '--' . $ticket->ID;
 <?php if ( true === $modal && $ticket->show_description() && ! empty( $ticket->description ) ) : ?>
 		<div class="tribe-tickets__item__details__summary">
 			<button
+				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--more"
 				aria-controls="<?php echo esc_attr( $id ); ?>"
 				tabindex="0"
@@ -36,6 +38,7 @@ $id .= '--' . $ticket->ID;
 				<?php echo esc_html_x( 'More', 'Opens the ticket description', 'event-tickets' ); ?>
 			</button>
 			<button
+				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--less"
 				aria-controls="<?php echo esc_attr( $id ); ?>"
 				tabindex="0"
