@@ -69,8 +69,6 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 			return;
 		}
 
-		Tribe__Tickets__Tickets::add_frontend_stock_data( $tickets );
-
 		$ticket_sent = empty( $_GET['tpp_sent'] ) ? false : true;
 
 		if ( $ticket_sent ) {

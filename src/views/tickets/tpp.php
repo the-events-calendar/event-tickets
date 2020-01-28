@@ -14,8 +14,10 @@
  * @since   4.10.8 Removed the date_in_range() check per ticket, since it now happens upstream. Better checking of max quantity available.
  * @since   4.10.10  Use customizable ticket name functions.
  * @since   4.11.1    Corrected amount of available/remaining tickets when threshold is empty.
+ * @since   TBD Updated the button to include a type - helps avoid submitting forms unintentionally.
+ * @since   TBD Changed button ID to match the format of the non-tpp buttons. (`tribe-tickets` instead of `buy-tickets`)
  *
- * @version 4.11.1
+ * @version TBD
  * @deprecated 4.11.0
  *
  * @var bool $must_login
@@ -49,7 +51,7 @@ $threshold = $settings_manager::get_option( 'ticket-display-tickets-left-thresho
 $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_threshold', $threshold, tribe_events_get_ticket_event( $ticket ) ) );
 ?>
 <form
-	id="tpp-buy-tickets"
+	id="tpp-tribe-tickets"
 	action="<?php echo esc_url( $cart_url ); ?>"
 	class="tribe-tickets-tpp cart <?php echo esc_attr( $messages_class ); ?>"
 	method="post"
@@ -152,7 +154,12 @@ $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_th
 				</td>
 				<td class="tickets_submit">
 					<?php if ( ! $must_login ) : ?>
-						<button type="submit" class="tpp-submit tribe-button"><?php esc_html_e( 'Buy now', 'event-tickets' );?></button>
+						<button
+							type="submit"
+							class="tpp-submit tribe-button"
+						>
+							<?php esc_html_e( 'Buy now', 'event-tickets' );?>
+						</button>
 					<?php endif; ?>
 				</td>
 			</tr>
