@@ -75,7 +75,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Includes Tickets into the path namespace mapping, allowing for a better namespacing when loading files.
 	 *
-	 * @since TBD
+	 * @since 4.11.2
 	 *
 	 * @param array            $namespace_map Indexed array containing the namespace as the key and path to `strpos`.
 	 * @param string           $path          Path we will do the `strpos` to validate a given namespace.

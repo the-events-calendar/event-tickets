@@ -10,7 +10,6 @@
  * @since TBD Reformat a bit of the code around the button - no functional changes.
  *
  * @version TBD
- *
  */
 ?>
 <div
