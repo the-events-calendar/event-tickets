@@ -95,7 +95,6 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 
 		<?php tribe_tickets_get_template_part( 'tickets/orders-rsvp' ); ?>
 
-<<<<<<< HEAD
 		<?php
 		if ( ! class_exists( 'Tribe__Tickets_Plus__Commerce__PayPal__Meta' ) ) {
 			tribe_tickets_get_template_part( 'tickets/orders-pp-tickets' );
@@ -133,44 +132,5 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 		// unset our global since we don't need it any more
 		unset( $tribe_my_tickets_have_meta );
 		?>
-=======
-	<?php
-	if ( ! class_exists( 'Tribe__Tickets_Plus__Commerce__PayPal__Meta' ) ) {
-		tribe_tickets_get_template_part( 'tickets/orders-pp-tickets' );
-	}
-	?>
-
-
-	<?php
-	/**
-	 * Fires before the process tickets submission button is rendered
-	 */
-	do_action( 'tribe_tickets_orders_before_submit' );
-	?>
-
-	<?php if (
-		// Current user has RSVP (with or without meta) so needs to be able to edit status
-		$view->has_rsvp_attendees( $event_id, get_current_user_id() )
-		|| (
-			// Current user has tickets with meta so needs to be able to edit meta
-			$view->has_ticket_attendees( $event_id, get_current_user_id() )
-			&& $tribe_my_tickets_have_meta
-		)
-	) : ?>
-		<div class="tribe-submit-tickets-form">
-			<button
-				type="submit"
-				name="process-tickets"
-				value="1"
-				class="button alt"
-			>
-				<?php echo sprintf( esc_html__( 'Update %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, get_current_user_id() ) ); ?>
-			</button>
-		</div>
-	<?php endif;
-	// unset our global since we don't need it any more
-	unset( $tribe_my_tickets_have_meta );
-	?>
->>>>>>> 4b5560526976b294406cb3cad4eb634377c25528
 	</form>
 </div>
