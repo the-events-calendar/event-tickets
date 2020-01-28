@@ -1303,6 +1303,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 				// Update Event capacity
 				update_post_meta( $post_id, $tickets_handler->key_capacity, $data['event_capacity'] );
+				update_post_meta( $post_id, $event_stock::GLOBAL_STOCK_ENABLED, 1 );
 				update_post_meta( $post_id, $event_stock::GLOBAL_STOCK_LEVEL, $data['event_capacity'] );
 			}
 		} else {
@@ -1354,7 +1355,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$data['stock'] -= $totals['pending'] + $totals['sold'];
 			}
 
-			// In here is safe to check because we don't have unlimted = -1
+			// In here is safe to check because we don't have unlimited = -1
 			$status = ( 0 < $data['stock'] ) ? 'instock' : 'outofstock';
 
 			update_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, $mode );
