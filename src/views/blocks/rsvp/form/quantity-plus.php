@@ -12,7 +12,6 @@
  *
  * @since 4.9
  * @since TBD Updated the button to include a type - helps avoid submitting forms unintentionally.
- * @version TBD
  *
  */
 

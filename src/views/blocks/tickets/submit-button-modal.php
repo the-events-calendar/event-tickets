@@ -30,19 +30,22 @@ $button_text = _x( 'Get Tickets', 'Get selected tickets.', 'event-tickets' );
  *
  * @param array $button_name The button classes.
  */
- $button_classes = apply_filters( 'tribe_tickets_ticket_block_submit_classes', [
-	'tribe-common-c-btn',
-	'tribe-common-c-btn--small',
-	'tribe-tickets__buy'
-] );
+$button_classes = apply_filters(
+	'tribe_tickets_ticket_block_submit_classes',
+	[
+		'tribe-common-c-btn',
+		'tribe-common-c-btn--small',
+		'tribe-tickets__buy',
+	]
+);
 
 /**
- * Filter Modal Content
+ * Filter Modal Content.
  *
  * @since 4.11.0
  *
- * @param string $content a string of default content
- * @param Tribe__Tickets__Editor__Template $template_obj the Template object
+ * @param string $content a string of default content.
+ * @param Tribe__Tickets__Editor__Template $template_obj the Template object.
  */
 $content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Ticket Modal</p>', $this );
 
