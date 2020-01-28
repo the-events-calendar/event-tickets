@@ -367,7 +367,7 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Filter to make sure Tickets eventDisplay properly displays the Tickets page.
 	 *
-	 * @since TBD
+	 * @since 4.11.2
 	 *
 	 * @param bool   $should_display_single If we should display single or not.
 	 * @param string $view_slug             Which view slug we are working with.
@@ -385,7 +385,7 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Intercepts the_content from the posts to include the orders structure.
 	 *
-	 * @since TBD Avoid running when it shouldn't by bailing if not in main query loop on a single post.
+	 * @since 4.11.2 Avoid running when it shouldn't by bailing if not in main query loop on a single post.
 	 *
 	 * @param string $content Normally the_content of a post.
 	 *
