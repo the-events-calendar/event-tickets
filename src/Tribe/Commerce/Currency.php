@@ -813,7 +813,6 @@ class Tribe__Tickets__Commerce__Currency {
 
 		$amount   = $this->get_formatted_currency( $amount, $post_id, $provider );
 		$currency = $this->get_currency_by_provider( $post_id, $provider );
-		$suffix   = $this->get_amount_suffix_html( $amount, $provider );
 
 		$format = '%1$s%2$s';
 
@@ -839,57 +838,18 @@ class Tribe__Tickets__Commerce__Currency {
 			}
 		}
 
-		$formatted = sprintf( $format, $currency['symbol'], $amount ) . $suffix;
+		$formatted = sprintf( $format, $currency['symbol'], $amount );
 
 		/**
 		 * Filter the Formatted Currency with Symbol
 		 *
 		 * @since 4.11.0
-		 * @since TBD Added $suffix param.
 		 *
 		 * @param string  $formatted The formatted amount.
 		 * @param int     $amount    The original amount to be formatted.
 		 * @param array   $currency  An array of currency formatting details.
 		 * @param boolean $html      Whether to return with html wrap.
-		 * @param string  $suffix    String to append to formatted amount.
 		 */
-		return apply_filters( 'tribe_format_amount_with_symbol', $formatted, $amount, $currency, $html, $suffix );
-	}
-
-	/**
-	 * Get the amount suffix, such as for text about taxes being included or excluded in the displayed price.
-	 *
-	 * Example suffix from WooCommerce's implementation:
-	 * `<small class="woocommerce-price-suffix">excl. VAT</small>`
-	 *
-	 * @since TBD
-	 *
-	 * @param int|string  $amount   Price amount for which to determine the suffix.
-	 * @param string|null $provider Ticket provider class name.
-	 *
-	 * @return string The suffix HTML, if any.
-	 */
-	public function get_amount_suffix_html( $amount, $provider = null ) {
-		$suffix = '';
-
-		/**
-		 * The suffix, including any HTML.
-		 *
-		 * @since TBD
-		 *
-		 * @param string      $suffix   The HTML suffix.
-		 * @param int|string  $amount   Price amount for which to get the formatted result.
-		 * @param string|null $provider Ticket provider class name. Currently defaults to and only supports Woo's.
-		 *
-		 * @return string Amount suffix, if any.
-		 */
-		$suffix = apply_filters(
-			'tribe_tickets_commerce_currency_suffix',
-			$suffix,
-			$amount,
-			$provider
-		);
-
-		return $suffix;
+		return apply_filters( 'tribe_format_amount_with_symbol', $formatted, $amount, $currency, $html );
 	}
 }
