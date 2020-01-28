@@ -139,6 +139,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Additional replacements with dynamic ticket text functions. [ETP-145]
 * Fix - Ensure that the first ticket with global stock added to a post/event updates the parent to indicate global stock is in use. [ET-614]
 * Fix - Ensure that empty start/end dates are treated like "immediately": and "forever", respectively. [ETP-159]
+* Fix - Hitting enter in the tickets form changes ticket quantities. [ETP-43]
 * Tweak - Refine logic for the no results notice on the "My Tickets" page. [ETP-151]
 * Tweak - Remove duplicate ticket script to prevent conflicts. [ET-596]
 * Tweak - Change the Attendee List opt-out checkbox to be checked by default. [ET-615]
