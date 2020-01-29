@@ -126,7 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Correct logic so selling out of one RSVP doesn't prevent "purchasing" another. [ETP-603]
 * Fix - Create new function `tribe_get_event_capacity` for checking the capacity of an entire event. Have `tribe_tickets_get_capacity` pass off to it as when given an event. [ETP-48]
 * Fix - Price formatting method now correctly prevents incorrect display when a comma is used as the decimal separator. [ETP-53]
-* Fix - Disable ticket block when password protected is enabled on posts and pages. [ETP-59]
+* Fix - Disable RSVP and ticket block when password protected is enabled on posts and pages. [ET-604]
 * Fix - Ensure that attendee images display horizontally in the frontend for Twenty Nineteen and Twenty Twenty themes. [ET-590]
 * Fix - Ensure we update the correct event meta for global stock on ticket creation. [ET-614]
 * Fix - JavaScript updated to remove IE11 console errors. [ET-619]
