@@ -144,6 +144,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Change the Attendee List opt-out checkbox to be checked by default. [ET-615]
 * Tweak - Change the Attendee List opt-out checkbox wording, centralize where we handle it and create a function to retreive it. [ET-615]
 * Tweak - Add some code for future implementation around converting opt-outs to opt-ins. [ET-615]
+* Tweak - Adjust styles to ensure our "get tickets" button's styles get preserved [ETP-210]
 
 = [4.11.2] 2020-01-27 =
 
