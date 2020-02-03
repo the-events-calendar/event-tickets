@@ -315,7 +315,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			$event = $this->get_event();
 
-			if ( function_exists( 'tribe_is_past_event' ) && $event instanceof WP_Post ) {
+			if ( function_exists( 'tribe_is_past_event' ) && $event instanceof WP_Post && tribe_is_event( $event ) ) {
 				$is_past_event = tribe_is_past_event( $event );
 			}
 
@@ -350,6 +350,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function get_date( $date = '', $as_timestamp = true ) {
 			if ( '' === $date ) {
+				bdump('bail on no end date');
 				return false;
 			}
 
