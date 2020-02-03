@@ -350,7 +350,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function get_date( $date = '', $as_timestamp = true ) {
 			if ( '' === $date ) {
-				bdump('bail on no end date');
 				return false;
 			}
 
