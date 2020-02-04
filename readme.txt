@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.11.4] TBD =
+
+* Fix - Hitting enter in the tickets form changes ticket quantities. [ETP-43]
+
 = [4.11.3] 2019-02-05 =
 
 * Feature - Show original price on ticket block if ticket on sale. Allow turning off via the `tribe_tickets_show_original_price_on_sale` filter. [ETP-47]
