@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.11.4] TBD =
+
+* Fix - Hitting enter in the tickets form changes ticket quantities. [ETP-43]
+
 = [4.11.3] 2019-02-05 =
 
 * Feature - Show original price on ticket block if ticket on sale. Allow turning off via the `tribe_tickets_show_original_price_on_sale` filter. [ETP-47]
@@ -137,7 +141,6 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Tickets Block quantity +/- buttons set to 'button' type to avoid submitting Add to Cart form in IE11 or when js is disabled. [ET-619]
 * Fix - Additional replacements with dynamic ticket text functions. [ETP-145]
 * Fix - Ensure that empty start/end dates are treated like "immediately": and "forever", respectively. [ETP-159]
-* Fix - Hitting enter in the tickets form changes ticket quantities. [ETP-43]
 * Tweak - Refine logic for the no results notice on the "My Tickets" page. [ETP-151]
 * Tweak - Remove duplicate ticket script to prevent conflicts. [ET-596]
 * Tweak - Change the Attendee List opt-out checkbox to be checked by default. [ET-615]
