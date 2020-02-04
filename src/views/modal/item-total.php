@@ -8,9 +8,9 @@
  * @link    {INSERT_ARTICLE_LINK_HERE}
  *
  * @since   4.11.0
- * @since   TBD Updated code comments.
+ * @since   4.11.3 Updated code comments.
  *
- * @version TBD
+ * @version 4.11.3
  */
 
 /** @var Tribe__Tickets__Commerce__Currency $tribe_commerce_currency */

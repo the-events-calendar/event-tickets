@@ -1772,13 +1772,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Tries to make data about global stock levels and global stock-enabled ticket objects
 		 * available to frontend scripts.
 		 *
-		 * @deprecated TBD
+		 * @deprecated 4.11.3
 		 *
 		 * @param array $tickets
 		 */
 		public static function add_frontend_stock_data( array $tickets ) {
 
-			_deprecated_function( __METHOD__, 'TBD', 'tribe( "tickets.editor.blocks.tickets" )->assets()' );
+			_deprecated_function( __METHOD__, '4.11.3', 'tribe( "tickets.editor.blocks.tickets" )->assets()' );
 
 			if ( is_admin() ) {
 				return;

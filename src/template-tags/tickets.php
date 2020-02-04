@@ -184,7 +184,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 	 * Echo remaining ticket count and purchase/rsvp buttons for a post.
 	 *
 	 * @since  4.5
-	 * @since  TBD Now also displays for posts having only RSVPs. Also changed from <form> to <button>.
+	 * @since  4.11.3 Now also displays for posts having only RSVPs. Also changed from <form> to <button>.
 	 *
 	 * @param bool $echo Whether or not we should print
 	 *
@@ -401,7 +401,7 @@ if ( ! function_exists( 'tribe_tickets_is_current_time_in_date_window' ) ) {
 	/**
 	 * Checks if the post has tickets that are available in the current date range set on the ticket.
 	 *
-	 * @since TBD
+	 * @since 4.11.3
 	 *
 	 * @param int $post_id Post (or event) to check for ticket availability.
 	 *
@@ -1007,7 +1007,7 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 	/**
 	 * Returns the capacity for a given Post/Event.
 	 *
-	 * @since  TBD
+	 * @since  4.11.3
 	 *
 	 * @param int|WP_Post $post Post (event) we are trying to fetch capacity for.
 	 *

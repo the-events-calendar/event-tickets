@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.11.3] TBD =
+= [4.11.3] 2019-02-05 =
 
 * Feature - Show original price on ticket block if ticket on sale. Allow turning off via the `tribe_tickets_show_original_price_on_sale` filter. [ETP-47]
 * Fix - Allow adding ticket header image on non-event posts. [ETP-54]
@@ -128,7 +128,6 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Price formatting method now correctly prevents incorrect display when a comma is used as the decimal separator. [ETP-53]
 * Fix - Disable RSVP and ticket block when password protected is enabled on posts and pages. [ET-604]
 * Fix - Ensure that attendee images display horizontally in the frontend for Twenty Nineteen and Twenty Twenty themes. [ET-590]
-* Fix - Ensure we update the correct event meta for global stock on ticket creation. [ET-614]
 * Fix - JavaScript updated to remove IE11 console errors. [ET-619]
 * Fix - Load JavaScript assets with Ticket Block when using Classic Editor. [ET-587]
 * Fix - Override checkout link in WooCommerce Mini-Cart widget so it uses the custom page for attendee registration if it is setup. [ETP-41]
@@ -137,7 +136,6 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - The Events Calendar's List View "RSVP Now!" button again displays for Events having only RSVP tickets and has the correct anchor link. [ETP-51]
 * Fix - Tickets Block quantity +/- buttons set to 'button' type to avoid submitting Add to Cart form in IE11 or when js is disabled. [ET-619]
 * Fix - Additional replacements with dynamic ticket text functions. [ETP-145]
-* Fix - Ensure that the first ticket with global stock added to a post/event updates the parent to indicate global stock is in use. [ET-614]
 * Fix - Ensure that empty start/end dates are treated like "immediately": and "forever", respectively. [ETP-159]
 * Fix - Hitting enter in the tickets form changes ticket quantities. [ETP-43]
 * Tweak - Refine logic for the no results notice on the "My Tickets" page. [ETP-151]
@@ -146,6 +144,9 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Change the Attendee List opt-out checkbox wording, centralize where we handle it and create a function to retreive it. [ET-615]
 * Tweak - Add some code for future implementation around converting opt-outs to opt-ins. [ET-615]
 * Tweak - Adjust styles to ensure our "get tickets" button's styles get preserved [ETP-210]
+* Tweak - Added filters: `tribe_tickets_default_opt_out_text`, `tribe_tickets_default_opt_in_text`, `tribe_tickets_show_original_price_on_sale`
+* Tweak - Changed views: `blocks/attendees`, `blocks/attendees/description`, `blocks/rsvp/form/error`, `blocks/rsvp/form/opt-out`, `blocks/rsvp/form/quantity-plus`, `blocks/rsvp/form/submit-button`, `blocks/rsvp/messages/success`, `blocks/tickets`, `blocks/tickets/extra-available`, `blocks/tickets/extra-price`, `blocks/tickets/extra`, `blocks/tickets/footer-total`, `blocks/tickets/item`, `blocks/tickets/opt-out-hidden`, `blocks/tickets/quantity-add`, `blocks/tickets/quantity-remove`, `blocks/tickets/registration/summary/title`, `blocks/tickets/submit-button-modal`, `blocks/tickets/submit-button`, `modal/item-remove`, `modal/item-total`, `modal/registration-js`, `registration-js/attendees/ticket`, `tickets/email`, `tickets/orders-pp-tickets`, `tickets/orders-rsvp`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp`
+* Language - 7 new strings added, 187 updated, 7 fuzzied, and 6 obsoleted
 
 = [4.11.2] 2020-01-27 =
 

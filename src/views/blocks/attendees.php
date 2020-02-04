@@ -10,9 +10,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @since TBD Fix malformed opening `<div>` tag.
+ * @since 4.11.3 Fix malformed opening `<div>` tag.
  *
- * @version TBD
+ * @version 4.11.3
  */
 
 $title     = $this->attr( 'title' );
