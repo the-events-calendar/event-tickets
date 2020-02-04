@@ -11,9 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.11.0
- * @since TBD Ensure we always show the optout by default.
+ * @since 4.11.3 Ensure we always show the optout by default.
  *
- * @version TBD
+ * @version 4.11.3
  *
  */
 $ticket   = $this->get( 'ticket' );

@@ -11,11 +11,11 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.11.0
- * @since TBD Updated the button to include a type - helps avoid submitting forms unintentionally.
- * @since TBD Allow filtering of the button classes.
- * @since TBD Added button ID for better JS targeting.
+ * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
+ * @since 4.11.3 Allow filtering of the button classes.
+ * @since 4.11.3 Added button ID for better JS targeting.
  *
- * @version TBD
+ * @version 4.11.3
  *
  */
 
@@ -26,7 +26,7 @@ $button_text = _x( 'Get Tickets', 'Get selected tickets.', 'event-tickets' );
 /**
  * Allow filtering of the button classes for the tickets block.
  *
- * @since TBD
+ * @since 4.11.3
  *
  * @param array $button_name The button classes.
  */

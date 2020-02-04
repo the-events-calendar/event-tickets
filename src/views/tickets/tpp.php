@@ -14,10 +14,10 @@
  * @since 4.10.8 Removed the date_in_range() check per ticket, since it now happens upstream. Better checking of max quantity available.
  * @since 4.10.10 Use customizable ticket name functions.
  * @since 4.11.1 Corrected amount of available/remaining tickets when threshold is empty.
- * @since TBD Updated the button to include a type - helps avoid submitting forms unintentionally.
- * @since TBD Changed button ID to match the format of the non-tpp buttons. (`tribe-tickets` instead of `buy-tickets`)
+ * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
+ * @since 4.11.3 Changed button ID to match the format of the non-tpp buttons. (`tribe-tickets` instead of `buy-tickets`)
  *
- * @version TBD
+ * @version 4.11.3
  * @deprecated 4.11.0
  *
  * @var bool $must_login

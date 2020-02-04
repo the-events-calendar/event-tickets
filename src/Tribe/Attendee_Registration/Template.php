@@ -158,7 +158,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Ensure we enqueue the frontend styles and scripts from our plugins on the AR page.
 	 *
-	 * @since TBD
+	 * @since 4.11.3
 	 *
 	 * @param boolean $enqueue
 	 * @return boolean
