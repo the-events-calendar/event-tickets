@@ -1696,13 +1696,13 @@ window.tribe.tickets.block = {
 	);
 
 	/**
-	 * Handle Enter/Return on the main tickets form.
+	 * Handle Enter/Return on the quantity input from the main tickets form.
 	 *
 	 * @since TBD
 	 */
 	obj.document.on(
 		'keypress',
-		obj.selector.container,
+		obj.selector.itemQuantityInput,
 		function( e ) {
 			if ( e.keyCode === 13 ) {
 				e.preventDefault();
