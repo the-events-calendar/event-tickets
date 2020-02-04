@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.11.4] TBD =
 
 * Fix - Update file path in the docblocks of the templates for The Events Calendar new views. [ET-713]
+* Fix - Hitting enter in the tickets form changes ticket quantities. [ETP-43]
 
 = [4.11.3] 2019-02-05 =
 
