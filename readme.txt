@@ -145,6 +145,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Adjust styles to ensure our "get tickets" button's styles get preserved [ETP-210]
 * Tweak - Added filters: `tribe_tickets_default_opt_out_text`, `tribe_tickets_default_opt_in_text`, `tribe_tickets_show_original_price_on_sale`
 * Tweak - Changed views: `blocks/attendees`, `blocks/attendees/description`, `blocks/rsvp/form/error`, `blocks/rsvp/form/opt-out`, `blocks/rsvp/form/quantity-plus`, `blocks/rsvp/form/submit-button`, `blocks/rsvp/messages/success`, `blocks/tickets`, `blocks/tickets/extra-available`, `blocks/tickets/extra-price`, `blocks/tickets/extra`, `blocks/tickets/footer-total`, `blocks/tickets/item`, `blocks/tickets/opt-out-hidden`, `blocks/tickets/quantity-add`, `blocks/tickets/quantity-remove`, `blocks/tickets/registration/summary/title`, `blocks/tickets/submit-button-modal`, `blocks/tickets/submit-button`, `modal/item-remove`, `modal/item-total`, `modal/registration-js`, `registration-js/attendees/ticket`, `tickets/email`, `tickets/orders-pp-tickets`, `tickets/orders-rsvp`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp`
+* Language - 7 new strings added, 187 updated, 7 fuzzied, and 6 obsoleted
 
 = [4.11.2] 2020-01-27 =
 
