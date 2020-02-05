@@ -21,6 +21,8 @@ class Tribe__Tickets__Theme_Compatibility {
 		'divi',
 		'enfold',
 		'genesis',
+		'twentyfifteen',
+		'twentysixteen',
 		'twentyseventeen',
 		'twentynineteen',
 		'twentytwenty',
@@ -88,6 +90,7 @@ class Tribe__Tickets__Theme_Compatibility {
 
 		// if the 2 options are the same, then there is no child theme.
 		if ( $child_theme !== $parent_theme ) {
+			$classes[] = sanitize_html_class( "tribe-theme-parent-$parent_theme" );
 			$classes[] = sanitize_html_class( "tribe-theme-child-$child_theme" );
 		}
 
