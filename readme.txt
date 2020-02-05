@@ -120,7 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.11.4] TBD =
 
 * Fix - Hitting enter in the tickets form changes ticket quantities. [ETP-43]
-* Fix - Add theme compatibility for the AR Modal by adding theme identifying body CSS classes [ETP-156]
+* Fix - Add theme compatibility for the AR Modal by adding theme identifying body CSS classes. [ETP-156]
 
 = [4.11.3] 2019-02-05 =
 
