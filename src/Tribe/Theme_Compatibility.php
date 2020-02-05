@@ -31,7 +31,7 @@ class Tribe__Tickets__Theme_Compatibility {
 	 *
 	 * @since  TBD
 	 *
-	 * @return boolean
+	 * @return boolean Whether compatibility is required.
 	 */
 	public function is_compatibility_required() {
 		$template   = strtolower( get_template() );
@@ -54,9 +54,9 @@ class Tribe__Tickets__Theme_Compatibility {
 	 *
 	 * @since TBD
 	 *
-	 * @param  array $classes Classes that are been passed to the body.
+	 * @param  array $classes List of body classes.
 	 *
-	 * @return array $classes
+	 * @return array $classes List of body classes, modified if compatibility is required.
 	 */
 	public function filter_body_class( array $classes ) {
 
@@ -72,7 +72,7 @@ class Tribe__Tickets__Theme_Compatibility {
 	 *
 	 * @since TBD
 	 *
-	 * @return array $classes
+	 * @return array $classes List of body classes with parent and child theme classes included.
 	 */
 	public function get_body_classes() {
 		$classes      = [];
