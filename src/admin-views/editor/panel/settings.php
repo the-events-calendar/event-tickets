@@ -14,7 +14,14 @@ if ( ! empty( $header_id ) ) {
 ?>
 
 <div id="tribe_panel_settings" class="ticket_panel panel_settings" aria-hidden="true" >
-	<h4><?php echo esc_html( sprintf( _x( '%s Settings', 'meta box ticket form heading', 'event-tickets' ), tribe_get_ticket_label_singular( 'meta_box_ticket_form_heading' ) ) ); ?></h4>
+	<h4><?php
+		echo esc_html(
+			sprintf(
+				_x( '%s Settings', 'meta box ticket form heading', 'event-tickets' ),
+				tribe_get_ticket_label_singular( 'meta_box_ticket_form_heading' )
+			)
+		); ?>
+	</h4>
 
 	<section class="settings_main">
 		<?php
@@ -42,9 +49,26 @@ if ( ! empty( $header_id ) ) {
 	<section id="tribe-tickets-image">
 		<div class="tribe-tickets-image-upload">
 			<div class="input_block">
-				<span class="ticket_form_label tribe-strong-label"><?php echo esc_html( sprintf( _x( '%s header image:', 'ticket image upload label', 'event-tickets' ), tribe_get_ticket_label_singular( 'ticket_image_upload_label' ) ) ); ?></span>
+				<span class="ticket_form_label tribe-strong-label"><?php
+					echo esc_html(
+						sprintf(
+							_x( '%s header image:', 'ticket image upload label', 'event-tickets' ),
+							tribe_get_ticket_label_singular( 'ticket_image_upload_label' )
+						)
+					); ?>
+				</span>
 				<p class="description">
-					<?php echo esc_html( sprintf( _x( 'Select an image from your Media Library to display on emailed %s. For best results, use a .jpg, .png, or .gif at least 1160px wide.', 'ticket image upload label description', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'ticket_image_upload_label_description' ) ) ); ?>
+					<?php
+					echo esc_html(
+						sprintf(
+							_x(
+								'Select an image from your Media Library to display on emailed %s. For best results, use a .jpg, .png, or .gif at least 1160px wide.',
+								'ticket image upload label description',
+								'event-tickets'
+							),
+							tribe_get_ticket_label_singular_lowercase( 'ticket_image_upload_label_description' )
+						)
+					); ?>
 				</p>
 			</div>
 			<input

@@ -183,7 +183,6 @@ class Tribe__Tickets__Data_API {
 		return $event_ids;
 	}
 
-
 	/**
 	 * Return Ticket Provider by Order, Product, Attendee, or Ticket ID.
 	 *

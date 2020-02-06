@@ -23,7 +23,7 @@
  * @since 4.7.6  Ability to filter ticket image.
  * @since 4.10.9 Use function for text.
  *
- * @version 4.10.9
+ * @version 4.11.3
  *
  * @var array $tickets An array of tickets in the format documented above.
  */
@@ -407,7 +407,14 @@
 													<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:15px;"><?php echo $ticket['ticket_id']; ?></span>
 												</td>
 												<td class="ticket-details" valign="top" align="left" width="120" style="padding: 0; width:120px; margin:0 !important;">
-													<h6 style="color:#909090 !important; margin:0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php echo esc_html( sprintf( _x( '%s Type', 'ticket type email heading', 'event-tickets' ), tribe_get_ticket_label_singular( 'ticket_type_email_heading' ) ) ); ?></h6>
+													<h6 style="color:#909090 !important; margin:0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php
+														echo esc_html(
+															sprintf(
+																_x( '%s Type', 'ticket type email heading', 'event-tickets' ),
+																tribe_get_ticket_label_singular( 'ticket_type_email_heading' )
+															)
+														); ?>
+													</h6>
 													<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:15px;"><?php echo $ticket['ticket_name']; ?></span>
 												</td>
 												<td class="ticket-details" valign="top" align="left" width="120" style="padding: 0 !important; width:120px; margin:0 !important;">

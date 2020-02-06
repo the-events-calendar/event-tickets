@@ -463,7 +463,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$attendee = $test_attendee;
 		}
 
-		// Dont try to Save if it's restricted
+		// Don't try to Save if it's restricted
 		if ( ! isset( $attendee['product_id'] )
 		     || $this->tickets_view->is_rsvp_restricted( $event_id, $attendee['product_id'] )
 		) {
@@ -1096,6 +1096,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return void
 	 */
 	public function front_end_tickets_form( $content ) {
+
+		// if password protected then do not display content
+		if ( post_password_required() ) {
+			return null;
+		}
+
 		if ( $this->is_frontend_tickets_form_done ) {
 			return $content;
 		}
@@ -1348,7 +1354,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Get total count of attendees marked as going for this provider.
+	 * Get total count of attendees marked as not going for this provider.
 	 *
 	 * @since 4.10.6
 	 *
@@ -1361,6 +1367,38 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$repository = tribe_attendees( $this->orm_provider );
 
 		return $repository->by( 'event', $post_id )->by( 'rsvp_status', 'no' )->found();
+	}
+
+	/**
+	 * Get total count of attendees marked as going for this provider and user.
+	 *
+	 * @since 4.11.3
+	 *
+	 * @param int $post_id Post or Event ID.
+	 *
+	 * @return int Total count of attendees marked as going.
+	 */
+	public function get_attendees_count_going_for_user( $post_id, $user_id ) {
+		/** @var Tribe__Tickets__Attendee_Repository $repository */
+		$repository = tribe_attendees( $this->orm_provider );
+
+		return $repository->by( 'event', $post_id )->by( 'user', $user_id )->by( 'rsvp_status', 'yes' )->found();
+	}
+
+	/**
+	 * Get total count of attendees marked as not going for this provider.
+	 *
+	 * @since 4.11.3
+	 *
+	 * @param int $post_id Post or Event ID.
+	 *
+	 * @return int Total count of attendees marked as going.
+	 */
+	public function get_attendees_count_not_going_for_user( $post_id, $user_id ) {
+		/** @var Tribe__Tickets__Attendee_Repository $repository */
+		$repository = tribe_attendees( $this->orm_provider );
+
+		return $repository->by( 'event', $post_id )->by( 'user', $user_id )->by( 'rsvp_status', 'no' )->found();
 	}
 
 	/**

@@ -50,11 +50,32 @@ if ( ! defined( 'ABSPATH' ) ) {
 					tribe_get_ticket_label_singular_lowercase( basename( __FILE__ ) )
 				)
 			); ?></li>
-		<li><?php echo esc_html( sprintf( __( '%s purchaser information: name and email address', 'event-tickets' ), tribe_get_ticket_label_singular( basename( __FILE__ ) ) ) ); ?></li>
-		<li><?php echo esc_html( sprintf( __( '%s purchaser billing address, which is collected through the use of WooCommerce, Easy Digital Downloads, or PayPal', 'event-tickets' ), tribe_get_ticket_label_singular( basename( __FILE__ ) ) ) ); ?></li>
+		<li><?php
+			echo esc_html(
+				sprintf(
+					__( '%s purchaser information: name and email address', 'event-tickets' ),
+					tribe_get_ticket_label_singular( basename( __FILE__ ) )
+				)
+			); ?>
+		</li>
+		<li><?php
+			echo esc_html(
+				sprintf(
+					__( '%s purchaser billing address, which is collected through the use of WooCommerce, Easy Digital Downloads, or PayPal', 'event-tickets' ),
+					tribe_get_ticket_label_singular( basename( __FILE__ ) )
+				)
+			); ?>
+		</li>
 	</ol>
 
-	<p><?php echo esc_html( sprintf( __( 'Please note: The website owner can collect nearly any Attendee Information requested from %s buyers by creating a custom registration form.', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( basename( __FILE__ ) ) ) ); ?></p>
+	<p><?php
+		echo esc_html(
+			sprintf(
+				__( 'Please note: The website owner can collect nearly any Attendee Information requested from %s buyers by creating a custom registration form.', 'event-tickets' ),
+				tribe_get_ticket_label_singular_lowercase( basename( __FILE__ ) )
+			)
+		); ?>
+	</p>
 
 	<h3><?php esc_html_e( 'API Keys', 'event-tickets' ); ?></h3>
 

@@ -9,29 +9,35 @@
 	 *
 	 * ----------------------------------------------------------------------------- */
 
-	.tribe-common-c-btn-link,
-	a.tribe-common-c-btn-link {
-		@mixin button-link;
+	button,
+	input[type="button"],
+	input[type="submit"],
+	a {
+		&.tribe-common-c-btn-link {
+			@mixin button-link;
 
-		color: var(--color-accent-primary);
-		padding: 11px 20px;
-		width: 100%;
+			background-color: transparent;
+			color: var(--color-accent-primary);
+			padding: 11px 20px;
+			width: 100%;
 
-		@media (--viewport-medium) {
-			width: auto;
-		}
+			@media (--viewport-medium) {
+				background-color: transparent;
+				width: auto;
+			}
 
-		&:focus,
-		&:hover {
-			color: var(--color-accent-primary-hover);
-		}
+			&:focus,
+			&:hover {
+				color: var(--color-accent-primary-hover);
+			}
 
-		&:active {
-			color: var(--color-accent-primary-active);
-		}
+			&:active {
+				color: var(--color-accent-primary-active);
+			}
 
-		&:disabled {
-			color: var(--color-accent-primary-background);
+			&:disabled {
+				color: var(--color-accent-primary-background);
+			}
 		}
 	}
 }

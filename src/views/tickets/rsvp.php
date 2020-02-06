@@ -12,7 +12,7 @@
  * @since 4.11.0 Added RSVP/ticket view link to template.
  * @since 4.11.1    Corrected amount of available/remaining tickets when threshold is empty.
  *
- * @version 4.11.1
+ * @version 4.11.3
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login
@@ -23,6 +23,9 @@ $is_there_any_product_to_sell = false;
 ob_start();
 $messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
 $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
+
+/* var Tribe__Tickets__Privacy $privacy  */
+$privacy = tribe( 'tickets.privacy' );
 
 /** @var Tribe__Settings_Manager $settings_manager */
 $settings_manager = tribe( 'settings.manager' );
@@ -109,6 +112,7 @@ if ( ! $already_rendered ) {
 			}
 
 			$ticket_id = $ticket->ID;
+			$is_there_any_rsvp_stock = false;
 
 			/** @var Tribe__Tickets__Tickets_Handler $handler */
 			$handler = tribe( 'tickets.handler' );
@@ -125,12 +129,13 @@ if ( ! $already_rendered ) {
 			 */
 			$show_unlimited = apply_filters( 'tribe_rsvp_block_show_unlimited_availability', false, $available );
 
-			$is_there_any_product_to_sell = 0 !== $available;
+			$is_there_any_rsvp_stock      = 0 !== $available;
+			$is_there_any_product_to_sell = $is_there_any_rsvp_stock || $is_there_any_product_to_sell;
 			?>
 			<tr>
 				<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket_id ); ?>">
 					<input type="hidden" name="product_id[]" value="<?php echo absint( $ticket_id ); ?>">
-					<?php if ( $is_there_any_product_to_sell ) : ?>
+					<?php if ( $is_there_any_rsvp_stock ) : ?>
 						<input
 							type="number"
 							class="tribe-tickets-quantity"
@@ -253,9 +258,10 @@ if ( ! $already_rendered ) {
 										type="checkbox"
 										name="attendee[optout]"
 										id="tribe-tickets-attendees-list-optout"
+										<?php checked( true ); ?>
 									>
 									<label for="tribe-tickets-attendees-list-optout">
-										<?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?>
+										<?php echo $privacy->get_opt_out_text(); ?>
 									</label>
 								</td>
 							</tr>
@@ -277,7 +283,13 @@ if ( ! $already_rendered ) {
 							value="1"
 							class="tribe-button tribe-button--rsvp"
 						>
-							<?php echo esc_html( sprintf( _x( 'Confirm %s', 'tickets process button text', 'event-tickets' ), tribe_get_rsvp_label_singular( 'tickets_process_button_text' ) ) );?>
+							<?php
+							echo esc_html(
+								sprintf(
+									_x( 'Confirm %s', 'tickets process button text', 'event-tickets' ),
+									tribe_get_rsvp_label_singular( 'tickets_process_button_text' )
+								)
+							); ?>
 						</button>
 					<?php endif; ?>
 				</td>
