@@ -1,15 +1,15 @@
 <?php
 /**
- * View: Map View - Single Event Actions - Cost
+ * View: Map View - Single Event Actions - Cost Spacer
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/event-tickets/views/v2/map/event-cards/event-card/event/actions/cost.php
+ * [your-theme]/tribe/event-tickets/views/v2/map/event-cards/event-card/event/actions/cost-spacer.php
  *
  * See more documentation about our views templating system.
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @since   4.10.9
+ * @since   TBD
  * @version TBD
  *
  * @var WP_Post $event The event post object with properties added by the `tribe_get_event` function.
@@ -21,9 +21,6 @@ if ( ! $event->tickets->exist() || ! tribe_tickets_is_current_time_in_date_windo
 	return;
 }
 ?>
-<a
-	href="<?php echo esc_url( $event->tickets->link->anchor ); ?>"
-	class="tribe-events-c-small-cta__link tribe-common-cta tribe-common-cta--thin-alt"
->
+<span class="tribe-events-c-small-cta__link tribe-common-cta tribe-common-cta--thin-alt">
 	<?php echo esc_html( $event->tickets->link->label ); ?>
-</a>
+</span>
