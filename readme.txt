@@ -121,6 +121,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Tweak - Adding support for The Events Calendar 5.0.0
 * Tweak - Added new `tribe_events_is_current_time_in_date_window()` function that checks if the current datetime is within a post's ticket availability window [TEC-3033]
+* Fix - Add cost spacer to map view template overrides. [ECP-317]
 * Language - 0 new strings added, 94 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.11.1] 2019-12-19 =
