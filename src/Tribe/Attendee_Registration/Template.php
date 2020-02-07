@@ -222,6 +222,33 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	}
 
 	/**
+	 * Add the theme to the body class, in order to
+	 * add compatibility for official themes.
+	 *
+	 * @since 4.9
+	 * @param array $classes List of classes to filter
+	 * @deprecated TBD
+	 *
+	 * @return array $classes
+	 */
+	public function theme_body_class( $classes ) {
+		return $classes;
+	}
+
+	/**
+	 * Checks if theme needs a compatibility fix
+	 *
+	 * @since 4.9
+	 * @param string $theme Name of template from WP_Theme->Template, defaults to current active template
+	 * @deprecated TBD
+	 *
+	 * @return mixed
+	 */
+	public function theme_has_compatibility_fix( $theme = null ) {
+		return false;
+	}
+
+	/**
 	 * This is where the magic happens where we run some ninja code that hooks
 	 * the query to resolve to an events template.
 	 *
