@@ -3,14 +3,14 @@
  * View: List Single Event Cost
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/event-tickets/views/v2/list/event/cost.php
+ * [your-theme]/tribe/tickets/views/v2/list/event/cost.php
  *
  * See more documentation about our views templating system.
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
  * @since   4.10.9
- * @version 4.11.3
+ * @version TBD
  *
  * @var WP_Post $event The event post object with properties added by the `tribe_get_event` function.
  *
