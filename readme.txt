@@ -117,7 +117,11 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.11.3] 2019-02-06 =
+= [4.11.3.1] 2020-02-11 =
+
+* Fix - Resolve potential fatal errors when an object is passed to determine a CSS class where we had expected a string. [ET-716]
+
+= [4.11.3] 2020-02-06 =
 
 * Feature - Show original price on ticket block if ticket on sale. Allow turning off via the `tribe_tickets_show_original_price_on_sale` filter. [ETP-47]
 * Fix - Allow adding ticket header image on non-event posts. [ETP-54]
