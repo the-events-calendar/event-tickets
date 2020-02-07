@@ -13,7 +13,7 @@
  *
  * @link    {INSERT_ARTICLE_LINK_HERE}
  *
- * @version 4.11.1
+ * @version 4.11.3
  *
  * @var Tribe__Tickets__Editor__Template $this
  */

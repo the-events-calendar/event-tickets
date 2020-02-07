@@ -13,7 +13,7 @@
  * @since   4.10.8 Updated loading logic for including a renamed template.
  * @since   4.10.10 Removed initial check for tickets.
  *
- * @version 4.11.0
+ * @version 4.11.3
  *
  * @var Tribe__Tickets__Editor__Template $this
  */

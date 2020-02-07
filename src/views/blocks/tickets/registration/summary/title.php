@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Block: Tickets
@@ -13,7 +14,7 @@
  * @since 4.9.3
  * @since 4.10.9 Uses new functions to get singular and plural texts.
  *
- * @version 4.11.0
+ * @version 4.11.3
  */
 
 ?>
