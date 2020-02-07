@@ -13,7 +13,7 @@
  * @since 4.9.3
  * @since 4.10.9 Use function for text.
  *
- * @version 4.10.9
+ * @version 4.11.3
  */
 
 ?>

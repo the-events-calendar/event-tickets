@@ -23,7 +23,7 @@
  * @since 4.7.6  Ability to filter ticket image.
  * @since 4.10.9 Use function for text.
  *
- * @version 4.10.9
+ * @version 4.11.3
  *
  * @var array $tickets An array of tickets in the format documented above.
  */

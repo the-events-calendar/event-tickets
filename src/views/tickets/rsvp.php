@@ -12,7 +12,7 @@
  * @since 4.11.0 Added RSVP/ticket view link to template.
  * @since 4.11.1    Corrected amount of available/remaining tickets when threshold is empty.
  *
- * @version 4.11.1
+ * @version 4.11.3
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login
