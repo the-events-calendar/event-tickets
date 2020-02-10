@@ -42,16 +42,16 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		$slug = $page ? $page->post_name : '';
 
 		if (
-			empty( $slug )
+			! empty( $slug )
 			|| (
-				! empty( $page )
-				&& ! has_shortcode( $page->post_content, 'tribe_attendee_registration' )
+				empty( $page )
+				&& has_shortcode( $page->post_content, 'tribe_attendee_registration' )
 			)
 		) {
-			$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', $this->default_page_slug );
+			return $slug;
 		}
 
-		return $slug;
+		return Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', $this->default_page_slug );
 	}
 
 	/**
