@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.11.3.1] 2019-02-11 =
+
+* Fix - Prevent conflicts with a template variable used by the Tickets block when rendering while The Events Calendar is activated. [ET-717]
+
 = [4.11.3] 2019-02-06 =
 
 * Feature - Show original price on ticket block if ticket on sale. Allow turning off via the `tribe_tickets_show_original_price_on_sale` filter. [ETP-47]
