@@ -7,7 +7,7 @@
  *
  * @since 4.11.0
  *
- * @version 4.11.0
+ * @version TBD
  *
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
@@ -51,7 +51,7 @@ $classes        = [
 	</div>
 
 	<h1 class="tribe-common-h2 tribe-common-h1--min-medium tribe-common-h--alt tribe-tickets__registration__page-title">
-		<?php esc_html_e( 'Attendee Registration', 'event-tickets' ); ?>
+		<?php echo esc_html( tribe( 'tickets.attendee_registration.template' )->get_page_title() ); ?>
 	</h1>
 	<form
 		method="post"
