@@ -254,12 +254,21 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 * Given a provider, get the class to be applied to the attendee registration form
 	 * @since 4.10.4
 	 *
-	 * @param string $provider the provider/attendee object name indicating ticket porovider
+	 * @param string|Tribe__Tickets__Tickets $provider The provider/attendee object name indicating ticket provider.
 	 *
 	 * @return string the class string or empty string if provider not found
 	 */
 	public function get_form_class( $provider ) {
 		$class = '';
+
+		if ( is_object( $provider ) ) {
+			if ( $provider instanceof Tribe__Tickets__Tickets ) {
+				$provider = $provider->attendee_object;
+			} else {
+				// Use the no provider return below.
+				$provider = false;
+			}
+		}
 
 		if ( empty( $provider ) ) {
 			/**
