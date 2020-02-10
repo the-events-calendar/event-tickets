@@ -397,7 +397,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		 * `tribe_tickets_attendee_registration_page_title`
 		 * Filters the attendee registration page title
 		 *
-		 * @param string the Page Title
+		 * @param string the "Attendee Registration" page title.
 		 */
 		return apply_filters( 'tribe_tickets_attendee_registration_page_title', $title );
 	}
