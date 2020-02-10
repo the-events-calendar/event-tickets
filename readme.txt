@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.11.3.1] 2020-02-11 =
 
 * Fix - Resolve potential fatal errors when an object is passed to determine a CSS class where we had expected a string. [ET-716]
+* Fix - Prevent conflicts with a template variable used by the Tickets block when rendering while The Events Calendar is activated. [ET-717]
 
 = [4.11.3] 2020-02-06 =
 
