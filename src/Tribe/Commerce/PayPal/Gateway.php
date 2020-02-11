@@ -529,14 +529,16 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$custom_args = apply_filters( 'tribe_tickets_commerce_paypal_custom_args', $custom_args, $post, $product_ids );
 
 		$args = [
-			'cmd'           => '_cart',
-			'business'      => urlencode( $email ),
-			'bn'            => 'ModernTribe_SP',
-			'notify_url'    => urlencode( $notify_url ),
-			'shopping_url'  => urlencode( $post_url ),
-			'return'        => $this->get_success_page_url( $invoice_number ),
-			'currency_code' => $currency_code ?: 'USD',
-			'custom'        => $custom_args,
+			'cmd'              => '_cart',
+			'business'         => urlencode( $email ),
+			'bn'               => 'ModernTribe_SP',
+			'notify_url'       => urlencode( $notify_url ),
+			'shopping_url'     => urlencode( $post_url ),
+			'return'           => $this->get_success_page_url( $invoice_number ),
+			'currency_code'    => $currency_code ?: 'USD',
+			'custom'           => $custom_args,
+			// tribe_redirected is needed because TEC will stop a redirect on the main events page.
+			'tribe_redirected' => 1,
 			/*
 			 * We're not sending an invoice anymore.
 			 * It would mess up the cart cookies and we ended up not using it.
@@ -656,6 +658,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 * @see Tribe__Tickets__Redirections::maybe_redirect
 		 */
 		$url_args = [
+			// tribe_redirected is needed because TEC will stop a redirect on the main events page.
 			'tribe_redirected'          => 1,
 			'tribe_tickets_post_id'     => $post_id,
 			'tribe_tickets_redirect_to' => rawurlencode( $cart_url ),
