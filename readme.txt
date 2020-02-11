@@ -121,6 +121,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Resolve potential fatal errors when an object is passed to determine a CSS class where we had expected a string. [ET-716]
 * Fix - Prevent conflicts with a template variable used by the Tickets block when rendering while The Events Calendar is activated. [ET-717]
+* Fix - Prevent The Events Calendar from disabling the redirect for Tribe Commerce that should take you to PayPal when checking out. [ET-714]
 
 = [4.11.3] 2020-02-06 =
 
