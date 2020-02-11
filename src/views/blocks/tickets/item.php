@@ -14,7 +14,7 @@
  * @since   4.11.0 Add modal only fields
  * @since   4.11.1 Corrected amount of available/remaining tickets.
  *
- * @version 4.11.1
+ * @version 4.11.3
  */
 $classes  = [ 'tribe-tickets__item' ];
 
@@ -67,7 +67,7 @@ $has_shared_cap = $tickets_handler->has_shared_capacity( $ticket );
 	data-available="<?php echo ( 0 === $tickets_handler->get_ticket_max_purchase( $ticket->ID ) ) ? 'false' : 'true'; ?>"
 	data-has-shared-cap="<?php echo $has_shared_cap ? 'true' : 'false'; ?>"
 	<?php if ( $has_shared_cap) : ?>
-		data-shared-cap="<?php echo esc_attr( $ticket->capacity() ); ?>"
+		data-shared-cap="<?php echo esc_attr( get_post_meta( $post_id, $tickets_handler->key_capacity, true ) ); ?>"
 	<?php endif; ?>
 
 >

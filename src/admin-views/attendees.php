@@ -40,7 +40,14 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', true, $attend
 				?>
 
 				<div class="welcome-panel-column welcome-panel-first">
-					<h3><?php echo esc_html( sprintf( _x( '%s Details', 'attendee screen summary', 'event-tickets' ), $singular ) ); ?></h3>
+					<h3><?php
+						echo esc_html(
+							sprintf(
+								_x( '%s Details', 'attendee screen summary', 'event-tickets' ),
+								$singular
+							)
+						); ?>
+					</h3>
 
 					<ul>
 						<?php

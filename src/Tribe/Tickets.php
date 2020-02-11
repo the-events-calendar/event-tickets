@@ -324,7 +324,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$args = [
 				'post_type'      => [ $this->ticket_object ],
-				'posts_per_page' => - 1,
+				'posts_per_page' => -1,
 				'fields'         => 'ids',
 				'post_status'    => 'publish',
 				'orderby'        => 'menu_order',
@@ -384,7 +384,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$query = new WP_Query( $args );
-			$cache->set( $cache_key, $query, Tribe__Cache::NO_EXPIRATION );
+			$cache->set( $cache_key, $query, Tribe__Cache::NO_EXPIRATION, 'event_tickets_after_create_ticket' );
 
 			return $query->posts;
 		}
@@ -971,7 +971,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			do_action( 'tribe_tickets_tickets_hook', $this );
 		}
 
-
 		/**
 		 * Remove the attendees transient when a Ticket change its state
 		 *
@@ -1422,7 +1421,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function get_all_event_tickets( $post_id ) {
-
 			$cache_key = self::$cache_key_prefix . $post_id;
 			$cache = new Tribe__Cache();
 			$tickets = $cache->get( $cache_key );
@@ -1437,13 +1435,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			foreach ( $modules as $class => $module ) {
 				$obj              = call_user_func( [ $class, 'get_instance' ] );
 				$provider_tickets = $obj->get_tickets( $post_id );
-				if ( is_array( $provider_tickets ) ) {
+				if ( is_array( $provider_tickets ) && !empty( $provider_tickets)  ) {
 					$tickets[] = $provider_tickets;
 				}
 			}
 
 			$tickets = empty( $tickets ) ? [] : call_user_func_array( 'array_merge', $tickets );
-			$cache->set( $cache_key, $tickets, Tribe__Cache::NO_EXPIRATION );
+			$cache->set( $cache_key, $tickets, Tribe__Cache::NO_EXPIRATION, 'event_tickets_after_create_ticket' );
 
 			return $tickets;
 		}
@@ -1568,6 +1566,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 60000 );
 
 			return [
+				'post_id'                     => get_the_ID(),
 				'ajaxurl'                     => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 				'availability_check_interval' => $availability_check_interval,
 			];
@@ -1773,13 +1772,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Tries to make data about global stock levels and global stock-enabled ticket objects
 		 * available to frontend scripts.
 		 *
-		 * @deprecated TBD
+		 * @deprecated 4.11.3
 		 *
 		 * @param array $tickets
 		 */
 		public static function add_frontend_stock_data( array $tickets ) {
 
-			_deprecated_function( __METHOD__, 'TBD', 'tribe( "tickets.editor.blocks.tickets" )->assets()' );
+			_deprecated_function( __METHOD__, '4.11.3', 'tribe( "tickets.editor.blocks.tickets" )->assets()' );
 
 			if ( is_admin() ) {
 				return;
@@ -2542,6 +2541,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
 
 			if ( is_admin() || ! $in_the_loop ) {
+				return false;
+			}
+
+			if ( ! is_singular() ) {
 				return false;
 			}
 

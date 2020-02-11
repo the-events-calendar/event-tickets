@@ -2,6 +2,8 @@
 
 namespace Tribe\Tickets\Test\Commerce\RSVP;
 
+use Tribe__Utils__Array as Utils_Array;
+
 trait Ticket_Maker {
 
 	/**
@@ -22,23 +24,40 @@ trait Ticket_Maker {
 		unset( $overrides['meta_input'] );
 
 		/** @var \Tribe__Tickets__RSVP $rsvp */
-		$rsvp = tribe( 'tickets.rsvp' );
+		$rsvp             = tribe( 'tickets.rsvp' );
+		$capacity         = Utils_Array::get( $meta_input, '_capacity', 100 );
+		$sales            = Utils_Array::get( $meta_input, 'total_sales', 0 );
 
-		$capacity = \Tribe__Utils__Array::get( $meta_input, '_capacity', 100 );
-		$stock    = \Tribe__Utils__Array::get( $meta_input, '_stock', $capacity );
+		$calculated_stock = -1 === $capacity ? null : ( $capacity - $sales );
+		$manage_stock     = -1 === $capacity ? 'no' : 'yes';
+
+		// Unlike tickets, we don't store '-1' for unlimited RSVP.
+		if ( -1 === $capacity || '' === $capacity ) {
+			$capacity = '-1';
+		}
 
 		unset( $meta_input['_capacity'], $meta_input['_stock'] );
 
-		$merged_meta_input = array_merge( [
-			'_tribe_rsvp_for_event'                          => $post_id,
-			'total_sales'                                    => 0,
-			'_stock'                                         => $stock,
-			tribe( 'tickets.handler' )->key_capacity         => $capacity,
-			'_manage_stock'                                  => 'yes',
-			'_ticket_start_date'                             => date( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
-			'_ticket_end_date'                               => date( 'Y-m-d H:i:s', strtotime( '+1 day' ) ),
-			\Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE => 'own',
-		], $meta_input );
+		$merged_meta_input = array_merge(
+			[
+				'_tribe_rsvp_for_event'                          => $post_id,
+				tribe( 'tickets.handler' )->key_capacity         => $capacity,
+				'_manage_stock'                                  => 'yes',
+				'_ticket_start_date'                             => date( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
+				'_ticket_end_date'                               => date( 'Y-m-d H:i:s', strtotime( '+1 day' ) ),
+			],
+			$meta_input
+		);
+
+		// We don't set stock for unlimited rsvps
+		if ( tribe_is_truthy( $manage_stock ) ) {
+			$merged_meta_input[ '_stock' ] = $calculated_stock;
+		}
+
+		// if we have sales, set them
+		if ( ! empty( $sales ) ) {
+			$merged_meta_input['total_sales' ] = $sales;
+		}
 
 		// if the ticket start and/or end date(s) are set to empty values they should
 		// not be set
@@ -50,9 +69,9 @@ trait Ticket_Maker {
 
 		$ticket_id = $factory->post->create( array_merge(
 				[
-					'post_title'   => "Test RSVP ticket for {$post_id}",
-					'post_content' => "Test RSVP ticket description for {$post_id}",
-					'post_excerpt' => "Ticket RSVP ticket excerpt for {$post_id}",
+					'post_title'   => "Test RSVP ticket for " . $post_id,
+					'post_content' => "Test RSVP ticket description for " . $post_id,
+					'post_excerpt' => "Ticket RSVP ticket excerpt for " . $post_id,
 					'post_type'    => $rsvp->ticket_object,
 					'meta_input'   => $merged_meta_input,
 				], $overrides )

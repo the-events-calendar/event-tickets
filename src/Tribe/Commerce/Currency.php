@@ -802,7 +802,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param int         $amount   The amount to format.
+	 * @param int|float   $amount   The amount to format.
 	 * @param int         $post_id  The id of the post with tickets.
 	 * @param string|null $provider The ticket provider class name.
 	 * @param boolean     $html     Whether to return with html wrap.
@@ -852,5 +852,4 @@ class Tribe__Tickets__Commerce__Currency {
 		 */
 		return apply_filters( 'tribe_format_amount_with_symbol', $formatted, $amount, $currency, $html );
 	}
-
 }
