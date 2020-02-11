@@ -6,9 +6,9 @@
  * [your-theme]/tribe/tickets/registration-js/content.php
  *
  * @since 4.11.0
- * @since TBD    Fix handling where $provider is an object.
+ * @since 4.11.3.1 Fix handling where $provider is an object.
  *
- * @version TBD
+ * @version 4.11.3.1
  *
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
