@@ -12,11 +12,17 @@ class Tribe__Tickets__Assets {
 		/** @var Tribe__Tickets__Main $tickets_main */
 		$tickets_main = tribe( 'tickets.main' );
 
+		$tickets_deps   = [ 'dashicons', 'event-tickets-reset-css' ];
+
+		if ( $this->should_enqueue_common_full() ) {
+			$tickets_deps[] = 'tribe-common-full-style';
+		}
+
 		tribe_assets(
 			$tickets_main,
 			[
 				[ 'event-tickets-reset-css', 'reset.css' ],
-				[ 'event-tickets-tickets-css', 'tickets.css', [ 'dashicons', 'event-tickets-reset-css' ] ],
+				[ 'event-tickets-tickets-css', 'tickets.css', $tickets_deps ],
 				[ 'event-tickets-tickets-rsvp-css', 'rsvp.css', [] ],
 				[ 'event-tickets-tickets-rsvp-js', 'rsvp.js', [ 'jquery' ] ],
 				[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
@@ -207,4 +213,36 @@ class Tribe__Tickets__Assets {
 
 		return $data;
 	}
+
+	/**
+	 * Check if we should load the common full style assets.
+	 * When TEC is not in place, or vies V2 are not enabled, so we have the common
+	 * styles we need for our tickets blocks, AR, etc.
+	 * If V2 are active, we respect the style option.
+	 *
+	 * @since  TBD
+	 *
+	 * @return bool
+	 */
+	public function should_enqueue_common_full() {
+		// If TEC isn't there, we need to load common full styles.
+		if ( ! class_exists( 'Tribe__Events__Main' ) ) {
+			return true;
+		}
+
+		// If TEC isn't active or they have a previous version.
+		if ( ! function_exists( 'tribe_events_views_v2_is_enabled' ) ) {
+			return true;
+		}
+
+		// If the views V2 are not enabled, we need to load common full styles.
+		if ( ! tribe_events_views_v2_is_enabled() ) {
+			return true;
+		}
+
+		// If views V2 are in place, we respect the setting.
+		$style_option = tribe_get_option( 'stylesheetOption', 'tribe' );
+		return 'skeleton' !== $style_option;
+	}
+
 }
