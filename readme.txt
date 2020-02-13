@@ -121,6 +121,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Update file path in the docblocks of the templates for The Events Calendar new views. [ET-713]
 * Fix - Hitting enter in the tickets form changes ticket quantities. [ETP-43]
+* Fix - Ensure we're loading the common full styles when required. This fixes missing styles problems from the tickets block. [ET-725]
 
 = [4.11.3] 2019-02-06 =
 
