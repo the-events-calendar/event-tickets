@@ -74,6 +74,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 		$file = $this->locate_template( $template );
 
 		$obj_tickets = $template_obj->get( 'tickets', [] );
+		$tickets = [];
 		foreach( $obj_tickets as $ticket ) {
 			$ticket_data = array(
 				'id'       => $ticket->ID,
