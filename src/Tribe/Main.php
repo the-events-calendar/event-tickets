@@ -360,6 +360,8 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
 
+		tribe_singleton( 'tickets.theme-compatibility', 'Tribe__Tickets__Theme_Compatibility' );
+
 		// Attendee Registration Page
 		tribe_register_provider( 'Tribe__Tickets__Attendee_Registration__Service_Provider' );
 
@@ -590,6 +592,9 @@ class Tribe__Tickets__Main {
 
 		// Cart handling.
 		add_action( 'init', tribe_callback( 'tickets.commerce.cart', 'hook' ) );
+
+		// Theme Compatibility.
+		add_filter( 'body_class', tribe_callback( 'tickets.theme-compatibility', 'filter_body_class' ) );
 	}
 
 	/**
