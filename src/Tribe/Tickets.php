@@ -1556,14 +1556,29 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array JS localize data for ticket options.
 		 */
 		public static function get_asset_localize_data_for_ticket_options() {
+			$availability_check_interval = MINUTE_IN_SECONDS * 1000;
+
+			/*
+			 * Prevent availability check AJAX errors because we don't currently
+			 * run our AJAX hook if this conditional fails.
+			 *
+			 * A temporary fix for ET-730 which will need to be followed up with.
+			 *
+			 * @see \Tribe__Tickets__Editor__Provider::register()
+			 * @see \Tribe__Tickets__Editor__Blocks__Tickets::hook()
+			 */
+			if ( ! tribe( 'editor' )->should_load_blocks() ) {
+				$availability_check_interval = 0;
+			}
+
 			/**
-			 * Allow filtering how often tickets availability is checked.
+			 * Allow filtering how often tickets availability is checked (in milliseconds).
 			 *
 			 * @since 4.11.0
 			 *
-			 * @param int $availability_check_interval How often to check availability for tickets.
+			 * @param int $availability_check_interval How often to check availability for tickets (in milliseconds).
 			 */
-			$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 60000 );
+			$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', $availability_check_interval );
 
 			$post_id = get_the_ID();
 
