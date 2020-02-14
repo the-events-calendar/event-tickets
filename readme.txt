@@ -123,7 +123,15 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Hitting enter in the tickets form changes ticket quantities. [ETP-43]
 * Fix - Add theme compatibility for the AR Modal by adding theme identifying body CSS classes. [ETP-156]
 
-= [4.11.3] 2019-02-06 =
+= [4.11.3.1] 2020-02-11 =
+
+* Fix - Resolve potential fatal errors when an object is passed to determine a CSS class where we had expected a string. [ET-716]
+* Fix - Prevent conflicts with a template variable used by the Tickets block when rendering while The Events Calendar is activated. [ET-717]
+* Fix - Prevent The Events Calendar from disabling the redirect for Tribe Commerce that should take you to PayPal when checking out. [ET-714]
+* Fix - Better detect the post ID to use on normal pages for Tribe Commerce. [ET-714]
+* Tweak - Changed views: `modal/registration-js`, `registration-js/content`
+
+= [4.11.3] 2020-02-06 =
 
 * Feature - Show original price on ticket block if ticket on sale. Allow turning off via the `tribe_tickets_show_original_price_on_sale` filter. [ETP-47]
 * Fix - Allow adding ticket header image on non-event posts. [ETP-54]
