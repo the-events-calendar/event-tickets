@@ -6,8 +6,9 @@
  * [your-theme]/tribe/tickets/registration-js/content.php
  *
  * @since 4.11.0
+ * @since 4.11.3.1 Fix handling where $provider is an object.
  *
- * @version 4.11.0
+ * @version 4.11.3.1
  *
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
@@ -21,7 +22,10 @@ if ( empty( $provider ) ) {
 	$provider      = $provider_obj->attendee_object;
 } elseif ( is_string( $provider ) ) {
 	$provider_obj = tribe( 'tickets.attendee_registration.view' )->get_cart_provider( $provider );
-	$provider      = $provider_obj->attendee_object;
+	$provider     = $provider_obj->attendee_object;
+} elseif ( $provider instanceof Tribe__Tickets__Tickets ) {
+	$provider_obj = $provider;
+	$provider     = $provider_obj->attendee_object;
 }
 
 $non_meta_count = 0;
