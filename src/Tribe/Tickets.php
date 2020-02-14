@@ -1556,7 +1556,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array JS localize data for ticket options.
 		 */
 		public static function get_asset_localize_data_for_ticket_options() {
-			$availability_check_interval = 60000;
+			$availability_check_interval = MINUTE_IN_SECONDS * 1000;
 
 			/*
 			 * Prevent availability check AJAX errors because we don't currently
