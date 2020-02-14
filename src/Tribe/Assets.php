@@ -240,9 +240,8 @@ class Tribe__Tickets__Assets {
 			return true;
 		}
 
-		// If views V2 are in place, we respect the setting.
-		$style_option = tribe_get_option( 'stylesheetOption', 'tribe' );
-		return 'skeleton' !== $style_option;
+		// If views V2 are in place, we respect the skeleton setting.
+		return ! tribe( Tribe\Events\Views\V2\Assets::class )->is_skeleton_style();
 	}
 
 }
