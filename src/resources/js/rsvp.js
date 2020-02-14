@@ -40,25 +40,15 @@ var tribe_tickets_rsvp = {
 	};
 
 	my.validate_submission = function( $form ) {
-		var $rsvp = $form.find( '.tribe-tickets-quantity' );
-		var rsvp_qty = 0;
-		var $name = $( document.getElementById( 'tribe-tickets-full-name' ) );
-		var $email = $( document.getElementById( 'tribe-tickets-email' ) );
+		var $qty = $form.find( 'input.tribe-tickets-quantity' );
+		var $name = $form.find( 'input.tribe-tickets-full-name' );
+		var $email = $form.find( 'input.tribe-tickets-email' );
 
-		$rsvp.each( function () {
-			rsvp_qty = rsvp_qty + parseInt( $( this ).val() );
-		} );
-
-		if (
-			0 === rsvp_qty ||
-			! $.trim( $rsvp.val() ).length ||
-			! $.trim( $name.val() ).length ||
-			! $.trim( $email.val() ).length
-		) {
-			return false;
-		}
-
-		return true;
+		return (
+			$.trim( $name.val() ).length &&
+			$.trim( $email.val() ).length &&
+			parseInt( $qty.val() ) > 0
+		);
 	};
 
 	my.event.quantity_changed = function() {
