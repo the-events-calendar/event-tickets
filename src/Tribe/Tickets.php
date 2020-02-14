@@ -1565,8 +1565,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 */
 			$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 60000 );
 
+			$post_id = get_the_ID();
+
+			if ( empty( $post_id ) && get_queried_object() instanceof WP_Post ) {
+				$post_id = get_queried_object_id();
+			}
+
 			return [
-				'post_id'                     => get_the_ID(),
+				'post_id'                     => $post_id,
 				'ajaxurl'                     => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 				'availability_check_interval' => $availability_check_interval,
 			];
