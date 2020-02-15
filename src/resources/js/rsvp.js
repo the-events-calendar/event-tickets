@@ -1,6 +1,6 @@
 var tribe_tickets_rsvp = {
 	num_attendees: 0,
-	event        : {},
+	event: {},
 };
 
 (function( $, my ) {
