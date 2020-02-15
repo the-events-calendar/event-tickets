@@ -121,6 +121,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Update file path in the docblocks of the templates for The Events Calendar new views. [ET-713]
 * Fix - Hitting enter in the tickets form changes ticket quantities. [ETP-43]
+* Fix - The scripts to obtain an RSVP or Tribe Commerce ticket now work even if required Attendee Information was missing upon initial attempt to submit the form. [ET-686]
 
 = [4.11.3] 2019-02-06 =
 
