@@ -7,12 +7,12 @@ var tribe_tickets_tpp = {
 	'use strict';
 
 	my.init = function() {
-		this.$rsvp = $( '.tribe-events-tickets-rsvp' );
+		this.$tpp = $( '.tribe_tpp_tickets' );
 		this.attendee_template = $( document.getElementById( 'tribe-tickets-tpp-tmpl' ) ).html();
 
-		this.$rsvp.on( 'change', '.tribe-tickets-quantity', this.event.quantity_changed );
+		this.$tpp.on( 'change', '.tribe-tickets-quantity', this.event.quantity_changed );
 
-		this.$rsvp.closest( '.cart' )
+		this.$tpp.closest( '.cart' )
 			.on( 'submit', this.event.handle_submission );
 
 		$( '.tribe-rsvp-list' ).on( 'click', '.attendee-meta-row .toggle', function() {
@@ -25,13 +25,13 @@ var tribe_tickets_tpp = {
 
 	my.quantity_changed = function( $quantity ) {
 		var i = 0;
-		var $rsvp = $quantity.closest( '.tribe-events-tickets-tpp' );
+		var $tpp = $quantity.closest( '.tribe-events-tickets-tpp' );
 		var quantity = parseInt( $quantity.val(), 10 );
 
 		if ( ! quantity ) {
-			$rsvp.removeClass( 'tribe-tickets-has-tpp' );
+			$tpp.removeClass( 'tribe-tickets-has-tpp' );
 		} else {
-			$rsvp.addClass( 'tribe-tickets-has-tpp' );
+			$tpp.addClass( 'tribe-tickets-has-tpp' );
 		}
 	};
 
@@ -51,7 +51,7 @@ var tribe_tickets_tpp = {
 	};
 
 	/**
-	 * Handle Submission of RSVP
+	 * Handle Submission of TPP
 	 *
 	 * @since 4.10.9 - Prevent multiple clicks on "Confirm RSVP" from submitting.
 	 *
