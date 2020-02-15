@@ -24,8 +24,8 @@ var tribe_tickets_rsvp = {
 	};
 
 	my.quantity_changed = function( $quantity ) {
-		let $rsvp = $quantity.closest( '.tribe-events-tickets-rsvp' );
-		let $rsvpQtys = $rsvp.find( '.tribe-tickets-quantity' );
+		const $rsvp = $quantity.closest( '.tribe-events-tickets-rsvp' );
+		const $rsvpQtys = $rsvp.find( '.tribe-tickets-quantity' );
 		let rsvpQty = 0;
 		$rsvpQtys.each( function() {
 			rsvpQty = rsvpQty + parseInt( $( this ).val() );
@@ -39,10 +39,10 @@ var tribe_tickets_rsvp = {
 	};
 
 	my.validate_rsvp_info = function( $form ) {
+		const $qty = $form.find( 'input.tribe-tickets-quantity' );
+		const $name = $form.find( 'input#tribe-tickets-full-name' );
+		const $email = $form.find( 'input#tribe-tickets-email' );
 		let rsvpQty = 0;
-		let $qty = $form.find( 'input.tribe-tickets-quantity' );
-		let $name = $form.find( 'input#tribe-tickets-full-name' );
-		let $email = $form.find( 'input#tribe-tickets-email' );
 
 		$qty.each( function() {
 			rsvpQty = rsvpQty + parseInt( $( this ).val() );
@@ -56,8 +56,8 @@ var tribe_tickets_rsvp = {
 	};
 
 	my.validate_meta = function( $form ) {
+		const hasTicketsPlus = !! window.tribe_event_tickets_plus;
 		let isMetaValid = true;
-		let hasTicketsPlus = !! window.tribe_event_tickets_plus;
 
 		if ( hasTicketsPlus ) {
 			isMetaValid = window.tribe_event_tickets_plus.meta.validate_meta( $form );
@@ -71,19 +71,20 @@ var tribe_tickets_rsvp = {
 	};
 
 	my.event.handle_submission = function( e ) {
-		let $form = $( this ).closest( 'form' );
+		const $form = $( this ).closest( 'form' );
 
-		let $rsvpMessages = $form.find( '.tribe-rsvp-messages, .tribe-rsvp-message-confirmation-error' );
-		let $etpMetaMessages = $form.find( '.tribe-event-tickets-meta-required-message' );
+		const $rsvpMessages = $form.find(
+			'.tribe-rsvp-messages, ' +
+			'.tribe-rsvp-message-confirmation-error',
+		);
 
-		let isRsvpInfoValid = !! my.validate_rsvp_info( $form );
-		let isAttendeeMetaValid = !! my.validate_meta( $form );
+		const $etpMetaMessages = $form.find( '.tribe-event-tickets-meta-required-message' );
+
+		const isRsvpInfoValid = !! my.validate_rsvp_info( $form );
+		const isAttendeeMetaValid = !! my.validate_meta( $form );
 
 		// Show/Hide message about missing RSVP details (name, email, going/not) and/or missing ETP fields (if applicable).
-		if (
-			! isRsvpInfoValid
-			|| ! isAttendeeMetaValid
-		) {
+		if ( ! isRsvpInfoValid || ! isAttendeeMetaValid ) {
 			isRsvpInfoValid
 				? $rsvpMessages.hide()
 				: $rsvpMessages.show();
