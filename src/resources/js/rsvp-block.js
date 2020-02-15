@@ -198,8 +198,6 @@ var tribe_tickets_rsvp_block = {
 		);
 	};
 
-
-
 	/**
 	 * Handle the form submission
 	 *

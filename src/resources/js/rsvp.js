@@ -24,15 +24,14 @@ var tribe_tickets_rsvp = {
 	};
 
 	my.quantity_changed = function( $quantity ) {
-
 		var $rsvp = $quantity.closest( '.tribe-events-tickets-rsvp' );
 		var $rsvp_qtys = $rsvp.find( '.tribe-tickets-quantity' );
 		var rsvp_qty = 0;
-		$rsvp_qtys.each( function () {
+		$rsvp_qtys.each( function() {
 			rsvp_qty = rsvp_qty + parseInt( $( this ).val() );
 		} );
 
-		if ( 0 === rsvp_qty ) {
+		if( 0 === rsvp_qty ) {
 			$rsvp.removeClass( 'tribe-tickets-has-rsvp' );
 		} else {
 			$rsvp.addClass( 'tribe-tickets-has-rsvp' );
