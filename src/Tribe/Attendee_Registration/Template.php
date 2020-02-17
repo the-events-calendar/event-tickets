@@ -352,7 +352,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @return string
 	 */
 	public function get_page_title() {
-		$title = esc_html__( 'Attendee Registration', 'event-tickets' );
+		$title = __( 'Attendee Registration', 'event-tickets' );
 		$page  = tribe( 'tickets.attendee_registration' )->get_attendee_registration_page();
 
 		$title = $page ? $page->post_title : $title;
@@ -363,7 +363,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		 *
 		 * @param string the "Attendee Registration" page title.
 		 */
-		return apply_filters( 'tribe_tickets_attendee_registration_page_title', $title );
+		return apply_filters( 'tribe_tickets_attendee_registration_page_title', esc_html( $title ) );
 	}
 
 	/**
