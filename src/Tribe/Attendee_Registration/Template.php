@@ -363,7 +363,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		 *
 		 * @param string the "Attendee Registration" page title.
 		 */
-		return apply_filters( 'tribe_tickets_attendee_registration_page_title', esc_html( $title ) );
+		return apply_filters( 'tribe_tickets_attendee_registration_page_title', $title );
 	}
 
 	/**
