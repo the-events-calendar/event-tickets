@@ -45,7 +45,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 			! empty( $slug )
 			|| (
 				empty( $page )
-				&& has_shortcode( $page->post_content, 'tribe_attendee_registration' )
+				|| has_shortcode( $page->post_content, 'tribe_attendee_registration' )
 			)
 		) {
 			return $slug;
