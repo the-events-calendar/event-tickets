@@ -194,11 +194,9 @@ var tribe_tickets_rsvp_block = {
 		return (
 			$.trim( $name.val() ).length &&
 				$.trim( $email.val() ).length &&
-				parseFloat( $qty.val() ) > 0
+				parseInt( $qty.val() ) > 0
 		);
 	};
-
-
 
 	/**
 	 * Handle the form submission
