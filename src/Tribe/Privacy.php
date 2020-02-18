@@ -8,7 +8,7 @@ class Tribe__Tickets__Privacy {
 	 * Text used for the opt-out checkbox
 	 *
 	 * @var string
-	 * @since TBD
+	 * @since 4.11.3
 	 */
 	public $opt_out_text = "";
 
@@ -16,7 +16,7 @@ class Tribe__Tickets__Privacy {
 	 * Text used for the (future) opt-in checkbox
 	 *
 	 * @var string
-	 * @since TBD
+	 * @since 4.11.3
 	 */
 	public $opt_in_text = "";
 
@@ -36,7 +36,7 @@ class Tribe__Tickets__Privacy {
 	/**
 	 * Initialize the opt-out/opt-in text default values.
 	 *
-	 * @since TBD
+	 * @since 4.11.3
 	 *
 	 */
 	public function init_text() {
@@ -602,7 +602,7 @@ class Tribe__Tickets__Privacy {
 	 * Get and filter the opt-out text.
 	 * @TODO: deprecate when we convert to opt-in and convert all uses to $this->get_opt_in_text()
 	 *
-	 * @since TBD
+	 * @since 4.11.3
 	 *
 	 * @return string
 	 */
@@ -610,7 +610,7 @@ class Tribe__Tickets__Privacy {
 		/**
 		 * Filters the default text for the opt-out checkbox.
 		 *
-		 * @since TBD
+		 * @since 4.11.3
 		 *
 		 * @param $content string The default text.
 		 */
@@ -620,7 +620,7 @@ class Tribe__Tickets__Privacy {
 	/**
 	 * Placeholder for when we change to opt-in.
 	 *
-	 * @since TBD
+	 * @since 4.11.3
 	 *
 	 * @return string
 	 */
@@ -628,7 +628,7 @@ class Tribe__Tickets__Privacy {
 		/**
 		 * Filters the default text for the opt-in checkbox.
 		 *
-		 * @since TBD
+		 * @since 4.11.3
 		 *
 		 * @param $content string The default text.
 		 */

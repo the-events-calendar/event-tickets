@@ -4,16 +4,6 @@
  */
 class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
-	/*
-	 * List of themes which we may want to include fixes
-	 */
-	public $themes_with_compatibility_fixes = array(
-		'twentynineteen',
-		'twentyseventeen',
-		'twentysixteen',
-		'twentyfifteen',
-	);
-
 	/**
 	 * Initialize the template class
 	 */
@@ -158,7 +148,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Ensure we enqueue the frontend styles and scripts from our plugins on the AR page.
 	 *
-	 * @since TBD
+	 * @since 4.11.3
 	 *
 	 * @param boolean $enqueue
 	 * @return boolean
@@ -189,11 +179,6 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		// Add classes that we actually want/need
 		add_filter( 'body_class', array( $this, 'add_body_classes' ) );
-
-		// add the theme name to the body class when needed
-		if ( $this->theme_has_compatibility_fix() ) {
-			add_filter( 'body_class', array( $this, 'theme_body_class' ) );
-		}
 	}
 
 	/**
@@ -242,27 +227,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 * @param array $classes List of classes to filter
+	 * @deprecated TBD
 	 *
 	 * @return array $classes
 	 */
 	public function theme_body_class( $classes ) {
-
-		$child_theme  = get_option( 'stylesheet' );
-		$parent_theme = get_option( 'template' );
-
-		// if the 2 options are the same, then there is no child theme
-		if ( $child_theme == $parent_theme ) {
-			$child_theme = false;
-		}
-
-		if ( $child_theme ) {
-			$theme_classes = "tribe-theme-parent-$parent_theme tribe-theme-child-$child_theme";
-		} else {
-			$theme_classes = "tribe-theme-$parent_theme";
-		}
-
-		$classes[] = $theme_classes;
-
 		return $classes;
 	}
 
@@ -271,17 +240,12 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 * @param string $theme Name of template from WP_Theme->Template, defaults to current active template
+	 * @deprecated TBD
 	 *
 	 * @return mixed
 	 */
 	public function theme_has_compatibility_fix( $theme = null ) {
-		// Defaults to current active theme
-		if ( null === $theme ) {
-			$theme = get_stylesheet();
-		}
-
-		// Return if the current theme is part of the ones we've compatibility for
-		return in_array( $theme, $this->themes_with_compatibility_fixes );
+		return false;
 	}
 
 	/**
@@ -388,13 +352,18 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @return string
 	 */
 	public function get_page_title() {
+		$title = __( 'Attendee Registration', 'event-tickets' );
+		$page  = tribe( 'tickets.attendee_registration' )->get_attendee_registration_page();
+
+		$title = $page ? $page->post_title : $title;
+
 		/**
 		 * `tribe_tickets_attendee_registration_page_title`
 		 * Filters the attendee registration page title
 		 *
-		 * @param string the "Attendee Registration" title
+		 * @param string the "Attendee Registration" page title.
 		 */
-		return apply_filters( 'tribe_tickets_attendee_registration_page_title', esc_html__( 'Attendee Registration', 'event-tickets' ) );
+		return apply_filters( 'tribe_tickets_attendee_registration_page_title', $title );
 	}
 
 	/**

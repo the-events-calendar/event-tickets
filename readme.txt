@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.9
 Tested up to: 5.3.2
-Stable tag: 4.11.3
+Stable tag: 4.11.4
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -117,33 +117,53 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.11.3] TBD =
+= [4.11.4] TBD =
+
+* Fix - Update file path in the docblocks of the templates for The Events Calendar new views. [ET-713]
+* Fix - Hitting enter in the tickets form changes ticket quantities. [ETP-43]
+* Fix - Respect the page title and fix redirection for the custom attendee registration page. [ETP-156]
+* Fix - Ensure we're loading the common full styles when required. This fixes missing styles problems from the tickets block. [ET-725]
+* Fix - Adjust JavaScript to have the "Attendee Registration" page working in IE11. [ETP-220]
+* Fix - Add theme compatibility for the AR Modal by adding theme identifying body CSS classes. [ETP-156]
+* Fix - When Classic Editor plugin is activated, prevent ticket availability AJAX errors by temporarily disabling the AJAX requests. [ET-730]
+
+= [4.11.3.1] 2020-02-11 =
+
+* Fix - Resolve potential fatal errors when an object is passed to determine a CSS class where we had expected a string. [ET-716]
+* Fix - Prevent conflicts with a template variable used by the Tickets block when rendering while The Events Calendar is activated. [ET-717]
+* Fix - Prevent The Events Calendar from disabling the redirect for Tribe Commerce that should take you to PayPal when checking out. [ET-714]
+* Fix - Better detect the post ID to use on normal pages for Tribe Commerce. [ET-714]
+* Tweak - Changed views: `modal/registration-js`, `registration-js/content`
+
+= [4.11.3] 2020-02-06 =
 
 * Feature - Include Freemius integration on to allow opt-in information collection. [ET-595]
 * Feature - Show original price on ticket block if ticket on sale. Allow turning off via the `tribe_tickets_show_original_price_on_sale` filter. [ETP-47]
 * Fix - Allow adding ticket header image on non-event posts. [ETP-54]
 * Fix - Close opening `<div>` in `blocks/attendees.php`. [ET-589]
-* Fix - Correct broken javascript for themes that change the base post classes. [ET-614]
-* Fix - Correct broken javascript for themes that change the base post classes. [ET-640]
+* Fix - Correct broken JavaScript for themes that change the base post CSS classes. [ET-640]
 * Fix - Correct logic so selling out of one RSVP doesn't prevent "purchasing" another. [ETP-603]
-* Fix - Create new function `tribe_get_event_capacity` for checking the capacity of an entire event. Have `tribe_tickets_get_capacity` pass off to it as when given an event. [ETP-48]
-* Fix - Disable ticket block when password protected is enabled on posts and pages. [ETP-59]
+* Fix - Price formatting method now prevents incorrect display when a comma is used as the decimal separator. [ETP-53]
+* Fix - Disable RSVP and Tickets block when password protection is enabled on posts or pages. [ET-604]
 * Fix - Ensure that attendee images display horizontally in the frontend for Twenty Nineteen and Twenty Twenty themes. [ET-590]
-* Fix - Ensure we update the correct event meta for global stock on ticket creation. [ET-614]
-* Fix - JavaScript updated to remove IE11 console errors. [ET-619]
-* Fix - Load JavaScript assets with Ticket Block when using Classic Editor. [ET-587]
+* Fix - JavaScript updated to remove IE 11 console errors. [ET-619]
+* Fix - Load JavaScript assets along with Ticket Block when using Classic Editor. [ET-587]
 * Fix - Override checkout link in WooCommerce Mini-Cart widget so it uses the custom page for attendee registration if it is setup. [ETP-41]
-* Fix - Price formatting method now correctly prevents incorrect display when a comma is used as the decimal separator. [ETP-53]
-* Fix - Re-implement displaying price suffix, if applicable, via new `tribe_tickets_commerce_currency_suffix` filter. [ET-620]
 * Fix - Remove inaccurate display of "You don't have tickets for this event" notice at single event page's list of current user's RSVP's and/or Tickets. [ETP-50]
 * Fix - The Events Calendar's List View "RSVP Now!" button again displays for Events having only RSVP tickets and has the correct anchor link. [ETP-51]
-* Fix - Tickets Block quantity +/- buttons set to 'button' type to avoid submitting Add to Cart form in IE11 or when js is disabled. [ET-619]
-* Tweak - Add filter to allow deactivating Freemius `tribe_tickets_integrations_should_load_freemius`. [ET-595]
-* Tweak - Add some code for future implementation around converting opt-outs to opt-ins. [ET-615]
+* Fix - Tickets Block quantity +/- buttons set to 'button' type to avoid submitting Add to Cart form in IE 11 or when JavaScript is disabled. [ET-619]
+* Fix - Additional implementation of dynamic ticket text functions so singular and plural versions of "Ticket" change in more areas when filtered. [ETP-145]
+* Fix - Ensure that empty start/end dates are treated like "immediately": and "forever", respectively. [ETP-159]
+* Tweak - Create new function `tribe_get_event_capacity()` for checking the capacity of an entire event. Have `tribe_tickets_get_capacity()` pass off to it as when given an event. [ETP-48]
+* Tweak - Refine logic for the "no results" notice on the "My Tickets" page. [ETP-151]
+* Tweak - Remove duplicate ticket script loading to prevent JavaScript conflicts. [ET-596]
 * Tweak - Change the Attendee List opt-out checkbox to be checked by default. [ET-615]
-* Tweak - Change the Attendee List opt-out checkbox wording, centralize where we handle it and create a function to retreive it. [ET-615]
-* Tweak - Refine logic for the no results notice on the "My Tickets" page. [ETP-151]
-* Tweak - Remove duplicate ticket script to prevent conflicts. [ET-596]
+* Tweak - Change the Attendee List opt-out checkbox wording, centralize where we handle it and create a new function to retrieve it. [ET-615]
+* Tweak - Add some code for future implementation around converting opt-outs to opt-ins. [ET-615]
+* Tweak - Adjust styles to ensure our "Get Tickets" button styles get preserved. [ETP-210]
+* Tweak - Added filters: `tribe_tickets_default_opt_out_text`, `tribe_tickets_default_opt_in_text`, `tribe_tickets_show_original_price_on_sale`
+* Tweak - Changed views: `blocks/attendees`, `blocks/attendees/description`, `blocks/rsvp/form/error`, `blocks/rsvp/form/opt-out`, `blocks/rsvp/form/quantity-plus`, `blocks/rsvp/form/submit-button`, `blocks/rsvp/messages/success`, `blocks/tickets`, `blocks/tickets/extra-available`, `blocks/tickets/extra-price`, `blocks/tickets/extra`, `blocks/tickets/footer-total`, `blocks/tickets/item`, `blocks/tickets/opt-out-hidden`, `blocks/tickets/quantity-add`, `blocks/tickets/quantity-remove`, `blocks/tickets/registration/summary/title`, `blocks/tickets/submit-button-modal`, `blocks/tickets/submit-button`, `modal/item-remove`, `modal/item-total`, `modal/registration-js`, `registration-js/attendees/ticket`, `tickets/email`, `tickets/orders-pp-tickets`, `tickets/orders-rsvp`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp`
+* Language - 7 new strings added, 187 updated, 7 fuzzied, and 6 obsoleted
 
 = [4.11.2] 2020-01-27 =
 

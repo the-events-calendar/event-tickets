@@ -287,8 +287,14 @@ $paypal_subfields = [
 		'default'         => 'on-pending',
 		'validation_type' => 'options',
 		'options'         => [
-			'on-pending'  => esc_html__( 'Decrease available ticket stock as soon as a Pending order is created.', 'event-tickets' ),
-			'on-complete' => esc_html__( 'Only decrease available ticket stock if an order is confirmed as Completed by PayPal.', 'event-tickets' ),
+			'on-pending'  => sprintf(
+				esc_html__( 'Decrease available %s stock as soon as a Pending order is created.', 'event-tickets' ),
+				tribe_get_ticket_label_singular_lowercase( 'stock_handling' )
+			),
+			'on-complete' => sprintf(
+				esc_html__( 'Only decrease available %s stock if an order is confirmed as Completed by PayPal.', 'event-tickets' ),
+				tribe_get_ticket_label_singular_lowercase( 'stock_handling' )
+			),
 		],
 		'tooltip_first' => true,
 	],

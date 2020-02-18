@@ -50,7 +50,12 @@ $default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id
 					data-depends="#ticket_id"
 					data-condition-is-empty
 				>
-					<?php echo esc_html( sprintf( _x( 'Add new %s', 'admin add new ticket panel heading', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'admin_add_new_ticket_panel_heading' ) ) ); ?>
+					<?php
+					echo esc_html(
+						sprintf(
+							_x( 'Add new %s', 'admin add new ticket panel heading', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'admin_add_new_ticket_panel_heading' )
+						)
+					); ?>
 				</h4>
 				<h4
 					id="ticket_title_edit"
@@ -58,7 +63,13 @@ $default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id
 					data-depends="#ticket_id"
 					data-condition-is-not-empty
 				>
-					<?php echo esc_html( sprintf( _x( 'Edit %s', 'admin edit ticket panel heading', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'admin_edit_ticket_panel_heading' ) ) ); ?>
+					<?php
+					echo esc_html(
+						sprintf(
+							_x( 'Edit %s', 'admin edit ticket panel heading', 'event-tickets' ),
+							tribe_get_ticket_label_singular_lowercase( 'admin_edit_ticket_panel_heading' )
+						)
+					); ?>
 				</h4>
 			</div>
 			<div
@@ -72,7 +83,13 @@ $default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id
 					data-depends="#ticket_id"
 					data-condition-is-empty
 				>
-					<?php echo esc_html( sprintf( _x( 'Add new %s', 'admin add new ticket panel heading', 'event-tickets' ), tribe_get_rsvp_label_singular( 'admin_add_new_ticket_panel_heading' ) ) ); ?>
+					<?php
+					echo esc_html(
+						sprintf(
+							_x( 'Add new %s', 'admin add new ticket panel heading', 'event-tickets' ),
+							tribe_get_rsvp_label_singular( 'admin_add_new_ticket_panel_heading' )
+						)
+					); ?>
 				</h4>
 				<h4
 					id="rsvp_title_edit"
@@ -80,7 +97,13 @@ $default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id
 					data-depends="#ticket_id"
 					data-condition-is-not-empty
 				>
-					<?php echo esc_html( sprintf( _x( 'Edit %s', 'admin edit ticket panel heading', 'event-tickets' ), tribe_get_rsvp_label_singular( 'admin_edit_ticket_panel_heading' ) ) ); ?>
+					<?php
+					echo esc_html(
+						sprintf(
+							_x( 'Edit %s', 'admin edit ticket panel heading', 'event-tickets' ),
+							tribe_get_rsvp_label_singular( 'admin_edit_ticket_panel_heading' )
+						)
+					); ?>
 				</h4>
 			</div>
 			<section id="ticket_form_main" class="main">
@@ -100,20 +123,28 @@ $default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id
 						class="tribe_soft_note ticket_form_right"
 						data-depends="#Tribe__Tickets__RSVP_radio"
 						data-condition-not-checked
-					><?php echo esc_html( sprintf(
-						_x( '%1$s type name shows on the front end and emailed %2$s', 'admin edit ticket panel note', 'event-tickets' ),
-						tribe_get_ticket_label_singular( 'admin_edit_ticket_panel_note' ),
-						tribe_get_ticket_label_plural_lowercase( 'admin_edit_ticket_panel_note' )
-					) ); ?></span>
+					><?php
+						echo esc_html(
+							sprintf(
+								_x( '%1$s type name shows on the front end and emailed %2$s', 'admin edit ticket panel note', 'event-tickets' ),
+								tribe_get_ticket_label_singular( 'admin_edit_ticket_panel_note' ),
+								tribe_get_ticket_label_plural_lowercase( 'admin_edit_ticket_panel_note' )
+							)
+						); ?>
+					</span>
 					<span
 						class="tribe_soft_note ticket_form_right"
 						data-depends="#Tribe__Tickets__RSVP_radio"
 						data-condition-is-checked
-					><?php echo esc_html( sprintf(
-						_x( '%1$s type name shows on the front end and emailed %2$s', 'admin edit ticket panel note', 'event-tickets' ),
-						tribe_get_rsvp_label_singular( 'admin_edit_rsvp_panel_note' ),
-						tribe_get_rsvp_label_plural_lowercase( 'admin_edit_ticket_panel_note' )
-				) ); ?></span>
+					><?php
+						echo esc_html(
+							sprintf(
+								_x( '%1$s type name shows on the front end and emailed %2$s', 'admin edit ticket panel note', 'event-tickets' ),
+								tribe_get_rsvp_label_singular( 'admin_edit_rsvp_panel_note' ),
+								tribe_get_rsvp_label_plural_lowercase( 'admin_edit_ticket_panel_note' )
+							)
+						); ?>
+					</span>
 				</div>
 				<fieldset id="tribe_ticket_provider_wrapper" class="input_block" aria-hidden="true" >
 					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></legend>

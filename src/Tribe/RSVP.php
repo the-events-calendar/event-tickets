@@ -1096,6 +1096,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return void
 	 */
 	public function front_end_tickets_form( $content ) {
+
+		// if password protected then do not display content
+		if ( post_password_required() ) {
+			return null;
+		}
+
 		if ( $this->is_frontend_tickets_form_done ) {
 			return $content;
 		}
@@ -1366,7 +1372,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Get total count of attendees marked as going for this provider and user.
 	 *
-	 * @since TBD
+	 * @since 4.11.3
 	 *
 	 * @param int $post_id Post or Event ID.
 	 *
@@ -1382,7 +1388,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Get total count of attendees marked as not going for this provider.
 	 *
-	 * @since TBD
+	 * @since 4.11.3
 	 *
 	 * @param int $post_id Post or Event ID.
 	 *

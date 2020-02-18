@@ -1,10 +1,10 @@
 <?php
 /**
  * Block: Tickets
- * Quantity Add
+ * Quantity Remove
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/blocks/tickets/quantity-add.php
+ * [your-theme]/tribe/tickets/blocks/tickets/quantity-remove.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
@@ -20,16 +20,16 @@
 
 $ticket = $this->get( 'ticket' );
 $button_title = sprintf(
-	_x( 'Increase ticket quantity for %s', '%s: ticket name.', 'event-tickets' ),
+	_x('Decrease ticket quantity for %s', '%s: ticket name.', 'event-tickets'),
 	$ticket->name
 );
 ?>
 <button
-	type="button"
-	class="tribe-tickets__item__quantity__add"
+	type="submit"
+	class="tribe-tickets__item__quantity__remove"
 	title="<?php echo esc_attr( $button_title ); ?>"
 	type="button"
 >
 	<span class="screen-reader-text"><?php echo esc_html( $button_title ); ?></span>
-	<?php echo esc_html_x( '+', 'A plus sign, add ticket.', 'event-tickets' ); ?>
+	<?php echo esc_html_x( '-', 'A minus sign, remove ticket.', 'event-tickets' ); ?>
 </button>

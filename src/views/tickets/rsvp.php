@@ -12,7 +12,7 @@
  * @since 4.11.0 Added RSVP/ticket view link to template.
  * @since 4.11.1    Corrected amount of available/remaining tickets when threshold is empty.
  *
- * @version 4.11.1
+ * @version 4.11.3
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login
@@ -283,7 +283,13 @@ if ( ! $already_rendered ) {
 							value="1"
 							class="tribe-button tribe-button--rsvp"
 						>
-							<?php echo esc_html( sprintf( _x( 'Confirm %s', 'tickets process button text', 'event-tickets' ), tribe_get_rsvp_label_singular( 'tickets_process_button_text' ) ) );?>
+							<?php
+							echo esc_html(
+								sprintf(
+									_x( 'Confirm %s', 'tickets process button text', 'event-tickets' ),
+									tribe_get_rsvp_label_singular( 'tickets_process_button_text' )
+								)
+							); ?>
 						</button>
 					<?php endif; ?>
 				</td>

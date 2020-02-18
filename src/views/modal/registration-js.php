@@ -6,9 +6,10 @@
  * [your-theme]/tribe/tickets/modal/registration-js.php
  *
  * @since 4.11.0
- * @since TBD Reformat a bit of the code around the button - no functional changes.
+ * @since 4.11.3 Reformat a bit of the code around the button - no functional changes.
+ * @since 4.11.3.1 Fix PHP errors when there are no tickets.
  *
- * @version TBD
+ * @version 4.11.3.1
  *
  */
 /** @var Tribe__Tickets__Attendee_Registration__View $view */
@@ -16,15 +17,19 @@ $view = tribe( 'tickets.attendee_registration.view' );
 /** @var Tribe__Tickets__Editor__Template $template */
 $template = tribe( 'tickets.editor.template' );
 
-// There should be only one!
-$providers             = wp_list_pluck( $tickets, 'provider' );
-$providers_arr         = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
-$provider              = $providers[0];
-$provider_class        = $view->get_form_class( $providers_arr[0] );
-$has_tpp               = in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers, true );
-$event_id              = get_the_ID();
-$meta                  = Tribe__Tickets_Plus__Main::instance()->meta();
-$non_meta_count        = 0;
+$providers      = wp_list_pluck( $tickets, 'provider' );
+$provider_class = '';
+$has_tpp        = false;
+$event_id       = get_the_ID();
+$meta           = Tribe__Tickets_Plus__Main::instance()->meta();
+$non_meta_count = 0;
+
+if ( ! empty( $providers ) ) {
+	$providers_arr  = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
+	$provider       = $providers[0];
+	$provider_class = $view->get_form_class( $providers_arr[0] );
+	$has_tpp        = in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers, true );
+}
 ?>
 <div class="tribe-tickets__item__attendee__fields">
 	<h2 class="tribe-common-h3 tribe-common-h4--min-medium tribe-common-h--alt tribe-tickets__item__attendee__fields__title"><?php esc_html_e( 'Attendee Details', 'event-tickets' ); ?></h2>

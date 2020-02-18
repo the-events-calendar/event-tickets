@@ -13,12 +13,18 @@
  * @since 4.9.3
  * @since 4.10.9 Use function for text.
  *
- * @version 4.10.9
+ * @version 4.11.3
  */
 
 ?>
 <div class="tribe-block__rsvp__message__success">
 
-	<?php echo esc_html( sprintf( _x( 'Your %1$s has been received! Check your email for your %1$s confirmation.', 'blocks rsvp messages success', 'event-tickets' ), tribe_get_rsvp_label_singular( 'blocks_rsvp_messages_success' ) ) ); ?>
+	<?php
+	echo esc_html(
+		sprintf(
+			_x( 'Your %1$s has been received! Check your email for your %1$s confirmation.', 'blocks rsvp messages success', 'event-tickets' ),
+			tribe_get_rsvp_label_singular( 'blocks_rsvp_messages_success' )
+		)
+	); ?>
 
 </div>

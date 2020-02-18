@@ -457,12 +457,15 @@
 		font-weight: var(--font-weight-bold);
 	}
 
+	.tribe-tickets__attendee__fields__footer_checkout-button,
 	.tribe-tickets__buy {
+		@mixin button-solid;
 		margin: 0;
 
 		&.tribe-common-c-btn {
 			white-space: nowrap;
 			margin-left: auto;
+
 
 			@media(min-width: 400px max-width: 500px) {
 			}
@@ -473,6 +476,15 @@
 
 			@media(--viewport-medium) {
 				margin-left: var(--spacer-6);
+			}
+
+			&:focus,
+			&:hover {
+				background-color: var(--color-accent-primary-hover);
+			}
+
+			&:active {
+				background-color: var(--color-accent-primary-active);
 			}
 
 			&:disabled {

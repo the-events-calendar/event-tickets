@@ -297,7 +297,7 @@ window.tribe.tickets.registration = {};
 		}
 
 		$.each( meta, function( metaIndex, ticket ) {
-			const $currentContainers = $containers.filter( `[data-ticket-id="${ ticket.ticket_id }"]` );
+			const $currentContainers = $containers.filter( '[data-ticket-id="' + ticket.ticket_id + ']' );
 
 			if ( ! $currentContainers.length ) {
 				return;
@@ -311,7 +311,7 @@ window.tribe.tickets.registration = {};
 
 				const $ticketContainers = $currentContainers.find( '.tribe-ticket' );
 				$.each( datum, function( index, value ) {
-					const $field = $ticketContainers.eq( current ).find( `[name*="${ index }"]` );
+					const $field = $ticketContainers.eq( current ).find( '[name*="' + index + '"]' );
 					if ( ! $field.is( ':radio' ) && ! $field.is( ':checkbox' ) ) {
 						$field.val( value );
 					} else {

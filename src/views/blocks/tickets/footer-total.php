@@ -11,9 +11,9 @@
  * @link    {INSERT_ARTICLE_LINK_HERE}
  *
  * @since   4.11.0
- * @since   TBD Updated code comments.
+ * @since   4.11.3 Updated code comments.
  *
- * @version TBD
+ * @version 4.11.3
  */
 $post_id = $this->get( 'event_id' );
 
