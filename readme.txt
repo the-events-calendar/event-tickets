@@ -123,9 +123,10 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Hitting enter in the tickets form changes ticket quantities. [ETP-43]
 * Fix - Respect the page title and fix redirection for the custom attendee registration page. [ETP-156]
 * Fix - Ensure we're loading the common full styles when required. This fixes missing styles problems from the tickets block. [ET-725]
-* Fix - Adjust JavaScript to have the "Attendee Registration" page working in IE11. [ETP-220]
-* Fix - Add theme compatibility for the AR Modal by adding theme identifying body CSS classes. [ETP-156]
+* Fix - Adjust JavaScript to have the Attendee Registration page working in IE11. [ETP-220]
+* Fix - Add theme compatibility for the Attendee Registration Modal by adding theme identifying body CSS classes. [ETP-156]
 * Fix - When Classic Editor plugin is activated, prevent ticket availability AJAX errors by temporarily disabling the AJAX requests. [ET-730]
+* Fix - Prevent The Events Calendar plugin from overriding the Attendee Registration page content when Events Page is set as site home page. [ET-732]
 
 = [4.11.3.1] 2020-02-11 =
 
