@@ -130,6 +130,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Prevent The Events Calendar plugin from overriding the Attendee Registration page content when Events Page is set as site home page. [ET-732]
 * Fix - Use the default `datepickerFormat` value if the option hasn't been set yet when setting up validation rules for the ticket add/edit admin form. [ET-727]
 * Fix - Resolve problems where "View My Tickets" (or RSVPs) page would be blank or not load. [ET-735]
+* Fix - Use tribe common a11y classes in the different tickets templates. [ET-725]
 
 = [4.11.3.1] 2020-02-11 =
 
