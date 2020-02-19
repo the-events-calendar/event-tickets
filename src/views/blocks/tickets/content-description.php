@@ -12,8 +12,9 @@
  *
  * @since 4.9
  * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
+ * @since TBD Added accessibility classes to screen reader text elements.
  *
- * @version 4.11.3
+ * @version TBD
  */
 
 $ticket = $this->get( 'ticket' );
@@ -34,7 +35,7 @@ $id .= '--' . $ticket->ID;
 				aria-controls="<?php echo esc_attr( $id ); ?>"
 				tabindex="0"
 			>
-				<span class="screen-reader-text"><?php esc_html_e( 'Open the ticket description.', 'event-tickets' ); ?></span>
+				<span class="screen-reader-text tribe-common-a11y-visual-hide"><?php esc_html_e( 'Open the ticket description.', 'event-tickets' ); ?></span>
 				<?php echo esc_html_x( 'More', 'Opens the ticket description', 'event-tickets' ); ?>
 			</button>
 			<button
@@ -43,7 +44,7 @@ $id .= '--' . $ticket->ID;
 				aria-controls="<?php echo esc_attr( $id ); ?>"
 				tabindex="0"
 			>
-				<span class="screen-reader-text"><?php esc_html_e( 'Close the ticket description.', 'event-tickets' ); ?></span>
+				<span class="screen-reader-text tribe-common-a11y-visual-hide"><?php esc_html_e( 'Close the ticket description.', 'event-tickets' ); ?></span>
 				<?php echo esc_html_x( 'Less', 'Closes the ticket description', 'event-tickets' ); ?>
 			</button>
 	</div>
