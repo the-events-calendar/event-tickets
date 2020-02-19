@@ -50,7 +50,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// Intercept Template file for Tickets.
-		add_action( 'tribe_events_pre_get_posts', [ $myself, 'modify_ticket_display_query' ] );
+		add_action( 'pre_get_posts', [ $myself, 'modify_ticket_display_query' ] );
 		add_filter( 'tribe_events_template_single-event.php', [ $myself, 'intercept_template' ], 20 );
 
 		// We will inject on the Priority 4, to be happen before RSVP.
@@ -87,10 +87,7 @@ class Tribe__Tickets__Tickets_View {
 		$query->query_vars['post_type'] = $post->post_type;
 
 		if ( 'page' === $post->post_type ) {
-			// Unset the p variable, we dont need it anymore
-			unset( $query->query_vars['p'] );
-
-			// Set `page_id` for faster query
+			// Set `page_id` for faster query.
 			$query->query_vars['page_id'] = $post->ID;
 		}
 
@@ -427,8 +424,7 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 */
 	public function modify_ticket_display_query( $query ) {
-
-		if ( ! $query->tribe_is_event_query ) {
+		if ( empty( $query->tribe_is_event_query ) ) {
 			return;
 		}
 
@@ -437,6 +433,9 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		$query->set( 'post__not_in', '' );
+
+		// Do not attempt to filter the query for this custom view.
+		$query->set( 'tribe_suppress_query_filters', true );
 	}
 
 	/**
