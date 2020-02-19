@@ -12,6 +12,7 @@
  *
  * @since 4.9
  * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
+ * @since TBD Added accessibility classes to screen reader text elements.
  *
  * @version TBD
  */

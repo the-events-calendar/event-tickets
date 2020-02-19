@@ -13,6 +13,7 @@
  * @since 4.9
  * @since 4.11.1 Changed some HTML class names.
  * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally. Updated comments and array formatting.
+ * @since TBD Added accessibility classes to screen reader text elements.
  *
  * @version TBD
  *
