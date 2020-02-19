@@ -128,6 +128,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - When Classic Editor plugin is activated, prevent ticket availability AJAX errors by temporarily disabling the AJAX requests. [ET-730]
 * Fix - When not using blocks, the scripts to obtain an RSVP ticket now work even if required Attendee Information (from Event Tickets Plus) is missing upon initial attempt to submit the form. [ET-686]
 * Fix - Prevent The Events Calendar plugin from overriding the Attendee Registration page content when Events Page is set as site home page. [ET-732]
+* Fix - Use the default `datepickerFormat` value if the option hasn't been set yet when setting up validation rules for the ticket add/edit admin form. [ET-727]
 * Fix - Resolve problems where "View My Tickets" (or RSVPs) page would be blank or not load. [ET-735]
 
 = [4.11.3.1] 2020-02-11 =
