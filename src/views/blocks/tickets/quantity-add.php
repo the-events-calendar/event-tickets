@@ -13,7 +13,7 @@
  * @since 4.9.3
  * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
  *
- * @version 4.11.3
+ * @version TBD
  *
  * @var $this Tribe__Tickets__Editor__Template
  */
@@ -30,6 +30,6 @@ $button_title = sprintf(
 	title="<?php echo esc_attr( $button_title ); ?>"
 	type="button"
 >
-	<span class="screen-reader-text"><?php echo esc_html( $button_title ); ?></span>
+	<span class="screen-reader-text tribe-common-a11y-visual-hide"><?php echo esc_html( $button_title ); ?></span>
 	<?php echo esc_html_x( '+', 'A plus sign, add ticket.', 'event-tickets' ); ?>
 </button>
