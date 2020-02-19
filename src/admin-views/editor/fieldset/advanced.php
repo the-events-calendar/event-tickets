@@ -1,5 +1,5 @@
 <?php
-$datepicker_format = Tribe__Date_Utils::datepicker_formats( tribe_get_option( 'datepickerFormat' ) );
+$datepicker_format = Tribe__Date_Utils::datepicker_formats( Tribe__Date_Utils::get_datepicker_format_index() );
 
 if ( ! isset( $post_id ) ) {
 	$post_id = get_the_ID();
@@ -41,7 +41,7 @@ $start_date_errors = array(
 <button class="accordion-header tribe_advanced_meta">
 	<?php esc_html_e( 'Advanced', 'event-tickets' ); ?>
 </button>
-<section id="ticket_form_advanced" class="advanced accordion-content" data-datepicker_format="<?php echo esc_attr( tribe_get_option( 'datepickerFormat' ) ); ?>">
+<section id="ticket_form_advanced" class="advanced accordion-content" data-datepicker_format="<?php echo esc_attr( Tribe__Date_Utils::get_datepicker_format_index() ); ?>">
 	<h4 class="accordion-label screen_reader_text"><?php esc_html_e( 'Advanced Settings', 'event-tickets' ); ?></h4>
 	<div class="input_block">
 		<label class="ticket_form_label ticket_form_left" for="ticket_description"><?php esc_html_e( 'Description:', 'event-tickets' ); ?></label>
