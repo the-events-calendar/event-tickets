@@ -131,6 +131,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Use the default `datepickerFormat` value if the option hasn't been set yet when setting up validation rules for the ticket add/edit admin form. [ET-727]
 * Fix - Resolve problems where "View My Tickets" (or RSVPs) page would be blank or not load. [ET-735]
 * Fix - Use accessibility CSS classes for more screen reader text elements. [ET-725]
+* Fix - Save initial shared capacity value for global stock correctly on first ticket so availability shows as expected instead of zero. [ET-737]
 
 = [4.11.3.1] 2020-02-11 =
 
