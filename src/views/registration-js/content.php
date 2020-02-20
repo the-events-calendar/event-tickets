@@ -8,7 +8,7 @@
  * @since 4.11.0
  * @since 4.11.3.1 Fix handling where $provider is an object.
  *
- * @version TBD
+ * @version 4.11.4
  *
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );

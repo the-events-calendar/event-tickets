@@ -12,9 +12,9 @@
  *
  * @since 4.9
  * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
- * @since TBD Added accessibility classes to screen reader text elements.
+ * @since 4.11.4 Added accessibility classes to screen reader text elements.
  *
- * @version TBD
+ * @version 4.11.4
  */
 
 $ticket = $this->get( 'ticket' );

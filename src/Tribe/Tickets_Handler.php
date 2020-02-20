@@ -90,7 +90,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Add hooks for saving/meta.
 	 *
-	 * @since TBD
+	 * @since 4.11.4
 	 */
 	public function add_hooks() {
 		$main = Tribe__Tickets__Main::instance();
@@ -109,7 +109,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Remove hooks for saving/meta.
 	 *
-	 * @since TBD
+	 * @since 4.11.4
 	 */
 	public function remove_hooks() {
 		$main = Tribe__Tickets__Main::instance();

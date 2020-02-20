@@ -227,7 +227,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 * @param array $classes List of classes to filter
-	 * @deprecated TBD
+	 * @deprecated 4.11.4
 	 *
 	 * @return array $classes
 	 */
@@ -240,7 +240,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 * @param string $theme Name of template from WP_Theme->Template, defaults to current active template
-	 * @deprecated TBD
+	 * @deprecated 4.11.4
 	 *
 	 * @return mixed
 	 */

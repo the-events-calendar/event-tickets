@@ -1698,7 +1698,7 @@ window.tribe.tickets.block = {
 	/**
 	 * Handle Enter/Return on the quantity input from the main tickets form.
 	 *
-	 * @since TBD
+	 * @since 4.11.4
 	 */
 	obj.document.on(
 		'keypress',

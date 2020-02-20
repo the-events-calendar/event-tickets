@@ -143,7 +143,7 @@ class Tribe__Tickets__Global_Stock {
 	 *
 	 * @since  4.1
 	 * @since  4.6  Added a Return
-	 * @since  TBD Added new $force parameter.
+	 * @since  4.11.4 Added new $force parameter.
 	 *
 	 * @param int     $quantity Quantity to set for stock.
 	 * @param boolean $force    Whether to force setting stock, even if capacity is less.

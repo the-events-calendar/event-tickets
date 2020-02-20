@@ -4,7 +4,7 @@
  *
  * @todo  This is an implementation to set a body class we can use in the common implementation.
  *
- * @since   TBD
+ * @since   4.11.4
  *
  */
 
@@ -12,7 +12,7 @@ class Tribe__Tickets__Theme_Compatibility {
 	/**
 	 * List of themes which have compatibility.
 	 *
-	 * @since TBD
+	 * @since 4.11.4
 	 *
 	 * @var   array
 	 */
@@ -31,7 +31,7 @@ class Tribe__Tickets__Theme_Compatibility {
 	/**
 	 * Checks if theme needs a compatibility fix.
 	 *
-	 * @since  TBD
+	 * @since  4.11.4
 	 *
 	 * @return boolean Whether compatibility is required.
 	 */
@@ -54,7 +54,7 @@ class Tribe__Tickets__Theme_Compatibility {
 	/**
 	 * Add the theme to the body class.
 	 *
-	 * @since TBD
+	 * @since 4.11.4
 	 *
 	 * @param  array $classes List of body classes.
 	 *
@@ -72,7 +72,7 @@ class Tribe__Tickets__Theme_Compatibility {
 	/**
 	 * Fetches the correct class strings for theme and child theme if available.
 	 *
-	 * @since TBD
+	 * @since 4.11.4
 	 *
 	 * @return array $classes List of body classes with parent and child theme classes included.
 	 */
@@ -100,7 +100,7 @@ class Tribe__Tickets__Theme_Compatibility {
 	/**
 	 * Returns a list of themes registered for compatibility with our Views.
 	 *
-	 * @since  TBD
+	 * @since  4.11.4
 	 *
 	 * @return array An array of the themes registered.
 	 */
@@ -108,7 +108,7 @@ class Tribe__Tickets__Theme_Compatibility {
 		/**
 		 * Filters the list of themes that are registered for compatibility.
 		 *
-		 * @since TBD
+		 * @since 4.11.4
 		 *
 		 * @param array $registered An associative array of views in the shape `[ <slug> => <class> ]`.
 		 */
