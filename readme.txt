@@ -134,6 +134,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Save initial shared capacity value for global stock correctly on first Tribe Commerce ticket so availability shows as expected instead of zero. [ET-737]
 * Tweak - Added filters: `tribe_tickets_theme_compatibility_registered`
 * Tweak - Changed views: `blocks/tickets/content-description`, `blocks/tickets/extra`, `blocks/tickets/quantity-add`, `blocks/tickets/quantity-remove`, `registration-js/content`, `v2/day/event/cost`, `v2/list/event/cost`, `v2/map/event-cards/event-card/actions/cost`, `v2/month/calendar-body/day/calendar-events/calendar-event/tooltip/cost`, `v2/month/mobile-events/mobile-day/mobile-event/cost`, `v2/photo/event/cost`, `v2/week/grid-body/events-day/event/tooltip/cost`, `v2/week/mobile-events/day/event/cost`
+* Language - 0 new strings added, 76 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.11.3.1] 2020-02-11 =
 
