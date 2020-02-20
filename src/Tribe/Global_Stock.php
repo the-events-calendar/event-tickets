@@ -143,20 +143,23 @@ class Tribe__Tickets__Global_Stock {
 	 *
 	 * @since  4.1
 	 * @since  4.6  Added a Return
+	 * @since  TBD Added new $force parameter.
 	 *
-	 * @param  int $quantity
+	 * @param int     $quantity Quantity to set for stock.
+	 * @param boolean $force    Whether to force setting stock, even if capacity is less.
 	 *
 	 * @return bool|int
 	 */
-	public function set_stock_level( $quantity ) {
+	public function set_stock_level( $quantity, $force = false ) {
 		$capacity = tribe_tickets_get_capacity( $this->post_id );
 		$quantity = (int) $quantity;
 
-		// When we are dealing with non-unlimited capacities verify before updating the Post
+		// When we are dealing with non-unlimited capacities verify before updating the Post.
 		if (
-			! is_null( $capacity ) // We need to verify null to prevent capacity check when it doesn't exist
-			&& $capacity >= 0
-			&& $quantity > $capacity
+			! $force
+			&& ! is_null( $capacity ) // We need to verify null to prevent capacity check when it doesn't exist.
+			&& 0 <= $capacity // Only non-unlimited capacities.
+			&& $capacity < $quantity // Only if quantity is more than capacity allows.
 		) {
 			$quantity = $capacity;
 		}
