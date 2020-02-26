@@ -1696,6 +1696,23 @@ window.tribe.tickets.block = {
 	);
 
 	/**
+	 * Handle Enter/Return on the quantity input from the main tickets form.
+	 *
+	 * @since 4.11.4
+	 */
+	obj.document.on(
+		'keypress',
+		obj.selector.itemQuantityInput,
+		function( e ) {
+			if ( e.keyCode === 13 ) {
+				e.preventDefault();
+				e.stopPropagation();
+				return;
+			}
+		}
+	);
+
+	/**
 	 * When "Get Tickets" is clicked, update the modal.
 	 *
 	 * @since 4.11.0

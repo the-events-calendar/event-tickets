@@ -8,7 +8,7 @@
  * @since 4.11.0
  * @since 4.11.3.1 Fix handling where $provider is an object.
  *
- * @version 4.11.3.1
+ * @version 4.11.4
  *
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
@@ -55,7 +55,7 @@ $classes        = [
 	</div>
 
 	<h1 class="tribe-common-h2 tribe-common-h1--min-medium tribe-common-h--alt tribe-tickets__registration__page-title">
-		<?php esc_html_e( 'Attendee Registration', 'event-tickets' ); ?>
+		<?php echo esc_html( tribe( 'tickets.attendee_registration.template' )->get_page_title() ); ?>
 	</h1>
 	<form
 		method="post"

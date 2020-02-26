@@ -4,7 +4,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.11.3.1';
+	const VERSION = '4.11.4';
 
 	/**
 	 * Min required The Events Calendar version
@@ -360,6 +360,8 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
 
+		tribe_singleton( 'tickets.theme-compatibility', 'Tribe__Tickets__Theme_Compatibility' );
+
 		// Attendee Registration Page
 		tribe_register_provider( 'Tribe__Tickets__Attendee_Registration__Service_Provider' );
 
@@ -580,8 +582,8 @@ class Tribe__Tickets__Main {
 		 * @see \Tribe__Tickets__Assets::add_data_strings()
 		 */
 
-		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'enqueue_scripts' ) );
-		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'admin_enqueue_scripts' ) );
+		add_action( 'tribe_plugins_loaded', tribe_callback( 'tickets.assets', 'enqueue_scripts' ) );
+		add_action( 'tribe_plugins_loaded', tribe_callback( 'tickets.assets', 'admin_enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', tribe_callback( 'tickets.assets', 'enqueue_editor_scripts' ) );
 		add_filter( 'tribe_asset_data_add_object_tribe_l10n_datatables', tribe_callback( 'tickets.assets', 'add_data_strings' ) );
 
@@ -590,6 +592,9 @@ class Tribe__Tickets__Main {
 
 		// Cart handling.
 		add_action( 'init', tribe_callback( 'tickets.commerce.cart', 'hook' ) );
+
+		// Theme Compatibility.
+		add_filter( 'body_class', tribe_callback( 'tickets.theme-compatibility', 'filter_body_class' ) );
 	}
 
 	/**
