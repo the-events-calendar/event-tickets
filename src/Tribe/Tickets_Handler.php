@@ -1157,8 +1157,9 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Gets the Maximum Purchase number for a given ticket.
 	 *
 	 * @since  4.8.1
+	 * @since  TBD Set default maximum allowed to be purchased at any one time to 100, for sanity and performance.
 	 *
-	 * @param  int|string $ticket_id Ticket from which to fetch purchase max.
+	 * @param int|string $ticket_id Ticket from which to fetch purchase max.
 	 *
 	 * @return int
 	 */
@@ -1177,7 +1178,29 @@ class Tribe__Tickets__Tickets_Handler {
 		/** @var Tribe__Tickets__Ticket_Object $ticket */
 		$ticket = $provider->get_ticket( $event, $ticket_id );
 
+		/**
+		 * Cap the amount of tickets able to be purchased at a single time (single "add to cart" action)
+		 * for sanity and performance reasons.
+		 *
+		 * @since TBD
+		 *
+		 * @param int                           $default_max Quantity allowed at one time, if available stock is greater.
+		 * @param Tribe__Tickets__Ticket_Object $ticket      Ticket object.
+		 * @param WP_Post                       $event       Event post.
+		 * @param int                           $ticket_id   Raw ticket ID.
+		 *
+		 * @return int
+		 */
+		$default_max = apply_filters( 'tribe_tickets_get_ticket_default_max_purchase_limit', 100, $ticket, $event, $ticket_id );
+
 		$available = $ticket->available();
+
+		// change Unlimited to Default Max
+		if ( - 1 === $available ) {
+			$available = $default_max;
+		}
+
+		$available = min( $available, $default_max );
 
 		/**
 		 * Allows filtering the quantity available displayed below the ticket
@@ -1187,7 +1210,7 @@ class Tribe__Tickets__Tickets_Handler {
 		 *
 		 * @since 4.8.1
 		 *
-		 * @param int                           $available Max purchase quantity.
+		 * @param int                           $available Max purchase quantity, as restricted by Default Max.
 		 * @param Tribe__Tickets__Ticket_Object $ticket    Ticket object.
 		 * @param WP_Post                       $event     Event post.
 		 * @param int                           $ticket_id Raw ticket ID.

@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Set the maximum quantity allowed in a single "add to cart" action to `100`, filterable via `tribe_tickets_get_ticket_default_max_purchase_limit`, for sanity and performance reasons. [ETP-149]
+
 = [4.11.4] 2020-02-26 =
 
 * Fix - Update file path in the docblocks of the templates for The Events Calendar new views. [ET-713]
