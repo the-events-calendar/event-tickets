@@ -52,8 +52,11 @@ class Tribe__Tickets__Promoter__Observer {
 		add_action( 'tribe_tickets_ticket_moved', [ $this, 'ticket_moved'], 10, 6 );
 
 		// PayPal
+		add_action( 'save_post_tribe_tpp_attendees', [ $this, 'notify_ticket_event' ], 10, 1 );
 		add_action( 'tickets_tpp_ticket_deleted', [ $this, 'notify_event_id' ], 10, 2 );
 		add_action( 'event_tickets_tpp_tickets_generated', [ $this, 'notify_event_id' ], 10, 2 );
+		add_action( 'event_tickets_tpp_attendee_updated', [ $this, 'tpp_attendee_updated' ], 10, 5 );
+		add_action( 'event_tickets_tpp_tickets_generated_for_product', [ $this, 'tpp_tickets_generated_for_product' ], 10, 3 );
 
 		// All tickets
 		add_action( 'event_tickets_after_save_ticket', [ $this, 'notify' ], 10, 1 );
@@ -156,6 +159,34 @@ class Tribe__Tickets__Promoter__Observer {
 		if ( $source_event_id !== $target_event_id ) {
 			$this->notify( $target_event_id );
 		}
+	}
+
+	/**
+	 * Action fired when an PayPal attendee ticket is updated.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id Attendee post ID
+	 * @param string $order_id PayPal Order ID
+	 * @param int $product_id PayPal ticket post ID
+	 * @param int $order_attendee_id Attendee number in submitted order
+	 * @param string $attendee_order_status The order status for the attendee.
+	 */
+	public function tpp_attendee_updated( $attendee_id, $order_id, $product_id, $order_attendee_id, $attendee_order_status ) {
+		$this->notify_ticket_event( $product_id );
+	}
+
+	/**
+	 * Action fired when a PayPal has had attendee tickets generated for it.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $product_id PayPal ticket post ID
+	 * @param string $order_id ID of the PayPal order
+	 * @param int $qty Quantity ordered
+	 */
+	public function tpp_tickets_generated_for_product( $product_id, $order_id, $qty ) {
+		$this->notify_ticket_event( $product_id );
 	}
 
 	/**
