@@ -41,7 +41,7 @@ class Tribe__Tickets__Promoter__Observer {
 		$this->registered_types();
 
 		// Listen for changes on RSVP as Gutenberg Uses the post_type API to update RSVP's
-		add_action( 'save_post_tribe_rsvp_tickets', [ $this, 'notify_rsvp_event' ], 10, 2 );
+		add_action( 'save_post_tribe_rsvp_tickets', [ $this, 'notify_ticket_event' ], 10, 1 );
 
 		// RSVP
 		add_action( 'tickets_rsvp_ticket_deleted', [ $this, 'notify_event_id' ], 10, 2 );
@@ -59,21 +59,21 @@ class Tribe__Tickets__Promoter__Observer {
 	}
 
 	/**
-	 * Notify to the parent Event when an attendee has changes via REST API.
+	 * Notify to the parent Event of the ticket
 	 *
 	 * @since 4.10.1.2
 	 *
-	 * @param $attendee_id
+	 * @param $ticket_id int The Ticket ID where to look for the Event.
 	 */
-	public function notify_rsvp_event( $attendee_id ) {
+	public function notify_ticket_event( $ticket_id ) {
 		/** @var Tribe__Tickets__RSVP $provider */
-		$provider = tribe_tickets_get_ticket_provider( $attendee_id );
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
-		if ( ! $provider instanceof Tribe__Tickets__RSVP ) {
+		if ( ! $provider instanceof Tribe__Tickets__Tickets ) {
 			return;
 		}
 
-		$this->notify( $provider->get_event_for_ticket( $attendee_id ) );
+		$this->notify( $provider->get_event_for_ticket( $ticket_id ) );
 	}
 
 	/**
