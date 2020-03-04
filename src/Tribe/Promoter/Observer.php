@@ -47,15 +47,16 @@ class Tribe__Tickets__Promoter__Observer {
 		add_action( 'tickets_rsvp_ticket_deleted', [ $this, 'notify_event_id' ], 10, 2 );
 		add_action( 'event_tickets_rsvp_tickets_generated', [ $this, 'notify_event_id' ], 10, 2 );
 
+		// Moved tickets
+		add_action( 'tribe_tickets_ticket_type_moved', [ $this, 'ticket_moved_type' ], 10, 4 );
+		add_action( 'tribe_tickets_ticket_moved', [ $this, 'ticket_moved'], 10, 6 );
+
 		// PayPal
 		add_action( 'tickets_tpp_ticket_deleted', [ $this, 'notify_event_id' ], 10, 2 );
 		add_action( 'event_tickets_tpp_tickets_generated', [ $this, 'notify_event_id' ], 10, 2 );
 
 		// All tickets
 		add_action( 'event_tickets_after_save_ticket', [ $this, 'notify' ], 10, 1 );
-
-		// Actions from REST
-		add_action( 'tribe_tickets_ticket_type_moved', [ $this, 'ticket_moved_type' ], 10, 4 );
 	}
 
 	/**
@@ -124,16 +125,36 @@ class Tribe__Tickets__Promoter__Observer {
 	 *
 	 * @since 4.10.1.2
 	 *
-	 * @param int $ticket_type_id
-	 * @param int $destination_id
-	 * @param int $source_id
-	 * @param int $instigator_id
+	 * @param int $ticket_type_id the ticket type which has been moved
+	 * @param int $destination_id the post to which the ticket type has been moved
+	 * @param int $source_id the post which previously hosted the ticket type
+	 * @param int $instigator_id the user who initiated the change
 	 */
 	public function ticket_moved_type( $ticket_type_id, $destination_id, $source_id, $instigator_id ) {
 		$this->notify( $source_id );
 		// Prevent to send the same response twice if the ID's are the same.
 		if ( $source_id !== $destination_id ) {
 			$this->notify( $destination_id );
+		}
+	}
+
+	/**
+	 * Observer when an attendee is moved from a post to another and notify Promoter about changes on both events
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id the ticket which has been moved
+	 * @param int $source_ticket_type_id the ticket type it belonged to originally
+	 * @param int $target_ticket_type_id the ticket type it now belongs to
+	 * @param int $source_event_id the event/post which the ticket originally belonged to
+	 * @param int $target_event_id the event/post which the ticket now belongs to
+	 * @param int $instigator_id the user who initiated the change
+	 */
+	public function ticket_moved( $ticket_id, $source_ticket_type_id, $target_ticket_type_id, $source_event_id, $target_event_id, $instigator_id ) {
+		$this->notify( $source_event_id );
+		// Prevent to send the same response twice if the ID's are the same.
+		if ( $source_event_id !== $target_event_id ) {
+			$this->notify( $target_event_id );
 		}
 	}
 
