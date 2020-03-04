@@ -91,7 +91,7 @@ class Tribe__Tickets__Promoter__Observer {
 		}
 
 		add_action( 'save_post_' . $this->event_type, [ $this, 'notify' ], 10, 1 );
-		add_action( 'delete_post', [ $this, 'delete_post' ], 10, 1 );
+		add_action( 'delete_post', [ $this, 'on_event_deleted' ], 10, 1 );
 	}
 
 	/**
@@ -144,7 +144,7 @@ class Tribe__Tickets__Promoter__Observer {
 	 *
 	 * @param $post_id
 	 */
-	public function delete_post( $post_id ) {
+	public function on_event_deleted( $post_id ) {
 		if ( $this->event_type === get_post_type( $post_id ) ) {
 			$this->notify( $post_id );
 		}
