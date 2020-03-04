@@ -158,6 +158,11 @@ class Tribe__Tickets__Promoter__Observer {
 	 * @param $post_id int The ID of the post.
 	 */
 	public function notify( $post_id ) {
+
+		if ( ! $post_id ) { // The $post_id is a falsy value, avoid a non required call.
+			return;
+		}
+
 		try {
 			/** @var Tribe__Promoter__Connector $connector */
 			$connector = tribe( 'promoter.connector' );
