@@ -1214,11 +1214,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		// Updates if we should show Description
-		$ticket->show_description = isset( $ticket->show_description ) && tribe_is_truthy( $ticket->show_description ) ? 'yes' : 'no';
-
 		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
+
+		// Updates if we should show Description
+		$ticket->show_description = isset( $ticket->show_description ) && tribe_is_truthy( $ticket->show_description ) ? 'yes' : 'no';
 
 		update_post_meta( $ticket->ID, $tickets_handler->key_show_description, $ticket->show_description );
 
@@ -1334,6 +1334,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		// Makes sure it's an Int after this point
 		$data['stock'] = (int) $data['stock'];
 
+		// The only available value lower than zero is -1 which is unlimited
+		if ( 0 > $data['stock'] ) {
+			$data['stock'] = -1;
+		}
+
 		$mode = isset( $data['mode'] ) ? $data['mode'] : 'own';
 
 		if ( '' !== $mode ) {
@@ -1355,8 +1360,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			if (
 				$event_stock->is_enabled()
 				&& Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $mode
-				&& '' !== $data['capacity']
-				&& $data['capacity'] > $data['event_capacity']
+				&& (
+					'' === $data['capacity']
+					|| $data['event_capacity'] < $data['capacity']
+				)
 			) {
 				$data['capacity'] = $data['event_capacity'];
 			}

@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [Capacity] TBD =
+
+* Fix - Make sure when changing unlimited ticket to be a shared capacity ticket that the empty individual capacity gets properly overridden to the shared capacity for Tribe Commerce. [ET-752]
+
 = [4.11.4] 2020-02-26 =
 
 * Fix - Update file path in the docblocks of the templates for The Events Calendar new views. [ET-713]
