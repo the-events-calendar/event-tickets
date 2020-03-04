@@ -1191,7 +1191,7 @@ class Tribe__Tickets__Tickets_Handler {
 		 *
 		 * @return int
 		 */
-		$default_max = apply_filters( 'tribe_tickets_get_ticket_default_max_purchase_limit', 100, $ticket, $event, $ticket_id );
+		$default_max = apply_filters( 'tribe_tickets_get_ticket_default_max_purchase', 100, $ticket, $event, $ticket_id );
 
 		$available = $ticket->available();
 
