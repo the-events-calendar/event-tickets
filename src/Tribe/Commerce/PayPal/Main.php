@@ -1219,7 +1219,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		// Updates if we should show Description.
 		$ticket->show_description = isset( $ticket->show_description ) && tribe_is_truthy( $ticket->show_description ) ? 'yes' : 'no';
-
 		update_post_meta( $ticket->ID, $tickets_handler->key_show_description, $ticket->show_description );
 
 		// let's make sure float price values are formatted to "0.xyz"
