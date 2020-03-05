@@ -1,18 +1,18 @@
 <?php
 /**
- * This template renders the RSVP ticket form
+ * This template renders the RSVP ticket form.
  *
  * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe-events/tickets/rsvp.php
  *
- *     [your-theme]/tribe-events/tickets/rsvp.php
+ * @since   4.0
+ * @since   4.10.8 More similar display format to that of other ticket types, including better checking of max quantity available.
+ * @since   4.10.9 Use customizable ticket name functions.
+ * @since   4.11.0 Added RSVP/ticket view link to template.
+ * @since   4.11.1 Corrected amount of available/remaining tickets when threshold is empty.
+ * @since   TBD Display total available separately from setting max allowed to purchase at once.
  *
- * @since 4.0
- * @since 4.10.8 More similar display format to that of other ticket types, including better checking of max quantity available.
- * @since 4.10.9 Use customizable ticket name functions.
- * @since 4.11.0 Added RSVP/ticket view link to template.
- * @since 4.11.1    Corrected amount of available/remaining tickets when threshold is empty.
- *
- * @version 4.11.3
+ * @version TBD
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login
@@ -94,6 +94,9 @@ if ( ! $already_rendered ) {
 
 	<table class="tribe-events-tickets tribe-events-tickets-rsvp">
 		<?php
+		/** @var Tribe__Tickets__Tickets_Handler $handler */
+		$handler = tribe( 'tickets.handler' );
+
 		foreach ( $tickets as $ticket ) {
 			if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
 				continue;
@@ -112,25 +115,27 @@ if ( ! $already_rendered ) {
 			}
 
 			$ticket_id = $ticket->ID;
+
 			$is_there_any_rsvp_stock = false;
 
-			/** @var Tribe__Tickets__Tickets_Handler $handler */
-			$handler = tribe( 'tickets.handler' );
+			$available = $ticket->available();
 
-			$available = $handler->get_ticket_max_purchase( $ticket_id );
 			$readable_amount = tribe_tickets_get_readable_amount( $available, null, false );
 
 			/**
 			 * Allows hiding of "unlimited" to be toggled on/off conditionally.
 			 *
-			 * @param int   $show_unlimited allow showing of "unlimited".
-			 *
 			 * @since 4.11.1
+			 *
+			 * @param int $show_unlimited allow showing of "unlimited".
+			 *
 			 */
 			$show_unlimited = apply_filters( 'tribe_rsvp_block_show_unlimited_availability', false, $available );
 
 			$is_there_any_rsvp_stock      = 0 !== $available;
 			$is_there_any_product_to_sell = $is_there_any_rsvp_stock || $is_there_any_product_to_sell;
+
+			$max_at_a_time = $handler->get_ticket_max_purchase( $ticket_id );
 			?>
 			<tr>
 				<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket_id ); ?>">
@@ -141,14 +146,12 @@ if ( ! $already_rendered ) {
 							class="tribe-tickets-quantity"
 							step="1"
 							min="0"
-							<?php if ( -1 !== $available ) : ?>
-								max="<?php echo esc_attr( $available ); ?>"
-							<?php endif; ?>
+							max="<?php echo esc_attr( $max_at_a_time ); ?>"
 							name="quantity_<?php echo absint( $ticket_id ); ?>"
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>
-						<?php if ( -1 !== $available && ( 0 === $threshold || $available <= $threshold ) ) : ?>
+						<?php if ( - 1 !== $available && ( 0 === $threshold || $available <= $threshold ) ) : ?>
 							<span class="tribe-tickets-remaining">
 								<span class="available-stock" data-product-id="<?php echo esc_attr( $ticket_id ); ?>">
 									<?php echo sprintf( esc_html__( '%1$s available', 'event-tickets' ), esc_html( $readable_amount ) ); ?>

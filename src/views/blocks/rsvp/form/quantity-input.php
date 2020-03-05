@@ -8,14 +8,18 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link    {INSERT_ARTICLE_LINK_HERE}
  *
- * @since 4.9
- * @since 4.11.1 Corrected amount of available/remaining tickets.
+ * @since   4.9
+ * @since   4.11.1 Corrected amount of available/remaining tickets. Removed unused `data-remaining` attribute.
  *
- * @version 4.11.1
+ * @version TBD
  */
-$must_login = ! is_user_logged_in() && tribe( 'tickets.rsvp' )->login_required();
+
+/** @var Tribe__Tickets__RSVP $rsvp */
+$rsvp = tribe( 'tickets.rsvp' );
+
+$must_login = ! is_user_logged_in() && $rsvp->login_required();
 
 /** @var Tribe__Tickets__Ticket_Object $ticket */
 if ( empty( $ticket->ID ) ) {
@@ -25,7 +29,7 @@ if ( empty( $ticket->ID ) ) {
 /** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 $tickets_handler = tribe( 'tickets.handler' );
 
-$available = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
+$max_at_a_time = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
 ?>
 <input
 	type="number"
@@ -36,8 +40,6 @@ $available = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
 	value="1"
 	required
 	data-remaining="<?php echo esc_attr( $available ); ?>"
-	<?php if ( -1 !== $available ) : ?>
-		max="<?php echo esc_attr( $available ); ?>"
-	<?php endif; ?>
+	max="<?php echo esc_attr( $max_at_a_time ); ?>"
 	<?php disabled( $must_login ); ?>
 />

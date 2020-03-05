@@ -8,12 +8,13 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @since   4.9.3
- * @since   4.11.1 Corrected amount of available/remaining tickets.
- *
  * @link    {INSERT_ARTICLE_LINK_HERE}
  *
- * @version 4.11.3
+ * @since   4.9.3
+ * @since   4.11.1 Corrected amount of available/remaining tickets.
+ * @since   TBD Corrected the way to get the actual stock available.
+ *
+ * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
@@ -25,10 +26,7 @@ if ( empty( $ticket->ID ) ) {
 	return;
 }
 
-/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
-$tickets_handler = tribe( 'tickets.handler' );
-
-$available = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
+$available = $ticket->available();
 
 if ( -1 === $available ) {
 	return;
@@ -51,7 +49,6 @@ $threshold = $settings_manager::get_option( 'ticket-display-tickets-left-thresho
  * @since 4.11.1
  */
 $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_threshold', $threshold, $post_id ) );
-$available = $ticket->available();
 
 /**
  * Allows hiding of "unlimited" to be toggled on/off conditionally.
@@ -66,7 +63,7 @@ $show_unlimited = apply_filters( 'tribe_tickets_block_show_unlimited_availabilit
 	class="tribe-common-b3 tribe-tickets__item__extra__available"
 >
 	<?php if ( $show_unlimited && -1 === $available ) : ?>
-		<?php $this->template( 'blocks/tickets/extra-available-unlimited', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
+		<?php $this->template( 'blocks/tickets/extra-available-unlimited', [ 'ticket' => $ticket, 'key' => $key ] ); ?>
 	<?php elseif ( 0 === $threshold || $available <= $threshold ) : ?>
 		<?php $this->template( 'blocks/tickets/extra-available-quantity', [ 'ticket' => $ticket, 'available' => $available ] ); ?>
 	<?php endif; ?>

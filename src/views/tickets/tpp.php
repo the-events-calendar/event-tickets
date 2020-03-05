@@ -3,22 +3,24 @@
  * This template renders the Tribe Commerce ticket form
  *
  * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe-events/tickets/tpp.php
  *
- *     [your-theme]/tribe-events/tickets/tpp.php
- *
- * @since 4.5
- * @since 4.7 Make the ticket form more readable.
- * @since 4.7.6 Add support for showing description option.
- * @since 4.8.2 Add date_in_range() logic so past tickets do not show.
- * @since 4.9.3 Display login link if visitor is logged out and logging in is required to purchase.
- * @since 4.10.8 Removed the date_in_range() check per ticket, since it now happens upstream. Better checking of max quantity available.
- * @since 4.10.10 Use customizable ticket name functions.
- * @since 4.11.1 Corrected amount of available/remaining tickets when threshold is empty.
- * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
- * @since 4.11.3 Changed button ID to match the format of the non-tpp buttons. (`tribe-tickets` instead of `buy-tickets`)
- *
- * @version 4.11.3
  * @deprecated 4.11.0
+ *
+ * @since      4.5
+ * @since      4.7 Make the ticket form more readable.
+ * @since      4.7.6 Add support for showing description option.
+ * @since      4.8.2 Add date_in_range() logic so past tickets do not show.
+ * @since      4.9.3 Display login link if visitor is logged out and logging in is required to purchase.
+ * @since      4.10.8 Removed the date_in_range() check per ticket, since it now happens upstream. Better checking of max quantity available.
+ * @since      4.10.10 Use customizable ticket name functions.
+ * @since      4.11.1 Corrected amount of available/remaining tickets when threshold is empty.
+ * @since      4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
+ * @since      4.11.3 Changed button ID to match the format of the non-tpp buttons. (`tribe-tickets` instead of `buy-tickets`)
+ * @since      TBD Display total available separately from setting max allowed to purchase at once and avoid the
+ *                    potential of `$readable_amount` being a undefined variable.
+ *
+ * @version    4.11.3
  *
  * @var bool $must_login
  * @var bool $display_login_link
@@ -84,7 +86,11 @@ $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_th
 
 	<table class="tribe-events-tickets tribe-events-tickets-tpp">
 		<?php
+		/** @var Tribe__Tickets__Tickets_Handler $handler */
+		$handler = tribe( 'tickets.handler' );
+
 		$item_counter = 1;
+
 		foreach ( $tickets as $ticket ) {
 			if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
 				continue;
@@ -98,21 +104,20 @@ $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_th
 				continue;
 			}
 
-			/** @var Tribe__Tickets__Tickets_Handler $handler */
-			$handler = tribe( 'tickets.handler' );
-
-			$available = $handler->get_ticket_max_purchase( $ticket->ID );
+			$available = $ticket->available();
 
 			/**
 			 * Allows hiding of "unlimited" to be toggled on/off conditionally.
 			 *
-			 * @param int   $show_unlimited allow showing of "unlimited".
-			 *
 			 * @since 4.11.1
+			 *
+			 * @param int $show_unlimited allow showing of "unlimited".
 			 */
 			$show_unlimited = apply_filters( 'tribe_tickets_block_show_unlimited_availability', false, $available );
 
 			$is_there_any_product_to_sell = 0 !== $available;
+
+			$max_at_a_time = $handler->get_ticket_max_purchase( $ticket->ID );
 			?>
 			<tr>
 				<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket->ID ); ?>">
@@ -121,18 +126,18 @@ $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_th
 						<input
 							type="number"
 							class="tribe-tickets-quantity qty"
+							step="1"
 							min="0"
-							<?php if ( -1 !== $available ) : ?>
-								max="<?php echo esc_attr( $available ); ?>"
-							<?php endif; ?>
+							max="<?php echo esc_attr( $max_at_a_time ); ?>"
 							name="quantity_<?php echo absint( $ticket->ID ); ?>"
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>
-						<?php if ( -1 !== $available && ( 0 === $threshold || $available <= $threshold ) ) : ?>
+						<?php $readable_amount = tribe_tickets_get_readable_amount( $available, null, false );
+
+						if ( - 1 !== $available && ( 0 === $threshold || $available <= $threshold ) ) : ?>
 							<span class="tribe-tickets-remaining">
 							<?php
-							$readable_amount = tribe_tickets_get_readable_amount( $available, null, false );
 							echo sprintf( esc_html__( '%1$s available', 'event-tickets' ), '<span class="available-stock" data-product-id="' . esc_attr( $ticket->ID ) . '">' . esc_html( $readable_amount ) . '</span>' );
 							?>
 							</span>
