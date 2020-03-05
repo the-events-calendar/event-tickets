@@ -60,9 +60,21 @@ class Tribe__Tickets__Promoter__Observer {
 	}
 
 	/**
-	 * Notify to the parent Event of the ticket
+	 * Notify to the parent Event when an attendee has changes via REST API.
 	 *
 	 * @since 4.10.1.2
+	 * @deprecated TBD
+	 *
+	 * @param $attendee_id
+	 */
+	public function notify_rsvp_event( $attendee_id ) {
+		$this->notify_ticket_event( $attendee_id );
+	}
+
+	/**
+	 * Notify to the parent Event of the ticket
+	 *
+	 * @since TBD
 	 *
 	 * @param $ticket_id int The Ticket ID where to look for the Event.
 	 */
@@ -164,6 +176,18 @@ class Tribe__Tickets__Promoter__Observer {
 	 * Notify the connector of changes when the event was deleted
 	 *
 	 * @since 4.10.9
+	 * @deprecated TBD
+	 *
+	 * @param $post_id
+	 */
+	public function delete_post( $post_id ) {
+		$this->on_event_deleted( $post_id );
+	}
+
+	/**
+	 * Notify the connector of changes when the event was deleted
+	 *
+	 * @since TBD
 	 *
 	 * @param $post_id
 	 */
@@ -183,7 +207,7 @@ class Tribe__Tickets__Promoter__Observer {
 	public function notify( $post_id ) {
 
 		// The $post_id is a falsy value, avoid a non required call.
-		if ( ! $post_id ) { 
+		if ( ! $post_id ) {
 			return;
 		}
 
