@@ -149,6 +149,8 @@ class Tribe__Tickets__Promoter__Observer {
 	 * @param int $source_event_id the event/post which the ticket originally belonged to
 	 * @param int $target_event_id the event/post which the ticket now belongs to
 	 * @param int $instigator_id the user who initiated the change
+	 *
+	 * @return void Action hook with no return.
 	 */
 	public function ticket_moved( $ticket_id, $source_ticket_type_id, $target_ticket_type_id, $source_event_id, $target_event_id, $instigator_id ) {
 		$this->notify( $source_event_id );
