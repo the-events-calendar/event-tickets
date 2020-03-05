@@ -12,6 +12,7 @@
  *
  * @since   4.9
  * @since   4.11.1 Corrected amount of available/remaining tickets. Removed unused `data-remaining` attribute.
+ * @since   TBD The input's "max" is now always set and remove unused `data-remaining` attribute.
  *
  * @version TBD
  */
@@ -39,7 +40,6 @@ $max_at_a_time = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
 	min="1"
 	value="1"
 	required
-	data-remaining="<?php echo esc_attr( $available ); ?>"
 	max="<?php echo esc_attr( $max_at_a_time ); ?>"
 	<?php disabled( $must_login ); ?>
 />
