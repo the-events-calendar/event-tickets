@@ -11,7 +11,7 @@
  * @link    {INSERT_ARTICLE_LINK_HERE}
  *
  * @since   4.9
- * @since   TBD Added template override instructions in template comments.
+ * @since   TBD Corrected the template override instructions in template comments.
  *
  * @version TBD
  */
