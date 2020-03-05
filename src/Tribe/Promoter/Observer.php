@@ -180,7 +180,8 @@ class Tribe__Tickets__Promoter__Observer {
 	 */
 	public function notify( $post_id ) {
 
-		if ( ! $post_id ) { // The $post_id is a falsy value, avoid a non required call.
+		// The $post_id is a falsy value, avoid a non required call.
+		if ( ! $post_id ) { 
 			return;
 		}
 
