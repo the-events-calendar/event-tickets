@@ -429,6 +429,50 @@ class BaseTicketEditorCest extends BaseRestCest {
 	}
 
 	/**
+	 * Create a RSVP.
+	 *
+	 * @param Restv1Tester $I         API tester.
+	 * @param array        $variation Variation data.
+	 * @param null|array   $override  List of arguments to override with.
+	 *
+	 * @return array RSVP args.
+	 */
+	protected function create_rsvp_using_rest( Restv1Tester $I, array $variation, array $override = [] ) {
+		$post_id = $I->havePostInDatabase();
+
+		$args = [
+			'post_id' => $post_id,
+			'title'   => 'Test RSVP name',
+			'excerpt' => 'Test description text',
+			'meta'    => [
+				'_price'                         => 0,
+				'_tribe_ticket_capacity'         => '',
+				'_ticket_start_date'             => '2020-01-02 08:00:00',
+				'_ticket_end_date'               => '2050-03-02 20:00:00',
+				'_tribe_ticket_show_not_going'   => 'false',
+				'_tribe_rsvp_for_event'          => $post_id,
+				'_tribe_ticket_show_description' => 'yes',
+			],
+			'status'  => 'publish',
+		];
+
+		$create_args = array_merge( $args, $override, $variation );
+
+		$rsvp_create_rest_url = $this->rsvps_url;
+
+		$I->sendPOST( $rsvp_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 201 );
+		$I->seeResponseIsJson();
+
+		$response = json_decode( $I->grabResponse(), true );
+
+		$create_args['response'] = $response;
+
+		return $create_args;
+	}
+
+	/**
 	 * Create a RSVP via admin-ajax.php.
 	 *
 	 * @param Restv1Tester $I         API tester.
@@ -571,8 +615,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 		}
 
 		$expected_json = [
-			// @todo Description not returned for EDD.
-			'description'                   => 'edd' === $provider ? '' : $create_args['description'],
+			'description'                   => $create_args['description'],
 			// @todo Empty string may not be what it should return if unlimited.
 			'capacity'                      => - 1 === $capacity ? '' : $capacity,
 			'post_id'                       => $post_id,
@@ -685,8 +728,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 		}
 
 		$expected_json = [
-			// @todo Description not returned for EDD.
-			'description'                   => 'edd' === $provider ? '' : $update_args['description'],
+			'description'                   => $update_args['description'],
 			// @todo Empty string may not be what it should return if unlimited.
 			'capacity'                      => - 1 === $capacity ? '' : $capacity,
 			'post_id'                       => $post_id,
@@ -889,7 +931,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$provider = $this->get_provider( $create_data['ticket_provider'] );
 		$mode     = 'own';
 		$price    = '0';
-		$sku      = '';
+		$sku      = null;
 
 		if ( isset( $create_data['tribe-ticket']['mode'] ) ) {
 			$mode = 'unlimited';
@@ -905,10 +947,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 			$price = $create_data['ticket_price'];
 		}
 
-		if ( 'rsvp' === $provider ) {
-			$sku = null;
-		} elseif ( 'edd' !== $provider ) {
-			// @todo SKU not returned for EDD.
+		if ( 'rsvp' !== $provider ) {
 			$sku = $create_data['ticket_sku'];
 		}
 
@@ -1083,7 +1122,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$provider = $this->get_provider( $update_data['ticket_provider'] );
 		$mode     = 'own';
 		$price    = '0';
-		$sku      = '';
+		$sku      = null;
 
 		if ( isset( $update_data['tribe-ticket']['mode'] ) ) {
 			$mode = 'unlimited';
@@ -1099,10 +1138,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 			$price = $update_data['ticket_price'];
 		}
 
-		if ( 'rsvp' === $provider ) {
-			$sku = null;
-		} elseif ( 'edd' !== $provider ) {
-			// @todo SKU not returned for EDD.
+		if ( 'rsvp' !== $provider ) {
 			$sku = $update_data['ticket_sku'];
 		}
 
