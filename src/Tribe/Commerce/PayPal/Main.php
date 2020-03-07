@@ -1217,7 +1217,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
 
-		// Updates if we should show Description
+		// Updates if we should show Description.
 		$ticket->show_description = isset( $ticket->show_description ) && tribe_is_truthy( $ticket->show_description ) ? 'yes' : 'no';
 
 		update_post_meta( $ticket->ID, $tickets_handler->key_show_description, $ticket->show_description );
@@ -1334,7 +1334,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		// Makes sure it's an Int after this point
 		$data['stock'] = (int) $data['stock'];
 
-		// The only available value lower than zero is -1 which is unlimited
+		// The only available value lower than zero is -1 which is unlimited.
 		if ( 0 > $data['stock'] ) {
 			$data['stock'] = -1;
 		}
