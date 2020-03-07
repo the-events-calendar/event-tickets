@@ -32,6 +32,11 @@ class BaseRestCest {
 	/**
 	 * @var string
 	 */
+	protected $rsvps_url;
+
+	/**
+	 * @var string
+	 */
 	protected $attendees_url;
 
 	/**
@@ -70,6 +75,7 @@ class BaseRestCest {
 		$this->rest_url          = $this->site_url . '/wp-json/tribe/tickets/v1/';
 		$this->tec_rest_url      = $this->site_url . '/wp-json/tribe/events/v1/';
 		$this->tickets_url       = $this->rest_url . 'tickets';
+		$this->rsvps_url         = $this->wp_rest_url . 'tribe_rsvp_tickets';
 		$this->attendees_url     = $this->rest_url . 'attendees';
 		$this->cart_url          = $this->rest_url . 'cart';
 		$this->documentation_url = $this->rest_url . 'doc';
