@@ -22,6 +22,11 @@ class BaseTicketEditorCest extends BaseRestCest {
 	}
 
 	/**
+	 * @var bool
+	 */
+	public $is_plus = false;
+
+	/**
 	 * Get ticket matrix mode variations.
 	 *
 	 * @return array List of mode variations.
@@ -567,7 +572,8 @@ class BaseTicketEditorCest extends BaseRestCest {
 		}
 
 		$expected_json = [
-			'description'                   => $create_args['description'],
+			// @todo Description not returned for EDD.
+			'description'                   => 'edd' === $provider ? '' : $create_args['description'],
 			// @todo Empty string may not be what it should return if unlimited.
 			'capacity'                      => - 1 === $capacity ? '' : $capacity,
 			'post_id'                       => $post_id,
@@ -577,9 +583,9 @@ class BaseTicketEditorCest extends BaseRestCest {
 			'title'                         => $create_args['name'],
 			'image'                         => false,
 			// @todo TC does not return full date+time, should it?
-			'available_from'                => $create_args['start_date'],
+			'available_from'                => 'tribe-commerce' === $provider ? $create_args['start_date'] : $create_args['start_date'] . ' ' . $create_args['start_time'],
 			// @todo TC does not return full date+time, should it?
-			'available_until'               => $create_args['end_date'],
+			'available_until'               => 'tribe-commerce' === $provider ? $create_args['end_date'] : $create_args['end_date'] . ' ' . $create_args['end_time'],
 			'capacity_details'              => [
 				'available_percentage' => 100,
 				// @todo Zero may not be what it should return if unlimited.
@@ -591,12 +597,14 @@ class BaseTicketEditorCest extends BaseRestCest {
 			'is_available'                  => true,
 			'cost'                          => '$' . $price . '.00',
 			'cost_details'                  => [
-				'currency_symbol'   => '$',
-				'currency_position' => 'prefix',
+				'currency_symbol'   => 'woo' === $provider ? '€' : '$',
+				'currency_position' => 'woo' === $provider ? 'postfix' : 'prefix',
 				'values'            => [
 					(string) $price,
 				],
 			],
+			'requires_attendee_information' => false,
+			'attendee_information_fields'   => [],
 			'supports_attendee_information' => false,
 			'attendees'                     => [],
 			'checkin'                       => [
@@ -606,6 +614,12 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'unchecked_in_percentage' => 0,
 			],
 		];
+
+		$is_plus_test = $this->is_plus;
+
+		if ( ! $is_plus_test ) {
+			unset( $expected_json['requires_attendee_information'], $expected_json['attendee_information_fields'] );
+		}
 
 		$response = json_decode( $I->grabResponse(), true );
 
@@ -672,7 +686,8 @@ class BaseTicketEditorCest extends BaseRestCest {
 		}
 
 		$expected_json = [
-			'description'                   => $update_args['description'],
+			// @todo Description not returned for EDD.
+			'description'                   => 'edd' === $provider ? '' : $update_args['description'],
 			// @todo Empty string may not be what it should return if unlimited.
 			'capacity'                      => - 1 === $capacity ? '' : $capacity,
 			'post_id'                       => $post_id,
@@ -687,10 +702,10 @@ class BaseTicketEditorCest extends BaseRestCest {
 			'title'                         => $update_args['name'],
 			'image'                         => false,
 			// @todo TC does not return full date+time, should it?
-			'available_from'                => $update_args['start_date'],
+			'available_from'                => 'tribe-commerce' === $provider ? $update_args['start_date'] : $update_args['start_date'] . ' ' . $update_args['start_time'],
 			'available_from_details'        => $response['available_from_details'],
 			// @todo TC does not return full date+time, should it?
-			'available_until'               => $update_args['end_date'],
+			'available_until'               => 'tribe-commerce' === $provider ? $update_args['end_date'] : $update_args['end_date'] . ' ' . $update_args['end_time'],
 			'available_until_details'       => $response['available_until_details'],
 			'capacity_details'              => [
 				'available_percentage' => 100,
@@ -703,12 +718,14 @@ class BaseTicketEditorCest extends BaseRestCest {
 			'is_available'                  => true,
 			'cost'                          => '$' . $price . '.00',
 			'cost_details'                  => [
-				'currency_symbol'   => '$',
-				'currency_position' => 'prefix',
+				'currency_symbol'   => 'woo' === $provider ? '€' : '$',
+				'currency_position' => 'woo' === $provider ? 'postfix' : 'prefix',
 				'values'            => [
 					(string) $price,
 				],
 			],
+			'requires_attendee_information' => false,
+			'attendee_information_fields'   => [],
 			'supports_attendee_information' => false,
 			'attendees'                     => [],
 			'checkin'                       => [
@@ -719,6 +736,12 @@ class BaseTicketEditorCest extends BaseRestCest {
 			],
 			'rest_url'                      => $ticket_update_rest_url,
 		];
+
+		$is_plus_test = $this->is_plus;
+
+		if ( ! $is_plus_test ) {
+			unset( $expected_json['requires_attendee_information'], $expected_json['attendee_information_fields'] );
+		}
 
 		$response = json_decode( $I->grabResponse(), true );
 
@@ -811,7 +834,27 @@ class BaseTicketEditorCest extends BaseRestCest {
 		// For snapshots.
 		$this->setName( __FUNCTION__ . '_' . md5( $variation_data ) );
 
-		$create_args = $this->create_ticket_using_ajax( $I, $variation );
+		// Create an unlimited capacity RSVP.
+		$rsvp_args = $this->create_rsvp_using_ajax( $I, [
+			// Unlimited capacity.
+			'ticket' => [
+				'capacity' => '',
+			],
+		] );
+
+		$create_args = $this->create_ticket_using_ajax( $I, $variation, [
+			'post_id' => $rsvp_args['post_id'],
+		] );
+
+		// Create another unlimited capacity RSVP.
+		$rsvp_args = $this->create_rsvp_using_ajax( $I, [
+			// Unlimited capacity.
+			'ticket' => [
+				'capacity' => '',
+			],
+		], [
+			'post_id' => $rsvp_args['post_id'],
+		] );
 
 		$response = $create_args['response'];
 
@@ -847,6 +890,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$provider = $this->get_provider( $create_data['ticket_provider'] );
 		$mode     = 'own';
 		$price    = '0';
+		$sku      = '';
 
 		if ( isset( $create_data['tribe-ticket']['mode'] ) ) {
 			$mode = 'unlimited';
@@ -860,6 +904,13 @@ class BaseTicketEditorCest extends BaseRestCest {
 
 		if ( isset( $create_data['ticket_price'] ) ) {
 			$price = $create_data['ticket_price'];
+		}
+
+		if ( 'rsvp' === $provider ) {
+			$sku = null;
+		} elseif ( 'edd' !== $provider ) {
+			// @todo SKU not returned for EDD.
+			$sku = $create_data['ticket_sku'];
 		}
 
 		$expected_json = [
@@ -887,12 +938,14 @@ class BaseTicketEditorCest extends BaseRestCest {
 			'is_available'                  => true,
 			'cost'                          => '$' . $price . '.00',
 			'cost_details'                  => [
-				'currency_symbol'   => '$',
-				'currency_position' => 'prefix',
+				'currency_symbol'   => 'woo' === $provider ? '€' : '$',
+				'currency_position' => 'woo' === $provider ? 'postfix' : 'prefix',
 				'values'            => [
 					(string) $price,
 				],
 			],
+			'requires_attendee_information' => false,
+			'attendee_information_fields'   => [],
 			'supports_attendee_information' => false,
 			'attendees'                     => [],
 			'checkin'                       => [
@@ -903,7 +956,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 			],
 			'capacity_type'                 => $mode,
 			// @todo The below does not match AJAX versus API.
-			'sku'                           => 'rsvp' === $provider ? null : $create_data['ticket_sku'],
+			'sku'                           => $sku,
 			'available_from_start_time'     => $create_data['ticket_start_time'],
 			'available_from_end_time'       => $create_data['ticket_end_time'],
 			'totals'                        => [
@@ -919,6 +972,12 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'rsvp_going'     => 0,
 				'rsvp_not_going' => 0,
 			];
+		}
+
+		$is_plus_test = $this->is_plus;
+
+		if ( ! $is_plus_test ) {
+			unset( $expected_json['requires_attendee_information'], $expected_json['attendee_information_fields'] );
 		}
 
 		$response = json_decode( $I->grabResponse(), true );
@@ -945,7 +1004,27 @@ class BaseTicketEditorCest extends BaseRestCest {
 		// For snapshots.
 		$this->setName( __FUNCTION__ . '_' . md5( $variation_data ) );
 
-		$create_args = $this->create_ticket_using_ajax( $I, $variation['from'] );
+		// Create an unlimited capacity RSVP.
+		$rsvp_args = $this->create_rsvp_using_ajax( $I, [
+			// Unlimited capacity.
+			'ticket' => [
+				'capacity' => '',
+			],
+		] );
+
+		$create_args = $this->create_ticket_using_ajax( $I, $variation['from'], [
+			'post_id' => $rsvp_args['post_id'],
+		] );
+
+		// Create another unlimited capacity RSVP.
+		$rsvp_args = $this->create_rsvp_using_ajax( $I, [
+			// Unlimited capacity.
+			'ticket' => [
+				'capacity' => '',
+			],
+		], [
+			'post_id' => $rsvp_args['post_id'],
+		] );
 
 		$create_response = $create_args['response'];
 
@@ -1005,6 +1084,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$provider = $this->get_provider( $update_data['ticket_provider'] );
 		$mode     = 'own';
 		$price    = '0';
+		$sku      = '';
 
 		if ( isset( $update_data['tribe-ticket']['mode'] ) ) {
 			$mode = 'unlimited';
@@ -1018,6 +1098,13 @@ class BaseTicketEditorCest extends BaseRestCest {
 
 		if ( isset( $update_data['ticket_price'] ) ) {
 			$price = $update_data['ticket_price'];
+		}
+
+		if ( 'rsvp' === $provider ) {
+			$sku = null;
+		} elseif ( 'edd' !== $provider ) {
+			// @todo SKU not returned for EDD.
+			$sku = $update_data['ticket_sku'];
 		}
 
 		$expected_json = [
@@ -1045,12 +1132,14 @@ class BaseTicketEditorCest extends BaseRestCest {
 			'is_available'                  => true,
 			'cost'                          => '$' . $price . '.00',
 			'cost_details'                  => [
-				'currency_symbol'   => '$',
-				'currency_position' => 'prefix',
+				'currency_symbol'   => 'woo' === $provider ? '€' : '$',
+				'currency_position' => 'woo' === $provider ? 'postfix' : 'prefix',
 				'values'            => [
 					(string) $price,
 				],
 			],
+			'requires_attendee_information' => false,
+			'attendee_information_fields'   => [],
 			'supports_attendee_information' => false,
 			'attendees'                     => [],
 			'checkin'                       => [
@@ -1061,7 +1150,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 			],
 			'capacity_type'                 => $mode,
 			// @todo The below does not match AJAX versus API.
-			'sku'                           => 'rsvp' === $provider ? null : $update_data['ticket_sku'],
+			'sku'                           => $sku,
 			'available_from_start_time'     => $update_data['ticket_start_time'],
 			'available_from_end_time'       => $update_data['ticket_end_time'],
 			'totals'                        => [
@@ -1077,6 +1166,12 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'rsvp_going'     => 0,
 				'rsvp_not_going' => 0,
 			];
+		}
+
+		$is_plus_test = $this->is_plus;
+
+		if ( ! $is_plus_test ) {
+			unset( $expected_json['requires_attendee_information'], $expected_json['attendee_information_fields'] );
 		}
 
 		$response = json_decode( $I->grabResponse(), true );
