@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Tickets\Test\REST\V1\PayPal;
+namespace Tribe\Tickets\Test\REST\V1\RSVP;
 
 use Codeception\Example;
 use Restv1Tester;
