@@ -81,9 +81,9 @@ class BaseTicketEditorCest extends BaseRestCest {
 
 		foreach ( $providers as $provider ) {
 			foreach ( $mode_matrix as $mode ) {
-				$matrix[] = array_merge( [
+				$matrix[] = array_merge( $mode, [
 					'provider' => $provider,
-				], $mode );
+				] );
 			}
 		}
 
@@ -139,7 +139,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 
 				unset( $new_ticket['ticket'] );
 
-				$new_ticket = array_merge( $new_ticket, $mode );
+				$new_ticket = array_merge( $mode, $new_ticket );
 
 				if ( $ticket === $new_ticket ) {
 					continue;
@@ -757,7 +757,6 @@ class BaseTicketEditorCest extends BaseRestCest {
 
 		$update_response = $update_args['response'];
 
-		$I->assertEquals( $this->prepare_html( $create_response['data']['ticket'] ), $this->prepare_html( $update_response['data']['ticket'] ) );
 		$I->assertEquals( $this->prepare_html( $create_response['data']['notice'] ), $this->prepare_html( $update_response['data']['notice'] ) );
 
 		$I->assertTrue( $update_response['success'] );
