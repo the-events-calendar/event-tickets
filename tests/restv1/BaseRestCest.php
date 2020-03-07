@@ -59,6 +59,11 @@ class BaseRestCest {
 	 */
 	protected $tec_rest_url;
 
+	/**
+	 * @var string
+	 */
+	protected $name;
+
 	public function _before( Restv1Tester $I ) {
 		$this->site_url          = $I->grabSiteUrl();
 		$this->wp_rest_url       = $this->site_url . '/wp-json/wp/v2/';
@@ -87,7 +92,6 @@ class BaseRestCest {
 
 			return $modules;
 		} );
-
 
 		tribe_update_option( 'ticket-enabled-post-types', [ 'post', 'tribe_events' ] );
 
@@ -136,5 +140,23 @@ class BaseRestCest {
 			'tickets'  => $tickets,
 			'post_id'  => $post_id,
 		] );
+	}
+
+	/**
+	 * Set name for snapshot.
+	 *
+	 * @param string $name Method identifier for snapshot.
+	 */
+	protected function setName( $name ) {
+		$this->name = $name;
+	}
+
+	/**
+	 * Get name for snapshot.
+	 *
+	 * @return string Method identifier for snapshot.
+	 */
+	protected function getName() {
+		return $this->name;
 	}
 }
