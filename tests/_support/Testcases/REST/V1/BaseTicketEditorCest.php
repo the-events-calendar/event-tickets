@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Tickets\Test\REST\V1;
+namespace Tribe\Tickets\Test\Testcases\REST\V1;
 
 use Codeception\Example;
 use Restv1Tester;
@@ -514,7 +514,6 @@ class BaseTicketEditorCest extends BaseRestCest {
 	/**
 	 * It should allow creating a ticket.
 	 *
-	 * @test
 	 * @dataProvider _get_ticket_matrix
 	 */
 	public function should_allow_creating_a_ticket( Restv1Tester $I, Example $variation ) {

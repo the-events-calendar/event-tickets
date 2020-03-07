@@ -6,7 +6,7 @@ use Codeception\Example;
 use Restv1Tester;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker;
-use Tribe\Tickets\Test\REST\V1\BaseTicketEditorCest;
+use Tribe\Tickets\Test\Testcases\REST\V1\BaseTicketEditorCest;
 
 class TicketEditorCest extends BaseTicketEditorCest {
 
