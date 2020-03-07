@@ -382,20 +382,25 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$I->seeResponseIsJson();
 
 		$capacity = $this->get_capacity( $create_args );
+		$provider = $this->get_provider( $create_args['provider'] );
 
 		$expected_json = [
 			'description'                   => $create_args['description'],
+			// @todo Empty string may not be what it should return if unlimited.
 			'capacity'                      => - 1 === $capacity ? '' : $capacity,
 			'post_id'                       => $post_id,
-			'provider'                      => $this->get_provider( $create_args['provider'] ),
+			'provider'                      => $provider,
 			'author'                        => (string) $author_id,
 			'status'                        => 'publish',
 			'title'                         => $create_args['name'],
 			'image'                         => false,
+			// @todo TC does not return full date+time, should it?
 			'available_from'                => $create_args['start_date'],
+			// @todo TC does not return full date+time, should it?
 			'available_until'               => $create_args['end_date'],
 			'capacity_details'              => [
 				'available_percentage' => 100,
+				// @todo Zero may not be what it should return if unlimited.
 				'max'                  => - 1 === $capacity ? 0 : $capacity,
 				'available'            => $capacity,
 				'sold'                 => 0,
@@ -410,7 +415,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 					(string) $create_args['price'],
 				],
 			],
-			'supports_attendee_information' => false, // ET+ not installed.
+			'supports_attendee_information' => false,
 			'attendees'                     => [],
 			'checkin'                       => [
 				'checked_in'              => 0,
@@ -418,13 +423,6 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'checked_in_percentage'   => 100,
 				'unchecked_in_percentage' => 0,
 			],
-			//'capacity_type'                 => $create_args['ticket[mode]'],
-			//'sku'                           => $create_args['sku'],
-			/*'totals'                        => [
-				'stock'   => $capacity,
-				'sold'    => 0,
-				'pending' => 0,
-			],*/
 		];
 
 		$response = json_decode( $I->grabResponse(), true );
@@ -473,12 +471,14 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$I->seeResponseIsJson();
 
 		$capacity = $this->get_capacity( $update_args );
+		$provider = $this->get_provider( $update_args['provider'] );
 
 		$expected_json = [
 			'description'                   => $update_args['description'],
+			// @todo Empty string may not be what it should return if unlimited.
 			'capacity'                      => - 1 === $capacity ? '' : $capacity,
 			'post_id'                       => $post_id,
-			'provider'                      => $this->get_provider( $update_args['provider'] ),
+			'provider'                      => $provider,
 			'id'                            => $ticket_id,
 			'global_id'                     => $repository->get_ticket_global_id( $ticket_id ),
 			'global_id_lineage'             => $repository->get_ticket_global_id_lineage( $ticket_id ),
@@ -488,12 +488,15 @@ class BaseTicketEditorCest extends BaseRestCest {
 			'date_utc'                      => $response['date_utc'],
 			'title'                         => $update_args['name'],
 			'image'                         => false,
+			// @todo TC does not return full date+time, should it?
 			'available_from'                => $update_args['start_date'],
 			'available_from_details'        => $response['available_from_details'],
+			// @todo TC does not return full date+time, should it?
 			'available_until'               => $update_args['end_date'],
 			'available_until_details'       => $response['available_until_details'],
 			'capacity_details'              => [
 				'available_percentage' => 100,
+				// @todo Zero may not be what it should return if unlimited.
 				'max'                  => - 1 === $capacity ? 0 : $capacity,
 				'available'            => $capacity,
 				'sold'                 => 0,
@@ -508,7 +511,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 					(string) $update_args['price'],
 				],
 			],
-			'supports_attendee_information' => false, // ET+ not installed.
+			'supports_attendee_information' => false,
 			'attendees'                     => [],
 			'checkin'                       => [
 				'checked_in'              => 0,
@@ -517,13 +520,6 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'unchecked_in_percentage' => 0,
 			],
 			'rest_url'                      => $ticket_update_rest_url,
-			//'capacity_type'                 => $update_args['ticket[mode]'],
-			//'sku'                           => $update_args['sku'],
-			/*'totals'                        => [
-				'stock'   => $capacity,
-				'sold'    => 0,
-				'pending' => 0,
-			],*/
 		];
 
 		$response = json_decode( $I->grabResponse(), true );
@@ -650,20 +646,25 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$create_data = $create_args['data'];
 
 		$capacity = $this->get_capacity( $create_data );
+		$provider = $this->get_provider( $create_data['ticket_provider'] );
 
 		$expected_json = [
 			'description'                   => $create_data['ticket_description'],
+			// @todo Empty string may not be what it should return if unlimited.
 			'capacity'                      => - 1 === $capacity ? '' : $capacity,
 			'post_id'                       => $post_id,
-			'provider'                      => $this->get_provider( $create_data['ticket_provider'] ),
+			'provider'                      => $provider,
 			'author'                        => (string) $author_id,
 			'status'                        => 'publish',
 			'title'                         => $create_data['ticket_name'],
 			'image'                         => false,
+			// @todo TC does not return full date+time, should it?
 			'available_from'                => $create_data['ticket_start_date'],
+			// @todo TC does not return full date+time, should it?
 			'available_until'               => $create_data['ticket_end_date'],
 			'capacity_details'              => [
 				'available_percentage' => 100,
+				// @todo Zero may not be what it should return if unlimited.
 				'max'                  => - 1 === $capacity ? 0 : $capacity,
 				'available'            => $capacity,
 				'sold'                 => 0,
@@ -679,7 +680,6 @@ class BaseTicketEditorCest extends BaseRestCest {
 				],
 			],
 			'supports_attendee_information' => false,
-			// ET+ not installed.
 			'attendees'                     => [],
 			'checkin'                       => [
 				'checked_in'              => 0,
@@ -688,12 +688,13 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'unchecked_in_percentage' => 0,
 			],
 			'capacity_type'                 => '' === $create_data['tribe-ticket']['mode'] ? 'unlimited' : $create_data['tribe-ticket']['mode'],
-			// @todo This does not match AJAX versus API
+			// @todo The below does not match AJAX versus API.
 			'sku'                           => $create_data['ticket_sku'],
 			'available_from_start_time'     => $create_data['ticket_start_time'],
 			'available_from_end_time'       => $create_data['ticket_end_time'],
 			'totals'                        => [
-				'stock'   => - 1 === $capacity ? 0 : $capacity, // @todo This does not match AJAX versus API
+				// @todo Zero may not be what it should return if unlimited.
+				'stock'   => - 1 === $capacity ? 0 : $capacity,
 				'sold'    => 0,
 				'pending' => 0,
 			],
@@ -780,20 +781,25 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$update_data = $update_args['data'];
 
 		$capacity = $this->get_capacity( $update_data );
+		$provider = $this->get_provider( $update_data['ticket_provider'] );
 
 		$expected_json = [
 			'description'                   => $update_data['ticket_description'],
+			// @todo Empty string may not be what it should return if unlimited.
 			'capacity'                      => - 1 === $capacity ? '' : $capacity,
 			'post_id'                       => $post_id,
-			'provider'                      => $this->get_provider( $update_data['ticket_provider'] ),
+			'provider'                      => $provider,
 			'author'                        => (string) $author_id,
 			'status'                        => 'publish',
 			'title'                         => $update_data['ticket_name'],
 			'image'                         => false,
+			// @todo TC does not return full date+time, should it?
 			'available_from'                => $update_data['ticket_start_date'],
+			// @todo TC does not return full date+time, should it?
 			'available_until'               => $update_data['ticket_end_date'],
 			'capacity_details'              => [
 				'available_percentage' => 100,
+				// @todo Zero may not be what it should return if unlimited.
 				'max'                  => - 1 === $capacity ? 0 : $capacity,
 				'available'            => $capacity,
 				'sold'                 => 0,
@@ -809,7 +815,6 @@ class BaseTicketEditorCest extends BaseRestCest {
 				],
 			],
 			'supports_attendee_information' => false,
-			// ET+ not installed.
 			'attendees'                     => [],
 			'checkin'                       => [
 				'checked_in'              => 0,
@@ -818,12 +823,13 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'unchecked_in_percentage' => 0,
 			],
 			'capacity_type'                 => '' === $update_data['tribe-ticket']['mode'] ? 'unlimited' : $update_data['tribe-ticket']['mode'],
-			// @todo This does not match AJAX versus API
+			// @todo The below does not match AJAX versus API.
 			'sku'                           => $update_data['ticket_sku'],
 			'available_from_start_time'     => $update_data['ticket_start_time'],
 			'available_from_end_time'       => $update_data['ticket_end_time'],
 			'totals'                        => [
-				'stock'   => - 1 === $capacity ? 0 : $capacity, // @todo This does not match AJAX versus API
+				// @todo Zero may not be what it should return if unlimited.
+				'stock'   => - 1 === $capacity ? 0 : $capacity,
 				'sold'    => 0,
 				'pending' => 0,
 			],
