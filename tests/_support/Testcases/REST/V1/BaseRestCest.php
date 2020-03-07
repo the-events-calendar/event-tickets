@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Tickets\Test\REST\V1;
+namespace Tribe\Tickets\Test\Testcases\REST\V1;
 
 use Restv1Tester;
 

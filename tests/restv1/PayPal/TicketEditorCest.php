@@ -3,7 +3,7 @@
 namespace Tribe\Tickets\Test\REST\V1\PayPal;
 
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as Ticket_Maker;
-use Tribe\Tickets\Test\REST\V1\BaseTicketEditorCest;
+use Tribe\Tickets\Test\Testcases\REST\V1\BaseTicketEditorCest;
 
 class TicketEditorCest extends BaseTicketEditorCest {
 
