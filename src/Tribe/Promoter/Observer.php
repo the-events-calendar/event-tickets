@@ -184,11 +184,13 @@ class Tribe__Tickets__Promoter__Observer {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $attendee_id Attendee post ID
-	 * @param string $order_id PayPal Order ID
-	 * @param int $product_id PayPal ticket post ID
-	 * @param int $order_attendee_id Attendee number in submitted order
+	 * @param int    $attendee_id           Attendee post ID.
+	 * @param string $order_id              PayPal Order ID.
+	 * @param int    $product_id            PayPal ticket post ID.
+	 * @param int    $order_attendee_id     Attendee number in submitted order.
 	 * @param string $attendee_order_status The order status for the attendee.
+	 *
+	 * @return void
 	 */
 	public function tpp_attendee_updated( $attendee_id, $order_id, $product_id, $order_attendee_id, $attendee_order_status ) {
 		$this->notify_ticket_event( $product_id );
@@ -199,9 +201,11 @@ class Tribe__Tickets__Promoter__Observer {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $product_id PayPal ticket post ID
-	 * @param string $order_id ID of the PayPal order
-	 * @param int $qty Quantity ordered
+	 * @param int    $product_id PayPal ticket post ID.
+	 * @param string $order_id   ID of the PayPal order.
+	 * @param int    $qty        Quantity ordered.
+	 *
+	 * @return void
 	 */
 	public function tpp_tickets_generated_for_product( $product_id, $order_id, $qty ) {
 		$this->notify_ticket_event( $product_id );
