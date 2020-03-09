@@ -1279,7 +1279,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$ticket_product = $ticket_product->ID;
 		}
 
-		if ( null === ( $product = get_post( $ticket_product ) ) ) {
+		if ( null === get_post( $ticket_product ) ) {
 			return false;
 		}
 
