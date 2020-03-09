@@ -49,7 +49,7 @@ class Tribe__Tickets__Promoter__Observer {
 
 		// Moved tickets
 		add_action( 'tribe_tickets_ticket_type_moved', [ $this, 'ticket_moved_type' ], 10, 4 );
-		add_action( 'tribe_tickets_ticket_moved', [ $this, 'ticket_moved'], 10, 6 );
+		add_action( 'tribe_tickets_ticket_moved', [ $this, 'ticket_moved' ], 10, 6 );
 
 		// PayPal
 		add_action( 'save_post_tribe_tpp_attendees', [ $this, 'notify_ticket_event' ], 10, 1 );
@@ -63,9 +63,25 @@ class Tribe__Tickets__Promoter__Observer {
 	}
 
 	/**
-	 * Notify to the parent Event of the ticket
+	 * Notify to the parent Event when an attendee has changes via REST API.
 	 *
 	 * @since 4.10.1.2
+	 *
+	 * @param $attendee_id
+	 *
+	 * @deprecated TBD
+	 *
+	 */
+	public function notify_rsvp_event( $attendee_id ) {
+		_deprecated_function( __METHOD__, '4.11.5', __CLASS__ . '::notify_ticket_event' );
+
+		$this->notify_ticket_event( $attendee_id );
+	}
+
+	/**
+	 * Notify to the parent Event of the ticket
+	 *
+	 * @since TBD
 	 *
 	 * @param $ticket_id int The Ticket ID where to look for the Event.
 	 */
@@ -152,6 +168,8 @@ class Tribe__Tickets__Promoter__Observer {
 	 * @param int $source_event_id the event/post which the ticket originally belonged to
 	 * @param int $target_event_id the event/post which the ticket now belongs to
 	 * @param int $instigator_id the user who initiated the change
+	 *
+	 * @return void Action hook with no return.
 	 */
 	public function ticket_moved( $ticket_id, $source_ticket_type_id, $target_ticket_type_id, $source_event_id, $target_event_id, $instigator_id ) {
 		$this->notify( $source_event_id );
@@ -195,6 +213,22 @@ class Tribe__Tickets__Promoter__Observer {
 	 * @since 4.10.9
 	 *
 	 * @param $post_id
+	 *
+	 * @deprecated TBD
+	 *
+	 */
+	public function delete_post( $post_id ) {
+		_deprecated_function( __METHOD__, '4.11.5', __CLASS__ . "::on_event_deleted" );
+
+		$this->on_event_deleted( $post_id );
+	}
+
+	/**
+	 * Notify the connector of changes when the event was deleted
+	 *
+	 * @since TBD
+	 *
+	 * @param $post_id
 	 */
 	public function on_event_deleted( $post_id ) {
 		if ( $this->event_type === get_post_type( $post_id ) ) {
@@ -211,7 +245,8 @@ class Tribe__Tickets__Promoter__Observer {
 	 */
 	public function notify( $post_id ) {
 
-		if ( ! $post_id ) { // The $post_id is a falsy value, avoid a non required call.
+		// The $post_id is a falsy value, avoid a non required call.
+		if ( ! $post_id ) {
 			return;
 		}
 
