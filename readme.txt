@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.11.5] TBD =
 
 * Tweak - Notify Promoter of changes when tickets are moved to other Events. [ET-741]
+* Tweak - Improve support between Tribe Commerce and Promoter by extending the actions that notify Promoter [ET-746]
 
 = [4.11.4] 2020-02-26 =
 
