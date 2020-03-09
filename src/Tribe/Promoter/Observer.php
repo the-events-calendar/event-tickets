@@ -49,7 +49,7 @@ class Tribe__Tickets__Promoter__Observer {
 
 		// Moved tickets
 		add_action( 'tribe_tickets_ticket_type_moved', [ $this, 'ticket_moved_type' ], 10, 4 );
-		add_action( 'tribe_tickets_ticket_moved', [ $this, 'ticket_moved'], 10, 6 );
+		add_action( 'tribe_tickets_ticket_moved', [ $this, 'ticket_moved' ], 10, 6 );
 
 		// PayPal
 		add_action( 'tickets_tpp_ticket_deleted', [ $this, 'notify_event_id' ], 10, 2 );
@@ -63,11 +63,15 @@ class Tribe__Tickets__Promoter__Observer {
 	 * Notify to the parent Event when an attendee has changes via REST API.
 	 *
 	 * @since 4.10.1.2
-	 * @deprecated TBD
 	 *
 	 * @param $attendee_id
+	 *
+	 * @deprecated TBD
+	 *
 	 */
 	public function notify_rsvp_event( $attendee_id ) {
+		_deprecated_function( __METHOD__, '4.11.5', __CLASS__ . '::notify_ticket_event' );
+
 		$this->notify_ticket_event( $attendee_id );
 	}
 
@@ -176,11 +180,15 @@ class Tribe__Tickets__Promoter__Observer {
 	 * Notify the connector of changes when the event was deleted
 	 *
 	 * @since 4.10.9
-	 * @deprecated TBD
 	 *
 	 * @param $post_id
+	 *
+	 * @deprecated TBD
+	 *
 	 */
 	public function delete_post( $post_id ) {
+		_deprecated_function( __METHOD__, '4.11.5', __CLASS__ . "::on_event_deleted" );
+
 		$this->on_event_deleted( $post_id );
 	}
 

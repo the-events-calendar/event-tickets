@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.11.5] TBD =
+
+* Tweak - Notify Promoter of changes when tickets are moved to other Events. [ET-741]
+
 = [4.11.4] 2020-02-26 =
 
 * Fix - Update file path in the docblocks of the templates for The Events Calendar new views. [ET-713]
