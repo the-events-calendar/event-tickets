@@ -2,6 +2,7 @@
 
 namespace Tribe\Tickets\Test\REST\V1;
 
+use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
@@ -26,8 +27,8 @@ class TicketArchiveByProviderCest extends BaseRestCest {
 			return $acc;
 		}, [] );
 		$paypal   = array_reduce( $post_ids, function ( $acc, $post_id ) {
-			$acc[] = $this->create_paypal_ticket( $post_id, 3 );
-			$acc[] = $this->create_paypal_ticket( $post_id, 3 );
+			$acc[] = $this->create_paypal_ticket_basic( $post_id, 3 );
+			$acc[] = $this->create_paypal_ticket_basic( $post_id, 3 );
 
 			return $acc;
 		}, [] );

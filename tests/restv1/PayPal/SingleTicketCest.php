@@ -6,7 +6,7 @@ use PHPUnit\Framework\Assert;
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as Ticket_Maker;
-use Tribe\Tickets\Test\REST\V1\BaseRestCest;
+use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
 
 class SingleTicketCest extends BaseRestCest {
 	use Ticket_Maker;
@@ -22,7 +22,7 @@ class SingleTicketCest extends BaseRestCest {
 
 		$post_id                     = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
 		$attendees_count             = 7;
-		$ticket_id                   = $this->create_paypal_ticket( $post_id, 5, [
+		$ticket_id                   = $this->create_paypal_ticket_basic( $post_id, 5, [
 			'meta_input' => [
 				'total_sales' => $attendees_count,
 				'_stock'      => 30 - $attendees_count,
@@ -195,7 +195,7 @@ class SingleTicketCest extends BaseRestCest {
 		$post_id                     = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
 		$attendees_count             = 7;
 		$optout_count = 3;
-		$ticket_id                   = $this->create_paypal_ticket( $post_id, 5, [
+		$ticket_id                   = $this->create_paypal_ticket_basic( $post_id, 5, [
 			'meta_input' => [
 				'total_sales' => $attendees_count,
 				'_stock'      => 30 - $attendees_count,
@@ -333,7 +333,7 @@ class SingleTicketCest extends BaseRestCest {
 	 */
 	public function should_return_401_when_trying_to_access_non_public_ticket( Restv1Tester $I ) {
 		$post_id   = $I->havePostInDatabase();
-		$ticket_id = $this->create_paypal_ticket( $post_id, 3, [
+		$ticket_id = $this->create_paypal_ticket_basic( $post_id, 3, [
 			'post_status' => 'draft',
 			'meta_input'  => [
 				'total_sales' => 0,

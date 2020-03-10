@@ -2,6 +2,7 @@
 
 namespace Tribe\Tickets\Test\REST\V1;
 
+use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
@@ -22,7 +23,7 @@ class AttendeeArchiveByOrderStatusCest extends BaseRestCest {
 		$rsvp_yes_attendee             = $this->create_attendee_for_ticket( $rsvp_ticket, $rsvp_post, [ 'rsvp_status' => 'yes' ] );
 		$rsvp_no_attendee              = $this->create_attendee_for_ticket( $rsvp_ticket, $rsvp_post, [ 'rsvp_status' => 'no' ] );
 		$paypal_post                   = $I->havePostInDatabase();
-		$paypal_ticket                 = $this->create_paypal_ticket( $paypal_post, 2 );
+		$paypal_ticket                 = $this->create_paypal_ticket_basic( $paypal_post, 2 );
 		$paypal_completed_attendee     = $this->create_attendee_for_ticket( $paypal_ticket, $paypal_post, [ '_tribe_tpp_status' => 'completed' ] );
 		$paypal_not_completed_attendee = $this->create_attendee_for_ticket( $paypal_ticket, $paypal_post, [ '_tribe_tpp_status' => 'not-completed' ] );
 		$paypal_pending_attendee       = $this->create_attendee_for_ticket( $paypal_ticket, $paypal_post, [ '_tribe_tpp_status' => 'pending-payment' ] );

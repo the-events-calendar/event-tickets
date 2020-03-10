@@ -401,8 +401,9 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	protected function add_ticket_post_data( &$data ) {
 		$ticket_id   = $data['id'];
 		$ticket_post = get_post( $ticket_id );
+		$ticket      = $this->get_ticket_object( $ticket_id );
 
-		if ( ! $ticket_post instanceof WP_Post ) {
+		if ( ! $ticket_post instanceof WP_Post || $ticket instanceof WP_Error ) {
 			throw new Tribe__REST__Exceptions__Exception(
 				$this->messages->get_message( 'error-ticket-post' ),
 				'error-ticket-post',
@@ -419,8 +420,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$data['date_utc']     = $ticket_post->post_date_gmt;
 		$data['modified']     = $ticket_post->post_modified;
 		$data['modified_utc'] = $ticket_post->post_modified_gmt;
-		$data['title']        = $ticket_post->post_title;
-		$data['description']  = $ticket_post->post_excerpt;
+		$data['title']        = $ticket->name;
+		$data['description']  = $ticket->description;
 
 	}
 
