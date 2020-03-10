@@ -46,10 +46,9 @@ class ContentDescription extends WPTestCase {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
-		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 10, [
-			'meta_input' => [
-				'_tribe_ticket_show_description' => false, // Setting false to show description.
-			],
+		$ticket_id = $this->create_paypal_ticket( $event_id, 10, [
+			// Setting false to show description.
+			'show_description' => false,
 		] );
 
 		$ticket    = tribe( 'tickets.commerce.paypal' )->get_ticket( $event_id, $ticket_id );
@@ -61,7 +60,21 @@ class ContentDescription extends WPTestCase {
 		];
 
 		$html     = $template->template( $this->partial_path, $args, false );
-		$this->assertMatchesSnapshot( $html );
+
+		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+
+		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferencesPrefixes( [
+			'post-',
+			'tribe-block-tickets-item-',
+			'tribe__details__content--',
+			'tribe-tickets-attendees-list-optout-',
+		] );
+		$driver->setTimeDependentAttributes( [
+			'data-ticket-id',
+		] );
+
+		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
 	/**
@@ -71,10 +84,9 @@ class ContentDescription extends WPTestCase {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
-		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 10, [
-			'meta_input' => [
-				'_tribe_ticket_show_description' => true, // Setting to show description.
-			],
+		$ticket_id = $this->create_paypal_ticket( $event_id, 10, [
+			// Setting to show description.
+			'show_description' => true,
 		] );
 
 		$ticket    = tribe( 'tickets.commerce.paypal' )->get_ticket( $event_id, $ticket_id );
@@ -86,7 +98,21 @@ class ContentDescription extends WPTestCase {
 		];
 
 		$html     = $template->template( $this->partial_path, $args, false );
-		$this->assertMatchesSnapshot( $html );
+
+		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+
+		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferencesPrefixes( [
+			'post-',
+			'tribe-block-tickets-item-',
+			'tribe__details__content--',
+			'tribe-tickets-attendees-list-optout-',
+		] );
+		$driver->setTimeDependentAttributes( [
+			'data-ticket-id',
+		] );
+
+		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
 	/**
@@ -96,10 +122,9 @@ class ContentDescription extends WPTestCase {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
-		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 10, [
-			'meta_input' => [
-				'_tribe_ticket_show_description' => true, // Setting to show description.
-			],
+		$ticket_id = $this->create_paypal_ticket( $event_id, 10, [
+			// Setting to show description.
+			'show_description' => true,
 		] );
 
 		$ticket    = tribe( 'tickets.commerce.paypal' )->get_ticket( $event_id, $ticket_id );
@@ -111,6 +136,20 @@ class ContentDescription extends WPTestCase {
 		];
 
 		$html     = $template->template( $this->partial_path, $args, false );
-		$this->assertMatchesSnapshot( $html );
+
+		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+
+		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferencesPrefixes( [
+			'post-',
+			'tribe-block-tickets-item-',
+			'tribe__details__content--',
+			'tribe-tickets-attendees-list-optout-',
+		] );
+		$driver->setTimeDependentAttributes( [
+			'data-ticket-id',
+		] );
+
+		$this->assertMatchesSnapshot( $html, $driver );
 	}
 }

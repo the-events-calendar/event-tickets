@@ -62,7 +62,21 @@ class Extra extends WPTestCase {
 		];
 
 		$html     = $template->template( $this->partial_path, $args, false );
-		$this->assertMatchesSnapshot( $html );
+
+		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+
+		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferencesPrefixes( [
+			'post-',
+			'tribe-block-tickets-item-',
+			'tribe__details__content--',
+			'tribe-tickets-attendees-list-optout-',
+		] );
+		$driver->setTimeDependentAttributes( [
+			'data-ticket-id',
+		] );
+
+		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
 	/**
@@ -88,7 +102,21 @@ class Extra extends WPTestCase {
 		];
 
 		$html     = $template->template( $this->partial_path, $args, false );
-		$this->assertMatchesSnapshot( $html );
+
+		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+
+		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferencesPrefixes( [
+			'post-',
+			'tribe-block-tickets-item-',
+			'tribe__details__content--',
+			'tribe-tickets-attendees-list-optout-',
+		] );
+		$driver->setTimeDependentAttributes( [
+			'data-ticket-id',
+		] );
+
+		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
 	/**
@@ -114,7 +142,21 @@ class Extra extends WPTestCase {
 		];
 
 		$html     = $template->template( $this->partial_path, $args, false );
-		$this->assertMatchesSnapshot( $html );
+
+		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+
+		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferencesPrefixes( [
+			'post-',
+			'tribe-block-tickets-item-',
+			'tribe__details__content--',
+			'tribe-tickets-attendees-list-optout-',
+		] );
+		$driver->setTimeDependentAttributes( [
+			'data-ticket-id',
+		] );
+
+		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
 	/**
@@ -140,7 +182,21 @@ class Extra extends WPTestCase {
 		];
 
 		$html     = $template->template( $this->partial_path, $args, false );
-		$this->assertMatchesSnapshot( $html );
+
+		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+
+		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferencesPrefixes( [
+			'post-',
+			'tribe-block-tickets-item-',
+			'tribe__details__content--',
+			'tribe-tickets-attendees-list-optout-',
+		] );
+		$driver->setTimeDependentAttributes( [
+			'data-ticket-id',
+		] );
+
+		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
 }
