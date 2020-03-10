@@ -44,11 +44,11 @@ $threshold = $settings_manager::get_option( 'ticket-display-tickets-left-thresho
 /**
  * Overwrites the threshold to display "# tickets left".
  *
- * @param int   $threshold Stock threshold to trigger display of "# tickets left"
+ * @since 4.11.1
+ *
  * @param array $data      Ticket data.
  * @param int   $post_id   WP_Post/Event ID.
- *
- * @since 4.11.1
+ * @param int   $threshold Stock threshold to trigger display of "# tickets left"
  */
 $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_threshold', $threshold, tribe_events_get_ticket_event( $ticket ) ) );
 ?>
@@ -133,9 +133,11 @@ $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_th
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>
-						<?php $readable_amount = tribe_tickets_get_readable_amount( $available, null, false );
+						<?php
+						$readable_amount = tribe_tickets_get_readable_amount( $available, null, false );
 
-						if ( - 1 !== $available && ( 0 === $threshold || $available <= $threshold ) ) : ?>
+						if ( - 1 !== $available && ( 0 === $threshold || $available <= $threshold ) ) :
+						?>
 							<span class="tribe-tickets-remaining">
 							<?php
 							echo sprintf( esc_html__( '%1$s available', 'event-tickets' ), '<span class="available-stock" data-product-id="' . esc_attr( $ticket->ID ) . '">' . esc_html( $readable_amount ) . '</span>' );
@@ -163,7 +165,7 @@ $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_th
 							type="submit"
 							class="tpp-submit tribe-button"
 						>
-							<?php esc_html_e( 'Buy now', 'event-tickets' );?>
+							<?php esc_html_e( 'Buy now', 'event-tickets' ); ?>
 						</button>
 					<?php endif; ?>
 				</td>
@@ -173,7 +175,7 @@ $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_th
 			/**
 			 * Allows injection of HTML after an Tribe Commerce ticket table row
 			 *
-			 * @var WP_Post $post The post object the ticket is attached to.
+			 * @var WP_Post                       $post The post object the ticket is attached to.
 			 * @var Tribe__Tickets__Ticket_Object $ticket
 			 */
 			do_action( 'event_tickets_tpp_after_ticket_row', tribe_events_get_ticket_event( $ticket->id ), $ticket );
