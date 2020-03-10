@@ -12,7 +12,8 @@
  *
  * @since   4.9
  * @since   4.11.1 Corrected amount of available/remaining tickets. Removed unused `data-remaining` attribute.
- * @since   TBD The input's "max" is now always set and remove unused `data-remaining` attribute.
+ * @since   TBD The input's "max" is now always set. The unused `data-remaining` attribute actually didn't get removed
+ *                 in the previous change, above, so it got removed in this version.
  *
  * @version TBD
  */
