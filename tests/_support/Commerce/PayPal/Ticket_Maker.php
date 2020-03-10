@@ -210,10 +210,11 @@ trait Ticket_Maker {
 				// Handle passed sales.
 				$sales = $ticket['meta_input']['total_sales'] ?? 0;
 
-				if ( ! empty( $sales ) ) {
+				/* This does not do the right thing
+				if ( empty( $sales ) ) {
 					$cap          -= $sales;
 					$global_sales += $sales;
-				}
+				}*/
 
 				if ( $global_qty < $cap ) {
 					// ensure we have enough cap to cover all tickets

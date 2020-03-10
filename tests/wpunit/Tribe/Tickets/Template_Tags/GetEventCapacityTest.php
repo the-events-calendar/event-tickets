@@ -52,24 +52,21 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @covers tribe_get_event_capacity()
 	 */
-	 public function it_should_get_the_correct_stock_for_an_event() {
-		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
-			$this->event_id,
+	public function it_should_get_the_correct_stock_for_an_event() {
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
 			[
-				[
-					'meta_input' => [
-						'_capacity'                     => 20,
-						'total_sales'                   => 5,
-					],
+				'meta_input' => [
+					'_capacity'   => 20,
+					'total_sales' => 5,
 				],
-				[
-					'meta_input' => [
-						'_capacity'                     => 30,
-						'total_sales'                   => 5,
-					],
+			],
+			[
+				'meta_input' => [
+					'_capacity'   => 30,
+					'total_sales' => 5,
 				],
-			]
-		);
+			],
+		] );
 
 		$test_data = tribe_get_event_capacity( $this->event_id );
 
@@ -82,56 +79,48 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @covers tribe_get_event_capacity()
 	 */
-	 public function it_should_get_the_correct_stock_for_an_event_with_unlimited_tickets() {
-		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
-			$this->event_id,
+	public function it_should_get_the_correct_stock_for_an_event_with_unlimited_tickets() {
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
 			[
-				[
-					'meta_input' => [
-						'_capacity'                     => 20,
-						'total_sales'                   => 5,
-					],
+				'meta_input' => [
+					'_capacity'   => 20,
+					'total_sales' => 5,
 				],
-				[
-					'meta_input' => [
-						'_capacity'                     => -1,
-						'total_sales'                   => 5,
-					],
+			],
+			[
+				'meta_input' => [
+					'_capacity'   => - 1,
+					'total_sales' => 5,
 				],
-			]
-		);
+			],
+		] );
 
 		$test_data = tribe_get_event_capacity( $this->event_id );
 
-		$this->assertEquals( -1, $test_data, 'Incorrect total capacity on global stock tickets.' );
+		$this->assertEquals( - 1, $test_data, 'Incorrect total capacity on global stock tickets.' );
 	}
 
 	/**
 	 * @test
-	 * It should get the correct stock for an event with shared tickets.
+	 * It should get the correct stock for an event with shared tickets with no sales.
 	 *
 	 * @covers tribe_get_event_capacity()
 	 */
-	 public function it_should_get_the_correct_stock_for_an_event_with_shared_tickets() {
-		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
-			$this->event_id,
+	public function it_should_get_the_correct_stock_for_an_event_with_shared_tickets_with_no_sales() {
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
 			[
-				[
-					'meta_input' => [
-						'_capacity'                     => 20,
-						'total_sales'                   => 5,
-						Global_Stock::TICKET_STOCK_MODE => Global_Stock::CAPPED_STOCK_MODE,
-					],
+				'meta_input' => [
+					'_capacity'                     => 20,
+					Global_Stock::TICKET_STOCK_MODE => Global_Stock::CAPPED_STOCK_MODE,
 				],
-				[
-					'meta_input' => [
-						'_capacity'                     => 30,
-						'total_sales'                   => 5,
-						Global_Stock::TICKET_STOCK_MODE => Global_Stock::GLOBAL_STOCK_MODE,
-					],
+			],
+			[
+				'meta_input' => [
+					'_capacity'                     => 30,
+					Global_Stock::TICKET_STOCK_MODE => Global_Stock::GLOBAL_STOCK_MODE,
 				],
-			]
-		);
+			],
+		] );
 
 		$test_data = tribe_get_event_capacity( $this->event_id );
 
@@ -140,29 +129,81 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * It should get the correct stock for an event with mixed tickets.
+	 * It should get the correct stock for an event with shared tickets with sales.
 	 *
 	 * @covers tribe_get_event_capacity()
 	 */
-	 public function it_should_get_the_correct_stock_for_an_event_with_mixed_shared_and_own() {
-		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
-			$this->event_id,
+	public function it_should_get_the_correct_stock_for_an_event_with_shared_tickets_with_sales() {
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
 			[
-				[
-					'meta_input' => [
-						'_capacity'                     => 20,
-						'total_sales'                   => 5,
-					],
+				'meta_input' => [
+					'_capacity'                     => 20,
+					'total_sales'                   => 5,
+					Global_Stock::TICKET_STOCK_MODE => Global_Stock::CAPPED_STOCK_MODE,
 				],
-				[
-					'meta_input' => [
-						'_capacity'                     => 30,
-						'total_sales'                   => 5,
-						Global_Stock::TICKET_STOCK_MODE => Global_Stock::GLOBAL_STOCK_MODE,
-					],
+			],
+			[
+				'meta_input' => [
+					'_capacity'                     => 30,
+					'total_sales'                   => 5,
+					Global_Stock::TICKET_STOCK_MODE => Global_Stock::GLOBAL_STOCK_MODE,
 				],
-			]
-		);
+			],
+		] );
+
+		$test_data = tribe_get_event_capacity( $this->event_id );
+
+		$this->assertEquals( 30, $test_data, 'Incorrect total capacity on global stock tickets.' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct stock for an event with mixed tickets with no sales.
+	 *
+	 * @covers tribe_get_event_capacity()
+	 */
+	public function it_should_get_the_correct_stock_for_an_event_with_mixed_shared_and_own_with_no_sales() {
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
+			[
+				'meta_input' => [
+					'_capacity' => 20,
+				],
+			],
+			[
+				'meta_input' => [
+					'_capacity'                     => 30,
+					Global_Stock::TICKET_STOCK_MODE => Global_Stock::GLOBAL_STOCK_MODE,
+				],
+			],
+		] );
+
+		$test_data = tribe_get_event_capacity( $this->event_id );
+
+		$this->assertEquals( 50, $test_data, 'Incorrect total capacity on global stock tickets.' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct stock for an event with mixed tickets with sales.
+	 *
+	 * @covers tribe_get_event_capacity()
+	 */
+	public function it_should_get_the_correct_stock_for_an_event_with_mixed_shared_and_own_with_sales() {
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
+			[
+				'meta_input' => [
+					'_capacity'   => 20,
+					'total_sales' => 5,
+				],
+			],
+			[
+				'meta_input' => [
+					'_capacity'                     => 30,
+					'total_sales'                   => 5,
+					Global_Stock::TICKET_STOCK_MODE => Global_Stock::GLOBAL_STOCK_MODE,
+				],
+			],
+		] );
 
 		$test_data = tribe_get_event_capacity( $this->event_id );
 
@@ -175,29 +216,26 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @covers tribe_get_event_capacity()
 	 */
-	 public function it_should_get_the_correct_stock_for_an_event_with_mixed_shared_and_unlimited() {
-		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
-			$this->event_id,
+	public function it_should_get_the_correct_stock_for_an_event_with_mixed_shared_and_unlimited() {
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
 			[
-				[
-					'meta_input' => [
-						'_capacity'                     => -1,
-						'total_sales'                   => 5,
-					],
+				'meta_input' => [
+					'_capacity'   => - 1,
+					'total_sales' => 5,
 				],
-				[
-					'meta_input' => [
-						'_capacity'                     => 30,
-						'total_sales'                   => 5,
-						Global_Stock::TICKET_STOCK_MODE => Global_Stock::GLOBAL_STOCK_MODE,
-					],
+			],
+			[
+				'meta_input' => [
+					'_capacity'                     => 30,
+					'total_sales'                   => 5,
+					Global_Stock::TICKET_STOCK_MODE => Global_Stock::GLOBAL_STOCK_MODE,
 				],
-			]
-		);
+			],
+		] );
 
 		$test_data = tribe_get_event_capacity( $this->event_id );
 
-		$this->assertEquals( -1, $test_data, 'Incorrect total capacity on global stock tickets.' );
+		$this->assertEquals( - 1, $test_data, 'Incorrect total capacity on global stock tickets.' );
 	}
 
 	/**
@@ -206,18 +244,14 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @covers tribe_get_event_capacity()
 	 */
-	 public function it_should_get_the_correct_stock_for_an_event_with_rsvps() {
-
-		$rsvp_ticket_id = $this->create_rsvp_ticket(
-			$this->event_id,
-			[
-				'meta_input' => [
-					'_capacity'                     => 30,
-					'total_sales'                   => 5,
-					Global_Stock::TICKET_STOCK_MODE => Global_Stock::GLOBAL_STOCK_MODE,
-				],
-			]
-		);
+	public function it_should_get_the_correct_stock_for_an_event_with_rsvps() {
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $this->event_id, [
+			'meta_input' => [
+				'_capacity'                     => 30,
+				'total_sales'                   => 5,
+				Global_Stock::TICKET_STOCK_MODE => Global_Stock::GLOBAL_STOCK_MODE,
+			],
+		] );
 
 		$test_data = tribe_get_event_capacity( $this->event_id );
 
@@ -230,56 +264,75 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @covers tribe_get_event_capacity()
 	 */
-	 public function it_should_get_the_correct_stock_for_an_event_with_unlimited_rsvps() {
-
-		$rsvp_ticket_id = $this->create_rsvp_ticket(
-			$this->event_id,
-			[
-				'meta_input' => [
-					'_capacity'                     => -1,
-					'total_sales'                   => 5,
-				],
-			]
-		);
+	public function it_should_get_the_correct_stock_for_an_event_with_unlimited_rsvps() {
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $this->event_id, [
+			'meta_input' => [
+				'_capacity'   => - 1,
+				'total_sales' => 5,
+			],
+		] );
 
 		$test_data = tribe_get_event_capacity( $this->event_id );
 
-		$this->assertEquals( -1, $test_data, 'Incorrect total capacity on global stock tickets.' );
+		$this->assertEquals( - 1, $test_data, 'Incorrect total capacity on global stock tickets.' );
 	}
 
 	/**
 	 * @test
-	 * It should get the correct stock for an event with mixed tickets.
+	 * It should get the correct stock for an event with mixed tickets with no sales.
 	 *
 	 * @covers tribe_get_event_capacity()
 	 */
-	 public function it_should_get_the_correct_stock_for_an_event_with_mixed_tickets_and_rsvps() {
-		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
-			$this->event_id,
+	public function it_should_get_the_correct_stock_for_an_event_with_mixed_tickets_and_rsvps_with_no_sales() {
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
 			[
-				[
-					'meta_input' => [
-						'_capacity'                     => 30,
-						'total_sales'                   => 5,
-						Global_Stock::TICKET_STOCK_MODE => Global_Stock::GLOBAL_STOCK_MODE,
-					],
+				'meta_input' => [
+					'_capacity'                     => 30,
+					Global_Stock::TICKET_STOCK_MODE => Global_Stock::GLOBAL_STOCK_MODE,
 				],
-			]
-		);
+			],
+		] );
 
-		$rsvp_ticket_id = $this->create_rsvp_ticket(
-			$this->event_id,
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $this->event_id, [
+			'meta_input' => [
+				'_capacity'                     => 30,
+				Global_Stock::TICKET_STOCK_MODE => Global_Stock::GLOBAL_STOCK_MODE,
+			],
+		] );
+
+		$test_data = tribe_get_event_capacity( $this->event_id );
+
+		$this->assertEquals( 60, $test_data, 'Incorrect total capacity on global stock tickets.' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct stock for an event with mixed tickets with sales.
+	 *
+	 * @covers tribe_get_event_capacity()
+	 */
+	public function it_should_get_the_correct_stock_for_an_event_with_mixed_tickets_and_rsvps_with_sales() {
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
 			[
 				'meta_input' => [
 					'_capacity'                     => 30,
 					'total_sales'                   => 5,
 					Global_Stock::TICKET_STOCK_MODE => Global_Stock::GLOBAL_STOCK_MODE,
 				],
-			]
-		);
+			],
+		] );
+
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $this->event_id, [
+			'meta_input' => [
+				'_capacity'                     => 30,
+				'total_sales'                   => 5,
+				Global_Stock::TICKET_STOCK_MODE => Global_Stock::GLOBAL_STOCK_MODE,
+			],
+		] );
 
 		$test_data = tribe_get_event_capacity( $this->event_id );
 
+		// RSVP does not reduce capacity, tickets do in this function.
 		$this->assertEquals( 60, $test_data, 'Incorrect total capacity on global stock tickets.' );
 	}
 }
