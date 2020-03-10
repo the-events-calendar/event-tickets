@@ -117,15 +117,24 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.11.4] TBD =
+= [4.11.4] 2020-02-26 =
 
 * Fix - Update file path in the docblocks of the templates for The Events Calendar new views. [ET-713]
 * Fix - Hitting enter in the tickets form changes ticket quantities. [ETP-43]
 * Fix - Respect the page title and fix redirection for the custom attendee registration page. [ETP-156]
 * Fix - Ensure we're loading the common full styles when required. This fixes missing styles problems from the tickets block. [ET-725]
-* Fix - Adjust JavaScript to have the "Attendee Registration" page working in IE11. [ETP-220]
-* Fix - Add theme compatibility for the AR Modal by adding theme identifying body CSS classes. [ETP-156]
+* Fix - Adjust JavaScript to have the Attendee Registration page working in IE11. [ETP-220]
+* Fix - Add theme compatibility for the Attendee Registration Modal by adding theme identifying body CSS classes. [ETP-156]
 * Fix - When Classic Editor plugin is activated, prevent ticket availability AJAX errors by temporarily disabling the AJAX requests. [ET-730]
+* Fix - When not using blocks, the scripts to obtain an RSVP ticket now work even if required Attendee Information (from Event Tickets Plus) is missing upon initial attempt to submit the form. [ET-686]
+* Fix - Prevent The Events Calendar plugin from overriding the Attendee Registration page content when Events Page is set as site home page. [ET-732]
+* Fix - Use the default `datepickerFormat` value if the option hasn't been set yet when setting up validation rules for the ticket add/edit admin form. [ET-727]
+* Fix - Resolve problems where "View My Tickets" (or RSVPs) page would be blank or not load. [ET-735]
+* Fix - Use accessibility CSS classes for more screen reader text elements. [ET-725]
+* Fix - Save initial shared capacity value for global stock correctly on first Tribe Commerce ticket so availability shows as expected instead of zero. [ET-737]
+* Tweak - Added filters: `tribe_tickets_theme_compatibility_registered`
+* Tweak - Changed views: `blocks/tickets/content-description`, `blocks/tickets/extra`, `blocks/tickets/quantity-add`, `blocks/tickets/quantity-remove`, `registration-js/content`, `v2/day/event/cost`, `v2/list/event/cost`, `v2/map/event-cards/event-card/actions/cost`, `v2/month/calendar-body/day/calendar-events/calendar-event/tooltip/cost`, `v2/month/mobile-events/mobile-day/mobile-event/cost`, `v2/photo/event/cost`, `v2/week/grid-body/events-day/event/tooltip/cost`, `v2/week/mobile-events/day/event/cost`
+* Language - 0 new strings added, 76 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.11.3.1] 2020-02-11 =
 

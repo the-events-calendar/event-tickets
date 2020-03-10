@@ -227,7 +227,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 * @param array $classes List of classes to filter
-	 * @deprecated TBD
+	 * @deprecated 4.11.4
 	 *
 	 * @return array $classes
 	 */
@@ -240,7 +240,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 * @param string $theme Name of template from WP_Theme->Template, defaults to current active template
-	 * @deprecated TBD
+	 * @deprecated 4.11.4
 	 *
 	 * @return mixed
 	 */
@@ -262,7 +262,10 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		}
 
 		if ( $this->is_main_loop( $query ) ) {
-			// on the_content, load our attendee info page
+			// Prevent the TEC v2 page override from preventing our content override.
+			add_filter( 'tribe_events_views_v2_should_hijack_page_template', '__return_false' );
+
+			// Load Attendee Registration view for the content.
 			add_filter( 'the_content', array( tribe( 'tickets.attendee_registration.view' ), 'display_attendee_registration_page' ) );
 		}
 	}

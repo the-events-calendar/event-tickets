@@ -361,55 +361,40 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		tribe_assets(
 			$main,
-			array(
-				array(
+			[
+				[
 					'event-tickets-tpp-css',
 					'tpp.css',
-				),
-				array(
-					'event-tickets-tpp-js',
-					'tpp.js',
-					array(
-						'jquery',
-					),
-				),
-			),
+				],
+			],
 			null,
-			array(
-				'localize' => array(
-					'event-tickets-tpp-js',
-					'tribe_tickets_tpp_strings',
-					array(
-						'attendee' => _x( 'Attendee %1$s', 'Attendee number', 'event-tickets' ),
-					),
-				),
-			)
+			[]
 		);
 
 		// Admin assets
 		tribe_assets(
 			$main,
-			array(
-				array(
+			[
+				[
 					'event-tickets-tpp-admin-js',
 					'tpp-admin.js',
-					array(
+					[
 						'jquery',
 						'underscore',
-					),
-				),
-			),
+					],
+				],
+			],
 			'admin_enqueue_scripts',
-			array(
+			[
 				'conditionals' => 'is_admin',
-				'localize' => (object) array(
+				'localize' => (object) [
 					'name' => 'tribe_tickets_tpp_admin_strings',
-					'data' => array(
+					'data' => [
 						'complete'   => tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'label', 'complete' ),
 						'incomplete' => tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'label', 'incomplete' ),
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 
@@ -426,7 +411,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		wp_enqueue_style( 'event-tickets-tpp-css' );
-		wp_enqueue_script( 'event-tickets-tpp-js' );
 
 		// Check for override stylesheet
 		$user_stylesheet_url = Tribe__Templates::locate_stylesheet( 'tribe-events/tickets/tpp.css' );
@@ -1297,13 +1281,17 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				// Makes sure it's an Int after this point
 				$data['event_capacity'] = (int) $data['event_capacity'];
 
+				$tickets_handler->remove_hooks();
+
 				// We need to update event post meta - if we've set a global stock
 				$event_stock->enable();
-				$event_stock->set_stock_level( $data['event_capacity'] );
+				$event_stock->set_stock_level( $data['event_capacity'], true );
 
 				// Update Event capacity
 				update_post_meta( $post_id, $tickets_handler->key_capacity, $data['event_capacity'] );
 				update_post_meta( $post_id, $event_stock::GLOBAL_STOCK_ENABLED, 1 );
+
+				$tickets_handler->add_hooks();
 			}
 		} else {
 			// If the Global Stock is configured we pull it from the Event

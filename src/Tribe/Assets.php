@@ -220,7 +220,7 @@ class Tribe__Tickets__Assets {
 	 * styles we need for our tickets blocks, AR, etc.
 	 * If V2 are active, we respect the style option.
 	 *
-	 * @since  TBD
+	 * @since  4.11.4
 	 *
 	 * @return bool
 	 */

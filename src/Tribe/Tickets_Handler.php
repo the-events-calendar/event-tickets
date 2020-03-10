@@ -80,8 +80,20 @@ class Tribe__Tickets__Tickets_Handler {
 	 *    Class constructor.
 	 */
 	public function __construct() {
-		$main = Tribe__Tickets__Main::instance();
 		$this->unlimited_term = __( 'Unlimited', 'event-tickets' );
+
+		$this->add_hooks();
+
+		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
+	}
+
+	/**
+	 * Add hooks for saving/meta.
+	 *
+	 * @since 4.11.4
+	 */
+	public function add_hooks() {
+		$main = Tribe__Tickets__Main::instance();
 
 		foreach ( $main->post_types() as $post_type ) {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_post' ) );
@@ -92,8 +104,25 @@ class Tribe__Tickets__Tickets_Handler {
 
 		add_filter( 'updated_postmeta', array( $this, 'update_meta_date' ), 15, 4 );
 		add_action( 'wp_insert_post', array( $this, 'update_start_date' ), 15, 3 );
+	}
 
-		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
+	/**
+	 * Remove hooks for saving/meta.
+	 *
+	 * @since 4.11.4
+	 */
+	public function remove_hooks() {
+		$main = Tribe__Tickets__Main::instance();
+
+		foreach ( $main->post_types() as $post_type ) {
+			remove_action( 'save_post_' . $post_type, array( $this, 'save_post' ) );
+		}
+
+		remove_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15 );
+		remove_filter( 'updated_postmeta', array( $this, 'update_shared_tickets_capacity' ), 15 );
+
+		remove_filter( 'updated_postmeta', array( $this, 'update_meta_date' ), 15 );
+		remove_action( 'wp_insert_post', array( $this, 'update_start_date' ), 15 );
 	}
 
 	/**

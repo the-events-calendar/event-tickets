@@ -297,7 +297,7 @@ window.tribe.tickets.registration = {};
 		}
 
 		$.each( meta, function( metaIndex, ticket ) {
-			const $currentContainers = $containers.filter( '[data-ticket-id="' + ticket.ticket_id + ']' );
+			const $currentContainers = $containers.filter( '[data-ticket-id="' + ticket.ticket_id + '"]' );
 
 			if ( ! $currentContainers.length ) {
 				return;
