@@ -198,6 +198,62 @@ trait CapacityMatrix {
 	}
 
 	/**
+	 * Get matrix as arguments when using dataProvider with non-cest tests.
+	 *
+	 * @param array $matrix Original matrix data.
+	 *
+	 * @return array Matrix data returning with each within their own array.
+	 */
+	protected function _get_matrix_as_args( $matrix ) {
+		$matrix_as_args = [];
+
+		foreach ( $matrix as $matrix_item ) {
+			// Setup as an item in an array so it is all passed as first argument by dataProvider.
+			$matrix_as_args[] = [
+				$matrix_item,
+			];
+		}
+
+		return $matrix_as_args;
+	}
+
+	/**
+	 * Get ticket matrix variations.
+	 *
+	 * @return array List of variations.
+	 */
+	public function _get_ticket_matrix_as_args() {
+		return $this->_get_matrix_as_args( $this->_get_ticket_matrix() );
+	}
+
+	/**
+	 * Get ticket update matrix variations.
+	 *
+	 * @return array List of variations.
+	 */
+	public function _get_ticket_update_matrix_as_args() {
+		return $this->_get_matrix_as_args( $this->_get_ticket_update_matrix() );
+	}
+
+	/**
+	 * Get RSVP matrix variations.
+	 *
+	 * @return array List of variations.
+	 */
+	public function _get_rsvp_matrix_as_args() {
+		return $this->_get_matrix_as_args( $this->_get_rsvp_matrix() );
+	}
+
+	/**
+	 * Get RSVP update matrix variations.
+	 *
+	 * @return array List of variations.
+	 */
+	public function _get_rsvp_update_matrix_as_args() {
+		return $this->_get_matrix_as_args( $this->_get_rsvp_update_matrix() );
+	}
+
+	/**
 	 * Prepare HTML so it can be used in snapshot testing.
 	 *
 	 * @param string $html HTML to prepare.

@@ -1,16 +1,18 @@
 <?php
+
 namespace Tribe\Tickets\Partials\Tickets\PayPal;
 
 use Codeception\TestCase\WPTestCase;
 use Spatie\Snapshots\MatchesSnapshots;
+use tad\FunctionMocker\FunctionMocker as Test;
+use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
-
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Traits\CapacityMatrix;
 use Tribe__Tickets__Data_API as Data_API;
-use tad\FunctionMocker\FunctionMocker as Test;
 
 class TicketTest extends WPTestCase {
+
 	use MatchesSnapshots;
 	use With_Post_Remapping;
 
@@ -66,77 +68,114 @@ class TicketTest extends WPTestCase {
 	}
 
 	/**
-	 * @dataProvider _get_ticket_matrix
-	 * @test
+	 * Setup ticket.
+	 *
+	 * @param int   $post_id   Post ID.
+	 * @param array $matrix    Matrix data to setup with.
+	 * @param array $overrides Overrides for ticket data.
+	 *
+	 * @return int Ticket ID.
 	 */
-	public function test_should_render_ticket_block( $matrix ) {
-		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal_provider */
-		$paypal_provider = tribe( 'tickets.commerce.paypal' );
+	protected function setup_ticket( $post_id, $matrix, $overrides = [] ) {
+		$mode           = $matrix['ticket']['mode'] ?? null;
+		$capacity       = $matrix['ticket']['capacity'] ?? null;
+		$event_capacity = $matrix['ticket']['event_capacity'] ?? null;
 
-		$post_id  = $this->make_event();
+		unset( $matrix['ticket'], $matrix['provider'] );
 
-		$overrides = [
-			'meta_input' => [
-				'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '-10 minutes' ) ),
-				'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '+2 months' ) ),
+		$overrides = array_merge( [
+			'tribe-ticket' => [
+				'mode'     => $mode,
+				'capacity' => $capacity,
 			],
-		];
+		], $overrides );
 
-		if ( isset( $matrix['mode'] ) ) {
-			$matrix['_global_stock_mode'];
+		if ( null !== $event_capacity ) {
+			$overrides['tribe-ticket']['event_capacity'] = $event_capacity;
 		}
 
-		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1, $overrides );
+		foreach ( $matrix as $arg => $value ) {
+			if ( 0 !== strpos( $arg, 'ticket_' ) ) {
+				$arg = 'ticket_' . $arg;
+			}
 
-		codecept_debug( var_export( $matrix, true ) );
+			$overrides[ $arg ] = $value;
+		}
 
-		$template  = tribe( 'tickets.editor.template' );
-		$event     = $this->get_mock_event( 'events/single/1.json' );
-		$event_id  = $event->ID;
-		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 10, [
-			'meta_input' => [
-				'_tribe_ticket_show_description' => false, // Setting false to show description.
-			],
-		] );
-
-		$ticket    = tribe( 'tickets.commerce.paypal' )->get_ticket( $event_id, $ticket_id );
-
-		$args    = [
-			'ticket'   => $ticket,
-			'post_id'  => $event_id,
-			'is_modal' => false,
-		];
-
-		$html     = $template->template( $this->partial_path, $args, false );
-		$this->assertMatchesSnapshot( $html );
+		return $this->create_paypal_ticket( $post_id, 5, $overrides );
 	}
 
 	/**
-	 * @dataProvider _get_ticket_update_matrix
+	 * @dataProvider _get_ticket_matrix_as_args
+	 * @test
+	 */
+	public function test_should_render_ticket_block( $matrix ) {
+		/** @var \Tribe__Tickets__Tickets $provider_class */
+		$provider_class = tribe( $this->get_paypal_ticket_provider() );
+
+		$post_id = $this->factory()->post->create();
+
+		$ticket_id = $this->setup_ticket( $post_id, $matrix );
+
+		/** @var \Tribe__Tickets__Main $tickets_main */
+		$tickets_main = tribe( 'tickets.main' );
+		$tickets_view = $tickets_main->tickets_view();
+
+		$html = $tickets_view->get_tickets_block( get_post( $post_id ) );
+
+		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+
+		$driver->setTolerableDifferences( [ $ticket_id, $post_id ] );
+		$driver->setTolerableDifferencesPrefixes( [
+			'post-',
+			'tribe-block-tickets-item-',
+			'tribe__details__content--',
+			'tribe-tickets-attendees-list-optout-',
+		] );
+		$driver->setTimeDependentAttributes( [
+			'data-ticket-id',
+		] );
+
+		$this->assertMatchesSnapshot( $html, $driver );
+	}
+
+	/**
+	 * @dataProvider _get_ticket_update_matrix_as_args
 	 * @test
 	 */
 	public function test_should_render_ticket_block_after_update( $matrix ) {
-		// @todo Do the setup for $matrix.
-		// $matrix['from'] and $matrix['to'] have the variations (from = create, to = update).
+		/** @var \Tribe__Tickets__Tickets $provider_class */
+		$provider_class = tribe( $this->get_paypal_ticket_provider() );
 
-		$template  = tribe( 'tickets.editor.template' );
-		$event     = $this->get_mock_event( 'events/single/1.json' );
-		$event_id  = $event->ID;
-		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 10, [
-			'meta_input' => [
-				'_tribe_ticket_show_description' => false, // Setting false to show description.
-			],
+		$post_id = $this->factory()->post->create();
+
+		// Create ticket.
+		$ticket_id = $this->setup_ticket( $post_id, $matrix['from'] );
+
+		// Update ticket.
+		$this->setup_ticket( $post_id, $matrix['to'], [
+			'ticket_id' => $ticket_id,
 		] );
 
-		$ticket    = tribe( 'tickets.commerce.paypal' )->get_ticket( $event_id, $ticket_id );
+		/** @var \Tribe__Tickets__Main $tickets_main */
+		$tickets_main = tribe( 'tickets.main' );
+		$tickets_view = $tickets_main->tickets_view();
 
-		$args    = [
-			'ticket'   => $ticket,
-			'post_id'  => $event_id,
-			'is_modal' => false,
-		];
+		$html = $tickets_view->get_tickets_block( get_post( $post_id ) );
 
-		$html     = $template->template( $this->partial_path, $args, false );
-		$this->assertMatchesSnapshot( $html );
+		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+
+		$driver->setTolerableDifferences( [ $ticket_id, $post_id ] );
+		$driver->setTolerableDifferencesPrefixes( [
+			'post-',
+			'tribe-block-tickets-item-',
+			'tribe__details__content--',
+			'tribe-tickets-attendees-list-optout-',
+		] );
+		$driver->setTimeDependentAttributes( [
+			'data-ticket-id',
+		] );
+
+		$this->assertMatchesSnapshot( $html, $driver );
 	}
 }
