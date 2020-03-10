@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Tickets\Test\REST\V1;
+namespace Tribe\Tickets\Test\Testcases\REST\V1;
 
 use Restv1Tester;
 
@@ -32,6 +32,11 @@ class BaseRestCest {
 	/**
 	 * @var string
 	 */
+	protected $rsvps_url;
+
+	/**
+	 * @var string
+	 */
 	protected $attendees_url;
 
 	/**
@@ -59,12 +64,18 @@ class BaseRestCest {
 	 */
 	protected $tec_rest_url;
 
+	/**
+	 * @var string
+	 */
+	protected $name;
+
 	public function _before( Restv1Tester $I ) {
 		$this->site_url          = $I->grabSiteUrl();
 		$this->wp_rest_url       = $this->site_url . '/wp-json/wp/v2/';
 		$this->rest_url          = $this->site_url . '/wp-json/tribe/tickets/v1/';
 		$this->tec_rest_url      = $this->site_url . '/wp-json/tribe/events/v1/';
 		$this->tickets_url       = $this->rest_url . 'tickets';
+		$this->rsvps_url         = $this->wp_rest_url . 'tribe_rsvp_tickets';
 		$this->attendees_url     = $this->rest_url . 'attendees';
 		$this->cart_url          = $this->rest_url . 'cart';
 		$this->documentation_url = $this->rest_url . 'doc';
@@ -87,7 +98,6 @@ class BaseRestCest {
 
 			return $modules;
 		} );
-
 
 		tribe_update_option( 'ticket-enabled-post-types', [ 'post', 'tribe_events' ] );
 
@@ -136,5 +146,23 @@ class BaseRestCest {
 			'tickets'  => $tickets,
 			'post_id'  => $post_id,
 		] );
+	}
+
+	/**
+	 * Set name for snapshot.
+	 *
+	 * @param string $name Method identifier for snapshot.
+	 */
+	protected function setName( $name ) {
+		$this->name = $name;
+	}
+
+	/**
+	 * Get name for snapshot.
+	 *
+	 * @return string Method identifier for snapshot.
+	 */
+	protected function getName() {
+		return $this->name;
 	}
 }
