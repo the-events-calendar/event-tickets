@@ -22,16 +22,16 @@
 	<input name="provider" value="Tribe__Tickets__Commerce__PayPal__Main" class="tribe-tickets-provider" type="hidden">
 									<div
 	id="tribe-block-tickets-item-123"
-	 class="tribe-tickets__item post-123 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="15"
+	 class="tribe-tickets__item post-123 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="442"
 	data-available="false"
 	data-has-shared-cap="false"
 	
 >
 	
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__item__content__title"  >
-		Test ticket for 14</div>
+		Test PayPal ticket for 441</div>
 	<div id="tribe__details__content--123" class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__item__details__content">
-	Test ticket description for 14</div>
+	Test PayPal ticket description for 441</div>
 <div class="tribe-tickets__item__extra">
 	<div
 	class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__item__extra__price"
@@ -47,8 +47,7 @@
 			<div
 	class="tribe-common-b3 tribe-tickets__item__extra__available"
 >
-			<span class="tribe-tickets__item__extra__available__quantity">100</span>
-available	</div>
+			Unlimited	</div>
 				<div class="tribe-tickets__item__details__summary">
 			<button
 				type="button"
