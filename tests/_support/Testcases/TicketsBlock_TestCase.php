@@ -1,23 +1,19 @@
 <?php
 
-namespace Tribe\Tickets\Test\Testcases\REST\V1;
+namespace Tribe\Tickets\Test\Testcases;
 
 use Codeception\TestCase\WPTestCase;
 use Spatie\Snapshots\MatchesSnapshots;
 use tad\FunctionMocker\FunctionMocker as Test;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
-use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
-use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Traits\CapacityMatrix;
 use Tribe__Tickets__Data_API as Data_API;
 
 class TicketsBlock_TestCase extends WPTestCase {
 
 	use MatchesSnapshots;
-	use With_Post_Remapping;
 
 	use CapacityMatrix;
-	use PayPal_Ticket_Maker;
 
 	protected $partial_path = 'blocks/tickets';
 
@@ -49,6 +45,15 @@ class TicketsBlock_TestCase extends WPTestCase {
 	}
 
 	/**
+	 * Get list of providers for test.
+	 *
+	 * @return array List of providers.
+	 */
+	protected function get_providers() {
+		return [];
+	}
+
+	/**
 	 * Create ticket.
 	 *
 	 * @param int   $post_id   The ID of the post this ticket should be related to.
@@ -58,7 +63,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 	 * @return int Ticket ID.
 	 */
 	protected function create_block_ticket( $post_id, $price, $overrides ) {
-		return $this->create_paypal_ticket( $post_id, 5, $overrides );
+		return 1;
 	}
 
 	/**

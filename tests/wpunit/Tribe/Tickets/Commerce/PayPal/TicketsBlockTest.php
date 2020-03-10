@@ -2,9 +2,12 @@
 
 namespace Tribe\Tickets\Commerce\PayPal;
 
-use Tribe\Tickets\Test\Testcases\REST\V1\TicketsBlock_TestCase;
+use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
+use Tribe\Tickets\Test\Testcases\TicketsBlock_TestCase;
 
 class TicketsBlockTest extends TicketsBlock_TestCase {
+
+	use PayPal_Ticket_Maker;
 
 	/**
 	 * {@inheritdoc}
@@ -44,6 +47,7 @@ class TicketsBlockTest extends TicketsBlock_TestCase {
 	protected function create_block_ticket( $post_id, $price, $overrides ) {
 		$this->factory()->post->create();
 		$this->factory()->post->create();
+
 		return $this->create_paypal_ticket( $post_id, 5, $overrides );
 	}
 }

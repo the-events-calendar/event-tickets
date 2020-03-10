@@ -52,13 +52,7 @@ trait Ticket_Maker {
 	 * @return array An array of the generated ticket post IDs.
 	 */
 	protected function create_many_paypal_tickets( $count, $post_id, array $overrides = [] ) {
-		$ticket_data = [];
-
-		for ( $i = 0; $i < $count; $i ++ ) {
-			$ticket_data[] = $overrides;
-		}
-
-		return $this->create_distinct_tickets( $this->get_paypal_ticket_provider(), $post_id, $ticket_data );
+		return $this->create_many_tickets( $this->get_paypal_ticket_provider(), $count, $post_id, $overrides );
 	}
 
 	/**
