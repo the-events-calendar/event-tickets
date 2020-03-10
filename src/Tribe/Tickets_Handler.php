@@ -1190,10 +1190,10 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$max_at_a_time = $this->get_max_qty_allowed_to_be_added_to_cart_at_a_time( $ticket );
 
-		// The actual ticket stock, not limited by Max At A Time
+		// The actual ticket stock, not limited by Max At A Time.
 		$stock_available = $ticket->available();
 
-		// change Unlimited to Max At A Time
+		// Change Unlimited to Max At A Time.
 		if ( - 1 === $stock_available ) {
 			$stock_available = $max_at_a_time;
 		}
@@ -1233,7 +1233,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket object.
 	 *
 	 * @return int
 	 */
