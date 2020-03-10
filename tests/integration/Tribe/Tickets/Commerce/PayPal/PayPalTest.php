@@ -103,8 +103,8 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 		$total_in_cart     = number_format( $ticket_1_gross + $ticket_2_gross, 2, '.', '' );
 
 		// we have a ticket product in the database
-		$ticket_1_id = $this->create_paypal_ticket( $event_1_id, $ticket_1_price );
-		$ticket_2_id = $this->create_paypal_ticket( $event_2_id, $ticket_2_price );
+		$ticket_1_id = $this->create_paypal_ticket_basic( $event_1_id, $ticket_1_price );
+		$ticket_2_id = $this->create_paypal_ticket_basic( $event_2_id, $ticket_2_price );
 
 		$body = <<<EOT
 SUCCESS
@@ -248,7 +248,7 @@ EOT;
 		} elseif ( 'stock' === $type ) {
 			$ticket_id = $this->make_stock_ticket( $stock, $post_id );
 		} else {
-			$ticket_id = $this->create_paypal_ticket( $post_id, 2, [
+			$ticket_id = $this->create_paypal_ticket_basic( $post_id, 2, [
 				'meta_input' => [
 					'total_sales' => $sales,
 					'_stock'      => $stock,
@@ -318,7 +318,7 @@ EOT;
 	}
 
 	protected function make_sales_ticket( $sales, $post_id ) {
-		return $this->create_paypal_ticket( $post_id, 2, [
+		return $this->create_paypal_ticket_basic( $post_id, 2, [
 			'meta_input' => [
 				'total_sales' => $sales,
 				'_stock'      => $sales + 10,
@@ -327,7 +327,7 @@ EOT;
 	}
 
 	protected function make_stock_ticket( $stock, $post_id ) {
-		return $this->create_paypal_ticket( $post_id, 2, [
+		return $this->create_paypal_ticket_basic( $post_id, 2, [
 			'meta_input' => [
 				'_stock' => $stock,
 			],

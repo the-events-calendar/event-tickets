@@ -53,7 +53,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers tribe_get_event_capacity()
 	 */
 	 public function it_should_get_the_correct_stock_for_an_event() {
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			[
 				[
@@ -83,7 +83,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers tribe_get_event_capacity()
 	 */
 	 public function it_should_get_the_correct_stock_for_an_event_with_unlimited_tickets() {
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			[
 				[
@@ -113,7 +113,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers tribe_get_event_capacity()
 	 */
 	 public function it_should_get_the_correct_stock_for_an_event_with_shared_tickets() {
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			[
 				[
@@ -145,7 +145,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers tribe_get_event_capacity()
 	 */
 	 public function it_should_get_the_correct_stock_for_an_event_with_mixed_shared_and_own() {
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			[
 				[
@@ -176,7 +176,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers tribe_get_event_capacity()
 	 */
 	 public function it_should_get_the_correct_stock_for_an_event_with_mixed_shared_and_unlimited() {
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			[
 				[
@@ -254,7 +254,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers tribe_get_event_capacity()
 	 */
 	 public function it_should_get_the_correct_stock_for_an_event_with_mixed_tickets_and_rsvps() {
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			[
 				[

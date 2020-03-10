@@ -46,7 +46,7 @@ class FooterTest extends WPTestCase {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
-		$tickets   = $this->create_many_paypal_tickets( 3, $event_id );
+		$tickets   = $this->create_many_paypal_tickets_basic( 3, $event_id );
 
 		$args    = [
 			'tickets'  => $tickets,
@@ -67,7 +67,7 @@ class FooterTest extends WPTestCase {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
-		$tickets   = $this->create_many_paypal_tickets( 3, $event_id );
+		$tickets   = $this->create_many_paypal_tickets_basic( 3, $event_id );
 
 		$args    = [
 			'tickets'  => $tickets,

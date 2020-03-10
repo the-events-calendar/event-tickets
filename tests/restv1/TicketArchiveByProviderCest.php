@@ -27,8 +27,8 @@ class TicketArchiveByProviderCest extends BaseRestCest {
 			return $acc;
 		}, [] );
 		$paypal   = array_reduce( $post_ids, function ( $acc, $post_id ) {
-			$acc[] = $this->create_paypal_ticket( $post_id, 3 );
-			$acc[] = $this->create_paypal_ticket( $post_id, 3 );
+			$acc[] = $this->create_paypal_ticket_basic( $post_id, 3 );
+			$acc[] = $this->create_paypal_ticket_basic( $post_id, 3 );
 
 			return $acc;
 		}, [] );

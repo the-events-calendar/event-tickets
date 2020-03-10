@@ -60,7 +60,7 @@ class ExtraAvailable extends WPTestCase {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
-		$ticket_id = $this->create_paypal_ticket( $event_id, 10 );
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 10 );
 		$ticket    = tribe( 'tickets.commerce.paypal' )->get_ticket( $event_id, $ticket_id );
 
 		$args    = [
@@ -83,7 +83,7 @@ class ExtraAvailable extends WPTestCase {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
-		$ticket_id = $this->create_paypal_ticket( $event_id, 10 );
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 10 );
 		$ticket    = tribe( 'tickets.commerce.paypal' )->get_ticket( $event_id, $ticket_id );
 
 		$args    = [
@@ -107,7 +107,7 @@ class ExtraAvailable extends WPTestCase {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
-		$ticket_id = $this->create_paypal_ticket( $event_id, 10, [
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 10, [
 			'meta_input' => [
 				'_capacity'   => -1, // Setting as unlimited.
 			],

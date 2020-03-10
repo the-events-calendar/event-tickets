@@ -61,7 +61,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function get_post_totals_should_return_the_correct_number_of_tickets_initially() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -88,7 +88,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function get_post_totals_should_return_the_correct_number_of_pending_tickets_initially() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -115,7 +115,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function get_post_totals_should_return_the_correct_total_capacity_initially() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -142,7 +142,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function get_post_totals_should_return_the_correct_total_stock_initially() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -169,7 +169,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function get_post_totals_should_return_the_correct_total_sales_initially() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -195,7 +195,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
 	public function get_post_totals_should_detect_unlimited_tickets_appropriately_initially() {
-		$ticket_id = $this->create_paypal_ticket(
+		$ticket_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -221,7 +221,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function get_post_totals_should_not_detect_unlimited_tickets_if_there_are_none() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -249,7 +249,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function get_post_totals_should_return_the_correct_number_of_tickets_on_add() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -268,7 +268,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $this->num_tickets, $test_data['tickets'], 'Incorrect number of tickets.' );
 
 		// Add another ticket.
-		$ticket_b_id = $this->create_paypal_ticket(
+		$ticket_b_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -293,7 +293,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function get_post_totals_should_return_the_correct_number_of_pending_tickets_on_add() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -310,7 +310,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
 		// Add another ticket.
-		$ticket_b_id = $this->create_paypal_ticket(
+		$ticket_b_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -334,7 +334,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function get_post_totals_should_return_the_correct_total_capacity_on_add() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -351,7 +351,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
 		// Add another ticket.
-		$ticket_b_id = $this->create_paypal_ticket(
+		$ticket_b_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -376,7 +376,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function get_post_totals_should_return_the_correct_total_stock_on_add() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -393,7 +393,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
 		// Add another ticket.
-		$ticket_b_id = $this->create_paypal_ticket(
+		$ticket_b_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -417,7 +417,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function get_post_totals_should_return_the_correct_total_sales_on_add() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -432,7 +432,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
 		// Add another ticket.
-		$ticket_b_id = $this->create_paypal_ticket(
+		$ticket_b_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -455,7 +455,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
 	public function get_post_totals_should_detect_unlimited_tickets_appropriately_on_add() {
-		$ticket_id = $this->create_paypal_ticket(
+		$ticket_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -470,7 +470,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertFalse( $test_data['has_unlimited'], 'Incorrect detection of nonexisting unlimited tickets.' );
 
-		$ticket_id_b = $this->create_paypal_ticket(
+		$ticket_id_b = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -500,7 +500,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function get_post_totals_should_return_the_correct_number_of_tickets_on_delete() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -532,7 +532,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function get_post_totals_should_return_the_correct_number_of_pending_tickets_on_delete() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -564,7 +564,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function get_post_totals_should_return_the_correct_total_capacity_on_delete() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -596,7 +596,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function get_post_totals_should_return_the_correct_total_stock_on_delete() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -628,7 +628,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function get_post_totals_should_return_the_correct_total_sales_on_delete() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -659,7 +659,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
 	public function get_post_totals_should_detect_unlimited_tickets_appropriately_on_delete() {
-		$ticket_id = $this->create_paypal_ticket(
+		$ticket_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -670,7 +670,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$ticket_id_b = $this->create_paypal_ticket(
+		$ticket_id_b = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -698,7 +698,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
 	public function get_post_totals_should_not_detect_deleted_unlimited_tickets() {
-		$ticket_id = $this->create_paypal_ticket(
+		$ticket_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -709,7 +709,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$ticket_id_b = $this->create_paypal_ticket(
+		$ticket_id_b = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -736,7 +736,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
 	public function it_should_detect_shared_ticket_for_an_event_with_global_stock() {
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			[
 				[
@@ -777,7 +777,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
 	public function it_should_handle_capacity_on_tickets_with_global_stock() {
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			[
 				[
@@ -809,7 +809,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
 	public function it_should_handle_stock_on_tickets_with_global_stock() {
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			[
 				[
@@ -841,7 +841,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
 	public function it_should_handle_sales_on_tickets_with_global_stock() {
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			[
 				[
@@ -873,7 +873,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
 	public function it_should_handle_unlimited_tickets_in_the_presence_of_global_stock() {
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			[
 				[
@@ -915,7 +915,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	 public function get_post_totals_should_return_the_correct_number_of_tickets_initially_with_tickets_and_rsvps() {
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[
@@ -927,7 +927,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$rsvp_ids = $this->create_many_paypal_tickets(
+		$rsvp_ids = $this->create_many_paypal_tickets_basic(
 			$this->num_tickets,
 			$this->event_id,
 			[

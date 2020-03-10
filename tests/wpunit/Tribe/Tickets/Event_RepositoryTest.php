@@ -123,7 +123,7 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 			$this_event_id              = $this->factory()->event->create();
 			$this->events[ $this_name ] = $this_event_id;
 			$events[]                   = $this_event_id;
-			$this->create_paypal_ticket( $this_event_id, $cost );
+			$this->create_paypal_ticket_basic( $this_event_id, $cost );
 		}
 
 		// Create an RSVP ticket for another event.

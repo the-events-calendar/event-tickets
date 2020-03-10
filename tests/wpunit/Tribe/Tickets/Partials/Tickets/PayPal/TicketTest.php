@@ -70,12 +70,30 @@ class TicketTest extends WPTestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block( $matrix ) {
-		// @todo Do the setup for $matrix.
+		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal_provider */
+		$paypal_provider = tribe( 'tickets.commerce.paypal' );
+
+		$post_id  = $this->make_event();
+
+		$overrides = [
+			'meta_input' => [
+				'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '-10 minutes' ) ),
+				'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '+2 months' ) ),
+			],
+		];
+
+		if ( isset( $matrix['mode'] ) ) {
+			$matrix['_global_stock_mode'];
+		}
+
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1, $overrides );
+
+		codecept_debug( var_export( $matrix, true ) );
 
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
-		$ticket_id = $this->create_paypal_ticket( $event_id, 10, [
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 10, [
 			'meta_input' => [
 				'_tribe_ticket_show_description' => false, // Setting false to show description.
 			],
@@ -104,7 +122,7 @@ class TicketTest extends WPTestCase {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
-		$ticket_id = $this->create_paypal_ticket( $event_id, 10, [
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 10, [
 			'meta_input' => [
 				'_tribe_ticket_show_description' => false, // Setting false to show description.
 			],

@@ -46,7 +46,7 @@ class Extra extends WPTestCase {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
-		$ticket_id = $this->create_paypal_ticket( $event_id, 10, [
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 10, [
 			'meta_input' => [
 				'_tribe_ticket_show_description' => true, // Setting to show description.
 			],
@@ -72,7 +72,7 @@ class Extra extends WPTestCase {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
-		$ticket_id = $this->create_paypal_ticket( $event_id, 10, [
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 10, [
 			'meta_input' => [
 				'_tribe_ticket_show_description' => false, // Setting false to show description.
 			],
@@ -98,7 +98,7 @@ class Extra extends WPTestCase {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
-		$ticket_id = $this->create_paypal_ticket( $event_id, 10, [
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 10, [
 			'meta_input' => [
 				'_tribe_ticket_show_description' => true, // Setting to show description.
 			],
@@ -124,7 +124,7 @@ class Extra extends WPTestCase {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
-		$ticket_id = $this->create_paypal_ticket( $event_id, 10, [
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 10, [
 			'meta_input' => [
 				'_tribe_ticket_show_description' => true, // Setting to show description.
 			],

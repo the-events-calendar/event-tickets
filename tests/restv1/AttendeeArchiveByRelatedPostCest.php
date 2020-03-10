@@ -57,7 +57,7 @@ class AttendeeArchiveByRelatedPostCest extends BaseRestCest {
 		$I->generate_nonce_for_role( 'editor' );
 
 		$paypal_post_id   = $I->havePostInDatabase();
-		$paypal_ticket_id = $this->create_paypal_ticket( $paypal_post_id, 2 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $paypal_post_id, 2 );
 		$paypal_attendees = $this->create_many_attendees_for_ticket( 2, $paypal_ticket_id, $paypal_post_id );
 		$rsvp_post_id     = $I->havePostInDatabase();
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $rsvp_post_id );
@@ -105,7 +105,7 @@ class AttendeeArchiveByRelatedPostCest extends BaseRestCest {
 		$I->generate_nonce_for_role( 'editor' );
 
 		$paypal_post_id   = $I->havePostInDatabase();
-		$paypal_ticket_id = $this->create_paypal_ticket( $paypal_post_id, 2 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $paypal_post_id, 2 );
 		$paypal_attendees = $this->create_many_attendees_for_ticket( 2, $paypal_ticket_id, $paypal_post_id );
 		$rsvp_post_id     = $I->havePostInDatabase();
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $rsvp_post_id );
@@ -153,7 +153,7 @@ class AttendeeArchiveByRelatedPostCest extends BaseRestCest {
 		$I->generate_nonce_for_role( 'editor' );
 
 		$paypal_post_id   = $I->havePostInDatabase();
-		$paypal_ticket_id = $this->create_paypal_ticket( $paypal_post_id, 2 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $paypal_post_id, 2 );
 		$paypal_attendees = $this->create_many_attendees_for_ticket( 2, $paypal_ticket_id, $paypal_post_id );
 		$rsvp_post_id     = $I->havePostInDatabase();
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $rsvp_post_id );
@@ -206,7 +206,7 @@ class AttendeeArchiveByRelatedPostCest extends BaseRestCest {
 		$I->generate_nonce_for_role( 'editor' );
 
 		$paypal_post_id   = $I->havePostInDatabase();
-		$paypal_ticket_id = $this->create_paypal_ticket( $paypal_post_id, 2 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $paypal_post_id, 2 );
 		$paypal_attendees = $this->create_many_attendees_for_ticket( 2, $paypal_ticket_id, $paypal_post_id );
 		$rsvp_post_id     = $I->havePostInDatabase();
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $rsvp_post_id );
