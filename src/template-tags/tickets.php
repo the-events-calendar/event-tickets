@@ -1094,7 +1094,7 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 		}
 
 		// If either is unlimited, it's all unlimited.
-		if ( -1 === $tickets_cap || -1 === $rsvp_cap) {
+		if ( -1 === $tickets_cap || -1 === $rsvp_cap ) {
 			return -1;
 		}
 

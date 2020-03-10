@@ -35,7 +35,7 @@ class TicketArchiveSearchCest extends BaseRestCest {
 
 			$title       = $titles[ $i ];
 			$description = $descriptions[ $i ++ ];
-			$tickets[]   = $w_title[ $title ] = $w_description[ $description ] = $this->create_paypal_ticket( $post_id, 1, [
+			$tickets[]   = $w_title[ $title ] = $w_description[ $description ] = $this->create_paypal_ticket_basic( $post_id, 1, [
 				'post_title'   => $title,
 				'post_excerpt' => $description
 			] );

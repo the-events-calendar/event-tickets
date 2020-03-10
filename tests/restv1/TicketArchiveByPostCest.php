@@ -23,7 +23,7 @@ class TicketArchiveByPostCest extends BaseRestCest {
 		$post_ids = $I->haveManyPostsInDatabase( 3 );
 		$tickets  = array_reduce( $post_ids, function ( $acc, $post_id ) {
 			$acc[] = $this->create_rsvp_ticket( $post_id );
-			$acc[] = $this->create_paypal_ticket( $post_id, 3 );
+			$acc[] = $this->create_paypal_ticket_basic( $post_id, 3 );
 
 			return $acc;
 		}, [] );

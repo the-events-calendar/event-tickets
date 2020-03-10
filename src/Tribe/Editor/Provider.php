@@ -12,7 +12,7 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	 *
 	 */
 	public function register() {
-		// Register these all the time - as we now use them in most of the tempaltes, blocks or otherwise.
+		// Register these all the time - as we now use them in most of the templates, blocks or otherwise.
 		$this->container->singleton( 'tickets.editor.template', 'Tribe__Tickets__Editor__Template' );
 		$this->container->singleton( 'tickets.editor.blocks.tickets', 'Tribe__Tickets__Editor__Blocks__Tickets' );
 		$this->container->singleton( 'tickets.editor.configuration', 'Tribe__Tickets__Editor__Configuration', array( 'hook' ) );

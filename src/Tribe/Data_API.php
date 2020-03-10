@@ -188,7 +188,7 @@ class Tribe__Tickets__Data_API {
 	 *
 	 * @param $post_id
 	 *
-	 * @return bool/object
+	 * @return bool|object
 	 */
 	public function get_ticket_provider( $post_id ) {
 		$services = $this->detect_by_id( $post_id );
