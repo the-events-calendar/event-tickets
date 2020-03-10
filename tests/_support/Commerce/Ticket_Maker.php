@@ -38,6 +38,8 @@ trait Ticket_Maker {
 			],
 		];
 
+		$data = array_merge( $data, $overrides );
+
 		return $provider_class->ticket_add( $post_id, $data );
 	}
 

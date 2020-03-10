@@ -45,6 +45,6 @@ class TicketsBlockTest extends TicketsBlock_TestCase {
 	 * @return int Ticket ID.
 	 */
 	protected function create_block_ticket( $post_id, $price, $overrides ) {
-		return $this->create_paypal_ticket( $post_id, 5, $overrides );
+		return $this->create_paypal_ticket( $post_id, $price, $overrides );
 	}
 }

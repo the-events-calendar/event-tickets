@@ -12,10 +12,7 @@ use Tribe__Tickets__Data_API as Data_API;
 class TicketsBlock_TestCase extends WPTestCase {
 
 	use MatchesSnapshots;
-
 	use CapacityMatrix;
-
-	protected $partial_path = 'blocks/tickets';
 
 	/**
 	 * {@inheritdoc}
