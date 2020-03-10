@@ -132,6 +132,12 @@ class TicketsBlock_TestCase extends WPTestCase {
 			'data-ticket-id',
 		] );
 
+		// OMG this is bugged.
+		$html = preg_replace( '/post-\d+/', 'post-123', $html );
+		$html = preg_replace( '/tribe-block-tickets-item-\d+/', 'tribe-block-tickets-item-123', $html );
+		$html = preg_replace( '/tribe__details__content--\d+/', 'tribe__details__content--123', $html );
+		$html = preg_replace( '/tribe-tickets-attendees-list-optout-\d+/', 'tribe-tickets-attendees-list-optout-123', $html );
+
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
@@ -168,6 +174,12 @@ class TicketsBlock_TestCase extends WPTestCase {
 		$driver->setTimeDependentAttributes( [
 			'data-ticket-id',
 		] );
+
+		// OMG this is bugged.
+		$html = preg_replace( '/post-\d+/', 'post-123', $html );
+		$html = preg_replace( '/tribe-block-tickets-item-\d+/', 'tribe-block-tickets-item-123', $html );
+		$html = preg_replace( '/tribe__details__content--\d+/', 'tribe__details__content--123', $html );
+		$html = preg_replace( '/tribe-tickets-attendees-list-optout-\d+/', 'tribe-tickets-attendees-list-optout-123', $html );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}

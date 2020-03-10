@@ -21,8 +21,8 @@
 
 	<input name="provider" value="Tribe__Tickets__Commerce__PayPal__Main" class="tribe-tickets-provider" type="hidden">
 									<div
-	id="tribe-block-tickets-item-38"
-	 class="tribe-tickets__item post-38 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="38"
+	id="tribe-block-tickets-item-123"
+	 class="tribe-tickets__item post-123 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="38"
 	data-available="false"
 	data-has-shared-cap="false"
 	
@@ -30,7 +30,7 @@
 	
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__item__content__title"  >
 		Test ticket for 37</div>
-	<div id="tribe__details__content--38" class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__item__details__content">
+	<div id="tribe__details__content--123" class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__item__details__content">
 	Test ticket description for 37</div>
 <div class="tribe-tickets__item__extra">
 	<div
@@ -53,7 +53,7 @@ available	</div>
 			<button
 				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--more"
-				aria-controls="tribe__details__content--38"
+				aria-controls="tribe__details__content--123"
 				tabindex="0"
 			>
 				<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description.</span>
@@ -61,7 +61,7 @@ available	</div>
 			<button
 				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--less"
-				aria-controls="tribe__details__content--38"
+				aria-controls="tribe__details__content--123"
 				tabindex="0"
 			>
 				<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
@@ -80,19 +80,19 @@ available	</div>
 			<div class="tribe-common-form-control-checkbox tribe-tickets-attendees-list-optout--wrapper">
 	<label
 		class="tribe-common-form-control-checkbox__label"
-		for="tribe-tickets-attendees-list-optout-38"
+		for="tribe-tickets-attendees-list-optout-123"
 	>
 		<input
 			class="tribe-common-form-control-checkbox__input tribe-tickets__item__optout"
-			id="tribe-tickets-attendees-list-optout-38"
+			id="tribe-tickets-attendees-list-optout-123"
 			name="attendee[optout]"
 			type="checkbox"
 			 checked=\'checked\'		/>Hide my attendee data from public view.</label>
 </div>
 	</div>
 								<div
-	id="tribe-block-tickets-item-39"
-	 class="tribe-tickets__item post-39 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="39"
+	id="tribe-block-tickets-item-123"
+	 class="tribe-tickets__item post-123 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="39"
 	data-available="false"
 	data-has-shared-cap="false"
 	
@@ -100,7 +100,7 @@ available	</div>
 	
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__item__content__title"  >
 		Test ticket for 37</div>
-	<div id="tribe__details__content--39" class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__item__details__content">
+	<div id="tribe__details__content--123" class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__item__details__content">
 	Test ticket description for 37</div>
 <div class="tribe-tickets__item__extra">
 	<div
@@ -123,7 +123,7 @@ available	</div>
 			<button
 				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--more"
-				aria-controls="tribe__details__content--39"
+				aria-controls="tribe__details__content--123"
 				tabindex="0"
 			>
 				<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description.</span>
@@ -131,7 +131,7 @@ available	</div>
 			<button
 				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--less"
-				aria-controls="tribe__details__content--39"
+				aria-controls="tribe__details__content--123"
 				tabindex="0"
 			>
 				<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
@@ -150,11 +150,11 @@ available	</div>
 			<div class="tribe-common-form-control-checkbox tribe-tickets-attendees-list-optout--wrapper">
 	<label
 		class="tribe-common-form-control-checkbox__label"
-		for="tribe-tickets-attendees-list-optout-39"
+		for="tribe-tickets-attendees-list-optout-123"
 	>
 		<input
 			class="tribe-common-form-control-checkbox__input tribe-tickets__item__optout"
-			id="tribe-tickets-attendees-list-optout-39"
+			id="tribe-tickets-attendees-list-optout-123"
 			name="attendee[optout]"
 			type="checkbox"
 			 checked=\'checked\'		/>Hide my attendee data from public view.</label>
