@@ -106,7 +106,17 @@ class TicketsBlock_TestCase extends WPTestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block( $matrix ) {
-		$post_id = $this->factory()->post->create();
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		// Get first key.
+		$provider = key( $this->get_providers() );
+
+		$post_id = $this->factory()->post->create( [
+			'meta_input' => [
+				$tickets_handler->key_provider_field => $provider,
+			],
+		] );
 
 		$ticket_id = $this->setup_block_ticket( $post_id, $matrix );
 
@@ -135,6 +145,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 		$html = preg_replace( '/tribe__details__content--\d+/', 'tribe__details__content--123', $html );
 		$html = preg_replace( '/tribe-tickets-attendees-list-optout-\d+/', 'tribe-tickets-attendees-list-optout-123', $html );
 
+		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
@@ -143,7 +154,17 @@ class TicketsBlock_TestCase extends WPTestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block_after_update( $matrix ) {
-		$post_id = $this->factory()->post->create();
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		// Get first key.
+		$provider = key( $this->get_providers() );
+
+		$post_id = $this->factory()->post->create( [
+			'meta_input' => [
+				$tickets_handler->key_provider_field => $provider,
+			],
+		] );
 
 		// Create ticket.
 		$ticket_id = $this->setup_block_ticket( $post_id, $matrix['from'] );
@@ -178,6 +199,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 		$html = preg_replace( '/tribe__details__content--\d+/', 'tribe__details__content--123', $html );
 		$html = preg_replace( '/tribe-tickets-attendees-list-optout-\d+/', 'tribe-tickets-attendees-list-optout-123', $html );
 
+		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 }

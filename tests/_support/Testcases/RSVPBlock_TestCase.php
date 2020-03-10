@@ -77,6 +77,7 @@ class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 		// Remove pesky SVG.
 		$html = preg_replace( '/<svg.*<\/svg>/Ums', '', $html );
 
+		$this->assertNotEmpty( $html, 'RSVP block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
@@ -114,6 +115,7 @@ class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 		// Remove pesky SVG.
 		$html = preg_replace( '/<svg.*<\/svg>/Ums', '', $html );
 
+		$this->assertNotEmpty( $html, 'RSVP block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 }
