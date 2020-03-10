@@ -46,6 +46,10 @@ class Content extends WPTestCase {
 		$driver   = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferencesPrefixes( [
+			'quantity_',
+		] );
+
 		$driver->setTimeDependentAttributes( [
 			'data-rsvp-id',
 			'data-product-id'
@@ -83,6 +87,10 @@ class Content extends WPTestCase {
 		$driver   = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferencesPrefixes( [
+			'quantity_',
+		] );
+
 		$driver->setTimeDependentAttributes( [
 			'data-rsvp-id',
 			'data-product-id',
@@ -117,6 +125,10 @@ class Content extends WPTestCase {
 		$driver   = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferencesPrefixes( [
+			'quantity_',
+		] );
+
 		$driver->setTimeDependentAttributes( [
 			'data-rsvp-id',
 			'data-product-id'
