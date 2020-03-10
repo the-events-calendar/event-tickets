@@ -46,7 +46,7 @@ class FetchTest extends \Codeception\TestCase\WPTestCase {
 
 		$post_id = $this->factory->post->create();
 
-		$paypal_ticket_ids = $this->create_many_paypal_tickets( 5, $post_id );
+		$paypal_ticket_ids = $this->create_many_paypal_tickets_basic( 5, $post_id );
 		$rsvp_ticket_ids   = $this->create_many_rsvp_tickets( 5, $post_id );
 
 		$ticket_ids = $tickets->get_ids();
@@ -65,7 +65,7 @@ class FetchTest extends \Codeception\TestCase\WPTestCase {
 
 		$post_id = $this->factory->post->create();
 
-		$paypal_ticket_ids = $this->create_many_paypal_tickets( 5, $post_id );
+		$paypal_ticket_ids = $this->create_many_paypal_tickets_basic( 5, $post_id );
 		$rsvp_ticket_ids   = $this->create_many_rsvp_tickets( 5, $post_id );
 
 		$ticket_ids = $tickets->get_ids();
@@ -84,7 +84,7 @@ class FetchTest extends \Codeception\TestCase\WPTestCase {
 
 		$post_id = $this->factory->post->create();
 
-		$paypal_ticket_ids = $this->create_many_paypal_tickets( 5, $post_id );
+		$paypal_ticket_ids = $this->create_many_paypal_tickets_basic( 5, $post_id );
 		$rsvp_ticket_ids   = $this->create_many_rsvp_tickets( 5, $post_id );
 
 		$ticket_ids = $tickets->get_ids();

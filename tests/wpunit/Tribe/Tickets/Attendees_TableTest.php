@@ -62,14 +62,14 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$post_id  = $this->factory->post->create();
 		$post_id2 = $this->factory->post->create();
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1 );
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
 
 		$paypal_attendee_ids = $this->create_many_attendees_for_ticket( 25, $paypal_ticket_id, $post_id );
 		$rsvp_attendee_ids   = $this->create_many_attendees_for_ticket( 25, $rsvp_ticket_id, $post_id );
 
 		// Add other ticket/attendees for another post so we can confirm we only returned the correct attendees.
-		$paypal_ticket_id2 = $this->create_paypal_ticket( $post_id2, 1 );
+		$paypal_ticket_id2 = $this->create_paypal_ticket_basic( $post_id2, 1 );
 		$rsvp_ticket_id2   = $this->create_rsvp_ticket( $post_id2 );
 
 		$paypal_attendee_ids2 = $this->create_many_attendees_for_ticket( 25, $paypal_ticket_id2, $post_id2 );
@@ -106,7 +106,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$rsvp_name_meta_key = tribe( 'tickets.rsvp' )->full_name;
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1 );
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
 
 		$paypal_attendee_ids = $this->create_many_attendees_for_ticket( 5, $paypal_ticket_id, $post_id );
@@ -141,7 +141,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$rsvp_email_meta_key = tribe( 'tickets.rsvp' )->email;
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1 );
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
 
 		$paypal_attendee_ids = $this->create_many_attendees_for_ticket( 5, $paypal_ticket_id, $post_id );
@@ -174,7 +174,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 	public function should_allow_fetching_attendees_by_ticket_search() {
 		$post_id = $this->factory->post->create();
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1 );
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
 
 		$paypal_attendee_ids = $this->create_many_attendees_for_ticket( 5, $paypal_ticket_id, $post_id );
@@ -205,7 +205,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$rsvp_security_code_meta_key = tribe( 'tickets.rsvp' )->security_code;
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1 );
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
 
 		$paypal_attendee_ids = $this->create_many_attendees_for_ticket( 5, $paypal_ticket_id, $post_id );
@@ -240,7 +240,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$rsvp_user_meta_key = tribe( 'tickets.rsvp' )->attendee_user_id;
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1 );
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
 
 		$paypal_attendee_ids = $this->create_many_attendees_for_ticket( 5, $paypal_ticket_id, $post_id );
@@ -275,7 +275,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$rsvp_user_meta_key = tribe( 'tickets.rsvp' )->attendee_user_id;
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1 );
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
 
 		$paypal_attendee_ids = $this->create_many_attendees_for_ticket( 5, $paypal_ticket_id, $post_id );
