@@ -3,6 +3,7 @@ namespace Tribe\Tickets\Partials\Tickets;
 
 use Codeception\TestCase\WPTestCase;
 use Spatie\Snapshots\MatchesSnapshots;
+use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
 
 class SubmitTest extends WPTestCase {

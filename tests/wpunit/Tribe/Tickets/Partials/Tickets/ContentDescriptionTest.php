@@ -3,6 +3,7 @@ namespace Tribe\Tickets\Partials\Tickets;
 
 use Codeception\TestCase\WPTestCase;
 use Spatie\Snapshots\MatchesSnapshots;
+use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
 
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
