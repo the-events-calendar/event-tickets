@@ -889,7 +889,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers tribe_tickets_get_capacity
 	 */
 
-	public function it_not_get_capacity_from_an_event() {
+	public function it_should_not_get_capacity_from_an_event() {
 		$event_id = $this->factory()->event->create();
 		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
 			'meta_input' => [
@@ -901,7 +901,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$capacity = tribe_tickets_get_capacity( $event_id );
 
-		$this->assertEquals( 10, $capacity, 'tribe_tickets_get_capacity() should not get capacity from an event or post!' );
+		$this->assertEquals( null, $capacity, 'tribe_tickets_get_capacity() should not get capacity from an event or post if it only has a ticket with the capacity set' );
 	}
 
 	/**
