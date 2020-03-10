@@ -26,7 +26,7 @@ class AttendeeArchiveByEventStatusCest extends BaseRestCest {
 		$attendee_maker = function ( $acc, $post_id ) use ( &$i ) {
 			$ticket_id = $i ++ % 2 === 0
 				? $this->create_rsvp_ticket( $post_id )
-				: $this->create_paypal_ticket( $post_id, 3 );
+				: $this->create_paypal_ticket_basic( $post_id, 3 );
 			$acc       = array_merge( $acc, $this->create_many_attendees_for_ticket( 2, $ticket_id, $post_id ) );
 
 			return $acc;
@@ -93,7 +93,7 @@ class AttendeeArchiveByEventStatusCest extends BaseRestCest {
 		$attendee_maker = function ( $acc, $post_id ) use ( &$i ) {
 			$ticket_id = $i ++ % 2 === 0
 				? $this->create_rsvp_ticket( $post_id )
-				: $this->create_paypal_ticket( $post_id, 3 );
+				: $this->create_paypal_ticket_basic( $post_id, 3 );
 			$acc       = array_merge( $acc, $this->create_many_attendees_for_ticket( 2, $ticket_id, $post_id ) );
 
 			return $acc;

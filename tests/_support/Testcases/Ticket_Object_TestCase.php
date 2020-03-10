@@ -168,7 +168,7 @@ class Ticket_Object_TestCase extends Test_Case {
 			$event_id = $this->make_event();
 		}
 
-		$ticket_id = $this->create_paypal_ticket( $event_id, $cost, $args );
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, $cost, $args );
 
 		return $this->get_ticket( $event_id, $ticket_id );
 	}
@@ -214,7 +214,7 @@ class Ticket_Object_TestCase extends Test_Case {
 		];
 
 		$event_id  = $this->make_event();
-		$ticket_id = $this->create_paypal_ticket( $event_id, $cost, $args );
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, $cost, $args );
 
 		return $this->get_ticket( $event_id, $ticket_id );
 	}

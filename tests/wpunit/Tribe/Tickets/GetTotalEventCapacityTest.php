@@ -69,7 +69,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$sales       = 2;
 
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$num_tickets,
 			$this->event_id,
 			[
@@ -100,7 +100,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$sales       = 2;
 
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$num_tickets,
 			$this->event_id,
 			[
@@ -146,7 +146,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 		}
 
 		// create 5 tickets
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			$ticket_data,
 			$this->global_cap
@@ -183,7 +183,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 			];
 		}
 
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			$ticket_data,
 			$this->global_cap
@@ -206,7 +206,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$capacity    = 10;
 		$sales       = 2;
 
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			[
 				[
@@ -248,7 +248,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->setupGlobalStock();
 
 		// Add a "standard" ticket.
-		$ticket_a_id = $this->create_paypal_ticket(
+		$ticket_a_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -260,7 +260,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		// Add a "global" ticket.
-		$ticket_a_id = $this->create_paypal_ticket(
+		$ticket_a_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -273,7 +273,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		// Add an unlimited ticket.
-		$ticket_a_id = $this->create_paypal_ticket(
+		$ticket_a_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -285,7 +285,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		// Add a "capped" ticket.
-		$ticket_a_id = $this->create_paypal_ticket(
+		$ticket_a_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[

@@ -34,7 +34,7 @@ class AttendeeArchiveByCheckedinCest extends BaseRestCest {
 			'checkin' => false,
 		] );
 		$paypal_post                           = $I->havePostInDatabase();
-		$paypal_ticket                         = $this->create_paypal_ticket( $paypal_post, 3 );
+		$paypal_ticket                         = $this->create_paypal_ticket_basic( $paypal_post, 3 );
 		$paypal_checked_in_attendees     = $this->create_many_attendees_for_ticket( 2, $paypal_ticket, $paypal_post, [
 			'checkin'         => true,
 			'checkin_details' => [

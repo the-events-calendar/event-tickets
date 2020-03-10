@@ -27,7 +27,7 @@ class CartUpdateCest extends BaseRestCest {
 
 		// 2 posts, 2 tickets per post, 2 attendees per ticket => 4 tickets, 8 attendees
 		$tickets = array_reduce( $post_ids, function ( array $acc, int $post_id ) {
-			$acc[ $post_id ] = $this->create_many_paypal_tickets( 2, $post_id );
+			$acc[ $post_id ] = $this->create_many_paypal_tickets_basic( 2, $post_id );
 
 			return $acc;
 		}, [] );
@@ -91,7 +91,7 @@ class CartUpdateCest extends BaseRestCest {
 
 		// 2 posts, 2 tickets per post, 2 attendees per ticket => 4 tickets, 8 attendees
 		$tickets = array_reduce( $post_ids, function ( array $acc, int $post_id ) {
-			$acc[ $post_id ] = $this->create_many_paypal_tickets( 2, $post_id );
+			$acc[ $post_id ] = $this->create_many_paypal_tickets_basic( 2, $post_id );
 
 			return $acc;
 		}, [] );
@@ -142,7 +142,7 @@ class CartUpdateCest extends BaseRestCest {
 
 		// 2 posts, 2 tickets per post, 2 attendees per ticket => 4 tickets, 8 attendees
 		$tickets = array_reduce( $post_ids, function ( array $acc, int $post_id ) {
-			$acc[ $post_id ] = $this->create_many_paypal_tickets( 2, $post_id );
+			$acc[ $post_id ] = $this->create_many_paypal_tickets_basic( 2, $post_id );
 
 			return $acc;
 		}, [] );
@@ -223,7 +223,7 @@ class CartUpdateCest extends BaseRestCest {
 
 		// 2 posts, 2 tickets per post, 2 attendees per ticket => 4 tickets, 8 attendees
 		$tickets = array_reduce( $post_ids, function ( array $acc, int $post_id ) {
-			$acc[ $post_id ] = $this->create_many_paypal_tickets( 2, $post_id );
+			$acc[ $post_id ] = $this->create_many_paypal_tickets_basic( 2, $post_id );
 
 			return $acc;
 		}, [] );
@@ -267,7 +267,7 @@ class CartUpdateCest extends BaseRestCest {
 
 		// 2 posts, 2 tickets per post, 2 attendees per ticket => 4 tickets, 8 attendees
 		$tickets = array_reduce( $post_ids, function ( array $acc, int $post_id ) {
-			$acc[ $post_id ] = $this->create_many_paypal_tickets( 2, $post_id );
+			$acc[ $post_id ] = $this->create_many_paypal_tickets_basic( 2, $post_id );
 
 			return $acc;
 		}, [] );

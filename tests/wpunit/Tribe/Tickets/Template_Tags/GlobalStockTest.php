@@ -59,7 +59,7 @@ class GlobalStockTest extends Ticket_Object_TestCase {
 		 *
 		 * @see \Tribe__Tickets__Tickets_Handler::has_unlimited_stock() Comments/Explanation.
 		 */
-		 $ticket_ids = $this->create_distinct_paypal_tickets(
+		 $ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$event_id,
 			[
 				[

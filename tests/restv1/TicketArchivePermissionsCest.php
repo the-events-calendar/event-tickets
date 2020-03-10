@@ -27,7 +27,7 @@ class TicketArchivePermissionsCest extends BaseRestCest {
 		$i                = 0;
 		$tickets          = array_reduce( $post_ids, function ( array $acc, $post_id ) use ( &$i, $attendees_counts ) {
 			$acc[] = $rsvp_ticket = $this->create_rsvp_ticket( $post_id );
-			$acc[] = $paypal_ticket = $this->create_paypal_ticket( $post_id, 2 );
+			$acc[] = $paypal_ticket = $this->create_paypal_ticket_basic( $post_id, 2 );
 			$this->create_many_attendees_for_ticket( $attendees_counts[ $i ++ ], $rsvp_ticket, $post_id );
 			$this->create_many_attendees_for_ticket( $attendees_counts[ $i ++ ], $paypal_ticket, $post_id );
 

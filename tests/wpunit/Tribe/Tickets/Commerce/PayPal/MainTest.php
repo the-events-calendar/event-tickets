@@ -357,7 +357,7 @@ class MainTest extends Test_Case {
 	protected function make_base_data( $sales = 0, $stock = 10 ) {
 		$post_id = $this->factory()->post->create();
 
-		$ticket_id = $this->create_paypal_ticket( $post_id, 1, [
+		$ticket_id = $this->create_paypal_ticket_basic( $post_id, 1, [
 			'meta_input' => [
 				'total_sales' => $sales,
 				'_stock'      => $stock,

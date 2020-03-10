@@ -91,7 +91,7 @@ class Tickets_FormTest extends \Codeception\TestCase\WPTestCase {
 
 		$tickets = [];
 		for ( $i = 0; $i < 3; $i ++ ) {
-			$tickets[] = $this->create_paypal_ticket( $post->ID, 1, [
+			$tickets[] = $this->create_paypal_ticket_basic( $post->ID, 1, [
 					'meta_input' => [
 						'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '-10 day' ) ),
 						'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '-5 day' ) ),
@@ -119,7 +119,7 @@ class Tickets_FormTest extends \Codeception\TestCase\WPTestCase {
 
 		$tickets = [];
 		for ( $i = 0; $i < 3; $i ++ ) {
-			$tickets[] = $this->create_paypal_ticket( $post->ID, 1, [
+			$tickets[] = $this->create_paypal_ticket_basic( $post->ID, 1, [
 				'meta_input' => [
 					'_ticket_start_date' => date( 'Y-m-d H:i:s', strtotime( '-10 day' ) ),
 					'_ticket_end_date'   => date( 'Y-m-d H:i:s', strtotime( '+10 day' ) ),

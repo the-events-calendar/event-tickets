@@ -25,7 +25,7 @@ class UTCTest extends Ticket_Object_TestCase {
 			],
 		];
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1, $overrides );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1, $overrides );
 
 		$this->create_many_attendees_for_ticket( 15, $paypal_ticket_id, $post_id );
 
@@ -57,7 +57,7 @@ class UTCTest extends Ticket_Object_TestCase {
 			],
 		];
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1, $overrides );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1, $overrides );
 
 		$this->create_many_attendees_for_ticket( 15, $paypal_ticket_id, $post_id );
 
@@ -96,7 +96,7 @@ class UTCTest extends Ticket_Object_TestCase {
 			],
 		];
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1, $overrides );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1, $overrides );
 
 		$this->create_many_attendees_for_ticket( 15, $paypal_ticket_id, $post_id );
 
@@ -131,7 +131,7 @@ class UTCTest extends Ticket_Object_TestCase {
 			],
 		];
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1, $overrides );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1, $overrides );
 
 		$this->create_many_attendees_for_ticket( 15, $paypal_ticket_id, $post_id );
 
@@ -172,7 +172,7 @@ class UTCTest extends Ticket_Object_TestCase {
 			],
 		];
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1, $overrides );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1, $overrides );
 
 		$this->create_many_attendees_for_ticket( 15, $paypal_ticket_id, $post_id );
 
