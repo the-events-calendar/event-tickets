@@ -568,7 +568,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * This stub method should be treated as if it were an abstract method - ie, the
 		 * concrete class ought to provide the implementation.
 		 *
-		 * @param $possible_ticket
+		 * @param $ticket_product
 		 *
 		 * @return bool|WP_Post
 		 */
@@ -577,7 +577,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$ticket_product = $ticket_product->ID;
 			}
 
-			if ( null === ( $product = get_post( $ticket_product ) ) ) {
+			if ( null === get_post( $ticket_product ) ) {
 				return false;
 			}
 
