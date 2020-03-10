@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Tickets\Partials\Tickets\PayPal;
+namespace Tribe\Tickets\Test\Testcases\REST\V1;
 
 use Codeception\TestCase\WPTestCase;
 use Spatie\Snapshots\MatchesSnapshots;
@@ -11,7 +11,7 @@ use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Traits\CapacityMatrix;
 use Tribe__Tickets__Data_API as Data_API;
 
-class TicketTest extends WPTestCase {
+class TicketsBlock_TestCase extends WPTestCase {
 
 	use MatchesSnapshots;
 	use With_Post_Remapping;
@@ -20,17 +20,6 @@ class TicketTest extends WPTestCase {
 	use PayPal_Ticket_Maker;
 
 	protected $partial_path = 'blocks/tickets';
-
-	/**
-	 * Get list of providers for test.
-	 *
-	 * @return array List of providers.
-	 */
-	protected function get_providers() {
-		return [
-			'Tribe__Tickets__Commerce__PayPal__Main' => 'tribe-commerce',
-		];
-	}
 
 	/**
 	 * {@inheritdoc}
@@ -42,14 +31,6 @@ class TicketTest extends WPTestCase {
 		// Enable post as ticket type.
 		add_filter( 'tribe_tickets_post_types', function () {
 			return [ 'post', 'tribe_events' ];
-		} );
-
-		// Enable Tribe Commerce.
-		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
-		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
-			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
-
-			return $modules;
 		} );
 
 		// Override all nonce generation to use this one for testing purposes.
@@ -68,6 +49,19 @@ class TicketTest extends WPTestCase {
 	}
 
 	/**
+	 * Create ticket.
+	 *
+	 * @param int   $post_id   The ID of the post this ticket should be related to.
+	 * @param int   $price     Ticket price.
+	 * @param array $overrides An array of values to override the default and random generation arguments.
+	 *
+	 * @return int Ticket ID.
+	 */
+	protected function create_block_ticket( $post_id, $price, $overrides ) {
+		return $this->create_paypal_ticket( $post_id, 5, $overrides );
+	}
+
+	/**
 	 * Setup ticket.
 	 *
 	 * @param int   $post_id   Post ID.
@@ -76,7 +70,7 @@ class TicketTest extends WPTestCase {
 	 *
 	 * @return int Ticket ID.
 	 */
-	protected function setup_ticket( $post_id, $matrix, $overrides = [] ) {
+	protected function setup_block_ticket( $post_id, $matrix, $overrides = [] ) {
 		$mode           = $matrix['ticket']['mode'] ?? null;
 		$capacity       = $matrix['ticket']['capacity'] ?? null;
 		$event_capacity = $matrix['ticket']['event_capacity'] ?? null;
@@ -102,7 +96,7 @@ class TicketTest extends WPTestCase {
 			$overrides[ $arg ] = $value;
 		}
 
-		return $this->create_paypal_ticket( $post_id, 5, $overrides );
+		return $this->create_block_ticket( $post_id, 5, $overrides );
 	}
 
 	/**
@@ -110,12 +104,9 @@ class TicketTest extends WPTestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block( $matrix ) {
-		/** @var \Tribe__Tickets__Tickets $provider_class */
-		$provider_class = tribe( $this->get_paypal_ticket_provider() );
-
 		$post_id = $this->factory()->post->create();
 
-		$ticket_id = $this->setup_ticket( $post_id, $matrix );
+		$ticket_id = $this->setup_block_ticket( $post_id, $matrix );
 
 		/** @var \Tribe__Tickets__Main $tickets_main */
 		$tickets_main = tribe( 'tickets.main' );
@@ -144,16 +135,13 @@ class TicketTest extends WPTestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block_after_update( $matrix ) {
-		/** @var \Tribe__Tickets__Tickets $provider_class */
-		$provider_class = tribe( $this->get_paypal_ticket_provider() );
-
 		$post_id = $this->factory()->post->create();
 
 		// Create ticket.
-		$ticket_id = $this->setup_ticket( $post_id, $matrix['from'] );
+		$ticket_id = $this->setup_block_ticket( $post_id, $matrix['from'] );
 
 		// Update ticket.
-		$this->setup_ticket( $post_id, $matrix['to'], [
+		$this->setup_block_ticket( $post_id, $matrix['to'], [
 			'ticket_id' => $ticket_id,
 		] );
 
