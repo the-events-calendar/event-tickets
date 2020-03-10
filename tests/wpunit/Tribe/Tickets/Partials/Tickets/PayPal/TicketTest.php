@@ -20,10 +20,22 @@ class TicketTest extends WPTestCase {
 	protected $partial_path = 'blocks/tickets';
 
 	/**
+	 * Get list of providers for test.
+	 *
+	 * @return array List of providers.
+	 */
+	protected function get_providers() {
+		return [
+			'Tribe__Tickets__Commerce__PayPal__Main' => 'tribe-commerce',
+		];
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function setUp() {
 		parent::setUp();
+		Test::setUp();
 
 		// Enable post as ticket type.
 		add_filter( 'tribe_tickets_post_types', function () {
@@ -43,6 +55,14 @@ class TicketTest extends WPTestCase {
 
 		// Reset Data_API object so it sees Tribe Commerce.
 		tribe_singleton( 'tickets.data_api', new Data_API );
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function tearDown() {
+		Test::tearDown();
+		parent::tearDown();
 	}
 
 	/**
