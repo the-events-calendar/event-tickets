@@ -119,6 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.11.5] TBD =
 
+* Feature - Include Freemius integration on to allow opt-in information collection. [ET-595]
 * Tweak - Notify Promoter of changes when tickets are moved to other Events. [ET-741]
 * Tweak - Improved compatibility between Tribe Commerce and Promoter by extending the actions that notify Promoter of Attendee modifications. [ET-746]
 
@@ -151,7 +152,6 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.11.3] 2020-02-06 =
 
-* Feature - Include Freemius integration on to allow opt-in information collection. [ET-595]
 * Feature - Show original price on ticket block if ticket on sale. Allow turning off via the `tribe_tickets_show_original_price_on_sale` filter. [ETP-47]
 * Fix - Allow adding ticket header image on non-event posts. [ETP-54]
 * Fix - Close opening `<div>` in `blocks/attendees.php`. [ET-589]
