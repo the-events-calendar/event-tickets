@@ -51,11 +51,11 @@
 
 	<td class="ticket_capacity">
 		<span class=\'tribe-mobile-only\'>Capacity:</span>
-		(10)	</td>
+		13	</td>
 
 	<td class="ticket_available">
 		<span class=\'tribe-mobile-only\'>Available:</span>
-				(10)	</td>
+				13	</td>
 
 	<td class="ticket_edit">
 		<button data-provider=\'Tribe__Tickets__Commerce__PayPal__Main\' data-ticket-id=\'2\' title=\'Ticket ID: 2\' class=\'ticket_edit_button\'><span class=\'ticket_edit_text\'>Test ticket name</span></a>	</td>
@@ -281,7 +281,7 @@
 		name=\'tribe-ticket[capacity]\'
 		class="ticket_field tribe-rsvp-field-capacity ticket_form_right"
 		size=\'7\'
-		value=\'10\'
+		value=\'13\'
 	/>
 	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
 </div>
@@ -301,7 +301,7 @@
 		name=\'tribe-ticket[capacity]\'
 		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
 		size=\'7\'
-		value=\'10\'
+		value=\'13\'
 	/>
 	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
 </div>
