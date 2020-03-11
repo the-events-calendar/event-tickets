@@ -543,14 +543,6 @@ class BaseTicketEditorCest extends BaseRestCest {
 
 		$ticket_create_ajax_url = admin_url( 'admin-ajax.php' );
 
-		// Assertion test the admin-ajax.php response.
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
-
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['list'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['settings'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['ticket'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['notice'] ), $driver );
-
 		preg_match( '/ticket-id=["\'](\d+)["\']/', $response['data']['list'], $matches );
 
 		$post_id   = $create_args['post_id'];
@@ -578,9 +570,22 @@ class BaseTicketEditorCest extends BaseRestCest {
 
 		$ticket_create_ajax_url = admin_url( 'admin-ajax.php' );
 
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['list'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['settings'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['ticket'] ), $driver );
+		// Assertion test the admin-ajax.php response.
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+
+		$driver->setTolerableDifferences( [
+			$ticket_id,
+			$post_id,
+		] );
+		$driver->setTimeDependentAttributes( [
+			'data-ticket-id',
+			'data-ticket-type-id',
+			'data-ticket-order-id',
+		] );
+
+		$html = implode( "\n\n------------\n\n", $response['data'] );
+
+		$this->assertMatchesSnapshot( $this->prepare_html( $html ), $driver );
 	}
 
 	/**
@@ -630,10 +635,18 @@ class BaseTicketEditorCest extends BaseRestCest {
 		// Assertion test the admin-ajax.php response.
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['list'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['settings'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['ticket'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['notice'] ), $driver );
+		$driver->setTolerableDifferences( [
+			$rsvp_args['post_id'],
+		] );
+		$driver->setTimeDependentAttributes( [
+			'data-ticket-id',
+			'data-ticket-type-id',
+			'data-ticket-order-id',
+		] );
+
+		$html = implode( "\n\n------------\n\n", $response['data'] );
+
+		$this->assertMatchesSnapshot( $this->prepare_html( $html ), $driver );
 
 		preg_match( '/ticket-id=["\'](\d+)["\']/', $response['data']['list'], $matches );
 
@@ -794,14 +807,6 @@ class BaseTicketEditorCest extends BaseRestCest {
 
 		$ticket_create_ajax_url = admin_url( 'admin-ajax.php' );
 
-		// Assertion test the admin-ajax.php response.
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
-
-		$this->assertMatchesSnapshot( $this->prepare_html( $create_response['data']['list'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $create_response['data']['settings'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $create_response['data']['ticket'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $create_response['data']['notice'] ), $driver );
-
 		preg_match( '/ticket-id=["\'](\d+)["\']/', $create_response['data']['list'], $matches );
 
 		$post_id   = $create_args['post_id'];
@@ -823,11 +828,6 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$I->assertEquals( $this->prepare_html( $create_response['data']['notice'] ), $this->prepare_html( $update_response['data']['notice'] ) );
 
 		$I->assertTrue( $update_response['success'] );
-
-		$this->assertMatchesSnapshot( $this->prepare_html( $update_response['data']['list'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $update_response['data']['settings'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $update_response['data']['ticket'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $update_response['data']['notice'] ), $driver );
 
 		// Get ticket data so we can assert ticket saved as expected.
 		$ticket_get_rest_url = $this->tickets_url . '/' . $ticket_id;
