@@ -126,7 +126,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		$html = $tickets_view->get_tickets_block( get_post( $post_id ) );
 
-		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://wp.localhost' );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $post_id ] );
 		$driver->setTolerableDifferencesPrefixes( [
@@ -144,7 +144,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 		$html = preg_replace( '/tribe-block-tickets-item-\d+/', 'tribe-block-tickets-item-123', $html );
 		$html = preg_replace( '/tribe__details__content--\d+/', 'tribe__details__content--123', $html );
 		$html = preg_replace( '/tribe-tickets-attendees-list-optout-\d+/', 'tribe-tickets-attendees-list-optout-123', $html );
-		$html = str_replace( getenv( 'WP_URL' ), 'http://wp.localhost', $html );
+		$html = str_replace( home_url(), 'http://wp.localhost', $html );
 
 		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );
@@ -181,7 +181,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		$html = $tickets_view->get_tickets_block( get_post( $post_id ) );
 
-		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://wp.localhost' );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $post_id ] );
 		$driver->setTolerableDifferencesPrefixes( [
@@ -199,7 +199,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 		$html = preg_replace( '/tribe-block-tickets-item-\d+/', 'tribe-block-tickets-item-123', $html );
 		$html = preg_replace( '/tribe__details__content--\d+/', 'tribe__details__content--123', $html );
 		$html = preg_replace( '/tribe-tickets-attendees-list-optout-\d+/', 'tribe-tickets-attendees-list-optout-123', $html );
-		$html = str_replace( getenv( 'WP_URL' ), 'http://wp.localhost', $html );
+		$html = str_replace( home_url(), 'http://wp.localhost', $html );
 
 		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );

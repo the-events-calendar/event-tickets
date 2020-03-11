@@ -62,7 +62,7 @@ class ContentDescription extends WPTestCase {
 
 		$html     = $template->template( $this->partial_path, $args, false );
 
-		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://wp.localhost' );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
 		$driver->setTolerableDifferencesPrefixes( [
@@ -100,7 +100,7 @@ class ContentDescription extends WPTestCase {
 
 		$html     = $template->template( $this->partial_path, $args, false );
 
-		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://wp.localhost' );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
 		$driver->setTolerableDifferencesPrefixes( [
@@ -138,7 +138,7 @@ class ContentDescription extends WPTestCase {
 
 		$html     = $template->template( $this->partial_path, $args, false );
 
-		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://wp.localhost' );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
 		$driver->setTolerableDifferencesPrefixes( [
