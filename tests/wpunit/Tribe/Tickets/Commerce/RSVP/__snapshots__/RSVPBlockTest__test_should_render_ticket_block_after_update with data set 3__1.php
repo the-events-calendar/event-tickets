@@ -1,6 +1,6 @@
 <?php return '
 <div class="tribe-block tribe-block__rsvp">
-						<div class="tribe-block__rsvp__ticket" data-rsvp-id="549">
+						<div class="tribe-block__rsvp__ticket" data-rsvp-id="20">
 				<div class="tribe-block__rsvp__icon">
 	
 	RSVP</div>
@@ -10,10 +10,10 @@
 		<div class="tribe-block__rsvp__details">
 
 	<header class="tribe-block__rsvp__title">
-	Test RSVP ticket for 548</header>
+	Test RSVP ticket for 19</header>
 
 	<div class="tribe-block__rsvp__description">
-	<p>Ticket RSVP ticket excerpt for 548</p>
+	<p>Ticket RSVP ticket excerpt for 19</p>
 </div>
 
 	<div class="tribe-block__rsvp__availability">
@@ -41,7 +41,7 @@
 
 </div>
 			</div>
-					<div class="tribe-block__rsvp__ticket" data-rsvp-id="550">
+					<div class="tribe-block__rsvp__ticket" data-rsvp-id="21">
 				<div class="tribe-block__rsvp__icon">
 	
 	RSVP</div>
@@ -51,10 +51,10 @@
 		<div class="tribe-block__rsvp__details">
 
 	<header class="tribe-block__rsvp__title">
-	Test RSVP ticket for 548</header>
+	Test RSVP ticket for 19</header>
 
 	<div class="tribe-block__rsvp__description">
-	<p>Ticket RSVP ticket excerpt for 548</p>
+	<p>Ticket RSVP ticket excerpt for 19</p>
 </div>
 
 	<div class="tribe-block__rsvp__availability">
