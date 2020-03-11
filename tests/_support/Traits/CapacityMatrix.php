@@ -82,6 +82,32 @@ trait CapacityMatrix {
 	}
 
 	/**
+	 * Get shared ticket matrix variations.
+	 *
+	 * @return array List of shared variations.
+	 */
+	public function _get_shared_ticket_matrix() {
+		$providers   = array_keys( $this->get_providers() );
+		$mode_matrix = $this->_get_ticket_mode_matrix();
+
+		$matrix = [];
+
+		foreach ( $providers as $provider ) {
+			foreach ( $mode_matrix as $mode ) {
+				if ( 'capped' !== $mode['ticket']['mode'] ) {
+					continue;
+				}
+
+				$matrix[] = array_merge( $mode, [
+					'provider' => $provider,
+				] );
+			}
+		}
+
+		return $matrix;
+	}
+
+	/**
 	 * Get ticket update matrix variations.
 	 *
 	 * @return array List of variations.
