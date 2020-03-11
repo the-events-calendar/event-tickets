@@ -1295,7 +1295,15 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			}
 		} else {
 			// If the Global Stock is configured we pull it from the Event
-			$data['event_capacity'] = tribe_tickets_get_capacity( $post_id );
+			$global_capacity = tribe_tickets_get_capacity( $post_id );
+
+			if ( ! empty( $data['event_capacity'] ) && $data['event_capacity'] !== $global_capacity ) {
+				// Update stock level with $data['event_capacity'].
+				$event_stock->set_stock_level( $data['event_capacity'], true );
+			} else {
+				// Set $data['event_capacity'] with what we know.
+				$data['event_capacity'] = $global_capacity;
+			}
 		}
 
 		// Default Capacity will be 0
