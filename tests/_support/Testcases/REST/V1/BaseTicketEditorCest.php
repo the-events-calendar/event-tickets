@@ -544,7 +544,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$ticket_create_ajax_url = admin_url( 'admin-ajax.php' );
 
 		// Assertion test the admin-ajax.php response.
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://wp.localhost' );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['list'] ), $driver );
 		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['settings'] ), $driver );
@@ -628,7 +628,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$ticket_create_ajax_url = admin_url( 'admin-ajax.php' );
 
 		// Assertion test the admin-ajax.php response.
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://wp.localhost' );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['list'] ), $driver );
 		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['settings'] ), $driver );
@@ -795,7 +795,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$ticket_create_ajax_url = admin_url( 'admin-ajax.php' );
 
 		// Assertion test the admin-ajax.php response.
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://wp.localhost' );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$this->assertMatchesSnapshot( $this->prepare_html( $create_response['data']['list'] ), $driver );
 		$this->assertMatchesSnapshot( $this->prepare_html( $create_response['data']['settings'] ), $driver );
