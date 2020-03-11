@@ -67,7 +67,7 @@ class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 
 		$html = $rsvp_block->render();
 
-		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $post_id ] );
 		$driver->setTimeDependentAttributes( [
@@ -105,7 +105,7 @@ class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 
 		$html = $rsvp_block->render();
 
-		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $post_id ] );
 		$driver->setTimeDependentAttributes( [
