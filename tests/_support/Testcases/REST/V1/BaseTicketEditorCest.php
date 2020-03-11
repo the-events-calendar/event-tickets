@@ -632,11 +632,18 @@ class BaseTicketEditorCest extends BaseRestCest {
 
 		$ticket_create_ajax_url = admin_url( 'admin-ajax.php' );
 
+		preg_match( '/ticket-id=["\'](\d+)["\']/', $response['data']['list'], $matches );
+
+		$post_id   = $create_args['post_id'];
+		$author_id = get_current_user_id();
+		$ticket_id = $matches[1];
+
 		// Assertion test the admin-ajax.php response.
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$driver->setTolerableDifferences( [
-			$rsvp_args['post_id'],
+			$ticket_id,
+			$post_id,
 		] );
 		$driver->setTimeDependentAttributes( [
 			'data-ticket-id',
@@ -647,12 +654,6 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$html = implode( "\n\n------------\n\n", $response['data'] );
 
 		$this->assertMatchesSnapshot( $this->prepare_html( $html ), $driver );
-
-		preg_match( '/ticket-id=["\'](\d+)["\']/', $response['data']['list'], $matches );
-
-		$post_id   = $create_args['post_id'];
-		$author_id = get_current_user_id();
-		$ticket_id = $matches[1];
 
 		// Get ticket data so we can assert ticket saved as expected.
 		$ticket_get_rest_url = $this->tickets_url . '/' . $ticket_id;
