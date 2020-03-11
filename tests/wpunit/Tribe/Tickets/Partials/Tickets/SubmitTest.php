@@ -27,7 +27,7 @@ class SubmitTest extends WPTestCase {
 
 		$html     = $template->template( $this->partial_path, $args, false );
 
-		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$driver->setTolerableDifferences( [ $event_id ] );
 		$driver->setTolerableDifferencesPrefixes( [
@@ -60,7 +60,7 @@ class SubmitTest extends WPTestCase {
 
 		$html     = $template->template( $this->partial_path, $args, false );
 
-		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$driver->setTolerableDifferences( [ $event_id ] );
 		$driver->setTolerableDifferencesPrefixes( [
