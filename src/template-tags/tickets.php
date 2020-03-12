@@ -473,9 +473,10 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	/**
 	 * Gets the "tickets sold" message for a given ticket
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket to analyze
-	 *
 	 * @since 4.10.9 Use customizable ticket name functions.
+	 * @since TBD Correct the sprintf placeholders that were forcing the readable amount to an integer.
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket to analyze.
 	 *
 	 * @return string
 	 */
@@ -517,19 +518,43 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			$sold_label = sprintf( _x( "%s'd going", 'RSVPs going', 'event-tickets' ), tribe_get_rsvp_label_singular() );
 		}
 
-		// Message for how many remain available
-		if ( -1 === $available ) {
-			$status_counts[] = sprintf( _x( '%1$s available', 'unlimited remaining stock message', 'event-tickets' ), tribe_tickets_get_readable_amount( $available, $global_stock ) );
+		// Message for how many remain available.
+		if ( - 1 === $available ) {
+			$status_counts[] = sprintf(
+			/* translators: %1$s: formatted quantity remaining */
+				_x(
+					'%1$s available',
+					'unlimited remaining stock message',
+					'event-tickets'
+				),
+				tribe_tickets_get_readable_amount( $available, $global_stock )
+			);
 		} elseif ( $is_global ) {
-			$status_counts[] = sprintf( _x( '%1$d available of shared capacity', 'ticket shared capacity message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
+			$status_counts[] = sprintf(
+			/* translators: %1$s: formatted quantity remaining */
+				_x(
+					'%1$s available of shared capacity',
+					'ticket shared capacity message (remaining stock)',
+					'event-tickets'
+				),
+				tribe_tickets_get_readable_amount( $available )
+			);
 		} else {
-			// It's "own stock". We use the $stock value
-			$status_counts[] = sprintf( _x( '%1$d available', 'ticket stock message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
+			// It's "own stock". We use the $stock value.
+			$status_counts[] = sprintf(
+			/* translators: %1$s: formatted quantity remaining */
+				_x(
+					'%1$s available',
+					'ticket stock message (remaining stock)',
+					'event-tickets'
+				),
+				tribe_tickets_get_readable_amount( $available )
+			);
 		}
 
 		if ( ! empty( $status_counts ) ) {
 			//remove empty values and prepare to display if values
-			$status_counts = array_diff( $status_counts, array( '' ) );
+			$status_counts = array_diff( $status_counts, [ '' ] );
 			if ( array_filter( $status_counts ) ) {
 				$status = sprintf( ' (%1$s)', implode( ', ', $status_counts ) );
 			}
