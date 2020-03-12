@@ -27,12 +27,7 @@ if ( empty( $ticket->ID ) ) {
 }
 
 $available = $ticket->available();
-
-if ( - 1 === $available ) {
-	return;
-}
-
-$post_id = $this->get( 'post_id' );
+$post_id   = $this->get( 'post_id' );
 
 /** @var Tribe__Settings_Manager $settings_manager */
 $settings_manager = tribe( 'settings.manager' );
@@ -44,10 +39,8 @@ $threshold = $settings_manager::get_option( 'ticket-display-tickets-left-thresho
  *
  * @since 4.11.1
  *
- * @param array $data      Ticket data.
- * @param int   $post_id   WP_Post/Event ID.
- *
  * @param int   $threshold Stock threshold to trigger display of "# tickets left"
+ * @param int   $post_id   WP_Post/Event ID.
  */
 $threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_threshold', $threshold, $post_id ) );
 
