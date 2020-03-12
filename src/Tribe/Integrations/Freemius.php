@@ -124,7 +124,7 @@ class Tribe__Tickets__Integrations__Freemius {
 		}
 
 		/**
-		 * Allows third-party enabling/disabling of the integration.
+		 * Allows third-party disabling of the integration.
 		 *
 		 * @since  TBD
 		 *
@@ -256,7 +256,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	public function get_plugin_icon_url() {
 		$class = $this->object_class;
 
-		return $class::instance()->plugin_url . '/src/resources/images/' . $this->slug . '.png';
+		return $class::instance()->plugin_url . '/src/resources/images/' . $this->slug . '.svg';
 	}
 
 	/**
