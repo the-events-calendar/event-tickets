@@ -8,6 +8,11 @@ use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker;
 use Tribe\Tickets\Test\Testcases\REST\V1\BaseTicketEditorCest;
 
+/**
+ * @group block
+ * @group editor
+ * @group capacity
+ */
 class TicketEditorCest extends BaseTicketEditorCest {
 
 	use Ticket_Maker;
