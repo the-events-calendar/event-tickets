@@ -686,7 +686,10 @@ class Tribe__Tickets__Main {
 	 * Hooked to the init action
 	 */
 	public function init() {
-		// Provide continued support for legacy ticketing modules
+		// Start the integrations manager.
+		Tribe__Tickets__Integrations__Manager::instance()->load_integrations();
+
+		// Provide continued support for legacy ticketing modules.
 		$this->legacy_provider_support = new Tribe__Tickets__Legacy_Provider_Support;
 		$this->settings_tab();
 		$this->tickets_view();

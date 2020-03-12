@@ -119,6 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.11.5] TBD =
 
+* Feature - Include Freemius integration to allow opt-in information collection. [ET-595]
 * Fix - Make sure when changing unlimited ticket to be a shared capacity ticket that the empty individual capacity gets properly overridden to the shared capacity for Tribe Commerce. [ET-752]
 * Fix - Prevent ticket capacity showing sold out when you have unlimited tickets or RSVPs alongside shared capacity tickets unless it really is sold out. [ET-744]
 * Tweak - Notify Promoter of changes when tickets are moved to other Events. [ET-741]
