@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.9
 Tested up to: 5.3.2
-Stable tag: 4.11.4
+Stable tag: 4.11.5
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -119,6 +119,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.11.5] TBD =
 
+* Fix - Prevent unintentionally clearing global capacity settings when saving event/post while using Block Editor is enabled. [ETP-267]
+* Fix - Save updated shared capacity for event/post if the argument is passed to the REST API endpoint for a Tribe Commerce ticket. [ETP-267]
 * Fix - Make sure when changing unlimited ticket to be a shared capacity ticket that the empty individual capacity gets properly overridden to the shared capacity for Tribe Commerce. [ET-752]
 * Fix - Prevent ticket capacity showing sold out when you have unlimited tickets or RSVPs alongside shared capacity tickets unless it really is sold out. [ET-744]
 * Fix - The maximum quantity allowed to be added to cart in a single click action is now always set (defaults to `100`, filterable via `tribe_tickets_get_ticket_default_max_purchase_limit`), for sanity and performance reasons, avoiding accidentally adding 100,000 tickets to cart at a time and crashing the site. [ETP-149]
