@@ -7,8 +7,11 @@ use Tribe\Tickets\Test\Testcases\TicketsBlock_TestCase;
 
 /**
  * @group block
+ * @group block-paypal
  * @group editor
+ * @group editor-paypal
  * @group capacity
+ * @group capacity-paypal
  */
 class TicketsBlockTest extends TicketsBlock_TestCase {
 

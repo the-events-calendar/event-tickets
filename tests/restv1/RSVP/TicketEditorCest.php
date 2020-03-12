@@ -10,8 +10,11 @@ use Tribe\Tickets\Test\Testcases\REST\V1\BaseTicketEditorCest;
 
 /**
  * @group block
+ * @group block-rsvp
  * @group editor
+ * @group editor-rsvp
  * @group capacity
+ * @group capacity-rsvp
  */
 class TicketEditorCest extends BaseTicketEditorCest {
 
