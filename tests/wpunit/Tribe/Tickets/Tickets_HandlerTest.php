@@ -82,6 +82,28 @@ class Tickets_HandlerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
+	 * it should get the default ticket max purchase for unlimited ticket
+	 */
+	public function it_should_get_default_ticket_max_purchase_for_unlimited_ticket() {
+		$sut = $this->make_instance();
+
+		$post_id = $this->factory()->post->create();
+
+		$ticket_id = $this->create_paypal_ticket( $post_id, 1, [
+			'tribe-ticket' => [
+				'mode'     => '',
+				'capacity' => '',
+			],
+		] );
+
+		$max_quantity = $sut->get_ticket_max_purchase( $ticket_id );
+
+		// Default max is 100, but capacity is 500 so it's limited to 100.
+		$this->assertEquals( 100, $max_quantity );
+	}
+
+	/**
+	 * @test
 	 * it should get the lesser available ticket max purchase
 	 */
 	public function it_should_get_lesser_available_ticket_max_purchase() {
