@@ -1,14 +1,15 @@
 <?php
+
 namespace Tribe\Tickets\Partials\RSVP\Details;
 
 use Codeception\TestCase\WPTestCase;
 use Spatie\Snapshots\MatchesSnapshots;
-use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
-
+use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 
 class Description extends WPTestCase {
+
 	use MatchesSnapshots;
 	use With_Post_Remapping;
 
@@ -27,15 +28,15 @@ class Description extends WPTestCase {
 
 		update_post_meta( $ticket_id, tribe( 'tickets.handler' )->key_show_description, false );
 
-		$ticket    = tribe( 'tickets.rsvp' )->get_ticket( $event_id, $ticket_id );
+		$ticket = tribe( 'tickets.rsvp' )->get_ticket( $event_id, $ticket_id );
 
-		$args    = [
+		$args = [
 			'ticket'  => $ticket,
 			'post_id' => $event_id,
 		];
 
-		$html     = $template->template( $this->partial_path, $args, false );
-		$driver   = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+		$html   = $template->template( $this->partial_path, $args, false );
+		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
 
@@ -52,13 +53,13 @@ class Description extends WPTestCase {
 		$ticket_id = $this->create_rsvp_ticket( $event_id );
 		$ticket    = tribe( 'tickets.rsvp' )->get_ticket( $event_id, $ticket_id );
 
-		$args    = [
+		$args = [
 			'ticket'  => $ticket,
 			'post_id' => $event_id,
 		];
 
-		$html     = $template->template( $this->partial_path, $args, false );
-		$driver   = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+		$html   = $template->template( $this->partial_path, $args, false );
+		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
 

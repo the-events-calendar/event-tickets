@@ -1,15 +1,16 @@
 <?php
+
 namespace Tribe\Tickets\Partials\RSVP;
 
 use Codeception\TestCase\WPTestCase;
 use Spatie\Snapshots\MatchesSnapshots;
-use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
-
-use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
+use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker as Attendee_Maker;
+use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 
 class Form extends WPTestCase {
+
 	use MatchesSnapshots;
 	use With_Post_Remapping;
 
@@ -27,15 +28,15 @@ class Form extends WPTestCase {
 		$event_id  = $event->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id );
 
-		$ticket    = tribe( 'tickets.rsvp' )->get_ticket( $event_id, $ticket_id );
+		$ticket = tribe( 'tickets.rsvp' )->get_ticket( $event_id, $ticket_id );
 
-		$args    = [
+		$args = [
 			'ticket'  => $ticket,
 			'post_id' => $event_id,
 			'going'   => true,
 		];
 
-		$html     = $template->template( $this->partial_path, $args, false );
+		$html = $template->template( $this->partial_path, $args, false );
 
 		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
 
@@ -46,7 +47,7 @@ class Form extends WPTestCase {
 
 		$driver->setTimeDependentAttributes( [
 			'data-rsvp-id',
-			'data-product-id'
+			'data-product-id',
 		] );
 
 		// Remove pesky SVG.
@@ -54,6 +55,5 @@ class Form extends WPTestCase {
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
-
 
 }
