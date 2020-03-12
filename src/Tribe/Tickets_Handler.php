@@ -1178,6 +1178,7 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+
 		if ( empty( $provider ) ) {
 			return 0;
 		}
