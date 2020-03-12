@@ -119,6 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.11.5] TBD =
 
+* Feature - Include Freemius integration to allow opt-in information collection. [ET-595]
 * Tweak - Notify Promoter of changes when tickets are moved to other Events. [ET-741]
 * Tweak - Improved compatibility between Tribe Commerce and Promoter by extending the actions that notify Promoter of Attendee modifications. [ET-746]
 
