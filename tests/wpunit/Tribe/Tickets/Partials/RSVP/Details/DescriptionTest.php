@@ -36,7 +36,7 @@ class Description extends WPTestCase {
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
 
@@ -59,7 +59,7 @@ class Description extends WPTestCase {
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
 
