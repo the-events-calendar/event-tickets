@@ -65,8 +65,7 @@
 	</div>
 	<span class="tribe-block__rsvp__number-input-label">
 		RSVPs	</span>
-</div>
-			</div>
+</div>			</div>
 
 	<div class="tribe-right">
 		<div class="tribe-block__rsvp__message__error">
