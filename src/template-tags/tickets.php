@@ -519,9 +519,9 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		}
 
 		// Message for how many remain available.
-		if ( -1 === $available ) {
+		if ( - 1 === $available ) {
 			$status_counts[] = sprintf(
-				/* translators: %1$s: formatted quantity remaining */
+			/* translators: %1$s: formatted quantity remaining */
 				_x(
 					'%1$s available',
 					'unlimited remaining stock message',
@@ -531,7 +531,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			);
 		} elseif ( $is_global ) {
 			$status_counts[] = sprintf(
-				/* translators: %1$s: formatted quantity remaining */
+			/* translators: %1$s: formatted quantity remaining */
 				_x(
 					'%1$s available of shared capacity',
 					'ticket shared capacity message (remaining stock)',
@@ -542,7 +542,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		} else {
 			// It's "own stock". We use the $stock value.
 			$status_counts[] = sprintf(
-				/* translators: %1$s: formatted quantity remaining */
+			/* translators: %1$s: formatted quantity remaining */
 				_x(
 					'%1$s available',
 					'ticket stock message (remaining stock)',
