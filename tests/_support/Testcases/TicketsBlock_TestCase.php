@@ -128,22 +128,25 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
-		$driver->setTolerableDifferences( [ $ticket_id, $post_id ] );
+		$driver->setTolerableDifferences( [
+			$ticket_id,
+			$post_id,
+		] );
 		$driver->setTolerableDifferencesPrefixes( [
 			'post-',
 			'tribe-block-tickets-item-',
 			'tribe__details__content--',
 			'tribe-tickets-attendees-list-optout-',
+			'Test PayPal ticket for ',
+			'Test PayPal ticket description for ',
+			'Test Easy Digital Downloads ticket for ',
+			'Test Easy Digital Downloads ticket description for ',
+			'Test WooCommerce ticket for ',
+			'Test WooCommerce ticket description for ',
 		] );
 		$driver->setTimeDependentAttributes( [
 			'data-ticket-id',
 		] );
-
-		// OMG this is bugged.
-		$html = preg_replace( '/post-\d+/', 'post-123', $html );
-		$html = preg_replace( '/tribe-block-tickets-item-\d+/', 'tribe-block-tickets-item-123', $html );
-		$html = preg_replace( '/tribe__details__content--\d+/', 'tribe__details__content--123', $html );
-		$html = preg_replace( '/tribe-tickets-attendees-list-optout-\d+/', 'tribe-tickets-attendees-list-optout-123', $html );
 
 		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );
@@ -182,22 +185,25 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
-		$driver->setTolerableDifferences( [ $ticket_id, $post_id ] );
+		$driver->setTolerableDifferences( [
+			$ticket_id,
+			$post_id,
+		] );
 		$driver->setTolerableDifferencesPrefixes( [
 			'post-',
 			'tribe-block-tickets-item-',
 			'tribe__details__content--',
 			'tribe-tickets-attendees-list-optout-',
+			'Test PayPal ticket for ',
+			'Test PayPal ticket description for ',
+			'Test Easy Digital Downloads ticket for ',
+			'Test Easy Digital Downloads ticket description for ',
+			'Test WooCommerce ticket for ',
+			'Test WooCommerce ticket description for ',
 		] );
 		$driver->setTimeDependentAttributes( [
 			'data-ticket-id',
 		] );
-
-		// OMG this is bugged.
-		$html = preg_replace( '/post-\d+/', 'post-123', $html );
-		$html = preg_replace( '/tribe-block-tickets-item-\d+/', 'tribe-block-tickets-item-123', $html );
-		$html = preg_replace( '/tribe__details__content--\d+/', 'tribe__details__content--123', $html );
-		$html = preg_replace( '/tribe-tickets-attendees-list-optout-\d+/', 'tribe-tickets-attendees-list-optout-123', $html );
 
 		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );

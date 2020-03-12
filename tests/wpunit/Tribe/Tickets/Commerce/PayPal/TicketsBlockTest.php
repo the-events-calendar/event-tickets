@@ -5,6 +5,14 @@ namespace Tribe\Tickets\Commerce\PayPal;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Testcases\TicketsBlock_TestCase;
 
+/**
+ * @group block
+ * @group block-paypal
+ * @group editor
+ * @group editor-paypal
+ * @group capacity
+ * @group capacity-paypal
+ */
 class TicketsBlockTest extends TicketsBlock_TestCase {
 
 	use PayPal_Ticket_Maker;

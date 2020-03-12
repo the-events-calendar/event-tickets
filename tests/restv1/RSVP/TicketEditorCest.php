@@ -8,6 +8,14 @@ use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker;
 use Tribe\Tickets\Test\Testcases\REST\V1\BaseTicketEditorCest;
 
+/**
+ * @group block
+ * @group block-rsvp
+ * @group editor
+ * @group editor-rsvp
+ * @group capacity
+ * @group capacity-rsvp
+ */
 class TicketEditorCest extends BaseTicketEditorCest {
 
 	use Ticket_Maker;
@@ -59,6 +67,16 @@ class TicketEditorCest extends BaseTicketEditorCest {
 	 * @dataProvider _get_ticket_matrix
 	 */
 	public function should_allow_creating_a_ticket( Restv1Tester $I, Example $variation ) {
+		// REST needs to be tested later.
+	}
+
+	/**
+	 * It should allow creating a RSVP and updating the post.
+	 *
+	 * @test
+	 * @dataProvider _get_shared_ticket_matrix
+	 */
+	public function should_allow_creating_a_ticket_and_updating_post( Restv1Tester $I, Example $variation ) {
 		// REST needs to be tested later.
 	}
 
