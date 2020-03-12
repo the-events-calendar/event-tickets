@@ -119,6 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.11.5] TBD =
 
+* Feature - Include Freemius integration to allow opt-in information collection. [ET-595]
 * Fix - Prevent unintentionally clearing global capacity settings when saving event/post while using Block Editor is enabled. [ETP-267]
 * Fix - Save updated shared capacity for event/post if the argument is passed to the REST API endpoint for a Tribe Commerce ticket. [ETP-267]
 * Fix - Make sure when changing unlimited ticket to be a shared capacity ticket that the empty individual capacity gets properly overridden to the shared capacity for Tribe Commerce. [ET-752]
