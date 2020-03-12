@@ -1189,7 +1189,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return 0;
 		}
 
-		$max_at_a_time = $this->get_max_qty_allowed_to_be_added_to_cart_at_a_time( $ticket );
+		$max_at_a_time = $this->get_max_qty_limit_per_transaction( $ticket );
 
 		// The actual ticket stock, not limited by Max At A Time.
 		$stock_available = $ticket->available();
@@ -1238,12 +1238,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @return int
 	 */
-	private function get_max_qty_allowed_to_be_added_to_cart_at_a_time( Tribe__Tickets__Ticket_Object $ticket ) {
+	private function get_max_qty_limit_per_transaction( Tribe__Tickets__Ticket_Object $ticket ) {
 		$default_max = 100;
-
-		if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
-			return $default_max;
-		}
 
 		/**
 		 * Cap the amount of tickets able to be purchased at a single time (single "add to cart" action)
