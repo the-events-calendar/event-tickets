@@ -755,6 +755,12 @@ class BaseTicketEditorCest extends BaseRestCest {
 		] );
 		$driver->setTolerableDifferencesPrefixes( [
 			'ticket_delete_',
+			'Test PayPal ticket for ',
+			'Test PayPal ticket description for ',
+			'Test Easy Digital Downloads ticket for ',
+			'Test Easy Digital Downloads ticket description for ',
+			'Test WooCommerce ticket for ',
+			'Test WooCommerce ticket description for ',
 		] );
 		$driver->setTimeDependentAttributes( [
 			'data-ticket-id',
@@ -827,6 +833,12 @@ class BaseTicketEditorCest extends BaseRestCest {
 		] );
 		$driver->setTolerableDifferencesPrefixes( [
 			'ticket_delete_',
+			'Test PayPal ticket for ',
+			'Test PayPal ticket description for ',
+			'Test Easy Digital Downloads ticket for ',
+			'Test Easy Digital Downloads ticket description for ',
+			'Test WooCommerce ticket for ',
+			'Test WooCommerce ticket description for ',
 		] );
 		$driver->setTimeDependentAttributes( [
 			'data-ticket-id',
