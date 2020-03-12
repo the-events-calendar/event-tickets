@@ -1260,7 +1260,7 @@ class Tribe__Tickets__Tickets_Handler {
 		);
 
 		// Don't allow less than 1.
-		if ( 0 === $max_at_a_time ) {
+		if ( $max_at_a_time < 1 ) {
 			$max_at_a_time = $default_max;
 		}
 
