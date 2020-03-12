@@ -28,6 +28,10 @@ git_clone_required_plugins(){
 
 	  	git clone --single-branch --branch ${branch} ${plugin_repo_url} ${plugin_slug};
 
+		echo "Cloned at the following commit hash:";
+
+	  	git rev-parse head;
+
 		cd ${plugin_slug};
 
 	  	if [[ -f ".gitmodules" ]]; then

@@ -12,7 +12,7 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	 *
 	 */
 	public function register() {
-		// Register these all the time - as we now use them in most of the tempaltes, blocks or otherwise.
+		// Register these all the time - as we now use them in most of the templates, blocks or otherwise.
 		$this->container->singleton( 'tickets.editor.template', 'Tribe__Tickets__Editor__Template' );
 		$this->container->singleton( 'tickets.editor.blocks.tickets', 'Tribe__Tickets__Editor__Blocks__Tickets' );
 		$this->container->singleton( 'tickets.editor.configuration', 'Tribe__Tickets__Editor__Configuration', array( 'hook' ) );
@@ -76,27 +76,12 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 			4
 		);
 
+		// Handle REST specific meta filtering.
 		add_filter(
-			'get_post_metadata',
-			tribe_callback( 'tickets.editor.meta', 'register_tickets_list_in_rest' ),
-			15,
-			4
-		);
-
-		// Don't delete virtual meta.
-		add_filter(
-			'delete_post_metadata',
-			tribe_callback( 'tickets.editor.meta', 'delete_tickets_list_in_rest' ),
-			15,
-			5
-		);
-
-		// Don't update virtual meta.
-		add_filter(
-			'update_post_metadata',
-			tribe_callback( 'tickets.editor.meta', 'update_tickets_list_in_rest' ),
-			15,
-			5
+			'rest_dispatch_request',
+			tribe_callback( 'tickets.editor.meta', 'filter_rest_dispatch_request' ),
+			10,
+			3
 		);
 
 		// Setup the Rest compatibility layer for WP

@@ -3,7 +3,7 @@
 namespace Tribe\Tickets\Test\REST\V1\PayPal;
 
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker;
-use Tribe\Tickets\Test\REST\V1\BaseRestCest;
+use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
 
 class FlagsCest extends BaseRestCest {
 	use Ticket_Maker;
@@ -19,7 +19,7 @@ class FlagsCest extends BaseRestCest {
 		tribe_update_option( 'ticket-enabled-post-types', [ 'post' ] );
 		$ticketed_post_id   = $I->havePostInDatabase();
 		$unticketed_post_id = $I->havePostInDatabase();
-		$ticket_id          = $this->create_paypal_ticket( $ticketed_post_id, 1 );
+		$ticket_id          = $this->create_paypal_ticket_basic( $ticketed_post_id, 1 );
 
 		$I->sendGET( $this->wp_rest_url . "posts/{$ticketed_post_id}" );
 
@@ -43,7 +43,7 @@ class FlagsCest extends BaseRestCest {
 		tribe_update_option( 'ticket-enabled-post-types', [ 'page' ] );
 		$ticketed_post_id   = $I->havePostInDatabase();
 		$unticketed_post_id = $I->havePostInDatabase();
-		$ticket_id          = $this->create_paypal_ticket( $ticketed_post_id, 1 );
+		$ticket_id          = $this->create_paypal_ticket_basic( $ticketed_post_id, 1 );
 
 		$I->sendGET( $this->wp_rest_url . "posts/{$ticketed_post_id}" );
 
@@ -69,7 +69,7 @@ class FlagsCest extends BaseRestCest {
 		tribe_update_option( 'ticket-enabled-post-types', [ 'tribe_events' ] );
 		$ticketed_event_id   = $I->havePostInDatabase( $this->event_data() );
 		$unticketed_event_id = $I->havePostInDatabase( $this->event_data() );
-		$ticket_id           = $this->create_paypal_ticket( $ticketed_event_id, 1 );
+		$ticket_id           = $this->create_paypal_ticket_basic( $ticketed_event_id, 1 );
 
 		$I->sendGET( $this->tec_rest_url . "events/{$ticketed_event_id}" );
 
@@ -108,7 +108,7 @@ class FlagsCest extends BaseRestCest {
 		tribe_update_option( 'ticket-enabled-post-types', [ 'page' ] );
 		$ticketed_event_id   = $I->havePostInDatabase( $this->event_data() );
 		$unticketed_event_id = $I->havePostInDatabase( $this->event_data() );
-		$ticket_id           = $this->create_paypal_ticket( $ticketed_event_id, 1 );
+		$ticket_id           = $this->create_paypal_ticket_basic( $ticketed_event_id, 1 );
 
 		$I->sendGET( $this->tec_rest_url . "events/{$ticketed_event_id}" );
 

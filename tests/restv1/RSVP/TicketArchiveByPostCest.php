@@ -6,7 +6,7 @@ use Codeception\Example;
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as Ticket_Maker;
-use Tribe\Tickets\Test\REST\V1\BaseRestCest;
+use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
 
 class TicketArchiveByPostCest extends BaseRestCest {
 	use Ticket_Maker;

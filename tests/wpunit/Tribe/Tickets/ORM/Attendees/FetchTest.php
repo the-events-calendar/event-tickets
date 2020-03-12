@@ -48,7 +48,7 @@ class FetchTest extends \Codeception\TestCase\WPTestCase {
 
 		$post_id = $this->factory->post->create();
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1 );
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
 
 		$paypal_attendee_ids = $this->create_many_attendees_for_ticket( 5, $paypal_ticket_id, $post_id );
@@ -70,7 +70,7 @@ class FetchTest extends \Codeception\TestCase\WPTestCase {
 
 		$post_id = $this->factory->post->create();
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1 );
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
 
 		$paypal_attendee_ids = $this->create_many_attendees_for_ticket( 5, $paypal_ticket_id, $post_id );
@@ -92,7 +92,7 @@ class FetchTest extends \Codeception\TestCase\WPTestCase {
 
 		$post_id = $this->factory->post->create();
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1 );
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
 
 		$paypal_attendee_ids = $this->create_many_attendees_for_ticket( 5, $paypal_ticket_id, $post_id );

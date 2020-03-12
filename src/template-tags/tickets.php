@@ -964,10 +964,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 		// This is really "post types that allow tickets"
 		$event_types = Tribe__Tickets__Main::instance()->post_types();
 
-		// Hand off when it's an event we're checking.
-		if ( in_array( $post->post_type, $event_types, true ) ) {
-			return tribe_get_event_capacity( $post );
-		}
+		$is_event_type = in_array( $post->post_type, $event_types, true );
 
 		/**
 		 * @var Tribe__Tickets__Tickets_Handler $tickets_handler
@@ -980,7 +977,8 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 
 		// When we have a legacy ticket we migrate it
 		if (
-			$version->is_legacy( $post->ID )
+			! $is_event_type
+			&& $version->is_legacy( $post->ID )
 		) {
 			$legacy_capacity = $tickets_handler->filter_capacity_support( null, $post->ID, $key );
 
@@ -999,7 +997,10 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 			];
 
 			// When we are in a Ticket Post Type update where we get the value from Event
-			if ( in_array( $mode, $shared_modes, true ) ) {
+			if (
+				! $is_event_type
+				&& in_array( $mode, $shared_modes, true )
+			) {
 				$event_id = tribe_tickets_get_event_ids( $post->ID );
 
 				// It will return an array of Events
@@ -1115,7 +1116,7 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 		}
 
 		// If either is unlimited, it's all unlimited.
-		if ( -1 === $tickets_cap || -1 === $rsvp_cap) {
+		if ( -1 === $tickets_cap || -1 === $rsvp_cap ) {
 			return -1;
 		}
 
