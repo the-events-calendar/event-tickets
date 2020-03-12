@@ -753,10 +753,14 @@ class BaseTicketEditorCest extends BaseRestCest {
 			$ticket_id,
 			$post_id,
 		] );
+		$driver->setTolerableDifferencesPrefixes( [
+			'ticket_delete_',
+		] );
 		$driver->setTimeDependentAttributes( [
 			'data-ticket-id',
 			'data-ticket-type-id',
 			'data-ticket-order-id',
+			'attr-ticket-id',
 		] );
 
 		$html = implode( "\n\n------------\n\n", $response['data'] );
@@ -821,10 +825,14 @@ class BaseTicketEditorCest extends BaseRestCest {
 			$ticket_id,
 			$post_id,
 		] );
+		$driver->setTolerableDifferencesPrefixes( [
+			'ticket_delete_',
+		] );
 		$driver->setTimeDependentAttributes( [
 			'data-ticket-id',
 			'data-ticket-type-id',
 			'data-ticket-order-id',
+			'attr-ticket-id',
 		] );
 
 		$html = implode( "\n\n------------\n\n", $response['data'] );
