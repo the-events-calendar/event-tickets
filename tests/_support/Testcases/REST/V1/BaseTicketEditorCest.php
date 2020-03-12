@@ -399,6 +399,182 @@ class BaseTicketEditorCest extends BaseRestCest {
 	}
 
 	/**
+	 * It should allow creating a ticket and updating the post.
+	 *
+	 * @dataProvider _get_shared_ticket_matrix
+	 */
+	public function should_allow_creating_a_ticket_and_updating_post( Restv1Tester $I, Example $variation ) {
+		$I->generate_nonce_for_role( 'administrator' );
+
+		$variation = $variation->getIterator()->getArrayCopy();
+
+		$author_id = get_current_user_id();
+		$post_id   = $I->havePostInDatabase();
+
+		$args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name',
+			'description'      => 'Test description text',
+			'price'            => 12,
+			'start_date'       => date_i18n( 'Y-m-d' ),
+			'start_time'       => '08:00:00',
+			'end_date'         => date_i18n( 'Y-m-d', strtotime( '+2 months' ) ),
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-555',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+		];
+
+		$create_args = array_merge( $args, $variation );
+
+		if ( 'Tribe__Tickets__RSVP' === $create_args['provider'] ) {
+			unset( $create_args['price'], $create_args['sku'] );
+		}
+
+		$ticket_create_rest_url = $this->tickets_url . '/';
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 202 );
+		$I->seeResponseIsJson();
+
+		$capacity = $this->get_capacity( $create_args );
+		$provider = $this->get_provider( $create_args['provider'] );
+		$mode     = 'own';
+		$price    = '0';
+		$sku      = null;
+
+		if ( isset( $create_args['ticket']['mode'] ) ) {
+			$mode = 'unlimited';
+
+			if ( '' !== $create_args['ticket']['mode'] ) {
+				$mode = $create_args['ticket']['mode'];
+			}
+		} elseif ( - 1 === $capacity ) {
+			$mode = 'unlimited';
+		}
+
+		if ( isset( $create_args['price'] ) ) {
+			$price = $create_args['price'];
+		}
+
+		if ( 'rsvp' !== $provider ) {
+			$sku = $create_args['sku'];
+		}
+
+		$expected_json = [
+			'description'                   => $create_args['description'],
+			// @todo Empty string may not be what it should return if unlimited.
+			'capacity'                      => - 1 === $capacity ? '' : $capacity,
+			'post_id'                       => $post_id,
+			'provider'                      => $provider,
+			'author'                        => (string) $author_id,
+			'status'                        => 'publish',
+			'title'                         => $create_args['name'],
+			'image'                         => false,
+			// @todo TC does not return full date+time, should it?
+			'available_from'                => 'tribe-commerce' === $provider ? $create_args['start_date'] : $create_args['start_date'] . ' ' . $create_args['start_time'],
+			// @todo TC does not return full date+time, should it?
+			'available_until'               => 'tribe-commerce' === $provider ? $create_args['end_date'] : $create_args['end_date'] . ' ' . $create_args['end_time'],
+			'capacity_details'              => [
+				'available_percentage' => 100,
+				// @todo Zero may not be what it should return if unlimited.
+				'max'                  => - 1 === $capacity ? 0 : $capacity,
+				'available'            => $capacity,
+				'sold'                 => 0,
+				'pending'              => 0,
+			],
+			'is_available'                  => true,
+			'cost'                          => '$' . $price . '.00',
+			'cost_details'                  => [
+				'currency_symbol'   => 'woo' === $provider ? '€' : '$',
+				'currency_position' => 'woo' === $provider ? 'postfix' : 'prefix',
+				'values'            => [
+					(string) $price,
+				],
+			],
+			'requires_attendee_information' => false,
+			'attendee_information_fields'   => [],
+			'supports_attendee_information' => false,
+			'attendees'                     => [],
+			'checkin'                       => [
+				'checked_in'              => 0,
+				'unchecked_in'            => 0,
+				'checked_in_percentage'   => 100,
+				'unchecked_in_percentage' => 0,
+			],
+			'capacity_type'                 => $mode,
+			'sku'                           => $sku,
+			'available_from_start_time'     => $create_args['start_time'],
+			'available_from_end_time'       => $create_args['end_time'],
+			'totals'                        => [
+				// @todo Zero may not be what it should return if unlimited.
+				'stock'   => - 1 === $capacity ? 0 : $capacity,
+				'sold'    => 0,
+				'pending' => 0,
+			],
+		];
+
+		$is_plus_test = $this->is_plus;
+
+		if ( ! $is_plus_test ) {
+			unset( $expected_json['requires_attendee_information'], $expected_json['attendee_information_fields'] );
+		}
+
+		$create_response = json_decode( $I->grabResponse(), true );
+
+		$ticket_id = $create_response['id'];
+
+		$post_args = [
+			'id'      => $post_id,
+			'content' => "<!-- wp:tribe/event-datetime /-->\n\n<!-- wp:paragraph {\"placeholder\":\"Add Description...\"} -->\n<p></p>\n<!-- /wp:paragraph -->\n\n<!-- wp:tribe/event-price /-->\n\n<!-- wp:tribe/event-organizer /-->\n\n<!-- wp:tribe/event-venue /-->\n\n<!-- wp:tribe/event-website /-->\n\n<!-- wp:tribe/event-links /-->\n\n<!-- wp:tribe/tickets -->\n<div class=\"wp-block-tribe-tickets\"><!-- wp:tribe/tickets-item {\"hasBeenCreated\":true,\"ticketId\":{$ticket_id} -->\n<div class=\"wp-block-tribe-tickets-item\"></div>\n<!-- /wp:tribe/tickets-item --></div>\n<!-- /wp:tribe/tickets -->\n\n<!-- wp:tribe/rsvp /-->",
+			'meta'    => [
+				'_price'                                 => '',
+				'_stock'                                 => '',
+				'_tribe_ticket_header'                   => '',
+				'_tribe_default_ticket_provider'         => $create_args['provider'],
+				'_tribe_ticket_capacity'                 => $capacity,
+				'_ticket_start_date'                     => '',
+				'_ticket_end_date'                       => '',
+				'_tribe_ticket_show_description'         => '',
+				'_tribe_ticket_show_not_going'           => false,
+				'_tribe_ticket_use_global_stock'         => '',
+				'_tribe_ticket_global_stock_level'       => '',
+				'_global_stock_mode'                     => '',
+				'_global_stock_cap'                      => '',
+				'_tribe_rsvp_for_event'                  => '',
+				'_tribe_ticket_going_count'              => '',
+				'_tribe_ticket_not_going_count'          => '',
+				'_tribe_tickets_list'                    => [],
+				'_tribe_ticket_has_attendee_info_fields' => false,
+			],
+		];
+
+		// Handle post update.
+		$post_update_rest_url = $this->wp_rest_url . 'posts/' . $post_id;
+
+		$I->sendPOST( $post_update_rest_url, $post_args );
+
+		$I->seeResponseCodeIs( 200 );
+		$I->seeResponseIsJson();
+
+		// Get Ticket data.
+		$ticket_get_rest_url = $this->tickets_url . '/' . $ticket_id;
+
+		$I->sendGET( $ticket_get_rest_url );
+
+		$I->seeResponseCodeIs( 200 );
+		$I->seeResponseIsJson();
+
+		$get_response = json_decode( $I->grabResponse(), true );
+
+		// Remove args from comparison.
+		unset( $get_response['id'], $get_response['global_id'], $get_response['global_id_lineage'], $get_response['date'], $get_response['date_utc'], $get_response['modified'], $get_response['modified_utc'], $get_response['available_from_details'], $get_response['available_until_details'], $get_response['rest_url'] );
+
+		$I->assertEquals( $expected_json, $get_response );
+	}
+
+	/**
 	 * It should allow updating a ticket.
 	 *
 	 * @test
@@ -543,14 +719,6 @@ class BaseTicketEditorCest extends BaseRestCest {
 
 		$ticket_create_ajax_url = admin_url( 'admin-ajax.php' );
 
-		// Assertion test the admin-ajax.php response.
-		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
-
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['list'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['settings'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['ticket'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['notice'] ), $driver );
-
 		preg_match( '/ticket-id=["\'](\d+)["\']/', $response['data']['list'], $matches );
 
 		$post_id   = $create_args['post_id'];
@@ -578,9 +746,22 @@ class BaseTicketEditorCest extends BaseRestCest {
 
 		$ticket_create_ajax_url = admin_url( 'admin-ajax.php' );
 
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['list'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['settings'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['ticket'] ), $driver );
+		// Assertion test the admin-ajax.php response.
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+
+		$driver->setTolerableDifferences( [
+			$ticket_id,
+			$post_id,
+		] );
+		$driver->setTimeDependentAttributes( [
+			'data-ticket-id',
+			'data-ticket-type-id',
+			'data-ticket-order-id',
+		] );
+
+		$html = implode( "\n\n------------\n\n", $response['data'] );
+
+		$this->assertMatchesSnapshot( $this->prepare_html( $html ), $driver );
 	}
 
 	/**
@@ -627,19 +808,28 @@ class BaseTicketEditorCest extends BaseRestCest {
 
 		$ticket_create_ajax_url = admin_url( 'admin-ajax.php' );
 
-		// Assertion test the admin-ajax.php response.
-		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
-
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['list'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['settings'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['ticket'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $response['data']['notice'] ), $driver );
-
 		preg_match( '/ticket-id=["\'](\d+)["\']/', $response['data']['list'], $matches );
 
 		$post_id   = $create_args['post_id'];
 		$author_id = get_current_user_id();
 		$ticket_id = $matches[1];
+
+		// Assertion test the admin-ajax.php response.
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+
+		$driver->setTolerableDifferences( [
+			$ticket_id,
+			$post_id,
+		] );
+		$driver->setTimeDependentAttributes( [
+			'data-ticket-id',
+			'data-ticket-type-id',
+			'data-ticket-order-id',
+		] );
+
+		$html = implode( "\n\n------------\n\n", $response['data'] );
+
+		$this->assertMatchesSnapshot( $this->prepare_html( $html ), $driver );
 
 		// Get ticket data so we can assert ticket saved as expected.
 		$ticket_get_rest_url = $this->tickets_url . '/' . $ticket_id;
@@ -794,14 +984,6 @@ class BaseTicketEditorCest extends BaseRestCest {
 
 		$ticket_create_ajax_url = admin_url( 'admin-ajax.php' );
 
-		// Assertion test the admin-ajax.php response.
-		$driver = new WPHtmlOutputDriver( getenv( 'WP_URL' ), 'http://wp.localhost' );
-
-		$this->assertMatchesSnapshot( $this->prepare_html( $create_response['data']['list'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $create_response['data']['settings'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $create_response['data']['ticket'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $create_response['data']['notice'] ), $driver );
-
 		preg_match( '/ticket-id=["\'](\d+)["\']/', $create_response['data']['list'], $matches );
 
 		$post_id   = $create_args['post_id'];
@@ -823,11 +1005,6 @@ class BaseTicketEditorCest extends BaseRestCest {
 		$I->assertEquals( $this->prepare_html( $create_response['data']['notice'] ), $this->prepare_html( $update_response['data']['notice'] ) );
 
 		$I->assertTrue( $update_response['success'] );
-
-		$this->assertMatchesSnapshot( $this->prepare_html( $update_response['data']['list'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $update_response['data']['settings'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $update_response['data']['ticket'] ), $driver );
-		$this->assertMatchesSnapshot( $this->prepare_html( $update_response['data']['notice'] ), $driver );
 
 		// Get ticket data so we can assert ticket saved as expected.
 		$ticket_get_rest_url = $this->tickets_url . '/' . $ticket_id;

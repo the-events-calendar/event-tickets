@@ -32,38 +32,38 @@
 			</tr>
 		</thead>
 				<tbody class="tribe-tickets-editor-table-tickets-body">
-			<tr class="Tribe__Tickets__Commerce__PayPal__Main is-expanded" data-ticket-order-id="order_2" data-ticket-type-id="2">
-	<td class="column-primary ticket_name Tribe__Tickets__Commerce__PayPal__Main" data-label="Ticket Type:">
+					</tbody>
+
+		<tbody>
+			<tr class="Tribe__Tickets__RSVP is-expanded" data-ticket-order-id="order_2" data-ticket-type-id="2">
+	<td class="column-primary ticket_name Tribe__Tickets__RSVP" data-label="Ticket Type:">
 		<span class="dashicons dashicons-screenoptions tribe-handle"></span>
 		<input
 			type="hidden"
 			class="tribe-ticket-field-order"
 			name="tribe-tickets[list][2][order]"
 			value="0"
-					>
+			disabled		>
 
 		
-		Test ticket name
+		Test RSVP name
 			</td>
 
 	<td class="ticket_price" data-label="Price:">
-	<span class="tribe-tickets-price-amount amount">&#x24;12.00</span></td>
+	RSVP</td>
 
 	<td class="ticket_capacity">
 		<span class=\'tribe-mobile-only\'>Capacity:</span>
-		(10)	</td>
+		13	</td>
 
 	<td class="ticket_available">
 		<span class=\'tribe-mobile-only\'>Available:</span>
-				(10)	</td>
+				13	</td>
 
 	<td class="ticket_edit">
-		<button data-provider=\'Tribe__Tickets__Commerce__PayPal__Main\' data-ticket-id=\'2\' title=\'Ticket ID: 2\' class=\'ticket_edit_button\'><span class=\'ticket_edit_text\'>Test ticket name</span></a>	</td>
+		<button data-provider=\'Tribe__Tickets__RSVP\' data-ticket-id=\'2\' title=\'Ticket ID: 2\' class=\'ticket_edit_button\'><span class=\'ticket_edit_text\'>Test RSVP name</span></a>	</td>
 </tr>
 		</tbody>
-
-		<tbody>
-					</tbody>
 	</table>
 
 			</div>
@@ -211,7 +211,7 @@
 						name=\'ticket_name\'
 						class="ticket_field ticket_form_right"
 						size=\'25\'
-						value="Test ticket name"
+						value="Test RSVP name"
 						data-validation-is-required
 						data-validation-error="RSVP type is a required field"
 					/>
@@ -235,7 +235,7 @@
 							value="Tribe__Tickets__RSVP"
 							class="ticket_field ticket_provider"
 							tabindex="-1"
-													>
+							 checked=\'checked\'						>
 						<span>
 							RSVPs						</span>
 											<input
@@ -245,7 +245,7 @@
 							value="Tribe__Tickets__Commerce__PayPal__Main"
 							class="ticket_field ticket_provider"
 							tabindex="-1"
-							 checked=\'checked\'						>
+													>
 						<span>
 							Tribe Commerce						</span>
 									</fieldset>
@@ -262,9 +262,11 @@
 			name="ticket_price"
 			class="ticket_field ticket_form_right"
 			size="7"
-			value="12"
-						data-validation-error="Ticket price must be greater than zero." data-required data-validation-is-greater-than="0"		/>
-			</div>
+			value="0"
+						data-validation-error="Ticket price must be greater than zero."		/>
+					<p class="description ticket_form_right">
+				Leave blank for free Ticket			</p>
+				</div>
 
 		</div><div
 	class="input_block ticket_advanced_Tribe__Tickets__RSVP tribe-dependent"
@@ -281,27 +283,7 @@
 		name=\'tribe-ticket[capacity]\'
 		class="ticket_field tribe-rsvp-field-capacity ticket_form_right"
 		size=\'7\'
-		value=\'10\'
-	/>
-	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
-</div>
-
-<div
-	class="input_block ticket_advanced_Tribe__Tickets__Commerce__PayPal__Main tribe-dependent"
-	data-depends="#Tribe__Tickets__Commerce__PayPal__Main_radio"
-	data-condition-is-checked
->
-	<label
-		for="Tribe__Tickets__Commerce__PayPal__Main_capacity"
-		class="ticket_form_label ticket_form_left"
-	>
-		Capacity:	</label>
-	<input
-		type=\'text\' id=\'Tribe__Tickets__Commerce__PayPal__Main_capacity\'
-		name=\'tribe-ticket[capacity]\'
-		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
-		size=\'7\'
-		value=\'10\'
+		value=\'13\'
 	/>
 	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
 </div>
@@ -397,24 +379,7 @@
 		</div>
 	</div>
 	<div id="advanced_fields">
-		<div id="Tribe__Tickets__Commerce__PayPal__Main_advanced" class="tribe-dependent" data-depends="#Tribe__Tickets__Commerce__PayPal__Main_radio" data-condition-is-checked>
-<div class="ticket_advanced_Tribe__Tickets__Commerce__PayPal__Main input_block tribe-dependent"
-     data-depends="#Tribe__Tickets__Commerce__PayPal__Main_radio"
-     data-condition-is-checked
->
-	<label for="ticket_tpp_sku" class="ticket_form_label ticket_form_left">SKU:</label>
-	<input
-		type="text"
-		id="ticket_sku"
-		name="ticket_sku"
-		class="ticket_field sku_input ticket_form_right"
-		size="14"
-		value="TKT-555"
-	>
-	<p class="description ticket_form_right">
-		A unique identifying code for each ticket type you&#039;re selling	</p>
-</div>
-</div>	</div>
+		<div id="Tribe__Tickets__Commerce__PayPal__Main_advanced" class="tribe-dependent" data-depends="#Tribe__Tickets__Commerce__PayPal__Main_radio" data-condition-is-checked></div>	</div>
 </section><!-- #ticket_form_advanced -->
 
 				
@@ -456,7 +421,7 @@
 
 				
 				<div id="ticket_bottom_right">
-					<a href="http://test.tribe.dev/wp-admin/post.php?post=1&action=edit&dialog=move_ticket_types&ticket_type_id=2&check=nonceABC&TB_iframe=true" class="thickbox tribe-ticket-move-link">Move Ticket</a> | <span><a href="#" attr-provider="Tribe__Tickets__Commerce__PayPal__Main" attr-ticket-id="2" id="ticket_delete_2" class="ticket_delete">Delete Ticket</a></span>				</div>
+					<a href="http://test.tribe.dev/wp-admin/post.php?post=1&action=edit&dialog=move_ticket_types&ticket_type_id=2&check=nonceABC&TB_iframe=true" class="thickbox tribe-ticket-move-link">Move RSVP</a> | <span><a href="#" attr-provider="Tribe__Tickets__RSVP" attr-ticket-id="2" id="ticket_delete_2" class="ticket_delete">Delete RSVP</a></span>				</div>
 			</div>
 		</div>
 	</div>

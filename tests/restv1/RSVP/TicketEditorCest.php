@@ -63,6 +63,16 @@ class TicketEditorCest extends BaseTicketEditorCest {
 	}
 
 	/**
+	 * It should allow creating a RSVP and updating the post.
+	 *
+	 * @test
+	 * @dataProvider _get_shared_ticket_matrix
+	 */
+	public function should_allow_creating_a_ticket_and_updating_post( Restv1Tester $I, Example $variation ) {
+		// REST needs to be tested later.
+	}
+
+	/**
 	 * It should allow updating a RSVP.
 	 *
 	 * @test

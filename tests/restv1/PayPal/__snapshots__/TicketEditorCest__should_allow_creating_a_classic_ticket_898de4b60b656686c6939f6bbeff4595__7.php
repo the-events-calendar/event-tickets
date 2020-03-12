@@ -211,7 +211,7 @@
 						name=\'ticket_name\'
 						class="ticket_field ticket_form_right"
 						size=\'25\'
-						value="Test ticket name"
+						value=""
 						data-validation-is-required
 						data-validation-error="RSVP type is a required field"
 					/>
@@ -245,7 +245,7 @@
 							value="Tribe__Tickets__Commerce__PayPal__Main"
 							class="ticket_field ticket_provider"
 							tabindex="-1"
-							 checked=\'checked\'						>
+													>
 						<span>
 							Tribe Commerce						</span>
 									</fieldset>
@@ -262,8 +262,8 @@
 			name="ticket_price"
 			class="ticket_field ticket_form_right"
 			size="7"
-			value="12"
-						data-validation-error="Ticket price must be greater than zero." data-required data-validation-is-greater-than="0"		/>
+			value=""
+						data-validation-error="Ticket price must be greater than zero."		/>
 			</div>
 
 		</div><div
@@ -281,7 +281,7 @@
 		name=\'tribe-ticket[capacity]\'
 		class="ticket_field tribe-rsvp-field-capacity ticket_form_right"
 		size=\'7\'
-		value=\'10\'
+		value=\'\'
 	/>
 	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
 </div>
@@ -301,7 +301,7 @@
 		name=\'tribe-ticket[capacity]\'
 		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
 		size=\'7\'
-		value=\'10\'
+		value=\'\'
 	/>
 	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
 </div>
@@ -320,7 +320,7 @@
 			name="ticket_description"
 			class="ticket_field ticket_form_right"
 			id="ticket_description"
-		>Test description text</textarea>
+		></textarea>
 		<div class="input_block">
 			<label class="tribe_soft_note">
 				<input
@@ -342,7 +342,7 @@
 				class="tribe-datepicker tribe-field-start_date ticket_field"
 				name="ticket_start_date"
 				id="ticket_start_date"
-				value="1/2/2020"
+				value=""
 				data-validation-type="datepicker"
 				data-validation-is-less-or-equal-to="#ticket_end_date"
 				data-validation-error="{&quot;is-required&quot;:&quot;Start sale date cannot be empty.&quot;,&quot;is-less-or-equal-to&quot;:&quot;Start sale date cannot be greater than End Sale date&quot;}"
@@ -357,7 +357,7 @@
 				id="ticket_start_time"
 								data-step="30"
 				data-round="00:00:00"
-				value="08:00:00"
+				value=""
 				aria-label="Ticket start date"
 			/>
 			<span class="helper-text hide-if-js">HH:MM</span>
@@ -374,7 +374,7 @@
 				class="tribe-datepicker tribe-field-end_date ticket_field"
 				name="ticket_end_date"
 				id="ticket_end_date"
-				value="3/1/2050"
+				value=""
 			/>
 			<span class="helper-text hide-if-js">YYYY-MM-DD</span>
 			<span class="datetime_seperator"> at </span>
@@ -386,7 +386,7 @@
 				id="ticket_end_time"
 								data-step="30"
 				data-round="00:00:00"
-				value="20:00:00"
+				value=""
 				aria-label="Ticket end date"
 			/>
 			<span class="helper-text hide-if-js">HH:MM</span>
@@ -409,7 +409,7 @@
 		name="ticket_sku"
 		class="ticket_field sku_input ticket_form_right"
 		size="14"
-		value="TKT-555"
+		value=""
 	>
 	<p class="description ticket_form_right">
 		A unique identifying code for each ticket type you&#039;re selling	</p>
@@ -426,7 +426,7 @@
 					name="ticket_id"
 					id="ticket_id"
 					class="ticket_field"
-					value="2"
+					value=""
 				/>
 				<input
 					type="button"
@@ -456,9 +456,13 @@
 
 				
 				<div id="ticket_bottom_right">
-					<a href="http://test.tribe.dev/wp-admin/post.php?post=1&action=edit&dialog=move_ticket_types&ticket_type_id=2&check=nonceABC&TB_iframe=true" class="thickbox tribe-ticket-move-link">Move Ticket</a> | <span><a href="#" attr-provider="Tribe__Tickets__Commerce__PayPal__Main" attr-ticket-id="2" id="ticket_delete_2" class="ticket_delete">Delete Ticket</a></span>				</div>
+									</div>
 			</div>
 		</div>
 	</div>
 </div>
-';
+
+
+------------
+
+<div class="wrap"><div class="updated"><p>ticket-add</p></div></div>';
