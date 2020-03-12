@@ -55,7 +55,7 @@
 	min="1"
 	value="1"
 	required
-	data-remaining="-1"
+	max="100"
 		/>
 		<button
 	type="button"

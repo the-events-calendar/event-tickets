@@ -124,6 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Save updated shared capacity for event/post if the argument is passed to the REST API endpoint for a Tribe Commerce ticket. [ETP-267]
 * Fix - Make sure when changing unlimited ticket to be a shared capacity ticket that the empty individual capacity gets properly overridden to the shared capacity for Tribe Commerce. [ET-752]
 * Fix - Prevent ticket capacity showing sold out when you have unlimited tickets or RSVPs alongside shared capacity tickets unless it really is sold out. [ET-744]
+* Fix - The maximum quantity allowed to be added to cart in a single click action is now always set (defaults to `100`, filterable via `tribe_tickets_get_ticket_default_max_purchase_limit`), for sanity and performance reasons, avoiding accidentally adding 100,000 tickets to cart at a time and crashing the site. [ETP-149]
 * Tweak - Notify Promoter of changes when tickets are moved to other Events. [ET-741]
 * Tweak - Improved compatibility between Tribe Commerce and Promoter by extending the actions that notify Promoter of Attendee modifications. [ET-746]
 
