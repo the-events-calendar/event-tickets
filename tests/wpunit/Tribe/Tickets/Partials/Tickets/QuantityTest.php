@@ -67,7 +67,7 @@ class Quantity extends WPTestCase {
 		];
 
 		// Return zero. Hijack the value so it returns the "Sold Out" template.
-		add_filter( 'tribe_tickets_get_ticket_max_purchase', '__return_false' );
+		add_filter( 'tribe_tickets_get_ticket_max_purchase', '__return_zero' );
 
 		$html     = $template->template( $this->partial_path, $args, false );
 
