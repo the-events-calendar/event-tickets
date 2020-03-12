@@ -45,7 +45,6 @@
 	min="1"
 	value="1"
 	required
-	data-remaining="0"
 			max="0"
 		/>
 		<button
