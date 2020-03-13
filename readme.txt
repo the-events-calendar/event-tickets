@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.11.5] TBD =
+= [4.11.5] 2020-03-18 =
 
 * Feature - Include Freemius integration to allow opt-in information collection. [ET-595]
 * Fix - Prevent unintentionally clearing global capacity settings when saving event/post while using Block Editor is enabled. [ETP-267]
@@ -129,6 +129,9 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Make it so the ticket quantity in the tickets block doesn't jump around when it gets to the maximum available in Safari and you try to increase it. [ET-758]
 * Tweak - Notify Promoter of changes when tickets are moved to other Events. [ET-741]
 * Tweak - Improved compatibility between Tribe Commerce and Promoter by extending the actions that notify Promoter of Attendee modifications. [ET-746]
+* Tweak - Added filters: `tribe_tickets_integrations_should_load_freemius`, `tribe_tickets_get_ticket_default_max_purchase`
+* Tweak - Changed views: `blocks/rsvp/form/attendee-meta`, `blocks/rsvp/form/details`, `blocks/rsvp/form/quantity-input`, `blocks/rsvp/form/quantity`, `blocks/tickets/extra-available`, `blocks/tickets/quantity-number`, `tickets/rsvp`, `tickets/tpp`
+* Language - 4 new strings added, 47 updated, 2 fuzzied, and 0 obsoleted
 
 = [4.11.4] 2020-02-26 =
 
