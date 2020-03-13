@@ -148,6 +148,9 @@ class TicketsBlock_TestCase extends WPTestCase {
 			'data-ticket-id',
 		] );
 
+		// Remove the port so it doesn't conflict with URL tolerances.
+		$html = str_replace( ':8080', '', $html );
+
 		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -204,6 +207,9 @@ class TicketsBlock_TestCase extends WPTestCase {
 		$driver->setTimeDependentAttributes( [
 			'data-ticket-id',
 		] );
+
+		// Remove the port so it doesn't conflict with URL tolerances.
+		$html = str_replace( ':8080', '', $html );
 
 		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );
