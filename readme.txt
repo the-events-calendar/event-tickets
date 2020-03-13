@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.9
 Tested up to: 5.3.2
-Stable tag: 4.11.4
+Stable tag: 4.11.5
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -120,6 +120,13 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.11.5] TBD =
 
 * Feature - Include Freemius integration to allow opt-in information collection. [ET-595]
+* Fix - Prevent unintentionally clearing global capacity settings when saving event/post while using Block Editor is enabled. [ETP-267]
+* Fix - Save updated shared capacity for event/post if the argument is passed to the REST API endpoint for a Tribe Commerce ticket. [ETP-267]
+* Fix - Make sure when changing unlimited ticket to be a shared capacity ticket that the empty individual capacity gets properly overridden to the shared capacity for Tribe Commerce. [ET-752]
+* Fix - Prevent ticket capacity showing sold out when you have unlimited tickets or RSVPs alongside shared capacity tickets unless it really is sold out. [ET-744]
+* Fix - The quantity allowed in a single "add to cart" action is now always set (defaults to `100`, filterable via `tribe_tickets_get_ticket_max_purchase`), for sanity and performance reasons. [ETP-149]
+* Fix - Correct the displayed quantity of tickets available in the Attendees Report admin screen. It was forcing the formatted number string (e.g. `2,000`) to an integer (this example was displaying as `2`) so only affected tickets with available quantities greater than 999 that weren't Unlimited. [ET-756]
+* Fix - Make it so the ticket quantity in the tickets block doesn't jump around when it gets to the maximum available in Safari and you try to increase it. [ET-758]
 * Tweak - Notify Promoter of changes when tickets are moved to other Events. [ET-741]
 * Tweak - Improved compatibility between Tribe Commerce and Promoter by extending the actions that notify Promoter of Attendee modifications. [ET-746]
 

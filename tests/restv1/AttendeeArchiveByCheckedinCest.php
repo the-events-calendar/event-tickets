@@ -2,6 +2,7 @@
 
 namespace Tribe\Tickets\Test\REST\V1;
 
+use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
@@ -33,7 +34,7 @@ class AttendeeArchiveByCheckedinCest extends BaseRestCest {
 			'checkin' => false,
 		] );
 		$paypal_post                           = $I->havePostInDatabase();
-		$paypal_ticket                         = $this->create_paypal_ticket( $paypal_post, 3 );
+		$paypal_ticket                         = $this->create_paypal_ticket_basic( $paypal_post, 3 );
 		$paypal_checked_in_attendees     = $this->create_many_attendees_for_ticket( 2, $paypal_ticket, $paypal_post, [
 			'checkin'         => true,
 			'checkin_details' => [

@@ -126,6 +126,7 @@ window.tribe.tickets.block = {
 	obj.updateAvailability = function( tickets ) {
 		Object.keys( tickets ).forEach( function( ticketId ) {
 			const available = tickets[ ticketId ].available;
+			const maxPurchase = tickets[ ticketId ].max_purchase;
 			const $ticketEl = $( obj.selector.item + '[data-ticket-id="' + ticketId + '"]' );
 
 			if ( 0 === available ) { // Ticket is out of stock.
@@ -143,7 +144,7 @@ window.tribe.tickets.block = {
 			}
 
 			if ( 1 < available ) { // Ticket in stock, we may want to update values.
-				$ticketEl.find( obj.selector.itemQuantityInput ).attr( { max: available } );
+				$ticketEl.find( obj.selector.itemQuantityInput ).attr( { max: maxPurchase } );
 				$ticketEl.find( obj.selector.itemExtraAvailableQuantity ).html( available );
 			}
 		} );
@@ -480,6 +481,10 @@ window.tribe.tickets.block = {
 
 		if ( 'function' === typeof $input[ 0 ].stepUp ) {
 			try {
+				// Bail if we're already in the max, safari has issues with stepUp() here.
+				if ( max < ( originalValue + step ) ) {
+					return;
+				}
 				$input[ 0 ].stepUp();
 			} catch ( ex ) {
 				$input.val( newValue );

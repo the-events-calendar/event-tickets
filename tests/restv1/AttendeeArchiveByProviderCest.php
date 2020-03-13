@@ -2,6 +2,7 @@
 
 namespace Tribe\Tickets\Test\REST\V1;
 
+use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
@@ -20,7 +21,7 @@ class AttendeeArchiveByProviderCest extends BaseRestCest {
 		$I->generate_nonce_for_role( 'editor' );
 
 		$paypal_post_id   = $I->havePostInDatabase();
-		$paypal_ticket_id = $this->create_paypal_ticket( $paypal_post_id, 2 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $paypal_post_id, 2 );
 		$paypal_attendees = $this->create_many_attendees_for_ticket( 2, $paypal_ticket_id, $paypal_post_id );
 		$rsvp_post_id     = $I->havePostInDatabase();
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $rsvp_post_id );

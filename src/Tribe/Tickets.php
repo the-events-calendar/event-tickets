@@ -613,9 +613,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int   $post_id
 		 * @param int   $ticket
 		 * @param array $raw_data
-		 * @return mixed
+		 *
+		 * @return int|false The updated/created ticket post ID or false if no ticket ID.
 		 */
-		public function save_ticket( $post_id, $ticket, $raw_data = [] ) {}
+		public function save_ticket( $post_id, $ticket, $raw_data = [] ) {
+			return false;
+		}
 
 		/**
 		 * Returns all the tickets for an event.
