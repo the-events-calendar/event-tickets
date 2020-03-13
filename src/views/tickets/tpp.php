@@ -17,7 +17,7 @@
  * @since      4.11.1 Corrected amount of available/remaining tickets when threshold is empty.
  * @since      4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
  * @since      4.11.3 Changed button ID to match the format of the non-tpp buttons. (`tribe-tickets` instead of `buy-tickets`)
- * @since      TBD Display total available separately from setting max allowed to purchase at once and avoid the
+ * @since      4.11.5 Display total available separately from setting max allowed to purchase at once and avoid the
  *                    potential of `$readable_amount` being a undefined variable.
  *
  * @version    4.11.3

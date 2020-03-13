@@ -10,9 +10,9 @@
  * @since   4.10.9 Use customizable ticket name functions.
  * @since   4.11.0 Added RSVP/ticket view link to template.
  * @since   4.11.1 Corrected amount of available/remaining tickets when threshold is empty.
- * @since   TBD Display total available separately from setting max allowed to purchase at once.
+ * @since   4.11.5 Display total available separately from setting max allowed to purchase at once.
  *
- * @version TBD
+ * @version 4.11.5
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login

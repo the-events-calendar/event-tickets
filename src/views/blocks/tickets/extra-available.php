@@ -12,9 +12,9 @@
  *
  * @since   4.9.3
  * @since   4.11.1 Corrected amount of available/remaining tickets.
- * @since   TBD Corrected the way to get the actual stock available.
+ * @since   4.11.5 Corrected the way to get the actual stock available.
  *
- * @version TBD
+ * @version 4.11.5
  *
  * @var Tribe__Tickets__Editor__Template $this
  */

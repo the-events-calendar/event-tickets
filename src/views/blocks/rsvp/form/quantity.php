@@ -7,9 +7,9 @@
  *
  * @since 4.9
  * @since 4.10.9 Uses new functions to get singular and plural texts.
- * @since TBD Added template override instructions in template comments.
+ * @since 4.11.5 Added template override instructions in template comments.
  *
- * @version TBD
+ * @version 4.11.5
  */
 ?>
 <div class="tribe-block__rsvp__number-input">

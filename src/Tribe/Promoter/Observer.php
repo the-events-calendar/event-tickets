@@ -69,7 +69,7 @@ class Tribe__Tickets__Promoter__Observer {
 	 *
 	 * @param $attendee_id
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.11.5
 	 *
 	 */
 	public function notify_rsvp_event( $attendee_id ) {
@@ -81,7 +81,7 @@ class Tribe__Tickets__Promoter__Observer {
 	/**
 	 * Notify to the parent Event of the ticket
 	 *
-	 * @since TBD
+	 * @since 4.11.5
 	 *
 	 * @param $ticket_id int The Ticket ID where to look for the Event.
 	 */
@@ -160,7 +160,7 @@ class Tribe__Tickets__Promoter__Observer {
 	/**
 	 * Observer when an attendee is moved from a post to another and notify Promoter about changes on both events
 	 *
-	 * @since TBD
+	 * @since 4.11.5
 	 *
 	 * @param int $ticket_id the ticket which has been moved
 	 * @param int $source_ticket_type_id the ticket type it belonged to originally
@@ -182,7 +182,7 @@ class Tribe__Tickets__Promoter__Observer {
 	/**
 	 * Action fired when an PayPal attendee ticket is updated.
 	 *
-	 * @since TBD
+	 * @since 4.11.5
 	 *
 	 * @param int    $attendee_id           Attendee post ID.
 	 * @param string $order_id              PayPal Order ID.
@@ -199,7 +199,7 @@ class Tribe__Tickets__Promoter__Observer {
 	/**
 	 * Action fired when a PayPal has had attendee tickets generated for it.
 	 *
-	 * @since TBD
+	 * @since 4.11.5
 	 *
 	 * @param int    $product_id PayPal ticket post ID.
 	 * @param string $order_id   ID of the PayPal order.
@@ -218,7 +218,7 @@ class Tribe__Tickets__Promoter__Observer {
 	 *
 	 * @param $post_id
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.11.5
 	 *
 	 */
 	public function delete_post( $post_id ) {
@@ -230,7 +230,7 @@ class Tribe__Tickets__Promoter__Observer {
 	/**
 	 * Notify the connector of changes when the event was deleted
 	 *
-	 * @since TBD
+	 * @since 4.11.5
 	 *
 	 * @param $post_id
 	 */

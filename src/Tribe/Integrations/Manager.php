@@ -5,14 +5,14 @@
  *
  * Loads and manages the third-party plugins integration implementations.
  *
- * @since TBD
+ * @since 4.11.5
  */
 class Tribe__Tickets__Integrations__Manager {
 
 	/**
 	 * The current instance of the object.
 	 *
-	 * @since TBD
+	 * @since 4.11.5
 	 *
 	 * @var Tribe__Tickets__Integrations__Manager
 	 */
@@ -21,7 +21,7 @@ class Tribe__Tickets__Integrations__Manager {
 	/**
 	 * The class singleton constructor.
 	 *
-	 * @since TBD
+	 * @since 4.11.5
 	 *
 	 * @return Tribe__Tickets__Integrations__Manager
 	 */
@@ -39,7 +39,7 @@ class Tribe__Tickets__Integrations__Manager {
 	 * Third-party plugin integration classes and methods will be loaded only if
 	 * supported plugins are activated.
 	 *
-	 * @since TBD
+	 * @since 4.11.5
 	 */
 	public function load_integrations() {
 		$this->load_freemius();
@@ -48,7 +48,7 @@ class Tribe__Tickets__Integrations__Manager {
 	/**
 	 * Loads our Freemius integration
 	 *
-	 * @since TBD
+	 * @since 4.11.5
 	 */
 	private function load_freemius() {
 		tribe_singleton( 'tickets.integrations.freemius', new Tribe__Tickets__Integrations__Freemius );

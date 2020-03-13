@@ -474,7 +474,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	 * Gets the "tickets sold" message for a given ticket
 	 *
 	 * @since 4.10.9 Use customizable ticket name functions.
-	 * @since TBD Correct the sprintf placeholders that were forcing the readable amount to an integer.
+	 * @since 4.11.5 Correct the sprintf placeholders that were forcing the readable amount to an integer.
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket to analyze.
 	 *

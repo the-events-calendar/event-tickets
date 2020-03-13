@@ -1162,7 +1162,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @see    \Tribe__Tickets__Ticket_Object::available() The actual ticket stock available, allowing -1 for Unlimited.
 	 *
 	 * @since  4.8.1
-	 * @since  TBD Return a zero or positive integer and add a maximum able to be purchased in a single action,
+	 * @since  4.11.5 Return a zero or positive integer and add a maximum able to be purchased in a single action,
 	 *               for sanity and performance reasons.
 	 *
 	 * @param int|string $ticket_id Ticket from which to fetch purchase max.
@@ -1216,7 +1216,7 @@ class Tribe__Tickets__Tickets_Handler {
 		 */
 		$available_at_a_time = apply_filters( 'tribe_tickets_get_ticket_max_purchase', $available_at_a_time, $ticket, $event, $ticket_id );
 
-		// Protect against filters passing `-1` as unlimited (from filters not yet updated for logic from version TBD).
+		// Protect against filters passing `-1` as unlimited (from filters not yet updated for logic from version 4.11.5).
 		if ( - 1 === $available_at_a_time ) {
 			$available_at_a_time = $max_at_a_time;
 		}
@@ -1232,7 +1232,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Get the maximum quantity allowed to be added to cart in a single action, for performance and sanity reasons.
 	 *
-	 * @since TBD
+	 * @since 4.11.5
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket object.
 	 *
@@ -1247,7 +1247,7 @@ class Tribe__Tickets__Tickets_Handler {
 		 *
 		 * Anything less than `1` will be ignored and reset to the default.
 		 *
-		 * @since TBD
+		 * @since 4.11.5
 		 *
 		 * @param int                           $default_max Maximum quantity allowed at one time (only applicable if
 		 *                                                   the ticket stock available is greater).

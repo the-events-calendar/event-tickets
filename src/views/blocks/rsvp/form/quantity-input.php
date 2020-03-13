@@ -12,10 +12,10 @@
  *
  * @since   4.9
  * @since   4.11.1 Corrected amount of available/remaining tickets. Removed unused `data-remaining` attribute.
- * @since   TBD The input's "max" is now always set. The unused `data-remaining` attribute actually didn't get removed
+ * @since   4.11.5 The input's "max" is now always set. The unused `data-remaining` attribute actually didn't get removed
  *                 in the previous change, above, so it got removed in this version.
  *
- * @version TBD
+ * @version 4.11.5
  */
 
 /** @var Tribe__Tickets__RSVP $rsvp */

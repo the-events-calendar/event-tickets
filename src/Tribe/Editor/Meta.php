@@ -219,7 +219,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Hook into the REST API request dispatch process (before REST endpoint runs) for custom overrides.
 	 *
-	 * @since TBD
+	 * @since 4.11.5
 	 *
 	 * @param mixed           $dispatch_result Dispatch result, will be used if not empty.
 	 * @param WP_REST_Request $request         Request used to generate the response.
@@ -350,7 +350,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Don't update global stock meta that's handled elsewhere.
 	 *
-	 * @since TBD
+	 * @since 4.11.5
 	 *
 	 * @param null|bool $check             Whether to allow updating metadata for the given type.
 	 * @param int       $unused_object_id  Object ID.
@@ -387,7 +387,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Get global stock meta fields that we don't actually want to update/delete from normal WP REST routes.
 	 *
-	 * @since TBD
+	 * @since 4.11.5
 	 *
 	 * @return array List of global stock meta fields.
 	 */

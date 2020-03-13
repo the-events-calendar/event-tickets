@@ -11,9 +11,9 @@
  * @link    {INSERT_ARTICLE_LINK_HERE}
  *
  * @since   4.9
- * @since   TBD Corrected the template override instructions in template comments.
+ * @since   4.11.5 Corrected the template override instructions in template comments.
  *
- * @version TBD
+ * @version 4.11.5
  */
 
 $this->template( 'blocks/rsvp/form/name', [ 'ticket' => $ticket ] );
