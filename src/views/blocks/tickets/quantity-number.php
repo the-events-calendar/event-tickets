@@ -24,6 +24,9 @@ $must_login = ! is_user_logged_in() && $ticket->get_provider()->login_required()
 
 $ticket = $this->get( 'ticket' );
 
+if ( empty( $ticket->ID ) ) {
+	return;
+}
 /** @var Tribe__Tickets__Tickets_Handler $handler */
 $handler = tribe( 'tickets.handler' );
 

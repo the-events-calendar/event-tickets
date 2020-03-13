@@ -175,9 +175,11 @@ extends Tribe__Editor__Blocks__Abstract {
 				continue;
 			}
 
-			$available = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
+			$available     = $ticket->available();
+			$max_at_a_time = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
 
-			$response['tickets'][ $ticket_id ]['available'] = $available;
+			$response['tickets'][ $ticket_id ]['available']    = $available;
+			$response['tickets'][ $ticket_id ]['max_purchase'] = $max_at_a_time;
 
 			// If there are no more available we will send the template part HTML to update the DOM
 			if ( 0 === $available ) {
