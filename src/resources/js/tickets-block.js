@@ -482,7 +482,7 @@ window.tribe.tickets.block = {
 		if ( 'function' === typeof $input[ 0 ].stepUp ) {
 			try {
 				// Bail if we're already in the max, safari has issues with stepUp() here.
-				if ( max < originalValue + step ) {
+				if ( max < ( originalValue + step ) ) {
 					return;
 				}
 				$input[ 0 ].stepUp();
