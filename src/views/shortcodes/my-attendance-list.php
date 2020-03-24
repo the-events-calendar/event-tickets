@@ -22,6 +22,9 @@
 					<span class="datetime">(<?php echo $start_date; ?>)</span>
 				<?php endif; ?>
 			</a>
+			<a href="<?php echo esc_url( get_permalink( $id ). 'tickets' ); ?>" target="_blank">
+                		- <span><?php esc_html_e( 'View Tickets', 'event-tickets' ) ?></span>
+            		</a>
 		</li>
 
 	<?php endforeach; ?>
