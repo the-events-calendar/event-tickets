@@ -121,6 +121,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Update file path in the docblocks of the templates for The Events Calendar new views. [ETP-289]
 * Fix - Update position of the `tribe_tickets_ticket_add` action so it receives the ticket data on ticket creation. [ETP-302]
+* Fix - Removed the `type="submit"` from button element in the ticket quantity remove template, as it's its default. [ETP-224]
+* Fix - Removed the duplicate `type="button"` from button element in the ticket quantity add template. [ETP-224]
 
 = [4.11.5] 2020-03-18 =
 
