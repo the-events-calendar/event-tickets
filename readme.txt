@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.11.6] TBD =
+
+* Fix - Update notice template to print content only when there's information. Remove the "Whoops" title for the Attendee Registration page notice. [ETP-233]
+
 = [4.11.5] 2020-03-18 =
 
 * Feature - Include Freemius integration to allow opt-in information collection. [ET-595]
