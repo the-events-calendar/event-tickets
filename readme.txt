@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.11.6] TBD =
+
+* Fix - Update file path in the docblocks of the templates for The Events Calendar new views. [ETP-289]
+
 = [4.11.5] 2020-03-18 =
 
 * Feature - Include Freemius integration to allow opt-in information collection. [ET-595]
