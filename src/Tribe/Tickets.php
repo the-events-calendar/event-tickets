@@ -2842,6 +2842,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$ticket->end_date = date( Tribe__Date_Utils::DBDATEFORMAT, strtotime( $end_datetime ) );
 			}
 
+			// Pass the control to the child object.
+			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
+
 			/**
 			 * Fired once a ticket has been created and added to a post
 			 *
@@ -2850,9 +2853,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param array $data Submitted post data
 			 */
 			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data );
-
-			// Pass the control to the child object
-			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
 
 			$tickets_handler->toggle_manual_update_flag( false );
 
