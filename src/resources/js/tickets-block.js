@@ -659,17 +659,28 @@ window.tribe.tickets.block = {
 	obj.cleanNumber = function( passedNumber ) {
 		let number = passedNumber;
 		const format = obj.getCurrencyFormatting();
+
+		if ( 0 === parseInt( format.number_of_decimals ) ) {
+			return number;
+		}
+
 		// we run into issue when the two symbols are the same -
 		// which appears to happen by default with some providers.
 		const same = format.thousands_sep === format.decimal_point;
 
 		if ( ! same ) {
-			number = number.split( format.thousands_sep ).join( '' );
-			number = number.split( format.decimal_point ).join( '.' );
+			if ( '' !== format.thousands_sep ) {
+				number = number.split( format.thousands_sep ).join( '' );
+			}
+			if ( '' !== format.decimal_point ) {
+				number = number.split( format.decimal_point ).join( '.' );
+			}
 		} else {
 			const decPlace = number.length - ( format.number_of_decimals + 1 );
 			number = number.substr( 0, decPlace ) + '_' + number.substr( decPlace + 1 );
-			number = number.split( format.thousands_sep ).join( '' );
+			if ( '' !== format.thousands_sep ) {
+				number = number.split( format.thousands_sep ).join( '' );
+			}
 			number = number.split( '_' ).join( '.' );
 		}
 
