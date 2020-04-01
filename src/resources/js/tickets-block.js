@@ -678,7 +678,7 @@ window.tribe.tickets.block = {
 
 	/**
 	 * Format the number according to provider settings.
-	 * Based off coding fron https://stackoverflow.com/a/2901136.
+	 * Based off coding from https://stackoverflow.com/a/2901136.
 	 *
 	 * @since 4.11.0
 	 *
