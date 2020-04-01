@@ -565,7 +565,7 @@ window.tribe.tickets.block = {
 	 * @param {object} $form - jQuery object that is the form we are checking.
 	 * @param {number} qty - The quantity we desire.
 	 *
-	 * @returns {integer} - The quantity, limited by exisitng shared cap tickets.
+	 * @returns {integer} - The quantity, limited by existing shared cap tickets.
 	 */
 	obj.checkSharedCapacity = function( $form, qty ) {
 		let sharedCap = [];
@@ -797,10 +797,10 @@ window.tribe.tickets.block = {
 		}
 	};
 
-	/* Prefill Handling */
+	/* Pre-fill Handling */
 
 	/**
-	 * Init the tickets block prefill.
+	 * Init the tickets block pre-fill.
 	 *
 	 * @since 4.9
 	 */
@@ -809,7 +809,7 @@ window.tribe.tickets.block = {
 	};
 
 	/**
-	 * Init the form prefills ( cart and AR forms ).
+	 * Init the form pre-fills ( cart and AR forms ).
 	 *
 	 * @since 4.11.0
 	 */
@@ -846,7 +846,7 @@ window.tribe.tickets.block = {
 	};
 
 	/**
-	 * Prefills the modal AR fields from supplied data.
+	 * Pre-fills the modal AR fields from supplied data.
 	 *
 	 * @since 4.11.0
 	 *
@@ -898,7 +898,7 @@ window.tribe.tickets.block = {
 	};
 
 	/**
-	 * Prefill the Cart.
+	 * Pre-fill the Cart.
 	 *
 	 * @since 4.11.0
 	 *
@@ -928,7 +928,7 @@ window.tribe.tickets.block = {
 	};
 
 	/**
-	 * Prefill tickets block from cart.
+	 * Pre-fill tickets block from cart.
 	 *
 	 * @since 4.11.0
 	 */
@@ -1123,7 +1123,7 @@ window.tribe.tickets.block = {
 	};
 
 	/**
-	 *
+	 * getMetaForSave()
 	 *
 	 * @since 4.11.0
 	 *
@@ -1204,13 +1204,13 @@ window.tribe.tickets.block = {
 	 * jQuery's $.when()
 	 *
 	 * Example:
-	 * 	$.when(
-	 * 		obj.getData()
-	 * 	).then(
-	 * 		function( data ) {
-	 * 			// Do stuff with the data.
-	 * 		}
-	 * 	);
+	 *  $.when(
+	 *     obj.getData()
+	 *  ).then(
+	 *     function( data ) {
+	 *         // Do stuff with the data.
+	 *     }
+	 *  );
 	 *
 	 * @since 4.11.0
 	 *
@@ -1327,9 +1327,9 @@ window.tribe.tickets.block = {
 		$fields.each(
 			function() {
 				const $field = $( this );
-				const isValidfield = obj.validateField( $field[ 0 ] );
+				const isValidField = obj.validateField( $field[ 0 ] );
 
-				if ( ! isValidfield ) {
+				if ( ! isValidField ) {
 					validBlock = false;
 				}
 			}
@@ -1390,29 +1390,29 @@ window.tribe.tickets.block = {
 	 */
 	obj.validateField = function( input ) {
 		let $input = $( input );
-		let isValidfield = input.checkValidity();
+		let isValidField = input.checkValidity();
 
-		if ( ! isValidfield ) {
+		if ( ! isValidField ) {
 			$input = $( input );
 			// Got to be careful of required checkbox/radio groups...
 			if ( $input.is( ':checkbox' ) || $input.is( ':radio' ) ) {
 				const $group = $input.closest( '.tribe-common-form-control-checkbox-radio-group' );
 
 				if ( $group.length ) {
-					isValidfield = obj.validateCheckboxRadioGroup( $group );
+					isValidField = obj.validateCheckboxRadioGroup( $group );
 				}
 			} else {
-				isValidfield = false;
+				isValidField = false;
 			}
 		}
 
-		if ( ! isValidfield ) {
+		if ( ! isValidField ) {
 			$input.addClass( 'ticket-meta__has-error' );
 		} else {
 			$input.removeClass( 'ticket-meta__has-error' );
 		}
 
-		return isValidfield;
+		return isValidField;
 	};
 
 	/* Event Handling */
