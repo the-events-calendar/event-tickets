@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.9
 Tested up to: 5.4
-Stable tag: 4.11.5
+Stable tag: 4.12.0
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.11.6] TBD =
+= [4.12.0] TBD =
 
 * Fix - Update file path in the docblocks of the templates for The Events Calendar new views. [ETP-289]
 * Fix - Update position of the `tribe_tickets_ticket_add` action so it receives the ticket data on ticket creation. [ETP-302]
