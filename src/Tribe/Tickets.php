@@ -621,15 +621,48 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Returns all the tickets for an event.
+		 * Returns all the tickets for an event, of the active ticket providers.
 		 *
-		 * @abstract
+		 * @since TBD Changed from protected abstract to public with duplicated child classes' logic consolidated here.
 		 *
 		 * @param int $post_id ID of parent "event" post.
 		 *
 		 * @return Tribe__Tickets__Ticket_Object[] List of ticket objects.
 		 */
-		protected function get_tickets( $post_id ) {}
+		public function get_tickets( $post_id ) {
+			$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+
+			// If the post's provider doesn't match.
+			if (
+				! is_admin()
+				&& $this->class_name !== $default_provider
+			) {
+				return [];
+			}
+
+			$ticket_ids = $this->get_tickets_ids( $post_id );
+
+			if ( ! $ticket_ids ) {
+				return [];
+			}
+
+			$tickets = [];
+
+			foreach ( $ticket_ids as $post ) {
+				$ticket = $this->get_ticket( $post_id, $post );
+
+				if (
+					! $ticket instanceof Tribe__Tickets__Ticket_Object
+					|| $this->class_name !== $ticket->provider_class
+				) {
+					continue;
+				}
+
+				$tickets[] = $ticket;
+			}
+
+			return $tickets;
+		}
 
 		/**
 		 * Get attendees for a Post ID / Post type.

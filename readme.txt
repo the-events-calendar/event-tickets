@@ -121,6 +121,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Update file path in the docblocks of the templates for The Events Calendar new views. [ETP-289]
 * Fix - Update position of the `tribe_tickets_ticket_add` action so it receives the ticket data on ticket creation. [ETP-302]
+* Tweak - Consolidate duplicated code from child classes into parent class: `\Tribe__Tickets__Tickets::get_tickets()`. [ETP-235]
 
 = [4.11.5] 2020-03-18 =
 
