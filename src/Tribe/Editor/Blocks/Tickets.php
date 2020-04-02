@@ -203,13 +203,20 @@ extends Tribe__Editor__Blocks__Abstract {
 		$all_tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post_id );
 
 		if ( ! $all_tickets ) {
-			return array();
+			return [];
 		}
 
-		$tickets = array();
+		/** @var Tribe__Tickets__RSVP $rsvp */
+		$rsvp = tribe( 'tickets.rsvp' );
 
+		$tickets = [];
+
+		// We only want RSVP tickets.
 		foreach ( $all_tickets as $ticket ) {
-			if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
+			if (
+				! $ticket instanceof Tribe__Tickets__Ticket_Object
+				|| $rsvp->class_name !== $ticket->provider_class
+			) {
 				continue;
 			}
 

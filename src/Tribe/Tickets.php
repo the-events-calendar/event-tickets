@@ -1306,7 +1306,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				/** @var Tribe__Tickets__Tickets $provider */
 				$provider = tribe_tickets_get_ticket_provider( $attendee );
 
-				if ( ! $provider ) {
+				// Could be `false` or ticket type could be for a disabled commerce provider.
+				if (
+					empty( $provider )
+					|| ! array_key_exists( $provider->class_name, static::modules() )
+				) {
 					continue;
 				}
 
