@@ -630,7 +630,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return Tribe__Tickets__Ticket_Object[] List of ticket objects.
 		 */
 		public function get_tickets( $post_id ) {
-			$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+			$default_provider = static::get_event_ticket_provider( $post_id );
 
 			// If the post's provider doesn't match.
 			if (
