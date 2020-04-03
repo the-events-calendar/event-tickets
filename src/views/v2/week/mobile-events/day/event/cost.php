@@ -33,7 +33,7 @@ if ( empty( $event->cost ) ) {
 	<?php endif; ?>
 	<?php if ( $event->tickets->sold_out() ) : ?>
 		<span class="tribe-events-c-small-cta__sold-out tribe-common-b3--bold">
-			<?php echo esc_html( $event->tickets->stock->sold_out ) ?>
+			<?php echo esc_html( $event->tickets->stock->sold_out ); ?>
 		</span>
 	<?php endif; ?>
 	<span class="tribe-events-c-small-cta__price">
@@ -41,7 +41,7 @@ if ( empty( $event->cost ) ) {
 	</span>
 	<?php if ( ! empty( $event->tickets->stock->available ) && $event->tickets->in_date_range() ) : ?>
 		<span class="tribe-events-c-small-cta__stock">
-			<?php echo esc_html( $event->tickets->stock->available ) ?>
+			<?php echo esc_html( $event->tickets->stock->available ); ?>
 		</span>
 	<?php endif; ?>
 </div>
