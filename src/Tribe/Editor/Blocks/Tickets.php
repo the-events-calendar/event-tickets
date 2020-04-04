@@ -191,7 +191,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	}
 
 	/**
-	 * Get all tickets for event/post, removing RSVPs
+	 * Get all tickets for event/post, other than RSVP type because they're presented in a separate block.
 	 *
 	 * @since 4.9
 	 *
