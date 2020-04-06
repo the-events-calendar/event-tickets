@@ -146,7 +146,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 			}
 
 			if ( ! $data['available'] ) {
-				$parts[ $type . '_stock' ] = esc_html_x( 'Sold Out', 'new views stock sold out', 'event-tickets' );
+				$parts[ $type . '_stock' ] = esc_html_x( 'Sold Out', 'events stock sold out (v2)', 'event-tickets' );
 
 				// Only re-apply if we don't have a stock yet
 				if ( empty( $html['stock'] ) ) {
