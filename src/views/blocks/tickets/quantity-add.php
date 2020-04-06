@@ -22,6 +22,7 @@
 
 $ticket = $this->get( 'ticket' );
 $button_title = sprintf(
+	// translators: %s: ticket name.
 	_x( 'Increase ticket quantity for %s', '%s: ticket name.', 'event-tickets' ),
 	$ticket->name
 );
