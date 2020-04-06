@@ -1,7 +1,6 @@
 <?php return '<div
 	 class="tribe-common-h4 tribe-tickets__item__quantity" >
 			<button
-	type="submit"
 	class="tribe-tickets__item__quantity__remove"
 	title="Decrease ticket quantity for Test PayPal ticket for 8"
 	type="button"
@@ -21,7 +20,6 @@
 			/>
 </div>
 		<button
-	type="button"
 	class="tribe-tickets__item__quantity__add"
 	title="Increase ticket quantity for Test PayPal ticket for 8"
 	type="button"
