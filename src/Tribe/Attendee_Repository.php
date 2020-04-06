@@ -602,7 +602,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			// For RSVP tickets the order status is the going status
 			$statuses = [ 'yes', 'no' ];
 
-			if ( Tribe__Tickets__Commerce__PayPal__Main::get_instance()->is_active() ) {
+			if ( tribe( 'tickets.commerce.paypal' )->is_active() ) {
 				$statuses = array_merge( $statuses, $status_mgr->get_statuses_by_action( 'all', 'tpp' ) );
 			}
 

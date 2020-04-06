@@ -1076,10 +1076,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function get_tickets( $post_id ) {
 		$ticket_ids = $this->get_tickets_ids( $post_id );
 		if ( ! $ticket_ids ) {
-			return array();
+			return [];
 		}
 
-		$tickets = array();
+		$tickets = [];
 
 		foreach ( $ticket_ids as $post ) {
 			$tickets[] = $this->get_ticket( $post_id, $post );
