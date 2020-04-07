@@ -1,7 +1,18 @@
 <?php
+/**
+ * Register classes, actions and filters
+ * that Event Tickets uses to manage "Events".
+ */
 
 namespace Tribe\Tickets\Events;
 
+/**
+ * Class Events_Service_Provider
+ *
+ * @since TBD
+ *
+ * @package Tribe\Tickets\Events
+ */
 class Events_Service_Provider extends \tad_DI52_ServiceProvider {
 
 	/**

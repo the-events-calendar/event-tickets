@@ -1,4 +1,8 @@
 <?php
+/**
+ * Class that detects if given post
+ * is displaying the Attendee List.
+ */
 
 namespace Tribe\Tickets\Events;
 
@@ -7,16 +11,27 @@ use InvalidArgumentException;
 use Tribe__Tickets_Plus__Attendees_List;
 use WP_Post;
 
+/**
+ * Class Attendee_List_Display
+ *
+ * @since TBD
+ *
+ * @package Tribe\Tickets\Events
+ */
 class Attendee_List_Display {
 
+	/**
+	 * @var string Meta name to control whether the Attendee List
+	 *             meta was changed by a shortcode in the content.
+	 */
 	private static $attendee_list_by_shortcode = 'tribe_tickets_attendee_list_triggered_by_shortcode';
 
 	/**
 	 * Check if given event is hiding the attendees list.
 	 *
-	 * @param int|WP_Post $post
+	 * @param int|WP_Post $post The Post being checked.
 	 *
-	 * @throws InvalidArgumentException
+	 * @throws InvalidArgumentException Could not determine if given event is hiding or showing the Attendee List.
 	 *
 	 * @return bool True if event is hiding the attendees list. False otherwise.
 	 */
@@ -48,6 +63,8 @@ class Attendee_List_Display {
 	 *
 	 * @see \Tribe\Tickets\Events\Events_Service_Provider::hooks
 	 *
+	 * @param bool $should_hide Whether the optout form should be hidden or not.
+	 *
 	 * @return bool
 	 */
 	public function should_hide_optout( $should_hide ) {
@@ -56,7 +73,7 @@ class Attendee_List_Display {
 
 			return $this->is_event_hiding_attendee_list( $post );
 		} catch ( Exception $e ) {
-			// Eg: global $post not a WP_Post object
+			// Eg: global $post not a WP_Post object.
 			return $should_hide;
 		}
 	}
@@ -69,6 +86,8 @@ class Attendee_List_Display {
 	 * @see \Tribe\Tickets\Events\Events_Service_Provider::hooks
 	 *
 	 * @retyrn void
+	 *
+	 * @param int|WP_Post $post The Post being checked.
 	 */
 	public function maybe_update_attendee_list_hide_meta( $post ) {
 		// Attendees list is a Plus feature, if ET Plus is not present we don't have to update the meta.
@@ -76,7 +95,7 @@ class Attendee_List_Display {
 			return;
 		}
 
-		// don't do anything on autosave, auto-draft, or massupdates
+		// Early bail: is an autosave or auto-draft.
 		if ( wp_is_post_autosave( $post ) || wp_is_post_revision( $post ) ) {
 			return;
 		}
@@ -85,7 +104,7 @@ class Attendee_List_Display {
 			$post = get_post( $post );
 		}
 
-		// Bail on Invalid post
+		// Early bail: Invalid post.
 		if ( ! $post instanceof WP_Post ) {
 			return;
 		}
@@ -116,7 +135,7 @@ class Attendee_List_Display {
 			'tribe_tickets_event_is_showing_attendee_list',
 			$is_showing_attendee_list,
 			$post,
-			$this->is_using_blocks() 
+			$this->is_using_blocks()
 		);
 
 		update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, $is_showing_attendee_list );
@@ -126,7 +145,7 @@ class Attendee_List_Display {
 	 * This keeps track of whether the Attendee List is being displayed becase of a shortcode
 	 * in the content, and acts accordingly if said shortcode is removed.
 	 *
-	 * @param WP_Post $post
+	 * @param WP_Post $post The Post being checked.
 	 *
 	 * @return void
 	 */
@@ -150,7 +169,6 @@ class Attendee_List_Display {
 		if ( $has_attendee_list_by_shortcode_meta && ! $has_attendee_list_shortcode ) {
 			update_post_meta( $post->ID, self::$attendee_list_by_shortcode, 'no' );
 
-			// This updates the main meta to false.
 			add_filter( 'tribe_tickets_event_is_showing_attendee_list', '__return_false' );
 		}
 	}
@@ -175,7 +193,7 @@ class Attendee_List_Display {
 	}
 
 	/**
-	 * @param WP_Post $post
+	 * @param WP_Post $post The Post being checked.
 	 *
 	 * @return bool
 	 */
@@ -187,7 +205,7 @@ class Attendee_List_Display {
 	}
 
 	/**
-	 * @param WP_Post $post
+	 * @param WP_Post $post The Post being checked.
 	 *
 	 * @return bool
 	 */
