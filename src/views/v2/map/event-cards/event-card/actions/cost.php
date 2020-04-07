@@ -17,7 +17,7 @@
  * @see tribe_get_event() For the format of the event object.
  *
  */
-if ( ! $event->tickets->exist() || ! tribe_tickets_is_current_time_in_date_window( $event->ID ) ) {
+if ( ! $event->tickets->exist() || ! $event->tickets->in_date_range() ) {
 	return;
 }
 ?>
