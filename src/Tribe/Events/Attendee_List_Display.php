@@ -112,8 +112,12 @@ class Attendee_List_Display {
 		 *
 		 * @return bool
 		 */
-		$is_showing_attendee_list = (bool) apply_filters( "tribe_tickets_event_is_showing_attendee_list", $is_showing_attendee_list, $post,
-			$this->is_using_blocks() );
+		$is_showing_attendee_list = (bool) apply_filters(
+			'tribe_tickets_event_is_showing_attendee_list',
+			$is_showing_attendee_list,
+			$post,
+			$this->is_using_blocks() 
+		);
 
 		update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, $is_showing_attendee_list );
 	}
@@ -147,7 +151,7 @@ class Attendee_List_Display {
 			update_post_meta( $post->ID, self::$attendee_list_by_shortcode, 'no' );
 
 			// This updates the main meta to false.
-			add_filter( "tribe_tickets_event_is_showing_attendee_list", "__return_false" );
+			add_filter( 'tribe_tickets_event_is_showing_attendee_list', '__return_false' );
 		}
 	}
 
@@ -165,7 +169,7 @@ class Attendee_List_Display {
 		 * This filter is for internal use only. It is not guaranteed to be maintained,
 		 * and can be removed or changed at any time.
 		 */
-		$is_using_blocks = apply_filters( "__internal_tribe_tickets_is_using_blocks", $is_using_blocks );
+		$is_using_blocks = apply_filters( '__internal_tribe_tickets_is_using_blocks', $is_using_blocks );
 
 		return $is_using_blocks;
 	}
