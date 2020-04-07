@@ -22,26 +22,26 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 		$this->disable_blocks();
 
 		// This allows us to call deprecated filters without the tests bailing
-		add_filter( "deprecated_hook_trigger_error", false );
+		add_filter( 'deprecated_hook_trigger_error', false );
 
 		$this->event_factory         = new Event();
-		$this->attendee_list_display = new Attendee_List_Display;
+		$this->attendee_list_display = new Attendee_List_Display();
 	}
 
 	/**
 	 * Activate the blocks in this test run.
 	 */
 	private function enable_blocks() {
-		remove_all_filters( "__internal_tribe_tickets_is_using_blocks" );
-		add_filter( "__internal_tribe_tickets_is_using_blocks", "__return_true" );
+		remove_all_filters( '__internal_tribe_tickets_is_using_blocks' );
+		add_filter( '__internal_tribe_tickets_is_using_blocks', '__return_true' );
 	}
 
 	/**
 	 * Deactivate the blocks in this test run.
 	 */
 	private function disable_blocks() {
-		remove_all_filters( "__internal_tribe_tickets_is_using_blocks" );
-		add_filter( "__internal_tribe_tickets_is_using_blocks", "__return_false" );
+		remove_all_filters( '__internal_tribe_tickets_is_using_blocks' );
+		add_filter( '__internal_tribe_tickets_is_using_blocks', '__return_false' );
 	}
 
 	/**
@@ -55,7 +55,7 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 	private function set_meta_off( WP_Post $post ) {
 		$updated = update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, false );
 
-		$this->assertNotFalse( $updated, "Failed to update post meta" );
+		$this->assertNotFalse( $updated, 'Failed to update post meta' );
 	}
 
 	/**
@@ -66,7 +66,7 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 	private function set_meta_on( WP_Post $post ) {
 		$updated = update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, true );
 
-		$this->assertNotFalse( $updated, "Failed to update post meta" );
+		$this->assertNotFalse( $updated, 'Failed to update post meta' );
 	}
 
 	/**
@@ -114,7 +114,7 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_hide_if_blocks_are_deactivated_and_has_the_block() {
-		$post = $this->event_factory->create_and_get( [ 'post_content' => "<!-- wp:tribe/attendees --><!-- /wp:tribe/attendees -->" ] );
+		$post = $this->event_factory->create_and_get( [ 'post_content' => '<!-- wp:tribe/attendees --><!-- /wp:tribe/attendees -->' ] );
 		$this->attendee_list_display->maybe_update_attendee_list_hide_meta( $post );
 
 		$this->assertTrue( $this->attendee_list_display->is_event_hiding_attendee_list( $post ) );
@@ -126,7 +126,7 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_hide_if_blocks_are_active_but_does_not_has_the_block() {
-		$post = $this->event_factory->create_and_get( [ 'post_content' => "<!-- wp:tribe/not-attendees --><!-- /wp:tribe/not-attendees -->" ] );
+		$post = $this->event_factory->create_and_get( [ 'post_content' => '<!-- wp:tribe/not-attendees --><!-- /wp:tribe/not-attendees -->' ] );
 		$this->enable_blocks();
 		$this->attendee_list_display->maybe_update_attendee_list_hide_meta( $post );
 
@@ -177,7 +177,7 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_not_hide_if_blocks_are_active_and_has_the_block() {
-		$post = $this->event_factory->create_and_get( [ 'post_content' => "<!-- wp:tribe/attendees --><!-- /wp:tribe/attendees -->" ] );
+		$post = $this->event_factory->create_and_get( [ 'post_content' => '<!-- wp:tribe/attendees --><!-- /wp:tribe/attendees -->' ] );
 		$this->enable_blocks();
 		$this->attendee_list_display->maybe_update_attendee_list_hide_meta( $post );
 
