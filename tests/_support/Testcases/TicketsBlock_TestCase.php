@@ -31,12 +31,24 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		// Reset Data_API object so it sees Tribe Commerce.
 		tribe_singleton( 'tickets.data_api', new Data_API );
+
+		/** @var \wpdb $wpdb */
+		global $wpdb;
+
+		// Set high initial post ID to prevent collisions with acceptable tolerances assertions.
+		$wpdb->query( "INSERT INTO {$wpdb->posts} ( ID, post_title, post_type ) VALUES ( 9999, 'Temporary', '_temp' )" );
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function tearDown() {
+		/** @var \wpdb $wpdb */
+		global $wpdb;
+
+		// Delete high initial post ID.
+		$wpdb->delete( $wpdb->posts, [ 'ID' => 9999 ] );
+
 		Test::tearDown();
 		parent::tearDown();
 	}
@@ -141,6 +153,8 @@ class TicketsBlock_TestCase extends WPTestCase {
 			'Test PayPal ticket description for ',
 			'Test Easy Digital Downloads ticket for ',
 			'Test Easy Digital Downloads ticket description for ',
+			'Test EDD ticket for ',
+			'Test EDD ticket description for ',
 			'Test WooCommerce ticket for ',
 			'Test WooCommerce ticket description for ',
 		] );
