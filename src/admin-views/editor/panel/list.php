@@ -3,8 +3,6 @@
 $tickets_attendees = tribe( 'tickets.attendees' );
 $attendees_url = $tickets_attendees->get_report_link( get_post( $post_id ) );
 
-/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
-$tickets_handler = tribe( 'tickets.handler' );
 $total_tickets = tribe_get_event_capacity( $post_id );
 
 $container_class = 'tribe_sectionheader ticket_list_container';
