@@ -1,5 +1,4 @@
 <?php return '<button
-	type="button"
 	class="tribe-tickets__item__quantity__add"
 	title="Increase ticket quantity for Ticket Title"
 	type="button"
