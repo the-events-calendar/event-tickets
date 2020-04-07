@@ -134,6 +134,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 		$html        = [];
 		$parts       = [];
 		$stock_html  = '';
+		$sold_out    = '';
 		$link_label  = '';
 		$link_anchor = '';
 
@@ -145,11 +146,12 @@ class Tickets implements \ArrayAccess, \Serializable {
 			}
 
 			if ( ! $data['available'] ) {
-				$parts[ $type . '_stock' ] = esc_html_x( 'Sold out', 'list view stock sold out', 'event-tickets' );
+				$parts[ $type . '_stock' ] = esc_html_x( 'Sold Out', 'events stock sold out (v2)', 'event-tickets' );
 
 				// Only re-apply if we don't have a stock yet
 				if ( empty( $html['stock'] ) ) {
 					$html['stock'] = $parts[ $type . '_stock' ];
+					$sold_out      = $parts[ $type . '_stock' ];
 				}
 			} else {
 				$stock = $data['stock'];
@@ -208,6 +210,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 
 		$this->data['stock'] = (object) [
 			'available' => $stock_html,
+			'sold_out'  => $sold_out,
 		];
 
 		return $this->data;
@@ -302,5 +305,33 @@ class Tickets implements \ArrayAccess, \Serializable {
 		$this->exists = ! empty( $this->all_tickets );
 
 		return $this->exists;
+	}
+
+	/**
+	 * Returns whether an event has tickets in date range.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether an event has tickets in date range
+	 */
+	public function in_date_range() {
+		if ( ! $this->post_id ) {
+			return false;
+		}
+
+		return tribe_tickets_is_current_time_in_date_window( $this->post_id );
+	}
+
+	/**
+	 * Returns whether an event has its tickets sold out.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether an event has its tickets sold out.
+	 */
+	public function sold_out() {
+		$data = $this->fetch_data();
+
+		return ! empty( $data['stock']->sold_out );
 	}
 }
