@@ -323,7 +323,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	}
 
 	/**
-	 * Returns whether an event has its tickets sold out
+	 * Returns whether an event has its tickets sold out.
 	 *
 	 * @since TBD
 	 *
