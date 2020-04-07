@@ -1,4 +1,7 @@
 <?php
+
+use Tribe\Tickets\Events\Events_Service_Provider;
+
 class Tribe__Tickets__Main {
 
 	/**
@@ -350,6 +353,9 @@ class Tribe__Tickets__Main {
 
 		// Attendee Registration Page
 		tribe_register_provider( 'Tribe__Tickets__Attendee_Registration__Service_Provider' );
+
+		// Event Tickets Provider to manage Events
+		tribe_register_provider( Events_Service_Provider::class );
 
 		// ORM
 		tribe_register_provider( 'Tribe__Tickets__Service_Providers__ORM' );
