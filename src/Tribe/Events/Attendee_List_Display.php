@@ -24,7 +24,7 @@ class Attendee_List_Display {
 	 * @var string Meta name to control whether the Attendee List
 	 *             meta was changed by a shortcode in the content.
 	 */
-	private static $attendee_list_by_shortcode = 'tribe_tickets_attendee_list_triggered_by_shortcode';
+	protected static $attendee_list_by_shortcode = 'tribe_tickets_attendee_list_triggered_by_shortcode';
 
 	/**
 	 * Check if given event is hiding the attendees list.
