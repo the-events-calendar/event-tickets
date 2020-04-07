@@ -235,7 +235,8 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$test_data = tribe_get_event_capacity( $this->event_id );
 
-		$this->assertEquals( ( $capacity * 3 ), $test_data, 'Incorrect capacity with mixed tickets.' );
+		// 1 ticket with unshared 10 and 2 tickets both sharing 10 = 20 expected, not 30.
+		$this->assertEquals( ( $capacity * 2 ), $test_data, 'Incorrect capacity with mixed tickets.' );
 	}
 
 	/**
