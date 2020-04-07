@@ -60,7 +60,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get correct capacity with "own" tickets.
 	 *
-	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
+	 * @covers ::tribe_get_event_capacity()
 	 */
 	public function it_should_get_correct_capacity_with_own_tickets() {
 		$num_tickets = 5;
@@ -83,7 +83,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
-		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
+		$test_data = tribe_get_event_capacity( $this->event_id );
 
 		$this->assertEquals( ( $num_tickets * $capacity ), $test_data, 'Incorrect capacity with own tickets.' );
 	}
@@ -92,7 +92,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get correct capacity with unlimited tickets.
 	 *
-	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
+	 * @covers ::tribe_get_event_capacity()
 	 */
 	public function it_should_get_correct_capacity_with_unlimited_tickets() {
 		$num_tickets = 5;
@@ -113,7 +113,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
-		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
+		$test_data = tribe_get_event_capacity( $this->event_id );
 
 		$this->assertEquals( -1, $test_data, 'Incorrect capacity with own tickets.' );
 	}
@@ -122,7 +122,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get correct capacity with "global" tickets.
 	 *
-	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
+	 * @covers ::tribe_get_event_capacity()
 	 */
 	public function it_should_get_correct_capacity_with_global_tickets() {
 		$global_cap = 25;
@@ -154,7 +154,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
-		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
+		$test_data = tribe_get_event_capacity( $this->event_id );
 
 		$this->assertEquals( $this->global_cap, $test_data, 'Incorrect capacity with global tickets.' );
 	}
@@ -163,7 +163,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get correct capacity with "capped" tickets.
 	 *
-	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
+	 * @covers ::tribe_get_event_capacity()
 	 */
 	public function it_should_get_correct_capacity_with_capped_tickets() {
 		$num_tickets = 5;
@@ -191,7 +191,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
-		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
+		$test_data = tribe_get_event_capacity( $this->event_id );
 
 		$this->assertEquals( $this->global_cap, $test_data, 'Incorrect capacity with capped tickets.' );
 	}
@@ -200,7 +200,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get correct capacity with mixed tickets.
 	 *
-	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
+	 * @covers ::tribe_get_event_capacity()
 	 */
 	public function it_should_get_correct_capacity_with_mixed_tickets() {
 		$capacity    = 10;
@@ -233,7 +233,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 			$capacity
 		);
 
-		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
+		$test_data = tribe_get_event_capacity( $this->event_id );
 
 		$this->assertEquals( ( $capacity * 3 ), $test_data, 'Incorrect capacity with mixed tickets.' );
 	}
@@ -242,7 +242,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get correct unlimited capacity with mixed tickets.
 	 *
-	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
+	 * @covers ::tribe_get_event_capacity()
 	 */
 	public function it_should_get_correct_unlimited_capacity_with_mixed_tickets() {
 		$this->setupGlobalStock();
@@ -297,7 +297,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
+		$test_data = tribe_get_event_capacity( $this->event_id );
 
 		$this->assertEquals( -1, $test_data, 'Incorrect capacity with mixed unlimited tickets.' );
 	}
