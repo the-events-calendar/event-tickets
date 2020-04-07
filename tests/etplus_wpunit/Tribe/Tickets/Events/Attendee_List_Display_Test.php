@@ -21,9 +21,6 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 		// Blocks disabled by default. Overridden in each test, if needed.
 		$this->disable_blocks();
 
-		// This allows us to call deprecated filters without the tests bailing
-		add_filter( 'deprecated_hook_trigger_error', false );
-
 		$this->event_factory         = new Event();
 		$this->attendee_list_display = new Attendee_List_Display();
 	}
@@ -32,16 +29,16 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 	 * Activate the blocks in this test run.
 	 */
 	private function enable_blocks() {
-		remove_all_filters( '__internal_tribe_tickets_is_using_blocks' );
-		add_filter( '__internal_tribe_tickets_is_using_blocks', '__return_true' );
+		remove_all_filters( 'tribe_is_using_blocks' );
+		add_filter( 'tribe_is_using_blocks', '__return_true' );
 	}
 
 	/**
 	 * Deactivate the blocks in this test run.
 	 */
 	private function disable_blocks() {
-		remove_all_filters( '__internal_tribe_tickets_is_using_blocks' );
-		add_filter( '__internal_tribe_tickets_is_using_blocks', '__return_false' );
+		remove_all_filters( 'tribe_is_using_blocks' );
+		add_filter( 'tribe_is_using_blocks', '__return_false' );
 	}
 
 	/**

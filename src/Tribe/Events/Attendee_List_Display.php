@@ -182,12 +182,14 @@ class Attendee_List_Display {
 		$is_using_blocks             = $should_load_blocks && $is_blocks_active_for_events;
 
 		/**
-		 * Filter for use in automated tests.
+		 * Whether post content is being served through blocks
+		 * or the classical editor.
 		 *
-		 * This filter is for internal use only. It is not guaranteed to be maintained,
-		 * and can be removed or changed at any time.
+		 * @since TBD
+		 *
+		 * @param bool $is_using_blocks True if using blocks. False if using the classical editor.
 		 */
-		$is_using_blocks = apply_filters( '__internal_tribe_tickets_is_using_blocks', $is_using_blocks );
+		$is_using_blocks = (bool) apply_filters( 'tribe_is_using_blocks', $is_using_blocks );
 
 		return $is_using_blocks;
 	}
