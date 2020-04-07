@@ -44,13 +44,25 @@ class Attendee_List_Display {
 	}
 
 	/**
-	 * Determines whether this post is displaying the Attendees List somehow.
+	 * @filter tribe_tickets_plus_hide_attendees_list_optout 10 1
 	 *
-	 * Examples of scenarios covered:
-	 * - Blocks disabled. Tickets -> Settings -> Show attendees list on event page ON/OFF
-	 * - Blocks disabled. tribe_attendees_list shortcode in post_content
-	 * - Blocks enabled. tribe_attendees_list shortcode in post_content
-	 * - Blocks enabled. tribe/attendees block in post_content.
+	 * @see \Tribe\Tickets\Events\Events_Service_Provider::hooks
+	 *
+	 * @return bool
+	 */
+	public function should_hide_optout( $should_hide ) {
+		try {
+			global $post;
+
+			return $this->is_event_hiding_attendee_list( $post );
+		} catch ( Exception $e ) {
+			// Eg: global $post not a WP_Post object
+			return $should_hide;
+		}
+	}
+
+	/**
+	 * Determines whether this post is displaying the Attendees List.
 	 *
 	 * @action save_post_tribe_events 10 1
 	 *
@@ -77,6 +89,8 @@ class Attendee_List_Display {
 		if ( ! $post instanceof WP_Post ) {
 			return;
 		}
+
+		$this->track_shortcode_driven_meta( $post );
 
 		if ( $this->is_using_blocks() ) {
 			$is_showing_attendee_list = $this->is_showing_attendee_list_with_blocks( $post );
@@ -105,20 +119,35 @@ class Attendee_List_Display {
 	}
 
 	/**
-	 * @filter tribe_tickets_plus_hide_attendees_list_optout 10 1
+	 * This keeps track of whether the Attendee List is being displayed becase of a shortcode
+	 * in the content, and acts accordingly if said shortcode is removed.
 	 *
-	 * @see \Tribe\Tickets\Events\Events_Service_Provider::hooks
+	 * @param WP_Post $post
 	 *
-	 * @return bool
+	 * @return void
 	 */
-	public function should_hide_optout( $should_hide ) {
-		try {
-			global $post;
+	private function track_shortcode_driven_meta( WP_Post $post ) {
+		$is_visible_by_meta                  = Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $post ) === false;
+		$has_attendee_list_shortcode         = has_shortcode( $post->post_content, 'tribe_attendees_list' );
+		$has_attendee_list_by_shortcode_meta = get_post_meta( $post->ID, self::$attendee_list_by_shortcode, true ) === 'yes';
 
-			return $this->is_event_hiding_attendee_list( $post );
-		} catch ( Exception $e ) {
-			// Eg: global $post not a WP_Post object
-			return $should_hide;
+		/*
+		 * If what triggers the Attendee List to display is a shortcode in the content,
+		 * let's save this piece of information so that we revert it when the shortcode is removed.
+		 */
+		if ( ! $is_visible_by_meta && $has_attendee_list_shortcode ) {
+			update_post_meta( $post->ID, self::$attendee_list_by_shortcode, 'yes' );
+		}
+
+		/*
+		 * The shortcode that triggered the Attendee List to display is no longer in the content.
+		 * Thus, we shall update the "Attendee List" meta to "hidden" again.
+		 */
+		if ( $has_attendee_list_by_shortcode_meta && ! $has_attendee_list_shortcode ) {
+			update_post_meta( $post->ID, self::$attendee_list_by_shortcode, 'no' );
+
+			// This updates the main meta to false.
+			add_filter( "tribe_tickets_event_is_showing_attendee_list", "__return_false" );
 		}
 	}
 
@@ -147,10 +176,10 @@ class Attendee_List_Display {
 	 * @return bool
 	 */
 	private function is_showing_attendee_list_with_blocks( WP_Post $post ) {
-		$has_attendee_list_shortcode = has_shortcode( $post->post_content, 'tribe_attendees_list' );
 		$has_attendee_list_block     = has_block( 'tribe/attendees', $post );
+		$has_attendee_list_shortcode = has_shortcode( $post->post_content, 'tribe_attendees_list' );
 
-		return $has_attendee_list_shortcode || $has_attendee_list_block;
+		return $has_attendee_list_block || $has_attendee_list_shortcode;
 	}
 
 	/**
@@ -159,29 +188,10 @@ class Attendee_List_Display {
 	 * @return bool
 	 */
 	private function is_showing_attendee_list_with_classical_editor( WP_Post $post ) {
-		$is_visible_by_meta                  = Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $post ) === false;
-		$has_attendee_list_shortcode         = has_shortcode( $post->post_content, 'tribe_attendees_list' );
-		$has_attendee_list_by_shortcode_meta = get_post_meta( $post->ID, self::$attendee_list_by_shortcode, true ) === 'yes';
+		$is_visible_by_meta          = Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $post ) === false;
+		$has_attendee_list_shortcode = has_shortcode( $post->post_content, 'tribe_attendees_list' );
 
-		/*
-		 * If what triggers the Attendee List to display is a shortcode in the content,
-		 * let's save this piece of information, so that we revert it when the shortcode is removed.
-		 */
-		if ( ! $is_visible_by_meta && $has_attendee_list_shortcode ) {
-			update_post_meta( $post->ID, self::$attendee_list_by_shortcode, 'yes' );
-		}
-
-		/*
-		 * Here is where we revert it. The shortcode that triggered the Attendee List to display is no
-		 * longer in the content. Thus, we shall update the meta to hidden again.
-		 */
-		if ( $has_attendee_list_by_shortcode_meta && ! $has_attendee_list_shortcode ) {
-			update_post_meta( $post->ID, self::$attendee_list_by_shortcode, 'no' );
-
-			return false;
-		}
-
-		return $has_attendee_list_shortcode || $is_visible_by_meta;
+		return $is_visible_by_meta || $has_attendee_list_shortcode;
 	}
 
 }

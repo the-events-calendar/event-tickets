@@ -32,6 +32,7 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 	 * Activate the blocks in this test run.
 	 */
 	private function enable_blocks() {
+		remove_all_filters( "__internal_tribe_tickets_is_using_blocks" );
 		add_filter( "__internal_tribe_tickets_is_using_blocks", "__return_true" );
 	}
 
@@ -39,6 +40,7 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 	 * Deactivate the blocks in this test run.
 	 */
 	private function disable_blocks() {
+		remove_all_filters( "__internal_tribe_tickets_is_using_blocks" );
 		add_filter( "__internal_tribe_tickets_is_using_blocks", "__return_false" );
 	}
 
@@ -195,9 +197,6 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 
 		$post->post_content = 'Not the shortcode anymore';
 
-		$post_updated = wp_update_post( $post );
-		$this->assertNotWPError( $post_updated );
-
 		$this->attendee_list_display->maybe_update_attendee_list_hide_meta( $post );
 		$this->assertTrue( $this->attendee_list_display->is_event_hiding_attendee_list( $post ) );
 	}
@@ -214,14 +213,27 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertFalse( $this->attendee_list_display->is_event_hiding_attendee_list( $post ) );
 
-		$post_updated = wp_update_post( [
-			'ID'           => $post->ID,
-			'post_content' => 'Not the shortcode anymore',
-		] );
-		$this->assertNotWPError( $post_updated );
+		$post->post_content = 'Not the shortcode anymore';
 
 		$this->attendee_list_display->maybe_update_attendee_list_hide_meta( $post );
 		$this->assertFalse( $this->attendee_list_display->is_event_hiding_attendee_list( $post ) );
+	}
+
+	/**
+	 * Should hide list after removing shortcode
+	 *
+	 * @test
+	 */
+	public function should_disable_meta_added_by_shortcode_after_migrating_from_blocks_to_classical() {
+		$this->enable_blocks();
+		$post = $this->event_factory->create_and_get( [ 'post_content' => '[tribe_attendees_list]' ] );
+		$this->attendee_list_display->maybe_update_attendee_list_hide_meta( $post );
+		$this->assertFalse( $this->attendee_list_display->is_event_hiding_attendee_list( $post ) );
+
+		$this->disable_blocks();
+		$post->post_content = 'Not the shortcode anymore';
+		$this->attendee_list_display->maybe_update_attendee_list_hide_meta( $post );
+		$this->assertTrue( $this->attendee_list_display->is_event_hiding_attendee_list( $post ) );
 	}
 
 }
