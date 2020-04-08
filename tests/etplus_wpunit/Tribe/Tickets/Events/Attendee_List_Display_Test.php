@@ -16,13 +16,20 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 		parent::setUp();
 
 		// We will want to control when this fires in the tests
-		remove_filter( 'save_post_tribe_events', [ tribe( Attendee_List_Display::class ), 'maybe_update_attendee_list_hide_meta' ] );
+		remove_filter( 'save_post', [ tribe( Attendee_List_Display::class ), 'maybe_update_attendee_list_hide_meta' ] );
 
 		// Blocks disabled by default. Overridden in each test, if needed.
 		$this->disable_blocks();
 
 		$this->event_factory         = new Event();
 		$this->attendee_list_display = new Attendee_List_Display();
+	}
+
+	public function tearDown() {
+		// Let's specify that only "posts" can have tickets by default.
+		tribe_update_option( 'ticket-enabled-post-types', [ 'tribe_events' ] );
+
+		parent::tearDown();
 	}
 
 	/**
@@ -50,9 +57,9 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 	 * @param int $post_id
 	 */
 	private function set_meta_off( WP_Post $post ) {
-		$updated = update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, false );
+		update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, false );
 
-		$this->assertNotFalse( $updated, 'Failed to update post meta' );
+		$this->assertEmpty( get_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, true ) );
 	}
 
 	/**
@@ -61,9 +68,9 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 	 * @param $post_id
 	 */
 	private function set_meta_on( WP_Post $post ) {
-		$updated = update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, true );
+		update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, true );
 
-		$this->assertNotFalse( $updated, 'Failed to update post meta' );
+		$this->assertNotEmpty( get_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, true ) );
 	}
 
 	/**
@@ -128,6 +135,25 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 		$this->attendee_list_display->maybe_update_attendee_list_hide_meta( $post );
 
 		$this->assertTrue( $this->attendee_list_display->is_event_hiding_attendee_list( $post ) );
+	}
+
+	/**
+	 * Should hide list after removing shortcode
+	 *
+	 * @test
+	 */
+	public function should_hide_or_show_if_post_type_is_allowed_to_have_tickets() {
+		tribe_update_option( 'ticket-enabled-post-types', [ 'tribe_events' ] );
+
+		$post = $this->factory()->post->create_and_get( [ 'post_content' => '[tribe_attendees_list]' ] );
+		$this->attendee_list_display->maybe_update_attendee_list_hide_meta( $post );
+		$this->assertTrue( $this->attendee_list_display->is_event_hiding_attendee_list( $post ) );
+
+		tribe_update_option( 'ticket-enabled-post-types', [ 'post' ] );
+
+		$post = $this->factory()->post->create_and_get( [ 'post_content' => '[tribe_attendees_list]' ] );
+		$this->attendee_list_display->maybe_update_attendee_list_hide_meta( $post );
+		$this->assertFalse( $this->attendee_list_display->is_event_hiding_attendee_list( $post ) );
 	}
 
 	/**

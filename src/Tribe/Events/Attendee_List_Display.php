@@ -8,13 +8,14 @@ namespace Tribe\Tickets\Events;
 
 use Exception;
 use InvalidArgumentException;
+use Tribe__Tickets__Main;
 use Tribe__Tickets_Plus__Attendees_List;
 use WP_Post;
 
 /**
  * Class Attendee_List_Display
  *
- * @since 4.12.0
+ * @since   4.12.0
  *
  * @package Tribe\Tickets\Events
  */
@@ -30,7 +31,6 @@ class Attendee_List_Display {
 	 * Check if given event is hiding the attendees list.
 	 *
 	 * @param int|WP_Post $post The Post being checked.
-	 *
 	 * @throws InvalidArgumentException Could not determine if given event is hiding or showing the Attendee List.
 	 *
 	 * @return bool True if event is hiding the attendees list. False otherwise.
@@ -59,11 +59,9 @@ class Attendee_List_Display {
 	}
 
 	/**
-	 * @filter tribe_tickets_plus_hide_attendees_list_optout 10 1
-	 *
-	 * @see \Tribe\Tickets\Events\Events_Service_Provider::hooks
-	 *
 	 * @param bool $should_hide Whether the optout form should be hidden or not.
+	 * @filter tribe_tickets_plus_hide_attendees_list_optout 10 1
+	 * @see    \Tribe\Tickets\Events\Events_Service_Provider::hooks
 	 *
 	 * @return bool
 	 */
@@ -81,13 +79,11 @@ class Attendee_List_Display {
 	/**
 	 * Determines whether this post is displaying the Attendees List.
 	 *
+	 * @param int|WP_Post $post The Post being checked.
 	 * @action save_post_tribe_events 10 1
-	 *
-	 * @see \Tribe\Tickets\Events\Events_Service_Provider::hooks
+	 * @see    \Tribe\Tickets\Events\Events_Service_Provider::hooks
 	 *
 	 * @retyrn void
-	 *
-	 * @param int|WP_Post $post The Post being checked.
 	 */
 	public function maybe_update_attendee_list_hide_meta( $post ) {
 		// Attendees list is a Plus feature, if ET Plus is not present we don't have to update the meta.
@@ -109,6 +105,13 @@ class Attendee_List_Display {
 			return;
 		}
 
+		$post_types_allowed_to_have_tickets = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+
+		// Early bail: This post type can't have tickets
+		if ( ! in_array( $post->post_type, $post_types_allowed_to_have_tickets ) ) {
+			return;
+		}
+
 		$this->track_shortcode_driven_meta( $post );
 
 		if ( $this->is_using_blocks() ) {
@@ -123,11 +126,11 @@ class Attendee_List_Display {
 		 * You can use this filter to let the system know that you're displaying
 		 * the Attendee List in some other way.
 		 *
-		 * @since TBD
+		 * @since 4.12.0
 		 *
 		 * @param bool    $is_showing_attendee_list Whether the post is showing the attendee list or not
-		 * @param WP_Post $post The WP_Post object being checked
-		 * @param bool    $is_using_blocks Whether the post is using Blocks or not
+		 * @param WP_Post $post                     The WP_Post object being checked
+		 * @param bool    $is_using_blocks          Whether the post is using Blocks or not
 		 *
 		 * @return bool
 		 */
@@ -217,5 +220,4 @@ class Attendee_List_Display {
 
 		return $is_visible_by_meta || $has_attendee_list_shortcode;
 	}
-
 }
