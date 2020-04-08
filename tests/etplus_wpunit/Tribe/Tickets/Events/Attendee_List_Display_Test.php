@@ -15,6 +15,13 @@ class Attendee_List_Display_Test extends \Codeception\TestCase\WPTestCase {
 		// before
 		parent::setUp();
 
+		/**
+		 * @todo Remove this once Travis or Github Actions can load ET Plus
+		 */
+		if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+			$this->markTestSkipped( "ET Plus is not loaded... Skipping test that requires ET Plus." );
+		}
+
 		// We will want to control when this fires in the tests
 		remove_filter( 'save_post', [ tribe( Attendee_List_Display::class ), 'maybe_update_attendee_list_hide_meta' ] );
 
