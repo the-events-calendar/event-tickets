@@ -125,6 +125,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Removed the `type="submit"` from the button element in the ticket quantity remove template. [ETP-224]
 * Fix - Removed the duplicate `type="button"` from the button element in the ticket quantity add template. [ETP-224]
 * Fix - Correct the `Total` value, when the WooCommerce options for currency are empty (Thousand and decimal separator, number of decimals). [ETP-231]
+* Fix - Correct dependencies for the tickets block JS, in order to have the block working in WordPress versions prior to 5.0. [ETP-238]
 * Tweak - Consolidate duplicate code for getting tickets for each Ticket Provider. [ETP-235]
 * Tweak - Modify new views implementation for The Event Calendar, in order to include the "Sold Out" message as we had in the previous version. [ET-764]
 
