@@ -1,6 +1,6 @@
 <?php return '
 <div class="tribe-block tribe-block__rsvp">
-						<div class="tribe-block__rsvp__ticket" data-rsvp-id="7">
+						<div class="tribe-block__rsvp__ticket" data-rsvp-id="10105">
 				<div class="tribe-block__rsvp__icon">
 	
 	RSVP</div>
@@ -10,10 +10,10 @@
 		<div class="tribe-block__rsvp__details">
 
 	<header class="tribe-block__rsvp__title">
-	Test RSVP ticket for 6</header>
+	Test RSVP ticket for 10104</header>
 
 	<div class="tribe-block__rsvp__description">
-	<p>Ticket RSVP ticket excerpt for 6</p>
+	<p>Ticket RSVP ticket excerpt for 10104</p>
 </div>
 
 	<div class="tribe-block__rsvp__availability">

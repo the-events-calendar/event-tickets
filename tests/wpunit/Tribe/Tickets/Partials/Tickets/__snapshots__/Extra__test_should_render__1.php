@@ -19,7 +19,7 @@ available	</div>
 			<button
 				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--more"
-				aria-controls="tribe__details__content--25"
+				aria-controls="tribe__details__content--12065"
 				tabindex="0"
 			>
 				<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description.</span>
@@ -27,7 +27,7 @@ available	</div>
 			<button
 				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--less"
-				aria-controls="tribe__details__content--25"
+				aria-controls="tribe__details__content--12065"
 				tabindex="0"
 			>
 				<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
