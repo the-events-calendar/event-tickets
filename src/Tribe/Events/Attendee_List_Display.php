@@ -14,7 +14,7 @@ use WP_Post;
 /**
  * Class Attendee_List_Display
  *
- * @since TBD
+ * @since 4.12.0
  *
  * @package Tribe\Tickets\Events
  */
