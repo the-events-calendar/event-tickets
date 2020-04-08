@@ -134,6 +134,7 @@ before_script:
 
 script:
   - codecept run unit -f
+  - codecept run etplus_wpunit -f
   - codecept run wpunit -f --skip-group="capacity"
   - codecept run wpunit -f --group="capacity"
   - codecept run integration -f
