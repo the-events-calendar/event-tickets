@@ -7,13 +7,13 @@
 namespace Tribe\Tickets\Events;
 
 /**
- * Class Events_Service_Provider
+ * Class Service_Provider
  *
  * @since TBD
  *
  * @package Tribe\Tickets\Events
  */
-class Events_Service_Provider extends \tad_DI52_ServiceProvider {
+class Service_Provider extends \tad_DI52_ServiceProvider {
 
 	/**
 	 * Register classes in the container that Event Tickets uses

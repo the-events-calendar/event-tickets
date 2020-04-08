@@ -1,6 +1,6 @@
 <?php
 
-use Tribe\Tickets\Events\Events_Service_Provider;
+use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
 
 class Tribe__Tickets__Main {
 
