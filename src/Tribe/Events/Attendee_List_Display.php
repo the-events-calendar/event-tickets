@@ -107,7 +107,7 @@ class Attendee_List_Display {
 
 		$post_types_allowed_to_have_tickets = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 
-		// Early bail: This post type can't have tickets
+		// Early bail: This post type can't have tickets.
 		if ( ! in_array( $post->post_type, $post_types_allowed_to_have_tickets ) ) {
 			return;
 		}
