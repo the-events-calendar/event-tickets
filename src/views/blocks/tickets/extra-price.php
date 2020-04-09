@@ -41,7 +41,7 @@ $tribe_commerce_currency = tribe( 'tickets.commerce.currency' );
 		<?php echo $tribe_commerce_currency->get_formatted_currency_with_symbol( $ticket->price, $post_id, $provider_class ); ?>
 		<?php if ( $has_suffix ) : ?>
 			<span class="tribe-tickets__sale_price-suffix tribe-common-b2">
-				<?php echo $ticket->price_suffix; ?>
+				<?php echo esc_html( $ticket->price_suffix ); ?>
 			</span>
 		<?php endif; ?>
 	</span>
