@@ -278,7 +278,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		if ( $this->is_main_loop( $query ) ) {
 			global $post;
-			if ( $post instanceof WP_Post && has_shortcode( $post->post_content, "tribe_attendee_registration" ) ) {
+			if ( $post instanceof WP_Post && has_shortcode( $post->post_content, 'tribe_attendee_registration' ) ) {
 				// Early bail: There's no need to override the content if the post is using the shortcode.
 				return;
 			}
