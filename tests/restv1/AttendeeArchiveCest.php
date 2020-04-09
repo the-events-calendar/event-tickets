@@ -180,7 +180,7 @@ class AttendeeArchiveCest extends BaseRestCest {
 	}
 
 	/**
-	 * It should return empty array if no attendees are found
+	 * Should return error if ET Plus is inactive.
 	 *
 	 * @test
 	 */
