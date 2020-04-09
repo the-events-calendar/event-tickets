@@ -81,6 +81,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 *
 	 * @param WP_REST_Request $request
 	 *
+	 * @since TBD Returns 401 Unauthorized if Event Tickets Plus is not loaded.
+	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
 	public function get( WP_REST_Request $request ) {

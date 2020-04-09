@@ -52,6 +52,8 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 		 * @param bool         $can_view_hidden_attendees The default value for whether the user can view hidden attendees.
 		 * @param null|WP_User $user                      The WP_User instance, if available.
 		 *
+		 * @since TBD
+		 *
 		 * @return bool Whether the current user can view hidden attendees.
 		 */
 		$can_view_hidden_attendees = (bool) apply_filters(
