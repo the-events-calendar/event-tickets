@@ -1,32 +1,5 @@
--- phpMyAdmin SQL Dump
--- version 5.0.0
--- https://www.phpmyadmin.net/
---
--- Host: mysql
--- Generation Time: Apr 09, 2020 at 01:22 AM
--- Server version: 10.4.12-MariaDB-1:10.4.12+maria~bionic
--- PHP Version: 7.4.2
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
-START TRANSACTION;
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `tribe_restv1_dump`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `wp_commentmeta`
---
 
 CREATE TABLE `wp_commentmeta` (
                                   `meta_id` bigint(20) UNSIGNED NOT NULL,
@@ -34,12 +7,6 @@ CREATE TABLE `wp_commentmeta` (
                                   `meta_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                                   `meta_value` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `wp_comments`
---
 
 CREATE TABLE `wp_comments` (
                                `comment_ID` bigint(20) UNSIGNED NOT NULL,
@@ -59,12 +26,6 @@ CREATE TABLE `wp_comments` (
                                `user_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `wp_links`
---
-
 CREATE TABLE `wp_links` (
                             `link_id` bigint(20) UNSIGNED NOT NULL,
                             `link_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -81,22 +42,12 @@ CREATE TABLE `wp_links` (
                             `link_rss` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `wp_options`
---
-
 CREATE TABLE `wp_options` (
                               `option_id` bigint(20) UNSIGNED NOT NULL,
                               `option_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
                               `option_value` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
                               `autoload` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'yes'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `wp_options`
---
 
 INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`) VALUES
 (1, 'siteurl', 'http://tribe.local', 'yes'),
@@ -216,18 +167,17 @@ INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`
 (127, 'tribe_skip_welcome', '1', 'yes'),
 (129, 'tribe_events_calendar_options', 'a:4:{s:25:\"ticket-enabled-post-types\";a:1:{i:0;s:12:\"tribe_events\";}s:31:\"previous_event_tickets_versions\";a:2:{i:0;s:1:\"0\";i:1;s:5:\"4.7.2\";}s:28:\"latest_event_tickets_version\";s:6:\"4.12.0\";s:28:\"event-tickets-schema-version\";s:6:\"4.12.0\";}', 'yes'),
 (130, 'recently_activated', 'a:2:{s:31:\"event-tickets/event-tickets.php\";i:1524579502;i:0;b:0;}', 'yes'),
-(131, '_transient_doing_cron', '1586395350.3118720054626464843750', 'yes'),
+(131, '_transient_doing_cron', '1586395492.3714129924774169921875', 'yes'),
 (132, 'wp_page_for_privacy_policy', '0', 'yes'),
 (133, 'show_comments_cookies_opt_in', '1', 'yes'),
 (134, 'admin_email_lifespan', '2533080438', 'yes'),
 (135, 'db_upgraded', '1', 'yes'),
-(136, 'tribe_feature_support_check_lock', '1', 'yes');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `wp_postmeta`
---
+(137, 'fs_active_plugins', 'O:8:\"stdClass\":3:{s:7:\"plugins\";a:1:{s:36:\"event-tickets/common/vendor/freemius\";O:8:\"stdClass\":4:{s:7:\"version\";s:5:\"2.3.2\";s:4:\"type\";s:6:\"plugin\";s:9:\"timestamp\";i:1586395381;s:11:\"plugin_path\";s:31:\"event-tickets/event-tickets.php\";}}s:7:\"abspath\";s:26:\"/shared/httpd/main/htdocs/\";s:6:\"newest\";O:8:\"stdClass\":5:{s:11:\"plugin_path\";s:31:\"event-tickets/event-tickets.php\";s:8:\"sdk_path\";s:36:\"event-tickets/common/vendor/freemius\";s:7:\"version\";s:5:\"2.3.2\";s:13:\"in_activation\";b:0;s:9:\"timestamp\";i:1586395381;}}', 'yes'),
+(138, 'fs_debug_mode', '', 'yes'),
+(139, 'fs_accounts', 'a:5:{s:21:\"id_slug_type_path_map\";a:1:{i:3841;a:3:{s:4:\"slug\";s:13:\"event-tickets\";s:4:\"type\";s:6:\"plugin\";s:4:\"path\";s:31:\"event-tickets/event-tickets.php\";}}s:11:\"plugin_data\";a:1:{s:13:\"event-tickets\";a:15:{s:16:\"plugin_main_file\";O:8:\"stdClass\":1:{s:4:\"path\";s:31:\"event-tickets/event-tickets.php\";}s:20:\"is_network_activated\";b:0;s:17:\"install_timestamp\";i:1586395381;s:17:\"was_plugin_loaded\";b:1;s:21:\"is_plugin_new_install\";b:0;s:16:\"sdk_last_version\";N;s:11:\"sdk_version\";s:5:\"2.3.2\";s:16:\"sdk_upgrade_mode\";b:1;s:18:\"sdk_downgrade_mode\";b:0;s:19:\"plugin_last_version\";N;s:14:\"plugin_version\";s:6:\"4.12.0\";s:19:\"plugin_upgrade_mode\";b:1;s:21:\"plugin_downgrade_mode\";b:0;s:17:\"connectivity_test\";a:6:{s:12:\"is_connected\";b:1;s:4:\"host\";s:8:\"main.loc\";s:9:\"server_ip\";s:12:\"172.16.238.1\";s:9:\"is_active\";b:1;s:9:\"timestamp\";i:1586395381;s:7:\"version\";s:6:\"4.12.0\";}s:15:\"prev_is_premium\";b:0;}}s:13:\"file_slug_map\";a:1:{s:31:\"event-tickets/event-tickets.php\";s:13:\"event-tickets\";}s:7:\"plugins\";a:1:{s:13:\"event-tickets\";O:9:\"FS_Plugin\":23:{s:16:\"parent_plugin_id\";N;s:5:\"title\";s:13:\"Event Tickets\";s:4:\"slug\";s:13:\"event-tickets\";s:12:\"premium_slug\";s:21:\"event-tickets-premium\";s:4:\"type\";s:6:\"plugin\";s:20:\"affiliate_moderation\";b:0;s:19:\"is_wp_org_compliant\";b:1;s:22:\"premium_releases_count\";N;s:4:\"file\";s:31:\"event-tickets/event-tickets.php\";s:7:\"version\";s:6:\"4.12.0\";s:11:\"auto_update\";N;s:4:\"info\";N;s:10:\"is_premium\";b:0;s:14:\"premium_suffix\";s:9:\"(Premium)\";s:7:\"is_live\";b:1;s:9:\"bundle_id\";N;s:17:\"bundle_public_key\";N;s:10:\"public_key\";s:32:\"pk_6dd9310b57c62871c59e58b8e739e\";s:10:\"secret_key\";N;s:2:\"id\";s:4:\"3841\";s:7:\"updated\";N;s:7:\"created\";N;s:22:\"\0FS_Entity\0_is_updated\";b:1;}}s:9:\"unique_id\";s:32:\"78b69501cc592dd8ec16180286bc2604\";}', 'yes'),
+(140, '_transient_timeout_tribe_feature_detection', '1587000182', 'no'),
+(141, '_transient_tribe_feature_detection', 'a:1:{s:22:\"supports_async_process\";b:0;}', 'no'),
+(142, 'fs_gdpr', 'a:1:{s:2:\"u0\";a:1:{s:8:\"required\";b:0;}}', 'yes');
 
 CREATE TABLE `wp_postmeta` (
                                `meta_id` bigint(20) UNSIGNED NOT NULL,
@@ -235,12 +185,6 @@ CREATE TABLE `wp_postmeta` (
                                `meta_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                                `meta_value` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `wp_posts`
---
 
 CREATE TABLE `wp_posts` (
                             `ID` bigint(20) UNSIGNED NOT NULL,
@@ -268,24 +212,12 @@ CREATE TABLE `wp_posts` (
                             `comment_count` bigint(20) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `wp_termmeta`
---
-
 CREATE TABLE `wp_termmeta` (
                                `meta_id` bigint(20) UNSIGNED NOT NULL,
                                `term_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
                                `meta_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                                `meta_value` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `wp_terms`
---
 
 CREATE TABLE `wp_terms` (
                             `term_id` bigint(20) UNSIGNED NOT NULL,
@@ -294,30 +226,14 @@ CREATE TABLE `wp_terms` (
                             `term_group` bigint(10) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `wp_terms`
---
-
 INSERT INTO `wp_terms` (`term_id`, `name`, `slug`, `term_group`) VALUES
 (1, 'Uncategorized', 'uncategorized', 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `wp_term_relationships`
---
 
 CREATE TABLE `wp_term_relationships` (
                                          `object_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
                                          `term_taxonomy_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
                                          `term_order` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `wp_term_taxonomy`
---
 
 CREATE TABLE `wp_term_taxonomy` (
                                     `term_taxonomy_id` bigint(20) UNSIGNED NOT NULL,
@@ -328,18 +244,8 @@ CREATE TABLE `wp_term_taxonomy` (
                                     `count` bigint(20) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `wp_term_taxonomy`
---
-
 INSERT INTO `wp_term_taxonomy` (`term_taxonomy_id`, `term_id`, `taxonomy`, `description`, `parent`, `count`) VALUES
 (1, 1, 'category', '', 0, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `wp_usermeta`
---
 
 CREATE TABLE `wp_usermeta` (
                                `umeta_id` bigint(20) UNSIGNED NOT NULL,
@@ -347,10 +253,6 @@ CREATE TABLE `wp_usermeta` (
                                `meta_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                                `meta_value` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `wp_usermeta`
---
 
 INSERT INTO `wp_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) VALUES
 (1, 1, 'nickname', 'admin'),
@@ -369,12 +271,6 @@ INSERT INTO `wp_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) VALU
 (14, 1, 'dismissed_wp_pointers', ''),
 (15, 1, 'show_welcome_panel', '1');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `wp_users`
---
-
 CREATE TABLE `wp_users` (
                             `ID` bigint(20) UNSIGNED NOT NULL,
                             `user_login` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -388,28 +284,15 @@ CREATE TABLE `wp_users` (
                             `display_name` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `wp_users`
---
-
 INSERT INTO `wp_users` (`ID`, `user_login`, `user_pass`, `user_nicename`, `user_email`, `user_url`, `user_registered`, `user_activation_key`, `user_status`, `display_name`) VALUES
 (1, 'admin', '$P$B5bvjdcJ9LPqh23fLj9ZyTMUERYwoH.', 'admin', 'admin@tribe.local', '', '2018-04-24 11:10:01', '', 0, 'admin');
 
---
--- Indexes for dumped tables
---
 
---
--- Indexes for table `wp_commentmeta`
---
 ALTER TABLE `wp_commentmeta`
     ADD PRIMARY KEY (`meta_id`),
     ADD KEY `comment_id` (`comment_id`),
     ADD KEY `meta_key` (`meta_key`(191));
 
---
--- Indexes for table `wp_comments`
---
 ALTER TABLE `wp_comments`
     ADD PRIMARY KEY (`comment_ID`),
     ADD KEY `comment_post_ID` (`comment_post_ID`),
@@ -418,32 +301,20 @@ ALTER TABLE `wp_comments`
     ADD KEY `comment_parent` (`comment_parent`),
     ADD KEY `comment_author_email` (`comment_author_email`(10));
 
---
--- Indexes for table `wp_links`
---
 ALTER TABLE `wp_links`
     ADD PRIMARY KEY (`link_id`),
     ADD KEY `link_visible` (`link_visible`);
 
---
--- Indexes for table `wp_options`
---
 ALTER TABLE `wp_options`
     ADD PRIMARY KEY (`option_id`),
     ADD UNIQUE KEY `option_name` (`option_name`),
     ADD KEY `autoload` (`autoload`);
 
---
--- Indexes for table `wp_postmeta`
---
 ALTER TABLE `wp_postmeta`
     ADD PRIMARY KEY (`meta_id`),
     ADD KEY `post_id` (`post_id`),
     ADD KEY `meta_key` (`meta_key`(191));
 
---
--- Indexes for table `wp_posts`
---
 ALTER TABLE `wp_posts`
     ADD PRIMARY KEY (`ID`),
     ADD KEY `post_name` (`post_name`(191)),
@@ -451,126 +322,66 @@ ALTER TABLE `wp_posts`
     ADD KEY `post_parent` (`post_parent`),
     ADD KEY `post_author` (`post_author`);
 
---
--- Indexes for table `wp_termmeta`
---
 ALTER TABLE `wp_termmeta`
     ADD PRIMARY KEY (`meta_id`),
     ADD KEY `term_id` (`term_id`),
     ADD KEY `meta_key` (`meta_key`(191));
 
---
--- Indexes for table `wp_terms`
---
 ALTER TABLE `wp_terms`
     ADD PRIMARY KEY (`term_id`),
     ADD KEY `slug` (`slug`(191)),
     ADD KEY `name` (`name`(191));
 
---
--- Indexes for table `wp_term_relationships`
---
 ALTER TABLE `wp_term_relationships`
     ADD PRIMARY KEY (`object_id`,`term_taxonomy_id`),
     ADD KEY `term_taxonomy_id` (`term_taxonomy_id`);
 
---
--- Indexes for table `wp_term_taxonomy`
---
 ALTER TABLE `wp_term_taxonomy`
     ADD PRIMARY KEY (`term_taxonomy_id`),
     ADD UNIQUE KEY `term_id_taxonomy` (`term_id`,`taxonomy`),
     ADD KEY `taxonomy` (`taxonomy`);
 
---
--- Indexes for table `wp_usermeta`
---
 ALTER TABLE `wp_usermeta`
     ADD PRIMARY KEY (`umeta_id`),
     ADD KEY `user_id` (`user_id`),
     ADD KEY `meta_key` (`meta_key`(191));
 
---
--- Indexes for table `wp_users`
---
 ALTER TABLE `wp_users`
     ADD PRIMARY KEY (`ID`),
     ADD KEY `user_login_key` (`user_login`),
     ADD KEY `user_nicename` (`user_nicename`),
     ADD KEY `user_email` (`user_email`);
 
---
--- AUTO_INCREMENT for dumped tables
---
 
---
--- AUTO_INCREMENT for table `wp_commentmeta`
---
 ALTER TABLE `wp_commentmeta`
     MODIFY `meta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `wp_comments`
---
 ALTER TABLE `wp_comments`
     MODIFY `comment_ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `wp_links`
---
 ALTER TABLE `wp_links`
     MODIFY `link_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `wp_options`
---
 ALTER TABLE `wp_options`
-    MODIFY `option_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=137;
+    MODIFY `option_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=143;
 
---
--- AUTO_INCREMENT for table `wp_postmeta`
---
 ALTER TABLE `wp_postmeta`
     MODIFY `meta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `wp_posts`
---
 ALTER TABLE `wp_posts`
     MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `wp_termmeta`
---
 ALTER TABLE `wp_termmeta`
     MODIFY `meta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `wp_terms`
---
 ALTER TABLE `wp_terms`
     MODIFY `term_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
---
--- AUTO_INCREMENT for table `wp_term_taxonomy`
---
 ALTER TABLE `wp_term_taxonomy`
     MODIFY `term_taxonomy_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
---
--- AUTO_INCREMENT for table `wp_usermeta`
---
 ALTER TABLE `wp_usermeta`
     MODIFY `umeta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
---
--- AUTO_INCREMENT for table `wp_users`
---
 ALTER TABLE `wp_users`
     MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
