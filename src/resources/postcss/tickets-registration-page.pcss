@@ -174,10 +174,15 @@ body.page-tribe-attendee-registration {
 			/* AR override styles */
 			.tribe-tickets__item {
 				grid-template-columns: 6fr 1fr 2fr 2fr;
+
+				&.tribe-tickets__item--price-sufix {
+					grid-template-columns: 4fr 3fr 2fr 2fr;
+				}
 			}
 
 			.tribe-tickets__item__extra {
 				grid-row: 1;
+				align-self: center;
 			}
 
 			.tribe-tickets__item__extra,
