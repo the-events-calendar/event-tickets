@@ -67,7 +67,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		 */
 		if ( is_array( $posts ) && ! empty( $posts ) ) {
 			if ( $posts[0] instanceof WP_Post ) {
-				if ( has_shortcode( $posts[0]->post_content, "tribe_attendee_registration" ) ) {
+				if ( has_shortcode( $posts[0]->post_content, 'tribe_attendee_registration' ) ) {
 					return $posts;
 				}
 			}
