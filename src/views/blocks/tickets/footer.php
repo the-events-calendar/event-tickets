@@ -20,8 +20,16 @@ $is_mini         = $this->get( 'is_mini' );
 $tickets         = $this->get( 'tickets' );
 $currency_symbol = $this->get( 'currency_symbol' );
 $provider        = $this->get( 'provider' );
-$cart_url        = $provider->get_cart_url();
-$checkout_url    = $provider->get_checkout_url();
+if ( method_exists( $provider, "get_cart_url" ) ) {
+	$cart_url = $provider->get_checkout_url();
+} else {
+	$cart_url = '';
+}
+if ( method_exists( $provider, "get_cart_provider" ) ) {
+	$checkout_url = $provider->get_checkout_url();
+} else {
+	$checkout_url = '';
+}
 ?>
 <div class="tribe-tickets__footer" >
 	<?php if ( $is_mini && strtok( $cart_url, '?' ) !== strtok( $checkout_url, '?' ) ) : ?>

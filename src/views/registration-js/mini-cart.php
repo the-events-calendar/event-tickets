@@ -23,6 +23,12 @@ if ( empty( $provider ) ) {
 $view = tribe( 'tickets.attendee_registration.view' );
 $provider_obj        = $view->get_cart_provider( $provider );
 
+if ( is_object( $provider_obj ) ) {
+	$provider_class = $provider_obj->class_name;
+} else {
+	$provider_class = '';
+}
+
 $tickets = $this->get( 'tickets' );
 // We don't display anything if there is no provider or tickets
 if ( ! $provider || empty( $tickets ) ) {
@@ -39,7 +45,7 @@ $currency = tribe( 'tickets.commerce.currency' );
 $tickets             = $this->get( 'tickets', [] );
 $cart_url            = $this->get( 'cart_url' );
 ?>
-<aside id="tribe-tickets__mini-cart" <?php tribe_classes( $cart_classes ); ?> data-provider="<?php echo esc_attr( $provider_obj->class_name ); ?>">
+<aside id="tribe-tickets__mini-cart" <?php tribe_classes( $cart_classes ); ?> data-provider="<?php echo esc_attr( $provider_class ); ?>">
 	<h3 class="tribe-common-h6 tribe-common-h5--min-medium tribe-common-h--alt tribe-tickets__mini-cart__title"><?php echo esc_html_x( 'Ticket Summary', 'Attendee registration mini-cart/ticket summary title.', 'event-tickets'); ?></h3>
 		<?php foreach ( $events as $event_id => $tickets ) : ?>
 			<?php foreach ( $tickets as $key => $ticket ) : ?>

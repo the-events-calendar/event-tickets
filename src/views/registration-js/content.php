@@ -28,6 +28,12 @@ if ( empty( $provider ) ) {
 	$provider     = $provider_obj->attendee_object;
 }
 
+if ( method_exists( $provider_obj, "get_cart_provider" ) ) {
+	$checkout_url = $provider_obj->get_checkout_url();
+} else {
+	$checkout_url = '';
+}
+
 $non_meta_count = 0;
 $provider_class = $this->get_form_class( $provider );
 $all_tickets    = [];
@@ -60,7 +66,7 @@ $classes        = [
 	<form
 		method="post"
 		id="tribe-tickets__registration__form"
-		action="<?php echo esc_url( $provider_obj->get_checkout_url() ); ?>"
+		action="<?php echo esc_url( $checkout_url ); ?>"
 		data-provider="<?php echo esc_attr( $provider ); ?>"
 	>
 	<div class="tribe-tickets__registration__grid">
