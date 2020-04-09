@@ -30,6 +30,7 @@ class Attendee_List_Display {
 
 	/**
 	 * Check if given event is hiding the attendees list.
+	 *
 	 * @since TBD
 	 *
 	 * @param int|WP_Post $post The Post being checked.
@@ -91,17 +92,17 @@ class Attendee_List_Display {
 	 * @action save_post_tribe_events 10 1
 	 * @see    \Tribe\Tickets\Events\Events_Service_Provider::hooks
 	 *
-	 * @retyrn void
+	 * @retyrn int|bool|void Void if didn't try to update. The return of update_post_meta otherwise.
 	 */
 	public function maybe_update_attendee_list_hide_meta( $post ) {
 		// Attendees list is a Plus feature, if ET Plus is not present we don't have to update the meta.
 		if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
-			return;
+			return null;
 		}
 
 		// Early bail: is an autosave or auto-draft.
 		if ( wp_is_post_autosave( $post ) || wp_is_post_revision( $post ) ) {
-			return;
+			return null;
 		}
 
 		if ( ! $post instanceof WP_Post ) {
@@ -110,14 +111,14 @@ class Attendee_List_Display {
 
 		// Early bail: Invalid post.
 		if ( ! $post instanceof WP_Post ) {
-			return;
+			return null;
 		}
 
 		$post_types_allowed_to_have_tickets = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 
 		// Early bail: This post type can't have tickets.
 		if ( ! in_array( $post->post_type, $post_types_allowed_to_have_tickets ) ) {
-			return;
+			return null;
 		}
 
 		$this->track_shortcode_driven_meta( $post );
@@ -149,7 +150,7 @@ class Attendee_List_Display {
 			$this->is_using_blocks()
 		);
 
-		update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, $is_showing_attendee_list );
+		return update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, $is_showing_attendee_list );
 	}
 
 	/**
@@ -187,6 +188,10 @@ class Attendee_List_Display {
 	}
 
 	/**
+	 * Whether the events are being served using Blocks or the Classical Editor.
+	 *
+	 * @since TBD
+	 *
 	 * @return bool
 	 */
 	private function is_using_blocks() {
