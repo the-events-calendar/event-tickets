@@ -42,7 +42,7 @@ class Attendee_List_Display {
 		}
 
 		if ( is_numeric( $post ) ) {
-			$post = WP_Post::get_instance( $post );
+			$post = get_post( $post );
 		}
 
 		if ( ! $post instanceof WP_Post ) {
