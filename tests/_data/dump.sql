@@ -219,7 +219,7 @@ INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`
 (131, '_transient_doing_cron', '1586395350.3118720054626464843750', 'yes'),
 (132, 'wp_page_for_privacy_policy', '0', 'yes'),
 (133, 'show_comments_cookies_opt_in', '1', 'yes'),
-(134, 'admin_email_lifespan', '0', 'yes'),
+(134, 'admin_email_lifespan', '2533080438', 'yes'),
 (135, 'db_upgraded', '1', 'yes'),
 (136, 'tribe_feature_support_check_lock', '1', 'yes');
 
