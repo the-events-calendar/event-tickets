@@ -33,6 +33,6 @@ $tribe_commerce_currency = tribe( 'tickets.commerce.currency' );
 		<?php echo esc_html_x( 'Total:', 'Total selected tickets price.', 'event-tickets' ); ?>
 	</span>
 	<span class="tribe-tickets__footer__total__wrap">
-		<?php echo $tribe_commerce_currency->get_formatted_currency_with_symbol( 0, $post_id, $provider_class); ?>
+		<?php echo $tribe_commerce_currency->get_formatted_currency_with_symbol( 0, $post_id, $provider_class ); ?>
 	</span>
 </div>
