@@ -48,6 +48,8 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 *
+	 * @param WP_Post  $posts Post data object.
+	 *
 	 * @return void
 	 */
 	public function setup_context( $posts ) {
@@ -58,7 +60,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			return $posts;
 		}
 
-		// Early bail: We have the shortcode in the content, but it's too early for $this->is_on_ar_page() to see it.
+		/*
+		 * Early bail:
+		 * We are on the AR page, but we have the shortcode in the content,
+		 * so we don't want to spoof this page.
+		 */
 		if ( is_array( $posts ) && ! empty( $posts ) ) {
 			if ( $posts[0] instanceof WP_Post ) {
 				if ( has_shortcode( $posts[0]->post_content, "tribe_attendee_registration" ) ) {
