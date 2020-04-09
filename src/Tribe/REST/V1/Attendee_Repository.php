@@ -57,7 +57,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 		 * @return bool Whether the current user can view hidden attendees.
 		 */
 		$can_view_hidden_attendees = (bool) apply_filters(
-			"tribe_tickets_user_can_view_hidden_attendees",
+			"tribe_tickets_user_can_view_hidden_attendees_rest",
 			$can_view_hidden_attendees,
 			wp_get_current_user()
 		);
