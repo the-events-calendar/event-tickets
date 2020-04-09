@@ -58,15 +58,24 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			return $posts;
 		}
 
+		// Early bail: We have the shortcode in the content, but it's too early for $this->is_on_ar_page() to see it.
+		if ( is_array( $posts ) && ! empty( $posts ) ) {
+			if ( $posts[0] instanceof WP_Post ) {
+				if ( has_shortcode( $posts[0]->post_content, "tribe_attendee_registration" ) ) {
+					return $posts;
+				}
+			}
+		}
+
 		// Empty posts
 		$posts = null;
 		// Create a fake virtual page
 		$posts[] = $this->spoofed_page();
 
 		// Don't tell wp_query we're anything in particular - then we don't run into issues with defaults.
-		$wp_query->is_page     = false;
-		$wp_query->is_singular = false;
-		$wp_query->is_home     = false;
+		$wp_query->is_page        = false;
+		$wp_query->is_singular    = false;
+		$wp_query->is_home        = false;
 		$wp_query->is_archive  = false;
 		$wp_query->is_category = false;
 		$wp_query->is_404      = false;
@@ -262,11 +271,17 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		}
 
 		if ( $this->is_main_loop( $query ) ) {
+			global $post;
+			if ( $post instanceof WP_Post && has_shortcode( $post->post_content, "tribe_attendee_registration" ) ) {
+				// Early bail: There's no need to override the content if the post is using the shortcode.
+				return;
+			}
+
 			// Prevent the TEC v2 page override from preventing our content override.
 			add_filter( 'tribe_events_views_v2_should_hijack_page_template', '__return_false' );
 
 			// Load Attendee Registration view for the content.
-			add_filter( 'the_content', array( tribe( 'tickets.attendee_registration.view' ), 'display_attendee_registration_page' ) );
+			add_filter( 'the_content', [ tribe( 'tickets.attendee_registration.view' ), 'display_attendee_registration_page' ] );
 		}
 	}
 
