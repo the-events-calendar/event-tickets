@@ -90,6 +90,11 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * {@inheritdoc}
 	 */
 	public function get_attendee_data( $attendee_id, $context = 'default' ) {
+		// Early bail: ET Plus must be active to get Attendee data.
+		if ( ! class_exists( "Tribe__Tickets_Plus__Main" ) ) {
+			return new WP_Error( 'etplus-not-loaded', $this->messages->get_message( 'etplus-not-loaded' ), [ 'status' => 401 ] );
+		}
+
 		$attendee_post = get_post( $attendee_id );
 
 		if ( ! $attendee_post instanceof WP_Post ) {

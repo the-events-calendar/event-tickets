@@ -32,78 +32,18 @@ class Post_RepositoryTest extends Ticket_TestCase {
 	}
 
 	/**
+	 * Should return an error if Event Tickets Plus is not loaded.
+	 *
 	 * @test
-	 * it should return a WP_Error when trying to get attendee data for non existing post
 	 */
-	public function it_should_return_a_wp_error_when_trying_to_get_attendee_data_for_non_existing_post() {
+	public function should_return_error_if_etplus_not_loaded() {
 		$sut = $this->make_instance();
 
 		$data = $sut->get_attendee_data( 22131 );
 
 		/** @var \WP_Error $data */
 		$this->assertWPError( $data );
-		$this->assertEquals( $this->messages->get_message( 'attendee-not-found' ), $data->get_error_message() );
-	}
-
-	/**
-	 * @test
-	 * it should return a WP_Error when trying to get attendee data for non attendee
-	 */
-	public function it_should_return_a_wp_error_when_trying_to_get_attendee_data_for_non_attendee() {
-		$sut = $this->make_instance();
-
-		$data = $sut->get_attendee_data( $this->factory()->post->create() );
-
-		/** @var \WP_Error $data */
-		$this->assertWPError( $data );
-		$this->assertEquals( $this->messages->get_message( 'attendee-not-found' ), $data->get_error_message() );
-	}
-
-	/**
-	 * @test
-	 * it should return an attendee array representation if attendee
-	 */
-	public function it_should_return_an_attendee_array_representation_if_attendee() {
-		$this->markTestSkipped( 'Review this when the ticket factory is in place' );
-
-		$attendee = $this->factory()->rsvp_attendee->create();
-
-		$sut  = $this->make_instance();
-		$data = $sut->get_attendee_data( $attendee );
-
-		$this->assertInternalType( 'array', $data );
-	}
-
-	/**
-	 * @test
-	 * it should return the array representation of an attendee if trying to get an attendee data
-	 */
-	public function it_should_return_the_array_representation_of_an_attendee_if_trying_to_get_an_attendee_data() {
-		$this->markTestSkipped( 'Review this when the ticket factory is in place' );
-
-		$attendee = $this->factory()->rsvp_attendee->create();
-
-		$sut  = $this->make_instance();
-		$data = $sut->get_data( $attendee );
-
-		$this->assertInternalType( 'array', $data );
-		$this->assertEquals( $attendee, $data['id'] );
-	}
-
-	/**
-	 * @test
-	 * it should return an attendee data if trying to get data for an attendee
-	 */
-	public function it_should_return_an_attendee_data_if_trying_to_get_data_for_an_attendee() {
-		$this->markTestSkipped( 'Review this when the ticket factory is in place' );
-
-		$attendee = $this->factory()->rsvp_attendee->create();
-
-		$sut  = $this->make_instance();
-		$data = $sut->get_data( $attendee );
-
-		$this->assertInternalType( 'array', $data );
-		$this->assertEquals( $attendee, $data['id'] );
+		$this->assertEquals( $this->messages->get_message( 'etplus-not-loaded' ), $data->get_error_message() );
 	}
 
 	/**
