@@ -156,6 +156,8 @@ class Attendee_List_Display {
 	 * This keeps track of whether the Attendee List is being displayed becase of a shortcode
 	 * in the content, and acts accordingly if said shortcode is removed.
 	 *
+	 * @since TBD
+	 *
 	 * @param WP_Post $post The Post being checked.
 	 *
 	 * @return void
@@ -206,6 +208,10 @@ class Attendee_List_Display {
 	}
 
 	/**
+	 * Determine whether we are showing the attendee list with the block editor.
+	 *
+	 * @since TBD
+	 *
 	 * @param WP_Post $post The Post being checked.
 	 *
 	 * @return bool
@@ -218,6 +224,10 @@ class Attendee_List_Display {
 	}
 
 	/**
+	 * Determine whether we are showing the attendee list with the block editor.
+	 *
+	 * @since TBD
+	 *
 	 * @param WP_Post $post The Post being checked.
 	 *
 	 * @return bool
