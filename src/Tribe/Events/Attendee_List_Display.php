@@ -15,13 +15,14 @@ use WP_Post;
 /**
  * Class Attendee_List_Display
  *
- * @since   4.12.0
+ * @since TBD
  *
  * @package Tribe\Tickets\Events
  */
 class Attendee_List_Display {
 
 	/**
+	 * @since TBD
 	 * @var string Meta name to control whether the Attendee List
 	 *             meta was changed by a shortcode in the content.
 	 */
@@ -29,6 +30,7 @@ class Attendee_List_Display {
 
 	/**
 	 * Check if given event is hiding the attendees list.
+	 * @since TBD
 	 *
 	 * @param int|WP_Post $post The Post being checked.
 	 * @throws InvalidArgumentException Could not determine if given event is hiding or showing the Attendee List.
@@ -59,6 +61,10 @@ class Attendee_List_Display {
 	}
 
 	/**
+	 * Determine whether we should hide the optout option.
+	 *
+	 * @since TBD
+	 *
 	 * @param bool $should_hide Whether the optout form should be hidden or not.
 	 * @filter tribe_tickets_plus_hide_attendees_list_optout 10 1
 	 * @see    \Tribe\Tickets\Events\Events_Service_Provider::hooks
@@ -78,6 +84,8 @@ class Attendee_List_Display {
 
 	/**
 	 * Determines whether this post is displaying the Attendees List.
+	 *
+	 * @since TBD
 	 *
 	 * @param int|WP_Post $post The Post being checked.
 	 * @action save_post_tribe_events 10 1
@@ -126,7 +134,7 @@ class Attendee_List_Display {
 		 * You can use this filter to let the system know that you're displaying
 		 * the Attendee List in some other way.
 		 *
-		 * @since 4.12.0
+		 * @since TBD
 		 *
 		 * @param bool    $is_showing_attendee_list Whether the post is showing the attendee list or not
 		 * @param WP_Post $post                     The WP_Post object being checked
