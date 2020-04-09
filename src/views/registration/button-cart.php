@@ -17,7 +17,7 @@ $provider     = $this->get( 'provider' );
 $cart_url     = $this->get_cart_url( $provider );
 $provider_obj = $this->get_cart_provider( $provider );
 
-if ( method_exists( $provider_obj, "get_cart_provider" ) ) {
+if ( method_exists( $provider_obj, 'get_cart_provider' ) ) {
 	$checkout_url = $provider_obj->get_checkout_url();
 } else {
 	$checkout_url = '';

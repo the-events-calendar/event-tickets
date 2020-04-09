@@ -20,12 +20,12 @@ $is_mini         = $this->get( 'is_mini' );
 $tickets         = $this->get( 'tickets' );
 $currency_symbol = $this->get( 'currency_symbol' );
 $provider        = $this->get( 'provider' );
-if ( method_exists( $provider, "get_cart_url" ) ) {
+if ( method_exists( $provider, 'get_cart_url' ) ) {
 	$cart_url = $provider->get_checkout_url();
 } else {
 	$cart_url = '';
 }
-if ( method_exists( $provider, "get_cart_provider" ) ) {
+if ( method_exists( $provider, 'get_cart_provider' ) ) {
 	$checkout_url = $provider->get_checkout_url();
 } else {
 	$checkout_url = '';
