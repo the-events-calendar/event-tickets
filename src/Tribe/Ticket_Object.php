@@ -105,6 +105,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $sku;
 
 		/**
+		 * Holds the price suffix.
+		 *
+		 * @var string
+		 */
+		public $price_suffix;
+
+		/**
 		 * Holds the menu order for the ticket
 		 *
 		 * @since 4.6
