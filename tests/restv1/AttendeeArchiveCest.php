@@ -178,4 +178,17 @@ class AttendeeArchiveCest extends BaseRestCest {
 		$I->seeHttpHeader( 'X-ET-TOTAL', 8 );
 		$I->seeHttpHeader( 'X-ET-TOTAL-PAGES', 2 );
 	}
+
+	/**
+	 * It should return empty array if no attendees are found
+	 *
+	 * @test
+	 */
+	public function should_return_error_if_et_plus_inactive( Restv1Tester $I ) {
+		$code = file_get_contents( codecept_data_dir( 'REST/V1/mu-plugins/disable-etplus.php' ) );
+		$I->haveMuPlugin( 'disable-etplus.php', $code );
+
+		$I->sendGET( $this->attendees_url );
+		$I->seeResponseCodeIs( 401 );
+	}
 }

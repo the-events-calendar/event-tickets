@@ -84,6 +84,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
 	public function get( WP_REST_Request $request ) {
+		// Early bail: ET Plus must be active to use this endpoint.
+		if ( ! class_exists( "Tribe__Tickets_Plus__Main" ) ) {
+			return new WP_REST_Response( __( 'Sorry, Event Tickets Plus must be active to use this endpoint.', 'event-tickets' ), 401 );
+		}
+
 		$query_args = $request->get_query_params();
 		$page  = $request['page'];
 		$per_page = $request['per_page'];
