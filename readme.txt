@@ -126,6 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Removed the duplicate `type="button"` from the button element in the ticket quantity add template. [ETP-224]
 * Fix - Correct the `Total` value, when the WooCommerce options for currency are empty (Thousand and decimal separator, number of decimals). [ETP-231]
 * Fix - Load plugin text domain on the new `tribe_load_text_domains` action hook, which fires on 'init' instead of on the 'plugins_loaded' hook. [ET-739]
+* Fix - Deprecate `\Tribe__Tickets__Tickets_Handler::get_total_event_capacity()` and replace its usage with `tribe_get_event_capacity()`, which returns the correct count. [ET-770]
 * Tweak - Consolidate duplicate code for getting tickets for each Ticket Provider. [ETP-235]
 * Tweak - Modify new views implementation for The Event Calendar, in order to include the "Sold Out" message as we had in the previous version. [ET-764]
 
