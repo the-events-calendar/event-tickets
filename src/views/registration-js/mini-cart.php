@@ -6,6 +6,7 @@
  * [your-theme]/tribe/tickets/registration-js/mini-cart.php
  *
  * @since 4.11.0
+ * @since TBD Prevent potential errors when $provider_obj is not valid.
  *
  * @version 4.11.0
  *
@@ -20,8 +21,8 @@ if ( empty( $provider ) ) {
 }
 
 /** @var Tribe__Tickets__Attendee_Registration__View $view */
-$view = tribe( 'tickets.attendee_registration.view' );
-$provider_obj        = $view->get_cart_provider( $provider );
+$view         = tribe( 'tickets.attendee_registration.view' );
+$provider_obj = $view->get_cart_provider( $provider );
 
 if ( is_object( $provider_obj ) ) {
 	$provider_class = $provider_obj->class_name;
