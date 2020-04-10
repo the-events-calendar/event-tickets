@@ -511,7 +511,7 @@ class Tribe__Tickets__Main {
 	 * set up hooks for this class
 	 */
 	public function hooks() {
-		add_action( 'tribe_load_text_domain', [ $this, 'load_text_domain' ] );
+		add_action( 'tribe_load_text_domains', [ $this, 'load_text_domain' ] );
 
 		add_action( 'init', [ $this, 'init' ] );
 
