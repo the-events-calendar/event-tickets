@@ -10,7 +10,7 @@
  * @since 4.11.0 Add docblock for `$this`.
  * @since TBD Prevent potential errors when $provider_obj is not valid.
  *
- * @version 4.11.0
+ * @version TBD
  *
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */
