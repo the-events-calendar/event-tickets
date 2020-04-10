@@ -351,7 +351,7 @@ class Tribe__Tickets__Main {
 
 		tribe_singleton( 'tickets.theme-compatibility', 'Tribe__Tickets__Theme_Compatibility' );
 
-		// Attendee Registration Page
+		// Attendee Registration Page.
 		tribe_register_provider( 'Tribe__Tickets__Attendee_Registration__Service_Provider' );
 
 		// Event Tickets Provider to manage Events.
