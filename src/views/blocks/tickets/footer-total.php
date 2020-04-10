@@ -8,12 +8,13 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link    {INSERT_ARTICLE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since   4.11.0
- * @since   4.11.3 Updated code comments.
+ * @since 4.11.0
+ * @since 4.11.3 Updated code comments.
+ * @since TBD Prevent potential errors when $provider_obj is not valid.
  *
- * @version 4.11.3
+ * @version TBD
  */
 $post_id = $this->get( 'event_id' );
 
