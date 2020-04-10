@@ -107,6 +107,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Holds the price suffix.
 		 *
+		 * @since TBD
+		 *
 		 * @var string
 		 */
 		public $price_suffix;
