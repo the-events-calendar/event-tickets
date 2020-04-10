@@ -114,6 +114,7 @@ class SingleTicketCest extends BaseRestCest {
 				'sold'    => 7,
 				'pending' => 0,
 			],
+			'price_suffix'                  => null,
 		];
 
 		$response = json_decode( $I->grabResponse(), true );
@@ -182,6 +183,7 @@ class SingleTicketCest extends BaseRestCest {
 				],
 			],
 			'optout'            => false,
+			'suffix'            => null,
 		];
 		$I->assertEquals( $expected_first_attendee, $first_attendee_from_response );
 	}
