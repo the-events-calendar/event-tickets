@@ -89,6 +89,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return void
 	 */
 	public function assets() {
+		global $wp_version;
 		$plugin = Tribe__Tickets__Main::instance();
 
 		wp_register_script(
@@ -101,11 +102,17 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		wp_enqueue_script( 'wp-util-not-in-footer' );
 
+		$tickets_block_dependencies = [ 'jquery', 'wp-util-not-in-footer' ];
+
+		if ( version_compare( $wp_version, '5.0', '>=' ) ) {
+			$tickets_block_dependencies[] = 'wp-i18n';
+		}
+
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-tickets',
 			'tickets-block.js',
-			[ 'jquery', 'wp-util-not-in-footer', 'wp-i18n' ],
+			$tickets_block_dependencies,
 			null,
 			[
 				'type'         => 'js',
