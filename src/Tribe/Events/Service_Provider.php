@@ -9,7 +9,7 @@ namespace Tribe\Tickets\Events;
 /**
  * Class Service_Provider
  *
- * @since 4.12.0
+ * @since TBD
  *
  * @package Tribe\Tickets\Events
  */
@@ -19,7 +19,7 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 	 * Register classes in the container that Event Tickets uses
 	 * to manage Events.
 	 *
-	 * @since 4.12.0
+	 * @since TBD
 	 */
 	public function register() {
 		tribe_singleton( Attendee_List_Display::class, Attendee_List_Display::class );
@@ -31,7 +31,7 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 	 * Actions and filters that Event Tickets uses to
 	 * to manage Events.
 	 *
-	 * @since 4.12.0
+	 * @since TBD
 	 */
 	protected function hooks() {
 		add_action( 'save_post', [ tribe( Attendee_List_Display::class ), 'maybe_update_attendee_list_hide_meta' ], 10 );
