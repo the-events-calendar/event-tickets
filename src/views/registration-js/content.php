@@ -7,6 +7,7 @@
  *
  * @since 4.11.0
  * @since 4.11.3.1 Fix handling where $provider is an object.
+ * @since TBD Prevent potential errors when $provider_obj is not valid.
  *
  * @version 4.11.4
  *
