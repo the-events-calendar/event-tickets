@@ -127,6 +127,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Correct the `Total` value, when the WooCommerce options for currency are empty (Thousand and decimal separator, number of decimals). [ETP-231]
 * Tweak - Consolidate duplicate code for getting tickets for each Ticket Provider. [ETP-235]
 * Tweak - Modify new views implementation for The Event Calendar, in order to include the "Sold Out" message as we had in the previous version. [ET-764]
+* Fix - Using a custom Attendee Registration page with the [tribe_attendee_registration] shortcode will no longer replace the contents of the page. [ETP-292]
 
 = [4.11.5] 2020-03-18 =
 
