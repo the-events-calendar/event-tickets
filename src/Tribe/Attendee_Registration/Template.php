@@ -287,7 +287,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			add_filter( 'tribe_events_views_v2_should_hijack_page_template', '__return_false' );
 
 			// Load Attendee Registration view for the content.
-			add_filter( 'the_content', [ tribe( 'tickets.attendee_registration.view' ), 'display_attendee_registration_page' ] );
+			add_filter( 'the_content', tribe_callback( 'tickets.attendee_registration.view', 'display_attendee_registration_page' ) );
 		}
 	}
 
