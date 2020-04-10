@@ -11,8 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.11.0
- * @version 4.11.0
+ * @since TBD Prevent potential errors when $provider_obj is not valid.
  *
+ * @version TBD
  */
 $event_id        = $this->get( 'event_id' );
 $is_modal        = $this->get( 'is_modal' );
@@ -20,11 +21,13 @@ $is_mini         = $this->get( 'is_mini' );
 $tickets         = $this->get( 'tickets' );
 $currency_symbol = $this->get( 'currency_symbol' );
 $provider        = $this->get( 'provider' );
+
 if ( method_exists( $provider, 'get_cart_url' ) ) {
 	$cart_url = $provider->get_cart_url();
 } else {
 	$cart_url = '';
 }
+
 if ( method_exists( $provider, 'get_checkout_url' ) ) {
 	$checkout_url = $provider->get_checkout_url();
 } else {
