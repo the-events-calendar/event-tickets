@@ -5,7 +5,7 @@
 					<span class="tribe-currency-symbol">&#x24;</span>
 					<span class="tribe-amount">10.00</span>
 				</span>
-								<span class="tribe-tickets__sale_price-suffix tribe-common-b2">
+								<span class="tribe-tickets__sale-price-suffix tribe-common-b2">
 				Price excl. VAT: $10			</span>
 			</span>
 </div>
