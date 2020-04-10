@@ -48,7 +48,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 *
-	 * @param WP_Post $posts Post data object.
+	 * @param WP_Post[] $posts Post data objects.
 	 *
 	 * @return void
 	 */
