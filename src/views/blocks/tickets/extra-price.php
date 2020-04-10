@@ -44,7 +44,8 @@ $tribe_commerce_currency = tribe( 'tickets.commerce.currency' );
 				<?php
 				// This suffix contains HTML to be output.
 				// phpcs:ignore
-				echo $ticket->price_suffix; ?>
+				echo $ticket->price_suffix;
+				?>
 			</span>
 		<?php endif; ?>
 	</span>
