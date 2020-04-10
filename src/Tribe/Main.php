@@ -354,7 +354,7 @@ class Tribe__Tickets__Main {
 		// Attendee Registration Page
 		tribe_register_provider( 'Tribe__Tickets__Attendee_Registration__Service_Provider' );
 
-		// Event Tickets Provider to manage Events
+		// Event Tickets Provider to manage Events.
 		tribe_register_provider( Events_Service_Provider::class );
 
 		// ORM

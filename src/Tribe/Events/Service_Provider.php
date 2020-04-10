@@ -22,7 +22,7 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	public function register() {
-		tribe_singleton( Attendee_List_Display::class, Attendee_List_Display::class );
+		tribe_singleton( 'tickets.events.attendee_list', Attendee_List::class );
 
 		$this->hooks();
 	}
@@ -34,8 +34,8 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function hooks() {
-		add_action( 'save_post', [ tribe( Attendee_List_Display::class ), 'maybe_update_attendee_list_hide_meta' ], 10 );
-		add_filter( 'tribe_tickets_plus_hide_attendees_list_optout', [ tribe( Attendee_List_Display::class ), 'should_hide_optout' ], 1 );
+		add_action( 'save_post', [ tribe( Attendee_List::class ), 'maybe_update_attendee_list_hide_meta' ], 10 );
+		add_filter( 'tribe_tickets_plus_hide_attendees_list_optout', [ tribe( Attendee_List::class ), 'should_hide_optout' ], 1 );
 	}
 
 }

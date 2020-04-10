@@ -13,13 +13,13 @@ use Tribe__Tickets_Plus__Attendees_List;
 use WP_Post;
 
 /**
- * Class Attendee_List_Display
+ * Class Attendee_List
  *
  * @since TBD
  *
  * @package Tribe\Tickets\Events
  */
-class Attendee_List_Display {
+class Attendee_List {
 
 	/**
 	 * @since TBD
