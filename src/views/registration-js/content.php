@@ -28,7 +28,7 @@ if ( empty( $provider ) ) {
 	$provider     = $provider_obj->attendee_object;
 }
 
-if ( method_exists( $provider_obj, 'get_cart_provider' ) ) {
+if ( method_exists( $provider_obj, 'get_checkout_url' ) ) {
 	$checkout_url = $provider_obj->get_checkout_url();
 } else {
 	$checkout_url = '';
