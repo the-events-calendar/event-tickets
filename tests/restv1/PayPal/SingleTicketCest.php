@@ -114,7 +114,7 @@ class SingleTicketCest extends BaseRestCest {
 				'sold'    => 7,
 				'pending' => 0,
 			],
-			'price_suffix'                  => null,
+			'suffix'                        => null,
 		];
 
 		$response = json_decode( $I->grabResponse(), true );
@@ -183,7 +183,6 @@ class SingleTicketCest extends BaseRestCest {
 				],
 			],
 			'optout'            => false,
-			'suffix'            => null,
 		];
 		$I->assertEquals( $expected_first_attendee, $first_attendee_from_response );
 	}
@@ -280,7 +279,7 @@ class SingleTicketCest extends BaseRestCest {
 				'values'            => [ 5 ],
 			],
 			'supports_attendee_information' => false, //no ET+ installed
-			'price_suffix'                  => null,
+			'suffix'                        => null,
 		);
 
 		$I->assertEquals( $expectedJson, $response );
@@ -312,7 +311,6 @@ class SingleTicketCest extends BaseRestCest {
 			'rest_url'          => $this->attendees_url . '/' . $first_attendee_id,
 			'title'             => $first_attendee_object['holder_name'],
 			'optout'            => false,
-			'suffix'            => null,
 		];
 		$I->assertEquals( $expected_first_attendee, $first_attendee_from_response );
 	}
