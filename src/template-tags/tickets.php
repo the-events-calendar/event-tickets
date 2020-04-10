@@ -960,7 +960,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 		}
 
 		// Bail when it's not a post or ID is 0
-		if ( ! $post instanceof WP_Post || 0 === $post->ID ) {
+		if ( ! $post instanceof WP_Post || empty( $post->ID ) ) {
 			return null;
 		}
 
