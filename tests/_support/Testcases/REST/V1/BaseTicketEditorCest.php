@@ -5,7 +5,6 @@ namespace Tribe\Tickets\Test\Testcases\REST\V1;
 use Codeception\Example;
 use Restv1Tester;
 use Spatie\Snapshots\MatchesSnapshots;
-use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Traits\CapacityMatrix;
 
@@ -381,8 +380,9 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'unchecked_in'            => 0,
 				'checked_in_percentage'   => 100,
 				'unchecked_in_percentage' => 0,
+				'suffix'                  => null,
 			],
-			'suffix'                        => null,
+			'price_suffix'                  => null,
 		];
 
 		$is_plus_test = $this->is_plus;
