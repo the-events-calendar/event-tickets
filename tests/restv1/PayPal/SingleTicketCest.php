@@ -2,7 +2,6 @@
 
 namespace Tribe\Tickets\Test\REST\V1\PayPal;
 
-use PHPUnit\Framework\Assert;
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as Ticket_Maker;
@@ -277,9 +276,10 @@ class SingleTicketCest extends BaseRestCest {
 				'currency_symbol'   => '$',
 				'currency_position' => 'prefix',
 				'values'            => [ 5 ],
+				'suffix'            => null,
 			],
 			'supports_attendee_information' => false, //no ET+ installed
-			'suffix'                        => null,
+			'price_suffix'                  => null,
 		);
 
 		$I->assertEquals( $expectedJson, $response );

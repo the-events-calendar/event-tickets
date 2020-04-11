@@ -20,8 +20,8 @@
 
 	<input name="provider" value="Tribe__Tickets__Commerce__PayPal__Main" class="tribe-tickets-provider" type="hidden">
 									<div
-	id="tribe-block-tickets-item-32"
-	 class="tribe-tickets__item post-32 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="32"
+	id="tribe-block-tickets-item-10028"
+	 class="tribe-tickets__item post-10028 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="10028"
 	data-available="false"
 	data-has-shared-cap="true"
 			data-shared-cap="15"
@@ -29,20 +29,18 @@
 >
 	
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__item__content__title"  >
-		Test PayPal ticket for 31</div>
-	<div id="tribe__details__content--32" class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__item__details__content">
-	Test PayPal ticket description for 31</div>
-<div class="tribe-tickets__item__extra">
-	<div
-	class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__item__extra__price"
->
+		Test PayPal ticket for 10027</div>
+	<div id="tribe__details__content--10028" class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__item__details__content">
+	Test PayPal ticket description for 10027</div>
+<div  class="tribe-tickets__item__extra" >
+	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__item__extra__price" >
 		<span class="tribe-tickets__sale_price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
 					<span class="tribe-currency-symbol">&#x24;</span>
 					<span class="tribe-amount">5.00</span>
 				</span>
-				</span>
+						</span>
 </div>
 			<div
 	class="tribe-common-b3 tribe-tickets__item__extra__available"
@@ -53,7 +51,7 @@ available	</div>
 			<button
 				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--more"
-				aria-controls="tribe__details__content--32"
+				aria-controls="tribe__details__content--10028"
 				tabindex="0"
 			>
 				<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description.</span>
@@ -61,7 +59,7 @@ available	</div>
 			<button
 				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--less"
-				aria-controls="tribe__details__content--32"
+				aria-controls="tribe__details__content--10028"
 				tabindex="0"
 			>
 				<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
@@ -80,11 +78,11 @@ available	</div>
 			<div class="tribe-common-form-control-checkbox tribe-tickets-attendees-list-optout--wrapper">
 	<label
 		class="tribe-common-form-control-checkbox__label"
-		for="tribe-tickets-attendees-list-optout-32"
+		for="tribe-tickets-attendees-list-optout-10028"
 	>
 		<input
 			class="tribe-common-form-control-checkbox__input tribe-tickets__item__optout"
-			id="tribe-tickets-attendees-list-optout-32"
+			id="tribe-tickets-attendees-list-optout-10028"
 			name="attendee[optout]"
 			type="checkbox"
 			 checked=\'checked\'		/>Hide my attendee data from public view.</label>

@@ -261,8 +261,10 @@ class SingleTicketCest extends BaseRestCest {
 				'currency_symbol'   => '$',
 				'currency_position' => 'prefix',
 				'values'            => [ 0 ],
+				'suffix'            => null,
 			],
 			'supports_attendee_information' => false, // we are on RSVP, no ET+ installed'
+			'price_suffix'                  => null,
 		);
 
 		$I->assertEquals( $expectedJson, $response );
