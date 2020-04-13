@@ -31,15 +31,8 @@
 		Test PayPal ticket for 10024</div>
 	<div id="tribe__details__content--10025" class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__item__details__content">
 	Test PayPal ticket description for 10024</div>
-<<<<<<< HEAD
-<div class="tribe-tickets__item__extra">
-	<div
-	class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__item__extra__price"
->
-=======
 <div  class="tribe-tickets__item__extra" >
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__item__extra__price" >
->>>>>>> fix/etp-292-ar-form-overrides-page-content
 		<span class="tribe-tickets__sale_price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
@@ -80,23 +73,7 @@
 	Sold Out</div>
 	</div>	
 	
-<<<<<<< HEAD
 				</div>
-=======
-			<div class="tribe-common-form-control-checkbox tribe-tickets-attendees-list-optout--wrapper">
-	<label
-		class="tribe-common-form-control-checkbox__label"
-		for="tribe-tickets-attendees-list-optout-10025"
-	>
-		<input
-			class="tribe-common-form-control-checkbox__input tribe-tickets__item__optout"
-			id="tribe-tickets-attendees-list-optout-10025"
-			name="attendee[optout]"
-			type="checkbox"
-			 checked=\'checked\'		/>Hide my attendee data from public view.</label>
-</div>
-	</div>
->>>>>>> fix/etp-292-ar-form-overrides-page-content
 				<div class="tribe-tickets__footer" >
 		<div class="tribe-common-b2 tribe-tickets__footer__quantity" >
 	<span class="tribe-tickets__footer__quantity__label">
