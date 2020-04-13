@@ -308,8 +308,6 @@ class Tribe__Tickets__Main {
 	 * @since 4.10
 	 */
 	public function bootstrap() {
-		Tribe__Main::instance( $this )->load_text_domain( 'event-tickets', $this->plugin_dir . 'lang/' );
-
 		// Initialize the Service Provider for Tickets
 		tribe_register_provider( 'Tribe__Tickets__Service_Provider' );
 
@@ -519,6 +517,8 @@ class Tribe__Tickets__Main {
 	 * set up hooks for this class
 	 */
 	public function hooks() {
+		add_action( 'tribe_load_text_domains', [ $this, 'load_text_domain' ] );
+
 		add_action( 'init', [ $this, 'init' ] );
 
 		// connect upgrade script
@@ -672,6 +672,17 @@ class Tribe__Tickets__Main {
 		];
 
 		return $plugins;
+	}
+
+	/**
+	 * Load the Event Tickets text domain after Tribe Common's.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function load_text_domain() {
+		return Tribe__Main::instance( $this )->load_text_domain( 'event-tickets', $this->plugin_dir . 'lang/' );
 	}
 
 	/**

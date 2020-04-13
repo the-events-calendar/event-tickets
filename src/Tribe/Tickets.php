@@ -606,13 +606,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function delete_ticket( $post_id, $ticket_id ) {}
 
 		/**
-		 * Saves a ticket
+		 * Saves a ticket.
 		 *
 		 * @abstract
 		 *
-		 * @param int   $post_id
-		 * @param int   $ticket
-		 * @param array $raw_data
+		 * @param int                           $post_id  Post ID.
+		 * @param Tribe__Tickets__Ticket_Object $ticket   Ticket object.
+		 * @param array                         $raw_data Ticket data.
 		 *
 		 * @return int|false The updated/created ticket post ID or false if no ticket ID.
 		 */
@@ -2912,7 +2912,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				update_post_meta( $ticket->ID, $tickets_handler->key_end_date, $event_start );
 			}
 
-			tribe( 'tickets.version' )->update( $ticket->ID );
+			/** @var Tribe__Tickets__Version $version */
+			$version = tribe( 'tickets.version' );
+
+			$version->update( $ticket->ID );
 
 			return $save_ticket;
 		}

@@ -29,12 +29,12 @@ class TicketSingularPermissionsCest extends BaseRestCest {
 	}
 
 	/**
-	 * It should include a Ticket's Attendee Information if request is from an Editor.
+	 * It should include a Ticket's Attendee Information if request is from an Admin.
 	 *
 	 * @test
 	 */
-	public function should_contain_attendee_info_if_editor( Restv1Tester $I ) {
-		$I->generate_nonce_for_role( 'editor' );
+	public function should_contain_attendee_info_if_admin( Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'administrator' );
 
 		$ticket_id = $this->get_a_single_rsvp_id_having_attendees( $I );
 
@@ -49,6 +49,33 @@ class TicketSingularPermissionsCest extends BaseRestCest {
 				'rest_url'  => $this_ticket_url,
 				'id'        => $ticket_id,
 				'attendees' => $expected_attendees,
+			]
+		);
+
+		// 'tickets' only appears in archives
+		$I->cantSeeResponseContainsJson( [ 'tickets' ] );
+	}
+
+	/**
+	 * It should not include a Ticket's Attendee Information if request is from an Editor.
+	 *
+	 * @test
+	 */
+	public function should_not_contain_attendee_info_if_editor( Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'editor' );
+
+		$ticket_id = $this->get_a_single_rsvp_id_having_attendees( $I );
+
+		$this_ticket_url = esc_url( trailingslashit( $this->tickets_url ) . $ticket_id );
+
+		$I->sendGET( $this_ticket_url );
+		$I->seeResponseIsJson();
+		$I->seeResponseCodeIs( 200 );
+		$I->canSeeResponseContainsJson(
+			[
+				'rest_url'  => $this_ticket_url,
+				'id'        => $ticket_id,
+				'attendees' => [], // property should be present as an empty array
 			]
 		);
 

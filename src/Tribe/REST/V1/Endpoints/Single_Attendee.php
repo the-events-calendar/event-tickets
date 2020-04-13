@@ -81,8 +81,15 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @since TBD Returns 401 Unauthorized if Event Tickets Plus is not loaded.
 	 */
 	public function get( WP_REST_Request $request ) {
+		// Early bail: ET Plus must be active to use this endpoint.
+		if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+			return new WP_REST_Response( __( 'Sorry, Event Tickets Plus must be active to use this endpoint.', 'event-tickets' ), 401 );
+		}
+
 		return tribe_attendees( 'restv1' )->by_primary_key( $request['id'] );
 	}
 }

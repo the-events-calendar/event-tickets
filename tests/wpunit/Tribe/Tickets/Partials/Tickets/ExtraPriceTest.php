@@ -61,4 +61,25 @@ class ExtraPrice extends WPTestCase {
 		$this->assertMatchesSnapshot( $html );
 	}
 
+	/**
+	 * @test
+	 */
+	public function test_should_render_price_suffix() {
+		$template  = tribe( 'tickets.editor.template' );
+		$event     = $this->get_mock_event( 'events/single/1.json' );
+		$event_id  = $event->ID;
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 10 );
+		$ticket    = tribe( 'tickets.commerce.paypal' )->get_ticket( $event_id, $ticket_id );
+		$ticket->price_suffix = 'Price excl. VAT: $10';
+
+		$args    = [
+			'ticket'   => $ticket,
+			'post_id'  => $event_id,
+			'provider' => tribe( 'tickets.commerce.paypal' ),
+		];
+
+		$html     = $template->template( $this->partial_path, $args, false );
+		$this->assertMatchesSnapshot( $html );
+	}
+
 }

@@ -32,17 +32,22 @@
 		Test PayPal ticket for 10063</div>
 	<div id="tribe__details__content--10064" class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__item__details__content">
 	Test PayPal ticket description for 10063</div>
+<<<<<<< HEAD
 <div class="tribe-tickets__item__extra">
 	<div
 	class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__item__extra__price"
 >
+=======
+<div  class="tribe-tickets__item__extra" >
+	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__item__extra__price" >
+>>>>>>> fix/etp-292-ar-form-overrides-page-content
 		<span class="tribe-tickets__sale_price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
 					<span class="tribe-currency-symbol">&#x24;</span>
 					<span class="tribe-amount">5.00</span>
 				</span>
-				</span>
+						</span>
 </div>
 			<div
 	class="tribe-common-b3 tribe-tickets__item__extra__available"
@@ -77,7 +82,23 @@ available	</div>
 	Sold Out</div>
 	</div>	
 	
+<<<<<<< HEAD
 				</div>
+=======
+			<div class="tribe-common-form-control-checkbox tribe-tickets-attendees-list-optout--wrapper">
+	<label
+		class="tribe-common-form-control-checkbox__label"
+		for="tribe-tickets-attendees-list-optout-10064"
+	>
+		<input
+			class="tribe-common-form-control-checkbox__input tribe-tickets__item__optout"
+			id="tribe-tickets-attendees-list-optout-10064"
+			name="attendee[optout]"
+			type="checkbox"
+			 checked=\'checked\'		/>Hide my attendee data from public view.</label>
+</div>
+	</div>
+>>>>>>> fix/etp-292-ar-form-overrides-page-content
 				<div class="tribe-tickets__footer" >
 		<div class="tribe-common-b2 tribe-tickets__footer__quantity" >
 	<span class="tribe-tickets__footer__quantity__label">
@@ -94,7 +115,8 @@ available	</div>
 					<span class="tribe-amount">0.00</span>
 				</span>
 				</span>
-</div>			<button
+</div>
+			<button
 	 class="tribe-common-c-btn tribe-common-c-btn--small tribe-tickets__buy" 	id="tribe-tickets__buy"
 	type="submit"
 			name="cart-button"
