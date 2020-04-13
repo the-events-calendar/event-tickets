@@ -131,6 +131,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Consolidate duplicate code for getting tickets for each Ticket Provider. [ETP-235]
 * Tweak - Modify new views implementation for The Event Calendar, in order to include the "Sold Out" message as we had in the previous version. [ET-764]
 * Tweak - Attendee REST endpoint now returns 401 (Unauthorized) if Event Tickets Plus is not loaded. [ETP-297]
+* Tweak - Implement price suffix for the tickets block when a price suffix is provided by a Commerce provider. [ET-620]
 
 = [4.11.5] 2020-03-18 =
 

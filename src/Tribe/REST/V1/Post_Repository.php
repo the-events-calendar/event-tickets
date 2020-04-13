@@ -629,6 +629,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'currency_symbol'   => html_entity_decode( $currency->get_provider_symbol( $provider, $ticket_id ) ),
 			'currency_position' => $currency->get_provider_symbol_position( $provider, $ticket_id ),
 			'values'            => array( $price ),
+			'suffix'            => $ticket->price_suffix,
 		);
 
 		return $details;

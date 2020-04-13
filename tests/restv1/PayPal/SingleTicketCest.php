@@ -116,6 +116,7 @@ class SingleTicketCest extends BaseRestCest {
 				'sold'    => 7,
 				'pending' => 0,
 			],
+			'suffix'                        => null,
 		];
 
 		$response = json_decode( $I->grabResponse(), true );
@@ -278,8 +279,10 @@ class SingleTicketCest extends BaseRestCest {
 				'currency_symbol'   => '$',
 				'currency_position' => 'prefix',
 				'values'            => [ 5 ],
+				'suffix'            => null,
 			],
 			'supports_attendee_information' => false, //no ET+ installed
+			'price_suffix'                  => null,
 		);
 
 		$I->assertEquals( $expectedJson, $response );
