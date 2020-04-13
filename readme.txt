@@ -119,6 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.12.0] TBD =
 
+* Fix - Using a custom Attendee Registration page with the [tribe_attendee_registration] shortcode will no longer replace the contents of the page. [ETP-292]
 * Fix - Update notice template to print content only when there's information. Remove the "Whoops" title for the Attendee Registration page notice. [ETP-233]
 * Fix - Update file path in the docblocks of the templates for The Events Calendar new views. [ETP-289]
 * Fix - Update position of the `tribe_tickets_ticket_add` action so it receives the ticket data on ticket creation. [ETP-302]
@@ -130,7 +131,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Deprecate `\Tribe__Tickets__Tickets_Handler::get_total_event_capacity()` and replace its usage with `tribe_get_event_capacity()`, which returns the correct count. [ET-770]
 * Tweak - Consolidate duplicate code for getting tickets for each Ticket Provider. [ETP-235]
 * Tweak - Modify new views implementation for The Event Calendar, in order to include the "Sold Out" message as we had in the previous version. [ET-764]
-* Fix - Using a custom Attendee Registration page with the [tribe_attendee_registration] shortcode will no longer replace the contents of the page. [ETP-292]
+* Tweak - Attendee REST endpoint now returns 401 (Unauthorized) if Event Tickets Plus is not loaded. [ETP-297]
+* Tweak - Implement price suffix for the tickets block when a price suffix is provided by a Commerce provider. [ET-620]
 
 = [4.11.5] 2020-03-18 =
 

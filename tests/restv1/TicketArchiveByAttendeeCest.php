@@ -46,7 +46,7 @@ class TicketArchiveByAttendeeCest extends BaseRestCest {
 			'tickets'     => $expected_tickets,
 		] );
 
-		// as a not logged in user the filter has no effect
+		// As a not logged in user the filter has no effect.
 		$I->sendGET( $this->tickets_url, [ 'attendees_max' => 3 ] );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
@@ -57,7 +57,8 @@ class TicketArchiveByAttendeeCest extends BaseRestCest {
 			'tickets'     => $expected_tickets,
 		] );
 
-		$I->generate_nonce_for_role( 'editor' );
+		// As an admin (edit_users / tribe_manage_attendees) the filter has will work.
+		$I->generate_nonce_for_role( 'administrator' );
 
 		$I->sendGET( $this->tickets_url, [ 'attendees_min' => 3 ] );
 		$I->seeResponseIsJson();
@@ -149,7 +150,7 @@ class TicketArchiveByAttendeeCest extends BaseRestCest {
 			'tickets'     => $expected_tickets,
 		] );
 
-		$I->generate_nonce_for_role( 'editor' );
+		$I->generate_nonce_for_role( 'administrator' );
 
 		$I->sendGET( $this->tickets_url, [ 'checkedin_min' => 3 ] );
 		$I->seeResponseIsJson();
