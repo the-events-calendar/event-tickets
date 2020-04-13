@@ -134,7 +134,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 			return new WP_Error( 'attendee-not-found', $messages->get_message( 'attendee-not-found' ), array( 'status' => 404 ) );
 		}
 
-		if ( current_user_can( 'read_private_posts' ) ) {
+		if ( current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' ) ) {
 			return $this->format_item( $found[0] );
 		}
 

@@ -127,7 +127,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			}
 		}
 
-		if ( current_user_can( 'read_private_posts' ) ) {
+		if ( current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' ) ) {
 			$permission                 = Tribe__Tickets__REST__V1__Attendee_Repository::PERMISSION_EDITABLE;
 			$fetch_args['post_status']  = Tribe__Utils__Array::get( $fetch_args, 'post_status', 'any' );
 			$fetch_args['event_status'] = Tribe__Utils__Array::get( $fetch_args, 'event_status', 'any' );

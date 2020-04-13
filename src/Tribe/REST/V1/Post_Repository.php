@@ -92,11 +92,6 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * @since TBD Returns 401 Unauthorized if Event Tickets Plus is not loaded.
 	 */
 	public function get_attendee_data( $attendee_id, $context = 'default' ) {
-		// Early bail: ET Plus must be active to get Attendee data.
-		if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
-			return new WP_Error( 'etplus-not-loaded', $this->messages->get_message( 'etplus-not-loaded' ), [ 'status' => 401 ] );
-		}
-
 		$attendee_post = get_post( $attendee_id );
 
 		if ( ! $attendee_post instanceof WP_Post ) {
@@ -585,7 +580,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'available'            => (int) $ticket->stock(), // see note above about why we use this
 		);
 
-		if ( current_user_can( 'read_private_posts' ) ) {
+		if ( current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' ) ) {
 			$details['max']     = (int) $ticket->capacity();
 			$details['sold']    = (int) $ticket->qty_sold();
 			$details['pending'] = (int) $ticket->qty_pending();
@@ -656,6 +651,9 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		$event = $ticket_object->get_event();
 
+		$has_manage_access          = current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
+		$always_show_attendees_data = $has_manage_access;
+
 		/**
 		 * Allow filtering to always show attendees data on tickets in the REST API. This bypasses checks for Attendees
 		 * shortcode or block in the associated event/post content for the ticket.
@@ -666,7 +664,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		 *                                         can see this information.
 		 * @param array $data                      Ticket REST data.
 		 */
-		$always_show_attendees_data = apply_filters( 'tribe_tickets_rest_api_always_show_attendee_data', current_user_can( 'read_private_posts' ), $data );
+		$always_show_attendees_data = apply_filters( 'tribe_tickets_rest_api_always_show_attendee_data', $always_show_attendees_data, $data );
 
 		// Check if we have an event or attendees block/shortcode.
 		if ( ! $always_show_attendees_data ) {
@@ -693,7 +691,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		if (
 			$ticket_object instanceof Tribe__Tickets__Ticket_Object
-			&& current_user_can( 'read_private_posts' )
+			&& $has_manage_access
 			&& false !== $data['attendees']
 		) {
 			$is_rsvp = $ticket_object->provider_class === 'Tribe__Tickets__RSVP';
@@ -755,19 +753,14 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			return false;
 		}
 
-		$can_read_private_posts = current_user_can( 'read_private_posts' );
-		$permission             = $can_read_private_posts ? 'editable' : 'readable';
-		// if the use can read private posts then it can access attendees that did optout
-		$optout = $can_read_private_posts ? 'any' : 'no';
+		$has_manage_access = current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
+		$permission        = $has_manage_access ? 'editable' : 'readable';
 
 		$query = tribe_attendees( 'restv1' )
 			->permission( $permission )
-			->where( 'ticket', $ticket_id )
-			->where( 'optout', $optout );
+			->where( 'ticket', $ticket_id );
 
-		if ( ! $can_read_private_posts
-		     && tribe_tickets_get_ticket_provider( $ticket_id ) instanceof Tribe__Tickets__RSVP
-		) {
+		if ( ! $has_manage_access && 'Tribe__Tickets__RSVP' === $ticket_object->provider_class ) {
 			// if we are dealing with an RSVP ticket then the attendee must be going to show
 			$query->where( 'meta_equals', Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY, 'yes' );
 		}
@@ -942,10 +935,10 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'rest_url'          => $main->get_url( '/attendees/' . $attendee_id ),
 		);
 
-		$can_read_private_post = current_user_can( 'read_private_posts' );
+		$has_manage_access = current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
 
 		// Only show the attendee name if the attendee did not optout or the user can read private posts
-		if ( empty( $attendee['optout'] ) || $can_read_private_post ) {
+		if ( empty( $attendee['optout'] ) || $has_manage_access ) {
 			$attendee_data['title']  = Tribe__Utils__Array::get( $attendee, 'holder_name', Tribe__Utils__Array::get( $attendee, 'purchaser_name', '' ) );
 			$attendee_data['optout'] = tribe_is_truthy( $attendee['optout'] );
 		} else {
