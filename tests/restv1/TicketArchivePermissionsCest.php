@@ -55,7 +55,7 @@ class TicketArchivePermissionsCest extends BaseRestCest {
 		$expected_tickets = tribe_tickets( 'restv1' )->all();
 
 		foreach( $expected_tickets as $ticket ) {
-			$I->asserNotEmpty( $ticket['attendees'] );
+			$I->assertNotEmpty( $ticket['attendees'] );
 		}
 
 		$I->seeResponseContainsJson(

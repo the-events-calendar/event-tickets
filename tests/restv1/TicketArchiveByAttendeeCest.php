@@ -64,6 +64,16 @@ class TicketArchiveByAttendeeCest extends BaseRestCest {
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseContainsJson( [
+			'rest_url'    => add_query_arg( [ 'attendees_min' => 3 ], $this->tickets_url . '/' ),
+			'total'       => 6,
+			'total_pages' => 1,
+			'tickets'     => $expected_tickets,
+		] );
+
+		$I->sendGET( $this->tickets_url, [ 'attendees_max' => 3 ] );
+		$I->seeResponseIsJson();
+		$I->seeResponseCodeIs( 200 );
+		$I->seeResponseContainsJson( [
 			'rest_url'    => add_query_arg( [ 'attendees_max' => 3 ], $this->tickets_url . '/' ),
 			'total'       => 6,
 			'total_pages' => 1,
@@ -163,7 +173,7 @@ class TicketArchiveByAttendeeCest extends BaseRestCest {
 			'tickets'     => $expected_tickets,
 		] );
 
-		$I->generate_nonce_for_role( 'editor' );
+		$I->generate_nonce_for_role( 'administrator' );
 
 		$I->sendGET( $this->tickets_url, [ 'checkedin_min' => 3 ] );
 		$I->seeResponseIsJson();
