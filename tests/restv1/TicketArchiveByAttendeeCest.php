@@ -57,29 +57,6 @@ class TicketArchiveByAttendeeCest extends BaseRestCest {
 			'tickets'     => $expected_tickets,
 		] );
 
-		// As a non-admin (edit_users / tribe_manage_attendees) the filter has no effect.
-		$I->generate_nonce_for_role( 'editor' );
-
-		$I->sendGET( $this->tickets_url, [ 'attendees_min' => 3 ] );
-		$I->seeResponseIsJson();
-		$I->seeResponseCodeIs( 200 );
-		$I->seeResponseContainsJson( [
-			'rest_url'    => add_query_arg( [ 'attendees_min' => 3 ], $this->tickets_url . '/' ),
-			'total'       => 6,
-			'total_pages' => 1,
-			'tickets'     => $expected_tickets,
-		] );
-
-		$I->sendGET( $this->tickets_url, [ 'attendees_max' => 3 ] );
-		$I->seeResponseIsJson();
-		$I->seeResponseCodeIs( 200 );
-		$I->seeResponseContainsJson( [
-			'rest_url'    => add_query_arg( [ 'attendees_max' => 3 ], $this->tickets_url . '/' ),
-			'total'       => 6,
-			'total_pages' => 1,
-			'tickets'     => $expected_tickets,
-		] );
-
 		// As an admin (edit_users / tribe_manage_attendees) the filter has will work.
 		$I->generate_nonce_for_role( 'administrator' );
 
