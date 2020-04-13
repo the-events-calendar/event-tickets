@@ -8,15 +8,21 @@
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
  * @since 4.11.0 Add docblock for `$this`.
+ * @since TBD Prevent potential errors when $provider_obj is not valid.
  *
- * @version 4.11.0
+ * @version TBD
  *
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */
 $provider     = $this->get( 'provider' );
 $cart_url     = $this->get_cart_url( $provider );
 $provider_obj = $this->get_cart_provider( $provider );
-$checkout_url = $provider_obj->get_checkout_url();
+
+if ( method_exists( $provider_obj, 'get_checkout_url' ) ) {
+	$checkout_url = $provider_obj->get_checkout_url();
+} else {
+	$checkout_url = '';
+}
 
 // If the cart and checkout urls are the same, don't display.
 if ( strtok( $cart_url, '?' ) === strtok( $checkout_url, '?' ) ) {

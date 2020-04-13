@@ -104,7 +104,8 @@ available	</div>
 					<span class="tribe-amount">0.00</span>
 				</span>
 				</span>
-</div>			<button
+</div>
+			<button
 	 class="tribe-common-c-btn tribe-common-c-btn--small tribe-tickets__buy" 	id="tribe-tickets__buy"
 	type="submit"
 			name="cart-button"

@@ -48,6 +48,8 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 *
+	 * @param WP_Post[] $posts Post data objects.
+	 *
 	 * @return void
 	 */
 	public function setup_context( $posts ) {
@@ -56,6 +58,19 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		// Bail if we're not on the attendee info page
 		if ( ! $this->is_on_ar_page() ) {
 			return $posts;
+		}
+
+		/*
+		 * Early bail:
+		 * We are on the AR page, but we have the shortcode in the content,
+		 * so we don't want to spoof this page.
+		 */
+		if ( is_array( $posts ) && ! empty( $posts ) ) {
+			if ( $posts[0] instanceof WP_Post ) {
+				if ( has_shortcode( $posts[0]->post_content, 'tribe_attendee_registration' ) ) {
+					return $posts;
+				}
+			}
 		}
 
 		// Empty posts
@@ -262,11 +277,17 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		}
 
 		if ( $this->is_main_loop( $query ) ) {
+			global $post;
+			if ( $post instanceof WP_Post && has_shortcode( $post->post_content, 'tribe_attendee_registration' ) ) {
+				// Early bail: There's no need to override the content if the post is using the shortcode.
+				return;
+			}
+
 			// Prevent the TEC v2 page override from preventing our content override.
 			add_filter( 'tribe_events_views_v2_should_hijack_page_template', '__return_false' );
 
 			// Load Attendee Registration view for the content.
-			add_filter( 'the_content', array( tribe( 'tickets.attendee_registration.view' ), 'display_attendee_registration_page' ) );
+			add_filter( 'the_content', tribe_callback( 'tickets.attendee_registration.view', 'display_attendee_registration_page' ) );
 		}
 	}
 

@@ -93,8 +93,9 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 
 		$allowed_tags = array_merge( wp_kses_allowed_html( 'post' ), $additional_allowed );
 
-		echo wp_kses( tribe( 'tickets.attendee_registration.view' )->display_attendee_registration_page( null, 'shortcode' ), $allowed_tags );
+		echo wp_kses( tribe( 'tickets.attendee_registration.view' )->display_attendee_registration_shortcode(), $allowed_tags );
 
 		return ob_get_clean();
 	}
+
 }
