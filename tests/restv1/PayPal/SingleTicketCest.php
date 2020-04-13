@@ -19,14 +19,17 @@ class SingleTicketCest extends BaseRestCest {
 	public function should_allow_getting_a_ticket_information_by_ticket_post_id( Restv1Tester $I ) {
 		$I->generate_nonce_for_role( 'administrator' );
 
-		$post_id                     = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
+		$post_id = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
+
+		$I->havePostmetaInDatabase( $post_id, '_tribe_hide_attendees_list', '1' );
+
 		$attendees_count             = 7;
 		$ticket_id                   = $this->create_paypal_ticket_basic( $post_id, 5, [
 			'meta_input' => [
 				'total_sales' => $attendees_count,
 				'_stock'      => 30 - $attendees_count,
 				'_capacity'   => 30,
-			]
+			],
 		] );
 		$first_attendee_checkin_date = '2018-01-02 09:00:16';
 		$first_attendee_checkin_time = strtotime( $first_attendee_checkin_date );
@@ -96,7 +99,7 @@ class SingleTicketCest extends BaseRestCest {
 			'cost_details'                  => [
 				'currency_symbol'   => '$',
 				'currency_position' => 'prefix',
-				'values'            => [ 5 ],
+				'values'            => [ '5' ],
 			],
 			'attendees'                     => $repository->get_ticket_attendees( $ticket_id ),
 			'supports_attendee_information' => false, // no ET+ installed'

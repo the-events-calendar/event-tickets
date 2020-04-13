@@ -129,7 +129,7 @@ class TicketArchiveByAvailabilityCest extends BaseRestCest {
 			'tickets'     => $expected_tickets,
 		] );
 
-		$I->generate_nonce_for_role( 'editor' );
+		$I->generate_nonce_for_role( 'administrator' );
 
 		$I->sendGET( $this->tickets_url, [ 'capacity_min' => 10 ] );
 		$I->seeResponseIsJson();

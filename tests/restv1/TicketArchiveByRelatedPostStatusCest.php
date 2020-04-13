@@ -67,7 +67,7 @@ class TicketArchiveByRelatedPostStatusCest extends BaseRestCest {
 			'tickets'     => [],
 		] );
 
-		$I->generate_nonce_for_role( 'editor' );
+		$I->generate_nonce_for_role( 'administrator' );
 
 		// implicitly any
 		$I->sendGET( $this->tickets_url );

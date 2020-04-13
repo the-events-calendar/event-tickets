@@ -1,17 +1,16 @@
 <?php
 
-namespace Tribe\Tickets\Test\REST\V1\RSVP;
+namespace Tribe\Tickets\Test\REST\V1\PayPal;
 
-use Codeception\Example;
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
-use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker;
 use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
 
 class SingleAttendeeCest extends BaseRestCest {
 
-	use Attendee_Maker;
 	use Ticket_Maker;
+	use Attendee_Maker;
 
 	/**
 	 * It should return an error if ET+ is not loaded.
@@ -23,12 +22,15 @@ class SingleAttendeeCest extends BaseRestCest {
 
 		$I->havePostmetaInDatabase( $post_id, '_tribe_hide_attendees_list', '1' );
 
-		$ticket_id = $this->create_rsvp_ticket( $post_id );
-
-		$this->create_attendee_for_ticket( $ticket_id, $post_id, [
-			'rsvp_status' => 'yes',
-			'optout'      => false,
+		$attendees_count = 7;
+		$ticket_id       = $this->create_paypal_ticket_basic( $post_id, 5, [
+			'meta_input' => [
+				'total_sales' => $attendees_count,
+				'_stock'      => 30 - $attendees_count,
+				'_capacity'   => 30,
+			],
 		] );
+		$attendees_id    = $this->create_many_attendees_for_ticket( $attendees_count, $ticket_id, $post_id );
 
 		$ticket_rest_url = $this->attendees_url . "/{$ticket_id}";
 

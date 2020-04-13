@@ -438,11 +438,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	public function filter_by_order_status( $order_status, $type = 'in' ) {
 		$statuses = Tribe__Utils__Array::list_to_array( $order_status );
 
-		$can_read_private_posts = current_user_can( 'read_private_posts' );
+		$has_manage_access = current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
 
 		// map the `any` meta-status
 		if ( 1 === count( $statuses ) && 'any' === $statuses[0] ) {
-			if ( ! $can_read_private_posts ) {
+			if ( ! $has_manage_access ) {
 				$statuses = [ 'public' ];
 			} else {
 				// no need to filter if the user can read all posts
@@ -461,7 +461,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		}
 
 		// Remove any status the user cannot access
-		if ( ! $can_read_private_posts ) {
+		if ( ! $has_manage_access ) {
 			$statuses = array_intersect( $statuses, self::$public_order_statuses );
 		}
 
@@ -617,8 +617,19 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				class_exists( 'Tribe__Tickets_Plus__Commerce__EDD__Main' )
 				&& function_exists( 'edd_get_payment_statuses' )
 			) {
-				$statuses = array_merge( $statuses, array_keys( $status_mgr->get_statuses_by_action( 'all', 'edd' ) ) );
+				$edd_statuses = $status_mgr->get_statuses_by_action( 'all', 'edd' );
+
+				// Remove complete status.
+				$edd_statuses = array_diff( [ 'Complete' ], $edd_statuses );
+
+				$statuses = array_merge( $statuses, $edd_statuses );
 			}
+
+			// Enforce lowercase for comparison purposes.
+			$statuses = array_map( 'strtolower', $statuses );
+
+			// Prevent unnecessary duplicates.
+			$statuses = array_unique( $statuses );
 
 			self::$order_statuses         = $statuses;
 			self::$private_order_statuses = array_diff( $statuses, self::$public_order_statuses );
