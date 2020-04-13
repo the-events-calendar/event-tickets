@@ -134,6 +134,18 @@ class TicketArchiveByAvailabilityCest extends BaseRestCest {
 		$I->sendGET( $this->tickets_url, [ 'capacity_min' => 10 ] );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
+		$I->seeResponseContainsJson( [
+			'rest_url'    => add_query_arg( [ 'capacity_min' => 10, 'capacity_max' => 23 ], $this->tickets_url . '/' ),
+			'total_pages' => 1,
+			'total'       => 8,
+			'tickets'     => $expected_tickets,
+		] );
+
+		$I->generate_nonce_for_role( 'administrator' );
+
+		$I->sendGET( $this->tickets_url, [ 'capacity_min' => 10 ] );
+		$I->seeResponseIsJson();
+		$I->seeResponseCodeIs( 200 );
 		$expected_tickets = tribe_tickets( 'restv1' )
 			->where( 'post__in', \array_slice( $available, 2 ) )
 			->all();

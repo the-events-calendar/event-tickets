@@ -38,11 +38,40 @@ class TicketArchivePermissionsCest extends BaseRestCest {
 	}
 
 	/**
-	 * It should include a Ticket's Attendee Information if request is from an Editor.
+	 * It should include a Ticket's Attendee Information if request is from an Admin.
 	 *
 	 * @test
 	 */
-	public function should_contain_attendee_info_if_editor( Restv1Tester $I ) {
+	public function should_contain_attendee_info_if_admin( Restv1Tester $I ) {
+		$I->generate_nonce_for_role( 'administrator' );
+
+		$this->get_multi_posts_with_multi_tickets_with_multi_attendees( $I );
+
+		$I->sendGET( $this->tickets_url );
+		$I->seeResponseIsJson();
+		$I->seeResponseCodeIs( 200 );
+
+		// includes 'attendees' array per ticket, even if empty
+		$expected_tickets = tribe_tickets( 'restv1' )->all();
+
+		foreach( $expected_tickets as $ticket ) {
+			$I->asserNotEmpty( $ticket['attendees'] );
+		}
+
+		$I->seeResponseContainsJson(
+			[
+				'rest_url'  => trailingslashit( $this->tickets_url ),
+				'tickets'   => $expected_tickets,
+			]
+		);
+	}
+
+	/**
+	 * It should not include a Ticket's Attendee Information if request is from an Editor.
+	 *
+	 * @test
+	 */
+	public function should_not_contain_attendee_info_if_editor( Restv1Tester $I ) {
 		$I->generate_nonce_for_role( 'editor' );
 
 		$this->get_multi_posts_with_multi_tickets_with_multi_attendees( $I );
@@ -55,7 +84,7 @@ class TicketArchivePermissionsCest extends BaseRestCest {
 		$expected_tickets = tribe_tickets( 'restv1' )->all();
 
 		foreach( $expected_tickets as $ticket ) {
-			$I->assertNotEmpty( $ticket['attendees'] );
+			$I->assertEmpty( $ticket['attendees'] );
 		}
 
 		$I->seeResponseContainsJson(

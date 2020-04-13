@@ -63,12 +63,9 @@ class TicketArchiveByAttendeeCest extends BaseRestCest {
 		$I->sendGET( $this->tickets_url, [ 'attendees_min' => 3 ] );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
-		$expected_tickets = tribe_tickets( 'restv1' )
-			->in( \array_slice( $tickets, 2 ) )
-			->all();
 		$I->seeResponseContainsJson( [
-			'rest_url'    => add_query_arg( [ 'attendees_min' => 3 ], $this->tickets_url . '/' ),
-			'total'       => 4,
+			'rest_url'    => add_query_arg( [ 'attendees_max' => 3 ], $this->tickets_url . '/' ),
+			'total'       => 6,
 			'total_pages' => 1,
 			'tickets'     => $expected_tickets,
 		] );
