@@ -807,7 +807,7 @@ class Tribe__Tickets__Tickets_Handler {
 			'has_unlimited' => false,
 			'has_shared'    => $global->is_enabled(),
 			'tickets'       => count( $tickets ),
-			'capacity'      => $this->get_total_event_capacity( $post ),
+			'capacity'      => tribe_get_event_capacity( $post ),
 			'sold'          => 0,
 			'pending'       => 0,
 			'stock'         => 0,
@@ -989,13 +989,17 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Get the total event capacity.
 	 *
-	 * @since  4.6
+	 * @deprecated TBD
 	 *
-	 * @param  int|object (null) $post Post or Post ID tickets are attached to
+	 * @since      4.6
+	 *
+	 * @param int|object $post Post ID or object to which tickets are attached.
 	 *
 	 * @return int
 	 */
 	public function get_total_event_capacity( $post = null ) {
+		_deprecated_function( __METHOD__, 'TBD', 'tribe_get_event_capacity()' );
+
 		$post_id = Tribe__Main::post_id_helper( $post );
 		$total   = 0;
 

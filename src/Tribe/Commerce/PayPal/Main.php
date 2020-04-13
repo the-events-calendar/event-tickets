@@ -1167,13 +1167,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Saves a ticket
+	 * Saves a Tribe Commerce ticket.
 	 *
 	 * @since 4.7
 	 *
-	 * @param int                           $post_id
-	 * @param Tribe__Tickets__Ticket_Object $ticket
-	 * @param array                         $raw_data
+	 * @param int                           $post_id  Post ID.
+	 * @param Tribe__Tickets__Ticket_Object $ticket   Ticket object.
+	 * @param array                         $raw_data Ticket data.
 	 *
 	 * @return int|false The updated/created ticket post ID or false if no ticket ID.
 	 */
