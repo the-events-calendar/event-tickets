@@ -123,7 +123,9 @@ class Attendees_List {
 
 		$this->track_shortcode_driven_meta( $post );
 
-		if ( $this->is_using_blocks() ) {
+	$is_events_using_blocks = tribe( 'editor' )->is_events_using_blocks();
+
+		if ( $is_events_using_blocks ) {
 			$is_showing_attendee_list = $this->is_showing_attendee_list_with_blocks( $post );
 		} else {
 			$is_showing_attendee_list = $this->is_showing_attendee_list_with_classical_editor( $post );
@@ -137,9 +139,9 @@ class Attendees_List {
 		 *
 		 * @since TBD
 		 *
-		 * @param bool    $is_showing_attendee_list Whether the post is showing the attendee list or not
-		 * @param WP_Post $post                     The WP_Post object being checked
-		 * @param bool    $is_using_blocks          Whether the post is using Blocks or not
+		 * @param bool    $is_showing_attendee_list Whether the post is showing the attendee list or not.
+		 * @param WP_Post $post                     The WP_Post object being checked.
+		 * @param bool    $is_events_using_blocks   Whether the post is using Blocks or not.
 		 *
 		 * @return bool
 		 */
@@ -147,7 +149,7 @@ class Attendees_List {
 			'tribe_tickets_event_is_showing_attendee_list',
 			$is_showing_attendee_list,
 			$post,
-			$this->is_using_blocks()
+			$is_events_using_blocks
 		);
 
 		return update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, $is_showing_attendee_list );
@@ -185,31 +187,6 @@ class Attendees_List {
 
 			add_filter( 'tribe_tickets_event_is_showing_attendee_list', '__return_false' );
 		}
-	}
-
-	/**
-	 * Whether the events are being served using Blocks or the Classical Editor.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	private function is_using_blocks() {
-		$should_load_blocks          = tribe( 'editor' )->should_load_blocks();
-		$is_blocks_active_for_events = tribe_is_truthy( tribe_get_option( 'toggle_blocks_editor', false ) );
-		$is_using_blocks             = $should_load_blocks && $is_blocks_active_for_events;
-
-		/**
-		 * Whether post content is being served through blocks
-		 * or the classical editor.
-		 *
-		 * @since TBD
-		 *
-		 * @param bool $is_using_blocks True if using blocks. False if using the classical editor.
-		 */
-		$is_using_blocks = (bool) apply_filters( 'tribe_is_using_blocks', $is_using_blocks );
-
-		return $is_using_blocks;
 	}
 
 	/**
