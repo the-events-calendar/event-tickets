@@ -763,7 +763,6 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 
-		codecept_debug( var_export( $test_data, true ) );
 		// Note for math: 30 is global cap, 10 sales.
 		$this->assertEquals( 20, $test_data['stock'], 'Incorrect total capacity on global stock tickets.' );
 	}

@@ -14,5 +14,6 @@
 					<span class="tribe-amount">0.00</span>
 				</span>
 				</span>
-</div>	</div>
+</div>
+	</div>
 ';

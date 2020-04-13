@@ -456,8 +456,6 @@ class UTCTest extends Ticket_Object_TestCase {
 			],
 		];
 
-		codecept_debug( var_export( $args, true ) );
-
 		$rsvp = $this->make_rsvp( $args );
 
 		$this->assertEquals( 'availability-future', $rsvp->availability_slug(), 'Failed to get correct availability slug on RSVP (availability-future).' );

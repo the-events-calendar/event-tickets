@@ -227,14 +227,11 @@ class Ticket_Object_TestCase extends Test_Case {
 		$utc_timezone = new \DateTimeZone( 'UTC' );
 		$date         = Date_Utils::build_date_object( $time, $utc_timezone );
 
-		codecept_debug( $date->format( Date_Utils::DBDATETIMEFORMAT ) );
-
 		if ( 'UTC' !== $this->timezone ) {
 			$timezone = new \DateTimeZone( $this->timezone );
 			$date->setTimezone( $timezone );
 		}
 
-		codecept_debug( $date->format( Date_Utils::DBDATETIMEFORMAT ) );
 		return $date->format( Date_Utils::DBDATETIMEFORMAT );
 	}
 
@@ -246,14 +243,11 @@ class Ticket_Object_TestCase extends Test_Case {
 		$utc_timezone = new \DateTimeZone( 'UTC' );
 		$date         = Date_Utils::build_date_object( $time, $utc_timezone );
 
-		codecept_debug( $date->format( Date_Utils::DBDATETIMEFORMAT ) );
-
 		if ( 'UTC' !== $this->timezone ) {
 			$timezone = new \DateTimeZone( $this->timezone );
 			$date->setTimezone( $timezone );
 		}
 
-		codecept_debug( $date->format( Date_Utils::DBDATETIMEFORMAT ) );
 		return $date->format( Date_Utils::DBDATETIMEFORMAT );
 	}
 }
