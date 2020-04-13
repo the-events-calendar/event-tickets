@@ -946,7 +946,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		}
 
 		// Sensible information should not be shown to everyone
-		if ( $can_read_private_post ) {
+		if ( $has_manage_access ) {
 			$attendee_data = array_merge( $attendee_data, array(
 				'provider'        => $this->get_provider_slug( $provider ),
 				'order'           => $attendee_order_id,

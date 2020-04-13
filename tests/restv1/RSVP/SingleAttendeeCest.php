@@ -9,8 +9,34 @@ use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker;
 use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
 
 class SingleAttendeeCest extends BaseRestCest {
+
 	use Attendee_Maker;
 	use Ticket_Maker;
+
+	/**
+	 * It should return an error if ET+ is not loaded.
+	 *
+	 * @test
+	 */
+	public function should_return_error_if_etplus_not_loaded( Restv1Tester $I ) {
+		$post_id = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
+
+		$I->havePostmetaInDatabase( $post_id, '_tribe_hide_attendees_list', '1' );
+
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
+
+		$this->create_attendee_for_ticket( $ticket_id, $post_id, [
+			'rsvp_status' => 'yes',
+			'optout'      => false,
+		] );
+
+		$ticket_rest_url = $this->attendees_url . "/{$ticket_id}";
+
+		$I->sendGET( $ticket_rest_url );
+
+		$I->seeResponseCodeIs( 401 );
+		$I->seeResponseIsJson();
+	}
 
 	/**
 	 * It should allow getting a single attendee information
@@ -30,7 +56,7 @@ class SingleAttendeeCest extends BaseRestCest {
 				'date'   => $attendee_checkin_date,
 				'source' => 'bar',
 				'author' => 'John Doe',
-			]
+			],
 		] );
 		$attendee_post         = get_post( $attendee_id );
 		$attendees_objects     = tribe_tickets_get_ticket_provider( $ticket_id )->get_attendees_by_id( $ticket_id );
@@ -68,7 +94,8 @@ class SingleAttendeeCest extends BaseRestCest {
 			'not-going-opt-out' => [ 'rsvp_status' => 'no', 'optout' => 'yes' ],
 			'not-going-opt-in'  => [ 'rsvp_status' => 'no', 'optout' => false ],
 		];
-}
+	}
+
 	/**
 	 * It should show all attendee fields to user that can read private posts
 	 *
@@ -91,7 +118,7 @@ class SingleAttendeeCest extends BaseRestCest {
 				'date'   => $attendee_checkin_date,
 				'source' => 'bar',
 				'author' => 'John Doe',
-			]
+			],
 		] );
 		$attendee_post         = get_post( $attendee_id );
 		$attendees_objects     = tribe_tickets_get_ticket_provider( $ticket_id )->get_attendees_by_id( $ticket_id );
@@ -136,8 +163,8 @@ class SingleAttendeeCest extends BaseRestCest {
 				'source'       => 'bar',
 				'author'       => 'John Doe',
 			],
-			'rsvp_going'        => tribe_is_truthy($example['rsvp_status']),
-			'optout'            => tribe_is_truthy($example['optout']),
+			'rsvp_going'        => tribe_is_truthy( $example['rsvp_status'] ),
+			'optout'            => tribe_is_truthy( $example['optout'] ),
 		], $response );
 	}
 
@@ -160,13 +187,13 @@ class SingleAttendeeCest extends BaseRestCest {
 	 *
 	 * @dataProvider rsvp_status_and_optout
 	 */
-	public function should_return_401_when_trying_to_get_unpublished_attendee( \Restv1Tester $I, Example $example) {
-		$post_id               = $I->havePostInDatabase();
-		$ticket_id             = $this->create_rsvp_ticket( $post_id );
-		$attendee_id           = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
-			'post_status'     => 'private',
-			'rsvp_status'     => $example['rsvp_status'],
-			'optout'          => $example['optout'],
+	public function should_return_401_when_trying_to_get_unpublished_attendee( \Restv1Tester $I, Example $example ) {
+		$post_id     = $I->havePostInDatabase();
+		$ticket_id   = $this->create_rsvp_ticket( $post_id );
+		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
+			'post_status' => 'private',
+			'rsvp_status' => $example['rsvp_status'],
+			'optout'      => $example['optout'],
 		] );
 
 		$I->sendGET( $this->attendees_url . "/{$attendee_id}" );
@@ -198,15 +225,15 @@ class SingleAttendeeCest extends BaseRestCest {
 				'date'   => $attendee_checkin_date,
 				'source' => 'bar',
 				'author' => 'John Doe',
-			]
+			],
 		] );
 		$attendee_post         = get_post( $attendee_id );
-		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+		$provider              = tribe_tickets_get_ticket_provider( $ticket_id );
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
 
-		$attendees_objects     = $provider->get_all_attendees_by_attendee_id( $attendee_id );
-		$attendee_object       = $attendees_objects[0];
+		$attendees_objects = $provider->get_all_attendees_by_attendee_id( $attendee_id );
+		$attendee_object   = $attendees_objects[0];
 
 		$I->sendGET( $this->attendees_url . "/{$attendee_id}" );
 
@@ -245,8 +272,8 @@ class SingleAttendeeCest extends BaseRestCest {
 				'source'       => 'bar',
 				'author'       => 'John Doe',
 			],
-			'rsvp_going'        => tribe_is_truthy($example['rsvp_status']),
-			'optout'            => tribe_is_truthy($example['optout']),
+			'rsvp_going'        => tribe_is_truthy( $example['rsvp_status'] ),
+			'optout'            => tribe_is_truthy( $example['optout'] ),
 		], $response );
 	}
 
@@ -256,11 +283,11 @@ class SingleAttendeeCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_return_401_when_trying_to_get_not_going_attendee( \Restv1Tester $I ) {
-		$post_id               = $I->havePostInDatabase();
-		$ticket_id             = $this->create_rsvp_ticket( $post_id );
-		$attendee_id           = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
-			'rsvp_status'     => 'no',
-			'optout'          => false,
+		$post_id     = $I->havePostInDatabase();
+		$ticket_id   = $this->create_rsvp_ticket( $post_id );
+		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
+			'rsvp_status' => 'no',
+			'optout'      => false,
 		] );
 
 		$I->sendGET( $this->attendees_url . "/{$attendee_id}" );

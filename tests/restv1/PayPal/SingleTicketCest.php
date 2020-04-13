@@ -120,9 +120,6 @@ class SingleTicketCest extends BaseRestCest {
 
 		$response = json_decode( $I->grabResponse(), true );
 
-		codecept_debug( var_export( $response, true ) );
-		codecept_debug( var_export( $expectedJson, true ) );
-
 		$I->assertContains( $response, $expectedJson );
 
 		// @todo - move this to dedicated test when Attendees endpoint is done
