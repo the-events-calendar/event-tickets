@@ -154,7 +154,7 @@ class Attendees_List {
 			$is_events_using_blocks
 		);
 
-		return update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, $is_showing_attendee_list );
+		return update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, (int) $is_showing_attendee_list );
 	}
 
 	/**
