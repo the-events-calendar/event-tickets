@@ -34,9 +34,10 @@ class Attendees_List {
 	 * @since TBD
 	 *
 	 * @param int|WP_Post $post The Post being checked.
-	 * @throws InvalidArgumentException Could not determine if given event is hiding or showing the Attendee List.
 	 *
 	 * @return bool True if event is hiding the attendees list. False otherwise.
+	 *
+	 * @throws InvalidArgumentException Could not determine if given event is hiding or showing the Attendee List.
 	 */
 	public function is_event_hiding_attendee_list( $post ) {
 		// Attendees list is a Plus feature, if ET Plus is not present it will always be hidden.
@@ -67,10 +68,10 @@ class Attendees_List {
 	 * @since TBD
 	 *
 	 * @param bool $should_hide Whether the optout form should be hidden or not.
-	 * @filter tribe_tickets_plus_hide_attendees_list_optout 10 1
-	 * @see    \Tribe\Tickets\Events\Events_Service_Provider::hooks
 	 *
-	 * @return bool
+	 * @return bool Whether we should hide the optout option.
+	 *
+	 * @see \Tribe\Tickets\Events\Events_Service_Provider::hooks
 	 */
 	public function should_hide_optout( $should_hide ) {
 		try {
@@ -89,10 +90,10 @@ class Attendees_List {
 	 * @since TBD
 	 *
 	 * @param int|WP_Post $post The Post being checked.
-	 * @action save_post_tribe_events 10 1
-	 * @see    \Tribe\Tickets\Events\Events_Service_Provider::hooks
 	 *
-	 * @retyrn int|bool|void Void if didn't try to update. The return of update_post_meta otherwise.
+	 * @return int|bool|void Void if didn't try to update. The return of update_post_meta otherwise.
+	 *
+	 * @see \Tribe\Tickets\Events\Events_Service_Provider::hooks
 	 */
 	public function maybe_update_attendee_list_hide_meta( $post ) {
 		// Attendees list is a Plus feature, if ET Plus is not present we don't have to update the meta.
@@ -114,16 +115,19 @@ class Attendees_List {
 			return null;
 		}
 
-		$post_types_allowed_to_have_tickets = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+		/** @var Tribe__Tickets__Main $main */
+		$main = tribe( 'tickets.main' );
+
+		$post_types_allowed_to_have_tickets = $main->post_types();
 
 		// Early bail: This post type can't have tickets.
-		if ( ! in_array( $post->post_type, $post_types_allowed_to_have_tickets ) ) {
+		if ( ! in_array( $post->post_type, $post_types_allowed_to_have_tickets, true ) ) {
 			return null;
 		}
 
 		$this->track_shortcode_driven_meta( $post );
 
-	$is_events_using_blocks = tribe( 'editor' )->is_events_using_blocks();
+		$is_events_using_blocks = tribe( 'editor' )->is_events_using_blocks();
 
 		if ( $is_events_using_blocks ) {
 			$is_showing_attendee_list = $this->is_showing_attendee_list_with_blocks( $post );
@@ -142,8 +146,6 @@ class Attendees_List {
 		 * @param bool    $is_showing_attendee_list Whether the post is showing the attendee list or not.
 		 * @param WP_Post $post                     The WP_Post object being checked.
 		 * @param bool    $is_events_using_blocks   Whether the post is using Blocks or not.
-		 *
-		 * @return bool
 		 */
 		$is_showing_attendee_list = (bool) apply_filters(
 			'tribe_tickets_event_is_showing_attendee_list',
@@ -196,7 +198,7 @@ class Attendees_List {
 	 *
 	 * @param WP_Post $post The Post being checked.
 	 *
-	 * @return bool
+	 * @return bool Whether we are showing the attendee list with the block editor.
 	 */
 	private function is_showing_attendee_list_with_blocks( WP_Post $post ) {
 		$has_attendee_list_block     = has_block( 'tribe/attendees', $post );
@@ -212,7 +214,7 @@ class Attendees_List {
 	 *
 	 * @param WP_Post $post The Post being checked.
 	 *
-	 * @return bool
+	 * @return bool Whether we are showing the attendee list with the block editor.
 	 */
 	private function is_showing_attendee_list_with_classical_editor( WP_Post $post ) {
 		$is_visible_by_meta          = Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $post ) === false;
