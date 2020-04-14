@@ -222,7 +222,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		foreach ( $all_tickets as $ticket ) {
 			if (
 				! $ticket instanceof Tribe__Tickets__Ticket_Object
-				|| $rsvp->class_name !== $ticket->provider_class
+				|| $rsvp->class_name === $ticket->provider_class
 			) {
 				continue;
 			}
