@@ -133,6 +133,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Modify new views implementation for The Event Calendar, in order to include the "Sold Out" message as we had in the previous version. [ET-764]
 * Tweak - Attendee REST endpoint now returns 401 (Unauthorized) if Event Tickets Plus is not loaded. [ETP-297]
 * Tweak - Implement price suffix for the tickets block when a price suffix is provided by a Commerce provider. [ET-620]
+* Tweak - When using Event Tickets Plus, the checkbox "Hide my attendee data from public view" will no longer show up when purchasing a ticket if an "Attendees List" is not being displayed in the event. [ETP-624]
 
 = [4.11.5] 2020-03-18 =
 

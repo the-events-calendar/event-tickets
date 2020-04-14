@@ -2,9 +2,9 @@
 <div class="tribe-block__rsvp__form">
 	<form
 	name="tribe-rsvp-form"
-	data-product-id="33"
+	data-product-id="10114"
 >
-	<input type="hidden" name="product_id[]" value="33">
+	<input type="hidden" name="product_id[]" value="10114">
 	<input type="hidden" name="attendee[order_status]" value="1">
 	<!-- Maybe add nonce over here? Try to leave templates as clean as possible -->
 
@@ -18,14 +18,14 @@
 
 		<input
 	type="number"
-	name="quantity_33"
+	name="quantity_10114"
 	class="tribe-tickets-quantity"
 	step="1"
 	min="1"
 	value="1"
 	required
-			max="100"
-		/>
+	max="100"
+	/>
 		<button
 	type="button"
 	class="tribe-block__rsvp__number-input-button tribe-block__rsvp__number-input-button--plus"
@@ -56,18 +56,6 @@
 	value=""
 	required
 />
-<div class="tribe-common-form-control-checkbox tribe-tickets-attendees-list-optout--wrapper">
-	<label
-		class="tribe-common-form-control-checkbox__label"
-		for="tribe-tickets-attendees-list-optout-33"
-	>
-		<input
-			class="tribe-common-form-control-checkbox__input tribe-tickets__item__optout"
-			id="tribe-tickets-attendees-list-optout-33"
-			name="attendee[optout]"
-			type="checkbox"
-			 checked=\'checked\'		/>Hide my attendee data from public view.</label>
-</div>
 			
 			<button
 	type="submit"

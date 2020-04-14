@@ -75,19 +75,7 @@ available	</div>
 	Sold Out</div>
 	</div>	
 	
-			<div class="tribe-common-form-control-checkbox tribe-tickets-attendees-list-optout--wrapper">
-	<label
-		class="tribe-common-form-control-checkbox__label"
-		for="tribe-tickets-attendees-list-optout-10043"
-	>
-		<input
-			class="tribe-common-form-control-checkbox__input tribe-tickets__item__optout"
-			id="tribe-tickets-attendees-list-optout-10043"
-			name="attendee[optout]"
-			type="checkbox"
-			 checked=\'checked\'		/>Hide my attendee data from public view.</label>
-</div>
-	</div>
+				</div>
 				<div class="tribe-tickets__footer" >
 		<div class="tribe-common-b2 tribe-tickets__footer__quantity" >
 	<span class="tribe-tickets__footer__quantity__label">
