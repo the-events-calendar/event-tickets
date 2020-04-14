@@ -125,15 +125,16 @@ class Attendees_List {
 			return null;
 		}
 
+		/** @var \Tribe__Editor $editor */
+		$editor = tribe( 'editor' );
+
+		if ( ! $editor->is_events_using_blocks() ) {
+			return;
+		}
+
 		$this->track_shortcode_driven_meta( $post );
 
-		$is_events_using_blocks = tribe( 'editor' )->is_events_using_blocks();
-
-		if ( $is_events_using_blocks ) {
-			$is_showing_attendee_list = $this->is_showing_attendee_list_with_blocks( $post );
-		} else {
-			$is_showing_attendee_list = $this->is_showing_attendee_list_with_classical_editor( $post );
-		}
+		$is_showing_attendee_list = $this->is_showing_attendee_list_with_blocks( $post );
 
 		/**
 		 * Returns true if the post is displaying a list of attendees.
@@ -145,16 +146,14 @@ class Attendees_List {
 		 *
 		 * @param bool    $is_showing_attendee_list Whether the post is showing the attendee list or not.
 		 * @param WP_Post $post                     The WP_Post object being checked.
-		 * @param bool    $is_events_using_blocks   Whether the post is using Blocks or not.
 		 */
 		$is_showing_attendee_list = (bool) apply_filters(
 			'tribe_tickets_event_is_showing_attendee_list',
 			$is_showing_attendee_list,
-			$post,
-			$is_events_using_blocks
+			$post
 		);
 
-		return update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, $is_showing_attendee_list );
+		return update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, (int) $is_showing_attendee_list );
 	}
 
 	/**
