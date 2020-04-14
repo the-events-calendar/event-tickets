@@ -5,7 +5,6 @@ namespace Tribe\Tickets\Test\Testcases\REST\V1;
 use Codeception\Example;
 use Restv1Tester;
 use Spatie\Snapshots\MatchesSnapshots;
-use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Traits\CapacityMatrix;
 
@@ -371,6 +370,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'values'            => [
 					(string) $price,
 				],
+				'suffix'            => null,
 			],
 			'requires_attendee_information' => false,
 			'attendee_information_fields'   => [],
@@ -382,6 +382,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'checked_in_percentage'   => 100,
 				'unchecked_in_percentage' => 0,
 			],
+			'price_suffix'                  => null,
 		];
 
 		$is_plus_test = $this->is_plus;
@@ -492,6 +493,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'values'            => [
 					(string) $price,
 				],
+				'suffix'            => null,
 			],
 			'requires_attendee_information' => false,
 			'attendee_information_fields'   => [],
@@ -513,6 +515,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'sold'    => 0,
 				'pending' => 0,
 			],
+			'price_suffix'                  => null,
 		];
 
 		$is_plus_test = $this->is_plus;
@@ -667,6 +670,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'values'            => [
 					(string) $price,
 				],
+				'suffix'            => null,
 			],
 			'requires_attendee_information' => false,
 			'attendee_information_fields'   => [],
@@ -679,6 +683,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'unchecked_in_percentage' => 0,
 			],
 			'rest_url'                      => $ticket_update_rest_url,
+			'price_suffix'                  => null,
 		];
 
 		$is_plus_test = $this->is_plus;

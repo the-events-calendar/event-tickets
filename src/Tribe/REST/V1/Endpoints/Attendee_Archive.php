@@ -81,9 +81,16 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 *
 	 * @param WP_REST_Request $request
 	 *
+	 * @since TBD Returns 401 Unauthorized if Event Tickets Plus is not loaded.
+	 *
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
 	public function get( WP_REST_Request $request ) {
+		// Early bail: ET Plus must be active to use this endpoint.
+		if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+			return new WP_REST_Response( __( 'Sorry, Event Tickets Plus must be active to use this endpoint.', 'event-tickets' ), 401 );
+		}
+
 		$query_args = $request->get_query_params();
 		$page  = $request['page'];
 		$per_page = $request['per_page'];
@@ -120,7 +127,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			}
 		}
 
-		if ( current_user_can( 'read_private_posts' ) ) {
+		if ( current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' ) ) {
 			$permission                 = Tribe__Tickets__REST__V1__Attendee_Repository::PERMISSION_EDITABLE;
 			$fetch_args['post_status']  = Tribe__Utils__Array::get( $fetch_args, 'post_status', 'any' );
 			$fetch_args['event_status'] = Tribe__Utils__Array::get( $fetch_args, 'event_status', 'any' );

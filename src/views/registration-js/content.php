@@ -7,9 +7,9 @@
  *
  * @since 4.11.0
  * @since 4.11.3.1 Fix handling where $provider is an object.
+ * @since TBD Prevent potential errors when $provider_obj is not valid.
  *
- * @version 4.11.4
- *
+ * @version TBD
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 $events = $this->get( 'events' );
@@ -26,6 +26,12 @@ if ( empty( $provider ) ) {
 } elseif ( $provider instanceof Tribe__Tickets__Tickets ) {
 	$provider_obj = $provider;
 	$provider     = $provider_obj->attendee_object;
+}
+
+if ( method_exists( $provider_obj, 'get_checkout_url' ) ) {
+	$checkout_url = $provider_obj->get_checkout_url();
+} else {
+	$checkout_url = '';
 }
 
 $non_meta_count = 0;
@@ -60,7 +66,7 @@ $classes        = [
 	<form
 		method="post"
 		id="tribe-tickets__registration__form"
-		action="<?php echo esc_url( $provider_obj->get_checkout_url() ); ?>"
+		action="<?php echo esc_url( $checkout_url ); ?>"
 		data-provider="<?php echo esc_attr( $provider ); ?>"
 	>
 	<div class="tribe-tickets__registration__grid">
