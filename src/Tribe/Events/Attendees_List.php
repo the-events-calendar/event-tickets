@@ -22,44 +22,65 @@ use WP_Post;
 class Attendees_List {
 
 	/**
+	 * Meta key to hold the if the Post has Attendees List hidden.
+	 *
 	 * @since TBD
-	 * @var string Meta name to control whether the Attendee List
-	 *             meta was changed by a shortcode in the content.
+	 *
+	 * @var string
+	 */
+	const HIDE_META_KEY = '_tribe_hide_attendees_list';
+
+	/**
+	 * Meta name to control whether the Attendee List meta was changed by a shortcode in the content.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
 	 */
 	protected static $attendee_list_by_shortcode = 'tribe_tickets_attendee_list_triggered_by_shortcode';
 
 	/**
-	 * Check if given event is hiding the attendees list.
+	 * Determine if we need to hide the attendees list.
 	 *
 	 * @since TBD
 	 *
-	 * @param int|WP_Post $post The Post being checked.
+	 * @param int|WP_Post $post The post object or ID.
 	 *
-	 * @return bool True if event is hiding the attendees list. False otherwise.
-	 *
-	 * @throws InvalidArgumentException Could not determine if given event is hiding or showing the Attendee List.
+	 * @return bool Whether the attendees list is hidden.
 	 */
-	public function is_event_hiding_attendee_list( $post ) {
-		// Attendees list is a Plus feature, if ET Plus is not present it will always be hidden.
-		if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
-			return true;
-		}
-
+	public static function is_hidden_on( $post ) {
 		if ( is_numeric( $post ) ) {
 			$post = get_post( $post );
 		}
 
 		if ( ! $post instanceof WP_Post ) {
-			/*
-			 * There's no way to apply a sensible default in this scenario.
-			 *
-			 * Let's throw an exception so the client calling this function deals
-			 * with it according to the >> caller << context.
-			 */
-			throw new InvalidArgumentException( '$post should be either a post ID or a WP_Post object.' );
+			return true;
 		}
 
-		return (bool) Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $post );
+		$is_hidden = get_post_meta( $post->ID, self::HIDE_META_KEY, true );
+
+		// By default non-existent meta will be an empty string
+		if ( '' === $is_hidden ) {
+			/**
+			 * Default to hide - which is unchecked but stored as true (1) in the Db for backwards compat.
+			 */
+			$is_hidden = true;
+		} else {
+			/**
+			 * Invert logic for backwards compat.
+			 */
+			$is_hidden = ! $is_hidden;
+		}
+
+		/**
+		 * Use this to filter and hide the Attendees List for a specific post or all of them.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool    $is_hidden Whether the attendees list is hidden.
+		 * @param WP_Post $post      The post object.
+		 */
+		return apply_filters( 'tribe_tickets_hide_attendees_list', $is_hidden, $post );
 	}
 
 	/**
@@ -74,14 +95,11 @@ class Attendees_List {
 	 * @see \Tribe\Tickets\Events\Events_Service_Provider::hooks
 	 */
 	public function should_hide_optout( $should_hide ) {
-		try {
-			global $post;
+		global $post;
 
-			return $this->is_event_hiding_attendee_list( $post );
-		} catch ( Exception $e ) {
-			// Eg: global $post not a WP_Post object.
-			return $should_hide;
-		}
+		// Future: Add support for $post_id to come in through the filter.
+
+		return static::is_hidden_on( $post );
 	}
 
 	/**
@@ -101,17 +119,17 @@ class Attendees_List {
 			return null;
 		}
 
-		// Early bail: is an autosave or auto-draft.
-		if ( wp_is_post_autosave( $post ) || wp_is_post_revision( $post ) ) {
-			return null;
-		}
-
-		if ( ! $post instanceof WP_Post ) {
+		if ( is_numeric( $post ) ) {
 			$post = get_post( $post );
 		}
 
 		// Early bail: Invalid post.
 		if ( ! $post instanceof WP_Post ) {
+			return null;
+		}
+
+		// Early bail: is an autosave or auto-draft.
+		if ( wp_is_post_autosave( $post ) || wp_is_post_revision( $post ) ) {
 			return null;
 		}
 
@@ -153,7 +171,7 @@ class Attendees_List {
 			$post
 		);
 
-		return update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, (int) $is_showing_attendee_list );
+		return update_post_meta( $post->ID, self::HIDE_META_KEY, (int) $is_showing_attendee_list );
 	}
 
 	/**
@@ -167,7 +185,7 @@ class Attendees_List {
 	 * @return void
 	 */
 	private function track_shortcode_driven_meta( WP_Post $post ) {
-		$is_visible_by_meta                  = Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $post ) === false;
+		$is_visible_by_meta                  = ! static::is_hidden_on( $post );
 		$has_attendee_list_shortcode         = has_shortcode( $post->post_content, 'tribe_attendees_list' );
 		$has_attendee_list_by_shortcode_meta = get_post_meta( $post->ID, self::$attendee_list_by_shortcode, true ) === 'yes';
 
@@ -216,7 +234,7 @@ class Attendees_List {
 	 * @return bool Whether we are showing the attendee list with the block editor.
 	 */
 	private function is_showing_attendee_list_with_classical_editor( WP_Post $post ) {
-		$is_visible_by_meta          = Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $post ) === false;
+		$is_visible_by_meta          = ! static::is_hidden_on( $post );
 		$has_attendee_list_shortcode = has_shortcode( $post->post_content, 'tribe_attendees_list' );
 
 		return $is_visible_by_meta || $has_attendee_list_shortcode;
