@@ -175,6 +175,73 @@ class Attendees_List {
 	}
 
 	/**
+	 * Get list of public attendees for display.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post|int $post_id Post object or ID.
+	 * @param  int        $limit   Limit of attendees to be retrieved from database.
+	 *
+	 * @return array List of public attendees for display.
+	 */
+	public function get_attendees_for_post( $post_id, $limit = - 1 ) {
+		$post = get_post( $post_id );
+
+		if ( ! $post instanceof WP_Post ) {
+			return [];
+		}
+
+		$args = [
+			'by' => [
+				// Exclude people who have opted out or not specified optout.
+				'optout' => 'no_or_none',
+				// Only include public attendees.
+				'post_status' => 'publish',
+				// Only include RSVP status yes.
+				'rsvp_status__or_none' => 'yes',
+				// Only include public order statuses.
+				'order_status' => 'public',
+			],
+		];
+
+		/**
+		 * Allow for adjusting the limit of attendees fetched from the database for the front-end "Who's Coming?" list.
+		 *
+		 * @since 4.10.6
+		 *
+		 * @param int $limit_attendees Number of attendees to retrieve. Default is no limit -1.
+		 */
+		$limit_attendees = (int) apply_filters( 'tribe_tickets_attendees_list_limit_attendees', $limit );
+
+		if ( 0 < $limit_attendees ) {
+			$args['per_page'] = $limit_attendees;
+		}
+
+		$attendees  = Tribe__Tickets__Tickets::get_event_attendees( $post->ID, $args );
+		$emails     = [];
+
+		// Bail if there are no attendees
+		if ( empty( $attendees ) || ! is_array( $attendees ) ) {
+			return [];
+		}
+
+		$attendees_for_display = [];
+
+		foreach ( $attendees as $key => $attendee ) {
+			// Skip when we already have another email like this one.
+			if ( isset( $emails[ $attendee['purchaser_email'] ] ) ) {
+				continue;
+			}
+
+			$emails[ $attendee['purchaser_email'] ] = true;
+
+			$attendees_for_display[] = $attendee;
+		}
+
+		return $attendees_for_display;
+	}
+
+	/**
 	 * This keeps track of whether the Attendee List is being displayed becase of a shortcode
 	 * in the content, and acts accordingly if said shortcode is removed.
 	 *
