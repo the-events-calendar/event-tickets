@@ -52,6 +52,9 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( 'tickets.promoter.integration', 'Tribe__Tickets__Promoter__Integration', array( 'hook' ) );
 		$this->container->singleton( 'tickets.promoter.observer', 'Tribe__Tickets__Promoter__Observer', array( 'hook' ) );
 
+		// Migration queues.
+		$this->container->singleton( 'tickets.migration.queue_4_12', \Tribe\Tickets\Migration\Queue_4_12::class, array( 'hook' ) );
+
 		$this->load();
 	}
 
@@ -72,6 +75,9 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 		tribe( 'tickets.editor' );
 		tribe( 'tickets.promoter.integration' );
 		tribe( 'tickets.promoter.observer' );
+
+		// Migration queues.
+		tribe( 'tickets.migration.queue_4_12' );
 
 		if ( is_admin() ) {
 			tribe( 'tickets.admin.views' );
