@@ -129,6 +129,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Correct dependencies for the tickets block JS, in order to have the block working in WordPress versions prior to 5.0. [ETP-238]
 * Fix - Load plugin text domain on the new 'tribe_load_text_domains' action hook, which fires on 'init' instead of on the 'plugins_loaded' hook. [ET-773]
 * Fix - Deprecate `\Tribe__Tickets__Tickets_Handler::get_total_event_capacity()` and replace its usage with `tribe_get_event_capacity()`, which returns the correct count. [ET-770]
+* Fix - When updating to Event Tickets 4.12, a background migration will get kicked off that fixes ticket-supported posts that use the Attendees List block or the Attendees List shortcodes from Event Tickets Plus so those attendees appear in the REST API properly. [ET-777]
 * Tweak - Consolidate duplicate code for getting tickets for each Ticket Provider. [ETP-235]
 * Tweak - Modify new views implementation for The Event Calendar, in order to include the "Sold Out" message as we had in the previous version. [ET-764]
 * Tweak - Attendee REST endpoint now returns 401 (Unauthorized) if Event Tickets Plus is not loaded. [ETP-297]
