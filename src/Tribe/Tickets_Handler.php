@@ -1385,7 +1385,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return string
 	 */
 	public function save_form_settings( $post, $data = null ) {
-		// don't do anything on autosave, auto-draft, or mass-updates
+		// Don't do anything on autosave, auto-draft, or mass updates.
 		if ( wp_is_post_autosave( $post ) || wp_is_post_revision( $post ) ) {
 			return false;
 		}

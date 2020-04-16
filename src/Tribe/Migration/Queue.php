@@ -7,6 +7,11 @@
 
 namespace Tribe\Tickets\Migration;
 
+/**
+ * Class Queue
+ *
+ * @package Tribe\Tickets\Migration
+ */
 class Queue {
 
 	/**
@@ -236,7 +241,7 @@ class Queue {
 			return;
 		}
 
-		$current_offset = (int) $current_offset;
+		$current_offset  = (int) $current_offset;
 		$current_offset += $not_processed;
 
 		tribe_update_option( $this->batch_offset_key, $current_offset );

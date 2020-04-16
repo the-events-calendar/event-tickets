@@ -11,6 +11,11 @@ use Tribe\Tickets\Events\Attendees_List;
 use Tribe__Tickets__Main;
 use WP_Query;
 
+/**
+ * Class Queue_4_12
+ *
+ * @package Tribe\Tickets\Migration
+ */
 class Queue_4_12 extends Queue {
 
 	/**
