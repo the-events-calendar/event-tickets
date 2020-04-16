@@ -23,7 +23,8 @@ import {
 	isModalShowing,
 	getModalTicketId,
 } from '@moderntribe/tickets/data/shared/move/selectors';
-import { withStore, withSaveData } from '@moderntribe/common/hoc';
+import { withStore } from '@moderntribe/common/hoc';
+import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
 import { moment as momentUtil, time } from '@moderntribe/common/utils';
 
 const getIsInactive = ( state ) => {
