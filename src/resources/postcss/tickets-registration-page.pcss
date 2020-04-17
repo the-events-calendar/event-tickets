@@ -405,12 +405,40 @@ body.page-tribe-attendee-registration {
 	 * Theme Overrides - Twenty twenty
 	 * ------------------------------------------------------------------------- */
 
+	&.tribe-theme-twentyseventeen {
+
+		&.page.page-one-column {
+			#primary {
+				max-width: 100%;
+			}
+		}
+
+		&.page-one-column,
+		&.page-two-column {
+
+			#primary .entry-content {
+				float: initial;
+				max-width: 960px !important;
+				margin: auto auto;
+				width: 100%;
+			}
+		}
+
+		.tribe-common .tribe-tickets__mini-cart {
+			margin-top: 0;
+		}
+	}
+
+	/* -------------------------------------------------------------------------
+	 * Theme Overrides - Twenty twenty
+	 * ------------------------------------------------------------------------- */
+
 	&.tribe-theme-twentytwenty {
 
 		.entry-content .tribe-tickets__registration {
 			max-width: 960px !important;
 		 }
-	 }
+	}
 }
 
 /* Theme overrides */
