@@ -1385,7 +1385,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return string
 	 */
 	public function save_form_settings( $post, $data = null ) {
-		// don't do anything on autosave, auto-draft, or massupdates
+		// Don't do anything on autosave, auto-draft, or mass updates.
 		if ( wp_is_post_autosave( $post ) || wp_is_post_revision( $post ) ) {
 			return false;
 		}
@@ -1429,7 +1429,18 @@ class Tribe__Tickets__Tickets_Handler {
 
 		// We reversed this logic on the back end
 		if ( class_exists( 'Tribe__Tickets_Plus__Attendees_List' ) ) {
-			update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, ! empty( $data['show_attendees'] ) );
+			/** @var \Tribe__Editor $editor */
+			$editor = tribe( 'editor' );
+
+			// Only update this meta if not using blocks.
+			if ( ! $editor->is_events_using_blocks() ) {
+				// Enforce meta value when saving after checking for block/shortcode later.
+				if ( ! empty( $data['show_attendees'] ) ) {
+					add_filter( 'tribe_tickets_event_is_showing_attendee_list', '__return_true' );
+				}
+
+				update_post_meta( $post->ID, \Tribe\Tickets\Events\Attendees_List::HIDE_META_KEY, ! empty( $data['show_attendees'] ) );
+			}
 		}
 
 		// Change the default ticket provider

@@ -1,11 +1,10 @@
 <?php
 
-
 /**
  * Class Tribe__Tickets__Updater
  *
  * @since 4.7.1
-*  @since 4.10.2 - uses Tribe__Updater in common library instead of Tribe__Events__Tribe
+ * @since 4.10.2 - uses Tribe__Updater in common library instead of Tribe__Events__Tribe
  *
  */
 class Tribe__Tickets__Updater extends Tribe__Updater {
@@ -23,4 +22,34 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	public function is_new_install() {
 		return false;
 	}
+
+	/**
+	 * Returns an array of callbacks that should be called
+	 * every time the version is updated.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_constant_update_callbacks() {
+		return [
+			[ $this, 'migrate_4_12_hide_attendees_list' ],
+		];
+	}
+
+	/**
+	 * Trigger setup of cron task to migrate the hide attendees list meta for block/shortcode enabled posts.
+	 *
+	 * @since TBD
+	 */
+	public function migrate_4_12_hide_attendees_list() {
+		/** @var \Tribe\Tickets\Migration\Queue_4_12 $migration */
+		$migration = tribe( 'tickets.migration.queue_4_12' );
+
+		// Trigger adding task to cron if it hasn't already been completed.
+		if ( 'complete' !== $migration->get_current_offset() ) {
+			$migration->register_scheduled_task();
+		}
+	}
+
 }

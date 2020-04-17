@@ -75,7 +75,8 @@ available	</div>
 	Sold Out</div>
 	</div>	
 	
-				</div>
+				<input name="attendee[optout]" value="1" type="hidden" />
+		</div>
 				<div class="tribe-tickets__footer" >
 		<div class="tribe-common-b2 tribe-tickets__footer__quantity" >
 	<span class="tribe-tickets__footer__quantity__label">
