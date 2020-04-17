@@ -78,7 +78,7 @@ class Queue_4_12 extends Queue {
 			'orderby'        => 'date',
 			'order'          => 'ASC',
 			'meta_query'     => [
-				'operator' => 'OR',
+				'relation' => 'OR',
 				[
 					'key'     => $hide_meta_key,
 					'compare' => 'NOT EXISTS',
@@ -88,6 +88,7 @@ class Queue_4_12 extends Queue {
 					'value' => '',
 				],
 			],
+			'sentence'       => true,
 		];
 
 		$posts = [];
