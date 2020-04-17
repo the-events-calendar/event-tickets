@@ -57,7 +57,7 @@ class Attendees_List {
 
 		$is_hidden = get_post_meta( $post->ID, self::HIDE_META_KEY, true );
 
-		// By default non-existent meta will be an empty string
+		// By default non-existent meta will be an empty string.
 		if ( '' === $is_hidden ) {
 			if ( $strict ) {
 				// Default to hide - which is unchecked but stored as true (1) in the Db for backwards compat.
