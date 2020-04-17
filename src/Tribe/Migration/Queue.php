@@ -66,15 +66,15 @@ class Queue {
 	 */
 	public function hooks() {
 		if ( null === $this->single_key ) {
-			$this->single_key = 'tribe_tickets_plus_migrate_single_' . $this->queue_id;
+			$this->single_key = 'tribe_tickets_migrate_single_' . $this->queue_id;
 		}
 
 		if ( null === $this->scheduled_key ) {
-			$this->scheduled_key = 'tribe_tickets_plus_migrate_' . $this->queue_id;
+			$this->scheduled_key = 'tribe_tickets_migrate_' . $this->queue_id;
 		}
 
 		if ( null === $this->batch_offset_key ) {
-			$this->batch_offset_key = 'tribe_tickets_plus_migrate_offset_' . $this->batch_offset_key;
+			$this->batch_offset_key = 'tribe_tickets_migrate_offset_' . $this->batch_offset_key;
 		}
 
 		add_action( $this->single_key, [ $this, 'process_queue' ], 20, 0 );
@@ -163,7 +163,7 @@ class Queue {
 			'not_processed' => 0,
 		];
 
-		$posts = $this->get_posts();
+		$posts = $this->get_posts( $current_offset );
 
 		if ( empty( $posts ) ) {
 			return $counts;
@@ -262,7 +262,7 @@ class Queue {
 		 *
 		 * @param int $batch_size The batch size used by the migration.
 		 */
-		return (int) apply_filters( "tribe_tickets_plus_migration_queue_batch_size_{$this->queue_id}", $this->batch_size );
+		return (int) apply_filters( "tribe_tickets_migration_queue_batch_size_{$this->queue_id}", $this->batch_size );
 	}
 
 	/**
@@ -287,6 +287,6 @@ class Queue {
 		 *
 		 * @see   wp_schedule_event()
 		 */
-		return apply_filters( "tribe_tickets_plus_migration_queue_interval_{$this->queue_id}", 'hourly' );
+		return apply_filters( "tribe_tickets_migration_queue_interval_{$this->queue_id}", 'hourly' );
 	}
 }
