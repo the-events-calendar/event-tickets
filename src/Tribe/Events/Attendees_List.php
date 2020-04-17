@@ -99,8 +99,6 @@ class Attendees_List {
 	public function should_hide_optout( $should_hide, $post_id = 0 ) {
 		global $post;
 
-		return true;
-
 		if ( empty( $post_id ) ) {
 			$post_id = $post;
 		}

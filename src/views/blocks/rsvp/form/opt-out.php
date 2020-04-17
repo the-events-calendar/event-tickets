@@ -34,6 +34,10 @@ $post_id = $this->get( 'post_id' );
 $hide_attendee_list_optout = apply_filters( 'tribe_tickets_plus_hide_attendees_list_optout', false, $post_id );
 
 if ( $hide_attendee_list_optout ) {
+	// Force optout.
+	?>
+	<input name="attendee[optout]" value="1" type="hidden" />
+	<?php
 	return;
 }
 
@@ -58,5 +62,7 @@ $field_id = implode( '-', $field_id );
 			name="attendee[optout]"
 			type="checkbox"
 			<?php checked( true ); ?>
-		/><?php echo $privacy->get_opt_out_text(); ?></label>
+		/>
+		<?php echo $privacy->get_opt_out_text(); ?>
+	</label>
 </div>
