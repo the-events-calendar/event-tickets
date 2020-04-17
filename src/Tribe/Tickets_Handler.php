@@ -1434,6 +1434,11 @@ class Tribe__Tickets__Tickets_Handler {
 
 			// Only update this meta if not using blocks.
 			if ( ! $editor->is_events_using_blocks() ) {
+				// Enforce meta value when saving after checking for block/shortcode later.
+				if ( ! empty( $data['show_attendees'] ) ) {
+					add_filter( 'tribe_tickets_event_is_showing_attendee_list', '__return_true' );
+				}
+
 				update_post_meta( $post->ID, \Tribe\Tickets\Events\Attendees_List::HIDE_META_KEY, ! empty( $data['show_attendees'] ) );
 			}
 		}

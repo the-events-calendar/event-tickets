@@ -127,11 +127,6 @@ class Attendees_List {
 	 * @see \Tribe\Tickets\Events\Events_Service_Provider::hooks
 	 */
 	public function maybe_update_attendee_list_hide_meta( $post ) {
-		// Attendees list is a Plus feature, if ET Plus is not present we don't have to update the meta.
-		if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
-			return null;
-		}
-
 		if ( is_numeric( $post ) ) {
 			$post = get_post( $post );
 		}
@@ -284,7 +279,7 @@ class Attendees_List {
 		if ( $has_attendee_list_by_shortcode_meta && ! $has_attendee_list_shortcode ) {
 			update_post_meta( $post->ID, self::$attendee_list_by_shortcode, 'no' );
 
-			add_filter( 'tribe_tickets_event_is_showing_attendee_list', '__return_false' );
+			add_filter( 'tribe_tickets_event_is_showing_attendee_list', '__return_false', 9 );
 		}
 	}
 
