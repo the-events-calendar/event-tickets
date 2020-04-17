@@ -217,9 +217,19 @@ extends Tribe__Editor__Blocks__Abstract {
 			wp_send_json_error( $response );
 		}
 
+		/** @var Tribe__Tickets__RSVP $rsvp */
+		$rsvp = tribe( 'tickets.rsvp' );
+
+		$ticket = $rsvp->get_ticket( get_the_id(), $ticket_id );
+
+		if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+			wp_send_json_error( $response );
+		}
+
 		$args = array(
 			'ticket_id' => $ticket_id,
-			'ticket'    => tribe( 'tickets.rsvp' )->get_ticket( get_the_id(), $ticket_id ),
+			'post_id'   => $ticket->get_event_id(),
+			'ticket'    => $ticket,
 			'going'     => $going,
 		);
 
