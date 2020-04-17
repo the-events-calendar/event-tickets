@@ -6,10 +6,7 @@
 
 namespace Tribe\Tickets\Events;
 
-use Exception;
-use InvalidArgumentException;
 use Tribe__Tickets__Main;
-use Tribe__Tickets_Plus__Attendees_List;
 use WP_Post;
 
 /**
@@ -44,11 +41,12 @@ class Attendees_List {
 	 *
 	 * @since TBD
 	 *
-	 * @param int|WP_Post $post The post object or ID.
+	 * @param int|WP_Post $post   The post object or ID.
+	 * @param boolean     $strict Whether to strictly check the meta value.
 	 *
-	 * @return bool Whether the attendees list is hidden.
+	 * @return bool|null Whether the attendees list is hidden, null if not set at all with strict mode off.
 	 */
-	public static function is_hidden_on( $post ) {
+	public static function is_hidden_on( $post, $strict = true ) {
 		if ( is_numeric( $post ) ) {
 			$post = get_post( $post );
 		}
@@ -61,10 +59,13 @@ class Attendees_List {
 
 		// By default non-existent meta will be an empty string
 		if ( '' === $is_hidden ) {
-			/**
-			 * Default to hide - which is unchecked but stored as true (1) in the Db for backwards compat.
-			 */
-			$is_hidden = true;
+			if ( $strict ) {
+				// Default to hide - which is unchecked but stored as true (1) in the Db for backwards compat.
+				$is_hidden = true;
+			} else {
+				// There's no value set, so it's not explicitly set as hidden.
+				$is_hidden = null;
+			}
 		} else {
 			/**
 			 * Invert logic for backwards compat.
@@ -89,17 +90,31 @@ class Attendees_List {
 	 * @since TBD
 	 *
 	 * @param bool $should_hide Whether the optout form should be hidden or not.
+	 * @param int  $post_id     The post ID the ticket belongs to.
 	 *
 	 * @return bool Whether we should hide the optout option.
 	 *
 	 * @see \Tribe\Tickets\Events\Events_Service_Provider::hooks
 	 */
-	public function should_hide_optout( $should_hide ) {
+	public function should_hide_optout( $should_hide, $post_id = 0 ) {
 		global $post;
 
-		// Future: Add support for $post_id to come in through the filter.
+		return true;
 
-		return static::is_hidden_on( $post );
+		if ( empty( $post_id ) ) {
+			$post_id = $post;
+		}
+
+		$is_hidden_on = static::is_hidden_on( $post_id, false );
+
+		if ( null !== $is_hidden_on ) {
+			return $is_hidden_on;
+		}
+
+		$post = get_post( $post_id );
+
+		// The setting isn't set yet, but let's double check until the setting gets migrated.
+		return ! $this->is_showing_attendee_list_with_blocks( $post );
 	}
 
 	/**
@@ -217,7 +232,7 @@ class Attendees_List {
 			$args['per_page'] = $limit_attendees;
 		}
 
-		$attendees  = Tribe__Tickets__Tickets::get_event_attendees( $post->ID, $args );
+		$attendees  = \Tribe__Tickets__Tickets::get_event_attendees( $post->ID, $args );
 		$emails     = [];
 
 		// Bail if there are no attendees
@@ -285,7 +300,7 @@ class Attendees_List {
 	 * @return bool Whether we are showing the attendee list with the block editor.
 	 */
 	private function is_showing_attendee_list_with_blocks( WP_Post $post ) {
-		$has_attendee_list_block     = has_block( 'tribe/attendees', $post );
+		$has_attendee_list_block     = function_exists( 'has_block' ) ? has_block( 'tribe/attendees', $post ) : false;
 		$has_attendee_list_shortcode = has_shortcode( $post->post_content, 'tribe_attendees_list' );
 
 		return $has_attendee_list_block || $has_attendee_list_shortcode;
