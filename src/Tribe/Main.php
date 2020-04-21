@@ -677,7 +677,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Load the Event Tickets text domain after Tribe Common's.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @return bool
 	 */

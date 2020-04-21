@@ -12,7 +12,7 @@ use WP_Post;
 /**
  * Class Attendees_List
  *
- * @since TBD
+ * @since 4.12.0
  *
  * @package Tribe\Tickets\Events
  */
@@ -21,7 +21,7 @@ class Attendees_List {
 	/**
 	 * Meta key to hold the if the Post has Attendees List hidden.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @var string
 	 */
@@ -30,7 +30,7 @@ class Attendees_List {
 	/**
 	 * Meta name to control whether the Attendee List meta was changed by a shortcode in the content.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ class Attendees_List {
 	/**
 	 * Determine if we need to hide the attendees list.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @param int|WP_Post $post   The post object or ID.
 	 * @param boolean     $strict Whether to strictly check the meta value.
@@ -76,7 +76,7 @@ class Attendees_List {
 		/**
 		 * Use this to filter and hide the Attendees List for a specific post or all of them.
 		 *
-		 * @since TBD
+		 * @since 4.12.0
 		 *
 		 * @param bool    $is_hidden Whether the attendees list is hidden.
 		 * @param WP_Post $post      The post object.
@@ -87,7 +87,7 @@ class Attendees_List {
 	/**
 	 * Determine whether we should hide the optout option.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @param bool $should_hide Whether the optout form should be hidden or not.
 	 * @param int  $post_id     The post ID the ticket belongs to.
@@ -118,7 +118,7 @@ class Attendees_List {
 	/**
 	 * Determines whether this post is displaying the Attendees List.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @param int|WP_Post $post The Post being checked.
 	 *
@@ -168,7 +168,7 @@ class Attendees_List {
 		 * You can use this filter to let the system know that you're displaying
 		 * the Attendee List in some other way.
 		 *
-		 * @since TBD
+		 * @since 4.12.0
 		 *
 		 * @param bool    $is_showing_attendee_list Whether the post is showing the attendee list or not.
 		 * @param WP_Post $post                     The WP_Post object being checked.
@@ -185,7 +185,7 @@ class Attendees_List {
 	/**
 	 * Get list of public attendees for display.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @param WP_Post|int $post_id Post object or ID.
 	 * @param  int        $limit   Limit of attendees to be retrieved from database.
@@ -253,7 +253,7 @@ class Attendees_List {
 	 * This keeps track of whether the Attendee List is being displayed becase of a shortcode
 	 * in the content, and acts accordingly if said shortcode is removed.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @param WP_Post $post The Post being checked.
 	 *
@@ -286,7 +286,7 @@ class Attendees_List {
 	/**
 	 * Determine whether we are showing the attendee list with the block editor.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @param WP_Post $post The Post being checked.
 	 *
@@ -302,7 +302,7 @@ class Attendees_List {
 	/**
 	 * Determine whether we are showing the attendee list with the block editor.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @param WP_Post $post The Post being checked.
 	 *

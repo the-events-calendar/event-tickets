@@ -6,9 +6,9 @@
  * [your-theme]/tribe/tickets/registration-js/mini-cart.php
  *
  * @since 4.11.0
- * @since TBD Prevent potential errors when $provider_obj is not valid.
+ * @since 4.12.0 Prevent potential errors when $provider_obj is not valid.
  *
- * @version TBD
+ * @version 4.12.0
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 

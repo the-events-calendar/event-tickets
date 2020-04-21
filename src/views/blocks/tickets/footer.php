@@ -11,9 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.11.0
- * @since TBD Prevent potential errors when $provider_obj is not valid.
+ * @since 4.12.0 Prevent potential errors when $provider_obj is not valid.
  *
- * @version TBD
+ * @version 4.12.0
  */
 $event_id        = $this->get( 'event_id' );
 $is_modal        = $this->get( 'is_modal' );

@@ -12,9 +12,9 @@
  *
  * @since   4.9
  * @since   4.11.3 Updated code comments and array formatting.
- * @since   TBD    Added implementation for the price suffix.
+ * @since   4.12.0    Added implementation for the price suffix.
  *
- * @version TBD
+ * @version 4.12.0
  */
 
 $classes = [ 'tribe-common-b2', 'tribe-common-b1--min-medium', 'tribe-tickets__item__extra__price' ];

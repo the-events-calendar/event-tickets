@@ -2,7 +2,7 @@
 /**
  * Queue to handle Attendees Block REST migration.
  *
- * @since TBD
+ * @since 4.12.0
  */
 
 namespace Tribe\Tickets\Migration;
@@ -21,7 +21,7 @@ class Queue_4_12 extends Queue {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @var string
 	 */
@@ -30,7 +30,7 @@ class Queue_4_12 extends Queue {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @param WP_Post|int $post The post object or post ID, depending on what $this->get_query() is set to return.
 	 *
@@ -50,7 +50,7 @@ class Queue_4_12 extends Queue {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @param int $current_offset The current offset being used.
 	 *

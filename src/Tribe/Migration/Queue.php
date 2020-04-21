@@ -2,7 +2,7 @@
 /**
  * Queue class for migration handling.
  *
- * @since TBD
+ * @since 4.12.0
  */
 
 namespace Tribe\Tickets\Migration;
@@ -17,7 +17,7 @@ class Queue {
 	/**
 	 * Queue Identifier.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @var string
 	 */
@@ -26,7 +26,7 @@ class Queue {
 	/**
 	 * Which action will be triggered as an single cron event.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Queue {
 	/**
 	 * Which action will be triggered as an ongoing scheduled cron event.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ class Queue {
 	/**
 	 * Batch offset key used to track migration progress.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @var string
 	 */
@@ -53,7 +53,7 @@ class Queue {
 	/**
 	 * Number of items to be processed in a single batch.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @var int
 	 */
@@ -62,7 +62,7 @@ class Queue {
 	/**
 	 * Queue Hooks.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 */
 	public function hooks() {
 		if ( null === $this->single_key ) {
@@ -87,7 +87,7 @@ class Queue {
 	/**
 	 * Register scheduled task to be used for processing batches on plugin activation.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 */
 	public function register_scheduled_task() {
 		if ( wp_next_scheduled( $this->scheduled_key ) ) {
@@ -106,7 +106,7 @@ class Queue {
 	/**
 	 * Clear the scheduled task on plugin deactivation.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 */
 	public function clear_scheduled_task() {
 		wp_clear_scheduled_hook( $this->scheduled_key );
@@ -115,7 +115,7 @@ class Queue {
 	/**
 	 * Processes the next waiting batch of orders to migrate, if there are any.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @param null|int $batch_size Batch processing size override.
 	 */
@@ -151,7 +151,7 @@ class Queue {
 	/**
 	 * Processes the next waiting batch of orders to migrate, if there are any.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @param int $current_offset The current offset being used.
 	 *
@@ -185,7 +185,7 @@ class Queue {
 	/**
 	 * Process post in queue.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @param WP_Post|int $post The post object or post ID, depending on what $this->get_query() is set to return.
 	 *
@@ -198,7 +198,7 @@ class Queue {
 	/**
 	 * Get posts for migrating.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @param int $current_offset The current offset being used.
 	 *
@@ -211,7 +211,7 @@ class Queue {
 	/**
 	 * Get the Current offset number.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @return string|int Current offset number.
 	 */
@@ -229,7 +229,7 @@ class Queue {
 	/**
 	 * Update the Offset Number with the Current Batch.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @param int $not_processed the number of orders not processed.
 	 */
@@ -250,7 +250,7 @@ class Queue {
 	/**
 	 * Get the size to be used by each batch processed.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @return int The batch size used by the migration.
 	 */
@@ -258,7 +258,7 @@ class Queue {
 		/**
 		 * Controls the size of each batch processed by default (ie, during cron updates of record inserts/updates).
 		 *
-		 * @since TBD
+		 * @since 4.12.0
 		 *
 		 * @param int $batch_size The batch size used by the migration.
 		 */
@@ -268,7 +268,7 @@ class Queue {
 	/**
 	 * Get the cron interval to be used by each batch processed.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @return int The batch size used by the migration.
 	 */
@@ -279,7 +279,7 @@ class Queue {
 		 * By default the interval "hourly" is specified, however other intervals such as "daily"
 		 * and "twicedaily" can normally be substituted.
 		 *
-		 * @since TBD
+		 * @since 4.12.0
 		 *
 		 * @param string|null $interval Cron interval or null to disable it.
 		 *

@@ -14,9 +14,9 @@
  * @since 4.11.1 Changed some HTML class names.
  * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally. Updated comments and array formatting.
  * @since 4.11.4 Added accessibility classes to screen reader text elements.
- * @since TBD    Added implementation for the price suffix.
+ * @since 4.12.0    Added implementation for the price suffix.
  *
- * @version TBD
+ * @version 4.12.0
  *
  * @var Tribe__Tickets__Editor__Template $this
  */

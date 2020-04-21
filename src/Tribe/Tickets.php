@@ -623,7 +623,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns all the tickets for an event, of the active ticket providers.
 		 *
-		 * @since TBD Changed from protected abstract to public with duplicated child classes' logic consolidated here.
+		 * @since 4.12.0 Changed from protected abstract to public with duplicated child classes' logic consolidated here.
 		 *
 		 * @param int $post_id ID of parent "event" post.
 		 *

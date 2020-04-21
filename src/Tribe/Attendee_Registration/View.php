@@ -20,7 +20,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 * Display the Attendee Info page when the correct permalink is loaded.
 	 *
 	 * @since 4.9
-	 * @since TBD Removed $content and $context parameters
+	 * @since 4.12.0 Removed $content and $context parameters
 	 *
 	 * @return string The resulting template content
 	 */
@@ -31,7 +31,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	/**
 	 * Render the Attendee Info shortcode.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @return string The resulting template content
 	 */

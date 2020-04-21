@@ -8,9 +8,9 @@
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
  * @since 4.11.0 Add docblock for `$this`.
- * @since TBD Prevent potential errors when $provider_obj is not valid.
+ * @since 4.12.0 Prevent potential errors when $provider_obj is not valid.
  *
- * @version TBD
+ * @version 4.12.0
  *
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */

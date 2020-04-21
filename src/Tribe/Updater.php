@@ -27,7 +27,7 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	 * Returns an array of callbacks that should be called
 	 * every time the version is updated.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @return array
 	 */
@@ -40,7 +40,7 @@ class Tribe__Tickets__Updater extends Tribe__Updater {
 	/**
 	 * Trigger setup of cron task to migrate the hide attendees list meta for block/shortcode enabled posts.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 */
 	public function migrate_4_12_hide_attendees_list() {
 		/** @var \Tribe\Tickets\Migration\Queue_4_12 $migration */

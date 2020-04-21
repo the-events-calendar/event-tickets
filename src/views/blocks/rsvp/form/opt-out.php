@@ -13,9 +13,9 @@
  * @since 4.9
  * @since 4.11.0 Updated the optout markup and classes used.
  * @since 4.11.3 Ensure we always show the optout by default.
- * @since TBD Add $post_id to filter for hiding opt-outs.
+ * @since 4.12.0 Add $post_id to filter for hiding opt-outs.
  *
- * @version TBD
+ * @version 4.12.0
  *
  */
 $modal   = $this->get( 'is_modal' );
@@ -26,7 +26,7 @@ $post_id = $this->get( 'post_id' );
  * Use this filter to hide the Attendees List Optout
  *
  * @since 4.9
- * @since TBD Added $post_id parameter.
+ * @since 4.12.0 Added $post_id parameter.
  *
  * @param bool $hide_attendee_list_optout Whether to hide attendees list opt-out.
  * @param int  $post_id                   The post ID this ticket belongs to.

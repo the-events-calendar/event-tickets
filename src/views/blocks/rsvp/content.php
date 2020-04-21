@@ -11,9 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @since TBD Add $post_id to filter for hiding opt-outs.
+ * @since 4.12.0 Add $post_id to filter for hiding opt-outs.
  *
- * @version TBD
+ * @version 4.12.0
  *
  */
 $going = ! empty( $_GET[ 'going' ] ) ? sanitize_text_field( $_GET[ 'going' ] ) : '';

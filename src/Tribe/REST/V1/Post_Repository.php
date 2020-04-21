@@ -89,7 +89,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * {@inheritdoc}
 	 *
-	 * @since TBD Returns 401 Unauthorized if Event Tickets Plus is not loaded.
+	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
 	 */
 	public function get_attendee_data( $attendee_id, $context = 'default' ) {
 		$attendee_post = get_post( $attendee_id );

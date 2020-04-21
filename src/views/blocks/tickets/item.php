@@ -13,9 +13,9 @@
  * @since   4.9
  * @since   4.11.0 Add modal only fields
  * @since   4.11.1 Corrected amount of available/remaining tickets.
- * @since   TBD    Added implementation for the price suffix.
+ * @since   4.12.0    Added implementation for the price suffix.
  *
- * @version TBD
+ * @version 4.12.0
  */
 $classes  = [ 'tribe-tickets__item' ];
 

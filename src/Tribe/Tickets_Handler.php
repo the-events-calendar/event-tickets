@@ -989,7 +989,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Get the total event capacity.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.12.0
 	 *
 	 * @since      4.6
 	 *

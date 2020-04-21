@@ -12,9 +12,9 @@
  *
  * @since 4.11.0
  * @since 4.11.3 Updated code comments.
- * @since TBD Prevent potential errors when $provider_obj is not valid.
+ * @since 4.12.0 Prevent potential errors when $provider_obj is not valid.
  *
- * @version TBD
+ * @version 4.12.0
  */
 $post_id = $this->get( 'event_id' );
 

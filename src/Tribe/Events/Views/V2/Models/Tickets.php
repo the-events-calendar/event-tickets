@@ -310,7 +310,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * Returns whether an event has tickets in date range.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @return bool Whether an event has tickets in date range
 	 */
@@ -325,7 +325,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * Returns whether an event has its tickets sold out.
 	 *
-	 * @since TBD
+	 * @since 4.12.0
 	 *
 	 * @return bool Whether an event has its tickets sold out.
 	 */

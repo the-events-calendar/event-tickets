@@ -13,9 +13,9 @@
  * @since 4.9.3
  * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
  * @since 4.11.4 Added accessibility classes to screen reader text element.
- * @since TBD    Removed duplicate `type="button"` from button element.
+ * @since 4.12.0    Removed duplicate `type="button"` from button element.
  *
- * @version TBD
+ * @version 4.12.0
  *
  * @var $this Tribe__Tickets__Editor__Template
  */
