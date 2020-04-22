@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.12.0] 2020-04-22 =
+= [4.12.0] 2020-04-23 =
 
 * Fix - When using Event Tickets Plus and using a custom Attendee Registration page with the [tribe_attendee_registration] shortcode, Event Tickets will no longer replace the contents of the page. [ETP-292]
 * Fix - Update notice template to print content only when there's information. Remove the "Whoops" title for the Attendee Registration page notice. [ETP-233]
