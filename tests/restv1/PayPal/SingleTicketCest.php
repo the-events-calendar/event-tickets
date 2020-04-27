@@ -2,11 +2,10 @@
 
 namespace Tribe\Tickets\Test\REST\V1\PayPal;
 
-use PHPUnit\Framework\Assert;
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as Ticket_Maker;
-use Tribe\Tickets\Test\REST\V1\BaseRestCest;
+use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
 
 class SingleTicketCest extends BaseRestCest {
 	use Ticket_Maker;
@@ -20,14 +19,17 @@ class SingleTicketCest extends BaseRestCest {
 	public function should_allow_getting_a_ticket_information_by_ticket_post_id( Restv1Tester $I ) {
 		$I->generate_nonce_for_role( 'administrator' );
 
-		$post_id                     = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
+		$post_id = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
+
+		$I->havePostmetaInDatabase( $post_id, '_tribe_hide_attendees_list', '1' );
+
 		$attendees_count             = 7;
-		$ticket_id                   = $this->create_paypal_ticket( $post_id, 5, [
+		$ticket_id                   = $this->create_paypal_ticket_basic( $post_id, 5, [
 			'meta_input' => [
 				'total_sales' => $attendees_count,
 				'_stock'      => 30 - $attendees_count,
 				'_capacity'   => 30,
-			]
+			],
 		] );
 		$first_attendee_checkin_date = '2018-01-02 09:00:16';
 		$first_attendee_checkin_time = strtotime( $first_attendee_checkin_date );
@@ -97,7 +99,7 @@ class SingleTicketCest extends BaseRestCest {
 			'cost_details'                  => [
 				'currency_symbol'   => '$',
 				'currency_position' => 'prefix',
-				'values'            => [ 5 ],
+				'values'            => [ '5' ],
 			],
 			'attendees'                     => $repository->get_ticket_attendees( $ticket_id ),
 			'supports_attendee_information' => false, // no ET+ installed'
@@ -114,6 +116,7 @@ class SingleTicketCest extends BaseRestCest {
 				'sold'    => 7,
 				'pending' => 0,
 			],
+			'suffix'                        => null,
 		];
 
 		$response = json_decode( $I->grabResponse(), true );
@@ -195,7 +198,7 @@ class SingleTicketCest extends BaseRestCest {
 		$post_id                     = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
 		$attendees_count             = 7;
 		$optout_count = 3;
-		$ticket_id                   = $this->create_paypal_ticket( $post_id, 5, [
+		$ticket_id                   = $this->create_paypal_ticket_basic( $post_id, 5, [
 			'meta_input' => [
 				'total_sales' => $attendees_count,
 				'_stock'      => 30 - $attendees_count,
@@ -276,8 +279,10 @@ class SingleTicketCest extends BaseRestCest {
 				'currency_symbol'   => '$',
 				'currency_position' => 'prefix',
 				'values'            => [ 5 ],
+				'suffix'            => null,
 			],
 			'supports_attendee_information' => false, //no ET+ installed
+			'price_suffix'                  => null,
 		);
 
 		$I->assertEquals( $expectedJson, $response );
@@ -333,7 +338,7 @@ class SingleTicketCest extends BaseRestCest {
 	 */
 	public function should_return_401_when_trying_to_access_non_public_ticket( Restv1Tester $I ) {
 		$post_id   = $I->havePostInDatabase();
-		$ticket_id = $this->create_paypal_ticket( $post_id, 3, [
+		$ticket_id = $this->create_paypal_ticket_basic( $post_id, 3, [
 			'post_status' => 'draft',
 			'meta_input'  => [
 				'total_sales' => 0,

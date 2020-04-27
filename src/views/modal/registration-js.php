@@ -41,7 +41,6 @@ if ( ! empty( $providers ) ) {
 				'tribe-tickets__notice--error',
 				'tribe-tickets__validation-notice',
 			],
-			'title' => __( 'Whoops', 'event-tickets' ),
 			'content' => sprintf(
 				esc_html_x(
 					'You have %s ticket(s) with a field that requires information.',

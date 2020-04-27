@@ -123,11 +123,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			}
 		}
 
-		$can_read_private_posts = current_user_can( 'read_private_posts' );
+		$has_manage_access = current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
 
 		$attendess_btwn = $checkedin_btwn = $capacity_btwn = null;
 
-		if ( $can_read_private_posts ) {
+		if ( $has_manage_access ) {
 			foreach ( $private_args as $request_arg => $query_arg ) {
 				if ( isset( $request[ $request_arg ] ) ) {
 					$fetch_args[ $query_arg ] = $request[ $request_arg ];
@@ -150,7 +150,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			}
 		}
 
-		if ( $can_read_private_posts ) {
+		if ( $has_manage_access ) {
 			$permission                 = Tribe__Tickets__REST__V1__Ticket_Repository::PERMISSION_EDITABLE;
 			$fetch_args['post_status']  = Tribe__Utils__Array::get( $fetch_args, 'post_status', 'any' );
 			$fetch_args['event_status'] = Tribe__Utils__Array::get( $fetch_args, 'event_status', 'any' );

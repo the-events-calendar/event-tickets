@@ -11,7 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @since 4.12.0 Add $post_id to filter for hiding opt-outs.
+ *
+ * @version 4.12.0
  *
  */
 
@@ -22,11 +24,12 @@ $must_login = ! is_user_logged_in() && tribe( 'tickets.rsvp' )->login_required()
 <div class="tribe-block__rsvp__form">
 	<?php if ( ! empty( $going ) && ! $must_login ) :
 		$ticket = $this->get( 'ticket' );
-		$args = array(
-					'ticket_id' => $ticket->ID,
-					'ticket'    => tribe( 'tickets.rsvp' )->get_ticket( get_the_id(), $ticket->ID ),
-					'going'     => esc_html( $going ),
-				);
+		$args = [
+			'ticket_id' => $ticket->ID,
+			'post_id'   => $post_id,
+			'ticket'    => tribe( 'tickets.rsvp' )->get_ticket( get_the_id(), $ticket->ID ),
+			'going'     => esc_html( $going ),
+		];
 
 		// can't escape, contains html
 		echo tribe( 'tickets.editor.template' )->template( 'blocks/rsvp/form/form', $args, false );

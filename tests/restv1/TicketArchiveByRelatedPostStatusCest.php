@@ -2,6 +2,7 @@
 
 namespace Tribe\Tickets\Test\REST\V1;
 
+use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
@@ -21,14 +22,14 @@ class TicketArchiveByRelatedPostStatusCest extends BaseRestCest {
 		$public_post  = $I->havePostInDatabase();
 		$public       = $this->create_rsvp_ticket( $public_post );
 		$private_post = $I->havePostInDatabase( [ 'post_status' => 'private' ] );
-		$private      = $this->create_paypal_ticket( $private_post, 2 );
+		$private      = $this->create_paypal_ticket_basic( $private_post, 2 );
 		$draft_post   = $I->havePostInDatabase( [ 'post_status' => 'draft' ] );
 		$draft        = $this->create_rsvp_ticket( $draft_post );
 		$future_post  = $I->havePostInDatabase( [
 			'post_status' => 'future',
 			'post_date'   => date( 'Y-m-d H:i:s', strtotime( '+1week' ) )
 		] );
-		$future       = $this->create_paypal_ticket( $future_post, 2 );
+		$future       = $this->create_paypal_ticket_basic( $future_post, 2 );
 
 		// implicitly publish
 		$I->sendGET( $this->tickets_url, [ 'post_status' => 'any' ] );
@@ -66,7 +67,7 @@ class TicketArchiveByRelatedPostStatusCest extends BaseRestCest {
 			'tickets'     => [],
 		] );
 
-		$I->generate_nonce_for_role( 'editor' );
+		$I->generate_nonce_for_role( 'administrator' );
 
 		// implicitly any
 		$I->sendGET( $this->tickets_url );

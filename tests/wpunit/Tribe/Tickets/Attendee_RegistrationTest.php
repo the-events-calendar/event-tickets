@@ -44,7 +44,7 @@ class Attendee_Registration extends \Codeception\TestCase\WPTestCase {
 		$post_id_1 = $this->factory->post->create();
 		$post_id_2 = $this->factory->post->create();
 
-		$paypal_ticket_id_1                   = $this->create_paypal_ticket( $post_id_1, 5, [
+		$paypal_ticket_id_1                   = $this->create_paypal_ticket_basic( $post_id_1, 5, [
 			'meta_input' => [
 				'_stock'              => 30,
 				'_capacity'           => 30,
@@ -60,13 +60,13 @@ class Attendee_Registration extends \Codeception\TestCase\WPTestCase {
 				]
 			],
 		] );
-		$paypal_ticket_id_2                   = $this->create_paypal_ticket( $post_id_1, 7, [
+		$paypal_ticket_id_2                   = $this->create_paypal_ticket_basic( $post_id_1, 7, [
 			'meta_input' => [
 				'_stock'              => 10,
 				'_capacity'           => 10,
 			],
 		] );
-		$paypal_ticket_id_3                   = $this->create_paypal_ticket( $post_id_2, 9, [
+		$paypal_ticket_id_3                   = $this->create_paypal_ticket_basic( $post_id_2, 9, [
 			'meta_input' => [
 				'_stock'              => 20,
 				'_capacity'           => 20,

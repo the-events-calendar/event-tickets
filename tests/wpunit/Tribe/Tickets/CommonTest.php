@@ -27,18 +27,4 @@ class CommonTest extends \Codeception\TestCase\WPTestCase {
 		);
 	}
 
-	/**
-	 * Common must be, at least in MIN_COMMON_VERSION
-	 *
-	 * @test
-	 * @since 4.8.0
-	*/
-	public function it_is_loading_common_required_version() {
-
-		$this->assertTrue(
-			version_compare( Common::VERSION, Tickets::MIN_COMMON_VERSION, '>=' ),
-			'Tribe Common version should be at least ' . Tickets::MIN_COMMON_VERSION . ', currently on ' . Common::VERSION
-		);
-	}
-
 }

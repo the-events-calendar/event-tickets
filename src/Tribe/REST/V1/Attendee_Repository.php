@@ -39,7 +39,30 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 * @return WP_Query
 	 */
 	public function build_query( $use_query_builder = true ) {
-		if ( ! current_user_can( 'read_private_posts' ) ) {
+		$can_view_hidden_attendees = false;
+
+		if ( current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' ) ) {
+			$can_view_hidden_attendees = true;
+		}
+
+		/**
+		 * Whether the current user can view hidden attendees,
+		 * for instance, those that opted out of having their data public.
+		 *
+		 * @param bool         $can_view_hidden_attendees The default value for whether the user can view hidden attendees.
+		 * @param null|WP_User $user                      The WP_User instance, if available.
+		 *
+		 * @since 4.12.0
+		 *
+		 * @return bool Whether the current user can view hidden attendees.
+		 */
+		$can_view_hidden_attendees = (bool) apply_filters(
+			'tribe_tickets_user_can_view_hidden_attendees_rest',
+			$can_view_hidden_attendees,
+			wp_get_current_user()
+		);
+
+		if ( ! $can_view_hidden_attendees ) {
 			$this->decorated->by( 'optout', 'no' );
 			$this->decorated->by( 'post_status', 'publish' );
 			$this->decorated->by( 'rsvp_status__or_none', 'yes' );
@@ -111,7 +134,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 			return new WP_Error( 'attendee-not-found', $messages->get_message( 'attendee-not-found' ), array( 'status' => 404 ) );
 		}
 
-		if ( current_user_can( 'read_private_posts' ) ) {
+		if ( current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' ) ) {
 			return $this->format_item( $found[0] );
 		}
 

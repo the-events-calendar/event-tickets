@@ -60,7 +60,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get correct capacity with "own" tickets.
 	 *
-	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
+	 * @covers ::tribe_get_event_capacity()
 	 */
 	public function it_should_get_correct_capacity_with_own_tickets() {
 		$num_tickets = 5;
@@ -69,7 +69,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$sales       = 2;
 
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$num_tickets,
 			$this->event_id,
 			[
@@ -83,7 +83,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
-		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
+		$test_data = tribe_get_event_capacity( $this->event_id );
 
 		$this->assertEquals( ( $num_tickets * $capacity ), $test_data, 'Incorrect capacity with own tickets.' );
 	}
@@ -92,7 +92,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get correct capacity with unlimited tickets.
 	 *
-	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
+	 * @covers ::tribe_get_event_capacity()
 	 */
 	public function it_should_get_correct_capacity_with_unlimited_tickets() {
 		$num_tickets = 5;
@@ -100,7 +100,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$sales       = 2;
 
 		// create 5 tickets
-		$ticket_ids = $this->create_many_paypal_tickets(
+		$ticket_ids = $this->create_many_paypal_tickets_basic(
 			$num_tickets,
 			$this->event_id,
 			[
@@ -113,7 +113,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
-		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
+		$test_data = tribe_get_event_capacity( $this->event_id );
 
 		$this->assertEquals( -1, $test_data, 'Incorrect capacity with own tickets.' );
 	}
@@ -122,7 +122,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get correct capacity with "global" tickets.
 	 *
-	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
+	 * @covers ::tribe_get_event_capacity()
 	 */
 	public function it_should_get_correct_capacity_with_global_tickets() {
 		$global_cap = 25;
@@ -146,7 +146,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 		}
 
 		// create 5 tickets
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			$ticket_data,
 			$this->global_cap
@@ -154,7 +154,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
-		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
+		$test_data = tribe_get_event_capacity( $this->event_id );
 
 		$this->assertEquals( $this->global_cap, $test_data, 'Incorrect capacity with global tickets.' );
 	}
@@ -163,7 +163,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get correct capacity with "capped" tickets.
 	 *
-	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
+	 * @covers ::tribe_get_event_capacity()
 	 */
 	public function it_should_get_correct_capacity_with_capped_tickets() {
 		$num_tickets = 5;
@@ -183,7 +183,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 			];
 		}
 
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			$ticket_data,
 			$this->global_cap
@@ -191,7 +191,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertNotEmpty( $ticket_ids, 'Tickets not created! ' . __METHOD__ );
 
-		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
+		$test_data = tribe_get_event_capacity( $this->event_id );
 
 		$this->assertEquals( $this->global_cap, $test_data, 'Incorrect capacity with capped tickets.' );
 	}
@@ -200,13 +200,13 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get correct capacity with mixed tickets.
 	 *
-	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
+	 * @covers ::tribe_get_event_capacity()
 	 */
 	public function it_should_get_correct_capacity_with_mixed_tickets() {
 		$capacity    = 10;
 		$sales       = 2;
 
-		$ticket_ids = $this->create_distinct_paypal_tickets(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			[
 				[
@@ -233,22 +233,23 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 			$capacity
 		);
 
-		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
+		$test_data = tribe_get_event_capacity( $this->event_id );
 
-		$this->assertEquals( ( $capacity * 3 ), $test_data, 'Incorrect capacity with mixed tickets.' );
+		// 1 ticket with unshared 10 and 2 tickets both sharing 10 = 20 expected, not 30.
+		$this->assertEquals( ( $capacity * 2 ), $test_data, 'Incorrect capacity with mixed tickets.' );
 	}
 
 	/**
 	 * @test
 	 * It should get correct unlimited capacity with mixed tickets.
 	 *
-	 * @covers Tribe__Tickets__Tickets_Handler::get_total_event_capacity()
+	 * @covers ::tribe_get_event_capacity()
 	 */
 	public function it_should_get_correct_unlimited_capacity_with_mixed_tickets() {
 		$this->setupGlobalStock();
 
 		// Add a "standard" ticket.
-		$ticket_a_id = $this->create_paypal_ticket(
+		$ticket_a_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -260,7 +261,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		// Add a "global" ticket.
-		$ticket_a_id = $this->create_paypal_ticket(
+		$ticket_a_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -273,7 +274,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		// Add an unlimited ticket.
-		$ticket_a_id = $this->create_paypal_ticket(
+		$ticket_a_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -285,7 +286,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		// Add a "capped" ticket.
-		$ticket_a_id = $this->create_paypal_ticket(
+		$ticket_a_id = $this->create_paypal_ticket_basic(
 			$this->event_id,
 			1,
 			[
@@ -297,7 +298,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$test_data = $this->handler->get_total_event_capacity( $this->event_id );
+		$test_data = tribe_get_event_capacity( $this->event_id );
 
 		$this->assertEquals( -1, $test_data, 'Incorrect capacity with mixed unlimited tickets.' );
 	}
