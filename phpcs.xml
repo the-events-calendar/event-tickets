@@ -10,6 +10,9 @@
 	</rule>
 	<rule ref="TribalScents"/>
 
+	<rule ref="PHPCompatibility"/>
+	<config name="testVersion" value="5.6-"/>
+
 	<!--exclude the rule for violation of direct DB calls as some have no alternative-->
 	<rule ref="WordPress.DB.DirectDatabaseQuery">
 		<exclude-pattern>src/Test.php</exclude-pattern>
