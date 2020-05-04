@@ -56,45 +56,9 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 	public function render() {
 		ob_start();
 
-		// things we need added, arrays so we can filter more if necessary
-		$additional_allowed = [
-			// forms
-			'form' => [
-				'class'  => [],
-				'id'     => [],
-				'name'   => [],
-				'value'  => [],
-				'type'   => [],
-				'action' => [],
-				'method' => [],
-			],
-			// form fields - input
-			'input' => [
-				'class'   => [],
-				'id'      => [],
-				'name'    => [],
-				'value'   => [],
-				'type'    => [],
-				'checked' => [],
-			],
-			// select
-			'select' => [
-				'class'  => [],
-				'id'     => [],
-				'name'   => [],
-				'value'  => [],
-				'type'   => [],
-			],
-			// select options
-			'option' => [
-				'selected' => [],
-			],
-		];
-
-		$allowed_tags = array_merge( wp_kses_allowed_html( 'post' ), $additional_allowed );
-
-		echo wp_kses( tribe( 'tickets.attendee_registration.view' )->display_attendee_registration_page( null, 'shortcode' ), $allowed_tags );
+		echo tribe( 'tickets.attendee_registration.view' )->display_attendee_registration_shortcode();
 
 		return ob_get_clean();
 	}
+
 }

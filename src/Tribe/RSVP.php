@@ -874,13 +874,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Saves a given ticket (WooCommerce product)
+	 * Saves an RSVP ticket.
 	 *
-	 * @param int                           $post_id
-	 * @param Tribe__Tickets__Ticket_Object $ticket
-	 * @param array                         $raw_data
+	 * @param int                           $post_id  Post ID.
+	 * @param Tribe__Tickets__Ticket_Object $ticket   Ticket object.
+	 * @param array                         $raw_data Ticket data.
 	 *
-	 * @return int The updated/created ticket post ID
+	 * @return int The updated/created ticket post ID.
 	 */
 	public function save_ticket( $post_id, $ticket, $raw_data = array() ) {
 		// assume we are updating until we find out otherwise
@@ -1076,10 +1076,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function get_tickets( $post_id ) {
 		$ticket_ids = $this->get_tickets_ids( $post_id );
 		if ( ! $ticket_ids ) {
-			return array();
+			return [];
 		}
 
-		$tickets = array();
+		$tickets = [];
 
 		foreach ( $ticket_ids as $post ) {
 			$tickets[] = $this->get_ticket( $post_id, $post );
@@ -1279,7 +1279,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$ticket_product = $ticket_product->ID;
 		}
 
-		if ( null === ( $product = get_post( $ticket_product ) ) ) {
+		if ( null === get_post( $ticket_product ) ) {
 			return false;
 		}
 

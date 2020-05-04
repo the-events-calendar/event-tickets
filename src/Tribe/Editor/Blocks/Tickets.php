@@ -89,6 +89,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return void
 	 */
 	public function assets() {
+		global $wp_version;
 		$plugin = Tribe__Tickets__Main::instance();
 
 		wp_register_script(
@@ -101,11 +102,17 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		wp_enqueue_script( 'wp-util-not-in-footer' );
 
+		$tickets_block_dependencies = [ 'jquery', 'wp-util-not-in-footer' ];
+
+		if ( version_compare( $wp_version, '5.0', '>=' ) ) {
+			$tickets_block_dependencies[] = 'wp-i18n';
+		}
+
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-tickets',
 			'tickets-block.js',
-			[ 'jquery', 'wp-util-not-in-footer', 'wp-i18n' ],
+			$tickets_block_dependencies,
 			null,
 			[
 				'type'         => 'js',
@@ -175,9 +182,11 @@ extends Tribe__Editor__Blocks__Abstract {
 				continue;
 			}
 
-			$available = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
+			$available     = $ticket->available();
+			$max_at_a_time = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
 
-			$response['tickets'][ $ticket_id ]['available'] = $available;
+			$response['tickets'][ $ticket_id ]['available']    = $available;
+			$response['tickets'][ $ticket_id ]['max_purchase'] = $max_at_a_time;
 
 			// If there are no more available we will send the template part HTML to update the DOM
 			if ( 0 === $available ) {
@@ -189,7 +198,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	}
 
 	/**
-	 * Get all tickets for event/post, removing RSVPs
+	 * Get all tickets for event/post, other than RSVP type because they're presented in a separate block.
 	 *
 	 * @since 4.9
 	 *
@@ -201,13 +210,20 @@ extends Tribe__Editor__Blocks__Abstract {
 		$all_tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post_id );
 
 		if ( ! $all_tickets ) {
-			return array();
+			return [];
 		}
 
-		$tickets = array();
+		/** @var Tribe__Tickets__RSVP $rsvp */
+		$rsvp = tribe( 'tickets.rsvp' );
 
+		$tickets = [];
+
+		// We only want RSVP tickets.
 		foreach ( $all_tickets as $ticket ) {
-			if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
+			if (
+				! $ticket instanceof Tribe__Tickets__Ticket_Object
+				|| $rsvp->class_name === $ticket->provider_class
+			) {
 				continue;
 			}
 

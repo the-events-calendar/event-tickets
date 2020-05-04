@@ -2,6 +2,7 @@
 
 namespace Tribe\Tickets\Test\REST\V1;
 
+use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
@@ -24,7 +25,7 @@ class TicketArchiveByAttendeeCest extends BaseRestCest {
 		$i                = 0;
 		$tickets          = array_reduce( $post_ids, function ( array $acc, $post_id ) use ( &$i, $attendees_counts ) {
 			$acc[] = $rsvp_ticket = $this->create_rsvp_ticket( $post_id );
-			$acc[] = $paypal_ticket = $this->create_paypal_ticket( $post_id, 2 );
+			$acc[] = $paypal_ticket = $this->create_paypal_ticket_basic( $post_id, 2 );
 			$this->create_many_attendees_for_ticket( $attendees_counts[ $i ++ ], $rsvp_ticket, $post_id );
 			$this->create_many_attendees_for_ticket( $attendees_counts[ $i ++ ], $paypal_ticket, $post_id );
 
@@ -45,7 +46,7 @@ class TicketArchiveByAttendeeCest extends BaseRestCest {
 			'tickets'     => $expected_tickets,
 		] );
 
-		// as a not logged in user the filter has no effect
+		// As a not logged in user the filter has no effect.
 		$I->sendGET( $this->tickets_url, [ 'attendees_max' => 3 ] );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
@@ -56,7 +57,8 @@ class TicketArchiveByAttendeeCest extends BaseRestCest {
 			'tickets'     => $expected_tickets,
 		] );
 
-		$I->generate_nonce_for_role( 'editor' );
+		// As an admin (edit_users / tribe_manage_attendees) the filter has will work.
+		$I->generate_nonce_for_role( 'administrator' );
 
 		$I->sendGET( $this->tickets_url, [ 'attendees_min' => 3 ] );
 		$I->seeResponseIsJson();
@@ -110,7 +112,7 @@ class TicketArchiveByAttendeeCest extends BaseRestCest {
 		$i = 0;
 		$tickets = array_reduce( $post_ids, function ( array $acc, $post_id ) use ( &$i, $checked_in_attendees_count ) {
 			$acc[] = $rsvp_ticket = $this->create_rsvp_ticket( $post_id );
-			$acc[] = $paypal_ticket = $this->create_paypal_ticket( $post_id, 2 );
+			$acc[] = $paypal_ticket = $this->create_paypal_ticket_basic( $post_id, 2 );
 			// create checked-in RSVP attendees
 			$this->create_many_attendees_for_ticket( $checked_in_attendees_count[ $i ++ ], $rsvp_ticket, $post_id, [ 'checkin' => 1 ] );
 			// create not checked-in RSVP attendees
@@ -148,7 +150,7 @@ class TicketArchiveByAttendeeCest extends BaseRestCest {
 			'tickets'     => $expected_tickets,
 		] );
 
-		$I->generate_nonce_for_role( 'editor' );
+		$I->generate_nonce_for_role( 'administrator' );
 
 		$I->sendGET( $this->tickets_url, [ 'checkedin_min' => 3 ] );
 		$I->seeResponseIsJson();

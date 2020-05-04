@@ -33,6 +33,7 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 			'error-attendee-post'           => __( 'There was a problem while fetching the requested attendee post', 'event-tickets' ),
 			// same as WordPress REST API
 			'invalid-page-number'           => __( 'The page number requested is larger than the number of pages available.', 'default' ),
+			'etplus-not-loaded'             => __( 'Event Tickets Plus must be loaded to get Attendee data.', 'default' ),
 		];
 	}
 

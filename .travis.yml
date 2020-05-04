@@ -133,13 +133,15 @@ before_script:
   - cd ${PLUGIN_DIR}
 
 script:
-  - codecept run unit
-  - codecept run wpunit
-  - codecept run integration
-  - codecept run functional
-  - codecept run restv1
-  - codecept run acceptance
-  - codecept run -f views_integration
+  - codecept run unit -f
+  - codecept run wpunit -f --skip-group="capacity"
+  - codecept run wpunit -f --group="capacity"
+  - codecept run integration -f
+  - codecept run functional -f
+  - codecept run restv1 --skip-group="capacity"
+  - codecept run restv1 -f --group="capacity"
+  - codecept run acceptance -f
+  - codecept run views_integration -f
 
 after_failure:
   # if the build failed let's see why

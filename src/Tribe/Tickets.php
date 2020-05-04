@@ -568,7 +568,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * This stub method should be treated as if it were an abstract method - ie, the
 		 * concrete class ought to provide the implementation.
 		 *
-		 * @param $possible_ticket
+		 * @param $ticket_product
 		 *
 		 * @return bool|WP_Post
 		 */
@@ -577,7 +577,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$ticket_product = $ticket_product->ID;
 			}
 
-			if ( null === ( $product = get_post( $ticket_product ) ) ) {
+			if ( null === get_post( $ticket_product ) ) {
 				return false;
 			}
 
@@ -606,27 +606,63 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function delete_ticket( $post_id, $ticket_id ) {}
 
 		/**
-		 * Saves a ticket
+		 * Saves a ticket.
 		 *
 		 * @abstract
 		 *
-		 * @param int   $post_id
-		 * @param int   $ticket
-		 * @param array $raw_data
-		 * @return mixed
+		 * @param int                           $post_id  Post ID.
+		 * @param Tribe__Tickets__Ticket_Object $ticket   Ticket object.
+		 * @param array                         $raw_data Ticket data.
+		 *
+		 * @return int|false The updated/created ticket post ID or false if no ticket ID.
 		 */
-		public function save_ticket( $post_id, $ticket, $raw_data = [] ) {}
+		public function save_ticket( $post_id, $ticket, $raw_data = [] ) {
+			return false;
+		}
 
 		/**
-		 * Returns all the tickets for an event.
+		 * Returns all the tickets for an event, of the active ticket providers.
 		 *
-		 * @abstract
+		 * @since 4.12.0 Changed from protected abstract to public with duplicated child classes' logic consolidated here.
 		 *
 		 * @param int $post_id ID of parent "event" post.
 		 *
 		 * @return Tribe__Tickets__Ticket_Object[] List of ticket objects.
 		 */
-		protected function get_tickets( $post_id ) {}
+		public function get_tickets( $post_id ) {
+			$default_provider = static::get_event_ticket_provider( $post_id );
+
+			// If the post's provider doesn't match.
+			if (
+				! is_admin()
+				&& $this->class_name !== $default_provider
+			) {
+				return [];
+			}
+
+			$ticket_ids = $this->get_tickets_ids( $post_id );
+
+			if ( ! $ticket_ids ) {
+				return [];
+			}
+
+			$tickets = [];
+
+			foreach ( $ticket_ids as $post ) {
+				$ticket = $this->get_ticket( $post_id, $post );
+
+				if (
+					! $ticket instanceof Tribe__Tickets__Ticket_Object
+					|| $this->class_name !== $ticket->provider_class
+				) {
+					continue;
+				}
+
+				$tickets[] = $ticket;
+			}
+
+			return $tickets;
+		}
 
 		/**
 		 * Get attendees for a Post ID / Post type.
@@ -1270,7 +1306,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				/** @var Tribe__Tickets__Tickets $provider */
 				$provider = tribe_tickets_get_ticket_provider( $attendee );
 
-				if ( ! $provider ) {
+				// Could be `false` or ticket type could be for a disabled commerce provider.
+				if (
+					empty( $provider )
+					|| ! array_key_exists( $provider->class_name, static::modules() )
+				) {
 					continue;
 				}
 
@@ -1556,14 +1596,29 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array JS localize data for ticket options.
 		 */
 		public static function get_asset_localize_data_for_ticket_options() {
+			$availability_check_interval = MINUTE_IN_SECONDS * 1000;
+
+			/*
+			 * Prevent availability check AJAX errors because we don't currently
+			 * run our AJAX hook if this conditional fails.
+			 *
+			 * A temporary fix for ET-730 which will need to be followed up with.
+			 *
+			 * @see \Tribe__Tickets__Editor__Provider::register()
+			 * @see \Tribe__Tickets__Editor__Blocks__Tickets::hook()
+			 */
+			if ( ! tribe( 'editor' )->should_load_blocks() ) {
+				$availability_check_interval = 0;
+			}
+
 			/**
-			 * Allow filtering how often tickets availability is checked.
+			 * Allow filtering how often tickets availability is checked (in milliseconds).
 			 *
 			 * @since 4.11.0
 			 *
-			 * @param int $availability_check_interval How often to check availability for tickets.
+			 * @param int $availability_check_interval How often to check availability for tickets (in milliseconds).
 			 */
-			$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', 60000 );
+			$availability_check_interval = apply_filters( 'tribe_tickets_availability_check_interval', $availability_check_interval );
 
 			$post_id = get_the_ID();
 
@@ -2824,6 +2879,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$ticket->end_date = date( Tribe__Date_Utils::DBDATEFORMAT, strtotime( $end_datetime ) );
 			}
 
+			// Pass the control to the child object.
+			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
+
 			/**
 			 * Fired once a ticket has been created and added to a post
 			 *
@@ -2832,9 +2890,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param array $data Submitted post data
 			 */
 			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data );
-
-			// Pass the control to the child object
-			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
 
 			$tickets_handler->toggle_manual_update_flag( false );
 
@@ -2857,7 +2912,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				update_post_meta( $ticket->ID, $tickets_handler->key_end_date, $event_start );
 			}
 
-			tribe( 'tickets.version' )->update( $ticket->ID );
+			/** @var Tribe__Tickets__Version $version */
+			$version = tribe( 'tickets.version' );
+
+			$version->update( $ticket->ID );
 
 			return $save_ticket;
 		}

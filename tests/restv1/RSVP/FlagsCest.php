@@ -3,7 +3,7 @@
 namespace Tribe\Tickets\Test\REST\V1\RSVP;
 
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker;
-use Tribe\Tickets\Test\REST\V1\BaseRestCest;
+use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
 
 class FlagsCest extends BaseRestCest {
 	use Ticket_Maker;

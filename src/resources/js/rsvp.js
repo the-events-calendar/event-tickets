@@ -1,6 +1,6 @@
 var tribe_tickets_rsvp = {
 	num_attendees: 0,
-	event: {}
+	event: {},
 };
 
 (function( $, my ) {
@@ -20,45 +20,50 @@ var tribe_tickets_rsvp = {
 				.toggleClass( 'on' )
 				.siblings( '.attendee-meta-details' )
 				.slideToggle();
-		});
+		} );
 	};
 
 	my.quantity_changed = function( $quantity ) {
-
-		var $rsvp = $quantity.closest( '.tribe-events-tickets-rsvp' );
-		var $rsvp_qtys = $rsvp.find( '.tribe-tickets-quantity' );
-		var rsvp_qty = 0;
-		$rsvp_qtys.each( function () {
-			rsvp_qty = rsvp_qty + parseInt( $( this ).val() );
+		const $rsvp = $quantity.closest( '.tribe-events-tickets-rsvp' );
+		const $rsvpQtys = $rsvp.find( '.tribe-tickets-quantity' );
+		let rsvpQty = 0;
+		$rsvpQtys.each( function() {
+			rsvpQty = rsvpQty + parseInt( $( this ).val() );
 		} );
 
-		if ( 0 === rsvp_qty ) {
+		if ( 0 === rsvpQty ) {
 			$rsvp.removeClass( 'tribe-tickets-has-rsvp' );
 		} else {
 			$rsvp.addClass( 'tribe-tickets-has-rsvp' );
 		}
 	};
 
-	my.validate_submission = function( $form ) {
-		var $rsvp = $form.find( '.tribe-tickets-quantity' );
-		var rsvp_qty = 0;
-		var $name = $( document.getElementById( 'tribe-tickets-full-name' ) );
-		var $email = $( document.getElementById( 'tribe-tickets-email' ) );
+	my.validate_rsvp_info = function( $form ) {
+		const $qty = $form.find( 'input.tribe-tickets-quantity' );
+		const $name = $form.find( 'input#tribe-tickets-full-name' );
+		const $email = $form.find( 'input#tribe-tickets-email' );
+		let rsvpQty = 0;
 
-		$rsvp.each( function () {
-			rsvp_qty = rsvp_qty + parseInt( $( this ).val() );
+		$qty.each( function() {
+			rsvpQty = rsvpQty + parseInt( $( this ).val() );
 		} );
 
-		if (
-			0 === rsvp_qty ||
-			! $.trim( $rsvp.val() ).length ||
-			! $.trim( $name.val() ).length ||
-			! $.trim( $email.val() ).length
-		) {
-			return false;
+		return (
+			$.trim( $name.val() ).length &&
+			$.trim( $email.val() ).length &&
+			rsvpQty
+		);
+	};
+
+	my.validate_meta = function( $form ) {
+		const hasTicketsPlus = !! window.tribe_event_tickets_plus;
+		let isMetaValid = true;
+
+		if ( hasTicketsPlus ) {
+			isMetaValid = window.tribe_event_tickets_plus.meta.validate_meta( $form );
 		}
 
-		return true;
+		return isMetaValid;
 	};
 
 	my.event.quantity_changed = function() {
@@ -66,19 +71,40 @@ var tribe_tickets_rsvp = {
 	};
 
 	my.event.handle_submission = function( e ) {
+		const $form = $( this ).closest( 'form' );
 
-		if ( ! my.validate_submission(  $( this ).closest( 'form' ) ) ) {
-			e.preventDefault();
-			var $form = $( this ).closest( 'form' );
+		const $rsvpMessages = $form.find(
+			'.tribe-rsvp-messages, ' +
+			'.tribe-rsvp-message-confirmation-error',
+		);
 
-			$form.addClass( 'tribe-rsvp-message-display' );
-			$form.find( '.tribe-rsvp-message-confirmation-error' ).show();
+		const $etpMetaMessages = $form.find( '.tribe-event-tickets-meta-required-message' );
 
-			$( 'html, body').animate({
-				scrollTop: $form.offset().top
+		const isRsvpInfoValid = my.validate_rsvp_info( $form );
+		const isAttendeeMetaValid = my.validate_meta( $form );
+
+		// Show/Hide message about missing RSVP details (name, email, going/not) and/or missing ETP fields (if applicable).
+		if ( ! isRsvpInfoValid || ! isAttendeeMetaValid ) {
+			isRsvpInfoValid
+				? $rsvpMessages.hide()
+				: $rsvpMessages.show();
+
+			if ( isAttendeeMetaValid ) {
+				$etpMetaMessages.hide();
+				$form.removeClass( 'tribe-event-tickets-plus-meta-missing-required' );
+			} else {
+				$form.addClass( 'tribe-event-tickets-plus-meta-missing-required' );
+				$etpMetaMessages.show();
+			}
+
+			$( 'html, body' ).animate( {
+				scrollTop: $form.offset().top - 100,
 			}, 300 );
+
 			return false;
 		}
+
+		return true;
 	};
 
 	$( function() {

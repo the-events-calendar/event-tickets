@@ -5,7 +5,7 @@ namespace Tribe\Tickets\Test\REST\V1\RSVP;
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as Ticket_Maker;
-use Tribe\Tickets\Test\REST\V1\BaseRestCest;
+use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
 
 class SingleTicketCest extends BaseRestCest {
 	use Ticket_Maker;
@@ -261,8 +261,10 @@ class SingleTicketCest extends BaseRestCest {
 				'currency_symbol'   => '$',
 				'currency_position' => 'prefix',
 				'values'            => [ 0 ],
+				'suffix'            => null,
 			],
 			'supports_attendee_information' => false, // we are on RSVP, no ET+ installed'
+			'price_suffix'                  => null,
 		);
 
 		$I->assertEquals( $expectedJson, $response );

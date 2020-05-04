@@ -3,14 +3,14 @@
  * View: Week View - Mobile Event Cost
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/event-tickets/views/v2/week/mobile-events/day/event/cost.php
+ * [your-theme]/tribe/tickets/v2/week/mobile-events/day/event/cost.php
  *
  * See more documentation about our views templating system.
  *
- * @link {INSERT_ARTCILE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since   4.10.9
- * @version 4.11.3
+ * @version 4.12.0
  *
  * @var WP_Post $event The event post object with properties added by the `tribe_get_event` function.
  *
@@ -23,7 +23,7 @@ if ( empty( $event->cost ) ) {
 }
 ?>
 <div class="tribe-events-c-small-cta tribe-common-b3 tribe-events-pro-week-mobile-events__event-cost">
-	<?php if ( $event->tickets->exist() && tribe_tickets_is_current_time_in_date_window( $event->ID ) ) : ?>
+	<?php if ( $event->tickets->exist() && $event->tickets->in_date_range() && ! $event->tickets->sold_out() ) : ?>
 		<a
 			href="<?php echo esc_url( $event->tickets->link->anchor ); ?>"
 			class="tribe-events-c-small-cta__link tribe-common-cta tribe-common-cta--thin-alt"
@@ -31,12 +31,17 @@ if ( empty( $event->cost ) ) {
 			<?php echo esc_html( $event->tickets->link->label ); ?>
 		</a>
 	<?php endif; ?>
+	<?php if ( $event->tickets->sold_out() ) : ?>
+		<span class="tribe-events-c-small-cta__sold-out tribe-common-b3--bold">
+			<?php echo esc_html( $event->tickets->stock->sold_out ); ?>
+		</span>
+	<?php endif; ?>
 	<span class="tribe-events-c-small-cta__price">
 		<?php echo esc_html( $event->cost ) ?>
 	</span>
-	<?php if ( ! empty( $event->tickets->stock->available ) && tribe_tickets_is_current_time_in_date_window( $event->ID ) ) : ?>
+	<?php if ( ! empty( $event->tickets->stock->available ) && $event->tickets->in_date_range() ) : ?>
 		<span class="tribe-events-c-small-cta__stock">
-			<?php echo esc_html( $event->tickets->stock->available ) ?>
+			<?php echo esc_html( $event->tickets->stock->available ); ?>
 		</span>
 	<?php endif; ?>
 </div>

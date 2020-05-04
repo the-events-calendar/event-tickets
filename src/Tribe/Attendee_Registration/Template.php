@@ -4,16 +4,6 @@
  */
 class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
-	/*
-	 * List of themes which we may want to include fixes
-	 */
-	public $themes_with_compatibility_fixes = array(
-		'twentynineteen',
-		'twentyseventeen',
-		'twentysixteen',
-		'twentyfifteen',
-	);
-
 	/**
 	 * Initialize the template class
 	 */
@@ -58,6 +48,8 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 *
+	 * @param WP_Post[] $posts Post data objects.
+	 *
 	 * @return void
 	 */
 	public function setup_context( $posts ) {
@@ -66,6 +58,19 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		// Bail if we're not on the attendee info page
 		if ( ! $this->is_on_ar_page() ) {
 			return $posts;
+		}
+
+		/*
+		 * Early bail:
+		 * We are on the AR page, but we have the shortcode in the content,
+		 * so we don't want to spoof this page.
+		 */
+		if ( is_array( $posts ) && ! empty( $posts ) ) {
+			if ( $posts[0] instanceof WP_Post ) {
+				if ( has_shortcode( $posts[0]->post_content, 'tribe_attendee_registration' ) ) {
+					return $posts;
+				}
+			}
 		}
 
 		// Empty posts
@@ -189,11 +194,6 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		// Add classes that we actually want/need
 		add_filter( 'body_class', array( $this, 'add_body_classes' ) );
-
-		// add the theme name to the body class when needed
-		if ( $this->theme_has_compatibility_fix() ) {
-			add_filter( 'body_class', array( $this, 'theme_body_class' ) );
-		}
 	}
 
 	/**
@@ -242,27 +242,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 * @param array $classes List of classes to filter
+	 * @deprecated 4.11.4
 	 *
 	 * @return array $classes
 	 */
 	public function theme_body_class( $classes ) {
-
-		$child_theme  = get_option( 'stylesheet' );
-		$parent_theme = get_option( 'template' );
-
-		// if the 2 options are the same, then there is no child theme
-		if ( $child_theme == $parent_theme ) {
-			$child_theme = false;
-		}
-
-		if ( $child_theme ) {
-			$theme_classes = "tribe-theme-parent-$parent_theme tribe-theme-child-$child_theme";
-		} else {
-			$theme_classes = "tribe-theme-$parent_theme";
-		}
-
-		$classes[] = $theme_classes;
-
 		return $classes;
 	}
 
@@ -271,17 +255,12 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since 4.9
 	 * @param string $theme Name of template from WP_Theme->Template, defaults to current active template
+	 * @deprecated 4.11.4
 	 *
 	 * @return mixed
 	 */
 	public function theme_has_compatibility_fix( $theme = null ) {
-		// Defaults to current active theme
-		if ( null === $theme ) {
-			$theme = get_stylesheet();
-		}
-
-		// Return if the current theme is part of the ones we've compatibility for
-		return in_array( $theme, $this->themes_with_compatibility_fixes );
+		return false;
 	}
 
 	/**
@@ -298,8 +277,17 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		}
 
 		if ( $this->is_main_loop( $query ) ) {
-			// on the_content, load our attendee info page
-			add_filter( 'the_content', array( tribe( 'tickets.attendee_registration.view' ), 'display_attendee_registration_page' ) );
+			global $post;
+			if ( $post instanceof WP_Post && has_shortcode( $post->post_content, 'tribe_attendee_registration' ) ) {
+				// Early bail: There's no need to override the content if the post is using the shortcode.
+				return;
+			}
+
+			// Prevent the TEC v2 page override from preventing our content override.
+			add_filter( 'tribe_events_views_v2_should_hijack_page_template', '__return_false' );
+
+			// Load Attendee Registration view for the content.
+			add_filter( 'the_content', tribe_callback( 'tickets.attendee_registration.view', 'display_attendee_registration_page' ) );
 		}
 	}
 
@@ -388,13 +376,18 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @return string
 	 */
 	public function get_page_title() {
+		$title = __( 'Attendee Registration', 'event-tickets' );
+		$page  = tribe( 'tickets.attendee_registration' )->get_attendee_registration_page();
+
+		$title = $page ? $page->post_title : $title;
+
 		/**
 		 * `tribe_tickets_attendee_registration_page_title`
 		 * Filters the attendee registration page title
 		 *
-		 * @param string the "Attendee Registration" title
+		 * @param string the "Attendee Registration" page title.
 		 */
-		return apply_filters( 'tribe_tickets_attendee_registration_page_title', esc_html__( 'Attendee Registration', 'event-tickets' ) );
+		return apply_filters( 'tribe_tickets_attendee_registration_page_title', $title );
 	}
 
 	/**

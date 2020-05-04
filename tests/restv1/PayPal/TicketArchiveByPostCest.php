@@ -6,7 +6,7 @@ use Codeception\Example;
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as Ticket_Maker;
-use Tribe\Tickets\Test\REST\V1\BaseRestCest;
+use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
 
 class TicketArchiveByPostCest extends BaseRestCest {
 	use Ticket_Maker;
@@ -19,7 +19,7 @@ class TicketArchiveByPostCest extends BaseRestCest {
 	 */
 	public function should_allow_getting_all_the_tickets_for_an_event( Restv1Tester $I ) {
 		$post_id    = $I->havePostInDatabase();
-		$ticket_ids = $this->create_many_paypal_tickets( 3, $post_id );
+		$ticket_ids = $this->create_many_paypal_tickets_basic( 3, $post_id );
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
 
@@ -54,7 +54,7 @@ class TicketArchiveByPostCest extends BaseRestCest {
 		$params = [ 'include_post' => $example[0] ];
 
 		$post_id    = $I->havePostInDatabase();
-		$ticket_ids = $this->create_many_paypal_tickets( 1, $post_id );
+		$ticket_ids = $this->create_many_paypal_tickets_basic( 1, $post_id );
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
 
@@ -70,8 +70,8 @@ class TicketArchiveByPostCest extends BaseRestCest {
 	 */
 	public function should_return_only_tickets_accessible_by_the_user( Restv1Tester $I ) {
 		$post_id           = $I->havePostInDatabase();
-		$public_ticket_ids = $this->create_many_paypal_tickets( 2, $post_id );
-		$draft_ticket_ids  = $this->create_many_paypal_tickets( 2, $post_id, [ 'post_status' => 'draft' ] );
+		$public_ticket_ids = $this->create_many_paypal_tickets_basic( 2, $post_id );
+		$draft_ticket_ids  = $this->create_many_paypal_tickets_basic( 2, $post_id, [ 'post_status' => 'draft' ] );
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
 
@@ -123,7 +123,7 @@ class TicketArchiveByPostCest extends BaseRestCest {
 	 */
 	public function should_allow_getting_paginated_results(Restv1Tester $I) {
 		$post_id = $I->havePostInDatabase();
-		$ticket_ids = $this->create_many_paypal_tickets( 4, $post_id );
+		$ticket_ids = $this->create_many_paypal_tickets_basic( 4, $post_id );
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
 		$page_1_tickets = array_map( function ( $ticket_id ) use ( $repository ) {

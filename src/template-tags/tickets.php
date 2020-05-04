@@ -473,9 +473,10 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	/**
 	 * Gets the "tickets sold" message for a given ticket
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket to analyze
-	 *
 	 * @since 4.10.9 Use customizable ticket name functions.
+	 * @since 4.11.5 Correct the sprintf placeholders that were forcing the readable amount to an integer.
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket to analyze.
 	 *
 	 * @return string
 	 */
@@ -517,19 +518,43 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			$sold_label = sprintf( _x( "%s'd going", 'RSVPs going', 'event-tickets' ), tribe_get_rsvp_label_singular() );
 		}
 
-		// Message for how many remain available
-		if ( -1 === $available ) {
-			$status_counts[] = sprintf( _x( '%1$s available', 'unlimited remaining stock message', 'event-tickets' ), tribe_tickets_get_readable_amount( $available, $global_stock ) );
+		// Message for how many remain available.
+		if ( - 1 === $available ) {
+			$status_counts[] = sprintf(
+			/* translators: %1$s: formatted quantity remaining */
+				_x(
+					'%1$s available',
+					'unlimited remaining stock message',
+					'event-tickets'
+				),
+				tribe_tickets_get_readable_amount( $available, $global_stock )
+			);
 		} elseif ( $is_global ) {
-			$status_counts[] = sprintf( _x( '%1$d available of shared capacity', 'ticket shared capacity message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
+			$status_counts[] = sprintf(
+			/* translators: %1$s: formatted quantity remaining */
+				_x(
+					'%1$s available of shared capacity',
+					'ticket shared capacity message (remaining stock)',
+					'event-tickets'
+				),
+				tribe_tickets_get_readable_amount( $available )
+			);
 		} else {
-			// It's "own stock". We use the $stock value
-			$status_counts[] = sprintf( _x( '%1$d available', 'ticket stock message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
+			// It's "own stock". We use the $stock value.
+			$status_counts[] = sprintf(
+			/* translators: %1$s: formatted quantity remaining */
+				_x(
+					'%1$s available',
+					'ticket stock message (remaining stock)',
+					'event-tickets'
+				),
+				tribe_tickets_get_readable_amount( $available )
+			);
 		}
 
 		if ( ! empty( $status_counts ) ) {
 			//remove empty values and prepare to display if values
-			$status_counts = array_diff( $status_counts, array( '' ) );
+			$status_counts = array_diff( $status_counts, [ '' ] );
 			if ( array_filter( $status_counts ) ) {
 				$status = sprintf( ' (%1$s)', implode( ', ', $status_counts ) );
 			}
@@ -935,17 +960,14 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 		}
 
 		// Bail when it's not a post or ID is 0
-		if ( ! $post instanceof WP_Post || 0 === $post->ID ) {
+		if ( ! $post instanceof WP_Post || empty( $post->ID ) ) {
 			return null;
 		}
 
 		// This is really "post types that allow tickets"
 		$event_types = Tribe__Tickets__Main::instance()->post_types();
 
-		// Hand off when it's an event we're checking.
-		if ( in_array( $post->post_type, $event_types, true ) ) {
-			return tribe_get_event_capacity( $post );
-		}
+		$is_event_type = in_array( $post->post_type, $event_types, true );
 
 		/**
 		 * @var Tribe__Tickets__Tickets_Handler $tickets_handler
@@ -958,7 +980,8 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 
 		// When we have a legacy ticket we migrate it
 		if (
-			$version->is_legacy( $post->ID )
+			! $is_event_type
+			&& $version->is_legacy( $post->ID )
 		) {
 			$legacy_capacity = $tickets_handler->filter_capacity_support( null, $post->ID, $key );
 
@@ -977,7 +1000,10 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 			];
 
 			// When we are in a Ticket Post Type update where we get the value from Event
-			if ( in_array( $mode, $shared_modes, true ) ) {
+			if (
+				! $is_event_type
+				&& in_array( $mode, $shared_modes, true )
+			) {
 				$event_id = tribe_tickets_get_event_ids( $post->ID );
 
 				// It will return an array of Events
@@ -1093,7 +1119,7 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 		}
 
 		// If either is unlimited, it's all unlimited.
-		if ( -1 === $tickets_cap || -1 === $rsvp_cap) {
+		if ( -1 === $tickets_cap || -1 === $rsvp_cap ) {
 			return -1;
 		}
 
