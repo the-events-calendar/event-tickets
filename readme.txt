@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.9
 Tested up to: 5.4
-Stable tag: 4.12.0
+Stable tag: 4.12.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -120,6 +120,8 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.12.1] TBD =
 
 * Fix - Attendee Registration page briefly showing notice while tickets form is loading. [ETP-241]
+* Fix - Ensure defaults are passed into `Tribe__Tickets__Editor__Template->attr()` correctly instead of defaulting to an empty array. [TEC-2964]
+* Fix - Prevent problems with `func_get_args()` usage around template inclusion for legacy template files [TEC-3104]
 
 = [4.12.0] 2020-04-23 =
 
