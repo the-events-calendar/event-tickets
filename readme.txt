@@ -119,9 +119,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.12.1] TBD =
 
+* Fix - Remove opinionated `max-width: none;` on generic elements over the Attendee Registration page CSS to prevent theme conflicts. [ETP-314]
 * Fix - Attendee Registration page briefly showing notice while tickets form is loading. [ETP-241]
 * Fix - Ensure defaults are passed into `Tribe__Tickets__Editor__Template->attr()` correctly instead of defaulting to an empty array. [TEC-2964]
-* Fix - Prevent problems with `func_get_args()` usage around template inclusion for legacy template files [TEC-3104]
+* Fix - Prevent problems with `func_get_args()` usage around template inclusion for legacy template files. [TEC-3104]
 
 = [4.12.0] 2020-04-23 =
 
