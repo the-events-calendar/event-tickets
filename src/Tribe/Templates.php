@@ -16,8 +16,8 @@ class Tribe__Tickets__Templates extends Tribe__Templates {
 	 **/
 	public static function get_template_hierarchy( $template, $args = array() ) {
 		if ( ! is_array( $args ) ) {
-			$args          = array();
 			$passed        = func_get_args();
+			$args          = array();
 			$backwards_map = array( 'namespace', 'plugin_path', 'disable_view_check' );
 			$count = count( $passed );
 
