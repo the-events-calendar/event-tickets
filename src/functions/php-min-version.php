@@ -39,7 +39,7 @@ function tribe_get_php_min_version() {
 }
 
 /**
- * Returns the error message when php version min doesnt check
+ * Returns the error message when php version min doesn't check
  *
  * @since  4.10
  *

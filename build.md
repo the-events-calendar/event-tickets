@@ -16,11 +16,11 @@ Using `composer install` in place of `composer update` will ensure you are using
 
 Once Composer is done, run `npm install` to ensure you have the correct node modules for your build processes.
 
-_Note: all items in /vendor have been ignored, so if you need to add something of ours there, ensure that you are using Comppsoer to pull it in!_
+_Note: all items in /vendor have been ignored, so if you need to add something of ours there, ensure that you are using Composer to pull it in!_
 
 ### Assets
 
-Compiled assets are NOT to be committed to the repo! They create extra conflicts and are regenerated on deploy anyway. Help keep our repos as small and simple as possbile!
+Compiled assets are NOT to be committed to the repo! They create extra conflicts and are regenerated on deploy anyway. Help keep our repos as small and simple as possible!
 
 After running `npm install`, you can compile assets by running `npm run build` In fact, you'll **need to** if you expect to load the site locally, as the css and js files are not in their final state. You will also need to any time you make changes to the pre-compiled code (js, css, etc) to view/test locally.
 
