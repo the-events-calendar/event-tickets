@@ -273,31 +273,41 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handler for the ticket column
+	 * Handler for the ticket column.
 	 *
-	 * @since 4.1
+	 * @since  4.1
+	 * @since  TBD Include the raw attendee Post ID in the ticket's ID.
 	 *
-	 * @param array $item Item whose ticket data should be output
+	 * @param array $item Item whose ticket data should be output.
 	 *
 	 * @return string
 	 */
-	public function column_ticket( $item ) {
+	public function column_ticket( array $item ) {
 		ob_start();
 
-		$attendee_id = trim( esc_html( $this->get_attendee_id( $item ) ) );
+		$attendee_id = trim( $this->get_attendee_id( $item ) );
+
+		if (
+			! empty( $attendee_id )
+			&& ! empty( $item['attendee_id'] )
+		) {
+			$attendee_id .= sprintf( ' [#%d]', $item['attendee_id'] );
+		}
+
+		$attendee_id = esc_html( $attendee_id );
 
 		if ( ! empty( $attendee_id ) ) {
 			$attendee_id .= ' &ndash; ';
 		}
 
 		?>
-			<div class="event-tickets-ticket-name">
-				<?php echo $attendee_id; ?>
-				<?php echo esc_html( $item['ticket'] ); ?>
-			</div>
+		<div class="event-tickets-ticket-name">
+			<?php echo $attendee_id; ?>
+			<?php echo esc_html( $item['ticket'] ); ?>
+		</div>
 
-			<?php echo $this->get_row_actions( $item ); ?>
 		<?php
+		echo $this->get_row_actions( $item );
 
 		/**
 		 * Hook to allow for the insertion of additional content in the ticket table cell

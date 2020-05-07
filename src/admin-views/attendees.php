@@ -11,19 +11,31 @@ $pto      = get_post_type_object( $event->post_type );
 $singular = $pto->labels->singular_name;
 
 /**
- * Whether or not we should display attendees title
+ * Whether we should display the "Attendees" title.
  *
  * @since  4.6.2
+ * @since  TBD Append the post ID to the Attendees page title and each Ticket's name.
  *
- * @param  boolean                          $show_title
- * @param  Tribe__Tickets__Tickets_Handler  $handler
+ * @param boolean                         $show_title
+ * @param Tribe__Tickets__Tickets_Handler $handler
  */
 $show_title = apply_filters( 'tribe_tickets_attendees_show_title', true, $attendees );
 ?>
 
 <div class="wrap tribe-report-page">
 	<?php if ( $show_title ) : ?>
-		<h1><?php esc_html_e( 'Attendees', 'event-tickets' ); ?></h1>
+		<h1>
+			<?php
+			echo esc_html(
+			// Translators: 1: the post title, 2: the post ID.
+				sprintf(
+					_x( 'Attendees for: %1$s [#%2$d]', 'event-tickets' ),
+					get_the_title( $event_id ),
+					$event_id
+				)
+			);
+			?>
+		</h1>
 	<?php endif; ?>
 	<div id="tribe-attendees-summary" class="welcome-panel tribe-report-panel">
 		<div class="welcome-panel-content">
@@ -90,16 +102,17 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', true, $attend
 
 					<ul>
 						<?php
+						/** @var Tribe__Tickets__Ticket_Object $ticket */
 						foreach ( $tickets as $ticket ) {
-							/** @var Tribe__Tickets__Ticket_Object $ticket */
+							$ticket_name = sprintf( '%s [#%d]', $ticket->name, $ticket->ID );
 							?>
-						<li>
-							<strong><?php echo esc_html( $ticket->name ) ?>:&nbsp;</strong><?php
-							echo esc_html( tribe_tickets_get_ticket_stock_message( $ticket ) );
-						?></li>
-					<?php } ?>
+							<li>
+								<strong><?php echo esc_html( $ticket_name ) ?>:&nbsp;</strong><?php
+								echo esc_html( tribe_tickets_get_ticket_stock_message( $ticket ) );
+								?></li>
+						<?php } ?>
 					</ul>
-					<?php do_action( 'tribe_events_tickets_attendees_ticket_sales_bottom', $event_id );  ?>
+					<?php do_action( 'tribe_events_tickets_attendees_ticket_sales_bottom', $event_id ); ?>
 				</div>
 				<div class="welcome-panel-column welcome-panel-last alternate">
 					<?php
