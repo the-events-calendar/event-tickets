@@ -8,12 +8,12 @@
  *
  * @since 4.11.0
  *
- * @version 4.11.0
- *
+ * @version TBD
  */
-$field         = $this->get( 'field' );
-$required      = isset( $field->required ) && 'on' === $field->required ? true : false;
-$field         = (array) $field;
+
+$field    = $this->get( 'field' );
+$required = isset( $field->required ) && 'on' === $field->required ? true : false;
+$field    = (array) $field;
 
 $options = null;
 
@@ -25,10 +25,10 @@ if ( ! $options ) {
 	return;
 }
 
-$value       = '';
-$disabled    = false;
-$slug        = $field['slug'];
-$field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $slug ) . ']';
+$value      = '';
+$disabled   = false;
+$slug       = $field['slug'];
+$field_name = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $slug ) . ']';
 ?>
 <div class="tribe-field tribe-tickets-meta-fieldset tribe-tickets-meta-fieldset__checkbox-radio <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
 	<header class="tribe-tickets-meta-label">

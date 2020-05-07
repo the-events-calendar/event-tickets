@@ -7,14 +7,14 @@
  *
  * @since 4.11.0
  *
- * @version 4.11.0
- *
+ * @version TBD
  */
-$required    = isset( $field->required ) && 'on' === $field->required ? true : false;
-$field       = (array) $field;
-$options     = Tribe__Utils__Array::get( $field, [ 'extra', 'options' ], null );
-$field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}]';
-$disabled    = false;
+
+$required   = isset( $field->required ) && 'on' === $field->required ? true : false;
+$field      = (array) $field;
+$options    = Tribe__Utils__Array::get( $field, [ 'extra', 'options' ], null );
+$field_name = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}]';
+$disabled   = false;
 
 if ( ! $options ) {
 	return;
@@ -33,7 +33,7 @@ if ( ! $options ) {
 			$option_id   = "tribe-tickets-meta_{$ticket->ID}_{$field_slug}{{data.attendee_id}}_{$option_slug}";
 			$slug        = $field_slug . '_' . $option_slug;
 			$value       = [];
-		?>
+			?>
 
 		<div class="tribe-common-form-control-checkbox">
 			<label
