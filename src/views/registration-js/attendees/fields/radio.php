@@ -40,7 +40,7 @@ $field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' 
 		foreach ( $options as $option ) :
 			$option_slug = md5( sanitize_title( $option ) );
 			$field_slug  = $field['slug'];
-			$option_id   = "tribe-tickets-meta_{$field_slug}{{data.attendee_id}}_{$option_slug}";
+			$option_id   = "tribe-tickets-meta_{$ticket->ID}_{$field_slug}{{data.attendee_id}}_{$option_slug}";
 			$slug        = $field_slug . '_' . $option_slug;
 			$value       = [];
 		?>
