@@ -329,9 +329,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	protected function get_row_actions( array $item ) {
+		/** @var Tribe__Tickets__Attendees $attendees */
+		$attendees = tribe( 'tickets.attendees' );
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
-			return false;
+		if ( ! $attendees->user_can_manage_attendees( 0, $this->event->ID ) ) {
+			return '';
 		}
 
 		/**
@@ -355,15 +357,17 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function add_default_row_actions( array $row_actions, array $item ) {
+		/** @var Tribe__Tickets__Attendees $attendees */
+		$attendees = tribe( 'tickets.attendees' );
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
-			return;
+		if ( ! $attendees->user_can_manage_attendees( 0, $this->event->ID ) ) {
+			return $row_actions;
 		}
 
 		$default_actions = [];
-		$provider = ! empty(  $item['provider'] ) ? $item['provider'] : null;
+		$provider        = ! empty( $item['provider'] ) ? $item['provider'] : null;
 
-		if ( is_object( $this->event ) && isset(  $this->event->ID ) ) {
+		if ( is_object( $this->event ) && isset( $this->event->ID ) ) {
 			$default_actions[] = sprintf(
 				'<span class="inline">
 					<a href="#" class="tickets_checkin" data-attendee-id="%1$d" data-event-id="%2$d" data-provider="%3$s">' . esc_html_x( 'Check In', 'row action', 'event-tickets' ) . '</a>
