@@ -10,6 +10,8 @@
  *
  * @version 4.11.0
  *
+ * @see Tribe__Tickets_Plus__Meta__Field__Radio
+ *
  */
 $field         = $this->get( 'field' );
 $required      = isset( $field->required ) && 'on' === $field->required ? true : false;

@@ -9,6 +9,8 @@
  *
  * @version 4.11.0
  *
+ * @see Tribe__Tickets_Plus__Meta__Field__Select
+ *
  */
 $required    = isset( $field->required ) && 'on' === $field->required ? true : false;
 $field       = (array) $field;
