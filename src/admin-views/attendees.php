@@ -29,7 +29,7 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', true, $attend
 			echo esc_html(
 				sprintf(
 				// Translators: 1: the post title, 2: the post ID.
-					_x( 'Attendees for: %1$s [#%2$d]', 'event-tickets' ),
+					_x( 'Attendees for: %1$s [#%2$d]', 'attendees report screen heading', 'event-tickets' ),
 					get_the_title( $event_id ),
 					$event_id
 				)
