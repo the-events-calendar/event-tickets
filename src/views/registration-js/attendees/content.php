@@ -68,5 +68,6 @@ if ( empty( $tickets ) ) {
 				?>
 			<?php endwhile; ?>
 		</script>
+		<?php Tribe__Tickets_Plus__Meta__Field__Birth::output_javascript() ?>
 <?php
 endforeach;
