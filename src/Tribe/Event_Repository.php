@@ -21,10 +21,57 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 	 */
 	public function __construct() {
 		$this->decorated = tribe( 'events.event-repository' );
-		$this->decorated->add_schema_entry( 'cost', array( $this, 'filter_by_cost' ) );
-		$this->decorated->add_schema_entry( 'cost_currency_symbol', array( $this, 'filter_by_cost_currency_symbol' ) );
-		$this->decorated->add_schema_entry( 'has_tickets', array( $this, 'filter_by_has_tickets' ) );
-		$this->decorated->add_schema_entry( 'has_rsvp', array( $this, 'filter_by_has_rsvp' ) );
+		$this->decorated->add_schema_entry( 'cost', [ $this, 'filter_by_cost' ] );
+		$this->decorated->add_schema_entry( 'cost_currency_symbol', [ $this, 'filter_by_cost_currency_symbol' ] );
+		$this->decorated->add_schema_entry( 'has_tickets', [ $this, 'filter_by_has_tickets' ] );
+		$this->decorated->add_schema_entry( 'has_rsvp', [ $this, 'filter_by_has_rsvp' ] );
+		$this->decorated->add_schema_entry( 'attendee', [ $this, 'filter_by_attendee' ] );
+		$this->decorated->add_schema_entry( 'attendee__not_in', [ $this, 'filter_by_attendee_not_in' ] );
+		$this->decorated->add_schema_entry( 'attendee_user', [ $this, 'filter_by_attendee_user' ] );
+		$this->decorated->add_schema_entry( 'attendee_user__not_in', [ $this, 'filter_by_attendee_user_not_in' ] );
+	}
+
+	/**
+	 * Returns an array of the attendee types handled by this repository.
+	 *
+	 * Extending repository classes should override this to add more attendee types.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function attendee_types() {
+		return [
+			'rsvp'           => 'tribe_rsvp_attendees',
+			'tribe-commerce' => 'tribe_tpp_attendees',
+		];
+	}
+
+	/**
+	 * Returns the list of meta keys relating an Attendee to a Post (Event).
+	 *
+	 * Extending repository classes should override this to add more keys.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function attendee_to_event_keys() {
+		return [
+			'rsvp'           => '_tribe_rsvp_event',
+			'tribe-commerce' => '_tribe_tpp_event',
+		];
+	}
+
+	/**
+	 * Returns the meta key relating an Attendee to a User.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function attendee_to_user_key() {
+		return '_tribe_tickets_attendee_user_id';
 	}
 
 	/**
@@ -46,7 +93,7 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 	 *                                        `NOT BETWEEN` operators without passing a two element array `$value`.
 	 */
 	public function filter_by_cost( $value, $operator = '=', $symbol = null ) {
-		if ( ! in_array( $operator, array(
+		if ( ! in_array( $operator, [
 			'<',
 			'<=',
 			'>',
@@ -57,18 +104,18 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 			'NOT BETWEEN',
 			'IN',
 			'NOT IN',
-		) ) ) {
+		] ) ) {
 			throw Tribe__Repository__Usage_Error::because_this_comparison_operator_is_not_supported( $operator, 'filter_by_cost' );
 		}
 
-		if ( in_array( $operator, array(
+		if ( in_array( $operator, [
 				'BETWEEN',
 				'NOT BETWEEN',
-			) ) && ! ( is_array( $value ) && 2 === count( $value ) ) ) {
+			] ) && ! ( is_array( $value ) && 2 === count( $value ) ) ) {
 			throw Tribe__Repository__Usage_Error::because_this_comparison_operator_requires_an_value_of_type( $operator, 'filter_by_cost', 'array' );
 		}
 
-		if ( in_array( $operator, array( 'IN', 'NOT IN' ) ) ) {
+		if ( in_array( $operator, [ 'IN', 'NOT IN' ] ) ) {
 			$value = (array) $value;
 		}
 
@@ -84,12 +131,12 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 				AND {$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$' 
 			)" );
 
-		$price_regexp_frags = array(
+		$price_regexp_frags = [
 			// PayPal and WooCommerce tickets.
 			'_price',
 			// Easy Digital Downloads tickets.
 			'edd_price',
-		);
+		];
 		$price_regexp       = '^(' . implode( '|', $price_regexp_frags ) . ')$';
 
 		// Join to the ticket cost meta, allow for RSVP tickets too that have no price.
@@ -100,13 +147,9 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 						{$prefix}_ticket_cost.meta_key REGEXP %s
 						OR {$prefix}_ticket_cost.meta_id IS NULL
 					)
-			)",
-			$price_regexp
-		) );
+			)", $price_regexp ) );
 
-		$prepared_value = is_array( $value )
-			? $this->decorated->prepare_interval( $value, '%d', $operator )
-			: $wpdb->prepare( '%d', $value );
+		$prepared_value = is_array( $value ) ? $this->decorated->prepare_interval( $value, '%d', $operator ) : $wpdb->prepare( '%d', $value );
 
 		// Default the cost to `0` if not set to make RSVP tickets show as "free" tickets, with a cost of 0.
 		$this->decorated->where_clause( "IFNULL( {$prefix}_ticket_cost.meta_value, 0 ) {$operator} {$prepared_value}" );
@@ -140,7 +183,7 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 		/** @var Tribe__Tickets__Commerce__Currency $currency */
 		$currency      = tribe( 'tickets.commerce.currency' );
 		$symbols       = (array) $symbol;
-		$request_codes = array();
+		$request_codes = [];
 
 		/*
 		 * Transform the request symbols into ISO codes; due to its ambiguous nature a
@@ -157,16 +200,16 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 		}
 
 		// Compile a list of ticket providers that are active and use one of the requested ISO codes.
-		$request_providers = array();
+		$request_providers = [];
 
 		if ( array_intersect( $request_codes, (array) $currency->get_currency_code() ) ) {
 			$request_providers[] = 'tpp';
 		}
 
-		$providers = array(
+		$providers = [
 			'eddticket' => 'Tribe__Tickets_Plus__Commerce__EDD__Main',
 			'wooticket' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
-		);
+		];
 
 		foreach ( $providers as $slug => $provider ) {
 			if ( ! class_exists( $provider ) ) {
@@ -245,7 +288,7 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 	 */
 	public function filter_by_has_rsvp( $has_rsvp = true ) {
 		global $wpdb;
-		$prefix   = 'has_rspv_';
+		$prefix = 'has_rspv_';
 
 		if ( (bool) $has_rsvp ) {
 			$this->decorated->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event
@@ -266,5 +309,176 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 		// Keep any event without tickets or not related to an RSVP ticket.
 		$this->decorated->where_clause( "{$prefix}_ticket_event.meta_id IS NULL 
 			OR {$prefix}_ticket_event.meta_key != '_tribe_rsvp_for_event'" );
+	}
+
+	/**
+	 * Filters events by attendee(s) that are or aren't ticketed.
+	 *
+	 * @since TBD
+	 *
+	 * @param array  $filters The list of filters to check.
+	 * @param string $compare The comparison to use (IN | NOT IN).
+	 */
+	protected function handle_filter_by_attendee( $filters, $compare = 'IN' ) {
+		global $wpdb;
+
+		$attendee_ids = '';
+		$user_ids     = '';
+
+		if ( isset( $filters['attendee_id'] ) ) {
+			$attendee_id = $filters['attendee_id'];
+
+			if ( is_numeric( $attendee_id ) || is_array( $attendee_id ) ) {
+				$attendee_ids = (array) $attendee_id;
+				$attendee_ids = array_map( 'absint', $attendee_ids );
+				$attendee_ids = array_filter( array_unique( $attendee_ids ) );
+				$attendee_ids = implode( ', ', $attendee_ids );
+			}
+		}
+
+		if ( isset( $filters['user_id'] ) ) {
+			$user_id = $filters['user_id'];
+
+			if ( is_numeric( $user_id ) || is_array( $user_id ) ) {
+				$user_ids = (array) $user_id;
+				$user_ids = array_map( 'absint', $user_ids );
+				$user_ids = array_filter( array_unique( $user_ids ) );
+				$user_ids = implode( ', ', $user_ids );
+			}
+		}
+
+		$prefix = 'ticket_attendee';
+
+		// Join to the meta that relates attendees to events.
+		$this->decorated->join_clause( "
+				LEFT JOIN `{$wpdb->postmeta}` AS `{$prefix}_event`
+					ON `{$prefix}_event`.`meta_value` = `{$wpdb->posts}`.`ID`
+			" );
+
+		// Join to the meta that relates users to attendees.
+		if ( ! empty( $attendee_ids ) ) {
+			$this->decorated->join_clause( "
+					LEFT JOIN `{$wpdb->postmeta}` AS `{$prefix}_user`
+						ON `{$prefix}_user`.`meta_value` = `{$prefix}_event`.`post_id`
+				" );
+		}
+
+		$event_meta_keys = $this->attendee_to_event_keys();
+		$event_meta_keys = array_map( [ $wpdb, '_real_escape' ], $event_meta_keys );
+		$event_meta_keys = '"' . implode( '", "', $event_meta_keys ) . '"';
+
+		$user_meta_key = $wpdb->_real_escape( $this->attendee_to_user_key() );
+
+		if ( 'NOT IN' === $compare ) {
+			$attendees_sql = '';
+			$users_sql     = '';
+
+			if ( '' !== $attendee_ids ) {
+				$attendees_sql = "
+						OR `{$prefix}_event`.`post_id` NOT IN ( {$attendee_ids} )
+					";
+			}
+
+			// Return events that *do not* have attendees.
+			$this->decorated->where_clause( "
+					`{$prefix}_event`.`meta_key` NOT IN ( {$event_meta_keys} )
+					OR `{$prefix}_event`.`meta_id` IS NULL
+					{$attendees_sql}
+				" );
+
+			if ( '' !== $user_ids ) {
+				$users_sql = "
+						OR `{$prefix}_user`.`meta_value` NOT IN ( {$user_ids} )
+					";
+
+				// Return events that *do not* have attendees.
+				$this->decorated->where_clause( "
+					`{$prefix}_user`.`meta_key` != {$user_meta_key}
+					OR `{$prefix}_user`.`meta_id` IS NULL
+					{$users_sql}
+				" );
+			}
+
+			return;
+		}
+
+		$attendees_sql = '';
+		$users_sql     = '';
+
+		if ( '' !== $attendee_ids ) {
+			$attendees_sql = "
+					AND `{$prefix}_event`.`post_id` IN ( {$attendee_ids} )
+				";
+		}
+
+		// Return events that *do not* have attendees.
+		$this->decorated->where_clause( "
+				`{$prefix}_event`.`meta_key` IN ( {$event_meta_keys} )
+				{$attendees_sql}
+			" );
+
+		if ( '' !== $user_ids ) {
+			$users_sql = "
+					AND `{$prefix}_user`.`meta_value` IN ( {$user_ids} )
+				";
+
+			// Return events that *do not* have attendees.
+			$this->decorated->where_clause( "
+					`{$prefix}_user`.`meta_key` = {$user_meta_key}
+					{$users_sql}
+				" );
+		}
+	}
+
+	/**
+	 * Filters events to include only those that match the provided attendee(s).
+	 *
+	 * @since TBD
+	 *
+	 * @param int|array $attendee_id The attendee(s) to filter by.
+	 */
+	public function filter_by_attendee( $attendee_id = [] ) {
+		$this->handle_filter_by_attendee( [
+			'attendee_id' => $attendee_id,
+		] );
+	}
+
+	/**
+	 * Filters events to include only those that do not match the provided attendee(s).
+	 *
+	 * @since TBD
+	 *
+	 * @param int|array $attendee_id The attendee(s) to filter out.
+	 */
+	public function filter_by_attendee_not_in( $attendee_id = [] ) {
+		$this->handle_filter_by_attendee( [
+			'attendee_id' => $attendee_id,
+		], 'NOT IN' );
+	}
+
+	/**
+	 * Filters events to include only those that match the provided attendee(s).
+	 *
+	 * @since TBD
+	 *
+	 * @param int|array $user_id The user ID(s) to filter by.
+	 */
+	public function filter_by_attendee_user( $user_id = [] ) {
+		$this->handle_filter_by_attendee( [
+			'user_id' => $user_id,
+		] );
+	}
+
+	/**
+	 * Filters events to include only those that do not match the provided attendee(s).
+	 *
+	 * @since TBD
+	 *
+	 * @param int|array $user_id The user ID(s) to filter out.
+	 */
+	public function filter_by_attendee_user_not_in( $user_id = [] ) {
+		$this->handle_filter_by_attendee( [
+			'user_id' => $user_id,
+		], 'NOT IN' );
 	}
 }
