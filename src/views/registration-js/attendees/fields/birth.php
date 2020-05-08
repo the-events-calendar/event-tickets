@@ -30,7 +30,7 @@ if ( $required ) {
 			for="<?php echo esc_attr( $option_id ); ?>"
 	><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 
-	<div class="tribe__tickets__item__attendee__field__birth tribe__tickets__item__attendee__field__birth__month">
+	<div class="tribe_day_month_year_datepicker tribe__tickets__item__attendee__field__birth__month">
 		<select
 				<?php tribe_disabled( $disabled ); ?>
 				<?php tribe_required( $required ); ?>
@@ -48,7 +48,7 @@ if ( $required ) {
 			?>
 		</select>
 	</div>
-	<div class="tribe__tickets__item__attendee__field__birth tribe__tickets__item__attendee__field__birth__day">
+	<div class="tribe_day_month_year_datepicker tribe__tickets__item__attendee__field__birth__day">
 		<select
 				<?php tribe_disabled( $disabled ); ?>
 				<?php tribe_required( $required ); ?>
@@ -65,7 +65,7 @@ if ( $required ) {
 			?>
 		</select>
 	</div>
-	<div class="tribe__tickets__item__attendee__field__birth tribe__tickets__item__attendee__field__birth__year">
+	<div class="tribe_day_month_year_datepicker tribe__tickets__item__attendee__field__birth__year">
 		<select
 				<?php tribe_disabled( $disabled ); ?>
 				<?php tribe_required( $required ); ?>
