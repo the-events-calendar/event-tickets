@@ -39,11 +39,10 @@ $years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
 				<?php tribe_required( $required ); ?>
 				id="tribe-events-birth-date-month"
 		>
-			<option value="" disabled selected><?php esc_html_e( "Month", 'tribe-event-plus' ); ?></option>
+			<option value="" disabled selected><?php esc_html_e( 'Month', 'tribe-event-plus' ); ?></option>
 			<?php
 			foreach ( $months as $month ) {
-				$month = esc_attr( $month );
-				echo "<option>$month</option>";
+				printf( '<option value="%1$s">%2$s</option>', esc_attr( $month ), esc_html( $month ) );
 			}
 			?>
 		</select>
@@ -54,11 +53,10 @@ $years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
 				<?php tribe_required( $required ); ?>
 				id="tribe-events-birth-date-day"
 		>
-			<option value="" disabled selected><?php esc_html_e( "Day", 'tribe-event-plus' ); ?></option>
+			<option value="" disabled selected><?php esc_html_e( 'Day', 'tribe-event-plus' ); ?></option>
 			<?php
 			foreach ( $days as $day ) {
-				$day = esc_attr( $day );
-				echo "<option>$day</option>";
+				printf( '<option value="%1$s">%2$s</option>', esc_attr( $day ), esc_html( $day ) );
 			}
 			?>
 		</select>
@@ -72,8 +70,7 @@ $years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
 			<option value="" disabled selected><?php esc_html_e( "Year", 'tribe-event-plus' ); ?></option>
 			<?php
 			foreach ( $years as $year ) {
-				$year = esc_attr( $year );
-				echo "<option>$year</option>";
+				printf( '<option value="%1$s">%2$s</option>', esc_attr( $year ), esc_html( $year ) );
 			}
 			?>
 		</select>
