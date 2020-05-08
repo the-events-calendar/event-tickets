@@ -12,21 +12,17 @@
  * @see     Tribe__Tickets_Plus__Meta__Field__Birth
  *
  */
-$required     = isset( $field->required ) && 'on' === $field->required ? true : false;
-$option_id    = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id}}";
-$field_object = $field;
-$field        = (array) $field;
-$field_name   = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $field['slug'] ) . ']';
-$disabled     = false;
-$classes      = [ 'tribe-common-b1', 'tribe-field', 'tribe-tickets__item__attendee__field__birth' ];
+$required    = isset( $field->required ) && 'on' === $field->required ? true : false;
+$option_id   = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id}}";
+$birth_field = $field;
+$field       = (array) $field;
+$field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $field['slug'] ) . ']';
+$disabled    = false;
+$classes     = [ 'tribe-common-b1', 'tribe-field', 'tribe-tickets__item__attendee__field__birth' ];
 
 if ( $required ) {
 	$classes[] = 'tribe-tickets-meta-required';
 }
-
-$days   = Tribe__Tickets_Plus__Meta__Field__Birth::get_days();
-$months = Tribe__Tickets_Plus__Meta__Field__Birth::get_months();
-$years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
 ?>
 <div <?php tribe_classes( $classes ); ?> >
 	<label
@@ -38,12 +34,12 @@ $years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
 		<select
 				<?php tribe_disabled( $disabled ); ?>
 				<?php tribe_required( $required ); ?>
-				id="<?php echo esc_attr( $field_object->month_id ); ?>"
-				name="<?php echo esc_attr( $field_object->month_id ); ?>"
+				id="<?php echo esc_attr( $birth_field->month_id ); ?>"
+				name="<?php echo esc_attr( $birth_field->month_id ); ?>"
 		>
 			<option value="" disabled selected><?php esc_html_e( "Month", 'tribe-event-plus' ); ?></option>
 			<?php
-			foreach ( $months as $month_number => $month_name ) {
+			foreach ( $birth_field->get_months() as $month_number => $month_name ) {
 				$month_number = esc_attr( $month_number );
 				$month_name   = esc_attr( $month_name );
 
@@ -56,12 +52,12 @@ $years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
 		<select
 				<?php tribe_disabled( $disabled ); ?>
 				<?php tribe_required( $required ); ?>
-				id="<?php echo esc_attr( $field_object->day_id ); ?>"
-				name="<?php echo esc_attr( $field_object->day_id ); ?>"
+				id="<?php echo esc_attr( $birth_field->day_id ); ?>"
+				name="<?php echo esc_attr( $birth_field->day_id ); ?>"
 		>
 			<option value="" disabled selected><?php esc_html_e( "Day", 'tribe-event-plus' ); ?></option>
 			<?php
-			foreach ( $days as $day ) {
+			foreach ( $birth_field->get_days() as $day ) {
 				$day = esc_attr( $day );
 
 				echo "<option>$day</option>";
@@ -73,12 +69,12 @@ $years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
 		<select
 				<?php tribe_disabled( $disabled ); ?>
 				<?php tribe_required( $required ); ?>
-				id="<?php echo esc_attr( $field_object->year_id ); ?>"
-				name="<?php echo esc_attr( $field_object->year_id ); ?>"
+				id="<?php echo esc_attr( $birth_field->year_id ); ?>"
+				name="<?php echo esc_attr( $birth_field->year_id ); ?>"
 		>
 			<option value="" disabled selected><?php esc_html_e( "Year", 'tribe-event-plus' ); ?></option>
 			<?php
-			foreach ( $years as $year ) {
+			foreach ( $birth_field->get_years() as $year ) {
 				$year = esc_attr( $year );
 				echo "<option>$year</option>";
 			}
@@ -89,7 +85,7 @@ $years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
 <div>
 	<input
 			type="text"
-			id="<?php echo esc_attr( $field_object->real_value_id ); ?>"
+			id="<?php echo esc_attr( $birth_field->real_value_id ); ?>"
 			class="tribe-common-form-control-birth__input ticket-meta"
 			name="<?php echo esc_attr( $field_name ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
