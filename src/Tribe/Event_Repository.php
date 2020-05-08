@@ -28,7 +28,9 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 		$this->decorated->add_schema_entry( 'attendee', [ $this, 'filter_by_attendee' ] );
 		$this->decorated->add_schema_entry( 'attendee__not_in', [ $this, 'filter_by_attendee_not_in' ] );
 		$this->decorated->add_schema_entry( 'attendee_user', [ $this, 'filter_by_attendee_user' ] );
-		$this->decorated->add_schema_entry( 'attendee_user__not_in', [ $this, 'filter_by_attendee_user_not_in' ] );
+
+		// This is not yet working, it needs more debugging to determine why it's not functional yet.
+		//$this->decorated->add_schema_entry( 'attendee_user__not_in', [ $this, 'filter_by_attendee_user_not_in' ] );
 	}
 
 	/**
@@ -312,56 +314,90 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 	}
 
 	/**
-	 * Filters events by attendee(s) that are or aren't ticketed.
+	 * Filters events to include only those that match the provided attendee(s).
 	 *
 	 * @since TBD
 	 *
-	 * @param array  $filters The list of filters to check.
-	 * @param string $compare The comparison to use (IN | NOT IN).
+	 * @param int|array $attendee_ids The attendee(s) to filter by.
 	 */
-	protected function handle_filter_by_attendee( $filters, $compare = 'IN' ) {
+	public function filter_by_attendee( $attendee_ids ) {
 		global $wpdb;
 
-		$attendee_ids = '';
-		$user_ids     = '';
+		$attendee_ids = (array) $attendee_ids;
+		$attendee_ids = array_map( 'absint', $attendee_ids );
+		$attendee_ids = array_unique( $attendee_ids );
+		$attendee_ids = implode( ', ', $attendee_ids );
 
-		if ( isset( $filters['attendee_id'] ) ) {
-			$attendee_id = $filters['attendee_id'];
+		$alias_event = 'ticket_attendee_event';
 
-			if ( is_numeric( $attendee_id ) || is_array( $attendee_id ) ) {
-				$attendee_ids = (array) $attendee_id;
-				$attendee_ids = array_map( 'absint', $attendee_ids );
-				$attendee_ids = array_filter( array_unique( $attendee_ids ) );
-				$attendee_ids = implode( ', ', $attendee_ids );
-			}
-		}
-
-		if ( isset( $filters['user_id'] ) ) {
-			$user_id = $filters['user_id'];
-
-			if ( is_numeric( $user_id ) || is_array( $user_id ) ) {
-				$user_ids = (array) $user_id;
-				$user_ids = array_map( 'absint', $user_ids );
-				$user_ids = array_filter( array_unique( $user_ids ) );
-				$user_ids = implode( ', ', $user_ids );
-			}
-		}
-
-		$prefix = 'ticket_attendee';
+		$event_meta_keys = $this->attendee_to_event_keys();
+		$event_meta_keys = array_map( [ $wpdb, '_real_escape' ], $event_meta_keys );
+		$event_meta_keys = '"' . implode( '", "', $event_meta_keys ) . '"';
 
 		// Join to the meta that relates attendees to events.
-		$this->decorated->join_clause( "
-				LEFT JOIN `{$wpdb->postmeta}` AS `{$prefix}_event`
-					ON `{$prefix}_event`.`meta_value` = `{$wpdb->posts}`.`ID`
-			" );
+		$this->decorated->filter_query->join( "
+				LEFT JOIN `{$wpdb->postmeta}` AS `{$alias_event}`
+					ON `{$alias_event}`.`meta_value` = `{$wpdb->posts}`.`ID`
+			", $alias_event );
 
-		// Join to the meta that relates users to attendees.
-		if ( ! empty( $attendee_ids ) ) {
-			$this->decorated->join_clause( "
-					LEFT JOIN `{$wpdb->postmeta}` AS `{$prefix}_user`
-						ON `{$prefix}_user`.`meta_value` = `{$prefix}_event`.`post_id`
-				" );
-		}
+		$this->decorated->where_clause( "
+				`{$alias_event}`.`meta_key` IN ( {$event_meta_keys} )
+				AND `{$alias_event}`.`post_id` IN ( {$attendee_ids} )
+			" );
+	}
+
+	/**
+	 * Filters events to include only those that do not match the provided attendee(s).
+	 *
+	 * @since TBD
+	 *
+	 * @param int|array $attendee_ids The attendee(s) to filter out.
+	 */
+	public function filter_by_attendee_not_in( $attendee_ids ) {
+		global $wpdb;
+
+		$attendee_ids = (array) $attendee_ids;
+		$attendee_ids = array_map( 'absint', $attendee_ids );
+		$attendee_ids = array_unique( $attendee_ids );
+		$attendee_ids = implode( ', ', $attendee_ids );
+
+		$alias_event = 'ticket_attendee_event';
+
+		$event_meta_keys = $this->attendee_to_event_keys();
+		$event_meta_keys = array_map( [ $wpdb, '_real_escape' ], $event_meta_keys );
+		$event_meta_keys = '"' . implode( '", "', $event_meta_keys ) . '"';
+
+		$this->decorated->where_clause( "
+				NOT EXISTS (
+					SELECT 1
+					FROM
+						`{$wpdb->postmeta}` AS `sub_{$alias_event}`
+					WHERE
+						`sub_{$alias_event}`.`meta_value` = `{$wpdb->posts}`.`ID`
+						AND `sub_{$alias_event}`.`meta_key` IN ( {$event_meta_keys} )
+						AND `sub_{$alias_event}`.`post_id` IN ( {$attendee_ids} )
+					LIMIT 1
+				)
+			" );
+	}
+
+	/**
+	 * Filters events to include only those that match the provided attendee(s).
+	 *
+	 * @since TBD
+	 *
+	 * @param int|array $user_ids The user ID(s) to filter by.
+	 */
+	public function filter_by_attendee_user( $user_ids ) {
+		global $wpdb;
+
+		$user_ids = (array) $user_ids;
+		$user_ids = array_map( 'absint', $user_ids );
+		$user_ids = array_unique( $user_ids );
+		$user_ids = implode( ', ', $user_ids );
+
+		$alias_event = 'ticket_attendee_event';
+		$alias_user  = 'ticket_attendee_user';
 
 		$event_meta_keys = $this->attendee_to_event_keys();
 		$event_meta_keys = array_map( [ $wpdb, '_real_escape' ], $event_meta_keys );
@@ -369,78 +405,23 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 
 		$user_meta_key = $wpdb->_real_escape( $this->attendee_to_user_key() );
 
-		if ( 'NOT IN' === $compare ) {
-			$attendees_sql = '';
-			$users_sql     = '';
+		// Join to the meta that relates attendees to events.
+		$this->decorated->filter_query->join( "
+				LEFT JOIN `{$wpdb->postmeta}` AS `{$alias_event}`
+					ON `{$alias_event}`.`meta_value` = `{$wpdb->posts}`.`ID`
+			", $alias_event );
 
-			if ( '' !== $attendee_ids ) {
-				$attendees_sql = "
-						OR `{$prefix}_event`.`post_id` NOT IN ( {$attendee_ids} )
-					";
-			}
+		// Join to the meta that relates users to attendees.
+		$this->decorated->filter_query->join( "
+				LEFT JOIN `{$wpdb->postmeta}` AS `{$alias_user}`
+					ON `{$alias_user}`.`post_id` = `{$alias_event}`.`post_id`
+			", $alias_user );
 
-			// Return events that *do not* have attendees.
-			$this->decorated->where_clause( "
-					`{$prefix}_event`.`meta_key` NOT IN ( {$event_meta_keys} )
-					OR `{$prefix}_event`.`meta_id` IS NULL
-					{$attendees_sql}
-				" );
-
-			if ( '' !== $user_ids ) {
-				$users_sql = "
-						OR `{$prefix}_user`.`meta_value` NOT IN ( {$user_ids} )
-					";
-
-				// Return events that *do not* have attendees.
-				$this->decorated->where_clause( "
-					`{$prefix}_user`.`meta_key` != {$user_meta_key}
-					OR `{$prefix}_user`.`meta_id` IS NULL
-					{$users_sql}
-				" );
-			}
-
-			return;
-		}
-
-		$attendees_sql = '';
-		$users_sql     = '';
-
-		if ( '' !== $attendee_ids ) {
-			$attendees_sql = "
-					AND `{$prefix}_event`.`post_id` IN ( {$attendee_ids} )
-				";
-		}
-
-		// Return events that *do not* have attendees.
 		$this->decorated->where_clause( "
-				`{$prefix}_event`.`meta_key` IN ( {$event_meta_keys} )
-				{$attendees_sql}
+				`{$alias_event}`.`meta_key` IN ( {$event_meta_keys} )
+				AND `{$alias_user}`.`meta_key` = '{$user_meta_key}'
+				AND `{$alias_user}`.`meta_value` IN ( {$user_ids} )
 			" );
-
-		if ( '' !== $user_ids ) {
-			$users_sql = "
-					AND `{$prefix}_user`.`meta_value` IN ( {$user_ids} )
-				";
-
-			// Return events that *do not* have attendees.
-			$this->decorated->where_clause( "
-					`{$prefix}_user`.`meta_key` = {$user_meta_key}
-					{$users_sql}
-				" );
-		}
-	}
-
-	/**
-	 * Filters events to include only those that match the provided attendee(s).
-	 *
-	 * @since TBD
-	 *
-	 * @param int|array $attendee_id The attendee(s) to filter by.
-	 */
-	public function filter_by_attendee( $attendee_id = [] ) {
-		$this->handle_filter_by_attendee( [
-			'attendee_id' => $attendee_id,
-		] );
 	}
 
 	/**
@@ -448,37 +429,45 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 	 *
 	 * @since TBD
 	 *
-	 * @param int|array $attendee_id The attendee(s) to filter out.
+	 * @param int|array $user_ids The user ID(s) to filter out.
 	 */
-	public function filter_by_attendee_not_in( $attendee_id = [] ) {
-		$this->handle_filter_by_attendee( [
-			'attendee_id' => $attendee_id,
-		], 'NOT IN' );
-	}
+	public function filter_by_attendee_user_not_in( $user_ids ) {
+		global $wpdb;
 
-	/**
-	 * Filters events to include only those that match the provided attendee(s).
-	 *
-	 * @since TBD
-	 *
-	 * @param int|array $user_id The user ID(s) to filter by.
-	 */
-	public function filter_by_attendee_user( $user_id = [] ) {
-		$this->handle_filter_by_attendee( [
-			'user_id' => $user_id,
-		] );
-	}
+		$user_ids = (array) $user_ids;
+		$user_ids = array_map( 'absint', $user_ids );
+		$user_ids = array_unique( $user_ids );
+		$user_ids = implode( ', ', $user_ids );
 
-	/**
-	 * Filters events to include only those that do not match the provided attendee(s).
-	 *
-	 * @since TBD
-	 *
-	 * @param int|array $user_id The user ID(s) to filter out.
-	 */
-	public function filter_by_attendee_user_not_in( $user_id = [] ) {
-		$this->handle_filter_by_attendee( [
-			'user_id' => $user_id,
-		], 'NOT IN' );
+		$alias_event = 'ticket_attendee_event';
+		$alias_user  = 'ticket_attendee_user';
+
+		$event_meta_keys = $this->attendee_to_event_keys();
+		$event_meta_keys = array_map( [ $wpdb, '_real_escape' ], $event_meta_keys );
+		$event_meta_keys = '"' . implode( '", "', $event_meta_keys ) . '"';
+
+		$user_meta_key = $wpdb->_real_escape( $this->attendee_to_user_key() );
+
+		$this->decorated->where_clause( "
+				NOT EXISTS (
+					SELECT 1
+					FROM
+						`{$wpdb->postmeta}` AS `sub_{$alias_event}`
+					WHERE
+						`sub_{$alias_event}`.`meta_value` = `{$wpdb->posts}`.`ID`
+						AND `sub_{$alias_event}`.`meta_key` IN ( {$event_meta_keys} )
+						AND	NOT EXISTS (
+							SELECT 1
+							FROM
+								`{$wpdb->postmeta}` AS `sub_{$alias_user}`
+							WHERE
+								`sub_{$alias_user}`.`post_id` = `sub_{$alias_event}`.`post_id`
+								AND `sub_{$alias_user}`.`meta_key` = '{$user_meta_key}'
+								AND `sub_{$alias_user}`.`meta_value` IN ( {$user_ids} )
+							LIMIT 1
+						)
+					LIMIT 1
+				)
+			" );
 	}
 }
