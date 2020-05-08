@@ -11,12 +11,13 @@
  * @see     Tribe__Tickets_Plus__Meta__Field__Birth
  *
  */
-$required   = isset( $field->required ) && 'on' === $field->required ? true : false;
-$option_id  = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id}}";
-$field      = (array) $field;
-$field_name = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $field['slug'] ) . ']';
-$disabled   = false;
-$classes    = [ 'tribe-common-b1', 'tribe-field', 'tribe-tickets__item__attendee__field__birth' ];
+$required     = isset( $field->required ) && 'on' === $field->required ? true : false;
+$option_id    = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id}}";
+$field_object = $field;
+$field        = (array) $field;
+$field_name   = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $field['slug'] ) . ']';
+$disabled     = false;
+$classes      = [ 'tribe-common-b1', 'tribe-field', 'tribe-tickets__item__attendee__field__birth' ];
 if ( $required ) {
 	$classes[] = 'tribe-tickets-meta-required';
 }
@@ -30,56 +31,50 @@ $years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
 			for="<?php echo esc_attr( $option_id ); ?>"
 	><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 
-	<div class="tribe__tickets__item__attendee__field__birth__month">
+	<div class="tribe__tickets__item__attendee__field__birth tribe__tickets__item__attendee__field__birth__month">
 		<select
 				<?php tribe_disabled( $disabled ); ?>
 				<?php tribe_required( $required ); ?>
-				id="tribe-events-birth-date-month"
+				id="<?php echo esc_attr( $field_object->month_id ); ?>"
+				name="<?php echo esc_attr( $field_object->month_id ); ?>"
 		>
-			<option value="" disabled selected><?php esc_html_e( "Month", 'tribe-event-plus' ); ?></option>
-			<?php
-			foreach ( $months as $month ) {
-				$month = esc_attr( $month );
-				echo "<option>$month</option>";
-			}
-			?>
+			<option disabled selected value=""><?php esc_html_e( 'Month', 'event-tickets' ); ?></option>
+			<?php foreach ( $months as $option ) : ?>
+				<option value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( $option ); ?></option>
+			<?php endforeach; ?>
 		</select>
 	</div>
-	<div class="tribe__tickets__item__attendee__field__birth__day">
+	<div class="tribe__tickets__item__attendee__field__birth tribe__tickets__item__attendee__field__birth__day">
 		<select
 				<?php tribe_disabled( $disabled ); ?>
 				<?php tribe_required( $required ); ?>
-				id="tribe-events-birth-date-day"
+				id="<?php echo esc_attr( $field_object->day_id ); ?>"
+				name="<?php echo esc_attr( $field_object->day_id ); ?>"
 		>
-			<option value="" disabled selected><?php esc_html_e( "Day", 'tribe-event-plus' ); ?></option>
-			<?php
-			foreach ( $days as $day ) {
-				$day = esc_attr( $day );
-				echo "<option>$day</option>";
-			}
-			?>
+			<option disabled selected value=""><?php esc_html_e( 'Day', 'event-tickets' ); ?></option>
+			<?php foreach ( $days as $option ) : ?>
+				<option value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( $option ); ?></option>
+			<?php endforeach; ?>
 		</select>
 	</div>
-	<div class="tribe__tickets__item__attendee__field__birth__year">
+	<div class="tribe__tickets__item__attendee__field__birth tribe__tickets__item__attendee__field__birth__year">
 		<select
 				<?php tribe_disabled( $disabled ); ?>
 				<?php tribe_required( $required ); ?>
-				id="tribe-events-birth-date-year"
+				id="<?php echo esc_attr( $field_object->year_id ); ?>"
+				name="<?php echo esc_attr( $field_object->year_id ); ?>"
 		>
-			<option value="" disabled selected><?php esc_html_e( "Year", 'tribe-event-plus' ); ?></option>
-			<?php
-			foreach ( $years as $year ) {
-				$year = esc_attr( $year );
-				echo "<option>$year</option>";
-			}
-			?>
+			<option disabled selected value=""><?php esc_html_e( 'Year', 'event-tickets' ); ?></option>
+			<?php foreach ( $years as $option ) : ?>
+				<option value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( $option ); ?></option>
+			<?php endforeach; ?>
 		</select>
 	</div>
 </div>
 <div>
 	<input
 			type="text"
-			id="tribe-common-form-control-birth__input_date_value"
+			id="<?php echo esc_attr( $field_object->real_value_id ); ?>"
 			class="tribe-common-form-control-birth__input ticket-meta"
 			name="<?php echo esc_attr( $field_name ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
