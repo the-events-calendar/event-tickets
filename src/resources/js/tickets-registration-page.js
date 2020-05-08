@@ -540,6 +540,25 @@ window.tribe.tickets.registration = {};
 			}
 		}
 
+		// Validation for Tribe Horizontal Date Picker
+		if ( $input.hasClass( 'tribe-horizontal-date-picker-value' ) ) {
+			const wrapper = $input.closest( '.tribe-horizontal-date-picker-container' );
+			const day = wrapper.find('.tribe-horizontal-date-picker-day');
+			const month = wrapper.find('.tribe-horizontal-date-picker-month');
+			const year = wrapper.find('.tribe-horizontal-date-picker-year');
+
+			[ day, month, year ].forEach( el => {
+				// Check if given value is a positive number, even if it's a string
+				if ( isNaN( parseInt( el.val() ) ) || parseInt( el.val() ) <= 0 ) {
+					el.addClass( 'ticket-meta__has-error' );
+
+					isValidfield = false;
+				} else {
+					el.removeClass( 'ticket-meta__has-error' );
+				}
+			} );
+		}
+
 		if ( ! isValidfield ) {
 			$input.addClass( 'ticket-meta__has-error' );
 		} else {

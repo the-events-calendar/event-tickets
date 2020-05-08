@@ -85,7 +85,7 @@ if ( $required ) {
 	</div>
 	<div>
 		<input
-				type="text"
+				type="<?php echo isset( $_GET[ 'qa' ] ) ? 'text' : 'hidden' ?>"
 				class="tribe-common-form-control-birth__input ticket-meta tribe-horizontal-date-picker-value"
 				name="<?php echo esc_attr( $field_name ); ?>"
 				value="<?php echo esc_attr( $value ); ?>"
