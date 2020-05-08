@@ -32,8 +32,8 @@ if ( $required ) {
 			class="tribe-common-form-control-datetime__input ticket-meta"
 			name="<?php echo esc_attr( $field_name ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
-			min="<?php echo date( 'Y' ) - 100 ?>-01-01"
-			max="<?php echo date( 'Y' ) + 100 ?>-31-12"
+			min="<?php echo esc_attr( date_i18n( 'Y' ) - 100 ); ?>-01-01"
+			max="<?php echo esc_attr( date_i18n( 'Y' ) + 100 ); ?>-31-12"
 			<?php tribe_required( $required ); ?>
 			<?php tribe_disabled( $disabled ); ?>
 	/>
