@@ -18,9 +18,11 @@ $field      = (array) $field;
 $field_name = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $field['slug'] ) . ']';
 $disabled   = false;
 $classes    = [ 'tribe-common-b1', 'tribe-field', 'tribe-tickets__item__attendee__field__birth' ];
+
 if ( $required ) {
 	$classes[] = 'tribe-tickets-meta-required';
 }
+
 $days   = Tribe__Tickets_Plus__Meta__Field__Birth::get_days();
 $months = Tribe__Tickets_Plus__Meta__Field__Birth::get_months();
 $years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
