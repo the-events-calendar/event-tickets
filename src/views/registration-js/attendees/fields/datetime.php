@@ -6,11 +6,13 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/datetime.php
  *
+ * @since  TBD
  * @version TBD
  *
  * @see Tribe__Tickets_Plus__Meta__Field__Datetime
  *
  */
+
 $required   = isset( $field->required ) && 'on' === $field->required ? true : false;
 $option_id  = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id}}";
 $field      = (array) $field;
@@ -32,8 +34,8 @@ if ( $required ) {
 			class="tribe-common-form-control-datetime__input ticket-meta"
 			name="<?php echo esc_attr( $field_name ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
-			min="<?php echo date( 'Y' ) - 100 ?>-01-01"
-			max="<?php echo date( 'Y' ) + 100 ?>-31-12"
+			min="<?php echo esc_attr( date_i18n( 'Y' ) - 100 ); ?>-01-01"
+			max="<?php echo esc_attr( date_i18n( 'Y' ) + 100 ); ?>-31-12"
 			<?php tribe_required( $required ); ?>
 			<?php tribe_disabled( $disabled ); ?>
 	/>

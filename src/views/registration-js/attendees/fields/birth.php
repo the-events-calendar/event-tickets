@@ -6,21 +6,23 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/birth.php
  *
+ * @since  TBD
  * @version TBD
  *
  * @see     Tribe__Tickets_Plus__Meta__Field__Birth
  *
  */
-$required     = isset( $field->required ) && 'on' === $field->required ? true : false;
-$option_id    = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id}}";
-$field_object = $field;
-$field        = (array) $field;
-$field_name   = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $field['slug'] ) . ']';
-$disabled     = false;
-$classes      = [ 'tribe-common-b1', 'tribe-field', 'tribe-tickets__item__attendee__field__birth' ];
+$required   = isset( $field->required ) && 'on' === $field->required ? true : false;
+$option_id  = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id}}";
+$field      = (array) $field;
+$field_name = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $field['slug'] ) . ']';
+$disabled   = false;
+$classes    = [ 'tribe-common-b1', 'tribe-field', 'tribe-tickets__item__attendee__field__birth' ];
+
 if ( $required ) {
 	$classes[] = 'tribe-tickets-meta-required';
 }
+
 $days   = Tribe__Tickets_Plus__Meta__Field__Birth::get_days();
 $months = Tribe__Tickets_Plus__Meta__Field__Birth::get_months();
 $years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
@@ -38,10 +40,13 @@ $years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
 				id="<?php echo esc_attr( $field_object->month_id ); ?>"
 				name="<?php echo esc_attr( $field_object->month_id ); ?>"
 		>
-			<option disabled selected value=""><?php esc_html_e( 'Month', 'event-tickets' ); ?></option>
-			<?php foreach ( $months as $option ) : ?>
-				<option value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( $option ); ?></option>
-			<?php endforeach; ?>
+			<option value="" disabled selected><?php esc_html_e( "Month", 'tribe-event-plus' ); ?></option>
+			<?php
+			foreach ( $months as $month ) {
+				$month = esc_attr( $month );
+				echo "<option>$month</option>";
+			}
+			?>
 		</select>
 	</div>
 	<div class="tribe__tickets__item__attendee__field__birth tribe__tickets__item__attendee__field__birth__day">
@@ -51,10 +56,13 @@ $years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
 				id="<?php echo esc_attr( $field_object->day_id ); ?>"
 				name="<?php echo esc_attr( $field_object->day_id ); ?>"
 		>
-			<option disabled selected value=""><?php esc_html_e( 'Day', 'event-tickets' ); ?></option>
-			<?php foreach ( $days as $option ) : ?>
-				<option value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( $option ); ?></option>
-			<?php endforeach; ?>
+			<option value="" disabled selected><?php esc_html_e( "Day", 'tribe-event-plus' ); ?></option>
+			<?php
+			foreach ( $days as $day ) {
+				$day = esc_attr( $day );
+				echo "<option>$day</option>";
+			}
+			?>
 		</select>
 	</div>
 	<div class="tribe__tickets__item__attendee__field__birth tribe__tickets__item__attendee__field__birth__year">
@@ -64,10 +72,13 @@ $years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
 				id="<?php echo esc_attr( $field_object->year_id ); ?>"
 				name="<?php echo esc_attr( $field_object->year_id ); ?>"
 		>
-			<option disabled selected value=""><?php esc_html_e( 'Year', 'event-tickets' ); ?></option>
-			<?php foreach ( $years as $option ) : ?>
-				<option value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( $option ); ?></option>
-			<?php endforeach; ?>
+			<option value="" disabled selected><?php esc_html_e( "Year", 'tribe-event-plus' ); ?></option>
+			<?php
+			foreach ( $years as $year ) {
+				$year = esc_attr( $year );
+				echo "<option>$year</option>";
+			}
+			?>
 		</select>
 	</div>
 </div>

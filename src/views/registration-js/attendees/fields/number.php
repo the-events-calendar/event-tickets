@@ -6,11 +6,13 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/url.php
  *
+ * @since  TBD
  * @version TBD
  *
  * @see Tribe__Tickets_Plus__Meta__Field__Number
  *
  */
+
 $required   = isset( $field->required ) && 'on' === $field->required ? true : false;
 $option_id  = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id}}";
 $field      = (array) $field;
