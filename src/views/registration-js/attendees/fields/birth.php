@@ -24,72 +24,73 @@ if ( $required ) {
 	$classes[] = 'tribe-tickets-meta-required';
 }
 ?>
-<div <?php tribe_classes( $classes ); ?> >
-	<label
-			class="tribe-common-b2--min-medium tribe-tickets-meta-label"
-			for="<?php echo esc_attr( $option_id ); ?>"
-	><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
+<div class="tribe-horizontal-date-picker-container">
+	<div <?php tribe_classes( $classes ); ?> >
+		<label
+				class="tribe-common-b2--min-medium tribe-tickets-meta-label"
+				for="<?php echo esc_attr( $birth_field->month_id ); ?>"
+		><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 
-	<div class="tribe_day_month_year_datepicker tribe__tickets__item__attendee__field__birth__month">
-		<select
+		<div class="tribe_day_month_year_datepicker tribe__tickets__item__attendee__field__birth__month">
+			<select
+					<?php tribe_disabled( $disabled ); ?>
+					<?php tribe_required( $required ); ?>
+					class="tribe-horizontal-date-picker-month"
+					onchange="tribe_events_horizontal_date_picker_update_value(this)"
+			>
+				<option value="" disabled selected><?php esc_html_e( "Month", 'tribe-event-plus' ); ?></option>
+				<?php
+				foreach ( $birth_field->get_months() as $month_number => $month_name ) {
+					$month_number = esc_attr( $month_number );
+					$month_name   = esc_attr( $month_name );
+
+					echo "<option value='$month_number'>$month_name</option>";
+				}
+				?>
+			</select>
+		</div>
+		<div class="tribe_day_month_year_datepicker tribe__tickets__item__attendee__field__birth__day">
+			<select
+					<?php tribe_disabled( $disabled ); ?>
+					<?php tribe_required( $required ); ?>
+					class="tribe-horizontal-date-picker-day"
+					onchange="tribe_events_horizontal_date_picker_update_value(this)"
+			>
+				<option value="" disabled selected><?php esc_html_e( "Day", 'tribe-event-plus' ); ?></option>
+				<?php
+				foreach ( $birth_field->get_days() as $day ) {
+					$day = esc_attr( $day );
+
+					echo "<option>$day</option>";
+				}
+				?>
+			</select>
+		</div>
+		<div class="tribe_day_month_year_datepicker tribe__tickets__item__attendee__field__birth__year">
+			<select
+					<?php tribe_disabled( $disabled ); ?>
+					<?php tribe_required( $required ); ?>
+					class="tribe-horizontal-date-picker-year"
+					onchange="tribe_events_horizontal_date_picker_update_value(this)"
+			>
+				<option value="" disabled selected><?php esc_html_e( "Year", 'tribe-event-plus' ); ?></option>
+				<?php
+				foreach ( $birth_field->get_years() as $year ) {
+					$year = esc_attr( $year );
+					echo "<option>$year</option>";
+				}
+				?>
+			</select>
+		</div>
+	</div>
+	<div>
+		<input
+				type="text"
+				class="tribe-common-form-control-birth__input ticket-meta tribe-horizontal-date-picker-value"
+				name="<?php echo esc_attr( $field_name ); ?>"
+				value="<?php echo esc_attr( $value ); ?>"
 				<?php tribe_disabled( $disabled ); ?>
 				<?php tribe_required( $required ); ?>
-				id="<?php echo esc_attr( $birth_field->month_id ); ?>"
-				name="<?php echo esc_attr( $birth_field->month_id ); ?>"
-		>
-			<option value="" disabled selected><?php esc_html_e( "Month", 'tribe-event-plus' ); ?></option>
-			<?php
-			foreach ( $birth_field->get_months() as $month_number => $month_name ) {
-				$month_number = esc_attr( $month_number );
-				$month_name   = esc_attr( $month_name );
-
-				echo "<option value='$month_number'>$month_name</option>";
-			}
-			?>
-		</select>
+		/>
 	</div>
-	<div class="tribe_day_month_year_datepicker tribe__tickets__item__attendee__field__birth__day">
-		<select
-				<?php tribe_disabled( $disabled ); ?>
-				<?php tribe_required( $required ); ?>
-				id="<?php echo esc_attr( $birth_field->day_id ); ?>"
-				name="<?php echo esc_attr( $birth_field->day_id ); ?>"
-		>
-			<option value="" disabled selected><?php esc_html_e( "Day", 'tribe-event-plus' ); ?></option>
-			<?php
-			foreach ( $birth_field->get_days() as $day ) {
-				$day = esc_attr( $day );
-
-				echo "<option>$day</option>";
-			}
-			?>
-		</select>
-	</div>
-	<div class="tribe_day_month_year_datepicker tribe__tickets__item__attendee__field__birth__year">
-		<select
-				<?php tribe_disabled( $disabled ); ?>
-				<?php tribe_required( $required ); ?>
-				id="<?php echo esc_attr( $birth_field->year_id ); ?>"
-				name="<?php echo esc_attr( $birth_field->year_id ); ?>"
-		>
-			<option value="" disabled selected><?php esc_html_e( "Year", 'tribe-event-plus' ); ?></option>
-			<?php
-			foreach ( $birth_field->get_years() as $year ) {
-				$year = esc_attr( $year );
-				echo "<option>$year</option>";
-			}
-			?>
-		</select>
-	</div>
-</div>
-<div>
-	<input
-			type="text"
-			id="<?php echo esc_attr( $birth_field->real_value_id ); ?>"
-			class="tribe-common-form-control-birth__input ticket-meta"
-			name="<?php echo esc_attr( $field_name ); ?>"
-			value="<?php echo esc_attr( $value ); ?>"
-			<?php tribe_disabled( $disabled ); ?>
-			<?php tribe_required( $required ); ?>
-	/>
 </div>
