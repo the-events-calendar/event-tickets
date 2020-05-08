@@ -256,7 +256,7 @@ window.tribe.tickets.registration = {};
 				}
 			}
 
-			window.dispatchEvent( new Event('tribe_et_after_append_ar_fields_ticket') );
+			window.dispatchEvent( new Event( 'tribe_et_after_append_ar_fields_ticket' ) );
 		} );
 
 		obj.maybeShowNonMetaNotice( nonMetaCount, metaCount );
