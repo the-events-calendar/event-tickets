@@ -6,18 +6,19 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/birth.php
  *
- * @since  TBD
+ * @since   TBD
  * @version TBD
  *
  * @see     Tribe__Tickets_Plus__Meta__Field__Birth
  *
  */
-$required   = isset( $field->required ) && 'on' === $field->required ? true : false;
-$option_id  = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id}}";
-$field      = (array) $field;
-$field_name = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $field['slug'] ) . ']';
-$disabled   = false;
-$classes    = [ 'tribe-common-b1', 'tribe-field', 'tribe-tickets__item__attendee__field__birth' ];
+$required     = isset( $field->required ) && 'on' === $field->required ? true : false;
+$option_id    = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id}}";
+$field_object = $field;
+$field        = (array) $field;
+$field_name   = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $field['slug'] ) . ']';
+$disabled     = false;
+$classes      = [ 'tribe-common-b1', 'tribe-field', 'tribe-tickets__item__attendee__field__birth' ];
 
 if ( $required ) {
 	$classes[] = 'tribe-tickets-meta-required';
@@ -42,9 +43,11 @@ $years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
 		>
 			<option value="" disabled selected><?php esc_html_e( "Month", 'tribe-event-plus' ); ?></option>
 			<?php
-			foreach ( $months as $month ) {
-				$month = esc_attr( $month );
-				echo "<option>$month</option>";
+			foreach ( $months as $month_number => $month_name ) {
+				$month_number = esc_attr( $month_number );
+				$month_name   = esc_attr( $month_name );
+
+				echo "<option value='$month_number'>$month_name</option>";
 			}
 			?>
 		</select>
@@ -60,6 +63,7 @@ $years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
 			<?php
 			foreach ( $days as $day ) {
 				$day = esc_attr( $day );
+
 				echo "<option>$day</option>";
 			}
 			?>
