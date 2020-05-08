@@ -8,7 +8,8 @@
  *
  * @since 4.11.0
  *
- * @version 4.11.0
+ * @since   TBD Updated phpdoc for which field class to reference.
+ * @version TBD
  *
  * @see Tribe__Tickets_Plus__Meta__Field__Radio
  *
