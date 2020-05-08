@@ -67,7 +67,7 @@ $years  = Tribe__Tickets_Plus__Meta__Field__Birth::get_years();
 				<?php tribe_required( $required ); ?>
 				id="tribe-events-birth-date-year"
 		>
-			<option value="" disabled selected><?php esc_html_e( "Year", 'tribe-event-plus' ); ?></option>
+			<option value="" disabled selected><?php esc_html_e( 'Year', 'tribe-event-plus' ); ?></option>
 			<?php
 			foreach ( $years as $year ) {
 				printf( '<option value="%1$s">%2$s</option>', esc_attr( $year ), esc_html( $year ) );
