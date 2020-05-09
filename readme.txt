@@ -117,8 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.12.1] TBD =
+= [4.12.1] 2020-05-19 =
 
+* Feature - Extend `tribe_events()` with new post filtering options: `has_attendees`, `attendee`, `attendee__not_in`, and `attendee_user`. [ET-618]
+* Feature - Add new `tribe( 'tickets.post-repository' )` object that works similar to `tribe_events()` but supports any post type. [ET-618]
 * Fix - Ensure defaults are passed into `Tribe__Tickets__Editor__Template->attr()` correctly instead of defaulting to an empty array. [TEC-2964]
 * Fix - Prevent problems with `func_get_args()` usage around template inclusion for legacy template files [TEC-3104]
 
