@@ -36,7 +36,7 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 		$this->decorated->add_schema_entry( 'has_rsvp', [ $this, 'filter_by_has_rsvp' ] );
 
 		// These filter methods are added by the Post_Attendees trait.
-		$this->decorated->add_schema_entry( 'has_attendee', [ $this, 'filter_by_has_attendees' ] );
+		$this->decorated->add_schema_entry( 'has_attendees', [ $this, 'filter_by_has_attendees' ] );
 		$this->decorated->add_schema_entry( 'attendee', [ $this, 'filter_by_attendee' ] );
 		$this->decorated->add_schema_entry( 'attendee__not_in', [ $this, 'filter_by_attendee_not_in' ] );
 		$this->decorated->add_schema_entry( 'attendee_user', [ $this, 'filter_by_attendee_user' ] );
