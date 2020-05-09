@@ -87,22 +87,23 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	 * @return array
 	 */
 	protected function get_upcoming_attendances() {
-		$events_orm = tribe_events();
+		/** @var \Tribe\Tickets\Repositories\Post_Repository $post_orm */
+		$post_orm = tribe( 'tickets.post-repository' );
 
 		// Limit to a specific number of events.
 		if ( 0 < $this->params['limit'] ) {
-			$events_orm->per_page( $this->params['limit'] );
+			$post_orm->per_page( $this->params['limit'] );
 		}
 
 		// Order by event date.
-		$events_orm->order_by( 'event_date' );
+		$post_orm->order_by( 'event_date', 'ASC' );
 
 		// Events that have not yet ended.
-		$events_orm->by( 'ends_on_or_before', current_time( 'mysql' ) );
+		$post_orm->by( 'ends_after', current_time( 'mysql' ) );
 
 		// Events with attendees by the specific user ID.
-		$events_orm->by( 'attendee_user', $this->params['user'] );
+		$post_orm->by( 'attendee_user', $this->params['user'] );
 
-		return $events_orm->get_ids();
+		return $post_orm->get_ids();
 	}
 }
