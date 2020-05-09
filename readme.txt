@@ -123,6 +123,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Attendee Registration page briefly showing notice while tickets form is loading. [ETP-241]
 * Fix - Ensure defaults are passed into `Tribe__Tickets__Editor__Template->attr()` correctly instead of defaulting to an empty array. [TEC-2964]
 * Fix - Prevent problems with `func_get_args()` usage around template inclusion for legacy template files. [TEC-3104]
+* Fix - Use unique HTML id for checkboxes and radio on the Attendee Registration fields to prevent conflicts. [ETP-306]
 * Tweak - Output the internal Post ID to the Attendees Report's Event Title, each Ticket Name, and each Attendee. [ET-786]
 
 = [4.12.0] 2020-04-23 =
