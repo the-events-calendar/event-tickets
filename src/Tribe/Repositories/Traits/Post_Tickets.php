@@ -1,4 +1,11 @@
 <?php
+/**
+ * Post tickets trait that contains all of the ORM filters that can be used for any repository.
+ *
+ * @since TBD
+ *
+ * @package Tribe\Tickets\Repositories\Traits
+ */
 
 namespace Tribe\Tickets\Repositories\Traits;
 
