@@ -228,7 +228,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$icon = sprintf( "<span class='warning'><img src='%s'/></span> ", esc_url( Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/images/warning.png' ) );
 		}
 
-		// Look for an order_status_label, fall back on the actual order_status string @todo remove fallback in 3.4.3
 		if ( empty( $item['order_status'] ) ) {
 			$item['order_status'] = '';
 		}
@@ -239,8 +238,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		if ( ! empty( $order_id_url ) && ! empty( $item[ 'order_id' ] ) ) {
 			$label = '<a href="' . esc_url( $order_id_url ) . '">#' . esc_html( $item[ 'order_id' ] ) . ' &ndash; ' . $label . '</a>';
-		} elseif ( ! empty( $item[ 'order_id' ] ) ) {
-			$label = '#' . esc_html( $item[ 'order_id' ] ) . ' &ndash; ' . $label;
 		}
 
 		/**
@@ -273,31 +270,41 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handler for the ticket column
+	 * Handler for the ticket column.
 	 *
-	 * @since 4.1
+	 * @since  4.1
+	 * @since  TBD Include the raw attendee Post ID in the ticket's ID.
 	 *
-	 * @param array $item Item whose ticket data should be output
+	 * @param array $item Item whose ticket data should be output.
 	 *
 	 * @return string
 	 */
-	public function column_ticket( $item ) {
+	public function column_ticket( array $item ) {
 		ob_start();
 
-		$attendee_id = trim( esc_html( $this->get_attendee_id( $item ) ) );
+		$attendee_id = trim( $this->get_attendee_id( $item ) );
+
+		if (
+			! empty( $attendee_id )
+			&& ! empty( $item['attendee_id'] )
+		) {
+			$attendee_id .= sprintf( ' [#%d]', $item['attendee_id'] );
+		}
+
+		$attendee_id = esc_html( $attendee_id );
 
 		if ( ! empty( $attendee_id ) ) {
 			$attendee_id .= ' &ndash; ';
 		}
 
 		?>
-			<div class="event-tickets-ticket-name">
-				<?php echo $attendee_id; ?>
-				<?php echo esc_html( $item['ticket'] ); ?>
-			</div>
+		<div class="event-tickets-ticket-name">
+			<?php echo $attendee_id; ?>
+			<?php echo esc_html( $item['ticket'] ); ?>
+		</div>
 
-			<?php echo $this->get_row_actions( $item ); ?>
 		<?php
+		echo $this->get_row_actions( $item );
 
 		/**
 		 * Hook to allow for the insertion of additional content in the ticket table cell
@@ -319,9 +326,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	protected function get_row_actions( array $item ) {
+		/** @var Tribe__Tickets__Attendees $attendees */
+		$attendees = tribe( 'tickets.attendees' );
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
-			return false;
+		if ( ! $attendees->user_can_manage_attendees( 0, $this->event->ID ) ) {
+			return '';
 		}
 
 		/**
@@ -345,15 +354,17 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function add_default_row_actions( array $row_actions, array $item ) {
+		/** @var Tribe__Tickets__Attendees $attendees */
+		$attendees = tribe( 'tickets.attendees' );
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
-			return;
+		if ( ! $attendees->user_can_manage_attendees( 0, $this->event->ID ) ) {
+			return $row_actions;
 		}
 
 		$default_actions = [];
-		$provider = ! empty(  $item['provider'] ) ? $item['provider'] : null;
+		$provider        = ! empty( $item['provider'] ) ? $item['provider'] : null;
 
-		if ( is_object( $this->event ) && isset(  $this->event->ID ) ) {
+		if ( is_object( $this->event ) && isset( $this->event->ID ) ) {
 			$default_actions[] = sprintf(
 				'<span class="inline">
 					<a href="#" class="tickets_checkin" data-attendee-id="%1$d" data-event-id="%2$d" data-provider="%3$s">' . esc_html_x( 'Check In', 'row action', 'event-tickets' ) . '</a>

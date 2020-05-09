@@ -89,13 +89,11 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 	 * Get the attendees for the event.
 	 *
 	 * @since 4.9
+	 * @since 4.12.0 Changed to use \Tribe\Tickets\Events\Attendees_List::get_attendees_for_post().
 	 *
 	 * @param WP_Post|int $post_id Post object or ID.
 	 *
 	 * @return array
-	 *
-	 * @see \Tribe\Tickets\Events\Attendees_List::get_attendees_for_post()
-	 * @deprecated 4.12.0 You should use \Tribe\Tickets\Events\Attendees_List::get_attendees_for_post() going forward.
 	 */
 	public function get_attendees( $post_id ) {
 		/** @var \Tribe\Tickets\Events\Attendees_List $attendees_list */
