@@ -2,7 +2,7 @@
 /**
  * Post tickets trait that contains all of the ORM filters that can be used for any repository.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package Tribe\Tickets\Repositories\Traits
  */
@@ -10,6 +10,8 @@
 namespace Tribe\Tickets\Repositories\Traits;
 
 use Tribe__Repository;
+use Tribe__Repository__Usage_Error;
+use Tribe__Repository__Void_Query_Exception;
 use Tribe__Utils__Array;
 
 /**
