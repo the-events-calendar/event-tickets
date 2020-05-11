@@ -68,15 +68,5 @@ if ( empty( $tickets ) ) {
 				?>
 			<?php endwhile; ?>
 		</script>
-		<?php
-			foreach ( $fields as $field ) {
-				/** @see \Tribe__Tickets_Plus__Meta__Field__Abstract_Field::get_escaped_inline_javascript */
-				$field_javascript = $field->get_escaped_inline_javascript();
-
-				if ( ! empty( $field_javascript ) ) {
-					echo '<script>' . $field_javascript . '</script>';
-				}
-			}
-		?>
 <?php
 endforeach;
