@@ -10,7 +10,6 @@
  * @version TBD
  *
  * @see Tribe__Tickets_Plus__Meta__Field__Email
- *
  */
 
 $required   = isset( $field->required ) && 'on' === $field->required ? true : false;
@@ -18,10 +17,12 @@ $option_id  = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id
 $field      = (array) $field;
 $field_name = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $field['slug'] ) . ']';
 $disabled   = false;
-$classes    = [ 'tribe-common-b1', 'tribe-field', 'tribe-tickets__item__attendee__field__email' ];
-if ( $required ) {
-	$classes[] = 'tribe-tickets-meta-required';
-}
+$classes    = [
+		'tribe-common-b1',
+		'tribe-field',
+		'tribe-tickets__item__attendee__field__email',
+		'tribe-tickets-meta-required' => $required
+];
 ?>
 <div <?php tribe_classes( $classes ); ?> >
 	<label
