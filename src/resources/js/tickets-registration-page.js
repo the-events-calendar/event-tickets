@@ -47,6 +47,14 @@ window.tribe.tickets.registration = {};
 		miniCart: '#tribe-tickets__mini-cart',
 		status: '.tribe-tickets__registration__status',
 		toggler: '.tribe-tickets__registration__toggle__handler',
+		horizontal_datepicker: {
+			container: '.tribe_horizontal_datepicker__container',
+			select: '.tribe_horizontal_datepicker__container select',
+			day: '.tribe_horizontal_datepicker__day',
+			month: '.tribe_horizontal_datepicker__month',
+			year: '.tribe_horizontal_datepicker__year',
+			value: '.tribe_horizontal_datepicker__value',
+		},
 	};
 
 	const $tribeRegistration = $( obj.selector.container );
@@ -541,11 +549,11 @@ window.tribe.tickets.registration = {};
 		}
 
 		// Validation for Tribe Horizontal Date Picker
-		if ( $input.hasClass( 'tribe-horizontal-date-picker-value' ) ) {
-			const wrapper = $input.closest( '.tribe-horizontal-date-picker-container' );
-			const day = wrapper.find('.tribe-horizontal-date-picker-day');
-			const month = wrapper.find('.tribe-horizontal-date-picker-month');
-			const year = wrapper.find('.tribe-horizontal-date-picker-year');
+		if ( $input.hasClass( obj.selector.horizontal_datepicker.value ) ) {
+			const wrapper = $input.closest( obj.selector.horizontal_datepicker.container );
+			const day = wrapper.find( obj.selector.horizontal_datepicker.day );
+			const month = wrapper.find( obj.selector.horizontal_datepicker.month );
+			const year = wrapper.find( obj.selector.horizontal_datepicker.year );
 
 			[ day, month, year ].forEach( function( el ) {
 				// Check if given value is a positive number, even if it's a string
