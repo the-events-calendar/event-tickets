@@ -53,6 +53,7 @@ if ( empty( $counters ) ) {
 
 $link = $view->get_tickets_page_url( $event_id, $is_event_page );
 
+// Translators: 1: number of RSVPs and/or Tickets with accompanying ticket type text, 2: post type label
 $message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' ), implode( _x( ' and ', 'separator if there are both RSVPs and Tickets', 'event-tickets' ), $counters ), $post_type_singular ) );
 ?>
 
