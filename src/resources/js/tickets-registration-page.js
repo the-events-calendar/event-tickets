@@ -547,7 +547,7 @@ window.tribe.tickets.registration = {};
 			const month = wrapper.find('.tribe-horizontal-date-picker-month');
 			const year = wrapper.find('.tribe-horizontal-date-picker-year');
 
-			[ day, month, year ].forEach( el => {
+			[ day, month, year ].forEach( function( el ) {
 				// Check if given value is a positive number, even if it's a string
 				if ( isNaN( parseInt( el.val() ) ) || parseInt( el.val() ) <= 0 ) {
 					el.addClass( 'ticket-meta__has-error' );
