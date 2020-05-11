@@ -40,7 +40,7 @@ $classes     = [
 			>
 				<option value="" disabled selected><?php esc_html_e( 'Month', 'tribe-event-plus' ); ?></option>
 				<?php foreach ( $birth_field->get_months() as $month_number => $month_name ): ?>
-					<option value="<?php esc_attr( $month_number ); ?>"><?php echo esc_attr( $month_name ); ?></option>
+					<option value="<?php echo esc_attr( $month_number ); ?>"><?php echo esc_attr( $month_name ); ?></option>
 				<?php endforeach; ?>
 			</select>
 		</div>
