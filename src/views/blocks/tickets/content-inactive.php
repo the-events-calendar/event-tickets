@@ -15,8 +15,7 @@
  *
  */
 
-$message = $this->get( 'is_sale_past' ) ? __( 'Tickets are no longer available', 'event-tickets' ) : __( 'Tickets are not yet available', 'event-tickets' );
-?>
+$message = $this->get( 'is_sale_past' ) ? sprintf( __( '%s are no longer available', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets' ) ) : sprintf( __( '%s are not yet available', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets' ) );
 <div
 	class="tribe-tickets__item__content tribe-tickets__item__content--inactive"
 >
