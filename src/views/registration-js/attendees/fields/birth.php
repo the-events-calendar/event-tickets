@@ -32,6 +32,7 @@ $classes     = [
 				for="<?php echo esc_attr( $birth_field->month_id ); ?>"
 		><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 
+		<!-- Month -->
 		<div class="tribe_horizontal_datepicker">
 			<select
 					<?php tribe_disabled( $disabled ); ?>
@@ -44,6 +45,7 @@ $classes     = [
 				<?php endforeach; ?>
 			</select>
 		</div>
+		<!-- Day -->
 		<div class="tribe_horizontal_datepicker">
 			<select
 					<?php tribe_disabled( $disabled ); ?>
@@ -56,6 +58,7 @@ $classes     = [
 				<?php endforeach; ?>
 			</select>
 		</div>
+		<!-- Year -->
 		<div class="tribe_horizontal_datepicker">
 			<select
 					<?php tribe_disabled( $disabled ); ?>
