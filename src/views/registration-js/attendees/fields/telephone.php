@@ -6,8 +6,7 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/telephone.php
  *
- * @since   TBD
- * @version TBD
+ * @version TBD Updated phpdoc for which field class to reference.
  *
  * @see Tribe__Tickets_Plus__Meta__Field__Telephone
  */
