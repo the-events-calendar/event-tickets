@@ -15,7 +15,7 @@
  * @since 4.10.8 Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated
  *               third parameter of `get_description_rsvp_ticket()` and to simplify the template's logic.
  * @since 4.10.9 Uses new functions to get singular and plural texts.
- * @since TBD Account for empty post type object, such as if post type got disabled.
+ * @since TBD Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
@@ -42,15 +42,19 @@ $rsvp_count         = $view->count_rsvp_attendees( $event_id, $user_id );
 $ticket_count       = $view->count_ticket_attendees( $event_id, $user_id );
 
 if ( 1 === $rsvp_count ) {
-	$counters[] = sprintf( _x( '%1d %2s', 'RSVP count singular', 'event-tickets' ), $rsvp_count, tribe_get_rsvp_label_singular( basename( __FILE__ ) ) );
+	// Translators: 1: the number one, 2: singular RSVP label.
+	$counters[] = sprintf( _x( '%1$d %2$s', 'RSVP count singular', 'event-tickets' ), $rsvp_count, tribe_get_rsvp_label_singular( basename( __FILE__ ) ) );
 } elseif ( 1 < $rsvp_count ) {
-	$counters[] = sprintf( _x( '%1d %2s', 'RSVP count plural', 'event-tickets' ), $rsvp_count, tribe_get_rsvp_label_plural( basename( __FILE__ ) ) );
+	// Translators: 1: the plural number of RSVPs, 2: plural RSVP label.
+	$counters[] = sprintf( _x( '%1$d %2$s', 'RSVP count plural', 'event-tickets' ), $rsvp_count, tribe_get_rsvp_label_plural( basename( __FILE__ ) ) );
 }
 
 if ( 1 === $ticket_count ) {
-	$counters[] = sprintf( _x( '%1d %2s', 'Ticket count singular', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_singular( basename( __FILE__ ) ) );
+	// Translators: 1: the number one, 2: singular Ticket label.
+	$counters[] = sprintf( _x( '%1$d %2$s', 'Ticket count singular', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_singular( basename( __FILE__ ) ) );
 } elseif ( 1 < $ticket_count ) {
-	$counters[] = sprintf( _x( '%1d %2s', 'Ticket count plural', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_plural( basename( __FILE__ ) ) );
+	// Translators: 1: the plural number of Tickets, 2: plural Ticket label.
+	$counters[] = sprintf( _x( '%1$d %2$s', 'Ticket count plural', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_plural( basename( __FILE__ ) ) );
 }
 
 if ( empty( $counters ) ) {

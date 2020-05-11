@@ -77,7 +77,7 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 	<p class="tribe-back">
 		<a href="<?php echo esc_url( get_permalink( $event_id ) ); ?>">
 			<?php
-			// Translators: post type label
+			// Translators: post type label.
 			printf( '&laquo; ' . esc_html__( 'View %s', 'event-tickets' ), $post_type_singular );
 			?>
 		</a>
