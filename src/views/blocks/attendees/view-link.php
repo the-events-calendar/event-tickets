@@ -15,10 +15,11 @@
  * @since 4.10.8 Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated
  *               third parameter of `get_description_rsvp_ticket()` and to simplify the template's logic.
  * @since 4.10.9 Uses new functions to get singular and plural texts.
+ * @since TBD Account for empty post type object, such as if post type got disabled.
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @version 4.10.9
+ * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
@@ -35,10 +36,10 @@ $user_id   = get_current_user_id();
 
 $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type;
 
-$events_label_singular = $post_type->labels->singular_name;
-$counters              = [];
-$rsvp_count            = $view->count_rsvp_attendees( $event_id, $user_id );
-$ticket_count          = $view->count_ticket_attendees( $event_id, $user_id );
+$post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post', 'fallback post type singular name', 'event-tickets' );
+$counters           = [];
+$rsvp_count         = $view->count_rsvp_attendees( $event_id, $user_id );
+$ticket_count       = $view->count_ticket_attendees( $event_id, $user_id );
 
 if ( 1 === $rsvp_count ) {
 	$counters[] = sprintf( _x( '%1d %2s', 'RSVP count singular', 'event-tickets' ), $rsvp_count, tribe_get_rsvp_label_singular( basename( __FILE__ ) ) );
@@ -58,7 +59,7 @@ if ( empty( $counters ) ) {
 
 $link = $view->get_tickets_page_url( $event_id, $is_event_page );
 
-$message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' ), implode( _x( ' and ', 'separator if there are both RSVPs and Tickets', 'event-tickets' ), $counters ), $events_label_singular ) );
+$message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' ), implode( _x( ' and ', 'separator if there are both RSVPs and Tickets', 'event-tickets' ), $counters ), $post_type_singular ) );
 ?>
 
 <div class="tribe-link-view-attendee">
