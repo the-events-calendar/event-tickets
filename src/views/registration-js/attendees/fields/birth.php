@@ -37,7 +37,6 @@ $classes     = [
 					<?php tribe_disabled( $disabled ); ?>
 					<?php tribe_required( $required ); ?>
 					class="tribe-horizontal-date-picker-month"
-					onchange="tribe_events_horizontal_date_picker_update_value(this)"
 			>
 				<option value="" disabled selected><?php esc_html_e( 'Month', 'tribe-event-plus' ); ?></option>
 				<?php foreach ( $birth_field->get_months() as $month_number => $month_name ): ?>
@@ -50,7 +49,6 @@ $classes     = [
 					<?php tribe_disabled( $disabled ); ?>
 					<?php tribe_required( $required ); ?>
 					class="tribe-horizontal-date-picker-day"
-					onchange="tribe_events_horizontal_date_picker_update_value(this)"
 			>
 				<option value="" disabled selected><?php esc_html_e( 'Day', 'tribe-event-plus' ); ?></option>
 				<?php foreach ( $birth_field->get_days() as $birth_day ): ?>
@@ -63,7 +61,6 @@ $classes     = [
 					<?php tribe_disabled( $disabled ); ?>
 					<?php tribe_required( $required ); ?>
 					class="tribe-horizontal-date-picker-year"
-					onchange="tribe_events_horizontal_date_picker_update_value(this)"
 			>
 				<option value="" disabled selected><?php esc_html_e( 'Year', 'tribe-event-plus' ); ?></option>
 				<?php foreach ( $birth_field->get_years() as $birth_year ): ?>
