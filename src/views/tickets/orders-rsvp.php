@@ -35,6 +35,7 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 	<h2><?php
 		echo esc_html(
 			sprintf(
+				// Translators: 1: plural RSVP label, 2: post type label.
 				__( 'My %1$s for this %2$s', 'event-tickets' ),
 				tribe_get_rsvp_label_plural( basename( __FILE__ ) ),
 				$post_type_singular
@@ -49,12 +50,14 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 			<p>
 				<?php
 				printf(
+					// Translators: 1: attendee name, 2: linked attendee email.
 					esc_html__( 'Reserved by %1$s (%2$s)', 'event-tickets' ),
 					esc_html( $first_attendee['purchaser_name'] ),
 					'<a href="' . esc_url( 'mailto:' . $first_attendee['purchaser_email'] ) .'">' . esc_html( $first_attendee['purchaser_email'] ) . '</a>'
 				);
 
 				printf(
+					// Translators: %s: date of RSVP.
 					esc_html__( ' on %s', 'event-tickets' ),
 					date_i18n( Tribe__Date_Utils::DATEONLYFORMAT, strtotime( esc_attr( $first_attendee['purchase_time'] ) ) )
 				);
