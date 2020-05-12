@@ -27,16 +27,16 @@ $classes     = [
 <div class="tribe_horizontal_datepicker__container">
 	<div <?php tribe_classes( $classes ); ?> >
 		<label
-				class="tribe-common-b2--min-medium tribe-tickets-meta-label"
-				for="<?php echo esc_attr( $birth_field->month_id ); ?>"
+			class="tribe-common-b2--min-medium tribe-tickets-meta-label"
+			for="<?php echo esc_attr( $birth_field->month_id ); ?>"
 		><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 
 		<!-- Month -->
 		<div class="tribe_horizontal_datepicker">
 			<select
-					<?php tribe_disabled( $disabled ); ?>
-					<?php tribe_required( $required ); ?>
-					class="tribe_horizontal_datepicker__month"
+				<?php tribe_disabled( $disabled ); ?>
+				<?php tribe_required( $required ); ?>
+				class="tribe_horizontal_datepicker__month"
 			>
 				<option value="" disabled selected><?php esc_html_e( 'Month', 'tribe-event-plus' ); ?></option>
 				<?php foreach ( $birth_field->get_months() as $month_number => $month_name ) : ?>
@@ -47,9 +47,9 @@ $classes     = [
 		<!-- Day -->
 		<div class="tribe_horizontal_datepicker">
 			<select
-					<?php tribe_disabled( $disabled ); ?>
-					<?php tribe_required( $required ); ?>
-					class="tribe_horizontal_datepicker__day"
+				<?php tribe_disabled( $disabled ); ?>
+				<?php tribe_required( $required ); ?>
+				class="tribe_horizontal_datepicker__day"
 			>
 				<option value="" disabled selected><?php esc_html_e( 'Day', 'tribe-event-plus' ); ?></option>
 				<?php foreach ( $birth_field->get_days() as $birth_day ) : ?>
@@ -60,9 +60,9 @@ $classes     = [
 		<!-- Year -->
 		<div class="tribe_horizontal_datepicker">
 			<select
-					<?php tribe_disabled( $disabled ); ?>
-					<?php tribe_required( $required ); ?>
-					class="tribe_horizontal_datepicker__year"
+				<?php tribe_disabled( $disabled ); ?>
+				<?php tribe_required( $required ); ?>
+				class="tribe_horizontal_datepicker__year"
 			>
 				<option value="" disabled selected><?php esc_html_e( 'Year', 'tribe-event-plus' ); ?></option>
 				<?php foreach ( $birth_field->get_years() as $birth_year ) : ?>
@@ -73,12 +73,12 @@ $classes     = [
 	</div>
 	<div>
 		<input
-				type="hidden"
-				class="ticket-meta tribe_horizontal_datepicker__value"
-				name="<?php echo esc_attr( $field_name ); ?>"
-				value="<?php echo esc_attr( $value ); ?>"
-				<?php tribe_disabled( $disabled ); ?>
-				<?php tribe_required( $required ); ?>
+			type="hidden"
+			class="ticket-meta tribe_horizontal_datepicker__value"
+			name="<?php echo esc_attr( $field_name ); ?>"
+			value="<?php echo esc_attr( $value ); ?>"
+			<?php tribe_disabled( $disabled ); ?>
+			<?php tribe_required( $required ); ?>
 		/>
 	</div>
 </div>
