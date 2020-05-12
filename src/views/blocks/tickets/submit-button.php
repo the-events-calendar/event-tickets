@@ -53,5 +53,5 @@ $button_classes = apply_filters(
 	<?php endif; ?>
 	<?php tribe_disabled( true ); ?>
 >
-	<?php echo esc_html( sprintf( _x( 'Get %s', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets') ) ); ?>
+	<?php echo esc_html( sprintf( _x( 'Get %s', 'Add tickets to cart.', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets') ) ); ?>
 </button>
