@@ -47,6 +47,14 @@ window.tribe.tickets.registration = {};
 		miniCart: '#tribe-tickets__mini-cart',
 		status: '.tribe-tickets__registration__status',
 		toggler: '.tribe-tickets__registration__toggle__handler',
+		horizontal_datepicker: {
+			container: '.tribe_horizontal_datepicker__container',
+			select: '.tribe_horizontal_datepicker__container select',
+			day: '.tribe_horizontal_datepicker__day',
+			month: '.tribe_horizontal_datepicker__month',
+			year: '.tribe_horizontal_datepicker__year',
+			value: '.tribe_horizontal_datepicker__value',
+		},
 	};
 
 	const $tribeRegistration = $( obj.selector.container );
@@ -214,6 +222,8 @@ window.tribe.tickets.registration = {};
 				if ( data.meta ) {
 					obj.appendARFields( data );
 					obj.prefillMetaForm( data );
+
+					window.dispatchEvent( new Event( 'tribe_et_after_form_prefills' ) );
 				}
 			},
 			complete: function() {
@@ -536,6 +546,25 @@ window.tribe.tickets.registration = {};
 			} else {
 				isValidfield = false;
 			}
+		}
+
+		// Validation for Tribe Horizontal Date Picker
+		if ( $input.hasClass( obj.selector.horizontal_datepicker.value ) ) {
+			const wrapper = $input.closest( obj.selector.horizontal_datepicker.container );
+			const day = wrapper.find( obj.selector.horizontal_datepicker.day );
+			const month = wrapper.find( obj.selector.horizontal_datepicker.month );
+			const year = wrapper.find( obj.selector.horizontal_datepicker.year );
+
+			[ day, month, year ].forEach( function( el ) {
+				// Check if given value is a positive number, even if it's a string
+				if ( isNaN( parseInt( el.val() ) ) || parseInt( el.val() ) <= 0 ) {
+					el.addClass( 'ticket-meta__has-error' );
+
+					isValidfield = false;
+				} else {
+					el.removeClass( 'ticket-meta__has-error' );
+				}
+			} );
 		}
 
 		if ( ! isValidfield ) {
