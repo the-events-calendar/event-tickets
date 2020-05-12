@@ -1,24 +1,13 @@
 <?php
+
+use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
+
 class Tribe__Tickets__Main {
 
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.11.1';
-
-	/**
-	 * Min required The Events Calendar version
-	 *
-	 * @deprecated 4.10
-	 */
-	const MIN_TEC_VERSION = '4.9.4';
-
-	/**
-	 * Min required version of Tribe Common
-	 *
-	 * @deprecated 4.10
-	 */
-	const MIN_COMMON_VERSION = '4.9.14';
+	const VERSION = '4.12.0';
 
 	/**
 	 * Used to store the version history.
@@ -53,7 +42,7 @@ class Tribe__Tickets__Main {
 	*
 	* @since 4.10
 	*/
-	protected $min_tec_version = '4.9.4';
+	protected $min_tec_version = '5.0.0';
 
 	/**
 	 * Name of the provider
@@ -319,8 +308,6 @@ class Tribe__Tickets__Main {
 	 * @since 4.10
 	 */
 	public function bootstrap() {
-		Tribe__Main::instance( $this )->load_text_domain( 'event-tickets', $this->plugin_dir . 'lang/' );
-
 		// Initialize the Service Provider for Tickets
 		tribe_register_provider( 'Tribe__Tickets__Service_Provider' );
 
@@ -360,8 +347,13 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
 
-		// Attendee Registration Page
+		tribe_singleton( 'tickets.theme-compatibility', 'Tribe__Tickets__Theme_Compatibility' );
+
+		// Attendee Registration Page.
 		tribe_register_provider( 'Tribe__Tickets__Attendee_Registration__Service_Provider' );
+
+		// Event Tickets Provider to manage Events.
+		tribe_register_provider( Events_Service_Provider::class );
 
 		// ORM
 		tribe_register_provider( 'Tribe__Tickets__Service_Providers__ORM' );
@@ -378,9 +370,7 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.privacy', 'Tribe__Tickets__Privacy', [ 'hook' ] );
 
 		// Views V2
-		if ( class_exists( 'Tribe__Events__Main' ) ) {
-			tribe_register_provider( Tribe\Events\Tickets\Views\V2\Service_Provider::class );
-		}
+		tribe_register_provider( Tribe\Tickets\Events\Views\V2\Service_Provider::class );
 	}
 
 	/**
@@ -527,6 +517,8 @@ class Tribe__Tickets__Main {
 	 * set up hooks for this class
 	 */
 	public function hooks() {
+		add_action( 'tribe_load_text_domains', [ $this, 'load_text_domain' ] );
+
 		add_action( 'init', [ $this, 'init' ] );
 
 		// connect upgrade script
@@ -582,8 +574,8 @@ class Tribe__Tickets__Main {
 		 * @see \Tribe__Tickets__Assets::add_data_strings()
 		 */
 
-		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'enqueue_scripts' ) );
-		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'admin_enqueue_scripts' ) );
+		add_action( 'tribe_plugins_loaded', tribe_callback( 'tickets.assets', 'enqueue_scripts' ) );
+		add_action( 'tribe_plugins_loaded', tribe_callback( 'tickets.assets', 'admin_enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', tribe_callback( 'tickets.assets', 'enqueue_editor_scripts' ) );
 		add_filter( 'tribe_asset_data_add_object_tribe_l10n_datatables', tribe_callback( 'tickets.assets', 'add_data_strings' ) );
 
@@ -592,6 +584,9 @@ class Tribe__Tickets__Main {
 
 		// Cart handling.
 		add_action( 'init', tribe_callback( 'tickets.commerce.cart', 'hook' ) );
+
+		// Theme Compatibility.
+		add_filter( 'body_class', tribe_callback( 'tickets.theme-compatibility', 'filter_body_class' ) );
 	}
 
 	/**
@@ -680,10 +675,24 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
+	 * Load the Event Tickets text domain after Tribe Common's.
+	 *
+	 * @since 4.12.0
+	 *
+	 * @return bool
+	 */
+	public function load_text_domain() {
+		return Tribe__Main::instance( $this )->load_text_domain( 'event-tickets', $this->plugin_dir . 'lang/' );
+	}
+
+	/**
 	 * Hooked to the init action
 	 */
 	public function init() {
-		// Provide continued support for legacy ticketing modules
+		// Start the integrations manager.
+		Tribe__Tickets__Integrations__Manager::instance()->load_integrations();
+
+		// Provide continued support for legacy ticketing modules.
 		$this->legacy_provider_support = new Tribe__Tickets__Legacy_Provider_Support;
 		$this->settings_tab();
 		$this->tickets_view();

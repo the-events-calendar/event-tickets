@@ -12,9 +12,12 @@ Makefile
 codeception.yml
 tests/*.suite.yml
 phpunit.xml
+.env.*
 *.local
 *.test
 *.testing
+codeception.tric.yml
+.env.testing.tric
 
 # Tests - local output files
 tests/_output

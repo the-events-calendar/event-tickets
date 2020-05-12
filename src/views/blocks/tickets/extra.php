@@ -12,14 +12,21 @@
  *
  * @since 4.9
  * @since 4.11.1 Changed some HTML class names.
+ * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally. Updated comments and array formatting.
+ * @since 4.11.4 Added accessibility classes to screen reader text elements.
+ * @since 4.12.0    Added implementation for the price suffix.
  *
- * @version 4.11.1
+ * @version 4.12.0
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
+$classes = [ 'tribe-tickets__item__extra' ];
 
 /** @var Tribe__Tickets__Ticket_Object $ticket */
-$ticket = $this->get( 'ticket' );
+$ticket     = $this->get( 'ticket' );
+$has_suffix = ! empty( $ticket->price_suffix );
+
+$classes['tribe-tickets__item__extra--price-suffix'] = $has_suffix;
 
 $is_mini = $this->get( 'is_mini' );
 
@@ -31,9 +38,10 @@ $context = [
 ];
 
 $modal = $this->get( 'is_modal' );
+
 $id = 'tribe__details__content--' . $ticket->ID;
 ?>
-<div class="tribe-tickets__item__extra">
+<div <?php tribe_classes( $classes ); ?>>
 	<?php $this->template( 'blocks/tickets/extra-price', $context ); ?>
 	<?php if ( true !== $is_mini ) : ?>
 		<?php $this->template( 'blocks/tickets/extra-available', $context ); ?>
@@ -41,19 +49,21 @@ $id = 'tribe__details__content--' . $ticket->ID;
 	<?php if ( true !== $modal && true !== $is_mini && $ticket->show_description() && ! empty( $ticket->description ) ) : ?>
 		<div class="tribe-tickets__item__details__summary">
 			<button
+				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--more"
 				aria-controls="<?php echo esc_attr( $id ); ?>"
 				tabindex="0"
 			>
-				<span class="screen-reader-text"><?php esc_html_e( 'Open the ticket description.', 'event-tickets' ); ?></span>
+				<span class="screen-reader-text tribe-common-a11y-visual-hide"><?php esc_html_e( 'Open the ticket description.', 'event-tickets' ); ?></span>
 				<?php echo esc_html_x( 'More', 'Opens the ticket description', 'event-tickets' ); ?>
 			</button>
 			<button
+				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--less"
 				aria-controls="<?php echo esc_attr( $id ); ?>"
 				tabindex="0"
 			>
-				<span class="screen-reader-text"><?php esc_html_e( 'Close the ticket description.', 'event-tickets' ); ?></span>
+				<span class="screen-reader-text tribe-common-a11y-visual-hide"><?php esc_html_e( 'Close the ticket description.', 'event-tickets' ); ?></span>
 				<?php echo esc_html_x( 'Less', 'Closes the ticket description', 'event-tickets' ); ?>
 			</button>
 	</div>

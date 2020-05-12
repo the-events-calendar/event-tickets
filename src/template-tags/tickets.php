@@ -157,7 +157,7 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 				continue;
 			}
 
-			$stock_level = $global_stock_mode === Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ? $ticket->global_stock_cap : $ticket->stock;
+			$stock_level = $global_stock_mode === Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ? $ticket->global_stock_cap() : $ticket->available();
 
 			// If we find an unlimited ticket, just return unlimited (-1) so we don't use -1 or an empty string as a numeric stock and try to do math with it
 			if (
@@ -181,9 +181,10 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 
 	/**
-	 * Echos Remaining Ticket Count and Purchase Buttons for an Event
+	 * Echo remaining ticket count and purchase/rsvp buttons for a post.
 	 *
 	 * @since  4.5
+	 * @since  4.11.3 Now also displays for posts having only RSVPs. Also changed from <form> to <button>.
 	 *
 	 * @param bool $echo Whether or not we should print
 	 *
@@ -192,9 +193,13 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 	function tribe_tickets_buy_button( $echo = true ) {
 		$event_id = get_the_ID();
 
-		// check if there are any tickets on sale
-		if ( ! tribe_events_has_tickets_on_sale( $event_id ) ) {
-			return null;
+		if ( empty( $event_id ) ) {
+			return '';
+		}
+
+		// Check if there are any tickets available.
+		if ( ! tribe_tickets_is_current_time_in_date_window( $event_id ) ) {
+			return '';
 		}
 
 		// get an array for ticket and rsvp counts
@@ -202,10 +207,10 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 
 		// if no rsvp or tickets return
 		if ( ! $types ) {
-			return null;
+			return '';
 		}
 
-		$html = [];
+		$html  = [];
 		$parts = [];
 
 		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out message
@@ -239,11 +244,12 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					/**
 					 * Overwrites the threshold to display "# tickets left".
 					 *
-					 * @param int   $threshold Stock threshold to trigger display of "# tickets left"
+					 * @since 4.10.1
+					 *
 					 * @param array $data      Ticket data.
 					 * @param int   $event_id  Event ID.
 					 *
-					 * @since 4.10.1
+					 * @param int   $threshold Stock threshold to trigger display of "# tickets left" text.
 					 */
 					$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $event_id ) );
 
@@ -274,27 +280,14 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					$button_anchor = '#rsvp-now';
 				} else {
 					$button_label  = _x( 'Buy Now!', 'list view buy now ticket button', 'event-tickets' );
-					$button_anchor = '#buy-tickets';
+					$button_anchor = '#tribe-tickets';
 				}
 
-				$permalink = get_the_permalink( $event_id );
-				$query_string = parse_url( $permalink, PHP_URL_QUERY );
-				$query_params = empty( $query_string ) ? [] : (array) explode( '&', $query_string );
-
-				$button = '<form method="get" action="' . esc_url( $permalink . $button_anchor ) . '">';
-
-				// Add any query attribute as a hidden input as the action of the form is GET
-				foreach ( $query_params as $param ) {
-					$parts = explode( '=', $param );
-
-					// a query string must be 2 parts only a name and a value
-					if ( is_array( $parts ) && 2 === count( $parts ) ) {
-						list( $name, $value ) = $parts;
-						$button .= '<input type="hidden" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '">';
-					}
-				}
-
-				$button	.= '<button type="submit" name="tickets_process" class="tribe-button">' . esc_html( $button_label ) . '</button></form>';
+				$button = sprintf(
+					'<div class="tribe-common"><a class="tribe-common-c-btn" href="%1$s">%2$s</a></div>',
+					esc_url( get_the_permalink( $event_id ) . $button_anchor ),
+					esc_html( $button_label )
+				);
 
 				$parts[ $type . '-button' ] = $html['button'] = $button;
 			}
@@ -403,6 +396,49 @@ if ( ! function_exists( 'tribe_events_ticket_is_on_sale' ) ) {
 	}
 }//end if
 
+if ( ! function_exists( 'tribe_tickets_is_current_time_in_date_window' ) ) {
+
+	/**
+	 * Checks if the post has tickets that are available in the current date range set on the ticket.
+	 *
+	 * @since 4.11.3
+	 *
+	 * @param int $post_id Post (or event) to check for ticket availability.
+	 *
+	 * @return bool
+	 */
+	function tribe_tickets_is_current_time_in_date_window( $post_id ) {
+		static $ticket_availability = [];
+
+		if ( isset( $ticket_availability[ $post_id ] ) ) {
+			return $ticket_availability[ $post_id ];
+		}
+
+		$has_tickets_available = false;
+		$tickets               = Tribe__Tickets__Tickets::get_all_event_tickets( $post_id );
+		$default_provider      = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+
+		/** @var Tribe__Tickets__Ticket_Object $ticket */
+		foreach ( $tickets as $ticket ) {
+			$ticket_provider = $ticket->get_provider();
+
+			// Skip tickets that are for a different provider than the event provider.
+			if (
+				$default_provider !== $ticket_provider->class_name
+				&& Tribe__Tickets__RSVP::class !== $ticket_provider->class_name
+			) {
+				continue;
+			}
+
+			$has_tickets_available = ( $has_tickets_available || tribe_events_ticket_is_on_sale( $ticket ) );
+		}
+
+		$ticket_availability[ $post_id ] = $has_tickets_available;
+
+		return $ticket_availability[ $post_id ];
+	}
+}
+
 if ( ! function_exists( 'tribe_events_has_tickets_on_sale' ) ) {
 
 	/**
@@ -437,9 +473,10 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	/**
 	 * Gets the "tickets sold" message for a given ticket
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket to analyze
-	 *
 	 * @since 4.10.9 Use customizable ticket name functions.
+	 * @since 4.11.5 Correct the sprintf placeholders that were forcing the readable amount to an integer.
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket to analyze.
 	 *
 	 * @return string
 	 */
@@ -481,19 +518,43 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			$sold_label = sprintf( _x( "%s'd going", 'RSVPs going', 'event-tickets' ), tribe_get_rsvp_label_singular() );
 		}
 
-		// Message for how many remain available
-		if ( -1 === $available ) {
-			$status_counts[] = sprintf( _x( '%1$s available', 'unlimited remaining stock message', 'event-tickets' ), tribe_tickets_get_readable_amount( $available, $global_stock ) );
+		// Message for how many remain available.
+		if ( - 1 === $available ) {
+			$status_counts[] = sprintf(
+			/* translators: %1$s: formatted quantity remaining */
+				_x(
+					'%1$s available',
+					'unlimited remaining stock message',
+					'event-tickets'
+				),
+				tribe_tickets_get_readable_amount( $available, $global_stock )
+			);
 		} elseif ( $is_global ) {
-			$status_counts[] = sprintf( _x( '%1$d available of shared capacity', 'ticket shared capacity message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
+			$status_counts[] = sprintf(
+			/* translators: %1$s: formatted quantity remaining */
+				_x(
+					'%1$s available of shared capacity',
+					'ticket shared capacity message (remaining stock)',
+					'event-tickets'
+				),
+				tribe_tickets_get_readable_amount( $available )
+			);
 		} else {
-			// It's "own stock". We use the $stock value
-			$status_counts[] = sprintf( _x( '%1$d available', 'ticket stock message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
+			// It's "own stock". We use the $stock value.
+			$status_counts[] = sprintf(
+			/* translators: %1$s: formatted quantity remaining */
+				_x(
+					'%1$s available',
+					'ticket stock message (remaining stock)',
+					'event-tickets'
+				),
+				tribe_tickets_get_readable_amount( $available )
+			);
 		}
 
 		if ( ! empty( $status_counts ) ) {
 			//remove empty values and prepare to display if values
-			$status_counts = array_diff( $status_counts, array( '' ) );
+			$status_counts = array_diff( $status_counts, [ '' ] );
 			if ( array_filter( $status_counts ) ) {
 				$status = sprintf( ' (%1$s)', implode( ', ', $status_counts ) );
 			}
@@ -881,14 +942,14 @@ if ( ! function_exists( 'tribe_tickets_update_capacity' ) ) {
 if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 
 	/**
-	 * Returns the capacity for a given Post
+	 * Returns the capacity for a given Ticket/RSVP.
 	 *
-	 * Note while we can send a post/event we do not store capacity on events
-	 * so the return values will always be null.
+	 * Note while we can send a post/event we only store capacity on tickets/rsvps
+	 * so when provided an event it will hand off to tribe_get_event_capacity().
 	 *
 	 * @since  4.6
 	 *
-	 * @param int|WP_Post $post Post we are trying to fetch capacity for.
+	 * @param int|WP_Post $post Post (ticket!) we are trying to fetch capacity for.
 	 *
 	 * @return int|null
 	 */
@@ -899,11 +960,14 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 		}
 
 		// Bail when it's not a post or ID is 0
-		if ( ! $post instanceof WP_Post || 0 === $post->ID ) {
+		if ( ! $post instanceof WP_Post || empty( $post->ID ) ) {
 			return null;
 		}
 
+		// This is really "post types that allow tickets"
 		$event_types = Tribe__Tickets__Main::instance()->post_types();
+
+		$is_event_type = in_array( $post->post_type, $event_types, true );
 
 		/**
 		 * @var Tribe__Tickets__Tickets_Handler $tickets_handler
@@ -916,19 +980,18 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 
 		// When we have a legacy ticket we migrate it
 		if (
-			! in_array( $post->post_type, $event_types )
+			! $is_event_type
 			&& $version->is_legacy( $post->ID )
 		) {
 			$legacy_capacity = $tickets_handler->filter_capacity_support( null, $post->ID, $key );
 
-			// Cast as integer as it might be returned as numeric string on some cases
+			// Cast as integer as it might be returned as numeric string in some cases.
 			return (int) $legacy_capacity;
 		}
 
 		// Defaults to the ticket ID
 		$post_id = $post->ID;
 
-		// Return Null for when we don't have the Capacity Data
 		if ( ! metadata_exists( 'post', $post->ID, $key ) ) {
 			$mode         = get_post_meta( $post->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 			$shared_modes = [
@@ -938,8 +1001,8 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 
 			// When we are in a Ticket Post Type update where we get the value from Event
 			if (
-				! in_array( $post->post_type, $event_types )
-				&& in_array( $mode, $shared_modes )
+				! $is_event_type
+				&& in_array( $mode, $shared_modes, true )
 			) {
 				$event_id = tribe_tickets_get_event_ids( $post->ID );
 
@@ -948,6 +1011,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 					$post_id = current( $event_id );
 				}
 			} else {
+				// Return Null for when we don't have the Capacity Data
 				return null;
 			}
 		}
@@ -959,6 +1023,107 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 		if ( '' === $value ) {
 			$value = -1;
 		}
+
+		return (int) $value;
+	}
+}
+
+if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
+
+	/**
+	 * Returns the capacity for a given Post/Event.
+	 *
+	 * @since  4.11.3
+	 *
+	 * @param int|WP_Post $post Post (event) we are trying to fetch capacity for.
+	 *
+	 * @return int|null
+	 */
+	function tribe_get_event_capacity( $post ) {
+		// When not dealing with a Instance of Post try to set it up.
+		if ( ! $post instanceof WP_Post ) {
+			$post = get_post( $post );
+		}
+
+		// Bail when it's not a post or ID is 0.
+		if ( ! $post instanceof WP_Post || 0 === $post->ID ) {
+			return null;
+		}
+
+		$post_id = $post->ID;
+
+		// This is really "post types that allow tickets".
+		$event_types = Tribe__Tickets__Main::instance()->post_types();
+
+		// Bail when it's not an allowed post type.
+		if ( ! in_array( $post->post_type, $event_types, true ) ) {
+			return null;
+		}
+
+		$rsvp         = Tribe__Tickets__RSVP::get_instance();
+		$rsvp_tickets = $rsvp->get_tickets_ids( $post_id );
+		$rsvp_cap     = 0;
+
+		foreach ( $rsvp_tickets as $rsvp_ticket ) {
+			$cap = tribe_tickets_get_capacity( $rsvp_ticket );
+
+			if ( -1 === $cap || '' === $cap ) {
+				$rsvp_cap = -1;
+				break;
+			}
+
+			$rsvp_cap += $cap;
+		}
+
+		$provider_id = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+
+		// Protect against ticket that exists but is of a type that is not enabled.
+		if ( ! method_exists( $provider_id, 'get_instance' ) ) {
+			return null;
+		}
+
+		$provider = call_user_func( [ $provider_id, 'get_instance' ] );
+		$tickets  = $provider->get_tickets_ids( $post_id );
+
+		// We only have RSVPs.
+		if ( empty( $tickets ) ) {
+			return (int) $rsvp_cap;
+		}
+
+		$global_stock       = new \Tribe__Tickets__Global_Stock( $post_id );
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+		$tickets_cap        = 0;
+		$added_global_stock = false;
+
+		foreach ( $tickets as $ticket ) {
+			// Handle global stock.
+			$mode = get_post_meta( $ticket, $global_stock::TICKET_STOCK_MODE, true );
+			if (
+				$global_stock::GLOBAL_STOCK_MODE !== $mode
+				&& $global_stock::CAPPED_STOCK_MODE !== $mode
+			) {
+				$cap = tribe_tickets_get_capacity( $ticket );
+
+				if ( -1 === $cap ) {
+					$tickets_cap = -1;
+					break;
+				}
+
+				$tickets_cap += $cap;
+			} elseif ( ! $added_global_stock ) {
+				$global_cap = (int) get_post_meta( $post_id, $tickets_handler->key_capacity, true );
+				$tickets_cap += $global_cap;
+				$added_global_stock = true;
+			}
+		}
+
+		// If either is unlimited, it's all unlimited.
+		if ( -1 === $tickets_cap || -1 === $rsvp_cap ) {
+			return -1;
+		}
+
+		$value = (int) $rsvp_cap + (int) $tickets_cap;
 
 		return (int) $value;
 	}

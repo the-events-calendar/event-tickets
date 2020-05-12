@@ -11,8 +11,10 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.11.0
+ * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
+ * @since 4.11.4 Added accessibility classes to screen reader text elements.
  *
+ * @version 4.11.4
  */
 
 $ticket = $this->get( 'ticket' );
@@ -28,19 +30,21 @@ $id .= '--' . $ticket->ID;
 <?php if ( true === $modal && $ticket->show_description() && ! empty( $ticket->description ) ) : ?>
 		<div class="tribe-tickets__item__details__summary">
 			<button
+				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--more"
 				aria-controls="<?php echo esc_attr( $id ); ?>"
 				tabindex="0"
 			>
-				<span class="screen-reader-text"><?php esc_html_e( 'Open the ticket description.', 'event-tickets' ); ?></span>
+				<span class="screen-reader-text tribe-common-a11y-visual-hide"><?php esc_html_e( 'Open the ticket description.', 'event-tickets' ); ?></span>
 				<?php echo esc_html_x( 'More', 'Opens the ticket description', 'event-tickets' ); ?>
 			</button>
 			<button
+				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--less"
 				aria-controls="<?php echo esc_attr( $id ); ?>"
 				tabindex="0"
 			>
-				<span class="screen-reader-text"><?php esc_html_e( 'Close the ticket description.', 'event-tickets' ); ?></span>
+				<span class="screen-reader-text tribe-common-a11y-visual-hide"><?php esc_html_e( 'Close the ticket description.', 'event-tickets' ); ?></span>
 				<?php echo esc_html_x( 'Less', 'Closes the ticket description', 'event-tickets' ); ?>
 			</button>
 	</div>

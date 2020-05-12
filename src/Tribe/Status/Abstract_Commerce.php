@@ -262,7 +262,10 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		/** @var Tooltip_View $tooltip */
 		$tooltip = tribe( 'tooltip.view' );
 
-		$message = esc_html__( 'Total Sales counts tickets from all completed orders.', 'event-tickets' );
+		$message = sprintf(
+			esc_html__( 'Total Sales counts %s from all completed orders.', 'event-tickets' ),
+			tribe_get_ticket_label_plural_lowercase( 'total_sales' )
+		);
 
 		return $tooltip->render_tooltip( $message );
 	}

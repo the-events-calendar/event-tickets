@@ -3,7 +3,7 @@ $post_id = get_the_ID();
 
 /** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 $tickets_handler = tribe( 'tickets.handler' );
-$total_tickets   = $tickets_handler->get_total_event_capacity( $post_id );
+$total_tickets   = tribe_get_event_capacity( $post_id );
 
 // only show if there are tickets
 if ( empty( $total_tickets ) ) {

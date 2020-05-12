@@ -11,8 +11,11 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.11.0
+ * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
+ * @since 4.11.3 Allow filtering of the button classes.
+ * @since 4.11.3 Added button ID for better JS targeting.
  *
- * @version 4.11.0
+ * @version 4.11.3
  *
  */
 
@@ -21,20 +24,38 @@ $title       = sprintf( _x( '%s Tickets', 'Modal title. %s: event name', 'event-
 $button_text = _x( 'Get Tickets', 'Get selected tickets.', 'event-tickets' );
 
 /**
- * Filter Modal Content
+ * Allow filtering of the button classes for the tickets block.
+ *
+ * @since 4.11.3
+ *
+ * @param array $button_name The button classes.
+ */
+$button_classes = apply_filters(
+	'tribe_tickets_ticket_block_submit_classes',
+	[
+		'tribe-common-c-btn',
+		'tribe-common-c-btn--small',
+		'tribe-tickets__buy',
+	]
+);
+
+/**
+ * Filter Modal Content.
  *
  * @since 4.11.0
  *
- * @param string $content a string of default content
- * @param Tribe__Tickets__Editor__Template $template_obj the Template objec
+ * @param string $content a string of default content.
+ * @param Tribe__Tickets__Editor__Template $template_obj the Template object.
  */
 $content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Ticket Modal</p>', $this );
 
 $args = [
 	'append_target'           => '#tribe-tickets__modal_target',
-	'button_classes'          => [ 'tribe-common-c-btn', 'tribe-common-c-btn--small', 'tribe-tickets__submit' ],
+	'button_classes'          => $button_classes,
 	'button_disabled'         => true,
+	'button_id'               => 'tribe-tickets__submit',
 	'button_name'             => $provider_id . '_get_tickets',
+	'button_id'               => 'tribe-tickets__submit',
 	'button_text'             => $button_text,
 	'button_type'             => 'submit',
 	'close_event'             => 'tribe_dialog_close_ar_modal',

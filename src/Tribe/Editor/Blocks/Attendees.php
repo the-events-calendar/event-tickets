@@ -70,7 +70,11 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 		}
 
 		$args['attributes'] = $this->attributes( $attributes );
-		$args['attendees']  = $this->get_attendees( $post_id );
+
+		/** @var \Tribe\Tickets\Events\Attendees_List $attendees_list */
+		$attendees_list = tribe( 'tickets.events.attendees-list' );
+
+		$args['attendees'] = $attendees_list->get_attendees_for_post( $post_id );
 
 		// Add the rendering attributes into global context
 		$template->add_template_globals( $args );
@@ -89,63 +93,14 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 	 * @param WP_Post|int $post_id Post object or ID.
 	 *
 	 * @return array
+	 *
+	 * @see \Tribe\Tickets\Events\Attendees_List::get_attendees_for_post()
+	 * @deprecated 4.12.0 You should use \Tribe\Tickets\Events\Attendees_List::get_attendees_for_post() going forward.
 	 */
 	public function get_attendees( $post_id ) {
-		$post   = get_post( $post_id );
-		$output = [];
+		/** @var \Tribe\Tickets\Events\Attendees_List $attendees_list */
+		$attendees_list = tribe( 'tickets.events.attendees-list' );
 
-		if ( ! $post instanceof WP_Post ) {
-			return $output;
-		}
-
-		$args = [
-			'by' => [
-				// Exclude people who have opted out or not specified optout.
-				'optout' => 'no_or_none',
-			],
-		];
-
-		/**
-		 * Allow for adjusting the limit of attendees fetched from the database for the front-end "Who's Coming?" list.
-		 *
-		 * @since 4.10.6
-		 *
-		 * @param int $limit_attendees Number of attendees to retrieve. Default is no limit -1.
-		 */
-		$limit_attendees = (int) apply_filters( 'tribe_tickets_attendees_list_limit_attendees', -1 );
-
-		if ( 0 < $limit_attendees ) {
-			$args['per_page'] = $limit_attendees;
-		}
-
-		$attendees = Tribe__Tickets__Tickets::get_event_attendees( $post->ID, $args );
-		$emails    = [];
-
-		// Bail if there are no attendees
-		if ( empty( $attendees ) || ! is_array( $attendees ) ) {
-			return $output;
-		}
-
-		$excluded_statuses = [
-			'no',
-			'failed',
-		];
-
-		foreach ( $attendees as $key => $attendee ) {
-			// Skip when we already have another email like this one.
-			if ( in_array( $attendee['purchaser_email'], $emails, true ) ) {
-				continue;
-			}
-
-			// Skip "Failed" orders and folks who've RSVPed as "Not Going".
-			if ( in_array( $attendee['order_status'], $excluded_statuses, true ) ) {
-				continue;
-			}
-
-			$emails[] = $attendee['purchaser_email'];
-			$output[] = $attendee;
-		}
-
-		return $output;
+		return $attendees_list->get_attendees_for_post( $post_id );
 	}
 }

@@ -80,8 +80,20 @@ class Tribe__Tickets__Tickets_Handler {
 	 *    Class constructor.
 	 */
 	public function __construct() {
-		$main = Tribe__Tickets__Main::instance();
 		$this->unlimited_term = __( 'Unlimited', 'event-tickets' );
+
+		$this->add_hooks();
+
+		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
+	}
+
+	/**
+	 * Add hooks for saving/meta.
+	 *
+	 * @since 4.11.4
+	 */
+	public function add_hooks() {
+		$main = Tribe__Tickets__Main::instance();
 
 		foreach ( $main->post_types() as $post_type ) {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_post' ) );
@@ -92,8 +104,25 @@ class Tribe__Tickets__Tickets_Handler {
 
 		add_filter( 'updated_postmeta', array( $this, 'update_meta_date' ), 15, 4 );
 		add_action( 'wp_insert_post', array( $this, 'update_start_date' ), 15, 3 );
+	}
 
-		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
+	/**
+	 * Remove hooks for saving/meta.
+	 *
+	 * @since 4.11.4
+	 */
+	public function remove_hooks() {
+		$main = Tribe__Tickets__Main::instance();
+
+		foreach ( $main->post_types() as $post_type ) {
+			remove_action( 'save_post_' . $post_type, array( $this, 'save_post' ) );
+		}
+
+		remove_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15 );
+		remove_filter( 'updated_postmeta', array( $this, 'update_shared_tickets_capacity' ), 15 );
+
+		remove_filter( 'updated_postmeta', array( $this, 'update_meta_date' ), 15 );
+		remove_action( 'wp_insert_post', array( $this, 'update_start_date' ), 15 );
 	}
 
 	/**
@@ -772,25 +801,41 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post->ID );
+		$global  = new Tribe__Tickets__Global_Stock( $post->ID );
+
 		$totals  = [
 			'has_unlimited' => false,
-			'tickets' => count( $tickets ),
-			'capacity' => $this->get_total_event_capacity( $post ),
-			'sold' => 0,
-			'pending' => 0,
-			'stock' => 0,
+			'has_shared'    => $global->is_enabled(),
+			'tickets'       => count( $tickets ),
+			'capacity'      => tribe_get_event_capacity( $post ),
+			'sold'          => 0,
+			'pending'       => 0,
+			'stock'         => 0,
 		];
 
 		foreach ( $tickets as $ticket ) {
 			$ticket_totals = $this->get_ticket_totals( $ticket->ID );
 			$totals['sold'] += $ticket_totals['sold'];
 			$totals['pending'] += $ticket_totals['pending'];
-			$totals['stock'] += $ticket_totals['stock'];
 
-			// check if we have any unlimited tickets
-			if ( ! $totals['has_unlimited'] ) {
-				$totals['has_unlimited'] = -1 === tribe_tickets_get_capacity( $ticket->ID );
+			if ( ! $this->has_shared_capacity( $ticket ) && ! $this->is_unlimited_ticket( $ticket ) ) {
+				$totals['stock'] += $ticket_totals['stock'];
 			}
+
+			// Check if we have any unlimited tickets. Only have to do this once.
+			if ( ! $totals['has_unlimited'] && $this->is_unlimited_ticket( $ticket ) ) {
+				$totals['has_unlimited'] = true;
+			}
+		}
+
+		// We only want to do this once per event.
+		if ( $totals['has_shared'] ) {
+			$totals['stock'] += $global->get_stock_level();
+			$totals['has_shared'] = true;
+		}
+
+		if ( $totals['has_unlimited'] ) {
+			$totals['stock'] = -1;
 		}
 
 		return $totals;
@@ -856,9 +901,9 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
-		$mode = get_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+		$stock_mode = get_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
-		return Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode || Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode;
+		return Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $stock_mode || Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $stock_mode;
 	}
 
 	/**
@@ -944,13 +989,17 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Get the total event capacity.
 	 *
-	 * @since  4.6
+	 * @deprecated 4.12.0
 	 *
-	 * @param  int|object (null) $post Post or Post ID tickets are attached to
+	 * @since      4.6
+	 *
+	 * @param int|object $post Post ID or object to which tickets are attached.
 	 *
 	 * @return int
 	 */
 	public function get_total_event_capacity( $post = null ) {
+		_deprecated_function( __METHOD__, 'TBD', 'tribe_get_event_capacity()' );
+
 		$post_id = Tribe__Main::post_id_helper( $post );
 		$total   = 0;
 
@@ -961,7 +1010,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$has_shared_tickets = 0 !== count( $this->get_event_shared_tickets( $post_id ) );
 
 		if ( $has_shared_tickets ) {
-			$total = tribe_tickets_get_capacity( $post_id );
+			$total = tribe_get_event_capacity( $post_id );
 		}
 
 		// short circuit unlimited stock
@@ -1109,13 +1158,21 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Gets the Maximum Purchase number for a given ticket.
+	 * Gets the maximum quantity able to be purchased in a single Add to Cart action for a given ticket.
+	 *
+	 * If a ticket's actual ticket stock available is Unlimited, this will return the maximum allowed to be purchased
+	 * in a single action (i.e. always zero or greater).
+	 *
+	 * @see    \Tribe__Tickets__Ticket_Object::available() The actual ticket stock available, allowing -1 for Unlimited.
 	 *
 	 * @since  4.8.1
+	 * @since  4.11.5 Return a zero or positive integer and add a maximum able to be purchased in a single action,
+	 *               for sanity and performance reasons.
 	 *
-	 * @param  int|string $ticket_id Ticket from which to fetch purchase max.
+	 * @param int|string $ticket_id Ticket from which to fetch purchase max.
 	 *
-	 * @return int
+	 * @return int A non-negative integer of how many tickets can be purchased in a single "add to cart" type of action
+	 *             (allows zero but not `-1` for Unlimited). If oversold, will be corrected to zero.
 	 */
 	public function get_ticket_max_purchase( $ticket_id ) {
 		$event = tribe_events_get_ticket_event( $ticket_id );
@@ -1125,14 +1182,28 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
-		if ( empty( $provider ) ) {
+
+		if ( ! $provider instanceof Tribe__Tickets__Tickets ) {
 			return 0;
 		}
 
-		/** @var Tribe__Tickets__Ticket_Object $ticket */
 		$ticket = $provider->get_ticket( $event, $ticket_id );
 
-		$available = $ticket->available();
+		if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+			return 0;
+		}
+
+		$max_at_a_time = $this->get_max_qty_limit_per_transaction( $ticket );
+
+		// The actual ticket stock, not limited by Max At A Time.
+		$stock_available = $ticket->available();
+
+		// Change Unlimited to Max At A Time.
+		if ( - 1 === $stock_available ) {
+			$stock_available = $max_at_a_time;
+		}
+
+		$available_at_a_time = min( $stock_available, $max_at_a_time );
 
 		/**
 		 * Allows filtering the quantity available displayed below the ticket
@@ -1142,12 +1213,62 @@ class Tribe__Tickets__Tickets_Handler {
 		 *
 		 * @since 4.8.1
 		 *
-		 * @param int                           $available Max purchase quantity.
-		 * @param Tribe__Tickets__Ticket_Object $ticket    Ticket object.
-		 * @param WP_Post                       $event     Event post.
-		 * @param int                           $ticket_id Raw ticket ID.
+		 * @param int                           $available_at_a_time Max purchase quantity, as restricted by Max At A Time.
+		 * @param Tribe__Tickets__Ticket_Object $ticket              Ticket object.
+		 * @param WP_Post                       $event               Event post.
+		 * @param int                           $ticket_id           Raw ticket ID.
 		 */
-		return (int) apply_filters( 'tribe_tickets_get_ticket_max_purchase', $available, $ticket, $event, $ticket_id );
+		$available_at_a_time = apply_filters( 'tribe_tickets_get_ticket_max_purchase', $available_at_a_time, $ticket, $event, $ticket_id );
+
+		// Protect against filters passing `-1` as unlimited (from filters not yet updated for logic from version 4.11.5).
+		if ( - 1 === $available_at_a_time ) {
+			$available_at_a_time = $max_at_a_time;
+		}
+
+		// If somehow oversold, set max allowed to zero.
+		if ( 0 > $available_at_a_time ) {
+			$available_at_a_time = 0;
+		}
+
+		return $available_at_a_time;
+	}
+
+	/**
+	 * Get the maximum quantity allowed to be added to cart in a single action, for performance and sanity reasons.
+	 *
+	 * @since 4.11.5
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket object.
+	 *
+	 * @return int
+	 */
+	private function get_max_qty_limit_per_transaction( Tribe__Tickets__Ticket_Object $ticket ) {
+		$default_max = 100;
+
+		/**
+		 * Cap the amount of tickets able to be purchased at a single time (single "add to cart" action)
+		 * for sanity and performance reasons.
+		 *
+		 * Anything less than `1` will be ignored and reset to the default.
+		 *
+		 * @since 4.11.5
+		 *
+		 * @param int                           $default_max Maximum quantity allowed at one time (only applicable if
+		 *                                                   the ticket stock available is greater).
+		 * @param Tribe__Tickets__Ticket_Object $ticket      Ticket object.
+		 *
+		 * @return int
+		 */
+		$max_at_a_time = absint(
+			apply_filters( 'tribe_tickets_get_ticket_default_max_purchase', $default_max, $ticket )
+		);
+
+		// Don't allow less than 1.
+		if ( 1 > $max_at_a_time ) {
+			$max_at_a_time = $default_max;
+		}
+
+		return $max_at_a_time;
 	}
 
 	/**
@@ -1264,7 +1385,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return string
 	 */
 	public function save_form_settings( $post, $data = null ) {
-		// don't do anything on autosave, auto-draft, or massupdates
+		// Don't do anything on autosave, auto-draft, or mass updates.
 		if ( wp_is_post_autosave( $post ) || wp_is_post_revision( $post ) ) {
 			return false;
 		}
@@ -1308,7 +1429,18 @@ class Tribe__Tickets__Tickets_Handler {
 
 		// We reversed this logic on the back end
 		if ( class_exists( 'Tribe__Tickets_Plus__Attendees_List' ) ) {
-			update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, ! empty( $data['show_attendees'] ) );
+			/** @var \Tribe__Editor $editor */
+			$editor = tribe( 'editor' );
+
+			// Only update this meta if not using blocks.
+			if ( ! $editor->is_events_using_blocks() ) {
+				// Enforce meta value when saving after checking for block/shortcode later.
+				if ( ! empty( $data['show_attendees'] ) ) {
+					add_filter( 'tribe_tickets_event_is_showing_attendee_list', '__return_true' );
+				}
+
+				update_post_meta( $post->ID, \Tribe\Tickets\Events\Attendees_List::HIDE_META_KEY, ! empty( $data['show_attendees'] ) );
+			}
 		}
 
 		// Change the default ticket provider

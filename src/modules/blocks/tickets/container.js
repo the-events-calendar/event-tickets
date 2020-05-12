@@ -8,7 +8,8 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import Template from './template';
-import { withSaveData, withStore } from '@moderntribe/common/hoc';
+import { withStore } from '@moderntribe/common/hoc';
+import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 
 const mapStateToProps = ( state ) => {

@@ -20,17 +20,22 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 * Display the Attendee Info page when the correct permalink is loaded.
 	 *
 	 * @since 4.9
-	 * @param string $content The original page|post content
-	 * @param string $context The context of the rendering
+	 * @since 4.12.0 Removed $content and $context parameters
 	 *
 	 * @return string The resulting template content
 	 */
-	public function display_attendee_registration_page( $content = '', $context = 'default' ) {
-		// Bail if we don't have the flag to be in the registration page (or we're not using a shortcode to display it)
-		if ( 'shortcode' !== $context && ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
-			return $content;
-		}
+	public function display_attendee_registration_page() {
+		return $this->display_attendee_registration_shortcode();
+	}
 
+	/**
+	 * Render the Attendee Info shortcode.
+	 *
+	 * @since 4.12.0
+	 *
+	 * @return string The resulting template content
+	 */
+	public function display_attendee_registration_shortcode() {
 		$q_provider = tribe_get_request_var( 'provider', false );
 
 		/**
@@ -141,8 +146,6 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			'is_meta_up_to_date'     => $is_meta_up_to_date,
 			'cart_has_required_meta' => $cart_has_required_meta,
 			'providers'              => $providers,
-			'context'                => $context,
-			'original_content'       => $content,
 		];
 
 		// Enqueue styles and scripts specific to this page.
@@ -254,12 +257,21 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 * Given a provider, get the class to be applied to the attendee registration form
 	 * @since 4.10.4
 	 *
-	 * @param string $provider the provider/attendee object name indicating ticket porovider
+	 * @param string|Tribe__Tickets__Tickets $provider The provider/attendee object name indicating ticket provider.
 	 *
 	 * @return string the class string or empty string if provider not found
 	 */
 	public function get_form_class( $provider ) {
 		$class = '';
+
+		if ( is_object( $provider ) ) {
+			if ( $provider instanceof Tribe__Tickets__Tickets ) {
+				$provider = $provider->attendee_object;
+			} else {
+				// Use the no provider return below.
+				$provider = false;
+			}
+		}
 
 		if ( empty( $provider ) ) {
 			/**

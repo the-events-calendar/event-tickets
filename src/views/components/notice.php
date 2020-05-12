@@ -7,9 +7,9 @@
  *
  * See more documentation about our views templating system.
  *
- * @link {INSERT_ARTCILE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @version 4.11.0
+ * @version 4.12.0
  *
  */
 
@@ -26,9 +26,15 @@ $n_classes       = $this->get( 'notice_classes' ) ?: [];
 $notice_classes  = array_merge( $notice_classes, (array) $n_classes );
 $content_classes = array_merge( $content_classes, (array) $c_classes );
 
+if ( empty( $content ) && empty( $title ) ) {
+	return;
+}
+
 ?>
 <div id="<?php echo esc_attr( $id ); ?>" <?php tribe_classes( $notice_classes ); ?>>
-	<h3 class="tribe-common-h7 tribe-tickets-notice__title"><?php echo esc_html( $title ); ?></h3>
+	<?php if ( ! empty( $title ) ) : ?>
+		<h3 class="tribe-common-h7 tribe-tickets-notice__title"><?php echo esc_html( $title ); ?></h3>
+	<?php endif; ?>
 
 	<div <?php tribe_classes( $content_classes ); ?>>
 		<?php echo wp_kses_post( $content ); ?>

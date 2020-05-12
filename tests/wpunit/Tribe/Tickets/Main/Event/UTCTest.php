@@ -26,11 +26,11 @@ class UTCTest extends Ticket_Object_TestCase {
 			],
 		];
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1, $overrides );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1, $overrides );
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id, $overrides );
 
 		// Add other ticket/attendees for another post so we can confirm we only returned the correct attendees.
-		$paypal_ticket_id2 = $this->create_paypal_ticket( $post_id2, 1, $overrides );
+		$paypal_ticket_id2 = $this->create_paypal_ticket_basic( $post_id2, 1, $overrides );
 		$rsvp_ticket_id2   = $this->create_rsvp_ticket( $post_id2, $overrides );
 
 		$GLOBALS['post'] = get_post( $post_id );
@@ -82,11 +82,11 @@ class UTCTest extends Ticket_Object_TestCase {
 			],
 		];
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1, $overrides );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1, $overrides );
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id, $overrides );
 
 		// Add other ticket/attendees for another post so we can confirm we only returned the correct attendees.
-		$paypal_ticket_id2 = $this->create_paypal_ticket( $post_id2, 1, $overrides );
+		$paypal_ticket_id2 = $this->create_paypal_ticket_basic( $post_id2, 1, $overrides );
 		$rsvp_ticket_id2   = $this->create_rsvp_ticket( $post_id2, $overrides );
 
 		wp_reset_postdata();

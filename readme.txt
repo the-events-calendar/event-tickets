@@ -3,8 +3,8 @@
 Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.9
-Tested up to: 5.3
-Stable tag: 4.11.1
+Tested up to: 5.4
+Stable tag: 4.12.0
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -116,6 +116,107 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.12.0] 2020-04-23 =
+
+* Fix - When using Event Tickets Plus and using a custom Attendee Registration page with the [tribe_attendee_registration] shortcode, Event Tickets will no longer replace the contents of the page. [ETP-292]
+* Fix - Update notice template to print content only when there's information. Remove the "Whoops" title for the Attendee Registration page notice. [ETP-233]
+* Fix - Update file path in the docblocks of the templates for The Events Calendar new views. [ETP-289]
+* Fix - Update position of the `tribe_tickets_ticket_add` action so it receives the ticket data on ticket creation. [ETP-302]
+* Fix - Removed the `type="submit"` from the button element in the ticket quantity remove template. [ETP-224]
+* Fix - Removed the duplicate `type="button"` from the button element in the ticket quantity add template. [ETP-224]
+* Fix - Correct the `Total` value, when the WooCommerce options for currency are empty (Thousand and decimal separator, number of decimals). [ETP-231]
+* Fix - Correct dependencies for the tickets block JS, in order to have the block working in WordPress versions prior to 5.0. [ETP-238]
+* Fix - Load plugin text domain on the new 'tribe_load_text_domains' action hook, which fires on 'init' instead of on the 'plugins_loaded' hook. [ET-773]
+* Fix - Deprecate `\Tribe__Tickets__Tickets_Handler::get_total_event_capacity()` and replace its usage with `tribe_get_event_capacity()`, which returns the correct count. [ET-770]
+* Fix - When updating to Event Tickets 4.12, a background migration will get kicked off that fixes ticket-supported posts that use the Attendees List block or the Attendees List shortcodes from Event Tickets Plus so those attendees appear in the REST API properly. [ET-777]
+* Fix - Prevent Blocks editor from throwing browser alert when leaving the page without any changes applied to the edited post.
+* Tweak - Improved on meta data handling of for Blocks editor.
+* Tweak - Deprecate Select2 3.5.4 in favor of SelectWoo
+* Tweak - Consolidate duplicate code for getting tickets for each Ticket Provider. [ETP-235]
+* Tweak - Modify new views implementation for The Event Calendar, in order to include the "Sold Out" message as we had in the previous version. [ET-764]
+* Tweak - Attendee REST endpoint now returns 401 (Unauthorized) if Event Tickets Plus is not loaded. [ETP-297]
+* Tweak - Implement price suffix for the tickets block when a price suffix is provided by a Commerce provider. [ET-620]
+* Tweak - When using Event Tickets Plus, the checkbox "Hide my attendee data from public view" will no longer show up when purchasing a ticket if an "Attendees List" is not being displayed in the event. [ETP-624]
+* Language - 0 new strings added, 329 updated, 10 fuzzied, and 58 obsoleted
+
+= [4.11.5] 2020-03-18 =
+
+* Feature - Include Freemius integration to allow opt-in information collection. [ET-595]
+* Fix - Prevent unintentionally clearing global capacity settings when saving event/post while using Block Editor is enabled. [ETP-267]
+* Fix - Save updated shared capacity for event/post if the argument is passed to the REST API endpoint for a Tribe Commerce ticket. [ETP-267]
+* Fix - Make sure when changing unlimited ticket to be a shared capacity ticket that the empty individual capacity gets properly overridden to the shared capacity for Tribe Commerce. [ET-752]
+* Fix - Prevent ticket capacity showing sold out when you have unlimited tickets or RSVPs alongside shared capacity tickets unless it really is sold out. [ET-744]
+* Fix - The quantity allowed in a single "add to cart" action is now always set (defaults to `100`, filterable via `tribe_tickets_get_ticket_max_purchase`), for sanity and performance reasons. [ETP-149]
+* Fix - Correct the displayed quantity of tickets available in the Attendees Report admin screen. It was forcing the formatted number string (e.g. `2,000`) to an integer (this example was displaying as `2`) so only affected tickets with available quantities greater than 999 that weren't Unlimited. [ET-756]
+* Fix - Make it so the ticket quantity in the tickets block doesn't jump around when it gets to the maximum available in Safari and you try to increase it. [ET-758]
+* Tweak - Notify Promoter of changes when tickets are moved to other Events. [ET-741]
+* Tweak - Improved compatibility between Tribe Commerce and Promoter by extending the actions that notify Promoter of Attendee modifications. [ET-746]
+* Tweak - Added filters: `tribe_tickets_integrations_should_load_freemius`, `tribe_tickets_get_ticket_default_max_purchase`
+* Tweak - Changed views: `blocks/rsvp/form/attendee-meta`, `blocks/rsvp/form/details`, `blocks/rsvp/form/quantity-input`, `blocks/rsvp/form/quantity`, `blocks/tickets/extra-available`, `blocks/tickets/quantity-number`, `tickets/rsvp`, `tickets/tpp`
+* Language - 4 new strings added, 47 updated, 2 fuzzied, and 0 obsoleted
+
+= [4.11.4] 2020-02-26 =
+
+* Fix - Update file path in the docblocks of the templates for The Events Calendar new views. [ET-713]
+* Fix - Hitting enter in the tickets form changes ticket quantities. [ETP-43]
+* Fix - Respect the page title and fix redirection for the custom attendee registration page. [ETP-156]
+* Fix - Ensure we're loading the common full styles when required. This fixes missing styles problems from the tickets block. [ET-725]
+* Fix - Adjust JavaScript to have the Attendee Registration page working in IE11. [ETP-220]
+* Fix - Add theme compatibility for the Attendee Registration Modal by adding theme identifying body CSS classes. [ETP-156]
+* Fix - When Classic Editor plugin is activated, prevent ticket availability AJAX errors by temporarily disabling the AJAX requests. [ET-730]
+* Fix - When not using blocks, the scripts to obtain an RSVP ticket now work even if required Attendee Information (from Event Tickets Plus) is missing upon initial attempt to submit the form. [ET-686]
+* Fix - Prevent The Events Calendar plugin from overriding the Attendee Registration page content when Events Page is set as site home page. [ET-732]
+* Fix - Use the default `datepickerFormat` value if the option hasn't been set yet when setting up validation rules for the ticket add/edit admin form. [ET-727]
+* Fix - Resolve problems where "View My Tickets" (or RSVPs) page would be blank or not load. [ET-735]
+* Fix - Use accessibility CSS classes for more screen reader text elements. [ET-725]
+* Fix - Save initial shared capacity value for global stock correctly on first Tribe Commerce ticket so availability shows as expected instead of zero. [ET-737]
+* Tweak - Added filters: `tribe_tickets_theme_compatibility_registered`
+* Tweak - Changed views: `blocks/tickets/content-description`, `blocks/tickets/extra`, `blocks/tickets/quantity-add`, `blocks/tickets/quantity-remove`, `registration-js/content`, `v2/day/event/cost`, `v2/list/event/cost`, `v2/map/event-cards/event-card/actions/cost`, `v2/month/calendar-body/day/calendar-events/calendar-event/tooltip/cost`, `v2/month/mobile-events/mobile-day/mobile-event/cost`, `v2/photo/event/cost`, `v2/week/grid-body/events-day/event/tooltip/cost`, `v2/week/mobile-events/day/event/cost`
+* Language - 0 new strings added, 76 updated, 0 fuzzied, and 0 obsoleted
+
+= [4.11.3.1] 2020-02-11 =
+
+* Fix - Resolve potential fatal errors when an object is passed to determine a CSS class where we had expected a string. [ET-716]
+* Fix - Prevent conflicts with a template variable used by the Tickets block when rendering while The Events Calendar is activated. [ET-717]
+* Fix - Prevent The Events Calendar from disabling the redirect for Tribe Commerce that should take you to PayPal when checking out. [ET-714]
+* Fix - Better detect the post ID to use on normal pages for Tribe Commerce. [ET-714]
+* Tweak - Changed views: `modal/registration-js`, `registration-js/content`
+
+= [4.11.3] 2020-02-06 =
+
+* Feature - Show original price on ticket block if ticket on sale. Allow turning off via the `tribe_tickets_show_original_price_on_sale` filter. [ETP-47]
+* Fix - Allow adding ticket header image on non-event posts. [ETP-54]
+* Fix - Close opening `<div>` in `blocks/attendees.php`. [ET-589]
+* Fix - Correct broken JavaScript for themes that change the base post CSS classes. [ET-640]
+* Fix - Correct logic so selling out of one RSVP doesn't prevent "purchasing" another. [ETP-603]
+* Fix - Price formatting method now prevents incorrect display when a comma is used as the decimal separator. [ETP-53]
+* Fix - Disable RSVP and Tickets block when password protection is enabled on posts or pages. [ET-604]
+* Fix - Ensure that attendee images display horizontally in the frontend for Twenty Nineteen and Twenty Twenty themes. [ET-590]
+* Fix - JavaScript updated to remove IE 11 console errors. [ET-619]
+* Fix - Load JavaScript assets along with Ticket Block when using Classic Editor. [ET-587]
+* Fix - Override checkout link in WooCommerce Mini-Cart widget so it uses the custom page for attendee registration if it is setup. [ETP-41]
+* Fix - Remove inaccurate display of "You don't have tickets for this event" notice at single event page's list of current user's RSVP's and/or Tickets. [ETP-50]
+* Fix - The Events Calendar's List View "RSVP Now!" button again displays for Events having only RSVP tickets and has the correct anchor link. [ETP-51]
+* Fix - Tickets Block quantity +/- buttons set to 'button' type to avoid submitting Add to Cart form in IE 11 or when JavaScript is disabled. [ET-619]
+* Fix - Additional implementation of dynamic ticket text functions so singular and plural versions of "Ticket" change in more areas when filtered. [ETP-145]
+* Fix - Ensure that empty start/end dates are treated like "immediately": and "forever", respectively. [ETP-159]
+* Tweak - Create new function `tribe_get_event_capacity()` for checking the capacity of an entire event. Have `tribe_tickets_get_capacity()` pass off to it as when given an event. [ETP-48]
+* Tweak - Refine logic for the "no results" notice on the "My Tickets" page. [ETP-151]
+* Tweak - Remove duplicate ticket script loading to prevent JavaScript conflicts. [ET-596]
+* Tweak - Change the Attendee List opt-out checkbox to be checked by default. [ET-615]
+* Tweak - Change the Attendee List opt-out checkbox wording, centralize where we handle it and create a new function to retrieve it. [ET-615]
+* Tweak - Add some code for future implementation around converting opt-outs to opt-ins. [ET-615]
+* Tweak - Adjust styles to ensure our "Get Tickets" button styles get preserved. [ETP-210]
+* Tweak - Added filters: `tribe_tickets_default_opt_out_text`, `tribe_tickets_default_opt_in_text`, `tribe_tickets_show_original_price_on_sale`
+* Tweak - Changed views: `blocks/attendees`, `blocks/attendees/description`, `blocks/rsvp/form/error`, `blocks/rsvp/form/opt-out`, `blocks/rsvp/form/quantity-plus`, `blocks/rsvp/form/submit-button`, `blocks/rsvp/messages/success`, `blocks/tickets`, `blocks/tickets/extra-available`, `blocks/tickets/extra-price`, `blocks/tickets/extra`, `blocks/tickets/footer-total`, `blocks/tickets/item`, `blocks/tickets/opt-out-hidden`, `blocks/tickets/quantity-add`, `blocks/tickets/quantity-remove`, `blocks/tickets/registration/summary/title`, `blocks/tickets/submit-button-modal`, `blocks/tickets/submit-button`, `modal/item-remove`, `modal/item-total`, `modal/registration-js`, `registration-js/attendees/ticket`, `tickets/email`, `tickets/orders-pp-tickets`, `tickets/orders-rsvp`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp`
+* Language - 7 new strings added, 187 updated, 7 fuzzied, and 6 obsoleted
+
+= [4.11.2] 2020-01-27 =
+
+* Tweak - Adding support for The Events Calendar 5.0.0
+* Tweak - Added new `tribe_events_is_current_time_in_date_window()` function that checks if the current datetime is within a post's ticket availability window [TEC-3033]
+* Language - 0 new strings added, 94 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.11.1] 2019-12-19 =
 

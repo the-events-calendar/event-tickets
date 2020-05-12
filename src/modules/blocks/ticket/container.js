@@ -9,7 +9,8 @@ import { compose } from 'redux';
  */
 import Template from './template';
 import { plugins } from '@moderntribe/common/data';
-import { withSaveData, withStore } from '@moderntribe/common/hoc';
+import { withStore } from '@moderntribe/common/hoc';
+import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import {
 	isModalShowing,

@@ -1,6 +1,6 @@
 <?php
 /**
- * Block: RSVP
+ * Block: Tickets
  * Form Opt-Out
  *
  * Override this template in your own theme by creating a file at:
@@ -11,7 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.11.0
- * @version 4.11.0
+ * @since 4.11.3 Ensure we always show the optout by default.
+ *
+ * @version 4.11.3
  *
  */
 $ticket   = $this->get( 'ticket' );
@@ -24,11 +26,14 @@ $ticket   = $this->get( 'ticket' );
  * @param bool
  */
 $hide_attendee_list_optout = apply_filters( 'tribe_tickets_plus_hide_attendees_list_optout', false );
-if ( $hide_attendee_list_optout
-	 && ! class_exists( 'Tribe__Tickets_Plus__Attendees_List' )
-	 && Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $this->get( 'post_id' ) )
-) {
+
+if ( $hide_attendee_list_optout ) {
+	// Force optout.
+	?>
+	<input name="attendee[optout]" value="1" type="hidden" />
+	<?php
 	return;
 }
 ?>
-<input id="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $ticket->ID ); ?>-modal" class="tribe-tickets__item__quantity" name="attendee[optout]" type="hidden" />
+
+<input id="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $ticket->ID ); ?>-modal" class="tribe-tickets__item__quantity" name="attendee[optout]" value="1" type="hidden" />

@@ -12,28 +12,41 @@
  *
  * @since 4.9
  * @since 4.11.0 Updated the optout markup and classes used.
- * @version 4.11.0
+ * @since 4.11.3 Ensure we always show the optout by default.
+ * @since 4.12.0 Add $post_id to filter for hiding opt-outs.
+ *
+ * @version 4.12.0
  *
  */
-$modal    = $this->get( 'is_modal' );
-$ticket   = $this->get( 'ticket' );
+$modal   = $this->get( 'is_modal' );
+$ticket  = $this->get( 'ticket' );
+$post_id = $this->get( 'post_id' );
+
 /**
  * Use this filter to hide the Attendees List Optout
  *
  * @since 4.9
+ * @since 4.12.0 Added $post_id parameter.
  *
- * @param bool
+ * @param bool $hide_attendee_list_optout Whether to hide attendees list opt-out.
+ * @param int  $post_id                   The post ID this ticket belongs to.
  */
-$hide_attendee_list_optout = apply_filters( 'tribe_tickets_plus_hide_attendees_list_optout', $modal );
-if ( $hide_attendee_list_optout
-	 && ! class_exists( 'Tribe__Tickets_Plus__Attendees_List' )
-	 && Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $this->get( 'post_id' ) )
-) {
+$hide_attendee_list_optout = apply_filters( 'tribe_tickets_plus_hide_attendees_list_optout', false, $post_id );
+
+if ( $hide_attendee_list_optout ) {
+	// Force optout.
+	?>
+	<input name="attendee[optout]" value="1" type="hidden" />
+	<?php
 	return;
 }
+
+/* var Tribe__Tickets__Privacy $privacy  */
+$privacy = tribe( 'tickets.privacy' );
+
 $field_id = [
 	'tribe-tickets-attendees-list-optout',
-	$ticket->ID
+	$ticket->ID,
 ];
 
 $field_id = implode( '-', $field_id );
@@ -48,5 +61,8 @@ $field_id = implode( '-', $field_id );
 			id="<?php echo esc_attr( $field_id ); ?>"
 			name="attendee[optout]"
 			type="checkbox"
-		/><?php esc_html_e( "Don't show me on public attendee lists.", 'event-tickets' ); ?></label>
+			<?php checked( true ); ?>
+		/>
+		<?php echo $privacy->get_opt_out_text(); ?>
+	</label>
 </div>

@@ -9,6 +9,7 @@ import classNames from 'classnames';
  * Wordpress dependencies
  */
 import { Spinner } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies

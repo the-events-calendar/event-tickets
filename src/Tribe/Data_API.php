@@ -183,13 +183,12 @@ class Tribe__Tickets__Data_API {
 		return $event_ids;
 	}
 
-
 	/**
 	 * Return Ticket Provider by Order, Product, Attendee, or Ticket ID.
 	 *
 	 * @param $post_id
 	 *
-	 * @return bool/object
+	 * @return bool|object
 	 */
 	public function get_ticket_provider( $post_id ) {
 		$services = $this->detect_by_id( $post_id );

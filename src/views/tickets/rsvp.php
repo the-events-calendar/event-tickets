@@ -1,18 +1,18 @@
 <?php
 /**
- * This template renders the RSVP ticket form
+ * This template renders the RSVP ticket form.
  *
  * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe-events/tickets/rsvp.php
  *
- *     [your-theme]/tribe-events/tickets/rsvp.php
+ * @since   4.0
+ * @since   4.10.8 More similar display format to that of other ticket types, including better checking of max quantity available.
+ * @since   4.10.9 Use customizable ticket name functions.
+ * @since   4.11.0 Added RSVP/ticket view link to template.
+ * @since   4.11.1 Corrected amount of available/remaining tickets when threshold is empty.
+ * @since   4.11.5 Display total available separately from setting max allowed to purchase at once.
  *
- * @since 4.0
- * @since 4.10.8 More similar display format to that of other ticket types, including better checking of max quantity available.
- * @since 4.10.9 Use customizable ticket name functions.
- * @since 4.11.0 Added RSVP/ticket view link to template.
- * @since 4.11.1    Corrected amount of available/remaining tickets when threshold is empty.
- *
- * @version 4.11.1
+ * @version 4.11.5
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login
@@ -23,6 +23,9 @@ $is_there_any_product_to_sell = false;
 ob_start();
 $messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
 $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
+
+/* var Tribe__Tickets__Privacy $privacy  */
+$privacy = tribe( 'tickets.privacy' );
 
 /** @var Tribe__Settings_Manager $settings_manager */
 $settings_manager = tribe( 'settings.manager' );
@@ -91,6 +94,9 @@ if ( ! $already_rendered ) {
 
 	<table class="tribe-events-tickets tribe-events-tickets-rsvp">
 		<?php
+		/** @var Tribe__Tickets__Tickets_Handler $handler */
+		$handler = tribe( 'tickets.handler' );
+
 		foreach ( $tickets as $ticket ) {
 			if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
 				continue;
@@ -110,40 +116,42 @@ if ( ! $already_rendered ) {
 
 			$ticket_id = $ticket->ID;
 
-			/** @var Tribe__Tickets__Tickets_Handler $handler */
-			$handler = tribe( 'tickets.handler' );
+			$is_there_any_rsvp_stock = false;
 
-			$available = $handler->get_ticket_max_purchase( $ticket_id );
+			$available = $ticket->available();
+
 			$readable_amount = tribe_tickets_get_readable_amount( $available, null, false );
 
 			/**
 			 * Allows hiding of "unlimited" to be toggled on/off conditionally.
 			 *
-			 * @param int   $show_unlimited allow showing of "unlimited".
-			 *
 			 * @since 4.11.1
+			 *
+			 * @param int $show_unlimited allow showing of "unlimited".
+			 *
 			 */
 			$show_unlimited = apply_filters( 'tribe_rsvp_block_show_unlimited_availability', false, $available );
 
-			$is_there_any_product_to_sell = 0 !== $available;
+			$is_there_any_rsvp_stock      = 0 !== $available;
+			$is_there_any_product_to_sell = $is_there_any_rsvp_stock || $is_there_any_product_to_sell;
+
+			$max_at_a_time = $handler->get_ticket_max_purchase( $ticket_id );
 			?>
 			<tr>
 				<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket_id ); ?>">
 					<input type="hidden" name="product_id[]" value="<?php echo absint( $ticket_id ); ?>">
-					<?php if ( $is_there_any_product_to_sell ) : ?>
+					<?php if ( $is_there_any_rsvp_stock ) : ?>
 						<input
 							type="number"
 							class="tribe-tickets-quantity"
 							step="1"
 							min="0"
-							<?php if ( -1 !== $available ) : ?>
-								max="<?php echo esc_attr( $available ); ?>"
-							<?php endif; ?>
+							max="<?php echo esc_attr( $max_at_a_time ); ?>"
 							name="quantity_<?php echo absint( $ticket_id ); ?>"
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>
-						<?php if ( -1 !== $available && ( 0 === $threshold || $available <= $threshold ) ) : ?>
+						<?php if ( - 1 !== $available && ( 0 === $threshold || $available <= $threshold ) ) : ?>
 							<span class="tribe-tickets-remaining">
 								<span class="available-stock" data-product-id="<?php echo esc_attr( $ticket_id ); ?>">
 									<?php echo sprintf( esc_html__( '%1$s available', 'event-tickets' ), esc_html( $readable_amount ) ); ?>
@@ -253,9 +261,10 @@ if ( ! $already_rendered ) {
 										type="checkbox"
 										name="attendee[optout]"
 										id="tribe-tickets-attendees-list-optout"
+										<?php checked( true ); ?>
 									>
 									<label for="tribe-tickets-attendees-list-optout">
-										<?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?>
+										<?php echo $privacy->get_opt_out_text(); ?>
 									</label>
 								</td>
 							</tr>
@@ -277,7 +286,13 @@ if ( ! $already_rendered ) {
 							value="1"
 							class="tribe-button tribe-button--rsvp"
 						>
-							<?php echo esc_html( sprintf( _x( 'Confirm %s', 'tickets process button text', 'event-tickets' ), tribe_get_rsvp_label_singular( 'tickets_process_button_text' ) ) );?>
+							<?php
+							echo esc_html(
+								sprintf(
+									_x( 'Confirm %s', 'tickets process button text', 'event-tickets' ),
+									tribe_get_rsvp_label_singular( 'tickets_process_button_text' )
+								)
+							); ?>
 						</button>
 					<?php endif; ?>
 				</td>

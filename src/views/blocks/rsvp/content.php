@@ -11,7 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @since 4.12.0 Add $post_id to filter for hiding opt-outs.
+ *
+ * @version 4.12.0
  *
  */
 $going = ! empty( $_GET[ 'going' ] ) ? sanitize_text_field( $_GET[ 'going' ] ) : '';
@@ -23,6 +25,6 @@ $going = ! empty( $_GET[ 'going' ] ) ? sanitize_text_field( $_GET[ 'going' ] ) :
 		<?php $this->template( 'blocks/rsvp/status', array( 'ticket' => $ticket, 'going' => $going ) ); ?>
 	</div>
 
-	<?php $this->template( 'blocks/rsvp/form', array( 'ticket' => $ticket, 'going' => $going ) ); ?>
+	<?php $this->template( 'blocks/rsvp/form', array( 'ticket' => $ticket, 'going' => $going, 'post_id' => $post_id ) ); ?>
 
 </div>

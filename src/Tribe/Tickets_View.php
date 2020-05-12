@@ -41,6 +41,7 @@ class Tribe__Tickets__Tickets_View {
 		add_action( 'parse_request', [ $myself, 'prevent_page_redirect' ] );
 		add_filter( 'the_content', [ $myself, 'intercept_content' ] );
 		add_action( 'parse_request', [ $myself, 'maybe_regenerate_rewrite_rules' ] );
+		add_filter( 'tribe_events_views_v2_bootstrap_should_display_single', [ $myself, 'intercept_views_v2_single_display' ], 15, 4 );
 
 		// Only Applies this to TEC users.
 		if ( class_exists( 'Tribe__Events__Rewrite' ) ) {
@@ -49,7 +50,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// Intercept Template file for Tickets.
-		add_action( 'tribe_events_pre_get_posts', [ $myself, 'modify_ticket_display_query' ] );
+		add_action( 'pre_get_posts', [ $myself, 'modify_ticket_display_query' ] );
 		add_filter( 'tribe_events_template_single-event.php', [ $myself, 'intercept_template' ], 20 );
 
 		// We will inject on the Priority 4, to be happen before RSVP.
@@ -86,10 +87,7 @@ class Tribe__Tickets__Tickets_View {
 		$query->query_vars['post_type'] = $post->post_type;
 
 		if ( 'page' === $post->post_type ) {
-			// Unset the p variable, we dont need it anymore
-			unset( $query->query_vars['p'] );
-
-			// Set `page_id` for faster query
+			// Set `page_id` for faster query.
 			$query->query_vars['page_id'] = $post->ID;
 		}
 
@@ -364,20 +362,41 @@ class Tribe__Tickets__Tickets_View {
 	}
 
 	/**
+	 * Filter to make sure Tickets eventDisplay properly displays the Tickets page.
+	 *
+	 * @since 4.11.2
+	 *
+	 * @param bool   $should_display_single If we should display single or not.
+	 * @param string $view_slug             Which view slug we are working with.
+	 *
+	 * @return bool
+	 */
+	public function intercept_views_v2_single_display( $should_display_single, $view_slug ) {
+		if ( 'tickets' === $view_slug ) {
+			return true;
+		}
+
+		return $should_display_single;
+	}
+
+	/**
 	 * Intercepts the_content from the posts to include the orders structure.
 	 *
-	 * @param  string $content Normally the_content of a post.
+	 * @since 4.11.2 Avoid running when it shouldn't by bailing if not in main query loop on a single post.
+	 *
+	 * @param string $content Normally the_content of a post.
+	 *
 	 * @return string
 	 */
 	public function intercept_content( $content = '' ) {
-		// Prevents firing more then it needs too outside of the loop
-		$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
-
 		// Now fetch the display and check it
 		$display = get_query_var( 'eventDisplay', false );
 
+		// Prevents firing more than it needs to outside of the loop.
 		if (
-			! $in_the_loop
+			! is_single()
+			|| ! in_the_loop()
+			|| ! is_main_query()
 			|| (
 				'tickets' !== $display
 				&& ! $this->is_edit_page()
@@ -405,8 +424,7 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 */
 	public function modify_ticket_display_query( $query ) {
-
-		if ( ! $query->tribe_is_event_query ) {
+		if ( empty( $query->tribe_is_event_query ) ) {
 			return;
 		}
 
@@ -415,14 +433,17 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		$query->set( 'post__not_in', '' );
+
+		// Do not attempt to filter the query for this custom view.
+		$query->set( 'tribe_suppress_query_filters', true );
 	}
 
 	/**
 	 * We need to intercept the template loading and load the correct file.
 	 *
-	 * @param  string $old_file Non important variable with the previous path.
-	 * @param  string $template Which template we are dealing with.
-	 * @return string           The correct File path for the tickets endpoint.
+	 * @param string $old_file Non important variable with the previous path.
+	 *
+	 * @return string          The correct File path for the tickets endpoint.
 	 */
 	public function intercept_template( $old_file ) {
 		global $wp_query;
@@ -963,6 +984,11 @@ class Tribe__Tickets__Tickets_View {
 			return '';
 		}
 
+		// if password protected then do not display content
+		if ( post_password_required() ) {
+			return '';
+		}
+
 		$post_id     = $post->ID;
 		$provider_id = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 
@@ -974,10 +1000,13 @@ class Tribe__Tickets__Tickets_View {
 		$provider = call_user_func( [ $provider_id, 'get_instance' ] );
 
 		/** @var \Tribe__Tickets__Editor__Template $template */
-		$template       = tribe( 'tickets.editor.template' );
+		$template = tribe( 'tickets.editor.template' );
 
 		/** @var \Tribe__Tickets__Editor__Blocks__Tickets $blocks_tickets */
 		$blocks_tickets = tribe( 'tickets.editor.blocks.tickets' );
+
+		// Load assets manually.
+		$blocks_tickets->assets();
 
 		$tickets = $provider->get_tickets( $post_id );
 

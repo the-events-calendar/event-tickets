@@ -150,7 +150,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$paypal_event_id = $this->factory()->event->create();
 
-		$this->create_paypal_ticket( $paypal_event_id, 1 );
+		$this->create_paypal_ticket_basic( $paypal_event_id, 1 );
 
 		$this->assertTrue( tribe_events_has_tickets( $paypal_event_id ), 'Could not find attached Tribe Commerce tickets' );
 	}
@@ -300,7 +300,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 			],
 		] );
 
-		$this->create_paypal_ticket( $event_id, 1, [
+		$this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity'   => 5,
 				'_stock'      => 3,
@@ -341,7 +341,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_return_true_if_event_has_unlimited_tickets() {
 		$event_id = $this->factory()->event->create();
 
-		$this->create_paypal_ticket( $event_id, 1, [
+		$this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity' => - 1,
 			],
@@ -389,7 +389,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 			],
 		] );
 
-		$this->create_paypal_ticket( $event_id, 1, [
+		$this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity'   => 5,
 				'_stock'      => 0,
@@ -433,7 +433,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 		$event_id = $this->factory()->event->create();
 
 		// not sold out
-		$this->create_paypal_ticket( $event_id, 1, [
+		$this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity' => 5,
 			],
@@ -463,7 +463,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 		] );
 
 		// sold out
-		$this->create_paypal_ticket( $event_id, 1, [
+		$this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity'   => 5,
 				'_stock'      => 0,
@@ -491,7 +491,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 				'_capacity' => 5,
 			],
 		] );
-		$this->create_paypal_ticket( $event_id, 1, [
+		$this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity' => 5,
 			],
@@ -550,7 +550,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 		] );
 
 		// sold out
-		$this->create_paypal_ticket( $event_id, 1, [
+		$this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity'   => 5,
 				'_stock'      => 0,
@@ -607,7 +607,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_properly_detect_a_tribe_commerce_ticket_as_a_ticket() {
 		$event_id  = $this->factory()->event->create();
-		$ticket_id = $this->create_paypal_ticket( $event_id, 1 );
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1 );
 		$is_ticket = tribe_events_product_is_ticket( $ticket_id );
 
 		$this->assertTrue( $is_ticket, $ticket_id );
@@ -670,7 +670,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertTrue( $rsvp_on_sale, 'RSVP with no date should show as on sale' );
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $event_id, 1 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $event_id, 1 );
 		$ticket_on_sale   = tribe_events_ticket_is_on_sale( tribe( 'tickets.commerce.paypal' )->get_ticket( $event_id, $paypal_ticket_id ) );
 
 		$this->assertTrue( $ticket_on_sale, 'Ticket with no date should show as on sale' );
@@ -690,7 +690,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertTrue( $rsvp_on_sale, 'RSVP with future end date should show as on sale' );
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $event_id, 1 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $event_id, 1 );
 		update_post_meta( $paypal_ticket_id, '_ticket_end_date', date( 'Y-m-d H:i:s', strtotime( '+10 days' ) ) );
 		$ticket_on_sale = tribe_events_ticket_is_on_sale( tribe( 'tickets.commerce.paypal' )->get_ticket( $event_id, $paypal_ticket_id ) );
 
@@ -711,7 +711,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertFalse( $rsvp_on_sale, 'RSVP with past end date should show as not on sale' );
 
-		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity' => 5,
 			],
@@ -769,7 +769,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_return_the_event_for_a_tribe_commerce_ticket() {
 		$event_id       = $this->factory()->event->create();
-		$ticket_id      = $this->create_paypal_ticket( $event_id, 1, [
+		$ticket_id      = $this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity' => 5,
 			],
@@ -788,7 +788,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_return_the_correct_providers() {
 		$event_id         = $this->factory()->event->create();
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $event_id );
-		$paypal_ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity' => 5,
 			],
@@ -830,7 +830,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertCount( count( $rsvp_attendees ), tribe_tickets_get_attendees( $event_id ) );
 
-		$paypal_ticket_id = $this->create_paypal_ticket( $event_id, 2 );
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $event_id, 2 );
 		$paypal_attendees = $this->create_many_attendees_for_ticket( 15, $paypal_ticket_id, $event_id );
 
 		// Confirm that caching is not in play as a result of a potential failure below.
@@ -857,7 +857,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$capacity = tribe_tickets_get_capacity( $rsvp_ticket_id );
 
-		$this->assertEquals( '10', $capacity );
+		$this->assertEquals( 10, $capacity );
 	}
 
 	/**
@@ -869,7 +869,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 	public function it_should_get_capacity_from_a_ticket() {
 		$event_id = $this->factory()->event->create();
-		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity'   => 10,
 				'_stock'      => 5,
@@ -879,7 +879,200 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$capacity = tribe_tickets_get_capacity( $ticket_id );
 
-		$this->assertEquals( '10', $capacity );
+		$this->assertEquals( 10, $capacity );
+	}
+
+	/**
+	 * @test
+	 * it should not get capacity from an event
+	 *
+	 * @covers tribe_tickets_get_capacity
+	 */
+
+	public function it_should_not_get_capacity_from_an_event() {
+		$event_id = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => 10,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_tickets_get_capacity( $event_id );
+
+		$this->assertEquals( null, $capacity, 'tribe_tickets_get_capacity() should not get capacity from an event or post if it only has a ticket with the capacity set' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct capacity for an RSVP
+	 *
+	 * @covers tribe_get_event_capacity
+	 */
+	public function it_should_get_the_correct_capacity_for_an_rsvp() {
+		$event_id = $this->factory()->event->create();
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'   => 10,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_get_event_capacity( $event_id );
+
+		$this->assertEquals( 10, $capacity, 'Incorrect event capacity for a single RSVP.' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct capacity for an unlimited RSVP
+	 *
+	 * @covers tribe_get_event_capacity
+	 */
+	public function it_should_get_the_correct_capacity_for_an_unlimited_rsvp() {
+		$event_id = $this->factory()->event->create();
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'   => -1,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_get_event_capacity( $event_id );
+
+		$this->assertEquals( -1, $capacity, 'Incorrect event capacity for a single unlimited RSVP. ' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct capacity when one RSVP is unlimited
+	 *
+	 * @covers tribe_get_event_capacity
+	 */
+	public function it_should_get_the_correct_capacity_when_one_rsvp_is_unlimited() {
+		$event_id = $this->factory()->event->create();
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'   => 10,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$rsvp_ticket_id_b = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'   => -1,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_get_event_capacity( $event_id );
+
+		$this->assertEquals( -1, $capacity, 'Incorrect event capacity for a single unlimited RSVP.' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct capacity for a ticket
+	 *
+	 * @covers tribe_get_event_capacity
+	 */
+	public function it_should_get_the_correct_capacity_for_a_ticket() {
+		$event_id = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => 10,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_get_event_capacity( $event_id );
+
+		$this->assertEquals( 10, $capacity, 'Incorrect event capacity for a single ticket.' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct capacity for an unlimited ticket
+	 *
+	 * @covers tribe_get_event_capacity
+	 */
+	public function it_should_get_the_correct_capacity_for_an_unlimited_ticket() {
+		$event_id = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => -1,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_get_event_capacity( $event_id );
+
+		$this->assertEquals( -1, $capacity, 'Incorrect event capacity for a single unlimited ticket.' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct capacity when one ticket is unlimited
+	 *
+	 * @covers tribe_get_event_capacity
+	 */
+	public function it_should_get_the_correct_capacity_when_one_ticket_is_unlimited() {
+		$event_id = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => 10,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$ticket_id_b = $this->create_paypal_ticket_basic( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => -1,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_get_event_capacity( $event_id );
+
+		$this->assertEquals( -1, $capacity, 'Incorrect event capacity for a single unlimited ticket.' );
+	}
+
+	/**
+	 * @test
+	 * It should get the correct capacity for a mix of RSVPs and tickets
+	 *
+	 * @covers tribe_get_event_capacity
+	 */
+	public function it_should_get_the_correct_capacity_for_a_mix_of_rsvps_and_tickets() {
+		$event_id = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => 10,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'   => 10,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_get_event_capacity( $event_id );
+
+		$this->assertEquals( '20', $capacity, 'Incorrect event capacity for a mix of rsvps and tickets.' );
 	}
 
 	/**
@@ -890,7 +1083,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_delete_capacity_from_a_ticket() {
 		$event_id  = $this->factory()->event->create();
-		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity'   => 10,
 			],
@@ -918,7 +1111,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_delete_capacity_from_an_event() {
 		$event_id  = $this->factory()->event->create();
-		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity'   => 10,
 			],
@@ -944,8 +1137,8 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_delete_capacity_from_a_post() {
 		$this->allow_posts();
-		$post_id   = $this->factory()->post->create();
-		$ticket_id = $this->create_paypal_ticket( $post_id, 1, [
+		$post_id   = (int) $this->factory()->post->create();
+		$ticket_id = $this->create_paypal_ticket_basic( $post_id, 1, [
 			'meta_input' => [
 				'_capacity'   => 10,
 			],
@@ -970,7 +1163,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_update_capacity_for_a_ticket() {
 		$event_id  = $this->factory()->event->create();
-		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity'   => 10,
 			],
@@ -998,7 +1191,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_update_capacity_for_an_event() {
 		$event_id  = $this->factory()->event->create();
-		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity'   => 10,
 			],
@@ -1017,7 +1210,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * it should update capacity for a post
+	 * It should update capacity for a post
 	 * Worth noting that this does NOT change the ticket capacity!
 	 *
 	 * @covers tribe_tickets_update_capacity
@@ -1025,7 +1218,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_update_capacity_for_a_post() {
 		$this->allow_posts();
 		$post_id   = $this->factory()->post->create();
-		$ticket_id = $this->create_paypal_ticket( $post_id, 1, [
+		$ticket_id = (int) $this->create_paypal_ticket_basic( $post_id, 1, [
 			'meta_input' => [
 				'_capacity'   => 10,
 			],
@@ -1050,7 +1243,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_get_readable_amount_for_ticket_with_own_capacity() {
 		$event_id  = $this->factory()->event->create();
-		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity'   => 10,
 			],
@@ -1071,7 +1264,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_get_readable_amount_for_ticket_with_unlimited_capacity() {
 		$event_id  = $this->factory()->event->create();
-		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity'   => -1,
 			],
@@ -1092,7 +1285,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_find_meta_fields_for_a_ticket() {
 		$event_id  = $this->factory()->event->create();
-		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1, [
 			'meta_input' => [
 				'_capacity'                   => 10,
 				'_tribe_tickets_meta_enabled' => true,
@@ -1122,7 +1315,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_not_find_meta_fields_for_a_ticket_when_there_isnt_any() {
 		$event_id  = $this->factory()->event->create();
-		$ticket_id = $this->create_paypal_ticket( $event_id, 1 );
+		$ticket_id = $this->create_paypal_ticket_basic( $event_id, 1 );
 		$rsvp_id   = $this->create_rsvp_ticket( $event_id );
 
 		$ticket_meta = tribe_tickets_has_meta_fields( $ticket_id );

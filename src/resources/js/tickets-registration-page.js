@@ -1,17 +1,17 @@
+/* eslint-disable max-len */
+/* global TribeCartEndpoint, TribeCurrency */
 // For compatibility purposes we add this
-if ( 'undefined' === typeof tribe ) {
-	tribe = {};
+if ( 'undefined' === typeof window.tribe ) {
+	window.tribe = {};
 }
 
-if ( 'undefined' === typeof tribe.tickets ) {
-	tribe.tickets = {};
+if ( 'undefined' === typeof window.tribe.tickets ) {
+	window.tribe.tickets = {};
 }
 
-tribe.tickets.registration = {};
+window.tribe.tickets.registration = {};
 
 ( function( $, obj ) {
-	'use strict';
-
 	/* Variables */
 
 	obj.document = $( document );
@@ -19,37 +19,37 @@ tribe.tickets.registration = {};
 	obj.hasChanges = {};
 
 	obj.selector = {
-		footerQuantity     : '.tribe-tickets__footer__quantity__number',
-		footerAmount       : '.tribe-tickets__footer__total .tribe-amount',
-		checkout           : '.tribe-tickets__registration__checkout',
-		checkoutButton     : '.tribe-tickets__item__registration__submit',
-		container          : '.tribe-tickets__registration',
-		eventContainer     : '.tribe-tickets__registration__event',
-		field              : {
-			text    : '.tribe-tickets__item__attendee__field__text',
+		footerQuantity: '.tribe-tickets__footer__quantity__number',
+		footerAmount: '.tribe-tickets__footer__total .tribe-amount',
+		checkout: '.tribe-tickets__registration__checkout',
+		checkoutButton: '.tribe-tickets__item__registration__submit',
+		container: '.tribe-tickets__registration',
+		eventContainer: '.tribe-tickets__registration__event',
+		field: {
+			text: '.tribe-tickets__item__attendee__field__text',
 			checkbox: '.tribe-tickets__item__attendee__field__checkbox',
-			select  : '.tribe-tickets__item__attendee__field__select',
-			radio   : '.tribe-tickets__item__attendee__field__radio',
+			select: '.tribe-tickets__item__attendee__field__select',
+			radio: '.tribe-tickets__item__attendee__field__radio',
 		},
-		fields             : '.tribe-tickets__item__attendee__fields',
-		fieldsError        : '.tribe-tickets__item__attendee__fields__error',
-		fieldsErrorAjax    : '.tribe-tickets__item__attendee__fields__error--ajax',
+		fields: '.tribe-tickets__item__attendee__fields',
+		fieldsError: '.tribe-tickets__item__attendee__fields__error',
+		fieldsErrorAjax: '.tribe-tickets__item__attendee__fields__error--ajax',
 		fieldsErrorRequired: '.tribe-tickets__item__attendee__fields__error--required',
-		fieldsSuccess      : '.tribe-tickets__item__attendee__fields__success',
-		form               : '#tribe-tickets__registration__form',
-		item               : '.tribe-tickets__item',
-		itemPrice          : '.tribe-amount',
-		itemQuantity       : '.tribe-ticket-quantity',
-		loader             : '.tribe-common-c-loader',
-		metaField          : '.ticket-meta',
-		metaItem           : '.tribe-ticket',
-		metaForm           : '.tribe-tickets__registration__content',
-		miniCart           : '#tribe-tickets__mini-cart',
-		status             : '.tribe-tickets__registration__status',
-		toggler            : '.tribe-tickets__registration__toggle__handler',
+		fieldsSuccess: '.tribe-tickets__item__attendee__fields__success',
+		form: '#tribe-tickets__registration__form',
+		item: '.tribe-tickets__item',
+		itemPrice: '.tribe-amount',
+		itemQuantity: '.tribe-ticket-quantity',
+		loader: '.tribe-common-c-loader',
+		metaField: '.ticket-meta',
+		metaItem: '.tribe-ticket',
+		metaForm: '.tribe-tickets__registration__content',
+		miniCart: '#tribe-tickets__mini-cart',
+		status: '.tribe-tickets__registration__status',
+		toggler: '.tribe-tickets__registration__toggle__handler',
 	};
 
-	var $tribe_registration = $( obj.selector.container );
+	const $tribeRegistration = $( obj.selector.container );
 
 	// Bail if there are no tickets on the current event/page/post
 	if ( ! $( obj.selector.eventContainer ).length ) {
@@ -63,62 +63,62 @@ tribe.tickets.registration = {};
 	 *
 	 */
 	obj.commerceSelector = {
-		edd                                              : 'Tribe__Tickets_Plus__Commerce__EDD__Main',
-		rsvp                                             : 'Tribe__Tickets__RSVP',
-		tpp                                              : 'Tribe__Tickets__Commerce__PayPal__Main',
-		Tribe__Tickets__Commerce__PayPal__Main           : 'tribe-commerce',
-		Tribe__Tickets__RSVP                             : 'rsvp',
-		Tribe__Tickets_Plus__Commerce__EDD__Main         : 'edd',
-		Tribe__Tickets_Plus__Commerce__WooCommerce__Main : 'woo',
-		tribe_eddticket                                  : 'edd',
-		tribe_tpp_attendees                              : 'tpp',
-		tribe_wooticket                                  : 'woo',
-		woo                                              : 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
+		edd: 'Tribe__Tickets_Plus__Commerce__EDD__Main',
+		rsvp: 'Tribe__Tickets__RSVP',
+		tpp: 'Tribe__Tickets__Commerce__PayPal__Main',
+		Tribe__Tickets__Commerce__PayPal__Main: 'tribe-commerce',
+		Tribe__Tickets__RSVP: 'rsvp',
+		Tribe__Tickets_Plus__Commerce__EDD__Main: 'edd',
+		Tribe__Tickets_Plus__Commerce__WooCommerce__Main: 'woo',
+		tribe_eddticket: 'edd',
+		tribe_tpp_attendees: 'tpp',
+		tribe_wooticket: 'woo',
+		woo: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
 	};
 
 	// Get the current provider & ID.
-	obj.provider = $tribe_registration.data( 'provider' );
+	obj.provider = $tribeRegistration.data( 'provider' );
 	obj.providerId = obj.commerceSelector[ obj.provider ];
 
 	/* Data Formatting / API Handling */
 
 	/**
-	 *
+	 * Get and format the meta to save.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @return obj Meta data object.
+	 * @return {object} Meta data object.
 	 */
 	obj.getMetaForSave = function() {
-		var $metaForm     = $( obj.selector.metaForm );
-		var $ticketRows = $metaForm.find( obj.selector.metaItem );
-		var meta    = [];
-		var tempMeta    = [];
+		const $metaForm     = $( obj.selector.metaForm );
+		const $ticketRows = $metaForm.find( obj.selector.metaItem );
+		const meta    = [];
+		const tempMeta    = [];
 		$ticketRows.each(
 			function() {
-				var data      = {};
-				var $row      = $( this );
-				var ticket_id = $row.data( 'ticketId' );
+				const data      = {};
+				const $row      = $( this );
+				const ticketId = $row.data( 'ticketId' );
 
-				var $fields = $row.find( obj.selector.metaField );
+				const $fields = $row.find( obj.selector.metaField );
 
 				// Skip tickets with no meta fields
 				if ( ! $fields.length ) {
 					return;
 				}
 
-				if ( ! tempMeta[ ticket_id ] ) {
-					tempMeta[ ticket_id ] = {};
-					tempMeta[ ticket_id ]['ticket_id'] = ticket_id;
-					tempMeta[ ticket_id ][ 'items' ] = [];
+				if ( ! tempMeta[ ticketId ] ) {
+					tempMeta[ ticketId ] = {};
+					tempMeta[ ticketId ].ticket_Id = ticketId;
+					tempMeta[ ticketId ].items = [];
 				}
 
 				$fields.each(
 					function() {
-						var $field  = $( this );
-						var value   = $field.val();
-						var isRadio = $field.is( ':radio' );
-						var name    = $field.attr( 'name' );
+						const $field  = $( this );
+						let value   = $field.val();
+						const isRadio = $field.is( ':radio' );
+						let name    = $field.attr( 'name' );
 
 						// Grab everything after the last bracket `[`.
 						name = name.split( '[' );
@@ -128,7 +128,7 @@ tribe.tickets.registration = {};
 						if ( isRadio || $field.is( ':checkbox' ) ) {
 							if ( ! $field.prop( 'checked' ) ) {
 								// If empty radio field, if field already has a value, skip setting it as empty.
-								if ( isRadio && '' !== data[name] ) {
+								if ( isRadio && '' !== data[ name ] ) {
 									return;
 								}
 
@@ -136,60 +136,59 @@ tribe.tickets.registration = {};
 							}
 						}
 
-						data[name] = value;
+						data[ name ] = value;
 					}
 				);
 
-				tempMeta[ ticket_id ]['items'].push( data );
+				tempMeta[ ticketId ].items.push( data );
 			}
 		);
 
 		Object.keys( tempMeta ).forEach( function( index ) {
-			var newArr = {
-				'ticket_id': index,
-				'items': tempMeta[index]['items']
+			const newArr = {
+				ticket_id: index,
+				items: tempMeta[ index ].items,
 			};
 			meta.push( newArr );
 		} );
 
 		return meta;
-	}
-
+	};
 
 	/**
 	 * Get ticket data to send to cart.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @return obj Tickets data object.
+	 * @return {object} Tickets data object.
 	 */
 	obj.getTicketsForSave = function() {
-		var tickets   = [];
-		var $cartForm = $( obj.selector.miniCart );
+		const tickets   = [];
+		let $cartForm = $( obj.selector.miniCart );
 
 		// Handle non-modal instances
 		if ( ! $cartForm.length ) {
 			$cartForm = $( obj.selector.container );
 		}
 
-		var $ticketRows = $cartForm.find( obj.selector.item );
+		const $ticketRows = $cartForm.find( obj.selector.item );
 
 		$ticketRows.each(
 			function() {
-				var $row        = $( this );
-				var ticket_id    = $row.data( 'ticketId' );
-				var qty          = $row.find( obj.selector.itemQuantity ).text();
+				const $row        = $( this );
+				const ticketId    = $row.data( 'ticketId' );
+				const qty          = $row.find( obj.selector.itemQuantity ).text();
 
-				var data          = {};
-				data['ticket_id'] = ticket_id;
-				data['quantity']  = qty;
+				const data          = {};
+				data.ticket_id = ticketId;
+				data.quantity = qty;
 
 				tickets.push( data );
 			}
 		);
 
 		return tickets;
-	}
+	};
 
 	/* Prefill Functions */
 
@@ -197,19 +196,17 @@ tribe.tickets.registration = {};
 	 * Init the form prefills ( cart and AR forms ).
 	 *
 	 * @since 4.11.0
-	 *
-	 * @return void
 	 */
 	obj.initFormPrefills = function() {
 		$.ajax( {
-			type    : 'GET',
-			data    : {
+			type: 'GET',
+			data: {
 				provider: obj.providerId,
 				post_id: obj.postId,
 			},
 			dataType: 'json',
-			url     : obj.getRestEndpoint(),
-			success : function ( data ) {
+			url: obj.getRestEndpoint(),
+			success: function( data ) {
 				if ( data.tickets ) {
 					obj.prefillCartForm( $( obj.selector.miniCart ), data.tickets );
 				}
@@ -221,109 +218,105 @@ tribe.tickets.registration = {};
 			},
 			complete: function() {
 				obj.loaderHide();
-			}
+			},
 		} );
-	}
+	};
 
 	/**
 	 * Appends AR fields on page load.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param obj meta The ticket meta we are usign to add "blocks".
+	 * @param {object} data The ticket meta we are using to add "blocks".
 	 */
-	obj.appendARFields = function ( data ) {
-		var tickets      = data.tickets;
-		var meta         = data.meta;
-		var nonMetaCount = 0;
-		var metaCount    = 0;
+	obj.appendARFields = function( data ) {
+		const tickets      = data.tickets;
+		let nonMetaCount = 0;
+		let metaCount    = 0;
 
 		$.each( tickets, function( index, ticket ) {
-			var ticket_meta       = meta.filter( obj => { return obj.ticket_id === ticket.ticket_id; } );
-			var ticketTemplate    = window.wp.template( 'tribe-registration--' + ticket.ticket_id );
-			var $ticket_container = $tribe_registration.find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticket.ticket_id + '"]' );
-			var counter           = 1;
+			const ticketTemplate    = window.wp.template( 'tribe-registration--' + ticket.ticket_id );
+			const $ticketContainer  = $tribeRegistration.find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticket.ticket_id + '"]' );
+			const counter           = 1;
 
-			if ( ! $ticket_container.length ) {
+			if ( ! $ticketContainer.length ) {
 				nonMetaCount += ticket.quantity;
 			} else {
 				metaCount += ticket.quantity;
 			}
 
-			$ticket_container.addClass( 'tribe-tickets--has-tickets' );
+			$ticketContainer.addClass( 'tribe-tickets--has-tickets' );
 
-			for ( var i = counter; i <= ticket.quantity; ++i ) {
-				var data = { 'attendee_id': i };
+			for ( let i = counter; i <= ticket.quantity; ++i ) {
+				const datum = { attendee_id: i };
 				try {
-					$ticket_container.append( ticketTemplate( data ) );
-				} catch( error ) {
+					$ticketContainer.append( ticketTemplate( datum ) );
+				} catch ( error ) {
 					// template doesn't exist - the ticket has no meta.
 				}
-
 			}
-
 		} );
 
 		obj.maybeShowNonMetaNotice( nonMetaCount, metaCount );
-	}
+	};
 
 	obj.maybeShowNonMetaNotice = function( nonMetaCount, metaCount ) {
-		var $notice = $( '.tribe-tickets__notice--non-ar' );
+		const $notice = $( '.tribe-tickets__notice--non-ar' );
 		if ( 0 < nonMetaCount && 0 < metaCount ) {
 			$( '#tribe-tickets__non-ar-count' ).text( nonMetaCount );
 			$notice.removeClass( 'tribe-common-a11y-hidden' );
 		} else {
 			$notice.addClass( 'tribe-common-a11y-hidden' );
 		}
-	}
+	};
 
 	/**
 	 * Prefills the AR fields from supplied data.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param meta Data to fill the form in with.
-	 * @param length Starting pointer for partial fill-ins.
-	 *
-	 * @return void
+	 * @param {object} data Data to fill the form in with.
+	 * @param {number} len Starting pointer for partial fill-ins.
 	 */
-	obj.prefillMetaForm = function( data, length ) {
+	obj.prefillMetaForm = function( data, len ) {
+		let length = len;
 		if ( undefined === data || 0 >= data.length ) {
 			return;
 		}
 
 		if ( undefined === length ) {
-			var length = 0;
+			length = 0;
 		}
 
-		var $form = $tribe_registration;
-		var $containers = $form.find( '.tribe-tickets__item__attendee__fields__container' );
-		var meta = data.meta;
+		const $form = $tribeRegistration;
+		const $containers = $form.find( '.tribe-tickets__item__attendee__fields__container' );
+		let meta = data.meta;
+
 		if ( 0 < length ) {
-			var meta = meta.splice( 0, length - 1 );
+			meta = meta.splice( 0, length - 1 );
 		}
 
-		$.each( meta, function( index, ticket ) {
-			var $current_containers = $containers.filter( `[data-ticket-id="${ticket.ticket_id}"]` );
+		$.each( meta, function( metaIndex, ticket ) {
+			const $currentContainers = $containers.filter( '[data-ticket-id="' + ticket.ticket_id + '"]' );
 
-			if ( ! $current_containers.length ) {
+			if ( ! $currentContainers.length ) {
 				return;
 			}
 
-			var current = 0;
-			$.each( ticket.items, function( index, data ) {
-				if ( 'object' !== typeof data ) {
+			let current = 0;
+			$.each( ticket.items, function( ticketIndex, datum ) {
+				if ( 'object' !== typeof datum ) {
 					return;
 				}
 
-				var $ticket_containers = $current_containers.find( '.tribe-ticket' );
-				$.each( data, function( index, value ) {
-					var $field = $ticket_containers.eq( current ).find( `[name*="${index}"]` );
+				const $ticketContainers = $currentContainers.find( '.tribe-ticket' );
+				$.each( datum, function( index, value ) {
+					const $field = $ticketContainers.eq( current ).find( '[name*="' + index + '"]' );
 					if ( ! $field.is( ':radio' ) && ! $field.is( ':checkbox' ) ) {
 						$field.val( value );
 					} else {
-						$field.each( function( index ) {
-							var $item = $( this );
+						$field.each( function() {
+							const $item = $( this );
 							if ( value === $item.val() ) {
 								$item.prop( 'checked', true );
 							}
@@ -334,7 +327,7 @@ tribe.tickets.registration = {};
 				current++;
 			} );
 		} );
-	}
+	};
 
 	/**
 	 * Update all the footer info.
@@ -344,25 +337,23 @@ tribe.tickets.registration = {};
 	obj.updateFooter = function() {
 		obj.updateFooterCount();
 		obj.updateFooterAmount();
-	}
+	};
 
 	/**
 	 * Adjust the footer count for +/-.
 	 *
 	 * @since 4.11.0
-	 *
-	 * @return void
 	 */
 	obj.updateFooterCount = function() {
-		var $form       = $( obj.selector.miniCart );
-		var $field      = $form.find( obj.selector.footerQuantity );
-		var footerCount = 0;
-		var $qtys       = $form.find( obj.selector.itemQuantity );
+		const $form       = $( obj.selector.miniCart );
+		const $field      = $form.find( obj.selector.footerQuantity );
+		let footerCount = 0;
+		const $qtys       = $form.find( obj.selector.itemQuantity );
 
-		$qtys.each( function(){
-			var new_quantity = parseInt( $( this ).text(), 10 );
-			new_quantity     = isNaN( new_quantity ) ? 0 : new_quantity;
-			footerCount      += new_quantity;
+		$qtys.each( function() {
+			let newQuantity = parseInt( $( this ).text(), 10 );
+			newQuantity = isNaN( newQuantity ) ? 0 : newQuantity;
+			footerCount += newQuantity;
 		} );
 
 		if ( 0 > footerCount ) {
@@ -370,27 +361,25 @@ tribe.tickets.registration = {};
 		}
 
 		$field.text( footerCount );
-	}
+	};
 
 	/**
 	 * Adjust the footer total/amount for +/-.
 	 *
 	 * @since 4.11.0
-	 *
-	 * @return void
 	 */
 	obj.updateFooterAmount = function() {
-		var $form        = $( obj.selector.miniCart );
-		var $field       = $form.find( obj.selector.footerAmount );
-		var footerAmount = 0;
-		var $qtys        = $form.find( obj.selector.itemQuantity );
+		const $form        = $( obj.selector.miniCart );
+		const $field       = $form.find( obj.selector.footerAmount );
+		let footerAmount = 0;
+		const $qtys        = $form.find( obj.selector.itemQuantity );
 
 		$qtys.each( function() {
-			var $qty = $( this );
-			var $price   = $qty.closest( obj.selector.item ).find( obj.selector.itemPrice ).first( 0 );
-			var quantity = parseInt( $qty.text(), 10 );
-			quantity     = isNaN( quantity ) ? 0 : quantity;
-			var cost     = obj.cleanNumber( $price.text() ) * quantity;
+			const $qty = $( this );
+			const $price   = $qty.closest( obj.selector.item ).find( obj.selector.itemPrice ).first( 0 );
+			let quantity = parseInt( $qty.text(), 10 );
+			quantity = isNaN( quantity ) ? 0 : quantity;
+			const cost     = obj.cleanNumber( $price.text() ) * quantity;
 			footerAmount += cost;
 		} );
 
@@ -398,33 +387,32 @@ tribe.tickets.registration = {};
 			return;
 		}
 
-		$field.text( obj.numberFormat ( footerAmount ) );
-	}
+		$field.text( obj.numberFormat( footerAmount ) );
+	};
 
 	/**
 	 * Prefill the Mini-Cart.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @returns {*}
+	 * @param {object} $form The mini-cart form.
+	 * @param {object} tickets THe ticket data.
 	 */
-	obj.prefillCartForm = function ( $form, tickets ) {
-		$.each( tickets, function ( index, value ) {
-			var $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
+	obj.prefillCartForm = function( $form, tickets ) {
+		$.each( tickets, function( index, value ) {
+			const $item = $form.find( '[data-ticket-id="' + value.ticket_id + '"]' );
 
 			if ( $item ) {
-				var pricePer = $item.find( '.tribe-tickets__item__extra__price .tribe-amount' ).text();
+				const pricePer = $item.find( '.tribe-tickets__sale_price .tribe-amount' ).text();
 				$item.find( '.tribe-ticket-quantity' ).html( value.quantity );
-				var price = value.quantity * obj.cleanNumber( pricePer );
+				let price = value.quantity * obj.cleanNumber( pricePer );
 				price = obj.numberFormat( price );
 				$item.find( '.tribe-tickets__item__total .tribe-amount' ).html( price );
 			}
 		} );
 
 		obj.updateFooter();
-
 	};
-
 
 	/* Validation */
 
@@ -434,19 +422,19 @@ tribe.tickets.registration = {};
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param $form jQuery object that is the form we are validating.
+	 * @param {object} $form jQuery object that is the form we are validating.
 	 *
-	 * @return boolean If the form validates.
+	 * @return {boolean} If the form validates.
 	 */
 	obj.validateForm = function( $form ) {
-		var $containers     = $form.find( obj.selector.metaItem );
-		var formValid       = true;
-		var invalidTickets  = 0;
+		const $containers     = $form.find( obj.selector.metaItem );
+		let formValid       = true;
+		let invalidTickets  = 0;
 
 		$containers.each(
 			function() {
-				var $container     = $( this );
-				var validContainer = obj.validateBlock( $container );
+				const $container     = $( this );
+				const validContainer = obj.validateBlock( $container );
 
 				if ( ! validContainer ) {
 					invalidTickets++;
@@ -455,25 +443,25 @@ tribe.tickets.registration = {};
 			}
 		);
 
-		return [formValid, invalidTickets];
-	}
+		return [ formValid, invalidTickets ];
+	};
 
 	/**
 	 * Validates and adds/removes error classes from a ticket meta block.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param $container jQuery object that is the block we are validating.
+	 * @param {object} $container jQuery object that is the block we are validating.
 	 *
-	 * @return boolean True if all fields validate, false otherwise.
+	 * @return {boolean} True if all fields validate, false otherwise.
 	 */
 	obj.validateBlock = function( $container ) {
-		var $fields = $container.find( obj.selector.metaField );
-		var validBlock = true;
+		const $fields = $container.find( obj.selector.metaField );
+		let validBlock = true;
 		$fields.each(
 			function() {
-				var $field = $( this );
-				var isValidfield = obj.validateField( $field[0] );
+				const $field = $( this );
+				const isValidfield = obj.validateField( $field[ 0 ] );
 
 				if ( ! isValidfield ) {
 					validBlock = false;
@@ -488,7 +476,7 @@ tribe.tickets.registration = {};
 		}
 
 		return validBlock;
-	}
+	};
 
 	/**
 	 * Validate Checkbox/Radio group.
@@ -497,18 +485,18 @@ tribe.tickets.registration = {};
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param $group The jQuery object for the checkbox group.
+	 * @param {object} $group The jQuery object for the checkbox group.
 	 *
-	 * @return boolean
+	 * @return {boolean} If the input group is valid.
 	 */
 	obj.validateCheckboxRadioGroup = function( $group ) {
-		var $checkboxes   = $group.find( obj.selector.metaField );
-		var checkboxValid = false;
-		var required      = true;
+		const $checkboxes   = $group.find( obj.selector.metaField );
+		let checkboxValid = false;
+		let required      = true;
 
 		$checkboxes.each(
 			function() {
-				var $this = $( this );
+				const $this = $( this );
 				if ( $this.is( ':checked' ) ) {
 					checkboxValid = true;
 				}
@@ -519,30 +507,28 @@ tribe.tickets.registration = {};
 			}
 		);
 
-		var valid = ! required || checkboxValid;
+		const valid = ! required || checkboxValid;
 
 		return valid;
-	}
+	};
 
 	/**
 	 * Adds/removes error classes from a single field.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param input DOM Object that is the field we are validating.
+	 * @param {object} input DOM Object that is the field we are validating.
 	 *
-	 * @return boolean
+	 * @return {boolean} If the field is valid.
 	 */
 	obj.validateField = function( input ) {
-		var isValidfield = true;
-		var $input       = $( input );
-		var isValidfield = input.checkValidity();
+		const $input       = $( input );
+		let isValidfield = input.checkValidity();
 
 		if ( ! isValidfield ) {
-			var $input = $( input );
 			// Got to be careful of required checkbox/radio groups...
 			if ( $input.is( ':checkbox' ) || $input.is( ':radio' ) ) {
-				var $group = $input.closest( '.tribe-common-form-control-checkbox-radio-group' );
+				const $group = $input.closest( '.tribe-common-form-control-checkbox-radio-group' );
 
 				if ( $group.length ) {
 					isValidfield = obj.validateCheckboxRadioGroup( $group );
@@ -559,7 +545,7 @@ tribe.tickets.registration = {};
 		}
 
 		return isValidfield;
-	}
+	};
 
 	/* DOM Manipulation */
 
@@ -568,20 +554,22 @@ tribe.tickets.registration = {};
 	 *
 	 * @since 4.11.0
 	 *
+	 * @param {string} input The triggering input selector string.
 	 */
 	obj.focusTicketBlock = function( input ) {
 		$( input ).closest( obj.selector.metaItem ).addClass( 'tribe-ticket-item__has-focus' );
-	}
+	};
 
 	/**
 	 * Remove focus effect from ticket block.
 	 *
 	 * @since 4.11.0
 	 *
+	 * @param {string} input The triggering input selector string.
 	 */
 	obj.unfocusTicketBlock = function( input ) {
 		$( input ).closest( obj.selector.metaItem ).removeClass( 'tribe-ticket-item__has-focus' );
-	}
+	};
 
 	/**
 	 * Show the loader/spinner.
@@ -590,7 +578,7 @@ tribe.tickets.registration = {};
 	 */
 	obj.loaderShow = function() {
 		$( obj.selector.loader ).removeClass( 'tribe-common-a11y-hidden' );
-	}
+	};
 
 	/**
 	 * Hide the loader/spinner.
@@ -599,7 +587,7 @@ tribe.tickets.registration = {};
 	 */
 	obj.loaderHide = function() {
 		$( obj.selector.loader ).addClass( 'tribe-common-a11y-hidden' );
-	}
+	};
 
 	/* Utility */
 
@@ -607,52 +595,55 @@ tribe.tickets.registration = {};
 	 * Get the REST endpoint
 	 *
 	 * @since 4.11.0
+	 *
+	 * @returns {string} The endpoint URL.
 	 */
 	obj.getRestEndpoint = function() {
-		var url = TribeCartEndpoint.url;
+		const url = TribeCartEndpoint.url;
 		return url;
-	}
+	};
 
 	/**
 	 * Get the Currency Formatting for a Provider.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @returns {*}
+	 * @returns {string} The currency format.
 	 */
-	obj.getCurrencyFormatting = function () {
-		var currency = JSON.parse( TribeCurrency.formatting );
-		var format   = currency[ obj.commerceSelector[ obj.providerId ] ];
+	obj.getCurrencyFormatting = function() {
+		const currency = JSON.parse( TribeCurrency.formatting );
+		const format   = currency[ obj.commerceSelector[ obj.providerId ] ];
 		return format;
 	};
 
 	/**
-	 * Removes separator characters and converts deciaml character to '.'
+	 * Removes separator characters and converts decimal character to '.'
 	 * So they play nice with other functions.
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param number The number to clean.
-	 * @returns {string}
+	 * @param {string|number} num The number to clean.
+	 * @returns {string} The cleaned number.
 	 */
-	obj.cleanNumber = function( number ) {
-		var format = obj.getCurrencyFormatting();
+	obj.cleanNumber = function( num ) {
+		let number   = num;
+		const format = obj.getCurrencyFormatting();
 		// we run into issue when the two symbols are the same -
 		// which appears to happen by default with some providers.
-		var same = format.thousands_sep === format.decimal_point;
+		const same = format.thousands_sep === format.decimal_point;
 
 		if ( ! same ) {
 			number = number.split( format.thousands_sep ).join( '' );
 			number = number.split( format.decimal_point ).join( '.' );
 		} else {
-			var dec_place = number.length - ( format.number_of_decimals + 1 );
-			number = number.substr( 0, dec_place ) + '_' + number.substr( dec_place + 1 );
+			const decPlace = number.length - ( format.number_of_decimals + 1 );
+			number = number.substr( 0, decPlace ) + '_' + number.substr( decPlace + 1 );
 			number = number.split( format.thousands_sep ).join( '' );
 			number = number.split( '_' ).join( '.' );
 		}
 
 		return number;
-	}
+	};
 
 	/**
 	 * Format the number according to provider settings.
@@ -660,44 +651,44 @@ tribe.tickets.registration = {};
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param number The number to format.
+	 * @param {string|number} number The number to format.
 	 *
-	 * @returns {string}
+	 * @returns {string} The formatted number.
 	 */
-	obj.numberFormat = function ( number ) {
-		var format = obj.getCurrencyFormatting();
+	obj.numberFormat = function( number ) {
+		const format = obj.getCurrencyFormatting();
 
 		if ( ! format ) {
 			return false;
 		}
 
-		var decimals      = format.number_of_decimals;
-		var dec_point     = format.decimal_point;
-		var thousands_sep = format.thousands_sep;
-		var n             = !isFinite( +number ) ? 0 : +number;
-		var prec          = !isFinite( +decimals ) ? 0 : Math.abs( decimals );
-		var sep           = ( 'undefined' === typeof thousands_sep ) ? ',' : thousands_sep;
-		var dec           = ( 'undefined' === typeof dec_point ) ? '.' : dec_point;
-		var toFixedFix    = function ( n, prec ) {
+		const decimals      = format.number_of_decimals;
+		const decPoint     = format.decimal_point;
+		const thousandsSep = format.thousands_sep;
+		const n             = ! isFinite( +number ) ? 0 : +number;
+		const prec          = ! isFinite( +decimals ) ? 0 : Math.abs( decimals );
+		const sep           = ( 'undefined' === typeof thousandsSep ) ? ',' : thousandsSep;
+		const dec           = ( 'undefined' === typeof decPoint ) ? '.' : decPoint;
+		const toFixedFix    = function( num, precision ) {
 			// Fix for IE parseFloat(0.55).toFixed(0) = 0;
-			var k = Math.pow( 10, prec );
+			const k = Math.pow( 10, precision );
 
-			return Math.round( n * k ) / k;
+			return Math.round( num * k ) / k;
 		};
 
-		var s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
+		const s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
 
-		if ( s[0].length > 3 ) {
-			s[0] = s[0].replace( /\B(?=(?:\d{3} )+(?!\d))/g, sep );
+		if ( s[ 0 ].length > 3 ) {
+			s[ 0 ] = s[ 0 ].replace( /\B(?=(?:\d{3} )+(?!\d))/g, sep );
 		}
 
-		if ( ( s[1] || '' ).length < prec ) {
-			s[1] = s[1] || '';
-			s[1] += new Array( prec - s[1].length + 1 ).join( '0' );
+		if ( ( s[ 1 ] || '' ).length < prec ) {
+			s[ 1 ] = s[ 1 ] || '';
+			s[ 1 ] += new Array( prec - s[ 1 ].length + 1 ).join( '0' );
 		}
 
 		return s.join( dec );
-	}
+	};
 
 	/* Event Handlers */
 
@@ -711,7 +702,7 @@ tribe.tickets.registration = {};
 		'focus',
 		'.tribe-ticket .ticket-meta',
 		function( e ) {
-			var input      = e.target;
+			const input      = e.target;
 			obj.focusTicketBlock( input );
 		}
 	);
@@ -726,7 +717,7 @@ tribe.tickets.registration = {};
 		'blur',
 		'.tribe-ticket .ticket-meta',
 		function( e ) {
-			var input      = e.target;
+			const input      = e.target;
 			obj.unfocusTicketBlock( input );
 		}
 	);
@@ -735,25 +726,21 @@ tribe.tickets.registration = {};
 	 * Handle AR submission.
 	 *
 	 * @since 4.11.0
-	 *
-	 * @return void
 	 */
 	obj.document.on(
 		'click',
 		obj.selector.checkoutButton,
 		function( e ) {
 			e.preventDefault();
-			var $button      = $( this );
-			var $metaForm    = $( obj.selector.metaForm );
-			var $errorNotice = $( '.tribe-tickets__notice--error' );
-			var isValidForm  = obj.validateForm( $metaForm );
+			const $metaForm    = $( obj.selector.metaForm );
+			const $errorNotice = $( '.tribe-tickets__notice--error' );
+			const isValidForm  = obj.validateForm( $metaForm );
 
 			if ( ! isValidForm[ 0 ] ) {
-				$( [document.documentElement, document.body] ).animate(
+				$( [ document.documentElement, document.body ] ).animate(
 					{ scrollTop: $( '.tribe-tickets__registration' ).offset().top },
 					'slow'
 				);
-
 
 				$( '.tribe-tickets__notice--error__count' ).text( isValidForm[ 1 ] );
 				$errorNotice.show();
@@ -766,11 +753,11 @@ tribe.tickets.registration = {};
 			obj.loaderShow();
 
 			// save meta and cart
-			var params = {
+			const params = {
 				tribe_tickets_provider: obj.commerceSelector[ obj.tribe_ticket_provider ],
-				tribe_tickets_tickets : obj.getTicketsForSave(),
-				tribe_tickets_meta    : obj.getMetaForSave(),
-				tribe_tickets_post_id : obj.postId,
+				tribe_tickets_tickets: obj.getTicketsForSave(),
+				tribe_tickets_meta: obj.getMetaForSave(),
+				tribe_tickets_post_id: obj.postId,
 			};
 
 			$( '#tribe_tickets_ar_data' ).val( JSON.stringify( params ) );
@@ -784,16 +771,14 @@ tribe.tickets.registration = {};
 	 * Init the tickets registration script
 	 *
 	 * @since 4.9
-	 *
-	 * @return void
 	 */
 	obj.init = function() {
 		obj.loaderShow();
 		obj.initFormPrefills();
-	}
+	};
 
-	obj.document.on( 'ready', function( $ ) {
+	obj.document.on( 'ready', function() {
 		obj.init();
 	} );
-
-} )( jQuery, tribe.tickets.registration );
+} )( jQuery, window.tribe.tickets.registration );
+/* eslint-enable max-len */

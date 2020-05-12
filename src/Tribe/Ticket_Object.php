@@ -105,6 +105,15 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $sku;
 
 		/**
+		 * Holds the price suffix.
+		 *
+		 * @since 4.12.0
+		 *
+		 * @var string
+		 */
+		public $price_suffix;
+
+		/**
 		 * Holds the menu order for the ticket
 		 *
 		 * @since 4.6
@@ -315,7 +324,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			$event = $this->get_event();
 
-			if ( function_exists( 'tribe_is_past_event' ) && $event instanceof WP_Post ) {
+			if ( function_exists( 'tribe_is_past_event' ) && $event instanceof WP_Post && tribe_is_event( $event ) ) {
 				$is_past_event = tribe_is_past_event( $event );
 			}
 
@@ -424,7 +433,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$start = $this->start_date();
 			}
 
-			return empty( $start ) || $date < $start;
+			return ! empty( $start ) && $date < $start;
 		}
 
 		/**
@@ -443,7 +452,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$end = $this->end_date();
 			}
 
-			return empty( $end ) || $date > $end;
+			return ! empty( $end ) && $date > $end;
 		}
 
 		/**

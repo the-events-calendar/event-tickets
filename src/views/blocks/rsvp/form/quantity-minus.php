@@ -11,8 +11,12 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
+ * @version 4.11.3
  *
  */
 ?>
-<button class="tribe-block__rsvp__number-input-button tribe-block__rsvp__number-input-button--minus"></button>
+<button
+	type="button"
+	class="tribe-block__rsvp__number-input-button tribe-block__rsvp__number-input-button--minus"
+></button>

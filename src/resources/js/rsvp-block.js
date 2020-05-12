@@ -97,7 +97,7 @@ var tribe_tickets_rsvp_block = {
 		e.preventDefault();
 		var $input   = $( this ).parent().find( 'input[type="number"]' );
 		var increase = $( this ).hasClass( 'tribe-block__rsvp__number-input-button--plus' );
-		var step = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1
+		var step = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
 		var originalValue = Number( $input[ 0 ].value );
 
 		// stepUp or stepDown the input according to the button that was clicked
@@ -108,6 +108,10 @@ var tribe_tickets_rsvp_block = {
 
 			if ( typeof $input[ 0 ].stepUp === 'function' ) {
 				try {
+					// Bail if we're already in the max, safari has issues with stepUp() here.
+					if ( max < ( originalValue + step ) ) {
+						return;
+					}
 					$input[ 0 ].stepUp();
 				} catch ( ex ) {
 					$input[ 0 ].value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
@@ -133,6 +137,36 @@ var tribe_tickets_rsvp_block = {
 		if ( originalValue !== $input[ 0 ].value ) {
 			$input.trigger( 'change' );
 		}
+	};
+
+	/**
+	 * Handle the number input + and - actions
+	 *
+	 * @since 4.9
+	 *
+	 * @param {event} e input event
+	 */
+	my.events.handle_quantity_change_value = function( e ) {
+		e.preventDefault();
+
+		const $this = $( e.target );
+		const $form = $this.closest( 'form' );
+		const max = $this.attr( 'max' );
+		let maxQty = 0;
+		let newQuantity = parseInt( $this.val(), 10 );
+		newQuantity = isNaN( newQuantity ) ? 0 : newQuantity;
+
+		if ( max < newQuantity ) {
+			newQuantity = max;
+			$this.val( max );
+		}
+
+		if ( 0 > maxQty ) {
+			newQuantity += maxQty;
+			$this.val( newQuantity );
+		}
+
+		e.preventDefault();
 	};
 
 	/**
@@ -194,11 +228,9 @@ var tribe_tickets_rsvp_block = {
 		return (
 			$.trim( $name.val() ).length &&
 				$.trim( $email.val() ).length &&
-				parseFloat( $qty.val() ) > 0
+				parseInt( $qty.val() ) > 0
 		);
 	};
-
-
 
 	/**
 	 * Handle the form submission
@@ -280,6 +312,11 @@ var tribe_tickets_rsvp_block = {
 				'click',
 				'.tribe-block__rsvp__number-input-button--minus, .tribe-block__rsvp__number-input-button--plus',
 				my.events.handle_quantity_change
+			)
+			.on(
+				'change keyup',
+				'.tribe-tickets-quantity',
+				my.events.handle_quantity_change_value
 			)
 			.on(
 				'focus',
