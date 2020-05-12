@@ -65,10 +65,10 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	 * @param $params
 	 */
 	protected function set_params( $params ) {
-		$this->params = shortcode_atts( array(
-			'limit' => -1,
-			'user'  => get_current_user_id()
-		), $params, $this->shortcode_name );
+		$this->params = shortcode_atts( [
+			'limit' => - 1,
+			'user'  => get_current_user_id(),
+		], $params, $this->shortcode_name );
 	}
 
 	/**
@@ -76,6 +76,7 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	 */
 	protected function generate_attendance_list() {
 		$event_ids = $this->get_upcoming_attendances();
+
 		include Tribe__Tickets__Templates::get_template_hierarchy( 'shortcodes/my-attendance-list' );
 	}
 
@@ -86,96 +87,23 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	 * @return array
 	 */
 	protected function get_upcoming_attendances() {
-		global $wpdb;
+		/** @var \Tribe\Tickets\Repositories\Post_Repository $post_orm */
+		$post_orm = tribe( 'tickets.post-repository' );
 
-		// Use a limit if set to a positive value
-		$limit = $this->params['limit'] > 0
-			? 'LIMIT ' . $wpdb->prepare( '%d', $this->params['limit'] )
-			: '';
-
-		$keys = $this->build_escaped_key_list( $this->get_event_keys() );
-
-		$query = "
-			SELECT ID
-			FROM {$wpdb->postmeta} AS match_user
-
-			JOIN {$wpdb->postmeta} AS match_events
-			  ON match_events.post_id = match_user.post_id
-
-			JOIN {$wpdb->posts} AS event_list
-			  ON match_events.meta_value = ID
-
-			JOIN {$wpdb->postmeta} AS event_end_dates
-			  ON event_end_dates.post_id = ID
-
-			WHERE (
-				-- Match the user
-				match_user.meta_key = '_tribe_tickets_attendee_user_id'
-				AND match_user.meta_value = %d
-			) AND (
-				-- Restrict to upcoming events
-				match_events.meta_key IN ( $keys )
-				AND event_end_dates.meta_key = '_EventEndDateUTC'
-				AND event_end_dates.meta_value > %s
-			)
-			AND NOT EXISTS (
-				SELECT 1
-				  FROM {$wpdb->postmeta} ticket_status
-				 WHERE ticket_status.meta_key = '_wp_trash_meta_status'
-				   AND ticket_status.post_id = match_events.post_id
-			)
-			GROUP BY ID, event_end_dates.meta_value
-			ORDER BY event_end_dates.meta_value
-
-			$limit
-		";
-
-		return (array) $wpdb->get_col( $wpdb->prepare(
-			$query,
-			absint( $this->params['user'] ),
-			current_time( 'mysql' )
-		) );
-	}
-
-	/**
-	 * Provides an array containing the value of the ATTENDEE_EVENT_KEY class constant
-	 * for each active ticketing provider.
-	 *
-	 * @return array
-	 */
-	protected function get_event_keys() {
-		$event_keys = array();
-
-		foreach ( Tribe__Tickets__Tickets::modules() as $module_class => $module_instance ) {
-			/**
-			 * The usage of plain `$module_class::ATTENDEE_EVENT_KEY` will throw a `T_PAAMAYIM_NEKUDOTAYIM`
-			 * when using PHP 5.2, which is a fatal.
-			 *
-			 * So we have to construct the constant name using a string and use the `constant` function.
-			 */
-			if ( defined( "$module_class::ATTENDEE_EVENT_KEY" ) ) {
-				$event_keys[] = constant( "$module_class::ATTENDEE_EVENT_KEY" );
-			} else {
-				$event_keys[] = call_user_func( array( $module_class, 'get_key' ), 'ATTENDEE_EVENT_KEY' );
-			}
+		// Limit to a specific number of events.
+		if ( 0 < $this->params['limit'] ) {
+			$post_orm->per_page( $this->params['limit'] );
 		}
 
-		return $event_keys;
-	}
+		// Order by event date.
+		$post_orm->order_by( 'event_date', 'ASC' );
 
-	/**
-	 * Provides a quoted, comma separated and escaped list of meta keys used to link
-	 * attendee posts to event posts.
-	 *
-	 * @return string
-	 */
-	protected function build_escaped_key_list( array $keys ) {
-		global $wpdb;
+		// Events that have not yet ended.
+		$post_orm->by( 'ends_after', current_time( 'mysql' ) );
 
-		foreach ( $keys as &$key ) {
-			$key = $wpdb->prepare( '%s', $key );
-		}
+		// Events with attendees by the specific user ID.
+		$post_orm->by( 'attendee_user', $this->params['user'] );
 
-		return implode( ',', $keys );
+		return $post_orm->get_ids();
 	}
 }
