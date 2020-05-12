@@ -126,6 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Use unique HTML id for checkboxes and radio on the Attendee Registration fields to prevent conflicts. [ETP-306]
 * Fix - Update several templates to account for a passed post to be of an unregistered post type, such as for an Event post when The Events Calendar plugin is disabled. [ET-787]
 * Tweak - Output the internal Post ID to the Attendees Report's Event Title, each Ticket Name, and each Attendee. [ET-786]
+* Feature - Added new field types to choose from when requiring Attendee Information on a Ticket or RSVP: Email, URL, Number, Date of Birth, Date and Telephone, when using Event Tickets Plus.
 
 = [4.12.0] 2020-04-23 =
 
