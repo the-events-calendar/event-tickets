@@ -74,7 +74,7 @@ $classes     = [
 	<div>
 		<input
 				type="hidden"
-				class="tribe_horizontal_datepicker__value"
+				class="ticket-meta tribe_horizontal_datepicker__value"
 				name="<?php echo esc_attr( $field_name ); ?>"
 				value="<?php echo esc_attr( $value ); ?>"
 				<?php tribe_disabled( $disabled ); ?>
