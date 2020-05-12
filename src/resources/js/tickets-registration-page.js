@@ -222,6 +222,8 @@ window.tribe.tickets.registration = {};
 				if ( data.meta ) {
 					obj.appendARFields( data );
 					obj.prefillMetaForm( data );
+
+					window.dispatchEvent( new Event( 'tribe_et_after_form_prefills' ) );
 				}
 			},
 			complete: function() {
@@ -263,8 +265,6 @@ window.tribe.tickets.registration = {};
 					// template doesn't exist - the ticket has no meta.
 				}
 			}
-
-			window.dispatchEvent( new Event( 'tribe_et_after_append_ar_fields_ticket' ) );
 		} );
 
 		obj.maybeShowNonMetaNotice( nonMetaCount, metaCount );
