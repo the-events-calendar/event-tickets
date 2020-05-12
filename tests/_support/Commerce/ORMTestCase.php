@@ -1733,12 +1733,11 @@ class ORMTestCase extends Test_Case {
 		//
 		// Event1: RSVP and PayPal by User2, User3, and guests
 		//
+		$test_data['events'][] =
 		$event_id_one = $this->factory()->event->create( [
 			'post_title'  => 'Test event 1',
 			'post_author' => $user_id_one,
 		] );
-
-		$test_data['events'][] = $event_id_one;
 
 		// Create RSVP1 ticket on Event1
 		$rsvp_id_one = $this->create_rsvp_ticket( $event_id_one );
@@ -1821,7 +1820,8 @@ class ORMTestCase extends Test_Case {
 		//
 		// Event2: No author nor tickets (and therefore no attendees)
 		//
-		$test_data['events'][] = $this->factory()->event->create( [
+		$test_data['events'][] =
+		$event_id_two = $this->factory()->event->create( [
 			'post_title'  => 'Test event 2',
 			'post_author' => 0,
 		] );
@@ -1831,12 +1831,11 @@ class ORMTestCase extends Test_Case {
 		//
 
 		// Create Event3, having tickets
+		$test_data['events'][] =
 		$event_id_three = $this->factory()->event->create( [
 			'post_title'  => 'Test event 3',
 			'post_author' => $user_id_one,
 		] );
-
-		$test_data['events'][] = $event_id_three;
 
 		$test_data['rsvp_tickets'][] =
 		$rsvp_id_five =
@@ -1945,7 +1944,7 @@ class ORMTestCase extends Test_Case {
 	 *
 	 * @return array|false
 	 */
-	private function get_attendee_data( int $id = 0 ) {
+	protected function get_attendee_data( int $id = 0 ) {
 		$result = [];
 
 		$post = get_post( $id, ARRAY_A );
@@ -1970,7 +1969,7 @@ class ORMTestCase extends Test_Case {
 	 *
 	 * @return array
 	 */
-	private function get_fake_ids( int $key = -1 ) {
+	protected function get_fake_ids( int $key = -1 ) {
 		$array = [
 			-1,
 			888888,
@@ -1994,7 +1993,7 @@ class ORMTestCase extends Test_Case {
 	 *
 	 * @return array
 	 */
-	private function get_fake_names( int $key = - 1 ) {
+	protected function get_fake_names( int $key = - 1 ) {
 		$array = [
 			'aaaaaaaaa',
 			'bbbbbbbbb',
@@ -2012,22 +2011,26 @@ class ORMTestCase extends Test_Case {
 	}
 
 	/**
-	 * Given an array of Attendee IDs, get the assertions array that flows through to the test.
+	 * Given an array of post IDs, get the assertions array that flows through to the test.
 	 *
-	 * @param array $attendee_ids
+	 * @param int|array $post_ids
 	 *
 	 * @return array
 	 */
-	private function get_assertions_array( array $attendee_ids ) {
+	protected function get_assertions_array( $post_ids ) {
+		if ( ! is_array( $post_ids ) ) {
+			$post_ids = (array) $post_ids;
+		}
+
 		// ORM will return sorted results, but we may not enter them that way
-		sort( $attendee_ids );
+		sort( $post_ids );
 
 		// Assume 'count' and 'found' will always be the same, since ORM defaults to unlimited (-1) results.
-		$total = count( $attendee_ids );
+		$total = count( $post_ids );
 
 		return [
-			'get_ids' => $attendee_ids,
-			'all'     => array_map( 'get_post', $attendee_ids ),
+			'get_ids' => $post_ids,
+			'all'     => array_map( 'get_post', $post_ids ),
 			'count'   => $total,
 			'found'   => $total,
 		];
