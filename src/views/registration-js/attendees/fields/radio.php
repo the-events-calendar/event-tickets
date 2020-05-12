@@ -7,6 +7,7 @@
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/radio.php
  *
  * @since 4.11.0
+ * @since TBD Make sure label/input IDs don't conflict with other ticket fields.
  *
  * @version TBD Updated phpdoc for which field class to reference.
  *
@@ -16,6 +17,10 @@
 $field         = $this->get( 'field' );
 $required      = isset( $field->required ) && 'on' === $field->required ? true : false;
 $field         = (array) $field;
+
+$field    = $this->get( 'field' );
+$required = isset( $field->required ) && 'on' === $field->required ? true : false;
+$field    = (array) $field;
 
 $options = null;
 
@@ -27,10 +32,10 @@ if ( ! $options ) {
 	return;
 }
 
-$value       = '';
-$disabled    = false;
-$slug        = $field['slug'];
-$field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $slug ) . ']';
+$value      = '';
+$disabled   = false;
+$slug       = $field['slug'];
+$field_name = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $slug ) . ']';
 ?>
 <div class="tribe-field tribe-tickets-meta-fieldset tribe-tickets-meta-fieldset__checkbox-radio <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
 	<header class="tribe-tickets-meta-label">
@@ -42,7 +47,7 @@ $field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' 
 		foreach ( $options as $option ) :
 			$option_slug = md5( sanitize_title( $option ) );
 			$field_slug  = $field['slug'];
-			$option_id   = "tribe-tickets-meta_{$field_slug}{{data.attendee_id}}_{$option_slug}";
+			$option_id   = "tribe-tickets-meta_{$ticket->ID}_{$field_slug}{{data.attendee_id}}_{$option_slug}";
 			$slug        = $field_slug . '_' . $option_slug;
 			$value       = [];
 		?>

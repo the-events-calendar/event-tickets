@@ -288,7 +288,13 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			! empty( $attendee_id )
 			&& ! empty( $item['attendee_id'] )
 		) {
-			$attendee_id .= sprintf( ' [#%d]', $item['attendee_id'] );
+			// Purposefully not forcing strict check here.
+			// phpcs:ignore
+			if ( $attendee_id != $item['attendee_id'] ) {
+				$attendee_id .= sprintf( ' [#%d]', $item['attendee_id'] );
+			} else {
+				$attendee_id = sprintf( '[#%s]', $attendee_id );
+			}
 		}
 
 		$attendee_id = esc_html( $attendee_id );
