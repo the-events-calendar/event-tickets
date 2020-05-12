@@ -204,7 +204,7 @@ trait Post_Tickets {
 		$repo->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event 
 			ON ( 
 				{$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID
-				AND {$prefix}_ticket_event.meta_key REGEXP '^_tribe_{$providers_regex}_for_event$' 
+				AND {$prefix}_ticket_event.meta_key REGEXP '^_tribe_{$providers_regex}_for_event\$' 
 			)" );
 	}
 
