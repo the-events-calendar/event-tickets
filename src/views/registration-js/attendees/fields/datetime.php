@@ -25,18 +25,18 @@ $classes    = [
 ?>
 <div <?php tribe_classes( $classes ); ?> >
 	<label
-			class="tribe-common-b2--min-medium tribe-tickets-meta-label"
-			for="<?php echo esc_attr( $option_id ); ?>"
+		class="tribe-common-b2--min-medium tribe-tickets-meta-label"
+		for="<?php echo esc_attr( $option_id ); ?>"
 	><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 	<input
-			type="date"
-			id="<?php echo esc_attr( $option_id ); ?>"
-			class="tribe-common-form-control-datetime__input ticket-meta"
-			name="<?php echo esc_attr( $field_name ); ?>"
-			value="<?php echo esc_attr( $value ); ?>"
-			min="1900-01-01"
-			max="<?php echo esc_attr( (int) date_i18n( 'Y' ) + 100 ); ?>-12-31"
-			<?php tribe_required( $required ); ?>
-			<?php tribe_disabled( $disabled ); ?>
+		type="date"
+		id="<?php echo esc_attr( $option_id ); ?>"
+		class="tribe-common-form-control-datetime__input ticket-meta"
+		name="<?php echo esc_attr( $field_name ); ?>"
+		value="<?php echo esc_attr( $value ); ?>"
+		min="1900-01-01"
+		max="<?php echo esc_attr( (int) date_i18n( 'Y' ) + 100 ); ?>-12-31"
+		<?php tribe_required( $required ); ?>
+		<?php tribe_disabled( $disabled ); ?>
 	/>
 </div>
