@@ -20,7 +20,7 @@ $classes    = [
 	'tribe-common-b1',
 	'tribe-field',
 	'tribe-tickets__item__attendee__field__telephone',
-	'tribe-tickets-meta-required' => $required
+	'tribe-tickets-meta-required' => $required,
 ];
 ?>
 <div <?php tribe_classes( $classes ); ?> >
