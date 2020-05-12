@@ -17,10 +17,10 @@ $field      = (array) $field;
 $field_name = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $field['slug'] ) . ']';
 $disabled   = false;
 $classes    = [
-		'tribe-common-b1',
-		'tribe-field',
-		'tribe-tickets__item__attendee__field__url',
-		'tribe-tickets-meta-required' => $required
+	'tribe-common-b1',
+	'tribe-field',
+	'tribe-tickets__item__attendee__field__url',
+	'tribe-tickets-meta-required' => $required
 ];
 ?>
 <div <?php tribe_classes( $classes ); ?> >
