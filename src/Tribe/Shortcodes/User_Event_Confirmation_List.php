@@ -17,7 +17,7 @@
  */
 class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	protected $shortcode_name = 'tribe-user-event-confirmations';
-	protected $params = array();
+	protected $params = [];
 
 	/**
 	 * Registers a user event confirmation list shortcode
@@ -34,7 +34,7 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 		 */
 		$this->shortcode_name = apply_filters( 'tribe_tickets_shortcodes_attendee_list_name', $this->shortcode_name );
 
-		add_shortcode( $this->shortcode_name, array( $this, 'generate' ) );
+		add_shortcode( $this->shortcode_name, [ $this, 'generate' ] );
 	}
 
 	/**
@@ -65,10 +65,22 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	 * @param $params
 	 */
 	protected function set_params( $params ) {
+		/**
+		 * Allow filtering of the default limit for the [tribe-user-event-confirmations] shortcode.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $default_limit The default limit to use.
+		 */
+		$default_limit = apply_filters( 'tribe_tickets_shortcodes_attendee_list_limit', 100 );
+
 		$this->params = shortcode_atts( [
-			'limit' => - 1,
-			'user'  => get_current_user_id(),
+			'limit' => $default_limit,
+			'user'  => get_current_user_id()
 		], $params, $this->shortcode_name );
+
+		$this->params['limit'] = (int) $this->params['limit'];
+		$this->params['user']  = absint( $this->params['user'] );
 	}
 
 	/**
@@ -81,8 +93,9 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	}
 
 	/**
-	 * Queries for events which have attendee posts related to whichever user
-	 * we are interested in.
+	 * Get list of upcoming event IDs for which the specified user is an attendee.
+	 *
+	 * If attending an Event (The Events Calendar), this list will only display upcoming events that have not yet ended. If attending another type of post (e.g. Post or Page), this list will display all corresponding posts.
 	 *
 	 * @return array
 	 */
