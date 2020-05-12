@@ -47,7 +47,7 @@ trait Post_Tickets {
 			$repo = $this->decorated;
 		}
 
-		if ( ! in_array( $operator, [
+		$operators = [
 			'<',
 			'<=',
 			'>',
@@ -58,7 +58,8 @@ trait Post_Tickets {
 			'NOT BETWEEN',
 			'IN',
 			'NOT IN',
-		], true ) ) {
+		];
+		if ( ! in_array( $operator, $operators, true ) ) {
 			throw Tribe__Repository__Usage_Error::because_this_comparison_operator_is_not_supported( $operator, 'filter_by_cost' );
 		}
 
