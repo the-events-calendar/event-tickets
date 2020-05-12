@@ -95,8 +95,7 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	/**
 	 * Get list of upcoming event IDs for which the specified user is an attendee.
 	 *
-	 * If attending Tribe Events event, only displays upcoming (not yet ended).
-	 * If attending another type of post (e.g. Post or Page), only displays ones where ticket sales are not yet ended.
+	 * If attending an Event (The Events Calendar), this list will only display upcoming events that have not yet ended. If attending another type of post (e.g. Post or Page), this list will display all corresponding posts.
 	 *
 	 * @return array
 	 */
