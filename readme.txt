@@ -117,13 +117,16 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.12.1] TBD =
+= [4.12.1] 2020-05-19 =
 
+* Feature - Extend `tribe_events()` with new post filtering options: `has_attendees`, `attendee`, `attendee__not_in`, and `attendee_user`. [ET-618]
+* Feature - Add new `tribe( 'tickets.post-repository' )` object that works similar to `tribe_events()` but supports any post type. [ET-618]
 * Fix - Remove opinionated `max-width: none;` on generic elements over the Attendee Registration page CSS to prevent theme conflicts. [ETP-314]
 * Fix - Attendee Registration page briefly showing notice while tickets form is loading. [ETP-241]
 * Fix - Ensure defaults are passed into `Tribe__Tickets__Editor__Template->attr()` correctly instead of defaulting to an empty array. [TEC-2964]
 * Fix - Prevent problems with `func_get_args()` usage around template inclusion for legacy template files. [TEC-3104]
 * Fix - Use unique HTML id for checkboxes and radio on the Attendee Registration fields to prevent conflicts. [ETP-306]
+* Fix - Update several templates to account for a passed post to be of an unregistered post type, such as for an Event post when The Events Calendar plugin is disabled. [ET-787]
 * Tweak - Ensure tickets labels use a function to retrieve the label so that they can be filtered. [ET-119]
 * Tweak - Output the internal Post ID to the Attendees Report's Event Title, each Ticket Name, and each Attendee. [ET-786]
 

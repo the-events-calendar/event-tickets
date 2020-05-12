@@ -1,15 +1,16 @@
 <?php
 /**
- * List of RSVP Orders
+ * List of RSVP Orders.
  *
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-rsvp.php
  *
  * @package TribeEventsCalendar
  *
- * @since 4.2
- * @since 4.10.9 Uses new functions to get singular and plural texts.
+ * @since   4.2
+ * @since   4.10.9 Uses new functions to get singular and plural texts.
+ * @since   TBD Account for empty post type object, such as if post type got disabled.
  *
- * @version 4.11.3
+ * @version TBD
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,15 +27,18 @@ if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 	return;
 }
 
+$post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post', 'fallback post type singular name', 'event-tickets' );
+
 $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user_id );
 ?>
 <div class="tribe-rsvp">
 	<h2><?php
 		echo esc_html(
 			sprintf(
+				// Translators: 1: plural RSVP label, 2: post type label.
 				__( 'My %1$s for this %2$s', 'event-tickets' ),
 				tribe_get_rsvp_label_plural( basename( __FILE__ ) ),
-				$post_type->labels->singular_name
+				$post_type_singular
 			)
 		); ?>
 	</h2>
@@ -46,12 +50,14 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 			<p>
 				<?php
 				printf(
+					// Translators: 1: attendee name, 2: linked attendee email.
 					esc_html__( 'Reserved by %1$s (%2$s)', 'event-tickets' ),
 					esc_html( $first_attendee['purchaser_name'] ),
 					'<a href="' . esc_url( 'mailto:' . $first_attendee['purchaser_email'] ) .'">' . esc_html( $first_attendee['purchaser_email'] ) . '</a>'
 				);
 
 				printf(
+					// Translators: %s: date of RSVP.
 					esc_html__( ' on %s', 'event-tickets' ),
 					date_i18n( Tribe__Date_Utils::DATEONLYFORMAT, strtotime( esc_attr( $first_attendee['purchase_time'] ) ) )
 				);
