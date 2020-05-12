@@ -117,7 +117,7 @@ class Post_Repository extends Tribe__Repository {
 	/**
 	 * Handles the `order_by` clauses for events
 	 *
-	 * @since 4.9.7
+	 * @since TBD
 	 *
 	 * @param string $order_by The key used to order events; e.g. `event_date` to order events by start date.
 	 */
@@ -174,7 +174,7 @@ class Post_Repository extends Tribe__Repository {
 	 * To avoid the "stacking" of `orderby` clauses and filters the query filters are added at the very last moment,
 	 * right before building the query.
 	 *
-	 * @since 4.9.7
+	 * @since TBD
 	 *
 	 * @return \WP_Query The built query object.
 	 */
@@ -191,8 +191,7 @@ class Post_Repository extends Tribe__Repository {
 	/**
 	 * Applies start-date-based ordering to the query.
 	 *
-	 * @since 4.9.7
-	 * @since 4.9.11 Added the `$after` parameter.
+	 * @since TBD
 	 *
 	 * @param bool $use_utc      Whether to use the events UTC start dates or their localized dates.
 	 * @param bool $after        Whether to append the order by clause to the ones managed by WordPress or not.
@@ -209,7 +208,9 @@ class Post_Repository extends Tribe__Repository {
 		 * the UTC time for event start and end times will be used. This filter allows the
 		 * disabling of that in certain contexts, so that local (not UTC) event times are used.
 		 *
-		 * @since 4.6.10
+		 * @see Tribe__Events__Repositories__Events::order_by_date
+		 *
+		 * @since TBD
 		 *
 		 * @param boolean $force_local_tz Whether to force the local TZ.
 		 */
