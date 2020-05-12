@@ -67,7 +67,7 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	protected function set_params( $params ) {
 		/**
 		 * Allow filtering of the default limit for the [tribe-user-event-confirmations] shortcode.
-     *
+		 *
 		 * @since TBD
 		 *
 		 * @param int $default_limit The default limit to use.
