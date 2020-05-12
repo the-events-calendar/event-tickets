@@ -40,7 +40,7 @@ $classes     = [
 			>
 				<option value="" disabled selected><?php esc_html_e( 'Month', 'tribe-event-plus' ); ?></option>
 				<?php foreach ( $birth_field->get_months() as $month_number => $month_name ): ?>
-					<option value="<?php echo esc_attr( $month_number ); ?>"><?php echo esc_attr( $month_name ); ?></option>
+					<option value="<?php echo esc_attr( $month_number ); ?>"><?php echo esc_html( $month_name ); ?></option>
 				<?php endforeach; ?>
 			</select>
 		</div>
@@ -53,7 +53,7 @@ $classes     = [
 			>
 				<option value="" disabled selected><?php esc_html_e( 'Day', 'tribe-event-plus' ); ?></option>
 				<?php foreach ( $birth_field->get_days() as $birth_day ): ?>
-					<option><?php echo esc_attr( $birth_day ); ?></option>
+					<option value="<?php echo esc_attr( $birth_day ); ?>"><?php echo esc_html( $birth_day ); ?></option>
 				<?php endforeach; ?>
 			</select>
 		</div>
@@ -66,7 +66,7 @@ $classes     = [
 			>
 				<option value="" disabled selected><?php esc_html_e( 'Year', 'tribe-event-plus' ); ?></option>
 				<?php foreach ( $birth_field->get_years() as $birth_year ): ?>
-					<option><?php echo esc_attr( $birth_year ); ?></option>
+					<option value="<?php echo esc_attr( $birth_year ); ?>"><?php echo esc_html( $birth_year ); ?></option>
 				<?php endforeach; ?>
 			</select>
 		</div>
