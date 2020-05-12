@@ -47,11 +47,9 @@ class Tribe__Tickets__Editor__Template extends Tribe__Template {
 	 * @return mixed
 	 */
 	public function attr( $index, $default = null ) {
-
-		$attribute = $this->get( array_merge( array( 'attributes' ), (array) $index ), array(), $default );
+		$attribute = $this->get( array_merge( [ 'attributes' ], (array) $index ), $default );
 
 		return $attribute;
-
 	}
 }
 

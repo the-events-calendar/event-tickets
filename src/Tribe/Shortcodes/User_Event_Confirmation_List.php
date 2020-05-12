@@ -67,6 +67,7 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	protected function set_params( $params ) {
 		/**
 		 * Allow filtering of the default limit for the [tribe-user-event-confirmations] shortcode.
+     *
 		 * @since TBD
 		 *
 		 * @param int $default_limit The default limit to use.
@@ -87,6 +88,7 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	 */
 	protected function generate_attendance_list() {
 		$event_ids = $this->get_upcoming_attendances();
+
 		include Tribe__Tickets__Templates::get_template_hierarchy( 'shortcodes/my-attendance-list' );
 	}
 
@@ -99,79 +101,23 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	 * @return array
 	 */
 	protected function get_upcoming_attendances() {
-		if ( empty( $this->params['user'] ) ) {
-			return [];
+		/** @var \Tribe\Tickets\Repositories\Post_Repository $post_orm */
+		$post_orm = tribe( 'tickets.post-repository' );
+
+		// Limit to a specific number of events.
+		if ( 0 < $this->params['limit'] ) {
+			$post_orm->per_page( $this->params['limit'] );
 		}
 
-		$post_ids                    = [];
-		$ticket_ids                  = [];
-		$event_ids                   = [];
-		$upcoming_non_event_post_ids = [];
+		// Order by event date.
+		$post_orm->order_by( 'event_date', 'ASC' );
 
-		// Get all of this user's attendee records
+		// Events that have not yet ended.
+		$post_orm->by( 'ends_after', current_time( 'mysql' ) );
 
-		/** @var Tribe__Tickets__Attendee_Repository $attendees */
-		$attendees = tribe_attendees();
+		// Events with attendees by the specific user ID.
+		$post_orm->by( 'attendee_user', $this->params['user'] );
 
-		$attendee_ids = $attendees
-			->by( 'user', $this->params['user'] )
-			->fields( 'ids' )
-			->get_ids();
-
-		// Build list of Posts and Tickets this user's attendance applies to
-
-		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
-		$tickets_handler = tribe( 'tickets.handler' );
-
-		foreach ( $attendee_ids as $attendee_id ) {
-			$connection = $tickets_handler->get_object_connections( $attendee_id );
-
-			if ( ! empty( $connection->event ) ) {
-				$post_ids[] = $connection->event;
-			}
-
-			if ( ! empty( $connection->product ) ) {
-				$ticket_ids[] = $connection->product;
-			}
-		}
-
-		$post_ids = array_unique( $post_ids );
-
-		// Restrict to upcoming Tribe Events posts
-		if ( function_exists( 'tribe_events' ) ) {
-			/** @var Tribe__Events__Repositories__Event $events */
-			$events = tribe_events();
-
-			$event_ids = $events
-				->by( 'ends_after', 'now' )
-				->in( $post_ids )
-				->fields( 'ids' )
-				->get_ids();
-		}
-
-		// Restrict non-Tribe Events posts to those for which ticket availability end date has not ended (regardless of available capacity)
-		$ticket_ids = array_unique( $ticket_ids );
-
-		/** @var Tribe__Tickets__Ticket_Repository $tickets */
-		$tickets = tribe_tickets();
-
-		$ticket_ids_upcoming = $tickets
-			->in( $ticket_ids )
-			->by( 'available_until', 'now' )
-			->fields( 'ids' )
-			->get_ids();
-
-		foreach ( $ticket_ids_upcoming as $ticket_id_upcoming ) {
-			$connection = $tickets_handler->get_object_connections( $ticket_id_upcoming );
-
-			if ( ! empty( $connection->event ) ) {
-				$upcoming_non_event_post_ids[] = $connection->event;
-			}
-		}
-
-		// Get list of Tribe Events posts plus Non-Tribe Events posts
-		$result = array_merge( $event_ids, $upcoming_non_event_post_ids );
-
-		return $result;
+		return $post_orm->get_ids();
 	}
 }

@@ -6,15 +6,24 @@
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/checkbox.php
  *
  * @since 4.11.0
+ * @since TBD Make sure label/input IDs don't conflict with other ticket fields.
  *
- * @version 4.11.0
+ * @version TBD Updated phpdoc for which field class to reference.
  *
+ * @see Tribe__Tickets_Plus__Meta__Field__Checkbox
  */
+
 $required    = isset( $field->required ) && 'on' === $field->required ? true : false;
 $field       = (array) $field;
 $options     = Tribe__Utils__Array::get( $field, [ 'extra', 'options' ], null );
 $field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}]';
 $disabled    = false;
+
+$required   = isset( $field->required ) && 'on' === $field->required ? true : false;
+$field      = (array) $field;
+$options    = Tribe__Utils__Array::get( $field, [ 'extra', 'options' ], null );
+$field_name = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}]';
+$disabled   = false;
 
 if ( ! $options ) {
 	return;
@@ -30,10 +39,10 @@ if ( ! $options ) {
 		foreach ( $options as $option ) :
 			$option_slug = md5( sanitize_title( $option ) );
 			$field_slug  = $field['slug'];
-			$option_id   = "tribe-tickets-meta_{$field_slug}{{data.attendee_id}}_{$option_slug}";
+			$option_id   = "tribe-tickets-meta_{$ticket->ID}_{$field_slug}{{data.attendee_id}}_{$option_slug}";
 			$slug        = $field_slug . '_' . $option_slug;
 			$value       = [];
-		?>
+			?>
 
 		<div class="tribe-common-form-control-checkbox">
 			<label

@@ -5,6 +5,8 @@
  * @since 4.10.4
  */
 
+use Tribe\Tickets\Repositories\Post_Repository;
+
 /**
  * Class Tribe__Tickets__Service_Providers__ORM
  *
@@ -26,6 +28,7 @@ class Tribe__Tickets__Service_Providers__ORM extends tad_DI52_ServiceProvider {
 		$this->container->bind( 'tickets.attendee-repository.rsvp', 'Tribe__Tickets__Repositories__Attendee__RSVP' );
 		$this->container->bind( 'tickets.attendee-repository.commerce', 'Tribe__Tickets__Repositories__Attendee__Commerce' );
 		$this->container->bind( 'tickets.event-repository', 'Tribe__Tickets__Event_Repository' );
+		$this->container->bind( 'tickets.post-repository', Post_Repository::class );
 
 		add_filter( 'tribe_events_event_repository_map', array( $this, 'filter_events_repository_map' ) );
 	}

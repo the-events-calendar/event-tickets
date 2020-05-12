@@ -8,8 +8,9 @@
  *
  * @since 4.7
  * @since 4.10.9 Uses new functions to get singular and plural texts.
+ * @since TBD Account for empty post type object, such as if post type got disabled.
  *
- * @version 4.11.3
+ * @version TBD
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -28,6 +29,8 @@ if ( ! $view->has_ticket_attendees( $post_id, $user_id ) ) {
 	return;
 }
 
+$post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post', 'fallback post type singular name', 'event-tickets' );
+
 $attendee_groups = $view->get_post_attendees_by_purchaser( $post_id, $user_id );
 ?>
 <div class="tribe-pp">
@@ -36,7 +39,7 @@ $attendee_groups = $view->get_post_attendees_by_purchaser( $post_id, $user_id );
 			sprintf(
 				__( 'My %1$s for this %2$s', 'event-tickets' ),
 				tribe_get_ticket_label_plural( basename( __FILE__ ) ),
-				$post_type->labels->singular_name
+				$post_type_singular
 			)
 		); ?>
 	</h2>
