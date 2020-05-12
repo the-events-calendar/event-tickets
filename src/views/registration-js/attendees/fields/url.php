@@ -7,7 +7,6 @@
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/url.php
  *
  * @since   TBD
- * @version TBD
  *
  * @see Tribe__Tickets_Plus__Meta__Field__Url
  */
