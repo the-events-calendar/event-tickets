@@ -72,7 +72,7 @@ if ( ! $already_rendered ) {
 	data-provider-id="<?php echo esc_attr( $provider->orm_provider ); ?>"
 	novalidate
 >
-	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title"><?php esc_html_e( tribe_get_ticket_label_plural( 'event-tickets' ), 'event-tickets' ); ?></h2>
+	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title"><?php echo esc_html( tribe_get_ticket_label_plural( 'event-tickets' ) ); ?></h2>
 	<input type="hidden" name="tribe_tickets_saving_attendees" value="1"/>
 	<input type="hidden" name="tribe_tickets_ar" value="1"/>
 	<input type="hidden" name="tribe_tickets_ar_data" value="" id="tribe_tickets_block_ar_data"/>
