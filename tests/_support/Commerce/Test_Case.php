@@ -38,15 +38,19 @@ class Test_Case extends WPTestCase {
 
 		$this->factory()->event = new Event();
 
-		// Enable post as ticket type.
-		add_filter(
-			'tribe_tickets_post_types', function () {
-			return [ 'post' ];
-		}
-		);
+		// Post types for which to enable tickets.
+		add_filter( 'tribe_tickets_post_types', static function () {
+			return [
+				'post',
+				'tribe_events',
+			];
+		} );
 
 		// Let's avoid confirmation emails.
 		add_filter( 'tribe_tickets_rsvp_send_mail', '__return_false' );
+
+		// Disable async saving.
+		add_filter( 'tribe_repository_update_background_activated', '__return_false' );
 
 		// Enable Tribe Commerce.
 		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
