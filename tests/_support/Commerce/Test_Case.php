@@ -46,6 +46,13 @@ class Test_Case extends WPTestCase {
 			];
 		} );
 
+		// let's avoid die()s
+		add_filter(
+			'tribe_exit', function () {
+			return [ $this, 'dont_die' ];
+		}
+		);
+
 		// Let's avoid confirmation emails.
 		add_filter( 'tribe_tickets_rsvp_send_mail', '__return_false' );
 
@@ -70,6 +77,10 @@ class Test_Case extends WPTestCase {
 
 		// Setup test data here.
 		$this->setup_test_data();
+	}
+
+	public function dont_die() {
+		// No-op, go on.
 	}
 
 	/**

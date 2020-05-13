@@ -18,39 +18,6 @@ class MainTest extends Test_Case {
 	use PayPal_Order_Maker;
 	use RSVP_Ticket_Maker;
 
-	public function setUp() {
-		// before
-		parent::setUp();
-
-		// Enable post as ticket type.
-		add_filter( 'tribe_tickets_post_types', function () {
-			return [ 'post' ];
-		} );
-
-		// let's avoid die()s
-		add_filter( 'tribe_exit', function () {
-			return [ $this, 'dont_die' ];
-		} );
-
-		// let's avoid confirmation emails
-		add_filter( 'tribe_tickets_rsvp_send_mail', '__return_false' );
-
-		// Enable Tribe Commerce.
-		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
-		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
-			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
-
-			return $modules;
-		} );
-
-		// Reset Data_API object so it sees Tribe Commerce.
-		tribe_singleton( 'tickets.data_api', new Data_API );
-	}
-
-	public function dont_die() {
-		// no-op, go on
-	}
-
 	public function tearDown() {
 		// your tear down methods here
 
