@@ -20,9 +20,18 @@ class Test_Case extends WPTestCase {
 	use Attendee_Maker;
 
 	/**
+	 * The array of generated data.
+	 *
+	 * @see setup_test_data()
+	 *
+	 * @var array
+	 */
+	public $test_data = [];
+
+	/**
 	 * Overrides the base setUp method to make sure we're starting from a database clean of any posts.
 	 */
-	function setUp() {
+	public function setUp() {
 		parent::setUp();
 
 		$this->remove_all_posts();

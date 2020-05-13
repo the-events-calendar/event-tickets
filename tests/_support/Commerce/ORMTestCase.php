@@ -10,15 +10,6 @@ namespace Tribe\Tickets\Test\Commerce;
 class ORMTestCase extends Test_Case {
 
 	/**
-	 * The array of generated data.
-	 *
-	 * @see setup_test_data()
-	 *
-	 * @var array
-	 */
-	protected $test_data = [];
-
-	/**
 	 * Get test matrix with all the assertions filled out.
 	 *
 	 * Method naming:
