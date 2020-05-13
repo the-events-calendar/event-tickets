@@ -55,7 +55,7 @@ $button_classes = apply_filters(
 	<?php tribe_disabled( true ); ?>
 >
 	<?php
-	/* translators: %s: Ticket label */
+	/* translators: %s: Tickets label */
 	echo esc_html( sprintf( _x( 'Get %s', 'Add tickets to cart.', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets') ) );
 	?>
 </button>
