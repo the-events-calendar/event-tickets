@@ -10,7 +10,7 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since TBD Updated button text to use ticket label
+ * @since TBD Updated message to use tribe_get_ticket_label_plural() for "Tickets" string
  * @version TBD
  *
  */
