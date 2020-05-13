@@ -10,11 +10,12 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since 4.9
- * @version 4.11.0
+ * @since TBD
+ * @version TBD
  *
  */
 
+/* translators: %s: Ticket label */
 $message = $this->get( 'is_sale_past' ) ? sprintf( __( '%s are no longer available', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets' ) ) : sprintf( __( '%s are not yet available', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets' ) );
 <div
 	class="tribe-tickets__item__content tribe-tickets__item__content--inactive"
