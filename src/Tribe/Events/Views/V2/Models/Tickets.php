@@ -190,7 +190,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 							$text = _n( "%1$s %2$s left", "%1$s %3$s left", $stock, 'event-tickets' );
 						}
 
-						$stock_html = esc_html( sprintf( $text, $number ) );
+						$stock_html = esc_html( sprintf( $text, $number, $ticket_label_singular, $ticket_label_plural ) );
 					}
 				}
 
