@@ -185,7 +185,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 						$ticket_label_plural = tribe_get_ticket_label_plural_lowercase( 'event-tickets' );
 
 						if ( 'rsvp' === $type ) {
-							$text = _n( '%s spot left', '%s spots left', $stock, 'event-tickets' );
+							$text = _n( '%1$s spot left', '%1$s spots left', $stock, 'event-tickets' );
 						} else {
 							$text = _n( "%1$s %2$s left", "%1$s %3$s left", $stock, 'event-tickets' );
 						}
