@@ -44,19 +44,23 @@ class FilterTest extends EventsTestCase {
 		 * Same as `all()` except only an array of Post IDs, not full Post objects.
 		 * Is affected by pagination, but ORM defaults to unlimited.
 		 *
+		 * We use the 'canonicalize' argument to compare arrays as sorted so the order returned doesn't matter.
+		 *
 		 * @see \Tribe__Repository::get_ids()
 		 */
-		$this->assertEquals( $assertions['get_ids'], $posts->get_ids(), $method );
+		$this->assertEquals( $assertions['get_ids'], $posts->get_ids(), $method, 0.0, 10, true );
 
 		/**
 		 * The total number of posts found matching the current query parameters.
 		 * Is affected by pagination, but ORM defaults to unlimited.
 		 *
+		 * We use the 'canonicalize' argument to compare arrays as sorted so the order returned doesn't matter.
+		 *
 		 * @see \Tribe__Repository::all() Runs get_posts() then format_item().
 		 * @see \WP_Query::get_posts()
 		 * @see \Tribe__Repository::format_item()
 		 */
-		$this->assertEquals( $assertions['all'], $posts->all(), $method );
+		$this->assertEquals( $assertions['all'], $posts->all(), $method, 0.0, 10, true );
 
 		/**
 		 * @see \Tribe__Repository::count() WP_Query's `post_count`:
