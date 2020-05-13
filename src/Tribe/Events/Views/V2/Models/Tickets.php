@@ -187,7 +187,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 						if ( 'rsvp' === $type ) {
 							$text = _n( '%s spot left', '%s spots left', $stock, 'event-tickets' );
 						} else {
-							$text = _n( "%s $ticket_label_singular left", "%s $ticket_label_plural left", $stock, 'event-tickets' );
+							$text = _n( "%1$s %2$s left", "%1$s %3$s left", $stock, 'event-tickets' );
 						}
 
 						$stock_html = esc_html( sprintf( $text, $number ) );
