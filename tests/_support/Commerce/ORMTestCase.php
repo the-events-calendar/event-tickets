@@ -1923,7 +1923,7 @@ class ORMTestCase extends Test_Case {
 				"
 			SELECT pm.meta_value FROM {$wpdb->postmeta} pm
 			LEFT JOIN {$wpdb->posts} p ON p.ID = pm.post_id
-			WHERE pm.meta_key = %s 
+			WHERE pm.meta_key = %s
 			AND p.post_type = %s
 			",
 				'_tribe_rsvp_full_name',
@@ -2021,9 +2021,6 @@ class ORMTestCase extends Test_Case {
 		if ( ! is_array( $post_ids ) ) {
 			$post_ids = (array) $post_ids;
 		}
-
-		// ORM will return sorted results, but we may not enter them that way
-		sort( $post_ids );
 
 		// Assume 'count' and 'found' will always be the same, since ORM defaults to unlimited (-1) results.
 		$total = count( $post_ids );
