@@ -10,7 +10,7 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since TBD
+ * @since TBD Updated button text to use ticket label
  * @version TBD
  *
  */
