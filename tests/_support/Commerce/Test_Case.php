@@ -311,7 +311,9 @@ class Test_Case extends WPTestCase {
 		$test_data['rsvp_tickets'] = array_merge( [ $rsvp_id_one ], $this->create_many_rsvp_tickets( 3, $event_id_one ) );
 
 		// Create test PayPal1 ticket
-		$paypal_id_one = $this->create_paypal_ticket( $event_id_one, 5 );
+		$test_data['paypal_tickets'][] =
+		$paypal_id_one =
+			$this->create_paypal_ticket( $event_id_one, 5 );
 
 		// Add User3 (Attendee5) and User4 (Attendee6) as Tribe Commerce PayPal Ticket attendees
 
@@ -341,8 +343,18 @@ class Test_Case extends WPTestCase {
 		$attendee_id_8 =
 			$this->create_attendee_for_ticket( $paypal_id_one, $event_id_one );
 
-		// Create 3 more PayPal tickets that will never have any attendees
-		$test_data['paypal_tickets'] = array_merge( [ $paypal_id_one ], $this->create_many_paypal_tickets( 3, $event_id_one ) );
+		// Create test PayPal tickets 2, 3, and 4. None of these will have attendees.
+		$test_data['paypal_tickets'][] =
+		$paypal_id_two =
+			$this->create_paypal_ticket( $event_id_one, '19.99' );
+
+		$test_data['paypal_tickets'][] =
+		$paypal_id_three =
+			$this->create_paypal_ticket( $event_id_one, '29.99' );
+
+		$test_data['paypal_tickets'][] =
+		$paypal_id_four =
+			$this->create_paypal_ticket( $event_id_one, '99.99' );
 
 		// Create test PayPal5 ticket
 		$test_data['paypal_tickets'][] =
