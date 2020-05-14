@@ -9,6 +9,7 @@
 
 namespace Tribe\Tickets\Repositories\Traits;
 
+use DateTimeZone;
 use Tribe__Date_Utils as Dates;
 use Tribe__Timezones as Timezones;
 
