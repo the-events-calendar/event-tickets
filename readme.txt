@@ -128,6 +128,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Prevent problems with `func_get_args()` usage around template inclusion for legacy template files. [TEC-3104]
 * Fix - Use unique HTML id for checkboxes and radio on the Attendee Registration fields to prevent conflicts. [ETP-306]
 * Fix - Update several templates to account for a passed post to be of an unregistered post type, such as for an Event post when The Events Calendar plugin is disabled. [ET-787]
+* Tweak - Ensure tickets labels use a function to retrieve the label so that they can be filtered. [ETP-119]
 * Tweak - Output the internal Post ID to the Attendees Report's Event Title, each Ticket Name, and each Attendee. [ET-786]
 
 = [4.12.0] 2020-04-23 =
