@@ -4,11 +4,12 @@ namespace Tribe\Tickets;
 
 use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
+use Tribe\Tickets\Test\Commerce\PayPal\Order_Maker as PayPal_Order_Maker;
+use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Testcases\Ticket_Object_TestCase;
 use Tribe__Tickets__Global_Stock as Global_Stock;
-use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
-use Tribe\Tickets\Test\Commerce\PayPal\Order_Maker as PayPal_Order_Maker;
 use Tribe__Tickets__RSVP as RSVP;
+use Tribe__Tickets__Tickets_Handler;
 
 /**
  * Test Calculations
@@ -53,25 +54,28 @@ class GlobalStockTest extends Ticket_Object_TestCase {
 
 		add_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, $initial_global_capacity );
 
+		/** @var Tribe__Tickets__Tickets_Handler $handler */
+		$handler = tribe( 'tickets.handler' );
+
 		/**
 		 * Create PayPal tickets with global stock enabled with 50 total/shared capacity,
 		 * 30 allowable to PayPal One and 40 allowable to PayPal Two.
 		 *
-		 * @see \Tribe__Tickets__Tickets_Handler::has_unlimited_stock() Comments/Explanation.
+		 * @see Tribe__Tickets__Tickets_Handler::has_unlimited_stock() Comments/Explanation.
 		 */
-		 $ticket_ids = $this->create_distinct_paypal_tickets_basic(
+		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$event_id,
 			[
 				[
 					'meta_input' => [
-						'_capacity'                     => 30,
+						$handler->key_capacity          => 30,
 						'total_sales'                   => $paypal_attendees_one_count,
 						Global_Stock::TICKET_STOCK_MODE => Global_Stock::CAPPED_STOCK_MODE,
 					],
 				],
 				[
 					'meta_input' => [
-						'_capacity'                     => 40,
+						$handler->key_capacity          => 40,
 						'total_sales'                   => $paypal_attendees_two_count,
 						Global_Stock::TICKET_STOCK_MODE => Global_Stock::CAPPED_STOCK_MODE,
 					],
@@ -86,14 +90,13 @@ class GlobalStockTest extends Ticket_Object_TestCase {
 		$this->assertEquals( $remaining_available, 39, 'Our math is incorrect - check this test!' );
 		$this->assertEquals( $remaining_available, tribe_events_count_available_tickets( $event_id ), "Incorrect available counts on capped tickets." );
 
-
 		// Add non-global RSVP ticket (RSVPs don't support Global Stock)
 		$initial_rsvp_capacity = 20;
 		$rsvp_attendees_count  = 4;
 
 		$rsvp_args = [
 			'meta_input' => [
-				'_capacity' => $initial_rsvp_capacity,
+				$handler->key_capacity => $initial_rsvp_capacity,
 			],
 		];
 

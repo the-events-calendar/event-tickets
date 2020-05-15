@@ -4,6 +4,7 @@ namespace Tribe\Tickets\Test\Commerce\PayPal;
 
 use Tribe\Tickets\Test\Commerce\Ticket_Maker as Ticket_Maker_Base;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe__Tickets__Tickets_Handler;
 use Tribe__Utils__Array as Utils_Array;
 
 trait Ticket_Maker {
@@ -181,7 +182,10 @@ trait Ticket_Maker {
 	 * @return array An array of the generated ticket post IDs.
 	 */
 	protected function create_distinct_paypal_tickets_basic( $post_id, array $tickets, $global_qty = 0 ) {
-		$global_sales       = 0;
+		/** @var Tribe__Tickets__Tickets_Handler $handler */
+		$handler = tribe( 'tickets.handler' );
+
+		$global_sales       = 0; // Assumes all tickets of Global Stock type will be generated only using this single function, all in a single call.
 		$global_stock       = new Global_Stock( $post_id );
 		$has_global_tickets = false;
 		$ticket_ids         = [];
@@ -205,16 +209,10 @@ trait Ticket_Maker {
 				$has_global_tickets = true;
 
 				// Get ticket capacity.
-				$cap = $ticket['meta_input']['_capacity'] ?? 0;
+				$cap = $ticket['meta_input'][ $handler->key_capacity ] ?? 0;
 
 				// Handle passed sales.
-				$sales = $ticket['meta_input']['total_sales'] ?? 0;
-
-				/* This does not do the right thing
-				if ( empty( $sales ) ) {
-					$cap          -= $sales;
-					$global_sales += $sales;
-				}*/
+				$global_sales += $ticket['meta_input']['total_sales'] ?? 0;
 
 				if ( $global_qty < $cap ) {
 					// ensure we have enough cap to cover all tickets
@@ -229,11 +227,9 @@ trait Ticket_Maker {
 		if ( $has_global_tickets ) {
 			$global_qty = $global_qty ?? 100;
 
-			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
-			$tickets_handler = tribe( 'tickets.handler' );
 			update_post_meta( $post_id, $global_stock::TICKET_STOCK_CAP, $global_qty );
 			update_post_meta( $post_id, $global_stock::GLOBAL_STOCK_LEVEL, $global_qty - $global_sales );
-			update_post_meta( $post_id, $tickets_handler->key_capacity, $global_qty );
+			tribe_tickets_update_capacity( $post_id, $global_sales );
 		}
 
 		return $ticket_ids;
