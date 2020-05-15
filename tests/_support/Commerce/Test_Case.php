@@ -7,6 +7,7 @@ use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Data_API as Data_API;
+use Tribe__Tickets__Tickets_Handler;
 
 /**
  * Class Test_Case
@@ -30,6 +31,11 @@ class Test_Case extends WPTestCase {
 	public $should_setup_test_data = false;
 
 	/**
+	 * @var Tribe__Tickets__Tickets_Handler
+	 */
+	public $tickets_handler;
+
+	/**
 	 * The array of generated data.
 	 *
 	 * @see setup_test_data()
@@ -43,6 +49,8 @@ class Test_Case extends WPTestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
+
+		$this->tickets_handler = tribe( 'tickets.handler' );
 
 		$this->remove_all_posts();
 

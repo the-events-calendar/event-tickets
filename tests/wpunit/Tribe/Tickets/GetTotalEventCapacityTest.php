@@ -5,7 +5,6 @@ namespace Tribe\Tickets;
 use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\Test_Case;
 use Tribe__Tickets__Global_Stock as Global_Stock;
-use Tribe__Tickets__Tickets_Handler as Handler;
 
 class GetTotalEventCapacityTest extends Test_Case {
 
@@ -14,11 +13,6 @@ class GetTotalEventCapacityTest extends Test_Case {
 	private $global_mode = Global_Stock::GLOBAL_STOCK_MODE;
 	private $capped_mode = Global_Stock::CAPPED_STOCK_MODE;
 	private $global_cap = 50;
-
-	/**
-	 * @var Handler
-	 */
-	private $handler;
 
 	/**
 	 * ID of a created TEC Event.
@@ -35,8 +29,6 @@ class GetTotalEventCapacityTest extends Test_Case {
 
 		$this->factory()->event = new Event();
 		$this->event_id         = $this->factory()->event->create();
-
-		$this->handler = tribe( 'tickets.handler' );
 	}
 
 	public function tearDown() {
@@ -50,7 +42,7 @@ class GetTotalEventCapacityTest extends Test_Case {
 	private function setupGlobalStock( $cap = null ) {
 		add_post_meta( $this->event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
 		$cap = is_null( $cap ) ? $this->global_cap : $cap;
-		add_post_meta( $this->event_id, $this->handler->key_capacity, $cap );
+		add_post_meta( $this->event_id, $this->tickets_handler->key_capacity, $cap );
 	}
 
 	/**
@@ -71,7 +63,7 @@ class GetTotalEventCapacityTest extends Test_Case {
 			$this->event_id,
 			[
 				'meta_input' => [
-					$this->handler->key_capacity   => $capacity,
+					$this->tickets_handler->key_capacity   => $capacity,
 					'_stock'      => $stock,
 					'total_sales' => $sales,
 				],
@@ -102,7 +94,7 @@ class GetTotalEventCapacityTest extends Test_Case {
 			$this->event_id,
 			[
 				'meta_input' => [
-					$this->handler->key_capacity   => $capacity,
+					$this->tickets_handler->key_capacity   => $capacity,
 					'total_sales' => $sales,
 				],
 			]
@@ -170,7 +162,7 @@ class GetTotalEventCapacityTest extends Test_Case {
 		for ( $i = 0; $i < $num_tickets; $i ++ ) {
 			$ticket_data[] = [
 				'meta_input' => [
-					$this->handler->key_capacity => $capacity,
+					$this->tickets_handler->key_capacity => $capacity,
 					'_stock'                     => $stock,
 					'total_sales'                => $sales,
 				],
@@ -205,7 +197,7 @@ class GetTotalEventCapacityTest extends Test_Case {
 			[
 				[
 					'meta_input' => [
-						$this->handler->key_capacity => $capacity,
+						$this->tickets_handler->key_capacity => $capacity,
 						'total_sales'                => $sales,
 					],
 				],
@@ -246,7 +238,7 @@ class GetTotalEventCapacityTest extends Test_Case {
 			1,
 			[
 				'meta_input' => [
-					$this->handler->key_capacity     => 10,
+					$this->tickets_handler->key_capacity     => 10,
 					'total_sales'   => 2,
 				],
 			]
@@ -258,7 +250,7 @@ class GetTotalEventCapacityTest extends Test_Case {
 			1,
 			[
 				'meta_input' => [
-					$this->handler->key_capacity     => 10,
+					$this->tickets_handler->key_capacity     => 10,
 					'total_sales'   => 2,
 					$this->cap_key => $this->global_mode
 				],
@@ -271,7 +263,7 @@ class GetTotalEventCapacityTest extends Test_Case {
 			1,
 			[
 				'meta_input' => [
-					$this->handler->key_capacity     => -1,
+					$this->tickets_handler->key_capacity     => -1,
 					'total_sales'   => 2,
 				],
 			]
@@ -283,7 +275,7 @@ class GetTotalEventCapacityTest extends Test_Case {
 			1,
 			[
 				'meta_input' => [
-					$this->handler->key_capacity     => 10,
+					$this->tickets_handler->key_capacity     => 10,
 					'total_sales'   => 2,
 					$this->cap_key => $this->capped_mode
 				],

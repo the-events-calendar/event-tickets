@@ -9,7 +9,6 @@ use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Testcases\Ticket_Object_TestCase;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__RSVP as RSVP;
-use Tribe__Tickets__Tickets_Handler;
 
 /**
  * Test Calculations
@@ -54,8 +53,6 @@ class GlobalStockTest extends Ticket_Object_TestCase {
 
 		add_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, $initial_global_capacity );
 
-		/** @var Tribe__Tickets__Tickets_Handler $handler */
-		$handler = tribe( 'tickets.handler' );
 
 		/**
 		 * Create PayPal tickets with global stock enabled with 50 total/shared capacity,
@@ -68,14 +65,14 @@ class GlobalStockTest extends Ticket_Object_TestCase {
 			[
 				[
 					'meta_input' => [
-						$handler->key_capacity          => 30,
+						$this->tickets_handler->key_capacity          => 30,
 						'total_sales'                   => $paypal_attendees_one_count,
 						Global_Stock::TICKET_STOCK_MODE => Global_Stock::CAPPED_STOCK_MODE,
 					],
 				],
 				[
 					'meta_input' => [
-						$handler->key_capacity          => 40,
+						$this->tickets_handler->key_capacity          => 40,
 						'total_sales'                   => $paypal_attendees_two_count,
 						Global_Stock::TICKET_STOCK_MODE => Global_Stock::CAPPED_STOCK_MODE,
 					],
@@ -96,7 +93,7 @@ class GlobalStockTest extends Ticket_Object_TestCase {
 
 		$rsvp_args = [
 			'meta_input' => [
-				$handler->key_capacity => $initial_rsvp_capacity,
+				$this->tickets_handler->key_capacity => $initial_rsvp_capacity,
 			],
 		];
 
