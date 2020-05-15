@@ -547,9 +547,9 @@ window.tribe.tickets.registration = {};
 				isValidfield = false;
 			}
 		}
-
+		
 		// Validation for Tribe Horizontal Date Picker
-		if ( $input.hasClass( obj.selector.horizontal_datepicker.value ) ) {
+		if ( $input.hasClass( obj.selector.horizontal_datepicker.value.replace( /^\./, '' ) ) ) {
 			const wrapper = $input.closest( obj.selector.horizontal_datepicker.container );
 			const day = wrapper.find( obj.selector.horizontal_datepicker.day );
 			const month = wrapper.find( obj.selector.horizontal_datepicker.month );
