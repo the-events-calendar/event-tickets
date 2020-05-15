@@ -229,7 +229,7 @@ trait Ticket_Maker {
 
 			update_post_meta( $post_id, $global_stock::TICKET_STOCK_CAP, $global_qty );
 			update_post_meta( $post_id, $global_stock::GLOBAL_STOCK_LEVEL, $global_qty - $global_sales );
-			tribe_tickets_update_capacity( $post_id, $global_sales );
+			tribe_tickets_update_capacity( $post_id, $global_qty );
 		}
 
 		return $ticket_ids;

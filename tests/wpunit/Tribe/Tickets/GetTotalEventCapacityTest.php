@@ -3,43 +3,40 @@
 namespace Tribe\Tickets;
 
 use Tribe\Events\Test\Factories\Event;
-use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\Test_Case;
 use Tribe__Tickets__Global_Stock as Global_Stock;
-use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Tickets_Handler as Handler;
-use Tribe__Cache as Cache;
 
-class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
+class GetTotalEventCapacityTest extends Test_Case {
 
-	use PayPal_Ticket_Maker;
 
-	private $cap_key     = Global_Stock::TICKET_STOCK_MODE;
+	private $cap_key = Global_Stock::TICKET_STOCK_MODE;
 	private $global_mode = Global_Stock::GLOBAL_STOCK_MODE;
 	private $capped_mode = Global_Stock::CAPPED_STOCK_MODE;
-	private $cap         = Global_Stock::TICKET_STOCK_CAP;
-	private $global_cap  = 50;
+	private $global_cap = 50;
+
+	/**
+	 * @var Handler
+	 */
+	private $handler;
+
+	/**
+	 * ID of a created TEC Event.
+	 *
+	 * @see \Tribe\Events\Test\Factories\Event::create_object()
+	 *
+	 * @var int
+	 */
+	private $event_id;
 
 	public function setUp() {
 		// before
 		parent::setUp();
 
-		// your set up methods here
 		$this->factory()->event = new Event();
 		$this->event_id         = $this->factory()->event->create();
 
-		// Tribe__Tickets__Tickets_Handler handler for easier access
-		$this->handler = new Handler;
-
-		// Enable Tribe Commerce.
-		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
-		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
-			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
-
-			return $modules;
-		} );
-
-		// Reset Data_API object so it sees Tribe Commerce.
-		tribe_singleton( 'tickets.data_api', new Data_API );
+		$this->handler = tribe( 'tickets.handler' );
 	}
 
 	public function tearDown() {
@@ -53,7 +50,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	private function setupGlobalStock( $cap = null ) {
 		add_post_meta( $this->event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
 		$cap = is_null( $cap ) ? $this->global_cap : $cap;
-		add_post_meta( $this->event_id, Global_Stock::GLOBAL_STOCK_LEVEL, $cap );
+		add_post_meta( $this->event_id, $this->handler->key_capacity, $cap );
 	}
 
 	/**
@@ -74,7 +71,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 			$this->event_id,
 			[
 				'meta_input' => [
-					'_capacity'   => $capacity,
+					$this->handler->key_capacity   => $capacity,
 					'_stock'      => $stock,
 					'total_sales' => $sales,
 				],
@@ -105,7 +102,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 			$this->event_id,
 			[
 				'meta_input' => [
-					'_capacity'   => $capacity,
+					$this->handler->key_capacity   => $capacity,
 					'total_sales' => $sales,
 				],
 			]
@@ -125,27 +122,25 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers ::tribe_get_event_capacity()
 	 */
 	public function it_should_get_correct_capacity_with_global_tickets() {
-		$global_cap = 25;
 		$this->setupGlobalStock();
 
 		$num_tickets = 5;
-		$capacity    = $global_cap / $num_tickets;
-		$stock       = 3;
-		$sales       = 2;
+		$capacity    = $this->global_cap / $num_tickets; // Evenly spaced capacities, although not required to be.
+		$sales       = 3;
+		$stock       = $capacity - $sales;
 		$ticket_data = [];
 
-		for ( $i = 0; $i < $num_tickets; $i++ ) {
+		for ( $i = 0; $i < $num_tickets; $i ++ ) {
 			$ticket_data[] = [
 				'meta_input' => [
-					'_capacity'    => $capacity,
 					'_stock'       => $stock,
 					'total_sales'  => $sales,
-					$this->cap_key => $this->global_mode
+					$this->cap_key => $this->global_mode,
 				],
 			];
 		}
 
-		// create 5 tickets
+		// create all of our tickets
 		$ticket_ids = $this->create_distinct_paypal_tickets_basic(
 			$this->event_id,
 			$ticket_data,
@@ -167,18 +162,17 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_get_correct_capacity_with_capped_tickets() {
 		$num_tickets = 5;
-		$capacity    = $this->global_cap / $num_tickets;
-		$stock       = 3;
-		$sales       = 2;
+		$capacity    = $this->global_cap / $num_tickets; // Evenly spaced capacities, although not required to be.
+		$sales       = 3;
+		$stock       = $capacity - $sales;
 		$ticket_data = [];
 
-		for ( $i = 0; $i < $num_tickets; $i++ ) {
+		for ( $i = 0; $i < $num_tickets; $i ++ ) {
 			$ticket_data[] = [
 				'meta_input' => [
-					'_capacity'    => $capacity,
-					'_stock'       => $stock,
-					'total_sales'  => $sales,
-					$this->cap_key => $this->capped_mode
+					$this->handler->key_capacity => $capacity,
+					'_stock'                     => $stock,
+					'total_sales'                => $sales,
 				],
 			];
 		}
@@ -211,20 +205,18 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 			[
 				[
 					'meta_input' => [
-						'_capacity'    => $capacity,
-						'total_sales'  => $sales,
+						$this->handler->key_capacity => $capacity,
+						'total_sales'                => $sales,
 					],
 				],
 				[
 					'meta_input' => [
-						'_capacity'    => $capacity,
 						'total_sales'  => $sales,
 						$this->cap_key => $this->global_mode,
 					],
 				],
 				[
 					'meta_input' => [
-						'_capacity'    => $capacity,
 						'total_sales'  => $sales,
 						$this->cap_key => $this->capped_mode,
 					],
@@ -254,7 +246,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 			1,
 			[
 				'meta_input' => [
-					'_capacity'     => 10,
+					$this->handler->key_capacity     => 10,
 					'total_sales'   => 2,
 				],
 			]
@@ -266,7 +258,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 			1,
 			[
 				'meta_input' => [
-					'_capacity'     => 10,
+					$this->handler->key_capacity     => 10,
 					'total_sales'   => 2,
 					$this->cap_key => $this->global_mode
 				],
@@ -279,7 +271,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 			1,
 			[
 				'meta_input' => [
-					'_capacity'     => -1,
+					$this->handler->key_capacity     => -1,
 					'total_sales'   => 2,
 				],
 			]
@@ -291,7 +283,7 @@ class GetTotalEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 			1,
 			[
 				'meta_input' => [
-					'_capacity'     => 10,
+					$this->handler->key_capacity     => 10,
 					'total_sales'   => 2,
 					$this->cap_key => $this->capped_mode
 				],

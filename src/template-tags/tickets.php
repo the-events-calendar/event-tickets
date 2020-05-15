@@ -1031,7 +1031,7 @@ if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 
 	/**
-	 * Returns the capacity for a given Post/Event.
+	 * Returns the total capacity for a given Post/Event (not remaining capacity/stock).
 	 *
 	 * @since  4.11.3
 	 *
