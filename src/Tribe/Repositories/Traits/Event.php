@@ -69,6 +69,7 @@ trait Event {
 
 		$this->where_clause( $wpdb->prepare( "
 				`{$alias_end_date}`.`post_id` IS NULL
+				OR `{$alias_end_date}`.`meta_value` = ''
 				OR CAST( `{$alias_end_date}`.`meta_value` AS DATETIME ) >= %s
 			", $end_date ) );
 	}
