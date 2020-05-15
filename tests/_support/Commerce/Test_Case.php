@@ -60,7 +60,8 @@ class Test_Case extends WPTestCase {
 		add_filter(
 			'tribe_exit', function () {
 			return [ $this, 'dont_die' ];
-		} );
+		}
+		);
 
 		// Let's avoid confirmation emails.
 		add_filter( 'tribe_tickets_rsvp_send_mail', '__return_false' );
@@ -70,16 +71,22 @@ class Test_Case extends WPTestCase {
 
 		// Enable Tribe Commerce.
 		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
-		add_filter(
-			'tribe_tickets_get_modules', function ( $modules ) {
-			/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
-			$paypal = tribe( 'tickets.commerce.paypal' );
 
-			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = $paypal->plugin_name;
+		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
+		$paypal = tribe( 'tickets.commerce.paypal' );
 
-			return $modules;
+		if ( $paypal->is_active() ) {
+			add_filter(
+				'tribe_tickets_get_modules', function ( $modules ) {
+				/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
+				$paypal = tribe( 'tickets.commerce.paypal' );
+
+				$modules[ $paypal->class_name ] = $paypal->plugin_name;
+
+				return $modules;
+			}
+			);
 		}
-		);
 
 		// Reset Data_API object so it sees Tribe Commerce. Must come after enabling TPP, above.
 		tribe_singleton( 'tickets.data_api', new Data_API );
