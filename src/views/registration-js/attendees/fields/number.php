@@ -31,6 +31,7 @@ $classes    = [
 	<input
 		type="number"
 		min="0"
+		step="0.01"
 		id="<?php echo esc_attr( $option_id ); ?>"
 		class="tribe-common-form-control-number__input ticket-meta"
 		name="<?php echo esc_attr( $field_name ); ?>"
