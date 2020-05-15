@@ -20,6 +20,16 @@ class Test_Case extends WPTestCase {
 	use Attendee_Maker;
 
 	/**
+	 * Control if the major testing scenario's data should be generated.
+	 *
+	 * Disabled by default because most tests for things like "generate 3 tickets, count that 3 tickets exist" wouldn't
+	 * pass because additional tickets were generated besides those 3, from this setup data.
+	 *
+	 * @var bool
+	 */
+	public $should_setup_test_data = false;
+
+	/**
 	 * The array of generated data.
 	 *
 	 * @see setup_test_data()
@@ -71,7 +81,7 @@ class Test_Case extends WPTestCase {
 		}
 		);
 
-		// Reset Data_API object so it sees Tribe Commerce.
+		// Reset Data_API object so it sees Tribe Commerce. Must come after enabling TPP, above.
 		tribe_singleton( 'tickets.data_api', new Data_API );
 
 		// Setup test data here.
@@ -207,8 +217,16 @@ class Test_Case extends WPTestCase {
 	 * - User2 is RSVP attendee
 	 * Event 4 has: User5 as author, no tickets (therefore no attendees)
 	 * Note that guest purchasers will still have User ID# zero saved to `_tribe_tickets_attendee_user_id` meta field.
+	 *
+	 * @param array|null $matrix Matrix for which to generate data. (Not used at this time but could/should, like CET).
+	 *
+	 * @return array
 	 */
-	public function setup_test_data() {
+	public function setup_test_data( $matrix = null ): array {
+		if ( empty( $this->should_setup_test_data ) ) {
+			return $this->test_data;
+		}
+
 		/** @var \Tribe__Tickets__RSVP $rsvp */
 		$rsvp = tribe( 'tickets.rsvp' );
 
@@ -491,6 +509,8 @@ class Test_Case extends WPTestCase {
 		if ( ! empty( $debug ) ) {
 			codecept_debug( $debug );
 		}
+
+		return $this->test_data;
 	}
 
 	/**

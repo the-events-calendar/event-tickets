@@ -2,14 +2,12 @@
 
 namespace Tribe\Tickets\Test\Testcases;
 
-use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker as Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\Test_Case;
 use Tribe__Date_Utils as Date_Utils;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
-use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Ticket_Object as RSVP;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 

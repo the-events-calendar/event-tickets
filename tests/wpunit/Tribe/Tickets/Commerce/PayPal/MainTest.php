@@ -8,8 +8,6 @@ use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Order_Maker as PayPal_Order_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Commerce__PayPal__Main as Main;
-use Tribe__Tickets__Data_API as Data_API;
-use Prophecy\Argument;
 
 class MainTest extends Test_Case {
 

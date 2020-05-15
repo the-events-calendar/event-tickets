@@ -10,6 +10,11 @@ namespace Tribe\Tickets\Test\Commerce;
 class ORMTestCase extends Test_Case {
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public $should_setup_test_data = true;
+
+	/**
 	 * Get test matrix with all the assertions filled out.
 	 *
 	 * Method naming:
