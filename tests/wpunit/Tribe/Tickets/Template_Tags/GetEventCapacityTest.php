@@ -50,7 +50,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get the correct global stock for an event.
 	 *
-	 * @covers tribe_get_event_capacity()
+	 * @covers ::tribe_get_event_capacity
 	 */
 	public function it_should_get_the_correct_stock_for_an_event() {
 		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
@@ -77,7 +77,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get the correct stock for an event with unlimited tickets.
 	 *
-	 * @covers tribe_get_event_capacity()
+	 * @covers ::tribe_get_event_capacity
 	 */
 	public function it_should_get_the_correct_stock_for_an_event_with_unlimited_tickets() {
 		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
@@ -104,7 +104,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get the correct stock for an event with shared tickets with no sales.
 	 *
-	 * @covers tribe_get_event_capacity()
+	 * @covers ::tribe_get_event_capacity
 	 */
 	public function it_should_get_the_correct_stock_for_an_event_with_shared_tickets_with_no_sales() {
 		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
@@ -131,7 +131,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get the correct stock for an event with shared tickets with sales.
 	 *
-	 * @covers tribe_get_event_capacity()
+	 * @covers ::tribe_get_event_capacity
 	 */
 	public function it_should_get_the_correct_stock_for_an_event_with_shared_tickets_with_sales() {
 		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
@@ -160,7 +160,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get the correct stock for an event with mixed tickets with no sales.
 	 *
-	 * @covers tribe_get_event_capacity()
+	 * @covers ::tribe_get_event_capacity
 	 */
 	public function it_should_get_the_correct_stock_for_an_event_with_mixed_shared_and_own_with_no_sales() {
 		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
@@ -186,7 +186,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get the correct stock for an event with mixed tickets with sales.
 	 *
-	 * @covers tribe_get_event_capacity()
+	 * @covers ::tribe_get_event_capacity
 	 */
 	public function it_should_get_the_correct_stock_for_an_event_with_mixed_shared_and_own_with_sales() {
 		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
@@ -214,7 +214,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get the correct stock for an event with mixed tickets.
 	 *
-	 * @covers tribe_get_event_capacity()
+	 * @covers ::tribe_get_event_capacity
 	 */
 	public function it_should_get_the_correct_stock_for_an_event_with_mixed_shared_and_unlimited() {
 		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
@@ -242,7 +242,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get the correct stock for an event with mixed tickets.
 	 *
-	 * @covers tribe_get_event_capacity()
+	 * @covers ::tribe_get_event_capacity
 	 */
 	public function it_should_get_the_correct_stock_for_an_event_with_rsvps() {
 		$rsvp_ticket_id = $this->create_rsvp_ticket( $this->event_id, [
@@ -262,7 +262,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get the correct stock for an event with mixed tickets.
 	 *
-	 * @covers tribe_get_event_capacity()
+	 * @covers ::tribe_get_event_capacity
 	 */
 	public function it_should_get_the_correct_stock_for_an_event_with_unlimited_rsvps() {
 		$rsvp_ticket_id = $this->create_rsvp_ticket( $this->event_id, [
@@ -281,7 +281,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get the correct stock for an event with mixed tickets with no sales.
 	 *
-	 * @covers tribe_get_event_capacity()
+	 * @covers ::tribe_get_event_capacity
 	 */
 	public function it_should_get_the_correct_stock_for_an_event_with_mixed_tickets_and_rsvps_with_no_sales() {
 		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
@@ -309,7 +309,7 @@ class GetEventCapacityTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * It should get the correct stock for an event with mixed tickets with sales.
 	 *
-	 * @covers tribe_get_event_capacity()
+	 * @covers ::tribe_get_event_capacity
 	 */
 	public function it_should_get_the_correct_stock_for_an_event_with_mixed_tickets_and_rsvps_with_sales() {
 		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
