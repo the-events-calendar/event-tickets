@@ -19,9 +19,8 @@
  *
  */
 
-/* translators: %s is the event or post title the tickets are attached to. */
-/* translators: %s: Tickets label */
-$title       = sprintf( _x( '%s %s', 'Modal title. %s: event name', 'event-tickets' ), get_the_title(), tribe_get_ticket_label_plural( 'event-tickets' ) );
+/* translators: %1$s: Event name, %2$s: Tickets label */
+$title = sprintf( _x( '%1$s %2$s', 'Tickets modal title.', 'event-tickets' ), get_the_title(), tribe_get_ticket_label_plural( 'event-tickets' ) );
 
 /* translators: %s: Tickets label */
 $button_text = sprintf( _x( 'Get %s', 'Get selected tickets.', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets' ) );
@@ -81,5 +80,4 @@ $event_id = get_the_ID();
 $template = tribe( 'tickets.editor.template' );
 $tickets  = $this->get( 'tickets' );
 $template->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) );
-
 
