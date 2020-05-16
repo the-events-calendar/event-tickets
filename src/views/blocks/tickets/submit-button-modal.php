@@ -20,8 +20,11 @@
  */
 
 /* translators: %s is the event or post title the tickets are attached to. */
-$title       = sprintf( _x( '%s Tickets', 'Modal title. %s: event name', 'event-tickets' ), get_the_title() );
-$button_text = _x( 'Get Tickets', 'Get selected tickets.', 'event-tickets' );
+/* translators: %s: Tickets label */
+$title       = sprintf( _x( '%s %s', 'Modal title. %s: event name', 'event-tickets' ), get_the_title(), tribe_get_ticket_label_plural( 'event-tickets' ) );
+
+/* translators: %s: Tickets label */
+$button_text = sprintf( _x( 'Get %s', 'Get selected tickets.', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets' ) );
 
 /**
  * Allow filtering of the button classes for the tickets block.
