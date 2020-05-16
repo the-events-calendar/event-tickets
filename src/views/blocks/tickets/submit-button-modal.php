@@ -23,7 +23,7 @@
 $title = sprintf( _x( '%1$s %2$s', 'Tickets modal title.', 'event-tickets' ), get_the_title(), tribe_get_ticket_label_plural( 'event-tickets' ) );
 
 /* translators: %s: Tickets label */
-$button_text = sprintf( _x( 'Get %s', 'Get selected tickets.', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets' ) );
+$button_text = sprintf( _x( 'Get %s', 'Get Tickets button.', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets' ) );
 
 /**
  * Allow filtering of the button classes for the tickets block.
@@ -80,4 +80,3 @@ $event_id = get_the_ID();
 $template = tribe( 'tickets.editor.template' );
 $tickets  = $this->get( 'tickets' );
 $template->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) );
-
