@@ -119,7 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.12.1] 2020-05-19 =
 
-* Feature - Added new field types to choose from when requiring Attendee Information on a Ticket or RSVP: Email, URL, Number, Date of Birth, Date and Telephone, when using Event Tickets Plus. [ETP-89]
+* Feature - Added new field types to choose from when requiring Attendee Information on a Ticket or RSVP: Email, URL, Date of Birth, Date and Telephone, when using Event Tickets Plus. [ETP-89]
 * Feature - Extend `tribe_events()` with new post filtering options: `has_attendees`, `attendee`, `attendee__not_in`, and `attendee_user`. [ET-618]
 * Feature - Add new `tribe( 'tickets.post-repository' )` object that works similar to `tribe_events()` but supports any post type. [ET-618]
 * Fix - Remove opinionated `max-width: none;` on generic elements over the Attendee Registration page CSS to prevent theme conflicts. [ETP-314]
