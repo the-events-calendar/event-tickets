@@ -12,9 +12,9 @@
  * @since   4.9
  * @since   4.10.8  Updated loading logic for including a renamed template.
  * @since   4.10.10 Removed initial check for tickets.
- * @since   TBD     Use tribe_get_ticket_label_plural() for "Tickets" string.
+ * @since   4.12.1     Use tribe_get_ticket_label_plural() for "Tickets" string.
  *
- * @version TBD
+ * @version 4.12.1
  *
  * @var Tribe__Tickets__Editor__Template $this
  */

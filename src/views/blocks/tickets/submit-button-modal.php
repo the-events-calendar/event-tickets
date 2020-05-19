@@ -14,9 +14,9 @@
  * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
  * @since 4.11.3 Allow filtering of the button classes.
  * @since 4.11.3 Added button ID for better JS targeting.
- * @since TBD Add support for custom label for "Tickets" plural.
+ * @since 4.12.1 Add support for custom label for "Tickets" plural.
  *
- * @version TBD
+ * @version 4.12.1
  *
  */
 

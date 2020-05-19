@@ -14,7 +14,7 @@ $singular = $pto->labels->singular_name;
  * Whether we should display the "Attendees" title.
  *
  * @since  4.6.2
- * @since  TBD Append the post ID to the Attendees page title and each Ticket's name.
+ * @since  4.12.1 Append the post ID to the Attendees page title and each Ticket's name.
  *
  * @param boolean                         $show_title
  * @param Tribe__Tickets__Tickets_Handler $handler

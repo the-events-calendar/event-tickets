@@ -14,9 +14,9 @@
  * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
  * @since 4.11.3 Allow filtering of the button classes.
  * @since 4.11.3 Added button ID for better JS targeting.
- * @since TBD Updated button text to use tribe_get_ticket_label_plural() for "Tickets" string.
+ * @since 4.12.1 Updated button text to use tribe_get_ticket_label_plural() for "Tickets" string.
  *
- * @version TBD
+ * @version 4.12.1
  *
  */
 

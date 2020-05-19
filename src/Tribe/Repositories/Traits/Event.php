@@ -2,7 +2,7 @@
 /**
  * Event trait that contains all of the ORM filters that can be used for any repository.
  *
- * @since TBD
+ * @since 4.12.1
  *
  * @package Tribe\Tickets\Repositories\Traits
  */
@@ -16,7 +16,7 @@ use Tribe__Timezones as Timezones;
 /**
  * Class Event
  *
- * @since TBD
+ * @since 4.12.1
  */
 trait Event {
 
@@ -63,7 +63,7 @@ trait Event {
 				LEFT JOIN `{$wpdb->postmeta}` AS `{$alias_end_date}`
 					ON (
 						`{$alias_end_date}`.`post_id` = `$wpdb->posts`.`ID`
-						AND `{$alias_end_date}`.`meta_key` = %s 
+						AND `{$alias_end_date}`.`meta_key` = %s
 					)
 			", [ $end_meta_key ] ), $alias_end_date );
 

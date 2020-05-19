@@ -10,8 +10,8 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since TBD Updated message to use tribe_get_ticket_label_plural() for "Tickets" string
- * @version TBD
+ * @since 4.12.1 Updated message to use tribe_get_ticket_label_plural() for "Tickets" string
+ * @version 4.12.1
  *
  */
 

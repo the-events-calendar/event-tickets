@@ -50,7 +50,7 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 	 *
 	 * Extending repository classes should override this to add more attendee types.
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @return array
 	 */
@@ -66,7 +66,7 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 	 *
 	 * Extending repository classes should override this to add more keys.
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @return array
 	 */
@@ -80,7 +80,7 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 	/**
 	 * Returns the meta key relating an Attendee to a User.
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @return string
 	 */

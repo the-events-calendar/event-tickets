@@ -6,7 +6,7 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/datetime.php
  *
- * @since  TBD
+ * @since  4.12.1
  *
  * @see Tribe__Tickets_Plus__Meta__Field__Datetime
  */

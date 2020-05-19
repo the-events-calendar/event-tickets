@@ -15,11 +15,11 @@
  * @since 4.10.8 Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated
  *               third parameter of `get_description_rsvp_ticket()` and to simplify the template's logic.
  * @since 4.10.9 Uses new functions to get singular and plural texts.
- * @since TBD Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
+ * @since 4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @version TBD
+ * @version 4.12.1
  *
  * @var Tribe__Tickets__Editor__Template $this
  */

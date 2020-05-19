@@ -2,7 +2,7 @@
 /**
  * Post attendees trait that contains all of the ORM filters that can be used for any repository.
  *
- * @since TBD
+ * @since 4.12.1
  *
  * @package Tribe\Tickets\Repositories\Traits
  */
@@ -12,14 +12,14 @@ namespace Tribe\Tickets\Repositories\Traits;
 /**
  * Class Post_Attendees
  *
- * @since TBD
+ * @since 4.12.1
  */
 trait Post_Attendees {
 
 	/**
 	 * Filters events to include only those that match the provided attendee(s).
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @param int|array $attendee_ids The attendee(s) to filter by.
 	 */
@@ -50,7 +50,7 @@ trait Post_Attendees {
 	/**
 	 * Filters events to include only those that match the provided attendee state.
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @param bool $has_attendees Indicates if the event should have attendees attached to it or not.
 	 */
@@ -116,7 +116,7 @@ trait Post_Attendees {
 	/**
 	 * Filters events to include only those that do not match the provided attendee(s).
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @param int|array $attendee_ids The attendee(s) to filter out.
 	 */
@@ -166,7 +166,7 @@ trait Post_Attendees {
 	/**
 	 * Filters events to include only those that match the provided attendee(s).
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @param int|array $user_ids The user ID(s) to filter by.
 	 */
@@ -217,7 +217,7 @@ trait Post_Attendees {
 	/**
 	 * Filters events to include only those that do not match the provided attendee(s).
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @param int|array $user_ids The user ID(s) to filter out.
 	 */
