@@ -19,19 +19,14 @@ class PostTypesCest {
 	}
 
 	/**
-	 * It should show no post types ticket-able by default
-	 */
-	public function should_show_no_post_types_ticket_able_by_default( AcceptanceTester $I ) {
-		// there are no post-type inputs checked
-		$I->seeNumberOfElements( 'input[name="ticket-enabled-post-types[]"]:checked', 0 );
-	}
-
-	/**
 	 * It should allow setting the ticket-able post types
 	 *
 	 * @test
 	 */
 	public function should_allow_setting_the_ticket_able_post_types(AcceptanceTester $I) {
+		// there are no post-type inputs checked
+		$I->seeNumberOfElements( 'input[name="ticket-enabled-post-types[]"]:checked', 0 );
+
 		// what is the `value` attribute of the first?
 		$value = $I->grabValueFrom('input[name="ticket-enabled-post-types[]"]:first-of-type');
 
