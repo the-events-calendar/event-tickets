@@ -8,7 +8,7 @@
  *
  * @since 4.11.0
  *
- * @version TBD Updated phpdoc for which field class to reference.
+ * @version 4.12.1 Updated phpdoc for which field class to reference.
  *
  * @see Tribe__Tickets_Plus__Meta__Field__Text
  */

@@ -2,7 +2,7 @@
 /**
  * Handles all of the post querying.
  *
- * @since   TBD
+ * @since   4.12.1
  *
  * @package Tribe\Tickets\Repositories
  */
@@ -19,7 +19,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Post_Repository.
  *
- * @since   TBD
+ * @since   4.12.1
  *
  * @package Tribe\Tickets\Repositories
  */
@@ -76,7 +76,7 @@ class Post_Repository extends Tribe__Repository {
 	 *
 	 * Extending repository classes should override this to add more attendee types.
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @return array
 	 */
@@ -92,7 +92,7 @@ class Post_Repository extends Tribe__Repository {
 	 *
 	 * Extending repository classes should override this to add more keys.
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @return array
 	 */
@@ -106,7 +106,7 @@ class Post_Repository extends Tribe__Repository {
 	/**
 	 * Returns the meta key relating an Attendee to a User.
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @return string
 	 */
@@ -117,7 +117,7 @@ class Post_Repository extends Tribe__Repository {
 	/**
 	 * Handles the `order_by` clauses for events
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @param string $order_by The key used to order events; e.g. `event_date` to order events by start date.
 	 */
@@ -174,7 +174,7 @@ class Post_Repository extends Tribe__Repository {
 	 * To avoid the "stacking" of `orderby` clauses and filters the query filters are added at the very last moment,
 	 * right before building the query.
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @return \WP_Query The built query object.
 	 */
@@ -191,7 +191,7 @@ class Post_Repository extends Tribe__Repository {
 	/**
 	 * Applies start-date-based ordering to the query.
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @param bool $use_utc      Whether to use the events UTC start dates or their localized dates.
 	 * @param bool $after        Whether to append the order by clause to the ones managed by WordPress or not.
@@ -210,7 +210,7 @@ class Post_Repository extends Tribe__Repository {
 		 *
 		 * @see Tribe__Events__Repositories__Events::order_by_date
 		 *
-		 * @since TBD
+		 * @since 4.12.1
 		 *
 		 * @param boolean $force_local_tz Whether to force the local TZ.
 		 */

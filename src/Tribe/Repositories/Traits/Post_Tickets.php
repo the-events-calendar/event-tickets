@@ -2,7 +2,7 @@
 /**
  * Post tickets trait that contains all of the ORM filters that can be used for any repository.
  *
- * @since   TBD
+ * @since   4.12.1
  *
  * @package Tribe\Tickets\Repositories\Traits
  */
@@ -17,7 +17,7 @@ use Tribe__Utils__Array;
 /**
  * Class Post_Tickets
  *
- * @since TBD
+ * @since 4.12.1
  */
 trait Post_Tickets {
 
@@ -25,7 +25,7 @@ trait Post_Tickets {
 	 * A re-implementation of the base `filter_by_cost` method to filter events by related
 	 * ticket costs in place of their own cost meta.
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @param float|array $value       The cost to use for the comparison; in the case of `BETWEEN`, `NOT BETWEEN`,
 	 *                                 `IN` and `NOT IN` operators this value should be an array.
@@ -64,11 +64,11 @@ trait Post_Tickets {
 		}
 
 		if (
-			in_array( $operator, [ 'BETWEEN', 'NOT BETWEEN' ], true ) 
+			in_array( $operator, [ 'BETWEEN', 'NOT BETWEEN' ], true )
 			&& ! (
-				is_array( $value ) 
+				is_array( $value )
 				&& 2 === count( $value )
-			) 
+			)
 		) {
 			throw Tribe__Repository__Usage_Error::because_this_comparison_operator_requires_an_value_of_type( $operator, 'filter_by_cost', 'array' );
 		}
@@ -83,10 +83,10 @@ trait Post_Tickets {
 		global $wpdb;
 
 		// Join to the meta that relates tickets to events.
-		$repo->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event 
-			ON ( 
+		$repo->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event
+			ON (
 				{$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID
-				AND {$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$' 
+				AND {$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
 			)" );
 
 		$price_regexp_frags = [
@@ -98,7 +98,7 @@ trait Post_Tickets {
 		$price_regexp       = '^(' . implode( '|', $price_regexp_frags ) . ')$';
 
 		// Join to the ticket cost meta, allow for RSVP tickets too that have no price.
-		$repo->join_clause( $wpdb->prepare( "LEFT JOIN {$wpdb->postmeta} {$prefix}_ticket_cost 
+		$repo->join_clause( $wpdb->prepare( "LEFT JOIN {$wpdb->postmeta} {$prefix}_ticket_cost
 			ON (
 					{$prefix}_ticket_cost.post_id = {$prefix}_ticket_event.post_id
 					AND (
@@ -129,7 +129,7 @@ trait Post_Tickets {
 	 * WooCommerce tickets use the "USD" code means "only fetch events that have WooCommerce
 	 * tickets".
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @param string|array $symbol One or more currency symbols or currency ISO codes. E.g.
 	 *                             "$" and "USD".
@@ -205,10 +205,10 @@ trait Post_Tickets {
 		global $wpdb;
 		$prefix = 'by_cost_currency_symbol_';
 		// Join to the meta that relates tickets to events but only for the providers that have the required symbols.
-		$repo->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event 
-			ON ( 
+		$repo->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event
+			ON (
 				{$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID
-				AND {$prefix}_ticket_event.meta_key REGEXP '^_tribe_{$providers_regex}_for_event\$' 
+				AND {$prefix}_ticket_event.meta_key REGEXP '^_tribe_{$providers_regex}_for_event\$'
 			)" );
 	}
 
@@ -218,7 +218,7 @@ trait Post_Tickets {
 	 * This does NOT include RSVPs or events that have a cost assigned via the
 	 * cost custom field.
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @param bool $has_tickets Indicates if the event should have ticket types attached to it or not.
 	 */
@@ -235,9 +235,9 @@ trait Post_Tickets {
 
 		if ( (bool) $has_tickets ) {
 			// Join to the meta that relates tickets to events but exclude RSVP tickets.
-			$repo->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event ON ( 
+			$repo->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event ON (
 					{$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID
-					AND {$prefix}_ticket_event.meta_key NOT REGEXP '^_tribe_rsvp_for_event$' 
+					AND {$prefix}_ticket_event.meta_key NOT REGEXP '^_tribe_rsvp_for_event$'
 				)" );
 
 			return;
@@ -247,14 +247,14 @@ trait Post_Tickets {
 		$repo->join_clause( "LEFT JOIN {$wpdb->postmeta} {$prefix}_ticket_event
 					ON {$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID" );
 		// Keep events that have no tickets assigned or are assigned RSVP tickets.
-		$repo->where_clause( "{$prefix}_ticket_event.meta_id IS NULL 
+		$repo->where_clause( "{$prefix}_ticket_event.meta_id IS NULL
 			OR {$prefix}_ticket_event.meta_key = '_tribe_rsvp_for_event'" );
 	}
 
 	/**
 	 * Filters events to include only those that match the provided RSVP state.
 	 *
-	 * @since TBD
+	 * @since 4.12.1
 	 *
 	 * @param bool $has_rsvp Indicates if the event should have RSVP tickets attached to it or not.
 	 */
@@ -286,7 +286,7 @@ trait Post_Tickets {
 				AND {$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
 			)" );
 		// Keep any event without tickets or not related to an RSVP ticket.
-		$repo->where_clause( "{$prefix}_ticket_event.meta_id IS NULL 
+		$repo->where_clause( "{$prefix}_ticket_event.meta_id IS NULL
 			OR {$prefix}_ticket_event.meta_key != '_tribe_rsvp_for_event'" );
 	}
 }

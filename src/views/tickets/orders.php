@@ -12,9 +12,9 @@
  * @since 4.10.9 Use function for text.
  * @since 4.11.3 Correct getting `$event_id` when using The Events Calendar's "Default Page Template" display template. `$event_id` now relies on the `WP_Query` queried object ID instead of the global `$post` object.
  * @since 4.11.3 Reformat a bit of the code around the button - no functional changes.
- * @since TBD Account for empty post type object, such as if post type got disabled.
+ * @since 4.12.1 Account for empty post type object, such as if post type got disabled.
  *
- * @version TBD
+ * @version 4.12.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

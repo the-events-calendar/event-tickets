@@ -11,9 +11,9 @@
  *                 parameter of `get_description_rsvp_ticket()`.
  * @since   4.10.9  Use customizable ticket name functions.
  * @since   4.11.0 Made template more like new blocks-based template in terms of logic.
- * @since TBD Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
+ * @since 4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
  *
- * @version TBD
+ * @version 4.12.1
  *
  * @var Tribe__Tickets__Tickets_View $this
  */

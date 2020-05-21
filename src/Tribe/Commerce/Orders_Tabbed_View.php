@@ -22,7 +22,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 	 * Renders the tabbed view for the current post.
 	 *
 	 * @since 4.7
-	 * @since TBD Added Post ID to page title.
+	 * @since 4.12.1 Added Post ID to page title.
 	 */
 	public function render() {
 		$post_id = Tribe__Utils__Array::get( $_GET, 'event_id', Tribe__Utils__Array::get( $_GET, 'post_id', false ), false );

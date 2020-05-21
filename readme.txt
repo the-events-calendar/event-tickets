@@ -3,7 +3,7 @@
 Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.9
-Tested up to: 5.4
+Tested up to: 5.4.1
 Stable tag: 4.12.1
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -117,9 +117,9 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.12.1] 2020-05-19 =
+= [4.12.1] 2020-05-20 =
 
-* Feature - Added new field types to choose from when requiring Attendee Information on a Ticket or RSVP: Email, URL, Number, Date of Birth, Date and Telephone, when using Event Tickets Plus. [ETP-89]
+* Feature - Added new field types to choose from when requiring Attendee Information on a Ticket or RSVP: Email, URL, Date of Birth, Date and Telephone, when using Event Tickets Plus. [ETP-89]
 * Feature - Extend `tribe_events()` with new post filtering options: `has_attendees`, `attendee`, `attendee__not_in`, and `attendee_user`. [ET-618]
 * Feature - Add new `tribe( 'tickets.post-repository' )` object that works similar to `tribe_events()` but supports any post type. [ET-618]
 * Fix - Remove opinionated `max-width: none;` on generic elements over the Attendee Registration page CSS to prevent theme conflicts. [ETP-314]
@@ -130,6 +130,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Update several templates to account for a passed post to be of an unregistered post type, such as for an Event post when The Events Calendar plugin is disabled. [ET-787]
 * Tweak - Ensure tickets labels use a function to retrieve the label so that they can be filtered. [ETP-119]
 * Tweak - Output the internal Post ID to the Attendees Report's Event Title, each Ticket Name, and each Attendee. [ET-786]
+* Language - 15 new strings added, 412 updated, 14 fuzzied, and 15 obsoleted
 
 = [4.12.0] 2020-04-23 =
 

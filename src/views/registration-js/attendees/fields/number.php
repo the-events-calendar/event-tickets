@@ -6,7 +6,7 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/url.php
  *
- * @since  TBD
+ * @since  4.12.1
  *
  * @see Tribe__Tickets_Plus__Meta__Field__Number
  */
@@ -31,6 +31,7 @@ $classes    = [
 	<input
 		type="number"
 		min="0"
+		step="0.01"
 		id="<?php echo esc_attr( $option_id ); ?>"
 		class="tribe-common-form-control-number__input ticket-meta"
 		name="<?php echo esc_attr( $field_name ); ?>"
