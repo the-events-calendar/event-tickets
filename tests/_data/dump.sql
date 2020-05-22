@@ -264,7 +264,7 @@ INSERT INTO `wp_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) VALU
 (7, 1, 'comment_shortcuts', 'false'),
 (8, 1, 'admin_color', 'fresh'),
 (9, 1, 'use_ssl', '0'),
-(10, 1, 'show_admin_bar_front', 'true'),
+(10, 1, 'show_admin_bar_front', 'false'),
 (11, 1, 'locale', ''),
 (12, 1, 'wp_capabilities', 'a:1:{s:13:\"administrator\";b:1;}'),
 (13, 1, 'wp_user_level', '10'),
