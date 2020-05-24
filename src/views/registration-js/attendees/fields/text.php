@@ -8,9 +8,11 @@
  *
  * @since 4.11.0
  *
- * @version 4.11.0
+ * @version 4.12.1 Updated phpdoc for which field class to reference.
  *
+ * @see Tribe__Tickets_Plus__Meta__Field__Text
  */
+
 $required    = isset( $field->required ) && 'on' === $field->required ? true : false;
 $option_id   = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id}}";
 $field       = (array) $field;

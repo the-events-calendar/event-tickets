@@ -1,0 +1,75 @@
+<?php
+
+namespace Tribe\Tickets\ORM\Posts;
+
+use Tribe\Tickets\Test\Commerce\ORM\EventsTestCase;
+
+/**
+ * Class FilterTest
+ * @package Tribe\Tickets\ORM\Posts
+ *
+ * @see \tribe_events() What all these tests are for.
+ * @see \Tribe__Tickets__Event_Repository The custom filters we are testing.
+ */
+class FilterTest extends EventsTestCase {
+
+	/**
+	 * @dataProvider get_event_test_matrix
+	 */
+	public function test_posts_orm_filters( $method ) {
+		list( $repository, $filter_name, $filter_arguments, $assertions ) = $this->$method();
+
+		// Setup posts.
+		$posts = tribe( 'tickets.post-repository' );
+
+		// Enable found() calculations.
+		$posts->set_found_rows( true );
+
+		// Do the filtering.
+		$args = array_merge( [ $filter_name ], $filter_arguments );
+
+		$posts->by( ...$args );
+
+		if ( 'attendee_user__not_in' === $filter_name ) {
+			codecept_debug( var_export( $args, true ) );
+			codecept_debug( var_export( $assertions['get_ids'], true ) );
+			codecept_debug( var_export( $posts->get_ids(), true ) );
+			codecept_debug( var_export( $this->test_data, true ) );
+			codecept_debug( $posts->get_last_built_query()->request );
+		}
+
+		// Assert that we get what we expected.
+
+		/**
+		 * Same as `all()` except only an array of Post IDs, not full Post objects.
+		 * Is affected by pagination, but ORM defaults to unlimited.
+		 *
+		 * @see \Tribe__Repository::get_ids()
+		 */
+		$this->assertEquals( $assertions['get_ids'], $posts->get_ids(), $method );
+
+		/**
+		 * The total number of posts found matching the current query parameters.
+		 * Is affected by pagination, but ORM defaults to unlimited.
+		 *
+		 * @see \Tribe__Repository::all() Runs get_posts() then format_item().
+		 * @see \WP_Query::get_posts()
+		 * @see \Tribe__Repository::format_item()
+		 */
+		$this->assertEquals( $assertions['all'], $posts->all(), $method );
+
+		/**
+		 * @see \Tribe__Repository::count() WP_Query's `post_count`:
+		 *      The number of posts being displayed. Is affected by pagination but ORM defaults to unlimited.
+		 */
+		$this->assertEquals( $assertions['count'], $posts->count(), $method );
+
+		/**
+		 * The total number of posts found matching the current query parameters.
+		 * Is NOT affected by pagination.
+		 *
+		 * @see \Tribe__Repository::found() WP_Query's `found_posts`.
+		 */
+		$this->assertEquals( $assertions['found'], $posts->found(), $method );
+	}
+}

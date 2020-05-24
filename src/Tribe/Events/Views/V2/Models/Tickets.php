@@ -181,13 +181,18 @@ class Tickets implements \ArrayAccess, \Serializable {
 
 						$number = number_format_i18n( $stock );
 
+						$ticket_label_singular = tribe_get_ticket_label_singular_lowercase( 'event-tickets' );
+						$ticket_label_plural   = tribe_get_ticket_label_plural_lowercase( 'event-tickets' );
+
 						if ( 'rsvp' === $type ) {
-							$text = _n( '%s spot left', '%s spots left', $stock, 'event-tickets' );
+							/* translators: %1$s: Number of stock */
+							$text = _n( '%1$s spot left', '%1$s spots left', $stock, 'event-tickets' );
 						} else {
-							$text = _n( '%s ticket left', '%s tickets left', $stock, 'event-tickets' );
+							/* translators: %1$s: Number of stock, %2$s: Ticket label, %3$s: Tickets label */
+							$text = _n( "%1$s %2$s left", "%1$s %3$s left", $stock, 'event-tickets' ); // phpcs:ignore
 						}
 
-						$stock_html = esc_html( sprintf( $text, $number ) );
+						$stock_html = esc_html( sprintf( $text, $number, $ticket_label_singular, $ticket_label_plural ) );
 					}
 				}
 

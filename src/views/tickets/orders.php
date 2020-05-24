@@ -1,6 +1,6 @@
 <?php
 /**
- * Edit Event Tickets
+ * Edit Event Tickets.
  *
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders.php
  *
@@ -12,8 +12,9 @@
  * @since 4.10.9 Use function for text.
  * @since 4.11.3 Correct getting `$event_id` when using The Events Calendar's "Default Page Template" display template. `$event_id` now relies on the `WP_Query` queried object ID instead of the global `$post` object.
  * @since 4.11.3 Reformat a bit of the code around the button - no functional changes.
+ * @since 4.12.1 Account for empty post type object, such as if post type got disabled.
  *
- * @version 4.11.3
+ * @version 4.12.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -67,13 +68,18 @@ if (
 	);
 }
 
+$post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post', 'fallback post type singular name', 'event-tickets' );
+
 $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type;
 ?>
 
 <div id="tribe-events-content" class="tribe-events-single">
 	<p class="tribe-back">
 		<a href="<?php echo esc_url( get_permalink( $event_id ) ); ?>">
-			<?php printf( '&laquo; ' . esc_html__( 'View %s', 'event-tickets' ), $post_type->labels->singular_name ); ?>
+			<?php
+			// Translators: %s: post type label.
+			printf( '&laquo; ' . esc_html__( 'View %s', 'event-tickets' ), $post_type_singular );
+			?>
 		</a>
 	</p>
 

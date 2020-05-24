@@ -14,24 +14,32 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 	/**
 	 * @var array A map that binds requested pages to tabs.
 	 */
-	protected $tab_map = array(
+	protected $tab_map = [
 		'tickets-attendees' => 'tribe-tickets-attendance-report',
-	);
+	];
 
 	/**
 	 * Renders the tabbed view for the current post.
 	 *
 	 * @since 4.7
+	 * @since 4.12.1 Added Post ID to page title.
 	 */
-	public function render( ) {
+	public function render() {
 		$post_id = Tribe__Utils__Array::get( $_GET, 'event_id', Tribe__Utils__Array::get( $_GET, 'post_id', false ), false );
 
 		if ( empty( $post_id ) || ! $post = get_post( $post_id ) ) {
 			return;
 		}
 
+		$view_title = sprintf(
+		// Translators: 1: the post title, 2: the post ID.
+			esc_html_x( 'Attendees for: %s [#%d]', 'attendees report screen heading', 'event-tickets' ),
+			get_the_title( $post_id ),
+			$post_id
+		);
+
 		$tabbed_view = new Tribe__Tabbed_View();
-		$tabbed_view->set_label( apply_filters( 'the_title', $post->post_title, $post->ID ) );
+		$tabbed_view->set_label( $view_title );
 		$query_string = empty( $_SERVER['QUERY_STRING'] ) ? '' : '?' . $_SERVER['QUERY_STRING'];
 		$request_uri  = 'edit.php' . $query_string;
 		$tabbed_view->set_url( remove_query_arg( 'tab', $request_uri ) );

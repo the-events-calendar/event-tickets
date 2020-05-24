@@ -42,6 +42,14 @@ window.tribe.tickets.block = {
 		ticketLoader: '.tribe-tickets-loader__tickets-block',
 		validationNotice: '.tribe-tickets__notice--error',
 		ticketInCartNotice: '#tribe-tickets__notice__tickets-in-cart',
+		horizontal_datepicker: {
+			container: '.tribe_horizontal_datepicker__container',
+			select: '.tribe_horizontal_datepicker__container select',
+			day: '.tribe_horizontal_datepicker__day',
+			month: '.tribe_horizontal_datepicker__month',
+			year: '.tribe_horizontal_datepicker__year',
+			value: '.tribe_horizontal_datepicker__value',
+		},
 	};
 
 	const $tribeTicket = $( obj.selector.container );
@@ -1391,6 +1399,41 @@ window.tribe.tickets.block = {
 	};
 
 	/**
+	 * Checks if a horizontal date picker is valid.
+	 * Eg: If a month is selected, a year and day must also be selected.
+	 *
+	 * @since TBD
+	 *
+	 * @param $input
+	 * @returns {boolean}
+	 */
+	obj.validateHorizontalDatePickerValue = function( $input ) {
+		// We don't check if the field is value if no day, month or year has been chosen.
+		if ( $input.val() === '' || $input.val() === 'null-null-null' ) {
+			return true;
+		}
+
+		const wrapper = $input.closest( obj.selector.horizontal_datepicker.container );
+		const day = wrapper.find( obj.selector.horizontal_datepicker.day );
+		const month = wrapper.find( obj.selector.horizontal_datepicker.month );
+		const year = wrapper.find( obj.selector.horizontal_datepicker.year );
+
+		let isValidDatePicker = true;
+
+		[ day, month, year ].forEach( function( el ) {
+			if ( isNaN( parseInt( el.val() ) ) || parseInt( el.val() ) <= 0 ) {
+				el.addClass( 'ticket-meta__has-error' );
+
+				isValidDatePicker = false;
+			} else {
+				el.removeClass( 'ticket-meta__has-error' );
+			}
+		}, isValidDatePicker );
+
+		return isValidDatePicker;
+	}
+
+	/**
 	 * Adds/removes error classes from a single field.
 	 *
 	 * @since 4.11.0
@@ -1415,6 +1458,10 @@ window.tribe.tickets.block = {
 			} else {
 				isValidField = false;
 			}
+		}
+
+		if ( $input.is( obj.selector.horizontal_datepicker.value ) ) {
+			isValidField = obj.validateHorizontalDatePickerValue( $input );
 		}
 
 		if ( ! isValidField ) {
