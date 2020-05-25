@@ -440,8 +440,8 @@
 										 *
 										 * @since TBD
 										 *
-										 * @param array $ticket Ticket information
-										 * @param WP_Post $event Event post object.
+										 * @param array   $ticket Ticket information.
+										 * @param WP_Post $event  Event post object.
 										 */
 										do_action( 'tribe_tickets_ticket_email_after_details', $ticket, $event );
 										?>
