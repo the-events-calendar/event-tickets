@@ -49,8 +49,8 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 		add_filter( 'tribe_events_tickets_template_tickets/rsvp.php', [
 			$this->container->make( Template::class ),
 			'override_template',
-        ] );
-        
+		] );
+
 		add_action( 'admin_init', [
 			$this->container->make( Update_Notice::class ),
 			'maybe_display_update_notice',
