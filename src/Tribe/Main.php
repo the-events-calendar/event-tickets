@@ -371,6 +371,9 @@ class Tribe__Tickets__Main {
 
 		// Views V2
 		tribe_register_provider( Tribe\Tickets\Events\Views\V2\Service_Provider::class );
+
+		// RSVP
+		tribe_register_provider( \Tribe\Tickets\RSVP\Service_Provider::class );
 	}
 
 	/**
