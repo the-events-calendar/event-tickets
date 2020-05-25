@@ -435,6 +435,23 @@
 											</tr>
 										</table>
 										<?php
+										/**
+										 * Allows inserting content after the "ticket details" section.
+										 *
+										 * @since TBD
+										 */
+										do_action( 'tribe_tickets_ticket_email_after_details', $ticket, $event );
+										?>
+										<?php if ( has_action( 'tribe_tickets_ticket_email_after_details' ) ) : ?>
+											<table class="whiteSpace" border="0" cellpadding="0" cellspacing="0" width="100%">
+												<tr>
+													<td valign="top" align="left" width="100%" height="30" style="height:30px; background:#f7f7f7; padding: 0 !important; margin:0 !important;">
+														<div style="margin:0; height:30px;"></div>
+													</td>
+												</tr>
+											</table>
+										<?php endif; ?>
+										<?php
 										if ( $venue_name || ! empty( $organizers ) ) {
 											?>
 											<table class="ticket-venue" border="0" cellpadding="0" cellspacing="0" width="100%" align="center">
