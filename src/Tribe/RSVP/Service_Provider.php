@@ -2,6 +2,10 @@
 
 namespace Tribe\Tickets\RSVP;
 
+use Tribe\Tickets\RSVP\Early_Access\Assets;
+use Tribe\Tickets\RSVP\Early_Access\Early_Access;
+use Tribe\Tickets\RSVP\Early_Access\Template;
+
 /**
  * Class Service_Provider
  *
@@ -26,19 +30,24 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	private function register_early_access() {
+		// Early bail: RSVP Early Access not enabled.
+		if ( $this->container->make( Early_Access::class )->is_rsvp_early_access() ) {
+			return;
+		}
+
 		add_action( 'init', [
-			$this->container->make( Early_Access::class ),
-			'maybe_register_early_access_assets'
-		]);
+			$this->container->make( Assets::class ),
+			'register_early_access_assets'
+		] );
 
 		add_action( 'wp_enqueue_scripts', [
-			$this->container->make( Early_Access::class ),
-			'maybe_deregister_rsvp_assets'
+			$this->container->make( Assets::class ),
+			'deregister_rsvp_assets'
 		], 100 );
 
 		add_filter( 'tribe_events_tickets_template_tickets/rsvp.php', [
-			$this->container->make( Early_Access::class ),
-			'maybe_override_template'
+			$this->container->make( Template::class ),
+			'override_template'
 		] );
 	}
 }
