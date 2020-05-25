@@ -5,6 +5,7 @@ namespace Tribe\Tickets\RSVP;
 use Tribe\Tickets\RSVP\Early_Access\Assets;
 use Tribe\Tickets\RSVP\Early_Access\Early_Access;
 use Tribe\Tickets\RSVP\Early_Access\Template;
+use Tribe\Tickets\RSVP\Early_Access\Update_Notice;
 
 /**
  * Class Service_Provider
@@ -48,6 +49,9 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 		add_filter( 'tribe_events_tickets_template_tickets/rsvp.php', [
 			$this->container->make( Template::class ),
 			'override_template'
+		add_action( 'admin_init', [
+			$this->container->make( Update_Notice::class ),
+			'maybe_display_update_notice',
 		] );
 	}
 }

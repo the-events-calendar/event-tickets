@@ -119,7 +119,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [TBD] =
 
-* Feature - Added an option that you can programmatically toggle to use the new RSVP template in Early Access.
+* Feature - Added an option that you can programmatically toggle to use the new RSVP template in Early Access. [ET-796]
+* Tweak - Added a notice regarding the new RSVP FE form styling. [ET-797]
 
 = [4.12.1] 2020-05-20 =
 
