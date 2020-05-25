@@ -32,23 +32,25 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 	 */
 	private function register_early_access() {
 		// Early bail: RSVP Early Access not enabled.
-		if ( $this->container->make( Early_Access::class )->is_rsvp_early_access() ) {
+		if ( ! $this->container->make( Early_Access::class )->is_rsvp_early_access() ) {
 			return;
 		}
 
 		add_action( 'init', [
 			$this->container->make( Assets::class ),
-			'register_early_access_assets'
+			'register_early_access_assets',
 		] );
 
 		add_action( 'wp_enqueue_scripts', [
 			$this->container->make( Assets::class ),
-			'deregister_rsvp_assets'
+			'deregister_rsvp_assets',
 		], 100 );
 
 		add_filter( 'tribe_events_tickets_template_tickets/rsvp.php', [
 			$this->container->make( Template::class ),
-			'override_template'
+			'override_template',
+        ] );
+        
 		add_action( 'admin_init', [
 			$this->container->make( Update_Notice::class ),
 			'maybe_display_update_notice',
