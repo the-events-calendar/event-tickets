@@ -9,9 +9,6 @@ class Early_Access_Template_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	protected $tester;
 
-	/** @var Early_Access */
-	private $early_access;
-
 	/** @var Template */
 	private $template;
 
@@ -19,7 +16,6 @@ class Early_Access_Template_Test extends \Codeception\TestCase\WPTestCase {
 		// Before...
 		parent::setUp();
 
-		$this->early_access = clone tribe( Early_Access::class );
 		$this->template     = clone tribe( Template::class );
 	}
 
@@ -32,7 +28,9 @@ class Early_Access_Template_Test extends \Codeception\TestCase\WPTestCase {
 
 	/** @test */
 	public function should_change_rsvp_template_if_early_access() {
-		$this->early_access->set_rsvp_early_access( true );
+		add_filter( 'tribe_tickets_is_rsvp_early_access', function() {
+			return true;
+		} );
 
 		$template = $this->template->override_template( 'foo/rsvp/bar/rsvp.php' );
 

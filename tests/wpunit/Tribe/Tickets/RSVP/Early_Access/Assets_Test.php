@@ -9,9 +9,6 @@ class Early_Access_Assets_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	protected $tester;
 
-	/** @var Early_Access */
-	private $early_access;
-
 	/** @var Assets */
 	private $assets;
 
@@ -34,7 +31,6 @@ class Early_Access_Assets_Test extends \Codeception\TestCase\WPTestCase {
 			$this->original_wp_styles = clone $wp_styles;
 		}
 
-		$this->early_access = clone tribe( Early_Access::class );
 		$this->assets       = clone tribe( Assets::class );
 	}
 
@@ -52,7 +48,9 @@ class Early_Access_Assets_Test extends \Codeception\TestCase\WPTestCase {
 
 	/** @test */
 	public function should_deregister_rsvp_assets_if_early_access() {
-		$this->early_access->set_rsvp_early_access( true );
+		add_filter( 'tribe_tickets_is_rsvp_early_access', function() {
+			return true;
+		} );
 
 		global $wp_scripts;
 		global $wp_styles;
@@ -68,7 +66,9 @@ class Early_Access_Assets_Test extends \Codeception\TestCase\WPTestCase {
 
 	/** @test */
 	public function should_register_rsvp_early_access_assets_if_early_access() {
-		$this->early_access->set_rsvp_early_access( true );
+		add_filter( 'tribe_tickets_is_rsvp_early_access', function() {
+			return true;
+		} );
 
 		tribe( 'assets' )->remove( 'event-tickets-rsvp-early-access-styles' );
 		tribe( 'assets' )->remove( 'event-tickets-rsvp-early-access-scripts' );
