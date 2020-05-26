@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] =
+
+* Important - The RSVP submission form now has an astonishing new design! If you have customized the RSVPs styles and templates, this might affect your customizations.
+
 = [4.12.1] 2020-05-20 =
 
 * Feature - Added new field types to choose from when requiring Attendee Information on a Ticket or RSVP: Email, URL, Date of Birth, Date and Telephone, when using Event Tickets Plus. [ETP-89]
