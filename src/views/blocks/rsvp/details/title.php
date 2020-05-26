@@ -17,5 +17,5 @@
 
 ?>
 <header class="tribe-block__rsvp__title">
-	<?php echo esc_html( $ticket->name ); ?>
+	<?php echo esc_html( ( $ticket->show_type() ? $ticket->name : '' ) ); ?>
 </header>

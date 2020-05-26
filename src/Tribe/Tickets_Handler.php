@@ -58,6 +58,15 @@ class Tribe__Tickets__Tickets_Handler {
 	public $key_manual_updated = '_tribe_ticket_manual_updated';
 
 	/**
+	 * Meta data key we store show_type under
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $key_show_type = '_tribe_ticket_show_type';
+
+	/**
 	 * Meta data key we store show_description under
 	 *
 	 * @since 4.6

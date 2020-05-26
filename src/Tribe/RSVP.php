@@ -918,8 +918,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		// Updates if we should show Description
+		// Updates if we should show Type and Description
+		$ticket->show_type = isset( $ticket->show_type ) && tribe_is_truthy( $ticket->show_type ) ? 'yes' : 'no';
 		$ticket->show_description = isset( $ticket->show_description ) && tribe_is_truthy( $ticket->show_description ) ? 'yes' : 'no';
+		update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_show_type, $ticket->show_type );
 		update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_show_description, $ticket->show_description );
 
 		// Adds RSVP price
@@ -1238,6 +1240,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->provider_class   = get_class( $this );
 		$return->admin_link       = '';
 		$return->report_link      = '';
+		$return->show_type        = $return->show_type();
 		$return->show_description = $return->show_description();
 
 		$start_date               = get_post_meta( $ticket_id, '_ticket_start_date', true );

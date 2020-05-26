@@ -165,7 +165,7 @@ if ( ! $already_rendered ) {
 					<?php endif; ?>
 				</td>
 				<td class="tickets_name">
-					<?php echo esc_html( $ticket->name ); ?>
+					<?php echo esc_html( ( $ticket->show_type() ? $ticket->name : '' ) ); ?>
 				</td>
 
 				<td class="tickets_description" colspan="2">
