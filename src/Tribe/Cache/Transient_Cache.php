@@ -31,7 +31,9 @@ class Tribe__Tickets__Cache__Transient_Cache extends Tribe__Tickets__Cache__Abst
 		}
 
 		// Flush WordPress cache for cache compatibility
-		wp_cache_flush();
+		if ( ! wp_using_ext_object_cache() ) {
+			wp_cache_flush();
+		}
 
 	}
 
