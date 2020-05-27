@@ -11,7 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @since TBD Added a conditional to display/hide the RSVP type..
+ *
+ * @version TBD
  *
  */
 

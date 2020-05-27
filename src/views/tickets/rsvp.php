@@ -11,8 +11,9 @@
  * @since   4.11.0 Added RSVP/ticket view link to template.
  * @since   4.11.1 Corrected amount of available/remaining tickets when threshold is empty.
  * @since   4.11.5 Display total available separately from setting max allowed to purchase at once.
+ * @since   TBD Added a conditional to display/hide the RSVP type.
  *
- * @version 4.11.5
+ * @version TBD
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login
