@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.12.1.1] 2020-05-29 =
+
+* Fix - Resolve PHP notices that can cause the Events to not show tickets or RSVPs. [ET-836]
+
 = [4.12.1] 2020-05-20 =
 
 * Feature - Added new field types to choose from when requiring Attendee Information on a Ticket or RSVP: Email, URL, Date of Birth, Date and Telephone, when using Event Tickets Plus. [ETP-89]
