@@ -189,7 +189,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 							$text = _n( '%1$s spot left', '%1$s spots left', $stock, 'event-tickets' );
 						} else {
 							/* translators: %1$s: Number of stock, %2$s: Ticket label, %3$s: Tickets label */
-							$text = _n( "%1$s %2$s left", "%1$s %3$s left", $stock, 'event-tickets' ); // phpcs:ignore
+							$text = _n( '%1$s %2$s left', '%1$s %3$s left', $stock, 'event-tickets' ); // phpcs:ignore
 						}
 
 						$stock_html = esc_html( sprintf( $text, $number, $ticket_label_singular, $ticket_label_plural ) );
