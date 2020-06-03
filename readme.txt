@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] =
+
+* Fix - Resolve a PHP notice when rendering the Birth date field in Event Tickets Plus [ETP-330]
+
 = [4.12.1.1] 2020-05-29 =
 
 * Fix - Resolve PHP notices that can cause the Events to not show tickets or RSVPs. [ET-836]
