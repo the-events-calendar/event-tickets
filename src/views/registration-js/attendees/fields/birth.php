@@ -13,6 +13,7 @@
 
 $required    = isset( $field->required ) && 'on' === $field->required ? true : false;
 $option_id   = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id}}";
+/** @var Tribe__Tickets_Plus__Meta__Field__Birth $birth_field */
 $birth_field = $field;
 $field       = (array) $field;
 $field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $field['slug'] ) . ']';
@@ -28,7 +29,7 @@ $classes     = [
 	<div <?php tribe_classes( $classes ); ?> >
 		<label
 			class="tribe-common-b2--min-medium tribe-tickets-meta-label"
-			for="<?php echo esc_attr( $birth_field->month_id ); ?>"
+			for="<?php echo esc_attr( $field_name ); ?>"
 		><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 
 		<!-- Month -->
