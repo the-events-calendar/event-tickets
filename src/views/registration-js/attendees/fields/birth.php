@@ -29,7 +29,7 @@ $classes     = [
 	<div <?php tribe_classes( $classes ); ?> >
 		<label
 			class="tribe-common-b2--min-medium tribe-tickets-meta-label"
-			for="<?php echo esc_attr( $field_name ); ?>"
+			for="<?php echo esc_attr( $option_id ); ?>"
 		><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 
 		<!-- Month -->
@@ -37,6 +37,7 @@ $classes     = [
 			<select
 				<?php tribe_disabled( $disabled ); ?>
 				<?php tribe_required( $required ); ?>
+				id="<?php echo esc_attr( $option_id ); ?>"
 				class="tribe_horizontal_datepicker__month"
 			>
 				<option value="" disabled selected><?php esc_html_e( 'Month', 'tribe-event-plus' ); ?></option>
