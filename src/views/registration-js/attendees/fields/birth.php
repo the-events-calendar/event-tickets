@@ -11,7 +11,7 @@
  * @see     Tribe__Tickets_Plus__Meta__Field__Birth
  */
 
-$required    = isset( $field->required ) && 'on' === $field->required ? true : false;
+$required    = isset( $field->required ) && 'on' === $field->required;
 $option_id   = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id}}";
 /** @var Tribe__Tickets_Plus__Meta__Field__Birth $birth_field */
 $birth_field = $field;
