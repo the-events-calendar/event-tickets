@@ -6,7 +6,7 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/birth.php
  *
- * @version 4.12.1
+ * @version TBD
  *
  * @since 4.12.1 Introduced template.
  * @since TBD Fix PHP notice for undefined variable.
