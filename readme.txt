@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Feature - For the `[tribe-user-event-confirmations]` shortcode, link to both the event and the direct My Tickets page. [ET-792]
+
 = [4.11.5] 2020-03-18 =
 
 * Feature - Include Freemius integration to allow opt-in information collection. [ET-595]
