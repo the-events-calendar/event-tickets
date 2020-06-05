@@ -13,8 +13,9 @@
  * @since   4.9
  * @since   4.11.0 Add modal only fields
  * @since   4.11.1 Corrected amount of available/remaining tickets.
+ * @since   4.12.0    Added implementation for the price suffix.
  *
- * @version 4.11.3
+ * @version 4.12.0
  */
 $classes  = [ 'tribe-tickets__item' ];
 
@@ -52,12 +53,17 @@ if (
 	return false;
 }
 
-$must_login = ! is_user_logged_in() && $ticket->get_provider()->login_required();
+$must_login     = ! is_user_logged_in() && $ticket->get_provider()->login_required();
+$has_shared_cap = $tickets_handler->has_shared_capacity( $ticket );
+$has_suffix     = ! empty( $ticket->price_suffix );
+
 if ( $must_login ) {
 	$classes[] = 'tribe-tickets__item__disabled';
 }
 
-$has_shared_cap = $tickets_handler->has_shared_capacity( $ticket );
+if ( $has_suffix ) {
+	$classes[] = 'tribe-tickets__item--price-sufix';
+}
 
 ?>
 <div

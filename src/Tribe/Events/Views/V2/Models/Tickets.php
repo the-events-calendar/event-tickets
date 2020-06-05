@@ -134,6 +134,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 		$html        = [];
 		$parts       = [];
 		$stock_html  = '';
+		$sold_out    = '';
 		$link_label  = '';
 		$link_anchor = '';
 
@@ -145,11 +146,12 @@ class Tickets implements \ArrayAccess, \Serializable {
 			}
 
 			if ( ! $data['available'] ) {
-				$parts[ $type . '_stock' ] = esc_html_x( 'Sold out', 'list view stock sold out', 'event-tickets' );
+				$parts[ $type . '_stock' ] = esc_html_x( 'Sold Out', 'events stock sold out (v2)', 'event-tickets' );
 
 				// Only re-apply if we don't have a stock yet
 				if ( empty( $html['stock'] ) ) {
 					$html['stock'] = $parts[ $type . '_stock' ];
+					$sold_out      = $parts[ $type . '_stock' ];
 				}
 			} else {
 				$stock = $data['stock'];
@@ -179,13 +181,18 @@ class Tickets implements \ArrayAccess, \Serializable {
 
 						$number = number_format_i18n( $stock );
 
+						$ticket_label_singular = tribe_get_ticket_label_singular_lowercase( 'event-tickets' );
+						$ticket_label_plural   = tribe_get_ticket_label_plural_lowercase( 'event-tickets' );
+
 						if ( 'rsvp' === $type ) {
-							$text = _n( '%s spot left', '%s spots left', $stock, 'event-tickets' );
+							/* translators: %1$s: Number of stock */
+							$text = _n( '%1$s spot left', '%1$s spots left', $stock, 'event-tickets' );
 						} else {
-							$text = _n( '%s ticket left', '%s tickets left', $stock, 'event-tickets' );
+							/* translators: %1$s: Number of stock, %2$s: Ticket label, %3$s: Tickets label */
+							$text = _n( '%1$s %2$s left', '%1$s %3$s left', $stock, 'event-tickets' );
 						}
 
-						$stock_html = esc_html( sprintf( $text, $number ) );
+						$stock_html = esc_html( sprintf( $text, $number, $ticket_label_singular, $ticket_label_plural ) );
 					}
 				}
 
@@ -208,6 +215,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 
 		$this->data['stock'] = (object) [
 			'available' => $stock_html,
+			'sold_out'  => $sold_out,
 		];
 
 		return $this->data;
@@ -302,5 +310,33 @@ class Tickets implements \ArrayAccess, \Serializable {
 		$this->exists = ! empty( $this->all_tickets );
 
 		return $this->exists;
+	}
+
+	/**
+	 * Returns whether an event has tickets in date range.
+	 *
+	 * @since 4.12.0
+	 *
+	 * @return bool Whether an event has tickets in date range
+	 */
+	public function in_date_range() {
+		if ( ! $this->post_id ) {
+			return false;
+		}
+
+		return tribe_tickets_is_current_time_in_date_window( $this->post_id );
+	}
+
+	/**
+	 * Returns whether an event has its tickets sold out.
+	 *
+	 * @since 4.12.0
+	 *
+	 * @return bool Whether an event has its tickets sold out.
+	 */
+	public function sold_out() {
+		$data = $this->fetch_data();
+
+		return ! empty( $data['stock']->sold_out );
 	}
 }

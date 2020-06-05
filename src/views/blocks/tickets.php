@@ -10,10 +10,11 @@
  * @link    {INSERT_ARTICLE_LINK_HERE}
  *
  * @since   4.9
- * @since   4.10.8 Updated loading logic for including a renamed template.
+ * @since   4.10.8  Updated loading logic for including a renamed template.
  * @since   4.10.10 Removed initial check for tickets.
+ * @since   4.12.1     Use tribe_get_ticket_label_plural() for "Tickets" string.
  *
- * @version 4.11.3
+ * @version 4.12.1
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
@@ -72,7 +73,7 @@ if ( ! $already_rendered ) {
 	data-provider-id="<?php echo esc_attr( $provider->orm_provider ); ?>"
 	novalidate
 >
-	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title"><?php esc_html_e( 'Tickets', 'event-tickets' ); ?></h2>
+	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title"><?php echo esc_html( tribe_get_ticket_label_plural( 'event-tickets' ) ); ?></h2>
 	<input type="hidden" name="tribe_tickets_saving_attendees" value="1"/>
 	<input type="hidden" name="tribe_tickets_ar" value="1"/>
 	<input type="hidden" name="tribe_tickets_ar_data" value="" id="tribe_tickets_block_ar_data"/>

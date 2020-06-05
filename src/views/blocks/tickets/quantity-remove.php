@@ -13,20 +13,21 @@
  * @since 4.9.3
  * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
  * @since 4.11.4 Added accessibility classes to screen reader text element.
+ * @since 4.12.0    Removed `type="submit"` from button element, as it's its default.
  *
- * @version 4.11.4
+ * @version 4.12.0
  *
  * @var $this Tribe__Tickets__Editor__Template
  */
 
 $ticket = $this->get( 'ticket' );
 $button_title = sprintf(
-	_x('Decrease ticket quantity for %s', '%s: ticket name.', 'event-tickets'),
+	// translators: %s: ticket name.
+	_x( 'Decrease ticket quantity for %s', 'Decrease ticket quantity button title', 'event-tickets' ),
 	$ticket->name
 );
 ?>
 <button
-	type="submit"
 	class="tribe-tickets__item__quantity__remove"
 	title="<?php echo esc_attr( $button_title ); ?>"
 	type="button"

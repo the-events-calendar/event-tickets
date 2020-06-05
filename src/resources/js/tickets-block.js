@@ -42,6 +42,14 @@ window.tribe.tickets.block = {
 		ticketLoader: '.tribe-tickets-loader__tickets-block',
 		validationNotice: '.tribe-tickets__notice--error',
 		ticketInCartNotice: '#tribe-tickets__notice__tickets-in-cart',
+		horizontal_datepicker: {
+			container: '.tribe_horizontal_datepicker__container',
+			select: '.tribe_horizontal_datepicker__container select',
+			day: '.tribe_horizontal_datepicker__day',
+			month: '.tribe_horizontal_datepicker__month',
+			year: '.tribe_horizontal_datepicker__year',
+			value: '.tribe_horizontal_datepicker__value',
+		},
 	};
 
 	const $tribeTicket = $( obj.selector.container );
@@ -565,7 +573,7 @@ window.tribe.tickets.block = {
 	 * @param {object} $form - jQuery object that is the form we are checking.
 	 * @param {number} qty - The quantity we desire.
 	 *
-	 * @returns {integer} - The quantity, limited by exisitng shared cap tickets.
+	 * @returns {integer} - The quantity, limited by existing shared cap tickets.
 	 */
 	obj.checkSharedCapacity = function( $form, qty ) {
 		let sharedCap = [];
@@ -659,17 +667,28 @@ window.tribe.tickets.block = {
 	obj.cleanNumber = function( passedNumber ) {
 		let number = passedNumber;
 		const format = obj.getCurrencyFormatting();
+
+		if ( 0 === parseInt( format.number_of_decimals ) ) {
+			return number;
+		}
+
 		// we run into issue when the two symbols are the same -
 		// which appears to happen by default with some providers.
 		const same = format.thousands_sep === format.decimal_point;
 
 		if ( ! same ) {
-			number = number.split( format.thousands_sep ).join( '' );
-			number = number.split( format.decimal_point ).join( '.' );
+			if ( '' !== format.thousands_sep ) {
+				number = number.split( format.thousands_sep ).join( '' );
+			}
+			if ( '' !== format.decimal_point ) {
+				number = number.split( format.decimal_point ).join( '.' );
+			}
 		} else {
 			const decPlace = number.length - ( format.number_of_decimals + 1 );
 			number = number.substr( 0, decPlace ) + '_' + number.substr( decPlace + 1 );
-			number = number.split( format.thousands_sep ).join( '' );
+			if ( '' !== format.thousands_sep ) {
+				number = number.split( format.thousands_sep ).join( '' );
+			}
 			number = number.split( '_' ).join( '.' );
 		}
 
@@ -678,7 +697,7 @@ window.tribe.tickets.block = {
 
 	/**
 	 * Format the number according to provider settings.
-	 * Based off coding fron https://stackoverflow.com/a/2901136.
+	 * Based off coding from https://stackoverflow.com/a/2901136.
 	 *
 	 * @since 4.11.0
 	 *
@@ -797,10 +816,10 @@ window.tribe.tickets.block = {
 		}
 	};
 
-	/* Prefill Handling */
+	/* Pre-fill Handling */
 
 	/**
-	 * Init the tickets block prefill.
+	 * Init the tickets block pre-fill.
 	 *
 	 * @since 4.9
 	 */
@@ -809,7 +828,7 @@ window.tribe.tickets.block = {
 	};
 
 	/**
-	 * Init the form prefills ( cart and AR forms ).
+	 * Init the form pre-fills ( cart and AR forms ).
 	 *
 	 * @since 4.11.0
 	 */
@@ -846,7 +865,7 @@ window.tribe.tickets.block = {
 	};
 
 	/**
-	 * Prefills the modal AR fields from supplied data.
+	 * Pre-fills the modal AR fields from supplied data.
 	 *
 	 * @since 4.11.0
 	 *
@@ -898,7 +917,7 @@ window.tribe.tickets.block = {
 	};
 
 	/**
-	 * Prefill the Cart.
+	 * Pre-fill the Cart.
 	 *
 	 * @since 4.11.0
 	 *
@@ -928,7 +947,7 @@ window.tribe.tickets.block = {
 	};
 
 	/**
-	 * Prefill tickets block from cart.
+	 * Pre-fill tickets block from cart.
 	 *
 	 * @since 4.11.0
 	 */
@@ -1123,7 +1142,7 @@ window.tribe.tickets.block = {
 	};
 
 	/**
-	 *
+	 * getMetaForSave()
 	 *
 	 * @since 4.11.0
 	 *
@@ -1204,13 +1223,13 @@ window.tribe.tickets.block = {
 	 * jQuery's $.when()
 	 *
 	 * Example:
-	 * 	$.when(
-	 * 		obj.getData()
-	 * 	).then(
-	 * 		function( data ) {
-	 * 			// Do stuff with the data.
-	 * 		}
-	 * 	);
+	 *  $.when(
+	 *     obj.getData()
+	 *  ).then(
+	 *     function( data ) {
+	 *         // Do stuff with the data.
+	 *     }
+	 *  );
 	 *
 	 * @since 4.11.0
 	 *
@@ -1327,9 +1346,9 @@ window.tribe.tickets.block = {
 		$fields.each(
 			function() {
 				const $field = $( this );
-				const isValidfield = obj.validateField( $field[ 0 ] );
+				const isValidField = obj.validateField( $field[ 0 ] );
 
-				if ( ! isValidfield ) {
+				if ( ! isValidField ) {
 					validBlock = false;
 				}
 			}
@@ -1380,6 +1399,41 @@ window.tribe.tickets.block = {
 	};
 
 	/**
+	 * Checks if a horizontal date picker is valid.
+	 * Eg: If a month is selected, a year and day must also be selected.
+	 *
+	 * @since TBD
+	 *
+	 * @param $input
+	 * @returns {boolean}
+	 */
+	obj.validateHorizontalDatePickerValue = function( $input ) {
+		// We don't check if the field is value if no day, month or year has been chosen.
+		if ( $input.val() === '' || $input.val() === 'null-null-null' ) {
+			return true;
+		}
+
+		const wrapper = $input.closest( obj.selector.horizontal_datepicker.container );
+		const day = wrapper.find( obj.selector.horizontal_datepicker.day );
+		const month = wrapper.find( obj.selector.horizontal_datepicker.month );
+		const year = wrapper.find( obj.selector.horizontal_datepicker.year );
+
+		let isValidDatePicker = true;
+
+		[ day, month, year ].forEach( function( el ) {
+			if ( isNaN( parseInt( el.val() ) ) || parseInt( el.val() ) <= 0 ) {
+				el.addClass( 'ticket-meta__has-error' );
+
+				isValidDatePicker = false;
+			} else {
+				el.removeClass( 'ticket-meta__has-error' );
+			}
+		}, isValidDatePicker );
+
+		return isValidDatePicker;
+	}
+
+	/**
 	 * Adds/removes error classes from a single field.
 	 *
 	 * @since 4.11.0
@@ -1390,29 +1444,33 @@ window.tribe.tickets.block = {
 	 */
 	obj.validateField = function( input ) {
 		let $input = $( input );
-		let isValidfield = input.checkValidity();
+		let isValidField = input.checkValidity();
 
-		if ( ! isValidfield ) {
+		if ( ! isValidField ) {
 			$input = $( input );
 			// Got to be careful of required checkbox/radio groups...
 			if ( $input.is( ':checkbox' ) || $input.is( ':radio' ) ) {
 				const $group = $input.closest( '.tribe-common-form-control-checkbox-radio-group' );
 
 				if ( $group.length ) {
-					isValidfield = obj.validateCheckboxRadioGroup( $group );
+					isValidField = obj.validateCheckboxRadioGroup( $group );
 				}
 			} else {
-				isValidfield = false;
+				isValidField = false;
 			}
 		}
 
-		if ( ! isValidfield ) {
+		if ( $input.is( obj.selector.horizontal_datepicker.value ) ) {
+			isValidField = obj.validateHorizontalDatePickerValue( $input );
+		}
+
+		if ( ! isValidField ) {
 			$input.addClass( 'ticket-meta__has-error' );
 		} else {
 			$input.removeClass( 'ticket-meta__has-error' );
 		}
 
-		return isValidfield;
+		return isValidField;
 	};
 
 	/* Event Handling */

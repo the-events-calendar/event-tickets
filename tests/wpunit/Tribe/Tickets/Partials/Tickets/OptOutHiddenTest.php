@@ -20,6 +20,9 @@ class OptOutHidden extends WPTestCase {
 				'ID'   => 7,
 			],
 		];
+
+		add_filter( 'tribe_tickets_plus_hide_attendees_list_optout', '__return_false' );
+
 		$html     = $template->template( $this->partial_path, $args, false );
 
 		$this->assertMatchesSnapshot( $html );

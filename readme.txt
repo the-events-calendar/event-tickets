@@ -3,8 +3,8 @@
 Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.9
-Tested up to: 5.4
-Stable tag: 4.11.5
+Tested up to: 5.4.1
+Stable tag: 4.12.1.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -120,6 +120,48 @@ Currently, the following add-ons are available for Event Tickets:
 = [TBD] TBD =
 
 * Feature - For the `[tribe-user-event-confirmations]` shortcode, link to both the event and the direct My Tickets page. [ET-792]
+
+= [4.12.1.1] 2020-05-29 =
+
+* Fix - Resolve PHP notices that can cause the Events to not show tickets or RSVPs. [ET-836]
+
+= [4.12.1] 2020-05-20 =
+
+* Feature - Added new field types to choose from when requiring Attendee Information on a Ticket or RSVP: Email, URL, Date of Birth, Date and Telephone, when using Event Tickets Plus. [ETP-89]
+* Feature - Extend `tribe_events()` with new post filtering options: `has_attendees`, `attendee`, `attendee__not_in`, and `attendee_user`. [ET-618]
+* Feature - Add new `tribe( 'tickets.post-repository' )` object that works similar to `tribe_events()` but supports any post type. [ET-618]
+* Fix - Remove opinionated `max-width: none;` on generic elements over the Attendee Registration page CSS to prevent theme conflicts. [ETP-314]
+* Fix - Attendee Registration page briefly showing notice while tickets form is loading. [ETP-241]
+* Fix - Ensure defaults are passed into `Tribe__Tickets__Editor__Template->attr()` correctly instead of defaulting to an empty array. [TEC-2964]
+* Fix - Prevent problems with `func_get_args()` usage around template inclusion for legacy template files. [TEC-3104]
+* Fix - Use unique HTML id for checkboxes and radio on the Attendee Registration fields to prevent conflicts. [ETP-306]
+* Fix - Update several templates to account for a passed post to be of an unregistered post type, such as for an Event post when The Events Calendar plugin is disabled. [ET-787]
+* Tweak - Ensure tickets labels use a function to retrieve the label so that they can be filtered. [ETP-119]
+* Tweak - Output the internal Post ID to the Attendees Report's Event Title, each Ticket Name, and each Attendee. [ET-786]
+* Language - 15 new strings added, 412 updated, 14 fuzzied, and 15 obsoleted
+
+= [4.12.0] 2020-04-23 =
+
+* Fix - When using Event Tickets Plus and using a custom Attendee Registration page with the [tribe_attendee_registration] shortcode, Event Tickets will no longer replace the contents of the page. [ETP-292]
+* Fix - Update notice template to print content only when there's information. Remove the "Whoops" title for the Attendee Registration page notice. [ETP-233]
+* Fix - Update file path in the docblocks of the templates for The Events Calendar new views. [ETP-289]
+* Fix - Update position of the `tribe_tickets_ticket_add` action so it receives the ticket data on ticket creation. [ETP-302]
+* Fix - Removed the `type="submit"` from the button element in the ticket quantity remove template. [ETP-224]
+* Fix - Removed the duplicate `type="button"` from the button element in the ticket quantity add template. [ETP-224]
+* Fix - Correct the `Total` value, when the WooCommerce options for currency are empty (Thousand and decimal separator, number of decimals). [ETP-231]
+* Fix - Correct dependencies for the tickets block JS, in order to have the block working in WordPress versions prior to 5.0. [ETP-238]
+* Fix - Load plugin text domain on the new 'tribe_load_text_domains' action hook, which fires on 'init' instead of on the 'plugins_loaded' hook. [ET-773]
+* Fix - Deprecate `\Tribe__Tickets__Tickets_Handler::get_total_event_capacity()` and replace its usage with `tribe_get_event_capacity()`, which returns the correct count. [ET-770]
+* Fix - When updating to Event Tickets 4.12, a background migration will get kicked off that fixes ticket-supported posts that use the Attendees List block or the Attendees List shortcodes from Event Tickets Plus so those attendees appear in the REST API properly. [ET-777]
+* Fix - Prevent Blocks editor from throwing browser alert when leaving the page without any changes applied to the edited post.
+* Tweak - Improved on meta data handling of for Blocks editor.
+* Tweak - Deprecate Select2 3.5.4 in favor of SelectWoo
+* Tweak - Consolidate duplicate code for getting tickets for each Ticket Provider. [ETP-235]
+* Tweak - Modify new views implementation for The Event Calendar, in order to include the "Sold Out" message as we had in the previous version. [ET-764]
+* Tweak - Attendee REST endpoint now returns 401 (Unauthorized) if Event Tickets Plus is not loaded. [ETP-297]
+* Tweak - Implement price suffix for the tickets block when a price suffix is provided by a Commerce provider. [ET-620]
+* Tweak - When using Event Tickets Plus, the checkbox "Hide my attendee data from public view" will no longer show up when purchasing a ticket if an "Attendees List" is not being displayed in the event. [ETP-624]
+* Language - 0 new strings added, 329 updated, 10 fuzzied, and 58 obsoleted
 
 = [4.11.5] 2020-03-18 =
 

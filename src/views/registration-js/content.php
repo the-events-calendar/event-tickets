@@ -7,9 +7,10 @@
  *
  * @since 4.11.0
  * @since 4.11.3.1 Fix handling where $provider is an object.
+ * @since 4.12.0 Prevent potential errors when $provider_obj is not valid.
+ * @since 4.12.1    Set the notice as hidden by default. The JavaScript will show it if needed.
  *
- * @version 4.11.4
- *
+ * @version 4.12.0
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 $events = $this->get( 'events' );
@@ -26,6 +27,12 @@ if ( empty( $provider ) ) {
 } elseif ( $provider instanceof Tribe__Tickets__Tickets ) {
 	$provider_obj = $provider;
 	$provider     = $provider_obj->attendee_object;
+}
+
+if ( method_exists( $provider_obj, 'get_checkout_url' ) ) {
+	$checkout_url = $provider_obj->get_checkout_url();
+} else {
+	$checkout_url = '';
 }
 
 $non_meta_count = 0;
@@ -60,7 +67,7 @@ $classes        = [
 	<form
 		method="post"
 		id="tribe-tickets__registration__form"
-		action="<?php echo esc_url( $provider_obj->get_checkout_url() ); ?>"
+		action="<?php echo esc_url( $checkout_url ); ?>"
 		data-provider="<?php echo esc_attr( $provider ); ?>"
 	>
 	<div class="tribe-tickets__registration__grid">
@@ -73,7 +80,6 @@ $classes        = [
 					'tribe-tickets__notice--error',
 					'tribe-tickets__validation-notice',
 				],
-				'title' => __( 'Whoops', 'event-tickets' ),
 				'content' => sprintf(
 					esc_html_x(
 						'You have %s ticket(s) with a field that requires information.',
@@ -169,11 +175,8 @@ $classes        = [
 		<?php
 		$notice_classes = [
 			'tribe-tickets__notice--non-ar',
+			'tribe-common-a11y-hidden', // Set as hidden. JavaScript will show it if needed.
 		];
-
-		if ( ! empty( $non_meta_count ) ) {
-			$notice_classes[] = 'tribe-common-a11y-hidden';
-		}
 
 		$this->template(
 			'components/notice',

@@ -12,10 +12,11 @@
  *
  * @since   4.9
  * @since   4.11.5 Corrected the template override instructions in template comments.
+ * @since   4.12.0 Add $post_id to filter for hiding opt-outs.
  *
- * @version 4.11.5
+ * @version 4.12.0
  */
 
 $this->template( 'blocks/rsvp/form/name', [ 'ticket' => $ticket ] );
 $this->template( 'blocks/rsvp/form/email', [ 'ticket' => $ticket ] );
-$this->template( 'blocks/rsvp/form/opt-out', [ 'ticket' => $ticket ] );
+$this->template( 'blocks/rsvp/form/opt-out', [ 'ticket' => $ticket, 'post_id' => $post_id ] );

@@ -14,14 +14,17 @@
  * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
  * @since 4.11.3 Allow filtering of the button classes.
  * @since 4.11.3 Added button ID for better JS targeting.
+ * @since 4.12.1 Add support for custom label for "Tickets" plural.
  *
- * @version 4.11.3
+ * @version 4.12.1
  *
  */
 
-/* translators: %s is the event or post title the tickets are attached to. */
-$title       = sprintf( _x( '%s Tickets', 'Modal title. %s: event name', 'event-tickets' ), get_the_title() );
-$button_text = _x( 'Get Tickets', 'Get selected tickets.', 'event-tickets' );
+/* translators: %1$s: Event name, %2$s: Tickets label */
+$title = sprintf( _x( '%1$s %2$s', 'Tickets modal title.', 'event-tickets' ), get_the_title(), tribe_get_ticket_label_plural( 'event-tickets' ) );
+
+/* translators: %s: Tickets label */
+$button_text = sprintf( _x( 'Get %s', 'Get Tickets button.', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets' ) );
 
 /**
  * Allow filtering of the button classes for the tickets block.
@@ -78,5 +81,3 @@ $event_id = get_the_ID();
 $template = tribe( 'tickets.editor.template' );
 $tickets  = $this->get( 'tickets' );
 $template->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) );
-
-

@@ -81,27 +81,33 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return array
 	 */
 	protected function get_tickets( $post_id ) {
-		$tickets = array();
+		$tickets = [];
 
 		// Bail if there's no event id
 		if ( ! $post_id ) {
 			return $tickets;
 		}
 
+		/** @var Tribe__Tickets__RSVP $rsvp */
+		$rsvp = tribe( 'tickets.rsvp' );
+
 		// Get the tickets IDs for this event
-		$ticket_ids = tribe( 'tickets.rsvp' )->get_tickets_ids( $post_id );
+		$ticket_ids = $rsvp->get_tickets_ids( $post_id );
 
 		// Bail if we don't have tickets
 		if ( ! $ticket_ids ) {
 			return $tickets;
 		}
 
+		// We only want RSVP tickets.
 		foreach ( $ticket_ids as $post ) {
 			// Get the ticket
-			$ticket = tribe( 'tickets.rsvp' )->get_ticket( $post_id, $post );
+			$ticket = $rsvp->get_ticket( $post_id, $post );
 
-			// Continue if is not RSVP, we only want RSVP tickets
-			if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
+			if (
+				! $ticket instanceof Tribe__Tickets__Ticket_Object
+				|| $rsvp->class_name !== $ticket->provider_class
+			) {
 				continue;
 			}
 
@@ -211,9 +217,19 @@ extends Tribe__Editor__Blocks__Abstract {
 			wp_send_json_error( $response );
 		}
 
+		/** @var Tribe__Tickets__RSVP $rsvp */
+		$rsvp = tribe( 'tickets.rsvp' );
+
+		$ticket = $rsvp->get_ticket( get_the_id(), $ticket_id );
+
+		if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+			wp_send_json_error( $response );
+		}
+
 		$args = array(
 			'ticket_id' => $ticket_id,
-			'ticket'    => tribe( 'tickets.rsvp' )->get_ticket( get_the_id(), $ticket_id ),
+			'post_id'   => $ticket->get_event_id(),
+			'ticket'    => $ticket,
 			'going'     => $going,
 		);
 

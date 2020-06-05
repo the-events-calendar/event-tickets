@@ -3,14 +3,14 @@
  * View: Week View - Event Tooltip Cost
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/views/v2/week/grid-body/events-day/event/tooltip/cost.php
+ * [your-theme]/tribe/tickets/v2/week/grid-body/events-day/event/tooltip/cost.php
  *
  * See more documentation about our views templating system.
  *
- * @link {INSERT_ARTCILE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since   4.10.9
- * @version 4.11.4
+ * @version 4.12.0
  *
  * @var WP_Post $event The event post object with properties added by the `tribe_get_event` function.
  *
@@ -22,7 +22,7 @@ if ( empty( $event->cost ) ) {
 }
 ?>
 <div class="tribe-events-c-small-cta tribe-common-b3 tribe-events-pro-week-grid__event-tooltip-cost">
-	<?php if ( $event->tickets->exist() && tribe_tickets_is_current_time_in_date_window( $event->ID ) ) : ?>
+	<?php if ( $event->tickets->exist() && $event->tickets->in_date_range() && ! $event->tickets->sold_out() ) : ?>
 		<a
 			href="<?php echo esc_url( $event->tickets->link->anchor ); ?>"
 			class="tribe-events-c-small-cta__link tribe-common-cta tribe-common-cta--thin-alt"
@@ -30,8 +30,13 @@ if ( empty( $event->cost ) ) {
 			<?php echo esc_html( $event->tickets->link->label ); ?>
 		</a>
 	<?php endif; ?>
+	<?php if ( $event->tickets->sold_out() ) : ?>
+		<span class="tribe-events-c-small-cta__sold-out tribe-common-b3--bold">
+			<?php echo esc_html( $event->tickets->stock->sold_out ); ?>
+		</span>
+	<?php endif; ?>
 	<span class="tribe-events-c-small-cta__price">
-		<?php echo esc_html( $event->cost ) ?>
+		<?php echo esc_html( $event->cost ); ?>
 	</span>
 </div>
 

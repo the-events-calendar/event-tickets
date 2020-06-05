@@ -14,8 +14,9 @@
  * @since 4.11.3 Updated the button to include a type - helps avoid submitting forms unintentionally.
  * @since 4.11.3 Allow filtering of the button classes.
  * @since 4.11.3 Added button ID for better JS targeting.
+ * @since 4.12.1 Updated button text to use tribe_get_ticket_label_plural() for "Tickets" string.
  *
- * @version 4.11.3
+ * @version 4.12.1
  *
  */
 
@@ -53,5 +54,8 @@ $button_classes = apply_filters(
 	<?php endif; ?>
 	<?php tribe_disabled( true ); ?>
 >
-	<?php echo esc_html_x( 'Get Tickets', 'Add tickets to cart.', 'event-tickets' ); ?>
+	<?php
+	/* translators: %s: Tickets label */
+	echo esc_html( sprintf( _x( 'Get %s', 'Add tickets to cart.', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets' ) ) );
+	?>
 </button>
