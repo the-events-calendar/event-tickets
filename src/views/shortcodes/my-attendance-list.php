@@ -25,7 +25,7 @@ $view = Tribe__Tickets__Tickets_View::instance();
 		$direct_link_my_tickets = $view->get_tickets_page_url( $event_id, $is_event );
 		?>
 		<?php $start_date = tribe_get_start_date( $event_id ); ?>
-		<li class="event-<?php echo esc_attr( $event_id ) ?>">
+		<li class="event-<?php echo esc_attr( $event_id ); ?>">
 			<a href="<?php echo esc_url( get_permalink( $event_id ) ); ?>" class="event-post-link">
 				<?php echo get_the_title( $event_id ); ?>
 				<?php if ( $start_date ): ?>
