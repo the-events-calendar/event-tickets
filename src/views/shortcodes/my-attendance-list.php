@@ -19,13 +19,13 @@ $view = Tribe__Tickets__Tickets_View::instance();
 
 <ul class="tribe-tickets my-attendance-list">
 	<?php
-	foreach ( $event_ids as $id ):
-		$is_event = function_exists( 'tribe_is_event' ) ? tribe_is_event( $id ) : false;
+	foreach ( $event_ids as $id ) :
+		$is_event               = function_exists( 'tribe_is_event' ) ? tribe_is_event( $id ) : false;
 		$direct_link_my_tickets = $view->get_tickets_page_url( $id, $is_event );
 		?>
 		<?php $start_date = tribe_get_start_date( $id ); ?>
 		<li class="event-<?php echo esc_attr( $id ) ?>">
-			<a class="event-post-link" href="<?php echo esc_url( get_permalink( $id ) ); ?>">
+			<a href="<?php echo esc_url( get_permalink( $id ) ); ?>" class="event-post-link">
 				<?php echo get_the_title( $id ); ?>
 				<?php if ( $start_date ): ?>
 					<span class="datetime">(<?php echo $start_date; ?>)</span>
@@ -35,10 +35,10 @@ $view = Tribe__Tickets__Tickets_View::instance();
 			if ( ! empty( $direct_link_my_tickets ) ) :
 				?>
 				<span class="event-post-tickets-separator">&mdash;</span>
-				<a class="event-post-direct-tickets-link" href="<?php echo esc_url( $direct_link_my_tickets ); ?>">
+				<a href="<?php echo esc_url( $direct_link_my_tickets ); ?>" class="event-post-direct-tickets-link">
 					<?php esc_html_e( 'View Tickets', 'event-tickets' ); ?>
 				</a>
-			<?php
+				<?php
 			endif;
 			?>
 		</li>
