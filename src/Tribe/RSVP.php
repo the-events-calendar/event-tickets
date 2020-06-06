@@ -918,8 +918,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		// Updates if we should show Type and Description
-		$ticket->show_type = isset( $ticket->show_type ) && tribe_is_truthy( $ticket->show_type ) ? 'yes' : 'no';
+		// Updates if we should show Type and Description.
+		$ticket->show_type = ( isset( $ticket->show_type ) && tribe_is_truthy( $ticket->show_type ) ) ? 'yes' : 'no';
 		$ticket->show_description = isset( $ticket->show_description ) && tribe_is_truthy( $ticket->show_description ) ? 'yes' : 'no';
 		update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_show_type, $ticket->show_type );
 		update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_show_description, $ticket->show_description );

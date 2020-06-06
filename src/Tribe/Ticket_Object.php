@@ -30,7 +30,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $description;
 
 		/**
-		 * Whether to show the type on the front end and in emails
+		 * Whether to show the type on the front end and in emails.
 		 *
 		 * @since TBD
 		 *
@@ -1036,7 +1036,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @return boolean
+		 * @return boolean Whether the ticket type should show.
 		 */
 		public function show_type() {
 			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
@@ -1050,16 +1050,16 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			/**
-			 * Allows filtering of the value so we can for example, disable it for a theme/site
+			 * Allows filtering of the value so we can for example, disable it for a theme/site.
 			 *
 			 * @since TBD
 			 *
-			 * @param boolean whether to show the type or not.
-			 * @param int ticket ID.
+			 * @param boolean                       $show   Whether to show the type or not.
+			 * @param Tribe__Tickets__Ticket_Object $ticket The ticket object.
 			 */
-			$show = apply_filters( 'tribe_tickets_show_type', $show, $this->ID );
+			$show = apply_filters( 'tribe_tickets_show_type', $show, $this );
 
-			// Make sure we have the correct value
+			// Make sure we have the correct value.
 			return tribe_is_truthy( $show );
 		}
 
