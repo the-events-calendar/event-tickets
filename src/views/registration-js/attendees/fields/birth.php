@@ -6,13 +6,17 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/birth.php
  *
- * @since   4.12.1
+ * @version TBD
+ *
+ * @since 4.12.1 Introduced template.
+ * @since TBD Fix PHP notice for undefined variable.
  *
  * @see     Tribe__Tickets_Plus__Meta__Field__Birth
  */
 
-$required    = isset( $field->required ) && 'on' === $field->required ? true : false;
+$required    = isset( $field->required ) && 'on' === $field->required;
 $option_id   = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id}}";
+/** @var Tribe__Tickets_Plus__Meta__Field__Birth $birth_field */
 $birth_field = $field;
 $field       = (array) $field;
 $field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}][' . esc_attr( $field['slug'] ) . ']';
@@ -28,7 +32,7 @@ $classes     = [
 	<div <?php tribe_classes( $classes ); ?> >
 		<label
 			class="tribe-common-b2--min-medium tribe-tickets-meta-label"
-			for="<?php echo esc_attr( $birth_field->month_id ); ?>"
+			for="<?php echo esc_attr( $option_id ); ?>"
 		><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 
 		<!-- Month -->
@@ -36,6 +40,7 @@ $classes     = [
 			<select
 				<?php tribe_disabled( $disabled ); ?>
 				<?php tribe_required( $required ); ?>
+				id="<?php echo esc_attr( $option_id ); ?>"
 				class="tribe_horizontal_datepicker__month"
 			>
 				<option value="" disabled selected><?php esc_html_e( 'Month', 'tribe-event-plus' ); ?></option>
