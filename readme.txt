@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [TBD] TBD =
 
 * Feature - For the `[tribe-user-event-confirmations]` shortcode, link to both the event and the direct My Tickets page. [ET-792]
+* Fix - Resolve a PHP notice when rendering the Event Tickets Plus field for Birth date [ETP-330]
 
 = [4.12.1.1] 2020-05-29 =
 
