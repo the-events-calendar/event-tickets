@@ -1045,8 +1045,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$key = $tickets_handler->key_show_type;
 
 			$show = true;
+
 			if ( metadata_exists( 'post', $this->ID, $key ) ) {
-				$show = get_post_meta( $this->ID, $key, true );
+				$show = tribe_is_truthy( get_post_meta( $this->ID, $key, true ) );
 			}
 
 			/**
