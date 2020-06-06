@@ -1057,7 +1057,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			 * @param boolean                       $show   Whether to show the type or not.
 			 * @param Tribe__Tickets__Ticket_Object $ticket The ticket object.
 			 */
-			$show = apply_filters( 'tribe_tickets_show_type', $show, $this );
+			$show = apply_filters( 'tribe_tickets_ticket_object_show_type', $show, $this );
 
 			// Make sure we have the correct value.
 			return tribe_is_truthy( $show );
