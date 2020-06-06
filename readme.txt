@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.9
 Tested up to: 5.4.1
-Stable tag: 4.12.1
+Stable tag: 4.12.1.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -119,7 +119,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [TBD]  =
 
-* Tweak - Improve the Birth Date Field styles that could show up un-styled under certain contexts. [ET-835]
+* Fix - Resolve a PHP notice when rendering the Event Tickets Plus field for Birth date [ETP-330]
+* Tweak - Improve the Birth date field styles that could show up without styling under certain contexts. [ET-835]
 
 = [4.12.1.1] 2020-05-29 =
 
