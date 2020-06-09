@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.9
 Tested up to: 5.4.1
-Stable tag: 4.12.1
+Stable tag: 4.12.1.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -118,7 +118,14 @@ Currently, the following add-ons are available for Event Tickets:
 == Changelog ==
 
 = [TBD] TBD =
-* Tweak - Add hook to ticket email template to allow injecting content between ticket details and organizers. [VE-46]
+
+* Feature - For the `[tribe-user-event-confirmations]` shortcode, link to both the event and the direct My Tickets page. [ET-792]
+* Fix - Resolve a PHP notice when rendering the Event Tickets Plus field for Birth date [ETP-330]
+* Tweak - Add hook to ticket email template to allow injecting content between ticket details and organizers. [ET-844]
+
+= [4.12.1.1] 2020-05-29 =
+
+* Fix - Resolve PHP notices that can cause the Events to not show tickets or RSVPs. [ET-836]
 
 = [4.12.1] 2020-05-20 =
 
