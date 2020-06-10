@@ -22,9 +22,9 @@ class Tribe__Tickets__Query {
 	}
 
 	/**
-	 * @param array $query_vars A list (array) of safe query variables.
+	 * @param array $query_vars A list of allowed query variables.
 	 *
-	 * @return array $query_vars A list (array) of safe query variables.
+	 * @return array $query_vars A list of allowed query variables.
 	 *               plus ours.
 	 */
 	public function filter_query_vars( array $query_vars = array() ) {
