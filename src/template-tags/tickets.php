@@ -795,7 +795,7 @@ if ( ! function_exists( 'tribe_tickets_get_event_ids' ) ) {
 if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
 
 	/**
-	 * Gets the ticket provider class when passed an id
+	 * Gets the ticket provider class when passed an id.
 	 *
 	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or product id
 	 *
@@ -1539,7 +1539,7 @@ if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
 		}
 
 		/**
-		 * Whether or not we are in tickets-enabled context, such as determining if we should load plugin assets.
+		 * Whether we are in tickets-enabled context, such as determining if we should load plugin assets.
 		 *
 		 * @since 4.11.1
 		 *
