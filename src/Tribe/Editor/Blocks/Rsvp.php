@@ -174,7 +174,8 @@ extends Tribe__Editor__Blocks__Abstract {
 						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 					],
 				],
-			] );
+			]
+		);
 
 		tribe_asset(
 			$plugin,
@@ -197,7 +198,8 @@ extends Tribe__Editor__Blocks__Abstract {
 						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 					],
 				],
-			] );
+			]
+		);
 
 		tribe_asset(
 			$plugin,
