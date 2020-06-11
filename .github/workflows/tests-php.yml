@@ -39,7 +39,7 @@ jobs:
           fetch-depth: 1
       - name: Add tric to the PATH
         run: echo "::set-env name=PATH::${GITHUB_WORKSPACE}/../tric:$PATH"
-      - name: Set tric run_context() for tric
+      - name: Set run_context() for tric
         run: echo "::set-env name=TRIC::1"
       - name: Start ssh-agent
         run: |
@@ -58,6 +58,20 @@ jobs:
           tric info
       - name: Print the current tric configuration
         run: tric config
+      - name: fetch and init TEC
+        run: |
+          cd ${GITHUB_WORKSPACE}/..
+          git clone https://github.com/moderntribe/the-events-calendar.git
+          cd the-events-calendar
+          git checkout origin/release/B20.05
+          sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
+          git submodule update --init
+          git submodule foreach --recursive "[ -f .gitmodules ] && sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules; git submodule update --init;"
+          cd ${GITHUB_WORKSPACE}/..
+          tric use the-events-calendar/common
+          tric composer install --no-dev
+          tric use the-events-calendar
+          tric composer install --no-dev
       - name: Set up event-tickets
         run: |
           tric use event-tickets
