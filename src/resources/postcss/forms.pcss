@@ -1,0 +1,152 @@
+/**
+ * Event Tickets - Form styles for Event Tickets.
+ *
+ * @since TDB
+ */
+
+ @import "common/utilities/_all.pcss";
+
+.event-tickets .tribe-tickets__form {
+
+	.tribe-tickets__form-field {
+		display: block;
+		width: 100%;
+		margin-bottom: var(--spacer-3);
+	}
+
+	.tribe-tickets__form-field--required {
+		header:first-child::after,
+		label:first-child::after {
+			content: '';
+		}
+	}
+
+	.tribe-required {
+		color: red;
+		margin-left: var(--spacer-0);
+	}
+
+	label,
+	.tribe-tickets__form-field-label {
+		color: var(--color-text-primary);
+		display: block;
+		font-weight: var(--font-weight-regular);
+		margin-bottom: var(--spacer-0);
+
+		&.tribe-tickets-meta-field-header {
+			cursor: pointer;
+			display: inline-block;
+			margin-bottom: 0;
+			margin-right: var(--spacer-4);
+		}
+	}
+
+	@media(--viewport-medium) {
+		.tribe-tickets__form-field-input-text,
+		.tribe-tickets__form-field-input-select {
+			label:not([for*="text-area"]) {
+				align-self: center;
+			}
+		}
+	}
+
+	input[type="text"],
+	input[type="email"],
+	input[type="url"],
+	input[type="password"],
+	input[type="search"],
+	input[type="number"],
+	input[type="tel"],
+	input[type="range"],
+	input[type="date"],
+	input[type="month"],
+	input[type="week"],
+	input[type="time"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="color"],
+	select,
+	textarea {
+		border-color: var(--form-color-border-secondary);
+		border-radius: var(--border-radius-default);
+		border-style: solid;
+		border-width: 1px;
+		width: 100%;
+
+		&:focus {
+			border-color: var(--color-accent-secondary-hover);
+		}
+
+		@media(--viewport-medium) {
+			max-width: 600px;
+		}
+
+		&.tribe-tickets__form-field-input--error {
+			border-color: var(--color-icon-error) ! important;
+		}
+	}
+
+	input[type="text"],
+	input[type="search"],
+	input[type="url"],
+	input[type="tel"],
+	input[type="email"],
+	input[type="password"] {
+
+		&::placeholder {
+			color: var(--color-text-secondary);
+			font-family: var(--font-family-base);
+		}
+
+	}
+
+	select {
+		appearance: none;
+		background-color: var(--color-background);
+		background-image: url('../images/select.png');
+		background-position: right center;
+		background-repeat: no-repeat;
+		background-size: 33px 33px;
+		height: auto;
+		padding: 0.7em;
+	}
+
+	.tribe-options {
+		overflow:hidden;
+		width: 100%;
+	}
+
+	/* Field-type specific */
+	.tribe-common-form-control-checkbox-radio-group {
+		> * {
+			margin-bottom: var(--spacer-0);
+		}
+
+		label,
+		.tribe-tickets__form-field-label {
+			margin-bottom: 0;
+			display: inline-block;
+			margin-left: 0;
+		}
+	}
+
+	.tribe-common-form-control-text__input {
+		padding: var(--spacer-1) var(--spacer-3);
+	}
+
+	.tribe-tickets__button--next {
+		align-items: center;
+		border: 1px solid var(--color-border-secondary);
+		background-color: var(--color-accent-primary);
+		color: var(--color-background);
+		display: inline-flex;
+		justify-content: center;
+		min-height: 54px;
+		max-width: 100%;
+
+		&:hover {
+			color: var(--color-background);
+		}
+	}
+
+}

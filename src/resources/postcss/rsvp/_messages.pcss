@@ -1,0 +1,36 @@
+/**
+ * Event Tickets - RSVP Messages
+ *
+ * @since TDB
+ */
+
+.event-tickets {
+
+	.tribe-tickets__rsvp-message {
+		display: flex;
+		align-items: center;
+		background-color: var(--color-accent-primary-background);
+		border-radius: var(--border-radius-default);
+		padding: var(--spacer-3);
+	}
+
+	.tribe-tickets__rsvp-message--success-icon {
+		background-image: svg-inline(paper-plane-active);
+		display: inline-block;
+		width: var(--spacer-3);
+		height: var(--spacer-3);
+		margin-right: var(--spacer-0);
+	}
+
+	.tribe-tickets__rsvp-message--must-login-icon {
+		background-image: svg-inline(error-active);
+		display: inline-block;
+		width: var(--spacer-3);
+		height: var(--spacer-3);
+		margin-right: var(--spacer-0);
+	}
+
+	.tribe-tickets__rsvp-message-link {
+		color: var(--color-accent-primary);
+	}
+}
