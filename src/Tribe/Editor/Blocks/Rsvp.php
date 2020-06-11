@@ -57,7 +57,7 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		$tickets_view = Tribe__Tickets__Tickets_View::instance();
 
-		return $tickets_view->get_rsvp_block( $post_id );
+		return $tickets_view->get_rsvp_block( $post_id, false );
 	}
 
 	/**

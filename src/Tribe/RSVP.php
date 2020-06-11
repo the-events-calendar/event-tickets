@@ -1129,7 +1129,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// Maybe render the new views.
 		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
-			return $this->tickets_view->get_rsvp_block( $post );
+			$this->tickets_view->get_rsvp_block( $post );
+
+			return;
 		}
 
 		// Check to see if all available tickets' end-sale dates have passed, in which case no form
