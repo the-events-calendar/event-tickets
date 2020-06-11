@@ -122,7 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Feature - For the `[tribe-user-event-confirmations]` shortcode, link to both the event and the direct My Tickets page. [ET-792]
 * Fix - Resolve a PHP notice when rendering the Event Tickets Plus field for Birth date [ETP-330]
 * Tweak - Add hook to ticket email template to allow injecting content between ticket details and organizers. [ET-844]
-* Tweak - Add `tribe_tickets_is_provider_active()` so any ticket found in the database can first check its Provider type before calling its functions. For example, if a WooCommerce Ticket was sold in the past but Event Tickets Plus is currently inactive, this would return false. [ET-843]
+* Tweak - Add `tribe_tickets_is_provider_active()` template function so before using any ticket found in the database we can more easily check if the ticket's commerce provider is currently active. [ET-843]
 
 = [4.12.1.1] 2020-05-29 =
 
