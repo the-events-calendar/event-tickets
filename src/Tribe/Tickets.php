@@ -2921,20 +2921,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Get the saved or default ticket provider.
+		 * Given a post ID, get the instance of the saved or default ticket provider class.
 		 *
 		 * Will return False if there is a saved provider that is currently not active.
 		 * Example: If provider is WooCommerce Ticket but ETP is inactive, will return False.
 		 *
+		 * @see get_ticket_provider_instance()
+		 *
 		 * @since 4.7
-		 * @since TBD If detected module is inactive, return False to avoid fatals while not returning unexpected data,
-		 * such as finding tickets of the wrong provider type.
+		 * @since TBD Return *instance* of detected provider class instead of string, or False if inactive provider.
 		 *
-		 * @param int $event_id The post ID of the event to which the ticket is attached.
+		 * @param int $post_id The post ID of the event to which the ticket is attached.
 		 *
-		 * @return string|false The ticket module class name (confirmed active). False if provider module is not active.
+		 * @return self|false Instance of child class (if confirmed active) or False if provider is not active.
 		 */
-		public static function get_event_ticket_provider( $event_id = null ) {
+		public static function get_event_ticket_provider( $post_id = null ) {
 			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 			$tickets_handler = tribe( 'tickets.handler' );
 
@@ -2942,19 +2943,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$provider = self::get_default_module();
 
 			// If post ID is set and a value has been saved.
-			if ( ! empty( $event_id ) ) {
-				$saved = get_post_meta( $event_id, $tickets_handler->key_provider_field, true );
+			if ( ! empty( $post_id ) ) {
+				$saved = get_post_meta( $post_id, $tickets_handler->key_provider_field, true );
 
 				if ( ! empty( $saved ) ) {
-					if ( tribe_tickets_is_provider_active( $saved ) ) {
-						$provider = $saved;
-					} else {
-						$provider = false;
-					}
+					$provider = $saved;
 				}
 			}
 
-			return $provider;
+			return self::get_ticket_provider_instance( $provider );
+		}
+
 		/**
 		 * Given a provider (class module) string, get its class instance if active.
 		 *
