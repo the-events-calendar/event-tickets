@@ -34,7 +34,7 @@ $classes     = [
 			class="tribe-common-b2--min-medium tribe-tickets-meta-label"
 			for="<?php echo esc_attr( $option_id ); ?>"
 		>
-			<?php echo wp_kses_post( $field['label'] ); tribe_required_label( $required ); ?>
+			<?php echo wp_kses_post( $field['label'] ) . ' ' . tribe_required_label( $required ); ?>
 		</label>
 
 		<!-- Group of Month, Day, Year fields -->
