@@ -2955,6 +2955,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return $provider;
+		/**
+		 * Given a provider (class module) string, get its class instance if active.
+		 *
+		 * @param string $provider Example: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main'
+		 *
+		 * @return self|false Instance of child class (if confirmed active) or False if provider is not active.
+		 */
+		public static function get_ticket_provider_instance( $provider ) {
+			if ( empty( tribe_tickets_is_provider_active( $provider ) ) ) {
+				return false;
+			}
+
+			$instance = tribe_get_class_instance( $provider );
+
+			if ( ! $provider instanceof self ) {
+				return false;
+			}
+
+			return $instance;
 		}
 
 		/**

@@ -123,6 +123,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Resolve a PHP notice when rendering the Event Tickets Plus field for Birth date [ETP-330]
 * Tweak - Add hook to ticket email template to allow injecting content between ticket details and organizers. [ET-844]
 * Tweak - Add `tribe_tickets_is_provider_active()` template function so before using any ticket found in the database we can more easily check if the ticket's commerce provider is currently active. [ET-843]
+* Tweak - Add `\Tribe__Tickets__Tickets::get_ticket_provider_instance()` to consistently and more concisely get a ticket provider's instance only if it is active. [ET-843]
 
 = [4.12.1.1] 2020-05-29 =
 
