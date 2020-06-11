@@ -1231,7 +1231,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				defined( 'TRIBE_TICKETS_RSVP_NEW_VIEWS' )
 				&& TRIBE_TICKETS_RSVP_NEW_VIEWS
 			)
-			|| (boolean) tribe_get_option( 'rsvp_use_new_views', $should_default_to_on )
+			|| (boolean) tribe_get_option( 'tickets_rsvp_use_new_views', $should_default_to_on )
 		);
 	}
 
