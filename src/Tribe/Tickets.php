@@ -2968,7 +2968,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$instance = tribe_get_class_instance( $provider );
 
-			if ( ! $provider instanceof self ) {
+			if ( ! $instance instanceof self ) {
 				return false;
 			}
 
