@@ -2345,7 +2345,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @internal
 		 *
-		 * @throws ReflectionException
+		 * @throws ReflectionException Possible from calling ReflectionProperty().
 		 *
 		 * @return string
 		 */
@@ -2973,7 +2973,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 4.7
 		 * @since TBD If detected module is inactive, return 'Tribe__Tickets__Tickets' to avoid fatals while not
-		 * 				returning unexpected data, such as finding tickets of the wrong provider type.
+		 * 			  returning unexpected data, such as finding tickets of the wrong provider type.
 		 *
 		 * @param int $event_id - the post id of the event the ticket is attached to.
 		 *
@@ -2991,7 +2991,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$saved = get_post_meta( $event_id, $tickets_handler->key_provider_field, true );
 
 				if ( ! empty( $saved ) ) {
-					if( tribe_tickets_is_provider_active( $saved ) ) {
+					if ( tribe_tickets_is_provider_active( $saved ) ) {
 						$provider = $saved;
 					} else {
 						/**
