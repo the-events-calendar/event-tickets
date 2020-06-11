@@ -1092,6 +1092,15 @@ class Tribe__Tickets__Tickets_View {
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
 
+		// Determine whether to show the previews on the page.
+		if (
+			defined( 'TRIBE_TICKETS_RSVP_NEW_VIEWS_PREVIEW' )
+			&& TRIBE_TICKETS_RSVP_NEW_VIEWS_PREVIEW
+		) {
+			// @todo Remove this after G20.07.
+			return $template->template( 'v2/rsvp-kitchen-sink', $args );
+		}
+
 		// Maybe render the new views.
 		if ( $rsvp->use_new_views() ) {
 			// Enqueue new assets.
