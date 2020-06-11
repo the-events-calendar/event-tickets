@@ -1057,7 +1057,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// If password protected then do not display content.
-		if ( post_password_required() ) {
+		if ( post_password_required( $post ) ) {
 			return '';
 		}
 
