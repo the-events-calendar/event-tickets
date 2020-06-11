@@ -962,11 +962,11 @@ class Tribe__Tickets__Tickets_View {
 	}
 
 	/**
-	 * Gets the block template "out of context" and makes it useable for non-gutenberg views.
+	 * Gets the Tickets block template "out of context" and makes it usable for Classic views.
 	 *
-	 * @param WP_Post|int $post the post/event we're viewing.
+	 * @param WP_Post|int $post The post object or ID.
 	 *
-	 * @return string HTML.
+	 * @return string The block HTML.
 	 */
 	public function get_tickets_block( $post ) {
 		if ( empty( $post ) ) {
@@ -1029,5 +1029,94 @@ class Tribe__Tickets__Tickets_View {
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-tickets-style' );
 
 		return $template->template( 'blocks/tickets', $args );
+	}
+
+	/**
+	 * Gets the RSVP block template "out of context" and makes it usable for Classic views.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post|int $post The post object or ID.
+	 *
+	 * @return string The block HTML.
+	 */
+	public function get_rsvp_block( $post ) {
+		if ( empty( $post ) ) {
+			return '';
+		}
+
+		if ( is_numeric( $post ) ) {
+			$post = get_post( $post );
+		}
+
+		if (
+			empty( $post )
+			|| ! ( $post instanceof WP_Post )
+		) {
+			return '';
+		}
+
+		// If password protected then do not display content.
+		if ( post_password_required( $post ) ) {
+			return '';
+		}
+
+		$post_id = $post->ID;
+
+		/** @var \Tribe__Tickets__Editor__Template $template */
+		$template = tribe( 'tickets.editor.template' );
+
+		/** @var \Tribe__Tickets__Editor__Blocks__Rsvp $blocks_rsvp */
+		$blocks_rsvp = tribe( 'tickets.editor.blocks.rsvp' );
+
+		/** @var Tribe__Tickets__RSVP $rsvp */
+		$rsvp = tribe( 'tickets.rsvp' );
+
+		// Load assets manually.
+		$blocks_rsvp->assets();
+
+		$tickets        = $blocks_rsvp->get_tickets( $post_id );
+		$active_tickets = $blocks_rsvp->get_active_tickets( $tickets );
+		$past_tickets   = $blocks_rsvp->get_all_tickets_past( $tickets );
+
+		$args = [
+			'post_id'          => $post_id,
+			'attributes'       => $blocks_rsvp->attributes(),
+			'active_rsvps'     => $active_tickets,
+			'all_past'         => $past_tickets,
+			'has_rsvps'        => ! empty( $tickets ),
+			'has_active_rsvps' => ! empty( $active_tickets ),
+			'must_login'       => ! is_user_logged_in() && $rsvp->login_required(),
+		];
+
+		// Add the rendering attributes into global context.
+		$template->add_template_globals( $args );
+
+		// @todo Remove this after G20.07.
+		// Determine whether to show the previews on the page.
+		if (
+			defined( 'TRIBE_TICKETS_RSVP_NEW_VIEWS_PREVIEW' )
+			&& TRIBE_TICKETS_RSVP_NEW_VIEWS_PREVIEW
+		) {
+			// Enqueue new assets.
+			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
+
+			return $template->template( 'v2/rsvp-kitchen-sink', $args );
+		}
+
+		// Maybe render the new views.
+		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
+			// Enqueue new assets.
+			tribe_asset_enqueue( 'tribe-tickets-rsvp' );
+			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
+
+			return $template->template( 'v2/rsvp', $args );
+		}
+
+		// Enqueue assets.
+		tribe_asset_enqueue( 'tribe-tickets-gutenberg-tickets' );
+		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-tickets-style' );
+
+		return $template->template( 'blocks/rsvp', $args );
 	}
 }

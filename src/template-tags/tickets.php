@@ -1552,3 +1552,44 @@ if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
 		return apply_filters( 'tribe_tickets_is_enabled_post_context', false, $post_types, $context );
 	}
 }
+
+/**
+ * Determine whether new RSVP views are enabled.
+ *
+ * In order the function will check the `TRIBE_TICKETS_RSVP_NEW_VIEWS` constant,
+ * the `TRIBE_TICKETS_RSVP_NEW_VIEWS` environment variable and, finally, the `tickets_rsvp_use_new_views` option.
+ *
+ * @since TBD
+ *
+ * @return boolean Whether new RSVP views are enabled.
+ */
+function tribe_tickets_rsvp_new_views_is_enabled() {
+	// Check for constant.
+	if ( defined( 'TRIBE_TICKETS_RSVP_NEW_VIEWS' ) ) {
+		return (boolean) TRIBE_TICKETS_RSVP_NEW_VIEWS;
+	}
+
+	// Check for env var.
+	$env_var = getenv( 'TRIBE_TICKETS_RSVP_NEW_VIEWS' );
+
+	if ( false !== $env_var ) {
+		return (boolean) $env_var;
+	}
+
+	// @todo Remove this in G20.07
+	return false;
+
+	// Determine if ET was installed at version 4.12.2+.
+	$should_default_to_on = ! tribe_installed_before( 'Tribe__Tickets__Main', '4.12.2' );
+
+	$enabled = (boolean) tribe_get_option( 'tickets_rsvp_use_new_views', $should_default_to_on );
+
+	/**
+	 * Allows filtering whether new RSVP views are enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @param boolean $enabled Whether new RSVP views are enabled.
+	 */
+	return apply_filters( 'tribe_tickets_rsvp_new_views_is_enabled', $enabled );
+}
