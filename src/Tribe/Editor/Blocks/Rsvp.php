@@ -165,23 +165,22 @@ extends Tribe__Editor__Blocks__Abstract {
 			$plugin,
 			'tribe-tickets-gutenberg-rsvp',
 			'rsvp-block.js',
-			array( 'jquery' ),
+			[ 'jquery' ],
 			null,
-			array(
-				'localize'     => array(
+			[
+				'localize' => [
 					'name' => 'TribeRsvp',
-					'data' => array(
+					'data' => [
 						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-					),
-				),
-			)
-		);
+					],
+				],
+			] );
 
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-block-rsvp-style',
 			'app/rsvp/frontend.css',
-			array(),
+			[],
 			null
 		);
 
@@ -189,23 +188,22 @@ extends Tribe__Editor__Blocks__Abstract {
 			$plugin,
 			'tribe-tickets-rsvp',
 			'v2/rsvp.js',
-			array( 'jquery' ),
+			[ 'jquery' ],
 			null,
-			array(
-				'localize'     => array(
+			[
+				'localize' => [
 					'name' => 'TribeRsvp',
-					'data' => array(
+					'data' => [
 						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-					),
-				),
-			)
-		);
+					],
+				],
+			] );
 
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-rsvp-style',
 			'app/v2/rsvp/frontend.css',
-			array(),
+			[],
 			null
 		);
 
