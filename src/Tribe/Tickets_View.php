@@ -965,10 +965,11 @@ class Tribe__Tickets__Tickets_View {
 	 * Gets the Tickets block template "out of context" and makes it usable for Classic views.
 	 *
 	 * @param WP_Post|int $post The post object or ID.
+	 * @param boolean     $echo Whether to echo the output or not.
 	 *
 	 * @return string The block HTML.
 	 */
-	public function get_tickets_block( $post ) {
+	public function get_tickets_block( $post, $echo = true ) {
 		if ( empty( $post ) ) {
 			return '';
 		}
@@ -985,7 +986,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// if password protected then do not display content
-		if ( post_password_required() ) {
+		if ( post_password_required( $post ) ) {
 			return '';
 		}
 
@@ -1028,7 +1029,7 @@ class Tribe__Tickets__Tickets_View {
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-tickets' );
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-tickets-style' );
 
-		return $template->template( 'blocks/tickets', $args );
+		return $template->template( 'blocks/tickets', $args, $echo );
 	}
 
 	/**
@@ -1037,10 +1038,11 @@ class Tribe__Tickets__Tickets_View {
 	 * @since TBD
 	 *
 	 * @param WP_Post|int $post The post object or ID.
+	 * @param boolean     $echo Whether to echo the output or not.
 	 *
 	 * @return string The block HTML.
 	 */
-	public function get_rsvp_block( $post ) {
+	public function get_rsvp_block( $post, $echo = true ) {
 		if ( empty( $post ) ) {
 			return '';
 		}
@@ -1101,7 +1103,7 @@ class Tribe__Tickets__Tickets_View {
 			// Enqueue new assets.
 			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
 
-			return $template->template( 'v2/rsvp-kitchen-sink', $args );
+			return $template->template( 'v2/rsvp-kitchen-sink', $args, $echo );
 		}
 
 		// Maybe render the new views.
@@ -1110,13 +1112,13 @@ class Tribe__Tickets__Tickets_View {
 			tribe_asset_enqueue( 'tribe-tickets-rsvp' );
 			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
 
-			return $template->template( 'v2/rsvp', $args );
+			return $template->template( 'v2/rsvp', $args, $echo );
 		}
 
 		// Enqueue assets.
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-tickets' );
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-tickets-style' );
 
-		return $template->template( 'blocks/rsvp', $args );
+		return $template->template( 'blocks/rsvp', $args, $echo );
 	}
 }
