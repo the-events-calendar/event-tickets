@@ -271,6 +271,49 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $orm_provider = 'default';
 
 		/**
+		 * Name of the CPT that holds Attendees (tickets holders).
+		 *
+		 * Set this in your child class. Included here to avoid errors if called directly on this base class.
+		 *
+		 * @var string
+		 */
+		const ATTENDEE_OBJECT = '';
+
+		/**
+		 * Name of the CPT that holds Orders.
+		 *
+		 * Set this in your child class. Included here to avoid errors if called directly on this base class.
+		 */
+		const ORDER_OBJECT = '';
+
+		/**
+		 * Meta key that relates Attendees and Events.
+		 *
+		 * Set this in your child class. Included here to avoid errors if called directly on this base class.
+		 *
+		 * @var string
+		 */
+		const ATTENDEE_EVENT_KEY = '';
+
+		/**
+		 * Meta key that relates Attendees and Products.
+		 *
+		 * Set this in your child class. Included here to avoid errors if called directly on this base class.
+		 *
+		 * @var string
+		 */
+		const ATTENDEE_PRODUCT_KEY = '';
+
+		/**
+		 * Meta key that relates Attendees and Orders.
+		 *
+		 * Set this in your child class. Included here to avoid errors if called directly on this base class.
+		 *
+		 * @var string
+		 */
+		const ATTENDEE_ORDER_KEY = '';
+
+		/**
 		 * Returns link to the report interface for sales for an event or
 		 * null if the provider doesn't have reporting capabilities.
 		 *
@@ -935,13 +978,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Returns instance of the child class (singleton).
+		 * Returns class instance. Child classes should overload this.
 		 *
 		 * @static
 		 *
-		 * @return mixed
+		 * @return self
 		 */
-		public static function get_instance() {}
+		public static function get_instance() {
+			return tribe( self::class );
+		}
 
 		// end API Definitions
 
@@ -2299,6 +2344,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * for this purpose.
 		 *
 		 * @internal
+		 *
+		 * @throws ReflectionException
 		 *
 		 * @return string
 		 */
