@@ -32,15 +32,8 @@ class Tribe__Tickets__Admin__Notices {
 
 		$this->maybe_display_plus_commerce_notice();
 
-		/** @var Tribe__Tickets__RSVP $rsvp */
-		$rsvp = tribe( 'tickets.rsvp' );
-
-		// @todo Remove this early return when we are ready to show the opt-in notice in G20.07.
-		if ( ! $rsvp->use_new_views() ) {
-			return;
-		}
-
-		$this->maybe_display_rsvp_new_views_options_notice();
+		// @todo Uncomment this when we are ready to show the opt-in notice in G20.07.
+		// $this->maybe_display_rsvp_new_views_options_notice();
 	}
 
 	/**
@@ -72,6 +65,14 @@ class Tribe__Tickets__Admin__Notices {
 			'tribe-common' === tribe_get_request_var( 'page' )
 			&& 'display' === tribe_get_request_var( 'tab' )
 		) {
+			return;
+		}
+
+		/** @var Tribe__Tickets__RSVP $rsvp */
+		$rsvp = tribe( 'tickets.rsvp' );
+
+		// Bail if the option is already in use.
+		if ( $rsvp->use_new_views() ) {
 			return;
 		}
 
