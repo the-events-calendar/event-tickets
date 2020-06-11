@@ -204,7 +204,24 @@ extends Tribe__Editor__Blocks__Abstract {
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-rsvp-style',
-			'app/v2/rsvp/frontend.css',
+			'rsvp.css',
+			[],
+			null
+		);
+
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-form-style',
+			'forms.css',
+			[ 'tribe-tickets-rsvp-style' ],
+			null
+		);
+
+		// @todo: Remove this once we solve the common breakpoints vs container based.
+		tribe_asset(
+			$plugin,
+			'tribe-common-responsive',
+			'common-responsive.css',
 			[],
 			null
 		);

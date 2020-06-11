@@ -1100,6 +1100,7 @@ class Tribe__Tickets__Tickets_View {
 		) {
 			// Enqueue new assets.
 			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
+			tribe_asset_enqueue( 'tribe-common-responsive' );
 
 			return $template->template( 'v2/rsvp-kitchen-sink', $args );
 		}
@@ -1109,6 +1110,8 @@ class Tribe__Tickets__Tickets_View {
 			// Enqueue new assets.
 			tribe_asset_enqueue( 'tribe-tickets-rsvp' );
 			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
+			tribe_asset_enqueue( 'tribe-tickets-form-style' );
+			tribe_asset_enqueue( 'tribe-common-responsive' );
 
 			return $template->template( 'v2/rsvp', $args );
 		}
