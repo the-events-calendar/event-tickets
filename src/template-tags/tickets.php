@@ -1552,3 +1552,25 @@ if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
 		return apply_filters( 'tribe_tickets_is_enabled_post_context', false, $post_types, $context );
 	}
 }
+
+if ( ! function_exists( 'tribe_tickets_is_provider_active' ) ) {
+	/**
+	 * Whether the passed ticket provider class string is active.
+	 *
+	 * Example: if provider is for a WooCommerce Ticket but ETP is disabled, returns False.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $provider Example: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main'.
+	 *
+	 * @return bool True if class exists and is in the list of active modules.
+	 */
+	function tribe_tickets_is_provider_active( $provider ) {
+		$provider = (string) $provider;
+
+		return (
+			class_exists( $provider )
+			&& array_key_exists( $provider, Tribe__Tickets__Tickets::modules() )
+		);
+	}
+}
