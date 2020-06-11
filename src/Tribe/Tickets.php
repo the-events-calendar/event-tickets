@@ -271,49 +271,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $orm_provider = 'default';
 
 		/**
-		 * Name of the CPT that holds Attendees (tickets holders).
-		 *
-		 * Set this in your child class. Included here to avoid errors if called directly on this base class.
-		 *
-		 * @var string
-		 */
-		const ATTENDEE_OBJECT = '';
-
-		/**
-		 * Name of the CPT that holds Orders.
-		 *
-		 * Set this in your child class. Included here to avoid errors if called directly on this base class.
-		 */
-		const ORDER_OBJECT = '';
-
-		/**
-		 * Meta key that relates Attendees and Events.
-		 *
-		 * Set this in your child class. Included here to avoid errors if called directly on this base class.
-		 *
-		 * @var string
-		 */
-		const ATTENDEE_EVENT_KEY = '';
-
-		/**
-		 * Meta key that relates Attendees and Products.
-		 *
-		 * Set this in your child class. Included here to avoid errors if called directly on this base class.
-		 *
-		 * @var string
-		 */
-		const ATTENDEE_PRODUCT_KEY = '';
-
-		/**
-		 * Meta key that relates Attendees and Orders.
-		 *
-		 * Set this in your child class. Included here to avoid errors if called directly on this base class.
-		 *
-		 * @var string
-		 */
-		const ATTENDEE_ORDER_KEY = '';
-
-		/**
 		 * Returns link to the report interface for sales for an event or
 		 * null if the provider doesn't have reporting capabilities.
 		 *
@@ -978,15 +935,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Returns class instance. Child classes should overload this.
+		 * Returns class instance. Child classes must overload this.
 		 *
 		 * @static
 		 *
-		 * @return self
+		 * @return static
 		 */
-		public static function get_instance() {
-			return tribe( self::class );
-		}
+		public static function get_instance() {}
 
 		// end API Definitions
 
@@ -2968,22 +2923,22 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get the saved or default ticket provider.
 		 *
-		 * Will return 'Tribe__Tickets__Tickets' if there is a saved provider that is currently not active.
-		 * Example: If provider is WooCommerce Ticket but ETP is inactive, will return 'Tribe__Tickets__Tickets'.
+		 * Will return False if there is a saved provider that is currently not active.
+		 * Example: If provider is WooCommerce Ticket but ETP is inactive, will return False.
 		 *
 		 * @since 4.7
-		 * @since TBD If detected module is inactive, return 'Tribe__Tickets__Tickets' to avoid fatals while not
-		 *            returning unexpected data, such as finding tickets of the wrong provider type.
+		 * @since TBD If detected module is inactive, return False to avoid fatals while not returning unexpected data,
+		 * such as finding tickets of the wrong provider type.
 		 *
-		 * @param int $event_id - the post id of the event the ticket is attached to.
+		 * @param int $event_id The post ID of the event to which the ticket is attached.
 		 *
-		 * @return string|false The ticket module class name (confirmed active). False if module is not active.
+		 * @return string|false The ticket module class name (confirmed active). False if provider module is not active.
 		 */
 		public static function get_event_ticket_provider( $event_id = null ) {
 			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 			$tickets_handler = tribe( 'tickets.handler' );
 
-			// 'Tribe__Tickets__RSVP' unless filtered but still wouldn't ever be 'Tribe__Tickets__Tickets'.
+			// 'Tribe__Tickets__RSVP' unless filtered.
 			$provider = self::get_default_module();
 
 			// If post ID is set and a value has been saved.
@@ -2994,15 +2949,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					if ( tribe_tickets_is_provider_active( $saved ) ) {
 						$provider = $saved;
 					} else {
-						/**
-						 * We return the base class so all the legacy calls like below don't cause errors and instead
-						 * return just end up finding no tickets are found for an event, for example, since no ticket
-						 * would actually ever have this base class as its provider.
-						 *
-						 * Example pre-existing code that we're accounting for:
-						 * call_user_func( [ $provider_id, 'get_instance' ] )->get_tickets( $event_id )
-						 */
-						$provider = self::class;
+						$provider = false;
 					}
 				}
 			}
