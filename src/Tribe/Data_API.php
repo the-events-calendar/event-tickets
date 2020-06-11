@@ -186,19 +186,17 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Return Ticket Provider by Order, Product, Attendee, or Ticket ID.
 	 *
-	 * @param $post_id
+	 * @since 4.5
+	 * @since TBD Use new helper method to account for possibly inactive ticket provider.
 	 *
-	 * @return bool|object
+	 * @param int|string $post_id
+	 *
+	 * @return Tribe__Tickets__Tickets|false Ticket provider instance or False if provider is not active.
 	 */
 	public function get_ticket_provider( $post_id ) {
 		$services = $this->detect_by_id( $post_id );
 
-		// if no module class return
-		if ( empty( $services['class'] ) || ! class_exists( $services['class'] ) ) {
-			return false;
-		}
-
-		return call_user_func( [ $services['class'], 'get_instance' ] );
+		return Tribe__Tickets__Tickets::get_ticket_provider_instance( $services['class'] );
 	}
 
 	/**
