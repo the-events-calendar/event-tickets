@@ -1128,7 +1128,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		// Maybe render the new views.
-		if ( $this->use_new_views() ) {
+		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
 			return $this->tickets_view->get_rsvp_block( $post );
 		}
 
@@ -1213,26 +1213,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function login_required() {
 		$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', array() );
 		return in_array( 'event-tickets_rsvp', $requirements, true );
-	}
-
-	/**
-	 * Determine whether to use new RSVP views.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether to use new RSVP views.
-	 */
-	public function use_new_views() {
-		// Determine if ET was installed at version 4.12.2+.
-		$should_default_to_on = ! tribe_installed_before( 'Tribe__Tickets__Main', '4.12.2' );
-
-		return (
-			(
-				defined( 'TRIBE_TICKETS_RSVP_NEW_VIEWS' )
-				&& TRIBE_TICKETS_RSVP_NEW_VIEWS
-			)
-			|| (boolean) tribe_get_option( 'tickets_rsvp_use_new_views', $should_default_to_on )
-		);
 	}
 
 	/**

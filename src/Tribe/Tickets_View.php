@@ -1105,7 +1105,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// Maybe render the new views.
-		if ( $rsvp->use_new_views() ) {
+		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
 			// Enqueue new assets.
 			tribe_asset_enqueue( 'tribe-tickets-rsvp' );
 			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );

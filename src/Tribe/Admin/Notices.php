@@ -68,11 +68,8 @@ class Tribe__Tickets__Admin__Notices {
 			return;
 		}
 
-		/** @var Tribe__Tickets__RSVP $rsvp */
-		$rsvp = tribe( 'tickets.rsvp' );
-
 		// Bail if the option is already in use.
-		if ( $rsvp->use_new_views() ) {
+		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
 			return;
 		}
 

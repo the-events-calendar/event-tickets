@@ -26,11 +26,8 @@ class Tribe__Tickets__Admin__Display_Settings {
 	 * @return array List of display settings.
 	 */
 	public function add_display_settings( $settings ) {
-		/** @var Tribe__Tickets__RSVP $rsvp */
-		$rsvp = tribe( 'tickets.rsvp' );
-
 		// @todo Remove this early return when we are ready to show the opt-in in G20.07.
-		if ( ! $rsvp->use_new_views() ) {
+		if ( ! tribe_tickets_rsvp_new_views_is_enabled() ) {
 			return $settings;
 		}
 
