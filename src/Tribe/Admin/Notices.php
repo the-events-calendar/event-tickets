@@ -50,7 +50,7 @@ class Tribe__Tickets__Admin__Notices {
 		/** @var Tribe__Settings $settings */
 		$settings = tribe( 'settings' );
 
-		// Bail if user cannot change settings
+		// Bail if user cannot change settings.
 		if ( ! current_user_can( $settings->requiredCap ) ) {
 			return;
 		}
