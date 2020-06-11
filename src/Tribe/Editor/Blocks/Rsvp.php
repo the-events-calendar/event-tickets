@@ -185,6 +185,30 @@ extends Tribe__Editor__Blocks__Abstract {
 			null
 		);
 
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-rsvp',
+			'v2/rsvp.js',
+			array( 'jquery' ),
+			null,
+			array(
+				'localize'     => array(
+					'name' => 'TribeRsvp',
+					'data' => array(
+						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+					),
+				),
+			)
+		);
+
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-rsvp-style',
+			'app/v2/rsvp/frontend.css',
+			array(),
+			null
+		);
+
 	}
 
 	/**
