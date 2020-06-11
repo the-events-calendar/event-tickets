@@ -50,7 +50,7 @@ class Tribe__Tickets__Data_API {
 				$this->ticket_class[ $module_class ][ $key ] = $value;
 			}
 
-			$this->ticket_class[ $module_class ]['tribe_for_event'] = $provider->event_key;
+			$this->ticket_class[ $module_class ]['tribe_for_event'] = $provider->get_event_key();
 			$this->ticket_class[ $module_class ]['event_id_key'] = constant( "$module_class::ATTENDEE_EVENT_KEY" );
 			$this->ticket_class[ $module_class ]['order_id_key'] = constant( "$module_class::ATTENDEE_ORDER_KEY" );
 			$this->ticket_class[ $module_class ]['slug'] = $status_mgr->get_provider_slug( $module_class );

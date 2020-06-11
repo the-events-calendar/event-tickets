@@ -334,7 +334,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( ! empty( $post_id ) ) {
 				$args['meta_query'] = [
 					[
-						'key'     => $this->event_key,
+						'key'     => $this->get_event_key(),
 						'value'   => $post_id,
 						'compare' => '=',
 					],
@@ -581,7 +581,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
-			$event_id = get_post_meta( $ticket_product, $this->event_key, true );
+			$event_id = get_post_meta( $ticket_product, $this->get_event_key(), true );
 
 			if ( ! $event_id && '' === ( $event_id = get_post_meta( $ticket_product, $this->attendee_event_key, true ) ) ) {
 				return false;
