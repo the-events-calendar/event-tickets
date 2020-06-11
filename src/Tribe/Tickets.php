@@ -2921,27 +2921,46 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get the saved or default ticket provider.
 		 *
+		 * Will return 'Tribe__Tickets__Tickets' if there is a saved provider that is currently not active.
+		 * Example: If provider is WooCommerce Ticket but ETP is inactive, will return 'Tribe__Tickets__Tickets'.
+		 *
 		 * @since 4.7
+		 * @since TBD If detected module is inactive, return 'Tribe__Tickets__Tickets' to avoid fatals while not
+		 * 				returning unexpected data, such as finding tickets of the wrong provider type.
 		 *
 		 * @param int $event_id - the post id of the event the ticket is attached to.
 		 *
-		 * @return string ticket module class name
+		 * @return string|false The ticket module class name (confirmed active). False if module is not active.
 		 */
 		public static function get_event_ticket_provider( $event_id = null ) {
 			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 			$tickets_handler = tribe( 'tickets.handler' );
 
-			// if  post ID is set, and a value has been saved, return the saved value
+			// 'Tribe__Tickets__RSVP' unless filtered but still wouldn't ever be 'Tribe__Tickets__Tickets'.
+			$provider = self::get_default_module();
+
+			// If post ID is set and a value has been saved.
 			if ( ! empty( $event_id ) ) {
 				$saved = get_post_meta( $event_id, $tickets_handler->key_provider_field, true );
 
 				if ( ! empty( $saved ) ) {
-					return $saved;
+					if( tribe_tickets_is_provider_active( $saved ) ) {
+						$provider = $saved;
+					} else {
+						/**
+						 * We return the base class so all the legacy calls like below don't cause errors and instead
+						 * return just end up finding no tickets are found for an event, for example, since no ticket
+						 * would actually ever have this base class as its provider.
+						 *
+						 * Example pre-existing code that we're accounting for:
+						 * call_user_func( [ $provider_id, 'get_instance' ] )->get_tickets( $event_id )
+						 */
+						$provider = self::class;
+					}
 				}
 			}
 
-			// otherwise just return the default
-			return self::get_default_module();
+			return $provider;
 		}
 
 		/**
