@@ -37,10 +37,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return array
 	 */
 	public function default_attributes() {
-
-		$defaults = array();
-
-		return $defaults;
+		return [];
 	}
 
 	/**
@@ -54,23 +51,13 @@ extends Tribe__Editor__Blocks__Abstract {
 	 */
 	public function render( $attributes = array() ) {
 		/** @var Tribe__Tickets__Editor__Template $template */
-		$template                 = tribe( 'tickets.editor.template' );
-		$args['post_id']          = $post_id = $template->get( 'post_id', null, false );
-		$rsvps                    = $this->get_tickets( $post_id );
-		$args['attributes']       = $this->attributes( $attributes );
-		$args['active_rsvps']     = $this->get_active_tickets( $rsvps );
-		$args['has_active_rsvps'] = ! empty( $args['active_rsvps'] );
-		$args['has_rsvps']        = ! empty( $rsvps );
-		$args['all_past']         = $this->get_all_tickets_past( $rsvps );
+		$template = tribe( 'tickets.editor.template' );
 
-		// Add the rendering attributes into global context
-		$template->add_template_globals( $args );
+		$post_id = $template->get( 'post_id', null, false );
 
-		// enqueue assets
-		tribe_asset_enqueue( 'tribe-tickets-gutenberg-rsvp' );
-		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-rsvp-style' );
+		$tickets_view = Tribe__Tickets__Tickets_View::instance();
 
-		return $template->template( array( 'blocks', $this->slug() ), $args, false );
+		return $tickets_view->get_rsvp_block( $post_id );
 	}
 
 	/**
@@ -80,7 +67,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @return array
 	 */
-	protected function get_tickets( $post_id ) {
+	public function get_tickets( $post_id ) {
 		$tickets = [];
 
 		// Bail if there's no event id
@@ -124,7 +111,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @return array
 	 */
-	protected function get_active_tickets( $tickets ) {
+	public function get_active_tickets( $tickets ) {
 		$active_tickets = array();
 
 		foreach ( $tickets as $ticket ) {
@@ -148,7 +135,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @return bool
 	 */
-	protected function get_all_tickets_past( $tickets ) {
+	public function get_all_tickets_past( $tickets ) {
 		if ( empty( $tickets ) ) {
 			return false;
 		}
