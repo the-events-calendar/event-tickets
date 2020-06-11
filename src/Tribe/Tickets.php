@@ -2973,7 +2973,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 4.7
 		 * @since TBD If detected module is inactive, return 'Tribe__Tickets__Tickets' to avoid fatals while not
-		 * 			  returning unexpected data, such as finding tickets of the wrong provider type.
+		 *            returning unexpected data, such as finding tickets of the wrong provider type.
 		 *
 		 * @param int $event_id - the post id of the event the ticket is attached to.
 		 *
