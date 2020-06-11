@@ -4,7 +4,7 @@
  * Form Quantity Input
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/rsvp/ari/quantity/input.php
+ * [your-theme]/tribe/tickets/v2/rsvp/ari/sidebar/quantity/input.php
  *
  * See more documentation about our Blocks Editor templating system.
  *

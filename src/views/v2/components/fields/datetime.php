@@ -11,7 +11,7 @@
  */
 
 $field_name = tribe_tickets_ar_field_name( $ticket->ID, $field->slug );
-$required   = tribe_tickets_ar_field_is_required( $field );
+$field_id   = tribe_tickets_ar_field_id( $ticket->ID, $field->slug );
 $option_id  = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id}}";
 $field      = (array) $field;
 $disabled   = false;
@@ -24,11 +24,11 @@ $classes    = [
 <div <?php tribe_classes( $classes ); ?>>
 	<label
 		class="tribe-common-b2--min-medium tribe-tickets__form-field-label"
-		for="<?php echo esc_attr( $option_id ); ?>"
+		for="<?php echo esc_attr( $field_id ); ?>"
 	><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 	<input
 		type="date"
-		id="<?php echo esc_attr( $option_id ); ?>"
+		id="<?php echo esc_attr( $field_id ); ?>"
 		class="tribe-common-form-control-datetime__input tribe-tickets__form-field-input"
 		name="<?php echo esc_attr( $field_name ); ?>"
 		value="<?php echo esc_attr( $value ); ?>"

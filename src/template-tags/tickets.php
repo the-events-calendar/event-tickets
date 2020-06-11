@@ -1634,7 +1634,7 @@ if ( ! function_exists( 'tribe_tickets_ar_field_id' ) ) {
 	 * @param string $field_slug The field slug.
 	 * @param string $option_slug The field option slug (in case they need it).
 	 *
-	 * @return string The AR field name.
+	 * @return string The AR field id.
 	 */
 	function tribe_tickets_ar_field_id( $ticket_id, $field_slug, $option_slug = '' ) {
 

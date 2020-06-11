@@ -22,7 +22,6 @@ if ( 'success' !== $step ) {
 }
 ?>
 <div class="tribe-tickets__rsvp-message tribe-tickets__rsvp-message--success tribe-common-b3">
-	<?php /** @todo: add classes, define classes for icon. */ ?>
 	<em class="tribe-common-svgicon tribe-tickets__rsvp-message--success-icon"></em>
 
 	<span class="tribe-tickets__rsvp-message-text">

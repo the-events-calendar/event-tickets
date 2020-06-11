@@ -3,7 +3,7 @@
  * Block: RSVP
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/blocks/rsvp.php
+ * [your-theme]/tribe/tickets/v2/rsvp.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
@@ -20,7 +20,6 @@ $event_id         = $this->get( 'post_id' );
 $rsvps            = $this->get( 'active_rsvps' );
 $has_active_rsvps = $this->get( 'has_active_rsvps' );
 $has_rsvps        = $this->get( 'has_rsvps' );
-$all_past         = $this->get( 'all_past' );
 
 // We don't display anything if there is no RSVP.
 if ( ! $has_rsvps ) {
@@ -39,6 +38,7 @@ if ( ! $has_rsvps ) {
 $already_rendered = apply_filters( 'tribe_tickets_order_link_template_already_rendered', false );
 
 // Output order links / view link if we haven't already (for RSVPs).
+// @todo @juanfra: componetize this.
 if ( ! $already_rendered ) {
 	$html = $this->template( 'blocks/attendees/order-links', [], false );
 

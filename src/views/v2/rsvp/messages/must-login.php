@@ -10,6 +10,7 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
+ * @param WP_Post|int $post_id The post object or ID.
  * @var bool $must_login Whether the user has to login to RSVP or not.
  *
  * @since TBD
@@ -21,11 +22,8 @@ if ( ! $must_login ) {
 	return;
 }
 
-$rsvp_data = tribe( 'tickets.handler' )->get_object_connections( $rsvp->ID );
-$event_id  = $rsvp_data->event;
 ?>
 <div class="tribe-tickets__rsvp-message tribe-tickets__rsvp-message--must-login tribe-common-b3">
-	<?php /** @todo: add classes, define classes for icon. */ ?>
 	<em class="tribe-common-svgicon tribe-tickets__rsvp-message--must-login-icon"></em>
 
 	<span class="tribe-tickets__rsvp-message-text">
@@ -41,7 +39,7 @@ $event_id  = $rsvp_data->event;
 			?>
 
 			<a
-				href="<?php echo esc_url( Tribe__Tickets__Tickets::get_login_url( $event_id ) . '?tribe-block__rsvp__ticket-' . $rsvp->ID ); ?>"
+				href="<?php echo esc_url( Tribe__Tickets__Tickets::get_login_url( $post_id ) . '?tribe-tickets__rsvp' . $rsvp->ID ); ?>"
 				class="tribe-tickets__rsvp-message-link"
 			>
 				<?php esc_html_e( 'Log in here', 'event-tickets' ); ?>

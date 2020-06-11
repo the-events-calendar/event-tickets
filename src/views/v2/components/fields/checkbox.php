@@ -12,10 +12,10 @@
  * @see Tribe__Tickets_Plus__Meta__Field__Checkbox
  */
 
- $required   = tribe_tickets_ar_field_is_required( $field );
+$field_name = tribe_tickets_ar_field_name( $ticket->ID, $field->slug );
+$required   = tribe_tickets_ar_field_is_required( $field );
 $field      = (array) $field;
 $options    = Tribe__Utils__Array::get( $field, [ 'extra', 'options' ], null );
-$field_name = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}]';
 $disabled   = false;
 
 if ( ! $options ) {
@@ -25,8 +25,6 @@ if ( ! $options ) {
 $classes = [
 	'tribe-tickets__form-field',
 	'tribe-tickets__form-field--required' => $required,
-	'tribe-tickets-meta-fieldset',
-	'tribe-tickets-meta-fieldset__checkbox-radio',
 ];
 
 ?>
@@ -43,7 +41,6 @@ $classes = [
 			$option_slug = md5( sanitize_title( $option ) );
 			$field_slug  = $field['slug'];
 			$option_id   = tribe_tickets_ar_field_id( $ticket->ID, $field_slug, $option_slug );
-			//"tribe-tickets-meta_{$ticket->ID}_{$field_slug}{{data.attendee_id}}_{$option_slug}";
 			$slug        = $field_slug . '_' . $option_slug;
 			$field_name  = tribe_tickets_ar_field_name( $ticket->ID, $slug );
 			$value       = [];
