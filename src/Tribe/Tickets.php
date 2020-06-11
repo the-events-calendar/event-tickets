@@ -2,12 +2,10 @@
 
 if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	/**
-	 * Class with the API definition and common functionality
-	 * for Tribe Tickets Pro. Providers for this functionality need to
-	 * extend this class. For a functional example of how this works
-	 * see Tribe WooTickets.
+	 * Class with the API definition and common functionality for Tribe Tickets. Providers for this functionality need
+	 * to extend this class.
 	 *
-	 * The relationship between orders, attendees and event posts is
+	 * The relationship between orders, attendees, and event posts is
 	 * maintained through post meta fields set for the attendee object.
 	 * Implementing classes are expected to provide the following class
 	 * constants detailing those meta keys:
