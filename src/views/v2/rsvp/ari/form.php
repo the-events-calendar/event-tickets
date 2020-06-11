@@ -28,7 +28,7 @@
 		<?php foreach ( $fields as $field ) : ?>
 			<?php
 				$args = [
-					'event_id'   => $post_id,
+					'event_id'   => $event_id,
 					'ticket'     => $ticket,
 					'field'      => $field,
 					'value'      => null,

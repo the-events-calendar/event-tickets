@@ -11,6 +11,7 @@
  */
 
 $field_name = tribe_tickets_ar_field_name( $ticket->ID, $field->slug );
+$required   = tribe_tickets_ar_field_is_required( $field );
 $field_id   = tribe_tickets_ar_field_id( $ticket->ID, $field->slug );
 $option_id  = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}{{data.attendee_id}}";
 $field      = (array) $field;
