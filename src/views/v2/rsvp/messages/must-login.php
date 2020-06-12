@@ -10,8 +10,8 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @param WP_Post|int $post_id The post object or ID.
- * @var bool $must_login Whether the user has to login to RSVP or not.
+ * @var bool   $must_login Whether the user has to login to RSVP or not.
+ * @var string $login_url The login URL.
  *
  * @since TBD
  *
@@ -39,7 +39,7 @@ if ( ! $must_login ) {
 			?>
 
 			<a
-				href="<?php echo esc_url( Tribe__Tickets__Tickets::get_login_url( $post_id ) . '?tribe-tickets__rsvp' . $rsvp->ID ); ?>"
+				href="<?php echo esc_url( $login_url . '?tribe-tickets__rsvp' . $rsvp->ID ); ?>"
 				class="tribe-tickets__rsvp-message-link"
 			>
 				<?php esc_html_e( 'Log in here', 'event-tickets' ); ?>
