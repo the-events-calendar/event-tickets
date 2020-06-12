@@ -2,7 +2,8 @@ name: 'JS Tests'
 on:
   pull_request:
     paths:
-      - 'resources/js/**'
+      - 'src/resources/js/**'
+      - 'src/resources/modules/**'
       - 'package.json'
       - 'webpack.*.js'
       - 'jest.config.json'
