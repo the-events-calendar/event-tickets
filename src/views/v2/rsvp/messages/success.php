@@ -15,7 +15,7 @@
  * @version TBD
  */
 
-$step = ! empty( $_GET[ 'step' ] ) ? sanitize_text_field( $_GET[ 'step' ] ) : '';
+$step = sanitize_text_field( tribe_get_request_var( 'step', '' ) );
 
 if ( 'success' !== $step ) {
 	return;
