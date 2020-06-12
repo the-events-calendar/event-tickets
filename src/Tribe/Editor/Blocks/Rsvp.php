@@ -201,11 +201,20 @@ extends Tribe__Editor__Blocks__Abstract {
 			]
 		);
 
+		// @todo: Remove this once we solve the common breakpoints vs container based.
+		tribe_asset(
+			$plugin,
+			'tribe-common-responsive',
+			'common-responsive.css',
+			[ 'tribe-common-skeleton-style' ],
+			null
+		);
+
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-rsvp-style',
 			'rsvp.css',
-			[],
+			[ 'tribe-common-skeleton-style', 'tribe-common-responsive' ],
 			null
 		);
 
@@ -216,16 +225,6 @@ extends Tribe__Editor__Blocks__Abstract {
 			[ 'tribe-tickets-rsvp-style' ],
 			null
 		);
-
-		// @todo: Remove this once we solve the common breakpoints vs container based.
-		tribe_asset(
-			$plugin,
-			'tribe-common-responsive',
-			'common-responsive.css',
-			[],
-			null
-		);
-
 	}
 
 	/**
