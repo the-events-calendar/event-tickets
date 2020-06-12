@@ -42,7 +42,7 @@ $classes = [
 			$field_slug  = $field['slug'];
 			$option_id   = tribe_tickets_ar_field_id( $ticket->ID, $field_slug, $option_slug );
 			$slug        = $field_slug . '_' . $option_slug;
-			$field_name  = tribe_tickets_ar_field_name( $ticket->ID, $slug );
+			$field_name  = tribe_tickets_ar_field_name( $ticket->ID, $field_slug, $option_slug );
 			$value       = [];
 			?>
 
