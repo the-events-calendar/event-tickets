@@ -11,6 +11,6 @@
  */
 
 ?>
-<span class="tribe-tickets__rsvp-ar-form-title tribe-common-h5">
+<h3 class="tribe-tickets__rsvp-ar-form-title tribe-common-h5">
 	<?php esc_html_e( 'Main Guest', 'event-tickets' ); ?>
-</span>
+</h3>
