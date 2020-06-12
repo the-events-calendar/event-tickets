@@ -38,6 +38,16 @@ if ( 0 !== $threshold && $threshold < $remaining_tickets ) {
 	return;
 }
 
-?>
-<span class="tribe-tickets__rsvp-availability-quantity tribe-common-b2--bold"><?php echo esc_html( $remaining_tickets ); ?> </span>
-<?php esc_html_e( 'remaining', 'event-tickets' ); ?>,
+echo wp_kses_post(
+	sprintf(
+		// Translators: 1: opening span. 2: the number of remaining tickets to RSVP. 3: Closing span.
+		_x(
+			'%1$s %2$s %3$s remaining, ',
+			'Remaining RSVP quantity',
+			'event-tickets'
+		),
+		'<span class="tribe-tickets__rsvp-availability-quantity tribe-common-b2--bold">',
+		$remaining_tickets,
+		'</span>'
+	)
+);
