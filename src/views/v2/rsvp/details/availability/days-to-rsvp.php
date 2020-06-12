@@ -24,14 +24,18 @@ if ( ! $rsvp->is_in_stock() ) {
 
 use Tribe__Date_Utils as Dates;
 $days_to_rsvp = Dates::date_diff( $rsvp->start_date, $rsvp->end_date );
-?>
-<span class="tribe-tickets__rsvp-availability-days-left tribe-common-b2--bold"><?php echo esc_html( $days_to_rsvp ); ?> </span>
-<?php
-echo esc_html(
+
+echo wp_kses_post(
 	sprintf(
-		/* Translators: 1: RSVP label. */
-		_x( 'days left to %1$s', 'blocks rsvp days left', 'event-tickets' ),
-		tribe_get_rsvp_label_singular( 'blocks_rsvp_messages_success' )
+		// Translators: 1: opening span. 2: the number of remaining days to RSVP. 3: Closing span. 4: The RSVP label.
+		_x(
+			'%1$s %2$s %3$s days left to %4$s',
+			'Days to RSVP',
+			'event-tickets'
+		),
+		'<span class="tribe-tickets__rsvp-availability-days-left tribe-common-b2--bold">',
+		$days_to_rsvp,
+		'</span>',
+		tribe_get_rsvp_label_singular( 'Days to RSVP' )
 	)
 );
-?>
