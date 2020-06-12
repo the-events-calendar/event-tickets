@@ -11,6 +11,6 @@
  */
 
 ?>
-<span class="tribe-common-h5">
+<h3 class="tribe-common-h5">
 	<?php esc_html_e( 'Attendee Registration', 'event-tickets' ); ?>
-</span>
+</h3>
