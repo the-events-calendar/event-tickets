@@ -1561,12 +1561,19 @@ if ( ! function_exists( 'tribe_tickets_is_provider_active' ) ) {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $provider Example: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main'.
+	 * @param Tribe__Tickets__Tickets|string $provider Example: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main'.
 	 *
 	 * @return bool True if class exists and is in the list of active modules.
 	 */
 	function tribe_tickets_is_provider_active( $provider ) {
-		$provider = (string) $provider;
+		if( $provider instanceof Tribe__Tickets__Tickets ) {
+			$provider = $provider->class_name;
+		}
+
+		// Protect against other type of object or other unexpected value.
+		if( ! is_string( $provider ) ) {
+			return false;
+		}
 
 		return (
 			class_exists( $provider )
