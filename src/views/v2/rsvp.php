@@ -43,7 +43,7 @@ if ( ! $already_rendered ) {
 	$html = $this->template( 'blocks/attendees/order-links', [], false );
 
 	if ( empty( $html ) ) {
-		$html = $this->template( 'blocks/attendees/view-link', [], false );;
+		$html = $this->template( 'blocks/attendees/view-link', [], false );
 	}
 
 	echo $html;
