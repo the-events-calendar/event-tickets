@@ -10,6 +10,9 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
+ * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
+ * @var WP_Post|int $post The post object or ID.
+ *
  * @since TBD
  *
  * @version TBD
@@ -17,6 +20,7 @@
 
 $meta   = Tribe__Tickets_Plus__Main::instance()->meta();
 $fields = $meta->get_meta_fields_by_ticket( $rsvp->ID );
+
 ?>
 <div class="tribe-tickets__rsvp-ar-form">
 
@@ -26,11 +30,11 @@ $fields = $meta->get_meta_fields_by_ticket( $rsvp->ID );
 		<?php foreach ( $fields as $field ) : ?>
 			<?php
 				$args = [
-					'event_id'   => $event_id,
-					'ticket'     => $ticket,
+					'event_id'   => $post_id,
+					'ticket'     => $rsvp,
 					'field'      => $field,
 					'value'      => null,
-					'saved_meta' => $saved_meta,
+					'saved_meta' => [],
 				];
 
 				$this->template( 'v2/components/fields/' . $field->type, $args );
