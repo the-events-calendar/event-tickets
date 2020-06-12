@@ -31,7 +31,6 @@ $field_label   = 'going' === $going ? __( 'Number of Guests', 'event-tickets' ) 
 		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-input-number"
 		value="1"
 		required
-		aria-required="true"
 		min="1"
 		max="<?php echo esc_attr( $max_at_a_time ); ?>"
 	>

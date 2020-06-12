@@ -39,7 +39,6 @@ $name = apply_filters( 'tribe_tickets_rsvp_form_full_name', '', $this );
 		name="attendee[full_name]"
 		value="<?php echo esc_attr( $name ); ?>"
 		required
-		aria-required="true"
 		placeholder="<?php esc_attr_e( 'John Doe', 'event-tickets' ); ?>"
 	>
 </div>
