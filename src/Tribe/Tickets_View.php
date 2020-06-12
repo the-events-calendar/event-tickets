@@ -1115,6 +1115,7 @@ class Tribe__Tickets__Tickets_View {
 			tribe_asset_enqueue( 'tribe-tickets-rsvp' );
 			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
 			tribe_asset_enqueue( 'tribe-tickets-form-style' );
+			// @todo: Remove this once we solve the common breakpoints vs container based.
 			tribe_asset_enqueue( 'tribe-common-responsive' );
 
 			return $template->template( 'v2/rsvp', $args, $echo );
