@@ -64,7 +64,7 @@ $classes = [
 					name="<?php echo esc_attr( $field_name ); ?>"
 					type="radio"
 					value="<?php echo esc_attr( $option ); ?>"
-					<?php checked( true, in_array( $slug, $value ) ); ?>
+					<?php checked( true, in_array( $slug, $value, true ) ); ?>
 					<?php tribe_disabled( $disabled ); ?>
 					<?php tribe_required( $required ); ?>
 				/>

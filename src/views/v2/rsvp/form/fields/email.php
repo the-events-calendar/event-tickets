@@ -40,6 +40,6 @@ $email = apply_filters( 'tribe_tickets_rsvp_form_email', '', $this );
 		value="<?php echo esc_attr( $email ); ?>"
 		required
 		aria-required="true"
-		placeholder="<?php esc_attr_e( 'john@doe.com', 'event-tickets' ); ?>"
+		placeholder="<?php esc_attr_e( 'your@email.com', 'event-tickets' ); ?>"
 	>
 </div>
