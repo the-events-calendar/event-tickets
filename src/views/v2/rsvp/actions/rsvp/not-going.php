@@ -4,7 +4,7 @@
  * Actions - RSVP - Not Going
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/rsvp/actions/rsvp/going.php
+ * [your-theme]/tribe/tickets/v2/rsvp/actions/rsvp/not-going.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
