@@ -32,7 +32,7 @@ $remaining_tickets = $rsvp->remaining();
  */
 $threshold = absint( apply_filters( 'tribe_display_rsvp_block_tickets_left_threshold', $threshold, tribe_events_get_ticket_event( $rsvp ) ) );
 
-if ( 0 !== $threshold && $remaining_tickets > $threshold ) {
+if ( 0 !== $threshold && $threshold < $remaining_tickets ) {
 	return;
 }
 
