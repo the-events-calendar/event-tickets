@@ -19,7 +19,7 @@ $field      = (array) $field;
 $multiline  = isset( $field['extra'] ) && isset( $field['extra']['multiline'] ) ? $field['extra']['multiline'] : '';
 $disabled   = false;
 
-$classes    = [
+$classes = [
 	'tribe-common-b1',
 	'tribe-tickets__form-field',
 	'tribe-tickets__form-field--required' => $required,
