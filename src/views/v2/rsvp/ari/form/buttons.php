@@ -7,6 +7,8 @@
  *
  * @since TBD
  *
+ * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
+ *
  * @version TBD
  */
 

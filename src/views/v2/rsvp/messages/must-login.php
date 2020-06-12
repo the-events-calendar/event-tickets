@@ -12,6 +12,7 @@
  *
  * @var bool   $must_login Whether the user has to login to RSVP or not.
  * @var string $login_url The login URL.
+ * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
  * @since TBD
  *

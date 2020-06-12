@@ -10,6 +10,8 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
+* @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
+ *
  * @since TBD
  * @version TBD
  */
