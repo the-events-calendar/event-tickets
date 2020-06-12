@@ -4,7 +4,7 @@
  * ARI Form
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/rsvp/ari/sidebar.php
+ * [your-theme]/tribe/tickets/v2/rsvp/ari/form.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
@@ -15,15 +15,13 @@
  * @version TBD
  */
 
+$meta   = Tribe__Tickets_Plus__Main::instance()->meta();
+$fields = $meta->get_meta_fields_by_ticket( $rsvp->ID );
 ?>
 <div class="tribe-tickets__rsvp-ar-form">
 
 	<?php $this->template( 'v2/rsvp/ari/form/title', [ 'rsvp' => $rsvp ] ); ?>
 
-	<?php
-	$meta   = Tribe__Tickets_Plus__Main::instance()->meta();
-	$fields = $meta->get_meta_fields_by_ticket( $rsvp->ID );
-	?>
 	<div class="tribe-tickets__form">
 		<?php foreach ( $fields as $field ) : ?>
 			<?php
