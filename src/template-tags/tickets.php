@@ -1615,12 +1615,13 @@ if ( ! function_exists( 'tribe_tickets_ar_field_name' ) ) {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id The ticket ID.
+	 * @param int    $ticket_id  The ticket ID.
+	 * @param string $field_slug The field slug.
 	 *
 	 * @return string The AR field name.
 	 */
-	function tribe_tickets_ar_field_name( $ticket_id ) {
-		return esc_attr( 'tribe-tickets-meta[' . $ticket_id . '][{{data.attendee_id}}][' . $slug . ']' );
+	function tribe_tickets_ar_field_name( $ticket_id, $field_slug ) {
+		return 'tribe-tickets-meta[' . $ticket_id . '][{{data.attendee_id}}][' . $field_slug . ']';
 	}
 }
 
@@ -1644,6 +1645,6 @@ if ( ! function_exists( 'tribe_tickets_ar_field_id' ) ) {
 			$field_id .= "_{$option_slug}";
 		}
 
-		return esc_attr( $field_id );
+		return $field_id;
 	}
 }
