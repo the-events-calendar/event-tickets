@@ -19,4 +19,6 @@
 <button
 	type="button"
 	class="tribe-tickets__rsvp-ar-quantity-input-number tribe-tickets__rsvp-ar-quantity-input-number--minus"
-></button>
+>
+	<span class="tribe-common-a11y-hidden"><?php esc_html_e( 'Minus', 'event-tickets' ); ?></span>
+</button>
