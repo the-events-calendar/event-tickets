@@ -14,7 +14,7 @@
  * @version TBD
  */
 
-$step = ! empty( $_GET[ 'step' ] ) ? sanitize_text_field( $_GET[ 'step' ] ) : '';
+$step = sanitize_text_field( tribe_get_request_var( 'step', '' ) );
 ?>
 <div class="tribe-tickets__rsvp-actions-wrapper tribe-common-g-col">
 	<div class="tribe-tickets__rsvp-actions">
