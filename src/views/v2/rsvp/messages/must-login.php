@@ -25,7 +25,7 @@ if ( ! $must_login ) {
 
 ?>
 <div class="tribe-tickets__rsvp-message tribe-tickets__rsvp-message--must-login tribe-common-b3">
-	<em class="tribe-common-svgicon tribe-tickets__rsvp-message--must-login-icon"></em>
+	<?php $this->template( 'v2/components/icons/error', [ 'classes' => [ 'tribe-tickets__rsvp-message--must-login-icon' ] ] ); ?>
 
 	<span class="tribe-tickets__rsvp-message-text">
 		<strong>

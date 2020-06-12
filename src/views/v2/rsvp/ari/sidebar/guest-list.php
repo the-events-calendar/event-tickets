@@ -14,7 +14,7 @@
 <ul class="tribe-tickets__rsvp-ar-guest-list tribe-common-h6">
 	<li class="tribe-tickets__rsvp-ar-guest-list-item">
 		<button>
-			<em class="tribe-common-svgicon tribe-common-svgicon--guest"></em>
+			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon' ] ] ); ?>
 			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-common-a11y-visual-hide">
 				<?php
 				echo wp_kses_post(
@@ -30,7 +30,7 @@
 	</li>
 	<li class="tribe-tickets__rsvp-ar-guest-list-item">
 		<button>
-			<em class="tribe-common-svgicon tribe-common-svgicon--guest-disabled"></em>
+			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon--disabled' ] ] ); ?>
 			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-common-a11y-visual-hide">
 				<?php
 				echo wp_kses_post(
@@ -46,7 +46,7 @@
 	</li>
 	<li class="tribe-tickets__rsvp-ar-guest-list-item">
 		<button>
-			<em class="tribe-common-svgicon tribe-common-svgicon--guest-disabled"></em>
+			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon--disabled' ] ] ); ?>
 			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-common-a11y-visual-hide">
 				<?php
 				echo wp_kses_post(

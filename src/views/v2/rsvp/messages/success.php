@@ -24,7 +24,7 @@ if ( 'success' !== $step ) {
 }
 ?>
 <div class="tribe-tickets__rsvp-message tribe-tickets__rsvp-message--success tribe-common-b3">
-	<em class="tribe-common-svgicon tribe-tickets__rsvp-message--success-icon"></em>
+	<?php $this->template( 'v2/components/icons/paper-plane', [ 'classes' => [ 'tribe-tickets__rsvp-message--success-icon' ] ] ); ?>
 
 	<span class="tribe-tickets__rsvp-message-text">
 		<strong>
