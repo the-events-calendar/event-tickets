@@ -3002,9 +3002,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Given a provider (class module) string, get its class instance if active.
+		 * Given a provider string (class module name or slug), get its class instance if an active module.
 		 *
-		 * @param Tribe__Tickets__Tickets|string $provider Example: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main'
+		 * @param Tribe__Tickets__Tickets|string $provider Examples: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
+		 *                                                 'woo', 'rsvp', etc.
 		 *
 		 * @return self|false Instance of child class (if confirmed active) or False if provider is not active.
 		 */
@@ -3013,9 +3014,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
-			if( $provider instanceof self ) {
+			if ( $provider instanceof self ) {
 				return $provider;
 			}
+
+			/** @var Tribe__Tickets__Status__Manager $status */
+			$status = tribe( 'tickets.status' );
+
+			$provider = $status->get_provider_class_from_slug( $provider );
 
 			$instance = tribe_get_class_instance( $provider );
 
