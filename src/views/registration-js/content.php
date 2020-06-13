@@ -18,7 +18,7 @@
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
-$events = (array) $this->get( 'events' );
+$events   = (array) $this->get( 'events' );
 
 if ( empty( $provider ) ) {
 	$event_keys   = array_keys( $events );
@@ -94,7 +94,7 @@ $classes        = [
 						'event-tickets'
 					),
 					'<span class="tribe-tickets__notice--error__count">1</span>'
-				)
+				),
 			]
 		);
 

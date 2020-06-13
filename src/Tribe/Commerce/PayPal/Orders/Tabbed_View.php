@@ -31,8 +31,8 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 	 * @param WP_Post            $post
 	 */
 	public function register_orders_tab( Tribe__Tabbed_View $tabbed_view, WP_Post $post ) {
-		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post->ID );
-		$not_using_paypal = ! $provider instanceof Tribe__Tickets__Commerce__PayPal__Main;
+		$provider              = Tribe__Tickets__Tickets::get_event_ticket_provider( $post->ID );
+		$not_using_paypal      = ! $provider instanceof Tribe__Tickets__Commerce__PayPal__Main;
 		$has_no_paypal_tickets = $not_using_paypal ? true : count( $provider->get_tickets_ids( $post ) ) === 0;
 
 		if ( $not_using_paypal && $has_no_paypal_tickets ) {

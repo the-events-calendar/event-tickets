@@ -243,7 +243,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			$provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider_name );
 		}
 
-		if ( empty( $provider)  ) {
+		if ( empty( $provider ) ) {
 			return new WP_Error(
 				'bad_request',
 				__( 'Commerce Module invalid', 'event-tickets' ),

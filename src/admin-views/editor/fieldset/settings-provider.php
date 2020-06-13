@@ -83,7 +83,7 @@ $fieldset_class = $multiple_modules ? 'input_block' : 'screen-reader-text';
 	<input
 		type="hidden"
 		name="tribe-tickets[settings][default_provider]"
-		value="<?php echo esc_attr( $default_module_class ) ?>"
+		value="<?php echo esc_attr( $default_module_class ); ?>"
 		class="tribe-ticket-editor-field-default_provider settings_field ticket_field"
 	>
 <?php endif;

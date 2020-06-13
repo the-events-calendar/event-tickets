@@ -4,7 +4,11 @@ if ( ! isset( $post_id ) ) {
 	$post_id = get_the_ID();
 }
 $validation_attrs = [
-	'data-validation-error="' . esc_attr( sprintf( _x( '%s price must be greater than zero.', 'ticket price validation error', 'event-tickets' ), tribe_get_ticket_label_singular( 'ticket_price_validation_error' ) ) ) . '"',
+	'data-validation-error="' . esc_attr( sprintf(
+		// Translators: %s: singular version of the Ticket label.
+		_x( '%s price must be greater than zero.', 'ticket price validation error', 'event-tickets' ),
+		tribe_get_ticket_label_singular( 'ticket_price_validation_error' )
+	) ) . '"'
 ];
 
 $provider          = null;
@@ -111,7 +115,7 @@ if ( ! isset( $ticket_id ) ) {
 		}
 		?>
 		<div class="input_block">
-			<label for="ticket_sale_price" class="ticket_form_label ticket_form_left"><?php echo $sale_price_label; ?></label>
+			<label for="ticket_sale_price" class="ticket_form_label ticket_form_left"><?php echo esc_html( $sale_price_label ); ?></label>
 			<input
 				type="text"
 				id="ticket_sale_price"
@@ -121,7 +125,7 @@ if ( ! isset( $ticket_id ) ) {
 				value="<?php echo esc_attr( $sale_price ); ?>"
 				readonly
 			/>
-			<p class="description ticket_form_right"><?php echo $sale_price_desc; ?></p>
+			<p class="description ticket_form_right"><?php echo esc_html( $sale_price_desc ); ?></p>
 		</div>
 	<?php endif; ?>
 	</div>

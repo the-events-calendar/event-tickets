@@ -955,7 +955,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		// Sensible information should not be shown to everyone
 		if ( $has_manage_access ) {
 			$attendee_data = array_merge(
-				$attendee_data, [
+				$attendee_data,
+				[
 					'provider'        => $this->get_provider_slug( $provider ),
 					'order'           => $attendee_order_id,
 					'sku'             => $this->get_attendee_sku( $attendee_id, $attendee_order_id, $provider ),

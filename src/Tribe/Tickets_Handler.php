@@ -344,7 +344,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @since  4.6.2
 	 * @since  TBD Use new helper methods for getting provider, including accounting for possibly inactive provider.
 	 *
-	 * @param int|WP_Post $object Which object you are trying to figure out
+	 * @param int|WP_Post $object Which object you are trying to figure out.
 	 *
 	 * @return object
 	 */

@@ -171,9 +171,8 @@ class Tribe__Tickets__Status__Manager {
 		}
 
 		$filtered_statuses = wp_list_filter(
-			$this->statuses[ $commerce ]->statuses, [
-				'trigger_option' => true,
-			]
+			$this->statuses[ $commerce ]->statuses,
+			[ 'trigger_option' => true ]
 		);
 
 		foreach ( $filtered_statuses as $status ) {
@@ -216,9 +215,10 @@ class Tribe__Tickets__Status__Manager {
 			}
 			$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, $criteria, $operator );
 		} else {
-			$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, [
-				$action => true,
-			] );
+			$filtered_statuses = wp_list_filter(
+				$this->statuses[ $commerce ]->statuses,
+				[ $action => true ]
+			);
 		}
 
 		foreach ( $filtered_statuses as $status ) {
@@ -338,9 +338,8 @@ class Tribe__Tickets__Status__Manager {
 		$abbreviated_name = $this->get_provider_slug( $provider_name );
 
 		$filtered_statuses = wp_list_filter(
-			$this->statuses[ $abbreviated_name ]->statuses, [
-				'count_completed' => true,
-			]
+			$this->statuses[ $abbreviated_name ]->statuses,
+			[ 'count_completed' => true ]
 		);
 
 

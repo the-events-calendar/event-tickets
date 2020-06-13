@@ -2225,7 +2225,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @param self|string $provider Example: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main'
+		 * @param self|string $provider Examples: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main', 'woo', 'rsvp', etc.
 		 *
 		 * @return string The meta key or an empty string if passed an invalid or inactive ticket provider.
 		 */
@@ -3004,8 +3004,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Given a provider string (class module name or slug), get its class instance if an active module.
 		 *
-		 * @param Tribe__Tickets__Tickets|string $provider Examples: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
-		 *                                                 'woo', 'rsvp', etc.
+		 * @param self|string $provider Examples: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main', 'woo', 'rsvp', etc.
 		 *
 		 * @return self|false Instance of child class (if confirmed active) or False if provider is not active.
 		 */

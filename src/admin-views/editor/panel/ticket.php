@@ -30,7 +30,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 $default_module_class = empty( $default_module ) ? '' : $default_module->class_name;
 ?>
 
-<div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true" data-default-provider="<?php echo esc_attr( $default_module_class ) ?>">
+<div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true" data-default-provider="<?php echo esc_attr( $default_module_class ); ?>">
 	<?php
 	/**
 	 * Allows for the insertion of additional elements into the main ticket edit panel.
