@@ -5,29 +5,35 @@ if ( ! isset( $post_id ) ) {
 	$post_id = get_the_ID();
 }
 
+$provider       = null;
+$provider_class = null;
+$ticket         = null;
+
 if ( ! isset( $ticket_id ) ) {
-	$provider = null;
-	$provider_class = null;
 	$ticket_id = null;
-	$ticket = null;
 
 	if ( ! $is_admin ) {
-		$provider_class = 'Tribe__Tickets__Commerce__PayPal__Main';
+		$provider_class = Tribe__Tickets__Tickets::get_default_module();
 	}
 } else {
 	$provider = tribe_tickets_get_ticket_provider( $ticket_id );
-	$provider_class = get_class( $provider );
-	$ticket = $provider->get_ticket( $post_id, $ticket_id );
+
+	if ( ! empty( $provider ) ) {
+		$provider_class = $provider->class_name;
+
+		$ticket = $provider->get_ticket( $post_id, $ticket_id );
+	}
 }
 
 $modules = Tribe__Tickets__Tickets::modules();
-$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+
+$default_module_class = empty( $default_module ) ? '' : $default_module->class_name;
 ?>
 
-<div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true" data-default-provider="<?php echo esc_attr( $default_provider ) ?>">
+<div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true" data-default-provider="<?php echo esc_attr( $default_module_class ) ?>">
 	<?php
 	/**
-	 * Allows for the insertion of additional elements into the main ticket edit panel
+	 * Allows for the insertion of additional elements into the main ticket edit panel.
 	 *
 	 * @since 4.6
 	 *
@@ -156,7 +162,7 @@ $default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id
 							value="<?php echo esc_attr( $class ); ?>"
 							class="ticket_field ticket_provider"
 							tabindex="-1"
-							<?php checked( true, $provider_class ? $provider_class === $class : false ); ?>
+							<?php checked( true, $provider_class === $class ); ?>
 						>
 						<span>
 							<?php

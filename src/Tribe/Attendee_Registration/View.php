@@ -32,6 +32,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 * Render the Attendee Info shortcode.
 	 *
 	 * @since 4.12.0
+	 * @since TBD Get provider slug more consistently.
 	 *
 	 * @return string The resulting template content
 	 */
@@ -55,16 +56,16 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		foreach ( $tickets_in_cart as $ticket_id => $quantity ) {
 			// Load the tickets in cart for each event, with their ID, quantity and provider.
-			$ticket = tribe( 'tickets.handler' )->get_object_connections( $ticket_id );
 
-			// If we've got a provider and it doesn't match, skip the ticket
-			if ( empty( $ticket->provider ) ) {
+			/** @var Tribe__Tickets__Tickets_Handler $handler */
+			$handler = tribe( 'tickets.handler' );
+			$ticket  = $handler->get_object_connections( $ticket_id );
+
+			if ( ! $ticket->provider instanceof Tribe__Tickets__Tickets ) {
 				continue;
 			}
 
-			$ticket_providers = [
-				$ticket->provider->attendee_object,
-			];
+			$ticket_providers = [ $ticket->provider->attendee_object ];
 
 			if ( ! empty( $ticket->provider->orm_provider ) ) {
 				$ticket_providers[] = $ticket->provider->orm_provider;
@@ -97,19 +98,9 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 				$default_provider[ $q_provider ] = $ticket->provider->class_name;
 			}
 
-			switch ( $ticket->provider->class_name ) {
-				case 'Tribe__Tickets__Commerce__PayPal__Main':
-					$provider = 'tpp';
-					break;
-				case 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main':
-					$provider = 'woo';
-					break;
-				case 'Tribe__Tickets_Plus__Commerce__EDD__Main':
-					$provider = 'edd';
-					break;
-				default:
-					break;
-			}
+			/** @var Tribe__Tickets__Status__Manager $status */
+			$status   = tribe( 'tickets.status' );
+			$provider = $status->get_provider_slug( $ticket->provider->class_name );
 
 			$providers[ $ticket->event ] = $provider;
 			$events[ $ticket->event ][]  = $ticket_data;
@@ -229,8 +220,10 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 * Get the cart provider class/object.
 	 *
 	 * @since 4.11.0
+	 * @since TBD Run filterable object through
 	 *
 	 * @param string $provider A string indicating the desired provider.
+	 *
 	 * @return boolean|object The provider object or boolean false if none found.
 	 */
 	public function get_cart_provider( $provider ) {
@@ -245,32 +238,41 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 *
 		 * @since 4.11.0
 		 *
-		 * @return boolean|object The provider object or boolean false if none found above.
 		 * @param string $provider A string indicating the desired provider.
+		 *
+		 * @return boolean|object The provider object or boolean false if none found above.
 		 */
 		$provider_obj = apply_filters( 'tribe_attendee_registration_cart_provider', $provider_obj, $provider );
+
+		if (
+			! $provider_obj instanceof Tribe__Tickets__Tickets
+			|| tribe_tickets_is_provider_active( $provider_obj )
+		) {
+			$provider_obj = false;
+		}
 
 		return $provider_obj;
 	}
 
 	/**
-	 * Given a provider, get the class to be applied to the attendee registration form
+	 * Given a provider, get the class to be applied to the attendee registration form.
+	 *
 	 * @since 4.10.4
+	 * @since TBD Consolidate getting provider.
 	 *
 	 * @param string|Tribe__Tickets__Tickets $provider The provider/attendee object name indicating ticket provider.
 	 *
-	 * @return string the class string or empty string if provider not found
+	 * @return string The class string or empty string if provider not found or not active.
 	 */
 	public function get_form_class( $provider ) {
 		$class = '';
 
-		if ( is_object( $provider ) ) {
-			if ( $provider instanceof Tribe__Tickets__Tickets ) {
-				$provider = $provider->attendee_object;
-			} else {
-				// Use the no provider return below.
-				$provider = false;
-			}
+		if ( is_string( $provider ) ) {
+			$provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider );
+		}
+
+		if ( ! empty( $provider ) ) {
+			$provider = $provider->attendee_object;
 		}
 
 		if ( empty( $provider ) ) {
@@ -289,7 +291,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 *
 		 * @since 4.10.4
 		 *
-		 * @param array $provider_classes in format $provider -> class suffix.
+		 * @param array $provider_classes In the format of: $provider -> class suffix.
 		 */
 		$provider_classes = apply_filters( 'tribe_attendee_registration_form_classes', [] );
 

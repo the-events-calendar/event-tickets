@@ -59,6 +59,12 @@ class Tribe__Tickets__Commerce__Currency {
 	public function filter_currency_symbol( $unused_currency_symbol, $post_id = null ) {
 		$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 
+		if ( empty( $default_provider ) ) {
+			$default_provider = '';
+		} else {
+			$default_provider = $default_provider->class_name;
+		}
+
 		return $this->get_provider_symbol( $default_provider, $post_id );
 	}
 
@@ -72,6 +78,12 @@ class Tribe__Tickets__Commerce__Currency {
 	 */
 	public function filter_currency_cost( $cost = '', $post_id = 0 ) {
 		$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+
+		if ( empty( $default_provider ) ) {
+			$default_provider = '';
+		} else {
+			$default_provider = $default_provider->class_name;
+		}
 
 		return $this->get_provider_cost( $default_provider, $cost );
 	}
@@ -393,6 +405,12 @@ class Tribe__Tickets__Commerce__Currency {
 
 		if ( $single ) {
 			$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $object_id );
+
+			if ( empty( $default_provider ) ) {
+				$default_provider = '';
+			} else {
+				$default_provider = $default_provider->class_name;
+			}
 
 			switch ( $meta_key ) {
 				case '_EventCurrencySymbol':

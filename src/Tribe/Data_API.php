@@ -42,8 +42,7 @@ class Tribe__Tickets__Data_API {
 			}
 			$types['attendee'] = constant( "$module_class::ATTENDEE_OBJECT" );
 
-			$this->ticket_class[ $module_class ] = array();
-
+			$this->ticket_class[ $module_class ] = [];
 
 			foreach ( $types as $key => $value ) {
 				$this->ticket_types[ $key ][]                = $value;

@@ -539,10 +539,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public static function load_ticket_object( $ticket_id ) {
 			foreach ( self::modules() as $provider_class => $name ) {
-				$provider = call_user_func( [ $provider_class, 'get_instance' ] );
-				$event    = $provider->get_event_for_ticket( $ticket_id );
+				$provider = static::get_ticket_provider_instance( $provider_class );
 
-				if ( ! $event ) {
+				if ( empty( $provider ) ) {
+					continue;
+				}
+
+				$event = $provider->get_event_for_ticket( $ticket_id );
+
+				if ( empty( $event ) ) {
 					continue;
 				}
 
@@ -630,10 +635,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function get_tickets( $post_id ) {
 			$default_provider = static::get_event_ticket_provider( $post_id );
 
+			if ( empty( $default_provider ) ) {
+				return [];
+			}
+
 			// If the post's provider doesn't match.
 			if (
 				! is_admin()
-				&& $this->class_name !== $default_provider
+				&& $this->class_name !== $default_provider->class_name
 			) {
 				return [];
 			}
@@ -916,9 +925,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * (it may contain the user selected currency, etc)
 		 *
 		 * @param object|int $product
+		 * @param array|boolean $attendee
+		 *
 		 * @return string
 		 */
-		public function get_price_html( $product ) {
+		public function get_price_html( $product, $attendee = false ) {
 			return '';
 		}
 
@@ -1304,11 +1315,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				/** @var Tribe__Tickets__Tickets $provider */
 				$provider = tribe_tickets_get_ticket_provider( $attendee );
 
-				// Could be `false` or ticket type could be for a disabled commerce provider.
-				if (
-					empty( $provider )
-					|| ! array_key_exists( $provider->class_name, static::modules() )
-				) {
+				// Could be `false`, such as ticket for a disabled commerce provider.
+				if ( empty( $provider ) ) {
 					continue;
 				}
 
@@ -2211,6 +2219,45 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 		}
 
+
+		/**
+		 * Given a ticket provider, get its Attendee Optout Meta Key from its class property (or constant if legacy).
+		 *
+		 * @since TBD
+		 *
+		 * @param self|string $provider Example: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main'
+		 *
+		 * @return string The meta key or an empty string if passed an invalid or inactive ticket provider.
+		 */
+		public static function get_attendee_optout_key( $provider ) {
+			$provider = static::get_ticket_provider_instance( $provider );
+
+			if ( empty( $provider ) ) {
+				return '';
+			}
+
+			/**
+			 * Not all classes have this static method.
+			 *
+			 * @see \Tribe__Tickets__Commerce__PayPal__Main::get_key() Does have this static method.
+			 */
+			if ( method_exists( $provider, 'get_key' ) ) {
+				$key = $provider::get_key( 'attendee_optout_key' );
+			}
+
+			if ( ! empty( $key ) ) {
+				return $key;
+			}
+
+			if ( ! empty( $provider->attendee_optout_key ) ) {
+				return $provider->attendee_optout_key;
+			}
+
+			$key = constant( "{$provider->class_name}::ATTENDEE_OPTOUT_KEY" );
+
+			return (string) $key;
+		}
+
 		/**
 		 * Returns the meta key used to link attendees with the base event.
 		 *
@@ -2951,7 +2998,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
-			return self::get_ticket_provider_instance( $provider );
+			return static::get_ticket_provider_instance( $provider );
 		}
 
 		/**

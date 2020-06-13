@@ -1,17 +1,20 @@
 <?php
 $post_id = get_the_ID();
 
-// Go ahead and get the necessary values
-// Set up default provider
-$modules        = Tribe__Tickets__Tickets::modules();
+// Go ahead and get the necessary values.
+// Set up default provider.
+$modules = Tribe__Tickets__Tickets::modules();
+
 $default_module = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+
+$default_module_class = empty( $default_module ) ? '' : $default_module->class_name;
 
 // We don't need this one here - RSVP and tickets are different now.
 unset( $modules['Tribe__Tickets__RSVP'] );
 
 $multiple_modules = 1 < count( $modules );
-// we use 'screen-reader-text' to hide it if there really aren't any choices
-$fieldset_class   = $multiple_modules ? 'input_block' : 'screen-reader-text';
+// We use 'screen-reader-text' to hide it if there really aren't any choices.
+$fieldset_class = $multiple_modules ? 'input_block' : 'screen-reader-text';
 ?>
 
 <?php if ( tribe_is_truthy( tribe_get_request_var( 'is_admin', true ) ) ) : ?>
@@ -53,7 +56,7 @@ $fieldset_class   = $multiple_modules ? 'input_block' : 'screen-reader-text';
 				<?php foreach ( $modules as $class => $module ) : ?>
 					<label class="ticket_form_right" for="provider_<?php echo esc_attr( $class . '_radio' ); ?>">
 						<input
-							<?php checked( $default_module, $class ); ?>
+							<?php checked( $default_module_class, $class ); ?>
 							type="radio"
 							name="tribe-tickets[settings][default_provider]"
 							id="provider_<?php echo esc_attr( $class . '_radio' ); ?>"
@@ -80,7 +83,7 @@ $fieldset_class   = $multiple_modules ? 'input_block' : 'screen-reader-text';
 	<input
 		type="hidden"
 		name="tribe-tickets[settings][default_provider]"
-		value="<?php echo $default_module ?>"
+		value="<?php echo esc_attr( $default_module_class ) ?>"
 		class="tribe-ticket-editor-field-default_provider settings_field ticket_field"
 	>
 <?php endif;

@@ -40,26 +40,20 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		// Prevent the render when the ID of the post has not being set to a correct value
 		if ( $args['post_id'] === null ) {
-			return;
+			return '';
 		}
 
 		// Fetch the default provider
 		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
-		if ( ! class_exists( $provider ) ) {
-			return;
+		if ( empty( $provider ) ) {
+			return '';
 		}
 
-		// No need to handle RSVPs here
-		if ( 'Tribe__Tickets__RSVP' === $provider ) {
-			return;
+		// No need to handle RSVPs here.
+		if ( 'Tribe__Tickets__RSVP' === $provider->class_name ) {
+			return '';
 		}
 
-		// If Provider is not active return
-		if ( ! array_key_exists( $provider, Tribe__Tickets__Tickets::modules() ) ) {
-			return;
-		}
-
-		$provider    = call_user_func( [ $provider, 'get_instance' ] );
 		$provider_id = $this->get_provider_id( $provider );
 		$tickets     = $this->get_tickets( $post_id );
 

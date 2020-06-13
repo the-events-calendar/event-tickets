@@ -195,6 +195,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			unset( parent::$active_modules['Tribe__Tickets__Commerce__PayPal__Main'] );
 		}
 
+		/** @var Tribe__Tickets__Commerce__PayPal__Tickets_View tickets_view */
 		$this->tickets_view = tribe( 'tickets.commerce.paypal.view' );
 
 		$this->register_resources();
@@ -1961,7 +1962,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @since 4.7
 	 *
 	 * @param int|object $product
-	 * @param array $attendee
+	 * @param array|boolean $attendee
 	 *
 	 * @return string
 	 */
