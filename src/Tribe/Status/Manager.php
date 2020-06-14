@@ -385,7 +385,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @param string $module The string of the module main class name or its slug.
 	 *
-	 * @return string|false
+	 * @return string|false Provider slug or false if not found.
 	 */
 	public function get_provider_slug( $module ) {
 		$slugs_to_classes = array_flip( $this->module_slugs );
@@ -412,7 +412,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @param string $slug The string of the slug or its module main class name.
 	 *
-	 * @return string|false
+	 * @return string|false Provider class name or false if not found.
 	 */
 	public function get_provider_class_from_slug( $slug ) {
 		$slugs_to_classes = array_flip( $this->module_slugs );
