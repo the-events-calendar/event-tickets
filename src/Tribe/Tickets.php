@@ -3009,7 +3009,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return self|false Instance of child class (if confirmed active) or False if provider is not active.
 		 */
 		public static function get_ticket_provider_instance( $provider ) {
-			if ( empty( tribe_tickets_is_provider_active( $provider ) ) ) {
+			$is_provider_active = tribe_tickets_is_provider_active( $provider );
+
+			if ( empty( $is_provider_active ) ) {
 				return false;
 			}
 
