@@ -416,6 +416,15 @@ class Tribe__Tickets__Tickets_Handler {
 			],
 		];
 
+		/**
+		 * Allow filtering the relationships so providers can add their own strings.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $relationships List of relationship information for providers.
+		 */
+		 $relationships = apply_filters( 'tribe_tickets_handler_relationships', $relationships );
+
 		foreach ( $relationships as $what => $keys ) {
 			foreach ( $keys as $key => $provider_slug ) {
 				// Skip any key that doesn't exist.
