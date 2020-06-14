@@ -3220,6 +3220,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			];
 		}
 
+		/**
+		 * Return the string representation of this provider class as the class name for backwards compatibility.
+		 *
+		 * @since TBD
+		 *
+		 * @return string The class name.
+		 */
+		public function __toString() {
+			return $this->class_name;
+		}
+
 		/************************
 		 *                      *
 		 *  Deprecated Methods  *
