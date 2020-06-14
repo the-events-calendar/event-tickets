@@ -220,7 +220,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 * Get the cart provider class/object.
 	 *
 	 * @since 4.11.0
-	 * @since TBD Run filterable object through
+	 * @since TBD Check if provider is a proper object and is active.
 	 *
 	 * @param string $provider A string indicating the desired provider.
 	 *
@@ -246,7 +246,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		if (
 			! $provider_obj instanceof Tribe__Tickets__Tickets
-			|| tribe_tickets_is_provider_active( $provider_obj )
+			|| ! tribe_tickets_is_provider_active( $provider_obj )
 		) {
 			$provider_obj = false;
 		}
