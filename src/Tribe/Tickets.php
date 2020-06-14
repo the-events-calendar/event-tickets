@@ -937,7 +937,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Returns instance of the child class (singleton)
+		 * Returns instance of the child class (singleton).
 		 *
 		 * @static
 		 *
@@ -2921,7 +2921,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Get the saved or default ticket provider
+		 * Get the saved or default ticket provider.
 		 *
 		 * @since 4.7
 		 *
@@ -2945,9 +2945,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// otherwise just return the default
 			return self::get_default_module();
 		}
-
-		// @codingStandardsIgnoreEnd
-
 
 		/**
 		 * Get currency symbol
@@ -3124,18 +3121,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 4.11.0
 		 *
-		 * @return void
+		 * @return array
 		 */
 		public static function set_messages() {
-			$messages = [
+			return [
 				'api_error_title'        => _x( 'API Error', 'Error message title, will be followed by the error code.', 'event-tickets' ),
 				'connection_error'       => __( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.', 'event-tickets' ),
 				'capacity_error'         => __( 'The ticket for this event has sold out and has been removed from your cart.', 'event-tickets' ),
 				'validation_error_title' => __( 'Whoops!', 'event-tickets' ),
 				'validation_error'       => '<p>' . sprintf( esc_html_x( 'You have %s ticket(s) with a field that requires information.', 'The %s will change based on the error produced.', 'event-tickets' ), '<span class="tribe-tickets__notice--error__count">0</span>' ) . '</p>',
 			];
-
-			return $messages;
 		}
 
 		/************************
@@ -3204,5 +3199,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			_deprecated_function( __METHOD__, '4.6.2', 'wp_send_json_success()' );
 			wp_send_json_success( $data );
 		}
+
+		// @codingStandardsIgnoreEnd
 	}
 }
