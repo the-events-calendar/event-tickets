@@ -30,7 +30,7 @@ $classes     = [
 	<div <?php tribe_classes( $classes ); ?>>
 		<label
 			class="tribe-common-b2--min-medium tribe-tickets__form-field-label"
-			for="<?php echo esc_attr( $birth_field->month_id ); ?>"
+			for="<?php echo esc_attr( $field_id ); ?>"
 		><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 
 		<!-- Month -->
