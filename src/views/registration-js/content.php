@@ -121,7 +121,6 @@ $classes        = [
 
 			<?php foreach ( $events as $event_id => $tickets ) : ?>
 				<?php
-				$provider_obj  = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
 				$providers     = wp_list_pluck( $tickets, 'provider' );
 				$providers_arr = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
 
