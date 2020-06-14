@@ -11,7 +11,7 @@
  * @since   4.12.1   Set the notice as hidden by default. The JavaScript will show if needed.
  * @since   TBD Update for getting ticket provider now returning instance or False. Remove duplicate array property.
  *              Retrieve $is_meta_up_to_date in a manner consistent with other template variables. Moved `novalidate` from
- *              div to form, as it used to be. Array short syntax.
+ *              div to form, as it used to be. Implement short array syntax.
  *
  * @version TBD
  *
