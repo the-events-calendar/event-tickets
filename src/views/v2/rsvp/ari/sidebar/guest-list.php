@@ -17,7 +17,7 @@
 			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon' ] ] ); ?>
 			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-common-a11y-visual-hide">
 				<?php
-				echo wp_kses_post(
+				echo esc_html(
 					sprintf(
 						/* Translators: %s Guest label for RSVP attendee registration sidebar. */
 						__( 'Main %s', 'event-tickets' ),
@@ -33,7 +33,7 @@
 			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon--disabled' ] ] ); ?>
 			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-common-a11y-visual-hide">
 				<?php
-				echo wp_kses_post(
+				echo esc_html(
 					sprintf(
 						/* Translators: %s Guest label for RSVP attendee registration sidebar. */
 						__( '%s 2', 'event-tickets' ),
@@ -49,7 +49,7 @@
 			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon--disabled' ] ] ); ?>
 			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-common-a11y-visual-hide">
 				<?php
-				echo wp_kses_post(
+				echo esc_html(
 					sprintf(
 						/* Translators: %s Guest label for RSVP attendee registration sidebar. */
 						__( '%s 3', 'event-tickets' ),
