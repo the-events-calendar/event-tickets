@@ -24,5 +24,7 @@
 		class="tribe-common-c-btn tribe-tickets__rsvp-actions-button-going"
 		type="submit"
 		<?php tribe_disabled( $must_login ); ?>
-	><?php esc_html_e( 'Going', 'event-tickets' ); ?></button>
+	>
+		<?php esc_html_e( 'Going', 'event-tickets' ); ?>
+	</button>
 </div>
