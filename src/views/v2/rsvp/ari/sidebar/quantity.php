@@ -16,7 +16,7 @@
 <div class="tribe-tickets__rsvp-ar-quantity">
 	<span class="tribe-common-h7">
 		<?php
-		echo wp_kses_post(
+		echo esc_html(
 			sprintf(
 				/* Translators: %s Guest label for RSVP attendee registration sidebar title. */
 				__( 'Total %s', 'event-tickets' ),
