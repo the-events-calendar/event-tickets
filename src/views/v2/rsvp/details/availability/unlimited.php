@@ -17,16 +17,7 @@
 
 $is_unlimited = $this->get( 'is_unlimited' );
 
-/**
- * Allows hiding of "unlimited" to be toggled on/off conditionally.
- *
- * @param int   $show_unlimited allow showing of "unlimited".
- *
- * @since 4.11.1
- */
-$show_unlimited = apply_filters( 'tribe_rsvp_block_show_unlimited_availability', false, $is_unlimited );
-
-if ( empty( $show_unlimited ) ) {
+if ( empty( tribe( 'tickets.editor.blocks.rsvp' )->show_unlimited( $is_unlimited ) ) ) {
 	return;
 }
 

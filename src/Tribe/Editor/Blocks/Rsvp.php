@@ -178,6 +178,24 @@ extends Tribe__Editor__Blocks__Abstract {
 	}
 
 	/**
+	 * Show unlimited?
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $is_unlimited
+	 */
+	public function show_unlimited( $is_unlimited ) {
+		/**
+		 * Allows hiding of "unlimited" to be toggled on/off conditionally.
+		 *
+		 * @param int   $show_unlimited allow showing of "unlimited".
+		 *
+		 * @since 4.11.1
+		 */
+		return apply_filters( 'tribe_rsvp_block_show_unlimited_availability', false, $is_unlimited );
+	}
+
+	/**
 	 * Register block assets
 	 *
 	 * @since 4.9
