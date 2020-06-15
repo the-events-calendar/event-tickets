@@ -381,13 +381,17 @@ class Tribe__Tickets__Status__Manager {
 	 * Get the Provider Slug from the Module Class.
 	 *
 	 * @since 4.11.0
-	 * @since TBD Added support for passing slug (such as to confirm slug is valid).
+	 * @since TBD Added support for passing slug (such as to confirm slug is valid) and class instance.
 	 *
-	 * @param string $module The string of the module main class name or its slug.
+	 * @param string|Tribe__Tickets__Tickets $module The string of the module main class name, its slug, or instance.
 	 *
 	 * @return string|false Provider slug or false if not found.
 	 */
 	public function get_provider_slug( $module ) {
+		if ( $module instanceof Tribe__Tickets__Tickets ) {
+			$module = $module->class_name;
+		}
+
 		$slugs_to_classes = array_flip( $this->module_slugs );
 
 		// If already a slug (case-sensitive).
@@ -409,11 +413,15 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug The string of the slug or its module main class name.
+	 * @param string|Tribe__Tickets__Tickets $slug The string of the slug, its module main class name, or instance.
 	 *
 	 * @return string|false Provider class name or false if not found.
 	 */
 	public function get_provider_class_from_slug( $slug ) {
+		if ( $slug instanceof Tribe__Tickets__Tickets ) {
+			$slug = $slug->class_name;
+		}
+
 		// If already a class name (case-sensitive).
 		if ( array_key_exists( $slug, $this->module_slugs ) ) {
 			return $slug;
