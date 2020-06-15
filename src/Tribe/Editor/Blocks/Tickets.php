@@ -228,30 +228,29 @@ extends Tribe__Editor__Blocks__Abstract {
 	}
 
 	/**
-	 * Get provider ID
+	 * Get provider ID/slug.
 	 *
 	 * @since 4.9
+	 * @since TBD Retrieve slug from updated Ticktes Status Manager method.
 	 *
 	 * @param  Tribe__Tickets__Tickets $provider Provider class instance
 	 *
 	 * @return string
 	 */
 	public function get_provider_id( $provider ) {
+		/** @var Tribe__Tickets__Status__Manager $status */
+		$status = tribe( 'tickets.status' );
 
-		switch ( $provider->class_name ) {
-			case 'Tribe__Tickets__Commerce__PayPal__Main' :
-				return 'tpp';
-				break;
-			case 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' :
-				return 'woo';
-				break;
-			case 'Tribe__Tickets_Plus__Commerce__EDD__Main' :
-				return 'edd';
-				break;
-			default:
-				return 'tpp';
+		$slug = $status->get_provider_slug( $provider );
+
+		if (
+			empty( $slug )
+			|| 'rsvp' === $slug
+		) {
+			$slug = 'tpp';
 		}
 
+		return $slug;
 	}
 
 	/**
