@@ -912,7 +912,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Returns whether a given object has the correct Provider for a Post or Ticket
 	 *
-	 * @since   4.6.2
+	 * @since   4.7
 	 * @since   TBD Account for possibly inactive ticket provider and better checking for default ETP provider.
 	 *
 	 * @param int|WP_Post                    $post
@@ -929,7 +929,11 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
-		$provider_class = get_class( $provider );
+		$provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider );
+
+		if( empty( $provider ) ) {
+			return false;
+		}
 
 		if ( tribe_tickets_post_type_enabled( $post->post_type ) ) {
 			$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post->ID );
@@ -955,19 +959,7 @@ class Tribe__Tickets__Tickets_Handler {
 			$default_provider = Tribe__Tickets__Tickets::get_default_module();
 		}
 
-		if ( is_object( $default_provider ) ) {
-			$default_provider = get_class( $default_provider );
-		}
-
-		// get_class() may return false.
-		if (
-			! is_string( $provider_class )
-			|| ! is_string( $default_provider )
-		) {
-			return false;
-		}
-
-		return $default_provider === $provider_class;
+		return $default_provider === $provider->class_name;
 	}
 
 	/**

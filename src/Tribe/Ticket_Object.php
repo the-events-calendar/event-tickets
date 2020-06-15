@@ -1024,7 +1024,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public function get_event() {
 			$provider = $this->get_provider();
 
-			if ( null !== $provider ) {
+			if ( ! empty( $provider ) ) {
 				return $provider->get_event_for_ticket( $this->ID );
 			}
 

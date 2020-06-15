@@ -127,7 +127,7 @@ class Tribe__Tickets__Data_API {
 			return array();
 		}
 
-		$module_class = $services['class'];
+		$module_class = ! empty( $services['class'] ) ? $services['class'] : '';
 
 		/**
 		 * if we have a rsvp order with a unique rsvp order key
@@ -194,6 +194,10 @@ class Tribe__Tickets__Data_API {
 	 */
 	public function get_ticket_provider( $post_id ) {
 		$services = $this->detect_by_id( $post_id );
+
+		if( empty( $services['class'] ) ) {
+			return false;
+		}
 
 		return Tribe__Tickets__Tickets::get_ticket_provider_instance( $services['class'] );
 	}
@@ -360,7 +364,10 @@ class Tribe__Tickets__Data_API {
 	}
 
 	/**
-	 * Get attendee(s) from any id
+	 * Get attendee(s) from any id.
+	 *
+	 * @since 4.5
+	 * @since TBD Use new helper method to account for possibly inactive ticket provider.
 	 *
 	 * @param $post_id
 	 * @param $context
@@ -384,10 +391,16 @@ class Tribe__Tickets__Data_API {
 		if ( ! isset( $services['class'] ) && is_numeric( $post_id ) ) {
 			return Tribe__Tickets__Tickets::get_event_attendees( $post_id );
 		} elseif ( ! isset( $services['class'] ) && ! is_numeric( $post_id ) ) {
-			return array();
+			return [];
 		}
 
-		$provider = call_user_func( array( $services['class'], 'get_instance' ) );
+		if( ! empty( $services['class'] ) ) {
+			$provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $services['class'] );
+		}
+
+		if( empty( $provider ) ) {
+			return [];
+		}
 
 		return $provider->get_attendees_by_id( $post_id, $services['post_type'] );
 	}
