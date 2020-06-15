@@ -390,10 +390,9 @@ class Tribe__Tickets__Status__Manager {
 	public function get_provider_slug( $module ) {
 		$slugs_to_classes = array_flip( $this->module_slugs );
 
-		// If already a slug.
-		$result = Tribe__Utils__Array::get( $slugs_to_classes, $module );
-		if ( ! empty( $result ) ) {
-			return $result;
+		// If already a slug (case-sensitive).
+		if ( array_key_exists( $module, $slugs_to_classes ) ) {
+			return $module;
 		}
 
 		// Get slug from class name.
@@ -415,13 +414,12 @@ class Tribe__Tickets__Status__Manager {
 	 * @return string|false Provider class name or false if not found.
 	 */
 	public function get_provider_class_from_slug( $slug ) {
-		$slugs_to_classes = array_flip( $this->module_slugs );
-
-		// If already a class name.
-		$result = Tribe__Utils__Array::get( $this->module_slugs, $slug );
-		if ( ! empty( $result ) ) {
-			return $result;
+		// If already a class name (case-sensitive).
+		if ( array_key_exists( $slug, $this->module_slugs ) ) {
+			return $slug;
 		}
+
+		$slugs_to_classes = array_flip( $this->module_slugs );
 
 		// Get class name from slug.
 		$result = Tribe__Utils__Array::get( $slugs_to_classes, $slug );
