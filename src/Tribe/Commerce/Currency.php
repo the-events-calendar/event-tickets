@@ -446,7 +446,10 @@ class Tribe__Tickets__Commerce__Currency {
 			return edd_currency_symbol();
 		}
 
-		if ( tribe( 'tickets.commerce.paypal' )->is_active() ) {
+		/** @var Tribe__Tickets__Commerce__PayPal__Main $tpp */
+		$tpp = tribe( 'tickets.commerce.paypal' );
+
+		if ( $tpp->is_active() ) {
 			return $this->get_currency_symbol( $object_id );
 		}
 
@@ -711,8 +714,8 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param string   $providers The ticket provider class name.
-	 * @param int|null $post_id   The id of the post with tickets.
+	 * @param array|string $providers The ticket provider class name.
+	 * @param int|null     $post_id   The id of the post with tickets.
 	 *
 	 * @return array
 	 */
