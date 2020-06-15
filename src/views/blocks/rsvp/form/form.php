@@ -20,11 +20,12 @@
 $ticket_id = $this->get( 'ticket_id' );
 $post_id   = $this->get( 'post_id' );
 $going     = $this->get( 'going' );
-$event_id  = $ticket_data->event;
 
 /** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 $tickets_handler = tribe( 'tickets.handler' );
 $ticket_data     = $handler->get_object_connections( $ticket_id );
+
+$event_id = $ticket_data->event;
 
 /** @var Tribe__Tickets__RSVP $rsvp */
 $rsvp       = tribe( 'tickets.rsvp' );
