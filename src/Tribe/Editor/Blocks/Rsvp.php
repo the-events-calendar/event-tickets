@@ -150,6 +150,34 @@ extends Tribe__Editor__Blocks__Abstract {
 	}
 
 	/**
+	 * Get the threshold.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id
+	 *
+	 * @return int
+	 */
+	public function get_threshold( $post_id = 0 ) {
+
+		/** @var Tribe__Settings_Manager $settings_manager */
+		$settings_manager = tribe( 'settings.manager' );
+		$threshold        = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
+
+		/**
+		 * Overwrites the threshold to display "# tickets left".
+		 *
+		 * @param int   $threshold Stock threshold to trigger display of "# tickets left"
+		 * @param int   $post_id  Event ID.
+		 *
+		 * @since 4.11.1
+		 */
+		$threshold = absint( apply_filters( 'tribe_display_rsvp_block_tickets_left_threshold', $threshold, $post_id ) );
+
+		return $threshold;
+	}
+
+	/**
 	 * Register block assets
 	 *
 	 * @since 4.9

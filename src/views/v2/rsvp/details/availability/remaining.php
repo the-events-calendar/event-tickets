@@ -11,28 +11,14 @@
  * @link  {INSERT_ARTICLE_LINK_HERE}
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
+ * @var int $threshold The threshold.
  *
  * @since TBD
  *
  * @version TBD
  */
 
-/** @var Tribe__Settings_Manager $settings_manager */
-$settings_manager = tribe( 'settings.manager' );
-
-$threshold         = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
 $remaining_tickets = $rsvp->remaining();
-
-/**
- * Overwrites the threshold to display "# tickets left".
- *
- * @param int   $threshold Stock threshold to trigger display of "# tickets left"
- * @param array $data      Ticket data.
- * @param int   $event_id  Event ID.
- *
- * @since 4.11.1
- */
-$threshold = absint( apply_filters( 'tribe_display_rsvp_block_tickets_left_threshold', $threshold, tribe_events_get_ticket_event( $rsvp ) ) );
 
 if ( 0 !== $threshold && $threshold < $remaining_tickets ) {
 	return;

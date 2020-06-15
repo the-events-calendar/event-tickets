@@ -1090,6 +1090,7 @@ class Tribe__Tickets__Tickets_View {
 			'has_active_rsvps' => ! empty( $active_tickets ),
 			'must_login'       => ! is_user_logged_in() && $rsvp->login_required(),
 			'login_url'        => Tribe__Tickets__Tickets::get_login_url( $post_id ),
+			'threshold'        => $blocks_rsvp->get_threshold( $post_id ),
 		];
 
 		// Add the rendering attributes into global context.
