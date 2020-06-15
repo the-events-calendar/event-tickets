@@ -11,7 +11,7 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
- * @var WP_Post|int $post The post object or ID.
+ * @var WP_Post|int $post_id The post object or ID.
  *
  * @since TBD
  *
@@ -30,7 +30,7 @@ $fields = $meta->get_meta_fields_by_ticket( $rsvp->ID );
 		<?php foreach ( $fields as $field ) : ?>
 			<?php
 				$args = [
-					'event_id'   => $post_id,
+					'post_id'    => $post_id,
 					'ticket'     => $rsvp,
 					'field'      => $field,
 					'value'      => null,
