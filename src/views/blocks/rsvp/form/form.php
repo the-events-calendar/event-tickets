@@ -23,7 +23,7 @@ $going     = $this->get( 'going' );
 
 /** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 $tickets_handler = tribe( 'tickets.handler' );
-$ticket_data     = $handler->get_object_connections( $ticket_id );
+$ticket_data     = $tickets_handler->get_object_connections( $ticket_id );
 
 $event_id = $ticket_data->event;
 
