@@ -16,7 +16,7 @@
  * @var Tribe__Tickets__Editor__Template $this
  */
 
-$event_id         = $this->get( 'post_id' );
+$post_id          = $this->get( 'post_id' );
 $rsvps            = $this->get( 'active_rsvps' );
 $has_active_rsvps = $this->get( 'has_active_rsvps' );
 $has_rsvps        = $this->get( 'has_rsvps' );
