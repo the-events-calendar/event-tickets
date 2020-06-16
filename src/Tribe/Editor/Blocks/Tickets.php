@@ -40,20 +40,26 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		// Prevent the render when the ID of the post has not being set to a correct value
 		if ( $args['post_id'] === null ) {
-			return '';
+			return;
 		}
 
 		// Fetch the default provider
 		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
-		if ( empty( $provider ) ) {
-			return '';
+		if ( ! class_exists( $provider ) ) {
+			return;
 		}
 
-		// No need to handle RSVPs here.
-		if ( 'Tribe__Tickets__RSVP' === $provider->class_name ) {
-			return '';
+		// No need to handle RSVPs here
+		if ( 'Tribe__Tickets__RSVP' === $provider ) {
+			return;
 		}
 
+		// If Provider is not active return
+		if ( ! array_key_exists( $provider, Tribe__Tickets__Tickets::modules() ) ) {
+			return;
+		}
+
+		$provider    = call_user_func( [ $provider, 'get_instance' ] );
 		$provider_id = $this->get_provider_id( $provider );
 		$tickets     = $this->get_tickets( $post_id );
 
@@ -228,29 +234,30 @@ extends Tribe__Editor__Blocks__Abstract {
 	}
 
 	/**
-	 * Get provider ID/slug.
+	 * Get provider ID
 	 *
 	 * @since 4.9
-	 * @since TBD Retrieve slug from updated Ticktes Status Manager method.
 	 *
 	 * @param  Tribe__Tickets__Tickets $provider Provider class instance
 	 *
 	 * @return string
 	 */
 	public function get_provider_id( $provider ) {
-		/** @var Tribe__Tickets__Status__Manager $status */
-		$status = tribe( 'tickets.status' );
 
-		$slug = $status->get_provider_slug( $provider );
-
-		if (
-			empty( $slug )
-			|| 'rsvp' === $slug
-		) {
-			$slug = 'tpp';
+		switch ( $provider->class_name ) {
+			case 'Tribe__Tickets__Commerce__PayPal__Main' :
+				return 'tpp';
+				break;
+			case 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' :
+				return 'woo';
+				break;
+			case 'Tribe__Tickets_Plus__Commerce__EDD__Main' :
+				return 'edd';
+				break;
+			default:
+				return 'tpp';
 		}
 
-		return $slug;
 	}
 
 	/**

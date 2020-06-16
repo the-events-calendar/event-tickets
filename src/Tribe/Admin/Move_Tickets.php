@@ -161,8 +161,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * @param int   $event_id
 	 */
 	protected function build_attendee_list( array $attendee_ids, $event_id ) {
-		$this->attendees              = [];
-		$this->ticket_provider        = '';
+		$this->attendees = array();
+		$this->ticket_provider = '';
 		$this->has_multiple_providers = false;
 
 		$args = [
@@ -176,13 +176,9 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 			$this->attendees[ $attendee_id ] = $attendee;
 
-			$provider = (string) $this->get_ticket_provider( $attendee );
+			$provider = $this->get_ticket_provider( $attendee );
 
-			if (
-				! empty( $this->ticket_provider )
-				&& ! empty( $provider )
-				&& $this->ticket_provider !== $provider
-			) {
+			if ( ! empty( $this->ticket_provider ) && $this->ticket_provider !== $provider ) {
 				$this->has_multiple_providers = true;
 			}
 
@@ -191,28 +187,29 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	}
 
 	/**
-	 * Given an attendee array, attempts to determine which ticket provider owns it (Woo, RSVP, etc).
+	 * Given an attendee array, attempts to determine which ticket provider
+	 * owns it (Woo, RSVP, etc).
 	 *
 	 * @param array $attendee
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	protected function get_ticket_provider( array $attendee ) {
 		if ( ! isset( $attendee['product_id'] ) ) {
-			return '';
+			return null;
 		}
 
 		$ticket_type = Tribe__Tickets__Tickets::load_ticket_object( $attendee['product_id'] );
 
 		if ( ! $ticket_type ) {
-			return '';
+			return null;
 		}
 
 		if ( property_exists( $ticket_type, 'provider_class' ) ) {
 			return $ticket_type->provider_class;
 		}
 
-		return '';
+		return null;
 	}
 
 	/**

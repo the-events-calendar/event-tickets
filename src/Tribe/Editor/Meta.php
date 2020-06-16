@@ -106,7 +106,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 
 		register_meta(
 			'post',
-			$rsvp->get_event_key(),
+			$rsvp->event_key,
 			$this->text()
 		);
 

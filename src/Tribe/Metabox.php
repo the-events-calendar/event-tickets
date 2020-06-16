@@ -248,9 +248,8 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Returns the data from a single ticket to populate the edit form.
 	 *
-	 * @since   4.6.2
-	 * @since   4.10.9 Use customizable ticket name functions.
-	 * @since   TBD Update detecting ticket provider to account for possibly inactive provider. Remove unused vars.
+	 * @since 4.6.2
+	 * @since 4.10.9 Use customizable ticket name functions.
 	 */
 	public function ajax_ticket_edit() {
 		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
@@ -265,16 +264,24 @@ class Tribe__Tickets__Metabox {
 			wp_send_json_error( esc_html( sprintf( __( 'Invalid %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_edit_error' ) ) ) );
 		}
 
+		/**
+		 * This is needed because a provider can implement a dynamic set of fields.
+		 * Each provider is responsible for sanitizing these values.
+		 */
+		$data = wp_parse_args( tribe_get_request_var( array( 'data' ), array() ), array() );
+
 		if ( ! $this->has_permission( $post_id, $_POST, 'edit_ticket_nonce' ) ) {
 			wp_send_json_error( esc_html( sprintf( __( 'Failed to edit the %s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_edit_error' ) ) ) );
 		}
 
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
-		if ( empty( $provider ) ) {
+		if ( ! $provider ) {
 			wp_send_json_error( esc_html__( 'Commerce Module invalid', 'event-tickets' ) );
 		}
 
+		// Get the Ticket Object
+		$ticket = $provider->get_ticket( $post_id, $ticket_id );
 		$return = $this->get_panels( $post_id, $ticket_id );
 
 		/**
@@ -315,7 +322,7 @@ class Tribe__Tickets__Metabox {
 
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
-		if ( empty( $provider ) ) {
+		if ( ! $provider ) {
 			wp_send_json_error( esc_html__( 'Commerce Module invalid', 'event-tickets' ) );
 		}
 
@@ -324,7 +331,7 @@ class Tribe__Tickets__Metabox {
 
 		// Successfully deleted?
 		if ( $return ) {
-			$return           = $this->get_panels( $post_id );
+			$return = $this->get_panels( $post_id );
 			$return['notice'] = $this->notice( 'ticket-delete' );
 
 			/**
@@ -342,7 +349,6 @@ class Tribe__Tickets__Metabox {
 	 * Handles the check-in ajax call, and calls the checkin method.
 	 *
 	 * @since  4.6.2
-	 * @since  TBD Use new helper method to account for possibly inactive ticket provider.
 	 */
 	public function ajax_attendee_checkin() {
 		$event_id    = Tribe__Utils__Array::get( $_POST, 'event_ID', false );
@@ -354,11 +360,11 @@ class Tribe__Tickets__Metabox {
 
 		$provider = Tribe__Utils__Array::get( $_POST, 'provider', false );
 
-		$provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider );
-
-		if ( empty( $provider ) ) {
+		if ( empty( $provider ) || ! $this->module_is_valid( $provider ) ) {
 			wp_send_json_error( esc_html__( 'Commerce Module invalid', 'event-tickets' ) );
 		}
+
+		$provider = call_user_func( array( $provider, 'get_instance' ) );
 
 		if (
 			empty( $_POST['nonce'] )
@@ -380,7 +386,6 @@ class Tribe__Tickets__Metabox {
 	 * Handles the check-in ajax call, and calls the uncheckin method.
 	 *
 	 * @since  4.6.2
-	 * @since  TBD Use new helper method to account for possibly inactive ticket provider.
 	 */
 	public function ajax_attendee_uncheckin() {
 		$event_id    = Tribe__Utils__Array::get( $_POST, 'event_ID', false );
@@ -392,11 +397,11 @@ class Tribe__Tickets__Metabox {
 
 		$provider = Tribe__Utils__Array::get( $_POST, 'provider', false );
 
-		$provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider );
-
-		if ( empty( $provider ) ) {
+		if ( empty( $provider ) || ! $this->module_is_valid( $provider ) ) {
 			wp_send_json_error( esc_html__( 'Commerce Module invalid', 'event-tickets' ) );
 		}
+
+		$provider = call_user_func( array( $provider, 'get_instance' ) );
 
 		if (
 			empty( $_POST['nonce'] )
@@ -415,34 +420,34 @@ class Tribe__Tickets__Metabox {
 	}
 
 	/**
-	 * Get the controls (move, delete) as a string.
+	 * Get the controls (move, delete) as a string
 	 *
 	 * @since  4.6.2
 	 *
-	 * @param int     $post_id
-	 * @param int     $ticket_id
-	 * @param boolean $echo
+	 * @param  array   $post_id
+	 * @param  array   $ticket_id
+	 * @param  boolean $echo
 	 *
 	 * @return string
 	 */
-	public function get_ticket_controls( $post_id, $ticket_id = 0, $echo = true ) {
+	public function get_ticket_controls( $post_id, $ticket_id = null, $echo = true ) {
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
-		if ( empty( $provider ) ) {
-			return '';
+		if ( ! $provider ) {
+			return false;
 		}
 
-		if ( empty( $ticket_id ) ) {
-			return '';
+		if ( ! $ticket_id ) {
+			return false;
 		}
 
 		$ticket = $provider->get_ticket( $post_id, $ticket_id );
 
 		if ( empty( $ticket ) ) {
-			return '';
+			return false;
 		}
 
-		$controls = [];
+		$controls = array();
 
 		if ( tribe_is_truthy( tribe_get_request_var( 'is_admin', true ) ) ) {
 			$controls[] = $provider->get_ticket_move_link( $post_id, $ticket );
@@ -451,7 +456,7 @@ class Tribe__Tickets__Metabox {
 
 		$html = join( ' | ', $controls );
 
-		if ( $echo ) {
+		if ( $echo )  {
 			echo $html;
 		}
 

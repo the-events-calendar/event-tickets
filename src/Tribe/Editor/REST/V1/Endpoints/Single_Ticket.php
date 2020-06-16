@@ -54,17 +54,17 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			return new WP_Error(
 				'forbidden',
 				__( 'Invalid nonce', 'event-tickets' ),
-				[ 'status' => 403 ]
+				array( 'status' => 403 )
 			);
 		}
 
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
-		if ( empty( $provider ) ) {
+		if ( ! $provider ) {
 			return new WP_Error(
 				'bad_request',
 				__( 'Commerce Module invalid', 'event-tickets' ),
-				[ 'status' => 400 ]
+				array( 'status' => 400 )
 			);
 		}
 
@@ -202,12 +202,11 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	/**
 	 * Add ticket callback executed to update / add a new ticket.
 	 *
-	 * @since  4.9
-	 * @since  4.10.9 Use customizable ticket name functions.
-	 * @since  TBD Update detecting ticket provider to account for possibly inactive provider.
+	 * @since 4.9
+	 * @since 4.10.9 Use customizable ticket name functions.
 	 *
-	 * @param  WP_REST_Request $request
-	 * @param  $nonce_action
+	 * @param WP_REST_Request $request
+	 * @param $nonce_action
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function add_ticket( WP_REST_Request $request, $nonce_action ) {
@@ -221,7 +220,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			$request->get_body_params()
 		);
 
-		$nonce   = $body[ $nonce_action ];
+		$nonce = $body[ $nonce_action ];
 		$post_id = $body['post_id'];
 
 		if ( ! $this->has_permission( $post_id, $nonce, $nonce_action ) ) {
@@ -232,18 +231,13 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			);
 		}
 
-		if ( ! empty( $ticket_id ) ) {
+		if ( $ticket_id === null && $provider_name !== null ) {
+			$provider = call_user_func( [ $provider_name, 'get_instance' ] );
+		} else {
 			$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 		}
 
-		if (
-			empty( $provider )
-			&& ! empty( $provider_name )
-		) {
-			$provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider_name );
-		}
-
-		if ( empty( $provider ) ) {
+		if ( ! $provider instanceof Tribe__Tickets__Tickets ) {
 			return new WP_Error(
 				'bad_request',
 				__( 'Commerce Module invalid', 'event-tickets' ),
@@ -274,7 +268,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 		// Get the Ticket Object
 		$ticket = $provider->ticket_add( $post_id, $ticket_data );
 
-		if ( empty( $ticket ) ) {
+		if ( ! $ticket ) {
 			return new WP_Error(
 				'not_acceptable',
 				esc_html( sprintf( __( '%s was not able to be updated', 'event-tickets' ), tribe_get_ticket_label_singular( 'rest_add_ticket_error' ) ) ),
