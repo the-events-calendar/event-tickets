@@ -103,13 +103,12 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		/** @var Tribe__Tickets__Data_API $data_api */
 		$data_api = tribe( 'tickets.data_api' );
-
 		/** @var Tribe__Tickets__Tickets $provider */
 		$provider = $data_api->get_ticket_provider( $attendee_id );
 
-		if ( empty( $provider ) ) {
+		if ( false === $provider ) {
 			// the attendee post does exist but it does not make sense on the server, server error
-			return new WP_Error( 'attendee-not-found', $this->messages->get_message( 'attendee-not-found' ), [ 'status' => 500 ] );
+			return new WP_Error( 'attendee-not-found', $this->messages->get_message( 'attendee-not-found' ), array( 'status' => 500 ) );
 		}
 
 		// The return value of this function will always be an array even if we only want one object.
@@ -117,7 +116,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		if ( empty( $attendee ) ) {
 			// the attendee post does exist but it does not make sense on the server, server error
-			return new WP_Error( 'attendee-not-found', $this->messages->get_message( 'attendee-not-found' ), [ 'status' => 500 ] );
+			return new WP_Error( 'attendee-not-found', $this->messages->get_message( 'attendee-not-found' ), array( 'status' => 500 ) );
 		}
 
 		// See note above, this is an array with one element in it
@@ -192,7 +191,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @param int|WP_Post $ticket_id
 	 *
-	 * @return Tribe__Tickets__Ticket_Object|bool|WP_Error The ticket object, `false`, or WP_Error.
+	 * @return Tribe__Tickets__Ticket_Object|bool The ticket object or `false`
 	 */
 	protected function get_ticket_object( $ticket_id ) {
 		if ( isset( $this->current_ticket_id ) && $ticket_id != $this->current_ticket_id ) {
@@ -213,8 +212,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		/** @var Tribe__Tickets__Tickets $provider */
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
-		if ( empty( $provider ) ) {
-			return new WP_Error( 'ticket-provider-not-found', $this->messages->get_message( 'ticket-provider-not-found' ), [ 'status' => 500 ] );
+		if ( ! $provider instanceof Tribe__Tickets__Tickets ) {
+			return new WP_Error( 'ticket-provider-not-found', $this->messages->get_message( 'ticket-provider-not-found' ), array( 'status' => 500 ) );
 		}
 
 		$this->current_ticket_provider = $provider;
@@ -222,7 +221,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$post = $provider->get_event_for_ticket( $ticket_id );
 
 		if ( ! $post instanceof WP_Post ) {
-			return new WP_Error( 'ticket-post-not-found', $this->messages->get_message( 'ticket-post-not-found' ), [ 'status' => 500 ] );
+			return new WP_Error( 'ticket-post-not-found', $this->messages->get_message( 'ticket-post-not-found' ), array( 'status' => 500 ) );
 		}
 
 		$this->current_ticket_post = $post;
@@ -231,7 +230,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$ticket = $provider->get_ticket( $post->ID, $ticket_id );
 
 		if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
-			return new WP_Error( 'ticket-object-not-found', $this->messages->get_message( 'ticket-object-not-found' ), [ 'status' => 500 ] );
+			return new WP_Error( 'ticket-object-not-found', $this->messages->get_message( 'ticket-object-not-found' ), array( 'status' => 500 ) );
 		}
 
 		$this->current_ticket_id     = $ticket_id;
@@ -332,14 +331,15 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			return $existing;
 		}
 
-		if ( empty( $provider_class ) ) {
+		if ( null === $provider_class ) {
+			/** @var Tribe__Tickets__Tickets $provider */
 			$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
-			if ( empty( $provider ) ) {
+			if ( ! $provider instanceof Tribe__Tickets__Tickets ) {
 				return false;
 			}
 
-			$provider_class = $provider->class_name;
+			$provider_class = get_class( $provider );
 		}
 
 		$generator = new Tribe__Tickets__Global_ID();
@@ -347,12 +347,10 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$type = $this->get_provider_slug( $provider_class );
 		$generator->type( $type );
 
-		$global_id = $generator->generate(
-			[
-				'type' => $type,
-				'id'   => $ticket_id,
-			]
-		);
+		$global_id = $generator->generate( array(
+			'type' => $type,
+			'id'   => $ticket_id,
+		) );
 
 		update_post_meta( $ticket_id, $this->global_id_key, $global_id );
 
@@ -894,11 +892,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$attendee_id = $attendee['attendee_id'];
 		/** @var Tribe__Tickets__Data_API $data_api */
 		$data_api = tribe( 'tickets.data_api' );
+		/** @var Tribe__Tickets__Tickets $provider */
 		$provider = $data_api->get_ticket_provider( $attendee_id );
-		if ( empty( $provider ) ) {
-			return [];
-		}
-
 		/** @var Tribe__Tickets__REST__V1__Main $main */
 		$main = tribe( 'tickets.rest-v1.main' );
 
@@ -909,12 +904,12 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		if ( $checked_in ) {
 			$checkin_details = get_post_meta( $attendee_id, $this->current_ticket_provider->checkin_key . '_details', true );
 			if ( isset( $checkin_details['date'], $checkin_details['source'], $checkin_details['author'] ) ) {
-				$checkin_details = [
+				$checkin_details = array(
 					'date'         => $checkin_details['date'],
 					'date_details' => $this->get_date_details( $checkin_details['date'] ),
 					'source'       => $checkin_details['source'],
 					'author'       => $checkin_details['author'],
-				];
+				);
 			} else {
 				$checkin_details = false;
 			}
@@ -922,12 +917,11 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		try {
 			$attendee_order_id = $this->get_attendee_order_id( $attendee_id, $provider );
-		}
-		catch ( ReflectionException $e ) {
-			return [];
+		} catch ( ReflectionException $e ) {
+			return array();
 		}
 
-		$attendee_data = [
+		$attendee_data = array(
 			'id'                => $attendee_id,
 			'post_id'           => (int) $attendee['event_id'],
 			'ticket_id'         => (int) $attendee['product_id'],
@@ -940,7 +934,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'modified'          => $attendee_post->post_modified,
 			'modified_utc'      => $attendee_post->post_modified_gmt,
 			'rest_url'          => $main->get_url( '/attendees/' . $attendee_id ),
-		];
+		);
 
 		$has_manage_access = current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
 
@@ -954,17 +948,14 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		// Sensible information should not be shown to everyone
 		if ( $has_manage_access ) {
-			$attendee_data = array_merge(
-				$attendee_data,
-				[
-					'provider'        => $this->get_provider_slug( $provider ),
-					'order'           => $attendee_order_id,
-					'sku'             => $this->get_attendee_sku( $attendee_id, $attendee_order_id, $provider ),
-					'email'           => Tribe__Utils__Array::get( $attendee, 'holder_email', Tribe__Utils__Array::get( $attendee, 'purchaser_email', '' ) ),
-					'checked_in'      => $checked_in,
-					'checkin_details' => $checkin_details,
-				]
-			);
+			$attendee_data = array_merge( $attendee_data, array(
+				'provider'        => $this->get_provider_slug( $provider ),
+				'order'           => $attendee_order_id,
+				'sku'             => $this->get_attendee_sku( $attendee_id, $attendee_order_id, $provider ),
+				'email'           => Tribe__Utils__Array::get( $attendee, 'holder_email', Tribe__Utils__Array::get( $attendee, 'purchaser_email', '' ) ),
+				'checked_in'      => $checked_in,
+				'checkin_details' => $checkin_details,
+			) );
 
 			if ( $provider instanceof Tribe__Tickets__RSVP ) {
 				$attendee_data['rsvp_going'] = tribe_is_truthy( $attendee['order_status'] );
@@ -1026,6 +1017,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			return (int) $attendee_id;
 		}
 
+		$key = '';
 		if ( ! empty( $provider->attendee_order_key ) ) {
 			$key = $provider->attendee_order_key;
 		} else {

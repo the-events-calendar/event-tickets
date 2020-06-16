@@ -402,9 +402,8 @@ if ( ! function_exists( 'tribe_tickets_is_current_time_in_date_window' ) ) {
 	 * Checks if the post has tickets that are available in the current date range set on the ticket.
 	 *
 	 * @since 4.11.3
-	 * @since TBD Use new helper method to account for possibly inactive ticket provider.
 	 *
-	 * @param int $post_id Post to check for ticket availability.
+	 * @param int $post_id Post (or event) to check for ticket availability.
 	 *
 	 * @return bool
 	 */
@@ -423,16 +422,9 @@ if ( ! function_exists( 'tribe_tickets_is_current_time_in_date_window' ) ) {
 		foreach ( $tickets as $ticket ) {
 			$ticket_provider = $ticket->get_provider();
 
-			if (
-				! $default_provider instanceof Tribe__Tickets__Tickets
-				|| ! $ticket_provider instanceof Tribe__Tickets__Tickets
-			) {
-				continue;
-			}
-
 			// Skip tickets that are for a different provider than the event provider.
 			if (
-				$default_provider->class_name !== $ticket_provider->class_name
+				$default_provider !== $ticket_provider->class_name
 				&& Tribe__Tickets__RSVP::class !== $ticket_provider->class_name
 			) {
 				continue;
@@ -465,7 +457,7 @@ if ( ! function_exists( 'tribe_events_has_tickets_on_sale' ) ) {
 			$ticket_provider = $ticket->get_provider();
 
 			// Skip tickets that are for a different provider than the event provider.
-			if ( $default_provider->class_name !== $ticket_provider->class_name ) {
+			if ( $default_provider !== $ticket_provider->class_name ) {
 				continue;
 			}
 
@@ -805,9 +797,9 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
 	/**
 	 * Gets the ticket provider class when passed an id.
 	 *
-	 * @param int|string $id An RSVP order key, order id, attendee id, ticket id, or product id.
+	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or product id
 	 *
-	 * @return Tribe__Tickets__Tickets|false Ticket provider instance or False if provider is not active.
+	 * @return bool|Tribe__Tickets__Tickets
 	 */
 	function tribe_tickets_get_ticket_provider( $id ) {
 		/** @var Tribe__Tickets__Data_API $data_api */
@@ -1042,7 +1034,6 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 	 * Returns the capacity for a given Post/Event.
 	 *
 	 * @since  4.11.3
-	 * @since TBD Use new helper method to account for possibly inactive ticket provider.
 	 *
 	 * @param int|WP_Post $post Post (event) we are trying to fetch capacity for.
 	 *
@@ -1076,21 +1067,23 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 		foreach ( $rsvp_tickets as $rsvp_ticket ) {
 			$cap = tribe_tickets_get_capacity( $rsvp_ticket );
 
-			if ( - 1 === $cap || '' === $cap ) {
-				$rsvp_cap = - 1;
+			if ( -1 === $cap || '' === $cap ) {
+				$rsvp_cap = -1;
 				break;
 			}
 
 			$rsvp_cap += $cap;
 		}
 
-		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+		$provider_id = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 
-		if ( empty( $provider ) ) {
+		// Protect against ticket that exists but is of a type that is not enabled.
+		if ( ! method_exists( $provider_id, 'get_instance' ) ) {
 			return null;
 		}
 
-		$tickets = $provider->get_tickets_ids( $post_id );
+		$provider = call_user_func( [ $provider_id, 'get_instance' ] );
+		$tickets  = $provider->get_tickets_ids( $post_id );
 
 		// We only have RSVPs.
 		if ( empty( $tickets ) ) {
@@ -1557,41 +1550,6 @@ if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
 		 * @return bool
 		 */
 		return apply_filters( 'tribe_tickets_is_enabled_post_context', false, $post_types, $context );
-	}
-}
-
-if ( ! function_exists( 'tribe_tickets_is_provider_active' ) ) {
-	/**
-	 * Whether the passed ticket provider class string (or its slug) is active.
-	 *
-	 * Example: if provider is for a WooCommerce Ticket but ETP is disabled, returns False.
-	 *
-	 * @since TBD
-	 *
-	 * @param Tribe__Tickets__Tickets|string $provider Examples: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
-	 *                                                 'woo', 'rsvp', etc.
-	 *
-	 * @return bool True if class exists and is in the list of active modules.
-	 */
-	function tribe_tickets_is_provider_active( $provider ) {
-		if ( $provider instanceof Tribe__Tickets__Tickets ) {
-			$provider = $provider->class_name;
-		}
-
-		// Protect against other type of object or other unexpected value.
-		if ( ! is_string( $provider ) ) {
-			return false;
-		}
-
-		/** @var Tribe__Tickets__Status__Manager $status */
-		$status = tribe( 'tickets.status' );
-
-		$provider = $status->get_provider_class_from_slug( $provider );
-
-		return (
-			class_exists( $provider )
-			&& array_key_exists( $provider, Tribe__Tickets__Tickets::modules() )
-		);
 	}
 }
 

@@ -1,6 +1,6 @@
 <?php
 $provider      = $ticket->provider_class;
-$provider_obj  = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider );
+$provider_obj  = call_user_func( array( $provider, 'get_instance' ) );
 $inventory     = $ticket->inventory();
 $available     = $ticket->available();
 $capacity      = $ticket->capacity();
