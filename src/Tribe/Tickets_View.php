@@ -1089,6 +1089,8 @@ class Tribe__Tickets__Tickets_View {
 			'has_rsvps'        => ! empty( $tickets ),
 			'has_active_rsvps' => ! empty( $active_tickets ),
 			'must_login'       => ! is_user_logged_in() && $rsvp->login_required(),
+			'login_url'        => Tribe__Tickets__Tickets::get_login_url( $post_id ),
+			'threshold'        => $blocks_rsvp->get_threshold( $post_id ),
 		];
 
 		// Add the rendering attributes into global context.
@@ -1102,6 +1104,8 @@ class Tribe__Tickets__Tickets_View {
 		) {
 			// Enqueue new assets.
 			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
+			// @todo: Remove this once we solve the common breakpoints vs container based.
+			tribe_asset_enqueue( 'tribe-common-responsive' );
 
 			return $template->template( 'v2/rsvp-kitchen-sink', $args, $echo );
 		}
@@ -1111,6 +1115,9 @@ class Tribe__Tickets__Tickets_View {
 			// Enqueue new assets.
 			tribe_asset_enqueue( 'tribe-tickets-rsvp' );
 			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
+			tribe_asset_enqueue( 'tribe-tickets-form-style' );
+			// @todo: Remove this once we solve the common breakpoints vs container based.
+			tribe_asset_enqueue( 'tribe-common-responsive' );
 
 			return $template->template( 'v2/rsvp', $args, $echo );
 		}

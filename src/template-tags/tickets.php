@@ -1593,3 +1593,154 @@ function tribe_tickets_rsvp_new_views_is_enabled() {
 	 */
 	return apply_filters( 'tribe_tickets_rsvp_new_views_is_enabled', $enabled );
 }
+
+if ( ! function_exists( 'tribe_tickets_ar_field_is_required' ) ) {
+	/**
+	 * Check if the AR field is required.
+	 *
+	 * @since TBD
+	 *
+	 * @param object $field The field object.
+	 *
+	 * @return bool True if is required
+	 */
+	function tribe_tickets_ar_field_is_required( $field ) {
+		return isset( $field->required ) && 'on' === $field->required;
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets_ar_field_name' ) ) {
+	/**
+	 * Build the AR field name.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $ticket_id  The ticket ID.
+	 * @param string $field_slug The field slug.
+	 *
+	 * @return string The AR field name.
+	 */
+	function tribe_tickets_ar_field_name( $ticket_id, $field_slug ) {
+		return 'tribe-tickets-meta[' . $ticket_id . '][{{data.attendee_id}}][' . $field_slug . ']';
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets_ar_field_id' ) ) {
+	/**
+	 * Build the AR field `id`.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $ticket_id   The ticket ID.
+	 * @param string $field_slug  The field slug.
+	 * @param string $option_slug The field option slug (in case they need it).
+	 *
+	 * @return string The AR field id.
+	 */
+	function tribe_tickets_ar_field_id( $ticket_id, $field_slug, $option_slug = '' ) {
+
+		$field_id = "tribe-tickets-meta_{$ticket_id}_{$field_slug}{{data.attendee_id}}";
+
+		if ( ! empty( $option_slug ) ) {
+			$field_id .= "_{$option_slug}";
+		}
+
+		return $field_id;
+	}
+}
+
+if ( ! function_exists( 'tribe_get_guest_label_singular' ) ) {
+
+	/**
+	 * Get the singular version of the Guest label. May also be used as a verb.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string
+	 */
+	function tribe_get_guest_label_singular( $context = '' ) {
+		/**
+		 * Allows customization of the singular version of the Guest label.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $label   The singular version of the Guest label. Defaults to "Guest".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+		 */
+		return apply_filters( 'tribe_get_guest_label_singular', _x( 'Guest', 'singular label for Guest', 'event-tickets' ), $context );
+	}
+}
+
+if ( ! function_exists( 'tribe_get_guest_label_singular_lowercase' ) ) {
+
+	/**
+	 * Get the lowercase singular version of the Guest label. May also be used as a verb.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string
+	 */
+	function tribe_get_guest_label_singular_lowercase( $context = '' ) {
+		/**
+		 * Allows customization of the lowercase singular version of the Guest label.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $label   The lowercase singular version of the Guest label. Defaults to "guest".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+		 */
+		return apply_filters( 'tribe_get_guest_label_singular_lowercase', _x( 'guest', 'lowercase singular label for Guest', 'event-tickets' ), $context );
+	}
+}
+
+if ( ! function_exists( 'tribe_get_guest_label_plural' ) ) {
+
+	/**
+	 * Get the plural version of the Guest label. May also be used as a verb.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string
+	 */
+	function tribe_get_guest_label_plural( $context = '' ) {
+		/**
+		 * Allows customization of the plural version of the Guest label.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $label   The plural version of the Guest label, defaults to "Guests".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+		 */
+		return apply_filters( 'tribe_get_guest_label_plural', _x( 'Guests', 'plural label for Guest', 'event-tickets' ), $context );
+	}
+}
+
+if ( ! function_exists( 'tribe_get_guest_label_plural_lowercase' ) ) {
+
+	/**
+	 * Get the lowercase plural version of the Guest label.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string
+	 */
+	function tribe_get_guest_label_plural_lowercase( $context = '' ) {
+		/**
+		 * Allows customization of the lowercase plural version of the Guest label.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $label   The lowercase plural version of the Guest label, defaults to "guests".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+		 */
+		return apply_filters( 'tribe_get_guest_label_plural_lowercase', _x( 'guests', 'lowercase plural label for Guest', 'event-tickets' ), $context );
+	}
+}

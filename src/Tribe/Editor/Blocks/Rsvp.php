@@ -150,6 +150,52 @@ extends Tribe__Editor__Blocks__Abstract {
 	}
 
 	/**
+	 * Get the threshold.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id
+	 *
+	 * @return int
+	 */
+	public function get_threshold( $post_id = 0 ) {
+
+		/** @var Tribe__Settings_Manager $settings_manager */
+		$settings_manager = tribe( 'settings.manager' );
+		$threshold        = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
+
+		/**
+		 * Overwrites the threshold to display "# tickets left".
+		 *
+		 * @param int   $threshold Stock threshold to trigger display of "# tickets left"
+		 * @param int   $post_id  Event ID.
+		 *
+		 * @since 4.11.1
+		 */
+		$threshold = absint( apply_filters( 'tribe_display_rsvp_block_tickets_left_threshold', $threshold, $post_id ) );
+
+		return $threshold;
+	}
+
+	/**
+	 * Show unlimited?
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $is_unlimited
+	 */
+	public function show_unlimited( $is_unlimited ) {
+		/**
+		 * Allows hiding of "unlimited" to be toggled on/off conditionally.
+		 *
+		 * @param int   $show_unlimited allow showing of "unlimited".
+		 *
+		 * @since 4.11.1
+		 */
+		return apply_filters( 'tribe_rsvp_block_show_unlimited_availability', false, $is_unlimited );
+	}
+
+	/**
 	 * Register block assets
 	 *
 	 * @since 4.9
@@ -201,14 +247,30 @@ extends Tribe__Editor__Blocks__Abstract {
 			]
 		);
 
+		// @todo: Remove this once we solve the common breakpoints vs container based.
 		tribe_asset(
 			$plugin,
-			'tribe-tickets-rsvp-style',
-			'app/v2/rsvp/frontend.css',
-			[],
+			'tribe-common-responsive',
+			'common-responsive.css',
+			[ 'tribe-common-skeleton-style' ],
 			null
 		);
 
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-rsvp-style',
+			'rsvp.css',
+			[ 'tribe-common-skeleton-style', 'tribe-common-responsive' ],
+			null
+		);
+
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-form-style',
+			'forms.css',
+			[ 'tribe-tickets-rsvp-style' ],
+			null
+		);
 	}
 
 	/**

@@ -1,0 +1,182 @@
+/**
+ * Event Tickets - RSVP Attendee Registration
+ *
+ * @since TBD
+ */
+
+.event-tickets {
+
+	.tribe-tickets__rsvp-ar {
+		padding-left: var(--grid-gutter-small-half);
+		padding-right: var(--grid-gutter-small-half);
+
+		@media(--viewport-medium) {
+			flex-direction: row-reverse;
+			padding-left: var(--grid-gutter-half);
+			padding-right: var(--grid-gutter-half);
+		}
+	}
+
+	.tribe-tickets__rsvp-ar-sidebar-wrapper {
+		flex: none;
+		display: flex;
+
+		@media(--viewport-medium) {
+			border-left: 1px dashed var(--color-border-secondary);
+			width: calc(3 * var(--grid-width-1-of-8));
+		}
+	}
+
+	.tribe-tickets__rsvp-ar-sidebar {
+		border-bottom: 1px dashed var(--color-border-secondary);
+		margin-top: var(--spacer-5);
+		padding: var(--spacer-5) 0;
+		width: 100%;
+
+		@media(--viewport-medium) {
+			border: 0;
+			margin-top: 0;
+		}
+	}
+
+	.tribe-tickets__rsvp-ar-quantity {
+		margin-top: var(--spacer-4);
+	}
+
+	.tribe-tickets__rsvp-ar-quantity-input {
+		align-items: center;
+		display: flex;
+
+		input[type="number"] {
+			appearance: textfield;
+			background: transparent;
+			border: none;
+			height: var(--spacer-8);
+			max-width: var(--spacer-8);
+			padding: var(--spacer-0) 0;
+			text-align: center;
+
+			@media (--viewport-small) {
+				height: var(--spacer-8);
+			}
+
+			&::-webkit-inner-spin-button,
+			&::-webkit-outer-spin-button {
+				appearance: none;
+			}
+		}
+	}
+
+	/* @todo @juanfra: check this and see if we do a minus/plus and one for the number input instead of generic. */
+	.tribe-tickets__rsvp-ar-quantity-input-number {
+		background-color: transparent;
+		border: 1px solid var(--color-border-default);
+		border-radius: 50%;
+		height: 28px;
+		padding: 0;
+		position: relative;
+		width: 28px;
+
+		&:before,
+		&:after {
+			background-color: var(--color-icon-active);
+			content: '';
+			height: 2px;
+			position: absolute;
+			width: 8px;
+			left: 9px;
+		}
+
+		&:hover,
+		&:focus {
+			background: none;
+
+			&:before,
+			&:after {
+				background-color: var(--color-icon-focus);
+			}
+		}
+	}
+
+	.tribe-tickets__rsvp-ar-quantity-input-number--plus {
+
+		&:after {
+			transform: rotate(90deg);
+		}
+	}
+
+	.tribe-tickets__rsvp-ar-guest-list {
+		margin-top: var(--spacer-4) !important; /* @todo @juanfra: see why common is setting specificity for this. */
+	}
+
+	.tribe-tickets__rsvp-ar-guest-list-item {
+		display: inline-block;
+
+		@media(--viewport-medium) {
+			display: block;
+		}
+
+		&:not(:first-of-type) {
+
+			@media(--viewport-medium) {
+				margin-top: var(--spacer-2);
+			}
+		}
+	}
+
+	.tribe-tickets__rsvp-ar-guest-list-item-title {
+
+		@media(--viewport-medium) {
+			@mixin visually-show;
+		}
+	}
+
+	.tribe-tickets__rsvp-ar-guest-icon,
+	.tribe-tickets__rsvp-ar-guest-icon--disabled {
+		display: inline-block;
+		margin-right: var(--spacer-0);
+		width: 11px;
+		height: 14px;
+	}
+
+	.tribe-tickets__rsvp-ar-guest-icon {
+		path {
+			fill: var(--color-icon-active);
+			stroke: var(--color-icon-active);
+		}
+	}
+
+	.tribe-tickets__rsvp-ar-guest-icon--disabled {
+		path {
+			fill: var(--color-icon-disabled);
+			stroke: var(--color-icon-disabled);
+		}
+	}
+
+	.tribe-tickets__rsvp-ar-form-wrapper {
+		background-color: #F6F7F9;
+		flex: none;
+		display: flex;
+
+		@media(--viewport-medium) {
+			width: calc(5 * var(--grid-width-1-of-8));
+		}
+	}
+
+	.tribe-tickets__rsvp-ar-form {
+		width: 100%;
+		padding: var(--spacer-5) 0;
+
+		@media(--viewport-medium) {
+			text-align: initial;
+		}
+
+		.tribe-tickets__form {
+			margin-top: var(--spacer-4);
+		}
+	}
+
+	.tribe-tickets__rsvp-ar-form-title {
+		color: var(--color-text-secondary);
+	}
+}
