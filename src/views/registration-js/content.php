@@ -5,24 +5,30 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/content.php
  *
- * @since 4.11.0
- * @since 4.11.3.1 Fix handling where $provider is an object.
- * @since 4.12.0 Prevent potential errors when $provider_obj is not valid.
- * @since 4.12.1    Set the notice as hidden by default. The JavaScript will show it if needed.
+ * @since   4.11.0
+ * @since   4.11.3.1 Fix handling where $provider is an object.
+ * @since   4.12.0   Prevent potential errors when $provider_obj is not valid.
+ * @since   4.12.1   Set the notice as hidden by default. The JavaScript will show if needed.
+ * @since   TBD Update for getting ticket provider now returning instance or False. Remove duplicate array property.
+ *              Retrieve $is_meta_up_to_date in a manner consistent with other template variables. Moved `novalidate` from
+ *              div to form, as it used to be. Implement short array syntax.
  *
- * @version 4.12.0
+ * @version TBD
+ *
+ * @var Tribe__Tickets__Attendee_Registration__View $this
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
-$events = $this->get( 'events' );
+$events   = (array) $this->get( 'events' );
 
 if ( empty( $provider ) ) {
-	$event_keys    = array_keys( $events );
-	$event_key     = array_shift( $event_keys );
-	$provider_name = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_key );
-	$provider_obj  = new $provider_name;
-	$provider      = $provider_obj->attendee_object;
+	$event_keys   = array_keys( $events );
+	$event_key    = array_shift( $event_keys );
+	$provider_obj = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_key );
+	$provider     = $provider_obj->attendee_object;
 } elseif ( is_string( $provider ) ) {
-	$provider_obj = tribe( 'tickets.attendee_registration.view' )->get_cart_provider( $provider );
+	/** @var Tribe__Tickets__Attendee_Registration__View $reg_view */
+	$reg_view     = tribe( 'tickets.attendee_registration.view' );
+	$provider_obj = $reg_view->get_cart_provider( $provider );
 	$provider     = $provider_obj->attendee_object;
 } elseif ( $provider instanceof Tribe__Tickets__Tickets ) {
 	$provider_obj = $provider;
@@ -46,7 +52,7 @@ $classes        = [
 <div <?php tribe_classes( $classes ); ?> data-provider="<?php echo esc_attr( $provider ); ?>">
 	<?php
 	/**
-	 * Before the output, whether or not $events is empty.
+	 * Before the output, whether $events is empty.
 	 *
 	 * @since 4.11.0
 	 *
@@ -58,7 +64,7 @@ $classes        = [
 	?>
 
 	<div class="tribe-common-h8 tribe-common-h--alt tribe-tickets__registration__actions">
-		<?php $this->template( 'registration/button-cart', array( 'provider' => $provider ) ); ?>
+		<?php $this->template( 'registration/button-cart', [ 'provider' => $provider ] ); ?>
 	</div>
 
 	<h1 class="tribe-common-h2 tribe-common-h1--min-medium tribe-common-h--alt tribe-tickets__registration__page-title">
@@ -69,6 +75,7 @@ $classes        = [
 		id="tribe-tickets__registration__form"
 		action="<?php echo esc_url( $checkout_url ); ?>"
 		data-provider="<?php echo esc_attr( $provider ); ?>"
+		novalidate
 	>
 	<div class="tribe-tickets__registration__grid">
 		<?php
@@ -87,7 +94,7 @@ $classes        = [
 						'event-tickets'
 					),
 					'<span class="tribe-tickets__notice--error__count">1</span>'
-			)
+				),
 			]
 		);
 
@@ -100,7 +107,6 @@ $classes        = [
 			'provider_id'         => $this->get( 'provider_id' ),
 			'provider'            => $provider,
 			'tickets_on_sale'     => $this->get( 'tickets_on_sale' ),
-			'tickets'             => $all_tickets,
 			'tickets'             => $this->get( 'tickets', [] ),
 		];
 
@@ -115,33 +121,32 @@ $classes        = [
 
 			<?php foreach ( $events as $event_id => $tickets ) : ?>
 				<?php
-					$provider_name  = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
-					$provider_obj   = new $provider_name;
-					$provider_class = $provider_class;
-					$providers      = wp_list_pluck( $tickets, 'provider' );
-					$providers_arr  = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
+				$providers     = wp_list_pluck( $tickets, 'provider' );
+				$providers_arr = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
 
-					if ( empty( $provider_class ) && ! empty( $providers_arr[ $event_id ] ) ) :
-						$provider_class = 'tribe-tickets__item__attendee__fields__form--' . $providers_arr[ $event_id ];
-					endif;
+				if (
+					empty( $provider_class )
+					&& ! empty( $providers_arr[ $event_id ] )
+				) :
+					$provider_class = 'tribe-tickets__item__attendee__fields__form--' . $providers_arr[ $event_id ];
+				endif;
 
-					$has_tpp = Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === $provider || in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers_arr, true );
+				$has_tpp = Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === $provider || in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers_arr, true );
 				?>
 				<div
 					class="tribe-tickets__registration__event"
 					data-event-id="<?php echo esc_attr( $event_id ); ?>"
-					data-is-meta-up-to-date="<?php echo absint( $is_meta_up_to_date ); ?>"
+					data-is-meta-up-to-date="<?php echo absint( $this->get( 'is_meta_up_to_date' ) ); ?>"
 				>
-					<?php $this->template( 'registration/summary/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
+					<?php $this->template( 'registration/summary/content', [ 'event_id' => $event_id, 'tickets' => $tickets ] ); ?>
 
 					<div class="tribe-tickets__item__attendee__fields">
 
-						<?php $this->template( 'registration-js/attendees/error', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
+						<?php $this->template( 'registration-js/attendees/error', [ 'event_id' => $event_id, 'tickets' => $tickets ] ); ?>
 
 						<div
 							class="tribe-tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?> tribe-validation"
 							name="event<?php echo esc_attr( $event_id ); ?>"
-							novalidate
 						>
 							<?php
 							foreach ( $tickets as $ticket ) :
@@ -167,7 +172,7 @@ $classes        = [
 						</div>
 					</div>
 				</div>
-				<?php $this->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets, 'provider' => $providers[0] ) ); ?>
+				<?php $this->template( 'registration-js/attendees/content', [ 'event_id' => $event_id, 'tickets' => $tickets, 'provider' => $providers[0] ] ); ?>
 			<?php endforeach; ?>
 		</div>
 	</div>

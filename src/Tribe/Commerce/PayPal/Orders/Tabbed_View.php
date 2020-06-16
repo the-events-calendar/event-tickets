@@ -16,7 +16,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 	 *
 	 * @return array
 	 */
-	public function filter_tribe_tickets_orders_tabbed_view_tab_map( array $tab_map = array() ) {
+	public function filter_tribe_tickets_orders_tabbed_view_tab_map( array $tab_map = [] ) {
 		$tab_map[ Tribe__Tickets__Commerce__PayPal__Orders__Report::$orders_slug ] = Tribe__Tickets__Commerce__PayPal__Orders__Report::$tab_slug;
 
 		return $tab_map;
@@ -31,9 +31,9 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 	 * @param WP_Post            $post
 	 */
 	public function register_orders_tab( Tribe__Tabbed_View $tabbed_view, WP_Post $post ) {
-		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post->ID );
-		$not_using_paypal = 'Tribe__Tickets__Commerce__PayPal__Main' !== $provider;
-		$has_no_paypal_tickets = count( Tribe__Tickets__Commerce__PayPal__Main::get_instance()->get_tickets_ids( $post ) ) === 0;
+		$provider              = Tribe__Tickets__Tickets::get_event_ticket_provider( $post->ID );
+		$not_using_paypal      = ! $provider instanceof Tribe__Tickets__Commerce__PayPal__Main;
+		$has_no_paypal_tickets = $not_using_paypal ? true : count( $provider->get_tickets_ids( $post ) ) === 0;
 
 		if ( $not_using_paypal && $has_no_paypal_tickets ) {
 			return;
@@ -51,7 +51,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 	 * @since 4.7
 	 */
 	public function register() {
-		add_filter( 'tribe_tickets_orders_tabbed_view_tab_map', array( $this, 'filter_tribe_tickets_orders_tabbed_view_tab_map' ) );
-		add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', array( $this, 'register_orders_tab' ), 10, 2 );
+		add_filter( 'tribe_tickets_orders_tabbed_view_tab_map', [ $this, 'filter_tribe_tickets_orders_tabbed_view_tab_map' ] );
+		add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_orders_tab' ], 10, 2 );
 	}
 }
