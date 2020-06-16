@@ -6,34 +6,39 @@
  *
  * @package TribeEventsCalendar
  *
- * @since 4.7.4
- * @since 4.10.2 Only show Update button if ticket has meta.
- * @since 4.10.8 Show Update button if current user has either RSVP or Ticket with meta. Do not use the now-deprecated third parameter of `get_description_rsvp_ticket()`.
- * @since 4.10.9 Use function for text.
- * @since 4.11.3 Correct getting `$event_id` when using The Events Calendar's "Default Page Template" display template. `$event_id` now relies on the `WP_Query` queried object ID instead of the global `$post` object.
- * @since 4.11.3 Reformat a bit of the code around the button - no functional changes.
- * @since 4.12.1 Account for empty post type object, such as if post type got disabled.
+ * @since   4.7.4
+ * @since   4.10.2 Only show Update button if ticket has meta.
+ * @since   4.10.8 Show Update button if current user has either RSVP or Ticket with meta. Do not use the now-deprecated third parameter of `get_description_rsvp_ticket()`.
+ * @since   4.10.9 Use function for text.
+ * @since   4.11.3 Correct getting `$event_id` when using The Events Calendar's "Default Page Template" display template. `$event_id` now relies on the `WP_Query` queried object ID instead of the global `$post` object.
+ * @since   4.11.3 Reformat a bit of the code around the button - no functional changes.
+ * @since   4.12.1 Account for empty post type object, such as if post type got disabled.
+ * @since   TBD Account for inactive ticket providers.
  *
- * @version 4.12.1
+ * @version TBD
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
-// Event Tickets Plus would set this from its own injected template to let us know about editable values
+// Event Tickets Plus would set this from its own injected template to let us know about editable values.
 global $tribe_my_tickets_have_meta;
 
-$rsvp                       = Tribe__Tickets__RSVP::get_instance();
-$view                       = Tribe__Tickets__Tickets_View::instance();
-$event_id                   = get_queried_object_id();
-$event                      = get_post( $event_id );
-$post_type                  = get_post_type_object( $event->post_type );
-$user_id                    = get_current_user_id();
-$provider_id                = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
-$provider                   = call_user_func( array( $provider_id, 'get_instance' ) );
-$event_has_tickets          = ! empty( $provider->get_tickets( $event_id ) );
-$event_has_rsvp             = ! empty( $rsvp->get_tickets( $event ) );
+$rsvp      = Tribe__Tickets__RSVP::get_instance();
+$view      = Tribe__Tickets__Tickets_View::instance();
+$event_id  = get_queried_object_id();
+$event     = get_post( $event_id );
+$post_type = get_post_type_object( $event->post_type );
+$user_id   = get_current_user_id();
+$provider  = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
+
+$event_has_tickets = $event_has_rsvp = false;
+if ( $provider ) {
+	$event_has_tickets = ! empty( $provider->get_tickets( $event_id ) );
+	$event_has_rsvp    = ! empty( $rsvp->get_tickets( $event ) );
+}
+
 $user_has_tickets           = $view->has_ticket_attendees( $event_id, $user_id );
 $user_has_rsvp              = $rsvp->get_attendees_count_going_for_user( $event_id, $user_id );
 $tribe_my_tickets_have_meta = false;
