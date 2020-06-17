@@ -941,6 +941,10 @@ class Tribe__Tickets__Tickets_Handler {
 			$default_provider = tribe_tickets_get_ticket_provider( $post->ID );
 		}
 
+		if ( $default_provider instanceof Tribe__Tickets__Tickets ) {
+			$default_provider = $default_provider->class_name;
+		}
+
 		if (
 			empty( $default_provider )
 			&& class_exists( 'Tribe__Tickets_Plus__Main' )
