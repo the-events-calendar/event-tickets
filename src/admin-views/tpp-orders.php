@@ -1,14 +1,14 @@
 <?php
 /**
- * @var int post_id The current post ID
- * @var WP_Post                                 $post                The current post object
- * @var WP_User                                 $author              The post author
- * @var string                                  $post_singular_label The post type singular label
- * @var int                                     $total_sold          The total number of tickets sold
- * @var array                                   $tickets_sold        A list of PayPal tickets that have at least one sale
- * @var Tribe__Tickets__Commerce__PayPal__Main  $paypal              The tickets handler object
- * @var Tribe__Tickets__Status__Manager         $order_overview      Order breakdown for all statuses
- * @var string                                  $table               The orders table output
+ * @var int post_id The current post ID.
+ * @var WP_Post                                          $post                The current post object.
+ * @var WP_User                                          $author              The post author.
+ * @var string                                           $post_singular_label The post type singular label.
+ * @var int                                              $total_sold          The total number of tickets sold.
+ * @var array                                            $tickets_sold        A list of PayPal tickets that have at least one sale.
+ * @var Tribe__Tickets__Commerce__PayPal__Main           $paypal              The tickets handler object.
+ * @var Tribe__Tickets__Commerce__PayPal__Status_Manager $order_overview      Order breakdown for all statuses.
+ * @var string                                           $table               The orders table output.
  */
 
 /**
