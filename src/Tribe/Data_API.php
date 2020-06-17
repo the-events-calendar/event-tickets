@@ -195,7 +195,7 @@ class Tribe__Tickets__Data_API {
 	public function get_ticket_provider( $post_id ) {
 		$services = $this->detect_by_id( $post_id );
 
-		if( empty( $services['class'] ) ) {
+		if ( empty( $services['class'] ) ) {
 			return false;
 		}
 
@@ -394,11 +394,11 @@ class Tribe__Tickets__Data_API {
 			return [];
 		}
 
-		if( ! empty( $services['class'] ) ) {
+		if ( ! empty( $services['class'] ) ) {
 			$provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $services['class'] );
 		}
 
-		if( empty( $provider ) ) {
+		if ( empty( $provider ) ) {
 			return [];
 		}
 
