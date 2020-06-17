@@ -423,7 +423,7 @@ class Tribe__Tickets__Tickets_Handler {
 		 *
 		 * @param array $relationships List of relationship information for providers.
 		 */
-		 $relationships = apply_filters( 'tribe_tickets_handler_relationships', $relationships );
+		$relationships = apply_filters( 'tribe_tickets_handler_relationships', $relationships );
 
 		foreach ( $relationships as $what => $keys ) {
 			foreach ( $keys as $key => $provider_slug ) {
