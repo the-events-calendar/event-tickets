@@ -922,8 +922,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		try {
 			$attendee_order_id = $this->get_attendee_order_id( $attendee_id, $provider );
-		}
-		catch ( ReflectionException $e ) {
+		} catch ( ReflectionException $e ) {
 			return [];
 		}
 
