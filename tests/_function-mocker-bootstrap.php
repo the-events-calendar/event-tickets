@@ -36,7 +36,7 @@ if ( ! is_dir( $cache_path ) ) {
 	}
 }
 
-echo( "Function Mocker cache path: {$cache_path}\n" );
+codecept_debug( 'Function Mocker cache path: ' . $cache_path );
 
 /*
  * Let's use exclusions and inclusions to really cover only what we need; we're really interested in catching WordPress
