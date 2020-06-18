@@ -19,6 +19,7 @@ class Guest extends WPTestCase {
 
 		$template = tribe( 'tickets.editor.template' );
 		$html     = $template->template( $this->partial_path, [], false );
+		$driver   = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
