@@ -1,7 +1,7 @@
 <p align="center"><a href="https://theeventscalendar.com/products/wordpress-event-tickets/"><img src="https://s3.theeventscalendar.com/uploads/2020/04/ET-Icon.svg" alt="Event Tickets" width="100px" height="auto"></a></p>
 
 
-Welcome to the Event Tickets repository on GitHub. Here you can browse the source, look at open issues and keep track of development.
+Welcome to the Event Tickets repository on GitHub. Here you can browse the source code and keep track of development.
 
 Event Tickets provides a simple way for visitors to RSVP or purchase tickets to your events. As a standalone plugin, it enables you to add RSVPs or tickets to posts or pages. When paired with [The Events Calendar](http://m.tri.be/18tg), you can add that same functionality directly to your event listings.
 
