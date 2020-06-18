@@ -17,7 +17,7 @@
  * @version TBD
  */
 
- $is_unlimited = -1 === $rsvp->remaining();
+$is_unlimited = -1 === $rsvp->remaining();
 
 ?>
 <div class="tribe-tickets__rsvp-availability tribe-common-b3">
