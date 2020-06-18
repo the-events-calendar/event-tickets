@@ -36,6 +36,7 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', array( 'hook' ) );
 		$this->container->singleton( 'tickets.admin.columns', 'Tribe__Tickets__Admin__Columns', array( 'hook' ) );
 		$this->container->singleton( 'tickets.admin.screen-options', 'Tribe__Tickets__Admin__Screen_Options', array( 'hook' ) );
+		$this->container->singleton( 'tickets.admin.settings.display', 'Tribe__Tickets__Admin__Display_Settings', array( 'hook' ) );
 
 		// Status Manager
 		$this->container->singleton( 'tickets.status', 'Tribe__Tickets__Status__Manager', array( 'hook' ) );
@@ -84,6 +85,7 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 			tribe( 'tickets.admin.columns' );
 			tribe( 'tickets.admin.screen-options' );
 			tribe( 'tickets.admin.notices' );
+			tribe( 'tickets.admin.settings.display' );
 		}
 	}
 

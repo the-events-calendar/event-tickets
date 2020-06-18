@@ -23,7 +23,7 @@ class Tribe__Tickets__Assets {
 			[
 				[ 'event-tickets-reset-css', 'reset.css' ],
 				[ 'event-tickets-tickets-css', 'tickets.css', $tickets_deps ],
-				[ 'event-tickets-tickets-rsvp-css', 'rsvp.css', [] ],
+				[ 'event-tickets-tickets-rsvp-css', 'rsvp-v1.css', [] ],
 				[ 'event-tickets-tickets-rsvp-js', 'rsvp.js', [ 'jquery' ] ],
 				[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
 				[ 'event-tickets-details-js', 'ticket-details.js', [] ],
