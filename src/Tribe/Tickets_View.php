@@ -1124,8 +1124,8 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// Enqueue assets.
-		tribe_asset_enqueue( 'tribe-tickets-gutenberg-tickets' );
-		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-tickets-style' );
+		tribe_asset_enqueue( 'tribe-tickets-gutenberg-rsvp' );
+		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-rsvp-style' );
 
 		return $template->template( 'blocks/rsvp', $args, $echo );
 	}
