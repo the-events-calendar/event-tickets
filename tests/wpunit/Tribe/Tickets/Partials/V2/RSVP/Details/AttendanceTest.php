@@ -10,7 +10,7 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker as Attendee_Maker;
 
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 
-class Attendance extends WPTestCase {
+class AttendanceTest extends WPTestCase {
 
 	use MatchesSnapshots;
 	use With_Post_Remapping;

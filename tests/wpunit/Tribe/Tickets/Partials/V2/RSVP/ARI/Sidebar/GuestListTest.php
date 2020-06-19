@@ -8,7 +8,7 @@ use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 
-class GuestList extends WPTestCase {
+class GuestListTest extends WPTestCase {
 
 	use MatchesSnapshots;
 	use With_Post_Remapping;

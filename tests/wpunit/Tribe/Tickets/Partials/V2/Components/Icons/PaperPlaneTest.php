@@ -6,7 +6,7 @@ use Codeception\TestCase\WPTestCase;
 use Spatie\Snapshots\MatchesSnapshots;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
 
-class PaperPlane extends WPTestCase {
+class PaperPlaneTest extends WPTestCase {
 
 	use MatchesSnapshots;
 
