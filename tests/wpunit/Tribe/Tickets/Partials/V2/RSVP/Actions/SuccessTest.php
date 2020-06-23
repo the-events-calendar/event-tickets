@@ -28,6 +28,12 @@ class SuccessTest extends WPTestCase {
 			]
 		);
 
+		$driver->setTimeDependentAttributes(
+			[
+				'data-rsvp-id',
+			]
+		);
+
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
