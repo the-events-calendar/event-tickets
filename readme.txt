@@ -118,12 +118,13 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [TBD] TBD =
+= [4.12.2] 2020-06-24 =
 
 * Fix - Resolve a PHP notice when rendering the Event Tickets Plus field for Birth date [ETP-330]
 * Tweak - Improve the Birth date field styles that could show up without styling under certain contexts. [ET-835]
 * Tweak - Add hook to ticket email template to allow injecting content between ticket details and organizers. [ET-844]
 * Tweak - For the `[tribe-user-event-confirmations]` shortcode, link to both the event and the direct My Tickets page. [ET-792]
+* Language - 39 new strings added, 26 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.12.1.1] 2020-05-29 =
 
