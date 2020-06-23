@@ -21,6 +21,12 @@ class SuccessTest extends WPTestCase {
 
 		$html   = $template->template( $this->partial_path, [], false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'rsvp-',
+			]
+		);
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
