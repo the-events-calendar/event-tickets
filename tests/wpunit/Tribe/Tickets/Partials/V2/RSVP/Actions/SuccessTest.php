@@ -24,6 +24,7 @@ class SuccessTest extends WPTestCase {
 		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
 		$driver->setTolerableDifferencesPrefixes(
 			[
+				'toggle-rsvp-',
 				'rsvp-',
 			]
 		);
