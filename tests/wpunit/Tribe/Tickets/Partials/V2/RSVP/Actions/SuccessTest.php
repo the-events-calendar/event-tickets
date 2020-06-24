@@ -44,13 +44,19 @@ class SuccessTest extends WPTestCase {
 
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+
+		$driver->setTolerableDifferences(
+			[
+				$ticket_id,
+				$event_id,
+			]
+		);
 		$driver->setTolerableDifferencesPrefixes(
 			[
 				'toggle-rsvp-',
 				'rsvp-',
 			]
 		);
-
 		$driver->setTimeDependentAttributes(
 			[
 				'data-rsvp-id',
