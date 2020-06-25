@@ -34,6 +34,8 @@ class SuccessTest extends WPTestCase {
 			]
 		);
 
+
+		// Get ticket.
 		$ticket = tribe( 'tickets.rsvp' )->get_ticket( $event_id, $ticket_id );
 
 		$args = [
