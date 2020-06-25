@@ -47,6 +47,24 @@ class ActionsTest extends WPTestCase {
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
 
+		$driver->setTolerableDifferences(
+			[
+				$ticket_id,
+				$event_id,
+			]
+		);
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'toggle-rsvp-',
+				'rsvp-',
+			]
+		);
+		$driver->setTimeDependentAttributes(
+			[
+				'data-rsvp-id',
+			]
+		);
+
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
@@ -79,6 +97,24 @@ class ActionsTest extends WPTestCase {
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
 
+		$driver->setTolerableDifferences(
+			[
+				$ticket_id,
+				$event_id,
+			]
+		);
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'toggle-rsvp-',
+				'rsvp-',
+			]
+		);
+		$driver->setTimeDependentAttributes(
+			[
+				'data-rsvp-id',
+			]
+		);
+
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
@@ -108,6 +144,24 @@ class ActionsTest extends WPTestCase {
 
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
+
+		$driver->setTolerableDifferences(
+			[
+				$ticket_id,
+				$event_id,
+			]
+		);
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'toggle-rsvp-',
+				'rsvp-',
+			]
+		);
+		$driver->setTimeDependentAttributes(
+			[
+				'data-rsvp-id',
+			]
+		);
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -140,6 +194,24 @@ class ActionsTest extends WPTestCase {
 
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
+
+		$driver->setTolerableDifferences(
+			[
+				$ticket_id,
+				$event_id,
+			]
+		);
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'toggle-rsvp-',
+				'rsvp-',
+			]
+		);
+		$driver->setTimeDependentAttributes(
+			[
+				'data-rsvp-id',
+			]
+		);
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
