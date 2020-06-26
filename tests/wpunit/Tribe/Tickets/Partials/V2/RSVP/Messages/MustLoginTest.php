@@ -45,7 +45,7 @@ class MustLoginTest extends WPTestCase {
 
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
-		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferences( [ $ticket_id, $event_id, home_url(), 'http://wordpress.test' ] );
 
 		$driver->setTolerableDifferencesPrefixes(
 			[
