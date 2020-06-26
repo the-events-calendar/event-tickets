@@ -24,10 +24,10 @@ class FormTest extends WPTestCase {
 	 */
 	public function test_should_render_form_going() {
 		$_GET['step'] = 'success';
-		$template   = tribe( 'tickets.editor.template' );
-		$event      = $this->get_mock_event( 'events/single/1.json' );
-		$event_id   = $event->ID;
-		$ticket_id  = $this->create_rsvp_ticket(
+		$template     = tribe( 'tickets.editor.template' );
+		$event        = $this->get_mock_event( 'events/single/1.json' );
+		$event_id     = $event->ID;
+		$ticket_id    = $this->create_rsvp_ticket(
 			$event_id,
 			[
 				'meta_input' => [
@@ -47,14 +47,18 @@ class FormTest extends WPTestCase {
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
 		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
-		$driver->setTolerableDifferencesPrefixes( [
-			'quantity_',
-		] );
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'quantity_',
+			]
+		);
 
-		$driver->setTimeDependentAttributes( [
-			'data-rsvp-id',
-			'data-product-id',
-		] );
+		$driver->setTimeDependentAttributes(
+			[
+				'data-rsvp-id',
+				'data-product-id',
+			]
+		);
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -64,10 +68,10 @@ class FormTest extends WPTestCase {
 	 */
 	public function test_should_render_form_not_going() {
 		$_GET['step'] = 'success';
-		$template   = tribe( 'tickets.editor.template' );
-		$event      = $this->get_mock_event( 'events/single/1.json' );
-		$event_id   = $event->ID;
-		$ticket_id  = $this->create_rsvp_ticket(
+		$template     = tribe( 'tickets.editor.template' );
+		$event        = $this->get_mock_event( 'events/single/1.json' );
+		$event_id     = $event->ID;
+		$ticket_id    = $this->create_rsvp_ticket(
 			$event_id,
 			[
 				'meta_input' => [
@@ -87,14 +91,18 @@ class FormTest extends WPTestCase {
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
 		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
-		$driver->setTolerableDifferencesPrefixes( [
-			'quantity_',
-		] );
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'quantity_',
+			]
+		);
 
-		$driver->setTimeDependentAttributes( [
-			'data-rsvp-id',
-			'data-product-id',
-		] );
+		$driver->setTimeDependentAttributes(
+			[
+				'data-rsvp-id',
+				'data-product-id',
+			]
+		);
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}

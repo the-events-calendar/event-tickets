@@ -4,7 +4,7 @@
 		<strong>
 			You must be logged in to RSVP.
 			<a
-				href="http://wordpress.test/wp-login.php?tribe-tickets__rsvp69"
+				href="http://wordpress.test/wp-login.php?tribe-tickets__rsvp71"
 				class="tribe-tickets__rsvp-message-link"
 			>
 				Log in here			</a>

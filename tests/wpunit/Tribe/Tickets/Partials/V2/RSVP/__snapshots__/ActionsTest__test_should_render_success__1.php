@@ -12,15 +12,15 @@
 	<div class="tribe-tickets__rsvp-actions-success-going-toggle tribe-common-form-control-toggle">
 		<input
 			class="tribe-common-form-control-toggle__input tribe-tickets__rsvp-actions-success-going-toggle-input"
-			id="toggle-rsvp-17"
+			id="toggle-rsvp-19"
 			name="toggleGroup"
 			type="checkbox"
 			value="toggleOne"
-			data-rsvp-id="17"
+			data-rsvp-id="19"
 		/>
 		<label
 			class="tribe-common-form-control-toggle__label tribe-tickets__rsvp-actions-success-going-toggle-label"
-			for="toggle-rsvp-17"
+			for="toggle-rsvp-19"
 		>
 			Show me on public attendee list		</label>
 			</div>
