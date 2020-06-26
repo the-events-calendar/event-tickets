@@ -47,6 +47,12 @@ class MustLoginTest extends WPTestCase {
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
 		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
 
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'rsvp-',
+			]
+		);
+
 		// Remove the URL + port so it doesn't conflict with URL tolerances.
 		$html = str_replace( 'http://localhost:8080', 'http://wordpress.test', $html );
 
