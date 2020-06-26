@@ -36,6 +36,7 @@
 		@media(--viewport-medium) {
 			border: 0;
 			margin-top: 0;
+			padding-left: var(--spacer-4);
 		}
 	}
 
@@ -90,11 +91,7 @@
 		&:hover,
 		&:focus {
 			background: none;
-
-			&:before,
-			&:after {
-				background-color: var(--color-icon-focus);
-			}
+			border-color: var(--color-border-active);
 		}
 	}
 
@@ -129,6 +126,15 @@
 		@media(--viewport-medium) {
 			@mixin visually-show;
 		}
+
+		&:hover,
+		&:focus {
+			color: var(--color-text-primary);
+		}
+	}
+
+	.tribe-tickets__rsvp-ar-guest-list-item-title--disabled {
+		color: var(--color-text-secondary);
 	}
 
 	.tribe-tickets__rsvp-ar-guest-icon,
