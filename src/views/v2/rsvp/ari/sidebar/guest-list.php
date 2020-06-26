@@ -31,7 +31,7 @@
 	<li class="tribe-tickets__rsvp-ar-guest-list-item">
 		<button>
 			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon--disabled' ] ] ); ?>
-			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-common-a11y-visual-hide">
+			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-tickets__rsvp-ar-guest-list-item-title--disabled tribe-common-a11y-visual-hide">
 				<?php
 				echo esc_html(
 					sprintf(
@@ -47,7 +47,7 @@
 	<li class="tribe-tickets__rsvp-ar-guest-list-item">
 		<button>
 			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon--disabled' ] ] ); ?>
-			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-common-a11y-visual-hide">
+			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-tickets__rsvp-ar-guest-list-item-title--disabled tribe-common-a11y-visual-hide">
 				<?php
 				echo esc_html(
 					sprintf(
