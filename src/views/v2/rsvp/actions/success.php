@@ -21,7 +21,7 @@ $toggle_id = 'toggle-rsvp-' . $rsvp->ID;
 <div class="tribe-tickets__rsvp-actions-success">
 	<div class="tribe-tickets__rsvp-actions-success-going">
 		<em class="tribe-tickets__rsvp-actions-success-going-check-icon"></em>
-		<span class="tribe-tickets__rsvp-actions-success-going-text tribe-common-h6">
+		<span class="tribe-tickets__rsvp-actions-success-going-text tribe-common-h4 tribe-common-h6--min-medium">
 			<?php esc_html_e( "You're going", 'event-tickets' ); ?>
 		</span>
 	</div>
