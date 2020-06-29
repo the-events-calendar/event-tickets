@@ -13,7 +13,8 @@ class Tribe__Tickets__Admin__Display_Settings {
 	 * @since TBD
 	 */
 	public function hook() {
-		add_filter( 'tribe_display_settings_tab_fields', [ $this, 'add_display_settings' ] );
+		// @todo Uncomment this in G20.07
+		//add_filter( 'tribe_display_settings_tab_fields', [ $this, 'add_display_settings' ] );
 	}
 
 	/**
@@ -26,11 +27,6 @@ class Tribe__Tickets__Admin__Display_Settings {
 	 * @return array List of display settings.
 	 */
 	public function add_display_settings( $settings ) {
-		// @todo Remove this in G20.07
-		if ( null === constant( 'TRIBE_TICKETS_RSVP_NEW_VIEWS' ) ) {
-			return $settings;
-		}
-
 		$plugin_path = Tribe__Tickets__Main::instance()->plugin_path;
 		include $plugin_path . 'src/admin-views/tribe-options-display.php';
 
