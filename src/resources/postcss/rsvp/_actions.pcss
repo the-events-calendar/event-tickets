@@ -21,8 +21,8 @@
 
 	.tribe-tickets__rsvp-actions {
 		border-top: 1px dashed var(--color-border-secondary);
-		margin-top: var(--spacer-6);
-		padding: var(--spacer-6) 0;
+		margin-top: var(--spacer-10);
+		padding: var(--spacer-10) 0;
 		width: 100%;
 
 
@@ -40,9 +40,16 @@
 	 * RSVP Actions (Going / Can't go)
 	 * ------------------------------------------------------------------------- */
 
-	.tribe-tickets__rsvp-actions-rsvp-going,
-	.tribe-tickets__rsvp-actions-rsvp-not-going {
+	.tribe-tickets__rsvp-actions-rsvp-going {
 		margin-top: var(--spacer-2);
+	}
+
+	.tribe-tickets__rsvp-actions-rsvp-not-going {
+		margin-top: var(--spacer-8);
+
+		@media(--viewport-medium) {
+			margin-top: var(--spacer-5);
+		}
 	}
 
 	/* -------------------------------------------------------------------------
@@ -90,12 +97,13 @@
 	}
 
 	.tribe-tickets__rsvp-actions-success-going-toggle {
-		margin-top: var(--spacer-2);
+		margin-top: var(--spacer-4);
 		display: flex;
 		justify-content: center;
 
 		@media(--viewport-medium) {
 			justify-content: flex-start;
+			margin-top: var(--spacer-1);
 		}
 	}
 

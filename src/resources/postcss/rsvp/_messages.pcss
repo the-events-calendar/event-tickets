@@ -11,7 +11,11 @@
 		align-items: center;
 		background-color: var(--color-accent-primary-background);
 		border-radius: var(--border-radius-default);
-		padding: var(--spacer-3);
+		padding: var(--spacer-4) var(--spacer-3);
+
+		@media(--viewport-medium) {
+			padding: var(--spacer-3);
+		}
 	}
 
 	.tribe-tickets__rsvp-message--success-icon {
