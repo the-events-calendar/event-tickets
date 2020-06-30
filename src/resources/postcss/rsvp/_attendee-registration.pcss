@@ -41,12 +41,23 @@
 	}
 
 	.tribe-tickets__rsvp-ar-quantity {
+		display: flex;
+		align-items: center;
 		margin-top: var(--spacer-4);
+
+		@media(--viewport-medium) {
+			display: block;
+		}
 	}
 
 	.tribe-tickets__rsvp-ar-quantity-input {
 		align-items: center;
 		display: flex;
+		margin-left: var(--spacer-3);
+
+		@media (--viewport-medium) {
+			margin-left: 0;
+		}
 
 		input[type="number"] {
 			appearance: textfield;
