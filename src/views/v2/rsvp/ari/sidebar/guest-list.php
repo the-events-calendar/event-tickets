@@ -13,7 +13,7 @@
 ?>
 <ul class="tribe-tickets__rsvp-ar-guest-list tribe-common-h6">
 	<li class="tribe-tickets__rsvp-ar-guest-list-item">
-		<button>
+		<button class="tribe-tickets__rsvp-ar-guest-list-item-button">
 			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon' ] ] ); ?>
 			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-common-a11y-visual-hide">
 				<?php
@@ -29,9 +29,9 @@
 		</button>
 	</li>
 	<li class="tribe-tickets__rsvp-ar-guest-list-item">
-		<button>
-			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon--disabled' ] ] ); ?>
-			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-tickets__rsvp-ar-guest-list-item-title--disabled tribe-common-a11y-visual-hide">
+		<button class="tribe-tickets__rsvp-ar-guest-list-item-button--inactive">
+			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon--inactive' ] ] ); ?>
+			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-tickets__rsvp-ar-guest-list-item-title--inactive tribe-common-a11y-visual-hide">
 				<?php
 				echo esc_html(
 					sprintf(
@@ -45,9 +45,9 @@
 		</button>
 	</li>
 	<li class="tribe-tickets__rsvp-ar-guest-list-item">
-		<button>
-			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon--disabled' ] ] ); ?>
-			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-tickets__rsvp-ar-guest-list-item-title--disabled tribe-common-a11y-visual-hide">
+		<button class="tribe-tickets__rsvp-ar-guest-list-item-button--inactive">
+			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon--inactive' ] ] ); ?>
+			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-tickets__rsvp-ar-guest-list-item-title--inactive tribe-common-a11y-visual-hide">
 				<?php
 				echo esc_html(
 					sprintf(

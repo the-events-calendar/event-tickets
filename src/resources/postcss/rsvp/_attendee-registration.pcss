@@ -132,11 +132,8 @@
 		}
 	}
 
-	.tribe-tickets__rsvp-ar-guest-list-item-title {
-
-		@media(--viewport-medium) {
-			@mixin visually-show;
-		}
+	.tribe-tickets__rsvp-ar-guest-list-item-button,
+	.tribe-tickets__rsvp-ar-guest-list-item-button--inactive {
 
 		&:hover,
 		&:focus {
@@ -144,12 +141,19 @@
 		}
 	}
 
-	.tribe-tickets__rsvp-ar-guest-list-item-title--disabled {
+	.tribe-tickets__rsvp-ar-guest-list-item-button--inactive {
 		color: var(--color-text-secondary);
 	}
 
+	.tribe-tickets__rsvp-ar-guest-list-item-title {
+
+		@media(--viewport-medium) {
+			@mixin visually-show;
+		}
+	}
+
 	.tribe-tickets__rsvp-ar-guest-icon,
-	.tribe-tickets__rsvp-ar-guest-icon--disabled {
+	.tribe-tickets__rsvp-ar-guest-icon--inactive {
 		display: inline-block;
 		height: 17px;
 		margin-right: var(--spacer-5);
@@ -170,7 +174,7 @@
 		}
 	}
 
-	.tribe-tickets__rsvp-ar-guest-icon--disabled {
+	.tribe-tickets__rsvp-ar-guest-icon--inactive {
 		path {
 			fill: var(--color-icon-disabled);
 			stroke: var(--color-icon-disabled);
