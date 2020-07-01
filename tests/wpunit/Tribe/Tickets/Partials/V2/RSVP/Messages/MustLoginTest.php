@@ -39,7 +39,7 @@ class MustLoginTest extends WPTestCase {
 
 		$args = [
 			'must_login' => true,
-			'login_url'  => 'http://wordpress.test/wp-login.php',
+			'login_url'  => 'http://localhost:8080/wp-login.php',
 			'rsvp'       => $ticket,
 		];
 
@@ -52,9 +52,6 @@ class MustLoginTest extends WPTestCase {
 				'rsvp-',
 			]
 		);
-
-		// Remove the URL + port so it doesn't conflict with URL tolerances.
-		$html = str_replace( 'http://localhost:8080', 'http://wordpress.test', $html );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
