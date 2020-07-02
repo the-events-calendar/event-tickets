@@ -40,7 +40,7 @@ if ( ! $must_login ) {
 			?>
 
 			<a
-				href="<?php echo esc_url( $login_url . '?tribe-tickets__rsvp' . $rsvp->ID ); ?>"
+				href="<?php echo esc_url( $login_url . '?tribe-tickets__rsvp-' . $rsvp->ID ); ?>"
 				class="tribe-tickets__rsvp-message-link"
 			>
 				<?php esc_html_e( 'Log in here', 'event-tickets' ); ?>
