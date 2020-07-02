@@ -14,7 +14,7 @@
 
 ?>
 <div class="tribe-tickets__rsvp-ar-quantity">
-	<span class="tribe-common-h7">
+	<span class="tribe-common-h7 tribe-common-h--alt">
 		<?php
 		echo esc_html(
 			sprintf(

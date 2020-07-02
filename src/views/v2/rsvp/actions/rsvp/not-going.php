@@ -37,7 +37,7 @@ if ( ! $show_not_going ) {
 ?>
 <div class="tribe-tickets__rsvp-actions-rsvp-not-going">
 	<button
-		class="tribe-common-cta tribe-common-cta--alt"
+		class="tribe-common-cta tribe-common-cta--alt tribe-tickets__rsvp-actions-button-not-going"
 		<?php tribe_disabled( $must_login ); ?>
 	>
 		<?php esc_html_e( "Can't go", 'event-tickets' ); ?>
