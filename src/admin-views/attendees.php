@@ -11,31 +11,21 @@ $pto      = get_post_type_object( $event->post_type );
 $singular = $pto->labels->singular_name;
 
 /**
- * Whether we should display the "Attendees" title.
+ * Whether we should display the "Attendees List" title.
  *
  * @since  4.6.2
  * @since  4.12.1 Append the post ID to the Attendees page title and each Ticket's name.
+ * @since  TBD Tweak wording from "Attendees" to "Attendees List" and change default from enabled to disabled.
  *
  * @param boolean                         $show_title
  * @param Tribe__Tickets__Tickets_Handler $handler
  */
-$show_title = apply_filters( 'tribe_tickets_attendees_show_title', true, $attendees );
+$show_title = apply_filters( 'tribe_tickets_attendees_show_title', false, $attendees );
 ?>
 
 <div class="wrap tribe-report-page">
 	<?php if ( $show_title ) : ?>
-		<h1>
-			<?php
-			echo esc_html(
-				sprintf(
-				// Translators: 1: the post title, 2: the post ID.
-					_x( 'Attendees for: %1$s [#%2$d]', 'attendees report screen heading', 'event-tickets' ),
-					get_the_title( $event_id ),
-					$event_id
-				)
-			);
-			?>
-		</h1>
+		<h1><?php esc_html_e( 'Attendees List', 'event-tickets' ); ?></h1>
 	<?php endif; ?>
 	<div id="tribe-attendees-summary" class="welcome-panel tribe-report-panel">
 		<div class="welcome-panel-content">
