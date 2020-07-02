@@ -16,18 +16,16 @@
  * @version TBD
  */
 
-$classes = [ 'tribe-tickets__rsvp-attendance-number' ];
+$classes = [ 'tribe-tickets__rsvp-attendance-number', 'tribe-common-h4' ];
 if ( ! $rsvp->show_description() || empty( $rsvp->description ) ) {
-	$classes[] = 'tribe-common-h1';
-} else {
-	$classes[] = 'tribe-common-h4';
+	$classes[] = 'tribe-tickets__rsvp-attendance-number--no-description';
 }
 ?>
 <div class="tribe-tickets__rsvp-attendance">
 	<span <?php tribe_classes( $classes ); ?>>
 		<?php echo esc_html( $rsvp->qty_sold ); ?>
 	</span>
-	<span class="tribe-tickets__rsvp-attendance-going tribe-common-b3">
+	<span class="tribe-tickets__rsvp-attendance-going tribe-common-h7 tribe-common-h--alt tribe-common-b3--min-medium">
 		<?php esc_html_e( 'Going', 'event-tickets' ); ?>
 	</span>
 </div>
