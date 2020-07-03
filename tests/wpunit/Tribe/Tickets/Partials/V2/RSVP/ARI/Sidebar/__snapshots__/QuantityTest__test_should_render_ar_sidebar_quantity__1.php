@@ -1,5 +1,5 @@
 <?php return '<div class="tribe-tickets__rsvp-ar-quantity">
-	<span class="tribe-common-h7">
+	<span class="tribe-common-h7 tribe-common-h--alt">
 		Total Guests	</span>
 
 	<div class="tribe-tickets__rsvp-ar-quantity-input">
