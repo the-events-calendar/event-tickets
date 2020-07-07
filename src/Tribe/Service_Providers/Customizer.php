@@ -72,7 +72,7 @@ class Customizer extends \tad_DI52_ServiceProvider {
 			 * Overrides from TEC when V2 is not active.
 			 */
 
-			 // overrides for common base/full/typography/_ctas.pcss.
+			// overrides for common base/full/typography/_ctas.pcss.
 			$template .= '
 				.tribe-common.event-tickets .tribe-common-cta--alt,
 				.tribe-common.event-tickets .tribe-common-cta--alt:active,
