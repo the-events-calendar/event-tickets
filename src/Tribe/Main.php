@@ -300,6 +300,9 @@ class Tribe__Tickets__Main {
 		Tribe__Main::instance();
 
 		add_action( 'tribe_common_loaded', [ $this, 'bootstrap' ], 0 );
+
+		// Customizer support.
+		tribe_register_provider( Tribe\Tickets\Service_Providers\Customizer::class );
 	}
 
 	/**
