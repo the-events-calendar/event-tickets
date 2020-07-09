@@ -2,7 +2,9 @@
 
 namespace Tribe\Tickets;
 
+use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__Data_API as Data_API;
+use Tribe__Tickets__RSVP as RSVP;
 
 /**
  * Class IsProviderActiveTest
@@ -21,13 +23,13 @@ class IsProviderActiveTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_determine_rsvp_is_active_provider() {
 		// Instance.
-		$rsvp = tribe( 'Tribe__Tickets__RSVP' );
+		$rsvp = tribe( RSVP::class );
 
 		$instance = is_object( $rsvp ) && tribe_tickets_is_provider_active( $rsvp );
 		$this->assertTrue( $instance, 'Checking against an instance should have worked.' );
 
 		// Class string.
-		$class = tribe_tickets_is_provider_active( 'Tribe__Tickets__RSVP' );
+		$class = tribe_tickets_is_provider_active( RSVP::class );
 		$this->assertTrue( $class, 'Checking against a class name string should have worked.' );
 
 		// Slug.
@@ -43,13 +45,13 @@ class IsProviderActiveTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_determine_tribe_commerce_is_not_active_provider() {
 		// Instance.
-		$tpp = tribe( 'Tribe__Tickets__Commerce__PayPal__Main' );
+		$tpp = tribe( PayPal::class );
 
 		$instance = is_object( $tpp ) && ! tribe_tickets_is_provider_active( $tpp );
 		$this->assertTrue( $instance, 'Checking against an instance should have worked.' );
 
 		// Class string.
-		$class = tribe_tickets_is_provider_active( 'Tribe__Tickets__Commerce__PayPal__Main' );
+		$class = tribe_tickets_is_provider_active( PayPal::class );
 		$this->assertFalse( $class, 'Checking against a class name string should have worked.' );
 
 		// Slug.
@@ -69,7 +71,7 @@ class IsProviderActiveTest extends \Codeception\TestCase\WPTestCase {
 		add_filter(
 			'tribe_tickets_get_modules',
 			function ( $modules ) {
-				$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
+				$modules[ PayPal::class ] = tribe( 'tickets.commerce.paypal' )->plugin_name;
 
 				return $modules;
 			}
@@ -79,13 +81,13 @@ class IsProviderActiveTest extends \Codeception\TestCase\WPTestCase {
 		tribe_singleton( 'tickets.data_api', new Data_API );
 
 		// Instance.
-		$tpp = tribe( 'Tribe__Tickets__Commerce__PayPal__Main' );
+		$tpp = tribe( PayPal::class );
 
 		$instance = is_object( $tpp ) && tribe_tickets_is_provider_active( $tpp );
 		$this->assertTrue( $instance, 'Checking against an instance should have worked.' );
 
 		// Class string.
-		$class = tribe_tickets_is_provider_active( 'Tribe__Tickets__Commerce__PayPal__Main' );
+		$class = tribe_tickets_is_provider_active( PayPal::class );
 		$this->assertTrue( $class, 'Checking against a class name string should have worked.' );
 
 		// Slug.
