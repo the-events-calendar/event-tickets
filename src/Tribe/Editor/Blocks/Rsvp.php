@@ -245,7 +245,7 @@ extends Tribe__Editor__Blocks__Abstract {
 						'cancelText' => esc_js( 'Are you sure you want to cancel?', 'event-tickets' )
 					],
 				],
-				'groups' => 'tribe-tickets-rsvp',
+				'groups'   => 'tribe-tickets-rsvp',
 			]
 		);
 
@@ -255,7 +255,7 @@ extends Tribe__Editor__Blocks__Abstract {
 			'v2/rsvp-block.js',
 			[ 'jquery' ],
 			null,
-			[ 'groups' => 'tribe-tickets-rsvp' ],
+			[ 'groups' => 'tribe-tickets-rsvp' ]
 		);
 
 		// @todo: Remove this once we solve the common breakpoints vs container based.
