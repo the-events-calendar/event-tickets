@@ -242,7 +242,7 @@ extends Tribe__Editor__Blocks__Abstract {
 					'name' => 'TribeRsvp',
 					'data' => [
 						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-						'cancelText' => esc_js( 'Are you sure you want to cancel?', 'event-tickets' )
+						'cancelText' => esc_js( 'Are you sure you want to cancel?', 'event-tickets' ),
 					],
 				],
 				'groups'   => 'tribe-tickets-rsvp',
