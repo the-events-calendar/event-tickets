@@ -1,0 +1,39 @@
+/**
+ * Event Tickets - RSVP Structure
+ *
+ * @since TBD
+ *
+ */
+
+.event-tickets {
+
+	.tribe-tickets__rsvp-wrapper {
+		background-color: var(--color-background);
+		border-radius: var(--border-radius-default);
+		border: 1px solid var(--color-border-secondary);
+		max-width: 580px;
+		overflow: hidden;
+		position: relative;
+		width: 100%;
+		transition: all 0.3s ease;
+		margin-top: var(--spacer-6);
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+	}
+
+	.tribe-tickets__rsvp {
+		padding-left: var(--grid-gutter-small-half);
+		padding-right: var(--grid-gutter-small-half);
+
+		/* @todo: re-check once Rachel adds spacing to the designs in Figma. */
+		padding-top: var(--spacer-5);
+		padding-bottom: var(--spacer-5);
+
+		@media(--viewport-medium) {
+			padding-left: var(--grid-gutter-half);
+			padding-right: var(--grid-gutter-half);
+		}
+	}
+}

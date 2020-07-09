@@ -1,0 +1,66 @@
+/**
+ * Event Tickets - RSVP form.
+ *
+ * @since TBD
+ */
+
+.event-tickets {
+
+	.tribe-common-c-btn:disabled {
+		background-color: var(--color-accent-primary);
+		cursor: not-allowed;
+	}
+
+	button.tribe-common-cta:disabled {
+		cursor: not-allowed;
+	}
+
+	.tribe-tickets__rsvp-form-wrapper {
+		padding: var(--spacer-5);
+	}
+
+	.tribe-tickets__rsvp-form-title {
+		border-bottom: 1px dashed var(--color-border-secondary);
+		padding-bottom: var(--spacer-5);
+
+		@media(--viewport-medium) {
+			border: none;
+			padding-bottom: 0;
+		}
+	}
+
+	.tribe-tickets__rsvp-form-content {
+		margin-top: var(--spacer-5);
+	}
+
+	.tribe-tickets__rsvp-form-buttons {
+		display: flex;
+		align-items: baseline;
+		justify-content: flex-end;
+		padding-top: var(--spacer-4);
+
+		> * {
+			margin-left: var(--spacer-4);
+		}
+	}
+
+	.tribe-tickets__form input[type="number"].tribe-tickets__rsvp-form-input-number {
+
+		@media(--viewport-medium) {
+			max-width: 140px;
+		}
+	}
+
+	.tribe-tickets__rsvp-form-button {
+		width: auto;
+	}
+
+	.tribe-tickets__rsvp-form-button--cancel {
+		color: var(--color-text-secondary);
+
+		&:focus,
+		&:hover {
+			color: var(--color-text-primary);
+		}
+	}
+}
