@@ -44,9 +44,6 @@ tribe.tickets.rsvp.manager = {};
 		container: '.tribe-tickets__rsvp-wrapper',
 		loader: '.tribe-common-c-loader',
 		hiddenElement: '.tribe-common-a11y-hidden',
-		goingButton: '.tribe-tickets__rsvp-actions-button-going',
-		notGoingButton: '.tribe-tickets__rsvp-actions-button-not-going',
-		cancelButton: '.tribe-tickets__rsvp-form-button--cancel',
 	};
 
 	/**
@@ -96,7 +93,7 @@ tribe.tickets.rsvp.manager = {};
 	};
 
 	/**
-	 * Setup the container for views management
+	 * Setup the container for RSVP management
 	 *
 	 * @since TBD
 	 *
@@ -111,56 +108,6 @@ tribe.tickets.rsvp.manager = {};
 		var $container = $( container );
 
 		$container.trigger( 'beforeSetup.tribeTicketsRsvp', [ index, $container ] );
-		var data  = {};
-		/*
-		var rsvpId = $container.data( 'rsvp-id' );
-
-		var $goingButton = $container.find( obj.selectors.goingButton );
-
-		$goingButton.each( function( index, button ) {
-			$( button ).on( 'click', function() {
-				data = {
-					action: 'tribe_tickets_rsvp',
-					ticket_id: rsvpId,
-					step: 'going',
-				};
-
-				obj.request( data, $container );
-			} );
-		} );
-
-		var $notGoingButton = $container.find( obj.selectors.notGoingButton );
-
-		$notGoingButton.each( function( index, button ) {
-			$( button ).on( 'click', function() {
-				data = {
-					action: 'tribe_tickets_rsvp',
-					ticket_id: rsvpId,
-					step: 'not-going',
-				};
-
-				obj.request( data, $container );
-			} );
-		} );
-
-		var $cancelButton = $container.find( obj.selectors.cancelButton );
-
-		$cancelButton.each( function( index, button ) {
-			$( button ).on( 'click', function() {
-
-				if ( ! confirm( 'Are you sure you want to cancel?' ) ) {
-					return;
-				}
-
-				data = {
-					action: 'tribe_tickets_rsvp',
-					ticket_id: rsvpId,
-					step: null,
-				};
-
-				obj.request( data, $container );
-			} );
-		} );*/
 
 		$container.trigger( 'afterSetup.tribeTicketsRsvp', [ index, $container ] );
 	};
