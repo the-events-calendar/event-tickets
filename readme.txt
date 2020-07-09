@@ -2,8 +2,8 @@
 
 Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell, juanfra
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
-Requires at least: 4.9
-Tested up to: 5.4.1
+Requires at least: 4.9.14
+Tested up to: 5.4.2
 Stable tag: 4.12.2
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.12.2] 2020-06-24 =
 
+* Feature - Added a preview of the new RSVP refresh. View the non-functional demo http://m.tri.be/refreshrsvp.
 * Fix - Resolve a PHP notice when rendering the Event Tickets Plus field for Birth date [ETP-330]
 * Tweak - Improve the Birth date field styles that could show up without styling under certain contexts. [ET-835]
 * Tweak - Add hook to ticket email template to allow injecting content between ticket details and organizers. [ET-844]
