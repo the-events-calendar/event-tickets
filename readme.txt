@@ -118,16 +118,19 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Tweak - Add `tribe_tickets_is_provider_active()` template function so we can more easily check if a ticket's commerce provider is currently active before using its class methods. [ET-843]
+* Tweak - Add `\Tribe__Tickets_Plus__Tickets::get_attendee_optout_key()` to simplify getting the optout key regardless of ticket provider class and accounting for legacy code. [ETP-843]
+* Tweak - Updated `\Tribe__Tickets__Status__Manager::get_provider_slug()` and added `\Tribe__Tickets__Status__Manager::get_provider_class_from_slug()` for convenient and consistent lookups. [ETP-843]
+* Tweak - Add `\Tribe__Tickets__Tickets::get_ticket_provider_instance()` to consistently and more concisely get a ticket provider's instance only if it is active. Update `\Tribe__Tickets__Tickets::get_ticket_provider_instance()` to return a class instance instead of class name string, for more robust usage. Multiple derivative functions and template files updated accordingly. Backwards compatibility for this resolved with adding a `\Tribe__Tickets__Tickets::__toString()` method that will handle usages of the class object when called as a string. [ET-843]
+
 = [4.12.2] 2020-06-24 =
 
 * Feature - Added a preview of the new RSVP refresh. View the non-functional demo http://m.tri.be/refreshrsvp.
 * Fix - Resolve a PHP notice when rendering the Event Tickets Plus field for Birth date [ETP-330]
 * Tweak - Improve the Birth date field styles that could show up without styling under certain contexts. [ET-835]
 * Tweak - Add hook to ticket email template to allow injecting content between ticket details and organizers. [ET-844]
-* Tweak - Add `tribe_tickets_is_provider_active()` template function so we can more easily check if a ticket's commerce provider is currently active before using its class methods. [ET-843]
-* Tweak - Add `\Tribe__Tickets_Plus__Tickets::get_attendee_optout_key()` to simplify getting the optout key regardless of ticket provider class and accounting for legacy code. [ETP-843]
-* Tweak - Updated `\Tribe__Tickets__Status__Manager::get_provider_slug()` and added `\Tribe__Tickets__Status__Manager::get_provider_class_from_slug()` for convenient and consistent lookups. [ETP-843]
-* Tweak - Add `\Tribe__Tickets__Tickets::get_ticket_provider_instance()` to consistently and more concisely get a ticket provider's instance only if it is active. Update `\Tribe__Tickets__Tickets::get_ticket_provider_instance()` to return a class instance instead of class name string, for more robust usage. Multiple derivative functions and template files updated accordingly. Backwards compatibility for this resolved with adding a `\Tribe__Tickets__Tickets::__toString()` method that will handle usages of the class object when called as a string. [ET-843]
 * Tweak - For the `[tribe-user-event-confirmations]` shortcode, link to both the event and the direct My Tickets page. [ET-792]
 * Language - 39 new strings added, 26 updated, 0 fuzzied, and 0 obsoleted
 
