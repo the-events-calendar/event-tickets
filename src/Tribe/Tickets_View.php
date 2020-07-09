@@ -1114,7 +1114,7 @@ class Tribe__Tickets__Tickets_View {
 		// Maybe render the new views.
 		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
 			// Enqueue new assets.
-			tribe_asset_enqueue( 'tribe-tickets-rsvp' );
+			tribe_asset_enqueue_group( 'tribe-tickets-rsvp' );
 			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
 			tribe_asset_enqueue( 'tribe-tickets-form-style' );
 			// @todo: Remove this once we solve the common breakpoints vs container based.
