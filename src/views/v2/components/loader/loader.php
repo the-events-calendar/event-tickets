@@ -12,10 +12,6 @@
  * @version TBD
  */
 
-if ( empty( $text ) ) {
-	$text = $this->get( 'text' ) ?: esc_html__( 'Loading...', 'event-tickets' );
-}
-
 if ( empty( $loader_classes ) ) {
 	$loader_classes = $this->get( 'classes' ) ?: [];
 }
