@@ -239,7 +239,7 @@ extends Tribe__Editor__Blocks__Abstract {
 				'jquery',
 				'tribe-common',
 				'tribe-tickets-rsvp-block',
-				'tribe-tickets-rsvp-tooltip'
+				'tribe-tickets-rsvp-tooltip',
 			],
 			null,
 			[
