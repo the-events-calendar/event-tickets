@@ -153,17 +153,9 @@ tribe.tickets.rsvp.block = {};
 		var $notGoingButton = $container.find( obj.selectors.notGoingButton );
 		var $cancelButton = $container.find( obj.selectors.cancelButton );
 
-		$goingButton.each( function( index, button ) {
-			$( button ).off();
-		} );
-
-		$notGoingButton.each( function( index, button ) {
-			$( button ).off();
-		} );
-
-		$cancelButton.each( function( index, button ) {
-			$( button ).off();
-		} );
+		$goingButton.off();
+		$notGoingButton.off();
+		$cancelButton.off();
 	};
 
 	/**
