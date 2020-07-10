@@ -116,8 +116,12 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 */
 		$cart_has_required_meta = (bool) apply_filters( 'tribe_tickets_attendee_registration_has_required_meta', ! empty( $tickets_in_cart ), $tickets_in_cart );
 
-		// Get the checkout URL, it'll be added to the checkout button
-		$checkout_url = tribe( 'tickets.attendee_registration' )->get_checkout_url();
+		// Get the checkout URL, it'll be added to the checkout button.
+
+		/** @var Tribe__Tickets__Attendee_Registration__Main $attendee_registration */
+		$attendee_registration = tribe( 'tickets.attendee_registration' );
+
+		$checkout_url = $attendee_registration->get_checkout_url();
 
 		/**
 		 * Filter to check if there's any required meta that wasn't filled in
@@ -148,18 +152,13 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		wp_localize_script(
 			'event-tickets-registration-page-scripts',
 			'TribeCurrency',
-			[
-				'formatting' => json_encode( $currency )
-			]
+			[ 'formatting' => json_encode( $currency ) ]
 		);
 		wp_localize_script(
 			'event-tickets-registration-page-scripts',
 			'TribeCartEndpoint',
-			[
-				'url' => tribe_tickets_rest_url( '/cart/' )
-			]
+			[ 'url' => tribe_tickets_rest_url( '/cart/' ) ]
 		);
-
 
 		wp_enqueue_style( 'dashicons' );
 

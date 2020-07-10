@@ -56,7 +56,10 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 	public function render() {
 		ob_start();
 
-		echo tribe( 'tickets.attendee_registration.view' )->display_attendee_registration_shortcode();
+		/** @var Tribe__Tickets__Attendee_Registration__View $view */
+		$view = tribe( 'tickets.attendee_registration.view' );
+
+		echo $view->display_attendee_registration_shortcode();
 
 		return ob_get_clean();
 	}
