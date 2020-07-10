@@ -1091,6 +1091,7 @@ class Tribe__Tickets__Tickets_View {
 			'must_login'       => ! is_user_logged_in() && $rsvp->login_required(),
 			'login_url'        => Tribe__Tickets__Tickets::get_login_url( $post_id ),
 			'threshold'        => $blocks_rsvp->get_threshold( $post_id ),
+			'step'             => null,
 		];
 
 		// Add the rendering attributes into global context.
@@ -1114,7 +1115,7 @@ class Tribe__Tickets__Tickets_View {
 		// Maybe render the new views.
 		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
 			// Enqueue new assets.
-			tribe_asset_enqueue( 'tribe-tickets-rsvp' );
+			tribe_asset_enqueue_group( 'tribe-tickets-rsvp' );
 			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
 			tribe_asset_enqueue( 'tribe-tickets-form-style' );
 			// @todo: Remove this once we solve the common breakpoints vs container based.
