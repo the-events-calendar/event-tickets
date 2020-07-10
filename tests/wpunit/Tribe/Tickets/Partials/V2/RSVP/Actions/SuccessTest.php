@@ -62,6 +62,7 @@ class SuccessTest extends WPTestCase {
 		$driver->setTimeDependentAttributes(
 			[
 				'data-rsvp-id',
+				'tribe-tickets-tooltip-content-',
 			]
 		);
 
