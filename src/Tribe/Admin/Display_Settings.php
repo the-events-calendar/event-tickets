@@ -13,8 +13,7 @@ class Tribe__Tickets__Admin__Display_Settings {
 	 * @since TBD
 	 */
 	public function hook() {
-		// @todo Uncomment this in G20.07
-		//add_filter( 'tribe_display_settings_tab_fields', [ $this, 'add_display_settings' ] );
+		add_filter( 'tribe_display_settings_tab_fields', [ $this, 'add_display_settings' ] );
 	}
 
 	/**

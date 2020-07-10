@@ -1576,9 +1576,6 @@ function tribe_tickets_rsvp_new_views_is_enabled() {
 		return (boolean) $env_var;
 	}
 
-	// @todo Remove this in G20.07
-	return false;
-
 	// Determine if ET was installed at version 4.12.2+.
 	$should_default_to_on = ! tribe_installed_before( 'Tribe__Tickets__Main', '4.12.2' );
 
