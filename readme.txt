@@ -118,6 +118,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Tweak - Layout improvements for Event Tickets Plus' Attendee Information's Birth Date field. [ET-875]
+
 = [4.12.2] 2020-06-24 =
 
 * Feature - Added a preview of the new RSVP refresh. View the non-functional demo http://m.tri.be/refreshrsvp.
