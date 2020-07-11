@@ -120,7 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [TBD] TBD =
 
-* Tweak - Layout improvements for Event Tickets Plus' Attendee Information's Birth Date field. [ET-875]
+* Tweak - Layout improvements for Attendee Information's Birth Date field. [ET-875]
 
 = [4.12.2] 2020-06-24 =
 
