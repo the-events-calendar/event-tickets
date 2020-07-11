@@ -7,7 +7,7 @@
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/birth.php
  *
  * @since 4.12.1 Introduced template.
- * @since TBD Fix PHP notice for undefined variable. Wrap select fields in sub-container.
+ * @since 4.12.2 Fix PHP notice for undefined variable. Wrap select fields in sub-container.
  * @since TBD Add a separate label per input for screen readers.
  *
  * @version TBD
