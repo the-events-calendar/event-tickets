@@ -85,37 +85,38 @@
 	}
 }
 
- .tribe-common,
- .entry .entry-content .tribe-common {
 
-	 .tribe-tickets__title {
-		 color: var(--color-text-primary);
-		 margin: 0 0 var(--spacer-1);
+.tribe-common,
+.entry .entry-content .tribe-common {
+
+	.tribe-tickets__title {
+		color: var(--color-text-primary);
+		margin: 0 0 var(--spacer-1);
 
 		/* Override since we don't have a header at this size */
-		 @media(--viewport-medium) {
-			 font-size: var(--font-size-5);
-		 }
-	 }
+		@media (--viewport-medium) {
+			font-size: var(--font-size-5);
+		}
+	}
 
-	 .tribe-tickets__notice--barred {
+	.tribe-tickets__notice--barred {
 		margin-bottom: var(--spacer-3);
-	 }
+	}
 
 	.tribe-tickets__item {
 		align-items: center;
 		border-top: 1px solid var(--color-border-secondary);
 		display: -ms-grid;
 		display: grid;
-		-ms-grid-columns:  10fr 1fr;
+		-ms-grid-columns: 10fr 1fr;
 		grid-template-columns: 10fr 1fr;
 		-ms-grid-rows: 1fr 1.5fr;
 		grid-template-rows: auto;
 		margin: 0;
 		padding: 12px 0 16px;
 
-		@media(--viewport-medium) {
-			-ms-grid-columns:  6.5fr 2fr;
+		@media (--viewport-medium) {
+			-ms-grid-columns: 6.5fr 2fr;
 			grid-template-columns: 6.5fr 2fr;
 			-ms-grid-rows: 1fr 1.5fr 1fr;
 		}
@@ -125,13 +126,13 @@
 		}
 
 		&.show-optout {
-			-ms-grid-columns:  10fr 1fr;
+			-ms-grid-columns: 10fr 1fr;
 			grid-template-columns: 10fr 1fr;
 			-ms-grid-rows: 1fr 1.5fr 1fr 1fr;
 			grid-template-rows: auto;
 
-			@media(--viewport-medium) {
-				-ms-grid-columns:  6.5fr 2fr 1fr;
+			@media (--viewport-medium) {
+				-ms-grid-columns: 6.5fr 2fr 1fr;
 				grid-template-columns: 6.5fr 2fr 1fr;
 				-ms-grid-rows: 1fr 1.5fr 1fr;
 			}
