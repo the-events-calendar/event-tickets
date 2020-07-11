@@ -8,6 +8,7 @@
  *
  * @since 4.12.1 Introduced template.
  * @since TBD Fix PHP notice for undefined variable. Wrap select fields in sub-container.
+ * @since TBD Add a separate label per input for screen readers.
  *
  * @version TBD
  *
@@ -32,7 +33,6 @@ $classes     = [
 	<div <?php tribe_classes( $classes ); ?> >
 		<label
 			class="tribe-common-b2--min-medium tribe-tickets-meta-label"
-			for="<?php echo esc_attr( $option_id ); ?>"
 		>
 			<?php echo wp_kses_post( $field['label'] ) . ' ' . tribe_required_label( $required ); ?>
 		</label>
@@ -41,10 +41,16 @@ $classes     = [
 		<div class="tribe_horizontal_datepicker__field_group">
 			<!-- Month -->
 			<div class="tribe_horizontal_datepicker">
+				<label
+					for="<?php echo esc_attr( $option_id . '-month' ); ?>"
+					class="tribe-common-a11y-hidden"
+				>
+					<?php echo wp_kses_post( $field['label'] ) . esc_html_x( ' Month', 'birthdate field', 'event-tickets-plus' ); ?>
+				</label>
 				<select
+					id="<?php echo esc_attr( $option_id . '-month' ); ?>"
 					<?php tribe_disabled( $disabled ); ?>
 					<?php tribe_required( $required ); ?>
-					id="<?php echo esc_attr( 'tribe_horizontal_datepicker__field_group' ); ?>"
 					class="tribe_horizontal_datepicker__month"
 				>
 					<option value="" disabled selected><?php esc_html_e( 'Month', 'tribe-event-plus' ); ?></option>
@@ -55,7 +61,14 @@ $classes     = [
 			</div>
 			<!-- Day -->
 			<div class="tribe_horizontal_datepicker">
+				<label
+					for="<?php echo esc_attr( $option_id . '-day' ); ?>"
+					class="tribe-common-a11y-hidden"
+				>
+					<?php echo wp_kses_post( $field['label'] ) . esc_html_x( ' Day', 'birthdate field', 'event-tickets-plus' ); ?>
+				</label>
 				<select
+					id="<?php echo esc_attr( $option_id . '-day' ); ?>"
 					<?php tribe_disabled( $disabled ); ?>
 					<?php tribe_required( $required ); ?>
 					class="tribe_horizontal_datepicker__day"
@@ -68,7 +81,14 @@ $classes     = [
 			</div>
 			<!-- Year -->
 			<div class="tribe_horizontal_datepicker">
+				<label
+					for="<?php echo esc_attr( $option_id . '-year' ); ?>"
+					class="tribe-common-a11y-hidden"
+				>
+					<?php echo wp_kses_post( $field['label'] ) . esc_html_x( ' Year', 'birthdate field', 'event-tickets-plus' ); ?>
+				</label>
 				<select
+					id="<?php echo esc_attr( $option_id . '-year' ); ?>"
 					<?php tribe_disabled( $disabled ); ?>
 					<?php tribe_required( $required ); ?>
 					class="tribe_horizontal_datepicker__year"
