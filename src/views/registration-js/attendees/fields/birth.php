@@ -1,7 +1,6 @@
 <?php
 /**
- * This template renders a Single Ticket content
- * composed by Title and Description currently
+ * This template renders the Birth Date field for Attendee Information.
  *
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/birth.php
