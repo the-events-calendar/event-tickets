@@ -19,8 +19,8 @@ $going = $this->get( 'going' );
 ?>
 
 <form
-	name="tribe-rsvp-form"
-	data-product-id="<?php echo esc_attr( $rsvp->ID ); ?>"
+	name="tribe-tickets-rsvp-form"
+	data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
 >
 	<input type="hidden" name="product_id[]" value="<?php echo esc_attr( absint( $rsvp->ID ) ); ?>">
 	<input type="hidden" name="attendee[order_status]" value="<?php echo esc_attr( $going ); ?>">
@@ -30,6 +30,8 @@ $going = $this->get( 'going' );
 		<?php $this->template( 'v2/rsvp/form/title', [ 'rsvp' => $rsvp, 'going' => $going ] ); ?>
 
 		<div class="tribe-tickets__rsvp-form-content tribe-tickets__form">
+
+			<?php $this->template( 'v2/rsvp/form/error', [ 'rsvp' => $rsvp, 'going' => $going ] ); ?>
 
 			<?php $this->template( 'v2/rsvp/form/fields', [ 'rsvp' => $rsvp, 'going' => $going ] ); ?>
 
