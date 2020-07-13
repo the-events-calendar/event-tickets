@@ -11,13 +11,12 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
+ * @var string|null $step The step the views are on.
  *
  * @since TBD
  *
  * @version TBD
  */
-
-$step = sanitize_text_field( tribe_get_request_var( 'step', '' ) );
 
 if ( 'success' !== $step ) {
 	return;
