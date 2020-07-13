@@ -39,7 +39,8 @@ $toggle_id = 'toggle-rsvp-' . $rsvp->ID;
 				data-js="tribe-tickets-tooltip"
 				data-tooltip-content="#tribe-tickets-tooltip-content-<?php echo esc_attr( $rsvp->ID ); ?>"
 				aria-describedby="tribe-tickets-tooltip-content-<?php echo esc_attr( $rsvp->ID ); ?>"
-			><?php
+			>
+				<?php
 				echo wp_kses_post(
 					sprintf(
 						// Translators: 1: opening span. 2: Closing span.
@@ -52,9 +53,9 @@ $toggle_id = 'toggle-rsvp-' . $rsvp->ID;
 						'</span>'
 					)
 				);
-			?></span>
+				?>
+			</span>
 		</label>
 		<?php $this->template( 'v2/rsvp/actions/success/tooltip', [ 'rsvp' => $rsvp ] ); ?>
 	</div>
 </div>
-
