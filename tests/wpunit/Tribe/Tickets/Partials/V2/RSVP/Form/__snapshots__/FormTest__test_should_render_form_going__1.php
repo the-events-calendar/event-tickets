@@ -1,9 +1,9 @@
 <?php return '
 <form
-	name="tribe-rsvp-form"
-	data-product-id="67"
+	name="tribe-tickets-rsvp-form"
+	data-rsvp-id="7"
 >
-	<input type="hidden" name="product_id[]" value="67">
+	<input type="hidden" name="product_id[]" value="7">
 	<input type="hidden" name="attendee[order_status]" value="going">
 
 	<div class="tribe-tickets__rsvp-form-wrapper">
@@ -13,6 +13,14 @@
 		Please submit your RSVP information, including the total number of guests.	</h3>
 </div>
 		<div class="tribe-tickets__rsvp-form-content tribe-tickets__form">
+
+			<div class="tribe-tickets__form-message tribe-tickets__form-message--error tribe-common-b3 tribe-common-a11y-hidden">
+	<svg  class="tribe-tickets-svgicon tribe-tickets__form-message--error-icon"  xmlns="http://www.w3.org/2000/svg" width="18" height="18"><g fill="none" fill-rule="evenodd" transform="translate(1 1)"><circle cx="8" cy="8" r="7.467" stroke="#141827" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><circle id="dot" cx="8" cy="11.733" r="1.067" fill="#141827" fill-rule="nonzero"/><path stroke="#141827" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 3.733v4.8"/></g></svg>	<span class="tribe-tickets__form-message-text">
+		<strong>
+			Whoops		</strong>
+		<p>There is a field that requires information.</p>
+	</span>
+</div>
 
 			<div class="tribe-common-b1 tribe-tickets__form-field tribe-tickets__form-field--required">
 	<label
@@ -24,8 +32,7 @@
 	</label>
 	<input
 		type="text"
-		id="tribe-tickets-rsvp-name"
-		class="tribe-common-form-control-text__input tribe-tickets__form-field-input"
+		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-name"
 		name="attendee[full_name]"
 		value=""
 		required
@@ -42,8 +49,7 @@
 	</label>
 	<input
 		type="email"
-		id="tribe-tickets-rsvp-email"
-		class="tribe-common-form-control-text__input tribe-tickets__form-field-input"
+		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-email"
 		name="attendee[email]"
 		value=""
 		required
@@ -53,16 +59,15 @@
 <div class="tribe-common-b1 tribe-tickets__form-field tribe-tickets__form-field--required">
 	<label
 		class="tribe-common-b2--min-medium tribe-tickets__form-field-label"
-		for="quantity_67"
+		for="quantity_7"
 	>
 		Number of Guests<span class="screen-reader-text">(required)</span>
 		<span class="tribe-required" aria-hidden="true" role="presentation">*</span>
 	</label>
 	<input
 		type="number"
-		name="quantity_67"
-		name="quantity_67"
-		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-input-number"
+		name="quantity_7"
+		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-input-number tribe-tickets__rsvp-form-field-quantity"
 		value="1"
 		required
 		min="1"
