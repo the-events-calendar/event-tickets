@@ -31,7 +31,7 @@ $going = $this->get( 'going' );
 
 		<div class="tribe-tickets__rsvp-form-content tribe-tickets__form">
 
-			<?php $this->template( 'v2/rsvp/form/error', [ 'rsvp' => $rsvp, 'going' => $going ] ); ?>
+			<?php $this->template( 'v2/rsvp/form/error' ); ?>
 
 			<?php $this->template( 'v2/rsvp/form/fields', [ 'rsvp' => $rsvp, 'going' => $going ] ); ?>
 
