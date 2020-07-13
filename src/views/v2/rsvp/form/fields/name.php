@@ -34,8 +34,7 @@ $name = apply_filters( 'tribe_tickets_rsvp_form_full_name', '', $this );
 	</label>
 	<input
 		type="text"
-		id="tribe-tickets-rsvp-name"
-		class="tribe-common-form-control-text__input tribe-tickets__form-field-input"
+		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-name"
 		name="attendee[full_name]"
 		value="<?php echo esc_attr( $name ); ?>"
 		required
