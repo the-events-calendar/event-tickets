@@ -196,7 +196,7 @@ tribe.tickets.rsvp.block = {};
 	};
 
 	/**
-	 * Binds events for the RSVP.
+	 * Binds events for the RSVP form.
 	 *
 	 * @since TBD
 	 *
