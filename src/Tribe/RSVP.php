@@ -294,8 +294,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'threshold'  => $blocks_rsvp->get_threshold( $post_id ),
 		];
 
+		$args['process_result'] = $this->process_rsvp_step( $args );
+
 		/**
-		 * Handle processing for the RSVP step if necessary.
+		 * Allow filtering of the template arguments used.
 		 *
 		 * @since TBD
 		 *
@@ -311,17 +313,45 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 *      @type int                           $threshold  The RSVP ticket threshold.
 		 * }
 		 */
-		do_action( 'tribe_tickets_rsvp_process_rsvp_step', $args );
+		$args = apply_filters( 'tribe_tickets_rsvp_render_step_template_args', $args );
 
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
 
-		$html = $template->template( 'v2/components/loader/loader', [], false );
+		$html  = $template->template( 'v2/components/loader/loader', [], false );
 		$html .= $template->template( 'v2/rsvp/content', $args, false );
 
 		$response['html'] = $html;
 
 		return wp_send_json_success( $response );
+	}
+
+	/**
+	 * Handle processing the RSVP step based on current arguments.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args {
+	 *      The list of step template arguments.
+	 *
+	 *      @type int                           $rsvp_id    The RSVP ticket ID.
+	 *      @type int                           $post_id    The ticket ID.
+	 *      @type Tribe__Tickets__Ticket_Object $rsvp       The RSVP ticket object.
+	 *      @type null|string                   $step       Which step being rendered.
+	 *      @type boolean                       $must_login Whether login is required to register.
+	 *      @type string                        $login_url  The site login URL.
+	 *      @type int                           $threshold  The RSVP ticket threshold.
+	 * }
+	 *
+	 * @return array The process result.
+	 */
+	public function process_rsvp_step( array $args ) {
+		$result = [
+			'success' => true,
+			'errors'  => [],
+		];
+
+		return $result;
 	}
 
 	/**
