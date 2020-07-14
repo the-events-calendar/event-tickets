@@ -235,7 +235,12 @@ extends Tribe__Editor__Blocks__Abstract {
 			$plugin,
 			'tribe-tickets-rsvp-manager',
 			'v2/rsvp-manager.js',
-			[ 'jquery', 'tribe-common', 'tribe-tickets-rsvp-block' ],
+			[
+				'jquery',
+				'tribe-common',
+				'tribe-tickets-rsvp-block',
+				'tribe-tickets-rsvp-tooltip',
+			],
 			null,
 			[
 				'localize' => [
@@ -256,6 +261,21 @@ extends Tribe__Editor__Blocks__Abstract {
 			[ 'jquery' ],
 			null,
 			[ 'groups' => 'tribe-tickets-rsvp' ]
+		);
+
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-rsvp-tooltip',
+			'v2/rsvp-tooltip.js',
+			[
+				'jquery',
+				'tribe-common',
+				'tribe-tooltipster',
+			],
+			null,
+			[
+				'groups' => 'tribe-tickets-rsvp',
+			]
 		);
 
 		// @todo: Remove this once we solve the common breakpoints vs container based.

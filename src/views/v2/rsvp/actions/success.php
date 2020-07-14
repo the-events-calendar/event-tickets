@@ -19,12 +19,8 @@
 $toggle_id = 'toggle-rsvp-' . $rsvp->ID;
 ?>
 <div class="tribe-tickets__rsvp-actions-success">
-	<div class="tribe-tickets__rsvp-actions-success-going">
-		<em class="tribe-tickets__rsvp-actions-success-going-check-icon"></em>
-		<span class="tribe-tickets__rsvp-actions-success-going-text tribe-common-h4 tribe-common-h6--min-medium">
-			<?php esc_html_e( 'You are going', 'event-tickets' ); ?>
-		</span>
-	</div>
+
+	<?php $this->template( 'v2/rsvp/actions/success/title' ); ?>
 
 	<div class="tribe-tickets__rsvp-actions-success-going-toggle tribe-common-form-control-toggle">
 		<input
@@ -39,9 +35,27 @@ $toggle_id = 'toggle-rsvp-' . $rsvp->ID;
 			class="tribe-common-form-control-toggle__label tribe-tickets__rsvp-actions-success-going-toggle-label"
 			for="<?php echo esc_attr( $toggle_id ); ?>"
 		>
-			<?php esc_html_e( 'Show me on public attendee list', 'event-tickets' ); ?>
+			<span
+				data-js="tribe-tickets-tooltip"
+				data-tooltip-content="#tribe-tickets-tooltip-content-<?php echo esc_attr( $rsvp->ID ); ?>"
+				aria-describedby="tribe-tickets-tooltip-content-<?php echo esc_attr( $rsvp->ID ); ?>"
+			>
+				<?php
+				echo wp_kses_post(
+					sprintf(
+						// Translators: 1: opening span. 2: Closing span.
+						_x(
+							'Show me on public %1$sattendee list%2$s',
+							'Toggle for RSVP attendee list.',
+							'event-tickets'
+						),
+						'<span class="tribe-tickets__rsvp-actions-success-going-toggle-label-underline">',
+						'</span>'
+					)
+				);
+				?>
+			</span>
 		</label>
-		<?php // @todo: Implement tooltip here. ?>
+		<?php $this->template( 'v2/rsvp/actions/success/tooltip', [ 'rsvp' => $rsvp ] ); ?>
 	</div>
 </div>
-

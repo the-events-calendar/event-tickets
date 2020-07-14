@@ -23,11 +23,10 @@ class ActionsTest extends WPTestCase {
 	 * @test
 	 */
 	public function test_should_render_success() {
-		$_GET['step'] = 'success';
-		$template   = tribe( 'tickets.editor.template' );
-		$event      = $this->get_mock_event( 'events/single/1.json' );
-		$event_id   = $event->ID;
-		$ticket_id  = $this->create_rsvp_ticket(
+		$template  = tribe( 'tickets.editor.template' );
+		$event     = $this->get_mock_event( 'events/single/1.json' );
+		$event_id  = $event->ID;
+		$ticket_id = $this->create_rsvp_ticket(
 			$event_id,
 			[
 				'meta_input' => [
@@ -42,6 +41,7 @@ class ActionsTest extends WPTestCase {
 			'rsvp'       => $ticket,
 			'post_id'    => $event_id,
 			'must_login' => false,
+			'step'       => 'success',
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
@@ -92,6 +92,7 @@ class ActionsTest extends WPTestCase {
 			'rsvp'       => $ticket,
 			'post_id'    => $event_id,
 			'must_login' => false,
+			'step'       => null,
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
@@ -140,6 +141,7 @@ class ActionsTest extends WPTestCase {
 			'rsvp'       => $ticket,
 			'post_id'    => $event_id,
 			'must_login' => false,
+			'step'       => null,
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
@@ -190,6 +192,7 @@ class ActionsTest extends WPTestCase {
 			'rsvp'       => $ticket,
 			'post_id'    => $event_id,
 			'must_login' => false,
+			'step'       => null,
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
