@@ -92,7 +92,7 @@ class ActionsTest extends WPTestCase {
 			'rsvp'       => $ticket,
 			'post_id'    => $event_id,
 			'must_login' => false,
-			'step'       => 'success',
+			'step'       => null,
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
@@ -141,7 +141,7 @@ class ActionsTest extends WPTestCase {
 			'rsvp'       => $ticket,
 			'post_id'    => $event_id,
 			'must_login' => false,
-			'step'       => 'success',
+			'step'       => null,
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
@@ -192,7 +192,7 @@ class ActionsTest extends WPTestCase {
 			'rsvp'       => $ticket,
 			'post_id'    => $event_id,
 			'must_login' => false,
-			'step'       => 'success',
+			'step'       => null,
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
