@@ -17,9 +17,8 @@ class SuccessTest extends WPTestCase {
 	 */
 	public function test_should_render_success_message() {
 		$template     = tribe( 'tickets.editor.template' );
-		$_GET['step'] = 'success';
 
-		$html   = $template->template( $this->partial_path, [], false );
+		$html   = $template->template( $this->partial_path, [ 'step' => 'success' ], false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$this->assertMatchesSnapshot( $html, $driver );
