@@ -118,6 +118,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Prevent PHP errors when loading the new RSVP views for posts using classic editor when The Events Calendar setting for Blocks editor is off. [ET-853]
+
 = [4.12.2] 2020-06-24 =
 
 * Feature - Added a preview of the new RSVP refresh. View the non-functional demo http://m.tri.be/refreshrsvp.
