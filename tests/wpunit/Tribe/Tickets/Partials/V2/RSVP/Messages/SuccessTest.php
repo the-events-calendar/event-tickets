@@ -30,7 +30,7 @@ class SuccessTest extends WPTestCase {
 	public function test_should_render_empty_if_not_param_set() {
 		$template = tribe( 'tickets.editor.template' );
 
-		$html   = $template->template( $this->partial_path, [], false );
+		$html   = $template->template( $this->partial_path, [ 'step' => null ], false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$this->assertMatchesSnapshot( $html, $driver );
