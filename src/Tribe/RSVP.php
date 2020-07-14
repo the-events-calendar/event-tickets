@@ -219,6 +219,109 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Has to be run on before_delete_post to be sure the meta is still available (and we don't want it to run again after the post is deleted)
 		// See https://codex.wordpress.org/Plugin_API/Action_Reference/delete_post
 		add_action( 'before_delete_post', array( $this, 'update_stock_from_attendees_page' ) );
+
+		// Handle RSVP AJAX.
+		add_action( 'wp_ajax_nopriv_tribe_tickets_rsvp_handle', [ $this, 'ajax_handle_rsvp' ] );
+		add_action( 'wp_ajax_tribe_tickets_rsvp_handle', [ $this, 'ajax_handle_rsvp' ] );
+	}
+
+	/**
+	 * Handle RSVP processing for the RSVP forms.
+	 *
+	 * @since TBD
+	 */
+	public function ajax_handle_rsvp() {
+		$response = [
+			'html' => '',
+		];
+
+		$post_id   = absint( tribe_get_request_var( 'post_id', 0 ) );
+		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
+		$step      = tribe_get_request_var( 'step', null );
+
+		$html = $this->render_rsvp_step( $ticket_id, $post_id, $step );
+
+		if ( '' === $html ) {
+			return wp_send_json_error( $response );
+		}
+
+		$response['html'] = $html;
+
+		return wp_send_json_success( $response );
+	}
+
+	/**
+	 * Handle RSVP processing for the RSVP forms.
+	 *
+	 * @since TBD
+	 *
+	 * @param int         $ticket_id The ticket ID.
+	 * @param int         $post_id   The post or event ID.
+	 * @param null|string $step      Which step to render.
+	 *
+	 * @return string The step template HTML.
+	 */
+	public function render_rsvp_step( $ticket_id, $post_id, $step = null ) {
+		// No ticket / post ID.
+		if ( 0 === $post_id || 0 === $ticket_id ) {
+			return '';
+		}
+
+		/** @var Tribe__Tickets__RSVP $rsvp */
+		$rsvp = tribe( 'tickets.rsvp' );
+
+		/** @var \Tribe__Tickets__Editor__Blocks__Rsvp $blocks_rsvp */
+		$blocks_rsvp = tribe( 'tickets.editor.blocks.rsvp' );
+
+		/** @var \Tribe__Tickets__Editor__Template $template */
+		$template = tribe( 'tickets.editor.template' );
+
+		$ticket = $rsvp->get_ticket( $post_id, $ticket_id );
+
+		// No ticket found.
+		if ( null === $ticket ) {
+			return '';
+		}
+
+		// Set required template globals.
+		$args = [
+			'rsvp_id'    => $ticket_id,
+			'post_id'    => $post_id,
+			'rsvp'       => $ticket,
+			'step'       => $step,
+			'must_login' => ! is_user_logged_in() && $rsvp->login_required(),
+			'login_url'  => Tribe__Tickets__Tickets::get_login_url( $post_id ),
+			'threshold'  => $blocks_rsvp->get_threshold( $post_id ),
+		];
+
+		/**
+		 * Handle processing for the RSVP step if necessary.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $args {
+		 *      The list of step template arguments.
+		 *
+		 *      @type int                           $rsvp_id    The RSVP ticket ID.
+		 *      @type int                           $post_id    The ticket ID.
+		 *      @type Tribe__Tickets__Ticket_Object $rsvp       The RSVP ticket object.
+		 *      @type null|string                   $step       Which step being rendered.
+		 *      @type boolean                       $must_login Whether login is required to register.
+		 *      @type string                        $login_url  The site login URL.
+		 *      @type int                           $threshold  The RSVP ticket threshold.
+		 * }
+		 */
+		do_action( 'tribe_tickets_rsvp_process_rsvp_step', $args );
+
+		// Add the rendering attributes into global context.
+		$template->add_template_globals( $args );
+
+		$html = $template->template( 'v2/components/loader/loader', [], false );
+		$html .= $template->template( 'v2/rsvp/content', $args, false );
+
+		$response['html'] = $html;
+
+		return wp_send_json_success( $response );
 	}
 
 	/**
