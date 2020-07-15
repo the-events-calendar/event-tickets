@@ -389,13 +389,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			 *
 			 * attendee[email]
 			 * attendee[full_name]
-			 * quantity_{$ticket_id}
 			 * attendee[order_status]
+			 * quantity_{$ticket_id}
 			 * tribe-tickets-meta[$ticket_id][$x][$field_slug]
-			 * attendee_ids
 			 */
-			// @todo Handle RSVP processing here.
-			$attendee_ids = $this->generate_tickets( $args['post_id'] );
+			$attendee_ids = $this->generate_tickets( $args['post_id'], false );
 
 			if ( false === $attendee_ids ) {
 				$result['success']  = false;
@@ -404,23 +402,32 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				return $result;
 			}
 
-			$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( json_encode( $attendee_ids ) );
+			$attendee_ids = implode( ',', $attendee_ids );
+
+			$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( $attendee_ids );
 
 			$result['success']     = true;
 			$result['opt_in_args'] = [
 				'attendee_ids' => $attendee_ids,
-				'opt-in-nonce' => wp_create_nonce( $nonce_action ),
+				'opt_in_nonce' => wp_create_nonce( $nonce_action ),
 			];
 		} elseif ( 'opt-in' === $args['step'] ) {
+			/**
+			 * These are the inputs we should be seeing.
+			 *
+			 * opt_in
+			 * attendee_ids
+			 * opt_in_nonce
+			 */
 			// @todo Handle opt-in setting for each attendee in order.
-			$optout = ! tribe_is_truthy( tribe_get_request_var( 'opt-in', true ) );
+			$optout = ! tribe_is_truthy( tribe_get_request_var( 'opt_in', true ) );
 
-			$attendee_ids = (array) tribe_get_request_var( 'attendee_ids', [] );
+			$attendee_ids = Tribe__Utils__Array::list_to_array( tribe_get_request_var( 'attendee_ids', [] ) );
 			$attendee_ids = array_map( 'absint', $attendee_ids );
 
-			$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( json_encode( $attendee_ids ) );
+			$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( implode( ',', $attendee_ids ) );
 
-			if ( false === wp_verify_nonce( tribe_get_request_var( 'opt-in-nonce', '' ), $nonce_action ) ) {
+			if ( false === wp_verify_nonce( tribe_get_request_var( 'opt_in_nonce', '' ), $nonce_action ) ) {
 				$result['success']  = false;
 				$result['errors'][] = __( 'Unable to verify your opt-in request, please try again.', 'event-tickets' );
 
@@ -961,6 +968,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @param int|null $post_id  Post ID for ticket, null to use current post ID.
 	 * @param boolean  $redirect Whether to redirect on error.
+	 *
+	 * @return array|false List of attendee ID(s) generated, or false if there was a problem.
 	 */
 	public function generate_tickets( $post_id = null, $redirect = true ) {
 		$has_tickets = false;
@@ -984,30 +993,41 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			if ( $redirect ) {
 				$url = get_permalink();
 				$url = add_query_arg( 'rsvp_error', 1, $url );
+
 				wp_redirect( esc_url_raw( $url ) );
 				tribe_exit();
 			}
 
-			return;
+			return false;
 		}
 
 		$product_ids = (array) $_POST['product_id'];
 		$product_ids = array_map( 'absint', $product_ids );
 		$product_ids = array_filter( $product_ids );
 
+		$attendee_ids = [];
+
 		// Iterate over each product
 		foreach ( $product_ids as $product_id ) {
 			$ticket_qty = $this->parse_ticket_quantity( $product_id );
 
 			if ( 0 === $ticket_qty ) {
-				// if there were no RSVP tickets for the product added to the cart, continue
+				// if there were no RSVP tickets for the product added to the cart, continue.
 				continue;
 			}
 
-			$has_tickets |= $this->generate_tickets_for( $product_id, $ticket_qty, $attendee_details, $redirect );
+			$tickets_generated = $this->generate_tickets_for( $product_id, $ticket_qty, $attendee_details, $redirect );
+
+			if ( $tickets_generated ) {
+				$attendee_ids[] = $tickets_generated;
+
+				$has_tickets = true;
+			}
 		}
 
-		$order_id = $attendee_details['order_id'];
+		$attendee_ids = array_merge( ...$attendee_ids );
+
+		$order_id              = $attendee_details['order_id'];
 		$attendee_order_status = $attendee_details['order_status'];
 
 		/**
@@ -1049,7 +1069,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			);
 
 			// No point sending tickets if their current intention is not to attend
-			if ( $has_tickets && in_array( $attendee_order_status, $send_mail_stati ) ) {
+			if ( $has_tickets && in_array( $attendee_order_status, $send_mail_stati, true ) ) {
 				$this->send_tickets_email( $order_id, $post_id );
 			} elseif ( $has_tickets ) {
 				$this->send_non_attendance_confirmation( $order_id, $post_id );
@@ -1057,12 +1077,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		// Redirect to the same page to prevent double purchase on refresh
-		if ( ! empty( $post_id ) ) {
+		if ( $redirect && ! empty( $post_id ) ) {
 			$url = get_permalink( $post_id );
 			$url = add_query_arg( 'rsvp_sent', 1, $url );
+
 			wp_redirect( esc_url_raw( $url ) );
 			tribe_exit();
 		}
+
+		return $attendee_ids;
 	}
 
 	/**
@@ -2388,6 +2411,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendee_order_status = $attendee_details['order_status'];
 		$attendee_optout       = $attendee_details['optout'];
 		$order_id              = $attendee_details['order_id'];
+
+		if ( 'going' === $attendee_order_status ) {
+			$attendee_order_status = 'yes';
+		} elseif ( 'not-going' === $attendee_order_status ) {
+			$attendee_order_status = 'no';
+		}
 
 		$attendee_optout = filter_var( $attendee_optout, FILTER_VALIDATE_BOOLEAN );
 		$attendee_optout = (int) $attendee_optout;

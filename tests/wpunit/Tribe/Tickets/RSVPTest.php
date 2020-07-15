@@ -90,7 +90,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $this->make_stock_ticket( 10, $this->event_id );
 
 		$sut = $this->make_instance();
-		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
 
 		$this->assertEquals( 9, get_post_meta( $ticket_id, '_stock', true ) );
 	}
@@ -103,7 +103,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $this->make_sales_ticket( 10, $this->event_id );
 
 		$sut = $this->make_instance();
-		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
 
 		$this->assertEquals( 11, get_post_meta( $ticket_id, 'total_sales', true ) );
 	}
@@ -116,7 +116,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $this->make_sales_ticket( 10, $this->event_id );
 
 		$sut = $this->make_instance();
-		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'no' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'no' ] ), false );
 
 		$this->assertEquals( 10, get_post_meta( $ticket_id, 'total_sales', true ) );
 	}
@@ -131,7 +131,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $this->make_stock_ticket( 10, $this->event_id );
 
 		$sut = $this->make_instance();
-		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'no' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'no' ] ), false );
 
 		$this->assertEquals( 10, get_post_meta( $ticket_id, '_stock', true ) );
 	}
@@ -298,7 +298,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $base_data['ticket_id'];
 		$user_id   = $base_data['user_id'];
 
-		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
 
 		$test_attendees = $sut->get_attendees_array( $post_id );
 
@@ -323,7 +323,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $base_data['ticket_id'];
 		$user_id   = $base_data['user_id'];
 
-		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
 
 		$test_attendees = $sut->get_attendees_array( $post_id );
 
@@ -366,7 +366,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $base_data['ticket_id'];
 		$user_id   = $base_data['user_id'];
 
-		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
 
 		$attendees = $sut->get_attendees_array( $post_id );
 
@@ -387,7 +387,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $base_data['ticket_id'];
 		$user_id   = $base_data['user_id'];
 
-		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
 
 		$attendees = $sut->get_attendees_by_id( $post_id );
 
@@ -408,7 +408,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $base_data['ticket_id'];
 		$user_id   = $base_data['user_id'];
 
-		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
 
 		$test_attendees = $sut->get_attendees_array( $post_id );
 
@@ -436,7 +436,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $base_data['ticket_id'];
 		$user_id   = $base_data['user_id'];
 
-		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
 
 		$attendees = $sut->get_attendees_by_id( $ticket_id );
 
@@ -457,7 +457,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $base_data['ticket_id'];
 		$user_id   = $base_data['user_id'];
 
-		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
 
 		$test_attendees = $sut->get_attendees_array( $post_id );
 
@@ -484,7 +484,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $base_data['ticket_id'];
 		$user_id   = $base_data['user_id'];
 
-		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
 
 		$this->assertEquals( 10, $sut->get_attendees_count( $post_id ) );
 	}
@@ -503,12 +503,12 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $base_data['ticket_id'];
 		$user_id   = $base_data['user_id'];
 
-		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
 
 		// Generate some tickets while logged in.
 		wp_set_current_user( $user_id );
 
-		$sut->generate_tickets_for( $ticket_id, 5, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 5, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
 
 		$this->assertEquals( 5, $sut->get_attendees_count_by_user( $post_id, $user_id ) );
 	}
@@ -527,8 +527,8 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $base_data['ticket_id'];
 		$user_id   = $base_data['user_id'];
 
-		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
-		$sut->generate_tickets_for( $ticket_id, 5, $this->fake_attendee_details( [ 'order_status' => 'no' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
+		$sut->generate_tickets_for( $ticket_id, 5, $this->fake_attendee_details( [ 'order_status' => 'no' ] ), false );
 
 		$this->assertEquals( 10, $sut->get_attendees_count_going( $post_id ) );
 	}
@@ -547,8 +547,8 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $base_data['ticket_id'];
 		$user_id   = $base_data['user_id'];
 
-		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
-		$sut->generate_tickets_for( $ticket_id, 5, $this->fake_attendee_details( [ 'order_status' => 'no' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
+		$sut->generate_tickets_for( $ticket_id, 5, $this->fake_attendee_details( [ 'order_status' => 'no' ] ), false );
 
 		$this->assertEquals( 5, $sut->get_attendees_count_not_going( $post_id ) );
 	}
@@ -561,37 +561,38 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		// Initial state.
 		yield 'initial state' => [
 			null,
-			[],
 		];
 
 		// They choose Going.
 		yield 'going' => [
 			'going',
-			[],
 		];
 
 		// They choose Not Going.
 		yield 'not going' => [
 			'not-going',
-			[],
 		];
 
 		// They need the ARI form.
 		yield 'ari' => [
 			'ari',
-			[],
 		];
 
 		// They complete the RSVP process.
-		yield 'success with failure' => [
+		yield 'success' => [
 			'success',
 			[
-				'attendee' => [
-					'email'     => 'test@test.com',
-					'full_name' => 'Test Name',
-					// Add other data for the submission here.
-				],
+				'attendee'   => $this->fake_attendee_details(),
+				'product_id' => 0,
+				'quantity'   => 2,
 			],
+		];
+
+		// They complete the RSVP process.
+		yield 'success with failure because of no data' => [
+			'success',
+			// Pass no data so that it won't process correctly.
+			[],
 			[
 				'success' => false,
 				'errors'  => [
@@ -601,15 +602,22 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		];
 
 		// They choose to opt-in from success view.
-		yield 'opt-in with failure' => [
+		yield 'opt-in' => [
 			'opt-in',
 			[
-				// Nonce needed here too.
-				'attendee_ids' => [
-					1,
-					2,
-					3,
-				],
+				'opt_in'       => 1,
+				'attendee_ids' => '',
+				'opt_in_nonce' => '',
+			],
+		];
+
+		// They choose to opt-in from success view.
+		yield 'opt-in with failure because of bad nonce' => [
+			'opt-in',
+			[
+				'opt_in'       => 1,
+				// No opt_in_nonce passed so it causes a problem.
+				'attendee_ids' => '',
 			],
 			[
 				'success' => false,
@@ -627,16 +635,41 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * @dataProvider provider_rsvp_steps
 	 *
 	 * @param string|null $step              The RSVP step.
-	 * @param array       $post_data         The data to include in the $_POST.
-	 * @param mixed       $expected_response Expected response if not HTML.
+	 * @param null|array  $post_data         The data to include in the $_POST.
+	 * @param null|array  $expected_response Expected response if not HTML.
 	 */
-	public function it_should_render_rsvp_step( $step, $post_data, $expected_response = null ) {
+	public function it_should_render_rsvp_step( $step, $post_data = null, $expected_response = null ) {
 		$sut = $this->make_instance();
 
 		$base_data = $this->make_base_data();
 
 		$post_id   = $base_data['post_id'];
 		$ticket_id = $base_data['ticket_id'];
+
+		if ( null !== $post_data ) {
+			if ( isset( $post_data['product_id'] ) ) {
+				$post_data['product_id'] = $ticket_id;
+			}
+
+			if ( isset( $post_data['quantity'] ) ) {
+				$post_data[ 'quantity_' . $ticket_id ] = $post_data['quantity'];
+			}
+
+			if ( isset( $post_data['attendee_ids'] ) ) {
+				$attendee_ids = $sut->generate_tickets_for( $ticket_id, 5, $this->fake_attendee_details( [ 'order_status' => 'going' ] ), false );
+				$attendee_ids = implode( ',', $attendee_ids );
+
+				$post_data['attendee_ids'] = $attendee_ids;
+
+				if ( isset( $post_data['opt_in_nonce'] ) ) {
+					$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( $attendee_ids );
+
+					$post_data['opt_in_nonce'] = wp_create_nonce( $nonce_action );
+				}
+			}
+
+			$_POST = $post_data;
+		}
 
 		$html = $sut->render_rsvp_step( $ticket_id, $post_id, $step );
 
@@ -656,6 +689,8 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$driver->setTimeDependentAttributes( [
 			'data-rsvp-id',
 			'data-product-id',
+			'data-attendee-ids',
+			'data-opt-in-nonce',
 		] );
 
 		$this->assertMatchesSnapshot( $html, $driver );

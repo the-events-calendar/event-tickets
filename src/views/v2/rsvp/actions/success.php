@@ -17,6 +17,13 @@
  */
 
 $toggle_id = 'toggle-rsvp-' . $rsvp->ID;
+$attendee_ids = '';
+$opt_in_nonce = '';
+
+if ( ! empty( $process_result['opt_in_args'] ) ) {
+	$attendee_ids = $process_result['opt_in_args']['attendee_ids'];
+	$opt_in_nonce = $process_result['opt_in_args']['opt_in_nonce'];
+}
 ?>
 <div class="tribe-tickets__rsvp-actions-success">
 
@@ -30,6 +37,8 @@ $toggle_id = 'toggle-rsvp-' . $rsvp->ID;
 			type="checkbox"
 			value="toggleOne"
 			data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
+			data-attendee-ids="<?php echo esc_attr( $attendee_ids ); ?>"
+			data-opt-in-nonce="<?php echo esc_attr( $opt_in_nonce ); ?>"
 		/>
 		<label
 			class="tribe-common-form-control-toggle__label tribe-tickets__rsvp-actions-success-going-toggle-label"
