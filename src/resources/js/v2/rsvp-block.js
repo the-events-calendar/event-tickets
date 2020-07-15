@@ -46,6 +46,9 @@ tribe.tickets.rsvp.block = {};
 		cancelButton: '.tribe-tickets__rsvp-form-button--cancel',
 		errorMessage: '.tribe-tickets__form-message--error',
 		hiddenElement: '.tribe-common-a11y-hidden',
+		inputName: '.tribe-tickets__rsvp-form-field-name',
+		inputEmail: '.tribe-tickets__rsvp-form-field-email',
+		inputQuantity: '.tribe-tickets__rsvp-form-field-quantity',
 	};
 
 	/**
@@ -150,9 +153,9 @@ tribe.tickets.rsvp.block = {};
 	 * @returns {bool} is valid
 	 */
 	obj.validateSubmission = function( $form ) {
-		var $qty = $form.find( 'input.tribe-tickets__rsvp-form-field-quantity' );
-		var $name = $form.find( 'input.tribe-tickets__rsvp-form-field-name' );
-		var $email = $form.find( 'input.tribe-tickets__rsvp-form-field-email' );
+		var $qty = $form.find( obj.selectors.inputQuantity );
+		var $name = $form.find( obj.selectors.inputName );
+		var $email = $form.find( obj.selectors.inputEmail );
 
 		return (
 			$.trim( $name.val() ).length &&
