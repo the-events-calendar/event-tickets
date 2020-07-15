@@ -35,6 +35,7 @@
 		type="text"
 		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-name"
 		name="attendee[full_name]"
+		id="tribe-tickets-rsvp-name"
 		value=""
 		required
 		placeholder="John Doe"
@@ -52,6 +53,7 @@
 		type="email"
 		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-email"
 		name="attendee[email]"
+		id="tribe-tickets-rsvp-email"
 		value=""
 		required
 		placeholder="your@email.com"
@@ -68,6 +70,7 @@
 	<input
 		type="number"
 		name="quantity_71"
+		id="quantity_71"
 		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-input-number tribe-tickets__rsvp-form-field-quantity"
 		value="1"
 		required
