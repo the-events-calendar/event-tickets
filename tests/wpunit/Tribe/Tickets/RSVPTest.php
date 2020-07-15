@@ -3,15 +3,18 @@
 namespace Tribe\Tickets;
 
 use Prophecy\Argument;
-use Tribe__Tickets__RSVP as RSVP;
 use Tribe\Events\Test\Factories\Event;
-use Tribe__Tickets__Tickets_View as Tickets_View;
-use Tribe__Tickets__Tickets_Handler as Handler;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
+use Tribe__Tickets__RSVP as RSVP;
+use Tribe__Tickets__Tickets_Handler as Handler;
+use Tribe__Tickets__Tickets_View as Tickets_View;
+use Spatie\Snapshots\MatchesSnapshots;
+use tad\WP\Snapshots\WPHtmlOutputDriver;
 
 class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
+	use MatchesSnapshots;
 	use Attendee_Maker;
 	use RSVP_Ticket_Maker;
 
@@ -548,6 +551,95 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$sut->generate_tickets_for( $ticket_id, 5, $this->fake_attendee_details( [ 'order_status' => 'no' ] ) );
 
 		$this->assertEquals( 5, $sut->get_attendees_count_not_going( $post_id ) );
+	}
+	/**
+	 * Provider for RSVP steps testing.
+	 *
+	 * @return \Generator
+	 */
+	public function provider_rsvp_steps() {
+		// Initial state.
+		yield 'initial state' => [
+			null,
+			[],
+		];
+
+		// They choose Going.
+		yield 'going' => [
+			'going',
+			[],
+		];
+
+		// They choose Not Going.
+		yield 'not going' => [
+			'not-going',
+			[],
+		];
+
+		// They need the ARI form.
+		yield 'ari' => [
+			'ari',
+			[],
+		];
+
+		// They complete the RSVP process.
+		yield 'success' => [
+			'success',
+			[
+				'attendee' => [
+					'email'     => 'test@test.com',
+					'full_name' => 'Test Name',
+					// Add other data for the submission here.
+				],
+			],
+		];
+
+		// They choose to opt-in from success view.
+		yield 'opt in' => [
+			'opt-in',
+			[
+				// Nonce needed here too.
+				'attendee_ids' => [
+					1,
+					2,
+					3,
+				],
+			],
+		];
+	}
+
+	/**
+	 * It should render the RSVP step.
+	 *
+	 * @test
+	 * @dataProvider provider_rsvp_steps
+	 *
+	 * @param string|null $step      The RSVP step.
+	 * @param array       $post_data The data to include in the $_POST.
+	 */
+	public function it_should_render_rsvp_step( $step, $post_data ) {
+		$sut = $this->make_instance();
+
+		$base_data = $this->make_base_data();
+
+		$post_id   = $base_data['post_id'];
+		$ticket_id = $base_data['ticket_id'];
+
+		$html = $sut->render_rsvp_step( $ticket_id, $post_id, $step );
+
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+
+		$driver->setTolerableDifferences( [ $post_id, $ticket_id ] );
+		$driver->setTolerableDifferencesPrefixes( [
+			'quantity_',
+		] );
+
+		$driver->setTimeDependentAttributes( [
+			'data-rsvp-id',
+			'data-product-id',
+		] );
+
+		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
 	/**
