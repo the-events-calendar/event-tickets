@@ -351,6 +351,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'errors'  => [],
 		];
 
+		// attendee[email]
+		// attendee[full_name]
+		// quantity_{$ticket_id}
+		// attendee[order_status]
+		// tribe-tickets-meta[$ticket_id][$x][$field_slug]
+
 		// Process the attendee.
 		if ( 'success' === $args['step'] ) {
 			$this->generate_tickets( $args['post_id'] );
