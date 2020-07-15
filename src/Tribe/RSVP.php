@@ -267,16 +267,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return '';
 		}
 
-		/** @var Tribe__Tickets__RSVP $rsvp */
-		$rsvp = tribe( 'tickets.rsvp' );
-
 		/** @var \Tribe__Tickets__Editor__Blocks__Rsvp $blocks_rsvp */
 		$blocks_rsvp = tribe( 'tickets.editor.blocks.rsvp' );
 
 		/** @var \Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 
-		$ticket = $rsvp->get_ticket( $post_id, $ticket_id );
+		$ticket = $this->get_ticket( $post_id, $ticket_id );
 
 		// No ticket found.
 		if ( null === $ticket ) {
@@ -289,8 +286,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'post_id'    => $post_id,
 			'rsvp'       => $ticket,
 			'step'       => $step,
-			'must_login' => ! is_user_logged_in() && $rsvp->login_required(),
-			'login_url'  => Tribe__Tickets__Tickets::get_login_url( $post_id ),
+			'must_login' => ! is_user_logged_in() && $this->login_required(),
+			'login_url'  => self::get_login_url( $post_id ),
 			'threshold'  => $blocks_rsvp->get_threshold( $post_id ),
 		];
 
@@ -321,9 +318,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$html  = $template->template( 'v2/components/loader/loader', [], false );
 		$html .= $template->template( 'v2/rsvp/content', $args, false );
 
-		$response['html'] = $html;
-
-		return wp_send_json_success( $response );
+		return $html;
 	}
 
 	/**
