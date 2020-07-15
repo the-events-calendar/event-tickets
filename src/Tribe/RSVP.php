@@ -232,22 +232,29 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function ajax_handle_rsvp() {
 		$response = [
-			'html' => '',
+			'html'   => '',
 		];
 
 		$post_id   = absint( tribe_get_request_var( 'post_id', 0 ) );
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 		$step      = tribe_get_request_var( 'step', null );
 
-		$html = $this->render_rsvp_step( $ticket_id, $post_id, $step );
+		$render_response = $this->render_rsvp_step( $ticket_id, $post_id, $step );
 
-		if ( '' === $html ) {
+		if ( is_string( $render_response ) && '' !== $render_response ) {
+			// Return the HTML if it's a string.
+			$response['html'] = $render_response;
+
+			return wp_send_json_success( $response );
+		} elseif ( is_array( $render_response ) && ! empty( $render_response['errors'] ) ) {
+			$response['html'] = $this->render_rsvp_error( $render_response['errors'] );
+
 			return wp_send_json_error( $response );
 		}
 
-		$response['html'] = $html;
+		$response['html'] = $this->render_rsvp_error( __( 'Something happened here.', 'event-tickets' ) );
 
-		return wp_send_json_success( $response );
+		return wp_send_json_error( $response );
 	}
 
 	/**
@@ -312,6 +319,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 */
 		$args = apply_filters( 'tribe_tickets_rsvp_render_step_template_args', $args );
 
+		// Return the process result for opt-in.
+		if ( false === $args['process_result']['success'] ) {
+			return $args['process_result'];
+		}
+
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
 
@@ -319,6 +331,30 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$html .= $template->template( 'v2/rsvp/content', $args, false );
 
 		return $html;
+	}
+
+	/**
+	 * Handle RSVP error rendering.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|array $error_message The error message(s).
+	 *
+	 * @return string The error template HTML.
+	 */
+	public function render_rsvp_error( $error_message ) {
+		// Set required template globals.
+		$args = [
+			'error_message' => $error_message,
+		];
+
+		/** @var \Tribe__Tickets__Editor__Template $template */
+		$template = tribe( 'tickets.editor.template' );
+
+		// Add the rendering attributes into global context.
+		$template->add_template_globals( $args );
+
+		return $template->template( 'v2/rsvp/messages/error', $args, false );
 	}
 
 	/**
@@ -342,7 +378,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function process_rsvp_step( array $args ) {
 		$result = [
-			'success' => true,
+			'success' => null,
 			'errors'  => [],
 		];
 
@@ -356,19 +392,47 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			 * quantity_{$ticket_id}
 			 * attendee[order_status]
 			 * tribe-tickets-meta[$ticket_id][$x][$field_slug]
+			 * attendee_ids
 			 */
 			// @todo Handle RSVP processing here.
-			$this->generate_tickets( $args['post_id'] );
-		} elseif ( 'opt-in' === $args['step'] ) {
-			// @todo Handle opt-in setting for each attendee in order.
-			$optout = true;
+			$attendee_ids = $this->generate_tickets( $args['post_id'] );
 
-			if ( isset( $attendee_data['optout'] ) && '' !== $attendee_data['optout'] ) {
-				$optout = tribe_is_truthy( $attendee_data['optout'] );
+			if ( false === $attendee_ids ) {
+				$result['success']  = false;
+				$result['errors'][] = __( 'Your RSVP was unsuccessful, please try again.', 'event-tickets' );
+
+				return $result;
 			}
 
-			// @todo This class is not setting $this->attendee_optout_key.
-			update_post_meta( $attendee_id, self::ATTENDEE_OPTOUT_KEY, (int) $optout );
+			$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( json_encode( $attendee_ids ) );
+
+			$result['success']     = true;
+			$result['opt_in_args'] = [
+				'attendee_ids' => $attendee_ids,
+				'opt-in-nonce' => wp_create_nonce( $nonce_action ),
+			];
+		} elseif ( 'opt-in' === $args['step'] ) {
+			// @todo Handle opt-in setting for each attendee in order.
+			$optout = ! tribe_is_truthy( tribe_get_request_var( 'opt-in', true ) );
+
+			$attendee_ids = (array) tribe_get_request_var( 'attendee_ids', [] );
+			$attendee_ids = array_map( 'absint', $attendee_ids );
+
+			$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( json_encode( $attendee_ids ) );
+
+			if ( false === wp_verify_nonce( tribe_get_request_var( 'opt-in-nonce', '' ), $nonce_action ) ) {
+				$result['success']  = false;
+				$result['errors'][] = __( 'Unable to verify your opt-in request, please try again.', 'event-tickets' );
+
+				return $result;
+			}
+
+			$result['success'] = true;
+
+			foreach ( $attendee_ids as $attendee_id ) {
+				// @todo This class is not setting $this->attendee_optout_key.
+				update_post_meta( $attendee_id, self::ATTENDEE_OPTOUT_KEY, (int) $optout );
+			}
 		}
 
 		return $result;
