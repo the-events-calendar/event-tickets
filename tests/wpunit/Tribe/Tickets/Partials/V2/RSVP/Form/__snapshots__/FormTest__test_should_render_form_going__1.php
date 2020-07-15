@@ -1,9 +1,9 @@
 <?php return '
 <form
 	name="tribe-tickets-rsvp-form"
-	data-rsvp-id="7"
+	data-rsvp-id="69"
 >
-	<input type="hidden" name="product_id[]" value="7">
+	<input type="hidden" name="product_id[]" value="69">
 	<input type="hidden" name="attendee[order_status]" value="going">
 
 	<div class="tribe-tickets__rsvp-form-wrapper">
@@ -59,14 +59,14 @@
 <div class="tribe-common-b1 tribe-tickets__form-field tribe-tickets__form-field--required">
 	<label
 		class="tribe-common-b2--min-medium tribe-tickets__form-field-label"
-		for="quantity_7"
+		for="quantity_69"
 	>
 		Number of Guests<span class="screen-reader-text">(required)</span>
 		<span class="tribe-required" aria-hidden="true" role="presentation">*</span>
 	</label>
 	<input
 		type="number"
-		name="quantity_7"
+		name="quantity_69"
 		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-input-number tribe-tickets__rsvp-form-field-quantity"
 		value="1"
 		required
