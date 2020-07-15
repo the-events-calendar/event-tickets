@@ -3,14 +3,14 @@
 namespace Tribe\Tickets;
 
 use Prophecy\Argument;
+use Spatie\Snapshots\MatchesSnapshots;
+use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Tickets_Handler as Handler;
 use Tribe__Tickets__Tickets_View as Tickets_View;
-use Spatie\Snapshots\MatchesSnapshots;
-use tad\WP\Snapshots\WPHtmlOutputDriver;
 
 class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
@@ -583,7 +583,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		];
 
 		// They complete the RSVP process.
-		yield 'success' => [
+		yield 'success with failure' => [
 			'success',
 			[
 				'attendee' => [
@@ -592,10 +592,16 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 					// Add other data for the submission here.
 				],
 			],
+			[
+				'success' => false,
+				'errors'  => [
+					'Your RSVP was unsuccessful, please try again.',
+				],
+			],
 		];
 
 		// They choose to opt-in from success view.
-		yield 'opt in' => [
+		yield 'opt-in with failure' => [
 			'opt-in',
 			[
 				// Nonce needed here too.
@@ -603,6 +609,12 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 					1,
 					2,
 					3,
+				],
+			],
+			[
+				'success' => false,
+				'errors'  => [
+					'Unable to verify your opt-in request, please try again.',
 				],
 			],
 		];
@@ -614,10 +626,11 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * @dataProvider provider_rsvp_steps
 	 *
-	 * @param string|null $step      The RSVP step.
-	 * @param array       $post_data The data to include in the $_POST.
+	 * @param string|null $step              The RSVP step.
+	 * @param array       $post_data         The data to include in the $_POST.
+	 * @param mixed       $expected_response Expected response if not HTML.
 	 */
-	public function it_should_render_rsvp_step( $step, $post_data ) {
+	public function it_should_render_rsvp_step( $step, $post_data, $expected_response = null ) {
 		$sut = $this->make_instance();
 
 		$base_data = $this->make_base_data();
@@ -626,6 +639,12 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $base_data['ticket_id'];
 
 		$html = $sut->render_rsvp_step( $ticket_id, $post_id, $step );
+
+		if ( null !== $expected_response ) {
+			self::assertEquals( $expected_response, $html );
+
+			return;
+		}
 
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
