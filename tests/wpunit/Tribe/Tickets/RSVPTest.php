@@ -552,6 +552,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEquals( 5, $sut->get_attendees_count_not_going( $post_id ) );
 	}
+
 	/**
 	 * Provider for RSVP steps testing.
 	 *
@@ -692,6 +693,220 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			'data-attendee-ids',
 			'data-opt-in-nonce',
 		] );
+
+		$this->assertMatchesSnapshot( $html, $driver );
+	}
+
+	/**
+	 * Provider for RSVP steps process testing.
+	 *
+	 * @return \Generator
+	 */
+	public function provider_rsvp_steps_for_process() {
+		// Initial state.
+		yield 'initial state' => [
+			null,
+			[],
+			[
+				'success' => null,
+				'errors'  => [],
+			],
+		];
+
+		// They choose Going.
+		yield 'going' => [
+			'going',
+			[],
+			[
+				'success' => null,
+				'errors'  => [],
+			],
+		];
+
+		// They choose Not Going.
+		yield 'not going' => [
+			'not-going',
+			[],
+			[
+				'success' => null,
+				'errors'  => [],
+			],
+		];
+
+		// They need the ARI form.
+		yield 'ari' => [
+			'ari',
+			[],
+			[
+				'success' => null,
+				'errors'  => [],
+			],
+		];
+
+		// They complete the RSVP process.
+		yield 'success' => [
+			'success',
+			[
+				'attendee'   => $this->fake_attendee_details(),
+				'product_id' => 0,
+				'quantity'   => 2,
+			],
+			[
+				'success'     => true,
+				'errors'      => [],
+				'opt_in_args' => [
+					'attendee_ids' => 'non-empty',
+					'opt_in_nonce' => 'non-empty',
+				],
+			],
+		];
+
+		// They complete the RSVP process.
+		yield 'success with failure because of no data' => [
+			'success',
+			// Pass no data so that it won't process correctly.
+			[],
+			[
+				'success' => false,
+				'errors'  => [
+					'Your RSVP was unsuccessful, please try again.',
+				],
+			],
+		];
+
+		// They choose to opt-in from success view.
+		yield 'opt-in' => [
+			'opt-in',
+			[
+				'opt_in'       => 1,
+				'attendee_ids' => '',
+				'opt_in_nonce' => '',
+			],
+			[
+				'success' => true,
+				'errors'  => [],
+			],
+		];
+
+		// They choose to opt-in from success view.
+		yield 'opt-in to opt-out' => [
+			'opt-in',
+			[
+				'opt_in'       => 0,
+				'attendee_ids' => '',
+				'opt_in_nonce' => '',
+			],
+			[
+				'success' => true,
+				'errors'  => [],
+			],
+		];
+
+		// They choose to opt-in from success view.
+		yield 'opt-in with failure because of bad nonce' => [
+			'opt-in',
+			[
+				'opt_in'       => 1,
+				// No opt_in_nonce passed so it causes a problem.
+				'attendee_ids' => '',
+			],
+			[
+				'success' => false,
+				'errors'  => [
+					'Unable to verify your opt-in request, please try again.',
+				],
+			],
+		];
+	}
+
+	/**
+	 * It should process the RSVP step.
+	 *
+	 * @test
+	 * @dataProvider provider_rsvp_steps_for_process
+	 *
+	 * @param string|null $step              The RSVP step.
+	 * @param array       $post_data         The data to include in the $_POST.
+	 * @param array       $expected_response Expected response if not successful.
+	 */
+	public function it_should_process_rsvp_step( $step, $post_data, $expected_response ) {
+		$sut = $this->make_instance();
+
+		$base_data = $this->make_base_data();
+
+		$post_id   = $base_data['post_id'];
+		$ticket_id = $base_data['ticket_id'];
+
+		if ( null !== $post_data ) {
+			if ( isset( $post_data['product_id'] ) ) {
+				$post_data['product_id'] = $ticket_id;
+			}
+
+			if ( isset( $post_data['quantity'] ) ) {
+				$post_data[ 'quantity_' . $ticket_id ] = $post_data['quantity'];
+			}
+
+			if ( isset( $post_data['attendee_ids'] ) ) {
+				$attendee_ids = $sut->generate_tickets_for( $ticket_id, 5, $this->fake_attendee_details( [ 'order_status' => 'going' ] ), false );
+				$attendee_ids = implode( ',', $attendee_ids );
+
+				$post_data['attendee_ids'] = $attendee_ids;
+
+				if ( isset( $post_data['opt_in_nonce'] ) ) {
+					$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( $attendee_ids );
+
+					$post_data['opt_in_nonce'] = wp_create_nonce( $nonce_action );
+				}
+			}
+
+			$_POST = $post_data;
+		}
+
+		$args = [
+			'rsvp_id' => $ticket_id,
+			'post_id' => $post_id,
+			'step'    => $step,
+		];
+
+		$process_result = $sut->process_rsvp_step( $args );
+
+		if ( isset( $expected_response['opt_in_args'], $process_result['opt_in_args'] ) ) {
+			$process_result['opt_in_args'] = array_merge( $process_result['opt_in_args'], $expected_response['opt_in_args'] );
+		}
+
+		self::assertEquals( $expected_response, $process_result );
+	}
+
+	/**
+	 * It should render the RSVP error.
+	 *
+	 * @test
+	 */
+	public function it_should_render_rsvp_error() {
+		$sut = $this->make_instance();
+
+		$html = $sut->render_rsvp_error( 'There was an error here' );
+
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+
+		$this->assertMatchesSnapshot( $html, $driver );
+	}
+
+	/**
+	 * It should render the RSVP error with an array of messages.
+	 *
+	 * @test
+	 */
+	public function it_should_render_rsvp_error_with_an_array() {
+		$sut = $this->make_instance();
+
+		$html = $sut->render_rsvp_error( [
+			'There was an error here',
+			'There was an error there too',
+			'There was an error over on the other side too',
+		] );
+
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
