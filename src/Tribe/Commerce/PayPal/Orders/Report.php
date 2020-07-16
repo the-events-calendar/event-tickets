@@ -39,11 +39,11 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	 * @return string The absolute URL.
 	 */
 	public static function get_tickets_report_link( $post ) {
-		$url = add_query_arg( array(
+		$url = add_query_arg( [
 			'post_type' => $post->post_type,
 			'page'      => self::$orders_slug,
 			'post_id'   => $post->ID,
-		), admin_url( 'edit.php' ) );
+		], admin_url( 'edit.php' ) );
 
 		return $url;
 	}
@@ -54,15 +54,17 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	 * @since 4.7
 	 */
 	public function hook() {
+		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
+		$paypal = tribe( 'tickets.commerce.paypal' );
 
 		// if Tribe Commerce is not active, then disable report page
-		if ( ! tribe( 'tickets.commerce.paypal' )->is_active() ) {
+		if ( ! $paypal->is_active() ) {
 			return;
 		}
 
-		add_filter( 'post_row_actions', array( $this, 'add_orders_row_action' ), 10, 2 );
-		add_action( 'tribe_tickets_attendees_page_inside', array( $this, 'render_tabbed_view' ) );
-		add_action( 'admin_menu', array( $this, 'register_orders_page' ) );
+		add_filter( 'post_row_actions', [ $this, 'add_orders_row_action' ], 10, 2 );
+		add_action( 'tribe_tickets_attendees_page_inside', [ $this, 'render_tabbed_view' ] );
+		add_action( 'admin_menu', [ $this, 'register_orders_page' ] );
 
 		// register the tabbed view
 		$paypal_tabbed_view = new Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View();
@@ -161,13 +163,16 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 			$page_title,
 			$cap,
 			self::$orders_slug,
-			array( $this, 'orders_page_inside' )
+			[ $this, 'orders_page_inside' ]
 		);
 
-		add_filter( 'tribe_filter_attendee_page_slug', array( $this, 'add_attendee_resources_page_slug' ) );
-		add_action( 'admin_enqueue_scripts', array( tribe( 'tickets.attendees' ), 'enqueue_assets' ) );
-		add_action( 'admin_enqueue_scripts', array( tribe( 'tickets.attendees' ), 'load_pointers' ) );
-		add_action( 'load-' . $this->orders_page, array( $this, 'attendees_page_screen_setup' ) );
+		/** @var Tribe__Tickets__Attendees $attendees */
+		$attendees = tribe( 'tickets.attendees' );
+
+		add_filter( 'tribe_filter_attendee_page_slug', [ $this, 'add_attendee_resources_page_slug' ] );
+		add_action( 'admin_enqueue_scripts', [ $attendees, 'enqueue_assets' ] );
+		add_action( 'admin_enqueue_scripts', [ $attendees, 'load_pointers' ] );
+		add_action( 'load-' . $this->orders_page, [ $this, 'attendees_page_screen_setup' ] );
 	}
 
 	/**
@@ -194,7 +199,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		$this->orders_table = new Tribe__Tickets__Commerce__PayPal__Orders__Table();
 		wp_enqueue_script( 'jquery-ui-dialog' );
 
-		add_filter( 'admin_title', array( $this, 'orders_admin_title' ) );
+		add_filter( 'admin_title', [ $this, 'orders_admin_title' ] );
 	}
 
 	/**
@@ -240,12 +245,12 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		/** @var \Tribe__Tickets__Commerce__PayPal__Orders__Sales $sales */
 		$sales = tribe( 'tickets.commerce.paypal.orders.sales' );
 
-		$paypal_tickets = array_filter( $tickets, array( $paypal, 'is_paypal_ticket' ) );
+		$paypal_tickets = array_filter( $tickets, [ $paypal, 'is_paypal_ticket' ] );
 		$ticket_ids     = Tribe__Utils__Array::get( $_GET, 'product_ids', false );
 
 		if ( false !== $ticket_ids ) {
 			$ticket_ids = array_map( 'absint', explode( ',', $ticket_ids ) );
-			$filtered   = array();
+			$filtered   = [];
 			/** @var \Tribe__Tickets__Ticket_Object $paypal_ticket */
 			foreach ( $paypal_tickets as $paypal_ticket ) {
 				if ( in_array( $paypal_ticket->ID, $ticket_ids ) ) {
@@ -273,7 +278,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 			}
 
 			if ( empty( $tickets_sold[ $ticket->name ] ) ) {
-				$tickets_sold[ $ticket->name ] = array(
+				$tickets_sold[ $ticket->name ] = [
 					'ticket'     => $ticket,
 					'has_stock'  => ! $ticket->stock(),
 					'sku'        => get_post_meta( $ticket->ID, '_sku', true ),
@@ -282,7 +287,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 					'completed'  => 0,
 					'refunded'   => 0,
 					'incomplete' => 0,
-				);
+				];
 			}
 
 			//update ticket item counts by order status
