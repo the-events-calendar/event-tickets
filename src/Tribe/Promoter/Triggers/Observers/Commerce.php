@@ -31,7 +31,7 @@ class Commerce {
 	 * @param string $attendee_order_status The order status for the attendee.
 	 */
 	public function attendee_created( $attendee_id, $order_id, $product_id, $order_attendee_id, $attendee_order_status ) {
-		$this->trigger( $attendee_id );
+		$this->trigger( 'ticket_purchased', $attendee_id );
 	}
 
 	/**
@@ -43,7 +43,7 @@ class Commerce {
 	 * @param bool|null $qr
 	 */
 	public function checkin( $attendee_id, $qr ) {
-		$this->trigger( $attendee_id );
+		$this->trigger( 'checkin', $attendee_id );
 	}
 
 	/**
@@ -51,9 +51,10 @@ class Commerce {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $attendee_id The ID of the attendee utilized.
+	 * @param string $type        The trigger type
+	 * @param int    $attendee_id The ID of the attendee utilized.
 	 */
-	private function trigger( $attendee_id ) {
+	private function trigger( $type, $attendee_id ) {
 		/** @var Tribe__Tickets__Commerce__PayPal__Main $ticket */
 		$ticket   = tribe( 'Tribe__Tickets__Commerce__PayPal__Main' );
 		$attendee = new Attendee( $ticket->get_attendee( $attendee_id ) );
@@ -67,6 +68,6 @@ class Commerce {
 		 * @param Attendee_Model          $attendee The attendee associated with the trigger.
 		 * @param Tribe__Tickets__Tickets $ticket   The ticket where the attendee was created.
 		 */
-		do_action( 'tribe_tickets_promoter_trigger_attendee', 'ticket_purchased', $attendee, $ticket );
+		do_action( 'tribe_tickets_promoter_trigger_attendee', $type, $attendee, $ticket );
 	}
 }
