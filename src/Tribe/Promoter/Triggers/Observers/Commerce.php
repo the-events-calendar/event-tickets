@@ -16,6 +16,7 @@ class Commerce {
 	 */
 	public function hook() {
 		add_action( 'event_tickets_tpp_attendee_created', [ $this, 'attendee_created' ], 10, 5 );
+		add_action( 'event_tickets_checkin', [ $this, 'checkin' ], 10, 2 );
 	}
 
 	/**
@@ -30,6 +31,29 @@ class Commerce {
 	 * @param string $attendee_order_status The order status for the attendee.
 	 */
 	public function attendee_created( $attendee_id, $order_id, $product_id, $order_attendee_id, $attendee_order_status ) {
+		$this->trigger( $attendee_id );
+	}
+
+	/**
+	 * Responds to a checkin action
+	 *
+	 * @since TBD
+	 *
+	 * @param int       $attendee_id
+	 * @param bool|null $qr
+	 */
+	public function checkin( $attendee_id, $qr ) {
+		$this->trigger( $attendee_id );
+	}
+
+	/**
+	 * Fire an trigger action using the tribe commerce as main source of the ticket data.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The ID of the attendee utilized.
+	 */
+	private function trigger( $attendee_id ) {
 		/** @var Tribe__Tickets__Commerce__PayPal__Main $ticket */
 		$ticket   = tribe( 'Tribe__Tickets__Commerce__PayPal__Main' );
 		$attendee = new Attendee( $ticket->get_attendee( $attendee_id ) );
