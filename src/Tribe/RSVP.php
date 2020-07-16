@@ -242,12 +242,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$html = $this->render_rsvp_step( $ticket_id, $post_id, $step );
 
 		if ( '' === $html ) {
-			return wp_send_json_error( $response );
+			wp_send_json_error( $response );
 		}
 
 		$response['html'] = $html;
 
-		return wp_send_json_success( $response );
+		wp_send_json_success( $response );
 	}
 
 	/**
