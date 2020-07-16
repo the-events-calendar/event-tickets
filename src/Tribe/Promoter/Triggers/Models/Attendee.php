@@ -27,7 +27,7 @@ class Attendee implements Attendee_Model {
 	 *
 	 * @param array $data An array with keys, value pairs that represent an attendee.
 	 */
-	public function __construct( array $data = [] ) {
+	public function __construct( $data = [] ) {
 		$this->data = $data;
 	}
 
