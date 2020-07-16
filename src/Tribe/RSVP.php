@@ -119,6 +119,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public $deleted_product = '_tribe_deleted_product_name';
 
 	/**
+	 * Meta key that holds the "not going" option visibility status.
+	 *
+	 * @var string
+	 */
+	public $show_not_going = '_tribe_ticket_show_not_going';
+
+	/**
 	 * @var Tribe__Tickets__RSVP__Attendance_Totals
 	 */
 	protected $attendance_totals;
@@ -928,6 +935,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$ticket_data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
 		$this->update_capacity( $ticket, $ticket_data, $save_type );
 
+		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
+			$show_not_going = 'no';
+
+			if ( isset( $ticket_data['not_going'] ) ) {
+				$show_not_going = $ticket_data['not_going'];
+			}
+
+			$show_not_going = tribe_is_truthy( $show_not_going ) ? 'yes' : 'no';
+			update_post_meta( $ticket->ID, $this->show_not_going, $show_not_going );
+		}
+
 		if ( ! empty( $raw_data['ticket_start_date'] ) ) {
 			$start_date = Tribe__Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_start_date'] );
 
@@ -1700,17 +1718,24 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return mixed
 	 */
 	public function do_metabox_capacity_options( $event_id, $ticket_id ) {
-		$capacity = '';
+		$capacity  = '';
+		$not_going = false;
 
 		// This returns the original stock
 		if ( ! empty( $ticket_id ) ) {
 			$ticket = $this->get_ticket( $event_id, $ticket_id );
+
 			if ( ! empty( $ticket ) ) {
-				$capacity = $ticket->capacity();
+				$capacity  = $ticket->capacity();
+				$not_going = tribe_is_truthy( get_post_meta( $ticket_id, $this->show_not_going, true ) );
 			}
 		}
 
 		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/rsvp-metabox-capacity.php';
+
+		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
+			include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/rsvp-metabox-not-going.php';
+		}
 	}
 
 	public function get_messages() {
