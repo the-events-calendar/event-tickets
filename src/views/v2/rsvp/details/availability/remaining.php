@@ -34,6 +34,6 @@ echo wp_kses_post(
 		),
 		'<span class="tribe-tickets__rsvp-availability-quantity tribe-common-b2--bold">',
 		$remaining_tickets,
-		'</span>'
-	) . ( $has_days_to_rsvp ? ',' : '' )
+		( false !== $days_to_rsvp ? ',' : '' ) . '</span>'
+	)
 );

@@ -26,5 +26,5 @@ $handler = tribe( 'tickets.handler' );
 
 ?>
 <span class="tribe-tickets__rsvp-availability-unlimited">
-	<?php echo esc_html( $handler->unlimited_term . ( $has_days_to_rsvp ? ',' : '' ) ); ?>
+	<?php echo esc_html( $handler->unlimited_term . ( false !== $days_to_rsvp ? ',' : '' ) ); ?>
 </span>
