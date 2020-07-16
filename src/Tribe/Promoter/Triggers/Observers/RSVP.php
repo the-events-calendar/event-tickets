@@ -3,8 +3,10 @@
 
 namespace Tribe\Tickets\Promoter\Triggers\Observers;
 
+use Tribe\Tickets\Promoter\Triggers\Contracts\Attendee_Model;
 use Tribe\Tickets\Promoter\Triggers\Models\Attendee;
 use Tribe__Tickets__RSVP;
+use Tribe__Tickets__Tickets;
 
 /**
  * Class RSVP
@@ -72,6 +74,15 @@ class RSVP {
 		$ticket   = tribe( 'tickets.rsvp' );
 		$attendee = new Attendee( $ticket->get_attendee( $attendee_id ) );
 
+		/**
+		 * Create a new action to listen for a trigger associated with an attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param string                  $type     The type of trigger fired.
+		 * @param Attendee_Model          $attendee The attendee associated with the trigger.
+		 * @param Tribe__Tickets__Tickets $ticket   The ticket where the attendee was created or updated.
+		 */
 		do_action( 'tribe_tickets_promoter_trigger_attendee', $type, $attendee, $ticket );
 	}
 }

@@ -4,7 +4,7 @@
 namespace Tribe\Tickets\Promoter\Triggers\Builders;
 
 
-use Tribe\Tickets\Promoter\Triggers\Models\Attendee as Model;
+use Tribe\Tickets\Promoter\Triggers\Contracts\Attendee_Model;
 use Tribe\Tickets\Promoter\Triggers\Director;
 use Tribe__Tickets__Tickets;
 
@@ -27,10 +27,10 @@ class Attendee_Trigger extends Director {
 	 * Attendee constructor.
 	 *
 	 * @param string                  $trigger_name
-	 * @param Model                   $attendee
+	 * @param Attendee_Model          $attendee
 	 * @param Tribe__Tickets__Tickets $provider
 	 */
-	public function __construct( $trigger_name, Model $attendee, Tribe__Tickets__Tickets $provider ) {
+	public function __construct( $trigger_name, Attendee_Model $attendee, Tribe__Tickets__Tickets $provider ) {
 		$this->type     = $trigger_name;
 		$this->attendee = $attendee;
 		$this->provider = $provider;
