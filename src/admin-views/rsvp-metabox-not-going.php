@@ -2,6 +2,7 @@
 /**
  * Admin setting for "Can't Go" checkbox when creating/editing RSVP in Classic Editor.
  */
+
 ?>
 
 <div
