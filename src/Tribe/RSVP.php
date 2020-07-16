@@ -232,7 +232,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function ajax_handle_rsvp() {
 		$response = [
-			'html'   => '',
+			'html' => '',
 		];
 
 		$post_id   = absint( tribe_get_request_var( 'post_id', 0 ) );
