@@ -10,14 +10,14 @@
 	data-condition-is-checked
 >
 	<label
-		for="Tribe__Tickets__RSVP_not_going"
+		for="tribe-tickets-rsvp-not-going"
 		class="ticket_form_label ticket_form_left"
 	>
 		<?php esc_html_e( "Can't Go:", 'event-tickets' ); ?>
 	</label>
 	<input
 		type="checkbox"
-		id="Tribe__Tickets__RSVP_not_going"
+		id="tribe-tickets-rsvp-not-going"
 		name="tribe-ticket[not_going]"
 		class="ticket_field tribe-rsvp-field-not-going ticket_form_right"
 		value="yes"
