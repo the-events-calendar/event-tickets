@@ -55,7 +55,7 @@ interface Triggered {
 	 *
 	 * @since TBD
 	 *
-	 * @return AttendeeModel
+	 * @return Attendee_Model
 	 */
 	public function attendee();
 }

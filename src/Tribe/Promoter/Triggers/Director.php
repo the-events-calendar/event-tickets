@@ -5,7 +5,7 @@ namespace Tribe\Tickets\Promoter\Triggers;
 
 
 use RuntimeException;
-use Tribe\Tickets\Promoter\Triggers\Contracts\AttendeeModel;
+use Tribe\Tickets\Promoter\Triggers\Contracts\Attendee_Model;
 use Tribe\Tickets\Promoter\Triggers\Contracts\Builder;
 use Tribe\Tickets\Promoter\Triggers\Contracts\Triggered;
 use Tribe__Tickets__Ticket_Object;
@@ -28,7 +28,7 @@ abstract class Director implements Triggered, Builder {
 	/**
 	 * @since TBD
 	 *
-	 * @var AttendeeModel $attendee
+	 * @var Attendee_Model $attendee
 	 */
 	protected $attendee;
 

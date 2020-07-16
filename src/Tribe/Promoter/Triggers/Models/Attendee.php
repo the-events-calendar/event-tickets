@@ -5,14 +5,14 @@ namespace Tribe\Tickets\Promoter\Triggers\Models;
 
 
 use RuntimeException;
-use Tribe\Tickets\Promoter\Triggers\Contracts\AttendeeModel;
+use Tribe\Tickets\Promoter\Triggers\Contracts\Attendee_Model;
 
 /**
  * Class Attendee
  *
  * @since TBD
  */
-class Attendee implements AttendeeModel {
+class Attendee implements Attendee_Model {
 	/**
 	 * @since TBD
 	 *
@@ -27,7 +27,7 @@ class Attendee implements AttendeeModel {
 	 *
 	 * @param array $data An array with keys, value pairs that represent an attendee.
 	 */
-	public function __construct( $data = [] ) {
+	public function __construct( array $data = [] ) {
 		$this->data = $data;
 	}
 

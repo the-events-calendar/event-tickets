@@ -4,7 +4,7 @@
 namespace Tribe\Tickets\Promoter\Triggers;
 
 
-use Tribe\Tickets\Promoter\Triggers\Builders\AttendeeTrigger;
+use Tribe\Tickets\Promoter\Triggers\Builders\Attendee_Trigger;
 use Tribe\Tickets\Promoter\Triggers\Models\Attendee as AttendeeModel;
 use Tribe__Tickets__Tickets;
 
@@ -28,6 +28,6 @@ class Factory {
 	 * @param Tribe__Tickets__Tickets $ticket   The ticket provider instance.
 	 */
 	public function build_attendee( $type, $attendee, $ticket ) {
-		do_action( 'tribe_tickets_promoter_trigger', new AttendeeTrigger( $type, $attendee, $ticket ) );
+		do_action( 'tribe_tickets_promoter_trigger', new Attendee_Trigger( $type, $attendee, $ticket ) );
 	}
 }
