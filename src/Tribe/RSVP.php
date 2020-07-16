@@ -120,6 +120,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	/**
 	 * Meta key that holds the "not going" option visibility status.
+	 *
 	 * @var string
 	 */
 	public $show_not_going = '_tribe_ticket_show_not_going';
