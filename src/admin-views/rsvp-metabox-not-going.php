@@ -1,3 +1,9 @@
+<?php
+/**
+ * Admin setting for "Can't Go" checkbox when creating/editing RSVP in Classic Editor.
+ */
+?>
+
 <div
 	class="input_block ticket_advanced_Tribe__Tickets__RSVP tribe-dependent"
 	data-depends="#Tribe__Tickets__RSVP_radio"
