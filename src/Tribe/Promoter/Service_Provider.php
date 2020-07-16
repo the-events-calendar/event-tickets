@@ -23,12 +23,16 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	public function register() {
+		$this->container->singleton( Tribe__Tickets__Promoter__Integration::class, Tribe__Tickets__Promoter__Integration::class, [ 'hook' ] );
 		$this->container->singleton( 'tickets.promoter.integration', Tribe__Tickets__Promoter__Integration::class, [ 'hook' ] );
+
+		$this->container->singleton( Tribe__Tickets__Promoter__Observer::class, Tribe__Tickets__Promoter__Observer::class, [ 'hook' ] );
 		$this->container->singleton( 'tickets.promoter.observer', Tribe__Tickets__Promoter__Observer::class, [ 'hook' ] );
-		$this->container->singleton( 'tickets.promoter.triggers.factory', Factory::class, [ 'hook' ] );
-		$this->container->singleton( 'tickets.promoter.triggers.dispatcher', Dispatcher::class, [ 'hook' ] );
-		$this->container->singleton( 'tickets.promoter.triggers.observers.commerce', Commerce::class, [ 'hook' ] );
-		$this->container->singleton( 'tickets.promoter.triggers.observers.rsvp', RSVP::class, [ 'hook' ] );
+
+		$this->container->singleton( Factory::class, Factory::class, [ 'hook' ] );
+		$this->container->singleton( Dispatcher::class, Dispatcher::class, [ 'hook' ] );
+		$this->container->singleton( Commerce::class, Commerce::class, [ 'hook' ] );
+		$this->container->singleton( RSVP::class, RSVP::class, [ 'hook' ] );
 
 		$this->load();
 	}
@@ -43,9 +47,9 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	protected function load() {
 		tribe( 'tickets.promoter.integration' );
 		tribe( 'tickets.promoter.observer' );
-		tribe( 'tickets.promoter.triggers.factory' );
-		tribe( 'tickets.promoter.triggers.dispatcher' );
-		tribe( 'tickets.promoter.triggers.observers.rsvp' );
-		tribe( 'tickets.promoter.triggers.observers.commerce' );
+		tribe( Factory::class );
+		tribe( Dispatcher::class );
+		tribe( RSVP::class );
+		tribe( Commerce::class );
 	}
 }

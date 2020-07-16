@@ -57,7 +57,7 @@ class Dispatcher {
 	 *
 	 * @param Triggered $trigger
 	 */
-	public function trigger( $trigger ) {
+	public function trigger( Triggered $trigger ) {
 		try {
 			$trigger->build();
 
