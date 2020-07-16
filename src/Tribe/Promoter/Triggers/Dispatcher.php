@@ -26,6 +26,14 @@ class Dispatcher {
 	 */
 	private $pue;
 
+	/**
+	 * Setup the dispatcher.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Promoter__Connector $connect The connector object for Promoter.
+	 * @param Tribe__Promoter__PUE       $pue     The PUE object for Promoter.
+	 */
 	public function __construct( Tribe__Promoter__Connector $connector, Tribe__Promoter__PUE $pue ) {
 		$this->connector   = $connector;
 		$this->pue         = $pue;
