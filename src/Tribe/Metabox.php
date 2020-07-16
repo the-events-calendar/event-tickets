@@ -75,13 +75,14 @@ class Tribe__Tickets__Metabox {
 	 */
 	public function render( $post_id ) {
 		$modules = Tribe__Tickets__Tickets::modules();
+
 		if ( empty( $modules ) ) {
 			return false;
 		}
 
 		$post = get_post( $post_id );
 
-		// Prepare all the variables required
+		// Prepare all the variables required.
 		$start_date = date( 'Y-m-d H:00:00' );
 		$end_date   = date( 'Y-m-d H:00:00' );
 		$start_time = Tribe__Date_Utils::time_only( $start_date, false );
@@ -91,7 +92,10 @@ class Tribe__Tickets__Metabox {
 		$tickets           = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
 		$global_stock      = new Tribe__Tickets__Global_Stock( $post->ID );
 
-		return tribe( 'tickets.admin.views' )->template( array( 'editor', 'metabox' ), get_defined_vars() );
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
+
+		return $admin_views->template( [ 'editor', 'metabox' ], get_defined_vars() );
 	}
 
 	/**
@@ -160,7 +164,7 @@ class Tribe__Tickets__Metabox {
 
 		// Bail on Invalid post
 		if ( ! $post instanceof WP_Post ) {
-			return array();
+			return [];
 		}
 
 		// Overwrites for a few templates that use get_the_ID() and get_post()
@@ -169,11 +173,14 @@ class Tribe__Tickets__Metabox {
 		// Let's create tickets list markup to return
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
 
-		$panels = array(
-			'list' => tribe( 'tickets.admin.views' )->template( 'editor/panel/list', array( 'post_id' => $post->ID, 'tickets' => $tickets ), false ),
-			'settings' => tribe( 'tickets.admin.views' )->template( 'editor/panel/settings', array( 'post_id' => $post->ID ), false ),
-			'ticket' => tribe( 'tickets.admin.views' )->template( 'editor/panel/ticket', array( 'post_id' => $post->ID, 'ticket_id' => $ticket_id ), false ),
-		);
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
+
+		$panels = [
+			'list'     => $admin_views->template( 'editor/panel/list', [ 'post_id' => $post->ID, 'tickets' => $tickets ], false ),
+			'settings' => $admin_views->template( 'editor/panel/settings', [ 'post_id' => $post->ID ], false ),
+			'ticket'   => $admin_views->template( 'editor/panel/ticket', [ 'post_id' => $post->ID, 'ticket_id' => $ticket_id ], false ),
+		];
 
 		return $panels;
 	}

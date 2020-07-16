@@ -191,11 +191,13 @@ $default_module_class = empty( $default_module ) ? '' : $default_module->class_n
 			</section>
 
 			<div class="accordion">
-				<?php tribe( 'tickets.admin.views' )->template( 'editor/fieldset/advanced', [ 'post_id' => $post_id, 'ticket_id' => $ticket_id ] ); ?>
-
-				<?php tribe( 'tickets.admin.views' )->template( 'editor/fieldset/history', [ 'post_id' => $post_id, 'ticket_id' => $ticket_id ] ); ?>
-
 				<?php
+				/** @var Tribe__Tickets__Admin__Views $admin_views */
+				$admin_views = tribe( 'tickets.admin.views' );
+
+				$admin_views->template( 'editor/fieldset/advanced', [ 'post_id' => $post_id, 'ticket_id' => $ticket_id ] );
+				$admin_views->template( 'editor/fieldset/history', [ 'post_id' => $post_id, 'ticket_id' => $ticket_id ] );
+
 				/**
 				 * Allows for the insertion of additional content sections into the ticket edit form accordion
 				 *
