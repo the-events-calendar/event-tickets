@@ -7,7 +7,7 @@
 		for="Tribe__Tickets__RSVP_not_going"
 		class="ticket_form_label ticket_form_left"
 	>
-		<?php esc_html_e( 'Not Going:', 'event-tickets' ); ?>
+		<?php esc_html_e( "Can't Go:", 'event-tickets' ); ?>
 	</label>
 	<input
 		type='checkbox' id='Tribe__Tickets__RSVP_not_going'
@@ -16,5 +16,5 @@
 		value='yes'
 		<?php checked( $not_going ); ?>
 	/>
-	<span class="tribe_soft_note ticket_form_right"><?php esc_html_e( 'Enable "Not Going" responses', 'event-tickets' ); ?></span>
+	<span class="tribe_soft_note ticket_form_right"><?php esc_html_e( "Enable \"Can't Go\" responses", 'event-tickets' ); ?></span>
 </div>
