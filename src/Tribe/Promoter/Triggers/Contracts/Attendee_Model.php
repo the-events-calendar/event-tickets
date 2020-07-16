@@ -8,7 +8,7 @@ namespace Tribe\Tickets\Promoter\Triggers\Contracts;
  *
  * @since TBD
  */
-interface AttendeeModel {
+interface Attendee_Model {
 	/**
 	 * Validate all the requirements for this attendee so it can be controlled when the validation takes place.
 	 *

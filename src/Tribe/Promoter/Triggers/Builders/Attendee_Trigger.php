@@ -9,11 +9,11 @@ use Tribe\Tickets\Promoter\Triggers\Director;
 use Tribe__Tickets__Tickets;
 
 /**
- * Class AttendeeTrigger
+ * Class Attendee_Trigger
  *
  * @since TBD
  */
-class AttendeeTrigger extends Director {
+class Attendee_Trigger extends Director {
 	/**
 	 * @var Tribe__Tickets__Tickets
 	 */
@@ -30,7 +30,7 @@ class AttendeeTrigger extends Director {
 	 * @param Model                   $attendee
 	 * @param Tribe__Tickets__Tickets $provider
 	 */
-	public function __construct( $trigger_name, $attendee, $provider ) {
+	public function __construct( $trigger_name, Model $attendee, Tribe__Tickets__Tickets $provider ) {
 		$this->type     = $trigger_name;
 		$this->attendee = $attendee;
 		$this->provider = $provider;
