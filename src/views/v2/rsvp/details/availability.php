@@ -35,26 +35,35 @@ if ( ! $is_in_stock || 6 < $days_to_rsvp ) {
 		<?php $this->template( 'v2/rsvp/details/availability/full', [ 'rsvp' => $rsvp ] ); ?>
 	<?php elseif ( $is_unlimited ) : ?>
 		<?php
-		$this->template( 'v2/rsvp/details/availability/unlimited', [
-			'is_unlimited' => $is_unlimited,
-			'days_to_rsvp' => $days_to_rsvp,
-		] );
+		$this->template(
+			'v2/rsvp/details/availability/unlimited',
+			[
+				'is_unlimited' => $is_unlimited,
+				'days_to_rsvp' => $days_to_rsvp,
+			]
+		);
 		?>
 	<?php else : ?>
 		<?php
-		$this->template( 'v2/rsvp/details/availability/remaining', [
-			'rsvp'         => $rsvp,
-			'days_to_rsvp' => $days_to_rsvp,
-		] );
+		$this->template(
+			'v2/rsvp/details/availability/remaining',
+			[
+				'rsvp'         => $rsvp,
+				'days_to_rsvp' => $days_to_rsvp,
+			]
+		);
 		?>
 	<?php endif; ?>
 
 	<?php if ( false !== $days_to_rsvp ) : ?>
 		<?php
-		$this->template( 'v2/rsvp/details/availability/days-to-rsvp', [
-			'rsvp'         => $rsvp,
-			'days_to_rsvp' => $days_to_rsvp,
-		] );
+		$this->template(
+			'v2/rsvp/details/availability/days-to-rsvp',
+			[
+				'rsvp'         => $rsvp,
+				'days_to_rsvp' => $days_to_rsvp,
+			]
+		);
 		?>
 	<?php endif; ?>
 </div>
