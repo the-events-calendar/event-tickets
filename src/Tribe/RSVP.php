@@ -677,12 +677,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		foreach ( $required_details as $required_detail ) {
 			// Detail is not set.
 			if ( ! isset( $attendee_data[ $required_detail ] ) ) {
-				throw new Exception( sprintf( 'Attendee field "%s" is not set.', $required_detail ) );
+				throw new Exception( sprintf( __( 'Attendee field "%s" is not set.', 'event-tickets' ), $required_detail ) );
 			}
 
 			// Detail is empty.
 			if ( empty( $attendee_data[ $required_detail ] ) ) {
-				throw new Exception( sprintf( 'Attendee field "%s" is empty.', $required_detail ) );
+				throw new Exception( sprintf( __( 'Attendee field "%s" is empty.', 'event-tickets' ), $required_detail ) );
 			}
 		}
 
@@ -699,6 +699,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$optout = tribe_is_truthy( $attendee_data['optout'] );
 		}
 
+		if ( 'going' === $order_status ) {
+			$order_status = 'yes';
+		} elseif ( 'not-going' === $order_status ) {
+			$order_status = 'no';
+		}
+
 		if ( ! isset( $rsvp_options[ $order_status ] ) ) {
 			$order_status = 'yes';
 		}
@@ -707,7 +713,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$post_id = (int) get_post_meta( $product_id, $this->event_key, true );
 
 		if ( empty( $post_id ) ) {
-			return false;
+			throw new Exception( __( 'Unable to process your request, invalid content resource.', 'event-tickets' ) );
 		}
 
 		$attendee = [
@@ -2466,7 +2472,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Iterate over all the amount of tickets purchased (for this product)
 		for ( $i = 0; $i < $qty; $i++ ) {
 			try {
-				$attendee_ids[] = $this->create_attendee_for_ticket( $ticket_type, [
+				$attendee_data = [
 					'full_name'         => $attendee_full_name,
 					'email'             => $attendee_email,
 					'optout'            => $attendee_optout,
@@ -2474,7 +2480,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 					'order_id'          => $order_id,
 					'order_attendee_id' => $i + 1,
 					'user_id'           => is_user_logged_in() ? get_current_user_id() : 0,
-				] );
+				];
+
+				$attendee_ids[] = $this->create_attendee_for_ticket( $ticket_type, $attendee_data );
 			} catch ( Exception $exception ) {
 				// No handling for this at the moment.
 			}

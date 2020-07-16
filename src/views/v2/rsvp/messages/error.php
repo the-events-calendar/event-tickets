@@ -23,10 +23,10 @@ $error_messages = (array) $error_message;
 <div class="tribe-tickets__rsvp-message tribe-tickets__rsvp-message--error tribe-common-b3">
 	<?php $this->template( 'v2/components/icons/paper-plane', [ 'classes' => [ 'tribe-tickets__rsvp-message--error-icon' ] ] ); ?>
 
-	<?php foreach ( $error_messages as $error ) : ?>
+	<?php foreach ( $error_messages as $message ) : ?>
 		<span class="tribe-tickets__rsvp-message-text">
 			<strong>
-				<?php echo wp_kses_post( $error ); ?>
+				<?php echo wp_kses_post( $message ); ?>
 			</strong>
 		</span>
 	<?php endforeach; ?>
