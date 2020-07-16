@@ -810,7 +810,7 @@ class Tribe__Tickets__Tickets_Handler {
 			'has_unlimited' => false,
 			'has_shared'    => $global->is_enabled(),
 			'tickets'       => count( $tickets ),
-			'capacity'      => tribe_get_event_capacity( $post ),
+			'capacity'      => (int) tribe_get_event_capacity( $post ), // Could be null.
 			'sold'          => 0,
 			'pending'       => 0,
 			'stock'         => 0,
