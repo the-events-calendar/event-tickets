@@ -100,7 +100,7 @@ class Dispatcher {
 	 *
 	 * @return array The payload to be encoded and delivered to the connector app.
 	 */
-	private function get_payload( $trigger ) {
+	private function get_payload( Triggered $trigger ) {
 		return [
 			'license'  => $this->license_key,
 			'type'     => $trigger->type(),
