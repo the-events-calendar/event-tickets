@@ -12,9 +12,7 @@
  * @version TBD
  */
 
-if ( empty( $classes ) ) {
-	$classes = $this->get( 'classes' ) ?: [];
-}
+$classes = $this->get( 'classes' ) ?: [];
 
 $spinner_classes = [
 	'tribe-tickets-loader__dots',
@@ -22,7 +20,7 @@ $spinner_classes = [
 	'tribe-common-a11y-hidden',
 ];
 
-if ( ! empty( $loader_classes ) ) {
+if ( ! empty( $classes ) ) {
 	$spinner_classes = array_merge( $spinner_classes, (array) $classes );
 }
 
