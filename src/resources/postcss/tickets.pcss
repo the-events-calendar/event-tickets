@@ -27,6 +27,64 @@
 	}
 }
 
+/*
+	Tribe Horizontal Datepicker (Day, Month, Year)
+*/
+.tribe_horizontal_datepicker__container {
+	label {
+		width: 100%;
+		display: inline-block;
+	}
+
+	.tribe_horizontal_datepicker__field_group {
+		max-width: 100%;
+
+		@media(--viewport-full) {
+			max-width: 50%;
+		}
+	}
+
+	.tribe_horizontal_datepicker {
+		min-width: 80px;
+		width: 100%;
+		margin: var(--spacer-1) 0;
+		display: inline-block;
+
+		@media(--viewport-medium) {
+			width: calc( ( 100% / 3 ) - var(--spacer-1) - 4px ); /* 4px = safety margin */
+			margin-right: var(--spacer-1);
+			display: inline-block;
+		}
+
+		select {
+			border: 1px solid var(--form-color-border-secondary);
+			border-radius: var(--border-radius-default);
+			width: 100%;
+
+			&:focus {
+				border-color: var(--color-accent-secondary-hover);
+			}
+
+			&.ticket-meta__has-error {
+				border-color: var(--color-icon-error) ! important;
+			}
+			@mixin mobile-body-2;
+			appearance: none;
+			background-color: var(--color-background);
+			background-image: url('../images/select.png');
+			background-position: right center;
+			background-repeat: no-repeat;
+			background-size: 33px 33px;
+			height: auto;
+			padding: 10px;
+
+			@media(--viewport-medium) {
+				@mixin desktop-body-2;
+			}
+		}
+	}
+}
+
  .tribe-common,
  .entry .entry-content .tribe-common {
 
@@ -509,16 +567,6 @@
 		.tribe-tickets__item__quantity__number .tribe-tickets-quantity {
 			color: rgba( var(--color-text-primary), 0.8);
 			color: var(--color-scroll-bar);
-		}
-	}
-
-	/*
-		Tribe Horizontal Datepicker (Day, Month, Year)
-	*/
-	.tribe_horizontal_datepicker__container {
-		.tribe_horizontal_datepicker {
-			width: 33%;
-			margin-right: var(--spacer-1);
 		}
 	}
 

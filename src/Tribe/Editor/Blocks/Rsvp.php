@@ -37,10 +37,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return array
 	 */
 	public function default_attributes() {
-
-		$defaults = array();
-
-		return $defaults;
+		return [];
 	}
 
 	/**
@@ -54,23 +51,13 @@ extends Tribe__Editor__Blocks__Abstract {
 	 */
 	public function render( $attributes = array() ) {
 		/** @var Tribe__Tickets__Editor__Template $template */
-		$template                 = tribe( 'tickets.editor.template' );
-		$args['post_id']          = $post_id = $template->get( 'post_id', null, false );
-		$rsvps                    = $this->get_tickets( $post_id );
-		$args['attributes']       = $this->attributes( $attributes );
-		$args['active_rsvps']     = $this->get_active_tickets( $rsvps );
-		$args['has_active_rsvps'] = ! empty( $args['active_rsvps'] );
-		$args['has_rsvps']        = ! empty( $rsvps );
-		$args['all_past']         = $this->get_all_tickets_past( $rsvps );
+		$template = tribe( 'tickets.editor.template' );
 
-		// Add the rendering attributes into global context
-		$template->add_template_globals( $args );
+		$post_id = $template->get( 'post_id', null, false );
 
-		// enqueue assets
-		tribe_asset_enqueue( 'tribe-tickets-gutenberg-rsvp' );
-		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-rsvp-style' );
+		$tickets_view = Tribe__Tickets__Tickets_View::instance();
 
-		return $template->template( array( 'blocks', $this->slug() ), $args, false );
+		return $tickets_view->get_rsvp_block( $post_id, false );
 	}
 
 	/**
@@ -80,7 +67,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @return array
 	 */
-	protected function get_tickets( $post_id ) {
+	public function get_tickets( $post_id ) {
 		$tickets = [];
 
 		// Bail if there's no event id
@@ -124,7 +111,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @return array
 	 */
-	protected function get_active_tickets( $tickets ) {
+	public function get_active_tickets( $tickets ) {
 		$active_tickets = array();
 
 		foreach ( $tickets as $ticket ) {
@@ -148,7 +135,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @return bool
 	 */
-	protected function get_all_tickets_past( $tickets ) {
+	public function get_all_tickets_past( $tickets ) {
 		if ( empty( $tickets ) ) {
 			return false;
 		}
@@ -160,6 +147,52 @@ extends Tribe__Editor__Blocks__Abstract {
 		}
 
 		return $all_past;
+	}
+
+	/**
+	 * Get the threshold.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id
+	 *
+	 * @return int
+	 */
+	public function get_threshold( $post_id = 0 ) {
+
+		/** @var Tribe__Settings_Manager $settings_manager */
+		$settings_manager = tribe( 'settings.manager' );
+		$threshold        = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
+
+		/**
+		 * Overwrites the threshold to display "# tickets left".
+		 *
+		 * @param int   $threshold Stock threshold to trigger display of "# tickets left"
+		 * @param int   $post_id  Event ID.
+		 *
+		 * @since 4.11.1
+		 */
+		$threshold = absint( apply_filters( 'tribe_display_rsvp_block_tickets_left_threshold', $threshold, $post_id ) );
+
+		return $threshold;
+	}
+
+	/**
+	 * Show unlimited?
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $is_unlimited
+	 */
+	public function show_unlimited( $is_unlimited ) {
+		/**
+		 * Allows hiding of "unlimited" to be toggled on/off conditionally.
+		 *
+		 * @param int   $show_unlimited allow showing of "unlimited".
+		 *
+		 * @since 4.11.1
+		 */
+		return apply_filters( 'tribe_rsvp_block_show_unlimited_availability', false, $is_unlimited );
 	}
 
 	/**
@@ -178,26 +211,66 @@ extends Tribe__Editor__Blocks__Abstract {
 			$plugin,
 			'tribe-tickets-gutenberg-rsvp',
 			'rsvp-block.js',
-			array( 'jquery' ),
+			[ 'jquery' ],
 			null,
-			array(
-				'localize'     => array(
+			[
+				'localize' => [
 					'name' => 'TribeRsvp',
-					'data' => array(
+					'data' => [
 						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-block-rsvp-style',
 			'app/rsvp/frontend.css',
-			array(),
+			[],
 			null
 		);
 
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-rsvp',
+			'v2/rsvp.js',
+			[ 'jquery' ],
+			null,
+			[
+				'localize' => [
+					'name' => 'TribeRsvp',
+					'data' => [
+						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+					],
+				],
+			]
+		);
+
+		// @todo: Remove this once we solve the common breakpoints vs container based.
+		tribe_asset(
+			$plugin,
+			'tribe-common-responsive',
+			'common-responsive.css',
+			[ 'tribe-common-skeleton-style' ],
+			null
+		);
+
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-rsvp-style',
+			'rsvp.css',
+			[ 'tribe-common-skeleton-style', 'tribe-common-responsive' ],
+			null
+		);
+
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-form-style',
+			'forms.css',
+			[ 'tribe-tickets-rsvp-style' ],
+			null
+		);
 	}
 
 	/**
