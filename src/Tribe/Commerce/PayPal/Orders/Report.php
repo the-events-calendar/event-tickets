@@ -93,9 +93,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
 		$paypal = tribe( 'tickets.commerce.paypal' );
 
-		$has_tickets = count( $paypal->get_tickets_ids( $post->ID ) );
-
-		if ( ! $has_tickets ) {
+		if ( ! $paypal->post_has_tickets( $post ) ) {
 			return $actions;
 		}
 

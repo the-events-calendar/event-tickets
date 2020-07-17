@@ -37,7 +37,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 
 		if (
 			! tribe_tickets_is_provider_active( $paypal )
-			|| ! tribe_tickets_post_has_provider_history( $post, $paypal )
+			|| empty( $paypal->post_has_tickets( $post ) )
 		) {
 			return;
 		}
