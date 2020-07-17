@@ -36,10 +36,10 @@ jobs:
         with:
           repository: moderntribe/tric
           ref: main
-          path: ../tric
+          path: tric
           fetch-depth: 1
       - name: Add tric to the PATH
-        run: echo "::set-env name=PATH::${GITHUB_WORKSPACE}/../tric:$PATH"
+        run: echo "::set-env name=PATH::${GITHUB_WORKSPACE}/tric:$PATH"
       - name: Set run_context() for tric
         run: echo "::set-env name=TRIC::1"
       - name: Start ssh-agent
