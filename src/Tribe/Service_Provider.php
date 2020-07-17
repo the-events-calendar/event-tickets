@@ -18,43 +18,39 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 	public function register() {
 		$this->container->singleton( 'tickets.assets', new Tribe__Tickets__Assets() );
 		$this->container->singleton( 'tickets.handler', 'Tribe__Tickets__Tickets_Handler' );
-		$this->container->singleton( 'tickets.attendees', 'Tribe__Tickets__Attendees', array( 'hook' ) );
-		$this->container->singleton( 'tickets.version', 'Tribe__Tickets__Version', array( 'hook' ) );
-		$this->container->singleton( 'tickets.metabox', 'Tribe__Tickets__Metabox', array( 'hook' ) );
+		$this->container->singleton( 'tickets.attendees', 'Tribe__Tickets__Attendees', [ 'hook' ] );
+		$this->container->singleton( 'tickets.version', 'Tribe__Tickets__Version', [ 'hook' ] );
+		$this->container->singleton( 'tickets.metabox', 'Tribe__Tickets__Metabox', [ 'hook' ] );
 
 		// Caching
-		$this->container->singleton( 'tickets.cache-central', 'Tribe__Tickets__Cache__Central', array( 'hook' ) );
+		$this->container->singleton( 'tickets.cache-central', 'Tribe__Tickets__Cache__Central', [ 'hook' ] );
 		$this->container->singleton( 'tickets.cache', tribe( 'tickets.cache-central' )->get_cache() );
 
 		// Query Vars
-		$this->container->singleton( 'tickets.query', 'Tribe__Tickets__Query', array( 'hook' ) );
+		$this->container->singleton( 'tickets.query', 'Tribe__Tickets__Query', [ 'hook' ] );
 
 		// Tribe Data API Init
 		$this->container->singleton( 'tickets.data_api', 'Tribe__Tickets__Data_API' );
 
 		// View links, columns and screen options
-		$this->container->singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', array( 'hook' ) );
-		$this->container->singleton( 'tickets.admin.columns', 'Tribe__Tickets__Admin__Columns', array( 'hook' ) );
-		$this->container->singleton( 'tickets.admin.screen-options', 'Tribe__Tickets__Admin__Screen_Options', array( 'hook' ) );
-		$this->container->singleton( 'tickets.admin.settings.display', 'Tribe__Tickets__Admin__Display_Settings', array( 'hook' ) );
+		$this->container->singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', [ 'hook' ] );
+		$this->container->singleton( 'tickets.admin.columns', 'Tribe__Tickets__Admin__Columns', [ 'hook' ] );
+		$this->container->singleton( 'tickets.admin.screen-options', 'Tribe__Tickets__Admin__Screen_Options', [ 'hook' ] );
+		$this->container->singleton( 'tickets.admin.settings.display', 'Tribe__Tickets__Admin__Display_Settings', [ 'hook' ] );
 
 		// Status Manager
-		$this->container->singleton( 'tickets.status', 'Tribe__Tickets__Status__Manager', array( 'hook' ) );
+		$this->container->singleton( 'tickets.status', 'Tribe__Tickets__Status__Manager', [ 'hook' ] );
 
 		// Editor
-		$this->container->singleton( 'tickets.editor', 'Tribe__Tickets__Editor', array( 'hook' ) );
+		$this->container->singleton( 'tickets.editor', 'Tribe__Tickets__Editor', [ 'hook' ] );
 
-		$this->container->singleton( 'tickets.admin.notices', 'Tribe__Tickets__Admin__Notices', array( 'hook' ) );
+		$this->container->singleton( 'tickets.admin.notices', 'Tribe__Tickets__Admin__Notices', [ 'hook' ] );
 
 		// Attendees Table
 		$this->container->singleton( 'tickets.admin.attendees_table', 'Tribe__Tickets__Attendees_Table' );
 
-		// Promoter
-		$this->container->singleton( 'tickets.promoter.integration', 'Tribe__Tickets__Promoter__Integration', array( 'hook' ) );
-		$this->container->singleton( 'tickets.promoter.observer', 'Tribe__Tickets__Promoter__Observer', array( 'hook' ) );
-
 		// Migration queues.
-		$this->container->singleton( 'tickets.migration.queue_4_12', \Tribe\Tickets\Migration\Queue_4_12::class, array( 'hooks' ) );
+		$this->container->singleton( 'tickets.migration.queue_4_12', \Tribe\Tickets\Migration\Queue_4_12::class, [ 'hooks' ] );
 
 		$this->load();
 	}
@@ -74,8 +70,6 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 		tribe( 'tickets.metabox' );
 		tribe( 'tickets.status' );
 		tribe( 'tickets.editor' );
-		tribe( 'tickets.promoter.integration' );
-		tribe( 'tickets.promoter.observer' );
 
 		// Migration queues.
 		tribe( 'tickets.migration.queue_4_12' );
