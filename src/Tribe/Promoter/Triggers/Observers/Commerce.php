@@ -39,8 +39,8 @@ class Commerce {
 	 *
 	 * @since TBD
 	 *
-	 * @param int       $attendee_id
-	 * @param bool|null $qr
+	 * @param int       $attendee_id The ID of the attendee utilized.
+	 * @param bool|null $qr          Whether it's from a QR scan.
 	 */
 	public function checkin( $attendee_id, $qr ) {
 		$this->trigger( 'checkin', $attendee_id );
