@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'common/src/**.php'
+      - 'common/tests/**'
       - 'common/*.php'
       - 'src/**.php'
       - 'tests/**'
