@@ -35,7 +35,7 @@ class Commerce {
 	}
 
 	/**
-	 * Responds to a checkin action
+	 * Responds to a checkin action.
 	 *
 	 * @since TBD
 	 *
