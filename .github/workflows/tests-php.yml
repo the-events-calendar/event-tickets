@@ -28,9 +28,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
+        with:
+          submodules: true
       - name: Checkout automation tools
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
+        with:
+          submodules: true
         with:
           repository: moderntribe/tric
           ref: main
