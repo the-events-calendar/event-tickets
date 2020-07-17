@@ -20,6 +20,33 @@ class AvailabilityTest extends WPTestCase {
 	protected $partial_path = 'v2/rsvp/details/availability';
 
 	/**
+	 * Provide dates for the days left variations.
+	 *
+	 * @return \Generator
+	 */
+	public function provider_days_left_dates() {
+		// Timezones are tricky in this test. We'll assume the time is off by a bit.
+
+		yield 'last day to RSVP' => [
+			// If there is less than a 24 hours, it will treat it as the last day.
+			'+12 hours',
+		];
+
+		yield '1 day left to RSVP' => [
+			'+2 days',
+		];
+
+		yield 'multi day left to RSVP' => [
+			'+6 days',
+		];
+
+		yield 'week threshold' => [
+			// The logic floors the day, so if there's 6 days and 23 hours, it'll treat it as 6 hours.
+			'+8 days',
+		];
+	}
+
+	/**
 	 * @test
 	 */
 	public function test_should_render_5_remaining() {
@@ -82,8 +109,9 @@ class AvailabilityTest extends WPTestCase {
 
 	/**
 	 * @test
+	 * @dataProvider provider_days_left_dates
 	 */
-	public function test_should_render_full() {
+	public function test_should_render_full( $ticket_end_date ) {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
@@ -92,6 +120,7 @@ class AvailabilityTest extends WPTestCase {
 			[
 				'meta_input' => [
 					'_capacity' => 3,
+					'_ticket_end_date' => date( 'Y-m-d H:i:s', strtotime( $ticket_end_date ) ),
 				],
 			]
 		);
@@ -113,8 +142,9 @@ class AvailabilityTest extends WPTestCase {
 
 	/**
 	 * @test
+	 * @dataProvider provider_days_left_dates
 	 */
-	public function test_should_render_unlimited() {
+	public function test_should_render_unlimited( $ticket_end_date ) {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
@@ -123,6 +153,7 @@ class AvailabilityTest extends WPTestCase {
 			[
 				'meta_input' => [
 					'_capacity' => - 1,
+					'_ticket_end_date' => date( 'Y-m-d H:i:s', strtotime( $ticket_end_date ) ),
 				],
 			]
 		);
