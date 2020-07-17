@@ -51,7 +51,7 @@ class Commerce {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $type        The trigger type
+	 * @param string $type        The trigger type.
 	 * @param int    $attendee_id The ID of the attendee utilized.
 	 */
 	private function trigger( $type, $attendee_id ) {
