@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [TBD] TBD =
 
+* Feature - Add foundation to support trigger base messages on Promoter. [ET-860]
 * Fix - Prevent PHP errors when loading the new RSVP views for posts using classic editor when The Events Calendar setting for Blocks editor is off. [ET-853]
 
 = [4.12.2] 2020-06-24 =
