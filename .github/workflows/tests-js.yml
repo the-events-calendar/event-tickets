@@ -51,6 +51,10 @@ jobs:
           tric here
           tric use event-tickets
           tric debug on
+      - name: common npm install
+        run: |
+          cd ${GITHUB_WORKSPACE}/common
+          npm install
       - name: tric npm install
         run: tric npm install
       - name: Run JS test suite
