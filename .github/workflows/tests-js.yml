@@ -20,6 +20,7 @@ jobs:
       matrix:
         suite:
           - test
+          - lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
