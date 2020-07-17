@@ -11,8 +11,9 @@
  * @since 4.10.1 Update template paths to add the "registration/" prefix
  * @since 4.10.9 Add Filter to show an event/post tickets on AR Page
  * @since 4.11.0 Add docblocks, pass missing 'provider' arg to registration/button-cart template, and add action hooks.
+ * @since TBD This template has been marked as deprecated.
  *
- * @version 4.11.0
+ * @version TBD
  *
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */
