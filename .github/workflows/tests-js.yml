@@ -2,6 +2,10 @@ name: 'JS Tests'
 on:
   pull_request:
     paths:
+      - 'common/src/resources/js/**'
+      - 'common/src/resources/modules/**'
+      - 'common/*.json'
+      - 'common/*.js'
       - 'src/resources/js/**'
       - 'src/resources/modules/**'
       - 'package.json'
