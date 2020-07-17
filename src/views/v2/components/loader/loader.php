@@ -12,8 +12,8 @@
  * @version TBD
  */
 
-if ( empty( $loader_classes ) ) {
-	$loader_classes = $this->get( 'classes' ) ?: [];
+if ( empty( $classes ) ) {
+	$classes = $this->get( 'classes' ) ?: [];
 }
 
 $spinner_classes = [
@@ -23,7 +23,7 @@ $spinner_classes = [
 ];
 
 if ( ! empty( $loader_classes ) ) {
-	$spinner_classes = array_merge( $spinner_classes, (array) $loader_classes );
+	$spinner_classes = array_merge( $spinner_classes, (array) $classes );
 }
 
 ?>
