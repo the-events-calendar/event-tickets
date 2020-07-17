@@ -34,8 +34,6 @@ jobs:
       - name: Checkout automation tools
         uses: actions/checkout@v2
         with:
-          submodules: true
-        with:
           repository: moderntribe/tric
           ref: main
           path: tric
