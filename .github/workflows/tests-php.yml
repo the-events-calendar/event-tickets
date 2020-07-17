@@ -36,7 +36,7 @@ jobs:
         with:
           repository: moderntribe/tric
           ref: main
-          path: tric
+          path: ../tric
           fetch-depth: 1
       - name: Add tric to the PATH
         run: echo "::set-env name=PATH::${GITHUB_WORKSPACE}/../tric:$PATH"
