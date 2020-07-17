@@ -1786,3 +1786,37 @@ if ( ! function_exists( 'tribe_tickets_is_provider_active' ) ) {
 		);
 	}
 }
+
+if ( ! function_exists( 'tribe_tickets_post_has_provider_history' ) ) {
+	/**
+	 * Whether a post has history with the specified ticket provider (and the provider is active).
+	 *
+	 * If provider is not active, we can't check if there were past tickets.
+	 * Example: if a post's ticket provider *was* Tribe Commerce and such tickets were sold, then the post's provider
+	 * changed to WooCommerce Tickets, the Attendees Report screen should show both the Tribe Commerce order history
+	 * tab *and* the WooCommerce order history tab, regardless of which ticket provider is currently the default.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|WP_Post                    $post
+	 * @param Tribe__Tickets__Tickets|string $provider Class string (or its slug). Examples: 'woo', 'rsvp',
+	 *                                                 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main', etc.
+	 *
+	 * @return bool True if the post has or had tickets from the specified provider.
+	 */
+	function tribe_tickets_post_has_provider_history( $post, $provider ) {
+		$post_id = Tribe__Main::post_id_helper( $post );
+
+		if ( empty( $post_id ) ) {
+			return false;
+		}
+
+		$provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider );
+
+		if ( empty( $provider ) ) {
+			return false;
+		}
+
+		return ! empty( $provider->get_tickets_ids( $post_id ) );
+	}
+}
