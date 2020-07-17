@@ -272,13 +272,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return '';
 		}
 
-		$post    = $this->get_event_for_ticket( $ticket_id );
-		$post_id = $post->ID;
+		$post = $this->get_event_for_ticket( $ticket_id );
 
-		// No `$post_id`, something went wrong.
-		if ( empty( $post_id ) ) {
+		// No post found, something went wrong.
+		if ( false === $post ) {
 			return '';
 		}
+
+		$post_id = $post->ID;
 
 		/** @var \Tribe__Tickets__Editor__Blocks__Rsvp $blocks_rsvp */
 		$blocks_rsvp = tribe( 'tickets.editor.blocks.rsvp' );
