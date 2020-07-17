@@ -55,7 +55,7 @@ jobs:
       - name: tric npm install for common
         run: |
           tric use event-tickets/common
-          tric run npm install
+          tric npm install
       - name: Set up event-tickets
         run: tric use event-tickets
       - name: tric npm install
