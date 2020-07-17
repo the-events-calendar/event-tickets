@@ -49,7 +49,7 @@ jobs:
           tric interactive off
           tric build-prompt off
           tric here
-          tric use events-virtual
+          tric use event-tickets
           tric debug on
       - name: tric npm install
         run: tric npm install
