@@ -15,7 +15,7 @@ jobs:
   test:
     strategy:
       matrix:
-        fail-fast: false
+        fail-fast: 'false'
         suite:
           - unit
           - wpunit --skip-group="capacity"
