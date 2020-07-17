@@ -46,9 +46,6 @@ tribe.tickets.rsvp.block = {};
 		cancelButton: '.tribe-tickets__rsvp-form-button--cancel',
 		errorMessage: '.tribe-tickets__form-message--error',
 		hiddenElement: '.tribe-common-a11y-hidden',
-		inputName: '.tribe-tickets__rsvp-form-field-name',
-		inputEmail: '.tribe-tickets__rsvp-form-field-email',
-		inputQuantity: '.tribe-tickets__rsvp-form-field-quantity',
 	};
 
 	/**
@@ -70,7 +67,7 @@ tribe.tickets.rsvp.block = {};
 		$goingButton.each( function( index, button ) {
 			$( button ).on( 'click', function() {
 				data = {
-					action: 'tribe_tickets_rsvp',
+					action: 'tribe_tickets_rsvp_handle',
 					ticket_id: rsvpId,
 					step: 'going',
 				};
@@ -99,7 +96,7 @@ tribe.tickets.rsvp.block = {};
 		$notGoingButton.each( function( index, button ) {
 			$( button ).on( 'click', function() {
 				data = {
-					action: 'tribe_tickets_rsvp',
+					action: 'tribe_tickets_rsvp_handle',
 					ticket_id: rsvpId,
 					step: 'not-going',
 				};
@@ -120,9 +117,7 @@ tribe.tickets.rsvp.block = {};
 	 */
 	obj.bindCancel = function( $container ) {
 		var data  = {};
-
 		var rsvpId = $container.data( 'rsvp-id' );
-
 		var $cancelButton = $container.find( obj.selectors.cancelButton );
 
 		$cancelButton.each( function( index, button ) {
@@ -133,7 +128,7 @@ tribe.tickets.rsvp.block = {};
 				}
 
 				data = {
-					action: 'tribe_tickets_rsvp',
+					action: 'tribe_tickets_rsvp_handle',
 					ticket_id: rsvpId,
 					step: null,
 				};
@@ -141,27 +136,6 @@ tribe.tickets.rsvp.block = {};
 				tribe.tickets.rsvp.manager.request( data, $container );
 			} );
 		} );
-	};
-
-	/**
-	 * Validates the RSVP form.
-	 *
-	 * @since TBD
-	 *
-	 * @param {obj} $form form object
-	 *
-	 * @returns {bool} is valid
-	 */
-	obj.validateSubmission = function( $form ) {
-		var $qty = $form.find( obj.selectors.inputQuantity );
-		var $name = $form.find( obj.selectors.inputName );
-		var $email = $form.find( obj.selectors.inputEmail );
-
-		return (
-			$.trim( $name.val() ).length &&
-				$.trim( $email.val() ).length &&
-				parseInt( $qty.val() ) > 0
-		);
 	};
 
 	/**
@@ -176,21 +150,10 @@ tribe.tickets.rsvp.block = {};
 
 		var $form = $( this );
 		var $container = $form.closest( obj.selectors.container );
-		var $errorMessage = $form.find( obj.selectors.errorMessage );
 		var rsvpId = $form.data( 'rsvp-id' );
-		var isRsvpValid = obj.validateSubmission( $form );
-
-		if ( ! isRsvpValid ) {
-			$errorMessage.removeClass( obj.selectors.hiddenElement.className() );
-			return;
-		}
-
-		if ( ! $errorMessage.hasClass( obj.selectors.hiddenElement.className() ) ) {
-			$errorMessage.addClass( obj.selectors.hiddenElement.className() );
-		}
 
 		var data = {
-			action: 'tribe_tickets_rsvp',
+			action: 'tribe_tickets_rsvp_handle',
 			ticket_id: rsvpId,
 			step: 'success',
 		};
@@ -208,7 +171,6 @@ tribe.tickets.rsvp.block = {};
 	 * @return {void}
 	 */
 	obj.bindForm = function( $container ) {
-
 		var $rsvpForm = $container.find( obj.selectors.rsvpForm );
 
 		$rsvpForm.each( function( index, form ) {
