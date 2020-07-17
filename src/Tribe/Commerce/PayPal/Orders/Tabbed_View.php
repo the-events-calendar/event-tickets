@@ -26,16 +26,26 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 	 * Registers the PayPal orders tab among those the tabbed view should render.
 	 *
 	 * @since 4.7
+	 * @since TBD Show PayPal Orders tab if has any PayPal tickets, even if not the default provider.
 	 *
 	 * @param Tribe__Tabbed_View $tabbed_view
 	 * @param WP_Post            $post
 	 */
 	public function register_orders_tab( Tribe__Tabbed_View $tabbed_view, WP_Post $post ) {
-		$provider              = Tribe__Tickets__Tickets::get_event_ticket_provider( $post->ID );
-		$not_using_paypal      = ! $provider instanceof Tribe__Tickets__Commerce__PayPal__Main;
-		$has_no_paypal_tickets = $not_using_paypal ? true : count( $provider->get_tickets_ids( $post ) ) === 0;
+		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
+		$paypal = tribe( 'tickets.commerce.paypal' );
 
-		if ( $not_using_paypal && $has_no_paypal_tickets ) {
+		if ( ! tribe_tickets_is_provider_active( $paypal ) ) {
+			return;
+		}
+
+		// The post's default ticket provider regardless of tickets available or sold.
+		$default_ticket_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post );
+
+		if (
+			! tribe_tickets_post_has_provider_history( $post, $paypal )
+			&& ! $default_ticket_provider instanceof $paypal
+		) {
 			return;
 		}
 
