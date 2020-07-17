@@ -34,7 +34,7 @@
 	min="1"
 	value="1"
 	required
-	max="0"
+	max="10"
 	/>
 
 		<button
