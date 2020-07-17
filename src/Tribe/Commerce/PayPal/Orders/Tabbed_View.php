@@ -35,16 +35,9 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
 		$paypal = tribe( 'tickets.commerce.paypal' );
 
-		if ( ! tribe_tickets_is_provider_active( $paypal ) ) {
-			return;
-		}
-
-		// The post's default ticket provider regardless of tickets available or sold.
-		$default_ticket_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post );
-
 		if (
-			! tribe_tickets_post_has_provider_history( $post, $paypal )
-			&& ! $default_ticket_provider instanceof $paypal
+			! tribe_tickets_is_provider_active( $paypal )
+			|| ! tribe_tickets_post_has_provider_history( $post, $paypal )
 		) {
 			return;
 		}
