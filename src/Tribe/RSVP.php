@@ -246,6 +246,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 		$step      = tribe_get_request_var( 'step', null );
 
+		if ( empty( $post_id ) && ! empty( $ticket_id ) ) {
+			$post_id = (int) get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true );
+		}
+
 		$render_response = $this->render_rsvp_step( $ticket_id, $post_id, $step );
 
 		if ( is_string( $render_response ) && '' !== $render_response ) {
