@@ -18,6 +18,10 @@
  * @version TBD
  */
 
+if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+	return;
+}
+
 $meta   = Tribe__Tickets_Plus__Main::instance()->meta();
 $fields = $meta->get_meta_fields_by_ticket( $rsvp->ID );
 

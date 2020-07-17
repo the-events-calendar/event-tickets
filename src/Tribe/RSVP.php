@@ -119,6 +119,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public $deleted_product = '_tribe_deleted_product_name';
 
 	/**
+	 * Meta key that holds the "not going" option visibility status.
+	 *
+	 * @var string
+	 */
+	public $show_not_going = '_tribe_ticket_show_not_going';
+
+	/**
 	 * @var Tribe__Tickets__RSVP__Attendance_Totals
 	 */
 	protected $attendance_totals;
@@ -219,6 +226,150 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Has to be run on before_delete_post to be sure the meta is still available (and we don't want it to run again after the post is deleted)
 		// See https://codex.wordpress.org/Plugin_API/Action_Reference/delete_post
 		add_action( 'before_delete_post', array( $this, 'update_stock_from_attendees_page' ) );
+
+		// Handle RSVP AJAX.
+		add_action( 'wp_ajax_nopriv_tribe_tickets_rsvp_handle', [ $this, 'ajax_handle_rsvp' ] );
+		add_action( 'wp_ajax_tribe_tickets_rsvp_handle', [ $this, 'ajax_handle_rsvp' ] );
+	}
+
+	/**
+	 * Handle RSVP processing for the RSVP forms.
+	 *
+	 * @since TBD
+	 */
+	public function ajax_handle_rsvp() {
+		$response = [
+			'html' => '',
+		];
+
+		$post_id   = absint( tribe_get_request_var( 'post_id', 0 ) );
+		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
+		$step      = tribe_get_request_var( 'step', null );
+
+		$html = $this->render_rsvp_step( $ticket_id, $post_id, $step );
+
+		if ( '' === $html ) {
+			wp_send_json_error( $response );
+		}
+
+		$response['html'] = $html;
+
+		wp_send_json_success( $response );
+	}
+
+	/**
+	 * Handle RSVP processing for the RSVP forms.
+	 *
+	 * @since TBD
+	 *
+	 * @param int         $ticket_id The ticket ID.
+	 * @param int         $post_id   The post or event ID.
+	 * @param null|string $step      Which step to render.
+	 *
+	 * @return string The step template HTML.
+	 */
+	public function render_rsvp_step( $ticket_id, $post_id, $step = null ) {
+		// No ticket / post ID.
+		if ( 0 === $post_id || 0 === $ticket_id ) {
+			return '';
+		}
+
+		/** @var \Tribe__Tickets__Editor__Blocks__Rsvp $blocks_rsvp */
+		$blocks_rsvp = tribe( 'tickets.editor.blocks.rsvp' );
+
+		/** @var \Tribe__Tickets__Editor__Template $template */
+		$template = tribe( 'tickets.editor.template' );
+
+		$ticket = $this->get_ticket( $post_id, $ticket_id );
+
+		// No ticket found.
+		if ( null === $ticket ) {
+			return '';
+		}
+
+		// Set required template globals.
+		$args = [
+			'rsvp_id'    => $ticket_id,
+			'post_id'    => $post_id,
+			'rsvp'       => $ticket,
+			'step'       => $step,
+			'must_login' => ! is_user_logged_in() && $this->login_required(),
+			'login_url'  => self::get_login_url( $post_id ),
+			'threshold'  => $blocks_rsvp->get_threshold( $post_id ),
+		];
+
+		$args['process_result'] = $this->process_rsvp_step( $args );
+
+		/**
+		 * Allow filtering of the template arguments used.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $args {
+		 *      The list of step template arguments.
+		 *
+		 *      @type int                           $rsvp_id    The RSVP ticket ID.
+		 *      @type int                           $post_id    The ticket ID.
+		 *      @type Tribe__Tickets__Ticket_Object $rsvp       The RSVP ticket object.
+		 *      @type null|string                   $step       Which step being rendered.
+		 *      @type boolean                       $must_login Whether login is required to register.
+		 *      @type string                        $login_url  The site login URL.
+		 *      @type int                           $threshold  The RSVP ticket threshold.
+		 * }
+		 */
+		$args = apply_filters( 'tribe_tickets_rsvp_render_step_template_args', $args );
+
+		// Add the rendering attributes into global context.
+		$template->add_template_globals( $args );
+
+		$html  = $template->template( 'v2/components/loader/loader', [], false );
+		$html .= $template->template( 'v2/rsvp/content', $args, false );
+
+		return $html;
+	}
+
+	/**
+	 * Handle processing the RSVP step based on current arguments.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args {
+	 *      The list of step template arguments.
+	 *
+	 *      @type int                           $rsvp_id    The RSVP ticket ID.
+	 *      @type int                           $post_id    The ticket ID.
+	 *      @type Tribe__Tickets__Ticket_Object $rsvp       The RSVP ticket object.
+	 *      @type null|string                   $step       Which step being rendered.
+	 *      @type boolean                       $must_login Whether login is required to register.
+	 *      @type string                        $login_url  The site login URL.
+	 *      @type int                           $threshold  The RSVP ticket threshold.
+	 * }
+	 *
+	 * @return array The process result.
+	 */
+	public function process_rsvp_step( array $args ) {
+		$result = [
+			'success' => true,
+			'errors'  => [],
+		];
+
+		// Process the attendee.
+		if ( 'success' === $args['step'] ) {
+			/**
+			 * These are the inputs we should be seeing.
+			 *
+			 * attendee[email]
+			 * attendee[full_name]
+			 * quantity_{$ticket_id}
+			 * attendee[order_status]
+			 * tribe-tickets-meta[$ticket_id][$x][$field_slug]
+			 */
+			// @todo Handle RSVP processing here.
+		} elseif ( 'opt-in' === $args['step'] ) {
+			// @todo Handle opt-in setting for each attendee in order.
+		}
+
+		return $result;
 	}
 
 	/**
@@ -927,6 +1078,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$ticket_data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
 		$this->update_capacity( $ticket, $ticket_data, $save_type );
+
+		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
+			$show_not_going = 'no';
+
+			if ( isset( $ticket_data['not_going'] ) ) {
+				$show_not_going = $ticket_data['not_going'];
+			}
+
+			$show_not_going = tribe_is_truthy( $show_not_going ) ? 'yes' : 'no';
+			update_post_meta( $ticket->ID, $this->show_not_going, $show_not_going );
+		}
 
 		if ( ! empty( $raw_data['ticket_start_date'] ) ) {
 			$start_date = Tribe__Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_start_date'] );
@@ -1700,17 +1862,24 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return mixed
 	 */
 	public function do_metabox_capacity_options( $event_id, $ticket_id ) {
-		$capacity = '';
+		$capacity  = '';
+		$not_going = false;
 
 		// This returns the original stock
 		if ( ! empty( $ticket_id ) ) {
 			$ticket = $this->get_ticket( $event_id, $ticket_id );
+
 			if ( ! empty( $ticket ) ) {
-				$capacity = $ticket->capacity();
+				$capacity  = $ticket->capacity();
+				$not_going = tribe_is_truthy( get_post_meta( $ticket_id, $this->show_not_going, true ) );
 			}
 		}
 
 		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/rsvp-metabox-capacity.php';
+
+		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
+			include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/rsvp-metabox-not-going.php';
+		}
 	}
 
 	public function get_messages() {
