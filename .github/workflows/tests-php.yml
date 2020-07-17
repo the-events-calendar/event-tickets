@@ -29,8 +29,6 @@ jobs:
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v1
-        with:
-          fetch-depth: 1
       - name: Checkout automation tools
         uses: actions/checkout@v1
         with:
