@@ -43,7 +43,7 @@ jobs:
           ssh-agent -a /tmp/ssh_agent.sock;
       - name: Export SSH_AUTH_SOCK env var
         run: echo "::set-env name=SSH_AUTH_SOCK::/tmp/ssh_agent.sock"
-      - name: tric use events-virtual
+      - name: tric use event-tickets
         run: |
           cd ${GITHUB_WORKSPACE}/..
           tric interactive off
