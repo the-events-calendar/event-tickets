@@ -624,6 +624,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Whether a post has tickets from this provider, even if this provider is not the default provider.
+		 *
+		 * @since TBD
+		 *
+		 * @param int|WP_Post $post
+		 *
+		 * @return bool True if this post has any tickets from this provider.
+		 */
+		public function post_has_tickets( $post ) {
+			$post_id = Tribe__Main::post_id_helper( $post );
+
+			if ( empty( $post_id ) ) {
+				return false;
+			}
+
+			return ! empty( $this->get_tickets_ids( $post_id ) );
+		}
+
+		/**
 		 * Returns all the tickets for an event, of the active ticket providers.
 		 *
 		 * @since 4.12.0 Changed from protected abstract to public with duplicated child classes' logic consolidated here.
