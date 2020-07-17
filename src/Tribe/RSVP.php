@@ -329,7 +329,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
 
-		$html  = $template->template( 'v2/components/loader/loader', [], false );
+		$html  = $template->template( 'v2/components/loader/loader', [ 'classes' => [] ], false );
 		$html .= $template->template( 'v2/rsvp/content', $args, false );
 
 		return $html;
