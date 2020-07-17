@@ -26,7 +26,7 @@ class RSVP {
 	}
 
 	/**
-	 * Fires a checkin action
+	 * Fires a checkin action.
 	 *
 	 * @var int       $attendee_id
 	 * @var bool|null $qr
