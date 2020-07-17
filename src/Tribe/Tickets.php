@@ -358,7 +358,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @param  int|WP_Post $post Only get tickets assigned to this post ID.
 		 *
-		 * @return array
+		 * @return array|false
 		 */
 		public function get_tickets_ids( $post = null ) {
 			if ( ! empty( $post ) ) {
