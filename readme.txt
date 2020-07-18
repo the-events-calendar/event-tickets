@@ -121,6 +121,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [TBD] TBD =
 
 * Tweak - Layout improvements for Attendee Information's Birth Date field. [ET-875]
+* Feature - Add foundation to support trigger base messages on Promoter. [ET-860]
 
 = [4.12.2] 2020-06-24 =
 
