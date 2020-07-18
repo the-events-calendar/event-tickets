@@ -1,6 +1,7 @@
 <?php
 
 use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
+use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
 
 class Tribe__Tickets__Main {
 
@@ -371,6 +372,9 @@ class Tribe__Tickets__Main {
 
 		// Views V2
 		tribe_register_provider( Tribe\Tickets\Events\Views\V2\Service_Provider::class );
+
+		// Promoter
+		tribe_register_provider( Promoter_Service_Provider::class );
 	}
 
 	/**
