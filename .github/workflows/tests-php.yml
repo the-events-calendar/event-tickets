@@ -17,15 +17,15 @@ jobs:
       fail-fast: false
       matrix:
         suite:
-#          - unit
-#          - wpunit --skip-group="capacity"
-#          - wpunit --group="capacity"
-#          - integration
+          - unit
+          - wpunit --skip-group="capacity"
+          - wpunit --group="capacity"
+          - integration
           - functional
-#          - restv1 --skip-group="capacity"
-#          - restv1 --group="capacity"
-#          - acceptance
-#          - views_integration
+          - restv1 --skip-group="capacity"
+          - restv1 --group="capacity"
+          - acceptance
+          - views_integration
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -78,7 +78,5 @@ jobs:
         run: |
           tric use event-tickets
           tric composer install
-#      - name: Init the WordPress container
-#        run: tric up wordpress
       - name: Run suite tests
         run: tric run ${{ matrix.suite }}
