@@ -78,7 +78,7 @@ jobs:
         run: |
           tric use event-tickets
           tric composer install
-      - name: Init the WordPress container
-        run: tric up wordpress
+#      - name: Init the WordPress container
+#        run: tric up wordpress
       - name: Run suite tests
         run: tric run ${{ matrix.suite }}
