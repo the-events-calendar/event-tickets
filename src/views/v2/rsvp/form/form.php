@@ -19,8 +19,8 @@ $going = $this->get( 'going' );
 ?>
 
 <form
-	name="tribe-rsvp-form"
-	data-product-id="<?php echo esc_attr( $rsvp->ID ); ?>"
+	name="tribe-tickets-rsvp-form"
+	data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
 >
 	<input type="hidden" name="product_id[]" value="<?php echo esc_attr( absint( $rsvp->ID ) ); ?>">
 	<input type="hidden" name="attendee[order_status]" value="<?php echo esc_attr( $going ); ?>">

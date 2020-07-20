@@ -8,8 +8,8 @@
 
 	
 <form
-	name="tribe-rsvp-form"
-	data-product-id="12"
+	name="tribe-tickets-rsvp-form"
+	data-rsvp-id="12"
 >
 	<input type="hidden" name="product_id[]" value="12">
 	<input type="hidden" name="attendee[order_status]" value="not-going">
@@ -33,9 +33,9 @@
 	</label>
 	<input
 		type="text"
-		id="tribe-tickets-rsvp-name"
-		class="tribe-common-form-control-text__input tribe-tickets__form-field-input"
+		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-name"
 		name="attendee[full_name]"
+		id="tribe-tickets-rsvp-name"
 		value=""
 		required
 		placeholder="John Doe"
@@ -51,9 +51,9 @@
 	</label>
 	<input
 		type="email"
-		id="tribe-tickets-rsvp-email"
-		class="tribe-common-form-control-text__input tribe-tickets__form-field-input"
+		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-email"
 		name="attendee[email]"
+		id="tribe-tickets-rsvp-email"
 		value=""
 		required
 		placeholder="your@email.com"
@@ -70,12 +70,12 @@
 	<input
 		type="number"
 		name="quantity_12"
-		name="quantity_12"
-		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-input-number"
+		id="quantity_12"
+		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-input-number tribe-tickets__rsvp-form-field-quantity"
 		value="1"
 		required
 		min="1"
-		max="0"
+		max="10"
 	>
 </div>
 

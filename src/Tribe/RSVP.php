@@ -242,11 +242,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'html' => '',
 		];
 
-		$post_id   = absint( tribe_get_request_var( 'post_id', 0 ) );
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 		$step      = tribe_get_request_var( 'step', null );
 
-		$html = $this->render_rsvp_step( $ticket_id, $post_id, $step );
+		$html = $this->render_rsvp_step( $ticket_id, $step );
 
 		if ( '' === $html ) {
 			wp_send_json_error( $response );
@@ -263,16 +262,24 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @since TBD
 	 *
 	 * @param int         $ticket_id The ticket ID.
-	 * @param int         $post_id   The post or event ID.
 	 * @param null|string $step      Which step to render.
 	 *
 	 * @return string The step template HTML.
 	 */
-	public function render_rsvp_step( $ticket_id, $post_id, $step = null ) {
-		// No ticket / post ID.
-		if ( 0 === $post_id || 0 === $ticket_id ) {
+	public function render_rsvp_step( $ticket_id, $step = null ) {
+		// No ticket.
+		if ( 0 === $ticket_id ) {
 			return '';
 		}
+
+		$post = $this->get_event_for_ticket( $ticket_id );
+
+		// No post found, something went wrong.
+		if ( false === $post ) {
+			return '';
+		}
+
+		$post_id = $post->ID;
 
 		/** @var \Tribe__Tickets__Editor__Blocks__Rsvp $blocks_rsvp */
 		$blocks_rsvp = tribe( 'tickets.editor.blocks.rsvp' );
@@ -322,7 +329,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
 
-		$html  = $template->template( 'v2/components/loader/loader', [], false );
+		$html  = $template->template( 'v2/components/loader/loader', [ 'classes' => [] ], false );
 		$html .= $template->template( 'v2/rsvp/content', $args, false );
 
 		return $html;
