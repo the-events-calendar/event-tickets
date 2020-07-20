@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: The Events Calendar, RSVP event registration, event ticket sales, attendee management, RSVP tickets
 Requires at least: 4.9.14
 Tested up to: 5.4.2
-Stable tag: 4.12.2
+Stable tag: 4.12.3
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -118,10 +118,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [TBD] TBD =
+= [4.12.3] 2020-07-28 =
 
-* Tweak - Layout improvements for Attendee Information's Birth Date field. [ET-875]
 * Feature - Add foundation to support trigger base messages on Promoter. [ET-860]
+* Tweak - Layout improvements for Attendee Information's Birth Date field. [ET-875]
 
 = [4.12.2] 2020-06-24 =
 
