@@ -61,7 +61,7 @@ if ( ! $already_rendered ) {
 				class="tribe-tickets__rsvp-wrapper"
 				data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
 			>
-
+				<?php $this->template( 'v2/components/loader/loader' ); ?>
 				<?php $this->template( 'v2/rsvp/content', [ 'rsvp' => $rsvp ] ); ?>
 
 			</div>

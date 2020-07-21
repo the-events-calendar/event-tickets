@@ -121,6 +121,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.12.3] 2020-07-28 =
 
 * Feature - Notify promoter for actions (RSVP going, RSVP not going, Event Checkin, Attendee Registered) for RSVP and Tribe Commerce. [ET-860]
+* Fix - Prevent PHP errors when loading the new RSVP views for posts using classic editor when The Events Calendar setting for Blocks editor is off. [ET-853]
 * Tweak - Layout improvements for Attendee Information's Birth Date field. [ET-875]
 * Tweak - Add `tribe_tickets_is_provider_active()` template function so we can more easily check if a ticket's commerce provider is currently active before using its class methods. [ET-843]
 * Tweak - Add `Tribe__Tickets_Plus__Tickets::get_attendee_optout_key()` to simplify getting the optout key regardless of ticket provider class and accounting for legacy code. [ETP-843]
