@@ -120,7 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.12.3] 2020-07-28 =
 
-* Feature - Add foundation to support trigger base messages on Promoter. [ET-860]
+* Feature - Notify promoter for actions (RSVP going, RSVP not going, Event Checkin, Attendee Registered) for RSVP and Tribe Commerce. [ET-860]
 * Tweak - Layout improvements for Attendee Information's Birth Date field. [ET-875]
 
 = [4.12.2] 2020-06-24 =
