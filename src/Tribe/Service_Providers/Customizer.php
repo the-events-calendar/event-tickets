@@ -11,6 +11,11 @@ namespace Tribe\Tickets\Service_Providers;
 use Tribe__Customizer;
 use Tribe__Utils__Color;
 
+/**
+ * Class Customizer.
+ *
+ * @since TBD
+ */
 class Customizer extends \tad_DI52_ServiceProvider {
 
 	/**
