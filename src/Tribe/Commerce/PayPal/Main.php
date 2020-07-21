@@ -195,6 +195,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			unset( parent::$active_modules['Tribe__Tickets__Commerce__PayPal__Main'] );
 		}
 
+		/** @var Tribe__Tickets__Commerce__PayPal__Tickets_View tickets_view */
 		$this->tickets_view = tribe( 'tickets.commerce.paypal.view' );
 
 		$this->register_resources();
@@ -1197,7 +1198,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$ticket->ID = wp_insert_post( $args );
 
 			// Relate event <---> ticket
-			add_post_meta( $ticket->ID, $this->event_key, $post_id );
+			add_post_meta( $ticket->ID, $this->get_event_key(), $post_id );
 
 		} else {
 			$args = array(
@@ -1961,7 +1962,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @since 4.7
 	 *
 	 * @param int|object $product
-	 * @param array $attendee
+	 * @param array|boolean $attendee
 	 *
 	 * @return string
 	 */
@@ -2163,7 +2164,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			'attendee_order_key'   => $instance->order_key,
 			'attendee_optout_key'  => $instance->attendee_optout_key,
 			'attendee_tpp_key'     => $instance->attendee_tpp_key,
-			'event_key'            => $instance->event_key,
+			'event_key'            => $instance->get_event_key(),
 			'checkin_key'          => $instance->checkin_key,
 			'order_key'            => $instance->order_key,
 		];
@@ -2437,7 +2438,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return $tickets;
 		}
 
-		$event_key  = $this->event_key;
+		$event_key  = $this->get_event_key();
 		$optout_key = $this->attendee_optout_key;
 
 		foreach ( $contents as $ticket_id => $item ) {

@@ -28,20 +28,23 @@ if ( ! empty( $header_id ) ) {
 		/**
 		 * Allows for the insertion of additional elements into the ticket settings admin panel above the ticket table
 		 *
-		 * @param int Post ID
-		 *
 		 * @since 4.6
+		 *
+		 * @param int Post ID
 		 */
 		do_action( 'tribe_events_tickets_settings_content_before', $post_id );
-		?>
-		<?php tribe( 'tickets.admin.views' )->template( 'editor/fieldset/settings-provider' ); ?>
 
-		<?php
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
+
+		$admin_views->template( 'editor/fieldset/settings-provider' );
+
 		/**
 		 * Allows for the insertion of additional elements into the ticket settings admin panel below the ticket table
 		 *
-		 * @param int Post ID
 		 * @since 4.6
+		 *
+		 * @param int Post ID
 		 */
 		do_action( 'tribe_events_tickets_settings_content', $post_id );
 		?>

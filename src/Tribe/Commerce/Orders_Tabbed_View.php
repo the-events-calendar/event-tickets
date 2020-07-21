@@ -69,11 +69,13 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		 */
 		do_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', $tabbed_view, $post );
 
-
-		// register the Attendees tab
+		// Register the Attendees tab.
 		$attendees_report = new Tribe__Tickets__Tabbed_View__Attendee_Report_Tab( $tabbed_view );
-		$tickets_handler  = tribe( 'tickets.attendees' );
-		$attendees_report->set_url( $tickets_handler->get_report_link( $post ) );
+
+		/** @var Tribe__Tickets__Attendees $attendees */
+		$attendees = tribe( 'tickets.attendees' );
+
+		$attendees_report->set_url( $attendees->get_report_link( $post ) );
 		$tabbed_view->register( $attendees_report );
 
 		/**
