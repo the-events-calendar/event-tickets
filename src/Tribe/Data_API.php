@@ -42,15 +42,14 @@ class Tribe__Tickets__Data_API {
 			}
 			$types['attendee'] = constant( "$module_class::ATTENDEE_OBJECT" );
 
-			$this->ticket_class[ $module_class ] = array();
-
+			$this->ticket_class[ $module_class ] = [];
 
 			foreach ( $types as $key => $value ) {
 				$this->ticket_types[ $key ][]                = $value;
 				$this->ticket_class[ $module_class ][ $key ] = $value;
 			}
 
-			$this->ticket_class[ $module_class ]['tribe_for_event'] = $provider->event_key;
+			$this->ticket_class[ $module_class ]['tribe_for_event'] = $provider->get_event_key();
 			$this->ticket_class[ $module_class ]['event_id_key'] = constant( "$module_class::ATTENDEE_EVENT_KEY" );
 			$this->ticket_class[ $module_class ]['order_id_key'] = constant( "$module_class::ATTENDEE_ORDER_KEY" );
 			$this->ticket_class[ $module_class ]['slug'] = $status_mgr->get_provider_slug( $module_class );
@@ -128,7 +127,7 @@ class Tribe__Tickets__Data_API {
 			return array();
 		}
 
-		$module_class = $services['class'];
+		$module_class = ! empty( $services['class'] ) ? $services['class'] : '';
 
 		/**
 		 * if we have a rsvp order with a unique rsvp order key
@@ -186,19 +185,21 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Return Ticket Provider by Order, Product, Attendee, or Ticket ID.
 	 *
-	 * @param $post_id
+	 * @since 4.5
+	 * @since TBD Use new helper method to account for possibly inactive ticket provider.
 	 *
-	 * @return bool|object
+	 * @param int|string $post_id
+	 *
+	 * @return Tribe__Tickets__Tickets|false Ticket provider instance or False if provider is not active.
 	 */
 	public function get_ticket_provider( $post_id ) {
 		$services = $this->detect_by_id( $post_id );
 
-		// if no module class return
-		if ( empty( $services['class'] ) || ! class_exists( $services['class'] ) ) {
+		if ( empty( $services['class'] ) ) {
 			return false;
 		}
 
-		return call_user_func( [ $services['class'], 'get_instance' ] );
+		return Tribe__Tickets__Tickets::get_ticket_provider_instance( $services['class'] );
 	}
 
 	/**
@@ -363,7 +364,10 @@ class Tribe__Tickets__Data_API {
 	}
 
 	/**
-	 * Get attendee(s) from any id
+	 * Get attendee(s) from any id.
+	 *
+	 * @since 4.5
+	 * @since TBD Use new helper method to account for possibly inactive ticket provider.
 	 *
 	 * @param $post_id
 	 * @param $context
@@ -387,10 +391,16 @@ class Tribe__Tickets__Data_API {
 		if ( ! isset( $services['class'] ) && is_numeric( $post_id ) ) {
 			return Tribe__Tickets__Tickets::get_event_attendees( $post_id );
 		} elseif ( ! isset( $services['class'] ) && ! is_numeric( $post_id ) ) {
-			return array();
+			return [];
 		}
 
-		$provider = call_user_func( array( $services['class'], 'get_instance' ) );
+		if ( ! empty( $services['class'] ) ) {
+			$provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $services['class'] );
+		}
+
+		if ( empty( $provider ) ) {
+			return [];
+		}
 
 		return $provider->get_attendees_by_id( $post_id, $services['post_type'] );
 	}

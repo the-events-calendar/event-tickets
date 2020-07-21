@@ -902,7 +902,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$ticket->ID = wp_insert_post( $args );
 
 			// Relate event <---> ticket
-			add_post_meta( $ticket->ID, $this->event_key, $post_id );
+			add_post_meta( $ticket->ID, $this->get_event_key(), $post_id );
 
 		} else {
 			$args = array(
@@ -1290,7 +1290,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		$event_id = get_post_meta( $ticket_product, $this->event_key, true );
+		$event_id = get_post_meta( $ticket_product, $this->get_event_key(), true );
 
 		if ( ! $event_id && '' === ( $event_id = get_post_meta( $ticket_product, self::ATTENDEE_EVENT_KEY, true ) ) ) {
 			return false;
@@ -1981,7 +1981,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendee_optout = (int) $attendee_optout;
 
 		// Get the event this tickets is for
-		$post_id = get_post_meta( $product_id, $this->event_key, true );
+		$post_id = get_post_meta( $product_id, $this->get_event_key(), true );
 
 		if ( empty( $post_id ) ) {
 			return false;

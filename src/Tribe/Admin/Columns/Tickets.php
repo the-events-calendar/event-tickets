@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Class Tribe__Tickets__Admin__Columns__Tickets
  *
@@ -17,7 +16,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 * @var array A map that related supported columns to the methods used to render
 	 *            their content.
 	 */
-	protected $supported_columns = array( 'tickets' => 'render_tickets_entry' );
+	protected $supported_columns = [ 'tickets' => 'render_tickets_entry' ];
 
 	/**
 	 * Tribe__Tickets__Admin__Columns__Tickets constructor.
