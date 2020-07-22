@@ -660,8 +660,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// If the post's provider doesn't match.
 			if (
-				! is_admin()
-				&& $this->class_name !== $default_provider->class_name
+				$this->class_name !== $default_provider
+				&& ! is_admin()
 			) {
 				return [];
 			}
@@ -2987,6 +2987,31 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Get the saved or default ticket provider, if active.
+		 *
+		 * Will return False if there is a saved provider that is currently not active.
+		 * Example: If provider is WooCommerce Ticket but ETP is inactive, will return False.
+		 *
+		 * @see get_event_ticket_provider_object()
+		 *
+		 * @since 4.7
+		 * @since TBD Now returning false if the provider is not active.
+		 *
+		 * @param int $event_id The post ID of the event to which the ticket is attached.
+		 *
+		 * @return string|false The ticket object class name, or false if not active.
+		 */
+		public static function get_event_ticket_provider( $event_id = null ) {
+			$provider = static::get_event_ticket_provider_object( $event_id );
+
+			if ( empty( $provider ) ) {
+				return false;
+			}
+
+			return $provider->class_name;
+		}
+
+		/**
 		 * Given a post ID, get the instance of the saved or default ticket provider class.
 		 *
 		 * Will return False if there is a saved provider that is currently not active.
@@ -2994,14 +3019,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @see get_ticket_provider_instance()
 		 *
-		 * @since 4.7
-		 * @since TBD Return *instance* of detected provider class instead of string, or False if inactive provider.
+		 * @since TBD
 		 *
 		 * @param int $post_id The post ID of the event to which the ticket is attached.
 		 *
 		 * @return self|false Instance of child class (if confirmed active) or False if provider is not active.
 		 */
-		public static function get_event_ticket_provider( $post_id = null ) {
+		public static function get_event_ticket_provider_object( $post_id = null ) {
 			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 			$tickets_handler = tribe( 'tickets.handler' );
 

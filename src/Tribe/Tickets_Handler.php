@@ -936,7 +936,7 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		if ( tribe_tickets_post_type_enabled( $post->post_type ) ) {
-			$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post->ID );
+			$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post->ID );
 		} else {
 			$default_provider = tribe_tickets_get_ticket_provider( $post->ID );
 		}
