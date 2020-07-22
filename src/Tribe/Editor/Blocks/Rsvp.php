@@ -233,17 +233,48 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		tribe_asset(
 			$plugin,
-			'tribe-tickets-rsvp',
-			'v2/rsvp.js',
-			[ 'jquery' ],
+			'tribe-tickets-rsvp-manager',
+			'v2/rsvp-manager.js',
+			[
+				'jquery',
+				'tribe-common',
+				'tribe-tickets-rsvp-block',
+				'tribe-tickets-rsvp-tooltip',
+			],
 			null,
 			[
 				'localize' => [
 					'name' => 'TribeRsvp',
 					'data' => [
-						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+						'ajaxurl'    => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+						'cancelText' => __( 'Are you sure you want to cancel?', 'event-tickets' ),
 					],
 				],
+				'groups'   => 'tribe-tickets-rsvp',
+			]
+		);
+
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-rsvp-block',
+			'v2/rsvp-block.js',
+			[ 'jquery' ],
+			null,
+			[ 'groups' => 'tribe-tickets-rsvp' ]
+		);
+
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-rsvp-tooltip',
+			'v2/rsvp-tooltip.js',
+			[
+				'jquery',
+				'tribe-common',
+				'tribe-tooltipster',
+			],
+			null,
+			[
+				'groups' => 'tribe-tickets-rsvp',
 			]
 		);
 

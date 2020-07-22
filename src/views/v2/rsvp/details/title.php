@@ -17,6 +17,6 @@
  */
 
 ?>
-<h3 class="tribe-tickets__rsvp-title tribe-common-h4">
+<h3 class="tribe-tickets__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
 	<?php echo wp_kses_post( $rsvp->name ); ?>
 </h3>

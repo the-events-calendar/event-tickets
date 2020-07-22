@@ -30,12 +30,32 @@
 	.tribe-tickets__rsvp-description {
 		color: var(--color-text-secondary);
 		margin-top: var(--spacer-1);
+
+		@media(--viewport-medium) {
+			margin-top: var(--spacer-2);
+		}
 	}
 
 	.tribe-tickets__rsvp-attendance {
 		display: flex;
 		flex-direction: column;
-		margin-top: var(--spacer-1);
+		margin-top: var(--spacer-4);
+
+		@media(--viewport-medium) {
+			margin-top: var(--spacer-5);
+		}
+	}
+
+	.tribe-tickets__rsvp-attendance-number {
+		font-size: var(--font-size-9);
+
+		@media(--viewport-medium) {
+			font-size: var(--font-size-7);
+		}
+
+		&.tribe-tickets__rsvp-attendance-number--no-description {
+			font-size: var(--font-size-10);
+		}
 	}
 
 	.tribe-tickets__rsvp-attendance-going {
@@ -44,7 +64,11 @@
 
 	.tribe-tickets__rsvp-availability {
 		color: var(--color-text-secondary);
-		margin-top: var(--spacer-3);
+		margin-top: var(--spacer-4);
+
+		@media(--viewport-medium) {
+			margin-top: var(--spacer-5);
+		}
 	}
 
 	.tribe-tickets__rsvp-availability-quantity,

@@ -41,10 +41,9 @@ class Tribe__Tickets__Status__Manager {
 	protected $status_managers = [
 		'edd'  => 'Tribe__Tickets_Plus__Commerce__EDD__Status_Manager',
 		'rsvp' => 'Tribe__Tickets__RSVP__Status_Manager',
-		'tpp' => 'Tribe__Tickets__Commerce__PayPal__Status_Manager',
+		'tpp'  => 'Tribe__Tickets__Commerce__PayPal__Status_Manager',
 		'woo'  => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
 	];
-
 
 	/**
 	 * An array of status objects for all active commerces
@@ -52,7 +51,6 @@ class Tribe__Tickets__Status__Manager {
 	 * @var array
 	 */
 	protected $statuses = [];
-
 
 	/**
 	 * Get (and instantiate, if necessary) the instance of the class
@@ -66,12 +64,10 @@ class Tribe__Tickets__Status__Manager {
 		return tribe( 'tickets.status' );
 	}
 
-
 	/**
 	 * Hook
 	 *
 	 * @since 4.10
-	 *
 	 */
 	public function hook() {
 		add_action( 'init', [ $this, 'setup' ] );
@@ -102,28 +98,6 @@ class Tribe__Tickets__Status__Manager {
 				$this->active_modules[ $module_class ] = $this->module_slugs[ $module_class ];
 			}
 		}
-
-	}
-
-	/**
-	 * Check if the Name of the Class was Provided and Convert to Abbreviation
-	 *
-	 * @since 4.10.5
-	 *
-	 */
-	protected function check_for_full_provider_name( $provider ) {
-
-		// if abbreviated then return it back
-		if ( strlen( $provider ) <= 4 ) {
-			return $provider;
-		}
-
-		// if the provider is not found return
-		if ( ! isset( $this->module_slugs[ $provider ] ) ) {
-			return false;
-		}
-
-		return $this->module_slugs[ $provider ];
 
 	}
 
@@ -190,15 +164,16 @@ class Tribe__Tickets__Status__Manager {
 
 		$trigger_statuses = [];
 
-		$commerce = $this->check_for_full_provider_name( $commerce );
+		$commerce = $this->get_provider_slug( $commerce );
 
 		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
 			return $trigger_statuses;
 		}
 
-		$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, [
-			'trigger_option' => true,
-		] );
+		$filtered_statuses = wp_list_filter(
+			$this->statuses[ $commerce ]->statuses,
+			[ 'trigger_option' => true ]
+		);
 
 		foreach ( $filtered_statuses as $status ) {
 			$trigger_statuses[ $status->provider_name ] = $status->name;
@@ -225,7 +200,7 @@ class Tribe__Tickets__Status__Manager {
 
 		$trigger_statuses = [];
 
-		$commerce = $this->check_for_full_provider_name( $commerce );
+		$commerce = $this->get_provider_slug( $commerce );
 
 		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
 			return $trigger_statuses;
@@ -240,9 +215,10 @@ class Tribe__Tickets__Status__Manager {
 			}
 			$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, $criteria, $operator );
 		} else {
-			$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, [
-				$action => true,
-			] );
+			$filtered_statuses = wp_list_filter(
+				$this->statuses[ $commerce ]->statuses,
+				[ $action => true ]
+			);
 		}
 
 		foreach ( $filtered_statuses as $status ) {
@@ -277,7 +253,7 @@ class Tribe__Tickets__Status__Manager {
 
 		$trigger_statuses = [];
 
-		$commerce = $this->check_for_full_provider_name( $commerce );
+		$commerce = $this->get_provider_slug( $commerce );
 
 		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
 			return $trigger_statuses;
@@ -300,7 +276,7 @@ class Tribe__Tickets__Status__Manager {
 
 		static $status_options;
 
-		$commerce = $this->check_for_full_provider_name( $commerce );
+		$commerce = $this->get_provider_slug( $commerce );
 
 		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
 			return [];
@@ -334,7 +310,7 @@ class Tribe__Tickets__Status__Manager {
 	 */
 	public function get_providers_status_classes( $commerce ) {
 
-		$commerce = $this->check_for_full_provider_name( $commerce );
+		$commerce = $this->get_provider_slug( $commerce );
 
 		if ( ! isset( $this->statuses[ $commerce ] ) ) {
 			return [];
@@ -359,11 +335,12 @@ class Tribe__Tickets__Status__Manager {
 			$provider_name = get_class( $provider_name );
 		}
 
-		$abbreviated_name = $this->check_for_full_provider_name( $provider_name );
+		$abbreviated_name = $this->get_provider_slug( $provider_name );
 
-		$filtered_statuses = wp_list_filter( $this->statuses[ $abbreviated_name ]->statuses, [
-			'count_completed' => true,
-		] );
+		$filtered_statuses = wp_list_filter(
+			$this->statuses[ $abbreviated_name ]->statuses,
+			[ 'count_completed' => true ]
+		);
 
 
 		foreach ( $filtered_statuses as $status ) {
@@ -404,15 +381,60 @@ class Tribe__Tickets__Status__Manager {
 	 * Get the Provider Slug from the Module Class.
 	 *
 	 * @since 4.11.0
+	 * @since TBD Added support for passing slug (such as to confirm slug is valid) and class instance.
 	 *
-	 * @param string $module_class The string of the module main class.
+	 * @param string|Tribe__Tickets__Tickets $module The string of the module main class name, its slug, or instance.
+	 *
+	 * @return string|false Provider slug or false if not found.
 	 */
-	public function get_provider_slug( $module_class ) {
-
-		if ( ! isset( $this->module_slugs[ $module_class ] ) || ! isset( $this->active_modules[ $module_class ] ) ) {
-			return false;
+	public function get_provider_slug( $module ) {
+		if ( $module instanceof Tribe__Tickets__Tickets ) {
+			$module = $module->class_name;
 		}
 
-		return $this->active_modules[ $module_class ];
+		$slugs_to_classes = array_flip( $this->module_slugs );
+
+		// If already a slug (case-sensitive).
+		if ( array_key_exists( $module, $slugs_to_classes ) ) {
+			return $module;
+		}
+
+		// Get slug from class name.
+		$result = Tribe__Utils__Array::get( $this->module_slugs, $module );
+		if ( ! empty( $result ) ) {
+			return $result;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get the Provider class name from its slug.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|Tribe__Tickets__Tickets $slug The string of the slug, its module main class name, or instance.
+	 *
+	 * @return string|false Provider class name or false if not found.
+	 */
+	public function get_provider_class_from_slug( $slug ) {
+		if ( $slug instanceof Tribe__Tickets__Tickets ) {
+			$slug = $slug->class_name;
+		}
+
+		// If already a class name (case-sensitive).
+		if ( array_key_exists( $slug, $this->module_slugs ) ) {
+			return $slug;
+		}
+
+		$slugs_to_classes = array_flip( $this->module_slugs );
+
+		// Get class name from slug.
+		$result = Tribe__Utils__Array::get( $slugs_to_classes, $slug );
+		if ( ! empty( $result ) ) {
+			return $result;
+		}
+
+		return false;
 	}
 }

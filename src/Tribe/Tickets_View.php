@@ -962,7 +962,10 @@ class Tribe__Tickets__Tickets_View {
 	}
 
 	/**
-	 * Gets the block template "out of context" and makes it useable for non-gutenberg views.
+	 * Gets the block template "out of context" and makes it usable for non-Block Editor views.
+	 *
+	 * @since 4.11.0
+	 * @since TBD Update usage of get_event_ticket_provider().
 	 *
 	 * @param WP_Post|int $post The post object or ID.
 	 * @param boolean     $echo Whether to echo the output or not.
@@ -978,32 +981,28 @@ class Tribe__Tickets__Tickets_View {
 			$post = get_post( $post );
 		}
 
-		if (
-			empty( $post )
-			|| ! ( $post instanceof WP_Post )
-		) {
+		if ( ! $post instanceof WP_Post ) {
 			return '';
 		}
 
-		// if password protected then do not display content
+		// If password protected, do not display content.
 		if ( post_password_required() ) {
 			return '';
 		}
 
-		$post_id     = $post->ID;
-		$provider_id = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+		$post_id = $post->ID;
 
-		// Protect against ticket that exists but is of a type that is not enabled
-		if ( ! method_exists( $provider_id, 'get_instance' ) ) {
+		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+
+		// Protect against ticket that exists but is of a type that is not enabled.
+		if ( empty( $provider ) ) {
 			return '';
 		}
 
-		$provider = call_user_func( [ $provider_id, 'get_instance' ] );
-
-		/** @var \Tribe__Tickets__Editor__Template $template */
+		/** @var Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 
-		/** @var \Tribe__Tickets__Editor__Blocks__Tickets $blocks_tickets */
+		/** @var Tribe__Tickets__Editor__Blocks__Tickets $blocks_tickets */
 		$blocks_tickets = tribe( 'tickets.editor.blocks.tickets' );
 
 		// Load assets manually.
@@ -1014,7 +1013,7 @@ class Tribe__Tickets__Tickets_View {
 		$args = [
 			'post_id'             => $post_id,
 			'provider'            => $provider,
-			'provider_id'         => $provider_id,
+			'provider_id'         => $provider->class_name,
 			'tickets'             => $tickets,
 			'cart_classes'        => [ 'tribe-block', 'tribe-tickets' ],
 			'tickets_on_sale'     => $blocks_tickets->get_tickets_on_sale( $tickets ),
@@ -1091,6 +1090,7 @@ class Tribe__Tickets__Tickets_View {
 			'must_login'       => ! is_user_logged_in() && $rsvp->login_required(),
 			'login_url'        => Tribe__Tickets__Tickets::get_login_url( $post_id ),
 			'threshold'        => $blocks_rsvp->get_threshold( $post_id ),
+			'step'             => null,
 		];
 
 		// Add the rendering attributes into global context.
@@ -1114,7 +1114,7 @@ class Tribe__Tickets__Tickets_View {
 		// Maybe render the new views.
 		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
 			// Enqueue new assets.
-			tribe_asset_enqueue( 'tribe-tickets-rsvp' );
+			tribe_asset_enqueue_group( 'tribe-tickets-rsvp' );
 			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
 			tribe_asset_enqueue( 'tribe-tickets-form-style' );
 			// @todo: Remove this once we solve the common breakpoints vs container based.
