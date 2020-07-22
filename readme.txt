@@ -130,6 +130,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Updated `Tribe__Tickets__Tickets::get_event_ticket_provider()` so it returns false if the resulting ticket provider is no longer active and implemented it across all plugin code. [ET-843]
 * Tweak - Updated `Tribe__Tickets__Status__Manager::get_provider_slug()` and added `Tribe__Tickets__Status__Manager::get_provider_class_from_slug()` for convenient and consistent lookups. [ETP-843]
 * Tweak - Display all of a post's order tabs in the Attendees Report admin screen. Example: if a post's ticket provider was Tribe Commerce and such tickets were sold, then the post's provider changed to WooCommerce Tickets, the Attendees Report screen should show both the Tribe Commerce order history tab and the WooCommerce order history tab, regardless of which ticket provider is currently the default. Introduced `Tribe__Tickets__Tickets::post_has_tickets()` helper function. [ET-843]
+* Tweak - Modify parameters on `register_rest_route` to include `permission_callback` to prevent notices on WordPress 5.5.
 
 = [4.12.2] 2020-06-24 =
 
