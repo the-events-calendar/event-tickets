@@ -44,7 +44,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		}
 
 		// Fetch the default provider
-		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post_id );
 		if ( empty( $provider ) ) {
 			return '';
 		}

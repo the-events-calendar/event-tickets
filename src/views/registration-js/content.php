@@ -23,7 +23,7 @@ $events   = (array) $this->get( 'events' );
 if ( empty( $provider ) ) {
 	$event_keys   = array_keys( $events );
 	$event_key    = array_shift( $event_keys );
-	$provider_obj = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_key );
+	$provider_obj = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $event_key );
 	$provider     = $provider_obj->attendee_object;
 } elseif ( is_string( $provider ) ) {
 	/** @var Tribe__Tickets__Attendee_Registration__View $reg_view */

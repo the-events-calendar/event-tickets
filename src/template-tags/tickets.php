@@ -419,26 +419,25 @@ if ( ! function_exists( 'tribe_tickets_is_current_time_in_date_window' ) ) {
 		$tickets               = Tribe__Tickets__Tickets::get_all_event_tickets( $post_id );
 		$default_provider      = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 
-		/** @var Tribe__Tickets__Ticket_Object $ticket */
-		foreach ( $tickets as $ticket ) {
-			$ticket_provider = $ticket->get_provider();
+		if ( false !== $default_provider ) {
+			/** @var Tribe__Tickets__Ticket_Object $ticket */
+			foreach ( $tickets as $ticket ) {
+				$ticket_provider = $ticket->get_provider();
 
-			if (
-				! $default_provider instanceof Tribe__Tickets__Tickets
-				|| ! $ticket_provider instanceof Tribe__Tickets__Tickets
-			) {
-				continue;
+				if ( ! $ticket_provider instanceof Tribe__Tickets__Tickets ) {
+					continue;
+				}
+
+				// Skip tickets that are for a different provider than the event provider.
+				if (
+					$default_provider !== $ticket_provider->class_name
+					&& Tribe__Tickets__RSVP::class !== $ticket_provider->class_name
+				) {
+					continue;
+				}
+
+				$has_tickets_available = ( $has_tickets_available || tribe_events_ticket_is_on_sale( $ticket ) );
 			}
-
-			// Skip tickets that are for a different provider than the event provider.
-			if (
-				$default_provider->class_name !== $ticket_provider->class_name
-				&& Tribe__Tickets__RSVP::class !== $ticket_provider->class_name
-			) {
-				continue;
-			}
-
-			$has_tickets_available = ( $has_tickets_available || tribe_events_ticket_is_on_sale( $ticket ) );
 		}
 
 		$ticket_availability[ $post_id ] = $has_tickets_available;
@@ -465,7 +464,7 @@ if ( ! function_exists( 'tribe_events_has_tickets_on_sale' ) ) {
 			$ticket_provider = $ticket->get_provider();
 
 			// Skip tickets that are for a different provider than the event provider.
-			if ( $default_provider->class_name !== $ticket_provider->class_name ) {
+			if ( $default_provider !== $ticket_provider->class_name ) {
 				continue;
 			}
 
@@ -1084,7 +1083,7 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 			$rsvp_cap += $cap;
 		}
 
-		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post_id );
 
 		if ( empty( $provider ) ) {
 			return null;

@@ -17,7 +17,7 @@ $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 if ( empty( $provider ) ) {
 	$event_keys = array_keys( $events );
 	$event_key  = array_shift( $event_keys );
-	$provider   = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_key );
+	$provider   = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $event_key );
 	$provider   = ! empty( $provider ) ? $provider::ATTENDEE_OBJECT : '';
 }
 
@@ -69,7 +69,7 @@ $cart_url            = $this->get( 'cart_url' );
 
 <?php foreach ( $events as $event_id => $tickets ) : ?>
 	<?php
-	$event_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
+	$event_provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $event_id );
 
 	if (
 		empty( $event_provider )
