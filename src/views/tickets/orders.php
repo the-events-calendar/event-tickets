@@ -31,7 +31,7 @@ $event_id  = get_queried_object_id();
 $event     = get_post( $event_id );
 $post_type = get_post_type_object( $event->post_type );
 $user_id   = get_current_user_id();
-$provider  = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
+$provider  = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $event_id );
 
 $event_has_tickets = $event_has_rsvp = false;
 if ( $provider ) {

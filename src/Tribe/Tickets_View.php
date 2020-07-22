@@ -992,7 +992,7 @@ class Tribe__Tickets__Tickets_View {
 
 		$post_id = $post->ID;
 
-		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post_id );
 
 		// Protect against ticket that exists but is of a type that is not enabled.
 		if ( empty( $provider ) ) {
