@@ -123,10 +123,12 @@ Currently, the following add-ons are available for Event Tickets:
 * Feature - Notify promoter for actions (RSVP going, RSVP not going, Event Checkin, Attendee Registered) for RSVP and Tribe Commerce. [ET-860]
 * Fix - Prevent PHP errors when loading the new RSVP views for posts using classic editor when The Events Calendar setting for Blocks editor is off. [ET-853]
 * Tweak - Layout improvements for Attendee Information's Birth Date field. [ET-875]
-* Tweak - Add `tribe_tickets_is_provider_active()` template function so we can more easily check if a ticket's commerce provider is currently active before using its class methods. [ET-843]
-* Tweak - Add `Tribe__Tickets_Plus__Tickets::get_attendee_optout_key()` to simplify getting the optout key regardless of ticket provider class and accounting for legacy code. [ETP-843]
+* Tweak - Added `tribe_tickets_is_provider_active()` template function so we can more easily check if a ticket's commerce provider is currently active before using its class methods. [ET-843]
+* Tweak - Added `Tribe__Tickets_Plus__Tickets::get_attendee_optout_key()` to simplify getting the optout key regardless of ticket provider class and accounting for legacy code. [ETP-843]
+* Tweak - Added `Tribe__Tickets__Tickets::get_event_ticket_provider_object()` to make it easier to get and interact with the ticket provider object itself and implemented it across all plugin code where the object is needed in place of the previous usage of class representation as a string. [ET-843]
+* Tweak - Added `Tribe__Tickets__Tickets::get_ticket_provider_instance()` to consistently and more concisely get a ticket provider's instance only if it is active. [ET-843]
+* Tweak - Updated `Tribe__Tickets__Tickets::get_event_ticket_provider()` so it returns false if the resulting ticket provider is no longer active and implemented it across all plugin code. [ET-843]
 * Tweak - Updated `Tribe__Tickets__Status__Manager::get_provider_slug()` and added `Tribe__Tickets__Status__Manager::get_provider_class_from_slug()` for convenient and consistent lookups. [ETP-843]
-* Tweak - Add `Tribe__Tickets__Tickets::get_ticket_provider_instance()` to consistently and more concisely get a ticket provider's instance only if it is active. Update `Tribe__Tickets__Tickets::get_ticket_provider_instance()` to return a class instance instead of class name string, for more robust usage. Multiple derivative functions and template files updated accordingly. Backwards compatibility for this resolved with adding a `Tribe__Tickets__Tickets::__toString()` method that will handle usages of the class object when called as a string. [ET-843]
 * Tweak - Display all of a post's order tabs in the Attendees Report admin screen. Example: if a post's ticket provider was Tribe Commerce and such tickets were sold, then the post's provider changed to WooCommerce Tickets, the Attendees Report screen should show both the Tribe Commerce order history tab and the WooCommerce order history tab, regardless of which ticket provider is currently the default. Introduced `Tribe__Tickets__Tickets::post_has_tickets()` helper function. [ET-843]
 
 = [4.12.2] 2020-06-24 =
