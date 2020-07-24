@@ -626,7 +626,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Whether a post has tickets from this provider, even if this provider is not the default provider.
 		 *
-		 * @since TBD
+		 * @since 4.12.3
 		 *
 		 * @param int|WP_Post $post
 		 *
@@ -2242,7 +2242,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Given a ticket provider, get its Attendee Optout Meta Key from its class property (or constant if legacy).
 		 *
-		 * @since TBD
+		 * @since 4.12.3
 		 *
 		 * @param self|string $provider Examples: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main', 'woo', 'rsvp', etc.
 		 *
@@ -2995,7 +2995,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @see get_event_ticket_provider_object()
 		 *
 		 * @since 4.7
-		 * @since TBD Now returning false if the provider is not active.
+		 * @since 4.12.3 Now returning false if the provider is not active.
 		 *
 		 * @param int $event_id The post ID of the event to which the ticket is attached.
 		 *
@@ -3019,7 +3019,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @see get_ticket_provider_instance()
 		 *
-		 * @since TBD
+		 * @since 4.12.3
 		 *
 		 * @param int $post_id The post ID of the event to which the ticket is attached.
 		 *
@@ -3266,7 +3266,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Return the string representation of this provider class as the class name for backwards compatibility.
 		 *
-		 * @since TBD
+		 * @since 4.12.3
 		 *
 		 * @return string The class name.
 		 */

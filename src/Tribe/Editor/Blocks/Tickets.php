@@ -231,7 +231,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * Get provider ID/slug.
 	 *
 	 * @since 4.9
-	 * @since TBD Retrieve slug from updated Ticktes Status Manager method.
+	 * @since 4.12.3 Retrieve slug from updated Ticktes Status Manager method.
 	 *
 	 * @param  Tribe__Tickets__Tickets $provider Provider class instance
 	 *

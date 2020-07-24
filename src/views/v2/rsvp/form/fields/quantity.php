@@ -5,9 +5,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/rsvp/form/fields/quantity.php
  *
- * @since TBD
+ * @since 4.12.3
  *
- * @version TBD
+ * @version 4.12.3
  */
 
 /** @var Tribe__Tickets__Tickets_Handler $tickets_handler */

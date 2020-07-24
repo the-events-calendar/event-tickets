@@ -12,9 +12,9 @@
  *
  * @since   4.9
  * @since   4.12.0 Add $post_id to filter for hiding opt-outs.
- * @since   TBD Add comments to help IDE auto-completion. Array short syntax.
+ * @since   4.12.3 Add comments to help IDE auto-completion. Array short syntax.
  *
- * @version TBD
+ * @version 4.12.3
  */
 
 $ticket_id = $this->get( 'ticket_id' );

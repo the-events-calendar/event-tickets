@@ -29,7 +29,7 @@ class Dispatcher {
 	/**
 	 * Setup the dispatcher.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param Tribe__Promoter__Connector $connect The connector object for Promoter.
 	 * @param Tribe__Promoter__PUE       $pue     The PUE object for Promoter.
@@ -44,7 +44,7 @@ class Dispatcher {
 	/**
 	 * Dispatch triggers as soon as a new action has been fired.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 */
 	public function hook() {
 		add_action( 'tribe_tickets_promoter_trigger', [ $this, 'trigger' ] );
@@ -53,7 +53,7 @@ class Dispatcher {
 	/**
 	 * Send trigger message back to connector application to notify promoter about this trigger action.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param Triggered $trigger
 	 */
@@ -94,7 +94,7 @@ class Dispatcher {
 	/**
 	 * Creat ea payload using the trigger object.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param Triggered $trigger The trigger object creating this action.
 	 *
@@ -121,7 +121,7 @@ class Dispatcher {
 	/**
 	 * Get the value of the license key of promoter for this installation.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @return mixed|string
 	 */

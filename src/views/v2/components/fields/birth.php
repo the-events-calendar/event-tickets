@@ -7,9 +7,9 @@
  *
  * @TODO: Update this file once this one is merged https://github.com/moderntribe/event-tickets/pull/1677
  *
- * @since   TBD
+ * @since   4.12.3
  *
- * @version TBD
+ * @version 4.12.3
  *
  * @see     Tribe__Tickets_Plus__Meta__Field__Birth
  */

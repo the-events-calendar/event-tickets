@@ -32,7 +32,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 * Render the Attendee Info shortcode.
 	 *
 	 * @since 4.12.0
-	 * @since TBD Get provider slug more consistently.
+	 * @since 4.12.3 Get provider slug more consistently.
 	 *
 	 * @return string The resulting template content
 	 */
@@ -219,7 +219,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 * Get the cart provider class/object.
 	 *
 	 * @since 4.11.0
-	 * @since TBD Check if provider is a proper object and is active.
+	 * @since 4.12.3 Check if provider is a proper object and is active.
 	 *
 	 * @param string $provider A string indicating the desired provider.
 	 *
@@ -257,7 +257,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 * Given a provider, get the class to be applied to the attendee registration form.
 	 *
 	 * @since 4.10.4
-	 * @since TBD Consolidate getting provider.
+	 * @since 4.12.3 Consolidate getting provider.
 	 *
 	 * @param string|Tribe__Tickets__Tickets $provider The provider/attendee object name indicating ticket provider.
 	 *

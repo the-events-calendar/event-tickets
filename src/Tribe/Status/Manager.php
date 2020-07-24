@@ -381,7 +381,7 @@ class Tribe__Tickets__Status__Manager {
 	 * Get the Provider Slug from the Module Class.
 	 *
 	 * @since 4.11.0
-	 * @since TBD Added support for passing slug (such as to confirm slug is valid) and class instance.
+	 * @since 4.12.3 Added support for passing slug (such as to confirm slug is valid) and class instance.
 	 *
 	 * @param string|Tribe__Tickets__Tickets $module The string of the module main class name, its slug, or instance.
 	 *
@@ -411,7 +411,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Get the Provider class name from its slug.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param string|Tribe__Tickets__Tickets $slug The string of the slug, its module main class name, or instance.
 	 *

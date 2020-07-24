@@ -7,9 +7,9 @@
  *
  * @since 4.12.1 Introduced template.
  * @since 4.12.2 Fix PHP notice for undefined variable. Wrap select fields in sub-container.
- * @since TBD Add a separate label per input for screen readers.
+ * @since 4.12.3 Add a separate label per input for screen readers.
  *
- * @version TBD
+ * @version 4.12.3
  *
  * @see     Tribe__Tickets_Plus__Meta__Field__Birth
  */

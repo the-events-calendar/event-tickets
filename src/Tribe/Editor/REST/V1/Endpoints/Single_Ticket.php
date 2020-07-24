@@ -204,7 +204,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	 *
 	 * @since  4.9
 	 * @since  4.10.9 Use customizable ticket name functions.
-	 * @since  TBD Update detecting ticket provider to account for possibly inactive provider.
+	 * @since  4.12.3 Update detecting ticket provider to account for possibly inactive provider.
 	 *
 	 * @param  WP_REST_Request $request
 	 * @param  $nonce_action

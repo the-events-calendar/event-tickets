@@ -12,9 +12,9 @@
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
- * @since TBD
+ * @since 4.12.3
  *
- * @version TBD
+ * @version 4.12.3
  */
 
 $step = sanitize_text_field( tribe_get_request_var( 'step', '' ) );

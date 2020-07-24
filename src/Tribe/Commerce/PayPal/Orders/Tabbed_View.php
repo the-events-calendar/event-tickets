@@ -26,7 +26,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 	 * Registers the PayPal orders tab among those the tabbed view should render.
 	 *
 	 * @since 4.7
-	 * @since TBD Show PayPal Orders tab if has any PayPal tickets, even if not the default provider.
+	 * @since 4.12.3 Show PayPal Orders tab if has any PayPal tickets, even if not the default provider.
 	 *
 	 * @param Tribe__Tabbed_View $tabbed_view
 	 * @param WP_Post            $post

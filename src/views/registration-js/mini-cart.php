@@ -7,10 +7,10 @@
  *
  * @since   4.11.0
  * @since   4.12.0 Prevent potential errors when $provider_obj is not valid.
- * @since   TBD Update detecting ticket provider to account for possibly inactive provider. Rename $provider_obj to
+ * @since   4.12.3 Update detecting ticket provider to account for possibly inactive provider. Rename $provider_obj to
  *              the more accurately named $cart_provider.
  *
- * @version TBD
+ * @version 4.12.3
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 
