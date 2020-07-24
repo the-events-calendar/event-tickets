@@ -965,7 +965,7 @@ class Tribe__Tickets__Tickets_View {
 	 * Gets the block template "out of context" and makes it usable for non-Block Editor views.
 	 *
 	 * @since 4.11.0
-	 * @since TBD Update usage of get_event_ticket_provider().
+	 * @since 4.12.3 Update usage of get_event_ticket_provider().
 	 *
 	 * @param WP_Post|int $post The post object or ID.
 	 * @param boolean     $echo Whether to echo the output or not.
@@ -992,7 +992,7 @@ class Tribe__Tickets__Tickets_View {
 
 		$post_id = $post->ID;
 
-		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post_id );
 
 		// Protect against ticket that exists but is of a type that is not enabled.
 		if ( empty( $provider ) ) {
@@ -1034,7 +1034,7 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Gets the RSVP block template "out of context" and makes it usable for Classic views.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param WP_Post|int $post The post object or ID.
 	 * @param boolean     $echo Whether to echo the output or not.

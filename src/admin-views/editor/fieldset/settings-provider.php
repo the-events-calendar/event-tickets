@@ -7,7 +7,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 
 $default_module = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 
-$default_module_class = empty( $default_module ) ? '' : $default_module->class_name;
+$default_module_class = empty( $default_module ) ? '' : $default_module;
 
 // We don't need this one here - RSVP and tickets are different now.
 unset( $modules['Tribe__Tickets__RSVP'] );

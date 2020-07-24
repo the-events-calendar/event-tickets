@@ -342,7 +342,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @see    \Tribe__Tickets__Tickets_Handler::get_connections_template()
 	 *
 	 * @since  4.6.2
-	 * @since  TBD Use new helper methods for getting provider, including accounting for possibly inactive provider.
+	 * @since  4.12.3 Use new helper methods for getting provider, including accounting for possibly inactive provider.
 	 *
 	 * @param int|WP_Post $object Which object you are trying to figure out.
 	 *
@@ -419,7 +419,7 @@ class Tribe__Tickets__Tickets_Handler {
 		/**
 		 * Allow filtering the relationships so providers can add their own strings.
 		 *
-		 * @since TBD
+		 * @since 4.12.3
 		 *
 		 * @param array $relationships List of relationship information for providers.
 		 */
@@ -913,7 +913,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Returns whether a given object has the correct Provider for a Post or Ticket
 	 *
 	 * @since   4.7
-	 * @since   TBD Account for possibly inactive ticket provider and better checking for default ETP provider.
+	 * @since   4.12.3 Account for possibly inactive ticket provider and better checking for default ETP provider.
 	 *
 	 * @param int|WP_Post                    $post
 	 * @param Tribe__Tickets__Tickets|string $provider
@@ -936,7 +936,7 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		if ( tribe_tickets_post_type_enabled( $post->post_type ) ) {
-			$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post->ID );
+			$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post->ID );
 		} else {
 			$default_provider = tribe_tickets_get_ticket_provider( $post->ID );
 		}
@@ -1018,7 +1018,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return int
 	 */
 	public function get_total_event_capacity( $post = null ) {
-		_deprecated_function( __METHOD__, 'TBD', 'tribe_get_event_capacity()' );
+		_deprecated_function( __METHOD__, '4.12.3', 'tribe_get_event_capacity()' );
 
 		$post_id = Tribe__Main::post_id_helper( $post );
 		$total   = 0;

@@ -5,7 +5,7 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/components/fields/email.php
  *
- * @since  TBD
+ * @since  4.12.3
  *
  * @see Tribe__Tickets_Plus__Meta__Field__Email
  */

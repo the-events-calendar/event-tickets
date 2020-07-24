@@ -257,7 +257,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since   4.6.2
 	 * @since   4.10.9 Use customizable ticket name functions.
-	 * @since   TBD Update detecting ticket provider to account for possibly inactive provider. Remove unused vars.
+	 * @since   4.12.3 Update detecting ticket provider to account for possibly inactive provider. Remove unused vars.
 	 */
 	public function ajax_ticket_edit() {
 		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
@@ -349,7 +349,7 @@ class Tribe__Tickets__Metabox {
 	 * Handles the check-in ajax call, and calls the checkin method.
 	 *
 	 * @since  4.6.2
-	 * @since  TBD Use new helper method to account for possibly inactive ticket provider.
+	 * @since  4.12.3 Use new helper method to account for possibly inactive ticket provider.
 	 */
 	public function ajax_attendee_checkin() {
 		$event_id    = Tribe__Utils__Array::get( $_POST, 'event_ID', false );
@@ -387,7 +387,7 @@ class Tribe__Tickets__Metabox {
 	 * Handles the check-in ajax call, and calls the uncheckin method.
 	 *
 	 * @since  4.6.2
-	 * @since  TBD Use new helper method to account for possibly inactive ticket provider.
+	 * @since  4.12.3 Use new helper method to account for possibly inactive ticket provider.
 	 */
 	public function ajax_attendee_uncheckin() {
 		$event_id    = Tribe__Utils__Array::get( $_POST, 'event_ID', false );

@@ -542,7 +542,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Provides the Inventory of the Ticket which should match the Commerce Stock
 		 *
 		 * @since  4.6
-		 * @since  TBD Account for possibly inactive ticket provider.
+		 * @since  4.12.3 Account for possibly inactive ticket provider.
 		 *
 		 * @return int
 		 */
@@ -988,7 +988,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Returns an instance of the provider class if found. If found, sets class property if not yet set.
 		 *
 		 * @since 4.1
-		 * @since TBD Use new helper method to account for possibly inactive ticket provider. Set provider if found.
+		 * @since 4.12.3 Use new helper method to account for possibly inactive ticket provider. Set provider if found.
 		 *
 		 * @return Tribe__Tickets__Tickets|false Ticket provider instance or False if provider is not active.
 		 */

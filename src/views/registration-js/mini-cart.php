@@ -7,17 +7,17 @@
  *
  * @since   4.11.0
  * @since   4.12.0 Prevent potential errors when $provider_obj is not valid.
- * @since   TBD Update detecting ticket provider to account for possibly inactive provider. Rename $provider_obj to
+ * @since   4.12.3 Update detecting ticket provider to account for possibly inactive provider. Rename $provider_obj to
  *              the more accurately named $cart_provider.
  *
- * @version TBD
+ * @version 4.12.3
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 
 if ( empty( $provider ) ) {
 	$event_keys = array_keys( $events );
 	$event_key  = array_shift( $event_keys );
-	$provider   = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_key );
+	$provider   = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $event_key );
 	$provider   = ! empty( $provider ) ? $provider::ATTENDEE_OBJECT : '';
 }
 
@@ -47,7 +47,7 @@ $cart_url            = $this->get( 'cart_url' );
 	<h3 class="tribe-common-h6 tribe-common-h5--min-medium tribe-common-h--alt tribe-tickets__mini-cart__title"><?php echo esc_html_x( 'Ticket Summary', 'Attendee registration mini-cart/ticket summary title.', 'event-tickets'); ?></h3>
 		<?php foreach ( $events as $event_id => $tickets ) : ?>
 			<?php foreach ( $tickets as $key => $ticket ) : ?>
-				<?php if ( $cart_provider !== $ticket['provider']->attendee_object ) : ?>
+				<?php if ( $provider_class !== $ticket['provider']->class_name ) : ?>
 					<?php continue; ?>
 				<?php endif; ?>
 				<?php $currency_symbol = $currency->get_currency_symbol( $ticket['id'], true ); ?>
@@ -69,12 +69,11 @@ $cart_url            = $this->get( 'cart_url' );
 
 <?php foreach ( $events as $event_id => $tickets ) : ?>
 	<?php
-	$event_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id );
+	$event_provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $event_id );
 
 	if (
 		empty( $event_provider )
-		|| empty( $event_provider->attendee_object )
-		|| $provider !== $event_provider->attendee_object
+		|| $provider_class !== $event_provider->class_name
 	) {
 		continue;
 	}
@@ -86,5 +85,6 @@ $cart_url            = $this->get( 'cart_url' );
 			'tickets'  => $tickets,
 			'provider' => $cart_provider,
 		]
-	); ?>
-<?php endforeach;
+	);
+	?>
+<?php endforeach; ?>

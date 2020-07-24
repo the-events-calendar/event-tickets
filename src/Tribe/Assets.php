@@ -30,7 +30,7 @@ class Tribe__Tickets__Assets {
 			],
 			'wp_enqueue_scripts',
 			[
-				'conditionals' => 'tribe_tickets_is_enabled_post_context',
+				'conditionals' => [ $this, 'should_enqueue_frontend' ],
 			]
 		);
 
@@ -169,6 +169,22 @@ class Tribe__Tickets__Assets {
 
 		// For the metabox
 		return ! empty( $post ) && ! empty( $modules ) && in_array( $post->post_type, tribe( 'tickets.main' )->post_types(), true );
+	}
+
+	/**
+	 * Check if we should enqueue ET frontend styles
+	 *
+	 * @since  TBD
+	 *
+	 * @return bool
+	 */
+	public function should_enqueue_frontend() {
+		$is_on_valid_post_type = tribe_tickets_is_enabled_post_context();
+
+		/** @var Tribe__Tickets__Attendee_Registration__Main $ar */
+		$ar = tribe( 'tickets.attendee_registration' );
+
+		return $is_on_valid_post_type || $ar->is_on_page();
 	}
 
 	/**

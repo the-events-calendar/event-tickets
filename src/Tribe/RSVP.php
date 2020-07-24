@@ -235,7 +235,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Handle RSVP processing for the RSVP forms.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 */
 	public function ajax_handle_rsvp() {
 		$response = [
@@ -260,7 +260,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Handle RSVP processing for the RSVP forms.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param int         $ticket_id The ticket ID.
 	 * @param int         $post_id   The post or event ID.
@@ -303,7 +303,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Allow filtering of the template arguments used.
 		 *
-		 * @since TBD
+		 * @since 4.12.3
 		 *
 		 * @param array $args {
 		 *      The list of step template arguments.
@@ -331,7 +331,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Handle processing the RSVP step based on current arguments.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param array $args {
 	 *      The list of step template arguments.

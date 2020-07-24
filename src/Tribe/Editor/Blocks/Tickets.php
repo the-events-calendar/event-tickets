@@ -44,7 +44,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		}
 
 		// Fetch the default provider
-		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post_id );
 		if ( empty( $provider ) ) {
 			return '';
 		}
@@ -231,7 +231,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * Get provider ID/slug.
 	 *
 	 * @since 4.9
-	 * @since TBD Retrieve slug from updated Ticktes Status Manager method.
+	 * @since 4.12.3 Retrieve slug from updated Ticktes Status Manager method.
 	 *
 	 * @param  Tribe__Tickets__Tickets $provider Provider class instance
 	 *

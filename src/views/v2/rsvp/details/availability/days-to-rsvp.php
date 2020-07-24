@@ -12,9 +12,9 @@
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
- * @since TBD
+ * @since 4.12.3
  *
- * @version TBD
+ * @version 4.12.3
  */
 
 // Bail if RSVP isn't in stock.

@@ -186,7 +186,7 @@ class Tribe__Tickets__Data_API {
 	 * Return Ticket Provider by Order, Product, Attendee, or Ticket ID.
 	 *
 	 * @since 4.5
-	 * @since TBD Use new helper method to account for possibly inactive ticket provider.
+	 * @since 4.12.3 Use new helper method to account for possibly inactive ticket provider.
 	 *
 	 * @param int|string $post_id
 	 *
@@ -367,7 +367,7 @@ class Tribe__Tickets__Data_API {
 	 * Get attendee(s) from any id.
 	 *
 	 * @since 4.5
-	 * @since TBD Use new helper method to account for possibly inactive ticket provider.
+	 * @since 4.12.3 Use new helper method to account for possibly inactive ticket provider.
 	 *
 	 * @param $post_id
 	 * @param $context
