@@ -56,7 +56,7 @@ extends Tribe__Editor__Blocks__Abstract {
 			$post_id = $attributes['post_id'];
 		}
 
-		// Prevent the render when the ID of the post has not being set to a correct value
+		// Prevent the render when the ID of the post has not being set to a correct value.
 		if ( empty( $post_id ) ) {
 			return '';
 		}
