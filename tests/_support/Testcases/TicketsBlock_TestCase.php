@@ -136,7 +136,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 		$tickets_main = tribe( 'tickets.main' );
 		$tickets_view = $tickets_main->tickets_view();
 
-		$html = $tickets_view->get_tickets_block( get_post( $post_id ) );
+		$html = $tickets_view->get_tickets_block( get_post( $post_id ), false );
 
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 

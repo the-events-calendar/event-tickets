@@ -31,15 +31,18 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return string
 	 */
 	public function render( $attributes = [] ) {
-		/** @var Tribe__Tickets__Editor__Template $template */
-		$template = tribe( 'tickets.editor.template' );
+		$post_id = get_the_ID();
+
+		if ( ! empty( $attributes['post_id'] ) ) {
+			$post_id = $attributes['post_id'];
+		}
 
 		$args['is_modal']   = null;
-		$args['post_id']    = $post_id = $template->get( 'post_id', null, false );
+		$args['post_id']    = $post_id;
 		$args['attributes'] = $this->attributes( $attributes );
 
 		// Prevent the render when the ID of the post has not being set to a correct value
-		if ( $args['post_id'] === null ) {
+		if ( empty( $args['post_id'] ) ) {
 			return '';
 		}
 
@@ -64,6 +67,9 @@ extends Tribe__Editor__Blocks__Abstract {
 		$args['has_tickets_on_sale'] = ! empty( $args['tickets_on_sale'] );
 		$args['is_sale_past']        = $this->get_is_sale_past( $tickets );
 		$args['is_sale_future']      = $this->get_is_sale_future( $tickets );
+
+		/** @var Tribe__Tickets__Editor__Template $template */
+		$template = tribe( 'tickets.editor.template' );
 
 		// Add the rendering attributes into global context
 		$template->add_template_globals( $args );

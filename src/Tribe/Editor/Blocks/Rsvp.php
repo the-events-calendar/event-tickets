@@ -50,10 +50,16 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return string
 	 */
 	public function render( $attributes = array() ) {
-		/** @var Tribe__Tickets__Editor__Template $template */
-		$template = tribe( 'tickets.editor.template' );
+		$post_id = get_the_ID();
 
-		$post_id = $template->get( 'post_id', null, false );
+		if ( ! empty( $attributes['post_id'] ) ) {
+			$post_id = $attributes['post_id'];
+		}
+
+		// Prevent the render when the ID of the post has not being set to a correct value
+		if ( empty( $post_id ) ) {
+			return '';
+		}
 
 		$tickets_view = Tribe__Tickets__Tickets_View::instance();
 

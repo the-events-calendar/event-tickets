@@ -58,14 +58,11 @@ class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 
 		$ticket_id = $this->setup_block_ticket( $post_id, $matrix );
 
-		/** @var \Tribe__Tickets__Editor__Blocks__Rsvp $rsvp_block */
-		$rsvp_block = tribe( 'tickets.editor.blocks.rsvp' );
+		/** @var \Tribe__Tickets__Main $tickets_main */
+		$tickets_main = tribe( 'tickets.main' );
+		$tickets_view = $tickets_main->tickets_view();
 
-		/** @var \Tribe__Tickets__Editor__Template $editor_template */
-		$editor_template = tribe( 'tickets.editor.template' );
-		$editor_template->set( 'post_id', $post_id, false );
-
-		$html = $rsvp_block->render();
+		$html = $tickets_view->get_rsvp_block( get_post( $post_id ), false );
 
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
@@ -96,14 +93,11 @@ class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 			'ticket_id' => $ticket_id,
 		] );
 
-		/** @var \Tribe__Tickets__Editor__Blocks__Rsvp $rsvp_block */
-		$rsvp_block = tribe( 'tickets.editor.blocks.rsvp' );
+		/** @var \Tribe__Tickets__Main $tickets_main */
+		$tickets_main = tribe( 'tickets.main' );
+		$tickets_view = $tickets_main->tickets_view();
 
-		/** @var \Tribe__Tickets__Editor__Template $editor_template */
-		$editor_template = tribe( 'tickets.editor.template' );
-		$editor_template->set( 'post_id', $post_id, false );
-
-		$html = $rsvp_block->render();
+		$html = $tickets_view->get_rsvp_block( get_post( $post_id ), false );
 
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
