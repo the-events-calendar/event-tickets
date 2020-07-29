@@ -189,7 +189,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			if ( isset( $_POST['tribe_ticket_quantity'] ) ) {
 				$quantity = absint( $_POST['tribe_ticket_quantity'] );
 			} elseif ( isset( $_POST[ "quantity_{$ticket_id}" ] ) ) {
-				$quantity = absint( $_POST["quantity_{$ticket_id}"] );
+				$quantity = absint( $_POST[ "quantity_{$ticket_id}" ] );
 			}
 
 			// skip if the ticket in no longer in stock or is not sellable
