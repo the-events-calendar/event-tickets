@@ -577,7 +577,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// Loop on All the attendees, allowing for some filtering of which will be removed or not
 			foreach ( $attendees as $attendee ) {
 				// Prevent RSVP with Not Going Status to decrease Inventory
-				if ( ! empty( $attendee['provider_slug'] ) && 'rsvp' === $attendee['provider_slug'] && in_array( $attendee[ 'order_status' ], $not_going_arr, true ) ) {
+				if ( ! empty( $attendee['provider_slug'] ) && 'rsvp' === $attendee['provider_slug'] && in_array( $attendee['order_status'], $not_going_arr, true ) ) {
 					continue;
 				}
 

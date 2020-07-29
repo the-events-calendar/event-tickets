@@ -103,7 +103,10 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 		// bail if this isn't a Tribe Commerce PayPal ticket
 		if (
-			empty( $_POST['product_id'] )
+			(
+				empty( $_POST['tribe_ticket_id'] )
+				&& empty( $_POST['product_id'] )
+			)
 			|| empty( $_POST['provider'] )
 			|| 'Tribe__Tickets__Commerce__PayPal__Main' !== $_POST['provider']
 		) {
@@ -113,7 +116,12 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$cart_url      = $this->get_cart_url( '_cart' );
 		$post_url      = get_permalink( $post );
 		$currency_code = trim( tribe_get_option( 'ticket-commerce-currency-code' ) );
-		$product_ids   = (array) $_POST['product_id'];
+
+		if ( isset( $_POST['tribe_ticket_id'] ) ) {
+			$product_ids = (array) $_POST['tribe_ticket_id'];
+		} elseif ( isset( $_POST['product_id'] ) ) {
+			$product_ids = (array) $_POST['product_id'];
+		}
 
 		$notify_url = tribe_get_option( 'ticket-paypal-notify-url', home_url() );
 
@@ -175,7 +183,14 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 		foreach ( $product_ids as $ticket_id ) {
 			$ticket   = tribe( 'tickets.commerce.paypal' )->get_ticket( $post->ID, $ticket_id );
-			$quantity = absint( $_POST[ "quantity_{$ticket_id}" ] );
+
+			$quantity = 0;
+
+			if ( isset( $_POST['tribe_ticket_quantity'] ) ) {
+				$quantity = absint( $_POST['tribe_ticket_quantity'] );
+			} elseif ( isset( $_POST[ "quantity_{$ticket_id}" ] ) ) {
+				$quantity = absint( $_POST["quantity_{$ticket_id}"] );
+			}
 
 			// skip if the ticket in no longer in stock or is not sellable
 			if (

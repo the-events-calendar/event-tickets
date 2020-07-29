@@ -30,7 +30,7 @@ $max_at_a_time = $tickets_handler->get_ticket_max_purchase( $rsvp->ID );
 ?>
 <input
 	type="number"
-	name="quantity_<?php echo absint( $rsvp->ID ); ?>"
+	name="tribe_ticket_quantity"
 	class="tribe-common-h4"
 	step="1"
 	min="1"

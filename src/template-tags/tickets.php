@@ -1621,6 +1621,10 @@ if ( ! function_exists( 'tribe_tickets_ar_field_name' ) ) {
 	 * @return string The AR field name.
 	 */
 	function tribe_tickets_ar_field_name( $ticket_id, $field_slug ) {
+		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
+			return 'tribe_ticket_attendee[{{data.attendee_id}}][meta][' . $field_slug . ']';
+		}
+
 		return 'tribe-tickets-meta[' . $ticket_id . '][{{data.attendee_id}}][' . $field_slug . ']';
 	}
 }

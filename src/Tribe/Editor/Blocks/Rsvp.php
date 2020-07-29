@@ -381,7 +381,7 @@ extends Tribe__Editor__Blocks__Abstract {
 			wp_send_json_error( $response );
 		}
 
-		$products = (array) tribe_get_request_var( 'product_id' );
+		$products = (array) tribe_get_request_var( 'tribe_ticket_id', tribe_get_request_var( 'product_id' ) );
 
 		// Iterate over each product
 		foreach ( $products as $product_id ) {

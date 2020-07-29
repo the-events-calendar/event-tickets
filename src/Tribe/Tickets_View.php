@@ -187,7 +187,8 @@ class Tribe__Tickets__Tickets_View {
 		if (
 			empty( $_POST['process-tickets'] )
 			|| (
-				empty( $_POST['attendee'] )
+				empty( $_POST['tribe_ticket_attendee'] )
+				&& empty( $_POST['attendee'] )
 				&& empty( $_POST['tribe-tickets-meta'] )
 			)
 		) {
@@ -196,7 +197,13 @@ class Tribe__Tickets__Tickets_View {
 
 		$post_id = get_the_ID();
 
-		$attendees = ! empty( $_POST['attendee'] ) ? $_POST['attendee'] : [];
+		$attendees = [];
+
+		if ( isset( $_POST['tribe_ticket_attendee'] ) ) {
+			$attendees = $_POST['tribe_ticket_attendee'];
+		} elseif ( isset( $_POST['attendee'] ) ) {
+			$attendees = $_POST['attendee'];
+		}
 
 		/**
 		 * Sort list to handle all not attending first

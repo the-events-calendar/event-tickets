@@ -26,7 +26,7 @@ $field_label   = 'going' === $going ? __( 'Number of Guests', 'event-tickets' ) 
 	</label>
 	<input
 		type="number"
-		name="quantity_<?php echo absint( $rsvp->ID ); ?>"
+		name="tribe_ticket_quantity"
 		id="quantity_<?php echo absint( $rsvp->ID ); ?>"
 		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-input-number tribe-tickets__rsvp-form-field-quantity"
 		value="1"
