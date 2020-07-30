@@ -148,9 +148,10 @@ tribe.tickets.rsvp.block = {};
 	obj.handleSubmission = function( e ) {
 		e.preventDefault();
 
-		var $form = $( this );
-		var $container = $form.closest( obj.selectors.container );
-		var rsvpId = $form.data( 'rsvp-id' );
+		const $form = $( this );
+		const $container = $form.closest( obj.selectors.container );
+		const rsvpId = $form.data( 'rsvp-id' );
+		const params = $form.serializeArray();
 
 		var data = {
 			action: 'tribe_tickets_rsvp_handle',
