@@ -41,6 +41,15 @@ class GuestListTest extends WPTestCase {
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
+		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+
+		$driver->setTimeDependentAttributes(
+			[
+				'data-rsvp-id',
+				'data-product-id',
+			]
+		);
+
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$this->assertMatchesSnapshot( $html, $driver );
