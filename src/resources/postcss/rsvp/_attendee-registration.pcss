@@ -115,16 +115,24 @@
 
 	.tribe-tickets__rsvp-ar-guest-list {
 		margin-top: var(--spacer-7) !important; /* @todo @juanfra: see why common is setting specificity for this. */
+		counter-reset: section;
 	}
 
 	.tribe-tickets__rsvp-ar-guest-list-item {
 		display: inline-block;
+		counter-increment: section;
 
 		@media(--viewport-medium) {
 			display: block;
 		}
 
 		&:not(:first-of-type) {
+
+			.tribe-tickets__rsvp-ar-guest-list-item-title {
+				&::after {
+					content: " " counter(section);
+				}
+			}
 
 			@media(--viewport-medium) {
 				margin-top: var(--spacer-7);
@@ -206,5 +214,10 @@
 
 	.tribe-tickets__rsvp-ar-form-title {
 		color: var(--color-text-secondary);
+
+
+		&[data-guest-number]::after {
+			content: " " attr(data-guest-number);
+		}
 	}
 }
