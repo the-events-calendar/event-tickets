@@ -158,6 +158,10 @@ tribe.tickets.rsvp.block = {};
 			step: 'success',
 		};
 
+		$( params ).each( function( index, object ) {
+			data[ object.name ] = object.value;
+		} );
+
 		tribe.tickets.rsvp.manager.request( data, $container );
 	};
 
