@@ -44,6 +44,12 @@ class GuestListTest extends WPTestCase {
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
 		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
 
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'template-',
+			]
+		);
+
 		$driver->setTimeDependentAttributes(
 			[
 				'data-rsvp-id',
