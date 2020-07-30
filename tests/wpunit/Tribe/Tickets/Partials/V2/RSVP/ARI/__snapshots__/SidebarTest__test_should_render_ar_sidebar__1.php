@@ -50,8 +50,8 @@
 	</button>
 </li>
 	<script
-	class="tribe-tickets__rsvp-ar-guest-list-item--template"
-	id="tmpl-tribe-tickets__rsvp-ar-guest-list-item--template-11"
+	class="tribe-tickets__rsvp-ar-guest-list-item-template"
+	id="tmpl-tribe-tickets__rsvp-ar-guest-list-item-template-11"
 	type="text/template"
 >
 	<li

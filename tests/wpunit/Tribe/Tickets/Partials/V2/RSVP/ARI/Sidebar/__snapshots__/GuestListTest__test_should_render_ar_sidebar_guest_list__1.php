@@ -11,8 +11,8 @@
 	</button>
 </li>
 	<script
-	class="tribe-tickets__rsvp-ar-guest-list-item--template"
-	id="tmpl-tribe-tickets__rsvp-ar-guest-list-item--template-5"
+	class="tribe-tickets__rsvp-ar-guest-list-item-template"
+	id="tmpl-tribe-tickets__rsvp-ar-guest-list-item-template-5"
 	type="text/template"
 >
 	<li
