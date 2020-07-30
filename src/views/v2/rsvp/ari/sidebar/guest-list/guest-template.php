@@ -22,8 +22,8 @@
 			type="button"
 			data-guest-number="{{data.attendee_id + 1}}"
 		>
-			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon', 'tribe-tickets__rsvp-ar-guest-icon--inactive' ] ] ); ?>
-			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-tickets__rsvp-ar-guest-list-item-title--inactive tribe-common-a11y-visual-hide">
+			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon' ] ] ); ?>
+			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-common-a11y-visual-hide">
 				<?php
 					echo esc_html( tribe_get_guest_label_singular( 'RSVP attendee registration sidebar guest button' ) );
 				?>

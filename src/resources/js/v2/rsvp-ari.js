@@ -51,7 +51,6 @@ tribe.tickets.rsvp.ari = {};
 		guestListItemButton: '.tribe-tickets__rsvp-ar-guest-list-item-button',
 		guestListItemButtonInactive: '.tribe-tickets__rsvp-ar-guest-list-item-button--inactive',
 		guestListItemButtonIcon: '.tribe-tickets__rsvp-ar-guest-icon',
-		guestListItemButtonIconInactive: '.tribe-tickets__rsvp-ar-guest-icon--inactive',
 		guestFormWrapper: '.tribe-tickets__rsvp-ar-form',
 		guestFormFields: '.tribe-tickets__rsvp-ar-form-guest',
 		guestFormFieldsError: '.tribe-tickets__form-message--error',
@@ -86,12 +85,10 @@ tribe.tickets.rsvp.ari = {};
 
 		// Set the classes for inactive.
 		$guestListButtons.addClass( obj.selectors.guestListItemButtonInactive.className() );
-		$guestListButtonsIcon.addClass( obj.selectors.guestListItemButtonIconInactive.className() );
 
 		// Set the active class for the current.
 		const $targetGuestButton = $container.find( obj.selectors.guestListItemButton + '[data-guest-number="' + guestNumber + '"]' );
 		$targetGuestButton.removeClass( obj.selectors.guestListItemButtonInactive.className() );
-		$targetGuestButton.find( obj.selectors.guestListItemButtonIcon ).removeClass( obj.selectors.guestListItemButtonIconInactive.className() );
 	};
 
 	/**
