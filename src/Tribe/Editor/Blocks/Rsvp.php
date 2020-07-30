@@ -200,8 +200,6 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  array $attributes
-	 *
 	 * @return void
 	 */
 	public function assets() {
@@ -240,6 +238,7 @@ extends Tribe__Editor__Blocks__Abstract {
 				'tribe-common',
 				'tribe-tickets-rsvp-block',
 				'tribe-tickets-rsvp-tooltip',
+				'tribe-tickets-rsvp-ari',
 			],
 			null,
 			[
@@ -275,6 +274,18 @@ extends Tribe__Editor__Blocks__Abstract {
 			null,
 			[
 				'groups' => 'tribe-tickets-rsvp',
+			]
+		);
+
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-rsvp-ari',
+			'v2/rsvp-ari.js',
+			[ 'jquery' ],
+			null,
+			[
+				'groups'       => 'tribe-tickets-rsvp',
+				'conditionals' => class_exists( 'Tribe__Tickets_Plus__Main' ),
 			]
 		);
 
