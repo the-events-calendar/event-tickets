@@ -152,7 +152,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Get the threshold.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param int $post_id
 	 *
@@ -180,7 +180,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Show unlimited?
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param bool $is_unlimited
 	 */

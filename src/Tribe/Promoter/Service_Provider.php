@@ -13,14 +13,14 @@ use Tribe__Tickets__Promoter__Observer;
 /**
  * Class Tribe__Tickets__Service_Providers__Promoter
  *
- * @since TBD
+ * @since 4.12.3
  */
 class Service_Provider extends tad_DI52_ServiceProvider {
 
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 */
 	public function register() {
 		$this->container->singleton( Tribe__Tickets__Promoter__Integration::class, Tribe__Tickets__Promoter__Integration::class, [ 'hook' ] );
@@ -42,7 +42,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 *
 	 * In place of delegating the hooking responsibility to the single classes they are all hooked here.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 */
 	protected function load() {
 		tribe( 'tickets.promoter.integration' );

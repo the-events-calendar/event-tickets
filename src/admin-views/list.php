@@ -22,18 +22,16 @@
 
 	$modules = Tribe__Tickets__Tickets::modules();
 
+	/** @var Tribe__Tickets__Ticket_Object $ticket */
 	foreach ( $tickets as $ticket ) {
-		/**
-		 * @var Tribe__Tickets__Ticket_Object $ticket
-		 */
-		$controls     = array();
+		$controls     = [];
 		$provider     = $ticket->provider_class;
-		$provider_obj = call_user_func( array( $provider, 'get_instance' ) );
+		$provider_obj = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider );
 
 		$controls[] = sprintf( '<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_edit_%2$s" class="ticket_edit">' . esc_html__( 'Edit', 'event-tickets' ) . '</a></span>', $ticket->provider_class, $ticket->ID );
 
 		/**
-		 * Determines whether or not the current user can delete a specific ticket.
+		 * Determines whether the current user can delete a specific ticket.
 		 *
 		 * @param bool   $user_can_delete_tickets
 		 * @param int    $ticket_id
@@ -57,12 +55,14 @@
 				$controls[] = $report;
 			}
 
-			$move_type_url = add_query_arg( array(
-				'dialog'         => Tribe__Tickets__Main::instance()->move_ticket_types()->dialog_name(),
-				'ticket_type_id' => $ticket->ID,
-				'check'          => wp_create_nonce( 'move_tickets' ),
-				'TB_iframe'      => 'true',
-			) );
+			$move_type_url = add_query_arg(
+				[
+					'dialog'         => Tribe__Tickets__Main::instance()->move_ticket_types()->dialog_name(),
+					'ticket_type_id' => $ticket->ID,
+					'check'          => wp_create_nonce( 'move_tickets' ),
+					'TB_iframe'      => 'true',
+				]
+			);
 
 			// Make sure Thickbox is available regardless of which admin page we're on.
 			add_thickbox();
@@ -81,11 +81,11 @@
 					<small>&nbsp;|&nbsp;</small>
 					<?php
 					$attendees_url = add_query_arg(
-						array(
+						[
 							'post_type' => $post_type,
-							'page' => Tribe__Tickets__Tickets_Handler::$attendees_slug,
-							'event_id' => $post_id,
-						),
+							'page'      => Tribe__Tickets__Tickets_Handler::$attendees_slug,
+							'event_id'  => $post_id,
+						],
 						admin_url( 'edit.php' )
 					);
 

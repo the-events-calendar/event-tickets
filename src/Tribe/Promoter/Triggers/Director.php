@@ -14,19 +14,19 @@ use WP_Post;
 
 abstract class Director implements Triggered, Builder {
 	/**
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @var Tribe__Tickets__Tickets $ticket
 	 */
 	protected $ticket;
 	/**
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @var WP_Post $event
 	 */
 	protected $event;
 	/**
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @var Attendee_Model $attendee
 	 */

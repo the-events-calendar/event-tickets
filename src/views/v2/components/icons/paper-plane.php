@@ -9,7 +9,7 @@
  *
  * @link  {INSERT_ARTICLE_LINK_HERE}
  *
- * @version TBD
+ * @version 4.12.3
  *
  * @var array $classes Additional classes to add to the svg icon.
  */

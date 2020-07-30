@@ -11,13 +11,13 @@ use Tribe__Tickets__Tickets;
 /**
  * Class RSVP
  *
- * @since TBD
+ * @since 4.12.3
  */
 class RSVP {
 	/**
 	 * Attach hooks for trigger messages.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 */
 	public function hook() {
 		add_action( 'rsvp_checkin', [ $this, 'rsvp_checkin' ], 10, 2 );
@@ -52,7 +52,7 @@ class RSVP {
 	/**
 	 * Fires immediately after updating a post's metadata.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param int    $meta_id    ID of updated metadata entry.
 	 * @param int    $object_id  Post ID.
@@ -70,7 +70,7 @@ class RSVP {
 	}
 
 	/**
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param $type
 	 * @param $attendee_id
@@ -83,7 +83,7 @@ class RSVP {
 		/**
 		 * Create a new action to listen for a trigger associated with an attendee.
 		 *
-		 * @since TBD
+		 * @since 4.12.3
 		 *
 		 * @param string                  $type     The type of trigger fired.
 		 * @param Attendee_Model          $attendee The attendee associated with the trigger.
