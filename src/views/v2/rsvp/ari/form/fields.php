@@ -5,6 +5,11 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/rsvp/ari/form/fields.php
  *
+ * @link {INSERT_ARTICLE_LINK_HERE}
+ *
+ * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
+ * @var int $post_id The post ID the RSVP is linked to.
+ *
  * @since TBD
  *
  * @version TBD
@@ -26,8 +31,8 @@ if ( empty( $has_meta ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @var bool|WP_Post
-		 * @var Tribe__Tickets__Ticket_Object
+		 * @var int $post_id The post ID the RSVP is linked to.
+		 * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
 		 */
 		do_action( 'tribe_tickets_rsvp_attendee_fields', $post_id, $rsvp );
 	?>
