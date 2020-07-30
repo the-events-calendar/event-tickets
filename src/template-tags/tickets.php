@@ -1594,61 +1594,6 @@ function tribe_tickets_rsvp_new_views_is_enabled() {
 	return apply_filters( 'tribe_tickets_rsvp_new_views_is_enabled', $enabled );
 }
 
-if ( ! function_exists( 'tribe_tickets_ar_field_is_required' ) ) {
-	/**
-	 * Check if the AR field is required.
-	 *
-	 * @since TBD
-	 *
-	 * @param object $field The field object.
-	 *
-	 * @return bool True if is required
-	 */
-	function tribe_tickets_ar_field_is_required( $field ) {
-		return isset( $field->required ) && 'on' === $field->required;
-	}
-}
-
-if ( ! function_exists( 'tribe_tickets_ar_field_name' ) ) {
-	/**
-	 * Build the AR field name.
-	 *
-	 * @since TBD
-	 *
-	 * @param int    $ticket_id  The ticket ID.
-	 * @param string $field_slug The field slug.
-	 *
-	 * @return string The AR field name.
-	 */
-	function tribe_tickets_ar_field_name( $ticket_id, $field_slug ) {
-		return 'tribe-tickets-meta[' . $ticket_id . '][{{data.attendee_id}}][' . $field_slug . ']';
-	}
-}
-
-if ( ! function_exists( 'tribe_tickets_ar_field_id' ) ) {
-	/**
-	 * Build the AR field `id`.
-	 *
-	 * @since TBD
-	 *
-	 * @param int    $ticket_id   The ticket ID.
-	 * @param string $field_slug  The field slug.
-	 * @param string $option_slug The field option slug (in case they need it).
-	 *
-	 * @return string The AR field id.
-	 */
-	function tribe_tickets_ar_field_id( $ticket_id, $field_slug, $option_slug = '' ) {
-
-		$field_id = "tribe-tickets-meta_{$ticket_id}_{$field_slug}{{data.attendee_id}}";
-
-		if ( ! empty( $option_slug ) ) {
-			$field_id .= "_{$option_slug}";
-		}
-
-		return $field_id;
-	}
-}
-
 if ( ! function_exists( 'tribe_get_guest_label_singular' ) ) {
 
 	/**
