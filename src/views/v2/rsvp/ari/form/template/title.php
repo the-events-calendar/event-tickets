@@ -11,6 +11,8 @@
  */
 
 ?>
-<header class="tribe-tickets__rsvp-ar-form-title tribe-common-h5" data-guest-number="{{data.attendee_id + 1}}">
-	<?php echo esc_html( tribe_get_guest_label_singular( 'RSVP attendee registration form title' ) ); ?>
+<header>
+	<h3 class="tribe-tickets__rsvp-ar-form-title tribe-common-h5" data-guest-number="{{data.attendee_id + 1}}">
+		<?php echo esc_html( tribe_get_guest_label_singular( 'RSVP attendee registration form title' ) ); ?>
+	</h3>
 </header>
