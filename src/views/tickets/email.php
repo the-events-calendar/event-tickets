@@ -438,7 +438,7 @@
 										/**
 										 * Allows inserting content after the "ticket details" section.
 										 *
-										 * @since TBD
+										 * @since 4.12.3
 										 *
 										 * @param array   $ticket Ticket information.
 										 * @param WP_Post $event  Event post object.

@@ -11,7 +11,7 @@ use Tribe__Tickets__Tickets;
 /**
  * Class Attendee_Trigger
  *
- * @since TBD
+ * @since 4.12.3
  */
 class Attendee_Trigger extends Director {
 	/**

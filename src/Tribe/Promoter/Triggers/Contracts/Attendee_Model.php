@@ -6,13 +6,13 @@ namespace Tribe\Tickets\Promoter\Triggers\Contracts;
 /**
  * Interface AttendeeModel
  *
- * @since TBD
+ * @since 4.12.3
  */
 interface Attendee_Model {
 	/**
 	 * Validate all the requirements for this attendee so it can be controlled when the validation takes place.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @return void
 	 */
@@ -21,7 +21,7 @@ interface Attendee_Model {
 	/**
 	 * Return an array of values that represent all the required keys to be part of this attendee.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @return array
 	 */
@@ -30,7 +30,7 @@ interface Attendee_Model {
 	/**
 	 * Return the ID of the attendee.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @return int
 	 */
@@ -39,7 +39,7 @@ interface Attendee_Model {
 	/**
 	 * Return the email associated with this attendee.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @return string
 	 */
@@ -55,7 +55,7 @@ interface Attendee_Model {
 	/**
 	 * Return the ID of the product associated to this attendee.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @return int
 	 */
@@ -64,7 +64,7 @@ interface Attendee_Model {
 	/**
 	 * Return the name of the ticket.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @return string
 	 */

@@ -17,7 +17,6 @@ phpunit.xml
 *.test
 *.testing
 codeception.tric.yml
-.env.testing.tric
 
 # Tests - local output files
 tests/_output

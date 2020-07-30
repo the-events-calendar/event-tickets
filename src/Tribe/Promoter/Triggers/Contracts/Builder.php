@@ -6,13 +6,13 @@ namespace Tribe\Tickets\Promoter\Triggers\Contracts;
 /**
  * Interface Builder
  *
- * @since TBD
+ * @since 4.12.3
  */
 interface Builder {
 	/**
 	 * Build an attendee.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @return void
 	 */
@@ -21,7 +21,7 @@ interface Builder {
 	/**
 	 * Find the ticket instance.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @return void
 	 */
@@ -30,7 +30,7 @@ interface Builder {
 	/**
 	 * Find an event instance for this trigger message.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @return void
 	 */

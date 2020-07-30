@@ -6,9 +6,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/components/fields/radio.php
  *
- * @since TBD
+ * @since 4.12.3
  *
- * @version TBD
+ * @version 4.12.3
  *
  * @see Tribe__Tickets_Plus__Meta__Field__Radio
  */

@@ -323,13 +323,13 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function get_connections_template() {
 		// If you add any new Items here, update the Docblock
-		$connections = (object) array(
-			'provider' => null,
-			'event' => null,
-			'product' => null,
-			'order' => null,
+		$connections = (object) [
+			'provider'   => null,
+			'event'      => null,
+			'product'    => null,
+			'order'      => null,
 			'order_item' => null,
-		);
+		];
 
 		return $connections;
 	}
@@ -339,11 +339,12 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * On RSVPs Attendees and Orders are the same Post
 	 *
+	 * @see    \Tribe__Tickets__Tickets_Handler::get_connections_template()
+	 *
 	 * @since  4.6.2
+	 * @since  4.12.3 Use new helper methods for getting provider, including accounting for possibly inactive provider.
 	 *
-	 * @see    self::get_connections_template
-	 *
-	 * @param  int|WP_Post  $object  Which object you are trying to figure out
+	 * @param int|WP_Post $object Which object you are trying to figure out.
 	 *
 	 * @return object
 	 */
@@ -358,50 +359,46 @@ class Tribe__Tickets__Tickets_Handler {
 			return $connections;
 		}
 
-		$provider_index = array(
-			'rsvp' => 'Tribe__Tickets__RSVP',
-			'tpp'  => 'Tribe__Tickets__Commerce__PayPal__Main',
-			'woo'  => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
-			'edd'  => 'Tribe__Tickets_Plus__Commerce__EDD__Main',
-		);
+		/** @var Tribe__Tickets__Status__Manager $status */
+		$status = tribe( 'tickets.status' );
 
-		$relationships = array(
-			'event' => array(
+		$relationships = [
+			'event'      => [
 				// RSVP
-				'_tribe_rsvp_event' => 'rsvp',
-				'_tribe_rsvp_for_event' => 'rsvp',
+				'_tribe_rsvp_event'          => 'rsvp',
+				'_tribe_rsvp_for_event'      => 'rsvp',
 
 				// PayPal tickets
-				'_tribe_tpp_event' => 'tpp',
-				'_tribe_tpp_for_event' => 'tpp',
+				'_tribe_tpp_event'           => 'tpp',
+				'_tribe_tpp_for_event'       => 'tpp',
 
 				// EDD
-				'_tribe_eddticket_event' => 'edd',
+				'_tribe_eddticket_event'     => 'edd',
 				'_tribe_eddticket_for_event' => 'edd',
 
 				// Woo
-				'_tribe_wooticket_event' => 'woo',
+				'_tribe_wooticket_event'     => 'woo',
 				'_tribe_wooticket_for_event' => 'woo',
-			),
-			'product' => array(
+			],
+			'product'    => [
 				// RSVP
-				'_tribe_rsvp_product' => 'rsvp',
+				'_tribe_rsvp_product'      => 'rsvp',
 
 				// PayPal tickets
-				'_tribe_tpp_product' => 'tpp',
+				'_tribe_tpp_product'       => 'tpp',
 
 				// EDD
 				'_tribe_eddticket_product' => 'edd',
 
 				// Woo
 				'_tribe_wooticket_product' => 'woo',
-			),
-			'order' => array(
+			],
+			'order'      => [
 				// RSVP
-				'_tribe_rsvp_order' => 'rsvp',
+				'_tribe_rsvp_order'      => 'rsvp',
 
 				// PayPal tickets
-				'_tribe_tpp_order' => 'tpp',
+				'_tribe_tpp_order'       => 'tpp',
 
 				// EDD
 				'_tribe_eddticket_order' => 'edd',
@@ -409,26 +406,35 @@ class Tribe__Tickets__Tickets_Handler {
 				// Woo
 				'_tribe_wooticket_order' => 'woo',
 
-			),
-			'order_item' => array(
+			],
+			'order_item' => [
 				// PayPal tickets
-				'_tribe_tpp_order' => 'tpp',
+				'_tribe_tpp_order'            => 'tpp',
 
 				// Woo
 				'_tribe_wooticket_order_item' => 'woo',
-			),
-		);
+			],
+		];
+
+		/**
+		 * Allow filtering the relationships so providers can add their own strings.
+		 *
+		 * @since 4.12.3
+		 *
+		 * @param array $relationships List of relationship information for providers.
+		 */
+		$relationships = apply_filters( 'tribe_tickets_handler_relationships', $relationships );
 
 		foreach ( $relationships as $what => $keys ) {
-			foreach ( $keys as $key => $provider ) {
-				// Skip any key that doens't exist
+			foreach ( $keys as $key => $provider_slug ) {
+				// Skip any key that doesn't exist.
 				if ( ! metadata_exists( 'post', $object->ID, $key ) ) {
 					continue;
 				}
 
 				// When we don't have a provider yet we test and fetch it
-				if ( ! $connections->provider && isset( $provider_index[ $provider ] ) ) {
-					$connections->provider = $provider_index[ $provider ];
+				if ( empty( $connections->provider ) ) {
+					$connections->provider = $status->get_provider_class_from_slug( $provider_slug );
 				}
 
 				// Fetch it
@@ -446,10 +452,7 @@ class Tribe__Tickets__Tickets_Handler {
 			}
 		}
 
-		// If we have a valid provider get it
-		if ( $connections->provider && class_exists( $connections->provider ) ) {
-			$connections->provider = call_user_func( array( $connections->provider, 'get_instance' ) );
-		}
+		$connections->provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $connections->provider );
 
 		return $connections;
 	}
@@ -695,12 +698,12 @@ class Tribe__Tickets__Tickets_Handler {
 				$capacity = null;
 			} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $mode ) {
 				/**
-				 * Due to a bug in version 4.5.6 of our code RSVP doesnt lower the Stock
-				 * so when setting up the capacity we need to avoid counting solds
+				 * Due to a bug in version 4.5.6 of our code RSVP doesn't lower the Stock
+				 * so when setting up the capacity we need to avoid counting solds.
 				 */
 				if (
-					is_object( $connections->provider )
-					&& 'Tribe__Tickets__RSVP' === get_class( $connections->provider )
+					$connections->provider instanceof Tribe__Tickets__Tickets
+					&& 'Tribe__Tickets__RSVP' === $connections->provider->class_name
 				) {
 					$capacity = $totals['stock'];
 				} else {
@@ -807,7 +810,7 @@ class Tribe__Tickets__Tickets_Handler {
 			'has_unlimited' => false,
 			'has_shared'    => $global->is_enabled(),
 			'tickets'       => count( $tickets ),
-			'capacity'      => tribe_get_event_capacity( $post ),
+			'capacity'      => (int) tribe_get_event_capacity( $post ), // Could be null.
 			'sold'          => 0,
 			'pending'       => 0,
 			'stock'         => 0,
@@ -909,10 +912,11 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Returns whether a given object has the correct Provider for a Post or Ticket
 	 *
-	 * @since   4.6.2
+	 * @since   4.7
+	 * @since   4.12.3 Account for possibly inactive ticket provider and better checking for default ETP provider.
 	 *
-	 * @param   int|WP_Post  $post
-	 * @param   mixed        $provider
+	 * @param int|WP_Post                    $post
+	 * @param Tribe__Tickets__Tickets|string $provider
 	 *
 	 * @return  bool
 	 */
@@ -925,25 +929,41 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
-		$provider_class = get_class( $provider );
+		$provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider );
+
+		if( empty( $provider ) ) {
+			return false;
+		}
 
 		if ( tribe_tickets_post_type_enabled( $post->post_type ) ) {
-			$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post->ID );
+			$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post->ID );
 		} else {
 			$default_provider = tribe_tickets_get_ticket_provider( $post->ID );
 		}
 
-		if ( ! $default_provider ) {
-			$default_provider = class_exists( 'Tribe__Tickets_Plus__Main' )
-				? 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main'
-				: 'Tribe__Tickets__RSVP';
+		if ( $default_provider instanceof Tribe__Tickets__Tickets ) {
+			$default_provider = $default_provider->class_name;
 		}
 
-		if ( ! is_string( $default_provider ) ) {
-			$default_provider = get_class( $default_provider );
+		if (
+			empty( $default_provider )
+			&& class_exists( 'Tribe__Tickets_Plus__Main' )
+		) {
+			$woo = 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main';
+			$edd = 'Tribe__Tickets_Plus__Commerce__EDD__Main';
+
+			if ( tribe_tickets_is_provider_active( $woo ) ) {
+				$default_provider = $woo;
+			} elseif ( tribe_tickets_is_provider_active( $edd ) ) {
+				$default_provider = $edd;
+			}
 		}
 
-		return $default_provider === $provider_class;
+		if ( empty( $default_provider ) ) {
+			$default_provider = Tribe__Tickets__Tickets::get_default_module();
+		}
+
+		return $default_provider === $provider->class_name;
 	}
 
 	/**
@@ -998,7 +1018,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return int
 	 */
 	public function get_total_event_capacity( $post = null ) {
-		_deprecated_function( __METHOD__, 'TBD', 'tribe_get_event_capacity()' );
+		_deprecated_function( __METHOD__, '4.12.3', 'tribe_get_event_capacity()' );
 
 		$post_id = Tribe__Main::post_id_helper( $post );
 		$total   = 0;
@@ -1183,7 +1203,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
-		if ( ! $provider instanceof Tribe__Tickets__Tickets ) {
+		if ( empty( $provider ) ) {
 			return 0;
 		}
 
