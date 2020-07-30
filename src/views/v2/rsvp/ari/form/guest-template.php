@@ -12,8 +12,8 @@
 
 ?>
 <script
-	class="tribe-tickets__rsvp-ar-form-guest--template"
-	id="tmpl-tribe-tickets__rsvp-ar-form-guest--template-<?php echo esc_attr( $rsvp->ID ); ?>"
+	class="tribe-tickets__rsvp-ar-form-guest-template"
+	id="tmpl-tribe-tickets__rsvp-ar-form-guest-template-<?php echo esc_attr( $rsvp->ID ); ?>"
 	type="text/template"
 >
 	<div

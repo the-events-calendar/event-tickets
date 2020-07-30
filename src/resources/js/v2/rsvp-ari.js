@@ -47,7 +47,7 @@ tribe.tickets.rsvp.ari = {};
 		removeGuestButton: '.tribe-tickets__rsvp-ar-quantity-input-number--minus',
 		guestList: '.tribe-tickets__rsvp-ar-guest-list',
 		guestListItem: '.tribe-tickets__rsvp-ar-guest-list-item',
-		guestListItemTemplate: '.tribe-tickets__rsvp-ar-guest-list-item--template',
+		guestListItemTemplate: '.tribe-tickets__rsvp-ar-guest-list-item-template',
 		guestListItemButton: '.tribe-tickets__rsvp-ar-guest-list-item-button',
 		guestListItemButtonInactive: '.tribe-tickets__rsvp-ar-guest-list-item-button--inactive',
 		guestListItemButtonIcon: '.tribe-tickets__rsvp-ar-guest-icon',
@@ -56,7 +56,7 @@ tribe.tickets.rsvp.ari = {};
 		guestFormFields: '.tribe-tickets__rsvp-ar-form-guest',
 		guestFormFieldsError: '.tribe-tickets__form-message--error',
 		guestFormFieldsTitle: '.tribe-tickets__rsvp-ar-form-title',
-		guestFormFieldsTemplate: '.tribe-tickets__rsvp-ar-form-guest--template',
+		guestFormFieldsTemplate: '.tribe-tickets__rsvp-ar-form-guest-template',
 		nextGuestButton: '.tribe-tickets__rsvp-form-button--next',
 		submitButton: '.tribe-tickets__rsvp-form-button--submit',
 
@@ -261,8 +261,8 @@ tribe.tickets.rsvp.ari = {};
 		const totalGuests = obj.getTotalGuests( $container );
 
 		const rsvpId = $container.data( 'rsvp-id' );
-		const rsvpFieldsTemplate = window.wp.template( 'tribe-tickets__rsvp-ar-form-guest--template-' + rsvpId );
-		const guestListItemTemplate = window.wp.template( 'tribe-tickets__rsvp-ar-guest-list-item--template-' + rsvpId );
+		const rsvpFieldsTemplate = window.wp.template( obj.selectors.guestFormFieldsTemplate.className() + '-' + rsvpId );
+		const guestListItemTemplate = window.wp.template( obj.selectors.guestListItemTemplate.className() + '-' + rsvpId );
 		const data = { attendee_id: totalGuests };
 
 		// Append the new guest list item and new guest form.
