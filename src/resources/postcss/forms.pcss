@@ -11,7 +11,7 @@
 	.tribe-tickets__form-field {
 		display: block;
 		width: 100%;
-		margin-bottom: var(--spacer-2);
+		padding-bottom: var(--spacer-2);
 	}
 
 	.tribe-tickets__form-field--required {
@@ -79,10 +79,12 @@
 			max-width: 600px;
 		}
 
-		&.tribe-tickets__form-field-input--error,
 		&:invalid {
-			border-color: var(--color-icon-error);
 			box-shadow: none;
+		}
+
+		&.tribe-tickets__form-field-input--error:invalid {
+			border-color: var(--color-icon-error);
 		}
 	}
 
