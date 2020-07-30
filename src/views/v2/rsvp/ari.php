@@ -16,8 +16,11 @@
  */
 
 ?>
-<div class="tribe-tickets__rsvp-ar tribe-common-g-row tribe-common-g-row--gutters">
-
+<form
+	class="tribe-tickets__rsvp-ar tribe-common-g-row tribe-common-g-row--gutters"
+	name="tribe-tickets-rsvp-form-ari"
+	data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
+>
 	<div class="tribe-tickets__rsvp-ar-sidebar-wrapper tribe-common-g-col">
 		<?php $this->template( 'v2/rsvp/ari/sidebar', [ 'rsvp' => $rsvp ] ); ?>
 	</div>
@@ -25,5 +28,4 @@
 	<div class="tribe-tickets__rsvp-ar-form-wrapper tribe-common-g-col">
 		<?php $this->template( 'v2/rsvp/ari/form', [ 'rsvp' => $rsvp ] ); ?>
 	</div>
-
-</div>
+</form>

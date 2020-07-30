@@ -22,7 +22,14 @@
 	</button>
 
 	<button
-		class="tribe-common-c-btn tribe-tickets__rsvp-form-button"
+		class="tribe-common-c-btn tribe-tickets__rsvp-form-button tribe-tickets__rsvp-form-button--next tribe-common-a11y-hidden"
+		type="button"
+	>
+		<?php esc_html_e( 'Next guest', 'event-tickets' ); ?>
+	</button>
+
+	<button
+		class="tribe-common-c-btn tribe-tickets__rsvp-form-button tribe-tickets__rsvp-form-button--submit"
 		type="submit"
 	>
 		<?php esc_html_e( 'Finish', 'event-tickets' ); ?>

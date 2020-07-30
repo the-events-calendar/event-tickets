@@ -11,7 +11,7 @@
  */
 
 ?>
-<h3 class="tribe-tickets__rsvp-ar-form-title tribe-common-h5">
+<header class="tribe-tickets__rsvp-ar-form-title tribe-common-h5">
 	<?php
 	echo wp_kses_post(
 		sprintf(
@@ -21,4 +21,4 @@
 		)
 	);
 	?>
-</h3>
+</header>
