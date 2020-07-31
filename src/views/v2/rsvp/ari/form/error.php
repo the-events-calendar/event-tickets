@@ -1,7 +1,6 @@
 <?php
 /**
- * Block: RSVP ARi
- * Form Error
+ * RSVP ARi Form Error
  *
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/rsvp/ari/form/error.php
