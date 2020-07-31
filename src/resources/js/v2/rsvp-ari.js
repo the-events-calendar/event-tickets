@@ -132,9 +132,9 @@ tribe.tickets.rsvp.ari = {};
 		$fields.each(
 			function() {
 				const $field = $( this );
-				const isValidfield = tribe.tickets.meta.validateField( $field[ 0 ] );
+				const isValidField = tribe.tickets.meta.validateField( $field[ 0 ] );
 
-				if ( ! isValidfield ) {
+				if ( ! isValidField ) {
 					isValid = false;
 				}
 			}
