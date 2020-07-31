@@ -58,7 +58,6 @@ tribe.tickets.rsvp.ari = {};
 		guestFormFieldsTemplate: '.tribe-tickets__rsvp-ar-form-guest-template',
 		nextGuestButton: '.tribe-tickets__rsvp-form-button--next',
 		submitButton: '.tribe-tickets__rsvp-form-button--submit',
-
 	};
 
 	/**
