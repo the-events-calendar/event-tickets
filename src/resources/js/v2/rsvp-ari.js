@@ -294,7 +294,7 @@ tribe.tickets.rsvp.ari = {};
 		const $container = e.data.container;
 
 		const max = $this.attr( 'max' );
-		const maxQty = 0;
+		const min = $this.attr( 'min' );
 		let newQuantity = parseInt( $this.val(), 10 );
 		newQuantity = isNaN( newQuantity ) ? 0 : newQuantity;
 
@@ -303,13 +303,9 @@ tribe.tickets.rsvp.ari = {};
 			newQuantity = max;
 		}
 
-		if ( 0 > maxQty ) {
-			newQuantity += maxQty;
-		}
-
-		// If the quantity is 0, set it to the min.
-		if ( 0 === newQuantity ) {
-			newQuantity = $this.attr( 'min' );
+		// If the quantity less than the min, set it to the min.
+		if ( newQuantity < $this.attr( 'min' ) ) {
+			newQuantity = min;
 		}
 
 		// Set the input value.
