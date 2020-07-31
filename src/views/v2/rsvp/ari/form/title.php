@@ -5,10 +5,10 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/rsvp/ari/form/title.php
  *
- * @since TBD
+ * @since 4.12.3
+ * @since TBD Added the main guest title.
  *
  * @version 4.12.3
- * @version TBD Added the main guest title.
  */
 
 ?>
