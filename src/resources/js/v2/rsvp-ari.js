@@ -174,7 +174,7 @@ tribe.tickets.rsvp.ari = {};
 			return false;
 		}
 
-		// Get the gurrent guest form.
+		// Get the current guest form.
 		const $currentGuestForm = $container.find( obj.selectors.guestFormFields + '[data-guest-number="' + currentGuest + '"]' );
 
 		// Get if there are required fields in the current.
@@ -328,8 +328,6 @@ tribe.tickets.rsvp.ari = {};
 				obj.removeGuest( $container );
 			}
 		}
-
-		e.preventDefault();
 	};
 
 	/**
