@@ -443,6 +443,14 @@ tribe.tickets.rsvp.ari = {};
 		return $currentFormFields.data( 'guest-number' );
 	};
 
+	/**
+	 * Handle the quantity change.
+	 *
+	 * @since TBD
+	 *
+	 * @param {event} e click event
+	 *
+	 */
 	obj.handleQuantityChange = function( e ) {
 		e.preventDefault();
 		const $input   = $( this ).parent().find( 'input[type="number"]' );
