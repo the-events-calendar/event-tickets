@@ -458,14 +458,14 @@ tribe.tickets.rsvp.ari = {};
 		e.preventDefault();
 		const $input   = $( this ).parent().find( 'input[type="number"]' );
 		const increase = $( this ).hasClass( obj.selectors.addGuestButton.className() );
-		const step = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
-		const originalValue = Number( $input[ 0 ].value );
+		const step = $input.attr( 'step' ) ? Number( $input.attr( 'step' ) ) : 1;
+		const originalValue = Number( $input.val() );
 
 		// stepUp or stepDown the input according to the button that was clicked
 		// handle IE/Edge
 		if ( increase ) {
 			// we use 0 here as a shorthand for no maximum.
-			const max = $input[ 0 ].max ? Number( $input[ 0 ].max ) : -1;
+			const max = $input.attr( 'max' ) ? Number( $input.attr( 'max' ) ) : -1;
 
 			if ( typeof $input[ 0 ].stepUp === 'function' ) {
 				try {
@@ -481,7 +481,7 @@ tribe.tickets.rsvp.ari = {};
 				$input[ 0 ].value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
 			}
 		} else {
-			const min = $input[ 0 ].min ? Number( $input[ 0 ].min ) : 0;
+			const min = $input.attr( 'min' ) ? Number( $input.attr( 'min' )) : 0;
 
 			if ( typeof $input[ 0 ].stepDown === 'function' ) {
 				try {
