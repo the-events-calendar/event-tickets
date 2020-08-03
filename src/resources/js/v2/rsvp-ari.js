@@ -496,7 +496,7 @@ tribe.tickets.rsvp.ari = {};
 
 		// Trigger the on Change for the input (if it has changed) as it's not handled via stepUp() || stepDown()
 		if ( originalValue !== $input[ 0 ].value ) {
-			$input.trigger( 'change' );
+			$input.trigger( 'input' );
 		}
 	};
 
@@ -521,7 +521,7 @@ tribe.tickets.rsvp.ari = {};
 		$removeGuestButton.on( 'click', obj.handleQuantityChange );
 
 		$qtyInput.on(
-			'change keyup',
+			'input',
 			{ container: $container },
 			obj.handleQuantityChangeValue
 		);
