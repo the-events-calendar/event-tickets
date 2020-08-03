@@ -31,9 +31,9 @@ if ( empty( $has_meta ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @var int $post_id The post ID the RSVP is linked to.
-		 * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
+		 * @see  Tribe__Template\do_entry_point()
+		 * @link https://docs.theeventscalendar.com/reference/classes/tribe__template/do_entry_point/
 		 */
-		do_action( 'tribe_tickets_rsvp_attendee_fields_template', $post_id, $rsvp );
+		$this->do_entry_point( 'rsvp_attendee_fields_template' );
 	?>
 </div>
