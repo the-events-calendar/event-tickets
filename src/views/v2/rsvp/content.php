@@ -13,9 +13,9 @@
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  * @var string|null $step The step the views are on.
  *
- * @since TBD
+ * @since 4.12.3
  *
- * @version TBD
+ * @version 4.12.3
  */
 
 ?>

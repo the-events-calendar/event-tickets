@@ -9,13 +9,13 @@ use WP_Post;
 /**
  * Interface Triggered
  *
- * @since TBD
+ * @since 4.12.3
  */
 interface Triggered {
 	/**
 	 * Return an instance to the WP_Post object.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @return WP_Post
 	 */
@@ -24,7 +24,7 @@ interface Triggered {
 	/**
 	 * Return the type of trigger message as a label.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @return string
 	 */
@@ -33,7 +33,7 @@ interface Triggered {
 	/**
 	 * Build the trigger messages with all the requirements.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @throws RuntimeException
 	 *
@@ -44,7 +44,7 @@ interface Triggered {
 	/**
 	 * Get access to the instance of the ticket associated with the trigger.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @return Tribe__Tickets__Ticket_Object
 	 */
@@ -53,7 +53,7 @@ interface Triggered {
 	/**
 	 * Access to the attendee associated with the trigger message.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @return Attendee_Model
 	 */

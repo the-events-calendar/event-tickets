@@ -152,7 +152,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Get the threshold.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param int $post_id
 	 *
@@ -180,7 +180,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Show unlimited?
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param bool $is_unlimited
 	 */
@@ -199,8 +199,6 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * Register block assets
 	 *
 	 * @since 4.9
-	 *
-	 * @param  array $attributes
 	 *
 	 * @return void
 	 */
@@ -240,6 +238,7 @@ extends Tribe__Editor__Blocks__Abstract {
 				'tribe-common',
 				'tribe-tickets-rsvp-block',
 				'tribe-tickets-rsvp-tooltip',
+				'tribe-tickets-rsvp-ari',
 			],
 			null,
 			[
@@ -275,6 +274,18 @@ extends Tribe__Editor__Blocks__Abstract {
 			null,
 			[
 				'groups' => 'tribe-tickets-rsvp',
+			]
+		);
+
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-rsvp-ari',
+			'v2/rsvp-ari.js',
+			[ 'jquery' ],
+			null,
+			[
+				'groups'       => 'tribe-tickets-rsvp',
+				'conditionals' => class_exists( 'Tribe__Tickets_Plus__Main' ),
 			]
 		);
 

@@ -13,9 +13,9 @@
  * @var bool $must_login Whether the user has to login to RSVP or not.
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
- * @since   TBD
+ * @since   4.12.3
  *
- * @version TBD
+ * @version 4.12.3
  */
 
 /** @var Tribe__Tickets__Ticket_Object $rsvp */
@@ -30,7 +30,7 @@ $max_at_a_time = $tickets_handler->get_ticket_max_purchase( $rsvp->ID );
 ?>
 <input
 	type="number"
-	name="tribe_ticket_quantity"
+	name="tribe_tickets[<?php echo absint( $rsvp->ID ); ?>][quantity]"
 	class="tribe-common-h4"
 	step="1"
 	min="1"
@@ -38,4 +38,5 @@ $max_at_a_time = $tickets_handler->get_ticket_max_purchase( $rsvp->ID );
 	required
 	max="<?php echo esc_attr( $max_at_a_time ); ?>"
 	<?php disabled( $must_login ); ?>
+	autocomplete="off"
 />

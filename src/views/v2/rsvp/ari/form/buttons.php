@@ -5,11 +5,11 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/rsvp/ari/form/buttons.php
  *
- * @since TBD
+ * @since 4.12.3
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
- * @version TBD
+ * @version 4.12.3
  */
 
 ?>
@@ -22,7 +22,14 @@
 	</button>
 
 	<button
-		class="tribe-common-c-btn tribe-tickets__rsvp-form-button"
+		class="tribe-common-c-btn tribe-tickets__rsvp-form-button tribe-tickets__rsvp-form-button--next tribe-common-a11y-hidden"
+		type="button"
+	>
+		<?php esc_html_e( 'Next guest', 'event-tickets' ); ?>
+	</button>
+
+	<button
+		class="tribe-common-c-btn tribe-tickets__rsvp-form-button tribe-tickets__rsvp-form-button--submit"
 		type="submit"
 	>
 		<?php esc_html_e( 'Finish', 'event-tickets' ); ?>

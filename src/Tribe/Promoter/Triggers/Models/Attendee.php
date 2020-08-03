@@ -10,11 +10,11 @@ use Tribe\Tickets\Promoter\Triggers\Contracts\Attendee_Model;
 /**
  * Class Attendee
  *
- * @since TBD
+ * @since 4.12.3
  */
 class Attendee implements Attendee_Model {
 	/**
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @var array An array with keys, value pairs that represent an attendee.
 	 */
@@ -23,7 +23,7 @@ class Attendee implements Attendee_Model {
 	/**
 	 * Attendee constructor.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param array $data An array with keys, value pairs that represent an attendee.
 	 */
@@ -45,7 +45,7 @@ class Attendee implements Attendee_Model {
 	 * Execute the validation of fields to make sure the values are present for all the required fields to construct
 	 * a valid attendee.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 * @return void
 	 */
 	private function validate_fields() {

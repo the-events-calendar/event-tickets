@@ -31,29 +31,28 @@
 	Tribe Horizontal Datepicker (Day, Month, Year)
 */
 .tribe_horizontal_datepicker__container {
+
 	label {
 		width: 100%;
-		display: inline-block;
-	}
 
-	.tribe_horizontal_datepicker__field_group {
-		max-width: 100%;
-
-		@media(--viewport-full) {
-			max-width: 50%;
+		/* Attendee Registration Page */
+		#tribe-tickets__registration__form & {
+			width: 100%;
 		}
 	}
 
-	.tribe_horizontal_datepicker {
-		min-width: 80px;
+	.tribe-field.tribe-tickets__item__attendee__field__birth {
 		width: 100%;
-		margin: var(--spacer-1) 0;
-		display: inline-block;
+	}
 
-		@media(--viewport-medium) {
-			width: calc( ( 100% / 3 ) - var(--spacer-1) - 4px ); /* 4px = safety margin */
+	.tribe_horizontal_datepicker {
+		width: 100%;
+		min-width: 80px;
+		margin-top: var(--spacer-1);
+		margin-bottom: var(--spacer-1);
+
+		&:not(:last-child) {
 			margin-right: var(--spacer-1);
-			display: inline-block;
 		}
 
 		select {
@@ -77,45 +76,75 @@
 			background-size: 33px 33px;
 			height: auto;
 			padding: 10px;
+		}
+	}
+}
 
-			@media(--viewport-medium) {
-				@mixin desktop-body-2;
+@media (--viewport-small) {
+	.tribe_horizontal_datepicker__container {
+		.tribe_horizontal_datepicker {
+			display: inline-block;
+			width: calc((100% / 3) - var(--spacer-1));
+			max-width: 280px;
+		}
+	}
+}
+
+@media (--viewport-medium) {
+	/* Attendee Registration Page */
+	#tribe-tickets__registration__form {
+
+		.tribe_horizontal_datepicker__container {
+			display: flex;
+			align-items: flex-start;
+		}
+
+		.tribe-tickets__item__attendee__field__birth {
+			flex-direction: column;
+
+			label {
+				flex-basis: auto;
 			}
 		}
 	}
 }
 
- .tribe-common,
- .entry .entry-content .tribe-common {
+/* Override TEC Full Stylesheet */
+.tribe-theme-twentytwenty .tribe-common.tribe_horizontal_datepicker__field_group {
+	background-color: transparent;
+}
 
-	 .tribe-tickets__title {
-		 color: var(--color-text-primary);
-		 margin: 0 0 var(--spacer-1);
+.tribe-common,
+.entry .entry-content .tribe-common {
+
+	.tribe-tickets__title {
+		color: var(--color-text-primary);
+		margin: 0 0 var(--spacer-1);
 
 		/* Override since we don't have a header at this size */
-		 @media(--viewport-medium) {
-			 font-size: var(--font-size-5);
-		 }
-	 }
+		@media (--viewport-medium) {
+			font-size: var(--font-size-5);
+		}
+	}
 
-	 .tribe-tickets__notice--barred {
+	.tribe-tickets__notice--barred {
 		margin-bottom: var(--spacer-3);
-	 }
+	}
 
 	.tribe-tickets__item {
 		align-items: center;
 		border-top: 1px solid var(--color-border-secondary);
 		display: -ms-grid;
 		display: grid;
-		-ms-grid-columns:  10fr 1fr;
+		-ms-grid-columns: 10fr 1fr;
 		grid-template-columns: 10fr 1fr;
 		-ms-grid-rows: 1fr 1.5fr;
 		grid-template-rows: auto;
 		margin: 0;
 		padding: 12px 0 16px;
 
-		@media(--viewport-medium) {
-			-ms-grid-columns:  6.5fr 2fr;
+		@media (--viewport-medium) {
+			-ms-grid-columns: 6.5fr 2fr;
 			grid-template-columns: 6.5fr 2fr;
 			-ms-grid-rows: 1fr 1.5fr 1fr;
 		}
@@ -125,13 +154,13 @@
 		}
 
 		&.show-optout {
-			-ms-grid-columns:  10fr 1fr;
+			-ms-grid-columns: 10fr 1fr;
 			grid-template-columns: 10fr 1fr;
 			-ms-grid-rows: 1fr 1.5fr 1fr 1fr;
 			grid-template-rows: auto;
 
-			@media(--viewport-medium) {
-				-ms-grid-columns:  6.5fr 2fr 1fr;
+			@media (--viewport-medium) {
+				-ms-grid-columns: 6.5fr 2fr 1fr;
 				grid-template-columns: 6.5fr 2fr 1fr;
 				-ms-grid-rows: 1fr 1.5fr 1fr;
 			}
@@ -275,7 +304,6 @@
 		grid-row: 2;
 		-ms-grid-columns:  min-content max-content auto;
 		grid-template-columns: min-content max-content auto;
-		overflow: hidden;
 
 		@media(--viewport-medium) {
 			align-self: start;
@@ -291,6 +319,7 @@
 
 		&.tribe-tickets__item__extra--price-suffix {
 			text-align: left;
+			overflow: hidden;
 		}
 	}
 
@@ -1102,7 +1131,7 @@
 				grid-column: 1 / span 4;
 				-ms-grid-row: 3;
 				grid-row: 3;
-				margin: var(--sapcer-0 ) 0;
+				margin: var(--spacer-0 ) 0;
 
 				@media(--viewport-medium) {
 					-ms-grid-column: 2;
