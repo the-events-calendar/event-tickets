@@ -359,7 +359,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 				$title .= ' (' . tribe_get_start_date( $wp_post->ID ) . ')';
 			}
 
-			$posts[ $wp_post->ID ] = $title;
+			$posts[ $wp_post->ID ] = apply_filters('the_title', $title, $wp_post->ID);
 		}
 
 		return $posts;
