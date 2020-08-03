@@ -21,6 +21,11 @@
 			class="tribe-tickets__rsvp-ar-guest-list-item-button tribe-tickets__rsvp-ar-guest-list-item-button--inactive"
 			type="button"
 			data-guest-number="{{data.attendee_id + 1}}"
+			role="tab"
+			aria-selected="false"
+			aria-controls="tribe-tickets-rsvp-<?php echo esc_attr( $rsvp->ID ); ?>-guest-{{data.attendee_id + 1}}-tab"
+			id="tribe-tickets-rsvp-<?php echo esc_attr( $rsvp->ID ); ?>-guest-{{data.attendee_id + 1}}"
+			tabindex="-1"
 		>
 			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon' ] ] ); ?>
 			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-common-a11y-visual-hide">
