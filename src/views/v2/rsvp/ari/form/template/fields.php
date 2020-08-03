@@ -15,7 +15,16 @@
  * @version TBD
  */
 
-$has_meta = get_post_meta( $rsvp->ID, '_tribe_tickets_meta_enabled', true );
+/**
+ * Filter to check if the RSVP has meta.
+ *
+ * @since TBD
+ *
+ * @param Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
+ *
+ * @return bool
+ */
+$has_meta = apply_filters( 'tribe_tickets_rsvp_has_meta', $rsvp, false );
 
 if ( empty( $has_meta ) ) {
 	return;
