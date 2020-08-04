@@ -46,6 +46,7 @@ tribe.tickets.rsvp.block = {};
 		cancelButton: '.tribe-tickets__rsvp-form-button--cancel',
 		errorMessage: '.tribe-tickets__form-message--error',
 		hiddenElement: '.tribe-common-a11y-hidden',
+		displayToggle: '.tribe-tickets__rsvp-actions-success-going-toggle-input',
 	};
 
 	/**
@@ -139,6 +140,35 @@ tribe.tickets.rsvp.block = {};
 	};
 
 	/**
+	 * Handle the RSVP toggle for listing in public attendee list.
+	 *
+	 * @since TBD
+	 *
+	 * @param {event} e submission event
+	 */
+	obj.handleDisplayToggle = function( e ) {
+		e.preventDefault();
+
+		const $input = $( e.target );
+		const rsvpId = $input.data( 'rsvp-id' );
+		const checked = $input.prop( 'checked' );
+		const attendeeIds = $input.data( 'attendee-ids' );
+		const nonce = $input.data( 'opt-in-nonce' );
+		const $container = e.data.container;
+
+		var data = {
+			action: 'tribe_tickets_rsvp_handle',
+			ticket_id: rsvpId,
+			step: 'opt-in',
+			opt_in: checked,
+			opt_in_none: nonce,
+			attendee_ids: attendeeIds,
+		};
+
+		tribe.tickets.rsvp.manager.request( data, $container );
+	};
+
+	/**
 	 * Handle the RSVP form submission
 	 *
 	 * @since TBD
@@ -184,6 +214,25 @@ tribe.tickets.rsvp.block = {};
 	};
 
 	/**
+	 * Binds events for the display in public attendee toggle.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container jQuery object of the RSVP container.
+	 *
+	 * @return {void}
+	 */
+	obj.bindDisplayToggle = function( $container ) {
+		const $displayToggle = $container.find( obj.selectors.displayToggle );
+
+		$displayToggle.on(
+			'input',
+			{ container: $container },
+			obj.handleDisplayToggle
+		);
+	};
+
+	/**
 	 * Unbinds events.
 	 *
 	 * @since TBD
@@ -200,11 +249,13 @@ tribe.tickets.rsvp.block = {};
 		var $notGoingButton = $container.find( obj.selectors.notGoingButton );
 		var $cancelButton = $container.find( obj.selectors.cancelButton );
 		var $rsvpForm = $container.find( obj.selectors.rsvpForm );
+		const $displayToggle = $container.find( obj.selectors.displayToggle );
 
 		$goingButton.off();
 		$notGoingButton.off();
 		$cancelButton.off();
 		$rsvpForm.off();
+		$displayToggle.off();
 	};
 
 	/**
@@ -222,6 +273,7 @@ tribe.tickets.rsvp.block = {};
 		obj.bindNotGoing( $container );
 		obj.bindCancel( $container );
 		obj.bindForm( $container );
+		obj.bindDisplayToggle( $container );
 
 		$container.on(
 			'beforeAjaxSuccess.tribeTicketsRsvp',
