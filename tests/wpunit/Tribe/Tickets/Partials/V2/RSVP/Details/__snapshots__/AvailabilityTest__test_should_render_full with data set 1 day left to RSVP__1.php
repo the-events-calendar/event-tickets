@@ -2,6 +2,5 @@
 			<span class="tribe-tickets__rsvp-availability-no-stock">
 	Currently full</span>
 	
-	
-</div>
+	</div>
 ';
