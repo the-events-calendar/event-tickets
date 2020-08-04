@@ -231,6 +231,18 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		tribe_asset(
 			$plugin,
+			'tribe-tickets-rsvp-ari',
+			'v2/rsvp-ari.js',
+			[ 'jquery' ],
+			null,
+			[
+				'groups'       => 'tribe-tickets-rsvp',
+				'conditionals' => [ $this, 'should_enqueue_ari' ],
+			]
+		);
+
+		tribe_asset(
+			$plugin,
 			'tribe-tickets-rsvp-manager',
 			'v2/rsvp-manager.js',
 			[
@@ -277,18 +289,6 @@ extends Tribe__Editor__Blocks__Abstract {
 			]
 		);
 
-		tribe_asset(
-			$plugin,
-			'tribe-tickets-rsvp-ari',
-			'v2/rsvp-ari.js',
-			[ 'jquery' ],
-			null,
-			[
-				'groups'       => 'tribe-tickets-rsvp',
-				'conditionals' => class_exists( 'Tribe__Tickets_Plus__Main' ),
-			]
-		);
-
 		// @todo: Remove this once we solve the common breakpoints vs container based.
 		tribe_asset(
 			$plugin,
@@ -313,6 +313,17 @@ extends Tribe__Editor__Blocks__Abstract {
 			[ 'tribe-tickets-rsvp-style' ],
 			null
 		);
+	}
+
+	/**
+	 * Determine whether we should enqueue the ARI assets.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether we should enqueue the ARI assets.
+	 */
+	public function should_enqueue_ari() {
+		return class_exists( 'Tribe__Tickets_Plus__Main' );
 	}
 
 	/**
