@@ -403,7 +403,13 @@ extends Tribe__Editor__Blocks__Abstract {
 			wp_send_json_error( $response );
 		}
 
-		$products = (array) tribe_get_request_var( 'product_id' );
+		$products = [];
+
+		if ( isset( $_POST['tribe_tickets'] ) ) {
+			$products = wp_list_pluck( $_POST['tribe_tickets'], 'ticket_id' );
+		} elseif ( isset( $_POST['product_id'] ) ) {
+			$products = (array) $_POST['product_id'];
+		}
 
 		// Iterate over each product
 		foreach ( $products as $product_id ) {

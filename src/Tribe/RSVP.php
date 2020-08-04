@@ -363,13 +363,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Process the attendee.
 		if ( 'success' === $args['step'] ) {
 			/**
-			 * These are the inputs we should be seeing.
+			 * These are the inputs we should be seeing:
 			 *
-			 * attendee[email]
-			 * attendee[full_name]
-			 * quantity_{$ticket_id}
-			 * attendee[order_status]
-			 * tribe-tickets-meta[$ticket_id][$x][$field_slug]
+			 * tribe_tickets[{$ticket_id}][ticket_id] (previously product_id[])
+			 * tribe_tickets[{$ticket_id}][quantity] (previously quantity_{$ticket_id})
+			 * tribe_tickets[{$ticket_id}][attendees][0][order_status] (previously attendee[order_status])
+			 * tribe_tickets[{$ticket_id}][attendees][0][full_name] (previously attendee[full_name])
+			 * tribe_tickets[{$ticket_id}][attendees][0][email] (previously attendee[email])
+			 * tribe_tickets[{$ticket_id}][attendees][0][meta][{$field_slug}] (previously tribe-tickets-meta[{$ticket_id}][0][{$field_slug}])
+			 * tribe_tickets[{$ticket_id}][attendees][1][full_name] (new for IAC)
+			 * tribe_tickets[{$ticket_id}][attendees][1][email] (new for IAC)
+			 * tribe_tickets[{$ticket_id}][attendees][1][meta][{$field_slug}] (previously tribe-tickets-meta[{$ticket_id}][1][{$field_slug}])
 			 */
 			// @todo Handle RSVP processing here.
 		} elseif ( 'opt-in' === $args['step'] ) {
@@ -719,7 +723,19 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function generate_tickets() {
 
-		if ( empty( $_POST['tickets_process'] ) || empty( $_POST['attendee'] ) || empty( $_POST['product_id'] ) ) {
+		$has_ticket_attendees = ! empty( $_POST['tribe_tickets'] );
+
+		if (
+			empty( $_POST['tickets_process'] )
+			|| (
+				! $has_ticket_attendees
+				&& empty( $_POST['attendee'] )
+			)
+			|| (
+				! $has_ticket_attendees
+				&& empty( $_POST['product_id'] )
+			)
+		) {
 			return;
 		}
 
@@ -744,10 +760,20 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			tribe_exit();
 		}
 
-		// Iterate over each product
-		foreach ( (array) $_POST['product_id'] as $product_id ) {
-			if ( ! $ticket_qty = $this->parse_ticket_quantity( $product_id ) ) {
-				// if there were no RSVP tickets for the product added to the cart, continue
+		$product_ids = [];
+
+		if ( isset( $_POST['tribe_tickets'] ) ) {
+			$product_ids = wp_list_pluck( $_POST['tribe_tickets'], 'ticket_id' );
+		} elseif ( isset( $_POST['product_id'] ) ) {
+			$product_ids = (array) $_POST['product_id'];
+		}
+
+		// Iterate over each product.
+		foreach ( $product_ids as $product_id ) {
+			$ticket_qty = $this->parse_ticket_quantity( $product_id );
+
+			if ( 0 === $ticket_qty ) {
+				// If there were no RSVP tickets for the product added to the cart, continue.
 				continue;
 			}
 
@@ -2273,33 +2299,41 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function parse_attendee_details() {
 		$order_id = self::generate_order_id();
 
-		$attendee_email     = empty( $_POST['attendee']['email'] ) ? null : sanitize_email( $_POST['attendee']['email'] );
+		$first_attendee = [];
+
+		if ( ! empty( $_POST['tribe_tickets']['attendees'] ) ) {
+			$first_attendee = $_POST['tribe_tickets']['attendees'][0];
+		} elseif ( isset( $_POST['attendee'] ) ) {
+			$first_attendee = $_POST['attendee'];
+		}
+
+		$attendee_email     = empty( $first_attendee['email'] ) ? null : sanitize_email( $first_attendee['email'] );
 		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
-		$attendee_full_name = empty( $_POST['attendee']['full_name'] ) ? null : sanitize_text_field( $_POST['attendee']['full_name'] );
-		$attendee_optout    = empty( $_POST['attendee']['optout'] ) ? 0 : $_POST['attendee']['optout'];
+		$attendee_full_name = empty( $first_attendee['full_name'] ) ? null : sanitize_text_field( $first_attendee['full_name'] );
+		$attendee_optout    = empty( $first_attendee['optout'] ) ? 0 : $first_attendee['optout'];
 
 		$attendee_optout = filter_var( $attendee_optout, FILTER_VALIDATE_BOOLEAN );
 
 		if (
-			empty( $_POST['attendee']['order_status'] )
-			|| ! $this->tickets_view->is_valid_rsvp_option( $_POST['attendee']['order_status'] )
+			empty( $first_attendee['order_status'] )
+			|| ! $this->tickets_view->is_valid_rsvp_option( $first_attendee['order_status'] )
 		) {
 			$attendee_order_status = 'yes';
 		} else {
-			$attendee_order_status = $_POST['attendee']['order_status'];
+			$attendee_order_status = $first_attendee['order_status'];
 		}
 
 		if ( ! $attendee_email || ! $attendee_full_name ) {
 			return false;
 		}
 
-		$attendee_details = array(
+		$attendee_details = [
 			'full_name'    => $attendee_full_name,
 			'email'        => $attendee_email,
 			'order_status' => $attendee_order_status,
 			'optout'       => $attendee_optout,
 			'order_id'     => $order_id,
-		);
+		];
 
 		return $attendee_details;
 	}
@@ -2309,17 +2343,20 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param int $product_id A product post ID
+	 * @param int $ticket_id The ticket ID.
 	 *
-	 * @return int Either the requested quantity of tickets for the product or `0` in
-	 *             any other case.
+	 * @return int Either the requested quantity of tickets or `0` in any other case.
 	 */
-	public function parse_ticket_quantity( $product_id ) {
-		if ( empty( $_POST[ "quantity_{$product_id}" ] ) ) {
-			return 0;
+	public function parse_ticket_quantity( $ticket_id ) {
+		$quantity = 0;
+
+		if ( isset( $_POST['tribe_tickets'][ $ticket_id ]['quantity'] ) ) {
+			$quantity = absint( $_POST['tribe_tickets'][ $ticket_id ]['quantity'] );
+		} elseif ( isset( $_POST["quantity_{$ticket_id}"] ) ) {
+			$quantity = absint( $_POST["quantity_{$ticket_id}"] );
 		}
 
-		return (int) $_POST[ "quantity_{$product_id}" ];
+		return $quantity;
 	}
 
 	/**

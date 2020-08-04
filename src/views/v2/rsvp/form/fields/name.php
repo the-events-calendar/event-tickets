@@ -11,7 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.12.3
- * @version 4.12.3
+ * @since TBD Updated the input name used for submitting.
+ *
+ * @version TBD
  */
 
 /**
@@ -35,10 +37,10 @@ $name = apply_filters( 'tribe_tickets_rsvp_form_full_name', '', $this );
 	<input
 		type="text"
 		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-name"
-		name="attendee[full_name]"
+		name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][attendees][0][full_name]"
 		id="tribe-tickets-rsvp-name"
 		value="<?php echo esc_attr( $name ); ?>"
 		required
-		placeholder="<?php esc_attr_e( 'John Doe', 'event-tickets' ); ?>"
+		placeholder="<?php esc_attr_e( 'Your Name', 'event-tickets' ); ?>"
 	>
 </div>
