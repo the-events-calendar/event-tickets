@@ -48,6 +48,7 @@ class GuestListTest extends WPTestCase {
 		$driver->setTolerableDifferencesPrefixes(
 			[
 				'template-',
+				'tribe-tickets-rsvp-',
 			]
 		);
 
