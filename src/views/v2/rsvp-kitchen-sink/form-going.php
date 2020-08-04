@@ -12,7 +12,7 @@
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
  * @since 4.12.3
- * @since TBD Updated the input name used for submitting data.
+ * @since TBD Updated the placeholder text used.
  *
  * @version TBD
  */
