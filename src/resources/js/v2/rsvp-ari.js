@@ -311,7 +311,7 @@ tribe.tickets.rsvp.ari = {};
 		}
 
 		// If the quantity less than the min, set it to the min.
-		if ( newQuantity < $this.attr( 'min' ) ) {
+		if ( newQuantity < min ) {
 			newQuantity = min;
 		}
 
