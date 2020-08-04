@@ -12,7 +12,7 @@ class Commerce {
 	/**
 	 * Attach hooks for trigger messages.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 */
 	public function hook() {
 		add_action( 'event_tickets_tpp_attendee_created', [ $this, 'attendee_created' ], 10, 5 );
@@ -22,7 +22,7 @@ class Commerce {
 	/**
 	 * Action fired when an PayPal attendee ticket is created
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param int    $attendee_id           Attendee post ID
 	 * @param string $order_id              PayPal Order ID
@@ -37,7 +37,7 @@ class Commerce {
 	/**
 	 * Responds to a checkin action.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param int       $attendee_id The ID of the attendee utilized.
 	 * @param bool|null $qr          Whether it's from a QR scan.
@@ -49,7 +49,7 @@ class Commerce {
 	/**
 	 * Fire an trigger action using the tribe commerce as main source of the ticket data.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param string $type        The trigger type.
 	 * @param int    $attendee_id The ID of the attendee utilized.
@@ -62,7 +62,7 @@ class Commerce {
 		/**
 		 * Create a new action to listen for a trigger associated with an attendee.
 		 *
-		 * @since TBD
+		 * @since 4.12.3
 		 *
 		 * @param string                  $type     The type of trigger fired.
 		 * @param Attendee_Model          $attendee The attendee associated with the trigger.

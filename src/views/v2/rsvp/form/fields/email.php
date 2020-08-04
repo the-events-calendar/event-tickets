@@ -10,8 +10,8 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since TBD
- * @version TBD
+ * @since 4.12.3
+ * @version 4.12.3
  */
 
 /**
@@ -34,9 +34,9 @@ $email = apply_filters( 'tribe_tickets_rsvp_form_email', '', $this );
 	</label>
 	<input
 		type="email"
+		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-email"
+		name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][attendees][0][email]"
 		id="tribe-tickets-rsvp-email"
-		class="tribe-common-form-control-text__input tribe-tickets__form-field-input"
-		name="attendee[email]"
 		value="<?php echo esc_attr( $email ); ?>"
 		required
 		placeholder="<?php esc_attr_e( 'your@email.com', 'event-tickets' ); ?>"

@@ -9,12 +9,10 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @version TBD
+ * @version 4.12.3
  */
 
-if ( empty( $loader_classes ) ) {
-	$loader_classes = $this->get( 'classes' ) ?: [];
-}
+$classes = $this->get( 'classes' ) ?: [];
 
 $spinner_classes = [
 	'tribe-tickets-loader__dots',
@@ -22,8 +20,8 @@ $spinner_classes = [
 	'tribe-common-a11y-hidden',
 ];
 
-if ( ! empty( $loader_classes ) ) {
-	$spinner_classes = array_merge( $spinner_classes, (array) $loader_classes );
+if ( ! empty( $classes ) ) {
+	$spinner_classes = array_merge( $spinner_classes, (array) $classes );
 }
 
 ?>

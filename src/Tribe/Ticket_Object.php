@@ -542,19 +542,18 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Provides the Inventory of the Ticket which should match the Commerce Stock
 		 *
 		 * @since  4.6
+		 * @since  4.12.3 Account for possibly inactive ticket provider.
 		 *
 		 * @return int
 		 */
 		public function inventory() {
-			// Fetch provider
+			// Fetch provider (also sets if found).
 			$provider = $this->get_provider();
+
 			$capacity = $this->capacity();
 
-			// If we don't have the provider we fetch from inventory
-			if (
-				is_null( $provider )
-				|| ! method_exists( $provider, 'get_attendees_by_id' )
-			) {
+			// If we don't have the provider, get the result from inventory.
+			if ( empty( $provider ) ) {
 				return $capacity - $this->qty_sold() - $this->qty_pending();
 			}
 
@@ -570,19 +569,19 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$status_mgr = tribe( 'tickets.status' );
 
 			// Fetch the Attendees
-			$attendees = $this->provider->get_attendees_by_id( $this->ID );
+			$attendees       = $provider->get_attendees_by_id( $this->ID );
 			$attendees_count = 0;
-			$not_going_arr = $status_mgr->get_statuses_by_action( 'count_not_going', 'rsvp' );
+			$not_going_arr   = $status_mgr->get_statuses_by_action( 'count_not_going', 'rsvp' );
 
 			// Loop on All the attendees, allowing for some filtering of which will be removed or not
 			foreach ( $attendees as $attendee ) {
 				// Prevent RSVP with Not Going Status to decrease Inventory
-				if ( ! empty( $attendee['provider_slug'] ) && 'rsvp' === $attendee['provider_slug'] && in_array( $attendee[ 'order_status' ], $not_going_arr, true ) ) {
+				if ( ! empty( $attendee['provider_slug'] ) && 'rsvp' === $attendee['provider_slug'] && in_array( $attendee['order_status'], $not_going_arr, true ) ) {
 					continue;
 				}
 
 				// allow providers to decide if an attendee will count toward inventory decrease or not
-				if ( ! $this->provider->attendee_decreases_inventory( $attendee ) ) {
+				if ( ! $provider->attendee_decreases_inventory( $attendee ) ) {
 					continue;
 				}
 
@@ -597,17 +596,17 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $this->global_stock_mode()
 				|| Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode()
 			) {
-				$event_attendees = $this->provider->get_attendees_by_id( $this->get_event()->ID );
+				$event_attendees       = $provider->get_attendees_by_id( $this->get_event()->ID );
 				$event_attendees_count = 0;
 
 				foreach ( $event_attendees as $attendee ) {
 					$attendee_ticket_stock = new Tribe__Tickets__Global_Stock( $attendee['event_id'] );
 					// bypass any potential weirdness (RSVPs or such)
-					if ( empty( $attendee[ 'product_id' ] ) ) {
+					if ( empty( $attendee['product_id'] ) ) {
 						continue;
 					}
 
-					$attendee_ticket_stock_mode = get_post_meta( $attendee[ 'product_id' ], Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+					$attendee_ticket_stock_mode = get_post_meta( $attendee['product_id'], Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
 					// On all cases of indy stock we don't add
 					if (
@@ -986,24 +985,35 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Returns an instance of the provider class.
+		 * Returns an instance of the provider class if found. If found, sets class property if not yet set.
 		 *
-		 * @return Tribe__Tickets__Tickets|null
+		 * @since 4.1
+		 * @since 4.12.3 Use new helper method to account for possibly inactive ticket provider. Set provider if found.
+		 *
+		 * @return Tribe__Tickets__Tickets|false Ticket provider instance or False if provider is not active.
 		 */
 		public function get_provider() {
-			if ( empty( $this->provider ) ) {
-				if ( empty( $this->provider_class ) || ! class_exists( $this->provider_class ) ) {
-					return null;
-				}
-
-				if ( method_exists( $this->provider_class, 'get_instance' ) ) {
-					$this->provider = call_user_func( array( $this->provider_class, 'get_instance' ) );
-				} else {
-					$this->provider = new $this->provider_class;
-				}
+			// Unexpected but we need to make sure we have something usable to start with.
+			if (
+				empty( $this->provider )
+				&& empty( $this->provider_class )
+			) {
+				return false;
 			}
 
-			return $this->provider;
+			// If class provider if already set, we're done.
+			if ( $this->provider instanceof Tribe__Tickets__Tickets ) {
+				return $this->provider;
+			}
+
+			// Set class provider if valid, then return value even if invalid provider.
+			$provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $this->provider_class );
+
+			if ( ! empty( $provider ) ) {
+				$this->provider = $provider;
+			}
+
+			return $provider;
 		}
 
 		/**
@@ -1014,7 +1024,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public function get_event() {
 			$provider = $this->get_provider();
 
-			if ( null !== $provider ) {
+			if ( ! empty( $provider ) ) {
 				return $provider->get_event_for_ticket( $this->ID );
 			}
 

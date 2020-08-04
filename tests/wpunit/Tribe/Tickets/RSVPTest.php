@@ -37,6 +37,11 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		// Tribe__Tickets__Tickets_Handler handler for easier access
 		$this->handler = new Handler;
 
+		// Enable post as ticket type.
+		add_filter( 'tribe_tickets_post_types', function () {
+			return [ 'post', 'tribe_events' ];
+		} );
+
 		// let's avoid die()s
 		add_filter( 'tribe_exit', function () {
 			return [ $this, 'dont_die' ];
@@ -672,7 +677,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			$_POST = $post_data;
 		}
 
-		$html = $sut->render_rsvp_step( $ticket_id, $post_id, $step );
+		$html = $sut->render_rsvp_step( $ticket_id, $step );
 
 		if ( null !== $expected_response ) {
 			self::assertEquals( $expected_response, $html );

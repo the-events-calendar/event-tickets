@@ -5,9 +5,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/rsvp/form/fields/quantity.php
  *
- * @since TBD
+ * @since 4.12.3
  *
- * @version TBD
+ * @version 4.12.3
  */
 
 /** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
@@ -26,9 +26,9 @@ $field_label   = 'going' === $going ? __( 'Number of Guests', 'event-tickets' ) 
 	</label>
 	<input
 		type="number"
-		name="quantity_<?php echo absint( $rsvp->ID ); ?>"
-		name="quantity_<?php echo absint( $rsvp->ID ); ?>"
-		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-input-number"
+		name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][quantity]"
+		id="quantity_<?php echo esc_attr( absint( $rsvp->ID ) ); ?>"
+		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-input-number tribe-tickets__rsvp-form-field-quantity"
 		value="1"
 		required
 		min="1"

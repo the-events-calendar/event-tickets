@@ -1,10 +1,10 @@
 <?php return '
 <form
-	name="tribe-rsvp-form"
-	data-product-id="71"
+	name="tribe-tickets-rsvp-form"
+	data-rsvp-id="3356"
 >
-	<input type="hidden" name="product_id[]" value="71">
-	<input type="hidden" name="attendee[order_status]" value="not-going">
+	<input type="hidden" name="tribe_tickets[3356][ticket_id]" value="3356">
+	<input type="hidden" name="tribe_tickets[3356][attendees][0][order_status]" value="not-going">
 
 	<div class="tribe-tickets__rsvp-form-wrapper">
 
@@ -25,12 +25,12 @@
 	</label>
 	<input
 		type="text"
+		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-name"
+		name="tribe_tickets[3356][attendees][0][full_name]"
 		id="tribe-tickets-rsvp-name"
-		class="tribe-common-form-control-text__input tribe-tickets__form-field-input"
-		name="attendee[full_name]"
 		value=""
 		required
-		placeholder="John Doe"
+		placeholder="Your Name"
 	>
 </div>
 <div class="tribe-common-b1 tribe-tickets__form-field tribe-tickets__form-field--required">
@@ -43,9 +43,9 @@
 	</label>
 	<input
 		type="email"
+		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-email"
+		name="tribe_tickets[3356][attendees][0][email]"
 		id="tribe-tickets-rsvp-email"
-		class="tribe-common-form-control-text__input tribe-tickets__form-field-input"
-		name="attendee[email]"
 		value=""
 		required
 		placeholder="your@email.com"
@@ -54,16 +54,16 @@
 <div class="tribe-common-b1 tribe-tickets__form-field tribe-tickets__form-field--required">
 	<label
 		class="tribe-common-b2--min-medium tribe-tickets__form-field-label"
-		for="quantity_71"
+		for="quantity_3356"
 	>
 		Number of Guests Not Attending<span class="screen-reader-text">(required)</span>
 		<span class="tribe-required" aria-hidden="true" role="presentation">*</span>
 	</label>
 	<input
 		type="number"
-		name="quantity_71"
-		name="quantity_71"
-		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-input-number"
+		name="tribe_tickets[3356][quantity]"
+		id="quantity_3356"
+		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-input-number tribe-tickets__rsvp-form-field-quantity"
 		value="1"
 		required
 		min="1"

@@ -10,7 +10,7 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since TBD
+ * @since 4.12.3
  *
  * @version TBD
  */
@@ -19,11 +19,11 @@ $going = $this->get( 'going' );
 ?>
 
 <form
-	name="tribe-rsvp-form"
-	data-product-id="<?php echo esc_attr( $rsvp->ID ); ?>"
+	name="tribe-tickets-rsvp-form"
+	data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
 >
-	<input type="hidden" name="product_id[]" value="<?php echo esc_attr( absint( $rsvp->ID ) ); ?>">
-	<input type="hidden" name="attendee[order_status]" value="<?php echo esc_attr( $going ); ?>">
+	<input type="hidden" name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][ticket_id]" value="<?php echo esc_attr( absint( $rsvp->ID ) ); ?>">
+	<input type="hidden" name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][attendees][0][order_status]" value="<?php echo esc_attr( $going ); ?>">
 
 	<div class="tribe-tickets__rsvp-form-wrapper">
 

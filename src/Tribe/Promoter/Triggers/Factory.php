@@ -14,7 +14,7 @@ class Factory {
 	/**
 	 * Create new triggers based on the different type of hooks.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 */
 	public function hook() {
 		add_action( 'tribe_tickets_promoter_trigger_attendee', [ $this, 'build_attendee' ], 10, 3 );
@@ -23,7 +23,7 @@ class Factory {
 	/**
 	 * When an action `tribe_tickets_promoter_trigger_attendee` is fired, react with an attendee trigger.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param string                  $type     The type of trigger message.
 	 * @param Attendee_Model          $attendee The representation of the attendee.
@@ -33,7 +33,7 @@ class Factory {
 		/**
 		 * Create a new action to deliver a trigger action
 		 *
-		 * @since TBD
+		 * @since 4.12.3
 		 *
 		 * @param Triggered $trigger The type of trigger fired.
 		 */
