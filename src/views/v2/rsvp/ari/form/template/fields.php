@@ -15,7 +15,16 @@
  * @version TBD
  */
 
-$has_meta = get_post_meta( $rsvp->ID, '_tribe_tickets_meta_enabled', true );
+/**
+ * Filter to check if the RSVP has meta.
+ *
+ * @since TBD
+ *
+ * @param Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
+ *
+ * @return bool
+ */
+$has_meta = apply_filters( 'tribe_tickets_rsvp_has_meta', $rsvp, false );
 
 if ( empty( $has_meta ) ) {
 	return;
@@ -31,9 +40,9 @@ if ( empty( $has_meta ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @var int $post_id The post ID the RSVP is linked to.
-		 * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
+		 * @see  Tribe__Template\do_entry_point()
+		 * @link https://docs.theeventscalendar.com/reference/classes/tribe__template/do_entry_point/
 		 */
-		do_action( 'tribe_tickets_rsvp_attendee_fields_template', $post_id, $rsvp );
+		$this->do_entry_point( 'rsvp_attendee_fields_template' );
 	?>
 </div>

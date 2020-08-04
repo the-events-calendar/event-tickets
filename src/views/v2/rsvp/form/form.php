@@ -11,9 +11,8 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.12.3
- * @version TBD Added form fields to implement the ARi dynamic functionality.
  *
- * @version 4.12.3
+ * @version TBD
  */
 
 $going = $this->get( 'going' );

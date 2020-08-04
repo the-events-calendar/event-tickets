@@ -35,9 +35,10 @@ class GuestListTest extends WPTestCase {
 
 		$ticket = tribe( 'tickets.rsvp' )->get_ticket( $event_id, $ticket_id );
 
-		$args = [
-			'rsvp'      => $ticket,
-			'post_id'   => $event_id,
+		$args   = [
+			'rsvp'       => $ticket,
+			'post_id'    => $event_id,
+			'must_login' => false,
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );

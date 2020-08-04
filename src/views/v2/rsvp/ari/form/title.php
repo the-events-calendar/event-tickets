@@ -8,7 +8,7 @@
  * @since 4.12.3
  * @since TBD Added the main guest title.
  *
- * @version 4.12.3
+ * @version TBD
  */
 
 ?>
