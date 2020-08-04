@@ -24,6 +24,7 @@ class GuestListTest extends WPTestCase {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
+
 		$ticket_id = $this->create_rsvp_ticket(
 			$event_id,
 			[
@@ -43,11 +44,28 @@ class GuestListTest extends WPTestCase {
 
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
-		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+
+		$driver->setTolerableDifferences(
+			[
+				$ticket_id,
+				$event_id,
+			]
+		);
 
 		$driver->setTolerableDifferencesPrefixes(
 			[
+				'tmpl-tribe-tickets__rsvp-ar-guest-list-item-template-',
+				'tribe-tickets-rsvp-',
 				'template-',
+			]
+		);
+
+		$driver->setTolerableDifferencesPostfixes(
+			[
+				'-guest-{{data.attendee_id + 1}}-tab',
+				'-guest-{{data.attendee_id + 1}}',
+				'-guest-1-tab',
+				'-guest-1',
 			]
 		);
 
@@ -59,6 +77,19 @@ class GuestListTest extends WPTestCase {
 		);
 
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+
+		// Note: The tolerable differences for prefix/postfix are not working as expected here, this is a hack.
+		$html = str_replace(
+			[
+				'-' . $ticket_id . '-',
+				'-' . $ticket_id,
+			],
+			[
+				'-TICKET_ID-',
+				'-TICKET_ID',
+			],
+			$html
+		);
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}

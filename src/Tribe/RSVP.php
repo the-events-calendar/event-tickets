@@ -2343,12 +2343,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param int $product_id A product post ID
+	 * @param int $ticket_id The ticket ID.
 	 *
-	 * @return int Either the requested quantity of tickets for the product or `0` in
-	 *             any other case.
+	 * @return int Either the requested quantity of tickets or `0` in any other case.
 	 */
-	public function parse_ticket_quantity( $product_id ) {
+	public function parse_ticket_quantity( $ticket_id ) {
 		$quantity = 0;
 
 		if ( isset( $_POST['tribe_tickets'][ $ticket_id ]['quantity'] ) ) {
