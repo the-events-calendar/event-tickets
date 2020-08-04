@@ -57,6 +57,7 @@ class GuestListTest extends WPTestCase {
 				'tmpl-tribe-tickets__rsvp-ar-guest-list-item-template-',
 				'tribe-tickets-rsvp-',
 				'template-',
+				'tribe-tickets-rsvp-',
 			]
 		);
 
