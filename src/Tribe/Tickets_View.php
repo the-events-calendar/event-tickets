@@ -187,7 +187,7 @@ class Tribe__Tickets__Tickets_View {
 		if (
 			empty( $_POST['process-tickets'] )
 			|| (
-				empty( $_POST['tribe_ticket_attendee'] )
+				empty( $_POST['tribe_tickets']['attendees'] )
 				&& empty( $_POST['attendee'] )
 				&& empty( $_POST['tribe-tickets-meta'] )
 			)
@@ -199,8 +199,8 @@ class Tribe__Tickets__Tickets_View {
 
 		$attendees = [];
 
-		if ( isset( $_POST['tribe_ticket_attendee'] ) ) {
-			$attendees = $_POST['tribe_ticket_attendee'];
+		if ( isset( $_POST['tribe_tickets']['attendees'] ) ) {
+			$attendees = $_POST['tribe_tickets']['attendees'];
 		} elseif ( isset( $_POST['attendee'] ) ) {
 			$attendees = $_POST['attendee'];
 		}

@@ -104,7 +104,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		// bail if this isn't a Tribe Commerce PayPal ticket
 		if (
 			(
-				empty( $_POST['tribe_ticket_id'] )
+				empty( $_POST['tribe_tickets'] )
 				&& empty( $_POST['product_id'] )
 			)
 			|| empty( $_POST['provider'] )
@@ -117,8 +117,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$post_url      = get_permalink( $post );
 		$currency_code = trim( tribe_get_option( 'ticket-commerce-currency-code' ) );
 
-		if ( isset( $_POST['tribe_ticket_id'] ) ) {
-			$product_ids = (array) $_POST['tribe_ticket_id'];
+		if ( isset( $_POST['tribe_tickets'] ) ) {
+			$product_ids = wp_list_pluck( $_POST['tribe_tickets'], 'ticket_id' );
 		} elseif ( isset( $_POST['product_id'] ) ) {
 			$product_ids = (array) $_POST['product_id'];
 		}
@@ -186,10 +186,10 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 			$quantity = 0;
 
-			if ( isset( $_POST['tribe_ticket_quantity'] ) ) {
-				$quantity = absint( $_POST['tribe_ticket_quantity'] );
-			} elseif ( isset( $_POST[ "quantity_{$ticket_id}" ] ) ) {
-				$quantity = absint( $_POST[ "quantity_{$ticket_id}" ] );
+			if ( isset( $_POST['tribe_tickets'][ $ticket_id ]['quantity'] ) ) {
+				$quantity = absint( $_POST['tribe_tickets'][ $ticket_id ]['quantity'] );
+			} elseif ( isset( $_POST["quantity_{$ticket_id}"] ) ) {
+				$quantity = absint( $_POST["quantity_{$ticket_id}"] );
 			}
 
 			// skip if the ticket in no longer in stock or is not sellable

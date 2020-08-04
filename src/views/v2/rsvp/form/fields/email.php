@@ -35,7 +35,7 @@ $email = apply_filters( 'tribe_tickets_rsvp_form_email', '', $this );
 	<input
 		type="email"
 		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-email"
-		name="tribe_ticket_attendee[0][email]"
+		name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][attendees][0][email]"
 		id="tribe-tickets-rsvp-email"
 		value="<?php echo esc_attr( $email ); ?>"
 		required

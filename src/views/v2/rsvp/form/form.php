@@ -22,8 +22,8 @@ $going = $this->get( 'going' );
 	name="tribe-tickets-rsvp-form"
 	data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
 >
-	<input type="hidden" name="tribe_ticket_id" value="<?php echo esc_attr( absint( $rsvp->ID ) ); ?>">
-	<input type="hidden" name="tribe_ticket_attendee[0][order_status]" value="<?php echo esc_attr( $going ); ?>">
+	<input type="hidden" name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][ticket_id]" value="<?php echo esc_attr( absint( $rsvp->ID ) ); ?>">
+	<input type="hidden" name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][attendees][0][order_status]" value="<?php echo esc_attr( $going ); ?>">
 
 	<div class="tribe-tickets__rsvp-form-wrapper">
 
