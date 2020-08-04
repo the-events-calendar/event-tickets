@@ -29,7 +29,7 @@ tribe.tickets.rsvp.block = {};
  */
 ( function( $, obj ) {
 	'use strict';
-	var $document = $( document );
+	const $document = $( document );
 
 	/**
 	 * Selectors used for configuration and setup
@@ -59,11 +59,9 @@ tribe.tickets.rsvp.block = {};
 	 * @return {void}
 	 */
 	obj.bindGoing = function( $container ) {
-		var data  = {};
-
-		var rsvpId = $container.data( 'rsvp-id' );
-
-		var $goingButton = $container.find( obj.selectors.goingButton );
+		let data  = {};
+		const rsvpId = $container.data( 'rsvp-id' );
+		const $goingButton = $container.find( obj.selectors.goingButton );
 
 		$goingButton.each( function( index, button ) {
 			$( button ).on( 'click', function() {
@@ -88,11 +86,9 @@ tribe.tickets.rsvp.block = {};
 	 * @return {void}
 	 */
 	obj.bindNotGoing = function( $container ) {
-		var data  = {};
-
-		var rsvpId = $container.data( 'rsvp-id' );
-
-		var $notGoingButton = $container.find( obj.selectors.notGoingButton );
+		let data  = {};
+		const rsvpId = $container.data( 'rsvp-id' );
+		const $notGoingButton = $container.find( obj.selectors.notGoingButton );
 
 		$notGoingButton.each( function( index, button ) {
 			$( button ).on( 'click', function() {
@@ -117,9 +113,9 @@ tribe.tickets.rsvp.block = {};
 	 * @return {void}
 	 */
 	obj.bindCancel = function( $container ) {
-		var data  = {};
-		var rsvpId = $container.data( 'rsvp-id' );
-		var $cancelButton = $container.find( obj.selectors.cancelButton );
+		let data  = {};
+		const rsvpId = $container.data( 'rsvp-id' );
+		const $cancelButton = $container.find( obj.selectors.cancelButton );
 
 		$cancelButton.each( function( index, button ) {
 			$( button ).on( 'click', function() {
@@ -206,7 +202,7 @@ tribe.tickets.rsvp.block = {};
 	 * @return {void}
 	 */
 	obj.bindForm = function( $container ) {
-		var $rsvpForm = $container.find( obj.selectors.rsvpForm );
+		const $rsvpForm = $container.find( obj.selectors.rsvpForm );
 
 		$rsvpForm.each( function( index, form ) {
 			$( form ).on( 'submit', obj.handleSubmission );
@@ -244,11 +240,11 @@ tribe.tickets.rsvp.block = {};
 	 * @return {void}
 	 */
 	obj.unbindEvents = function( event, jqXHR, settings ) {
-		var $container = event.data.container;
-		var $goingButton = $container.find( obj.selectors.goingButton );
-		var $notGoingButton = $container.find( obj.selectors.notGoingButton );
-		var $cancelButton = $container.find( obj.selectors.cancelButton );
-		var $rsvpForm = $container.find( obj.selectors.rsvpForm );
+		const $container = event.data.container;
+		const $goingButton = $container.find( obj.selectors.goingButton );
+		const $notGoingButton = $container.find( obj.selectors.notGoingButton );
+		const $cancelButton = $container.find( obj.selectors.cancelButton );
+		const $rsvpForm = $container.find( obj.selectors.rsvpForm );
 		const $displayToggle = $container.find( obj.selectors.displayToggle );
 
 		$goingButton.off();
