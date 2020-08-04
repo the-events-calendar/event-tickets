@@ -155,7 +155,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $this->setup_POST( 'yes-plus-one', 10 );
 
 		$sut = $this->make_instance();
-		$sut->generate_tickets();
+		$sut->maybe_generate_tickets();
 
 		$this->assertEquals( 12, get_post_meta( $ticket_id, 'total_sales', true ) );
 	}
@@ -365,7 +365,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_return_attendees_from_get_attendees_array() {
 		$sut = $this->make_instance();
 
-		$base_data = $this->make_base_data();
+		$base_data = $this->make_base_data( 0, 20 );
 
 		$post_id   = $base_data['post_id'];
 		$ticket_id = $base_data['ticket_id'];
@@ -386,7 +386,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_return_attendees_from_get_attendees_by_id() {
 		$sut = $this->make_instance();
 
-		$base_data = $this->make_base_data();
+		$base_data = $this->make_base_data( 0, 20 );
 
 		$post_id   = $base_data['post_id'];
 		$ticket_id = $base_data['ticket_id'];
@@ -407,7 +407,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_return_attendees_from_get_attendees_by_id_for_order_id() {
 		$sut = $this->make_instance();
 
-		$base_data = $this->make_base_data();
+		$base_data = $this->make_base_data( 0, 20 );
 
 		$post_id   = $base_data['post_id'];
 		$ticket_id = $base_data['ticket_id'];
@@ -435,7 +435,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_return_attendees_from_get_attendees_by_id_for_ticket_id() {
 		$sut = $this->make_instance();
 
-		$base_data = $this->make_base_data();
+		$base_data = $this->make_base_data( 0, 20 );
 
 		$post_id   = $base_data['post_id'];
 		$ticket_id = $base_data['ticket_id'];
@@ -456,7 +456,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_return_event_id_from_get_event_id_from_attendee_id() {
 		$sut = $this->make_instance();
 
-		$base_data = $this->make_base_data();
+		$base_data = $this->make_base_data( 0, 20 );
 
 		$post_id   = $base_data['post_id'];
 		$ticket_id = $base_data['ticket_id'];
@@ -483,7 +483,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_return_count_from_get_attendees_count() {
 		$sut = $this->make_instance();
 
-		$base_data = $this->make_base_data();
+		$base_data = $this->make_base_data( 0, 20 );
 
 		$post_id   = $base_data['post_id'];
 		$ticket_id = $base_data['ticket_id'];
@@ -502,18 +502,23 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_return_count_from_get_attendees_count_by_user() {
 		$sut = $this->make_instance();
 
-		$base_data = $this->make_base_data();
+		$base_data = $this->make_base_data( 0, 20 );
 
 		$post_id   = $base_data['post_id'];
 		$ticket_id = $base_data['ticket_id'];
 		$user_id   = $base_data['user_id'];
 
-		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
+		$user_id_for_test = $this->factory()->user->create();
+
+		// Generate some tickets while logged in as a test user.
+		wp_set_current_user( $user_id_for_test );
+
+		$this->assertCount( 10, $sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false ) );
 
 		// Generate some tickets while logged in.
 		wp_set_current_user( $user_id );
 
-		$sut->generate_tickets_for( $ticket_id, 5, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false );
+		$this->assertCount( 5, $sut->generate_tickets_for( $ticket_id, 5, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ), false ) );
 
 		$this->assertEquals( 5, $sut->get_attendees_count_by_user( $post_id, $user_id ) );
 	}
@@ -526,7 +531,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_return_count_from_get_attendees_count_going() {
 		$sut = $this->make_instance();
 
-		$base_data = $this->make_base_data();
+		$base_data = $this->make_base_data( 0, 20 );
 
 		$post_id   = $base_data['post_id'];
 		$ticket_id = $base_data['ticket_id'];
@@ -546,7 +551,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_return_count_from_get_attendees_count_not_going() {
 		$sut = $this->make_instance();
 
-		$base_data = $this->make_base_data();
+		$base_data = $this->make_base_data( 0, 20 );
 
 		$post_id   = $base_data['post_id'];
 		$ticket_id = $base_data['ticket_id'];

@@ -1060,13 +1060,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$tickets_generated = $this->generate_tickets_for( $product_id, $ticket_qty, $attendee_details, $redirect );
 
 			if ( $tickets_generated ) {
-				$attendee_ids[] = $tickets_generated;
+				if ( is_array( $tickets_generated ) ) {
+					$attendee_ids[] = $tickets_generated;
+				}
 
 				$has_tickets = true;
 			}
 		}
 
-		$attendee_ids = array_merge( ...$attendee_ids );
+		if ( ! empty( $attendee_ids ) ) {
+			$attendee_ids = array_merge( ...$attendee_ids );
+		}
 
 		$order_id              = $attendee_details['order_id'];
 		$attendee_order_status = $attendee_details['order_status'];
@@ -2461,11 +2465,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			if ( ! isset( $attendee_details[ $required_detail ] ) ) {
 				return false;
 			}
-			if ( $required_detail !== 'optout' ) {
-				// some details should not be empty
-				if ( empty( $attendee_details[ $required_detail ] ) ) {
-					return false;
-				}
+
+			// Some details should not be empty.
+			if ( 'optout' !== $required_detail && empty( $attendee_details[ $required_detail ] ) ) {
+				return false;
 			}
 		}
 
@@ -2505,7 +2508,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$qty = max( $ticket_qty, 0 );
 
 		// Throw an error if Qty is bigger then Remaining
-		if ( $ticket_type->managing_stock() && $qty > $ticket_type->inventory() ) {
+		if ( $ticket_type->managing_stock() && $ticket_type->inventory() < $qty ) {
 			if ( $redirect ) {
 				$url = add_query_arg( 'rsvp_error', 2, get_permalink( $post_id ) );
 				wp_redirect( esc_url_raw( $url ) );
