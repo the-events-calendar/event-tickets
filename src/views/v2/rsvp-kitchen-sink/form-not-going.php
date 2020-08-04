@@ -12,8 +12,9 @@
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
  * @since 4.12.3
+ * @since TBD Updated the placeholder text used.
  *
- * @version 4.12.3
+ * @version TBD
  */
 ?>
 <div class="tribe-tickets__rsvp-wrapper" data-rsvp-id="51">
@@ -40,7 +41,7 @@
 		Name<span class="screen-reader-text">required</span>
 		<span class="tribe-required" aria-hidden="true" role="presentation">*</span>
 	</label>
-	<input type="text" id="tribe-tickets-rsvp-name" class="tribe-common-form-control-text__input tribe-tickets__form-field-input" name="attendee[full_name]" value="" required="" placeholder="John Doe">
+	<input type="text" id="tribe-tickets-rsvp-name" class="tribe-common-form-control-text__input tribe-tickets__form-field-input" name="attendee[full_name]" value="" required="" placeholder="Your Name">
 </div>
 <div class="tribe-common-b1 tribe-tickets__form-field tribe-tickets__form-field--required">
 	<label class="tribe-common-b2--min-medium tribe-tickets__form-field-label" for="tribe-tickets-rsvp-email">

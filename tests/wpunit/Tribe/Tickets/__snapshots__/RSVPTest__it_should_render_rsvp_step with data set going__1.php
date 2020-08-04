@@ -9,10 +9,10 @@
 	
 <form
 	name="tribe-tickets-rsvp-form"
-	data-rsvp-id="9"
+	data-rsvp-id="3630"
 >
-	<input type="hidden" name="product_id[]" value="9">
-	<input type="hidden" name="attendee[order_status]" value="going">
+	<input type="hidden" name="tribe_tickets[3630][ticket_id]" value="3630">
+	<input type="hidden" name="tribe_tickets[3630][attendees][0][order_status]" value="going">
 
 	<div class="tribe-tickets__rsvp-form-wrapper">
 
@@ -33,11 +33,11 @@
 	<input
 		type="text"
 		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-name"
-		name="attendee[full_name]"
+		name="tribe_tickets[3630][attendees][0][full_name]"
 		id="tribe-tickets-rsvp-name"
 		value=""
 		required
-		placeholder="John Doe"
+		placeholder="Your Name"
 	>
 </div>
 <div class="tribe-common-b1 tribe-tickets__form-field tribe-tickets__form-field--required">
@@ -51,7 +51,7 @@
 	<input
 		type="email"
 		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-email"
-		name="attendee[email]"
+		name="tribe_tickets[3630][attendees][0][email]"
 		id="tribe-tickets-rsvp-email"
 		value=""
 		required
@@ -61,15 +61,15 @@
 <div class="tribe-common-b1 tribe-tickets__form-field tribe-tickets__form-field--required">
 	<label
 		class="tribe-common-b2--min-medium tribe-tickets__form-field-label"
-		for="quantity_9"
+		for="quantity_3630"
 	>
 		Number of Guests<span class="screen-reader-text">(required)</span>
 		<span class="tribe-required" aria-hidden="true" role="presentation">*</span>
 	</label>
 	<input
 		type="number"
-		name="quantity_9"
-		id="quantity_9"
+		name="tribe_tickets[3630][quantity]"
+		id="quantity_3630"
 		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-input-number tribe-tickets__rsvp-form-field-quantity"
 		value="1"
 		required

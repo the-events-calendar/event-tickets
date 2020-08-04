@@ -7,9 +7,10 @@
  *
  * @since 4.12.3
  *
+ * @var bool $must_login Whether the user has to login to RSVP or not.
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
- * @version 4.12.3
+ * @version TBD
  */
 
 ?>
@@ -22,8 +23,17 @@
 	</button>
 
 	<button
-		class="tribe-common-c-btn tribe-tickets__rsvp-form-button"
+		class="tribe-common-c-btn tribe-tickets__rsvp-form-button tribe-tickets__rsvp-form-button--next tribe-common-a11y-hidden"
+		type="button"
+		<?php tribe_disabled( $must_login ); ?>
+	>
+		<?php esc_html_e( 'Next guest', 'event-tickets' ); ?>
+	</button>
+
+	<button
+		class="tribe-common-c-btn tribe-tickets__rsvp-form-button tribe-tickets__rsvp-form-button--submit"
 		type="submit"
+		<?php tribe_disabled( $must_login ); ?>
 	>
 		<?php esc_html_e( 'Finish', 'event-tickets' ); ?>
 	</button>

@@ -148,15 +148,20 @@ tribe.tickets.rsvp.block = {};
 	obj.handleSubmission = function( e ) {
 		e.preventDefault();
 
-		var $form = $( this );
-		var $container = $form.closest( obj.selectors.container );
-		var rsvpId = $form.data( 'rsvp-id' );
+		const $form = $( this );
+		const $container = $form.closest( obj.selectors.container );
+		const rsvpId = $form.data( 'rsvp-id' );
+		const params = $form.serializeArray();
 
 		var data = {
 			action: 'tribe_tickets_rsvp_handle',
 			ticket_id: rsvpId,
 			step: 'success',
 		};
+
+		$( params ).each( function( index, object ) {
+			data[ object.name ] = object.value;
+		} );
 
 		tribe.tickets.rsvp.manager.request( data, $container );
 	};
