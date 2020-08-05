@@ -21,7 +21,7 @@
 <div class="tribe-tickets__rsvp-actions-wrapper tribe-common-g-col">
 	<div class="tribe-tickets__rsvp-actions">
 
-		<?php if ( 'success' === $step ) : ?>
+		<?php if ( in_array( $step, [ 'success', 'opt-in' ], true ) ) : ?>
 
 			<?php $this->template( 'v2/rsvp/actions/success', [ 'rsvp' => $rsvp ] ); ?>
 
