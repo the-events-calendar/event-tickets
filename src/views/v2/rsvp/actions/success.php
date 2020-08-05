@@ -10,7 +10,10 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
+ * @var Tribe__Tickets__Ticket_Object $rsvp                The rsvp ticket object.
+ * @var string                        $opt_in_attendee_ids The list of attendee IDs to send.
+ * @var string                        $opt_in_nonce        The nonce for opt-in AJAX requests.
+ * @var boolean                       $opt_in_checked      Whether the opt-in field should be checked.
  *
  * @since 4.12.3
  * @version 4.12.3
@@ -29,7 +32,10 @@ $toggle_id = 'toggle-rsvp-' . $rsvp->ID;
 			name="toggleGroup"
 			type="checkbox"
 			value="toggleOne"
+			<?php checked( $opt_in_checked ); ?>
 			data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
+			data-attendee-ids="<?php echo esc_attr( $opt_in_attendee_ids ); ?>"
+			data-opt-in-nonce="<?php echo esc_attr( $opt_in_nonce ); ?>"
 		/>
 		<label
 			class="tribe-common-form-control-toggle__label tribe-tickets__rsvp-actions-success-going-toggle-label"
