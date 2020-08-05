@@ -2611,8 +2611,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$first_attendee = [];
 
-		if ( ! empty( $_POST['tribe_tickets']['attendees'] ) ) {
-			$first_attendee = $_POST['tribe_tickets']['attendees'][0];
+		if ( ! empty( $_POST['tribe_tickets'] ) ) {
+			$first_ticket = current( $_POST['tribe_tickets'] );
+
+			if ( ! empty( $first_ticket['attendees'] ) ) {
+				$first_attendee = current( $first_ticket['attendees'] );
+			}
 		} elseif ( isset( $_POST['attendee'] ) ) {
 			$first_attendee = $_POST['attendee'];
 		}
