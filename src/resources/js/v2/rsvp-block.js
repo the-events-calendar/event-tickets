@@ -140,24 +140,24 @@ tribe.tickets.rsvp.block = {};
 	 *
 	 * @since TBD
 	 *
-	 * @param {event} e submission event
+	 * @param {event} event Input event
 	 */
-	obj.handleDisplayToggle = function( e ) {
-		e.preventDefault();
+	obj.handleDisplayToggle = function( event ) {
+		event.preventDefault();
 
-		const $input = $( e.target );
+		const $input = $( event.target );
 		const rsvpId = $input.data( 'rsvp-id' );
 		const checked = $input.prop( 'checked' );
 		const attendeeIds = $input.data( 'attendee-ids' );
 		const nonce = $input.data( 'opt-in-nonce' );
-		const $container = e.data.container;
+		const $container = event.data.container;
 
-		var data = {
+		const data = {
 			action: 'tribe_tickets_rsvp_handle',
 			ticket_id: rsvpId,
 			step: 'opt-in',
 			opt_in: checked,
-			opt_in_none: nonce,
+			opt_in_nonce: nonce,
 			attendee_ids: attendeeIds,
 		};
 
