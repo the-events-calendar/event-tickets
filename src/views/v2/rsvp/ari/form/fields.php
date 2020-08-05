@@ -15,35 +15,15 @@
  * @version TBD
  */
 
-/**
- * Filter to check if the RSVP has meta.
- *
- * @since TBD
- *
- * @param Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
- *
- * @return bool
- */
-$has_meta = apply_filters( 'tribe_tickets_rsvp_has_meta', $rsvp, false );
-
-if ( empty( $has_meta ) ) {
-	return;
-}
 ?>
 <div class="tribe-tickets__form">
 
 	<?php $this->template( 'v2/rsvp/ari/form/error', [ 'rsvp' => $rsvp ] ); ?>
 
-	<?php
-		/**
-		 * Allows injection of meta fields in the RSVP ARI form.
-		 *
-		 * @since TBD
-		 *
-		 * @see  Tribe__Template\do_entry_point()
-		 * @link https://docs.theeventscalendar.com/reference/classes/tribe__template/do_entry_point/
-		 */
-		$this->do_entry_point( 'rsvp_attendee_fields' );
-	?>
+	<?php $this->template( 'v2/rsvp/ari/form/fields/name', [ 'rsvp' => $rsvp ] ); ?>
+
+	<?php $this->template( 'v2/rsvp/ari/form/fields/email', [ 'rsvp' => $rsvp ] ); ?>
+
+	<?php $this->template( 'v2/rsvp/ari/form/fields/meta', [ 'rsvp' => $rsvp ] ); ?>
 
 </div>
