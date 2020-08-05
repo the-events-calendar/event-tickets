@@ -28,7 +28,6 @@
 			aria-selected="false"
 			aria-controls="tribe-tickets-rsvp-<?php echo esc_attr( $rsvp->ID ); ?>-guest-{{data.attendee_id + 1}}-tab"
 			id="tribe-tickets-rsvp-<?php echo esc_attr( $rsvp->ID ); ?>-guest-{{data.attendee_id + 1}}"
-			tabindex="-1"
 			<?php disabled( $must_login ); ?>
 		>
 			<?php $this->template( 'v2/components/icons/guest', [ 'classes' => [ 'tribe-tickets__rsvp-ar-guest-icon' ] ] ); ?>

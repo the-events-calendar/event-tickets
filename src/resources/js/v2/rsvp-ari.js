@@ -87,14 +87,11 @@ tribe.tickets.rsvp.ari = {};
 		// Set the classes for inactive.
 		$guestListButtons.addClass( obj.selectors.guestListItemButtonInactive.className() );
 		$guestListButtons.attr( 'aria-selected', false );
-		$guestListButtons.attr( 'tabindex', -1 );
 
 		// Set the active class for the current.
 		const $targetGuestButton = $container.find( obj.selectors.guestListItemButton + '[data-guest-number="' + guestNumber + '"]' );
 		$targetGuestButton.removeClass( obj.selectors.guestListItemButtonInactive.className() );
 		$targetGuestButton.attr( 'aria-selected', true );
-		$targetGuestButton.removeAttr( 'tabindex' );
-
 	};
 
 	/**
