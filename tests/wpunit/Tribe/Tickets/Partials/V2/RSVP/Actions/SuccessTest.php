@@ -39,9 +39,12 @@ class SuccessTest extends WPTestCase {
 		$ticket = tribe( 'tickets.rsvp' )->get_ticket( $event_id, $ticket_id );
 
 		$args = [
-			'rsvp'       => $ticket,
-			'post_id'    => $event_id,
-			'must_login' => false,
+			'rsvp'                => $ticket,
+			'post_id'             => $event_id,
+			'must_login'          => false,
+			'opt_in_checked'      => false,
+			'opt_in_attendee_ids' => '',
+			'opt_in_nonce'        => '',
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
