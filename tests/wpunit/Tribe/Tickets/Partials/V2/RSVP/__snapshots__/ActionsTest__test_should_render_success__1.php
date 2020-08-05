@@ -17,7 +17,7 @@
 			name="toggleGroup"
 			type="checkbox"
 			value="toggleOne"
-			data-rsvp-id="21"
+						data-rsvp-id="21"
 			data-attendee-ids=""
 			data-opt-in-nonce=""
 		/>
