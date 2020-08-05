@@ -78,6 +78,27 @@
 		@media(--viewport-medium) {
 			max-width: 600px;
 		}
+	}
+
+	input[type="text"],
+	input[type="email"],
+	input[type="url"],
+	input[type="password"],
+	input[type="search"],
+	input[type="number"],
+	input[type="tel"],
+	input[type="range"],
+	input[type="date"],
+	input[type="month"],
+	input[type="week"],
+	input[type="time"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="color"],
+	input[type="checkbox"],
+	input[type="radio"],
+	select,
+	textarea {
 
 		&:invalid {
 			box-shadow: none;
@@ -99,7 +120,6 @@
 			color: var(--color-text-secondary);
 			font-family: var(--font-family-base);
 		}
-
 	}
 
 	select {
