@@ -1,93 +1,140 @@
-<?php return '
-<div class="tribe-block tribe-block__rsvp">
-						<div class="tribe-block__rsvp__ticket" data-rsvp-id="11">
-				<div class="tribe-block__rsvp__icon">
+<?php return '	<div class="tribe-common event-tickets">
+
+		
+			<div
+				class="tribe-tickets__rsvp-wrapper"
+				data-rsvp-id="10007"
+			>
+				<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
+	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--first"></div>
+	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--second"></div>
+	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--third"></div>
+</div>
+				
+
+
 	
-	RSVP</div>
-				<div class="tribe-block__rsvp__content">
+	<div class="tribe-tickets__rsvp tribe-common-g-row tribe-common-g-row--gutters">
 
-	<div class="tribe-block__rsvp__details__status">
-		<div class="tribe-block__rsvp__details">
+		<div class="tribe-tickets__rsvp-details-wrapper tribe-common-g-col">
+	<div class="tribe-tickets__rsvp-details">
+		<h3 class="tribe-tickets__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
+	Test RSVP ticket for 10006</h3>
 
-	<header class="tribe-block__rsvp__title">
-	Test RSVP ticket for 10</header>
-
-	<div class="tribe-block__rsvp__description">
-	<p>Ticket RSVP ticket excerpt for 10</p>
+		<div class="tribe-tickets__rsvp-description tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
+	<p>Ticket RSVP ticket excerpt for 10006</p>
 </div>
 
-	<div class="tribe-block__rsvp__availability">
-			<span class="tribe-block__rsvp__quantity">100 </span>
-		remaining	</div>
-
+		<div class="tribe-tickets__rsvp-attendance">
+	<span  class="tribe-tickets__rsvp-attendance-number tribe-common-h4" >
+		0	</span>
+	<span class="tribe-tickets__rsvp-attendance-going tribe-common-h7 tribe-common-h--alt tribe-common-b3--min-medium">
+		Going	</span>
 </div>
-		<div class="tribe-block__rsvp__status">
+
+		<div class="tribe-tickets__rsvp-availability tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
+			<span class="tribe-tickets__rsvp-availability-quantity tribe-common-b2--bold"> 100 </span> remaining,	
+			
+<span class="tribe-tickets__rsvp-availability-days-to-rsvp">
+	Last day to RSVP</span>
+	</div>
+	</div>
+</div>
+
+		<div class="tribe-tickets__rsvp-actions-wrapper tribe-common-g-col">
+	<div class="tribe-tickets__rsvp-actions">
+
+		
+			<div class="tribe-tickets__rsvp-actions-rsvp">
+	<span class="tribe-common-h2 tribe-common-h6--min-medium">
+		RSVP Here	</span>
+
 	
-		<span>
+<div class="tribe-tickets__rsvp-actions-rsvp-going">
 	<button
-	class="tribe-block__rsvp__status-button tribe-block__rsvp__status-button--going"
-		>
-		<span>Going</span>
-		
-	</button>
-</span>
-		
-	</div>
-	</div>
-
-	<!-- This div is where the AJAX returns the form -->
-<div class="tribe-block__rsvp__form">
-	</div>
-
+		class="tribe-common-c-btn tribe-tickets__rsvp-actions-button-going tribe-common-b1 tribe-common-b2--min-medium"
+		type="submit"
+			>
+		Going	</button>
 </div>
+
+	
+</div>
+
 			</div>
-					<div class="tribe-block__rsvp__ticket" data-rsvp-id="12">
-				<div class="tribe-block__rsvp__icon">
-	
-	RSVP</div>
-				<div class="tribe-block__rsvp__content">
-
-	<div class="tribe-block__rsvp__details__status">
-		<div class="tribe-block__rsvp__details">
-
-	<header class="tribe-block__rsvp__title">
-	Test RSVP ticket for 10</header>
-
-	<div class="tribe-block__rsvp__description">
-	<p>Ticket RSVP ticket excerpt for 10</p>
-</div>
-
-	<div class="tribe-block__rsvp__availability">
-			<span class="tribe-block__rsvp__quantity">100 </span>
-		remaining	</div>
 
 </div>
-		<div class="tribe-block__rsvp__status">
+
+	</div>
+
+			</div>
+		
+			<div
+				class="tribe-tickets__rsvp-wrapper"
+				data-rsvp-id="10008"
+			>
+				<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
+	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--first"></div>
+	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--second"></div>
+	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--third"></div>
+</div>
+				
+
+
 	
-		<span>
+	<div class="tribe-tickets__rsvp tribe-common-g-row tribe-common-g-row--gutters">
+
+		<div class="tribe-tickets__rsvp-details-wrapper tribe-common-g-col">
+	<div class="tribe-tickets__rsvp-details">
+		<h3 class="tribe-tickets__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
+	Test RSVP ticket for 10006</h3>
+
+		<div class="tribe-tickets__rsvp-description tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
+	<p>Ticket RSVP ticket excerpt for 10006</p>
+</div>
+
+		<div class="tribe-tickets__rsvp-attendance">
+	<span  class="tribe-tickets__rsvp-attendance-number tribe-common-h4" >
+		0	</span>
+	<span class="tribe-tickets__rsvp-attendance-going tribe-common-h7 tribe-common-h--alt tribe-common-b3--min-medium">
+		Going	</span>
+</div>
+
+		<div class="tribe-tickets__rsvp-availability tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
+			<span class="tribe-tickets__rsvp-availability-quantity tribe-common-b2--bold"> 100 </span> remaining,	
+			
+<span class="tribe-tickets__rsvp-availability-days-to-rsvp">
+	Last day to RSVP</span>
+	</div>
+	</div>
+</div>
+
+		<div class="tribe-tickets__rsvp-actions-wrapper tribe-common-g-col">
+	<div class="tribe-tickets__rsvp-actions">
+
+		
+			<div class="tribe-tickets__rsvp-actions-rsvp">
+	<span class="tribe-common-h2 tribe-common-h6--min-medium">
+		RSVP Here	</span>
+
+	
+<div class="tribe-tickets__rsvp-actions-rsvp-going">
 	<button
-	class="tribe-block__rsvp__status-button tribe-block__rsvp__status-button--going"
-		>
-		<span>Going</span>
-		
-	</button>
-</span>
-		
-	</div>
-	</div>
-
-	<!-- This div is where the AJAX returns the form -->
-<div class="tribe-block__rsvp__form">
-	</div>
-
+		class="tribe-common-c-btn tribe-tickets__rsvp-actions-button-going tribe-common-b1 tribe-common-b2--min-medium"
+		type="submit"
+			>
+		Going	</button>
 </div>
+
+	
+</div>
+
 			</div>
-				<div class="tribe-common">
-	<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden tribe-block__rsvp__loading"  >
-		<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--first"></div>
-		<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--second"></div>
-		<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--third"></div>
+
+</div>
+
 	</div>
-</div>
-</div>
+
+			</div>
+			</div>
 ';
