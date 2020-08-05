@@ -703,11 +703,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		foreach ( $required_details as $required_detail ) {
 			// Detail is not set.
 			if ( ! isset( $attendee_data[ $required_detail ] ) ) {
+				/* translators: %s is the attendee field name. */
 				throw new Exception( sprintf( __( 'Attendee field "%s" is not set.', 'event-tickets' ), $required_detail ) );
 			}
 
 			// Detail is empty.
 			if ( empty( $attendee_data[ $required_detail ] ) ) {
+				/* translators: %s is the attendee field name. */
 				throw new Exception( sprintf( __( 'Attendee field "%s" is empty.', 'event-tickets' ), $required_detail ) );
 			}
 		}
@@ -2554,7 +2556,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 				$attendee_ids[] = $this->create_attendee_for_ticket( $ticket_type, $attendee_data );
 			} catch ( Exception $exception ) {
-				// No handling for this at the moment.
+				// Stop processing and return false.
+				return false;
 			}
 		}
 
