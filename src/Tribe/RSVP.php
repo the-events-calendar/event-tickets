@@ -310,12 +310,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'threshold'  => $blocks_rsvp->get_threshold( $post_id ),
 		];
 
-		$args['process_result'] = $this->process_rsvp_step( $args );
-
 		/**
-		 * Allow filtering of the template arguments used.
+		 * Allow filtering of the template arguments used prior to processing.
 		 *
-		 * @since 4.12.3
+		 * @since TBD
 		 *
 		 * @param array $args {
 		 *      The list of step template arguments.
@@ -327,6 +325,28 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 *      @type boolean                       $must_login Whether login is required to register.
 		 *      @type string                        $login_url  The site login URL.
 		 *      @type int                           $threshold  The RSVP ticket threshold.
+		 * }
+		 */
+		$args = apply_filters( 'tribe_tickets_rsvp_render_step_template_args_pre_process', $args );
+
+		$args['process_result'] = $this->process_rsvp_step( $args );
+
+		/**
+		 * Allow filtering of the template arguments used.
+		 *
+		 * @since 4.12.3
+		 *
+		 * @param array $args {
+		 *      The list of step template arguments.
+		 *
+		 *      @type int                           $rsvp_id        The RSVP ticket ID.
+		 *      @type int                           $post_id        The ticket ID.
+		 *      @type Tribe__Tickets__Ticket_Object $rsvp           The RSVP ticket object.
+		 *      @type null|string                   $step           Which step being rendered.
+		 *      @type boolean                       $must_login     Whether login is required to register.
+		 *      @type string                        $login_url      The site login URL.
+		 *      @type int                           $threshold      The RSVP ticket threshold.
+		 *      @type array                         $process_result The processing result.
 		 * }
 		 */
 		$args = apply_filters( 'tribe_tickets_rsvp_render_step_template_args', $args );
