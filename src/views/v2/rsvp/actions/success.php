@@ -10,20 +10,16 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
+ * @var Tribe__Tickets__Ticket_Object $rsvp                The rsvp ticket object.
+ * @var string                        $opt_in_attendee_ids The list of attendee IDs to send.
+ * @var string                        $opt_in_nonce        The nonce for opt-in AJAX requests.
+ * @var boolean                       $opt_in_checked      Whether the opt-in field should be checked.
  *
  * @since 4.12.3
  * @version 4.12.3
  */
 
 $toggle_id = 'toggle-rsvp-' . $rsvp->ID;
-$attendee_ids = '';
-$opt_in_nonce = '';
-
-if ( ! empty( $process_result['opt_in_args'] ) ) {
-	$attendee_ids = $process_result['opt_in_args']['attendee_ids'];
-	$opt_in_nonce = $process_result['opt_in_args']['opt_in_nonce'];
-}
 ?>
 <div class="tribe-tickets__rsvp-actions-success">
 
@@ -36,8 +32,9 @@ if ( ! empty( $process_result['opt_in_args'] ) ) {
 			name="toggleGroup"
 			type="checkbox"
 			value="toggleOne"
+			<?php checked( $opt_in_checked ); ?>
 			data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
-			data-attendee-ids="<?php echo esc_attr( $attendee_ids ); ?>"
+			data-attendee-ids="<?php echo esc_attr( $opt_in_attendee_ids ); ?>"
 			data-opt-in-nonce="<?php echo esc_attr( $opt_in_nonce ); ?>"
 		/>
 		<label

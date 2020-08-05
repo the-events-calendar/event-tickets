@@ -1088,16 +1088,19 @@ class Tribe__Tickets__Tickets_View {
 		$past_tickets   = $blocks_rsvp->get_all_tickets_past( $tickets );
 
 		$args = [
-			'post_id'          => $post_id,
-			'attributes'       => $blocks_rsvp->attributes(),
-			'active_rsvps'     => $active_tickets,
-			'all_past'         => $past_tickets,
-			'has_rsvps'        => ! empty( $tickets ),
-			'has_active_rsvps' => ! empty( $active_tickets ),
-			'must_login'       => ! is_user_logged_in() && $rsvp->login_required(),
-			'login_url'        => Tribe__Tickets__Tickets::get_login_url( $post_id ),
-			'threshold'        => $blocks_rsvp->get_threshold( $post_id ),
-			'step'             => null,
+			'post_id'             => $post_id,
+			'attributes'          => $blocks_rsvp->attributes(),
+			'active_rsvps'        => $active_tickets,
+			'all_past'            => $past_tickets,
+			'has_rsvps'           => ! empty( $tickets ),
+			'has_active_rsvps'    => ! empty( $active_tickets ),
+			'must_login'          => ! is_user_logged_in() && $rsvp->login_required(),
+			'login_url'           => Tribe__Tickets__Tickets::get_login_url( $post_id ),
+			'threshold'           => $blocks_rsvp->get_threshold( $post_id ),
+			'step'                => null,
+			'opt_in_checked'      => false,
+			'opt_in_attendee_ids' => '',
+			'opt_in_nonce'        => '',
 		];
 
 		// Add the rendering attributes into global context.

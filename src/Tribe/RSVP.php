@@ -336,6 +336,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return $args['process_result'];
 		}
 
+		$args['opt_in_checked']      = false;
+		$args['opt_in_attendee_ids'] = '';
+		$args['opt_in_nonce']        = '';
+
+		if ( ! empty( $process_result['opt_in_args'] ) ) {
+			$args['opt_in_checked']      = false;
+			$args['opt_in_attendee_ids'] = $process_result['opt_in_args']['attendee_ids'];
+			$args['opt_in_nonce']        = $process_result['opt_in_args']['opt_in_nonce'];
+		}
+
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
 
@@ -429,7 +439,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			];
 		} elseif ( 'opt-in' === $args['step'] ) {
 			/**
-			 * These are the inputs we should be seeing.
+			 * These are the inputs we should be seeing:
 			 *
 			 * opt_in
 			 * attendee_ids
