@@ -44,6 +44,7 @@ tribe.tickets.rsvp.manager = {};
 		container: '.tribe-tickets__rsvp-wrapper',
 		loader: '.tribe-common-c-loader',
 		hiddenElement: '.tribe-common-a11y-hidden',
+		messageError: '.tribe-tickets__rsvp-message--error',
 	};
 
 	/**
@@ -229,11 +230,20 @@ tribe.tickets.rsvp.manager = {};
 	 * @return {void}
 	 */
 	obj.ajaxSuccess = function( response, textStatus, jqXHR ) {
-		var $container = this;
+		const $container = this;
+		const $html = response.data.html;
+
+		// If the request is not successful, prepend the error.
+		if ( ! response.success ) {
+			// Prepend the error only once.
+			if ( ! $container.find( obj.selectors.messageError ).length ) {
+				$container.prepend( $html );
+			}
+
+			return;
+		}
 
 		$container.trigger( 'beforeAjaxSuccess.tribeTicketsRsvp', [ response, textStatus, jqXHR ] );
-
-		var $html = response.data.html;
 
 		// Clean up the container and event listeners.
 		obj.cleanup( $container );
