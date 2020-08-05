@@ -9,7 +9,7 @@
 	<form
 	class="tribe-tickets__rsvp-ar tribe-common-g-row tribe-common-g-row--gutters"
 	name="tribe-tickets-rsvp-form-ari"
-	data-rsvp-id="3636"
+	data-rsvp-id="281"
 >
 	<div class="tribe-tickets__rsvp-ar-sidebar-wrapper tribe-common-g-col">
 		<div class="tribe-tickets__rsvp-ar-sidebar">
@@ -31,7 +31,7 @@
 
 		<input
 	type="number"
-	name="tribe_tickets[3636][quantity]"
+	name="tribe_tickets[281][quantity]"
 	class="tribe-common-h4"
 	step="1"
 	min="1"
@@ -64,8 +64,8 @@
 		data-guest-number="1"
 		role="tab"
 		aria-selected="true"
-		aria-controls="tribe-tickets-rsvp-3636-guest-1-tab"
-		id="tribe-tickets-rsvp-3636-guest-1"
+		aria-controls="tribe-tickets-rsvp-281-guest-1-tab"
+		id="tribe-tickets-rsvp-281-guest-1"
 			>
 		<svg  class="tribe-tickets-svgicon tribe-tickets__rsvp-ar-guest-icon"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 11 14"><defs/><path fill="#141827" stroke="#141827" stroke-width="1.1" d="M8.24995 3.575c0 1.32005-1.18823 2.475-2.75 2.475s-2.75-1.15495-2.75-2.475v-.55c0-1.32005 1.18823-2.475 2.75-2.475s2.75 1.15495 2.75 2.475v.55zM.55 11.5868c0-2.12633 1.7237-3.85003 3.85-3.85003h2.2c2.1263 0 3.85 1.7237 3.85 3.85003v1.7435H.55v-1.7435z"/></svg>		<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-common-a11y-visual-hide">
 			Main Guest		</span>
@@ -73,7 +73,7 @@
 </li>
 	<script
 	class="tribe-tickets__rsvp-ar-guest-list-item-template"
-	id="tmpl-tribe-tickets__rsvp-ar-guest-list-item-template-3636"
+	id="tmpl-tribe-tickets__rsvp-ar-guest-list-item-template-281"
 	type="text/template"
 >
 	<li class="tribe-tickets__rsvp-ar-guest-list-item">
@@ -83,9 +83,8 @@
 			data-guest-number="{{data.attendee_id + 1}}"
 			role="tab"
 			aria-selected="false"
-			aria-controls="tribe-tickets-rsvp-3636-guest-{{data.attendee_id + 1}}-tab"
-			id="tribe-tickets-rsvp-3636-guest-{{data.attendee_id + 1}}"
-			tabindex="-1"
+			aria-controls="tribe-tickets-rsvp-281-guest-{{data.attendee_id + 1}}-tab"
+			id="tribe-tickets-rsvp-281-guest-{{data.attendee_id + 1}}"
 					>
 			<svg  class="tribe-tickets-svgicon tribe-tickets__rsvp-ar-guest-icon"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 11 14"><defs/><path fill="#141827" stroke="#141827" stroke-width="1.1" d="M8.24995 3.575c0 1.32005-1.18823 2.475-2.75 2.475s-2.75-1.15495-2.75-2.475v-.55c0-1.32005 1.18823-2.475 2.75-2.475s2.75 1.15495 2.75 2.475v.55zM.55 11.5868c0-2.12633 1.7237-3.85003 3.85-3.85003h2.2c2.1263 0 3.85 1.7237 3.85 3.85003v1.7435H.55v-1.7435z"/></svg>			<span class="tribe-tickets__rsvp-ar-guest-list-item-title tribe-common-a11y-visual-hide">
 								Guest {{data.attendee_id + 1}}			</span>
@@ -108,8 +107,8 @@
 	data-guest-number="1"
 	tabindex="0"
 	role="tabpanel"
-	id="tribe-tickets-rsvp-3636-guest-1-tab"
-	aria-labelledby="tribe-tickets-rsvp-3636-guest-1"
+	id="tribe-tickets-rsvp-281-guest-1-tab"
+	aria-labelledby="tribe-tickets-rsvp-281-guest-1"
 >
 	<header>
 	<h3 class="tribe-tickets__rsvp-ar-form-title tribe-common-h5">
@@ -122,6 +121,44 @@
 	<svg  class="tribe-tickets-svgicon tribe-tickets__form-message--error-icon"  xmlns="http://www.w3.org/2000/svg" width="18" height="18"><g fill="none" fill-rule="evenodd" transform="translate(1 1)"><circle cx="8" cy="8" r="7.467" stroke="#141827" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><circle id="dot" cx="8" cy="11.733" r="1.067" fill="#141827" fill-rule="nonzero"/><path stroke="#141827" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 3.733v4.8"/></g></svg>	<span class="tribe-tickets__form-message-text">
 		<p>Please fill in required information before proceeding</p>
 	</span>
+</div>
+
+	<div class="tribe-common-b1 tribe-tickets__form-field tribe-tickets__form-field--required">
+	<label
+		class="tribe-common-b2--min-medium tribe-tickets__form-field-label"
+		for="tribe-tickets-rsvp-name"
+	>
+		Name<span class="screen-reader-text">required</span>
+		<span class="tribe-required" aria-hidden="true" role="presentation">*</span>
+	</label>
+	<input
+		type="text"
+		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-name"
+		name="tribe_tickets[281][attendees][0][full_name]"
+		id="tribe-tickets-rsvp-name"
+		value=""
+		required
+		placeholder="Your Name"
+	>
+</div>
+
+	<div class="tribe-common-b1 tribe-tickets__form-field tribe-tickets__form-field--required">
+	<label
+		class="tribe-common-b2--min-medium tribe-tickets__form-field-label"
+		for="tribe-tickets-rsvp-email"
+	>
+		Email<span class="screen-reader-text">required</span>
+		<span class="tribe-required" aria-hidden="true" role="presentation">*</span>
+	</label>
+	<input
+		type="email"
+		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-email"
+		name="tribe_tickets[281][attendees][0][email]"
+		id="tribe-tickets-rsvp-email"
+		value=""
+		required
+		placeholder="your@email.com"
+	>
 </div>
 
 	
@@ -151,7 +188,7 @@
 
 	<script
 	class="tribe-tickets__rsvp-ar-form-guest-template"
-	id="tmpl-tribe-tickets__rsvp-ar-form-guest-template-3636"
+	id="tmpl-tribe-tickets__rsvp-ar-form-guest-template-281"
 	type="text/template"
 >
 	<div
@@ -159,8 +196,8 @@
 		data-guest-number="{{data.attendee_id + 1}}"
 		tabindex="0"
 		role="tabpanel"
-		id="tribe-tickets-rsvp-3636-guest-{{data.attendee_id + 1}}-tab"
-		aria-labelledby="tribe-tickets-rsvp-3636-guest-{{data.attendee_id + 1}}"
+		id="tribe-tickets-rsvp-281-guest-{{data.attendee_id + 1}}-tab"
+		aria-labelledby="tribe-tickets-rsvp-281-guest-{{data.attendee_id + 1}}"
 		hidden
 	>
 
