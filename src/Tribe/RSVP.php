@@ -360,10 +360,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$args['opt_in_attendee_ids'] = '';
 		$args['opt_in_nonce']        = '';
 
-		if ( ! empty( $process_result['opt_in_args'] ) ) {
-			$args['opt_in_checked']      = false;
-			$args['opt_in_attendee_ids'] = $process_result['opt_in_args']['attendee_ids'];
-			$args['opt_in_nonce']        = $process_result['opt_in_args']['opt_in_nonce'];
+		if ( ! empty( $args['process_result']['opt_in_args'] ) ) {
+			$args['opt_in_checked']      = $args['process_result']['opt_in_args']['checked'];
+			$args['opt_in_attendee_ids'] = $args['process_result']['opt_in_args']['attendee_ids'];
+			$args['opt_in_nonce']        = $args['process_result']['opt_in_args']['opt_in_nonce'];
 		}
 
 		// Add the rendering attributes into global context.
@@ -454,6 +454,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 			$result['success']     = true;
 			$result['opt_in_args'] = [
+				'checked'      => false,
 				'attendee_ids' => $attendee_ids,
 				'opt_in_nonce' => wp_create_nonce( $nonce_action ),
 			];
@@ -471,21 +472,29 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$attendee_ids = Tribe__Utils__Array::list_to_array( tribe_get_request_var( 'attendee_ids', [] ) );
 			$attendee_ids = array_map( 'absint', $attendee_ids );
 
-			$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( implode( ',', $attendee_ids ) );
+			$attendee_ids_flat = implode( ',', $attendee_ids );
 
-			if ( false === wp_verify_nonce( tribe_get_request_var( 'opt_in_nonce', '' ), $nonce_action ) ) {
+			$nonce_value  = tribe_get_request_var( 'opt_in_nonce', '' );
+			$nonce_action = 'tribe-tickets-rsvp-opt-in-' . md5( $attendee_ids_flat );
+
+			if ( false === wp_verify_nonce( $nonce_value, $nonce_action ) ) {
 				$result['success']  = false;
 				$result['errors'][] = __( 'Unable to verify your opt-in request, please try again.', 'event-tickets' );
 
 				return $result;
 			}
 
-			$result['success'] = true;
-
 			foreach ( $attendee_ids as $attendee_id ) {
 				// @todo This class is not setting $this->attendee_optout_key.
 				update_post_meta( $attendee_id, self::ATTENDEE_OPTOUT_KEY, (int) $optout );
 			}
+
+			$result['success']     = true;
+			$result['opt_in_args'] = [
+				'checked'      => ! $optout,
+				'attendee_ids' => $attendee_ids_flat,
+				'opt_in_nonce' => $nonce_value,
+			];
 		}
 
 		return $result;

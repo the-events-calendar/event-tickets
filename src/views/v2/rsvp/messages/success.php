@@ -18,7 +18,7 @@
  * @version 4.12.3
  */
 
-if ( 'success' !== $step ) {
+if ( ! in_array( $step, [ 'success', 'opt-in' ], true ) ) {
 	return;
 }
 ?>
