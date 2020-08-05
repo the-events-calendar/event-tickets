@@ -690,7 +690,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @return int Attendee ID.
 	 *
-	 * @throws Exception
+	 * @throws Exception The exception if attendee failed to be created.
 	 */
 	public function create_attendee_for_ticket( $ticket, $attendee_data ) {
 		$rsvp_options = \Tribe__Tickets__Tickets_View::instance()->get_rsvp_options( null, false );
