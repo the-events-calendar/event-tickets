@@ -360,10 +360,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$args['opt_in_attendee_ids'] = '';
 		$args['opt_in_nonce']        = '';
 
-		if ( ! empty( $process_result['opt_in_args'] ) ) {
+		if ( ! empty( $args['process_result']['opt_in_args'] ) ) {
 			$args['opt_in_checked']      = false;
-			$args['opt_in_attendee_ids'] = $process_result['opt_in_args']['attendee_ids'];
-			$args['opt_in_nonce']        = $process_result['opt_in_args']['opt_in_nonce'];
+			$args['opt_in_attendee_ids'] = $args['process_result']['opt_in_args']['attendee_ids'];
+			$args['opt_in_nonce']        = $args['process_result']['opt_in_args']['opt_in_nonce'];
 		}
 
 		// Add the rendering attributes into global context.
