@@ -6,9 +6,10 @@
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/checkbox.php
  *
  * @since 4.11.0
- * @since 4.12.1 Make sure label/input IDs don't conflict with other ticket fields.
+ * @since 4.12.1 Make sure label/input IDs don't conflict with other ticket fields. Updated phpdoc for which field class to reference.
+ * @since TBD Remove duplicate variables defined in the view.
  *
- * @version 4.12.1 Updated phpdoc for which field class to reference.
+ * @version TBD
  *
  * @see Tribe__Tickets_Plus__Meta__Field__Checkbox
  */
