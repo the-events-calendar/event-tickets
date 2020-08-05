@@ -18,6 +18,15 @@
 		}
 	}
 
+	.tribe-tickets__rsvp-message--error {
+
+		&,
+		&.tribe-tickets__rsvp-message {
+			background-color: var(--color-background-error);
+		}
+
+	}
+
 	.tribe-tickets__rsvp-message--success-icon {
 		display: inline-block;
 		width: var(--spacer-3);
@@ -29,7 +38,8 @@
 		}
 	}
 
-	.tribe-tickets__rsvp-message--must-login-icon {
+	.tribe-tickets__rsvp-message--must-login-icon,
+	.tribe-tickets__rsvp-message--error-icon {
 		display: inline-block;
 		margin-right: var(--spacer-2);
 
