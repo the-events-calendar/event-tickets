@@ -50,6 +50,7 @@ class Tribe__Tickets__Editor__Compatibility__Tickets {
 		// We don't care about anything other than event for now
 		if (
 			class_exists( 'Tribe__Events__Main' )
+			&& defined( 'Tribe__Events__Main::POSTTYPE' )
 			&& Tribe__Events__Main::POSTTYPE !== $post->post_type
 		) {
 			return $content;
