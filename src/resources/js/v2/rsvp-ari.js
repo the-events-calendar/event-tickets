@@ -230,7 +230,9 @@ tribe.tickets.rsvp.ari = {};
 	 *
 	 * @return {void}
 	 */
-	obj.bindGoToGuest = function( $container, $button, guestNumber = 1 ) {
+	obj.bindGoToGuest = function( $container, $button, guestNumber ) {
+		var guestNumber = guestNumber || 1;
+
 		$button.on( 'click', function() {
 			const guestNumberDataAttribute = $( this ).data( 'guest-number' );
 			if ( undefined !== guestNumberDataAttribute ) {
