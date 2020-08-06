@@ -216,18 +216,11 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 		}
 
 		$ticket_form_hook = $this->ticket_type->get_ticket_form_hook();
+
 		if ( ! empty( $ticket_form_hook ) ) {
-			remove_action(
-				$ticket_form_hook, [
-				$this->ticket_type,
-				'maybe_add_front_end_tickets_form',
-			], 5 );
+			remove_action( $ticket_form_hook, [ $this->ticket_type, 'maybe_add_front_end_tickets_form' ], 5 );
 		}
 
-		remove_filter(
-			'the_content', [
-			$this->ticket_type,
-			'front_end_tickets_form_in_content',
-		], 11 );
+		remove_filter( 'the_content', [ $this->ticket_type, 'front_end_tickets_form_in_content' ], 11 );
 	}
 }
