@@ -273,8 +273,6 @@ tribe.tickets.rsvp.ari = {};
 		const $newGuest = $guestListItems.last();
 		const $newGuestButton = $newGuest.find( obj.selectors.guestListItemButton );
 
-		const $newGuestForm = $guestFormWrapper.children( obj.selectors.guestFormFields ).last();
-
 		// Globally set next guest / Submit.
 		obj.setNextAndSubmit( $container );
 
@@ -282,7 +280,8 @@ tribe.tickets.rsvp.ari = {};
 		obj.bindGoToGuest( $container, $newGuestButton );
 
 		// Bind Cancel button in this new form.
-		tribe.tickets.rsvp.block.bindCancel( $newGuestForm );
+		$container.find( tribe.tickets.rsvp.block.selectors.cancelButton ).off();
+		tribe.tickets.rsvp.block.bindCancel( $container );
 	};
 
 	/**
