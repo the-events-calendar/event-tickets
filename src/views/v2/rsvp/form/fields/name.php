@@ -20,15 +20,15 @@
  * Set the default Full Name for the RSVP form
  *
  * @param string
- * @param Tribe__Events_Gutenberg__Template $this
+ * @param Tribe__Tickets__Editor__Template $this
  *
  * @since 4.9
  */
 $name = apply_filters( 'tribe_tickets_rsvp_form_full_name', '', $this );
 ?>
-<div class="tribe-common-b1 tribe-tickets__form-field tribe-tickets__form-field--required">
+<div class="tribe-common-b1 tribe-common-b2--min-medium tribe-tickets__form-field tribe-tickets__form-field--required">
 	<label
-		class="tribe-common-b2--min-medium tribe-tickets__form-field-label"
+		class="tribe-tickets__form-field-label"
 		for="tribe-tickets-rsvp-name"
 	>
 		<?php esc_html_e( 'Name', 'event-tickets' ); ?><span class="screen-reader-text"><?php esc_html_e( 'required', 'event-tickets' ); ?></span>
