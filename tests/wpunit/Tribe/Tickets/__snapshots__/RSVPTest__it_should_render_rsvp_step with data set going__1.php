@@ -22,9 +22,9 @@
 </div>
 		<div class="tribe-tickets__rsvp-form-content tribe-tickets__form">
 
-			<div class="tribe-common-b1 tribe-tickets__form-field tribe-tickets__form-field--required">
+			<div class="tribe-common-b1 tribe-common-b2--min-medium tribe-tickets__form-field tribe-tickets__form-field--required">
 	<label
-		class="tribe-common-b2--min-medium tribe-tickets__form-field-label"
+		class="tribe-tickets__form-field-label"
 		for="tribe-tickets-rsvp-name"
 	>
 		Name<span class="screen-reader-text">required</span>
@@ -40,9 +40,9 @@
 		placeholder="Your Name"
 	>
 </div>
-<div class="tribe-common-b1 tribe-tickets__form-field tribe-tickets__form-field--required">
+<div class="tribe-common-b1 tribe-common-b2--min-medium tribe-tickets__form-field tribe-tickets__form-field--required">
 	<label
-		class="tribe-common-b2--min-medium tribe-tickets__form-field-label"
+		class="tribe-tickets__form-field-label"
 		for="tribe-tickets-rsvp-email"
 	>
 		Email<span class="screen-reader-text">required</span>

@@ -62,8 +62,8 @@
 			type="checkbox"
 			value="toggleOne"
 						data-rsvp-id="284"
-			data-attendee-ids=""
-			data-opt-in-nonce=""
+			data-attendee-ids="285,286"
+			data-opt-in-nonce="66ef826c08"
 		/>
 		<label
 			class="tribe-common-form-control-toggle__label tribe-tickets__rsvp-actions-success-going-toggle-label"
