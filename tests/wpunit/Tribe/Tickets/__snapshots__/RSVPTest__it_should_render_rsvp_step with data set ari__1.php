@@ -101,6 +101,9 @@
 	<div class="tribe-tickets__rsvp-ar-form-wrapper tribe-common-g-col">
 		<div class="tribe-tickets__rsvp-ar-form">
 
+	<input type="hidden" name="tribe_tickets[281][ticket_id]" value="281">
+	<input type="hidden" name="tribe_tickets[281][attendees][0][order_status]" value="not-going">
+
 	
 <div
 	class="tribe-tickets__rsvp-ar-form-guest"
@@ -123,9 +126,9 @@
 	</span>
 </div>
 
-	<div class="tribe-common-b1 tribe-tickets__form-field tribe-tickets__form-field--required">
+	<div class="tribe-common-b1 tribe-common-b2--min-medium tribe-tickets__form-field tribe-tickets__form-field--required">
 	<label
-		class="tribe-common-b2--min-medium tribe-tickets__form-field-label"
+		class="tribe-tickets__form-field-label"
 		for="tribe-tickets-rsvp-name"
 	>
 		Name<span class="screen-reader-text">required</span>
@@ -142,9 +145,9 @@
 	>
 </div>
 
-	<div class="tribe-common-b1 tribe-tickets__form-field tribe-tickets__form-field--required">
+	<div class="tribe-common-b1 tribe-common-b2--min-medium tribe-tickets__form-field tribe-tickets__form-field--required">
 	<label
-		class="tribe-common-b2--min-medium tribe-tickets__form-field-label"
+		class="tribe-tickets__form-field-label"
 		for="tribe-tickets-rsvp-email"
 	>
 		Email<span class="screen-reader-text">required</span>
