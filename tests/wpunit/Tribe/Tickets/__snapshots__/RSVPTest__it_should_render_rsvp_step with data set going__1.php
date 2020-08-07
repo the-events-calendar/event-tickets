@@ -13,6 +13,7 @@
 >
 	<input type="hidden" name="tribe_tickets[275][ticket_id]" value="275">
 	<input type="hidden" name="tribe_tickets[275][attendees][0][order_status]" value="going">
+	<input type="hidden" name="tribe_tickets[96][attendees][0][optout]" value="1">
 
 	<div class="tribe-tickets__rsvp-form-wrapper">
 

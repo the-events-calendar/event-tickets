@@ -103,6 +103,7 @@
 
 	<input type="hidden" name="tribe_tickets[281][ticket_id]" value="281">
 	<input type="hidden" name="tribe_tickets[281][attendees][0][order_status]" value="not-going">
+	<input type="hidden" name="tribe_tickets[96][attendees][0][optout]" value="1">
 
 	
 <div
