@@ -365,10 +365,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			// Refresh ticket.
 			$args['rsvp'] = $this->get_ticket( $post_id, $ticket_id );
 
-			if ( ! empty( $args['process_result']['opt_in_args']['is_going'] ) ) {
-				$args['is_going'] = $args['process_result']['opt_in_args']['is_going'];
-			}
-
+			$args['is_going']            = $args['process_result']['opt_in_args']['is_going'];
 			$args['opt_in_checked']      = $args['process_result']['opt_in_args']['checked'];
 			$args['opt_in_attendee_ids'] = $args['process_result']['opt_in_args']['attendee_ids'];
 			$args['opt_in_nonce']        = $args['process_result']['opt_in_args']['opt_in_nonce'];
@@ -520,6 +517,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 			$result['success']     = true;
 			$result['opt_in_args'] = [
+				'is_going'     => true,
 				'checked'      => ! $optout,
 				'attendee_ids' => $attendee_ids_flat,
 				'opt_in_nonce' => $nonce_value,
