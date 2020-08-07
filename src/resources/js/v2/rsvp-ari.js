@@ -74,7 +74,6 @@ tribe.tickets.rsvp.ari = {};
 		const $guestFormWrapper = $container.find( obj.selectors.guestFormWrapper );
 		const $targetGuestForm = $guestFormWrapper.find( obj.selectors.guestFormFields + '[data-guest-number="' + guestNumber + '"]' );
 		const $guestListButtons = $container.find( obj.selectors.guestListItemButton );
-		const $guestListButtonsIcon = $container.find( obj.selectors.guestListItemButtonIcon );
 
 		// Set all forms as hidden.
 		$container.find( obj.selectors.guestFormFields ).addClass( obj.selectors.hiddenElement.className() );
