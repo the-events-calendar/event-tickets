@@ -28,6 +28,12 @@ if ( ! empty( $is_going ) ) {
 		<?php esc_html_e( 'Thank you for confirming!', 'event-tickets' ); ?>
 	</strong>
 
-	<?php esc_html_e( 'Your RSVP response has been received.', 'event-tickets' ); ?>
+	echo esc_html(
+		sprintf(
+			/* Translators: %1$s: RSVP label. */
+			_x( 'Your %1$s response has been received.', 'blocks rsvp messages success', 'event-tickets' ),
+			tribe_get_rsvp_label_singular( 'blocks_rsvp_messages_success' )
+		)
+	);
 
 </span>
