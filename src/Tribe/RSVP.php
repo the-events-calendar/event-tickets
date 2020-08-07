@@ -359,7 +359,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$args['opt_in_checked']      = false;
 		$args['opt_in_attendee_ids'] = '';
 		$args['opt_in_nonce']        = '';
-		$args['order_status']        = '';
+		$args['is_going']            = null;
 
 		if ( ! empty( $args['process_result']['opt_in_args'] ) ) {
 			// Refresh ticket.
@@ -386,7 +386,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 */
 		$hide_attendee_list_optout = apply_filters( 'tribe_tickets_hide_attendees_list_optout', false, $post_id, $ticket_id );
 
-		if ( ! $args['is_going'] ) {
+		if ( false === $args['is_going'] ) {
 			$hide_attendee_list_optout = true;
 		}
 
