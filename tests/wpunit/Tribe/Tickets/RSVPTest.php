@@ -695,6 +695,8 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$driver->setTolerableDifferences( [ $post_id, $ticket_id ] );
 		$driver->setTolerableDifferencesPrefixes( [
 			'quantity_',
+			'tribe-tickets-rsvp-name-',
+			'tribe-tickets-rsvp-email-',
 		] );
 
 		$driver->setTimeDependentAttributes( [
@@ -703,6 +705,19 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			'data-attendee-ids',
 			'data-opt-in-nonce',
 		] );
+
+		// Handle ticket ID variations that tolerances won't handle
+		$html = str_replace(
+			[
+				'[' . $ticket_id . ']',
+				'"' . $ticket_id . '"',
+			],
+			[
+				'[TICKET_ID]',
+				'"TICKET_ID"',
+			],
+			$html
+		);
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -765,6 +780,8 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 				'success'     => true,
 				'errors'      => [],
 				'opt_in_args' => [
+					'is_going' => true,
+					'checked' => false,
 					'attendee_ids' => 'non-empty',
 					'opt_in_nonce' => 'non-empty',
 				],
@@ -795,6 +812,12 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			[
 				'success' => true,
 				'errors'  => [],
+				'opt_in_args' => [
+					'is_going' => true,
+					'checked' => true,
+					'attendee_ids' => 'non-empty',
+					'opt_in_nonce' => 'non-empty',
+				],
 			],
 		];
 
@@ -809,6 +832,12 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			[
 				'success' => true,
 				'errors'  => [],
+				'opt_in_args' => [
+					'is_going' => true,
+					'checked' => false,
+					'attendee_ids' => 'non-empty',
+					'opt_in_nonce' => 'non-empty',
+				],
 			],
 		];
 

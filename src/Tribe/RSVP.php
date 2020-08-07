@@ -359,12 +359,35 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$args['opt_in_checked']      = false;
 		$args['opt_in_attendee_ids'] = '';
 		$args['opt_in_nonce']        = '';
+		$args['is_going']            = null;
 
 		if ( ! empty( $args['process_result']['opt_in_args'] ) ) {
+			// Refresh ticket.
+			$args['rsvp'] = $this->get_ticket( $post_id, $ticket_id );
+
+			$args['is_going']            = $args['process_result']['opt_in_args']['is_going'];
 			$args['opt_in_checked']      = $args['process_result']['opt_in_args']['checked'];
 			$args['opt_in_attendee_ids'] = $args['process_result']['opt_in_args']['attendee_ids'];
 			$args['opt_in_nonce']        = $args['process_result']['opt_in_args']['opt_in_nonce'];
 		}
+
+		/**
+		 * Allow filtering of whether to show the opt-in option for attendees.
+		 *
+		 * @since 4.5.2
+		 * @since TBD Added $post_id and $ticket_id parameters.
+		 *
+		 * @param bool $hide_attendee_list_optout Whether to hide attendees list opt-out.
+		 * @param int  $post_id                   The post ID that the ticket belongs to.
+		 * @param int  $ticket_id                 The ticket ID.
+		 */
+		$hide_attendee_list_optout = apply_filters( 'tribe_tickets_hide_attendees_list_optout', false, $post_id, $ticket_id );
+
+		if ( false === $args['is_going'] ) {
+			$hide_attendee_list_optout = true;
+		}
+
+		$args['opt_in_toggle_hidden'] = $hide_attendee_list_optout;
 
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
@@ -426,6 +449,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// Process the attendee.
 		if ( 'success' === $args['step'] ) {
+			$first_attendee = $this->parse_attendee_details();
+
 			/**
 			 * These are the inputs we should be seeing:
 			 *
@@ -454,6 +479,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 			$result['success']     = true;
 			$result['opt_in_args'] = [
+				'is_going'     => ! empty( $first_attendee['order_status'] ) ? 'yes' === $first_attendee['order_status'] : false,
 				'checked'      => false,
 				'attendee_ids' => $attendee_ids,
 				'opt_in_nonce' => wp_create_nonce( $nonce_action ),
@@ -491,6 +517,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 			$result['success']     = true;
 			$result['opt_in_args'] = [
+				'is_going'     => true,
 				'checked'      => ! $optout,
 				'attendee_ids' => $attendee_ids_flat,
 				'opt_in_nonce' => $nonce_value,
@@ -2630,20 +2657,22 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$first_attendee = $_POST['attendee'];
 		}
 
-		$attendee_email     = empty( $first_attendee['email'] ) ? null : sanitize_email( $first_attendee['email'] );
-		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
-		$attendee_full_name = empty( $first_attendee['full_name'] ) ? null : sanitize_text_field( $first_attendee['full_name'] );
-		$attendee_optout    = empty( $first_attendee['optout'] ) ? 0 : $first_attendee['optout'];
+		$attendee_email        = empty( $first_attendee['email'] ) ? null : sanitize_email( $first_attendee['email'] );
+		$attendee_email        = is_email( $attendee_email ) ? $attendee_email : null;
+		$attendee_full_name    = empty( $first_attendee['full_name'] ) ? null : sanitize_text_field( $first_attendee['full_name'] );
+		$attendee_optout       = empty( $first_attendee['optout'] ) ? 0 : $first_attendee['optout'];
+		$attendee_order_status = empty( $first_attendee['order_status'] ) ? 'yes' : $first_attendee['order_status'];
 
 		$attendee_optout = filter_var( $attendee_optout, FILTER_VALIDATE_BOOLEAN );
 
-		if (
-			empty( $first_attendee['order_status'] )
-			|| ! $this->tickets_view->is_valid_rsvp_option( $first_attendee['order_status'] )
-		) {
+		if ( 'going' === $attendee_order_status ) {
 			$attendee_order_status = 'yes';
-		} else {
-			$attendee_order_status = $first_attendee['order_status'];
+		} elseif ( 'not-going' === $attendee_order_status ) {
+			$attendee_order_status = 'no';
+		}
+
+		if ( ! $this->tickets_view->is_valid_rsvp_option( $attendee_order_status ) ) {
+			$attendee_order_status = 'yes';
 		}
 
 		if ( ! $attendee_email || ! $attendee_full_name ) {
