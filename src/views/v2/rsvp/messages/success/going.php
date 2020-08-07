@@ -28,7 +28,7 @@ if ( empty( $is_going ) ) {
 		<?php
 		echo esc_html(
 			sprintf(
-				/* Translators: 1: RSVP label. */
+				/* Translators: %1$s: RSVP label. */
 				_x( 'Your %1$s has been received! ', 'blocks rsvp messages success', 'event-tickets' ),
 				tribe_get_rsvp_label_singular( 'blocks_rsvp_messages_success' )
 			)
@@ -39,7 +39,7 @@ if ( empty( $is_going ) ) {
 	<?php
 	echo esc_html(
 		sprintf(
-			/* Translators: 1: RSVP label. */
+			/* Translators: %1$s: RSVP label. */
 			_x( 'Check your email for %1$s confirmation.', 'blocks rsvp messages success', 'event-tickets' ),
 			tribe_get_rsvp_label_singular( 'blocks_rsvp_messages_success' )
 		)
