@@ -233,7 +233,7 @@ extends Tribe__Editor__Blocks__Abstract {
 			$plugin,
 			'tribe-tickets-rsvp-ari',
 			'v2/rsvp-ari.js',
-			[ 'jquery' ],
+			[ 'jquery', 'wp-util' ],
 			null,
 			[
 				'groups'       => 'tribe-tickets-rsvp',
