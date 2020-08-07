@@ -15,7 +15,7 @@
  *
  * @since 4.12.3
  *
- * @version 4.12.3
+ * @version TBD
  */
 
 if ( ! in_array( $step, [ 'success', 'opt-in' ], true ) ) {
@@ -25,27 +25,8 @@ if ( ! in_array( $step, [ 'success', 'opt-in' ], true ) ) {
 <div class="tribe-tickets__rsvp-message tribe-tickets__rsvp-message--success tribe-common-b3">
 	<?php $this->template( 'v2/components/icons/paper-plane', [ 'classes' => [ 'tribe-tickets__rsvp-message--success-icon' ] ] ); ?>
 
-	<span class="tribe-tickets__rsvp-message-text">
-		<strong>
-			<?php
-			echo esc_html(
-				sprintf(
-					/* Translators: 1: RSVP label. */
-					_x( 'Your %1$s has been received! ', 'blocks rsvp messages success', 'event-tickets' ),
-					tribe_get_rsvp_label_singular( 'blocks_rsvp_messages_success' )
-				)
-			);
-			?>
-		</strong>
+	<?php $this->template( 'v2/rsvp/messages/success/going' ); ?>
 
-		<?php
-		echo esc_html(
-			sprintf(
-				/* Translators: 1: RSVP label. */
-				_x( 'Check your email for %1$s confirmation.', 'blocks rsvp messages success', 'event-tickets' ),
-				tribe_get_rsvp_label_singular( 'blocks_rsvp_messages_success' )
-			)
-		);
-		?>
-	</span>
+	<?php $this->template( 'v2/rsvp/messages/success/not-going' ); ?>
+
 </div>
