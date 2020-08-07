@@ -29,7 +29,7 @@ $name = apply_filters( 'tribe_tickets_rsvp_form_full_name', '', $this );
 <div class="tribe-common-b1 tribe-common-b2--min-medium tribe-tickets__form-field tribe-tickets__form-field--required">
 	<label
 		class="tribe-tickets__form-field-label"
-		for="tribe-tickets-rsvp-name-<?php esc_attr( $rsvp->ID ); ?>"
+		for="tribe-tickets-rsvp-name-<?php echo esc_attr( $rsvp->ID ); ?>"
 	>
 		<?php esc_html_e( 'Name', 'event-tickets' ); ?><span class="screen-reader-text"><?php esc_html_e( 'required', 'event-tickets' ); ?></span>
 		<span class="tribe-required" aria-hidden="true" role="presentation">*</span>
@@ -38,7 +38,7 @@ $name = apply_filters( 'tribe_tickets_rsvp_form_full_name', '', $this );
 		type="text"
 		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-name"
 		name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][attendees][0][full_name]"
-		id="tribe-tickets-rsvp-name-<?php esc_attr( $rsvp->ID ); ?>"
+		id="tribe-tickets-rsvp-name-<?php echo esc_attr( $rsvp->ID ); ?>"
 		value="<?php echo esc_attr( $name ); ?>"
 		required
 		placeholder="<?php esc_attr_e( 'Your Name', 'event-tickets' ); ?>"
