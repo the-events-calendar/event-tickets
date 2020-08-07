@@ -2630,20 +2630,22 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$first_attendee = $_POST['attendee'];
 		}
 
-		$attendee_email     = empty( $first_attendee['email'] ) ? null : sanitize_email( $first_attendee['email'] );
-		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
-		$attendee_full_name = empty( $first_attendee['full_name'] ) ? null : sanitize_text_field( $first_attendee['full_name'] );
-		$attendee_optout    = empty( $first_attendee['optout'] ) ? 0 : $first_attendee['optout'];
+		$attendee_email        = empty( $first_attendee['email'] ) ? null : sanitize_email( $first_attendee['email'] );
+		$attendee_email        = is_email( $attendee_email ) ? $attendee_email : null;
+		$attendee_full_name    = empty( $first_attendee['full_name'] ) ? null : sanitize_text_field( $first_attendee['full_name'] );
+		$attendee_optout       = empty( $first_attendee['optout'] ) ? 0 : $first_attendee['optout'];
+		$attendee_order_status = empty( $first_attendee['order_status'] ) ? 'yes' : $first_attendee['order_status'];
 
 		$attendee_optout = filter_var( $attendee_optout, FILTER_VALIDATE_BOOLEAN );
 
-		if (
-			empty( $first_attendee['order_status'] )
-			|| ! $this->tickets_view->is_valid_rsvp_option( $first_attendee['order_status'] )
-		) {
+		if ( 'going' === $attendee_order_status ) {
 			$attendee_order_status = 'yes';
-		} else {
-			$attendee_order_status = $first_attendee['order_status'];
+		} elseif ( 'not-going' === $attendee_order_status ) {
+			$attendee_order_status = 'no';
+		}
+
+		if ( ! $this->tickets_view->is_valid_rsvp_option( $attendee_order_status ) ) {
+			$attendee_order_status = 'yes';
 		}
 
 		if ( ! $attendee_email || ! $attendee_full_name ) {
