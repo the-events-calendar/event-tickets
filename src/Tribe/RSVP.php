@@ -359,8 +359,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$args['opt_in_checked']      = false;
 		$args['opt_in_attendee_ids'] = '';
 		$args['opt_in_nonce']        = '';
+		$args['order_status']        = '';
 
 		if ( ! empty( $args['process_result']['opt_in_args'] ) ) {
+			// Refresh ticket.
+			$args['rsvp'] = $this->get_ticket( $post_id, $ticket_id );
+
+			if ( ! empty( $args['process_result']['opt_in_args']['order_status'] ) ) {
+				$args['order_status'] = $args['process_result']['opt_in_args']['order_status'];
+			}
+
 			$args['opt_in_checked']      = $args['process_result']['opt_in_args']['checked'];
 			$args['opt_in_attendee_ids'] = $args['process_result']['opt_in_args']['attendee_ids'];
 			$args['opt_in_nonce']        = $args['process_result']['opt_in_args']['opt_in_nonce'];
@@ -426,6 +434,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// Process the attendee.
 		if ( 'success' === $args['step'] ) {
+			$first_attendee = $this->parse_attendee_details();
+
 			/**
 			 * These are the inputs we should be seeing:
 			 *
@@ -454,6 +464,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 			$result['success']     = true;
 			$result['opt_in_args'] = [
+				'order_status' => ! empty( $first_attendee['order_status'] ) ? $first_attendee['order_status'] : 'yes',
 				'checked'      => false,
 				'attendee_ids' => $attendee_ids,
 				'opt_in_nonce' => wp_create_nonce( $nonce_action ),
