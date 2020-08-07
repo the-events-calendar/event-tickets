@@ -365,14 +365,32 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			// Refresh ticket.
 			$args['rsvp'] = $this->get_ticket( $post_id, $ticket_id );
 
-			if ( ! empty( $args['process_result']['opt_in_args']['order_status'] ) ) {
-				$args['order_status'] = $args['process_result']['opt_in_args']['order_status'];
+			if ( ! empty( $args['process_result']['opt_in_args']['is_going'] ) ) {
+				$args['is_going'] = $args['process_result']['opt_in_args']['is_going'];
 			}
 
 			$args['opt_in_checked']      = $args['process_result']['opt_in_args']['checked'];
 			$args['opt_in_attendee_ids'] = $args['process_result']['opt_in_args']['attendee_ids'];
 			$args['opt_in_nonce']        = $args['process_result']['opt_in_args']['opt_in_nonce'];
 		}
+
+		/**
+		 * Allow filtering of whether to show the opt-in option for attendees.
+		 *
+		 * @since 4.5.2
+		 * @since TBD Added $post_id and $ticket_id parameters.
+		 *
+		 * @param bool $hide_attendee_list_optout Whether to hide attendees list opt-out.
+		 * @param int  $post_id                   The post ID that the ticket belongs to.
+		 * @param int  $ticket_id                 The ticket ID.
+		 */
+		$hide_attendee_list_optout = apply_filters( 'tribe_tickets_hide_attendees_list_optout', false, $post_id, $ticket_id );
+
+		if ( ! $args['is_going'] ) {
+			$hide_attendee_list_optout = true;
+		}
+
+		$args['opt_in_toggle_hidden'] = $hide_attendee_list_optout;
 
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
@@ -464,7 +482,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 			$result['success']     = true;
 			$result['opt_in_args'] = [
-				'order_status' => ! empty( $first_attendee['order_status'] ) ? $first_attendee['order_status'] : 'yes',
+				'is_going'     => ! empty( $first_attendee['order_status'] ) ? 'yes' === $first_attendee['order_status'] : false,
 				'checked'      => false,
 				'attendee_ids' => $attendee_ids,
 				'opt_in_nonce' => wp_create_nonce( $nonce_action ),
