@@ -6,7 +6,7 @@
 	<strong>
 		Thank you for confirming!	</strong>
 
-	Your RSVP response has been received
+	Your RSVP response has been received.
 </span>
 
 </div>

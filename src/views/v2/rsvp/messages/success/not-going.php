@@ -28,6 +28,6 @@ if ( ! empty( $is_going ) ) {
 		<?php esc_html_e( 'Thank you for confirming!', 'event-tickets' ); ?>
 	</strong>
 
-	<?php esc_html_e( 'Your RSVP response has been received', 'event-tickets' ); ?>
+	<?php esc_html_e( 'Your RSVP response has been received.', 'event-tickets' ); ?>
 
 </span>
