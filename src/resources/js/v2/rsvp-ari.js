@@ -42,6 +42,8 @@ tribe.tickets.rsvp.ari = {};
 	obj.selectors = {
 		container: '.tribe-tickets__rsvp-wrapper',
 		rsvpForm: 'form[name~="tribe-tickets-rsvp-form-ari"]',
+		rsvpFormNameInput: '.tribe-tickets__rsvp-form-field-name',
+		rsvpFormEmailInput: '.tribe-tickets__rsvp-form-field-email',
 		hiddenElement: '.tribe-common-a11y-hidden',
 		addGuestButton: '.tribe-tickets__rsvp-ar-quantity-input-number--plus',
 		removeGuestButton: '.tribe-tickets__rsvp-ar-quantity-input-number--minus',
@@ -74,7 +76,6 @@ tribe.tickets.rsvp.ari = {};
 		const $guestFormWrapper = $container.find( obj.selectors.guestFormWrapper );
 		const $targetGuestForm = $guestFormWrapper.find( obj.selectors.guestFormFields + '[data-guest-number="' + guestNumber + '"]' );
 		const $guestListButtons = $container.find( obj.selectors.guestListItemButton );
-		const $guestListButtonsIcon = $container.find( obj.selectors.guestListItemButtonIcon );
 
 		// Set all forms as hidden.
 		$container.find( obj.selectors.guestFormFields ).addClass( obj.selectors.hiddenElement.className() );
@@ -92,6 +93,27 @@ tribe.tickets.rsvp.ari = {};
 		const $targetGuestButton = $container.find( obj.selectors.guestListItemButton + '[data-guest-number="' + guestNumber + '"]' );
 		$targetGuestButton.removeClass( obj.selectors.guestListItemButtonInactive.className() );
 		$targetGuestButton.attr( 'aria-selected', true );
+	};
+
+	/**
+	 * Check if there are required fields for the ARI.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container jQuery object of the container.
+	 *
+	 * @return {bool} True if there are required fields for ARI.
+	 */
+	obj.hasAriRequiredFields = function( $container ) {
+		const $form = $container.find( obj.selectors.rsvpForm );
+		const $required = $form.find( tribe.tickets.meta.selectors.formFieldRequired );
+		const $name = $form.find( obj.selectors.rsvpFormNameInput );
+		const $email = $form.find( obj.selectors.rsvpFormEmailInput );
+
+		// True if there are more required than the name and email fields.
+		const requiredAri = 0 < $required.length - ( $name.length + $email.length );
+
+		return !! requiredAri;
 	};
 
 	/**
@@ -167,14 +189,15 @@ tribe.tickets.rsvp.ari = {};
 	 */
 	obj.canGoToGuest = function( $container, guestNumber ) {
 		const currentGuest = obj.getCurrentGuest( $container );
+		const hasAriRequiredFields = obj.hasAriRequiredFields( $container );
 
 		// If the guest number is lower than the current guest, return true.
 		if ( guestNumber < currentGuest ) {
 			return true;
 		}
 
-		// They can only proceed to the next guest.
-		if ( 1 < ( guestNumber - currentGuest ) ) {
+		// They can only proceed to the next guest if there's required ARI fields.
+		if ( hasAriRequiredFields && ( 1 < ( guestNumber - currentGuest ) ) ) {
 			return false;
 		}
 
