@@ -28,7 +28,7 @@ $email = apply_filters( 'tribe_tickets_rsvp_form_email', '', $this );
 <div class="tribe-common-b1 tribe-common-b2--min-medium tribe-tickets__form-field tribe-tickets__form-field--required">
 	<label
 		class="tribe-tickets__form-field-label"
-		for="tribe-tickets-rsvp-email"
+		for="tribe-tickets-rsvp-email-<?php echo esc_attr( $rsvp->ID ); ?>"
 	>
 		<?php esc_html_e( 'Email', 'event-tickets' ); ?><span class="screen-reader-text"><?php esc_html_e( 'required', 'event-tickets' ); ?></span>
 		<span class="tribe-required" aria-hidden="true" role="presentation">*</span>
@@ -37,7 +37,7 @@ $email = apply_filters( 'tribe_tickets_rsvp_form_email', '', $this );
 		type="email"
 		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-email"
 		name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][attendees][0][email]"
-		id="tribe-tickets-rsvp-email"
+		id="tribe-tickets-rsvp-email-<?php echo esc_attr( $rsvp->ID ); ?>"
 		value="<?php echo esc_attr( $email ); ?>"
 		required
 		placeholder="<?php esc_attr_e( 'your@email.com', 'event-tickets' ); ?>"
