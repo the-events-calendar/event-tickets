@@ -47,6 +47,7 @@ class ActionsTest extends WPTestCase {
 			'opt_in_checked'       => false,
 			'opt_in_attendee_ids'  => '',
 			'opt_in_nonce'         => '',
+			'is_going'             => true,
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
