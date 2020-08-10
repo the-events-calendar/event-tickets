@@ -15,10 +15,22 @@ class TitleTest extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function test_should_render_success_title() {
-		$template  = tribe( 'tickets.editor.template' );
+	public function test_should_render_success_title_going() {
+		$template = tribe( 'tickets.editor.template' );
 
-		$html   = $template->template( $this->partial_path, [], false );
+		$html   = $template->template( $this->partial_path, [ 'is_going' => true ], false );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+
+		$this->assertMatchesSnapshot( $html, $driver );
+	}
+
+	/**
+	 * @test
+	 */
+	public function test_should_render_success_title_not_going() {
+		$template = tribe( 'tickets.editor.template' );
+
+		$html   = $template->template( $this->partial_path, [ 'is_going' => false ], false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$this->assertMatchesSnapshot( $html, $driver );
