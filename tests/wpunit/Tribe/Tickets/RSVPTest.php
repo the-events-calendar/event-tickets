@@ -619,6 +619,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 				'opt_in'       => 1,
 				'attendee_ids' => '',
 				'opt_in_nonce' => '',
+				'is_going'     => true,
 			],
 		];
 
@@ -629,6 +630,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 				'opt_in'       => 1,
 				// No opt_in_nonce passed so it causes a problem.
 				'attendee_ids' => '',
+				'is_going'     => true,
 			],
 			[
 				'success' => false,
@@ -808,6 +810,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 				'opt_in'       => 1,
 				'attendee_ids' => '',
 				'opt_in_nonce' => '',
+				'is_going'     => true,
 			],
 			[
 				'success' => true,
@@ -828,6 +831,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 				'opt_in'       => 0,
 				'attendee_ids' => '',
 				'opt_in_nonce' => '',
+				'is_going'     => true,
 			],
 			[
 				'success' => true,
