@@ -1582,8 +1582,8 @@ function tribe_tickets_rsvp_new_views_is_enabled() {
 		return (boolean) $env_var;
 	}
 
-	// Determine if ET was installed at version 4.12.2+.
-	$should_default_to_on = ! tribe_installed_before( 'Tribe__Tickets__Main', '4.12.2' );
+	// Determine if ET was installed at version 5.0+.
+	$should_default_to_on = ! tribe_installed_before( 'Tribe__Tickets__Main', '5.0' );
 
 	$enabled = (boolean) tribe_get_option( 'tickets_rsvp_use_new_views', $should_default_to_on );
 
