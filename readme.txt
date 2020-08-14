@@ -118,6 +118,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.12.3.1] 2020-08-17 =
+
+* Fix - Prevent attendee registration modal in block editor from closing when clicking into the modal. [GTRIA-275]
+
 = [4.12.3] 2020-07-28 =
 
 * Feature - Notify promoter for actions (RSVP going, RSVP not going, Event Checkin, Attendee Registered) for RSVP and Tribe Commerce. [ET-860]
