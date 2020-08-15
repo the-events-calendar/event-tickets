@@ -1121,6 +1121,13 @@ class Tribe__Tickets__Tickets_View {
 			return $template->template( 'v2/rsvp-kitchen-sink', $args, $echo );
 		}
 
+		/**
+		 * Allow for the addition of content (namely the "Who's Attending?" list) above the ticket form.
+		 *
+		 * @since 4.5.5
+		 */
+		do_action( 'tribe_tickets_before_front_end_ticket_form' );
+
 		// Maybe render the new views.
 		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
 			// Enqueue new assets.

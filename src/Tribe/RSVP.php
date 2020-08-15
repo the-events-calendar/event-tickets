@@ -1685,13 +1685,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return $content;
 		}
 
-		// Maybe render the new views.
-		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
-			$this->tickets_view->get_rsvp_block( $post );
-
-			return;
-		}
-
 		// Check to see if all available tickets' end-sale dates have passed, in which case no form
 		// should show on the front-end.
 		$expired_tickets = 0;
@@ -1725,6 +1718,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			 * @param array $tickets
 			 */
 			do_action( 'tribe_tickets_expired_front_end_ticket_form', $must_login, $tickets );
+		}
+
+		// Maybe render the new views.
+		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
+			$this->tickets_view->get_rsvp_block( $post );
+
+			return;
 		}
 
 		$rsvp_sent  = empty( $_GET['rsvp_sent'] ) ? false : true;
