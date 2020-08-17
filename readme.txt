@@ -123,6 +123,10 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Removed unused HTML files in the plugin root folder that were there for your reference to our plugin's data collection transparency. This information is included within WordPress' Privacy Guide at /wp-admin/privacy-policy-guide.php [ET-854]
 * Fix - Event Tickets Plus' `[tribe_tickets]` shortcode no longer double-renders the Tickets block when using Classic Editor. The issue was caused by _setting_ `global $post` within `\Tribe\Tickets\Events\Attendees_List::should_hide_optout()`, which was called via the `tribe_tickets_plus_hide_attendees_list_optout` filter. [ET-889]
 
+= [4.12.3.1] 2020-08-17 =
+
+* Fix - Prevent attendee registration modal in block editor from closing when clicking into the modal. [GTRIA-275]
+
 = [4.12.3] 2020-07-28 =
 
 * Feature - Notify promoter for actions (RSVP going, RSVP not going, Event Checkin, Attendee Registered) for RSVP and Tribe Commerce. [ET-860]
