@@ -308,6 +308,14 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		tribe_asset(
 			$plugin,
+			'tribe-tickets-rsvp-style-override',
+			Tribe__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' ),
+			[],
+			null
+		);
+
+		tribe_asset(
+			$plugin,
 			'tribe-tickets-form-style',
 			'forms.css',
 			[ 'tribe-tickets-rsvp-style' ],
