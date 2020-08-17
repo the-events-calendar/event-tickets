@@ -11,15 +11,13 @@
  *
  * @since 4.12.3
  *
- * @version 4.12.3
+ * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template $this
+ * @var WP_Post|int                      $post_id      The post object or ID.
+ * @var boolean                          $has_rsvps    True if there are RSVPs.
+ * @var array                            $active_rsvps An array containing the active RSVPs.
  */
-
-$post_id          = $this->get( 'post_id' );
-$rsvps            = $this->get( 'active_rsvps' );
-$has_active_rsvps = $this->get( 'has_active_rsvps' );
-$has_rsvps        = $this->get( 'has_rsvps' );
 
 // We don't display anything if there is no RSVP.
 if ( ! $has_rsvps ) {
@@ -51,20 +49,21 @@ if ( ! $already_rendered ) {
 	add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
 }
 
+if ( empty( $active_rsvps ) ) {
+	return;
+}
+
 ?>
-<?php if ( $has_active_rsvps ) : ?>
-	<div class="tribe-common event-tickets">
 
-		<?php foreach ( $rsvps as $rsvp ) : ?>
+<div class="tribe-common event-tickets">
+	<?php foreach ( $active_rsvps as $rsvp ) : ?>
+		<div
+			class="tribe-tickets__rsvp-wrapper"
+			data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
+		>
+			<?php $this->template( 'v2/components/loader/loader' ); ?>
+			<?php $this->template( 'v2/rsvp/content', [ 'rsvp' => $rsvp ] ); ?>
 
-			<div
-				class="tribe-tickets__rsvp-wrapper"
-				data-rsvp-id="<?php echo esc_attr( $rsvp->ID ); ?>"
-			>
-				<?php $this->template( 'v2/components/loader/loader' ); ?>
-				<?php $this->template( 'v2/rsvp/content', [ 'rsvp' => $rsvp ] ); ?>
-
-			</div>
-		<?php endforeach; ?>
-	</div>
-<?php endif; ?>
+		</div>
+	<?php endforeach; ?>
+</div>
