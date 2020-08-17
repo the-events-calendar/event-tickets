@@ -24,31 +24,7 @@ if ( ! $has_rsvps ) {
 	return false;
 }
 
-/**
- * A flag we can set via filter, e.g. at the end of this method, to ensure this template only shows once.
- *
- * @since 4.5.6
- *
- * @param boolean $already_rendered Whether the order link template has already been rendered.
- *
- * @see Tribe__Tickets__Tickets_View::inject_link_template()
- */
-$already_rendered = apply_filters( 'tribe_tickets_order_link_template_already_rendered', false );
-
-// Output order links / view link if we haven't already (for RSVPs).
-// @todo @juanfra: componetize this.
-if ( ! $already_rendered ) {
-	$html = $this->template( 'blocks/attendees/order-links', [], false );
-
-	if ( empty( $html ) ) {
-		$html = $this->template( 'blocks/attendees/view-link', [], false );
-	}
-
-	echo $html;
-
-	add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
-}
-
+// Bail if there are no active RSVP.
 if ( empty( $active_rsvps ) ) {
 	return;
 }
