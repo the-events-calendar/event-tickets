@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Event Tickets
+Plugin Name: Event Tickets and RSVPs
 Plugin URI:  http://m.tri.be/1acb
 Description: Event Tickets allows you to sell basic tickets and collect RSVPs from any post, page, or event.
 Version: 4.12.3.1
