@@ -109,6 +109,7 @@ class Tribe__Tickets__Assets {
 			[
 				'groups'       => 'event-tickets-admin',
 				'conditionals' => [ $this, 'should_enqueue_admin' ],
+				'priority'     => 15,
 				'localize'     => [
 					[
 						'name' => 'HeaderImageData',
