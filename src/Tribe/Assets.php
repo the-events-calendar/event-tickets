@@ -99,7 +99,11 @@ class Tribe__Tickets__Assets {
 				[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
 				[ 'event-tickets-admin-accordion-js', 'accordion.js', [] ],
 				[ 'event-tickets-admin-accordion-css', 'accordion.css', [] ],
-				[ 'event-tickets-admin-js', 'tickets.js', [ 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'tribe-moment', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'tribe-timepicker' ] ],
+				[ 'event-tickets-admin-js', 'tickets.js', [ 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'tribe-moment', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'tribe-timepicker' ], 'admin_enqueue_scripts',
+				    [
+						'priority' => 99
+					]
+				],
 		];
 
 		tribe_assets(
