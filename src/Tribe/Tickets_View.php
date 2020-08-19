@@ -1121,12 +1121,16 @@ class Tribe__Tickets__Tickets_View {
 			return $template->template( 'v2/rsvp-kitchen-sink', $args, $echo );
 		}
 
+		ob_start();
+
 		/**
 		 * Allow for the addition of content (namely the "Who's Attending?" list) above the ticket form.
 		 *
 		 * @since 4.5.5
 		 */
 		do_action( 'tribe_tickets_before_front_end_ticket_form' );
+
+		$before_content = ob_get_clean();
 
 		// Maybe render the new views.
 		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
@@ -1137,13 +1141,13 @@ class Tribe__Tickets__Tickets_View {
 			// @todo: Remove this once we solve the common breakpoints vs container based.
 			tribe_asset_enqueue( 'tribe-common-responsive' );
 
-			return $template->template( 'v2/rsvp', $args, $echo );
+			return $before_content . $template->template( 'v2/rsvp', $args, $echo );
 		}
 
 		// Enqueue assets.
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-rsvp' );
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-rsvp-style' );
 
-		return $template->template( 'blocks/rsvp', $args, $echo );
+		return $before_content . $template->template( 'blocks/rsvp', $args, $echo );
 	}
 }
