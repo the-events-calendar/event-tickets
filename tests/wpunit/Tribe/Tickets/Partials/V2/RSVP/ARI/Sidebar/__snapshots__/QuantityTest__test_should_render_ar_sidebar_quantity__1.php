@@ -12,14 +12,15 @@
 
 		<input
 	type="number"
-	name="quantity_7"
+	name="tribe_tickets[7][quantity]"
 	class="tribe-common-h4"
 	step="1"
 	min="1"
 	value="1"
 	required
 	max="5"
-	/>
+		autocomplete="off"
+/>
 
 		<button
 	type="button"

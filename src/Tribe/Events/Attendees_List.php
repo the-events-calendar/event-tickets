@@ -291,7 +291,7 @@ class Attendees_List {
 	 *
 	 * @return bool Whether we are showing the attendee list with the block editor.
 	 */
-	private function is_showing_attendee_list_with_blocks( WP_Post $post ) {
+	protected function is_showing_attendee_list_with_blocks( WP_Post $post ) {
 		$has_attendee_list_block     = function_exists( 'has_block' ) ? has_block( 'tribe/attendees', $post ) : false;
 		$has_attendee_list_shortcode = has_shortcode( $post->post_content, 'tribe_attendees_list' );
 
@@ -307,7 +307,7 @@ class Attendees_List {
 	 *
 	 * @return bool Whether we are showing the attendee list with the block editor.
 	 */
-	private function is_showing_attendee_list_with_classical_editor( WP_Post $post ) {
+	protected function is_showing_attendee_list_with_classical_editor( WP_Post $post ) {
 		$is_visible_by_meta          = ! static::is_hidden_on( $post );
 		$has_attendee_list_shortcode = has_shortcode( $post->post_content, 'tribe_attendees_list' );
 

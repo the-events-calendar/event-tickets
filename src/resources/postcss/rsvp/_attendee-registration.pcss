@@ -84,6 +84,7 @@
 		background-color: transparent;
 		border: 1px solid var(--color-border-default);
 		border-radius: 50%;
+		flex: none;
 		height: 28px;
 		padding: 0;
 		position: relative;
@@ -94,9 +95,10 @@
 			background-color: var(--color-icon-active);
 			content: '';
 			height: 2px;
+			left: 9px;
+			top: 12px; /* Fix for IE11 */
 			position: absolute;
 			width: 8px;
-			left: 9px;
 		}
 
 		&:hover,
@@ -143,6 +145,13 @@
 
 	.tribe-tickets__rsvp-ar-guest-list-item-button--inactive {
 		color: var(--color-text-secondary);
+
+		.tribe-tickets__rsvp-ar-guest-icon {
+			path {
+				fill: var(--color-icon-disabled);
+				stroke: var(--color-icon-disabled);
+			}
+		}
 	}
 
 	.tribe-tickets__rsvp-ar-guest-list-item-title {
@@ -152,8 +161,7 @@
 		}
 	}
 
-	.tribe-tickets__rsvp-ar-guest-icon,
-	.tribe-tickets__rsvp-ar-guest-icon--inactive {
+	.tribe-tickets__rsvp-ar-guest-icon {
 		display: inline-block;
 		height: 17px;
 		margin-right: var(--spacer-5);
@@ -171,13 +179,6 @@
 		path {
 			fill: var(--color-icon-active);
 			stroke: var(--color-icon-active);
-		}
-	}
-
-	.tribe-tickets__rsvp-ar-guest-icon--inactive {
-		path {
-			fill: var(--color-icon-disabled);
-			stroke: var(--color-icon-disabled);
 		}
 	}
 
