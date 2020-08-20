@@ -2664,10 +2664,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected function should_inject_ticket_form_into_post_content() {
 			global $post;
 
-			// Prevents firing more then it needs too outside of the loop
+			// Prevents firing more then it needs to outside of the loop.
 			$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
 
-			if ( is_admin() || ! $in_the_loop ) {
+			if (
+				is_admin()
+				|| ! $in_the_loop
+			) {
 				return false;
 			}
 
@@ -2675,37 +2678,44 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
-			// if this isn't a post for some reason, bail
+			// Bail if this isn't a post for some reason.
 			if ( ! $post instanceof WP_Post ) {
 				return false;
 			}
 
-			// if this isn't a supported post type, bail
+			// Bail if this isn't a supported post type.
 			if ( ! tribe_tickets_post_type_enabled( $post->post_type ) ) {
 				return false;
 			}
 
-			//  User is currently viewing/editing their existing tickets.
+			// User is currently viewing/editing their existing tickets.
 			if ( Tribe__Tickets__Tickets_View::instance()->is_edit_page() ) {
 				return false;
 			}
 
-			// if this is a tribe_events post, let's bail because those post types are handled with a different hook
-			if ( 'tribe_events' === $post->post_type ) {
+			// Bail if a tribe_events post because those post types are handled with a different hook.
+			if (
+				class_exists( 'Tribe__Events__Main' )
+				&& defined( 'Tribe__Events__Main::POSTTYPE' )
+				&& Tribe__Events__Main::POSTTYPE === $post->post_type
+			) {
 				return false;
 			}
 
-			// if there aren't any tickets, bail
+			// Bail if there aren't any tickets.
 			$tickets = $this->get_tickets( $post->ID );
 			if ( empty( $tickets ) ) {
 				return false;
 			}
 
+			/** @var Tribe__Editor $editor */
+			$editor = tribe( 'editor' );
+
 			// Blocks and ticket templates merged - bail if we should be seeing blocks.
 			if (
 				has_blocks( $post->ID )
-				&& tribe( 'editor' )->should_load_blocks()
-				&& ! tribe( 'editor' )->is_classic_editor()
+				&& $editor->should_load_blocks()
+				&& ! $editor->is_classic_editor()
 			) {
 				return false;
 			}

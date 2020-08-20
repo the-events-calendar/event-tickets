@@ -11,34 +11,36 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.12.3
- * @version 4.12.3
+ * @since TBD Updated the input name used for submitting.
+ *
+ * @version TBD
  */
 
 /**
  * Set the default Full Name for the RSVP form
  *
  * @param string
- * @param Tribe__Events_Gutenberg__Template $this
+ * @param Tribe__Tickets__Editor__Template $this
  *
  * @since 4.9
  */
 $name = apply_filters( 'tribe_tickets_rsvp_form_full_name', '', $this );
 ?>
-<div class="tribe-common-b1 tribe-tickets__form-field tribe-tickets__form-field--required">
+<div class="tribe-common-b1 tribe-common-b2--min-medium tribe-tickets__form-field tribe-tickets__form-field--required">
 	<label
-		class="tribe-common-b2--min-medium tribe-tickets__form-field-label"
-		for="tribe-tickets-rsvp-name"
+		class="tribe-tickets__form-field-label"
+		for="tribe-tickets-rsvp-name-<?php echo esc_attr( $rsvp->ID ); ?>"
 	>
 		<?php esc_html_e( 'Name', 'event-tickets' ); ?><span class="screen-reader-text"><?php esc_html_e( 'required', 'event-tickets' ); ?></span>
 		<span class="tribe-required" aria-hidden="true" role="presentation">*</span>
 	</label>
 	<input
 		type="text"
-		id="tribe-tickets-rsvp-name"
-		class="tribe-common-form-control-text__input tribe-tickets__form-field-input"
-		name="attendee[full_name]"
+		class="tribe-common-form-control-text__input tribe-tickets__form-field-input tribe-tickets__rsvp-form-field-name"
+		name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][attendees][0][full_name]"
+		id="tribe-tickets-rsvp-name-<?php echo esc_attr( $rsvp->ID ); ?>"
 		value="<?php echo esc_attr( $name ); ?>"
 		required
-		placeholder="<?php esc_attr_e( 'John Doe', 'event-tickets' ); ?>"
+		placeholder="<?php esc_attr_e( 'Your Name', 'event-tickets' ); ?>"
 	>
 </div>

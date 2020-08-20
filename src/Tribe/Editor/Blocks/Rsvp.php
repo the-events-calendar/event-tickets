@@ -206,8 +206,6 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  array $attributes
-	 *
 	 * @return void
 	 */
 	public function assets() {
@@ -239,6 +237,18 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		tribe_asset(
 			$plugin,
+			'tribe-tickets-rsvp-ari',
+			'v2/rsvp-ari.js',
+			[ 'jquery', 'wp-util' ],
+			null,
+			[
+				'groups'       => 'tribe-tickets-rsvp',
+				'conditionals' => [ $this, 'should_enqueue_ari' ],
+			]
+		);
+
+		tribe_asset(
+			$plugin,
 			'tribe-tickets-rsvp-manager',
 			'v2/rsvp-manager.js',
 			[
@@ -246,6 +256,7 @@ extends Tribe__Editor__Blocks__Abstract {
 				'tribe-common',
 				'tribe-tickets-rsvp-block',
 				'tribe-tickets-rsvp-tooltip',
+				'tribe-tickets-rsvp-ari',
 			],
 			null,
 			[
@@ -303,11 +314,30 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		tribe_asset(
 			$plugin,
+			'tribe-tickets-rsvp-style-override',
+			Tribe__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' ),
+			[],
+			null
+		);
+
+		tribe_asset(
+			$plugin,
 			'tribe-tickets-form-style',
 			'forms.css',
 			[ 'tribe-tickets-rsvp-style' ],
 			null
 		);
+	}
+
+	/**
+	 * Determine whether we should enqueue the ARI assets.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether we should enqueue the ARI assets.
+	 */
+	public function should_enqueue_ari() {
+		return class_exists( 'Tribe__Tickets_Plus__Main' );
 	}
 
 	/**
@@ -387,7 +417,13 @@ extends Tribe__Editor__Blocks__Abstract {
 			wp_send_json_error( $response );
 		}
 
-		$products = (array) tribe_get_request_var( 'product_id' );
+		$products = [];
+
+		if ( isset( $_POST['tribe_tickets'] ) ) {
+			$products = wp_list_pluck( $_POST['tribe_tickets'], 'ticket_id' );
+		} elseif ( isset( $_POST['product_id'] ) ) {
+			$products = (array) $_POST['product_id'];
+		}
 
 		// Iterate over each product
 		foreach ( $products as $product_id ) {
