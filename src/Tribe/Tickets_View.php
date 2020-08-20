@@ -1132,6 +1132,13 @@ class Tribe__Tickets__Tickets_View {
 
 		$before_content = ob_get_clean();
 
+		// Maybe echo the content from the action.
+		if ( $echo ) {
+			echo $before_content;
+
+			$before_content = '';
+		}
+
 		// Maybe render the new views.
 		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
 			// Enqueue new assets.
