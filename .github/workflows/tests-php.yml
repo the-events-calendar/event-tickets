@@ -60,16 +60,18 @@ jobs:
           tric info
       - name: Print the current tric configuration
         run: tric config
-      - name: fetch and init TEC
+      - name: clone TEC
+        uses: actions/checkout@v2
+        with:
+          repository: moderntribe/the-events-calendar
+          ref: master
+          token: ${{ secrets.GH_BOT_TOKEN }}
+          path: the-events-calendar
+          submodules: recursive
+      - name: init TEC
         run: |
-          cd ${GITHUB_WORKSPACE}/..
-          git clone https://github.com/moderntribe/the-events-calendar.git
-          cd the-events-calendar
-          git checkout origin/release/B20.05
-          sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
-          git submodule update --init
-          git submodule foreach --recursive "[ -f .gitmodules ] && sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules; git submodule update --init;"
-          cd ${GITHUB_WORKSPACE}/..
+          mv ${GITHUB_WORKSPACE}/the-events-calendar ${GITHUB_WORKSPACE}/../the-events-calendar
+          docker network prune -f
           tric use the-events-calendar/common
           tric composer install --no-dev
           tric use the-events-calendar
@@ -78,5 +80,7 @@ jobs:
         run: |
           tric use event-tickets
           tric composer install
+      - name: Init the WordPress container
+        run: tric up wordpress
       - name: Run suite tests
         run: tric run ${{ matrix.suite }}
