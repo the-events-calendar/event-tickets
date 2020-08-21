@@ -371,6 +371,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$args['opt_in_nonce']        = $args['process_result']['opt_in_args']['opt_in_nonce'];
 		}
 
+		// Check to see if attendees list is being hidden or not.
+		if ( class_exists( 'Tribe__Tickets_Plus__Attendees_List' ) ) {
+			// Handle Event Tickets Plus compatible logic.
+			$hide_attendee_list_optout = Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $post_id );
+		} else {
+			// Handle Event Tickets logic.
+			$hide_attendee_list_optout = \Tribe\Tickets\Events\Attendees_List::is_hidden_on( $post_id );
+		}
+
 		/**
 		 * Allow filtering of whether to show the opt-in option for attendees.
 		 *
@@ -381,7 +390,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @param int  $post_id                   The post ID that the ticket belongs to.
 		 * @param int  $ticket_id                 The ticket ID.
 		 */
-		$hide_attendee_list_optout = apply_filters( 'tribe_tickets_hide_attendees_list_optout', false, $post_id, $ticket_id );
+		$hide_attendee_list_optout = apply_filters( 'tribe_tickets_hide_attendees_list_optout', $hide_attendee_list_optout, $post_id, $ticket_id );
 
 		if ( false === $args['is_going'] ) {
 			$hide_attendee_list_optout = true;
