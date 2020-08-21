@@ -1130,6 +1130,24 @@ class Tribe__Tickets__Tickets_View {
 		 */
 		do_action( 'tribe_tickets_before_front_end_ticket_form' );
 
+		/**
+		 * A flag we can set via filter, e.g. at the end of this method, to ensure this template only shows once.
+		 *
+		 * @since 4.5.6
+		 *
+		 * @param boolean $already_rendered Whether the order link template has already been rendered.
+		 *
+		 * @see Tribe__Tickets__Tickets_View::inject_link_template()
+		 */
+		$already_rendered = apply_filters( 'tribe_tickets_order_link_template_already_rendered', false );
+
+		// Output order links / view link if we haven't already (for RSVPs).
+		if ( ! $already_rendered ) {
+			$template->template( 'tickets/view-link' );
+
+			add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
+		}
+
 		$before_content = ob_get_clean();
 
 		// Maybe echo the content from the action.
