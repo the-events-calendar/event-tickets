@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: The Events Calendar, RSVP event registration, event ticket sales, attendee management, RSVP tickets
 Requires at least: 4.9.14
 Tested up to: 5.4.2
-Stable tag: 4.12.3
+Stable tag: 4.12.3.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.12.3.1] 2020-08-17 =
+
+* Fix - Prevent attendee registration modal in block editor from closing when clicking into the modal. [GTRIA-275]
 
 = [4.12.3] 2020-07-28 =
 
