@@ -14,7 +14,7 @@ class RsvpGoingCest {
 		$I->activatePlugin(
 			[
 				'the-events-calendar',
-				'event-tickets'
+				'event-tickets',
 			]
 		);
 
@@ -70,7 +70,6 @@ class RsvpGoingCest {
 		// Check that the view RSVP links is there on reload.
 		$I->waitForText( 'You have 1 RSVP for this Event' );
 		$I->seeElement( '.tribe-link-view-attendee' );
-
 	}
 
 }

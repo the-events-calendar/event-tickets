@@ -15,7 +15,7 @@ class RsvpNotGoingCest {
 		$I->activatePlugin(
 			[
 				'the-events-calendar',
-				'event-tickets'
+				'event-tickets',
 			]
 		);
 
@@ -31,7 +31,7 @@ class RsvpNotGoingCest {
 	/*
 	 * @test
 	 */
-	public function should_confirm_rsvp_going_flow( AcceptanceTester $I ) {
+	public function should_confirm_rsvp_not_going_flow( AcceptanceTester $I ) {
 		// Go to the Event page.
 		$I->amOnPage( '/event/rsvp-test/' );
 
