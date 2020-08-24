@@ -2,6 +2,7 @@ actor: AcceptanceTester
 modules:
     enabled:
         - \Helper\Acceptance
+        - \Helper\TribeDb
         # see https://github.com/lucatume/wp-browser#modules to know the general ratio of each
         - WPWebDriver #browse
         - WPDb #manipulate the database and look up stuff
