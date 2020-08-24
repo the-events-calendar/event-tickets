@@ -10,7 +10,7 @@
  * @var bool $must_login Whether the user has to login to RSVP or not.
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
- * @version TBD
+ * @version5.0.0
  */
 
 ?>

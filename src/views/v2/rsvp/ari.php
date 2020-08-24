@@ -11,9 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.12.3
- * @since TBD Added form information to implement the ARi dynamic functionality.
+ * @since5.0.0 Added form information to implement the ARi dynamic functionality.
  *
- * @version TBD
+ * @version5.0.0
  */
 
 ?>

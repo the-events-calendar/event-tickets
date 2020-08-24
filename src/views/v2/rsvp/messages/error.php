@@ -12,9 +12,9 @@
  *
  * @var string|array $error_message The error message(s).
  *
- * @since TBD
+ * @since5.0.0
  *
- * @version TBD
+ * @version5.0.0
  */
 
 // Treat error messages as an array.

@@ -1,7 +1,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since5.0.0
  *
  * @type {PlainObject}
  */
@@ -11,7 +11,7 @@ tribe.tickets.rsvp = tribe.tickets.rsvp || {};
 /**
  * Configures RSVP ARI Object in the Global Tribe variable
  *
- * @since  TBD
+ * @since 5.0.0
  *
  * @type {PlainObject}
  */
@@ -20,7 +20,7 @@ tribe.tickets.rsvp.ari = {};
 /**
  * Initializes in a Strict env the code that manages the RSVP block.
  *
- * @since TBD
+ * @since5.0.0
  *
  * @param  {PlainObject} $   jQuery
  * @param  {PlainObject} obj tribe.tickets.rsvp.block
@@ -35,7 +35,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Selectors used for configuration and setup
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @type {PlainObject}
 	 */
@@ -65,7 +65,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Go to guest.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 * @param {number} guestNumber The guest number we want to go to.
@@ -98,7 +98,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Check if there are required fields for the ARI.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $container jQuery object of the container.
 	 *
@@ -119,7 +119,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Show element.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $element jQuery object of the element to show.
 	 *
@@ -132,7 +132,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Hide element.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $element jQuery object of the element to hide.
 	 *
@@ -145,7 +145,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Checks if the guest form is valid.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $guestForm jQuery object of the guest form container.
 	 *
@@ -180,7 +180,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Checks if if can move to the guest coming in `guestNumber`.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 * @param {number} guestNumber The guest number we want to go to.
@@ -214,7 +214,7 @@ tribe.tickets.rsvp.ari = {};
 	 * Set the "Next" and "Submit" hidden classes.
 	 * Bind the required actions to the "Next" button.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 *
@@ -245,7 +245,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Bind go to guest.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 * @param {jQuery} $button jQuery object of the button.
@@ -274,7 +274,7 @@ tribe.tickets.rsvp.ari = {};
 	 * Add guest.
 	 * Adds the form and the list item.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 *
@@ -312,7 +312,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Handle the number input + and - actions
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {event} e input event
 	 */
@@ -357,7 +357,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Handle the RSVP form submission
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {event} e submission event
 	 */
@@ -385,7 +385,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Binds events for the RSVP form.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 *
@@ -403,7 +403,7 @@ tribe.tickets.rsvp.ari = {};
 	 * Remove guest.
 	 * Remove the form and the list item.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 *
@@ -442,7 +442,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Get the total guests number for the container.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 *
@@ -455,7 +455,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Get the current guest number for the container.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 *
@@ -470,7 +470,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Handle the quantity change.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {event} e click event
 	 *
@@ -524,7 +524,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Binds events for guest addition/removal.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 *
@@ -551,7 +551,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Binds events for next guest button.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 *
@@ -569,7 +569,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Unbinds events.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param  {Event}       event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
 	 * @param  {jqXHR}       jqXHR    Request object
@@ -591,7 +591,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Binds events for container.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery}  $container jQuery object of object of the RSVP container.
 	 *
@@ -612,7 +612,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Initialize RSVP events.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {Event}   event      event object for 'afterSetup.tribeTicketsRsvp' event
 	 * @param {integer} index      jQuery.each index param from 'afterSetup.tribeTicketsRsvp' event.
@@ -627,7 +627,7 @@ tribe.tickets.rsvp.ari = {};
 	/**
 	 * Handles the initialization of the RSVP block events when Document is ready.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @return {void}
 	 */

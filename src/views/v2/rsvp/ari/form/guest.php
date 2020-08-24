@@ -5,9 +5,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/rsvp/ari/form/guest.php
  *
- * @since TBD
+ * @since5.0.0
  *
- * @version TBD
+ * @version5.0.0
  */
 
 ?>

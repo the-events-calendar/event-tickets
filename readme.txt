@@ -118,7 +118,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.0.0] 2020-08-26 =
 
 * Feature - We've introduced a refined look and experience for RSVPs! New installations of Event Tickets will gain the new look right away. Existing Event Tickets installations can opt-in upon upgrade from our previous version(s). This new design is consistent in both the Classic and Block modes so you have a better visual when creating RSVPs in either WordPress editor. [ET-866]
 * Tweak - Removed unused HTML files in the plugin root folder that were there for your reference to our plugin's data collection transparency. This information is included within WordPress' Privacy Guide at /wp-admin/privacy-policy-guide.php [ET-854]

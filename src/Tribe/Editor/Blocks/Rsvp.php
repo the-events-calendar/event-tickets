@@ -326,7 +326,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Determine whether we should enqueue the ARI assets.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @return bool Whether we should enqueue the ARI assets.
 	 */

@@ -12,7 +12,7 @@
  *
  * @since 4.12.3
  *
- * @version TBD
+ * @version5.0.0
  */
 
 ?>

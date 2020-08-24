@@ -16,8 +16,8 @@
  * @var string                        $opt_in_nonce         The nonce for opt-in AJAX requests.
  * @var boolean                       $opt_in_checked       Whether the opt-in field should be checked.
  *
- * @since TBD
- * @version TBD
+ * @since5.0.0
+ * @version5.0.0
  */
 
 if ( $opt_in_toggle_hidden ) {

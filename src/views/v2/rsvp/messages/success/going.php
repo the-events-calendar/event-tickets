@@ -13,9 +13,9 @@
  * @var Tribe__Tickets__Ticket_Object $rsvp     The rsvp ticket object.
  * @var null|bool                     $is_going Whether the user confirmed for going or not-going.
  *
- * @since TBD
+ * @since5.0.0
  *
- * @version TBD
+ * @version5.0.0
  */
 
 if ( empty( $is_going ) ) {

@@ -11,9 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.12.3
- * @since TBD Updated the input name used for submitting.
+ * @since5.0.0 Updated the input name used for submitting.
  *
- * @version TBD
+ * @version5.0.0
  */
 
 /**

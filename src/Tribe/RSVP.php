@@ -313,7 +313,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Allow filtering of the template arguments used prior to processing.
 		 *
-		 * @since TBD
+		 * @since5.0.0
 		 *
 		 * @param array $args {
 		 *      The list of step template arguments.
@@ -384,7 +384,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * Allow filtering of whether to show the opt-in option for attendees.
 		 *
 		 * @since 4.5.2
-		 * @since TBD Added $post_id and $ticket_id parameters.
+		 * @since5.0.0 Added $post_id and $ticket_id parameters.
 		 *
 		 * @param bool $hide_attendee_list_optout Whether to hide attendees list opt-out.
 		 * @param int  $post_id                   The post ID that the ticket belongs to.
@@ -410,7 +410,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Handle RSVP error rendering.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param string|array $error_message The error message(s).
 	 *
@@ -748,7 +748,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Create an attendee for a RSVP ticket.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param \Tribe__Tickets__Ticket_Object $ticket        Ticket object.
 	 * @param array                          $attendee_data Attendee data.
@@ -845,7 +845,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			/**
 			 * Allow enabling user lookups by Attendee Email.
 			 *
-			 * @since TBD
+			 * @since5.0.0
 			 *
 			 * @param boolean $lookup_user_from_email Whether to lookup the User using the Attendee Email if User ID not set.
 			 */

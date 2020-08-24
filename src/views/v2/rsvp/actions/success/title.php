@@ -11,7 +11,7 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.12.3
- * @version TBD
+ * @version5.0.0
  */
 
 $success_text = ! empty( $is_going ) ? __( 'You are going', 'event-tickets' ) : __( "Can't go", 'event-tickets' );

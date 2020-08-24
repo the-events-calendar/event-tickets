@@ -10,15 +10,15 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since TBD
+ * @since5.0.0
  *
- * @version TBD
+ * @version5.0.0
  */
 
 /**
  * Filter to check if the RSVP has meta.
  *
- * @since TBD
+ * @since5.0.0
  *
  * @param Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
@@ -33,7 +33,7 @@ if ( empty( $has_meta ) ) {
 /**
  * Allows injection of meta fields in the RSVP ARI form.
  *
- * @since TBD
+ * @since5.0.0
  *
  * @see  Tribe__Template\do_entry_point()
  * @link https://docs.theeventscalendar.com/reference/classes/tribe__template/do_entry_point/

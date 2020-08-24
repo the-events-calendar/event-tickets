@@ -88,7 +88,7 @@ class Attendees_List {
 	 * Determine whether we should hide the optout option.
 	 *
 	 * @since 4.12.0
-	 * @since TBD Removed setting `global $post`, accidentally affecting other code.
+	 * @since5.0.0 Removed setting `global $post`, accidentally affecting other code.
 	 *
 	 * @param bool $should_hide Whether the optout form should be hidden or not.
 	 * @param int  $post_id     The post ID the ticket belongs to.

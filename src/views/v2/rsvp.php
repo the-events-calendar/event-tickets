@@ -11,7 +11,7 @@
  *
  * @since 4.12.3
  *
- * @version TBD
+ * @version5.0.0
  *
  * @var Tribe__Tickets__Editor__Template $this
  * @var WP_Post|int                      $post_id      The post object or ID.
