@@ -118,6 +118,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] =
+
+* Fix - Synced Date format with selected option for Ticket Start and End sale dates  [GTRIA-263]
+
 = [4.12.3.1] 2020-08-17 =
 
 * Fix - Prevent attendee registration modal in block editor from closing when clicking into the modal. [GTRIA-275]
