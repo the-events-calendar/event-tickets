@@ -395,13 +395,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			var $timepickers = $tribe_tickets.find( '.tribe-timepicker:not(.ui-timepicker-input)' );
 			tribe_timepickers.setup_timepickers( $timepickers );
 
-			$ticket_start_date.datepicker( datepickerOpts ).datepicker( 'option', 'setDate', $( document.getElementById( 'EventStartDate' ) ).val() ).keyup( function( e ) {
+			$ticket_start_date.datepicker( datepickerOpts ).datepicker( 'option', 'defaultDate', $( document.getElementById( 'EventStartDate' ) ).val() ).keyup( function( e ) {
 				if ( e.keyCode === 8 || e.keyCode === 46 ) {
 					$.datepicker._clearDate( this );
 				}
 			} );
 
-			$ticket_end_date.datepicker( datepickerOpts ).datepicker( 'option', 'defaultDate', $( document.getElementById( 'EventEndDate' ) ).data( 'prevDate' ) ).keyup( function( e ) {
+			$ticket_end_date.datepicker( datepickerOpts ).datepicker( 'option', 'defaultDate', $( document.getElementById( 'EventEndDate' ) ).val() ).keyup( function( e ) {
 				if ( e.keyCode === 8 || e.keyCode === 46 ) {
 					$.datepicker._clearDate( this );
 				}
