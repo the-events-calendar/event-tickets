@@ -120,7 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [TBD] =
 
-* Fix - Synced Date format with selected option for Ticket Start and End sale dates  [GTRIA-263]
+* Fix - Use the correct default date for initial Ticket start sale and end sale dates for Classic Editor. [ET-900]
 
 = [4.12.3.1] 2020-08-17 =
 
