@@ -2,19 +2,19 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 4.12.3\n"
+"Project-Id-Version: Event Tickets 5.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2020-07-23 05:41:38+00:00\n"
+"POT-Creation-Date: 2020-08-24 01:22:12+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2020-07-23 05:41\n"
+"PO-Revision-Date: 2020-08-24 01:22\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.12.3)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.0.0)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: event-tickets.php:62 src/Tribe/Admin/Notices.php:89 src/Tribe/Main.php:675
+#: event-tickets.php:62 src/Tribe/Admin/Notices.php:90 src/Tribe/Main.php:675
 #: src/Tribe/Privacy.php:59
 msgid "Event Tickets"
 msgstr ""
@@ -146,22 +146,22 @@ msgstr ""
 msgid "This ticket was moved to %1$s from %2$s"
 msgstr ""
 
-#: src/Tribe/Admin/Notices.php:85
+#: src/Tribe/Admin/Notices.php:86
 msgctxt "Admin notice link text"
 msgid "RSVP Display Settings"
 msgstr ""
 
 #. translators: %1$s: RSVP singular text, %2$s: Link to settings page.
-#: src/Tribe/Admin/Notices.php:94
+#: src/Tribe/Admin/Notices.php:95
 msgid ""
 "With this new version, we've introduced newly redesigned %1$s frontend "
 "views. If you have customized the %1$s section, this update will likely "
 "impact your customizations.\n"
-"\t\t\t\n"
+"\n"
 "\t\t\tTo upgrade to the new frontend views, please enable them in the %2$s."
 msgstr ""
 
-#: src/Tribe/Admin/Notices.php:153
+#: src/Tribe/Admin/Notices.php:154
 msgid ""
 "Event Tickets does not support ticket sales via third party ecommerce "
 "plugins. If you want to sell tickets with %1$s, please purchase a license "
@@ -212,7 +212,7 @@ msgstr ""
 msgid "Please enter in without thousand separators and currency symbols."
 msgstr ""
 
-#: src/Tribe/Assets.php:212
+#: src/Tribe/Assets.php:228
 msgid ""
 "There is unsaved attendee information. Are you sure you want to continue?"
 msgstr ""
@@ -423,7 +423,8 @@ msgstr ""
 #: src/Tribe/Privacy.php:470 src/Tribe/Privacy.php:566
 #: src/admin-views/admin-welcome-message.php:62
 #: src/views/blocks/rsvp/form/email.php:32 src/views/tickets/rsvp.php:229
-#: src/views/v2/rsvp/form/fields/email.php:32
+#: src/views/v2/rsvp/ari/form/fields/email.php:33
+#: src/views/v2/rsvp/form/fields/email.php:34
 msgid "Email"
 msgstr ""
 
@@ -752,31 +753,31 @@ msgstr ""
 msgid "Report"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1925 src/Tribe/RSVP.php:1951
+#: src/Tribe/Commerce/PayPal/Main.php:1925 src/Tribe/RSVP.php:2360
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1932 src/Tribe/RSVP.php:1958
+#: src/Tribe/Commerce/PayPal/Main.php:1932 src/Tribe/RSVP.php:2367
 msgid "Post updated. %1$s"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1936 src/Tribe/RSVP.php:1962
+#: src/Tribe/Commerce/PayPal/Main.php:1936 src/Tribe/RSVP.php:2371
 msgid "Post published. %1$s"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1939 src/Tribe/RSVP.php:1965
+#: src/Tribe/Commerce/PayPal/Main.php:1939 src/Tribe/RSVP.php:2374
 msgid "Post submitted."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1940 src/Tribe/RSVP.php:1966
+#: src/Tribe/Commerce/PayPal/Main.php:1940 src/Tribe/RSVP.php:2375
 msgid "Post scheduled."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1941 src/Tribe/RSVP.php:1967
+#: src/Tribe/Commerce/PayPal/Main.php:1941 src/Tribe/RSVP.php:2376
 msgid "Post draft updated."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2955 src/Tribe/RSVP.php:1616
+#: src/Tribe/Commerce/PayPal/Main.php:2955 src/Tribe/RSVP.php:2025
 msgid "(deleted)"
 msgstr ""
 
@@ -935,31 +936,31 @@ msgstr ""
 msgid "Who's coming?"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Rsvp.php:250
+#: src/Tribe/Editor/Blocks/Rsvp.php:261
 msgid "Are you sure you want to cancel?"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:325 src/Tribe/Tickets.php:3258
+#: src/Tribe/Editor/Blocks/Tickets.php:325 src/Tribe/Tickets.php:3268
 msgctxt "Error message title, will be followed by the error code."
 msgid "API Error"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:326 src/Tribe/Tickets.php:3259
+#: src/Tribe/Editor/Blocks/Tickets.php:326 src/Tribe/Tickets.php:3269
 msgid ""
 "Refresh this page or wait a few minutes before trying again. If this happens "
 "repeatedly, please contact the Site Admin."
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:327 src/Tribe/Tickets.php:3260
+#: src/Tribe/Editor/Blocks/Tickets.php:327 src/Tribe/Tickets.php:3270
 msgid ""
 "The ticket for this event has sold out and has been removed from your cart."
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:328 src/Tribe/Tickets.php:3261
+#: src/Tribe/Editor/Blocks/Tickets.php:328 src/Tribe/Tickets.php:3271
 msgid "Whoops!"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:329 src/Tribe/Tickets.php:3262
+#: src/Tribe/Editor/Blocks/Tickets.php:329 src/Tribe/Tickets.php:3272
 msgctxt "The %s will change based on the error produced."
 msgid "You have %s ticket(s) with a field that requires information."
 msgstr ""
@@ -1040,7 +1041,7 @@ msgstr ""
 msgid "Powered by"
 msgstr ""
 
-#: src/Tribe/JSON_LD/Order.php:132 src/Tribe/RSVP.php:1227
+#: src/Tribe/JSON_LD/Order.php:132 src/Tribe/RSVP.php:1632
 #: src/admin-views/editor/column-body-price.php:18
 msgid "Free"
 msgstr ""
@@ -2007,37 +2008,63 @@ msgctxt "attendee summary"
 msgid "Not Going:"
 msgstr ""
 
-#: src/Tribe/RSVP.php:456
+#: src/Tribe/RSVP.php:261
+msgid "Something happened here."
+msgstr ""
+
+#: src/Tribe/RSVP.php:480
+msgid "Your RSVP was unsuccessful, please try again."
+msgstr ""
+
+#: src/Tribe/RSVP.php:517
+msgid "Unable to verify your opt-in request, please try again."
+msgstr ""
+
+#: src/Tribe/RSVP.php:620
 msgctxt "Attendee number"
 msgid "Attendee %1$s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:494
+#: src/Tribe/RSVP.php:658
 msgid "RSVP Tickets"
 msgstr ""
 
-#: src/Tribe/RSVP.php:495
+#: src/Tribe/RSVP.php:659
 msgid "RSVP Ticket"
 msgstr ""
 
-#: src/Tribe/RSVP.php:910
+#. translators: %s is the attendee field name.
+#: src/Tribe/RSVP.php:772
+msgid "Attendee field \"%s\" is not set."
+msgstr ""
+
+#. translators: %s is the attendee field name.
+#: src/Tribe/RSVP.php:778
+msgid "Attendee field \"%s\" is empty."
+msgstr ""
+
+#: src/Tribe/RSVP.php:809
+msgid "Unable to process your request, invalid content resource."
+msgstr ""
+
+#: src/Tribe/RSVP.php:1315
 msgid "Your %1$s from %2$s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:1001
+#: src/Tribe/RSVP.php:1406
 msgid "You confirmed you will not be attending %s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:1338
+#: src/Tribe/RSVP.php:1743
 msgid ""
 "Your %1$s has been received! Check your email for your %1$s confirmation."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1345
+#: src/Tribe/RSVP.php:1750
 msgid "You can't %1$s more than the total remaining %2$s."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1353
+#: src/Tribe/RSVP.php:1758
 msgid "In order to %s, you must enter your name and a valid email address."
 msgstr ""
 
@@ -2131,13 +2158,13 @@ msgstr ""
 msgid "Unlimited"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:845 src/views/blocks/attendees/view-link.php:67
+#: src/Tribe/Tickets_View.php:852 src/views/blocks/attendees/view-link.php:67
 #: src/views/tickets/view-link.php:61
 msgctxt "separator if there are both RSVPs and Tickets"
 msgid " and "
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:905
+#: src/Tribe/Tickets_View.php:912
 msgid "This %s is no longer active."
 msgstr ""
 
@@ -2544,7 +2571,7 @@ msgstr ""
 
 #: src/admin-views/editor/panel/settings.php:112
 #: src/admin-views/editor/panel/ticket.php:255 src/admin-views/meta-box.php:304
-#: src/views/v2/rsvp/ari/form/buttons.php:21
+#: src/views/v2/rsvp/ari/form/buttons.php:22
 #: src/views/v2/rsvp/form/fields/cancel.php:23
 msgid "Cancel"
 msgstr ""
@@ -2956,19 +2983,19 @@ msgstr ""
 msgid "Total %s Ordered"
 msgstr ""
 
-#: src/admin-views/tribe-options-display.php:12
+#: src/admin-views/tribe-options-display.php:17
 msgid "RSVP Display Settings"
 msgstr ""
 
-#: src/admin-views/tribe-options-display.php:16
+#: src/admin-views/tribe-options-display.php:21
 msgid "The settings below control the display of your RSVPs."
 msgstr ""
 
-#: src/admin-views/tribe-options-display.php:20
+#: src/admin-views/tribe-options-display.php:25
 msgid "Enable New RSVP Experience"
 msgstr ""
 
-#: src/admin-views/tribe-options-display.php:21
+#: src/admin-views/tribe-options-display.php:26
 msgid ""
 "This setting will render the new front-end designs (styling) and user-flow "
 "for the RSVP experience."
@@ -3348,22 +3375,22 @@ msgctxt "lowercase plural label for Tickets"
 msgid "tickets"
 msgstr ""
 
-#: src/template-tags/tickets.php:1678
+#: src/template-tags/tickets.php:1620
 msgctxt "singular label for Guest"
 msgid "Guest"
 msgstr ""
 
-#: src/template-tags/tickets.php:1702
+#: src/template-tags/tickets.php:1644
 msgctxt "lowercase singular label for Guest"
 msgid "guest"
 msgstr ""
 
-#: src/template-tags/tickets.php:1726
+#: src/template-tags/tickets.php:1668
 msgctxt "plural label for Guest"
 msgid "Guests"
 msgstr ""
 
-#: src/template-tags/tickets.php:1750
+#: src/template-tags/tickets.php:1692
 msgctxt "lowercase plural label for Guest"
 msgid "guests"
 msgstr ""
@@ -3549,7 +3576,6 @@ msgstr ""
 #: src/views/blocks/tickets/registration/attendee/fields/select.php:47
 #: src/views/registration/attendees/fields/select.php:40
 #: src/views/registration-js/attendees/fields/select.php:41
-#: src/views/v2/components/fields/select.php:50
 msgid "Select an option"
 msgstr ""
 
@@ -3718,7 +3744,6 @@ msgid " Month"
 msgstr ""
 
 #: src/views/registration-js/attendees/fields/birth.php:55
-#: src/views/v2/components/fields/birth.php:43
 msgid "Month"
 msgstr ""
 
@@ -3728,7 +3753,6 @@ msgid " Day"
 msgstr ""
 
 #: src/views/registration-js/attendees/fields/birth.php:75
-#: src/views/v2/components/fields/birth.php:56
 msgid "Day"
 msgstr ""
 
@@ -3738,7 +3762,6 @@ msgid " Year"
 msgstr ""
 
 #: src/views/registration-js/attendees/fields/birth.php:95
-#: src/views/v2/components/fields/birth.php:69
 msgid "Year"
 msgstr ""
 
@@ -3966,6 +3989,7 @@ msgid "RSVP Closed"
 msgstr ""
 
 #: src/views/v2/rsvp/actions/rsvp/not-going.php:43
+#: src/views/v2/rsvp/actions/success/title.php:17
 msgid "Can't go"
 msgstr ""
 
@@ -3973,8 +3997,14 @@ msgstr ""
 msgid "RSVP Here"
 msgstr ""
 
-#: src/views/v2/rsvp/actions/success/title.php:21
+#: src/views/v2/rsvp/actions/success/title.php:17
 msgid "You are going"
+msgstr ""
+
+#. Translators: 1: opening span. 2: Closing span.
+#: src/views/v2/rsvp/actions/success/toggle.php:55
+msgctxt "Toggle for RSVP attendee list."
+msgid "Show me on public %1$sattendee list%2$s"
 msgstr ""
 
 #: src/views/v2/rsvp/actions/success/tooltip.php:26
@@ -3983,32 +4013,59 @@ msgid ""
 "attendees to see."
 msgstr ""
 
-#. Translators: 1: opening span. 2: Closing span.
-#: src/views/v2/rsvp/actions/success.php:47
-msgctxt "Toggle for RSVP attendee list."
-msgid "Show me on public %1$sattendee list%2$s"
+#: src/views/v2/rsvp/ari/form/buttons.php:30
+msgid "Next guest"
 msgstr ""
 
-#: src/views/v2/rsvp/ari/form/buttons.php:28
+#: src/views/v2/rsvp/ari/form/buttons.php:38
 #: src/views/v2/rsvp/form/fields/submit.php:23
 msgid "Finish"
 msgstr ""
 
+#: src/views/v2/rsvp/ari/form/error.php:21
+msgid "Please fill in required information before proceeding"
+msgstr ""
+
+#: src/views/v2/rsvp/ari/form/fields/email.php:33
+#: src/views/v2/rsvp/ari/form/fields/name.php:33
+#: src/views/v2/rsvp/form/fields/email.php:34
+#: src/views/v2/rsvp/form/fields/name.php:34
+#: src/views/v2/rsvp/form/fields/quantity.php:25
+msgid "required"
+msgstr ""
+
+#: src/views/v2/rsvp/ari/form/fields/email.php:43
+#: src/views/v2/rsvp/form/fields/email.php:44
+msgid "your@email.com"
+msgstr ""
+
+#: src/views/v2/rsvp/ari/form/fields/name.php:33
+#: src/views/v2/rsvp/form/fields/name.php:34
+msgid "Name"
+msgstr ""
+
+#: src/views/v2/rsvp/ari/form/fields/name.php:43
+#: src/views/v2/rsvp/form/fields/name.php:44
+msgid "Your Name"
+msgstr ""
+
+#. Translators: 1 the guest number.
+#: src/views/v2/rsvp/ari/form/template/title.php:17
+msgctxt "RSVP attendee registration form title"
+msgid "Guest %1$s"
+msgstr ""
+
 #. Translators: %s Guest label for RSVP attendee registration form title.
 #. Translators: %s Guest label for RSVP attendee registration sidebar.
-#: src/views/v2/rsvp/ari/form/title.php:19
-#: src/views/v2/rsvp/ari/sidebar/guest-list.php:23
+#: src/views/v2/rsvp/ari/form/title.php:21
+#: src/views/v2/rsvp/ari/sidebar/guest-list/guest.php:34
 msgid "Main %s"
 msgstr ""
 
-#. Translators: %s Guest label for RSVP attendee registration sidebar.
-#: src/views/v2/rsvp/ari/sidebar/guest-list.php:39
-msgid "%s 2"
-msgstr ""
-
-#. Translators: %s Guest label for RSVP attendee registration sidebar.
-#: src/views/v2/rsvp/ari/sidebar/guest-list.php:55
-msgid "%s 3"
+#. Translators: 1 the guest number.
+#: src/views/v2/rsvp/ari/sidebar/guest-list/guest-template.php:36
+msgctxt "RSVP attendee registration sidebar guest button"
+msgid "Guest %1$s"
 msgstr ""
 
 #: src/views/v2/rsvp/ari/sidebar/quantity/minus.php:23
@@ -4026,9 +4083,17 @@ msgstr ""
 
 #. Translators: 1: opening span. 2: the number of remaining days to RSVP. 3:
 #. Closing span. 4: The RSVP label.
-#: src/views/v2/rsvp/details/availability/days-to-rsvp.php:31
+#: src/views/v2/rsvp/details/availability/days-to-rsvp.php:23
 msgctxt "Days to RSVP"
-msgid "%1$s %2$s %3$s days left to %4$s"
+msgid "%1$s %2$s %3$s day left to %4$s"
+msgid_plural "%1$s %2$s %3$s days left to %4$s"
+msgstr[0] ""
+msgstr[1] ""
+
+#. Translators: %s: The RSVP label.
+#: src/views/v2/rsvp/details/availability/days-to-rsvp.php:38
+msgctxt "Last day to RSVP"
+msgid "Last day to %s"
 msgstr ""
 
 #: src/views/v2/rsvp/details/availability/full.php:22
@@ -4039,32 +4104,14 @@ msgstr ""
 #. Closing span.
 #: src/views/v2/rsvp/details/availability/remaining.php:30
 msgctxt "Remaining RSVP quantity"
-msgid "%1$s %2$s %3$s remaining, "
+msgid "%1$s %2$s %3$s remaining"
 msgstr ""
 
-#: src/views/v2/rsvp/form/fields/email.php:32
-#: src/views/v2/rsvp/form/fields/name.php:32
-#: src/views/v2/rsvp/form/fields/quantity.php:24
-msgid "required"
-msgstr ""
-
-#: src/views/v2/rsvp/form/fields/email.php:42
-msgid "your@email.com"
-msgstr ""
-
-#: src/views/v2/rsvp/form/fields/name.php:32
-msgid "Name"
-msgstr ""
-
-#: src/views/v2/rsvp/form/fields/name.php:42
-msgid "John Doe"
-msgstr ""
-
-#: src/views/v2/rsvp/form/fields/quantity.php:17
+#: src/views/v2/rsvp/form/fields/quantity.php:18
 msgid "Number of Guests"
 msgstr ""
 
-#: src/views/v2/rsvp/form/fields/quantity.php:17
+#: src/views/v2/rsvp/form/fields/quantity.php:18
 msgid "Number of Guests Not Attending"
 msgstr ""
 
@@ -4087,16 +4134,26 @@ msgstr ""
 msgid "Log in here"
 msgstr ""
 
-#. Translators: 1: RSVP label.
-#: src/views/v2/rsvp/messages/success.php:35
+#. Translators: %1$s: RSVP label.
+#: src/views/v2/rsvp/messages/success/going.php:32
 msgctxt "blocks rsvp messages success"
 msgid "Your %1$s has been received! "
 msgstr ""
 
-#. Translators: 1: RSVP label.
-#: src/views/v2/rsvp/messages/success.php:46
+#. Translators: %1$s: RSVP label.
+#: src/views/v2/rsvp/messages/success/going.php:43
 msgctxt "blocks rsvp messages success"
 msgid "Check your email for %1$s confirmation."
+msgstr ""
+
+#: src/views/v2/rsvp/messages/success/not-going.php:28
+msgid "Thank you for confirming!"
+msgstr ""
+
+#. Translators: %1$s: RSVP label.
+#: src/views/v2/rsvp/messages/success/not-going.php:35
+msgctxt "blocks rsvp messages success"
+msgid "Your %1$s response has been received."
 msgstr ""
 
 #. Plugin URI of the plugin/theme

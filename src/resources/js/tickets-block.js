@@ -1402,7 +1402,7 @@ window.tribe.tickets.block = {
 	 * Checks if a horizontal date picker is valid.
 	 * Eg: If a month is selected, a year and day must also be selected.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param $input
 	 * @returns {boolean}

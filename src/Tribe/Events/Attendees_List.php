@@ -88,6 +88,7 @@ class Attendees_List {
 	 * Determine whether we should hide the optout option.
 	 *
 	 * @since 4.12.0
+	 * @since5.0.0 Removed setting `global $post`, accidentally affecting other code.
 	 *
 	 * @param bool $should_hide Whether the optout form should be hidden or not.
 	 * @param int  $post_id     The post ID the ticket belongs to.
@@ -97,10 +98,8 @@ class Attendees_List {
 	 * @see \Tribe\Tickets\Events\Events_Service_Provider::hooks
 	 */
 	public function should_hide_optout( $should_hide, $post_id = 0 ) {
-		global $post;
-
 		if ( empty( $post_id ) ) {
-			$post_id = $post;
+			$post_id = get_the_ID();
 		}
 
 		$is_hidden_on = static::is_hidden_on( $post_id, false );
@@ -292,7 +291,7 @@ class Attendees_List {
 	 *
 	 * @return bool Whether we are showing the attendee list with the block editor.
 	 */
-	private function is_showing_attendee_list_with_blocks( WP_Post $post ) {
+	protected function is_showing_attendee_list_with_blocks( WP_Post $post ) {
 		$has_attendee_list_block     = function_exists( 'has_block' ) ? has_block( 'tribe/attendees', $post ) : false;
 		$has_attendee_list_shortcode = has_shortcode( $post->post_content, 'tribe_attendees_list' );
 
@@ -308,7 +307,7 @@ class Attendees_List {
 	 *
 	 * @return bool Whether we are showing the attendee list with the block editor.
 	 */
-	private function is_showing_attendee_list_with_classical_editor( WP_Post $post ) {
+	protected function is_showing_attendee_list_with_classical_editor( WP_Post $post ) {
 		$is_visible_by_meta          = ! static::is_hidden_on( $post );
 		$has_attendee_list_shortcode = has_shortcode( $post->post_content, 'tribe_attendees_list' );
 
