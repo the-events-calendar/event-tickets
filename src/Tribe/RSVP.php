@@ -1860,7 +1860,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$event_id = (int) get_post_meta( $ticket_product, $this->get_event_key(), true );
 
 		if ( 0 === $event_id ) {
-			$event_id = get_post_meta( $ticket_product, self::ATTENDEE_EVENT_KEY, true );
+			$event_id = (int) get_post_meta( $ticket_product, self::ATTENDEE_EVENT_KEY, true );
 		}
 
 		if ( 0 === $event_id ) {
