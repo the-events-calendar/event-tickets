@@ -60,6 +60,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		$args['provider']            = $provider;
 		$args['provider_id']         = $provider_id;
 		$args['cart_url']            = 'tpp' !== $provider_id ? $provider->get_cart_url() : '';
+		$args['tickets']             = $tickets;
 		$args['tickets_on_sale']     = $this->get_tickets_on_sale( $tickets );
 		$args['has_tickets_on_sale'] = ! empty( $args['tickets_on_sale'] );
 		$args['is_sale_past']        = $this->get_is_sale_past( $tickets );
