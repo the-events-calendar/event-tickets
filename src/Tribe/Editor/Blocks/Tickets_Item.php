@@ -27,5 +27,6 @@ class Tribe__Tickets__Editor__Blocks__Tickets_Item extends Tribe__Editor__Blocks
 	 */
 	public function render( $attributes = array() ) {
 		// This block has no render.
+		return '';
 	}
 }

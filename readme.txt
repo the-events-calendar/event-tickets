@@ -120,7 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [5.0.1] 2020-08-31 =
 
-* Fix - Prevent the RSVP provider class from interfering with the Attendee Registration modal flow in regards to a ticket's real provider. [TBD]
+* Fix - Prevent the Attendee Registration modal from incorrectly setting RSVP as the provider class. [TBD]
 
 = [5.0.0] 2020-08-26 =
 
