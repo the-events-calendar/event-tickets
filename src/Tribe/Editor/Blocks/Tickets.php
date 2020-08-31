@@ -60,10 +60,12 @@ extends Tribe__Editor__Blocks__Abstract {
 		$args['provider']            = $provider;
 		$args['provider_id']         = $provider_id;
 		$args['cart_url']            = 'tpp' !== $provider_id ? $provider->get_cart_url() : '';
+		$args['tickets']             = $tickets;
 		$args['tickets_on_sale']     = $this->get_tickets_on_sale( $tickets );
 		$args['has_tickets_on_sale'] = ! empty( $args['tickets_on_sale'] );
 		$args['is_sale_past']        = $this->get_is_sale_past( $tickets );
 		$args['is_sale_future']      = $this->get_is_sale_future( $tickets );
+		$args['currency']            = tribe( 'tickets.commerce.currency' );
 
 		// Add the rendering attributes into global context
 		$template->add_template_globals( $args );
@@ -186,7 +188,7 @@ extends Tribe__Editor__Blocks__Abstract {
 			$response['tickets'][ $ticket_id ]['available']    = $available;
 			$response['tickets'][ $ticket_id ]['max_purchase'] = $max_at_a_time;
 
-			// If there are no more available we will send the template part HTML to update the DOM
+			// If there are no more available we will send the template part HTML to update the DOM.
 			if ( 0 === $available ) {
 				$response['tickets'][ $ticket_id ]['unavailable_html'] = $tickets_editor->template( 'blocks/tickets/quantity-unavailable', $ticket, false );
 			}

@@ -1022,10 +1022,11 @@ class Tribe__Tickets__Tickets_View {
 			'provider'            => $provider,
 			'provider_id'         => $provider->class_name,
 			'tickets'             => $tickets,
-			'cart_classes'        => [ 'tribe-block', 'tribe-tickets' ],
 			'tickets_on_sale'     => $blocks_tickets->get_tickets_on_sale( $tickets ),
 			'has_tickets_on_sale' => tribe_events_has_tickets_on_sale( $post_id ),
 			'is_sale_past'        => $blocks_tickets->get_is_sale_past( $tickets ),
+			'is_sale_future'      => $blocks_tickets->get_is_sale_future( $tickets ),
+			'currency'            => tribe( 'tickets.commerce.currency' ),
 		];
 
 		// Add the rendering attributes into global context.
