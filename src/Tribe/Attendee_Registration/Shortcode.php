@@ -40,9 +40,8 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 			return;
 		}
 
-		// enqueue styles and scripts for this page
-		tribe_asset_enqueue( 'event-tickets-registration-page-styles' );
-		tribe_asset_enqueue( 'event-tickets-registration-page-scripts' );
+		// Enqueue styles and scripts for this page.
+		tribe_asset_enqueue_group( 'tribe-tickets-attendee-registration-page' );
 	}
 
 

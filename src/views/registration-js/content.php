@@ -12,11 +12,13 @@
  * @since   4.12.3 Update for getting ticket provider now returning instance or False. Remove duplicate array property.
  *              Retrieve $is_meta_up_to_date in a manner consistent with other template variables. Moved `novalidate` from
  *              div to form, as it used to be. Implement short array syntax.
+ * @since   TBD Add comments for translators. Use the loader V2 template.
  *
- * @version 4.12.3
+ * @version TBD
  *
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */
+
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 $events   = (array) $this->get( 'events' );
 
@@ -49,7 +51,10 @@ $classes        = [
 	'tribe-tickets__registration',
 ];
 ?>
-<div <?php tribe_classes( $classes ); ?> data-provider="<?php echo esc_attr( $provider ); ?>">
+<div
+	<?php tribe_classes( $classes ); ?>
+	data-provider="<?php echo esc_attr( $provider ); ?>"
+>
 	<?php
 	/**
 	 * Before the output, whether $events is empty.
@@ -82,12 +87,13 @@ $classes        = [
 		$this->template(
 			'components/notice',
 			[
-				'id' => 'tribe-tickets__notice__attendee-registration',
+				'id'             => 'tribe-tickets__notice__attendee-registration',
 				'notice_classes' => [
 					'tribe-tickets__notice--error',
 					'tribe-tickets__validation-notice',
 				],
 				'content' => sprintf(
+					// Translators: % the tickets number.
 					esc_html_x(
 						'You have %s ticket(s) with a field that requires information.',
 						'Note about missing required fields, %s is the html-wrapped number of tickets.',
@@ -187,18 +193,20 @@ $classes        = [
 			'components/notice',
 			[
 				'notice_classes'  => $notice_classes,
-				'content' => sprintf(
+				'content'         => sprintf(
+					// Translators: %s the number of tickets.
 					esc_html_x(
 						'There are %s other tickets in your cart that do not require attendee information.',
 						'Note that there are more tickets in the cart, %s is the html-wrapped number.',
 						'event-tickets'
 					),
 					'<span id="tribe-tickets__non-ar-count">' . absint( $non_meta_count ) . '</span>'
-				)
+				),
 			]
 		); ?>
 		<?php $this->template( 'blocks/tickets/registration/attendee/submit' ); ?>
 	</div>
 	</form>
 </div>
-<?php include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' ); ?>
+<?php
+$this->template( 'v2/components/loader/loader', [ 'classes' => 'tribe-common' ] );

@@ -10,6 +10,7 @@
  * @version 4.11.0
  *
  */
+
 if (
 	! class_exists( 'Tribe__Tickets_Plus__Meta' )
 	|| ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' )
@@ -38,7 +39,7 @@ if ( empty( $tickets ) ) {
 			$ticket = $provider->get_ticket( $event_id, $ticket['id'] );
 		}
 
-		// Only include tickets with meta
+		// Only include tickets with meta.
 		$has_meta = get_post_meta( $ticket->ID, '_tribe_tickets_meta_enabled', true );
 
 		if ( empty( $has_meta ) || ! tribe_is_truthy( $has_meta ) ) {
@@ -69,4 +70,5 @@ if ( empty( $tickets ) ) {
 			<?php endwhile; ?>
 		</script>
 <?php
+
 endforeach;

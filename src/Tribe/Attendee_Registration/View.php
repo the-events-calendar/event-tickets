@@ -144,10 +144,9 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		];
 
 		// Enqueue styles and scripts specific to this page.
-		tribe_asset_enqueue( 'event-tickets-registration-page-styles' );
-		tribe_asset_enqueue( 'event-tickets-registration-page-scripts' );
+		tribe_asset_enqueue_group( 'tribe-tickets-attendee-registration-page' );
 
-		// One provder per instance
+		// One provider per instance.
 		$currency  = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $default_provider, null );
 		wp_localize_script(
 			'event-tickets-registration-page-scripts',
