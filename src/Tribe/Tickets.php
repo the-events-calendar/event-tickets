@@ -1897,9 +1897,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				[ 'jquery', 'tribe-common', 'jquery-ui-datepicker', 'wp-util-not-in-footer', 'wp-i18n' ],
 				null,
 				[
-					'type'         => 'js',
-					'groups'       => [ 'tribe-tickets-block-assets' ],
-					'localize'     => [
+					'type'     => 'js',
+					'groups'   => [ 'tribe-tickets-block-assets' ],
+					'localize' => [
 						[
 							'name' => 'TribeTicketOptions',
 							'data' => [ __CLASS__, 'get_asset_localize_data_for_ticket_options' ],
