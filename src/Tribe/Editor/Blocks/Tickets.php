@@ -65,7 +65,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		$args['is_sale_past']        = $this->get_is_sale_past( $tickets );
 		$args['is_sale_future']      = $this->get_is_sale_future( $tickets );
 
-		// Add the rendering attributes into global context
+		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
 
 		// enqueue assets

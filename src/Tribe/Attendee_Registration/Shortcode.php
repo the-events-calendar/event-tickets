@@ -41,7 +41,7 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 		}
 
 		// Enqueue styles and scripts for this page.
-		tribe_asset_enqueue_group( 'tribe-tickets-attendee-registration-page' );
+		tribe_asset_enqueue_group( 'tribe-tickets-registration-page' );
 	}
 
 

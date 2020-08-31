@@ -47,7 +47,7 @@ class Tribe__Tickets__Assets {
 				'groups' => [
 					'tribe-tickets-block-assets',
 					'tribe-tickets-rsvp',
-					'tribe-tickets-attendee-registration-page',
+					'tribe-tickets-registration-page',
 				],
 			]
 		);
@@ -55,13 +55,13 @@ class Tribe__Tickets__Assets {
 		// Tickets registration page styles.
 		tribe_asset(
 			$tickets_main,
-			'event-tickets-registration-page-styles',
+			'tribe-tickets-registration-page-styles',
 			'tickets-registration-page.css',
 			[],
 			null,
 			[
 				'groups' => [
-					'tribe-tickets-attendee-registration-page',
+					'tribe-tickets-registration-page',
 				],
 			]
 		);
@@ -69,7 +69,7 @@ class Tribe__Tickets__Assets {
 		// Tickets registration page scripts.
 		tribe_asset(
 			$tickets_main,
-			'event-tickets-registration-page-scripts',
+			'tribe-tickets-registration-page-scripts',
 			'tickets-registration-page.js',
 			[
 				'jquery',
@@ -79,7 +79,7 @@ class Tribe__Tickets__Assets {
 			null,
 			[
 				'groups' => [
-					'tribe-tickets-attendee-registration-page',
+					'tribe-tickets-registration-page',
 				],
 			]
 		);
