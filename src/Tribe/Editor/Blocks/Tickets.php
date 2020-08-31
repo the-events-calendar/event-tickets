@@ -68,9 +68,8 @@ extends Tribe__Editor__Blocks__Abstract {
 		// Add the rendering attributes into global context
 		$template->add_template_globals( $args );
 
-		// enqueue assets
-		tribe_asset_enqueue( 'tribe-tickets-gutenberg-tickets' );
-		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-tickets-style' );
+		// Enqueue assets.
+		tribe_asset_enqueue_group( 'tribe-tickets-block-assets' );
 
 		return $template->template( [ 'blocks', $this->slug() ], $args, false );
 	}
@@ -96,7 +95,11 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		wp_enqueue_script( 'wp-util-not-in-footer' );
 
-		$tickets_block_dependencies = [ 'jquery', 'wp-util-not-in-footer' ];
+		$tickets_block_dependencies = [
+			'jquery',
+			'wp-util-not-in-footer',
+			'tribe-common',
+		];
 
 		if ( version_compare( $wp_version, '5.0', '>=' ) ) {
 			$tickets_block_dependencies[] = 'wp-i18n';
@@ -109,8 +112,9 @@ extends Tribe__Editor__Blocks__Abstract {
 			$tickets_block_dependencies,
 			null,
 			[
-				'type'         => 'js',
-				'localize'     => [
+				'type'     => 'js',
+				'groups'   => [ 'tribe-tickets-block-assets' ],
+				'localize' => [
 					[
 						'name' => 'TribeTicketOptions',
 						'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_ticket_options' ],

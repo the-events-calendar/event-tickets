@@ -1032,8 +1032,7 @@ class Tribe__Tickets__Tickets_View {
 		$template->add_template_globals( $args );
 
 		// Enqueue assets.
-		tribe_asset_enqueue( 'tribe-tickets-gutenberg-tickets' );
-		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-tickets-style' );
+		tribe_asset_enqueue_group( 'tribe-tickets-block-assets' );
 
 		return $template->template( 'blocks/tickets', $args, $echo );
 	}

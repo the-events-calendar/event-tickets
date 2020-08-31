@@ -1892,12 +1892,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			tribe_asset(
 				$plugin,
-				'tribe_tickets_frontend_tickets',
+				'tribe-tickets-block',
 				'tickets-block.js',
-				[ 'jquery', 'jquery-ui-datepicker', 'wp-util-not-in-footer', 'wp-i18n' ],
+				[ 'jquery', 'tribe-common', 'jquery-ui-datepicker', 'wp-util-not-in-footer', 'wp-i18n' ],
 				null,
 				[
 					'type'         => 'js',
+					'groups'       => [ 'tribe-tickets-block-assets' ],
 					'localize'     => [
 						[
 							'name' => 'TribeTicketOptions',
@@ -1925,7 +1926,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				]
 			);
 
-			tribe_asset_enqueue( 'tribe_tickets_frontend_tickets' );
+			tribe_asset_enqueue_group( 'tribe-tickets-block-assets' );
 
 			self::$frontend_script_enqueued = true;
 		}
@@ -1969,7 +1970,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$data['tickets'][ $ticket->ID ] = $ticket_data;
 			}
 
-			wp_localize_script( 'tribe_tickets_frontend_tickets', 'tribe_tickets_stock_data', $data );
+			wp_localize_script( 'tribe-tickets-block', 'tribe_tickets_stock_data', $data );
 		}
 
 		/**
