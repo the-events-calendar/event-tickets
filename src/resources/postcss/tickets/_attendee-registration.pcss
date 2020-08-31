@@ -1,0 +1,72 @@
+/**
+ * Event Tickets - Tickets Stylesheet - Attendee registration
+ *
+ * @since TBD
+ */
+
+.event-tickets,
+.entry .entry-content .event-tickets {
+
+	/*
+		Tickets Registration/Purchase
+	*/
+	.tribe-tickets__registration {
+		border: 1px solid var(--color-border-secondary);
+	}
+
+	.tribe-tickets__registration__summary {
+	}
+
+	.tribe-tickets__registration__title {
+		h2 {
+			color: var(--color-text-primary);
+		}
+	}
+
+	.tribe-tickets__registration__description {
+		margin-top: 10px;
+	}
+
+	.tribe-tickets__registration__tickets {
+	}
+
+	.tribe-tickets__registration__tickets__item {
+		border-bottom: 1px solid var(--color-border-secondary);
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+
+		&:last-child {
+			border: none;
+		}
+	}
+
+	.tribe-tickets__registration__tickets__item__icon {
+		flex: 0 1 50px;
+
+		svg {
+			max-width: 45px;
+		}
+	}
+
+	.tribe-tickets__registration__tickets__item__quantity {
+		flex: 0 1 20px;
+	}
+
+	.tribe-tickets__registration__tickets__item__title {
+		flex: 10 5 230px;
+	}
+
+	.tribe-tickets__registration__tickets__item__price {
+		flex: 0 1 40px;
+	}
+
+	.tribe-ticket__heading {
+		margin-bottom: var(--spacer-3);
+
+		@media (--viewport-medium) {
+			margin-bottom: var(--spacer-4);
+		}
+	}
+}

@@ -1,0 +1,72 @@
+/**
+ * Event Tickets - Tickets Stylesheet - Extras
+ *
+ * @since TBD
+ */
+
+.event-tickets,
+.entry .entry-content .event-tickets {
+
+	/*
+		Block "extras"
+	*/
+	.tribe-tickets__item__extra {
+		align-items: baseline;
+		-ms-grid-row: 2;
+		grid-row: 2;
+		-ms-grid-columns:  min-content max-content auto;
+		grid-template-columns: min-content max-content auto;
+
+		@media(--viewport-medium) {
+			align-self: start;
+			-ms-grid-column: 2;
+			grid-column: 2;
+			-ms-grid-row-start: 1;
+			grid-row-start: 1;
+			-ms-grid-row-end: 3;
+			grid-row-end: 3;
+
+			padding: 0 var(--spacer-2);
+		}
+
+		&.tribe-tickets__item__extra--price-suffix {
+			text-align: left;
+			overflow: hidden;
+		}
+	}
+
+	.tribe-tickets__item__extra__available {
+		color: var(--color-text-secondary);
+	}
+
+	.tribe-tickets__item__extra__price {
+
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+
+		.tribe-formatted-currency-wrap {
+			font-weight: var(--font-weight-bold);
+		}
+
+		.tribe-tickets__original_price {
+			color: var(--color-text-secondary);
+			font-weight: var(--font-weight-regular);
+			text-decoration: line-through;
+		}
+	}
+
+	.tribe-tickets__sale-price-suffix {
+		color: var(--color-text-secondary);
+		font-weight: var(--font-weight-regular);
+
+		small {
+			font-size: 100%;
+		}
+	}
+
+	.tribe-tickets__item__extra__available + .tribe-tickets__item__details__summary {
+		-ms-grid-column: 3;
+		grid-column: 3;
+	}
+}
