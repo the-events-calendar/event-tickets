@@ -131,7 +131,9 @@ if ( ! $already_rendered ) {
 			<?php $this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] ); ?>
 		<?php endif; ?>
 		<?php $this->template( 'v2/components/loader/loader' ); ?>
+
 	</form>
+
 	<div class="tribe-common">
 		<span id="tribe-tickets__modal_target"></span>
 	</div>
