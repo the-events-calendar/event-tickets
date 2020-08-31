@@ -1,5 +1,19 @@
+/**
+ * Makes sure we have all the required levels on the Tribe Object
+ *
+ * @since TBD
+ *
+ * @type {PlainObject}
+ */
 tribe.tickets = tribe.tickets || {};
 
+/**
+ * Configures ET registration page Object in the Global Tribe variable.
+ *
+ * @since TBD
+ *
+ * @type {PlainObject}
+ */
 tribe.tickets.registration = {};
 
 ( function( $, obj ) {
