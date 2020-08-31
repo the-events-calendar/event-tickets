@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
 Tested up to: 5.5
-Stable tag: 5.0.1
+Stable tag: 5.0.0.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -118,7 +118,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [5.0.1] 2020-08-31 =
+= [5.0.0.1] 2020-08-31 =
 
 * Fix - Prevent the Attendee Registration modal from incorrectly setting RSVP as the provider class. [ET-901]
 
