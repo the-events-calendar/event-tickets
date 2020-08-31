@@ -111,7 +111,7 @@ if ( ! $already_rendered ) {
 						[
 							'ticket'          => $ticket,
 							'key'             => $key,
-							'currency_symbol' => $ticket_symbol
+							'currency_symbol' => $ticket_symbol,
 						]
 					);
 				?>
