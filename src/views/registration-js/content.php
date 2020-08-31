@@ -46,6 +46,7 @@ $provider_class = $this->get_form_class( $provider );
 $all_tickets    = [];
 $classes        = [
 	'tribe-common',
+	'event-tickets',
 	'tribe-tickets__registration',
 ];
 ?>

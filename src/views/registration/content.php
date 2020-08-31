@@ -40,7 +40,7 @@ if ( empty( $events ) ) {
 }
 
 ?>
-<div class="tribe-common tribe-tickets__registration">
+<div class="tribe-common event-tickets tribe-tickets__registration">
 	<div class="tribe-tickets__registration__actions">
 	<?php $this->template(
 		'registration/button-cart',
