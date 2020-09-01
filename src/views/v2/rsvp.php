@@ -31,7 +31,7 @@ if ( empty( $active_rsvps ) ) {
 
 ?>
 
-<div class="tribe-common event-tickets">
+<div id="rsvp-now" class="tribe-common event-tickets">
 	<?php foreach ( $active_rsvps as $rsvp ) : ?>
 		<div
 			class="tribe-tickets__rsvp-wrapper"
