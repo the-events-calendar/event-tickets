@@ -93,7 +93,7 @@ $classes        = [
 					'tribe-tickets__validation-notice',
 				],
 				'content' => sprintf(
-					// Translators: % the tickets number.
+					// Translators: %s the tickets number.
 					esc_html_x(
 						'You have %s ticket(s) with a field that requires information.',
 						'Note about missing required fields, %s is the html-wrapped number of tickets.',
