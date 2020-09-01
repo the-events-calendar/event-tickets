@@ -120,7 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [5.0.1] TBD =
 
-
+* Fix - Use the correct file path for the modal overrides. It's now using `your-theme/tribe/tickets/` [ETP-432]
 
 = [5.0.0.1] 2020-08-31 =
 
