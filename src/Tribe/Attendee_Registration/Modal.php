@@ -147,7 +147,9 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	function locate_template( $template ) {
 		$main = Tribe__Tickets__Main::instance();
 
-		if ( $theme_file = locate_template( [ 'tribe-events/' . $template ] ) ) {
+		$theme_file = locate_template( [ 'tribe-events/' . $template, 'tribe/tickets/' . $template ] );
+
+		if ( $theme_file ) {
 			$file = $theme_file;
 		} else {
 			$file = $main->plugin_path . 'src/views/' . $template;
