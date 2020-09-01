@@ -8,7 +8,7 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link http://m.tri.be/1amo
  *
  * @since 4.9.3
  * @version 4.10.4
