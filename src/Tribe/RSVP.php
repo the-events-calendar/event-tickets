@@ -1569,7 +1569,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function delete_ticket( $event_id, $ticket_id ) {
 		// Ensure we know the event and product IDs (the event ID may not have been passed in)
 		if ( empty( $event_id ) ) {
-			$event_id = get_post_meta( $ticket_id, $this->get_event_key(), true );
+			$event_id = get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true );
 		}
 
 		// Additional check (in case we were passed an invalid ticket ID and still can't determine the event)
@@ -1860,7 +1860,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$event_id = (int) get_post_meta( $ticket_product, $this->get_event_key(), true );
 
 		if ( 0 === $event_id ) {
-			$event_id = get_post_meta( $ticket_product, self::ATTENDEE_EVENT_KEY, true );
+			$event_id = (int) get_post_meta( $ticket_product, self::ATTENDEE_EVENT_KEY, true );
 		}
 
 		if ( 0 === $event_id ) {
