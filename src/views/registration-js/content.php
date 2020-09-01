@@ -92,7 +92,7 @@ $classes        = [
 					'tribe-tickets__notice--error',
 					'tribe-tickets__validation-notice',
 				],
-				'content' => sprintf(
+				'content'        => sprintf(
 					// Translators: %s the tickets number.
 					esc_html_x(
 						'You have %s ticket(s) with a field that requires information.',
@@ -192,8 +192,8 @@ $classes        = [
 		$this->template(
 			'components/notice',
 			[
-				'notice_classes'  => $notice_classes,
-				'content'         => sprintf(
+				'notice_classes' => $notice_classes,
+				'content'        => sprintf(
 					// Translators: %s the number of tickets.
 					esc_html_x(
 						'There are %s other tickets in your cart that do not require attendee information.',
@@ -203,7 +203,8 @@ $classes        = [
 					'<span id="tribe-tickets__non-ar-count">' . absint( $non_meta_count ) . '</span>'
 				),
 			]
-		); ?>
+		);
+		?>
 		<?php $this->template( 'blocks/tickets/registration/attendee/submit' ); ?>
 	</div>
 	</form>
