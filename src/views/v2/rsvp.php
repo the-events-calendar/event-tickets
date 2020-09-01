@@ -7,7 +7,7 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link  {INSERT_ARTICLE_LINK_HERE}
+ * @link  http://m.tri.be/1amp
  *
  * @since 4.12.3
  *
