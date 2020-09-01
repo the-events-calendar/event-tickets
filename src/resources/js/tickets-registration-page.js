@@ -1,3 +1,4 @@
+/* global tribe */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
