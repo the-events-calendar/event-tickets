@@ -564,5 +564,5 @@ VALUES
     (4,	'_tribe_ticket_version',	'5.0.0'),
     (4,	'_tribe_ticket_show_not_going',	'1'),
     (4,	'_tribe_tickets_meta',	'a:0:{}'),
-    (4,	'_ticket_start_date',	'2020-05-20 00:00:00'),
-    (4,	'_ticket_end_date',	'2020-08-31 08:00:00');
+    (4,	'_ticket_start_date',	CONCAT( DATE_ADD( CURDATE(), INTERVAL -7 DAY ), ' 00:00:00' ) ),
+    (4,	'_ticket_end_date',	CONCAT( DATE_ADD( CURDATE(), INTERVAL 14 DAY ), ' 00:00:00' ) );
