@@ -120,7 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [5.0.1] TBD =
 
-
+* Fix - More thorough validity checking for post IDs, such as to account for a BuddyPress page having a Post ID of zero. [ET-899]
 
 = [5.0.0.1] 2020-08-31 =
 
