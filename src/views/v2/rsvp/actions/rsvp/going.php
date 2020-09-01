@@ -25,6 +25,6 @@
 		type="submit"
 		<?php tribe_disabled( $must_login ); ?>
 	>
-		<?php esc_html_e( 'Going', 'event-tickets' ); ?>
+		<?php echo esc_html_x( 'Going', 'Button label.','event-tickets' ); ?>
 	</button>
 </div>
