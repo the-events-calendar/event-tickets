@@ -118,6 +118,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - We have added the missing ID to the new RSVP block to allow linking to it directly. [GTRIA-293]
+
 = [5.0.0.1] 2020-08-31 =
 
 * Fix - Prevent the Attendee Registration modal from incorrectly setting RSVP as the provider class. [ET-901]
