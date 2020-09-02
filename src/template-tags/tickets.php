@@ -262,8 +262,10 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 						}
 
 						if ( 'rsvp' === $type ) {
+							// Translators: %s number of RSVP spots left.
 							$text = _n( '%s spot left', '%s spots left', $stock, 'event-tickets' );
 						} else {
+							// Translators: %s number of tickets left.
 							$text = _n( '%s ticket left', '%s tickets left', $stock, 'event-tickets' );
 						}
 
@@ -276,6 +278,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 				$parts[ $type . '-stock' ] = $html['stock'] = $stock_html;
 
 				if ( 'rsvp' === $type ) {
+					// Translators: %s RSVP singular or plural.
 					$button_label  = sprintf( _x( '%s Now!', 'list view rsvp now ticket button', 'event-tickets' ), tribe_get_rsvp_label_singular( 'list_view_rsvp_now_button' ) );
 					$button_anchor = '#rsvp-now';
 				} else {
