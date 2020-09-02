@@ -7,17 +7,12 @@
  *
  * @since 4.11.0
  * @since 4.12.1 Make sure label/input IDs don't conflict with other ticket fields.
+ * @since TBD Make sure we have the required label.
  *
- * @version 4.12.1 Updated phpdoc for which field class to reference.
+ * @version TBD
  *
  * @see Tribe__Tickets_Plus__Meta__Field__Checkbox
  */
-
-$required    = isset( $field->required ) && 'on' === $field->required ? true : false;
-$field       = (array) $field;
-$options     = Tribe__Utils__Array::get( $field, [ 'extra', 'options' ], null );
-$field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][{{data.attendee_id}}]';
-$disabled    = false;
 
 $required   = isset( $field->required ) && 'on' === $field->required ? true : false;
 $field      = (array) $field;
