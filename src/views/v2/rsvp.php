@@ -14,9 +14,10 @@
  * @version5.0.0
  *
  * @var Tribe__Tickets__Editor__Template $this
- * @var WP_Post|int                      $post_id      The post object or ID.
- * @var boolean                          $has_rsvps    True if there are RSVPs.
- * @var array                            $active_rsvps An array containing the active RSVPs.
+ * @var WP_Post|int                      $post_id       The post object or ID.
+ * @var boolean                          $has_rsvps     True if there are RSVPs.
+ * @var array                            $active_rsvps  An array containing the active RSVPs.
+ * @var string                           $block_html_id The unique HTML id for the block.
  */
 
 // We don't display anything if there is no RSVP.
@@ -31,7 +32,10 @@ if ( empty( $active_rsvps ) ) {
 
 ?>
 
-<div id="rsvp-now" class="tribe-common event-tickets">
+<div
+	id="<?php echo esc_attr( $block_html_id ); ?>"
+	class="tribe-common event-tickets"
+>
 	<?php foreach ( $active_rsvps as $rsvp ) : ?>
 		<div
 			class="tribe-tickets__rsvp-wrapper"
