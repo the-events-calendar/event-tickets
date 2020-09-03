@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
 Tested up to: 5.5
-Stable tag: 5.0.0.1
+Stable tag: 5.0.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -118,8 +118,9 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.0.1] TBD =
 
+* Fix - More thorough validity checking for post IDs, such as to account for a BuddyPress page having a Post ID of zero. [ET-899]
 * Tweak - We have added context to some of the strings and labels of the new RSVP block to allow more granular translation. [GTRIA-294]
 
 = [5.0.0.1] 2020-08-31 =
