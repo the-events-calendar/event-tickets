@@ -12,7 +12,10 @@ class Tribe__Tickets__Assets {
 		/** @var Tribe__Tickets__Main $tickets_main */
 		$tickets_main = tribe( 'tickets.main' );
 
-		$tickets_deps   = [ 'dashicons', 'event-tickets-reset-css' ];
+		$tickets_deps = [
+			'dashicons',
+			'event-tickets-reset-css',
+		];
 
 		if ( $this->should_enqueue_common_full() ) {
 			$tickets_deps[] = 'tribe-common-full-style';
@@ -37,7 +40,7 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
-		// Tickets registration page styles
+		// Tickets registration page styles.
 		tribe_asset(
 			$tickets_main,
 			'event-tickets-registration-page-styles',
@@ -47,7 +50,7 @@ class Tribe__Tickets__Assets {
 			[]
 		);
 
-		// Tickets registration page scripts
+		// Tickets registration page scripts.
 		tribe_asset(
 			$tickets_main,
 			'event-tickets-registration-page-scripts',
@@ -66,7 +69,7 @@ class Tribe__Tickets__Assets {
 	 * @since 4.10.9 Use customizable ticket name functions.
 	 */
 	public function admin_enqueue_scripts() {
-		// Set up some data for our localize scripts
+		// Set up some data for our localize scripts.
 
 		$upload_header_data = [
 			'title'  => esc_html( sprintf( __( '%s header image', 'event-tickets' ), tribe_get_ticket_label_singular( 'header_image_title' ) ) ),
@@ -170,7 +173,7 @@ class Tribe__Tickets__Assets {
 		 */
 		$modules = Tribe__Tickets__Tickets::modules();
 
-		// For the metabox
+		// For the metabox.
 		return ! empty( $post ) && ! empty( $modules ) && in_array( $post->post_type, tribe( 'tickets.main' )->post_types(), true );
 	}
 
