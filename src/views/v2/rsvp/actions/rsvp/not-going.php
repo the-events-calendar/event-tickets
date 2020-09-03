@@ -40,6 +40,6 @@ if ( ! $show_not_going ) {
 		class="tribe-common-cta tribe-common-cta--alt tribe-tickets__rsvp-actions-button-not-going"
 		<?php tribe_disabled( $must_login ); ?>
 	>
-		<?php echo esc_html_x( "Can't go", 'Button label.', 'event-tickets' ); ?>
+		<?php echo esc_html_x( "Can't go", 'Label for the RSVP "can't go" version of the not going button', 'event-tickets' ); ?>
 	</button>
 </div>
