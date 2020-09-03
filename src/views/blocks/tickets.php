@@ -34,9 +34,10 @@ if ( ! $is_sale_future && ( ! $provider || ! $tickets ) ) {
 	return false;
 }
 
-$classes = [
+$cart_classes = [
+	'tribe-block',
+	'tribe-tickets',
 	'tribe-common',
-	'event-tickets',
 ];
 
 /**
@@ -63,79 +64,76 @@ if ( ! $already_rendered ) {
 	add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
 }
 ?>
-<div <?php tribe_classes( $classes ); ?>>
-	<form
-		id="tribe-tickets"
-		action="<?php echo esc_url( $provider->get_cart_url() ); ?>"
-		class="tribe-tickets"
-		class="tribe-tickets"
-		method="post"
-		enctype='multipart/form-data'
-		data-provider="<?php echo esc_attr( $provider->class_name ); ?>"
-		autocomplete="off"
-		data-provider-id="<?php echo esc_attr( $provider->orm_provider ); ?>"
-		novalidate
-	>
-		<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title">
-			<?php echo esc_html( tribe_get_ticket_label_plural( 'event-tickets' ) ); ?>
-		</h2>
-		<input type="hidden" name="tribe_tickets_saving_attendees" value="1"/>
-		<input type="hidden" name="tribe_tickets_ar" value="1"/>
-		<input type="hidden" name="tribe_tickets_ar_data" value="" id="tribe_tickets_block_ar_data"/>
-		<?php
-		$this->template(
-			'components/notice',
-			[
-				'id'              => 'tribe-tickets__notice__tickets-in-cart',
-				'notice_classes'  => [
-					'tribe-tickets__notice--barred',
-					'tribe-tickets__notice--barred-left',
-				],
+<form
+	id="tribe-tickets"
+	action="<?php echo esc_url( $provider->get_cart_url() ); ?>"
+	class="tribe-tickets"
+	<?php tribe_classes( $cart_classes ); ?>
+	method="post"
+	enctype='multipart/form-data'
+	data-provider="<?php echo esc_attr( $provider->class_name ); ?>"
+	autocomplete="off"
+	data-provider-id="<?php echo esc_attr( $provider->orm_provider ); ?>"
+	novalidate
+>
+	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title">
+		<?php echo esc_html( tribe_get_ticket_label_plural( 'event-tickets' ) ); ?>
+	</h2>
+	<input type="hidden" name="tribe_tickets_saving_attendees" value="1"/>
+	<input type="hidden" name="tribe_tickets_ar" value="1"/>
+	<input type="hidden" name="tribe_tickets_ar_data" value="" id="tribe_tickets_block_ar_data"/>
+	<?php
+	$this->template(
+		'components/notice',
+		[
+			'id'              => 'tribe-tickets__notice__tickets-in-cart',
+			'notice_classes'  => [
+				'tribe-tickets__notice--barred',
+				'tribe-tickets__notice--barred-left',
+			],
 
-				'content_classes' => [
-					'tribe-common-b3',
-				],
-				'content'         => __( 'The numbers below include tickets for this event already in your cart. Clicking "Get Tickets" will allow you to edit any existing attendee information as well as change ticket quantities.', 'event-tickets' ),
+			'content_classes' => [
+				'tribe-common-b3',
+			],
+			'content'         => __( 'The numbers below include tickets for this event already in your cart. Clicking "Get Tickets" will allow you to edit any existing attendee information as well as change ticket quantities.', 'event-tickets' ),
+		]
+	);
+	?>
+
+	<?php $this->template( 'blocks/tickets/commerce/fields', [ 'provider' => $provider, 'provider_id' => $provider_id ] ); ?>
+
+	<?php if ( $has_tickets_on_sale ) : ?>
+		<?php foreach ( $tickets_on_sale as $key => $ticket ) : ?>
+			<?php $ticket_symbol = $currency->get_currency_symbol( $ticket->ID, true ); ?>
+			<?php
+				$this->template(
+					'blocks/tickets/item',
+					[
+						'ticket'          => $ticket,
+						'key'             => $key,
+						'currency_symbol' => $ticket_symbol,
+					]
+				);
+			?>
+		<?php endforeach; ?>
+		<?php
+		// We're assuming that all the currency is the same here.
+		$currency_symbol = $currency->get_currency_symbol( $ticket->ID, true );
+		$this->template(
+			'blocks/tickets/footer',
+			[
+				'tickets'         => $tickets,
+				'currency_symbol' => $currency_symbol,
 			]
 		);
 		?>
+	<?php else : ?>
+		<?php $this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] ); ?>
+	<?php endif; ?>
+	<?php $this->template( 'v2/components/loader/loader' ); ?>
 
-		<?php $this->template( 'blocks/tickets/commerce/fields', [ 'provider' => $provider, 'provider_id' => $provider_id ] ); ?>
+</form>
 
-		<?php if ( $has_tickets_on_sale ) : ?>
-			<?php foreach ( $tickets_on_sale as $key => $ticket ) : ?>
-				<?php $ticket_symbol = $currency->get_currency_symbol( $ticket->ID, true ); ?>
-				<?php
-					$this->template(
-						'blocks/tickets/item',
-						[
-							'ticket'          => $ticket,
-							'key'             => $key,
-							'currency_symbol' => $ticket_symbol,
-						]
-					);
-				?>
-			<?php endforeach; ?>
-			<?php
-			// We're assuming that all the currency is the same here.
-			$currency_symbol = $currency->get_currency_symbol( $ticket->ID, true );
-			$this->template(
-				'blocks/tickets/footer',
-				[
-					'tickets'         => $tickets,
-					'currency_symbol' => $currency_symbol,
-				]
-			);
-			?>
-		<?php else : ?>
-			<?php $this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] ); ?>
-		<?php endif; ?>
-		<?php $this->template( 'v2/components/loader/loader' ); ?>
-
-	</form>
-
-	<div class="tribe-common">
-		<span id="tribe-tickets__modal_target"></span>
-	</div>
-
+<div class="tribe-common">
+	<span id="tribe-tickets__modal_target"></span>
 </div>
