@@ -15,11 +15,32 @@ class SuccessTest extends WPTestCase {
 	/**
 	 * @test
 	 */
-	public function test_should_render_success_message() {
-		$template     = tribe( 'tickets.editor.template' );
-		$_GET['step'] = 'success';
+	public function test_should_render_success_message_going() {
+		$template = tribe( 'tickets.editor.template' );
 
-		$html   = $template->template( $this->partial_path, [], false );
+		$args = [
+			'step'     => 'success',
+			'is_going' => true,
+		];
+
+		$html   = $template->template( $this->partial_path, $args, false );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+
+		$this->assertMatchesSnapshot( $html, $driver );
+	}
+
+	/**
+	 * @test
+	 */
+	public function test_should_render_success_message_not_going() {
+		$template = tribe( 'tickets.editor.template' );
+
+		$args = [
+			'step'     => 'success',
+			'is_going' => false,
+		];
+
+		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$this->assertMatchesSnapshot( $html, $driver );
@@ -31,7 +52,7 @@ class SuccessTest extends WPTestCase {
 	public function test_should_render_empty_if_not_param_set() {
 		$template = tribe( 'tickets.editor.template' );
 
-		$html   = $template->template( $this->partial_path, [], false );
+		$html   = $template->template( $this->partial_path, [ 'step' => null ], false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
 
 		$this->assertMatchesSnapshot( $html, $driver );

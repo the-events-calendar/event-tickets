@@ -32,8 +32,7 @@ class Tribe__Tickets__Admin__Notices {
 
 		$this->maybe_display_plus_commerce_notice();
 
-		// @todo Uncomment this when we are ready to show the opt-in notice in G20.07.
-		// $this->maybe_display_rsvp_new_views_options_notice();
+		$this->maybe_display_rsvp_new_views_options_notice();
 	}
 
 	/**
@@ -60,11 +59,13 @@ class Tribe__Tickets__Admin__Notices {
 			return;
 		}
 
+		// Bail if we aren't in Events > Settings.
+		if ( 'tribe-common' !== tribe_get_request_var( 'page' ) ) {
+			return;
+		}
+
 		// Bail if already at wp-admin > Events > Settings > Tickets tab to avoid redundancy/confusion by linking to itself.
-		if (
-			'tribe-common' === tribe_get_request_var( 'page' )
-			&& 'display' === tribe_get_request_var( 'tab' )
-		) {
+		if ( 'display' === tribe_get_request_var( 'tab' ) ) {
 			return;
 		}
 

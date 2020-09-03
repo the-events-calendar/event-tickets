@@ -26,7 +26,7 @@ class ActionsTest extends WPTestCase {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
-		$ticket_id = $this->create_rsvp_ticket(
+		$ticket_id    = $this->create_rsvp_ticket(
 			$event_id,
 			[
 				'meta_input' => [
@@ -38,10 +38,16 @@ class ActionsTest extends WPTestCase {
 		$ticket = tribe( 'tickets.rsvp' )->get_ticket( $event_id, $ticket_id );
 
 		$args = [
-			'rsvp'       => $ticket,
-			'post_id'    => $event_id,
-			'must_login' => false,
-			'step'       => 'success',
+			'rsvp'                 => $ticket,
+			'post_id'              => $event_id,
+			'must_login'           => false,
+			'step'                 => 'success',
+			'going'                => true,
+			'opt_in_toggle_hidden' => false,
+			'opt_in_checked'       => false,
+			'opt_in_attendee_ids'  => '',
+			'opt_in_nonce'         => '',
+			'is_going'             => true,
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
