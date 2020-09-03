@@ -67,7 +67,6 @@ if ( ! $already_rendered ) {
 <form
 	id="tribe-tickets"
 	action="<?php echo esc_url( $provider->get_cart_url() ); ?>"
-	class="tribe-tickets"
 	<?php tribe_classes( $cart_classes ); ?>
 	method="post"
 	enctype='multipart/form-data'
