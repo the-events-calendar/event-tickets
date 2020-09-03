@@ -175,7 +175,7 @@ class Tribe__Tickets__Assets {
 	/**
 	 * Check if we should enqueue ET frontend styles
 	 *
-	 * @since  TBD
+	 * @since 5.0.0
 	 *
 	 * @return bool
 	 */

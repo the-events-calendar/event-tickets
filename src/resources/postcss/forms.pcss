@@ -1,7 +1,7 @@
 /**
  * Event Tickets - Form styles for Event Tickets.
  *
- * @since TBD
+ * @since5.0.0
  */
 
  @import "common/utilities/_all.pcss";
@@ -11,7 +11,7 @@
 	.tribe-tickets__form-field {
 		display: block;
 		width: 100%;
-		margin-bottom: var(--spacer-2);
+		padding-bottom: var(--spacer-2);
 	}
 
 	.tribe-tickets__form-field--required {
@@ -22,7 +22,7 @@
 	}
 
 	.tribe-required {
-		color: red;
+		color: var(--color-icon-error);
 		margin-left: var(--spacer-0);
 	}
 
@@ -78,9 +78,34 @@
 		@media(--viewport-medium) {
 			max-width: 600px;
 		}
+	}
 
-		&.tribe-tickets__form-field-input--error {
-			border-color: var(--color-icon-error) ! important;
+	input[type="text"],
+	input[type="email"],
+	input[type="url"],
+	input[type="password"],
+	input[type="search"],
+	input[type="number"],
+	input[type="tel"],
+	input[type="range"],
+	input[type="date"],
+	input[type="month"],
+	input[type="week"],
+	input[type="time"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="color"],
+	input[type="checkbox"],
+	input[type="radio"],
+	select,
+	textarea {
+
+		&:invalid {
+			box-shadow: none;
+		}
+
+		&.tribe-tickets__form-field-input--error:invalid {
+			border-color: var(--color-icon-error);
 		}
 	}
 
@@ -95,7 +120,6 @@
 			color: var(--color-text-secondary);
 			font-family: var(--font-family-base);
 		}
-
 	}
 
 	select {
@@ -122,14 +146,29 @@
 
 		label,
 		.tribe-tickets__form-field-label {
+			display: inherit;
 			margin-bottom: 0;
-			display: inline-block;
 			margin-left: 0;
 		}
 	}
 
 	.tribe-common-form-control-text__input {
 		padding: var(--spacer-1) var(--spacer-3);
+	}
+
+	/* Date of birth field */
+	.tribe-tickets__form-field--birth {
+		select {
+			min-width: 80px;
+			width: 100%;
+			margin: 0 0 var(--spacer-1) 0;
+			display: inline-block;
+
+			@media (--viewport-medium) {
+				width: calc( ( 100% / 3 ) - var(--spacer-1) - 4px ); /* 4px = safety margin */
+				margin-right: var(--spacer-1);
+			}
+		}
 	}
 
 	.tribe-tickets__button--next {
@@ -144,6 +183,41 @@
 
 		&:hover {
 			color: var(--color-background);
+		}
+	}
+
+	.tribe-tickets__form-message {
+		display: flex;
+		align-items: flex-start;
+		background-color: var(--color-accent-primary-background);
+		border-radius: var(--border-radius-default);
+		padding: var(--spacer-4) var(--spacer-3);
+		margin-bottom: var(--spacer-4);
+
+		@media(--viewport-medium) {
+			padding: var(--spacer-3);
+		}
+	}
+
+	.tribe-tickets__form-message--error {
+		background-color: var(--color-background-error);
+	}
+
+	.tribe-tickets__form-message--error-icon {
+		display: inline-block;
+		margin-right: var(--spacer-2);
+
+		circle {
+			stroke: var(--color-icon-active);
+		}
+
+		circle#dot {
+			stroke: transparent;
+			fill: var(--color-icon-active);
+		}
+
+		path {
+			stroke: var(--color-icon-active);
 		}
 	}
 
