@@ -1,7 +1,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since  TBD
+ * @since 5.0.0
  *
  * @type   {PlainObject}
  */
@@ -11,7 +11,7 @@ tribe.tickets.rsvp = tribe.tickets.rsvp || {};
 /**
  * Configures RSVP Tooltip Object in the Global Tribe variable
  *
- * @since  TBD
+ * @since 5.0.0
  *
  * @type   {PlainObject}
  */
@@ -20,7 +20,7 @@ tribe.tickets.rsvp.tooltip = {};
 /**
  * Initializes in a Strict env the code that manages the Event Views
  *
- * @since  TBD
+ * @since 5.0.0
  *
  * @param  {PlainObject} $   jQuery
  * @param  {PlainObject} obj tribe.tickets.rsvp.tooltip
@@ -34,7 +34,7 @@ tribe.tickets.rsvp.tooltip = {};
 	/**
 	 * Config used for tooltip setup.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @type {PlainObject}
 	 */
@@ -46,7 +46,7 @@ tribe.tickets.rsvp.tooltip = {};
 	/**
 	 * Selectors used for configuration and setup.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @type {PlainObject}
 	 */
@@ -62,7 +62,7 @@ tribe.tickets.rsvp.tooltip = {};
 	/**
 	 * Handle tooltip focus event.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {Event} event event object
 	 *
@@ -82,7 +82,7 @@ tribe.tickets.rsvp.tooltip = {};
 	/**
 	 * Handle tooltip blur event.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {Event} event event object
 	 *
@@ -95,7 +95,7 @@ tribe.tickets.rsvp.tooltip = {};
 	/**
 	 * Handle origin mouseenter and touchstart events.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {Event} event event object
 	 *
@@ -108,7 +108,7 @@ tribe.tickets.rsvp.tooltip = {};
 	/**
 	 * Handle origin mouseleave and touchleave events.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {Event} event event object
 	 *
@@ -121,7 +121,7 @@ tribe.tickets.rsvp.tooltip = {};
 	/**
 	 * Handle tooltip mouseenter and touchstart event.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {Event} event event object
 	 *
@@ -134,7 +134,7 @@ tribe.tickets.rsvp.tooltip = {};
 	/**
 	 * Handle tooltip mouseleave and touchleave events.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {Event} event event object
 	 *
@@ -147,7 +147,7 @@ tribe.tickets.rsvp.tooltip = {};
 	/**
 	 * Handle tooltip instance closing event.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {Event} event event object
 	 *
@@ -170,7 +170,7 @@ tribe.tickets.rsvp.tooltip = {};
 	/**
 	 * Handle tooltip instance close event.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {Event} event event object
 	 *
@@ -186,7 +186,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Override of the `functionInit` tooltipster method.
 	 * A custom function to be fired only once at instantiation.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {Tooltipster} instance instance of Tooltipster
 	 * @param {PlainObject} helper   helper object with tooltip origin
@@ -209,7 +209,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Override of the `functionReady` tooltipster method.
 	 * A custom function to be fired when the tooltip and its contents have been added to the DOM.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {Tooltipster} instance instance of Tooltipster
 	 * @param {PlainObject} helper   helper object with tooltip origin
@@ -226,7 +226,7 @@ tribe.tickets.rsvp.tooltip = {};
 	/**
 	 * Deinitialize accessible tooltips via tooltipster.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $container jQuery object of view container.
 	 *
@@ -246,7 +246,7 @@ tribe.tickets.rsvp.tooltip = {};
 	/**
 	 * Initialize accessible tooltips via tooltipster.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $container jQuery object of RSVP container.
 	 *
@@ -273,7 +273,7 @@ tribe.tickets.rsvp.tooltip = {};
 	/**
 	 * Initialize tooltip theme.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {jQuery} $container jQuery object of RSVP container.
 	 *
@@ -295,7 +295,7 @@ tribe.tickets.rsvp.tooltip = {};
 	/**
 	 * Deinitialize tooltip JS.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param  {Event}       event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
 	 * @param  {jqXHR}       jqXHR    Request object
@@ -312,7 +312,7 @@ tribe.tickets.rsvp.tooltip = {};
 	/**
 	 * Initialize tooltips JS.
 	 *
-	 * @since TBD
+	 * @since5.0.0
 	 *
 	 * @param {Event}   event      event object for 'afterSetup.tribeTicketsRsvp' event
 	 * @param {integer} index      jQuery.each index param from 'afterSetup.tribeTicketsRsvp' event.
@@ -329,7 +329,7 @@ tribe.tickets.rsvp.tooltip = {};
 	/**
 	 * Handles the initialization of the scripts when Document is ready.
 	 *
-	 * @since  TBD
+	 * @since 5.0.0
 	 *
 	 * @return {void}
 	 */
