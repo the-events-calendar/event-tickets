@@ -13,15 +13,15 @@
  * @var bool $must_login Whether the user has to login to RSVP or not.
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
- * @since TBD
- * @version TBD
+ * @since 4.12.3
+ * @version 4.12.3
  */
 
 ?>
 
 <div class="tribe-tickets__rsvp-actions-rsvp-going">
 	<button
-		class="tribe-common-c-btn tribe-tickets__rsvp-actions-button-going"
+		class="tribe-common-c-btn tribe-tickets__rsvp-actions-button-going tribe-common-b1 tribe-common-b2--min-medium"
 		type="submit"
 		<?php tribe_disabled( $must_login ); ?>
 	>

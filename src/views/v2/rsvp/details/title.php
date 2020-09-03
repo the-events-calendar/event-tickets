@@ -12,11 +12,11 @@
  *
 * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
- * @since TBD
- * @version TBD
+ * @since 4.12.3
+ * @version 4.12.3
  */
 
 ?>
-<h3 class="tribe-tickets__rsvp-title tribe-common-h4">
+<h3 class="tribe-tickets__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
 	<?php echo wp_kses_post( $rsvp->name ); ?>
 </h3>

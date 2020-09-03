@@ -19,7 +19,7 @@ class Tribe__Tickets__Admin__Notices {
 	/**
 	 * Maybe display admin notices.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 */
 	public function maybe_display_notices() {
 		// Bail on the unexpected
@@ -32,14 +32,13 @@ class Tribe__Tickets__Admin__Notices {
 
 		$this->maybe_display_plus_commerce_notice();
 
-		// @todo Uncomment this when we are ready to show the opt-in notice in G20.07.
-		// $this->maybe_display_rsvp_new_views_options_notice();
+		$this->maybe_display_rsvp_new_views_options_notice();
 	}
 
 	/**
 	 * Display dismissible notice about new RSVP view settings.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 */
 	public function maybe_display_rsvp_new_views_options_notice() {
 		// Bail if previously dismissed this notice.
@@ -60,11 +59,13 @@ class Tribe__Tickets__Admin__Notices {
 			return;
 		}
 
+		// Bail if we aren't in Events > Settings.
+		if ( 'tribe-common' !== tribe_get_request_var( 'page' ) ) {
+			return;
+		}
+
 		// Bail if already at wp-admin > Events > Settings > Tickets tab to avoid redundancy/confusion by linking to itself.
-		if (
-			'tribe-common' === tribe_get_request_var( 'page' )
-			&& 'display' === tribe_get_request_var( 'tab' )
-		) {
+		if ( 'display' === tribe_get_request_var( 'tab' ) ) {
 			return;
 		}
 
@@ -92,7 +93,7 @@ class Tribe__Tickets__Admin__Notices {
 		$text = sprintf(
 			// translators: %1$s: RSVP singular text, %2$s: Link to settings page.
 			__( 'With this new version, we\'ve introduced newly redesigned %1$s frontend views. If you have customized the %1$s section, this update will likely impact your customizations.
-			
+
 			To upgrade to the new frontend views, please enable them in the %2$s.', 'event-tickets' ),
 			tribe_get_rsvp_label_singular( 'admin_notices' ),
 			$link

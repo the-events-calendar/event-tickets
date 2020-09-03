@@ -7,14 +7,14 @@
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
- * @since TBD
+ * @since 4.12.3
  *
- * @version TBD
+ * @version 4.12.3
  */
 
 ?>
 <div class="tribe-tickets__rsvp-ar-quantity">
-	<span class="tribe-common-h7">
+	<span class="tribe-common-h7 tribe-common-h--alt">
 		<?php
 		echo esc_html(
 			sprintf(

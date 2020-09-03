@@ -40,32 +40,27 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		// Prevent the render when the ID of the post has not being set to a correct value
 		if ( $args['post_id'] === null ) {
-			return;
+			return '';
 		}
 
 		// Fetch the default provider
-		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
-		if ( ! class_exists( $provider ) ) {
-			return;
+		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post_id );
+		if ( empty( $provider ) ) {
+			return '';
 		}
 
-		// No need to handle RSVPs here
-		if ( 'Tribe__Tickets__RSVP' === $provider ) {
-			return;
+		// No need to handle RSVPs here.
+		if ( 'Tribe__Tickets__RSVP' === $provider->class_name ) {
+			return '';
 		}
 
-		// If Provider is not active return
-		if ( ! array_key_exists( $provider, Tribe__Tickets__Tickets::modules() ) ) {
-			return;
-		}
-
-		$provider    = call_user_func( [ $provider, 'get_instance' ] );
 		$provider_id = $this->get_provider_id( $provider );
 		$tickets     = $this->get_tickets( $post_id );
 
 		$args['provider']            = $provider;
 		$args['provider_id']         = $provider_id;
 		$args['cart_url']            = 'tpp' !== $provider_id ? $provider->get_cart_url() : '';
+		$args['tickets']             = $tickets;
 		$args['tickets_on_sale']     = $this->get_tickets_on_sale( $tickets );
 		$args['has_tickets_on_sale'] = ! empty( $args['tickets_on_sale'] );
 		$args['is_sale_past']        = $this->get_is_sale_past( $tickets );
@@ -234,30 +229,29 @@ extends Tribe__Editor__Blocks__Abstract {
 	}
 
 	/**
-	 * Get provider ID
+	 * Get provider ID/slug.
 	 *
 	 * @since 4.9
+	 * @since 4.12.3 Retrieve slug from updated Ticktes Status Manager method.
 	 *
 	 * @param  Tribe__Tickets__Tickets $provider Provider class instance
 	 *
 	 * @return string
 	 */
 	public function get_provider_id( $provider ) {
+		/** @var Tribe__Tickets__Status__Manager $status */
+		$status = tribe( 'tickets.status' );
 
-		switch ( $provider->class_name ) {
-			case 'Tribe__Tickets__Commerce__PayPal__Main' :
-				return 'tpp';
-				break;
-			case 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' :
-				return 'woo';
-				break;
-			case 'Tribe__Tickets_Plus__Commerce__EDD__Main' :
-				return 'edd';
-				break;
-			default:
-				return 'tpp';
+		$slug = $status->get_provider_slug( $provider );
+
+		if (
+			empty( $slug )
+			|| 'rsvp' === $slug
+		) {
+			$slug = 'tpp';
 		}
 
+		return $slug;
 	}
 
 	/**

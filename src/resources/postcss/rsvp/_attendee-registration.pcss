@@ -1,7 +1,7 @@
 /**
  * Event Tickets - RSVP Attendee Registration
  *
- * @since TBD
+ * @since5.0.0
  */
 
 .event-tickets {
@@ -36,16 +36,28 @@
 		@media(--viewport-medium) {
 			border: 0;
 			margin-top: 0;
+			padding-left: var(--spacer-4);
 		}
 	}
 
 	.tribe-tickets__rsvp-ar-quantity {
+		display: flex;
+		align-items: center;
 		margin-top: var(--spacer-4);
+
+		@media(--viewport-medium) {
+			display: block;
+		}
 	}
 
 	.tribe-tickets__rsvp-ar-quantity-input {
 		align-items: center;
 		display: flex;
+		margin-left: var(--spacer-3);
+
+		@media (--viewport-medium) {
+			margin-left: 0;
+		}
 
 		input[type="number"] {
 			appearance: textfield;
@@ -72,6 +84,7 @@
 		background-color: transparent;
 		border: 1px solid var(--color-border-default);
 		border-radius: 50%;
+		flex: none;
 		height: 28px;
 		padding: 0;
 		position: relative;
@@ -82,19 +95,16 @@
 			background-color: var(--color-icon-active);
 			content: '';
 			height: 2px;
+			left: 9px;
+			top: 12px; /* Fix for IE11 */
 			position: absolute;
 			width: 8px;
-			left: 9px;
 		}
 
 		&:hover,
 		&:focus {
 			background: none;
-
-			&:before,
-			&:after {
-				background-color: var(--color-icon-focus);
-			}
+			border-color: var(--color-border-active);
 		}
 	}
 
@@ -106,7 +116,7 @@
 	}
 
 	.tribe-tickets__rsvp-ar-guest-list {
-		margin-top: var(--spacer-4) !important; /* @todo @juanfra: see why common is setting specificity for this. */
+		margin-top: var(--spacer-7) !important; /* @todo @juanfra: see why common is setting specificity for this. */
 	}
 
 	.tribe-tickets__rsvp-ar-guest-list-item {
@@ -119,7 +129,27 @@
 		&:not(:first-of-type) {
 
 			@media(--viewport-medium) {
-				margin-top: var(--spacer-2);
+				margin-top: var(--spacer-7);
+			}
+		}
+	}
+
+	.tribe-tickets__rsvp-ar-guest-list-item-button,
+	.tribe-tickets__rsvp-ar-guest-list-item-button--inactive {
+
+		&:hover,
+		&:focus {
+			color: var(--color-text-primary);
+		}
+	}
+
+	.tribe-tickets__rsvp-ar-guest-list-item-button--inactive {
+		color: var(--color-text-secondary);
+
+		.tribe-tickets__rsvp-ar-guest-icon {
+			path {
+				fill: var(--color-icon-disabled);
+				stroke: var(--color-icon-disabled);
 			}
 		}
 	}
@@ -131,25 +161,24 @@
 		}
 	}
 
-	.tribe-tickets__rsvp-ar-guest-icon,
-	.tribe-tickets__rsvp-ar-guest-icon--disabled {
+	.tribe-tickets__rsvp-ar-guest-icon {
 		display: inline-block;
-		margin-right: var(--spacer-0);
-		width: 11px;
-		height: 14px;
+		height: 17px;
+		margin-right: var(--spacer-5);
+		width: 14px;
+
+		@media(--viewport-medium) {
+			height: 14px;
+			margin-right: var(--spacer-0);
+			width: 11px;
+		}
+
 	}
 
 	.tribe-tickets__rsvp-ar-guest-icon {
 		path {
 			fill: var(--color-icon-active);
 			stroke: var(--color-icon-active);
-		}
-	}
-
-	.tribe-tickets__rsvp-ar-guest-icon--disabled {
-		path {
-			fill: var(--color-icon-disabled);
-			stroke: var(--color-icon-disabled);
 		}
 	}
 

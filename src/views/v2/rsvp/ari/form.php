@@ -13,35 +13,20 @@
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  * @var WP_Post|int $post_id The post object or ID.
  *
- * @since TBD
+ * @since 4.12.3
  *
- * @version TBD
+ * @version5.0.0
  */
-
-$meta   = Tribe__Tickets_Plus__Main::instance()->meta();
-$fields = $meta->get_meta_fields_by_ticket( $rsvp->ID );
 
 ?>
 <div class="tribe-tickets__rsvp-ar-form">
 
-	<?php $this->template( 'v2/rsvp/ari/form/title', [ 'rsvp' => $rsvp ] ); ?>
+	<input type="hidden" name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][ticket_id]" value="<?php echo esc_attr( absint( $rsvp->ID ) ); ?>">
+	<input type="hidden" name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][attendees][0][order_status]" value="<?php echo esc_attr( $going ); ?>">
+	<input type="hidden" name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][attendees][0][optout]" value="1">
 
-	<div class="tribe-tickets__form">
-		<?php foreach ( $fields as $field ) : ?>
-			<?php
-				$args = [
-					'post_id'    => $post_id,
-					'ticket'     => $rsvp,
-					'field'      => $field,
-					'value'      => null,
-					'saved_meta' => [],
-				];
+	<?php $this->template( 'v2/rsvp/ari/form/guest', [ 'rsvp' => $rsvp ] ); ?>
 
-				$this->template( 'v2/components/fields/' . $field->type, $args );
-				?>
-		<?php endforeach; ?>
-	</div>
-
-	<?php $this->template( 'v2/rsvp/ari/form/buttons', [ 'rsvp' => $rsvp ] ); ?>
+	<?php $this->template( 'v2/rsvp/ari/form/guest-template', [ 'rsvp' => $rsvp ] ); ?>
 
 </div>

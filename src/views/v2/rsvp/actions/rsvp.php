@@ -12,13 +12,13 @@
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
- * @since TBD
- * @version TBD
+ * @since 4.12.3
+ * @version 4.12.3
  */
 
 ?>
 <div class="tribe-tickets__rsvp-actions-rsvp">
-	<span class="tribe-common-h6">
+	<span class="tribe-common-h2 tribe-common-h6--min-medium">
 		<?php esc_html_e( 'RSVP Here', 'event-tickets' ); ?>
 	</span>
 

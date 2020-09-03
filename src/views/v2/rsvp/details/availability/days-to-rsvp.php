@@ -12,30 +12,39 @@
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
- * @since TBD
+ * @since 4.12.3
  *
- * @version TBD
+ * @version 4.12.3
  */
 
-// Bail if RSVP isn't in stock.
-if ( ! $rsvp->is_in_stock() ) {
-	return;
-}
-
-use Tribe__Date_Utils as Dates;
-$days_to_rsvp = Dates::date_diff( $rsvp->start_date, $rsvp->end_date );
-
-echo wp_kses_post(
-	sprintf(
+if ( 0 < $days_to_rsvp ) {
+	$text = sprintf(
 		// Translators: 1: opening span. 2: the number of remaining days to RSVP. 3: Closing span. 4: The RSVP label.
-		_x(
+		_nx(
+			'%1$s %2$s %3$s day left to %4$s',
 			'%1$s %2$s %3$s days left to %4$s',
+			$days_to_rsvp,
 			'Days to RSVP',
 			'event-tickets'
 		),
 		'<span class="tribe-tickets__rsvp-availability-days-left tribe-common-b2--bold">',
-		$days_to_rsvp,
+		number_format_i18n( $days_to_rsvp ),
 		'</span>',
 		tribe_get_rsvp_label_singular( 'Days to RSVP' )
-	)
-);
+	);
+} else {
+	$text = sprintf(
+		// Translators: %s: The RSVP label.
+		_x(
+			'Last day to %s',
+			'Last day to RSVP',
+			'event-tickets'
+		),
+		tribe_get_rsvp_label_singular( 'Last day to RSVP' )
+	);
+}
+?>
+
+<span class="tribe-tickets__rsvp-availability-days-to-rsvp">
+	<?php echo wp_kses_post( $text ); ?>
+</span>

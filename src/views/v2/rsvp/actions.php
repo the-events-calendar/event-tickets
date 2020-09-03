@@ -11,17 +11,17 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
+ * @var string|null $step The step the views are on.
  *
- * @since TBD
- * @version TBD
+ * @since 4.12.3
+ * @version 4.12.3
  */
 
-$step = sanitize_text_field( tribe_get_request_var( 'step', '' ) );
 ?>
 <div class="tribe-tickets__rsvp-actions-wrapper tribe-common-g-col">
 	<div class="tribe-tickets__rsvp-actions">
 
-		<?php if ( 'success' === $step ) : ?>
+		<?php if ( in_array( $step, [ 'success', 'opt-in' ], true ) ) : ?>
 
 			<?php $this->template( 'v2/rsvp/actions/success', [ 'rsvp' => $rsvp ] ); ?>
 

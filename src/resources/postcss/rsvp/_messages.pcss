@@ -11,22 +11,38 @@
 		align-items: center;
 		background-color: var(--color-accent-primary-background);
 		border-radius: var(--border-radius-default);
-		padding: var(--spacer-3);
+		padding: var(--spacer-4) var(--spacer-3);
+
+		@media(--viewport-medium) {
+			padding: var(--spacer-3);
+		}
+	}
+
+	.tribe-tickets__rsvp-message--error {
+
+		&,
+		&.tribe-tickets__rsvp-message {
+			background-color: var(--color-background-error);
+		}
+
 	}
 
 	.tribe-tickets__rsvp-message--success-icon {
 		display: inline-block;
 		width: var(--spacer-3);
 		height: var(--spacer-3);
-		margin-right: var(--spacer-0);
+		margin-right: var(--spacer-2);
+
 		path {
 			stroke: var(--color-icon-active);
 		}
 	}
 
-	.tribe-tickets__rsvp-message--must-login-icon {
+	.tribe-tickets__rsvp-message--must-login-icon,
+	.tribe-tickets__rsvp-message--error-icon {
 		display: inline-block;
-		margin-right: var(--spacer-0);
+		margin-right: var(--spacer-2);
+
 		circle {
 			stroke: var(--color-icon-active);
 		}

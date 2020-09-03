@@ -1,13 +1,14 @@
 <?php
 
 use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
+use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
 
 class Tribe__Tickets__Main {
 
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.12.2';
+	const VERSION = '5.0.1';
 
 	/**
 	 * Used to store the version history.
@@ -296,10 +297,13 @@ class Tribe__Tickets__Main {
 		 */
 		$this->init_autoloading();
 
-		// Start Up Common
+		// Start Up Common.
 		Tribe__Main::instance();
 
 		add_action( 'tribe_common_loaded', [ $this, 'bootstrap' ], 0 );
+
+		// Customizer support.
+		tribe_register_provider( Tribe\Tickets\Service_Providers\Customizer::class );
 	}
 
 	/**
@@ -308,7 +312,7 @@ class Tribe__Tickets__Main {
 	 * @since 4.10
 	 */
 	public function bootstrap() {
-		// Initialize the Service Provider for Tickets
+		// Initialize the Service Provider for Tickets.
 		tribe_register_provider( 'Tribe__Tickets__Service_Provider' );
 
 		$this->hooks();
@@ -371,6 +375,9 @@ class Tribe__Tickets__Main {
 
 		// Views V2
 		tribe_register_provider( Tribe\Tickets\Events\Views\V2\Service_Provider::class );
+
+		// Promoter
+		tribe_register_provider( Promoter_Service_Provider::class );
 	}
 
 	/**

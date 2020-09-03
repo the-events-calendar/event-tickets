@@ -12,14 +12,14 @@
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
- * @since TBD
- * @version TBD
+ * @since 4.12.3
+ * @version 4.12.3
  */
 
 if ( ! $rsvp->show_description() ) {
 	return;
 }
 ?>
-<div class="tribe-tickets__rsvp-description tribe-common-b3">
+<div class="tribe-tickets__rsvp-description tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
 	<?php echo wpautop( wp_kses_post( $rsvp->description ) ); ?>
 </div>

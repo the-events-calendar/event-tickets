@@ -187,7 +187,8 @@ class Tribe__Tickets__Tickets_View {
 		if (
 			empty( $_POST['process-tickets'] )
 			|| (
-				empty( $_POST['attendee'] )
+				empty( $_POST['tribe_tickets']['attendees'] )
+				&& empty( $_POST['attendee'] )
 				&& empty( $_POST['tribe-tickets-meta'] )
 			)
 		) {
@@ -196,7 +197,13 @@ class Tribe__Tickets__Tickets_View {
 
 		$post_id = get_the_ID();
 
-		$attendees = ! empty( $_POST['attendee'] ) ? $_POST['attendee'] : [];
+		$attendees = [];
+
+		if ( isset( $_POST['tribe_tickets']['attendees'] ) ) {
+			$attendees = $_POST['tribe_tickets']['attendees'];
+		} elseif ( isset( $_POST['attendee'] ) ) {
+			$attendees = $_POST['attendee'];
+		}
 
 		/**
 		 * Sort list to handle all not attending first
@@ -962,7 +969,10 @@ class Tribe__Tickets__Tickets_View {
 	}
 
 	/**
-	 * Gets the block template "out of context" and makes it useable for non-gutenberg views.
+	 * Gets the block template "out of context" and makes it usable for non-Block Editor views.
+	 *
+	 * @since 4.11.0
+	 * @since 4.12.3 Update usage of get_event_ticket_provider().
 	 *
 	 * @param WP_Post|int $post The post object or ID.
 	 * @param boolean     $echo Whether to echo the output or not.
@@ -978,32 +988,28 @@ class Tribe__Tickets__Tickets_View {
 			$post = get_post( $post );
 		}
 
-		if (
-			empty( $post )
-			|| ! ( $post instanceof WP_Post )
-		) {
+		if ( ! $post instanceof WP_Post ) {
 			return '';
 		}
 
-		// if password protected then do not display content
+		// If password protected, do not display content.
 		if ( post_password_required() ) {
 			return '';
 		}
 
-		$post_id     = $post->ID;
-		$provider_id = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+		$post_id = $post->ID;
 
-		// Protect against ticket that exists but is of a type that is not enabled
-		if ( ! method_exists( $provider_id, 'get_instance' ) ) {
+		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post_id );
+
+		// Protect against ticket that exists but is of a type that is not enabled.
+		if ( empty( $provider ) ) {
 			return '';
 		}
 
-		$provider = call_user_func( [ $provider_id, 'get_instance' ] );
-
-		/** @var \Tribe__Tickets__Editor__Template $template */
+		/** @var Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 
-		/** @var \Tribe__Tickets__Editor__Blocks__Tickets $blocks_tickets */
+		/** @var Tribe__Tickets__Editor__Blocks__Tickets $blocks_tickets */
 		$blocks_tickets = tribe( 'tickets.editor.blocks.tickets' );
 
 		// Load assets manually.
@@ -1014,7 +1020,7 @@ class Tribe__Tickets__Tickets_View {
 		$args = [
 			'post_id'             => $post_id,
 			'provider'            => $provider,
-			'provider_id'         => $provider_id,
+			'provider_id'         => $provider->class_name,
 			'tickets'             => $tickets,
 			'cart_classes'        => [ 'tribe-block', 'tribe-tickets' ],
 			'tickets_on_sale'     => $blocks_tickets->get_tickets_on_sale( $tickets ),
@@ -1035,7 +1041,7 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Gets the RSVP block template "out of context" and makes it usable for Classic views.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param WP_Post|int $post The post object or ID.
 	 * @param boolean     $echo Whether to echo the output or not.
@@ -1082,15 +1088,19 @@ class Tribe__Tickets__Tickets_View {
 		$past_tickets   = $blocks_rsvp->get_all_tickets_past( $tickets );
 
 		$args = [
-			'post_id'          => $post_id,
-			'attributes'       => $blocks_rsvp->attributes(),
-			'active_rsvps'     => $active_tickets,
-			'all_past'         => $past_tickets,
-			'has_rsvps'        => ! empty( $tickets ),
-			'has_active_rsvps' => ! empty( $active_tickets ),
-			'must_login'       => ! is_user_logged_in() && $rsvp->login_required(),
-			'login_url'        => Tribe__Tickets__Tickets::get_login_url( $post_id ),
-			'threshold'        => $blocks_rsvp->get_threshold( $post_id ),
+			'post_id'             => $post_id,
+			'attributes'          => $blocks_rsvp->attributes(),
+			'active_rsvps'        => $active_tickets,
+			'all_past'            => $past_tickets,
+			'has_rsvps'           => ! empty( $tickets ),
+			'has_active_rsvps'    => ! empty( $active_tickets ),
+			'must_login'          => ! is_user_logged_in() && $rsvp->login_required(),
+			'login_url'           => Tribe__Tickets__Tickets::get_login_url( $post_id ),
+			'threshold'           => $blocks_rsvp->get_threshold( $post_id ),
+			'step'                => null,
+			'opt_in_checked'      => false,
+			'opt_in_attendee_ids' => '',
+			'opt_in_nonce'        => '',
 		];
 
 		// Add the rendering attributes into global context.
@@ -1111,22 +1121,58 @@ class Tribe__Tickets__Tickets_View {
 			return $template->template( 'v2/rsvp-kitchen-sink', $args, $echo );
 		}
 
+		ob_start();
+
+		/**
+		 * Allow for the addition of content (namely the "Who's Attending?" list) above the ticket form.
+		 *
+		 * @since 4.5.5
+		 */
+		do_action( 'tribe_tickets_before_front_end_ticket_form' );
+
+		/**
+		 * A flag we can set via filter, e.g. at the end of this method, to ensure this template only shows once.
+		 *
+		 * @since 4.5.6
+		 *
+		 * @param boolean $already_rendered Whether the order link template has already been rendered.
+		 *
+		 * @see Tribe__Tickets__Tickets_View::inject_link_template()
+		 */
+		$already_rendered = apply_filters( 'tribe_tickets_order_link_template_already_rendered', false );
+
+		// Output order links / view link if we haven't already (for RSVPs).
+		if ( ! $already_rendered ) {
+			$template->template( 'tickets/view-link' );
+
+			add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
+		}
+
+		$before_content = ob_get_clean();
+
+		// Maybe echo the content from the action.
+		if ( $echo ) {
+			echo $before_content;
+
+			$before_content = '';
+		}
+
 		// Maybe render the new views.
 		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {
 			// Enqueue new assets.
-			tribe_asset_enqueue( 'tribe-tickets-rsvp' );
+			tribe_asset_enqueue_group( 'tribe-tickets-rsvp' );
 			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
 			tribe_asset_enqueue( 'tribe-tickets-form-style' );
 			// @todo: Remove this once we solve the common breakpoints vs container based.
 			tribe_asset_enqueue( 'tribe-common-responsive' );
 
-			return $template->template( 'v2/rsvp', $args, $echo );
+			return $before_content . $template->template( 'v2/rsvp', $args, $echo );
 		}
 
 		// Enqueue assets.
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-rsvp' );
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-rsvp-style' );
 
-		return $template->template( 'blocks/rsvp', $args, $echo );
+		return $before_content . $template->template( 'blocks/rsvp', $args, $echo );
 	}
 }

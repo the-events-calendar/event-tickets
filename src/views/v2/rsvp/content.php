@@ -11,13 +11,13 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
+ * @var string|null $step The step the views are on.
  *
- * @since TBD
+ * @since 4.12.3
  *
- * @version TBD
+ * @version 4.12.3
  */
 
-$step = sanitize_text_field( tribe_get_request_var( 'step', '' ) );
 ?>
 
 <?php $this->template( 'v2/rsvp/messages/must-login' ); ?>

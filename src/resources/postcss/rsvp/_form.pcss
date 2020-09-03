@@ -1,7 +1,7 @@
 /**
  * Event Tickets - RSVP form.
  *
- * @since TBD
+ * @since5.0.0
  */
 
 .event-tickets {
@@ -30,7 +30,12 @@
 	}
 
 	.tribe-tickets__rsvp-form-content {
-		margin-top: var(--spacer-5);
+		margin-bottom: var(--spacer-1);
+		margin-top: var(--spacer-8);
+
+		@media(--viewport-medium) {
+			margin-top: var(--spacer-5);
+		}
 	}
 
 	.tribe-tickets__rsvp-form-buttons {
@@ -62,5 +67,10 @@
 		&:hover {
 			color: var(--color-text-primary);
 		}
+	}
+
+	.tribe-tickets__rsvp-form-button--submit {
+		padding-left: var(--spacer-6);
+		padding-right: var(--spacer-6);
 	}
 }

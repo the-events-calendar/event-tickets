@@ -5,35 +5,33 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/mini-cart.php
  *
- * @since 4.11.0
- * @since 4.12.0 Prevent potential errors when $provider_obj is not valid.
+ * @since   4.11.0
+ * @since   4.12.0 Prevent potential errors when $provider_obj is not valid.
+ * @since   4.12.3 Update detecting ticket provider to account for possibly inactive provider. Rename $provider_obj to
+ *              the more accurately named $cart_provider.
  *
- * @version 4.12.0
+ * @version 4.12.3
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 
 if ( empty( $provider ) ) {
 	$event_keys = array_keys( $events );
-	$event_key = array_shift( $event_keys );
-	$provider_name     = Tribe__Tickets__Tickets::get_event_ticket_provider( $event_key );
-	$provider = $provider_name::ATTENDEE_OBJECT;
+	$event_key  = array_shift( $event_keys );
+	$provider   = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $event_key );
+	$provider   = ! empty( $provider ) ? $provider::ATTENDEE_OBJECT : '';
 }
 
 /** @var Tribe__Tickets__Attendee_Registration__View $view */
-$view         = tribe( 'tickets.attendee_registration.view' );
-$provider_obj = $view->get_cart_provider( $provider );
+$view          = tribe( 'tickets.attendee_registration.view' );
+$cart_provider = $view->get_cart_provider( $provider );
 
-if ( is_object( $provider_obj ) ) {
-	$provider_class = $provider_obj->class_name;
-} else {
+if ( empty( $cart_provider ) ) {
 	$provider_class = '';
+} else {
+	$provider_class = $cart_provider->class_name;
 }
 
 $tickets = $this->get( 'tickets' );
-// We don't display anything if there is no provider or tickets
-if ( ! $provider || empty( $tickets ) ) {
-	//return false;
-}
 
 $cart_classes = [
 	'tribe-common',
@@ -49,30 +47,34 @@ $cart_url            = $this->get( 'cart_url' );
 	<h3 class="tribe-common-h6 tribe-common-h5--min-medium tribe-common-h--alt tribe-tickets__mini-cart__title"><?php echo esc_html_x( 'Ticket Summary', 'Attendee registration mini-cart/ticket summary title.', 'event-tickets'); ?></h3>
 		<?php foreach ( $events as $event_id => $tickets ) : ?>
 			<?php foreach ( $tickets as $key => $ticket ) : ?>
-				<?php if ( $provider !== $ticket['provider']->attendee_object ) : ?>
+				<?php if ( $provider_class !== $ticket['provider']->class_name ) : ?>
 					<?php continue; ?>
 				<?php endif; ?>
-				<?php $currency_symbol     = $currency->get_currency_symbol( $ticket['id'], true ); ?>
+				<?php $currency_symbol = $currency->get_currency_symbol( $ticket['id'], true ); ?>
 				<?php $this->template(
 					'blocks/tickets/item',
 					[
-						'ticket' => $provider_obj->get_ticket( $event_id, $ticket['id'] ),
-						'key' => $key,
-						'is_mini' => true,
+						'ticket'          => $cart_provider->get_ticket( $event_id, $ticket['id'] ),
+						'key'             => $key,
+						'is_mini'         => true,
 						'currency_symbol' => $currency_symbol,
-						'provider' => $provider_obj,
-						'post_id' => $event_id
-						]
+						'provider'        => $cart_provider,
+						'post_id'         => $event_id,
+					]
 				); ?>
 			<?php endforeach; ?>
 		<?php endforeach; ?>
-		<?php $this->template( 'blocks/tickets/footer', [ 'is_mini' => true, 'provider' => $provider_obj ] ); ?>
+	<?php $this->template( 'blocks/tickets/footer', [ 'is_mini' => true, 'provider' => $cart_provider ] ); ?>
 </aside>
 
 <?php foreach ( $events as $event_id => $tickets ) : ?>
 	<?php
-	if ( empty( Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id )->attendee_object )
-		|| $provider !== Tribe__Tickets__Tickets::get_event_ticket_provider( $event_id )->attendee_object ) {
+	$event_provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $event_id );
+
+	if (
+		empty( $event_provider )
+		|| $provider_class !== $event_provider->class_name
+	) {
 		continue;
 	}
 
@@ -81,7 +83,8 @@ $cart_url            = $this->get( 'cart_url' );
 		[
 			'event_id' => $event_id,
 			'tickets'  => $tickets,
-			'provider' => $provider_obj
+			'provider' => $cart_provider,
 		]
-	); ?>
-<?php endforeach;
+	);
+	?>
+<?php endforeach; ?>

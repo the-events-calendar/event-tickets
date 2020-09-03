@@ -1,7 +1,7 @@
 /**
  * Event Tickets - RSVP Structure
  *
- * @since TBD
+ * @since5.0.0
  */
 
 .event-tickets {
@@ -21,14 +21,15 @@
 
 	.tribe-tickets__rsvp-actions {
 		border-top: 1px dashed var(--color-border-secondary);
-		margin-top: var(--spacer-6);
-		padding: var(--spacer-6) 0;
+		margin-top: var(--spacer-10);
+		padding: var(--spacer-10) 0;
 		width: 100%;
 
 
 		@media(--viewport-medium) {
 			border-top: 0;
 			margin-top: 0;
+			padding: 0;
 		}
 
 		.tribe-common-c-btn {
@@ -40,15 +41,31 @@
 	 * RSVP Actions (Going / Can't go)
 	 * ------------------------------------------------------------------------- */
 
-	.tribe-tickets__rsvp-actions-rsvp-going,
-	.tribe-tickets__rsvp-actions-rsvp-not-going {
+	.tribe-tickets__rsvp-actions-rsvp-going {
 		margin-top: var(--spacer-2);
+	}
+
+	.tribe-tickets__rsvp-actions-rsvp-not-going {
+		margin-top: var(--spacer-8);
+
+		@media(--viewport-medium) {
+			margin-top: var(--spacer-5);
+		}
+	}
+
+	.tribe-tickets__rsvp-actions-button-not-going {
+		font-size: var(--font-size-2);
+
+		@media(--viewport-medium) {
+			font-size: var(--font-size-1);
+		}
 	}
 
 	/* -------------------------------------------------------------------------
 	 * Full RSVP
 	 * ------------------------------------------------------------------------- */
 	.tribe-tickets__rsvp-actions-full {
+		padding: var(--spacer-12) var(--spacer-7) var(--spacer-11) var(--spacer-7);
 
 		@media(--viewport-medium) {
 			padding: 0 var(--spacer-7);
@@ -87,15 +104,17 @@
 
 	.tribe-tickets__rsvp-actions-success-going-text {
 		margin-left: var(--spacer-1);
+		text-transform: capitalize;
 	}
 
 	.tribe-tickets__rsvp-actions-success-going-toggle {
-		margin-top: var(--spacer-2);
+		margin-top: var(--spacer-4);
 		display: flex;
 		justify-content: center;
 
 		@media(--viewport-medium) {
 			justify-content: flex-start;
+			margin-top: var(--spacer-1);
 		}
 	}
 
@@ -105,5 +124,10 @@
 
 	.tribe-tickets__rsvp-actions-success-going-toggle-label {
 		text-align: left;
+	}
+
+	.tribe-tickets__rsvp-actions-success-going-toggle-label-underline {
+		cursor: help;
+		text-decoration: underline dotted;
 	}
 }

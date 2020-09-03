@@ -10,9 +10,9 @@
  *
  * @link  {INSERT_ARTICLE_LINK_HERE}
  *
- * @since TBD
+ * @since 4.12.3
  *
- * @version TBD
+ * @version 4.12.3
  */
 
 $is_unlimited = $this->get( 'is_unlimited' );
@@ -26,5 +26,5 @@ $handler = tribe( 'tickets.handler' );
 
 ?>
 <span class="tribe-tickets__rsvp-availability-unlimited">
-	<?php echo esc_html( $handler->unlimited_term ); ?>
+	<?php echo esc_html( $handler->unlimited_term . ( false !== $days_to_rsvp ? ',' : '' ) ); ?>
 </span>

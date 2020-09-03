@@ -152,7 +152,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Get the threshold.
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param int $post_id
 	 *
@@ -180,7 +180,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Show unlimited?
 	 *
-	 * @since TBD
+	 * @since 4.12.3
 	 *
 	 * @param bool $is_unlimited
 	 */
@@ -199,8 +199,6 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * Register block assets
 	 *
 	 * @since 4.9
-	 *
-	 * @param  array $attributes
 	 *
 	 * @return void
 	 */
@@ -233,17 +231,61 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		tribe_asset(
 			$plugin,
-			'tribe-tickets-rsvp',
-			'v2/rsvp.js',
-			[ 'jquery' ],
+			'tribe-tickets-rsvp-ari',
+			'v2/rsvp-ari.js',
+			[ 'jquery', 'wp-util' ],
+			null,
+			[
+				'groups'       => 'tribe-tickets-rsvp',
+				'conditionals' => [ $this, 'should_enqueue_ari' ],
+			]
+		);
+
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-rsvp-manager',
+			'v2/rsvp-manager.js',
+			[
+				'jquery',
+				'tribe-common',
+				'tribe-tickets-rsvp-block',
+				'tribe-tickets-rsvp-tooltip',
+				'tribe-tickets-rsvp-ari',
+			],
 			null,
 			[
 				'localize' => [
 					'name' => 'TribeRsvp',
 					'data' => [
-						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+						'ajaxurl'    => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+						'cancelText' => __( 'Are you sure you want to cancel?', 'event-tickets' ),
 					],
 				],
+				'groups'   => 'tribe-tickets-rsvp',
+			]
+		);
+
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-rsvp-block',
+			'v2/rsvp-block.js',
+			[ 'jquery' ],
+			null,
+			[ 'groups' => 'tribe-tickets-rsvp' ]
+		);
+
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-rsvp-tooltip',
+			'v2/rsvp-tooltip.js',
+			[
+				'jquery',
+				'tribe-common',
+				'tribe-tooltipster',
+			],
+			null,
+			[
+				'groups' => 'tribe-tickets-rsvp',
 			]
 		);
 
@@ -266,11 +308,30 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		tribe_asset(
 			$plugin,
+			'tribe-tickets-rsvp-style-override',
+			Tribe__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' ),
+			[],
+			null
+		);
+
+		tribe_asset(
+			$plugin,
 			'tribe-tickets-form-style',
 			'forms.css',
 			[ 'tribe-tickets-rsvp-style' ],
 			null
 		);
+	}
+
+	/**
+	 * Determine whether we should enqueue the ARI assets.
+	 *
+	 * @since5.0.0
+	 *
+	 * @return bool Whether we should enqueue the ARI assets.
+	 */
+	public function should_enqueue_ari() {
+		return class_exists( 'Tribe__Tickets_Plus__Main' );
 	}
 
 	/**
@@ -350,7 +411,13 @@ extends Tribe__Editor__Blocks__Abstract {
 			wp_send_json_error( $response );
 		}
 
-		$products = (array) tribe_get_request_var( 'product_id' );
+		$products = [];
+
+		if ( isset( $_POST['tribe_tickets'] ) ) {
+			$products = wp_list_pluck( $_POST['tribe_tickets'], 'ticket_id' );
+		} elseif ( isset( $_POST['product_id'] ) ) {
+			$products = (array) $_POST['product_id'];
+		}
 
 		// Iterate over each product
 		foreach ( $products as $product_id ) {
