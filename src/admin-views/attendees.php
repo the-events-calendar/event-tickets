@@ -20,7 +20,7 @@ $singular = $pto->labels->singular_name;
  * @param boolean                         $show_title
  * @param Tribe__Tickets__Tickets_Handler $handler
  */
-$show_title = apply_filters( 'tribe_tickets_attendees_show_title', false, $attendees );
+$show_title = apply_filters( 'tribe_tickets_attendees_show_title', is_admin(), $attendees );
 ?>
 
 <div class="wrap tribe-report-page">
