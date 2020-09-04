@@ -97,14 +97,19 @@ if ( ! $already_rendered ) {
 			'content'         => __( 'The numbers below include tickets for this event already in your cart. Clicking "Get Tickets" will allow you to edit any existing attendee information as well as change ticket quantities.', 'event-tickets' ),
 		]
 	);
-	?>
 
-	<?php $this->template( 'blocks/tickets/commerce/fields', [ 'provider' => $provider, 'provider_id' => $provider_id ] ); ?>
+	$this->template(
+		'blocks/tickets/commerce/fields',
+		[
+			'provider'    => $provider,
+			'provider_id' => $provider_id,
+		]
+	);
 
-	<?php if ( $has_tickets_on_sale ) : ?>
-		<?php foreach ( $tickets_on_sale as $key => $ticket ) : ?>
-			<?php $ticket_symbol = $currency->get_currency_symbol( $ticket->ID, true ); ?>
-			<?php
+	if ( $has_tickets_on_sale ) :
+		foreach ( $tickets_on_sale as $key => $ticket ) :
+			$ticket_symbol = $currency->get_currency_symbol( $ticket->ID, true );
+
 				$this->template(
 					'blocks/tickets/item',
 					[
@@ -113,9 +118,8 @@ if ( ! $already_rendered ) {
 						'currency_symbol' => $ticket_symbol,
 					]
 				);
-			?>
-		<?php endforeach; ?>
-		<?php
+		endforeach;
+
 		// We're assuming that all the currency is the same here.
 		$currency_symbol = $currency->get_currency_symbol( $ticket->ID, true );
 		$this->template(
@@ -125,11 +129,12 @@ if ( ! $already_rendered ) {
 				'currency_symbol' => $currency_symbol,
 			]
 		);
-		?>
-	<?php else : ?>
-		<?php $this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] ); ?>
-	<?php endif; ?>
-	<?php $this->template( 'v2/components/loader/loader' ); ?>
+	else :
+		$this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] );
+	endif;
+
+	$this->template( 'v2/components/loader/loader' );
+	?>
 
 </form>
 
