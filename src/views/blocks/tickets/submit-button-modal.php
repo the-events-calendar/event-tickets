@@ -50,7 +50,7 @@ $button_classes = apply_filters(
  * @param string $content a string of default content.
  * @param Tribe__Tickets__Editor__Template $template_obj the Template object.
  */
-$content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Ticket Modal</p>', $this );
+$content = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Ticket Modal</p>', $this );
 
 $args = [
 	'append_target'           => '#tribe-tickets__modal_target',
