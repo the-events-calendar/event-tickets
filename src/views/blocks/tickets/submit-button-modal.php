@@ -58,7 +58,6 @@ $args = [
 	'button_disabled'         => true,
 	'button_id'               => 'tribe-tickets__submit',
 	'button_name'             => $provider_id . '_get_tickets',
-	'button_id'               => 'tribe-tickets__submit',
 	'button_text'             => $button_text,
 	'button_type'             => 'submit',
 	'close_event'             => 'tribe_dialog_close_ar_modal',
