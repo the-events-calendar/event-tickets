@@ -1736,7 +1736,7 @@ if ( ! function_exists( 'tribe_tickets_is_provider_active' ) ) {
  *
  * @since TBD
  *
- * @return boolean Whether new tickets views are enabled.
+ * @return bool Whether new tickets views are enabled.
  */
 function tribe_tickets_new_views_is_enabled() {
 	// Check for constant.
