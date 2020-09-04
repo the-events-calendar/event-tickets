@@ -1741,14 +1741,14 @@ if ( ! function_exists( 'tribe_tickets_is_provider_active' ) ) {
 function tribe_tickets_new_views_is_enabled() {
 	// Check for constant.
 	if ( defined( 'TRIBE_TICKETS_NEW_VIEWS' ) ) {
-		return (boolean) TRIBE_TICKETS_NEW_VIEWS;
+		return (bool) TRIBE_TICKETS_NEW_VIEWS;
 	}
 
 	// Check for env var.
 	$env_var = getenv( 'TRIBE_TICKETS_NEW_VIEWS' );
 
 	if ( false !== $env_var ) {
-		return (boolean) $env_var;
+		return (bool) $env_var;
 	}
 
 	/**
