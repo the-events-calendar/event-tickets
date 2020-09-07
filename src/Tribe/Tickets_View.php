@@ -1081,7 +1081,7 @@ class Tribe__Tickets__Tickets_View {
 		$rsvp = tribe( 'tickets.rsvp' );
 
 		// Check if the call is coming from a shortcode.
-		$doing_shortcode = tribe_is_truthy( array_search( 'do_shortcode', array_column( debug_backtrace(), 'function' ) ) );
+		$doing_shortcode = tribe_doing_shortcode( 'tribe_tickets_rsvp' );
 
 		// Get the RSVP block HTML ID.
 		$block_html_id  = 'rsvp-now';
