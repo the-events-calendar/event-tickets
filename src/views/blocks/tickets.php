@@ -110,14 +110,14 @@ if ( ! $already_rendered ) {
 		foreach ( $tickets_on_sale as $key => $ticket ) :
 			$ticket_symbol = $currency->get_currency_symbol( $ticket->ID, true );
 
-				$this->template(
-					'blocks/tickets/item',
-					[
-						'ticket'          => $ticket,
-						'key'             => $key,
-						'currency_symbol' => $ticket_symbol,
-					]
-				);
+			$this->template(
+				'blocks/tickets/item',
+				[
+					'ticket'          => $ticket,
+					'key'             => $key,
+					'currency_symbol' => $ticket_symbol,
+				]
+			);
 		endforeach;
 
 		// We're assuming that all the currency is the same here.
