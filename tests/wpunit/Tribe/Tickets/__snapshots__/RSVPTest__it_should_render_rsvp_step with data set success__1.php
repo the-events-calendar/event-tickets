@@ -56,7 +56,7 @@
 	<span class="tribe-tickets__rsvp-actions-success-going-text tribe-common-h4 tribe-common-h6--min-medium">
 		You are going	</span>
 </div>
-
+	
 
 </div>
 
