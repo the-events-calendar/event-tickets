@@ -121,6 +121,9 @@ Currently, the following add-ons are available for Event Tickets:
 = [5.0.1] TBD =
 
 * Fix - Use the correct default date for initial Ticket start sale and end sale dates for Classic Editor. [ET-900]
+* Fix - Use the correct file path for the modal overrides. It's now correctly using the `your-theme/tribe/tickets/` path. [ETP-432]
+* Fix - More thorough validity checking for post IDs, such as to account for a BuddyPress page having a Post ID of zero. [ET-899]
+* Fix - Ensure we print the required label for the ARI checkboxes. [ETP-361]
 
 = [5.0.0.1] 2020-08-31 =
 
