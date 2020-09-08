@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [5.0.1] TBD =
 
+* Fix - Ensure the Attendees List title for the Attendees report is clean and not replicated on the page for the admin area as well as frontend. [ET-861]
 * Fix - Use the correct file path for the modal overrides. It's now correctly using the `your-theme/tribe/tickets/` path. [ETP-432]
 * Fix - More thorough validity checking for post IDs, such as to account for a BuddyPress page having a Post ID of zero. [ET-899]
 
