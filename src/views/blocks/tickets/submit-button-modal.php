@@ -15,9 +15,9 @@
  * @since 4.11.3 Allow filtering of the button classes.
  * @since 4.11.3 Added button ID for better JS targeting.
  * @since 4.12.1 Add support for custom label for "Tickets" plural.
+ * @since TBD Removed duplicate button ID from `$args`.
  *
- * @version 4.12.1
- *
+ * @version TBD
  */
 
 /* translators: %1$s: Event name, %2$s: Tickets label */
@@ -50,7 +50,7 @@ $button_classes = apply_filters(
  * @param string $content a string of default content.
  * @param Tribe__Tickets__Editor__Template $template_obj the Template object.
  */
-$content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Ticket Modal</p>', $this );
+$content = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Ticket Modal</p>', $this );
 
 $args = [
 	'append_target'           => '#tribe-tickets__modal_target',
@@ -58,7 +58,6 @@ $args = [
 	'button_disabled'         => true,
 	'button_id'               => 'tribe-tickets__submit',
 	'button_name'             => $provider_id . '_get_tickets',
-	'button_id'               => 'tribe-tickets__submit',
 	'button_text'             => $button_text,
 	'button_type'             => 'submit',
 	'close_event'             => 'tribe_dialog_close_ar_modal',
