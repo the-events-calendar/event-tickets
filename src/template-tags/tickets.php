@@ -1727,3 +1727,36 @@ if ( ! function_exists( 'tribe_tickets_is_provider_active' ) ) {
 		);
 	}
 }
+
+/**
+ * Determine whether new tickets (block) views are enabled.
+ *
+ * In order the function will check the `TRIBE_TICKETS_NEW_VIEWS` constant,
+ * the `TRIBE_TICKETS_NEW_VIEWS` environment variable and, finally, the `tribe_tickets_new_views_is_enabled` option.
+ *
+ * @since TBD
+ *
+ * @return bool Whether new tickets views are enabled.
+ */
+function tribe_tickets_new_views_is_enabled() {
+	// Check for constant.
+	if ( defined( 'TRIBE_TICKETS_NEW_VIEWS' ) ) {
+		return (bool) TRIBE_TICKETS_NEW_VIEWS;
+	}
+
+	// Check for env var.
+	$env_var = getenv( 'TRIBE_TICKETS_NEW_VIEWS' );
+
+	if ( false !== $env_var ) {
+		return (bool) $env_var;
+	}
+
+	/**
+	 * Allows filtering whether new tickets block views are enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @param boolean $enabled Whether new RSVP views are enabled.
+	 */
+	return apply_filters( 'tribe_tickets_new_views_is_enabled', $enabled );
+}

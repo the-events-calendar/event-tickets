@@ -1892,13 +1892,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			tribe_asset(
 				$plugin,
-				'tribe_tickets_frontend_tickets',
+				'tribe-tickets-block',
 				'tickets-block.js',
-				[ 'jquery', 'jquery-ui-datepicker', 'wp-util-not-in-footer', 'wp-i18n' ],
+				[ 'jquery', 'tribe-common', 'jquery-ui-datepicker', 'wp-util-not-in-footer', 'wp-i18n' ],
 				null,
 				[
-					'type'         => 'js',
-					'localize'     => [
+					'type'     => 'js',
+					'groups'   => [ 'tribe-tickets-block-assets' ],
+					'localize' => [
 						[
 							'name' => 'TribeTicketOptions',
 							'data' => [ __CLASS__, 'get_asset_localize_data_for_ticket_options' ],
@@ -1925,7 +1926,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				]
 			);
 
-			tribe_asset_enqueue( 'tribe_tickets_frontend_tickets' );
+			tribe_asset_enqueue_group( 'tribe-tickets-block-assets' );
 
 			self::$frontend_script_enqueued = true;
 		}
@@ -1969,7 +1970,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$data['tickets'][ $ticket->ID ] = $ticket_data;
 			}
 
-			wp_localize_script( 'tribe_tickets_frontend_tickets', 'tribe_tickets_stock_data', $data );
+			wp_localize_script( 'tribe-tickets-block', 'tribe_tickets_stock_data', $data );
 		}
 
 		/**
@@ -2659,6 +2660,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Determines if this is a suitable opportunity to inject ticket form content into a post.
 		 * Expects to run within "the_content".
 		 *
+		 * @since TBD Bail if $post->ID is zero, such as from BuddyPress' "Activity" page.
+		 *
 		 * @return bool
 		 */
 		protected function should_inject_ticket_form_into_post_content() {
@@ -2679,7 +2682,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// Bail if this isn't a post for some reason.
-			if ( ! $post instanceof WP_Post ) {
+			// Empty check is for BuddyPress having a WP Post with ID of zero.
+			if (
+				! $post instanceof WP_Post
+				|| empty( $post->ID )
+			) {
 				return false;
 			}
 

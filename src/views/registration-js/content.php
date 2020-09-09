@@ -12,7 +12,7 @@
  * @since   4.12.3 Update for getting ticket provider now returning instance or False. Remove duplicate array property.
  *              Retrieve $is_meta_up_to_date in a manner consistent with other template variables. Moved `novalidate` from
  *              div to form, as it used to be. Implement short array syntax.
- * @since   TBD Add comments for translators. Use the loader V2 template.
+ * @since   TBD Add comments for translators. Use the loader V2 template. Add `event-tickets` class to the wrapper.
  *
  * @version TBD
  *
@@ -48,6 +48,7 @@ $provider_class = $this->get_form_class( $provider );
 $all_tickets    = [];
 $classes        = [
 	'tribe-common',
+	'event-tickets',
 	'tribe-tickets__registration',
 ];
 ?>

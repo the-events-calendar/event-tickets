@@ -1,0 +1,104 @@
+/**
+ * Event Tickets - Tickets Stylesheet - Details
+ *
+ * @since TBD
+ */
+
+.event-tickets,
+.entry .entry-content .event-tickets {
+
+	/*
+		Block details/summary and controls
+	*/
+	.tribe-tickets__item__details__content {
+		color: var(--color-text-secondary);
+		display: none;
+		-ms-grid-column: 1;
+		grid-column: 1;
+		-ms-grid-row: 3;
+		grid-row: 3;
+		line-height: 1;
+		margin: var(--spacer-0) 0;
+
+		&.tribe__details--open {
+			display: block;
+		}
+	}
+
+	&.tribe-tickets .tribe-tickets__item__details__content {
+		@media(--viewport-medium) {
+			display: block;
+			-ms-grid-column: 1;
+			grid-column: 1;
+			-ms-grid-row: 2;
+			grid-row: 2;
+		}
+	}
+
+	.tribe-tickets__item__details__summary {
+		color: var(--color-text-secondary);
+		display: -ms-grid;
+		display: grid;
+		-ms-grid-column: 2;
+		grid-column: 2;
+		-ms-grid-row: 1;
+		grid-row: 1;
+		justify-content: flex-start;
+		padding-left: var(--spacer-0);
+
+		.tribe-tickets& {
+			@media(--viewport-medium) {
+				@mixin hidden;
+			}
+		}
+	}
+
+	.tribe-tickets__item__details__summary--more,
+	.tribe-tickets__item__details__summary--less {
+		@mixin mobile-body-2;
+
+		background-color: transparent;
+		color: var(--color-text-secondary);
+		position: relative;
+		white-space: nowrap;
+
+		&:after {
+			border: var(--spacer-0) solid var(--color-background-transparent);
+			content: '';
+			display: inline-block;
+			margin-bottom: 1px;
+		}
+
+		@media (--viewport-medium) {
+			.tribe-tickets& {
+				@mixin hidden;
+			}
+		}
+	}
+
+	.tribe-tickets__item__details__summary--more {
+		&:after {
+			border-bottom: 0 none;
+			border-top: var(--spacer-0) solid var(--color-text-secondary);
+		}
+	}
+
+	.tribe-tickets__item__details__summary--less {
+		display: none;
+
+		&:after {
+			border-bottom: var(--spacer-0) solid var(--color-text-secondary);
+			border-top: 0 none;
+		}
+	}
+
+	.tribe__details--open {
+		.tribe-tickets__item__details__summary--more {
+			@mixin hidden;
+		}
+
+		.tribe-tickets__item__details__summary--less {
+			display: block;
+		}
+	}
+}
