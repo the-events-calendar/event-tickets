@@ -14,7 +14,7 @@
  * @since 4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
  * @since TBD Add additional checks to prevent PHP errors when called from automated testing.
  *
- * @version 4.12.1
+ * @version TBD
  *
  * @var Tribe__Tickets__Tickets_View $this
  */
