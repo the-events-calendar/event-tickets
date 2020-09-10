@@ -126,6 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - More thorough validity checking for post IDs, such as to account for a BuddyPress page having a Post ID of zero. [ET-899]
 * Fix - Remove duplicate `button_id` from the `$args` in `src/blocks/tickets/submit-button-modal.php`. Props @justlevine for the fix! [ET-907]
 * Fix - Ensure we print the required label for the ARI checkboxes. [ETP-361]
+* Fix - Prevent PHP errors in the `tickets/view-link.php` template in automated testing suite. [ET-910]
 * Tweak - We have added context to some of the strings and labels of the new RSVP block to allow more granular translation. [ET-903]
 
 = [5.0.0.1] 2020-08-31 =
