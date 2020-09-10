@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [5.0.1] TBD =
 
+* Fix - Remove duplicate variables at the top of the `registration-js/attendees/fields/checkbox.php` template. [ET-908]
 * Fix - Use the correct file path for the modal overrides. It's now correctly using the `your-theme/tribe/tickets/` path. [ETP-432]
 * Fix - More thorough validity checking for post IDs, such as to account for a BuddyPress page having a Post ID of zero. [ET-899]
 
