@@ -20,14 +20,14 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param string $content a string of default content
-	 * @param Tribe__Tickets__Editor__Template $template_obj the Template object
+	 * @param string                           $content a string of default content.
+	 * @param Tribe__Tickets__Editor__Template $template_obj the Template object.
 	 *
 	 * @return string
 	 */
 	function modal_cart_template( $content, $template_obj ) {
 		$template = 'modal/cart.php';
-		$file = $this->locate_template( $template );
+		$file     = $this->locate_template( $template );
 
 		$post_id             = $template_obj->get( 'post_id' );
 		$tickets             = $template_obj->get( 'tickets', [] );
@@ -64,18 +64,16 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param string $content The content string
-	 * @param Tribe__Tickets__Editor__Template $template_obj the Template object
-	 *
-	 * @return string The content with AR fields appended.
+	 * @param string                           $unused_content The content string.
+	 * @param Tribe__Tickets__Editor__Template $template_obj the Template object.
 	 */
 	function append_modal_ar_template( $unused_content, $template_obj ) {
 		$template = 'modal/registration-js.php';
-		$file = $this->locate_template( $template );
+		$file     = $this->locate_template( $template );
 
 		$obj_tickets = $template_obj->get( 'tickets', [] );
 		$tickets = [];
-		foreach( $obj_tickets as $ticket ) {
+		foreach ( $obj_tickets as $ticket ) {
 			$ticket_data = array(
 				'id'       => $ticket->ID,
 				'qty'      => 1,
@@ -99,17 +97,18 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param string $content The content string
-	 * @param Tribe__Tickets__Editor__Template $template_obj the Template object
+	 * @param string                           $content The content string.
+	 * @param Tribe__Tickets__Editor__Template $template_obj the Template object.
 	 *
 	 * @return string The content with AR fields appended.
 	 */
 	function modal_footer_template( $content, $template_obj ) {
 		$template = 'modal/footer.php';
-		$file = $this->locate_template( $template );
+		$file     = $this->locate_template( $template );
 
 		$obj_tickets = $template_obj->get( 'tickets', [] );
-		foreach( $obj_tickets as $ticket ) {
+
+		foreach ( $obj_tickets as $ticket ) {
 			$ticket_data = array(
 				'id'       => $ticket->ID,
 				'qty'      => 1,
@@ -147,7 +146,9 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	function locate_template( $template ) {
 		$main = Tribe__Tickets__Main::instance();
 
-		if ( $theme_file = locate_template( [ 'tribe-events/' . $template ] ) ) {
+		$theme_file = locate_template( [ 'tribe-events/' . $template, 'tribe/tickets/' . $template ] );
+
+		if ( $theme_file ) {
 			$file = $theme_file;
 		} else {
 			$file = $main->plugin_path . 'src/views/' . $template;
@@ -160,6 +161,8 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 		 *
 		 * @param string $template Relative path to template file.
 		 * @param string $file The template location.
+		 *
+		 * @return string
 		 */
 		$file = apply_filters( 'tribe_events_tickets_template_' . $template, $file );
 

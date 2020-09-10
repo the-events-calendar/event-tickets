@@ -2659,6 +2659,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Determines if this is a suitable opportunity to inject ticket form content into a post.
 		 * Expects to run within "the_content".
 		 *
+		 * @since TBD Bail if $post->ID is zero, such as from BuddyPress' "Activity" page.
+		 *
 		 * @return bool
 		 */
 		protected function should_inject_ticket_form_into_post_content() {
@@ -2679,7 +2681,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// Bail if this isn't a post for some reason.
-			if ( ! $post instanceof WP_Post ) {
+			// Empty check is for BuddyPress having a WP Post with ID of zero.
+			if (
+				! $post instanceof WP_Post
+				|| empty( $post->ID )
+			) {
 				return false;
 			}
 
