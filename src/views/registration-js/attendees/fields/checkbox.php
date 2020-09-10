@@ -6,8 +6,8 @@
  * [your-theme]/tribe/tickets/registration-js/attendees/fields/checkbox.php
  *
  * @since 4.11.0
- * @since 4.12.1 Make sure label/input IDs don't conflict with other ticket fields. Updated phpdoc for which field class to reference.
- * @since TBD Remove duplicate variables defined in the view.
+ * @since 4.12.1 Make sure label/input IDs don't conflict with other ticket fields.
+ * @since TBD Make sure we have the required label and remove duplicate variables defined in the view.
  *
  * @version TBD
  *
@@ -26,7 +26,10 @@ if ( ! $options ) {
 ?>
 <div class="tribe-field tribe-tickets-meta-fieldset tribe-tickets-meta-fieldset__checkbox-radio <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
 	<header class="tribe-tickets-meta-label">
-		<h3 class="tribe-common-b1 tribe-common-b2--min-medium"><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></h3>
+		<h3 class="tribe-common-b1 tribe-common-b2--min-medium">
+			<?php echo wp_kses_post( $field['label'] ); ?>
+			<?php tribe_required_label( $required ); ?>
+		</h3>
 	</header>
 
 	<div class="tribe-common-form-control-checkbox-radio-group">
