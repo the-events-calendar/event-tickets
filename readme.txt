@@ -122,6 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Use the correct default date for initial Ticket start sale and end sale dates for Classic Editor. [ET-900]
 * Fix - We have added the missing ID to the new RSVP block to allow linking to it directly. [ET-904]
+* Fix - Prevent 301 redirects to the homepage while handling Tribe Commerce checkout process. [ET-845]
 * Fix - Use the correct file path for the modal overrides. It's now correctly using the `your-theme/tribe/tickets/` path. [ETP-432]
 * Fix - More thorough validity checking for post IDs, such as to account for a BuddyPress page having a Post ID of zero. [ET-899]
 * Fix - Remove duplicate `button_id` from the `$args` in `src/blocks/tickets/submit-button-modal.php`. Props @justlevine for the fix! [ET-907]
