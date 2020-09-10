@@ -12,10 +12,12 @@
  * @since   4.10.9  Use customizable ticket name functions.
  * @since   4.11.0 Made template more like new blocks-based template in terms of logic.
  * @since 4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
+ * @since TBD Use the provided $post_id instead of relying on get_the_ID().
  *
  * @version 4.12.1
  *
  * @var Tribe__Tickets__Tickets_View $this
+ * @var int                          $post_id
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -23,8 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $view      = Tribe__Tickets__Tickets_View::instance();
-$event_id  = get_the_ID();
-$event     = get_post( $event_id );
+$event     = get_post( $post_id );
 $post_type = get_post_type_object( $event->post_type );
 $user_id   = get_current_user_id();
 
@@ -32,8 +33,8 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 
 $post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post', 'fallback post type singular name', 'event-tickets' );
 $counters           = [];
-$rsvp_count         = $view->count_rsvp_attendees( $event_id, $user_id );
-$ticket_count       = $view->count_ticket_attendees( $event_id, $user_id );
+$rsvp_count         = $view->count_rsvp_attendees( $post_id, $user_id );
+$ticket_count       = $view->count_ticket_attendees( $post_id, $user_id );
 
 if ( 1 === $rsvp_count ) {
 	// Translators: 1: the number one, 2: singular RSVP label.
@@ -55,7 +56,7 @@ if ( empty( $counters ) ) {
 	return false;
 }
 
-$link = $view->get_tickets_page_url( $event_id, $is_event_page );
+$link = $view->get_tickets_page_url( $post_id, $is_event_page );
 
 // Translators: 1: number of RSVPs and/or Tickets with accompanying ticket type text, 2: post type label.
 $message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' ), implode( _x( ' and ', 'separator if there are both RSVPs and Tickets', 'event-tickets' ), $counters ), $post_type_singular ) );
@@ -63,5 +64,5 @@ $message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' 
 
 <div class="tribe-link-view-attendee">
 	<?php echo $message ?>
-	<a href="<?php echo esc_url( $link ) ?>"><?php echo sprintf( esc_html__( 'View your %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, $user_id ) ) ?></a>
+	<a href="<?php echo esc_url( $link ) ?>"><?php echo sprintf( esc_html__( 'View your %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $post_id, $user_id ) ) ?></a>
 </div>
