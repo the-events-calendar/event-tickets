@@ -32,11 +32,24 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		}
 
 		$view_title = sprintf(
-		// Translators: 1: the post title, 2: the post ID.
-			esc_html_x( 'Attendees for: %s [#%d]', 'attendees report screen heading', 'event-tickets' ),
-			get_the_title( $post_id ),
-			$post_id
+			// Translators: %s: the post title.
+			esc_html_x( 'Attendees for: %s', 'attendees report screen heading', 'event-tickets' ),
+			get_the_title( $post_id )
 		);
+
+		/**
+		 * Whether we should display the "Attendees for: %s [#%d]" view title.
+		 *
+		 * @since TBD
+		 *
+		 * @param boolean $show_title Whether to show the view title.
+		 * @param int     $post_id    The post ID.
+		 */
+		$show_title = apply_filters( 'tribe_tickets_attendees_show_view_title', true, $post_id );
+
+		if ( ! $show_title ) {
+			$view_title = '';
+		}
 
 		$tabbed_view = new Tribe__Tabbed_View();
 		$tabbed_view->set_label( $view_title );
