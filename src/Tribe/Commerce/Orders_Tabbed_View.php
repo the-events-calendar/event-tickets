@@ -32,7 +32,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		}
 
 		$view_title = sprintf(
-			// Translators: %1$s: the post title, %2$d: the post ID.
+			// Translators: %1$s: the post/event title, %2$d: the post/event ID.
 			_x( 'Attendees for: %1$s [#%2$d]', 'attendees report screen heading', 'event-tickets' ),
 			get_the_title( $post_id ),
 			$post_id
