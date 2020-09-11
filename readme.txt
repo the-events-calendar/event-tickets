@@ -121,8 +121,15 @@ Currently, the following add-ons are available for Event Tickets:
 = [5.0.1] TBD =
 
 * Fix - Ensure the Attendees List title for the Attendees report is clean and not replicated on the page for the admin area as well as frontend. [ET-861]
+* Fix - Use `the_title` filter when getting list of post titles for the Move Ticket workflow. [ET-909]
+* Fix - Use the correct default date for initial Ticket start sale and end sale dates for Classic Editor. [ET-900]
+* Fix - We have added the missing ID to the new RSVP block to allow linking to it directly. [ET-904]
+* Fix - Prevent 301 redirects to the homepage while handling Tribe Commerce checkout process. [ET-845]
 * Fix - Use the correct file path for the modal overrides. It's now correctly using the `your-theme/tribe/tickets/` path. [ETP-432]
 * Fix - More thorough validity checking for post IDs, such as to account for a BuddyPress page having a Post ID of zero. [ET-899]
+* Fix - Remove duplicate `button_id` from the `$args` in `src/blocks/tickets/submit-button-modal.php`. Props @justlevine for the fix! [ET-907]
+* Fix - Ensure we print the required label for the ARI checkboxes. [ETP-361]
+* Tweak - We have added context to some of the strings and labels of the new RSVP block to allow more granular translation. [ET-903]
 
 = [5.0.0.1] 2020-08-31 =
 
