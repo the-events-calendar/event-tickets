@@ -29,9 +29,10 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', is_admin(), $
 			<?php
 			echo esc_html(
 				sprintf(
-					// Translators: %s: the post title.
-					_x( 'Attendees for: %s', 'attendees report screen heading', 'event-tickets' ),
-					get_the_title( $event )
+					// Translators: %1$s: the post title, %2$d: the post ID.
+					_x( 'Attendees for: %1$s [#%2$d]', 'attendees report screen heading', 'event-tickets' ),
+					get_the_title( $event ),
+					$event_id
 				)
 			);
 			?>
