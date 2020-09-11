@@ -44,7 +44,6 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 		tribe_asset_enqueue_group( 'tribe-tickets-registration-page' );
 	}
 
-
 	/**
 	 * Renders the shortcode AR page.
 	 *
