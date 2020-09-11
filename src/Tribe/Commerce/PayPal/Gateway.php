@@ -481,7 +481,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 */
 	public function get_paypal_cart_api_url( $post_id ) {
 		if ( empty( $post_id ) || headers_sent() ) {
-			return home_url();
+			return home_url( '/' );
 		}
 
 		$cart_url      = $this->get_cart_url( '_cart' );
@@ -679,7 +679,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'tribe_tickets_redirect_to' => rawurlencode( $cart_url ),
 		];
 
-		$url = add_query_arg( $url_args, home_url() );
+		$url = add_query_arg( $url_args, home_url( '/' ) );
 
 		/**
 		 * Filters the add to cart redirect.
