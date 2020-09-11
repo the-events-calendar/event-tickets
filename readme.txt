@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [5.0.1] TBD =
 
+* Fix - Ensure the Attendees List title for the Attendees report is clean and not replicated on the page for the admin area as well as frontend. [ET-912]
 * Fix - Use `the_title` filter when getting list of post titles for the Move Ticket workflow. [ET-909]
 * Fix - Use the correct default date for initial Ticket start sale and end sale dates for Classic Editor. [ET-900]
 * Fix - We have added the missing ID to the new RSVP block to allow linking to it directly. [ET-904]
