@@ -1074,10 +1074,35 @@ class Tribe__Tickets__Tickets_View {
 		// Enqueue assets.
 		tribe_asset_enqueue_group( 'tribe-tickets-block-assets' );
 
-		// Check wether we use v1 or v2. We need to update this when we deprecate tickets v1.
-		$template_file = tribe_tickets_new_views_is_enabled() ? 'v2/tickets' : 'blocks/tickets';
+		if ( tribe_tickets_new_views_is_enabled() ) {
+			$before_content = '';
 
-		return $template->template( $template_file, $args, $echo );
+			/**
+			 * A flag we can set via filter, e.g. at the end of this method, to ensure this template only shows once.
+			 *
+			 * @since 4.5.6
+			 *
+			 * @param boolean $already_rendered Whether the order link template has already been rendered.
+			 *
+			 * @see Tribe__Tickets__Tickets_View::inject_link_template()
+			 */
+			$already_rendered = apply_filters( 'tribe_tickets_order_link_template_already_rendered', false );
+
+			// Output order links / view link if we haven't already (for RSVPs).
+			if ( ! $already_rendered ) {
+				$before_content = $template->template( 'blocks/attendees/order-links', [], false );
+
+				if ( empty( $before_content ) ) {
+					$before_content = $template->template( 'blocks/attendees/view-link', [], false );
+				}
+
+				add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
+			}
+
+			return $before_content . $template->template( 'v2/tickets', $args, $echo );
+		}
+
+		return $template->template( 'blocks/tickets', $args, $echo );
 	}
 
 	/**
@@ -1143,6 +1168,7 @@ class Tribe__Tickets__Tickets_View {
 			'opt_in_checked'      => false,
 			'opt_in_attendee_ids' => '',
 			'opt_in_nonce'        => '',
+			'submit_button_name'  => $submit_button_name,
 		];
 
 		// Add the rendering attributes into global context.
