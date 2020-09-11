@@ -5,7 +5,7 @@
 */
 class Tribe__Tickets__Attendee_Registration__Shortcode {
 	protected $shortcode_name = 'tribe_attendee_registration';
-	protected $params = array();
+	protected $params         = [];
 
 	public function hook() {
 		// block editor has a fit if we don't bail on the admin...don't really need them in other places?
@@ -40,9 +40,8 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 			return;
 		}
 
-		// enqueue styles and scripts for this page
-		tribe_asset_enqueue( 'event-tickets-registration-page-styles' );
-		tribe_asset_enqueue( 'event-tickets-registration-page-scripts' );
+		// Enqueue styles and scripts for this page.
+		tribe_asset_enqueue_group( 'tribe-tickets-registration-page' );
 	}
 
 

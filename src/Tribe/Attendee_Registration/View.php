@@ -71,7 +71,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 				$ticket_providers[] = $ticket->provider->orm_provider;
 			}
 
-			// If we've got a provider and it doesn't match, skip the ticket
+			// If we've got a provider and it doesn't match, skip the ticket.
 			if ( ! in_array( $q_provider, $ticket_providers, true ) ) {
 				continue;
 			}
@@ -132,6 +132,13 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 */
 		$is_meta_up_to_date = (int) apply_filters( 'tribe_tickets_attendee_registration_is_meta_up_to_date', true );
 
+		// Enqueue styles and scripts for this page.
+		tribe_asset_enqueue_group( 'tribe-tickets-registration-page' );
+
+		// One provider per instance.
+		$currency        = tribe( 'tickets.commerce.currency' );
+		$currency_config = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $default_provider, null );
+
 		/**
 		 *  Set all the template variables
 		 */
@@ -141,21 +148,19 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			'is_meta_up_to_date'     => $is_meta_up_to_date,
 			'cart_has_required_meta' => $cart_has_required_meta,
 			'providers'              => $providers,
+			'currency'               => $currency,
+			'currency_config'        => $currency_config,
+			'must_login'             => ! is_user_logged_in() && $default_provider->login_required(),
+			'is_modal'               => null,
 		];
 
-		// Enqueue styles and scripts specific to this page.
-		tribe_asset_enqueue( 'event-tickets-registration-page-styles' );
-		tribe_asset_enqueue( 'event-tickets-registration-page-scripts' );
-
-		// One provder per instance
-		$currency  = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $default_provider, null );
 		wp_localize_script(
-			'event-tickets-registration-page-scripts',
+			'tribe-tickets-registration-page-scripts',
 			'TribeCurrency',
-			[ 'formatting' => json_encode( $currency ) ]
+			[ 'formatting' => json_encode( $currency_config ) ]
 		);
 		wp_localize_script(
-			'event-tickets-registration-page-scripts',
+			'tribe-tickets-registration-page-scripts',
 			'TribeCartEndpoint',
 			[ 'url' => tribe_tickets_rest_url( '/cart/' ) ]
 		);
@@ -165,11 +170,9 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		$this->add_template_globals( $args );
 
 		// Check wether we use v1 or v2. We need to update this when we deprecate tickets v1.
-		$template = tribe_tickets_new_views_is_enabled()
-			? 'v2/attendee-registration/content'
-			: 'registration-js/content';
+		$template_path = tribe_tickets_new_views_is_enabled() ? 'v2/attendee-registration/content' : 'registration-js/content';
 
-		return $this->template( $template, $args, false );
+		return $this->template( $template_path, $args, false );
 	}
 
 	/**
