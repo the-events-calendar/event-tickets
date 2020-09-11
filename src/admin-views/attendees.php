@@ -11,7 +11,7 @@ $pto      = get_post_type_object( $event->post_type );
 $singular = $pto->labels->singular_name;
 
 /**
- * Whether we should display the "Attendees List" title.
+ * Whether we should display the "Attendees for: %s" title.
  *
  * @since  4.6.2
  * @since  4.12.1 Append the post ID to the Attendees page title and each Ticket's name.
