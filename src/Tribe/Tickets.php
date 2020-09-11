@@ -1894,7 +1894,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$plugin,
 				'tribe-tickets-block',
 				'tickets-block.js',
-				[ 'jquery', 'tribe-common', 'jquery-ui-datepicker', 'wp-util-not-in-footer', 'wp-i18n' ],
+				[
+					'jquery',
+					'tribe-common',
+					'jquery-ui-datepicker',
+					'wp-util-not-in-footer',
+					'wp-i18n',
+				],
 				null,
 				[
 					'type'     => 'js',
