@@ -26,8 +26,11 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	 * @return string
 	 */
 	function modal_cart_template( $content, $template_obj ) {
-		$template = 'modal/cart.php';
-		$file     = $this->locate_template( $template );
+		// If they're not using the new views, include v1 and bail.
+		if ( ! tribe_tickets_new_views_is_enabled() ) {
+			$this->modal_cart_template_v1( $unused_content, $template_obj );
+			return;
+		}
 
 		$post_id             = $template_obj->get( 'post_id' );
 		$tickets             = $template_obj->get( 'tickets', [] );
@@ -37,6 +40,22 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 		$tickets_on_sale     = $template_obj->get( 'tickets_on_sale' );
 		$has_tickets_on_sale = $template_obj->get( 'has_tickets_on_sale' );
 		$is_sale_past        = $template_obj->get( 'is_sale_past' );
+		$must_login          = $template_obj->get( 'must_login' );
+
+		$args = [
+			'post_id'             => $post_id,
+			'tickets'             => $tickets,
+			'provider'            => $provider,
+			'provider_id'         => $provider_id,
+			'cart_url'            => $cart_url,
+			'tickets_on_sale'     => $tickets_on_sale,
+			'has_tickets_on_sale' => $has_tickets_on_sale,
+			'is_sale_past'        => $is_sale_past,
+			'must_login'          => $must_login,
+			'is_modal'            => true,
+		];
+
+		$template_obj->add_template_globals( $args );
 
 		ob_start();
 		?>
@@ -51,7 +70,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 			novalidate
 		>
 			<?php
-			include $file;
+			$template_obj->template( 'v2/modal/cart' );
 			$this->append_modal_ar_template( $content, $template_obj );
 			?>
 		</form>
@@ -68,24 +87,41 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	 * @param Tribe__Tickets__Editor__Template $template_obj the Template object.
 	 */
 	function append_modal_ar_template( $unused_content, $template_obj ) {
-		$template = 'modal/registration-js.php';
-		$file     = $this->locate_template( $template );
+		// If they're not using the new views, include v1 and bail.
+		if ( ! tribe_tickets_new_views_is_enabled() ) {
+			$this->append_modal_ar_template_v1( $unused_content, $template_obj );
+			return;
+		}
 
-		$obj_tickets = $template_obj->get( 'tickets', [] );
-		$tickets = [];
+		$obj_tickets  = $template_obj->get( 'tickets', [] );
+		$tickets_data = [];
+
 		foreach ( $obj_tickets as $ticket ) {
-			$ticket_data = array(
+			$tickets_data[] = [
 				'id'       => $ticket->ID,
 				'qty'      => 1,
 				'provider' => $ticket->get_provider(),
-			);
-
-			$tickets[] = $ticket_data;
+			];
 		}
+
+		/** @var Tribe__Tickets__Attendee_Registration__View $view */
+		$view = tribe( 'tickets.attendee_registration.view' );
+
+		$args = [
+			'tickets'        => $obj_tickets,
+			'providers'      => wp_list_pluck( $tickets_data, 'provider' ),
+			'provider_class' => '',
+			'has_tpp'        => false,
+			'post_id'        => $template_obj->get( 'post_id' ),
+			'view'           => $view,
+			'is_modal'       => true,
+		];
+
+		$template_obj->add_template_globals( $args );
 
 		ob_start();
 
-		include $file;
+		$template_obj->template( 'v2/modal/attendee-registration' );
 
 		$content = ob_get_clean();
 
@@ -167,5 +203,86 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 		$file = apply_filters( 'tribe_events_tickets_template_' . $template, $file );
 
 		return $file;
+	}
+
+	/**
+	 * Add Cart Template for Modal (V1)
+	 * Note: This will be deprecated when we remove support for V1 views.
+	 * Make it private so we can erase it later.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                           $content a string of default content.
+	 * @param Tribe__Tickets__Editor__Template $template_obj the Template object.
+	 *
+	 * @return string
+	 */
+	private function modal_cart_template_v1( $content, $template_obj ) {
+		$template = 'modal/cart.php';
+		$file     = $this->locate_template( $template );
+
+		$post_id             = $template_obj->get( 'post_id' );
+		$tickets             = $template_obj->get( 'tickets', [] );
+		$provider            = $template_obj->get( 'provider' );
+		$provider_id         = $template_obj->get( 'provider_id' );
+		$cart_url            = $template_obj->get( 'cart_url' );
+		$tickets_on_sale     = $template_obj->get( 'tickets_on_sale' );
+		$has_tickets_on_sale = $template_obj->get( 'has_tickets_on_sale' );
+		$is_sale_past        = $template_obj->get( 'is_sale_past' );
+
+		ob_start();
+		?>
+		<form
+			id="tribe-tickets__modal-form"
+			action=""
+			method="post"
+			enctype='multipart/form-data'
+			data-provider="<?php echo esc_attr( $provider->class_name ); ?>"
+			autocomplete="off"
+			data-provider-id="<?php echo esc_attr( $provider->orm_provider ); ?>"
+			novalidate
+		>
+			<?php
+			include $file;
+			$this->append_modal_ar_template( $content, $template_obj );
+			?>
+		</form>
+		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * Add AR Template to Modal (V1)
+	 * Note: This will be deprecated when we remove support for V1 views.
+	 * Make it private so we can erase it later.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                           $unused_content The content string.
+	 * @param Tribe__Tickets__Editor__Template $template_obj the Template object.
+	 */
+	private function append_modal_ar_template_v1( $unused_content, $template_obj ) {
+		$template = 'modal/registration-js.php';
+		$file     = $this->locate_template( $template );
+
+		$obj_tickets = $template_obj->get( 'tickets', [] );
+		$tickets = [];
+		foreach ( $obj_tickets as $ticket ) {
+			$ticket_data = [
+				'id'       => $ticket->ID,
+				'qty'      => 1,
+				'provider' => $ticket->get_provider(),
+			];
+
+			$tickets[] = $ticket_data;
+		}
+
+		ob_start();
+
+		include $file;
+
+		$content = ob_get_clean();
+
+		echo $content;
 	}
 }
