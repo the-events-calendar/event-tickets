@@ -1036,7 +1036,10 @@ class Tribe__Tickets__Tickets_View {
 		// Enqueue assets.
 		tribe_asset_enqueue_group( 'tribe-tickets-block-assets' );
 
-		return $template->template( 'blocks/tickets', $args, $echo );
+		// Check wether we use v1 or v2. We need to update this when we deprecate tickets v1.
+		$template_file = tribe_tickets_new_views_is_enabled() ? 'v2/tickets' : 'blocks/tickets';
+
+		return $template->template( $template_file, $args, $echo );
 	}
 
 	/**
