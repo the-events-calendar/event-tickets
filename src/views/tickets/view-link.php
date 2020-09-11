@@ -12,8 +12,9 @@
  * @since   4.10.9  Use customizable ticket name functions.
  * @since   4.11.0 Made template more like new blocks-based template in terms of logic.
  * @since 4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
+ * @since TBD Add additional checks to prevent PHP errors when called from automated testing.
  *
- * @version 4.12.1
+ * @version TBD
  *
  * @var Tribe__Tickets__Tickets_View $this
  */
@@ -23,10 +24,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $view      = Tribe__Tickets__Tickets_View::instance();
+
 $event_id  = get_the_ID();
-$event     = get_post( $event_id );
+
+if ( empty( $event_id ) ) {
+	return;
+}
+
+$event = get_post( $event_id );
+
+if ( empty( $event ) ) {
+	return;
+}
+
 $post_type = get_post_type_object( $event->post_type );
 $user_id   = get_current_user_id();
+
+if ( empty( $post_type ) || ! is_user_logged_in() ) {
+	return;
+}
 
 $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type;
 
