@@ -66,9 +66,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 				continue;
 			}
 
-			$has_meta = get_post_meta( $ticket_id, '_tribe_tickets_meta_enabled', true );
-
-			if ( empty( $has_meta ) || ! tribe_is_truthy( $has_meta ) ) {
+			if ( ! $ticket->has_meta_enabled() ) {
 				$non_meta_count += $quantity;
 			}
 
