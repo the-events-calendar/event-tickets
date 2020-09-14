@@ -53,6 +53,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		$events           = [];
 		$providers        = [];
 		$default_provider = [];
+		$non_meta_count   = 0;
 
 		foreach ( $tickets_in_cart as $ticket_id => $quantity ) {
 			// Load the tickets in cart for each event, with their ID, quantity and provider.
@@ -63,6 +64,12 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 			if ( ! $ticket->provider instanceof Tribe__Tickets__Tickets ) {
 				continue;
+			}
+
+			$has_meta = get_post_meta( $ticket_id, '_tribe_tickets_meta_enabled', true );
+
+			if ( empty( $has_meta ) || ! tribe_is_truthy( $has_meta ) ) {
+				$non_meta_count += $quantity;
 			}
 
 			$ticket_providers = [ $ticket->provider->attendee_object ];
@@ -152,6 +159,8 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			'currency_config'        => $currency_config,
 			'must_login'             => ! is_user_logged_in() && $default_provider->login_required(),
 			'is_modal'               => null,
+			'provider'               => $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' ),
+			'non_meta_count'         => $non_meta_count,
 		];
 
 		wp_localize_script(
