@@ -13,23 +13,18 @@
  *
  * @version TBD
  *
- * @var string $provider The commerce provider.
+ * @var string $provider     The commerce provider.
+ * @var string $cart_url     The cart URL.
+ * @var string $checkout_url The checkout URL.
  */
-
-/** @var Tribe__Tickets__Attendee_Registration__View $ar_view */
-$ar_view      = tribe( 'tickets.attendee_registration.view' );
-$cart_url     = $ar_view->get_cart_url( $provider );
-$provider_obj = $ar_view->get_cart_provider( $provider );
-
-$checkout_url = method_exists( $provider_obj, 'get_checkout_url' ) ? $provider_obj->get_checkout_url() : '';
-
-// If the cart and checkout urls are the same, don't display.
-if ( strtok( $cart_url, '?' ) === strtok( $checkout_url, '?' ) ) {
-	return;
-}
 
 // Bail if the "Cart URL" is empty.
 if ( empty( $cart_url ) ) {
+	return;
+}
+
+// If the cart and checkout urls are the same, don't display.
+if ( strtok( $cart_url, '?' ) === strtok( $checkout_url, '?' ) ) {
 	return;
 }
 ?>

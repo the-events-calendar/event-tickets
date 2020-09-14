@@ -177,6 +177,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			}
 
 			$args['provider'] = $provider;
+			$args['cart_url'] = $this->get_cart_url( $provider );
 		}
 
 
