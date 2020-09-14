@@ -123,11 +123,10 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 */
 		$cart_has_required_meta = (bool) apply_filters( 'tribe_tickets_attendee_registration_has_required_meta', ! empty( $tickets_in_cart ), $tickets_in_cart );
 
-		// Get the checkout URL, it'll be added to the checkout button.
-
 		/** @var Tribe__Tickets__Attendee_Registration__Main $attendee_registration */
 		$attendee_registration = tribe( 'tickets.attendee_registration' );
 
+		// Get the checkout URL, it'll be added to the checkout button.
 		$checkout_url = $attendee_registration->get_checkout_url();
 
 		/**
@@ -158,9 +157,28 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			'currency'               => $currency,
 			'currency_config'        => $currency_config,
 			'is_modal'               => null,
-			'provider'               => $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' ),
 			'non_meta_count'         => $non_meta_count,
 		];
+
+		if ( tribe_tickets_new_views_is_enabled() ) {
+			$provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
+
+			if ( empty( $provider ) ) {
+				$event_keys   = array_keys( $events );
+				$event_key    = array_shift( $event_keys );
+				$provider_obj = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $event_key );
+				$provider     = $provider_obj->attendee_object;
+			} elseif ( is_string( $provider ) ) {
+				$provider_obj = $this->get_cart_provider( $provider );
+				$provider     = $provider_obj->attendee_object;
+			} elseif ( $provider instanceof Tribe__Tickets__Tickets ) {
+				$provider_obj = $provider;
+				$provider     = $provider_obj->attendee_object;
+			}
+
+			$args['provider'] = $provider;
+		}
+
 
 		wp_localize_script(
 			'tribe-tickets-registration-page-scripts',
