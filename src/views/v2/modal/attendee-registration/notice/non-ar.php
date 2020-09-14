@@ -18,7 +18,7 @@
 
 $notice_classes = [
 	'tribe-tickets__notice--non-ar',
-	'tribe-common-a11y-hidden' => ! empty( $non_meta_count ),
+	'tribe-common-a11y-hidden' => empty( $non_meta_count ),
 ];
 
 $this->template(
