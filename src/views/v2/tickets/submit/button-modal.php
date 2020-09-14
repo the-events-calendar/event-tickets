@@ -79,6 +79,4 @@ $args = [
 
 tribe( 'dialog.view' )->render_modal( $content, $args );
 
-/** @var Tribe__Tickets__Editor__Template $template */
-$template = tribe( 'tickets.editor.template' );
-$template->template( 'v2/attendee-registration/attendees/content', [ 'post_id' => get_the_ID(), 'tickets' => $tickets ] );
+$this->template( 'v2/attendee-registration/content/attendees/content', [ 'post_id' => get_the_ID(), 'tickets' => $tickets ] );
