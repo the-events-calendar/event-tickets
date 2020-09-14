@@ -58,10 +58,9 @@ $classes = [
 			<?php
 			foreach ( $tickets as $ticket ) :
 				$all_tickets[] = $ticket;
-				// Only include tickets with meta.
-				$has_meta = get_post_meta( $ticket['id'], '_tribe_tickets_meta_enabled', true );
 
-				if ( empty( $has_meta ) || ! tribe_is_truthy( $has_meta ) ) {
+				// Only include tickets with meta.
+				if ( ! $ticket->has_meta_enabled() ) {
 					continue;
 				}
 				?>

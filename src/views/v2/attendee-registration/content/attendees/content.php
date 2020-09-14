@@ -41,9 +41,7 @@ $storage = new Tribe__Tickets_Plus__Meta__Storage();
 	}
 
 	// Only include tickets with meta.
-	$has_meta = get_post_meta( $ticket->ID, '_tribe_tickets_meta_enabled', true );
-
-	if ( empty( $has_meta ) || ! tribe_is_truthy( $has_meta ) ) {
+	if ( ! $ticket->has_meta_enabled() ) {
 		continue;
 	}
 	?>
