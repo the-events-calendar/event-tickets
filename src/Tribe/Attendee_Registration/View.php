@@ -157,7 +157,6 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			'providers'              => $providers,
 			'currency'               => $currency,
 			'currency_config'        => $currency_config,
-			'must_login'             => ! is_user_logged_in() && $default_provider->login_required(),
 			'is_modal'               => null,
 			'provider'               => $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' ),
 			'non_meta_count'         => $non_meta_count,
