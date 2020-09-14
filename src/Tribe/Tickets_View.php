@@ -1066,6 +1066,7 @@ class Tribe__Tickets__Tickets_View {
 			'show_original_price_on_sale' => $show_original_price_on_sale,
 			'is_mini'                     => null,
 			'is_modal'                    => null,
+			'submit_button_name'          => $submit_button_name,
 		];
 
 		// Add the rendering attributes into global context.
@@ -1168,7 +1169,6 @@ class Tribe__Tickets__Tickets_View {
 			'opt_in_checked'      => false,
 			'opt_in_attendee_ids' => '',
 			'opt_in_nonce'        => '',
-			'submit_button_name'  => $submit_button_name,
 		];
 
 		// Add the rendering attributes into global context.
