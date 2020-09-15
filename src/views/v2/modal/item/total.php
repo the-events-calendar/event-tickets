@@ -11,8 +11,11 @@
  *
  * @version TBD
  *
- * @var bool $is_mini  True if it's in mini cart context.
- * @var bool $is_modal True if it's in modal context.
+ * @var bool                               $is_mini  True if it's in mini cart context.
+ * @var bool                               $is_modal True if it's in modal context.
+ * @var int                                $post_id  The post/event ID.
+ * @var Tribe__Tickets__Commerce__Currency $currency The currency class.
+ * @var Tribe__Tickets__Tickets            $provider The tickets provider class.
  */
 
 // Bail if it's NOT in modal and mini cart context.
@@ -23,11 +26,9 @@ if (
 	return;
 }
 
-/** @var Tribe__Tickets__Commerce__Currency $tribe_commerce_currency */
-$tribe_commerce_currency = tribe( 'tickets.commerce.currency' );
 ?>
 <div class="tribe-common-b2 tribe-tickets__item__total__wrap">
 	<span class="tribe-tickets__item__total">
-		<?php echo $tribe_commerce_currency->get_formatted_currency_with_symbol( 0, $post_id, $provider->class_name ); ?>
+		<?php echo $currency->get_formatted_currency_with_symbol( 0, $post_id, $provider->class_name ); ?>
 	</span>
 </div>

@@ -14,13 +14,12 @@
  * @version TBD
  */
 
-$context = [
-	'ticket' => $this->get( 'ticket' ),
-	'key'    => $this->get( 'key' ),
-];
+if ( empty( $ticket ) ) {
+	return;
+}
 
-$this->template( 'v2/tickets/item/content/title', $context );
+$this->template( 'v2/tickets/item/content/title', [ 'ticket' => $ticket, 'key' => $key ] );
 
-$this->template( 'v2/tickets/item/content/description', $context );
+$this->template( 'v2/tickets/item/content/description', [ 'ticket' => $ticket, 'key' => $key ] );
 
-$this->template( 'v2/tickets/item/extra', $context );
+$this->template( 'v2/tickets/item/extra', [ 'ticket' => $ticket, 'key' => $key ] );

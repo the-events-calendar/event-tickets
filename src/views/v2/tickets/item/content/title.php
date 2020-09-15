@@ -13,9 +13,10 @@
  * @since TBD
  * @version TBD
  *
+ * @var Tribe__Tickets__Ticket_Object $ticket
+ * @var bool                          $is_mini  True if it's in mini cart context.
  */
 
-$is_mini        = $this->get( 'is_mini' );
 $no_description = ! $ticket->show_description() || empty( $ticket->description ) || $is_mini;
 
 $title_classes = [

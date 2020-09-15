@@ -25,18 +25,13 @@ $classes = [
 	'tribe-tickets__item__extra--price-suffix' => $has_suffix,
 ];
 
-$context = [
-	'ticket' => $ticket,
-	'key'    => $this->get( 'key' ),
-];
-
 ?>
 <div <?php tribe_classes( $classes ); ?>>
 
-	<?php $this->template( 'v2/tickets/item/extra/price', $context ); ?>
+	<?php $this->template( 'v2/tickets/item/extra/price', [ 'ticket' => $ticket, 'key' => $key ] ); ?>
 
-	<?php $this->template( 'v2/tickets/item/extra/available', $context ); ?>
+	<?php $this->template( 'v2/tickets/item/extra/available', [ 'ticket' => $ticket, 'key' => $key ] ); ?>
 
-	<?php $this->template( 'v2/tickets/item/extra/description-toggle', $context ); ?>
+	<?php $this->template( 'v2/tickets/item/extra/description-toggle', [ 'ticket' => $ticket, 'key' => $key ] ); ?>
 
 </div>

@@ -14,10 +14,11 @@
  *
  * @version TBD
  *
- * @var Tribe__Tickets__Ticket_Object $ticket                      The ticket object.
- * @var Tribe__Tickets__Tickets       $provider                    The tickets provider class.
- * @var string                        $provider_id                 The tickets provider class name.
- * @var bool                          $show_original_price_on_sale True if it shows the original price on sale.
+ * @var Tribe__Tickets__Ticket_Object      $ticket                      The ticket object.
+ * @var Tribe__Tickets__Tickets            $provider                    The tickets provider class.
+ * @var string                             $provider_id                 The tickets provider class name.
+ * @var bool                               $show_original_price_on_sale True if it shows the original price on sale.
+ * @var Tribe__Tickets__Commerce__Currency $currency
  */
 
 $classes = [
@@ -28,17 +29,15 @@ $classes = [
 
 $has_suffix = ! empty( $ticket->price_suffix );
 
-/** @var Tribe__Tickets__Commerce__Currency $tribe_commerce_currency */
-$tribe_commerce_currency = tribe( 'tickets.commerce.currency' );
 ?>
 <div <?php tribe_classes( $classes ); ?>>
 	<?php if ( ! empty( $ticket->on_sale ) ) : ?>
 		<span class="tribe-common-b2 tribe-tickets__original_price">
-			<?php echo $tribe_commerce_currency->get_formatted_currency_with_symbol( $ticket->regular_price, $post_id, $provider_id ); ?>
+			<?php echo $currency->get_formatted_currency_with_symbol( $ticket->regular_price, $post_id, $provider_id ); ?>
 		</span>
 	<?php endif; ?>
 	<span class="tribe-tickets__sale_price">
-		<?php echo $tribe_commerce_currency->get_formatted_currency_with_symbol( $ticket->price, $post_id, $provider_id ); ?>
+		<?php echo $currency->get_formatted_currency_with_symbol( $ticket->price, $post_id, $provider_id ); ?>
 		<?php if ( $has_suffix ) : ?>
 			<span class="tribe-tickets__sale-price-suffix tribe-common-b2">
 				<?php

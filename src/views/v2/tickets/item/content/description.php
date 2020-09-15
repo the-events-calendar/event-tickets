@@ -32,7 +32,7 @@ $ticket_details_id  = 'tribe__details__content' . ( true === $is_modal ) ?: '__m
 $ticket_details_id .= '--' . $ticket->ID;
 ?>
 
-<?php $this->template( 'v2/tickets/item/content/description-toggle' ); ?>
+<?php $this->template( 'v2/tickets/item/content/description-toggle', [ 'ticket' => $ticket ] ); ?>
 
 <div
 	id="<?php echo esc_attr( $ticket_details_id ); ?>"

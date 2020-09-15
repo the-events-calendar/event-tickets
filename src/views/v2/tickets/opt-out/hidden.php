@@ -12,8 +12,9 @@
  *
  * @since TBD
  *
- * @version 4.11.3
+ * @version TBD
  *
+ * @var bool $is_modal True if it's in "Modal" context.
  */
 
 if ( empty( $is_modal ) ) {

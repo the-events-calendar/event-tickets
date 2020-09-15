@@ -1067,6 +1067,8 @@ class Tribe__Tickets__Tickets_View {
 			'is_mini'                     => null,
 			'is_modal'                    => null,
 			'submit_button_name'          => $submit_button_name,
+			'cart_url'                    => method_exists( $provider, 'get_cart_url' ) ? $provider->get_cart_url() : '',
+			'checkout_url'                => method_exists( $provider, 'get_checkout_url' ) ? $provider->get_checkout_url() : '',
 		];
 
 		// Add the rendering attributes into global context.

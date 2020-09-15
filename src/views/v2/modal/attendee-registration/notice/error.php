@@ -12,8 +12,6 @@
  * @since TBD
  *
  * @version TBD
- *
- * @var bool $has_tpp
  */
 
 $notice_classes = [

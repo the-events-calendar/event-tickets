@@ -27,11 +27,6 @@ if ( ! empty( $is_mini ) ) {
 $tickets_handler = tribe( 'tickets.handler' );
 $available       = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
 
-$context = [
-	'ticket' => $ticket,
-	'key'    => $this->get( 'key' ),
-];
-
 $classes = [
 	'tribe-common-h4',
 	'tribe-tickets__item__quantity',
@@ -39,10 +34,10 @@ $classes = [
 ?>
 <div <?php tribe_classes( $classes ); ?>>
 	<?php if ( 0 !== $available ) : ?>
-		<?php $this->template( 'v2/tickets/item/quantity/remove', $context ); ?>
-		<?php $this->template( 'v2/tickets/item/quantity/number', $context ); ?>
-		<?php $this->template( 'v2/tickets/item/quantity/add', $context ); ?>
+		<?php $this->template( 'v2/tickets/item/quantity/remove', [ 'ticket' => $ticket, 'key' => $key ] ); ?>
+		<?php $this->template( 'v2/tickets/item/quantity/number', [ 'ticket' => $ticket, 'key' => $key ] ); ?>
+		<?php $this->template( 'v2/tickets/item/quantity/add', [ 'ticket' => $ticket, 'key' => $key ] ); ?>
 	<?php else : ?>
-		<?php $this->template( 'v2/tickets/item/quantity/unavailable', $context ); ?>
+		<?php $this->template( 'v2/tickets/item/quantity/unavailable', [ 'ticket' => $ticket, 'key' => $key ] ); ?>
 	<?php endif; ?>
 </div>

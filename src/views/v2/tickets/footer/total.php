@@ -14,13 +14,10 @@
  *
  * @version TBD
  *
- * @var WP_Post|int             $post_id     The post object or ID.
- * @var Tribe__Tickets__Tickets $provider    The tickets provider class.
- * @var string                  $provider_id The tickets provider class name.
+ * @var WP_Post|int                        $post_id     The post object or ID.
+ * @var string                             $provider_id The tickets provider class name.
+ * @var Tribe__Tickets__Commerce__Currency $currency
  */
-
-/** @var Tribe__Tickets__Commerce__Currency $tribe_commerce_currency */
-$tribe_commerce_currency = tribe( 'tickets.commerce.currency' );
 
 ?>
 <div class="tribe-common-b2 tribe-tickets__footer__total">
@@ -28,6 +25,6 @@ $tribe_commerce_currency = tribe( 'tickets.commerce.currency' );
 		<?php echo esc_html_x( 'Total:', 'Total selected tickets price.', 'event-tickets' ); ?>
 	</span>
 	<span class="tribe-tickets__footer__total__wrap">
-		<?php echo $tribe_commerce_currency->get_formatted_currency_with_symbol( 0, $post_id, $provider_id ); ?>
+		<?php echo $currency->get_formatted_currency_with_symbol( 0, $post_id, $provider_id ); ?>
 	</span>
 </div>

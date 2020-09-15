@@ -13,12 +13,11 @@
  * @since TBD
  * @version TBD
  *
- * @var Tribe__Tickets__Tickets $provider    The tickets provider class.
- * @var string                  $provider_id The tickets provider class name.
+ * @var string                  $cart_url     The provider cart URL.
+ * @var string                  $checkout_url The provider checkout URL.
+ * @var bool                    $is_mini      True if in "mini cart" context.
  */
 
-$cart_url     = method_exists( $provider, 'get_cart_url' ) ? $provider->get_cart_url() : '';
-$checkout_url = method_exists( $provider, 'get_checkout_url' ) ? $provider->get_checkout_url() : '';
 
 if (
 	! $is_mini
