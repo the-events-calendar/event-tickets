@@ -28,8 +28,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	function modal_cart_template( $content, $template_obj ) {
 		// If they're not using the new views, include v1 and bail.
 		if ( ! tribe_tickets_new_views_is_enabled() ) {
-			$this->modal_cart_template_v1( $content, $template_obj );
-			return;
+			return $this->modal_cart_template_v1( $content, $template_obj );
 		}
 
 		$post_id             = $template_obj->get( 'post_id' );
