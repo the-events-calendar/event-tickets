@@ -40,6 +40,21 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-form-style',
+			'forms.css',
+			[],
+			null,
+			[
+				'groups' => [
+					'tribe-tickets-block-assets',
+					'tribe-tickets-rsvp',
+					'tribe-tickets-registration-page',
+				],
+			]
+		);
+
 		// Tickets registration page styles.
 		tribe_asset(
 			$tickets_main,
