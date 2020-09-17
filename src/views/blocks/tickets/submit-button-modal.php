@@ -15,9 +15,9 @@
  * @since 4.11.3 Allow filtering of the button classes.
  * @since 4.11.3 Added button ID for better JS targeting.
  * @since 4.12.1 Add support for custom label for "Tickets" plural.
- * @since TBD Removed duplicate button ID from `$args`.
+ * @since 5.0.1 Removed duplicate button ID from `$args`.
  *
- * @version TBD
+ * @version 5.0.1
  */
 
 /* translators: %1$s: Event name, %2$s: Tickets label */

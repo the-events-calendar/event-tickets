@@ -7,9 +7,9 @@
  *
  * @since 4.11.0
  * @since 4.12.1 Make sure label/input IDs don't conflict with other ticket fields.
- * @since TBD Make sure we have the required label.
+ * @since 5.0.1 Make sure we have the required label.
  *
- * @version TBD
+ * @version 5.0.1
  *
  * @see Tribe__Tickets_Plus__Meta__Field__Checkbox
  */

@@ -41,7 +41,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		/**
 		 * Whether we should display the "Attendees for: %s [#%d]" view title.
 		 *
-		 * @since TBD
+		 * @since 5.0.1
 		 *
 		 * @param boolean $show_title Whether to show the view title.
 		 * @param int     $post_id    The post ID.

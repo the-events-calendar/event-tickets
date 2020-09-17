@@ -15,7 +15,7 @@ $singular = $pto->labels->singular_name;
  *
  * @since  4.6.2
  * @since  4.12.1 Append the post ID to the Attendees page title and each Ticket's name.
- * @since  TBD Change default to the result of `is_admin()`.
+ * @since  5.0.1 Change default to the result of `is_admin()`.
  *
  * @param boolean                   $show_title Whether to show the title.
  * @param Tribe__Tickets__Attendees $attendees  The attendees object.
