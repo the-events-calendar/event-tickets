@@ -3,7 +3,7 @@
 Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
-Tested up to: 5.5
+Tested up to: 5.5.1
 Stable tag: 5.0.1
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -118,7 +118,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [5.0.1] TBD =
+= [5.0.1] 2020-09-21 =
 
 * Fix - Ensure the Attendees List title for the Attendees report is clean and not replicated on the page for the admin area as well as frontend. [ET-912]
 * Fix - Use `the_title` filter when getting list of post titles for the Move Ticket workflow. [ET-909]
