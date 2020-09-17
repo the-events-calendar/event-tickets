@@ -131,6 +131,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Ensure we print the required label for the ARI checkboxes. [ETP-361]
 * Fix - Prevent PHP errors in the `tickets/view-link.php` template in automated testing suite. [ET-910]
 * Tweak - We have added context to some of the strings and labels of the new RSVP block to allow more granular translation. [ET-903]
+* Language - 4 new strings added, 53 updated, 0 fuzzied, and 3 obsoleted
 
 = [5.0.0.1] 2020-08-31 =
 
