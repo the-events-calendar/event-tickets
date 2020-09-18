@@ -35,6 +35,7 @@ if ( ! $is_sale_future && ( ! $provider || ! $tickets ) ) {
 $classes = [
 	'tribe-common',
 	'event-tickets',
+	'tribe-tickets__tickets-wrapper',
 ];
 
 ?>
@@ -49,6 +50,7 @@ $classes = [
 		data-provider="<?php echo esc_attr( $provider->class_name ); ?>"
 		autocomplete="off"
 		data-provider-id="<?php echo esc_attr( $provider->orm_provider ); ?>"
+		data-post-id="<?php echo esc_attr( $post_id ); ?>"
 		novalidate
 	>
 
