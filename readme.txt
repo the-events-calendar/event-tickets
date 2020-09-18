@@ -131,6 +131,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Ensure we print the required label for the ARI checkboxes. [ETP-361]
 * Fix - Prevent PHP errors in the `tickets/view-link.php` template in automated testing suite. [ET-910]
 * Tweak - We have added context to some of the strings and labels of the new RSVP block to allow more granular translation. [ET-903]
+* Tweak - Added filters: `tribe_tickets_attendees_show_view_title`
+* Tweak - Changed views: `blocks/rsvp/status/going`, `blocks/rsvp/status/not-going`, `blocks/tickets/submit-button-modal`, `registration-js/attendees/fields/checkbox`, `tickets/view-link`, `v2/rsvp`, `v2/rsvp/actions/rsvp/going`, `v2/rsvp/actions/rsvp/not-going`, `v2/rsvp/details/attendance`
 * Language - 4 new strings added, 53 updated, 0 fuzzied, and 3 obsoleted
 
 = [5.0.0.1] 2020-08-31 =
