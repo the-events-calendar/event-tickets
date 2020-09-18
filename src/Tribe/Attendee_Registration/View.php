@@ -143,7 +143,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		// One provider per instance.
 		$currency        = tribe( 'tickets.commerce.currency' );
-		$currency_config = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $default_provider, null );
+		$currency_config = $currency->get_currency_config_for_provider( $default_provider, null );
 
 		/**
 		 *  Set all the template variables
