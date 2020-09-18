@@ -167,13 +167,14 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 				$event_keys   = array_keys( $events );
 				$event_key    = array_shift( $event_keys );
 				$provider_obj = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $event_key );
-				$provider     = $provider_obj->attendee_object;
 			} elseif ( is_string( $provider ) ) {
 				$provider_obj = $this->get_cart_provider( $provider );
-				$provider     = $provider_obj->attendee_object;
 			} elseif ( $provider instanceof Tribe__Tickets__Tickets ) {
 				$provider_obj = $provider;
-				$provider     = $provider_obj->attendee_object;
+			}
+
+			if ( $provider_obj instanceof Tribe__Tickets__Tickets ) {
+				$provider = $provider_obj->attendee_object;
 			}
 
 			$args['provider'] = $provider;
