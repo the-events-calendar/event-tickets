@@ -94,7 +94,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	}
 
 	/**
-	 * Convenience wrapper for tribe( 'tickets.attendee_registration' )->is_on_page()
+	 * Convenience wrapper for tribe( 'tickets.attendee_registration' )->is_on_page() usage.
 	 *
 	 * @since 4.10.2
 	 *
@@ -168,7 +168,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @since 4.11.3
 	 *
 	 * @param boolean $enqueue A boolean containing if we should enqueue.
-	 * @return boolean
+	 * @return boolean Whether we should enqueue frontend styles and scripts.
 	 */
 	public function should_enqueue_frontend( $enqueue ) {
 		if ( $this->is_on_ar_page() ) {
@@ -437,7 +437,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @param string $link The edit post link.
 	 *
-	 * @return mixed
+	 * @return string The edit post link or blank if on the AR page.
 	 */
 	public function set_edit_post_link( $link ) {
 
