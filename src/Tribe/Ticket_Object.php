@@ -1090,6 +1090,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function has_meta_enabled() {
 			$has_meta = get_post_meta( $this->ID, '_tribe_tickets_meta_enabled', true );
+			$has_meta = ! empty( $has_meta ) && tribe_is_truthy( $has_meta );
 
 			/**
 			 * Filters if the ticket has meta or not.
@@ -1097,9 +1098,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			 * @param bool $has_meta Wether if it has meta.
 			 * @param int  $ticket_id The ticket ID.
 			 */
-			$has_meta = apply_filters( 'tribe_tickets_has_meta_enabled', $has_meta, $this->ID );
-
-			return tribe_is_truthy( $has_meta );
+			return (boolean) apply_filters( 'tribe_tickets_has_meta_enabled', $has_meta, $this->ID );
 		}
 
 	}
