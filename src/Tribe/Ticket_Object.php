@@ -1086,7 +1086,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @return bool
+		 * @return bool Whether the ticket has meta enabled.
 		 */
 		public function has_meta_enabled() {
 			$has_meta = get_post_meta( $this->ID, '_tribe_tickets_meta_enabled', true );
