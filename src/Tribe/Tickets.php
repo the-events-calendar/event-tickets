@@ -1890,10 +1890,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			wp_enqueue_script( 'wp-util-not-in-footer' );
 
+			// Check wether we use v1 or v2. We need to update this when we deprecate tickets v1.
+			$tickets_js = tribe_tickets_new_views_is_enabled() ? 'v2/tickets-block.js' : 'tickets-block.js';
+
 			tribe_asset(
 				$plugin,
 				'tribe-tickets-block',
-				'tickets-block.js',
+				$tickets_js,
 				[
 					'jquery',
 					'tribe-common',

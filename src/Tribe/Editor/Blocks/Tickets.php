@@ -101,16 +101,21 @@ extends Tribe__Editor__Blocks__Abstract {
 			'jquery',
 			'wp-util-not-in-footer',
 			'tribe-common',
+			'tribe-tickets-modal', // @todo: Include only when ET+ is active and modal is there.
+			'tribe-tickets-data', // @todo: check when is that we want to include this.
 		];
 
 		if ( version_compare( $wp_version, '5.0', '>=' ) ) {
 			$tickets_block_dependencies[] = 'wp-i18n';
 		}
 
+		// Check wether we use v1 or v2. We need to update this when we deprecate tickets v1.
+		$tickets_js = tribe_tickets_new_views_is_enabled() ? 'v2/tickets-block.js' : 'tickets-block.js';
+
 		tribe_asset(
 			$plugin,
-			'tribe-tickets-gutenberg-tickets',
-			'tickets-block.js',
+			'tribe-tickets-block',
+			$tickets_js,
 			$tickets_block_dependencies,
 			null,
 			[
@@ -142,6 +147,43 @@ extends Tribe__Editor__Blocks__Abstract {
 				],
 			]
 		);
+
+		if ( tribe_tickets_new_views_is_enabled() ) {
+			// @todo: Include only when ET+ is active and modal is there.
+			tribe_asset(
+				$plugin,
+				'tribe-tickets-modal',
+				'v2/tickets-modal.js',
+				[
+					'jquery',
+					'tribe-common',
+					//'tribe-tickets-block',
+				],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-block-assets',
+					],
+				]
+			);
+
+			// @todo: Include only when ET+ is active and modal is there.
+			tribe_asset(
+				$plugin,
+				'tribe-tickets-data',
+				'v2/tickets-data.js',
+				[
+					'jquery',
+					'tribe-common',
+				],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-block-assets',
+					],
+				]
+			);
+		}
 
 		Tribe__Tickets__Tickets::$frontend_script_enqueued = true;
 	}

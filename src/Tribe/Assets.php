@@ -55,6 +55,30 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
+		if (
+			tribe_tickets_new_views_is_enabled()
+			|| tribe_tickets_rsvp_new_views_is_enabled()
+		) {
+			// Tickets loader library JS.
+			tribe_asset(
+				$tickets_main,
+				'tribe-tickets-loader',
+				'v2/tickets-loader.js',
+				[
+					'jquery',
+					'tribe-common',
+				],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-block-assets',
+						'tribe-tickets-rsvp',
+						'tribe-tickets-registration-page',
+					],
+				]
+			);
+		}
+
 		// Tickets registration page styles.
 		tribe_asset(
 			$tickets_main,
