@@ -7,7 +7,7 @@
 class Tribe__Tickets__Attendee_Registration__Modal {
 
 	/**
-	 * Setup Modal Cart Template
+	 * Setup Modal Cart Template.
 	 *
 	 * @since 4.11.0
 	 */
@@ -16,7 +16,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	}
 
 	/**
-	 * Add Cart Template for Modal
+	 * Return Cart Template for Modal.
 	 *
 	 * @since 4.11.0
 	 *
@@ -78,7 +78,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	}
 
 	/**
-	 * Add AR Template to Modal
+	 * Render AR Template to Modal.
 	 *
 	 * @since 4.11.0
 	 *
@@ -89,6 +89,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 		// If they're not using the new views, include v1 and bail.
 		if ( ! tribe_tickets_new_views_is_enabled() ) {
 			$this->append_modal_ar_template_v1( $unused_content, $template_obj );
+
 			return;
 		}
 
@@ -118,17 +119,11 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 
 		$template_obj->add_template_globals( $args );
 
-		ob_start();
-
 		$template_obj->template( 'v2/modal/attendee-registration' );
-
-		$content = ob_get_clean();
-
-		echo $content;
 	}
 
 	/**
-	 * Add Footer Template to Modal
+	 * Add Footer Template to Modal content.
 	 *
 	 * @since 4.11.0
 	 *
@@ -167,6 +162,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 		include $file;
 
 		$content .= ob_get_clean();
+
 		return $content;
 	}
 
@@ -205,7 +201,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	}
 
 	/**
-	 * Add Cart Template for Modal (V1)
+	 * Return Cart Template for Modal (V1).
 	 * Note: This will be deprecated when we remove support for V1 views.
 	 * Make it private so we can erase it later.
 	 *
@@ -251,7 +247,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	}
 
 	/**
-	 * Add AR Template to Modal (V1)
+	 * Render AR Template to Modal (V1).
 	 * Note: This will be deprecated when we remove support for V1 views.
 	 * Make it private so we can erase it later.
 	 *
@@ -261,11 +257,11 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	 * @param Tribe__Tickets__Editor__Template $template_obj the Template object.
 	 */
 	private function append_modal_ar_template_v1( $unused_content, $template_obj ) {
-		$template = 'modal/registration-js.php';
-		$file     = $this->locate_template( $template );
-
+		$template    = 'modal/registration-js.php';
+		$file        = $this->locate_template( $template );
 		$obj_tickets = $template_obj->get( 'tickets', [] );
-		$tickets = [];
+		$tickets     = [];
+
 		foreach ( $obj_tickets as $ticket ) {
 			$ticket_data = [
 				'id'       => $ticket->ID,
@@ -276,12 +272,6 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 			$tickets[] = $ticket_data;
 		}
 
-		ob_start();
-
 		include $file;
-
-		$content = ob_get_clean();
-
-		echo $content;
 	}
 }
