@@ -210,7 +210,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	 * @param string                           $content a string of default content.
 	 * @param Tribe__Tickets__Editor__Template $template_obj the Template object.
 	 *
-	 * @return string
+	 * @return string The cart template HTML.
 	 */
 	private function modal_cart_template_v1( $content, $template_obj ) {
 		$template = 'modal/cart.php';
