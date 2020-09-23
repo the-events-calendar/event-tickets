@@ -1,6 +1,6 @@
 <?php
 /**
- * This template renders the attendee registration back to cart button
+ * This template renders the Attendee Registration back to cart button.
  *
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/attendee-registration/button/back-to-cart.php

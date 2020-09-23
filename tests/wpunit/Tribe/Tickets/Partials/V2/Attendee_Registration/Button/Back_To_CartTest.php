@@ -15,6 +15,8 @@ class Back_To_CartTest extends WPTestCase {
 
 	protected $partial_path = 'v2/attendee-registration/button/back-to-cart';
 
+	private $base_url = 'http://wordpress.test/';
+
 	/**
 	 * @test
 	 */
@@ -24,12 +26,12 @@ class Back_To_CartTest extends WPTestCase {
 
 		$args = [
 			'cart_url'     => '',
-			'checkout_url' => 'https://wordpress.test/checkout/?anything',
+			'checkout_url' => $this->base_url . 'checkout/?anything',
 			'provider'     => 'any-provider',
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), 'https://wordpress.test' );
+		$driver = new WPHtmlOutputDriver( home_url(), $this->base_url );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -42,13 +44,13 @@ class Back_To_CartTest extends WPTestCase {
 		$template = tribe( 'tickets.editor.template' );
 
 		$args = [
-			'cart_url'     => 'https://wordpress.test/checkout/?anything',
-			'checkout_url' => 'https://wordpress.test/checkout/?anything',
+			'cart_url'     => $this->base_url . 'checkout/?anything',
+			'checkout_url' => $this->base_url . 'checkout/?anything',
 			'provider'     => 'any-provider',
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), 'https://wordpress.test' );
+		$driver = new WPHtmlOutputDriver( home_url(), $this->base_url );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -61,13 +63,13 @@ class Back_To_CartTest extends WPTestCase {
 		$template = tribe( 'tickets.editor.template' );
 
 		$args = [
-			'cart_url'     => 'https://wordpress.test/cart/?anything',
-			'checkout_url' => 'https://wordpress.test/checkout/?something-else',
+			'cart_url'     => $this->base_url . 'cart/?anything',
+			'checkout_url' => $this->base_url . 'checkout/?something-else',
 			'provider'     => 'any-provider',
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), 'https://wordpress.test' );
+		$driver = new WPHtmlOutputDriver( home_url(), $this->base_url );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
