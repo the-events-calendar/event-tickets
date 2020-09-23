@@ -10,6 +10,11 @@
  * @since   TBD
  *
  * @version TBD
+ *
+ * @var Tribe__Tickets__Editor__Template $this         The template class.
+ * @var string                           $provider     The commerce provider.
+ * @var string                           $cart_url     The cart URL.
+ * @var string                           $checkout_url The checkout URL.
  */
 
 ?>
