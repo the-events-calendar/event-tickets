@@ -7,15 +7,16 @@
  *
  * See more documentation about our views templating system.
  *
- * @link http://m.tri.be/1amp
+ * @link    http://m.tri.be/1amp
  *
- * @since TBD
+ * @since   TBD
  *
  * @version TBD
  *
- * @var string $provider     The commerce provider.
- * @var string $cart_url     The cart URL.
- * @var string $checkout_url The checkout URL.
+ * @var Tribe__Tickets__Editor__Template $this         The template class.
+ * @var string                           $provider     The commerce provider.
+ * @var string                           $cart_url     The cart URL.
+ * @var string                           $checkout_url The checkout URL.
  */
 
 // Bail if the "Cart URL" is empty.
