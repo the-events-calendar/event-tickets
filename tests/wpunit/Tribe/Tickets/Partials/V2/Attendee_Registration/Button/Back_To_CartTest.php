@@ -5,13 +5,11 @@ namespace Tribe\Tickets\Partials\V2\Attendee_Registration\Button;
 use Codeception\TestCase\WPTestCase;
 use Spatie\Snapshots\MatchesSnapshots;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
-use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
 use Tribe__Tickets__Editor__Template;
 
 class Back_To_CartTest extends WPTestCase {
 
 	use MatchesSnapshots;
-	use With_Post_Remapping;
 
 	protected $partial_path = 'v2/attendee-registration/button/back-to-cart';
 
