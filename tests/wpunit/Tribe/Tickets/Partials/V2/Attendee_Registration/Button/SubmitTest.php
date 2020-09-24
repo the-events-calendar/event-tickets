@@ -2,16 +2,18 @@
 
 namespace Tribe\Tickets\Partials\V2\Attendee_Registration\Button;
 
-use Codeception\TestCase\WPTestCase;
-use Spatie\Snapshots\MatchesSnapshots;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
+use Tribe\Tickets\Test\Partials\V2TestCase;
 use Tribe__Tickets__Editor__Template;
 
-class SubmitTest extends WPTestCase {
+/**
+ * Class SubmitTest.
+ * @package Tribe\Tickets\Partials\V2\Attendee_Registration\Button
+ */
+class SubmitTest extends V2TestCase {
 
-	use MatchesSnapshots;
-
-	protected $partial_path = 'v2/attendee-registration/button/submit';
+	/** @var string Relative path to V2 template file. */
+	private $partial_path = 'v2/attendee-registration/button/submit';
 
 	/**
 	 * @test

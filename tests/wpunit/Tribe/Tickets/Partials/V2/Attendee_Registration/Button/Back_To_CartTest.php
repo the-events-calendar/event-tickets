@@ -2,18 +2,18 @@
 
 namespace Tribe\Tickets\Partials\V2\Attendee_Registration\Button;
 
-use Codeception\TestCase\WPTestCase;
-use Spatie\Snapshots\MatchesSnapshots;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
+use Tribe\Tickets\Test\Partials\V2TestCase;
 use Tribe__Tickets__Editor__Template;
 
-class Back_To_CartTest extends WPTestCase {
+/**
+ * Class Back_To_CartTest.
+ * @package Tribe\Tickets\Partials\V2\Attendee_Registration\Button
+ */
+class Back_To_CartTest extends V2TestCase {
 
-	use MatchesSnapshots;
-
-	protected $partial_path = 'v2/attendee-registration/button/back-to-cart';
-
-	private $base_url = 'http://wordpress.test/';
+	/** @var string Relative path to V2 template file. */
+	private $partial_path = 'v2/attendee-registration/button/back-to-cart';
 
 	/**
 	 * @test
