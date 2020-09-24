@@ -23,10 +23,10 @@
  * @var boolean                            $is_mini             Context of template
  */
 
-// Bail if there are no tickets or we're not in mini context.
+// Bail if there are no tickets and we're not in mini context.
 if (
 	! $is_mini
-	|| empty( $tickets_on_sale )
+	&& empty( $tickets_on_sale )
 ) {
 	return;
 }
