@@ -44,8 +44,8 @@ class FooterTest extends WPTestCase {
 			'is_mini'                     => false,
 			'is_modal'                    => false,
 			'submit_button_name'          => 'cart-button',
-			'cart_url'                    => $provider->get_cart_url(),
-			'checkout_url'                => $provider->get_checkout_url(),
+			'cart_url'                    => 'http://wordpress.test/cart/?foo',
+			'checkout_url'                => 'http://wordpress.test/checkout/?bar',
 		];
 	}
 
@@ -82,6 +82,9 @@ class FooterTest extends WPTestCase {
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
 
+		// Make sure we have the Return to Cart link shown.
+		$this->assertContains( 'tribe-tickets__footer__back-link', $html );
+
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
@@ -99,6 +102,27 @@ class FooterTest extends WPTestCase {
 
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
+
+		$this->assertMatchesSnapshot( $html, $driver );
+	}
+
+	/**
+	 * @test
+	 */
+	public function test_should_render_ar_page_mini_cart_footer_with_cart_url_if_is_mini_and_has_ticket_on_sale() {
+		$template = tribe( 'tickets.editor.template' );
+
+		$override = [
+			'is_mini'      => true,
+		];
+
+		$args = array_merge( $this->get_default_args(), $override );
+
+		$html   = $template->template( $this->partial_path, $args, false );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
+
+		// Make sure we have the Return to Cart link shown.
+		$this->assertContains( 'tribe-tickets__footer__back-link', $html );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
