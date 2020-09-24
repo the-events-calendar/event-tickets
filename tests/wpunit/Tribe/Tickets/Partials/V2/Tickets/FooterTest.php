@@ -56,9 +56,46 @@ class FooterTest extends WPTestCase {
 		$template = tribe( 'tickets.editor.template' );
 
 		$args = [
-			'is_mini' => null,
+			'is_mini' => false,
 			'tickets_on_sale' => [],
 		];
+
+		$html   = $template->template( $this->partial_path, $args, false );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
+
+		$this->assertMatchesSnapshot( $html, $driver );
+	}
+
+	/**
+	 * @test
+	 */
+	public function test_should_render_ar_page_mini_cart_footer_if_is_mini_and_empty_ticket_on_sale() {
+		$template = tribe( 'tickets.editor.template' );
+
+		$override = [
+			'is_mini'         => true,
+			'tickets_on_sale' => [],
+		];
+
+		$args = array_merge( $this->get_default_args(), $override );
+
+		$html   = $template->template( $this->partial_path, $args, false );
+		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
+
+		$this->assertMatchesSnapshot( $html, $driver );
+	}
+
+	/**
+	 * @test
+	 */
+	public function test_should_render_ticket_form_footer_if_not_is_mini_and_has_ticket_on_sale() {
+		$template = tribe( 'tickets.editor.template' );
+
+		$override = [
+			'is_mini'         => false,
+		];
+
+		$args = array_merge( $this->get_default_args(), $override );
 
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
