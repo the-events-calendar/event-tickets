@@ -72,6 +72,7 @@ $classes = [
 
 	</form>
 
-	<?php $this->template( 'v2/modal/target' ); ?>
+	// @todo Convert this into an action.
+	<?php // $this->template( 'v2/modal/target' ); ?>
 
 </div>

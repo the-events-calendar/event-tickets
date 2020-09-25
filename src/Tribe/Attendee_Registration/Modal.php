@@ -12,6 +12,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	 * @since 4.11.0
 	 */
 	public function hook() {
+		// @todo Add hook for this filter on ET+ so it can render if v2.
 		add_filter( 'tribe_events_tickets_attendee_registration_modal_content', [ $this, 'modal_cart_template' ], 10, 2 );
 	}
 
@@ -31,6 +32,9 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 			return $this->modal_cart_template_v1( $content, $template_obj );
 		}
 
+		return $content;
+
+		// @todo Bring this code over into ET+ and call the template that was also moved there.
 		$post_id             = $template_obj->get( 'post_id' );
 		$tickets             = $template_obj->get( 'tickets', [] );
 		$provider            = $template_obj->get( 'provider' );
@@ -92,6 +96,10 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 
 			return;
 		}
+
+		return;
+
+		// @todo Bring this code over into ET+ and call the template that was also moved there.
 
 		$obj_tickets  = $template_obj->get( 'tickets', [] );
 		$tickets_data = [];
