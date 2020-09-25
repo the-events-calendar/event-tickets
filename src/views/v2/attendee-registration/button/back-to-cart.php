@@ -1,21 +1,20 @@
 <?php
 /**
- * This template renders the attendee registration back to cart button
+ * This template renders the Attendee Registration back to cart button.
  *
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/attendee-registration/button/back-to-cart.php
  *
- * See more documentation about our views templating system.
+ * @link    http://m.tri.be/1amp See more documentation about our views templating system.
  *
- * @link http://m.tri.be/1amp
- *
- * @since TBD
+ * @since   TBD
  *
  * @version TBD
  *
- * @var string $provider     The commerce provider.
- * @var string $cart_url     The cart URL.
- * @var string $checkout_url The checkout URL.
+ * @var Tribe__Tickets__Editor__Template $this         The template class.
+ * @var string                           $provider     The commerce provider.
+ * @var string                           $cart_url     The cart URL.
+ * @var string                           $checkout_url The checkout URL.
  */
 
 // Bail if the "Cart URL" is empty.
