@@ -1,18 +1,20 @@
 <?php
 /**
- * Block: Tickets
- * Registration Attendee Submit
+ * This template renders the Attendee Registration submit button.
  *
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/attendee-registration/button/submit.php
  *
- * See more documentation about our views templating system.
- *
- * @link http://m.tri.be/1amp
+ * @link    http://m.tri.be/1amp See more documentation about our views templating system.
  *
  * @since   TBD
  *
  * @version TBD
+ *
+ * @var Tribe__Tickets__Editor__Template $this         The template class.
+ * @var string                           $provider     The commerce provider.
+ * @var string                           $cart_url     The cart URL.
+ * @var string                           $checkout_url The checkout URL.
  */
 
 ?>
