@@ -13,8 +13,9 @@
  * @since TBD
  * @version TBD
  *
- * @var Tribe__Tickets__Ticket_Object $ticket
- * @var bool                          $is_mini  True if it's in mini cart context.
+ * @var Tribe__Tickets__Ticket_Object $ticket Ticket Object.
+ * @var WP_Post|int $post_id                  The post object or ID.
+ * @var bool $is_mini                         True if it's in mini cart context.
  */
 
 $no_description = ! $ticket->show_description() || empty( $ticket->description ) || $is_mini;

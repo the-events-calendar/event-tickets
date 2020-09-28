@@ -15,7 +15,8 @@
  * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template $this
- * @var Tribe__Tickets__Ticket_Object    $ticket
+ * @var Tribe__Tickets__Ticket_Object $ticket
+ * @var int $key Ticket Item index
  */
 
 $has_suffix = ! empty( $ticket->price_suffix );

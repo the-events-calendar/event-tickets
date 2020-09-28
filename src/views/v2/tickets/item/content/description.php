@@ -14,7 +14,7 @@
  *
  * @version TBD
  *
- * @var Tribe__Tickets__Ticket_Object $ticket
+ * @var Tribe__Tickets__Ticket_Object $ticket 	Ticket Object
  * @var bool                          $is_mini  True if it's in mini cart context.
  * @var bool                          $is_modal True if it's in modal context.
  */
@@ -38,5 +38,5 @@ $ticket_details_id .= '--' . $ticket->ID;
 	id="<?php echo esc_attr( $ticket_details_id ); ?>"
 	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__item__details__content"
 >
-	<?php echo $ticket->description; ?>
+	<?php echo esc_html_x( $ticket->description, 'Ticket Description in Ticket Form', 'event-tickets' ); ?>
 </div>

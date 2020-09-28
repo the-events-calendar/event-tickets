@@ -13,6 +13,8 @@
  * @since TBD
  * @version TBD
  *
+ * @var bool $has_tickets_on_sale True if the event has any tickets on sale.
+ * @var bool $is_sale_past        True if tickets are past sale.*
  */
 
 // Bail if there are tickets on sale.

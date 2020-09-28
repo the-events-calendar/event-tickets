@@ -15,6 +15,7 @@
  * @version TBD
  *
  * @var Tribe__Tickets__Ticket_Object      $ticket
+ * @var WP_Post|int                        $post_id     The post object or ID.
  * @var Tribe__Tickets__Tickets            $provider    The tickets provider class.
  * @var string                             $provider_id The tickets provider class name.
  * @var Tribe__Tickets__Commerce__Currency $currency

@@ -15,7 +15,8 @@
  * @version TBD
  *
  * @var Tribe__Tickets__Ticket_Object $ticket The ticket object.
- * @var bool                          $is_mini   If the template is in "mini cart" context.
+ * @var bool $is_mini                         If the template is in "mini cart" context.
+ * @var int $key                              Ticket Item index
  */
 
 // Bail if it's "mini cart" context.

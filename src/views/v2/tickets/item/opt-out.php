@@ -14,8 +14,10 @@
  *
  * @version TBD
  *
- * @var bool $is_mini  True if it's in mini cart context.
- * @var bool $is_modal True if it's in modal context.
+ * @var bool $is_mini        True if it's in mini cart context.
+ * @var bool $is_modal       True if it's in modal context.
+ * @var WP_Post|int $post_id The post object or ID.
+ * @var Tribe__Tickets__Ticket_Object $ticket
  */
 
  // Bail if it's in "mini cart" or "modal" context.
@@ -70,6 +72,6 @@ $field_id = implode( '-', $field_id );
 			type="checkbox"
 			<?php checked( true ); ?>
 		/>
-		<?php echo $privacy->get_opt_out_text(); ?>
+		<?php echo esc_html( $privacy->get_opt_out_text() ); ?>
 	</label>
 </div>

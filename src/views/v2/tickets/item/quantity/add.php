@@ -14,8 +14,8 @@
  *
  * @version TBD
  *
- * @var $this Tribe__Tickets__Editor__Template
- * @var Tribe__Tickets__Ticket_Object $ticket The ticket object.
+ * @var	Tribe__Tickets__Editor__Template	$this Template object.
+ * @var	Tribe__Tickets__Ticket_Object		$ticket The ticket object.
  */
 
 $button_title = sprintf(

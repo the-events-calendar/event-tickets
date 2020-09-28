@@ -13,6 +13,8 @@
  * @since TBD
  *
  * @version TBD
+ *
+ * @var bool $is_sale_past True if tickets are past sale.
  */
 
 

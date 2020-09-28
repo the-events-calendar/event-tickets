@@ -12,6 +12,9 @@
  *
  * @since TBD
  * @version TBD
+ *
+ * @var Tribe__Tickets__Ticket_Object   $ticket Ticket Object.
+ * @var int                             $key Ticket Item index
  */
 
 if ( empty( $ticket ) ) {
