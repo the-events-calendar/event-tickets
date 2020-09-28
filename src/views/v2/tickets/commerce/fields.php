@@ -17,7 +17,7 @@
  * @var string                  $provider_id The tickets provider class name.
  */
 
-$this->template( 'v2/tickets/commerce/fields/' . $provider_id );
+$this->template( 'v2/tickets/commerce/fields/' . $provider->orm_provider );
 
 ?>
 <input name="provider" value="<?php echo esc_attr( $provider->class_name ); ?>" class="tribe-tickets-provider" type="hidden">
