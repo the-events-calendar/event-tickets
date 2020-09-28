@@ -2,16 +2,11 @@
 
 namespace Tribe\Tickets\Partials\V2\Tickets;
 
-use Codeception\TestCase\WPTestCase;
-use Spatie\Snapshots\MatchesSnapshots;
-use tad\WP\Snapshots\WPHtmlOutputDriver;
-use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
+use Tribe\Tickets\Test\Partials\V2TestCase;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 
-class FooterTest extends WPTestCase {
+class FooterTest extends V2TestCase {
 
-	use MatchesSnapshots;
-	use With_Post_Remapping;
 	use PayPal_Ticket_Maker;
 
 	protected $partial_path = 'v2/tickets/footer';
@@ -61,9 +56,8 @@ class FooterTest extends WPTestCase {
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
 
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertMatchesSnapshot( $html );
 	}
 
 	/**
@@ -80,12 +74,11 @@ class FooterTest extends WPTestCase {
 		$args = array_merge( $this->get_default_args(), $override );
 
 		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
 
 		// Make sure we have the Return to Cart link shown.
 		$this->assertContains( 'tribe-tickets__footer__back-link', $html );
 
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertMatchesSnapshot( $html );
 	}
 
 	/**
@@ -99,11 +92,9 @@ class FooterTest extends WPTestCase {
 		];
 
 		$args = array_merge( $this->get_default_args(), $override );
+		$html = $template->template( $this->partial_path, $args, false );
 
-		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
-
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertMatchesSnapshot( $html );
 	}
 
 	/**
@@ -117,14 +108,12 @@ class FooterTest extends WPTestCase {
 		];
 
 		$args = array_merge( $this->get_default_args(), $override );
-
-		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
+		$html = $template->template( $this->partial_path, $args, false );
 
 		// Make sure we have the Return to Cart link shown.
 		$this->assertContains( 'tribe-tickets__footer__back-link', $html );
 
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertMatchesSnapshot( $html );
 	}
 
 }
