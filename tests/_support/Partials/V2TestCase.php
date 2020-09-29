@@ -20,7 +20,7 @@ abstract class V2TestCase extends WPTestCase {
 	use With_Post_Remapping;
 
 	/**
-	 * Get the HTML Driver.
+	 * Get an HTML Driver.
 	 *
 	 * @return WPHtmlOutputDriver
 	 */
@@ -29,9 +29,9 @@ abstract class V2TestCase extends WPTestCase {
 	}
 
 	/**
-	 * Override snapshot assertion with support for default driver
+	 * Override snapshot assertion with support for default driver.
 	 *
-	 * @param $html
+	 * @param string                  $html
 	 * @param WPHtmlOutputDriver|null $driver
 	 */
 	public function assertMatchesSnapshot( $html, WPHtmlOutputDriver $driver = null ) {
