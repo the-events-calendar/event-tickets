@@ -2,7 +2,6 @@
 
 namespace Tribe\Tickets\Partials\V2\Attendee_Registration\Button;
 
-use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Tickets\Test\Partials\V2TestCase;
 use Tribe__Tickets__Editor__Template;
 
@@ -28,10 +27,9 @@ class Back_To_CartTest extends V2TestCase {
 			'provider'     => 'any-provider',
 		];
 
-		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
+		$html = $template->template( $this->partial_path, $args, false );
 
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertMatchesSnapshot( $html );
 	}
 
 	/**
@@ -47,10 +45,9 @@ class Back_To_CartTest extends V2TestCase {
 			'provider'     => 'any-provider',
 		];
 
-		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
+		$html = $template->template( $this->partial_path, $args, false );
 
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertMatchesSnapshot( $html );
 	}
 
 	/**
@@ -66,9 +63,8 @@ class Back_To_CartTest extends V2TestCase {
 			'provider'     => 'any-provider',
 		];
 
-		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
+		$html = $template->template( $this->partial_path, $args, false );
 
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertMatchesSnapshot( $html );
 	}
 }
