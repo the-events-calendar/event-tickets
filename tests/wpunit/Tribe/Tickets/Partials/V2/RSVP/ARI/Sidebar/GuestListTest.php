@@ -43,7 +43,7 @@ class GuestListTest extends WPTestCase {
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$driver->setTolerableDifferences(
 			[
@@ -77,7 +77,7 @@ class GuestListTest extends WPTestCase {
 			]
 		);
 
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		// Note: The tolerable differences for prefix/postfix are not working as expected here, this is a hack.
 		$html = str_replace(

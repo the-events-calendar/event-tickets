@@ -54,8 +54,8 @@ CREATE TABLE `wp_options` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`) VALUES
-(1, 'siteurl', 'http://test.tribe.dev', 'yes'),
-(2, 'home', 'http://test.tribe.dev', 'yes'),
+(1, 'siteurl', TRIBE_TESTS_HOME_URL, 'yes'),
+(2, 'home', TRIBE_TESTS_HOME_URL, 'yes'),
 (3, 'blogname', 'Tribe Commerce', 'yes'),
 (4, 'blogdescription', 'Just another WordPress site', 'yes'),
 (5, 'users_can_register', '0', 'yes'),

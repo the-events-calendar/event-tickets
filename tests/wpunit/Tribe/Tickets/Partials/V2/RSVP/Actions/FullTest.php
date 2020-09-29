@@ -20,7 +20,7 @@ class FullTest extends WPTestCase {
 		$_GET['step'] = 'success';
 
 		$html   = $template->template( $this->partial_path, [], false );
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}

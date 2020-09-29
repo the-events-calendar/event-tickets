@@ -20,7 +20,7 @@ class TitleTest extends WPTestCase {
 		$_GET['step'] = 'going';
 
 		$html   = $template->template( $this->partial_path, [ 'going' => 'going' ], false );
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -33,7 +33,7 @@ class TitleTest extends WPTestCase {
 		$_GET['step'] = 'going';
 
 		$html   = $template->template( $this->partial_path, [ 'going' => 'not-going' ], false );
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}

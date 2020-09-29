@@ -138,7 +138,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		$html = $tickets_view->get_tickets_block( get_post( $post_id ) );
 
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$driver->setTolerableDifferences( [
 			$ticket_id,
@@ -163,7 +163,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 		] );
 
 		// Remove the URL + port so it doesn't conflict with URL tolerances.
-		$html = str_replace( 'http://localhost:8080', 'http://test.tribe.dev', $html );
+		$html = str_replace( 'http://localhost:8080', TRIBE_TESTS_HOME_URL, $html );
 
 		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );
@@ -200,7 +200,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		$html = $tickets_view->get_tickets_block( get_post( $post_id ) );
 
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$driver->setTolerableDifferences( [
 			$ticket_id,
@@ -223,7 +223,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 		] );
 
 		// Remove the URL + port so it doesn't conflict with URL tolerances.
-		$html = str_replace( 'http://localhost:8080', 'http://test.tribe.dev', $html );
+		$html = str_replace( 'http://localhost:8080', TRIBE_TESTS_HOME_URL, $html );
 
 		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );

@@ -24,7 +24,7 @@ class SuccessTest extends WPTestCase {
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -41,7 +41,7 @@ class SuccessTest extends WPTestCase {
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -53,7 +53,7 @@ class SuccessTest extends WPTestCase {
 		$template = tribe( 'tickets.editor.template' );
 
 		$html   = $template->template( $this->partial_path, [ 'step' => null ], false );
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
