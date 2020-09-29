@@ -12,7 +12,6 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	 * @since 4.11.0
 	 */
 	public function hook() {
-		// @todo Add hook for this filter on ET+ so it can render if v2.
 		add_filter( 'tribe_events_tickets_attendee_registration_modal_content', [ $this, 'modal_cart_template' ], 10, 2 );
 	}
 
@@ -112,8 +111,8 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 			];
 		}
 
-		/** @var Tribe__Tickets__Attendee_Registration__View $view */
-		$view = tribe( 'tickets.attendee_registration.view' );
+		/** @var \Tribe\Tickets\Plus\Attendee_Registration\View $view */
+		$view = tribe( 'tickets-plus.attendee-registration.view' );
 
 		$args = [
 			'tickets'        => $obj_tickets,

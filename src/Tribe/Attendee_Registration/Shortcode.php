@@ -52,14 +52,10 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 	 * @return string
 	 */
 	public function render() {
-		ob_start();
+		/** @var \Tribe\Tickets\Plus\Attendee_Registration\View $view */
+		$view = tribe( 'tickets-plus.attendee-registration.view' );
 
-		/** @var Tribe__Tickets__Attendee_Registration__View $view */
-		$view = tribe( 'tickets.attendee_registration.view' );
-
-		echo $view->display_attendee_registration_shortcode();
-
-		return ob_get_clean();
+		return $view->get_page_content();
 	}
 
 }

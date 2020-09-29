@@ -3269,6 +3269,32 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Get list of tickets in cart for a specific provider.
+		 *
+		 * @since TBD
+		 *
+		 * @param null|string|false $provider The provider slug or false if no provider, leave as null to detect from page.
+		 *
+		 * @return array List of tickets in cart for the provider.
+		 */
+		public static function get_tickets_in_cart_for_provider( $provider = null ) {
+			if ( null === $provider ) {
+				$provider = tribe_get_request_var( 'provider', false );
+			}
+
+			/**
+			 * Filter to add/remove tickets from the global cart.
+			 *
+			 * @since 4.9
+			 * @since 4.11.0 Added $provider to allow context of current provider.
+			 *
+			 * @param array        $tickets_in_cart The array containing the cart elements. Format array( 'ticket_id' => 'quantity' ).
+			 * @param string|false $provider        Current ticket provider or false if not set.
+			 */
+			return (array) apply_filters( 'tribe_tickets_tickets_in_cart', [], $provider );
+		}
+
+		/**
 		 * Localized messages for errors, etc in javascript. Added in assets() above.
 		 * Set up this way to amke it easier to add messages as needed.
 		 *
