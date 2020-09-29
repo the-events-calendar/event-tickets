@@ -1039,9 +1039,9 @@ class Tribe__Tickets__Tickets_View {
 		/**
 		 * Show original price on sale.
 		 *
-		 * @param bool Wether the original price should be shown on sale or not. Default is true.
+		 * @param bool Whether the original price should be shown on sale or not. Default is true.
 		 *
-		 * @return bool Wether the original price should be shown on sale or not.
+		 * @return bool Whether the original price should be shown on sale or not.
 		 */
 		$show_original_price_on_sale = apply_filters( 'tribe_tickets_show_original_price_on_sale', true );
 
