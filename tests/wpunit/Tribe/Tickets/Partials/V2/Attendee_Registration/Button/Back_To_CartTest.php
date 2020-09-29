@@ -24,12 +24,12 @@ class Back_To_CartTest extends V2TestCase {
 
 		$args = [
 			'cart_url'     => '',
-			'checkout_url' => $this->base_url . 'checkout/?anything',
+			'checkout_url' => TRIBE_TESTS_HOME_URL . 'checkout/?anything',
 			'provider'     => 'any-provider',
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), $this->base_url );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -42,13 +42,13 @@ class Back_To_CartTest extends V2TestCase {
 		$template = tribe( 'tickets.editor.template' );
 
 		$args = [
-			'cart_url'     => $this->base_url . 'checkout/?anything',
-			'checkout_url' => $this->base_url . 'checkout/?anything',
+			'cart_url'     => TRIBE_TESTS_HOME_URL . 'checkout/?anything',
+			'checkout_url' => TRIBE_TESTS_HOME_URL . 'checkout/?anything',
 			'provider'     => 'any-provider',
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), $this->base_url );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -61,13 +61,13 @@ class Back_To_CartTest extends V2TestCase {
 		$template = tribe( 'tickets.editor.template' );
 
 		$args = [
-			'cart_url'     => $this->base_url . 'cart/?anything',
-			'checkout_url' => $this->base_url . 'checkout/?something-else',
+			'cart_url'     => TRIBE_TESTS_HOME_URL . 'cart/?anything',
+			'checkout_url' => TRIBE_TESTS_HOME_URL . 'checkout/?something-else',
 			'provider'     => 'any-provider',
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), $this->base_url );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}

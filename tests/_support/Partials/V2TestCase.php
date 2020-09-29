@@ -19,16 +19,13 @@ abstract class V2TestCase extends WPTestCase {
 
 	use With_Post_Remapping;
 
-	/** @var string Test site home URL (not HTTPS). */
-	public $base_url = 'http://wordpress.test/';
-
 	/**
 	 * Get the HTML Driver.
 	 *
 	 * @return WPHtmlOutputDriver
 	 */
 	public function get_html_output_driver() {
-		return new WPHtmlOutputDriver( home_url(), $this->base_url );
+		return new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 	}
 
 	/**
