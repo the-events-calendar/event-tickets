@@ -72,8 +72,16 @@ class ItemsTest extends V2TestCase {
 	public function test_should_render_if_not_empty_tickets_on_sale() {
 		$template = tribe( 'tickets.editor.template' );
 
-		$html = $template->template( $this->partial_path, $this->get_default_args(), false );
+		$args = $this->get_default_args();
+		$html = $template->template( $this->partial_path, $args, false );
 
-		$this->assertMatchesSnapshot( $html );
+		$driver = $this->get_html_output_driver();
+		$driver->setTolerableDifferences( [ $args['post_id'] ] );
+
+		foreach ( $args['tickets'] as $ticket ) {
+			$driver->setTolerableDifferences( (array) $ticket );
+		}
+
+		$this->assertMatchesSnapshot( $html, $driver );
 	}
 }
