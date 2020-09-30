@@ -67,4 +67,13 @@ class Back_To_CartTest extends V2TestCase {
 
 		$this->assertMatchesSnapshot( $html );
 	}
+
+	/**
+	 * @test
+	 */
+	public function test_see_values() {
+		$x = sprintf( '%s__%s__%s', getenv( 'WP_URL' ), home_url(), TRIBE_TESTS_HOME_URL );
+
+		$this->assertMatchesSnapshot( $x );
+	}
 }
