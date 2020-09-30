@@ -125,14 +125,22 @@ class Tribe__Tickets__Assets {
 		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
 		$global_stock_mode = $tickets_handler->get_default_capacity_mode();
+
+		$ticket_js_deps = [ 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'tribe-moment', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'tribe-timepicker' ];
+
+		// While TEC is active, make sure we are loading TEC admin JS as dependency.
+		if ( class_exists( 'Tribe__Events__Main' ) ) {
+			$ticket_js_deps[] = 'tribe-events-admin';
+		}
+
 		$assets = [
-				[ 'event-tickets-admin-css', 'tickets-admin.css', [ 'tribe-validation-style', 'tribe-jquery-timepicker-css', 'tribe-common-admin' ] ],
-				[ 'event-tickets-admin-refresh-css', 'tickets-refresh.css', [ 'event-tickets-admin-css', 'tribe-common-admin' ] ],
-				[ 'event-tickets-admin-tables-css', 'tickets-tables.css', [ 'event-tickets-admin-css' ] ],
-				[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
-				[ 'event-tickets-admin-accordion-js', 'accordion.js', [] ],
-				[ 'event-tickets-admin-accordion-css', 'accordion.css', [] ],
-				[ 'event-tickets-admin-js', 'tickets.js', [ 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'tribe-moment', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'tribe-timepicker' ] ],
+			[ 'event-tickets-admin-css', 'tickets-admin.css', [ 'tribe-validation-style', 'tribe-jquery-timepicker-css', 'tribe-common-admin' ] ],
+			[ 'event-tickets-admin-refresh-css', 'tickets-refresh.css', [ 'event-tickets-admin-css', 'tribe-common-admin' ] ],
+			[ 'event-tickets-admin-tables-css', 'tickets-tables.css', [ 'event-tickets-admin-css' ] ],
+			[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
+			[ 'event-tickets-admin-accordion-js', 'accordion.js', [] ],
+			[ 'event-tickets-admin-accordion-css', 'accordion.css', [] ],
+			[ 'event-tickets-admin-js', 'tickets.js', $ticket_js_deps ],
 		];
 
 		tribe_assets(

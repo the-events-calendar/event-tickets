@@ -1,16 +1,18 @@
-<?php return '	<div class="tribe-common event-tickets">
-
-		
+<?php return '
+<div
+	id="rsvp-now"
+	class="tribe-common event-tickets"
+>
 			<div
-				class="tribe-tickets__rsvp-wrapper"
-				data-rsvp-id="10010"
-			>
-				<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
+			class="tribe-tickets__rsvp-wrapper"
+			data-rsvp-id="10010"
+		>
+			<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
 	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--first"></div>
 	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--second"></div>
 	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--third"></div>
 </div>
-				
+			
 
 
 	
@@ -67,18 +69,17 @@
 
 	</div>
 
-			</div>
-		
+		</div>
 			<div
-				class="tribe-tickets__rsvp-wrapper"
-				data-rsvp-id="10011"
-			>
-				<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
+			class="tribe-tickets__rsvp-wrapper"
+			data-rsvp-id="10011"
+		>
+			<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
 	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--first"></div>
 	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--second"></div>
 	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--third"></div>
 </div>
-				
+			
 
 
 	
@@ -135,6 +136,6 @@
 
 	</div>
 
-			</div>
-			</div>
+		</div>
+	</div>
 ';
