@@ -109,10 +109,14 @@ class ItemTest extends V2TestCase {
 			]
 		);
 
+		$driver->setTimeDependentAttributes( [ 'value', 'data-ticket-id', 'aria-controls' ] );
+
 		$driver->setTolerableDifferencesPrefixes( [
 			'post-',
-			'Test ticket for',
-			'Test ticket description for',
+			'tribe-block-tickets-item-',
+			'Test ticket for ',
+			'Test ticket description for ',
+			'tribe__details__content--',
 		] );
 
 		$this->assertMatchesSnapshot( $html, $driver );
