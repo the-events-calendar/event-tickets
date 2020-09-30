@@ -53,6 +53,15 @@ class Back_To_CartTest extends V2TestCase {
 	/**
 	 * @test
 	 */
+	public function test_see_values() {
+		$x = sprintf( '%s__%s__%s', getenv( 'WP_URL' ), home_url(), TRIBE_TESTS_HOME_URL );
+
+		$this->assertMatchesSnapshot( $x );
+	}
+
+	/**
+	 * @test
+	 */
 	public function test_should_render_successfully() {
 		/** @var Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
@@ -66,14 +75,5 @@ class Back_To_CartTest extends V2TestCase {
 		$html = $template->template( $this->partial_path, $args, false );
 
 		$this->assertMatchesSnapshot( $html );
-	}
-
-	/**
-	 * @test
-	 */
-	public function test_see_values() {
-		$x = sprintf( '%s__%s__%s', getenv( 'WP_URL' ), home_url(), TRIBE_TESTS_HOME_URL );
-
-		$this->assertMatchesSnapshot( $x );
 	}
 }
