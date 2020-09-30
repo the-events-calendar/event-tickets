@@ -23,7 +23,7 @@ class SubmitTest extends V2TestCase {
 		$template = tribe( 'tickets.editor.template' );
 
 		$html   = $template->template( $this->partial_path, [], false );
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
