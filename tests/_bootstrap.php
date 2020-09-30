@@ -12,6 +12,7 @@ if( ! defined( 'TRIBE_TESTS_HOME_URL' ) ) {
 	 * Snapshots URL to compare to home_url().
 	 *
 	 * Added to reduce complexity and avoid having to regenerate snapshots simply from switching testing environments.
+	 * If value ever changes, keep in sync with `tests/data/restv1-dump.sql`.
 	 */
 	define( 'TRIBE_TESTS_HOME_URL', 'http://wordpress.test/' );
 }
