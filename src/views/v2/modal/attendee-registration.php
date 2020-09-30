@@ -27,7 +27,7 @@ if ( ! empty( $providers ) ) {
 // Set the CSS classes.
 $classes = [
 	'tribe-tickets__item__attendee__fields__form',
-	sanitize_html_class( $provider_class ),
+	$provider_class,
 	'tribe-validation',
 ];
 ?>
