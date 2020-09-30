@@ -197,7 +197,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		$this->add_template_globals( $args );
 
-		// Check wether we use v1 or v2. We need to update this when we deprecate tickets v1.
+		// Check whether we use v1 or v2. We need to update this when we deprecate tickets v1.
 		$template_path = tribe_tickets_new_views_is_enabled() ? 'v2/attendee-registration/content' : 'registration-js/content';
 
 		return $this->template( $template_path, $args, false );

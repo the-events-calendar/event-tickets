@@ -1039,9 +1039,9 @@ class Tribe__Tickets__Tickets_View {
 		/**
 		 * Show original price on sale.
 		 *
-		 * @param bool Wether the original price should be shown on sale or not. Default is true.
+		 * @param bool Whether the original price should be shown on sale or not. Default is true.
 		 *
-		 * @return bool Wether the original price should be shown on sale or not.
+		 * @return bool Whether the original price should be shown on sale or not.
 		 */
 		$show_original_price_on_sale = apply_filters( 'tribe_tickets_show_original_price_on_sale', true );
 
@@ -1150,6 +1150,13 @@ class Tribe__Tickets__Tickets_View {
 		/** @var Tribe__Tickets__RSVP $rsvp */
 		$rsvp = tribe( 'tickets.rsvp' );
 
+		// Check if the call is coming from a shortcode.
+		$doing_shortcode = tribe_doing_shortcode( 'tribe_tickets_rsvp' );
+
+		// Get the RSVP block HTML ID.
+		$block_html_id  = 'rsvp-now';
+		$block_html_id .= $doing_shortcode ? '-' . uniqid() : '';
+
 		// Load assets manually.
 		$blocks_rsvp->assets();
 
@@ -1171,6 +1178,8 @@ class Tribe__Tickets__Tickets_View {
 			'opt_in_checked'      => false,
 			'opt_in_attendee_ids' => '',
 			'opt_in_nonce'        => '',
+			'doing_shortcode'     => $doing_shortcode,
+			'block_html_id'       => $block_html_id,
 		];
 
 		// Add the rendering attributes into global context.

@@ -8,6 +8,7 @@ use tad\FunctionMocker\FunctionMocker as Test;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Tickets\Test\Traits\CapacityMatrix;
 use Tribe__Tickets__Data_API as Data_API;
+use Tribe__Tickets__Editor__Template as Template;
 
 class TicketsBlock_TestCase extends WPTestCase {
 
@@ -31,6 +32,9 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		// Reset Data_API object so it sees Tribe Commerce.
 		tribe_singleton( 'tickets.data_api', new Data_API );
+
+		// Reset the template singleton.
+		tribe_singleton( 'tickets.editor.template', new Template );
 
 		/** @var \wpdb $wpdb */
 		global $wpdb;

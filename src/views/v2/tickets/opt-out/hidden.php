@@ -32,7 +32,7 @@ if ( empty( $is_modal ) ) {
 $hide_attendee_list_optout = apply_filters( 'tribe_tickets_plus_hide_attendees_list_optout', false );
 
 if ( $hide_attendee_list_optout ) {
-	// Force optout.
+	// Force opt-out.
 	?>
 	<input name="attendee[optout]" value="1" type="hidden" />
 	<?php
@@ -40,4 +40,10 @@ if ( $hide_attendee_list_optout ) {
 }
 ?>
 
-<input id="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $ticket->ID ); ?>-modal" class="tribe-tickets__item__quantity" name="attendee[optout]" value="1" type="hidden" />
+<input
+	id="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $ticket->ID ); ?>-modal"
+	class="tribe-tickets__item__quantity"
+	name="attendee[optout]"
+	value="1"
+	type="hidden"
+/>
