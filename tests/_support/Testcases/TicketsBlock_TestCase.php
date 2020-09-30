@@ -167,7 +167,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 		] );
 
 		// Remove the URL + port so it doesn't conflict with URL tolerances.
-		$html = str_replace( 'http://localhost:8080', TRIBE_TESTS_HOME_URL, $html );
+		$html = str_replace( home_url(), TRIBE_TESTS_HOME_URL, $html );
 
 		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );
@@ -227,7 +227,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 		] );
 
 		// Remove the URL + port so it doesn't conflict with URL tolerances.
-		$html = str_replace( 'http://localhost:8080', TRIBE_TESTS_HOME_URL, $html );
+		$html = str_replace( home_url(), TRIBE_TESTS_HOME_URL, $html );
 
 		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );

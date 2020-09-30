@@ -39,7 +39,7 @@ class MustLoginTest extends WPTestCase {
 
 		$args = [
 			'must_login' => true,
-			'login_url'  => 'http://localhost:8080/wp-login.php',
+			'login_url'  => home_url( 'wp-login.php' ),
 			'rsvp'       => $ticket,
 		];
 
