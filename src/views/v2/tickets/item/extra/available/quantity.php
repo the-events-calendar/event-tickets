@@ -14,18 +14,17 @@
  *
  * @version TBD
  *
- * @var Tribe__Tickets__Editor__Template $this
- * @var Tribe__Tickets__Ticket_Object    $ticket
- * @var int                              $threshold The threshold.
+ * @var Tribe__Tickets__Editor__Template $this The Template Object
+ * @var Tribe__Tickets__Ticket_Object $ticket  The Ticket Object
+ * @var int $threshold                         The threshold value to show or hide quantity available
  */
-
 if ( 0 !== $threshold && $threshold < $ticket->available() ) {
 	return;
 }
 
 echo wp_kses_post(
 	sprintf(
-		// Translators: 1: opening span. 2: the number of remaining tickets to buy. 3: Closing span.
+	// Translators: 1: opening span. 2: the number of remaining tickets to buy. 3: Closing span.
 		_x(
 			'%1$s %2$s %3$s available',
 			'Tickets available',
