@@ -14,11 +14,11 @@
  *
  * @version TBD
  *
+ * @var Tribe__Tickets__Ticket_Object      $post_id                     The Post object ID.
  * @var Tribe__Tickets__Ticket_Object      $ticket                      The ticket object.
  * @var Tribe__Tickets__Tickets            $provider                    The tickets provider class.
  * @var string                             $provider_id                 The tickets provider class name.
- * @var bool                               $show_original_price_on_sale True if it shows the original price on sale.
- * @var Tribe__Tickets__Commerce__Currency $currency
+ * @var Tribe__Tickets__Commerce__Currency $currency	                The Currency Object
  */
 
 $classes = [
