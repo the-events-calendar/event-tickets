@@ -76,11 +76,22 @@ class ItemsTest extends V2TestCase {
 		$html = $template->template( $this->partial_path, $args, false );
 
 		$driver = $this->get_html_output_driver();
-		$driver->setTolerableDifferences( [ $args['post_id'] ] );
 
-		foreach ( $args['tickets'] as $ticket ) {
-			$driver->setTolerableDifferences( (array) $ticket );
-		}
+		$driver->setTolerableDifferences( [
+				$args['post_id'],
+			]
+		);
+
+		$driver->setTimeDependentAttributes( [ 'value', 'data-ticket-id', 'aria-controls' ] );
+
+		$driver->setTolerableDifferencesPrefixes( [
+			'post-',
+			'tribe-block-tickets-item-',
+			'Test ticket for ',
+			'Test ticket description for ',
+			'tribe__details__content--',
+			'class="tribe-amount">',
+		] );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}

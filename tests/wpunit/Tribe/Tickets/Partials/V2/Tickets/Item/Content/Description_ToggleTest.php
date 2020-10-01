@@ -78,6 +78,9 @@ class Description_ToggleTest extends V2TestCase {
 		$this->assertMatchesSnapshot( $html );
 	}
 
+	/**
+	 * @test
+	 */
 	public function test_should_render_if_is_modal_and_valid_ticket(){
 		$template = tribe( 'tickets.editor.template' );
 

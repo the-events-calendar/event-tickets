@@ -85,6 +85,7 @@ class ContentTest extends V2TestCase {
 			'post-',
 			'Test ticket for ',
 			'Test ticket description for ',
+			'tribe__details__content--',
 		] );
 
 		$this->assertMatchesSnapshot( $html, $driver );
