@@ -8,6 +8,11 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	 * @since 4.9
 	 */
 	public function register() {
+		// Only run the code if ET+ is active.
+		if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+			return;
+		}
+
 		tribe_singleton( 'tickets.attendee_registration', 'Tribe__Tickets__Attendee_Registration__Main' );
 		tribe_singleton( 'tickets.attendee_registration.template', 'Tribe__Tickets__Attendee_Registration__Template' );
 		tribe_singleton( 'tickets.attendee_registration.view', 'Tribe__Tickets__Attendee_Registration__View' );
