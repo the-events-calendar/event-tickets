@@ -21,9 +21,9 @@ if ( empty( $tickets_on_sale ) ) {
 	return;
 }
 
-foreach ( $tickets_on_sale as $key => $ticket ) :
+foreach ( $tickets_on_sale as $key => $ticket ) {
 
 	$this->template( 'v2/tickets/item', [ 'ticket' => $ticket, 'key' => $key ] );
 
-endforeach;
+}
 
