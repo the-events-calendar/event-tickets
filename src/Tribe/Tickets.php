@@ -2660,7 +2660,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Determines if this is a suitable opportunity to inject ticket form content into a post.
 		 * Expects to run within "the_content".
 		 *
-		 * @since TBD Bail if $post->ID is zero, such as from BuddyPress' "Activity" page.
+		 * @since 5.0.1 Bail if $post->ID is zero, such as from BuddyPress' "Activity" page.
 		 *
 		 * @return bool
 		 */

@@ -186,7 +186,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 	 * @since  4.5
 	 * @since  4.11.3 Now also displays for posts having only RSVPs. Also changed from <form> to <button>.
 	 *
-	 * @param bool $echo Whether or not we should print
+	 * @param bool $echo Whether or not we should print.
 	 *
 	 * @return string
 	 */
@@ -202,10 +202,10 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 			return '';
 		}
 
-		// get an array for ticket and rsvp counts
+		// Get an array for ticket and rsvp counts.
 		$types = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 
-		// if no rsvp or tickets return
+		// If no rsvp or tickets return.
 		if ( ! $types ) {
 			return '';
 		}
@@ -213,7 +213,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 		$html  = [];
 		$parts = [];
 
-		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out message
+		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out message.
 		foreach ( $types as $type => $data ) {
 			if ( ! $data['count'] ) {
 				continue;
@@ -222,14 +222,14 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 			if ( ! $data['available'] ) {
 				$parts[ $type . '-stock' ] = '<span class="tribe-out-of-stock">' . esc_html_x( 'Sold out', 'list view stock sold out', 'event-tickets' ) . '</span>';
 
-				// Only re-apply if we don't have a stock yet
+				// Only re-apply if we don't have a stock yet.
 				if ( empty( $html['stock'] ) ) {
 					$html['stock'] = $parts[ $type . '-stock' ];
 				}
 			} else {
 				$stock = $data['stock'];
 				if ( $data['unlimited'] || ! $data['stock'] ) {
-					// if unlimited tickets, tickets with no stock and rsvp, or no tickets and rsvp unlimited - hide the remaining count
+					// if unlimited tickets, tickets with no stock and rsvp, or no tickets and rsvp unlimited - hide the remaining count.
 					$stock = false;
 				}
 
@@ -262,8 +262,10 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 						}
 
 						if ( 'rsvp' === $type ) {
+							// Translators: %s number of RSVP spots left.
 							$text = _n( '%s spot left', '%s spots left', $stock, 'event-tickets' );
 						} else {
+							// Translators: %s number of tickets left.
 							$text = _n( '%s ticket left', '%s tickets left', $stock, 'event-tickets' );
 						}
 
@@ -276,6 +278,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 				$parts[ $type . '-stock' ] = $html['stock'] = $stock_html;
 
 				if ( 'rsvp' === $type ) {
+					// Translators: %s RSVP singular or plural.
 					$button_label  = sprintf( _x( '%s Now!', 'list view rsvp now ticket button', 'event-tickets' ), tribe_get_rsvp_label_singular( 'list_view_rsvp_now_button' ) );
 					$button_anchor = '#rsvp-now';
 				} else {

@@ -352,7 +352,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		$posts = array();
 
 		foreach ( $query_results as $wp_post ) {
-			$title = $wp_post->post_title;
+			/** This filter is documented in wp-includes/post-template.php */
+			$title = apply_filters( 'the_title', $wp_post->post_title, $wp_post->ID );
 
 			// Append the event start date if there is one, ie for events
 			if ( $wp_post->_EventStartDate ) {
