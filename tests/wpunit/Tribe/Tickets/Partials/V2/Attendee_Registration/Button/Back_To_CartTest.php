@@ -2,7 +2,6 @@
 
 namespace Tribe\Tickets\Partials\V2\Attendee_Registration\Button;
 
-use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Tickets\Test\Partials\V2TestCase;
 use Tribe__Tickets__Editor__Template;
 
@@ -24,14 +23,13 @@ class Back_To_CartTest extends V2TestCase {
 
 		$args = [
 			'cart_url'     => '',
-			'checkout_url' => $this->base_url . 'checkout/?anything',
+			'checkout_url' => TRIBE_TESTS_HOME_URL . 'checkout/?anything',
 			'provider'     => 'any-provider',
 		];
 
-		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), $this->base_url );
+		$html = $template->template( $this->partial_path, $args, false );
 
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertMatchesSnapshot( $html );
 	}
 
 	/**
@@ -42,15 +40,23 @@ class Back_To_CartTest extends V2TestCase {
 		$template = tribe( 'tickets.editor.template' );
 
 		$args = [
-			'cart_url'     => $this->base_url . 'checkout/?anything',
-			'checkout_url' => $this->base_url . 'checkout/?anything',
+			'cart_url'     => TRIBE_TESTS_HOME_URL . 'checkout/?anything',
+			'checkout_url' => TRIBE_TESTS_HOME_URL . 'checkout/?anything',
 			'provider'     => 'any-provider',
 		];
 
-		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), $this->base_url );
+		$html = $template->template( $this->partial_path, $args, false );
 
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertMatchesSnapshot( $html );
+	}
+
+	/**
+	 * @test
+	 */
+	public function test_see_values() {
+		$x = sprintf( '%s__%s__%s', getenv( 'WP_URL' ), home_url(), TRIBE_TESTS_HOME_URL );
+
+		$this->assertMatchesSnapshot( $x );
 	}
 
 	/**
@@ -61,14 +67,13 @@ class Back_To_CartTest extends V2TestCase {
 		$template = tribe( 'tickets.editor.template' );
 
 		$args = [
-			'cart_url'     => $this->base_url . 'cart/?anything',
-			'checkout_url' => $this->base_url . 'checkout/?something-else',
+			'cart_url'     => TRIBE_TESTS_HOME_URL . 'cart/?anything',
+			'checkout_url' => TRIBE_TESTS_HOME_URL . 'checkout/?something-else',
 			'provider'     => 'any-provider',
 		];
 
-		$html   = $template->template( $this->partial_path, $args, false );
-		$driver = new WPHtmlOutputDriver( home_url(), $this->base_url );
+		$html = $template->template( $this->partial_path, $args, false );
 
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertMatchesSnapshot( $html );
 	}
 }

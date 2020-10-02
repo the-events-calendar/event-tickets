@@ -692,7 +692,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			return;
 		}
 
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$driver->setTolerableDifferences( [ $post_id, $ticket_id ] );
 		$driver->setTolerableDifferencesPrefixes( [
@@ -930,7 +930,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
 		$html = $sut->render_rsvp_error( 'There was an error here' );
 
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -949,7 +949,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			'There was an error over on the other side too',
 		] );
 
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
