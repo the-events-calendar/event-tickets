@@ -9,9 +9,9 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since5.0.0
+ * @version 5.0.0
  *
- * @version5.0.0
+ * @version 5.0.0
  */
 
 ?>

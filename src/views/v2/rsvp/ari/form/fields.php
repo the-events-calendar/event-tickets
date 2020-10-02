@@ -10,9 +10,9 @@
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  * @var int $post_id The post ID the RSVP is linked to.
  *
- * @since5.0.0
+ * @version 5.0.0
  *
- * @version5.0.0
+ * @version 5.0.0
  */
 
 ?>
