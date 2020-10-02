@@ -6,9 +6,9 @@
  * [your-theme]/tribe/tickets/v2/rsvp/form/fields/quantity.php
  *
  * @since 4.12.3
- * @since5.0.0 Updated the input name used for submitting.
+ * @since 5.0.0 Updated the input name used for submitting.
  *
- * @version5.0.0
+ * @version 5.0.0
  */
 
 /** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
