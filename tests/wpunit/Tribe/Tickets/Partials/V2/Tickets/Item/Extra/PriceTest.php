@@ -48,12 +48,12 @@ class PriceTest extends V2TestCase {
 
 		$args = $this->get_default_args();
 
-		// Set price suffix
+		// Set price suffix.
 		$args['ticket']->price_suffix = 'Great_Price';
 
 		$html = $template->template( $this->partial_path, $args, false );
 
-		// Make sure we have suffix block
+		// Make sure we have suffix block.
 		$this->assertContains( 'tribe-tickets__sale-price-suffix', $html );
 
 		$this->assertMatchesSnapshot( $html, $this->get_html_output_driver() );

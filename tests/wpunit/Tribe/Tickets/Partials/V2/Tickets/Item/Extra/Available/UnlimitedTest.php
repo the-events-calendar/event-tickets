@@ -63,7 +63,7 @@ class UnlimitedTest extends V2TestCase {
 
 		$args = $this->get_default_args();
 
-		// set a fixed capacity
+		// set a fixed capacity.
 		$args['ticket']->capacity = 25;
 
 		$html = $template->template( $this->partial_path, $args, false );

@@ -56,7 +56,7 @@ class QuantityTest extends V2TestCase {
 
 		$args = $this->get_default_args();
 
-		// Threshold is less than the set capacity of 20
+		// Threshold is less than the set capacity of 20.
 		$args['threshold'] = 10;
 
 		$html = $template->template( $this->partial_path, $args, false );
@@ -72,7 +72,7 @@ class QuantityTest extends V2TestCase {
 
 		$args = $this->get_default_args();
 
-		// Threshold is greater than the set capacity of 20
+		// Threshold is greater than the set capacity of 20.
 		$args['threshold'] = 25;
 
 		$html = $template->template( $this->partial_path, $args, false );
