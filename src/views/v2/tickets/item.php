@@ -66,21 +66,12 @@ $ticket_item_id     .= '-tickets-item-' . $ticket->ID;
 	<?php endif; ?>
 >
 
-	// @todo Convert this into an action.
-	<?php //$this->template( 'v2/modal/item/remove', $context ); ?>
-
 	<?php $this->template( 'v2/tickets/item/content', $context ); ?>
 
 	<?php $this->template( 'v2/tickets/item/quantity', $context ); ?>
 
 	<?php $this->template( 'v2/tickets/item/quantity-mini', $context ); ?>
 
-	// @todo Convert this into an action.
-	<?php //$this->template( 'v2/modal/item/total', $context ); ?>
-
 	<?php $this->template( 'v2/tickets/item/opt-out', $context ); ?>
-
-	// @todo Convert this into an action.
-	<?php //$this->template( 'v2/modal/item/opt-out', $context ); ?>
 
 </div>
