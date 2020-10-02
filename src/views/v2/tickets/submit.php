@@ -27,7 +27,4 @@ if (
 
 $this->template( 'v2/tickets/submit/must-login' );
 
-// @todo Convert this into an action.
-// $this->template( 'v2/tickets/submit/button-modal' );
-
 $this->template( 'v2/tickets/submit/button' );
