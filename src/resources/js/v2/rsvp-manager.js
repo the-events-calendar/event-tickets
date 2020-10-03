@@ -1,7 +1,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since5.0.0
+ * @since 5.0.0
  *
  * @type {PlainObject}
  */
@@ -36,7 +36,7 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Selectors used for configuration and setup
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @type {PlainObject}
 	 */
@@ -50,7 +50,7 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Stores the current ajax request been handled by the manager.
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @type {jqXHR|null}
 	 */
@@ -59,7 +59,7 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Containers on the current page that were initialized.
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @type {jQuery}
 	 */
@@ -79,7 +79,7 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Clean up the container and event listeners
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @param  {jQuery} container Which element we are going to clean up
 	 *
@@ -96,7 +96,7 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Setup the container for RSVP management
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @todo  Requirement to setup other JS modules after hijacking Click and Submit
 	 *
@@ -116,7 +116,7 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Performs an AJAX request.
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @param  {object}         data       DOM Event related to the Click action
 	 * @param  {Element|jQuery} $container Which container we are dealing with
@@ -135,7 +135,7 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Gets the jQuery.ajax() settings provided a views container
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @param  {Element|jQuery} $container Which container we are dealing with.
 	 *
@@ -163,7 +163,7 @@ tribe.tickets.rsvp.manager = {};
 	 *
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @param  {jqXHR}       jqXHR    Request object
 	 * @param  {PlainObject} settings Settings that this request will be made with
@@ -190,7 +190,7 @@ tribe.tickets.rsvp.manager = {};
 	 *
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @param  {jqXHR}  jqXHR      Request object
 	 * @param  {String} textStatus Status for the request
@@ -221,7 +221,7 @@ tribe.tickets.rsvp.manager = {};
 	 *
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @param  {Object} response   Response sent from the AJAX response.
 	 * @param  {String} textStatus Status for the request
@@ -268,7 +268,7 @@ tribe.tickets.rsvp.manager = {};
 	 *
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @param  {jqXHR}       jqXHR    Request object
 	 * @param  {PlainObject} settings Settings that this request was made with
