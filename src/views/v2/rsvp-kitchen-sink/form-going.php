@@ -12,9 +12,9 @@
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
  * @since 4.12.3
- * @since5.0.0 Updated the placeholder text used.
+ * @since 5.0.0 Updated the placeholder text used.
  *
- * @version5.0.0
+ * @version 5.0.0
  */
 ?>
 <div class="tribe-tickets__rsvp-wrapper" data-rsvp-id="13">
