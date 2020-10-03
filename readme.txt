@@ -118,6 +118,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Correctly detect ticket provider to support Attendee Information. [ET-915]
+
 = [5.0.1] 2020-09-21 =
 
 * Fix - Ensure the Attendees List title for the Attendees report is clean and not replicated on the page for the admin area as well as frontend. [ET-912]

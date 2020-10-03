@@ -3140,6 +3140,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * redirect to the meta collection screen.
 		 *
 		 * @since 4.9
+		 * @since TBD Correct provider attendee object.
 		 *
 		 * @param string   $redirect URL to redirect to.
 		 * @param null|int $post_id  Post ID for cart.
@@ -3173,6 +3174,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$q_provider = tribe_get_request_var( 'provider', false );
+
+			// Provider to use the attendee object.
+			if (
+				static::class === $q_provider
+				|| empty( $q_provider )
+			) {
+				$q_provider = $this->attendee_object;
+			}
 
 			/**
 			 * Filter to add/remove tickets from the global cart
@@ -3225,14 +3234,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$url = $attendee_reg->get_url();
 
-			$provider = tribe_get_request_var( 'provider' );
-
-			if ( empty( $provider ) ) {
-				$provider = $this->attendee_object;
+			if ( empty( $q_provider ) ) {
+				$q_provider = $this->attendee_object;
 			}
 
-			if ( ! empty( $provider ) ) {
-				$url = add_query_arg( 'provider', $provider, $url );
+			if ( ! empty( $q_provider ) ) {
+				$url = add_query_arg( 'provider', $q_provider, $url );
 			}
 
 			if ( ! empty( $redirect ) ) {
