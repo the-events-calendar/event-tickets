@@ -637,14 +637,14 @@ if ( ! function_exists( 'tribe_tickets_get_template_part' ) ) {
 	 * Includes a template part, similar to the WP get template part, but looks
 	 * in the correct directories for Tribe Tickets templates
 	 *
-	 * @param string      $slug The Base template name
-	 * @param null|string $name (optional) if set will try to include `{$slug}-{$name}.php` file
-	 * @param array       $data (optional) array of vars to inject into the template part
-	 * @param bool        $echo (optional) Allows the user to print or return the template
-	 *
-	 * @return string|void It will depend if it's echoing or not
 	 * @uses Tribe__Tickets__Templates::get_template_hierarchy
 	 *
+	 * @param string      $slug The Base template name.
+	 * @param null|string $name (optional) if set will try to include `{$slug}-{$name}.php` file.
+	 * @param array       $data (optional) array of vars to inject into the template part.
+	 * @param bool        $echo (optional) Allows the user to print or return the template.
+	 *
+	 * @return string|void Whether it's echoing or not.
 	 */
 	function tribe_tickets_get_template_part( $slug, $name = null, array $data = null, $echo = true ) {
 
@@ -1770,7 +1770,6 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 		 * @param bool $enabled Whether the tickets block views are enabled.
 		 *
 		 * @var bool   $enabled Whether the tickets block views are enabled.
-		 *
 		 */
 		return (bool) apply_filters( 'tribe_tickets_new_views_is_enabled', $enabled );
 	}
