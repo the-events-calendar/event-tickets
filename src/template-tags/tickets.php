@@ -1732,37 +1732,46 @@ if ( ! function_exists( 'tribe_tickets_is_provider_active' ) ) {
 	}
 }
 
-/**
- * Determine whether new tickets (block) views are enabled.
- *
- * In order the function will check the `TRIBE_TICKETS_NEW_VIEWS` constant,
- * the `TRIBE_TICKETS_NEW_VIEWS` environment variable and, finally, the `tribe_tickets_new_views_is_enabled` option.
- *
- * @since TBD
- *
- * @return bool Whether new tickets views are enabled.
- */
-function tribe_tickets_new_views_is_enabled() {
-	$enabled = false;
-
-	// Check for constant.
-	if ( defined( 'TRIBE_TICKETS_NEW_VIEWS' ) ) {
-		return (bool) TRIBE_TICKETS_NEW_VIEWS;
-	}
-
-	// Check for env var.
-	$env_var = getenv( 'TRIBE_TICKETS_NEW_VIEWS' );
-
-	if ( false !== $env_var ) {
-		return (bool) $env_var;
-	}
-
+if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 	/**
-	 * Allows filtering whether new tickets block views are enabled.
+	 * Determine whether the tickets block views is enabled.
+	 *
+	 * In order: the function will check the constant, the environment variable, the settings UI option, and then
+	 * allow filtering.
 	 *
 	 * @since TBD
 	 *
-	 * @param bool $enabled Whether new RSVP views are enabled.
+	 * @return bool Whether the tickets block views is enabled.
 	 */
-	return apply_filters( 'tribe_tickets_new_views_is_enabled', $enabled );
+	function tribe_tickets_new_views_is_enabled() {
+		// Check for constant.
+		if ( defined( 'TRIBE_TICKETS_NEW_VIEWS' ) ) {
+			return (bool) TRIBE_TICKETS_NEW_VIEWS;
+		}
+
+		// Check for env var.
+		$env_var = getenv( 'TRIBE_TICKETS_NEW_VIEWS' );
+
+		if ( false !== $env_var ) {
+			return (bool) $env_var;
+		}
+
+		// If ETP was installed on or after version 5.1, default to enabled.
+		$should_default_to_on = ! tribe_installed_before( 'Tribe__Tickets_Plus__Main', '5.1' );
+
+		// Check for settings UI option.
+		$enabled = (bool) tribe_get_option( 'tickets_use_new_views', $should_default_to_on );
+
+		/**
+		 * Allows filtering whether the tickets block views is enabled.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $enabled Whether the tickets block views are enabled.
+		 *
+		 * @var bool   $enabled Whether the tickets block views are enabled.
+		 *
+		 */
+		return (bool) apply_filters( 'tribe_tickets_new_views_is_enabled', $enabled );
+	}
 }

@@ -6,6 +6,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	 * Register the Attendee Info Provider singletons.
 	 *
 	 * @since 4.9
+	 * @since TBD Bail if ETP is not active.
 	 */
 	public function register() {
 		// Only run the code if ET+ is active.
