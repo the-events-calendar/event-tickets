@@ -23,7 +23,7 @@ if (
 }
 
 $tickets_rsvp_display_title = sprintf(
-	// Translators: %1$s: dynamic "RSVPs" text.
+// Translators: %1$s: dynamic "RSVPs" text.
 	esc_html_x(
 		'%1$s Display Settings',
 		'title of settings section',
@@ -33,7 +33,7 @@ $tickets_rsvp_display_title = sprintf(
 );
 
 $tickets_rsvp_display_description = sprintf(
-	// Translators: %1$s: dynamic "RSVPs" text.
+// Translators: %1$s: dynamic "RSVPs" text.
 	esc_html_x(
 		'The settings below control the display of your %1$s.',
 		'description of settings section',
@@ -44,7 +44,7 @@ $tickets_rsvp_display_description = sprintf(
 
 if ( $etp_active ) {
 	$tickets_rsvp_display_title = sprintf(
-		// Translators: %1$s: dynamic "Tickets" text, %2$s: dynamic "RSVPs" text.
+	// Translators: %1$s: dynamic "Tickets" text, %2$s: dynamic "RSVPs" text.
 		esc_html_x(
 			'%1$s and %2$s Display Settings',
 			'title of settings section',
@@ -55,7 +55,7 @@ if ( $etp_active ) {
 	);
 
 	$tickets_rsvp_display_description = sprintf(
-		// Translators: %1$s: dynamic "Tickets" text, %2$s: dynamic "RSVPs" text.
+	// Translators: %1$s: dynamic "Tickets" text, %2$s: dynamic "RSVPs" text.
 		esc_html_x(
 			'The settings below control the display of your %1$s and %2$s.',
 			'description of settings section',
@@ -82,7 +82,7 @@ if ( tribe_installed_before( 'Tribe__Tickets__Main', '5.0' ) ) {
 	$et_options_display['tickets_rsvp_use_new_views'] = [
 		'type'            => 'checkbox_bool',
 		'label'           => sprintf(
-			// Translators: %1$s: dynamic "RSVPs" text.
+		// Translators: %1$s: dynamic "RSVPs" text.
 			esc_html_x(
 				'Enable New %1$s Experience',
 				'settings label',
@@ -91,7 +91,7 @@ if ( tribe_installed_before( 'Tribe__Tickets__Main', '5.0' ) ) {
 			esc_html( tribe_get_rsvp_label_singular( 'tickets_rsvp_use_new_views' ) )
 		),
 		'tooltip'         => sprintf(
-			// Translators: %1$s: dynamic "RSVPs" text.
+		// Translators: %1$s: dynamic "RSVPs" text.
 			esc_html_x(
 				'This setting will render the new front-end designs (styling) and user-flow for the %1$s experience.',
 				'settings tooltip',
@@ -112,7 +112,7 @@ if (
 	$et_options_display['tickets_use_new_views'] = [
 		'type'            => 'checkbox_bool',
 		'label'           => sprintf(
-			// Translators: %1$s: dynamic "Tickets" text.
+		// Translators: %1$s: dynamic "Tickets" text.
 			esc_html_x(
 				'Enable Updated %1$s Experience',
 				'settings label',
@@ -121,7 +121,7 @@ if (
 			esc_html( tribe_get_ticket_label_plural( 'tickets_use_new_views' ) )
 		),
 		'tooltip'         => sprintf(
-			// Translators: %1$s: dynamic "Tickets" text.
+		// Translators: %1$s: dynamic "Tickets" text.
 			esc_html_x( 'This setting will enable the updated front-end views and Individual Attendee Collection (IAC) flows for %1$s.', 'settings tooltip', 'event-tickets' ),
 			esc_html( tribe_get_ticket_label_plural( 'tickets_use_new_views' ) )
 		),
