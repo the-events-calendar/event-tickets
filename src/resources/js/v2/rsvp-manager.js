@@ -172,14 +172,11 @@ tribe.tickets.rsvp.manager = {};
 	 * @return {void}
 	 */
 	obj.ajaxBeforeSend = function( jqXHR, settings ) {
-		var $container = this;
-		var $loader = $container.find( obj.selectors.loader );
+		const $container = this;
 
 		$container.trigger( 'beforeAjaxBeforeSend.tribeTicketsRsvp', [ jqXHR, settings ] );
 
-		if ( $loader.length ) {
-			$loader.removeClass( obj.selectors.hiddenElement.className() );
-		}
+		tribe.tickets.loader.show( $container );
 
 		$container.trigger( 'afterAjaxBeforeSend.tribeTicketsRsvp', [ jqXHR, settings ] );
 	};
@@ -199,14 +196,11 @@ tribe.tickets.rsvp.manager = {};
 	 * @return {void}
 	 */
 	obj.ajaxComplete = function( jqXHR, textStatus ) {
-		var $container = this;
-		var $loader = $container.find( obj.selectors.loader );
+		const $container = this;
 
 		$container.trigger( 'beforeAjaxComplete.tribeTicketsRsvp', [ jqXHR, textStatus ] );
 
-		if ( $loader.length ) {
-			$loader.addClass( obj.selectors.hiddenElement.className() );
-		}
+		tribe.tickets.loader.hide( $container );
 
 		$container.trigger( 'afterAjaxComplete.tribeTicketsRsvp', [ jqXHR, textStatus ] );
 
