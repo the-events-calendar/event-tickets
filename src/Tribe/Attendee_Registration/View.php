@@ -53,6 +53,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		$events           = [];
 		$providers        = [];
 		$default_provider = [];
+		$non_meta_count   = 0;
 
 		foreach ( $tickets_in_cart as $ticket_id => $quantity ) {
 			// Load the tickets in cart for each event, with their ID, quantity and provider.
@@ -65,13 +66,19 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 				continue;
 			}
 
+			$has_meta = get_post_meta( $ticket_id, '_tribe_tickets_meta_enabled', true );
+
+			if ( empty( $has_meta ) || ! tribe_is_truthy( $has_meta ) ) {
+				$non_meta_count += $quantity;
+			}
+
 			$ticket_providers = [ $ticket->provider->attendee_object ];
 
 			if ( ! empty( $ticket->provider->orm_provider ) ) {
 				$ticket_providers[] = $ticket->provider->orm_provider;
 			}
 
-			// If we've got a provider and it doesn't match, skip the ticket
+			// If we've got a provider and it doesn't match, skip the ticket.
 			if ( ! in_array( $q_provider, $ticket_providers, true ) ) {
 				continue;
 			}
@@ -116,11 +123,10 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 */
 		$cart_has_required_meta = (bool) apply_filters( 'tribe_tickets_attendee_registration_has_required_meta', ! empty( $tickets_in_cart ), $tickets_in_cart );
 
-		// Get the checkout URL, it'll be added to the checkout button.
-
 		/** @var Tribe__Tickets__Attendee_Registration__Main $attendee_registration */
 		$attendee_registration = tribe( 'tickets.attendee_registration' );
 
+		// Get the checkout URL, it'll be added to the checkout button.
 		$checkout_url = $attendee_registration->get_checkout_url();
 
 		/**
@@ -132,6 +138,13 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 */
 		$is_meta_up_to_date = (int) apply_filters( 'tribe_tickets_attendee_registration_is_meta_up_to_date', true );
 
+		// Enqueue styles and scripts for this page.
+		tribe_asset_enqueue_group( 'tribe-tickets-registration-page' );
+
+		// One provider per instance.
+		$currency        = tribe( 'tickets.commerce.currency' );
+		$currency_config = $currency->get_currency_config_for_provider( $default_provider, null );
+
 		/**
 		 *  Set all the template variables
 		 */
@@ -141,21 +154,41 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			'is_meta_up_to_date'     => $is_meta_up_to_date,
 			'cart_has_required_meta' => $cart_has_required_meta,
 			'providers'              => $providers,
+			'currency'               => $currency,
+			'currency_config'        => $currency_config,
+			'is_modal'               => null,
+			'non_meta_count'         => $non_meta_count,
 		];
 
-		// Enqueue styles and scripts specific to this page.
-		tribe_asset_enqueue( 'event-tickets-registration-page-styles' );
-		tribe_asset_enqueue( 'event-tickets-registration-page-scripts' );
+		if ( tribe_tickets_new_views_is_enabled() ) {
+			$provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 
-		// One provder per instance
-		$currency  = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $default_provider, null );
+			if ( empty( $provider ) ) {
+				$event_keys   = array_keys( $events );
+				$event_key    = array_shift( $event_keys );
+				$provider_obj = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $event_key );
+			} elseif ( is_string( $provider ) ) {
+				$provider_obj = $this->get_cart_provider( $provider );
+			} elseif ( $provider instanceof Tribe__Tickets__Tickets ) {
+				$provider_obj = $provider;
+			}
+
+			if ( $provider_obj instanceof Tribe__Tickets__Tickets ) {
+				$provider = $provider_obj->attendee_object;
+			}
+
+			$args['provider'] = $provider;
+			$args['cart_url'] = $this->get_cart_url( $provider );
+		}
+
+
 		wp_localize_script(
-			'event-tickets-registration-page-scripts',
+			'tribe-tickets-registration-page-scripts',
 			'TribeCurrency',
-			[ 'formatting' => json_encode( $currency ) ]
+			[ 'formatting' => json_encode( $currency_config ) ]
 		);
 		wp_localize_script(
-			'event-tickets-registration-page-scripts',
+			'tribe-tickets-registration-page-scripts',
 			'TribeCartEndpoint',
 			[ 'url' => tribe_tickets_rest_url( '/cart/' ) ]
 		);
@@ -164,7 +197,10 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		$this->add_template_globals( $args );
 
-		return $this->template( 'registration-js/content', $args, false );
+		// Check whether we use v1 or v2. We need to update this when we deprecate tickets v1.
+		$template_path = tribe_tickets_new_views_is_enabled() ? 'v2/attendee-registration/content' : 'registration-js/content';
+
+		return $this->template( $template_path, $args, false );
 	}
 
 	/**
@@ -180,7 +216,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		if ( is_numeric( $provider ) ) {
 			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 			$tickets_handler = tribe( 'tickets.handler' );
-			$provider = get_post_meta( absint( $provider ), $tickets_handler->key_provider_field, true );
+			$provider        = get_post_meta( absint( $provider ), $tickets_handler->key_provider_field, true );
 		}
 
 		if ( empty( $provider ) ) {

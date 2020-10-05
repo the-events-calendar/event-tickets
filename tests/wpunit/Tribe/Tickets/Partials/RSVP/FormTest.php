@@ -38,7 +38,7 @@ class Form extends WPTestCase {
 
 		$html = $template->template( $this->partial_path, $args, false );
 
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
 		$driver->setTolerableDifferencesPrefixes( [

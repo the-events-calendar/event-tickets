@@ -40,24 +40,51 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-form-style',
+			'forms.css',
+			[],
+			null,
+			[
+				'groups' => [
+					'tribe-tickets-block-assets',
+					'tribe-tickets-rsvp',
+					'tribe-tickets-registration-page',
+				],
+			]
+		);
+
 		// Tickets registration page styles.
 		tribe_asset(
 			$tickets_main,
-			'event-tickets-registration-page-styles',
+			'tribe-tickets-registration-page-styles',
 			'tickets-registration-page.css',
 			[],
 			null,
-			[]
+			[
+				'groups' => [
+					'tribe-tickets-registration-page',
+				],
+			]
 		);
 
 		// Tickets registration page scripts.
 		tribe_asset(
 			$tickets_main,
-			'event-tickets-registration-page-scripts',
+			'tribe-tickets-registration-page-scripts',
 			'tickets-registration-page.js',
-			[ 'jquery', 'wp-util' ],
+			[
+				'jquery',
+				'wp-util',
+				'tribe-common',
+			],
 			null,
-			[]
+			[
+				'groups' => [
+					'tribe-tickets-registration-page',
+				],
+			]
 		);
 
 	}
