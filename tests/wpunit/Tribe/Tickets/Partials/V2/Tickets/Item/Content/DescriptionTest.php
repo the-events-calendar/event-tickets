@@ -95,7 +95,7 @@ class DescriptionTest extends V2TestCase {
 			]
 		);
 
-		// Make sure we have the Modal class added
+		// Make sure we have the Modal class added.
 		$this->assertContains( 'tribe__details__content1', $html );
 
 		$this->assertMatchesSnapshot( $html, $driver );
