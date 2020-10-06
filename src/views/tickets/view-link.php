@@ -4,7 +4,7 @@
  * Included on the Events Single Page after the meta
  * The Message that will link to the Tickets page
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-link.php
+ * Override this template in your own theme by creating a file at [your-theme]/tribe/tickets/tickets/view-link.php
  *
  * @since   4.2
  * @since   4.10.8 Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated third
@@ -13,8 +13,9 @@
  * @since   4.11.0 Made template more like new blocks-based template in terms of logic.
  * @since 4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
  * @since 5.0.1 Add additional checks to prevent PHP errors when called from automated testing.
+ * @since TBD Fix template path in documenation block..
  *
- * @version 5.0.1
+ * @version TBD
  *
  * @var Tribe__Tickets__Tickets_View $this
  */
