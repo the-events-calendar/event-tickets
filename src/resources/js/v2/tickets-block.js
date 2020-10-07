@@ -443,8 +443,6 @@ tribe.tickets.block = {
 		return isNaN( price ) ? 0 : price;
 	};
 
-	/* Pre-fill Handling */
-
 	/**
 	 * Get ticket data to send to cart.
 	 *
