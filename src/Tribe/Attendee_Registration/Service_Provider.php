@@ -88,7 +88,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	/**
 	 * Sets up the rules required by Event Tickets.
 	 *
-	 * @param Tribe__Tickets__Attendee_Registration__Rewrite $rewrite
+	 * @param Tribe__Tickets__Attendee_Registration__Rewrite $rewrite The rewrite instance.
 	 */
 	public function generate_core_rules( Tribe__Tickets__Attendee_Registration__Rewrite $rewrite ) {
 		/** @var Tribe__Tickets__Attendee_Registration__Rewrite $make */
@@ -100,7 +100,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	/**
 	 * Generate the Rewrite Rules.
 	 *
-	 * @param WP_Rewrite $wp_rewrite WordPress rewrite that will be modified, pass it by reference (&$wp_rewrite)
+	 * @param WP_Rewrite $wp_rewrite WordPress rewrite that will be modified, pass it by reference (&$wp_rewrite).
 	 */
 	public function filter_generate( WP_Rewrite $wp_rewrite ) {
 		/** @var Tribe__Tickets__Attendee_Registration__Rewrite $make */
@@ -110,7 +110,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	}
 
 	/**
-	 * @param array $rules
+	 * @param array $rules The rewrite rules.
 	 *
 	 * @return array
 	 */

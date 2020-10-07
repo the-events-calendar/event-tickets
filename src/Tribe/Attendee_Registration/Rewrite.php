@@ -22,7 +22,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  WP_Rewrite $wp_rewrite WordPress rewrite that will be modified, pass it by reference (&$wp_rewrite)
+	 * @param  WP_Rewrite $wp_rewrite WordPress rewrite that will be modified, pass it by reference (&$wp_rewrite).
 	 */
 	public function filter_generate( WP_Rewrite $wp_rewrite ) {
 		$this->setup( $wp_rewrite );
@@ -35,7 +35,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 		 * deal with the array merge, noting that rules for Event Tickets are
 		 * themselves added via this hook (default priority).
 		 *
-		 * @var Tribe__Tickets__Attendee_Registration__Rewrite $rewrite
+		 * @var Tribe__Tickets__Attendee_Registration__Rewrite $rewrite This rewrite instance.
 		 */
 		do_action( 'tribe_tickets_pre_rewrite', $this );
 
@@ -61,10 +61,10 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	 *
 	 * @since 4.9
 	 *
-	 * @param Tribe__Tickets__Attendee_Registration__Rewrite $rewrite
+	 * @param Tribe__Tickets__Attendee_Registration__Rewrite $rewrite The rewrite instance.
 	 */
 	public function generate_core_rules( Tribe__Tickets__Attendee_Registration__Rewrite $rewrite ) {
-		$rewrite->add( array( '{{ ' . tribe( 'tickets.attendee_registration' )->key_query_var . ' }}' ), array( tribe( 'tickets.attendee_registration' )->key_query_var => 1 ) );
+		$rewrite->add( [ '{{ ' . tribe( 'tickets.attendee_registration' )->key_query_var . ' }}' ], [ tribe( 'tickets.attendee_registration' )->key_query_var => 1 ] );
 	}
 
 	/**
