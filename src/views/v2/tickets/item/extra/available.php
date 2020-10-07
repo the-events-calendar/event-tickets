@@ -14,8 +14,8 @@
  *
  * @version TBD
  *
- * @var Tribe__Tickets__Editor__Template $this The Template Object
- * @var Tribe__Tickets__Ticket_Object    $ticket The Ticket Object
+ * @var Tribe__Tickets__Editor__Template $this The Template Object.
+ * @var Tribe__Tickets__Ticket_Object    $ticket The Ticket Object.
  * @var bool                             $is_mini True if it's in the mini cart context.
  */
 

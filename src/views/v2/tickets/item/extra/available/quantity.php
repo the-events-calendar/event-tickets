@@ -14,9 +14,9 @@
  *
  * @version TBD
  *
- * @var Tribe__Tickets__Editor__Template $this The Template Object
- * @var Tribe__Tickets__Ticket_Object $ticket  The Ticket Object
- * @var int $threshold                         The threshold value to show or hide quantity available
+ * @var Tribe__Tickets__Editor__Template $this The Template Object.
+ * @var Tribe__Tickets__Ticket_Object $ticket  The Ticket Object.
+ * @var int $threshold                         The threshold value to show or hide quantity available.
  */
 if ( 0 !== $threshold && $threshold < $ticket->available() ) {
 	return;
