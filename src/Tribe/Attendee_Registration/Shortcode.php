@@ -1,6 +1,6 @@
 <?php
 /**
-* Provides shortcodes for the attendee registration templatee.
+* Provides shortcodes for the attendee registration template.
 * @since 4.10.2
 */
 class Tribe__Tickets__Attendee_Registration__Shortcode {

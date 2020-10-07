@@ -18,11 +18,11 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	}
 
 	/**
-	 * Generate the Rewrite Rules
+	 * Generate the Rewrite Rules.
 	 *
 	 * @since 4.9
 	 *
-	 * @param  WP_Rewrite $wp_rewrite WordPress Rewrite that will be modified, pass it by reference (&$wp_rewrite)
+	 * @param  WP_Rewrite $wp_rewrite WordPress rewrite that will be modified, pass it by reference (&$wp_rewrite)
 	 */
 	public function filter_generate( WP_Rewrite $wp_rewrite ) {
 		$this->setup( $wp_rewrite );

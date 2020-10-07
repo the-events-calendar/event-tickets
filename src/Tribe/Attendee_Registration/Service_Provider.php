@@ -45,6 +45,9 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 		add_filter( 'tribe_tickets_commerce_paypal_add_to_cart_args', [ $this, 'add_product_delete_to_paypal_url' ], 10, 1 );
 	}
 
+	/**
+	 * Initialize the template class
+	 */
 	public function add_attendee_registration_template_hook() {
 		/** @var Tribe__Tickets__Attendee_Registration__Template $make */
 		$make = $this->container->make( 'tickets.attendee_registration.template' );
@@ -52,6 +55,9 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 		$make->hook();
 	}
 
+	/**
+	 * Setup shortcodes for the attendee registration template.
+	 */
 	public function add_attendee_registration_shortcode_hook() {
 		/** @var Tribe__Tickets__Attendee_Registration__Shortcode $make */
 		$make = $this->container->make( 'tickets.attendee_registration.shortcode' );
@@ -59,6 +65,9 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 		$make->hook();
 	}
 
+	/**
+	 * Setup Modal Cart Template.
+	 */
 	public function add_attendee_registration_modal_hook() {
 		/** @var Tribe__Tickets__Attendee_Registration__Modal $make */
 		$make = $this->container->make( 'tickets.attendee_registration.modal' );
@@ -66,6 +75,9 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 		$make->hook();
 	}
 
+	/**
+	 * Add attendee-registration rewrite tag.
+	 */
 	public function add_rewrite_tags() {
 		/** @var Tribe__Tickets__Attendee_Registration__Rewrite $make */
 		$make = $this->container->make( 'tickets.attendee_registration.rewrite' );
@@ -74,6 +86,8 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	}
 
 	/**
+	 * Sets up the rules required by Event Tickets.
+	 *
 	 * @param Tribe__Tickets__Attendee_Registration__Rewrite $rewrite
 	 */
 	public function generate_core_rules( Tribe__Tickets__Attendee_Registration__Rewrite $rewrite ) {
@@ -84,7 +98,9 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	}
 
 	/**
-	 * @param WP_Rewrite $wp_rewrite
+	 * Generate the Rewrite Rules.
+	 *
+	 * @param WP_Rewrite $wp_rewrite WordPress rewrite that will be modified, pass it by reference (&$wp_rewrite)
 	 */
 	public function filter_generate( WP_Rewrite $wp_rewrite ) {
 		/** @var Tribe__Tickets__Attendee_Registration__Rewrite $make */
