@@ -143,7 +143,10 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 */
 		$notify_url = apply_filters( 'tribe_tickets_commerce_paypal_notify_url', $notify_url, $post, $product_ids );
 
-		$custom_args = [ 'user_id' => get_current_user_id(), 'tribe_handler' => 'tpp', 'pid' => $post->ID ];
+		$custom_args = [
+			'user_id'       => get_current_user_id(),
+			'tribe_handler' => 'tpp', 'pid' => $post->ID,
+		];
 
 		$invoice_number = $this->set_invoice_number();
 
