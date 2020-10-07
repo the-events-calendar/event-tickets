@@ -23,7 +23,10 @@
  *
  * @since 4.11.1
  *
- * @param int $show_unlimited allow showing of "unlimited".
+ * @var Tribe__Tickets__Editor__Template $this The Template Object.
+ * @var Tribe__Tickets__Ticket_Object $ticket  The Ticket Object.
+ * @var int $threshold                         The threshold value to show or hide quantity available.
+ * @var int $show_unlimited                    Whether to allow showing of "unlimited".
  */
 $show_unlimited = apply_filters( 'tribe_tickets_block_show_unlimited_availability', true, $ticket->available() );
 $is_unlimited   = $ticket->available() === - 1;
