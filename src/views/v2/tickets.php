@@ -35,6 +35,7 @@ if ( ! $is_sale_future && ( ! $provider || ! $tickets ) ) {
 $classes = [
 	'tribe-common',
 	'event-tickets',
+	'tribe-tickets__tickets-wrapper',
 ];
 
 ?>
