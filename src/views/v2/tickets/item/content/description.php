@@ -14,7 +14,7 @@
  *
  * @version TBD
  *
- * @var Tribe__Tickets__Ticket_Object $ticket   Ticket Object
+ * @var Tribe__Tickets__Ticket_Object $ticket   Ticket Object.
  * @var bool                          $is_mini  True if it's in mini cart context.
  * @var bool                          $is_modal True if it's in modal context.
  */
