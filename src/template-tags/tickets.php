@@ -1734,7 +1734,7 @@ if ( ! function_exists( 'tribe_tickets_is_provider_active' ) ) {
 
 if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 	/**
-	 * Determine whether the tickets block views is enabled.
+	 * Determine whether the new Tickets views are enabled.
 	 *
 	 * In order: the function will check the constant, the environment variable, the settings UI option, and then
 	 * allow filtering.
