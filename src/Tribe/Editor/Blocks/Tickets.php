@@ -107,10 +107,13 @@ extends Tribe__Editor__Blocks__Abstract {
 			$tickets_block_dependencies[] = 'wp-i18n';
 		}
 
+		// Check wether we use v1 or v2. We need to update this when we deprecate tickets v1.
+		$tickets_js = tribe_tickets_new_views_is_enabled() ? 'v2/tickets-block.js' : 'tickets-block.js';
+
 		tribe_asset(
 			$plugin,
-			'tribe-tickets-gutenberg-tickets',
-			'tickets-block.js',
+			'tribe-tickets-block',
+			$tickets_js,
 			$tickets_block_dependencies,
 			null,
 			[
