@@ -14,7 +14,7 @@
  *
  * @version TBD
  *
- * @var    Tribe__Tickets__Editor__Template $thisTemplate object.
+ * @var    Tribe__Tickets__Editor__Template $this Template object.
  * @var    Tribe__Tickets__Ticket_Object $ticket          The ticket object.
  */
 
