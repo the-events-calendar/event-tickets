@@ -22,47 +22,55 @@ if (
 	return;
 }
 
-$tickets_rsvp_display_title = sprintf(
-// Translators: %1$s: dynamic "RSVPs" text.
-	esc_html_x(
-		'%1$s Display Settings',
-		'title of settings section',
-		'event-tickets'
-	),
-	esc_html( tribe_get_rsvp_label_plural( 'tickets_rsvp_display_title' ) )
-);
-
-$tickets_rsvp_display_description = sprintf(
-// Translators: %1$s: dynamic "RSVPs" text.
-	esc_html_x(
-		'The settings below control the display of your %1$s.',
-		'description of settings section',
-		'event-tickets'
-	),
-	esc_html( tribe_get_rsvp_label_plural( 'tickets_rsvp_display_description' ) )
-);
-
-if ( $etp_active ) {
-	$tickets_rsvp_display_title = sprintf(
-	// Translators: %1$s: dynamic "Tickets" text, %2$s: dynamic "RSVPs" text.
-		esc_html_x(
-			'%1$s and %2$s Display Settings',
+$tickets_rsvp_display_title = esc_html(
+	sprintf(
+	// Translators: %1$s: dynamic "RSVPs" text.
+		_x(
+			'%1$s Display Settings',
 			'title of settings section',
 			'event-tickets'
 		),
-		esc_html( tribe_get_ticket_label_plural( 'tickets_rsvp_display_title' ) ),
-		esc_html( tribe_get_rsvp_label_plural( 'tickets_rsvp_display_title' ) )
-	);
+		tribe_get_rsvp_label_plural( 'tickets_rsvp_display_title' )
+	)
+);
 
-	$tickets_rsvp_display_description = sprintf(
-	// Translators: %1$s: dynamic "Tickets" text, %2$s: dynamic "RSVPs" text.
-		esc_html_x(
-			'The settings below control the display of your %1$s and %2$s.',
+$tickets_rsvp_display_description = esc_html(
+	sprintf(
+	// Translators: %1$s: dynamic "RSVPs" text.
+		_x(
+			'The settings below control the display of your %1$s.',
 			'description of settings section',
 			'event-tickets'
 		),
-		esc_html( tribe_get_ticket_label_plural( 'tickets_rsvp_display_description' ) ),
-		esc_html( tribe_get_rsvp_label_plural( 'tickets_rsvp_display_description' ) )
+		tribe_get_rsvp_label_plural( 'tickets_rsvp_display_description' )
+	)
+);
+
+if ( $etp_active ) {
+	$tickets_rsvp_display_title = esc_html(
+		sprintf(
+		// Translators: %1$s: dynamic "Tickets" text, %2$s: dynamic "RSVPs" text.
+			_x(
+				'%1$s and %2$s Display Settings',
+				'title of settings section',
+				'event-tickets'
+			),
+			esc_html( tribe_get_ticket_label_plural( 'tickets_rsvp_display_title' ) ),
+			tribe_get_rsvp_label_plural( 'tickets_rsvp_display_title' )
+		)
+	);
+
+	$tickets_rsvp_display_description = esc_html(
+		sprintf(
+		// Translators: %1$s: dynamic "Tickets" text, %2$s: dynamic "RSVPs" text.
+			_x(
+				'The settings below control the display of your %1$s and %2$s.',
+				'description of settings section',
+				'event-tickets'
+			),
+			esc_html( tribe_get_ticket_label_plural( 'tickets_rsvp_display_description' ) ),
+			tribe_get_rsvp_label_plural( 'tickets_rsvp_display_description' )
+		)
 	);
 }
 
@@ -81,23 +89,27 @@ $et_options_display = [
 if ( tribe_installed_before( 'Tribe__Tickets__Main', '5.0' ) ) {
 	$et_options_display['tickets_rsvp_use_new_views'] = [
 		'type'            => 'checkbox_bool',
-		'label'           => sprintf(
-		// Translators: %1$s: dynamic "RSVPs" text.
-			esc_html_x(
-				'Enable New %1$s Experience',
-				'settings label',
-				'event-tickets'
-			),
-			esc_html( tribe_get_rsvp_label_singular( 'tickets_rsvp_use_new_views' ) )
+		'label'           => esc_html(
+			sprintf(
+			// Translators: %1$s: dynamic "RSVPs" text.
+				_x(
+					'Enable New %1$s Experience',
+					'settings label',
+					'event-tickets'
+				),
+				tribe_get_rsvp_label_singular( 'tickets_rsvp_use_new_views' )
+			)
 		),
-		'tooltip'         => sprintf(
-		// Translators: %1$s: dynamic "RSVPs" text.
-			esc_html_x(
-				'This setting will render the new front-end designs (styling) and user-flow for the %1$s experience.',
-				'settings tooltip',
-				'event-tickets'
-			),
-			esc_html( tribe_get_rsvp_label_singular( 'tickets_rsvp_use_new_views' ) )
+		'tooltip'         => esc_html(
+			sprintf(
+			// Translators: %1$s: dynamic "RSVPs" text.
+				_x(
+					'This setting will render the new front-end designs (styling) and user-flow for the %1$s experience.',
+					'settings tooltip',
+					'event-tickets'
+				),
+				tribe_get_rsvp_label_singular( 'tickets_rsvp_use_new_views' )
+			)
 		),
 		'validation_type' => 'boolean',
 		'default'         => false,
@@ -111,19 +123,23 @@ if (
 ) {
 	$et_options_display['tickets_use_new_views'] = [
 		'type'            => 'checkbox_bool',
-		'label'           => sprintf(
-		// Translators: %1$s: dynamic "Tickets" text.
-			esc_html_x(
-				'Enable Updated %1$s Experience',
-				'settings label',
-				'event-tickets'
-			),
-			esc_html( tribe_get_ticket_label_plural( 'tickets_use_new_views' ) )
+		'label'           => esc_html(
+			sprintf(
+			// Translators: %1$s: dynamic "Tickets" text.
+				_x(
+					'Enable Updated %1$s Experience',
+					'settings label',
+					'event-tickets'
+				),
+				tribe_get_ticket_label_plural( 'tickets_use_new_views' )
+			)
 		),
-		'tooltip'         => sprintf(
-		// Translators: %1$s: dynamic "Tickets" text.
-			esc_html_x( 'This setting will enable the updated front-end views and Individual Attendee Collection (IAC) flows for %1$s.', 'settings tooltip', 'event-tickets' ),
-			esc_html( tribe_get_ticket_label_plural( 'tickets_use_new_views' ) )
+		'tooltip'         => esc_html(
+			sprintf(
+			// Translators: %1$s: dynamic "Tickets" text.
+				_x( 'This setting will enable the updated front-end views and Individual Attendee Collection (IAC) flows for %1$s.', 'settings tooltip', 'event-tickets' ),
+				tribe_get_ticket_label_plural( 'tickets_use_new_views' )
+			)
 		),
 		'validation_type' => 'boolean',
 		'default'         => false,
