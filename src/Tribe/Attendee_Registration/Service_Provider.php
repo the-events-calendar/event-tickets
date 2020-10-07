@@ -46,7 +46,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	}
 
 	/**
-	 * Initialize the template class
+	 * Initialize the template class.
 	 */
 	public function add_attendee_registration_template_hook() {
 		/** @var Tribe__Tickets__Attendee_Registration__Template $make */
@@ -122,11 +122,11 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	}
 
 	/**
-	 * @param $args
+	 * @param array $args PayPal Add To Cart URL arguments.
 	 *
 	 * @return array
 	 */
-	public function add_product_delete_to_paypal_url( $args ) {
+	public function add_product_delete_to_paypal_url( array $args ) {
 		/** @var Tribe__Tickets__Attendee_Registration__Meta $make */
 		$make = $this->container->make( 'tickets.attendee_registration.meta' );
 
