@@ -8,14 +8,14 @@
  *
  * See more documentation about our views templating system.
  *
- * @link http://m.tri.be/1amp
+ * @link    http://m.tri.be/1amp
  *
- * @since TBD
+ * @since   TBD
  *
  * @version TBD
  *
- * @var $this Tribe__Tickets__Editor__Template
- * @var Tribe__Tickets__Ticket_Object $ticket The ticket object.
+ * @var    Tribe__Tickets__Editor__Template $this Template object.
+ * @var    Tribe__Tickets__Ticket_Object $ticket          The ticket object.
  */
 
 $button_title = sprintf(
