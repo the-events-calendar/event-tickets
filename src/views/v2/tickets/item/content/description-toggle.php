@@ -8,15 +8,14 @@
  *
  * See more documentation about our views templating system.
  *
- * @link http://m.tri.be/1amp
+ * @link    http://m.tri.be/1amp
  *
- * @since TBD
+ * @since   TBD
  *
  * @version TBD
  *
- * @var Tribe__Tickets__Ticket_Object $ticket
- * @var bool                          $is_mini  True if it's in mini cart context.
- * @var bool                          $is_modal True if it's in modal context.
+ * @var Tribe__Tickets__Ticket_Object $ticket The Ticket Object
+ * @var bool $is_modal                        True if it's in modal context.
  */
 
 if (
