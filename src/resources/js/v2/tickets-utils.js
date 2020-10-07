@@ -18,7 +18,7 @@ tribe.tickets = tribe.tickets || {};
 tribe.tickets.utils = {};
 
 /**
- * Initializes in a Strict env the code that manages the plugin "loader".
+ * Initializes in a Strict env the code that manages the plugin "utils".
  *
  * @since TBD
  *
