@@ -1,8 +1,10 @@
 <?php
+
 /**
-* Provides shortcodes for the attendee registration templatee.
-* @since 4.10.2
-*/
+ * Provides shortcodes for the attendee registration template.
+ *
+ * @since 4.10.2
+ */
 class Tribe__Tickets__Attendee_Registration__Shortcode {
 	protected $shortcode_name = 'tribe_attendee_registration';
 	protected $params         = [];
@@ -52,14 +54,10 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 	 * @return string
 	 */
 	public function render() {
-		ob_start();
+		/** @var \Tribe\Tickets\Plus\Attendee_Registration\View $view */
+		$view = tribe( 'tickets-plus.attendee-registration.view' );
 
-		/** @var Tribe__Tickets__Attendee_Registration__View $view */
-		$view = tribe( 'tickets.attendee_registration.view' );
-
-		echo $view->display_attendee_registration_shortcode();
-
-		return ob_get_clean();
+		return $view->get_page_content();
 	}
 
 }

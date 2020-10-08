@@ -205,16 +205,8 @@ class Tribe__Tickets__Tickets_View {
 			$attendees = $_POST['attendee'];
 		}
 
-		/**
-		 * Sort list to handle all not attending first
-		 *
-		 * @todo switch to only wp_list_sort once WordPress 4.7 is minimum supported version
-		 */
-		if ( function_exists( 'wp_list_sort' ) ) {
-			$attendees = wp_list_sort( $attendees, 'order_status', 'ASC', true );
-		} else {
-			uasort( $attendees, [ $this, 'sort_attendees' ] );
-		}
+		// Sort list to handle all not attending first.
+		$attendees = wp_list_sort( $attendees, 'order_status', 'ASC', true );
 
 		foreach ( $attendees as $order_id => $data ) {
 			/**
@@ -1185,7 +1177,6 @@ class Tribe__Tickets__Tickets_View {
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
 
-		// @todo Remove this after G20.07.
 		// Determine whether to show the previews on the page.
 		if (
 			defined( 'TRIBE_TICKETS_RSVP_NEW_VIEWS_PREVIEW' )

@@ -295,15 +295,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function get_ticket_reports_link( $post_id_deprecated, $ticket_id ) {}
 
 		/**
-		 * Returns a single ticket
+		 * Returns a single ticket.
 		 *
-		 * @abstract
+		 * @param int $post_id   ID of parent "event" post.
+		 * @param int $ticket_id ID of ticket post.
 		 *
-		 * @param int $post_id ID of parent "event" post
-		 * @param int $ticket_id ID of ticket post
-		 * @return mixed
+		 * @return Tribe__Tickets__Ticket_Object|null
 		 */
-		public function get_ticket( $post_id, $ticket_id ) {}
+		public function get_ticket( $post_id, $ticket_id ) {
+			return null;
+		}
 
 		/**
 		 * Retrieve the Query args to fetch all the Tickets.
@@ -3266,6 +3267,32 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			wp_safe_redirect( $url );
 			exit;
+		}
+
+		/**
+		 * Get list of tickets in cart for a specific provider.
+		 *
+		 * @since TBD
+		 *
+		 * @param null|string|false $provider The provider slug or false if no provider, leave as null to detect from page.
+		 *
+		 * @return array List of tickets in cart for the provider.
+		 */
+		public static function get_tickets_in_cart_for_provider( $provider = null ) {
+			if ( null === $provider ) {
+				$provider = tribe_get_request_var( 'provider', false );
+			}
+
+			/**
+			 * Filter to add/remove tickets from the global cart.
+			 *
+			 * @since 4.9
+			 * @since 4.11.0 Added $provider to allow context of current provider.
+			 *
+			 * @param array        $tickets_in_cart The array containing the cart elements. Format array( 'ticket_id' => 'quantity' ).
+			 * @param string|false $provider        Current ticket provider or false if not set.
+			 */
+			return (array) apply_filters( 'tribe_tickets_tickets_in_cart', [], $provider );
 		}
 
 		/**
