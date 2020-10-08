@@ -295,15 +295,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function get_ticket_reports_link( $post_id_deprecated, $ticket_id ) {}
 
 		/**
-		 * Returns a single ticket
+		 * Returns a single ticket.
 		 *
-		 * @abstract
+		 * @param int $post_id   ID of parent "event" post.
+		 * @param int $ticket_id ID of ticket post.
 		 *
-		 * @param int $post_id ID of parent "event" post
-		 * @param int $ticket_id ID of ticket post
-		 * @return mixed
+		 * @return Tribe__Tickets__Ticket_Object|null
 		 */
-		public function get_ticket( $post_id, $ticket_id ) {}
+		public function get_ticket( $post_id, $ticket_id ) {
+			return null;
+		}
 
 		/**
 		 * Retrieve the Query args to fetch all the Tickets.

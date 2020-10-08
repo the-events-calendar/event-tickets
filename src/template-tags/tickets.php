@@ -637,14 +637,14 @@ if ( ! function_exists( 'tribe_tickets_get_template_part' ) ) {
 	 * Includes a template part, similar to the WP get template part, but looks
 	 * in the correct directories for Tribe Tickets templates
 	 *
-	 * @param string      $slug The Base template name
-	 * @param null|string $name (optional) if set will try to include `{$slug}-{$name}.php` file
-	 * @param array       $data (optional) array of vars to inject into the template part
-	 * @param boolean     $echo (optional) Allows the user to print or return the template
-	 *
-	 * @return string|void It will depend if it's echoing or not
 	 * @uses Tribe__Tickets__Templates::get_template_hierarchy
 	 *
+	 * @param string      $slug The Base template name.
+	 * @param null|string $name (optional) if set will try to include `{$slug}-{$name}.php` file.
+	 * @param array       $data (optional) array of vars to inject into the template part.
+	 * @param bool        $echo (optional) Allows the user to print or return the template.
+	 *
+	 * @return string|void Whether it's echoing or not.
 	 */
 	function tribe_tickets_get_template_part( $slug, $name = null, array $data = null, $echo = true ) {
 
@@ -773,10 +773,11 @@ if ( ! function_exists( 'tribe_tickets_get_template_part' ) ) {
 if ( ! function_exists( 'tribe_tickets_post_type_enabled' ) ) {
 
 	/**
-	 * Returns whether or not the provided post type allows tickets to be attached
+	 * Returns whether the provided post type allows tickets to be attached
 	 *
 	 * @param string $post_type
-	 * @return boolean
+	 *
+	 * @return bool
 	 */
 	function tribe_tickets_post_type_enabled( $post_type ) {
 		$post_types = Tribe__Tickets__Main::instance()->post_types();
@@ -1203,7 +1204,7 @@ if ( ! function_exists( 'tribe_tickets_ticket_in_wc_membership_for_user' ) ) {
 	 * @param int $ticket_id
 	 * @param int $user_id
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	function tribe_tickets_ticket_in_wc_membership_for_user( $ticket_id, $user_id = 0 ) {
 
@@ -1489,7 +1490,7 @@ if ( ! function_exists( 'tribe_tickets_is_event_page' ) ) {
 	 *
 	 * @param int|WP_Post|null $post The post (or its ID) we're testing. Default is global post.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	function tribe_tickets_is_event_page( $post = null ) {
 		// Tribe__Events__Main must exist.
@@ -1570,32 +1571,32 @@ if ( ! function_exists( 'tribe_tickets_is_enabled_post_context' ) ) {
  *
  * @since 4.12.3
  *
- * @return boolean Whether new RSVP views are enabled.
+ * @return bool Whether new RSVP views are enabled.
  */
 function tribe_tickets_rsvp_new_views_is_enabled() {
 	// Check for constant.
 	if ( defined( 'TRIBE_TICKETS_RSVP_NEW_VIEWS' ) ) {
-		return (boolean) TRIBE_TICKETS_RSVP_NEW_VIEWS;
+		return (bool) TRIBE_TICKETS_RSVP_NEW_VIEWS;
 	}
 
 	// Check for env var.
 	$env_var = getenv( 'TRIBE_TICKETS_RSVP_NEW_VIEWS' );
 
 	if ( false !== $env_var ) {
-		return (boolean) $env_var;
+		return (bool) $env_var;
 	}
 
 	// Determine if ET was installed at version 5.0+.
 	$should_default_to_on = ! tribe_installed_before( 'Tribe__Tickets__Main', '5.0' );
 
-	$enabled = (boolean) tribe_get_option( 'tickets_rsvp_use_new_views', $should_default_to_on );
+	$enabled = (bool) tribe_get_option( 'tickets_rsvp_use_new_views', $should_default_to_on );
 
 	/**
 	 * Allows filtering whether new RSVP views are enabled.
 	 *
 	 * @since 4.12.3
 	 *
-	 * @param boolean $enabled Whether new RSVP views are enabled.
+	 * @param bool $enabled Whether new RSVP views are enabled.
 	 */
 	return apply_filters( 'tribe_tickets_rsvp_new_views_is_enabled', $enabled );
 }
@@ -1731,37 +1732,45 @@ if ( ! function_exists( 'tribe_tickets_is_provider_active' ) ) {
 	}
 }
 
-/**
- * Determine whether new tickets (block) views are enabled.
- *
- * In order the function will check the `TRIBE_TICKETS_NEW_VIEWS` constant,
- * the `TRIBE_TICKETS_NEW_VIEWS` environment variable and, finally, the `tribe_tickets_new_views_is_enabled` option.
- *
- * @since TBD
- *
- * @return bool Whether new tickets views are enabled.
- */
-function tribe_tickets_new_views_is_enabled() {
-	$enabled = false;
-
-	// Check for constant.
-	if ( defined( 'TRIBE_TICKETS_NEW_VIEWS' ) ) {
-		return (bool) TRIBE_TICKETS_NEW_VIEWS;
-	}
-
-	// Check for env var.
-	$env_var = getenv( 'TRIBE_TICKETS_NEW_VIEWS' );
-
-	if ( false !== $env_var ) {
-		return (bool) $env_var;
-	}
-
+if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 	/**
-	 * Allows filtering whether new tickets block views are enabled.
+	 * Determine whether the new Tickets views are enabled.
+	 *
+	 * In order: the function will check the constant, the environment variable, the settings UI option, and then
+	 * allow filtering.
 	 *
 	 * @since TBD
 	 *
-	 * @param boolean $enabled Whether new RSVP views are enabled.
+	 * @return bool Whether the tickets block views is enabled.
 	 */
-	return apply_filters( 'tribe_tickets_new_views_is_enabled', $enabled );
+	function tribe_tickets_new_views_is_enabled() {
+		// Check for constant.
+		if ( defined( 'TRIBE_TICKETS_NEW_VIEWS' ) ) {
+			return (bool) TRIBE_TICKETS_NEW_VIEWS;
+		}
+
+		// Check for env var.
+		$env_var = getenv( 'TRIBE_TICKETS_NEW_VIEWS' );
+
+		if ( false !== $env_var ) {
+			return (bool) $env_var;
+		}
+
+		// If ETP was installed on or after version 5.1, default to enabled.
+		$should_default_to_on = ! tribe_installed_before( 'Tribe__Tickets_Plus__Main', '5.1' );
+
+		// Check for settings UI option.
+		$enabled = (bool) tribe_get_option( 'tickets_use_new_views', $should_default_to_on );
+
+		/**
+		 * Allows filtering whether the tickets block views is enabled.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $enabled Whether the tickets block views are enabled.
+		 *
+		 * @var bool   $enabled Whether the tickets block views are enabled.
+		 */
+		return (bool) apply_filters( 'tribe_tickets_new_views_is_enabled', $enabled );
+	}
 }
