@@ -44,7 +44,6 @@ $classes = [
 		id="tribe-tickets"
 		action="<?php echo esc_url( $provider->get_cart_url() ); ?>"
 		class="tribe-tickets"
-		class="tribe-tickets"
 		method="post"
 		enctype='multipart/form-data'
 		data-provider="<?php echo esc_attr( $provider->class_name ); ?>"
