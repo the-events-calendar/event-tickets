@@ -3142,8 +3142,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since 4.9
 		 * @since TBD Correct provider attendee object.
 		 *
-		 * @param string   $redirect URL to redirect to.
-		 * @param null|int $post_id  Post ID for cart.
+		 * @param string|null $redirect URL to redirect to.
+		 * @param null|int    $post_id  Post ID for cart.
 		 */
 		public function maybe_redirect_to_attendees_registration_screen( $redirect = null, $post_id = null ) {
 
@@ -3164,7 +3164,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var \Tribe__Tickets__Attendee_Registration__Main $attendee_registration */
 			$attendee_registration = tribe( 'tickets.attendee_registration' );
 
-			if ( $attendee_registration->is_on_page() || $attendee_registration->is_cart_rest() || $attendee_registration->is_using_shortcode() ) {
+			if (
+				$attendee_registration->is_on_page()
+				|| $attendee_registration->is_cart_rest()
+				|| $attendee_registration->is_using_shortcode()
+			) {
 				return;
 			}
 
@@ -3199,12 +3203,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			$is_paypal = (bool) $redirect;
-
 			/** @var Tribe__Tickets_Plus__Main $tickets_plus_main */
 			$tickets_plus_main = tribe( 'tickets-plus.main' );
 
-			/** @var Tribe__Tickets_Plus__Meta $meta */
 			$meta = $tickets_plus_main->meta();
 
 			$cart_has_meta = true;
