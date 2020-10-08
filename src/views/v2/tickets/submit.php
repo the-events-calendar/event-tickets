@@ -27,6 +27,4 @@ if (
 
 $this->template( 'v2/tickets/submit/must-login' );
 
-$this->template( 'v2/tickets/submit/button-modal' );
-
 $this->template( 'v2/tickets/submit/button' );

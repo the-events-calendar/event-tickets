@@ -72,6 +72,15 @@ $classes = [
 
 	</form>
 
-	<?php $this->template( 'v2/modal/target' ); ?>
-
+	<?php
+	/**
+	 * Allows injection of additional markup after the form tag but within the div of this template.
+	 *
+	 * @since TBD
+	 *
+	 * @see  Tribe__Template\do_entry_point()
+	 * @link https://docs.theeventscalendar.com/reference/classes/tribe__template/do_entry_point/
+	 */
+	$this->do_entry_point( 'after_form' );
+	?>
 </div>
