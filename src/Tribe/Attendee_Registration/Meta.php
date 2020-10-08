@@ -13,7 +13,7 @@ class Tribe__Tickets__Attendee_Registration__Meta {
 	 *
 	 * @since  4.9
 	 *
-	 * @param array $args
+	 * @param array $args PayPal URL query arguments.
 	 *
 	 * @filter tribe_tickets_commerce_paypal_add_to_cart_args 10 1
 	 *
