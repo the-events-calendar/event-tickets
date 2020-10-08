@@ -15,6 +15,7 @@
  * @version TBD
  *
  * @var bool $is_modal True if it's in "Modal" context.
+ * @var Tribe__Tickets__Ticket_Object $ticket Ticket Item.
  */
 
 if ( empty( $is_modal ) ) {
