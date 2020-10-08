@@ -11,9 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.12.3
- * @since5.0.0 Updated the input name used for submitting data.
+ * @since 5.0.0 Updated the input name used for submitting data.
  *
- * @version5.0.0
+ * @version 5.0.0
  */
 
 /**
