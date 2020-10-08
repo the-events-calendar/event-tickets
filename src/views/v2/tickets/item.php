@@ -14,10 +14,11 @@
  *
  * @version TBD
  *
- * @var Tribe__Tickets__Ticket_Object      $ticket
+ * @var Tribe__Tickets__Ticket_Object      $ticket      The Ticket Object
+ * @var WP_Post|int                        $post_id     The post object or ID.
  * @var Tribe__Tickets__Tickets            $provider    The tickets provider class.
  * @var string                             $provider_id The tickets provider class name.
- * @var Tribe__Tickets__Commerce__Currency $currency
+ * @var Tribe__Tickets__Commerce__Currency $currency    The Currency Object
  * @var int                                $key         The ticket key.
  * @var bool                               $is_mini     True if it's in mini cart context.
  * @var bool                               $is_modal    True if it's in modal context.
