@@ -62,7 +62,7 @@ if ( $must_login ) {
 }
 
 if ( $has_suffix ) {
-	$classes[] = 'tribe-tickets__item--price-sufix';
+	$classes[] = 'tribe-tickets__item--price-suffix';
 }
 
 ?>

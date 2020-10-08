@@ -166,10 +166,13 @@
 			}
 		}
 
+		/* V1 views had a typo in "suffix" so we cover both. */
 		&.tribe-tickets__item--price-sufix,
-		&.tribe-tickets__item--price-sufix.show-optout {
-			@media(--viewport-medium) {
-				-ms-grid-columns:  5.5fr 3fr;
+		&.tribe-tickets__item--price-sufix.show-optout,
+		&.tribe-tickets__item--price-suffix,
+		&.tribe-tickets__item--price-suffix.show-optout {
+			@media (--viewport-medium) {
+				-ms-grid-columns: 5.5fr 3fr;
 				grid-template-columns: 5.5fr 3fr;
 			}
 		}
