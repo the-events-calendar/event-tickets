@@ -3140,9 +3140,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * redirect to the meta collection screen.
 		 *
 		 * @since 4.9
+		 * @since TBD Correct provider attendee object.
 		 *
-		 * @param string   $redirect URL to redirect to.
-		 * @param null|int $post_id  Post ID for cart.
+		 * @param string|null $redirect URL to redirect to.
+		 * @param null|int    $post_id  Post ID for cart.
 		 */
 		public function maybe_redirect_to_attendees_registration_screen( $redirect = null, $post_id = null ) {
 
@@ -3163,7 +3164,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var \Tribe__Tickets__Attendee_Registration__Main $attendee_registration */
 			$attendee_registration = tribe( 'tickets.attendee_registration' );
 
-			if ( $attendee_registration->is_on_page() || $attendee_registration->is_cart_rest() || $attendee_registration->is_using_shortcode() ) {
+			if (
+				$attendee_registration->is_on_page()
+				|| $attendee_registration->is_cart_rest()
+				|| $attendee_registration->is_using_shortcode()
+			) {
 				return;
 			}
 
@@ -3173,6 +3178,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$q_provider = tribe_get_request_var( 'provider', false );
+
+			// Provider to use the attendee object.
+			if (
+				static::class === $q_provider
+				|| empty( $q_provider )
+			) {
+				$q_provider = $this->attendee_object;
+			}
 
 			/**
 			 * Filter to add/remove tickets from the global cart
@@ -3190,12 +3203,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			$is_paypal = (bool) $redirect;
-
 			/** @var Tribe__Tickets_Plus__Main $tickets_plus_main */
 			$tickets_plus_main = tribe( 'tickets-plus.main' );
 
-			/** @var Tribe__Tickets_Plus__Meta $meta */
 			$meta = $tickets_plus_main->meta();
 
 			$cart_has_meta = true;
@@ -3225,14 +3235,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$url = $attendee_reg->get_url();
 
-			$provider = tribe_get_request_var( 'provider' );
-
-			if ( empty( $provider ) ) {
-				$provider = $this->attendee_object;
-			}
-
-			if ( ! empty( $provider ) ) {
-				$url = add_query_arg( 'provider', $provider, $url );
+			if ( ! empty( $q_provider ) ) {
+				$url = add_query_arg( 'provider', $q_provider, $url );
 			}
 
 			if ( ! empty( $redirect ) ) {

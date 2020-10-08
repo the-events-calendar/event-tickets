@@ -65,7 +65,11 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 				continue;
 			}
 
-			$ticket_providers = [ $ticket->provider->attendee_object ];
+			// Check for attendee object or class name.
+			$ticket_providers = [
+				$ticket->provider->attendee_object,
+				get_class( $ticket->provider ),
+			];
 
 			if ( ! empty( $ticket->provider->orm_provider ) ) {
 				$ticket_providers[] = $ticket->provider->orm_provider;

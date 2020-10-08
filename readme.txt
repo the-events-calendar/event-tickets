@@ -120,7 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [5.0.2] TBD =
 
-
+* Fix - Correctly detect ticket provider to support Attendee Information. [ET-915]
 
 = [5.0.1] 2020-09-21 =
 
