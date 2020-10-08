@@ -24,13 +24,13 @@ if (
 
 $tickets_rsvp_display_title = esc_html(
 	sprintf(
-	// Translators: %1$s: dynamic "RSVPs" text.
+	// Translators: %1$s: dynamic "RSVP" text.
 		_x(
 			'%1$s Display Settings',
 			'title of settings section',
 			'event-tickets'
 		),
-		tribe_get_rsvp_label_plural( 'tickets_rsvp_display_title' )
+		tribe_get_rsvp_label_singular( 'tickets_rsvp_display_title' )
 	)
 );
 
@@ -49,14 +49,14 @@ $tickets_rsvp_display_description = esc_html(
 if ( $etp_active ) {
 	$tickets_rsvp_display_title = esc_html(
 		sprintf(
-		// Translators: %1$s: dynamic "Tickets" text, %2$s: dynamic "RSVPs" text.
+		// Translators: %1$s: dynamic "Ticket" text, %2$s: dynamic "RSVP" text.
 			_x(
 				'%1$s and %2$s Display Settings',
 				'title of settings section',
 				'event-tickets'
 			),
-			esc_html( tribe_get_ticket_label_plural( 'tickets_rsvp_display_title' ) ),
-			tribe_get_rsvp_label_plural( 'tickets_rsvp_display_title' )
+			esc_html( tribe_get_ticket_label_singular( 'tickets_rsvp_display_title' ) ),
+			tribe_get_rsvp_label_singular( 'tickets_rsvp_display_title' )
 		)
 	);
 
@@ -91,7 +91,7 @@ if ( tribe_installed_before( 'Tribe__Tickets__Main', '5.0' ) ) {
 		'type'            => 'checkbox_bool',
 		'label'           => esc_html(
 			sprintf(
-			// Translators: %1$s: dynamic "RSVPs" text.
+			// Translators: %1$s: dynamic "RSVP" text.
 				_x(
 					'Enable New %1$s Experience',
 					'settings label',
@@ -102,7 +102,7 @@ if ( tribe_installed_before( 'Tribe__Tickets__Main', '5.0' ) ) {
 		),
 		'tooltip'         => esc_html(
 			sprintf(
-			// Translators: %1$s: dynamic "RSVPs" text.
+			// Translators: %1$s: dynamic "RSVP" text.
 				_x(
 					'This setting will render the new front-end designs (styling) and user-flow for the %1$s experience.',
 					'settings tooltip',
