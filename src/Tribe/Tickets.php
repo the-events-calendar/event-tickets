@@ -3235,10 +3235,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$url = $attendee_reg->get_url();
 
-			if ( empty( $q_provider ) ) {
-				$q_provider = $this->attendee_object;
-			}
-
 			if ( ! empty( $q_provider ) ) {
 				$url = add_query_arg( 'provider', $q_provider, $url );
 			}
