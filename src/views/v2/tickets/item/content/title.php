@@ -8,14 +8,15 @@
  *
  * See more documentation about our views templating system.
  *
- * @link http://m.tri.be/1amp
+ * @link    http://m.tri.be/1amp
  *
- * @since TBD
+ * @since   TBD
+ *
  * @version TBD
  *
- * @var Tribe__Tickets__Ticket_Object $ticket Ticket Object.
- * @var WP_Post|int $post_id                  The post object or ID.
- * @var bool $is_mini                         True if it's in mini cart context.
+ * @var Tribe__Tickets__Ticket_Object $ticket  Ticket Object.
+ * @var WP_Post|int                   $post_id The post object or ID.
+ * @var bool                          $is_mini True if it's in mini cart context.
  */
 
 $no_description = ! $ticket->show_description() || empty( $ticket->description ) || $is_mini;
@@ -36,7 +37,7 @@ $event_title_classes = [
 <div <?php tribe_classes( $title_classes ); ?> >
 	<?php if ( $is_mini ) : ?>
 		<div <?php tribe_classes( $event_title_classes ); ?> >
-			<?php echo esc_html( get_the_title( $post_id ) ); ?>
+			<?php the_title(); ?>
 		</div>
 	<?php endif; ?>
 	<?php echo esc_html( $ticket->name ); ?>
