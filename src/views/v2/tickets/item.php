@@ -39,13 +39,11 @@ $privacy = tribe( 'tickets.privacy' );
 /** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 $tickets_handler = tribe( 'tickets.handler' );
 
-$available = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
-
 $context = [
 	'ticket'    => $ticket,
 	'key'       => $this->get( 'key' ),
 	'privacy'   => $privacy,
-	'available' => $available,
+	'max_at_a_time' => $tickets_handler->get_ticket_max_purchase( $ticket->ID ),
 ];
 
 $has_suffix = ! empty( $ticket->price_suffix );
