@@ -4,7 +4,7 @@
  */
 
 $main = Tribe__Main::instance();
-$has_plus = true || class_exists( 'Tribe__Tickets_Plus__Main' );
+$has_plus = class_exists( 'Tribe__Tickets_Plus__Main' );
 $has_tec = class_exists( 'Tribe__Events__Main' );
 ?>
 
