@@ -19,8 +19,8 @@
  * @var string                             $provider_id         The tickets provider class name.
  * @var Tribe__Tickets__Ticket_Object[]    $tickets             List of tickets.
  * @var Tribe__Tickets__Ticket_Object[]    $tickets_on_sale     List of tickets on sale.
- * @var Tribe__Tickets__Commerce__Currency $currency
- * @var boolean                            $is_mini             Context of template
+ * @var Tribe__Tickets__Commerce__Currency $currency The Currency instance.
+ * @var boolean                            $is_mini             Context of template.
  */
 
 // Bail if there are no tickets and we're not in mini context.
