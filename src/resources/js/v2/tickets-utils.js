@@ -29,14 +29,15 @@ tribe.tickets.utils = {};
  */
 ( function( $, obj ) {
 	'use strict';
+	const $document = $( document );
 
 	/**
 	 * Disable/Enable element.
 	 *
 	 * @since TBD
 	 *
-	 * @param {object} $element - jQuery object that we want to disable/enable.
-	 * @param {boolean} isDisabled - True if we want to disable the element.
+	 * @param {object} $element jQuery object that we want to disable/enable.
+	 * @param {boolean} isDisabled True if we want to disable the element.
 	 *
 	 * @return {void}
 	 */
@@ -59,7 +60,7 @@ tribe.tickets.utils = {};
 	 *
 	 * @since TBD
 	 *
-	 * @returns {string} - REST endpoint URL.
+	 * @returns {string} REST endpoint URL.
 	 */
 	obj.getRestEndpoint = function() {
 		return TribeCartEndpoint.url;
@@ -131,7 +132,7 @@ tribe.tickets.utils = {};
 	 * @param {number} number The number to format.
 	 * @param {string} provider The provider.
 	 *
-	 * @returns {string} - The formatted number.
+	 * @returns {string} The formatted number.
 	 */
 	obj.numberFormat = function( number, provider ) {
 		const format = obj.getCurrencyFormatting( provider );
@@ -174,4 +175,45 @@ tribe.tickets.utils = {};
 
 		return s.join( dec );
 	};
+
+	/**
+	 * Get the tickets provider, given a post ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param {number} postId The post id.
+	 *
+	 * @returns {boolean|string} The provider, or false if it's not found.
+	 */
+	obj.getTicketsProviderFromPostId = function( postId ) {
+		return $document.find( tribe.tickets.block.selectors.container + '[data-post-id="' + postId + '"]' ).data( 'provider' ) || false;
+	};
+
+	/**
+	 * Get the tickets provider ID, given a post ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param {number} postId The post id.
+	 *
+	 * @returns {boolean|string} The provider ID, or false if it's not found.
+	 */
+	obj.getTicketsProviderIdFromPostId = function( postId ) {
+		return $document.find( tribe.tickets.block.selectors.container + '[data-post-id="' + postId + '"]' ).data( 'provider-id' ) || false;
+	};
+
+	/**
+	 * Get the first tickets block post ID
+	 *
+	 * @since TBD
+	 *
+	 * @return {boolean|int} postId The post id.
+	 */
+	obj.getTicketsPostId = function() {
+		const $ticketsBlock = $( tribe.tickets.block.selectors.container )[ 0 ];
+
+		// Return the post id for the first ticket block.
+		return $ticketsBlock.getAttribute( 'data-post-id' ) || false;
+	};
+
 } )( jQuery, tribe.tickets.utils );
