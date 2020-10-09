@@ -8,30 +8,34 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link    {INSERT_ARTICLE_LINK_HERE}
  *
- * @since 4.9
- * @since 4.12.0 Add $post_id to filter for hiding opt-outs.
+ * @since   4.9
+ * @since   4.12.0 Add $post_id to filter for hiding opt-outs.
+ * @since   TBD Add vars to docblock.
  *
  * @version 4.12.0
  *
+ * @var Tribe__Tickets__Editor__Template $template
+ * @var Tribe__Tickets__RSVP             $rsvp
+ * @var int                              $post_id
  */
 
 $going      = $this->get( 'going' );
-$must_login = ! is_user_logged_in() && tribe( 'tickets.rsvp' )->login_required();
+$must_login = ! is_user_logged_in() && $rsvp->login_required();
 ?>
 <!-- This div is where the AJAX returns the form -->
 <div class="tribe-block__rsvp__form">
 	<?php if ( ! empty( $going ) && ! $must_login ) :
 		$ticket = $this->get( 'ticket' );
-		$args = [
+		$args   = [
 			'ticket_id' => $ticket->ID,
 			'post_id'   => $post_id,
-			'ticket'    => tribe( 'tickets.rsvp' )->get_ticket( get_the_id(), $ticket->ID ),
+			'ticket'    => $rsvp->get_ticket( get_the_id(), $ticket->ID ),
 			'going'     => esc_html( $going ),
 		];
 
 		// can't escape, contains html
-		echo tribe( 'tickets.editor.template' )->template( 'blocks/rsvp/form/form', $args, false );
+		echo $template->template( 'blocks/rsvp/form/form', $args, false );
 	endif; ?>
 </div>
