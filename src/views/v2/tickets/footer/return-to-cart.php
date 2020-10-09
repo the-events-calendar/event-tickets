@@ -8,16 +8,30 @@
  *
  * See more documentation about our views templating system.
  *
- * @link http://m.tri.be/1amp
+ * @link    http://m.tri.be/1amp
  *
- * @since TBD
+ * @since   TBD
+ *
  * @version TBD
  *
- * @var string                  $cart_url     The provider cart URL.
- * @var string                  $checkout_url The provider checkout URL.
- * @var bool                    $is_mini      True if in "mini cart" context.
+ * @var Tribe__Tickets__Tickets $provider    The tickets provider class.
+ * @var bool                    $is_mini     True if in "mini cart" context.
+ * @var WP_Post|int             $post_id     The post object or ID.
+ * @var string                  $provider_id The tickets provider class name.
+ * @var int                     $key         The ticket key.
  */
 
+if ( method_exists( $provider, 'get_cart_url' ) ) {
+	$cart_url = $provider->get_cart_url();
+} else {
+	$cart_url = '';
+}
+
+if ( method_exists( $provider, 'get_checkout_url' ) ) {
+	$checkout_url = $provider->get_checkout_url();
+} else {
+	$checkout_url = '';
+}
 
 if (
 	! $is_mini

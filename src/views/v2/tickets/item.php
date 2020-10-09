@@ -57,7 +57,7 @@ $ticket_item_id .= '-tickets-item-' . $ticket->ID;
 	data-ticket-id="<?php echo esc_attr( $ticket->ID ); ?>"
 	data-available="<?php echo esc_attr( $this->get( 'data_available' ) ); ?>"
 	data-has-shared-cap="<?php echo esc_attr( $this->get( 'data_has_shared_cap' ) ); ?>"
-	<?php if ( $has_shared_cap ) : ?>
+	<?php if ( $this->get( 'has_shared_cap' ) ) : ?>
 		data-shared-cap="<?php echo esc_attr( get_post_meta( $post_id, $tickets_handler->key_capacity, true ) ); ?>"
 	<?php endif; ?>
 >
