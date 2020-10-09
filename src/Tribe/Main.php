@@ -802,6 +802,17 @@ class Tribe__Tickets__Main {
 				'welcome_page_title'    => esc_html__( 'Welcome to Event Tickets!', 'event-tickets' ),
 				'welcome_page_template' => $this->plugin_path . 'src/admin-views/admin-welcome-message.php',
 			] );
+
+			tribe_asset(
+				$this,
+				'tribe-tickets-welcome-message',
+				'admin/welcome-message.js',
+				[ 'jquery' ],
+				'admin_enqueue_scripts',
+				[
+					'conditionals' => [ $this->activation_page, 'is_welcome_page' ]
+				]
+			);
 		}
 
 		return $this->activation_page;

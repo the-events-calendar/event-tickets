@@ -212,39 +212,3 @@ $has_tec = class_exists( 'Tribe__Events__Main' );
 	/>
 
 </div>
-
-<script>
-	jQuery( document ).ready( function() {
-		$window = jQuery( window );
-		$window.on( 'resize', function() {
-			// resize the video embed to keep the right aspect ratio
-			jQuery( ".tribe-events-admin-video" ).each( function() {
-				var $video = jQuery( this );
-				var w = $video.width();
-				var newHeight;
-
-				// 16:9 ratio
-				newHeight = w * 0.5625;
-
-				$video.height( newHeight );
-				$video.find( 'iframe' ).height( newHeight );
-			} );
-
-			// find window size to adjust the thickbox links
-			height = parseInt( $window.height() * 0.9 );
-			width = parseInt( $window.width() * 0.9 );
-
-			// adjust thickbox links height and width to be 90% of the browser height and width
-			jQuery( "a.thickbox" ).each( function() {
-				var $link = jQuery( this );
-				var href = new URL( $link.prop( "href" ) );
-
-				href.searchParams.set( 'height', height );
-				href.searchParams.set( 'width', width );
-
-				$link.prop( "href", href.toString() );
-			} );
-		} );
-		$window.resize(); // call the resize event at document ready to do this on load as well
-	} );
-</script>
