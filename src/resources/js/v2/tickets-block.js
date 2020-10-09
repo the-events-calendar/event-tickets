@@ -489,11 +489,26 @@ tribe.tickets.block = {
 	};
 
 	/**
+	 * Unbinds events for add/remove ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container jQuery object of the tickets container.
+	 *
+	 * @return {void}
+	 */
+	obj.unbindTicketsAddRemove = function( $container ) {
+		const $addRemove = $container.find( '.tribe-tickets__item__quantity__remove, .tribe-tickets__item__quantity__add' );
+
+		$addRemove.off();
+	};
+
+	/**
 	 * Binds events for add/remove ticket.
 	 *
 	 * @since TBD
 	 *
-	 * @param {jQuery} $container jQuery object of the RSVP container.
+	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
 	 * @return {void}
 	 */
@@ -536,11 +551,26 @@ tribe.tickets.block = {
 	};
 
 	/**
+	 * Unbinds events for the quantity input.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container jQuery object of the tickets container.
+	 *
+	 * @return {void}
+	 */
+	obj.bindTicketsQuantityInput = function( $container ) {
+		const $quantityInput = $container.find( obj.selectors.itemQuantityInput );
+
+		$quantityInput.off();
+	};
+
+	/**
 	 * Binds events for the quantity input.
 	 *
 	 * @since TBD
 	 *
-	 * @param {jQuery} $container jQuery object of the RSVP container.
+	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
 	 * @return {void}
 	 */
@@ -603,7 +633,7 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param {jQuery} $container jQuery object of the RSVP container.
+	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
 	 * @return {void}
 	 */
@@ -644,7 +674,7 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param {jQuery} $container jQuery object of object of the RSVP container.
+	 * @param {jQuery} $container jQuery object of object of the tickets container.
 	 *
 	 * @return {void}
 	 */
