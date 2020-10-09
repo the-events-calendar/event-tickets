@@ -14,11 +14,11 @@
  *
  * @version TBD
  *
- * @var Tribe__Tickets__Tickets $provider    The tickets provider class.
- * @var bool                    $is_mini     True if in "mini cart" context.
- * @var WP_Post|int             $post_id     The post object or ID.
+ * @var Tribe__Tickets__Tickets $provider    The tickets provider instance.
  * @var string                  $provider_id The tickets provider class name.
+ * @var WP_Post|int             $post_id     The post object or ID.
  * @var int                     $key         The ticket key.
+ * @var bool                    $is_mini     True if in "mini cart" context.
  */
 
 if ( method_exists( $provider, 'get_cart_url' ) ) {
