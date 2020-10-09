@@ -810,7 +810,7 @@ class Tribe__Tickets__Main {
 				[ 'jquery' ],
 				'admin_enqueue_scripts',
 				[
-					'conditionals' => [ $this->activation_page, 'is_welcome_page' ]
+					'conditionals' => [ $this->activation_page, 'is_welcome_page' ],
 				]
 			);
 		}
