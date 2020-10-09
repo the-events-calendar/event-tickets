@@ -878,9 +878,9 @@ class Tribe__Tickets__Main {
 	public function post_types() {
 		$options = (array) get_option( Tribe__Main::OPTIONNAME, [] );
 
-		// if the ticket-enabled-post-types index has never been set, default it to tribe_events
+		// if the ticket-enabled-post-types index has never been set, default it to tribe_events and page
 		if ( ! array_key_exists( 'ticket-enabled-post-types', $options ) ) {
-			$defaults                             = [ 'tribe_events' ];
+			$defaults                             = [ 'tribe_events', 'page' ];
 			$options['ticket-enabled-post-types'] = $defaults;
 			tribe_update_option( 'ticket-enabled-post-types', $defaults );
 		}
