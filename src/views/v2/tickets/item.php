@@ -33,9 +33,13 @@ if (
 	return false;
 }
 
+/* var Tribe__Tickets__Privacy $privacy  */
+$privacy = tribe( 'tickets.privacy' );
+
 $context = [
-	'ticket'          => $ticket,
-	'key'             => $this->get( 'key' ),
+	'ticket'  => $ticket,
+	'key'     => $this->get( 'key' ),
+	'privacy' => $privacy,
 ];
 
 $has_suffix = ! empty( $ticket->price_suffix );

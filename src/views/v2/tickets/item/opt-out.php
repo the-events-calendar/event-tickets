@@ -14,10 +14,11 @@
  *
  * @version TBD
  *
- * @var bool $is_mini                         True if it's in mini cart context.
- * @var bool $is_modal                        True if it's in modal context.
- * @var WP_Post|int $post_id                  The post object or ID.
- * @var Tribe__Tickets__Ticket_Object $ticket The ticket object.
+ * @var bool                          $is_mini  True if it's in mini cart context.
+ * @var bool                          $is_modal True if it's in modal context.
+ * @var WP_Post|int                   $post_id  The post object or ID.
+ * @var Tribe__Tickets__Ticket_Object $ticket   The ticket object.
+ * @var Tribe__Tickets__Privacy       $privacy  The privacy object.
  */
 
  // Bail if it's in "mini cart" or "modal" context.
@@ -49,9 +50,6 @@ if ( $hide_attendee_list_optout ) {
 	<?php
 	return;
 }
-
-/* var Tribe__Tickets__Privacy $privacy  */
-$privacy = tribe( 'tickets.privacy' );
 
 $field_id = [
 	'tribe-tickets-attendees-list-optout',
