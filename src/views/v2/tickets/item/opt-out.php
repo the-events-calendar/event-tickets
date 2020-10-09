@@ -8,9 +8,9 @@
  *
  * See more documentation about our views templating system.
  *
- * @link http://m.tri.be/1amp
+ * @link    http://m.tri.be/1amp
  *
- * @since TBD
+ * @since   TBD
  *
  * @version TBD
  *
@@ -21,7 +21,7 @@
  * @var Tribe__Tickets__Privacy       $privacy  The privacy object.
  */
 
- // Bail if it's in "mini cart" or "modal" context.
+// Bail if it's in "mini cart" or "modal" context.
 if (
 	! empty( $is_modal )
 	|| ! empty( $is_mini )

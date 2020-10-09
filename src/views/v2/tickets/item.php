@@ -14,16 +14,16 @@
  *
  * @version TBD
  *
- * @var Tribe__Tickets__Ticket_Object[]    $active_rsvps    The RSVPs.
- * @var Tribe__Tickets__Tickets_Handler    $tickets_handler The Tickets Handler instance.
- * @var Tribe__Tickets__Ticket_Object      $ticket          The Ticket Object.
- * @var WP_Post|int                        $post_id         The post object or ID.
- * @var Tribe__Tickets__Tickets            $provider        The tickets provider class.
- * @var string                             $provider_id     The tickets provider class name.
- * @var int                                $key             The ticket key.
- * @var bool                               $has_shared_cap  True if ticket has shared capacity.
- * @var bool                               $is_mini         True if it's in mini cart context.
- * @var bool                               $is_modal        True if it's in modal context.
+ * @var Tribe__Tickets__Ticket_Object[] $active_rsvps    The RSVPs.
+ * @var Tribe__Tickets__Tickets_Handler $tickets_handler The Tickets Handler instance.
+ * @var Tribe__Tickets__Ticket_Object   $ticket          The Ticket Object.
+ * @var WP_Post|int                     $post_id         The post object or ID.
+ * @var Tribe__Tickets__Tickets         $provider        The tickets provider class.
+ * @var string                          $provider_id     The tickets provider class name.
+ * @var int                             $key             The ticket key.
+ * @var bool                            $has_shared_cap  True if ticket has shared capacity.
+ * @var bool                            $is_mini         True if it's in mini cart context.
+ * @var bool                            $is_modal        True if it's in modal context.
  */
 
 if (
