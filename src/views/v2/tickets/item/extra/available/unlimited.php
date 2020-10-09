@@ -8,28 +8,18 @@
  *
  * See more documentation about our views templating system.
  *
- * @link http://m.tri.be/1amp
+ * @link    http://m.tri.be/1amp
  *
- * @since TBD
+ * @since   TBD
  *
  * @version TBD
  *
- * @var Tribe__Tickets__Editor__Template $this
- * @var Tribe__Tickets__Ticket_Object    $ticket
+ * @var Tribe__Tickets__Editor__Template $this           The template instance.
+ * @var Tribe__Tickets__Ticket_Object    $ticket         The ticket object.
+ * @var int                              $threshold      The threshold value to show or hide quantity available.
+ * @var bool                             $show_unlimited Whether to allow showing of "unlimited".
+ * @var bool                             $is_unlimited   Whether the ticket has unlimited quantity.
  */
-
-/**
- * Allows hiding of "unlimited" to be toggled on/off conditionally.
- *
- * @since 4.11.1
- *
- * @var Tribe__Tickets__Editor__Template $this The Template Object.
- * @var Tribe__Tickets__Ticket_Object $ticket  The Ticket Object.
- * @var int $threshold                         The threshold value to show or hide quantity available.
- * @var int $show_unlimited                    Whether to allow showing of "unlimited".
- */
-$show_unlimited = apply_filters( 'tribe_tickets_block_show_unlimited_availability', true, $ticket->available() );
-$is_unlimited   = $ticket->available() === - 1;
 
 if (
 	! $is_unlimited

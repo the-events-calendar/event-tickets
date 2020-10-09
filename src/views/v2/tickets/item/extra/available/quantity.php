@@ -14,11 +14,17 @@
  *
  * @version TBD
  *
- * @var Tribe__Tickets__Editor__Template $this The Template Object.
- * @var Tribe__Tickets__Ticket_Object $ticket  The Ticket Object.
- * @var int $threshold                         The threshold value to show or hide quantity available.
+ * @var Tribe__Tickets__Editor__Template $this            The template instance.
+ * @var Tribe__Tickets__Ticket_Object    $ticket          The ticket object.
+ * @var int                              $threshold       The threshold value to show or hide quantity available.
+ * @var int                              $available_count The quantity of Available tickets based on the Attendees number.
+ * @var bool                             $show_unlimited  Whether to allow showing of "unlimited".
+ * @var bool                             $is_unlimited    Whether the ticket has unlimited quantity.
  */
-if ( 0 !== $threshold && $threshold < $ticket->available() ) {
+if (
+	0 !== $threshold
+	&& $threshold < $this->get( 'available_count' )
+) {
 	return;
 }
 
@@ -31,7 +37,7 @@ echo wp_kses_post(
 			'event-tickets'
 		),
 		'<span class="tribe-tickets__item__extra__available__quantity">',
-		$ticket->available(),
+		$this->get( 'available_count' ),
 		'</span>'
 	)
 );
