@@ -3,9 +3,9 @@
  * The template that displays the welcome message when the plugin is first activated.
  */
 
-$main = Tribe__Main::instance();
+$main     = Tribe__Main::instance();
 $has_plus = class_exists( 'Tribe__Tickets_Plus__Main' );
-$has_tec = class_exists( 'Tribe__Events__Main' );
+$has_tec  = class_exists( 'Tribe__Events__Main' );
 ?>
 
 <?php if ( $has_plus ) : ?>
