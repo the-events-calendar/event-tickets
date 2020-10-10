@@ -897,6 +897,7 @@ class Tribe__Tickets__Main {
 			];
 
 			$options['ticket-enabled-post-types'] = $defaults;
+
 			tribe_update_option( 'ticket-enabled-post-types', $defaults );
 		}
 
