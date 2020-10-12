@@ -429,21 +429,13 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @returns {object} Tickets data object.
+	 * @param {jQuery} $form jQuery object of the form container.
+	 *
+	 * @returns {array} Tickets array of objects.
 	 */
-	// @todo: move to modal or see how to handle when non-modal and hook here. Maybe trigger?
-	obj.getTicketsForCart = function() {
+	obj.getTicketsForCart = function( $form ) {
 		const tickets = [];
-
-		// @todo: see how to hook from Modal.
-		let $cartForm = $( tribe.tickets.modal.selectors.cartForm );
-
-		// Handle non-modal instances.
-		if ( ! $cartForm.length ) {
-			$cartForm = $( obj.selectors.container );
-		}
-
-		const $ticketRows = $cartForm.find( obj.selectors.item );
+		const $ticketRows = $form.find( obj.selectors.item );
 
 		$ticketRows.each(
 			function() {
@@ -636,7 +628,7 @@ tribe.tickets.block = {
 				// Save meta and cart.
 				const params = {
 					tribe_tickets_provider: obj.commerceSelector[ ticketProvider ],
-					tribe_tickets_tickets: obj.getTicketsForCart(),
+					tribe_tickets_tickets: obj.getTicketsForCart( $container ),
 					tribe_tickets_meta: {},
 					tribe_tickets_post_id: postId,
 				};
