@@ -61,9 +61,11 @@ tribe.tickets.block = {
 	/**
 	 * Make dom updates for the AJAX response.
 	 *
+	 * @since TBD
+	 *
 	 * @param {array} tickets Array of tickets to iterate over.
 	 *
-	 * @since TBD
+	 * @return {void}
 	 */
 	obj.updateAvailability = function( tickets ) {
 		Object.keys( tickets ).forEach( function( ticketId ) {
@@ -97,7 +99,9 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param {object} $form The form we're updating.
+	 * @param {jQuery} $form The form we're updating.
+	 *
+	 * @return {void}
 	 */
 	obj.updateFooter = function( $form ) {
 		const $footer = $form.find( obj.selectors.blockFooter );
@@ -141,7 +145,7 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param {object} $form The form we want to retrieve the provider from.
+	 * @param {jQuery} $form The form we want to retrieve the provider from.
 	 *
 	 * @return {string} The provider.
 	 */
@@ -184,7 +188,9 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param {object} $form The jQuery form object to update totals.
+	 * @param {jQuery} $form The jQuery form object to update totals.
+	 *
+	 * @return {void}
 	 */
 	obj.updateFormTotals = function( $form ) {
 		$document.trigger( 'beforeUpdateFormTotals.tribeTicketsBlock', [ $form ] );
@@ -199,7 +205,7 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @returns {array} Array of tickets.
+	 * @returns {array} Array of tickets IDs.
 	 */
 	obj.getTickets = function() {
 		const $tickets = $( obj.selectors.item ).map(
@@ -216,7 +222,7 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param {object} $ticket     The ticket item element.
+	 * @param {jQuery} $ticket     The ticket item element.
 	 * @param {number} newQuantity The new ticket quantity.
 	 *
 	 * @return {void}
@@ -240,7 +246,7 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param {object} $input        The input field.
+	 * @param {jQuery} $input        The input field.
 	 * @param {number} originalValue The field's original value.
 	 */
 	// @todo: check if we need to handle IE exception as we're no longer supporting IE11.
@@ -286,7 +292,7 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param {object} $input        The input field.
+	 * @param {jQuery} $input        The input field.
 	 * @param {number} originalValue The field's original value.
 	 */
 	// @todo: check if we need to handle IE exception as we're no longer supporting IE11.
@@ -349,7 +355,7 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param {object} $form jQuery object that is the form we are checking.
+	 * @param {jQuery} $form jQuery object that is the form we are checking.
 	 * @param {number} qty   The quantity we desire.
 	 *
 	 * @returns {integer} The quantity, limited by existing shared cap tickets.
@@ -397,7 +403,7 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param {object} $cartItem The cart item to update.
+	 * @param {jQuery} $cartItem The cart item to update.
 	 *
 	 * @returns {number} The item quantity.
 	 */
@@ -412,7 +418,7 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param {object} $cartItem The cart item to update.
+	 * @param {jQuery} $cartItem The jQuery object of the cart item to update.
 	 *
 	 * @returns {number} The item price.
 	 */
