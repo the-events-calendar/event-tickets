@@ -34,6 +34,7 @@ tribe.tickets.block = {
 		itemQuantityInput: '.tribe-tickets-quantity',
 		itemQuantityAdd: '.tribe-tickets__item__quantity__add',
 		itemQuantityRemove: '.tribe-tickets__item__quantity__remove',
+		classicSubmit: '#tribe-tickets__buy',
 		submit: '.tribe-tickets__buy',
 	};
 
@@ -620,7 +621,7 @@ tribe.tickets.block = {
 	 * @return {void}
 	 */
 	obj.bindTicketsSubmit = function( $container ) {
-		const $submitButton = $container.find( obj.selectors.submit );
+		const $submitButton = $container.find( obj.selectors.classicSubmit );
 
 		$submitButton.on(
 			'click',
@@ -703,7 +704,7 @@ tribe.tickets.block = {
 				window.performance.navigation.type === 2
 			)
 		) {
-			obj.init();
+			obj.ready();
 		}
 	} );
 
