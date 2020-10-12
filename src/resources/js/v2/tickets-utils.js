@@ -186,7 +186,7 @@ tribe.tickets.utils = {};
 	 * @returns {jQuery} The jQuery object of the form.
 	 */
 	obj.getTicketsFormFromPostId = function( postId ) {
-		return $document.find( tribe.tickets.block.selectors.container + '[data-post-id="' + postId + '"]' );
+		return $document.find( tribe.tickets.block.selectors.form + '[data-post-id="' + postId + '"]' );
 	};
 
 	/**
@@ -223,7 +223,7 @@ tribe.tickets.utils = {};
 	 * @return {boolean|int} postId The post id.
 	 */
 	obj.getTicketsPostId = function() {
-		const $ticketsBlock = $( tribe.tickets.block.selectors.container )[ 0 ];
+		const $ticketsBlock = $( tribe.tickets.block.selectors.form )[ 0 ];
 
 		// Return the post id for the first ticket block.
 		return $ticketsBlock.getAttribute( 'data-post-id' ) || false;

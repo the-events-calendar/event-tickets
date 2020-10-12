@@ -17,8 +17,8 @@ tribe.tickets.block = {
 	 */
 	// @todo: check what we need to remove and/or rename here.
 	obj.selectors = {
-		containerWrapper: '.tribe-tickets__tickets-wrapper', // @todo: This will be the main container.
-		container: '.tribe-tickets',
+		container: '.tribe-tickets__tickets-wrapper',
+		form: '.tribe-tickets',
 		blockFooter: '.tribe-tickets__footer',
 		blockFooterActive: 'tribe-tickets__footer--active',
 		blockFooterAmount: '.tribe-amount',
@@ -35,7 +35,6 @@ tribe.tickets.block = {
 		itemQuantityAdd: '.tribe-tickets__item__quantity__add',
 		itemQuantityRemove: '.tribe-tickets__item__quantity__remove',
 		submit: '.tribe-tickets__buy',
-		classicSubmit: '#tribe-tickets__buy', // @todo: try to avoid using IDs
 	};
 
 	/*
@@ -43,7 +42,6 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 */
-	// @todo: see if we can have basic ET stuff here and modify from ET+.
 	obj.commerceSelector = {
 		edd: 'Tribe__Tickets_Plus__Commerce__EDD__Main',
 		rsvp: 'Tribe__Tickets__RSVP',
@@ -59,7 +57,7 @@ tribe.tickets.block = {
 	};
 
 	/**
-	 * Make dom updates for the AJAX response.
+	 * Make DOM updates for the AJAX response.
 	 *
 	 * @since TBD
 	 *
@@ -575,7 +573,6 @@ tribe.tickets.block = {
 		 * @since TBD
 		 */
 		$quantityInput.on(
-			//'input',
 			'change keyup',
 			function( e ) {
 				const $this = $( e.target );
@@ -623,14 +620,14 @@ tribe.tickets.block = {
 	 * @return {void}
 	 */
 	obj.bindTicketsSubmit = function( $container ) {
-		const $submitButton = $container.find( obj.selectors.classicSubmit );
+		const $submitButton = $container.find( obj.selectors.submit );
 
 		$submitButton.on(
 			'click',
 			function( e ) {
 				e.preventDefault();
 
-				const $form = $container.find( obj.selectors.container );
+				const $form = $container.find( obj.selectors.form );
 				const postId = $form.data( 'post-id' );
 				const ticketProvider = $form.data( 'provider' );
 
@@ -690,7 +687,7 @@ tribe.tickets.block = {
 			obj.checkAvailability();
 		}
 
-		const $ticketsBlock = $document.find( obj.selectors.containerWrapper );
+		const $ticketsBlock = $document.find( obj.selectors.container );
 		// Bind events for each tickets block.
 		$ticketsBlock.each( function( index, block ) {
 			obj.bindEvents( $( block ) );
