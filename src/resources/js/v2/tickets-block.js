@@ -193,30 +193,6 @@ tribe.tickets.block = {
 	};
 
 	/**
-	 * Update the Price for the Given Cart Item.
-	 *
-	 * @since TBD
-	 *
-	 * @param {number} qty The quantity.
-	 * @param {number} price The price.
-	 * @param {object} $cartItem The cart item to update.
-	 *
-	 * @returns {string} - Formatted currency string.
-	 */
-	obj.updateTotal = function( qty, price, $cartItem ) {
-		const $form = $cartItem.closest( 'form' );
-		const provider = obj.getTicketsBlockProvider( $form );
-		const format = tribe.tickets.utils.getCurrencyFormatting( provider );
-		const totalForItem = ( qty * price ).toFixed( format.number_of_decimals );
-		// @todo: check how we do it when ET+ is not active? (maybe trigger)
-		const $field = $cartItem.find( tribe.tickets.modal.selectors.itemTotal );
-
-		$field.text( tribe.tickets.utils.numberFormat( totalForItem, provider ) );
-
-		return totalForItem;
-	};
-
-	/**
 	 * Get the tickets IDs.
 	 *
 	 * @since TBD
