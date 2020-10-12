@@ -562,7 +562,7 @@ tribe.tickets.block = {
 	 *
 	 * @return {void}
 	 */
-	obj.bindTicketsQuantityInput = function( $container ) {
+	obj.unbindTicketsQuantityInput = function( $container ) {
 		const $quantityInput = $container.find( obj.selectors.itemQuantityInput );
 
 		$quantityInput.off();
