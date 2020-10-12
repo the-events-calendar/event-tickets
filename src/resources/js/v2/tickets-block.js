@@ -32,6 +32,8 @@ tribe.tickets.block = {
 		itemPrice: '.tribe-tickets__sale_price .tribe-amount',
 		itemQuantity: '.tribe-tickets__item__quantity',
 		itemQuantityInput: '.tribe-tickets-quantity',
+		itemQuantityAdd: '.tribe-tickets__item__quantity__add',
+		itemQuantityRemove: '.tribe-tickets__item__quantity__remove',
 		submit: '.tribe-tickets__buy',
 		classicSubmit: '#tribe-tickets__buy', // @todo: try to avoid using IDs
 	};
@@ -477,7 +479,7 @@ tribe.tickets.block = {
 	 * @return {void}
 	 */
 	obj.unbindTicketsAddRemove = function( $container ) {
-		const $addRemove = $container.find( '.tribe-tickets__item__quantity__remove, .tribe-tickets__item__quantity__add' );
+		const $addRemove = $container.find( obj.selectors.itemQuantityAdd + ', ' + obj.selectors.itemQuantityRemove );
 
 		$addRemove.off();
 	};
@@ -492,7 +494,7 @@ tribe.tickets.block = {
 	 * @return {void}
 	 */
 	obj.bindTicketsAddRemove = function( $container ) {
-		const $addRemove = $container.find( '.tribe-tickets__item__quantity__remove, .tribe-tickets__item__quantity__add' );
+		const $addRemove = $container.find( obj.selectors.itemQuantityAdd + ', ' + obj.selectors.itemQuantityRemove );
 
 		$addRemove.on(
 			'click',
@@ -511,7 +513,7 @@ tribe.tickets.block = {
 				// Step up or Step down the input according to the button that was clicked.
 				// Handles IE/Edge.
 				// @todo: check if we still want to support this.
-				if ( $( this ).hasClass( 'tribe-tickets__item__quantity__add' ) ) {
+				if ( $( this ).hasClass( obj.selectors.itemQuantityAdd.className() ) ) {
 					obj.stepUp( $input, originalValue );
 				} else {
 					obj.stepDown( $input, originalValue );
