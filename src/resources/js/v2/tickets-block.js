@@ -578,6 +578,9 @@ tribe.tickets.block = {
 			'change keyup',
 			function( e ) {
 				const $this = $( e.target );
+
+				$document.trigger( 'beforeTicketsQuantityChange.tribeTicketsBlock', [ $this ] );
+
 				const $ticket = $this.closest( obj.selectors.item );
 				const $form = $this.closest( 'form' );
 				const max = $this.attr( 'max' );
@@ -603,6 +606,8 @@ tribe.tickets.block = {
 				obj.maybeShowOptOut( $ticket, newQuantity );
 				obj.updateFooter( $form );
 				obj.updateFormTotals( $form );
+
+				$document.trigger( 'afterTicketsQuantityChange.tribeTicketsBlock', [ $this ] );
 			}
 		);
 	};
