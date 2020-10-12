@@ -177,6 +177,19 @@ tribe.tickets.utils = {};
 	};
 
 	/**
+	 * Get the tickets form, given a post ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param {number} postId The post id.
+	 *
+	 * @returns {jQuery} The jQuery object of the form.
+	 */
+	obj.getTicketsFormFromPostId = function( postId ) {
+		return $document.find( tribe.tickets.block.selectors.container + '[data-post-id="' + postId + '"]' );
+	};
+
+	/**
 	 * Get the tickets provider, given a post ID.
 	 *
 	 * @since TBD
@@ -186,7 +199,7 @@ tribe.tickets.utils = {};
 	 * @returns {boolean|string} The provider, or false if it's not found.
 	 */
 	obj.getTicketsProviderFromPostId = function( postId ) {
-		return $document.find( tribe.tickets.block.selectors.container + '[data-post-id="' + postId + '"]' ).data( 'provider' ) || false;
+		return obj.getTicketsFormFromPostId( postId ).data( 'provider' ) || false;
 	};
 
 	/**
@@ -199,7 +212,7 @@ tribe.tickets.utils = {};
 	 * @returns {boolean|string} The provider ID, or false if it's not found.
 	 */
 	obj.getTicketsProviderIdFromPostId = function( postId ) {
-		return $document.find( tribe.tickets.block.selectors.container + '[data-post-id="' + postId + '"]' ).data( 'provider-id' ) || false;
+		return obj.getTicketsFormFromPostId( postId ).data( 'provider-id' ) || false;
 	};
 
 	/**

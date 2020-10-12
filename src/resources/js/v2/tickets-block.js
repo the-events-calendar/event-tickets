@@ -440,8 +440,9 @@ tribe.tickets.block = {
 	 * @returns {array} Tickets array of objects.
 	 */
 	obj.getTicketsForCart = function( $form ) {
+		const $ticketsForm = $form || $document;
 		const tickets = [];
-		const $ticketRows = $form.find( obj.selectors.item );
+		const $ticketRows = $ticketsForm.find( obj.selectors.item );
 
 		$ticketRows.each(
 			function() {
