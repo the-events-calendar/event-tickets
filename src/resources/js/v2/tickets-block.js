@@ -20,6 +20,7 @@ tribe.tickets.block = {
 		containerWrapper: '.tribe-tickets__tickets-wrapper', // @todo: This will be the main container.
 		container: '.tribe-tickets',
 		blockFooter: '.tribe-tickets__footer',
+		blockFooterActive: 'tribe-tickets__footer--active',
 		blockFooterAmount: '.tribe-amount',
 		blockFooterQuantity: '.tribe-tickets__footer__quantity__number',
 		blockSubmit: '#tribe-tickets__submit', // @todo: try to avoid using IDs
@@ -97,10 +98,12 @@ tribe.tickets.block = {
 	 * @param {object} $form The form we're updating.
 	 */
 	obj.updateFooter = function( $form ) {
+		const $footer = $form.find( obj.selectors.blockFooter );
+
 		obj.updateFooterCount( $form );
 		obj.updateFooterAmount( $form );
-		// @todo: see how to use data from `obj.selectors`.
-		$form.find( '.tribe-tickets__footer' ).addClass( 'tribe-tickets__footer--active' );
+
+		$footer.addClass( obj.selectors.blockFooterActive.className() );
 	};
 
 	/**
