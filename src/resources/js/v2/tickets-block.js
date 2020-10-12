@@ -34,7 +34,6 @@ tribe.tickets.block = {
 		itemQuantityInput: '.tribe-tickets-quantity',
 		itemQuantityAdd: '.tribe-tickets__item__quantity__add',
 		itemQuantityRemove: '.tribe-tickets__item__quantity__remove',
-		classicSubmit: '#tribe-tickets__buy',
 		submit: '.tribe-tickets__buy',
 	};
 
@@ -621,12 +620,17 @@ tribe.tickets.block = {
 	 * @return {void}
 	 */
 	obj.bindTicketsSubmit = function( $container ) {
-		const $submitButton = $container.find( obj.selectors.classicSubmit );
+		const $submitButton = $container.find( obj.selectors.submit );
 
 		$submitButton.on(
 			'click',
 			function( e ) {
 				e.preventDefault();
+				const hasModal = !! $( this ).data( 'content' );
+
+				if ( hasModal ) {
+					return;
+				}
 
 				const $form = $container.find( obj.selectors.form );
 				const postId = $form.data( 'post-id' );
