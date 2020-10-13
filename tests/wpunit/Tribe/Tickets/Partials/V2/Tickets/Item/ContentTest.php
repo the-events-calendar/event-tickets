@@ -83,8 +83,8 @@ class ContentTest extends V2TestCase {
 
 		$driver->setTolerableDifferencesPrefixes( [
 			'post-',
-			'Test ticket for ',
-			'Test ticket description for ',
+			'Test ticket for',
+			'Test ticket description for',
 			'tribe__details__content--',
 		] );
 
