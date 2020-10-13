@@ -98,6 +98,26 @@ class Tribe__Tickets__Assets {
 					],
 				]
 			);
+		} else {
+
+			// Tickets registration page scripts.
+			tribe_asset(
+				$tickets_main,
+				'tribe-tickets-registration-page-scripts',
+				'tickets-registration-page.js',
+				[
+					'jquery',
+					'wp-util',
+					'tribe-common',
+				],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-registration-page',
+					],
+				]
+			);
+
 		}
 
 		// Tickets registration page styles.
@@ -113,25 +133,6 @@ class Tribe__Tickets__Assets {
 				],
 			]
 		);
-
-		// Tickets registration page scripts.
-		tribe_asset(
-			$tickets_main,
-			'tribe-tickets-registration-page-scripts',
-			'tickets-registration-page.js',
-			[
-				'jquery',
-				'wp-util',
-				'tribe-common',
-			],
-			null,
-			[
-				'groups' => [
-					'tribe-tickets-registration-page',
-				],
-			]
-		);
-
 	}
 
 	/**
