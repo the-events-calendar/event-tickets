@@ -8,13 +8,13 @@ $has_plus = class_exists( 'Tribe__Tickets_Plus__Main' );
 $has_tec  = class_exists( 'Tribe__Events__Main' );
 
 $desktop_graphic = 'images/header/welcome-desktop-et.jpg';
-$logo_image = 'images/logo/event-tickets.svg';
-$mobile_graphic = 'images/header/welcome-mobile-et.jpg';
+$logo_image      = 'images/logo/event-tickets.svg';
+$mobile_graphic  = 'images/header/welcome-mobile-et.jpg';
 
 if ( $has_plus ) {
 	$desktop_graphic = 'images/header/welcome-desktop-etplus.jpg';
-	$logo_image = 'images/logo/event-tickets-plus.svg';
-	$mobile_graphic = 'images/header/welcome-mobile-etplus.jpg';
+	$logo_image      = 'images/logo/event-tickets-plus.svg';
+	$mobile_graphic  = 'images/header/welcome-mobile-etplus.jpg';
 }
 ?>
 
