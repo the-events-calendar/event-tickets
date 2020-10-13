@@ -3,8 +3,7 @@
  * Renders the logged out message for the My Attendance list
  *
  * Override this template in your own theme by creating a file at:
- *
- *     [your-theme]/tribe-events/shortcodes/my-attendance-list-logged-out.php
+ * [your-theme]/tribe/tickets/shortcodes/my-attendance-list-logged-out.php
  *
  * @version 4.8.2
  */

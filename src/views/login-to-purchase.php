@@ -4,8 +4,7 @@
  * before being able to purchase tickets.
  *
  * Override this template in your own theme by creating a file at:
- *
- *     [your-theme]/tribe-events/login-to-purchase.php
+ * [your-theme]/tribe/tickets/login-to-purchase.php
  *
  * @version 4.7
  */

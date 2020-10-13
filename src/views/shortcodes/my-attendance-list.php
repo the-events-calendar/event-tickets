@@ -4,7 +4,7 @@
  *
  * Override this template in your own theme by creating a file at:
  *
- *     [your-theme]/tribe-events/shortcodes/my-attendance-list.php
+ *     [your-theme]/tribe/tickets/shortcodes/my-attendance-list.php
  *
  * @since   4.8.2
  * @since   4.12.3 Removed target="_blank" from links, added direct link to each post's "My Tickets" view,
