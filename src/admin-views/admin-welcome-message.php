@@ -43,13 +43,15 @@ $has_tec  = class_exists( 'Tribe__Events__Main' );
 			src="<?php echo esc_url( tribe_resource_url( $logo_image, false, null, $main ) ); ?>"
 			alt="<?php esc_attr_e( 'Event Tickets logo', 'event-tickets' ); ?>"
 		/>
-		<h2 class="tribe-events-admin-title__heading"><?php
+		<h2 class="tribe-events-admin-title__heading">
+			<?php
 			if ( $has_plus ) :
 				esc_html_e( 'Event Tickets Plus', 'event-tickets' );
 			else :
 				esc_html_e( 'Event Tickets', 'event-tickets' );
 			endif;
-		?></h2>
+			?>
+		</h2>
 		<p class="tribe-events-admin-title__description"><?php
 			if ( $has_plus ) :
 				esc_html_e( 'Thanks for installing Event Tickets Plus! Here are some handy resources for getting started with our plugins.', 'event-tickets' );
