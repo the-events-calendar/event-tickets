@@ -654,6 +654,14 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function available() {
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
+
+			$cache = tribe( 'cache' );
+			$key   = "ticket_available_{$this->ID}";
+
+			if ( ! empty( $cache[ $key ] ) ) {
+				return $cache[ $key ];
+			}
+
 			if (
 				! $this->managing_stock()
 				|| -1 === $this->capacity()
@@ -669,7 +677,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$available = min( $values );
 
 			// Prevents Negative
-			return max( $available, 0 );
+			$available = max( $available, 0 );
+
+			$cache[ $key ] = $available;
+
+			return $available;
 		}
 
 		/**
