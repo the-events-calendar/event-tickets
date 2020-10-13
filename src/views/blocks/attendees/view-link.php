@@ -20,7 +20,6 @@
  * @since 4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
  * @since TBD Fix template path in documentation block.
  *
- * @version 4.12.1
  * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template $this
