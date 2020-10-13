@@ -810,7 +810,7 @@ class Tribe__Tickets__Main {
 				[ 'jquery' ],
 				'admin_enqueue_scripts',
 				[
-					'conditionals' => [ $this->activation_page, 'is_welcome_page' ]
+					'conditionals' => [ $this->activation_page, 'is_welcome_page' ],
 				]
 			);
 		}
@@ -891,8 +891,13 @@ class Tribe__Tickets__Main {
 
 		// If the ticket-enabled-post-types index has never been set, default it to tribe_events and page.
 		if ( ! array_key_exists( 'ticket-enabled-post-types', $options ) ) {
-			$defaults                             = [ 'tribe_events', 'page' ];
+			$defaults = [
+				'tribe_events',
+				'page',
+			];
+
 			$options['ticket-enabled-post-types'] = $defaults;
+
 			tribe_update_option( 'ticket-enabled-post-types', $defaults );
 		}
 
