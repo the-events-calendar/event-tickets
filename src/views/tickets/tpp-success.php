@@ -2,9 +2,8 @@
 /**
  * PayPal Tickets Success content
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/tpp-success.php
- *
- * @package TribeEventsCalendar
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/tpp-success.php
  *
  * @since 4.7
  * @since 4.10.9 Uses new functions to get singular and plural texts.

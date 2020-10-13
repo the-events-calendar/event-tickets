@@ -2,9 +2,8 @@
 /**
  * List of RSVP Orders.
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-rsvp.php
- *
- * @package TribeEventsCalendar
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/orders-rsvp.php
  *
  * @since   4.2
  * @since   4.10.9 Uses new functions to get singular and plural texts.

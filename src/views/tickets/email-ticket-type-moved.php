@@ -4,8 +4,7 @@
  * (where it has been moved from one post to another).
  *
  * Override this template in your own theme by creating a file at:
- *
- *     [your-theme]/tribe-events/tickets/email-ticket-type-moved.php
+ * [your-theme]/tribe/tickets/email-ticket-type-moved.php
  *
  * @var int    $original_event_id
  * @var string $original_event_name

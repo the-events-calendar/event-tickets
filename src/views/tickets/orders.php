@@ -2,9 +2,8 @@
 /**
  * Edit Event Tickets.
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders.php
- *
- * @package TribeEventsCalendar
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/orders.php
  *
  * @since   4.7.4
  * @since   4.10.2 Only show Update button if ticket has meta.

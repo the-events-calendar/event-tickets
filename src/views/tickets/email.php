@@ -3,7 +3,8 @@
  * Tickets Email Template
  * The template for the email with the purchased tickets when using ticketing plugins (Like WooTickets)
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/email.php
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/email.php
  *
  * This file is being included in events/lib/tickets/Tickets.php
  *  in the function generate_tickets_email_content. That function has a $tickets

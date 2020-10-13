@@ -3,7 +3,7 @@
  * Attendees Email Template
  * The template for the email with the attendee list when using ticketing plugins (Like WooTickets)
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/attendees-email.php
+ * Override this template in your own theme by creating a file at [your-theme]/tribe/tickets/attendees-email.php
  *
  * @package TribeEventsCalendar
  *

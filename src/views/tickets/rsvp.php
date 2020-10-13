@@ -3,7 +3,7 @@
  * This template renders the RSVP ticket form.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe-events/tickets/rsvp.php
+ * [your-theme]/tribe/tickets/rsvp.php
  *
  * @since   4.0
  * @since   4.10.8 More similar display format to that of other ticket types, including better checking of max quantity available.
