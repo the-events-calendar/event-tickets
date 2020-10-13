@@ -114,8 +114,8 @@ class ItemTest extends V2TestCase {
 		$driver->setTolerableDifferencesPrefixes( [
 			'post-',
 			'tribe-block-tickets-item-',
-			'Test ticket for',
-			'Test ticket description for',
+			'Test ticket for ',
+			'Test ticket description for ',
 			'tribe__details__content--',
 		] );
 
