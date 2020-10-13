@@ -10,8 +10,9 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since 4.9
- * @version 4.11.0
+ * @since   4.9
+ * @since   TBD Fix template path in documentation block.
+ * @version TBD
  *
  */
 ?>
