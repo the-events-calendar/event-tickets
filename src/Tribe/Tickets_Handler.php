@@ -1195,6 +1195,14 @@ class Tribe__Tickets__Tickets_Handler {
 	 *             (allows zero but not `-1` for Unlimited). If oversold, will be corrected to zero.
 	 */
 	public function get_ticket_max_purchase( $ticket_id ) {
+
+		$cache = tribe( 'cache' );
+		$key   = __METHOD__ .'-'. $ticket_id;
+
+		if ( ! empty( $cache[ $key ] ) ) {
+			return $cache[ $key ];
+		}
+
 		$event = tribe_events_get_ticket_event( $ticket_id );
 
 		if ( ! $event instanceof WP_Post ) {
@@ -1249,6 +1257,8 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( 0 > $available_at_a_time ) {
 			$available_at_a_time = 0;
 		}
+
+		$cache[ $key ] = $available_at_a_time;
 
 		return $available_at_a_time;
 	}
