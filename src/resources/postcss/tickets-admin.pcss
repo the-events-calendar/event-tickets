@@ -614,13 +614,8 @@ p.description {
 	margin-right: 0;
 }
 
-/* -- Event Tickets tweaks -- */
+/* -- Event Tickets tweaks for welcome screen -- */
 .tribe-events-admin-tickets {
-	.tribe-events-admin-quick-nav {
-		@media screen and (min-width: 750px) {
-			width: 750px;
-		}
-	}
 
 	.tribe-events-admin-section-header {
 		font-size: 28px;
@@ -643,6 +638,17 @@ p.description {
 	.tribe-events-admin-card__title {
 		@media screen and (min-width: 710px) {
 			font-size: 18px;
+		}
+	}
+
+	.tribe-events-admin-card--2up .tribe-events-admin-card__title {
+		@media screen and (min-width: 710px) {
+			font-size: 18px;
+			height: 66px;
+		}
+
+		@media screen and (min-width: 1217px) {
+			height: auto;
 		}
 	}
 
