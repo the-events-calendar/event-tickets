@@ -4,7 +4,7 @@
  * Title
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/blocks/attendees/gravatar.php
+ * [your-theme]/tribe/tickets/blocks/attendees/title.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
