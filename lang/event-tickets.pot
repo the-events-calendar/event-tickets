@@ -2,17 +2,17 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.0.0\n"
+"Project-Id-Version: Event Tickets 5.0.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2020-08-24 01:22:12+00:00\n"
+"POT-Creation-Date: 2020-09-17 04:58:58+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2020-08-24 01:22\n"
+"PO-Revision-Date: 2020-09-17 04:58\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.0.0)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.0.1)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: event-tickets.php:62 src/Tribe/Admin/Notices.php:90 src/Tribe/Main.php:675
 #: src/Tribe/Privacy.php:59
@@ -68,7 +68,7 @@ msgid ""
 msgstr ""
 
 #: src/Tribe/Admin/Move_Ticket_Types.php:320
-#: src/Tribe/Admin/Move_Tickets.php:752
+#: src/Tribe/Admin/Move_Tickets.php:753
 msgid "Changes to your tickets from %s"
 msgstr ""
 
@@ -103,28 +103,28 @@ msgctxt "attendee screen bulk actions"
 msgid "Move"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:444
+#: src/Tribe/Admin/Move_Tickets.php:445
 msgid ""
 "%1$s could not be moved: valid %2$s IDs or a destination ID were not "
 "provided."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:456
+#: src/Tribe/Admin/Move_Tickets.php:457
 msgid ""
 "%s could not be moved: there was an unexpected failure during reassignment."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:465
+#: src/Tribe/Admin/Move_Tickets.php:466
 msgctxt "moved tickets success message fragment"
 msgid "assigned to %s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:472
+#: src/Tribe/Admin/Move_Tickets.php:473
 msgctxt "moved tickets success message fragment"
 msgid "moved to %s and"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:479
+#: src/Tribe/Admin/Move_Tickets.php:480
 msgid ""
 "%1$d attendee for %2$s was successfully %3$s. By default, we adjust capacity "
 "and stock, however, we recommend reviewing each as needed to ensure numbers "
@@ -138,11 +138,11 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Tribe/Admin/Move_Tickets.php:627
+#: src/Tribe/Admin/Move_Tickets.php:628
 msgid "This ticket was moved to %1$s %2$s from %3$s %4$s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:814
+#: src/Tribe/Admin/Move_Tickets.php:815
 msgid "This ticket was moved to %1$s from %2$s"
 msgstr ""
 
@@ -198,21 +198,21 @@ msgstr ""
 msgid "Set as %s header"
 msgstr ""
 
-#: src/Tribe/Assets.php:128
+#: src/Tribe/Assets.php:136
 msgid "Are you sure you want to delete this ticket? This cannot be undone."
 msgstr ""
 
-#: src/Tribe/Assets.php:134
+#: src/Tribe/Assets.php:142
 msgid ""
 "It looks like you have modified your shared capacity setting but have not "
 "saved or updated the post."
 msgstr ""
 
-#: src/Tribe/Assets.php:141 src/Tribe/Metabox.php:575
+#: src/Tribe/Assets.php:149 src/Tribe/Metabox.php:575
 msgid "Please enter in without thousand separators and currency symbols."
 msgstr ""
 
-#: src/Tribe/Assets.php:228
+#: src/Tribe/Assets.php:236
 msgid ""
 "There is unsaved attendee information. Are you sure you want to continue?"
 msgstr ""
@@ -628,10 +628,11 @@ msgstr ""
 msgid "U.S. Dollar (USD)"
 msgstr ""
 
-#. Translators: 1: the post title, 2: the post ID.
+#. Translators: %1$s: the post/event title, %2$d: the post/event ID.
 #: src/Tribe/Commerce/Orders_Tabbed_View.php:36
+#: src/admin-views/attendees.php:33
 msgctxt "attendees report screen heading"
-msgid "Attendees for: %s [#%d]"
+msgid "Attendees for: %1$s [#%2$d]"
 msgstr ""
 
 #: src/Tribe/Commerce/PayPal/Attendance_Totals.php:77
@@ -777,7 +778,7 @@ msgstr ""
 msgid "Post draft updated."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2955 src/Tribe/RSVP.php:2025
+#: src/Tribe/Commerce/PayPal/Main.php:2954 src/Tribe/RSVP.php:2025
 msgid "(deleted)"
 msgstr ""
 
@@ -940,27 +941,27 @@ msgstr ""
 msgid "Are you sure you want to cancel?"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:325 src/Tribe/Tickets.php:3268
+#: src/Tribe/Editor/Blocks/Tickets.php:326 src/Tribe/Tickets.php:3274
 msgctxt "Error message title, will be followed by the error code."
 msgid "API Error"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:326 src/Tribe/Tickets.php:3269
+#: src/Tribe/Editor/Blocks/Tickets.php:327 src/Tribe/Tickets.php:3275
 msgid ""
 "Refresh this page or wait a few minutes before trying again. If this happens "
 "repeatedly, please contact the Site Admin."
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:327 src/Tribe/Tickets.php:3270
+#: src/Tribe/Editor/Blocks/Tickets.php:328 src/Tribe/Tickets.php:3276
 msgid ""
 "The ticket for this event has sold out and has been removed from your cart."
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:328 src/Tribe/Tickets.php:3271
+#: src/Tribe/Editor/Blocks/Tickets.php:329 src/Tribe/Tickets.php:3277
 msgid "Whoops!"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:329 src/Tribe/Tickets.php:3272
+#: src/Tribe/Editor/Blocks/Tickets.php:330 src/Tribe/Tickets.php:3278
 msgctxt "The %s will change based on the error produced."
 msgid "You have %s ticket(s) with a field that requires information."
 msgstr ""
@@ -2159,7 +2160,7 @@ msgid "Unlimited"
 msgstr ""
 
 #: src/Tribe/Tickets_View.php:852 src/views/blocks/attendees/view-link.php:67
-#: src/views/tickets/view-link.php:61
+#: src/views/tickets/view-link.php:77
 msgctxt "separator if there are both RSVPs and Tickets"
 msgid " and "
 msgstr ""
@@ -2318,23 +2319,17 @@ msgstr ""
 msgid "Send Email"
 msgstr ""
 
-#. Translators: 1: the post title, 2: the post ID.
-#: src/admin-views/attendees.php:32
-msgctxt "attendees report screen heading"
-msgid "Attendees for: %1$s [#%2$d]"
-msgstr ""
-
-#: src/admin-views/attendees.php:58
+#: src/admin-views/attendees.php:59
 msgctxt "attendee screen summary"
 msgid "%s Details"
 msgstr ""
 
-#: src/admin-views/attendees.php:100
+#: src/admin-views/attendees.php:101
 msgctxt "attendee screen summary"
 msgid "Overview"
 msgstr ""
 
-#: src/admin-views/attendees.php:151
+#: src/admin-views/attendees.php:152
 msgid "Search attendees"
 msgstr ""
 
@@ -3286,111 +3281,114 @@ msgctxt "list view stock sold out"
 msgid "Sold out"
 msgstr ""
 
-#: src/template-tags/tickets.php:265
+#. Translators: %s number of RSVP spots left.
+#: src/template-tags/tickets.php:266
 msgid "%s spot left"
 msgid_plural "%s spots left"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/template-tags/tickets.php:267
+#. Translators: %s number of tickets left.
+#: src/template-tags/tickets.php:269
 msgid "%s ticket left"
 msgid_plural "%s tickets left"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/template-tags/tickets.php:279
+#. Translators: %s RSVP singular or plural.
+#: src/template-tags/tickets.php:282
 msgctxt "list view rsvp now ticket button"
 msgid "%s Now!"
 msgstr ""
 
-#: src/template-tags/tickets.php:282
+#: src/template-tags/tickets.php:285
 msgctxt "list view buy now ticket button"
 msgid "Buy Now!"
 msgstr ""
 
-#: src/template-tags/tickets.php:523
+#: src/template-tags/tickets.php:526
 msgid "issued"
 msgstr ""
 
-#: src/template-tags/tickets.php:525
+#: src/template-tags/tickets.php:528
 msgctxt "RSVPs going"
 msgid "%s'd going"
 msgstr ""
 
 #. translators: %1$s: formatted quantity remaining
-#: src/template-tags/tickets.php:532
+#: src/template-tags/tickets.php:535
 msgctxt "unlimited remaining stock message"
 msgid "%1$s available"
 msgstr ""
 
 #. translators: %1$s: formatted quantity remaining
-#: src/template-tags/tickets.php:542
+#: src/template-tags/tickets.php:545
 msgctxt "ticket shared capacity message (remaining stock)"
 msgid "%1$s available of shared capacity"
 msgstr ""
 
 #. translators: %1$s: formatted quantity remaining
-#: src/template-tags/tickets.php:553
+#: src/template-tags/tickets.php:556
 msgctxt "ticket stock message (remaining stock)"
 msgid "%1$s available"
 msgstr ""
 
-#: src/template-tags/tickets.php:1309
+#: src/template-tags/tickets.php:1312
 msgctxt "singular label for RSVP"
 msgid "RSVP"
 msgstr ""
 
-#: src/template-tags/tickets.php:1333
+#: src/template-tags/tickets.php:1336
 msgctxt "lowercase singular label for RSVP"
 msgid "rsvp"
 msgstr ""
 
-#: src/template-tags/tickets.php:1357
+#: src/template-tags/tickets.php:1360
 msgctxt "plural label for RSVPs"
 msgid "RSVPs"
 msgstr ""
 
-#: src/template-tags/tickets.php:1381
+#: src/template-tags/tickets.php:1384
 msgctxt "lowercase plural label for RSVPs"
 msgid "rsvps"
 msgstr ""
 
-#: src/template-tags/tickets.php:1405
+#: src/template-tags/tickets.php:1408
 msgctxt "singular label for Ticket"
 msgid "Ticket"
 msgstr ""
 
-#: src/template-tags/tickets.php:1429
+#: src/template-tags/tickets.php:1432
 msgctxt "lowercase singular label for Ticket"
 msgid "ticket"
 msgstr ""
 
-#: src/template-tags/tickets.php:1453
+#: src/template-tags/tickets.php:1456
 msgctxt "plural label for Tickets"
 msgid "Tickets"
 msgstr ""
 
-#: src/template-tags/tickets.php:1477
+#: src/template-tags/tickets.php:1480
 msgctxt "lowercase plural label for Tickets"
 msgid "tickets"
 msgstr ""
 
-#: src/template-tags/tickets.php:1620
+#: src/template-tags/tickets.php:1623
 msgctxt "singular label for Guest"
 msgid "Guest"
 msgstr ""
 
-#: src/template-tags/tickets.php:1644
+#: src/template-tags/tickets.php:1647
 msgctxt "lowercase singular label for Guest"
 msgid "guest"
 msgstr ""
 
-#: src/template-tags/tickets.php:1668
+#: src/template-tags/tickets.php:1671
 msgctxt "plural label for Guest"
 msgid "Guests"
 msgstr ""
 
-#: src/template-tags/tickets.php:1692
+#: src/template-tags/tickets.php:1695
 msgctxt "lowercase plural label for Guest"
 msgid "guests"
 msgstr ""
@@ -3404,35 +3402,35 @@ msgstr[1] ""
 #: src/views/blocks/attendees/view-link.php:39
 #: src/views/tickets/orders-pp-tickets.php:32
 #: src/views/tickets/orders-rsvp.php:30 src/views/tickets/orders.php:76
-#: src/views/tickets/view-link.php:33
+#: src/views/tickets/view-link.php:49
 msgctxt "fallback post type singular name"
 msgid "Post"
 msgstr ""
 
 #. Translators: 1: the number one, 2: singular RSVP label.
 #: src/views/blocks/attendees/view-link.php:46
-#: src/views/tickets/view-link.php:40
+#: src/views/tickets/view-link.php:56
 msgctxt "RSVP count singular"
 msgid "%1$d %2$s"
 msgstr ""
 
 #. Translators: 1: the plural number of RSVPs, 2: plural RSVP label.
 #: src/views/blocks/attendees/view-link.php:49
-#: src/views/tickets/view-link.php:43
+#: src/views/tickets/view-link.php:59
 msgctxt "RSVP count plural"
 msgid "%1$d %2$s"
 msgstr ""
 
 #. Translators: 1: the number one, 2: singular Ticket label.
 #: src/views/blocks/attendees/view-link.php:54
-#: src/views/tickets/view-link.php:48
+#: src/views/tickets/view-link.php:64
 msgctxt "Ticket count singular"
 msgid "%1$d %2$s"
 msgstr ""
 
 #. Translators: 1: the plural number of Tickets, 2: plural Ticket label.
 #: src/views/blocks/attendees/view-link.php:57
-#: src/views/tickets/view-link.php:51
+#: src/views/tickets/view-link.php:67
 msgctxt "Ticket count plural"
 msgid "%1$d %2$s"
 msgstr ""
@@ -3442,12 +3440,14 @@ msgstr ""
 #. Translators: 1: number of RSVPs and/or Tickets with accompanying ticket type
 #. text, 2: post type label.
 #: src/views/blocks/attendees/view-link.php:67
-#: src/views/tickets/view-link.php:61
+#: src/views/tickets/view-link.php:77
 msgid "You have %1s for this %2s."
 msgstr ""
 
+#. Translators: %s: The name(s) of the type(s) of ticket(s) the specified user
+#. (optional) has for the specified event.
 #: src/views/blocks/attendees/view-link.php:72
-#: src/views/tickets/view-link.php:66
+#: src/views/tickets/view-link.php:85
 msgid "View your %s"
 msgstr ""
 
@@ -3496,11 +3496,12 @@ msgstr ""
 
 #: src/views/blocks/rsvp/status/going.php:25
 #: src/views/v2/rsvp/actions/rsvp/going.php:28
-#: src/views/v2/rsvp/details/attendance.php:29
+msgctxt "Label for the RSVP going button"
 msgid "Going"
 msgstr ""
 
 #: src/views/blocks/rsvp/status/not-going.php:44
+msgctxt "Label for the RSVP not going button"
 msgid "Not going"
 msgstr ""
 
@@ -3989,7 +3990,7 @@ msgid "RSVP Closed"
 msgstr ""
 
 #: src/views/v2/rsvp/actions/rsvp/not-going.php:43
-#: src/views/v2/rsvp/actions/success/title.php:17
+msgctxt "Label for the RSVP \"can't go\" version of the not going button"
 msgid "Can't go"
 msgstr ""
 
@@ -3999,6 +4000,10 @@ msgstr ""
 
 #: src/views/v2/rsvp/actions/success/title.php:17
 msgid "You are going"
+msgstr ""
+
+#: src/views/v2/rsvp/actions/success/title.php:17
+msgid "Can't go"
 msgstr ""
 
 #. Translators: 1: opening span. 2: Closing span.
@@ -4079,6 +4084,11 @@ msgstr ""
 #. Translators: %s Guest label for RSVP attendee registration sidebar title.
 #: src/views/v2/rsvp/ari/sidebar/quantity.php:22
 msgid "Total %s"
+msgstr ""
+
+#: src/views/v2/rsvp/details/attendance.php:29
+msgctxt "Label below the attendance number"
+msgid "Going"
 msgstr ""
 
 #. Translators: 1: opening span. 2: the number of remaining days to RSVP. 3:
