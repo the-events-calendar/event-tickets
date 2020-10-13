@@ -6,6 +6,16 @@
 $main     = Tribe__Main::instance();
 $has_plus = class_exists( 'Tribe__Tickets_Plus__Main' );
 $has_tec  = class_exists( 'Tribe__Events__Main' );
+
+$desktop_graphic = 'images/header/welcome-desktop-et.jpg';
+$logo_image = 'images/logo/event-tickets.svg';
+$mobile_graphic = 'images/header/welcome-mobile-et.jpg';
+
+if ( $has_plus ) {
+	$desktop_graphic = 'images/header/welcome-desktop-etplus.jpg';
+	$logo_image = 'images/logo/event-tickets-plus.svg';
+	$mobile_graphic = 'images/header/welcome-mobile-etplus.jpg';
+}
 ?>
 
 <?php if ( $has_plus ) : ?>
@@ -24,14 +34,12 @@ $has_tec  = class_exists( 'Tribe__Events__Main' );
 <div class="tribe-events-admin-content-wrapper tribe-events-admin-tickets <?php if ( $has_plus ) { echo 'tribe-events-admin-tickets-plus'; } ?>">
 	<img
 		class="tribe-events-admin-graphic tribe-events-admin-graphic--desktop-only"
-		<?php $desktop_graphic = $has_plus ? 'images/header/welcome-desktop-etplus.jpg' : 'images/header/welcome-desktop-et.jpg'; ?>
 		src="<?php echo esc_url( tribe_resource_url( $desktop_graphic, false, null, $main ) ); ?>"
 		alt="<?php esc_attr_e( 'Shapes and lines for visual interest', 'event-tickets' ); ?>"
 	/>
 
 	<img
 		class="tribe-events-admin-graphic tribe-events-admin-graphic--mobile-only"
-		<?php $mobile_graphic = $has_plus ? 'images/header/welcome-mobile-etplus.jpg' : 'images/header/welcome-mobile-et.jpg'; ?>
 		src="<?php echo esc_url( tribe_resource_url( $mobile_graphic, false, null, $main ) ); ?>"
 		alt="<?php esc_attr_e( 'Shapes and lines for visual interest', 'event-tickets' ); ?>"
 	/>
@@ -39,7 +47,6 @@ $has_tec  = class_exists( 'Tribe__Events__Main' );
 	<div class="tribe-events-admin-title">
 		<img
 			class="tribe-events-admin-title__logo"
-			<?php $logo_image = $has_plus ? 'images/logo/event-tickets-plus.svg' : 'images/logo/event-tickets.svg'; ?>
 			src="<?php echo esc_url( tribe_resource_url( $logo_image, false, null, $main ) ); ?>"
 			alt="<?php esc_attr_e( 'Event Tickets logo', 'event-tickets' ); ?>"
 		/>
@@ -86,7 +93,8 @@ $has_tec  = class_exists( 'Tribe__Events__Main' );
 
 	<h3 class="tribe-events-admin-section-header"><?php esc_html_e( 'Helpful Resources', 'event-tickets' ); ?></h3>
 
-	<?php /* Video was not yet ready.
+	<?php
+	/* Video was not yet ready.
 	<div class="tribe-events-admin-video">
 		<iframe src="https://www.youtube.com/embed/TBD" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 	</div>
@@ -98,7 +106,7 @@ $has_tec  = class_exists( 'Tribe__Events__Main' );
 			<img
 				class="tribe-events-admin-card__image"
 				src="<?php echo esc_url( tribe_resource_url( 'images/welcome/guide-book-green.jpg', false, null, $main ) ); ?>"
-				alt="<?php esc_attr_e( 'illustration of a book with The Events Calendar logo', 'event-tickets' ); ?>"
+				alt="<?php esc_attr_e( 'Illustration of a book with The Events Calendar logo', 'event-tickets' ); ?>"
 			/>
 			<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Getting Started Guide', 'event-tickets' ); ?></div>
 			<div class="tribe-events-admin-card__description"><?php esc_html_e( 'New to Event Tickets? Here\'s everything you need to get started.', 'event-tickets' ); ?></div>
@@ -108,7 +116,7 @@ $has_tec  = class_exists( 'Tribe__Events__Main' );
 			<img
 				class="tribe-events-admin-card__image"
 				src="<?php echo esc_url( tribe_resource_url( 'images/welcome/knowledgebase.jpg', false, null, $main ) ); ?>"
-				alt="<?php esc_attr_e( 'illustration of a thought lightbulb coming from a book', 'event-tickets' ); ?>"
+				alt="<?php esc_attr_e( 'Illustration of a thought lightbulb coming from a book', 'event-tickets' ); ?>"
 			/>
 			<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Knowledgebase', 'event-tickets' ); ?></div>
 			<div class="tribe-events-admin-card__description"><?php esc_html_e( 'Ready to dig deeper? Our Knowledgebase can help you get the most out of The Events Calendar suite.', 'event-tickets' ); ?></div>
@@ -118,7 +126,7 @@ $has_tec  = class_exists( 'Tribe__Events__Main' );
 			<img
 				class="tribe-events-admin-card__image"
 				src="<?php echo esc_url( tribe_resource_url( 'images/welcome/translations.jpg', false, null, $main ) ); ?>"
-				alt="<?php esc_attr_e( 'illustration of characters being translated', 'event-tickets' ); ?>"
+				alt="<?php esc_attr_e( 'Illustration of characters being translated', 'event-tickets' ); ?>"
 			/>
 			<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Translations', 'event-tickets' ); ?></div>
 			<div class="tribe-events-admin-card__description"><?php esc_html_e( 'Need a language other than English? We\'ve got you covered here.', 'event-tickets' ); ?></div>
@@ -129,7 +137,7 @@ $has_tec  = class_exists( 'Tribe__Events__Main' );
 			<img
 				class="tribe-events-admin-card__image"
 				src="<?php echo esc_url( tribe_resource_url( 'images/welcome/virtual-events.jpg', false, null, $main ) ); ?>"
-				alt="<?php esc_attr_e( 'illustration of a phone screen with a person\'s face', 'event-tickets' ); ?>"
+				alt="<?php esc_attr_e( 'Illustration of a phone screen with a person\'s face', 'event-tickets' ); ?>"
 			/>
 			<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Virtual Event Resources', 'event-tickets' ); ?></div>
 			<div class="tribe-events-admin-card__description"><?php esc_html_e( 'Tips and tools to help with planning online events, webinars, and more on WordPress and beyond.', 'event-tickets' ); ?></div>
@@ -141,7 +149,7 @@ $has_tec  = class_exists( 'Tribe__Events__Main' );
 				<img
 					class="tribe-events-admin-card__image"
 					src="<?php echo esc_url( tribe_resource_url( 'images/welcome/extension-library.jpg', false, null, $main ) ); ?>"
-					alt="<?php esc_attr_e( 'illustration of a power plug and gears', 'event-tickets' ); ?>"
+					alt="<?php esc_attr_e( 'Illustration of a power plug and gears', 'event-tickets' ); ?>"
 				/>
 				<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Browse our library of free extensions for Event Tickets.', 'event-tickets' ); ?></div>
 				<a class="tribe-events-admin-card__link" href="https://m.tri.be/1amf" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'event-tickets' ); ?></a>
@@ -151,7 +159,7 @@ $has_tec  = class_exists( 'Tribe__Events__Main' );
 				<img
 					class="tribe-events-admin-card__image"
 					src="<?php echo esc_url( tribe_resource_url( 'images/welcome/next-level.jpg', false, null, $main ) ); ?>"
-					alt="<?php esc_attr_e( 'book with The Events Calendar logo', 'event-tickets' ); ?>"
+					alt="<?php esc_attr_e( 'Illustration of a book with The Events Calendar logo', 'event-tickets' ); ?>"
 				/>
 				<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Want to take your events to the next level?', 'event-tickets' ); ?></div>
 				<a class="tribe-events-admin-card__link" href="admin.php?page=tribe-app-shop"><?php esc_html_e( 'Check out our suite of add-ons', 'event-tickets' ); ?></a>
@@ -161,7 +169,7 @@ $has_tec  = class_exists( 'Tribe__Events__Main' );
 				<img
 					class="tribe-events-admin-card__image"
 					src="<?php echo esc_url( tribe_resource_url( 'images/welcome/calendar.jpg', false, null, $main ) ); ?>"
-					alt="<?php esc_attr_e( 'illustration of a calendar', 'event-tickets' ); ?>"
+					alt="<?php esc_attr_e( 'Illustration of a calendar', 'event-tickets' ); ?>"
 				/>
 				<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Add The Events Calendar (it\'s free!) to enhance Event Tickets.', 'event-tickets' ); ?></div>
 				<a class="tribe-events-admin-card__link" href="https://m.tri.be/1anm" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'event-tickets' ); ?></a>
@@ -173,7 +181,7 @@ $has_tec  = class_exists( 'Tribe__Events__Main' );
 				<img
 					class="tribe-events-admin-card__image"
 					src="<?php echo esc_url( tribe_resource_url( 'images/welcome/next-level.jpg', false, null, $main ) ); ?>"
-					alt="<?php esc_attr_e( 'book with The Events Calendar logo', 'event-tickets' ); ?>"
+					alt="<?php esc_attr_e( 'Illustration of a book with The Events Calendar logo', 'event-tickets' ); ?>"
 				/>
 				<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Want to take your events to the next level?', 'event-tickets' ); ?></div>
 				<a class="tribe-events-admin-card__link" href="admin.php?page=tribe-app-shop"><?php esc_html_e( 'Check out our suite of add-ons', 'event-tickets' ); ?></a>
@@ -183,7 +191,7 @@ $has_tec  = class_exists( 'Tribe__Events__Main' );
 				<img
 					class="tribe-events-admin-card__image"
 					src="<?php echo esc_url( tribe_resource_url( 'images/welcome/et-plus-upsell.jpg', false, null, $main ) ); ?>"
-					alt="<?php esc_attr_e( 'illustration of a hand holding a ticket and the WooCommerce logo', 'event-tickets' ); ?>"
+					alt="<?php esc_attr_e( 'Illustration of a hand holding a ticket and the WooCommerce logo', 'event-tickets' ); ?>"
 				/>
 				<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Add WooCommerce integration, advanced registration, and more.', 'event-tickets' ); ?></div>
 				<a class="tribe-events-admin-card__link" href="https://m.tri.be/1ano" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Check out Event Tickets Plus', 'event-tickets' ); ?></a>
