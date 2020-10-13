@@ -34,12 +34,12 @@
 		// adjust thickbox links height and width to be 90% of the browser height and width
 		$( obj.selectors.thickbox ).each( function() {
 			var $link = $( this );
-			var href = new URL( $link.prop( "href" ) );
+			var href = new URL( $link.prop( 'href' ) );
 
 			href.searchParams.set( 'height', height );
 			href.searchParams.set( 'width', width );
 
-			$link.prop( "href", href.toString() );
+			$link.prop( 'href', href.toString() );
 		} );
 	};
 
