@@ -656,7 +656,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
 
 			$cache = tribe( 'cache' );
-			$key   = "ticket_available_{$this->ID}";
+			$key   = __METHOD__ . '-' . $this->ID;
 
 			if ( ! empty( $cache[ $key ] ) ) {
 				return $cache[ $key ];
