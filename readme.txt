@@ -122,6 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Correctly detect ticket provider to support Attendee Information. [ET-915]
 * Fix - Correct template override location comments. [ET-919]
+* Language - 42 new strings added, 25 updated, 1 fuzzied, and 28 obsoleted
 
 = [5.0.1] 2020-09-21 =
 
