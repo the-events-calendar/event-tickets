@@ -1197,7 +1197,7 @@ class Tribe__Tickets__Tickets_Handler {
 	public function get_ticket_max_purchase( $ticket_id ) {
 
 		$cache = tribe( 'cache' );
-		$key = __METHOD__ . '-' . $ticket_id;
+		$key   = __METHOD__ . '-' . $ticket_id;
 
 		if ( ! empty( $cache[ $key ] ) ) {
 			return $cache[ $key ];
