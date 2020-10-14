@@ -249,7 +249,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * Get the Welcome page URL.
 	 *
-	 * @since TBD
+	 * @since 5.0.2
 	 *
 	 * @return string The welcome page URL.
 	 */

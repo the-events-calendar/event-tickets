@@ -18,9 +18,9 @@
  *               third parameter of `get_description_rsvp_ticket()` and to simplify the template's logic.
  * @since 4.10.9 Uses new functions to get singular and plural texts.
  * @since 4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
- * @since TBD Fix template path in documentation block.
+ * @since 5.0.2 Fix template path in documentation block.
  *
- * @version TBD
+ * @version 5.0.2
  *
  * @var Tribe__Tickets__Editor__Template $this
  */

@@ -118,7 +118,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [5.0.2] TBD =
+= [5.0.2] 2020-10-19 =
 
 * Fix - Correctly detect ticket provider to support Attendee Information. [ET-915]
 * Fix - Correct template override location comments. [ET-919]
