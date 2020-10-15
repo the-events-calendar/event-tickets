@@ -714,6 +714,5 @@ tribe.tickets.block = {
 
 	// Configure on document ready.
 	$document.ready( obj.ready );
-
 } )( jQuery, tribe.tickets.block );
 /* eslint-enable max-len */

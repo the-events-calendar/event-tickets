@@ -228,5 +228,4 @@ tribe.tickets.utils = {};
 		// Return the post id for the first ticket block.
 		return $ticketsBlock.getAttribute( 'data-post-id' ) || false;
 	};
-
 } )( jQuery, tribe.tickets.utils );
