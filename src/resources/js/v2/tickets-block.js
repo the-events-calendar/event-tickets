@@ -15,7 +15,6 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 */
-	// @todo: check what we need to remove and/or rename here.
 	obj.selectors = {
 		container: '.tribe-tickets__tickets-wrapper',
 		form: '.tribe-tickets',
@@ -23,7 +22,7 @@ tribe.tickets.block = {
 		blockFooterActive: 'tribe-tickets__footer--active',
 		blockFooterAmount: '.tribe-amount',
 		blockFooterQuantity: '.tribe-tickets__footer__quantity__number',
-		blockSubmit: '#tribe-tickets__submit', // @todo: try to avoid using IDs
+		blockSubmit: '#tribe-tickets__submit',
 		item: '.tribe-tickets__item',
 		itemExtraAvailable: '.tribe-tickets__item__extra__available',
 		itemExtraAvailableQuantity: '.tribe-tickets__item__extra__available__quantity',
@@ -220,7 +219,7 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param {jQuery} $ticket     The ticket item element.
+	 * @param {jQuery} $ticket The ticket item element.
 	 * @param {number} newQuantity The new ticket quantity.
 	 *
 	 * @return {void}
@@ -244,10 +243,9 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param {jQuery} $input        The input field.
+	 * @param {jQuery} $input The input field.
 	 * @param {number} originalValue The field's original value.
 	 */
-	// @todo: check if we need to handle IE exception as we're no longer supporting IE11.
 	obj.stepUp = function( $input, originalValue ) {
 		// We use 0 here as a shorthand for no maximum.
 		const max = $input.attr( 'max' ) ? Number( $input.attr( 'max' ) ) : -1;
@@ -290,10 +288,9 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param {jQuery} $input        The input field.
+	 * @param {jQuery} $input The input field.
 	 * @param {number} originalValue The field's original value.
 	 */
-	// @todo: check if we need to handle IE exception as we're no longer supporting IE11.
 	obj.stepDown = function( $input, originalValue ) {
 		const min = $input.attr( 'min' ) ? Number( $input.attr( 'min' ) ) : 0;
 		const step = $input.attr( 'step' ) ? Number( $input.attr( 'step' ) ) : 1;
@@ -354,7 +351,7 @@ tribe.tickets.block = {
 	 * @since TBD
 	 *
 	 * @param {jQuery} $form jQuery object that is the form we are checking.
-	 * @param {number} qty   The quantity we desire.
+	 * @param {number} qty The quantity we desire.
 	 *
 	 * @returns {integer} The quantity, limited by existing shared cap tickets.
 	 */
@@ -699,7 +696,6 @@ tribe.tickets.block = {
 		} );
 	};
 
-	// @TODO: Check WTF is this for?
 	window.addEventListener( 'pageshow', function( event ) {
 		if (
 			event.persisted ||
