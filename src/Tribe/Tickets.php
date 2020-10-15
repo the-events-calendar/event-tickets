@@ -653,6 +653,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return Tribe__Tickets__Ticket_Object[] List of ticket objects.
 		 */
 		public function get_tickets( $post_id ) {
+
+			/** @var Tribe__Cache $cache */
+			$cache = tribe( 'cache' );
+			$key   = __METHOD__ . '-' . $post_id;
+
+			if ( isset( $cache[ $key ] ) ) {
+				return $cache[ $key ];
+			}
+
 			$default_provider = static::get_event_ticket_provider( $post_id );
 
 			if ( empty( $default_provider ) ) {
@@ -687,6 +696,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$tickets[] = $ticket;
 			}
+
+			$cache[ $key ] = $tickets;
 
 			return $tickets;
 		}
@@ -1464,6 +1475,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return 0;
 			}
 
+			$cache = tribe( 'cache' );
+			$key   = __METHOD__ . '-' . $post_id;
+
+			if ( isset( $cache[ $key ] ) ) {
+				return $cache[ $key ];
+			}
+
 			$provider = 'default';
 
 			if ( ! empty( $args['provider'] ) ) {
@@ -1477,7 +1495,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			self::pass_args_to_repository( $repository, $args );
 
-			return $repository->found();
+			$found = $repository->found();
+
+			$cache[ $key ] = $found;
+
+			return $found;
 		}
 
 		/**
@@ -1487,9 +1509,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function get_all_event_tickets( $post_id ) {
-			$cache_key = self::$cache_key_prefix . $post_id;
-			$cache = new Tribe__Cache();
-			$tickets = $cache->get( $cache_key );
+
+			$key     = __METHOD__ . '-' . $post_id;
+			$cache   = tribe( 'cache' );
+			$tickets = $cache[ $key ];
 
 			if ( is_array( $tickets ) ) {
 				return $tickets;
@@ -1501,13 +1524,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			foreach ( $modules as $class => $module ) {
 				$obj              = call_user_func( [ $class, 'get_instance' ] );
 				$provider_tickets = $obj->get_tickets( $post_id );
-				if ( is_array( $provider_tickets ) && !empty( $provider_tickets)  ) {
+				if ( is_array( $provider_tickets ) && ! empty( $provider_tickets ) ) {
 					$tickets[] = $provider_tickets;
 				}
 			}
 
 			$tickets = empty( $tickets ) ? [] : call_user_func_array( 'array_merge', $tickets );
-			$cache->set( $cache_key, $tickets, Tribe__Cache::NO_EXPIRATION, 'event_tickets_after_create_ticket' );
+			$cache[ $key ] = $tickets;
 
 			return $tickets;
 		}

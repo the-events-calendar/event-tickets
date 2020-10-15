@@ -1195,11 +1195,11 @@ class Tribe__Tickets__Tickets_Handler {
 	 *             (allows zero but not `-1` for Unlimited). If oversold, will be corrected to zero.
 	 */
 	public function get_ticket_max_purchase( $ticket_id ) {
-
+		/** @var Tribe__Cache $cache */
 		$cache = tribe( 'cache' );
 		$key   = __METHOD__ . '-' . $ticket_id;
 
-		if ( ! empty( $cache[ $key ] ) ) {
+		if ( isset( $cache[ $key ] ) ) {
 			return $cache[ $key ];
 		}
 
