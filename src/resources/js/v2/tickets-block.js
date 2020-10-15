@@ -684,7 +684,6 @@ tribe.tickets.block = {
 	 * @return {void}
 	 */
 	obj.ready = function() {
-		// @todo: Check to see if we can make it container based. (use data-attributes)
 		if ( 0 < TribeTicketOptions.availability_check_interval ) {
 			obj.checkAvailability();
 		}
