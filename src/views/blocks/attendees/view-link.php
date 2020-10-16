@@ -11,17 +11,21 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @since 4.9
- * @since 4.10.8 Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated
+ * @since   4.9
+ * @since   4.10.8 Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated
  *               third parameter of `get_description_rsvp_ticket()` and to simplify the template's logic.
- * @since 4.10.9 Uses new functions to get singular and plural texts.
- * @since 4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
+ * @since   4.10.9 Uses new functions to get singular and plural texts.
+ * @since   4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
+ * @since   TBD Rename Event to Post.
  *
- * @link https://m.tri.be/1amp Help article for RSVP & Ticket template files.
+ * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
- * @version 4.12.1
+ * @version TBD
  *
- * @var Tribe__Tickets__Editor__Template $this
+ * @var Tribe__Tickets__Editor__Template $this       Template object.
+ * @var int                              $post_id    [Global] The current Post ID to which tickets are attached.
+ * @var array                            $attributes [Global] Attendee block's attributes (such as Title above block).
+ * @var array                            $attendees  [Global] List of attendees with attendee data.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -29,17 +33,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $view      = Tribe__Tickets__Tickets_View::instance();
-$event_id  = $this->get( 'post_id' );
-$event     = get_post( $event_id );
-$post_type = get_post_type_object( $event->post_type );
+$post      = get_post( $post_id );
+$post_type = get_post_type_object( $post->post_type );
 $user_id   = get_current_user_id();
 
-$is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type;
+$is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $post->post_type;
 
 $post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post', 'fallback post type singular name', 'event-tickets' );
 $counters           = [];
-$rsvp_count         = $view->count_rsvp_attendees( $event_id, $user_id );
-$ticket_count       = $view->count_ticket_attendees( $event_id, $user_id );
+$rsvp_count         = $view->count_rsvp_attendees( $post_id, $user_id );
+$ticket_count       = $view->count_ticket_attendees( $post_id, $user_id );
 
 if ( 1 === $rsvp_count ) {
 	// Translators: 1: the number one, 2: singular RSVP label.
@@ -61,7 +64,7 @@ if ( empty( $counters ) ) {
 	return false;
 }
 
-$link = $view->get_tickets_page_url( $event_id, $is_event_page );
+$link = $view->get_tickets_page_url( $post_id, $is_event_page );
 
 // Translators: 1: number of RSVPs and/or Tickets with accompanying ticket type text, 2: post type label
 $message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' ), implode( _x( ' and ', 'separator if there are both RSVPs and Tickets', 'event-tickets' ), $counters ), $post_type_singular ) );
@@ -69,5 +72,5 @@ $message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' 
 
 <div class="tribe-link-view-attendee">
 	<?php echo $message ?>
-	<a href="<?php echo esc_url( $link ) ?>"><?php echo sprintf( esc_html__( 'View your %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, $user_id ) ) ?></a>
+	<a href="<?php echo esc_url( $link ) ?>"><?php echo sprintf( esc_html__( 'View your %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $post_id, $user_id ) ) ?></a>
 </div>

@@ -56,11 +56,11 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 	 *
 	 * @since 4.9
 	 *
-	 * @param  array $attributes
+	 * @param array $attributes
 	 *
 	 * @return string
 	 */
-	public function render( $attributes = array() ) {
+	public function render( $attributes = [] ) {
 		/** @var Tribe__Tickets__Editor__Template $template */
 		$template        = tribe( 'tickets.editor.template' );
 		$args['post_id'] = $post_id = $template->get( 'post_id', null, false );
@@ -76,13 +76,22 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 
 		$args['attendees'] = $attendees_list->get_attendees_for_post( $post_id );
 
-		// Add the rendering attributes into global context
+		/**
+		 * Add the rendering attributes into global context.
+		 *
+		 * Start with the following for template files loading this global context.
+		 *
+		 * @var Tribe__Tickets__Editor__Template $this       Template object.
+		 * @var int                              $post_id    [Global] The current Post ID to which tickets are attached.
+		 * @var array                            $attributes [Global] Attendee block's attributes (such as Title above block).
+		 * @var array                            $attendees  [Global] List of attendees with attendee data.
+		 */
 		$template->add_template_globals( $args );
 
 		// enqueue assets
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-attendees-style' );
 
-		return $template->template( array( 'blocks', $this->slug() ), $args, false );
+		return $template->template( [ 'blocks', $this->slug() ], $args, false );
 	}
 
 	/**
