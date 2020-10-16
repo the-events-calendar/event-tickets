@@ -17,7 +17,7 @@
  * @since 4.10.9 Uses new functions to get singular and plural texts.
  * @since 4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
  * @version 4.12.1
  *
