@@ -80,6 +80,7 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 		 * Add the rendering attributes into global context.
 		 *
 		 * Start with the following for template files loading this global context.
+		 * Keep all templates with this starter block of comments updated if these global args update.
 		 *
 		 * @var Tribe__Tickets__Editor__Template $this       Template object.
 		 * @var int                              $post_id    [Global] The current Post ID to which tickets are attached.
