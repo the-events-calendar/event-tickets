@@ -41,7 +41,7 @@ if ( ! $rsvp->show_description() || empty( $rsvp->description ) ) {
 ?>
 <div class="tribe-tickets__rsvp-attendance">
 	<span <?php tribe_classes( $classes ); ?>>
-		<?php echo esc_html( $rsvp->qty_sold ); ?>
+		<?php echo esc_html( $rsvp->qty_sold() ); ?>
 	</span>
 	<span class="tribe-tickets__rsvp-attendance-going tribe-common-h7 tribe-common-h--alt tribe-common-b3--min-medium">
 		<?php echo esc_html_x( 'Going', 'Label below the attendance number', 'event-tickets' ); ?>
