@@ -27,6 +27,7 @@
  * @var bool                             $doing_shortcode     [Global] True if detected within context of shortcode output.
  * @var bool                             $block_html_id       [Global] The RSVP block HTML ID. $doing_shortcode may alter it.
  * @var Tribe__Tickets__Ticket_Object    $rsvp                The rsvp ticket object.
+ * @var string                           $going               Whether the attendee RSVP'd going or not.
  */
 
 /** @var Tribe__Tickets__Tickets_Handler $tickets_handler */

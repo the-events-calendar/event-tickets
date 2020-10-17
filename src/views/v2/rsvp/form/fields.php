@@ -31,6 +31,7 @@
  * @var bool                             $doing_shortcode     [Global] True if detected within context of shortcode output.
  * @var bool                             $block_html_id       [Global] The RSVP block HTML ID. $doing_shortcode may alter it.
  * @var Tribe__Tickets__Ticket_Object    $rsvp                The rsvp ticket object.
+ * @var string                           $going               Whether the attendee RSVP'd going or not.
  */
 
 $this->template( 'v2/rsvp/form/fields/name', [ 'rsvp' => $rsvp, 'going' => $going ] );

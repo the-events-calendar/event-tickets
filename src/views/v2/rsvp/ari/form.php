@@ -33,7 +33,6 @@
  * @var Tribe__Tickets__Ticket_Object    $rsvp                The rsvp ticket object.
  * @var string                           $going               Whether the attendee RSVP'd going or not.
  */
-
 ?>
 
 <div class="tribe-tickets__rsvp-ar-form">
