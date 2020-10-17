@@ -36,7 +36,10 @@
 
 $is_unlimited = $this->get( 'is_unlimited' );
 
-if ( empty( tribe( 'tickets.editor.blocks.rsvp' )->show_unlimited( $is_unlimited ) ) ) {
+/** @var \Tribe__Tickets__Editor__Blocks__Rsvp $blocks_rsvp */
+$blocks_rsvp = tribe( 'tickets.editor.blocks.rsvp' );
+
+if ( empty( $blocks_rsvp->show_unlimited( $is_unlimited ) ) ) {
 	return;
 }
 
