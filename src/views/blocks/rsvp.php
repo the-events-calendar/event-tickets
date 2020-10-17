@@ -33,11 +33,8 @@
  * @var bool                             $block_html_id       [Global] The RSVP block HTML ID. $doing_shortcode may alter it.
  */
 
-$event_id         = $this->get( 'post_id' );
-$rsvps            = $this->get( 'active_rsvps' );
-$has_active_rsvps = $this->get( 'has_active_rsvps' );
-$has_rsvps        = $this->get( 'has_rsvps' );
-$all_past         = $this->get( 'all_past' );
+$event_id = $post_id;
+$rsvps    = $active_rsvps;
 
 // We don't display anything if there is no RSVP
 if ( ! $has_rsvps ) {
