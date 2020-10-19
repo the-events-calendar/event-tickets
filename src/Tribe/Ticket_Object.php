@@ -1095,7 +1095,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			 * @param bool $has_meta Whether the ticket has meta enabled.
 			 * @param int  $ticket_id The ticket ID.
 			 */
-			return (boolean) apply_filters( 'tribe_tickets_has_meta_enabled', false, $this->ID );
+			return (bool) apply_filters( 'tribe_tickets_has_meta_enabled', false, $this->ID );
 		}
 
 	}
