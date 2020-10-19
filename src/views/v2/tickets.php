@@ -35,6 +35,7 @@ if ( ! $is_sale_future && ( ! $provider || ! $tickets ) ) {
 $classes = [
 	'tribe-common',
 	'event-tickets',
+	'tribe-tickets__tickets-wrapper',
 ];
 
 ?>
@@ -43,12 +44,12 @@ $classes = [
 		id="tribe-tickets"
 		action="<?php echo esc_url( $provider->get_cart_url() ); ?>"
 		class="tribe-tickets"
-		class="tribe-tickets"
 		method="post"
 		enctype='multipart/form-data'
 		data-provider="<?php echo esc_attr( $provider->class_name ); ?>"
 		autocomplete="off"
 		data-provider-id="<?php echo esc_attr( $provider->orm_provider ); ?>"
+		data-post-id="<?php echo esc_attr( $post_id ); ?>"
 		novalidate
 	>
 
@@ -72,6 +73,15 @@ $classes = [
 
 	</form>
 
-	<?php $this->template( 'v2/modal/target' ); ?>
-
+	<?php
+	/**
+	 * Allows injection of additional markup after the form tag but within the div of this template.
+	 *
+	 * @since TBD
+	 *
+	 * @see  Tribe__Template\do_entry_point()
+	 * @link https://docs.theeventscalendar.com/reference/classes/tribe__template/do_entry_point/
+	 */
+	$this->do_entry_point( 'after_form' );
+	?>
 </div>

@@ -295,15 +295,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function get_ticket_reports_link( $post_id_deprecated, $ticket_id ) {}
 
 		/**
-		 * Returns a single ticket
+		 * Returns a single ticket.
 		 *
-		 * @abstract
+		 * @param int $post_id   ID of parent "event" post.
+		 * @param int $ticket_id ID of ticket post.
 		 *
-		 * @param int $post_id ID of parent "event" post
-		 * @param int $ticket_id ID of ticket post
-		 * @return mixed
+		 * @return Tribe__Tickets__Ticket_Object|null
 		 */
-		public function get_ticket( $post_id, $ticket_id ) {}
+		public function get_ticket( $post_id, $ticket_id ) {
+			return null;
+		}
 
 		/**
 		 * Retrieve the Query args to fetch all the Tickets.
@@ -1890,10 +1891,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			wp_enqueue_script( 'wp-util-not-in-footer' );
 
+			// Check whether we use v1 or v2. We need to update this when we deprecate tickets v1.
+			$tickets_js = tribe_tickets_new_views_is_enabled() ? 'v2/tickets-block.js' : 'tickets-block.js';
+
 			tribe_asset(
 				$plugin,
 				'tribe-tickets-block',
-				'tickets-block.js',
+				$tickets_js,
 				[
 					'jquery',
 					'tribe-common',
@@ -3147,9 +3151,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * redirect to the meta collection screen.
 		 *
 		 * @since 4.9
+		 * @since TBD Correct provider attendee object.
 		 *
-		 * @param string   $redirect URL to redirect to.
-		 * @param null|int $post_id  Post ID for cart.
+		 * @param string|null $redirect URL to redirect to.
+		 * @param null|int    $post_id  Post ID for cart.
 		 */
 		public function maybe_redirect_to_attendees_registration_screen( $redirect = null, $post_id = null ) {
 
@@ -3170,7 +3175,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var \Tribe__Tickets__Attendee_Registration__Main $attendee_registration */
 			$attendee_registration = tribe( 'tickets.attendee_registration' );
 
-			if ( $attendee_registration->is_on_page() || $attendee_registration->is_cart_rest() || $attendee_registration->is_using_shortcode() ) {
+			if (
+				$attendee_registration->is_on_page()
+				|| $attendee_registration->is_cart_rest()
+				|| $attendee_registration->is_using_shortcode()
+			) {
 				return;
 			}
 
@@ -3180,6 +3189,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$q_provider = tribe_get_request_var( 'provider', false );
+
+			// Provider to use the attendee object.
+			if (
+				static::class === $q_provider
+				|| empty( $q_provider )
+			) {
+				$q_provider = $this->attendee_object;
+			}
 
 			/**
 			 * Filter to add/remove tickets from the global cart
@@ -3197,12 +3214,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			$is_paypal = (bool) $redirect;
-
 			/** @var Tribe__Tickets_Plus__Main $tickets_plus_main */
 			$tickets_plus_main = tribe( 'tickets-plus.main' );
 
-			/** @var Tribe__Tickets_Plus__Meta $meta */
 			$meta = $tickets_plus_main->meta();
 
 			$cart_has_meta = true;
@@ -3232,14 +3246,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$url = $attendee_reg->get_url();
 
-			$provider = tribe_get_request_var( 'provider' );
-
-			if ( empty( $provider ) ) {
-				$provider = $this->attendee_object;
-			}
-
-			if ( ! empty( $provider ) ) {
-				$url = add_query_arg( 'provider', $provider, $url );
+			if ( ! empty( $q_provider ) ) {
+				$url = add_query_arg( 'provider', $q_provider, $url );
 			}
 
 			if ( ! empty( $redirect ) ) {
@@ -3266,6 +3274,32 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			wp_safe_redirect( $url );
 			exit;
+		}
+
+		/**
+		 * Get list of tickets in cart for a specific provider.
+		 *
+		 * @since TBD
+		 *
+		 * @param null|string|false $provider The provider slug or false if no provider, leave as null to detect from page.
+		 *
+		 * @return array List of tickets in cart for the provider.
+		 */
+		public static function get_tickets_in_cart_for_provider( $provider = null ) {
+			if ( null === $provider ) {
+				$provider = tribe_get_request_var( 'provider', false );
+			}
+
+			/**
+			 * Filter to add/remove tickets from the global cart.
+			 *
+			 * @since 4.9
+			 * @since 4.11.0 Added $provider to allow context of current provider.
+			 *
+			 * @param array        $tickets_in_cart The array containing the cart elements. Format array( 'ticket_id' => 'quantity' ).
+			 * @param string|false $provider        Current ticket provider or false if not set.
+			 */
+			return (array) apply_filters( 'tribe_tickets_tickets_in_cart', [], $provider );
 		}
 
 		/**

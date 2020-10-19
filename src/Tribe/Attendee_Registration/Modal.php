@@ -31,50 +31,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 			return $this->modal_cart_template_v1( $content, $template_obj );
 		}
 
-		$post_id             = $template_obj->get( 'post_id' );
-		$tickets             = $template_obj->get( 'tickets', [] );
-		$provider            = $template_obj->get( 'provider' );
-		$provider_id         = $template_obj->get( 'provider_id' );
-		$cart_url            = $template_obj->get( 'cart_url' );
-		$tickets_on_sale     = $template_obj->get( 'tickets_on_sale' );
-		$has_tickets_on_sale = $template_obj->get( 'has_tickets_on_sale' );
-		$is_sale_past        = $template_obj->get( 'is_sale_past' );
-		$must_login          = $template_obj->get( 'must_login' );
-
-		$args = [
-			'post_id'             => $post_id,
-			'tickets'             => $tickets,
-			'provider'            => $provider,
-			'provider_id'         => $provider_id,
-			'cart_url'            => $cart_url,
-			'tickets_on_sale'     => $tickets_on_sale,
-			'has_tickets_on_sale' => $has_tickets_on_sale,
-			'is_sale_past'        => $is_sale_past,
-			'must_login'          => $must_login,
-			'is_modal'            => true,
-		];
-
-		$template_obj->add_template_globals( $args );
-
-		ob_start();
-		?>
-		<form
-			id="tribe-tickets__modal-form"
-			action=""
-			method="post"
-			enctype='multipart/form-data'
-			data-provider="<?php echo esc_attr( $provider->class_name ); ?>"
-			autocomplete="off"
-			data-provider-id="<?php echo esc_attr( $provider->orm_provider ); ?>"
-			novalidate
-		>
-			<?php
-			$template_obj->template( 'v2/modal/cart' );
-			$this->append_modal_ar_template( $content, $template_obj );
-			?>
-		</form>
-		<?php
-		return ob_get_clean();
+		return $content;
 	}
 
 	/**
@@ -89,37 +46,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 		// If they're not using the new views, include v1 and bail.
 		if ( ! tribe_tickets_new_views_is_enabled() ) {
 			$this->append_modal_ar_template_v1( $unused_content, $template_obj );
-
-			return;
 		}
-
-		$obj_tickets  = $template_obj->get( 'tickets', [] );
-		$tickets_data = [];
-
-		foreach ( $obj_tickets as $ticket ) {
-			$tickets_data[] = [
-				'id'       => $ticket->ID,
-				'qty'      => 1,
-				'provider' => $ticket->get_provider(),
-			];
-		}
-
-		/** @var Tribe__Tickets__Attendee_Registration__View $view */
-		$view = tribe( 'tickets.attendee_registration.view' );
-
-		$args = [
-			'tickets'        => $obj_tickets,
-			'providers'      => wp_list_pluck( $tickets_data, 'provider' ),
-			'provider_class' => '',
-			'has_tpp'        => false,
-			'post_id'        => $template_obj->get( 'post_id' ),
-			'view'           => $view,
-			'is_modal'       => true,
-		];
-
-		$template_obj->add_template_globals( $args );
-
-		$template_obj->template( 'v2/modal/attendee-registration' );
 	}
 
 	/**
@@ -239,7 +166,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 		>
 			<?php
 			include $file;
-			$this->append_modal_ar_template( $content, $template_obj );
+			$this->append_modal_ar_template_v1( $content, $template_obj );
 			?>
 		</form>
 		<?php
