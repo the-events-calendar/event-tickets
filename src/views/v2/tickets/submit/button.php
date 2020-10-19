@@ -14,16 +14,14 @@
  *
  * @version TBD
  *
- * @var bool   $must_login If the login is required to purchase tickets.
+ * @var bool $must_login           If the login is required to purchase tickets.
  * @var string $submit_button_name The name of the button.
+ * @var bool $is_modal             True if it's in modal context.
  */
 
-/** @var \Tribe__Tickets__Attendee_Registration__Main $attendee_registration */
-$attendee_registration = tribe( 'tickets.attendee_registration' );
-
 if (
-	! empty( $must_login )
-	|| $attendee_registration->is_modal_enabled()
+		! empty( $must_login )
+		|| $is_modal
 ) {
 	return;
 }
