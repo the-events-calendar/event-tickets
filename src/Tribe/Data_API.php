@@ -346,7 +346,7 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Determine whether the ticket IDs have meta fields.
 	 *
-	 * @param $ticket_ids array The ticket IDs.
+	 * @param array $ticket_ids The ticket IDs.
 	 *
 	 * @return bool Whether the ticket IDs have meta.
 	 */
@@ -506,4 +506,3 @@ class Tribe__Tickets__Data_API {
 	}
 
 }
-
