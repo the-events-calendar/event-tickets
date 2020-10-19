@@ -7,8 +7,12 @@
  *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @version 4.11.0
+ * @since TBD Abstract calls for whether a ticket has meta enabled.
  *
+ * @version TBD
+ *
+ * @var int   $event_id The post/event ID.
+ * @var array $tickets  The list of ticket config arrays.
  */
 if (
 	! class_exists( 'Tribe__Tickets_Plus__Meta' )
@@ -18,15 +22,14 @@ if (
 }
 
 $storage = new Tribe__Tickets_Plus__Meta__Storage();
-$meta    = tribe( 'tickets-plus.main' )->meta();
+/** @var Tribe__Tickets_Plus__Meta $meta */
+$meta    = tribe( 'tickets-plus.meta' );
 ?>
 
 <?php foreach ( $tickets as $ticket ) : ?>
 	<?php
-	// Only include those who have meta
-	$has_meta = get_post_meta( $ticket['id'], '_tribe_tickets_meta_enabled', true );
-
-	if ( empty( $has_meta ) || ! tribe_is_truthy( $has_meta ) ) {
+	// Only include those who have meta.
+	if ( ! $meta->ticket_has_meta( $ticket['id'] ) ) {
 		continue;
 	}
 
@@ -37,9 +40,6 @@ $meta    = tribe( 'tickets-plus.main' )->meta();
 	<?php // go through each attendee ?>
 	<?php while ( $attendee_count < $ticket['qty'] ) : ?>
 		<?php
- 			/**
- 			 * @var Tribe__Tickets_Plus__Meta $meta
- 			 */
 			$fields     = $meta->get_meta_fields_by_ticket( $post->ID );
 			$saved_meta = $storage->get_meta_data_for( $post->ID );
 

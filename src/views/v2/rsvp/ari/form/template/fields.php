@@ -26,6 +26,10 @@
  */
 $has_meta = apply_filters( 'tribe_tickets_rsvp_has_meta', $rsvp, false );
 
+if ( $rsvp instanceof Tribe__Tickets__Ticket_Object ) {
+	$has_meta = $rsvp->has_meta_enabled();
+}
+
 if ( empty( $has_meta ) ) {
 	return;
 }

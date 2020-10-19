@@ -13,6 +13,8 @@
  * @since 5.0.0
  *
  * @version 5.0.0
+ *
+ * @var Tribe__Tickets__Ticket_Object $rsvp The RSVP ticket object.
  */
 
 /**
@@ -25,6 +27,10 @@
  * @return bool
  */
 $has_meta = apply_filters( 'tribe_tickets_rsvp_has_meta', $rsvp, false );
+
+if ( $rsvp instanceof Tribe__Tickets__Ticket_Object ) {
+	$has_meta = $rsvp->has_meta_enabled();
+}
 
 if ( empty( $has_meta ) ) {
 	return;
