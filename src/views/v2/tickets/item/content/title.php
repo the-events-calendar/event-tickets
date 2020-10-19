@@ -36,7 +36,7 @@ $event_title_classes = [
 <div <?php tribe_classes( $title_classes ); ?> >
 	<?php if ( $is_mini ) : ?>
 		<div <?php tribe_classes( $event_title_classes ); ?> >
-			<?php echo esc_html( get_the_title( $post_id ) ); ?>
+			<?php echo get_the_title( $post_id ); ?>
 		</div>
 	<?php endif; ?>
 	<?php echo esc_html( $ticket->name ); ?>
