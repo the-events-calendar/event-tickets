@@ -22,8 +22,9 @@ if (
 }
 
 $storage = new Tribe__Tickets_Plus__Meta__Storage();
+
 /** @var Tribe__Tickets_Plus__Meta $meta */
-$meta    = tribe( 'tickets-plus.meta' );
+$meta = tribe( 'tickets-plus.meta' );
 ?>
 
 <?php foreach ( $tickets as $ticket ) : ?>
