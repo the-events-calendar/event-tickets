@@ -18,6 +18,7 @@ class SubmitTest extends V2TestCase {
 			'is_mini'            => false,
 			'is_modal'           => false,
 			'submit_button_name' => 'cart-button',
+			'must_login'         => true,
 		];
 	}
 

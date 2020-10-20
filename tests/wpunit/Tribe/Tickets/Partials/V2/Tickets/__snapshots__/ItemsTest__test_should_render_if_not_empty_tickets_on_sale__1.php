@@ -5,7 +5,6 @@
 	data-has-shared-cap="false"
 	>
 
-	
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__item__content__title"  >
 		Test ticket for 8</div>
 
@@ -59,13 +58,11 @@
 	</div>
 
 	
-	
 		<input
 		name="attendee[optout]"
 		value="1"
 		type="hidden"
 	/>
-	
 	
 </div>
 <div
@@ -75,7 +72,6 @@
 	data-has-shared-cap="false"
 	>
 
-	
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__item__content__title"  >
 		Test ticket for 8</div>
 
@@ -129,13 +125,11 @@
 	</div>
 
 	
-	
 		<input
 		name="attendee[optout]"
 		value="1"
 		type="hidden"
 	/>
-	
 	
 </div>
 ';
