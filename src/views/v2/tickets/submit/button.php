@@ -8,9 +8,9 @@
  *
  * See more documentation about our views templating system.
  *
- * @link    http://m.tri.be/1amp
+ * @link http://m.tri.be/1amp
  *
- * @since   TBD
+ * @since TBD
  *
  * @version TBD
  *
@@ -29,26 +29,28 @@ if (
 /**
  * Allow filtering of the button classes for the tickets block.
  *
+ * @since 4.11.3
+ *
  * @param array $button_name The button classes.
  *
  * @since 4.11.3
  *
  */
 $button_classes = apply_filters(
-		'tribe_tickets_ticket_block_submit_classes',
-		[
-				'tribe-common-c-btn',
-				'tribe-common-c-btn--small',
-				'tribe-tickets__buy',
-		]
+	'tribe_tickets_ticket_block_submit_classes',
+	[
+		'tribe-common-c-btn',
+		'tribe-common-c-btn--small',
+		'tribe-tickets__buy',
+	]
 );
 ?>
 <button
-		<?php tribe_classes( $button_classes ) ?>
-		id="tribe-tickets__buy"
-		type="submit"
-		name="<?php echo esc_html( $submit_button_name ); ?>"
-		<?php tribe_disabled( true ); ?>
+	<?php tribe_classes( $button_classes ); ?>
+	id="tribe-tickets__buy"
+	type="submit"
+	name="<?php echo esc_html( $submit_button_name ); ?>"
+	<?php tribe_disabled( true ); ?>
 >
 	<?php
 	/* translators: %s: Tickets label */
