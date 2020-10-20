@@ -118,21 +118,20 @@ class Tribe__Tickets__Assets {
 				]
 			);
 
+			// Tickets registration page styles.
+			tribe_asset(
+				$tickets_main,
+				'tribe-tickets-registration-page-styles',
+				'tickets-registration-page.css',
+				[],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-registration-page',
+					],
+				]
+			);
 		}
-
-		// Tickets registration page styles.
-		tribe_asset(
-			$tickets_main,
-			'tribe-tickets-registration-page-styles',
-			'tickets-registration-page.css',
-			[],
-			null,
-			[
-				'groups' => [
-					'tribe-tickets-registration-page',
-				],
-			]
-		);
 	}
 
 	/**
