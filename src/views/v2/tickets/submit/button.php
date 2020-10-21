@@ -14,16 +14,14 @@
  *
  * @version TBD
  *
- * @var bool   $must_login If the login is required to purchase tickets.
+ * @var bool $must_login           If the login is required to purchase tickets.
  * @var string $submit_button_name The name of the button.
+ * @var bool $is_modal             True if it's in modal context.
  */
 
-/** @var \Tribe__Tickets__Attendee_Registration__Main $attendee_registration */
-$attendee_registration = tribe( 'tickets.attendee_registration' );
-
 if (
-	! empty( $must_login )
-	|| $attendee_registration->is_modal_enabled()
+		! empty( $must_login )
+		|| $is_modal
 ) {
 	return;
 }
@@ -34,6 +32,9 @@ if (
  * @since 4.11.3
  *
  * @param array $button_name The button classes.
+ *
+ * @since 4.11.3
+ *
  */
 $button_classes = apply_filters(
 	'tribe_tickets_ticket_block_submit_classes',
@@ -45,7 +46,7 @@ $button_classes = apply_filters(
 );
 ?>
 <button
-	<?php tribe_classes( $button_classes ) ?>
+	<?php tribe_classes( $button_classes ); ?>
 	id="tribe-tickets__buy"
 	type="submit"
 	name="<?php echo esc_html( $submit_button_name ); ?>"

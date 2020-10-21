@@ -1,15 +1,15 @@
 <?php
 
-namespace Tribe\Tickets\Partials\V2\Tickets\Item\Content;
+namespace Tribe\Tickets\Partials\V2\Tickets\Item;
 
 use Tribe\Tickets\Test\Partials\V2TestCase;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 
-class TitleTest extends V2TestCase {
+class ExtraTest extends V2TestCase {
 
 	use PayPal_Ticket_Maker;
 
-	protected $partial_path = 'v2/tickets/item/content/title';
+	protected $partial_path = 'v2/tickets/item/extra';
 
 	/**
 	 * Get all the default args required for this template
@@ -24,7 +24,7 @@ class TitleTest extends V2TestCase {
 		$provider = tribe_get_class_instance( 'Tribe__Tickets__Commerce__PayPal__Main' );
 
 		$event   = $this->get_mock_event( 'events/single/1.json' );
-		$ids     = $this->create_many_paypal_tickets( 1, $event->ID );
+		$ids     = $this->create_many_paypal_tickets( 1, $event->ID, [ 'price' => 99 ] );
 
 		$ticket = $provider->get_ticket( $event->ID, $ids[0] );
 
@@ -50,80 +50,21 @@ class TitleTest extends V2TestCase {
 	/**
 	 * @test
 	 */
-	public function test_should_not_show_description_if_is_mini() {
-		$template = tribe( 'tickets.editor.template' );
-
-		$override = [
-			'is_mini' => true,
-		];
-
-		$args = array_merge( $this->get_default_args(), $override );
-		$html = $template->template( $this->partial_path, $args, false );
-
-		$this->assertContains( 'tribe-tickets--no-description', $html );
-		$this->assertContains( 'tribe-tickets__item__content__subtitle', $html );
-
-		$driver = $this->get_html_output_driver();
-
-		$driver->setTolerableDifferences( [
-				$args['post_id'],
-				$args['ticket']->name,
-			]
-		);
-
-		$driver->setTolerableDifferencesPrefixes( [
-			'Test ticket for ',
-		] );
-
-		$this->assertMatchesSnapshot( $html, $driver );
-	}
-
-	/**
-	 * @test
-	 */
-	public function test_should_not_show_description_if_ticket_description_empty() {
+	public function test_should_render_with_price_suffix() {
 		$template = tribe( 'tickets.editor.template' );
 
 		$args = $this->get_default_args();
 
-		$args['ticket']->description = '';
+		$args['ticket']->price_suffix = 'simple_prefix';
 
 		$html = $template->template( $this->partial_path, $args, false );
 
-		$this->assertContains( 'tribe-tickets--no-description', $html );
+		$this->assertContains( 'tribe-tickets__item__extra--price-suffix', $html );
 
 		$driver = $this->get_html_output_driver();
-
 		$driver->setTolerableDifferences( [
 				$args['post_id'],
-				$args['ticket']->name,
-			]
-		);
-
-		$driver->setTolerableDifferencesPrefixes( [
-			'Test ticket for ',
-		] );
-
-		$this->assertMatchesSnapshot( $html, $driver );
-	}
-
-	/**
-	 * @test
-	 */
-	public function test_should_not_show_description_if_filter_is_false() {
-		$template = tribe( 'tickets.editor.template' );
-
-		add_filter( 'tribe_tickets_show_description', '__return_false' );
-
-		$args = $this->get_default_args();
-		$html = $template->template( $this->partial_path, $args, false );
-
-		$this->assertContains( 'tribe-tickets--no-description', $html );
-		$driver = $this->get_html_output_driver();
-
-		$driver->setTolerableDifferences( [
-				$args['post_id'],
-				$args['ticket']->name,
+				$args['ticket']->ID,
 			]
 		);
 
@@ -133,23 +74,21 @@ class TitleTest extends V2TestCase {
 	/**
 	 * @test
 	 */
-	public function test_should_render_title_block() {
+	public function test_should_render_without_price_suffix() {
 		$template = tribe( 'tickets.editor.template' );
 
 		$args = $this->get_default_args();
+
+		$args['ticket']->price_suffix = '';
+
 		$html = $template->template( $this->partial_path, $args, false );
 
 		$driver = $this->get_html_output_driver();
-
 		$driver->setTolerableDifferences( [
 				$args['post_id'],
-				$args['ticket']->name,
+				$args['ticket']->ID,
 			]
 		);
-
-		$driver->setTolerableDifferencesPrefixes( [
-			'Test ticket for ',
-		] );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
