@@ -5,7 +5,6 @@
 	data-has-shared-cap="false"
 	>
 
-	
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__item__content__title"  >
 		Test ticket for 8</div>
 
@@ -22,7 +21,7 @@
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
 					<span class="tribe-currency-symbol">$</span>
-					<span class="tribe-amount">1.00</span>
+					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
 </div>
@@ -59,13 +58,11 @@
 	</div>
 
 	
-	
 		<input
 		name="attendee[optout]"
 		value="1"
 		type="hidden"
 	/>
-	
 	
 </div>
 <div
@@ -75,7 +72,6 @@
 	data-has-shared-cap="false"
 	>
 
-	
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__item__content__title"  >
 		Test ticket for 8</div>
 
@@ -92,7 +88,7 @@
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
 					<span class="tribe-currency-symbol">$</span>
-					<span class="tribe-amount">3.00</span>
+					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
 </div>
@@ -129,13 +125,11 @@
 	</div>
 
 	
-	
 		<input
 		name="attendee[optout]"
 		value="1"
 		type="hidden"
 	/>
-	
 	
 </div>
 ';
