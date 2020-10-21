@@ -10,7 +10,7 @@
 	/*
 		Block details/summary and controls
 	*/
-	.tribe-tickets__item__details__content {
+	.tribe-tickets__tickets-item-details-content {
 		color: var(--color-text-secondary);
 		display: none;
 		-ms-grid-column: 1;
@@ -25,7 +25,7 @@
 		}
 	}
 
-	&.tribe-tickets .tribe-tickets__item__details__content {
+	&.tribe-tickets__tickets .tribe-tickets__tickets-item-details-content {
 		@media(--viewport-medium) {
 			display: block;
 			-ms-grid-column: 1;
@@ -35,7 +35,7 @@
 		}
 	}
 
-	.tribe-tickets__item__details__summary {
+	.tribe-tickets__tickets-item-details-summary {
 		color: var(--color-text-secondary);
 		display: -ms-grid;
 		display: grid;
@@ -53,8 +53,8 @@
 		}
 	}
 
-	.tribe-tickets__item__details__summary--more,
-	.tribe-tickets__item__details__summary--less {
+	.tribe-tickets__tickets-item-details-summary-button--more,
+	.tribe-tickets__tickets-item-details-summary-button--less {
 		@mixin mobile-body-2;
 
 		background-color: transparent;
@@ -76,14 +76,14 @@
 		}
 	}
 
-	.tribe-tickets__item__details__summary--more {
+	.tribe-tickets__tickets-item-details-summary-button--more {
 		&:after {
 			border-bottom: 0 none;
 			border-top: var(--spacer-0) solid var(--color-text-secondary);
 		}
 	}
 
-	.tribe-tickets__item__details__summary--less {
+	.tribe-tickets__tickets-item-details-summary-button--less {
 		display: none;
 
 		&:after {
@@ -93,11 +93,11 @@
 	}
 
 	.tribe__details--open {
-		.tribe-tickets__item__details__summary--more {
+		.tribe-tickets__tickets-item-details-summary-button--more {
 			@mixin hidden;
 		}
 
-		.tribe-tickets__item__details__summary--less {
+		.tribe-tickets__tickets-item-details-summary-button--less {
 			display: block;
 		}
 	}
