@@ -23,13 +23,13 @@ $no_description = ! $ticket->show_description() || empty( $ticket->description )
 $title_classes = [
 	'tribe-common-h7',
 	'tribe-common-h6--min-medium',
-	'tribe-tickets__item__content__title',
+	'tribe-tickets__tickets-item-content-title',
 	'tribe-tickets--no-description' => $no_description,
 ];
 
 $event_title_classes = [
 	'tribe-common-b3',
-	'tribe-tickets__item__content__subtitle',
+	'tribe-tickets__tickets-item-content-subtitle',
 ];
 
 ?>

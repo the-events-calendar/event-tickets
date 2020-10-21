@@ -44,9 +44,9 @@ $has_shared_cap = $tickets_handler->has_shared_capacity( $ticket );
 $has_suffix     = ! empty( $ticket->price_suffix );
 
 $classes = [
-	'tribe-tickets__item',
-	'tribe-tickets__item__disabled'     => ! empty( $must_login ),
-	'tribe-tickets__item--price-suffix' => $has_suffix,
+	'tribe-tickets__tickets-item',
+	'tribe-tickets__tickets-item--disabled'     => ! empty( $must_login ),
+	'tribe-tickets__tickets-item--price-suffix' => $has_suffix,
 	get_post_class( '', $ticket->ID ),
 ];
 

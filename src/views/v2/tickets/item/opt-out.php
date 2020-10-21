@@ -20,7 +20,7 @@
  * @var Tribe__Tickets__Ticket_Object $ticket The ticket object.
  */
 
- // Bail if it's in "mini cart" or "modal" context.
+// Bail if it's in "mini cart" or "modal" context.
 if (
 	! empty( $is_modal )
 	|| ! empty( $is_mini )
@@ -66,7 +66,7 @@ $field_id = implode( '-', $field_id );
 		for="<?php echo esc_attr( $field_id ); ?>"
 	>
 		<input
-			class="tribe-common-form-control-checkbox__input tribe-tickets__item__optout"
+			class="tribe-common-form-control-checkbox__input tribe-tickets__tickets-item-optout"
 			id="<?php echo esc_attr( $field_id ); ?>"
 			name="attendee[optout]"
 			type="checkbox"

@@ -42,7 +42,7 @@ if ( $hide_attendee_list_optout ) {
 
 <input
 	id="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $ticket->ID ); ?>-modal"
-	class="tribe-tickets__item__quantity"
+	class="tribe-tickets__tickets-item-quantity"
 	name="attendee[optout]"
 	value="1"
 	type="hidden"
