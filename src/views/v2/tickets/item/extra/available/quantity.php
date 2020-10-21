@@ -19,7 +19,7 @@
  * @var int $threshold                         The threshold value to show or hide quantity available.
  */
 
- if ( 0 !== $threshold && $threshold < $ticket->available() ) {
+if ( 0 !== $threshold && $threshold < $ticket->available() ) {
 	return;
 }
 
