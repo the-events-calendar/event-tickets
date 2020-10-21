@@ -45,7 +45,7 @@ $button_classes = apply_filters(
 );
 ?>
 <button
-	<?php tribe_classes( $button_classes ) ?>
+	<?php tribe_classes( $button_classes ); ?>
 	id="tribe-tickets__tickets-buy"
 	type="submit"
 	name="<?php echo esc_html( $submit_button_name ); ?>"
