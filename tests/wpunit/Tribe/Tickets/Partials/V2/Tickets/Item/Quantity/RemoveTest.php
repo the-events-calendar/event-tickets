@@ -42,7 +42,7 @@ class RemoveTest extends V2TestCase {
 		$args = $this->get_default_args();
 		$html = $template->template( $this->partial_path, $args, false );
 
-		$this->assertContains( 'tickets__item__quantity__remove', $html );
+		$this->assertContains( 'tribe-tickets__tickets-item-quantity-remove', $html );
 		$this->assertContains( $args['ticket']->name, $html );
 
 		$this->assertMatchesSnapshot( $html );

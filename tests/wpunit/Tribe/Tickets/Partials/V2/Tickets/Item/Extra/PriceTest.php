@@ -54,7 +54,7 @@ class PriceTest extends V2TestCase {
 		$html = $template->template( $this->partial_path, $args, false );
 
 		// Make sure we have suffix block.
-		$this->assertContains( 'tribe-tickets__sale-price-suffix', $html );
+		$this->assertContains( 'tribe-tickets__tickets-sale-price-suffix', $html );
 
 		$this->assertMatchesSnapshot( $html, $this->get_html_output_driver() );
 	}
