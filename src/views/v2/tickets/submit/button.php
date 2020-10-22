@@ -20,8 +20,8 @@
  */
 
 if (
-		! empty( $must_login )
-		|| $is_modal
+	! empty( $must_login )
+	|| $is_modal
 ) {
 	return;
 }
@@ -34,20 +34,19 @@ if (
  * @param array $button_name The button classes.
  *
  * @since 4.11.3
- *
  */
 $button_classes = apply_filters(
 	'tribe_tickets_ticket_block_submit_classes',
 	[
 		'tribe-common-c-btn',
 		'tribe-common-c-btn--small',
-		'tribe-tickets__buy',
+		'tribe-tickets__tickets-buy',
 	]
 );
 ?>
 <button
 	<?php tribe_classes( $button_classes ); ?>
-	id="tribe-tickets__buy"
+	id="tribe-tickets__tickets-buy"
 	type="submit"
 	name="<?php echo esc_html( $submit_button_name ); ?>"
 	<?php tribe_disabled( true ); ?>

@@ -30,7 +30,7 @@ $available       = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
 
 $classes = [
 	'tribe-common-h4',
-	'tribe-tickets__item__quantity',
+	'tribe-tickets__tickets-item-quantity',
 ];
 ?>
 <div <?php tribe_classes( $classes ); ?>>
