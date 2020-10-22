@@ -1,4 +1,4 @@
-<?php return '<div  class="tribe-tickets__item__quantity__number tribe-tickets__disabled" >
+<?php return '<div  class="tribe-tickets__tickets-item-quantity-number tribe-tickets__disabled" >
 	<input
 		type="number"
 		class="tribe-common-h3 tribe-common-h4--min-medium tribe-tickets-quantity"

@@ -8,7 +8,8 @@
 	data-provider-id="tribe-commerce"
 	novalidate
 >
-	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title">Tickets</h2>
+	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title">
+		Tickets	</h2>
 	<input type="hidden" name="tribe_tickets_saving_attendees" value="1"/>
 	<input type="hidden" name="tribe_tickets_ar" value="1"/>
 	<input type="hidden" name="tribe_tickets_ar_data" value="" id="tribe_tickets_block_ar_data"/>
@@ -17,9 +18,8 @@
 	<div  class="tribe-common-b2 tribe-tickets-notice__content tribe-common-b3" >
 		The numbers below include tickets for this event already in your cart. Clicking "Get Tickets" will allow you to edit any existing attendee information as well as change ticket quantities.	</div>
 </div>
-
-	<input name="provider" value="Tribe__Tickets__Commerce__PayPal__Main" class="tribe-tickets-provider" type="hidden">
-									<div
+<input name="provider" value="Tribe__Tickets__Commerce__PayPal__Main" class="tribe-tickets-provider" type="hidden">
+<div
 	id="tribe-block-tickets-item-10003"
 	 class="tribe-tickets__item post-10003 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="10003"
 	data-available="false"
@@ -77,7 +77,7 @@ available	</div>
 	
 				<input name="attendee[optout]" value="1" type="hidden" />
 		</div>
-				<div class="tribe-tickets__footer" >
+<div class="tribe-tickets__footer" >
 		<div class="tribe-common-b2 tribe-tickets__footer__quantity" >
 	<span class="tribe-tickets__footer__quantity__label">
 		Quantity:	</span>
@@ -101,14 +101,14 @@ available	</div>
 		disabled aria-disabled="true">
 	Get Tickets</button>
 	</div>
-		<div class="tribe-common">
-	<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden tribe-tickets-loader__tickets-block"  >
-		<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--first"></div>
-		<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--second"></div>
-		<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--third"></div>
-	</div>
+<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
+	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--first"></div>
+	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--second"></div>
+	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--third"></div>
 </div>
+
 </form>
+
 <div class="tribe-common">
 	<span id="tribe-tickets__modal_target"></span>
 </div>

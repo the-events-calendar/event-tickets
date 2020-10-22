@@ -1,17 +1,17 @@
 <?php return '
-<div class="tribe-tickets__item__details__summary">
+<div class="tribe-tickets__tickets-item-details-summary">
 	<button
 		type="button"
-		class="tribe-common-b3 tribe-tickets__item__details__summary--more"
-		aria-controls="tribe__details__content1--11"
+		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
+		aria-controls="tribe__details__content1--12689"
 		tabindex="0"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description.</span>
 		More	</button>
 	<button
 		type="button"
-		class="tribe-common-b3 tribe-tickets__item__details__summary--less"
-		aria-controls="tribe__details__content1--11"
+		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
+		aria-controls="tribe__details__content1--12689"
 		tabindex="0"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
@@ -19,8 +19,8 @@
 </div>
 
 <div
-	id="tribe__details__content1--11"
-	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__item__details__content"
+	id="tribe__details__content1--12689"
+	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content"
 >
 	Test ticket description for 8</div>
 ';

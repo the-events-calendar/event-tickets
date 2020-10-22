@@ -1,14 +1,14 @@
-<?php return '<div  class="tribe-common event-tickets" >
+<?php return '<div  class="tribe-common event-tickets tribe-tickets__tickets-wrapper" >
 	<form
-		id="tribe-tickets"
+		id="tribe-tickets__tickets-form"
 		action=""
-		class="tribe-tickets"
-		class="tribe-tickets"
+		class="tribe-tickets__tickets-form"
 		method="post"
 		enctype=\'multipart/form-data\'
 		data-provider="Tribe__Tickets__Commerce__PayPal__Main"
 		autocomplete="off"
 		data-provider-id="tribe-commerce"
+		data-post-id="8"
 		novalidate
 	>
 
@@ -24,7 +24,7 @@
 />
 <input name="provider" value="Tribe__Tickets__Commerce__PayPal__Main" class="tribe-tickets-provider" type="hidden">
 
-		<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title">
+		<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__tickets-title">
 	Tickets</h2>
 
 		<div id="tribe-tickets__notice__tickets-in-cart"  class="tribe-tickets__notice tribe-tickets__notice--barred tribe-tickets__notice--barred-left" >
@@ -34,24 +34,23 @@
 </div>
 
 		<div
-	id="tribe-block-tickets-item-131"
-	 class="tribe-tickets__item post-131 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="131"
+	id="tribe-block-tickets-item-12799"
+	 class="tribe-tickets__tickets-item post-12799 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12799"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
-	
-	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__item__content__title tribe-tickets--no-description"  >
-			<div  class="tribe-common-b3 tribe-tickets__item__content__subtitle"  >
+	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title tribe-tickets--no-description"  >
+			<div  class="tribe-common-b3 tribe-tickets__tickets-item-content-subtitle"  >
 					</div>
 		Test ticket for 8</div>
-<div  class="tribe-tickets__item__extra" >
+<div  class="tribe-tickets__tickets-item-extra" >
 
-	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__item__extra__price" >
-		<span class="tribe-tickets__sale_price">
+	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
+		<span class="tribe-tickets__tickets-sale-price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">$</span>
+					<span class="tribe-currency-symbol">&#x24;</span>
 					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
@@ -64,38 +63,26 @@
 	
 	<div class="tribe-ticket-quantity">0</div>
 
-	<div class="tribe-common-b2 tribe-tickets__item__total__wrap">
-	<span class="tribe-tickets__item__total">
-		
-				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">$</span>
-					<span class="tribe-amount">0.00</span>
-				</span>
-				</span>
-</div>
-
-	
 	
 </div>
 <div
-	id="tribe-block-tickets-item-132"
-	 class="tribe-tickets__item post-132 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="132"
+	id="tribe-block-tickets-item-12800"
+	 class="tribe-tickets__tickets-item post-12800 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12800"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
-	
-	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__item__content__title tribe-tickets--no-description"  >
-			<div  class="tribe-common-b3 tribe-tickets__item__content__subtitle"  >
+	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title tribe-tickets--no-description"  >
+			<div  class="tribe-common-b3 tribe-tickets__tickets-item-content-subtitle"  >
 					</div>
 		Test ticket for 8</div>
-<div  class="tribe-tickets__item__extra" >
+<div  class="tribe-tickets__tickets-item-extra" >
 
-	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__item__extra__price" >
-		<span class="tribe-tickets__sale_price">
+	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
+		<span class="tribe-tickets__tickets-sale-price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">$</span>
+					<span class="tribe-currency-symbol">&#x24;</span>
 					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
@@ -108,38 +95,25 @@
 	
 	<div class="tribe-ticket-quantity">0</div>
 
-	<div class="tribe-common-b2 tribe-tickets__item__total__wrap">
-	<span class="tribe-tickets__item__total">
-		
-				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">$</span>
-					<span class="tribe-amount">0.00</span>
-				</span>
-				</span>
-</div>
-
-	
 	
 </div>
 
-		<div class="tribe-tickets__footer">
+		<div class="tribe-tickets__tickets-footer">
 
-	<a class="tribe-common-b2 tribe-tickets__footer__back-link" href="http://wordpress.test/cart/?foo">
-	Return to Cart</a>
-
-	<div class="tribe-common-b2 tribe-tickets__footer__quantity" >
-	<span class="tribe-tickets__footer__quantity__label">
+	
+	<div class="tribe-common-b2 tribe-tickets__tickets-footer-quantity">
+	<span class="tribe-tickets__tickets-footer-quantity-label">
 		Quantity:	</span>
-	<span class="tribe-tickets__footer__quantity__number">0</span>
+	<span class="tribe-tickets__tickets-footer-quantity-number">0</span>
 </div>
 
-	<div class="tribe-common-b2 tribe-tickets__footer__total">
-	<span class="tribe-tickets__footer__total__label">
+	<div class="tribe-common-b2 tribe-tickets__tickets-footer-total">
+	<span class="tribe-tickets__tickets-footer-total-label">
 		Total:	</span>
-	<span class="tribe-tickets__footer__total__wrap">
+	<span class="tribe-tickets__tickets-footer-total-wrap">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">$</span>
+					<span class="tribe-currency-symbol">&#x24;</span>
 					<span class="tribe-amount">0.00</span>
 				</span>
 				</span>
@@ -157,10 +131,5 @@
 
 	</form>
 
-	
-<div class="tribe-common event-tickets">
-	<span id="tribe-tickets__modal_target"></span>
-</div>
-
-</div>
+	</div>
 ';
