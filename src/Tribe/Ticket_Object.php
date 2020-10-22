@@ -1167,7 +1167,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public function reset_cached_calls() {
 
 			if ( empty( $this->cached_keys ) ) {
-				return;
+				return false;
 			}
 
 			/** @var \Tribe__Cache */
@@ -1178,6 +1178,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			$this->cached_keys = [];
+
+			return true;
 		}
 
 	}
