@@ -1,5 +1,5 @@
 <?php return '<button
-	class="tribe-tickets__item__quantity__remove"
+	class="tribe-tickets__tickets-item-quantity-remove"
 	title="Decrease ticket quantity for Test ticket for 8"
 	type="button"
 >
