@@ -38,10 +38,10 @@ if ( empty( $tickets ) ) {
 			$ticket = $provider->get_ticket( $event_id, $ticket['id'] );
 		}
 
-		// Only include tickets with meta
-		$has_meta = get_post_meta( $ticket->ID, '_tribe_tickets_meta_enabled', true );
+		/** @var Tribe__Tickets__Ticket_Object $ticket */
 
-		if ( empty( $has_meta ) || ! tribe_is_truthy( $has_meta ) ) {
+		// Only include tickets with meta.
+		if ( ! $ticket->has_meta_enabled() ) {
 			continue;
 		}
 		?>
