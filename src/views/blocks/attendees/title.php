@@ -4,14 +4,15 @@
  * Title
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/blocks/attendees/gravatar.php
+ * [your-theme]/tribe/tickets/blocks/attendees/title.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since 4.9.2
- * @version 4.9.4
+ * @since   4.9.2
+ * @since   5.0.2 Fix template path in documentation block.
+ * @version 5.0.2
  *
  */
 $display_title = $this->attr( 'displayTitle' );

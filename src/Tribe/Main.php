@@ -802,6 +802,17 @@ class Tribe__Tickets__Main {
 				'welcome_page_title'    => esc_html__( 'Welcome to Event Tickets!', 'event-tickets' ),
 				'welcome_page_template' => $this->plugin_path . 'src/admin-views/admin-welcome-message.php',
 			] );
+
+			tribe_asset(
+				$this,
+				'tribe-tickets-welcome-message',
+				'admin/welcome-message.js',
+				[ 'jquery' ],
+				'admin_enqueue_scripts',
+				[
+					'conditionals' => [ $this->activation_page, 'is_welcome_page' ],
+				]
+			);
 		}
 
 		return $this->activation_page;
@@ -878,10 +889,15 @@ class Tribe__Tickets__Main {
 	public function post_types() {
 		$options = (array) get_option( Tribe__Main::OPTIONNAME, [] );
 
-		// if the ticket-enabled-post-types index has never been set, default it to tribe_events
+		// If the ticket-enabled-post-types index has never been set, default it to tribe_events and page.
 		if ( ! array_key_exists( 'ticket-enabled-post-types', $options ) ) {
-			$defaults                             = [ 'tribe_events' ];
+			$defaults = [
+				'tribe_events',
+				'page',
+			];
+
 			$options['ticket-enabled-post-types'] = $defaults;
+
 			tribe_update_option( 'ticket-enabled-post-types', $defaults );
 		}
 
