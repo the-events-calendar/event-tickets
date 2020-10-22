@@ -34,8 +34,8 @@
 </div>
 
 		<div
-	id="tribe-block-tickets-item-12799"
-	 class="tribe-tickets__tickets-item post-12799 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12799"
+	id="tribe-block-tickets-item-235"
+	 class="tribe-tickets__tickets-item post-235 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="235"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
@@ -66,8 +66,8 @@
 	
 </div>
 <div
-	id="tribe-block-tickets-item-12800"
-	 class="tribe-tickets__tickets-item post-12800 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12800"
+	id="tribe-block-tickets-item-236"
+	 class="tribe-tickets__tickets-item post-236 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="236"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
@@ -100,7 +100,9 @@
 
 		<div class="tribe-tickets__tickets-footer">
 
-	
+	<a class="tribe-common-b2 tribe-tickets__tickets-footer-back-link" href="http://wordpress.test/cart/?foo">
+	Return to Cart</a>
+
 	<div class="tribe-common-b2 tribe-tickets__tickets-footer-quantity">
 	<span class="tribe-tickets__tickets-footer-quantity-label">
 		Quantity:	</span>
