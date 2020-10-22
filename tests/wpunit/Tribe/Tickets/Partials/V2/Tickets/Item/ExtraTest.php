@@ -59,7 +59,7 @@ class ExtraTest extends V2TestCase {
 
 		$html = $template->template( $this->partial_path, $args, false );
 
-		$this->assertContains( 'tribe-tickets__item__extra--price-suffix', $html );
+		$this->assertContains( 'tribe-tickets__tickets-item-extra--price-suffix', $html );
 
 		$driver = $this->get_html_output_driver();
 		$driver->setTolerableDifferences( [

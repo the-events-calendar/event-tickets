@@ -61,7 +61,7 @@ class TitleTest extends V2TestCase {
 		$html = $template->template( $this->partial_path, $args, false );
 
 		$this->assertContains( 'tribe-tickets--no-description', $html );
-		$this->assertContains( 'tribe-tickets__item__content__subtitle', $html );
+		$this->assertContains( 'tribe-tickets__tickets-item-content-subtitle', $html );
 
 		$driver = $this->get_html_output_driver();
 

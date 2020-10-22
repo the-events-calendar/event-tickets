@@ -76,7 +76,7 @@ class FooterTest extends V2TestCase {
 		$html   = $template->template( $this->partial_path, $args, false );
 
 		// Make sure we have the Return to Cart link shown.
-		$this->assertContains( 'tribe-tickets__footer__back-link', $html );
+		$this->assertContains( 'tribe-tickets__tickets-footer-back-link', $html );
 
 		$this->assertMatchesSnapshot( $html );
 	}
@@ -111,7 +111,7 @@ class FooterTest extends V2TestCase {
 		$html = $template->template( $this->partial_path, $args, false );
 
 		// Make sure we have the Return to Cart link shown.
-		$this->assertContains( 'tribe-tickets__footer__back-link', $html );
+		$this->assertContains( 'tribe-tickets__tickets-footer-back-link', $html );
 
 		$this->assertMatchesSnapshot( $html );
 	}
