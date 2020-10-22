@@ -250,6 +250,15 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		private $event_id = null;
 
 		/**
+		 * Store the keys for the cached calls
+		 *
+		 * @since TBD
+		 *
+		 * @var array
+		 */
+		protected $cached_keys = [];
+
+		/**
 		 * Get the ticket's start date
 		 *
 		 * @since 4.2
@@ -514,6 +523,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			if ( isset( $cache[ $key ] ) ) {
 				return $cache[ $key ];
 			}
+			// Storing the $key.
+			$this->cached_keys[] = $key;
 
 			$remaining    = $this->inventory();
 			$is_unlimited = $remaining === - 1;
@@ -564,6 +575,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			if ( isset( $cache[ $key ] ) ) {
 				return $cache[ $key ];
 			}
+
+			// Storing the $key.
+			$this->cached_keys[] = $key;
+
 			// Fetch provider (also sets if found).
 			$provider = $this->get_provider();
 
@@ -701,6 +716,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			$cache[ $key ] = $available;
 
+			$this->cached_keys[] = $key;
 			return $available;
 		}
 
@@ -723,6 +739,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			if ( isset( $cache[ $key ] ) ) {
 				return $cache[ $key ];
 			}
+			// Storing the $key.
+			$this->cached_keys[] = $key;
 
 			if ( is_null( $this->capacity ) ) {
 				$this->capacity = tribe_tickets_get_capacity( $this->ID );
@@ -1139,6 +1157,27 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			 * @param int  $ticket_id The ticket ID.
 			 */
 			return (bool) apply_filters( 'tribe_tickets_has_meta_enabled', false, $this->ID );
+		}
+
+		/**
+		 * Clear the cached calls
+		 *
+		 * @since TBD
+		 */
+		public function reset_cached_calls() {
+
+			if ( empty( $this->cached_keys ) ) {
+				return;
+			}
+
+			/** @var \Tribe__Cache */
+			$cache = tribe( 'cache' );
+
+			foreach ( $this->cached_keys as $key ) {
+				$cache->delete( $key );
+			}
+
+			$this->cached_keys = [];
 		}
 
 	}
