@@ -8,7 +8,7 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link http://m.tri.be/1amp
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
@@ -26,6 +26,6 @@ if ( ! $rsvp->show_description() || empty( $rsvp->description ) ) {
 		<?php echo esc_html( $rsvp->qty_sold ); ?>
 	</span>
 	<span class="tribe-tickets__rsvp-attendance-going tribe-common-h7 tribe-common-h--alt tribe-common-b3--min-medium">
-		<?php esc_html_e( 'Going', 'event-tickets' ); ?>
+		<?php echo esc_html_x( 'Going', 'Label below the attendance number', 'event-tickets' ); ?>
 	</span>
 </div>

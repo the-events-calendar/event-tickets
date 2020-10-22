@@ -3,8 +3,8 @@
 Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
-Tested up to: 5.4.2
-Stable tag: 5.0.0
+Tested up to: 5.5.1
+Stable tag: 5.0.2
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -118,12 +118,43 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.0.2] 2020-10-19 =
+
+* Fix - Correctly detect ticket provider to support Attendee Information. [ET-915]
+* Fix - Correct template override location comments. [ET-919]
+* Language - 42 new strings added, 25 updated, 1 fuzzied, and 28 obsoleted
+
+= [5.0.1] 2020-09-21 =
+
+* Fix - Ensure the Attendees List title for the Attendees report is clean and not replicated on the page for the admin area as well as frontend. [ET-912]
+* Fix - Use `the_title` filter when getting list of post titles for the Move Ticket workflow. [ET-909]
+* Fix - Use the correct default date for initial Ticket start sale and end sale dates for Classic Editor. [ET-900]
+* Fix - We have added the missing ID to the new RSVP block to allow linking to it directly. [ET-904]
+* Fix - Prevent 301 redirects to the homepage while handling Tribe Commerce checkout process. [ET-845]
+* Fix - Use the correct file path for the modal overrides. It's now correctly using the `your-theme/tribe/tickets/` path. [ETP-432]
+* Fix - More thorough validity checking for post IDs, such as to account for a BuddyPress page having a Post ID of zero. [ET-899]
+* Fix - Remove duplicate `button_id` from the `$args` in `src/blocks/tickets/submit-button-modal.php`. Props @justlevine for the fix! [ET-907]
+* Fix - Ensure we print the required label for the ARI checkboxes. [ETP-361]
+* Fix - Prevent PHP errors in the `tickets/view-link.php` template in automated testing suite. [ET-910]
+* Tweak - We have added context to some of the strings and labels of the new RSVP block to allow more granular translation. [ET-903]
+* Tweak - Added filters: `tribe_tickets_attendees_show_view_title`
+* Tweak - Changed views: `blocks/rsvp/status/going`, `blocks/rsvp/status/not-going`, `blocks/tickets/submit-button-modal`, `registration-js/attendees/fields/checkbox`, `tickets/view-link`, `v2/rsvp`, `v2/rsvp/actions/rsvp/going`, `v2/rsvp/actions/rsvp/not-going`, `v2/rsvp/details/attendance`
+* Language - 4 new strings added, 53 updated, 0 fuzzied, and 3 obsoleted
+
+= [5.0.0.1] 2020-08-31 =
+
+* Fix - Prevent the Attendee Registration modal from incorrectly setting RSVP as the provider class. [ET-901]
+
+= [5.0.0] 2020-08-26 =
 
 * Feature - We've introduced a refined look and experience for RSVPs! New installations of Event Tickets will gain the new look right away. Existing Event Tickets installations can opt-in upon upgrade from our previous version(s). This new design is consistent in both the Classic and Block modes so you have a better visual when creating RSVPs in either WordPress editor. [ET-866]
 * Tweak - Removed unused HTML files in the plugin root folder that were there for your reference to our plugin's data collection transparency. This information is included within WordPress' Privacy Guide at /wp-admin/privacy-policy-guide.php [ET-854]
 * Fix - Event Tickets Plus' `[tribe_tickets]` shortcode no longer double-renders the Tickets block when using Classic Editor. The issue was caused by _setting_ `global $post` within `\Tribe\Tickets\Events\Attendees_List::should_hide_optout()`, which was called via the `tribe_tickets_plus_hide_attendees_list_optout` filter. [ET-889]
 * Fix - Replace usage of MultiByte package when it's not available, use `tribe_strtoupper` instead of `mb_strtoupper` and `mb_detect_encoding` [ETP-411] [ETP-412] [VE-150]
+* Tweak - Added filters: `tribe_tickets_rsvp_render_step_template_args_pre_process`, `tribe_tickets_hide_attendees_list_optout`, `tribe_tickets_rsvp_create_attendee_lookup_user_from_email`, `tribe_tickets_rsvp_has_meta`, `tribe_tickets_rsvp_has_meta`
+* Tweak - Added actions: `tribe_tickets_before_front_end_ticket_form`
+* Tweak - Changed views: `v2/components/fields/birth`, `v2/components/fields/checkbox`, `v2/components/fields/datetime`, `v2/components/fields/email`, `v2/components/fields/number`, `v2/components/fields/radio`, `v2/components/fields/select`, `v2/components/fields/telephone`, `v2/components/fields/text`, `v2/components/fields/url`, `v2/components/loader/loader`, `v2/rsvp-kitchen-sink/form-going`, `v2/rsvp-kitchen-sink/form-not-going`, `v2/rsvp`, `v2/rsvp/actions`, `v2/rsvp/actions/success`, `v2/rsvp/actions/success/title`, `v2/rsvp/actions/success/toggle`, `v2/rsvp/ari`, `v2/rsvp/ari/form`, `v2/rsvp/ari/form/buttons`, `v2/rsvp/ari/form/error`, `v2/rsvp/ari/form/fields`, `v2/rsvp/ari/form/fields/email`, `v2/rsvp/ari/form/fields/meta`, `v2/rsvp/ari/form/fields/name`, `v2/rsvp/ari/form/guest-template`, `v2/rsvp/ari/form/guest`, `v2/rsvp/ari/form/template/fields`, `v2/rsvp/ari/form/template/title`, `v2/rsvp/ari/form/title`, `v2/rsvp/ari/sidebar/guest-list`, `v2/rsvp/ari/sidebar/guest-list/guest-template`, `v2/rsvp/ari/sidebar/guest-list/guest`, `v2/rsvp/ari/sidebar/quantity/input`, `v2/rsvp/details/availability`, `v2/rsvp/details/availability/days-to-rsvp`, `v2/rsvp/details/availability/remaining`, `v2/rsvp/details/availability/unlimited`, `v2/rsvp/form/buttons`, `v2/rsvp/form/fields/email`, `v2/rsvp/form/fields/name`, `v2/rsvp/form/fields/quantity`, `v2/rsvp/form/form`, `v2/rsvp/messages/error`, `v2/rsvp/messages/success`, `v2/rsvp/messages/success/going`, `v2/rsvp/messages/success/not-going`
+* Language - 14 new strings added, 54 updated, 3 fuzzied, and 3 obsoleted
 
 = [4.12.3.1] 2020-08-17 =
 

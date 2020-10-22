@@ -313,7 +313,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Allow filtering of the template arguments used prior to processing.
 		 *
-		 * @since TBD
+		 * @since 5.0.0
 		 *
 		 * @param array $args {
 		 *      The list of step template arguments.
@@ -371,17 +371,26 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$args['opt_in_nonce']        = $args['process_result']['opt_in_args']['opt_in_nonce'];
 		}
 
+		// Check to see if attendees list is being hidden or not.
+		if ( class_exists( 'Tribe__Tickets_Plus__Attendees_List' ) ) {
+			// Handle Event Tickets Plus compatible logic.
+			$hide_attendee_list_optout = Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $post_id );
+		} else {
+			// Handle Event Tickets logic.
+			$hide_attendee_list_optout = \Tribe\Tickets\Events\Attendees_List::is_hidden_on( $post_id );
+		}
+
 		/**
 		 * Allow filtering of whether to show the opt-in option for attendees.
 		 *
 		 * @since 4.5.2
-		 * @since TBD Added $post_id and $ticket_id parameters.
+		 * @since 5.0.0 Added $post_id and $ticket_id parameters.
 		 *
 		 * @param bool $hide_attendee_list_optout Whether to hide attendees list opt-out.
 		 * @param int  $post_id                   The post ID that the ticket belongs to.
 		 * @param int  $ticket_id                 The ticket ID.
 		 */
-		$hide_attendee_list_optout = apply_filters( 'tribe_tickets_hide_attendees_list_optout', false, $post_id, $ticket_id );
+		$hide_attendee_list_optout = apply_filters( 'tribe_tickets_hide_attendees_list_optout', $hide_attendee_list_optout, $post_id, $ticket_id );
 
 		if ( false === $args['is_going'] ) {
 			$hide_attendee_list_optout = true;
@@ -401,7 +410,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Handle RSVP error rendering.
 	 *
-	 * @since TBD
+	 * @since 5.0.0
 	 *
 	 * @param string|array $error_message The error message(s).
 	 *
@@ -739,7 +748,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Create an attendee for a RSVP ticket.
 	 *
-	 * @since TBD
+	 * @since 5.0.0
 	 *
 	 * @param \Tribe__Tickets__Ticket_Object $ticket        Ticket object.
 	 * @param array                          $attendee_data Attendee data.
@@ -836,7 +845,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			/**
 			 * Allow enabling user lookups by Attendee Email.
 			 *
-			 * @since TBD
+			 * @since 5.0.0
 			 *
 			 * @param boolean $lookup_user_from_email Whether to lookup the User using the Attendee Email if User ID not set.
 			 */
@@ -1560,7 +1569,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function delete_ticket( $event_id, $ticket_id ) {
 		// Ensure we know the event and product IDs (the event ID may not have been passed in)
 		if ( empty( $event_id ) ) {
-			$event_id = get_post_meta( $ticket_id, $this->get_event_key(), true );
+			$event_id = get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true );
 		}
 
 		// Additional check (in case we were passed an invalid ticket ID and still can't determine the event)
@@ -1851,7 +1860,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$event_id = (int) get_post_meta( $ticket_product, $this->get_event_key(), true );
 
 		if ( 0 === $event_id ) {
-			$event_id = get_post_meta( $ticket_product, self::ATTENDEE_EVENT_KEY, true );
+			$event_id = (int) get_post_meta( $ticket_product, self::ATTENDEE_EVENT_KEY, true );
 		}
 
 		if ( 0 === $event_id ) {

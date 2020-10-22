@@ -1080,6 +1080,13 @@ class Tribe__Tickets__Tickets_View {
 		/** @var Tribe__Tickets__RSVP $rsvp */
 		$rsvp = tribe( 'tickets.rsvp' );
 
+		// Check if the call is coming from a shortcode.
+		$doing_shortcode = tribe_doing_shortcode( 'tribe_tickets_rsvp' );
+
+		// Get the RSVP block HTML ID.
+		$block_html_id  = 'rsvp-now';
+		$block_html_id .= $doing_shortcode ? '-' . uniqid() : '';
+
 		// Load assets manually.
 		$blocks_rsvp->assets();
 
@@ -1101,6 +1108,8 @@ class Tribe__Tickets__Tickets_View {
 			'opt_in_checked'      => false,
 			'opt_in_attendee_ids' => '',
 			'opt_in_nonce'        => '',
+			'doing_shortcode'     => $doing_shortcode,
+			'block_html_id'       => $block_html_id,
 		];
 
 		// Add the rendering attributes into global context.
@@ -1130,7 +1139,32 @@ class Tribe__Tickets__Tickets_View {
 		 */
 		do_action( 'tribe_tickets_before_front_end_ticket_form' );
 
+		/**
+		 * A flag we can set via filter, e.g. at the end of this method, to ensure this template only shows once.
+		 *
+		 * @since 4.5.6
+		 *
+		 * @param boolean $already_rendered Whether the order link template has already been rendered.
+		 *
+		 * @see Tribe__Tickets__Tickets_View::inject_link_template()
+		 */
+		$already_rendered = apply_filters( 'tribe_tickets_order_link_template_already_rendered', false );
+
+		// Output order links / view link if we haven't already (for RSVPs).
+		if ( ! $already_rendered ) {
+			$template->template( 'tickets/view-link' );
+
+			add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
+		}
+
 		$before_content = ob_get_clean();
+
+		// Maybe echo the content from the action.
+		if ( $echo ) {
+			echo $before_content;
+
+			$before_content = '';
+		}
 
 		// Maybe render the new views.
 		if ( tribe_tickets_rsvp_new_views_is_enabled() ) {

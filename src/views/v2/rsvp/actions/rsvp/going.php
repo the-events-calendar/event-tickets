@@ -8,7 +8,7 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link http://m.tri.be/1amp
  *
  * @var bool $must_login Whether the user has to login to RSVP or not.
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
@@ -25,6 +25,6 @@
 		type="submit"
 		<?php tribe_disabled( $must_login ); ?>
 	>
-		<?php esc_html_e( 'Going', 'event-tickets' ); ?>
+		<?php echo esc_html_x( 'Going', 'Label for the RSVP going button', 'event-tickets' ); ?>
 	</button>
 </div>

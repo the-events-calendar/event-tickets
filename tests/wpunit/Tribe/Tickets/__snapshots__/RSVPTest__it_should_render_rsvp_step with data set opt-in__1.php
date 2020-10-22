@@ -23,10 +23,10 @@
 		<div class="tribe-tickets__rsvp-details-wrapper tribe-common-g-col">
 	<div class="tribe-tickets__rsvp-details">
 		<h3 class="tribe-tickets__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
-	Test RSVP ticket for 389</h3>
+	Test RSVP ticket for 291</h3>
 
 		<div class="tribe-tickets__rsvp-description tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
-	<p>Ticket RSVP ticket excerpt for 389</p>
+	<p>Ticket RSVP ticket excerpt for 291</p>
 </div>
 
 		<div class="tribe-tickets__rsvp-attendance">
@@ -58,38 +58,6 @@
 </div>
 
 	
-<div class="tribe-tickets__rsvp-actions-success-going-toggle tribe-common-form-control-toggle">
-	<input
-		class="tribe-common-form-control-toggle__input tribe-tickets__rsvp-actions-success-going-toggle-input"
-		id="toggle-rsvp-390"
-		name="toggleGroup"
-		type="checkbox"
-		value="toggleOne"
-		 checked=\'checked\'		data-rsvp-id="TICKET_ID"
-		data-attendee-ids="391,392,393,394,395"
-		data-opt-in-nonce="6a4d2977fb"
-	/>
-	<label
-		class="tribe-common-form-control-toggle__label tribe-tickets__rsvp-actions-success-going-toggle-label"
-		for="toggle-rsvp-390"
-	>
-		<span
-			data-js="tribe-tickets-tooltip"
-			data-tooltip-content="#tribe-tickets-tooltip-content-390"
-			aria-describedby="tribe-tickets-tooltip-content-390"
-		>
-			Show me on public <span class="tribe-tickets__rsvp-actions-success-going-toggle-label-underline">attendee list</span>		</span>
-	</label>
-	<div class="tribe-common-a11y-hidden">
-	<div
-		class="tribe-common-b3"
-		id="tribe-tickets-tooltip-content-390"
-		role="tooltip"
-	>
-		Enabling this allows your gravatar and name to be present for other attendees to see.	</div>
-</div>
-</div>
-
 </div>
 
 			</div>

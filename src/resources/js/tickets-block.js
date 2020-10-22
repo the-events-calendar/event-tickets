@@ -1375,34 +1375,21 @@ window.tribe.tickets.block = {
 	 * @returns {boolean} - Is checkbox valid?
 	 */
 	obj.validateCheckboxRadioGroup = function( $group ) {
-		const $checkboxes = $group.find( obj.modalSelector.metaField );
-		let checkboxValid = false;
-		let required = true;
+		const checked  = $group.find( 'input:checked' ).length;
+		const required = $group.find( 'input:required' ).length;
 
-		$checkboxes.each(
-			function() {
-				const $this = $( this );
+		// the group is valid if there are no required.
+		// or if it is required and there's at least one checked.
+		const isValid = ! required || ( required && checked );
 
-				if ( $this.is( ':checked' ) ) {
-					checkboxValid = true;
-				}
-
-				if ( ! $this.prop( 'required' ) ) {
-					required = false;
-				}
-			}
-		);
-
-		const valid = ! required || checkboxValid;
-
-		return valid;
+		return !! isValid;
 	};
 
 	/**
 	 * Checks if a horizontal date picker is valid.
 	 * Eg: If a month is selected, a year and day must also be selected.
 	 *
-	 * @since TBD
+	 * @since 5.0.0
 	 *
 	 * @param $input
 	 * @returns {boolean}

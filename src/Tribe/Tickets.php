@@ -2659,6 +2659,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Determines if this is a suitable opportunity to inject ticket form content into a post.
 		 * Expects to run within "the_content".
 		 *
+		 * @since 5.0.1 Bail if $post->ID is zero, such as from BuddyPress' "Activity" page.
+		 *
 		 * @return bool
 		 */
 		protected function should_inject_ticket_form_into_post_content() {
@@ -2679,7 +2681,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// Bail if this isn't a post for some reason.
-			if ( ! $post instanceof WP_Post ) {
+			// Empty check is for BuddyPress having a WP Post with ID of zero.
+			if (
+				! $post instanceof WP_Post
+				|| empty( $post->ID )
+			) {
 				return false;
 			}
 
@@ -3134,9 +3140,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * redirect to the meta collection screen.
 		 *
 		 * @since 4.9
+		 * @since 5.0.2 Correct provider attendee object.
 		 *
-		 * @param string   $redirect URL to redirect to.
-		 * @param null|int $post_id  Post ID for cart.
+		 * @param string|null $redirect URL to redirect to.
+		 * @param null|int    $post_id  Post ID for cart.
 		 */
 		public function maybe_redirect_to_attendees_registration_screen( $redirect = null, $post_id = null ) {
 
@@ -3157,7 +3164,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var \Tribe__Tickets__Attendee_Registration__Main $attendee_registration */
 			$attendee_registration = tribe( 'tickets.attendee_registration' );
 
-			if ( $attendee_registration->is_on_page() || $attendee_registration->is_cart_rest() || $attendee_registration->is_using_shortcode() ) {
+			if (
+				$attendee_registration->is_on_page()
+				|| $attendee_registration->is_cart_rest()
+				|| $attendee_registration->is_using_shortcode()
+			) {
 				return;
 			}
 
@@ -3167,6 +3178,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$q_provider = tribe_get_request_var( 'provider', false );
+
+			// Provider to use the attendee object.
+			if (
+				static::class === $q_provider
+				|| empty( $q_provider )
+			) {
+				$q_provider = $this->attendee_object;
+			}
 
 			/**
 			 * Filter to add/remove tickets from the global cart
@@ -3184,12 +3203,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			$is_paypal = (bool) $redirect;
-
 			/** @var Tribe__Tickets_Plus__Main $tickets_plus_main */
 			$tickets_plus_main = tribe( 'tickets-plus.main' );
 
-			/** @var Tribe__Tickets_Plus__Meta $meta */
 			$meta = $tickets_plus_main->meta();
 
 			$cart_has_meta = true;
@@ -3219,14 +3235,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$url = $attendee_reg->get_url();
 
-			$provider = tribe_get_request_var( 'provider' );
-
-			if ( empty( $provider ) ) {
-				$provider = $this->attendee_object;
-			}
-
-			if ( ! empty( $provider ) ) {
-				$url = add_query_arg( 'provider', $provider, $url );
+			if ( ! empty( $q_provider ) ) {
+				$url = add_query_arg( 'provider', $q_provider, $url );
 			}
 
 			if ( ! empty( $redirect ) ) {

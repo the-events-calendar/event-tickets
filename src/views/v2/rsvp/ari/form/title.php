@@ -6,9 +6,9 @@
  * [your-theme]/tribe/tickets/v2/rsvp/ari/form/title.php
  *
  * @since 4.12.3
- * @since TBD Added the main guest title.
+ * @since 5.0.0 Added the main guest title.
  *
- * @version TBD
+ * @version 5.0.0
  */
 
 ?>
