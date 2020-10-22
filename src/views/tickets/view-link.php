@@ -13,9 +13,9 @@
  * @since   4.11.0 Made template more like new blocks-based template in terms of logic.
  * @since   4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
  * @since   5.0.1 Add additional checks to prevent PHP errors when called from automated testing.
- * @since   TBD Fix template path in documentation block.
+ * @since   5.0.2 Fix template path in documentation block.
  *
- * @version TBD
+ * @version 5.0.2
  *
  * @var Tribe__Tickets__Tickets_View $this
  */

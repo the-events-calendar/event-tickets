@@ -11,8 +11,8 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since   4.9
- * @since   TBD Fix template path in documentation block.
- * @version TBD
+ * @since   5.0.2 Fix template path in documentation block.
+ * @version 5.0.2
  *
  */
 ?>
