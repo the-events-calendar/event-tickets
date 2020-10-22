@@ -10,8 +10,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 5.0.0
+ * @since TBD Updated to use the has_meta_enabled logic check and removed the old filter.
  *
- * @version 5.0.0
+ * @version TBD
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The RSVP ticket object.
  */
