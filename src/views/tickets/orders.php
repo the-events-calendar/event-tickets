@@ -33,6 +33,9 @@ $post_type = get_post_type_object( $event->post_type );
 $user_id   = get_current_user_id();
 $provider  = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $event_id );
 
+/** @var Tribe__Tickets__Editor__Template $template */
+$template = tribe( 'tickets.editor.template' );
+
 $event_has_tickets = $event_has_rsvp = false;
 if ( $provider ) {
 	$event_has_tickets = ! empty( $provider->get_tickets( $event_id ) );
@@ -104,14 +107,13 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 
 	<form method="post">
 
-		<?php tribe_tickets_get_template_part( 'tickets/orders-rsvp' ); ?>
+		<?php $template->template( 'tickets/orders-rsvp' ); ?>
 
 		<?php
 		if ( ! class_exists( 'Tribe__Tickets_Plus__Commerce__PayPal__Meta' ) ) {
-			tribe_tickets_get_template_part( 'tickets/orders-pp-tickets' );
+			$template->template( 'tickets/orders-pp-tickets' );
 		}
 		?>
-
 
 		<?php
 		/**

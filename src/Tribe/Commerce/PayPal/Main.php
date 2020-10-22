@@ -2993,6 +2993,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 			// Attendee Meta
 			'attendee_meta' => $meta,
+
+			// Handle initial Attendee flags.
+			// @todo Make these live in future IAC work.
+			'is_subscribed' => false,
+			'is_purchaser'  => true,
 		) );
 
 		/**
