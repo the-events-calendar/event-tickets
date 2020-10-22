@@ -18,6 +18,7 @@
  * @var Tribe__Tickets__Ticket_Object $ticket  The Ticket Object.
  * @var int $threshold                         The threshold value to show or hide quantity available.
  */
+
 if ( 0 !== $threshold && $threshold < $ticket->available() ) {
 	return;
 }
@@ -30,7 +31,7 @@ echo wp_kses_post(
 			'Tickets available',
 			'event-tickets'
 		),
-		'<span class="tribe-tickets__item__extra__available__quantity">',
+		'<span class="tribe-tickets__tickets-item-extra-available-quantity">',
 		$ticket->available(),
 		'</span>'
 	)

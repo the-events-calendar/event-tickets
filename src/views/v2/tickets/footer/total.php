@@ -20,11 +20,11 @@
  */
 
 ?>
-<div class="tribe-common-b2 tribe-tickets__footer__total">
-	<span class="tribe-tickets__footer__total__label">
+<div class="tribe-common-b2 tribe-tickets__tickets-footer-total">
+	<span class="tribe-tickets__tickets-footer-total-label">
 		<?php echo esc_html_x( 'Total:', 'Total selected tickets price.', 'event-tickets' ); ?>
 	</span>
-	<span class="tribe-tickets__footer__total__wrap">
+	<span class="tribe-tickets__tickets-footer-total-wrap">
 		<?php echo $currency->get_formatted_currency_with_symbol( 0, $post_id, $provider_id ); ?>
 	</span>
 </div>

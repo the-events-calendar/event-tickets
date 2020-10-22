@@ -133,7 +133,19 @@ if ( ! $already_rendered ) {
 		$this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] );
 	endif;
 
-	$this->template( 'v2/components/loader/loader' );
+	ob_start();
+	/**
+	 * Allows filtering of extra classes used on the tickets-block loader
+	 *
+	 * @since  4.11.0
+	 *
+	 * @param  array $classes The array of classes that will be filtered.
+	 */
+	$loader_classes = apply_filters( 'tribe_tickets_block_loader_classes', [ 'tribe-tickets-loader__tickets-block' ] );
+	include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' );
+	$html = ob_get_contents();
+	ob_end_clean();
+	echo $html;
 	?>
 
 </form>

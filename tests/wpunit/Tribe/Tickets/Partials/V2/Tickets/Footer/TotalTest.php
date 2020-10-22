@@ -35,9 +35,9 @@ class TotalTest extends WPTestCase {
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
 
 		// Check we have the proper blocks.
-		$this->assertContains( 'tribe-common-b2 tribe-tickets__footer__total', $html );
-		$this->assertContains( 'tribe-tickets__footer__total__label', $html );
-		$this->assertContains( 'tribe-tickets__footer__total__wrap', $html );
+		$this->assertContains( 'tribe-common-b2 tribe-tickets__tickets-footer-total', $html );
+		$this->assertContains( 'tribe-tickets__tickets-footer-total-label', $html );
+		$this->assertContains( 'tribe-tickets__tickets-footer-total-wrap', $html );
 
 		// Confirm if we have the currency blocks.
 		$this->assertContains( '<span class="tribe-formatted-currency-wrap tribe-currency-prefix">', $html );

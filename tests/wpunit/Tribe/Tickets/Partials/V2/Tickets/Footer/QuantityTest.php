@@ -31,9 +31,9 @@ class QuantityTest extends WPTestCase {
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
 
 		// Check we have the proper blocks.
-		$this->assertContains( 'tribe-common-b2 tribe-tickets__footer__quantity', $html );
-		$this->assertContains( 'tribe-tickets__footer__quantity__label', $html );
-		$this->assertContains( '<span class="tribe-tickets__footer__quantity__number">0</span>', $html );
+		$this->assertContains( 'tribe-common-b2 tribe-tickets__tickets-footer-quantity', $html );
+		$this->assertContains( 'tribe-tickets__tickets-footer-quantity-label', $html );
+		$this->assertContains( '<span class="tribe-tickets__tickets-footer-quantity-number">0</span>', $html );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}

@@ -15,6 +15,6 @@
  */
 
 ?>
-<div class="tribe-common-b2 tribe-common-b2--bold tribe-tickets__item__quantity__unavailable">
+<div class="tribe-common-b2 tribe-common-b2--bold tribe-tickets__tickets-item-quantity-unavailable">
 	<?php echo esc_html_x( 'Sold Out', 'Tickets are sold out.', 'event-tickets' ); ?>
 </div>

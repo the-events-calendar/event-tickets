@@ -25,7 +25,7 @@ if ( ! empty( $is_mini ) ) {
 }
 
 ?>
-<div class="tribe-common-b3 tribe-tickets__item__extra__available">
+<div class="tribe-common-b3 tribe-tickets__tickets-item-extra-available">
 	<?php $this->template( 'v2/tickets/item/extra/available/unlimited', [ 'ticket' => $ticket ] ); ?>
 
 	<?php $this->template( 'v2/tickets/item/extra/available/quantity', [ 'ticket' => $ticket ] ); ?>

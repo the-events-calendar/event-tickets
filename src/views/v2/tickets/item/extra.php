@@ -22,8 +22,8 @@
 $has_suffix = ! empty( $ticket->price_suffix );
 
 $classes = [
-	'tribe-tickets__item__extra',
-	'tribe-tickets__item__extra--price-suffix' => $has_suffix,
+	'tribe-tickets__tickets-item-extra',
+	'tribe-tickets__tickets-item-extra--price-suffix' => $has_suffix,
 ];
 
 ?>
