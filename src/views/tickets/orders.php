@@ -34,7 +34,7 @@ $user_id   = get_current_user_id();
 $provider  = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $event_id );
 
 /** @var Tribe__Tickets__Editor__Template $template */
-$template  = tribe( 'tickets.editor.template' );
+$template = tribe( 'tickets.editor.template' );
 
 $event_has_tickets = $event_has_rsvp = false;
 if ( $provider ) {
