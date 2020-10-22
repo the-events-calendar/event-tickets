@@ -1475,6 +1475,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return 0;
 			}
 
+			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
 			$key   = __METHOD__ . '-' . $post_id;
 
@@ -1509,13 +1510,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function get_all_event_tickets( $post_id ) {
+			$key = __METHOD__ . '-' . $post_id;
 
-			$key     = __METHOD__ . '-' . $post_id;
+			/** @var Tribe__Cache $cache */
 			$cache   = tribe( 'cache' );
-			$tickets = $cache[ $key ];
 
-			if ( is_array( $tickets ) ) {
-				return $tickets;
+			if ( isset( $cache[ $key ] ) ) {
+				return $cache[ $key ];
 			}
 
 			$tickets = [];

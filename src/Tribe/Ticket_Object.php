@@ -527,7 +527,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$this->cached_keys[] = $key;
 
 			$remaining    = $this->inventory();
-			$is_unlimited = $remaining === - 1;
+			$is_unlimited = - 1 === $remaining;
 
 			$cache[ $key ] = false === $remaining || $remaining > 0 || $is_unlimited;
 
@@ -690,6 +690,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public function available() {
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
 
+			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
 			$key   = __METHOD__ . '-' . $this->ID;
 
