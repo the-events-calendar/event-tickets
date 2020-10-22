@@ -26,7 +26,7 @@
  */
 $has_meta = apply_filters( 'tribe_tickets_rsvp_has_meta', $rsvp, false );
 
-if ( $has_meta instanceof Tribe__Tickets__Ticket_Object ) {
+if ( ! $has_meta || $has_meta instanceof Tribe__Tickets__Ticket_Object ) {
 	$has_meta = $rsvp->has_meta_enabled();
 }
 
