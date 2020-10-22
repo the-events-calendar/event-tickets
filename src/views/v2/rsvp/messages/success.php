@@ -15,7 +15,7 @@
  *
  * @since 4.12.3
  *
- * @version5.0.0
+ * @version 5.0.0
  */
 
 if ( ! in_array( $step, [ 'success', 'opt-in' ], true ) ) {

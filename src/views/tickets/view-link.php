@@ -1,20 +1,21 @@
 <?php
 /**
- * Link to Tickets
- * Included on the Events Single Page after the meta
- * The Message that will link to the Tickets page
+ * Link to Tickets included on the Events Single Page after the meta.
+ * The message that will link to the Tickets page.
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-link.php
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/view-link.php
  *
  * @since   4.2
  * @since   4.10.8 Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated third
  *                 parameter of `get_description_rsvp_ticket()`.
  * @since   4.10.9  Use customizable ticket name functions.
  * @since   4.11.0 Made template more like new blocks-based template in terms of logic.
- * @since 4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
- * @since 5.0.1 Add additional checks to prevent PHP errors when called from automated testing.
+ * @since   4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
+ * @since   5.0.1 Add additional checks to prevent PHP errors when called from automated testing.
+ * @since   5.0.2 Fix template path in documentation block.
  *
- * @version 5.0.1
+ * @version 5.0.2
  *
  * @var Tribe__Tickets__Tickets_View $this
  */
@@ -23,9 +24,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
-$view      = Tribe__Tickets__Tickets_View::instance();
+$view = Tribe__Tickets__Tickets_View::instance();
 
-$event_id  = get_the_ID();
+$event_id = get_the_ID();
 
 if ( empty( $event_id ) ) {
 	return;
