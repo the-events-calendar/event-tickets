@@ -1,6 +1,6 @@
 <?php
 /**
- * This template renders the RSVP AR form fields.
+ * This template renders the RSVP Attendee Registration form fields template for JS to use.
  *
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/rsvp/ari/form/template/fields.php
@@ -15,22 +15,7 @@
  * @version 5.0.0
  */
 
-/**
- * Filter to check if the RSVP has meta.
- *
- * @since 5.0.0
- *
- * @param Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
- *
- * @return bool
- */
-$has_meta = apply_filters( 'tribe_tickets_rsvp_has_meta', $rsvp, false );
-
-if ( ! $has_meta || $has_meta instanceof Tribe__Tickets__Ticket_Object ) {
-	$has_meta = $rsvp->has_meta_enabled();
-}
-
-if ( empty( $has_meta ) ) {
+if ( ! $rsvp->has_meta_enabled() ) {
 	return;
 }
 ?>
