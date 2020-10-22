@@ -4,14 +4,15 @@
  * Registration Summary Ticket Price
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/blocks/tickets/registration/summary/ticket-icon.php
+ * [your-theme]/tribe/tickets/blocks/tickets/registration/summary/ticket-price.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @since 4.9
- * @version 4.11.0
+ * @since   4.9
+ * @since   5.0.2 Fix template path in documentation block.
+ * @version 5.0.2
  *
  */
 ?>

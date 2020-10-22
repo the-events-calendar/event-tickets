@@ -3174,7 +3174,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * redirect to the meta collection screen.
 		 *
 		 * @since 4.9
-		 * @since TBD Correct provider attendee object.
+		 * @since 5.0.2 Correct provider attendee object.
 		 *
 		 * @param string|null $redirect URL to redirect to.
 		 * @param null|int    $post_id  Post ID for cart.

@@ -24,7 +24,7 @@ class ItemsTest extends V2TestCase {
 		$provider = tribe_get_class_instance( 'Tribe__Tickets__Commerce__PayPal__Main' );
 
 		$event   = $this->get_mock_event( 'events/single/1.json' );
-		$ids     = $this->create_many_paypal_tickets( 2, $event->ID );
+		$ids     = $this->create_many_paypal_tickets( 2, $event->ID, [ 'price' => 99 ] );
 		$tickets = [];
 
 		foreach ( $ids as $ticket ) {
@@ -77,9 +77,8 @@ class ItemsTest extends V2TestCase {
 
 		$driver = $this->get_html_output_driver();
 
-		$driver->setTolerableDifferences( [
-				$args['post_id'],
-			]
+		$driver->setTolerableDifferences(
+			array_merge( [ $args['post_id'] ], wp_list_pluck( $args['tickets'], 'ID' ) )
 		);
 
 		$driver->setTimeDependentAttributes( [ 'value', 'data-ticket-id', 'aria-controls' ] );
