@@ -45,7 +45,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	 *
 	 * @since 4.9
 	 *
-	 * @param array $attributes
+	 * @param array $attributes Block attributes.
 	 *
 	 * @return string
 	 */
