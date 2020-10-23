@@ -26,7 +26,7 @@ $button_title = sprintf(
 
 ?>
 <button
-	class="tribe-tickets__item__quantity__add"
+	class="tribe-tickets__tickets-item-quantity-add"
 	title="<?php echo esc_attr( $button_title ); ?>"
 	type="button"
 >

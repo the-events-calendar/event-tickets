@@ -25,7 +25,7 @@ $message = $is_sale_past
 	: sprintf( __( '%s are not yet available', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets' ) );
 ?>
 <div
-	class="tribe-tickets__item__content tribe-tickets__item__content--inactive"
+	class="tribe-tickets__tickets-item-content tribe-tickets__tickets-item-content--inactive"
 >
 	<?php echo esc_html( $message ); ?>
 </div>

@@ -64,7 +64,7 @@ $field_id = implode( '-', $field_id );
 		for="<?php echo esc_attr( $field_id ); ?>"
 	>
 		<input
-			class="tribe-common-form-control-checkbox__input tribe-tickets__item__optout"
+			class="tribe-common-form-control-checkbox__input tribe-tickets__tickets-item-optout"
 			id="<?php echo esc_attr( $field_id ); ?>"
 			name="attendee[optout]"
 			type="checkbox"

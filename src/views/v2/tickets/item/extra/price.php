@@ -33,7 +33,7 @@
 $classes = [
 	'tribe-common-b2',
 	'tribe-common-b1--min-medium',
-	'tribe-tickets__item__extra__price',
+	'tribe-tickets__tickets-item-extra-price',
 ];
 
 $has_suffix = ! empty( $ticket->price_suffix );
@@ -41,14 +41,14 @@ $has_suffix = ! empty( $ticket->price_suffix );
 ?>
 <div <?php tribe_classes( $classes ); ?>>
 	<?php if ( ! empty( $ticket->on_sale ) ) : ?>
-		<span class="tribe-common-b2 tribe-tickets__original_price">
+		<span class="tribe-common-b2 tribe-tickets__tickets-original-price">
 			<?php echo $currency->get_formatted_currency_with_symbol( $ticket->regular_price, $post_id, $provider_id ); ?>
 		</span>
 	<?php endif; ?>
-	<span class="tribe-tickets__sale_price">
+	<span class="tribe-tickets__tickets-sale-price">
 		<?php echo $currency->get_formatted_currency_with_symbol( $ticket->price, $post_id, $provider_id ); ?>
 		<?php if ( $has_suffix ) : ?>
-			<span class="tribe-tickets__sale-price-suffix tribe-common-b2">
+			<span class="tribe-tickets__tickets-sale-price-suffix tribe-common-b2">
 				<?php
 				// This suffix contains HTML to be output.
 				// phpcs:ignore

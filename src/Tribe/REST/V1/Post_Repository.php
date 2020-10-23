@@ -962,6 +962,11 @@ class Tribe__Tickets__REST__V1__Post_Repository
 					'email'           => Tribe__Utils__Array::get( $attendee, 'holder_email', Tribe__Utils__Array::get( $attendee, 'purchaser_email', '' ) ),
 					'checked_in'      => $checked_in,
 					'checkin_details' => $checkin_details,
+
+					// Show Attendee flags.
+					// @todo Make these live in future IAC work.
+					'is_subscribed' => false,
+					'is_purchaser'  => true,
 				]
 			);
 

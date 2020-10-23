@@ -15,6 +15,6 @@
  */
 
 ?>
-<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__title">
+<h2 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__tickets-title">
 	<?php echo esc_html( tribe_get_ticket_label_plural( 'event-tickets' ) ); ?>
 </h2>

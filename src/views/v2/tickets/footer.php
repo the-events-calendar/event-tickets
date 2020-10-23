@@ -32,7 +32,7 @@ if (
 }
 
 ?>
-<div class="tribe-tickets__footer">
+<div class="tribe-tickets__tickets-footer">
 
 	<?php $this->template( 'v2/tickets/footer/return-to-cart' ); ?>
 

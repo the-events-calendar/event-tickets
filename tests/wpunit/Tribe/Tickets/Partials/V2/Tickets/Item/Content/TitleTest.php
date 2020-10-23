@@ -61,7 +61,7 @@ class TitleTest extends V2TestCase {
 		$html = $template->template( $this->partial_path, $args, false );
 
 		$this->assertContains( 'tribe-tickets--no-description', $html );
-		$this->assertContains( 'tribe-tickets__item__content__subtitle', $html );
+		$this->assertContains( 'tribe-tickets__tickets-item-content-subtitle', $html );
 
 		$driver = $this->get_html_output_driver();
 
@@ -107,7 +107,28 @@ class TitleTest extends V2TestCase {
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
-	// @todo @rafsuntaskin: test for $ticket->show_description => false.
+	/**
+	 * @test
+	 */
+	public function test_should_not_show_description_if_filter_is_false() {
+		$template = tribe( 'tickets.editor.template' );
+
+		add_filter( 'tribe_tickets_show_description', '__return_false' );
+
+		$args = $this->get_default_args();
+		$html = $template->template( $this->partial_path, $args, false );
+
+		$this->assertContains( 'tribe-tickets--no-description', $html );
+		$driver = $this->get_html_output_driver();
+
+		$driver->setTolerableDifferences( [
+				$args['post_id'],
+				$args['ticket']->name,
+			]
+		);
+
+		$this->assertMatchesSnapshot( $html, $driver );
+	}
 
 	/**
 	 * @test

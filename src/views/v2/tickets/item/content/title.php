@@ -24,20 +24,20 @@ $no_description = ! $ticket->show_description() || empty( $ticket->description )
 $title_classes = [
 	'tribe-common-h7',
 	'tribe-common-h6--min-medium',
-	'tribe-tickets__item__content__title',
+	'tribe-tickets__tickets-item-content-title',
 	'tribe-tickets--no-description' => $no_description,
 ];
 
 $event_title_classes = [
 	'tribe-common-b3',
-	'tribe-tickets__item__content__subtitle',
+	'tribe-tickets__tickets-item-content-subtitle',
 ];
 
 ?>
 <div <?php tribe_classes( $title_classes ); ?> >
 	<?php if ( $is_mini ) : ?>
 		<div <?php tribe_classes( $event_title_classes ); ?> >
-			<?php the_title(); ?>
+			<?php echo get_the_title( $post_id ); ?>
 		</div>
 	<?php endif; ?>
 	<?php echo esc_html( $ticket->name ); ?>

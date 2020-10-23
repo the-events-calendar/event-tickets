@@ -28,7 +28,7 @@ if ( ! empty( $is_mini ) ) {
 
 $classes = [
 	'tribe-common-h4',
-	'tribe-tickets__item__quantity',
+	'tribe-tickets__tickets-item-quantity',
 ];
 
 $context = [

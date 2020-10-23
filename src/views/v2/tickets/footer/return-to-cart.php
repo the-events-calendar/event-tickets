@@ -41,6 +41,6 @@ if (
 }
 
 ?>
-<a class="tribe-common-b2 tribe-tickets__footer__back-link" href="<?php echo esc_url( $cart_url ); ?>">
+<a class="tribe-common-b2 tribe-tickets__tickets-footer-back-link" href="<?php echo esc_url( $cart_url ); ?>">
 	<?php esc_html_e( 'Return to Cart', 'event-tickets' ); ?>
 </a>

@@ -36,7 +36,7 @@ $ticket_details_id .= '--' . $ticket->ID;
 
 <div
 	id="<?php echo esc_attr( $ticket_details_id ); ?>"
-	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__item__details__content"
+	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content"
 >
 	<?php echo wp_kses_post( $ticket->description ); ?>
 </div>

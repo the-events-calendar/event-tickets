@@ -55,38 +55,6 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
-		// Tickets registration page styles.
-		tribe_asset(
-			$tickets_main,
-			'tribe-tickets-registration-page-styles',
-			'tickets-registration-page.css',
-			[],
-			null,
-			[
-				'groups' => [
-					'tribe-tickets-registration-page',
-				],
-			]
-		);
-
-		// Tickets registration page scripts.
-		tribe_asset(
-			$tickets_main,
-			'tribe-tickets-registration-page-scripts',
-			'tickets-registration-page.js',
-			[
-				'jquery',
-				'wp-util',
-				'tribe-common',
-			],
-			null,
-			[
-				'groups' => [
-					'tribe-tickets-registration-page',
-				],
-			]
-		);
-
 		if (
 			tribe_tickets_new_views_is_enabled()
 			|| tribe_tickets_rsvp_new_views_is_enabled()
@@ -111,6 +79,59 @@ class Tribe__Tickets__Assets {
 			);
 		}
 
+		if ( tribe_tickets_new_views_is_enabled() ) {
+			// Tribe tickets utils.
+			tribe_asset(
+				$tickets_main,
+				'tribe-tickets-utils',
+				'v2/tickets-utils.js',
+				[
+					'jquery',
+					'tribe-common',
+				],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-block-assets',
+						'tribe-tickets-rsvp',
+						'tribe-tickets-registration-page',
+					],
+				]
+			);
+		} else {
+
+			// Tickets registration page scripts.
+			tribe_asset(
+				$tickets_main,
+				'tribe-tickets-registration-page-scripts',
+				'tickets-registration-page.js',
+				[
+					'jquery',
+					'wp-util',
+					'tribe-common',
+				],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-registration-page',
+					],
+				]
+			);
+
+			// Tickets registration page styles.
+			tribe_asset(
+				$tickets_main,
+				'tribe-tickets-registration-page-styles',
+				'tickets-registration-page.css',
+				[],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-registration-page',
+					],
+				]
+			);
+		}
 	}
 
 	/**

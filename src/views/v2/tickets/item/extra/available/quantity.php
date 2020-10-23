@@ -23,7 +23,7 @@
  */
 if (
 	0 !== $threshold
-	&& $threshold < $this->get( 'available_count' )
+	&& $threshold < $available_count
 ) {
 	return;
 }
@@ -36,8 +36,8 @@ echo wp_kses_post(
 			'Tickets available',
 			'event-tickets'
 		),
-		'<span class="tribe-tickets__item__extra__available__quantity">',
-		$this->get( 'available_count' ),
+		'<span class="tribe-tickets__tickets-item-extra-available-quantity">',
+		$available_count,
 		'</span>'
 	)
 );

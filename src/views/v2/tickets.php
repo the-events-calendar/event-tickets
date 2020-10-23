@@ -35,20 +35,21 @@ if ( ! $is_sale_future && ( ! $provider || ! $tickets ) ) {
 $classes = [
 	'tribe-common',
 	'event-tickets',
+	'tribe-tickets__tickets-wrapper',
 ];
 
 ?>
 <div <?php tribe_classes( $classes ); ?>>
 	<form
-		id="tribe-tickets"
+		id="tribe-tickets__tickets-form"
 		action="<?php echo esc_url( $provider->get_cart_url() ); ?>"
-		class="tribe-tickets"
-		class="tribe-tickets"
+		class="tribe-tickets__tickets-form"
 		method="post"
 		enctype='multipart/form-data'
 		data-provider="<?php echo esc_attr( $provider->class_name ); ?>"
 		autocomplete="off"
 		data-provider-id="<?php echo esc_attr( $provider->orm_provider ); ?>"
+		data-post-id="<?php echo esc_attr( $post_id ); ?>"
 		novalidate
 	>
 

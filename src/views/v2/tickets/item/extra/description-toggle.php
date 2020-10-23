@@ -30,10 +30,10 @@ if (
 
 $toggle_id = 'tribe__details__content--' . $ticket->ID;
 ?>
-<div class="tribe-tickets__item__details__summary">
+<div class="tribe-tickets__tickets-item-details-summary">
 	<button
 		type="button"
-		class="tribe-common-b3 tribe-tickets__item__details__summary--more"
+		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
 		aria-controls="<?php echo esc_attr( $toggle_id ); ?>"
 		tabindex="0"
 	>
@@ -44,7 +44,7 @@ $toggle_id = 'tribe__details__content--' . $ticket->ID;
 	</button>
 	<button
 		type="button"
-		class="tribe-common-b3 tribe-tickets__item__details__summary--less"
+		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
 		aria-controls="<?php echo esc_attr( $toggle_id ); ?>"
 		tabindex="0"
 	>

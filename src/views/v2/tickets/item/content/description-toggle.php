@@ -29,10 +29,10 @@ if (
 $ticket_details_id  = 'tribe__details__content' . ( true === $is_modal ) ?: '__modal';
 $ticket_details_id .= '--' . $ticket->ID;
 ?>
-<div class="tribe-tickets__item__details__summary">
+<div class="tribe-tickets__tickets-item-details-summary">
 	<button
 		type="button"
-		class="tribe-common-b3 tribe-tickets__item__details__summary--more"
+		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
 		aria-controls="<?php echo esc_attr( $ticket_details_id ); ?>"
 		tabindex="0"
 	>
@@ -41,7 +41,7 @@ $ticket_details_id .= '--' . $ticket->ID;
 	</button>
 	<button
 		type="button"
-		class="tribe-common-b3 tribe-tickets__item__details__summary--less"
+		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
 		aria-controls="<?php echo esc_attr( $ticket_details_id ); ?>"
 		tabindex="0"
 	>

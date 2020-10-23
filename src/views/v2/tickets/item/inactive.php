@@ -23,8 +23,8 @@ if ( ! empty( $has_tickets_on_sale ) ) {
 }
 
 $classes = [
-	'tribe-tickets__item',
-	'tribe-tickets__item--inactive',
+	'tribe-tickets__tickets-item',
+	'tribe-tickets__tickets-item--inactive',
 ];
 
 $message = $is_sale_past
@@ -35,7 +35,7 @@ $message = $is_sale_past
 ?>
 <div <?php tribe_classes( $classes ); ?>>
 	<div
-		class="tribe-tickets__item__content tribe-tickets__item__content--inactive"
+		class="tribe-tickets__tickets-item-content tribe-tickets__tickets-item-content--inactive"
 	>
 		<?php echo esc_html( $message ); ?>
 	</div>

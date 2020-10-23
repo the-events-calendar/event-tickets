@@ -25,7 +25,7 @@ $handler = tribe( 'tickets.handler' );
 $max_at_a_time = $handler->get_ticket_max_purchase( $ticket->ID );
 
 $classes = [
-	'tribe-tickets__item__quantity__number',
+	'tribe-tickets__tickets-item-quantity-number',
 	'tribe-tickets__disabled' => ! empty( $must_login ),
 ];
 

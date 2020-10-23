@@ -31,20 +31,20 @@ $available_count = $ticket->available();
  *
  * @since 4.11.1
  *
- * @var bool $show_unlimited    Whether to show the "unlimited" text.
+ * @var bool $show_unlimited  Whether to show the "unlimited" text.
  * @var int  $available_count The quantity of Available tickets based on the Attendees number.
  */
 $show_unlimited = apply_filters( 'tribe_tickets_block_show_unlimited_availability', true, $available_count );
 
 $context = [
-	'ticket'         => $ticket,
-	'show_unlimited' => (bool) $show_unlimited,
+	'ticket'          => $ticket,
+	'show_unlimited'  => (bool) $show_unlimited,
 	'available_count' => $available_count,
-	'is_unlimited'   => - 1 === $available_count,
-]
-
+	'is_unlimited'    => - 1 === $available_count,
+];
 ?>
-<div class="tribe-common-b3 tribe-tickets__item__extra__available">
+
+<div class="tribe-common-b3 tribe-tickets__tickets-item-extra-available">
 
 	<?php $this->template( 'v2/tickets/item/extra/available/unlimited', $context ); ?>
 
