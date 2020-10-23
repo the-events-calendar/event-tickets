@@ -3,4 +3,4 @@
 	url = git@github.com:moderntribe/tribe-common.git
 [submodule "src/resources/postcss/utilities"]
 	path = src/resources/postcss/utilities
-	url = git@github.com:moderntribe/tribe-common-styles.git
+	url = https://github.com/moderntribe/tribe-common-styles.git
