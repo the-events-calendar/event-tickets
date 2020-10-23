@@ -336,7 +336,10 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	 * @return void
 	 */
 	public function rsvp_form() {
-		$response  = [ 'html' => '', 'view' => 'rsvp-form' ];
+		$response  = [
+			'html' => '',
+			'view' => 'rsvp-form',
+		];
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 		$going     = tribe_get_request_var( 'going', 'yes' );
 
