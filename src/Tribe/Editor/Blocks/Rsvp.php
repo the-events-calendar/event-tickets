@@ -381,7 +381,10 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	 * @return void
 	 */
 	public function rsvp_process() {
-		$response  = [ 'html' => '', 'view' => 'rsvp-process' ];
+		$response  = [
+			'html' => '',
+			'view' => 'rsvp-process',
+		];
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 
 		if ( 0 === $ticket_id ) {
