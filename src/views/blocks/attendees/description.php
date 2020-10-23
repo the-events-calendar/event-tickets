@@ -40,5 +40,6 @@ $message = _n( 'One person is attending %2$s', '%d people are attending %s', $at
 			$attendees_total,
 			get_the_title( $post_id )
 		)
-	); ?>
+	);
+	?>
 </p>
