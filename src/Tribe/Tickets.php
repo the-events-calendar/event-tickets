@@ -140,6 +140,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public $ticket_object = '';
 
+		/**
+		 * The name of the meta key used to store whether an attendee is subscribed to updates.
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $attendee_subscribed = '_tribe_tickets_subscribed';
+
 		/* Deprecated vars */
 
 		/**
