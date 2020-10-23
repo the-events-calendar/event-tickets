@@ -33,7 +33,8 @@ $attendees_total = count( $attendees );
 $message = _n( 'One person is attending %2$s', '%d people are attending %s', $attendees_total, 'event-tickets' );
 ?>
 <p>
-	<?php echo esc_html(
+	<?php
+	echo esc_html(
 		sprintf(
 			$message,
 			$attendees_total,
