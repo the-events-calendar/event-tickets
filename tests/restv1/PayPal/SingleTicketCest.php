@@ -185,6 +185,8 @@ class SingleTicketCest extends BaseRestCest {
 				],
 			],
 			'optout'            => false,
+			'is_subscribed'     => false,
+			'is_purchaser'      => true,
 		];
 		$I->assertEquals( $expected_first_attendee, $first_attendee_from_response );
 	}
