@@ -2091,7 +2091,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'attendee_meta'      => $meta,
 
 			// Handle initial Attendee flags.
-			'is_subscribed'      => tribe_is_truthy( get_post_meta( $attendee->ID, $this->attendee_subscribed_key, true ) ),
+			'is_subscribed'      => tribe_is_truthy( get_post_meta( $attendee->ID, $this->attendee_subscribed, true ) ),
 			'is_purchaser'       => true,
 		] );
 
