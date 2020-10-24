@@ -1668,15 +1668,19 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		$find_by_args = [
-			'post_id'   => $order_id,
-			'ticket_id' => [],
+			'post_id'        => $order_id,
+			'ticket_id'      => [],
+			'posts_per_page' => 1,
 		];
 
 		if ( $ticket_id ) {
 			$find_by_args['ticket_id'] = (array) $ticket_id;
 		}
 
-		$orders = Tribe__Tickets__Commerce__PayPal__Order::find_by( $find_by_args );
+		$orders = Tribe__Tickets__Commerce__PayPal__Order::find_by( $find_by_args, [
+			// Get just the paypal ID var we need.
+			'txn_id',
+		] );
 
 		if ( ! $orders ) {
 			return [];
@@ -1707,7 +1711,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$name  = get_post_meta( $order_id, $this->full_name, true );
 		$email = get_post_meta( $order_id, $this->email, true );
 
-		$order = Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id( $order_id );
+		$order = Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id( $order_id, [
+			'address_name',
+			'payer_email',
+		] );
 
 		if ( $order ) {
 			$name  = $order->get_meta( 'address_name' );
@@ -2834,8 +2841,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		) {
 			$purchase_time = Tribe__Utils__Array::get( $attendee, 'purchase_time', false );
 
-			if ( false !== $order = Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id( $attendee_id ) ) {
-				/** @var \Tribe__Tickets__Commerce__PayPal__Order $order */
+			$order = Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id( $attendee_id, [
+				// Get no meta fields.
+			] );
+
+			if ( false !== $order ) {
 				$purchase_time = $order->get_creation_date();
 			}
 		}
@@ -3059,10 +3069,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	protected function get_cancelled( $ticket_id ) {
 		$denied_orders = Tribe__Tickets__Commerce__PayPal__Order::find_by( array(
-			'ticket_id'   => $ticket_id,
-			'post_status' => Tribe__Tickets__Commerce__PayPal__Stati::$denied,
+			'ticket_id'      => $ticket_id,
+			'post_status'    => Tribe__Tickets__Commerce__PayPal__Stati::$denied,
 			'posts_per_page' => -1,
-		) );
+		), [
+			'items',
+		] );
 
 		$denied = 0;
 		foreach ( $denied_orders as $denied_order ) {
