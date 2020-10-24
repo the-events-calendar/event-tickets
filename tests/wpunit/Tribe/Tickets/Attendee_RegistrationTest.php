@@ -73,16 +73,19 @@ class Attendee_Registration extends \Codeception\TestCase\WPTestCase {
 			],
 		] );
 
+		// no meta, returns false
+		$tickets_3[]['id'] = $paypal_ticket_id_3;
+		$show_tickets_3    = tribe( 'tickets.attendee_registration' )->has_attendee_registration_enabled_in_array_of_tickets( $tickets_3 );
+		$this->assertEquals( false, $show_tickets_3 );
+
+		// ET+ functionality filters this and would return true.
+		add_filter( 'tribe_tickets_data_ticket_ids_have_meta_fields', '__return_true' );
+
 		// one ticket with and one without, returns true
 		$tickets_1_2[]['id'] = $paypal_ticket_id_1;
 		$tickets_1_2[]['id'] = $paypal_ticket_id_2;
 		$show_tickets_2      = tribe( 'tickets.attendee_registration' )->has_attendee_registration_enabled_in_array_of_tickets( $tickets_1_2 );
 		$this->assertEquals( true, $show_tickets_2 );
-
-		// no meta, returns false
-		$tickets_3[]['id'] = $paypal_ticket_id_3;
-		$show_tickets_3    = tribe( 'tickets.attendee_registration' )->has_attendee_registration_enabled_in_array_of_tickets( $tickets_3 );
-		$this->assertEquals( false, $show_tickets_3 );
 	}
 
 }
