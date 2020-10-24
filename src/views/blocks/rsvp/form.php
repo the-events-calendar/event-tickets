@@ -16,9 +16,9 @@
  *
  * @version 4.12.0
  *
- * @var Tribe__Tickets__Editor__Template $template
  * @var Tribe__Tickets__RSVP             $rsvp
  * @var int                              $post_id
+ * @var Tribe__Tickets__Editor__Template $this    The template class.
  */
 
 $going      = $this->get( 'going' );
@@ -36,6 +36,6 @@ $must_login = ! is_user_logged_in() && $rsvp->login_required();
 		];
 
 		// can't escape, contains html
-		echo $template->template( 'blocks/rsvp/form/form', $args, false );
 	endif; ?>
+		echo $this->template( 'blocks/rsvp/form/form', $args, false );
 </div>
