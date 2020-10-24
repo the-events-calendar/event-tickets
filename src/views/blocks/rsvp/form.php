@@ -1,7 +1,7 @@
 <?php
 /**
- * Block: RSVP
- * Form from rsvp/form/form.php via AJAX
+ * Block: RSVP.
+ * Form from rsvp/form/form.php via AJAX.
  *
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/blocks/rsvp/form.php
@@ -16,17 +16,21 @@
  *
  * @version 4.12.0
  *
- * @var Tribe__Tickets__RSVP             $rsvp
- * @var int                              $post_id
  * @var Tribe__Tickets__Editor__Template $this    The template class.
+ * @var Tribe__Tickets__RSVP             $rsvp    The RSVP class.
+ * @var int                              $post_id The post ID.
  */
 
 $going      = $this->get( 'going' );
 $must_login = ! is_user_logged_in() && $rsvp->login_required();
 ?>
-<!-- This div is where the AJAX returns the form -->
+<!-- This div is where the AJAX returns the form. -->
 <div class="tribe-block__rsvp__form">
-	<?php if ( ! empty( $going ) && ! $must_login ) :
+	<?php
+	if (
+		! empty( $going )
+		&& ! $must_login
+	) :
 		$ticket = $this->get( 'ticket' );
 		$args   = [
 			'ticket_id' => $ticket->ID,
@@ -35,7 +39,8 @@ $must_login = ! is_user_logged_in() && $rsvp->login_required();
 			'going'     => esc_html( $going ),
 		];
 
-		// can't escape, contains html
-	endif; ?>
+		// Can't escape, contains HTML.
 		echo $this->template( 'blocks/rsvp/form/form', $args, false );
+	endif;
+	?>
 </div>
