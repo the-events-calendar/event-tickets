@@ -809,9 +809,37 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			throw new Exception( __( 'Unable to process your request, invalid content resource.', 'event-tickets' ) );
 		}
 
+		/**
+		 * Allow filtering the individual attendee name used when creating a new attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param string                  $individual_attendee_name The attendee full name.
+		 * @param int|null                $attendee_number          The attendee number index value from the order, starting with zero.
+		 * @param int                     $order_id                 The order ID.
+		 * @param int                     $ticket_id                The ticket ID.
+		 * @param int                     $post_id                  The ID of the post associated to the ticket.
+		 * @param Tribe__Tickets__Tickets $provider                 The current ticket provider object.
+		 */
+		$individual_attendee_name = apply_filters( 'tribe_tickets_attendee_create_individual_name', $full_name, $order_attendee_id, $order_id, $product_id, $post_id, $this );
+
+		/**
+		 * Allow filtering the individual attendee email used when creating a new attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param string                  $individual_attendee_email The attendee email.
+		 * @param int|null                $attendee_number           The attendee number index value from the order, starting with zero.
+		 * @param int                     $order_id                 The order ID.
+		 * @param int                     $ticket_id                 The ticket ID.
+		 * @param int                     $post_id                   The ID of the post associated to the ticket.
+		 * @param Tribe__Tickets__Tickets $provider                  The current ticket provider object.
+		 */
+		$individual_attendee_email = apply_filters( 'tribe_tickets_attendee_create_individual_email', $email, $order_attendee_id, $order_id, $product_id, $post_id, $this );
+
 		$attendee = [
 			'post_status' => 'publish',
-			'post_title'  => $full_name,
+			'post_title'  => $individual_attendee_name,
 			'post_type'   => $this->attendee_object,
 			'ping_status' => 'closed',
 			'post_author' => 0,
@@ -853,7 +881,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 			if ( $lookup_user_from_email ) {
 				// Check if user exists.
-				$user = get_user_by( 'email', $email );
+				$user = get_user_by( 'email', $individual_attendee_email );
 
 				if ( $user ) {
 					$user_id = $user->ID;
@@ -867,8 +895,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// @todo ET should add a property for this.
 		update_post_meta( $attendee_id, self::ATTENDEE_RSVP_KEY, $order_status );
-		update_post_meta( $attendee_id, $this->full_name, $full_name );
-		update_post_meta( $attendee_id, $this->email, $email );
+		update_post_meta( $attendee_id, $this->full_name, $individual_attendee_name );
+		update_post_meta( $attendee_id, $this->email, $individual_attendee_email );
 
 		update_post_meta( $attendee_id, '_paid_price', 0 );
 
@@ -2037,7 +2065,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			}
 		}
 
-		$attendee_data = array_merge( $this->get_order_data( $attendee->ID ), array(
+		$attendee_data = array_merge( $this->get_order_data( $attendee->ID ), [
 			'optout'             => $optout,
 			'ticket'             => $product_title,
 			'attendee_id'        => $attendee->ID,
@@ -2049,37 +2077,35 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'user_id'            => $user_id,
 			'ticket_sent'        => $ticket_sent,
 
-			// Fields for Email Tickets
-			'event_id'      => get_post_meta( $attendee->ID, self::ATTENDEE_EVENT_KEY, true ),
-			'ticket_name'   => ! empty( $product ) ? $product->post_title : false,
-			'holder_name'   => get_post_meta( $attendee->ID, $this->full_name, true ),
-			'holder_email'  => get_post_meta( $attendee->ID, $this->email, true ),
-			'order_id'      => $attendee->ID,
-			'ticket_id'     => $ticket_unique_id,
-			'qr_ticket_id'  => $attendee->ID,
-			'security_code' => $security,
+			// Fields for Email Tickets.
+			'event_id'           => get_post_meta( $attendee->ID, self::ATTENDEE_EVENT_KEY, true ),
+			'ticket_name'        => ! empty( $product ) ? $product->post_title : false,
+			'holder_name'        => get_post_meta( $attendee->ID, $this->full_name, true ),
+			'holder_email'       => get_post_meta( $attendee->ID, $this->email, true ),
+			'order_id'           => $attendee->ID,
+			'ticket_id'          => $ticket_unique_id,
+			'qr_ticket_id'       => $attendee->ID,
+			'security_code'      => $security,
 
-			// Attendee Meta
-			'attendee_meta' => $meta,
+			// Attendee Meta.
+			'attendee_meta'      => $meta,
 
 			// Handle initial Attendee flags.
-			// @todo Make these live in future IAC work.
-			'is_subscribed' => false,
-			'is_purchaser'  => true,
-		) );
+			'is_subscribed'      => tribe_is_truthy( get_post_meta( $attendee->ID, $this->attendee_subscribed, true ) ),
+			'is_purchaser'       => true,
+		] );
 
 		/**
-		 * Allow users to filter the Attendee Data
+		 * Allow filtering the attendee information to return.
 		 *
-		 * @var array An associative array with the Information of the Attendee
-		 * @var string What Provider is been used
-		 * @var WP_Post Attendee Object
-		 * @var int Post ID
+		 * @since 4.7
 		 *
+		 * @param array   $attendee_data The attendee information.
+		 * @param string  $provider_slug The provider slug.
+		 * @param WP_Post $attendee      The attendee post object.
+		 * @param int     $post_id       The post ID of the attendee ID.
 		 */
-		$attendee_data = apply_filters( 'tribe_tickets_attendee_data', $attendee_data, 'rsvp', $attendee, $post_id );
-
-		return $attendee_data;
+		return apply_filters( 'tribe_tickets_attendee_data', $attendee_data, $this->orm_provider, $attendee, $post_id );
 	}
 
 	/**
@@ -2104,7 +2130,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'purchaser_name'  => $name,
 			'purchaser_email' => $email,
 			'provider'        => __CLASS__,
-			'provider_slug'   => 'rsvp',
+			'provider_slug'   => $this->orm_provider,
 			'purchase_time'   => get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $order_id ),
 		);
 
@@ -2116,7 +2142,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @var int Order ID
 		 *
 		 */
-		$data = apply_filters( 'tribe_tickets_order_data', $data, 'rsvp', $order_id );
+		$data = apply_filters( 'tribe_tickets_order_data', $data, $this->orm_provider, $order_id );
 
 		return $data;
 	}

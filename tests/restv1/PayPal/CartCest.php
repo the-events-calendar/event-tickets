@@ -20,6 +20,7 @@ class CartCest extends BaseRestCest {
 	/**
 	 * It should allow getting cart for post.
 	 *
+	 * @skip This isn't an endpoint we're using yet.
 	 * @test
 	 */
 	public function should_allow_getting_cart_for_post( Restv1Tester $I ) {
