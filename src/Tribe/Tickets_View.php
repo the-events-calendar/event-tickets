@@ -998,6 +998,11 @@ class Tribe__Tickets__Tickets_View {
 			return '';
 		}
 
+		// No need to handle RSVPs here.
+		if ( 'Tribe__Tickets__RSVP' === $provider->class_name ) {
+			return '';
+		}
+
 		/** @var Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 

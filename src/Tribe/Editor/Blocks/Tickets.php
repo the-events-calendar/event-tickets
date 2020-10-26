@@ -32,67 +32,11 @@ extends Tribe__Editor__Blocks__Abstract {
 	 */
 	public function render( $attributes = [] ) {
 		/** @var Tribe__Tickets__Editor__Template $template */
-		$template = tribe( 'tickets.editor.template' );
+		$template     = tribe( 'tickets.editor.template' );
+		$post_id      = $template->get( 'post_id', null, false );
+		$tickets_view = Tribe__Tickets__Tickets_View::instance();
 
-		$args['is_modal']   = null;
-		$args['post_id']    = $post_id = $template->get( 'post_id', null, false );
-		$args['attributes'] = $this->attributes( $attributes );
-
-		// Prevent the render when the ID of the post has not being set to a correct value
-		if ( $args['post_id'] === null ) {
-			return '';
-		}
-
-		// Fetch the default provider
-		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post_id );
-		if ( empty( $provider ) ) {
-			return '';
-		}
-
-		// No need to handle RSVPs here.
-		if ( 'Tribe__Tickets__RSVP' === $provider->class_name ) {
-			return '';
-		}
-
-		$provider_id = $this->get_provider_id( $provider );
-		$tickets     = $this->get_tickets( $post_id );
-
-		$args['provider']            = $provider;
-		$args['provider_id']         = $provider_id;
-		$args['cart_url']            = 'tpp' !== $provider_id ? $provider->get_cart_url() : '';
-		$args['tickets']             = $tickets;
-		$args['tickets_on_sale']     = $this->get_tickets_on_sale( $tickets );
-		$args['has_tickets_on_sale'] = ! empty( $args['tickets_on_sale'] );
-		$args['is_sale_past']        = $this->get_is_sale_past( $tickets );
-		$args['is_sale_future']      = $this->get_is_sale_future( $tickets );
-		$args['currency']            = tribe( 'tickets.commerce.currency' );
-
-		/**
-		 * Add the rendering attributes into global context.
-		 *
-		 * Start with the following for template files loading this global context.
-		 * Keep all templates with this starter block of comments updated if these global args update.
-		 *
-		 * @var Tribe__Tickets__Editor__Template   $this                Template object.
-		 * @var null|bool                          $is_modal            [Global] Whether the modal is enabled.
-		 * @var int                                $post_id             [Global] The current Post ID to which tickets are attached.
-		 * @var array                              $attributes          [Global] Ticket attributes (could be empty).
-		 * @var Tribe__Tickets__Tickets            $provider            [Global] The tickets provider class.
-		 * @var string                             $provider_id         [Global] The tickets provider class name.
-		 * @var string                             $cart_url            [Global] Link to Cart (could be empty).
-		 * @var Tribe__Tickets__Ticket_Object[]    $tickets             [Global] List of tickets.
-		 * @var Tribe__Tickets__Ticket_Object[]    $tickets_on_sale     [Global] List of tickets on sale.
-		 * @var bool                               $has_tickets_on_sale [Global] True if the event has any tickets on sale.
-		 * @var bool                               $is_sale_past        [Global] True if tickets' sale dates are all in the past.
-		 * @var bool                               $is_sale_future      [Global] True if no ticket sale dates have started yet.
-		 * @var Tribe__Tickets__Commerce__Currency $currency            [Global] Tribe Currency object.
-		 */
-		$template->add_template_globals( $args );
-
-		// Enqueue assets.
-		tribe_asset_enqueue_group( 'tribe-tickets-block-assets' );
-
-		return $template->template( [ 'blocks', $this->slug() ], $args, false );
+		return $tickets_view->get_tickets_block( $post_id, false );
 	}
 
 	/**
