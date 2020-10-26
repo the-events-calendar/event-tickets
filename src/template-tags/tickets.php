@@ -1087,7 +1087,7 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 
 		$has_provider = ! empty( $provider );
 
-		if ( ( ! $has_provider && $rsvp_tickets ) || is_a( $provider, 'Tribe_Tickets_RSVP' ) ) {
+		if ( ( ! $has_provider && $rsvp_tickets ) || $provider instanceof Tribe__Tickets__RSVP ) {
 			// If we have no provider but have RSVP tickets, or the provider is RSVP, return the RSVP capacity.
 			return (int) $rsvp_cap;
 		} elseif ( ! $has_provider ) {
