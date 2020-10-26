@@ -8,7 +8,7 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link http://m.tri.be/1amo
  *
  * @since 4.9.3
  * @version 4.10.4
@@ -41,7 +41,7 @@ $going = $must_login ? false : $this->get( 'going' );
 		class="tribe-block__rsvp__status-button tribe-block__rsvp__status-button--not-going<?php if ( 'no' === $going ) { echo ' tribe-active'; }?>"
 		<?php echo disabled( 'no', $going, false ); ?>
 	>
-		<span><?php esc_html_e( 'Not going', 'event-tickets' ); ?></span>
+		<span><?php echo esc_html_x( 'Not going', 'Label for the RSVP not going button', 'event-tickets' ); ?></span>
 		<?php $this->template( 'blocks/rsvp/status/not-going-icon' ); ?>
 	</button>
 </span>

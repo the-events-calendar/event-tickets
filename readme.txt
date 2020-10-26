@@ -3,8 +3,8 @@
 Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
-Tested up to: 5.5
-Stable tag: 5.0.1
+Tested up to: 5.5.1
+Stable tag: 5.0.3
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -118,9 +118,36 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [5.0.1] TBD =
+= [5.0.3] TBD =
 
 
+
+= [5.0.2] 2020-10-19 =
+
+* Fix - Correctly detect ticket provider to support Attendee Information. [ET-915]
+* Fix - Correct template override location comments. [ET-919]
+* Language - 42 new strings added, 25 updated, 1 fuzzied, and 28 obsoleted
+
+= [5.0.1] 2020-09-21 =
+
+* Fix - Ensure the Attendees List title for the Attendees report is clean and not replicated on the page for the admin area as well as frontend. [ET-912]
+* Fix - Use `the_title` filter when getting list of post titles for the Move Ticket workflow. [ET-909]
+* Fix - Use the correct default date for initial Ticket start sale and end sale dates for Classic Editor. [ET-900]
+* Fix - We have added the missing ID to the new RSVP block to allow linking to it directly. [ET-904]
+* Fix - Prevent 301 redirects to the homepage while handling Tribe Commerce checkout process. [ET-845]
+* Fix - Use the correct file path for the modal overrides. It's now correctly using the `your-theme/tribe/tickets/` path. [ETP-432]
+* Fix - More thorough validity checking for post IDs, such as to account for a BuddyPress page having a Post ID of zero. [ET-899]
+* Fix - Remove duplicate `button_id` from the `$args` in `src/blocks/tickets/submit-button-modal.php`. Props @justlevine for the fix! [ET-907]
+* Fix - Ensure we print the required label for the ARI checkboxes. [ETP-361]
+* Fix - Prevent PHP errors in the `tickets/view-link.php` template in automated testing suite. [ET-910]
+* Tweak - We have added context to some of the strings and labels of the new RSVP block to allow more granular translation. [ET-903]
+* Tweak - Added filters: `tribe_tickets_attendees_show_view_title`
+* Tweak - Changed views: `blocks/rsvp/status/going`, `blocks/rsvp/status/not-going`, `blocks/tickets/submit-button-modal`, `registration-js/attendees/fields/checkbox`, `tickets/view-link`, `v2/rsvp`, `v2/rsvp/actions/rsvp/going`, `v2/rsvp/actions/rsvp/not-going`, `v2/rsvp/details/attendance`
+* Language - 4 new strings added, 53 updated, 0 fuzzied, and 3 obsoleted
+
+= [5.0.0.1] 2020-08-31 =
+
+* Fix - Prevent the Attendee Registration modal from incorrectly setting RSVP as the provider class. [ET-901]
 
 = [5.0.0] 2020-08-26 =
 

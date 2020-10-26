@@ -1,19 +1,21 @@
 <?php
 /**
- * Link to Tickets
- * Included on the Events Single Page after the meta
- * The Message that will link to the Tickets page
+ * Link to Tickets included on the Events Single Page after the meta.
+ * The message that will link to the Tickets page.
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-link.php
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/view-link.php
  *
  * @since   4.2
  * @since   4.10.8 Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated third
  *                 parameter of `get_description_rsvp_ticket()`.
  * @since   4.10.9  Use customizable ticket name functions.
  * @since   4.11.0 Made template more like new blocks-based template in terms of logic.
- * @since 4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
+ * @since   4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
+ * @since   5.0.1 Add additional checks to prevent PHP errors when called from automated testing.
+ * @since   5.0.2 Fix template path in documentation block.
  *
- * @version 4.12.1
+ * @version 5.0.2
  *
  * @var Tribe__Tickets__Tickets_View $this
  */
@@ -22,11 +24,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
-$view      = Tribe__Tickets__Tickets_View::instance();
-$event_id  = get_the_ID();
-$event     = get_post( $event_id );
+$view = Tribe__Tickets__Tickets_View::instance();
+
+$event_id = get_the_ID();
+
+if ( empty( $event_id ) ) {
+	return;
+}
+
+$event = get_post( $event_id );
+
+if ( empty( $event ) ) {
+	return;
+}
+
 $post_type = get_post_type_object( $event->post_type );
 $user_id   = get_current_user_id();
+
+if ( empty( $post_type ) || ! is_user_logged_in() ) {
+	return;
+}
 
 $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type;
 
@@ -63,5 +80,10 @@ $message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' 
 
 <div class="tribe-link-view-attendee">
 	<?php echo $message ?>
-	<a href="<?php echo esc_url( $link ) ?>"><?php echo sprintf( esc_html__( 'View your %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, $user_id ) ) ?></a>
+	<a href="<?php echo esc_url( $link ); ?>">
+		<?php
+		// Translators: %s: The name(s) of the type(s) of ticket(s) the specified user (optional) has for the specified event.
+		echo sprintf( esc_html__( 'View your %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, $user_id ) );
+		?>
+	</a>
 </div>
