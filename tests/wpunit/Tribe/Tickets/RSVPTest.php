@@ -670,7 +670,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
 			if ( isset( $post_data['attendee_ids'] ) ) {
 				$attendee_ids = $sut->generate_tickets_for( $ticket_id, 5, $this->fake_attendee_details( [ 'order_status' => 'going' ] ), false );
-				$attendee_ids = implode( ',', $attendee_ids );
+				$attendee_ids = $attendee_ids ? implode( ',', $attendee_ids ) : [];
 
 				$post_data['attendee_ids'] = $attendee_ids;
 

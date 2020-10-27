@@ -19,6 +19,10 @@ class Tribe__Tickets__REST__V1__Flags {
 	public function flag_ticketed_post( WP_REST_Response $response, WP_Post $post ) {
 		$id = $post->ID;
 
+		if ( ! in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types(), true ) ) {
+			return $response;
+		}
+
 		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $id );
 
 		$response->data['ticketed'] = count( $tickets ) > 0
@@ -62,10 +66,6 @@ class Tribe__Tickets__REST__V1__Flags {
 	 */
 	public function flag_ticketed_event( array $data, WP_Post $event ) {
 		$id = $event->ID;
-
-		if ( ! in_array( $event->post_type, Tribe__Tickets__Main::instance()->post_types(), true ) ) {
-			return $data;
-		}
 
 		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $id );
 
