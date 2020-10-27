@@ -408,7 +408,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @since 4.7
 	 *
-	 * @param int        $attendee_id An Attendee post ID
+	 * @param int        $attendee_id An Attendee post ID.
 	 * @param null|array $fields      List of fields to hydrate, or null for all.
 	 *
 	 * @return Tribe__Tickets__Commerce__PayPal__Order|false Either an existing or new order or `false` on
