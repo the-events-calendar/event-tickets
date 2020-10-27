@@ -273,6 +273,24 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $attendee_optout_key = '';
 
 		/**
+		 * Meta key that holds the full name of the ticket attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $full_name = '_tribe_tickets_full_name';
+
+		/**
+		 * Meta key that holds the email of the ticket attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $email = '_tribe_tickets_email';
+
+		/**
 		 * The provider used for Attendees and Tickets ORM.
 		 *
 		 * @var string
