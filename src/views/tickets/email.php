@@ -6,24 +6,46 @@
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/email.php
  *
  * This file is being included in events/lib/tickets/Tickets.php
- *  in the function generate_tickets_email_content. That function has a $tickets
- *  array with elements that have this fields:
- *        $tickets[] = array( 'event_id',
- *                              'ticket_name'
- *                              'holder_name'
- *                              'order_id'
- *                              'ticket_id'
- *                              'security_code')
+ *  in the function generate_tickets_email_content. Each ticket provider class has a get_attendee() method returning an
+ *  array with elements that have fields like this example for an RSVP type ticket:
+ *    order_id => 10280
+ *    purchaser_name => Person Example
+ *    purchaser_email => person@example.com
+ *    provider => Tribe__Tickets__RSVP
+ *    provider_slug => rsvp
+ *    purchase_time => 2020-10-26 17:59:18
+ *    optout => 1
+ *    ticket => Ticket Name
+ *    attendee_id => 9280
+ *    security => 122552ae
+ *    product_id => 12322
+ *    check_in =>
+ *    order_status => yes
+ *    order_status_label => Going
+ *    user_id => 285
+ *    ticket_sent =>
+ *    event_id => 8872
+ *    ticket_name => Ticket Name
+ *    holder_name => Person Example
+ *    holder_email => person@example.com
+ *    ticket_id => ABC-XYZ-123
+ *    qr_ticket_id => 12345
+ *    security_code => abc123
+ *    attendee_meta =>
+ *    is_subscribed =>
+ *    is_purchaser => 1
+ *    ticket_exists => 1
  *
- * @since 4.0
- * @since 4.5.11 Ability to remove display of event date.
- * @since 4.7.4  Change event date to display by default.
+ * @since   4.0
+ * @since   4.5.11 Ability to remove display of event date.
+ * @since   4.7.4  Change event date to display by default.
  *               Display WooCommerce featured image.
  *               Current ticket action hook before output.
- * @since 4.7.6  Ability to filter ticket image.
- * @since 4.10.9 Use function for text.
+ * @since   4.7.6  Ability to filter ticket image.
+ * @since   4.10.9 Use function for text.
+ * @since   TBD Update comments for single ticket array.
  *
- * @version 4.11.3
+ * @version TBD
  *
  * @var array $tickets An array of tickets in the format documented above.
  */
