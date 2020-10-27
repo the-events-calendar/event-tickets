@@ -43,9 +43,7 @@ class AttendeeCollection extends Component {
 	);
 
 	getContent = () => (
-		<Fragment>
-			<IACSetting clientId={ this.props.clientId } />
-		</Fragment>
+		<IACSetting clientId={ this.props.clientId } />
 	);
 
 	getRows = () => ( [
