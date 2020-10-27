@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [5.0.3] TBD =
 
+* Fix - Calculation fixed for attendee count percentage column while using RSVP only. [ET-876]
 
 
 = [5.0.2] 2020-10-19 =
