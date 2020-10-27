@@ -32,7 +32,6 @@
  * @var bool                             $doing_shortcode     [Global] True if detected within context of shortcode output.
  * @var bool                             $block_html_id       [Global] The RSVP block HTML ID. $doing_shortcode may alter it.
  */
-$must_login = ! is_user_logged_in() && tribe( 'tickets.rsvp' )->login_required();
 $going = $must_login ? false : $this->get( 'going' );
 ?>
 <span>

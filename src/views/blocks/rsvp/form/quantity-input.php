@@ -27,7 +27,7 @@
 /** @var Tribe__Tickets__RSVP $rsvp */
 $rsvp = tribe( 'tickets.rsvp' );
 
-$must_login = ! is_user_logged_in() && $rsvp->login_required();
+$must_login = $this->get( 'must_login' );
 
 /** @var Tribe__Tickets__Ticket_Object $ticket */
 if ( empty( $ticket->ID ) ) {
