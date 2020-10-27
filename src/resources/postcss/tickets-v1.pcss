@@ -441,37 +441,41 @@
 		}
 	}
 
-	.tribe-common-form-control-radio__input.tribe-common-form-control-radio__input,
-	.tribe-common-form-control-checkbox__input.tribe-common-form-control-checkbox__input {
-		border-color: var(--form-color-border-secondary);
-		border-width: 1px;
-		margin-right: var(--spacer-1);
+	&.tribe-tickets,
+	&.event-tickets {
 
-		&:active,
-		&:hover {
+		.tribe-common-form-control-radio__input,
+		.tribe-common-form-control-checkbox__input {
 			border-color: var(--form-color-border-secondary);
+			border-width: 1px;
+			margin-right: var(--spacer-1);
+
+			&:active,
+			&:hover {
+				border-color: var(--form-color-border-secondary);
+			}
+
+			&:focus {
+				border-color: var(--form-color-border-primary);
+			}
+
+			&:checked {
+				background-color: var(--color-icon-focus);
+				border-color: var(--color-icon-focus);
+			}
+
+			&.ticket-meta__has-error {
+				border-color: var(--color-icon-error) ! important;
+			}
 		}
 
-		&:focus {
-			border-color: var(--form-color-border-primary);
+		.tribe-common-form-control-checkbox__input {
+			border-radius: var(--border-radius-default);
 		}
 
-		&:checked {
-			background-color: var(--color-icon-focus);
-			border-color: var(--color-icon-focus);
+		.tribe-common-form-control-checkbox__label {
+			margin-left: 0;
 		}
-
-		&.ticket-meta__has-error {
-			border-color: var(--color-icon-error) ! important;
-		}
-	}
-
-	.tribe-common-form-control-checkbox__input.tribe-common-form-control-checkbox__input {
-		border-radius: var(--border-radius-default);
-	}
-
-	.tribe-common-form-control-checkbox__label.tribe-common-form-control-checkbox__label {
-		margin-left: 0;
 	}
 
 	.tribe-tickets-attendees-list-optout--wrapper {
