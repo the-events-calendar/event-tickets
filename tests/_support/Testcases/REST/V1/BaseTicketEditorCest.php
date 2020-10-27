@@ -383,7 +383,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'unchecked_in_percentage' => 0,
 			],
 			'price_suffix'                  => null,
-			'iac'                           => 'nonce',
+			'iac'                           => 'none',
 		];
 
 		$is_plus_test = $this->is_plus;
