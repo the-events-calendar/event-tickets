@@ -120,7 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [5.0.3] TBD =
 
-
+* Tweak - Added the calling class as a string to the list of arguments passed in the `tribe_tickets_ticket_add` action. [ETP-389]
 
 = [5.0.2] 2020-10-19 =
 
