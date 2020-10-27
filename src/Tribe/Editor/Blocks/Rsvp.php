@@ -357,7 +357,6 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 		}
 
 		$args = [
-			'ticket_id' => $ticket_id,
 			'post_id'   => $ticket->get_event_id(),
 			'ticket'    => $ticket,
 			'going'     => $going,
@@ -381,10 +380,11 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	 * @return void
 	 */
 	public function rsvp_process() {
-		$response  = [
+		$response = [
 			'html' => '',
 			'view' => 'rsvp-process',
 		];
+
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 
 		if ( 0 === $ticket_id ) {
@@ -480,8 +480,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 		}
 
 		$args = [
-			'ticket_id' => $ticket_id,
-			'ticket'    => $ticket,
+			'ticket' => $ticket,
 		];
 
 		$remaining = $ticket->remaining();
@@ -498,6 +497,5 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 		$response['html']           = $template->template( 'blocks/rsvp/messages/success', $args, false );
 
 		wp_send_json_success( $response );
-
 	}
 }

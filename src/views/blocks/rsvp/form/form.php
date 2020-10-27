@@ -13,11 +13,12 @@
  * @since   4.9
  * @since   4.12.0 Add $post_id to filter for hiding opt-outs.
  * @since   4.12.3 Add comments to help IDE auto-completion. Array short syntax.
+ * @since   TBD Add docblock vars and use $ticket->ID instead of duplicative $ticket_id.
  *
- * @version 4.12.3
+ * @version TBD
+ *
  */
 
-$ticket_id = $this->get( 'ticket_id' );
 $post_id   = $this->get( 'post_id' );
 $going     = $this->get( 'going' );
 
@@ -33,9 +34,9 @@ $must_login = ! is_user_logged_in() && $rsvp->login_required();
 ?>
 <form
 	name="tribe-rsvp-form"
-	data-product-id="<?php echo esc_attr( $ticket_id ); ?>"
+	data-product-id="<?php echo esc_attr( $ticket->ID ); ?>"
 >
-	<input type="hidden" name="product_id[]" value="<?php echo esc_attr( absint( $ticket_id ) ); ?>">
+	<input type="hidden" name="product_id[]" value="<?php echo esc_attr( absint( $ticket->ID ) ); ?>">
 	<input type="hidden" name="attendee[order_status]" value="<?php echo esc_attr( $going ); ?>">
 	<!-- Maybe add nonce over here? Try to leave templates as clean as possible -->
 

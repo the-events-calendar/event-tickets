@@ -8,19 +8,23 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link https://m.tri.be/1amp Help article for RSVP & Ticket template files.
+ * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
- * @version 4.9.4
+ * @since   4.9.3
+ * @since   4.10.8 Fixed text domain for string.
+ * @since   TBD Add docblock vars and use $ticket->ID instead of duplicative $ticket_id.
  *
- * @since 4.9.3
- * @since 4.10.8 Fixed text domain for string.
+ * @version TBD
  *
+ * @var Tribe__Tickets__Editor__Template $this    Template object.
+ * @var int                              $post_id [Global] The current Post ID to which RSVPs are attached.
+ * @var Tribe__Tickets__Ticket_Object    $ticket  The ticket object with provider set to RSVP.
+ * @var string                           $going   The RSVP status at time of add/edit, or empty if not in that context.
  */
 $event_id  = $this->get( 'event_id' );
-$ticket_id = $this->get( 'ticket_id' );
 $going     = $this->get( 'going' );
 // Note: the anchor tag is urlencoded here ('%23tribe-block__rsvp__ticket-') so it passes through the login redirect
 ?>
-<a href="<?php echo esc_url( Tribe__Tickets__Tickets::get_login_url( $event_id ) . '?going=' . $going . '%23tribe-block__rsvp__ticket-' . $ticket_id ); ?>">
+<a href="<?php echo esc_url( Tribe__Tickets__Tickets::get_login_url( $event_id ) . '?going=' . $going . '%23tribe-block__rsvp__ticket-' . $ticket->ID ); ?>">
 	<?php esc_html_e( 'Log in to RSVP', 'event-tickets' ); ?>
 </a>
