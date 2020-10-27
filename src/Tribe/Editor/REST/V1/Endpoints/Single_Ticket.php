@@ -296,82 +296,82 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	}
 
 	public function ticket_args() {
-		return array(
-			'name' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+		return [
+			'name'             => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'description' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => '',
+			],
+			'description'      => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'price' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => '',
+			],
+			'price'            => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'show_description' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => '',
+			],
+			'show_description' => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => 'yes',
-			),
-			'start_date' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => 'yes',
+			],
+			'start_date'       => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'start_time' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => '',
+			],
+			'start_time'       => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'end_date' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => '',
+			],
+			'end_date'         => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'end_time' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => '',
+			],
+			'end_time'         => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'sku' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => '',
+			],
+			'sku'              => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'iac' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => '',
+			],
+			'iac'              => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'ticket' => array(
-				'in' => 'body',
-				'type' => 'object',
+				'default'           => '',
+			],
+			'ticket'           => [
+				'in'       => 'body',
+				'type'     => 'object',
 				'defaults' => null,
-			),
-		);
+			],
+		];
 	}
 }
