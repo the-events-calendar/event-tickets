@@ -33,6 +33,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_DESCRIPTION:
 		case types.SET_TICKET_PRICE:
 		case types.SET_TICKET_SKU:
+		case types.SET_TICKET_IAC_SETTING:
 		case types.SET_TICKET_START_DATE:
 		case types.SET_TICKET_START_DATE_INPUT:
 		case types.SET_TICKET_START_DATE_MOMENT:
@@ -53,6 +54,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TEMP_DESCRIPTION:
 		case types.SET_TICKET_TEMP_PRICE:
 		case types.SET_TICKET_TEMP_SKU:
+		case types.SET_TICKET_TEMP_IAC_SETTING:
 		case types.SET_TICKET_TEMP_START_DATE:
 		case types.SET_TICKET_TEMP_START_DATE_INPUT:
 		case types.SET_TICKET_TEMP_START_DATE_MOMENT:

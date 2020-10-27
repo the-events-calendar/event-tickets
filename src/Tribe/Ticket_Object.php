@@ -105,6 +105,15 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $sku;
 
 		/**
+		 * Holds the IAC setting for the ticket.
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $iac = 'none';
+
+		/**
 		 * Holds the price suffix.
 		 *
 		 * @since 4.12.0
