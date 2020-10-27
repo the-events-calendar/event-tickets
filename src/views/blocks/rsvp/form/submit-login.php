@@ -21,8 +21,8 @@
  * @var Tribe__Tickets__Ticket_Object    $ticket  The ticket object with provider set to RSVP.
  * @var string                           $going   The RSVP status at time of add/edit, or empty if not in that context.
  */
-$event_id  = $this->get( 'event_id' );
-$going     = $this->get( 'going' );
+$event_id = $this->get( 'event_id' );
+$going    = $this->get( 'going' );
 // Note: the anchor tag is urlencoded here ('%23tribe-block__rsvp__ticket-') so it passes through the login redirect
 ?>
 <a href="<?php echo esc_url( Tribe__Tickets__Tickets::get_login_url( $event_id ) . '?going=' . $going . '%23tribe-block__rsvp__ticket-' . $ticket->ID ); ?>">

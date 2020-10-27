@@ -14,8 +14,14 @@
  * @since   4.11.1 Corrected amount of available/remaining tickets. Removed unused `data-remaining` attribute.
  * @since   4.11.5 The input's "max" is now always set. The unused `data-remaining` attribute actually didn't get removed
  *                 in the previous change, above, so it got removed in this version.
+ * @since   TBD Add vars to docblock and removed duplicative vars.
  *
- * @version 4.11.5
+ * @version TBD
+ *
+ * @var Tribe__Tickets__Editor__Template $this    Template object.
+ * @var int                              $post_id [Global] The current Post ID to which RSVPs are attached.
+ * @var Tribe__Tickets__Ticket_Object    $ticket  The ticket object with provider set to RSVP.
+ * @var string                           $going   The RSVP status at time of add/edit, or empty if not in that context.
  */
 
 /** @var Tribe__Tickets__RSVP $rsvp */

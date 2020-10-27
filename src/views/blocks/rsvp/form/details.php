@@ -13,10 +13,16 @@
  * @since   4.9
  * @since   4.11.5 Corrected the template override instructions in template comments.
  * @since   4.12.0 Add $post_id to filter for hiding opt-outs.
+ * @since   TBD Add vars to docblock and removed duplicative vars.
  *
- * @version 4.12.0
+ * @version TBD
+ *
+ * @var Tribe__Tickets__Editor__Template $this    Template object.
+ * @var int                              $post_id [Global] The current Post ID to which RSVPs are attached.
+ * @var Tribe__Tickets__Ticket_Object    $ticket  The ticket object with provider set to RSVP.
+ * @var string                           $going   The RSVP status at time of add/edit, or empty if not in that context.
  */
 
-$this->template( 'blocks/rsvp/form/name', [ 'ticket' => $ticket ] );
-$this->template( 'blocks/rsvp/form/email', [ 'ticket' => $ticket ] );
-$this->template( 'blocks/rsvp/form/opt-out', [ 'ticket' => $ticket, 'post_id' => $post_id ] );
+$this->template( 'blocks/rsvp/form/name' );
+$this->template( 'blocks/rsvp/form/email' );
+$this->template( 'blocks/rsvp/form/opt-out' );
