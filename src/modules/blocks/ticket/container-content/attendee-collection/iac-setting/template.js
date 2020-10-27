@@ -8,7 +8,7 @@ import classNames from 'classnames';
 /**
  * Wordpress dependencies
  */
-import {__} from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import {RadioControl} from '@wordpress/components';
 import uniqid from 'uniqid';
 
