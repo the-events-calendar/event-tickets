@@ -2981,8 +2981,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param int $post_id ID of parent "event" post
 			 * @param Tribe__Tickets__Ticket_Object $ticket Ticket object
 			 * @param array $data Submitted post data
+			 * @param string $class Commerce engine class.
 			 */
-			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data );
+			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data, __CLASS__ );
 
 			$tickets_handler->toggle_manual_update_flag( false );
 
