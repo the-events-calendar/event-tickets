@@ -28,7 +28,7 @@ if ( ! empty( $is_mini ) ) {
 	return;
 }
 
-$ticket_details_id  = 'tribe__details__content' . ( true === $is_modal ) ?: '__modal';
+$ticket_details_id  = 'tribe__details__content' . ( empty( $is_modal ) ? '' : '__modal' );
 $ticket_details_id .= '--' . $ticket->ID;
 ?>
 
