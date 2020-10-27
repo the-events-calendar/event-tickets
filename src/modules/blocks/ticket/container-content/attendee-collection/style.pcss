@@ -1,4 +1,5 @@
-.tribe-editor__ticket__advanced-options {
+.tribe-editor__ticket__attendee-collection {
+	margin-top: 20px;
 
 	.tribe-editor__accordion__row {
 		position: relative;
@@ -17,15 +18,27 @@
 		}
 
 		&.open {
-
 			.tribe-editor__accordion__row-content {
 				overflow: visible;
+			}
+		}
+
+		.tribe-editor__accordion__row-content {
+			margin-top: 30px;
+
+			.tribe-editor__ticket__content-row {
+				margin-top: 15px;
+
+				&.tribe-editor__ticket__content-row--iac-setting label {
+					font-size:   14px;
+					line-height: 28px;
+				}
 			}
 		}
 	}
 }
 
-.tribe-editor__ticket__advanced-options-header {
+.tribe-editor__ticket__attendee-collection-header {
 	border: none;
 	background-color: #f8f9f9 !important;
 	display: flex;
@@ -34,7 +47,7 @@
 	position: relative;
 }
 
-svg.tribe-editor__ticket__advanced-options-header-icon {
+svg.tribe-editor__ticket__attendee-collection-header-icon {
 	fill: #8D949B;
 	margin-left: -5px;
 	margin-right: 3px;
@@ -48,7 +61,7 @@ svg.tribe-editor__ticket__advanced-options-header-icon {
 	}
 }
 
-.tribe-editor__ticket__advanced-options-header-text {
+.tribe-editor__ticket__attendee-collection-header-text {
 	color: #000000;
 	font-size: 15px;
 	font-weight: bold;

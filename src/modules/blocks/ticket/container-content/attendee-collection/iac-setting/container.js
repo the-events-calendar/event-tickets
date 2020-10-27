@@ -13,13 +13,13 @@ import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
-	sku: selectors.getTicketTempSku( state, ownProps ),
+	iac: selectors.getTicketTempIACSetting( state, ownProps ),
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
-	onChange: ( e ) => {
+	onChange: ( value ) => {
 		const { clientId } = ownProps;
-		dispatch( actions.setTicketTempSku( clientId, e.target.value ) );
+		dispatch( actions.setTicketTempIACSetting( clientId, value ) );
 		dispatch( actions.setTicketHasChanges( clientId, true ) );
 	},
 } );

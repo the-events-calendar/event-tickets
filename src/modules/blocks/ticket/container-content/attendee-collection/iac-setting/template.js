@@ -1,78 +1,65 @@
 /**
  * External dependencies
  */
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 /**
  * Wordpress dependencies
  */
-import { __ } from '@wordpress/i18n';
-import { Dashicon, RadioControl } from '@wordpress/components';
+import {__} from '@wordpress/i18n';
+import {RadioControl} from '@wordpress/components';
 import uniqid from 'uniqid';
 
 /**
  * Internal dependencies
  */
-import { Input } from '@moderntribe/common/elements';
-import { LabelWithTooltip } from '@moderntribe/tickets/elements';
 
 class IACSetting extends PureComponent {
 	static propTypes = {
 		isDisabled: PropTypes.bool,
 		onChange: PropTypes.func.isRequired,
-		iac_setting: PropTypes.string,
+		iac: PropTypes.string,
 	};
 
 	constructor( props ) {
 		super( props );
-		this.id = uniqid( 'ticket-iac_setting' );
+		this.id = uniqid( 'ticket-iac' );
 	}
 
 	render() {
-		const { iacSetting, isDisabled, onChange } = this.props;
+		const { iac, isDisabled, onChange } = this.props;
+
+		const options = window.tribe_tickets_plus_iac_vars.iac_options;
+
+		let iacSetting = iac;
+
+		// Set the default for new tickets.
+		if ( '' === iacSetting ) {
+			iacSetting = window.tribe_tickets_plus_iac_vars.iac_default;
+		}
 
 		return (
-			<div className={ classNames(
-				'tribe-editor__ticket__iac_setting',
-				'tribe-editor__ticket__content-row',
-				'tribe-editor__ticket__content-row--iac_setting',
-			) }>
-				<LabelWithTooltip
-					className="tribe-editor__ticket__iac_setting-label-with-tooltip"
-					forId={ this.id }
-					isLabel={ true }
-					label={ __( 'Ticket SKU', 'event-tickets' ) }
-					tooltipText={ __(
-						'A unique identifying code for each ticket type you\'re selling',
-						'event-tickets',
-					) }
-					tooltipLabel={ <Dashicon className="tribe-editor__ticket__tooltip-label" icon="info-outline" /> }
-				/>
-				<RadioControl
-					className="tribe-editor__ticket__iac_setting-input"
-					id={ this.id }
-					type="text"
-					value={ iacSetting }
-					onChange={ onChange }
-					disabled={ isDisabled }
-					help={ __( 'Testing the help', 'event-tickets' ) }
-					options={ [
-						{
-							label: __( 'No individual attendees', 'event-tickets' ),
-							value: 'none',
-						},
-						{
-							label: __( 'Allow individual attendees', 'event-tickets' ),
-							value: 'allowed',
-						},
-						{
-							label: __( 'Require individual attendees', 'event-tickets' ),
-							value: 'required',
-						},
-					] }
-				/>
+			<div>
+				<div className="tribe-editor__ticket__content-row--iac-setting-description">
+					{ __( 'Select the default way to sell your tickets. Individual Attendee Collection gives you the control to allow purchasers to enter a name and email for each ticket, which you can also require as unique.', 'event-tickets' ) }
+				</div>
+				<div className={ classNames(
+					'tribe-editor__ticket__iac-setting',
+					'tribe-editor__ticket__content-row',
+					'tribe-editor__ticket__content-row--iac-setting',
+				) }>
+					<RadioControl
+						className="tribe-editor__ticket__iac-setting-input"
+						id={ this.id }
+						type="text"
+						selected={ iacSetting }
+						onChange={ onChange }
+						disabled={ isDisabled }
+						options={ options }
+					/>
+				</div>
 			</div>
 		);
 	}

@@ -16,12 +16,9 @@ import { __ } from '@wordpress/i18n';
  */
 import { Accordion } from '@moderntribe/common/elements';
 import './style.pcss';
-import Duration from './duration/container';
-import SKU from './sku/container';
-import EcommerceOptions from './ecommerce-options/container';
-import MoveDelete from './move-delete/container';
+import IACSetting from './iac-setting/container';
 
-class AdvancedOptions extends Component {
+class AttendeeCollection extends Component {
 	static propTypes = {
 		clientId: PropTypes.string.isRequired,
 		isDisabled: PropTypes.bool,
@@ -36,23 +33,18 @@ class AdvancedOptions extends Component {
 	getHeader = () => (
 		<Fragment>
 			<Dashicon
-				className="tribe-editor__ticket__advanced-options-header-icon"
+				className="tribe-editor__ticket__attendee-collection-header-icon"
 				icon="arrow-down"
 			/>
-			<span className="tribe-editor__ticket__advanced-options-header-text">
-				{ __( 'Advanced Options', 'event-tickets' ) }
+			<span className="tribe-editor__ticket__attendee-collection-header-text">
+				{ __( 'Attendee Collection', 'event-tickets' ) }
 			</span>
 		</Fragment>
 	);
 
 	getContent = () => (
 		<Fragment>
-			<Duration clientId={ this.props.clientId } />
-			<SKU clientId={ this.props.clientId } />
-			<EcommerceOptions clientId={ this.props.clientId } />
-			{ this.props.hasBeenCreated && (
-				<MoveDelete clientId={ this.props.clientId } />
-			) }
+			<IACSetting clientId={ this.props.clientId } />
 		</Fragment>
 	);
 
@@ -60,21 +52,21 @@ class AdvancedOptions extends Component {
 		{
 			accordionId: this.accordionId,
 			content: this.getContent(),
-			contentClassName: 'tribe-editor__ticket__advanced-options-content',
+			contentClassName: 'tribe-editor__ticket__attendee-collection-content',
 			header: this.getHeader(),
 			headerAttrs: { disabled: this.props.isDisabled },
-			headerClassName: 'tribe-editor__ticket__advanced-options-header',
+			headerClassName: 'tribe-editor__ticket__attendee-collection-header',
 		},
 	] );
 
 	render() {
 		return (
 			<Accordion
-				className="tribe-editor__ticket__advanced-options"
+				className="tribe-editor__ticket__attendee-collection"
 				rows={ this.getRows() }
 			/>
 		);
 	}
 }
 
-export default AdvancedOptions;
+export default AttendeeCollection;

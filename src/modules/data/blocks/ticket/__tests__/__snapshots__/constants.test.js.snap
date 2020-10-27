@@ -6,6 +6,8 @@ exports[`Ticket Constants EDD 1`] = `"edd"`;
 
 exports[`Ticket Constants EDD_CLASS 1`] = `"Tribe__Tickets_Plus__Commerce__EDD__Main"`;
 
+exports[`Ticket Constants EDD_ORDERS 1`] = `"edd-orders"`;
+
 exports[`Ticket Constants INDEPENDENT 1`] = `"independent"`;
 
 exports[`Ticket Constants OWN 1`] = `"own"`;
