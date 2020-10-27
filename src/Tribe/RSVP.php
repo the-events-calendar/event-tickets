@@ -1842,6 +1842,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->report_link      = '';
 		$return->show_description = $return->show_description();
 
+		// All tickets are 'none' by default, ET+ will filter to change.
+		$return->iac = 'none';
+
 		$start_date               = get_post_meta( $ticket_id, '_ticket_start_date', true );
 		$end_date                 = get_post_meta( $ticket_id, '_ticket_end_date', true );
 

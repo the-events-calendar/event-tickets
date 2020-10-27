@@ -1571,6 +1571,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$return->end_time         = get_post_meta( $ticket_id, '_ticket_end_time', true );
 		$return->sku              = get_post_meta( $ticket_id, '_sku', true );
 
+		// All tickets are 'none' by default, ET+ will filter to change.
+		$return->iac = 'none';
+
 		// If the quantity sold wasn't set, default to zero
 		$qty_sold = $qty_sold ? $qty_sold : 0;
 
