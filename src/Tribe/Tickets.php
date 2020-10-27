@@ -2985,13 +2985,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
 
 			/**
-			 * Fired once a ticket has been created and added to a post
+			 * Fired once a ticket has been created and added to a post.
 			 *
-			 * @param int $post_id ID of parent "event" post
-			 * @param Tribe__Tickets__Ticket_Object $ticket Ticket object
-			 * @param array $data Submitted post data
+			 * @param int                           $post_id  The ticket parent post ID.
+			 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket that was just added.
+			 * @param array                         $raw_data The ticket data that was used to save.
+			 * @param string                        $class    The Commerce engine class name.
 			 */
-			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data );
+			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data, __CLASS__ );
 
 			$tickets_handler->toggle_manual_update_flag( false );
 
