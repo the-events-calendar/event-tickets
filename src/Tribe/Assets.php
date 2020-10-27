@@ -42,8 +42,8 @@ class Tribe__Tickets__Assets {
 
 		tribe_asset(
 			$tickets_main,
-			'tribe-tickets-form-style',
-			'forms.css',
+			'tribe-tickets-forms-style',
+			'tickets-forms.css',
 			[],
 			null,
 			[
