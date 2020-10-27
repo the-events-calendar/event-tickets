@@ -1864,7 +1864,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->qty_sold( $qty );
 		$return->capacity = tribe_tickets_get_capacity( $ticket_id );
 
-		return $return;
+		/**
+		 * Allow filtering to change ticket data.
+		 *
+		 * @since TBD
+		 *
+		 * @param Tribe__Tickets__Ticket_Object $ticket    The ticket object.
+		 * @param int                           $post_id   The ticket parent post ID.
+		 * @param int                           $ticket_id The ticket ID.
+		 */
+		return apply_filters( 'tribe_tickets_rsvp_get_ticket', $return, $event_id, $ticket_id );
 	}
 
 	/**
