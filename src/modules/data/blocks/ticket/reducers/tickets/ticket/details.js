@@ -26,6 +26,7 @@ export const DEFAULT_STATE = {
 	description: '',
 	price: '',
 	sku: '',
+	iac: '',
 	startDate: momentUtil.toDatabaseDate( currentMoment ),
 	startDateInput,
 	startDateMoment: currentMoment,
@@ -61,6 +62,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				sku: action.payload.sku,
+			};
+		case types.SET_TICKET_IAC_SETTING:
+			return {
+				...state,
+				iac: action.payload.iac,
 			};
 		case types.SET_TICKET_START_DATE:
 			return {
