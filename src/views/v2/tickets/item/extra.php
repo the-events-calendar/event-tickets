@@ -14,6 +14,7 @@
  *
  * @version TBD
  *
+ * If RSVP:
  * @var Tribe__Tickets__Editor__Template   $this                Template object.
  * @var null|bool                          $is_modal            [Global] Whether the modal is enabled.
  * @var int                                $post_id             [Global] The current Post ID to which tickets are attached.
@@ -27,8 +28,10 @@
  * @var bool                               $is_sale_past        [Global] True if tickets' sale dates are all in the past.
  * @var bool                               $is_sale_future      [Global] True if no ticket sale dates have started yet.
  * @var Tribe__Tickets__Commerce__Currency $currency            [Global] Tribe Currency object.
- * @var Tribe__Tickets__Ticket_Object      $ticket              The Ticket Object
- * @var int                                $key                 Ticket Item index
+ * @var Tribe__Tickets__Ticket_Object      $ticket              The ticket object.
+ * @var int                                $key                 Ticket item index.
+ *
+ * If Ticket, some of the above but not all.
  */
 
 $has_suffix = ! empty( $ticket->price_suffix );
@@ -41,7 +44,6 @@ $classes = [
 $context = [
 	'ticket'      => $ticket,
 	'key'         => $key,
-	'provider_id' => $provider_id,
 ]
 
 ?>

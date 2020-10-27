@@ -14,9 +14,13 @@
  *
  * @version TBD
  *
- * @var WP_Post|int                        $post_id     The post object or ID.
- * @var string                             $provider_id The tickets provider class name.
- * @var Tribe__Tickets__Commerce__Currency $currency
+ * @var WP_Post|int                        $post_id             The post object or ID.
+ * @var Tribe__Tickets__Tickets            $provider            The tickets provider class.
+ * @var string                             $provider_id         The tickets provider class name.
+ * @var Tribe__Tickets__Ticket_Object[]    $tickets             List of tickets.
+ * @var Tribe__Tickets__Ticket_Object[]    $tickets_on_sale     List of tickets on sale.
+ * @var Tribe__Tickets__Commerce__Currency $currency            The Currency instance.
+ * @var boolean                            $is_mini             Context of template.
  */
 
 ?>
@@ -25,6 +29,6 @@
 		<?php echo esc_html_x( 'Total:', 'Total selected tickets price.', 'event-tickets' ); ?>
 	</span>
 	<span class="tribe-tickets__tickets-footer-total-wrap">
-		<?php echo $currency->get_formatted_currency_with_symbol( 0, $post_id, $provider_id ); ?>
+		<?php echo $currency->get_formatted_currency_with_symbol( 0, $post_id, $provider->class_name ); ?>
 	</span>
 </div>

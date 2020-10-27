@@ -24,20 +24,15 @@
  * @var WP_Post|int                        $post_id         The post object or ID.
  * @var Tribe__Tickets__Tickets            $provider        The tickets provider class.
  * @var bool                               $is_mini         True if it's in mini cart context.
+ * @var int                                $max_at_a_time   The maximum quantity able to be purchased in a single Add to Cart action.
  */
 
 if ( empty( $ticket ) ) {
 	return;
 }
 
-$context = [
-	'ticket'      => $ticket,
-	'key'         => $key,
-	'provider_id' => $provider->class_name,
-];
+$this->template( 'v2/tickets/item/content/title' );
 
-$this->template( 'v2/tickets/item/content/title', $context );
+$this->template( 'v2/tickets/item/content/description' );
 
-$this->template( 'v2/tickets/item/content/description', $context );
-
-$this->template( 'v2/tickets/item/extra', $context );
+$this->template( 'v2/tickets/item/extra' );
