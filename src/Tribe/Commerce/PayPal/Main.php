@@ -1677,10 +1677,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$find_by_args['ticket_id'] = (array) $ticket_id;
 		}
 
-		$orders = Tribe__Tickets__Commerce__PayPal__Order::find_by( $find_by_args, [
-			// Get just the paypal ID var we need.
-			'txn_id',
-		] );
+		$orders = Tribe__Tickets__Commerce__PayPal__Order::find_by(
+			$find_by_args,
+			[
+				// Get just the paypal ID var we need.
+				'txn_id',
+			]
+		);
 
 		if ( ! $orders ) {
 			return [];
@@ -1711,10 +1714,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$name  = get_post_meta( $order_id, $this->full_name, true );
 		$email = get_post_meta( $order_id, $this->email, true );
 
-		$order = Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id( $order_id, [
-			'address_name',
-			'payer_email',
-		] );
+		$order = Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id(
+			$order_id,
+			[
+				'address_name',
+				'payer_email',
+			]
+		);
 
 		if ( $order ) {
 			$name  = $order->get_meta( 'address_name' );
@@ -2841,9 +2847,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		) {
 			$purchase_time = Tribe__Utils__Array::get( $attendee, 'purchase_time', false );
 
-			$order = Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id( $attendee_id, [
-				// Get no meta fields.
-			] );
+			$order = Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id(
+				$attendee_id,
+				[
+					// Get no meta fields.
+				]
+			);
 
 			if ( false !== $order ) {
 				$purchase_time = $order->get_creation_date();
