@@ -28,11 +28,7 @@ $tickets_handler = tribe( 'tickets.handler' );
 
 $ticket_data = $tickets_handler->get_object_connections( $ticket->ID );
 
-$event_id = $ticket_data->event;
-
-/** @var Tribe__Tickets__RSVP $rsvp */
-$rsvp = tribe( 'tickets.rsvp' );
-
+$event_id   = $ticket_data->event;
 $must_login = $this->get( 'must_login' );
 ?>
 <form
