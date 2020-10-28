@@ -24,7 +24,6 @@
  * @var int                              $post_id         The Post ID the RSVP is attached to.
  */
 $going = $this->get( 'get' );
-//$going = ! empty( $_GET[ 'going' ] ) ? sanitize_text_field( $_GET[ 'going' ] ) : '';
 ?>
 <div class="tribe-block__rsvp__content">
 
