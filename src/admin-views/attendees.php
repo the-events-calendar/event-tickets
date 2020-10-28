@@ -111,6 +111,11 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', is_admin(), $
 								<strong><?php echo esc_html( $ticket_name ) ?>:&nbsp;</strong><?php
 								echo esc_html( tribe_tickets_get_ticket_stock_message( $ticket ) );
 
+								/**
+								 * Adds an entry point to inject additional info for ticket.
+								 *
+								 * @since TBD
+								 */
 								$this->set( 'ticket_item_for_overview', $ticket );
 								$this->do_entry_point( 'overview_section_after_ticket_name' );
 								?>
