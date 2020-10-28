@@ -14,6 +14,7 @@
  * @since   4.11.3 Reformat a bit of the code around the button - no functional changes.
  * @since   4.12.1 Account for empty post type object, such as if post type got disabled.
  * @since   4.12.3 Account for inactive ticket providers.
+ * @since   TBD Add filter to control the re-sending emails option on email alteration.
  *
  * @version 4.12.3
  */
@@ -45,6 +46,15 @@ if ( $provider ) {
 $user_has_tickets           = $view->has_ticket_attendees( $event_id, $user_id );
 $user_has_rsvp              = $rsvp->get_attendees_count_going_for_user( $event_id, $user_id );
 $tribe_my_tickets_have_meta = false;
+
+/**
+ * This filter allows the admin to control the re-send email option when an attendee's email is updated.
+ *
+ * @param bool Defaults to `true`.
+ *
+ * @since TBD
+ */
+$allow_resending_email = apply_filters( 'tribe_tickets_my_tickets_allow_email_resend_on_attendee_email_update', true );
 
 /**
  * Display a notice if the user doesn't have tickets
@@ -108,6 +118,7 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 		class="tribe-tickets__tickets-page-wrapper"
 		data-post-id="<?php echo esc_attr( $event_id ); ?>"
 		data-provider="<?php echo esc_attr( $provider ); ?>"
+		data-resending-allowed="<?php echo esc_attr( $allow_resending_email ); ?>"
 	>
 
 		<form method="post" autocomplete="off">
