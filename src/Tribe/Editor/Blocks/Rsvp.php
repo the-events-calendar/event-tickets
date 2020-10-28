@@ -168,8 +168,8 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 		 *
 		 * @since 4.11.1
 		 *
-		 * @param int $post_id   Event ID.
 		 * @param int $threshold Stock threshold to trigger display of "# tickets left" text.
+		 * @param int $post_id   Event ID.
 		 */
 		$threshold = absint( apply_filters( 'tribe_display_rsvp_block_tickets_left_threshold', $threshold, $post_id ) );
 
