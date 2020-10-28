@@ -49,9 +49,9 @@ $privacy = tribe( 'tickets.privacy' );
 $tickets_handler = tribe( 'tickets.handler' );
 
 $context = [
-	'ticket'    => $ticket,
-	'key'       => $this->get( 'key' ),
-	'privacy'   => $privacy,
+	'ticket'        => $ticket,
+	'key'           => $this->get( 'key' ),
+	'privacy'       => $privacy,
 	'max_at_a_time' => $tickets_handler->get_ticket_max_purchase( $ticket->ID ),
 ];
 
