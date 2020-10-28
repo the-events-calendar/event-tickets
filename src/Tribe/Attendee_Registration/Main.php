@@ -243,13 +243,16 @@ class Tribe__Tickets__Attendee_Registration__Main {
 			return false;
 		}
 
+		/** @var Tribe__Tickets__Data_API $data_api */
+		$data_api = tribe( 'tickets.data_api' );
+
 		foreach ( $tickets as $ticket ) {
 
 			if ( ! isset( $ticket['id'] ) ) {
 				continue;
 			}
 
-			if ( tribe( 'tickets.data_api' )->ticket_has_meta_fields( $ticket['id'] ) ) {
+			if ( $data_api->ticket_has_meta_fields( $ticket['id'] ) ) {
 				return true;
 			}
 		}

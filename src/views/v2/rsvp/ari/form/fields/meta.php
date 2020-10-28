@@ -1,7 +1,6 @@
 <?php
 /**
- * Block: RSVP ARi
- * Form meta fields.
+ * This template renders the RSVP Attendee Registration form fields.
  *
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/rsvp/ari/form/fields/meta.php
@@ -11,22 +10,14 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 5.0.0
+ * @since TBD Updated to use the has_meta_enabled logic check and removed the old filter.
  *
- * @version 5.0.0
+ * @version TBD
+ *
+ * @var Tribe__Tickets__Ticket_Object $rsvp The RSVP ticket object.
  */
 
-/**
- * Filter to check if the RSVP has meta.
- *
- * @since 5.0.0
- *
- * @param Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
- *
- * @return bool
- */
-$has_meta = apply_filters( 'tribe_tickets_rsvp_has_meta', $rsvp, false );
-
-if ( empty( $has_meta ) ) {
+if ( ! $rsvp->has_meta_enabled() ) {
 	return;
 }
 

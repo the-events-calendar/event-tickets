@@ -94,6 +94,10 @@ describe( 'Ticket actions', () => {
 			expect( actions.setTicketSku( clientId, 'my-sku' ) ).toMatchSnapshot();
 		} );
 
+		test( 'set ticket iac setting', () => {
+			expect( actions.setTicketIACSetting( clientId, 'allowed' ) ).toMatchSnapshot();
+		} );
+
 		test( 'set ticket start date', () => {
 			expect( actions.setTicketStartDate( clientId, '2018-01-01' ) ).toMatchSnapshot();
 		} );
@@ -161,6 +165,10 @@ describe( 'Ticket actions', () => {
 
 		test( 'set ticket temp sku', () => {
 			expect( actions.setTicketTempSku( clientId, 'my-sku' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket temp iac setting', () => {
+			expect( actions.setTicketTempIACSetting( clientId, 'allowed' ) ).toMatchSnapshot();
 		} );
 
 		test( 'set ticket temp start date', () => {

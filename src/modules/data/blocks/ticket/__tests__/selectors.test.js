@@ -246,6 +246,10 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.getTicketSku( state, ownProps ) ).toMatchSnapshot();
 		} );
 
+		test( 'getTicketIACSetting', () => {
+			expect( selectors.getTicketIACSetting( state, ownProps ) ).toMatchSnapshot();
+		} );
+
 		test( 'getTicketStartDate', () => {
 			expect( selectors.getTicketStartDate( state, ownProps ) ).toMatchSnapshot();
 		} );
@@ -362,6 +366,10 @@ describe( 'Ticket block selectors', () => {
 
 		test( 'getTicketTempSku', () => {
 			expect( selectors.getTicketTempSku( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempIACSetting', () => {
+			expect( selectors.getTicketTempIACSetting( state, ownProps ) ).toMatchSnapshot();
 		} );
 
 		test( 'getTicketTempStartDate', () => {

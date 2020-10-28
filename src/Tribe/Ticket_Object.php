@@ -105,6 +105,15 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $sku;
 
 		/**
+		 * Holds the IAC setting for the ticket.
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $iac = 'none';
+
+		/**
 		 * Holds the price suffix.
 		 *
 		 * @since 4.12.0
@@ -1080,6 +1089,24 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 			return $this->event_id;
 		}
+
+		/**
+		 * Check if the ticket has meta enabled.
+		 *
+		 * @since TBD
+		 *
+		 * @return bool Whether the ticket has meta enabled.
+		 */
+		public function has_meta_enabled() {
+			/**
+			 * Filters if the ticket has meta or not.
+			 *
+			 * @param bool $has_meta Whether the ticket has meta enabled.
+			 * @param int  $ticket_id The ticket ID.
+			 */
+			return (bool) apply_filters( 'tribe_tickets_has_meta_enabled', false, $this->ID );
+		}
+
 	}
 
 }

@@ -11,12 +11,13 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.11.0
+ * @since TBD Add `event-tickets` class to the wrapper.
  *
+ * @version TBD
  */
 
 ?>
-<div class="tribe-common tribe-tickets__registration">
+<div class="tribe-common event-tickets tribe-tickets__registration">
 
 	<?php $this->template( 'blocks/tickets/registration/summary/content' ); ?>
 	<?php $this->template( 'blocks/tickets/registration/attendee/content' ); ?>

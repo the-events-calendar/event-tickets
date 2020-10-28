@@ -313,14 +313,6 @@ extends Tribe__Editor__Blocks__Abstract {
 			[],
 			null
 		);
-
-		tribe_asset(
-			$plugin,
-			'tribe-tickets-form-style',
-			'forms.css',
-			[ 'tribe-tickets-rsvp-style' ],
-			null
-		);
 	}
 
 	/**

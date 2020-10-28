@@ -12,8 +12,9 @@
  * @since 4.10.9 Add Filter to show an event/post tickets on AR Page
  * @since 4.11.0 Add docblocks, pass missing 'provider' arg to registration/button-cart template, and add action hooks.
  * @since 4.12.3 This template has been marked as deprecated.
+ * @since TBD Add `event-tickets` class to the wrapper.
  *
- * @version 4.12.3
+ * @version TBD
  *
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */
@@ -33,21 +34,23 @@ $passed_provider_class = $this->get_form_class( $passed_provider );
  */
 do_action( 'tribe_tickets_registration_content_before_all_events', $passed_provider, $passed_provider_class, $events );
 
-// If there are no events with tickets in cart, print the empty cart template
+// If there are no events with tickets in cart, print the empty cart template.
 if ( empty( $events ) ) {
 	$this->template( 'registration/cart-empty' );
 	return;
 }
 
 ?>
-<div class="tribe-common tribe-tickets__registration">
+<div class="tribe-common event-tickets tribe-tickets__registration">
 	<div class="tribe-tickets__registration__actions">
-	<?php $this->template(
-		'registration/button-cart',
-		[
-			'provider' => $passed_provider,
-		]
-	); ?>
+	<?php
+		$this->template(
+			'registration/button-cart',
+			[
+				'provider' => $passed_provider,
+			]
+		);
+	?>
 	</div>
 	<?php
 	foreach ( $events as $event_id => $tickets ) :
@@ -58,7 +61,7 @@ if ( empty( $events ) ) {
 		/**
 		 * Filter to show an event/post tickets on Attendee Registration page regardless if they are enabled.
 		 *
-		 * @param boolean $show_tickets Rrue or false to show tickets for an event.
+		 * @param boolean $show_tickets True or false to show tickets for an event.
 		 * @param array   $tickets      An array of ticket products.
 		 * @param int     $event_id     The event/post ID.
 		 *
@@ -121,7 +124,8 @@ if ( empty( $events ) ) {
 
 	<?php endforeach; ?>
 
-	<?php $this->template(
+	<?php
+	$this->template(
 		'registration/button-checkout',
 		[
 			'checkout_url'           => $checkout_url,
@@ -140,4 +144,5 @@ if ( empty( $events ) ) {
 	 * @param array  $events                The non-empty array of events.
 	 */
 	do_action( 'tribe_tickets_registration_content_after_all_events', $passed_provider, $passed_provider_class, $events );
-?></div>
+	?>
+</div>

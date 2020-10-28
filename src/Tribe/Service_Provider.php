@@ -32,6 +32,9 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 		// Tribe Data API Init
 		$this->container->singleton( 'tickets.data_api', 'Tribe__Tickets__Data_API' );
 
+		// Ticket view handler.
+		$this->container->singleton( 'tickets.tickets-view', Tribe__Tickets__Tickets_View::class );
+
 		// View links, columns and screen options
 		$this->container->singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', [ 'hook' ] );
 		$this->container->singleton( 'tickets.admin.columns', 'Tribe__Tickets__Admin__Columns', [ 'hook' ] );

@@ -140,6 +140,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public $ticket_object = '';
 
+		/**
+		 * The name of the meta key used to store whether an attendee is subscribed to updates.
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $attendee_subscribed = '_tribe_tickets_subscribed';
+
 		/* Deprecated vars */
 
 		/**
@@ -264,6 +273,24 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $attendee_optout_key = '';
 
 		/**
+		 * Meta key that holds the full name of the ticket attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $full_name = '_tribe_tickets_full_name';
+
+		/**
+		 * Meta key that holds the email of the ticket attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $email = '_tribe_tickets_email';
+
+		/**
 		 * The provider used for Attendees and Tickets ORM.
 		 *
 		 * @var string
@@ -295,15 +322,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function get_ticket_reports_link( $post_id_deprecated, $ticket_id ) {}
 
 		/**
-		 * Returns a single ticket
+		 * Returns a single ticket.
 		 *
-		 * @abstract
+		 * @param int $post_id   ID of parent "event" post.
+		 * @param int $ticket_id ID of ticket post.
 		 *
-		 * @param int $post_id ID of parent "event" post
-		 * @param int $ticket_id ID of ticket post
-		 * @return mixed
+		 * @return Tribe__Tickets__Ticket_Object|null
 		 */
-		public function get_ticket( $post_id, $ticket_id ) {}
+		public function get_ticket( $post_id, $ticket_id ) {
+			return null;
+		}
 
 		/**
 		 * Retrieve the Query args to fetch all the Tickets.
@@ -1890,15 +1918,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			wp_enqueue_script( 'wp-util-not-in-footer' );
 
+			// Check whether we use v1 or v2. We need to update this when we deprecate tickets v1.
+			$tickets_js = tribe_tickets_new_views_is_enabled() ? 'v2/tickets-block.js' : 'tickets-block.js';
+
 			tribe_asset(
 				$plugin,
-				'tribe_tickets_frontend_tickets',
-				'tickets-block.js',
-				[ 'jquery', 'jquery-ui-datepicker', 'wp-util-not-in-footer', 'wp-i18n' ],
+				'tribe-tickets-block',
+				$tickets_js,
+				[
+					'jquery',
+					'tribe-common',
+					'jquery-ui-datepicker',
+					'wp-util-not-in-footer',
+					'wp-i18n',
+				],
 				null,
 				[
-					'type'         => 'js',
-					'localize'     => [
+					'type'     => 'js',
+					'groups'   => [ 'tribe-tickets-block-assets' ],
+					'localize' => [
 						[
 							'name' => 'TribeTicketOptions',
 							'data' => [ __CLASS__, 'get_asset_localize_data_for_ticket_options' ],
@@ -1925,7 +1963,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				]
 			);
 
-			tribe_asset_enqueue( 'tribe_tickets_frontend_tickets' );
+			tribe_asset_enqueue_group( 'tribe-tickets-block-assets' );
 
 			self::$frontend_script_enqueued = true;
 		}
@@ -1969,7 +2007,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$data['tickets'][ $ticket->ID ] = $ticket_data;
 			}
 
-			wp_localize_script( 'tribe_tickets_frontend_tickets', 'tribe_tickets_stock_data', $data );
+			wp_localize_script( 'tribe-tickets-block', 'tribe_tickets_stock_data', $data );
 		}
 
 		/**
@@ -2965,13 +3003,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
 
 			/**
-			 * Fired once a ticket has been created and added to a post
+			 * Fired once a ticket has been created and added to a post.
 			 *
-			 * @param int $post_id ID of parent "event" post
-			 * @param Tribe__Tickets__Ticket_Object $ticket Ticket object
-			 * @param array $data Submitted post data
+			 * @param int                           $post_id  The ticket parent post ID.
+			 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket that was just added.
+			 * @param array                         $raw_data The ticket data that was used to save.
+			 * @param string                        $class    The Commerce engine class name.
 			 */
-			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data );
+			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data, __CLASS__ );
 
 			$tickets_handler->toggle_manual_update_flag( false );
 
@@ -3263,6 +3302,32 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			wp_safe_redirect( $url );
 			exit;
+		}
+
+		/**
+		 * Get list of tickets in cart for a specific provider.
+		 *
+		 * @since TBD
+		 *
+		 * @param null|string|false $provider The provider slug or false if no provider, leave as null to detect from page.
+		 *
+		 * @return array List of tickets in cart for the provider.
+		 */
+		public static function get_tickets_in_cart_for_provider( $provider = null ) {
+			if ( null === $provider ) {
+				$provider = tribe_get_request_var( 'provider', false );
+			}
+
+			/**
+			 * Filter to add/remove tickets from the global cart.
+			 *
+			 * @since 4.9
+			 * @since 4.11.0 Added $provider to allow context of current provider.
+			 *
+			 * @param array        $tickets_in_cart The array containing the cart elements. Format array( 'ticket_id' => 'quantity' ).
+			 * @param string|false $provider        Current ticket provider or false if not set.
+			 */
+			return (array) apply_filters( 'tribe_tickets_tickets_in_cart', [], $provider );
 		}
 
 		/**
