@@ -16,6 +16,13 @@ class TicketsBlock_TestCase extends WPTestCase {
 	use CapacityMatrix;
 
 	/**
+	 * Whether to use v2 views.
+	 *
+	 * @var bool
+	 */
+	protected $use_v2 = false;
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function setUp() {
@@ -35,6 +42,14 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		// Reset the template singleton.
 		tribe_singleton( 'tickets.editor.template', new Template );
+
+		if ( $this->use_v2 ) {
+			add_filter( 'tribe_tickets_new_views_is_enabled', '__return_true' );
+			add_filter( 'tribe_tickets_rsvp_new_views_is_enabled', '__return_true' );
+		} else {
+			add_filter( 'tribe_tickets_new_views_is_enabled', '__return_false' );
+			add_filter( 'tribe_tickets_rsvp_new_views_is_enabled', '__return_false' );
+		}
 
 		/** @var \wpdb $wpdb */
 		global $wpdb;
