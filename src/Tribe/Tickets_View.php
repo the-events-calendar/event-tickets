@@ -11,16 +11,9 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @static
 	 * @return self
-	 *
 	 */
 	public static function instance() {
-		static $instance;
-
-		if ( ! $instance instanceof self ) {
-			$instance = new self;
-		}
-
-		return $instance;
+		return tribe( 'tickets.tickets-view' );
 	}
 
 	/**

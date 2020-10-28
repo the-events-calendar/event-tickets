@@ -16,7 +16,14 @@ class FlagsCest extends BaseRestCest {
 	private $provider = 'tribe-commerce';
 
 	public function should_flag_posts_that_have_tickets_assigned_as_tickets( \Restv1Tester $I ) {
-		tribe_update_option( 'ticket-enabled-post-types', [ 'post' ] );
+		$options = $I->grabOptionFromDatabase( \Tribe__Main::OPTIONNAME );
+
+		$options['ticket-enabled-post-types'] = [
+			'post',
+		];
+
+		$I->haveOptionInDatabase( \Tribe__Main::OPTIONNAME, $options );
+
 		$ticketed_post_id   = $I->havePostInDatabase();
 		$unticketed_post_id = $I->havePostInDatabase();
 		$ticket_id          = $this->create_paypal_ticket_basic( $ticketed_post_id, 1 );
@@ -40,7 +47,14 @@ class FlagsCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_not_flag_disabled_posts_that_have_tickets_assigned_as_ticketed( \Restv1Tester $I ) {
-		tribe_update_option( 'ticket-enabled-post-types', [ 'page' ] );
+		$options = $I->grabOptionFromDatabase( \Tribe__Main::OPTIONNAME );
+
+		$options['ticket-enabled-post-types'] = [
+			'page',
+		];
+
+		$I->haveOptionInDatabase( \Tribe__Main::OPTIONNAME, $options );
+
 		$ticketed_post_id   = $I->havePostInDatabase();
 		$unticketed_post_id = $I->havePostInDatabase();
 		$ticket_id          = $this->create_paypal_ticket_basic( $ticketed_post_id, 1 );
@@ -69,7 +83,14 @@ class FlagsCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_flag_events_that_have_tickets_assigned_as_ticketed( \Restv1Tester $I ) {
-		tribe_update_option( 'ticket-enabled-post-types', [ 'tribe_events' ] );
+		$options = $I->grabOptionFromDatabase( \Tribe__Main::OPTIONNAME );
+
+		$options['ticket-enabled-post-types'] = [
+			'tribe_events',
+		];
+
+		$I->haveOptionInDatabase( \Tribe__Main::OPTIONNAME, $options );
+
 		$ticketed_event_id   = $I->havePostInDatabase( $this->event_data() );
 		$unticketed_event_id = $I->havePostInDatabase( $this->event_data() );
 		$ticket_id           = $this->create_paypal_ticket_basic( $ticketed_event_id, 1 );
@@ -108,7 +129,14 @@ class FlagsCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_not_flag_disabled_that_have_tickets_as_ticketed( \Restv1Tester $I ) {
-		tribe_update_option( 'ticket-enabled-post-types', [ 'page' ] );
+		$options = $I->grabOptionFromDatabase( \Tribe__Main::OPTIONNAME );
+
+		$options['ticket-enabled-post-types'] = [
+			'page',
+		];
+
+		$I->haveOptionInDatabase( \Tribe__Main::OPTIONNAME, $options );
+
 		$ticketed_event_id   = $I->havePostInDatabase( $this->event_data() );
 		$unticketed_event_id = $I->havePostInDatabase( $this->event_data() );
 		$ticket_id           = $this->create_paypal_ticket_basic( $ticketed_event_id, 1 );
@@ -117,17 +145,12 @@ class FlagsCest extends BaseRestCest {
 
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
-		$response = json_decode( $I->grabResponse(), true );
-		$I->assertArrayNotHasKey( 'ticketed', $response );
-
-		// For some reason the ticket-enabled-post-types option gets reset on the subsequent request.
-		return;
+		$I->seeResponseContainsJson( [ 'id' => $ticketed_event_id, 'ticketed' => false ] );
 
 		$I->sendGET( $this->tec_rest_url . "events/{$unticketed_event_id}" );
 
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
-		$response = json_decode( $I->grabResponse(), true );
-		$I->assertArrayNotHasKey( 'ticketed', $response );
+		$I->seeResponseContainsJson( [ 'id' => $unticketed_event_id, 'ticketed' => false ] );
 	}
 }
