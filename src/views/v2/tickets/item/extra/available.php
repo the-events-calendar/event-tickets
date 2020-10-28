@@ -40,7 +40,7 @@ $context = [
 	'ticket'          => $ticket,
 	'show_unlimited'  => (bool) $show_unlimited,
 	'available_count' => $available_count,
-	'is_unlimited'    => - 1 === $available_count,
+	'is_unlimited'    => -1 === $available_count,
 ];
 ?>
 
