@@ -271,7 +271,7 @@
 				/** @var Tribe__Tickets__Tickets_Handler $handler */
 				$handler = tribe( 'tickets.handler' );
 
-				$header_id  = get_post_meta( $ticket['event_id'], $handler->key_image_header, true );
+				$header_id = get_post_meta( $ticket['event_id'], $handler->key_image_header, true );
 
 				$header_img = false;
 

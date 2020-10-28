@@ -53,7 +53,7 @@ $must_login = $this->get( 'must_login' );
 		<?php $this->template( 'blocks/rsvp/form/error' ); ?>
 
 		<?php if ( $must_login ) : ?>
-			<?php $this->template( 'blocks/rsvp/form/submit-login', [ 'event_id' => $event_id, ] ); ?>
+			<?php $this->template( 'blocks/rsvp/form/submit-login', [ 'event_id' => $event_id ] ); ?>
 		<?php else : ?>
 			<?php $this->template( 'blocks/rsvp/form/details' ); ?>
 			<?php $this->template( 'blocks/rsvp/form/attendee-meta' ); ?>
