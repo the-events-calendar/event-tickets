@@ -54,7 +54,7 @@ $tribe_my_tickets_have_meta = false;
  *
  * @since TBD
  */
-$allow_resending_email = apply_filters( 'tribe_tickets_my_tickets_allow_email_resend_on_attendee_email_update', true );
+$allow_resending_email = (int) apply_filters( 'tribe_tickets_my_tickets_allow_email_resend_on_attendee_email_update', true );
 
 /**
  * Display a notice if the user doesn't have tickets
