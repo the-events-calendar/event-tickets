@@ -45,7 +45,7 @@
 		&& ! $must_login
 	) :
 		// Can't escape, contains HTML.
-		echo $this->template( 'blocks/rsvp/form/form', [], false );
+		$this->template( 'blocks/rsvp/form/form' );
 	endif;
 	?>
 </div>
