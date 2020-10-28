@@ -1090,19 +1090,19 @@ class Tribe__Tickets__Tickets_View {
 
 			// Output order links / view link if we haven't already (for RSVPs).
 			if ( ! $already_rendered ) {
-				$before_content = $template->template( 'blocks/attendees/order-links', [], false );
+				$before_content = $template->template( 'blocks/attendees/order-links', [], $echo );
 
 				if ( empty( $before_content ) ) {
-					$before_content = $template->template( 'blocks/attendees/view-link', [], false );
+					$before_content = $template->template( 'blocks/attendees/view-link', [], $echo );
 				}
 
 				add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
 			}
 
-			return $before_content . $template->template( 'v2/tickets', $args, $echo );
+			return $before_content . $template->template( 'v2/tickets', [], $echo );
 		}
 
-		return $template->template( 'blocks/tickets', $args, $echo );
+		return $template->template( 'blocks/tickets', [], $echo );
 	}
 
 	/**
@@ -1211,7 +1211,7 @@ class Tribe__Tickets__Tickets_View {
 		) {
 			// Enqueue new assets.
 			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
-			tribe_asset_enqueue( 'tribe-tickets-form-style' );
+			tribe_asset_enqueue( 'tribe-tickets-forms-style' );
 			// @todo: Remove this once we solve the common breakpoints vs container based.
 			tribe_asset_enqueue( 'tribe-common-responsive' );
 
@@ -1259,7 +1259,7 @@ class Tribe__Tickets__Tickets_View {
 			// Enqueue new assets.
 			tribe_asset_enqueue_group( 'tribe-tickets-rsvp' );
 			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
-			tribe_asset_enqueue( 'tribe-tickets-form-style' );
+			tribe_asset_enqueue( 'tribe-tickets-forms-style' );
 			// @todo: Remove this once we solve the common breakpoints vs container based.
 			tribe_asset_enqueue( 'tribe-common-responsive' );
 

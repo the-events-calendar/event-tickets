@@ -42,7 +42,7 @@ if (
 	return;
 }
 
-$ticket_details_id  = 'tribe__details__content' . ( true === $is_modal ) ?: '__modal';
+$ticket_details_id  = 'tribe__details__content' . ( empty( $is_modal ) ? '' : '__modal' );
 $ticket_details_id .= '--' . $ticket->ID;
 ?>
 <div class="tribe-tickets__tickets-item-details-summary">

@@ -124,6 +124,14 @@ export const setTicketSku = ( clientId, sku ) => ( {
 	},
 } );
 
+export const setTicketIACSetting = ( clientId, iac ) => ( {
+	type: types.SET_TICKET_IAC_SETTING,
+	payload: {
+		clientId,
+		iac,
+	},
+} );
+
 export const setTicketStartDate = ( clientId, startDate ) => ( {
 	type: types.SET_TICKET_START_DATE,
 	payload: {
@@ -253,6 +261,14 @@ export const setTicketTempSku = ( clientId, sku ) => ( {
 	payload: {
 		clientId,
 		sku,
+	},
+} );
+
+export const setTicketTempIACSetting = ( clientId, iac ) => ( {
+	type: types.SET_TICKET_TEMP_IAC_SETTING,
+	payload: {
+		clientId,
+		iac,
 	},
 } );
 
