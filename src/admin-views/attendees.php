@@ -112,7 +112,7 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', is_admin(), $
 								echo esc_html( tribe_tickets_get_ticket_stock_message( $ticket ) );
 
 								$this->set( 'ticket_item_for_overview', $ticket );
-								$this->do_entry_point( 'after_ticket_name' );
+								$this->do_entry_point( 'overview_section_after_ticket_name' );
 								?>
 							</li>
 						<?php } ?>
