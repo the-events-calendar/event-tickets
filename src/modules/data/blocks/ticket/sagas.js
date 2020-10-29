@@ -165,7 +165,9 @@ export function* setTicketInitialState( action ) {
 
 	const isEvent = yield call( isTribeEventPostType );
 
+	// Only run this on events post type.
 	if ( isEvent && window.tribe.events ) {
+		// This try-catch may be redundant given the above if statement.
 		try {
 			// NOTE: This requires TEC to be installed, if not installed, do not set an end date
 			const eventStart = yield select( tribe.events.data.blocks.datetime.selectors.getStart ); // Ticket purchase window should end when event starts
@@ -927,6 +929,8 @@ export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ){
 		const isSyncedToEventStart = yield call( [ tempEndMoment, 'isSame' ], prevEventStartMoment, 'minute' );
 		const isEvent = yield call( isTribeEventPostType );
 
+		// This if statement may be redundant given the try-catch statement above.
+		// Only run this on events post type.
 		if ( isEvent && window.tribe.events && isNotManuallyEdited && isSyncedToEventStart ) {
 			const eventStart = yield select( window.tribe.events.data.blocks.datetime.selectors.getStart );
 			const {
