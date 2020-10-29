@@ -98,6 +98,24 @@ class Tribe__Tickets__Assets {
 					],
 				]
 			);
+
+			// Tribe tickets page.
+			tribe_asset(
+				$tickets_main,
+				'tribe-tickets-page',
+				'v2/tickets-page.js',
+				[
+					'jquery',
+					'tribe-common',
+				],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-page-assets',
+					],
+				]
+			);
+
 		} else {
 
 			// Tickets registration page scripts.

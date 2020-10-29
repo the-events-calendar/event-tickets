@@ -397,6 +397,8 @@ class Tribe__Tickets__Tickets_View {
 			return $content;
 		}
 
+		tribe_asset_enqueue_group( 'tribe-tickets-page-assets' );
+
 		ob_start();
 
 		include Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders.php' );
@@ -461,6 +463,8 @@ class Tribe__Tickets__Tickets_View {
 		if ( 'tickets' !== $display && ! $this->is_edit_page() ) {
 			return $old_file;
 		}
+
+		tribe_asset_enqueue_group( 'tribe-tickets-page-assets' );
 
 		// Fetch the correct file using the Tickets Hierarchy
 		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders.php' );
