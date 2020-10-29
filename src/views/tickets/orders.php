@@ -118,7 +118,7 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 		class="tribe-tickets__tickets-page-wrapper"
 		data-post-id="<?php echo esc_attr( $event_id ); ?>"
 		data-provider="<?php echo esc_attr( $provider ); ?>"
-		data-resending-allowed="<?php echo esc_attr( $allow_resending_email ); ?>"
+		data-attendee-resend-email="<?php echo esc_attr( $allow_resending_email ); ?>"
 	>
 
 		<form method="post" autocomplete="off">
