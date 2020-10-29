@@ -14,6 +14,7 @@
  * @since   4.11.3 Reformat a bit of the code around the button - no functional changes.
  * @since   4.12.1 Account for empty post type object, such as if post type got disabled.
  * @since   4.12.3 Account for inactive ticket providers.
+ * @since   TBD Add filter to control the re-sending emails option on email alteration.
  *
  * @version 4.12.3
  */
@@ -45,6 +46,15 @@ if ( $provider ) {
 $user_has_tickets           = $view->has_ticket_attendees( $event_id, $user_id );
 $user_has_rsvp              = $rsvp->get_attendees_count_going_for_user( $event_id, $user_id );
 $tribe_my_tickets_have_meta = false;
+
+/**
+ * This filter allows the admin to control the re-send email option when an attendee's email is updated.
+ *
+ * @param bool Defaults to `true`.
+ *
+ * @since TBD
+ */
+$allow_resending_email = (int) apply_filters( 'tribe_tickets_my_tickets_allow_email_resend_on_attendee_email_update', true );
 
 /**
  * Display a notice if the user doesn't have tickets
@@ -80,7 +90,6 @@ $post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post
 
 $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type;
 ?>
-
 <div id="tribe-events-content" class="tribe-events-single">
 	<p class="tribe-back">
 		<a href="<?php echo esc_url( get_permalink( $event_id ) ); ?>">
@@ -91,7 +100,7 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 		</a>
 	</p>
 
-	<?php if ( $is_event_page ): ?>
+	<?php if ( $is_event_page ) : ?>
 		<?php the_title( '<h1 class="tribe-events-single-event-title">', '</h1>' ); ?>
 
 		<div class="tribe-events-schedule tribe-clearfix">
@@ -105,45 +114,55 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 	<!-- Notices -->
 	<?php tribe_the_notices() ?>
 
-	<form method="post">
+	<div
+		class="tribe-tickets__tickets-page-wrapper"
+		data-post-id="<?php echo esc_attr( $event_id ); ?>"
+		data-provider="<?php echo esc_attr( $provider ); ?>"
+		data-attendee-resend-email="<?php echo esc_attr( $allow_resending_email ); ?>"
+	>
 
-		<?php $template->template( 'tickets/orders-rsvp' ); ?>
+		<form method="post" autocomplete="off">
 
-		<?php
-		if ( ! class_exists( 'Tribe__Tickets_Plus__Commerce__PayPal__Meta' ) ) {
-			$template->template( 'tickets/orders-pp-tickets' );
-		}
-		?>
+			<?php $template->template( 'tickets/orders-rsvp' ); ?>
 
-		<?php
-		/**
-		 * Fires before the process tickets submission button is rendered
-		 */
-		do_action( 'tribe_tickets_orders_before_submit' );
-		?>
+			<?php
+			if ( ! class_exists( 'Tribe__Tickets_Plus__Commerce__PayPal__Meta' ) ) {
+				$template->template( 'tickets/orders-pp-tickets' );
+			}
+			?>
 
-		<?php if (
-			// Current user has RSVP (with or without meta) so needs to be able to edit status
-			$view->has_rsvp_attendees( $event_id, get_current_user_id() )
-			|| (
-				// Current user has tickets with meta so needs to be able to edit meta
-				$view->has_ticket_attendees( $event_id, get_current_user_id() )
-				&& $tribe_my_tickets_have_meta
-			)
-		) : ?>
-			<div class="tribe-submit-tickets-form">
-				<button
-					type="submit"
-					name="process-tickets"
-					value="1"
-					class="button alt"
-				>
-					<?php echo sprintf( esc_html__( 'Update %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, get_current_user_id() ) ); ?>
-				</button>
-			</div>
-		<?php endif;
-		// unset our global since we don't need it any more
-		unset( $tribe_my_tickets_have_meta );
-		?>
-	</form>
+			<?php
+			/**
+			 * Fires before the process tickets submission button is rendered
+			 */
+			do_action( 'tribe_tickets_orders_before_submit' );
+			?>
+
+			<?php if (
+				// Current user has RSVP (with or without meta) so needs to be able to edit status
+				$view->has_rsvp_attendees( $event_id, get_current_user_id() )
+				|| (
+					// Current user has tickets with meta so needs to be able to edit meta
+					$view->has_ticket_attendees( $event_id, get_current_user_id() )
+					&& $tribe_my_tickets_have_meta
+				)
+			) : ?>
+				<div class="tribe-submit-tickets-form">
+					<button
+						type="submit"
+						name="process-tickets"
+						value="1"
+						class="button alt"
+					>
+						<?php echo sprintf( esc_html__( 'Update %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, get_current_user_id() ) ); ?>
+					</button>
+				</div>
+			<?php endif;
+			// unset our global since we don't need it any more
+			unset( $tribe_my_tickets_have_meta );
+			?>
+		</form>
+
+	</div>
+
 </div>
