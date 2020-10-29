@@ -162,41 +162,4 @@ class Ticket_ObjectTest extends Ticket_Object_TestCase {
 		$this->assertEquals( '', $ticket->capacity(), 'Incorrect capacity reported for unlimited capacity ticket with attendees.' );
 		$this->assertEquals( '-1', $ticket->inventory(), 'Incorrect inventory reported for unlimited capacity ticket with attendees.' );
 	}
-
-	/**
-	 * @test
-	 * It should store cached keys
-	 * Calling reset should clear the cache to allow updating object data
-	 *
-	 * @covers cache
-	 */
-	public function it_should_cache_function_calls_and_clear_cache_when_reset_is_called() {
-		$rsvp = $this->make_rsvp( [
-			'meta_input' => [
-				'_capacity' => 20,
-			],
-		] );
-
-		/**
-		 * @var \Tribe__Cache
-		 */
-		$cache = tribe( 'cache' );
-
-		$this->assertEquals( 20, $rsvp->capacity(), 'Incorrect capacity reported for new RSVP.' );
-
-		$capacity_key = get_class( $rsvp ) . '::' . 'capacity-' . $rsvp->ID;
-
-		$this->assertNotFalse( $cache[ $capacity_key ], 'Cache was not created for Capacity method' );
-		$this->assertEquals( 20, $rsvp->inventory(), 'Incorrect inventory reported for new RSVP.' );
-
-		$inventory_key = get_class( $rsvp ) . '::' . 'inventory-' . $rsvp->ID;
-		$this->assertNotFalse( $cache[ $inventory_key ], 'Cache was not created for Inventory method' );
-
-		$this->assertTrue( $rsvp->reset_cached_calls(), 'Cache keys are not set to be cleared' );
-
-		$this->assertFalse( $cache[ $capacity_key ], 'Cache was not cleared for capacity method' );
-		$this->assertFalse( $cache[ $inventory_key ], 'Cache was not cleared for Inventory method' );
-
-		$this->assertFalse( $rsvp->reset_cached_calls(), 'Cache keys should be empty but it is not' );
-	}
 }
