@@ -41,7 +41,7 @@ class IACSetting extends PureComponent {
 		return (
 			<div>
 				<div className="tribe-editor__ticket__content-row--iac-setting-description">
-					{ __( 'Select the default way to sell your tickets. Individual Attendee Collection gives you the control to allow purchasers to enter a name and email for each ticket, which you can also require as unique.', 'event-tickets' ) }
+					{ __( 'Select the default way to sell tickets. Enabling Individual Attendee Collection will allow purchasers to enter a name and email for each ticket.', 'event-tickets' ) }
 				</div>
 				<div className={ classNames(
 					'tribe-editor__ticket__iac-setting',
