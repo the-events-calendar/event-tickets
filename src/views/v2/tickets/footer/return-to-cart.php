@@ -53,13 +53,13 @@
  */
 
 if ( method_exists( $provider, 'get_cart_url' ) ) {
-	$cart_url = $provider->get_cart_url();
+	$cart_url = $provider->get_cart_url( $post_id );
 } else {
 	$cart_url = '';
 }
 
 if ( method_exists( $provider, 'get_checkout_url' ) ) {
-	$checkout_url = $provider->get_checkout_url();
+	$checkout_url = $provider->get_checkout_url( $post_id );
 } else {
 	$checkout_url = '';
 }
