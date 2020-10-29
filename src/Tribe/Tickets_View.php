@@ -1051,6 +1051,7 @@ class Tribe__Tickets__Tickets_View {
 			'is_sale_past'                => $blocks_tickets->get_is_sale_past( $tickets ),
 			'is_sale_future'              => $blocks_tickets->get_is_sale_future( $tickets ),
 			'currency'                    => tribe( 'tickets.commerce.currency' ),
+			'handler'                     => tribe( 'tickets.handler' ),
 			'threshold'                   => $threshold,
 			'must_login'                  => ! is_user_logged_in() && $provider->login_required(),
 			'show_original_price_on_sale' => $show_original_price_on_sale,
@@ -1061,7 +1062,31 @@ class Tribe__Tickets__Tickets_View {
 			'checkout_url'                => method_exists( $provider, 'get_checkout_url' ) ? $provider->get_checkout_url() : '',
 		];
 
-		// Add the rendering attributes into global context.
+		/**
+		 * Add the rendering attributes into global context.
+		 *
+		 * Start with the following for template files loading this global context.
+		 * Keep all templates with this starter block of comments updated if these global args update.
+		 *
+		 * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
+		 * @var Tribe__Tickets__Tickets            $provider                    [Global] The tickets provider class.
+		 * @var string                             $provider_id                 [Global] The tickets provider class name.
+		 * @var Tribe__Tickets__Ticket_Object[]    $tickets                     [Global] List of tickets.
+		 * @var array                              $cart_classes                [Global] CSS classes.
+		 * @var Tribe__Tickets__Ticket_Object[]    $tickets_on_sale             [Global] List of tickets on sale.
+		 * @var bool                               $has_tickets_on_sale         [Global] True if the event has any tickets on sale.
+		 * @var bool                               $is_sale_past                [Global] True if tickets' sale dates are all in the past.
+		 * @var bool                               $is_sale_future              [Global] True if no ticket sale dates have started yet.
+		 * @var Tribe__Tickets__Commerce__Currency $currency                    [Global] Tribe Currency object.
+		 * @var Tribe__Tickets__Tickets_Handler    $handler                     [Global] Tribe Tickets Handler object.
+		 * @var int                                $threshold                   [Global] The count at which "number of tickets left" message appears.
+		 * @var bool                               $show_original_price_on_sale [Global] Show original price on sale.
+		 * @var null|bool                          $is_mini                     [Global] If in "mini cart" context.
+		 * @var null|bool                          $is_modal                    [Global] Whether the modal is enabled.
+		 * @var string                             $submit_button_name          [Global] The button name for the tickets block.
+		 * @var string                             $cart_url                    [Global] Link to Cart (could be empty).
+		 * @var string                             $checkout_url                [Global] Link to Checkout (could be empty).
+		 */
 		$template->add_template_globals( $args );
 
 		// Enqueue assets.

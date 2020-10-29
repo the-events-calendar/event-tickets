@@ -30,6 +30,11 @@
  * @var Tribe__Tickets__Commerce__Currency $currency            [Global] Tribe Currency object.
  * @var Tribe__Tickets__Ticket_Object      $ticket              The ticket object.
  * @var int                                $key                 Ticket item index.
+ * @var bool                               $show_unlimited      Whether to allow showing of "unlimited".
+ * @var int                                $available_count     Quantity available based on the Attendees number.
+ * @var bool                               $is_unlimited        Whether the ticket has unlimited quantity.
+ * @var int                                $max_at_a_time       The maximum quantity able to be purchased in a single Add to Cart action.
+ * @var Tribe__Tickets__Privacy            $privacy             Tribe Privacy instance.
  *
  * If Ticket, some of the above but not all.
  */

@@ -30,7 +30,6 @@
  * @var string                             $data_has_shared_cap True text if ticket has shared capacity.
  * @var int                                $threshold           The threshold value to show or hide quantity available.
  * @var int                                $available_count     The quantity of Available tickets based on the Attendees number.
- * @var bool                               $show_unlimited      Whether to allow showing of "unlimited".
  * @var bool                               $is_unlimited        Whether the ticket has unlimited quantity.
  */
 
