@@ -10,10 +10,13 @@ import { compose } from 'redux';
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
+import { globals } from '@moderntribe/common/utils';
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
 	iac: selectors.getTicketTempIACSetting( state, ownProps ),
+	iacDefault: globals.ticketsPlusIacVars().iac_default,
+	iacOptions: globals.ticketsPlusIacVars().iac_options,
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
