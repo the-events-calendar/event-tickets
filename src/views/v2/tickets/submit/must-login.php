@@ -40,6 +40,6 @@ if ( empty( $must_login ) ) {
 }
 
 ?>
-<a class="tribe-common-c-btn tribe-common-c-btn--small" href="<?php echo esc_url( Tribe__Tickets__Tickets::get_login_url() ); ?>">
+<a class="tribe-common-c-btn tribe-common-c-btn--small" href="<?php echo esc_url( $provider::get_login_url() ); ?>">
 	<?php echo esc_html_x( 'Log in to purchase', 'login required before purchase', 'event-tickets' ); ?>
 </a>

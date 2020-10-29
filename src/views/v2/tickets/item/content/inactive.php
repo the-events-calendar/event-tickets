@@ -31,6 +31,7 @@
  * @var int                                $threshold           The threshold value to show or hide quantity available.
  * @var int                                $available_count     The quantity of Available tickets based on the Attendees number.
  * @var bool                               $is_unlimited        Whether the ticket has unlimited quantity.
+ * @var bool                               $is_sale_past        True if tickets' sale dates are all in the past.
  */
 
 $message = $is_sale_past

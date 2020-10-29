@@ -68,17 +68,13 @@ class Return_To_Cart_Test extends WPTestCase {
 	public function test_should_render_if_is_mini_and_different_cart_and_checkout_url() {
 		$template = tribe( 'tickets.editor.template' );
 
-		$override = [
-			'is_mini' => true,
-		];
-
-		$args = array_merge( $this->get_default_args(), $override );
+		$args = $this->get_default_args();
 
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), 'http://wordpress.test' );
 
-		// Check Cart URL is showing .
-		$this->assertContains( 'href="'.$args['cart_url'], $html );
+		// Check Cart URL is showing.
+		$this->assertContains( 'href="' . $args['cart_url'], $html );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
