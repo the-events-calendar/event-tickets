@@ -23,12 +23,17 @@ class Form extends WPTestCase {
 	 * @test
 	 */
 	public function test_should_render_form() {
-		$template  = tribe( 'tickets.editor.template' );
+		/** @var \Tribe__Tickets__Editor__Template $template */
+		$template = tribe( 'tickets.editor.template' );
+
+		/** @var \Tribe__Tickets__RSVP $rsvp_instance */
+		$rsvp_instance = tribe( 'tickets.rsvp' );
+
 		$event     = $this->get_mock_event( 'events/single/1.json' );
 		$event_id  = $event->ID;
 		$ticket_id = $this->create_rsvp_ticket( $event_id );
 
-		$ticket = tribe( 'tickets.rsvp' )->get_ticket( $event_id, $ticket_id );
+		$ticket = $rsvp_instance->get_ticket( $event_id, $ticket_id );
 
 		$args = [
 			'ticket'  => $ticket,

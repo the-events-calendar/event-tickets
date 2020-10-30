@@ -24,9 +24,6 @@
  * @var string                           $going   The RSVP status at time of add/edit, or empty if not in that context.
  */
 
-/** @var Tribe__Tickets__RSVP $rsvp */
-$rsvp = tribe( 'tickets.rsvp' );
-
 $must_login = $this->get( 'must_login' );
 
 /** @var Tribe__Tickets__Ticket_Object $ticket */

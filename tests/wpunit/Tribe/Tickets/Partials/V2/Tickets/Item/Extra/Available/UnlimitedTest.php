@@ -51,7 +51,9 @@ class UnlimitedTest extends V2TestCase {
 		add_filter( 'tribe_tickets_block_show_unlimited_availability', '__return_false' );
 
 		$template = tribe( 'tickets.editor.template' );
-		$html     = $template->template( $this->partial_path, $this->get_default_args(), false );
+
+		$html = $template->template( $this->partial_path, $this->get_default_args(), false );
+
 		$this->assertMatchesSnapshot( $html );
 	}
 
@@ -63,7 +65,7 @@ class UnlimitedTest extends V2TestCase {
 
 		$args = $this->get_default_args();
 
-		// set a fixed capacity.
+		// Set a fixed capacity.
 		$args['ticket']->capacity = 25;
 
 		$html = $template->template( $this->partial_path, $args, false );

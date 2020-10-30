@@ -15,7 +15,6 @@
  *
  */
 
-
 /**
  * @todo: Create a hook for the get_ticket method in order to set dynamic or custom properties into
  * the instance variable so we can set a new one called $ticket->show_not_going.
@@ -33,7 +32,10 @@ if ( ! $show_not_going ) {
     return;
 }
 
-$must_login = ! is_user_logged_in() && tribe( 'tickets.rsvp' )->login_required();
+/** @var Tribe__Tickets__RSVP $rsvp_instance */
+$rsvp_instance = tribe( 'tickets.rsvp' );
+
+$must_login = ! is_user_logged_in() && $rsvp_instance->login_required();
 $going = $must_login ? false : $this->get( 'going' );
 ?>
 <span>
