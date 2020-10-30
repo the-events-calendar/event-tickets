@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { Component, Fragment } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import uniqid from 'uniqid';
 
@@ -18,7 +18,7 @@ import { Accordion } from '@moderntribe/common/elements';
 import './style.pcss';
 import IACSetting from './iac-setting/container';
 
-class AttendeeCollection extends Component {
+class AttendeeCollection extends PureComponent {
 	static propTypes = {
 		clientId: PropTypes.string.isRequired,
 		isDisabled: PropTypes.bool,

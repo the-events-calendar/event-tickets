@@ -21,6 +21,11 @@ class IACSetting extends PureComponent {
 		isDisabled: PropTypes.bool,
 		onChange: PropTypes.func.isRequired,
 		iac: PropTypes.string,
+		iacDefault: PropTypes.string,
+		iacOptions: PropTypes.arrayOf( PropTypes.shape( {
+			label: PropTypes.string,
+			value: PropTypes.string,
+		} ) ),
 	};
 
 	constructor( props ) {
@@ -29,16 +34,9 @@ class IACSetting extends PureComponent {
 	}
 
 	render() {
-		const { iac, isDisabled, onChange } = this.props;
+		const { iac, iacDefault, iacOptions, isDisabled, onChange } = this.props;
 
-		const options = window.tribe_tickets_plus_iac_vars.iac_options;
-
-		let iacSetting = iac;
-
-		// Set the default for new tickets.
-		if ( '' === iacSetting ) {
-			iacSetting = window.tribe_tickets_plus_iac_vars.iac_default;
-		}
+		const iacSetting = iac || iacDefault;
 
 		return (
 			<div>
@@ -57,7 +55,7 @@ class IACSetting extends PureComponent {
 						selected={ iacSetting }
 						onChange={ onChange }
 						disabled={ isDisabled }
-						options={ options }
+						options={ iacOptions }
 					/>
 				</div>
 			</div>
