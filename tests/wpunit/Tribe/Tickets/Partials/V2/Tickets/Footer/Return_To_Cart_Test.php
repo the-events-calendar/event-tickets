@@ -72,6 +72,8 @@ class Return_To_Cart_Test extends V2TestCase {
 	}
 
 	/**
+	 * We need to filter both Cart and Checkout URLs because PayPal has the same for both, which is dynamic.
+	 *
 	 * @test
 	 */
 	public function test_should_render_if_is_mini_and_different_cart_and_checkout_url() {
@@ -79,23 +81,15 @@ class Return_To_Cart_Test extends V2TestCase {
 
 		$args = $this->get_default_args();
 
-		$invoice_number = 'foo';
-
-		/** @var \Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged $cart */
-		$cart = tribe( 'tickets.commerce.paypal.cart' );
-		$cart->set_id( $invoice_number );
-		$cart->add_item( $args['test_ticket_id'], 3 );
-		$cart->save();
-
-		// Make PayPal Gateway find our mocked items in cart.
+		// Filter PayPal Cart URL.
 		add_filter(
-			'tribe_tickets_commerce_paypal_invoice_number',
-			static function () use ( $invoice_number ) {
-				return $invoice_number;
+			'tribe_tickets_tribe-commerce_cart_url',
+			static function () use ( $args ) {
+				return $args['cart_url'];
 			}
 		);
 
-		// Filter Checkout URL (not Cart, since Checkout starts from there) to force it different.
+		// Filter PayPal Checkout URL.
 		add_filter(
 			'tribe_tickets_tribe-commerce_checkout_url',
 			static function () use ( $args ) {
@@ -106,7 +100,7 @@ class Return_To_Cart_Test extends V2TestCase {
 		$html = $template->template( $this->partial_path, $args, false );
 
 		// Check Cart URL is showing.
-		$this->assertContains( 'href="https://www.paypal.com/cgi-bin/webscr/_cart', $html );
+		$this->assertContains( $args['cart_url'], $html );
 
 		$this->assertMatchesSnapshot( $html );
 	}

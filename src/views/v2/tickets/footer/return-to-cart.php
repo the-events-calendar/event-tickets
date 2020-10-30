@@ -66,7 +66,7 @@ if ( method_exists( $provider, 'get_checkout_url' ) ) {
 
 if (
 	! $is_mini
-	|| strtok( $cart_url, '?' ) === strtok( $checkout_url, '?' )
+	|| strtok( $cart_url, '?' ) === strtok( $checkout_url, '?' ) // If URLs are the same before the '?'.
 ) {
 	return;
 }

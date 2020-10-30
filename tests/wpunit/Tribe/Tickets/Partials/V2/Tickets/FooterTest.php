@@ -73,7 +73,7 @@ class FooterTest extends V2TestCase {
 
 		$args = array_merge( $this->get_default_args(), $override );
 
-		$html   = $template->template( $this->partial_path, $args, false );
+		$html = $template->template( $this->partial_path, $args, false );
 
 		// Make sure we have the Return to Cart link shown.
 		$this->assertContains( 'tribe-tickets__tickets-footer-back-link', $html );
