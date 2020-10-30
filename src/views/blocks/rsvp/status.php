@@ -31,10 +31,9 @@
  * @var string                           $opt_in_nonce        [Global] The nonce for opt-in AJAX requests.
  * @var bool                             $doing_shortcode     [Global] True if detected within context of shortcode output.
  * @var bool                             $block_html_id       [Global] The RSVP block HTML ID. $doing_shortcode may alter it.
- * @var string                           $going               [Global] The RSVP status at time of add/edit (e.g. 'yes'), or empty if not in that context.
  * @var Tribe__Tickets__Ticket_Object    $ticket              The ticket object with provider set to RSVP.
+ * @var string                           $going               The RSVP status at time of add/edit (e.g. 'yes'), or empty if not in that context.
  */
-$going = $this->get( 'going' );
 ?>
 <div class="tribe-block__rsvp__status">
 	<?php if ( $ticket->is_in_stock() ) : ?>

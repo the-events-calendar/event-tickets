@@ -23,7 +23,6 @@
  * @var bool                             $is_unlimited    Whether the ticket has unlimited quantity.
  * @var int                              $post_id         The Post ID the RSVP is attached to.
  */
-$going = $this->get( 'get' );
 ?>
 <div class="tribe-block__rsvp__content">
 

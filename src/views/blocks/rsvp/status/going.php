@@ -31,8 +31,9 @@
  * @var string                           $opt_in_nonce        [Global] The nonce for opt-in AJAX requests.
  * @var bool                             $doing_shortcode     [Global] True if detected within context of shortcode output.
  * @var bool                             $block_html_id       [Global] The RSVP block HTML ID. $doing_shortcode may alter it.
+ * @var string                           $going               The RSVP status at time of add/edit (e.g. 'yes'), or empty if not in that context.
  */
-$going = $must_login ? false : $this->get( 'going' );
+$going = $must_login ? false : $going;
 ?>
 <span>
 	<button

@@ -17,10 +17,11 @@
  *
  * @version TBD
  *
- * @var Tribe__Tickets__Editor__Template $this    Template object.
- * @var int                              $post_id [Global] The current Post ID to which RSVPs are attached.
- * @var Tribe__Tickets__Ticket_Object    $ticket  The ticket object with provider set to RSVP.
- * @var string                           $going   The RSVP status at time of add/edit (e.g. 'yes'), or empty if not in that context.
+ * @var Tribe__Tickets__Editor__Template $this       Template object.
+ * @var int                              $post_id    [Global] The current Post ID to which RSVPs are attached.
+ * @var bool                             $must_login [Global] True if login is required and user is not logged in..
+ * @var Tribe__Tickets__Ticket_Object    $ticket     The ticket object with provider set to RSVP.
+ * @var string                           $going      The RSVP status at time of add/edit (e.g. 'yes'), or empty if not in that context.
  */
 
 /** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
@@ -29,7 +30,6 @@ $tickets_handler = tribe( 'tickets.handler' );
 $ticket_data = $tickets_handler->get_object_connections( $ticket->ID );
 
 $event_id   = $ticket_data->event;
-$must_login = $this->get( 'must_login' );
 ?>
 <form
 	name="tribe-rsvp-form"

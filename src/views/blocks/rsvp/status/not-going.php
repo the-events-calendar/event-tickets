@@ -31,12 +31,6 @@ $show_not_going = tribe_is_truthy(
 if ( ! $show_not_going ) {
     return;
 }
-
-/** @var Tribe__Tickets__RSVP $rsvp_instance */
-$rsvp_instance = tribe( 'tickets.rsvp' );
-
-$must_login = ! is_user_logged_in() && $rsvp_instance->login_required();
-$going = $must_login ? false : $this->get( 'going' );
 ?>
 <span>
 	<button

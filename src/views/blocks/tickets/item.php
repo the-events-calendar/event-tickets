@@ -53,7 +53,6 @@ if (
 	return false;
 }
 
-$must_login     = ! is_user_logged_in() && $ticket->get_provider()->login_required();
 $has_shared_cap = $tickets_handler->has_shared_capacity( $ticket );
 $has_suffix     = ! empty( $ticket->price_suffix );
 

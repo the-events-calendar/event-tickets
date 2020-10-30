@@ -24,8 +24,6 @@
  * @var string                           $going   The RSVP status at time of add/edit (e.g. 'yes'), or empty if not in that context.
  */
 
-$must_login = $this->get( 'must_login' );
-
 /** @var Tribe__Tickets__Ticket_Object $ticket */
 if ( empty( $ticket->ID ) ) {
 	return;
