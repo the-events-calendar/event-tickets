@@ -33,24 +33,23 @@ class Content extends WPTestCase {
 	public function test_should_render_content() {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
-		$event_id  = $event->ID;
-		$ticket_id = $this->create_rsvp_ticket( $event_id );
+		$ticket_id = $this->create_rsvp_ticket( $event->ID );
 
 		/** @var \Tribe__Tickets__RSVP $rsvp */
 		$rsvp = tribe( 'tickets.rsvp' );
 
-		$ticket = $rsvp->get_ticket( $event_id, $ticket_id );
+		$ticket = $rsvp->get_ticket( $event->ID, $ticket_id );
 
 		$args = [
 			'ticket'     => $ticket,
-			'post_id'    => $event_id,
+			'post_id'    => $event->ID,
 			'must_login' => false,
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
-		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferences( [ $ticket_id, $event->ID ] );
 		$driver->setTolerableDifferencesPrefixes(
 			[
 				'quantity_',
@@ -76,31 +75,30 @@ class Content extends WPTestCase {
 	public function test_should_render_out_of_stock() {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
-		$event_id  = $event->ID;
 		$ticket_id = $this->create_rsvp_ticket(
-			$event_id, [
+			$event->ID, [
 				'meta_input' => [
 					'_capacity' => 3,
 				],
 			]
 		);
 
-		$this->create_many_attendees_for_ticket( 5, $ticket_id, $event_id );
+		$this->create_many_attendees_for_ticket( 5, $ticket_id, $event->ID );
 
 		/** @var \Tribe__Tickets__RSVP $rsvp */
 		$rsvp = tribe( 'tickets.rsvp' );
 
-		$ticket = $rsvp->get_ticket( $event_id, $ticket_id );
+		$ticket = $rsvp->get_ticket( $event->ID, $ticket_id );
 
 		$args = [
 			'ticket'  => $ticket,
-			'post_id' => $event_id,
+			'post_id' => $event->ID,
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
-		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferences( [ $ticket_id, $event->ID ] );
 		$driver->setTolerableDifferencesPrefixes(
 			[
 				'quantity_',
@@ -126,9 +124,8 @@ class Content extends WPTestCase {
 	public function test_should_render_unlimited() {
 		$template  = tribe( 'tickets.editor.template' );
 		$event     = $this->get_mock_event( 'events/single/1.json' );
-		$event_id  = $event->ID;
 		$ticket_id = $this->create_rsvp_ticket(
-			$event_id, [
+			$event->ID, [
 				'meta_input' => [
 					'_capacity' => - 1,
 				],
@@ -138,18 +135,18 @@ class Content extends WPTestCase {
 		/** @var \Tribe__Tickets__RSVP $rsvp */
 		$rsvp = tribe( 'tickets.rsvp' );
 
-		$ticket = $rsvp->get_ticket( $event_id, $ticket_id );
+		$ticket = $rsvp->get_ticket( $event->ID, $ticket_id );
 		add_filter( 'tribe_rsvp_block_show_unlimited_availability', '__return_true' );
 
 		$args = [
 			'ticket'  => $ticket,
-			'post_id' => $event_id,
+			'post_id' => $event->ID,
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
 		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
-		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferences( [ $ticket_id, $event->ID ] );
 		$driver->setTolerableDifferencesPrefixes(
 			[
 				'quantity_',
