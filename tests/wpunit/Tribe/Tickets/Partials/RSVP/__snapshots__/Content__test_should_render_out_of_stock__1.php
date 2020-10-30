@@ -19,7 +19,8 @@
 			RSVP Full	</div>
 	</div>
 
-	<!-- This div is where the AJAX returns the form -->
+	
+<!-- This div is where the AJAX returns the form. -->
 <div class="tribe-block__rsvp__form">
 	<form
 	name="tribe-rsvp-form"
@@ -78,15 +79,13 @@
 	required
 />
 	<input name="attendee[optout]" value="1" type="hidden" />
-				
-			<button
+							<button
 	type="submit"
 	name="tickets_process"
 	value="1"
 	class="tribe-block__rsvp__submit-button"
 >
 	Submit RSVP</button>			</div>
-
 </form>
 </div>
 

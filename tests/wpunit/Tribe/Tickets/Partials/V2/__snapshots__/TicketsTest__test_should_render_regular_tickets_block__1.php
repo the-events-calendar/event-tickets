@@ -61,9 +61,12 @@
 						</span>
 </div>
 
-	<div class="tribe-common-b3 tribe-tickets__tickets-item-extra-available">
 	
-	<span class="tribe-tickets__tickets-item-extra-available-quantity"> 100 </span> available</div>
+<div class="tribe-common-b3 tribe-tickets__tickets-item-extra-available">
+
+	
+	<span class="tribe-tickets__tickets-item-extra-available-quantity"> 100 </span> available
+</div>
 
 	<div class="tribe-tickets__tickets-item-details-summary">
 	<button
@@ -128,9 +131,12 @@
 						</span>
 </div>
 
-	<div class="tribe-common-b3 tribe-tickets__tickets-item-extra-available">
 	
-	<span class="tribe-tickets__tickets-item-extra-available-quantity"> 100 </span> available</div>
+<div class="tribe-common-b3 tribe-tickets__tickets-item-extra-available">
+
+	
+	<span class="tribe-tickets__tickets-item-extra-available-quantity"> 100 </span> available
+</div>
 
 	<div class="tribe-tickets__tickets-item-details-summary">
 	<button

@@ -60,8 +60,7 @@ class Return_To_Cart_Test extends V2TestCase {
 		$template = tribe( 'tickets.editor.template' );
 
 		$override = [
-			'cart_url'     => 'http://wordpress.test/cart/?foo',
-			'checkout_url' => 'http://wordpress.test/cart/?foo',
+			'checkout_url' => 'http://wordpress.test/cart/?bar', // Should only be comparing the part BEFORE the '?'.
 		];
 
 		$args = array_merge( $this->get_default_args(), $override );
