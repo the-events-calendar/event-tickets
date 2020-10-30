@@ -24,7 +24,7 @@ class Content extends WPTestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
-		$_GET['going'] = true;
+		$_GET['going'] = 'yes';
 	}
 
 	/**
@@ -44,6 +44,7 @@ class Content extends WPTestCase {
 			'ticket'     => $ticket,
 			'post_id'    => $event->ID,
 			'must_login' => false,
+			'going'      => tribe_get_request_var( 'going', '' ),
 		];
 
 		$html   = $template->template( $this->partial_path, $args, false );
