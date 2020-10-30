@@ -40,7 +40,16 @@ class UnlimitedTest extends V2TestCase {
 	 */
 	public function test_should_render_unlimited_text() {
 		$template = tribe( 'tickets.editor.template' );
-		$html     = $template->template( $this->partial_path, $this->get_default_args(), false );
+
+		$args = [
+			'is_unlimited'   => true,
+			'show_unlimited' => true,
+		];
+
+		$args = array_merge( $this->get_default_args(), $args );
+
+		$html = $template->template( $this->partial_path, $args, false );
+
 		$this->assertMatchesSnapshot( $html );
 	}
 
@@ -52,7 +61,9 @@ class UnlimitedTest extends V2TestCase {
 
 		$template = tribe( 'tickets.editor.template' );
 
-		$html = $template->template( $this->partial_path, $this->get_default_args(), false );
+		$args = array_merge( $this->get_default_args(), [ 'show_unlimited' => false ] );
+
+		$html = $template->template( $this->partial_path, $args, false );
 
 		$this->assertMatchesSnapshot( $html );
 	}
@@ -67,6 +78,8 @@ class UnlimitedTest extends V2TestCase {
 
 		// Set a fixed capacity.
 		$args['ticket']->capacity = 25;
+
+		$args['is_unlimited'] = false;
 
 		$html = $template->template( $this->partial_path, $args, false );
 		$this->assertMatchesSnapshot( $html );
