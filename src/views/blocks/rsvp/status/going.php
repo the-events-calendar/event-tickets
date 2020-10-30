@@ -22,7 +22,7 @@
  * @var bool                             $all_past            [Global] True if RSVPs availability dates are all in the past.
  * @var bool                             $has_rsvps           [Global] True if the event has any RSVPs.
  * @var bool                             $has_active_rsvps    [Global] True if the event has any RSVPs available.
- * @var bool                             $must_login          [Global] True if only logged-in users may obtain RSVPs.
+ * @var bool                             $must_login          [Global] True if login is required and user is not logged in..
  * @var string                           $login_url           [Global] The site's login URL.
  * @var int                              $threshold           [Global] The count at which "number of tickets left" message appears.
  * @var null|string                      $step                [Global] The point we're at in the loading process.
