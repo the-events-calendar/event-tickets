@@ -33,7 +33,7 @@
  * @var bool                             $doing_shortcode     [Global] True if detected within context of shortcode output.
  * @var bool                             $block_html_id       [Global] The RSVP block HTML ID. $doing_shortcode may alter it.
  * @var Tribe__Tickets__Ticket_Object    $ticket              The ticket object with provider set to RSVP.
- * @var string                           $going               The RSVP status at time of add/edit, or empty if not in that context.
+ * @var string                           $going               The RSVP status at time of add/edit (e.g. 'yes'), or empty if not in that context.
  */
 ?>
 

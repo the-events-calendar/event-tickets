@@ -19,7 +19,7 @@
  * @var Tribe__Tickets__Editor__Template $this    Template object.
  * @var int                              $post_id [Global] The current Post ID to which RSVPs are attached.
  * @var Tribe__Tickets__Ticket_Object    $ticket  The ticket object with provider set to RSVP.
- * @var string                           $going   The RSVP status at time of add/edit, or empty if not in that context.
+ * @var string                           $going   The RSVP status at time of add/edit (e.g. 'yes'), or empty if not in that context.
  */
 $event_id = $this->get( 'event_id' );
 $going    = $this->get( 'going' );
