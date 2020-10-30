@@ -15,6 +15,7 @@
  * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
+ * @var int                                $post_id                     [Global] The current Post ID to which tickets are attached.
  * @var Tribe__Tickets__Tickets            $provider                    [Global] The tickets provider class.
  * @var string                             $provider_id                 [Global] The tickets provider class name.
  * @var Tribe__Tickets__Ticket_Object[]    $tickets                     [Global] List of tickets.
@@ -25,6 +26,7 @@
  * @var bool                               $is_sale_future              [Global] True if no ticket sale dates have started yet.
  * @var Tribe__Tickets__Commerce__Currency $currency                    [Global] Tribe Currency object.
  * @var Tribe__Tickets__Tickets_Handler    $handler                     [Global] Tribe Tickets Handler object.
+ * @var Tribe__Tickets__Privacy            $privacy                     [Global] Tribe Tickets Privacy object.
  * @var int                                $threshold                   [Global] The count at which "number of tickets left" message appears.
  * @var bool                               $show_original_price_on_sale [Global] Show original price on sale.
  * @var null|bool                          $is_mini                     [Global] If in "mini cart" context.
@@ -34,10 +36,14 @@
  * @var string                             $checkout_url                [Global] Link to Checkout (could be empty).
  * @var Tribe__Tickets__Ticket_Object      $ticket                      The ticket object.
  * @var int                                $key                         Ticket Item index.
- * @var int                                $available_count             Quantity available based on the Attendees number.
+ * @var string                             $data_available              Boolean string.
+ * @var bool                               $has_shared_cap              True if ticket has shared capacity.
+ * @var string                             $data_has_shared_cap         True text if ticket has shared capacity.
+ * @var string                             $currency_symbol             The ticket's currency symbol, e.g. '$'.
+ * @var bool                               $show_unlimited              Whether to allow showing of "unlimited".
+ * @var int                                $available_count             The quantity of Available tickets based on the Attendees number.
  * @var bool                               $is_unlimited                Whether the ticket has unlimited quantity.
  * @var int                                $max_at_a_time               The maximum quantity able to be purchased in a single Add to Cart action.
- * @var Tribe__Tickets__Privacy            $privacy                     Tribe Privacy instance.
  */
 
 // Bail if it's "mini cart" context.
@@ -49,19 +55,13 @@ $classes = [
 	'tribe-common-h4',
 	'tribe-tickets__tickets-item-quantity',
 ];
-
-$context = [
-	'ticket'        => $ticket,
-	'key'           => $key,
-	'max_at_a_time' => $max_at_a_time,
-];
 ?>
 <div <?php tribe_classes( $classes ); ?>>
 	<?php if ( 0 !== $max_at_a_time ) : ?>
-		<?php $this->template( 'v2/tickets/item/quantity/remove', $context ); ?>
-		<?php $this->template( 'v2/tickets/item/quantity/number', $context ); ?>
-		<?php $this->template( 'v2/tickets/item/quantity/add', $context ); ?>
+		<?php $this->template( 'v2/tickets/item/quantity/remove' ); ?>
+		<?php $this->template( 'v2/tickets/item/quantity/number' ); ?>
+		<?php $this->template( 'v2/tickets/item/quantity/add' ); ?>
 	<?php else : ?>
-		<?php $this->template( 'v2/tickets/item/quantity/unavailable', $context ); ?>
+		<?php $this->template( 'v2/tickets/item/quantity/unavailable' ); ?>
 	<?php endif; ?>
 </div>
