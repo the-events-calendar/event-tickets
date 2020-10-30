@@ -21,6 +21,11 @@ class IACSetting extends PureComponent {
 		isDisabled: PropTypes.bool,
 		onChange: PropTypes.func.isRequired,
 		iac: PropTypes.string,
+		iacDefault: PropTypes.string,
+		iacOptions: PropTypes.arrayOf( PropTypes.shape( {
+			label: PropTypes.string,
+			value: PropTypes.string,
+		} ) ),
 	};
 
 	constructor( props ) {
@@ -29,21 +34,14 @@ class IACSetting extends PureComponent {
 	}
 
 	render() {
-		const { iac, isDisabled, onChange } = this.props;
+		const { iac, iacDefault, iacOptions, isDisabled, onChange } = this.props;
 
-		const options = window.tribe_tickets_plus_iac_vars.iac_options;
-
-		let iacSetting = iac;
-
-		// Set the default for new tickets.
-		if ( '' === iacSetting ) {
-			iacSetting = window.tribe_tickets_plus_iac_vars.iac_default;
-		}
+		const iacSetting = iac || iacDefault;
 
 		return (
 			<div>
 				<div className="tribe-editor__ticket__content-row--iac-setting-description">
-					{ __( 'Select the default way to sell your tickets. Individual Attendee Collection gives you the control to allow purchasers to enter a name and email for each ticket, which you can also require as unique.', 'event-tickets' ) }
+					{ __( 'Select the default way to sell tickets. Enabling Individual Attendee Collection will allow purchasers to enter a name and email for each ticket.', 'event-tickets' ) }
 				</div>
 				<div className={ classNames(
 					'tribe-editor__ticket__iac-setting',
@@ -57,7 +55,7 @@ class IACSetting extends PureComponent {
 						selected={ iacSetting }
 						onChange={ onChange }
 						disabled={ isDisabled }
-						options={ options }
+						options={ iacOptions }
 					/>
 				</div>
 			</div>
