@@ -43,14 +43,14 @@ if ( empty( $events ) ) {
 ?>
 <div class="tribe-common event-tickets tribe-tickets__registration">
 	<div class="tribe-tickets__registration__actions">
-	<?php
+		<?php
 		$this->template(
 			'registration/button-cart',
 			[
 				'provider' => $passed_provider,
 			]
 		);
-	?>
+		?>
 	</div>
 	<?php
 	foreach ( $events as $event_id => $tickets ) :

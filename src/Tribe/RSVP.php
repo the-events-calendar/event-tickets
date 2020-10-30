@@ -2074,35 +2074,38 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			}
 		}
 
-		$attendee_data = array_merge( $this->get_order_data( $attendee->ID ), [
-			'optout'             => $optout,
-			'ticket'             => $product_title,
-			'attendee_id'        => $attendee->ID,
-			'security'           => $security,
-			'product_id'         => $product_id,
-			'check_in'           => $checkin,
-			'order_status'       => $status,
-			'order_status_label' => $status_label,
-			'user_id'            => $user_id,
-			'ticket_sent'        => $ticket_sent,
+		$attendee_data = array_merge(
+			$this->get_order_data( $attendee->ID ),
+			[
+				'optout'             => $optout,
+				'ticket'             => $product_title,
+				'attendee_id'        => $attendee->ID,
+				'security'           => $security,
+				'product_id'         => $product_id,
+				'check_in'           => $checkin,
+				'order_status'       => $status,
+				'order_status_label' => $status_label,
+				'user_id'            => $user_id,
+				'ticket_sent'        => $ticket_sent,
 
 			// Fields for Email Tickets.
-			'event_id'           => get_post_meta( $attendee->ID, self::ATTENDEE_EVENT_KEY, true ),
-			'ticket_name'        => ! empty( $product ) ? $product->post_title : false,
-			'holder_name'        => get_post_meta( $attendee->ID, $this->full_name, true ),
-			'holder_email'       => get_post_meta( $attendee->ID, $this->email, true ),
-			'order_id'           => $attendee->ID,
-			'ticket_id'          => $ticket_unique_id,
-			'qr_ticket_id'       => $attendee->ID,
-			'security_code'      => $security,
+				'event_id'           => get_post_meta( $attendee->ID, self::ATTENDEE_EVENT_KEY, true ),
+				'ticket_name'        => ! empty( $product ) ? $product->post_title : false,
+				'holder_name'        => get_post_meta( $attendee->ID, $this->full_name, true ),
+				'holder_email'       => get_post_meta( $attendee->ID, $this->email, true ),
+				'order_id'           => $attendee->ID,
+				'ticket_id'          => $ticket_unique_id,
+				'qr_ticket_id'       => $attendee->ID,
+				'security_code'      => $security,
 
-			// Attendee Meta.
-			'attendee_meta'      => $meta,
+				// Attendee Meta.
+				'attendee_meta'      => $meta,
 
-			// Handle initial Attendee flags.
-			'is_subscribed'      => tribe_is_truthy( get_post_meta( $attendee->ID, $this->attendee_subscribed, true ) ),
-			'is_purchaser'       => true,
-		] );
+				// Handle initial Attendee flags.
+				'is_subscribed'      => tribe_is_truthy( get_post_meta( $attendee->ID, $this->attendee_subscribed, true ) ),
+				'is_purchaser'       => true,
+			]
+		);
 
 		/**
 		 * Allow filtering the attendee information to return.
