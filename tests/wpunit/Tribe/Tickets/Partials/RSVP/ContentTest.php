@@ -123,8 +123,10 @@ class Content extends WPTestCase {
 	 * @test
 	 */
 	public function test_should_render_unlimited() {
-		$template  = tribe( 'tickets.editor.template' );
-		$event     = $this->get_mock_event( 'events/single/1.json' );
+		$template = tribe( 'tickets.editor.template' );
+
+		$event = $this->get_mock_event( 'events/single/1.json' );
+
 		$ticket_id = $this->create_rsvp_ticket(
 			$event->ID, [
 				'meta_input' => [
@@ -140,11 +142,14 @@ class Content extends WPTestCase {
 		add_filter( 'tribe_rsvp_block_show_unlimited_availability', '__return_true' );
 
 		$args = [
-			'ticket'  => $ticket,
-			'post_id' => $event->ID,
+			'ticket'     => $ticket,
+			'post_id'    => $event->ID,
+			'must_login' => false,
+			'going'      => tribe_get_request_var( 'going', '' ),
 		];
 
-		$html   = $template->template( $this->partial_path, $args, false );
+		$html = $template->template( $this->partial_path, $args, false );
+
 		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $event->ID ] );

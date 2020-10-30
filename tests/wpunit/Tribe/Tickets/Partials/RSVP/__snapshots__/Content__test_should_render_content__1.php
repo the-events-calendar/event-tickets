@@ -19,8 +19,8 @@
 	
 		<span>
 	<button
-	class="tribe-block__rsvp__status-button tribe-block__rsvp__status-button--going"
-		>
+	class="tribe-block__rsvp__status-button tribe-block__rsvp__status-button--going tribe-active"
+	 disabled=\'disabled\'	>
 		<span>Going</span>
 		
 	</button>

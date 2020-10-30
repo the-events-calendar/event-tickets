@@ -12,6 +12,7 @@ class TicketsTest extends V2TestCase {
 	protected $partial_path = 'v2/tickets';
 
 	private $tolerables = [];
+
 	/**
 	 * Get all the default args required for this template
 	 *
@@ -24,18 +25,29 @@ class TicketsTest extends V2TestCase {
 		 */
 		$provider = tribe_get_class_instance( 'Tribe__Tickets__Commerce__PayPal__Main' );
 
-		$event = $this->get_mock_event( 'events/single/1.json' );
-		$ids   = $this->create_many_paypal_tickets( 2, $event->ID, [ 'price' => 99 ] );
+		$event_id = $this->factory()->event->create();
 
-		$tickets = [];
-		$this->tolerables[] = $event->ID;
+		$ids = $this->create_many_paypal_tickets( 2, $event_id, [ 'price' => 99 ] );
+
+		$tickets            = [];
+		$this->tolerables[] = $event_id;
 		foreach ( $ids as $id ) {
-			$tickets[] = $provider->get_ticket( $event->ID, $id );
+			$tickets[] = $provider->get_ticket( $event_id, $id );
+
 			$this->tolerables[] = $id;
 		}
 
+		/** @var \Tribe__Tickets__Ticket_Object $ticket */
+		$ticket = $provider->get_ticket( $event_id, $ids[0] );
+
+		$available_count = $ticket->available();
+
+		/** @var \Tribe__Tickets__Tickets_Handler $handler */
+		$handler = tribe( 'tickets.handler' );
+
 		return [
-			'post_id'                     => $event->ID,
+			'test_ticket_id'              => $ids[0],
+			'post_id'                     => $event_id,
 			'provider'                    => $provider,
 			'provider_id'                 => $provider->class_name,
 			'tickets'                     => $tickets,
@@ -52,6 +64,11 @@ class TicketsTest extends V2TestCase {
 			'submit_button_name'          => 'cart-button',
 			'cart_url'                    => 'http://wordpress.test/cart/?foo',
 			'checkout_url'                => 'http://wordpress.test/checkout/?bar',
+			'handler'                     => $handler,
+			'show_unlimited'              => (bool) apply_filters( 'tribe_tickets_block_show_unlimited_availability', true, $available_count ),
+			'available_count'             => $available_count,
+			'is_unlimited'                => - 1 === $available_count,
+			'max_at_a_time'               => $handler->get_ticket_max_purchase( $ticket->ID ),
 		];
 	}
 
@@ -134,6 +151,23 @@ class TicketsTest extends V2TestCase {
 		];
 
 		$args = array_merge( $this->get_default_args(), $override );
+
+		// Filter PayPal Cart URL.
+		add_filter(
+			'tribe_tickets_tribe-commerce_cart_url',
+			static function () use ( $args ) {
+				return $args['cart_url'];
+			}
+		);
+
+		// Filter PayPal Checkout URL.
+		add_filter(
+			'tribe_tickets_tribe-commerce_checkout_url',
+			static function () use ( $args ) {
+				return $args['checkout_url'];
+			}
+		);
+
 		$html = $template->template( $this->partial_path, $args, false );
 
 		$driver = $this->get_html_output_driver();
