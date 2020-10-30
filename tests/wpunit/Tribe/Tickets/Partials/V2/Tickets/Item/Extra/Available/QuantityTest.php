@@ -1,4 +1,5 @@
 <?php
+
 namespace Tribe\Tickets\Partials\V2\Tickets\Item\Extra\Available;
 
 use Tribe\Tickets\Test\Partials\V2TestCase;
@@ -22,16 +23,19 @@ class QuantityTest extends V2TestCase {
 		$provider = tribe_get_class_instance( 'Tribe__Tickets__Commerce__PayPal__Main' );
 
 		$event = $this->get_mock_event( 'events/single/1.json' );
-		$ids   = $this->create_many_paypal_tickets( 1, $event->ID );
 
+		$ids = $this->create_many_paypal_tickets( 1, $event->ID );
+
+		/** @var \Tribe__Tickets__Ticket_Object $ticket */
 		$ticket = $provider->get_ticket( $event->ID, $ids[0] );
 
 		// default Ticket scenario.
 		$ticket->capacity = 20;
 
 		return [
-			'ticket'      => $ticket,
-			'threshold'   => 0,
+			'ticket'          => $ticket,
+			'threshold'       => 0,
+			'available_count' => $ticket->available(),
 		];
 	}
 

@@ -15,7 +15,7 @@
 	
 <div class="tribe-common-b3 tribe-tickets__tickets-item-extra-available">
 
-	Unlimited
+	
 	<span class="tribe-tickets__tickets-item-extra-available-quantity"> 100 </span> available
 </div>
 
