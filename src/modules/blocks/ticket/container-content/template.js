@@ -13,11 +13,11 @@ import AttendeeCollection from './attendee-collection/container';
 import AttendeesRegistration from './attendees-registration/container';
 import './style.pcss';
 
-const TicketContainerContent = ( { clientId, hasTicketsPlus } ) => (
+const TicketContainerContent = ( { clientId, hasTicketsPlus, hasIacVars } ) => (
 	<Fragment>
 		<Capacity clientId={ clientId } />
 		<AdvancedOptions clientId={ clientId } />
-		{ hasTicketsPlus && window.tribe_tickets_plus_iac_vars && <AttendeeCollection clientId={ clientId } /> }
+		{ hasTicketsPlus && hasIacVars && <AttendeeCollection clientId={ clientId } /> }
 		{ hasTicketsPlus && <AttendeesRegistration clientId={ clientId } /> }
 	</Fragment>
 );
