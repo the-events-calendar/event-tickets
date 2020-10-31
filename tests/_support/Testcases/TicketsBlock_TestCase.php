@@ -163,6 +163,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 			$ticket_id,
 			$post_id,
 		] );
+
 		$driver->setTolerableDifferencesPrefixes( [
 			'post-',
 			'tribe-block-tickets-item-',
@@ -177,6 +178,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 			'Test WooCommerce ticket for ',
 			'Test WooCommerce ticket description for ',
 		] );
+
 		$driver->setTimeDependentAttributes( [
 			'data-ticket-id',
 		] );
