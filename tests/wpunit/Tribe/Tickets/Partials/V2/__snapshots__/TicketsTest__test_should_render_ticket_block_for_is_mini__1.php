@@ -125,7 +125,7 @@
 </div>
 
 		
-		<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden tribe-tickets__rsvp-message--success-icon" >
+		<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
 	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--first"></div>
 	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--second"></div>
 	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--third"></div>
