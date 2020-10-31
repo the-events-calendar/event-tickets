@@ -8,7 +8,7 @@
 		data-provider="Tribe__Tickets__Commerce__PayPal__Main"
 		autocomplete="off"
 		data-provider-id="tribe-commerce"
-		data-post-id="8"
+		data-post-id="4"
 		novalidate
 	>
 
@@ -34,8 +34,8 @@
 </div>
 
 		<div
-	id="tribe-block-tickets-item-235"
-	 class="tribe-tickets__tickets-item post-235 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="235"
+	id="tribe-block-tickets-item-5"
+	 class="tribe-tickets__tickets-item post-5 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="5"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
@@ -50,7 +50,7 @@
 		<span class="tribe-tickets__tickets-sale-price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">&#x24;</span>
+					<span class="tribe-currency-symbol">$</span>
 					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
@@ -66,8 +66,8 @@
 	
 </div>
 <div
-	id="tribe-block-tickets-item-236"
-	 class="tribe-tickets__tickets-item post-236 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="236"
+	id="tribe-block-tickets-item-6"
+	 class="tribe-tickets__tickets-item post-6 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="6"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
@@ -82,7 +82,7 @@
 		<span class="tribe-tickets__tickets-sale-price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">&#x24;</span>
+					<span class="tribe-currency-symbol">$</span>
 					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
@@ -115,7 +115,7 @@
 	<span class="tribe-tickets__tickets-footer-total-wrap">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">&#x24;</span>
+					<span class="tribe-currency-symbol">$</span>
 					<span class="tribe-amount">0.00</span>
 				</span>
 				</span>

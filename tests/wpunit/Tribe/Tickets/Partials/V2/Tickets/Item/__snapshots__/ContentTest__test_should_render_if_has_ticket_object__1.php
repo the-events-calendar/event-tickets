@@ -13,7 +13,7 @@
 		<span class="tribe-tickets__tickets-sale-price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">&#x24;</span>
+					<span class="tribe-currency-symbol">$</span>
 					<span class="tribe-amount">8.00</span>
 				</span>
 						</span>

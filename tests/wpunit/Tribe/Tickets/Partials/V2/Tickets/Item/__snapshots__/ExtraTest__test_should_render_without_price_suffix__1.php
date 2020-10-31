@@ -4,7 +4,7 @@
 		<span class="tribe-tickets__tickets-sale-price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">&#x24;</span>
+					<span class="tribe-currency-symbol">$</span>
 					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
@@ -21,7 +21,7 @@
 	<button
 		type="button"
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
-		aria-controls="tribe__details__content--12747"
+		aria-controls="tribe__details__content--69"
 		tabindex="0"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">
@@ -30,7 +30,7 @@
 	<button
 		type="button"
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
-		aria-controls="tribe__details__content--12747"
+		aria-controls="tribe__details__content--69"
 		tabindex="0"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
