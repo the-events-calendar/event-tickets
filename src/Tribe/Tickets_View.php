@@ -1056,7 +1056,7 @@ class Tribe__Tickets__Tickets_View {
 			'is_sale_future'              => $blocks_tickets->get_is_sale_future( $tickets ),
 			'currency'                    => tribe( 'tickets.commerce.currency' ),
 			'handler'                     => tribe( 'tickets.handler' ),
-			'privacy'                     => tribe( 'privacy' ),
+			'privacy'                     => tribe( 'tickets.privacy' ),
 			'threshold'                   => $threshold,
 			'must_login'                  => ! is_user_logged_in() && $provider->login_required(),
 			'show_original_price_on_sale' => $show_original_price_on_sale,
