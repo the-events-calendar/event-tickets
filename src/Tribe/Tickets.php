@@ -683,14 +683,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			/* @var Tribe__Cache $cache */
 			$cache     = tribe( 'cache' );
-			$cache_key = __METHOD__;
+			$cache_key = $post_id;
+			$sub_key   = __METHOD__;
 
 			if ( ! is_array( $cache[ $cache_key ] ) ) {
 				$cache[ $cache_key ] = [];
 			}
 
-			if ( isset( $cache[ $cache_key ][ $post_id ] ) ) {
-				return $cache[ $cache_key ][ $post_id ];
+			if ( isset( $cache[ $cache_key ][ $sub_key ]  ) ) {
+				return $cache[ $cache_key ][ $sub_key ] ;
 			}
 
 			$default_provider = static::get_event_ticket_provider( $post_id );
@@ -728,7 +729,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$tickets[] = $ticket;
 			}
 
-			$cache[ $cache_key ][ $post_id ] = $tickets;
+			$cache[ $cache_key ][ $sub_key ]  = $tickets;
 
 			return $tickets;
 		}
@@ -1508,14 +1509,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			/* @var Tribe__Cache $cache */
 			$cache     = tribe( 'cache' );
-			$cache_key = __METHOD__;
+			$cache_key = $post_id;
+			$sub_key   = __METHOD__;
 
 			if ( ! is_array( $cache[ $cache_key ] ) ) {
 				$cache[ $cache_key ] = [];
 			}
 
-			if ( isset( $cache[ $cache_key ][ $post_id ] ) ) {
-				return $cache[ $cache_key ][ $post_id ];
+			if ( isset( $cache[ $cache_key ][ $sub_key ]  ) ) {
+				return $cache[ $cache_key ][ $sub_key ] ;
 			}
 
 			$provider = 'default';
@@ -1533,7 +1535,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$found = $repository->found();
 
-			$cache[ $cache_key ][ $post_id ] = $found;
+			$cache[ $cache_key ][ $sub_key ]  = $found;
 
 			return $found;
 		}
@@ -1545,18 +1547,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function get_all_event_tickets( $post_id ) {
-			$key = __METHOD__ . '-' . $post_id;
-
-			/* @var Tribe__Cache $cache */
+			/** @var Tribe__Cache $cache */
 			$cache     = tribe( 'cache' );
-			$cache_key = __METHOD__;
+			$cache_key = $post_id;
+			$sub_key   = __METHOD__;
 
 			if ( ! is_array( $cache[ $cache_key ] ) ) {
 				$cache[ $cache_key ] = [];
 			}
 
-			if ( isset( $cache[ $cache_key ][ $post_id ] ) ) {
-				return $cache[ $cache_key ][ $post_id ];
+			if ( isset( $cache[ $cache_key ][ $sub_key ]  ) ) {
+				return $cache[ $cache_key ][ $sub_key ] ;
 			}
 
 			$tickets = [];
@@ -1571,7 +1572,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$tickets = empty( $tickets ) ? [] : call_user_func_array( 'array_merge', $tickets );
-			$cache[ $cache_key ][ $post_id ] = $tickets;
+			$cache[ $cache_key ][ $sub_key ]  = $tickets;
 
 			return $tickets;
 		}

@@ -1197,14 +1197,15 @@ class Tribe__Tickets__Tickets_Handler {
 	public function get_ticket_max_purchase( $ticket_id ) {
 		/* @var Tribe__Cache $cache */
 		$cache     = tribe( 'cache' );
-		$cache_key = __METHOD__;
+		$cache_key = $ticket_id;
+		$sub_key   = __METHOD__;
 
 		if ( ! is_array( $cache[ $cache_key ] ) ) {
 			$cache[ $cache_key ] = [];
 		}
 
-		if ( isset( $cache[ $cache_key ][ $ticket_id ] ) ) {
-			return $cache[ $cache_key ][ $ticket_id ];
+		if ( isset( $cache[ $cache_key ][ $sub_key ] ) ) {
+			return $cache[ $cache_key ][ $sub_key ];
 		}
 
 		$event = tribe_events_get_ticket_event( $ticket_id );
@@ -1262,7 +1263,7 @@ class Tribe__Tickets__Tickets_Handler {
 			$available_at_a_time = 0;
 		}
 
-		$cache[ $cache_key ][ $ticket_id ] = $available_at_a_time;
+		$cache[ $cache_key ][ $sub_key ]  = $available_at_a_time;
 
 		return $available_at_a_time;
 	}
