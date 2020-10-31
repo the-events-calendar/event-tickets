@@ -137,7 +137,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block( $matrix ) {
-		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
 
 		// Get first key.
@@ -193,7 +193,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block_after_update( $matrix ) {
-		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
 
 		// Get first key.
