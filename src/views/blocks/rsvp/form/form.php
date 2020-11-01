@@ -29,7 +29,7 @@ $tickets_handler = tribe( 'tickets.handler' );
 
 $ticket_data = $tickets_handler->get_object_connections( $ticket->ID );
 
-$event_id   = $ticket_data->event;
+$event_id = $ticket_data->event;
 ?>
 <form
 	name="tribe-rsvp-form"
