@@ -40,18 +40,20 @@ if ( empty( $tickets_on_sale ) ) {
 	return;
 }
 
-/**
- * Allows hiding of "unlimited" to be toggled on/off conditionally.
- *
- * @since 4.11.1
- *
- * @var bool $show_unlimited  Whether to show the "unlimited" text.
- * @var int  $available_count The quantity of Available tickets based on the Attendees number.
- */
-$show_unlimited = apply_filters( 'tribe_tickets_block_show_unlimited_availability', true, $available_count );
-
 foreach ( $tickets_on_sale as $key => $ticket ) {
 	$available_count = $ticket->available();
+
+	/**
+	 * Allows hiding of "unlimited" to be toggled on/off conditionally.
+	 *
+	 * @since 4.11.1
+	 * @since TBD Added $ticket parameter.
+	 *
+	 * @var bool                          $show_unlimited  Whether to show the "unlimited" text.
+	 * @var int                           $available_count The quantity of Available tickets based on the Attendees number.
+	 * @var Tribe__Tickets__Ticket_Object $ticket          The ticket object.
+	 */
+	$show_unlimited = apply_filters( 'tribe_tickets_block_show_unlimited_availability', true, $available_count, $ticket );
 
 	$has_shared_cap = $handler->has_shared_capacity( $ticket );
 

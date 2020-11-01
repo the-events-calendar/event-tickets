@@ -33,7 +33,7 @@
  * @var bool                             $block_html_id       [Global] The RSVP block HTML ID. $doing_shortcode may alter it.
  * @var string                           $going               The RSVP status at time of add/edit (e.g. 'yes'), or empty if not in that context.
  */
-$going = $must_login ? false : $going;
+$going = $must_login ? false : $this->get( 'going' );
 ?>
 <span>
 	<button
