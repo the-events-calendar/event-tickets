@@ -26,7 +26,7 @@ class Return_To_Cart_Test extends V2TestCase {
 
 		$ticket_ids = $this->create_many_paypal_tickets( 1, $event_id );
 
-		$args = [
+		return [
 			'provider'       => $provider,
 			'post_id'        => $event_id,
 			'test_ticket_id' => $ticket_ids[0],
@@ -34,24 +34,6 @@ class Return_To_Cart_Test extends V2TestCase {
 			'cart_url'       => 'http://wordpress.test/cart/?foo',
 			'checkout_url'   => 'http://wordpress.test/checkout/?bar',
 		];
-
-		// Filter PayPal Cart URL.
-		add_filter(
-			'tribe_tickets_tribe-commerce_cart_url',
-			static function () use ( $args ) {
-				return $args['cart_url'];
-			}
-		);
-
-		// Filter PayPal Checkout URL.
-		add_filter(
-			'tribe_tickets_tribe-commerce_checkout_url',
-			static function () use ( $args ) {
-				return $args['checkout_url'];
-			}
-		);
-
-		return $args;
 	}
 
 	/**
@@ -97,6 +79,23 @@ class Return_To_Cart_Test extends V2TestCase {
 		$template = tribe( 'tickets.editor.template' );
 
 		$args = $this->get_default_args();
+
+		// Filter PayPal Cart URL.
+		add_filter(
+			'tribe_tickets_tribe-commerce_cart_url',
+			static function () use ( $args ) {
+				return $args['cart_url'];
+			}
+		);
+
+		// Filter PayPal Checkout URL.
+		add_filter(
+			'tribe_tickets_tribe-commerce_checkout_url',
+			static function () use ( $args ) {
+				return $args['checkout_url'];
+			}
+		);
+
 		$html = $template->template( $this->partial_path, $args, false );
 
 		// Check Cart URL is showing.
