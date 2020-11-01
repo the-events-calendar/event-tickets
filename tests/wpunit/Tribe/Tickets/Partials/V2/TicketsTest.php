@@ -45,7 +45,7 @@ class TicketsTest extends V2TestCase {
 		/** @var \Tribe__Tickets__Tickets_Handler $handler */
 		$handler = tribe( 'tickets.handler' );
 
-		return [
+		$args = [
 			'test_ticket_id'              => $ids[0],
 			'post_id'                     => $event_id,
 			'provider'                    => $provider,
@@ -70,6 +70,24 @@ class TicketsTest extends V2TestCase {
 			'is_unlimited'                => - 1 === $available_count,
 			'max_at_a_time'               => $handler->get_ticket_max_purchase( $ticket->ID ),
 		];
+
+		// Filter PayPal Cart URL.
+		add_filter(
+			'tribe_tickets_tribe-commerce_cart_url',
+			static function () use ( $args ) {
+				return $args['cart_url'];
+			}
+		);
+
+		// Filter PayPal Checkout URL.
+		add_filter(
+			'tribe_tickets_tribe-commerce_checkout_url',
+			static function () use ( $args ) {
+				return $args['checkout_url'];
+			}
+		);
+
+		return $args;
 	}
 
 	/**
@@ -151,23 +169,6 @@ class TicketsTest extends V2TestCase {
 		];
 
 		$args = array_merge( $this->get_default_args(), $override );
-
-		// Filter PayPal Cart URL.
-		add_filter(
-			'tribe_tickets_tribe-commerce_cart_url',
-			static function () use ( $args ) {
-				return $args['cart_url'];
-			}
-		);
-
-		// Filter PayPal Checkout URL.
-		add_filter(
-			'tribe_tickets_tribe-commerce_checkout_url',
-			static function () use ( $args ) {
-				return $args['checkout_url'];
-			}
-		);
-
 		$html = $template->template( $this->partial_path, $args, false );
 
 		$driver = $this->get_html_output_driver();

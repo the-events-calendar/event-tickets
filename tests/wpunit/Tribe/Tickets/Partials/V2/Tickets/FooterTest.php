@@ -26,7 +26,7 @@ class FooterTest extends V2TestCase {
 
 		$tickets = $this->create_many_paypal_tickets( 3, $event_id );
 
-		return [
+		$args = [
 			'post_id'             => $event_id,
 			'provider'            => $provider,
 			'provider_id'         => $provider->class_name,
@@ -42,6 +42,24 @@ class FooterTest extends V2TestCase {
 			'cart_url'            => 'http://wordpress.test/cart/?foo',
 			'checkout_url'        => 'http://wordpress.test/checkout/?bar',
 		];
+
+		// Filter PayPal Cart URL.
+		add_filter(
+			'tribe_tickets_tribe-commerce_cart_url',
+			static function () use ( $args ) {
+				return $args['cart_url'];
+			}
+		);
+
+		// Filter PayPal Checkout URL.
+		add_filter(
+			'tribe_tickets_tribe-commerce_checkout_url',
+			static function () use ( $args ) {
+				return $args['checkout_url'];
+			}
+		);
+
+		return $args;
 	}
 
 	/**
