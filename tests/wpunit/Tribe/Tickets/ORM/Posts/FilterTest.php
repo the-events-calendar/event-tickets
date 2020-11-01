@@ -46,7 +46,7 @@ class FilterTest extends EventsTestCase {
 		 *
 		 * @see \Tribe__Repository::get_ids()
 		 */
-		$this->assertEquals( $assertions['get_ids'], $posts->get_ids(), $method );
+		$this->assertEqualSets( $assertions['get_ids'], $posts->get_ids(), $method );
 
 		/**
 		 * The total number of posts found matching the current query parameters.
@@ -56,13 +56,13 @@ class FilterTest extends EventsTestCase {
 		 * @see \WP_Query::get_posts()
 		 * @see \Tribe__Repository::format_item()
 		 */
-		$this->assertEquals( $assertions['all'], $posts->all(), $method );
+		$this->assertEqualSets( $assertions['all'], $posts->all(), $method );
 
 		/**
 		 * @see \Tribe__Repository::count() WP_Query's `post_count`:
 		 *      The number of posts being displayed. Is affected by pagination but ORM defaults to unlimited.
 		 */
-		$this->assertEquals( $assertions['count'], $posts->count(), $method );
+		$this->assertEqualSets( $assertions['count'], $posts->count(), $method );
 
 		/**
 		 * The total number of posts found matching the current query parameters.
@@ -70,6 +70,6 @@ class FilterTest extends EventsTestCase {
 		 *
 		 * @see \Tribe__Repository::found() WP_Query's `found_posts`.
 		 */
-		$this->assertEquals( $assertions['found'], $posts->found(), $method );
+		$this->assertEqualSets( $assertions['found'], $posts->found(), $method );
 	}
 }
