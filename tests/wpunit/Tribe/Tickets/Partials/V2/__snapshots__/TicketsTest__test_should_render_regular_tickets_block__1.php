@@ -34,8 +34,8 @@
 </div>
 
 		<div
-	id="tribe-block-tickets-item-12796"
-	 class="tribe-tickets__tickets-item post-12796 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12796"
+	id="tribe-block-tickets-item-232"
+	 class="tribe-tickets__tickets-item post-232 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="232"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
@@ -45,9 +45,8 @@
 
 
 <div
-	id="tribe__details__content--12796"
-	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content"
->
+	id="tribe__details__content--232"
+	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
 	Test ticket description for 8</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
@@ -65,26 +64,7 @@
 	
 	<span class="tribe-tickets__tickets-item-extra-available-quantity"> 100 </span> available</div>
 
-	<div class="tribe-tickets__tickets-item-details-summary">
-	<button
-		type="button"
-		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
-		aria-controls="tribe__details__content--12796"
-		tabindex="0"
-	>
-		<span class="screen-reader-text tribe-common-a11y-visual-hide">
-			Open the ticket description.		</span>
-		More	</button>
-	<button
-		type="button"
-		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
-		aria-controls="tribe__details__content--12796"
-		tabindex="0"
-	>
-		<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
-		Less	</button>
-</div>
-
+	
 </div>
 
 	<div  class="tribe-common-h4 tribe-tickets__tickets-item-quantity" >
@@ -101,8 +81,8 @@
 	
 </div>
 <div
-	id="tribe-block-tickets-item-12797"
-	 class="tribe-tickets__tickets-item post-12797 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12797"
+	id="tribe-block-tickets-item-233"
+	 class="tribe-tickets__tickets-item post-233 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="233"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
@@ -112,9 +92,8 @@
 
 
 <div
-	id="tribe__details__content--12797"
-	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content"
->
+	id="tribe__details__content--233"
+	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
 	Test ticket description for 8</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
@@ -132,26 +111,7 @@
 	
 	<span class="tribe-tickets__tickets-item-extra-available-quantity"> 100 </span> available</div>
 
-	<div class="tribe-tickets__tickets-item-details-summary">
-	<button
-		type="button"
-		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
-		aria-controls="tribe__details__content--12797"
-		tabindex="0"
-	>
-		<span class="screen-reader-text tribe-common-a11y-visual-hide">
-			Open the ticket description.		</span>
-		More	</button>
-	<button
-		type="button"
-		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
-		aria-controls="tribe__details__content--12797"
-		tabindex="0"
-	>
-		<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
-		Less	</button>
-</div>
-
+	
 </div>
 
 	<div  class="tribe-common-h4 tribe-tickets__tickets-item-quantity" >
