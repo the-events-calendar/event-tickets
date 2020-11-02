@@ -24,6 +24,9 @@ tribe.tickets.block = {
 		blockFooterQuantity: '.tribe-tickets__tickets-footer-quantity-number',
 		blockSubmit: '#tribe-tickets__tickets-submit',
 		item: '.tribe-tickets__tickets-item',
+		itemDescription: '.tribe-tickets__tickets-item-details-content',
+		itemDescriptionButtonMore: '.tribe-tickets__tickets-item-details-summary-button--more',
+		itemDescriptionButtonLess: '.tribe-tickets__tickets-item-details-summary-button--less',
 		itemExtraAvailable: '.tribe-tickets__tickets-item-extra-available',
 		itemExtraAvailableQuantity: '.tribe-tickets__tickets-item-extra-available-quantity',
 		itemOptOut: '.tribe-tickets-attendees-list-optout--wrapper',
@@ -34,6 +37,7 @@ tribe.tickets.block = {
 		itemQuantityAdd: '.tribe-tickets__tickets-item-quantity-add',
 		itemQuantityRemove: '.tribe-tickets__tickets-item-quantity-remove',
 		submit: '.tribe-tickets__tickets-buy',
+		hiddenElement: '.tribe-common-a11y-hidden',
 	};
 
 	/*
@@ -608,6 +612,89 @@ tribe.tickets.block = {
 	};
 
 	/**
+	 * Toggle the ticket item description visibility.
+	 *
+	 * @since TBD
+	 *
+	 * @param {event} trigger The event.
+	 *
+	 * @return {void}
+	 */
+	obj.itemDescriptionToggle = function( trigger ) {
+		if ( ! trigger ) {
+			return;
+		}
+
+		const $trigger = $( trigger );
+
+		if (
+			! $trigger.hasClass( obj.selectors.itemDescriptionButtonMore.className() ) &&
+			! $trigger.hasClass( obj.selectors.itemDescriptionButtonLess.className() )
+		) {
+			return;
+		}
+
+		const $parent = $trigger.closest( obj.selectors.item );
+		const $target = $( '#' + $trigger.attr( 'aria-controls' ) );
+
+		if ( ! $target || ! $parent ) {
+			return;
+		}
+
+		// Let our CSS handle the hide/show. Also allows us to make it responsive.
+		const onOff = ! $parent.hasClass( 'tribe__details--open' );
+		$parent.toggleClass( 'tribe__details--open', onOff );
+		$target.toggleClass( 'tribe__details--open', onOff );
+		$target.toggleClass( obj.selectors.hiddenElement.className() );
+	};
+
+	/**
+	 * Binds the description toggle.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container jQuery object of the tickets container.
+	 *
+	 * @return {void}
+	 */
+	obj.bindDescriptionToggle = function( $container ) {
+		const $descriptionToggleButtons = $container.find( obj.selectors.itemDescriptionButtonMore + ', ' + obj.selectors.itemDescriptionButtonLess );
+
+		// Add keyboard support for enter key.
+		$descriptionToggleButtons.on(
+			'keyup',
+			function( event ) {
+				// Toggle open like click does.
+				if ( 13 === event.keyCode ) {
+					obj.itemDescriptionToggle( event.target );
+				}
+			}
+		);
+
+		$descriptionToggleButtons.on(
+			'click',
+			function( event ) {
+				obj.itemDescriptionToggle( event.target );
+			}
+		);
+	};
+
+	/**
+	 * Unbinds the description toggle.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container jQuery object of the tickets container.
+	 *
+	 * @return {void}
+	 */
+	obj.unbindDescriptionToggle = function( $container ) {
+		const $descriptionToggleButtons = $container.find( obj.selectors.itemDescriptionButtonMore + ', ' + obj.selectors.itemDescriptionButtonLess );
+
+		$descriptionToggleButtons.off();
+	};
+
+	/**
 	 * Binds events the classic "Submit" (non-modal)
 	 *
 	 * @since TBD
@@ -672,6 +759,7 @@ tribe.tickets.block = {
 		obj.bindTicketsAddRemove( $container );
 		obj.bindTicketsQuantityInput( $container );
 		obj.bindTicketsSubmit( $container );
+		obj.bindDescriptionToggle( $container );
 
 		$document.trigger( 'afterSetup.tribeTicketsBlock', [ $container ] );
 	};

@@ -30,13 +30,20 @@ if ( ! empty( $is_mini ) ) {
 
 $ticket_details_id  = 'tribe__details__content' . ( empty( $is_modal ) ? '' : '__modal' );
 $ticket_details_id .= '--' . $ticket->ID;
+
+$classes = [
+	'tribe-common-b2',
+	'tribe-common-b3--min-medium',
+	'tribe-tickets__tickets-item-details-content',
+	'tribe-common-a11y-hidden' => ! empty( $is_modal ),
+];
 ?>
 
 <?php $this->template( 'v2/tickets/item/content/description-toggle', [ 'ticket' => $ticket ] ); ?>
 
 <div
 	id="<?php echo esc_attr( $ticket_details_id ); ?>"
-	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content"
+	<?php tribe_classes( $classes ); ?>
 >
 	<?php echo wp_kses_post( $ticket->description ); ?>
 </div>
