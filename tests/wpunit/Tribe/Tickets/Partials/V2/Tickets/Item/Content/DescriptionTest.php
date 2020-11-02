@@ -82,25 +82,6 @@ class DescriptionTest extends V2TestCase {
 	/**
 	 * @test
 	 */
-	public function test_should_not_render_if_not_is_mini_and_valid_ticket() {
-		$template = tribe( 'tickets.editor.template' );
-
-		$args = $this->get_default_args();
-		$html = $template->template( $this->partial_path, $args, false );
-
-		$driver = $this->get_html_output_driver();
-
-		$driver->setTolerableDifferences( [
-				$args['ticket']->ID,
-			]
-		);
-
-		$this->assertMatchesSnapshot( $html, $driver );
-	}
-
-	/**
-	 * @test
-	 */
 	public function test_should_render_if_it_is_modal_and_valid_ticket() {
 		$template = tribe( 'tickets.editor.template' );
 
