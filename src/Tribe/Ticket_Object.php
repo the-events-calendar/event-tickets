@@ -511,7 +511,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return boolean
 		 */
 		public function is_in_stock() {
-			// if we aren't tracking stock, then always assume it is in stock.
+			// If we aren't tracking stock, then always assume it is in stock.
 			if ( ! $this->managing_stock() ) {
 				return true;
 			}
