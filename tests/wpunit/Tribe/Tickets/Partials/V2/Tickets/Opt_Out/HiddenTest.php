@@ -5,7 +5,6 @@ namespace Tribe\Tickets\Partials\V2\Tickets\Opt_Out;
 use Tribe\Tickets\Test\Partials\V2TestCase;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 
-
 class HiddenTest extends V2TestCase {
 
 	use PayPal_Ticket_Maker;

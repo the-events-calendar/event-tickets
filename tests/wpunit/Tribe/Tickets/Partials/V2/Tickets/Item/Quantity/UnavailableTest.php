@@ -4,7 +4,6 @@ namespace Tribe\Tickets\Partials\V2\Tickets\Item\Quantity;
 
 use Tribe\Tickets\Test\Partials\V2TestCase;
 
-
 class UnavailableTest extends V2TestCase {
 
 	protected $partial_path = 'v2/tickets/item/quantity/unavailable';

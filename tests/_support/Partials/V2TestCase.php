@@ -5,6 +5,7 @@ namespace Tribe\Tickets\Test\Partials;
 use Codeception\TestCase\WPTestCase;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Spatie\Snapshots\MatchesSnapshots;
+use Tribe\Events\Test\Factories\Event;
 use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
 
 /**
@@ -18,6 +19,13 @@ abstract class V2TestCase extends WPTestCase {
 	}
 
 	use With_Post_Remapping;
+
+	public function setUp() {
+		// before
+		parent::setUp();
+
+		$this->factory()->event = new Event();
+	}
 
 	/**
 	 * Get an HTML Driver.

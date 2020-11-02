@@ -2487,6 +2487,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$event_key  = $this->get_event_key();
 		$optout_key = $this->attendee_optout_key;
+		$iac        = 'none';
 
 		foreach ( $contents as $ticket_id => $item ) {
 			$optout = false;
@@ -2515,6 +2516,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				'quantity'  => $ticket_quantity,
 				'post_id'   => $post_id,
 				'optout'    => $optout,
+				'iac'       => $iac,
 				'provider'  => 'tribe-commerce',
 			];
 		}
@@ -3020,38 +3022,41 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			}
 		}
 
-		$attendee_data = array_merge( $this->get_order_data( $attendee->ID ), [
-			'optout'        => $optout,
-			'ticket'        => $product_title,
-			'attendee_id'   => $attendee->ID,
-			'security'      => $security,
-			'product_id'    => $product_id,
-			'check_in'      => $checkin,
-			'order_status'  => $status,
-			'user_id'       => $user_id,
-			'ticket_sent'   => $ticket_sent,
+		$attendee_data = array_merge(
+			$this->get_order_data( $attendee->ID ),
+			[
+				'optout'        => $optout,
+				'ticket'        => $product_title,
+				'attendee_id'   => $attendee->ID,
+				'security'      => $security,
+				'product_id'    => $product_id,
+				'check_in'      => $checkin,
+				'order_status'  => $status,
+				'user_id'       => $user_id,
+				'ticket_sent'   => $ticket_sent,
 
-			// this is used to find existing attendees.
-			'post_title'    => $attendee->post_title,
+				// This is used to find existing attendees.
+				'post_title'    => $attendee->post_title,
 
-			// Fields for Email Tickets.
-			'event_id'      => get_post_meta( $attendee->ID, $this->attendee_event_key, true ),
-			'ticket_name'   => ! empty( $product ) ? $product->post_title : false,
-			'holder_name'   => get_post_meta( $attendee->ID, $this->full_name, true ),
-			'holder_email'  => get_post_meta( $attendee->ID, $this->email, true ),
-			'order_id'      => $attendee->ID,
-			'order_hash'    => $order_id,
-			'ticket_id'     => $ticket_unique_id,
-			'qr_ticket_id'  => $attendee->ID,
-			'security_code' => $security,
+				// Fields for Email Tickets.
+				'event_id'      => get_post_meta( $attendee->ID, $this->attendee_event_key, true ),
+				'ticket_name'   => ! empty( $product ) ? $product->post_title : false,
+				'holder_name'   => get_post_meta( $attendee->ID, $this->full_name, true ),
+				'holder_email'  => get_post_meta( $attendee->ID, $this->email, true ),
+				'order_id'      => $attendee->ID,
+				'order_hash'    => $order_id,
+				'ticket_id'     => $ticket_unique_id,
+				'qr_ticket_id'  => $attendee->ID,
+				'security_code' => $security,
 
-			// Attendee Meta.
-			'attendee_meta' => $meta,
+				// Attendee Meta.
+				'attendee_meta' => $meta,
 
-			// Handle initial Attendee flags.
-			'is_subscribed' => tribe_is_truthy( get_post_meta( $attendee->ID, $this->attendee_subscribed, true ) ),
-			'is_purchaser'  => true,
-		] );
+				// Handle initial Attendee flags.
+				'is_subscribed' => tribe_is_truthy( get_post_meta( $attendee->ID, $this->attendee_subscribed, true ) ),
+				'is_purchaser'  => true,
+			]
+		);
 
 		/**
 		 * Allow filtering the attendee information to return.

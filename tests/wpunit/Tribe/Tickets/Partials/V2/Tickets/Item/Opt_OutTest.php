@@ -33,6 +33,8 @@ class Opt_OutTest extends V2TestCase {
 			'ticket'   => $ticket,
 			'is_mini'  => false,
 			'is_modal' => false,
+			'handler'  => tribe( 'tickets.handler' ),
+			'privacy'  => tribe( 'tickets.privacy' ),
 		];
 	}
 

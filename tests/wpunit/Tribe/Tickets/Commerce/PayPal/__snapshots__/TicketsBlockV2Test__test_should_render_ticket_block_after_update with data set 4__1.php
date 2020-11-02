@@ -61,9 +61,12 @@
 						</span>
 </div>
 
-	<div class="tribe-common-b3 tribe-tickets__tickets-item-extra-available">
+	
+<div class="tribe-common-b3 tribe-tickets__tickets-item-extra-available">
+
 	Unlimited
-	<span class="tribe-tickets__tickets-item-extra-available-quantity"> -1 </span> available</div>
+	<span class="tribe-tickets__tickets-item-extra-available-quantity"> -1 </span> available
+</div>
 
 	<div class="tribe-tickets__tickets-item-details-summary">
 	<button
