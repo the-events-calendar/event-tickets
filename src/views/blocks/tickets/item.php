@@ -8,7 +8,7 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link    {INSERT_ARTICLE_LINK_HERE}
+ * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
  * @since   4.9
  * @since   4.11.0 Add modal only fields
@@ -53,7 +53,6 @@ if (
 	return false;
 }
 
-$must_login     = ! is_user_logged_in() && $ticket->get_provider()->login_required();
 $has_shared_cap = $tickets_handler->has_shared_capacity( $ticket );
 $has_suffix     = ! empty( $ticket->price_suffix );
 
@@ -62,7 +61,7 @@ if ( $must_login ) {
 }
 
 if ( $has_suffix ) {
-	$classes[] = 'tribe-tickets__item--price-sufix';
+	$classes[] = 'tribe-tickets__item--price-suffix';
 }
 
 ?>

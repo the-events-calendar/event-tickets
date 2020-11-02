@@ -23,27 +23,29 @@ class ExtraTest extends V2TestCase {
 		 */
 		$provider = tribe_get_class_instance( 'Tribe__Tickets__Commerce__PayPal__Main' );
 
-		$event   = $this->get_mock_event( 'events/single/1.json' );
-		$ids     = $this->create_many_paypal_tickets( 1, $event->ID, [ 'price' => 99 ] );
+		$event = $this->get_mock_event( 'events/single/1.json' );
+		$ids   = $this->create_many_paypal_tickets( 1, $event->ID, [ 'price' => 99 ] );
 
+		/** @var \Tribe__Tickets__Ticket_Object $ticket */
 		$ticket = $provider->get_ticket( $event->ID, $ids[0] );
 
 		return [
-			'post_id'                     => $event->ID,
-			'ticket'                      => $ticket,
-			'provider'                    => $provider,
-			'provider_id'                 => $provider->class_name,
-			'has_tickets_on_sale'         => true,
-			'is_sale_past'                => false,
-			'is_sale_future'              => true,
-			'currency'                    => tribe( 'tickets.commerce.currency' ),
-			'is_mini'                     => false,
-			'is_modal'                    => false,
-			'submit_button_name'          => 'cart-button',
-			'cart_url'                    => 'http://wordpress.test/cart/?foo',
-			'checkout_url'                => 'http://wordpress.test/checkout/?bar',
-			'threshold'                   => 0,
-			'key'                         => 0,
+			'post_id'             => $event->ID,
+			'ticket'              => $ticket,
+			'provider'            => $provider,
+			'provider_id'         => $provider->class_name,
+			'has_tickets_on_sale' => true,
+			'is_sale_past'        => false,
+			'is_sale_future'      => true,
+			'currency'            => tribe( 'tickets.commerce.currency' ),
+			'is_mini'             => false,
+			'is_modal'            => false,
+			'submit_button_name'  => 'cart-button',
+			'cart_url'            => 'http://wordpress.test/cart/?foo',
+			'checkout_url'        => 'http://wordpress.test/checkout/?bar',
+			'threshold'           => 0,
+			'key'                 => 0,
+			'available_count'     => $ticket->available(),
 		];
 	}
 

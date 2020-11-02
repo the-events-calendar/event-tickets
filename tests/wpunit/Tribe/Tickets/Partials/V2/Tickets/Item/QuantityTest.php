@@ -5,7 +5,6 @@ namespace Tribe\Tickets\Partials\V2\Tickets\Item;
 use Tribe\Tickets\Test\Partials\V2TestCase;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 
-
 class QuantityTest extends V2TestCase {
 
 	use PayPal_Ticket_Maker;
@@ -28,12 +27,17 @@ class QuantityTest extends V2TestCase {
 
 		$ticket = $provider->get_ticket( $event->ID, $ids[0], [ 'price' => 99 ] );
 
+		/** @var \Tribe__Tickets__Tickets_Handler $handler */
+		$handler = tribe( 'tickets.handler' );
+
 		return [
-			'post_id'             => $event->ID,
-			'ticket'              => $ticket,
-			'is_mini'             => false,
-			'key'                 => 0,
-			'must_login'          => false,
+			'post_id'       => $event->ID,
+			'ticket'        => $ticket,
+			'is_mini'       => false,
+			'key'           => 0,
+			'must_login'    => false,
+			'handler'       => $handler,
+			'max_at_a_time' => $handler->get_ticket_max_purchase( $ticket->ID ),
 		];
 	}
 

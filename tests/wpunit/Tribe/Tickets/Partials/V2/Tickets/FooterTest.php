@@ -17,31 +17,49 @@ class FooterTest extends V2TestCase {
 	 * @return array
 	 */
 	public function get_default_args() {
-
 		/**
 		 * @var \Tribe__Tickets__Commerce__PayPal__Main
 		 */
 		$provider = tribe_get_class_instance( 'Tribe__Tickets__Commerce__PayPal__Main' );
 
-		$event   = $this->get_mock_event( 'events/single/1.json' );
-		$tickets = $this->create_many_paypal_tickets( 3, $event->ID );
+		$event_id = $this->factory()->event->create();
 
-		return [
-			'post_id'                     => $event->ID,
-			'provider'                    => $provider,
-			'provider_id'                 => $provider->class_name,
-			'tickets'                     => $tickets,
-			'tickets_on_sale'             => $tickets,
-			'has_tickets_on_sale'         => true,
-			'is_sale_past'                => false,
-			'is_sale_future'              => true,
-			'currency'                    => tribe( 'tickets.commerce.currency' ),
-			'is_mini'                     => false,
-			'is_modal'                    => false,
-			'submit_button_name'          => 'cart-button',
-			'cart_url'                    => 'http://wordpress.test/cart/?foo',
-			'checkout_url'                => 'http://wordpress.test/checkout/?bar',
+		$tickets = $this->create_many_paypal_tickets( 3, $event_id );
+
+		$args = [
+			'post_id'             => $event_id,
+			'provider'            => $provider,
+			'provider_id'         => $provider->class_name,
+			'tickets'             => $tickets,
+			'tickets_on_sale'     => $tickets,
+			'has_tickets_on_sale' => true,
+			'is_sale_past'        => false,
+			'is_sale_future'      => true,
+			'currency'            => tribe( 'tickets.commerce.currency' ),
+			'is_mini'             => false,
+			'is_modal'            => false,
+			'submit_button_name'  => 'cart-button',
+			'cart_url'            => 'http://wordpress.test/cart/?foo',
+			'checkout_url'        => 'http://wordpress.test/checkout/?bar',
 		];
+
+		// Filter PayPal Cart URL.
+		add_filter(
+			'tribe_tickets_tribe-commerce_cart_url',
+			static function () use ( $args ) {
+				return $args['cart_url'];
+			}
+		);
+
+		// Filter PayPal Checkout URL.
+		add_filter(
+			'tribe_tickets_tribe-commerce_checkout_url',
+			static function () use ( $args ) {
+				return $args['checkout_url'];
+			}
+		);
+
+		return $args;
 	}
 
 	/**
@@ -51,11 +69,11 @@ class FooterTest extends V2TestCase {
 		$template = tribe( 'tickets.editor.template' );
 
 		$args = [
-			'is_mini' => false,
+			'is_mini'         => false,
 			'tickets_on_sale' => [],
 		];
 
-		$html   = $template->template( $this->partial_path, $args, false );
+		$html = $template->template( $this->partial_path, $args, false );
 
 		$this->assertMatchesSnapshot( $html );
 	}
@@ -73,7 +91,7 @@ class FooterTest extends V2TestCase {
 
 		$args = array_merge( $this->get_default_args(), $override );
 
-		$html   = $template->template( $this->partial_path, $args, false );
+		$html = $template->template( $this->partial_path, $args, false );
 
 		// Make sure we have the Return to Cart link shown.
 		$this->assertContains( 'tribe-tickets__tickets-footer-back-link', $html );
@@ -88,7 +106,7 @@ class FooterTest extends V2TestCase {
 		$template = tribe( 'tickets.editor.template' );
 
 		$override = [
-			'is_mini'         => false,
+			'is_mini' => false,
 		];
 
 		$args = array_merge( $this->get_default_args(), $override );
@@ -104,7 +122,7 @@ class FooterTest extends V2TestCase {
 		$template = tribe( 'tickets.editor.template' );
 
 		$override = [
-			'is_mini'      => true,
+			'is_mini' => true,
 		];
 
 		$args = array_merge( $this->get_default_args(), $override );

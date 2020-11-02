@@ -35,7 +35,8 @@
 	</div>
 	</div>
 
-	<!-- This div is where the AJAX returns the form -->
+	
+<!-- This div is where the AJAX returns the form. -->
 <div class="tribe-block__rsvp__form">
 	</div>
 
@@ -76,7 +77,8 @@
 	</div>
 	</div>
 
-	<!-- This div is where the AJAX returns the form -->
+	
+<!-- This div is where the AJAX returns the form. -->
 <div class="tribe-block__rsvp__form">
 	</div>
 
