@@ -64,8 +64,7 @@
 
 <div
 	id="tribe__details__content__modal--238"
-	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content"
->
+	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content tribe-common-a11y-hidden" >
 	Test ticket description for 8</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
@@ -73,7 +72,7 @@
 		<span class="tribe-tickets__tickets-sale-price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">$</span>
+					<span class="tribe-currency-symbol">&#x24;</span>
 					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
@@ -125,8 +124,7 @@
 
 <div
 	id="tribe__details__content__modal--239"
-	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content"
->
+	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content tribe-common-a11y-hidden" >
 	Test ticket description for 8</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
@@ -134,7 +132,7 @@
 		<span class="tribe-tickets__tickets-sale-price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">$</span>
+					<span class="tribe-currency-symbol">&#x24;</span>
 					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
@@ -171,7 +169,7 @@
 	<span class="tribe-tickets__tickets-footer-total-wrap">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">$</span>
+					<span class="tribe-currency-symbol">&#x24;</span>
 					<span class="tribe-amount">0.00</span>
 				</span>
 				</span>

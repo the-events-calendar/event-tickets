@@ -3,9 +3,8 @@
 
 
 <div
-	id="tribe__details__content--147"
-	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content"
->
+	id="tribe__details__content--149"
+	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
 	Test ticket description for 8</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
@@ -14,7 +13,7 @@
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
 					<span class="tribe-currency-symbol">&#x24;</span>
-					<span class="tribe-amount">8.00</span>
+					<span class="tribe-amount">5.00</span>
 				</span>
 						</span>
 </div>
@@ -23,25 +22,6 @@
 	
 	<span class="tribe-tickets__tickets-item-extra-available-quantity"> 100 </span> available</div>
 
-	<div class="tribe-tickets__tickets-item-details-summary">
-	<button
-		type="button"
-		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
-		aria-controls="tribe__details__content--147"
-		tabindex="0"
-	>
-		<span class="screen-reader-text tribe-common-a11y-visual-hide">
-			Open the ticket description.		</span>
-		More	</button>
-	<button
-		type="button"
-		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
-		aria-controls="tribe__details__content--147"
-		tabindex="0"
-	>
-		<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
-		Less	</button>
-</div>
-
+	
 </div>
 ';
