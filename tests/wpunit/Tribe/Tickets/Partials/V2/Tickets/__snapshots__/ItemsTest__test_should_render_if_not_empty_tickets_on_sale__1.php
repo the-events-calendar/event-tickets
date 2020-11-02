@@ -1,6 +1,6 @@
 <?php return '<div
-	id="tribe-block-tickets-item-12904"
-	 class="tribe-tickets__tickets-item post-12904 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12904"
+	id="tribe-block-tickets-item-12910"
+	 class="tribe-tickets__tickets-item post-12910 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12910"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
@@ -10,9 +10,8 @@
 
 
 <div
-	id="tribe__details__content--12904"
-	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content"
->
+	id="tribe__details__content--12910"
+	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
 	Test ticket description for 8</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
@@ -69,8 +68,8 @@
 	
 </div>
 <div
-	id="tribe-block-tickets-item-12905"
-	 class="tribe-tickets__tickets-item post-12905 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12905"
+	id="tribe-block-tickets-item-12911"
+	 class="tribe-tickets__tickets-item post-12911 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12911"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
@@ -80,9 +79,8 @@
 
 
 <div
-	id="tribe__details__content--12905"
-	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content"
->
+	id="tribe__details__content--12911"
+	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
 	Test ticket description for 8</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 

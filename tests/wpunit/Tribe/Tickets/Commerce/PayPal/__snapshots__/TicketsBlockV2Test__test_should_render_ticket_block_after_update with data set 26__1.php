@@ -47,8 +47,7 @@
 
 <div
 	id="tribe__details__content--10193"
-	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content"
->
+	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
 	Test PayPal ticket description for 10192</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 

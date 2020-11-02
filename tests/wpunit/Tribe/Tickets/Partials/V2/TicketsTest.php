@@ -94,6 +94,7 @@ class TicketsTest extends V2TestCase {
 	 * @test
 	 */
 	public function test_should_not_render_if_not_is_sale_future() {
+		/** @var \Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 
 		$override = [
@@ -111,6 +112,7 @@ class TicketsTest extends V2TestCase {
 	 * @test
 	 */
 	public function test_should_not_render_if_empty_provider() {
+		/** @var \Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 
 		$override = [
@@ -128,6 +130,7 @@ class TicketsTest extends V2TestCase {
 	 * @test
 	 */
 	public function test_should_not_render_if_empty_tickets() {
+		/** @var \Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 
 		$override = [
@@ -145,6 +148,7 @@ class TicketsTest extends V2TestCase {
 	 * @test
 	 */
 	public function test_should_render_regular_tickets_block() {
+		/** @var \Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 
 		$override = [];
@@ -162,6 +166,7 @@ class TicketsTest extends V2TestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block_for_is_mini() {
+		/** @var \Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 
 		$override = [
@@ -181,6 +186,7 @@ class TicketsTest extends V2TestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block_for_is_modal() {
+		/** @var \Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 
 		$override = [
