@@ -206,6 +206,7 @@ class Tribe__Tickets__Commerce__Cart {
 				'quantity'  => 0,
 				'post_id'   => 0,
 				'optout'    => 0,
+				'iac'       => 'none',
 			];
 
 			foreach ( $cart_tickets as $ticket ) {

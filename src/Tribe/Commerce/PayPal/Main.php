@@ -2487,6 +2487,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$event_key  = $this->get_event_key();
 		$optout_key = $this->attendee_optout_key;
+		$iac        = 'none';
 
 		foreach ( $contents as $ticket_id => $item ) {
 			$optout = false;
@@ -2515,6 +2516,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				'quantity'  => $ticket_quantity,
 				'post_id'   => $post_id,
 				'optout'    => $optout,
+				'iac'       => $iac,
 				'provider'  => 'tribe-commerce',
 			];
 		}
