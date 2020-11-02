@@ -47,8 +47,8 @@
  */
 
 if (
-	! empty( $is_mini )
-	|| ! empty( $is_modal )
+	empty( $is_mini )
+	|| empty( $is_modal )
 	|| ! $ticket->show_description()
 	|| empty( $ticket->description )
 ) {
