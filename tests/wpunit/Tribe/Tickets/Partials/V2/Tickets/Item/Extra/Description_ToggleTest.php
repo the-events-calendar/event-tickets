@@ -54,7 +54,7 @@ class Description_ToggleTest extends V2TestCase {
 	/**
 	 * @test
 	 */
-	public function test_should_not_render_if_is_modal() {
+	public function test_should_render_if_is_modal() {
 		$template = tribe( 'tickets.editor.template' );
 
 		$override = [
@@ -98,7 +98,7 @@ class Description_ToggleTest extends V2TestCase {
 	/**
 	 * @test
 	 */
-	public function test_should_render_if_is_not_modal_or_mini_and_has_description() {
+	public function test_should_not_render_if_is_not_modal_or_mini_and_has_description() {
 		$template = tribe( 'tickets.editor.template' );
 
 		$args = $this->get_default_args();

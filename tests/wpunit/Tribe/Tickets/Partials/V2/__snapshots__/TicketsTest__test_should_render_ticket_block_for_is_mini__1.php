@@ -8,7 +8,7 @@
 		data-provider="Tribe__Tickets__Commerce__PayPal__Main"
 		autocomplete="off"
 		data-provider-id="tribe-commerce"
-		data-post-id="8"
+		data-post-id="12930"
 		novalidate
 	>
 
@@ -34,23 +34,23 @@
 </div>
 
 		<div
-	id="tribe-block-tickets-item-235"
-	 class="tribe-tickets__tickets-item post-235 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="235"
+	id="tribe-block-tickets-item-12931"
+	 class="tribe-tickets__tickets-item post-12931 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12931"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title tribe-tickets--no-description"  >
 			<div  class="tribe-common-b3 tribe-tickets__tickets-item-content-subtitle"  >
-					</div>
-		Test ticket for 8</div>
+			Post title 4004		</div>
+		Test ticket for 12930</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
 		<span class="tribe-tickets__tickets-sale-price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">&#x24;</span>
+					<span class="tribe-currency-symbol">$</span>
 					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
@@ -66,23 +66,23 @@
 	
 </div>
 <div
-	id="tribe-block-tickets-item-236"
-	 class="tribe-tickets__tickets-item post-236 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="236"
+	id="tribe-block-tickets-item-12932"
+	 class="tribe-tickets__tickets-item post-12932 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12932"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title tribe-tickets--no-description"  >
 			<div  class="tribe-common-b3 tribe-tickets__tickets-item-content-subtitle"  >
-					</div>
-		Test ticket for 8</div>
+			Post title 4004		</div>
+		Test ticket for 12930</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
 		<span class="tribe-tickets__tickets-sale-price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">&#x24;</span>
+					<span class="tribe-currency-symbol">$</span>
 					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
@@ -115,7 +115,7 @@
 	<span class="tribe-tickets__tickets-footer-total-wrap">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">&#x24;</span>
+					<span class="tribe-currency-symbol">$</span>
 					<span class="tribe-amount">0.00</span>
 				</span>
 				</span>

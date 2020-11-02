@@ -82,7 +82,7 @@ class DescriptionTest extends V2TestCase {
 	/**
 	 * @test
 	 */
-	public function test_should_render_if_not_is_mini_and_valid_ticket() {
+	public function test_should_render_if_it_is_modal_and_valid_ticket() {
 		$template = tribe( 'tickets.editor.template' );
 
 		$args = $this->get_default_args();
@@ -97,6 +97,9 @@ class DescriptionTest extends V2TestCase {
 
 		// Make sure we have the Modal class added.
 		$this->assertContains( 'tribe__details__content__modal', $html );
+
+		// Make sure we have the hidden class.
+		$this->assertContains( 'tribe-common-a11y-hidden', $html );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}

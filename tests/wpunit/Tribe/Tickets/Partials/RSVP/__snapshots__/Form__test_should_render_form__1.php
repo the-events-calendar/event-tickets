@@ -1,10 +1,11 @@
-<?php return '<!-- This div is where the AJAX returns the form -->
+<?php return '
+<!-- This div is where the AJAX returns the form. -->
 <div class="tribe-block__rsvp__form">
 	<form
 	name="tribe-rsvp-form"
-	data-product-id="12030"
+	data-product-id="12636"
 >
-	<input type="hidden" name="product_id[]" value="12030">
+	<input type="hidden" name="product_id[]" value="12636">
 	<input type="hidden" name="attendee[order_status]" value="1">
 	<!-- Maybe add nonce over here? Try to leave templates as clean as possible -->
 
@@ -18,7 +19,7 @@
 
 		<input
 	type="number"
-	name="quantity_12030"
+	name="quantity_12636"
 	class="tribe-tickets-quantity"
 	step="1"
 	min="1"
@@ -57,15 +58,13 @@
 	required
 />
 	<input name="attendee[optout]" value="1" type="hidden" />
-				
-			<button
+							<button
 	type="submit"
 	name="tickets_process"
 	value="1"
 	class="tribe-block__rsvp__submit-button"
 >
 	Submit RSVP</button>			</div>
-
 </form>
 </div>
 ';

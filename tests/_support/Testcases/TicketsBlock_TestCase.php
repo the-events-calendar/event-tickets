@@ -137,7 +137,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block( $matrix ) {
-		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
 
 		// Get first key.
@@ -163,6 +163,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 			$ticket_id,
 			$post_id,
 		] );
+
 		$driver->setTolerableDifferencesPrefixes( [
 			'post-',
 			'tribe-block-tickets-item-',
@@ -177,6 +178,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 			'Test WooCommerce ticket for ',
 			'Test WooCommerce ticket description for ',
 		] );
+
 		$driver->setTimeDependentAttributes( [
 			'data-ticket-id',
 		] );
@@ -193,7 +195,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block_after_update( $matrix ) {
-		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
 
 		// Get first key.
