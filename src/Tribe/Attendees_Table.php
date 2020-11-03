@@ -1088,11 +1088,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handler for the Edit Attendee column
-	 *
-	 * @param array $item Row item data.
+	 * Render the Edit Attendee column value.
 	 *
 	 * @since TBD
+	 *
+	 * @param array $item Row item data.
 	 */
 	public function column_edit_attendee( $item ) {
 		echo wp_kses_post(
