@@ -195,7 +195,13 @@ $default_module_class = empty( $default_module ) ? '' : $default_module->class_n
 				/** @var Tribe__Tickets__Admin__Views $admin_views */
 				$admin_views = tribe( 'tickets.admin.views' );
 
-				$admin_views->template( 'editor/fieldset/advanced', [ 'post_id' => $post_id, 'ticket_id' => $ticket_id, 'provider' => $provider ] );
+				$admin_context = [
+					'post_id'   => $post_id,
+					'ticket_id' => $ticket_id,
+					'provider'  => $provider,
+				];
+
+				$admin_views->template( 'editor/fieldset/advanced', $admin_context );
 				$admin_views->template( 'editor/fieldset/history', [ 'post_id' => $post_id, 'ticket_id' => $ticket_id ] );
 
 				/**
