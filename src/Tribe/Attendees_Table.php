@@ -1095,6 +1095,15 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @since TBD
 	 */
 	public function column_edit_attendee( $item ) {
-		echo wp_kses_post( sprintf( '<a href="#" class="edit-attendee" data-provider-id="%s" data-event-id="%s" data-attendee-id="%s"><span class="edit-attendee-column-icon dashicons dashicons-ellipsis"></span></a>', $item['provider'], $item['event_id'], $item['attendee_id'] ) );
+		echo wp_kses_post(
+			sprintf(
+				'<a href="#attendee-edit" class="edit-attendee" data-provider-id="%s" data-event-id="%s" data-attendee-id="%s">
+					<span class="edit-attendee-column-icon dashicons dashicons-ellipsis"></span>
+				</a>',
+				$item['provider'],
+				$item['event_id'],
+				$item['attendee_id']
+			)
+		);
 	}
 }
