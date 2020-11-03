@@ -616,11 +616,17 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param {event} trigger The event.
+	 * @param {event} event The event.
 	 *
 	 * @return {void}
 	 */
-	obj.itemDescriptionToggle = function( trigger ) {
+	obj.itemDescriptionToggle = function( event ) {
+		if ( 'keyup' === event.type && 13 !== event.keyCode ) {
+			return;
+		}
+
+		const trigger = event.target;
+
 		if ( ! trigger ) {
 			return;
 		}
@@ -637,7 +643,7 @@ tribe.tickets.block = {
 		const $parent = $trigger.closest( obj.selectors.item );
 		const $target = $( '#' + $trigger.attr( 'aria-controls' ) );
 
-		if ( ! $target || ! $parent ) {
+		if ( ! $target.length || ! $parent ) {
 			return;
 		}
 
@@ -663,19 +669,12 @@ tribe.tickets.block = {
 		// Add keyboard support for enter key.
 		$descriptionToggleButtons.on(
 			'keyup',
-			function( event ) {
-				// Toggle open like click does.
-				if ( 13 === event.keyCode ) {
-					obj.itemDescriptionToggle( event.target );
-				}
-			}
+			obj.itemDescriptionToggle
 		);
 
 		$descriptionToggleButtons.on(
 			'click',
-			function( event ) {
-				obj.itemDescriptionToggle( event.target );
-			}
+			obj.itemDescriptionToggle
 		);
 	};
 
