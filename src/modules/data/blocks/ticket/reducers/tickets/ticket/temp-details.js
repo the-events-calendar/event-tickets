@@ -20,13 +20,16 @@ const startDateInput = datePickerFormat
 const endDateInput = datePickerFormat
 	? endMoment.format( momentUtil.toFormat( datePickerFormat ) )
 	: momentUtil.toDate( endMoment );
+const iac = globals.iacVars().iacDefault
+	? globals.iacVars().iacDefault
+	: 'none';
 
 export const DEFAULT_STATE = {
 	title: '',
 	description: '',
 	price: '',
 	sku: '',
-	iac: '',
+	iac: iac,
 	startDate: momentUtil.toDatabaseDate( currentMoment ),
 	startDateInput,
 	startDateMoment: currentMoment,
