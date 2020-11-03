@@ -516,24 +516,20 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return true;
 			}
 
-			/* @var Tribe__Cache $cache */
-			$cache     = tribe( 'cache' );
-			$cache_key = __METHOD__;
+			/** @var Tribe__Cache $cache */
+			$cache = tribe( 'cache' );
+			$key   = __METHOD__ . '-' . $this->ID;
 
-			if ( ! is_array( $cache[ $this->ID ] ) ) {
-				$cache[ $cache_key ] = [];
-			}
-
-			if ( isset( $cache[ $this->ID ][ $cache_key ] ) ) {
-				return $cache[ $this->ID ][ $cache_key ];
+			if ( isset( $cache[ $key ] ) ) {
+				return $cache[ $key ];
 			}
 
 			$remaining    = $this->inventory();
 			$is_unlimited = - 1 === $remaining;
 
-			$cache[ $this->ID ][ $cache_key ] = false === $remaining || $remaining > 0 || $is_unlimited;
+			$cache[ $key ] = false === $remaining || $remaining > 0 || $is_unlimited;
 
-			return $cache[ $this->ID ][ $cache_key ];
+			return $cache[ $key ];
 		}
 
 		/**
@@ -570,18 +566,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function inventory() {
 
-			/* @var Tribe__Cache $cache */
-			$cache     = tribe( 'cache' );
-			$cache_key = __METHOD__;
+			/** @var Tribe__Cache $cache */
+			$cache = tribe( 'cache' );
+			$key   = __METHOD__ . '-' . $this->ID;
 
-			if ( ! is_array( $cache[ $this->ID ] ) ) {
-				$cache[ $cache_key ] = [];
+			if ( isset( $cache[ $key ] ) ) {
+				return $cache[ $key ];
 			}
-
-			if ( isset( $cache[ $this->ID ][ $cache_key ] ) ) {
-				return $cache[ $this->ID ][ $cache_key ];
-			}
-
 			// Fetch provider (also sets if found).
 			$provider = $this->get_provider();
 
@@ -589,8 +580,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			// If we don't have the provider, get the result from inventory.
 			if ( empty( $provider ) ) {
-				$cache[ $this->ID ][ $cache_key ] = $capacity - $this->qty_sold() - $this->qty_pending();
-				return $cache[ $this->ID ][ $cache_key ];
+				$cache[ $key ] = $capacity - $this->qty_sold() - $this->qty_pending();
+				return $cache[ $key ];
 			}
 
 			// If we aren't tracking stock, then always assume it is in stock or capacity is unlimited.
@@ -598,8 +589,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				! $this->managing_stock()
 				|| -1 === $capacity
 			) {
-				$cache[ $this->ID ][ $cache_key ] = -1;
-				return $cache[ $this->ID ][ $cache_key ];
+				$cache[ $key ] = -1;
+				return $cache[ $key ];
 			}
 
 			/** @var Tribe__Tickets__Status__Manager $status_mgr */
@@ -664,8 +655,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$inventory = min( $inventory );
 
 			// Prevents Negative
-			$cache[ $this->ID ][ $cache_key ] = max( $inventory, 0 );
-			return $cache[ $this->ID ][ $cache_key ];
+			$cache[ $key ] = max( $inventory, 0 );
+			return $cache[ $key ];
 		}
 
 		/**
@@ -692,18 +683,14 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function available() {
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited.
+			/** @var Tribe__Cache $cache */
+			$cache = tribe( 'cache' );
+			$key   = __METHOD__ . '-' . $this->ID;
 
-			/* @var Tribe__Cache $cache */
-			$cache     = tribe( 'cache' );
-			$cache_key = __METHOD__;
-
-			if ( ! is_array( $cache[ $this->ID ] ) ) {
-				$cache[ $cache_key ] = [];
+			if ( isset( $cache[ $key ] ) ) {
+				return $cache[ $key ];
 			}
 
-			if ( isset( $cache[ $this->ID ][ $cache_key ] ) ) {
-				return $cache[ $this->ID ][ $cache_key ];
-			}
 			if (
 				! $this->managing_stock()
 				|| -1 === $this->capacity()
@@ -721,7 +708,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// Prevents Negative
 			$available = max( $available, 0 );
 
-			$cache[ $this->ID ][ $cache_key ] = $available;
+			$cache[ $key ] = $available;
 
 			return $available;
 		}
@@ -738,16 +725,12 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return '';
 			}
 
-			/* @var Tribe__Cache $cache */
-			$cache     = tribe( 'cache' );
-			$cache_key = __METHOD__;
+			/** @var Tribe__Cache $cache */
+			$cache = tribe( 'cache' );
+			$key   = __METHOD__ . '-' . $this->ID;
 
-			if ( ! is_array( $cache[ $this->ID ] ) ) {
-				$cache[ $cache_key ] = [];
-			}
-
-			if ( isset( $cache[ $this->ID ][ $cache_key ] ) ) {
-				return $cache[ $this->ID ][ $cache_key ];
+			if ( isset( $cache[ $key ] ) ) {
+				return $cache[ $key ];
 			}
 
 			if ( is_null( $this->capacity ) ) {
@@ -758,8 +741,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			// Unlimited is always unlimited
 			if ( -1 === (int) $this->capacity ) {
-				$cache[ $this->ID ][ $cache_key ] = (int) $this->capacity;
-				return $cache[ $this->ID ][ $cache_key ];
+				$cache[ $key ] = (int) $this->capacity;
+				return $cache[ $key ];
 			}
 
 			// If Capped or we used the local Capacity
@@ -767,14 +750,14 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $stock_mode
 				|| Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode
 			) {
-				$cache[ $this->ID ][ $cache_key ] = (int) $this->capacity;
-				return $cache[ $this->ID ][ $cache_key ];
+				$cache[ $key ] = (int) $this->capacity;
+				return $cache[ $key ];
 			}
 
 			$event_capacity = tribe_tickets_get_capacity( $this->get_event() );
 
-			$cache[ $this->ID ][ $cache_key ] = (int) $event_capacity;
-			return $cache[ $this->ID ][ $cache_key ];
+			$cache[ $key ] = (int) $event_capacity;
+			return $cache[ $key ];
 		}
 
 		/**
