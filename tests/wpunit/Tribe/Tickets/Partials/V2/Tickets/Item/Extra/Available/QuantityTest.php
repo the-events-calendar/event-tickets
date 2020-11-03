@@ -84,4 +84,19 @@ class QuantityTest extends V2TestCase {
 		$this->assertMatchesSnapshot( $html, $this->get_html_output_driver() );
 	}
 
+	/**
+	 * @test
+	 */
+	public function test_should_not_render_quantity_block_if_is_unlimited() {
+		$template = tribe( 'tickets.editor.template' );
+
+		$args = $this->get_default_args();
+
+		$args['is_unlimited'] = true;
+
+		$html = $template->template( $this->partial_path, $args, false );
+
+		$this->assertMatchesSnapshot( $html, $this->get_html_output_driver() );
+	}
+
 }
