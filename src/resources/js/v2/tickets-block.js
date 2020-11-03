@@ -494,7 +494,7 @@ tribe.tickets.block = {
 	obj.bindTicketsAddRemove = function( $container ) {
 		const $addRemove = $container.find( obj.selectors.itemQuantityAdd + ', ' + obj.selectors.itemQuantityRemove );
 
-		$addRemove.on(
+		$addRemove.unbind( 'click' ).on(
 			'click',
 			function( e ) {
 				e.preventDefault();
