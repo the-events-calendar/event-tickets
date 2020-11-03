@@ -1195,17 +1195,12 @@ class Tribe__Tickets__Tickets_Handler {
 	 *             (allows zero but not `-1` for Unlimited). If oversold, will be corrected to zero.
 	 */
 	public function get_ticket_max_purchase( $ticket_id ) {
-		/* @var Tribe__Cache $cache */
-		$cache     = tribe( 'cache' );
-		$cache_key = $ticket_id;
-		$sub_key   = __METHOD__;
+		/** @var Tribe__Cache $cache */
+		$cache = tribe( 'cache' );
+		$key   = __METHOD__ . '-' . $ticket_id;
 
-		if ( ! is_array( $cache[ $cache_key ] ) ) {
-			$cache[ $cache_key ] = [];
-		}
-
-		if ( isset( $cache[ $cache_key ][ $sub_key ] ) ) {
-			return $cache[ $cache_key ][ $sub_key ];
+		if ( isset( $cache[ $key ] ) ) {
+			return $cache[ $key ];
 		}
 
 		$event = tribe_events_get_ticket_event( $ticket_id );
@@ -1263,7 +1258,7 @@ class Tribe__Tickets__Tickets_Handler {
 			$available_at_a_time = 0;
 		}
 
-		$cache[ $cache_key ][ $sub_key ]  = $available_at_a_time;
+		$cache[ $key ] = $available_at_a_time;
 
 		return $available_at_a_time;
 	}
