@@ -2822,10 +2822,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// set the default capacity to that of the event, if set, or to unlimited
-			$default_capacity = Tribe__Utils__Array::get( $data, 'event_capacity', -1 );
+			$default_capacity = (int) Tribe__Utils__Array::get( $data, 'event_capacity', -1 );
 
 			// Fetch capacity field, if we don't have it use default (defined above)
-			$data['capacity'] = trim( Tribe__Utils__Array::get( $data, 'capacity', $default_capacity ) );
+			$data['capacity'] = (int) trim( Tribe__Utils__Array::get( $data, 'capacity', $default_capacity ) );
 
 			// If empty we need to modify to the default
 			if ( '' === $data['capacity'] ) {
@@ -2838,7 +2838,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// Fetch the stock if defined, otherwise use Capacity field
-			$data['stock'] = trim( Tribe__Utils__Array::get( $data, 'stock', $data['capacity'] ) );
+			$data['stock'] = (int) trim( Tribe__Utils__Array::get( $data, 'stock', $data['capacity'] ) );
 
 			// If empty we need to modify to what every capacity was
 			if ( '' === $data['stock'] ) {
