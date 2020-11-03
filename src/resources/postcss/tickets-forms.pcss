@@ -41,6 +41,19 @@
 		}
 	}
 
+	.tribe-tickets__form-field-input-wrapper {
+		width: 100%;
+	}
+
+	.tribe-tickets__form-field-input-helper {
+		color: var(--color-text-primary-light);
+		margin-top: var(--spacer-0);
+	}
+
+	.tribe-tickets__form-field-input-helper--error {
+		color: var(--color-icon-error);
+	}
+
 	@media(--viewport-medium) {
 		.tribe-tickets__form-field-input-text,
 		.tribe-tickets__form-field-input-select {
@@ -137,6 +150,7 @@
 			box-shadow: none;
 		}
 
+		&.tribe-tickets__form-field-input--error,
 		&.tribe-tickets__form-field-input--error:invalid {
 			border-color: var(--color-icon-error);
 		}
