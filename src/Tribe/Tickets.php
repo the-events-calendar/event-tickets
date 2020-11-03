@@ -1541,10 +1541,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var Tribe__Cache $cache */
 			$cache   = tribe( 'cache' );
 			$key     = __METHOD__ . '-' . $post_id;
-			$tickets = $cache[ $key ];
 
-			if ( isset( $tickets ) ) {
-				return $tickets;
+			if ( is_array( $cache[ $key ] ) ) {
+				return $cache[ $key ];
 			}
 
 			$tickets = [];
