@@ -643,7 +643,7 @@ tribe.tickets.block = {
 		const $parent = $trigger.closest( obj.selectors.item );
 		const $target = $( '#' + $trigger.attr( 'aria-controls' ) );
 
-		if ( ! $target.length || ! $parent ) {
+		if ( ! $target.length || ! $parent.length ) {
 			return;
 		}
 
