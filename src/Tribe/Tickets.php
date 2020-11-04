@@ -1539,8 +1539,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public static function get_all_event_tickets( $post_id ) {
 
 			/** @var Tribe__Cache $cache */
-			$cache   = tribe( 'cache' );
-			$key     = __METHOD__ . '-' . $post_id;
+			$cache = tribe( 'cache' );
+			$key   = __METHOD__ . '-' . $post_id;
 
 			if ( is_array( $cache[ $key ] ) ) {
 				return $cache[ $key ];
