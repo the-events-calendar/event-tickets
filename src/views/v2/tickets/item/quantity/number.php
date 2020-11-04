@@ -57,7 +57,7 @@ $classes = [
 <div <?php tribe_classes( $classes ); ?>>
 	<input
 		type="number"
-		class="tribe-common-h3 tribe-common-h4--min-medium tribe-tickets-quantity tribe-tickets__tickets-item-quantity-number-input"
+		class="tribe-common-h3 tribe-common-h4--min-medium tribe-tickets__tickets-item-quantity-number-input"
 		step="1"
 		min="0"
 		max="<?php echo esc_attr( $max_at_a_time ); ?>"

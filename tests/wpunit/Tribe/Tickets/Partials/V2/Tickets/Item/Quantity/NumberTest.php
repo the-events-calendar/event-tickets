@@ -42,7 +42,7 @@ class NumberTest extends V2TestCase {
 		$args = $this->get_default_args();
 		$html = $template->template( $this->partial_path, $args, false );
 
-		$this->assertContains( 'tribe-tickets-quantity', $html );
+		$this->assertContains( 'tribe-tickets__tickets-item-quantity-number-input', $html );
 
 		$driver = $this->get_html_output_driver();
 
@@ -66,7 +66,7 @@ class NumberTest extends V2TestCase {
 		$args['must_login'] = true;
 		$html               = $template->template( $this->partial_path, $args, false );
 
-		$this->assertContains( 'tribe-tickets-quantity', $html );
+		$this->assertContains( 'tribe-tickets__tickets-item-quantity-number-input', $html );
 		$this->assertContains( 'tribe-tickets__disabled', $html );
 
 		$driver = $this->get_html_output_driver();

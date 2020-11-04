@@ -2,13 +2,13 @@
 	<form
 		id="tribe-tickets__tickets-form"
 		action=""
-		class="tribe-tickets__tickets-form"
+		class="tribe-tickets__tickets-form tribe-tickets__form"
 		method="post"
 		enctype=\'multipart/form-data\'
 		data-provider="Tribe__Tickets__Commerce__PayPal__Main"
 		autocomplete="off"
 		data-provider-id="tribe-commerce"
-		data-post-id="12927"
+		data-post-id="239"
 		novalidate
 	>
 
@@ -34,20 +34,20 @@
 </div>
 
 		<div
-	id="tribe-block-tickets-item-12928"
-	 class="tribe-tickets__tickets-item post-12928 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12928"
+	id="tribe-block-tickets-item-240"
+	 class="tribe-tickets__tickets-item post-240 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="240"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test ticket for 12927</div>
+		Test ticket for 239</div>
 
 
 <div
-	id="tribe__details__content--12928"
+	id="tribe__details__content--240"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
-	Test ticket description for 12927</div>
+	Test ticket description for 239</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
@@ -84,20 +84,20 @@
 	
 </div>
 <div
-	id="tribe-block-tickets-item-12929"
-	 class="tribe-tickets__tickets-item post-12929 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12929"
+	id="tribe-block-tickets-item-241"
+	 class="tribe-tickets__tickets-item post-241 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="241"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test ticket for 12927</div>
+		Test ticket for 239</div>
 
 
 <div
-	id="tribe__details__content--12929"
+	id="tribe__details__content--241"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
-	Test ticket description for 12927</div>
+	Test ticket description for 239</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
