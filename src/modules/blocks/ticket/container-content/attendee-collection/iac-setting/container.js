@@ -15,8 +15,7 @@ import { globals } from '@moderntribe/common/utils';
 const mapStateToProps = ( state, ownProps ) => ( {
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
 	iac: selectors.getTicketTempIACSetting( state, ownProps ),
-	iacDefault: globals.ticketsPlusIacVars().iac_default,
-	iacOptions: globals.ticketsPlusIacVars().iac_options,
+	iacOptions: globals.iacVars().iacOptions,
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {

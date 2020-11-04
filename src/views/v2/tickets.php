@@ -51,7 +51,7 @@ $classes = [
 	<form
 		id="tribe-tickets__tickets-form"
 		action="<?php echo esc_url( $provider->get_cart_url() ); ?>"
-		class="tribe-tickets__tickets-form"
+		class="tribe-tickets__tickets-form tribe-tickets__form"
 		method="post"
 		enctype='multipart/form-data'
 		data-provider="<?php echo esc_attr( $provider->class_name ); ?>"

@@ -21,7 +21,6 @@ class IACSetting extends PureComponent {
 		isDisabled: PropTypes.bool,
 		onChange: PropTypes.func.isRequired,
 		iac: PropTypes.string,
-		iacDefault: PropTypes.string,
 		iacOptions: PropTypes.arrayOf( PropTypes.shape( {
 			label: PropTypes.string,
 			value: PropTypes.string,
@@ -34,9 +33,7 @@ class IACSetting extends PureComponent {
 	}
 
 	render() {
-		const { iac, iacDefault, iacOptions, isDisabled, onChange } = this.props;
-
-		const iacSetting = iac || iacDefault;
+		const { iac, iacOptions, isDisabled, onChange } = this.props;
 
 		return (
 			<div>
@@ -52,7 +49,7 @@ class IACSetting extends PureComponent {
 						className="tribe-editor__ticket__iac-setting-input"
 						id={ this.id }
 						type="text"
-						selected={ iacSetting }
+						selected={ iac }
 						onChange={ onChange }
 						disabled={ isDisabled }
 						options={ iacOptions }
