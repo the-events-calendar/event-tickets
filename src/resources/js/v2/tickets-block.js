@@ -33,7 +33,7 @@ tribe.tickets.block = {
 		itemOptOutInput: '#tribe-tickets-attendees-list-optout-',
 		itemPrice: '.tribe-tickets__tickets-sale-price .tribe-amount',
 		itemQuantity: '.tribe-tickets__tickets-item-quantity',
-		itemQuantityInput: '.tribe-tickets-quantity',
+		itemQuantityInput: '.tribe-tickets__tickets-item-quantity-number-input',
 		itemQuantityAdd: '.tribe-tickets__tickets-item-quantity-add',
 		itemQuantityRemove: '.tribe-tickets__tickets-item-quantity-remove',
 		submit: '.tribe-tickets__tickets-buy',

@@ -36,6 +36,7 @@ class QuantityTest extends V2TestCase {
 			'ticket'          => $ticket,
 			'threshold'       => 0,
 			'available_count' => $ticket->available(),
+			'is_unlimited'    => null,
 		];
 	}
 

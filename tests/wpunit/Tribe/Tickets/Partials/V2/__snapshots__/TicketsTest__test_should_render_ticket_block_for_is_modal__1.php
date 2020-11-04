@@ -2,13 +2,13 @@
 	<form
 		id="tribe-tickets__tickets-form"
 		action=""
-		class="tribe-tickets__tickets-form"
+		class="tribe-tickets__tickets-form tribe-tickets__form"
 		method="post"
 		enctype=\'multipart/form-data\'
 		data-provider="Tribe__Tickets__Commerce__PayPal__Main"
 		autocomplete="off"
 		data-provider-id="tribe-commerce"
-		data-post-id="12933"
+		data-post-id="245"
 		novalidate
 	>
 
@@ -34,20 +34,20 @@
 </div>
 
 		<div
-	id="tribe-modal-tickets-item-12934"
-	 class="tribe-tickets__tickets-item post-12934 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12934"
+	id="tribe-modal-tickets-item-246"
+	 class="tribe-tickets__tickets-item post-246 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="246"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test ticket for 12933</div>
+		Test ticket for 245</div>
 
 <div class="tribe-tickets__tickets-item-details-summary">
 	<button
 		type="button"
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
-		aria-controls="tribe__details__content__modal--12934"
+		aria-controls="tribe__details__content__modal--246"
 		tabindex="0"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description.</span>
@@ -55,7 +55,7 @@
 	<button
 		type="button"
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
-		aria-controls="tribe__details__content__modal--12934"
+		aria-controls="tribe__details__content__modal--246"
 		tabindex="0"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
@@ -63,9 +63,9 @@
 </div>
 
 <div
-	id="tribe__details__content__modal--12934"
+	id="tribe__details__content__modal--246"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content tribe-common-a11y-hidden" >
-	Test ticket description for 12933</div>
+	Test ticket description for 245</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
@@ -97,20 +97,20 @@
 	
 </div>
 <div
-	id="tribe-modal-tickets-item-12935"
-	 class="tribe-tickets__tickets-item post-12935 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12935"
+	id="tribe-modal-tickets-item-247"
+	 class="tribe-tickets__tickets-item post-247 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="247"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test ticket for 12933</div>
+		Test ticket for 245</div>
 
 <div class="tribe-tickets__tickets-item-details-summary">
 	<button
 		type="button"
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
-		aria-controls="tribe__details__content__modal--12935"
+		aria-controls="tribe__details__content__modal--247"
 		tabindex="0"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description.</span>
@@ -118,7 +118,7 @@
 	<button
 		type="button"
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
-		aria-controls="tribe__details__content__modal--12935"
+		aria-controls="tribe__details__content__modal--247"
 		tabindex="0"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
@@ -126,9 +126,9 @@
 </div>
 
 <div
-	id="tribe__details__content__modal--12935"
+	id="tribe__details__content__modal--247"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content tribe-common-a11y-hidden" >
-	Test ticket description for 12933</div>
+	Test ticket description for 245</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >

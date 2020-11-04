@@ -68,26 +68,28 @@
 		white-space: nowrap;
 	}
 
-	.tribe-tickets-quantity {
-		appearance: textfield;
-		background: transparent;
-		border: none;
-		color: var(--color-text-primary);
-		padding: 0;
-		text-align: center;
-		width: fit-content;
-
-		&::-webkit-inner-spin-button,
-		&::-webkit-outer-spin-button {
-			-webkit-appearance: none;
-		}
-
-		&:focus {
+	.tribe-tickets__form {
+		input[type="number"].tribe-tickets__tickets-item-quantity-number-input {
+			appearance: textfield;
+			background: transparent;
+			border: none;
 			color: var(--color-text-primary);
-		}
+			padding: 0;
+			text-align: center;
+			width: fit-content;
 
-		&.tribe-tickets__tickets-item-quantity-number--active {
-			color: var(--color-text-primary);
+			&::-webkit-inner-spin-button,
+			&::-webkit-outer-spin-button {
+				-webkit-appearance: none;
+			}
+
+			&:focus {
+				color: var(--color-text-primary);
+			}
+
+			&.tribe-tickets__tickets-item-quantity-number--active {
+				color: var(--color-text-primary);
+			}
 		}
 	}
 }
