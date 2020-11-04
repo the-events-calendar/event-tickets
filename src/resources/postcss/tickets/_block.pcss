@@ -131,12 +131,18 @@
 			-ms-grid-row: 3;
 			grid-row: 3;
 		}
+	}
 
-		label {
-			font-size: var(--font-size-1);
+	.tribe-tickets__form {
+		.tribe-tickets-attendees-list-optout--wrapper {
+			label {
+				color: var(--color-text-secondary);
+				display: flex;
+				font-size: var(--font-size-1);
 
-			@media(--viewport-medium) {
-				font-size: var(--font-size-2);
+				@media(--viewport-medium) {
+					font-size: var(--font-size-2);
+				}
 			}
 		}
 	}
@@ -153,7 +159,7 @@
 		.tribe-tickets__tickets-item-quantity,
 		.tribe-tickets__tickets-item-quantity-add,
 		.tribe-tickets__tickets-item-quantity-remove,
-		.tribe-tickets__tickets-item-quantity-number .tribe-tickets-quantity {
+		.tribe-tickets__tickets-item-quantity-number-input {
 			color: rgba( var(--color-text-primary), 0.8);
 			color: var(--color-scroll-bar);
 		}
