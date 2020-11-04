@@ -675,15 +675,15 @@ class Tribe__Tickets__Main {
 	 */
 	public function add_template_updates_check( $plugins ) {
 		$plugins[ __( 'Event Tickets', 'event-tickets' ) ] = [
-				self::VERSION,
-				$this->plugin_path . 'src/views',
-				trailingslashit( get_stylesheet_directory() ) . 'tribe/tickets',
+			self::VERSION,
+			$this->plugin_path . 'src/views',
+			trailingslashit( get_stylesheet_directory() ) . 'tribe/tickets',
 		];
 
 		$plugins[ __( 'Event Tickets - Legacy', 'event-tickets' ) ] = [
-				self::VERSION,
-				$this->plugin_path . 'src/views',
-				trailingslashit( get_stylesheet_directory() ) . 'tribe-events/tickets',
+			self::VERSION,
+			$this->plugin_path . 'src/views',
+			trailingslashit( get_stylesheet_directory() ) . 'tribe-events/tickets',
 		];
 
 		return $plugins;
