@@ -2822,7 +2822,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// set the default capacity to that of the event, if set, or to unlimited
-			$default_capacity = Tribe__Utils__Array::get( $data, 'event_capacity', -1 );
+			$default_capacity = (int) Tribe__Utils__Array::get( $data, 'event_capacity', -1 );
 
 			// Fetch capacity field, if we don't have it use default (defined above)
 			$data['capacity'] = trim( Tribe__Utils__Array::get( $data, 'capacity', $default_capacity ) );
