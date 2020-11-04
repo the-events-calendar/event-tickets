@@ -8,7 +8,7 @@
 		data-provider="Tribe__Tickets__Commerce__PayPal__Main"
 		autocomplete="off"
 		data-provider-id="tribe-commerce"
-		data-post-id="8"
+		data-post-id="12933"
 		novalidate
 	>
 
@@ -34,20 +34,20 @@
 </div>
 
 		<div
-	id="tribe-modal-tickets-item-12928"
-	 class="tribe-tickets__tickets-item post-12928 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12928"
+	id="tribe-modal-tickets-item-12934"
+	 class="tribe-tickets__tickets-item post-12934 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12934"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test ticket for 8</div>
+		Test ticket for 12933</div>
 
 <div class="tribe-tickets__tickets-item-details-summary">
 	<button
 		type="button"
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
-		aria-controls="tribe__details__content__modal--12928"
+		aria-controls="tribe__details__content__modal--12934"
 		tabindex="0"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description.</span>
@@ -55,7 +55,7 @@
 	<button
 		type="button"
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
-		aria-controls="tribe__details__content__modal--12928"
+		aria-controls="tribe__details__content__modal--12934"
 		tabindex="0"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
@@ -63,17 +63,16 @@
 </div>
 
 <div
-	id="tribe__details__content__modal--12928"
-	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content"
->
-	Test ticket description for 8</div>
+	id="tribe__details__content__modal--12934"
+	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content tribe-common-a11y-hidden" >
+	Test ticket description for 12933</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
 		<span class="tribe-tickets__tickets-sale-price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">&#x24;</span>
+					<span class="tribe-currency-symbol">$</span>
 					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
@@ -98,20 +97,20 @@
 	
 </div>
 <div
-	id="tribe-modal-tickets-item-12929"
-	 class="tribe-tickets__tickets-item post-12929 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12929"
+	id="tribe-modal-tickets-item-12935"
+	 class="tribe-tickets__tickets-item post-12935 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12935"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test ticket for 8</div>
+		Test ticket for 12933</div>
 
 <div class="tribe-tickets__tickets-item-details-summary">
 	<button
 		type="button"
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
-		aria-controls="tribe__details__content__modal--12929"
+		aria-controls="tribe__details__content__modal--12935"
 		tabindex="0"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description.</span>
@@ -119,7 +118,7 @@
 	<button
 		type="button"
 		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
-		aria-controls="tribe__details__content__modal--12929"
+		aria-controls="tribe__details__content__modal--12935"
 		tabindex="0"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
@@ -127,17 +126,16 @@
 </div>
 
 <div
-	id="tribe__details__content__modal--12929"
-	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content"
->
-	Test ticket description for 8</div>
+	id="tribe__details__content__modal--12935"
+	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content tribe-common-a11y-hidden" >
+	Test ticket description for 12933</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
 		<span class="tribe-tickets__tickets-sale-price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">&#x24;</span>
+					<span class="tribe-currency-symbol">$</span>
 					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
@@ -177,7 +175,7 @@
 	<span class="tribe-tickets__tickets-footer-total-wrap">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">&#x24;</span>
+					<span class="tribe-currency-symbol">$</span>
 					<span class="tribe-amount">0.00</span>
 				</span>
 				</span>

@@ -47,8 +47,7 @@
 
 <div
 	id="tribe__details__content--10107"
-	class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content"
->
+	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
 	Test PayPal ticket description for 10106</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
@@ -69,26 +68,7 @@
 	<span class="tribe-tickets__tickets-item-extra-available-quantity"> 15 </span> available
 </div>
 
-	<div class="tribe-tickets__tickets-item-details-summary">
-	<button
-		type="button"
-		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--more"
-		aria-controls="tribe__details__content--10107"
-		tabindex="0"
-	>
-		<span class="screen-reader-text tribe-common-a11y-visual-hide">
-			Open the ticket description.		</span>
-		More	</button>
-	<button
-		type="button"
-		class="tribe-common-b3 tribe-tickets__tickets-item-details-summary-button--less"
-		aria-controls="tribe__details__content--10107"
-		tabindex="0"
-	>
-		<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>
-		Less	</button>
-</div>
-
+	
 </div>
 
 	<div  class="tribe-common-h4 tribe-tickets__tickets-item-quantity" >

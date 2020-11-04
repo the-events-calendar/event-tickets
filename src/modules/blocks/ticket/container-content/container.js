@@ -15,7 +15,7 @@ import { globals } from '@moderntribe/common/utils';
 
 const mapStateToProps = ( state ) => ( {
 	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
-	hasIacVars: ! isEmpty( globals.ticketsPlusIacVars() ),
+	hasIacVars: ! isEmpty( globals.iacVars() ),
 } );
 
 export default compose(
