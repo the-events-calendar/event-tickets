@@ -4,6 +4,7 @@ namespace Tribe\Tickets\Partials\V2\Tickets\Item\Quantity;
 
 use Tribe\Tickets\Test\Partials\V2TestCase;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
+use Tribe__Tickets__Tickets_Handler;
 
 class NumberTest extends V2TestCase {
 
@@ -17,9 +18,10 @@ class NumberTest extends V2TestCase {
 	 * @return array
 	 */
 	public function get_default_args() {
-		/**
-		 * @var \Tribe__Tickets__Commerce__PayPal__Main
-		 */
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		/** @var \Tribe__Tickets__Commerce__PayPal__Main */
 		$provider = tribe_get_class_instance( 'Tribe__Tickets__Commerce__PayPal__Main' );
 
 		$event = $this->get_mock_event( 'events/single/1.json' );
@@ -28,7 +30,8 @@ class NumberTest extends V2TestCase {
 		$ticket = $provider->get_ticket( $event->ID, $ids[0], [ 'price' => 99 ] );
 
 		return [
-			'ticket' => $ticket,
+			'handler'    => $tickets_handler,
+			'ticket'     => $ticket,
 			'must_login' => false,
 		];
 	}
