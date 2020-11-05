@@ -9,7 +9,7 @@ class TicketsTest extends V2TestCase {
 
 	use PayPal_Ticket_Maker;
 
-	protected $partial_path = 'v2/tickets';
+	public $partial_path = 'v2/tickets';
 
 	private $tolerables = [];
 

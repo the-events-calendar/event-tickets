@@ -6,7 +6,7 @@ use Tribe\Tickets\Test\Partials\V2TestCase;
 
 class ButtonTest extends V2TestCase {
 
-	protected $partial_path = 'v2/tickets/submit/button';
+	public $partial_path = 'v2/tickets/submit/button';
 
 	/**
 	 * Get all the default args required for this template
