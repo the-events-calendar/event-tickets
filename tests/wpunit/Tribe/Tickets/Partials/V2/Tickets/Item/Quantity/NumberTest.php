@@ -60,7 +60,9 @@ class NumberTest extends V2TestCase {
 	 * @test
 	 */
 	public function test_should_render_disabled_number_when_must_login_is_true() {
-		$override['must_login'] = true;
+		$override = [
+			'must_login' => true,
+		];
 
 		$html = $this->template_html( $this->get_args( $override ) );
 
