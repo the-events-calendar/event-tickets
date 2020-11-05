@@ -1099,17 +1099,48 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		$send_args = [
-			'subject'              => tribe_get_option( 'ticket-paypal-confirmation-email-subject', false ),
-			'from_name'            => tribe_get_option( 'ticket-paypal-confirmation-email-sender-name', false ),
-			'from_email'           => tribe_get_option( 'ticket-paypal-confirmation-email-sender-email', false ),
-			'provider'             => 'tpp',
-			'post_id'              => $post_id,
-			'order_id'             => $order_id,
-			'ticket_sent_meta_key' => $this->attendee_ticket_sent,
+			'post_id'  => $post_id,
+			'order_id' => $order_id,
 		];
 
 		// Send the emails.
 		$this->send_tickets_email_for_attendees( $to_send, $send_args );
+	}
+
+	/**
+	 * Send RSVPs/tickets email for attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $attendees List of attendees.
+	 * @param array $args      {
+	 *      @type string       $subject              The email subject.
+	 *      @type string       $content              The email content.
+	 *      @type string       $from_name            The name to send tickets from.
+	 *      @type string       $from_email           The email to send tickets from.
+	 *      @type array|string $headers              The list of headers to send.
+	 *      @type array        $attachments          The list of attachments to send.
+	 *      @type string       $provider             The provider slug (rsvp, tpp, woo, edd).
+	 *      @type int          $post_id              The post/event ID to send the emails for.
+	 *      @type string|int   $order_id             The order ID to send the emails for.
+	 *      @type string|int   $ticket_sent_meta_key The meta key to use for marking an attendee ticket as sent.
+	 * }
+	 *
+	 * @return int The number of emails sent successfully.
+	 */
+	public function send_tickets_email_for_attendees( $attendees, $args = [] ) {
+		$args = array_merge(
+			[
+				'subject'              => tribe_get_option( 'ticket-paypal-confirmation-email-subject', false ),
+				'from_name'            => tribe_get_option( 'ticket-paypal-confirmation-email-sender-name', false ),
+				'from_email'           => tribe_get_option( 'ticket-paypal-confirmation-email-sender-email', false ),
+				'provider'             => 'tpp',
+				'ticket_sent_meta_key' => $this->attendee_ticket_sent,
+			],
+			$args
+		);
+
+		return parent::send_tickets_email_for_attendees( $attendees, $args );
 	}
 
 	/**
