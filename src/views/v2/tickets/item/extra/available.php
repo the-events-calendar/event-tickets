@@ -53,6 +53,7 @@ if ( ! empty( $is_mini ) ) {
 
 $context = [
 	'ticket'          => $ticket,
+	'threshold'       => $threshold,
 	'show_unlimited'  => (bool) $show_unlimited,
 	'available_count' => $available_count,
 	'is_unlimited'    => -1 === $available_count,
@@ -61,8 +62,8 @@ $context = [
 
 <div class="tribe-common-b3 tribe-tickets__tickets-item-extra-available">
 
-	<?php $this->template( 'v2/tickets/item/extra/available/unlimited' ); ?>
+	<?php $this->template( 'v2/tickets/item/extra/available/unlimited', $context ); ?>
 
-	<?php $this->template( 'v2/tickets/item/extra/available/quantity' ); ?>
+	<?php $this->template( 'v2/tickets/item/extra/available/quantity', $context ); ?>
 
 </div>

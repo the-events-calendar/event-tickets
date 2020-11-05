@@ -50,8 +50,16 @@ if ( empty( $ticket ) ) {
 	return;
 }
 
-$this->template( 'v2/tickets/item/content/title' );
+$context = $this->get_values();
 
-$this->template( 'v2/tickets/item/content/description' );
+$this->template(
+	'v2/tickets/item/content/title',
+	[
+		'ticket'  => $ticket,
+		'post_id' => $post_id,
+	]
+);
 
-$this->template( 'v2/tickets/item/extra' );
+$this->template( 'v2/tickets/item/content/description', $context );
+
+$this->template( 'v2/tickets/item/extra', $context );

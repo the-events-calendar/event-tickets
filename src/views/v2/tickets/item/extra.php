@@ -76,13 +76,14 @@ $classes = [
 	'tribe-tickets__tickets-item-extra--price-suffix' => $has_suffix,
 ];
 
+$context = $this->get_values();
 ?>
 <div <?php tribe_classes( $classes ); ?>>
 
-	<?php $this->template( 'v2/tickets/item/extra/price' ); ?>
+	<?php $this->template( 'v2/tickets/item/extra/price', $context ); ?>
 
-	<?php $this->template( 'v2/tickets/item/extra/available' ); ?>
+	<?php $this->template( 'v2/tickets/item/extra/available', $context ); ?>
 
-	<?php $this->template( 'v2/tickets/item/extra/description-toggle' ); ?>
+	<?php $this->template( 'v2/tickets/item/extra/description-toggle', $context ); ?>
 
 </div>
