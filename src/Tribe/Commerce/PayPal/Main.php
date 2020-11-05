@@ -1114,6 +1114,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @param array $attendees List of attendees.
 	 * @param array $args      {
+	 *      The list of arguments to use for sending ticket emails.
+	 *
 	 *      @type string       $subject              The email subject.
 	 *      @type string       $content              The email content.
 	 *      @type string       $from_name            The name to send tickets from.

@@ -2117,6 +2117,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @param array $attendees List of attendees.
 		 * @param array $args      {
+		 *      The list of arguments to use for sending ticket emails.
+		 *
 		 *      @type string       $subject              The email subject.
 		 *      @type string       $content              The email content.
 		 *      @type string       $from_name            The name to send tickets from.
@@ -2161,6 +2163,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param string $to      The email to send the tickets to.
 		 * @param array  $tickets The list of tickets to send.
 		 * @param array  $args    {
+		 *      The list of arguments to use for sending ticket emails.
+		 *
 		 *      @type string       $subject              The email subject.
 		 *      @type string       $content              The email content.
 		 *      @type string       $from_name            The name to send tickets from.
