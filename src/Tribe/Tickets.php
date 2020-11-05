@@ -2248,6 +2248,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				);
 			}
 
+			// Enforce headers array.
+			if ( ! is_array( $headers ) ) {
+				$headers = explode( "\r\n", $headers );
+			}
+
 			// Add From name/email to headers if no headers set yet and we have a valid From email address.
 			if ( empty( $headers ) && ! empty( $from_name ) && ! empty( $from_email ) && is_email( $from_email ) ) {
 				$from_email = filter_var( $from_email, FILTER_SANITIZE_EMAIL );
@@ -2262,11 +2267,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					'Reply-To: %s',
 					$from_email
 				);
-			}
-
-			// Enforce headers array.
-			if ( ! is_array( $headers ) ) {
-				$headers = explode( "\r\n", $headers );
 			}
 
 			// Enforce text/html content type header.
