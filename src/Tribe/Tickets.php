@@ -2279,6 +2279,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * The dynamic portion of the filter hook, `$provider`, refers to the provider slug (rsvp, tpp, woo, edd).
 			 *
+			 * @deprecated TBD Use the tribe_tickets_ticket_email_recipient filter instead.
+			 *
+			 * @since 4.7.6
+			 *
 			 * @since TBD
 			 *
 			 * @param string     $to       The email to send to.
@@ -2297,8 +2301,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param int        $post_id  The post/event ID to send the email for.
 			 * @param string|int $order_id The order ID to send the email for.
 			 * @param array      $tickets  The list of tickets to send.
+			 * @param string     $provider The provider slug.
+			 * @param array      $args     The full list of ticket email arguments as sent to the function.
 			 */
-			$to = apply_filters( 'tribe_tickets_ticket_email_recipient', $to, $post_id, $order_id, $tickets );
+			$to = apply_filters( 'tribe_tickets_ticket_email_recipient', $to, $post_id, $order_id, $tickets, $provider, $args );
 
 			// If no email set or invalid email is used, do not send the email.
 			if ( empty( $to ) || ! is_email( $to ) ) {
@@ -2310,7 +2316,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * The dynamic portion of the filter hook, `$provider`, refers to the provider slug (rsvp, tpp, woo, edd).
 			 *
-			 * @since TBD
+			 * @deprecated TBD Use the tribe_tickets_ticket_email_subject filter instead.
+			 *
+			 * @since 4.7.6
 			 *
 			 * @param string     $subject  The email subject.
 			 * @param int        $post_id  The post/event ID to send the email for.
@@ -2328,27 +2336,34 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param int        $post_id  The post/event ID to send the email for.
 			 * @param string|int $order_id The order ID to send the email for.
 			 * @param array      $tickets  The list of tickets to send.
+			 * @param string     $provider The provider slug.
+			 * @param array      $args     The full list of ticket email arguments as sent to the function.
 			 */
-			$subject = apply_filters( 'tribe_tickets_ticket_email_subject', $subject, $post_id, $order_id, $tickets );
+			$subject = apply_filters( 'tribe_tickets_ticket_email_subject', $subject, $post_id, $order_id, $tickets, $provider, $args );
 
 			// If no subject to use for the email, do not send the email.
 			if ( empty( $subject ) ) {
 				return false;
 			}
 
+			// Generate the email content for the tickets.
+			$content = $this->generate_tickets_email_content( $tickets );
+
 			/**
 			 * Allow filtering the email content for a provider. Backwards compatible with previous provider filter.
 			 *
 			 * The dynamic portion of the filter hook, `$provider`, refers to the provider slug (rsvp, tpp, woo, edd).
 			 *
-			 * @since TBD
+			 * @deprecated TBD Use the tribe_tickets_ticket_email_content filter instead.
+			 *
+			 * @since 4.7.6
 			 *
 			 * @param array      $content  The content to send the email with.
 			 * @param int        $post_id  The post/event ID to send the email for.
 			 * @param string|int $order_id The order ID to send the email for.
 			 * @param array      $tickets  The list of tickets to send.
 			 */
-			$content = apply_filters( "tribe_{$provider}_email_content", $this->generate_tickets_email_content( $tickets ), $post_id, $order_id, $tickets );
+			$content = apply_filters( "tribe_{$provider}_email_content", $content, $post_id, $order_id, $tickets );
 
 			/**
 			 * Allow filtering the email content.
@@ -2359,8 +2374,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param int        $post_id  The post/event ID to send the email for.
 			 * @param string|int $order_id The order ID to send the email for.
 			 * @param array      $tickets  The list of tickets to send.
+			 * @param string     $provider The provider slug.
+			 * @param array      $args     The full list of ticket email arguments as sent to the function.
 			 */
-			$content = apply_filters( 'tribe_tickets_ticket_email_content', $content, $post_id, $order_id, $tickets );
+			$content = apply_filters( 'tribe_tickets_ticket_email_content', $content, $post_id, $order_id, $tickets, $provider, $args );
 
 			// If no content to use for the email, do not send the email.
 			if ( empty( $content ) ) {
@@ -2372,7 +2389,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * The dynamic portion of the filter hook, `$provider`, refers to the provider slug (rsvp, tpp, woo, edd).
 			 *
-			 * @since TBD
+			 * @deprecated TBD Use the tribe_tickets_ticket_email_headers filter instead.
+			 *
+			 * @since 4.7.6
 			 *
 			 * @param array      $headers  List of email headers.
 			 * @param int        $post_id  The post/event ID to send the email for.
@@ -2390,15 +2409,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param int        $post_id  The post/event ID to send the email for.
 			 * @param string|int $order_id The order ID to send the email for.
 			 * @param array      $tickets  The list of tickets to send.
+			 * @param string     $provider The provider slug.
+			 * @param array      $args     The full list of ticket email arguments as sent to the function.
 			 */
-			$headers = apply_filters( 'tribe_tickets_ticket_email_headers', $headers, $post_id, $order_id, $tickets );
+			$headers = apply_filters( 'tribe_tickets_ticket_email_headers', $headers, $post_id, $order_id, $tickets, $provider, $args );
 
 			/**
 			 * Allow filtering the email attachments for a provider. Backwards compatible with previous provider filter.
 			 *
 			 * The dynamic portion of the filter hook, `$provider`, refers to the provider slug (rsvp, tpp, woo, edd).
 			 *
-			 * @since TBD
+			 * @deprecated TBD Use the tribe_tickets_ticket_email_attachments filter instead.
+			 *
+			 * @since 4.7.6
 			 *
 			 * @param array      $attachments The list of attachments to send.
 			 * @param int        $post_id     The post/event ID to send the email for.
@@ -2416,8 +2439,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param int        $post_id     The post/event ID to send the email for.
 			 * @param string|int $order_id    The order ID to send the email for.
 			 * @param array      $tickets     The list of tickets to send.
+			 * @param string     $provider The provider slug.
+			 * @param array      $args     The full list of ticket email arguments as sent to the function.
 			 */
-			$attachments = apply_filters( 'tribe_tickets_ticket_email_attachments', $attachments, $post_id, $order_id, $tickets );
+			$attachments = apply_filters( 'tribe_tickets_ticket_email_attachments', $attachments, $post_id, $order_id, $tickets, $provider, $args );
 
 			$sent = $send_callback( $to, $subject, $content, $headers, $attachments );
 
