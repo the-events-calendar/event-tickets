@@ -291,15 +291,6 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			]
 		);
 
-		// @todo: Remove this once we solve the common breakpoints vs container based.
-		tribe_asset(
-			$plugin,
-			'tribe-common-responsive',
-			'common-responsive.css',
-			[ 'tribe-common-skeleton-style' ],
-			null
-		);
-
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-rsvp-style',
