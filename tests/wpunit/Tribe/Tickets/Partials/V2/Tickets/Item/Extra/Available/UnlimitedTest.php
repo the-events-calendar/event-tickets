@@ -9,7 +9,7 @@ class UnlimitedTest extends V2TestCase {
 
 	use PayPal_Ticket_Maker;
 
-	protected $partial_path = 'v2/tickets/item/extra/available/unlimited';
+	public $partial_path = 'v2/tickets/item/extra/available/unlimited';
 
 	/**
 	 * Get all the default args required for this template

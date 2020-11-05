@@ -9,7 +9,7 @@ class NumberTest extends V2TestCase {
 
 	use PayPal_Ticket_Maker;
 
-	protected $partial_path = 'v2/tickets/item/quantity/number';
+	public $partial_path = 'v2/tickets/item/quantity/number';
 
 	/**
 	 * Get all the default args required for this template
@@ -37,10 +37,7 @@ class NumberTest extends V2TestCase {
 	 * @test
 	 */
 	public function test_should_render_number_html() {
-		$template = tribe( 'tickets.editor.template' );
-
-		$args = $this->get_default_args();
-		$html = $template->template( $this->partial_path, $args, false );
+		$html = $this->template_html( $this->get_default_args() );
 
 		$this->assertContains( 'tribe-tickets__tickets-item-quantity-number-input', $html );
 
@@ -60,11 +57,9 @@ class NumberTest extends V2TestCase {
 	 * @test
 	 */
 	public function test_should_render_disabled_number_when_must_login_is_true() {
-		$template = tribe( 'tickets.editor.template' );
+		$override['must_login'] = true;
 
-		$args               = $this->get_default_args();
-		$args['must_login'] = true;
-		$html               = $template->template( $this->partial_path, $args, false );
+		$html = $this->template_html( $this->get_args( $override ) );
 
 		$this->assertContains( 'tribe-tickets__tickets-item-quantity-number-input', $html );
 		$this->assertContains( 'tribe-tickets__disabled', $html );

@@ -6,7 +6,7 @@ use Tribe\Tickets\Test\Partials\V2TestCase;
 
 class UnavailableTest extends V2TestCase {
 
-	protected $partial_path = 'v2/tickets/item/quantity/unavailable';
+	public $partial_path = 'v2/tickets/item/quantity/unavailable';
 
 	/**
 	 * Get all the default args required for this template

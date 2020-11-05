@@ -9,7 +9,7 @@ class HiddenTest extends V2TestCase {
 
 	use PayPal_Ticket_Maker;
 
-	protected $partial_path = 'v2/tickets/opt-out/hidden';
+	public $partial_path = 'v2/tickets/opt-out/hidden';
 
 	/**
 	 * Get all the default args required for this template
