@@ -90,7 +90,7 @@ class Tribe__Tickets__Assets {
 						'tribe-tickets-block-assets',
 						'tribe-tickets-rsvp',
 						'tribe-tickets-registration-page',
-					]
+					],
 				]
 			);
 		}
