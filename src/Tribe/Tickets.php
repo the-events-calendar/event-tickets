@@ -2113,17 +2113,20 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Send RSVPs/tickets email for attendees.
 		 *
+		 * @since TBD
+		 *
 		 * @param array $attendees List of attendees.
 		 * @param array $args      {
-		 *      @type string     $subject              The email subject.
-		 *      @type string     $from_name            The name to send tickets from.
-		 *      @type string     $from_email           The email to send tickets from.
-		 *      @type array      $attachments          The list of attachments to send.
-		 *      @type array      $headers              The list of attachments to send.
-		 *      @type string     $provider             The provider slug (rsvp, tpp, woo, edd).
-		 *      @type int        $post_id              The post/event ID to send the emails for.
-		 *      @type string|int $order_id             The order ID to send the emails for.
-		 *      @type string|int $ticket_sent_meta_key The meta key to use for marking an attendee ticket as sent.
+		 *      @type string       $subject              The email subject.
+		 *      @type string       $content              The email content.
+		 *      @type string       $from_name            The name to send tickets from.
+		 *      @type string       $from_email           The email to send tickets from.
+		 *      @type array|string $headers              The list of headers to send.
+		 *      @type array        $attachments          The list of attachments to send.
+		 *      @type string       $provider             The provider slug (rsvp, tpp, woo, edd).
+		 *      @type int          $post_id              The post/event ID to send the emails for.
+		 *      @type string|int   $order_id             The order ID to send the emails for.
+		 *      @type string|int   $ticket_sent_meta_key The meta key to use for marking an attendee ticket as sent.
 		 * }
 		 *
 		 * @return int The number of emails sent successfully.
@@ -2153,19 +2156,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Send RSVPs/tickets email for an attendee.
 		 *
+		 * @since TBD
+		 *
 		 * @param string $to      The email to send the tickets to.
 		 * @param array  $tickets The list of tickets to send.
 		 * @param array  $args    {
-		 *      @type string     $subject              The email subject.
-		 *      @type string     $content              The email content.
-		 *      @type string     $from_name            The name to send tickets from.
-		 *      @type string     $from_email           The email to send tickets from.
-		 *      @type array      $attachments          The list of attachments to send.
-		 *      @type array      $headers              The list of attachments to send.
-		 *      @type string     $provider             The provider slug (rsvp, tpp, woo, edd).
-		 *      @type int        $post_id              The post/event ID to send the emails for.
-		 *      @type string|int $order_id             The order ID to send the emails for.
-		 *      @type string|int $ticket_sent_meta_key The meta key to use for marking an attendee ticket as sent.
+		 *      @type string       $subject              The email subject.
+		 *      @type string       $content              The email content.
+		 *      @type string       $from_name            The name to send tickets from.
+		 *      @type string       $from_email           The email to send tickets from.
+		 *      @type array|string $headers              The list of headers to send.
+		 *      @type array        $attachments          The list of attachments to send.
+		 *      @type string       $provider             The provider slug (rsvp, tpp, woo, edd).
+		 *      @type int          $post_id              The post/event ID to send the emails for.
+		 *      @type string|int   $order_id             The order ID to send the emails for.
+		 *      @type string|int   $ticket_sent_meta_key The meta key to use for marking an attendee ticket as sent.
 		 * }
 		 *
 		 * @return bool Whether email was sent to attendees.
@@ -2181,33 +2186,33 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'content'              => '',
 				'from_name'            => '',
 				'from_email'           => '',
-				'attachments'          => [],
 				'headers'              => [],
+				'attachments'          => [],
 				'provider'             => 'ticket',
 				'post_id'              => 0,
 				'order_id'             => '',
 				'ticket_sent_meta_key' => '',
-				'send_callback'        => '',
+				'send_callback'        => 'wp_mail',
 			];
 
-			// Set up the defaults.
+			// Set up the default arguments.
 			$args = array_merge( $defaults, $args );
 
 			$subject              = trim( (string) $args['subject'] );
 			$content              = trim( (string) $args['content'] );
 			$from_name            = trim( (string) $args['from_name'] );
 			$from_email           = trim( (string) $args['from_email'] );
-			$attachments          = $args['attachments'];
 			$headers              = $args['headers'];
+			$attachments          = $args['attachments'];
 			$provider             = $args['provider'];
 			$post_id              = $args['post_id'];
 			$order_id             = $args['order_id'];
 			$ticket_sent_meta_key = $args['ticket_sent_meta_key'];
 			$send_callback        = $args['send_callback'];
 
-			// Set up default send callback.
-			if ( empty( $send_callback ) || ! is_callable( $send_callback ) ) {
-				$send_callback = 'wp_mail';
+			// If invalid send callback, do not send the email.
+			if ( ! is_callable( $send_callback ) ) {
+				return false;
 			}
 
 			// Set up default content.
@@ -2255,11 +2260,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				);
 			}
 
+			// Enforce headers array.
+			if ( ! is_array( $headers ) ) {
+				$headers = explode( "\r\n", $headers );
+			}
+
 			// Enforce text/html content type header.
-			if ( is_array( $headers ) ) {
-				$headers[] = 'Content-type: text/html';
-			} else {
-				$headers .= "Content-type: text/html\r\n";
+			if ( ! in_array( 'Content-type: text/html', $headers, true ) || ! in_array( 'Content-type: text/html; charset=utf-8', $headers, true ) ) {
+				$headers[] = 'Content-type: text/html; charset=utf-8';
 			}
 
 			/**
