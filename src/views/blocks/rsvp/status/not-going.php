@@ -8,13 +8,12 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
  * @since 4.9.3
  * @version 4.10.4
  *
  */
-
 
 /**
  * @todo: Create a hook for the get_ticket method in order to set dynamic or custom properties into
@@ -32,16 +31,13 @@ $show_not_going = tribe_is_truthy(
 if ( ! $show_not_going ) {
     return;
 }
-
-$must_login = ! is_user_logged_in() && tribe( 'tickets.rsvp' )->login_required();
-$going = $must_login ? false : $this->get( 'going' );
 ?>
 <span>
 	<button
 		class="tribe-block__rsvp__status-button tribe-block__rsvp__status-button--not-going<?php if ( 'no' === $going ) { echo ' tribe-active'; }?>"
 		<?php echo disabled( 'no', $going, false ); ?>
 	>
-		<span><?php esc_html_e( 'Not going', 'event-tickets' ); ?></span>
+		<span><?php echo esc_html_x( 'Not going', 'Label for the RSVP not going button', 'event-tickets' ); ?></span>
 		<?php $this->template( 'blocks/rsvp/status/not-going-icon' ); ?>
 	</button>
 </span>

@@ -115,8 +115,9 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		$endpoint = tribe( 'tickets.rest-v1.endpoints.documentation' );
 
 		register_rest_route( $this->namespace, '/doc', array(
-			'methods'  => WP_REST_Server::READABLE,
-			'callback' => array( $endpoint, 'get' ),
+			'methods'             => WP_REST_Server::READABLE,
+			'callback'            => array( $endpoint, 'get' ),
+			'permission_callback' => '__return_true',
 		) );
 
 		$endpoint->register_definition_provider( 'Image', new Tribe__Documentation__Swagger__Image_Definition_Provider() );
@@ -146,9 +147,10 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		$endpoint = tribe( 'tickets.rest-v1.endpoints.tickets-single' );
 
 		register_rest_route( $this->namespace, '/tickets/(?P<id>\\d+)', array(
-			'methods'  => WP_REST_Server::READABLE,
-			'args'     => $endpoint->READ_args(),
-			'callback' => array( $endpoint, 'get' ),
+			'methods'             => WP_REST_Server::READABLE,
+			'args'                => $endpoint->READ_args(),
+			'callback'            => array( $endpoint, 'get' ),
+			'permission_callback' => '__return_true',
 		) );
 
 		tribe( 'tickets.rest-v1.endpoints.documentation' )->register_documentation_provider( '/tickets/{id}', $endpoint );
@@ -168,9 +170,10 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		$endpoint = tribe( 'tickets.rest-v1.endpoints.tickets-archive' );
 
 		register_rest_route( $this->namespace, '/tickets', array(
-			'methods'  => WP_REST_Server::READABLE,
-			'args'     => $endpoint->READ_args(),
-			'callback' => array( $endpoint, 'get' ),
+			'methods'             => WP_REST_Server::READABLE,
+			'args'                => $endpoint->READ_args(),
+			'callback'            => array( $endpoint, 'get' ),
+			'permission_callback' => '__return_true',
 		) );
 
 		tribe( 'tickets.rest-v1.endpoints.documentation' )->register_documentation_provider( '/tickets', $endpoint );
@@ -191,9 +194,10 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 
 		register_rest_route( $this->namespace, '/cart', [
 			[
-				'methods'  => WP_REST_Server::READABLE,
-				'args'     => $endpoint->READ_args(),
-				'callback' => [ $endpoint, 'get' ],
+				'methods'             => WP_REST_Server::READABLE,
+				'args'                => $endpoint->READ_args(),
+				'callback'            => [ $endpoint, 'get' ],
+				'permission_callback' => '__return_true',
 			],
 			[
 				'methods'             => WP_REST_Server::EDITABLE,
@@ -228,9 +232,10 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		$endpoint = tribe( 'tickets.rest-v1.endpoints.attendees-single' );
 
 		register_rest_route( $this->namespace, '/attendees/(?P<id>\\d+)', array(
-			'methods'  => WP_REST_Server::READABLE,
-			'args'     => $endpoint->READ_args(),
-			'callback' => array( $endpoint, 'get' ),
+			'methods'             => WP_REST_Server::READABLE,
+			'args'                => $endpoint->READ_args(),
+			'callback'            => array( $endpoint, 'get' ),
+			'permission_callback' => '__return_true',
 		) );
 
 		tribe( 'tickets.rest-v1.endpoints.documentation' )->register_documentation_provider( '/attendees/{id}', $endpoint );
@@ -243,9 +248,10 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		$endpoint = tribe( 'tickets.rest-v1.endpoints.attendees-archive' );
 
 		register_rest_route( $this->namespace, '/attendees', array(
-			'methods'  => WP_REST_Server::READABLE,
-			'args'     => $endpoint->READ_args(),
-			'callback' => array( $endpoint, 'get' ),
+			'methods'             => WP_REST_Server::READABLE,
+			'args'                => $endpoint->READ_args(),
+			'callback'            => array( $endpoint, 'get' ),
+			'permission_callback' => '__return_true',
 		) );
 
 		tribe( 'tickets.rest-v1.endpoints.documentation' )->register_documentation_provider( '/attendees', $endpoint );

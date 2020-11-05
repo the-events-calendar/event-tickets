@@ -1,13 +1,14 @@
 <?php
 
 use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
+use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
 
 class Tribe__Tickets__Main {
 
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.12.2';
+	const VERSION = '5.0.3';
 
 	/**
 	 * Used to store the version history.
@@ -296,10 +297,13 @@ class Tribe__Tickets__Main {
 		 */
 		$this->init_autoloading();
 
-		// Start Up Common
+		// Start Up Common.
 		Tribe__Main::instance();
 
 		add_action( 'tribe_common_loaded', [ $this, 'bootstrap' ], 0 );
+
+		// Customizer support.
+		tribe_register_provider( Tribe\Tickets\Service_Providers\Customizer::class );
 	}
 
 	/**
@@ -308,7 +312,7 @@ class Tribe__Tickets__Main {
 	 * @since 4.10
 	 */
 	public function bootstrap() {
-		// Initialize the Service Provider for Tickets
+		// Initialize the Service Provider for Tickets.
 		tribe_register_provider( 'Tribe__Tickets__Service_Provider' );
 
 		$this->hooks();
@@ -371,6 +375,9 @@ class Tribe__Tickets__Main {
 
 		// Views V2
 		tribe_register_provider( Tribe\Tickets\Events\Views\V2\Service_Provider::class );
+
+		// Promoter
+		tribe_register_provider( Promoter_Service_Provider::class );
 	}
 
 	/**
@@ -660,6 +667,8 @@ class Tribe__Tickets__Main {
 	/**
 	 * Register Event Tickets with the template update checker.
 	 *
+	 * @since TBD Updated template structure.
+	 *
 	 * @param array $plugins
 	 *
 	 * @return array
@@ -667,7 +676,13 @@ class Tribe__Tickets__Main {
 	public function add_template_updates_check( $plugins ) {
 		$plugins[ __( 'Event Tickets', 'event-tickets' ) ] = [
 			self::VERSION,
-			$this->plugin_path . 'src/views/tickets',
+			$this->plugin_path . 'src/views',
+			trailingslashit( get_stylesheet_directory() ) . 'tribe/tickets',
+		];
+
+		$plugins[ __( 'Event Tickets - Legacy', 'event-tickets' ) ] = [
+			self::VERSION,
+			$this->plugin_path . 'src/views',
 			trailingslashit( get_stylesheet_directory() ) . 'tribe-events/tickets',
 		];
 
@@ -795,6 +810,17 @@ class Tribe__Tickets__Main {
 				'welcome_page_title'    => esc_html__( 'Welcome to Event Tickets!', 'event-tickets' ),
 				'welcome_page_template' => $this->plugin_path . 'src/admin-views/admin-welcome-message.php',
 			] );
+
+			tribe_asset(
+				$this,
+				'tribe-tickets-welcome-message',
+				'admin/welcome-message.js',
+				[ 'jquery' ],
+				'admin_enqueue_scripts',
+				[
+					'conditionals' => [ $this->activation_page, 'is_welcome_page' ],
+				]
+			);
 		}
 
 		return $this->activation_page;
@@ -871,10 +897,15 @@ class Tribe__Tickets__Main {
 	public function post_types() {
 		$options = (array) get_option( Tribe__Main::OPTIONNAME, [] );
 
-		// if the ticket-enabled-post-types index has never been set, default it to tribe_events
+		// If the ticket-enabled-post-types index has never been set, default it to tribe_events and page.
 		if ( ! array_key_exists( 'ticket-enabled-post-types', $options ) ) {
-			$defaults                             = [ 'tribe_events' ];
+			$defaults = [
+				'tribe_events',
+				'page',
+			];
+
 			$options['ticket-enabled-post-types'] = $defaults;
+
 			tribe_update_option( 'ticket-enabled-post-types', $defaults );
 		}
 

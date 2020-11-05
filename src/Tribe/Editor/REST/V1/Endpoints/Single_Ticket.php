@@ -54,17 +54,17 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			return new WP_Error(
 				'forbidden',
 				__( 'Invalid nonce', 'event-tickets' ),
-				array( 'status' => 403 )
+				[ 'status' => 403 ]
 			);
 		}
 
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
-		if ( ! $provider ) {
+		if ( empty( $provider ) ) {
 			return new WP_Error(
 				'bad_request',
 				__( 'Commerce Module invalid', 'event-tickets' ),
-				array( 'status' => 400 )
+				[ 'status' => 400 ]
 			);
 		}
 
@@ -202,11 +202,12 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	/**
 	 * Add ticket callback executed to update / add a new ticket.
 	 *
-	 * @since 4.9
-	 * @since 4.10.9 Use customizable ticket name functions.
+	 * @since  4.9
+	 * @since  4.10.9 Use customizable ticket name functions.
+	 * @since  4.12.3 Update detecting ticket provider to account for possibly inactive provider.
 	 *
-	 * @param WP_REST_Request $request
-	 * @param $nonce_action
+	 * @param  WP_REST_Request $request
+	 * @param  $nonce_action
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function add_ticket( WP_REST_Request $request, $nonce_action ) {
@@ -220,7 +221,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			$request->get_body_params()
 		);
 
-		$nonce = $body[ $nonce_action ];
+		$nonce   = $body[ $nonce_action ];
 		$post_id = $body['post_id'];
 
 		if ( ! $this->has_permission( $post_id, $nonce, $nonce_action ) ) {
@@ -231,13 +232,18 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			);
 		}
 
-		if ( $ticket_id === null && $provider_name !== null ) {
-			$provider = call_user_func( [ $provider_name, 'get_instance' ] );
-		} else {
+		if ( ! empty( $ticket_id ) ) {
 			$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 		}
 
-		if ( ! $provider instanceof Tribe__Tickets__Tickets ) {
+		if (
+			empty( $provider )
+			&& ! empty( $provider_name )
+		) {
+			$provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider_name );
+		}
+
+		if ( empty( $provider ) ) {
 			return new WP_Error(
 				'bad_request',
 				__( 'Commerce Module invalid', 'event-tickets' ),
@@ -257,6 +263,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			'ticket_end_date' => $body['end_date'],
 			'ticket_end_time' => $body['end_time'],
 			'ticket_sku' => $body['sku'],
+			'ticket_iac' => $body['iac'],
 			'ticket_menu_order' => $body['menu_order'],
 			'tribe-ticket' => $body['ticket'],
 		];
@@ -268,7 +275,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 		// Get the Ticket Object
 		$ticket = $provider->ticket_add( $post_id, $ticket_data );
 
-		if ( ! $ticket ) {
+		if ( empty( $ticket ) ) {
 			return new WP_Error(
 				'not_acceptable',
 				esc_html( sprintf( __( '%s was not able to be updated', 'event-tickets' ), tribe_get_ticket_label_singular( 'rest_add_ticket_error' ) ) ),
@@ -289,75 +296,82 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	}
 
 	public function ticket_args() {
-		return array(
-			'name' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+		return [
+			'name'             => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'description' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => '',
+			],
+			'description'      => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'price' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => '',
+			],
+			'price'            => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'show_description' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => '',
+			],
+			'show_description' => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => 'yes',
-			),
-			'start_date' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => 'yes',
+			],
+			'start_date'       => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'start_time' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => '',
+			],
+			'start_time'       => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'end_date' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => '',
+			],
+			'end_date'         => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'end_time' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => '',
+			],
+			'end_time'         => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'sku' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'validate_callback' => array( $this->validator, 'is_string_or_empty' ),
+				'default'           => '',
+			],
+			'sku'              => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
 				'sanitize_callback' => 'sanitize_text_field',
-				'default' => '',
-			),
-			'ticket' => array(
-				'in' => 'body',
-				'type' => 'object',
+				'default'           => '',
+			],
+			'iac'              => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'validate_callback' => [ $this->validator, 'is_string_or_empty' ],
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '',
+			],
+			'ticket'           => [
+				'in'       => 'body',
+				'type'     => 'object',
 				'defaults' => null,
-			),
-		);
+			],
+		];
 	}
 }

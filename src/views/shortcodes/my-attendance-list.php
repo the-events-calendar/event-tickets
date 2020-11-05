@@ -7,10 +7,10 @@
  *     [your-theme]/tribe-events/shortcodes/my-attendance-list.php
  *
  * @since   4.8.2
- * @since   TBD Removed target="_blank" from links, added direct link to each post's "My Tickets" view,
+ * @since   4.12.3 Removed target="_blank" from links, added direct link to each post's "My Tickets" view,
  *          rename $event_id variable.
  *
- * @version TBD
+ * @version 4.12.3
  *
  * @var array $event_ids
  */

@@ -28,7 +28,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 			$this->text()
 		);
 
-		// Tickets Hander Keys
+		/** @var Tribe__Tickets__Tickets_Handler $handler */
 		$handler = tribe( 'tickets.handler' );
 
 		register_meta(
@@ -106,7 +106,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 
 		register_meta(
 			'post',
-			$rsvp->event_key,
+			$rsvp->get_event_key(),
 			$this->text()
 		);
 

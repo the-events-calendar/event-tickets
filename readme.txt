@@ -1,10 +1,10 @@
 === Event Tickets ===
 
-Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
-Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
-Requires at least: 4.9
-Tested up to: 5.4.1
-Stable tag: 4.12.2
+Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell, juanfra
+Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
+Requires at least: 4.9.14
+Tested up to: 5.5.1
+Stable tag: 5.0.3
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -109,6 +109,7 @@ Currently, the following add-ons are available for Event Tickets:
 * [Event Tickets Plus](http://m.tri.be/18wk), for selling tickets to your events using your favorite e-commerce platform.
 * [The Events Calendar](https://wordpress.org/plugins/the-events-calendar/), for managing a full calendar of events with ease.
 * [Events Calendar PRO](http://m.tri.be/18wi), for adding premium calendar features like recurring events, advanced views, cool widgets, shortcodes, additional fields, and more!
+* [Virtual Events](http://m.tri.be/1akx), which optimizes your calendar for virtual events including Zoom integration, video and livestream embeds, SEO optimization for online events and more.
 * [Event Aggregator](http://m.tri.be/197u), a service that effortlessly fills your calendar with events from Meetup, Google Calendar, iCalendar, Eventbrite, CSV, and ICS.
 * [Community Events](http://m.tri.be/2g), for allowing frontend event submission from your readers.
 * [Community Tickets](http://m.tri.be/18wl), which allows event organizers to sell tickets to the events they submit via Community Events.
@@ -117,11 +118,78 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.0.3] TBD =
 
-* Feature - For the `[tribe-user-event-confirmations]` shortcode, link to both the event and the direct My Tickets page. [ET-792]
+* Fix - Calculation fixed for attendee count percentage column while using RSVP only. [ET-876]
+* Fix - Correct specificity of checkboxes and radio buttons styles to prevent conflicts with other Modern Tribe plugins. [ET-922]
+* Fix - Ensure shared capacity stock does not reset while updating ticket. [ETP-562]
+* Tweak - Add help section update notice texts for updated directory structure. [ET-929]
+
+= [5.0.2] 2020-10-19 =
+
+* Fix - Correctly detect ticket provider to support Attendee Information. [ET-915]
+* Fix - Correct template override location comments. [ET-919]
+* Language - 42 new strings added, 25 updated, 1 fuzzied, and 28 obsoleted
+
+= [5.0.1] 2020-09-21 =
+
+* Fix - Ensure the Attendees List title for the Attendees report is clean and not replicated on the page for the admin area as well as frontend. [ET-912]
+* Fix - Use `the_title` filter when getting list of post titles for the Move Ticket workflow. [ET-909]
+* Fix - Use the correct default date for initial Ticket start sale and end sale dates for Classic Editor. [ET-900]
+* Fix - We have added the missing ID to the new RSVP block to allow linking to it directly. [ET-904]
+* Fix - Prevent 301 redirects to the homepage while handling Tribe Commerce checkout process. [ET-845]
+* Fix - Use the correct file path for the modal overrides. It's now correctly using the `your-theme/tribe/tickets/` path. [ETP-432]
+* Fix - More thorough validity checking for post IDs, such as to account for a BuddyPress page having a Post ID of zero. [ET-899]
+* Fix - Remove duplicate `button_id` from the `$args` in `src/blocks/tickets/submit-button-modal.php`. Props @justlevine for the fix! [ET-907]
+* Fix - Ensure we print the required label for the ARI checkboxes. [ETP-361]
+* Fix - Prevent PHP errors in the `tickets/view-link.php` template in automated testing suite. [ET-910]
+* Tweak - We have added context to some of the strings and labels of the new RSVP block to allow more granular translation. [ET-903]
+* Tweak - Added filters: `tribe_tickets_attendees_show_view_title`
+* Tweak - Changed views: `blocks/rsvp/status/going`, `blocks/rsvp/status/not-going`, `blocks/tickets/submit-button-modal`, `registration-js/attendees/fields/checkbox`, `tickets/view-link`, `v2/rsvp`, `v2/rsvp/actions/rsvp/going`, `v2/rsvp/actions/rsvp/not-going`, `v2/rsvp/details/attendance`
+* Language - 4 new strings added, 53 updated, 0 fuzzied, and 3 obsoleted
+
+= [5.0.0.1] 2020-08-31 =
+
+* Fix - Prevent the Attendee Registration modal from incorrectly setting RSVP as the provider class. [ET-901]
+
+= [5.0.0] 2020-08-26 =
+
+* Feature - We've introduced a refined look and experience for RSVPs! New installations of Event Tickets will gain the new look right away. Existing Event Tickets installations can opt-in upon upgrade from our previous version(s). This new design is consistent in both the Classic and Block modes so you have a better visual when creating RSVPs in either WordPress editor. [ET-866]
+* Tweak - Removed unused HTML files in the plugin root folder that were there for your reference to our plugin's data collection transparency. This information is included within WordPress' Privacy Guide at /wp-admin/privacy-policy-guide.php [ET-854]
+* Fix - Event Tickets Plus' `[tribe_tickets]` shortcode no longer double-renders the Tickets block when using Classic Editor. The issue was caused by _setting_ `global $post` within `\Tribe\Tickets\Events\Attendees_List::should_hide_optout()`, which was called via the `tribe_tickets_plus_hide_attendees_list_optout` filter. [ET-889]
+* Fix - Replace usage of MultiByte package when it's not available, use `tribe_strtoupper` instead of `mb_strtoupper` and `mb_detect_encoding` [ETP-411] [ETP-412] [VE-150]
+* Tweak - Added filters: `tribe_tickets_rsvp_render_step_template_args_pre_process`, `tribe_tickets_hide_attendees_list_optout`, `tribe_tickets_rsvp_create_attendee_lookup_user_from_email`, `tribe_tickets_rsvp_has_meta`, `tribe_tickets_rsvp_has_meta`
+* Tweak - Added actions: `tribe_tickets_before_front_end_ticket_form`
+* Tweak - Changed views: `v2/components/fields/birth`, `v2/components/fields/checkbox`, `v2/components/fields/datetime`, `v2/components/fields/email`, `v2/components/fields/number`, `v2/components/fields/radio`, `v2/components/fields/select`, `v2/components/fields/telephone`, `v2/components/fields/text`, `v2/components/fields/url`, `v2/components/loader/loader`, `v2/rsvp-kitchen-sink/form-going`, `v2/rsvp-kitchen-sink/form-not-going`, `v2/rsvp`, `v2/rsvp/actions`, `v2/rsvp/actions/success`, `v2/rsvp/actions/success/title`, `v2/rsvp/actions/success/toggle`, `v2/rsvp/ari`, `v2/rsvp/ari/form`, `v2/rsvp/ari/form/buttons`, `v2/rsvp/ari/form/error`, `v2/rsvp/ari/form/fields`, `v2/rsvp/ari/form/fields/email`, `v2/rsvp/ari/form/fields/meta`, `v2/rsvp/ari/form/fields/name`, `v2/rsvp/ari/form/guest-template`, `v2/rsvp/ari/form/guest`, `v2/rsvp/ari/form/template/fields`, `v2/rsvp/ari/form/template/title`, `v2/rsvp/ari/form/title`, `v2/rsvp/ari/sidebar/guest-list`, `v2/rsvp/ari/sidebar/guest-list/guest-template`, `v2/rsvp/ari/sidebar/guest-list/guest`, `v2/rsvp/ari/sidebar/quantity/input`, `v2/rsvp/details/availability`, `v2/rsvp/details/availability/days-to-rsvp`, `v2/rsvp/details/availability/remaining`, `v2/rsvp/details/availability/unlimited`, `v2/rsvp/form/buttons`, `v2/rsvp/form/fields/email`, `v2/rsvp/form/fields/name`, `v2/rsvp/form/fields/quantity`, `v2/rsvp/form/form`, `v2/rsvp/messages/error`, `v2/rsvp/messages/success`, `v2/rsvp/messages/success/going`, `v2/rsvp/messages/success/not-going`
+* Language - 14 new strings added, 54 updated, 3 fuzzied, and 3 obsoleted
+
+= [4.12.3.1] 2020-08-17 =
+
+* Fix - Prevent attendee registration modal in block editor from closing when clicking into the modal. [GTRIA-275]
+
+= [4.12.3] 2020-07-28 =
+
+* Feature - Notify promoter for actions (RSVP going, RSVP not going, Event Checkin, Attendee Registered) for RSVP and Tribe Commerce. [ET-860]
+* Fix - Prevent PHP errors when loading the new RSVP views for posts using classic editor when The Events Calendar setting for Blocks editor is off. [ET-853]
+* Tweak - Layout improvements for Attendee Information's Birth Date field. [ET-875]
+* Tweak - Added `tribe_tickets_is_provider_active()` template function so we can more easily check if a ticket's commerce provider is currently active before using its class methods. [ET-843]
+* Tweak - Added `Tribe__Tickets_Plus__Tickets::get_attendee_optout_key()` to simplify getting the optout key regardless of ticket provider class and accounting for legacy code. [ETP-843]
+* Tweak - Added `Tribe__Tickets__Tickets::get_event_ticket_provider_object()` to make it easier to get and interact with the ticket provider object itself and implemented it across all plugin code where the object is needed in place of the previous usage of class representation as a string. [ET-843]
+* Tweak - Added `Tribe__Tickets__Tickets::get_ticket_provider_instance()` to consistently and more concisely get a ticket provider's instance only if it is active. [ET-843]
+* Tweak - Updated `Tribe__Tickets__Tickets::get_event_ticket_provider()` so it returns false if the resulting ticket provider is no longer active and implemented it across all plugin code. [ET-843]
+* Tweak - Updated `Tribe__Tickets__Status__Manager::get_provider_slug()` and added `Tribe__Tickets__Status__Manager::get_provider_class_from_slug()` for convenient and consistent lookups. [ETP-843]
+* Tweak - Display all of a post's order tabs in the Attendees Report admin screen. Example: if a post's ticket provider was Tribe Commerce and such tickets were sold, then the post's provider changed to WooCommerce Tickets, the Attendees Report screen should show both the Tribe Commerce order history tab and the WooCommerce order history tab, regardless of which ticket provider is currently the default. Introduced `Tribe__Tickets__Tickets::post_has_tickets()` helper function. [ET-843]
+* Tweak - Modify parameters on `register_rest_route` to include `permission_callback` to prevent notices on WordPress 5.5.
+* Language - 8 new strings added, 200 updated, 1 fuzzied, and 1 obsoleted
+
+= [4.12.2] 2020-06-24 =
+
+* Feature - Added a preview of the new RSVP refresh. View the non-functional demo http://m.tri.be/refreshrsvp.
 * Fix - Resolve a PHP notice when rendering the Event Tickets Plus field for Birth date [ETP-330]
+* Tweak - Improve the Birth date field styles that could show up without styling under certain contexts. [ET-835]
 * Tweak - Add hook to ticket email template to allow injecting content between ticket details and organizers. [ET-844]
+* Tweak - For the `[tribe-user-event-confirmations]` shortcode, link to both the event and the direct My Tickets page. [ET-792]
+* Language - 39 new strings added, 26 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.12.1.1] 2020-05-29 =
 
@@ -153,7 +221,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Correct the `Total` value, when the WooCommerce options for currency are empty (Thousand and decimal separator, number of decimals). [ETP-231]
 * Fix - Correct dependencies for the tickets block JS, in order to have the block working in WordPress versions prior to 5.0. [ETP-238]
 * Fix - Load plugin text domain on the new 'tribe_load_text_domains' action hook, which fires on 'init' instead of on the 'plugins_loaded' hook. [ET-773]
-* Fix - Deprecate `\Tribe__Tickets__Tickets_Handler::get_total_event_capacity()` and replace its usage with `tribe_get_event_capacity()`, which returns the correct count. [ET-770]
+* Fix - Deprecate `Tribe__Tickets__Tickets_Handler::get_total_event_capacity()` and replace its usage with `tribe_get_event_capacity()`, which returns the correct count. [ET-770]
 * Fix - When updating to Event Tickets 4.12, a background migration will get kicked off that fixes ticket-supported posts that use the Attendees List block or the Attendees List shortcodes from Event Tickets Plus so those attendees appear in the REST API properly. [ET-777]
 * Fix - Prevent Blocks editor from throwing browser alert when leaving the page without any changes applied to the edited post.
 * Tweak - Improved on meta data handling of for Blocks editor.
@@ -343,7 +411,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Fatal error when sending the attendee list by email in WordPress 4.9 or earlier [134061]
 * Fix - The "View your RSVPs and Tickets" link was not appearing when using the Block Editor for Events [128512]
 * Fix - Admin ticket editor was not displaying currency symbol at all if set to display after amount (postfix/suffix) [128532]
-* Fix - Update `\Tribe__Tickets__Tickets_View::get_description_rsvp_ticket()` to determine when to use the appropriate singular or plural texts based on the quantity found for each ticket type and deprecated its third parameter (_bool_ `$plurals`) (props @solepixel for pointing us to the issue) [129582]
+* Fix - Update `Tribe__Tickets__Tickets_View::get_description_rsvp_ticket()` to determine when to use the appropriate singular or plural texts based on the quantity found for each ticket type and deprecated its third parameter (_bool_ `$plurals`) (props @solepixel for pointing us to the issue) [129582]
 * Fix - Correct two places where the translation domain was incorrect. Thanks to @cfaria for the catch! [128193]
 * Fix - Allow saving RSVP status changes (Going / Not Going) even if tickets have no Attendee Information fields [128629]
 * Language - 5 new strings added, 132 updated, 0 fuzzied, and 3 obsoleted

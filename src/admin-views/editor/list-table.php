@@ -19,7 +19,6 @@ if ( 0 === $post_id ) {
 $modules = Tribe__Tickets__Tickets::modules();
 ?>
 
-
 <?php if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) : ?>
 <div id="ticket_list_wrapper">
 <?php endif; ?>
@@ -30,7 +29,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 				<th class="ticket_name column-primary"><?php echo esc_html( tribe_get_ticket_label_plural( basename( __FILE__ ) ) ); ?></th>
 				<?php
 				/**
-				 * Allows for the insertion of additional columns into the ticket table header
+				 * Allows for the insertion of additional columns into the ticket table header.
 				 *
 				 * @since 4.6
 				 */
@@ -51,24 +50,29 @@ $modules = Tribe__Tickets__Tickets::modules();
 			}
 		}
 
-		$tickets = tribe( 'tickets.handler' )->sort_tickets_by_menu_order( $tickets );
+		/** @var Tribe__Tickets__Tickets_Handler $handler */
+		$handler = tribe( 'tickets.handler' );
 
+		$tickets = $handler->sort_tickets_by_menu_order( $tickets );
+
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
 		?>
 		<tbody class="tribe-tickets-editor-table-tickets-body">
-			<?php
-			if ( ! empty( $tickets ) ) {
-				foreach ( $tickets as $ticket ) {
-					tribe( 'tickets.admin.views' )->template( array( 'editor', 'list-row' ), array( 'ticket' => $ticket ) );
-				}
+		<?php
+		if ( ! empty( $tickets ) ) {
+			foreach ( $tickets as $ticket ) {
+				$admin_views->template( [ 'editor', 'list-row' ], [ 'ticket' => $ticket ] );
 			}
-			?>
+		}
+		?>
 		</tbody>
 
 		<tbody>
 			<?php
 			if ( ! empty( $rsvp ) ) {
 				foreach ( $rsvp as $ticket ) {
-					tribe( 'tickets.admin.views' )->template( array( 'editor', 'list-row' ), array( 'ticket' => $ticket ) );
+					$admin_views->template( [ 'editor', 'list-row' ], [ 'ticket' => $ticket ] );
 				}
 			}
 			?>

@@ -2,10 +2,10 @@
 
 namespace Tribe\Tickets;
 
-use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
-use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
-use Tribe__Tickets__Data_API as Data_API;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
+use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
+use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Tickets as Tickets;
 
 class TicketsTest extends \Codeception\TestCase\WPTestCase {
@@ -233,7 +233,167 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_allow_getting_availability_slug_by_collection() {
-		//
+		$this->markTestIncomplete( 'This test was never written' );
+	}
+
+	/**
+	 * It should allow getting the default ticket provider for a Tribe Commerce post.
+	 *
+	 * @test
+	 */
+	public function should_allow_getting_default_ticket_provider_for_tribe_commerce_post() {
+		$post_id          = $this->factory->post->create();
+		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+
+		$this->assertEquals( 'Tribe__Tickets__Commerce__PayPal__Main', Tickets::get_event_ticket_provider( $post_id ) );
+	}
+
+	/**
+	 * It should allow getting the ticket provider for a Tribe Commerce post with default provider.
+	 *
+	 * @test
+	 */
+	public function should_allow_getting_ticket_provider_for_tribe_commerce_post_with_default_provider() {
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$post_id          = $this->factory->post->create( [
+			'meta_input' => [
+				$tickets_handler->key_provider_field => 'Tribe__Tickets__Commerce__PayPal__Main',
+			],
+		] );
+		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+
+		$this->assertEquals( 'Tribe__Tickets__Commerce__PayPal__Main', Tickets::get_event_ticket_provider( $post_id ) );
+	}
+
+	/**
+	 * It should allow getting the default ticket provider for a RSVP post with no default.
+	 *
+	 * @test
+	 */
+	public function should_allow_getting_default_ticket_provider_for_rsvp_post_with_no_default() {
+		$post_id        = $this->factory->post->create();
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
+
+		$this->assertEquals( 'Tribe__Tickets__Commerce__PayPal__Main', Tickets::get_event_ticket_provider( $post_id ) );
+	}
+
+	/**
+	 * It should allow getting the ticket provider for a RSVP post.
+	 *
+	 * @test
+	 */
+	public function should_allow_getting_ticket_provider_for_rsvp_post() {
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$post_id        = $this->factory->post->create( [
+			'meta_input' => [
+				$tickets_handler->key_provider_field => 'Tribe__Tickets__RSVP',
+			],
+		] );
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
+
+		$this->assertEquals( 'Tribe__Tickets__RSVP', Tickets::get_event_ticket_provider( $post_id ) );
+	}
+
+	/**
+	 * It should allow getting the ticket provider for a post.
+	 *
+	 * @test
+	 */
+	public function should_allow_getting_ticket_provider_for_post_with_inactive_provider() {
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$post_id = $this->factory->post->create( [
+			'meta_input' => [
+				$tickets_handler->key_provider_field => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
+			],
+		] );
+
+		$this->assertEquals( false, Tickets::get_event_ticket_provider( $post_id ) );
+	}
+
+	/**
+	 * It should allow getting the default ticket provider for a Tribe Commerce post.
+	 *
+	 * @test
+	 */
+	public function should_allow_getting_default_ticket_provider_object_for_tribe_commerce_post() {
+		$post_id          = $this->factory->post->create();
+		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+
+		$this->assertInstanceOf( 'Tribe__Tickets__Commerce__PayPal__Main', Tickets::get_event_ticket_provider_object( $post_id ) );
+	}
+
+	/**
+	 * It should allow getting the ticket provider for a Tribe Commerce post with default provider.
+	 *
+	 * @test
+	 */
+	public function should_allow_getting_ticket_provider_object_for_tribe_commerce_post_with_default_provider() {
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$post_id          = $this->factory->post->create( [
+			'meta_input' => [
+				$tickets_handler->key_provider_field => 'Tribe__Tickets__Commerce__PayPal__Main',
+			],
+		] );
+		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+
+		$this->assertInstanceOf( 'Tribe__Tickets__Commerce__PayPal__Main', Tickets::get_event_ticket_provider_object( $post_id ) );
+	}
+
+	/**
+	 * It should allow getting the default ticket provider for a RSVP post with no default.
+	 *
+	 * @test
+	 */
+	public function should_allow_getting_default_ticket_provider_object_for_rsvp_post_with_no_default() {
+		$post_id        = $this->factory->post->create();
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
+
+		$this->assertInstanceOf( 'Tribe__Tickets__Commerce__PayPal__Main', Tickets::get_event_ticket_provider_object( $post_id ) );
+	}
+
+	/**
+	 * It should allow getting the ticket provider for a RSVP post.
+	 *
+	 * @test
+	 */
+	public function should_allow_getting_ticket_provider_object_for_rsvp_post() {
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$post_id        = $this->factory->post->create( [
+			'meta_input' => [
+				$tickets_handler->key_provider_field => 'Tribe__Tickets__RSVP',
+			],
+		] );
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
+
+		$this->assertInstanceOf( 'Tribe__Tickets__RSVP', Tickets::get_event_ticket_provider_object( $post_id ) );
+	}
+
+	/**
+	 * It should allow getting the ticket provider for a post.
+	 *
+	 * @test
+	 */
+	public function should_allow_getting_ticket_provider_object_for_post_with_inactive_provider() {
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$post_id = $this->factory->post->create( [
+			'meta_input' => [
+				$tickets_handler->key_provider_field => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
+			],
+		] );
+
+		$this->assertEquals( false, Tickets::get_event_ticket_provider_object( $post_id ) );
 	}
 
 }
