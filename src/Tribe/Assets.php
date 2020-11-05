@@ -75,6 +75,22 @@ class Tribe__Tickets__Assets {
 						'tribe-tickets-rsvp',
 						'tribe-tickets-registration-page',
 					],
+				],
+			);
+
+			// @todo: Remove this once we solve the common breakpoints vs container based.
+			tribe_asset(
+				$tickets_main,
+				'tribe-common-responsive',
+				'common-responsive.css',
+				[ 'tribe-common-skeleton-style' ],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-block-assets',
+						'tribe-tickets-rsvp',
+						'tribe-tickets-registration-page',
+					],
 				]
 			);
 		}
