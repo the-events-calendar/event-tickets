@@ -291,6 +291,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $email = '_tribe_tickets_email';
 
 		/**
+		 * Meta key that holds the security code that is used for printed tickets and QR codes.
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $security_code = '_tribe_tickets_security_code';
+
+		/**
 		 * The provider used for Attendees and Tickets ORM.
 		 *
 		 * @var string
@@ -3685,6 +3694,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param string|false $provider        Current ticket provider or false if not set.
 			 */
 			return (array) apply_filters( 'tribe_tickets_tickets_in_cart', [], $provider );
+		}
+
+		/**
+		 * Generates the security code that will be used for printed tickets and QR codes.
+		 *
+		 * @since 4.7
+		 *
+		 * @param string $attendee_id The attendee ID or another string to based the security code off of.
+		 *
+		 * @return string The generated security code.
+		 */
+		public function generate_security_code( $attendee_id ) {
+			return substr( md5( wp_rand() . '_' . $attendee_id ), 0, 10 );
 		}
 
 		/**
