@@ -137,7 +137,7 @@ if (
 		'tooltip'         => wp_kses_post(
 			sprintf(
 				// Translators: %1$s: dynamic "Tickets" text, %2$s and %3$s are part of link.
-				_x( 'Enables updated front-end views and Individual Attendee Collection (IAC) flows for %1$s. You\'ll see a new default setting within the Tickets tab and new individual ticket setting within both Classic and Gutenberg editors %2$s[Learn more]%3$s.', 'settings tooltip', 'event-tickets' ),
+				_x( 'Enables updated front-end views and Individual Attendee Collection flows for %1$s. You\'ll see a new default setting within the Tickets tab and new individual ticket setting within both Classic and Gutenberg editors %2$s[Learn more]%3$s.', 'settings tooltip', 'event-tickets' ),
 				tribe_get_ticket_label_plural( 'tickets_use_new_views' ),
 				'<a href="https://m.tri.be/1an-">',
 				'</a>'
