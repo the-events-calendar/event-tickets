@@ -1099,8 +1099,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		$send_args = [
-			'post_id'  => $post_id,
-			'order_id' => $order_id,
+			'post_id'            => $post_id,
+			'order_id'           => $order_id,
+			'send_purchaser_all' => true,
 		];
 
 		// Send the emails.
