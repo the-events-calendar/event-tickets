@@ -75,7 +75,7 @@ class Tribe__Tickets__Assets {
 						'tribe-tickets-rsvp',
 						'tribe-tickets-registration-page',
 					],
-				],
+				]
 			);
 
 			// @todo: Remove this once we solve the common breakpoints vs container based.
