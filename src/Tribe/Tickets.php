@@ -2147,6 +2147,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$emails_sent = 0;
 
+			// Handle purchaser emails.
+			if ( ! empty( $args['send_purchaser_all'] ) ) {
+				// Get the purchaser email from the first attendee.
+				$first_attendee  = reset( $attendees );
+				$purchaser_email = $first_attendee['purchaser_email'];
+
+				// Make sure purchaser gets a list of all of the attendee tickets.
+				$unique_attendees[ $purchaser_email ] = $attendees;
+			}
+
 			// Send an email with all RSVPs/tickets for each unique attendee.
 			foreach ( $unique_attendees as $to => $tickets ) {
 				$emails_sent += (int) $this->send_tickets_email_for_attendee( $to, $tickets, $args );
