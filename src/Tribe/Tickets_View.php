@@ -962,6 +962,7 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @since 4.11.0
 	 * @since 4.12.3 Update usage of get_event_ticket_provider().
+	 * @since TBD Moved getting of context array to its own method.
 	 *
 	 * @param WP_Post|int $post The post object or ID.
 	 * @param boolean     $echo Whether to echo the output or not.
@@ -969,26 +970,24 @@ class Tribe__Tickets__Tickets_View {
 	 * @return string The block HTML.
 	 */
 	public function get_tickets_block( $post, $echo = true ) {
-		if ( empty( $post ) ) {
-			return '';
-		}
-
 		if ( is_numeric( $post ) ) {
 			$post = get_post( $post );
 		}
 
-		if ( ! $post instanceof WP_Post ) {
+		if (
+			! $post instanceof WP_Post
+			|| empty( $post->ID )
+		) {
 			return '';
 		}
 
-		// If password protected, do not display content.
-		if ( post_password_required() ) {
+		$args = $this->get_tickets_block_context_args( $post->ID );
+
+		if ( empty( $args ) ) {
 			return '';
 		}
 
-		$post_id = $post->ID;
-
-		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post_id );
+		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post->ID );
 
 		// Protect against ticket that exists but is of a type that is not enabled.
 		if ( empty( $provider ) ) {
@@ -1003,98 +1002,13 @@ class Tribe__Tickets__Tickets_View {
 		/** @var Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 
+		$template->add_template_globals( $args );
+
 		/** @var Tribe__Tickets__Editor__Blocks__Tickets $blocks_tickets */
 		$blocks_tickets = tribe( 'tickets.editor.blocks.tickets' );
 
-		/** @var Tribe__Settings_Manager $settings_manager */
-		$settings_manager = tribe( 'settings.manager' );
-
-		$threshold = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', null );
-
-		/**
-		 * Overwrites the threshold to display "# tickets left".
-		 *
-		 * @since 4.11.1
-		 *
-		 * @param int   $threshold Stock threshold to trigger display of "# tickets left"
-		 * @param int   $post_id   WP_Post/Event ID.
-		 */
-		$threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_threshold', $threshold, $post_id ) );
-
-		/**
-		 * Allow filtering of the button name for the tickets block.
-		 *
-		 * @since 4.11.0
-		 *
-		 * @param string $button_name The button name. Set to cart-button to send to cart on submit, or set to checkout-button to send to checkout on submit.
-		 */
-		$submit_button_name = apply_filters( 'tribe_tickets_ticket_block_submit', 'cart-button' );
-
-		/**
-		 * Show original price on sale.
-		 *
-		 * @param bool Whether the original price should be shown on sale or not. Default is true.
-		 *
-		 * @return bool Whether the original price should be shown on sale or not.
-		 */
-		$show_original_price_on_sale = apply_filters( 'tribe_tickets_show_original_price_on_sale', true );
-
 		// Load assets manually.
 		$blocks_tickets->assets();
-
-		$tickets = $provider->get_tickets( $post_id );
-
-		$args = [
-			'post_id'                     => $post_id,
-			'provider'                    => $provider,
-			'provider_id'                 => $provider->class_name,
-			'tickets'                     => $tickets,
-			'cart_classes'                => [ 'tribe-block', 'tribe-tickets' ], // @todo: deprecate with V1.
-			'tickets_on_sale'             => $blocks_tickets->get_tickets_on_sale( $tickets ),
-			'has_tickets_on_sale'         => tribe_events_has_tickets_on_sale( $post_id ),
-			'is_sale_past'                => $blocks_tickets->get_is_sale_past( $tickets ),
-			'is_sale_future'              => $blocks_tickets->get_is_sale_future( $tickets ),
-			'currency'                    => tribe( 'tickets.commerce.currency' ),
-			'handler'                     => tribe( 'tickets.handler' ),
-			'privacy'                     => tribe( 'tickets.privacy' ),
-			'threshold'                   => $threshold,
-			'must_login'                  => ! is_user_logged_in() && $provider->login_required(),
-			'show_original_price_on_sale' => $show_original_price_on_sale,
-			'is_mini'                     => null,
-			'is_modal'                    => null,
-			'submit_button_name'          => $submit_button_name,
-			'cart_url'                    => method_exists( $provider, 'get_cart_url' ) ? $provider->get_cart_url() : '',
-			'checkout_url'                => method_exists( $provider, 'get_checkout_url' ) ? $provider->get_checkout_url() : '',
-		];
-
-		/**
-		 * Add the rendering attributes into global context.
-		 *
-		 * Start with the following for template files loading this global context.
-		 * Keep all templates with this starter block of comments updated if these global args update.
-		 *
-		 * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
-		 * @var int                                $post_id                     [Global] The current Post ID to which tickets are attached.
-		 * @var Tribe__Tickets__Tickets            $provider                    [Global] The tickets provider class.
-		 * @var string                             $provider_id                 [Global] The tickets provider class name.
-		 * @var Tribe__Tickets__Ticket_Object[]    $tickets                     [Global] List of tickets.
-		 * @var array                              $cart_classes                [Global] CSS classes.
-		 * @var Tribe__Tickets__Ticket_Object[]    $tickets_on_sale             [Global] List of tickets on sale.
-		 * @var bool                               $has_tickets_on_sale         [Global] True if the event has any tickets on sale.
-		 * @var bool                               $is_sale_past                [Global] True if tickets' sale dates are all in the past.
-		 * @var bool                               $is_sale_future              [Global] True if no ticket sale dates have started yet.
-		 * @var Tribe__Tickets__Commerce__Currency $currency                    [Global] Tribe Currency object.
-		 * @var Tribe__Tickets__Tickets_Handler    $handler                     [Global] Tribe Tickets Handler object.
-		 * @var Tribe__Tickets__Privacy            $privacy                     [Global] Tribe Tickets Privacy object.
-		 * @var int                                $threshold                   [Global] The count at which "number of tickets left" message appears.
-		 * @var bool                               $show_original_price_on_sale [Global] Show original price on sale.
-		 * @var null|bool                          $is_mini                     [Global] If in "mini cart" context.
-		 * @var null|bool                          $is_modal                    [Global] Whether the modal is enabled.
-		 * @var string                             $submit_button_name          [Global] The button name for the tickets block.
-		 * @var string                             $cart_url                    [Global] Link to Cart (could be empty).
-		 * @var string                             $checkout_url                [Global] Link to Checkout (could be empty).
-		 */
-		$template->add_template_globals( $args );
 
 		// Enqueue assets.
 		tribe_asset_enqueue_group( 'tribe-tickets-block-assets' );
@@ -1128,6 +1042,126 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		return $template->template( 'blocks/tickets', [], $echo );
+	}
+
+	/**
+	 * Gets the context argument array usable by non-Block Editor views.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return array The array of template context arguments.
+	 */
+	public function get_tickets_block_context_args( $post_id ) {
+		$post_id = (int) $post_id;
+
+		if ( empty( $post_id ) ) {
+			return [];
+		}
+
+		// If password protected, do not display content.
+		if ( post_password_required() ) {
+			return [];
+		}
+
+		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post_id );
+
+		// Protect against ticket that exists but is of a type that is not enabled.
+		if ( empty( $provider ) ) {
+			return [];
+		}
+
+		// No need to handle RSVPs here.
+		if ( 'Tribe__Tickets__RSVP' === $provider->class_name ) {
+			return [];
+		}
+
+		/** @var Tribe__Tickets__Editor__Blocks__Tickets $blocks_tickets */
+		$blocks_tickets = tribe( 'tickets.editor.blocks.tickets' );
+
+		/** @var Tribe__Settings_Manager $settings_manager */
+		$settings_manager = tribe( 'settings.manager' );
+
+		$threshold = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', null );
+
+		/**
+		 * Overwrites the threshold to display "# tickets left".
+		 *
+		 * @since 4.11.1
+		 *
+		 * @param int $threshold Stock threshold to trigger display of "# tickets left"
+		 * @param int $post_id   WP_Post/Event ID.
+		 */
+		$threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_threshold', $threshold, $post_id ) );
+
+		/**
+		 * Allow filtering of the button name for the tickets block.
+		 *
+		 * @since 4.11.0
+		 *
+		 * @param string $button_name The button name. Set to cart-button to send to cart on submit, or set to checkout-button to send to checkout on submit.
+		 */
+		$submit_button_name = apply_filters( 'tribe_tickets_ticket_block_submit', 'cart-button' );
+
+		/**
+		 * Show original price on sale.
+		 *
+		 * @param bool Whether the original price should be shown on sale or not. Default is true.
+		 *
+		 * @return bool Whether the original price should be shown on sale or not.
+		 */
+		$show_original_price_on_sale = apply_filters( 'tribe_tickets_show_original_price_on_sale', true );
+
+		$tickets = $provider->get_tickets( $post_id );
+
+		/**
+		 * Start with the following for template files loading this global context.
+		 * Keep all templates with this starter block of comments updated if these global args update.
+		 *
+		 * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
+		 * @var int                                $post_id                     [Global] The current Post ID to which tickets are attached.
+		 * @var Tribe__Tickets__Tickets            $provider                    [Global] The tickets provider class.
+		 * @var string                             $provider_id                 [Global] The tickets provider class name.
+		 * @var Tribe__Tickets__Ticket_Object[]    $tickets                     [Global] List of tickets.
+		 * @var array                              $cart_classes                [Global] CSS classes.
+		 * @var Tribe__Tickets__Ticket_Object[]    $tickets_on_sale             [Global] List of tickets on sale.
+		 * @var bool                               $has_tickets_on_sale         [Global] True if the event has any tickets on sale.
+		 * @var bool                               $is_sale_past                [Global] True if tickets' sale dates are all in the past.
+		 * @var bool                               $is_sale_future              [Global] True if no ticket sale dates have started yet.
+		 * @var Tribe__Tickets__Commerce__Currency $currency                    [Global] Tribe Currency object.
+		 * @var Tribe__Tickets__Tickets_Handler    $handler                     [Global] Tribe Tickets Handler object.
+		 * @var Tribe__Tickets__Privacy            $privacy                     [Global] Tribe Tickets Privacy object.
+		 * @var int                                $threshold                   [Global] The count at which "number of tickets left" message appears.
+		 * @var bool                               $show_original_price_on_sale [Global] Show original price on sale.
+		 * @var null|bool                          $is_mini                     [Global] If in "mini cart" context.
+		 * @var null|bool                          $is_modal                    [Global] Whether the modal is enabled.
+		 * @var string                             $submit_button_name          [Global] The button name for the tickets block.
+		 * @var string                             $cart_url                    [Global] Link to Cart (could be empty).
+		 * @var string                             $checkout_url                [Global] Link to Checkout (could be empty).
+		 */
+		return [
+			'post_id'                     => $post_id,
+			'provider'                    => $provider,
+			'provider_id'                 => $provider->class_name,
+			'tickets'                     => $tickets,
+			'cart_classes'                => [ 'tribe-block', 'tribe-tickets' ], // @todo: deprecate with V1.
+			'tickets_on_sale'             => $blocks_tickets->get_tickets_on_sale( $tickets ),
+			'has_tickets_on_sale'         => tribe_events_has_tickets_on_sale( $post_id ),
+			'is_sale_past'                => $blocks_tickets->get_is_sale_past( $tickets ),
+			'is_sale_future'              => $blocks_tickets->get_is_sale_future( $tickets ),
+			'currency'                    => tribe( 'tickets.commerce.currency' ),
+			'handler'                     => tribe( 'tickets.handler' ),
+			'privacy'                     => tribe( 'tickets.privacy' ),
+			'threshold'                   => $threshold,
+			'must_login'                  => ! is_user_logged_in() && $provider->login_required(),
+			'show_original_price_on_sale' => $show_original_price_on_sale,
+			'is_mini'                     => null,
+			'is_modal'                    => null,
+			'submit_button_name'          => $submit_button_name,
+			'cart_url'                    => method_exists( $provider, 'get_cart_url' ) ? $provider->get_cart_url() : '',
+			'checkout_url'                => method_exists( $provider, 'get_checkout_url' ) ? $provider->get_checkout_url() : '',
+		];
 	}
 
 	/**
