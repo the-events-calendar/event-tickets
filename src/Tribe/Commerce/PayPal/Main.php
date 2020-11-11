@@ -1073,12 +1073,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		// fact it was sent
 		foreach ( $all_attendees as $single_attendee ) {
 			// Only add those attendees/tickets that haven't already been sent
-			if ( ! empty( $single_attendee[ 'ticket_sent' ] ) ) {
+			if ( ! empty( $single_attendee['ticket_sent'] ) ) {
 				continue;
 			}
 
 			$to_send[] = $single_attendee;
-			update_post_meta( $single_attendee[ 'qr_ticket_id' ], $this->attendee_ticket_sent, true );
 		}
 
 		/**
@@ -1099,100 +1098,52 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		// For now all ticket holders in an order share the same email
-		$to = $all_attendees['0']['holder_email'];
+		$send_args = [
+			'post_id'            => $post_id,
+			'order_id'           => $order_id,
+			'send_purchaser_all' => true,
+		];
 
-		if ( ! is_email( $to ) ) {
-			return;
-		}
+		// Send the emails.
+		$this->send_tickets_email_for_attendees( $to_send, $send_args );
+	}
 
-		/**
-		 * Filters the Tribe Commerce tickets email content
-		 *
-		 * @since 4.7.6 added new parameters $post_id and $order_id
-		 *
-		 * @param string email content
-		 * @param int    $post_id
-		 * @param string $order_id
-		 */
-		$content = apply_filters( 'tribe_tpp_email_content', $this->generate_tickets_email_content( $to_send ), $post_id, $order_id );
+	/**
+	 * Send RSVPs/tickets email for attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $attendees List of attendees.
+	 * @param array $args      {
+	 *      The list of arguments to use for sending ticket emails.
+	 *
+	 *      @type string       $subject              The email subject.
+	 *      @type string       $content              The email content.
+	 *      @type string       $from_name            The name to send tickets from.
+	 *      @type string       $from_email           The email to send tickets from.
+	 *      @type array|string $headers              The list of headers to send.
+	 *      @type array        $attachments          The list of attachments to send.
+	 *      @type string       $provider             The provider slug (rsvp, tpp, woo, edd).
+	 *      @type int          $post_id              The post/event ID to send the emails for.
+	 *      @type string|int   $order_id             The order ID to send the emails for.
+	 *      @type string|int   $ticket_sent_meta_key The meta key to use for marking an attendee ticket as sent.
+	 * }
+	 *
+	 * @return int The number of emails sent successfully.
+	 */
+	public function send_tickets_email_for_attendees( $attendees, $args = [] ) {
+		$args = array_merge(
+			[
+				'subject'              => tribe_get_option( 'ticket-paypal-confirmation-email-subject', false ),
+				'from_name'            => tribe_get_option( 'ticket-paypal-confirmation-email-sender-name', false ),
+				'from_email'           => tribe_get_option( 'ticket-paypal-confirmation-email-sender-email', false ),
+				'provider'             => 'tpp',
+				'ticket_sent_meta_key' => $this->attendee_ticket_sent,
+			],
+			$args
+		);
 
-		/**
-		 * Filters the Tribe Commerce tickets email sender name
-		 *
-		 * @since 4.7.6 added new parameters $post_id and $order_id
-		 *
-		 * @param string email sender name
-		 * @param int    $post_id
-		 * @param string $order_id
-		 */
-		$from = apply_filters( 'tribe_tpp_email_from_name', tribe_get_option( 'ticket-paypal-confirmation-email-sender-name', false ), $post_id, $order_id );
-
-		/**
-		 * Filters the Tribe Commerce tickets email sender email
-		 *
-		 * @since 4.7.6 added new parameters $post_id and $order_id
-		 *
-		 * @param string email sender email
-		 * @param int    $post_id
-		 * @param string $order_id
-		 */
-		$from_email = apply_filters( 'tribe_tpp_email_from_email', tribe_get_option( 'ticket-paypal-confirmation-email-sender-email', false ), $post_id, $order_id );
-
-		$headers = array( 'Content-type: text/html' );
-
-		if ( ! empty( $from ) && ! empty( $from_email ) ) {
-			$headers[] = sprintf( 'From: %s <%s>', filter_var( $from, FILTER_SANITIZE_STRING ), filter_var( $from_email, FILTER_SANITIZE_EMAIL ) );
-		}
-
-		/**
-		 * Filters the Tribe Commerce tickets email headers
-		 *
-		 * @since 4.7.6 added new parameters $post_id and $order_id
-		 *
-		 * @param array  email headers
-		 * @param int    $post_id
-		 * @param string $order_id
-		 */
-		$headers = apply_filters( 'tribe_tpp_email_headers', $headers, $post_id, $order_id );
-
-		/**
-		 * Filters the Tribe Commerce tickets email attachments
-		 *
-		 * @since 4.7.6 added new parameters $post_id and $order_id
-		 *
-		 * @param array  attachments
-		 * @param int    $post_id
-		 * @param string $order_id
-		 */
-		$attachments = apply_filters( 'tribe_tpp_email_attachments', array(), $post_id, $order_id );
-
-		/**
-		 * Filters the Tribe Commerce tickets email recipient
-		 *
-		 * @since 4.7.6 added new parameters $post_id and $order_id
-		 *
-		 * @param string $to
-		 * @param int    $event_id
-		 * @param string $order_id
-		 */
-		$to = apply_filters( 'tribe_tpp_email_recipient', $to, $post_id, $order_id );
-
-		$site_name = stripslashes_deep( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES ) );
-		$default_subject = sprintf( __( 'Your tickets from %s', 'event-tickets' ), $site_name );
-
-		/**
-		 * Filters the Tribe Commerce tickets email subject
-		 *
-		 * @since 4.7.6 added new parameters $post_id and $order_id
-		 *
-		 * @param string email subject
-		 * @param int    $post_id
-		 * @param string $order_id
-		 */
-		$subject = apply_filters( 'tribe_tpp_email_subject', tribe_get_option( 'ticket-paypal-confirmation-email-subject', $default_subject ) );
-
-		wp_mail( $to, $subject, $content, $headers, $attachments );
+		return parent::send_tickets_email_for_attendees( $attendees, $args );
 	}
 
 	/**
@@ -1323,7 +1274,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			}
 		} else {
 			// If the Global Stock is configured we pull it from the Event
-			$global_capacity = tribe_tickets_get_capacity( $post_id );
+			$global_capacity        = (int) tribe_tickets_get_capacity( $post_id );
+			$data['event_capacity'] = (int) Tribe__Utils__Array::get( 'event_capacity', $data, 0 );
 
 			if ( ! empty( $data['event_capacity'] ) && $data['event_capacity'] !== $global_capacity ) {
 				// Update stock level with $data['event_capacity'].
@@ -3058,6 +3010,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			]
 		);
 
+		$attendee_data['is_purchaser'] = $attendee_data['holder_email'] === $attendee_data['purchaser_email'];
+
 		/**
 		 * Allow filtering the attendee information to return.
 		 *
@@ -3132,21 +3086,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 		tribe_exit();
 	}
-
-    /**
-     * Generates the validation code that will be printed in the ticket.
-     *
-     * Its purpose is to be used to validate the ticket at the door of an event.
-     *
-     * @since 4.7
-     *
-     * @param int $attendee_id
-     *
-     * @return string
-     */
-    public function generate_security_code( $attendee_id ) {
-        return substr( md5( rand() . '_' . $attendee_id ), 0, 10 );
-    }
 
 	/**
 	 * If other modules are active, we should deprioritize this one (we want other commerce

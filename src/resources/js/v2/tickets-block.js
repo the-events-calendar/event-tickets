@@ -33,7 +33,7 @@ tribe.tickets.block = {
 		itemOptOutInput: '#tribe-tickets-attendees-list-optout-',
 		itemPrice: '.tribe-tickets__tickets-sale-price .tribe-amount',
 		itemQuantity: '.tribe-tickets__tickets-item-quantity',
-		itemQuantityInput: '.tribe-tickets-quantity',
+		itemQuantityInput: '.tribe-tickets__tickets-item-quantity-number-input',
 		itemQuantityAdd: '.tribe-tickets__tickets-item-quantity-add',
 		itemQuantityRemove: '.tribe-tickets__tickets-item-quantity-remove',
 		submit: '.tribe-tickets__tickets-buy',
@@ -494,7 +494,7 @@ tribe.tickets.block = {
 	obj.bindTicketsAddRemove = function( $container ) {
 		const $addRemove = $container.find( obj.selectors.itemQuantityAdd + ', ' + obj.selectors.itemQuantityRemove );
 
-		$addRemove.on(
+		$addRemove.unbind( 'click' ).on(
 			'click',
 			function( e ) {
 				e.preventDefault();
@@ -616,11 +616,17 @@ tribe.tickets.block = {
 	 *
 	 * @since TBD
 	 *
-	 * @param {event} trigger The event.
+	 * @param {event} event The event.
 	 *
 	 * @return {void}
 	 */
-	obj.itemDescriptionToggle = function( trigger ) {
+	obj.itemDescriptionToggle = function( event ) {
+		if ( 'keyup' === event.type && 13 !== event.keyCode ) {
+			return;
+		}
+
+		const trigger = event.target;
+
 		if ( ! trigger ) {
 			return;
 		}
@@ -637,7 +643,7 @@ tribe.tickets.block = {
 		const $parent = $trigger.closest( obj.selectors.item );
 		const $target = $( '#' + $trigger.attr( 'aria-controls' ) );
 
-		if ( ! $target || ! $parent ) {
+		if ( ! $target.length || ! $parent.length ) {
 			return;
 		}
 
@@ -663,19 +669,12 @@ tribe.tickets.block = {
 		// Add keyboard support for enter key.
 		$descriptionToggleButtons.on(
 			'keyup',
-			function( event ) {
-				// Toggle open like click does.
-				if ( 13 === event.keyCode ) {
-					obj.itemDescriptionToggle( event.target );
-				}
-			}
+			obj.itemDescriptionToggle
 		);
 
 		$descriptionToggleButtons.on(
 			'click',
-			function( event ) {
-				obj.itemDescriptionToggle( event.target );
-			}
+			obj.itemDescriptionToggle
 		);
 	};
 
@@ -730,6 +729,8 @@ tribe.tickets.block = {
 					tribe_tickets_meta: {},
 					tribe_tickets_post_id: postId,
 				};
+
+				$( '#tribe_tickets_block_ar_data' ).val( JSON.stringify( params ) );
 
 				$document.trigger( 'beforeTicketsSubmit.tribeTicketsBlock', [ $form, params ] );
 

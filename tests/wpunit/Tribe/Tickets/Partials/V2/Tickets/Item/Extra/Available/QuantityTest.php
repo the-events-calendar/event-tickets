@@ -9,7 +9,7 @@ class QuantityTest extends V2TestCase {
 
 	use PayPal_Ticket_Maker;
 
-	protected $partial_path = 'v2/tickets/item/extra/available/quantity';
+	public $partial_path = 'v2/tickets/item/extra/available/quantity';
 
 	/**
 	 * Get all the default args required for this template
@@ -36,6 +36,7 @@ class QuantityTest extends V2TestCase {
 			'ticket'          => $ticket,
 			'threshold'       => 0,
 			'available_count' => $ticket->available(),
+			'is_unlimited'    => null,
 		];
 	}
 
@@ -78,6 +79,21 @@ class QuantityTest extends V2TestCase {
 
 		// Threshold is greater than the set capacity of 20.
 		$args['threshold'] = 25;
+
+		$html = $template->template( $this->partial_path, $args, false );
+
+		$this->assertMatchesSnapshot( $html, $this->get_html_output_driver() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function test_should_not_render_quantity_block_if_is_unlimited() {
+		$template = tribe( 'tickets.editor.template' );
+
+		$args = $this->get_default_args();
+
+		$args['is_unlimited'] = true;
 
 		$html = $template->template( $this->partial_path, $args, false );
 

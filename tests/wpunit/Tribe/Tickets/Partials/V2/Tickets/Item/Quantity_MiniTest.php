@@ -6,7 +6,7 @@ use Tribe\Tickets\Test\Partials\V2TestCase;
 
 class Quantity_MiniTest extends V2TestCase {
 
-	protected $partial_path = 'v2/tickets/item/quantity-mini';
+	public $partial_path = 'v2/tickets/item/quantity-mini';
 
 	/**
 	 * Get all the default args required for this template

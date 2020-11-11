@@ -9,7 +9,7 @@ class Opt_OutTest extends V2TestCase {
 
 	use PayPal_Ticket_Maker;
 
-	protected $partial_path = 'v2/tickets/item/opt-out';
+	public $partial_path = 'v2/tickets/item/opt-out';
 
 	/**
 	 * Get all the default args required for this template

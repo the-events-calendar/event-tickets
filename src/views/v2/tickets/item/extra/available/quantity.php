@@ -47,8 +47,8 @@
  */
 
 if (
-	0 !== $threshold
-	&& $threshold < $available_count
+	( 0 !== $threshold && $threshold < $available_count )
+	|| $is_unlimited
 ) {
 	return;
 }

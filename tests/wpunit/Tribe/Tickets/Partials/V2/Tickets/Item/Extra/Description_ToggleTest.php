@@ -9,7 +9,7 @@ class Description_ToggleTest extends V2TestCase {
 
 	use PayPal_Ticket_Maker;
 
-	protected $partial_path = 'v2/tickets/item/extra/description-toggle';
+	public $partial_path = 'v2/tickets/item/extra/description-toggle';
 
 	/**
 	 * Get all the default args required for this template

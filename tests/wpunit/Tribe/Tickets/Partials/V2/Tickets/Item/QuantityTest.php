@@ -9,7 +9,7 @@ class QuantityTest extends V2TestCase {
 
 	use PayPal_Ticket_Maker;
 
-	protected $partial_path = 'v2/tickets/item/quantity';
+	public $partial_path = 'v2/tickets/item/quantity';
 
 	/**
 	 * Get all the default args required for this template

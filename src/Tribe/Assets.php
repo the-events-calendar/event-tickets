@@ -77,6 +77,22 @@ class Tribe__Tickets__Assets {
 					],
 				]
 			);
+
+			// @todo: Remove this once we solve the common breakpoints vs container based.
+			tribe_asset(
+				$tickets_main,
+				'tribe-common-responsive',
+				'common-responsive.css',
+				[ 'tribe-common-skeleton-style' ],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-block-assets',
+						'tribe-tickets-rsvp',
+						'tribe-tickets-registration-page',
+					],
+				]
+			);
 		}
 
 		if ( tribe_tickets_new_views_is_enabled() ) {
