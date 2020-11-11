@@ -4,7 +4,7 @@ use Tribe\Tickets\Test\Partials\V2TestCase;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 
 class FieldsTest extends V2TestCase {
-	protected $partial_path = 'v2/tickets/commerce/fields';
+	public $partial_path = 'v2/tickets/commerce/fields';
 
 	/**
 	 * Get all the default args required for this template

@@ -2,7 +2,7 @@
 	<form
 		id="tribe-tickets__tickets-form"
 		action=""
-		class="tribe-tickets__tickets-form"
+		class="tribe-tickets__tickets-form tribe-tickets__form"
 		method="post"
 		enctype=\'multipart/form-data\'
 		data-provider="Tribe__Tickets__Commerce__PayPal__Main"

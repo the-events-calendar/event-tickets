@@ -6,7 +6,7 @@ use Tribe\Tickets\Test\Partials\V2TestCase;
 
 class InactiveTest extends V2TestCase {
 
-	protected $partial_path = 'v2/tickets/item/content/inactive';
+	public $partial_path = 'v2/tickets/item/content/inactive';
 
 	/**
 	 * Get all the default args required for this template

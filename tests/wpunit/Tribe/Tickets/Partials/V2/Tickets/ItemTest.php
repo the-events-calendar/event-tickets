@@ -9,7 +9,7 @@ class ItemTest extends V2TestCase {
 
 	use PayPal_Ticket_Maker;
 
-	protected $partial_path = 'v2/tickets/item';
+	public $partial_path = 'v2/tickets/item';
 
 	/**
 	 * Get all the default args required for this template.

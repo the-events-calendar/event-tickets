@@ -9,7 +9,7 @@ class Return_To_Cart_Test extends V2TestCase {
 
 	use PayPal_Ticket_Maker;
 
-	protected $partial_path = 'v2/tickets/footer/return-to-cart';
+	public $partial_path = 'v2/tickets/footer/return-to-cart';
 
 	/**
 	 * Get all the default args required for this template

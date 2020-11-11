@@ -3,7 +3,7 @@
 use Tribe\Tickets\Test\Partials\V2TestCase;
 
 class TitleTest extends V2TestCase {
-	protected $partial_path = 'v2/tickets/title';
+	public $partial_path = 'v2/tickets/title';
 
 	/**
 	 * Get all the default args required for this template

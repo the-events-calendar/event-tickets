@@ -6,7 +6,7 @@ use Tribe\Tickets\Test\Partials\V2TestCase;
 
 class Must_LoginTest extends V2TestCase {
 
-	protected $partial_path = 'v2/tickets/submit/must-login';
+	public $partial_path = 'v2/tickets/submit/must-login';
 
 	/**
 	 * Get all the default args required for this template
