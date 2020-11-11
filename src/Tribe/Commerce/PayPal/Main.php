@@ -3010,6 +3010,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			]
 		);
 
+		$attendee_data['is_purchaser'] = $attendee_data['holder_email'] === $attendee_data['purchaser_email'];
+
 		/**
 		 * Allow filtering the attendee information to return.
 		 *
