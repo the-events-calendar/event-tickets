@@ -3087,21 +3087,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_exit();
 	}
 
-    /**
-     * Generates the validation code that will be printed in the ticket.
-     *
-     * Its purpose is to be used to validate the ticket at the door of an event.
-     *
-     * @since 4.7
-     *
-     * @param int $attendee_id
-     *
-     * @return string
-     */
-    public function generate_security_code( $attendee_id ) {
-        return substr( md5( rand() . '_' . $attendee_id ), 0, 10 );
-    }
-
 	/**
 	 * If other modules are active, we should deprioritize this one (we want other commerce
 	 * modules to take priority over this one).
