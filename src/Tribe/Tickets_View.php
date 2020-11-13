@@ -1202,6 +1202,7 @@ class Tribe__Tickets__Tickets_View {
 			'opt_in_nonce'        => '',
 			'doing_shortcode'     => $doing_shortcode,
 			'block_html_id'       => $block_html_id,
+			'going'               => tribe_get_request_var( 'going', '' ),
 		];
 
 		/**
