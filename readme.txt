@@ -118,7 +118,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [5.0.3] TBD =
+= [5.0.3] 2020-11-19 =
 
 * Fix - Calculation fixed for attendee count percentage column while using RSVP only. [ET-876]
 * Fix - Correct specificity of checkboxes and radio buttons styles to prevent conflicts with other Modern Tribe plugins. [ET-922]
