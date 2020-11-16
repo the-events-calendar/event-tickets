@@ -5,6 +5,8 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/content.php
  *
+ * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
+ *
  * @since   4.11.0
  * @since   4.11.3.1 Fix handling where $provider is an object.
  * @since   4.12.0   Prevent potential errors when $provider_obj is not valid.

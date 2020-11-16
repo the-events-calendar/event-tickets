@@ -6,6 +6,8 @@
  *
  * @package TribeEventsCalendar
  *
+ * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
+ *
  * @since   4.7.4
  * @since   4.10.2 Only show Update button if ticket has meta.
  * @since   4.10.8 Show Update button if current user has either RSVP or Ticket with meta. Do not use the now-deprecated third parameter of `get_description_rsvp_ticket()`.
@@ -16,7 +18,7 @@
  * @since   4.12.3 Account for inactive ticket providers.
  * @since   TBD Add filter to control the re-sending emails option on email alteration.
  *
- * @version 4.12.3
+ * @version TBD
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

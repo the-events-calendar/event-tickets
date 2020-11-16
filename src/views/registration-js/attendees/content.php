@@ -5,9 +5,12 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/attendees/content.php
  *
- * @since 4.11.0
+ * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
- * @version 4.11.0
+ * @since 4.11.0
+ * @since TBD Updated template link.
+ *
+ * @version TBD
  *
  */
 if (
