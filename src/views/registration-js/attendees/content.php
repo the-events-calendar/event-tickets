@@ -8,9 +8,9 @@
  * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
  * @since 4.11.0
- * @since TBD Updated template link.
+ * @since 5.0.3 Updated template link.
  *
- * @version TBD
+ * @version 5.0.3
  *
  */
 if (

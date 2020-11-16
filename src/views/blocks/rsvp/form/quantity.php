@@ -10,9 +10,9 @@
  * @since   4.9
  * @since   4.10.9 Uses new functions to get singular and plural texts.
  * @since   4.11.5 Added template override instructions in template comments.
- * @since   TBD Add vars to docblock and removed duplicative vars.
+ * @since   5.0.3 Add vars to docblock and removed duplicative vars.
  *
- * @version TBD
+ * @version 5.0.3
  *
  * @var Tribe__Tickets__Editor__Template $this    Template object.
  * @var int                              $post_id [Global] The current Post ID to which RSVPs are attached.

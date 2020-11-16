@@ -9,9 +9,9 @@
  *
  * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
- * @since   TBD
+ * @since   5.0.3
  *
- * @version TBD
+ * @version 5.0.3
  *
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
  * @var Tribe__Tickets__Tickets            $provider                    [Global] The tickets provider class.
@@ -85,7 +85,7 @@ $classes = [
 	/**
 	 * Allows injection of additional markup after the form tag but within the div of this template.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @see  Tribe__Template\do_entry_point()
 	 * @link https://docs.theeventscalendar.com/reference/classes/tribe__template/do_entry_point/

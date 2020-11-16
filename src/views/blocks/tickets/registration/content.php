@@ -11,9 +11,9 @@
  * @link https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
  * @since 4.9
- * @since TBD Add `event-tickets` class to the wrapper.
+ * @since 5.0.3 Add `event-tickets` class to the wrapper.
  *
- * @version TBD
+ * @version 5.0.3
  */
 
 ?>

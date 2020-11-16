@@ -14,9 +14,9 @@
  * @since   4.12.3 Update for getting ticket provider now returning instance or False. Remove duplicate array property.
  *              Retrieve $is_meta_up_to_date in a manner consistent with other template variables. Moved `novalidate` from
  *              div to form, as it used to be. Implement short array syntax.
- * @since TBD Add `event-tickets` class to the wrapper.
+ * @since 5.0.3 Add `event-tickets` class to the wrapper.
  *
- * @version TBD
+ * @version 5.0.3
  *
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */

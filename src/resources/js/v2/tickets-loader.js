@@ -2,7 +2,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since 5.0.3
  *
  * @type   {PlainObject}
  */
@@ -11,7 +11,7 @@ tribe.tickets = tribe.tickets || {};
 /**
  * Configures ET Loader Object in the Global Tribe variable
  *
- * @since TBD
+ * @since 5.0.3
  *
  * @type   {PlainObject}
  */
@@ -20,7 +20,7 @@ tribe.tickets.loader = {};
 /**
  * Initializes in a Strict env the code that manages the plugin "loader".
  *
- * @since TBD
+ * @since 5.0.3
  *
  * @param  {PlainObject} $   jQuery
  * @param  {PlainObject} obj tribe.tickets.loader
@@ -34,7 +34,7 @@ tribe.tickets.loader = {};
 	/**
 	 * Selectors used for configuration and setup.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @type {PlainObject}
 	 */
@@ -46,7 +46,7 @@ tribe.tickets.loader = {};
 	/**
 	 * Show loader for the container.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $container jQuery object of the container.
 	 *
@@ -63,7 +63,7 @@ tribe.tickets.loader = {};
 	/**
 	 * Hide loader for the container.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $container jQuery object of the container.
 	 *

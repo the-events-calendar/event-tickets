@@ -812,7 +812,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Allow filtering the individual attendee name used when creating a new attendee.
 		 *
-		 * @since TBD
+		 * @since 5.0.3
 		 *
 		 * @param string                  $individual_attendee_name The attendee full name.
 		 * @param int|null                $attendee_number          The attendee number index value from the order, starting with zero.
@@ -826,7 +826,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Allow filtering the individual attendee email used when creating a new attendee.
 		 *
-		 * @since TBD
+		 * @since 5.0.3
 		 *
 		 * @param string                  $individual_attendee_email The attendee email.
 		 * @param int|null                $attendee_number           The attendee number index value from the order, starting with zero.
@@ -1867,7 +1867,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Allow filtering to change ticket data.
 		 *
-		 * @since TBD
+		 * @since 5.0.3
 		 *
 		 * @param Tribe__Tickets__Ticket_Object $ticket    The ticket object.
 		 * @param int                           $post_id   The ticket parent post ID.

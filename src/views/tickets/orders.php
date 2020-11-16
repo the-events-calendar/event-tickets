@@ -16,9 +16,9 @@
  * @since   4.11.3 Reformat a bit of the code around the button - no functional changes.
  * @since   4.12.1 Account for empty post type object, such as if post type got disabled.
  * @since   4.12.3 Account for inactive ticket providers.
- * @since   TBD Add filter to control the re-sending emails option on email alteration.
+ * @since   5.0.3 Add filter to control the re-sending emails option on email alteration.
  *
- * @version TBD
+ * @version 5.0.3
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -54,7 +54,7 @@ $tribe_my_tickets_have_meta = false;
  *
  * @param bool Defaults to `true`.
  *
- * @since TBD
+ * @since 5.0.3
  */
 $allow_resending_email = (int) apply_filters( 'tribe_tickets_my_tickets_allow_email_resend_on_attendee_email_update', true );
 

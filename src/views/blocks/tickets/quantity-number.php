@@ -13,9 +13,9 @@
  * @since   4.9
  * @since   4.10.8 Tweaked logic for unlimited maximum quantity allowed.
  * @since   4.11.5 The input's "max" is now always set.
- * @since   TBD Removed duplicative vars.
+ * @since   5.0.3 Removed duplicative vars.
  *
- * @version TBD
+ * @version 5.0.3
  *
  * @var Tribe__Tickets__Ticket_Object    $ticket
  * @var Tribe__Tickets__Editor__Template $this

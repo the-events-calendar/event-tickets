@@ -13,7 +13,7 @@ tribe.tickets.block = {
 	/*
 	 * Ticket Block Selectors.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 */
 	obj.selectors = {
 		container: '.tribe-tickets__tickets-wrapper',
@@ -43,7 +43,7 @@ tribe.tickets.block = {
 	/*
 	 * Commerce Provider "lookup table".
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 */
 	obj.commerceSelector = {
 		edd: 'Tribe__Tickets_Plus__Commerce__EDD__Main',
@@ -62,7 +62,7 @@ tribe.tickets.block = {
 	/**
 	 * Make DOM updates for the AJAX response.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {array} tickets Array of tickets to iterate over.
 	 *
@@ -98,7 +98,7 @@ tribe.tickets.block = {
 	/**
 	 * Update all the footer info.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $form The form we're updating.
 	 *
@@ -116,7 +116,7 @@ tribe.tickets.block = {
 	/**
 	 * Adjust the footer count for +/-.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {object} $form The form we're updating.
 	 */
@@ -144,7 +144,7 @@ tribe.tickets.block = {
 	/**
 	 * Get tickets block provider.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $form The form we want to retrieve the provider from.
 	 *
@@ -157,7 +157,7 @@ tribe.tickets.block = {
 	/**
 	 * Adjust the footer total/amount for +/-.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {object} $form The form we're updating.
 	 */
@@ -187,7 +187,7 @@ tribe.tickets.block = {
 	/**
 	 * Update form totals.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $form The jQuery form object to update totals.
 	 *
@@ -204,7 +204,7 @@ tribe.tickets.block = {
 	/**
 	 * Get the tickets IDs.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @returns {array} Array of tickets IDs.
 	 */
@@ -221,7 +221,7 @@ tribe.tickets.block = {
 	/**
 	 * Maybe display the Opt Out.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $ticket The ticket item element.
 	 * @param {number} newQuantity The new ticket quantity.
@@ -245,7 +245,7 @@ tribe.tickets.block = {
 	 * Step up the input according to the button that was clicked.
 	 * Handles IE/Edge.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $input The input field.
 	 * @param {number} originalValue The field's original value.
@@ -290,7 +290,7 @@ tribe.tickets.block = {
 	 * Step down the input according to the button that was clicked.
 	 * Handles IE/Edge.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $input The input field.
 	 * @param {number} originalValue The field's original value.
@@ -314,7 +314,7 @@ tribe.tickets.block = {
 	/**
 	 * Check tickets availability.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 */
 	obj.checkAvailability = function() {
 		// We're checking availability for all the tickets at once.
@@ -352,7 +352,7 @@ tribe.tickets.block = {
 	 * Check if we're updating the qty of a shared cap ticket and
 	 * limits it to the shared cap minus any tickets in cart.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $form jQuery object that is the form we are checking.
 	 * @param {number} qty The quantity we desire.
@@ -400,7 +400,7 @@ tribe.tickets.block = {
 	/**
 	 * Get the Quantity.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $cartItem The cart item to update.
 	 *
@@ -415,7 +415,7 @@ tribe.tickets.block = {
 	/**
 	 * Get the Price.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $cartItem The jQuery object of the cart item to update.
 	 *
@@ -432,7 +432,7 @@ tribe.tickets.block = {
 	/**
 	 * Get ticket data to send to cart.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $form jQuery object of the form container.
 	 *
@@ -470,7 +470,7 @@ tribe.tickets.block = {
 	/**
 	 * Unbinds events for add/remove ticket.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
@@ -485,7 +485,7 @@ tribe.tickets.block = {
 	/**
 	 * Binds events for add/remove ticket.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
@@ -532,7 +532,7 @@ tribe.tickets.block = {
 	/**
 	 * Unbinds events for the quantity input.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
@@ -547,7 +547,7 @@ tribe.tickets.block = {
 	/**
 	 * Binds events for the quantity input.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
@@ -571,7 +571,7 @@ tribe.tickets.block = {
 		/**
 		 * Handle the Ticket form(s).
 		 *
-		 * @since TBD
+		 * @since 5.0.3
 		 */
 		$quantityInput.on(
 			'change keyup',
@@ -614,7 +614,7 @@ tribe.tickets.block = {
 	/**
 	 * Toggle the ticket item description visibility.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {event} event The event.
 	 *
@@ -657,7 +657,7 @@ tribe.tickets.block = {
 	/**
 	 * Binds the description toggle.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
@@ -681,7 +681,7 @@ tribe.tickets.block = {
 	/**
 	 * Unbinds the description toggle.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
@@ -696,7 +696,7 @@ tribe.tickets.block = {
 	/**
 	 * Binds events the classic "Submit" (non-modal)
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
@@ -744,7 +744,7 @@ tribe.tickets.block = {
 	/**
 	 * Binds events for container.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $container jQuery object of object of the tickets container.
 	 *
@@ -768,7 +768,7 @@ tribe.tickets.block = {
 	/**
 	 * Handles the initialization of the tickets block events when Document is ready.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @return {void}
 	 */

@@ -10,9 +10,9 @@
  * @since 4.11.0
  * @since 4.11.3 Reformat a bit of the code around the button - no functional changes.
  * @since 4.11.3.1 Fix PHP errors when there are no tickets.
- * @since TBD Updated template link.
+ * @since 5.0.3 Updated template link.
  *
- * @version TBD
+ * @version 5.0.3
  *
  */
 /** @var Tribe__Tickets__Attendee_Registration__View $view */

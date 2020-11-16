@@ -12,9 +12,9 @@
  *
  * @since 4.9.3
  * @since 4.11.5 Corrected the template override instructions in template comments.
- * @since TBD Abstracted the ticket meta enabled check to use the Ticket object method instead.
+ * @since 5.0.3 Abstracted the ticket meta enabled check to use the Ticket object method instead.
  *
- * @version TBD
+ * @version 5.0.3
  *
  * @var Tribe__Tickets__Ticket_Object $ticket The ticket object.
  */

@@ -9,9 +9,9 @@
  *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @since TBD Abstract calls for whether a ticket has meta enabled.
+ * @since 5.0.3 Abstract calls for whether a ticket has meta enabled.
  *
- * @version TBD
+ * @version 5.0.3
  *
  * @var int   $event_id The post/event ID.
  * @var array $tickets  The list of ticket config arrays.
