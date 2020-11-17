@@ -120,6 +120,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [5.0.3] 2020-11-19 =
 
+* Feature - Added support for the new Individual Attendee Collection functionality included in Event Tickets Plus. It now allows for collection of individual names and emails for each attendee for Tribe Commerce, WooCommerce, and Easy Digital Download tickets. You can enable this option per ticket and choose to make the fields optional or required. [ETP-364]
+* Feature - An optional new set of Ticket-specific views have been added that make it easier to customize and require less updating by our team in the future. The new views have greater Automated Testing coverage to improve long term stability. These views must be enabled in order to make use of the new Individual Attendee Collection feature. [ETP-364]
 * Fix - Calculation fixed for attendee count percentage column while using RSVP only. [ET-876]
 * Fix - Correct specificity of checkboxes and radio buttons styles to prevent conflicts with other Modern Tribe plugins. [ET-922]
 * Fix - Ensure shared capacity stock does not reset while updating ticket. [ETP-562]
