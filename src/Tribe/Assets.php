@@ -175,8 +175,10 @@ class Tribe__Tickets__Assets {
 	 * @since 4.10.9 Use customizable ticket name functions.
 	 */
 	public function admin_enqueue_scripts() {
-		// Set up some data for our localize scripts.
+		/** @var Tribe__Tickets__Main $tickets_main */
+		$tickets_main = tribe( 'tickets.main' );
 
+		// Set up some data for our localize scripts.
 		$upload_header_data = [
 			'title'  => esc_html( sprintf( __( '%s header image', 'event-tickets' ), tribe_get_ticket_label_singular( 'header_image_title' ) ) ),
 			'button' => esc_html( sprintf( __( 'Set as %s header', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'header_button' ) ) ),
@@ -223,7 +225,7 @@ class Tribe__Tickets__Assets {
 		];
 
 		tribe_assets(
-			Tribe__Tickets__Main::instance(),
+			$tickets_main,
 			$assets,
 			'admin_enqueue_scripts',
 			[
