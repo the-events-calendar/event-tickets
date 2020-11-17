@@ -5,11 +5,13 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration/attendees/content.php
  *
+ * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
+ *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @since TBD Abstract calls for whether a ticket has meta enabled.
+ * @since 5.0.3 Abstract calls for whether a ticket has meta enabled.
  *
- * @version TBD
+ * @version 5.0.3
  *
  * @var int   $event_id The post/event ID.
  * @var array $tickets  The list of ticket config arrays.

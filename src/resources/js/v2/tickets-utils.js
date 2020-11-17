@@ -2,7 +2,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since 5.0.3
  *
  * @type   {PlainObject}
  */
@@ -11,7 +11,7 @@ tribe.tickets = tribe.tickets || {};
 /**
  * Configures ET Utils Object in the Global Tribe variable
  *
- * @since TBD
+ * @since 5.0.3
  *
  * @type   {PlainObject}
  */
@@ -20,7 +20,7 @@ tribe.tickets.utils = {};
 /**
  * Initializes in a Strict env the code that manages the plugin "utils".
  *
- * @since TBD
+ * @since 5.0.3
  *
  * @param  {PlainObject} $   jQuery
  * @param  {PlainObject} obj tribe.tickets.utils
@@ -34,7 +34,7 @@ tribe.tickets.utils = {};
 	/**
 	 * Disable/Enable element.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {object} $element jQuery object that we want to disable/enable.
 	 * @param {boolean} isDisabled True if we want to disable the element.
@@ -58,7 +58,7 @@ tribe.tickets.utils = {};
 	/**
 	 * Get the REST endpoint
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @returns {string} REST endpoint URL.
 	 */
@@ -69,7 +69,7 @@ tribe.tickets.utils = {};
 	/**
 	 * Get the Currency Formatting for a Provider.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {string} provider The provider.
 	 *
@@ -85,7 +85,7 @@ tribe.tickets.utils = {};
 	 * Removes separator characters and converts decimal character to '.'
 	 * So they play nice with other functions.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {number} passedNumber The number to clean.
 	 * @param {string} provider The provider.
@@ -127,7 +127,7 @@ tribe.tickets.utils = {};
 	 * Format the number according to provider settings.
 	 * Based off coding from https://stackoverflow.com/a/2901136.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {number} number The number to format.
 	 * @param {string} provider The provider.
@@ -179,7 +179,7 @@ tribe.tickets.utils = {};
 	/**
 	 * Get the tickets form, given a post ID.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {number} postId The post id.
 	 *
@@ -192,7 +192,7 @@ tribe.tickets.utils = {};
 	/**
 	 * Get the tickets provider, given a post ID.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {number} postId The post id.
 	 *
@@ -205,7 +205,7 @@ tribe.tickets.utils = {};
 	/**
 	 * Get the tickets provider ID, given a post ID.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {number} postId The post id.
 	 *
@@ -218,7 +218,7 @@ tribe.tickets.utils = {};
 	/**
 	 * Get the first tickets block post ID
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @return {boolean|int} postId The post id.
 	 */

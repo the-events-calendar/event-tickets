@@ -114,7 +114,7 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', is_admin(), $
 								/**
 								 * Adds an entry point to inject additional info for ticket.
 								 *
-								 * @since TBD
+								 * @since 5.0.3
 								 */
 								$this->set( 'ticket_item_for_overview', $ticket );
 								$this->do_entry_point( 'overview_section_after_ticket_name' );

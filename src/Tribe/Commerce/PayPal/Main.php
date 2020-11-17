@@ -836,7 +836,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				/**
 				 * Allow filtering the individual attendee name used when creating a new attendee.
 				 *
-				 * @since TBD
+				 * @since 5.0.3
 				 *
 				 * @param string                  $individual_attendee_name The attendee full name.
 				 * @param int|null                $attendee_number          The attendee number index value from the order, starting with zero.
@@ -850,7 +850,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				/**
 				 * Allow filtering the individual attendee email used when creating a new attendee.
 				 *
-				 * @since TBD
+				 * @since 5.0.3
 				 *
 				 * @param string                  $individual_attendee_email The attendee email.
 				 * @param int|null                $attendee_number           The attendee number index value from the order, starting with zero.
@@ -1111,7 +1111,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Send RSVPs/tickets email for attendees.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param array $attendees List of attendees.
 	 * @param array $args      {
@@ -3010,6 +3010,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			]
 		);
 
+		$attendee_data['is_purchaser'] = $attendee_data['holder_email'] === $attendee_data['purchaser_email'];
+
 		/**
 		 * Allow filtering the attendee information to return.
 		 *
@@ -3084,21 +3086,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 		tribe_exit();
 	}
-
-    /**
-     * Generates the validation code that will be printed in the ticket.
-     *
-     * Its purpose is to be used to validate the ticket at the door of an event.
-     *
-     * @since 4.7
-     *
-     * @param int $attendee_id
-     *
-     * @return string
-     */
-    public function generate_security_code( $attendee_id ) {
-        return substr( md5( rand() . '_' . $attendee_id ), 0, 10 );
-    }
 
 	/**
 	 * If other modules are active, we should deprioritize this one (we want other commerce

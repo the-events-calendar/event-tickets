@@ -96,7 +96,7 @@ if ( $has_plus ) {
 	<?php
 	/* Video was not yet ready.
 	<div class="tribe-events-admin-video">
-		<iframe src="https://www.youtube.com/embed/TBD" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		<iframe src="https://www.youtube.com/embed/5.0.3" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 	</div>
 	*/
 	?>
