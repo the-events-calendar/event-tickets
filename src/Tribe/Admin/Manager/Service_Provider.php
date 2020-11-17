@@ -99,7 +99,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		// // Add the rendering attributes into global context.
 		// $template->add_template_globals( $args );
 
-		// return $template->template( 'v2/rsvp/messages/error', $args, false );
+		// return $template->template( 'path/to/template/error', $args, false );
 
 		return $error_message;
 	}
