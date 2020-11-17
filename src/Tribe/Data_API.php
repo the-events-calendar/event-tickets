@@ -354,7 +354,7 @@ class Tribe__Tickets__Data_API {
 		/**
 		 * Allow filtering whether the ticket IDs have meta fields.
 		 *
-		 * @since TBD
+		 * @since 5.0.3
 		 *
 		 * @param bool  $tickets_have_meta_fields Whether the ticket IDs have meta fields.
 		 * @param array $ticket_ids               The ticket IDs.

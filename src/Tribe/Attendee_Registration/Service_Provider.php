@@ -24,7 +24,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	 * Add actions and filters for the Attendee Info classes.
 	 *
 	 * @since 4.9
-	 * @since TBD Bail if ETP is not active.
+	 * @since 5.0.3 Bail if ETP is not active.
 	 */
 	public function hooks() {
 		// Only run the code if Event Tickets Plus is active.
@@ -48,7 +48,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	/**
 	 * Initialize the template class.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 */
 	public function add_attendee_registration_template_hook() {
 		/** @var Tribe__Tickets__Attendee_Registration__Template $make */
@@ -60,7 +60,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	/**
 	 * Setup shortcodes for the attendee registration template.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 */
 	public function add_attendee_registration_shortcode_hook() {
 		/** @var Tribe__Tickets__Attendee_Registration__Shortcode $make */
@@ -72,7 +72,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	/**
 	 * Setup Modal Cart Template.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 */
 	public function add_attendee_registration_modal_hook() {
 		/** @var Tribe__Tickets__Attendee_Registration__Modal $make */
@@ -84,7 +84,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	/**
 	 * Add attendee-registration rewrite tag.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 */
 	public function add_rewrite_tags() {
 		/** @var Tribe__Tickets__Attendee_Registration__Rewrite $make */
@@ -96,7 +96,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	/**
 	 * Sets up the rules required by Event Tickets.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param Tribe__Tickets__Attendee_Registration__Rewrite $rewrite The rewrite instance.
 	 */
@@ -110,7 +110,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	/**
 	 * Generate the Rewrite Rules.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param WP_Rewrite $wp_rewrite WordPress rewrite that will be modified.
 	 */
@@ -124,7 +124,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	/**
 	 * Remove percentage sign placeholders from the array of rewrite rules.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param array $rules The rewrite rules.
 	 *
@@ -140,7 +140,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	/**
 	 * Add delete parameter to the PayPal URL.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param array $args PayPal Add To Cart URL arguments.
 	 *

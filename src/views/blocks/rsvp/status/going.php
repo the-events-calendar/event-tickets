@@ -11,9 +11,9 @@
  * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
  * @since   4.9.3
- * @since   TBD Add vars to docblock and removed duplicative vars.
+ * @since   5.0.3 Add vars to docblock and removed duplicative vars.
  *
- * @version TBD
+ * @version 5.0.3
  *
  * @var Tribe__Tickets__Editor__Template $this                Template object.
  * @var int                              $post_id             [Global] The current Post ID to which RSVPs are attached.

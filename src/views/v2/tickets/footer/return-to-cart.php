@@ -10,9 +10,9 @@
  *
  * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
- * @since   TBD
+ * @since   5.0.3
  *
- * @version TBD
+ * @version 5.0.3
  *
  * If RSVP:
  * @var WP_Post|int                        $post_id                     The post object or ID.

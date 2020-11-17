@@ -169,7 +169,7 @@ class Tribe__Tickets__Attendees {
 		/**
 		 * Filter the Attendee Report Url
 		 *
-		 * @since TDB
+		 * @since 5.0.3
 		 *
 		 * @param string $url  a url to attendee report
 		 * @param int    $post ->ID post id

@@ -14,9 +14,9 @@
  * @since   4.11.0 Updated the optout markup and classes used.
  * @since   4.11.3 Ensure we always show the optout by default.
  * @since   4.12.0 Add $post_id to filter for hiding opt-outs.
- * @since   TBD Add vars to docblock and removed duplicative vars.
+ * @since   5.0.3 Add vars to docblock and removed duplicative vars.
  *
- * @version TBD
+ * @version 5.0.3
  *
  * @var Tribe__Tickets__Editor__Template $this    Template object.
  * @var int                              $post_id [Global] The current Post ID to which RSVPs are attached.
