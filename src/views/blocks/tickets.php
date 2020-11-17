@@ -13,9 +13,9 @@
  * @since   4.10.8  Updated loading logic for including a renamed template.
  * @since   4.10.10 Removed initial check for tickets.
  * @since   4.12.1  Use tribe_get_ticket_label_plural() for "Tickets" string.
- * @since   TBD Use wrapper with `tribe-common` and `event-tickets`. Receive variables from the backend.
+ * @since   5.0.3 Use wrapper with `tribe-common` and `event-tickets`. Receive variables from the backend.
  *
- * @version TBD
+ * @version 5.0.3
  *
  * @var Tribe__Tickets__Editor__Template   $this
  * @var bool                               $has_tickets_on_sale True if the event has any tickets on sale.

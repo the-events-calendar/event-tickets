@@ -143,7 +143,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * The name of the meta key used to store whether an attendee is subscribed to updates.
 		 *
-		 * @since TBD
+		 * @since 5.0.3
 		 *
 		 * @var string
 		 */
@@ -275,7 +275,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Meta key that holds the full name of the ticket attendee.
 		 *
-		 * @since TBD
+		 * @since 5.0.3
 		 *
 		 * @var string
 		 */
@@ -284,7 +284,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Meta key that holds the email of the ticket attendee.
 		 *
-		 * @since TBD
+		 * @since 5.0.3
 		 *
 		 * @var string
 		 */
@@ -293,7 +293,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Meta key that holds the security code that is used for printed tickets and QR codes.
 		 *
-		 * @since TBD
+		 * @since 5.0.3
 		 *
 		 * @var string
 		 */
@@ -2146,7 +2146,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Send RSVPs/tickets email for attendees.
 		 *
-		 * @since TBD
+		 * @since 5.0.3
 		 *
 		 * @param array $attendees List of attendees.
 		 * @param array $args      {
@@ -2201,7 +2201,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Send RSVPs/tickets email for an attendee.
 		 *
-		 * @since TBD
+		 * @since 5.0.3
 		 *
 		 * @param string $to      The email to send the tickets to.
 		 * @param array  $tickets The list of tickets to send.
@@ -2322,11 +2322,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * The dynamic portion of the filter hook, `$provider`, refers to the provider slug (rsvp, tpp, woo, edd).
 			 *
-			 * @deprecated TBD Use the tribe_tickets_ticket_email_recipient filter instead.
+			 * @deprecated 5.0.3 Use the tribe_tickets_ticket_email_recipient filter instead.
 			 *
 			 * @since 4.7.6
 			 *
-			 * @since TBD
+			 * @since 5.0.3
 			 *
 			 * @param string     $to       The email to send to.
 			 * @param int        $post_id  The post/event ID to send the email for.
@@ -2338,7 +2338,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allow filtering the email recipient.
 			 *
-			 * @since TBD
+			 * @since 5.0.3
 			 *
 			 * @param string     $to       The email to send to.
 			 * @param int        $post_id  The post/event ID to send the email for.
@@ -2359,7 +2359,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * The dynamic portion of the filter hook, `$provider`, refers to the provider slug (rsvp, tpp, woo, edd).
 			 *
-			 * @deprecated TBD Use the tribe_tickets_ticket_email_subject filter instead.
+			 * @deprecated 5.0.3 Use the tribe_tickets_ticket_email_subject filter instead.
 			 *
 			 * @since 4.7.6
 			 *
@@ -2373,7 +2373,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allow filtering the email subject.
 			 *
-			 * @since TBD
+			 * @since 5.0.3
 			 *
 			 * @param string     $subject  The email subject.
 			 * @param int        $post_id  The post/event ID to send the email for.
@@ -2397,7 +2397,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * The dynamic portion of the filter hook, `$provider`, refers to the provider slug (rsvp, tpp, woo, edd).
 			 *
-			 * @deprecated TBD Use the tribe_tickets_ticket_email_content filter instead.
+			 * @deprecated 5.0.3 Use the tribe_tickets_ticket_email_content filter instead.
 			 *
 			 * @since 4.7.6
 			 *
@@ -2411,7 +2411,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allow filtering the email content.
 			 *
-			 * @since TBD
+			 * @since 5.0.3
 			 *
 			 * @param array      $content  The content to send the email with.
 			 * @param int        $post_id  The post/event ID to send the email for.
@@ -2432,7 +2432,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * The dynamic portion of the filter hook, `$provider`, refers to the provider slug (rsvp, tpp, woo, edd).
 			 *
-			 * @deprecated TBD Use the tribe_tickets_ticket_email_headers filter instead.
+			 * @deprecated 5.0.3 Use the tribe_tickets_ticket_email_headers filter instead.
 			 *
 			 * @since 4.7.6
 			 *
@@ -2446,7 +2446,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allow filtering the email headers.
 			 *
-			 * @since TBD
+			 * @since 5.0.3
 			 *
 			 * @param array      $headers  List of email headers.
 			 * @param int        $post_id  The post/event ID to send the email for.
@@ -2462,7 +2462,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * The dynamic portion of the filter hook, `$provider`, refers to the provider slug (rsvp, tpp, woo, edd).
 			 *
-			 * @deprecated TBD Use the tribe_tickets_ticket_email_attachments filter instead.
+			 * @deprecated 5.0.3 Use the tribe_tickets_ticket_email_attachments filter instead.
 			 *
 			 * @since 4.7.6
 			 *
@@ -2476,7 +2476,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allow filtering the email attachments.
 			 *
-			 * @since TBD
+			 * @since 5.0.3
 			 *
 			 * @param array      $attachments The list of attachments to send.
 			 * @param int        $post_id     The post/event ID to send the email for.
@@ -3697,7 +3697,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get list of tickets in cart for a specific provider.
 		 *
-		 * @since TBD
+		 * @since 5.0.3
 		 *
 		 * @param null|string|false $provider The provider slug or false if no provider, leave as null to detect from page.
 		 *

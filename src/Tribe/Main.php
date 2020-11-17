@@ -667,7 +667,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Register Event Tickets with the template update checker.
 	 *
-	 * @since TBD Updated template structure.
+	 * @since 5.0.3 Updated template structure.
 	 *
 	 * @param array $plugins
 	 *

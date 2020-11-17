@@ -107,7 +107,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Holds the IAC setting for the ticket.
 		 *
-		 * @since TBD
+		 * @since 5.0.3
 		 *
 		 * @var string
 		 */
@@ -1136,7 +1136,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Check if the ticket has meta enabled.
 		 *
-		 * @since TBD
+		 * @since 5.0.3
 		 *
 		 * @return bool Whether the ticket has meta enabled.
 		 */

@@ -132,7 +132,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	 * Note: This will be deprecated when we remove support for V1 views.
 	 * Make it private so we can erase it later.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param string                           $content a string of default content.
 	 * @param Tribe__Tickets__Editor__Template $template_obj the Template object.
@@ -178,7 +178,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	 * Note: This will be deprecated when we remove support for V1 views.
 	 * Make it private so we can erase it later.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param string                           $unused_content The content string.
 	 * @param Tribe__Tickets__Editor__Template $template_obj the Template object.

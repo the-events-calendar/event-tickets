@@ -118,11 +118,12 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [5.0.3] TBD =
+= [5.0.3] 2020-11-19 =
 
 * Fix - Calculation fixed for attendee count percentage column while using RSVP only. [ET-876]
 * Fix - Correct specificity of checkboxes and radio buttons styles to prevent conflicts with other Modern Tribe plugins. [ET-922]
 * Fix - Ensure shared capacity stock does not reset while updating ticket. [ETP-562]
+* Fix - Prevent PHP notices about `$going` not being set in certain template views which would prevent the "Not Going" text from showing up. [ET-943]
 * Tweak - Add help section update notice texts for updated directory structure. [ET-929]
 
 = [5.0.2] 2020-10-19 =

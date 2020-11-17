@@ -2,7 +2,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since 5.0.3
  *
  * @type   {PlainObject}
  */
@@ -11,7 +11,7 @@ tribe.tickets = tribe.tickets || {};
 /**
  * Configures ET tickets page Object in the Global Tribe variable
  *
- * @since TBD
+ * @since 5.0.3
  *
  * @type   {PlainObject}
  */
@@ -20,7 +20,7 @@ tribe.tickets.page = {};
 /**
  * Initializes in a Strict env the code that manages the plugin tickets page.
  *
- * @since TBD
+ * @since 5.0.3
  *
  * @param  {PlainObject} $   jQuery
  * @param  {PlainObject} obj tribe.tickets.page
@@ -34,7 +34,7 @@ tribe.tickets.page = {};
 	/*
 	 * Ticket Page Selectors.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 */
 	obj.selectors = {
 		container: '.tribe-tickets__tickets-page-wrapper',
@@ -43,7 +43,7 @@ tribe.tickets.page = {};
 	/**
 	 * Binds events for container.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @param {jQuery} $container jQuery object of object of the tickets page container.
 	 *
@@ -58,7 +58,7 @@ tribe.tickets.page = {};
 	/**
 	 * Handles the initialization of the tickets page events when Document is ready.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @return {void}
 	 */
