@@ -51,6 +51,7 @@ class Tribe__Tickets__Assets {
 					'tribe-tickets-block-assets',
 					'tribe-tickets-rsvp',
 					'tribe-tickets-registration-page',
+					'tribe-tickets-admin',
 				],
 			]
 		);
@@ -263,6 +264,28 @@ class Tribe__Tickets__Assets {
 							'decimal_error' => __( 'Please enter in without thousand separators and currency symbols.', 'event-tickets' ),
 						],
 					],
+				],
+			]
+		);
+
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-admin-manager',
+			'admin/tickets-manager.js',
+			[
+				'jquery',
+				'tribe-common',
+			],
+			null,
+			[
+				'localize' => [
+					[
+						'name' => 'TribeTickets',
+						'data' => $nonces,
+					],
+				],
+				'groups'   => [
+					'tribe-tickets-admin',
 				],
 			]
 		);
