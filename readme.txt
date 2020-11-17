@@ -126,6 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Prevent PHP notices about `$going` not being set in certain template views which would prevent the "Not Going" text from showing up. [ET-943]
 * Tweak - Improved performance of certain queries done on the same page for a ticket in regards to capacity and lists of tickets. [ET-917]
 * Tweak - Add help section update notice texts for updated directory structure. [ET-929]
+* Language - 12 new strings added, 119 updated, 1 fuzzied, and 4 obsoleted
 
 = [5.0.2] 2020-10-19 =
 
