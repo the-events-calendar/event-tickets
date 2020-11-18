@@ -40,6 +40,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	public function ajax_handle_admin_manager() {
+		// @todo Look at adding capability checks of some sort based on a filter that provides capability context for the specific request.
 		$response = [
 			'html' => '',
 		];
