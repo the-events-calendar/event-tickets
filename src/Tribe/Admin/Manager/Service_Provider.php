@@ -45,6 +45,12 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 			'html' => '',
 		];
 
+		if ( ! check_ajax_referer( 'tribe_tickets_admin_manager_nonce', 'nonce', false ) ) {
+			$response['html'] = $this->render_error( __( 'Insecure request.', 'event-tickets' ) );
+
+			wp_send_json_error( $response );
+		}
+
 		// Get the request vars.
 		$vars = tribe_get_request_vars();
 
