@@ -1763,7 +1763,7 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 		}
 
 		// If ETP was installed on or after version 5.1, default to enabled.
-		$should_default_to_on = ! tribe_installed_before( 'Tribe__Tickets_Plus__Main', '5.1' );
+		$should_default_to_on = class_exists( 'Tribe__Tickets_Plus__Main' ) && ! tribe_installed_before( 'Tribe__Tickets_Plus__Main', '5.1' );
 
 		// Check for settings UI option.
 		$enabled = (bool) tribe_get_option( 'tickets_use_new_views', $should_default_to_on );
