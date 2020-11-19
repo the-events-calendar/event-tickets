@@ -60,7 +60,17 @@ $tickets_fields = [
 	],
 	'ticket-enabled-post-types' => [
 		'type'            => 'checkbox_list',
-		'label'           => esc_html( sprintf( _x( 'Post types that can have %s', 'tickets fields settings enabled post types', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_enabled_post_types' ) ) ),
+		'label'           => esc_html(
+			sprintf(
+			// Translators: %s: dynamic "tickets" text.
+				_x(
+					'Post types that can have %s',
+					'tickets fields settings enabled post types',
+					'event-tickets'
+				),
+				tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_enabled_post_types' )
+			)
+		),
 		// only set the default to tribe_events if the ticket-enabled-post-types index has never been saved
 		'default'         => array_key_exists( 'ticket-enabled-post-types', $options ) ? false : 'tribe_events',
 		'options'         => $all_post_types,
