@@ -62,7 +62,7 @@ $tickets_fields = [
 		'type'            => 'checkbox_list',
 		'label'           => esc_html(
 			sprintf(
-			// Translators: %s: dynamic "tickets" text.
+				// Translators: %s: dynamic "tickets" text.
 				_x(
 					'Post types that can have %s',
 					'tickets fields settings enabled post types',
