@@ -29,6 +29,10 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function hooks() {
+		if ( ! is_admin() ) {
+			return;
+		}
+
 		// Handle AJAX.
 		add_action( 'wp_ajax_nopriv_tribe_tickets_admin_manager', [ $this, 'ajax_handle_admin_manager' ] );
 		add_action( 'wp_ajax_tribe_tickets_admin_manager', [ $this, 'ajax_handle_admin_manager' ] );
@@ -44,6 +48,12 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		$response = [
 			'html' => '',
 		];
+
+		if ( ! check_ajax_referer( 'tribe_tickets_admin_manager_nonce', 'nonce', false ) ) {
+			$response['html'] = $this->render_error( __( 'Insecure request.', 'event-tickets' ) );
+
+			wp_send_json_error( $response );
+		}
 
 		// Get the request vars.
 		$vars = tribe_get_request_vars();
