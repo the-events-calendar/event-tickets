@@ -241,12 +241,15 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 * @return string
 	 */
 	public function add_column_content_price( $ticket, $provider_obj ) {
-		$context = array(
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
+
+		$context = [
 			'ticket'       => $ticket,
 			'provider_obj' => $provider_obj,
-		);
+		];
 
-		return tribe( 'tickets.admin.views' )->template( 'editor/column-body-price', $context );
+		return $admin_views->template( 'editor/column-body-price', $context );
 	}
 
 	/**
@@ -260,8 +263,11 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 * @return bool
 	 */
 	public function flush_blocks() {
-		// Bail because we dont have access to any of the classes we need for Blocks Editor
-		if ( ! tribe( 'editor' )->should_load_blocks() ) {
+		/** @var Tribe__Editor $editor */
+		$editor = tribe( 'editor' );
+
+		// Bail because we dont have access to any of the classes we need for Blocks Editor.
+		if ( ! $editor->should_load_blocks() ) {
 			return false;
 		}
 
