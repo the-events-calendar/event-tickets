@@ -1745,7 +1745,7 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 	 * In order: the function will check the constant, the environment variable, the settings UI option, and then
 	 * allow filtering.
 	 *
-	 * @since TBD
+	 * @since 5.0.3
 	 *
 	 * @return bool Whether the tickets block views is enabled.
 	 */
@@ -1771,7 +1771,7 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 		/**
 		 * Allows filtering whether the tickets block views is enabled.
 		 *
-		 * @since TBD
+		 * @since 5.0.3
 		 *
 		 * @param bool $enabled Whether the tickets block views are enabled.
 		 *

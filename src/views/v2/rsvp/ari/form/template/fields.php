@@ -8,9 +8,9 @@
  * @link https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
  * @since 5.0.0
- * @since TBD Updated to use the has_meta_enabled logic check and removed the old filter.
+ * @since 5.0.3 Updated to use the has_meta_enabled logic check and removed the old filter.
  *
- * @version TBD
+ * @version 5.0.3
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  * @var int $post_id The post ID the RSVP is linked to.

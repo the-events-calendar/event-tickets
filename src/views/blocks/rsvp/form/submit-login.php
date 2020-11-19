@@ -12,9 +12,9 @@
  *
  * @since   4.9.3
  * @since   4.10.8 Fixed text domain for string.
- * @since   TBD Add docblock vars and use $ticket->ID instead of duplicative $ticket_id.
+ * @since   5.0.3 Add docblock vars and use $ticket->ID instead of duplicative $ticket_id.
  *
- * @version TBD
+ * @version 5.0.3
  *
  * @var Tribe__Tickets__Editor__Template $this    Template object.
  * @var int                              $post_id [Global] The current Post ID to which RSVPs are attached.
