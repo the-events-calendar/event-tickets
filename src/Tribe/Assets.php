@@ -301,10 +301,14 @@ class Tribe__Tickets__Assets {
 	public function should_enqueue_frontend() {
 		$is_on_valid_post_type = tribe_tickets_is_enabled_post_context();
 
-		/** @var Tribe__Tickets__Attendee_Registration__Main $ar */
-		$ar = tribe( 'tickets.attendee_registration' );
+		try {
+			/** @var \Tribe__Tickets__Attendee_Registration__Main $ar_reg */
+			$ar_reg = tribe( 'tickets.attendee_registration' );
+		} catch ( \Exception $exception ) {
+			return false;
+		}
 
-		return $is_on_valid_post_type || $ar->is_on_page();
+		return $is_on_valid_post_type || $ar_reg->is_on_page();
 	}
 
 	/**

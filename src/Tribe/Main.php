@@ -353,8 +353,10 @@ class Tribe__Tickets__Main {
 
 		tribe_singleton( 'tickets.theme-compatibility', 'Tribe__Tickets__Theme_Compatibility' );
 
-		// Attendee Registration Page.
-		tribe_register_provider( 'Tribe__Tickets__Attendee_Registration__Service_Provider' );
+		if ( class_exists( 'Tribe__Tickets_Plus__Meta__Storage' ) ) {
+			// Attendee Registration Page.
+			tribe_register_provider( 'Tribe__Tickets__Attendee_Registration__Service_Provider' );
+		}
 
 		// Event Tickets Provider to manage Events.
 		tribe_register_provider( Events_Service_Provider::class );
@@ -724,8 +726,12 @@ class Tribe__Tickets__Main {
 	 * @since 4.11.0
 	 */
 	public function maybe_set_options_for_old_installs() {
-		/** @var \Tribe__Tickets__Attendee_Registration__Main $ar_reg */
-		$ar_reg = tribe( 'tickets.attendee_registration' );
+		try {
+			/** @var \Tribe__Tickets__Attendee_Registration__Main $ar_reg */
+			$ar_reg = tribe( 'tickets.attendee_registration' );
+		} catch ( \Exception $exception ) {
+			return;
+		}
 
 		// If the (boolean) option is not set, and this install predated the modal, let's set the option to false.
 		$modal_option = $ar_reg->is_modal_enabled();
