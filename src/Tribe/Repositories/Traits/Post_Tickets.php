@@ -145,7 +145,7 @@ trait Post_Tickets {
 			$repo = $this->decorated;
 		}
 
-		/** @var Tribe__Tickets__Commerce__Currency $currency */
+		/** @var \Tribe__Tickets__Commerce__Currency $currency */
 		$currency      = tribe( 'tickets.commerce.currency' );
 		$symbols       = (array) $symbol;
 		$request_codes = [];

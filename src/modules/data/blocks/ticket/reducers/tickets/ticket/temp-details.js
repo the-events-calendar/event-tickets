@@ -20,12 +20,16 @@ const startDateInput = datePickerFormat
 const endDateInput = datePickerFormat
 	? endMoment.format( momentUtil.toFormat( datePickerFormat ) )
 	: momentUtil.toDate( endMoment );
+const iac = globals.iacVars().iacDefault
+	? globals.iacVars().iacDefault
+	: 'none';
 
 export const DEFAULT_STATE = {
 	title: '',
 	description: '',
 	price: '',
 	sku: '',
+	iac: iac,
 	startDate: momentUtil.toDatabaseDate( currentMoment ),
 	startDateInput,
 	startDateMoment: currentMoment,
@@ -61,6 +65,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				sku: action.payload.sku,
+			};
+		case types.SET_TICKET_TEMP_IAC_SETTING:
+			return {
+				...state,
+				iac: action.payload.iac,
 			};
 		case types.SET_TICKET_TEMP_START_DATE:
 			return {

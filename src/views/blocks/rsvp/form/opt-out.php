@@ -8,19 +8,22 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
- * @since 4.9
- * @since 4.11.0 Updated the optout markup and classes used.
- * @since 4.11.3 Ensure we always show the optout by default.
- * @since 4.12.0 Add $post_id to filter for hiding opt-outs.
+ * @since   4.9
+ * @since   4.11.0 Updated the optout markup and classes used.
+ * @since   4.11.3 Ensure we always show the optout by default.
+ * @since   4.12.0 Add $post_id to filter for hiding opt-outs.
+ * @since   5.0.3 Add vars to docblock and removed duplicative vars.
  *
- * @version 4.12.0
+ * @version 5.0.3
  *
+ * @var Tribe__Tickets__Editor__Template $this    Template object.
+ * @var int                              $post_id [Global] The current Post ID to which RSVPs are attached.
+ * @var Tribe__Tickets__Ticket_Object    $ticket  The ticket object with provider set to RSVP.
+ * @var string                           $going   The RSVP status at time of add/edit (e.g. 'yes'), or empty if not in that context.
  */
 $modal   = $this->get( 'is_modal' );
-$ticket  = $this->get( 'ticket' );
-$post_id = $this->get( 'post_id' );
 
 /**
  * Use this filter to hide the Attendees List Optout

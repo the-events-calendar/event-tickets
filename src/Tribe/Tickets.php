@@ -140,6 +140,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public $ticket_object = '';
 
+		/**
+		 * The name of the meta key used to store whether an attendee is subscribed to updates.
+		 *
+		 * @since 5.0.3
+		 *
+		 * @var string
+		 */
+		public $attendee_subscribed = '_tribe_tickets_subscribed';
+
 		/* Deprecated vars */
 
 		/**
@@ -254,7 +263,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var boolean
 		 */
-		public $attendee_ticket_sent = '';
+		public $attendee_ticket_sent = '_tribe_attendee_ticket_sent';
 
 		/**
 		 * Meta key that if this attendee wants to show on the attendee list
@@ -262,6 +271,33 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @var string
 		 */
 		public $attendee_optout_key = '';
+
+		/**
+		 * Meta key that holds the full name of the ticket attendee.
+		 *
+		 * @since 5.0.3
+		 *
+		 * @var string
+		 */
+		public $full_name = '_tribe_tickets_full_name';
+
+		/**
+		 * Meta key that holds the email of the ticket attendee.
+		 *
+		 * @since 5.0.3
+		 *
+		 * @var string
+		 */
+		public $email = '_tribe_tickets_email';
+
+		/**
+		 * Meta key that holds the security code that is used for printed tickets and QR codes.
+		 *
+		 * @since 5.0.3
+		 *
+		 * @var string
+		 */
+		public $security_code = '_tribe_tickets_security_code';
 
 		/**
 		 * The provider used for Attendees and Tickets ORM.
@@ -295,15 +331,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function get_ticket_reports_link( $post_id_deprecated, $ticket_id ) {}
 
 		/**
-		 * Returns a single ticket
+		 * Returns a single ticket.
 		 *
-		 * @abstract
+		 * @param int $post_id   ID of parent "event" post.
+		 * @param int $ticket_id ID of ticket post.
 		 *
-		 * @param int $post_id ID of parent "event" post
-		 * @param int $ticket_id ID of ticket post
-		 * @return mixed
+		 * @return Tribe__Tickets__Ticket_Object|null
 		 */
-		public function get_ticket( $post_id, $ticket_id ) {}
+		public function get_ticket( $post_id, $ticket_id ) {
+			return null;
+		}
 
 		/**
 		 * Retrieve the Query args to fetch all the Tickets.
@@ -652,6 +689,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return Tribe__Tickets__Ticket_Object[] List of ticket objects.
 		 */
 		public function get_tickets( $post_id ) {
+
+			/** @var Tribe__Cache $cache */
+			$cache = tribe( 'cache' );
+			$key   = __METHOD__ . '-' . $this->orm_provider . '-' . $post_id;
+
+			if ( isset( $cache[ $key ] ) ) {
+				return $cache[ $key ];
+			}
+
 			$default_provider = static::get_event_ticket_provider( $post_id );
 
 			if ( empty( $default_provider ) ) {
@@ -686,6 +732,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$tickets[] = $ticket;
 			}
+
+			$cache[ $key ] = $tickets;
 
 			return $tickets;
 		}
@@ -1463,6 +1511,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return 0;
 			}
 
+			/** @var Tribe__Cache $cache */
+			$cache = tribe( 'cache' );
+			$key   = __METHOD__ . '-' . $post_id;
+
+			if ( isset( $cache[ $key ] ) ) {
+				return $cache[ $key ];
+			}
+
 			$provider = 'default';
 
 			if ( ! empty( $args['provider'] ) ) {
@@ -1476,7 +1532,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			self::pass_args_to_repository( $repository, $args );
 
-			return $repository->found();
+			$found = $repository->found();
+
+			$cache[ $key ] = $found;
+
+			return $found;
 		}
 
 		/**
@@ -1486,12 +1546,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function get_all_event_tickets( $post_id ) {
-			$cache_key = self::$cache_key_prefix . $post_id;
-			$cache = new Tribe__Cache();
-			$tickets = $cache->get( $cache_key );
 
-			if ( is_array( $tickets ) ) {
-				return $tickets;
+			/** @var Tribe__Cache $cache */
+			$cache = tribe( 'cache' );
+			$key   = __METHOD__ . '-' . $post_id;
+
+			if ( is_array( $cache[ $key ] ) ) {
+				return $cache[ $key ];
 			}
 
 			$tickets = [];
@@ -1500,13 +1561,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			foreach ( $modules as $class => $module ) {
 				$obj              = call_user_func( [ $class, 'get_instance' ] );
 				$provider_tickets = $obj->get_tickets( $post_id );
-				if ( is_array( $provider_tickets ) && !empty( $provider_tickets)  ) {
+				if ( is_array( $provider_tickets ) && ! empty( $provider_tickets ) ) {
 					$tickets[] = $provider_tickets;
 				}
 			}
 
 			$tickets = empty( $tickets ) ? [] : call_user_func_array( 'array_merge', $tickets );
-			$cache->set( $cache_key, $tickets, Tribe__Cache::NO_EXPIRATION, 'event_tickets_after_create_ticket' );
+			$cache[ $key ] = $tickets;
 
 			return $tickets;
 		}
@@ -1890,15 +1951,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			wp_enqueue_script( 'wp-util-not-in-footer' );
 
+			// Check whether we use v1 or v2. We need to update this when we deprecate tickets v1.
+			$tickets_js = tribe_tickets_new_views_is_enabled() ? 'v2/tickets-block.js' : 'tickets-block.js';
+
 			tribe_asset(
 				$plugin,
-				'tribe_tickets_frontend_tickets',
-				'tickets-block.js',
-				[ 'jquery', 'jquery-ui-datepicker', 'wp-util-not-in-footer', 'wp-i18n' ],
+				'tribe-tickets-block',
+				$tickets_js,
+				[
+					'jquery',
+					'tribe-common',
+					'jquery-ui-datepicker',
+					'wp-util-not-in-footer',
+					'wp-i18n',
+				],
 				null,
 				[
-					'type'         => 'js',
-					'localize'     => [
+					'type'     => 'js',
+					'groups'   => [ 'tribe-tickets-block-assets' ],
+					'localize' => [
 						[
 							'name' => 'TribeTicketOptions',
 							'data' => [ __CLASS__, 'get_asset_localize_data_for_ticket_options' ],
@@ -1925,7 +1996,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				]
 			);
 
-			tribe_asset_enqueue( 'tribe_tickets_frontend_tickets' );
+			tribe_asset_enqueue_group( 'tribe-tickets-block-assets' );
 
 			self::$frontend_script_enqueued = true;
 		}
@@ -1969,7 +2040,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$data['tickets'][ $ticket->ID ] = $ticket_data;
 			}
 
-			wp_localize_script( 'tribe_tickets_frontend_tickets', 'tribe_tickets_stock_data', $data );
+			wp_localize_script( 'tribe-tickets-block', 'tribe_tickets_stock_data', $data );
 		}
 
 		/**
@@ -2070,6 +2141,363 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function generate_tickets_email_content( $tickets ) {
 			return tribe_tickets_get_template_part( 'tickets/email', null, [ 'tickets' => $tickets ], false );
+		}
+
+		/**
+		 * Send RSVPs/tickets email for attendees.
+		 *
+		 * @since 5.0.3
+		 *
+		 * @param array $attendees List of attendees.
+		 * @param array $args      {
+		 *      The list of arguments to use for sending ticket emails.
+		 *
+		 *      @type string       $subject              The email subject.
+		 *      @type string       $content              The email content.
+		 *      @type string       $from_name            The name to send tickets from.
+		 *      @type string       $from_email           The email to send tickets from.
+		 *      @type array|string $headers              The list of headers to send.
+		 *      @type array        $attachments          The list of attachments to send.
+		 *      @type string       $provider             The provider slug (rsvp, tpp, woo, edd).
+		 *      @type int          $post_id              The post/event ID to send the emails for.
+		 *      @type string|int   $order_id             The order ID to send the emails for.
+		 *      @type string|int   $ticket_sent_meta_key The meta key to use for marking an attendee ticket as sent.
+		 * }
+		 *
+		 * @return int The number of emails sent successfully.
+		 */
+		public function send_tickets_email_for_attendees( $attendees, $args = [] ) {
+			$unique_attendees = [];
+
+			// Collect the unique emails for attendees.
+			foreach ( $attendees as $attendee ) {
+				if ( ! isset( $unique_attendees[ $attendee['holder_email'] ] ) ) {
+					$unique_attendees[ $attendee['holder_email'] ] = [];
+				}
+
+				$unique_attendees[ $attendee['holder_email'] ][] = $attendee;
+			}
+
+			$emails_sent = 0;
+
+			// Handle purchaser emails.
+			if ( ! empty( $args['send_purchaser_all'] ) ) {
+				// Get the purchaser email from the first attendee.
+				$first_attendee  = reset( $attendees );
+				$purchaser_email = $first_attendee['purchaser_email'];
+
+				// Make sure purchaser gets a list of all of the attendee tickets.
+				$unique_attendees[ $purchaser_email ] = $attendees;
+			}
+
+			// Send an email with all RSVPs/tickets for each unique attendee.
+			foreach ( $unique_attendees as $to => $tickets ) {
+				$emails_sent += (int) $this->send_tickets_email_for_attendee( $to, $tickets, $args );
+			}
+
+			return 0 < $emails_sent;
+		}
+
+		/**
+		 * Send RSVPs/tickets email for an attendee.
+		 *
+		 * @since 5.0.3
+		 *
+		 * @param string $to      The email to send the tickets to.
+		 * @param array  $tickets The list of tickets to send.
+		 * @param array  $args    {
+		 *      The list of arguments to use for sending ticket emails.
+		 *
+		 *      @type string       $subject              The email subject.
+		 *      @type string       $content              The email content.
+		 *      @type string       $from_name            The name to send tickets from.
+		 *      @type string       $from_email           The email to send tickets from.
+		 *      @type array|string $headers              The list of headers to send.
+		 *      @type array        $attachments          The list of attachments to send.
+		 *      @type string       $provider             The provider slug (rsvp, tpp, woo, edd).
+		 *      @type int          $post_id              The post/event ID to send the emails for.
+		 *      @type string|int   $order_id             The order ID to send the emails for.
+		 *      @type string|int   $ticket_sent_meta_key The meta key to use for marking an attendee ticket as sent.
+		 * }
+		 *
+		 * @return bool Whether email was sent to attendees.
+		 */
+		public function send_tickets_email_for_attendee( $to, $tickets, $args = [] ) {
+			// If no tickets to send for, do not send email.
+			if ( empty( $tickets ) ) {
+				return false;
+			}
+
+			$defaults = [
+				'subject'              => '',
+				'content'              => '',
+				'from_name'            => '',
+				'from_email'           => '',
+				'headers'              => [],
+				'attachments'          => [],
+				'provider'             => 'ticket',
+				'post_id'              => 0,
+				'order_id'             => '',
+				'ticket_sent_meta_key' => '',
+				'send_callback'        => 'wp_mail',
+			];
+
+			// Set up the default arguments.
+			$args = array_merge( $defaults, $args );
+
+			$subject              = trim( (string) $args['subject'] );
+			$content              = trim( (string) $args['content'] );
+			$from_name            = trim( (string) $args['from_name'] );
+			$from_email           = trim( (string) $args['from_email'] );
+			$headers              = $args['headers'];
+			$attachments          = $args['attachments'];
+			$provider             = $args['provider'];
+			$post_id              = $args['post_id'];
+			$order_id             = $args['order_id'];
+			$ticket_sent_meta_key = $args['ticket_sent_meta_key'];
+			$send_callback        = $args['send_callback'];
+
+			// If invalid send callback, do not send the email.
+			if ( ! is_callable( $send_callback ) ) {
+				return false;
+			}
+
+			// Set up default content.
+			if ( empty( $content ) ) {
+				$content = $this->generate_tickets_email_content( $tickets );
+			}
+
+			// Set up default subject.
+			if ( empty( $subject ) ) {
+				$site_name = stripslashes_deep( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES ) );
+				$is_rsvp   = 'rsvp' === $provider;
+
+				$singular = $is_rsvp
+					? tribe_get_rsvp_label_singular( 'RSVP email send' )
+					: tribe_get_ticket_label_singular_lowercase( 'ticket email send' );
+
+				$plural = $is_rsvp
+					? tribe_get_rsvp_label_plural( 'RSVPs email send' )
+					: tribe_get_ticket_label_plural_lowercase( 'tickets email send' );
+
+				// translators: %1$s: The singular of "RSVP" or "ticket", %2$s: The plural of "RSVPs" or "tickets", %3$s: The site name.
+				$subject_string = _nx( 'Your %1$s from %3$s', 'Your %2$s from %3$s', count( $tickets ), 'The default RSVP/ticket email subject', 'event-tickets' );
+
+				$subject = sprintf(
+					$subject_string,
+					$singular,
+					$plural,
+					$site_name
+				);
+			}
+
+			// Enforce headers array.
+			if ( ! is_array( $headers ) ) {
+				$headers = explode( "\r\n", $headers );
+			}
+
+			// Add From name/email to headers if no headers set yet and we have a valid From email address.
+			if ( empty( $headers ) && ! empty( $from_name ) && ! empty( $from_email ) && is_email( $from_email ) ) {
+				$from_email = filter_var( $from_email, FILTER_SANITIZE_EMAIL );
+
+				$headers[] = sprintf(
+					'From: %1$s <%2$s>',
+					filter_var( $from_name, FILTER_SANITIZE_STRING ),
+					$from_email
+				);
+
+				$headers[] = sprintf(
+					'Reply-To: %s',
+					$from_email
+				);
+			}
+
+			// Enforce text/html content type header.
+			if ( ! in_array( 'Content-type: text/html', $headers, true ) || ! in_array( 'Content-type: text/html; charset=utf-8', $headers, true ) ) {
+				$headers[] = 'Content-type: text/html; charset=utf-8';
+			}
+
+			/**
+			 * Allow filtering the email recipient for a provider. Backwards compatible with previous provider filter.
+			 *
+			 * The dynamic portion of the filter hook, `$provider`, refers to the provider slug (rsvp, tpp, woo, edd).
+			 *
+			 * @deprecated 5.0.3 Use the tribe_tickets_ticket_email_recipient filter instead.
+			 *
+			 * @since 4.7.6
+			 *
+			 * @since 5.0.3
+			 *
+			 * @param string     $to       The email to send to.
+			 * @param int        $post_id  The post/event ID to send the email for.
+			 * @param string|int $order_id The order ID to send the email for.
+			 * @param array      $tickets  The list of tickets to send.
+			 */
+			$to = apply_filters( "tribe_{$provider}_email_recipient", $to, $post_id, $order_id, $tickets );
+
+			/**
+			 * Allow filtering the email recipient.
+			 *
+			 * @since 5.0.3
+			 *
+			 * @param string     $to       The email to send to.
+			 * @param int        $post_id  The post/event ID to send the email for.
+			 * @param string|int $order_id The order ID to send the email for.
+			 * @param array      $tickets  The list of tickets to send.
+			 * @param string     $provider The provider slug.
+			 * @param array      $args     The full list of ticket email arguments as sent to the function.
+			 */
+			$to = apply_filters( 'tribe_tickets_ticket_email_recipient', $to, $post_id, $order_id, $tickets, $provider, $args );
+
+			// If no email set or invalid email is used, do not send the email.
+			if ( empty( $to ) || ! is_email( $to ) ) {
+				return false;
+			}
+
+			/**
+			 * Allow filtering the email subject for a provider. Backwards compatible with previous provider filter.
+			 *
+			 * The dynamic portion of the filter hook, `$provider`, refers to the provider slug (rsvp, tpp, woo, edd).
+			 *
+			 * @deprecated 5.0.3 Use the tribe_tickets_ticket_email_subject filter instead.
+			 *
+			 * @since 4.7.6
+			 *
+			 * @param string     $subject  The email subject.
+			 * @param int        $post_id  The post/event ID to send the email for.
+			 * @param string|int $order_id The order ID to send the email for.
+			 * @param array      $tickets  The list of tickets to send.
+			 */
+			$subject = apply_filters( "tribe_{$provider}_email_subject", $subject, $post_id, $order_id, $tickets );
+
+			/**
+			 * Allow filtering the email subject.
+			 *
+			 * @since 5.0.3
+			 *
+			 * @param string     $subject  The email subject.
+			 * @param int        $post_id  The post/event ID to send the email for.
+			 * @param string|int $order_id The order ID to send the email for.
+			 * @param array      $tickets  The list of tickets to send.
+			 * @param string     $provider The provider slug.
+			 * @param array      $args     The full list of ticket email arguments as sent to the function.
+			 */
+			$subject = apply_filters( 'tribe_tickets_ticket_email_subject', $subject, $post_id, $order_id, $tickets, $provider, $args );
+
+			// If no subject to use for the email, do not send the email.
+			if ( empty( $subject ) ) {
+				return false;
+			}
+
+			// Generate the email content for the tickets.
+			$content = $this->generate_tickets_email_content( $tickets );
+
+			/**
+			 * Allow filtering the email content for a provider. Backwards compatible with previous provider filter.
+			 *
+			 * The dynamic portion of the filter hook, `$provider`, refers to the provider slug (rsvp, tpp, woo, edd).
+			 *
+			 * @deprecated 5.0.3 Use the tribe_tickets_ticket_email_content filter instead.
+			 *
+			 * @since 4.7.6
+			 *
+			 * @param array      $content  The content to send the email with.
+			 * @param int        $post_id  The post/event ID to send the email for.
+			 * @param string|int $order_id The order ID to send the email for.
+			 * @param array      $tickets  The list of tickets to send.
+			 */
+			$content = apply_filters( "tribe_{$provider}_email_content", $content, $post_id, $order_id, $tickets );
+
+			/**
+			 * Allow filtering the email content.
+			 *
+			 * @since 5.0.3
+			 *
+			 * @param array      $content  The content to send the email with.
+			 * @param int        $post_id  The post/event ID to send the email for.
+			 * @param string|int $order_id The order ID to send the email for.
+			 * @param array      $tickets  The list of tickets to send.
+			 * @param string     $provider The provider slug.
+			 * @param array      $args     The full list of ticket email arguments as sent to the function.
+			 */
+			$content = apply_filters( 'tribe_tickets_ticket_email_content', $content, $post_id, $order_id, $tickets, $provider, $args );
+
+			// If no content to use for the email, do not send the email.
+			if ( empty( $content ) ) {
+				return false;
+			}
+
+			/**
+			 * Allow filtering the email headers for a provider. Backwards compatible with previous provider filter.
+			 *
+			 * The dynamic portion of the filter hook, `$provider`, refers to the provider slug (rsvp, tpp, woo, edd).
+			 *
+			 * @deprecated 5.0.3 Use the tribe_tickets_ticket_email_headers filter instead.
+			 *
+			 * @since 4.7.6
+			 *
+			 * @param array      $headers  List of email headers.
+			 * @param int        $post_id  The post/event ID to send the email for.
+			 * @param string|int $order_id The order ID to send the email for.
+			 * @param array      $tickets  The list of tickets to send.
+			 */
+			$headers = apply_filters( "tribe_{$provider}_email_headers", $headers, $post_id, $order_id, $tickets );
+
+			/**
+			 * Allow filtering the email headers.
+			 *
+			 * @since 5.0.3
+			 *
+			 * @param array      $headers  List of email headers.
+			 * @param int        $post_id  The post/event ID to send the email for.
+			 * @param string|int $order_id The order ID to send the email for.
+			 * @param array      $tickets  The list of tickets to send.
+			 * @param string     $provider The provider slug.
+			 * @param array      $args     The full list of ticket email arguments as sent to the function.
+			 */
+			$headers = apply_filters( 'tribe_tickets_ticket_email_headers', $headers, $post_id, $order_id, $tickets, $provider, $args );
+
+			/**
+			 * Allow filtering the email attachments for a provider. Backwards compatible with previous provider filter.
+			 *
+			 * The dynamic portion of the filter hook, `$provider`, refers to the provider slug (rsvp, tpp, woo, edd).
+			 *
+			 * @deprecated 5.0.3 Use the tribe_tickets_ticket_email_attachments filter instead.
+			 *
+			 * @since 4.7.6
+			 *
+			 * @param array      $attachments The list of attachments to send.
+			 * @param int        $post_id     The post/event ID to send the email for.
+			 * @param string|int $order_id    The order ID to send the email for.
+			 * @param array      $tickets     The list of tickets to send.
+			 */
+			$attachments = apply_filters( "tribe_{$provider}_email_attachments", $attachments, $post_id, $order_id, $tickets );
+
+			/**
+			 * Allow filtering the email attachments.
+			 *
+			 * @since 5.0.3
+			 *
+			 * @param array      $attachments The list of attachments to send.
+			 * @param int        $post_id     The post/event ID to send the email for.
+			 * @param string|int $order_id    The order ID to send the email for.
+			 * @param array      $tickets     The list of tickets to send.
+			 * @param string     $provider The provider slug.
+			 * @param array      $args     The full list of ticket email arguments as sent to the function.
+			 */
+			$attachments = apply_filters( 'tribe_tickets_ticket_email_attachments', $attachments, $post_id, $order_id, $tickets, $provider, $args );
+
+			$sent = $send_callback( $to, $subject, $content, $headers, $attachments );
+
+			// Handle marking the attendee ticket email as being sent.
+			if ( $sent && ! empty( $ticket_sent_meta_key ) ) {
+				// Mark attendee ticket email as being sent for each attendee ticket.
+				foreach ( $tickets as $attendee ) {
+					update_post_meta( $attendee['attendee_id'], $ticket_sent_meta_key, '1' );
+				}
+			}
+
+			return $sent;
 		}
 
 		/**
@@ -2784,7 +3212,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// set the default capacity to that of the event, if set, or to unlimited
-			$default_capacity = Tribe__Utils__Array::get( $data, 'event_capacity', -1 );
+			$default_capacity = (int) Tribe__Utils__Array::get( $data, 'event_capacity', -1 );
 
 			// Fetch capacity field, if we don't have it use default (defined above)
 			$data['capacity'] = trim( Tribe__Utils__Array::get( $data, 'capacity', $default_capacity ) );
@@ -2965,13 +3393,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
 
 			/**
-			 * Fired once a ticket has been created and added to a post
+			 * Fired once a ticket has been created and added to a post.
 			 *
-			 * @param int $post_id ID of parent "event" post
-			 * @param Tribe__Tickets__Ticket_Object $ticket Ticket object
-			 * @param array $data Submitted post data
+			 * @param int                           $post_id  The ticket parent post ID.
+			 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket that was just added.
+			 * @param array                         $raw_data The ticket data that was used to save.
+			 * @param string                        $class    The Commerce engine class name.
 			 */
-			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data );
+			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data, __CLASS__ );
 
 			$tickets_handler->toggle_manual_update_flag( false );
 
@@ -3263,6 +3692,45 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			wp_safe_redirect( $url );
 			exit;
+		}
+
+		/**
+		 * Get list of tickets in cart for a specific provider.
+		 *
+		 * @since 5.0.3
+		 *
+		 * @param null|string|false $provider The provider slug or false if no provider, leave as null to detect from page.
+		 *
+		 * @return array List of tickets in cart for the provider.
+		 */
+		public static function get_tickets_in_cart_for_provider( $provider = null ) {
+			if ( null === $provider ) {
+				$provider = tribe_get_request_var( 'provider', false );
+			}
+
+			/**
+			 * Filter to add/remove tickets from the global cart.
+			 *
+			 * @since 4.9
+			 * @since 4.11.0 Added $provider to allow context of current provider.
+			 *
+			 * @param array        $tickets_in_cart The array containing the cart elements. Format array( 'ticket_id' => 'quantity' ).
+			 * @param string|false $provider        Current ticket provider or false if not set.
+			 */
+			return (array) apply_filters( 'tribe_tickets_tickets_in_cart', [], $provider );
+		}
+
+		/**
+		 * Generates the security code that will be used for printed tickets and QR codes.
+		 *
+		 * @since 4.7
+		 *
+		 * @param string $attendee_id The attendee ID or another string to based the security code off of.
+		 *
+		 * @return string The generated security code.
+		 */
+		public function generate_security_code( $attendee_id ) {
+			return substr( md5( wp_rand() . '_' . $attendee_id ), 0, 10 );
 		}
 
 		/**

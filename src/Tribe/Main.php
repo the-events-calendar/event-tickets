@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.0.2';
+	const VERSION = '5.0.3';
 
 	/**
 	 * Used to store the version history.
@@ -667,6 +667,8 @@ class Tribe__Tickets__Main {
 	/**
 	 * Register Event Tickets with the template update checker.
 	 *
+	 * @since 5.0.3 Updated template structure.
+	 *
 	 * @param array $plugins
 	 *
 	 * @return array
@@ -674,7 +676,13 @@ class Tribe__Tickets__Main {
 	public function add_template_updates_check( $plugins ) {
 		$plugins[ __( 'Event Tickets', 'event-tickets' ) ] = [
 			self::VERSION,
-			$this->plugin_path . 'src/views/tickets',
+			$this->plugin_path . 'src/views',
+			trailingslashit( get_stylesheet_directory() ) . 'tribe/tickets',
+		];
+
+		$plugins[ __( 'Event Tickets - Legacy', 'event-tickets' ) ] = [
+			self::VERSION,
+			$this->plugin_path . 'src/views',
 			trailingslashit( get_stylesheet_directory() ) . 'tribe-events/tickets',
 		];
 

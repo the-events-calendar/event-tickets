@@ -11,16 +11,9 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @static
 	 * @return self
-	 *
 	 */
 	public static function instance() {
-		static $instance;
-
-		if ( ! $instance instanceof self ) {
-			$instance = new self;
-		}
-
-		return $instance;
+		return tribe( 'tickets.tickets-view' );
 	}
 
 	/**
@@ -205,16 +198,8 @@ class Tribe__Tickets__Tickets_View {
 			$attendees = $_POST['attendee'];
 		}
 
-		/**
-		 * Sort list to handle all not attending first
-		 *
-		 * @todo switch to only wp_list_sort once WordPress 4.7 is minimum supported version
-		 */
-		if ( function_exists( 'wp_list_sort' ) ) {
-			$attendees = wp_list_sort( $attendees, 'order_status', 'ASC', true );
-		} else {
-			uasort( $attendees, [ $this, 'sort_attendees' ] );
-		}
+		// Sort list to handle all not attending first.
+		$attendees = wp_list_sort( $attendees, 'order_status', 'ASC', true );
 
 		foreach ( $attendees as $order_id => $data ) {
 			/**
@@ -412,6 +397,8 @@ class Tribe__Tickets__Tickets_View {
 			return $content;
 		}
 
+		tribe_asset_enqueue_group( 'tribe-tickets-page-assets' );
+
 		ob_start();
 
 		include Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders.php' );
@@ -476,6 +463,8 @@ class Tribe__Tickets__Tickets_View {
 		if ( 'tickets' !== $display && ! $this->is_edit_page() ) {
 			return $old_file;
 		}
+
+		tribe_asset_enqueue_group( 'tribe-tickets-page-assets' );
 
 		// Fetch the correct file using the Tickets Hierarchy
 		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders.php' );
@@ -1006,11 +995,49 @@ class Tribe__Tickets__Tickets_View {
 			return '';
 		}
 
+		// No need to handle RSVPs here.
+		if ( 'Tribe__Tickets__RSVP' === $provider->class_name ) {
+			return '';
+		}
+
 		/** @var Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 
 		/** @var Tribe__Tickets__Editor__Blocks__Tickets $blocks_tickets */
 		$blocks_tickets = tribe( 'tickets.editor.blocks.tickets' );
+
+		/** @var Tribe__Settings_Manager $settings_manager */
+		$settings_manager = tribe( 'settings.manager' );
+
+		$threshold = $settings_manager::get_option( 'ticket-display-tickets-left-threshold', null );
+
+		/**
+		 * Overwrites the threshold to display "# tickets left".
+		 *
+		 * @since 4.11.1
+		 *
+		 * @param int   $threshold Stock threshold to trigger display of "# tickets left"
+		 * @param int   $post_id   WP_Post/Event ID.
+		 */
+		$threshold = absint( apply_filters( 'tribe_display_tickets_block_tickets_left_threshold', $threshold, $post_id ) );
+
+		/**
+		 * Allow filtering of the button name for the tickets block.
+		 *
+		 * @since 4.11.0
+		 *
+		 * @param string $button_name The button name. Set to cart-button to send to cart on submit, or set to checkout-button to send to checkout on submit.
+		 */
+		$submit_button_name = apply_filters( 'tribe_tickets_ticket_block_submit', 'cart-button' );
+
+		/**
+		 * Show original price on sale.
+		 *
+		 * @param bool Whether the original price should be shown on sale or not. Default is true.
+		 *
+		 * @return bool Whether the original price should be shown on sale or not.
+		 */
+		$show_original_price_on_sale = apply_filters( 'tribe_tickets_show_original_price_on_sale', true );
 
 		// Load assets manually.
 		$blocks_tickets->assets();
@@ -1018,24 +1045,89 @@ class Tribe__Tickets__Tickets_View {
 		$tickets = $provider->get_tickets( $post_id );
 
 		$args = [
-			'post_id'             => $post_id,
-			'provider'            => $provider,
-			'provider_id'         => $provider->class_name,
-			'tickets'             => $tickets,
-			'cart_classes'        => [ 'tribe-block', 'tribe-tickets' ],
-			'tickets_on_sale'     => $blocks_tickets->get_tickets_on_sale( $tickets ),
-			'has_tickets_on_sale' => tribe_events_has_tickets_on_sale( $post_id ),
-			'is_sale_past'        => $blocks_tickets->get_is_sale_past( $tickets ),
+			'post_id'                     => $post_id,
+			'provider'                    => $provider,
+			'provider_id'                 => $provider->class_name,
+			'tickets'                     => $tickets,
+			'cart_classes'                => [ 'tribe-block', 'tribe-tickets' ], // @todo: deprecate with V1.
+			'tickets_on_sale'             => $blocks_tickets->get_tickets_on_sale( $tickets ),
+			'has_tickets_on_sale'         => tribe_events_has_tickets_on_sale( $post_id ),
+			'is_sale_past'                => $blocks_tickets->get_is_sale_past( $tickets ),
+			'is_sale_future'              => $blocks_tickets->get_is_sale_future( $tickets ),
+			'currency'                    => tribe( 'tickets.commerce.currency' ),
+			'handler'                     => tribe( 'tickets.handler' ),
+			'privacy'                     => tribe( 'tickets.privacy' ),
+			'threshold'                   => $threshold,
+			'must_login'                  => ! is_user_logged_in() && $provider->login_required(),
+			'show_original_price_on_sale' => $show_original_price_on_sale,
+			'is_mini'                     => null,
+			'is_modal'                    => null,
+			'submit_button_name'          => $submit_button_name,
+			'cart_url'                    => method_exists( $provider, 'get_cart_url' ) ? $provider->get_cart_url() : '',
+			'checkout_url'                => method_exists( $provider, 'get_checkout_url' ) ? $provider->get_checkout_url() : '',
 		];
 
-		// Add the rendering attributes into global context.
+		/**
+		 * Add the rendering attributes into global context.
+		 *
+		 * Start with the following for template files loading this global context.
+		 * Keep all templates with this starter block of comments updated if these global args update.
+		 *
+		 * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
+		 * @var int                                $post_id                     [Global] The current Post ID to which tickets are attached.
+		 * @var Tribe__Tickets__Tickets            $provider                    [Global] The tickets provider class.
+		 * @var string                             $provider_id                 [Global] The tickets provider class name.
+		 * @var Tribe__Tickets__Ticket_Object[]    $tickets                     [Global] List of tickets.
+		 * @var array                              $cart_classes                [Global] CSS classes.
+		 * @var Tribe__Tickets__Ticket_Object[]    $tickets_on_sale             [Global] List of tickets on sale.
+		 * @var bool                               $has_tickets_on_sale         [Global] True if the event has any tickets on sale.
+		 * @var bool                               $is_sale_past                [Global] True if tickets' sale dates are all in the past.
+		 * @var bool                               $is_sale_future              [Global] True if no ticket sale dates have started yet.
+		 * @var Tribe__Tickets__Commerce__Currency $currency                    [Global] Tribe Currency object.
+		 * @var Tribe__Tickets__Tickets_Handler    $handler                     [Global] Tribe Tickets Handler object.
+		 * @var Tribe__Tickets__Privacy            $privacy                     [Global] Tribe Tickets Privacy object.
+		 * @var int                                $threshold                   [Global] The count at which "number of tickets left" message appears.
+		 * @var bool                               $show_original_price_on_sale [Global] Show original price on sale.
+		 * @var null|bool                          $is_mini                     [Global] If in "mini cart" context.
+		 * @var null|bool                          $is_modal                    [Global] Whether the modal is enabled.
+		 * @var string                             $submit_button_name          [Global] The button name for the tickets block.
+		 * @var string                             $cart_url                    [Global] Link to Cart (could be empty).
+		 * @var string                             $checkout_url                [Global] Link to Checkout (could be empty).
+		 */
 		$template->add_template_globals( $args );
 
 		// Enqueue assets.
-		tribe_asset_enqueue( 'tribe-tickets-gutenberg-tickets' );
-		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-tickets-style' );
+		tribe_asset_enqueue_group( 'tribe-tickets-block-assets' );
 
-		return $template->template( 'blocks/tickets', $args, $echo );
+		if ( tribe_tickets_new_views_is_enabled() ) {
+			$before_content = '';
+
+			/**
+			 * A flag we can set via filter, e.g. at the end of this method, to ensure this template only shows once.
+			 *
+			 * @since 4.5.6
+			 *
+			 * @param boolean $already_rendered Whether the order link template has already been rendered.
+			 *
+			 * @see Tribe__Tickets__Tickets_View::inject_link_template()
+			 */
+			$already_rendered = apply_filters( 'tribe_tickets_order_link_template_already_rendered', false );
+
+			// Output order links / view link if we haven't already (for RSVPs).
+			if ( ! $already_rendered ) {
+				$before_content = $template->template( 'blocks/attendees/order-links', [], $echo );
+
+				if ( empty( $before_content ) ) {
+					$before_content = $template->template( 'blocks/attendees/view-link', [], $echo );
+				}
+
+				add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
+			}
+
+			return $before_content . $template->template( 'v2/tickets', [], $echo );
+		}
+
+		return $template->template( 'blocks/tickets', [], $echo );
 	}
 
 	/**
@@ -1110,12 +1202,34 @@ class Tribe__Tickets__Tickets_View {
 			'opt_in_nonce'        => '',
 			'doing_shortcode'     => $doing_shortcode,
 			'block_html_id'       => $block_html_id,
+			'going'               => tribe_get_request_var( 'going', '' ),
 		];
 
-		// Add the rendering attributes into global context.
+		/**
+		 * Add the rendering attributes into global context.
+		 *
+		 * Start with the following for template files loading this global context.
+		 * Keep all templates with this starter block of comments updated if these global args update.
+		 *
+		 * @var Tribe__Tickets__Editor__Template $this                Template object.
+		 * @var int                              $post_id             [Global] The current Post ID to which RSVPs are attached.
+		 * @var array                            $attributes          [Global] RSVP attributes (could be empty).
+		 * @var Tribe__Tickets__Ticket_Object[]  $active_rsvps        [Global] List of RSVPs.
+		 * @var bool                             $all_past            [Global] True if RSVPs availability dates are all in the past.
+		 * @var bool                             $has_rsvps           [Global] True if the event has any RSVPs.
+		 * @var bool                             $has_active_rsvps    [Global] True if the event has any RSVPs available.
+		 * @var bool                             $must_login          [Global] True if login is required and user is not logged in..
+		 * @var string                           $login_url           [Global] The site's login URL.
+		 * @var int                              $threshold           [Global] The count at which "number of tickets left" message appears.
+		 * @var null|string                      $step                [Global] The point we're at in the loading process.
+		 * @var bool                             $opt_in_checked      [Global] Whether appearing in Attendee List was checked.
+		 * @var string                           $opt_in_attendee_ids [Global] The list of attendee IDs to send in the form submission.
+		 * @var string                           $opt_in_nonce        [Global] The nonce for opt-in AJAX requests.
+		 * @var bool                             $doing_shortcode     [Global] True if detected within context of shortcode output.
+		 * @var bool                             $block_html_id       [Global] The RSVP block HTML ID. $doing_shortcode may alter it.
+		 */
 		$template->add_template_globals( $args );
 
-		// @todo Remove this after G20.07.
 		// Determine whether to show the previews on the page.
 		if (
 			defined( 'TRIBE_TICKETS_RSVP_NEW_VIEWS_PREVIEW' )
@@ -1123,7 +1237,7 @@ class Tribe__Tickets__Tickets_View {
 		) {
 			// Enqueue new assets.
 			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
-			tribe_asset_enqueue( 'tribe-tickets-form-style' );
+			tribe_asset_enqueue( 'tribe-tickets-forms-style' );
 			// @todo: Remove this once we solve the common breakpoints vs container based.
 			tribe_asset_enqueue( 'tribe-common-responsive' );
 
@@ -1171,7 +1285,7 @@ class Tribe__Tickets__Tickets_View {
 			// Enqueue new assets.
 			tribe_asset_enqueue_group( 'tribe-tickets-rsvp' );
 			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
-			tribe_asset_enqueue( 'tribe-tickets-form-style' );
+			tribe_asset_enqueue( 'tribe-tickets-forms-style' );
 			// @todo: Remove this once we solve the common breakpoints vs container based.
 			tribe_asset_enqueue( 'tribe-common-responsive' );
 
