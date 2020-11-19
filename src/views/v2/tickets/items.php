@@ -10,9 +10,9 @@
  *
  * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
- * @since   TBD
+ * @since   5.0.3
  *
- * @version TBD
+ * @version 5.0.3
  *
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
  * @var int                                $post_id                     [Global] The current Post ID to which tickets are attached.
@@ -47,7 +47,7 @@ foreach ( $tickets_on_sale as $key => $ticket ) {
 	 * Allows hiding of "unlimited" to be toggled on/off conditionally.
 	 *
 	 * @since 4.11.1
-	 * @since TBD Added $ticket parameter.
+	 * @since 5.0.3 Added $ticket parameter.
 	 *
 	 * @var bool                          $show_unlimited  Whether to show the "unlimited" text.
 	 * @var int                           $available_count The quantity of Available tickets based on the Attendees number.
