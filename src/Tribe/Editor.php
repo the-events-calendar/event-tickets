@@ -284,14 +284,8 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 		/** @var Tribe__Tickets__Editor__Template__Overwrite $template_overwrite */
 		$template_overwrite = tribe( 'tickets.editor.template.overwrite' );
 
-		$is_event                 = function_exists( 'tribe_is_event' ) && tribe_is_event( $post_id );
-		$has_event_classic_editor = $is_event && ! $template_overwrite->has_early_access_to_blocks();
-
-		/** @var Tribe__Editor $editor */
-		$editor = tribe( 'editor' );
-
-		// Set meta key only if is classic editor and bail
-		if ( $editor->is_classic_editor() || $has_event_classic_editor ) {
+		// Set meta key only if is classic editor and bail.
+		if ( $template_overwrite->has_classic_editor( $post_id ) ) {
 			update_post_meta( $post_id, $this->meta_key_flush_flag, 1 );
 
 			return false;
