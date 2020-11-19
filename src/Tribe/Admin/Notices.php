@@ -137,13 +137,13 @@ class Tribe__Tickets__Admin__Notices {
 		$plus = sprintf(
 			'<a target="_blank" rel="noopener nofollow" href="%s">%s</a>',
 			esc_attr( $plus_link ),
-			esc_html( 'Event Tickets Plus', 'event-tickets' )
+			esc_html__( 'Event Tickets Plus', 'event-tickets' )
 		);
 
-		$plus_commerce_providers = array(
-			esc_html( 'WooCommerce', 'event-tickets' )            => 'woocommerce/woocommerce.php',
-			esc_html( 'Easy Digital Downloads', 'event-tickets' ) => 'easy-digital-downloads/easy-digital-downloads.php',
-		);
+		$plus_commerce_providers = [
+			esc_html__( 'WooCommerce', 'event-tickets' )            => 'woocommerce/woocommerce.php',
+			esc_html__( 'Easy Digital Downloads', 'event-tickets' ) => 'easy-digital-downloads/easy-digital-downloads.php',
+		];
 
 		foreach ( $plus_commerce_providers as $provider => $path ) {
 			if ( ! is_plugin_active( $path ) ) {
