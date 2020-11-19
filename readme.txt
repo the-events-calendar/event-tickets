@@ -118,6 +118,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Post type settings label typo changed to plural "tickets". [ET-954]
+
 = [5.0.3] 2020-11-19 =
 
 * Feature - Added support for the new Individual Attendee Collection functionality included in Event Tickets Plus. It now allows for collection of individual names and emails for each attendee for Tribe Commerce, WooCommerce, and Easy Digital Download tickets. You can enable this option per ticket and choose to make the fields optional or required. [ETP-364]
