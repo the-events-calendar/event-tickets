@@ -30,10 +30,12 @@ class Tribe__Tickets__Admin__Notices {
 			return;
 		}
 
-		$this->maybe_display_plus_commerce_notice();
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 		$this->maybe_display_rsvp_new_views_options_notice();
+		$this->maybe_display_classic_editor_ecp_recurring_tickets_notice();
+		$this->maybe_display_plus_commerce_notice();
+
 	}
 
 	/**
@@ -105,6 +107,80 @@ class Tribe__Tickets__Admin__Notices {
 
 		tribe_notice(
 			__FUNCTION__,
+			$message,
+			[
+				'dismiss' => true,
+				'type'    => 'warning',
+			]
+		);
+	}
+
+	/**
+	 * Display dismissible notice about recurring events tickets, per event.
+	 *
+	 * @since TBD
+	 */
+	public function maybe_display_classic_editor_ecp_recurring_tickets_notice() {
+		$post_id = absint( tribe_get_request_var( 'post' ) );
+
+		if ( empty( $post_id ) ) {
+			return;
+		}
+
+		// Warning: Changing this would invalidate all past dismissals.
+		$slug_prefix = 'tribe_notice_classic_editor_ecp_recurring_tickets';
+		$notice_slug = sprintf( '%s-%d', $slug_prefix, $post_id );
+
+		// Bail if this notice was previously dismissed for this TEC event.
+		if ( Tribe__Admin__Notices::instance()->has_user_dimissed( $notice_slug ) ) {
+			return;
+		}
+
+		/** @var Tribe__Tickets__Editor__Template__Overwrite $template_overwrite */
+		$template_overwrite = tribe( 'tickets.editor.template.overwrite' );
+
+		if (
+			! function_exists( 'tribe_is_recurring_event' )
+			|| ! tribe_is_recurring_event( $post_id )
+			|| ! tribe_events_has_tickets( $post_id )
+			|| ! $template_overwrite->has_classic_editor( $post_id )
+		) {
+			return;
+		}
+
+		$heading = sprintf(
+			// Translators: %1$s: dynamic "Tickets" text, %2$s: dynamic "Event" text.
+			_x(
+				'%1$s for Recurring %2$s',
+				'heading for classic editor notice if Events Calendar Pro event has tickets',
+				'event-tickets'
+			),
+			tribe_get_ticket_label_plural( $slug_prefix ),
+			tribe_get_event_label_singular()
+		);
+
+		$text = sprintf(
+			// Translators: %1$s: dynamic "event" text, %2$s: dynamic "ticket" text, %3$s: dynamic "tickets" text, %4$s: dynamic "RSVP" text, %5$s: dynamic "Ticket" text.
+			_x(
+				'Heads up! You saved a recurring %1$s with a %2$s. Please note that we do not currently support recurring %3$s. Only the first instance of this recurring series will have your %4$s or %5$s displayed.',
+				'text for classic editor notice if Events Calendar Pro event has tickets',
+				'event-tickets'
+			),
+			tribe_get_event_label_singular_lowercase(),
+			tribe_get_ticket_label_singular_lowercase( $slug_prefix ),
+			tribe_get_ticket_label_plural_lowercase( $slug_prefix ),
+			tribe_get_rsvp_label_singular( $slug_prefix ),
+			tribe_get_ticket_label_singular( $slug_prefix )
+		);
+
+		$message = sprintf(
+			'<h3>%1$s</h3>%2$s',
+			esc_html( $heading ),
+			wpautop( esc_html( $text ) )
+		);
+
+		tribe_notice(
+			$notice_slug,
 			$message,
 			[
 				'dismiss' => true,
