@@ -121,6 +121,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [5.0.3.1] 2020-11-19 =
 
 * Fix - Require Event Tickets Plus 5.1+ for compatibility purposes on certain areas in Event Tickets that have direct calls to Event Tickets Plus functionality. [ET-964]
+* Tweak - Changed views: `blocks/tickets/submit`
 
 = [5.0.3] 2020-11-19 =
 
