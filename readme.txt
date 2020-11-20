@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
 Tested up to: 5.5.1
-Stable tag: 5.0.3
+Stable tag: 5.0.3.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -117,6 +117,14 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [5.1.0] TBD =
+
+* Fix - Post type settings label typo changed to plural "tickets". [ET-954]
+
+= [5.0.3.1] 2020-11-19 =
+
+* Fix - Require Event Tickets Plus 5.1+ for compatibility purposes on certain areas in Event Tickets that have direct calls to Event Tickets Plus functionality. [ET-964]
 
 = [5.0.3] 2020-11-19 =
 
