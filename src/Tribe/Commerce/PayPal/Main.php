@@ -923,6 +923,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
 				} else {
 					// Update attendee.
+					$repository->by_primary_key( $attendee_id );
 					$repository->set_args( $data );
 					$repository->save();
 				}
