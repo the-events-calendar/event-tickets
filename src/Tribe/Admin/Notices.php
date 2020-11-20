@@ -13,7 +13,7 @@ class Tribe__Tickets__Admin__Notices {
 	 * @since 4.7
 	 */
 	public function hook() {
-		add_action( 'admin_init', array( $this, 'maybe_display_notices' ) );
+		add_action( 'admin_init', [ $this, 'maybe_display_notices' ] );
 	}
 
 	/**
@@ -31,6 +31,7 @@ class Tribe__Tickets__Admin__Notices {
 		}
 
 		$this->maybe_display_plus_commerce_notice();
+		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 		$this->maybe_display_rsvp_new_views_options_notice();
 	}
@@ -119,8 +120,6 @@ class Tribe__Tickets__Admin__Notices {
 	 * @since 4.7
 	 */
 	public function maybe_display_plus_commerce_notice() {
-		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-
 		if ( class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
 			return;
 		}
