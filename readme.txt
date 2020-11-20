@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [TBD] TBD =
 
+* Tweak - Added admin notice when editing an Events Calendar Pro recurring event having tickets in classic editor. [ET-949]
 * Fix - Post type settings label typo changed to plural "tickets". [ET-954]
 
 = [5.0.3] 2020-11-19 =
