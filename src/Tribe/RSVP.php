@@ -853,21 +853,18 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$attendee['post_title'] .= ' | ' . $order_attendee_id;
 		}
 
-		// Insert individual ticket purchased.
-		$attendee_id = wp_insert_post( $attendee );
+		$repository = tribe_attendees( $this->orm_provider );
 
-		if ( is_wp_error( $attendee_id ) ) {
-			throw new Exception( $attendee_id->get_error_message() );
-		}
+		$data = $attendee;
 
-		// @todo This class is not setting $this->attendee_product_key.
-		update_post_meta( $attendee_id, self::ATTENDEE_PRODUCT_KEY, $product_id );
-		// @todo This class is not setting $this->attendee_event_key.
-		update_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, $post_id );
-		update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
-		update_post_meta( $attendee_id, $this->order_key, $order_id );
-		// @todo This class is not setting $this->attendee_optout_key.
-		update_post_meta( $attendee_id, self::ATTENDEE_OPTOUT_KEY, (int) $optout );
+		$data['ticket_id']       = $product_id;
+		$data['post_id']         = $post_id;
+		$data['order_id']        = $order_id;
+		$data['optout']          = (int) $optout;
+		$data['attendee_status'] = $order_status;
+		$data['full_name']       = $individual_attendee_name;
+		$data['email']           = $individual_attendee_email;
+		$data['price_paid']      = 0;
 
 		if ( 0 === $user_id ) {
 			/**
@@ -890,15 +887,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		if ( 0 < $user_id ) {
-			update_post_meta( $attendee_id, $this->attendee_user_id, $user_id );
+			$data['user_id'] = $user_id;
 		}
 
-		// @todo ET should add a property for this.
-		update_post_meta( $attendee_id, self::ATTENDEE_RSVP_KEY, $order_status );
-		update_post_meta( $attendee_id, $this->full_name, $individual_attendee_name );
-		update_post_meta( $attendee_id, $this->email, $individual_attendee_email );
+		$repository->set_args( $data );
 
-		update_post_meta( $attendee_id, '_paid_price', 0 );
+		$attendee_id = $repository->create();
+
+		// Update this after attendee is created.
+		update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
 
 		// Get the RSVP status `decrease_stock_by` value.
 		$status_stock_size = $rsvp_options[ $order_status ]['decrease_stock_by'];

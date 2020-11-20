@@ -17,6 +17,34 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 	/**
 	 * {@inheritdoc}
 	 */
+	public function __construct() {
+		parent::__construct();
+
+		/** @var Tribe__Tickets__Commerce__PayPal__Main $provider */
+		$provider = tribe( 'tickets.commerce.paypal' );
+
+		// Add object specific aliases.
+		$this->update_fields_aliases = array_merge( $this->update_fields_aliases, array(
+			'ticket_id'       => $provider::ATTENDEE_PRODUCT_KEY,
+			'product_id'      => $provider::ATTENDEE_PRODUCT_KEY,
+			'event_id'        => $provider::ATTENDEE_EVENT_KEY,
+			'post_id'         => $provider::ATTENDEE_EVENT_KEY,
+			'security_code'   => $provider->security_code,
+			'order_id'        => $provider->order_key,
+			'optout'          => $provider->attendee_optout_key,
+			'user_id'         => $provider->attendee_user_id,
+			'price_paid'      => '_paid_price',
+			'price_currency'  => '_price_currency_symbol',
+			'full_name'       => $provider->full_name,
+			'email'           => $provider->email,
+			'attendee_status' => $provider->attendee_tpp_key,
+			'refund_order_id' => $provider->refund_order_key,
+		) );
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function attendee_types() {
 		return $this->limit_list( $this->key_name, parent::attendee_types() );
 	}

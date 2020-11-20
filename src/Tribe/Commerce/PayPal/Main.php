@@ -870,6 +870,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					$existing_attendee = reset( $existing_attendee );
 					$updating_attendee = true;
 					$attendee_id       = $existing_attendee['attendee_id'];
+					$attendee          = [];
 				} else {
 					$attendee = array(
 						'post_status' => 'publish',
@@ -878,11 +879,52 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 						'ping_status' => 'closed',
 					);
 
-					// Insert individual ticket purchased
-					$attendee_id = wp_insert_post( $attendee );
-
 					// since we are creating at least one
 					$has_generated_new_tickets = true;
+				}
+
+				$attendee_order_status = trim( strtolower( $payment_status ) );
+
+				$repository = tribe_attendees( $this->orm_provider );
+
+				$data = $attendee;
+
+				$data['attendee_status'] = $attendee_order_status;
+
+				if ( Tribe__Tickets__Commerce__PayPal__Stati::$refunded === $payment_status ) {
+					$refund_order_id = Tribe__Utils__Array::get( $transaction_data, 'txn_id', '' );
+
+					$data['refund_order_id'] = $refund_order_id;
+				}
+
+				if ( ! $updating_attendee ) {
+					$optout = Tribe__Utils__Array::get( $attendee_optouts, 'ticket_' . $product_id, false );
+					$optout = filter_var( $optout, FILTER_VALIDATE_BOOLEAN );
+					$optout = $optout ? 'yes' : 'no';
+
+					$data['ticket_id']       = $product_id;
+					$data['post_id']         = $post_id;
+					$data['order_id']        = $order_id;
+					$data['optout']          = $optout;
+					$data['full_name']       = $individual_attendee_name;
+					$data['email']           = $individual_attendee_email;
+					$data['price_paid']      = get_post_meta( $product_id, '_price', true );
+					$data['price_currency']  = $currency_symbol;
+
+					if ( 0 < $attendee_user_id ) {
+						$data['user_id'] = $attendee_user_id;
+					}
+
+					$repository->set_args( $data );
+
+					$attendee_id = $repository->create();
+
+					// Update this after attendee is created.
+					update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
+				} else {
+					// Update attendee.
+					$repository->set_args( $data );
+					$repository->save();
 				}
 
 				$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
@@ -902,31 +944,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 						default:
 							break;
 					}
-				}
-
-				$attendee_order_status = trim( strtolower( $payment_status ) );
-
-				if ( ! $updating_attendee ) {
-					$optout = Tribe__Utils__Array::get( $attendee_optouts, 'ticket_' . $product_id, false );
-					$optout = filter_var( $optout, FILTER_VALIDATE_BOOLEAN );
-					$optout = $optout ? 'yes' : 'no';
-
-					update_post_meta( $attendee_id, $this->attendee_product_key, $product_id );
-					update_post_meta( $attendee_id, $this->attendee_event_key, $post_id );
-					update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
-					update_post_meta( $attendee_id, $this->order_key, $order_id );
-					update_post_meta( $attendee_id, $this->attendee_optout_key, $optout );
-					update_post_meta( $attendee_id, $this->email, $individual_attendee_email );
-					update_post_meta( $attendee_id, $this->full_name, $individual_attendee_name );
-					update_post_meta( $attendee_id, '_paid_price', get_post_meta( $product_id, '_price', true ) );
-					update_post_meta( $attendee_id, '_price_currency_symbol', $currency_symbol );
-				}
-
-				update_post_meta( $attendee_id, $this->attendee_tpp_key, $attendee_order_status );
-
-				if ( Tribe__Tickets__Commerce__PayPal__Stati::$refunded === $payment_status ) {
-					$refund_order_id = Tribe__Utils__Array::get( $transaction_data, 'txn_id', '' );
-					update_post_meta( $attendee_id, $this->refund_order_key, $refund_order_id );
 				}
 
 				if ( ! $updating_attendee ) {
@@ -964,7 +981,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 				$order->add_attendee( $attendee_id );
 
-				$this->record_attendee_user_id( $attendee_id, $attendee_user_id );
 				$order_attendee_id++;
 
 				if ( ! empty( $existing_attendee ) ) {

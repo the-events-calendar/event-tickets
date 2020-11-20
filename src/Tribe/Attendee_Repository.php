@@ -88,6 +88,22 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'rsvp_status'           => [ $this, 'filter_by_rsvp_status' ],
 		] );
 
+		// Add object default aliases.
+		$this->update_fields_aliases = array_merge( $this->update_fields_aliases, array(
+			'ticket_id'      => '_tribe_tickets_ticket_id',
+			'product_id'     => '_tribe_tickets_ticket_id',
+			'event_id'       => '_tribe_tickets_post_id',
+			'post_id'        => '_tribe_tickets_post_id',
+			'security_code'  => '_tribe_tickets_security_code',
+			'order_id'       => '_tribe_tickets_order_id',
+			'optout'         => '_tribe_tickets_optout',
+			'user_id'        => '_tribe_tickets_user_id',
+			'price_paid'     => '_tribe_tickets_price_paid',
+			'price_currency' => '_tribe_tickets_price_currency_symbol',
+			'full_name'      => '_tribe_tickets_full_name',
+			'email'          => '_tribe_tickets_email',
+		) );
+
 		$this->init_order_statuses();
 	}
 
@@ -634,14 +650,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			self::$order_statuses         = $statuses;
 			self::$private_order_statuses = array_diff( $statuses, self::$public_order_statuses );
 		}
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function create() {
-		// Disabled for now.
-		return false;
 	}
 
 	/**
