@@ -42,11 +42,8 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( 'tickets.editor.rest.compatibility', 'Tribe__Tickets__Editor__REST__Compatibility', array( 'hook' ) );
 		$this->container->singleton( 'tickets.editor.attendees_table', 'Tribe__Tickets__Attendees_Table' );
 
-		if ( class_exists( 'Tribe__Tickets_Plus__Meta__Storage' ) ) {
-			$this->container->singleton( 'tickets.editor.attendee_registration', 'Tribe__Tickets__Editor__Attendee_Registration' );
-		}
-
 		$this->hook();
+
 		/**
 		 * Lets load all compatibility related methods
 		 *
@@ -88,10 +85,6 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 
 		// Setup the Rest compatibility layer for WP
 		tribe( 'tickets.editor.rest.compatibility' );
-
-		if ( class_exists( 'Tribe__Tickets_Plus__Meta__Storage' ) ) {
-			tribe( 'tickets.editor.attendee_registration' )->hook();
-		}
 
 		// Register blocks
 		add_action(
