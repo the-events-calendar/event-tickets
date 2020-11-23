@@ -11,7 +11,7 @@ import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 
 const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 const currentMoment = moment();
-const endMoment = currentMoment.clone();
+const endMoment = currentMoment.clone().add( 2, 'hours' );
 
 const startDateInput = datePickerFormat
 	? currentMoment.format( momentUtil.toFormat( datePickerFormat ) )

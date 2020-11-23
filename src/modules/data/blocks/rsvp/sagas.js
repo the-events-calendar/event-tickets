@@ -626,7 +626,7 @@ export function* setNonEventPostTypeEndDate() {
 
 	const tempEndMoment = yield select( selectors.getRSVPTempEndDateMoment );
 	const endMoment = yield call( [ tempEndMoment, 'clone' ] );
-	yield call( [ endMoment, 'add' ], 100, 'years' );
+	yield call( [ endMoment, 'add' ], 2, 'hours' );
 	const { date, dateInput, moment, time } = yield call( createDates, endMoment.toDate() );
 
 	yield all( [
