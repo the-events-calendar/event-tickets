@@ -16,8 +16,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 		$this->container->singleton( 'tickets.attendee_registration.shortcode', Tribe__Tickets__Attendee_Registration__Shortcode::class );
 		$this->container->singleton( 'tickets.attendee_registration.modal', Tribe__Tickets__Attendee_Registration__Modal::class );
 
-		// Priority 45 to be before priority 50 used on the same action in hooks().
-		add_action( 'tribe_plugins_loaded', [ $this, 'hooks' ], 45 );
+		$this->hooks();
 	}
 
 	/**
@@ -32,8 +31,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 			return;
 		}
 
-		// After priority 45 from register() using this same action.
-		add_action( 'tribe_plugins_loaded', [ $this, 'add_attendee_registration_template_hook' ], 50 );
+		$this->add_attendee_registration_template_hook();
 
 		add_action( 'init', [ $this, 'add_attendee_registration_shortcode_hook' ] );
 		add_action( 'init', [ $this, 'add_attendee_registration_modal_hook' ] );
