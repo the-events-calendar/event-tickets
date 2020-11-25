@@ -179,6 +179,7 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 = [5.0.4] TBD =
 
 * Tweak - Added admin notice when editing an Events Calendar Pro recurring event having tickets in classic editor. [ET-949]
+* Fix - Detect ticket provider(s) by correctly excluding RSVP. [ET-953]
 * Fix - Post type settings label typo changed to plural "tickets". [ET-954]
 
 = [5.0.3.1] 2020-11-19 =
