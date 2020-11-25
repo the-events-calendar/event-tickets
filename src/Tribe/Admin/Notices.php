@@ -35,7 +35,6 @@ class Tribe__Tickets__Admin__Notices {
 		$this->maybe_display_rsvp_new_views_options_notice();
 		$this->maybe_display_classic_editor_ecp_recurring_tickets_notice();
 		$this->maybe_display_plus_commerce_notice();
-
 	}
 
 	/**
