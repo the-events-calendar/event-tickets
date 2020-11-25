@@ -52,8 +52,8 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 $timepicker_round = '00:00:00';
 
 $start_date_errors = [
-		'is-required'         => __( 'Start sale date cannot be empty.', 'event-tickets' ),
-		'is-less-or-equal-to' => __( 'Start sale date cannot be greater than End Sale date', 'event-tickets' ),
+	'is-required'         => __( 'Start sale date cannot be empty.', 'event-tickets' ),
+	'is-less-or-equal-to' => __( 'Start sale date cannot be greater than End Sale date', 'event-tickets' ),
 ];
 ?>
 
@@ -179,7 +179,7 @@ $start_date_errors = [
 						); ?>
 					</span>
 				</div>
-				<fieldset id="tribe_ticket_provider_wrapper" class="input_block" aria-hidden="true" >
+				<fieldset id="tribe_ticket_provider_wrapper" class="input_block" aria-hidden="true">
 					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></legend>
 					<?php foreach ( $modules as $class => $module ) : ?>
 						<input
@@ -219,27 +219,29 @@ $start_date_errors = [
 			<div class="input_block">
 				<label class="ticket_form_label ticket_form_left" for="ticket_description"><?php esc_html_e( 'Description:', 'event-tickets' ); ?></label>
 				<textarea
-						rows="5"
-						cols="40"
-						name="ticket_description"
-						class="ticket_field ticket_form_right"
-						id="ticket_description"
+					rows="5"
+					cols="40"
+					name="ticket_description"
+					class="ticket_field ticket_form_right"
+					id="ticket_description"
 				><?php echo esc_textarea( $ticket ? $ticket->description : null ) ?></textarea>
 				<div class="input_block">
 					<label class="tribe_soft_note">
 						<input
-								type="checkbox"
-								id="tribe_tickets_show_description"
-								name="ticket_show_description"
-								value="1"
-								class="ticket_field ticket_form_left"
-								<?php checked( true, $ticket ? $ticket->show_description : true ); ?>
+							type="checkbox"
+							id="tribe_tickets_show_description"
+							name="ticket_show_description"
+							value="1"
+							class="ticket_field ticket_form_left"
+							<?php checked( true, $ticket ? $ticket->show_description : true ); ?>
 						>
 						<?php
-						echo esc_html( sprintf(
+						echo esc_html(
+							sprintf(
 								__( 'Show description on front end %s form.', 'event-tickets' ),
 								tribe_get_ticket_label_singular_lowercase( 'default_ticket_provider' )
-						) );
+							)
+						);
 						?>
 					</label>
 				</div>
@@ -248,43 +250,43 @@ $start_date_errors = [
 				<label class="ticket_form_label ticket_form_left" for="ticket_start_date"><?php esc_html_e( 'Start sale:', 'event-tickets' ); ?></label>
 				<div class="ticket_form_right">
 					<input
-							autocomplete="off"
-							type="text"
-							class="tribe-datepicker tribe-field-start_date ticket_field"
-							name="ticket_start_date"
-							id="ticket_start_date"
-							value="<?php echo esc_attr( $ticket ? $start_date : null ); ?>"
-							data-validation-type="datepicker"
-							data-validation-is-less-or-equal-to="#ticket_end_date"
-							data-validation-error="<?php echo esc_attr( json_encode( $start_date_errors ) ) ?>"
+						autocomplete="off"
+						type="text"
+						class="tribe-datepicker tribe-field-start_date ticket_field"
+						name="ticket_start_date"
+						id="ticket_start_date"
+						value="<?php echo esc_attr( $ticket ? $start_date : null ); ?>"
+						data-validation-type="datepicker"
+						data-validation-is-less-or-equal-to="#ticket_end_date"
+						data-validation-error="<?php echo esc_attr( json_encode( $start_date_errors ) ) ?>"
 					/>
 					<span class="helper-text hide-if-js"><?php esc_html_e( 'YYYY-MM-DD', 'event-tickets' ) ?></span>
 					<span class="datetime_seperator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
 					<input
-							autocomplete="off"
-							type="text"
-							class="tribe-timepicker tribe-field-start_time ticket_field"
-							name="ticket_start_time"
-							id="ticket_start_time"
-							<?php echo Tribe__View_Helpers::is_24hr_format() ? 'data-format="H:i"' : '' ?>
-							data-step="<?php echo esc_attr( $timepicker_step ); ?>"
-							data-round="<?php echo esc_attr( $timepicker_round ); ?>"
-							value="<?php echo esc_attr( $ticket ? $ticket->start_time : null ); ?>"
-							aria-label="<?php
-							echo esc_html(
-									sprintf(
-											__( '%s start date', 'event-tickets' ),
-											tribe_get_ticket_label_singular( 'input_start_time_aria_label' )
-									)
-							); ?>"
+						autocomplete="off"
+						type="text"
+						class="tribe-timepicker tribe-field-start_time ticket_field"
+						name="ticket_start_time"
+						id="ticket_start_time"
+						<?php echo Tribe__View_Helpers::is_24hr_format() ? 'data-format="H:i"' : '' ?>
+						data-step="<?php echo esc_attr( $timepicker_step ); ?>"
+						data-round="<?php echo esc_attr( $timepicker_round ); ?>"
+						value="<?php echo esc_attr( $ticket ? $ticket->start_time : null ); ?>"
+						aria-label="<?php
+						echo esc_html(
+							sprintf(
+								__( '%s start date', 'event-tickets' ),
+								tribe_get_ticket_label_singular( 'input_start_time_aria_label' )
+							)
+						); ?>"
 					/>
 					<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
 					<span class="dashicons dashicons-editor-help" title="<?php
 					echo esc_html(
-							sprintf(
-									__( 'If you do not set a start sale date, %s will be available immediately.', 'event-tickets' ),
-									tribe_get_ticket_label_plural_lowercase( 'input_start_time_help_text_title' )
-							)
+						sprintf(
+							__( 'If you do not set a start sale date, %s will be available immediately.', 'event-tickets' ),
+							tribe_get_ticket_label_plural_lowercase( 'input_start_time_help_text_title' )
+						)
 					); ?>">
 			</span>
 				</div>
@@ -293,50 +295,50 @@ $start_date_errors = [
 				<label class="ticket_form_label ticket_form_left" for="ticket_end_date"><?php esc_html_e( 'End sale:', 'event-tickets' ); ?></label>
 				<div class="ticket_form_right">
 					<input
-							autocomplete="off"
-							type="text"
-							class="tribe-datepicker tribe-field-end_date ticket_field"
-							name="ticket_end_date"
-							id="ticket_end_date"
-							value="<?php echo esc_attr( $ticket ? $end_date : null ); ?>"
+						autocomplete="off"
+						type="text"
+						class="tribe-datepicker tribe-field-end_date ticket_field"
+						name="ticket_end_date"
+						id="ticket_end_date"
+						value="<?php echo esc_attr( $ticket ? $end_date : null ); ?>"
 					/>
 					<span class="helper-text hide-if-js"><?php esc_html_e( 'YYYY-MM-DD', 'event-tickets' ) ?></span>
 					<span class="datetime_seperator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
 					<input
-							autocomplete="off"
-							type="text"
-							class="tribe-timepicker tribe-field-end_time ticket_field"
-							name="ticket_end_time"
-							id="ticket_end_time"
-							<?php echo Tribe__View_Helpers::is_24hr_format() ? 'data-format="H:i"' : '' ?>
-							data-step="<?php echo esc_attr( $timepicker_step ); ?>"
-							data-round="<?php echo esc_attr( $timepicker_round ); ?>"
-							value="<?php echo esc_attr( $ticket ? $ticket->end_time : null ); ?>"
-							aria-label="<?php
-							echo esc_html(
-									sprintf(
-											__( '%s end date', 'event-tickets' ),
-											tribe_get_ticket_label_singular( 'input_end_time_aria_label' )
-									)
-							); ?>"
+						autocomplete="off"
+						type="text"
+						class="tribe-timepicker tribe-field-end_time ticket_field"
+						name="ticket_end_time"
+						id="ticket_end_time"
+						<?php echo Tribe__View_Helpers::is_24hr_format() ? 'data-format="H:i"' : '' ?>
+						data-step="<?php echo esc_attr( $timepicker_step ); ?>"
+						data-round="<?php echo esc_attr( $timepicker_round ); ?>"
+						value="<?php echo esc_attr( $ticket ? $ticket->end_time : null ); ?>"
+						aria-label="<?php
+						echo esc_html(
+							sprintf(
+								__( '%s end date', 'event-tickets' ),
+								tribe_get_ticket_label_singular( 'input_end_time_aria_label' )
+							)
+						); ?>"
 					/>
 					<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
 					<span class="dashicons dashicons-editor-help"
 						<?php if ( class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === get_post_type( $post_id ) ) : ?>
 							title="<?php
 							echo esc_html(
-									sprintf(
-											__( 'If you do not set an end sale date, %s will be available until the event begins.', 'event-tickets' ),
-											tribe_get_ticket_label_plural_lowercase( 'input_end_time_help_text_title' )
-									)
+								sprintf(
+									__( 'If you do not set an end sale date, %s will be available until the event begins.', 'event-tickets' ),
+									tribe_get_ticket_label_plural_lowercase( 'input_end_time_help_text_title' )
+								)
 							); ?>"
 						<?php else : ?>
 							title="<?php
 							echo esc_html(
-									sprintf(
-											__( 'If you do not set an end sale date, %s will be available forever.', 'event-tickets' ),
-											tribe_get_ticket_label_plural_lowercase( 'input_end_time_help_text_title' )
-									)
+								sprintf(
+									__( 'If you do not set an end sale date, %s will be available forever.', 'event-tickets' ),
+									tribe_get_ticket_label_plural_lowercase( 'input_end_time_help_text_title' )
+								)
 							); ?>"
 						<?php endif; ?>
 					></span>
