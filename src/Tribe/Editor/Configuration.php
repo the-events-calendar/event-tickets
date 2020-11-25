@@ -28,17 +28,18 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	 * @return array
 	 */
 	public function editor_config( $editor_config ) {
-		$tickets       = empty( $editor_js_config['tickets'] ) ? array() : $editor_js_config['tickets'];
+		$tickets = empty( $editor_config['tickets'] ) ? [] : $editor_config['tickets'];
+
 		$editor_config = $this->set_defaults( $editor_config );
 
 		$editor_config['common']['rest']['nonce'] = array_merge(
 			$editor_config['common']['rest']['nonce'],
-			array(
+			[
 				'add_ticket_nonce'    => wp_create_nonce( 'add_ticket_nonce' ),
 				'edit_ticket_nonce'   => wp_create_nonce( 'edit_ticket_nonce' ),
 				'remove_ticket_nonce' => wp_create_nonce( 'remove_ticket_nonce' ),
 				'move_tickets'        => wp_create_nonce( 'move_tickets' ),
-			)
+			]
 		);
 
 		$editor_config['tickets'] = array_merge(
