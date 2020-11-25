@@ -70,9 +70,7 @@ $default_module_class = (string) Tribe__Tickets__Tickets::get_event_ticket_provi
 						 *
 						 * @param string $module - the name of the module
 						 */
-						$provider_name = apply_filters( 'tribe_events_tickets_module_name', $active_provider['name'] );
-
-						esc_html_e( $provider_name );
+						echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $active_provider['name'] ) );
 						?>
 					</label>
 				<?php endforeach; ?>
