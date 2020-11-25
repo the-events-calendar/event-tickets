@@ -87,7 +87,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	}
 
 	/**
-	 * Return an array with all the providers used by tickets
+	 * Return an array with all the currently-active ticket providers (not RSVP).
 	 *
 	 * @since 4.9
 	 *
@@ -95,34 +95,33 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	 */
 	public function get_providers() {
 		$modules                 = Tribe__Tickets__Tickets::modules();
-		$class_names             = array_keys( $modules );
-		$providers               = array();
+		$providers               = [];
 		$default_currency_symbol = tribe_get_option( 'defaultCurrencySymbol', '$' );
 
-		foreach ( $class_names as $class ) {
-			if ( 'RSVP' === $modules[ $class ] ) {
+		foreach ( $modules as $class_name => $display_name ) {
+			if ( Tribe__Tickets__RSVP::class === $class_name ) {
 				continue;
 			}
 
 			$currency = tribe( 'tickets.commerce.currency' );
 
-			// Backwards to avoid fatals
+			// Backwards to avoid fatals.
 			$currency_symbol = $default_currency_symbol;
-			if ( is_callable( array( $currency, 'get_provider_symbol' ) ) ) {
-				$currency_symbol = $currency->get_provider_symbol( $class, null );
+			if ( is_callable( [ $currency, 'get_provider_symbol' ] ) ) {
+				$currency_symbol = $currency->get_provider_symbol( $class_name, null );
 			}
 
 			$currency_position = 'prefix';
-			if ( is_callable( array( $currency, 'get_provider_symbol_position' ) ) ) {
-				$currency_position = $currency->get_provider_symbol_position( $class, null );
+			if ( is_callable( [ $currency, 'get_provider_symbol_position' ] ) ) {
+				$currency_position = $currency->get_provider_symbol_position( $class_name, null );
 			}
 
-			$providers[] = array(
-				'name'              => $modules[ $class ],
-				'class'             => $class,
+			$providers[] = [
+				'name'              => $modules[ $class_name ],
+				'class'             => $class_name,
 				'currency'          => html_entity_decode( $currency_symbol ),
 				'currency_position' => $currency_position,
-			);
+			];
 		}
 
 		return $providers;

@@ -1,32 +1,30 @@
 <?php
 $post_id = get_the_ID();
 
-// Go ahead and get the necessary values.
-// Set up default provider.
-$modules = Tribe__Tickets__Tickets::modules();
+/** @var Tribe__Tickets__Editor__Configuration $editor_config */
+$editor_config = tribe( 'tickets.editor.configuration' );
 
-$default_module = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+// Get list of providers (excluding RSVP).
+$active_providers = $editor_config->get_providers();
 
-$default_module_class = empty( $default_module ) ? '' : $default_module;
+$multiple_providers = 1 < count( $active_providers );
 
-// We don't need this one here - RSVP and tickets are different now.
-unset( $modules['Tribe__Tickets__RSVP'] );
-
-$multiple_modules = 1 < count( $modules );
 // We use 'screen-reader-text' to hide it if there really aren't any choices.
-$fieldset_class = $multiple_modules ? 'input_block' : 'screen-reader-text';
+$fieldset_class = $multiple_providers ? 'input_block' : 'screen-reader-text';
+
+$default_module_class = (string) Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 ?>
 
 <?php if ( tribe_is_truthy( tribe_get_request_var( 'is_admin', true ) ) ) : ?>
 	<fieldset class="<?php echo esc_attr( $fieldset_class ); ?>">
-		<?php if ( ! $multiple_modules ) : ?>
-			<?php foreach ( $modules as $class => $module ) : ?>
+		<?php if ( ! $multiple_providers ) : ?>
+			<?php foreach ( $active_providers as $active_provider ) : ?>
 				<input
 					type="radio"
 					class="tribe-ticket-editor-field-default_provider settings_field"
 					name="tribe-tickets[settings][default_provider]"
-					id="provider_<?php echo esc_attr( $class . '_radio' ); ?>"
-					value="<?php echo esc_attr( $class ); ?>"
+					id="provider_<?php echo esc_attr( $active_provider['class'] . '_radio' ); ?>"
+					value="<?php echo esc_attr( $active_provider['class'] ); ?>"
 					checked
 				>
 			<?php endforeach; ?>
@@ -53,14 +51,14 @@ $fieldset_class = $multiple_modules ? 'input_block' : 'screen-reader-text';
 					) );
 					?></em>
 				</p>
-				<?php foreach ( $modules as $class => $module ) : ?>
-					<label class="ticket_form_right" for="provider_<?php echo esc_attr( $class . '_radio' ); ?>">
+				<?php foreach ( $active_providers as $active_provider ) : ?>
+					<label class="ticket_form_right" for="provider_<?php echo esc_attr( $active_provider['class'] . '_radio' ); ?>">
 						<input
-							<?php checked( $default_module_class, $class ); ?>
+							<?php checked( $default_module_class, $active_provider['class'] ); ?>
 							type="radio"
 							name="tribe-tickets[settings][default_provider]"
-							id="provider_<?php echo esc_attr( $class . '_radio' ); ?>"
-							value="<?php echo esc_attr( $class ); ?>"
+							id="provider_<?php echo esc_attr( $active_provider['class'] . '_radio' ); ?>"
+							value="<?php echo esc_attr( $active_provider['class'] ); ?>"
 							class="tribe-ticket-editor-field-default_provider settings_field ticket_field"
 							aria-labelledby="default_ticket_provider_legend"
 						>
@@ -72,7 +70,7 @@ $fieldset_class = $multiple_modules ? 'input_block' : 'screen-reader-text';
 						 *
 						 * @param string $module - the name of the module
 						 */
-						echo apply_filters( 'tribe_events_tickets_module_name', esc_html( $module ) );
+						echo apply_filters( 'tribe_events_tickets_module_name', esc_html( $active_provider['name'] ) );
 						?>
 					</label>
 				<?php endforeach; ?>
