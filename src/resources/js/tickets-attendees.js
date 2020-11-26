@@ -59,7 +59,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		});
 
 		$( '.trash' ).click( function ( e ) {
-			return confirm( 'Please confirm you would like to delete this attendee.' );
+			return confirm( Attendees.confirmation );
 		});
 
 		$( '.tickets_checkin' ).click( function( e ) {
