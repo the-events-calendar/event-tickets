@@ -320,7 +320,7 @@ class Tribe__Tickets__Attendees {
 				'check'     => wp_create_nonce( 'move_tickets' ),
 				'TB_iframe' => 'true',
 			) ),
-			'confirmation'  => esc_html__( 'Please confirm that you would like to delete this attendee.', 'event-tickets' ),
+			'confirmation'    => esc_html__( 'Please confirm that you would like to delete this attendee.', 'event-tickets' ),
 		);
 
 		/**
