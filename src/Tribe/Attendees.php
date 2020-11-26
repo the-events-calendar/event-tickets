@@ -878,7 +878,7 @@ class Tribe__Tickets__Attendees {
 		try {
 			$orm->set_args(
 				[
-					'title'     => $attendee_data['full_name'],
+					'title'     => $attendee_data['post_title'],
 					'full_name' => $attendee_data['full_name'],
 					'email'     => $attendee_data['email'],
 				]
@@ -888,8 +888,6 @@ class Tribe__Tickets__Attendees {
 			return false;
 		}
 
-		$attendee = $orm->make( $ticket, $attendee_data );
-
-		return $attendee;
+		return $orm->make( $ticket, $attendee_data );
 	}
 }

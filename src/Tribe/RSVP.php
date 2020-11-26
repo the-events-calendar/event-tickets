@@ -838,11 +838,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$individual_attendee_email = apply_filters( 'tribe_tickets_attendee_create_individual_email', $email, $order_attendee_id, $order_id, $product_id, $post_id, $this );
 
 		$attendee = [
-			'post_status' => 'publish',
 			'post_title'  => $individual_attendee_name,
-			'post_type'   => $this->attendee_object,
-			'ping_status' => 'closed',
-			'post_author' => 0,
 		];
 
 		if ( $order_id ) {
@@ -852,8 +848,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		if ( null !== $order_attendee_id ) {
 			$attendee['post_title'] .= ' | ' . $order_attendee_id;
 		}
-
-		$repository = tribe_attendees( $this->orm_provider );
 
 		$data = $attendee;
 
@@ -890,12 +884,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$data['user_id'] = $user_id;
 		}
 
-		$repository->set_args( $data );
+		$attendee_object = tribe( 'tickets.attendees' )->create_attendee( $ticket, $data );
 
-		$attendee_id = $repository->create();
+		if ( ! $attendee_object ) {
+			throw new Exception( __( 'Unable to process your request, attendee creation failed.', 'event-tickets' ) );
+		}
 
-		// Update this after attendee is created.
-		update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
+		$attendee_id     = $attendee_object->ID;
 
 		// Get the RSVP status `decrease_stock_by` value.
 		$status_stock_size = $rsvp_options[ $order_status ]['decrease_stock_by'];
