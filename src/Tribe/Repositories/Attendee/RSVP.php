@@ -23,6 +23,8 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 		/** @var Tribe__Tickets__RSVP $provider */
 		$provider = tribe( 'tickets.rsvp' );
 
+		$this->create_args['post_type'] = 'tribe_rsvp_attendees';
+
 		// Add object specific aliases.
 		$this->update_fields_aliases = array_merge( $this->update_fields_aliases, array(
 			'ticket_id'       => $provider::ATTENDEE_PRODUCT_KEY,
@@ -37,7 +39,6 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 			'full_name'       => $provider->full_name,
 			'email'           => $provider->email,
 			'attendee_status' => $provider::ATTENDEE_RSVP_KEY,
-			'refund_order_id' => $provider->refund_order_key,
 		) );
 	}
 
@@ -104,4 +105,34 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 		return $this->limit_list( $this->key_name, parent::checked_in_keys() );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function update_additional_data( $attendee, $ticket, $attendee_data ) {
+
+		/** @var Tribe__Tickets__RSVP $provider */
+		$provider = tribe( 'tickets.rsvp' );
+
+		try {
+			$query = $this->where( 'id', $attendee->ID )
+			              ->set( 'ticket_id', $ticket->ID )
+			              ->set( 'event_id', $provider->get_event_for_ticket( $ticket ) )
+			              ->set( 'security_code', $provider->generate_security_code( $attendee->ID ) )
+			              ->set( 'order_id', $attendee_data['order_id'] )
+			              ->set( 'optout', $attendee_data['optout'] )
+			              ->set( 'user_id', $attendee_data['user_id'] )
+			              ->set( 'full_name', $attendee_data['full_name'] )
+			              ->set( 'email', $attendee_data['email'] )
+			              ->set( 'attendee_status', $attendee_data['attendee_status'] )
+			              ->set( 'price_paid', 0 );
+		}
+		catch ( Tribe__Repository__Usage_Error $e ) {
+			do_action( 'tribe_log', 'error', __CLASS__, [
+				'message' => $e->getMessage(),
+			] );
+		}
+		finally {
+			$query->save();
+		}
+	}
 }
