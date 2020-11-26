@@ -320,9 +320,19 @@ class Tribe__Tickets__Attendees {
 				'check'     => wp_create_nonce( 'move_tickets' ),
 				'TB_iframe' => 'true',
 			) ),
+			'confirmation'  => esc_html__( 'Please confirm that you would like to delete this attendee.', 'event-tickets' ),
 		);
 
-		wp_localize_script( $this->slug() . '-js', 'Attendees', $mail_data );
+		/**
+		 * Allow filtering of localized data for Attendee Object.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $mail_data Array of localized data.
+		 */
+		$data = apply_filters( 'tribe_tickets_filter_attendee_report_asset_data', $mail_data );
+
+		wp_localize_script( $this->slug() . '-js', 'Attendees', $data );
 	}
 
 	/**
