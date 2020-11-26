@@ -121,8 +121,8 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 						  ->set( 'security_code', $attendee_data['security_code'] )
 						  ->set( 'order_id', $attendee_data['order_id'] )
 						  ->set( 'optout', $attendee_data['optout'] )
-						  ->set( 'order_status', $attendee_data['order_status'] )
-						  ->set( 'price_paid', 0 )
+						  ->set( 'attendee_status', $attendee_data['attendee_status'] )
+						  ->set( 'price_paid', $attendee_data['price_paid'] )
 						  ->set( 'user_id', $attendee_data['user_id'] );
 		}
 		catch ( Tribe__Repository__Usage_Error $e ) {
@@ -152,13 +152,14 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 		$provider = tribe( 'tickets.rsvp' );
 
 		$defaults = [
-			'event_id'      => $provider->get_event_for_ticket( $ticket->ID )->ID,
-			'security_code' => $provider->generate_security_code( $attendee->ID ),
-			'order_id'      => $provider->generate_order_id(),
-			'optout'        => 1,
-			'order_status'  => 'yes',
-			'price_paid'    => 0,
-			'user_id'       => 0,
+			'event_id'          => $provider->get_event_for_ticket( $ticket->ID )->ID,
+			'security_code'     => $provider->generate_security_code( $attendee->ID ),
+			'order_id'          => $provider->generate_order_id(),
+			'optout'            => 1,
+			'attendee_status'   => 'yes',
+			'price_paid'        => 0,
+			'user_id'           => 0,
+			'order_attendee_id' => null,
 		];
 
 		/**
@@ -186,8 +187,8 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	public function trigger_actions( $attendee, $ticket, $attendee_data ) {
 
 		$attendee_id       = $attendee->ID;
-		$post_id           = $attendee['event_id'];
-		$order_id          = $attendee['order_id'];
+		$post_id           = $attendee_data['event_id'];
+		$order_id          = $attendee_data['order_id'];
 		$product_id        = $ticket->ID;
 		$order_attendee_id = $attendee_data['order_attendee_id'];
 
