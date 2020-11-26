@@ -44,6 +44,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		parent::__construct();
 
 		$this->create_args['post_type'] = current( $this->attendee_types() );
+		$this->create_args['post_status'] = 'publish';
+		$this->create_args['ping_status'] = 'closed';
 
 		$this->default_args = array_merge( $this->default_args, [
 			'post_type'   => $this->attendee_types(),
@@ -670,5 +672,36 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		return [
 			$key => $list[ $key ],
 		];
+	}
+
+	/**
+	 * Update Additional data after creation of attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post                       $attendee Attendee Object.
+	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket Object.
+	 * @param array                         $attendee_data Array of attendee data.
+	 */
+	public function update_additional_data( $attendee, $ticket, $attendee_data ) {
+		// Each Attendee Repository should override this.
+	}
+
+	/**
+	 * Create an attendee object from ticket data.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 * @param array                         $attendee_data
+	 *
+	 * @return false|WP_Post
+	 */
+	public function make( $ticket, $attendee_data ) {
+		$attendee = parent::create();
+
+		$this->update_additional_data( $attendee, $ticket, $attendee_data );
+
+		return $attendee;
 	}
 }
