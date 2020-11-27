@@ -11,6 +11,7 @@ class Tribe__Tickets__Commerce__Warnings {
 
 	public function hook() {
 		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'recurring_event_warning_msg' ] );
+		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'add_commerce_provider_warning' ] );
 	}
 
 	/**
@@ -40,6 +41,24 @@ class Tribe__Tickets__Commerce__Warnings {
 	}
 
 	/**
+	 * Add Provider missing warning for tickets.
+	 *
+	 * @param $post_id
+	 */
+	public function add_commerce_provider_warning( $post_id ) {
+		$available_modules = array_diff_key( Tribe__Tickets__Tickets::modules(), [ 'Tribe__Tickets__RSVP' => true ] );
+
+		if ( count( $available_modules ) > 0 ) {
+			return;
+		}
+
+		$kb_link = 'http://m.tri.be/1ao5';
+		$message = sprintf( __( 'There is no payment gateway configured. To create tickets, you\'ll need to enable and configure an ecommerce solution. <a href="%1$s" target="_blank" rel="noopener noreferrer">[Learn more]</a>', 'event-tickets' ), $kb_link );
+
+		$this->show_notice( $message );
+	}
+
+	/**
 	 * Render the notice block.
 	 *
 	 * @since TBD
@@ -52,7 +71,7 @@ class Tribe__Tickets__Commerce__Warnings {
 		?>
 		<div class="ticket-editor-notice <?php echo esc_attr( $type ) ?>">
 			<span class="dashicons <?php echo esc_attr( $icon ); ?>"></span>
-			<span class="message"><?php esc_html_e( $msg, 'event-tickets' ); ?></span>
+			<span class="message"><?php echo wp_kses_post( $msg, 'event-tickets' ); ?></span>
 		</div>
 		<?php
 	}
