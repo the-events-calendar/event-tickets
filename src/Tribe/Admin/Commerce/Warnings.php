@@ -3,7 +3,7 @@
  * Conditional Warnings on Ticket Features.
  */
 
-namespace Tribe\Tickets\Commerce;
+namespace Tribe\Tickets\Admin\Commerce;
 
 /**
  * Warnings handling class.
