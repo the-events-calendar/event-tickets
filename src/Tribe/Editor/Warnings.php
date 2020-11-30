@@ -43,7 +43,7 @@ class Warnings {
 
 		$warning = $this->get_recurring_event_warning_message();
 
-		$this->show_notice( $warning );
+		$this->render_notice( $warning );
 	}
 
 	/**
@@ -62,15 +62,15 @@ class Warnings {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $msg Message to show.
-	 * @param string $type Type of message.
+	 * @param string $message Tee message to show.
+	 * @param string $type    Type of message.
 	 */
-	public function show_notice( $msg, $type = 'info' ) {
+	public function render_notice( $message, $type = 'info' ) {
 		$icon = 'dashicons-' . $type;
 		?>
 		<div class="ticket-editor-notice <?php echo esc_attr( $type ); ?>">
 			<span class="dashicons <?php echo esc_attr( $icon ); ?>"></span>
-			<span class="message"><?php esc_html_e( $msg, 'event-tickets' ); ?></span>
+			<span class="message"><?php echo esc_html( $message ); ?></span>
 		</div>
 		<?php
 	}
