@@ -1,12 +1,16 @@
 <?php
 /**
- * Conditional Warnings on Ticket Features
- *
- * Class Tribe__Tickets__Commerce__Warnings
+ * Conditional Warnings on Ticket Features.
+ */
+
+namespace Tribe\Tickets\Commerce;
+
+/**
+ * Warnings handling class.
  *
  * @since TBD
  */
-class Tribe__Tickets__Commerce__Warnings {
+class Warnings {
 
 	/**
 	 * Hooks actions for showing warnings
@@ -18,7 +22,7 @@ class Tribe__Tickets__Commerce__Warnings {
 	/**
 	 * Create Recurring Event Warning Message Label
 	 *
-	 * @since 4.6
+	 * @since TBD
 	 *
 	 * @param int $post_id Post ID.
 	 */
