@@ -1,9 +1,9 @@
 <?php
 /**
- * Conditional Warnings on Ticket Features.
+ * Conditional Warnings for the Editor.
  */
 
-namespace Tribe\Tickets\Admin\Commerce;
+namespace Tribe\Tickets\Editor;
 
 /**
  * Warnings handling class.
@@ -14,19 +14,21 @@ class Warnings {
 
 	/**
 	 * Hooks actions for showing warnings
+	 *
+	 * @since TBD
 	 */
 	public function hook() {
-		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'recurring_event_warning_msg' ] );
+		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'show_recurring_event_warning_message' ] );
 	}
 
 	/**
-	 * Create Recurring Event Warning Message Label
+	 * Show the Recurring Event warning message.
 	 *
 	 * @since TBD
 	 *
 	 * @param int $post_id Post ID.
 	 */
-	public function recurring_event_warning_msg( $post_id ) {
+	public function show_recurring_event_warning_message( $post_id ) {
 		if ( ! class_exists( 'Tribe__Events__Pro__Main' ) ) {
 			return;
 		}
@@ -39,9 +41,20 @@ class Warnings {
 			return;
 		}
 
-		$warning = __( 'This is a recurring event. If you add tickets, they will only show up on first event in the recurrence series. Please carefully configure your recurring events.', 'event-tickets' );
+		$warning = $this->get_recurring_event_warning_message();
 
 		$this->show_notice( $warning );
+	}
+
+	/**
+	 * Get the Recurring Event warning message.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The Recurring Event warning message.
+	 */
+	public function get_recurring_event_warning_message() {
+		return __( 'This is a recurring event. If you add tickets, they will only show up on first event in the recurrence series. Please carefully configure your recurring events.', 'event-tickets' );
 	}
 
 	/**
