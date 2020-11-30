@@ -150,14 +150,12 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 			'ticket_id'         => $ticket->ID,
 			'event_id'          => $provider->get_event_for_ticket( $ticket->ID )->ID,
 			'security_code'     => $provider->generate_security_code( $attendee->ID ),
-			'order_id'          => 0,
 			'optout'            => 1,
 			'attendee_status'   => 'completed',
 			'price_paid'        => 0,
 			'user_id'           => 0,
 			'order_attendee_id' => 0,
 			'price_currency'    => $currency_symbol,
-			'refund_order_id'   => null,
 		];
 
 		/**
