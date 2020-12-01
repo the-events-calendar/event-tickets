@@ -79,8 +79,13 @@ class Warnings {
 			esc_html_x( '[Learn More]', 'Helper link in Ticket Editor', 'event-tickets' )
 		);
 
-		/* translators: %1$s: link to help article. */
-		return sprintf( __( 'There is no payment gateway configured. To create tickets, you\'ll need to enable and configure an ecommerce solution. %1$s', 'event-tickets' ), $link );
+		return wp_kses_post(
+			sprintf(
+				/* translators: %1$s: link to help article. */
+				__( 'There is no payment gateway configured. To create tickets, you\'ll need to enable and configure an ecommerce solution. %1$s', 'event-tickets' ),
+				$link
+			)
+		);
 	}
 
 	/**
