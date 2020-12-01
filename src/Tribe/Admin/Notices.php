@@ -215,22 +215,25 @@ class Tribe__Tickets__Admin__Notices {
 		);
 
 		$plus_commerce_providers = [
-			esc_html__( 'WooCommerce', 'event-tickets' )            => 'woocommerce/woocommerce.php',
-			esc_html__( 'Easy Digital Downloads', 'event-tickets' ) => 'easy-digital-downloads/easy-digital-downloads.php',
+			'woocommerce/woocommerce.php'                       => __( 'WooCommerce', 'event-tickets' ),
+			'easy-digital-downloads/easy-digital-downloads.php' => __( 'Easy Digital Downloads', 'event-tickets' ),
 		];
 
-		foreach ( $plus_commerce_providers as $provider => $path ) {
+		foreach ( $plus_commerce_providers as $path => $provider ) {
 			if ( ! is_plugin_active( $path ) ) {
 				continue;
 			}
 
 			$message = sprintf(
-				__( 'Event Tickets does not support ticket sales via third party ecommerce plugins. If you want to sell tickets with %1$s, please purchase a license for %2$s.' ),
+				__( 'Event Tickets does not support ticket sales via third party ecommerce plugins. If you want to sell tickets with %1$s, please purchase a license for %2$s.', 'event-tickets' ),
 				$provider,
 				$plus
 			);
 
-			tribe_notice( "event-tickets-plus-missing-{$provider}-support", "<p>{$message}</p>", 'dismiss=1&type=warning' );
+			// Wrap in <p> tag.
+			$message = sprintf( '<p>%s</p>', esc_html( $message ) );
+
+			tribe_notice( "event-tickets-plus-missing-{$provider}-support", $message, 'dismiss=1&type=warning' );
 		}
 	}
 }
