@@ -72,12 +72,14 @@ class Warnings {
 	public function get_commerce_provider_missing_warning_message() {
 		$kb_url      = 'http://m.tri.be/1ao5';
 
+		/* translators: %1$s: URL for help link, %2$s: Label for help link. */
 		$link = sprintf(
 				'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
 				esc_url( $kb_url ),
 				esc_html_x( '[Learn More]', 'Helper link in Ticket Editor', 'event-tickets' )
 		);
 
+		/* translators: %1$s: link to help article. */
 		return sprintf( __( 'There is no payment gateway configured. To create tickets, you\'ll need to enable and configure an ecommerce solution. %1$s', 'event-tickets' ), $link );
 	}
 
