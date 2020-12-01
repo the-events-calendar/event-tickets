@@ -56,11 +56,11 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 		$editor_config['tickets']['end_sale_buffer_duration'] = apply_filters( 'tribe_ticket_editor_end_sale_buffer_duration_hours', 2 );
 
 		/**
-		 * Filter the default buffer years between ticket sale start time and end time.
+		 * Filter the default buffer years between ticket sale start date and end date.
 		 *
 		 * @since TBD
 		 *
-		 * @param int $buffer Number in hours to be used.
+		 * @param int $buffer Number in years to be used.
 		 */
 		$editor_config['tickets']['end_sale_buffer_years'] = apply_filters( 'tribe_ticket_editor_end_sale_buffer_years', 1 );
 

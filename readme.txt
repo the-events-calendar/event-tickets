@@ -179,6 +179,7 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 = [5.0.4] TBD =
 
 * Fix - Post type settings label typo changed to plural "tickets". [ET-954]
+* Fix - RSVP/Ticket's end sale date for non-event post types now defaults to 1 year and 2 hrs+ from current date instead of 100. [ET-954]
 
 = [5.0.3.1] 2020-11-19 =
 
