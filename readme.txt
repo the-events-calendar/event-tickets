@@ -179,6 +179,7 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 = [5.0.4] TBD =
 
 * Fix - Post type settings label typo changed to plural "tickets". [ET-954]
+* Tweak - Show confirmation dialog before deleting an attendee on the attendee list. [ET-648]
 
 = [5.0.3.1] 2020-11-19 =
 
