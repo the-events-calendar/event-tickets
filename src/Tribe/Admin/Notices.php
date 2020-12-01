@@ -225,13 +225,14 @@ class Tribe__Tickets__Admin__Notices {
 			}
 
 			$message = sprintf(
-				__( 'Event Tickets does not support ticket sales via third party ecommerce plugins. If you want to sell tickets with %1$s, please purchase a license for %2$s.', 'event-tickets' ),
-				$provider,
+				// translators: %1$s: The ticket commerce provider (WooCommerce, etc); %2$s: The Event Tickets Plus plugin name and link.
+				esc_html__( 'Event Tickets does not support ticket sales via third party ecommerce plugins. If you want to sell tickets with %1$s, please purchase a license for %2$s.', 'event-tickets' ),
+				esc_html( $provider ),
 				$plus
 			);
 
 			// Wrap in <p> tag.
-			$message = sprintf( '<p>%s</p>', esc_html( $message ) );
+			$message = sprintf( '<p>%s</p>', $message );
 
 			tribe_notice( "event-tickets-plus-missing-{$provider}-support", $message, 'dismiss=1&type=warning' );
 		}
