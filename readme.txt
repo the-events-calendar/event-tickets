@@ -180,6 +180,7 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 
 * Fix - Post type settings label typo changed to plural "tickets". [ET-954]
 * Tweak - Show warning message within the classic ticket editor for recurring events. [ET-947]
+* Tweak - Show warning message within the classic ticket editor if no commerce provider is active. [ET-957]
 
 = [5.0.3.1] 2020-11-19 =
 
