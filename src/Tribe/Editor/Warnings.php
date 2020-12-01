@@ -70,7 +70,7 @@ class Warnings {
 		?>
 		<div class="ticket-editor-notice <?php echo esc_attr( $type ); ?>">
 			<span class="dashicons <?php echo esc_attr( $icon ); ?>"></span>
-			<span class="message"><?php echo esc_html( $message ); ?></span>
+			<span class="message"><?php echo wp_kses_post( $message ); ?></span>
 		</div>
 		<?php
 	}
