@@ -48,7 +48,6 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( 'tickets.editor', 'Tribe__Tickets__Editor', [ 'hook' ] );
 
 		$this->container->singleton( 'tickets.admin.notices', 'Tribe__Tickets__Admin__Notices', [ 'hook' ] );
-		$this->container->singleton( 'tickets.commerce.warnings', 'Tribe__Tickets__Commerce__Warnings', [ 'hook' ] );
 
 		// Attendees Table
 		$this->container->singleton( 'tickets.admin.attendees_table', 'Tribe__Tickets__Attendees_Table' );
@@ -84,7 +83,6 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 			tribe( 'tickets.admin.screen-options' );
 			tribe( 'tickets.admin.notices' );
 			tribe( 'tickets.admin.settings.display' );
-			tribe( 'tickets.commerce.warnings' );
 		}
 	}
 

@@ -1,5 +1,11 @@
 <?php
 /**
+ * Handle the provider for the Event Tickets Editor functionality.
+ */
+
+use Tribe\Tickets\Editor\Warnings;
+
+/**
  * Register Event Tickets provider
  *
  * @since 4.9
@@ -9,19 +15,34 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	 * Binds and sets up implementations.
 	 *
 	 * @since 4.9
-	 *
 	 */
 	public function register() {
+		// The general warnings class.
+		$this->container->singleton( 'tickets.editor.warnings', Warnings::class, [ 'hook' ] );
+
 		// Register these all the time - as we now use them in most of the templates, blocks or otherwise.
 		$this->container->singleton( 'tickets.editor.template', 'Tribe__Tickets__Editor__Template' );
 		$this->container->singleton( 'tickets.editor.blocks.tickets', 'Tribe__Tickets__Editor__Blocks__Tickets' );
 		$this->container->singleton( 'tickets.editor.blocks.rsvp', 'Tribe__Tickets__Editor__Blocks__Rsvp' );
-		$this->container->singleton( 'tickets.editor.configuration', 'Tribe__Tickets__Editor__Configuration', array( 'hook' ) );
+		$this->container->singleton( 'tickets.editor.configuration', 'Tribe__Tickets__Editor__Configuration', [ 'hook' ] );
 
-		if (
-			! tribe( 'editor' )->should_load_blocks()
-			|| ! class_exists( 'Tribe__Tickets__Main' )
-		) {
+		$this->register_for_blocks();
+
+		// Handle general non-block-specific instances.
+		tribe( 'tickets.editor.warnings' );
+	}
+
+	/**
+	 * Handle registration for blocks-functionality separately.
+	 *
+	 * @since TBD
+	 */
+	public function register_for_blocks() {
+		/** @var \Tribe__Editor $editor */
+		$editor = tribe( 'editor' );
+
+		// Only register for blocks if we are using them.
+		if ( ! $editor->should_load_blocks() ) {
 			return;
 		}
 
