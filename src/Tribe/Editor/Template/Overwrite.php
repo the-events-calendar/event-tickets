@@ -83,7 +83,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	}
 
 	/**
-	 * Return if the classic editor is active on the post
+	 * Return if the classic editor is active on the post.
 	 *
 	 * @since 4.9.2
 	 *
@@ -93,6 +93,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	 */
 	public function has_classic_editor( $post_id ) {
 		$is_event = function_exists( 'tribe_is_event' ) && tribe_is_event( $post_id );
+
 		if ( $is_event && $this->has_early_access_to_blocks() ) {
 			return false;
 		}

@@ -178,6 +178,7 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 
 = [5.0.4] TBD =
 
+* Tweak - Added admin notice when editing an Events Calendar Pro recurring event that has tickets in classic editor to warn about how tickets will act on recurring events. [ET-949]
 * Fix - Post type settings label typo changed to plural "tickets". [ET-954]
 * Fix - RSVP/Ticket's end sale date for non-event post types now defaults to 1 year and 2 hrs from current date instead of 100 years. [ET-954]
 * Tweak - Show warning message within the classic ticket editor if no commerce provider is active. [ET-957]
