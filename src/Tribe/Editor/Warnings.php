@@ -19,6 +19,7 @@ class Warnings {
 	 */
 	public function hook() {
 		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'show_recurring_event_warning_message' ] );
+		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'add_commerce_provider_warning' ] );
 	}
 
 	/**
@@ -44,6 +45,47 @@ class Warnings {
 		$warning = $this->get_recurring_event_warning_message();
 
 		$this->render_notice( $warning );
+	}
+
+	/**
+	 * Add Provider missing warning for tickets.
+	 *
+	 * @since TBD
+	 */
+	public function add_commerce_provider_warning() {
+		$available_modules = array_diff_key( \Tribe__Tickets__Tickets::modules(), [ 'Tribe__Tickets__RSVP' => true ] );
+
+		if ( count( $available_modules ) > 0 ) {
+			return;
+		}
+
+		$this->render_notice( $this->get_commerce_provider_missing_warning_message() );
+	}
+
+	/**
+	 * Get the Commerce Provider missing warning message.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The Commerce Provider missing message.
+	 */
+	public function get_commerce_provider_missing_warning_message() {
+		$kb_url = 'http://m.tri.be/1ao5';
+
+		/* translators: %1$s: URL for help link, %2$s: Label for help link. */
+		$link = sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+			esc_url( $kb_url ),
+			esc_html_x( '[Learn More]', 'Helper link in Ticket Editor', 'event-tickets' )
+		);
+
+		return wp_kses_post(
+			sprintf(
+				/* translators: %1$s: link to help article. */
+				__( 'There is no payment gateway configured. To create tickets, you\'ll need to enable and configure an ecommerce solution. %1$s', 'event-tickets' ),
+				$link
+			)
+		);
 	}
 
 	/**
