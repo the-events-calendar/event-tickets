@@ -30,7 +30,7 @@ class Tribe__Tickets__Admin__Notices {
 			return;
 		}
 
-		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		include_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 		$this->maybe_display_rsvp_new_views_options_notice();
 		$this->maybe_display_classic_editor_ecp_recurring_tickets_notice();
