@@ -106,22 +106,26 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Update Additional data after creation of attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post                       $attendee Attendee Object.
+	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket Object.
+	 * @param array                         $attendee_data Array of attendee data.
 	 */
 	public function update_additional_data( $attendee, $ticket, $attendee_data ) {
 
 		$attendee_data = $this->format_attendee_data( $attendee, $ticket, $attendee_data );
 
+		$query = $this->by( 'id', $attendee->ID );
+
 		try {
-			$query = $this->by_primary_key( 'id', $attendee->ID )
-			              ->set_args( $attendee_data );
-		}
-		catch ( Tribe__Repository__Usage_Error $e ) {
-			do_action( 'tribe_log', 'error', __CLASS__, [
-				'message' => $e->getMessage(),
-			] );
-		}
-		finally {
+			$query->set_args( $attendee_data );
+		} catch ( Tribe__Repository__Usage_Error $e ) {
+			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
+			return;
+		} finally {
 			$query->save();
 
 			$this->trigger_actions( $attendee, $ticket, $attendee_data );
