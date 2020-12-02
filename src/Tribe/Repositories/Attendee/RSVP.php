@@ -125,8 +125,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 		} catch ( Tribe__Repository__Usage_Error $e ) {
 			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
 			return;
-		}
-		finally {
+		} finally {
 			$query->save();
 
 			$this->trigger_actions( $attendee, $ticket, $attendee_data );
