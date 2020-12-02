@@ -875,7 +875,7 @@ class Tribe__Tickets__Attendees {
 		$provider = $ticket->get_provider();
 
 		/** @var Tribe__Tickets__Attendee_Repository $orm */
-		$orm      = tribe_attendees( $provider->orm_provider );
+		$orm = tribe_attendees( $provider->orm_provider );
 
 		try {
 			$orm->set_args(
@@ -885,11 +885,12 @@ class Tribe__Tickets__Attendees {
 					'email'     => $attendee_data['email'],
 				]
 			);
-		}
-		catch ( Tribe__Repository__Usage_Error $e ) {
+		} catch ( Tribe__Repository__Usage_Error $e ) {
+			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
 			return false;
 		}
 
 		return $orm->create_attendee_for_ticket( $ticket, $attendee_data );
 	}
+
 }
