@@ -891,7 +891,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			throw new Exception( __( 'Unable to process your request, attendee creation failed.', 'event-tickets' ) );
 		}
 
-		$attendee_id     = $attendee_object->ID;
+		$attendee_id = $attendee_object->ID;
 
 		// Get the RSVP status `decrease_stock_by` value.
 		$status_stock_size = $rsvp_options[ $order_status ]['decrease_stock_by'];

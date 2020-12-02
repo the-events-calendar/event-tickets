@@ -692,8 +692,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since TBD
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket
-	 * @param array                         $attendee_data
+	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket Object.
+	 * @param array                         $attendee_data Array of attendee data.
 	 *
 	 * @return false|WP_Post
 	 */

@@ -23,7 +23,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 		/** @var Tribe__Tickets__RSVP $provider */
 		$provider = tribe( 'tickets.rsvp' );
 
-		$this->create_args['post_type'] = 'tribe_rsvp_attendees';
+		$this->create_args['post_type'] = $provider->attendee_object;
 
 		// Add object specific aliases.
 		$this->update_fields_aliases = array_merge( $this->update_fields_aliases, array(
@@ -126,9 +126,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 						  ->set( 'user_id', $attendee_data['user_id'] );
 		}
 		catch ( Tribe__Repository__Usage_Error $e ) {
-			do_action( 'tribe_log', 'error', __CLASS__, [
-				'message' => $e->getMessage(),
-			] );
+			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
 		}
 		finally {
 			$query->save();
