@@ -873,6 +873,8 @@ class Tribe__Tickets__Attendees {
 	public function create_attendee( $ticket, $attendee_data ) {
 
 		$provider = $ticket->get_provider();
+
+		/** @var Tribe__Tickets__Attendee_Repository $orm */
 		$orm      = tribe_attendees( $provider->orm_provider );
 
 		try {
@@ -888,6 +890,6 @@ class Tribe__Tickets__Attendees {
 			return false;
 		}
 
-		return $orm->make( $ticket, $attendee_data );
+		return $orm->create_attendee_for_ticket( $ticket, $attendee_data );
 	}
 }
