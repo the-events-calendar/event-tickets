@@ -106,27 +106,26 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Update Additional data after creation of attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post                       $attendee Attendee Object.
+	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket Object.
+	 * @param array                         $attendee_data Array of attendee data.
 	 */
 	public function update_additional_data( $attendee, $ticket, $attendee_data ) {
 
 		$attendee_data = $this->format_attendee_data( $attendee, $ticket, $attendee_data );
 
+		$query = $this->by( 'id', $attendee->ID );
+
 		try {
-			$query = $this->where( 'id', $attendee->ID )
-			              ->set( 'ticket_id', $ticket->ID )
-						  ->set( 'full_name', $attendee_data['full_name'] )
-						  ->set( 'email', $attendee_data['email'] )
-						  ->set( 'event_id', $attendee_data['event_id'] )
-						  ->set( 'security_code', $attendee_data['security_code'] )
-						  ->set( 'order_id', $attendee_data['order_id'] )
-						  ->set( 'optout', $attendee_data['optout'] )
-						  ->set( 'attendee_status', $attendee_data['attendee_status'] )
-						  ->set( 'price_paid', $attendee_data['price_paid'] )
-						  ->set( 'user_id', $attendee_data['user_id'] );
+			$query->set_args( $attendee_data );
 		}
 		catch ( Tribe__Repository__Usage_Error $e ) {
 			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
+			return;
 		}
 		finally {
 			$query->save();
@@ -148,9 +147,11 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 
 		/** @var Tribe__Tickets__RSVP $provider */
 		$provider = tribe( 'tickets.rsvp' );
+		$event    = $provider->get_event_for_ticket( $ticket->ID );
 
 		$defaults = [
-			'event_id'          => $provider->get_event_for_ticket( $ticket->ID )->ID,
+			'ticket_id'         => $ticket->ID,
+			'event_id'          => $event ? $event->ID : '',
 			'security_code'     => $provider->generate_security_code( $attendee->ID ),
 			'order_id'          => $provider->generate_order_id(),
 			'optout'            => 1,
