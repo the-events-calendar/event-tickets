@@ -697,7 +697,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @return false|WP_Post
 	 */
-	public function make( $ticket, $attendee_data ) {
+	public function create_attendee_for_ticket( $ticket, $attendee_data ) {
 		$attendee = parent::create();
 
 		$this->update_additional_data( $attendee, $ticket, $attendee_data );
