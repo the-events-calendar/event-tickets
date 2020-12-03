@@ -139,7 +139,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket Object.
 	 * @param array                         $attendee_data List of additional attendee data.
 	 *
-	 * @return array
+	 * @return array Formatted attendee data.
 	 */
 	public function format_attendee_data( $attendee, $ticket, $attendee_data ) {
 

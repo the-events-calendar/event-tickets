@@ -871,7 +871,6 @@ class Tribe__Tickets__Attendees {
 	 * @return WP_Post|false The new post object or false if unsuccessful.
 	 */
 	public function create_attendee( $ticket, $attendee_data ) {
-
 		$provider = $ticket->get_provider();
 
 		/** @var Tribe__Tickets__Attendee_Repository $orm */
