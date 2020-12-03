@@ -56,7 +56,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		}
 
 		// Get the request vars.
-		$vars = tribe_get_request_vars();
+		$vars = $_REQUEST;
 
 		/**
 		 * Filter the admin manager request.
