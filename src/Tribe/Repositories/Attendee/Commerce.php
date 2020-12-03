@@ -149,14 +149,16 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 		/** @var Tribe__Tickets__Commerce__Currency $currency */
 		$currency        = tribe( 'tickets.commerce.currency' );
 		$currency_symbol = $currency->get_currency_symbol( $ticket->ID, true );
+		$event           = $provider->get_event_for_ticket( $ticket->ID );
 
 		$defaults = [
 			'ticket_id'         => $ticket->ID,
-			'event_id'          => $provider->get_event_for_ticket( $ticket->ID )->ID,
+			'event_id'          => $event ? $event->ID : '',
 			'security_code'     => $provider->generate_security_code( $attendee->ID ),
 			'optout'            => 1,
 			'attendee_status'   => 'completed',
 			'price_paid'        => 0,
+			'order_id'          => null,
 			'user_id'           => 0,
 			'order_attendee_id' => 0,
 			'price_currency'    => $currency_symbol,
@@ -170,7 +172,7 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 		 * @param array $data Attendee data.
 		 * @param Tribe__Tickets__Ticket_Object $ticket Ticket for attendee.
 		 */
-		$attendee_data = apply_filters( 'event_tickets_attendee_tc_paypal_data_before_insert', wp_parse_args( $attendee_data, $defaults ), $ticket );
+		$attendee_data = apply_filters( 'tribe_tickets_attendee_tc_paypal_data_before_insert', wp_parse_args( $attendee_data, $defaults ), $ticket );
 
 		return $attendee_data;
 	}
