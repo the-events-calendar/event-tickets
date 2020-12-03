@@ -865,10 +865,10 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since TBD
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket Object.
+	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket Object.
 	 * @param array                         $attendee_data Validated attendee data.
 	 *
-	 * @return WP_Post|false
+	 * @return WP_Post|false The new post object or false if unsuccessful.
 	 */
 	public function create_attendee( $ticket, $attendee_data ) {
 
