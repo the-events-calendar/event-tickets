@@ -1,5 +1,7 @@
 <?php
 
+use Tribe__Utils__Array as Arr;
+
 /**
  * The ORM/Repository class for RSVP attendees.
  *
@@ -145,11 +147,12 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 
 		/** @var Tribe__Tickets__RSVP $provider */
 		$provider = tribe( 'tickets.rsvp' );
-		$event    = $provider->get_event_for_ticket( $ticket->ID );
+
+		$event_id = $ticket->get_event_id();
 
 		$defaults = [
 			'ticket_id'         => $ticket->ID,
-			'event_id'          => $event ? $event->ID : '',
+			'event_id'          => $event_id,
 			'security_code'     => $provider->generate_security_code( $attendee->ID ),
 			'order_id'          => $provider->generate_order_id(),
 			'optout'            => 1,
@@ -169,6 +172,14 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 		 */
 		$attendee_data = apply_filters( 'tribe_tickets_attendee_rsvp_data_before_insert', wp_parse_args( $attendee_data, $defaults ), $ticket );
 
+		// Remove nulls.
+		$attendee_data = array_filter(
+			$attendee_data,
+			static function( $value ) {
+				return ! is_null( $value );
+			}
+		);
+
 		return $attendee_data;
 	}
 
@@ -187,7 +198,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 		$post_id           = $attendee_data['event_id'];
 		$order_id          = $attendee_data['order_id'];
 		$product_id        = $ticket->ID;
-		$order_attendee_id = $attendee_data['order_attendee_id'];
+		$order_attendee_id = Arr::get( $attendee_data, 'order_attendee_id' );
 
 		/**
 		 * RSVP specific action fired when a RSVP-driven attendee ticket for an event is generated.
