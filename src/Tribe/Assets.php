@@ -339,11 +339,13 @@ class Tribe__Tickets__Assets {
 		try {
 			/** @var \Tribe__Tickets__Attendee_Registration__Main $ar_reg */
 			$ar_reg = tribe( 'tickets.attendee_registration' );
+
+			$is_on_ar_page = $ar_reg->is_on_page();
 		} catch ( \Exception $exception ) {
-			return false;
+			$is_on_ar_page = false;
 		}
 
-		return $is_on_valid_post_type || $ar_reg->is_on_page();
+		return $is_on_valid_post_type || $is_on_ar_page;
 	}
 
 	/**

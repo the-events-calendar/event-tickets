@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.0.3.1';
+	const VERSION = '5.0.4';
 
 	/**
 	 * Used to store the version history.
@@ -352,11 +352,6 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
 
 		tribe_singleton( 'tickets.theme-compatibility', 'Tribe__Tickets__Theme_Compatibility' );
-
-		if ( class_exists( 'Tribe__Tickets_Plus__Meta__Storage' ) ) {
-			// Attendee Registration Page.
-			tribe_register_provider( 'Tribe__Tickets__Attendee_Registration__Service_Provider' );
-		}
 
 		// Event Tickets Provider to manage Events.
 		tribe_register_provider( Events_Service_Provider::class );

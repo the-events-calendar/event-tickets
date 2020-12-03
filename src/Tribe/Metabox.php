@@ -148,7 +148,7 @@ class Tribe__Tickets__Metabox {
 	}
 
 	/**
-	 * Get the Panels for a given
+	 * Get the Panels for a given post.
 	 *
 	 * @since  4.6.2
 	 *
@@ -162,7 +162,7 @@ class Tribe__Tickets__Metabox {
 			$post = get_post( $post );
 		}
 
-		// Bail on Invalid post
+		// Bail on invalid post.
 		if ( ! $post instanceof WP_Post ) {
 			return [];
 		}
