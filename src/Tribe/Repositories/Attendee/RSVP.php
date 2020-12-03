@@ -110,9 +110,9 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_Post                       $attendee Attendee Object.
-	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket Object.
-	 * @param array                         $attendee_data Array of attendee data.
+	 * @param WP_Post                       $attendee      Attendee Object.
+	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket Object.
+	 * @param array                         $attendee_data List of additional attendee data.
 	 */
 	public function update_additional_data( $attendee, $ticket, $attendee_data ) {
 
@@ -125,21 +125,21 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 		} catch ( Tribe__Repository__Usage_Error $e ) {
 			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
 			return;
-		} finally {
-			$query->save();
-
-			$this->trigger_actions( $attendee, $ticket, $attendee_data );
 		}
+
+		$query->save();
+
+		$this->trigger_actions( $attendee, $ticket, $attendee_data );
 	}
 
 	/**
 	 * Format attendee data for meta updates.
 	 *
-	 * @param WP_Post                       $attendee Attendee Post Object.
-	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket Object.
-	 * @param array                         $attendee_data Array of attendee data.
+	 * @param WP_Post                       $attendee      Attendee Object.
+	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket Object.
+	 * @param array                         $attendee_data List of additional attendee data.
 	 *
-	 * @return array
+	 * @return array Formatted attendee data.
 	 */
 	public function format_attendee_data( $attendee, $ticket, $attendee_data ) {
 
@@ -164,8 +164,8 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 		 *
 		 * @since TBD
 		 *
-		 * @param array $data Attendee data.
-		 * @param Tribe__Tickets__Ticket_Object $ticket Ticket for attendee.
+	 * @param array                         $attendee_data List of additional attendee data.
+	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket Object.
 		 */
 		$attendee_data = apply_filters( 'tribe_tickets_attendee_rsvp_data_before_insert', wp_parse_args( $attendee_data, $defaults ), $ticket );
 
@@ -177,9 +177,9 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_Post                       $attendee Attendee Post Object.
-	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket Object.
-	 * @param array                         $attendee_data Array of attendee data.
+	 * @param WP_Post                       $attendee      Attendee Object.
+	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket Object.
+	 * @param array                         $attendee_data List of additional attendee data.
 	 */
 	public function trigger_actions( $attendee, $ticket, $attendee_data ) {
 

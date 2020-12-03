@@ -838,7 +838,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$individual_attendee_email = apply_filters( 'tribe_tickets_attendee_create_individual_email', $email, $order_attendee_id, $order_id, $product_id, $post_id, $this );
 
 		$attendee = [
-			'post_title'  => $individual_attendee_name,
+			'post_title' => $individual_attendee_name,
 		];
 
 		if ( $order_id ) {
@@ -885,7 +885,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$data['user_id'] = $user_id;
 		}
 
-		$attendee_object = tribe( 'tickets.attendees' )->create_attendee( $ticket, $data );
+		/** @var Tribe__Tickets__Attendee_Repository $attendees */
+		$attendees = tribe( 'tickets.attendees' );
+
+		$attendee_object = $attendees->create_attendee( $ticket, $data );
 
 		if ( ! $attendee_object ) {
 			throw new Exception( __( 'Unable to process your request, attendee creation failed.', 'event-tickets' ) );
