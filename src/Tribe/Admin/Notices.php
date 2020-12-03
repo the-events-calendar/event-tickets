@@ -30,7 +30,7 @@ class Tribe__Tickets__Admin__Notices {
 			return;
 		}
 
-		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		include_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 		$this->maybe_display_rsvp_new_views_options_notice();
 		$this->maybe_display_classic_editor_ecp_recurring_tickets_notice();
@@ -215,22 +215,26 @@ class Tribe__Tickets__Admin__Notices {
 		);
 
 		$plus_commerce_providers = [
-			esc_html__( 'WooCommerce', 'event-tickets' )            => 'woocommerce/woocommerce.php',
-			esc_html__( 'Easy Digital Downloads', 'event-tickets' ) => 'easy-digital-downloads/easy-digital-downloads.php',
+			'woocommerce/woocommerce.php'                       => __( 'WooCommerce', 'event-tickets' ),
+			'easy-digital-downloads/easy-digital-downloads.php' => __( 'Easy Digital Downloads', 'event-tickets' ),
 		];
 
-		foreach ( $plus_commerce_providers as $provider => $path ) {
+		foreach ( $plus_commerce_providers as $path => $provider ) {
 			if ( ! is_plugin_active( $path ) ) {
 				continue;
 			}
 
 			$message = sprintf(
-				__( 'Event Tickets does not support ticket sales via third party ecommerce plugins. If you want to sell tickets with %1$s, please purchase a license for %2$s.' ),
-				$provider,
+				// translators: %1$s: The ticket commerce provider (WooCommerce, etc); %2$s: The Event Tickets Plus plugin name and link.
+				esc_html__( 'Event Tickets does not support ticket sales via third party ecommerce plugins. If you want to sell tickets with %1$s, please purchase a license for %2$s.', 'event-tickets' ),
+				esc_html( $provider ),
 				$plus
 			);
 
-			tribe_notice( "event-tickets-plus-missing-{$provider}-support", "<p>{$message}</p>", 'dismiss=1&type=warning' );
+			// Wrap in <p> tag.
+			$message = sprintf( '<p>%s</p>', $message );
+
+			tribe_notice( "event-tickets-plus-missing-{$provider}-support", $message, 'dismiss=1&type=warning' );
 		}
 	}
 }
