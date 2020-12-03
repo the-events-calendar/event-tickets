@@ -43,7 +43,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	public function __construct() {
 		parent::__construct();
 
-		$this->create_args['post_type']  = current( $this->attendee_types() );
+		$this->create_args['post_type']   = current( $this->attendee_types() );
 		$this->create_args['post_status'] = 'publish';
 		$this->create_args['ping_status'] = 'closed';
 
