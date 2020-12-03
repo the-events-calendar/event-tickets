@@ -885,7 +885,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$data['user_id'] = $user_id;
 		}
 
-		/** @var Tribe__Tickets__Attendee_Repository $attendees */
+		/** @var Tribe__Tickets__Attendees $attendees */
 		$attendees = tribe( 'tickets.attendees' );
 
 		$attendee_object = $attendees->create_attendee( $ticket, $data );

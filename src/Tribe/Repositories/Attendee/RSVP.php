@@ -164,8 +164,8 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 		 *
 		 * @since TBD
 		 *
-	 * @param array                         $attendee_data List of additional attendee data.
-	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket Object.
+		 * @param array                         $attendee_data List of additional attendee data.
+		 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket Object.
 		 */
 		$attendee_data = apply_filters( 'tribe_tickets_attendee_rsvp_data_before_insert', wp_parse_args( $attendee_data, $defaults ), $ticket );
 
