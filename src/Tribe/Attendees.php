@@ -859,4 +859,37 @@ class Tribe__Tickets__Attendees {
 
 		return $user_can;
 	}
+
+	/**
+	 * Create attendee from Ticket data and validated attendee data.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket Object.
+	 * @param array                         $attendee_data Validated attendee data.
+	 *
+	 * @return WP_Post|false The new post object or false if unsuccessful.
+	 */
+	public function create_attendee( $ticket, $attendee_data ) {
+		$provider = $ticket->get_provider();
+
+		/** @var Tribe__Tickets__Attendee_Repository $orm */
+		$orm = tribe_attendees( $provider->orm_provider );
+
+		try {
+			$orm->set_args(
+				[
+					'title'     => $attendee_data['post_title'],
+					'full_name' => $attendee_data['full_name'],
+					'email'     => $attendee_data['email'],
+				]
+			);
+		} catch ( Tribe__Repository__Usage_Error $e ) {
+			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
+			return false;
+		}
+
+		return $orm->create_attendee_for_ticket( $ticket, $attendee_data );
+	}
+
 }

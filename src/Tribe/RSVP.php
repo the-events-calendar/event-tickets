@@ -838,11 +838,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$individual_attendee_email = apply_filters( 'tribe_tickets_attendee_create_individual_email', $email, $order_attendee_id, $order_id, $product_id, $post_id, $this );
 
 		$attendee = [
-			'post_status' => 'publish',
-			'post_title'  => $individual_attendee_name,
-			'post_type'   => $this->attendee_object,
-			'ping_status' => 'closed',
-			'post_author' => 0,
+			'post_title' => $individual_attendee_name,
 		];
 
 		if ( $order_id ) {
@@ -853,18 +849,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$attendee['post_title'] .= ' | ' . $order_attendee_id;
 		}
 
-		$repository = tribe_attendees( $this->orm_provider );
-
 		$data = $attendee;
 
-		$data['ticket_id']       = $product_id;
-		$data['post_id']         = $post_id;
-		$data['order_id']        = $order_id;
-		$data['optout']          = (int) $optout;
-		$data['attendee_status'] = $order_status;
-		$data['full_name']       = $individual_attendee_name;
-		$data['email']           = $individual_attendee_email;
-		$data['price_paid']      = 0;
+		$data['ticket_id']         = $product_id;
+		$data['post_id']           = $post_id;
+		$data['order_id']          = $order_id;
+		$data['optout']            = (int) $optout;
+		$data['attendee_status']   = $order_status;
+		$data['full_name']         = $individual_attendee_name;
+		$data['email']             = $individual_attendee_email;
+		$data['price_paid']        = 0;
+		$data['order_attendee_id'] = $order_attendee_id;
 
 		if ( 0 === $user_id ) {
 			/**
@@ -890,12 +885,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$data['user_id'] = $user_id;
 		}
 
-		$repository->set_args( $data );
+		/** @var Tribe__Tickets__Attendee_Repository $attendees */
+		$attendees = tribe( 'tickets.attendees' );
 
-		$attendee_id = $repository->create();
+		$attendee_object = $attendees->create_attendee( $ticket, $data );
 
-		// Update this after attendee is created.
-		update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
+		if ( ! $attendee_object ) {
+			throw new Exception( __( 'Unable to process your request, attendee creation failed.', 'event-tickets' ) );
+		}
+
+		$attendee_id = $attendee_object->ID;
 
 		// Get the RSVP status `decrease_stock_by` value.
 		$status_stock_size = $rsvp_options[ $order_status ]['decrease_stock_by'];
@@ -910,41 +909,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			// Adjust stock.
 			$stock = (int) get_post_meta( $product_id, '_stock', true ) - $status_stock_size;
 			update_post_meta( $product_id, '_stock', $stock );
-		}
-
-		/**
-		 * RSVP specific action fired when a RSVP-driven attendee ticket for an event is generated.
-		 * Used to assign a unique ID to the attendee.
-		 *
-		 * @param int    $attendee_id ID of attendee ticket.
-		 * @param int    $post_id     ID of event.
-		 * @param string $order_id    RSVP order ID (hash).
-		 * @param int    $product_id  RSVP product ID.
-		 */
-		do_action( 'event_tickets_rsvp_attendee_created', $attendee_id, $post_id, $order_id, $product_id );
-
-		/**
-		 * Action fired when an RSVP attendee ticket is created.
-		 * Used to store attendee meta.
-		 *
-		 * @param int $attendee_id       ID of the attendee post.
-		 * @param int $post_id           Event post ID.
-		 * @param int $product_id        RSVP ticket post ID.
-		 * @param int $order_attendee_id Attendee # for order.
-		 */
-		do_action( 'event_tickets_rsvp_ticket_created', $attendee_id, $post_id, $product_id, $order_attendee_id );
-
-		if ( null === $order_attendee_id ) {
-			/**
-			 * Action fired when an RSVP ticket has had attendee tickets generated for it.
-			 *
-			 * @param int    $product_id RSVP ticket post ID.
-			 * @param string $order_id   ID (hash) of the RSVP order.
-			 * @param int    $qty        Quantity ordered.
-			 */
-			do_action( 'event_tickets_rsvp_tickets_generated_for_product', $product_id, $order_id, 1 );
-
-			$this->clear_attendees_cache( $post_id );
 		}
 
 		return $attendee_id;
