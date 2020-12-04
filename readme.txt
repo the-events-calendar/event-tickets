@@ -184,6 +184,7 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 * Fix - Remove the Custom Class Name from the block interface for the Event Tickets blocks to prevent extra interface options that are unused. [ET-960]
 * Fix - Remove extraneous "Save and checkout" heading from the `registration-js/content.php` view. [ET-955]
 * Fix - Prevent PHP notices by setting up the `must_login` argument within the `registration-js/mini-cart.php` view. [ET-955]
+* Fix - Make the "Configure Settings" link on the Welcome screen for Event Tickets open up in a new tab. [ET-958]
 * Tweak - Added admin notice when editing an Events Calendar Pro recurring event that has tickets in classic editor to warn about how tickets will act on recurring events. [ET-949]
 * Tweak - Show warning message within the classic ticket editor if no commerce provider is active. [ET-957]
 * Tweak - Show warning message within the classic ticket editor for recurring events about the limitations of tickets on recurring events. [ET-947]
