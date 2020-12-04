@@ -9,6 +9,8 @@ $provider       = null;
 $provider_class = null;
 $ticket         = null;
 
+$datepicker_format = Tribe__Date_Utils::datepicker_formats( Tribe__Date_Utils::get_datepicker_format_index() );
+
 if ( ! isset( $ticket_id ) ) {
 	$ticket_id = null;
 
@@ -40,8 +42,6 @@ if ( ! isset( $ticket_id ) ) {
 $modules = Tribe__Tickets__Tickets::modules();
 
 $default_module_class = empty( $default_module ) ? '' : $default_module->class_name;
-
-$datepicker_format = Tribe__Date_Utils::datepicker_formats( Tribe__Date_Utils::get_datepicker_format_index() );
 
 $timepicker_step = 30;
 
