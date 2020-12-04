@@ -15,8 +15,9 @@
  *              Retrieve $is_meta_up_to_date in a manner consistent with other template variables. Moved `novalidate` from
  *              div to form, as it used to be. Implement short array syntax.
  * @since 5.0.3 Add `event-tickets` class to the wrapper.
+ * @since TBD Remove extraneous "Save and checkout" heading.
  *
- * @version 5.0.3
+ * @version TBD
  *
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */
@@ -173,10 +174,6 @@ $classes        = [
 										</h3>
 									</div>
 							<?php endforeach; ?>
-
-							<?php if ( $has_tpp ) : ?>
-								<button type="submit"><?php esc_html_e( 'Save and Checkout', 'event-tickets' ); ?></button>
-							<?php endif; ?>
 						</div>
 					</div>
 				</div>
