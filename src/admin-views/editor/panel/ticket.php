@@ -60,6 +60,76 @@ $ticket_name        = $ticket ? $ticket->name : '';
 $ticket_description = $ticket ? $ticket->description : '';
 $ticket_start_time  = $ticket ? $ticket->start_time : '';
 $ticket_end_time    = $ticket ? $ticket->end_time : '';
+
+$msg_rsvp_type_required = sprintf(
+	// Translators: %s: dynamic 'RSVP' text.
+	_x(
+		'%s type is a required field',
+		'admin edit ticket panel error',
+		'event-tickets'
+	),
+	tribe_get_rsvp_label_singular( 'admin_edit_ticket_panel_error' )
+);
+
+$msg_rsvp_form_save = sprintf(
+	// Translators: %s: dynamic 'RSVP' text.
+	_x(
+		'Save %s',
+		'RSVP form save value',
+		'event-tickets'
+	),
+	tribe_get_rsvp_label_singular( 'form_save_value' )
+);
+
+$msg_ticket_start_date = sprintf(
+	// Translators: %s: dynamic 'tickets' text.
+	_x(
+		'If you do not set a start sale date, %s will be available immediately.',
+		'input start time help text title',
+		'event-tickets'
+	),
+	tribe_get_ticket_label_plural_lowercase( 'input_start_time_help_text_title' )
+);
+
+$msg_ticket_end_date_aria = sprintf(
+	// Translators: %s: dynamic 'Ticket' text.
+	_x(
+		'%s end date',
+		'input end time ARIA label',
+		'event-tickets'
+	),
+	tribe_get_ticket_label_singular( 'input_end_time_aria_label' )
+);
+
+$msg_ticket_end_date_title_if_tec = sprintf(
+	// Translators: %s: dynamic 'tickets' text.
+	_x(
+		'If you do not set an end sale date, %s will be available until the event begins.',
+		'input end time help text title',
+		'event-tickets'
+	),
+	tribe_get_ticket_label_plural_lowercase( 'input_end_time_help_text_title' )
+);
+
+$msg_ticket_end_date_title_if_not_tec = sprintf(
+	// Translators: %s: dynamic 'tickets' text.
+	_x(
+		'If you do not set an end sale date, %s will be available forever.',
+		'input end time help text title',
+		'event-tickets'
+	),
+	tribe_get_ticket_label_plural_lowercase( 'input_end_time_help_text_title' )
+);
+
+$msg_ticket_form_save = sprintf(
+	// Translators: %s: dynamic 'tickets' text.
+	_x(
+		'Save %s',
+		'meta box ticket form button text',
+		'event-tickets'
+	),
+	tribe_get_ticket_label_singular_lowercase( 'meta_box_ticket_form_button_text' )
+);
 ?>
 
 <div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true" data-default-provider="<?php echo esc_attr( $default_module_class ); ?>">
@@ -179,21 +249,7 @@ $ticket_end_time    = $ticket ? $ticket->end_time : '';
 						size='25'
 						value="<?php echo esc_attr( $ticket_name ); ?>"
 						data-validation-is-required
-						data-validation-error="
-						<?php
-						echo esc_attr(
-							sprintf(
-								// Translators: %s: dynamic 'RSVP' text.
-								_x(
-									'%s type is a required field',
-									'admin edit ticket panel error',
-									'event-tickets'
-								),
-								tribe_get_rsvp_label_singular( 'admin_edit_ticket_panel_error' )
-							)
-						);
-						?>
-						"
+						data-validation-error="<?php echo esc_attr( $msg_rsvp_type_required ); ?>"
 					/>
 					<span
 						class="tribe_soft_note ticket_form_right"
@@ -202,7 +258,7 @@ $ticket_end_time    = $ticket ? $ticket->end_time : '';
 					><?php
 						echo esc_html(
 							sprintf(
-								// Translators: %1$s: dynamic 'Ticket' text, %2$s: dynamic 'tickets' text.
+							// Translators: %1$s: dynamic 'Ticket' text, %2$s: dynamic 'tickets' text.
 								_x(
 									'%1$s type name shows on the front end and emailed %2$s',
 									'admin edit ticket panel note',
@@ -278,20 +334,7 @@ $ticket_end_time    = $ticket ? $ticket->end_time : '';
 						/>
 						<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
 						<span class="dashicons dashicons-editor-help" title="
-						<?php
-						echo esc_attr(
-							sprintf(
-								// Translators: %s: dynamic 'tickets' text.
-								_x(
-									'If you do not set a start sale date, %s will be available immediately.',
-									'input start time help text title',
-									'event-tickets'
-								),
-								tribe_get_ticket_label_plural_lowercase( 'input_start_time_help_text_title' )
-							)
-						);
-						?>
-						">
+						<?php echo esc_attr( $msg_ticket_start_date ); ?>">
 			</span>
 					</div>
 				</div>
@@ -318,21 +361,7 @@ $ticket_end_time    = $ticket ? $ticket->end_time : '';
 							data-step="<?php echo esc_attr( $timepicker_step ); ?>"
 							data-round="<?php echo esc_attr( $timepicker_round ); ?>"
 							value="<?php echo esc_attr( $ticket_end_time ); ?>"
-							aria-label="
-							<?php
-							echo esc_attr(
-								sprintf(
-									// Translators: %s: dynamic 'Ticket' text.
-									_x(
-										'%s end date',
-										'input end time ARIA label',
-										'event-tickets'
-									),
-									tribe_get_ticket_label_singular( 'input_end_time_aria_label' )
-								)
-							);
-							?>
-							"
+							aria-label="<?php echo esc_attr( $msg_ticket_end_date_aria ); ?>"
 						/>
 						<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
 						<span class="dashicons dashicons-editor-help"
@@ -342,37 +371,9 @@ $ticket_end_time    = $ticket ? $ticket->end_time : '';
 							&& Tribe__Events__Main::POSTTYPE === get_post_type( $post_id )
 						) :
 							?>
-							title="
-							<?php
-							echo esc_attr(
-								sprintf(
-									// Translators: %s: dynamic 'tickets' text.
-									_x(
-										'If you do not set an end sale date, %s will be available until the event begins.',
-										'input end time help text title',
-										'event-tickets'
-									),
-									tribe_get_ticket_label_plural_lowercase( 'input_end_time_help_text_title' )
-								)
-							);
-							?>
-							"
+							title="<?php echo esc_attr( $msg_ticket_end_date_title_if_tec ); ?>"
 						<?php else : ?>
-							title="
-							<?php
-							echo esc_attr(
-								sprintf(
-									// Translators: %s: dynamic 'tickets' text.
-									_x(
-										'If you do not set an end sale date, %s will be available forever.',
-										'input end time help text title',
-										'event-tickets'
-									),
-									tribe_get_ticket_label_plural_lowercase( 'input_end_time_help_text_title' )
-								)
-							);
-							?>
-							"
+							title="<?php echo esc_attr( $msg_ticket_end_date_title_if_not_tec ); ?>"
 						<?php endif; ?>
 					></span>
 					</div>
@@ -499,21 +500,7 @@ $ticket_end_time    = $ticket ? $ticket->end_time : '';
 					id="ticket_form_save"
 					class="button-primary tribe-dependent tribe-validation-submit"
 					name="ticket_form_save"
-					value="
-					<?php
-					echo esc_attr(
-						sprintf(
-							// Translators: %s: dynamic 'tickets' text.
-							_x(
-								'Save %s',
-								'meta box ticket form button text',
-								'event-tickets'
-							),
-							tribe_get_ticket_label_singular_lowercase( 'meta_box_ticket_form_button_text' )
-						)
-					);
-					?>
-					"
+					value="<?php echo esc_attr( $msg_ticket_form_save ); ?>"
 					data-depends="#Tribe__Tickets__RSVP_radio"
 					data-condition-is-not-checked
 				/>
@@ -522,21 +509,7 @@ $ticket_end_time    = $ticket ? $ticket->end_time : '';
 					id="rsvp_form_save"
 					class="button-primary tribe-dependent tribe-validation-submit"
 					name="ticket_form_save"
-					value="
-					<?php
-					echo esc_attr(
-						sprintf(
-							// Translators: %s: dynamic 'RSVP' text.
-							_x(
-								'Save %s',
-								'RSVP form save value',
-								'event-tickets'
-							),
-							tribe_get_rsvp_label_singular( 'form_save_value' )
-						)
-					);
-					?>
-					"
+					value="<?php echo esc_attr( $msg_rsvp_form_save ); ?>"
 					data-depends="#Tribe__Tickets__RSVP_radio"
 					data-condition-is-checked
 				/>
