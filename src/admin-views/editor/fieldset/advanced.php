@@ -16,6 +16,33 @@ if ( ! isset( $ticket_id ) ) {
 		$ticket = $provider->get_ticket( $post_id, $ticket_id );
 	}
 }
+
+// Avoid rendering an empty "Advanced" settings section, which all but RSVPs have.
+$hide_advanced_section = $provider instanceof Tribe__Tickets__RSVP;
+
+/**
+ * Whether the 'Advanced Settings' section should load in the Classic Editor.
+ *
+ * The point is to avoid displaying an empty section.
+ *
+ * @since TBD
+ *
+ * @param bool                               $hide_advanced_section The default value of whether we should hide.
+ * @param Tribe__Tickets__Ticket_Object|null $ticket                The current ticket.
+ * @param int|false                          $post_id               The current post.
+ *
+ * @return bool True if we should bail and not render the 'Advanced' section.
+ */
+$hide_advanced_section = apply_filters(
+	'tribe_tickets_classic_editor_hide_advanced_section',
+	$hide_advanced_section,
+	$ticket,
+	$post_id
+);
+
+if ( $hide_advanced_section ) {
+	return;
+}
 ?>
 <button class="accordion-header tribe_advanced_meta">
 	<?php esc_html_e( 'Advanced', 'event-tickets' ); ?>
