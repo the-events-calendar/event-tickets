@@ -192,7 +192,8 @@ $ticket_end_time    = $ticket ? $ticket->end_time : '';
 								tribe_get_rsvp_label_singular( 'admin_edit_ticket_panel_error' )
 							)
 						);
-						?>"
+						?>
+						"
 					/>
 					<span
 						class="tribe_soft_note ticket_form_right"
@@ -275,7 +276,7 @@ $ticket_end_time    = $ticket ? $ticket->end_time : '';
 							?>
 							"
 						/>
-						<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
+						<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
 						<span class="dashicons dashicons-editor-help" title="
 						<?php
 						echo esc_attr(
@@ -333,14 +334,14 @@ $ticket_end_time    = $ticket ? $ticket->end_time : '';
 							?>
 							"
 						/>
-						<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
+						<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
 						<span class="dashicons dashicons-editor-help"
 						<?php
 						if (
 							class_exists( 'Tribe__Events__Main' )
 							&& Tribe__Events__Main::POSTTYPE === get_post_type( $post_id )
 						) :
-						?>
+							?>
 							title="
 							<?php
 							echo esc_attr(
@@ -354,7 +355,8 @@ $ticket_end_time    = $ticket ? $ticket->end_time : '';
 									tribe_get_ticket_label_plural_lowercase( 'input_end_time_help_text_title' )
 								)
 							);
-							?>"
+							?>
+							"
 						<?php else : ?>
 							title="
 							<?php
