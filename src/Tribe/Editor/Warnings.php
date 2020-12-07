@@ -110,7 +110,9 @@ class Warnings {
 		$condition_attr = empty( $condition ) ? '' : 'data-condition-is-' . $condition;
 		?>
 		<div class="ticket-editor-notice <?php echo esc_attr( $classes ); ?>"
-		     data-depends="<?php echo esc_attr( $depends_on ); ?>"
+			<?php if ( $depends_on ) { ?>
+				data-depends="<?php echo esc_attr( $depends_on ); ?>"
+			<?php } ?>
 			<?php echo esc_attr( $condition_attr ); ?>
 		>
 			<span class="dashicons <?php echo esc_attr( $icon ); ?>"></span>
