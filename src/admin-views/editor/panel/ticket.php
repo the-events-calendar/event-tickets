@@ -333,8 +333,7 @@ $msg_ticket_form_save = sprintf(
 							"
 						/>
 						<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
-						<span class="dashicons dashicons-editor-help" title="
-						<?php echo esc_attr( $msg_ticket_start_date ); ?>">
+						<span class="dashicons dashicons-editor-help" title="<?php echo esc_attr( $msg_ticket_start_date ); ?>">
 			</span>
 					</div>
 				</div>
