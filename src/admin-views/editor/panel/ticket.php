@@ -71,14 +71,14 @@ $msg_rsvp_type_required = sprintf(
 	tribe_get_rsvp_label_singular( 'admin_edit_ticket_panel_error' )
 );
 
-$msg_rsvp_form_save = sprintf(
-	// Translators: %s: dynamic 'RSVP' text.
+$msg_ticket_start_time_aria = sprintf(
+// Translators: %s: dynamic 'Ticket' text.
 	_x(
-		'Save %s',
-		'RSVP form save value',
+		'%s start date',
+		'input start time ARIA label',
 		'event-tickets'
 	),
-	tribe_get_rsvp_label_singular( 'form_save_value' )
+	tribe_get_ticket_label_singular( 'input_start_time_aria_label' )
 );
 
 $msg_ticket_start_date = sprintf(
@@ -129,6 +129,16 @@ $msg_ticket_form_save = sprintf(
 		'event-tickets'
 	),
 	tribe_get_ticket_label_singular_lowercase( 'meta_box_ticket_form_button_text' )
+);
+
+$msg_rsvp_form_save = sprintf(
+// Translators: %s: dynamic 'RSVP' text.
+	_x(
+		'Save %s',
+		'RSVP form save value',
+		'event-tickets'
+	),
+	tribe_get_rsvp_label_singular( 'form_save_value' )
 );
 ?>
 
@@ -316,21 +326,7 @@ $msg_ticket_form_save = sprintf(
 							data-step="<?php echo esc_attr( $timepicker_step ); ?>"
 							data-round="<?php echo esc_attr( $timepicker_round ); ?>"
 							value="<?php echo esc_attr( $ticket_start_time ); ?>"
-							aria-label="
-							<?php
-							echo esc_attr(
-								sprintf(
-									// Translators: %s: dynamic 'Ticket' text.
-									_x(
-										'%s start date',
-										'input start time ARIA label',
-										'event-tickets'
-									),
-									tribe_get_ticket_label_singular( 'input_start_time_aria_label' )
-								)
-							);
-							?>
-							"
+							aria-label="<?php echo esc_attr( $msg_ticket_start_time_aria ); ?>"
 						/>
 						<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
 						<span class="dashicons dashicons-editor-help" title="<?php echo esc_attr( $msg_ticket_start_date ); ?>">
