@@ -76,7 +76,7 @@ class Warnings {
 		$link = sprintf(
 			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
 			esc_url( $kb_url ),
-			esc_html_x( '[Learn More]', 'Helper link in Ticket Editor', 'event-tickets' )
+			esc_html_x( 'Learn More', 'Helper link in Ticket Editor', 'event-tickets' )
 		);
 
 		return wp_kses_post(
