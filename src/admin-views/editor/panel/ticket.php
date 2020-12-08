@@ -301,6 +301,41 @@ $msg_rsvp_form_save = sprintf(
 					</span>
 				</div>
 				<div class="input_block">
+					<label class="ticket_form_label ticket_form_left" for="ticket_description"><?php esc_html_e( 'Description:', 'event-tickets' ); ?></label>
+					<textarea
+						rows="5"
+						cols="40"
+						name="ticket_description"
+						class="ticket_field ticket_form_right"
+						id="ticket_description"
+					><?php echo esc_textarea( $ticket_description ); ?></textarea>
+					<div class="input_block">
+						<label class="tribe_soft_note">
+							<input
+								type="checkbox"
+								id="tribe_tickets_show_description"
+								name="ticket_show_description"
+								value="1"
+								class="ticket_field ticket_form_left"
+								<?php checked( true, $ticket ? $ticket->show_description : true ); ?>
+							>
+							<?php
+							echo esc_html(
+								sprintf(
+								// Translators: %s: dynamic 'tickets' text.
+									_x(
+										'Show description on frontend %s form.',
+										'default ticket provider',
+										'event-tickets'
+									),
+									tribe_get_ticket_label_singular_lowercase( 'default_ticket_provider' )
+								)
+							);
+							?>
+						</label>
+					</div>
+				</div>
+				<div class="input_block">
 					<label class="ticket_form_label ticket_form_left" for="ticket_start_date"><?php esc_html_e( 'Start sale:', 'event-tickets' ); ?></label>
 					<div class="ticket_form_right">
 						<input
@@ -371,41 +406,6 @@ $msg_rsvp_form_save = sprintf(
 							title="<?php echo esc_attr( $msg_ticket_end_date_title_if_not_tec ); ?>"
 						<?php endif; ?>
 					></span>
-					</div>
-				</div>
-				<div class="input_block">
-					<label class="ticket_form_label ticket_form_left" for="ticket_description"><?php esc_html_e( 'Description:', 'event-tickets' ); ?></label>
-					<textarea
-						rows="5"
-						cols="40"
-						name="ticket_description"
-						class="ticket_field ticket_form_right"
-						id="ticket_description"
-					><?php echo esc_textarea( $ticket_description ); ?></textarea>
-					<div class="input_block">
-						<label class="tribe_soft_note">
-							<input
-								type="checkbox"
-								id="tribe_tickets_show_description"
-								name="ticket_show_description"
-								value="1"
-								class="ticket_field ticket_form_left"
-								<?php checked( true, $ticket ? $ticket->show_description : true ); ?>
-							>
-							<?php
-							echo esc_html(
-								sprintf(
-									// Translators: %s: dynamic 'tickets' text.
-									_x(
-										'Show description on frontend %s form.',
-										'default ticket provider',
-										'event-tickets'
-									),
-									tribe_get_ticket_label_singular_lowercase( 'default_ticket_provider' )
-								)
-							);
-							?>
-						</label>
 					</div>
 				</div>
 				<fieldset id="tribe_ticket_provider_wrapper" class="input_block" aria-hidden="true">
