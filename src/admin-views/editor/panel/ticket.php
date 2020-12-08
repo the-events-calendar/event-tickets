@@ -270,7 +270,7 @@ $msg_rsvp_form_save = sprintf(
 							sprintf(
 							// Translators: %1$s: dynamic 'Ticket' text, %2$s: dynamic 'tickets' text.
 								_x(
-									'%1$s type name shows on the front end and emailed %2$s',
+									'%1$s type name shows on the frontend and emailed %2$s',
 									'admin edit ticket panel note',
 									'event-tickets'
 								),
@@ -289,7 +289,7 @@ $msg_rsvp_form_save = sprintf(
 							sprintf(
 								// Translators: %1$s: dynamic 'RSVP' text, %2$s: dynamic 'rsvps' text.
 								_x(
-									'%1$s type name shows on the front end and emailed %2$s',
+									'%1$s type name shows on the frontend and emailed %2$s',
 									'admin edit ticket panel note',
 									'event-tickets'
 								),
@@ -397,7 +397,7 @@ $msg_rsvp_form_save = sprintf(
 								sprintf(
 									// Translators: %s: dynamic 'tickets' text.
 									_x(
-										'Show description on front end %s form.',
+										'Show description on frontend %s form.',
 										'default ticket provider',
 										'event-tickets'
 									),
