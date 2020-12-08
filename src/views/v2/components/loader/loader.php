@@ -9,7 +9,7 @@
  *
  * @link https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
- * @since TBD Update template to use icons from common.
+ * @since TBD Update template to use icons from Tribe Common.
  *
  * @version TBD
  */
