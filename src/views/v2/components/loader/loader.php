@@ -9,7 +9,9 @@
  *
  * @link https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
- * @version 4.12.3
+ * @since TBD Update template to use icons from common.
+ *
+ * @version TBD
  */
 
 $classes = $this->get( 'classes' ) ?: [];
