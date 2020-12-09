@@ -68,7 +68,7 @@ class Warnings {
 	 * @return string The Commerce Provider missing message.
 	 */
 	public function get_commerce_provider_missing_warning_message() {
-		$kb_url = 'http://m.tri.be/1ao5';
+		$kb_url = 'https://evnt.is/1ao5';
 
 		/* translators: %1$s: URL for help link, %2$s: Label for help link. */
 		$link = sprintf(
