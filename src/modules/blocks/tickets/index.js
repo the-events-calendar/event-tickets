@@ -31,6 +31,7 @@ export default {
 	supports: {
 		html: false,
 		multiple: false,
+		customClassName: false,
 	},
 
 	attributes: {
