@@ -22,6 +22,7 @@ export default {
 
 	supports: {
 		html: false,
+		customClassName: false,
 	},
 
 	attributes: {

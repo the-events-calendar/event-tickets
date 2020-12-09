@@ -38,13 +38,7 @@ class Warnings {
 			return;
 		}
 
-		if ( ! tribe_is_recurring_event( $post_id ) ) {
-			return;
-		}
-
-		$warning = $this->get_recurring_event_warning_message();
-
-		$this->render_notice( $warning );
+		$this->render_notice( $this->get_recurring_event_warning_message(), 'info', '#tribe-recurrence-active', 'checked' );
 	}
 
 	/**
@@ -76,7 +70,7 @@ class Warnings {
 		$link = sprintf(
 			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
 			esc_url( $kb_url ),
-			esc_html_x( '[Learn More]', 'Helper link in Ticket Editor', 'event-tickets' )
+			esc_html_x( 'Learn More', 'Helper link in Ticket Editor', 'event-tickets' )
 		);
 
 		return wp_kses_post(
@@ -106,11 +100,21 @@ class Warnings {
 	 *
 	 * @param string $message Tee message to show.
 	 * @param string $type    Type of message.
+	 * @param string $depends_on Dependency selector.
+	 * @param string $condition Dependency condition like 'checked' | 'not-checked' | 'numeric'.
 	 */
-	public function render_notice( $message, $type = 'info' ) {
-		$icon = 'dashicons-' . $type;
+	public function render_notice( $message, $type = 'info', $depends_on = '', $condition = '' ) {
+		$icon           = 'dashicons-' . $type;
+		$has_dependency = empty( $depends_on ) ? '' : 'tribe-dependent';
+		$classes        = $type . ' ' . $has_dependency;
+		$condition_attr = empty( $condition ) ? '' : 'data-condition-is-' . $condition;
 		?>
-		<div class="ticket-editor-notice <?php echo esc_attr( $type ); ?>">
+		<div class="ticket-editor-notice <?php echo esc_attr( $classes ); ?>"
+			<?php if ( $depends_on ) { ?>
+				data-depends="<?php echo esc_attr( $depends_on ); ?>"
+			<?php } ?>
+			<?php echo esc_attr( $condition_attr ); ?>
+		>
 			<span class="dashicons <?php echo esc_attr( $icon ); ?>"></span>
 			<span class="message"><?php echo wp_kses_post( $message ); ?></span>
 		</div>
