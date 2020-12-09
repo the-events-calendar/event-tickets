@@ -30,11 +30,15 @@ class Warnings {
 	 * @param int $post_id Post ID.
 	 */
 	public function show_recurring_event_warning_message( $post_id ) {
-		if ( ! class_exists( 'Tribe__Events__Pro__Main' ) ) {
+		if ( ! class_exists( 'Tribe__Events__Pro__Main' ) || ! class_exists( 'Tribe__Events__Main' ) ) {
 			return;
 		}
 
 		if ( ! function_exists( 'tribe_is_recurring_event' ) ) {
+			return;
+		}
+
+		if ( \Tribe__Events__Main::POSTTYPE != get_post_type( $post_id ) ) {
 			return;
 		}
 
@@ -64,7 +68,7 @@ class Warnings {
 	 * @return string The Commerce Provider missing message.
 	 */
 	public function get_commerce_provider_missing_warning_message() {
-		$kb_url = 'http://m.tri.be/1ao5';
+		$kb_url = 'https://evnt.is/1ao5';
 
 		/* translators: %1$s: URL for help link, %2$s: Label for help link. */
 		$link = sprintf(
