@@ -877,31 +877,44 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since TBD
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket Object.
+	 * @param Tribe__Tickets__Ticket_Object|int $ticket Ticket Object or ID.
 	 * @param array                         $attendee_data Validated attendee data.
 	 *
 	 * @return WP_Post|false The new post object or false if unsuccessful.
 	 */
 	public function create_attendee( $ticket, $attendee_data ) {
-		$provider = $ticket->get_provider();
+		if ( is_numeric( $ticket ) ) {
+			// Try to get provider from the ticket ID.
+			$provider = tribe_tickets_get_ticket_provider( $ticket );
+
+			if ( ! $provider ) {
+				return false;
+			}
+
+			// Get ticket from provider.
+			$ticket = $provider->get_ticket( 0, $ticket );
+
+			if ( ! $ticket ) {
+				return false;
+			}
+		} else {
+			// Get provider from ticket object.
+			$provider = $ticket->get_provider();
+
+			if ( ! $provider ) {
+				return false;
+			}
+		}
 
 		/** @var Tribe__Tickets__Attendee_Repository $orm */
 		$orm = tribe_attendees( $provider->orm_provider );
 
 		try {
-			$orm->set_args(
-				[
-					'title'     => $attendee_data['post_title'],
-					'full_name' => $attendee_data['full_name'],
-					'email'     => $attendee_data['email'],
-				]
-			);
+			return $orm->create_attendee_for_ticket( $ticket, $attendee_data );
 		} catch ( Tribe__Repository__Usage_Error $e ) {
 			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
 			return false;
 		}
-
-		return $orm->create_attendee_for_ticket( $ticket, $attendee_data );
 	}
 
 }

@@ -17,6 +17,13 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	protected $filter_name = 'attendees';
 
 	/**
+	 * Key name to use when limiting lists of keys.
+	 *
+	 * @var string
+	 */
+	protected $key_name = '';
+
+	/**
 	 * @var array An array of all the order statuses supported by the repository.
 	 */
 	protected static $order_statuses;
@@ -675,33 +682,216 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	}
 
 	/**
-	 * Update Additional data after creation of attendee.
+	 * Create an attendee object from ticket and attendee data.
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_Post                       $attendee      Attendee Object.
-	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket Object.
-	 * @param array                         $attendee_data List of additional attendee data.
-	 */
-	public function update_additional_data( $attendee, $ticket, $attendee_data ) {
-		// Each Attendee Repository should override this.
-	}
-
-	/**
-	 * Create an attendee object from ticket data.
-	 *
-	 * @since TBD
-	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket Object.
+	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object.
 	 * @param array                         $attendee_data List of additional attendee data.
 	 *
 	 * @return WP_Post|false The new post object or false if unsuccessful.
+	 *
+	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
 	 */
-	public function create_attendee_for_ticket( $ticket, $attendee_data ) {
-		$attendee = parent::create();
+	public function create_attendee_for_ticket( $attendee_data, $ticket ) {
+		// Set the attendee arguments accordingly.
+		$this->set_attendee_args( $attendee_data, $ticket );
 
-		$this->update_additional_data( $attendee, $ticket, $attendee_data );
+		// Create the new attendee.
+		$attendee = $this->create();
+
+		// Handle any further attendee updates.
+		$this->save_extra_attendee_data( $attendee, $attendee_data, $ticket );
 
 		return $attendee;
+	}
+
+	/**
+	 * Create an attendee object from ticket and attendee data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $attendee_data  List of attendee data to be saved.
+	 * @param bool  $return_promise Whether to return a promise object or just the ids
+	 *                              of the updated posts; if `true` then a promise will
+	 *                              be returned whether the update is happening in background
+	 *                              or not.
+	 *
+	 * @return array|Tribe__Promise A list of the post IDs that have been (synchronous) or will
+	 *                              be (asynchronous) updated if `$return_promise` is set to `false`;
+	 *                              the Promise object if `$return_promise` is set to `true`.
+	 *
+	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
+	 */
+	public function update_attendee( $attendee_data, $return_promise = false ) {
+		// Set the attendee arguments accordingly.
+		$this->set_attendee_args( $attendee_data );
+
+		// Update the attendee(s).
+		return $this->save( $return_promise );
+	}
+
+	/**
+	 * Set arguments for attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param array                         $attendee_data List of additional attendee data.
+	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object or null if not relying on it.
+	 *
+	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
+	 */
+	public function set_attendee_args( $attendee_data, $ticket = null ) {
+		$args = [
+			'attendee_id'       => null,
+			'title'             => null,
+			'full_name'         => null,
+			'email'             => null,
+			'ticket_id'         => $ticket ? $ticket->ID : null,
+			'post_id'           => $ticket ? $ticket->get_event_id() : null,
+			'order_id'          => null,
+			'order_attendee_id' => null,
+			'user_id'           => null,
+			'attendee_status'   => null,
+			'price_paid'        => null,
+			'optout'            => null,
+		];
+
+		$args = array_merge( $args, $attendee_data );
+
+		$attendee_id = null;
+
+		// Unset the attendee ID if found.
+		if ( isset( $args['attendee_id'] ) ) {
+			$attendee_id = $args['attendee_id'];
+
+			unset( $args['attendee_id'] );
+		}
+
+		// Do some extra set up if creating an attendee.
+		if ( null === $attendee_id ) {
+			// Default attendees to opted-out.
+			if ( null === $args['optout'] ) {
+				$args['optout'] = 1;
+			}
+
+			// If the title is empty, set the title from the full name.
+			if ( empty( $args['title'] ) && $args['full_name'] ) {
+				$args['title'] = $args['full_name'];
+
+				// Maybe add the Order ID.
+				if ( $args['order_id'] ) {
+					$args['title'] = $args['order_id'] . ' | ' . $args['title'];
+				}
+
+				// Maybe add the Order Attendee ID.
+				if ( null !== $args['order_attendee_id'] ) {
+					$args['title'] .= ' | ' . $args['order_attendee_id'];
+				}
+			}
+
+			// Maybe handle setting the User ID based on information we already have.
+			if ( empty( $args['user_id'] ) && ! empty( $args['email'] ) ) {
+				/**
+				 * Allow filtering whether to enable user lookups by Attendee Email.
+				 *
+				 * @since TBD
+				 *
+				 * @param boolean $lookup_user_from_email Whether to lookup the User using the Attendee Email if User ID is not set.
+				 * @param array   $args                   The arguments being set for this attendee.
+				 */
+				$lookup_user_from_email = (boolean) apply_filters( 'tribe_tickets_create_attendee_lookup_user_from_email', false, $args );
+
+				if ( $lookup_user_from_email ) {
+					// Check if user exists.
+					$user = get_user_by( 'email', $args['email'] );
+
+					if ( $user ) {
+						$args['user_id'] = $user->ID;
+					}
+				}
+
+				// Maybe create the user based on information we already have.
+				if ( empty( $args['user_id'] ) ) {
+					/**
+					 * Allow filtering whether to enable creating users using the Attendee Email.
+					 *
+					 * @since TBD
+					 *
+					 * @param boolean $create_user_from_email Whether to create the User using the Attendee Email if User ID is not set.
+					 * @param array   $args                   The arguments being set for this attendee.
+					 */
+					$create_user_from_email = (boolean) apply_filters( 'tribe_tickets_create_attendee_create_user_from_email', false, $args );
+
+					if ( $create_user_from_email ) {
+						// Create the user using the attendee email.
+						$created = wp_create_user( $args['email'], wp_generate_password( 12, false ), $args['email'] );
+
+						if ( $created && ! is_wp_error( $created ) ) {
+							/**
+							 * Allow filtering whether to send the new user information email to the new user.
+							 *
+							 * @since TBD
+							 *
+							 * @param boolean $send_new_user_info Whether to send the new user information email to the new user.
+							 * @param array   $args               The arguments being set for this attendee.
+							 */
+							$send_new_user_info = (boolean) apply_filters( 'tribe_tickets_create_attendee_create_user_from_email_send_new_user_info', false, $args );
+
+							if ( $send_new_user_info ) {
+								wp_send_new_user_notifications( $created, 'user' );
+							}
+
+							$args['user_id'] = $created;
+						}
+					}
+				}
+			}
+		}
+
+		/**
+		 * Allow filtering the arguments to set for the attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param array                         $args          List of arguments to set for the attendee.
+		 * @param array                         $attendee_data List of additional attendee data.
+		 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object or null if not relying on it.
+		 */
+		$args = apply_filters( 'tribe_tickets_attendee_repository_set_attendee_args', $args, $attendee_data, $ticket );
+
+		// Maybe run filter if using a provider key name.
+		if ( $this->key_name ) {
+			/**
+			 * Allow filtering the arguments to set for the attendee by provider key name.
+			 *
+			 * @since TBD
+			 *
+			 * @param array                         $args          List of arguments to set for the attendee.
+			 * @param array                         $attendee_data List of additional attendee data.
+			 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object or null if not relying on it.
+			 */
+			$args = apply_filters( 'tribe_tickets_attendee_repository_set_attendee_args_' . $this->key_name, $args, $attendee_data, $ticket );
+		}
+
+		// Remove arguments that are null.
+		$args = array_filter( $args, static function ( $value ) {
+			return ! is_null( $value );
+		} );
+
+		$this->set_args( $args );
+	}
+
+	/**
+	 * Save extra attendee data after creation of attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post                       $attendee      The attendee object.
+	 * @param array                         $attendee_data List of additional attendee data.
+	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object.
+	 */
+	public function save_extra_attendee_data( $attendee, $attendee_data, $ticket ) {
+		// Each Attendee Repository should override this.
 	}
 }
