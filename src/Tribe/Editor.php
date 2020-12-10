@@ -241,12 +241,15 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 * @return string
 	 */
 	public function add_column_content_price( $ticket, $provider_obj ) {
-		$context = array(
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
+
+		$context = [
 			'ticket'       => $ticket,
 			'provider_obj' => $provider_obj,
-		);
+		];
 
-		return tribe( 'tickets.admin.views' )->template( 'editor/column-body-price', $context );
+		return $admin_views->template( 'editor/column-body-price', $context );
 	}
 
 	/**
@@ -260,8 +263,11 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 * @return bool
 	 */
 	public function flush_blocks() {
-		// Bail because we dont have access to any of the classes we need for Blocks Editor
-		if ( ! tribe( 'editor' )->should_load_blocks() ) {
+		/** @var Tribe__Editor $editor */
+		$editor = tribe( 'editor' );
+
+		// Bail because we dont have access to any of the classes we need for Blocks Editor.
+		if ( ! $editor->should_load_blocks() ) {
 			return false;
 		}
 
@@ -278,14 +284,8 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 		/** @var Tribe__Tickets__Editor__Template__Overwrite $template_overwrite */
 		$template_overwrite = tribe( 'tickets.editor.template.overwrite' );
 
-		$is_event                 = function_exists( 'tribe_is_event' ) && tribe_is_event( $post_id );
-		$has_event_classic_editor = $is_event && ! $template_overwrite->has_early_access_to_blocks();
-
-		/** @var Tribe__Editor $editor */
-		$editor = tribe( 'editor' );
-
-		// Set meta key only if is classic editor and bail
-		if ( $editor->is_classic_editor() || $has_event_classic_editor ) {
+		// Set meta key only if is classic editor and bail.
+		if ( $template_overwrite->has_classic_editor( $post_id ) ) {
 			update_post_meta( $post_id, $this->meta_key_flush_flag, 1 );
 
 			return false;

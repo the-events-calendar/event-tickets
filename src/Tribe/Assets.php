@@ -301,10 +301,21 @@ class Tribe__Tickets__Assets {
 	public function should_enqueue_frontend() {
 		$is_on_valid_post_type = tribe_tickets_is_enabled_post_context();
 
-		/** @var Tribe__Tickets__Attendee_Registration__Main $ar */
-		$ar = tribe( 'tickets.attendee_registration' );
+		/**
+		 * This Try/Catch is present to deal with a problem on Autoloading from version 5.1.0 ET+ with ET 5.0.3.
+		 *
+		 * @todo Needs to be revised once proper autoloading rules are done for Common, ET and ET+.
+		 */
+		try {
+			/** @var \Tribe__Tickets__Attendee_Registration__Main $ar_reg */
+			$ar_reg = tribe( 'tickets.attendee_registration' );
 
-		return $is_on_valid_post_type || $ar->is_on_page();
+			$is_on_ar_page = $ar_reg->is_on_page();
+		} catch ( \Exception $exception ) {
+			$is_on_ar_page = false;
+		}
+
+		return $is_on_valid_post_type || $is_on_ar_page;
 	}
 
 	/**

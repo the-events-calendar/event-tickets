@@ -3590,8 +3590,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			/** @var \Tribe__Tickets__Attendee_Registration__Main $attendee_registration */
-			$attendee_registration = tribe( 'tickets.attendee_registration' );
+			/**
+			 * This Try/Catch is present to deal with a problem on Autoloading from version 5.1.0 ET+ with ET 5.0.3.
+			 *
+			 * @todo Needs to be revised once proper autoloading rules are done for Common, ET and ET+.
+			 */
+			try {
+				/** @var \Tribe__Tickets__Attendee_Registration__Main $attendee_registration */
+				$attendee_registration = tribe( 'tickets.attendee_registration' );
+			} catch( RuntimeException $error ) {
+				return;
+			}
 
 			if (
 				$attendee_registration->is_on_page()
