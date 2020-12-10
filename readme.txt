@@ -187,6 +187,7 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 * Fix - Make the "Configure Settings" link on the Welcome screen for Event Tickets open up in a new tab. [ET-958]
 * Fix - Update loader templates to use new icons from Tribe Common. [ET-588]
 * Fix - Resolve PHP notices on the Attendee Registration Page from Tribe Commerce ticket details when multiple Commerce Providers may be available. [ET-599]
+* Fix - Prevent potential conflicts with themes like Avada that manually trigger a jQuery ready event during the normal jQuery ready event. [ETP-601]
 * Tweak - Added admin notice when editing an Events Calendar Pro recurring event that has tickets in classic editor to warn about how tickets will act on recurring events. [ET-949]
 * Tweak - Show warning message within the classic ticket editor if no commerce provider is active. [ET-957]
 * Tweak - Show warning message within the classic ticket editor for recurring events about the limitations of tickets on recurring events. [ET-947]
