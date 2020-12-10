@@ -2401,6 +2401,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$commerce_tickets = $this->commerce_get_tickets_in_cart( $tickets );
 
 		foreach ( $commerce_tickets as $ticket ) {
+			if ( ! is_array( $ticket ) ) {
+				continue;
+			}
+
 			$tickets[ $ticket['ticket_id'] ] = $ticket['quantity'];
 		}
 
