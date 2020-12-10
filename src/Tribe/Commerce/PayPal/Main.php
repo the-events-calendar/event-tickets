@@ -872,12 +872,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					$attendee_id       = $existing_attendee['attendee_id'];
 					$attendee          = [];
 				} else {
-					$attendee = array(
-						'post_status' => 'publish',
+					$attendee = [
 						'post_title'  => $post_title,
-						'post_type'   => $this->attendee_object,
-						'ping_status' => 'closed',
-					);
+					];
 
 					// since we are creating at least one
 					$has_generated_new_tickets = true;
@@ -915,12 +912,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 						$data['user_id'] = $attendee_user_id;
 					}
 
-					$repository->set_args( $data );
+					$attendee_object = tribe( 'tickets.attendees' )->create_attendee( $ticket_type, $data );
+					$attendee_id     = $attendee_object->ID;
 
-					$attendee_id = $repository->create();
-
-					// Update this after attendee is created.
-					update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
 				} else {
 					// Update attendee.
 					$repository->by_primary_key( $attendee_id );
@@ -945,21 +939,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 						default:
 							break;
 					}
-				}
-
-				if ( ! $updating_attendee ) {
-					/**
-					 * Action fired when an PayPal attendee ticket is created
-					 *
-					 * @since 4.7
-					 *
-					 * @param int    $attendee_id           Attendee post ID
-					 * @param string $order_id              PayPal Order ID
-					 * @param int    $product_id            PayPal ticket post ID
-					 * @param int    $order_attendee_id     Attendee number in submitted order
-					 * @param string $attendee_order_status The order status for the attendee.
-					 */
-					do_action( 'event_tickets_tpp_attendee_created', $attendee_id, $order_id, $product_id, $order_attendee_id, $attendee_order_status );
 				}
 
 				/**
