@@ -42,6 +42,8 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 			'email'           => $provider->email,
 			'attendee_status' => $provider::ATTENDEE_RSVP_KEY,
 		) );
+
+		add_filter( 'tribe_tickets_attendee_repository_set_attendee_args_' . $this->key_name, [ $this, 'filter_set_attendee_args' ], 3 );
 	}
 
 	/**
@@ -135,52 +137,68 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	}
 
 	/**
-	 * Format attendee data for meta updates.
+	 * Filter the arguments to set for the attendee for this provider.
 	 *
-	 * @param WP_Post                       $attendee      Attendee Object.
-	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket Object.
+	 * @since TBD
+	 *
+	 * @param array                         $args          List of arguments to set for the attendee.
 	 * @param array                         $attendee_data List of additional attendee data.
+	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object or null if not relying on it.
 	 *
-	 * @return array Formatted attendee data.
+	 * @return array List of arguments to set for the attendee.
 	 */
-	public function format_attendee_data( $attendee, $ticket, $attendee_data ) {
-
+	public function filter_set_attendee_args( $args, $attendee_data, $ticket = null ) {
 		/** @var Tribe__Tickets__RSVP $provider */
 		$provider = tribe( 'tickets.rsvp' );
 
-		$event_id = $ticket->get_event_id();
+		// Set default order ID.
+		if ( empty( $args['order_id'] ) ) {
+			$args['order_id'] = $provider::generate_order_id();
+		}
 
-		$defaults = [
-			'ticket_id'         => $ticket->ID,
-			'event_id'          => $event_id,
-			'security_code'     => $provider->generate_security_code( $attendee->ID ),
-			'order_id'          => $provider->generate_order_id(),
-			'optout'            => 1,
-			'attendee_status'   => 'yes',
-			'price_paid'        => 0,
-			'user_id'           => 0,
-			'order_attendee_id' => null,
-		];
+		// Set default attendee status.
+		if ( empty( $args['attendee_status'] ) ) {
+			$args['attendee_status'] = 'yes';
+		}
 
-		/**
-		 * Filter the formatted defaults for RSVP attendee.
-		 *
-		 * @since TBD
-		 *
-		 * @param array                         $attendee_data List of additional attendee data.
-		 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket Object.
-		 */
-		$attendee_data = apply_filters( 'tribe_tickets_attendee_rsvp_data_before_insert', wp_parse_args( $attendee_data, $defaults ), $ticket );
+		return $args;
+	}
 
-		// Remove nulls.
-		$attendee_data = array_filter(
-			$attendee_data,
-			static function( $value ) {
-				return ! is_null( $value );
-			}
-		);
+	/**
+	 * Save extra attendee data after creation of attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post                       $attendee      The attendee object.
+	 * @param array                         $attendee_data List of additional attendee data.
+	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object.
+	 */
+	public function save_extra_attendee_data( $attendee, $attendee_data, $ticket ) {
+		/** @var Tribe__Tickets__RSVP $provider */
+		$provider = tribe( 'tickets.rsvp' );
 
-		return $attendee_data;
+		$args = [];
+
+		// Set up security code if it was not already customized.
+		if ( empty( $attendee_data['security_code'] ) ) {
+			$args['security_code'] = $provider->generate_security_code( $attendee_data['attendee_id'] );
+		}
+
+		// If no args are set to be saved, bail.
+		if ( empty( $args ) ) {
+			return;
+		}
+
+		$query = $this->by( 'id', $attendee->ID );
+
+		try {
+			$query->set_args( $attendee_data );
+		} catch ( Tribe__Repository__Usage_Error $e ) {
+			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
+			return;
+		}
+
+		$query->save();
 	}
 
 	/**

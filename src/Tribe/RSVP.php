@@ -837,53 +837,18 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 */
 		$individual_attendee_email = apply_filters( 'tribe_tickets_attendee_create_individual_email', $email, $order_attendee_id, $order_id, $product_id, $post_id, $this );
 
-		$attendee = [
-			'post_title' => $individual_attendee_name,
+		$data = [
+			'full_name'         => $individual_attendee_name,
+			'email'             => $individual_attendee_email,
+			'ticket_id'         => $product_id,
+			'post_id'           => $post_id,
+			'order_id'          => $order_id,
+			'order_attendee_id' => $order_attendee_id,
+			'user_id'           => $user_id,
+			'optout'            => (int) $optout,
+			'attendee_status'   => $order_status,
+			'price_paid'        => 0,
 		];
-
-		if ( $order_id ) {
-			$attendee['post_title'] = $order_id . ' | ' . $attendee['post_title'];
-		}
-
-		if ( null !== $order_attendee_id ) {
-			$attendee['post_title'] .= ' | ' . $order_attendee_id;
-		}
-
-		$data = $attendee;
-
-		$data['ticket_id']         = $product_id;
-		$data['post_id']           = $post_id;
-		$data['order_id']          = $order_id;
-		$data['optout']            = (int) $optout;
-		$data['attendee_status']   = $order_status;
-		$data['full_name']         = $individual_attendee_name;
-		$data['email']             = $individual_attendee_email;
-		$data['price_paid']        = 0;
-		$data['order_attendee_id'] = $order_attendee_id;
-
-		if ( 0 === $user_id ) {
-			/**
-			 * Allow enabling user lookups by Attendee Email.
-			 *
-			 * @since 5.0.0
-			 *
-			 * @param boolean $lookup_user_from_email Whether to lookup the User using the Attendee Email if User ID not set.
-			 */
-			$lookup_user_from_email = apply_filters( 'tribe_tickets_rsvp_create_attendee_lookup_user_from_email', false );
-
-			if ( $lookup_user_from_email ) {
-				// Check if user exists.
-				$user = get_user_by( 'email', $individual_attendee_email );
-
-				if ( $user ) {
-					$user_id = $user->ID;
-				}
-			}
-		}
-
-		if ( 0 < $user_id ) {
-			$data['user_id'] = $user_id;
-		}
 
 		/** @var Tribe__Tickets__Attendees $attendees */
 		$attendees = tribe( 'tickets.attendees' );
