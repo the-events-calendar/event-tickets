@@ -176,11 +176,8 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 
 == Changelog ==
 
-= [5.0.4] 2020-12-16 =
+= [5.0.4] 2020-12-15 =
 
-* Feature - V2 Customizer - Add background color css overrides. [ET-935]
-* Feature - V2 Customizer - Add Event Title color css overrides. [ET-937]
-* Feature - V2 Customizer - Add Event Date & Time color css overrides. [ET-945]
 * Fix - Exclude the "RSVP" ticket provider from the providers list in the editor for tickets. [ET-953]
 * Fix - Post type settings label typo changed to plural "tickets". [ET-954]
 * Fix - RSVP/Ticket's end sale date for non-event post types now defaults to 1 year and 2 hrs from current date instead of 100 years. [ET-954]
