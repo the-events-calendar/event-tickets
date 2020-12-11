@@ -8,14 +8,14 @@ namespace Tribe\Tickets\Editor;
 /**
  * Warnings handling class.
  *
- * @since TBD
+ * @since 5.0.4
  */
 class Warnings {
 
 	/**
 	 * Hooks actions for showing warnings
 	 *
-	 * @since TBD
+	 * @since 5.0.4
 	 */
 	public function hook() {
 		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'show_recurring_event_warning_message' ] );
@@ -25,7 +25,7 @@ class Warnings {
 	/**
 	 * Show the Recurring Event warning message.
 	 *
-	 * @since TBD
+	 * @since 5.0.4
 	 *
 	 * @param int $post_id Post ID.
 	 */
@@ -48,7 +48,7 @@ class Warnings {
 	/**
 	 * Add Provider missing warning for tickets.
 	 *
-	 * @since TBD
+	 * @since 5.0.4
 	 */
 	public function add_commerce_provider_warning() {
 		$available_modules = array_diff_key( \Tribe__Tickets__Tickets::modules(), [ 'Tribe__Tickets__RSVP' => true ] );
@@ -63,7 +63,7 @@ class Warnings {
 	/**
 	 * Get the Commerce Provider missing warning message.
 	 *
-	 * @since TBD
+	 * @since 5.0.4
 	 *
 	 * @return string The Commerce Provider missing message.
 	 */
@@ -89,7 +89,7 @@ class Warnings {
 	/**
 	 * Get the Recurring Event warning message.
 	 *
-	 * @since TBD
+	 * @since 5.0.4
 	 *
 	 * @return string The Recurring Event warning message.
 	 */
@@ -100,7 +100,7 @@ class Warnings {
 	/**
 	 * Render the notice block.
 	 *
-	 * @since TBD
+	 * @since 5.0.4
 	 *
 	 * @param string $message Tee message to show.
 	 * @param string $type    Type of message.
