@@ -193,6 +193,7 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 * Tweak - Show warning message within the classic ticket editor for recurring events about the limitations of tickets on recurring events. [ET-947]
 * Tweak - Show confirmation dialog before deleting an attendee on the attendee list. [ET-648]
 * Tweak - Rearrange Classic Editor's ticket settings so all "Advanced" fields are into the main section, other than the non-RSVP fields for "SKU" and "Ecommerce". [ET-950]
+* Language - 16 new strings added, 167 updated, 0 fuzzied, and 7 obsoleted
 
 = [5.0.3.1] 2020-11-19 =
 
