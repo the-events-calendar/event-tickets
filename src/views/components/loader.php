@@ -9,9 +9,9 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @since TBD Update template to use icons from Tribe Common.
+ * @since 5.0.4 Update template to use icons from Tribe Common.
  *
- * @version TBD
+ * @version 5.0.4
  *
  */
 if ( empty( $text ) ) {

@@ -3,7 +3,7 @@
 Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, cliffpaulick, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, patriciahillebrandt, peterchester, reid.peifer, shane.pearlman, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
-Tested up to: 5.5.3
+Tested up to: 5.6.0
 Stable tag: 5.0.4
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -176,7 +176,7 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 
 == Changelog ==
 
-= [5.0.4] TBD =
+= [5.0.4] 2020-12-16 =
 
 * Fix - Exclude the "RSVP" ticket provider from the providers list in the editor for tickets. [ET-953]
 * Fix - Post type settings label typo changed to plural "tickets". [ET-954]
@@ -193,6 +193,7 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 * Tweak - Show warning message within the classic ticket editor for recurring events about the limitations of tickets on recurring events. [ET-947]
 * Tweak - Show confirmation dialog before deleting an attendee on the attendee list. [ET-648]
 * Tweak - Rearrange Classic Editor's ticket settings so all "Advanced" fields are into the main section, other than the non-RSVP fields for "SKU" and "Ecommerce". [ET-950]
+* Language - 16 new strings added, 167 updated, 0 fuzzied, and 7 obsoleted
 
 = [5.0.3.1] 2020-11-19 =
 
