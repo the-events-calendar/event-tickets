@@ -3,7 +3,7 @@
 Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, cliffpaulick, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, patriciahillebrandt, peterchester, reid.peifer, shane.pearlman, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
-Tested up to: 5.5.3
+Tested up to: 5.6.0
 Stable tag: 5.0.4
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -176,7 +176,7 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 
 == Changelog ==
 
-= [5.0.4] TBD =
+= [5.0.4] 2020-12-16 =
 
 * Fix - Post type settings label typo changed to plural "tickets". [ET-954]
 
