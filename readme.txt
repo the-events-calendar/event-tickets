@@ -178,6 +178,9 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 
 = [5.0.4] 2020-12-16 =
 
+* Feature - V2 Customizer - Add background color css overrides. [ET-935]
+* Feature - V2 Customizer - Add Event Title color css overrides. [ET-937]
+* Feature - V2 Customizer - Add Event Date & Time color css overrides. [ET-945]
 * Fix - Exclude the "RSVP" ticket provider from the providers list in the editor for tickets. [ET-953]
 * Fix - Post type settings label typo changed to plural "tickets". [ET-954]
 * Fix - RSVP/Ticket's end sale date for non-event post types now defaults to 1 year and 2 hrs from current date instead of 100 years. [ET-954]
@@ -188,6 +191,7 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 * Fix - Update loader templates to use new icons from Tribe Common. [ET-588]
 * Fix - Resolve PHP notices on the Attendee Registration Page from Tribe Commerce ticket details when multiple Commerce Providers may be available. [ET-599]
 * Fix - Prevent potential conflicts with themes like Avada that manually trigger a jQuery ready event during the normal jQuery ready event. [ETP-601]
+* Tweak - Add opaque backgrounds for selected bordered elements. [ET-944]
 * Tweak - Added admin notice when editing an Events Calendar Pro recurring event that has tickets in classic editor to warn about how tickets will act on recurring events. [ET-949]
 * Tweak - Show warning message within the classic ticket editor if no commerce provider is active. [ET-957]
 * Tweak - Show warning message within the classic ticket editor for recurring events about the limitations of tickets on recurring events. [ET-947]
