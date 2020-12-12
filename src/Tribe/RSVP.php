@@ -1368,7 +1368,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$sent = wp_mail( $to, $subject, $content, $headers, $attachments );
 
 		if ( $sent ) {
-			$this->update_ticket_sent_counter( $all_attendees[0]['qr_ticket_id'], $this->attendee_ticket_sent );
+			foreach ( $all_attendees as $attendee ) {
+				$this->update_ticket_sent_counter( $attendee['qr_ticket_id'], $this->attendee_ticket_sent );
+			}
 		}
 	}
 
