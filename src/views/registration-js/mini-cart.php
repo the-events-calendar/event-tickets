@@ -11,8 +11,9 @@
  * @since   4.12.0 Prevent potential errors when $provider_obj is not valid.
  * @since   4.12.3 Update detecting ticket provider to account for possibly inactive provider. Rename $provider_obj to
  *              the more accurately named $cart_provider.
+ * @since   5.0.4  Pass must_login variable to blocks/tickets/item template
  *
- * @version 4.12.3
+ * @version 5.0.4
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 
