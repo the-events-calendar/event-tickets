@@ -13,14 +13,14 @@ class Tribe__Tickets__Attendee_Registration__Meta {
 	 *
 	 * @since 4.9
 	 *
-	 * @param $args
+	 * @param array $args PayPal Add To Cart URL arguments.
 	 *
 	 * @filter tribe_tickets_commerce_paypal_add_to_cart_args 10 1
 	 *
 	 * @return array
 	 */
-	public function add_product_delete_to_paypal_url( $args ) {
-		$args['shopping_url'] = add_query_arg( array( 'clear_product_cache' => true ), $args['shopping_url'] );
+	public function add_product_delete_to_paypal_url( array $args ) {
+		$args['shopping_url'] = add_query_arg( [ 'clear_product_cache' => true ], $args['shopping_url'] );
 
 		return $args;
 	}

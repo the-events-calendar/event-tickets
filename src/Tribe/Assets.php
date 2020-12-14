@@ -12,17 +12,23 @@ class Tribe__Tickets__Assets {
 		/** @var Tribe__Tickets__Main $tickets_main */
 		$tickets_main = tribe( 'tickets.main' );
 
-		$tickets_deps   = [ 'dashicons', 'event-tickets-reset-css' ];
+		$tickets_deps = [
+			'dashicons',
+			'event-tickets-reset-css',
+		];
 
 		if ( $this->should_enqueue_common_full() ) {
 			$tickets_deps[] = 'tribe-common-full-style';
 		}
 
+		// Check wether we use v1 or v2. We need to update this when we deprecate tickets v1.
+		$tickets_stylesheet = tribe_tickets_new_views_is_enabled() ? 'tickets.css' : 'tickets-v1.css';
+
 		tribe_assets(
 			$tickets_main,
 			[
 				[ 'event-tickets-reset-css', 'reset.css' ],
-				[ 'event-tickets-tickets-css', 'tickets.css', $tickets_deps ],
+				[ 'event-tickets-tickets-css', $tickets_stylesheet, $tickets_deps ],
 				[ 'event-tickets-tickets-rsvp-css', 'rsvp-v1.css', [] ],
 				[ 'event-tickets-tickets-rsvp-js', 'rsvp.js', [ 'jquery' ] ],
 				[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
@@ -34,26 +40,132 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
-		// Tickets registration page styles
 		tribe_asset(
 			$tickets_main,
-			'event-tickets-registration-page-styles',
-			'tickets-registration-page.css',
+			'tribe-tickets-forms-style',
+			'tickets-forms.css',
 			[],
 			null,
-			[]
+			[
+				'groups' => [
+					'tribe-tickets-block-assets',
+					'tribe-tickets-rsvp',
+					'tribe-tickets-registration-page',
+				],
+			]
 		);
 
-		// Tickets registration page scripts
-		tribe_asset(
-			$tickets_main,
-			'event-tickets-registration-page-scripts',
-			'tickets-registration-page.js',
-			[ 'jquery', 'wp-util' ],
-			null,
-			[]
-		);
+		if (
+			tribe_tickets_new_views_is_enabled()
+			|| tribe_tickets_rsvp_new_views_is_enabled()
+		) {
+			// Tickets loader library JS.
+			tribe_asset(
+				$tickets_main,
+				'tribe-tickets-loader',
+				'v2/tickets-loader.js',
+				[
+					'jquery',
+					'tribe-common',
+				],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-block-assets',
+						'tribe-tickets-rsvp',
+						'tribe-tickets-registration-page',
+					],
+				]
+			);
 
+			// @todo: Remove this once we solve the common breakpoints vs container based.
+			tribe_asset(
+				$tickets_main,
+				'tribe-common-responsive',
+				'common-responsive.css',
+				[ 'tribe-common-skeleton-style' ],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-block-assets',
+						'tribe-tickets-rsvp',
+						'tribe-tickets-registration-page',
+					],
+				]
+			);
+		}
+
+		if ( tribe_tickets_new_views_is_enabled() ) {
+			// Tribe tickets utils.
+			tribe_asset(
+				$tickets_main,
+				'tribe-tickets-utils',
+				'v2/tickets-utils.js',
+				[
+					'jquery',
+					'tribe-common',
+				],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-block-assets',
+						'tribe-tickets-rsvp',
+						'tribe-tickets-registration-page',
+					],
+				]
+			);
+
+			// Tribe tickets page.
+			tribe_asset(
+				$tickets_main,
+				'tribe-tickets-page',
+				'v2/tickets-page.js',
+				[
+					'jquery',
+					'tribe-common',
+				],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-page-assets',
+					],
+				]
+			);
+
+		} else {
+
+			// Tickets registration page scripts.
+			tribe_asset(
+				$tickets_main,
+				'tribe-tickets-registration-page-scripts',
+				'tickets-registration-page.js',
+				[
+					'jquery',
+					'wp-util',
+					'tribe-common',
+				],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-registration-page',
+					],
+				]
+			);
+
+			// Tickets registration page styles.
+			tribe_asset(
+				$tickets_main,
+				'tribe-tickets-registration-page-styles',
+				'tickets-registration-page.css',
+				[],
+				null,
+				[
+					'groups' => [
+						'tribe-tickets-registration-page',
+					],
+				]
+			);
+		}
 	}
 
 	/**
@@ -63,7 +175,7 @@ class Tribe__Tickets__Assets {
 	 * @since 4.10.9 Use customizable ticket name functions.
 	 */
 	public function admin_enqueue_scripts() {
-		// Set up some data for our localize scripts
+		// Set up some data for our localize scripts.
 
 		$upload_header_data = [
 			'title'  => esc_html( sprintf( __( '%s header image', 'event-tickets' ), tribe_get_ticket_label_singular( 'header_image_title' ) ) ),
@@ -175,7 +287,7 @@ class Tribe__Tickets__Assets {
 		 */
 		$modules = Tribe__Tickets__Tickets::modules();
 
-		// For the metabox
+		// For the metabox.
 		return ! empty( $post ) && ! empty( $modules ) && in_array( $post->post_type, tribe( 'tickets.main' )->post_types(), true );
 	}
 
@@ -189,10 +301,21 @@ class Tribe__Tickets__Assets {
 	public function should_enqueue_frontend() {
 		$is_on_valid_post_type = tribe_tickets_is_enabled_post_context();
 
-		/** @var Tribe__Tickets__Attendee_Registration__Main $ar */
-		$ar = tribe( 'tickets.attendee_registration' );
+		/**
+		 * This Try/Catch is present to deal with a problem on Autoloading from version 5.1.0 ET+ with ET 5.0.3.
+		 *
+		 * @todo Needs to be revised once proper autoloading rules are done for Common, ET and ET+.
+		 */
+		try {
+			/** @var \Tribe__Tickets__Attendee_Registration__Main $ar_reg */
+			$ar_reg = tribe( 'tickets.attendee_registration' );
 
-		return $is_on_valid_post_type || $ar->is_on_page();
+			$is_on_ar_page = $ar_reg->is_on_page();
+		} catch ( \Exception $exception ) {
+			$is_on_ar_page = false;
+		}
+
+		return $is_on_valid_post_type || $is_on_ar_page;
 	}
 
 	/**

@@ -8,7 +8,7 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp                 The rsvp ticket object.
  * @var boolean                       $opt_in_toggle_hidden The order status of the RSVP that was made.
@@ -16,8 +16,8 @@
  * @var string                        $opt_in_nonce         The nonce for opt-in AJAX requests.
  * @var boolean                       $opt_in_checked       Whether the opt-in field should be checked.
  *
- * @since5.0.0
- * @version5.0.0
+ * @since 5.0.0
+ * @version 5.0.0
  */
 
 if ( $opt_in_toggle_hidden ) {

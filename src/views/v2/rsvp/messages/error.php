@@ -8,13 +8,13 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
  * @var string|array $error_message The error message(s).
  *
- * @since5.0.0
+ * @since 5.0.0
  *
- * @version5.0.0
+ * @version 5.0.0
  */
 
 // Treat error messages as an array.

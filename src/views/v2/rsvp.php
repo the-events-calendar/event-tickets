@@ -7,11 +7,11 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link  http://m.tri.be/1amp
+ * @link  https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
  * @since 4.12.3
  *
- * @version5.0.0
+ * @version 5.0.0
  *
  * @var Tribe__Tickets__Editor__Template $this
  * @var WP_Post|int                      $post_id       The post object or ID.

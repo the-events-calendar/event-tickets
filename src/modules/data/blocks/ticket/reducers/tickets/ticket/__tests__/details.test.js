@@ -30,6 +30,10 @@ describe( 'Details reducer', () => {
 		expect( reducer( DEFAULT_STATE, actions.setTicketSku( 'block-id', '12345678' ) ) ).toMatchSnapshot();
 	} );
 
+	it( 'should set the iac setting', () => {
+		expect( reducer( DEFAULT_STATE, actions.setTicketIACSetting( 'block-id', 'none' ) ) ).toMatchSnapshot();
+	} );
+
 	it( 'should set the start date', () => {
 		expect( reducer( DEFAULT_STATE, actions.setTicketStartDate( 'block-id', 'January 1, 2018' ) ) ).toMatchSnapshot();
 	} );

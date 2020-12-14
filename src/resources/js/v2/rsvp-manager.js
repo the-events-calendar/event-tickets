@@ -1,7 +1,8 @@
+/* global tribe */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since5.0.0
+ * @since 5.0.0
  *
  * @type {PlainObject}
  */
@@ -30,13 +31,12 @@ tribe.tickets.rsvp.manager = {};
  */
 ( function( $, _, obj ) {
 	'use strict';
-	var $document = $( document );
-	var $window = $( window );
+	const $document = $( document );
 
 	/**
 	 * Selectors used for configuration and setup
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @type {PlainObject}
 	 */
@@ -50,7 +50,7 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Stores the current ajax request been handled by the manager.
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @type {jqXHR|null}
 	 */
@@ -59,7 +59,7 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Containers on the current page that were initialized.
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @type {jQuery}
 	 */
@@ -79,14 +79,14 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Clean up the container and event listeners
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @param  {jQuery} container Which element we are going to clean up
 	 *
 	 * @return {void}
 	 */
 	obj.cleanup = function( container ) {
-		var $container = $( container );
+		const $container = $( container );
 
 		$container.trigger( 'beforeCleanup.tribeTicketsRsvp', [ $container ] );
 
@@ -96,7 +96,7 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Setup the container for RSVP management
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @todo  Requirement to setup other JS modules after hijacking Click and Submit
 	 *
@@ -106,7 +106,7 @@ tribe.tickets.rsvp.manager = {};
 	 * @return {void}
 	 */
 	obj.setup = function( index, container ) {
-		var $container = $( container );
+		const $container = $( container );
 
 		$container.trigger( 'beforeSetup.tribeTicketsRsvp', [ index, $container ] );
 
@@ -116,7 +116,7 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Performs an AJAX request.
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @param  {object}         data       DOM Event related to the Click action
 	 * @param  {Element|jQuery} $container Which container we are dealing with
@@ -124,7 +124,7 @@ tribe.tickets.rsvp.manager = {};
 	 * @return {void}
 	 */
 	obj.request = function( data, $container ) {
-		var settings = obj.getAjaxSettings( $container );
+		const settings = obj.getAjaxSettings( $container );
 
 		// Pass the data received to the $.ajax settings
 		settings.data = data;
@@ -135,7 +135,7 @@ tribe.tickets.rsvp.manager = {};
 	/**
 	 * Gets the jQuery.ajax() settings provided a views container
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @param  {Element|jQuery} $container Which container we are dealing with.
 	 *
@@ -143,7 +143,7 @@ tribe.tickets.rsvp.manager = {};
 	 */
 	obj.getAjaxSettings = function( $container ) {
 
-		var ajaxSettings = {
+		const ajaxSettings = {
 			url: TribeRsvp.ajaxurl,
 			method: 'POST',
 			beforeSend: obj.ajaxBeforeSend,
@@ -163,7 +163,7 @@ tribe.tickets.rsvp.manager = {};
 	 *
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @param  {jqXHR}       jqXHR    Request object
 	 * @param  {PlainObject} settings Settings that this request will be made with
@@ -171,14 +171,11 @@ tribe.tickets.rsvp.manager = {};
 	 * @return {void}
 	 */
 	obj.ajaxBeforeSend = function( jqXHR, settings ) {
-		var $container = this;
-		var $loader = $container.find( obj.selectors.loader );
+		const $container = this;
 
 		$container.trigger( 'beforeAjaxBeforeSend.tribeTicketsRsvp', [ jqXHR, settings ] );
 
-		if ( $loader.length ) {
-			$loader.removeClass( obj.selectors.hiddenElement.className() );
-		}
+		tribe.tickets.loader.show( $container );
 
 		$container.trigger( 'afterAjaxBeforeSend.tribeTicketsRsvp', [ jqXHR, settings ] );
 	};
@@ -190,7 +187,7 @@ tribe.tickets.rsvp.manager = {};
 	 *
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @param  {jqXHR}  jqXHR      Request object
 	 * @param  {String} textStatus Status for the request
@@ -198,14 +195,11 @@ tribe.tickets.rsvp.manager = {};
 	 * @return {void}
 	 */
 	obj.ajaxComplete = function( jqXHR, textStatus ) {
-		var $container = this;
-		var $loader = $container.find( obj.selectors.loader );
+		const $container = this;
 
 		$container.trigger( 'beforeAjaxComplete.tribeTicketsRsvp', [ jqXHR, textStatus ] );
 
-		if ( $loader.length ) {
-			$loader.addClass( obj.selectors.hiddenElement.className() );
-		}
+		tribe.tickets.loader.hide( $container );
 
 		$container.trigger( 'afterAjaxComplete.tribeTicketsRsvp', [ jqXHR, textStatus ] );
 
@@ -221,7 +215,7 @@ tribe.tickets.rsvp.manager = {};
 	 *
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @param  {Object} response   Response sent from the AJAX response.
 	 * @param  {String} textStatus Status for the request
@@ -268,7 +262,7 @@ tribe.tickets.rsvp.manager = {};
 	 *
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
-	 * @since5.0.0
+	 * @since 5.0.0
 	 *
 	 * @param  {jqXHR}       jqXHR    Request object
 	 * @param  {PlainObject} settings Settings that this request was made with
@@ -276,7 +270,7 @@ tribe.tickets.rsvp.manager = {};
 	 * @return {void}
 	 */
 	obj.ajaxError = function( jqXHR, settings ) {
-		var $container = this;
+		const $container = this;
 
 		$container.trigger( 'beforeAjaxError.tribeTicketsRsvp', [ jqXHR, settings ] );
 

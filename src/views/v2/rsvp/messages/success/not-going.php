@@ -8,14 +8,14 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link https://m.tri.be/1amp Help article for RSVP & Ticket template files.
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp     The rsvp ticket object.
  * @var null|bool                     $is_going Whether the user confirmed for going or not-going.
  *
- * @since5.0.0
+ * @since 5.0.0
  *
- * @version5.0.0
+ * @version 5.0.0
  */
 
 if ( ! empty( $is_going ) ) {

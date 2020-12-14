@@ -163,32 +163,38 @@ export function* setTicketInitialState( action ) {
 		put( actions.setTicketHasBeenCreated( clientId, hasBeenCreated ) ),
 	] );
 
-	try {
-		// NOTE: This requires TEC to be installed, if not installed, do not set an end date
-		const eventStart = yield select( tribe.events.data.blocks.datetime.selectors.getStart ); // Ticket purchase window should end when event starts
-		const endMoment = yield call( momentUtil.toMoment, eventStart );
-		const endDate = yield call( momentUtil.toDatabaseDate, endMoment );
-		const endDateInput = yield datePickerFormat
-			? call( momentUtil.toDate, endMoment, datePickerFormat )
-			: call( momentUtil.toDate, endMoment );
-		const endTime = yield call( momentUtil.toDatabaseTime, endMoment );
-		const endTimeInput = yield call( momentUtil.toTime, endMoment );
+	const isEvent = yield call( isTribeEventPostType );
 
-		yield all( [
-			put( actions.setTicketEndDate( clientId, endDate ) ),
-			put( actions.setTicketEndDateInput( clientId, endDateInput ) ),
-			put( actions.setTicketEndDateMoment( clientId, endMoment ) ),
-			put( actions.setTicketEndTime( clientId, endTime ) ),
-			put( actions.setTicketEndTimeInput( clientId, endTimeInput ) ),
-			put( actions.setTicketTempEndDate( clientId, endDate ) ),
-			put( actions.setTicketTempEndDateInput( clientId, endDateInput ) ),
-			put( actions.setTicketTempEndDateMoment( clientId, endMoment ) ),
-			put( actions.setTicketTempEndTime( clientId, endTime ) ),
-			put( actions.setTicketTempEndTimeInput( clientId, endTimeInput ) ),
-		] );
-	} catch ( err ) {
-		console.error( err );
-		// ¯\_(ツ)_/¯
+	// Only run this on events post type.
+	if ( isEvent && window.tribe.events ) {
+		// This try-catch may be redundant given the above if statement.
+		try {
+			// NOTE: This requires TEC to be installed, if not installed, do not set an end date
+			const eventStart = yield select( tribe.events.data.blocks.datetime.selectors.getStart ); // Ticket purchase window should end when event starts
+			const endMoment = yield call( momentUtil.toMoment, eventStart );
+			const endDate = yield call( momentUtil.toDatabaseDate, endMoment );
+			const endDateInput = yield datePickerFormat
+				? call( momentUtil.toDate, endMoment, datePickerFormat )
+				: call( momentUtil.toDate, endMoment );
+			const endTime = yield call( momentUtil.toDatabaseTime, endMoment );
+			const endTimeInput = yield call( momentUtil.toTime, endMoment );
+
+			yield all( [
+				put( actions.setTicketEndDate( clientId, endDate ) ),
+				put( actions.setTicketEndDateInput( clientId, endDateInput ) ),
+				put( actions.setTicketEndDateMoment( clientId, endMoment ) ),
+				put( actions.setTicketEndTime( clientId, endTime ) ),
+				put( actions.setTicketEndTimeInput( clientId, endTimeInput ) ),
+				put( actions.setTicketTempEndDate( clientId, endDate ) ),
+				put( actions.setTicketTempEndDateInput( clientId, endDateInput ) ),
+				put( actions.setTicketTempEndDateMoment( clientId, endMoment ) ),
+				put( actions.setTicketTempEndTime( clientId, endTime ) ),
+				put( actions.setTicketTempEndTimeInput( clientId, endTimeInput ) ),
+			] );
+		} catch ( err ) {
+			console.error( err );
+			// ¯\_(ツ)_/¯
+		}
 	}
 
 	const hasTicketsPlus = yield select( plugins.selectors.hasPlugin, plugins.constants.TICKETS_PLUS );
@@ -235,6 +241,7 @@ export function* setBodyDetails( clientId ) {
 	body.append( 'end_date', yield select( selectors.getTicketTempEndDate, props ) );
 	body.append( 'end_time', yield select( selectors.getTicketTempEndTime, props ) );
 	body.append( 'sku', yield select( selectors.getTicketTempSku, props ) );
+	body.append( 'iac', yield select( selectors.getTicketTempIACSetting, props ) );
 	body.append( 'menu_order', yield call( [ wpSelect( 'core/editor' ), 'getBlockIndex' ], clientId, rootClientId ) )
 
 	const capacityType = yield select( selectors.getTicketTempCapacityType, props );
@@ -291,6 +298,7 @@ export function* fetchTicket( action ) {
 				title,
 				description,
 				sku,
+				iac,
 				capacity_type,
 				capacity,
 				supports_attendee_information,
@@ -327,6 +335,7 @@ export function* fetchTicket( action ) {
 				description,
 				price: cost_details.values[ 0 ],
 				sku,
+				iac,
 				startDate,
 				startDateInput,
 				startDateMoment: startMoment,
@@ -398,6 +407,7 @@ export function* createNewTicket( action ) {
 				description,
 				price,
 				sku,
+				iac,
 				startDate,
 				startDateInput,
 				startDateMoment,
@@ -415,6 +425,7 @@ export function* createNewTicket( action ) {
 				select( selectors.getTicketTempDescription, props ),
 				select( selectors.getTicketTempPrice, props ),
 				select( selectors.getTicketTempSku, props ),
+				select( selectors.getTicketTempIACSetting, props ),
 				select( selectors.getTicketTempStartDate, props ),
 				select( selectors.getTicketTempStartDateInput, props ),
 				select( selectors.getTicketTempStartDateMoment, props ),
@@ -435,6 +446,7 @@ export function* createNewTicket( action ) {
 					description,
 					price,
 					sku,
+					iac,
 					startDate,
 					startDateInput,
 					startDateMoment,
@@ -505,6 +517,7 @@ export function* updateTicket( action ) {
 				description,
 				price,
 				sku,
+				iac,
 				startDate,
 				startDateInput,
 				startDateMoment,
@@ -522,6 +535,7 @@ export function* updateTicket( action ) {
 				select( selectors.getTicketTempDescription, props ),
 				select( selectors.getTicketTempPrice, props ),
 				select( selectors.getTicketTempSku, props ),
+				select( selectors.getTicketTempIACSetting, props ),
 				select( selectors.getTicketTempStartDate, props ),
 				select( selectors.getTicketTempStartDateInput, props ),
 				select( selectors.getTicketTempStartDateMoment, props ),
@@ -542,6 +556,7 @@ export function* updateTicket( action ) {
 					description,
 					price,
 					sku,
+					iac,
 					startDate,
 					startDateInput,
 					startDateMoment,
@@ -757,6 +772,7 @@ export function* setTicketDetails( action ) {
 		description,
 		price,
 		sku,
+		iac,
 		startDate,
 		startDateInput,
 		startDateMoment,
@@ -776,6 +792,7 @@ export function* setTicketDetails( action ) {
 		put( actions.setTicketDescription( clientId, description ) ),
 		put( actions.setTicketPrice( clientId, price ) ),
 		put( actions.setTicketSku( clientId, sku ) ),
+		put( actions.setTicketIACSetting( clientId, iac ) ),
 		put( actions.setTicketStartDate( clientId, startDate ) ),
 		put( actions.setTicketStartDateInput( clientId, startDateInput ) ),
 		put( actions.setTicketStartDateMoment( clientId, startDateMoment ) ),
@@ -798,6 +815,7 @@ export function* setTicketTempDetails( action ) {
 		description,
 		price,
 		sku,
+		iac,
 		startDate,
 		startDateInput,
 		startDateMoment,
@@ -817,6 +835,7 @@ export function* setTicketTempDetails( action ) {
 		put( actions.setTicketTempDescription( clientId, description ) ),
 		put( actions.setTicketTempPrice( clientId, price ) ),
 		put( actions.setTicketTempSku( clientId, sku ) ),
+		put( actions.setTicketTempIACSetting( clientId, iac ) ),
 		put( actions.setTicketTempStartDate( clientId, startDate ) ),
 		put( actions.setTicketTempStartDateInput( clientId, startDateInput ) ),
 		put( actions.setTicketTempStartDateMoment( clientId, startDateMoment ) ),
@@ -908,8 +927,11 @@ export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ){
 		// If initial end and current end are the same, the RSVP has not been modified
 		const isNotManuallyEdited = yield call( [ tempEndMoment, 'isSame' ], endMoment, 'minute' );
 		const isSyncedToEventStart = yield call( [ tempEndMoment, 'isSame' ], prevEventStartMoment, 'minute' );
+		const isEvent = yield call( isTribeEventPostType );
 
-		if ( isNotManuallyEdited && isSyncedToEventStart ) {
+		// This if statement may be redundant given the try-catch statement above.
+		// Only run this on events post type.
+		if ( isEvent && window.tribe.events && isNotManuallyEdited && isSyncedToEventStart ) {
 			const eventStart = yield select( window.tribe.events.data.blocks.datetime.selectors.getStart );
 			const {
 				moment: endDateMoment,
