@@ -117,7 +117,7 @@ class Tribe__Tickets__Admin__Notices {
 	/**
 	 * Display dismissible notice about recurring events tickets, per event.
 	 *
-	 * @since TBD
+	 * @since 5.0.4
 	 */
 	public function maybe_display_classic_editor_ecp_recurring_tickets_notice() {
 		$post_id = absint( tribe_get_request_var( 'post' ) );

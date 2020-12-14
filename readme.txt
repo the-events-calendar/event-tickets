@@ -3,7 +3,7 @@
 Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, cliffpaulick, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, patriciahillebrandt, peterchester, reid.peifer, shane.pearlman, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
-Tested up to: 5.5.3
+Tested up to: 5.6.0
 Stable tag: 5.0.4
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -176,7 +176,7 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 
 == Changelog ==
 
-= [5.0.4] TBD =
+= [5.0.4] 2020-12-15 =
 
 * Fix - Exclude the "RSVP" ticket provider from the providers list in the editor for tickets. [ET-953]
 * Fix - Post type settings label typo changed to plural "tickets". [ET-954]
@@ -187,11 +187,14 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 * Fix - Make the "Configure Settings" link on the Welcome screen for Event Tickets open up in a new tab. [ET-958]
 * Fix - Update loader templates to use new icons from Tribe Common. [ET-588]
 * Fix - Resolve PHP notices on the Attendee Registration Page from Tribe Commerce ticket details when multiple Commerce Providers may be available. [ET-599]
+* Fix - Prevent potential conflicts with themes like Avada that manually trigger a jQuery ready event during the normal jQuery ready event. [ETP-601]
+* Tweak - Add opaque backgrounds for selected bordered elements. [ET-944]
 * Tweak - Added admin notice when editing an Events Calendar Pro recurring event that has tickets in classic editor to warn about how tickets will act on recurring events. [ET-949]
 * Tweak - Show warning message within the classic ticket editor if no commerce provider is active. [ET-957]
 * Tweak - Show warning message within the classic ticket editor for recurring events about the limitations of tickets on recurring events. [ET-947]
 * Tweak - Show confirmation dialog before deleting an attendee on the attendee list. [ET-648]
 * Tweak - Rearrange Classic Editor's ticket settings so all "Advanced" fields are into the main section, other than the non-RSVP fields for "SKU" and "Ecommerce". [ET-950]
+* Language - 16 new strings added, 167 updated, 0 fuzzied, and 7 obsoleted
 
 = [5.0.3.1] 2020-11-19 =
 
