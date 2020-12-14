@@ -1371,11 +1371,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			foreach ( $all_attendees as $attendee ) {
 				$this->update_ticket_sent_counter( $attendee['qr_ticket_id'], $this->attendee_ticket_sent );
 
-				$this->update_attendee_activity_log( $attendee['attendee_id'], [
-					'type'  => 'email',
-					'name'  => $attendee['holder_name'],
-					'email' => $attendee['holder_email'],
-				] );
+				$this->update_attendee_activity_log(
+					$attendee['attendee_id'],
+					[
+						'type'  => 'email',
+						'name'  => $attendee['holder_name'],
+						'email' => $attendee['holder_email'],
+					]
+				);
 			}
 		}
 	}
