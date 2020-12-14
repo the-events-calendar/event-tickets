@@ -15,9 +15,9 @@
  *              Retrieve $is_meta_up_to_date in a manner consistent with other template variables. Moved `novalidate` from
  *              div to form, as it used to be. Implement short array syntax.
  * @since 5.0.3 Add `event-tickets` class to the wrapper.
- * @since TBD Remove extraneous "Save and checkout" heading.
+ * @since 5.0.4 Remove extraneous "Save and checkout" heading.
  *
- * @version TBD
+ * @version 5.0.4
  *
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */

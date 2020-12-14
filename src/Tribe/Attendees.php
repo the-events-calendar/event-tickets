@@ -328,7 +328,7 @@ class Tribe__Tickets__Attendees {
 		/**
 		 * Allow filtering the configuration data for the Attendee objects on Attendees report page.
 		 *
-		 * @since TBD
+		 * @since 5.0.4
 		 *
 		 * @param array $config_data List of configuration data to be localized.
 		 */

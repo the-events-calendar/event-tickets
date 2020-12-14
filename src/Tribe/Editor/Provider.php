@@ -36,7 +36,7 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Handle registration for blocks-functionality separately.
 	 *
-	 * @since TBD
+	 * @since 5.0.4
 	 */
 	public function register_for_blocks() {
 		/** @var \Tribe__Editor $editor */

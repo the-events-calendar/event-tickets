@@ -547,7 +547,7 @@ window.tribe.tickets.registration = {};
 				isValidfield = false;
 			}
 		}
-		
+
 		// Validation for Tribe Horizontal Date Picker
 		if ( $input.hasClass( obj.selector.horizontal_datepicker.value.replace( /^\./, '' ) ) ) {
 			const wrapper = $input.closest( obj.selector.horizontal_datepicker.container );
@@ -806,7 +806,7 @@ window.tribe.tickets.registration = {};
 		obj.initFormPrefills();
 	};
 
-	obj.document.on( 'ready', function() {
+	obj.document.ready( function() {
 		obj.init();
 	} );
 } )( jQuery, window.tribe.tickets.registration );

@@ -50,7 +50,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 		/**
 		 * Filter the default buffer duration between ticket sale start time and end time.
 		 *
-		 * @since TBD
+		 * @since 5.0.4
 		 *
 		 * @param int $buffer Number in hours to be used.
 		 */
@@ -59,7 +59,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 		/**
 		 * Filter the default buffer years between ticket sale start date and end date.
 		 *
-		 * @since TBD
+		 * @since 5.0.4
 		 *
 		 * @param int $buffer Number in years to be used.
 		 */

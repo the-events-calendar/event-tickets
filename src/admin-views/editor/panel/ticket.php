@@ -268,14 +268,13 @@ $msg_rsvp_form_save = sprintf(
 					><?php
 						echo esc_html(
 							sprintf(
-							// Translators: %1$s: dynamic 'Ticket' text, %2$s: dynamic 'tickets' text.
+								// Translators: %1$s: dynamic 'ticket' text.
 								_x(
-									'%1$s type name shows on the frontend and emailed %2$s',
+									'This is the name of your %1$s. It is displayed on the frontend of your website and within %1$s emails.',
 									'admin edit ticket panel note',
 									'event-tickets'
 								),
-								tribe_get_ticket_label_singular( 'admin_edit_ticket_panel_note' ),
-								tribe_get_ticket_label_plural_lowercase( 'admin_edit_ticket_panel_note' )
+								tribe_get_ticket_label_singular_lowercase( 'admin_edit_ticket_panel_note' )
 							)
 						);
 						?>
@@ -287,14 +286,13 @@ $msg_rsvp_form_save = sprintf(
 					><?php
 						echo esc_html(
 							sprintf(
-								// Translators: %1$s: dynamic 'RSVP' text, %2$s: dynamic 'rsvps' text.
+								// Translators: %1$s: dynamic 'RSVP' text.
 								_x(
-									'%1$s type name shows on the frontend and emailed %2$s',
-									'admin edit ticket panel note',
+									'This is the name of your %1$s. It is displayed on the frontend of your website and within %1$s emails.',
+									'admin edit RSVP panel note',
 									'event-tickets'
 								),
-								tribe_get_rsvp_label_singular( 'admin_edit_rsvp_panel_note' ),
-								tribe_get_rsvp_label_plural_lowercase( 'admin_edit_ticket_panel_note' )
+								tribe_get_rsvp_label_singular( 'admin_edit_rsvp_panel_note' )
 							)
 						);
 						?>
