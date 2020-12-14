@@ -52,6 +52,7 @@ class Tribe__Tickets__Assets {
 					'tribe-tickets-rsvp',
 					'tribe-tickets-registration-page',
 					'tribe-tickets-admin',
+					'tribe-tickets-forms',
 				],
 			]
 		);

@@ -694,7 +694,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$cache = tribe( 'cache' );
 			$key   = __METHOD__ . '-' . $this->orm_provider . '-' . $post_id;
 
-			if ( isset( $cache[ $key ] ) ) {
+			if ( isset( $cache[ $key ] ) && is_array( $cache[ $key ] ) ) {
 				return $cache[ $key ];
 			}
 
