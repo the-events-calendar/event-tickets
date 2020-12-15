@@ -5,6 +5,12 @@ namespace Tribe\Tickets\ORM\Attendees;
 use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 use Tribe__Tickets__Data_API as Data_API;
 
+/**
+ * Class CreateTest
+ *
+ * @package Tribe\Tickets\ORM\Attendees
+ * @group orm-create-update
+ */
 class CreateTest extends \Codeception\TestCase\WPTestCase {
 
 	/**

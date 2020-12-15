@@ -8,6 +8,12 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 use Tribe__Tickets__Data_API as Data_API;
 
+/**
+ * Class UpdateTest
+ *
+ * @package Tribe\Tickets\ORM\Attendees
+ * @group orm-create-update
+ */
 class UpdateTest extends \Codeception\TestCase\WPTestCase {
 
 	use RSVP_Ticket_Maker;

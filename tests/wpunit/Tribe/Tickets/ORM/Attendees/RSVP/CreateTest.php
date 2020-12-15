@@ -6,6 +6,12 @@ use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 use WP_Post;
 
+/**
+ * Class CreateTest
+ *
+ * @package Tribe\Tickets\ORM\Attendees\RSVP
+ * @group orm-create-update
+ */
 class CreateTest extends \Codeception\TestCase\WPTestCase {
 
 	use RSVP_Ticket_Maker;

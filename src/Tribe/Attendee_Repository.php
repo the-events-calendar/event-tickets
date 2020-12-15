@@ -734,6 +734,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		// Set the attendee arguments accordingly.
 		$this->set_attendee_args( $attendee_data, $ticket );
 
+		// Update the attendee data for referencing with what we handled in the set_attendee_args().
+		$attendee_data = array_merge( $attendee_data, $this->updates );
+
 		// Create the new attendee.
 		$attendee = $this->create();
 
