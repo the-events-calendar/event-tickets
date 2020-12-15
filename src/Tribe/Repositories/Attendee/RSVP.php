@@ -141,7 +141,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	}
 
 	/**
-	 * Trigger actions.
+	 * Handle backwards compatible actions for RSVPs.
 	 *
 	 * @since TBD
 	 *
@@ -152,10 +152,8 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	public function trigger_create_actions( $attendee, $attendee_data, $ticket ) {
 		parent::trigger_create_actions( $attendee, $attendee_data, $ticket );
 
-		// Handle backwards compatible actions for RSVPs.
-
 		$attendee_id       = $attendee->ID;
-		$post_id           = $attendee_data['event_id'];
+		$post_id           = Arr::get( $attendee_data, 'post_id' );
 		$order_id          = $attendee_data['order_id'];
 		$product_id        = $ticket->ID;
 		$order_attendee_id = Arr::get( $attendee_data, 'order_attendee_id' );
