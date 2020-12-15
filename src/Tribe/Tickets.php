@@ -3743,6 +3743,70 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Create an attendee for the Commerce provider from a ticket.
+		 *
+		 * @since TBD
+		 *
+		 * @param Tribe__Tickets__Ticket_Object|int $ticket        Ticket object or ID to create the attendee for.
+		 * @param array                             $attendee_data Attendee data to create from.
+		 *
+		 * @return WP_Post|false The new post object or false if unsuccessful.
+		 */
+		public function create_attendee( $ticket, $attendee_data ) {
+			// Get the ticket object from the ID.
+			if ( is_numeric( $ticket ) ) {
+				$ticket = $this->get_ticket( 0, (int) $ticket );
+			}
+
+			if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+				return false;
+			}
+
+			/** @var Tribe__Tickets__Attendee_Repository $orm */
+			$orm = tribe_attendees( $this->orm_provider );
+
+			try {
+				return $orm->create_attendee_for_ticket( $ticket, $attendee_data );
+			} catch ( Tribe__Repository__Usage_Error $e ) {
+				do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
+				return false;
+			}
+		}
+
+		/**
+		 * Update an attendee for the Commerce provider.
+		 *
+		 * @since TBD
+		 *
+		 * @param array|int $attendee      The attendee data or ID for the attendee to update.
+		 * @param array     $attendee_data The attendee data to update to.
+		 *
+		 * @return WP_Post|false The updated post object or false if unsuccessful.
+		 */
+		public function update_attendee( $attendee, $attendee_data ) {
+			if ( is_numeric( $attendee ) ) {
+				$attendee_id = (int) $attendee;
+			} elseif ( is_array( $attendee ) && isset( $attendee['attendee_id'] ) ) {
+				$attendee_id = (int) $attendee['attendee_id'];
+			} else {
+				return false;
+			}
+
+			// Set the attendee ID to be updated.
+			$attendee_data['attendee_id'] = $attendee_id;
+
+			/** @var Tribe__Tickets__Attendee_Repository $orm */
+			$orm = tribe_attendees( $this->orm_provider );
+
+			try {
+				return $orm->update_attendee( $attendee_data );
+			} catch ( Tribe__Repository__Usage_Error $e ) {
+				do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
+				return false;
+			}
+		}
+
+		/**
 		 * Localized messages for errors, etc in javascript. Added in assets() above.
 		 * Set up this way to amke it easier to add messages as needed.
 		 *

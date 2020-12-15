@@ -2,16 +2,10 @@
 
 namespace Tribe\Tickets\ORM\Attendees;
 
-use Tribe\Tickets\RSVPTest;
-use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
-use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 use Tribe__Tickets__Data_API as Data_API;
 
 class CreateTest extends \Codeception\TestCase\WPTestCase {
-
-	use RSVP_Ticket_Maker;
-	use PayPal_Ticket_Maker;
 
 	/**
 	 * {@inheritdoc}
@@ -49,17 +43,17 @@ class CreateTest extends \Codeception\TestCase\WPTestCase {
 			'title' => 'A test attendee',
 		];
 
-		$ticket = $attendees->set_args( $args )->create();
+		$attendee = $attendees->set_args( $args )->create();
 
-		$this->assertFalse( $ticket );
+		$this->assertFalse( $attendee );
 	}
 
 	/**
-	 * It should not allow creating an attendee from the rsvp context.
+	 * It should not allow creating an attendee from the rsvp context without required args.
 	 *
 	 * @test
 	 */
-	public function should_not_allow_creating_attendee_from_rsvp_context() {
+	public function should_not_allow_creating_attendee_from_rsvp_context_without_required_args() {
 		/** @var Attendee_Repository $attendees */
 		$attendees = tribe_attendees( 'rsvp' );
 
@@ -67,18 +61,17 @@ class CreateTest extends \Codeception\TestCase\WPTestCase {
 			'title' => 'A test attendee',
 		];
 
-		$ticket = $attendees->set_args( $args )->create();
+		$attendee = $attendees->set_args( $args )->create();
 
-		$this->assertFalse( $ticket );
-		//$this->assertInstanceOf( \WP_Post::class, $ticket );
+		$this->assertFalse( $attendee );
 	}
 
 	/**
-	 * It should not allow creating an attendee from the tribe-commerce context.
+	 * It should not allow creating an attendee from the tribe-commerce context without required args.
 	 *
 	 * @test
 	 */
-	public function should_not_allow_creating_attendee_from_tribe_commerce_context() {
+	public function should_not_allow_creating_attendee_from_tribe_commerce_context_without_required_args() {
 		/** @var Attendee_Repository $attendees */
 		$attendees = tribe_attendees( 'tribe-commerce' );
 
@@ -86,10 +79,9 @@ class CreateTest extends \Codeception\TestCase\WPTestCase {
 			'title' => 'A test attendee',
 		];
 
-		$ticket = $attendees->set_args( $args )->create();
+		$attendee = $attendees->set_args( $args )->create();
 
-		$this->assertFalse( $ticket );
-		//$this->assertInstanceOf( \WP_Post::class, $ticket );
+		$this->assertFalse( $attendee );
 	}
 
 }

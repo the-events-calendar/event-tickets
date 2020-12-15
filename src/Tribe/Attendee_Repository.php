@@ -29,6 +29,15 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	protected static $order_statuses;
 
 	/**
+	 * The attendee provider object.
+	 *
+	 * @since TBD
+	 *
+	 * @var Tribe__Tickets__Tickets
+	 */
+	protected $attendee_provider;
+
+	/**
 	 * @var array An array of all the public order statuses supported by the repository.
 	 *            This list is hand compiled as reduced and easier to maintain.
 	 */
@@ -98,9 +107,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		] );
 
 		// Add object default aliases.
-		$this->update_fields_aliases = array_merge( $this->update_fields_aliases, array(
+		$this->update_fields_aliases = array_merge( $this->update_fields_aliases, [
 			'ticket_id'      => '_tribe_tickets_ticket_id',
-			'product_id'     => '_tribe_tickets_ticket_id',
 			'event_id'       => '_tribe_tickets_post_id',
 			'post_id'        => '_tribe_tickets_post_id',
 			'security_code'  => '_tribe_tickets_security_code',
@@ -111,7 +119,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'price_currency' => '_tribe_tickets_price_currency_symbol',
 			'full_name'      => '_tribe_tickets_full_name',
 			'email'          => '_tribe_tickets_email',
-		) );
+		] );
 
 		$this->init_order_statuses();
 	}
@@ -682,6 +690,30 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
+	 * @return WP_Post|false The new post object or false if unsuccessful.
+	 */
+	public function create() {
+		/*
+		 * Only create if we are using a specific attendee context. The post type used is
+		 * entirely dependent on the provider-specific implementation for attendees.
+		 */
+		if ( ! $this->key_name ) {
+			return false;
+		}
+
+		/*
+		 * Only create if we have a ticket set.
+		 */
+		if ( ! isset( $this->updates['ticket_id'] ) ) {
+			return false;
+		}
+
+		return parent::create();
+	}
+
+	/**
 	 * Create an attendee object from ticket and attendee data.
 	 *
 	 * @since TBD
@@ -693,7 +725,12 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
 	 */
-	public function create_attendee_for_ticket( $attendee_data, $ticket ) {
+	public function create_attendee_for_ticket( $ticket, $attendee_data ) {
+		// Require the ticket be a ticket object.
+		if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+			throw new Tribe__Repository__Usage_Error( 'You must provide a ticket object when creating an attendee from the Attendees Repository class' );
+		}
+
 		// Set the attendee arguments accordingly.
 		$this->set_attendee_args( $attendee_data, $ticket );
 
@@ -702,6 +739,14 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 
 		// Handle any further attendee updates.
 		$this->save_extra_attendee_data( $attendee, $attendee_data, $ticket );
+
+		// Trigger creation actions.
+		$this->trigger_create_actions( $attendee, $attendee_data, $ticket );
+
+		// Clear the attendee cache if post_id is provided.
+		if ( ! empty( $this->updates['post_id'] ) ) {
+			$this->attendee_provider->clear_attendees_cache( $this->updates['post_id'] );
+		}
 
 		return $attendee;
 	}
@@ -728,7 +773,21 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		$this->set_attendee_args( $attendee_data );
 
 		// Update the attendee(s).
-		return $this->save( $return_promise );
+		$saved = $this->save( $return_promise );
+
+		if ( $return_promise ) {
+			$repository = $this;
+
+			return $saved->then( static function() use ( $repository, $attendee_data ) {
+				// Trigger the update actions.
+				$repository->trigger_update_actions( $attendee_data );
+			} );
+		}
+
+		// Trigger the update actions.
+		$this->trigger_update_actions( $attendee_data );
+
+		return $saved;
 	}
 
 	/**
@@ -892,6 +951,126 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object.
 	 */
 	public function save_extra_attendee_data( $attendee, $attendee_data, $ticket ) {
-		// Each Attendee Repository should override this.
+		$args = [];
+
+		// Set up security code if it was not already customized.
+		if ( empty( $attendee_data['security_code'] ) ) {
+			$args['security_code'] = $this->attendee_provider->generate_security_code( $attendee->ID );
+		}
+
+		/**
+		 * Allow filtering the arguments to be used when saving extra attendee data.
+		 *
+		 * @since TBD
+		 *
+		 * @param array                         $args          List of arguments to set for the attendee.
+		 * @param WP_Post                       $attendee      The attendee object.
+		 * @param array                         $attendee_data List of additional attendee data.
+		 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object.
+		 */
+		$args = apply_filters( 'tribe_tickets_attendee_repository_save_extra_attendee_data_args', $args, $attendee, $attendee_data, $ticket );
+
+		// Maybe run filter if using a provider key name.
+		if ( $this->key_name ) {
+			/**
+			 * Allow filtering the arguments to be used when saving extra attendee data by provider key name.
+			 *
+			 * @since TBD
+			 *
+			 * @param array                         $args          List of arguments to set for the attendee.
+			 * @param WP_Post                       $attendee      The attendee object.
+			 * @param array                         $attendee_data List of additional attendee data.
+			 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object.
+			 */
+			$args = apply_filters( 'tribe_tickets_attendee_repository_save_extra_attendee_data_args_' . $this->key_name, $args, $attendee, $attendee_data, $ticket );
+		}
+
+		// If no args are set to be saved, bail.
+		if ( empty( $args ) ) {
+			return;
+		}
+
+		$query = tribe_attendees( $this->key_name );
+
+		$query->by( 'id', $attendee->ID );
+
+		try {
+			$query->set_args( $args );
+		} catch ( Tribe__Repository__Usage_Error $e ) {
+			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
+			return;
+		}
+
+		$query->save();
+	}
+
+	/**
+	 * Trigger the creation actions needed based on the provider.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post                       $attendee      The attendee object.
+	 * @param array                         $attendee_data List of additional attendee data.
+	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object.
+	 */
+	public function trigger_create_actions( $attendee, $attendee_data, $ticket ) {
+		/**
+		 * Allow hooking into after the attendee has been created.
+		 *
+		 * @since TBD
+		 *
+		 * @param WP_Post                             $attendee      The attendee object.
+		 * @param array                               $attendee_data List of additional attendee data.
+		 * @param Tribe__Tickets__Ticket_Object       $ticket        The ticket object.
+		 * @param Tribe__Tickets__Attendee_Repository $repository    The current repository object.
+		 */
+		do_action( 'tribe_tickets_attendee_repository_create_attendee_for_ticket_after_create', $attendee, $attendee_data, $ticket, $this );
+
+		// Maybe run filter if using a provider key name.
+		if ( $this->key_name ) {
+			/**
+			 * Allow hooking into after the attendee has been created by provider key name.
+			 *
+			 * @since TBD
+			 *
+			 * @param WP_Post                             $attendee      The attendee object.
+			 * @param array                               $attendee_data List of additional attendee data.
+			 * @param Tribe__Tickets__Ticket_Object       $ticket        The ticket object.
+			 * @param Tribe__Tickets__Attendee_Repository $repository    The current repository object.
+			 */
+			do_action( 'tribe_tickets_attendee_repository_create_attendee_for_ticket_after_create_' . $this->key_name, $attendee, $attendee_data, $ticket, $this );
+		}
+	}
+
+	/**
+	 * Trigger the update actions needed based on the provider.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $attendee_data  List of attendee data to be saved.
+	 */
+	public function trigger_update_actions( $attendee_data ) {
+		/**
+		 * Allow hooking into after the attendee has been updated.
+		 *
+		 * @since TBD
+		 *
+		 * @param array                               $attendee_data List of attendee data to be saved.
+		 * @param Tribe__Tickets__Attendee_Repository $repository    The current repository object.
+		 */
+		do_action( 'tribe_tickets_attendee_repository_update_attendee_after_update', $attendee_data, $this );
+
+		// Maybe run filter if using a provider key name.
+		if ( $this->key_name ) {
+			/**
+			 * Allow hooking into after the attendee has been updated by provider key name.
+			 *
+			 * @since TBD
+			 *
+			 * @param array                               $attendee_data List of attendee data to be saved.
+			 * @param Tribe__Tickets__Attendee_Repository $repository    The current repository object.
+			 */
+			do_action( 'tribe_tickets_attendee_repository_update_attendee_after_update_' . $this->key_name, $attendee_data, $this );
+		}
 	}
 }

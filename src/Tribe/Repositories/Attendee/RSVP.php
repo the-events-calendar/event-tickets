@@ -6,6 +6,8 @@ use Tribe__Utils__Array as Arr;
  * The ORM/Repository class for RSVP attendees.
  *
  * @since 4.10.6
+ *
+ * @property Tribe__Tickets__RSVP $attendee_provider
  */
 class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Attendee_Repository {
 
@@ -22,28 +24,29 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	public function __construct() {
 		parent::__construct();
 
-		/** @var Tribe__Tickets__RSVP $provider */
-		$provider = tribe( 'tickets.rsvp' );
+		$this->attendee_provider = tribe( 'tickets.rsvp' );
 
-		$this->create_args['post_type'] = $provider->attendee_object;
+		$this->create_args['post_type'] = $this->attendee_provider->attendee_object;
+
+		// Use a regular variable so we can get constants from it PHP <7.0
+		$attendee_provider = $this->attendee_provider;
 
 		// Add object specific aliases.
-		$this->update_fields_aliases = array_merge( $this->update_fields_aliases, array(
-			'ticket_id'       => $provider::ATTENDEE_PRODUCT_KEY,
-			'product_id'      => $provider::ATTENDEE_PRODUCT_KEY,
-			'event_id'        => $provider::ATTENDEE_EVENT_KEY,
-			'post_id'         => $provider::ATTENDEE_EVENT_KEY,
-			'security_code'   => $provider->security_code,
-			'order_id'        => $provider->order_key,
-			'optout'          => $provider::ATTENDEE_OPTOUT_KEY,
-			'user_id'         => $provider->attendee_user_id,
+		$this->update_fields_aliases = array_merge( $this->update_fields_aliases, [
+			'ticket_id'       => $attendee_provider::ATTENDEE_PRODUCT_KEY,
+			'event_id'        => $attendee_provider::ATTENDEE_EVENT_KEY,
+			'post_id'         => $attendee_provider::ATTENDEE_EVENT_KEY,
+			'security_code'   => $attendee_provider->security_code,
+			'order_id'        => $attendee_provider->order_key,
+			'optout'          => $attendee_provider::ATTENDEE_OPTOUT_KEY,
+			'user_id'         => $attendee_provider->attendee_user_id,
 			'price_paid'      => '_paid_price',
-			'full_name'       => $provider->full_name,
-			'email'           => $provider->email,
-			'attendee_status' => $provider::ATTENDEE_RSVP_KEY,
-		) );
+			'full_name'       => $attendee_provider->full_name,
+			'email'           => $attendee_provider->email,
+			'attendee_status' => $attendee_provider::ATTENDEE_RSVP_KEY,
+		] );
 
-		add_filter( 'tribe_tickets_attendee_repository_set_attendee_args_' . $this->key_name, [ $this, 'filter_set_attendee_args' ], 3 );
+		add_filter( 'tribe_tickets_attendee_repository_set_attendee_args_' . $this->key_name, [ $this, 'filter_set_attendee_args' ], 10, 3 );
 	}
 
 	/**
@@ -110,33 +113,6 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	}
 
 	/**
-	 * Update Additional data after creation of attendee.
-	 *
-	 * @since TBD
-	 *
-	 * @param WP_Post                       $attendee      Attendee Object.
-	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket Object.
-	 * @param array                         $attendee_data List of additional attendee data.
-	 */
-	public function update_additional_data( $attendee, $ticket, $attendee_data ) {
-
-		$attendee_data = $this->format_attendee_data( $attendee, $ticket, $attendee_data );
-
-		$query = $this->by( 'id', $attendee->ID );
-
-		try {
-			$query->set_args( $attendee_data );
-		} catch ( Tribe__Repository__Usage_Error $e ) {
-			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
-			return;
-		}
-
-		$query->save();
-
-		$this->trigger_actions( $attendee, $ticket, $attendee_data );
-	}
-
-	/**
 	 * Filter the arguments to set for the attendee for this provider.
 	 *
 	 * @since TBD
@@ -148,16 +124,16 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 * @return array List of arguments to set for the attendee.
 	 */
 	public function filter_set_attendee_args( $args, $attendee_data, $ticket = null ) {
-		/** @var Tribe__Tickets__RSVP $provider */
-		$provider = tribe( 'tickets.rsvp' );
-
 		// Set default order ID.
 		if ( empty( $args['order_id'] ) ) {
-			$args['order_id'] = $provider::generate_order_id();
+			// Use a regular variable so we can call a static method from it PHP <7.0
+			$attendee_provider = $this->attendee_provider;
+
+			$args['order_id'] = $attendee_provider::generate_order_id();
 		}
 
 		// Set default attendee status.
-		if ( empty( $args['attendee_status'] ) ) {
+		if ( ! isset( $args['attendee_status'] ) ) {
 			$args['attendee_status'] = 'yes';
 		}
 
@@ -165,7 +141,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	}
 
 	/**
-	 * Save extra attendee data after creation of attendee.
+	 * Trigger actions.
 	 *
 	 * @since TBD
 	 *
@@ -173,44 +149,10 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 * @param array                         $attendee_data List of additional attendee data.
 	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object.
 	 */
-	public function save_extra_attendee_data( $attendee, $attendee_data, $ticket ) {
-		/** @var Tribe__Tickets__RSVP $provider */
-		$provider = tribe( 'tickets.rsvp' );
+	public function trigger_create_actions( $attendee, $attendee_data, $ticket ) {
+		parent::trigger_create_actions( $attendee, $attendee_data, $ticket );
 
-		$args = [];
-
-		// Set up security code if it was not already customized.
-		if ( empty( $attendee_data['security_code'] ) ) {
-			$args['security_code'] = $provider->generate_security_code( $attendee_data['attendee_id'] );
-		}
-
-		// If no args are set to be saved, bail.
-		if ( empty( $args ) ) {
-			return;
-		}
-
-		$query = $this->by( 'id', $attendee->ID );
-
-		try {
-			$query->set_args( $attendee_data );
-		} catch ( Tribe__Repository__Usage_Error $e ) {
-			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
-			return;
-		}
-
-		$query->save();
-	}
-
-	/**
-	 * Trigger actions.
-	 *
-	 * @since TBD
-	 *
-	 * @param WP_Post                       $attendee      Attendee Object.
-	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket Object.
-	 * @param array                         $attendee_data List of additional attendee data.
-	 */
-	public function trigger_actions( $attendee, $ticket, $attendee_data ) {
+		// Handle backwards compatible actions for RSVPs.
 
 		$attendee_id       = $attendee->ID;
 		$post_id           = $attendee_data['event_id'];
@@ -249,8 +191,6 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 			 * @param int    $qty        Quantity ordered.
 			 */
 			do_action( 'event_tickets_rsvp_tickets_generated_for_product', $product_id, $order_id, 1 );
-
-			$ticket->get_provider()->clear_attendees_cache( $post_id );
 		}
 	}
 }
