@@ -176,6 +176,10 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 
 == Changelog ==
 
+= [5.0.4.1] 2020-12-16 =
+
+* Fix - Resolve fatal error from the Attendee Registration modal when calling the loading "dot" icons outside of the template context in older views. [TBD]
+
 = [5.0.4] 2020-12-15 =
 
 * Fix - Exclude the "RSVP" ticket provider from the providers list in the editor for tickets. [ET-953]
