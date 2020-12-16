@@ -2550,10 +2550,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Filter the activity log data for attendee.
 			 *
+			 * @since TBD
+			 *
 			 * @param array $data Activity data.
 			 * @param int   $attendee_id Attendee ID.
-			 *
-			 * @since TBD
 			 */
 			$data = apply_filters( 'tribe_tickets_attendee_activity_log_data', $data, $attendee_id );
 
