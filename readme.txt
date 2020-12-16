@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
 Tested up to: 5.6.0
-Stable tag: 5.0.4
+Stable tag: 5.0.4.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -175,6 +175,10 @@ We've got a [UserVoice](https://tribe.uservoice.com/forums/195723-feature-ideas)
 Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.0.4.1] 2020-12-16 =
+
+* Fix - Resolve fatal error from the Attendee Registration modal when calling the loading "dot" icons outside of the template context in older views. [ET-986]
 
 = [5.0.4] 2020-12-15 =
 
