@@ -2490,14 +2490,27 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$sent = $send_callback( $to, $subject, $content, $headers, $attachments );
 
 			// Handle marking the attendee ticket email as being sent.
-			if ( $sent && ! empty( $ticket_sent_meta_key ) ) {
+			if ( $sent ) {
 				// Mark attendee ticket email as being sent for each attendee ticket.
 				foreach ( $tickets as $attendee ) {
-					update_post_meta( $attendee['attendee_id'], $ticket_sent_meta_key, '1' );
+					$this->update_ticket_sent_counter( $attendee['attendee_id'], $this->attendee_ticket_sent );
 				}
 			}
 
 			return $sent;
+		}
+
+		/**
+		 * Update the email sent counter for attendee by 1.
+		 *
+		 * @since TBD
+		 *
+		 * @param int    $attendee_id Attendee ID.
+		 * @param string $meta_key Meta Key that stores the count.
+		 */
+		public function update_ticket_sent_counter( $attendee_id, $meta_key ) {
+			$prev_val = (int) get_post_meta( $attendee_id, $meta_key, true );
+			update_post_meta( $attendee_id, $meta_key, $prev_val + 1 );
 		}
 
 		/**
