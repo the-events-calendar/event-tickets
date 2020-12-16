@@ -772,10 +772,16 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
 	 */
 	public function update_attendee( $attendee_data, $return_promise = false ) {
+		if ( empty( $attendee_data['attendee_id'] ) ) {
+			throw new Tribe__Repository__Usage_Error( 'You must provide the attendee_id when updating an attendee from the Attendees Repository class' );
+		}
+
+		$this->by( 'id', $attendee_data['attendee_id'] );
+
 		// Set the attendee arguments accordingly.
 		$this->set_attendee_args( $attendee_data );
 
-		// Update the attendee(s).
+		// Update the attendee.
 		$saved = $this->save( $return_promise );
 
 		if ( $return_promise ) {
@@ -968,7 +974,13 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 
 		// Set up security code if it was not already customized.
 		if ( empty( $attendee_data['security_code'] ) ) {
-			$args['security_code'] = $this->attendee_provider->generate_security_code( $attendee->ID );
+			$key = $attendee->ID;
+
+			if ( ! empty( $attendee_data['order_id'] ) ) {
+				$key = $attendee_data['order_id'] . '_' . $key;
+			}
+
+			$args['security_code'] = $this->attendee_provider->generate_security_code( $key );
 		}
 
 		/**
