@@ -872,59 +872,10 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 
 			// Maybe handle setting the User ID based on information we already have.
 			if ( empty( $args['user_id'] ) && ! empty( $args['email'] ) ) {
-				/**
-				 * Allow filtering whether to enable user lookups by Attendee Email.
-				 *
-				 * @since TBD
-				 *
-				 * @param boolean $lookup_user_from_email Whether to lookup the User using the Attendee Email if User ID is not set.
-				 * @param array   $args                   The arguments being set for this attendee.
-				 */
-				$lookup_user_from_email = (bool) apply_filters( 'tribe_tickets_create_attendee_lookup_user_from_email', false, $args );
+				$user_id = $this->maybe_setup_attendee_user_from_email( $args['email'], $args );
 
-				if ( $lookup_user_from_email ) {
-					// Check if user exists.
-					$user = get_user_by( 'email', $args['email'] );
-
-					if ( $user ) {
-						$args['user_id'] = $user->ID;
-					}
-				}
-
-				// Maybe create the user based on information we already have.
-				if ( empty( $args['user_id'] ) ) {
-					/**
-					 * Allow filtering whether to enable creating users using the Attendee Email.
-					 *
-					 * @since TBD
-					 *
-					 * @param boolean $create_user_from_email Whether to create the User using the Attendee Email if User ID is not set.
-					 * @param array   $args                   The arguments being set for this attendee.
-					 */
-					$create_user_from_email = (bool) apply_filters( 'tribe_tickets_create_attendee_create_user_from_email', false, $args );
-
-					if ( $create_user_from_email ) {
-						// Create the user using the attendee email.
-						$created = wp_create_user( $args['email'], wp_generate_password( 12, false ), $args['email'] );
-
-						if ( $created && ! is_wp_error( $created ) ) {
-							/**
-							 * Allow filtering whether to send the new user information email to the new user.
-							 *
-							 * @since TBD
-							 *
-							 * @param boolean $send_new_user_info Whether to send the new user information email to the new user.
-							 * @param array   $args               The arguments being set for this attendee.
-							 */
-							$send_new_user_info = (bool) apply_filters( 'tribe_tickets_create_attendee_create_user_from_email_send_new_user_info', false, $args );
-
-							if ( $send_new_user_info ) {
-								wp_send_new_user_notifications( $created, 'user' );
-							}
-
-							$args['user_id'] = $created;
-						}
-					}
+				if ( $user_id ) {
+					$args['user_id'] = $user_id;
 				}
 			}
 
@@ -976,6 +927,81 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		}
 
 		$this->set_args( $args );
+	}
+
+	/**
+	 * Maybe lookup or create an attendee user from an email.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $email The email to maybe set up the user from.
+	 * @param array  $args  The arguments used from this attendee.
+	 *
+	 * @return int|null The user ID or null if not set up.
+	 */
+	public function maybe_setup_attendee_user_from_email( $email, $args = [] ) {
+		if ( empty( $email ) || ! is_email( $email ) ) {
+			return null;
+		}
+
+		/**
+		 * Allow filtering whether to enable user lookups by Attendee Email.
+		 *
+		 * @since TBD
+		 *
+		 * @param boolean $lookup_user_from_email Whether to lookup the User using the Attendee Email if User ID is not set.
+		 * @param array   $args                   The arguments being set for this attendee.
+		 */
+		$lookup_user_from_email = (bool) apply_filters( 'tribe_tickets_create_attendee_lookup_user_from_email', false, $args );
+
+		if ( $lookup_user_from_email ) {
+			// Check if user exists.
+			$user = get_user_by( 'email', $email );
+
+			if ( $user ) {
+				return $user->ID;
+			}
+		}
+
+		// Maybe create the user based on information we already have.
+		/**
+		 * Allow filtering whether to enable creating users using the Attendee Email.
+		 *
+		 * @since TBD
+		 *
+		 * @param boolean $create_user_from_email Whether to create the User using the Attendee Email if User ID is not set.
+		 * @param array   $args                   The arguments being set for this attendee.
+		 */
+		$create_user_from_email = (bool) apply_filters( 'tribe_tickets_create_attendee_create_user_from_email', false, $args );
+
+		// Do not create the user from the email.
+		if ( ! $create_user_from_email ) {
+			return null;
+		}
+
+		// Create the user using the attendee email.
+		$created = wp_create_user( $email, wp_generate_password( 12, false ), $email );
+
+		// The user was not created successfully.
+		if ( ! $created || is_wp_error( $created ) ) {
+			return null;
+		}
+
+		/**
+		 * Allow filtering whether to send the new user information email to the new user.
+		 *
+		 * @since TBD
+		 *
+		 * @param boolean $send_new_user_info Whether to send the new user information email to the new user.
+		 * @param array   $args               The arguments being set for this attendee.
+		 */
+		$send_new_user_info = (bool) apply_filters( 'tribe_tickets_create_attendee_create_user_from_email_send_new_user_info', false, $args );
+
+		if ( $send_new_user_info ) {
+			wp_send_new_user_notifications( $created, 'user' );
+		}
+
+		return $created;
 	}
 
 	/**
