@@ -266,6 +266,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $attendee_ticket_sent = '_tribe_attendee_ticket_sent';
 
 		/**
+		 * Logs the attendee notification email activity.
+		 *
+		 * @var array
+		 *
+		 * @since TBD
+		 */
+		public $attendee_activity_log = '_tribe_attendee_activity_log';
+
+		/**
 		 * Meta key that if this attendee wants to show on the attendee list
 		 *
 		 * @var string
@@ -2490,14 +2499,69 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$sent = $send_callback( $to, $subject, $content, $headers, $attachments );
 
 			// Handle marking the attendee ticket email as being sent.
-			if ( $sent && ! empty( $ticket_sent_meta_key ) ) {
+			if ( $sent ) {
 				// Mark attendee ticket email as being sent for each attendee ticket.
 				foreach ( $tickets as $attendee ) {
-					update_post_meta( $attendee['attendee_id'], $ticket_sent_meta_key, '1' );
+					$this->update_ticket_sent_counter( $attendee['attendee_id'], $this->attendee_ticket_sent );
+
+					$this->update_attendee_activity_log(
+						$attendee['attendee_id'],
+						[
+							'type'  => 'email',
+							'name'  => $attendee['holder_name'],
+							'email' => $attendee['holder_email'],
+						]
+					);
 				}
 			}
 
 			return $sent;
+		}
+
+		/**
+		 * Update the email sent counter for attendee by 1.
+		 *
+		 * @since TBD
+		 *
+		 * @param int    $attendee_id Attendee ID.
+		 * @param string $meta_key Meta Key that stores the count.
+		 */
+		public function update_ticket_sent_counter( $attendee_id, $meta_key ) {
+			$prev_val = (int) get_post_meta( $attendee_id, $meta_key, true );
+			update_post_meta( $attendee_id, $meta_key, $prev_val + 1 );
+		}
+
+		/**
+		 * Update the attendee activity log data.
+		 *
+		 * @param int   $attendee_id Attendee ID.
+		 * @param array $data Data that needs to be logged.
+		 *
+		 * @since TBD
+		 */
+		public function update_attendee_activity_log( $attendee_id, $data = [] ) {
+
+			$activity = get_post_meta( $attendee_id, $this->attendee_activity_log, true );
+
+			if ( ! is_array( $activity ) ) {
+				$activity = [];
+			}
+
+			/**
+			 * Filter the activity log data for attendee.
+			 *
+			 * @since TBD
+			 *
+			 * @param array $data Activity data.
+			 * @param int   $attendee_id Attendee ID.
+			 */
+			$data = apply_filters( 'tribe_tickets_attendee_activity_log_data', $data, $attendee_id );
+
+			$data['time'] = time();
+
+			$activity[] = $data;
+
+			update_post_meta( $attendee_id, $this->attendee_activity_log, $activity );
 		}
 
 		/**
