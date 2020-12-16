@@ -32,23 +32,24 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 		$attendee_provider = $this->attendee_provider;
 
 		// Add object specific aliases.
-		$this->update_fields_aliases = array_merge( $this->update_fields_aliases, [
-			'ticket_id'       => $attendee_provider::ATTENDEE_PRODUCT_KEY,
-			'event_id'        => $attendee_provider::ATTENDEE_EVENT_KEY,
-			'post_id'         => $attendee_provider::ATTENDEE_EVENT_KEY,
-			'security_code'   => $attendee_provider->security_code,
-			'order_id'        => $attendee_provider->order_key,
-			'optout'          => $attendee_provider->attendee_optout_key,
-			'user_id'         => $attendee_provider->attendee_user_id,
-			'price_paid'      => '_paid_price',
-			'price_currency'  => '_price_currency_symbol',
-			'full_name'       => $attendee_provider->full_name,
-			'email'           => $attendee_provider->email,
-			'attendee_status' => $attendee_provider->attendee_tpp_key,
-			'refund_order_id' => $attendee_provider->refund_order_key,
-		] );
-
-		add_filter( 'tribe_tickets_attendee_repository_set_attendee_args_' . $this->key_name, [ $this, 'filter_set_attendee_args' ], 10, 3 );
+		$this->update_fields_aliases = array_merge(
+			$this->update_fields_aliases,
+			[
+				'ticket_id'       => $attendee_provider::ATTENDEE_PRODUCT_KEY,
+				'event_id'        => $attendee_provider::ATTENDEE_EVENT_KEY,
+				'post_id'         => $attendee_provider::ATTENDEE_EVENT_KEY,
+				'security_code'   => $attendee_provider->security_code,
+				'order_id'        => $attendee_provider->order_key,
+				'optout'          => $attendee_provider->attendee_optout_key,
+				'user_id'         => $attendee_provider->attendee_user_id,
+				'price_paid'      => '_paid_price',
+				'price_currency'  => '_price_currency_symbol',
+				'full_name'       => $attendee_provider->full_name,
+				'email'           => $attendee_provider->email,
+				'attendee_status' => $attendee_provider->attendee_tpp_key,
+				'refund_order_id' => $attendee_provider->refund_order_key,
+			]
+		);
 	}
 
 	/**
@@ -115,7 +116,7 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 	}
 
 	/**
-	 * Filter the arguments to set for the attendee for this provider.
+	 * Set up the arguments to set for the attendee for this provider.
 	 *
 	 * @since TBD
 	 *
@@ -125,7 +126,7 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 	 *
 	 * @return array List of arguments to set for the attendee.
 	 */
-	public function filter_set_attendee_args( $args, $attendee_data, $ticket = null ) {
+	public function setup_attendee_args( $args, $attendee_data, $ticket = null ) {
 		// Set default attendee status.
 		if ( ! isset( $args['attendee_status'] ) ) {
 			$args['attendee_status'] = 'completed';

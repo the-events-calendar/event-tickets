@@ -28,25 +28,26 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 
 		$this->create_args['post_type'] = $this->attendee_provider->attendee_object;
 
-		// Use a regular variable so we can get constants from it PHP <7.0
+		// Use a regular variable so we can get constants from it in a PHP <7.0 compatible way.
 		$attendee_provider = $this->attendee_provider;
 
 		// Add object specific aliases.
-		$this->update_fields_aliases = array_merge( $this->update_fields_aliases, [
-			'ticket_id'       => $attendee_provider::ATTENDEE_PRODUCT_KEY,
-			'event_id'        => $attendee_provider::ATTENDEE_EVENT_KEY,
-			'post_id'         => $attendee_provider::ATTENDEE_EVENT_KEY,
-			'security_code'   => $attendee_provider->security_code,
-			'order_id'        => $attendee_provider->order_key,
-			'optout'          => $attendee_provider::ATTENDEE_OPTOUT_KEY,
-			'user_id'         => $attendee_provider->attendee_user_id,
-			'price_paid'      => '_paid_price',
-			'full_name'       => $attendee_provider->full_name,
-			'email'           => $attendee_provider->email,
-			'attendee_status' => $attendee_provider::ATTENDEE_RSVP_KEY,
-		] );
-
-		add_filter( 'tribe_tickets_attendee_repository_set_attendee_args_' . $this->key_name, [ $this, 'filter_set_attendee_args' ], 10, 3 );
+		$this->update_fields_aliases = array_merge(
+			$this->update_fields_aliases,
+			[
+				'ticket_id'       => $attendee_provider::ATTENDEE_PRODUCT_KEY,
+				'event_id'        => $attendee_provider::ATTENDEE_EVENT_KEY,
+				'post_id'         => $attendee_provider::ATTENDEE_EVENT_KEY,
+				'security_code'   => $attendee_provider->security_code,
+				'order_id'        => $attendee_provider->order_key,
+				'optout'          => $attendee_provider::ATTENDEE_OPTOUT_KEY,
+				'user_id'         => $attendee_provider->attendee_user_id,
+				'price_paid'      => '_paid_price',
+				'full_name'       => $attendee_provider->full_name,
+				'email'           => $attendee_provider->email,
+				'attendee_status' => $attendee_provider::ATTENDEE_RSVP_KEY,
+			]
+		);
 	}
 
 	/**
@@ -113,7 +114,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	}
 
 	/**
-	 * Filter the arguments to set for the attendee for this provider.
+	 * Set up the arguments to set for the attendee for this provider.
 	 *
 	 * @since TBD
 	 *
@@ -123,10 +124,10 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 *
 	 * @return array List of arguments to set for the attendee.
 	 */
-	public function filter_set_attendee_args( $args, $attendee_data, $ticket = null ) {
+	public function setup_attendee_args( $args, $attendee_data, $ticket = null ) {
 		// Set default order ID.
 		if ( empty( $args['order_id'] ) ) {
-			// Use a regular variable so we can call a static method from it PHP <7.0
+			// Use a regular variable so we can call static methods from it in a PHP <7.0 compatible way.
 			$attendee_provider = $this->attendee_provider;
 
 			$args['order_id'] = $attendee_provider::generate_order_id();

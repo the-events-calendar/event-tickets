@@ -927,10 +927,27 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		$attendee_email     = empty( $attendee_data['email'] ) ? null : sanitize_email( $attendee_data['email'] );
-		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
-		$attendee_full_name = empty( $attendee_data['full_name'] ) ? null : sanitize_text_field( $attendee_data['full_name'] );
-		$attendee_optout    = empty( $attendee_data['optout'] ) ? 0 : (int) tribe_is_truthy( $attendee_data['optout'] );
+		$attendee_data_to_save = [];
+
+		// Only update full name if set.
+		if ( ! empty( $attendee_data['full_name'] ) ) {
+			$attendee_data_to_save['full_name'] = sanitize_text_field( $attendee_data['full_name'] );
+		}
+
+		// Only update email if set.
+		if ( ! empty( $attendee_data['email'] ) ) {
+			$attendee_data['email'] = sanitize_email( $attendee_data['email'] );
+
+			// Only update email if valid
+			if ( is_email( $attendee_data['email'] ) ) {
+				$attendee_data_to_save['email'] = $attendee_data['email'];
+			}
+		}
+
+		// Only update optout if set.
+		if ( isset( $attendee_data['optout'] ) ) {
+			$attendee_data_to_save['optout'] = (int) tribe_is_truthy( $attendee_data['optout'] );
+		}
 
 		if ( empty( $attendee_data['order_status'] ) || ! $this->tickets_view->is_valid_rsvp_option( $attendee_data['order_status'] ) ) {
 			$attendee_status = null;
@@ -958,17 +975,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$this->update_sales_and_stock_by_order_status( $attendee_id, $attendee_status, $ticket_id );
 
-		$attendee_data_to_save = [
-			'full_name'       => $attendee_full_name,
-			'email'           => $attendee_email,
-			'attendee_status' => $attendee_status,
-			'optout'          => $attendee_optout,
-		];
+		if ( null !== $attendee_status ) {
+			$attendee_data_to_save['attendee_status'] = $attendee_status;
+		}
 
-		// Remove arguments that are null.
-		$attendee_data_to_save = array_filter( $attendee_data_to_save, static function ( $value ) {
-			return ! is_null( $value );
-		} );
+		// Only update if there's data to set.
+		if ( empty( $attendee_data_to_save ) ) {
+			return;
+		}
 
 		$this->update_attendee( $attendee_id, $attendee_data_to_save );
 	}

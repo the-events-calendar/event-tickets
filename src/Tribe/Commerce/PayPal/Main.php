@@ -561,21 +561,32 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		$attendee_email     = empty( $attendee_data['email'] ) ? null : sanitize_email( $attendee_data['email'] );
-		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
-		$attendee_full_name = empty( $attendee_data['full_name'] ) ? null : sanitize_text_field( $attendee_data['full_name'] );
-		$attendee_optout    = empty( $attendee_data['optout'] ) ? 0 : (int) tribe_is_truthy( $attendee_data['optout'] );
+		$attendee_data_to_save = [];
 
-		$attendee_data_to_save = [
-			'full_name' => $attendee_full_name,
-			'email'     => $attendee_email,
-			'optout'    => $attendee_optout,
-		];
+		// Only update full name if set.
+		if ( ! empty( $attendee_data['full_name'] ) ) {
+			$attendee_data_to_save['full_name'] = sanitize_text_field( $attendee_data['full_name'] );
+		}
 
-		// Remove arguments that are null.
-		$attendee_data_to_save = array_filter( $attendee_data_to_save, static function ( $value ) {
-			return ! is_null( $value );
-		} );
+		// Only update email if set.
+		if ( ! empty( $attendee_data['email'] ) ) {
+			$attendee_data['email'] = sanitize_email( $attendee_data['email'] );
+
+			// Only update email if valid
+			if ( is_email( $attendee_data['email'] ) ) {
+				$attendee_data_to_save['email'] = $attendee_data['email'];
+			}
+		}
+
+		// Only update optout if set.
+		if ( isset( $attendee_data['optout'] ) ) {
+			$attendee_data_to_save['optout'] = (int) tribe_is_truthy( $attendee_data['optout'] );
+		}
+
+		// Only update if there's data to set.
+		if ( empty( $attendee_data_to_save ) ) {
+			return;
+		}
 
 		$this->update_attendee( $attendee_id, $attendee_data_to_save );
 	}
@@ -896,14 +907,14 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					$optout = filter_var( $optout, FILTER_VALIDATE_BOOLEAN );
 					$optout = $optout ? 'yes' : 'no';
 
-					$data['ticket_id']       = $product_id;
-					$data['post_id']         = $post_id;
-					$data['order_id']        = $order_id;
-					$data['optout']          = $optout;
-					$data['full_name']       = $individual_attendee_name;
-					$data['email']           = $individual_attendee_email;
-					$data['price_paid']      = get_post_meta( $product_id, '_price', true );
-					$data['price_currency']  = $currency_symbol;
+					$data['ticket_id']      = $product_id;
+					$data['post_id']        = $post_id;
+					$data['order_id']       = $order_id;
+					$data['optout']         = $optout;
+					$data['full_name']      = $individual_attendee_name;
+					$data['email']          = $individual_attendee_email;
+					$data['price_paid']     = get_post_meta( $product_id, '_price', true );
+					$data['price_currency'] = $currency_symbol;
 
 					if ( 0 < $attendee_user_id ) {
 						$data['user_id'] = $attendee_user_id;

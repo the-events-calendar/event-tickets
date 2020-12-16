@@ -107,19 +107,22 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		] );
 
 		// Add object default aliases.
-		$this->update_fields_aliases = array_merge( $this->update_fields_aliases, [
-			'ticket_id'      => '_tribe_tickets_ticket_id',
-			'event_id'       => '_tribe_tickets_post_id',
-			'post_id'        => '_tribe_tickets_post_id',
-			'security_code'  => '_tribe_tickets_security_code',
-			'order_id'       => '_tribe_tickets_order_id',
-			'optout'         => '_tribe_tickets_optout',
-			'user_id'        => '_tribe_tickets_user_id',
-			'price_paid'     => '_tribe_tickets_price_paid',
-			'price_currency' => '_tribe_tickets_price_currency_symbol',
-			'full_name'      => '_tribe_tickets_full_name',
-			'email'          => '_tribe_tickets_email',
-		] );
+		$this->update_fields_aliases = array_merge(
+			$this->update_fields_aliases,
+			[
+				'ticket_id'      => '_tribe_tickets_ticket_id',
+				'event_id'       => '_tribe_tickets_post_id',
+				'post_id'        => '_tribe_tickets_post_id',
+				'security_code'  => '_tribe_tickets_security_code',
+				'order_id'       => '_tribe_tickets_order_id',
+				'optout'         => '_tribe_tickets_optout',
+				'user_id'        => '_tribe_tickets_user_id',
+				'price_paid'     => '_tribe_tickets_price_paid',
+				'price_currency' => '_tribe_tickets_price_currency_symbol',
+				'full_name'      => '_tribe_tickets_full_name',
+				'email'          => '_tribe_tickets_email',
+			]
+		);
 
 		$this->init_order_statuses();
 	}
@@ -922,6 +925,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			}
 		}
 
+		// Handle any customizations per provider for the attendee arguments.
+		$args = $this->setup_attendee_args( $args, $attendee_data, $ticket );
+
 		/**
 		 * Allow filtering the arguments to set for the attendee.
 		 *
@@ -958,6 +964,22 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		}
 
 		$this->set_args( $args );
+	}
+
+	/**
+	 * Set up the arguments to set for the attendee for this provider.
+	 *
+	 * @since TBD
+	 *
+	 * @param array                         $args          List of arguments to set for the attendee.
+	 * @param array                         $attendee_data List of additional attendee data.
+	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object or null if not relying on it.
+	 *
+	 * @return array List of arguments to set for the attendee.
+	 */
+	public function setup_attendee_args( $args, $attendee_data, $ticket = null ) {
+		// Providers can override this.
+		return $args;
 	}
 
 	/**
