@@ -141,7 +141,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	}
 
 	/**
-	 * Handle backwards compatible actions for RSVPs.
+	 * Handle backwards compatible creation actions for RSVPs.
 	 *
 	 * @since TBD
 	 *
@@ -190,5 +190,31 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 			 */
 			do_action( 'event_tickets_rsvp_tickets_generated_for_product', $product_id, $order_id, 1 );
 		}
+	}
+
+	/**
+	 * Handle backwards compatible update actions for RSVPs.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $attendee_data List of attendee data to be saved.
+	 */
+	public function trigger_update_actions( $attendee_data ) {
+		parent::trigger_update_actions( $attendee_data );
+
+		$attendee_id     = (int) Arr::get( $attendee_data, 'attendee_id' );
+		$post_id         = (int) Arr::get( $attendee_data, 'post_id' );
+		$attendee_status = Arr::get( $attendee_data, 'attendee_status' );
+
+		/**
+		 * An Action fired when an RSVP is updated.
+		 *
+		 * @since 4.11.0
+		 *
+		 * @param int    $attendee_id     The attendee ID.
+		 * @param int    $post_id         The event/post ID.
+		 * @param string $attendee_status The status of the attendee, either yes or no.
+		 */
+		do_action( 'event_tickets_rsvp_after_attendee_update', $attendee_id, $post_id, $attendee_status );
 	}
 }

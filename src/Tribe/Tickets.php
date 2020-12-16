@@ -3758,6 +3758,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$ticket = $this->get_ticket( 0, (int) $ticket );
 			}
 
+			// If the ticket is not valid, stop creating the attendee.
 			if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
 				return false;
 			}

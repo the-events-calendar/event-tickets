@@ -909,6 +909,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 					}
 				}
 			}
+
+			if ( isset( $args['optout'] ) ) {
+				// Enforce a 0/1 value for the optout value.
+				$args['optout'] = (int) tribe_is_truthy( $args['optout'] );
+			}
 		}
 
 		/**
@@ -940,6 +945,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		$args = array_filter( $args, static function ( $value ) {
 			return ! is_null( $value );
 		} );
+
+		// Remove unused arguments from saving.
+		if ( isset( $args['order_attendee_id'] ) ) {
+			unset( $args['order_attendee_id'] );
+		}
 
 		$this->set_args( $args );
 	}

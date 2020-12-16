@@ -882,30 +882,30 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Update the RSVP values for this user.
 	 *
-	 * Note that, within this method, $order_id refers to the attendee or ticket ID
+	 * Note that, within this method, $attendee_id refers to the attendee or ticket ID
 	 * (it does not refer to an "order" in the sense of a transaction that may include
 	 * multiple tickets, as is the case in some other methods for instance).
 	 *
-	 * @param array $data
-	 * @param int   $order_id
-	 * @param int   $event_id
+	 * @param array $attendee_data Information that we are trying to save.
+	 * @param int   $attendee_id   The attendee ID.
+	 * @param int   $post_id       The event/post ID.
 	 */
-	public function update_attendee_data( $data, $order_id, $event_id ) {
+	public function update_attendee_data( $attendee_data, $attendee_id, $post_id ) {
 		$user_id = get_current_user_id();
 
-		$rsvp_orders    = $this->tickets_view->get_event_rsvp_attendees( $event_id, $user_id );
-		$rsvp_order_ids = array_map( 'absint', wp_list_pluck( $rsvp_orders, 'order_id' ) );
+		$rsvp_attendees    = $this->tickets_view->get_event_rsvp_attendees( $post_id, $user_id );
+		$rsvp_attendee_ids = array_map( 'absint', wp_list_pluck( $rsvp_attendees, 'attendee_id' ) );
 
 		// This makes sure we don't save attendees for orders that are not from this current user and event
-		if ( ! in_array( (int) $order_id, $rsvp_order_ids, true ) ) {
+		if ( ! in_array( $attendee_id, $rsvp_attendee_ids, true ) ) {
 			return;
 		}
 
 		$attendee = array();
 
-		// Get the Attendee Data, it's important for testing
-		foreach ( $rsvp_orders as $test_attendee ) {
-			if ( $order_id !== $test_attendee['order_id'] ) {
+		// Get the attendee data for the attendee we are updating.
+		foreach ( $rsvp_attendees as $test_attendee ) {
+			if ( $attendee_id !== $test_attendee['attendee_id'] ) {
 				continue;
 			}
 
@@ -913,67 +913,57 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		// Don't try to Save if it's restricted
-		if ( ! isset( $attendee['product_id'] )
-		     || $this->tickets_view->is_rsvp_restricted( $event_id, $attendee['product_id'] )
+		if (
+			! isset( $attendee['product_id'] )
+		    || $this->tickets_view->is_rsvp_restricted( $post_id, $attendee['product_id'] )
 		) {
 			return;
 		}
 
-		$attendee_email     = empty( $data['email'] ) ? null : sanitize_email( $data['email'] );
+		$attendee_email     = empty( $attendee_data['email'] ) ? null : sanitize_email( $attendee_data['email'] );
 		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
-		$attendee_full_name = empty( $data['full_name'] ) ? null : sanitize_text_field( $data['full_name'] );
-		$attendee_optout    = empty( $data['optout'] ) ? 0 : $data['optout'];
+		$attendee_full_name = empty( $attendee_data['full_name'] ) ? null : sanitize_text_field( $attendee_data['full_name'] );
+		$attendee_optout    = empty( $attendee_data['optout'] ) ? 0 : (int) tribe_is_truthy( $attendee_data['optout'] );
 
-		$attendee_optout = filter_var( $attendee_optout, FILTER_VALIDATE_BOOLEAN );
-		$attendee_optout = (int) $attendee_optout;
-
-		if ( empty( $data['order_status'] ) || ! $this->tickets_view->is_valid_rsvp_option( $data['order_status'] ) ) {
-			$attendee_order_status = null;
+		if ( empty( $attendee_data['order_status'] ) || ! $this->tickets_view->is_valid_rsvp_option( $attendee_data['order_status'] ) ) {
+			$attendee_status = null;
 		} else {
-			$attendee_order_status = $data['order_status'];
+			$attendee_status = $attendee_data['order_status'];
 		}
 
-		$product_id  = $attendee['product_id'];
+		$ticket_id  = $attendee['product_id'];
 
 		//check if changing status will cause rsvp to go over capacity
-		$previous_order_status = get_post_meta( $order_id, self::ATTENDEE_RSVP_KEY, true );
+		$previous_order_status = get_post_meta( $attendee_id, self::ATTENDEE_RSVP_KEY, true );
 
 		// The status changed from "not going" to "going", check if we have the capacity to support it.
-		if ( tribe_is_truthy( $attendee_order_status ) && in_array( $previous_order_status, $this->get_statuses_by_action( 'count_not_going' ), true ) ) {
-			$capacity = tribe_tickets_get_capacity( $product_id );
-			$sales = (int) get_post_meta( $product_id, 'total_sales', true );
-			$unlimited = -1;
+		if ( tribe_is_truthy( $attendee_status ) && in_array( $previous_order_status, $this->get_statuses_by_action( 'count_not_going' ), true ) ) {
+			$capacity  = tribe_tickets_get_capacity( $ticket_id );
+			$sales     = (int) get_post_meta( $ticket_id, 'total_sales', true );
+			$unlimited = - 1;
+
+			// If capacity is not unlimited and there is no capacity for switching, remove attendee status from being saved.
 			if ( $unlimited !== $capacity && $sales + 1 > $capacity ) {
-				return;
+				// Set to null so it won't be changed.
+				$attendee_status = null;
 			}
 		}
 
-		$this->update_sales_and_stock_by_order_status( $order_id, $attendee_order_status, $product_id );
+		$this->update_sales_and_stock_by_order_status( $attendee_id, $attendee_status, $ticket_id );
 
-		if ( null !== $attendee_order_status ) {
-			update_post_meta( $order_id, self::ATTENDEE_RSVP_KEY, $attendee_order_status );
-		}
+		$attendee_data_to_save = [
+			'full_name'       => $attendee_full_name,
+			'email'           => $attendee_email,
+			'attendee_status' => $attendee_status,
+			'optout'          => $attendee_optout,
+		];
 
-		update_post_meta( $order_id, self::ATTENDEE_OPTOUT_KEY, $attendee_optout );
+		// Remove arguments that are null.
+		$attendee_data_to_save = array_filter( $attendee_data_to_save, static function ( $value ) {
+			return ! is_null( $value );
+		} );
 
-		if ( null !== $attendee_full_name ) {
-			update_post_meta( $order_id, $this->full_name, $attendee_full_name );
-		}
-
-		if ( null !== $attendee_email ) {
-			update_post_meta( $order_id, $this->email, $attendee_email );
-		}
-
-		/**
-		 * An Action fired when an RSVP is updated.
-		 *
-		 * @since 4.11.0
-		 *
-		 * @param int    $order_id              refers to the attendee or ticket ID per this methods $order_id parameter.
-		 * @param int    $event_id              the ID of an event.
-		 * @param string $attendee_order_status The status of the attendee, either yes or no.
-		 */
-		do_action( 'event_tickets_rsvp_after_attendee_update', $order_id, $event_id, $attendee_order_status );
+		$this->update_attendee( $attendee_id, $attendee_data_to_save );
 	}
 
 	/**
@@ -2582,7 +2572,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 					'full_name'         => $attendee_full_name,
 					'email'             => $attendee_email,
 					'optout'            => $attendee_optout,
-					'order_status'      => $attendee_order_status,
+					'attendee_status'   => $attendee_order_status,
 					'order_id'          => $order_id,
 					'order_attendee_id' => $i + 1,
 					'user_id'           => is_user_logged_in() ? get_current_user_id() : 0,
@@ -2606,7 +2596,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		do_action( 'event_tickets_rsvp_tickets_generated_for_product', $product_id, $order_id, $qty, $attendee_ids );
 
 		// After Adding the Values we Update the Transient
-		Tribe__Post_Transient::instance()->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+		$this->clear_attendees_cache( $post_id );
 
 		if ( ! $redirect ) {
 			return $attendee_ids;

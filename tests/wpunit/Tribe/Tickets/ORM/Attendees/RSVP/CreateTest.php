@@ -101,6 +101,8 @@ class CreateTest extends \Codeception\TestCase\WPTestCase {
 
 		$attendee = $attendees->create_attendee_for_ticket( $ticket, $attendee_data );
 
+		$meta = get_post_meta( $attendee->ID );
+
 		// Confirm the attendee was created as intended.
 		$this->assertInstanceOf( WP_Post::class, $attendee );
 		$this->assertEquals( $attendee_data['full_name'], $attendee->post_title );
@@ -118,5 +120,6 @@ class CreateTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertNotEmpty( get_post_meta( $attendee->ID, $provider->order_key, true ) );
 		$this->assertNotEmpty( get_post_meta( $attendee->ID, $provider->security_code, true ) );
 		$this->assertEquals( $attendee_data['user_id'], (int) get_post_meta( $attendee->ID, $provider->attendee_user_id, true ) );
+		$this->assertCount( 9, $meta, 'There appears to be untested meta on this attendee, please add them to the test: ' . var_export( $meta, true ) );
 	}
 }

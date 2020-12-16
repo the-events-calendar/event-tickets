@@ -1,16 +1,15 @@
 <?php
 
-namespace Tribe\Tickets\ORM\Attendees\Commerce;
+namespace Tribe\Tickets\Commerce\PayPal\Main\Attendees;
 
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
-use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 use Tribe__Tickets__Data_API as Data_API;
 use WP_Post;
 
 /**
  * Class CreateTest
  *
- * @package Tribe\Tickets\ORM\Attendees\Commerce
+ * @package Tribe\Tickets\Commerce\PayPal\Main\Attendees
  * @group orm-create-update
  */
 class CreateTest extends \Codeception\TestCase\WPTestCase {
@@ -41,56 +40,75 @@ class CreateTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * It should not allow creating an attendee from the Tribe Commerce context without required args.
+	 * It should allow creating an attendee without any data.
 	 *
 	 * @test
 	 */
-	public function should_not_allow_creating_attendee_from_tribe_commerce_context_without_required_args() {
-		/** @var Attendee_Repository $attendees */
-		$attendees = tribe_attendees( 'tribe-commerce' );
+	public function should_allow_creating_an_attendee_without_any_data() {
+		/** @var \Tribe__Tickets__Commerce__PayPal__Main $provider */
+		$provider = tribe( 'tickets.commerce.paypal' );
 
-		$args = [
-			'title' => 'A test attendee',
-		];
-
-		$attendee = $attendees->set_args( $args )->create();
-
-		$this->assertFalse( $attendee );
-	}
-
-	/**
-	 * It should not allow creating an attendee from a Tribe Commerce ticket ID.
-	 *
-	 * @test
-	 */
-	public function should_not_allow_creating_an_attendee_from_a_tribe_commerce_ticket_id() {
-		/** @var \Tribe__Tickets__Repositories__Attendee__Commerce $attendees */
-		$attendees = tribe_attendees( 'tribe-commerce' );
-
-		$post_id = $this->factory->post->create();
-
-		$attendee_data = [
-			'full_name' => 'A test attendee',
-			'email'     => 'attendee@test.com',
-		];
-
+		$post_id   = $this->factory->post->create();
 		$ticket_id = $this->create_paypal_ticket( $post_id );
 
-		$this->expectException( \Tribe__Repository__Usage_Error::class );
+		$attendee_data = [];
 
-		$attendees->create_attendee_for_ticket( $attendee_data, $ticket_id );
+		$attendee = $provider->create_attendee( $ticket_id, $attendee_data );
+
+		$this->assertInstanceOf( WP_Post::class, $attendee );
 	}
 
 	/**
-	 * It should allow creating an attendee from a Tribe Commerce ticket object.
+	 * It should allow creating an attendee from a ticket ID.
 	 *
 	 * @test
 	 */
-	public function should_allow_creating_an_attendee_from_a_tribe_commerce_ticket_object() {
-		/** @var \Tribe__Tickets__Repositories__Attendee__Commerce $attendees */
-		$attendees = tribe_attendees( 'tribe-commerce' );
+	public function should_allow_creating_an_attendee_from_a_ticket_id() {
+		/** @var \Tribe__Tickets__Commerce__PayPal__Main $provider */
+		$provider = tribe( 'tickets.commerce.paypal' );
 
-		$post_id = $this->factory->post->create();
+		$post_id   = $this->factory->post->create();
+		$ticket_id = $this->create_paypal_ticket( $post_id );
+
+		$attendee_data = [];
+
+		$attendee = $provider->create_attendee( $ticket_id, $attendee_data );
+
+		$this->assertInstanceOf( WP_Post::class, $attendee );
+	}
+
+	/**
+	 * It should allow creating an attendee from a ticket object.
+	 *
+	 * @test
+	 */
+	public function should_allow_creating_an_attendee_from_a_ticket_object() {
+		/** @var \Tribe__Tickets__Commerce__PayPal__Main $provider */
+		$provider = tribe( 'tickets.commerce.paypal' );
+
+		$post_id   = $this->factory->post->create();
+		$ticket_id = $this->create_paypal_ticket( $post_id );
+		$ticket    = $provider->get_ticket( $post_id, $ticket_id );
+
+		$attendee_data = [];
+
+		$attendee = $provider->create_attendee( $ticket, $attendee_data );
+
+		$this->assertInstanceOf( WP_Post::class, $attendee );
+	}
+
+	/**
+	 * It should allow creating an attendee.
+	 *
+	 * @test
+	 */
+	public function should_allow_creating_an_attendee() {
+		/** @var \Tribe__Tickets__Commerce__PayPal__Main $provider */
+		$provider = tribe( 'tickets.commerce.paypal' );
+
+		$post_id   = $this->factory->post->create();
+		$ticket_id = $this->create_paypal_ticket( $post_id );
+		$ticket    = $provider->get_ticket( $post_id, $ticket_id );
 
 		$attendee_data = [
 			'full_name' => 'A test attendee',
@@ -105,14 +123,7 @@ class CreateTest extends \Codeception\TestCase\WPTestCase {
 			//'optout' => 0,
 		];
 
-		$ticket_id = $this->create_paypal_ticket( $post_id );
-
-		/** @var \Tribe__Tickets__Commerce__PayPal__Main $provider */
-		$provider = tribe( 'tickets.commerce.paypal' );
-
-		$ticket = $provider->get_ticket( $post_id, $ticket_id );
-
-		$attendee = $attendees->create_attendee_for_ticket( $ticket, $attendee_data );
+		$attendee = $provider->create_attendee( $ticket, $attendee_data );
 
 		$meta = get_post_meta( $attendee->ID );
 

@@ -546,42 +546,38 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param array  $data
-	 * @param string $order_id
-	 * @param int    $event_id
+	 * @param array $attendee_data Information that we are trying to save.
+	 * @param int   $attendee_id   The attendee ID.
+	 * @param int   $post_id       The event/post ID.
 	 */
-	public function update_attendee_data( $data, $order_id, $event_id ) {
+	public function update_attendee_data( $attendee_data, $attendee_id, $post_id ) {
 		$user_id = get_current_user_id();
 
-		$ticket_orders    = $this->tickets_view->get_post_ticket_attendees( $event_id, $user_id );
-		$ticket_order_ids = wp_list_pluck( $ticket_orders, 'order_id' );
+		$ticket_attendees    = $this->tickets_view->get_post_ticket_attendees( $post_id, $user_id );
+		$ticket_attendee_ids = wp_list_pluck( $ticket_attendees, 'attendee_id' );
 
-		// This makes sure we don't save attendees for orders that are not from this current user and event
-		if ( ! in_array( $order_id, $ticket_order_ids ) ) {
+		// This makes sure we don't save attendees for attendees that are not from this current user and event.
+		if ( ! in_array( $attendee_id, $ticket_attendee_ids, true ) ) {
 			return;
 		}
 
-		// Get the Attendee Data, it's important for testing
-		foreach ( $ticket_orders as $test_attendee ) {
-			if ( $order_id !== $test_attendee['order_id'] ) {
-				continue;
-			}
-		}
-
-		$attendee_email     = empty( $data['email'] ) ? null : sanitize_email( $data['email'] );
+		$attendee_email     = empty( $attendee_data['email'] ) ? null : sanitize_email( $attendee_data['email'] );
 		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
-		$attendee_full_name = empty( $data['full_name'] ) ? null : sanitize_text_field( $data['full_name'] );
-		$attendee_optout    = empty( $data['optout'] ) ? 0 : max( 0, (int) $data['optout'] );
+		$attendee_full_name = empty( $attendee_data['full_name'] ) ? null : sanitize_text_field( $attendee_data['full_name'] );
+		$attendee_optout    = empty( $attendee_data['optout'] ) ? 0 : (int) tribe_is_truthy( $attendee_data['optout'] );
 
-		update_post_meta( $order_id, $this->attendee_optout_key, (int) $attendee_optout );
+		$attendee_data_to_save = [
+			'full_name' => $attendee_full_name,
+			'email'     => $attendee_email,
+			'optout'    => $attendee_optout,
+		];
 
-		if ( ! is_null( $attendee_full_name ) ) {
-			update_post_meta( $order_id, $this->full_name, $attendee_full_name );
-		}
+		// Remove arguments that are null.
+		$attendee_data_to_save = array_filter( $attendee_data_to_save, static function ( $value ) {
+			return ! is_null( $value );
+		} );
 
-		if ( ! is_null( $attendee_email ) ) {
-			update_post_meta( $order_id, $this->email, $attendee_email );
-		}
+		$this->update_attendee( $attendee_id, $attendee_data_to_save );
 	}
 
 	/**
@@ -886,7 +882,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 				$data = $attendee;
 
-				$data['attendee_status'] = $attendee_order_status;
+				$data['order_attendee_id'] = $order_attendee_id;
+				$data['attendee_status']   = $attendee_order_status;
 
 				if ( Tribe__Tickets__Commerce__PayPal__Stati::$refunded === $payment_status ) {
 					$refund_order_id = Tribe__Utils__Array::get( $transaction_data, 'txn_id', '' );
@@ -912,52 +909,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 						$data['user_id'] = $attendee_user_id;
 					}
 
-					$attendee_object = tribe( 'tickets.attendees' )->create_attendee( $ticket_type, $data );
+					$attendee_object = $this->create_attendee( $ticket_type, $data );
 					$attendee_id     = $attendee_object->ID;
 
 				} else {
 					// Update attendee.
-					$repository->by_primary_key( $attendee_id );
-					$repository->set_args( $data );
-					$repository->save();
+					$this->update_attendee( $attendee_id, $data );
 				}
-
-				$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
-				$shared_capacity = false;
-				if ( $global_stock->is_enabled() ) {
-					$shared_capacity = true;
-				}
-
-				if ( $status_stock_size > 0 ) {
-					switch ( $payment_status ) {
-						case Tribe__Tickets__Commerce__PayPal__Stati::$completed:
-							$this->increase_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
-							break;
-						case Tribe__Tickets__Commerce__PayPal__Stati::$refunded:
-							$this->decrease_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
-							break;
-						default:
-							break;
-					}
-				}
-
-				/**
-				 * Action fired when an PayPal attendee ticket is updated.
-				 *
-				 * This action will fire both when the attendee is created and
-				 * when the attendee is updated.
-				 * Hook into the `event_tickets_tpp_attendee_created` action to
-				 * only act on the attendee creation.
-				 *
-				 * @since 4.7
-				 *
-				 * @param int    $attendee_id           Attendee post ID
-				 * @param string $order_id              PayPal Order ID
-				 * @param int    $product_id            PayPal ticket post ID
-				 * @param int    $order_attendee_id     Attendee number in submitted order
-				 * @param string $attendee_order_status The order status for the attendee.
-				 */
-				do_action( 'event_tickets_tpp_attendee_updated', $attendee_id, $order_id, $product_id, $order_attendee_id, $attendee_order_status );
 
 				$order->add_attendee( $attendee_id );
 

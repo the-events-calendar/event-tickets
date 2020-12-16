@@ -201,23 +201,24 @@ class Tribe__Tickets__Tickets_View {
 		// Sort list to handle all not attending first.
 		$attendees = wp_list_sort( $attendees, 'order_status', 'ASC', true );
 
-		foreach ( $attendees as $order_id => $data ) {
+		foreach ( $attendees as $attendee_id => $attendee_data ) {
 			/**
-			 * An Action fired for each one of the Attendees that were posted on the Order Tickets page
+			 * Allow Commerce providers to process updates for each attendee from the My Tickets page.
 			 *
-			 * @var array $data     Information that we are trying to save.
-			 * @var int   $order_id ID of attendee ticket.
-			 * @var int   $post_id  ID of event.
+			 * @param array $attendee_data Information that we are trying to save.
+			 * @param int   $attendee_id   The attendee ID.
+			 * @param int   $post_id       The event/post ID.
 			 */
-			do_action( 'event_tickets_attendee_update', $data, $order_id, $post_id );
+			do_action( 'event_tickets_attendee_update', $attendee_data, (int) $attendee_id, $post_id );
 		}
 
 		/**
-		 * A way for Meta to be saved, because it's grouped in a different way
+		 * Allow functionality to be hooked into after all of the attendees have been updated from the My Tickets page.
 		 *
-		 * @param int $post_id ID of event
+		 * @param int   $post_id   The event/post ID.
+		 * @param array $attendees List of attendees and their data that was saved.
 		 */
-		do_action( 'event_tickets_after_attendees_update', $post_id );
+		do_action( 'event_tickets_after_attendees_update', $post_id, $attendees );
 
 		// After editing the values, we update the transient.
 		Tribe__Post_Transient::instance()->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );

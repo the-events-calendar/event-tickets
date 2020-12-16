@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Tickets\Commerce\PayPal\Main;
+namespace Tribe\Tickets\Commerce\PayPal\Main\Inventory;
 
 require_once 'UTCTest.php';
 
