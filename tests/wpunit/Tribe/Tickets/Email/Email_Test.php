@@ -103,4 +103,52 @@ class Email_Test extends \Codeception\TestCase\WPTestCase {
 		// After updating again should be 2.
 		$this->assertEquals( 2, $ticket_sent_count );
 	}
+
+	/**
+	 * It should check if email activities are logged properly for RSVP.
+	 *
+	 * @test
+	 */
+	public function should_log_email_activity_data_for_rsvp() {
+		$post_id = $this->factory->post->create();
+
+		$rsvp_ticket_id    = $this->create_rsvp_ticket( $post_id );
+		$rsvp_attendee_ids = $this->create_many_attendees_for_ticket( 1, $rsvp_ticket_id, $post_id, [ 'ticket_sent' => false ] );
+		$attendee_id       = $rsvp_attendee_ids[0];
+
+		/** @var \Tribe__Tickets__RSVP $rsvp */
+		$rsvp = tribe( 'tickets.rsvp' );
+
+		$activity = (bool) get_post_meta( $attendee_id, $rsvp->attendee_activity_log, true );
+
+		// Should be false as no activity logged yet.
+		$this->assertFalse( $activity );
+
+		// Send Tickets Email.
+		$rsvp->send_tickets_email( $attendee_id, $post_id );
+
+		$activity = get_post_meta( $attendee_id, $rsvp->attendee_activity_log, true );
+
+		// Activity log is created.
+		$this->assertCount( 1, $activity );
+
+		$dummy_data = [
+			'type'  => 'test',
+			'name'  => 'dummy_name',
+			'email' => 'dummy_email@mail.com',
+		];
+
+		$rsvp->update_attendee_activity_log( $attendee_id, $dummy_data );
+
+		$activity = get_post_meta( $attendee_id, $rsvp->attendee_activity_log, true );
+
+		// Activity log is created.
+		$this->assertCount( 2, $activity );
+
+		// Remove the timestamp data from inserted dummy data.
+		unset( $activity[1]['time'] );
+
+		// Make sure that dummy data is same as passed.
+		$this->assertEqualSets( $activity[1], $dummy_data );
+	}
 }
