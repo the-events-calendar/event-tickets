@@ -55,7 +55,11 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 			wp_send_json_error( $response );
 		}
 
-		// Get the request vars.
+		/*
+		 * Get the request vars.
+		 *
+		 * Note to future developers: Using tribe_get_request_vars() here was removing non-string values (like arrays).
+		 */
 		$vars = $_REQUEST;
 
 		/**

@@ -723,17 +723,22 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since TBD
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object.
-	 * @param array                         $attendee_data List of additional attendee data.
+	 * @param Tribe__Tickets__Ticket_Object|int $ticket        The ticket object or ID.
+	 * @param array                             $attendee_data List of additional attendee data.
 	 *
 	 * @return WP_Post|false The new post object or false if unsuccessful.
 	 *
 	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
 	 */
 	public function create_attendee_for_ticket( $ticket, $attendee_data ) {
+		// Attempt to get the ticket object from the ticket ID.
+		if ( is_numeric( $ticket ) && $this->attendee_provider ) {
+			$ticket = $this->attendee_provider->get_ticket( null, $ticket );
+		}
+
 		// Require the ticket be a ticket object.
 		if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
-			throw new Tribe__Repository__Usage_Error( 'You must provide a ticket object when creating an attendee from the Attendees Repository class' );
+			throw new Tribe__Repository__Usage_Error( 'You must provide a valid ticket ID or object when creating an attendee from the Attendees Repository class' );
 		}
 
 		// Set the attendee arguments accordingly.
@@ -792,10 +797,12 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		if ( $return_promise ) {
 			$repository = $this;
 
-			return $saved->then( static function() use ( $repository, $attendee_data ) {
-				// Trigger the update actions.
-				$repository->trigger_update_actions( $attendee_data );
-			} );
+			return $saved->then(
+				static function() use ( $repository, $attendee_data ) {
+					// Trigger the update actions.
+					$repository->trigger_update_actions( $attendee_data );
+				}
+			);
 		}
 
 		// Trigger the update actions.
@@ -873,7 +880,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				 * @param boolean $lookup_user_from_email Whether to lookup the User using the Attendee Email if User ID is not set.
 				 * @param array   $args                   The arguments being set for this attendee.
 				 */
-				$lookup_user_from_email = (boolean) apply_filters( 'tribe_tickets_create_attendee_lookup_user_from_email', false, $args );
+				$lookup_user_from_email = (bool) apply_filters( 'tribe_tickets_create_attendee_lookup_user_from_email', false, $args );
 
 				if ( $lookup_user_from_email ) {
 					// Check if user exists.
@@ -894,7 +901,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 					 * @param boolean $create_user_from_email Whether to create the User using the Attendee Email if User ID is not set.
 					 * @param array   $args                   The arguments being set for this attendee.
 					 */
-					$create_user_from_email = (boolean) apply_filters( 'tribe_tickets_create_attendee_create_user_from_email', false, $args );
+					$create_user_from_email = (bool) apply_filters( 'tribe_tickets_create_attendee_create_user_from_email', false, $args );
 
 					if ( $create_user_from_email ) {
 						// Create the user using the attendee email.
@@ -909,7 +916,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 							 * @param boolean $send_new_user_info Whether to send the new user information email to the new user.
 							 * @param array   $args               The arguments being set for this attendee.
 							 */
-							$send_new_user_info = (boolean) apply_filters( 'tribe_tickets_create_attendee_create_user_from_email_send_new_user_info', false, $args );
+							$send_new_user_info = (bool) apply_filters( 'tribe_tickets_create_attendee_create_user_from_email_send_new_user_info', false, $args );
 
 							if ( $send_new_user_info ) {
 								wp_send_new_user_notifications( $created, 'user' );
@@ -956,9 +963,12 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		}
 
 		// Remove arguments that are null.
-		$args = array_filter( $args, static function ( $value ) {
-			return ! is_null( $value );
-		} );
+		$args = array_filter(
+			$args,
+			static function ( $value ) {
+				return ! is_null( $value );
+			}
+		);
 
 		// Remove unused arguments from saving.
 		if ( isset( $args['order_attendee_id'] ) ) {

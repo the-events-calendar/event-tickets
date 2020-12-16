@@ -572,7 +572,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		if ( ! empty( $attendee_data['email'] ) ) {
 			$attendee_data['email'] = sanitize_email( $attendee_data['email'] );
 
-			// Only update email if valid
+			// Only update email if valid.
 			if ( is_email( $attendee_data['email'] ) ) {
 				$attendee_data_to_save['email'] = $attendee_data['email'];
 			}

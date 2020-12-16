@@ -919,10 +919,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$attendee = $test_attendee;
 		}
 
-		// Don't try to Save if it's restricted
+		// Don't try to Save if it's restricted.
 		if (
 			! isset( $attendee['product_id'] )
-		    || $this->tickets_view->is_rsvp_restricted( $post_id, $attendee['product_id'] )
+			|| $this->tickets_view->is_rsvp_restricted( $post_id, $attendee['product_id'] )
 		) {
 			return;
 		}
@@ -938,7 +938,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		if ( ! empty( $attendee_data['email'] ) ) {
 			$attendee_data['email'] = sanitize_email( $attendee_data['email'] );
 
-			// Only update email if valid
+			// Only update email if valid.
 			if ( is_email( $attendee_data['email'] ) ) {
 				$attendee_data_to_save['email'] = $attendee_data['email'];
 			}
@@ -955,7 +955,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$attendee_status = $attendee_data['order_status'];
 		}
 
-		$ticket_id  = $attendee['product_id'];
+		$ticket_id = $attendee['product_id'];
 
 		//check if changing status will cause rsvp to go over capacity
 		$previous_order_status = get_post_meta( $attendee_id, self::ATTENDEE_RSVP_KEY, true );

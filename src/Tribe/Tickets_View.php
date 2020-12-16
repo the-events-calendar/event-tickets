@@ -215,6 +215,8 @@ class Tribe__Tickets__Tickets_View {
 		/**
 		 * Allow functionality to be hooked into after all of the attendees have been updated from the My Tickets page.
 		 *
+		 * @since TBD Added the $attendees value to the action for further integration.
+		 *
 		 * @param int   $post_id   The event/post ID.
 		 * @param array $attendees List of attendees and their data that was saved.
 		 */
