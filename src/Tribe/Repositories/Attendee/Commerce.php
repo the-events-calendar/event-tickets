@@ -28,7 +28,7 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 
 		$this->create_args['post_type'] = $this->attendee_provider->attendee_object;
 
-		// Use a regular variable so we can get constants from it PHP <7.0
+		// Use a regular variable so we can get constants from it in a PHP <7.0 compatible way.
 		$attendee_provider = $this->attendee_provider;
 
 		// Add object specific aliases.
@@ -175,6 +175,24 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 		 */
 		do_action( 'event_tickets_tpp_attendee_created', $attendee_id, $order_id, $product_id, $order_attendee_id, $attendee_order_status );
 
+		/**
+		 * Action fired when an PayPal attendee ticket is updated.
+		 *
+		 * This action will fire both when the attendee is created and
+		 * when the attendee is updated.
+		 * Hook into the `event_tickets_tpp_attendee_created` action to
+		 * only act on the attendee creation.
+		 *
+		 * @since 4.7
+		 *
+		 * @param int    $attendee_id           Attendee post ID
+		 * @param string $order_id              PayPal Order ID
+		 * @param int    $product_id            PayPal ticket post ID
+		 * @param int    $order_attendee_id     Attendee number in submitted order
+		 * @param string $attendee_order_status The order status for the attendee.
+		 */
+		do_action( 'event_tickets_tpp_attendee_updated', $attendee_id, $order_id, $product_id, $order_attendee_id, $attendee_order_status );
+
 		if ( $post_id ) {
 			$global_stock    = new Tribe__Tickets__Global_Stock( $post_id );
 			$shared_capacity = false;
@@ -194,6 +212,34 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 					break;
 			}
 		}
+	}
+
+	/**
+	 * Handle backwards compatible update actions for RSVPs.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $attendee_data List of attendee data to be saved.
+	 */
+	public function trigger_update_actions( $attendee_data ) {
+		parent::trigger_update_actions( $attendee_data );
+
+		$attendee_id = (int) Arr::get( $attendee_data, 'attendee_id' );
+
+		if ( ! $attendee_id ) {
+			return;
+		}
+
+		$attendee = $this->attendee_provider->get_attendee( $attendee_id );
+
+		if ( ! $attendee ) {
+			return;
+		}
+
+		$order_id              = $attendee['order_id'];
+		$product_id            = $attendee['product_id'];
+		$order_attendee_id     = 0;
+		$attendee_order_status = $attendee['order_status'];
 
 		/**
 		 * Action fired when an PayPal attendee ticket is updated.
