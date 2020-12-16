@@ -178,7 +178,7 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 
 = [5.0.4.1] 2020-12-16 =
 
-* Fix - Resolve fatal error from the Attendee Registration modal when calling the loading "dot" icons outside of the template context in older views. [TBD]
+* Fix - Resolve fatal error from the Attendee Registration modal when calling the loading "dot" icons outside of the template context in older views. [ET-986]
 
 = [5.0.4] 2020-12-15 =
 
