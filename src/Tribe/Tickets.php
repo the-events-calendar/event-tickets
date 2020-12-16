@@ -2503,10 +2503,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Update the email sent counter for attendee by 1.
 		 *
+		 * @since TBD
+		 *
 		 * @param int    $attendee_id Attendee ID.
 		 * @param string $meta_key Meta Key that stores the count.
-		 *
-		 * @since TBD
 		 */
 		public function update_ticket_sent_counter( $attendee_id, $meta_key ) {
 			$prev_val = (int) get_post_meta( $attendee_id, $meta_key, true );
