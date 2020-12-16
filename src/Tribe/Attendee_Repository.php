@@ -19,6 +19,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Key name to use when limiting lists of keys.
 	 *
+	 * @since TBD
+	 *
 	 * @var string
 	 */
 	protected $key_name = '';
