@@ -703,26 +703,27 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
 
+			$class = __CLASS__;
+
 			$methods = [
 				'get_tickets',
 			];
 
 			foreach ( $methods as $method ) {
-				$key = __CLASS__ . '::' . $method . '-' . $this->orm_provider . '-' . $post_id;
+				$key = $class . '::' . $method . '-' . $this->orm_provider . '-' . $post_id;
 
-				$cache[ $key ] = null;
+				unset( $cache[ $key ] );
 			}
 
 			$static_methods = [
-				'get_tickets',
 				'get_all_event_tickets',
 				'get_event_attendees_count',
 			];
 
 			foreach ( $static_methods as $method ) {
-				$key = __CLASS__ . '::' . $method . '-' . $post_id;
+				$key = $class . '::' . $method . '-' . $post_id;
 
-				$cache[ $key ] = null;
+				unset( $cache[ $key ] );
 			}
 		}
 
@@ -1562,7 +1563,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$cache = tribe( 'cache' );
 			$key   = __METHOD__ . '-' . $post_id;
 
-			if ( isset( $cache[ $key ] ) ) {
+			if ( empty( $args ) && isset( $cache[ $key ] ) ) {
 				return $cache[ $key ];
 			}
 
@@ -1581,7 +1582,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$found = $repository->found();
 
-			$cache[ $key ] = $found;
+			if ( empty( $args ) ) {
+				$cache[ $key ] = $found;
+			}
 
 			return $found;
 		}
