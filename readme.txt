@@ -1,6 +1,6 @@
 === Event Tickets ===
 
-Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, cliffpaulick, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, patriciahillebrandt, peterchester, reid.peifer, shane.pearlman, vicskf, zbtirrell, juanfra
+Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, patriciahillebrandt, peterchester, reid.peifer, shane.pearlman, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
 Tested up to: 5.6.0
