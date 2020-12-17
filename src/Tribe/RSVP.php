@@ -1430,6 +1430,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return int The updated/created ticket post ID.
 	 */
 	public function save_ticket( $post_id, $ticket, $raw_data = array() ) {
+		// Run anything we might need on parent method.
+		parent::save_ticket( $post_id, $ticket, $raw_data );
+
 		// assume we are updating until we find out otherwise
 		$save_type = 'update';
 
@@ -1558,6 +1561,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function delete_ticket( $event_id, $ticket_id ) {
+		// Run anything we might need on parent method.
+		parent::delete_ticket( $post_id, $ticket_id );
+
 		// Ensure we know the event and product IDs (the event ID may not have been passed in)
 		if ( empty( $event_id ) ) {
 			$event_id = get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true );

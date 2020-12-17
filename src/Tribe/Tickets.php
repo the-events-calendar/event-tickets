@@ -652,7 +652,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $ticket_id ID of ticket post
 		 * @return mixed
 		 */
-		public function delete_ticket( $post_id, $ticket_id ) {}
+		public function delete_ticket( $post_id, $ticket_id ) {
+			$this->clear_ticket_cache_for_post( $post_id );
+		}
 
 		/**
 		 * Saves a ticket.
@@ -666,6 +668,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return int|false The updated/created ticket post ID or false if no ticket ID.
 		 */
 		public function save_ticket( $post_id, $ticket, $raw_data = [] ) {
+			$this->clear_ticket_cache_for_post( $post_id );
+
 			return false;
 		}
 
@@ -686,6 +690,40 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return ! empty( $this->get_tickets_ids( $post_id ) );
+		}
+
+		/**
+		 * Clear the ticket cache for a specific post ID.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $post_id The post ID.
+		 */
+		public function clear_ticket_cache_for_post( $post_id ) {
+			/** @var Tribe__Cache $cache */
+			$cache = tribe( 'cache' );
+
+			$methods = [
+				'get_tickets',
+			];
+
+			foreach ( $methods as $method ) {
+				$key = __CLASS__ . '::' . $method . '-' . $this->orm_provider . '-' . $post_id;
+
+				$cache[ $key ] = null;
+			}
+
+			$static_methods = [
+				'get_tickets',
+				'get_all_event_tickets',
+				'get_event_attendees_count',
+			];
+
+			foreach ( $static_methods as $method ) {
+				$key = __CLASS__ . '::' . $method . '-' . $post_id;
+
+				$cache[ $key ] = null;
+			}
 		}
 
 		/**
@@ -3491,6 +3529,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$version = tribe( 'tickets.version' );
 
 			$version->update( $ticket->ID );
+
+			$this->clear_ticket_cache_for_post( $post_id );
 
 			return $save_ticket;
 		}
