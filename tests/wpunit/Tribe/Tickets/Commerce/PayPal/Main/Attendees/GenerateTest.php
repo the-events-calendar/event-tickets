@@ -122,7 +122,8 @@ class GenerateTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( 1, (int) get_post_meta( $new_attendee->ID, $provider->attendee_ticket_sent, true ) );
 		$this->assertEquals( $user_id, (int) get_post_meta( $new_attendee->ID, $provider->attendee_user_id, true ) );
 		$this->assertNotEmpty( get_post_meta( $new_attendee->ID, $provider->security_code, true ) );
-		$this->assertCount( 12, $meta, 'There appears to be untested meta on this attendee, please add them to the test: ' . var_export( $meta, true ) );
+		$this->assertNotEmpty( get_post_meta( $new_attendee->ID, $provider->attendee_activity_log, true ) );
+		$this->assertCount( 13, $meta, 'There appears to be untested meta on this attendee, please add them to the test: ' . var_export( $meta, true ) );
 
 		// Confirm the ticket sales/stock is updated.
 		$this->assertEquals( 1, (int) get_post_meta( $ticket_id, 'total_sales', true ) );
