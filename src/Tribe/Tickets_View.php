@@ -636,7 +636,7 @@ class Tribe__Tickets__Tickets_View {
 		/** @var Tribe__Tickets__RSVP $rsvp */
 		$rsvp = tribe( 'tickets.rsvp' );
 
-		if ( ! $user_id ) {
+		if ( null === $user_id ) {
 			return $rsvp->get_attendees_by_id( $event_id );
 		}
 
