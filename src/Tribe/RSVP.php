@@ -786,11 +786,18 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			}
 		}
 
+		$order_status = 'yes';
+
+		if ( isset( $attendee_data['order_status'] ) ) {
+			$order_status = $attendee_data['order_status'];
+		} elseif ( isset( $attendee_data['attendee_status'] ) ) {
+			$order_status = $attendee_data['attendee_status'];
+		}
+
 		$full_name         = $attendee_data['full_name'];
 		$email             = $attendee_data['email'];
 		$optout            = true;
 		$user_id           = isset( $attendee_data['user_id'] ) ? (int) $attendee_data['user_id'] : 0;
-		$order_status      = isset( $attendee_data['order_status'] ) ? $attendee_data['order_status'] : 'yes';
 		$order_id          = ! empty( $attendee_data['order_id'] ) ? $attendee_data['order_id'] : $this->generate_order_id();
 		$product_id        = $ticket->ID;
 		$order_attendee_id = isset( $attendee_data['order_attendee_id'] ) ? $attendee_data['order_attendee_id'] : null;
@@ -898,6 +905,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @param int   $post_id       The event/post ID.
 	 */
 	public function update_attendee_data( $attendee_data, $attendee_id, $post_id ) {
+		// Bail if the user is not logged in.
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+
 		$user_id = get_current_user_id();
 
 		$rsvp_attendees    = $this->tickets_view->get_event_rsvp_attendees( $post_id, $user_id );
