@@ -1562,7 +1562,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function delete_ticket( $event_id, $ticket_id ) {
 		// Run anything we might need on parent method.
-		parent::delete_ticket( $post_id, $ticket_id );
+		parent::delete_ticket( $event_id, $ticket_id );
 
 		// Ensure we know the event and product IDs (the event ID may not have been passed in)
 		if ( empty( $event_id ) ) {
