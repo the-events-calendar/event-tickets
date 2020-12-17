@@ -551,6 +551,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param int   $post_id       The event/post ID.
 	 */
 	public function update_attendee_data( $attendee_data, $attendee_id, $post_id ) {
+		// Bail if the user is not logged in.
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+
 		$user_id = get_current_user_id();
 
 		$ticket_attendees    = $this->tickets_view->get_post_ticket_attendees( $post_id, $user_id );
