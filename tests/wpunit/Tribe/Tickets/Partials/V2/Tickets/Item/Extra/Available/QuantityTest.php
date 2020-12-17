@@ -24,13 +24,14 @@ class QuantityTest extends V2TestCase {
 
 		$event = $this->get_mock_event( 'events/single/1.json' );
 
-		$ids = $this->create_many_paypal_tickets( 1, $event->ID );
+		$ids = $this->create_many_paypal_tickets( 1, $event->ID, [
+			'tribe-ticket' => [
+				'capacity' => 20,
+			],
+		] );
 
 		/** @var \Tribe__Tickets__Ticket_Object $ticket */
 		$ticket = $provider->get_ticket( $event->ID, $ids[0] );
-
-		// default Ticket scenario.
-		$ticket->capacity = 20;
 
 		return [
 			'ticket'          => $ticket,
