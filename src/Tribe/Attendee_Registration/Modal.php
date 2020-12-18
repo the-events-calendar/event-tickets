@@ -165,7 +165,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 			novalidate
 		>
 			<?php
-			include $file;
+			$template_obj->template( $template );
 			$this->append_modal_ar_template_v1( $content, $template_obj );
 			?>
 		</form>
