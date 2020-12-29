@@ -179,6 +179,7 @@ Check out our extensive [knowledgebase](https://m.tri.be/18wm) for articles on u
 = [5.0.4.2] 2020-12-29 =
 
 * Fix - Resolve JavaScript validation issues with start/end date fields when saving tickets in the Classic Editor using a variety of date formats. [ET-987]
+* Tweak - Point PUE URLs to the correct servers to avoid redirects.
 
 = [5.0.4.1] 2020-12-16 =
 
