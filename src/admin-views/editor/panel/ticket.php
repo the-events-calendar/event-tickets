@@ -248,7 +248,7 @@ $msg_rsvp_form_save = sprintf(
 					?>
 				</h4>
 			</div>
-			<section id="ticket_form_main" class="main">
+			<section id="ticket_form_main" class="main" data-datepicker_format="<?php echo esc_attr( Tribe__Date_Utils::get_datepicker_format_index() ); ?>">
 				<div class="input_block">
 					<label class="ticket_form_label ticket_form_left" for="ticket_name"><?php esc_html_e( 'Type:', 'event-tickets' ); ?></label>
 					<input
