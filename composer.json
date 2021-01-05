@@ -1,5 +1,5 @@
 {
-  "name": "moderntribe/event-tickets",
+  "name": "the-events-calendar/event-tickets",
   "description": "Standalone Tickets Framework",
   "type": "wordpress-plugin",
   "keywords": [
@@ -13,7 +13,7 @@
     "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
     "wp-coding-standards/wpcs": "^2.1",
     "automattic/vipwpcs": "^2.0",
-    "moderntribe/tribalscents": "dev-master",
+    "the-events-calendar/tribalscents": "dev-master",
     "lucatume/wp-browser": "2.2.15",
     "codeception/codeception": "^2.5.6",
     "phpunit/phpunit": "^6.5.14",
@@ -23,19 +23,19 @@
     "spatie/phpunit-snapshot-assertions": "^1.4.2",
     "fzaninotto/faker": "^1.8",
     "lucatume/wp-snaphot-assertions": "^1.0",
-    "moderntribe/tribe-testing-facilities": "dev-master"
+    "the-events-calendar/tec-testing-facilities": "dev-master"
   },
   "repositories": [
     {
-      "name": "moderntribe/tribe-testing-facilities",
+      "name": "the-events-calendar/tec-testing-facilities",
       "type": "github",
-      "url": "https://github.com/moderntribe/tribe-testing-facilities",
+      "url": "https://github.com/the-events-calendar/tec-testing-facilities",
       "no-api": true
     },
     {
-      "name": "moderntribe/TribalScents",
+      "name": "the-events-calendar/TribalScents",
       "type": "github",
-      "url": "https://github.com/moderntribe/TribalScents",
+      "url": "https://github.com/the-events-calendar/TribalScents",
       "no-api": true
     }
   ],
