@@ -1,7 +1,7 @@
 {
   "name": "event-tickets",
   "version": "5.0.5",
-  "repository": "git@github.com:moderntribe/event-tickets.git",
+  "repository": "git@github.com:the-events-calendar/event-tickets.git",
   "_zipname": "event-tickets",
   "_zipfoldername": "event-tickets",
   "_resourcepath": "src/resources",
