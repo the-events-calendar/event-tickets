@@ -1155,7 +1155,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			 * @param array                               $attendee_data List of attendee data to be saved.
 			 * @param Tribe__Tickets__Attendee_Repository $repository    The current repository object.
 			 */
-			do_action( 'tribe_tickets_attendee_repository_update_attendee_after_update_' . $this->key_name, $attendee_data, $this );
+			do_action( "tribe_tickets_attendee_repository_update_attendee_after_update_{$this->key_name}", $attendee_data, $this );
 		}
 	}
 }
