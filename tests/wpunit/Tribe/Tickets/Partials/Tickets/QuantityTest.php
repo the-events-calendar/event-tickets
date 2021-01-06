@@ -85,8 +85,9 @@ class Quantity extends WPTestCase {
 		$ticket    = tribe( 'tickets.commerce.paypal' )->get_ticket( $event_id, $ticket_id );
 
 		$args    = [
-			'ticket' => $ticket,
-			'key'    => 0,
+			'ticket'     => $ticket,
+			'key'        => 0,
+			'must_login' => false,
 		];
 
 		// Return 10.

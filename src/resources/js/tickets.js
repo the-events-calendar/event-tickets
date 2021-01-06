@@ -295,6 +295,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			// At the end always swap panels (deafults to base/list)
 			obj.swapPanel( swapTo );
+
+			// Trigger dependency.
+			$( '.tribe-dependency' ).trigger( 'verify.dependency' );
 		};
 
 		obj.setupPanels = function() {
