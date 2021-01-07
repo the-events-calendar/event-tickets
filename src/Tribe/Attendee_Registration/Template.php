@@ -109,7 +109,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @since TBD
 	 *
-	 * @return boolean
+	 * @return bool Whether the Attendee Registration shortcode is being used.
 	 */
 	public function is_using_shortcode() {
 		return tribe( 'tickets.attendee_registration' )->is_using_shortcode();
