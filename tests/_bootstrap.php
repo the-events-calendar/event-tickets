@@ -10,7 +10,7 @@ Codeception\Util\Autoload::addNamespace( 'Tribe\Tickets\Test', __DIR__ . '/_supp
 $common_tests_dir = __DIR__ . '/../common/tests/';
 $common_support_dir = $common_tests_dir . '/_support';
 
-require_once $common_support_dir . '/Helper/TribeDb.php';
+require_once $common_support_dir . '/Helper/TECDb.php';
 
 Codeception\Util\Autoload::addNamespace( 'Tribe\Tests', $common_support_dir );
 
