@@ -22,7 +22,7 @@
     "spatie/phpunit-snapshot-assertions": "^1.4.2",
     "fzaninotto/faker": "^1.8",
     "lucatume/wp-snaphot-assertions": "^1.0",
-    "the-events-calendar/tribe-testing-facilities": "dev-master",
+    "the-events-calendar/tec-testing-facilities": "dev-master",
     "codeception/module-asserts": "^1.0",
     "codeception/module-phpbrowser": "^1.0",
     "codeception/module-webdriver": "^1.0",
