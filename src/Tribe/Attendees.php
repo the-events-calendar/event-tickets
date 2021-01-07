@@ -307,7 +307,13 @@ class Tribe__Tickets__Attendees {
 
 		add_thickbox();
 
-		$mail_data = array(
+		$move_url_args = [
+			'dialog'    => Tribe__Tickets__Main::instance()->move_tickets()->dialog_name(),
+			'check'     => wp_create_nonce( 'move_tickets' ),
+			'TB_iframe' => 'true',
+		];
+
+		$config_data = [
 			'nonce'           => wp_create_nonce( 'email-attendee-list' ),
 			'required'        => esc_html__( 'You need to select a user or type a valid email address', 'event-tickets' ),
 			'sending'         => esc_html__( 'Sending...', 'event-tickets' ),
@@ -315,14 +321,20 @@ class Tribe__Tickets__Attendees {
 			'checkin_nonce'   => wp_create_nonce( 'checkin' ),
 			'uncheckin_nonce' => wp_create_nonce( 'uncheckin' ),
 			'cannot_move'     => esc_html__( 'You must first select one or more tickets before you can move them!', 'event-tickets' ),
-			'move_url'        => add_query_arg( array(
-				'dialog'    => Tribe__Tickets__Main::instance()->move_tickets()->dialog_name(),
-				'check'     => wp_create_nonce( 'move_tickets' ),
-				'TB_iframe' => 'true',
-			) ),
-		);
+			'move_url'        => add_query_arg( $move_url_args ),
+			'confirmation'    => esc_html__( 'Please confirm that you would like to delete this attendee.', 'event-tickets' ),
+		];
 
-		wp_localize_script( $this->slug() . '-js', 'Attendees', $mail_data );
+		/**
+		 * Allow filtering the configuration data for the Attendee objects on Attendees report page.
+		 *
+		 * @since 5.0.4
+		 *
+		 * @param array $config_data List of configuration data to be localized.
+		 */
+		$config_data = apply_filters( 'tribe_tickets_attendees_report_js_config', $config_data );
+
+		wp_localize_script( $this->slug() . '-js', 'Attendees', $config_data );
 	}
 
 	/**

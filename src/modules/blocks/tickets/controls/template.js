@@ -23,7 +23,7 @@ const message = __(
 );
 
 const note = __(
-	'Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin',
+	'Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin.',
 	'event-tickets',
 );
 

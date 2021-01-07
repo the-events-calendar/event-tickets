@@ -28,23 +28,42 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	 * @return array
 	 */
 	public function editor_config( $editor_config ) {
-		$tickets       = empty( $editor_js_config['tickets'] ) ? array() : $editor_js_config['tickets'];
+		$tickets = empty( $editor_config['tickets'] ) ? [] : $editor_config['tickets'];
+
 		$editor_config = $this->set_defaults( $editor_config );
 
 		$editor_config['common']['rest']['nonce'] = array_merge(
 			$editor_config['common']['rest']['nonce'],
-			array(
+			[
 				'add_ticket_nonce'    => wp_create_nonce( 'add_ticket_nonce' ),
 				'edit_ticket_nonce'   => wp_create_nonce( 'edit_ticket_nonce' ),
 				'remove_ticket_nonce' => wp_create_nonce( 'remove_ticket_nonce' ),
 				'move_tickets'        => wp_create_nonce( 'move_tickets' ),
-			)
+			]
 		);
 
 		$editor_config['tickets'] = array_merge(
 			(array) $tickets,
 			$this->localize()
 		);
+
+		/**
+		 * Filter the default buffer duration between ticket sale start time and end time.
+		 *
+		 * @since 5.0.4
+		 *
+		 * @param int $buffer Number in hours to be used.
+		 */
+		$editor_config['tickets']['end_sale_buffer_duration'] = apply_filters( 'tribe_tickets_editor_end_sale_buffer_duration_hours', 2 );
+
+		/**
+		 * Filter the default buffer years between ticket sale start date and end date.
+		 *
+		 * @since 5.0.4
+		 *
+		 * @param int $buffer Number in years to be used.
+		 */
+		$editor_config['tickets']['end_sale_buffer_years'] = apply_filters( 'tribe_tickets_editor_end_sale_buffer_years', 1 );
 
 		return $editor_config;
 	}
@@ -86,7 +105,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	}
 
 	/**
-	 * Return an array with all the providers used by tickets
+	 * Return an array with all the currently-active ticket providers (not RSVP).
 	 *
 	 * @since 4.9
 	 *
@@ -94,34 +113,33 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	 */
 	public function get_providers() {
 		$modules                 = Tribe__Tickets__Tickets::modules();
-		$class_names             = array_keys( $modules );
-		$providers               = array();
+		$providers               = [];
 		$default_currency_symbol = tribe_get_option( 'defaultCurrencySymbol', '$' );
 
-		foreach ( $class_names as $class ) {
-			if ( 'RSVP' === $modules[ $class ] ) {
+		foreach ( $modules as $class_name => $display_name ) {
+			if ( Tribe__Tickets__RSVP::class === $class_name ) {
 				continue;
 			}
 
 			$currency = tribe( 'tickets.commerce.currency' );
 
-			// Backwards to avoid fatals
+			// Backwards to avoid fatals.
 			$currency_symbol = $default_currency_symbol;
-			if ( is_callable( array( $currency, 'get_provider_symbol' ) ) ) {
-				$currency_symbol = $currency->get_provider_symbol( $class, null );
+			if ( is_callable( [ $currency, 'get_provider_symbol' ] ) ) {
+				$currency_symbol = $currency->get_provider_symbol( $class_name, null );
 			}
 
 			$currency_position = 'prefix';
-			if ( is_callable( array( $currency, 'get_provider_symbol_position' ) ) ) {
-				$currency_position = $currency->get_provider_symbol_position( $class, null );
+			if ( is_callable( [ $currency, 'get_provider_symbol_position' ] ) ) {
+				$currency_position = $currency->get_provider_symbol_position( $class_name, null );
 			}
 
-			$providers[] = array(
-				'name'              => $modules[ $class ],
-				'class'             => $class,
+			$providers[] = [
+				'name'              => $modules[ $class_name ],
+				'class'             => $class_name,
 				'currency'          => html_entity_decode( $currency_symbol ),
 				'currency_position' => $currency_position,
-			);
+			];
 		}
 
 		return $providers;

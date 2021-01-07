@@ -1,5 +1,11 @@
 <?php
 /**
+ * Handle the provider for the Event Tickets Editor functionality.
+ */
+
+use Tribe\Tickets\Editor\Warnings;
+
+/**
  * Register Event Tickets provider
  *
  * @since 4.9
@@ -9,37 +15,51 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	 * Binds and sets up implementations.
 	 *
 	 * @since 4.9
-	 *
 	 */
 	public function register() {
+		// The general warnings class.
+		$this->container->singleton( 'tickets.editor.warnings', Warnings::class, [ 'hook' ] );
+
 		// Register these all the time - as we now use them in most of the templates, blocks or otherwise.
+		$this->container->singleton( 'tickets.editor.template.overwrite', 'Tribe__Tickets__Editor__Template__Overwrite' );
 		$this->container->singleton( 'tickets.editor.template', 'Tribe__Tickets__Editor__Template' );
 		$this->container->singleton( 'tickets.editor.blocks.tickets', 'Tribe__Tickets__Editor__Blocks__Tickets' );
 		$this->container->singleton( 'tickets.editor.blocks.rsvp', 'Tribe__Tickets__Editor__Blocks__Rsvp' );
-		$this->container->singleton( 'tickets.editor.configuration', 'Tribe__Tickets__Editor__Configuration', array( 'hook' ) );
+		$this->container->singleton( 'tickets.editor.configuration', 'Tribe__Tickets__Editor__Configuration', [ 'hook' ] );
 
-		if (
-			! tribe( 'editor' )->should_load_blocks()
-			|| ! class_exists( 'Tribe__Tickets__Main' )
-		) {
+		$this->register_for_blocks();
+
+		// Handle general non-block-specific instances.
+		tribe( 'tickets.editor.warnings' );
+	}
+
+	/**
+	 * Handle registration for blocks-functionality separately.
+	 *
+	 * @since 5.0.4
+	 */
+	public function register_for_blocks() {
+		/** @var \Tribe__Editor $editor */
+		$editor = tribe( 'editor' );
+
+		// Only register for blocks if we are using them.
+		if ( ! $editor->should_load_blocks() ) {
 			return;
 		}
-
-		$this->container->singleton( 'tickets.editor.template.overwrite', 'Tribe__Tickets__Editor__Template__Overwrite', array( 'hook' ) );
 
 		$this->container->singleton(
 			'tickets.editor.compatibility.tickets',
 			'Tribe__Tickets__Editor__Compatibility__Tickets',
-			array( 'hook' )
+			[ 'hook' ]
 		);
 
-		$this->container->singleton( 'tickets.editor.assets', 'Tribe__Tickets__Editor__Assets', array( 'register' ) );
+		$this->container->singleton( 'tickets.editor.assets', 'Tribe__Tickets__Editor__Assets', [ 'register' ] );
 
 		$this->container->singleton( 'tickets.editor.blocks.tickets-item', 'Tribe__Tickets__Editor__Blocks__Tickets_Item' );
 		$this->container->singleton( 'tickets.editor.blocks.attendees', 'Tribe__Tickets__Editor__Blocks__Attendees' );
 
 		$this->container->singleton( 'tickets.editor.meta', 'Tribe__Tickets__Editor__Meta' );
-		$this->container->singleton( 'tickets.editor.rest.compatibility', 'Tribe__Tickets__Editor__REST__Compatibility', array( 'hook' ) );
+		$this->container->singleton( 'tickets.editor.rest.compatibility', 'Tribe__Tickets__Editor__REST__Compatibility', [ 'hook' ] );
 		$this->container->singleton( 'tickets.editor.attendees_table', 'Tribe__Tickets__Attendees_Table' );
 
 		$this->hook();
@@ -54,7 +74,7 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 		// Initialize the correct Singleton
 		tribe( 'tickets.editor.assets' );
 		tribe( 'tickets.editor.configuration' );
-		tribe( 'tickets.editor.template.overwrite' );
+		tribe( 'tickets.editor.template.overwrite' )->hook();
 	}
 
 	/**
