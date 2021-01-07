@@ -178,7 +178,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.0.5] TBD =
 
-* Tweak - Capitalize "Attendees" in the "Search Attendees" button on the "Attendees" page. [ETP-624]
+* Tweak - Enforce capitalization for the text for action buttons on the "Attendees" page. [ETP-624]
 
 = [5.0.4.2] 2020-12-29 =
 
