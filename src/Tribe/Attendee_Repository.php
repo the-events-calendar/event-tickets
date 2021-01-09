@@ -1,5 +1,7 @@
 <?php
 
+use Tribe__Utils__Array as Arr;
+
 /**
  * Class Tribe__Tickets__Attendee_Repository
  *
@@ -366,8 +368,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function filter_by_provider( $provider ) {
-		$providers = Tribe__Utils__Array::list_to_array( $provider );
-		$meta_keys = Tribe__Utils__Array::map_or_discard( (array) $providers, $this->attendee_to_event_keys() );
+		$providers = Arr::list_to_array( $provider );
+		$meta_keys = Arr::map_or_discard( (array) $providers, $this->attendee_to_event_keys() );
 
 		$this->by( 'meta_exists', $meta_keys );
 	}
@@ -386,8 +388,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function filter_by_provider_not_in( $provider ) {
-		$providers = Tribe__Utils__Array::list_to_array( $provider );
-		$meta_keys = Tribe__Utils__Array::map_or_discard( (array) $providers, $this->attendee_to_event_keys() );
+		$providers = Arr::list_to_array( $provider );
+		$meta_keys = Arr::map_or_discard( (array) $providers, $this->attendee_to_event_keys() );
 
 		$this->by( 'meta_not_exists', $meta_keys );
 	}
@@ -402,7 +404,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
 	 */
 	public function filter_by_event_status( $event_status ) {
-		$statuses = Tribe__Utils__Array::list_to_array( $event_status );
+		$statuses = Arr::list_to_array( $event_status );
 
 		$can_read_private_posts = current_user_can( 'read_private_posts' );
 
@@ -458,7 +460,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @param string|array $order_id Order ID(s).
 	 */
 	public function filter_by_order( $order_id ) {
-		$order_ids = Tribe__Utils__Array::list_to_array( $order_id );
+		$order_ids = Arr::list_to_array( $order_id );
 
 		$this->by( 'meta_in', $this->attendee_to_order_keys(), $order_ids );
 	}
@@ -474,7 +476,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
 	 */
 	public function filter_by_order_status( $order_status, $type = 'in' ) {
-		$statuses = Tribe__Utils__Array::list_to_array( $order_status );
+		$statuses = Arr::list_to_array( $order_status );
 
 		$has_manage_access = current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
 
@@ -855,6 +857,15 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				$args['optout'] = 1;
 			}
 
+			// Attempt to create order if none set.
+			if ( empty( $args['order_id'] ) && $ticket ) {
+				$order_id = $this->create_order_for_attendee( $args, $ticket );
+
+				if ( $order_id ) {
+					$args['order_id'] = $order_id;
+				}
+			}
+
 			// If the title is empty, set the title from the full name.
 			if ( empty( $args['title'] ) && $args['full_name'] ) {
 				$args['title'] = $args['full_name'];
@@ -872,7 +883,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 
 			// Maybe handle setting the User ID based on information we already have.
 			if ( empty( $args['user_id'] ) && ! empty( $args['email'] ) ) {
-				$user_id = $this->maybe_setup_attendee_user_from_email( $args['email'], $args );
+				$user_id = $this->attendee_provider->maybe_setup_attendee_user_from_email( $args['email'], $args );
 
 				if ( $user_id ) {
 					$args['user_id'] = $user_id;
@@ -930,88 +941,13 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	}
 
 	/**
-	 * Maybe lookup or create an attendee user from an email.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $email The email to maybe set up the user from.
-	 * @param array  $args  The arguments used from this attendee.
-	 *
-	 * @return int|null The user ID or null if not set up.
-	 */
-	public function maybe_setup_attendee_user_from_email( $email, $args = [] ) {
-		if ( empty( $email ) || ! is_email( $email ) ) {
-			return null;
-		}
-
-		/**
-		 * Allow filtering whether to enable user lookups by Attendee Email.
-		 *
-		 * @since TBD
-		 *
-		 * @param boolean $lookup_user_from_email Whether to lookup the User using the Attendee Email if User ID is not set.
-		 * @param array   $args                   The arguments being set for this attendee.
-		 */
-		$lookup_user_from_email = (bool) apply_filters( 'tribe_tickets_create_attendee_lookup_user_from_email', false, $args );
-
-		if ( $lookup_user_from_email ) {
-			// Check if user exists.
-			$user = get_user_by( 'email', $email );
-
-			if ( $user ) {
-				return $user->ID;
-			}
-		}
-
-		// Maybe create the user based on information we already have.
-		/**
-		 * Allow filtering whether to enable creating users using the Attendee Email.
-		 *
-		 * @since TBD
-		 *
-		 * @param boolean $create_user_from_email Whether to create the User using the Attendee Email if User ID is not set.
-		 * @param array   $args                   The arguments being set for this attendee.
-		 */
-		$create_user_from_email = (bool) apply_filters( 'tribe_tickets_create_attendee_create_user_from_email', false, $args );
-
-		// Do not create the user from the email.
-		if ( ! $create_user_from_email ) {
-			return null;
-		}
-
-		// Create the user using the attendee email.
-		$created = wp_create_user( $email, wp_generate_password( 12, false ), $email );
-
-		// The user was not created successfully.
-		if ( ! $created || is_wp_error( $created ) ) {
-			return null;
-		}
-
-		/**
-		 * Allow filtering whether to send the new user information email to the new user.
-		 *
-		 * @since TBD
-		 *
-		 * @param boolean $send_new_user_info Whether to send the new user information email to the new user.
-		 * @param array   $args               The arguments being set for this attendee.
-		 */
-		$send_new_user_info = (bool) apply_filters( 'tribe_tickets_create_attendee_create_user_from_email_send_new_user_info', false, $args );
-
-		if ( $send_new_user_info ) {
-			wp_send_new_user_notifications( $created, 'user' );
-		}
-
-		return $created;
-	}
-
-	/**
 	 * Set up the arguments to set for the attendee for this provider.
 	 *
 	 * @since TBD
 	 *
-	 * @param array                         $args          List of arguments to set for the attendee.
-	 * @param array                         $attendee_data List of additional attendee data.
-	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object or null if not relying on it.
+	 * @param array                              $args          List of arguments to set for the attendee.
+	 * @param array                              $attendee_data List of additional attendee data.
+	 * @param null|Tribe__Tickets__Ticket_Object $ticket        The ticket object or null if not relying on it.
 	 *
 	 * @return array List of arguments to set for the attendee.
 	 */
@@ -1157,5 +1093,72 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			 */
 			do_action( "tribe_tickets_attendee_repository_update_attendee_after_update_{$this->key_name}", $attendee_data, $this );
 		}
+	}
+
+	/**
+	 * Create an order for an attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param array                         $attendee_data List of additional attendee data.
+	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object or null if not relying on it.
+	 *
+	 * @return int|string|false The order ID or false if not created.
+	 */
+	public function create_order_for_attendee( $attendee_data, $ticket ) {
+		// Bail if we already have an attendee or order.
+		if ( ! empty( $attendee_data['attendee_id'] ) || ! empty( $attendee_data['order_id'] ) ) {
+			return false;
+		}
+
+		// Attempt to generate a new order.
+		$orders = tribe_tickets_orders( $this->key_name );
+
+		// Bail if provider-specific order repository not found.
+		if ( empty( $orders->key_name ) ) {
+			return false;
+		}
+
+		$order_args = [
+			'full_name'    => Arr::get( $attendee_data, 'full_name' ),
+			'email'        => Arr::get( $attendee_data, 'email' ),
+			'user_id'      => Arr::get( $attendee_data, 'user_id' ),
+			'order_status' => Arr::get( $attendee_data, 'attendee_status' ),
+			'tickets'      => [
+				[
+					'id'       => $ticket->ID,
+					'quantity' => 1,
+				],
+			],
+		];
+
+		/**
+		 * Allow filtering the order data being used to create an order for the attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param array                         $order_args    List of order data to be saved.
+		 * @param array                         $attendee_data List of additional attendee data.
+		 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object or null if not relying on it.
+		 */
+		$order_args = apply_filters( 'tribe_tickets_attendee_repository_create_order_for_attendee_order_args', $order_args, $attendee_data, $ticket );
+
+		// Check if order creation is disabled.
+		if ( empty( $order_args ) ) {
+			return false;
+		}
+
+		try {
+			$order = $orders->set_args( $order_args )->create();
+		} catch ( Tribe__Repository__Usage_Error $exception ) {
+			return false;
+		}
+
+		// Check if order was created.
+		if ( ! $order ) {
+			return false;
+		}
+
+		return $order->ID;
 	}
 }
