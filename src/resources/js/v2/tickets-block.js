@@ -730,7 +730,7 @@ tribe.tickets.block = {
 					tribe_tickets_post_id: postId,
 				};
 
-				$( '#tribe_tickets_block_ar_data' ).val( JSON.stringify( params ) );
+				$form.find( '#tribe_tickets_block_ar_data' ).val( JSON.stringify( params ) );
 
 				$document.trigger( 'beforeTicketsSubmit.tribeTicketsBlock', [ $form, params ] );
 
