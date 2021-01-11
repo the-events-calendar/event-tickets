@@ -1669,8 +1669,6 @@ window.tribe.tickets.block = {
 			e.preventDefault();
 
 			const $button = $( this );
-
-			return console.log( $button );
 			const $form = $( obj.modalSelector.form );
 			const $metaForm = $( obj.modalSelector.metaForm );
 			const isValidForm = obj.validateForm( $metaForm );
