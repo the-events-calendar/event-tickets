@@ -178,7 +178,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.0.5] TBD =
 
-
+* Fix - Ensure trashed orders do not cause the Delete confirmation text to show up when clicking links for attendees in the Attendees Report. [ET-994]
 
 = [5.0.4.1] 2020-12-16 =
 
