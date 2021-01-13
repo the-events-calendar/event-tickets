@@ -178,7 +178,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.0.5] TBD =
 
-
+* Fix - Prevent potential fatal errors when referencing deleted Tribe Commerce tickets in PayPal orders and API calls. [ET-995]
 
 = [5.0.4.1] 2020-12-16 =
 
