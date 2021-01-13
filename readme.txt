@@ -179,6 +179,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.0.5] TBD =
 
 
+
 = [5.0.4.1] 2020-12-16 =
 
 * Fix - Resolve fatal error from the Attendee Registration modal when calling the loading "dot" icons outside of the template context in older views. [ET-986]
