@@ -551,9 +551,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$checked = ' tickets_checked ';
 		}
 
-		$status = 'complete';
+		$status = 'order-status-complete';
 		if ( ! empty( $item['order_status'] ) ) {
-			$status = $item['order_status'];
+			$status = 'order-status-' . $item['order_status'];
 		}
 
 		echo '<tr class="' . esc_attr( $checked . $status ) . '">';
