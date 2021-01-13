@@ -178,6 +178,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.0.5] TBD =
 
+* Fix - Multiple shortcodes `[tribe_tickets post_id="ID"]` on a single page will now properly work with the Attendee Registration Modal and adding to the cart / checking out. [ETP-627]
 
 = [5.0.4.2] 2020-12-29 =
 
