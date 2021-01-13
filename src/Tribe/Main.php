@@ -10,6 +10,7 @@ class Tribe__Tickets__Main {
 	 */
 	const VERSION = '5.0.5';
 
+
 	/**
 	 * Used to store the version history.
 	 *
