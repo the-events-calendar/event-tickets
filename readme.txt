@@ -178,7 +178,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.0.5] TBD =
 
-
+* Fix - Ensure the currency-related object is available to JavaScript on the Attendee Registration even when there are no tickets shown. [ETP-629]
 
 = [5.0.4.1] 2020-12-16 =
 
