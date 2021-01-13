@@ -178,7 +178,12 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.0.5] TBD =
 
-* Fix - Multiple shortcodes `[tribe_tickets post_id="ID"]` on a single page will now properly work with the Attendee Registration Modal and adding to the cart / checking out.
+* Fix - Multiple shortcodes `[tribe_tickets post_id="ID"]` on a single page will now properly work with the Attendee Registration Modal and adding to the cart / checking out. [ETP-627]
+
+= [5.0.4.2] 2020-12-29 =
+
+* Fix - Resolve JavaScript validation issues with start/end date fields when saving tickets in the Classic Editor using a variety of date formats. Props to @therajumandapati for the initial in-depth debugging that helped us get this fix out so quickly! [ET-987]
+* Tweak - Point PUE URLs to the correct servers to avoid redirects.
 
 = [5.0.4.1] 2020-12-16 =
 
