@@ -5,7 +5,7 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration/content.php
  *
- * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
+ * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @deprecated 4.11.0 Starting with version 4.12.3, loading this file will cause errors.
  *
