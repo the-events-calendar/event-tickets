@@ -6,7 +6,7 @@
  *
  * @package TribeEventsCalendar
  *
- * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
+ * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   4.7.4
  * @since   4.10.2 Only show Update button if ticket has meta.

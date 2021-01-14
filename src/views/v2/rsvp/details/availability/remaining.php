@@ -8,7 +8,7 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link  https://m.tri.be/1amp Help article for RSVP & Ticket template files.
+ * @link  https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  * @var int $threshold The threshold.
