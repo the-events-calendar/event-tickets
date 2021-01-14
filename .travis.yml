@@ -50,10 +50,10 @@ install:
   - phpenv config-rm xdebug.ini
 
   # The installation will include wp-cli as well as it's a requirement of wp-browser.
-  - composer update --prefer-dist
+  - composer install --prefer-dist
 
   # Install composer on common if it exists; use --no-dev to avoid Common dev dependencies being used in ET tests.
-  - if [[ -d "common" ]]; then cd common; composer update --prefer-dist --no-dev; cd ../; fi;
+  - if [[ -d "common" ]]; then cd common; composer install --prefer-dist --no-dev; cd ../; fi;
 
   # Install wp-cli phar.
   # While wp-cli is one of wp-browser dependencies the binary that lives in the `vendor/bin` folder will load the
