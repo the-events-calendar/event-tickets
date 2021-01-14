@@ -192,6 +192,11 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		foreach ( $product_ids as $ticket_id ) {
 			$ticket = $paypal->get_ticket( $post->ID, $ticket_id );
 
+			// Skip the product if the ticket no longer exists.
+			if ( ! $ticket ) {
+				continue;
+			}
+
 			$quantity = 0;
 
 			if ( isset( $_POST['tribe_tickets'][ $ticket_id ]['quantity'] ) ) {
@@ -591,6 +596,11 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			}
 
 			$ticket = $paypal->get_ticket( $post_id, $ticket_id );
+
+			// Skip the ticket if it no longer exists.
+			if ( ! $ticket ) {
+				continue;
+			}
 
 			// Skip if the ticket in no longer in stock or is not sellable.
 			if (
