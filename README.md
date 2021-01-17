@@ -3,7 +3,7 @@
 
 Welcome to the Event Tickets repository on GitHub. Here you can browse the source code and keep track of development.
 
-Event Tickets provides a simple way for visitors to RSVP or purchase tickets to your events. As a standalone plugin, it enables you to add RSVPs or tickets to posts or pages. When paired with [The Events Calendar](http://m.tri.be/18tg), you can add that same functionality directly to your event listings.
+Event Tickets provides a simple way for visitors to RSVP or purchase tickets to your events. As a standalone plugin, it enables you to add RSVPs or tickets to posts or pages. When paired with [The Events Calendar](http://evnt.is/18tg), you can add that same functionality directly to your event listings.
 
 We recommend to stay up to date about everything happening in the project by [following @TheEventsCal](https://twitter.com/TheEventsCal) on Twitter.
 
