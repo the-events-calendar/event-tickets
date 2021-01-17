@@ -12,11 +12,11 @@ If you are not a developer, please use the [Event Tickets plugin page](https://w
 ## Documentation
 * [Event Tickets Documentation](https://theeventscalendar.com/knowledgebase/k/new-user-primer-event-tickets-event-tickets-plus/)
 * [Event Tickets Developer Documentation](https://docs.theeventscalendar.com/product/event-tickets/)
-* [Contributing guide](https://github.com/moderntribe/event-tickets/blob/master/CONTRIBUTING.md)
-* [Quick tests introduction](https://github.com/moderntribe/event-tickets/blob/master/tests.md)
+* [Contributing guide](https://github.com/the-events-calendar/event-tickets/blob/master/CONTRIBUTING.md)
+* [Quick tests introduction](https://github.com/the-events-calendar/event-tickets/blob/master/tests.md)
 
 ## Reporting Issues
-To report an issue, [please create a new pull request](https://github.com/moderntribe/event-tickets/pulls).
+To report an issue, [please create a new pull request](https://github.com/the-events-calendar/event-tickets/pulls).
 
 ## Support
 This repository is not suitable for support. Please don't use our issue tracker for support requests, but for core Event Tickets issues only. Support can take place through the appropriate channels:
@@ -28,4 +28,4 @@ This repository is not suitable for support. Please don't use our issue tracker 
 Support requests on this repository will be closed on sight.
 
 ## Contributing to Event Tickets
-If you have a patch or have stumbled upon an issue with Event Tickets core, you can contribute this back to the code. Please read our [contributor guidelines](https://github.com/moderntribe/event-tickets/blob/master/CONTRIBUTING.md) for more information how you can do this.
+If you have a patch or have stumbled upon an issue with Event Tickets core, you can contribute this back to the code. Please read our [contributor guidelines](https://github.com/the-events-calendar/event-tickets/blob/master/CONTRIBUTING.md) for more information how you can do this.
