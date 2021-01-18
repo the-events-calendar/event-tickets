@@ -1667,6 +1667,7 @@ window.tribe.tickets.block = {
 		obj.modalSelector.submit,
 		function( e ) {
 			e.preventDefault();
+
 			const $button = $( this );
 			const $form = $( obj.modalSelector.form );
 			const $metaForm = $( obj.modalSelector.metaForm );
@@ -1739,7 +1740,7 @@ window.tribe.tickets.block = {
 				tribe_tickets_post_id: obj.postId,
 			};
 
-			$( '#tribe_tickets_block_ar_data' ).val( JSON.stringify( params ) );
+			$form.find( '#tribe_tickets_block_ar_data' ).val( JSON.stringify( params ) );
 
 			$form.submit();
 		}
