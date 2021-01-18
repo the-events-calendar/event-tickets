@@ -36,7 +36,7 @@
  *    is_purchaser => 1
  *    ticket_exists => 1
  *
- * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
+ * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   4.0
  * @since   4.5.11 Ability to remove display of event date.

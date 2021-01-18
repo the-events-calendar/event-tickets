@@ -4414,7 +4414,7 @@ msgid "%1$s %2$s %3$s available"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
-msgid "http://m.tri.be/1acb"
+msgid "http://evnt.is/1acb"
 msgstr ""
 
 #. Description of the plugin/theme
@@ -4428,5 +4428,5 @@ msgid "Modern Tribe, Inc."
 msgstr ""
 
 #. Author URI of the plugin/theme
-msgid "http://m.tri.be/28"
+msgid "http://evnt.is/28"
 msgstr ""
