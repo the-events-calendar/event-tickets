@@ -606,10 +606,10 @@ class Tribe__Tickets__Main {
 	public function add_help_section_support_content( $help ) {
 		$help->add_section_content( 'support', '<strong>' . esc_html__( 'Support for Event Tickets', 'event-tickets' ) . '</strong>', 20 );
 		$help->add_section_content( 'support', [
-			'<strong><a href="http://m.tri.be/18ne" target="_blank">' . esc_html__( 'Settings overview', 'event-tickets' ) . '</a></strong>',
-			'<strong><a href="http://m.tri.be/18nf" target="_blank">' . esc_html__( 'Features overview', 'event-tickets' ) . '</a></strong>',
-			'<strong><a href="http://m.tri.be/18jb" target="_blank">' . esc_html__( 'Troubleshooting common problems', 'event-tickets' ) . '</a></strong>',
-			'<strong><a href="http://m.tri.be/18ng" target="_blank">' . esc_html__( 'Customizing Event Tickets', 'event-tickets' ) . '</a></strong>',
+			'<strong><a href="https://evnt.is/18ne" target="_blank">' . esc_html__( 'Settings overview', 'event-tickets' ) . '</a></strong>',
+			'<strong><a href="https://evnt.is/18nf" target="_blank">' . esc_html__( 'Features overview', 'event-tickets' ) . '</a></strong>',
+			'<strong><a href="https://evnt.is/18jb" target="_blank">' . esc_html__( 'Troubleshooting common problems', 'event-tickets' ) . '</a></strong>',
+			'<strong><a href="https://evnt.is/18ng" target="_blank">' . esc_html__( 'Customizing Event Tickets', 'event-tickets' ) . '</a></strong>',
 		], 20 );
 	}
 
@@ -626,7 +626,7 @@ class Tribe__Tickets__Main {
 			return;
 		}
 
-		$link = '<a href="http://m.tri.be/18nd" target="_blank">' . esc_html__( 'New User Primer', 'event-tickets' ) . '</a>';
+		$link = '<a href="https://evnt.is/18nd" target="_blank">' . esc_html__( 'New User Primer', 'event-tickets' ) . '</a>';
 
 		$help->add_section_content( 'feature-box', sprintf( _x( 'We are committed to helping you sell %1$s for your event. Check out our handy %2$s to get started.', 'help feature box section', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'help_feature_box_section' ), $link ), 20 );
 	}
@@ -648,16 +648,16 @@ class Tribe__Tickets__Main {
 				$link = '<a href="https://wordpress.org/support/plugin/event-tickets/" target="_blank">' . esc_html__( 'open-source forum on WordPress.org', 'event-tickets' ) . '</a>';
 				$help->add_section_content( 'extra-help', sprintf( __( 'If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there.', 'event-tickets' ), $link ), 20 );
 
-				$link_forum = '<a href="http://m.tri.be/4w/" target="_blank">' . esc_html__( 'premium support on our website', 'event-tickets' ) . '</a>';
-				$link_plus = '<a href="http://m.tri.be/18ni" target="_blank">' . esc_html__( 'Event Tickets Plus', 'event-tickets' ) . '</a>';
+				$link_forum = '<a href="https://evnt.is/4w/" target="_blank">' . esc_html__( 'premium support on our website', 'event-tickets' ) . '</a>';
+				$link_plus = '<a href="https://evnt.is/18ni" target="_blank">' . esc_html__( 'Event Tickets Plus', 'event-tickets' ) . '</a>';
 				$help->add_section_content( 'extra-help', sprintf( __( 'Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays.', 'event-tickets' ), $link_forum, $link_plus ), 20 );
 
-				$link = '<a href="http://m.tri.be/4w/" target="_blank">' . esc_html__( 'post a thread', 'event-tickets' ) . '</a>';
+				$link = '<a href="https://evnt.is/4w/" target="_blank">' . esc_html__( 'post a thread', 'event-tickets' ) . '</a>';
 				$help->add_section_content( 'extra-help', sprintf( __( 'Already have Event Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week).', 'event-tickets' ), $link ), 20 );
 
 			}  else {
 
-				$link = '<a href="http://m.tri.be/4w/" target="_blank">' . esc_html__( 'post a thread', 'event-tickets' ) . '</a>';
+				$link = '<a href="https://evnt.is/4w/" target="_blank">' . esc_html__( 'post a thread', 'event-tickets' ) . '</a>';
 				$help->add_section_content( 'extra-help', sprintf( __( 'If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week).', 'event-tickets' ), $link ), 20 );
 
 			}

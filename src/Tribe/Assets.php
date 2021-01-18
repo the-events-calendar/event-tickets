@@ -114,6 +114,12 @@ class Tribe__Tickets__Assets {
 						'tribe-tickets-rsvp',
 						'tribe-tickets-registration-page',
 					],
+					'localize' => [
+						[
+							'name' => 'TribeCurrency',
+							'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_currencies' ],
+						],
+					],
 				]
 			);
 

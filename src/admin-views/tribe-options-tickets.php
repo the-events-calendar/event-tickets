@@ -152,12 +152,12 @@ $authentication_fields = [
 
 
 $plus_link = sprintf(
-	'<a href="http://m.tri.be/19zl" target="_blank">%s</a>',
+	'<a href="https://evnt.is/19zl" target="_blank">%s</a>',
 	__( 'Event Tickets Plus', 'tribe-common' )
 );
 
 $plus_link_2 = sprintf(
-	'<a href="http://m.tri.be/19zl" target="_blank">%s</a>',
+	'<a href="https://evnt.is/19zl" target="_blank">%s</a>',
 	__( 'Check it out!', 'tribe-common' )
 );
 
@@ -186,8 +186,13 @@ $current_user = get_user_by( 'id', get_current_user_id() );
 
 // The KB article URL will change depending on whether ET+ is active or not
 $paypal_setup_kb_url = class_exists( 'Tribe__Tickets_Plus__Main' )
-	? 'http://m.tri.be/19yk'
-	: 'http://m.tri.be/19yj';
+<<<<<<< HEAD
+	? 'https://evnt.is/19yk'
+	: 'https://evnt.is/19yj';
+=======
+	? 'http://evnt.is/19yk'
+	: 'http://evnt.is/19yj';
+>>>>>>> de0ee07fae0a45d731e36194bc9965d50230aece
 $paypal_setup_kb_link = '<a href="' . esc_url( $paypal_setup_kb_url ) . '" target="_blank">' . esc_html__( 'these instructions', 'event-tickets' ) . '</a>';
 $paypal_setup_note    = sprintf( esc_html_x( 'In order to use Tribe Commerce to sell %1$s, you must configure your PayPal account to communicate with your WordPress site. If you need help getting set up, follow %2$s', 'tickets fields settings PayPal setup', 'event-tickets' ), esc_html( tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_setup' ) ), $paypal_setup_kb_link );
 
