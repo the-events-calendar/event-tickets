@@ -42,7 +42,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 				'order_id'        => $attendee_provider->order_key,
 				'optout'          => $attendee_provider::ATTENDEE_OPTOUT_KEY,
 				'user_id'         => $attendee_provider->attendee_user_id,
-				'price_paid'      => '_paid_price',
+				'price_paid'      => $attendee_provider->price_paid,
 				'full_name'       => $attendee_provider->full_name,
 				'email'           => $attendee_provider->email,
 				'attendee_status' => $attendee_provider::ATTENDEE_RSVP_KEY,
