@@ -311,6 +311,24 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $security_code = '_tribe_tickets_security_code';
 
 		/**
+		 * Meta key that holds the price paid for the ticket.
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $price_paid = '_paid_price';
+
+		/**
+		 * Meta key that holds the price currency symbol used during payment.
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $price_currency = '_price_currency_symbol';
+
+		/**
 		 * The provider used for Attendees and Tickets ORM.
 		 *
 		 * @var string
