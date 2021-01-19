@@ -5,7 +5,7 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/mini-cart.php
  *
- * @link    https://m.tri.be/1amp Help article for RSVP & Ticket template files.
+ * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   4.11.0
  * @since   4.12.0 Prevent potential errors when $provider_obj is not valid.

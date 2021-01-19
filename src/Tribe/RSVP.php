@@ -54,6 +54,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	const ATTENDEE_TICKET_SENT = '_tribe_rsvp_attendee_ticket_sent';
 
 	/**
+	 * Holds the number of times a ticket for this attendee was sent out via email.
+	 *
+	 * @var boolean
+	 */
+	public $attendee_ticket_sent = '_tribe_rsvp_attendee_ticket_sent';
+
+	/**
 	 * Name of the CPT that holds Tickets
 	 *
 	 * @var string
@@ -1270,7 +1277,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			// Only add those attendees/tickets that haven't already been sent
 			if ( empty( $single_attendee['ticket_sent'] ) ) {
 				$to_send[] = $single_attendee;
-				update_post_meta( $single_attendee['qr_ticket_id'], self::ATTENDEE_TICKET_SENT, true );
 			}
 		}
 
@@ -1359,7 +1365,22 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 */
 		$content = apply_filters( 'tribe_rsvp_email_content', $this->generate_tickets_email_content( $to_send ), $event_id, $order_id );
 
-		wp_mail( $to, $subject, $content, $headers, $attachments );
+		$sent = wp_mail( $to, $subject, $content, $headers, $attachments );
+
+		if ( $sent ) {
+			foreach ( $all_attendees as $attendee ) {
+				$this->update_ticket_sent_counter( $attendee['qr_ticket_id'], $this->attendee_ticket_sent );
+
+				$this->update_attendee_activity_log(
+					$attendee['attendee_id'],
+					[
+						'type'  => 'email',
+						'name'  => $attendee['holder_name'],
+						'email' => $attendee['holder_email'],
+					]
+				);
+			}
+		}
 	}
 
 	/**

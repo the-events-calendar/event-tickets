@@ -7,7 +7,7 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link https://m.tri.be/1amp Help article for RSVP & Ticket template files.
+ * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 5.0.0
  * @since 5.0.3 Updated to use the has_meta_enabled logic check and removed the old filter.

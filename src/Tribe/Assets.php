@@ -51,6 +51,8 @@ class Tribe__Tickets__Assets {
 					'tribe-tickets-block-assets',
 					'tribe-tickets-rsvp',
 					'tribe-tickets-registration-page',
+					'tribe-tickets-admin',
+					'tribe-tickets-forms',
 				],
 			]
 		);
@@ -111,6 +113,12 @@ class Tribe__Tickets__Assets {
 						'tribe-tickets-block-assets',
 						'tribe-tickets-rsvp',
 						'tribe-tickets-registration-page',
+					],
+					'localize' => [
+						[
+							'name' => 'TribeCurrency',
+							'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_currencies' ],
+						],
 					],
 				]
 			);
@@ -175,8 +183,10 @@ class Tribe__Tickets__Assets {
 	 * @since 4.10.9 Use customizable ticket name functions.
 	 */
 	public function admin_enqueue_scripts() {
-		// Set up some data for our localize scripts.
+		/** @var Tribe__Tickets__Main $tickets_main */
+		$tickets_main = tribe( 'tickets.main' );
 
+		// Set up some data for our localize scripts.
 		$upload_header_data = [
 			'title'  => esc_html( sprintf( __( '%s header image', 'event-tickets' ), tribe_get_ticket_label_singular( 'header_image_title' ) ) ),
 			'button' => esc_html( sprintf( __( 'Set as %s header', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'header_button' ) ) ),
@@ -223,7 +233,7 @@ class Tribe__Tickets__Assets {
 		];
 
 		tribe_assets(
-			Tribe__Tickets__Main::instance(),
+			$tickets_main,
 			$assets,
 			'admin_enqueue_scripts',
 			[
@@ -261,6 +271,33 @@ class Tribe__Tickets__Assets {
 							'decimal_error' => __( 'Please enter in without thousand separators and currency symbols.', 'event-tickets' ),
 						],
 					],
+				],
+			]
+		);
+
+		$admin_manager_js_data = [
+			'tribeTicketsAdminManagerNonce' => wp_create_nonce( 'tribe_tickets_admin_manager_nonce' ),
+			'ajaxurl'                           => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+		];
+
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-admin-manager',
+			'admin/tickets-manager.js',
+			[
+				'jquery',
+				'tribe-common',
+			],
+			null,
+			[
+				'localize' => [
+					[
+						'name' => 'TribeTickets',
+						'data' => $admin_manager_js_data,
+					],
+				],
+				'groups'   => [
+					'tribe-tickets-admin',
 				],
 			]
 		);
