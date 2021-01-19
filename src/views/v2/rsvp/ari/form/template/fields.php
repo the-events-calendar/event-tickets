@@ -5,7 +5,7 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/rsvp/ari/form/template/fields.php
  *
- * @link https://m.tri.be/1amp Help article for RSVP & Ticket template files.
+ * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 5.0.0
  * @since 5.0.3 Updated to use the has_meta_enabled logic check and removed the old filter.
