@@ -25,7 +25,9 @@ class TicketsTest extends V2TestCase {
 		 */
 		$provider = tribe_get_class_instance( 'Tribe__Tickets__Commerce__PayPal__Main' );
 
-		$event_id = $this->factory()->event->create();
+		$event_id = $this->factory()->event->create( [
+			'post_title' => 'Test event for partial snapshot',
+		] );
 
 		$ids = $this->create_many_paypal_tickets( 2, $event_id, [ 'price' => 99 ] );
 

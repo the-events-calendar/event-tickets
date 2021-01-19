@@ -8,7 +8,7 @@
 		data-provider="Tribe__Tickets__Commerce__PayPal__Main"
 		autocomplete="off"
 		data-provider-id="tribe-commerce"
-		data-post-id="239"
+		data-post-id="13"
 		novalidate
 	>
 
@@ -34,20 +34,20 @@
 </div>
 
 		<div
-	id="tribe-block-tickets-item-240"
-	 class="tribe-tickets__tickets-item post-240 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="240"
+	id="tribe-block-tickets-item-14"
+	 class="tribe-tickets__tickets-item post-14 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="14"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test ticket for 239</div>
+		Test ticket for 13</div>
 
 
 <div
-	id="tribe__details__content--240"
+	id="tribe__details__content--14"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
-	Test ticket description for 239</div>
+	Test ticket description for 13</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
@@ -84,20 +84,20 @@
 	
 </div>
 <div
-	id="tribe-block-tickets-item-241"
-	 class="tribe-tickets__tickets-item post-241 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="241"
+	id="tribe-block-tickets-item-15"
+	 class="tribe-tickets__tickets-item post-15 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="15"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test ticket for 239</div>
+		Test ticket for 13</div>
 
 
 <div
-	id="tribe__details__content--241"
+	id="tribe__details__content--15"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
-	Test ticket description for 239</div>
+	Test ticket description for 13</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
@@ -165,7 +165,7 @@
 </div>
 
 		
-		<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden tribe-tickets__rsvp-message--success-icon" >
+		<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--first"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--second"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--third"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
