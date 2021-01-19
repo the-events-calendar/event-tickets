@@ -55,27 +55,30 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 			wp_send_json_error( $response );
 		}
 
-		// Get the request vars.
-		$vars = tribe_get_request_vars();
+		/*
+		 * Get the request vars.
+		 *
+		 * Note to future developers: Using tribe_get_request_vars() here was removing non-string values (like arrays).
+		 */
+		$vars = $_REQUEST;
 
 		/**
 		 * Filter the admin manager request.
 		 *
 		 * @since TBD
 		 *
-		 * @param array $vars The request vars.
-		 *
-		 * @return mixed The response.
+		 * @param string|\WP_Error $render_response The render response HTML content or WP_Error with list of errors.
+		 * @param array            $vars            The request variables.
 		 */
-		$render_response = apply_filters( 'tribe_tickets_admin_manager_request', $vars );
+		$render_response = apply_filters( 'tribe_tickets_admin_manager_request', '', $vars );
 
 		if ( is_string( $render_response ) && '' !== $render_response ) {
 			// Return the HTML if it's a string.
 			$response['html'] = $render_response;
 
 			wp_send_json_success( $response );
-		} elseif ( is_array( $render_response ) && ! empty( $render_response['errors'] ) ) {
-			$response['html'] = $this->render_error( $render_response['errors'] );
+		} elseif ( is_wp_error( $render_response ) ) {
+			$response['html'] = $this->render_error( $render_response->get_error_messages() );
 
 			wp_send_json_error( $response );
 		}

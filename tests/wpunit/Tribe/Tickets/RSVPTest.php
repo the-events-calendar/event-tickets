@@ -1002,8 +1002,9 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$tickets_view->get_rsvp_options( null, false )->willReturn( $rsvp_options );
 		$tickets_view->get_event_rsvp_attendees( $post_id, $user_id )->willReturn( [
 			[
-				'product_id' => $ticket_id,
-				'order_id'   => $order_id,
+				'attendee_id' => $order_id,
+				'product_id'  => $ticket_id,
+				'order_id'    => $order_id,
 			],
 		] );
 
