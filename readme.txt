@@ -176,7 +176,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.0.5] TBD =
+= [5.0.5] 2021-01-20 =
 
 * Fix - Prevent potential fatal errors when referencing deleted Tribe Commerce tickets in PayPal orders and API calls. [ET-995]
 * Fix - Ensure the currency-related object is available to JavaScript on the Attendee Registration even when there are no tickets shown. [ETP-629]
