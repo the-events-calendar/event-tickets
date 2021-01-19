@@ -736,7 +736,7 @@ class Tribe__Tickets__Main {
 			return;
 		}
 
-		// If the (boolean) option is not set, and this install predated the modal, let's set the option to false.
+		// If the (bool) option is not set, and this install predated the modal, let's set the option to false.
 		$modal_option = $ar_reg->is_modal_enabled();
 
 		if ( ! $modal_option && $modal_option !== false ) {
