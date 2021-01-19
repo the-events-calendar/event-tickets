@@ -1,6 +1,7 @@
 <?php
 
 use Tribe__Utils__Array as Arr;
+use Tribe__Tickets__Commerce__PayPal__Stati as PayPal__Stati;
 
 /**
  * The ORM/Repository class for Tribe Commerce (PayPal) attendees.
@@ -129,7 +130,7 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 	public function setup_attendee_args( $args, $attendee_data, $ticket = null ) {
 		// Set default attendee status.
 		if ( ! isset( $args['attendee_status'] ) ) {
-			$args['attendee_status'] = 'completed';
+			$args['attendee_status'] = PayPal__Stati::$completed;
 		}
 
 		// Set default currency symbol.
