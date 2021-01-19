@@ -759,7 +759,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		$this->trigger_create_actions( $attendee, $attendee_data, $ticket );
 
 		// Clear the attendee cache if post_id is provided.
-		if ( ! empty( $this->updates['post_id'] ) ) {
+		if ( ! empty( $this->updates['post_id'] ) && $this->attendee_provider ) {
 			$this->attendee_provider->clear_attendees_cache( $this->updates['post_id'] );
 		}
 
@@ -809,6 +809,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 
 		// Trigger the update actions.
 		$this->trigger_update_actions( $attendee_data );
+
+		// Clear the attendee cache if post_id is provided.
+		if ( ! empty( $this->updates['post_id'] ) && $this->attendee_provider ) {
+			$this->attendee_provider->clear_attendees_cache( $this->updates['post_id'] );
+		}
 
 		return $saved;
 	}
@@ -882,7 +887,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			}
 
 			// Maybe handle setting the User ID based on information we already have.
-			if ( empty( $args['user_id'] ) && ! empty( $args['email'] ) ) {
+			if ( empty( $args['user_id'] ) && ! empty( $args['email'] ) && $this->attendee_provider ) {
 				$user_id = $this->attendee_provider->maybe_setup_attendee_user_from_email( $args['email'], $args );
 
 				if ( $user_id ) {
@@ -969,7 +974,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		$args = [];
 
 		// Set up security code if it was not already customized.
-		if ( empty( $attendee_data['security_code'] ) ) {
+		if ( empty( $attendee_data['security_code'] ) && $this->attendee_provider ) {
 			$key = $attendee->ID;
 
 			if ( ! empty( $attendee_data['order_id'] ) ) {
