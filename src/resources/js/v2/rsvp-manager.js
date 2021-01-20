@@ -290,6 +290,6 @@ tribe.tickets.rsvp.manager = {};
 	};
 
 	// Configure on document ready.
-	$document.ready( obj.ready );
+	$( obj.ready );
 
 } )( jQuery, window.underscore || window._, tribe.tickets.rsvp.manager );
