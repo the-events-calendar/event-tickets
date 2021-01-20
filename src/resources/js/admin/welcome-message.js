@@ -44,5 +44,5 @@
 	};
 
 	obj.$window.on( 'resize', obj.onResize );
-	$( document ).ready( obj.onReady );
+	$( obj.onReady );
 } )( jQuery, {} );
