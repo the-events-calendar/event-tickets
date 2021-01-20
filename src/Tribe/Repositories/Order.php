@@ -3,6 +3,7 @@
 namespace Tribe\Tickets\Repositories;
 
 use Tribe__Repository;
+use Tribe__Utils__Array as Arr;
 
 /**
  * The repository functionality for Ticket Orders.

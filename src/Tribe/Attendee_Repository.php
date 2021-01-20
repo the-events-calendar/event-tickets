@@ -1180,11 +1180,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			return false;
 		}
 
-		// Check if order was created.
-		if ( ! $order ) {
-			return false;
-		}
-
-		return $order->ID;
+		return $order;
 	}
 }
