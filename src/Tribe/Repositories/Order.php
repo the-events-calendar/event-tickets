@@ -148,4 +148,75 @@ class Order extends Tribe__Repository {
 		// Extended repositories must handle their own order creation.
 		return false;
 	}
+
+	/**
+	 * Create an order for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param array                                  $order_data List of order data to be saved.
+	 * @param null|int|Tribe__Tickets__Ticket_Object $ticket     The ticket object, ticket ID, or null if not relying on it.
+	 *
+	 * @return int|string|false The order ID or false if not created.
+	 */
+	public function create_order_for_ticket( $order_data, $ticket = null ) {
+		// Bail if we already have an order.
+		if ( ! empty( $order_data['order_id'] ) ) {
+			return false;
+		}
+
+		$tickets = Arr::get( $order_data, 'tickets', [] );
+
+		if ( empty( $order_data['tickets'] ) ) {
+			$ticket_id = $ticket;
+
+			if ( is_object( $ticket ) ) {
+				// Detect ticket ID from the object.
+				$ticket_id = $ticket->ID;
+			} elseif ( empty( $ticket ) && isset( $order_data['ticket_id'] ) ) {
+				// Detect the ticket ID from the order data.
+				$ticket_id = $order_data['ticket_id'];
+			}
+
+			// Bail if no valid ticket ID.
+			if ( $ticket_id < 1 ) {
+				return false;
+			}
+
+			$order_data['tickets'] = [
+				[
+					'id'       => $ticket_id,
+					'quantity' => 1,
+				],
+			];
+		}
+
+		/**
+		 * Allow filtering the order data being used to create an order for the ticket.
+		 *
+		 * @since TBD
+		 *
+		 * @param array                         $order_data List of order data to be saved.
+		 * @param Tribe__Tickets__Ticket_Object $ticket     The ticket object or null if not relying on it.
+		 */
+		$order_data = apply_filters( 'tribe_tickets_repositories_order_create_order_for_ticket_order_args', $order_data, $ticket );
+
+		// Check if order creation is disabled.
+		if ( empty( $order_data ) ) {
+			return false;
+		}
+
+		try {
+			$order = $this->set_args( $order_data )->create();
+		} catch ( Tribe__Repository__Usage_Error $exception ) {
+			return false;
+		}
+
+		// Check if order was created.
+		if ( ! $order ) {
+			return false;
+		}
+
+		return $order->ID;
+	}
 }
