@@ -1,9 +1,10 @@
+/* global jQuery, tribe */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.0.0
  *
- * @type {PlainObject}
+ * @type {Object}
  */
 tribe.tickets = tribe.tickets || {};
 tribe.tickets.rsvp = tribe.tickets.rsvp || {};
@@ -13,7 +14,7 @@ tribe.tickets.rsvp = tribe.tickets.rsvp || {};
  *
  * @since 5.0.0
  *
- * @type {PlainObject}
+ * @type {Object}
  */
 tribe.tickets.rsvp.ari = {};
 
@@ -22,22 +23,21 @@ tribe.tickets.rsvp.ari = {};
  *
  * @since 5.0.0
  *
- * @param  {PlainObject} $   jQuery
- * @param  {PlainObject} obj tribe.tickets.rsvp.block
+ * @param  {Object} $   jQuery
+ * @param  {Object} obj tribe.tickets.rsvp.block
  *
  * @return {void}
  */
 ( function( $, obj ) {
 	'use strict';
 	const $document = $( document );
-	const $window = $( window );
 
 	/**
 	 * Selectors used for configuration and setup
 	 *
 	 * @since 5.0.0
 	 *
-	 * @type {PlainObject}
+	 * @type {Object}
 	 */
 	obj.selectors = {
 		container: '.tribe-tickets__rsvp-wrapper',
@@ -79,7 +79,7 @@ tribe.tickets.rsvp.ari = {};
 
 		// Set all forms as hidden.
 		$container.find( obj.selectors.guestFormFields ).addClass( obj.selectors.hiddenElement.className() );
-		$container.find( obj.selectors.guestFormFields ).attr( 'hidden', true );
+		$container.find( obj.selectors.guestFormFields ).prop( 'hidden', true );
 
 		// Show the selected guest.
 		obj.showElement( $targetGuestForm );
@@ -87,12 +87,12 @@ tribe.tickets.rsvp.ari = {};
 
 		// Set the classes for inactive.
 		$guestListButtons.addClass( obj.selectors.guestListItemButtonInactive.className() );
-		$guestListButtons.attr( 'aria-selected', false );
+		$guestListButtons.prop( 'aria-selected', false );
 
 		// Set the active class for the current.
 		const $targetGuestButton = $container.find( obj.selectors.guestListItemButton + '[data-guest-number="' + guestNumber + '"]' );
 		$targetGuestButton.removeClass( obj.selectors.guestListItemButtonInactive.className() );
-		$targetGuestButton.attr( 'aria-selected', true );
+		$targetGuestButton.prop( 'aria-selected', true );
 	};
 
 	/**
@@ -314,7 +314,7 @@ tribe.tickets.rsvp.ari = {};
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param {event} e input event
+	 * @param {Event} e input event
 	 */
 	obj.handleQuantityChangeValue = function( e ) {
 		e.preventDefault();
@@ -359,7 +359,7 @@ tribe.tickets.rsvp.ari = {};
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param {event} e submission event
+	 * @param {Event} e submission event
 	 */
 	obj.handleSubmission = function( e ) {
 		e.preventDefault();
@@ -472,7 +472,7 @@ tribe.tickets.rsvp.ari = {};
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param {event} e click event
+	 * @param {Event} e click event
 	 *
 	 */
 	obj.handleQuantityChange = function( e ) {
@@ -571,9 +571,9 @@ tribe.tickets.rsvp.ari = {};
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param  {Event}       event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
-	 * @param  {jqXHR}       jqXHR    Request object
-	 * @param  {PlainObject} settings Settings that this request was made with
+	 * @param  {Event}            event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
+	 * @param  {XMLHttpRequest}   jqXHR    Request object
+	 * @param  {Object}           settings Settings that this request was made with
 	 *
 	 * @return {void}
 	 */
@@ -615,7 +615,7 @@ tribe.tickets.rsvp.ari = {};
 	 * @since 5.0.0
 	 *
 	 * @param {Event}   event      event object for 'afterSetup.tribeTicketsRsvp' event
-	 * @param {integer} index      jQuery.each index param from 'afterSetup.tribeTicketsRsvp' event.
+	 * @param {int} index      jQuery.each index param from 'afterSetup.tribeTicketsRsvp' event.
 	 * @param {jQuery}  $container jQuery object of view container.
 	 *
 	 * @return {void}
@@ -640,5 +640,5 @@ tribe.tickets.rsvp.ari = {};
 	};
 
 	// Configure on document ready.
-	$document.ready( obj.ready );
+	$( obj.ready );
 } )( jQuery, tribe.tickets.rsvp.ari );
