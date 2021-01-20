@@ -1105,12 +1105,12 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since TBD
 	 *
-	 * @param array                         $attendee_data List of additional attendee data.
-	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object or null if not relying on it.
+	 * @param array                                  $attendee_data List of attendee data to reference.
+	 * @param null|int|Tribe__Tickets__Ticket_Object $ticket        The ticket object, ticket ID, or null if not relying on it.
 	 *
 	 * @return int|string|false The order ID or false if not created.
 	 */
-	public function create_order_for_attendee( $attendee_data, $ticket ) {
+	public function create_order_for_attendee( $attendee_data, $ticket = null ) {
 		// Bail if we already have an attendee or order.
 		if ( ! empty( $attendee_data['attendee_id'] ) || ! empty( $attendee_data['order_id'] ) ) {
 			return false;
@@ -1124,17 +1124,38 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			return false;
 		}
 
+		$tickets = Arr::get( $attendee_data, 'tickets', [] );
+
+		if ( empty( $tickets ) ) {
+			$ticket_id = $ticket;
+
+			if ( is_object( $ticket ) ) {
+				// Detect ticket ID from the object.
+				$ticket_id = $ticket->ID;
+			} elseif ( empty( $ticket ) && isset( $attendee_data['ticket_id'] ) ) {
+				// Detect the ticket ID from the attendee data.
+				$ticket_id = $attendee_data['ticket_id'];
+			}
+
+			// Bail if no valid ticket ID.
+			if ( $ticket_id < 1 ) {
+				return false;
+			}
+
+			$tickets = [
+				[
+					'id'       => $ticket_id,
+					'quantity' => 1,
+				],
+			];
+		}
+
 		$order_args = [
 			'full_name'    => Arr::get( $attendee_data, 'full_name' ),
 			'email'        => Arr::get( $attendee_data, 'email' ),
 			'user_id'      => Arr::get( $attendee_data, 'user_id' ),
 			'order_status' => Arr::get( $attendee_data, 'attendee_status' ),
-			'tickets'      => [
-				[
-					'id'       => $ticket->ID,
-					'quantity' => 1,
-				],
-			],
+			'tickets'      => $tickets,
 		];
 
 		/**
@@ -1154,16 +1175,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		}
 
 		try {
-			$order = $orders->set_args( $order_args )->create();
+			$order = $orders->create_order_for_ticket( $order_args );
 		} catch ( Tribe__Repository__Usage_Error $exception ) {
 			return false;
 		}
 
-		// Check if order was created.
-		if ( ! $order ) {
-			return false;
-		}
-
-		return $order->ID;
+		return $order;
 	}
 }
