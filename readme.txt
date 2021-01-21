@@ -180,12 +180,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Tweak - Enforce capitalization for the text for action buttons on the "Attendees" page. [ETP-624]
 
-= [5.0.5] TBD =
+= [5.0.5] 2021-01-20 =
 
 * Fix - Prevent potential fatal errors when referencing deleted Tribe Commerce tickets in PayPal orders and API calls. [ET-995]
 * Fix - Ensure the currency-related object is available to JavaScript on the Attendee Registration even when there are no tickets shown. [ETP-629]
 * Fix - Multiple shortcodes `[tribe_tickets post_id="ID"]` on a single page will now properly work with the Attendee Registration Modal and adding to the cart / checking out. [ETP-627]
 * Fix - Ensure trashed orders do not cause the Delete confirmation text to show up when clicking links for attendees in the Attendees Report. [ET-994]
+* Language - 2 new strings added, 67 updated, 0 fuzzied, and 3 obsoleted
 
 = [5.0.4.2] 2020-12-29 =
 
