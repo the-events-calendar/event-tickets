@@ -58,11 +58,11 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			}
 		});
 
-		$( '.trash a' ).click( function ( e ) {
+		$( '.trash a' ).on( 'click', function ( e ) {
 			return confirm( Attendees.confirmation );
 		});
 
-		$( '.tickets_checkin' ).click( function( e ) {
+		$( '.tickets_checkin' ).on( 'click', function( e ) {
 
 			var obj = jQuery( this );
 			obj.prop( 'disabled', true );
@@ -97,7 +97,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			e.preventDefault();
 		} );
 
-		$( '.tickets_uncheckin' ).click( function( e ) {
+		$( '.tickets_uncheckin' ).on( 'click', function( e ) {
 
 			var obj = jQuery( this );
 			obj.prop( 'disabled', true );
@@ -148,7 +148,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		/**
 		 * Handle "move" bulk action requests.
 		 */
-		$( '#doaction, #doaction2' ).click( function( event ) {
+		$( '#doaction, #doaction2' ).on( 'click', function( event ) {
 			var bulk_action_selector;
 
 			// Which doaction button was selected (top or bottom)?
@@ -201,10 +201,10 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				ticket_ids = [ ticket_ids ];
 			}
 
-			var target_width = parseInt( $( window ).width() * 0.7 );
+			var target_width = parseInt( $( window ).width() * 0.7, 10 );
 			target_width = target_width > 800 ? 800 : target_width;
 
-			var target_height = parseInt( $( window ).height() * 0.9 );
+			var target_height = parseInt( $( window ).height() * 0.9, 10 );
 			target_height = target_height > 800 ? 800 : target_height;
 
 			var params = '&ticket_ids=' + ticket_ids.join( '|' )
@@ -231,7 +231,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			// Hide the hide history links until they are needed
 			$hide_links.hide();
 
-			$show_links.click( function( event ) {
+			$show_links.on( 'click', function( event ) {
 				var $this      = $( this );
 				var $hide_link = $this.siblings( '.hide-ticket-history' );
 				var ticket_id  = parseInt( $this.data( 'ticket-id' ), 10 );
@@ -280,7 +280,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				return false;
 			} )
 
-			$hide_links.click( function( event ) {
+			$hide_links.on( 'click', function( event ) {
 				var $this      = $( this );
 				var $show_link = $this.siblings( '.ticket-history' );
 				var ticket_id  = parseInt( $show_link.data( 'ticket-id' ), 10 );
@@ -382,6 +382,6 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		return retObj;
 	}
 
-	$( document ).ready( init );
+	$( init );
 
 } )( jQuery, tribe_event_tickets_attendees );
