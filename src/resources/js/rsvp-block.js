@@ -78,7 +78,7 @@ var tribe_tickets_rsvp_block = {
 				}
 				if ( ! my.validate_submission( $form ) ) {
 					var $submit = $form.find( '.tribe-block__rsvp__submit-button' );
-					$submit.attr( 'disabled', true );
+					$submit.prop( 'disabled', true );
 					my.state.submitActive = false;
 				}
 				my.tribe_rsvp_loader_end();
@@ -226,9 +226,9 @@ var tribe_tickets_rsvp_block = {
 		var $email = $form.find( 'input.tribe-tickets-email' );
 
 		return (
-			$.trim( $name.val() ).length &&
-				$.trim( $email.val() ).length &&
-				parseInt( $qty.val() ) > 0
+			$name.val().trim().length &&
+			$email.val().trim().length &&
+			parseInt( $qty.val(), 10 ) > 0
 		);
 	};
 
