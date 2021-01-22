@@ -134,7 +134,7 @@ if ( $has_plus ) {
 			/>
 			<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Getting Started Guide', 'event-tickets' ); ?></div>
 			<div class="tribe-events-admin-card__description"><?php esc_html_e( 'New to Event Tickets? Here\'s everything you need to get started.', 'event-tickets' ); ?></div>
-			<a class="tribe-events-admin-card__link" href="http://evnt.is/1an9" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Check out the guide', 'event-tickets' ); ?></a>
+			<a class="tribe-events-admin-card__link" href="https://evnt.is/1an9" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Check out the guide', 'event-tickets' ); ?></a>
 		</div>
 		<div class="tribe-events-admin-card tribe-events-admin-card--3up tribe-events-admin-card--middle">
 			<img
