@@ -1,7 +1,7 @@
 <?php return '<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
-	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--first"></div>
-	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--second"></div>
-	<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--third"></div>
+	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--first"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
+	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--second"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
+	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--third"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 </div>
 
 
@@ -37,7 +37,7 @@
 </div>
 
 		<div class="tribe-tickets__rsvp-availability tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
-			<span class="tribe-tickets__rsvp-availability-quantity tribe-common-b2--bold"> 8 </span> remaining,	
+			<span class="tribe-tickets__rsvp-availability-quantity tribe-common-b2--bold"> 10 </span> remaining,	
 			
 <span class="tribe-tickets__rsvp-availability-days-to-rsvp">
 	Last day to RSVP</span>

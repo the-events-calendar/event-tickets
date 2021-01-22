@@ -8,8 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.0.5';
-
+	const VERSION = '5.1.0';
 
 	/**
 	 * Used to store the version history.
@@ -374,6 +373,9 @@ class Tribe__Tickets__Main {
 		// Views V2
 		tribe_register_provider( Tribe\Tickets\Events\Views\V2\Service_Provider::class );
 
+		// Admin manager.
+		tribe_register_provider( Tribe\Tickets\Admin\Manager\Service_Provider::class );
+
 		// Promoter
 		tribe_register_provider( Promoter_Service_Provider::class );
 	}
@@ -734,7 +736,7 @@ class Tribe__Tickets__Main {
 			return;
 		}
 
-		// If the (boolean) option is not set, and this install predated the modal, let's set the option to false.
+		// If the (bool) option is not set, and this install predated the modal, let's set the option to false.
 		$modal_option = $ar_reg->is_modal_enabled();
 
 		if ( ! $modal_option && $modal_option !== false ) {
