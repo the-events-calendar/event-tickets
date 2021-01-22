@@ -1,10 +1,30 @@
 name: 'Codeception Tests'
-on: [ pull_request ]
+on:
+  pull_request:
+    - 'common/src/**.php'
+    - 'common/tests/**'
+    - 'common/*.php'
+    - 'src/**.php'
+    - 'tests/**'
+    - '*.php'
+    - 'composer.json'
+    - 'codeception.*.yml'
+    - '.github/workflows/tests-php.yml'
 jobs:
   test:
     strategy:
+      fail-fast: false
       matrix:
-        suite: [ unit, wpunit, integration, functional, restv1, acceptance, views_integration ]
+        suite:
+          - unit
+          - wpunit --skip-group="capacity"
+          - wpunit --group="capacity"
+          - integration
+          - functional
+          - restv1 --skip-group="capacity"
+          - restv1 --group="capacity"
+          - acceptance
+          - views_integration
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
