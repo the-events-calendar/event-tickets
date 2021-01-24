@@ -1,3 +1,6 @@
+/* global tribe_event_tickets_plus, tribe, jQuery, _, tribe_l10n_datatables,
+ tribe_ticket_datepicker_format, TribeTickets, tribe_timepickers  */
+
 // For compatibility purposes we add this
 if ( 'undefined' === typeof tribe.tickets ) {
 	tribe.tickets = {};
@@ -48,7 +51,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		'dd-mm-yy',
 		'yy.mm.dd',
 		'mm.dd.yy',
-		'dd.mm.yy'
+		'dd.mm.yy',
 	];
 	var dateFormat = datepickerFormats[0];
 
@@ -194,8 +197,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 		if ( panel instanceof jQuery ) {
 			$panel = panel;
-		} else if ( 'undefined' !== typeof obj.panels[panel] ) {
-			$panel = $( obj.panels[panel] );
+		} else if ( 'undefined' !== typeof obj.panels[ panel ] ) {
+			$panel = $( obj.panels[ panel ] );
 		} else {
 			$panel = $base_panel;
 		}
@@ -203,7 +206,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var $eventTickets = $( '#event_tickets' );
 
 		// trigger an event before swapping the panel
-		$eventTickets.trigger( 'before_panel_swap.tickets', {panel: $panel} );
+		$eventTickets.trigger( 'before_panel_swap.tickets', { panel: $panel } );
 
 		// First, hide them all!
 		$tribe_tickets.find( '.ticket_panel' ).each( function() {
@@ -223,8 +226,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 
 		// trigger an event after swapping the panel
-		$eventTickets.trigger( 'after_panel_swap.tickets', {panel: $panel} );
-	}
+		$eventTickets.trigger( 'after_panel_swap.tickets', { panel: $panel } );
+	};
 
 	obj.fetchPanels = function( data, swapTo ) {
 		if ( 'undefined' === typeof data ) {
@@ -258,7 +261,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$tickets_container.find( '.tribe-ticket-move-link' ).one( 'click', function() {
 			// give ThickBox some time to load, in ms
 			window.setTimeout( obj.listentToThickboxEvents, 250 );
-		} )
+		} );
 	};
 
 	obj.listentToThickboxEvents = function() {
@@ -326,7 +329,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			if ( ! isNaN( format ) ) {
 				window.tribe_datepicker_opts = {
 					dateFormat: datepickerFormats[ format ],
-				}
+				};
 			}
 		}
 
@@ -398,17 +401,23 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var $timepickers = $tribe_tickets.find( '.tribe-timepicker:not(.ui-timepicker-input)' );
 		tribe_timepickers.setup_timepickers( $timepickers );
 
-		$ticket_start_date.datepicker( datepickerOpts ).datepicker( 'option', 'defaultDate', $( document.getElementById( 'EventStartDate' ) ).val() ).keyup( function( e ) {
-			if ( e.keyCode === 8 || e.keyCode === 46 ) {
-				$.datepicker._clearDate( this );
-			}
-		} );
+		$ticket_start_date
+			.datepicker( datepickerOpts )
+			.datepicker( 'option', 'defaultDate', $( document.getElementById( 'EventStartDate' ) ).val() )
+			.on( 'keyup', function( e ) {
+				if ( e.keyCode === 8 || e.keyCode === 46 ) {
+					$.datepicker._clearDate( this );
+				}
+			} );
 
-		$ticket_end_date.datepicker( datepickerOpts ).datepicker( 'option', 'defaultDate', $( document.getElementById( 'EventEndDate' ) ).val() ).keyup( function( e ) {
-			if ( e.keyCode === 8 || e.keyCode === 46 ) {
-				$.datepicker._clearDate( this );
-			}
-		} );
+		$ticket_end_date
+			.datepicker( datepickerOpts )
+			.datepicker( 'option', 'defaultDate', $( document.getElementById( 'EventEndDate' ) ).val() )
+			.on( 'keyup', function( e ) {
+				if ( e.keyCode === 8 || e.keyCode === 46 ) {
+					$.datepicker._clearDate( this );
+				}
+			} );
 
 		if ( $( document.getElementById( 'tribe_ticket_header_preview' ) ).find( 'img' ).length ) {
 			$( document.getElementById( 'tribe_ticket_header_remove' ) ).show();
@@ -427,7 +436,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			&& $.isPlainObject( tribe_event_tickets_plus )
 			&& $.isPlainObject( tribe_event_tickets_plus.meta )
 			&& $.isPlainObject( tribe_event_tickets_plus.meta.admin )
-			&& $.isFunction( tribe_event_tickets_plus.meta.admin.init_ticket_fields )
+			&& 'function' === typeof tribe_event_tickets_plus.meta.admin.init_ticket_fields
 		) {
 			tribe_event_tickets_plus.meta.admin.init_ticket_fields();
 		}
@@ -772,5 +781,4 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	} );
 
 	$( obj.setupPanels );
-
 } )( window, jQuery, _, tribe.tickets.editor );

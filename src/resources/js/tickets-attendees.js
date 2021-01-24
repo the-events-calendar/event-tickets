@@ -1,3 +1,4 @@
+/* global jQuery, AttendeesPointer, Attendees */
 var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 
 ( function( $, obj ) {
@@ -8,7 +9,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				close: function() {
 					$.post( Attendees.ajaxurl, {
 						pointer: AttendeesPointer.pointer_id,
-						action : 'dismiss-wp-pointer'
+						action : 'dismiss-wp-pointer',
 					} );
 				},
 				open: function( event, widget ) {
@@ -16,16 +17,16 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 						.css({
 							top: parseInt( widget.pointer.css( 'top' ).replace( 'px', '' ), 10 ) + 5
 						})
-						.find( '.wp-pointer-arrow' ).css({
-						right: '50px',
-						left: 'auto'
-					} );
+						.find( '.wp-pointer-arrow' ).css( {
+							right: '50px',
+							left: 'auto',
+						} );
 
-					widget.element.on({
-						'click': function() {
+					widget.element.on( {
+						click: function() {
 							widget.element.pointer( 'close' );
 						}
-					});
+					} );
 				}
 			} );
 
@@ -357,7 +358,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			$email = $user;
 		}
 
-		if ( $.trim( $address ) !== '' && tribe_is_email( $address ) ) {
+		if ( $address.trim() !== '' && tribe_is_email( $address ) ) {
 			$email = $address;
 		}
 
