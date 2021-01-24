@@ -59,7 +59,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			}
 		});
 
-		$( '.trash a' ).on( 'click', function ( e ) {
+		$( 'span.trash a' ).on( 'click', function ( e ) {
 			return confirm( Attendees.confirmation );
 		});
 
