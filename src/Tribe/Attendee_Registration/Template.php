@@ -112,7 +112,9 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @return bool Whether the Attendee Registration shortcode is being used.
 	 */
 	public function is_using_shortcode() {
-		return tribe( 'tickets.attendee_registration' )->is_using_shortcode();
+		/* @var $ar Tribe__Tickets__Attendee_Registration__Main */
+		$ar = tribe( 'tickets.attendee_registration' );
+		return $ar->is_using_shortcode();
 	}
 
 	/**
@@ -245,7 +247,10 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		$classes[] = 'page-tribe-attendee-registration';
 		$classes[] = 'page-one-column';
-		$classes[] = $this->is_using_shortcode() ? 'page-tribe-attendee-registration--shortcode' : '';
+
+		if ( $this->is_using_shortcode()  ) {
+			$classes[] = 'page-tribe-attendee-registration--shortcode';
+		}
 
 		return $classes;
 	}
