@@ -27,6 +27,17 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		return;
 	}
 
+	/**
+	 * Replacement for jQuery $.isNumeric that was deprecated on version 5.7 of WP.
+	 *
+	 * @param {string|int} number
+	 *
+	 * @return {boolean} If the passed variable is numeric.
+	 */
+	const isNumeric = function( number ) {
+		return ! isNaN( parseFloat( number ) ) && isFinite( number );
+	};
+
 	var $tickets_container = $( document.getElementById( 'event_tickets' ) );
 	var $post_id = $( document.getElementById( 'post_ID' ) );
 	var $publish = $( document.getElementById( 'publish' ) );
@@ -148,8 +159,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			var frame = wp.media( {
 				title: HeaderImageData.title,
 				multiple: false,
-				library: {type: 'image'},
-				button: {text: HeaderImageData.button}
+				library: { type: 'image' },
+				button: { text: HeaderImageData.button },
 			} );
 
 			// Handle results from media manager.
@@ -165,10 +176,12 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		},
 		// Output Image preview and populate widget form.
 		render: function( attachment ) {
-			$( document.getElementById( 'tribe_ticket_header_preview' ) ).html( ticketHeaderImage.imgHTML( attachment ) );
+			$( document.getElementById( 'tribe_ticket_header_preview' ) )
+				.html( ticketHeaderImage.imgHTML( attachment ) );
 			$( document.getElementById( 'tribe_ticket_header_image_id' ) ).val( attachment.id );
 			$( document.getElementById( 'tribe_ticket_header_remove' ) ).show();
-			$( document.getElementById( 'tribe_tickets_image_preview_filename' ) ).show().find( '.filename' ).text( attachment.filename );
+			$( document.getElementById( 'tribe_tickets_image_preview_filename' ) )
+				.show().find( '.filename' ).text( attachment.filename );
 		},
 		// Render html for the image.
 		imgHTML: function( attachment ) {
@@ -177,7 +190,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			img_html += 'height="' + attachment.height + '" ';
 			img_html += '/>';
 			return img_html;
-		}
+		},
 	};
 
 	obj.panels = {
@@ -340,7 +353,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 
 		if ( 'undefined' !== typeof tribe_ticket_datepicker_format ) {
-			var indexDatepickerFormat = $.isNumeric( tribe_ticket_datepicker_format.datepicker_format_index ) ? tribe_ticket_datepicker_format.datepicker_format_index : 0;
+			var indexDatepickerFormat = isNumeric( tribe_ticket_datepicker_format.datepicker_format_index ) ? tribe_ticket_datepicker_format.datepicker_format_index : 0;
 			dateFormat = datepickerFormats[ indexDatepickerFormat ];
 		} else if ( datepicker_opts && datepicker_opts.dateFormat ) {
 			// if datepicker_opts exists and has a valid dateFormat use it if tribe_ticket_datepicker_format is not defined
