@@ -103,9 +103,12 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 * @return boolean
 	 */
 	public function is_using_shortcode() {
-		global $wp_query;
+		$queried_object = get_queried_object();
+		if ( ! $queried_object instanceof WP_Post ) {
+			return false;
+		}
 
-		return ! empty( $wp_query->queried_object->post_content ) && has_shortcode( $wp_query->queried_object->post_content, 'tribe_attendee_registration' );
+		return ! empty( $queried_object->post_content ) && has_shortcode( $queried_object->post_content, 'tribe_attendee_registration' );
 	}
 
 	/**
