@@ -3951,8 +3951,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return null;
 			}
 
-			$lookup_user_from_email = Arr::get( $args, 'use_existing_user', false );
-			$create_user_from_email = Arr::get( $args, 'create_user', false );
+			$lookup_user_from_email = Arr::get( $args, 'use_existing_user', true );
+			$create_user_from_email = Arr::get( $args, 'create_user', true );
 			$send_new_user_info     = Arr::get( $args, 'send_email', false );
 
 			/**
