@@ -520,16 +520,18 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$cache = tribe( 'cache' );
 			$key   = __METHOD__ . '-' . $this->ID;
 
-			if ( isset( $cache[ $key ] ) ) {
-				return $cache[ $key ];
+			if ( $this->is_ticket_cache_enabled() && isset( $cache[ $key ] ) ) {
+				return tribe_is_truthy( $cache[ $key ] );
 			}
 
 			$remaining    = $this->inventory();
 			$is_unlimited = - 1 === $remaining;
 
-			$cache[ $key ] = false === $remaining || $remaining > 0 || $is_unlimited;
+			$is_in_stock = false === $remaining || $remaining > 0 || $is_unlimited;
 
-			return $cache[ $key ];
+			$cache[ $key ] = $is_in_stock ? 'yes' : 'no';
+
+			return $is_in_stock;
 		}
 
 		/**
@@ -570,7 +572,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$cache = tribe( 'cache' );
 			$key   = __METHOD__ . '-' . $this->ID;
 
-			if ( isset( $cache[ $key ] ) ) {
+			if ( $this->is_ticket_cache_enabled() && isset( $cache[ $key ] ) ) {
 				return $cache[ $key ];
 			}
 			// Fetch provider (also sets if found).
@@ -687,7 +689,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$cache = tribe( 'cache' );
 			$key   = __METHOD__ . '-' . $this->ID;
 
-			if ( isset( $cache[ $key ] ) ) {
+			if ( $this->is_ticket_cache_enabled() && isset( $cache[ $key ] ) ) {
 				return $cache[ $key ];
 			}
 
@@ -729,7 +731,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$cache = tribe( 'cache' );
 			$key   = __METHOD__ . '-' . $this->ID;
 
-			if ( isset( $cache[ $key ] ) ) {
+			if ( $this->is_ticket_cache_enabled() && isset( $cache[ $key ] ) ) {
 				return $cache[ $key ];
 			}
 
@@ -1148,6 +1150,23 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			 * @param int  $ticket_id The ticket ID.
 			 */
 			return (bool) apply_filters( 'tribe_tickets_has_meta_enabled', false, $this->ID );
+		}
+
+		/**
+		 * Determine whether the ticket has ticket cache enabled.
+		 *
+		 * @since TBD
+		 *
+		 * @return bool Whether the ticket has ticket cache enabled.
+		 */
+		public function is_ticket_cache_enabled() {
+			/**
+			 * Allow filtering whether the ticket has ticket cache enabled.
+			 *
+			 * @param bool $has_meta  Whether the ticket has ticket cache enabled.
+			 * @param int  $ticket_id The ticket ID.
+			 */
+			return (bool) apply_filters( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', true, $this->ID );
 		}
 	}
 
