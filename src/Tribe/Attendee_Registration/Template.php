@@ -105,6 +105,19 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	}
 
 	/**
+	 * Convenience wrapper for tribe( 'tickets.attendee_registration' )->is_using_shortcode() usage.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the Attendee Registration shortcode is being used.
+	 */
+	public function is_using_shortcode() {
+		/* @var $ar Tribe__Tickets__Attendee_Registration__Main */
+		$ar = tribe( 'tickets.attendee_registration' );
+		return $ar->is_using_shortcode();
+	}
+
+	/**
 	 * Set the theme page template we're going to use for the attendee-registration page
 	 *
 	 * @since 4.9
@@ -234,6 +247,10 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		$classes[] = 'page-tribe-attendee-registration';
 		$classes[] = 'page-one-column';
+
+		if ( $this->is_using_shortcode()  ) {
+			$classes[] = 'page-tribe-attendee-registration--shortcode';
+		}
 
 		return $classes;
 	}

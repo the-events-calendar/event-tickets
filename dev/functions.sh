@@ -47,7 +47,7 @@ git_clone_required_plugins(){
 		echo "Installing composer for plugin ${plugin_slug}";
 
 		# Install composer on plugin.
-		composer update --prefer-dist --no-dev;
+		composer install --prefer-dist --no-dev;
 
 		# Install composer on common if it exists.
 	  	if [[ -d "common" ]]; then
@@ -55,7 +55,7 @@ git_clone_required_plugins(){
 
 			echo "Installing common composer for plugin ${plugin_slug}";
 
-			composer update --prefer-dist --no-dev;
+			composer install --prefer-dist --no-dev;
 	  	fi;
 
 	  	cd ${plugins_folder}
