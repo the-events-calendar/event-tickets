@@ -520,7 +520,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$cache = tribe( 'cache' );
 			$key   = __METHOD__ . '-' . $this->ID;
 
-			if ( $this->is_ticket_cache_enabled() && isset( $cache[ $key ] ) ) {
+			if ( $this->is_ticket_cache_enabled() && ! empty( $cache[ $key ] ) ) {
 				return tribe_is_truthy( $cache[ $key ] );
 			}
 
@@ -1163,7 +1163,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			/**
 			 * Allow filtering whether the ticket has ticket cache enabled.
 			 *
-			 * @param bool $has_meta  Whether the ticket has ticket cache enabled.
+			 * @since TBD
+			 *
+			 * @param bool $is_cache_enabled  Whether the ticket has ticket cache enabled.
 			 * @param int  $ticket_id The ticket ID.
 			 */
 			return (bool) apply_filters( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', true, $this->ID );
