@@ -752,15 +752,12 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		// Create the new attendee.
 		$attendee = $this->create();
 
-		// Handle any further attendee updates.
-		$this->save_extra_attendee_data( $attendee, $attendee_data, $ticket );
+		if ( $attendee ) {
+			// Handle any further attendee updates.
+			$this->save_extra_attendee_data( $attendee, $attendee_data, $ticket );
 
-		// Trigger creation actions.
-		$this->trigger_create_actions( $attendee, $attendee_data, $ticket );
-
-		// Clear the attendee cache if post_id is provided.
-		if ( ! empty( $this->updates['post_id'] ) && $this->attendee_provider ) {
-			$this->attendee_provider->clear_attendees_cache( $this->updates['post_id'] );
+			// Trigger creation actions.
+			$this->trigger_create_actions( $attendee, $attendee_data, $ticket );
 		}
 
 		return $attendee;
@@ -810,11 +807,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		// Trigger the update actions.
 		$this->trigger_update_actions( $attendee_data );
 
-		// Clear the attendee cache if post_id is provided.
-		if ( ! empty( $this->updates['post_id'] ) && $this->attendee_provider ) {
-			$this->attendee_provider->clear_attendees_cache( $this->updates['post_id'] );
-		}
-
 		return $saved;
 	}
 
@@ -847,6 +839,18 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		$args = array_merge( $args, $attendee_data );
 
 		$attendee_id = null;
+
+		$ignored = [
+			'send_ticket_email',
+			'send_ticket_email_args',
+		];
+
+		// Remove ignored arguments from being saved.
+		foreach ( $ignored as $ignore ) {
+			if ( isset( $args[ $ignore ] ) ) {
+				unset( $args[ $ignore ] );
+			}
+		}
 
 		// Unset the attendee ID if found.
 		if ( isset( $args['attendee_id'] ) ) {
@@ -1066,6 +1070,14 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			 */
 			do_action( 'tribe_tickets_attendee_repository_create_attendee_for_ticket_after_create_' . $this->key_name, $attendee, $attendee_data, $ticket, $this );
 		}
+
+		// Maybe send the attendee email.
+		$this->maybe_send_attendee_email( $attendee->ID, $attendee_data );
+
+		// Clear the attendee cache if post_id is provided.
+		if ( ! empty( $this->updates['post_id'] ) && $this->attendee_provider ) {
+			$this->attendee_provider->clear_attendees_cache( $this->updates['post_id'] );
+		}
 	}
 
 	/**
@@ -1097,6 +1109,14 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			 * @param Tribe__Tickets__Attendee_Repository $repository    The current repository object.
 			 */
 			do_action( "tribe_tickets_attendee_repository_update_attendee_after_update_{$this->key_name}", $attendee_data, $this );
+		}
+
+		// Maybe send the attendee email.
+		$this->maybe_send_attendee_email( $attendee_data['attendee_id'], $attendee_data );
+
+		// Clear the attendee cache if post_id is provided.
+		if ( ! empty( $this->updates['post_id'] ) && $this->attendee_provider ) {
+			$this->attendee_provider->clear_attendees_cache( $this->updates['post_id'] );
 		}
 	}
 
@@ -1181,5 +1201,34 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		}
 
 		return $order;
+	}
+
+	/**
+	 * Maybe send the attendee email for an attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $attendee_id   The attendee ID.
+	 * @param array $attendee_data List of attendee data that was used for saving.
+	 */
+	protected function maybe_send_attendee_email( $attendee_id, $attendee_data ) {
+		$send_ticket_email      = (bool) Arr::get( $attendee_data, 'send_ticket_email', false );
+		$send_ticket_email_args = (array) Arr::get( $attendee_data, 'send_ticket_email_args', [] );
+
+		// Check if we need to send the ticket email.
+		if ( ! $send_ticket_email ) {
+			return;
+		}
+
+		// Check if we have an attendee provider object set.
+		if ( ! $this->attendee_provider ) {
+			return;
+		}
+
+		$attendee_tickets = [
+			$attendee_id,
+		];
+
+		$this->attendee_provider->send_tickets_email_for_attendees( $attendee_tickets, $send_ticket_email_args );
 	}
 }
