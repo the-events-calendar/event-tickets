@@ -2241,6 +2241,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Collect the unique emails for attendees.
 			foreach ( $attendees as $attendee ) {
+				// If the attendee data is not provided, get it from the provider.
+				if ( ! is_array( $attendee ) ) {
+					$attendee = $this->get_attendee( $attendee );
+				}
+
+				// If invalid attendee is set, skip it.
+				if ( ! $attendee ) {
+					continue;
+				}
+
 				if ( ! isset( $unique_attendees[ $attendee['holder_email'] ] ) ) {
 					$unique_attendees[ $attendee['holder_email'] ] = [];
 				}
