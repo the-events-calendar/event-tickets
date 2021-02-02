@@ -144,6 +144,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 		$provider = key( $this->get_providers() );
 
 		$post_id = $this->factory()->post->create( [
+			'post_title' => 'Test post for ticket block',
 			'meta_input' => [
 				$tickets_handler->key_provider_field => $provider,
 			],
@@ -202,6 +203,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 		$provider = key( $this->get_providers() );
 
 		$post_id = $this->factory()->post->create( [
+			'post_title' => 'Test post for ticket block after update',
 			'meta_input' => [
 				$tickets_handler->key_provider_field => $provider,
 			],
