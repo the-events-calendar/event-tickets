@@ -1087,16 +1087,15 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param array $args      {
 	 *      The list of arguments to use for sending ticket emails.
 	 *
-	 *      @type string       $subject              The email subject.
-	 *      @type string       $content              The email content.
-	 *      @type string       $from_name            The name to send tickets from.
-	 *      @type string       $from_email           The email to send tickets from.
-	 *      @type array|string $headers              The list of headers to send.
-	 *      @type array        $attachments          The list of attachments to send.
-	 *      @type string       $provider             The provider slug (rsvp, tpp, woo, edd).
-	 *      @type int          $post_id              The post/event ID to send the emails for.
-	 *      @type string|int   $order_id             The order ID to send the emails for.
-	 *      @type string|int   $ticket_sent_meta_key The meta key to use for marking an attendee ticket as sent.
+	 *      @type string       $subject     The email subject.
+	 *      @type string       $content     The email content.
+	 *      @type string       $from_name   The name to send tickets from.
+	 *      @type string       $from_email  The email to send tickets from.
+	 *      @type array|string $headers     The list of headers to send.
+	 *      @type array        $attachments The list of attachments to send.
+	 *      @type string       $provider    The provider slug (rsvp, tpp, woo, edd).
+	 *      @type int          $post_id     The post/event ID to send the emails for.
+	 *      @type string|int   $order_id    The order ID to send the emails for.
 	 * }
 	 *
 	 * @return int The number of emails sent successfully.
@@ -1104,11 +1103,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	public function send_tickets_email_for_attendees( $attendees, $args = [] ) {
 		$args = array_merge(
 			[
-				'subject'              => tribe_get_option( 'ticket-paypal-confirmation-email-subject', false ),
-				'from_name'            => tribe_get_option( 'ticket-paypal-confirmation-email-sender-name', false ),
-				'from_email'           => tribe_get_option( 'ticket-paypal-confirmation-email-sender-email', false ),
-				'provider'             => 'tpp',
-				'ticket_sent_meta_key' => $this->attendee_ticket_sent,
+				'subject'    => tribe_get_option( 'ticket-paypal-confirmation-email-subject', false ),
+				'from_name'  => tribe_get_option( 'ticket-paypal-confirmation-email-sender-name', false ),
+				'from_email' => tribe_get_option( 'ticket-paypal-confirmation-email-sender-email', false ),
+				'provider'   => 'tpp',
 			],
 			$args
 		);
@@ -2930,7 +2928,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$optout      = get_post_meta( $attendee->ID, $this->attendee_optout_key, true );
 		$status      = get_post_meta( $attendee->ID, $this->attendee_tpp_key, true );
 		$user_id     = get_post_meta( $attendee->ID, $this->attendee_user_id, true );
-		$ticket_sent = (bool) get_post_meta( $attendee->ID, $this->attendee_ticket_sent, true );
+		$ticket_sent = (int) get_post_meta( $attendee->ID, $this->attendee_ticket_sent, true );
 
 		if ( empty( $product_id ) ) {
 			return false;

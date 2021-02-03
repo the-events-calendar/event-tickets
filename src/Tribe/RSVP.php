@@ -1311,7 +1311,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		if ( $sent ) {
 			foreach ( $all_attendees as $attendee ) {
-				$this->update_ticket_sent_counter( $attendee['qr_ticket_id'], $this->attendee_ticket_sent );
+				$this->update_ticket_sent_counter( $attendee['qr_ticket_id'] );
 
 				$this->update_attendee_activity_log(
 					$attendee['attendee_id'],
@@ -2019,7 +2019,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$status       = get_post_meta( $attendee->ID, self::ATTENDEE_RSVP_KEY, true );
 		$status_label = $this->tickets_view->get_rsvp_options( $status );
 		$user_id      = get_post_meta( $attendee->ID, self::ATTENDEE_USER_ID, true );
-		$ticket_sent  = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_TICKET_SENT, true );
+		$ticket_sent  = (int) get_post_meta( $attendee->ID, $this->attendee_ticket_sent, true );
 
 		if ( empty( $product_id ) ) {
 			return false;
@@ -2057,7 +2057,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'user_id'            => $user_id,
 				'ticket_sent'        => $ticket_sent,
 
-			// Fields for Email Tickets.
+				// Fields for Email Tickets.
 				'event_id'           => get_post_meta( $attendee->ID, self::ATTENDEE_EVENT_KEY, true ),
 				'ticket_name'        => ! empty( $product ) ? $product->post_title : false,
 				'holder_name'        => get_post_meta( $attendee->ID, $this->full_name, true ),

@@ -2222,16 +2222,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param array $args      {
 		 *      The list of arguments to use for sending ticket emails.
 		 *
-		 *      @type string       $subject              The email subject.
-		 *      @type string       $content              The email content.
-		 *      @type string       $from_name            The name to send tickets from.
-		 *      @type string       $from_email           The email to send tickets from.
-		 *      @type array|string $headers              The list of headers to send.
-		 *      @type array        $attachments          The list of attachments to send.
-		 *      @type string       $provider             The provider slug (rsvp, tpp, woo, edd).
-		 *      @type int          $post_id              The post/event ID to send the emails for.
-		 *      @type string|int   $order_id             The order ID to send the emails for.
-		 *      @type string|int   $ticket_sent_meta_key The meta key to use for marking an attendee ticket as sent.
+		 *      @type string       $subject     The email subject.
+		 *      @type string       $content     The email content.
+		 *      @type string       $from_name   The name to send tickets from.
+		 *      @type string       $from_email  The email to send tickets from.
+		 *      @type array|string $headers     The list of headers to send.
+		 *      @type array        $attachments The list of attachments to send.
+		 *      @type string       $provider    The provider slug (rsvp, tpp, woo, edd).
+		 *      @type int          $post_id     The post/event ID to send the emails for.
+		 *      @type string|int   $order_id    The order ID to send the emails for.
 		 * }
 		 *
 		 * @return int The number of emails sent successfully.
@@ -2288,16 +2287,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param array  $args    {
 		 *      The list of arguments to use for sending ticket emails.
 		 *
-		 *      @type string       $subject              The email subject.
-		 *      @type string       $content              The email content.
-		 *      @type string       $from_name            The name to send tickets from.
-		 *      @type string       $from_email           The email to send tickets from.
-		 *      @type array|string $headers              The list of headers to send.
-		 *      @type array        $attachments          The list of attachments to send.
-		 *      @type string       $provider             The provider slug (rsvp, tpp, woo, edd).
-		 *      @type int          $post_id              The post/event ID to send the emails for.
-		 *      @type string|int   $order_id             The order ID to send the emails for.
-		 *      @type string|int   $ticket_sent_meta_key The meta key to use for marking an attendee ticket as sent.
+		 *      @type string       $subject     The email subject.
+		 *      @type string       $content     The email content.
+		 *      @type string       $from_name   The name to send tickets from.
+		 *      @type string       $from_email  The email to send tickets from.
+		 *      @type array|string $headers     The list of headers to send.
+		 *      @type array        $attachments The list of attachments to send.
+		 *      @type string       $provider    The provider slug (rsvp, tpp, woo, edd).
+		 *      @type int          $post_id     The post/event ID to send the emails for.
+		 *      @type string|int   $order_id    The order ID to send the emails for.
 		 * }
 		 *
 		 * @return bool Whether email was sent to attendees.
@@ -2309,33 +2307,31 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$defaults = [
-				'subject'              => '',
-				'content'              => '',
-				'from_name'            => '',
-				'from_email'           => '',
-				'headers'              => [],
-				'attachments'          => [],
-				'provider'             => 'ticket',
-				'post_id'              => 0,
-				'order_id'             => '',
-				'ticket_sent_meta_key' => '',
-				'send_callback'        => 'wp_mail',
+				'subject'       => '',
+				'content'       => '',
+				'from_name'     => '',
+				'from_email'    => '',
+				'headers'       => [],
+				'attachments'   => [],
+				'provider'      => 'ticket',
+				'post_id'       => 0,
+				'order_id'      => '',
+				'send_callback' => 'wp_mail',
 			];
 
 			// Set up the default arguments.
 			$args = array_merge( $defaults, $args );
 
-			$subject              = trim( (string) $args['subject'] );
-			$content              = trim( (string) $args['content'] );
-			$from_name            = trim( (string) $args['from_name'] );
-			$from_email           = trim( (string) $args['from_email'] );
-			$headers              = $args['headers'];
-			$attachments          = $args['attachments'];
-			$provider             = $args['provider'];
-			$post_id              = $args['post_id'];
-			$order_id             = $args['order_id'];
-			$ticket_sent_meta_key = $args['ticket_sent_meta_key'];
-			$send_callback        = $args['send_callback'];
+			$subject       = trim( (string) $args['subject'] );
+			$content       = trim( (string) $args['content'] );
+			$from_name     = trim( (string) $args['from_name'] );
+			$from_email    = trim( (string) $args['from_email'] );
+			$headers       = $args['headers'];
+			$attachments   = $args['attachments'];
+			$provider      = $args['provider'];
+			$post_id       = $args['post_id'];
+			$order_id      = $args['order_id'];
+			$send_callback = $args['send_callback'];
 
 			// If invalid send callback, do not send the email.
 			if ( ! is_callable( $send_callback ) ) {
@@ -2573,7 +2569,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( $sent ) {
 				// Mark attendee ticket email as being sent for each attendee ticket.
 				foreach ( $tickets as $attendee ) {
-					$this->update_ticket_sent_counter( $attendee['attendee_id'], $this->attendee_ticket_sent );
+					$this->update_ticket_sent_counter( $attendee['attendee_id'] );
 
 					$this->update_attendee_activity_log(
 						$attendee['attendee_id'],
@@ -2590,16 +2586,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Update the email sent counter for attendee by 1.
+		 * Update the email sent counter for attendee by increasing it +1.
 		 *
 		 * @since TBD
 		 *
-		 * @param int    $attendee_id Attendee ID.
-		 * @param string $meta_key Meta Key that stores the count.
+		 * @param int $attendee_id The attendee ID.
 		 */
-		public function update_ticket_sent_counter( $attendee_id, $meta_key ) {
-			$prev_val = (int) get_post_meta( $attendee_id, $meta_key, true );
-			update_post_meta( $attendee_id, $meta_key, $prev_val + 1 );
+		public function update_ticket_sent_counter( $attendee_id ) {
+			$prev_val = (int) get_post_meta( $attendee_id, $this->attendee_ticket_sent, true );
+
+			update_post_meta( $attendee_id, $this->attendee_ticket_sent, $prev_val + 1 );
 		}
 
 		/**
