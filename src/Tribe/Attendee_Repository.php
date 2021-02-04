@@ -1074,9 +1074,17 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		// Maybe send the attendee email.
 		$this->maybe_send_attendee_email( $attendee->ID, $attendee_data );
 
-		// Clear the attendee cache if post_id is provided.
-		if ( ! empty( $this->updates['post_id'] ) && $this->attendee_provider ) {
-			$this->attendee_provider->clear_attendees_cache( $this->updates['post_id'] );
+		// Handle clearing the caches.
+		if ( $this->attendee_provider ) {
+			// Clear the attendee cache if post_id is provided.
+			if ( ! empty( $this->updates['post_id'] ) ) {
+				$this->attendee_provider->clear_attendees_cache( $this->updates['post_id'] );
+			}
+
+			// Clear the ticket cache if ticket is provided.
+			if ( $ticket ) {
+				$this->attendee_provider->clear_ticket_cache( $ticket->ID );
+			}
 		}
 	}
 

@@ -3429,6 +3429,35 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Clears the ticket cache for a given ticket ID.
+		 *
+		 * @since TBD
+		 *
+		 * @param int|object $ticket_id The ticket ID.
+		 */
+		public function clear_ticket_cache( $ticket_id ) {
+			if ( is_object( $ticket_id ) ) {
+				$ticket_id = $ticket_id->ID;
+			}
+
+			$methods = [
+				'Tribe__Tickets__Ticket_Object::is_in_stock',
+				'Tribe__Tickets__Ticket_Object::inventory',
+				'Tribe__Tickets__Ticket_Object::available',
+				'Tribe__Tickets__Ticket_Object::capacity',
+			];
+
+			/** @var Tribe__Cache $cache */
+			$cache = tribe( 'cache' );
+
+			foreach ( $methods as $method ) {
+				$key = $method . '-' . $ticket_id;
+
+				unset( $cache[ $key ] );
+			}
+		}
+
+		/**
 		 * Returns the action tag that should be used to print the front-end ticket form.
 		 *
 		 * This value is set in the Events > Settings > Tickets tab and is distinct between RSVP

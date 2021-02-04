@@ -151,13 +151,12 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object.
 	 */
 	public function trigger_create_actions( $attendee, $attendee_data, $ticket ) {
-		parent::trigger_create_actions( $attendee, $attendee_data, $ticket );
-
 		$attendee_id       = $attendee->ID;
 		$post_id           = Arr::get( $attendee_data, 'post_id' );
 		$order_id          = $attendee_data['order_id'];
 		$product_id        = $ticket->ID;
 		$order_attendee_id = Arr::get( $attendee_data, 'order_attendee_id' );
+		$attendee_status   = Arr::get( $attendee_data, 'attendee_status', 'yes' );
 
 		/**
 		 * RSVP specific action fired when a RSVP-driven attendee ticket for an event is generated.
@@ -191,6 +190,13 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 			 */
 			do_action( 'event_tickets_rsvp_tickets_generated_for_product', $product_id, $order_id, 1 );
 		}
+
+		// Update the ticket sales numbers.
+		if ( $post_id && 'yes' === $attendee_status ) {
+			$this->attendee_provider->increase_ticket_sales_by( $product_id, 1 );
+		}
+
+		parent::trigger_create_actions( $attendee, $attendee_data, $ticket );
 	}
 
 	/**

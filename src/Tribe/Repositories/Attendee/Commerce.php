@@ -155,8 +155,6 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object.
 	 */
 	public function trigger_create_actions( $attendee, $attendee_data, $ticket ) {
-		parent::trigger_create_actions( $attendee, $attendee_data, $ticket );
-
 		$attendee_id           = $attendee->ID;
 		$post_id               = Arr::get( $attendee_data, 'post_id' );
 		$order_id              = Arr::get( $attendee_data, 'order_id' );
@@ -195,6 +193,7 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 		 */
 		do_action( 'event_tickets_tpp_attendee_updated', $attendee_id, $order_id, $product_id, $order_attendee_id, $attendee_order_status );
 
+		// Update the ticket sales numbers.
 		if ( $post_id ) {
 			$global_stock    = new Tribe__Tickets__Global_Stock( $post_id );
 			$shared_capacity = false;
@@ -203,17 +202,14 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 				$shared_capacity = true;
 			}
 
-			switch ( $attendee_order_status ) {
-				case Tribe__Tickets__Commerce__PayPal__Stati::$completed:
-					$this->attendee_provider->increase_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
-					break;
-				case Tribe__Tickets__Commerce__PayPal__Stati::$refunded:
-					$this->attendee_provider->decrease_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
-					break;
-				default:
-					break;
+			if ( Tribe__Tickets__Commerce__PayPal__Stati::$completed === $attendee_order_status ) {
+				$this->attendee_provider->increase_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
+			} elseif ( Tribe__Tickets__Commerce__PayPal__Stati::$refunded === $attendee_order_status ) {
+				$this->attendee_provider->decrease_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
 			}
 		}
+
+		parent::trigger_create_actions( $attendee, $attendee_data, $ticket );
 	}
 
 	/**
