@@ -223,11 +223,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 		// First, hide them all!
 		$tribe_tickets.find( '.ticket_panel' ).each( function() {
-			$( this ).prop( 'aria-hidden', true );
+			$( this ).attr( 'aria-hidden', 'true' );
 		} );
 
 		// then show the one we want
-		$panel.prop( 'aria-hidden', false );
+		$panel.attr( 'aria-hidden', 'false' );
 
 		if ( ! $panel.is( $base_panel ) ) {
 			$( window ).on( 'beforeunload.tribe', obj.beforeUnload );
@@ -568,6 +568,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 	/* "Add ticket" button action */
 	$document.on( 'click', '.ticket_form_toggle', function( event ) {
+
 		// Prevent Form Submit on button click
 		event.preventDefault();
 
