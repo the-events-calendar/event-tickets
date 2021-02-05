@@ -2844,48 +2844,58 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Increases the sales for a ticket by an amount.
+	 * Increase the sales for a ticket by a specific quantity.
 	 *
 	 * @since 4.7
 	 * @since 4.10.2 added $shared_capacity and $global_stock parameter
 	 *
-	 * @param int         $ticket_id       The ticket post ID
-	 * @param int         $qty             the quanitity to modify stock
-	 * @param bool        $shared_capacity true or false if the ticket is using share capacity
-	 * @param object|null $global_stock    the object of Tribe__Tickets__Global_Stock or null
+	 * @param int                               $ticket_id       The ticket post ID.
+	 * @param int                               $quantity        The quanitity to increase the ticket sales by.
+	 * @param bool                              $shared_capacity Whether the ticket is using shared capacity.
+	 * @param Tribe__Tickets__Global_Stock|null $global_stock    The stock object or null.
 	 *
-	 * @return int
+	 * @return int The new sales amount.
 	 */
-	public function increase_ticket_sales_by( $ticket_id, $qty = 1, $shared_capacity = false, $global_stock = null ) {
-		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
-		update_post_meta( $ticket_id, 'total_sales', $sales + $qty );
+	public function increase_ticket_sales_by( $ticket_id, $quantity = 1, $shared_capacity = false, $global_stock = null ) {
+		// Adjust sales.
+		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true ) + $quantity;
+
+		update_post_meta( $ticket_id, 'total_sales', $sales );
 
 		if ( $shared_capacity && $global_stock instanceof Tribe__Tickets__Global_Stock ) {
-			$this->update_global_stock( $global_stock, $qty );
+			$this->update_global_stock( $global_stock, $quantity );
 		}
+
 		return $sales;
 	}
 
 	/**
-	 * Decreases the sales for a ticket by an amount.
+	 * Decrease the sales for a ticket by a specific quantity.
 	 *
 	 * @since 4.7
 	 * @since 4.10.2 added $shared_capacity and $global_stock parameter
 	 *
-	 * @param int         $ticket_id       The ticket post ID
-	 * @param int         $qty             the quanitity to modify stock
-	 * @param bool        $shared_capacity true or false if the ticket is using share capacity
-	 * @param object|null $global_stock    the object of Tribe__Tickets__Global_Stock or null
+	 * @param int                               $ticket_id       The ticket post ID.
+	 * @param int                               $quantity        The quanitity to increase the ticket sales by.
+	 * @param bool                              $shared_capacity Whether the ticket is using shared capacity.
+	 * @param Tribe__Tickets__Global_Stock|null $global_stock    The stock object or null.
 	 *
-	 * @return int
+	 * @return int The new sales amount.
 	 */
-	public function decrease_ticket_sales_by( $ticket_id, $qty = 1, $shared_capacity = false, $global_stock = null ) {
-		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
-		update_post_meta( $ticket_id, 'total_sales', max( $sales - $qty, 0 ) );
+	public function decrease_ticket_sales_by( $ticket_id, $quantity = 1, $shared_capacity = false, $global_stock = null ) {
+		// Adjust sales.
+		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true ) - $quantity;
+
+		// Prevent negatives.
+		$sales = max( $sales, 0 );
+
+		update_post_meta( $ticket_id, 'total_sales', $sales );
 
 		if ( $shared_capacity && $global_stock instanceof Tribe__Tickets__Global_Stock ) {
-			$this->update_global_stock( $global_stock, $qty, true );
+			$this->update_global_stock( $global_stock, $quantity, true );
 		}
+
+		return $sales;
 	}
 
 	/**
@@ -2898,8 +2908,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param bool                         $increase     Whether to increase stock, default is false.
 	 */
 	public function update_global_stock( $global_stock, $qty = 1, $increase = false ) {
-
 		$level = $global_stock->get_stock_level();
+
 		if ( $increase ) {
 			$new_level = (int) $level + (int) $qty;
 		} else {

@@ -873,24 +873,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			throw new Exception( __( 'Unable to process your request, attendee creation failed.', 'event-tickets' ) );
 		}
 
-		$attendee_id = $attendee_object->ID;
-
-		// Get the RSVP status `decrease_stock_by` value.
-		$status_stock_size = $rsvp_options[ $order_status ]['decrease_stock_by'];
-
-		if ( 0 < $status_stock_size ) {
-			// @todo Holy race condition batman!
-
-			// Adjust total sales.
-			$sales = (int) get_post_meta( $product_id, 'total_sales', true );
-			update_post_meta( $product_id, 'total_sales', ++ $sales );
-
-			// Adjust stock.
-			$stock = (int) get_post_meta( $product_id, '_stock', true ) - $status_stock_size;
-			update_post_meta( $product_id, '_stock', $stock );
-		}
-
-		return $attendee_id;
+		return $attendee_object->ID;
 	}
 
 	/**
@@ -2484,6 +2467,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
+		// Prevent negatives.
+		$sales_diff = max( $sales_diff, 0 );
+		$stock_diff = max( $stock_diff, 0 );
+
 		// these should NEVER be updated separately - if one goes up the other must go down and vice versa
 		return update_post_meta( $ticket_id, 'total_sales', $sales_diff ) && update_post_meta( $ticket_id, '_stock', $stock_diff );
 	}
@@ -2775,5 +2762,59 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function get_total_not_going( $event_id ) {
 		return $this->get_attendees_count_not_going( $event_id );
+	}
+
+	/**
+	 * Increase the sales for a ticket by a specific quantity.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 * @param int $quantity  The quanitity to increase the ticket sales by.
+	 *
+	 * @return int The new sales amount.
+	 */
+	public function increase_ticket_sales_by( $ticket_id, $quantity = 1 ) {
+		// Adjust sales.
+		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true ) + $quantity;
+
+		update_post_meta( $ticket_id, 'total_sales', $sales );
+
+		// Adjust stock.
+		$stock = (int) get_post_meta( $ticket_id, '_stock', true ) - $quantity;
+
+		// Prevent negatives.
+		$stock = max( $stock, 0 );
+
+		update_post_meta( $ticket_id, '_stock', $stock );
+
+		return $sales;
+	}
+
+	/**
+	 * Decrease the sales for a ticket by a specific quantity.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 * @param int $quantity  The quanitity to decrease the ticket sales by.
+	 *
+	 * @return int The new sales amount.
+	 */
+	public function decrease_ticket_sales_by( $ticket_id, $quantity = 1 ) {
+		// Adjust sales.
+		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true ) - $quantity;
+
+		// Prevent negatives.
+		$sales = max( $sales, 0 );
+
+		update_post_meta( $ticket_id, 'total_sales', $sales );
+
+		// Adjust stock.
+		$stock = (int) get_post_meta( $ticket_id, '_stock', true ) + $quantity;
+
+		update_post_meta( $ticket_id, '_stock', $stock );
+
+		return $sales;
 	}
 }
