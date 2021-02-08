@@ -1,0 +1,163 @@
+name: 'Codeception Tests'
+on:
+  pull_request:
+    paths:
+      - 'common/src/**.php'
+      - 'common/tests/**'
+      - 'common/*.php'
+      - 'src/**.php'
+      - 'tests/**'
+      - '*.php'
+      - 'composer.json'
+      - 'codeception.*.yml'
+      - '.github/workflows/tests-php.yml'
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        suite:
+          - acceptance
+          - functional
+          - integration
+          - restv1 --group="capacity"
+          - restv1 --skip-group="capacity"
+          - unit
+          - views_integration
+          - wpunit --group="capacity"
+          - wpunit --skip-group="capacity"
+    runs-on: ubuntu-latest
+    steps:
+      # ------------------------------------------------------------------------------
+      # Checkout the repo and tric
+      # ------------------------------------------------------------------------------
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.GH_BOT_TOKEN }}
+          submodules: recursive
+      - name: Checkout tric
+        uses: actions/checkout@v2
+        with:
+          repository: the-events-calendar/tric
+          ref: main
+          path: tric
+          fetch-depth: 1
+      # ------------------------------------------------------------------------------
+      # Prepare our composer cache directory
+      # ------------------------------------------------------------------------------
+      - name: Get Composer Cache Directory
+        id: get-composer-cache-dir
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - uses: actions/cache@v2
+        id: composer-cache
+        with:
+          path: ${{ steps.get-composer-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      # ------------------------------------------------------------------------------
+      # Initialize tric
+      # ------------------------------------------------------------------------------
+      - name: Set up tric env vars
+        run: |
+          echo "TRIC_BIN=${GITHUB_WORKSPACE}/tric/tric" >> $GITHUB_ENV
+          echo "TRIC_WP_DIR=${GITHUB_WORKSPACE}/tric/_wordpress" >> $GITHUB_ENV
+          echo "TRIC_WORDPRESS_DOCKERFILE=Dockerfile.base" >> $GITHUB_ENV
+      - name: Set run context for tric
+        run: echo "TRIC=1" >> $GITHUB_ENV && echo "CI=1" >> $GITHUB_ENV
+      - name: Start ssh-agent
+        run: |
+          mkdir -p "${HOME}/.ssh";
+          ssh-agent -a /tmp/ssh_agent.sock;
+      - name: Export SSH_AUTH_SOCK env var
+        run: echo "SSH_AUTH_SOCK=/tmp/ssh_agent.sock" >> $GITHUB_ENV
+      - name: Set up tric for CI
+        run: |
+          cd ${GITHUB_WORKSPACE}/..
+          ${TRIC_BIN} here
+          ${TRIC_BIN} interactive off
+          ${TRIC_BIN} build-prompt off
+          ${TRIC_BIN} build-subdir off
+          ${TRIC_BIN} xdebug off
+          ${TRIC_BIN} composer-cache set /home/runner/.cache/composer
+          ${TRIC_BIN} debug on
+          ${TRIC_BIN} info
+          ${TRIC_BIN} config
+      # ------------------------------------------------------------------------------
+      # Fetch branches for dependent repos
+      # ------------------------------------------------------------------------------
+      - name: Fetch head branch from TEC
+        uses: octokit/request-action@v2.x
+        id: fetch-tec-head-branch
+        with:
+          route: GET /repos/{owner}/{repo}/branches/${{ github.head_ref }}
+          owner: the-events-calendar
+          repo: the-events-calendar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+        continue-on-error: true
+      - name: Fetch base branch from TEC
+        uses: octokit/request-action@v2.x
+        id: fetch-tec-base-branch
+        if: steps.fetch-tec-head-branch.outcome != 'success'
+        with:
+          route: GET /repos/{owner}/{repo}/branches/${{ github.base_ref }}
+          owner: the-events-calendar
+          repo: the-events-calendar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+        continue-on-error: true
+      # ------------------------------------------------------------------------------
+      # Set TEC branch
+      # ------------------------------------------------------------------------------
+      - name: Set TEC with head branch
+        if: steps.fetch-tec-head-branch.outcome == 'success'
+        run: echo "TEC_BRANCH=${{ github.head_ref }}" >> $GITHUB_ENV
+      - name: Set TEC with base branch
+        if: steps.fetch-tec-head-branch.outcome != 'success' && steps.fetch-tec-base-branch.outcome == 'success'
+        run: echo "TEC_BRANCH=${{ github.base_ref }}" >> $GITHUB_ENV
+      - name: Set TEC with master branch
+        if: steps.fetch-tec-head-branch.outcome != 'success' && steps.fetch-tec-base-branch.outcome != 'success'
+        run: echo "TEC_BRANCH=master" >> $GITHUB_ENV
+      # ------------------------------------------------------------------------------
+      # Clone and init TEC
+      # ------------------------------------------------------------------------------
+      - name: Clone TEC
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          repository: the-events-calendar/the-events-calendar
+          ref: ${{ env.TEC_BRANCH }}
+          token: ${{ secrets.GH_BOT_TOKEN }}
+          path: the-events-calendar
+          submodules: recursive
+      - name: Init TEC
+        run: |
+          mv ${GITHUB_WORKSPACE}/the-events-calendar ${GITHUB_WORKSPACE}/../the-events-calendar
+          docker network prune -f
+          ${TRIC_BIN} use the-events-calendar
+          ${TRIC_BIN} composer install --no-dev
+      - name: Set up TEC Common
+        run: |
+          docker network prune -f
+          ${TRIC_BIN} use the-events-calendar/common
+          ${TRIC_BIN} composer install --no-dev
+      # ------------------------------------------------------------------------------
+      # Set up ET and run tests
+      # ------------------------------------------------------------------------------
+      - name: Set up ET Common
+        run: |
+          docker network prune -f
+          ${TRIC_BIN} use event-tickets/common
+          ${TRIC_BIN} composer install
+      - name: Set up ET
+        run: |
+          ${TRIC_BIN} use event-tickets
+          ${TRIC_BIN} composer install
+      - name: Init the WordPress container
+        run: ${TRIC_BIN} up wordpress
+      - name: Run suite tests
+        run: ${TRIC_BIN} run ${{ matrix.suite }} --ext DotReporter
