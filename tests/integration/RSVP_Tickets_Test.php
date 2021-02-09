@@ -8,6 +8,8 @@ class RSVP_Tickets_Test extends \Codeception\TestCase\WPTestCase {
 	 * the in-stock values
 	 */
 	public function test_ticket_with_stock() {
+		add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', '__return_false' );
+
 		$post_id = $this->factory->post->create();
 		$start = strtotime( date( 'Y-m-d H:00:00' ) );
 		$end = strtotime( date( 'Y-m-d H:00:00', strtotime( '+5 days' ) ) );
@@ -65,6 +67,8 @@ class RSVP_Tickets_Test extends \Codeception\TestCase\WPTestCase {
 	 * the in-stock values
 	 */
 	public function test_ticket_without_stock() {
+		add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', '__return_false' );
+
 		$start = strtotime( date( 'Y-m-d H:00:00' ) );
 		$end = strtotime( date( 'Y-m-d H:00:00', strtotime( '+5 days' ) ) );
 		$post_id = $this->factory->post->create();
@@ -111,6 +115,7 @@ class RSVP_Tickets_Test extends \Codeception\TestCase\WPTestCase {
 		];
 		$rsvp->save_ticket( $post_id, $ticket, $data );
 		$tickets = $rsvp->get_event_tickets( $post_id );
+		codecept_debug( $ticket->inventory() );
 		/** @var \Tribe__Tickets__Ticket_Object $ticket */
 		$ticket = $tickets[0];
 		$this->assertTrue( $ticket->managing_stock(), 'RSVP ticket is now managing stock' );
