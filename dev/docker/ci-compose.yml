@@ -48,7 +48,7 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
 
   chromedriver:
-    container_name: ci_chromedriver
+    container_name: chrome
     image: selenium/standalone-chrome:3.141.59-oxygen
     depends_on:
       - db
