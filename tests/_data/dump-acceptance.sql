@@ -264,6 +264,8 @@ ALTER TABLE `wp_usermeta`
 ALTER TABLE `wp_users`
     MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
+LOCK TABLES `wp_options` WRITE;
+/*!40000 ALTER TABLE `wp_options` DISABLE KEYS */;
 INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`) VALUES
 (1, 'siteurl', 'http://tribe.local', 'yes'),
 (2, 'home', 'http://tribe.local', 'yes'),
@@ -393,6 +395,8 @@ INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`
 (140, '_transient_timeout_tribe_feature_detection', '1587000182', 'no'),
 (141, '_transient_tribe_feature_detection', 'a:1:{s:22:\"supports_async_process\";b:0;}', 'no'),
 (142, 'fs_gdpr', 'a:1:{s:2:\"u0\";a:1:{s:8:\"required\";b:0;}}', 'yes');
+/*!40000 ALTER TABLE `wp_options` ENABLE KEYS */;
+UNLOCK TABLES;
 
 INSERT INTO `wp_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) VALUES
 (1, 1, 'nickname', 'admin'),
