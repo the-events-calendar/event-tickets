@@ -176,9 +176,16 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.1.0] TBD =
+= [5.1.0] 2021-02-15 =
 
-* Tweak - Enforce capitalization for the text for action buttons on the "Attendees" page. [ETP-624]
+* Feature - New Attendees ORM functionality allows creating and updating attendees. [ETP-366]
+* Feature - New Orders ORM can be used by calling `tribe_tickets_orders()` and allows interfacing with Event Tickets Plus commerce providers. [ETP-366]
+* Fix - Remove the duplicate Attendees heading from the Attendees Report screen when using Tribe Commerce tickets. [ETP-366]
+* Tweak - New admin manager code to help us consolidate modals going forward with a comprehensive templating and form processing solution. [ETP-366]
+* Tweak - Enforce capitalization for the text for action buttons on the Attendees Report screen. [ETP-624]
+* Tweak - A new filter was introduced to help avoid problems where ticket caching has problems with certain hosting environments that cause tickets to show as Sold Out. Disable ticket caching with `add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', '__return_false' );` [ETP-366]
+* Tweak - Start tracking attendee email activity in a meta record so that there's a better ability for determining if an attendee email was sent, where to, and how many times it was re-sent. [ETP-366]
+
 
 = [5.0.5] 2021-01-20 =
 
