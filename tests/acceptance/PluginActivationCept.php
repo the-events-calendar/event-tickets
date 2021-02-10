@@ -4,7 +4,7 @@ $I->wantTo( 'activate Event Tickets on a fresh WordPress installation and deacti
 
 // set the `active_plugins` in the database to an empty array to make sure no plugin is active
 // by default the database dump has Event Tickets active
-$I->haveOptionInDatabase( 'active_plugins', [] );
+// $I->haveOptionInDatabase( 'active_plugins', [] );
 
 $I->loginAsAdmin();
 $I->amOnPluginsPage();
