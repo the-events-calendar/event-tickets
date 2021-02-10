@@ -86,6 +86,8 @@ jobs:
           ${TRIC_BIN} debug on
           ${TRIC_BIN} info
           ${TRIC_BIN} config
+      - name: Start the Chrome container
+        run: ${TRIC_BIN} up chrome
       # ------------------------------------------------------------------------------
       # Fetch branches for dependent repos
       # ------------------------------------------------------------------------------
