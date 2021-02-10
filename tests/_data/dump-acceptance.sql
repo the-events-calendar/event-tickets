@@ -70,6 +70,200 @@ CREATE TABLE `wp_options` (
                               `autoload` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'yes'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `wp_postmeta`;
+CREATE TABLE `wp_postmeta` (
+                               `meta_id` bigint(20) UNSIGNED NOT NULL,
+                               `post_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+                               `meta_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                               `meta_value` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `wp_posts`;
+CREATE TABLE `wp_posts` (
+                            `ID` bigint(20) UNSIGNED NOT NULL,
+                            `post_author` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+                            `post_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                            `post_date_gmt` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                            `post_content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+                            `post_title` text COLLATE utf8mb4_unicode_ci NOT NULL,
+                            `post_excerpt` text COLLATE utf8mb4_unicode_ci NOT NULL,
+                            `post_status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'publish',
+                            `comment_status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'open',
+                            `ping_status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'open',
+                            `post_password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                            `post_name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                            `to_ping` text COLLATE utf8mb4_unicode_ci NOT NULL,
+                            `pinged` text COLLATE utf8mb4_unicode_ci NOT NULL,
+                            `post_modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                            `post_modified_gmt` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                            `post_content_filtered` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+                            `post_parent` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+                            `guid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                            `menu_order` int(11) NOT NULL DEFAULT 0,
+                            `post_type` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'post',
+                            `post_mime_type` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                            `comment_count` bigint(20) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `wp_termmeta`;
+CREATE TABLE `wp_termmeta` (
+                               `meta_id` bigint(20) UNSIGNED NOT NULL,
+                               `term_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+                               `meta_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                               `meta_value` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `wp_terms`;
+CREATE TABLE `wp_terms` (
+                            `term_id` bigint(20) UNSIGNED NOT NULL,
+                            `name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                            `slug` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                            `term_group` bigint(10) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `wp_terms` (`term_id`, `name`, `slug`, `term_group`) VALUES
+(1, 'Uncategorized', 'uncategorized', 0);
+
+DROP TABLE IF EXISTS `wp_term_relationships`;
+CREATE TABLE `wp_term_relationships` (
+                                         `object_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+                                         `term_taxonomy_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+                                         `term_order` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `wp_term_taxonomy`;
+CREATE TABLE `wp_term_taxonomy` (
+                                    `term_taxonomy_id` bigint(20) UNSIGNED NOT NULL,
+                                    `term_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+                                    `taxonomy` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                                    `description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+                                    `parent` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+                                    `count` bigint(20) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `wp_term_taxonomy` (`term_taxonomy_id`, `term_id`, `taxonomy`, `description`, `parent`, `count`) VALUES
+(1, 1, 'category', '', 0, 1);
+
+DROP TABLE IF EXISTS `wp_usermeta`;
+CREATE TABLE `wp_usermeta` (
+                               `umeta_id` bigint(20) UNSIGNED NOT NULL,
+                               `user_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+                               `meta_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                               `meta_value` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `wp_users`;
+CREATE TABLE `wp_users` (
+                            `ID` bigint(20) UNSIGNED NOT NULL,
+                            `user_login` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                            `user_pass` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                            `user_nicename` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                            `user_email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                            `user_url` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                            `user_registered` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                            `user_activation_key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                            `user_status` int(11) NOT NULL DEFAULT 0,
+                            `display_name` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `wp_commentmeta`
+    ADD PRIMARY KEY (`meta_id`),
+    ADD KEY `comment_id` (`comment_id`),
+    ADD KEY `meta_key` (`meta_key`(191));
+
+ALTER TABLE `wp_comments`
+    ADD PRIMARY KEY (`comment_ID`),
+    ADD KEY `comment_post_ID` (`comment_post_ID`),
+    ADD KEY `comment_approved_date_gmt` (`comment_approved`,`comment_date_gmt`),
+    ADD KEY `comment_date_gmt` (`comment_date_gmt`),
+    ADD KEY `comment_parent` (`comment_parent`),
+    ADD KEY `comment_author_email` (`comment_author_email`(10));
+
+ALTER TABLE `wp_links`
+    ADD PRIMARY KEY (`link_id`),
+    ADD KEY `link_visible` (`link_visible`);
+
+ALTER TABLE `wp_options`
+    ADD PRIMARY KEY (`option_id`),
+    ADD UNIQUE KEY `option_name` (`option_name`),
+    ADD KEY `autoload` (`autoload`);
+
+ALTER TABLE `wp_postmeta`
+    ADD PRIMARY KEY (`meta_id`),
+    ADD KEY `post_id` (`post_id`),
+    ADD KEY `meta_key` (`meta_key`(191));
+
+ALTER TABLE `wp_posts`
+    ADD PRIMARY KEY (`ID`),
+    ADD KEY `post_name` (`post_name`(191)),
+    ADD KEY `type_status_date` (`post_type`,`post_status`,`post_date`,`ID`),
+    ADD KEY `post_parent` (`post_parent`),
+    ADD KEY `post_author` (`post_author`);
+
+ALTER TABLE `wp_termmeta`
+    ADD PRIMARY KEY (`meta_id`),
+    ADD KEY `term_id` (`term_id`),
+    ADD KEY `meta_key` (`meta_key`(191));
+
+ALTER TABLE `wp_terms`
+    ADD PRIMARY KEY (`term_id`),
+    ADD KEY `slug` (`slug`(191)),
+    ADD KEY `name` (`name`(191));
+
+ALTER TABLE `wp_term_relationships`
+    ADD PRIMARY KEY (`object_id`,`term_taxonomy_id`),
+    ADD KEY `term_taxonomy_id` (`term_taxonomy_id`);
+
+ALTER TABLE `wp_term_taxonomy`
+    ADD PRIMARY KEY (`term_taxonomy_id`),
+    ADD UNIQUE KEY `term_id_taxonomy` (`term_id`,`taxonomy`),
+    ADD KEY `taxonomy` (`taxonomy`);
+
+ALTER TABLE `wp_usermeta`
+    ADD PRIMARY KEY (`umeta_id`),
+    ADD KEY `user_id` (`user_id`),
+    ADD KEY `meta_key` (`meta_key`(191));
+
+ALTER TABLE `wp_users`
+    ADD PRIMARY KEY (`ID`),
+    ADD KEY `user_login_key` (`user_login`),
+    ADD KEY `user_nicename` (`user_nicename`),
+    ADD KEY `user_email` (`user_email`);
+
+
+ALTER TABLE `wp_commentmeta`
+    MODIFY `meta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `wp_comments`
+    MODIFY `comment_ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `wp_links`
+    MODIFY `link_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `wp_options`
+    MODIFY `option_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=143;
+
+ALTER TABLE `wp_postmeta`
+    MODIFY `meta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `wp_posts`
+    MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `wp_termmeta`
+    MODIFY `meta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `wp_terms`
+    MODIFY `term_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+ALTER TABLE `wp_term_taxonomy`
+    MODIFY `term_taxonomy_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+ALTER TABLE `wp_usermeta`
+    MODIFY `umeta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+ALTER TABLE `wp_users`
+    MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`) VALUES
 (1, 'siteurl', 'http://tribe.local', 'yes'),
 (2, 'home', 'http://tribe.local', 'yes'),
@@ -200,40 +394,25 @@ INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`
 (141, '_transient_tribe_feature_detection', 'a:1:{s:22:\"supports_async_process\";b:0;}', 'no'),
 (142, 'fs_gdpr', 'a:1:{s:2:\"u0\";a:1:{s:8:\"required\";b:0;}}', 'yes');
 
-DROP TABLE IF EXISTS `wp_postmeta`;
-CREATE TABLE `wp_postmeta` (
-                               `meta_id` bigint(20) UNSIGNED NOT NULL,
-                               `post_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
-                               `meta_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-                               `meta_value` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `wp_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) VALUES
+(1, 1, 'nickname', 'admin'),
+(2, 1, 'first_name', ''),
+(3, 1, 'last_name', ''),
+(4, 1, 'description', ''),
+(5, 1, 'rich_editing', 'true'),
+(6, 1, 'syntax_highlighting', 'true'),
+(7, 1, 'comment_shortcuts', 'false'),
+(8, 1, 'admin_color', 'fresh'),
+(9, 1, 'use_ssl', '0'),
+(10, 1, 'show_admin_bar_front', 'true'),
+(11, 1, 'locale', ''),
+(12, 1, 'wp_capabilities', 'a:1:{s:13:\"administrator\";b:1;}'),
+(13, 1, 'wp_user_level', '10'),
+(14, 1, 'dismissed_wp_pointers', ''),
+(15, 1, 'show_welcome_panel', '1');
 
-DROP TABLE IF EXISTS `wp_posts`;
-CREATE TABLE `wp_posts` (
-                            `ID` bigint(20) UNSIGNED NOT NULL,
-                            `post_author` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
-                            `post_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-                            `post_date_gmt` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-                            `post_content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-                            `post_title` text COLLATE utf8mb4_unicode_ci NOT NULL,
-                            `post_excerpt` text COLLATE utf8mb4_unicode_ci NOT NULL,
-                            `post_status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'publish',
-                            `comment_status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'open',
-                            `ping_status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'open',
-                            `post_password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                            `post_name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                            `to_ping` text COLLATE utf8mb4_unicode_ci NOT NULL,
-                            `pinged` text COLLATE utf8mb4_unicode_ci NOT NULL,
-                            `post_modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-                            `post_modified_gmt` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-                            `post_content_filtered` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-                            `post_parent` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
-                            `guid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                            `menu_order` int(11) NOT NULL DEFAULT 0,
-                            `post_type` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'post',
-                            `post_mime_type` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                            `comment_count` bigint(20) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `wp_users` (`ID`, `user_login`, `user_pass`, `user_nicename`, `user_email`, `user_url`, `user_registered`, `user_activation_key`, `user_status`, `display_name`) VALUES
+(1, 'admin', '$P$B5bvjdcJ9LPqh23fLj9ZyTMUERYwoH.', 'admin', 'admin@tribe.local', '', '2018-04-24 11:10:01', '', 0, 'admin');
 
 --
 -- Dumping data for table `wp_posts`
@@ -328,186 +507,6 @@ INSERT INTO `wp_posts` VALUES (
 );
 /*!40000 ALTER TABLE `wp_posts` ENABLE KEYS */;
 UNLOCK TABLES;
-
-DROP TABLE IF EXISTS `wp_termmeta`;
-CREATE TABLE `wp_termmeta` (
-                               `meta_id` bigint(20) UNSIGNED NOT NULL,
-                               `term_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
-                               `meta_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-                               `meta_value` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-DROP TABLE IF EXISTS `wp_terms`;
-CREATE TABLE `wp_terms` (
-                            `term_id` bigint(20) UNSIGNED NOT NULL,
-                            `name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                            `slug` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                            `term_group` bigint(10) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `wp_terms` (`term_id`, `name`, `slug`, `term_group`) VALUES
-(1, 'Uncategorized', 'uncategorized', 0);
-
-DROP TABLE IF EXISTS `wp_term_relationships`;
-CREATE TABLE `wp_term_relationships` (
-                                         `object_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
-                                         `term_taxonomy_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
-                                         `term_order` int(11) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-DROP TABLE IF EXISTS `wp_term_taxonomy`;
-CREATE TABLE `wp_term_taxonomy` (
-                                    `term_taxonomy_id` bigint(20) UNSIGNED NOT NULL,
-                                    `term_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
-                                    `taxonomy` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                                    `description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-                                    `parent` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
-                                    `count` bigint(20) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `wp_term_taxonomy` (`term_taxonomy_id`, `term_id`, `taxonomy`, `description`, `parent`, `count`) VALUES
-(1, 1, 'category', '', 0, 1);
-
-DROP TABLE IF EXISTS `wp_usermeta`;
-CREATE TABLE `wp_usermeta` (
-                               `umeta_id` bigint(20) UNSIGNED NOT NULL,
-                               `user_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
-                               `meta_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-                               `meta_value` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `wp_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) VALUES
-(1, 1, 'nickname', 'admin'),
-(2, 1, 'first_name', ''),
-(3, 1, 'last_name', ''),
-(4, 1, 'description', ''),
-(5, 1, 'rich_editing', 'true'),
-(6, 1, 'syntax_highlighting', 'true'),
-(7, 1, 'comment_shortcuts', 'false'),
-(8, 1, 'admin_color', 'fresh'),
-(9, 1, 'use_ssl', '0'),
-(10, 1, 'show_admin_bar_front', 'true'),
-(11, 1, 'locale', ''),
-(12, 1, 'wp_capabilities', 'a:1:{s:13:\"administrator\";b:1;}'),
-(13, 1, 'wp_user_level', '10'),
-(14, 1, 'dismissed_wp_pointers', ''),
-(15, 1, 'show_welcome_panel', '1');
-
-DROP TABLE IF EXISTS `wp_users`;
-CREATE TABLE `wp_users` (
-                            `ID` bigint(20) UNSIGNED NOT NULL,
-                            `user_login` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                            `user_pass` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                            `user_nicename` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                            `user_email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                            `user_url` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                            `user_registered` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-                            `user_activation_key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                            `user_status` int(11) NOT NULL DEFAULT 0,
-                            `display_name` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `wp_users` (`ID`, `user_login`, `user_pass`, `user_nicename`, `user_email`, `user_url`, `user_registered`, `user_activation_key`, `user_status`, `display_name`) VALUES
-(1, 'admin', '$P$B5bvjdcJ9LPqh23fLj9ZyTMUERYwoH.', 'admin', 'admin@tribe.local', '', '2018-04-24 11:10:01', '', 0, 'admin');
-
-
-ALTER TABLE `wp_commentmeta`
-    ADD PRIMARY KEY (`meta_id`),
-    ADD KEY `comment_id` (`comment_id`),
-    ADD KEY `meta_key` (`meta_key`(191));
-
-ALTER TABLE `wp_comments`
-    ADD PRIMARY KEY (`comment_ID`),
-    ADD KEY `comment_post_ID` (`comment_post_ID`),
-    ADD KEY `comment_approved_date_gmt` (`comment_approved`,`comment_date_gmt`),
-    ADD KEY `comment_date_gmt` (`comment_date_gmt`),
-    ADD KEY `comment_parent` (`comment_parent`),
-    ADD KEY `comment_author_email` (`comment_author_email`(10));
-
-ALTER TABLE `wp_links`
-    ADD PRIMARY KEY (`link_id`),
-    ADD KEY `link_visible` (`link_visible`);
-
-ALTER TABLE `wp_options`
-    ADD PRIMARY KEY (`option_id`),
-    ADD UNIQUE KEY `option_name` (`option_name`),
-    ADD KEY `autoload` (`autoload`);
-
-ALTER TABLE `wp_postmeta`
-    ADD PRIMARY KEY (`meta_id`),
-    ADD KEY `post_id` (`post_id`),
-    ADD KEY `meta_key` (`meta_key`(191));
-
-ALTER TABLE `wp_posts`
-    ADD PRIMARY KEY (`ID`),
-    ADD KEY `post_name` (`post_name`(191)),
-    ADD KEY `type_status_date` (`post_type`,`post_status`,`post_date`,`ID`),
-    ADD KEY `post_parent` (`post_parent`),
-    ADD KEY `post_author` (`post_author`);
-
-ALTER TABLE `wp_termmeta`
-    ADD PRIMARY KEY (`meta_id`),
-    ADD KEY `term_id` (`term_id`),
-    ADD KEY `meta_key` (`meta_key`(191));
-
-ALTER TABLE `wp_terms`
-    ADD PRIMARY KEY (`term_id`),
-    ADD KEY `slug` (`slug`(191)),
-    ADD KEY `name` (`name`(191));
-
-ALTER TABLE `wp_term_relationships`
-    ADD PRIMARY KEY (`object_id`,`term_taxonomy_id`),
-    ADD KEY `term_taxonomy_id` (`term_taxonomy_id`);
-
-ALTER TABLE `wp_term_taxonomy`
-    ADD PRIMARY KEY (`term_taxonomy_id`),
-    ADD UNIQUE KEY `term_id_taxonomy` (`term_id`,`taxonomy`),
-    ADD KEY `taxonomy` (`taxonomy`);
-
-ALTER TABLE `wp_usermeta`
-    ADD PRIMARY KEY (`umeta_id`),
-    ADD KEY `user_id` (`user_id`),
-    ADD KEY `meta_key` (`meta_key`(191));
-
-ALTER TABLE `wp_users`
-    ADD PRIMARY KEY (`ID`),
-    ADD KEY `user_login_key` (`user_login`),
-    ADD KEY `user_nicename` (`user_nicename`),
-    ADD KEY `user_email` (`user_email`);
-
-
-ALTER TABLE `wp_commentmeta`
-    MODIFY `meta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `wp_comments`
-    MODIFY `comment_ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `wp_links`
-    MODIFY `link_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `wp_options`
-    MODIFY `option_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=143;
-
-ALTER TABLE `wp_postmeta`
-    MODIFY `meta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `wp_posts`
-    MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `wp_termmeta`
-    MODIFY `meta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `wp_terms`
-    MODIFY `term_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
-ALTER TABLE `wp_term_taxonomy`
-    MODIFY `term_taxonomy_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
-ALTER TABLE `wp_usermeta`
-    MODIFY `umeta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
-ALTER TABLE `wp_users`
-    MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 -- Meta data for Event.
 INSERT INTO `wp_postmeta`
