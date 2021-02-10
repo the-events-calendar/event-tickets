@@ -86,7 +86,6 @@ jobs:
           ${TRIC_BIN} debug on
           ${TRIC_BIN} info
           ${TRIC_BIN} config
-          ${TRIC_BIN} cli core update-db
       - name: Start the Chrome container
         run: ${TRIC_BIN} up chrome
       # ------------------------------------------------------------------------------
