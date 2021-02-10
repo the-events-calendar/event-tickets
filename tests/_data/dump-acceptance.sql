@@ -240,9 +240,6 @@ ALTER TABLE `wp_comments`
 ALTER TABLE `wp_links`
     MODIFY `link_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `wp_options`
-    MODIFY `option_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=143;
-
 ALTER TABLE `wp_postmeta`
     MODIFY `meta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
@@ -397,6 +394,9 @@ INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`
 (142, 'fs_gdpr', 'a:1:{s:2:\"u0\";a:1:{s:8:\"required\";b:0;}}', 'yes');
 /*!40000 ALTER TABLE `wp_options` ENABLE KEYS */;
 UNLOCK TABLES;
+
+ALTER TABLE `wp_options`
+    MODIFY `option_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=143;
 
 INSERT INTO `wp_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) VALUES
 (1, 1, 'nickname', 'admin'),
