@@ -86,6 +86,7 @@ jobs:
           ${TRIC_BIN} debug on
           ${TRIC_BIN} info
           ${TRIC_BIN} config
+          ${TRIC_BIN} cli core update-db
       - name: Start the Chrome container
         run: ${TRIC_BIN} up chrome
       # ------------------------------------------------------------------------------
@@ -160,8 +161,6 @@ jobs:
           ${TRIC_BIN} use event-tickets
           ${TRIC_BIN} composer install
       - name: Init the WordPress container
-        run: |
-          ${TRIC_BIN} up wordpress
-          ${TRIC_BIN} site-cli core update-db
+        run: ${TRIC_BIN} up wordpress
       - name: Run suite tests
         run: ${TRIC_BIN} run ${{ matrix.suite }} --ext DotReporter
