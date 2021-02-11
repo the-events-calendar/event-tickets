@@ -2767,7 +2767,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Increase the sales for a ticket by a specific quantity.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 * @param int $quantity  The quanitity to increase the ticket sales by.
@@ -2794,7 +2794,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Decrease the sales for a ticket by a specific quantity.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 * @param int $quantity  The quanitity to decrease the ticket sales by.

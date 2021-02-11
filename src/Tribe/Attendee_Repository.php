@@ -21,7 +21,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Key name to use when limiting lists of keys.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * The attendee provider object.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @var Tribe__Tickets__Tickets
 	 */
@@ -723,7 +723,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Create an attendee object from ticket and attendee data.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param Tribe__Tickets__Ticket_Object|int $ticket        The ticket object or ID.
 	 * @param array                             $attendee_data List of additional attendee data.
@@ -766,7 +766,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Create an attendee object from ticket and attendee data.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param array $attendee_data  List of attendee data to be saved.
 	 * @param bool  $return_promise Whether to return a promise object or just the ids
@@ -813,7 +813,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Set arguments for attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param array                         $attendee_data List of additional attendee data.
 	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object or null if not relying on it.
@@ -911,7 +911,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		/**
 		 * Allow filtering the arguments to set for the attendee.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param array                         $args          List of arguments to set for the attendee.
 		 * @param array                         $attendee_data List of additional attendee data.
@@ -924,7 +924,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			/**
 			 * Allow filtering the arguments to set for the attendee by provider key name.
 			 *
-			 * @since TBD
+			 * @since 5.1.0
 			 *
 			 * @param array                         $args          List of arguments to set for the attendee.
 			 * @param array                         $attendee_data List of additional attendee data.
@@ -952,7 +952,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Set up the arguments to set for the attendee for this provider.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param array                              $args          List of arguments to set for the attendee.
 	 * @param array                              $attendee_data List of additional attendee data.
@@ -968,7 +968,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Save extra attendee data after creation of attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param WP_Post                       $attendee      The attendee object.
 	 * @param array                         $attendee_data List of additional attendee data.
@@ -991,7 +991,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		/**
 		 * Allow filtering the arguments to be used when saving extra attendee data.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param array                         $args          List of arguments to set for the attendee.
 		 * @param WP_Post                       $attendee      The attendee object.
@@ -1005,7 +1005,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			/**
 			 * Allow filtering the arguments to be used when saving extra attendee data by provider key name.
 			 *
-			 * @since TBD
+			 * @since 5.1.0
 			 *
 			 * @param array                         $args          List of arguments to set for the attendee.
 			 * @param WP_Post                       $attendee      The attendee object.
@@ -1037,7 +1037,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Trigger the creation actions needed based on the provider.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param WP_Post                       $attendee      The attendee object.
 	 * @param array                         $attendee_data List of additional attendee data.
@@ -1047,7 +1047,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		/**
 		 * Allow hooking into after the attendee has been created.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param WP_Post                             $attendee      The attendee object.
 		 * @param array                               $attendee_data List of additional attendee data.
@@ -1061,7 +1061,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			/**
 			 * Allow hooking into after the attendee has been created by provider key name.
 			 *
-			 * @since TBD
+			 * @since 5.1.0
 			 *
 			 * @param WP_Post                             $attendee      The attendee object.
 			 * @param array                               $attendee_data List of additional attendee data.
@@ -1091,7 +1091,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Trigger the update actions needed based on the provider.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param array $attendee_data  List of attendee data to be saved.
 	 */
@@ -1099,7 +1099,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		/**
 		 * Allow hooking into after the attendee has been updated.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param array                               $attendee_data List of attendee data to be saved.
 		 * @param Tribe__Tickets__Attendee_Repository $repository    The current repository object.
@@ -1111,7 +1111,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			/**
 			 * Allow hooking into after the attendee has been updated by provider key name.
 			 *
-			 * @since TBD
+			 * @since 5.1.0
 			 *
 			 * @param array                               $attendee_data List of attendee data to be saved.
 			 * @param Tribe__Tickets__Attendee_Repository $repository    The current repository object.
@@ -1131,7 +1131,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Create an order for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param array                                  $attendee_data List of attendee data to reference.
 	 * @param null|int|Tribe__Tickets__Ticket_Object $ticket        The ticket object, ticket ID, or null if not relying on it.
@@ -1189,7 +1189,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		/**
 		 * Allow filtering the order data being used to create an order for the attendee.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param array                         $order_args    List of order data to be saved.
 		 * @param array                         $attendee_data List of additional attendee data.
@@ -1214,7 +1214,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Maybe send the attendee email for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param int   $attendee_id   The attendee ID.
 	 * @param array $attendee_data List of attendee data that was used for saving.

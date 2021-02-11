@@ -8,14 +8,14 @@ use Tribe__Utils__Array as Arr;
 /**
  * The repository functionality for Ticket Orders.
  *
- * @since TBD
+ * @since 5.1.0
  */
 class Order extends Tribe__Repository {
 
 	/**
 	 * The unique fragment that will be used to identify this repository filters.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @var string
 	 */
@@ -24,7 +24,7 @@ class Order extends Tribe__Repository {
 	/**
 	 * Key name to use when limiting lists of keys.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ class Order extends Tribe__Repository {
 	/**
 	 * The attendee provider object used to interact with the Order.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @var Tribe__Tickets__Tickets
 	 */
@@ -42,7 +42,7 @@ class Order extends Tribe__Repository {
 	/**
 	 * The list of supported order statuses.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @var array An array of all the order statuses supported by the repository.
 	 */
@@ -51,7 +51,7 @@ class Order extends Tribe__Repository {
 	/**
 	 * The list of supported public order statuses.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @var array
 	 */
@@ -60,7 +60,7 @@ class Order extends Tribe__Repository {
 	/**
 	 * The list of supported private order statuses.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @var array
 	 */
@@ -69,7 +69,7 @@ class Order extends Tribe__Repository {
 	/**
 	 * Tribe__Tickets__Attendee_Repository constructor.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -87,7 +87,7 @@ class Order extends Tribe__Repository {
 	/**
 	 * Initialize the order statuses needed for the Orders repository.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 */
 	protected function init_order_statuses() {
 		// Statuses already generated.
@@ -101,7 +101,7 @@ class Order extends Tribe__Repository {
 		/**
 		 * Allow filtering the list of all order statuses supported by the Orders repository.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param array $statuses List of all order statuses.
 		 */
@@ -119,7 +119,7 @@ class Order extends Tribe__Repository {
 		/**
 		 * Allow filtering the list of public order statuses supported by the Orders repository.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param array $public_order_statuses List of public order statuses.
 		 */
@@ -131,7 +131,7 @@ class Order extends Tribe__Repository {
 		/**
 		 * Allow filtering the list of private order statuses supported by the Orders repository.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param array $private_order_statuses List of private order statuses.
 		 */
@@ -141,7 +141,7 @@ class Order extends Tribe__Repository {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @return WP_Post|false The new post object or false if unsuccessful.
 	 */
@@ -153,7 +153,7 @@ class Order extends Tribe__Repository {
 	/**
 	 * Create an order for a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param array                                  $order_data List of order data to be saved.
 	 * @param null|int|Tribe__Tickets__Ticket_Object $ticket     The ticket object, ticket ID, or null if not relying on it.
@@ -195,7 +195,7 @@ class Order extends Tribe__Repository {
 		/**
 		 * Allow filtering the order data being used to create an order for the ticket.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param array                         $order_data List of order data to be saved.
 		 * @param Tribe__Tickets__Ticket_Object $ticket     The ticket object or null if not relying on it.

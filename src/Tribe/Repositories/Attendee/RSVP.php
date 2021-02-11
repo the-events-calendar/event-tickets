@@ -116,7 +116,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	/**
 	 * Set up the arguments to set for the attendee for this provider.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param array                         $args          List of arguments to set for the attendee.
 	 * @param array                         $attendee_data List of additional attendee data.
@@ -144,7 +144,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	/**
 	 * Handle backwards compatible creation actions for RSVPs.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param WP_Post                       $attendee      The attendee object.
 	 * @param array                         $attendee_data List of additional attendee data.
@@ -202,7 +202,7 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	/**
 	 * Handle backwards compatible update actions for RSVPs.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param array $attendee_data List of attendee data to be saved.
 	 */

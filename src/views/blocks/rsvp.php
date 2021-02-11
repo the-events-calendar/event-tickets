@@ -11,9 +11,9 @@
  *
  * @since 4.10.8 Updated loading logic for including a renamed template.
  * @since 4.11.0 Added tribe_tickets_order_link_template_already_rendered hook usage to template to prevent duplicate links.
- * @since TBD Fixed the template loading process.
+ * @since 5.1.0 Fixed the template loading process.
  *
- * @version TBD
+ * @version 5.1.0
  *
  * @var Tribe__Tickets__Editor__Template $this
  */

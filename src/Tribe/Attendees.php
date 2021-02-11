@@ -875,7 +875,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Create an attendee for any Commerce provider from a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param Tribe__Tickets__Ticket_Object|int $ticket        Ticket object or ID to create the attendee for.
 	 * @param array                             $attendee_data Attendee data to create from.
@@ -901,7 +901,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Update an attendee for any Commerce provider.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param array|int $attendee      The attendee data or ID for the attendee to update.
 	 * @param array     $attendee_data The attendee data to update to.

@@ -11,9 +11,9 @@
  * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 4.9
- * @since TBD Fixed the template loading process.
+ * @since 5.1.0 Fixed the template loading process.
  *
- * @version TBD
+ * @version 5.1.0
  *
  */
 

@@ -272,7 +272,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var array
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 */
 		public $attendee_activity_log = '_tribe_attendee_activity_log';
 
@@ -313,7 +313,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Meta key that holds the price paid for the ticket.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @var string
 		 */
@@ -322,7 +322,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Meta key that holds the price currency symbol used during payment.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @var string
 		 */
@@ -715,7 +715,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Clear the ticket cache for a specific post ID.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param int $post_id The post ID.
 		 */
@@ -2588,7 +2588,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Update the email sent counter for attendee by increasing it +1.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param int $attendee_id The attendee ID.
 		 */
@@ -2604,7 +2604,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int   $attendee_id Attendee ID.
 		 * @param array $data Data that needs to be logged.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 */
 		public function update_attendee_activity_log( $attendee_id, $data = [] ) {
 
@@ -2617,7 +2617,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Filter the activity log data for attendee.
 			 *
-			 * @since TBD
+			 * @since 5.1.0
 			 *
 			 * @param array $data Activity data.
 			 * @param int   $attendee_id Attendee ID.
@@ -3427,7 +3427,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Clears the ticket cache for a given ticket ID.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param int|object $ticket_id The ticket ID.
 		 */
@@ -3907,7 +3907,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Create an attendee for the Commerce provider from a ticket.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param Tribe__Tickets__Ticket_Object|int $ticket        Ticket object or ID to create the attendee for.
 		 * @param array                             $attendee_data Attendee data to create from.
@@ -3939,7 +3939,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Update an attendee for the Commerce provider.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param array|int $attendee      The attendee data or ID for the attendee to update.
 		 * @param array     $attendee_data The attendee data to update to.
@@ -3974,7 +3974,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Maybe lookup or create an attendee user from an email.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param string $email The email to maybe set up the user from.
 		 * @param array  $args  The arguments used from this attendee.
@@ -3993,7 +3993,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allow filtering whether to enable user lookups by Attendee Email.
 			 *
-			 * @since TBD
+			 * @since 5.1.0
 			 *
 			 * @param bool  $lookup_user_from_email Whether to lookup the User using the Attendee Email if User ID is not set.
 			 * @param array $args                   The arguments being set for this attendee.
@@ -4012,7 +4012,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allow filtering whether to enable creating users using the Attendee Email.
 			 *
-			 * @since TBD
+			 * @since 5.1.0
 			 *
 			 * @param bool  $create_user_from_email Whether to create the User using the Attendee Email if User ID is not set.
 			 * @param array $args                   The arguments being set for this attendee.
@@ -4051,7 +4051,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allow filtering whether to send the new user information email to the new user.
 			 *
-			 * @since TBD
+			 * @since 5.1.0
 			 *
 			 * @param bool  $send_new_user_info Whether to send the new user information email to the new user.
 			 * @param array $args               The arguments being set for this attendee.

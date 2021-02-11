@@ -1300,7 +1300,7 @@ if ( ! function_exists( 'tribe_tickets_orders' ) ) {
 	/**
 	 * Builds and returns the correct Order repository.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param string $repository The slug of the repository to build/return.
 	 *
@@ -1314,7 +1314,7 @@ if ( ! function_exists( 'tribe_tickets_orders' ) ) {
 		/**
 		 * Filters the map relating Order repository slugs to service container bindings.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param array  $map        A map in the shape [ <repository_slug> => <service_name> ].
 		 * @param string $repository The currently requested implementation.
