@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, patriciahillebrandt, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
-Tested up to: 5.6.0
+Tested up to: 5.6.1
 Stable tag: 5.1.0
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -185,7 +185,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Enforce capitalization for the text for action buttons on the Attendees Report screen. [ETP-624]
 * Tweak - A new filter was introduced to help avoid problems where ticket caching has problems with certain hosting environments that cause tickets to show as Sold Out. Disable ticket caching with `add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', '__return_false' );` [ETP-366]
 * Tweak - Start tracking attendee email activity in a meta record so that there's a better ability for determining if an attendee email was sent, where to, and how many times it was re-sent. [ETP-366]
-
+* Language - 2 new strings added, 94 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.0.5] 2021-01-20 =
 
