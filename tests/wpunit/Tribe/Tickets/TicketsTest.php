@@ -433,8 +433,8 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 		$this->create_paypal_ticket( $post_id, 1 );
 
 		$this->assertEquals( [
-			'Tribe__Tickets__RSVP',
-			'Tribe__Tickets__Commerce__PayPal__Main',
+			'Tribe__Tickets__RSVP' => 'Tribe__Tickets__RSVP',
+			'Tribe__Tickets__Commerce__PayPal__Main' => 'Tribe__Tickets__Commerce__PayPal__Main',
 		], Tickets::get_active_providers_for_post( $post_id ) );
 	}
 
@@ -456,12 +456,15 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 		$this->create_rsvp_ticket( $post_id );
 		$this->create_paypal_ticket( $post_id, 1 );
 
-		$active_providers = array_keys( Tickets::get_active_providers_for_post( $post_id, true ) );
+		$active_providers = Tickets::get_active_providers_for_post( $post_id, true );
+		$active_provider_keys = array_keys( $active_providers );
 
 		$this->assertEquals( [
 			'Tribe__Tickets__RSVP',
 			'Tribe__Tickets__Commerce__PayPal__Main',
-		], $active_providers );
+		], $active_provider_keys );
+		$this->assertInstanceOf( $active_providers['Tribe__Tickets__RSVP'], 'Tribe__Tickets__RSVP' );
+		$this->assertInstanceOf( $active_providers['Tribe__Tickets__Commerce__PayPal__Main'], 'Tribe__Tickets__Commerce__PayPal__Main' );
 	}
 
 }
