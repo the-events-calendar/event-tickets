@@ -57,45 +57,42 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
-		if (
-			tribe_tickets_new_views_is_enabled()
-			|| tribe_tickets_rsvp_new_views_is_enabled()
-		) {
-			// Tickets loader library JS.
-			tribe_asset(
-				$tickets_main,
-				'tribe-tickets-loader',
-				'v2/tickets-loader.js',
-				[
-					'jquery',
-					'tribe-common',
+		// Tickets loader library JS.
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-loader',
+			'v2/tickets-loader.js',
+			[
+				'jquery',
+				'tribe-common',
+			],
+			null,
+			[
+				'conditionals' => [ $this, 'should_enqueue_tickets_loader' ],
+				'groups'       => [
+					'tribe-tickets-block-assets',
+					'tribe-tickets-rsvp',
+					'tribe-tickets-registration-page',
 				],
-				null,
-				[
-					'groups' => [
-						'tribe-tickets-block-assets',
-						'tribe-tickets-rsvp',
-						'tribe-tickets-registration-page',
-					],
-				]
-			);
+			]
+		);
 
-			// @todo: Remove this once we solve the common breakpoints vs container based.
-			tribe_asset(
-				$tickets_main,
-				'tribe-common-responsive',
-				'common-responsive.css',
-				[ 'tribe-common-skeleton-style' ],
-				null,
-				[
-					'groups' => [
-						'tribe-tickets-block-assets',
-						'tribe-tickets-rsvp',
-						'tribe-tickets-registration-page',
-					],
-				]
-			);
-		}
+		// @todo: Remove this once we solve the common breakpoints vs container based.
+		tribe_asset(
+			$tickets_main,
+			'tribe-common-responsive',
+			'common-responsive.css',
+			[ 'tribe-common-skeleton-style' ],
+			null,
+			[
+				'conditionals' => [ $this, 'should_enqueue_tickets_loader' ],
+				'groups'       => [
+					'tribe-tickets-block-assets',
+					'tribe-tickets-rsvp',
+					'tribe-tickets-registration-page',
+				],
+			]
+		);
 
 		if ( tribe_tickets_new_views_is_enabled() ) {
 			// Tribe tickets utils.
@@ -353,6 +350,27 @@ class Tribe__Tickets__Assets {
 		}
 
 		return $is_on_valid_post_type || $is_on_ar_page;
+	}
+
+	/**
+	 * Check if we should enqueue the new Tickets Loader script.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function should_enqueue_tickets_loader() {
+		$are_new_views_enabled = tribe_tickets_new_views_is_enabled()
+			|| tribe_tickets_rsvp_new_views_is_enabled();
+
+		/**
+		 * Allow filtering whether the Tickets Loader script be enqueued.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $should_enqueue_tickets_loader Whether the Tickets Loader script be enqueued.
+		 */
+		return (bool) apply_filters( 'tribe_tickets_assets_should_enqueue_tickets_loader', $are_new_views_enabled );
 	}
 
 	/**

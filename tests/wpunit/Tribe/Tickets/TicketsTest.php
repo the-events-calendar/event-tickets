@@ -379,11 +379,11 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * It should allow getting the ticket provider for a post.
+	 * It should not get the ticket provider for a post with inactive provider.
 	 *
 	 * @test
 	 */
-	public function should_allow_getting_ticket_provider_object_for_post_with_inactive_provider() {
+	public function should_not_get_ticket_provider_object_for_post_with_inactive_provider() {
 		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
 
@@ -394,6 +394,74 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 		] );
 
 		$this->assertEquals( false, Tickets::get_event_ticket_provider_object( $post_id ) );
+	}
+
+	/**
+	 * It should get empty list of active providers for a post with tickets that have an inactive provider.
+	 *
+	 * @test
+	 */
+	public function should_get_empty_list_of_active_providers_for_a_post_with_tickets_that_have_an_inactive_provider() {
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$post_id = $this->factory->post->create( [
+			'meta_input' => [
+				$tickets_handler->key_provider_field => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
+			],
+		] );
+
+		$this->assertEquals( [], Tickets::get_active_providers_for_post( $post_id ) );
+	}
+
+	/**
+	 * It should get the list of active providers for a post with tickets that have an inactive provider.
+	 *
+	 * @test
+	 */
+	public function should_get_the_list_of_active_providers_for_a_post_with_tickets_that_have_an_inactive_provider() {
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$post_id = $this->factory->post->create( [
+			'meta_input' => [
+				$tickets_handler->key_provider_field => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
+			],
+		] );
+
+		$this->create_rsvp_ticket( $post_id );
+		$this->create_paypal_ticket( $post_id, 1 );
+
+		$this->assertEquals( [
+			'Tribe__Tickets__RSVP',
+			'Tribe__Tickets__Commerce__PayPal__Main',
+		], Tickets::get_active_providers_for_post( $post_id ) );
+	}
+
+	/**
+	 * It should get the list of active provider objects for a post with tickets that have an inactive provider.
+	 *
+	 * @test
+	 */
+	public function should_get_the_list_of_active_provider_objects_for_a_post_with_tickets_that_have_an_inactive_provider() {
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$post_id = $this->factory->post->create( [
+			'meta_input' => [
+				$tickets_handler->key_provider_field => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
+			],
+		] );
+
+		$this->create_rsvp_ticket( $post_id );
+		$this->create_paypal_ticket( $post_id, 1 );
+
+		$active_providers = array_keys( Tickets::get_active_providers_for_post( $post_id, true ) );
+
+		$this->assertEquals( [
+			'Tribe__Tickets__RSVP',
+			'Tribe__Tickets__Commerce__PayPal__Main',
+		], $active_providers );
 	}
 
 }

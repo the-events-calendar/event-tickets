@@ -439,6 +439,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$args = $this->get_tickets_query_args();
 			}
 
+			// @todo Switch this into a Ticket ORM request in the future.
 			$cache = new Tribe__Cache();
 			$cache_key = $cache->make_key( $args );
 			$query = $cache->get( $cache_key );
@@ -3616,6 +3617,52 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return $provider->class_name;
+		}
+
+		/**
+		 * Given a post ID, get the active providers used for RSVP(s)/ticket(s).
+		 *
+		 * @see get_ticket_provider_instance()
+		 *
+		 * @since TBD
+		 *
+		 * @param int  $post_id          The post ID of the post/event to which RSVP(s)/ticket(s) are attached.
+		 * @param bool $return_instances Whether to return instances, otherwise it will return class name strings.
+		 *
+		 * @return string[]|self[] Instances or names of provider classes for RSVP(s)/ticket(s) attached to the post/event.
+		 */
+		public static function get_active_providers_for_post( $post_id, $return_instances = false ) {
+			$all_active_modules = array_keys( self::modules() );
+
+			$active_providers = [];
+
+			// Determine which providers have tickets for this event.
+			foreach ( $all_active_modules as $module ) {
+				$provider = self::get_ticket_provider_instance( $module );
+
+				// Skip this provider if the instance couldn't be set up.
+				if ( ! $provider ) {
+					continue;
+				}
+
+				// Get the tickets for this event on this provider, if any.
+				$tickets_orm = tribe_tickets( $provider->orm_provider );
+				$tickets_orm->by( 'event', $post_id );
+
+				if ( 0 < $tickets_orm->found() ) {
+					$provider_class = $provider;
+
+					// Check whether to return the provider class names.
+					if ( ! $return_instances ) {
+						$provider       = $provider->class_name;
+						$provider_class = $provider;
+					}
+
+					$active_providers[ $provider_class ] = $provider;
+				}
+			}
+
+			return $active_providers;
 		}
 
 		/**
