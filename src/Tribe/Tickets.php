@@ -3650,12 +3650,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$tickets_orm->by( 'event', $post_id );
 
 				if ( 0 < $tickets_orm->found() ) {
-					$provider_class = $provider;
+					$provider_class = $provider->class_name;
 
 					// Check whether to return the provider class names.
 					if ( ! $return_instances ) {
-						$provider       = $provider->class_name;
-						$provider_class = $provider;
+						$provider = $provider_class;
 					}
 
 					$active_providers[ $provider_class ] = $provider;
