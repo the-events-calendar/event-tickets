@@ -364,11 +364,11 @@ class Tribe__Tickets__Assets {
 			|| tribe_tickets_rsvp_new_views_is_enabled();
 
 		/**
-		 * Allow filtering whether the Tickets Loader script be enqueued.
+		 * Allow filtering whether the Tickets Loader script should be enqueued.
 		 *
 		 * @since TBD
 		 *
-		 * @param bool $should_enqueue_tickets_loader Whether the Tickets Loader script be enqueued.
+		 * @param bool $should_enqueue_tickets_loader Whether the Tickets Loader script should be enqueued.
 		 */
 		return (bool) apply_filters( 'tribe_tickets_assets_should_enqueue_tickets_loader', $are_new_views_enabled );
 	}
