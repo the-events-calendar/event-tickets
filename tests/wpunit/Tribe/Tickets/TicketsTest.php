@@ -463,8 +463,8 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 			'Tribe__Tickets__RSVP',
 			'Tribe__Tickets__Commerce__PayPal__Main',
 		], $active_provider_keys );
-		$this->assertInstanceOf( $active_providers['Tribe__Tickets__RSVP'], 'Tribe__Tickets__RSVP' );
-		$this->assertInstanceOf( $active_providers['Tribe__Tickets__Commerce__PayPal__Main'], 'Tribe__Tickets__Commerce__PayPal__Main' );
+		$this->assertInstanceOf( 'Tribe__Tickets__RSVP', $active_providers['Tribe__Tickets__RSVP'] );
+		$this->assertInstanceOf( 'Tribe__Tickets__Commerce__PayPal__Main', $active_providers['Tribe__Tickets__Commerce__PayPal__Main'] );
 	}
 
 }
