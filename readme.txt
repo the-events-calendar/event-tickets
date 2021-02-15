@@ -176,7 +176,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.1.0] 2021-02-15 =
+= [5.1.0] 2021-02-16 =
 
 * Feature - New Attendees ORM functionality allows creating and updating attendees. [ETP-366]
 * Feature - New Orders ORM can be used by calling `tribe_tickets_orders()` and allows interfacing with Event Tickets Plus commerce providers. [ETP-366]
