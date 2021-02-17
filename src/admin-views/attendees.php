@@ -38,7 +38,7 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', is_admin(), $
 			/**
 			 * Add an action to render content after text title.
 			 *
-			 * @since TBD
+			 * @since 5.1.0
 			 *
 			 * @param int $event_id Post ID.
 			 */

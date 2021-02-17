@@ -107,7 +107,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Convenience wrapper for tribe( 'tickets.attendee_registration' )->is_using_shortcode() usage.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @return bool Whether the Attendee Registration shortcode is being used.
 	 */

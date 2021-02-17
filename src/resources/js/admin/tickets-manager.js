@@ -2,7 +2,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since 5.1.0
  *
  * @type {PlainObject}
  */
@@ -12,7 +12,7 @@ tribe.tickets.admin = tribe.tickets.admin || {};
 /**
  * Configures admin manager Object in the Global Tribe variable
  *
- * @since TBD
+ * @since 5.1.0
  *
  * @type {PlainObject}
  */
@@ -21,7 +21,7 @@ tribe.tickets.admin.manager = {};
 /**
  * Initializes in a Strict env the code that manages the Event Views
  *
- * @since TBD
+ * @since 5.1.0
  *
  * @param  {PlainObject} $   jQuery
  * @param  {PlainObject} _   Underscore.js
@@ -36,7 +36,7 @@ tribe.tickets.admin.manager = {};
 	/**
 	 * Selectors used for configuration and setup
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @type {PlainObject}
 	 */
@@ -50,7 +50,7 @@ tribe.tickets.admin.manager = {};
 	/**
 	 * Stores the current ajax request been handled by the manager.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @type {jqXHR|null}
 	 */
@@ -59,7 +59,7 @@ tribe.tickets.admin.manager = {};
 	/**
 	 * Containers on the current page that were initialized.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @type {jQuery}
 	 */
@@ -68,7 +68,7 @@ tribe.tickets.admin.manager = {};
 	/**
 	 * Saves all the containers in the page into the object.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @return {void}
 	 */
@@ -79,7 +79,7 @@ tribe.tickets.admin.manager = {};
 	/**
 	 * Clean up the container and event listeners
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param  {jQuery} container Which element we are going to clean up
 	 *
@@ -96,7 +96,7 @@ tribe.tickets.admin.manager = {};
 	/**
 	 * Setup the container for admin management
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @todo  Requirement to setup other JS modules after hijacking Click and Submit
 	 *
@@ -116,7 +116,7 @@ tribe.tickets.admin.manager = {};
 	/**
 	 * Performs an AJAX request.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param  {object}         data       DOM Event related to the Click action
 	 * @param  {Element|jQuery} $container Which container we are dealing with
@@ -138,7 +138,7 @@ tribe.tickets.admin.manager = {};
 	/**
 	 * Gets the jQuery.ajax() settings provided a views container
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param  {Element|jQuery} $container Which container we are dealing with.
 	 *
@@ -165,7 +165,7 @@ tribe.tickets.admin.manager = {};
 	 *
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param  {jqXHR}       jqXHR    Request object
 	 * @param  {PlainObject} settings Settings that this request will be made with
@@ -190,7 +190,7 @@ tribe.tickets.admin.manager = {};
 	 *
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param  {jqXHR}  jqXHR      Request object
 	 * @param  {String} textStatus Status for the request
@@ -218,7 +218,7 @@ tribe.tickets.admin.manager = {};
 	 *
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param  {Object} response   Response sent from the AJAX response.
 	 * @param  {String} textStatus Status for the request
@@ -265,7 +265,7 @@ tribe.tickets.admin.manager = {};
 	 *
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param  {jqXHR}       jqXHR    Request object
 	 * @param  {PlainObject} settings Settings that this request was made with
@@ -283,7 +283,7 @@ tribe.tickets.admin.manager = {};
 	/**
 	 * Handles the initialization of the manager when Document is ready.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @return {void}
 	 */

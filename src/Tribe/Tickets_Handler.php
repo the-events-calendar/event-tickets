@@ -1623,7 +1623,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Maybe disable the email resend if the attendee has reached their max limit.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param bool         $allow_resending_email Whether to allow email resending.
 	 * @param WP_Post|null $ticket                The ticket post object if available, otherwise null.
@@ -1644,7 +1644,7 @@ class Tribe__Tickets__Tickets_Handler {
 		 *
 		 * Return -1 to remove the limit entirely.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param int          $max_resend_limit The maximum number of emails can be resent to an attendee.
 		 * @param WP_Post|null $ticket           The ticket post object if available, otherwise null.

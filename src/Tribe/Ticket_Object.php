@@ -1155,7 +1155,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Determine whether the ticket has ticket cache enabled.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @return bool Whether the ticket has ticket cache enabled.
 		 */
@@ -1163,7 +1163,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			/**
 			 * Allow filtering whether the ticket has ticket cache enabled.
 			 *
-			 * @since TBD
+			 * @since 5.1.0
 			 *
 			 * @param bool $is_cache_enabled  Whether the ticket has ticket cache enabled.
 			 * @param int  $ticket_id The ticket ID.

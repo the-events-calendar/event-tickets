@@ -9,13 +9,13 @@ use tad_DI52_ServiceProvider;
  *
  * @package Tribe\Tickets\Admin\Manager
  *
- * @since   TBD
+ * @since   5.1.0
  */
 class Service_Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Register the provider singletons.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 */
 	public function register() {
 		$this->container->singleton( 'tickets.admin.manager', self::class );
@@ -26,7 +26,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Add actions and filters.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 */
 	protected function hooks() {
 		if ( ! is_admin() ) {
@@ -41,7 +41,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Handle response
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 */
 	public function ajax_handle_admin_manager() {
 		// @todo Look at adding capability checks of some sort based on a filter that provides capability context for the specific request.
@@ -65,7 +65,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		/**
 		 * Filter the admin manager request.
 		 *
-		 * @since TBD
+		 * @since 5.1.0
 		 *
 		 * @param string|\WP_Error $render_response The render response HTML content or WP_Error with list of errors.
 		 * @param array            $vars            The request variables.
@@ -91,7 +91,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Handle error rendering.
 	 *
-	 * @since TBD
+	 * @since 5.1.0
 	 *
 	 * @param string|array $error_message The error message(s).
 	 *

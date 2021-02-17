@@ -115,7 +115,6 @@ class RSVP_Tickets_Test extends \Codeception\TestCase\WPTestCase {
 		];
 		$rsvp->save_ticket( $post_id, $ticket, $data );
 		$tickets = $rsvp->get_event_tickets( $post_id );
-		codecept_debug( $ticket->inventory() );
 		/** @var \Tribe__Tickets__Ticket_Object $ticket */
 		$ticket = $tickets[0];
 		$this->assertTrue( $ticket->managing_stock(), 'RSVP ticket is now managing stock' );

@@ -53,7 +53,7 @@ $tribe_my_tickets_have_meta = false;
  * This filter allows the admin to control the re-send email option when an attendee's email is updated.
  *
  * @since 5.0.3
- * @since TBD Updated the parameters to match what is used in Event Tickets Plus.
+ * @since 5.1.0 Updated the parameters to match what is used in Event Tickets Plus.
  *
  * @param bool         $allow_resending_email Whether to allow email resending.
  * @param WP_Post|null $ticket                The ticket post object if available, otherwise null.
