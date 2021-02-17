@@ -163,3 +163,13 @@ jobs:
         run: ${TRIC_BIN} up wordpress
       - name: Run suite tests
         run: ${TRIC_BIN} run ${{ matrix.suite }} --ext DotReporter
+      # ------------------------------------------------------------------------------
+      # Upload artifacts (On failure)
+      # ------------------------------------------------------------------------------
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: output ${{ matrix.suite }}
+          path: tests/_output/
+          retention-days: 7
