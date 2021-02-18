@@ -11,8 +11,9 @@
  *
  * @since 4.10.8 Updated loading logic for including a renamed template.
  * @since 4.11.0 Added tribe_tickets_order_link_template_already_rendered hook usage to template to prevent duplicate links.
+ * @since 5.1.0 Fixed the template loading process.
  *
- * @version 4.11.0
+ * @version 5.1.0
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
@@ -68,7 +69,6 @@ if ( ! $already_rendered ) {
 		</div>
 	<?php endif; ?>
 	<?php
-		ob_start();
 		/**
 		 * Allows filtering of extra classes used on the rsvp-block loader.
 		 *
@@ -77,9 +77,7 @@ if ( ! $already_rendered ) {
 		 * @param  array $classes The array of classes that will be filtered.
 		 */
 		$loader_classes = apply_filters( 'tribe_rsvp_block_loader_classes', [ 'tribe-block__rsvp__loading' ] );
-		include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' );
-		$html = ob_get_contents();
-		ob_end_clean();
-		echo $html;
+
+		$this->template( 'components/loader', [ 'loader_classes' => $loader_classes ] );
 	?>
 </div>

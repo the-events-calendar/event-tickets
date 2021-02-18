@@ -326,7 +326,7 @@ class Tribe__Tickets__Commerce__Cart {
 		$provider = isset( $args['provider'] ) ? $args['provider'] : null;
 		$tickets  = isset( $args['tickets'] ) ? $args['tickets'] : null;
 		$meta     = isset( $args['meta'] ) ? $args['meta'] : null;
-		$additive = isset( $args['additive'] ) ? (boolean) $args['additive'] : true;
+		$additive = isset( $args['additive'] ) ? (bool) $args['additive'] : true;
 
 		// Update cart quantities.
 		if ( null !== $tickets ) {

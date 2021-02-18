@@ -54,7 +54,11 @@ class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block( $matrix ) {
-		$post_id = $this->factory()->post->create();
+		$post_id = $this->factory()->post->create(
+			[
+				'post_title' => 'Test post for RSVP ticket block',
+			]
+		);
 
 		$ticket_id = $this->setup_block_ticket( $post_id, $matrix );
 
@@ -86,7 +90,11 @@ class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block_after_update( $matrix ) {
-		$post_id = $this->factory()->post->create();
+		$post_id = $this->factory()->post->create(
+			[
+				'post_title' => 'Test post for RSVP ticket block after update',
+			]
+		);
 
 		// Create ticket.
 		$ticket_id = $this->setup_block_ticket( $post_id, $matrix['from'] );

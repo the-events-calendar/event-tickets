@@ -546,42 +546,54 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @param array  $data
-	 * @param string $order_id
-	 * @param int    $event_id
+	 * @param array $attendee_data Information that we are trying to save.
+	 * @param int   $attendee_id   The attendee ID.
+	 * @param int   $post_id       The event/post ID.
 	 */
-	public function update_attendee_data( $data, $order_id, $event_id ) {
-		$user_id = get_current_user_id();
-
-		$ticket_orders    = $this->tickets_view->get_post_ticket_attendees( $event_id, $user_id );
-		$ticket_order_ids = wp_list_pluck( $ticket_orders, 'order_id' );
-
-		// This makes sure we don't save attendees for orders that are not from this current user and event
-		if ( ! in_array( $order_id, $ticket_order_ids ) ) {
+	public function update_attendee_data( $attendee_data, $attendee_id, $post_id ) {
+		// Bail if the user is not logged in.
+		if ( ! is_user_logged_in() ) {
 			return;
 		}
 
-		// Get the Attendee Data, it's important for testing
-		foreach ( $ticket_orders as $test_attendee ) {
-			if ( $order_id !== $test_attendee['order_id'] ) {
-				continue;
+		$user_id = get_current_user_id();
+
+		$ticket_attendees    = $this->tickets_view->get_post_ticket_attendees( $post_id, $user_id );
+		$ticket_attendee_ids = wp_list_pluck( $ticket_attendees, 'attendee_id' );
+
+		// This makes sure we don't save attendees for attendees that are not from this current user and event.
+		if ( ! in_array( $attendee_id, $ticket_attendee_ids, true ) ) {
+			return;
+		}
+
+		$attendee_data_to_save = [];
+
+		// Only update full name if set.
+		if ( ! empty( $attendee_data['full_name'] ) ) {
+			$attendee_data_to_save['full_name'] = sanitize_text_field( $attendee_data['full_name'] );
+		}
+
+		// Only update email if set.
+		if ( ! empty( $attendee_data['email'] ) ) {
+			$attendee_data['email'] = sanitize_email( $attendee_data['email'] );
+
+			// Only update email if valid.
+			if ( is_email( $attendee_data['email'] ) ) {
+				$attendee_data_to_save['email'] = $attendee_data['email'];
 			}
 		}
 
-		$attendee_email     = empty( $data['email'] ) ? null : sanitize_email( $data['email'] );
-		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
-		$attendee_full_name = empty( $data['full_name'] ) ? null : sanitize_text_field( $data['full_name'] );
-		$attendee_optout    = empty( $data['optout'] ) ? 0 : max( 0, (int) $data['optout'] );
-
-		update_post_meta( $order_id, $this->attendee_optout_key, (int) $attendee_optout );
-
-		if ( ! is_null( $attendee_full_name ) ) {
-			update_post_meta( $order_id, $this->full_name, $attendee_full_name );
+		// Only update optout if set.
+		if ( isset( $attendee_data['optout'] ) ) {
+			$attendee_data_to_save['optout'] = (int) tribe_is_truthy( $attendee_data['optout'] );
 		}
 
-		if ( ! is_null( $attendee_email ) ) {
-			update_post_meta( $order_id, $this->email, $attendee_email );
+		// Only update if there's data to set.
+		if ( empty( $attendee_data_to_save ) ) {
+			return;
 		}
+
+		$this->update_attendee( $attendee_id, $attendee_data_to_save );
 	}
 
 	/**
@@ -870,101 +882,59 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					$existing_attendee = reset( $existing_attendee );
 					$updating_attendee = true;
 					$attendee_id       = $existing_attendee['attendee_id'];
+					$attendee          = [];
 				} else {
-					$attendee = array(
-						'post_status' => 'publish',
+					$attendee = [
 						'post_title'  => $post_title,
-						'post_type'   => $this->attendee_object,
-						'ping_status' => 'closed',
-					);
-
-					// Insert individual ticket purchased
-					$attendee_id = wp_insert_post( $attendee );
+					];
 
 					// since we are creating at least one
 					$has_generated_new_tickets = true;
 				}
 
-				$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
-				$shared_capacity = false;
-				if ( $global_stock->is_enabled() ) {
-					$shared_capacity = true;
-				}
-
-				if ( $status_stock_size > 0 ) {
-					switch ( $payment_status ) {
-						case Tribe__Tickets__Commerce__PayPal__Stati::$completed:
-							$this->increase_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
-							break;
-						case Tribe__Tickets__Commerce__PayPal__Stati::$refunded:
-							$this->decrease_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
-							break;
-						default:
-							break;
-					}
-				}
-
 				$attendee_order_status = trim( strtolower( $payment_status ) );
+
+				$repository = tribe_attendees( $this->orm_provider );
+
+				$data = $attendee;
+
+				$data['order_attendee_id'] = $order_attendee_id;
+				$data['attendee_status']   = $attendee_order_status;
+
+				if ( Tribe__Tickets__Commerce__PayPal__Stati::$refunded === $payment_status ) {
+					$refund_order_id = Tribe__Utils__Array::get( $transaction_data, 'txn_id', '' );
+
+					$data['refund_order_id'] = $refund_order_id;
+				}
 
 				if ( ! $updating_attendee ) {
 					$optout = Tribe__Utils__Array::get( $attendee_optouts, 'ticket_' . $product_id, false );
 					$optout = filter_var( $optout, FILTER_VALIDATE_BOOLEAN );
 					$optout = $optout ? 'yes' : 'no';
 
-					update_post_meta( $attendee_id, $this->attendee_product_key, $product_id );
-					update_post_meta( $attendee_id, $this->attendee_event_key, $post_id );
-					update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
-					update_post_meta( $attendee_id, $this->order_key, $order_id );
-					update_post_meta( $attendee_id, $this->attendee_optout_key, $optout );
-					update_post_meta( $attendee_id, $this->email, $individual_attendee_email );
-					update_post_meta( $attendee_id, $this->full_name, $individual_attendee_name );
-					update_post_meta( $attendee_id, '_paid_price', get_post_meta( $product_id, '_price', true ) );
-					update_post_meta( $attendee_id, '_price_currency_symbol', $currency_symbol );
+					$data['ticket_id']      = $product_id;
+					$data['post_id']        = $post_id;
+					$data['order_id']       = $order_id;
+					$data['optout']         = $optout;
+					$data['full_name']      = $individual_attendee_name;
+					$data['email']          = $individual_attendee_email;
+					$data['price_paid']     = get_post_meta( $product_id, '_price', true );
+					$data['price_currency'] = $currency_symbol;
+
+					if ( 0 < $attendee_user_id ) {
+						$data['user_id'] = $attendee_user_id;
+					}
+
+					$attendee_object = $this->create_attendee( $ticket_type, $data );
+					$attendee_id     = $attendee_object->ID;
+
+				} else {
+					// Update attendee.
+					$this->update_attendee( $attendee_id, $data );
 				}
-
-				update_post_meta( $attendee_id, $this->attendee_tpp_key, $attendee_order_status );
-
-				if ( Tribe__Tickets__Commerce__PayPal__Stati::$refunded === $payment_status ) {
-					$refund_order_id = Tribe__Utils__Array::get( $transaction_data, 'txn_id', '' );
-					update_post_meta( $attendee_id, $this->refund_order_key, $refund_order_id );
-				}
-
-				if ( ! $updating_attendee ) {
-					/**
-					 * Action fired when an PayPal attendee ticket is created
-					 *
-					 * @since 4.7
-					 *
-					 * @param int    $attendee_id           Attendee post ID
-					 * @param string $order_id              PayPal Order ID
-					 * @param int    $product_id            PayPal ticket post ID
-					 * @param int    $order_attendee_id     Attendee number in submitted order
-					 * @param string $attendee_order_status The order status for the attendee.
-					 */
-					do_action( 'event_tickets_tpp_attendee_created', $attendee_id, $order_id, $product_id, $order_attendee_id, $attendee_order_status );
-				}
-
-				/**
-				 * Action fired when an PayPal attendee ticket is updated.
-				 *
-				 * This action will fire both when the attendee is created and
-				 * when the attendee is updated.
-				 * Hook into the `event_tickets_tpp_attendee_created` action to
-				 * only act on the attendee creation.
-				 *
-				 * @since 4.7
-				 *
-				 * @param int    $attendee_id           Attendee post ID
-				 * @param string $order_id              PayPal Order ID
-				 * @param int    $product_id            PayPal ticket post ID
-				 * @param int    $order_attendee_id     Attendee number in submitted order
-				 * @param string $attendee_order_status The order status for the attendee.
-				 */
-				do_action( 'event_tickets_tpp_attendee_updated', $attendee_id, $order_id, $product_id, $order_attendee_id, $attendee_order_status );
 
 				$order->add_attendee( $attendee_id );
 
-				$this->record_attendee_user_id( $attendee_id, $attendee_user_id );
 				$order_attendee_id++;
 
 				if ( ! empty( $existing_attendee ) ) {
@@ -1117,16 +1087,15 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param array $args      {
 	 *      The list of arguments to use for sending ticket emails.
 	 *
-	 *      @type string       $subject              The email subject.
-	 *      @type string       $content              The email content.
-	 *      @type string       $from_name            The name to send tickets from.
-	 *      @type string       $from_email           The email to send tickets from.
-	 *      @type array|string $headers              The list of headers to send.
-	 *      @type array        $attachments          The list of attachments to send.
-	 *      @type string       $provider             The provider slug (rsvp, tpp, woo, edd).
-	 *      @type int          $post_id              The post/event ID to send the emails for.
-	 *      @type string|int   $order_id             The order ID to send the emails for.
-	 *      @type string|int   $ticket_sent_meta_key The meta key to use for marking an attendee ticket as sent.
+	 *      @type string       $subject     The email subject.
+	 *      @type string       $content     The email content.
+	 *      @type string       $from_name   The name to send tickets from.
+	 *      @type string       $from_email  The email to send tickets from.
+	 *      @type array|string $headers     The list of headers to send.
+	 *      @type array        $attachments The list of attachments to send.
+	 *      @type string       $provider    The provider slug (rsvp, tpp, woo, edd).
+	 *      @type int          $post_id     The post/event ID to send the emails for.
+	 *      @type string|int   $order_id    The order ID to send the emails for.
 	 * }
 	 *
 	 * @return int The number of emails sent successfully.
@@ -1134,11 +1103,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	public function send_tickets_email_for_attendees( $attendees, $args = [] ) {
 		$args = array_merge(
 			[
-				'subject'              => tribe_get_option( 'ticket-paypal-confirmation-email-subject', false ),
-				'from_name'            => tribe_get_option( 'ticket-paypal-confirmation-email-sender-name', false ),
-				'from_email'           => tribe_get_option( 'ticket-paypal-confirmation-email-sender-email', false ),
-				'provider'             => 'tpp',
-				'ticket_sent_meta_key' => $this->attendee_ticket_sent,
+				'subject'    => tribe_get_option( 'ticket-paypal-confirmation-email-subject', false ),
+				'from_name'  => tribe_get_option( 'ticket-paypal-confirmation-email-sender-name', false ),
+				'from_email' => tribe_get_option( 'ticket-paypal-confirmation-email-sender-email', false ),
+				'provider'   => 'tpp',
 			],
 			$args
 		);
@@ -1158,6 +1126,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return int|false The updated/created ticket post ID or false if no ticket ID.
 	 */
 	public function save_ticket( $post_id, $ticket, $raw_data = array() ) {
+		// Run anything we might need on parent method.
+		parent::save_ticket( $post_id, $ticket, $raw_data );
+
 		// assume we are updating until we find out otherwise
 		$save_type = 'update';
 
@@ -1409,6 +1380,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function delete_ticket( $event_id, $ticket_id ) {
+		// Run anything we might need on parent method.
+		parent::delete_ticket( $event_id, $ticket_id );
+
 		// Ensure we know the event and product IDs (the event ID may not have been passed in)
 		if ( empty( $event_id ) ) {
 			$event_id = get_post_meta( $ticket_id, $this->attendee_event_key, true );
@@ -2870,48 +2844,58 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Increases the sales for a ticket by an amount.
+	 * Increase the sales for a ticket by a specific quantity.
 	 *
 	 * @since 4.7
 	 * @since 4.10.2 added $shared_capacity and $global_stock parameter
 	 *
-	 * @param int         $ticket_id       The ticket post ID
-	 * @param int         $qty             the quanitity to modify stock
-	 * @param bool        $shared_capacity true or false if the ticket is using share capacity
-	 * @param object|null $global_stock    the object of Tribe__Tickets__Global_Stock or null
+	 * @param int                               $ticket_id       The ticket post ID.
+	 * @param int                               $quantity        The quanitity to increase the ticket sales by.
+	 * @param bool                              $shared_capacity Whether the ticket is using shared capacity.
+	 * @param Tribe__Tickets__Global_Stock|null $global_stock    The stock object or null.
 	 *
-	 * @return int
+	 * @return int The new sales amount.
 	 */
-	public function increase_ticket_sales_by( $ticket_id, $qty = 1, $shared_capacity = false, $global_stock = null ) {
-		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
-		update_post_meta( $ticket_id, 'total_sales', $sales + $qty );
+	public function increase_ticket_sales_by( $ticket_id, $quantity = 1, $shared_capacity = false, $global_stock = null ) {
+		// Adjust sales.
+		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true ) + $quantity;
+
+		update_post_meta( $ticket_id, 'total_sales', $sales );
 
 		if ( $shared_capacity && $global_stock instanceof Tribe__Tickets__Global_Stock ) {
-			$this->update_global_stock( $global_stock, $qty );
+			$this->update_global_stock( $global_stock, $quantity );
 		}
+
 		return $sales;
 	}
 
 	/**
-	 * Decreases the sales for a ticket by an amount.
+	 * Decrease the sales for a ticket by a specific quantity.
 	 *
 	 * @since 4.7
 	 * @since 4.10.2 added $shared_capacity and $global_stock parameter
 	 *
-	 * @param int         $ticket_id       The ticket post ID
-	 * @param int         $qty             the quanitity to modify stock
-	 * @param bool        $shared_capacity true or false if the ticket is using share capacity
-	 * @param object|null $global_stock    the object of Tribe__Tickets__Global_Stock or null
+	 * @param int                               $ticket_id       The ticket post ID.
+	 * @param int                               $quantity        The quanitity to increase the ticket sales by.
+	 * @param bool                              $shared_capacity Whether the ticket is using shared capacity.
+	 * @param Tribe__Tickets__Global_Stock|null $global_stock    The stock object or null.
 	 *
-	 * @return int
+	 * @return int The new sales amount.
 	 */
-	public function decrease_ticket_sales_by( $ticket_id, $qty = 1, $shared_capacity = false, $global_stock = null ) {
-		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
-		update_post_meta( $ticket_id, 'total_sales', max( $sales - $qty, 0 ) );
+	public function decrease_ticket_sales_by( $ticket_id, $quantity = 1, $shared_capacity = false, $global_stock = null ) {
+		// Adjust sales.
+		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true ) - $quantity;
+
+		// Prevent negatives.
+		$sales = max( $sales, 0 );
+
+		update_post_meta( $ticket_id, 'total_sales', $sales );
 
 		if ( $shared_capacity && $global_stock instanceof Tribe__Tickets__Global_Stock ) {
-			$this->update_global_stock( $global_stock, $qty, true );
+			$this->update_global_stock( $global_stock, $quantity, true );
 		}
+
+		return $sales;
 	}
 
 	/**
@@ -2924,8 +2908,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param bool                         $increase     Whether to increase stock, default is false.
 	 */
 	public function update_global_stock( $global_stock, $qty = 1, $increase = false ) {
-
 		$level = $global_stock->get_stock_level();
+
 		if ( $increase ) {
 			$new_level = (int) $level + (int) $qty;
 		} else {
@@ -2954,7 +2938,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$optout      = get_post_meta( $attendee->ID, $this->attendee_optout_key, true );
 		$status      = get_post_meta( $attendee->ID, $this->attendee_tpp_key, true );
 		$user_id     = get_post_meta( $attendee->ID, $this->attendee_user_id, true );
-		$ticket_sent = (bool) get_post_meta( $attendee->ID, $this->attendee_ticket_sent, true );
+		$ticket_sent = (int) get_post_meta( $attendee->ID, $this->attendee_ticket_sent, true );
 
 		if ( empty( $product_id ) ) {
 			return false;

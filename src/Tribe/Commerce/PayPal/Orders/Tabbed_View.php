@@ -42,6 +42,8 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 			return;
 		}
 
+		add_filter( 'tribe_tickets_attendees_show_title', '__return_false' );
+
 		$orders_report     = new Tribe__Tickets__Commerce__PayPal__Orders__Tab( $tabbed_view );
 		$orders_report_url = Tribe__Tickets__Commerce__PayPal__Orders__Report::get_tickets_report_link( $post );
 		$orders_report->set_url( $orders_report_url );

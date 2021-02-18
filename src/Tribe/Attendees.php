@@ -871,4 +871,59 @@ class Tribe__Tickets__Attendees {
 
 		return $user_can;
 	}
+
+	/**
+	 * Create an attendee for any Commerce provider from a ticket.
+	 *
+	 * @since 5.1.0
+	 *
+	 * @param Tribe__Tickets__Ticket_Object|int $ticket        Ticket object or ID to create the attendee for.
+	 * @param array                             $attendee_data Attendee data to create from.
+	 *
+	 * @return WP_Post|false The new post object or false if unsuccessful.
+	 */
+	public function create_attendee( $ticket, $attendee_data ) {
+		if ( is_numeric( $ticket ) ) {
+			// Try to get provider from the ticket ID.
+			$provider = tribe_tickets_get_ticket_provider( (int) $ticket );
+		} else {
+			// Get provider from ticket object.
+			$provider = $ticket->get_provider();
+		}
+
+		if ( ! $provider ) {
+			return false;
+		}
+
+		return $provider->create_attendee( $ticket, $attendee_data );
+	}
+
+	/**
+	 * Update an attendee for any Commerce provider.
+	 *
+	 * @since 5.1.0
+	 *
+	 * @param array|int $attendee      The attendee data or ID for the attendee to update.
+	 * @param array     $attendee_data The attendee data to update to.
+	 *
+	 * @return WP_Post|false The updated post object or false if unsuccessful.
+	 */
+	public function update_attendee( $attendee, $attendee_data ) {
+		$provider = false;
+
+		if ( is_numeric( $attendee ) ) {
+			// Try to get provider from the attendee ID.
+			$provider = tribe_tickets_get_ticket_provider( (int) $attendee );
+		} elseif ( is_array( $attendee ) && isset( $attendee['provider'] ) ) {
+			// Try to get provider from the attendee data.
+			$provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $attendee['provider'] );
+		}
+
+		if ( ! $provider ) {
+			return false;
+		}
+
+		return $provider->update_attendee( $attendee, $attendee_data );
+	}
+
 }
