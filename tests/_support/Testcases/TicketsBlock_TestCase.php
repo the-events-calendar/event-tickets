@@ -178,6 +178,8 @@ class TicketsBlock_TestCase extends WPTestCase {
 			'Test EDD ticket description for ',
 			'Test WooCommerce ticket for ',
 			'Test WooCommerce ticket description for ',
+			'Test RSVP ticket for ',
+			'Ticket RSVP ticket excerpt for ',
 		] );
 
 		$driver->setTimeDependentAttributes( [
@@ -240,6 +242,8 @@ class TicketsBlock_TestCase extends WPTestCase {
 			'Test Easy Digital Downloads ticket description for ',
 			'Test WooCommerce ticket for ',
 			'Test WooCommerce ticket description for ',
+			'Test RSVP ticket for ',
+			'Ticket RSVP ticket excerpt for ',
 		] );
 		$driver->setTimeDependentAttributes( [
 			'data-ticket-id',
