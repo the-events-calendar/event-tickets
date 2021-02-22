@@ -163,7 +163,9 @@ jobs:
       # Init WordPress container
       # ------------------------------------------------------------------------------
       - name: Init the WordPress container
-        run: ${TRIC_BIN} up wordpress
+        run: |
+          ${TRIC_BIN} up wordpress
+          ${TRIC_BIN} site-cli core version
       # ------------------------------------------------------------------------------
       # Install and activate TwentyTwenty
       # ------------------------------------------------------------------------------
