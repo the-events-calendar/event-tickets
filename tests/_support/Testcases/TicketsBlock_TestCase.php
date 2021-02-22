@@ -189,6 +189,19 @@ class TicketsBlock_TestCase extends WPTestCase {
 		// Remove the URL + port so it doesn't conflict with URL tolerances.
 		$html = str_replace( home_url(), TRIBE_TESTS_HOME_URL, $html );
 
+		// Handle variations that tolerances won't handle.
+		$html = str_replace(
+			[
+				$post_id,
+				$ticket_id,
+			],
+			[
+				'[EVENT_ID]',
+				'[TICKET_ID]',
+			],
+			$html
+		);
+
 		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -251,6 +264,19 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		// Remove the URL + port so it doesn't conflict with URL tolerances.
 		$html = str_replace( home_url(), TRIBE_TESTS_HOME_URL, $html );
+
+		// Handle variations that tolerances won't handle.
+		$html = str_replace(
+			[
+				$post_id,
+				$ticket_id,
+			],
+			[
+				'[EVENT_ID]',
+				'[TICKET_ID]',
+			],
+			$html
+		);
 
 		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );
