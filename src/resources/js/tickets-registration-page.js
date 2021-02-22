@@ -806,8 +806,6 @@ window.tribe.tickets.registration = {};
 		obj.initFormPrefills();
 	};
 
-	obj.document.ready( function() {
-		obj.init();
-	} );
+	$( obj.init );
 } )( jQuery, window.tribe.tickets.registration );
 /* eslint-enable max-len */

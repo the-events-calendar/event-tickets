@@ -78,23 +78,23 @@ var tribe_tickets_tpp_admin = {
 	};
 
 	my.setupValidationOnPanel = function( event, data ) {
-			if ( ! ( data.panel && data.panel instanceof jQuery ) ) {
-				return;
-			}
+		if ( ! ( data.panel && data.panel instanceof jQuery ) ) {
+			return;
+		}
 
-			var $panel = data.panel;
+		var $panel = data.panel;
 
-			var paypalIsDefaultProvider = $panel.data( 'default-provider' ) === 'Tribe__Tickets__Commerce__PayPal__Main';
-			var isNew = ! $( '#ticket_id' ).val();
+		var paypalIsDefaultProvider = $panel.data( 'default-provider' ) === 'Tribe__Tickets__Commerce__PayPal__Main';
+		var isNew = ! $( '#ticket_id' ).val();
 
-			if ( paypalIsDefaultProvider && isNew ) {
-				$( '#ticket_price, #ticket_sale_price' )
-					.attr( 'data-required', true )
-					.attr( 'data-validation-is-greater-than', '0' )
-			}
+		if ( paypalIsDefaultProvider && isNew ) {
+			$( '#ticket_price, #ticket_sale_price' )
+				.prop( 'data-required', true )
+				.attr( 'data-validation-is-greater-than', '0' )
+		}
 
-			$panel.find( '.tribe-validation' ).validation();
-		};
+		$panel.find( '.tribe-validation' ).validation();
+	};
 
 	my.init = function() {
 		$( '.checkmark input' ).each( function() {

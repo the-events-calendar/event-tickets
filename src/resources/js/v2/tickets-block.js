@@ -77,7 +77,7 @@ tribe.tickets.block = {
 			if ( 0 === available ) { // Ticket is out of stock.
 				const unavailableHtml = tickets[ ticketId ].unavailable_html;
 				// Set the availability data attribute to false.
-				$ticketEl.attr( 'available', false );
+				$ticketEl.prop( 'available', false );
 
 				// Remove classes for in-stock and purchasable.
 				$ticketEl.removeClass( 'instock' );
@@ -797,6 +797,6 @@ tribe.tickets.block = {
 	} );
 
 	// Configure on document ready.
-	$document.ready( obj.ready );
+	$( obj.ready );
 } )( jQuery, tribe.tickets.block );
 /* eslint-enable max-len */

@@ -178,7 +178,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.1.1] TBD =
 
-
+* Fix - Compatibility with WordPress 5.7 and jQuery 3.5.X [ET-992]
 
 = [5.1.0] 2021-02-16 =
 
