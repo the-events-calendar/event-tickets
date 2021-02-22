@@ -23,13 +23,19 @@ class TitleTest extends V2TestCase {
 		 */
 		$provider = tribe_get_class_instance( 'Tribe__Tickets__Commerce__PayPal__Main' );
 
-		$event   = $this->get_mock_event( 'events/single/1.json' );
-		$ids     = $this->create_many_paypal_tickets( 1, $event->ID );
+		$event_id = $this->factory()->event->create(
+			[
+				'post_title' => 'TEC event for ticket item',
+				'post_name'  => 'tec-event-for-ticket',
+			]
+		);
 
-		$ticket = $provider->get_ticket( $event->ID, $ids[0] );
+		$ids     = $this->create_many_paypal_tickets( 1, $event_id );
+
+		$ticket = $provider->get_ticket( $event_id, $ids[0] );
 
 		return [
-			'post_id'                     => $event->ID,
+			'post_id'                     => $event_id,
 			'ticket'                      => $ticket,
 			'provider'                    => $provider,
 			'provider_id'                 => $provider->class_name,
@@ -62,6 +68,8 @@ class TitleTest extends V2TestCase {
 
 		$this->assertContains( 'tribe-tickets--no-description', $html );
 		$this->assertContains( 'tribe-tickets__tickets-item-content-subtitle', $html );
+
+		codecept_debug( $args['ticket']);
 
 		$driver = $this->get_html_output_driver();
 
