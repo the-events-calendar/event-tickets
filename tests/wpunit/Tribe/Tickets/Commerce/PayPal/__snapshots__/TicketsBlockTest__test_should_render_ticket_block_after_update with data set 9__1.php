@@ -20,17 +20,17 @@
 </div>
 <input name="provider" value="Tribe__Tickets__Commerce__PayPal__Main" class="tribe-tickets-provider" type="hidden">
 <div
-	id="tribe-block-tickets-item-10040"
-	 class="tribe-tickets__item post-10040 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="10040"
+	id="tribe-block-tickets-item-[TICKET_ID]"
+	 class="tribe-tickets__item post-[TICKET_ID] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	data-ticket-id="[TICKET_ID]"
 	data-available="false"
 	data-has-shared-cap="false"
 	
 >
 	
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__item__content__title"  >
-		Test PayPal ticket for 10039</div>
-	<div id="tribe__details__content--10040" class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__item__details__content">
-	Test PayPal ticket description for 10039</div>
+		Test PayPal ticket for [EVENT_ID]</div>
+	<div id="tribe__details__content--[TICKET_ID]" class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__item__details__content">
+	Test PayPal ticket description for [EVENT_ID]</div>
 <div  class="tribe-tickets__item__extra" >
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__item__extra__price" >
 		<span class="tribe-tickets__sale_price">
@@ -49,7 +49,7 @@
 			<button
 				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--more"
-				aria-controls="tribe__details__content--10040"
+				aria-controls="tribe__details__content--[TICKET_ID]"
 				tabindex="0"
 			>
 				<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description.</span>
@@ -57,7 +57,7 @@
 			<button
 				type="button"
 				class="tribe-common-b3 tribe-tickets__item__details__summary--less"
-				aria-controls="tribe__details__content--10040"
+				aria-controls="tribe__details__content--[TICKET_ID]"
 				tabindex="0"
 			>
 				<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description.</span>

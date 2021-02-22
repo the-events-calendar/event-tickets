@@ -5,7 +5,7 @@
 >
 			<div
 			class="tribe-tickets__rsvp-wrapper"
-			data-rsvp-id="10233"
+			data-rsvp-id="[TICKET_ID]"
 		>
 			<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
 	
@@ -21,10 +21,10 @@
 		<div class="tribe-tickets__rsvp-details-wrapper tribe-common-g-col">
 	<div class="tribe-tickets__rsvp-details">
 		<h3 class="tribe-tickets__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
-	Test RSVP ticket for 10232</h3>
+	Test RSVP ticket for [EVENT_ID]</h3>
 
 		<div class="tribe-tickets__rsvp-description tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
-	<p>Ticket RSVP ticket excerpt for 10232</p>
+	<p>Ticket RSVP ticket excerpt for [EVENT_ID]</p>
 </div>
 
 		<div class="tribe-tickets__rsvp-attendance">
