@@ -146,6 +146,19 @@ class ItemTest extends V2TestCase {
 			]
 		);
 
+		// Handle variations that tolerances won't handle.
+		$html = str_replace(
+			[
+				$args['post_id'],
+				$args['ticket']->ID,
+			],
+			[
+				'[EVENT_ID]',
+				'[TICKET_ID]',
+			],
+			$html
+		);
+
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 }

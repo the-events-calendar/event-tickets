@@ -47,6 +47,7 @@ class ItemsTest extends V2TestCase {
 			'cart_url'                    => 'http://wordpress.test/cart/?foo',
 			'checkout_url'                => 'http://wordpress.test/checkout/?bar',
 			'threshold'                   => 0,
+			'handler'                     => tribe( 'tickets.handler' ),
 		];
 	}
 
