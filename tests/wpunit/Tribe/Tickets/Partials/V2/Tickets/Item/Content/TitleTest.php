@@ -75,6 +75,18 @@ class TitleTest extends V2TestCase {
 			'Test ticket for ',
 		] );
 
+		$html = str_replace(
+			[
+				$args['post_id'],
+				$args['ticket']->ID,
+			],
+			[
+				'[EVENT_ID]',
+				'[TICKET_ID]',
+			],
+			$html
+		);
+
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
@@ -104,6 +116,18 @@ class TitleTest extends V2TestCase {
 			'Test ticket for ',
 		] );
 
+		$html = str_replace(
+			[
+				$args['post_id'],
+				$args['ticket']->ID,
+			],
+			[
+				'[EVENT_ID]',
+				'[TICKET_ID]',
+			],
+			$html
+		);
+
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
@@ -125,6 +149,18 @@ class TitleTest extends V2TestCase {
 				$args['post_id'],
 				$args['ticket']->name,
 			]
+		);
+
+		$html = str_replace(
+			[
+				$args['post_id'],
+				$args['ticket']->ID,
+			],
+			[
+				'[EVENT_ID]',
+				'[TICKET_ID]',
+			],
+			$html
 		);
 
 		$this->assertMatchesSnapshot( $html, $driver );
@@ -150,6 +186,18 @@ class TitleTest extends V2TestCase {
 		$driver->setTolerableDifferencesPrefixes( [
 			'Test ticket for ',
 		] );
+
+		$html = str_replace(
+			[
+				$args['post_id'],
+				$args['ticket']->ID,
+			],
+			[
+				'[EVENT_ID]',
+				'[TICKET_ID]',
+			],
+			$html
+		);
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
