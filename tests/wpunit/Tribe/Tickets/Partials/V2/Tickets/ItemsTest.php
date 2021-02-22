@@ -47,6 +47,7 @@ class ItemsTest extends V2TestCase {
 			'cart_url'                    => 'http://wordpress.test/cart/?foo',
 			'checkout_url'                => 'http://wordpress.test/checkout/?bar',
 			'threshold'                   => 0,
+			'handler'                     => tribe( 'tickets.handler' ),
 		];
 	}
 
@@ -91,17 +92,6 @@ class ItemsTest extends V2TestCase {
 			'tribe__details__content--',
 			'class="tribe-amount">',
 		] );
-
-		// Handle variations that tolerances won't handle.
-		$html = str_replace(
-			array_merge( [ $args['post_id'] ], wp_list_pluck( $args['tickets'], 'ID' ) ),
-			[
-				'[EVENT_ID]',
-				'[TICKET_ID_1]',
-				'[TICKET_ID_2]',
-			],
-			$html
-		);
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}

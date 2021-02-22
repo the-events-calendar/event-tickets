@@ -1,18 +1,18 @@
 <?php return '<div
-	id="tribe-block-tickets-item-[TICKET_ID_1]"
-	 class="tribe-tickets__tickets-item post-[TICKET_ID_1] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	data-ticket-id="[TICKET_ID_1]"
+	id="tribe-block-tickets-item-8"
+	 class="tribe-tickets__tickets-item post-8 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	data-ticket-id="8"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test ticket for [EVENT_ID]</div>
+		Test ticket for 8</div>
 
 
 <div
-	id="tribe__details__content--[TICKET_ID_1]"
+	id="tribe__details__content--8"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
-	Test ticket description for [EVENT_ID]</div>
+	Test ticket description for 8</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
@@ -49,20 +49,20 @@
 	
 </div>
 <div
-	id="tribe-block-tickets-item-[TICKET_ID_2]"
-	 class="tribe-tickets__tickets-item post-[TICKET_ID_2] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	data-ticket-id="[TICKET_ID_2]"
+	id="tribe-block-tickets-item-9"
+	 class="tribe-tickets__tickets-item post-9 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	data-ticket-id="9"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test ticket for [EVENT_ID]</div>
+		Test ticket for 8</div>
 
 
 <div
-	id="tribe__details__content--[TICKET_ID_2]"
+	id="tribe__details__content--9"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
-	Test ticket description for [EVENT_ID]</div>
+	Test ticket description for 8</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
