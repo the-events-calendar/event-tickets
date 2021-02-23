@@ -1,9 +1,10 @@
+/* globals jQuery, tribe */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.0.0
  *
- * @type {PlainObject}
+ * @type {Object}
  */
 tribe.tickets = tribe.tickets || {};
 tribe.tickets.rsvp = tribe.tickets.rsvp || {};
@@ -13,7 +14,7 @@ tribe.tickets.rsvp = tribe.tickets.rsvp || {};
  *
  * @since 5.0.0
  *
- * @type {PlainObject}
+ * @type {Object}
  */
 tribe.tickets.rsvp.block = {};
 
@@ -22,8 +23,8 @@ tribe.tickets.rsvp.block = {};
  *
  * @since 5.0.0
  *
- * @param  {PlainObject} $   jQuery
- * @param  {PlainObject} obj tribe.tickets.rsvp.block
+ * @param  {Object} $   jQuery
+ * @param  {Object} obj tribe.tickets.rsvp.block
  *
  * @return {void}
  */
@@ -36,7 +37,7 @@ tribe.tickets.rsvp.block = {};
 	 *
 	 * @since 5.0.0
 	 *
-	 * @type {PlainObject}
+	 * @type {Object}
 	 */
 	obj.selectors = {
 		container: '.tribe-tickets__rsvp-wrapper',
@@ -140,7 +141,7 @@ tribe.tickets.rsvp.block = {};
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param {event} event Input event
+	 * @param {Event} event Input event
 	 */
 	obj.handleDisplayToggle = function( event ) {
 		event.preventDefault();
@@ -235,7 +236,7 @@ tribe.tickets.rsvp.block = {};
 	 *
 	 * @param  {Event}       event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
 	 * @param  {jqXHR}       jqXHR    Request object
-	 * @param  {PlainObject} settings Settings that this request was made with
+	 * @param  {Object}      settings Settings that this request was made with
 	 *
 	 * @return {void}
 	 */
@@ -284,7 +285,7 @@ tribe.tickets.rsvp.block = {};
 	 * @since 5.0.0
 	 *
 	 * @param {Event}   event      event object for 'afterSetup.tribeTicketsRsvp' event
-	 * @param {integer} index      jQuery.each index param from 'afterSetup.tribeTicketsRsvp' event.
+	 * @param {int}     index      jQuery.each index param from 'afterSetup.tribeTicketsRsvp' event.
 	 * @param {jQuery}  $container jQuery object of view container.
 	 *
 	 * @return {void}
@@ -309,5 +310,5 @@ tribe.tickets.rsvp.block = {};
 	};
 
 	// Configure on document ready.
-	$document.ready( obj.ready );
+	$( obj.ready );
 } )( jQuery, tribe.tickets.rsvp.block );

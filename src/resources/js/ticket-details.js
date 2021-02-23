@@ -55,7 +55,7 @@ var tribe_ticket_details = tribe_ticket_details || {};
 		$target.toggleClass( 'tribe__details--open', onOff );
 	}
 
-	$document.ready(
+	$(
 		function() {
 			var detailsElems = document.querySelectorAll( '.tribe-tickets__item__details__summary' );
 
