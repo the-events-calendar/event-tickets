@@ -170,7 +170,7 @@ jobs:
       # Install and activate TwentyTwenty
       # ------------------------------------------------------------------------------
       - name: Install and activate TwentyTwenty
-        if: ${{ matrix.suite }} == 'acceptance --debug'
+        if: ${{ matrix.suite }} != 'acceptance --debug'
         run:  ${TRIC_BIN} site-cli theme install twentytwenty --activate
       # ------------------------------------------------------------------------------
       # Run tests
