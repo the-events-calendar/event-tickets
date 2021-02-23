@@ -654,19 +654,14 @@ class Tribe__Tickets__Attendees {
 			$charset  = get_option( 'blog_charset' );
 			$filename = sanitize_file_name( $event->post_title . '-' . __( 'attendees', 'event-tickets' ) );
 
-			// output headers so that the file is downloaded rather than displayed
+			// output headers so that the file is downloaded rather than displayed.
 			header( "Content-Type: text/csv; charset=$charset" );
 			header( "Content-Disposition: attachment; filename=$filename.csv" );
 
-			// create a file pointer connected to the output stream
+			// create a file pointer connected to the output stream.
 			$output = fopen( 'php://output', 'w' );
 
-			// Get indexes by keys
-			$flip  = array_flip( $items[0] );
-			$name  = $flip['Customer Name'];
-			$email = $flip['Customer Email Address'];
-
-			//And echo the data
+			// And echo the data.
 			foreach ( $items as $item ) {
 				fputcsv( $output, $item );
 			}
