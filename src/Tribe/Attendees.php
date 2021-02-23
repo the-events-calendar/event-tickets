@@ -654,14 +654,14 @@ class Tribe__Tickets__Attendees {
 			$charset  = get_option( 'blog_charset' );
 			$filename = sanitize_file_name( $event->post_title . '-' . __( 'attendees', 'event-tickets' ) );
 
-			// output headers so that the file is downloaded rather than displayed.
+			// Output headers so that the file is downloaded rather than displayed.
 			header( "Content-Type: text/csv; charset=$charset" );
 			header( "Content-Disposition: attachment; filename=$filename.csv" );
 
-			// create a file pointer connected to the output stream.
+			// Create the file pointer connected to the output stream.
 			$output = fopen( 'php://output', 'w' );
 
-			// And echo the data.
+			// Output the lines into the file.
 			foreach ( $items as $item ) {
 				fputcsv( $output, $item );
 			}
