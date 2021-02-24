@@ -182,6 +182,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Prevent the Attendee Registration page from having the title coming from draft pages. [ETP-360]
 * Fix - Highlight the "Ticketed" and "Unticketed" filters in the WordPress when they're applied. [ET-1022]
 * Tweak - Added new `Ticket Holder Name` and `Ticket Holder Email Address` columns to the Attendees Report export CSV file and update the previous `Customer` columns to label as `Purchaser`. [ETP-652]
+* Tweak - Tweaked SQL queries for MySQL 8+ compatibility. [ETP-652]
 
 = [5.1.0] 2021-02-16 =
 
