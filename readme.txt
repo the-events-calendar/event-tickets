@@ -181,6 +181,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Compatibility with WordPress 5.7 and jQuery 3.5.X [ET-992]
 * Fix - Prevent the Attendee Registration page from having the title coming from draft pages. [ETP-360]
 * Fix - Highlight the "Ticketed" and "Unticketed" filters in the WordPress when they're applied. [ET-1022]
+* Tweak - New `Ticket Holder Name` and `Ticket Holder Email Address` columns added on attendee export CSV file. [ETP-652]
 
 = [5.1.0] 2021-02-16 =
 
