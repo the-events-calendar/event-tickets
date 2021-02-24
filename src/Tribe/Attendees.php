@@ -511,8 +511,10 @@ class Tribe__Tickets__Attendees {
 		$export_columns['order_id']           = esc_html_x( 'Order ID', 'attendee export', 'event-tickets' );
 		$export_columns['order_status_label'] = esc_html_x( 'Order Status', 'attendee export', 'event-tickets' );
 		$export_columns['attendee_id']        = esc_html( sprintf( _x( '%s ID', 'attendee export', 'event-tickets' ), tribe_get_ticket_label_singular( 'attendee_export_ticket_id' ) ) );
-		$export_columns['purchaser_name']     = esc_html_x( 'Customer Name', 'attendee export', 'event-tickets' );
-		$export_columns['purchaser_email']    = esc_html_x( 'Customer Email Address', 'attendee export', 'event-tickets' );
+		$export_columns['holder_name']        = esc_html_x( 'Ticket Holder Name', 'attendee export', 'event-tickets' );
+		$export_columns['holder_email']       = esc_html_x( 'Ticket Holder Email Address', 'attendee export', 'event-tickets' );
+		$export_columns['purchaser_name']     = esc_html_x( 'Purchaser Name', 'attendee export', 'event-tickets' );
+		$export_columns['purchaser_email']    = esc_html_x( 'Purchaser Email Address', 'attendee export', 'event-tickets' );
 
 		/**
 		 * Used to modify what columns should be shown on the CSV export
@@ -652,19 +654,14 @@ class Tribe__Tickets__Attendees {
 			$charset  = get_option( 'blog_charset' );
 			$filename = sanitize_file_name( $event->post_title . '-' . __( 'attendees', 'event-tickets' ) );
 
-			// output headers so that the file is downloaded rather than displayed
+			// Output headers so that the file is downloaded rather than displayed.
 			header( "Content-Type: text/csv; charset=$charset" );
 			header( "Content-Disposition: attachment; filename=$filename.csv" );
 
-			// create a file pointer connected to the output stream
+			// Create the file pointer connected to the output stream.
 			$output = fopen( 'php://output', 'w' );
 
-			// Get indexes by keys
-			$flip  = array_flip( $items[0] );
-			$name  = $flip['Customer Name'];
-			$email = $flip['Customer Email Address'];
-
-			//And echo the data
+			// Output the lines into the file.
 			foreach ( $items as $item ) {
 				fputcsv( $output, $item );
 			}
