@@ -82,16 +82,31 @@ class Attendees_Test extends \Codeception\TestCase\WPTestCase {
 		// Sanitize list of attendees.
 		$items = $sut->sanitize_csv_rows( $items );
 
-		// Get the 'Customer Name' column from the arrays.
-		$full_names = wp_list_pluck( $items, 6 );
+		// Get the 'Ticket Holder Name' column from the arrays.
+		$ticket_holder = wp_list_pluck( $items, 6 );
 
-		$this->assertEquals( [
-			'Customer Name',
-			'\'=cmd|\'/C ping -t 192.0.0.1\'!\'A1\'',
-			'\'-1+1|cmd|\'/C ping -t 192.0.0.1\'!\'A1\'',
-			'\'+1-1|cmd|\'/C ping -t 192.0.0.1\'!\'A1\'',
-			'\'@cmd|\'/C ping -t 192.0.0.1\'!\'A1\'',
-		], $full_names );
+		// Get the 'Purchaser Name' column from the arrays.
+		$purchaser_name = wp_list_pluck( $items, 8 );
+
+		$this->assertEquals(
+			[
+				'Ticket Holder Name',
+				'\'=cmd|\'/C ping -t 192.0.0.1\'!\'A1\'',
+				'\'-1+1|cmd|\'/C ping -t 192.0.0.1\'!\'A1\'',
+				'\'+1-1|cmd|\'/C ping -t 192.0.0.1\'!\'A1\'',
+				'\'@cmd|\'/C ping -t 192.0.0.1\'!\'A1\'',
+			], $ticket_holder
+		);
+
+		$this->assertEquals(
+			[
+				'Purchaser Name',
+				'\'=cmd|\'/C ping -t 192.0.0.1\'!\'A1\'',
+				'\'-1+1|cmd|\'/C ping -t 192.0.0.1\'!\'A1\'',
+				'\'+1-1|cmd|\'/C ping -t 192.0.0.1\'!\'A1\'',
+				'\'@cmd|\'/C ping -t 192.0.0.1\'!\'A1\'',
+			], $purchaser_name
+		);
 	}
 
 	/**
