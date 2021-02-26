@@ -55,8 +55,6 @@ class TicketArchiveByPostCest extends BaseRestCest {
 
 		$post_id    = $I->havePostInDatabase();
 		$ticket_ids = $this->create_many_paypal_tickets_basic( 1, $post_id );
-		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
-		$repository = tribe( 'tickets.rest-v1.repository' );
 
 		$I->sendGET( $this->tickets_url, $params );
 		$I->seeResponseIsJson();
@@ -72,12 +70,14 @@ class TicketArchiveByPostCest extends BaseRestCest {
 		$post_id           = $I->havePostInDatabase();
 		$public_ticket_ids = $this->create_many_paypal_tickets_basic( 2, $post_id );
 		$draft_ticket_ids  = $this->create_many_paypal_tickets_basic( 2, $post_id, [ 'post_status' => 'draft' ] );
+
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
 
 		$I->sendGET( $this->tickets_url, [ 'include_post' => $post_id ] );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
+
 		$response         = json_decode( $I->grabResponse(), true );
 		$expected_tickets = array_map( function ( $ticket_id ) use ( $repository ) {
 			return $repository->get_ticket_data( $ticket_id );
@@ -99,6 +99,7 @@ class TicketArchiveByPostCest extends BaseRestCest {
 		$I->sendGET( $this->tickets_url, [ 'include_post' => $post_id ] );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
+
 		$response         = json_decode( $I->grabResponse(), true );
 		$expected_tickets = array_map( function ( $ticket_id ) use ( $repository ) {
 			return $repository->get_ticket_data( $ticket_id );
