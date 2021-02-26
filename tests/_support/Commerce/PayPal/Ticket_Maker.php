@@ -141,7 +141,7 @@ trait Ticket_Maker {
 		update_post_meta( $post_id, $provider_key, 'Tribe__Tickets__Commerce__PayPal__Main' );
 
 		// Clear the cache.
-		tribe( $this->get_paypal_ticket_provider() )->clear_ticket_cache_for_post( $this->event_id );
+		tribe( $this->get_paypal_ticket_provider() )->clear_ticket_cache_for_post( $post_id );
 
 		return $ticket_id;
 	}
