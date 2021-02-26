@@ -11,7 +11,7 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   5.0.3
- * @since TBD Display data attributes via `tribe_attributes` and make them filterable via ``.
+ * @since TBD Display data attributes via `tribe_attributes` and make them filterable via `tribe_tickets_block_ticket_html_attributes`.
  *
  * @version TBD
  *
