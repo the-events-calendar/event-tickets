@@ -520,7 +520,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$cache = tribe( 'cache' );
 			$key   = __METHOD__ . '-' . $this->ID;
 
-			if ( $this->is_ticket_cache_enabled() && ! empty( $cache[ $key ] ) ) {
+			if ( $this->is_ticket_cache_enabled() && false !== $cache[ $key ] ) {
 				return tribe_is_truthy( $cache[ $key ] );
 			}
 
@@ -572,7 +572,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$cache = tribe( 'cache' );
 			$key   = __METHOD__ . '-' . $this->ID;
 
-			if ( $this->is_ticket_cache_enabled() && isset( $cache[ $key ] ) ) {
+			if ( $this->is_ticket_cache_enabled() && false !== $cache[ $key ] ) {
 				return $cache[ $key ];
 			}
 			// Fetch provider (also sets if found).
@@ -689,7 +689,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$cache = tribe( 'cache' );
 			$key   = __METHOD__ . '-' . $this->ID;
 
-			if ( $this->is_ticket_cache_enabled() && isset( $cache[ $key ] ) ) {
+			if ( $this->is_ticket_cache_enabled() && false !== $cache[ $key ] ) {
 				return $cache[ $key ];
 			}
 
@@ -731,7 +731,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$cache = tribe( 'cache' );
 			$key   = __METHOD__ . '-' . $this->ID;
 
-			if ( $this->is_ticket_cache_enabled() && isset( $cache[ $key ] ) ) {
+			if ( $this->is_ticket_cache_enabled() && false !== $cache[ $key ] ) {
 				return $cache[ $key ];
 			}
 
