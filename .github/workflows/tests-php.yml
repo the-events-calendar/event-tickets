@@ -147,22 +147,30 @@ jobs:
           docker network prune -f
           ${TRIC_BIN} use the-events-calendar/common
           ${TRIC_BIN} composer install --no-dev
-          pwd
-          ls
       # ------------------------------------------------------------------------------
-      # Set up ET
+      # Set up ET Common
       # ------------------------------------------------------------------------------
       - name: Set up ET Common
         run: |
           docker network prune -f
           ${TRIC_BIN} use event-tickets/common
           ${TRIC_BIN} composer install
+      # ------------------------------------------------------------------------------
+      # Set up ET
+      # ------------------------------------------------------------------------------
       - name: Set up ET
         run: |
           ${TRIC_BIN} use event-tickets
           ${TRIC_BIN} composer install
-          pwd
-          ls
+      # ------------------------------------------------------------------------------
+      # Clean `.htaccess` files (remove once this is solved: https://github.com/the-events-calendar/tric/issues/75)
+      # ------------------------------------------------------------------------------
+      - name: Cleanup .htaccess files
+        run: |
+          rm -f .htaccess
+          rm -f common/.htaccess
+          rm -f ../the-events-calendar/.htaccess
+          rm -f ../the-events-calendar/common.htaccess
       # ------------------------------------------------------------------------------
       # Init WordPress container
       # ------------------------------------------------------------------------------
@@ -175,7 +183,6 @@ jobs:
       # ------------------------------------------------------------------------------
       - name: Install and activate TwentyTwenty
         run:  ${TRIC_BIN} site-cli theme install twentytwenty --activate
-        if: ${{ matrix.suite }} != 'acceptance --debug'
       # ------------------------------------------------------------------------------
       # Run tests
       # ------------------------------------------------------------------------------
