@@ -184,6 +184,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Ensure ticket object caches return normally in all circumstances, preventing potential "Sold Out" messaging from happening in certain hosting environments. [ET-1023]
 * Fix - Set the default `iac` argument value in the single ticket REST API endpoint to add tickets since it is an optional argument to be sent.
 * Tweak - Added new `Ticket Holder Name` and `Ticket Holder Email Address` columns to the Attendees Report export CSV file and update the previous `Customer` columns to label as `Purchaser`. [ETP-652]
+* Tweak - Tweaked SQL queries for MySQL 8+ compatibility. [ET-1021]
 
 = [5.1.0] 2021-02-16 =
 

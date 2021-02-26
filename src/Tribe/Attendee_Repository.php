@@ -297,7 +297,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			case 'no_or_none':
 				$optout_keys = $this->attendee_optout_keys();
 				$optout_keys = array_map( [ $wpdb, '_real_escape' ], $optout_keys );
-				$optout_keys = '"' . implode( '", "', $optout_keys ) . '"';
+				$optout_keys = "'" . implode( "', '", $optout_keys ) . "'";
 
 				$this->filter_query->join( "
 					LEFT JOIN {$wpdb->postmeta} attendee_optout
