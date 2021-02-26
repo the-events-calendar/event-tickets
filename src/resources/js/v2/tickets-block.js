@@ -694,6 +694,40 @@ tribe.tickets.block = {
 	};
 
 	/**
+	 * Submit the tickets block form.
+	 *
+	 * @since 5.0.3
+	 *
+	 * @param {jQuery} $form jQuery object of the form.
+	 *
+	 * @return {void}
+	 */
+	obj.ticketsSubmit = function( $form ) {
+		const $container = $form.closest( obj.selectors.container );
+		const postId = $form.data( 'post-id' );
+		const ticketProvider = $form.data( 'provider' );
+
+		// Show the loader.
+		tribe.tickets.loader.show( $form );
+
+		// Save meta and cart.
+		const params = {
+			tribe_tickets_provider: obj.commerceSelector[ ticketProvider ],
+			tribe_tickets_tickets: obj.getTicketsForCart( $form ),
+			tribe_tickets_meta: {},
+			tribe_tickets_post_id: postId,
+		};
+
+		$form.find( '#tribe_tickets_block_ar_data' ).val( JSON.stringify( params ) );
+
+		$document.trigger( 'beforeTicketsSubmit.tribeTicketsBlock', [ $form, params ] );
+
+		$form.submit();
+
+		$document.trigger( 'afterTicketsSubmit.tribeTicketsBlock', [ $form, params ] );
+	};
+
+	/**
 	 * Binds events the classic "Submit" (non-modal)
 	 *
 	 * @since 5.0.3
@@ -716,27 +750,8 @@ tribe.tickets.block = {
 				}
 
 				const $form = $container.find( obj.selectors.form );
-				const postId = $form.data( 'post-id' );
-				const ticketProvider = $form.data( 'provider' );
 
-				// Show the loader.
-				tribe.tickets.loader.show( $form );
-
-				// Save meta and cart.
-				const params = {
-					tribe_tickets_provider: obj.commerceSelector[ ticketProvider ],
-					tribe_tickets_tickets: obj.getTicketsForCart( $container ),
-					tribe_tickets_meta: {},
-					tribe_tickets_post_id: postId,
-				};
-
-				$form.find( '#tribe_tickets_block_ar_data' ).val( JSON.stringify( params ) );
-
-				$document.trigger( 'beforeTicketsSubmit.tribeTicketsBlock', [ $form, params ] );
-
-				$form.submit();
-
-				$document.trigger( 'afterTicketsSubmit.tribeTicketsBlock', [ $form, params ] );
+				obj.ticketsSubmit( $form );
 			}
 		);
 	};
