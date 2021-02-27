@@ -69,11 +69,11 @@ trait Post_Attendees {
 
 		$event_meta_keys = method_exists( $this, 'attendee_to_event_keys' ) ? $this->attendee_to_event_keys() : [];
 		$event_meta_keys = array_map( [ $wpdb, '_real_escape' ], $event_meta_keys );
-		$event_meta_keys = '"' . implode( '", "', $event_meta_keys ) . '"';
+		$event_meta_keys = "'" . implode( "', '", $event_meta_keys ) . "'";
 
 		$attendee_types = method_exists( $this, 'attendee_types' ) ? $this->attendee_types() : [];
 		$attendee_types = array_map( [ $wpdb, '_real_escape' ], $attendee_types );
-		$attendee_types = '"' . implode( '", "', $attendee_types ) . '"';
+		$attendee_types = "'" . implode( "', '", $attendee_types ) . "'";
 
 		if ( $has_attendees ) {
 			// Join to the meta that relates attendees to events.
@@ -140,11 +140,11 @@ trait Post_Attendees {
 
 		$event_meta_keys = method_exists( $this, 'attendee_to_event_keys' ) ? $this->attendee_to_event_keys() : [];
 		$event_meta_keys = array_map( [ $wpdb, '_real_escape' ], $event_meta_keys );
-		$event_meta_keys = '"' . implode( '", "', $event_meta_keys ) . '"';
+		$event_meta_keys = "'" . implode( "', '", $event_meta_keys ) . "'";
 
 		$attendee_types = method_exists( $this, 'attendee_types' ) ? $this->attendee_types() : [];
 		$attendee_types = array_map( [ $wpdb, '_real_escape' ], $attendee_types );
-		$attendee_types = '"' . implode( '", "', $attendee_types ) . '"';
+		$attendee_types = "'" . implode( "', '", $attendee_types ) . "'";
 
 		$repo->where_clause( "
 				NOT EXISTS (
@@ -190,7 +190,7 @@ trait Post_Attendees {
 
 		$event_meta_keys = method_exists( $this, 'attendee_to_event_keys' ) ? $this->attendee_to_event_keys() : [];
 		$event_meta_keys = array_map( [ $wpdb, '_real_escape' ], $event_meta_keys );
-		$event_meta_keys = '"' . implode( '", "', $event_meta_keys ) . '"';
+		$event_meta_keys = "'" . implode( "', '", $event_meta_keys ) . "'";
 
 		$user_meta_key = method_exists( $this, 'attendee_to_user_key' ) ? $this->attendee_to_user_key() : 'null';
 		$user_meta_key = $wpdb->_real_escape( $user_meta_key );
@@ -241,7 +241,7 @@ trait Post_Attendees {
 
 		$event_meta_keys = method_exists( $this, 'attendee_to_event_keys' ) ? $this->attendee_to_event_keys() : [];
 		$event_meta_keys = array_map( [ $wpdb, '_real_escape' ], $event_meta_keys );
-		$event_meta_keys = '"' . implode( '", "', $event_meta_keys ) . '"';
+		$event_meta_keys = "'" . implode( "', '", $event_meta_keys ) . "'";
 
 		$user_meta_key = method_exists( $this, 'attendee_to_user_key' ) ? $this->attendee_to_user_key() : 'null';
 		$user_meta_key = $wpdb->_real_escape( $user_meta_key );

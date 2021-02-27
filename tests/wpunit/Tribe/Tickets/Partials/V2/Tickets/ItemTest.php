@@ -161,4 +161,74 @@ class ItemTest extends V2TestCase {
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
+
+	/**
+	 * @test
+	 */
+	public function test_should_render_wit_whatever_data_attribute() {
+		$template = tribe( 'tickets.editor.template' );
+
+		/**
+		 * Make sure we have the proper class set.
+		 *
+		 * @var \Tribe__Tickets__Commerce__PayPal__Main $provider
+		 */
+		$provider = tribe_get_class_instance( 'Tribe__Tickets__Commerce__PayPal__Main' );
+
+		$provider->class_name = 'Tribe__Tickets__Commerce__PayPal__Main';
+
+		$override = [
+			'provider' => $provider,
+		];
+
+		add_filter(
+			'tribe_tickets_block_ticket_html_attributes',
+			static function( $attributes ) {
+				$attributes['data-whatever'] = 'value';
+				return $attributes;
+			}
+		);
+
+		$args = array_merge( $this->get_default_args(), $override );
+
+		$html = $template->template( $this->partial_path, $args, false );
+
+		$driver = $this->get_html_output_driver();
+
+
+		$driver->setTolerableDifferences(
+			[
+				$args['post_id'],
+				$args['ticket']->price,
+				$args['ticket']->ID,
+			]
+		);
+
+		$driver->setTimeDependentAttributes( [ 'value', 'data-ticket-id', 'aria-controls' ] );
+
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'post-',
+				'tribe-block-tickets-item-',
+				'Test ticket for ',
+				'Test ticket description for ',
+				'tribe__details__content--',
+			]
+		);
+
+		// Handle variations that tolerances won't handle.
+		$html = str_replace(
+			[
+				$args['post_id'],
+				$args['ticket']->ID,
+			],
+			[
+				'[EVENT_ID]',
+				'[TICKET_ID]',
+			],
+			$html
+		);
+
+		$this->assertMatchesSnapshot( $html, $driver );
+	}
 }

@@ -11,8 +11,9 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   5.0.3
+ * @since TBD Display data attributes via `tribe_attributes` and make them filterable via `tribe_tickets_block_ticket_html_attributes`.
  *
- * @version 5.0.3
+ * @version TBD
  *
  * If RSVP:
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
@@ -91,22 +92,37 @@ $classes = [
 	get_post_class( '', $ticket->ID ),
 ];
 
-$ticket_item_id = 'tribe-';
+$ticket_item_id  = 'tribe-';
 $ticket_item_id .= ! empty( $is_modal ) ? 'modal' : 'block';
 $ticket_item_id .= '-tickets-item-' . $ticket->ID;
 
 // ET has this set from global context but ETP does not.
 $has_shared_cap = isset( $has_shared_cap ) ? $has_shared_cap : $this->get( 'has_shared_cap' );
+
+$attributes = [
+	'data-ticket-id'      => (string) $ticket->ID,
+	'data-available'      => $this->get( 'data_available' ),
+	'data-has-shared-cap' => $this->get( 'data_has_shared_cap' ),
+];
+
+if ( $has_shared_cap ) {
+	$attributes['data-shared-cap'] = get_post_meta( $post_id, $handler->key_capacity, true );
+}
+
+/**
+ * Filter the ticket data attributes.
+ *
+ * @since TBD
+ *
+ * @param array $attributes A list of data attributes with their values.
+ * @param Tribe__Tickets__Ticket_Object $ticket The ticket object.
+ */
+$attributes = apply_filters( 'tribe_tickets_block_ticket_html_attributes', $attributes, $ticket );
 ?>
 <div
 	id="<?php echo esc_attr( $ticket_item_id ); ?>"
 	<?php tribe_classes( $classes ); ?>
-	data-ticket-id="<?php echo esc_attr( $ticket->ID ); ?>"
-	data-available="<?php echo esc_attr( $this->get( 'data_available' ) ); ?>"
-	data-has-shared-cap="<?php echo esc_attr( $this->get( 'data_has_shared_cap' ) ); ?>"
-	<?php if ( $has_shared_cap ) : ?>
-		data-shared-cap="<?php echo esc_attr( get_post_meta( $post_id, $handler->key_capacity, true ) ); ?>"
-	<?php endif; ?>
+	<?php tribe_attributes( $attributes ); ?>
 >
 
 	<?php $this->template( 'v2/tickets/item/content', $context ); ?>
