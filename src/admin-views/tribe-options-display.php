@@ -8,17 +8,8 @@ $dep = tribe( Tribe__Dependency::class );
 
 $etp_active = $dep->is_plugin_active( 'Tribe__Tickets_Plus__Main' );
 
-// Don't display this section if ET is a newer install and ETP is inactive or ETP is active but a newer install.
-if (
-	(
-		! $etp_active
-		&& ! tribe_installed_before( 'Tribe__Tickets__Main', '5.0' )
-	)
-	|| (
-		$etp_active
-		&& ! tribe_installed_before( 'Tribe__Tickets_Plus__Main', '5.1' )
-	)
-) {
+// Don't display this section if both ET and ETP is newer install.
+if ( ! tribe_installed_before( 'Tribe__Tickets__Main', '5.0' )  && ! tribe_installed_before( 'Tribe__Tickets_Plus__Main', '5.1' ) ) {
 	return;
 }
 
