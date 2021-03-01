@@ -155,6 +155,7 @@ jobs:
           docker network prune -f
           ${TRIC_BIN} use event-tickets/common
           ${TRIC_BIN} composer install
+          ${TRIC_BIN} npm run build
       # ------------------------------------------------------------------------------
       # Set up ET
       # ------------------------------------------------------------------------------
@@ -162,6 +163,7 @@ jobs:
         run: |
           ${TRIC_BIN} use event-tickets
           ${TRIC_BIN} composer install
+          ${TRIC_BIN} npm run build
       # ------------------------------------------------------------------------------
       # Clean `.htaccess` files (remove once this is solved: https://github.com/the-events-calendar/tric/issues/75)
       # ------------------------------------------------------------------------------
