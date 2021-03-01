@@ -86,7 +86,11 @@ jobs:
           ${TRIC_BIN} debug on
           ${TRIC_BIN} info
           ${TRIC_BIN} config
+      # ------------------------------------------------------------------------------
+      # Start the Chrome container
+      # ------------------------------------------------------------------------------
       - name: Start the Chrome container
+        if: ${{ matrix.suite == 'acceptance' }}
         run: ${TRIC_BIN} up chrome
       # ------------------------------------------------------------------------------
       # Fetch branches for dependent repos
@@ -167,7 +171,7 @@ jobs:
       # Set up ET (npm install and build)
       # ------------------------------------------------------------------------------
       - name: ET npm install and build
-        if: ${{ matrix.suite }} == 'acceptance'
+        if: ${{ matrix.suite == 'acceptance' }}
         run: |
           ${TRIC_BIN} npm install
           ${TRIC_BIN} npm run build
@@ -175,6 +179,7 @@ jobs:
       # Clean `.htaccess` files (remove once this is solved: https://github.com/the-events-calendar/tric/issues/75)
       # ------------------------------------------------------------------------------
       - name: Cleanup .htaccess files
+        if: ${{ matrix.suite == 'acceptance' }}
         run: |
           ls -a
           rm -f .htaccess
@@ -193,6 +198,7 @@ jobs:
       # Install and activate TwentyTwenty
       # ------------------------------------------------------------------------------
       - name: Install and activate TwentyTwenty
+        if: ${{ matrix.suite == 'acceptance' }}
         run:  ${TRIC_BIN} site-cli theme install twentytwenty --activate
       # ------------------------------------------------------------------------------
       # Run tests
