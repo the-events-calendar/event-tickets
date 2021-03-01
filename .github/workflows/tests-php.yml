@@ -19,13 +19,13 @@ jobs:
         suite:
           - acceptance
           - functional
-          #- integration
-          #- restv1 --group="capacity"
-          #- restv1 --skip-group="capacity"
-          #- unit
-          #- views_integration
-          #- wpunit --group="capacity"
-          #- wpunit --skip-group="capacity"
+          - integration
+          - restv1 --group="capacity"
+          - restv1 --skip-group="capacity"
+          - unit
+          - views_integration
+          - wpunit --group="capacity"
+          - wpunit --skip-group="capacity"
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
@@ -161,6 +161,14 @@ jobs:
           ${TRIC_BIN} composer install
           ${TRIC_BIN} npm run build
       # ------------------------------------------------------------------------------
+      # Set up ET Common (npm install and build)
+      # ------------------------------------------------------------------------------
+      - name: Set up ET Common (npm)
+        if: ${{ matrix.suite == 'acceptance' }}
+        run: |
+          ${TRIC_BIN} npm install
+          ${TRIC_BIN} npm run build
+      # ------------------------------------------------------------------------------
       # Set up ET
       # ------------------------------------------------------------------------------
       - name: Set up ET
@@ -170,7 +178,7 @@ jobs:
       # ------------------------------------------------------------------------------
       # Set up ET (npm install and build)
       # ------------------------------------------------------------------------------
-      - name: ET npm install and build
+      - name: Set up ET (npm)
         if: ${{ matrix.suite == 'acceptance' }}
         run: |
           ${TRIC_BIN} npm install
