@@ -17,8 +17,8 @@ jobs:
       fail-fast: false
       matrix:
         suite:
-          - acceptance --debug
-          #- functional
+          - acceptance
+          - functional
           #- integration
           #- restv1 --group="capacity"
           #- restv1 --skip-group="capacity"
@@ -163,6 +163,12 @@ jobs:
         run: |
           ${TRIC_BIN} use event-tickets
           ${TRIC_BIN} composer install
+      # ------------------------------------------------------------------------------
+      # Set up ET (npm install and build)
+      # ------------------------------------------------------------------------------
+      - name: ET npm install and build
+        if: ${{ matrix.suite }} == 'acceptance'
+        run: |
           ${TRIC_BIN} npm install
           ${TRIC_BIN} npm run build
       # ------------------------------------------------------------------------------
