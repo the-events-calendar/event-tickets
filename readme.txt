@@ -179,6 +179,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.1.1] TBD =
 
 * Fix - Compatibility with WordPress 5.7 and jQuery 3.5.X [ET-992]
+* Fix - Prevent the Attendee Registration page from having the title coming from draft pages. [ETP-360]
+* Fix - Highlight the "Ticketed" and "Unticketed" filters in the WordPress when they're applied. [ET-1022]
+* Fix - Prevent duplicate tickets from showing in post loops. [ETP-639]
+* Fix - Ensure ticket object caches return normally in all circumstances, preventing potential "Sold Out" messaging from happening in certain hosting environments. [ET-1023]
+* Fix - Set the default `iac` argument value in the single ticket REST API endpoint to add tickets since it is an optional argument to be sent.
+* Tweak - Added new `Ticket Holder Name` and `Ticket Holder Email Address` columns to the Attendees Report export CSV file and update the previous `Customer` columns to label as `Purchaser`. [ETP-652]
+* Tweak - Tweaked SQL queries for MySQL 8+ compatibility. [ET-1021]
 
 = [5.1.0] 2021-02-16 =
 

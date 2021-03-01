@@ -1099,6 +1099,9 @@ class Tribe__Tickets__Tickets_View {
 		 */
 		$template->add_template_globals( $args );
 
+		// Add local vars to ensure that the data is passed properly within WP_Query Loop.
+		$template->set_values( $args, true );
+
 		// Enqueue assets.
 		tribe_asset_enqueue_group( 'tribe-tickets-block-assets' );
 
