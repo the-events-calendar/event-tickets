@@ -163,6 +163,7 @@ jobs:
         run: |
           ${TRIC_BIN} use event-tickets
           ${TRIC_BIN} composer install
+          ${TRIC_BIN} npm install
           ${TRIC_BIN} npm run build
       # ------------------------------------------------------------------------------
       # Clean `.htaccess` files (remove once this is solved: https://github.com/the-events-calendar/tric/issues/75)
