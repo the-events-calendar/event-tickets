@@ -189,12 +189,10 @@ jobs:
       - name: Cleanup .htaccess files
         if: ${{ matrix.suite == 'acceptance' }}
         run: |
-          ls -a
           rm -f .htaccess
           rm -f common/.htaccess
           rm -f ../the-events-calendar/.htaccess
           rm -f ../the-events-calendar/common.htaccess
-          ls -a
       # ------------------------------------------------------------------------------
       # Init WordPress container
       # ------------------------------------------------------------------------------
