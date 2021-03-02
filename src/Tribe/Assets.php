@@ -355,7 +355,7 @@ class Tribe__Tickets__Assets {
 	/**
 	 * Check if we should enqueue the new Tickets Loader script.
 	 *
-	 * @since TBD
+	 * @since 5.1.1
 	 *
 	 * @return bool
 	 */
@@ -366,7 +366,7 @@ class Tribe__Tickets__Assets {
 		/**
 		 * Allow filtering whether the Tickets Loader script should be enqueued.
 		 *
-		 * @since TBD
+		 * @since 5.1.1
 		 *
 		 * @param bool $should_enqueue_tickets_loader Whether the Tickets Loader script should be enqueued.
 		 */

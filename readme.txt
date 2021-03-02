@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, patriciahillebrandt, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
-Tested up to: 5.6.1
+Tested up to: 5.7.0
 Stable tag: 5.1.1
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -176,7 +176,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.1.1] TBD =
+= [5.1.1] 2021-03-04 =
 
 * Fix - Compatibility with WordPress 5.7 and jQuery 3.5.X [ET-992]
 * Fix - Prevent the Attendee Registration page from having the title coming from draft pages. [ETP-360]
@@ -186,6 +186,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Set the default `iac` argument value in the single ticket REST API endpoint to add tickets since it is an optional argument to be sent.
 * Tweak - Added new `Ticket Holder Name` and `Ticket Holder Email Address` columns to the Attendees Report export CSV file and update the previous `Customer` columns to label as `Purchaser`. [ETP-652]
 * Tweak - Tweaked SQL queries for MySQL 8+ compatibility. [ET-1021]
+* Language - 2 new strings added, 38 updated, 2 fuzzied, and 0 obsoleted
 
 = [5.1.0] 2021-02-16 =
 

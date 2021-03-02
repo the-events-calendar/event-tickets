@@ -34,7 +34,6 @@
     "lint": "eslint --quiet --parser=babel-eslint 'src/modules/**/*.js'",
     "lint:fix": "npm run lint -- --fix",
     "test": "TZ=UTC jest --config jest.config.json",
-    "test:travis": "npm run test -- --maxWorkers=4",
     "zip": "node node_modules/product-taskmaster/util/zip.js",
     "glotpress": "gulp glotpress"
   },

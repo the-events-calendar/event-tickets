@@ -21,7 +21,6 @@ params:
 ```
 
 Codeception will process configuration files in a cascading way, think of CSS, so the `codeception.dist.yml` file will be read first and whatever you set in `codeception.yml` will be applied on top of it.
-The only override we do here is telling Codeception that it should read the modules settings not from the `.env` file, that is configured to run the tests on Travis CI, but to read them from the `.env.testing.local` file.
 Now create, again in the plugin root folder, a `.env.testing.local` file copying the `.env.` file and changing any value in it to match your local installation, e.g.:
 
 ```
