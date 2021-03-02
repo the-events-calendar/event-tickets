@@ -8,12 +8,6 @@
 	input[type=radio] {
 		margin-right: 5px;
 	}
-
-	span {
-		&.datetime_seperator {
-			margin-left: 10px;
-		}
-	}
 }
 
 .ticket_list {
@@ -293,6 +287,10 @@
 		float: right;
 		margin-top: 0;
 	}
+}
+
+.global_capacity-wrapper {
+	margin-bottom: 1em;
 }
 
 .global_capacity_edit_button {
@@ -612,4 +610,38 @@ p.description {
 
 #ticket_form .original_stock_cap span {
 	margin-right: 0;
+}
+
+.ticket-editor-notice {
+	padding: 10px;
+	margin-bottom: 10px;
+	font-size: 13px;
+	border-radius: 4px;
+	display: flex;
+
+	&.info {
+		background-color: #EDF6FC;
+		.dashicons {
+			color: #2A709D;
+		}
+	}
+
+	&.tribe-dependent {
+		display: none;
+
+		&.tribe-active {
+			display: flex;
+		}
+	}
+
+	.dashicons {
+		font-size: 20px;
+		width: 20px;
+		height: 20px;
+		margin-right: 2px;
+	}
+}
+
+.tribe_events_page_tickets-attendees .search-box .button {
+	text-transform: capitalize;
 }

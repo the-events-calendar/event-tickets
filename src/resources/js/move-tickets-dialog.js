@@ -570,5 +570,5 @@ var tribe_move_tickets = tribe_move_tickets || {};
 		return ! $current_stage.next( '.stage' ).length;
 	}
 
-	$( document ).ready( init );
+	$( init );
 }( jQuery, tribe_move_tickets ) );

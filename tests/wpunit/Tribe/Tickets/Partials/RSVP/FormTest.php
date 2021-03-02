@@ -23,32 +23,40 @@ class Form extends WPTestCase {
 	 * @test
 	 */
 	public function test_should_render_form() {
-		$template  = tribe( 'tickets.editor.template' );
-		$event     = $this->get_mock_event( 'events/single/1.json' );
-		$event_id  = $event->ID;
-		$ticket_id = $this->create_rsvp_ticket( $event_id );
+		/** @var \Tribe__Tickets__Editor__Template $template */
+		$template = tribe( 'tickets.editor.template' );
 
-		$ticket = tribe( 'tickets.rsvp' )->get_ticket( $event_id, $ticket_id );
+		/** @var \Tribe__Tickets__RSVP $rsvp_instance */
+		$rsvp_instance = tribe( 'tickets.rsvp' );
+
+		$event     = $this->get_mock_event( 'events/single/1.json' );
+		$ticket_id = $this->create_rsvp_ticket( $event->ID );
+
+		$ticket = $rsvp_instance->get_ticket( $event->ID, $ticket_id );
 
 		$args = [
 			'ticket'  => $ticket,
-			'post_id' => $event_id,
+			'post_id' => $event->ID,
 			'going'   => true,
 		];
 
 		$html = $template->template( $this->partial_path, $args, false );
 
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
-		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
-		$driver->setTolerableDifferencesPrefixes( [
-			'quantity_',
-		] );
+		$driver->setTolerableDifferences( [ $ticket_id, $event->ID ] );
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'quantity_',
+			]
+		);
 
-		$driver->setTimeDependentAttributes( [
-			'data-rsvp-id',
-			'data-product-id',
-		] );
+		$driver->setTimeDependentAttributes(
+			[
+				'data-rsvp-id',
+				'data-product-id',
+			]
+		);
 
 		// Remove pesky SVG.
 		$html = preg_replace( '/<svg.*<\/svg>/Ums', '', $html );

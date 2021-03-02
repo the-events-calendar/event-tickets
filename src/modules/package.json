@@ -9,7 +9,7 @@
     "common"
   ],
   "private": true,
-  "repository": "git+https://github.com/moderntribe/event-tickets.git",
+  "repository": "git+https://github.com/the-events-calendar/event-tickets.git",
   "author": "Modern Tribe",
   "license": "GPL-2.0-or-later",
   "dependencies": {}

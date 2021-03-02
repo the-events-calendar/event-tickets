@@ -5,11 +5,14 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/modal/registration-js.php
  *
+ * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
+ *
  * @since 4.11.0
  * @since 4.11.3 Reformat a bit of the code around the button - no functional changes.
  * @since 4.11.3.1 Fix PHP errors when there are no tickets.
+ * @since 5.0.3 Updated template link.
  *
- * @version 4.11.3.1
+ * @version 5.0.3
  *
  */
 /** @var Tribe__Tickets__Attendee_Registration__View $view */
@@ -21,8 +24,10 @@ $providers      = wp_list_pluck( $tickets, 'provider' );
 $provider_class = '';
 $has_tpp        = false;
 $event_id       = get_the_ID();
-$meta           = Tribe__Tickets_Plus__Main::instance()->meta();
 $non_meta_count = 0;
+
+/** @var Tribe__Tickets_Plus__Meta $meta */
+$meta = tribe( 'tickets-plus.meta' );
 
 if ( ! empty( $providers ) ) {
 	$providers_arr  = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
@@ -61,11 +66,10 @@ if ( ! empty( $providers ) ) {
 	>
 		<?php foreach ( $tickets as $ticket ) : ?>
 			<?php
-			// Only include tickets with meta
-			$has_meta = get_post_meta( $ticket['id'], '_tribe_tickets_meta_enabled', true );
-
-			if ( empty( $has_meta ) || ! tribe_is_truthy( $has_meta ) ) {
+			// Only include tickets with meta.
+			if ( ! $meta->ticket_has_meta( $ticket['id'] ) ) {
 				$non_meta_count++;
+
 				continue;
 			}
 			?>

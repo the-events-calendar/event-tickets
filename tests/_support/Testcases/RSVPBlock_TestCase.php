@@ -54,7 +54,11 @@ class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block( $matrix ) {
-		$post_id = $this->factory()->post->create();
+		$post_id = $this->factory()->post->create(
+			[
+				'post_title' => 'Test post for RSVP ticket block',
+			]
+		);
 
 		$ticket_id = $this->setup_block_ticket( $post_id, $matrix );
 
@@ -67,7 +71,7 @@ class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 
 		$html = $rsvp_block->render();
 
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $post_id ] );
 		$driver->setTimeDependentAttributes( [
@@ -76,6 +80,19 @@ class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 
 		// Remove pesky SVG.
 		$html = preg_replace( '/<svg.*<\/svg>/Ums', '', $html );
+
+		// Handle variations that tolerances won't handle.
+		$html = str_replace(
+			[
+				$post_id,
+				$ticket_id,
+			],
+			[
+				'[EVENT_ID]',
+				'[TICKET_ID]',
+			],
+			$html
+		);
 
 		$this->assertNotEmpty( $html, 'RSVP block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );
@@ -86,7 +103,11 @@ class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block_after_update( $matrix ) {
-		$post_id = $this->factory()->post->create();
+		$post_id = $this->factory()->post->create(
+			[
+				'post_title' => 'Test post for RSVP ticket block after update',
+			]
+		);
 
 		// Create ticket.
 		$ticket_id = $this->setup_block_ticket( $post_id, $matrix['from'] );
@@ -105,7 +126,7 @@ class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 
 		$html = $rsvp_block->render();
 
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$driver->setTolerableDifferences( [ $ticket_id, $post_id ] );
 		$driver->setTimeDependentAttributes( [
@@ -114,6 +135,18 @@ class RSVPBlock_TestCase extends TicketsBlock_TestCase {
 
 		// Remove pesky SVG.
 		$html = preg_replace( '/<svg.*<\/svg>/Ums', '', $html );
+		// Handle variations that tolerances won't handle.
+		$html = str_replace(
+			[
+				$post_id,
+				$ticket_id,
+			],
+			[
+				'[EVENT_ID]',
+				'[TICKET_ID]',
+			],
+			$html
+		);
 
 		$this->assertNotEmpty( $html, 'RSVP block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );

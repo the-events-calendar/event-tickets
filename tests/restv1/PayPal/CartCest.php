@@ -20,6 +20,7 @@ class CartCest extends BaseRestCest {
 	/**
 	 * It should allow getting cart for post.
 	 *
+	 * @skip This isn't an endpoint we're using yet.
 	 * @test
 	 */
 	public function should_allow_getting_cart_for_post( Restv1Tester $I ) {
@@ -76,6 +77,7 @@ class CartCest extends BaseRestCest {
 	/**
 	 * It should allow getting cart for post without post ID.
 	 *
+	 * @skip This isn't an endpoint we're using yet.
 	 * @test
 	 */
 	public function should_allow_getting_cart_for_post_without_post_id( Restv1Tester $I ) {
@@ -111,6 +113,7 @@ class CartCest extends BaseRestCest {
 					'quantity'  => 15,
 					'post_id'   => $first_post_id,
 					'optout'    => 1,
+					'iac'       => 'none',
 					'provider'  => 'tribe-commerce',
 				],
 				[
@@ -118,6 +121,7 @@ class CartCest extends BaseRestCest {
 					'quantity'  => 5,
 					'post_id'   => $first_post_id,
 					'optout'    => 1,
+					'iac'       => 'none',
 					'provider'  => 'tribe-commerce',
 				],
 			],

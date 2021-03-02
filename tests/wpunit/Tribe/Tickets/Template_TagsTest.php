@@ -1300,6 +1300,9 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 			],
 		] );
 
+		// ET+ functionality filters this and would return true.
+		add_filter( 'tribe_tickets_data_ticket_ids_have_meta_fields', '__return_true' );
+
 		$ticket_meta = tribe_tickets_has_meta_fields( $ticket_id );
 		$rsvp_meta = tribe_tickets_has_meta_fields( $rsvp_id );
 

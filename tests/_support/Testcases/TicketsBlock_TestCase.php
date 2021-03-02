@@ -16,6 +16,13 @@ class TicketsBlock_TestCase extends WPTestCase {
 	use CapacityMatrix;
 
 	/**
+	 * Whether to use v2 views.
+	 *
+	 * @var bool
+	 */
+	protected $use_v2 = false;
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function setUp() {
@@ -35,6 +42,14 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		// Reset the template singleton.
 		tribe_singleton( 'tickets.editor.template', new Template );
+
+		if ( $this->use_v2 ) {
+			add_filter( 'tribe_tickets_new_views_is_enabled', '__return_true' );
+			add_filter( 'tribe_tickets_rsvp_new_views_is_enabled', '__return_true' );
+		} else {
+			add_filter( 'tribe_tickets_new_views_is_enabled', '__return_false' );
+			add_filter( 'tribe_tickets_rsvp_new_views_is_enabled', '__return_false' );
+		}
 
 		/** @var \wpdb $wpdb */
 		global $wpdb;
@@ -122,13 +137,14 @@ class TicketsBlock_TestCase extends WPTestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block( $matrix ) {
-		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
 
 		// Get first key.
 		$provider = key( $this->get_providers() );
 
 		$post_id = $this->factory()->post->create( [
+			'post_title' => 'Test post for ticket block',
 			'meta_input' => [
 				$tickets_handler->key_provider_field => $provider,
 			],
@@ -142,12 +158,13 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		$html = $tickets_view->get_tickets_block( get_post( $post_id ) );
 
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$driver->setTolerableDifferences( [
 			$ticket_id,
 			$post_id,
 		] );
+
 		$driver->setTolerableDifferencesPrefixes( [
 			'post-',
 			'tribe-block-tickets-item-',
@@ -161,13 +178,29 @@ class TicketsBlock_TestCase extends WPTestCase {
 			'Test EDD ticket description for ',
 			'Test WooCommerce ticket for ',
 			'Test WooCommerce ticket description for ',
+			'Test RSVP ticket for ',
+			'Ticket RSVP ticket excerpt for ',
 		] );
+
 		$driver->setTimeDependentAttributes( [
 			'data-ticket-id',
 		] );
 
 		// Remove the URL + port so it doesn't conflict with URL tolerances.
-		$html = str_replace( 'http://localhost:8080', 'http://test.tribe.dev', $html );
+		$html = str_replace( home_url(), TRIBE_TESTS_HOME_URL, $html );
+
+		// Handle variations that tolerances won't handle.
+		$html = str_replace(
+			[
+				$post_id,
+				$ticket_id,
+			],
+			[
+				'[EVENT_ID]',
+				'[TICKET_ID]',
+			],
+			$html
+		);
 
 		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );
@@ -178,13 +211,14 @@ class TicketsBlock_TestCase extends WPTestCase {
 	 * @test
 	 */
 	public function test_should_render_ticket_block_after_update( $matrix ) {
-		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
 
 		// Get first key.
 		$provider = key( $this->get_providers() );
 
 		$post_id = $this->factory()->post->create( [
+			'post_title' => 'Test post for ticket block after update',
 			'meta_input' => [
 				$tickets_handler->key_provider_field => $provider,
 			],
@@ -204,7 +238,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		$html = $tickets_view->get_tickets_block( get_post( $post_id ) );
 
-		$driver = new WPHtmlOutputDriver( home_url(), 'http://test.tribe.dev' );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$driver->setTolerableDifferences( [
 			$ticket_id,
@@ -221,13 +255,28 @@ class TicketsBlock_TestCase extends WPTestCase {
 			'Test Easy Digital Downloads ticket description for ',
 			'Test WooCommerce ticket for ',
 			'Test WooCommerce ticket description for ',
+			'Test RSVP ticket for ',
+			'Ticket RSVP ticket excerpt for ',
 		] );
 		$driver->setTimeDependentAttributes( [
 			'data-ticket-id',
 		] );
 
 		// Remove the URL + port so it doesn't conflict with URL tolerances.
-		$html = str_replace( 'http://localhost:8080', 'http://test.tribe.dev', $html );
+		$html = str_replace( home_url(), TRIBE_TESTS_HOME_URL, $html );
+
+		// Handle variations that tolerances won't handle.
+		$html = str_replace(
+			[
+				$post_id,
+				$ticket_id,
+			],
+			[
+				'[EVENT_ID]',
+				'[TICKET_ID]',
+			],
+			$html
+		);
 
 		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );

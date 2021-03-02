@@ -9,7 +9,10 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version 4.11.0
+ * @since 5.0.4 Update template to use icons from Tribe Common.
+ * @since 5.0.4.1 Call dot views using template class to prevent issues where this template was included outside of a template class.
+ *
+ * @version 5.0.4.1
  *
  */
 if ( empty( $text ) ) {
@@ -33,8 +36,8 @@ if ( ! empty( $loader_classes ) ) {
 ?>
 <div class="tribe-common">
 	<div <?php tribe_classes( $spinner_classes ); ?> >
-		<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--first"></div>
-		<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--second"></div>
-		<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--third"></div>
+		<?php $this->template( 'v2/components/icons/dot', [ 'classes' => [ 'tribe-common-c-loader__dot', 'tribe-common-c-loader__dot--first' ] ] ); ?>
+		<?php $this->template( 'v2/components/icons/dot', [ 'classes' => [ 'tribe-common-c-loader__dot', 'tribe-common-c-loader__dot--second' ] ] ); ?>
+		<?php $this->template( 'v2/components/icons/dot', [ 'classes' => [ 'tribe-common-c-loader__dot', 'tribe-common-c-loader__dot--third' ] ] ); ?>
 	</div>
 </div>

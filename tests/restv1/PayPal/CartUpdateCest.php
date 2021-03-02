@@ -66,6 +66,7 @@ class CartUpdateCest extends BaseRestCest {
 				'quantity'  => 15,
 				'post_id'   => $first_post_id,
 				'optout'    => 1,
+				'iac'       => 'none',
 				'provider'  => 'tribe-commerce',
 			],
 			[
@@ -73,6 +74,7 @@ class CartUpdateCest extends BaseRestCest {
 				'quantity'  => 5,
 				'post_id'   => $first_post_id,
 				'optout'    => 0,
+				'iac'       => 'none',
 				'provider'  => 'tribe-commerce',
 			],
 		], $response['tickets'] );
@@ -180,6 +182,7 @@ class CartUpdateCest extends BaseRestCest {
 				'quantity'  => 15,
 				'post_id'   => $first_post_id,
 				'optout'    => 1,
+				'iac'       => 'none',
 				'provider'  => 'tribe-commerce',
 			],
 			[
@@ -187,6 +190,7 @@ class CartUpdateCest extends BaseRestCest {
 				'quantity'  => 5,
 				'post_id'   => $first_post_id,
 				'optout'    => 0,
+				'iac'       => 'none',
 				'provider'  => 'tribe-commerce',
 			],
 		], $response['tickets'] );

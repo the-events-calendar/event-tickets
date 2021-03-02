@@ -2,6 +2,7 @@ actor: AcceptanceTester
 modules:
     enabled:
         - \Helper\Acceptance
+        - \Tribe\Tests\Helper\TECDb
         # see https://github.com/lucatume/wp-browser#modules to know the general ratio of each
         - WPWebDriver #browse
         - WPDb #manipulate the database and look up stuff
@@ -19,7 +20,7 @@ modules:
             browser: chrome
             host: %CHROMEDRIVER_HOST%
             port: %CHROMEDRIVER_PORT%
-            window_size: 1366x768
+            window_size: 1366x1400
             capabilities:
               chromeOptions:
                 args:
@@ -33,7 +34,7 @@ modules:
            dsn: 'mysql:host=%WP_DB_HOST%;dbname=%WP_DB_NAME%'
            user: %WP_DB_USER%
            password: %WP_DB_PASSWORD%
-           dump: 'tests/_data/dump.sql'
+           dump: 'tests/_data/dump-acceptance.sql'
            populate: true
            waitlock: 10
            cleanup: true

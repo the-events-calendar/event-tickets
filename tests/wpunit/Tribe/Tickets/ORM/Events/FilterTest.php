@@ -22,6 +22,9 @@ class FilterTest extends EventsTestCase {
 		// Setup events.
 		$events = tribe_events();
 
+		// Always return consistent list of IDs.
+		$events->order_by( 'id' );
+
 		// Enable found() calculations.
 		$events->set_found_rows( true );
 
@@ -30,6 +33,7 @@ class FilterTest extends EventsTestCase {
 
 		$events->by( ...$args );
 
+		// @todo Remove this when attendee_user__not_in is finished.
 		if ( 'attendee_user__not_in' === $filter_name ) {
 			codecept_debug( var_export( $args, true ) );
 			codecept_debug( var_export( $assertions['get_ids'], true ) );

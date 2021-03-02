@@ -1,11 +1,11 @@
 /**
  * Event Tickets - Common responsive
  *
- * @since TDB
- * @todo @juanfra: Check this once we define https://github.com/moderntribe/tribe-common/pull/1379
+ * @since 5.0.3
+ * @todo @juanfra: Check this once we define https://github.com/the-events-calendar/tribe-common/pull/1379
  */
 
-@import "common/utilities/_all.pcss";
+@import "utilities/_all.pcss";
 
 .event-tickets {
 
@@ -207,5 +207,19 @@
 				padding-right: var(--grid-gutter-half);
 			}
 		}
+	}
+
+	/* -------------------------------------------------------------------------
+	 *
+	 * Common responsive: Theme Overrides
+	 *
+	 * ------------------------------------------------------------------------- */
+
+	/* -------------------------------------------------------------------------
+	 * Theme Overrides - Twenty Twenty
+	 * ------------------------------------------------------------------------- */
+
+	.tribe-theme-twentytwenty & {
+		background-color: transparent;
 	}
 }

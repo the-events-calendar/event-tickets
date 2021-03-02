@@ -5,7 +5,7 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/modal/item-total.php
  *
- * @link    {INSERT_ARTICLE_LINK_HERE}
+ * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   4.11.0
  * @since   4.11.3 Updated code comments.

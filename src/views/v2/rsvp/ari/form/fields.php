@@ -5,7 +5,7 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/rsvp/ari/form/fields.php
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  * @var int $post_id The post ID the RSVP is linked to.

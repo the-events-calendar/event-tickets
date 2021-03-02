@@ -7,7 +7,7 @@
  *
  * See more documentation about our views templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @version 4.12.0
  *

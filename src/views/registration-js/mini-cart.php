@@ -5,12 +5,15 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration-js/mini-cart.php
  *
+ * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
+ *
  * @since   4.11.0
  * @since   4.12.0 Prevent potential errors when $provider_obj is not valid.
  * @since   4.12.3 Update detecting ticket provider to account for possibly inactive provider. Rename $provider_obj to
  *              the more accurately named $cart_provider.
+ * @since   5.0.4  Pass must_login variable to blocks/tickets/item template
  *
- * @version 4.12.3
+ * @version 5.0.4
  */
 $provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
 
@@ -57,6 +60,7 @@ $cart_url            = $this->get( 'cart_url' );
 						'ticket'          => $cart_provider->get_ticket( $event_id, $ticket['id'] ),
 						'key'             => $key,
 						'is_mini'         => true,
+						'must_login'      => ! is_user_logged_in() && $cart_provider->login_required(),
 						'currency_symbol' => $currency_symbol,
 						'provider'        => $cart_provider,
 						'post_id'         => $event_id,
