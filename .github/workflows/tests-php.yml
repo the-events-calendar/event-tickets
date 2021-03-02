@@ -87,6 +87,12 @@ jobs:
           ${TRIC_BIN} info
           ${TRIC_BIN} config
       # ------------------------------------------------------------------------------
+      # Start the Chrome container
+      # ------------------------------------------------------------------------------
+      - name: Start the Chrome container
+        if: ${{ matrix.suite == 'acceptance' }}
+        run: ${TRIC_BIN} up chrome
+      # ------------------------------------------------------------------------------
       # Fetch branches for dependent repos
       # ------------------------------------------------------------------------------
       - name: Fetch head branch from TEC
@@ -146,18 +152,72 @@ jobs:
           ${TRIC_BIN} use the-events-calendar/common
           ${TRIC_BIN} composer install --no-dev
       # ------------------------------------------------------------------------------
-      # Set up ET and run tests
+      # Set up ET Common
       # ------------------------------------------------------------------------------
       - name: Set up ET Common
         run: |
           docker network prune -f
           ${TRIC_BIN} use event-tickets/common
           ${TRIC_BIN} composer install
+          ${TRIC_BIN} npm run build
+      # ------------------------------------------------------------------------------
+      # Set up ET Common (npm install and build)
+      # ------------------------------------------------------------------------------
+      - name: Set up ET Common (npm)
+        if: ${{ matrix.suite == 'acceptance' }}
+        run: |
+          ${TRIC_BIN} npm install
+          ${TRIC_BIN} npm run build
+      # ------------------------------------------------------------------------------
+      # Set up ET
+      # ------------------------------------------------------------------------------
       - name: Set up ET
         run: |
           ${TRIC_BIN} use event-tickets
           ${TRIC_BIN} composer install
+      # ------------------------------------------------------------------------------
+      # Set up ET (npm install and build)
+      # ------------------------------------------------------------------------------
+      - name: Set up ET (npm)
+        if: ${{ matrix.suite == 'acceptance' }}
+        run: |
+          ${TRIC_BIN} npm install
+          ${TRIC_BIN} npm run build
+      # ------------------------------------------------------------------------------
+      # Clean `.htaccess` files (remove once this is solved: https://github.com/the-events-calendar/tric/issues/75)
+      # ------------------------------------------------------------------------------
+      - name: Cleanup .htaccess files
+        if: ${{ matrix.suite == 'acceptance' }}
+        run: |
+          rm -f .htaccess
+          rm -f common/.htaccess
+          rm -f ../the-events-calendar/.htaccess
+          rm -f ../the-events-calendar/common/.htaccess
+      # ------------------------------------------------------------------------------
+      # Init WordPress container
+      # ------------------------------------------------------------------------------
       - name: Init the WordPress container
-        run: ${TRIC_BIN} up wordpress
+        run: |
+          ${TRIC_BIN} up wordpress
+          ${TRIC_BIN} site-cli core version
+      # ------------------------------------------------------------------------------
+      # Install and activate TwentyTwenty
+      # ------------------------------------------------------------------------------
+      - name: Install and activate TwentyTwenty
+        if: ${{ matrix.suite == 'acceptance' }}
+        run:  ${TRIC_BIN} site-cli theme install twentytwenty --activate
+      # ------------------------------------------------------------------------------
+      # Run tests
+      # ------------------------------------------------------------------------------
       - name: Run suite tests
         run: ${TRIC_BIN} run ${{ matrix.suite }} --ext DotReporter
+      # ------------------------------------------------------------------------------
+      # Upload artifacts (On failure)
+      # ------------------------------------------------------------------------------
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: output ${{ matrix.suite }}
+          path: tests/_output/
+          retention-days: 7

@@ -14,7 +14,7 @@
     "wp-coding-standards/wpcs": "^2.1",
     "automattic/vipwpcs": "^2.0",
     "the-events-calendar/tribalscents": "dev-master",
-    "lucatume/wp-browser": "^2.6.0",
+    "lucatume/wp-browser": "^3.0.5",
     "codeception/codeception": "^4.0",
     "phpunit/phpunit": "^6.5.14",
     "lucatume/function-mocker": "^1.3.8",
