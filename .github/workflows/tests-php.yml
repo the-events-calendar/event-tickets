@@ -192,7 +192,7 @@ jobs:
           rm -f .htaccess
           rm -f common/.htaccess
           rm -f ../the-events-calendar/.htaccess
-          rm -f ../the-events-calendar/common.htaccess
+          rm -f ../the-events-calendar/common/.htaccess
       # ------------------------------------------------------------------------------
       # Init WordPress container
       # ------------------------------------------------------------------------------
