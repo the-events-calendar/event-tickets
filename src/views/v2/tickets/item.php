@@ -11,9 +11,9 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   5.0.3
- * @since TBD Display data attributes via `tribe_attributes` and make them filterable via `tribe_tickets_block_ticket_html_attributes`.
+ * @since 5.1.1 Display data attributes via `tribe_attributes` and make them filterable via `tribe_tickets_block_ticket_html_attributes`.
  *
- * @version TBD
+ * @version 5.1.1
  *
  * If RSVP:
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
@@ -112,7 +112,7 @@ if ( $has_shared_cap ) {
 /**
  * Filter the ticket data attributes.
  *
- * @since TBD
+ * @since 5.1.1
  *
  * @param array $attributes A list of data attributes with their values.
  * @param Tribe__Tickets__Ticket_Object $ticket The ticket object.
