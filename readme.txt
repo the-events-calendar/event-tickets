@@ -176,7 +176,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.1.1] 2021-03-02 =
+= [5.1.1] 2021-03-04 =
 
 * Fix - Compatibility with WordPress 5.7 and jQuery 3.5.X [ET-992]
 * Fix - Prevent the Attendee Registration page from having the title coming from draft pages. [ETP-360]
