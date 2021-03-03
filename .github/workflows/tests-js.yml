@@ -1,0 +1,60 @@
+name: 'NPM Tests'
+on: [pull_request]
+jobs:
+  test:
+    strategy:
+      matrix:
+        suite: [ 'test' ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - name: Checkout automation tools
+        uses: actions/checkout@v1
+        with:
+          repository: the-events-calendar/tric
+          ref: main
+          path: tric
+          fetch-depth: 1
+      - name: Start ssh-agent
+        run: |
+          mkdir -p "${HOME}/.ssh";
+          ssh-agent -a /tmp/ssh_agent.sock;
+      - name: Set up env vars
+        run: |
+          echo "TRIC=1" >> $GITHUB_ENV
+          echo "TRIC_BIN=${GITHUB_WORKSPACE}/../tric/tric" >> $GITHUB_ENV
+          echo "SSH_AUTH_SOCK=/tmp/ssh_agent.sock" >> $GITHUB_ENV
+      # ------------------------------------------------------------------------------
+      # Initialize tric
+      # ------------------------------------------------------------------------------
+      - name: tric use event-tickets
+        run: |
+          cd ${GITHUB_WORKSPACE}/..
+          "${TRIC_BIN}" interactive off
+          "${TRIC_BIN}" build-prompt off
+          "${TRIC_BIN}" here
+          "${TRIC_BIN}" debug on
+      # ------------------------------------------------------------------------------
+      # Set up ET Common
+      # ------------------------------------------------------------------------------
+      - name: Set up ET Common
+        run: |
+          docker network prune -f
+          ${TRIC_BIN} use event-tickets/common
+          ${TRIC_BIN} npm install
+      # ------------------------------------------------------------------------------
+      # Set up ET
+      # ------------------------------------------------------------------------------
+      - name: Set up ET
+        run: |
+          docker network prune -f
+          ${TRIC_BIN} use event-tickets
+          ${TRIC_BIN} npm install
+      # ------------------------------------------------------------------------------
+      # Run JS tests
+      # ------------------------------------------------------------------------------
+      - name: Run JS test suite
+        run: ${TRIC_BIN} npm run ${{ matrix.suite }}
