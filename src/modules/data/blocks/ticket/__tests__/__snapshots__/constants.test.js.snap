@@ -53,6 +53,7 @@ exports[`Ticket Constants TC_ORDERS 1`] = `"tpp-orders"`;
 
 exports[`Ticket Constants TICKET_ORDERS_PAGE_SLUG 1`] = `
 Object {
+  "Tribe__Tickets_Plus__Commerce__EDD__Main": "edd-orders",
   "Tribe__Tickets_Plus__Commerce__WooCommerce__Main": "tickets-orders",
   "Tribe__Tickets__Commerce__PayPal__Main": "tpp-orders",
 }
