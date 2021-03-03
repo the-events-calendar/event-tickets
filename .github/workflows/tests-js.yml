@@ -43,11 +43,11 @@ jobs:
       # ------------------------------------------------------------------------------
       # Set up ET Common
       # ------------------------------------------------------------------------------
-      - name: Set up ET Common
-        run: |
-          docker network prune -f
-          ${TRIC_BIN} use event-tickets/common
-          ${TRIC_BIN} npm install
+      #- name: Set up ET Common
+      #  run: |
+      #    docker network prune -f
+      #    ${TRIC_BIN} use event-tickets/common
+      #    ${TRIC_BIN} npm install
       # ------------------------------------------------------------------------------
       # Set up ET
       # ------------------------------------------------------------------------------
