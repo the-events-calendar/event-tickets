@@ -26,8 +26,8 @@ jobs:
       - name: Set up tric env vars
         run: |
           echo "TRIC=1" >> $GITHUB_ENV
-          echo "TRIC_BIN=${GITHUB_WORKSPACE}/../tric/tric" >> $GITHUB_ENV
-          echo "TRIC_WP_DIR=${GITHUB_WORKSPACE}/../tric/_wordpress" >> $GITHUB_ENV
+          echo "TRIC_BIN=${GITHUB_WORKSPACE}/tric/tric" >> $GITHUB_ENV
+          echo "TRIC_WP_DIR=${GITHUB_WORKSPACE}/tric/_wordpress" >> $GITHUB_ENV
           echo "TRIC_WORDPRESS_DOCKERFILE=Dockerfile.base" >> $GITHUB_ENV
           echo "SSH_AUTH_SOCK=/tmp/ssh_agent.sock" >> $GITHUB_ENV
       - name: Set run context for tric
