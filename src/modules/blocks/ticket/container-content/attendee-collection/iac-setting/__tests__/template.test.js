@@ -5,7 +5,7 @@ import React from 'react';
 
 import IACSetting from './../template';
 
-describe( 'IACSetting', () => {
+describe.skip( 'IACSetting', () => {
 	test( 'Render the component with no errors', () => {
 		const onChange = jest.fn();
 		const iacDefault = 'hello';
