@@ -17,7 +17,7 @@ Manage tickets and RSVPs for free with [Event Tickets](https://evnt.is/1ao8), fr
 
 This plugin makes it easy to sell tickets and collect registration for in-person or virtual events. Plus, it comes with features backed by our world-class team of developers and designers. Integrate Event Tickets with your PayPal business account and manage attendees from your WordPress dashboard.
 
-https://vimeo.com/480516958/dda22d4e01
+https://vimeo.com/480516958
 
 = 🎟️ Ticketing and Registration for WordPress =
 
