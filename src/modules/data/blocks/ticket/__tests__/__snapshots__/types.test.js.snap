@@ -58,6 +58,8 @@ exports[`Tickets block types SET_TICKET_HAS_CHANGES 1`] = `"@@MT/TICKETS/SET_TIC
 
 exports[`Tickets block types SET_TICKET_HAS_DURATION_ERROR 1`] = `"@@MT/TICKETS/SET_TICKET_HAS_DURATION_ERROR"`;
 
+exports[`Tickets block types SET_TICKET_IAC_SETTING 1`] = `"@@MT/TICKETS/SET_TICKET_IAC_SETTING"`;
+
 exports[`Tickets block types SET_TICKET_ID 1`] = `"@@MT/TICKETS/SET_TICKET_ID"`;
 
 exports[`Tickets block types SET_TICKET_INITIAL_STATE 1`] = `"@@MT/TICKETS/SET_TICKET_INITIAL_STATE"`;
@@ -73,8 +75,6 @@ exports[`Tickets block types SET_TICKET_PRICE 1`] = `"@@MT/TICKETS/SET_TICKET_PR
 exports[`Tickets block types SET_TICKET_PROVIDER 1`] = `"@@MT/TICKETS/SET_TICKET_PROVIDER"`;
 
 exports[`Tickets block types SET_TICKET_SKU 1`] = `"@@MT/TICKETS/SET_TICKET_SKU"`;
-
-exports[`Tickets block types SET_TICKET_IAC_SETTING 1`] = `"@@MT/TICKETS/SET_TICKET_IAC_SETTING"`;
 
 exports[`Tickets block types SET_TICKET_SOLD 1`] = `"@@MT/TICKETS/SET_TICKET_SOLD"`;
 
@@ -106,11 +106,11 @@ exports[`Tickets block types SET_TICKET_TEMP_END_TIME 1`] = `"@@MT/TICKETS/SET_T
 
 exports[`Tickets block types SET_TICKET_TEMP_END_TIME_INPUT 1`] = `"@@MT/TICKETS/SET_TICKET_TEMP_END_TIME_INPUT"`;
 
+exports[`Tickets block types SET_TICKET_TEMP_IAC_SETTING 1`] = `"@@MT/TICKETS/SET_TICKET_TEMP_IAC_SETTING"`;
+
 exports[`Tickets block types SET_TICKET_TEMP_PRICE 1`] = `"@@MT/TICKETS/SET_TICKET_TEMP_PRICE"`;
 
 exports[`Tickets block types SET_TICKET_TEMP_SKU 1`] = `"@@MT/TICKETS/SET_TICKET_TEMP_SKU"`;
-
-exports[`Tickets block types SET_TICKET_TEMP_IAC_SETTING 1`] = `"@@MT/TICKETS/SET_TICKET_TEMP_IAC_SETTING"`;
 
 exports[`Tickets block types SET_TICKET_TEMP_START_DATE 1`] = `"@@MT/TICKETS/SET_TICKET_TEMP_START_DATE"`;
 
