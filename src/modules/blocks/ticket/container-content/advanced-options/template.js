@@ -16,7 +16,6 @@ import { __ } from '@wordpress/i18n';
  */
 import { Accordion } from '@moderntribe/common/elements';
 import './style.pcss';
-import Duration from './duration/container';
 import SKU from './sku/container';
 import EcommerceOptions from './ecommerce-options/container';
 import MoveDelete from './move-delete/container';
@@ -47,7 +46,6 @@ class AdvancedOptions extends Component {
 
 	getContent = () => (
 		<Fragment>
-			<Duration clientId={ this.props.clientId } />
 			<SKU clientId={ this.props.clientId } />
 			<EcommerceOptions clientId={ this.props.clientId } />
 			{ this.props.hasBeenCreated && (
