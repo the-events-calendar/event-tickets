@@ -21,9 +21,9 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 			return;
 		}
 
-		add_filter( 'admin_body_class', array( $this, 'filter_admin_body_class' ) );
-		add_action( 'admin_init', array( $this, 'admin_init' ) );
-		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+		add_filter( 'admin_body_class', [ $this, 'filter_admin_body_class' ] );
+		add_action( 'admin_init', [ $this, 'admin_init' ] );
+		add_action( 'admin_menu', [ $this, 'admin_menu' ] );
 	}
 
 	/**
@@ -46,17 +46,17 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 		}
 
 
-		// if not on attendee registration page
+		// if not on attendee registration page.
 		if ( tribe_get_request_var( 'page', '' ) !== $ar_page_slug ) {
 			return $classes;
 		}
 
-		// if tribe_events_modal is not set or not set to 1
+		// if tribe_events_modal is not set or not set to 1.
 		if ( ! tribe_get_request_var( 'tribe_events_modal', 0 ) ) {
 			return $classes;
 		}
 
-		// add .tribe_events_modal to body class
+		// add `.tribe_events_modal` to body class.
 		$classes .= ' tribe_events_modal';
 
 		return $classes;
@@ -67,17 +67,17 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	 *
 	 * @since 4.9
 	 *
-	 * @return null
+	 * @return void
 	 */
 	public function admin_menu() {
 		// Setup attendee registration
 		add_submenu_page(
-			null, // attach to null so it doesn't appear in sidebar
+			null, // attach to null so it doesn't appear in sidebar.
 			'Attendee Registration',
-			'Attendee Registration', // hidden
+			'Attendee Registration', // hidden.
 			'edit_posts',
 			'attendee-registration',
-			array( $this, 'render' )
+			[ $this, 'render' ]
 		);
 	}
 
@@ -108,8 +108,8 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 		if ( isset( $_GET['success'] ) ) {
 			tribe_notice(
 				'attendee-information-success',
-				array( $this, 'success_notice' ),
-				array( 'type' => 'success' )
+				[ $this, 'success_notice' ],
+				[ 'type' => 'success' ]
 			);
 		}
 
@@ -121,7 +121,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	 *
 	 * @since 4.9
 	 *
-	 * @return string success message
+	 * @return string success message.
 	 */
 	public function success_notice() {
 		$link    = '<a href="' . esc_url( get_edit_post_link( $this->post->ID, 'raw' ) ) . '">' . esc_html__( 'return to the content editor', 'event-tickets' ) . '</a>';
@@ -133,12 +133,9 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	}
 
 	/**
-	 * output for attendee information metabox
+	 * Output for attendee information metabox.
 	 *
 	 * @since 4.9
-	 *
-	 * @param  $post_id post id for the event
-	 *
 	 */
 	public function render() {
 		if ( empty( $this->ticket ) || empty( $this->post ) ) {
@@ -187,7 +184,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	}
 
 	/**
-	 * handle the saving of attendee registration form
+	 * Handle the saving of attendee registration form.
 	 *
 	 * @since 4.9
 	 *
