@@ -1,11 +1,19 @@
 <?php
 $post_id = get_the_ID();
 
+// Get all the event providers.
+$providers = Tribe__Tickets__Tickets::get_active_providers_for_post( $post_id );
+
+// If RSVP is the only provider, bail out.
+if ( count( $providers ) == 1 && isset( $providers['Tribe__Tickets__RSVP'] ) ) {
+	return;
+}
+
 /** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 $tickets_handler = tribe( 'tickets.handler' );
 $total_tickets   = tribe_get_event_capacity( $post_id );
 
-// only show if there are tickets
+// Only show if there are tickets.
 if ( empty( $total_tickets ) ) {
 	return;
 }
