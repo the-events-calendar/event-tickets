@@ -121,12 +121,12 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @return void
 	 */
-	public function ticket_availability( $tickets = array() ) {
+	public function ticket_availability( $tickets = [] ) {
 
-		$response  = array( 'html' => '' );
-		$tickets   = tribe_get_request_var( 'tickets', array() );
+		$response = [ 'html' => '' ];
+		$tickets  = tribe_get_request_var( 'tickets', [] );
 
-		// Bail if we receive no tickets
+		// Bail if we receive no tickets.
 		if ( empty( $tickets ) ) {
 			wp_send_json_error( $response );
 		}
@@ -137,7 +137,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		/** @var Tribe__Tickets__Editor__Template $tickets_editor */
 		$tickets_editor = tribe( 'tickets.editor.template' );
 
-		// Parse the tickets and create the array for the response
+		// Parse the tickets and create the array for the response.
 		foreach ( $tickets as $ticket_id ) {
 			$ticket = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
 
@@ -168,7 +168,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  int $post_id Post ID
+	 * @param  int $post_id Post ID.
 	 *
 	 * @return array
 	 */
@@ -205,7 +205,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @since 4.9
 	 * @since 4.12.3 Retrieve slug from updated Ticktes Status Manager method.
 	 *
-	 * @param  Tribe__Tickets__Tickets $provider Provider class instance
+	 * @param  Tribe__Tickets__Tickets $provider Provider class instance.
 	 *
 	 * @return string
 	 */
@@ -230,12 +230,12 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  array $tickets Array of all tickets
+	 * @param  array $tickets Array of all tickets.
 	 *
 	 * @return array
 	 */
 	public function get_tickets_on_sale( $tickets ) {
-		$tickets_on_sale = array();
+		$tickets_on_sale = [];
 
 		foreach ( $tickets as $ticket ) {
 			if ( tribe_events_ticket_is_on_sale( $ticket ) ) {
@@ -251,7 +251,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  array $tickets Array of all tickets
+	 * @param  array $tickets Array of all tickets.
 	 *
 	 * @return bool
 	 */
@@ -270,7 +270,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param  array $tickets Array of all tickets
+	 * @param  array $tickets Array of all tickets.
 	 *
 	 * @return bool
 	 */
