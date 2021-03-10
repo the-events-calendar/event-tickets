@@ -178,7 +178,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.1.2] TBD =
 
-
+* Fix - Don't show View Orders link for RSVP only events. [ET-985]
 
 = [5.1.1] 2021-03-04 =
 
