@@ -111,7 +111,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 		}
 
 		$num_ticket_types_available = 0;
-		foreach( $this->all_tickets as $ticket ) {
+		foreach ( $this->all_tickets as $ticket ) {
 			if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
 				continue;
 			}
@@ -152,7 +152,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 					$parts[ $type . '_stock' ] = esc_html_x( 'Sold Out', 'events stock sold out (v2)', 'event-tickets' );
 				}
 
-				// Only re-apply if we don't have a stock yet
+				// Only re-apply if we don't have a stock yet.
 				if ( empty( $html['stock'] ) ) {
 					$html['stock'] = $parts[ $type . '_stock' ];
 					$sold_out      = $parts[ $type . '_stock' ];
@@ -179,7 +179,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 					 *
 					 * @since 4.10.1
 					 */
-					$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $this->post_id  ) );
+					$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $this->post_id ) );
 
 					if ( ! $threshold || $stock <= $threshold ) {
 
@@ -203,9 +203,11 @@ class Tickets implements \ArrayAccess, \Serializable {
 				$parts[ $type . '_stock' ] = $html['stock'] = $stock_html;
 
 				if ( 'rsvp' === $type ) {
+					/* Translators: RSVP singular label. */
 					$link_label  = esc_html( sprintf( _x( '%s Now', 'list view rsvp now ticket button', 'event-tickets' ), tribe_get_rsvp_label_singular( 'list_view_rsvp_now_button' ) ) );
 					$link_anchor = '#rsvp-now';
 				} else {
+					/* Translators: Tickets plural label. */
 					$link_label  = esc_html( sprintf( _x( 'Get %s', 'list view buy now ticket button', 'event-tickets' ), tribe_get_ticket_label_plural( 'list_view_buy_now_button' ) ) );
 					$link_anchor = '#tribe-tickets';
 				}
@@ -267,7 +269,6 @@ class Tickets implements \ArrayAccess, \Serializable {
 	 * Returns an array representation of the event tickets data.
 	 *
 	 * @since 4.10.9
-	 *
 	 *
 	 * @return array An array representation of the event tickets data.
 	 */
