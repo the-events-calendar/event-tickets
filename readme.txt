@@ -178,7 +178,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.1.2] TBD =
 
-
+* Tweak - Move the sales duration of Tickets and RSVP blocks outside of the "Advanced Options" section, making them more accessible. [ET-951]
 
 = [5.1.1] 2021-03-04 =
 
