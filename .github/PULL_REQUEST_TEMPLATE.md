@@ -1,9 +1,6 @@
 ### Ticket
 🎫 [TICKET_ID] <!-- Ticket ID, if there's any put it between brackets -->
 
-### Artifacts <!-- if applicable-->
-<!-- 🎥 screencast or 📷 screenshots -->
-
 ### Description
 <!-- Please describe what you have changed or added -->
 <!-- What types of changes does your code introduce? -->
@@ -11,6 +8,9 @@
 <!-- New feature (non-breaking change which adds functionality) -->
 <!-- Include any important information for reviewers -->
 <!-- Etc, etc, etc -->
+
+### Artifacts <!-- if applicable-->
+<!-- 🎥 screencast or 📷 screenshots -->
 
 ### Checklist:
 - [ ] I've included a readme entry. <!-- Confirm that it includes the ticket ID -->
