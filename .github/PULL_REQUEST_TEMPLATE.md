@@ -12,7 +12,7 @@
 <!-- Include any important information for reviewers -->
 <!-- Etc, etc, etc -->
 
-## Checklist:
+### Checklist:
 - [ ] I've included a readme entry. <!-- Confirm that it includes the ticket ID -->
 - [ ] My code is tested. <!-- Check that tests are passing and DO NOT merge if they're failing. -->
 - [ ] My code has proper inline documentation.
