@@ -3947,7 +3947,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string The generated security code.
 		 */
 		public function generate_security_code( $attendee_id ) {
-			return substr( md5( wp_rand() . '_' . $attendee_id ), 0, 10 );
+			$code = substr( md5( wp_rand() . '_' . $attendee_id ), 0, 10 );
+
+			/**
+			 * Filter the generated security code for tickets.
+			 *
+			 * @since 5.1.2
+			 *
+			 * @param string $code Generated secujrity code for attendee Ticket.
+			 * @param string $attendee_id ID of attendee.
+			 */
+			return apply_filters( 'tribe_tickets_attendee_security_code', $code, $attendee_id );
 		}
 
 		/**
