@@ -10,9 +10,9 @@
 <!-- Etc, etc, etc -->
 
 ### Artifacts <!-- if applicable-->
-<!-- 🎥 screencast or 📷 screenshots -->
+<!-- 🎥 screencast(s) or 📷 screenshot(s) -->
 
 ### Checklist:
-- [ ] I've included a readme entry. <!-- Confirm that it includes the ticket ID -->
+- [ ] I've included a readme.txt Changelog entry. <!-- Confirm that it includes the ticket ID -->
 - [ ] My code is tested. <!-- Check that tests are passing and DO NOT merge if they're failing. -->
 - [ ] My code has proper inline documentation.
