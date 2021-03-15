@@ -179,6 +179,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.1.2] TBD =
 
 * Fix - Add "Currently full" message on TEC views when the event has RSVPs without availability. [ET-1004]
+* Fix - Fixed showing notices for localized script in the attendee list page. [ET-1043]
 
 = [5.1.1] 2021-03-04 =
 
