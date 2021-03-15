@@ -16,10 +16,10 @@ class Tribe__Tickets__Editor__Template extends Tribe__Template {
 
 		$this->set_template_folder( 'src/views' );
 
-		// Configures this templating class to extract variables
+		// Configures this templating class to extract variables.
 		$this->set_template_context_extract( true );
 
-		// Uses the public folders
+		// Uses the public folders.
 		$this->set_template_folder_lookup( true );
 	}
 
@@ -31,9 +31,9 @@ class Tribe__Tickets__Editor__Template extends Tribe__Template {
 	 * @param array $default_attributes
 	 * @return array
 	 */
-	public function attributes( $default_attributes = array() ) {
+	public function attributes( $default_attributes = [] ) {
 		return wp_parse_args(
-			$this->get( 'attributes', array() ),
+			$this->get( 'attributes', [] ),
 			$default_attributes
 		);
 	}
