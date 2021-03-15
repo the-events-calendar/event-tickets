@@ -1,13 +1,12 @@
 <?php
-
 /**
- * Initialize Gutenberg Event Meta fields
+ * Initialize Gutenberg Event Meta fields.
  *
  * @since 4.9
  */
 class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
-	 * Register the required Meta fields for good Gutenberg saving
+	 * Register the required Meta fields for good Gutenberg saving.
 	 *
 	 * @since 4.9
 	 *
@@ -15,7 +14,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	 */
 	public function register() {
 
-		// That comes from Woo, that is why it's static string
+		// That comes from Woo, that is why it's static string.
 		register_meta(
 			'post',
 			'_price',
@@ -76,7 +75,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 			$this->boolean_or_null()
 		);
 
-		// Global Stock
+		// Global Stock.
 		register_meta(
 			'post',
 			Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED,
@@ -101,7 +100,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 			$this->text()
 		);
 
-		// Fetch RSVP keys
+		// Fetch RSVP keys.
 		$rsvp = tribe( 'tickets.rsvp' );
 
 		register_meta(
@@ -208,7 +207,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	 *
 	 * @return array
 	 */
-	public function register_meta_args( $args = array(), $defaults = '', $object_type = '', $meta_key = '' ) {
+	public function register_meta_args( $args = [], $defaults = '', $object_type = '', $meta_key = '' ) {
 		if ( '_edd_button_behavior' === $meta_key ) {
 			$args['show_in_rest'] = false;
 		}
