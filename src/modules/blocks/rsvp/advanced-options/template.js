@@ -33,10 +33,6 @@ class RSVPAdvancedOptions extends PureComponent {
 
 	getContent = () => (
 		<Fragment>
-			<RSVPDuration />
-			{ this.props.hasBeenCreated && (
-				<MoveDelete clientId={ this.props.clientId } />
-			) }
 		</Fragment>
 	);
 

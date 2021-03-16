@@ -20,8 +20,8 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 			return false;
 		}
 
-		add_filter( 'updated_post_meta', array( $this, 'trigger_update_capacity' ), 15, 4 );
-		add_filter( 'rest_prepare_tribe_rsvp_tickets', array( $this, 'filter_rest_hook' ), 10, 3 );
+		add_filter( 'updated_post_meta', [ $this, 'trigger_update_capacity' ], 15, 4 );
+		add_filter( 'rest_prepare_tribe_rsvp_tickets', [ $this, 'filter_rest_hook' ], 10, 3 );
 
 		return true;
 	}

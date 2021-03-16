@@ -39,15 +39,15 @@ class Tribe__Tickets__Editor__Compatibility__Tickets {
 			return $content;
 		}
 
-		// Fetch the post
+		// Fetch the post.
 		$post = get_post( get_the_ID() );
 
-		// Return content if post is empty
+		// Return content if post is empty.
 		if ( empty( $post ) ) {
 			return $content;
 		}
 
-		// We don't care about anything other than event for now
+		// We don't care about anything other than event for now.
 		if (
 			class_exists( 'Tribe__Events__Main' )
 			&& defined( 'Tribe__Events__Main::POSTTYPE' )
@@ -59,7 +59,7 @@ class Tribe__Tickets__Editor__Compatibility__Tickets {
 		/** @var Tribe__Tickets__Editor__Template__Overwrite $template_overwrite */
 		$template_overwrite = tribe( 'tickets.editor.template.overwrite' );
 
-		// Bail on non gutenberg
+		// Bail on non gutenberg.
 		if (
 			! has_blocks( $post->ID )
 			|| $template_overwrite->has_classic_editor( $post->ID )
@@ -74,7 +74,7 @@ class Tribe__Tickets__Editor__Compatibility__Tickets {
 
 		remove_filter( 'the_content', [ $this, 'include_frontend_form' ], 50 );
 
-		// Remove iCal to prevent infinite loops
+		// Remove iCal to prevent infinite loops.
 		remove_all_filters( $hook );
 
 		ob_start();
