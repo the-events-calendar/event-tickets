@@ -13,7 +13,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import RSVPAdvancedOptions from '@moderntribe/tickets/blocks/rsvp/advanced-options/container';
+import RSVPDuration from './../duration/container';
+import MoveDelete from './../move-delete/container';
 import RSVPAttendeeRegistration from '../attendee-registration/container';
 import { Checkbox, NumberInput } from '@moderntribe/common/elements';
 import './style.pcss';
@@ -76,6 +77,7 @@ class RSVPContainerContent extends PureComponent {
 		onTempNotGoingResponsesChange: PropTypes.func,
 		tempCapacity: PropTypes.string,
 		tempNotGoingResponses: PropTypes.bool,
+		hasBeenCreated: PropTypes.bool,
 	}
 
 	constructor( props ) {
@@ -107,7 +109,10 @@ class RSVPContainerContent extends PureComponent {
 			<Fragment>
 				<RSVPContainerContentLabels />
 				<RSVPContainerContentOptions { ...optionsProps } />
-				<RSVPAdvancedOptions clientId={ clientId } />
+				<RSVPDuration />
+				{ this.props.hasBeenCreated && (
+					<MoveDelete clientId={ clientId } />
+				) }
 				{ this.props.hasTicketsPlus && <RSVPAttendeeRegistration /> }
 			</Fragment>
 		);

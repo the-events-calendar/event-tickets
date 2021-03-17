@@ -21,6 +21,7 @@ const mapStateToProps = ( state ) => ( {
 	isDisabled: getIsDisabled( state ),
 	tempCapacity: selectors.getRSVPTempCapacity( state ),
 	tempNotGoingResponses: selectors.getRSVPTempNotGoingResponses( state ),
+	hasBeenCreated: selectors.getRSVPCreated( state ),
 } );
 
 const mapDispatchToProps = ( dispatch ) => ( {
