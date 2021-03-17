@@ -323,7 +323,7 @@ class Tribe__Tickets__Attendees {
 			'cannot_move'       => esc_html__( 'You must first select one or more tickets before you can move them!', 'event-tickets' ),
 			'move_url'          => add_query_arg( $move_url_args ),
 			'confirmation'      => esc_html__( 'Please confirm that you would like to delete this attendee.', 'event-tickets' ),
-			'bulk_confirmation' => esc_html__( 'Please confirm you would like to delete these attendees', 'event-tickets' ),
+			'bulk_confirmation' => esc_html__( 'Please confirm you would like to delete these attendees.', 'event-tickets' ),
 		];
 
 		/**
