@@ -31,44 +31,44 @@ function event_tickets_render_settings_banner() {
 
 	$et_resource_links = [
 		[
-			'label' => esc_html__( 'Getting Started Guide', 'event-tickets' ),
+			'label' => __( 'Getting Started Guide', 'event-tickets' ),
 			'href'  => 'https://theeventscalendar.com/knowledgebase/guide/event-tickets/',
 		],
 
 		[
-			'label' => esc_html__( 'Configuring PayPal for Ticket Purchases', 'event-tickets' ),
+			'label' => __( 'Configuring PayPal for Ticket Purchases', 'event-tickets' ),
 			'href'  => 'https://theeventscalendar.com/knowledgebase/k/configuring-paypal-for-ticket-purchases/',
 		],
 		[
-			'label' => esc_html__( 'Configuring Tribe Commerce', 'event-tickets' ),
+			'label' => __( 'Configuring Tribe Commerce', 'event-tickets' ),
 			'href'  => 'https://theeventscalendar.com/knowledgebase/k/configuring-tribe-commerce/',
 		],
 		[
-			'label' => esc_html__( 'Managing Orders and Attendees', 'event-tickets' ),
+			'label' => __( 'Managing Orders and Attendees', 'event-tickets' ),
 			'href'  => 'https://theeventscalendar.com/knowledgebase/k/tickets-managing-your-orders-and-attendees/',
 		],
 		[
-			'label' => esc_html__( 'Event Tickets Manual', 'event-tickets' ),
+			'label' => __( 'Event Tickets Manual', 'event-tickets' ),
 			'href'  => 'https://theeventscalendar.com/knowledgebase/product/event-tickets/',
 		],
 	];
 
 	$etp_resource_links = [
 		[
-			'label' => esc_html__( 'Tickets & WooCommerce', 'event-tickets' ),
+			'label' => __( 'Tickets & WooCommerce', 'event-tickets' ),
 			'href'  => 'https://theeventscalendar.com/knowledgebase/k/woocommerce-specific-ticket-settings/',
 		],
 
 		[
-			'label' => esc_html__( 'Creating Tickets', 'event-tickets' ),
+			'label' => __( 'Creating Tickets', 'event-tickets' ),
 			'href'  => 'https://theeventscalendar.com/knowledgebase/k/making-tickets/',
 		],
 		[
-			'label' => esc_html__( 'Event Tickets and Event Tickets Plus Settings Overview', 'event-tickets' ),
+			'label' => __( 'Event Tickets and Event Tickets Plus Settings Overview', 'event-tickets' ),
 			'href'  => 'https://theeventscalendar.com/knowledgebase/k/settings-overview-event-tickets-and-event-tickets-plus/',
 		],
 		[
-			'label' => esc_html__( 'Event Tickets Plus Manual', 'event-tickets' ),
+			'label' => __( 'Event Tickets Plus Manual', 'event-tickets' ),
 			'href'  => 'https://theeventscalendar.com/knowledgebase/product/event-tickets-plus/',
 		],
 	];
