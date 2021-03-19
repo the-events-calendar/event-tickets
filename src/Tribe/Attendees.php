@@ -314,15 +314,16 @@ class Tribe__Tickets__Attendees {
 		];
 
 		$config_data = [
-			'nonce'           => wp_create_nonce( 'email-attendee-list' ),
-			'required'        => esc_html__( 'You need to select a user or type a valid email address', 'event-tickets' ),
-			'sending'         => esc_html__( 'Sending...', 'event-tickets' ),
-			'ajaxurl'         => admin_url( 'admin-ajax.php' ),
-			'checkin_nonce'   => wp_create_nonce( 'checkin' ),
-			'uncheckin_nonce' => wp_create_nonce( 'uncheckin' ),
-			'cannot_move'     => esc_html__( 'You must first select one or more tickets before you can move them!', 'event-tickets' ),
-			'move_url'        => add_query_arg( $move_url_args ),
-			'confirmation'    => esc_html__( 'Please confirm that you would like to delete this attendee.', 'event-tickets' ),
+			'nonce'             => wp_create_nonce( 'email-attendee-list' ),
+			'required'          => esc_html__( 'You need to select a user or type a valid email address', 'event-tickets' ),
+			'sending'           => esc_html__( 'Sending...', 'event-tickets' ),
+			'ajaxurl'           => admin_url( 'admin-ajax.php' ),
+			'checkin_nonce'     => wp_create_nonce( 'checkin' ),
+			'uncheckin_nonce'   => wp_create_nonce( 'uncheckin' ),
+			'cannot_move'       => esc_html__( 'You must first select one or more tickets before you can move them!', 'event-tickets' ),
+			'move_url'          => add_query_arg( $move_url_args ),
+			'confirmation'      => esc_html__( 'Please confirm that you would like to delete this attendee.', 'event-tickets' ),
+			'bulk_confirmation' => esc_html__( 'Please confirm you would like to delete these attendees.', 'event-tickets' ),
 		];
 
 		/**
@@ -350,7 +351,7 @@ class Tribe__Tickets__Attendees {
 		}
 
 		$dismissed = explode( ',', (string) get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) );
-		$pointer   = null;
+		$pointer   = [];
 
 		if ( version_compare( get_bloginfo( 'version' ), '3.3', '>' ) && ! in_array( 'attendees_filters', $dismissed ) ) {
 			$pointer = array(

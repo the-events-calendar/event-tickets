@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, sc0ttkclark, ag
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
 Tested up to: 5.7.0
-Stable tag: 5.1.1
+Stable tag: 5.1.2
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -17,7 +17,7 @@ Manage tickets and RSVPs for free with [Event Tickets](https://evnt.is/1ao8), fr
 
 This plugin makes it easy to sell tickets and collect registration for in-person or virtual events. Plus, it comes with features backed by our world-class team of developers and designers. Integrate Event Tickets with your PayPal business account and manage attendees from your WordPress dashboard.
 
-https://vimeo.com/480516958/dda22d4e01
+https://vimeo.com/480516958
 
 = 🎟️ Ticketing and Registration for WordPress =
 
@@ -179,6 +179,14 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Tweak - A new `tribe_events_attendees_csv_export_delimiter` filter was introduced to help change the delimiter when creating a CSV export of attendees. [GTRIA-508]
+
+= [5.1.2] TBD =
+
+* Fix - Add "Currently full" message on TEC views when the event has RSVPs without availability. [ET-1004]
+* Fix - Fixed showing notices for localized script in the attendee report page. [ET-1043]
+* Tweak - Move the sales duration of Tickets and RSVP blocks outside of the "Advanced Options" section, making them more accessible. [ET-951]
+* Tweak - Aesthetic improvements for the Tickets and RSVP blocks. Adding a white background so they look consistent when there's a different background on the editor styles. [ET-982]
+* Tweak - Add confirmation dialog for bulk deletion of attendees in the attendee report page. [ET-981]
 
 = [5.1.1] 2021-03-04 =
 
