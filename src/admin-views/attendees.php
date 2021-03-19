@@ -162,7 +162,7 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', is_admin(), $
 	</div>
 	<?php do_action( 'tribe_events_tickets_attendees_event_summary_table_after', $event_id ); ?>
 
-	<form id="attendees-admin-form" class="topics-filter attendees-admin-form" method="post">
+	<form id="event-tickets__attendees-admin-form" class="topics-filter event-tickets__attendees-admin-form" method="post">
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'page' : 'tribe[page]' ); ?>" value="<?php echo esc_attr( isset( $_GET['page'] ) ? $_GET['page'] : '' ); ?>" />
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'event_id' : 'tribe[event_id]' ); ?>" id="event_id" value="<?php echo esc_attr( $event_id ); ?>" />
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'post_type' : 'tribe[post_type]' ); ?>" value="<?php echo esc_attr( $event->post_type ); ?>" />
