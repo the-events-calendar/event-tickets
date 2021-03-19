@@ -50,34 +50,3 @@ $help_text = $etp_enabled
 		</div>
 	</div>
 </div>
-<style>
-	#event-tickets__admin-banner {
-		background-color: #f9f9f9;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-		margin: 20px 0;
-		padding: 8px 20px 12px;
-		border-left: 5px solid #0073AA;
-	}
-
-	#event-tickets__admin-banner a {
-		text-decoration: none;
-	}
-
-	p.event-tickets__admin-banner-help-text {
-		max-width: 80%;
-	}
-
-	.event-tickets__admin-banner-help-links {
-		display: flex;
-	}
-
-	.event-tickets__admin-banner-help-links div {
-		min-width: 50%;
-	}
-
-	.event-tickets__admin-banner-et-links h3,
-	.event-tickets__admin-banner-etp-links h3 {
-		font-size: 14px;
-	}
-</style>
