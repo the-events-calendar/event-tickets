@@ -82,5 +82,5 @@ function event_tickets_render_settings_banner() {
 	/** @var Tribe__Tickets__Admin__Views $admin_views */
 	$admin_views = tribe( 'tickets.admin.views' );
 
-	return $admin_views->template( 'settings/help-banner', $context );
+	return $admin_views->template( 'settings/getting-started', $context );
 }
