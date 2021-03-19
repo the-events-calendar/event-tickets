@@ -43,7 +43,7 @@ $help_text = $etp_enabled
 			<ul class="event-tickets__admin-banner-kb-list">
 				<?php
 				foreach ( $etp_resource_links as $link ) {
-					printf( '<li><a href="%s" target="_blank" rel="nofollow">%s</a></li>', esc_url( $link['href'] ), esc_html( $link['label'] ) );
+					printf( '<li><a href="%s" target="_blank" rel="noopener noreferrer">%s</a></li>', esc_url( $link['href'] ), esc_html( $link['label'] ) );
 				}
 				?>
 			</ul>
