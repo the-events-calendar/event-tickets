@@ -3954,8 +3954,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * @since TBD
 			 *
-			 * @param string $code Generated security code for attendee Ticket.
-			 * @param string $attendee_id ID of attendee.
+			 * @param string $code        Generated security code for attendee ticket.
+			 * @param string $attendee_id The attendee ID.
 			 */
 			return apply_filters( 'tribe_tickets_attendee_security_code', $code, $attendee_id );
 		}
@@ -3970,14 +3970,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return false|string Generated code or False if not generated.
 		 */
 		public function maybe_regenerate_security_code( $key ) {
-
 			/**
 			 * Allow filtering for the regeneration of security code.
 			 *
 			 * @since TBD
 			 *
-			 * @param bool $enabled If regeneration is enabled then true otherwise false.
-			 * @param string $key Key to generate the security code.
+			 * @param bool   $enabled Whether regeneration is enabled.
+			 * @param string $key     The key to generate the security code with, normally the attendee ID.
 			 */
 			$regenerate = apply_filters( 'tribe_tickets_regenerate_security_code_on_email_change', true, $key );
 
