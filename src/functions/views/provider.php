@@ -21,7 +21,7 @@ function tribe_events_tickets_views_v2_is_enabled() {
 add_action( 'tribe_settings_before_content_tab_event-tickets', 'event_tickets_render_settings_banner' );
 
 /**
- * Render the Help banner for the Ticket Settings Tab
+ * Render the Help banner for the Ticket Settings Tab.
  *
  * @since TBD
  *

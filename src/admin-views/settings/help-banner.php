@@ -1,6 +1,6 @@
 <?php
 /**
- * Settings help banner
+ * Getting started banner section.
  *
  * @since TBD
  *
@@ -15,27 +15,27 @@ $help_text = $etp_enabled
 
 ?>
 <div id="event-tickets-info">
-	<h3><?php esc_html_e( 'Getting Started With Tickets', 'event-tickets' ); ?></h3>
-	<p class="help-text"><?php esc_html_e( $help_text ); ?></p>
+	<h3><?php echo esc_html( 'Getting Started With Tickets', 'event-tickets' ); ?></h3>
+	<p class="help-text"><?php echo esc_html( $help_text ); ?></p>
 
 	<div class="help-links-wrapper">
 		<div class="et-help-links">
-			<h3><?php esc_html_e( 'Beginner Resources', 'event-tickets' )  ?> </h3>
+			<h3><?php echo esc_html( 'Beginner Resources', 'event-tickets' )  ?> </h3>
 
 			<ul class="kb-links">
 				<?php
 				foreach ( $et_resource_links as $link ) {
-					printf( '<li><a href="%s" target="_blank" rel="noopener noreferrer">%s</a></li>', esc_attr( $link['href'] ), esc_html( $link['label'] ) );
+					printf( '<li><a href="%s" target="_blank" rel="noopener noreferrer">%s</a></li>', esc_url( $link['href'] ), esc_html( $link['label'] ) );
 				}
 				?>
 			</ul>
 		</div>
 		<div class="etp-help-links">
 			<h3>
-				<?php esc_html_e( 'Advanced Plus Features', 'event-tickets' ); ?>
+				<?php echo esc_html( 'Advanced Plus Features', 'event-tickets' ); ?>
 				<?php
 					if ( ! $etp_enabled ) {
-						printf( ' - <a class="upgrade-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a>', esc_attr( 'https://theeventscalendar.com/products/wordpress-event-tickets/' ) , esc_html__( 'Need To Upgrade?', 'event-tickets' ) );;
+						printf( ' - <a class="upgrade-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a>', esc_url( 'https://theeventscalendar.com/products/wordpress-event-tickets/' ), esc_html__( 'Need To Upgrade?', 'event-tickets' ) );
 					}
 				?>
 			</h3>
@@ -43,7 +43,7 @@ $help_text = $etp_enabled
 			<ul class="kb-links">
 				<?php
 				foreach ( $etp_resource_links as $link ) {
-					printf( '<li><a href="%s" target="_blank" rel="nofollow">%s</a></li>', esc_attr( $link['href'] ), esc_html( $link['label'] ) );
+					printf( '<li><a href="%s" target="_blank" rel="nofollow">%s</a></li>', esc_url( $link['href'] ), esc_html( $link['label'] ) );
 				}
 				?>
 			</ul>
