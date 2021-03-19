@@ -661,9 +661,18 @@ class Tribe__Tickets__Attendees {
 			// Create the file pointer connected to the output stream.
 			$output = fopen( 'php://output', 'w' );
 
+			/**
+			 * Allow for modifying the field delimiter in the CSV export file.
+			 *
+			 * @since 5.1.2
+			 *
+			 * @param string delimiter The separator
+			 */
+			$delimiter = apply_filters( 'tribe_events_attendees_csv_export_delimiter', ',' );
+			
 			// Output the lines into the file.
 			foreach ( $items as $item ) {
-				fputcsv( $output, $item );
+				fputcsv( $output, $item, $delimiter );
 			}
 
 			fclose( $output );
