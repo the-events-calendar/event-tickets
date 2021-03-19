@@ -3965,7 +3965,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $key Key to generate security code.
+		 * @param string $key The key to generate the security code with, normally the attendee ID.
 		 *
 		 * @return false|string Generated code or False if not generated.
 		 */
