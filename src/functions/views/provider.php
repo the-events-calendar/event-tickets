@@ -25,10 +25,9 @@ add_action( 'tribe_settings_before_content_tab_event-tickets', 'event_tickets_re
  *
  * @since TBD
  *
- * @return string
+ * @return string The help banner HTML content.
  */
 function event_tickets_render_settings_banner() {
-
 	$et_resource_links = [
 		[
 			'label' => __( 'Getting Started Guide', 'event-tickets' ),
