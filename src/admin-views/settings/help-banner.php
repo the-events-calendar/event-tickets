@@ -25,7 +25,7 @@ $help_text = $etp_enabled
 			<ul class="kb-links">
 				<?php
 				foreach ( $et_resource_links as $link ) {
-					printf( '<li><a href="%s" target="_blank" rel="nofollow">%s</a></li>', esc_attr( $link['href'] ), esc_html( $link['label'] ) );
+					printf( '<li><a href="%s" target="_blank" rel="noopener noreferrer">%s</a></li>', esc_attr( $link['href'] ), esc_html( $link['label'] ) );
 				}
 				?>
 			</ul>
@@ -35,7 +35,7 @@ $help_text = $etp_enabled
 				<?php esc_html_e( 'Advanced Plus Features', 'event-tickets' ); ?>
 				<?php
 					if ( ! $etp_enabled ) {
-						printf( ' - <a class="upgrade-link" href="%s" target="_blank" rel="nofollow">%s</a>', esc_attr( 'https://theeventscalendar.com/products/wordpress-event-tickets/' ) , esc_html__( 'Need To Upgrade?', 'event-tickets' ) );;
+						printf( ' - <a class="upgrade-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a>', esc_attr( 'https://theeventscalendar.com/products/wordpress-event-tickets/' ) , esc_html__( 'Need To Upgrade?', 'event-tickets' ) );;
 					}
 				?>
 			</h3>
