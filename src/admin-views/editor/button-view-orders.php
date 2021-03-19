@@ -5,7 +5,7 @@ $post_id = get_the_ID();
 $providers = Tribe__Tickets__Tickets::get_active_providers_for_post( $post_id );
 
 // If RSVP is the only provider, bail out.
-if ( count( $providers ) == 1 && isset( $providers['Tribe__Tickets__RSVP'] ) ) {
+if ( 1 === count( $providers ) && isset( $providers['Tribe__Tickets__RSVP'] ) ) {
 	return;
 }
 
