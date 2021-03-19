@@ -14,15 +14,15 @@ $help_text = $etp_enabled
 	: __( 'Thank you for using Event Tickets! We recommend looking through the settings below so that you can fine tune your specific ticketing needs. Here are some resources that can help.', 'event-tickets' );
 
 ?>
-<div id="event-tickets-info">
-	<h3><?php echo esc_html( 'Getting Started With Tickets', 'event-tickets' ); ?></h3>
-	<p class="help-text"><?php echo esc_html( $help_text ); ?></p>
+<div id="event-tickets__admin-banner">
+	<h3><?php echo esc_html__( 'Getting Started With Tickets', 'event-tickets' ); ?></h3>
+	<p class="event-tickets__admin-banner-help-text"><?php echo esc_html__( $help_text ); ?></p>
 
-	<div class="help-links-wrapper">
-		<div class="et-help-links">
-			<h3><?php echo esc_html( 'Beginner Resources', 'event-tickets' )  ?> </h3>
+	<div class="event-tickets__admin-banner-help-links">
+		<div class="event-tickets__admin-banner-et-links">
+			<h3><?php echo esc_html__( 'Beginner Resources', 'event-tickets' )  ?> </h3>
 
-			<ul class="kb-links">
+			<ul class="event-tickets__admin-banner-kb-list">
 				<?php
 				foreach ( $et_resource_links as $link ) {
 					printf( '<li><a href="%s" target="_blank" rel="noopener noreferrer">%s</a></li>', esc_url( $link['href'] ), esc_html( $link['label'] ) );
@@ -30,9 +30,9 @@ $help_text = $etp_enabled
 				?>
 			</ul>
 		</div>
-		<div class="etp-help-links">
+		<div class="event-tickets__admin-banner-etp-links">
 			<h3>
-				<?php echo esc_html( 'Advanced Plus Features', 'event-tickets' ); ?>
+				<?php echo esc_html__( 'Advanced Plus Features', 'event-tickets' ); ?>
 				<?php
 					if ( ! $etp_enabled ) {
 						printf( ' - <a class="upgrade-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a>', esc_url( 'https://theeventscalendar.com/products/wordpress-event-tickets/' ), esc_html__( 'Need To Upgrade?', 'event-tickets' ) );
@@ -40,7 +40,7 @@ $help_text = $etp_enabled
 				?>
 			</h3>
 
-			<ul class="kb-links">
+			<ul class="event-tickets__admin-banner-kb-list">
 				<?php
 				foreach ( $etp_resource_links as $link ) {
 					printf( '<li><a href="%s" target="_blank" rel="nofollow">%s</a></li>', esc_url( $link['href'] ), esc_html( $link['label'] ) );
@@ -51,7 +51,7 @@ $help_text = $etp_enabled
 	</div>
 </div>
 <style>
-	#event-tickets-info {
+	#event-tickets__admin-banner {
 		background-color: #f9f9f9;
 		border: 1px solid #ccc;
 		border-radius: 4px;
@@ -60,23 +60,24 @@ $help_text = $etp_enabled
 		border-left: 5px solid #0073AA;
 	}
 
-	#event-tickets-info a {
+	#event-tickets__admin-banner a {
 		text-decoration: none;
 	}
 
-	p.help-text {
+	p.event-tickets__admin-banner-help-text {
 		max-width: 80%;
 	}
 
-	.help-links-wrapper {
+	.event-tickets__admin-banner-help-links {
 		display: flex;
 	}
 
-	.help-links-wrapper div {
+	.event-tickets__admin-banner-help-links div {
 		min-width: 50%;
 	}
 
-	.et-help-links h3, .etp-help-links h3 {
+	.event-tickets__admin-banner-et-links h3,
+	.event-tickets__admin-banner-etp-links h3 {
 		font-size: 14px;
 	}
 </style>
