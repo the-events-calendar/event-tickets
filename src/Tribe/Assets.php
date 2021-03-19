@@ -352,8 +352,14 @@ class Tribe__Tickets__Assets {
 
 		$admin_helpers = Tribe__Admin__Helpers::instance();
 
+		// The list of admin tabs that the plugin hooks into.
+		$admin_tabs = [
+			'event-tickets',
+			'event-tickets-commerce',
+		];
+
 		// Load specifically on Ticket Settings page only.
-		$should_enqueue = $admin_helpers->is_screen() && 'event-tickets' === tribe_get_request_var( 'tab' );
+		$should_enqueue = $admin_helpers->is_screen() && in_array( tribe_get_request_var( 'tab' ), $admin_tabs, true );
 
 		/**
 		 * Allow filtering of where the base Admin Settings Assets will be loaded
