@@ -179,6 +179,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.1.2] TBD =
 
 * Fix - Add "Currently full" message on TEC views when the event has RSVPs without availability. [ET-1004]
+* Fix - Fixed showing notices for localized script in the attendee report page. [ET-1043]
 * Tweak - Move the sales duration of Tickets and RSVP blocks outside of the "Advanced Options" section, making them more accessible. [ET-951]
 * Tweak - Aesthetic improvements for the Tickets and RSVP blocks. Adding a white background so they look consistent when there's a different background on the editor styles. [ET-982]
 

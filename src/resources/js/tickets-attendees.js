@@ -4,7 +4,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 ( function( $, obj ) {
 
 	function init() {
-		if ( typeof AttendeesPointer !== 'undefined' && null !== AttendeesPointer ) {
+		if ( typeof AttendeesPointer !== 'undefined' && AttendeesPointer.length ) {
 			options = $.extend( AttendeesPointer.options, {
 				close: function() {
 					$.post( Attendees.ajaxurl, {
