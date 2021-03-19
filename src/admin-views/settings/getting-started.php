@@ -20,7 +20,7 @@ $help_text = $etp_enabled
 
 	<div class="event-tickets__admin-banner-help-links">
 		<div class="event-tickets__admin-banner-et-links">
-			<h3><?php echo esc_html__( 'Beginner Resources', 'event-tickets' )  ?> </h3>
+			<h3><?php esc_html_e( 'Beginner Resources', 'event-tickets' ); ?> </h3>
 
 			<ul class="event-tickets__admin-banner-kb-list">
 				<?php
@@ -32,7 +32,7 @@ $help_text = $etp_enabled
 		</div>
 		<div class="event-tickets__admin-banner-etp-links">
 			<h3>
-				<?php echo esc_html__( 'Advanced Plus Features', 'event-tickets' ); ?>
+				<?php esc_html_e( 'Advanced Plus Features', 'event-tickets' ); ?>
 				<?php
 					if ( ! $etp_enabled ) {
 						printf( ' - <a class="upgrade-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a>', esc_url( 'https://theeventscalendar.com/products/wordpress-event-tickets/' ), esc_html__( 'Need To Upgrade?', 'event-tickets' ) );
