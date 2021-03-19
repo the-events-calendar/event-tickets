@@ -63,6 +63,21 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			return confirm( Attendees.confirmation );
 		});
 
+		$( '.event-tickets__attendees-admin-form' ).on( 'submit', function ( e ) {
+
+			// If not the delete action, return.
+			if ( 'delete_attendee' !== $( '#bulk-action-selector-top' ).val() ) {
+				return;
+			}
+
+			// If no attendee was selected, bail out.
+			if ( ! $( this ).serialize().includes( '&attendee' ) )  {
+				return;
+			}
+
+			return confirm( Attendees.bulk_confirmation );
+		} );
+
 		$( '.tickets_checkin' ).on( 'click', function( e ) {
 
 			var obj = jQuery( this );
