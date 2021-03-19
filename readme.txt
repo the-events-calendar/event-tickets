@@ -176,6 +176,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Tweak - A new `tribe_events_attendees_csv_export_delimiter` filter was introduced to help change the delimiter when creating a CSV export of attendees. [GTRIA-508]
+
 = [5.1.1] 2021-03-04 =
 
 * Fix - Compatibility with WordPress 5.7 and jQuery 3.5.X [ET-992]
