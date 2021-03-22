@@ -665,7 +665,7 @@ class Tribe__Tickets__Attendees {
 			/**
 			 * Allow for modifying the field delimiter in the CSV export file.
 			 *
-			 * @since 5.1.2
+			 * @since TBD
 			 *
 			 * @param string delimiter The separator
 			 */
