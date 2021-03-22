@@ -179,6 +179,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.1.1] 2021-03-04 =
 
 * Fix - Compatibility with WordPress 5.7 and jQuery 3.5.X [ET-992]
+* Fix - Attendees will no longer have a new user created (if they did not already exist), which was introduced in Event Tickets 5.1.0. To turn this on, you can simply add the filter `add_filter( 'tribe_tickets_attendee_create_user_from_email', '__return_true' );`
 * Fix - Prevent the Attendee Registration page from having the title coming from draft pages. [ETP-360]
 * Fix - Highlight the "Ticketed" and "Unticketed" filters in the WordPress when they're applied. [ET-1022]
 * Fix - Prevent duplicate tickets from showing in post loops. [ETP-639]
