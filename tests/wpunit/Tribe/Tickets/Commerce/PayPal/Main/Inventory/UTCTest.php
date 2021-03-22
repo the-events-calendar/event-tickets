@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Tickets\Commerce\PayPal\Main;
+namespace Tribe\Tickets\Commerce\PayPal\Main\Inventory;
 
 use Tribe\Tickets\Test\Testcases\Ticket_Object_TestCase;
 

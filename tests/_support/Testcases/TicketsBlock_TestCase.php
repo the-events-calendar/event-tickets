@@ -144,6 +144,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 		$provider = key( $this->get_providers() );
 
 		$post_id = $this->factory()->post->create( [
+			'post_title' => 'Test post for ticket block',
 			'meta_input' => [
 				$tickets_handler->key_provider_field => $provider,
 			],
@@ -177,6 +178,8 @@ class TicketsBlock_TestCase extends WPTestCase {
 			'Test EDD ticket description for ',
 			'Test WooCommerce ticket for ',
 			'Test WooCommerce ticket description for ',
+			'Test RSVP ticket for ',
+			'Ticket RSVP ticket excerpt for ',
 		] );
 
 		$driver->setTimeDependentAttributes( [
@@ -185,6 +188,19 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		// Remove the URL + port so it doesn't conflict with URL tolerances.
 		$html = str_replace( home_url(), TRIBE_TESTS_HOME_URL, $html );
+
+		// Handle variations that tolerances won't handle.
+		$html = str_replace(
+			[
+				$post_id,
+				$ticket_id,
+			],
+			[
+				'[EVENT_ID]',
+				'[TICKET_ID]',
+			],
+			$html
+		);
 
 		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );
@@ -202,6 +218,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 		$provider = key( $this->get_providers() );
 
 		$post_id = $this->factory()->post->create( [
+			'post_title' => 'Test post for ticket block after update',
 			'meta_input' => [
 				$tickets_handler->key_provider_field => $provider,
 			],
@@ -238,6 +255,8 @@ class TicketsBlock_TestCase extends WPTestCase {
 			'Test Easy Digital Downloads ticket description for ',
 			'Test WooCommerce ticket for ',
 			'Test WooCommerce ticket description for ',
+			'Test RSVP ticket for ',
+			'Ticket RSVP ticket excerpt for ',
 		] );
 		$driver->setTimeDependentAttributes( [
 			'data-ticket-id',
@@ -245,6 +264,19 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		// Remove the URL + port so it doesn't conflict with URL tolerances.
 		$html = str_replace( home_url(), TRIBE_TESTS_HOME_URL, $html );
+
+		// Handle variations that tolerances won't handle.
+		$html = str_replace(
+			[
+				$post_id,
+				$ticket_id,
+			],
+			[
+				'[EVENT_ID]',
+				'[TICKET_ID]',
+			],
+			$html
+		);
 
 		$this->assertNotEmpty( $html, 'Tickets block is not rendering' );
 		$this->assertMatchesSnapshot( $html, $driver );

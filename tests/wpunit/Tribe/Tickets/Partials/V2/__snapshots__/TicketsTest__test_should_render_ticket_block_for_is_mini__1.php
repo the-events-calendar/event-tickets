@@ -8,7 +8,7 @@
 		data-provider="Tribe__Tickets__Commerce__PayPal__Main"
 		autocomplete="off"
 		data-provider-id="tribe-commerce"
-		data-post-id="12932"
+		data-post-id="[EVENT_ID]"
 		novalidate
 	>
 
@@ -34,16 +34,16 @@
 </div>
 
 		<div
-	id="tribe-block-tickets-item-12933"
-	 class="tribe-tickets__tickets-item post-12933 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12933"
+	id="tribe-block-tickets-item-[TICKET_ID_1]"
+	 class="tribe-tickets__tickets-item post-[TICKET_ID_1] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	data-ticket-id="[TICKET_ID_1]"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title tribe-tickets--no-description"  >
 			<div  class="tribe-common-b3 tribe-tickets__tickets-item-content-subtitle"  >
-			Post title 4008		</div>
-		Test ticket for 12932</div>
+			Test event for partial snapshot		</div>
+		Test ticket for [EVENT_ID]</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
@@ -66,16 +66,16 @@
 	
 </div>
 <div
-	id="tribe-block-tickets-item-12934"
-	 class="tribe-tickets__tickets-item post-12934 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="12934"
+	id="tribe-block-tickets-item-[TICKET_ID_2]"
+	 class="tribe-tickets__tickets-item post-[TICKET_ID_2] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	data-ticket-id="[TICKET_ID_2]"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title tribe-tickets--no-description"  >
 			<div  class="tribe-common-b3 tribe-tickets__tickets-item-content-subtitle"  >
-			Post title 4008		</div>
-		Test ticket for 12932</div>
+			Test event for partial snapshot		</div>
+		Test ticket for [EVENT_ID]</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >

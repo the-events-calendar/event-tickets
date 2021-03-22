@@ -8,7 +8,7 @@
 		data-provider="Tribe__Tickets__Commerce__PayPal__Main"
 		autocomplete="off"
 		data-provider-id="tribe-commerce"
-		data-post-id="239"
+		data-post-id="[EVENT_ID]"
 		novalidate
 	>
 
@@ -34,20 +34,20 @@
 </div>
 
 		<div
-	id="tribe-block-tickets-item-240"
-	 class="tribe-tickets__tickets-item post-240 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="240"
+	id="tribe-block-tickets-item-[TICKET_ID_1]"
+	 class="tribe-tickets__tickets-item post-[TICKET_ID_1] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	data-ticket-id="[TICKET_ID_1]"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test ticket for 239</div>
+		Test ticket for [EVENT_ID]</div>
 
 
 <div
-	id="tribe__details__content--240"
+	id="tribe__details__content--[TICKET_ID_1]"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
-	Test ticket description for 239</div>
+	Test ticket description for [EVENT_ID]</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
@@ -84,20 +84,20 @@
 	
 </div>
 <div
-	id="tribe-block-tickets-item-241"
-	 class="tribe-tickets__tickets-item post-241 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="241"
+	id="tribe-block-tickets-item-[TICKET_ID_2]"
+	 class="tribe-tickets__tickets-item post-[TICKET_ID_2] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	data-ticket-id="[TICKET_ID_2]"
 	data-available="false"
 	data-has-shared-cap="false"
 	>
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test ticket for 239</div>
+		Test ticket for [EVENT_ID]</div>
 
 
 <div
-	id="tribe__details__content--241"
+	id="tribe__details__content--[TICKET_ID_2]"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
-	Test ticket description for 239</div>
+	Test ticket description for [EVENT_ID]</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >

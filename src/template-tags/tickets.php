@@ -1296,6 +1296,35 @@ if ( ! function_exists( 'tribe_attendees' ) ) {
 	}
 }
 
+if ( ! function_exists( 'tribe_tickets_orders' ) ) {
+	/**
+	 * Builds and returns the correct Order repository.
+	 *
+	 * @since 5.1.0
+	 *
+	 * @param string $repository The slug of the repository to build/return.
+	 *
+	 * @return Tribe__Repository__Interface The Order repository object.
+	 */
+	function tribe_tickets_orders( $repository = 'default' ) {
+		$map = [
+			'default' => 'tickets.repositories.order',
+		];
+
+		/**
+		 * Filters the map relating Order repository slugs to service container bindings.
+		 *
+		 * @since 5.1.0
+		 *
+		 * @param array  $map        A map in the shape [ <repository_slug> => <service_name> ].
+		 * @param string $repository The currently requested implementation.
+		 */
+		$map = apply_filters( 'tribe_tickets_repositories_order_map', $map, $repository );
+
+		return tribe( Tribe__Utils__Array::get( $map, $repository, $map['default'] ) );
+	}
+}
+
 if ( ! function_exists( 'tribe_get_rsvp_label_singular' ) ) {
 
 	/**

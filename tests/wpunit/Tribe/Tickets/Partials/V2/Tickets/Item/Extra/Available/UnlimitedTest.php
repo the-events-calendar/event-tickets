@@ -16,19 +16,20 @@ class UnlimitedTest extends V2TestCase {
 	 *
 	 * @return array
 	 */
-	public function get_default_args() {
+	public function get_default_args( $capacity = null ) {
 		/**
 		 * @var \Tribe__Tickets__Commerce__PayPal__Main
 		 */
 		$provider = tribe_get_class_instance( 'Tribe__Tickets__Commerce__PayPal__Main' );
 
 		$event = $this->get_mock_event( 'events/single/1.json' );
-		$ids   = $this->create_many_paypal_tickets( 1, $event->ID );
+		$ids   = $this->create_many_paypal_tickets( 1, $event->ID, [
+			'tribe-ticket' => [
+				'capacity' => null !== $capacity ? $capacity : -1,
+			],
+		] );
 
 		$ticket = $provider->get_ticket( $event->ID, $ids[0] );
-
-		// default Ticket scenario.
-		$ticket->capacity = - 1;
 
 		return [
 			'ticket' => $ticket,
@@ -74,10 +75,7 @@ class UnlimitedTest extends V2TestCase {
 	public function test_should_not_render_if_available_quantity_is_not_unlimited() {
 		$template = tribe( 'tickets.editor.template' );
 
-		$args = $this->get_default_args();
-
-		// Set a fixed capacity.
-		$args['ticket']->capacity = 25;
+		$args = $this->get_default_args( 25 );
 
 		$args['is_unlimited'] = false;
 

@@ -1,4 +1,7 @@
 <?php
+
+use Tribe__Utils__Array as Arr;
+
 /**
  * Handles most actions related to a Ticket or Multiple ones
  */
@@ -104,6 +107,8 @@ class Tribe__Tickets__Tickets_Handler {
 
 		add_filter( 'updated_postmeta', array( $this, 'update_meta_date' ), 15, 4 );
 		add_action( 'wp_insert_post', array( $this, 'update_start_date' ), 15, 3 );
+
+		add_filter( 'tribe_tickets_my_tickets_allow_email_resend_on_attendee_email_update', [ $this, 'maybe_disable_email_resend' ], 9, 3 );
 	}
 
 	/**
@@ -1613,6 +1618,46 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Maybe disable the email resend if the attendee has reached their max limit.
+	 *
+	 * @since 5.1.0
+	 *
+	 * @param bool         $allow_resending_email Whether to allow email resending.
+	 * @param WP_Post|null $ticket                The ticket post object if available, otherwise null.
+	 * @param array|null   $attendee              The attendee information if available, otherwise null.
+	 *
+	 * @return bool Whether to allow email resending.
+	 */
+	public function maybe_disable_email_resend( $allow_resending_email, $ticket = null, $attendee = null ) {
+		// Check if we have an attendee to reference or resending has been disabled already.
+		if ( ! is_array( $attendee ) || ! $allow_resending_email ) {
+			return $allow_resending_email;
+		}
+
+		$ticket_sent = (int) Arr::get( $attendee, 'ticket_sent', 0 );
+
+		/**
+		 * Allow filtering the maximum number of emails can be resent to an attendee.
+		 *
+		 * Return -1 to remove the limit entirely.
+		 *
+		 * @since 5.1.0
+		 *
+		 * @param int          $max_resend_limit The maximum number of emails can be resent to an attendee.
+		 * @param WP_Post|null $ticket           The ticket post object if available, otherwise null.
+		 * @param array|null   $attendee         The attendee information if available, otherwise null.
+		 */
+		$max_resend_limit = apply_filters( 'tribe_tickets_handler_email_max_resend_limit', 2, $ticket, $attendee );
+
+		// Check if limit is unlimited or if the attendee has been at/sent below the current limit.
+		if ( -1 === $max_resend_limit || $ticket_sent <= $max_resend_limit ) {
+			return $allow_resending_email;
+		}
+
+		return false;
 	}
 
 	/**

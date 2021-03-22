@@ -146,6 +146,9 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * it should increase sales by the status stock size
 	 */
 	public function it_should_increase_sales_by_the_status_stock_size() {
+		// @todo @sc0ttclark: Re check if we would want to remove this one.
+		$this->markTestSkipped( 'This test is no longer relevant since RSVP v2.' );
+
 		add_filter( 'event_tickets_rsvp_options', function ( $options ) {
 			return array_merge( $options, [
 					'yes-plus-one' => [ 'label' => 'Yes plus one', 'decrease_stock_by' => 2 ],
@@ -1002,8 +1005,9 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$tickets_view->get_rsvp_options( null, false )->willReturn( $rsvp_options );
 		$tickets_view->get_event_rsvp_attendees( $post_id, $user_id )->willReturn( [
 			[
-				'product_id' => $ticket_id,
-				'order_id'   => $order_id,
+				'attendee_id' => $order_id,
+				'product_id'  => $ticket_id,
+				'order_id'    => $order_id,
 			],
 		] );
 

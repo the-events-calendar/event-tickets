@@ -51,49 +51,48 @@ class Tribe__Tickets__Assets {
 					'tribe-tickets-block-assets',
 					'tribe-tickets-rsvp',
 					'tribe-tickets-registration-page',
+					'tribe-tickets-admin',
+					'tribe-tickets-forms',
 				],
 			]
 		);
 
-		if (
-			tribe_tickets_new_views_is_enabled()
-			|| tribe_tickets_rsvp_new_views_is_enabled()
-		) {
-			// Tickets loader library JS.
-			tribe_asset(
-				$tickets_main,
-				'tribe-tickets-loader',
-				'v2/tickets-loader.js',
-				[
-					'jquery',
-					'tribe-common',
+		// Tickets loader library JS.
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-loader',
+			'v2/tickets-loader.js',
+			[
+				'jquery',
+				'tribe-common',
+			],
+			null,
+			[
+				'conditionals' => [ $this, 'should_enqueue_tickets_loader' ],
+				'groups'       => [
+					'tribe-tickets-block-assets',
+					'tribe-tickets-rsvp',
+					'tribe-tickets-registration-page',
 				],
-				null,
-				[
-					'groups' => [
-						'tribe-tickets-block-assets',
-						'tribe-tickets-rsvp',
-						'tribe-tickets-registration-page',
-					],
-				]
-			);
+			]
+		);
 
-			// @todo: Remove this once we solve the common breakpoints vs container based.
-			tribe_asset(
-				$tickets_main,
-				'tribe-common-responsive',
-				'common-responsive.css',
-				[ 'tribe-common-skeleton-style' ],
-				null,
-				[
-					'groups' => [
-						'tribe-tickets-block-assets',
-						'tribe-tickets-rsvp',
-						'tribe-tickets-registration-page',
-					],
-				]
-			);
-		}
+		// @todo: Remove this once we solve the common breakpoints vs container based.
+		tribe_asset(
+			$tickets_main,
+			'tribe-common-responsive',
+			'common-responsive.css',
+			[ 'tribe-common-skeleton-style' ],
+			null,
+			[
+				'conditionals' => [ $this, 'should_enqueue_tickets_loader' ],
+				'groups'       => [
+					'tribe-tickets-block-assets',
+					'tribe-tickets-rsvp',
+					'tribe-tickets-registration-page',
+				],
+			]
+		);
 
 		if ( tribe_tickets_new_views_is_enabled() ) {
 			// Tribe tickets utils.
@@ -111,6 +110,12 @@ class Tribe__Tickets__Assets {
 						'tribe-tickets-block-assets',
 						'tribe-tickets-rsvp',
 						'tribe-tickets-registration-page',
+					],
+					'localize' => [
+						[
+							'name' => 'TribeCurrency',
+							'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_currencies' ],
+						],
 					],
 				]
 			);
@@ -175,8 +180,10 @@ class Tribe__Tickets__Assets {
 	 * @since 4.10.9 Use customizable ticket name functions.
 	 */
 	public function admin_enqueue_scripts() {
-		// Set up some data for our localize scripts.
+		/** @var Tribe__Tickets__Main $tickets_main */
+		$tickets_main = tribe( 'tickets.main' );
 
+		// Set up some data for our localize scripts.
 		$upload_header_data = [
 			'title'  => esc_html( sprintf( __( '%s header image', 'event-tickets' ), tribe_get_ticket_label_singular( 'header_image_title' ) ) ),
 			'button' => esc_html( sprintf( __( 'Set as %s header', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'header_button' ) ) ),
@@ -223,7 +230,7 @@ class Tribe__Tickets__Assets {
 		];
 
 		tribe_assets(
-			Tribe__Tickets__Main::instance(),
+			$tickets_main,
 			$assets,
 			'admin_enqueue_scripts',
 			[
@@ -261,6 +268,33 @@ class Tribe__Tickets__Assets {
 							'decimal_error' => __( 'Please enter in without thousand separators and currency symbols.', 'event-tickets' ),
 						],
 					],
+				],
+			]
+		);
+
+		$admin_manager_js_data = [
+			'tribeTicketsAdminManagerNonce' => wp_create_nonce( 'tribe_tickets_admin_manager_nonce' ),
+			'ajaxurl'                           => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+		];
+
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-admin-manager',
+			'admin/tickets-manager.js',
+			[
+				'jquery',
+				'tribe-common',
+			],
+			null,
+			[
+				'localize' => [
+					[
+						'name' => 'TribeTickets',
+						'data' => $admin_manager_js_data,
+					],
+				],
+				'groups'   => [
+					'tribe-tickets-admin',
 				],
 			]
 		);
@@ -316,6 +350,27 @@ class Tribe__Tickets__Assets {
 		}
 
 		return $is_on_valid_post_type || $is_on_ar_page;
+	}
+
+	/**
+	 * Check if we should enqueue the new Tickets Loader script.
+	 *
+	 * @since 5.1.1
+	 *
+	 * @return bool
+	 */
+	public function should_enqueue_tickets_loader() {
+		$are_new_views_enabled = tribe_tickets_new_views_is_enabled()
+			|| tribe_tickets_rsvp_new_views_is_enabled();
+
+		/**
+		 * Allow filtering whether the Tickets Loader script should be enqueued.
+		 *
+		 * @since 5.1.1
+		 *
+		 * @param bool $should_enqueue_tickets_loader Whether the Tickets Loader script should be enqueued.
+		 */
+		return (bool) apply_filters( 'tribe_tickets_assets_should_enqueue_tickets_loader', $are_new_views_enabled );
 	}
 
 	/**

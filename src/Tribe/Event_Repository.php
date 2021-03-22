@@ -26,7 +26,6 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 	 * @since 4.10.4
 	 */
 	public function __construct() {
-		Tribe__Events__Repositories__Event::PERMISSION_EDITABLE;
 		$this->decorated = tribe( 'events.event-repository' );
 
 		// These filter methods are added by the Post_Tickets trait.

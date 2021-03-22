@@ -8,26 +8,22 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link https://m.tri.be/1amp Help article for RSVP & Ticket template files.
+ * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 4.9
- * @version 4.9.4
+ * @since 5.1.0 Fixed the template loading process.
+ *
+ * @version 5.1.0
  *
  */
 
-?>
-<?php
-	ob_start();
-	/**
-	 * Allows filtering of extra classes used on the rsvp-block loader.
-	 *
-	 * @since  4.11.1
-	 *
-	 * @param  array $classes The array of classes that will be filtered.
-	 */
-	$loader_classes = apply_filters( 'tribe_rsvp_block_loader_classes', [ 'tribe-block__rsvp__loading' ] );
-	include Tribe__Tickets__Templates::get_template_hierarchy( 'components/loader.php' );
-	$html = ob_get_contents();
-	ob_end_clean();
-	echo $html;
-?>
+/**
+ * Allows filtering of extra classes used on the rsvp-block loader.
+ *
+ * @since  4.11.1
+ *
+ * @param  array $classes The array of classes that will be filtered.
+ */
+$loader_classes = apply_filters( 'tribe_rsvp_block_loader_classes', [ 'tribe-block__rsvp__loading' ] );
+
+$this->template( 'components/loader', [ 'loader_classes' => $loader_classes ] );

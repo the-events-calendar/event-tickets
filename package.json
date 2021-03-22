@@ -1,6 +1,6 @@
 {
   "name": "event-tickets",
-  "version": "5.0.5",
+  "version": "5.1.1",
   "repository": "git@github.com:the-events-calendar/event-tickets.git",
   "_zipname": "event-tickets",
   "_zipfoldername": "event-tickets",
@@ -34,13 +34,12 @@
     "lint": "eslint --quiet --parser=babel-eslint 'src/modules/**/*.js'",
     "lint:fix": "npm run lint -- --fix",
     "test": "TZ=UTC jest --config jest.config.json",
-    "test:travis": "npm run test -- --maxWorkers=4",
     "zip": "node node_modules/product-taskmaster/util/zip.js",
     "glotpress": "gulp glotpress"
   },
   "engines": {
-    "node": "0.10.30",
-    "npm": "1.4.23"
+    "node": "10.16.0",
+    "npm": "6.9.0"
   },
   "devDependencies": {
     "@babel/runtime": "7.0.0-beta.52",

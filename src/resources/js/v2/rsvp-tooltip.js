@@ -342,5 +342,5 @@ tribe.tickets.rsvp.tooltip = {};
 	};
 
 	// Configure on document ready.
-	$document.ready( obj.ready );
+	$( obj.ready );
 } )( jQuery, tribe.tickets.rsvp.tooltip );
