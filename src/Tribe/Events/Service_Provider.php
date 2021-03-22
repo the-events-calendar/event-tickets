@@ -1,7 +1,6 @@
 <?php
 /**
- * Register classes, actions and filters
- * that Event Tickets uses to manage "Events".
+ * Register classes, actions and filters that Event Tickets uses to manage "Events".
  */
 
 namespace Tribe\Tickets\Events;
@@ -16,8 +15,7 @@ namespace Tribe\Tickets\Events;
 class Service_Provider extends \tad_DI52_ServiceProvider {
 
 	/**
-	 * Register classes in the container that Event Tickets uses
-	 * to manage Events.
+	 * Register classes in the container that Event Tickets uses to manage Events.
 	 *
 	 * @since 4.12.0
 	 */
@@ -28,14 +26,16 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Actions and filters that Event Tickets uses to
-	 * to manage Events.
+	 * Actions and filters that Event Tickets uses to manage Events.
 	 *
 	 * @since 4.12.0
 	 */
 	protected function hooks() {
-		add_action( 'save_post', tribe_callback( 'tickets.events.attendees-list', 'maybe_update_attendee_list_hide_meta' ), 10 );
-		add_filter( 'tribe_tickets_plus_hide_attendees_list_optout', tribe_callback( 'tickets.events.attendees-list', 'should_hide_optout' ), 1, 2 );
+		/** @var Attendees_List $attendees_list */
+		$attendees_list = tribe( 'tickets.events.attendees-list' );
+
+		add_action( 'save_post', tribe_callback( $attendees_list, 'maybe_update_attendee_list_hide_meta' ), 10 );
+		add_filter( 'tribe_tickets_plus_hide_attendees_list_optout', tribe_callback( $attendees_list, 'should_hide_optout' ), 1, 2 );
 	}
 
 }

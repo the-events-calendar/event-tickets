@@ -2,6 +2,7 @@ actor: AcceptanceTester
 modules:
     enabled:
         - \Helper\Acceptance
+        - \Tribe\Tests\Helper\TECDb
         # see https://github.com/lucatume/wp-browser#modules to know the general ratio of each
         - WPWebDriver #browse
         - WPDb #manipulate the database and look up stuff
@@ -11,7 +12,7 @@ modules:
         WPWebDriver:
             # We have to use a URL Chromedriver will be able to resolve.
             # See the `.env` file for more information.
-            url: 'http://%WP_CHROMEDRIVER_URL%'
+            url: %WP_CHROMEDRIVER_URL%
             # see codeception.dist.yml for the configuration
             adminUsername: %WP_ADMIN_USERNAME%
             adminPassword: %WP_ADMIN_PASSWORD%
@@ -19,15 +20,21 @@ modules:
             browser: chrome
             host: %CHROMEDRIVER_HOST%
             port: %CHROMEDRIVER_PORT%
-            window_size: false
+            window_size: 1366x1400
             capabilities:
               chromeOptions:
-                args: ["--headless", "--disable-gpu", "--proxy-server='direct://'", "--proxy-bypass-list=*" ]
+                args:
+                  - "--disable-gpu"
+                  - "--proxy-server='direct://'"
+                  - "--proxy-bypass-list=*"
+                  - "--user-agent=tribe-tester"
+                  - "--high-dpi-support=1.0"
+                  - "--force-device-scale-factor=1.0"
         WPDb:
            dsn: 'mysql:host=%WP_DB_HOST%;dbname=%WP_DB_NAME%'
            user: %WP_DB_USER%
            password: %WP_DB_PASSWORD%
-           dump: 'tests/_data/dump.sql'
+           dump: 'tests/_data/dump-acceptance.sql'
            populate: true
            waitlock: 10
            cleanup: true

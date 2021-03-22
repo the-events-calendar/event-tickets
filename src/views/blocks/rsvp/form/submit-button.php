@@ -8,7 +8,7 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 4.9.3
  * @since 4.10.9 Use function for submit button text.

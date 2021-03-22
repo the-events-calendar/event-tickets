@@ -46,7 +46,7 @@ class FilterTest extends EventsTestCase {
 		 *
 		 * @see \Tribe__Repository::get_ids()
 		 */
-		$this->assertEquals( $assertions['get_ids'], $posts->get_ids(), $method );
+		$this->assertEqualSets( $assertions['get_ids'], $posts->get_ids() );
 
 		/**
 		 * The total number of posts found matching the current query parameters.
@@ -56,7 +56,7 @@ class FilterTest extends EventsTestCase {
 		 * @see \WP_Query::get_posts()
 		 * @see \Tribe__Repository::format_item()
 		 */
-		$this->assertEquals( $assertions['all'], $posts->all(), $method );
+		$this->assertEqualSets( $assertions['all'], $posts->all() );
 
 		/**
 		 * @see \Tribe__Repository::count() WP_Query's `post_count`:

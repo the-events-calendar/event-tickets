@@ -30,6 +30,10 @@ describe( 'Temp details reducer', () => {
 		expect( reducer( DEFAULT_STATE, actions.setTicketTempSku( 'block-id', '12345678' ) ) ).toMatchSnapshot();
 	} );
 
+	it( 'should set the temp iac setting', () => {
+		expect( reducer( DEFAULT_STATE, actions.setTicketTempIACSetting( 'block-id', 'none' ) ) ).toMatchSnapshot();
+	} );
+
 	it( 'should set the temp start date', () => {
 		expect( reducer( DEFAULT_STATE, actions.setTicketTempStartDate( 'block-id', 'January 1, 2018' ) ) ).toMatchSnapshot();
 	} );

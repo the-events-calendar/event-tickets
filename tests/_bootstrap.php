@@ -7,6 +7,23 @@ Codeception\Util\Autoload::addNamespace( 'Tribe__Events__WP_UnitTestCase', __DIR
 Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', __DIR__ . '/_support' );
 Codeception\Util\Autoload::addNamespace( 'Tribe\Tickets\Test', __DIR__ . '/_support' );
 
+$common_tests_dir = __DIR__ . '/../common/tests/';
+$common_support_dir = $common_tests_dir . '/_support';
+
+require_once $common_support_dir . '/Helper/TECDb.php';
+
+Codeception\Util\Autoload::addNamespace( 'Tribe\Tests', $common_support_dir );
+
+if( ! defined( 'TRIBE_TESTS_HOME_URL' ) ) {
+	/**
+	 * Snapshots URL to compare to home_url().
+	 *
+	 * Added to reduce complexity and avoid having to regenerate snapshots simply from switching testing environments.
+	 * If value ever changes, keep in sync with `tests/data/restv1-dump.sql`.
+	 */
+	define( 'TRIBE_TESTS_HOME_URL', 'http://wordpress.test/' );
+}
+
 /**
  * Codeception will regenerate snapshots on `--debug`, while the `spatie/snapshot-assertions`
  * library will do the same on `--update-snapshots`.

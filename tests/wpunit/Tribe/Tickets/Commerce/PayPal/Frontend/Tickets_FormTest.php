@@ -26,7 +26,7 @@ class Tickets_FormTest extends \Codeception\TestCase\WPTestCase {
 			return [ 'post' ];
 		} );
 		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
-		$this->driver = new WPHtmlOutputDriver( home_url(), 'http://commerce.dev' );
+		$this->driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 	}
 
 	public function tearDown() {

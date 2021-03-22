@@ -79,17 +79,17 @@ class Tribe__Tickets__Promoter__Observer {
 	}
 
 	/**
-	 * Notify to the parent Event of the ticket
+	 * Notify to the parent Event of the ticket.
 	 *
 	 * @since 4.11.5
 	 *
-	 * @param $ticket_id int The Ticket ID where to look for the Event.
+	 * @param $ticket_id int|null The Ticket ID where to look for the Event.
 	 */
 	public function notify_ticket_event( $ticket_id ) {
-		/** @var Tribe__Tickets__RSVP $provider */
+		/** @var Tribe__Tickets__Tickets $provider */
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
-		if ( ! $provider instanceof Tribe__Tickets__Tickets ) {
+		if ( empty( $provider ) ) {
 			return;
 		}
 

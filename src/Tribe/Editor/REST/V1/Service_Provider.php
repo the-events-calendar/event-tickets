@@ -76,14 +76,16 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 		$endpoint = tribe( 'tickets.editor.rest-v1.endpoints.tickets-single' );
 		register_rest_route( $this->namespace, '/tickets/(?P<id>\\d+)', [
 			[
-				'methods' => WP_REST_Server::EDITABLE,
-				'args' => $endpoint->EDIT_args(),
-				'callback' => [ $endpoint, 'update' ],
+				'methods'             => WP_REST_Server::EDITABLE,
+				'args'                => $endpoint->EDIT_args(),
+				'callback'            => [ $endpoint, 'update' ],
+				'permission_callback' => '__return_true',
 			],
 			[
-				'methods' => WP_REST_Server::DELETABLE,
-				'args' => $endpoint->DELETE_args(),
-				'callback' => [ $endpoint, 'delete' ],
+				'methods'             => WP_REST_Server::DELETABLE,
+				'args'                => $endpoint->DELETE_args(),
+				'callback'            => [ $endpoint, 'delete' ],
+				'permission_callback' => '__return_true',
 			],
 		] );
 
@@ -102,9 +104,10 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 		/** @var Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket $endpoint */
 		$endpoint = tribe( 'tickets.editor.rest-v1.endpoints.tickets-single' );
 		register_rest_route( $this->namespace, '/tickets', [
-			'methods' => WP_REST_Server::CREATABLE,
-			'args' => $endpoint->CREATE_args(),
-			'callback' => [ $endpoint, 'create' ],
+			'methods'             => WP_REST_Server::CREATABLE,
+			'args'                => $endpoint->CREATE_args(),
+			'callback'            => [ $endpoint, 'create' ],
+			'permission_callback' => '__return_true',
 		] );
 
 		return $endpoint;

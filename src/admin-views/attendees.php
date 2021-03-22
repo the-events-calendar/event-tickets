@@ -11,15 +11,16 @@ $pto      = get_post_type_object( $event->post_type );
 $singular = $pto->labels->singular_name;
 
 /**
- * Whether we should display the "Attendees" title.
+ * Whether we should display the "Attendees for: %s" title.
  *
  * @since  4.6.2
  * @since  4.12.1 Append the post ID to the Attendees page title and each Ticket's name.
+ * @since  5.0.1 Change default to the result of `is_admin()`.
  *
- * @param boolean                         $show_title
- * @param Tribe__Tickets__Tickets_Handler $handler
+ * @param boolean                   $show_title Whether to show the title.
+ * @param Tribe__Tickets__Attendees $attendees  The attendees object.
  */
-$show_title = apply_filters( 'tribe_tickets_attendees_show_title', true, $attendees );
+$show_title = apply_filters( 'tribe_tickets_attendees_show_title', is_admin(), $attendees );
 ?>
 
 <div class="wrap tribe-report-page">
@@ -28,12 +29,20 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', true, $attend
 			<?php
 			echo esc_html(
 				sprintf(
-				// Translators: 1: the post title, 2: the post ID.
+					// Translators: %1$s: the post/event title, %2$d: the post/event ID.
 					_x( 'Attendees for: %1$s [#%2$d]', 'attendees report screen heading', 'event-tickets' ),
-					get_the_title( $event_id ),
+					get_the_title( $event ),
 					$event_id
 				)
 			);
+			/**
+			 * Add an action to render content after text title.
+			 *
+			 * @since 5.1.0
+			 *
+			 * @param int $event_id Post ID.
+			 */
+			do_action( 'tribe_report_page_after_text_label', $event_id );
 			?>
 		</h1>
 	<?php endif; ?>
@@ -109,7 +118,16 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', true, $attend
 							<li>
 								<strong><?php echo esc_html( $ticket_name ) ?>:&nbsp;</strong><?php
 								echo esc_html( tribe_tickets_get_ticket_stock_message( $ticket ) );
-								?></li>
+
+								/**
+								 * Adds an entry point to inject additional info for ticket.
+								 *
+								 * @since 5.0.3
+								 */
+								$this->set( 'ticket_item_for_overview', $ticket );
+								$this->do_entry_point( 'overview_section_after_ticket_name' );
+								?>
+							</li>
 						<?php } ?>
 					</ul>
 					<?php do_action( 'tribe_events_tickets_attendees_ticket_sales_bottom', $event_id ); ?>

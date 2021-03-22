@@ -8,20 +8,21 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link    {INSERT_ARTICLE_LINK_HERE}
+ * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   4.9
  * @since   4.11.1 Corrected amount of available/remaining tickets. Removed unused `data-remaining` attribute.
  * @since   4.11.5 The input's "max" is now always set. The unused `data-remaining` attribute actually didn't get removed
  *                 in the previous change, above, so it got removed in this version.
+ * @since   5.0.3 Add vars to docblock and removed duplicative vars.
  *
- * @version 4.11.5
+ * @version 5.0.3
+ *
+ * @var Tribe__Tickets__Editor__Template $this    Template object.
+ * @var int                              $post_id [Global] The current Post ID to which RSVPs are attached.
+ * @var Tribe__Tickets__Ticket_Object    $ticket  The ticket object with provider set to RSVP.
+ * @var string                           $going   The RSVP status at time of add/edit (e.g. 'yes'), or empty if not in that context.
  */
-
-/** @var Tribe__Tickets__RSVP $rsvp */
-$rsvp = tribe( 'tickets.rsvp' );
-
-$must_login = ! is_user_logged_in() && $rsvp->login_required();
 
 /** @var Tribe__Tickets__Ticket_Object $ticket */
 if ( empty( $ticket->ID ) ) {

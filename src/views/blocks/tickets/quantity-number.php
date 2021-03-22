@@ -8,19 +8,18 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link    {INSERT_ARTICLE_LINK_HERE}
+ * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   4.9
  * @since   4.10.8 Tweaked logic for unlimited maximum quantity allowed.
  * @since   4.11.5 The input's "max" is now always set.
+ * @since   5.0.3 Removed duplicative vars.
  *
- * @version 4.11.5
+ * @version 5.0.3
  *
  * @var Tribe__Tickets__Ticket_Object    $ticket
  * @var Tribe__Tickets__Editor__Template $this
  */
-
-$must_login = ! is_user_logged_in() && $ticket->get_provider()->login_required();
 
 $ticket = $this->get( 'ticket' );
 

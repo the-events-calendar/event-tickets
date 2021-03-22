@@ -60,7 +60,17 @@ $tickets_fields = [
 	],
 	'ticket-enabled-post-types' => [
 		'type'            => 'checkbox_list',
-		'label'           => esc_html( sprintf( _x( 'Post types that can have %s', 'tickets fields settings enabled post types', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_enabled_post_types' ) ) ),
+		'label'           => esc_html(
+			sprintf(
+				// Translators: %s: dynamic "tickets" text.
+				_x(
+					'Post types that can have %s',
+					'tickets fields settings enabled post types',
+					'event-tickets'
+				),
+				tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_enabled_post_types' )
+			)
+		),
 		// only set the default to tribe_events if the ticket-enabled-post-types index has never been saved
 		'default'         => array_key_exists( 'ticket-enabled-post-types', $options ) ? false : 'tribe_events',
 		'options'         => $all_post_types,
@@ -142,12 +152,12 @@ $authentication_fields = [
 
 
 $plus_link = sprintf(
-	'<a href="http://m.tri.be/19zl" target="_blank">%s</a>',
+	'<a href="https://evnt.is/19zl" target="_blank">%s</a>',
 	__( 'Event Tickets Plus', 'tribe-common' )
 );
 
 $plus_link_2 = sprintf(
-	'<a href="http://m.tri.be/19zl" target="_blank">%s</a>',
+	'<a href="https://evnt.is/19zl" target="_blank">%s</a>',
 	__( 'Check it out!', 'tribe-common' )
 );
 
@@ -174,10 +184,11 @@ $paypal_currency_code_options = tribe( 'tickets.commerce.currency' )->generate_c
 
 $current_user = get_user_by( 'id', get_current_user_id() );
 
-// The KB article URL will change depending on whether ET+ is active or not
+// The KB article URL will change depending on whether ET+ is active or not.
 $paypal_setup_kb_url = class_exists( 'Tribe__Tickets_Plus__Main' )
-	? 'http://m.tri.be/19yk'
-	: 'http://m.tri.be/19yj';
+	? 'https://evnt.is/19yk'
+	: 'https://evnt.is/19yj';
+
 $paypal_setup_kb_link = '<a href="' . esc_url( $paypal_setup_kb_url ) . '" target="_blank">' . esc_html__( 'these instructions', 'event-tickets' ) . '</a>';
 $paypal_setup_note    = sprintf( esc_html_x( 'In order to use Tribe Commerce to sell %1$s, you must configure your PayPal account to communicate with your WordPress site. If you need help getting set up, follow %2$s', 'tickets fields settings PayPal setup', 'event-tickets' ), esc_html( tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_setup' ) ), $paypal_setup_kb_link );
 

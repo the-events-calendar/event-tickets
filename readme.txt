@@ -1,10 +1,10 @@
 === Event Tickets ===
 
-Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
-Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
-Requires at least: 4.9
-Tested up to: 5.4.1
-Stable tag: 4.12.1
+Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, patriciahillebrandt, vicskf, zbtirrell, juanfra
+Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
+Requires at least: 4.9.14
+Tested up to: 5.7.0
+Stable tag: 5.1.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,51 +13,91 @@ Event Tickets allows your visitors to RSVP and buy tickets to events on your sit
 
 == Description ==
 
-Event Tickets provides a simple way for visitors to RSVP or purchase tickets to your events. As a standalone plugin, it enables you to add RSVPs or tickets to posts or pages. When paired with [The Events Calendar](http://m.tri.be/18tg), you can add that same functionality directly to your event listings.
+Manage tickets and RSVPs for free with [Event Tickets](https://evnt.is/1ao8), from the team behind the number one calendar on WordPress.
 
-Sell tickets to your events by connecting your PayPal business account to your site. PayPal handles the transactions so you can focus on event management! Admins can view attendee information from the backend, allowing them to check in registered attendees with ease when your event begins.
+This plugin makes it easy to sell tickets and collect registration for in-person or virtual events. Plus, it comes with features backed by our world-class team of developers and designers. Integrate Event Tickets with your PayPal business account and manage attendees from your WordPress dashboard.
 
-<strong>Check out [Event Tickets Plus](http://m.tri.be/18th) and [other add-ons](http://m.tri.be/2a)</strong>
+https://vimeo.com/480516958/dda22d4e01
 
->Take full control of the event ticketing process and customize it to suit your needs. Event Tickets Plus uses your favorite e-commerce provider to keep users on your site from start to finish. Advanced ticket functionality allows you to share capacity between tickets so you can always sell out without selling over. Configure custom attendee registration forms to collect information like t-shirt size or food preferences.
->[Upgrade to Event Ticket Plus now](http://m.tri.be/18th).
->
+= 🎟️ Ticketing and Registration for WordPress =
 
-= Built solid & supported =
+See Event Tickets in action on our [demo site](https://evnt.is/1ajs). Just getting started? Check out the [Getting Started Guide](https://evnt.is/1aoc) for an introduction to features, settings, and functionality.
 
-The team at Modern Tribe stands by our work and offers light support weekly for the community via the WordPress.org support forums. Feel free to ask a question if you're having a problem with implementation or if you find bugs. Looking for help NOW or need a deeper level of support? Add [Event Tickets Plus](http://m.tri.be/18th) to get access to premium support forums with 24-48 hour response times on weekdays.
+Looking for additional features like custom registration fields, QR check-in, Zoom integration, and more? <strong>Check out [Event Tickets Plus](https://evnt.is/18th) and our [other add-ons](https://evnt.is/2a)</strong>. ...and all of them are on sale from November 23-30 during our annual 💰[Black Friday Sale](https://evnt.is/1aod)💰
 
-Just getting started? Check out the [New User Primer](http://m.tri.be/18ti) for an introduction to features, settings, and functionality.
+= 🔌🎨 Plug and Play or Customize =
 
-Do you enjoy using Event Tickets, know how to make customizations and tweaks, and want to make money helping people? We're growing our community team and would love to hear from you. If you're interested, [check this out!](http://m.tri.be/mk)
+Event Tickets is built to work out of the box. Just install the plugin, configure your settings, and start collecting RSVPs and selling tickets in minutes.
 
-= Plug-n-play & highly customizable =
+Add your own touch by using Event Tickets as the foundation for customization. Personalize to your heart's content with the help of a skeleton stylesheet, partial template overrides, template tags, hooks and filters, [careful documentation](https://evnt.is/eu), and a [library of free extensions](https://evnt.is/1a0r).
 
-Event Tickets is built to work out of the box: it doesn't use a shortcode (nor is one available). Just turn it on, configure the settings to match your needs and you'll be taking RSVPs and selling tickets within minutes.
+Whether your vision is big or small, you're in good company. Thousands of small businesses, musicians, venues, restaurants, and non-profits are increasing revenue from their in-person and virtual events with Event Tickets. Our plugins have also been scaled to work on large networks for Fortune 100 companies, universities, and government institutions.
 
-By developers, for developers... it's ready to be the foundation for your wildest hack sessions. Complete with a skeleton stylesheet to theme fast and efficiently, loads of tools including partial template overrides, a host of template tags, hooks and filters, [careful documentation](http://m.tri.be/eu), as well as a [library of free extensions](http://m.tri.be/ext). Events Tickets is built FOR people who build websites.
+= ✨ Features =
 
-Whether your vision is big or small, we have you in mind.
+✔️ Attendees can RSVP to events
+✔️ Attendees can purchase tickets to events
+✔️ Add RSVPs and tickets to posts, pages, or custom post types
+✔️ Collect ticket fees by connecting your PayPal business account
+✔️ Generate sales and attendee reports
+✔️ Ticket stock countdown
+✔️ Automatic ticket confirmation emails
+✔️ Works out of the box with [The Events Calendar](https://wordpress.org/plugins/the-events-calendar/)
+✔️ Responsive design works on all devices
+✔️ Tested on the major theme frameworks such as Avada, Genesis, Woo Themes, Thesis and many more.
+✔️ Internationalized & translated
+✔️ Extensive template tags for customization
+✔️ Hooks & filters galore
+✔️ [Library of extensions](https://evnt.is/1a0r)
 
-= Features =
+Upgrade to [Event Tickets Plus](https://evnt.is/18th) for full WooCommerce integration to use additional payment gateways like Stripe or Braintree.
 
-* Visitors can RSVP to events
-* Visitors can purchase tickets to events
-* Add RSVPs and tickets to posts, pages, or any custom post type
-* Admins can collect ticket fees by connecting their PayPal business account
-* Works out of the box with [The Events Calendar](https://wordpress.org/plugins/the-events-calendar/)
-* Completely responsive from mobile to tablet to desktop
-* Tested on the major theme frameworks such as Avada, Genesis, Woo Themes, Thesis and many more.
-* Internationalized & translated
-* Extensive template tags for customization
-* Hooks & filters galore
+== 📃 Documentation ==
 
-Upgrade to [Event Tickets Plus](http://m.tri.be/18th) for advanced ticket sales using WooCommerce and Easy Digital Downloads
-Looking for something else? We've got [add-ons available](http://m.tri.be/2a) to take your calendar to the next level.
+All of our documentation can be found in [our knowledgebase](https://evnt.is/eu).
 
-= Submitting Patches =
+Additional helpful links:
 
-If you've identified a bug and have a fix, we'd welcome it at our [GitHub page for Event Tickets](https://github.com/moderntribe/event-tickets). Simply submit a pull request so we can review as part of our [release cycle](http://m.tri.be/release-schedule) and merge into the codebase if appropriate from there. If a pull request is rejected, we'll do our best to tell you why. Users whose pull requests are accepted will receive credit in the plugin's changelog. For more information, check out the readme at our GitHub page. Happy coding!
+* [Guide: Getting Started with Event Tickets](https://theeventscalendar.com/knowledgebase/guide/event-tickets/)
+* [Installing Event Tickets Video](https://evnt.is/1ao9)
+* [Do I need Event TIckets or Event Tickets Plus?](https://evnt.is/1aoa)
+* [How to Make Money with Virtual Events](https://evnt.is/1aob)
+
+If you have any questions about this plugin, you can post a thread in the WordPress.org forum. Please search existing threads before starting a new on
+
+== ➕ Add-Ons ==
+
+Take your calendar to the next level by pairing it with our plugins for ticketing, crowdsourcing, email marketing, and more. Learn more about all our products on our website.
+Our Free Plugins:
+📅 [The Events Calendar](https://wordpress.org/plugins/the-events-calendar/)
+📐 [Advanced Post Manager](https://wordpress.org/plugins/advanced-post-manager/)
+
+Our Premium Plugins and Services:
+
+⚡ [Events Calendar Pro](https://evnt.is/18wi)
+↪️ [Event Aggregator](https://evnt.is/197u) (service)
+🎟️ [Event Tickets Plus](https://evnt.is/18wk)
+✉️ [Promoter](https://evnt.is/1ajt)
+👥 [Community Events](https://evnt.is/2g)
+🎟️ [Community Tickets](https://evnt.is/18wl)
+✏️ [Filter Bar](https://evnt.is/fa)
+🗓️ [Eventbrite Tickets](https://evnt.is/2e)
+📡 [Virtual Events](https://evnt.is/1aky)
+
+== Help ==
+
+If you aren't familiar with Event Tickets, check out our [Getting Started Guide](https://evnt.is/1aoc). It will have you creating tickets in no time.
+
+Ready to dig deeper? Check out these resources:
+
+* [Tutorials](https://evnt.is/2u)
+* [Known Issues](https://theeventscalendar.com/known-issues/)
+* [Help Videos](https://evnt.is/youtube)
+* [Release Notes](https://evnt.is/2v)
+
+We check in on the [Event Tickets forum here on WordPress.org](https://wordpress.org/support/plugin/event-tickets/) about once a week to help users with basic troubleshooting and identifying bugs. If you're looking for premium, personalized support, consider upgrading to Event Tickets Plus.
+
+Still have a question? Shoot us an email at support@theeventscalendar.com.
 
 == Installation ==
 
@@ -82,40 +122,214 @@ If you've identified a bug and have a fix, we'd welcome it at our [GitHub page f
 
 == Frequently Asked Questions ==
 
-= Where do I go to file a bug or ask a question? =
+= Are there any troubleshooting steps I should try before I post a new thread in the support forum? =
 
-Users of the free plugin can post in the [Event Tickets support forum on WordPress.org](https://wordpress.org/support/plugin/event-tickets/). Our team reviews that forum weekly to look for bug reports. If you need more in-depth help, consider purchasing a license for [Event Tickets Plus](http://m.tri.be/18th). A valid license gives you access to our [premium support forums](http://m.tri.be/18u1) which have a 24-48 hour response time on weekdays.
+First, make sure that you're running the latest version of Event Tickets. If you've got any other add-ons, make sure those are current and running the latest code as well. Also be sure to check our [knowledgebase](https://evnt.is/1aoc).
 
-= Are there any troubleshooting steps you'd suggest I try that might resolve my issue before I post a new thread? =
+The most common issues we see are either plugin or theme conflicts. You can test if a plugin or theme is conflicting by manually deactivating other plugins until just Event Tickets is running on your site. If the issue persists, revert to the default [Twenty Twenty](https://wordpress.org/themes/twentytwenty/) theme. If the issue is resolved after deactivating a specific plugin or your theme, you'll know that is the source of the conflict.
 
-First, make sure that you're running the latest version of Event Tickets. If you've got any other add-ons, make sure those are current / running the latest code as well.
+Note that we aren't going to say “tough luck” if you identify a plugin/theme conflict. While we can't guarantee 100% integration with any plugin or theme out there, we will do our best (and reach out the plugin/theme author as needed) to figure out a solution that benefits everyone.
 
-The most common issues we see are either plugin or theme conflicts. You can test if a plugin or theme is conflicting by manually deactivating other plugins until just Event Tickets is running on your site. If the issue persists from there, revert to the default Twenty Fifteen theme. If the issue is resolved after deactivating a specific plugin or your theme, you'll know that is the source of the conflict.
+= I'm still stuck. Where do I go to file a bug or ask a question? =
 
-Note that we aren't going to say "tough luck" if you identify a plugin/theme conflict. While we can't guarantee 100% integration with any plugin or theme out there, we will do our best (and reach out the plugin/theme author as needed) to figure out a solution that benefits everyone.
+Free plugin users can post in the [Event Tickets support forum on WordPress.org](https://wordpress.org/support/plugin/event-tickets/). Our team reviews that forum weekly to look for bug reports.
 
-= Event Tickets Plus is just what I need! I'm sold! How can I get my hands on it? =
+If you're already an Event Tickets Plus subscriber, you're entitled to our actively-monitored [Premium Support](https://evnt.is/1aoe) on our website. Generally, except in times of increased support loads, we reply to all premium support tickets within 24 hours during the business week.
 
-Events Tickets Plus can be purchased directly on [our website](http://m.tri.be/18th). There are five (5) license types available, and all licenses include access to premium support, new feature releases, and regular maintenance updates.
+= What's the difference between Event Tickets and Events Tickets Plus?
 
-= I'm interested in Event Tickets Plus or another add-on, but I have a few questions before making the purchase. Can you help me get those addressed? =
+Event Tickets is our free ticketing plugin that has all the basics you need to sell tickets and collect RSVPs on your website. You can use Event Tickets with or without The Events Calendar.
 
-Absolutely. If you're not finding your questions answered on the product pages, hit up our [pre-sales forum](http://m.tri.be/2w) on our site. You can save yourself some time by reviewing the threads first to verify if your question has already been asked. If it hasn't, post a new thread as a guest. We'll get you a reply as quickly as we can, so you can make an informed decision regarding purchase.
+Event Tickets Plus is a premium plugin that runs alongside Event Tickets and enhances it with extra features, including custom registration fields, shortcodes, WooCommerce integration, our [mobile ticketing app](https://evnt.is/1aof) and more.
+
+[Read more to learn which plugin is right for you.](https://evnt.is/1aoa)
+
+= Do I need The Events Calendar to run Event Tickets? =
+
+Nope! Event Tickets works with or without The Events Calendar. Even if you don't have The Events Calendar, you can create RSVPs and tickets on WordPress pages and posts.
+
+= Can I email attendees using Event Tickets? =
+
+Yes. Event Tickets automatically sends an email confirmation after attendees register or RSVP for an event. If the attendee purchases a ticket, the confirmation email will also provide a ticket to scan at the door for admission.
 
 = What add-ons are available for Event Tickets, and where can I read more about them? =
 
-Currently, the following add-ons are available for Event Tickets:
+The following add-ons are available for The Events Calendar:
 
-* [Event Tickets Plus](http://m.tri.be/18wk), for selling tickets to your events using your favorite e-commerce platform.
-* [The Events Calendar](https://wordpress.org/plugins/the-events-calendar/), for managing a full calendar of events with ease.
-* [Events Calendar PRO](http://m.tri.be/18wi), for adding premium calendar features like recurring events, advanced views, cool widgets, shortcodes, additional fields, and more!
-* [Event Aggregator](http://m.tri.be/197u), a service that effortlessly fills your calendar with events from Meetup, Google Calendar, iCalendar, Eventbrite, CSV, and ICS.
-* [Community Events](http://m.tri.be/2g), for allowing frontend event submission from your readers.
-* [Community Tickets](http://m.tri.be/18wl), which allows event organizers to sell tickets to the events they submit via Community Events.
-* [Filter Bar](http://m.tri.be/fa), for adding advanced frontend filtering capabilities to your events calendar.
-* [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
+* [Events Calendar Pro](https://evnt.is/18wi), for adding premium calendar features like recurring events, advanced views, cool widgets, [shortcodes](https://evnt.is/1ajw), additional fields, and more!
+* [Event Aggregator](https://evnt.is/197u), a service that effortlessly fills your calendar with events from Meetup, Google Calendar, iCalendar, Eventbrite, CSV, and ICS.
+* [Virtual Events](https://evnt.is/1aky), which optimizes your calendar for virtual events including Zoom integration, video and livestream embeds, SEO optimization for online events and more.
+* [Event Tickets Plus](https://evnt.is/18wk), which allows you to sell tickets for your events using your favorite e-commerce platform.
+* [Promoter](https://evnt.is/1ajt), automated email communication made just for The Events Calendar and Event Tickets. Stay in touch with your attendees every step of the way.
+* [Community Events](https://evnt.is/2g), for allowing frontend event submission from your readers.
+* [Community Tickets](https://evnt.is/18wl), which allows event organizers to sell tickets to the events they submit via Community Events.
+* [Filter Bar](https://evnt.is/fa), for adding advanced frontend filtering capabilities to your events calendar.
+* [Eventbrite Tickets](https://evnt.is/2e), for selling tickets to your event directly through Eventbrite.
+
+= I have a feature idea. What's the best way to tell you about it? =
+
+We've got a [UserVoice](https://tribe.uservoice.com/forums/195723-feature-ideas) page where we're actively watching for feature ideas from the community. Vote up existing feature requests or add your own, and help us shape the future of the products business in a way that best meets the community's needs.
+
+= I've still got questions. Where can I find answers? =
+
+Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.1.1] 2021-03-04 =
+
+* Fix - Compatibility with WordPress 5.7 and jQuery 3.5.X [ET-992]
+* Fix - Attendees will no longer have a new user created (if they did not already exist), which was introduced in Event Tickets 5.1.0. To turn this on, you can simply add the filter `add_filter( 'tribe_tickets_attendee_create_user_from_email', '__return_true' );`
+* Fix - Prevent the Attendee Registration page from having the title coming from draft pages. [ETP-360]
+* Fix - Highlight the "Ticketed" and "Unticketed" filters in the WordPress when they're applied. [ET-1022]
+* Fix - Prevent duplicate tickets from showing in post loops. [ETP-639]
+* Fix - Ensure ticket object caches return normally in all circumstances, preventing potential "Sold Out" messaging from happening in certain hosting environments. [ET-1023]
+* Fix - Set the default `iac` argument value in the single ticket REST API endpoint to add tickets since it is an optional argument to be sent.
+* Tweak - Added new `Ticket Holder Name` and `Ticket Holder Email Address` columns to the Attendees Report export CSV file and update the previous `Customer` columns to label as `Purchaser`. [ETP-652]
+* Tweak - Tweaked SQL queries for MySQL 8+ compatibility. [ET-1021]
+* Language - 2 new strings added, 38 updated, 2 fuzzied, and 0 obsoleted
+
+= [5.1.0] 2021-02-16 =
+
+* Feature - New Attendees ORM functionality allows creating and updating attendees. [ETP-366]
+* Feature - New Orders ORM can be used by calling `tribe_tickets_orders()` and allows interfacing with Event Tickets Plus commerce providers. [ETP-366]
+* Fix - Remove the duplicate Attendees heading from the Attendees Report screen when using Tribe Commerce tickets. [ETP-366]
+* Tweak - New admin manager code to help us consolidate modals going forward with a comprehensive templating and form processing solution. [ETP-366]
+* Tweak - Enforce capitalization for the text for action buttons on the Attendees Report screen. [ETP-624]
+* Tweak - A new filter was introduced to help avoid problems where ticket caching has problems with certain hosting environments that cause tickets to show as Sold Out. Disable ticket caching with `add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', '__return_false' );` [ETP-366]
+* Tweak - Start tracking attendee email activity in a meta record so that there's a better ability for determining if an attendee email was sent, where to, and how many times it was re-sent. [ETP-366]
+* Tweak - Added filters: `tribe_tickets_admin_manager_request`, `tribe_tickets_attendee_repository_set_attendee_args`, `tribe_tickets_attendee_repository_set_attendee_args_`, `tribe_tickets_attendee_repository_save_extra_attendee_data_args`, `tribe_tickets_attendee_repository_save_extra_attendee_data_args_`, `tribe_tickets_attendee_repository_create_order_for_attendee_order_args`, `tribe_tickets_repositories_order_statuses`, `tribe_tickets_repositories_order_public_statuses`, `tribe_tickets_repositories_order_private_statuses`, `tribe_tickets_repositories_order_create_order_for_ticket_order_args`, `tribe_tickets_ticket_object_is_ticket_cache_enabled`, `tribe_tickets_attendee_activity_log_data`, `tribe_tickets_attendee_lookup_user_from_email`, `tribe_tickets_attendee_create_user_from_email`, `tribe_tickets_attendee_create_user_from_email_send_new_user_info`, `tribe_tickets_handler_email_max_resend_limit`, `tribe_tickets_repositories_order_map`
+* Tweak - Removed filters: `tribe_tickets_rsvp_create_attendee_lookup_user_from_email`
+* Tweak - Added actions: `tribe_log`, `tribe_tickets_attendee_repository_create_attendee_for_ticket_after_create`, `tribe_tickets_attendee_repository_create_attendee_for_ticket_after_create_`, `tribe_tickets_attendee_repository_update_attendee_after_update`, `tribe_tickets_attendee_repository_update_attendee_after_update_{$this->key_name}`, `tribe_log`, `tribe_log`, `tribe_report_page_after_text_label`
+* Tweak - Changed views: `blocks/attendees`, `blocks/attendees/description`, `blocks/attendees/gravatar`, `blocks/attendees/title`, `blocks/attendees/view-link`, `blocks/rsvp`, `blocks/rsvp/content-inactive`, `blocks/rsvp/content`, `blocks/rsvp/details`, `blocks/rsvp/details/availability`, `blocks/rsvp/details/description`, `blocks/rsvp/details/title`, `blocks/rsvp/form`, `blocks/rsvp/form/attendee-meta`, `blocks/rsvp/form/details`, `blocks/rsvp/form/email`, `blocks/rsvp/form/error`, `blocks/rsvp/form/form`, `blocks/rsvp/form/name`, `blocks/rsvp/form/opt-out`, `blocks/rsvp/form/quantity-input`, `blocks/rsvp/form/quantity-minus`, `blocks/rsvp/form/quantity-plus`, `blocks/rsvp/form/quantity`, `blocks/rsvp/form/submit-button`, `blocks/rsvp/form/submit-login`, `blocks/rsvp/icon-svg`, `blocks/rsvp/icon`, `blocks/rsvp/loader-svg`, `blocks/rsvp/loader`, `blocks/rsvp/messages/success`, `blocks/rsvp/status`, `blocks/rsvp/status/full`, `blocks/rsvp/status/going-icon`, `blocks/rsvp/status/going`, `blocks/rsvp/status/not-going-icon`, `blocks/rsvp/status/not-going`, `blocks/tickets`, `blocks/tickets/commerce/fields-edd`, `blocks/tickets/commerce/fields-tpp`, `blocks/tickets/commerce/fields-woo`, `blocks/tickets/commerce/fields`, `blocks/tickets/content-description`, `blocks/tickets/content-inactive`, `blocks/tickets/content-title`, `blocks/tickets/content`, `blocks/tickets/extra-available-quantity`, `blocks/tickets/extra-available-unlimited`, `blocks/tickets/extra-available`, `blocks/tickets/extra-price`, `blocks/tickets/extra`, `blocks/tickets/footer-quantity`, `blocks/tickets/footer-total`, `blocks/tickets/footer`, `blocks/tickets/icon-svg`, `blocks/tickets/icon`, `blocks/tickets/item-inactive`, `blocks/tickets/item`, `blocks/tickets/opt-out-hidden`, `blocks/tickets/quantity-add`, `blocks/tickets/quantity-number`, `blocks/tickets/quantity-remove`, `blocks/tickets/quantity-unavailable`, `blocks/tickets/quantity`, `blocks/tickets/registration/attendee/content`, `blocks/tickets/registration/attendee/fields`, `blocks/tickets/registration/attendee/fields/checkbox`, `blocks/tickets/registration/attendee/fields/radio`, `blocks/tickets/registration/attendee/fields/select`, `blocks/tickets/registration/attendee/fields/text`, `blocks/tickets/registration/attendee/submit`, `blocks/tickets/registration/content`, `blocks/tickets/registration/summary/content`, `blocks/tickets/registration/summary/ticket-icon`, `blocks/tickets/registration/summary/ticket-price`, `blocks/tickets/registration/summary/ticket-quantity`, `blocks/tickets/registration/summary/ticket-title`, `blocks/tickets/registration/summary/ticket`, `blocks/tickets/registration/summary/tickets`, `blocks/tickets/registration/summary/title`, `blocks/tickets/submit-button-modal`, `blocks/tickets/submit-button`, `blocks/tickets/submit-login`, `blocks/tickets/submit`, `components/loader`, `components/notice`, `modal/item-total`, `modal/registration-js`, `registration-js/attendees/content`, `registration-js/content`, `registration-js/mini-cart`, `registration/attendees/content`, `registration/content`, `tickets/email`, `tickets/orders`, `v2/components/icons/error`, `v2/components/icons/guest`, `v2/components/icons/paper-plane`, `v2/components/loader/loader`, `v2/day/event/cost`, `v2/list/event/cost`, `v2/map/event-cards/event-card/actions/cost`, `v2/month/calendar-body/day/calendar-events/calendar-event/tooltip/cost`, `v2/month/mobile-events/mobile-day/mobile-event/cost`, `v2/photo/event/cost`, `v2/rsvp-kitchen-sink`, `v2/rsvp-kitchen-sink/ari`, `v2/rsvp-kitchen-sink/default-full`, `v2/rsvp-kitchen-sink/default-must-login`, `v2/rsvp-kitchen-sink/default-no-description`, `v2/rsvp-kitchen-sink/default-unlimited`, `v2/rsvp-kitchen-sink/default`, `v2/rsvp-kitchen-sink/form-going`, `v2/rsvp-kitchen-sink/form-not-going`, `v2/rsvp-kitchen-sink/success`, `v2/rsvp`, `v2/rsvp/actions`, `v2/rsvp/actions/full`, `v2/rsvp/actions/rsvp`, `v2/rsvp/actions/rsvp/going`, `v2/rsvp/actions/rsvp/not-going`, `v2/rsvp/actions/success`, `v2/rsvp/actions/success/title`, `v2/rsvp/actions/success/toggle`, `v2/rsvp/actions/success/tooltip`, `v2/rsvp/ari`, `v2/rsvp/ari/form`, `v2/rsvp/ari/form/error`, `v2/rsvp/ari/form/fields`, `v2/rsvp/ari/form/fields/email`, `v2/rsvp/ari/form/fields/meta`, `v2/rsvp/ari/form/fields/name`, `v2/rsvp/ari/form/template/fields`, `v2/rsvp/ari/sidebar`, `v2/rsvp/ari/sidebar/quantity/input`, `v2/rsvp/ari/sidebar/quantity/minus`, `v2/rsvp/ari/sidebar/quantity/plus`, `v2/rsvp/content`, `v2/rsvp/details`, `v2/rsvp/details/attendance`, `v2/rsvp/details/availability`, `v2/rsvp/details/availability/days-to-rsvp`, `v2/rsvp/details/availability/full`, `v2/rsvp/details/availability/remaining`, `v2/rsvp/details/availability/unlimited`, `v2/rsvp/details/description`, `v2/rsvp/details/title`, `v2/rsvp/form/buttons`, `v2/rsvp/form/fields`, `v2/rsvp/form/fields/cancel`, `v2/rsvp/form/fields/email`, `v2/rsvp/form/fields/name`, `v2/rsvp/form/fields/submit`, `v2/rsvp/form/form`, `v2/rsvp/form/going/title`, `v2/rsvp/form/not-going/title`, `v2/rsvp/form/title`, `v2/rsvp/messages/error`, `v2/rsvp/messages/must-login`, `v2/rsvp/messages/success`, `v2/rsvp/messages/success/going`, `v2/rsvp/messages/success/not-going`, `v2/tickets`, `v2/tickets/commerce/fields`, `v2/tickets/commerce/fields/tribe-commerce`, `v2/tickets/footer`, `v2/tickets/footer/quantity`, `v2/tickets/footer/return-to-cart`, `v2/tickets/footer/total`, `v2/tickets/item`, `v2/tickets/item/content`, `v2/tickets/item/content/description-toggle`, `v2/tickets/item/content/description`, `v2/tickets/item/content/inactive`, `v2/tickets/item/content/title`, `v2/tickets/item/extra`, `v2/tickets/item/extra/available`, `v2/tickets/item/extra/available/quantity`, `v2/tickets/item/extra/available/unlimited`, `v2/tickets/item/extra/description-toggle`, `v2/tickets/item/extra/price`, `v2/tickets/item/inactive`, `v2/tickets/item/opt-out`, `v2/tickets/item/quantity-mini`, `v2/tickets/item/quantity`, `v2/tickets/item/quantity/add`, `v2/tickets/item/quantity/number`, `v2/tickets/item/quantity/remove`, `v2/tickets/item/quantity/unavailable`, `v2/tickets/items`, `v2/tickets/notice`, `v2/tickets/opt-out/hidden`, `v2/tickets/submit`, `v2/tickets/submit/button`, `v2/tickets/submit/must-login`, `v2/tickets/title`, `v2/week/grid-body/events-day/event/tooltip/cost`, `v2/week/mobile-events/day/event/cost`
+* Language - 2 new strings added, 94 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.0.5] 2021-01-20 =
+
+* Fix - Prevent potential fatal errors when referencing deleted Tribe Commerce tickets in PayPal orders and API calls. [ET-995]
+* Fix - Ensure the currency-related object is available to JavaScript on the Attendee Registration even when there are no tickets shown. [ETP-629]
+* Fix - Multiple shortcodes `[tribe_tickets post_id="ID"]` on a single page will now properly work with the Attendee Registration Modal and adding to the cart / checking out. [ETP-627]
+* Fix - Ensure trashed orders do not cause the Delete confirmation text to show up when clicking links for attendees in the Attendees Report. [ET-994]
+* Language - 2 new strings added, 67 updated, 0 fuzzied, and 3 obsoleted
+
+= [5.0.4.2] 2020-12-29 =
+
+* Fix - Resolve JavaScript validation issues with start/end date fields when saving tickets in the Classic Editor using a variety of date formats. Props to @therajumandapati for the initial in-depth debugging that helped us get this fix out so quickly! [ET-987]
+* Tweak - Point PUE URLs to the correct servers to avoid redirects.
+
+= [5.0.4.1] 2020-12-16 =
+
+* Fix - Resolve fatal error from the Attendee Registration modal when calling the loading "dot" icons outside of the template context in older views. [ET-986]
+
+= [5.0.4] 2020-12-15 =
+
+* Fix - Exclude the "RSVP" ticket provider from the providers list in the editor for tickets. [ET-953]
+* Fix - Post type settings label typo changed to plural "tickets". [ET-954]
+* Fix - RSVP/Ticket's end sale date for non-event post types now defaults to 1 year and 2 hrs from current date instead of 100 years. [ET-954]
+* Fix - Remove the Custom Class Name from the block interface for the Event Tickets blocks to prevent extra interface options that are unused. [ET-960]
+* Fix - Remove extraneous "Save and checkout" heading from the `registration-js/content.php` view. [ET-955]
+* Fix - Prevent PHP notices by setting up the `must_login` argument within the `registration-js/mini-cart.php` view. [ET-955]
+* Fix - Make the "Configure Settings" link on the Welcome screen for Event Tickets open up in a new tab. [ET-958]
+* Fix - Update loader templates to use new icons from Tribe Common. [ET-588]
+* Fix - Resolve PHP notices on the Attendee Registration Page from Tribe Commerce ticket details when multiple Commerce Providers may be available. [ET-599]
+* Fix - Prevent potential conflicts with themes like Avada that manually trigger a jQuery ready event during the normal jQuery ready event. [ETP-601]
+* Tweak - Add opaque backgrounds for selected bordered elements. [ET-944]
+* Tweak - Added admin notice when editing an Events Calendar Pro recurring event that has tickets in classic editor to warn about how tickets will act on recurring events. [ET-949]
+* Tweak - Show warning message within the classic ticket editor if no commerce provider is active. [ET-957]
+* Tweak - Show warning message within the classic ticket editor for recurring events about the limitations of tickets on recurring events. [ET-947]
+* Tweak - Show confirmation dialog before deleting an attendee on the attendee list. [ET-648]
+* Tweak - Rearrange Classic Editor's ticket settings so all "Advanced" fields are into the main section, other than the non-RSVP fields for "SKU" and "Ecommerce". [ET-950]
+* Language - 16 new strings added, 167 updated, 0 fuzzied, and 7 obsoleted
+
+= [5.0.3.1] 2020-11-19 =
+
+* Fix - Require Event Tickets Plus 5.1+ for compatibility purposes on certain areas in Event Tickets that have direct calls to Event Tickets Plus functionality. [ET-964]
+* Tweak - Changed views: `blocks/tickets/submit`
+
+= [5.0.3] 2020-11-19 =
+
+* Feature - Added support for the new Individual Attendee Collection functionality included in Event Tickets Plus. It now allows for collection of individual names and emails for each attendee for Tribe Commerce, WooCommerce, and Easy Digital Download tickets. You can enable this option per ticket and choose to make the fields optional or required. [ETP-364]
+* Feature - An optional new set of Ticket-specific views have been added that make it easier to customize and require less updating by our team in the future. The new views have greater automated testing coverage to improve long term stability. These views must be enabled in order to make use of the new Individual Attendee Collection feature in Event Tickets Plus. [ETP-364]
+* Fix - Calculation fixed for attendee count percentage column while using RSVP only. [ET-876]
+* Fix - Correct specificity of checkboxes and radio buttons styles to prevent conflicts with other The Events Calendar family plugins. [ET-922]
+* Fix - Ensure shared capacity stock does not reset while updating ticket. [ETP-562]
+* Fix - Prevent PHP notices about `$going` not being set in certain template views which would prevent the "Not Going" text from showing up. [ET-943]
+* Tweak - Improved performance of certain queries done on the same page for a ticket in regards to capacity and lists of tickets. [ET-917]
+* Tweak - Add help section update notice texts for updated directory structure. [ET-929]
+* Language - 12 new strings added, 119 updated, 1 fuzzied, and 4 obsoleted
+* Tweak - Added filters: `tribe_tickets_attendee_create_individual_name`, `tribe_tickets_attendee_create_individual_email`, `tribe_tickets_data_ticket_ids_have_meta_fields`, `tribe_tickets_rsvp_get_ticket`, `tribe_tickets_has_meta_enabled`, `tribe_{$provider}_email_recipient`, `tribe_tickets_ticket_email_recipient`, `tribe_{$provider}_email_subject`, `tribe_tickets_ticket_email_subject`, `tribe_{$provider}_email_content`, `tribe_tickets_ticket_email_content`, `tribe_{$provider}_email_headers`, `tribe_tickets_ticket_email_headers`, `tribe_{$provider}_email_attachments`, `tribe_tickets_ticket_email_attachments`, `tribe_display_tickets_block_tickets_left_threshold`, `tribe_tickets_ticket_block_submit`, `tribe_tickets_show_original_price_on_sale`, `tribe_tickets_order_link_template_already_rendered`, `tribe_tickets_new_views_is_enabled`, `tribe_tickets_my_tickets_allow_email_resend_on_attendee_email_update`, `tribe_tickets_plus_hide_attendees_list_optout`, `tribe_tickets_block_show_unlimited_availability`
+* Tweak - Removed filters: `tribe_tickets_attendee_registration_has_required_meta`, `tribe_tickets_attendee_registration_is_meta_up_to_date`, `tribe_attendee_registration_cart_provider`, `tribe_attendee_registration_form_no_provider_class`, `tribe_attendee_registration_form_classes`, `tribe_attendee_registration_form_class`, `tribe_tpp_email_content`, `tribe_tpp_email_from_name`, `tribe_tpp_email_from_email`, `tribe_tpp_email_headers`, `tribe_tpp_email_attachments`, `tribe_tpp_email_recipient`, `tribe_tpp_email_subject`
+* Tweak - Changed views: `blocks/attendees`, `blocks/attendees/description`, `blocks/attendees/gravatar`, `blocks/attendees/title`, `blocks/attendees/view-link`, `blocks/rsvp`, `blocks/rsvp/content-inactive`, `blocks/rsvp/content`, `blocks/rsvp/details`, `blocks/rsvp/details/availability`, `blocks/rsvp/details/description`, `blocks/rsvp/details/title`, `blocks/rsvp/form`, `blocks/rsvp/form/attendee-meta`, `blocks/rsvp/form/details`, `blocks/rsvp/form/email`, `blocks/rsvp/form/error`, `blocks/rsvp/form/form`, `blocks/rsvp/form/name`, `blocks/rsvp/form/opt-out`, `blocks/rsvp/form/quantity-input`, `blocks/rsvp/form/quantity-minus`, `blocks/rsvp/form/quantity-plus`, `blocks/rsvp/form/quantity`, `blocks/rsvp/form/submit-button`, `blocks/rsvp/form/submit-login`, `blocks/rsvp/icon-svg`, `blocks/rsvp/icon`, `blocks/rsvp/loader-svg`, `blocks/rsvp/loader`, `blocks/rsvp/messages/success`, `blocks/rsvp/status`, `blocks/rsvp/status/full`, `blocks/rsvp/status/going-icon`, `blocks/rsvp/status/going`, `blocks/rsvp/status/not-going-icon`, `blocks/rsvp/status/not-going`, `blocks/tickets`, `blocks/tickets/commerce/fields-edd`, `blocks/tickets/commerce/fields-tpp`, `blocks/tickets/commerce/fields-woo`, `blocks/tickets/commerce/fields`, `blocks/tickets/content-description`, `blocks/tickets/content-inactive`, `blocks/tickets/content-title`, `blocks/tickets/content`, `blocks/tickets/extra-available-quantity`, `blocks/tickets/extra-available-unlimited`, `blocks/tickets/extra-available`, `blocks/tickets/extra-price`, `blocks/tickets/extra`, `blocks/tickets/footer-quantity`, `blocks/tickets/footer-total`, `blocks/tickets/footer`, `blocks/tickets/icon-svg`, `blocks/tickets/icon`, `blocks/tickets/item-inactive`, `blocks/tickets/item`, `blocks/tickets/opt-out-hidden`, `blocks/tickets/quantity-add`, `blocks/tickets/quantity-number`, `blocks/tickets/quantity-remove`, `blocks/tickets/quantity-unavailable`, `blocks/tickets/quantity`, `blocks/tickets/registration/attendee/content`, `blocks/tickets/registration/attendee/fields`, `blocks/tickets/registration/attendee/fields/checkbox`, `blocks/tickets/registration/attendee/fields/radio`, `blocks/tickets/registration/attendee/fields/select`, `blocks/tickets/registration/attendee/fields/text`, `blocks/tickets/registration/attendee/submit`, `blocks/tickets/registration/content`, `blocks/tickets/registration/summary/content`, `blocks/tickets/registration/summary/ticket-icon`, `blocks/tickets/registration/summary/ticket-price`, `blocks/tickets/registration/summary/ticket-quantity`, `blocks/tickets/registration/summary/ticket-title`, `blocks/tickets/registration/summary/ticket`, `blocks/tickets/registration/summary/tickets`, `blocks/tickets/registration/summary/title`, `blocks/tickets/submit-button-modal`, `blocks/tickets/submit-button`, `blocks/tickets/submit-login`, `blocks/tickets/submit`, `components/notice`, `modal/item-total`, `modal/registration-js`, `registration-js/attendees/content`, `registration-js/content`, `registration/attendees/content`, `registration/content`, `tickets/email`, `tickets/orders`, `v2/components/icons/error`, `v2/components/icons/guest`, `v2/components/icons/paper-plane`, `v2/components/loader/loader`, `v2/day/event/cost`, `v2/list/event/cost`, `v2/map/event-cards/event-card/actions/cost`, `v2/month/calendar-body/day/calendar-events/calendar-event/tooltip/cost`, `v2/month/mobile-events/mobile-day/mobile-event/cost`, `v2/photo/event/cost`, `v2/rsvp-kitchen-sink`, `v2/rsvp-kitchen-sink/ari`, `v2/rsvp-kitchen-sink/default-full`, `v2/rsvp-kitchen-sink/default-must-login`, `v2/rsvp-kitchen-sink/default-no-description`, `v2/rsvp-kitchen-sink/default-unlimited`, `v2/rsvp-kitchen-sink/default`, `v2/rsvp-kitchen-sink/form-going`, `v2/rsvp-kitchen-sink/form-not-going`, `v2/rsvp-kitchen-sink/success`, `v2/rsvp`, `v2/rsvp/actions`, `v2/rsvp/actions/full`, `v2/rsvp/actions/rsvp`, `v2/rsvp/actions/rsvp/going`, `v2/rsvp/actions/rsvp/not-going`, `v2/rsvp/actions/success`, `v2/rsvp/actions/success/title`, `v2/rsvp/actions/success/toggle`, `v2/rsvp/actions/success/tooltip`, `v2/rsvp/ari`, `v2/rsvp/ari/form`, `v2/rsvp/ari/form/error`, `v2/rsvp/ari/form/fields`, `v2/rsvp/ari/form/fields/email`, `v2/rsvp/ari/form/fields/meta`, `v2/rsvp/ari/form/fields/name`, `v2/rsvp/ari/form/template/fields`, `v2/rsvp/ari/sidebar`, `v2/rsvp/ari/sidebar/quantity/input`, `v2/rsvp/ari/sidebar/quantity/minus`, `v2/rsvp/ari/sidebar/quantity/plus`, `v2/rsvp/content`, `v2/rsvp/details`, `v2/rsvp/details/attendance`, `v2/rsvp/details/availability`, `v2/rsvp/details/availability/days-to-rsvp`, `v2/rsvp/details/availability/full`, `v2/rsvp/details/availability/remaining`, `v2/rsvp/details/availability/unlimited`, `v2/rsvp/details/description`, `v2/rsvp/details/title`, `v2/rsvp/form/buttons`, `v2/rsvp/form/fields`, `v2/rsvp/form/fields/cancel`, `v2/rsvp/form/fields/email`, `v2/rsvp/form/fields/name`, `v2/rsvp/form/fields/submit`, `v2/rsvp/form/form`, `v2/rsvp/form/going/title`, `v2/rsvp/form/not-going/title`, `v2/rsvp/form/title`, `v2/rsvp/messages/error`, `v2/rsvp/messages/must-login`, `v2/rsvp/messages/success`, `v2/rsvp/messages/success/going`, `v2/rsvp/messages/success/not-going`, `v2/tickets`, `v2/tickets/commerce/fields`, `v2/tickets/commerce/fields/tribe-commerce`, `v2/tickets/footer`, `v2/tickets/footer/quantity`, `v2/tickets/footer/return-to-cart`, `v2/tickets/footer/total`, `v2/tickets/item`, `v2/tickets/item/content`, `v2/tickets/item/content/description-toggle`, `v2/tickets/item/content/description`, `v2/tickets/item/content/inactive`, `v2/tickets/item/content/title`, `v2/tickets/item/extra`, `v2/tickets/item/extra/available`, `v2/tickets/item/extra/available/quantity`, `v2/tickets/item/extra/available/unlimited`, `v2/tickets/item/extra/description-toggle`, `v2/tickets/item/extra/price`, `v2/tickets/item/inactive`, `v2/tickets/item/opt-out`, `v2/tickets/item/quantity-mini`, `v2/tickets/item/quantity`, `v2/tickets/item/quantity/add`, `v2/tickets/item/quantity/number`, `v2/tickets/item/quantity/remove`, `v2/tickets/item/quantity/unavailable`, `v2/tickets/items`, `v2/tickets/notice`, `v2/tickets/opt-out/hidden`, `v2/tickets/submit`, `v2/tickets/submit/button`, `v2/tickets/submit/must-login`, `v2/tickets/title`, `v2/week/grid-body/events-day/event/tooltip/cost`, `v2/week/mobile-events/day/event/cost`
+
+= [5.0.2] 2020-10-19 =
+
+* Fix - Correctly detect ticket provider to support Attendee Information. [ET-915]
+* Fix - Correct template override location comments. [ET-919]
+* Language - 42 new strings added, 25 updated, 1 fuzzied, and 28 obsoleted
+
+= [5.0.1] 2020-09-21 =
+
+* Fix - Ensure the Attendees List title for the Attendees report is clean and not replicated on the page for the admin area as well as frontend. [ET-912]
+* Fix - Use `the_title` filter when getting list of post titles for the Move Ticket workflow. [ET-909]
+* Fix - Use the correct default date for initial Ticket start sale and end sale dates for Classic Editor. [ET-900]
+* Fix - We have added the missing ID to the new RSVP block to allow linking to it directly. [ET-904]
+* Fix - Prevent 301 redirects to the homepage while handling Tribe Commerce checkout process. [ET-845]
+* Fix - Use the correct file path for the modal overrides. It's now correctly using the `your-theme/tribe/tickets/` path. [ETP-432]
+* Fix - More thorough validity checking for post IDs, such as to account for a BuddyPress page having a Post ID of zero. [ET-899]
+* Fix - Remove duplicate `button_id` from the `$args` in `src/blocks/tickets/submit-button-modal.php`. Props @justlevine for the fix! [ET-907]
+* Fix - Ensure we print the required label for the ARI checkboxes. [ETP-361]
+* Fix - Prevent PHP errors in the `tickets/view-link.php` template in automated testing suite. [ET-910]
+* Tweak - We have added context to some of the strings and labels of the new RSVP block to allow more granular translation. [ET-903]
+* Tweak - Added filters: `tribe_tickets_attendees_show_view_title`
+* Tweak - Changed views: `blocks/rsvp/status/going`, `blocks/rsvp/status/not-going`, `blocks/tickets/submit-button-modal`, `registration-js/attendees/fields/checkbox`, `tickets/view-link`, `v2/rsvp`, `v2/rsvp/actions/rsvp/going`, `v2/rsvp/actions/rsvp/not-going`, `v2/rsvp/details/attendance`
+* Language - 4 new strings added, 53 updated, 0 fuzzied, and 3 obsoleted
+
+= [5.0.0.1] 2020-08-31 =
+
+* Fix - Prevent the Attendee Registration modal from incorrectly setting RSVP as the provider class. [ET-901]
+
+= [5.0.0] 2020-08-26 =
+
+* Feature - We've introduced a refined look and experience for RSVPs! New installations of Event Tickets will gain the new look right away. Existing Event Tickets installations can opt-in upon upgrade from our previous version(s). This new design is consistent in both the Classic and Block modes so you have a better visual when creating RSVPs in either WordPress editor. [ET-866]
+* Tweak - Removed unused HTML files in the plugin root folder that were there for your reference to our plugin's data collection transparency. This information is included within WordPress' Privacy Guide at /wp-admin/privacy-policy-guide.php [ET-854]
+* Fix - Event Tickets Plus' `[tribe_tickets]` shortcode no longer double-renders the Tickets block when using Classic Editor. The issue was caused by _setting_ `global $post` within `\Tribe\Tickets\Events\Attendees_List::should_hide_optout()`, which was called via the `tribe_tickets_plus_hide_attendees_list_optout` filter. [ET-889]
+* Fix - Replace usage of MultiByte package when it's not available, use `tribe_strtoupper` instead of `mb_strtoupper` and `mb_detect_encoding` [ETP-411] [ETP-412] [VE-150]
+* Tweak - Added filters: `tribe_tickets_rsvp_render_step_template_args_pre_process`, `tribe_tickets_hide_attendees_list_optout`, `tribe_tickets_rsvp_create_attendee_lookup_user_from_email`, `tribe_tickets_rsvp_has_meta`, `tribe_tickets_rsvp_has_meta`
+* Tweak - Added actions: `tribe_tickets_before_front_end_ticket_form`
+* Tweak - Changed views: `v2/components/fields/birth`, `v2/components/fields/checkbox`, `v2/components/fields/datetime`, `v2/components/fields/email`, `v2/components/fields/number`, `v2/components/fields/radio`, `v2/components/fields/select`, `v2/components/fields/telephone`, `v2/components/fields/text`, `v2/components/fields/url`, `v2/components/loader/loader`, `v2/rsvp-kitchen-sink/form-going`, `v2/rsvp-kitchen-sink/form-not-going`, `v2/rsvp`, `v2/rsvp/actions`, `v2/rsvp/actions/success`, `v2/rsvp/actions/success/title`, `v2/rsvp/actions/success/toggle`, `v2/rsvp/ari`, `v2/rsvp/ari/form`, `v2/rsvp/ari/form/buttons`, `v2/rsvp/ari/form/error`, `v2/rsvp/ari/form/fields`, `v2/rsvp/ari/form/fields/email`, `v2/rsvp/ari/form/fields/meta`, `v2/rsvp/ari/form/fields/name`, `v2/rsvp/ari/form/guest-template`, `v2/rsvp/ari/form/guest`, `v2/rsvp/ari/form/template/fields`, `v2/rsvp/ari/form/template/title`, `v2/rsvp/ari/form/title`, `v2/rsvp/ari/sidebar/guest-list`, `v2/rsvp/ari/sidebar/guest-list/guest-template`, `v2/rsvp/ari/sidebar/guest-list/guest`, `v2/rsvp/ari/sidebar/quantity/input`, `v2/rsvp/details/availability`, `v2/rsvp/details/availability/days-to-rsvp`, `v2/rsvp/details/availability/remaining`, `v2/rsvp/details/availability/unlimited`, `v2/rsvp/form/buttons`, `v2/rsvp/form/fields/email`, `v2/rsvp/form/fields/name`, `v2/rsvp/form/fields/quantity`, `v2/rsvp/form/form`, `v2/rsvp/messages/error`, `v2/rsvp/messages/success`, `v2/rsvp/messages/success/going`, `v2/rsvp/messages/success/not-going`
+* Language - 14 new strings added, 54 updated, 3 fuzzied, and 3 obsoleted
+
+= [4.12.3.1] 2020-08-17 =
+
+* Fix - Prevent attendee registration modal in block editor from closing when clicking into the modal. [GTRIA-275]
+
+= [4.12.3] 2020-07-28 =
+
+* Feature - Notify promoter for actions (RSVP going, RSVP not going, Event Checkin, Attendee Registered) for RSVP and Tribe Commerce. [ET-860]
+* Fix - Prevent PHP errors when loading the new RSVP views for posts using classic editor when The Events Calendar setting for Blocks editor is off. [ET-853]
+* Tweak - Layout improvements for Attendee Information's Birth Date field. [ET-875]
+* Tweak - Added `tribe_tickets_is_provider_active()` template function so we can more easily check if a ticket's commerce provider is currently active before using its class methods. [ET-843]
+* Tweak - Added `Tribe__Tickets_Plus__Tickets::get_attendee_optout_key()` to simplify getting the optout key regardless of ticket provider class and accounting for legacy code. [ETP-843]
+* Tweak - Added `Tribe__Tickets__Tickets::get_event_ticket_provider_object()` to make it easier to get and interact with the ticket provider object itself and implemented it across all plugin code where the object is needed in place of the previous usage of class representation as a string. [ET-843]
+* Tweak - Added `Tribe__Tickets__Tickets::get_ticket_provider_instance()` to consistently and more concisely get a ticket provider's instance only if it is active. [ET-843]
+* Tweak - Updated `Tribe__Tickets__Tickets::get_event_ticket_provider()` so it returns false if the resulting ticket provider is no longer active and implemented it across all plugin code. [ET-843]
+* Tweak - Updated `Tribe__Tickets__Status__Manager::get_provider_slug()` and added `Tribe__Tickets__Status__Manager::get_provider_class_from_slug()` for convenient and consistent lookups. [ETP-843]
+* Tweak - Display all of a post's order tabs in the Attendees Report admin screen. Example: if a post's ticket provider was Tribe Commerce and such tickets were sold, then the post's provider changed to WooCommerce Tickets, the Attendees Report screen should show both the Tribe Commerce order history tab and the WooCommerce order history tab, regardless of which ticket provider is currently the default. Introduced `Tribe__Tickets__Tickets::post_has_tickets()` helper function. [ET-843]
+* Tweak - Modify parameters on `register_rest_route` to include `permission_callback` to prevent notices on WordPress 5.5.
+* Language - 8 new strings added, 200 updated, 1 fuzzied, and 1 obsoleted
+
+= [4.12.2] 2020-06-24 =
+
+* Feature - Added a preview of the new RSVP refresh. View the non-functional demo https://evnt.is/refreshrsvp.
+* Fix - Resolve a PHP notice when rendering the Event Tickets Plus field for Birth date [ETP-330]
+* Tweak - Improve the Birth date field styles that could show up without styling under certain contexts. [ET-835]
+* Tweak - Add hook to ticket email template to allow injecting content between ticket details and organizers. [ET-844]
+* Tweak - For the `[tribe-user-event-confirmations]` shortcode, link to both the event and the direct My Tickets page. [ET-792]
+* Language - 39 new strings added, 26 updated, 0 fuzzied, and 0 obsoleted
+
+= [4.12.1.1] 2020-05-29 =
+
+* Fix - Resolve PHP notices that can cause the Events to not show tickets or RSVPs. [ET-836]
 
 = [4.12.1] 2020-05-20 =
 
@@ -143,7 +357,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Correct the `Total` value, when the WooCommerce options for currency are empty (Thousand and decimal separator, number of decimals). [ETP-231]
 * Fix - Correct dependencies for the tickets block JS, in order to have the block working in WordPress versions prior to 5.0. [ETP-238]
 * Fix - Load plugin text domain on the new 'tribe_load_text_domains' action hook, which fires on 'init' instead of on the 'plugins_loaded' hook. [ET-773]
-* Fix - Deprecate `\Tribe__Tickets__Tickets_Handler::get_total_event_capacity()` and replace its usage with `tribe_get_event_capacity()`, which returns the correct count. [ET-770]
+* Fix - Deprecate `Tribe__Tickets__Tickets_Handler::get_total_event_capacity()` and replace its usage with `tribe_get_event_capacity()`, which returns the correct count. [ET-770]
 * Fix - When updating to Event Tickets 4.12, a background migration will get kicked off that fixes ticket-supported posts that use the Attendees List block or the Attendees List shortcodes from Event Tickets Plus so those attendees appear in the REST API properly. [ET-777]
 * Fix - Prevent Blocks editor from throwing browser alert when leaving the page without any changes applied to the edited post.
 * Tweak - Improved on meta data handling of for Blocks editor.
@@ -333,7 +547,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Fatal error when sending the attendee list by email in WordPress 4.9 or earlier [134061]
 * Fix - The "View your RSVPs and Tickets" link was not appearing when using the Block Editor for Events [128512]
 * Fix - Admin ticket editor was not displaying currency symbol at all if set to display after amount (postfix/suffix) [128532]
-* Fix - Update `\Tribe__Tickets__Tickets_View::get_description_rsvp_ticket()` to determine when to use the appropriate singular or plural texts based on the quantity found for each ticket type and deprecated its third parameter (_bool_ `$plurals`) (props @solepixel for pointing us to the issue) [129582]
+* Fix - Update `Tribe__Tickets__Tickets_View::get_description_rsvp_ticket()` to determine when to use the appropriate singular or plural texts based on the quantity found for each ticket type and deprecated its third parameter (_bool_ `$plurals`) (props @solepixel for pointing us to the issue) [129582]
 * Fix - Correct two places where the translation domain was incorrect. Thanks to @cfaria for the catch! [128193]
 * Fix - Allow saving RSVP status changes (Going / Not Going) even if tickets have no Attendee Information fields [128629]
 * Language - 5 new strings added, 132 updated, 0 fuzzied, and 3 obsoleted

@@ -32,53 +32,11 @@ extends Tribe__Editor__Blocks__Abstract {
 	 */
 	public function render( $attributes = [] ) {
 		/** @var Tribe__Tickets__Editor__Template $template */
-		$template = tribe( 'tickets.editor.template' );
+		$template     = tribe( 'tickets.editor.template' );
+		$post_id      = $template->get( 'post_id', null, false );
+		$tickets_view = Tribe__Tickets__Tickets_View::instance();
 
-		$args['is_modal']   = null;
-		$args['post_id']    = $post_id = $template->get( 'post_id', null, false );
-		$args['attributes'] = $this->attributes( $attributes );
-
-		// Prevent the render when the ID of the post has not being set to a correct value
-		if ( $args['post_id'] === null ) {
-			return;
-		}
-
-		// Fetch the default provider
-		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
-		if ( ! class_exists( $provider ) ) {
-			return;
-		}
-
-		// No need to handle RSVPs here
-		if ( 'Tribe__Tickets__RSVP' === $provider ) {
-			return;
-		}
-
-		// If Provider is not active return
-		if ( ! array_key_exists( $provider, Tribe__Tickets__Tickets::modules() ) ) {
-			return;
-		}
-
-		$provider    = call_user_func( [ $provider, 'get_instance' ] );
-		$provider_id = $this->get_provider_id( $provider );
-		$tickets     = $this->get_tickets( $post_id );
-
-		$args['provider']            = $provider;
-		$args['provider_id']         = $provider_id;
-		$args['cart_url']            = 'tpp' !== $provider_id ? $provider->get_cart_url() : '';
-		$args['tickets_on_sale']     = $this->get_tickets_on_sale( $tickets );
-		$args['has_tickets_on_sale'] = ! empty( $args['tickets_on_sale'] );
-		$args['is_sale_past']        = $this->get_is_sale_past( $tickets );
-		$args['is_sale_future']      = $this->get_is_sale_future( $tickets );
-
-		// Add the rendering attributes into global context
-		$template->add_template_globals( $args );
-
-		// enqueue assets
-		tribe_asset_enqueue( 'tribe-tickets-gutenberg-tickets' );
-		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-tickets-style' );
-
-		return $template->template( [ 'blocks', $this->slug() ], $args, false );
+		return $tickets_view->get_tickets_block( $post_id, false );
 	}
 
 	/**
@@ -102,21 +60,29 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		wp_enqueue_script( 'wp-util-not-in-footer' );
 
-		$tickets_block_dependencies = [ 'jquery', 'wp-util-not-in-footer' ];
+		$tickets_block_dependencies = [
+			'jquery',
+			'wp-util-not-in-footer',
+			'tribe-common',
+		];
 
 		if ( version_compare( $wp_version, '5.0', '>=' ) ) {
 			$tickets_block_dependencies[] = 'wp-i18n';
 		}
 
+		// Check whether we use v1 or v2. We need to update this when we deprecate tickets v1.
+		$tickets_js = tribe_tickets_new_views_is_enabled() ? 'v2/tickets-block.js' : 'tickets-block.js';
+
 		tribe_asset(
 			$plugin,
-			'tribe-tickets-gutenberg-tickets',
-			'tickets-block.js',
+			'tribe-tickets-block',
+			$tickets_js,
 			$tickets_block_dependencies,
 			null,
 			[
-				'type'         => 'js',
-				'localize'     => [
+				'type'     => 'js',
+				'groups'   => [ 'tribe-tickets-block-assets' ],
+				'localize' => [
 					[
 						'name' => 'TribeTicketOptions',
 						'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_ticket_options' ],
@@ -188,7 +154,7 @@ extends Tribe__Editor__Blocks__Abstract {
 			$response['tickets'][ $ticket_id ]['available']    = $available;
 			$response['tickets'][ $ticket_id ]['max_purchase'] = $max_at_a_time;
 
-			// If there are no more available we will send the template part HTML to update the DOM
+			// If there are no more available we will send the template part HTML to update the DOM.
 			if ( 0 === $available ) {
 				$response['tickets'][ $ticket_id ]['unavailable_html'] = $tickets_editor->template( 'blocks/tickets/quantity-unavailable', $ticket, false );
 			}
@@ -234,30 +200,29 @@ extends Tribe__Editor__Blocks__Abstract {
 	}
 
 	/**
-	 * Get provider ID
+	 * Get provider ID/slug.
 	 *
 	 * @since 4.9
+	 * @since 4.12.3 Retrieve slug from updated Ticktes Status Manager method.
 	 *
 	 * @param  Tribe__Tickets__Tickets $provider Provider class instance
 	 *
 	 * @return string
 	 */
 	public function get_provider_id( $provider ) {
+		/** @var Tribe__Tickets__Status__Manager $status */
+		$status = tribe( 'tickets.status' );
 
-		switch ( $provider->class_name ) {
-			case 'Tribe__Tickets__Commerce__PayPal__Main' :
-				return 'tpp';
-				break;
-			case 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' :
-				return 'woo';
-				break;
-			case 'Tribe__Tickets_Plus__Commerce__EDD__Main' :
-				return 'edd';
-				break;
-			default:
-				return 'tpp';
+		$slug = $status->get_provider_slug( $provider );
+
+		if (
+			empty( $slug )
+			|| 'rsvp' === $slug
+		) {
+			$slug = 'tpp';
 		}
 
+		return $slug;
 	}
 
 	/**

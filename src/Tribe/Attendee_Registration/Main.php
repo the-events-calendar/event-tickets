@@ -103,9 +103,12 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 * @return boolean
 	 */
 	public function is_using_shortcode() {
-		global $wp_query;
+		$queried_object = get_queried_object();
+		if ( ! $queried_object instanceof WP_Post ) {
+			return false;
+		}
 
-		return ! empty( $wp_query->queried_object->post_content ) && has_shortcode( $wp_query->queried_object->post_content, 'tribe_attendee_registration' );
+		return ! empty( $queried_object->post_content ) && has_shortcode( $queried_object->post_content, 'tribe_attendee_registration' );
 	}
 
 	/**
@@ -195,7 +198,13 @@ class Tribe__Tickets__Attendee_Registration__Main {
 
 		$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-slug', false );
 
-		return get_page_by_path( $slug );
+		$slug = trim( Tribe__Settings_Manager::get_option( 'ticket-attendee-page-slug', '' ) );
+
+		if ( ! empty( $slug ) ) {
+			return get_page_by_path( $slug );
+		}
+
+		return null;
 	}
 
 	/**
@@ -243,13 +252,16 @@ class Tribe__Tickets__Attendee_Registration__Main {
 			return false;
 		}
 
+		/** @var Tribe__Tickets__Data_API $data_api */
+		$data_api = tribe( 'tickets.data_api' );
+
 		foreach ( $tickets as $ticket ) {
 
 			if ( ! isset( $ticket['id'] ) ) {
 				continue;
 			}
 
-			if ( tribe( 'tickets.data_api' )->ticket_has_meta_fields( $ticket['id'] ) ) {
+			if ( $data_api->ticket_has_meta_fields( $ticket['id'] ) ) {
 				return true;
 			}
 		}

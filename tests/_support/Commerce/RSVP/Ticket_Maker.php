@@ -77,6 +77,9 @@ trait Ticket_Maker {
 				], $overrides )
 		);
 
+		// Clear the cache.
+		$rsvp->clear_ticket_cache_for_post( $post_id );
+
 		return $ticket_id;
 	}
 

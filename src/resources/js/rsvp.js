@@ -7,13 +7,13 @@ var tribe_tickets_rsvp = {
 	'use strict';
 
 	my.init = function() {
-		this.$rsvp = $( '.tribe-events-tickets-rsvp' );
-		this.attendee_template = $( document.getElementById( 'tribe-tickets-rsvp-tmpl' ) ).html();
+		my.$rsvp = $( '.tribe-events-tickets-rsvp' );
+		my.attendee_template = $( document.getElementById( 'tribe-tickets-rsvp-tmpl' ) ).html();
 
-		this.$rsvp.on( 'change input keyup', '.tribe-tickets-quantity', this.event.quantity_changed );
+		my.$rsvp.on( 'change input keyup', '.tribe-tickets-quantity', my.event.quantity_changed );
 
-		this.$rsvp.closest( '.cart' )
-			.on( 'submit', this.event.handle_submission );
+		my.$rsvp.closest( '.cart' )
+			.on( 'submit', my.event.handle_submission );
 
 		$( '.tribe-rsvp-list' ).on( 'click', '.attendee-meta-row .toggle', function() {
 			$( this )
@@ -28,7 +28,7 @@ var tribe_tickets_rsvp = {
 		const $rsvpQtys = $rsvp.find( '.tribe-tickets-quantity' );
 		let rsvpQty = 0;
 		$rsvpQtys.each( function() {
-			rsvpQty = rsvpQty + parseInt( $( this ).val() );
+			rsvpQty = rsvpQty + parseInt( $( this ).val(), 10 );
 		} );
 
 		if ( 0 === rsvpQty ) {
@@ -45,12 +45,12 @@ var tribe_tickets_rsvp = {
 		let rsvpQty = 0;
 
 		$qty.each( function() {
-			rsvpQty = rsvpQty + parseInt( $( this ).val() );
+			rsvpQty = rsvpQty + parseInt( $( this ).val(), 10 );
 		} );
 
 		return (
-			$.trim( $name.val() ).length &&
-			$.trim( $email.val() ).length &&
+			$name.val().trim().length &&
+			$email.val().trim().length &&
 			rsvpQty
 		);
 	};
@@ -107,7 +107,5 @@ var tribe_tickets_rsvp = {
 		return true;
 	};
 
-	$( function() {
-		my.init();
-	} );
+	$( my.init );
 })( jQuery, tribe_tickets_rsvp );

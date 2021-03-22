@@ -1,6 +1,6 @@
 <?php return '
 <div class="tribe-block tribe-block__rsvp">
-						<div class="tribe-block__rsvp__ticket" data-rsvp-id="5">
+						<div class="tribe-block__rsvp__ticket" data-rsvp-id="[TICKET_ID]">
 				<div class="tribe-block__rsvp__icon">
 	
 	RSVP</div>
@@ -10,10 +10,10 @@
 		<div class="tribe-block__rsvp__details">
 
 	<header class="tribe-block__rsvp__title">
-	Test RSVP ticket for 4</header>
+	Test RSVP ticket for [EVENT_ID]</header>
 
 	<div class="tribe-block__rsvp__description">
-	<p>Ticket RSVP ticket excerpt for 4</p>
+	<p>Ticket RSVP ticket excerpt for [EVENT_ID]</p>
 </div>
 
 	<div class="tribe-block__rsvp__availability">
@@ -35,7 +35,8 @@
 	</div>
 	</div>
 
-	<!-- This div is where the AJAX returns the form -->
+	
+<!-- This div is where the AJAX returns the form. -->
 <div class="tribe-block__rsvp__form">
 	</div>
 
@@ -43,9 +44,9 @@
 			</div>
 				<div class="tribe-common">
 	<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden tribe-block__rsvp__loading"  >
-		<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--first"></div>
-		<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--second"></div>
-		<div class="tribe-common-c-loader__dot tribe-common-c-loader__dot--third"></div>
+		
+		
+		
 	</div>
 </div>
 </div>

@@ -1,13 +1,14 @@
 <?php
 /** @var Tribe__Tickets__Attendees $tickets_attendees */
 $tickets_attendees = tribe( 'tickets.attendees' );
+
 $attendees_url = $tickets_attendees->get_report_link( get_post( $post_id ) );
 
 $total_tickets = tribe_get_event_capacity( $post_id );
 
 $container_class = 'tribe_sectionheader ticket_list_container';
 $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '';
-$ticket_providing_modules = array_diff_key( Tribe__Tickets__Tickets::modules(), array( 'Tribe__Tickets__RSVP' => true ) );
+$ticket_providing_modules = array_diff_key( Tribe__Tickets__Tickets::modules(), [ 'Tribe__Tickets__RSVP' => true ] );
 $add_new_ticket_label = count( $ticket_providing_modules ) > 0
 	? esc_attr__( 'Add a new ticket', 'event-tickets' )
 	: esc_attr__( 'No commerce providers available', 'event-tickets' )
@@ -23,20 +24,20 @@ $add_new_ticket_label = count( $ticket_providing_modules ) > 0
 			<div class="ticket_table_intro">
 				<?php
 				/**
-				 * Allows for the insertion of total capacity element into the main ticket admin panel "header"
+				 * Allows for the insertion of total capacity element into the main ticket admin panel "header".
 				 *
 				 * @since 4.6
 				 *
-				 * @param int $post_id the id of the post
+				 * @param int $post_id Post ID.
 				 */
 				do_action( 'tribe_events_tickets_capacity', $post_id );
 
 				/**
-				 * Allows for the insertion of additional elements (buttons/links) into the main ticket admin panel "header"
+				 * Allows for the insertion of additional elements (buttons/links) into the main ticket admin panel "header".
 				 *
 				 * @since 4.6
 				 *
-				 * @param int $post_id the id of the post
+				 * @param int $post_id Post ID.
 				 */
 				do_action( 'tribe_events_tickets_post_capacity', $post_id );
 				?>
@@ -47,17 +48,22 @@ $add_new_ticket_label = count( $ticket_providing_modules ) > 0
 					<?php esc_html_e( 'View Attendees', 'event-tickets' ); ?>
 				</a>
 			</div>
-			<?php tribe( 'tickets.admin.views' )->template( 'editor/list-table', array( 'tickets' => $tickets ) ); ?>
+			<?php
+			/** @var Tribe__Tickets__Admin__Views $admin_views */
+			$admin_views = tribe( 'tickets.admin.views' );
+
+			$admin_views->template( 'editor/list-table', [ 'tickets' => $tickets ] );
+			?>
 		<?php endif; ?>
 	</div>
 	<div class="tribe-ticket-control-wrap">
 		<?php
 		/**
-		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
+		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing.
 		 *
 		 * @since 4.6
 		 *
-		 * @param int $post_id the id of the post
+		 * @param int $post_id Post ID.
 		 */
 		do_action( 'tribe_events_tickets_new_ticket_buttons', $post_id ); ?>
 
@@ -97,11 +103,11 @@ $add_new_ticket_label = count( $ticket_providing_modules ) > 0
 
 		<?php
 		/**
-		 * Allows for the insertion of warnings before the settings button
+		 * Allows for the insertion of warnings before the settings button.
 		 *
 		 * @since 4.6
 		 *
-		 * @param int Post ID
+		 * @param int Post ID.
 		 */
 		do_action( 'tribe_events_tickets_new_ticket_warnings', $post_id );
 		?>
@@ -109,11 +115,11 @@ $add_new_ticket_label = count( $ticket_providing_modules ) > 0
 	</div>
 	<?php
 	/**
-	 * Allows for the insertion of content at the end of the new ticket admin panel
+	 * Allows for the insertion of content at the end of the new ticket admin panel.
 	 *
 	 * @since 4.6
 	 *
-	 * @param int Post ID
+	 * @param int Post ID.
 	 */
 	do_action( 'tribe_events_tickets_after_new_ticket_panel', $post_id );
 	?>

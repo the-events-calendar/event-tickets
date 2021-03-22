@@ -1,31 +1,31 @@
 <?php
 /**
- * @var int post_id The current post ID
- * @var WP_Post                                 $post                The current post object
- * @var WP_User                                 $author              The post author
- * @var string                                  $post_singular_label The post type singular label
- * @var int                                     $total_sold          The total number of tickets sold
- * @var array                                   $tickets_sold        A list of PayPal tickets that have at least one sale
- * @var Tribe__Tickets__Commerce__PayPal__Main  $paypal              The tickets handler object
- * @var Tribe__Tickets__Status__Manager         $order_overview      Order breakdown for all statuses
- * @var string                                  $table               The orders table output
+ * @var int                                              $post_id             The current post ID.
+ * @var WP_Post                                          $post                The current post object.
+ * @var WP_User                                          $author              The post author.
+ * @var string                                           $post_singular_label The post type singular label.
+ * @var int                                              $total_sold          The total number of tickets sold.
+ * @var array                                            $tickets_sold        A list of PayPal tickets that have at least one sale.
+ * @var Tribe__Tickets__Commerce__PayPal__Main           $paypal              The tickets handler object.
+ * @var Tribe__Tickets__Commerce__PayPal__Status_Manager $order_overview      Order breakdown for all statuses.
+ * @var string                                           $table               The orders table output.
  */
 
 /**
- * Wether or not we should display order report title.
+ * Whether we should display order report title.
  *
  * @since  4.10.7
  *
- * @param  boolean $show_title (false) Whether or not to show the title.
+ * @param boolean $show_title (false) Whether to show the title.
  */
 $show_title = apply_filters( 'tribe_tickets_order_report_show_title', false );
 
 /**
- * Wether or not we should display order report title for Tribe Commerce orders.
+ * Whether we should display order report title for Tribe Commerce orders.
  *
  * @since  4.10.7
  *
- * @param  boolean $show_title (false) Whether or not to show the title.
+ * @param boolean $show_title (false) Whether to show the title.
  */
 $show_title = apply_filters( 'tribe_tickets_tpp_order_report_show_title', $show_title );
 
@@ -36,7 +36,7 @@ $title = __( 'Orders Report', 'event-tickets' );
  *
  * @since  4.10.7
  *
- * @param  string $title the title.
+ * @param string $title the title.
  */
 $title = apply_filters( 'tribe_tickets_tpp_order_report_title', $title );
 
@@ -102,23 +102,23 @@ if ( $total_sold ) {
 				<div class="welcome-panel-column welcome-panel-middle">
 					<h3>
 						<?php
-						echo esc_html( sprintf(
-							__( 'Sales by %s Type', 'event-tickets' ),
-							tribe_get_ticket_label_singular( 'sales_by_type' )
-						) );
+						echo esc_html(
+							sprintf(
+								__( 'Sales by %s Type', 'event-tickets' ),
+								tribe_get_ticket_label_singular( 'sales_by_type' )
+							)
+						);
 						?>
 						<?php echo $order_overview->get_sale_by_ticket_tooltip(); ?>
 					</h3>
 					<?php
 					foreach ( $tickets_sold as $ticket_sold ) {
-
-						//Only Display if a TPP Ticket otherwise kick out
+						// Only display if a TPP Ticket, else kick out.
 						if ( 'Tribe__Tickets__Commerce__PayPal__Main' != $ticket_sold['ticket']->provider_class ) {
 							continue;
 						}
 
 						echo $order_overview->get_ticket_sale_infomation( $ticket_sold, $post_id );
-
 					}
 					?>
 				</div>
@@ -203,11 +203,11 @@ if ( $total_sold ) {
 
 	<form id="topics-filter" method="get">
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'page' : 'tribe[page]' ); ?>"
-		       value="<?php echo esc_attr( isset( $_GET['page'] ) ? $_GET['page'] : '' ); ?>"/>
+			   value="<?php echo esc_attr( isset( $_GET['page'] ) ? $_GET['page'] : '' ); ?>" />
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'post_id' : 'tribe[event_id]' ); ?>" id="event_id"
-		       value="<?php echo esc_attr( $post_id ); ?>"/>
+			   value="<?php echo esc_attr( $post_id ); ?>" />
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'post_type' : 'tribe[post_type]' ); ?>"
-		       value="<?php echo esc_attr( $post->post_type ); ?>"/>
+			   value="<?php echo esc_attr( $post->post_type ); ?>" />
 		<?php echo $table; ?>
 	</form>
 </div>

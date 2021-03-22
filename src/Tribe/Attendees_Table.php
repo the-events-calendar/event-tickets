@@ -187,13 +187,29 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_primary_info( array $item ) {
-		$purchaser_name  = empty( $item[ 'purchaser_name' ] ) ? '' : esc_html( $item[ 'purchaser_name' ] );
-		$purchaser_email = empty( $item[ 'purchaser_email' ] ) ? '' : esc_html( $item[ 'purchaser_email' ] );
+		$name  = '';
+		$email = '';
 
-		$output = "
-			<div class='purchaser_name'>{$purchaser_name}</div>
-			<div class='purchaser_email'>{$purchaser_email}</div>
-		";
+		if ( ! empty( $item['holder_name'] ) ) {
+			$name = $item['holder_name'];
+		} elseif ( ! empty( $item['purchaser_name'] ) ) {
+			$name = $item['purchaser_name'];
+		}
+
+		if ( ! empty( $item['holder_email'] ) ) {
+			$email = $item['holder_email'];
+		} elseif ( ! empty( $item['purchaser_email'] ) ) {
+			$email = $item['purchaser_email'];
+		}
+
+		$output = sprintf(
+			'
+				<div class="purchaser_name">%1$s</div>
+				<div class="purchaser_email">%2$s</div>
+			',
+			esc_html( $name ),
+			esc_html( $email )
+		);
 
 		/**
 		 * Provides an opportunity to modify the Primary Info column content in
@@ -931,6 +947,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$search_like_keys = [
 				'purchaser_name',
 				'purchaser_email',
+				'holder_name',
+				'holder_email',
 			];
 
 			/**
@@ -995,6 +1013,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		return [
 			'purchaser_name'  => esc_html_x( 'Search by Purchaser Name', 'Attendees Table search options', 'event-tickets' ),
 			'purchaser_email' => esc_html_x( 'Search by Purchaser Email', 'Attendees Table search options', 'event-tickets' ),
+			'holder_name'     => esc_html_x( 'Search by Ticket Holder Name', 'Attendees Table search options', 'event-tickets' ),
+			'holder_email'    => esc_html_x( 'Search by Ticket Holder Email', 'Attendees Table search options', 'event-tickets' ),
 			'user'            => esc_html_x( 'Search by User ID', 'Attendees Table search options', 'event-tickets' ),
 			'order_status'    => esc_html_x( 'Search by Order Status', 'Attendees Table search options', 'event-tickets' ),
 			'order'           => esc_html_x( 'Search by Order ID', 'Attendees Table search options', 'event-tickets' ),

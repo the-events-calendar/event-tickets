@@ -30,6 +30,7 @@ const onCancelClick = ( state, dispatch, ownProps ) => () => {
 			description: selectors.getTicketDescription( state, ownProps ),
 			price: selectors.getTicketPrice( state, ownProps ),
 			sku: selectors.getTicketSku( state, ownProps ),
+			iac: selectors.getTicketIACSetting( state, ownProps ),
 			startDate: selectors.getTicketStartDate( state, ownProps ),
 			startDateInput: selectors.getTicketStartDateInput( state, ownProps ),
 			startDateMoment: selectors.getTicketStartDateMoment( state, ownProps ),
