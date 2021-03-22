@@ -342,7 +342,7 @@ class Tribe__Tickets__Assets {
 	}
 
 	/**
-	 * Check if we should add the Admin Settings Assets into a Page
+	 * Check if we should add the Admin Settings Assets onto an admin page.
 	 *
 	 * @since TBD
 	 *
@@ -362,7 +362,7 @@ class Tribe__Tickets__Assets {
 		$should_enqueue = $admin_helpers->is_screen() && in_array( tribe_get_request_var( 'tab' ), $admin_tabs, true );
 
 		/**
-		 * Allow filtering of where the base Admin Settings Assets will be loaded
+		 * Allow filtering of whether the base Admin Settings Assets should be loaded.
 		 *
 		 * @since TBD
 		 *
