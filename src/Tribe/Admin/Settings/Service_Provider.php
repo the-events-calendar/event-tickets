@@ -18,7 +18,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	public function register() {
-		$this->container->singleton( 'tickets.admin.manager', self::class );
+		$this->container->singleton( 'tickets.admin.settings', self::class );
 
 		$this->hooks();
 	}
