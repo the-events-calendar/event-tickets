@@ -14,12 +14,12 @@ $help_text = $etp_enabled
 	: __( 'Thank you for using Event Tickets! We recommend looking through the settings below so that you can fine tune your specific ticketing needs. Here are some resources that can help.', 'event-tickets' );
 
 ?>
-<div id="event-tickets__admin-banner">
+<div class="event-tickets__admin-banner">
 	<h3><?php echo esc_html__( 'Getting Started With Tickets', 'event-tickets' ); ?></h3>
 	<p class="event-tickets__admin-banner-help-text"><?php echo esc_html__( $help_text ); ?></p>
 
-	<div class="event-tickets__admin-banner-help-links">
-		<div class="event-tickets__admin-banner-et-links">
+	<div class="event-tickets__admin-banner-help-links-wrapper">
+		<div class="event-tickets__admin-banner-links">
 			<h3><?php esc_html_e( 'Beginner Resources', 'event-tickets' ); ?> </h3>
 
 			<ul class="event-tickets__admin-banner-kb-list">
@@ -30,7 +30,7 @@ $help_text = $etp_enabled
 				?>
 			</ul>
 		</div>
-		<div class="event-tickets__admin-banner-etp-links">
+		<div class="event-tickets__admin-banner-links">
 			<h3>
 				<?php esc_html_e( 'Advanced Plus Features', 'event-tickets' ); ?>
 				<?php
