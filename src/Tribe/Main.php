@@ -373,6 +373,9 @@ class Tribe__Tickets__Main {
 		// Views V2
 		tribe_register_provider( Tribe\Tickets\Events\Views\V2\Service_Provider::class );
 
+		// Admin settings.
+		tribe_register_provider( Tribe\Tickets\Admin\Settings\Service_Provider::class );
+
 		// Admin manager.
 		tribe_register_provider( Tribe\Tickets\Admin\Manager\Service_Provider::class );
 

@@ -178,6 +178,7 @@ class Tribe__Tickets__Assets {
 	 *
 	 * @since 4.6
 	 * @since 4.10.9 Use customizable ticket name functions.
+	 * @since TBD Add Ticket Settings assets.
 	 */
 	public function admin_enqueue_scripts() {
 		/** @var Tribe__Tickets__Main $tickets_main */
@@ -298,6 +299,21 @@ class Tribe__Tickets__Assets {
 				],
 			]
 		);
+
+		// Register Ticket Admin Settings page assets.
+		$settings_assets = [
+			[ 'event-tickets-admin-settings-css', 'tickets-admin-settings.css', [ 'tribe-common-admin' ] ],
+		];
+
+		tribe_assets(
+			$tickets_main,
+			$settings_assets,
+			'admin_enqueue_scripts',
+			[
+				'groups'       => 'event-tickets-admin-settings',
+				'conditionals' => [ $this, 'should_enqueue_admin_settings_assets' ],
+			],
+		);
 	}
 
 	/**
@@ -323,6 +339,36 @@ class Tribe__Tickets__Assets {
 
 		// For the metabox.
 		return ! empty( $post ) && ! empty( $modules ) && in_array( $post->post_type, tribe( 'tickets.main' )->post_types(), true );
+	}
+
+	/**
+	 * Check if we should add the Admin Settings Assets onto an admin page.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function should_enqueue_admin_settings_assets() {
+
+		$admin_helpers = Tribe__Admin__Helpers::instance();
+
+		// The list of admin tabs that the plugin hooks into.
+		$admin_tabs = [
+			'event-tickets',
+			'event-tickets-commerce',
+		];
+
+		// Load specifically on Ticket Settings page only.
+		$should_enqueue = $admin_helpers->is_screen() && in_array( tribe_get_request_var( 'tab' ), $admin_tabs, true );
+
+		/**
+		 * Allow filtering of whether the base Admin Settings Assets should be loaded.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $should_enqueue Should enqueue the settings asset or not.
+		 */
+		return apply_filters( 'event_tickets_should_enqueue_admin_settings_assets', $should_enqueue );
 	}
 
 	/**

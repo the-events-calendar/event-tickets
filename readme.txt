@@ -184,6 +184,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Move the sales duration of Tickets and RSVP blocks outside of the "Advanced Options" section, making them more accessible. [ET-951]
 * Tweak - Aesthetic improvements for the Tickets and RSVP blocks. Adding a white background so they look consistent when there's a different background on the editor styles. [ET-982]
 * Tweak - Add confirmation dialog for bulk deletion of attendees in the attendee report page. [ET-981]
+* Tweak - Added Getting started banner with links to knowledgebase articles in Ticket Settings. [ET-959]
 
 = [5.1.1] 2021-03-04 =
 
