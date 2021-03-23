@@ -185,6 +185,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Aesthetic improvements for the Tickets and RSVP blocks. Adding a white background so they look consistent when there's a different background on the editor styles. [ET-982]
 * Tweak - Add confirmation dialog for bulk deletion of attendees in the attendee report page. [ET-981]
 * Tweak - Added Getting started banner with links to knowledgebase articles in Ticket Settings. [ET-959]
+* Tweak - Add top border to the ticket save section in order to make it more clear that's not part of the AR fields. [ETP-684]
 
 = [5.1.1] 2021-03-04 =
 
