@@ -59,6 +59,10 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 				'href'  => 'https://theeventscalendar.com/knowledgebase/k/configuring-tribe-commerce/',
 			],
 			[
+				'label' => __( 'Using RSVPs', 'event-tickets' ),
+				'href'  => 'https://theeventscalendar.com/knowledgebase/k/event-tickets-using-rsvps/',
+			],
+			[
 				'label' => __( 'Managing Orders and Attendees', 'event-tickets' ),
 				'href'  => 'https://theeventscalendar.com/knowledgebase/k/tickets-managing-your-orders-and-attendees/',
 			],
@@ -70,10 +74,17 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 
 		$etp_resource_links = [
 			[
+				'label' => __( 'Switching from Tribe Commerce to WooCommerce', 'event-tickets' ),
+				'href'  => 'https://theeventscalendar.com/knowledgebase/k/switching-from-tribe-commerce-to-woocommerce/',
+			],
+			[
+				'label' => __( 'Setting Up E-Commerce Plugins for Selling Tickets', 'event-tickets' ),
+				'href'  => 'https://theeventscalendar.com/knowledgebase/k/setting-up-e-commerce-plugins-for-selling-tickets/',
+			],
+			[
 				'label' => __( 'Tickets & WooCommerce', 'event-tickets' ),
 				'href'  => 'https://theeventscalendar.com/knowledgebase/k/woocommerce-specific-ticket-settings/',
 			],
-
 			[
 				'label' => __( 'Creating Tickets', 'event-tickets' ),
 				'href'  => 'https://theeventscalendar.com/knowledgebase/k/making-tickets/',
