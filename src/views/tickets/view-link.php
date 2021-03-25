@@ -5,7 +5,7 @@
  *
  * Override this template in your own theme by creating a file at:
  *
- *     [your-theme]/tribe-events/tickets/view-link.php
+ *     [your-theme]/tribe-events/tickets/tickets/view-link.php
  *
  * @since   4.2
  * @since   4.10.8 Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated third
