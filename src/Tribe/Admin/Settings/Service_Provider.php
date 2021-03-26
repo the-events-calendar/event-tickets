@@ -9,13 +9,13 @@ use tad_DI52_ServiceProvider;
  *
  * @package Tribe\Tickets\Admin\Settings
  *
- * @since   TBD
+ * @since   5.1.2
  */
 class Service_Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Register the provider singletons.
 	 *
-	 * @since TBD
+	 * @since 5.1.2
 	 */
 	public function register() {
 		$this->container->singleton( 'tickets.admin.settings', self::class );
@@ -26,7 +26,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Add actions and filters.
 	 *
-	 * @since TBD
+	 * @since 5.1.2
 	 */
 	protected function hooks() {
 		if ( ! is_admin() ) {
@@ -39,7 +39,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Render the Help banner for the Ticket Settings Tab.
 	 *
-	 * @since TBD
+	 * @since 5.1.2
 	 *
 	 * @return string The help banner HTML content.
 	 */

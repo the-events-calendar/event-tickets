@@ -2,7 +2,7 @@
 /**
  * Getting started banner section.
  *
- * @since TBD
+ * @since 5.1.2
  *
  * @var bool $etp_enabled         Event Tickets Plus enabled or not.
  * @var array $et_resource_links  Knowledgebase links for Event Tickets.

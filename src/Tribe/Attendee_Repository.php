@@ -790,7 +790,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		/**
 		 * Filter the attendee data before updating the attendee.
 		 *
-		 * @since TBD
+		 * @since 5.1.2
 		 *
 		 * @param array                               $attendee_data Attendee data that needs to be updated.
 		 * @param Tribe__Tickets__Attendee_Repository $this          The Tickets Attendee ORM object.

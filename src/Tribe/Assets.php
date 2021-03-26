@@ -178,7 +178,7 @@ class Tribe__Tickets__Assets {
 	 *
 	 * @since 4.6
 	 * @since 4.10.9 Use customizable ticket name functions.
-	 * @since TBD Add Ticket Settings assets.
+	 * @since 5.1.2 Add Ticket Settings assets.
 	 */
 	public function admin_enqueue_scripts() {
 		/** @var Tribe__Tickets__Main $tickets_main */
@@ -344,7 +344,7 @@ class Tribe__Tickets__Assets {
 	/**
 	 * Check if we should add the Admin Settings Assets onto an admin page.
 	 *
-	 * @since TBD
+	 * @since 5.1.2
 	 *
 	 * @return bool
 	 */
@@ -364,7 +364,7 @@ class Tribe__Tickets__Assets {
 		/**
 		 * Allow filtering of whether the base Admin Settings Assets should be loaded.
 		 *
-		 * @since TBD
+		 * @since 5.1.2
 		 *
 		 * @param bool $should_enqueue Should enqueue the settings asset or not.
 		 */
