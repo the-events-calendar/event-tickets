@@ -176,7 +176,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.1.2] TBD =
+= [5.1.2] 2021-03-30 =
 
 * Fix - Don't show View Orders button on the Classic Editor ticket meta box for RSVP only events. [ET-985]
 * Fix - Add "Currently full" message on TEC views when the event has RSVPs without availability. [ET-1004]
