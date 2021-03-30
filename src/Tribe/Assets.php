@@ -312,7 +312,7 @@ class Tribe__Tickets__Assets {
 			[
 				'groups'       => 'event-tickets-admin-settings',
 				'conditionals' => [ $this, 'should_enqueue_admin_settings_assets' ],
-			],
+			]
 		);
 	}
 
