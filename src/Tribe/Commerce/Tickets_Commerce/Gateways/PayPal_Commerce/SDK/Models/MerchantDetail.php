@@ -97,7 +97,7 @@ class MerchantDetail {
 	/**
 	 * Return array of merchant details.
 	 *
-	 * @sicne 2.9.0
+	 * @since TBD
 	 *
 	 * @return array
 	 */
@@ -187,8 +187,6 @@ class MerchantDetail {
 	 * @since TBD
 	 *
 	 * @param array $tokenDetails
-	 *
-	 * @return mixed
 	 */
 	public function setTokenDetails( $tokenDetails ) {
 		$this->tokenDetails = array_merge( $this->tokenDetails, $tokenDetails );

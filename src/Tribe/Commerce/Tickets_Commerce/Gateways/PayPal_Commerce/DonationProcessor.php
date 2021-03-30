@@ -20,11 +20,6 @@ class DonationProcessor {
 	private $donationFormData;
 
 	/**
-	 * @var int
-	 */
-	private $formId;
-
-	/**
 	 * Handle donation form submission.
 	 *
 	 * @since TBD
@@ -39,12 +34,12 @@ class DonationProcessor {
 			return;
 		}
 
-		$this->formId = absint( $this->donationFormData['post_data']['give-form-id'] );
+		$formId = absint( $this->donationFormData['post_data']['give-form-id'] );
 
 		$donationData = [
 			'price'           => $this->donationFormData['price'],
 			'give_form_title' => $this->donationFormData['post_data']['give-form-title'],
-			'give_form_id'    => $this->formId,
+			'give_form_id'    => $formId,
 			'give_price_id'   => isset( $this->donationFormData['post_data']['give-price-id'] ) ? $this->donationFormData['post_data']['give-price-id'] : '',
 			'date'            => $this->donationFormData['date'],
 			'user_email'      => $this->donationFormData['user_email'],
@@ -73,11 +68,21 @@ class DonationProcessor {
 	 */
 	private function redirectBackToDonationForm() {
 		// Record the error.
-		give_record_gateway_error( esc_html__( 'Payment Error', 'event-tickets' ), /* translators: %s: payment data */ sprintf( esc_html__( 'The payment creation failed before processing the PayPalCommerce gateway request. Payment data: %s', 'event-tickets' ), print_r( $this->donationFormData, true ) ) );
+		// @todo Replace this with a logging function.
+		give_record_gateway_error(
+			esc_html__( 'Payment Error', 'event-tickets' ),
+			sprintf(
+				/* translators: %s: payment data */
+				esc_html__( 'The payment creation failed before processing the PayPalCommerce gateway request. Payment data: %s', 'event-tickets' ),
+				print_r( $this->donationFormData, true )
+			)
+		);
 
+		// @todo Replace this with an error+notice follow-up function.
 		give_set_error( 'event-tickets', esc_html__( 'An error occurred while processing your payment. Please try again.', 'event-tickets' ) );
 
 		// Problems? Send back.
+		// @todo Replace this.
 		give_send_back_to_checkout();
 	}
 
@@ -87,25 +92,43 @@ class DonationProcessor {
 	 * @since TBD
 	 *
 	 * @param int $donationId
-	 *
 	 */
 	private function redirectDonorToSuccessPage( $donationId ) {
 		$orderDetailRequest = new OrdersGetRequest( $this->donationFormData['post_data']['payPalOrderId'] );
-		$orderDetails       = (array) tribe( PayPalClient::class )->getHttpClient()
-		                                                         ->execute( $orderDetailRequest )->result;
+
+		$client = tribe( PayPalClient::class )->getHttpClient();
+
+		$orderDetails = (array) $client->execute( $orderDetailRequest )->result;
 
 		$order = PayPalOrder::fromArray( $orderDetails );
 
-		give_insert_payment_note( $donationId, sprintf( __( 'Transaction Successful. PayPal Transaction ID: %1$s    PayPal Order ID: %2$s', 'event-tickets' ), $order->payment->id, $order->id ) );
+		give_insert_payment_note(
+			$donationId,
+			// @todo Add translator text
+			sprintf(
+				__( 'Transaction Successful. PayPal Transaction ID: %1$s    PayPal Order ID: %2$s', 'event-tickets' ),
+				$order->payment->id,
+				$order->id
+			)
+		);
+
 		give_set_payment_transaction_id( $donationId, $order->payment->id );
-		give( 'payment_meta' )->update_meta( $donationId, '_give_order_id', $order->id );
+
+		Give( 'payment_meta' )->update_meta( $donationId, '_give_order_id', $order->id );
 
 		// Do not need to set donation to complete if already completed by PayPal webhook.
 		if ( 'COMPLETED' === $order->payment->status ) {
 			give_update_payment_status( $donationId );
 		}
 
-		wp_safe_redirect( add_query_arg( [ 'payment-confirmation' => 'paypal-commerce' ], give_get_success_page_url() ) );
+		wp_safe_redirect(
+			add_query_arg(
+				[
+					'payment-confirmation' => 'paypal-commerce',
+				],
+				give_get_success_page_url()
+			)
+		);
 
 		exit();
 	}

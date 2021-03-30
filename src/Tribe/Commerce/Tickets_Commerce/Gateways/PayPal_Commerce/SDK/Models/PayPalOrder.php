@@ -2,9 +2,9 @@
 
 namespace TEC\PaymentGateways\PayPalCommerce\SDK\Models;
 
-use TEC\Helpers\ArrayDataSet;
 use InvalidArgumentException;
 use stdClass;
+use TEC\Helpers\ArrayDataSet;
 
 /**
  * Class PayPalOrder
@@ -140,17 +140,30 @@ class PayPalOrder {
 	 * @throws InvalidArgumentException
 	 */
 	private function validate( $array ) {
-		$required = [ 'id', 'intent', 'purchase_units', 'create_time', 'update_time', 'links' ];
+		$required = [
+			'id',
+			'intent',
+			'purchase_units',
+			'create_time',
+			'update_time',
+			'links',
+		];
 
 		// PayPal does not send following parameter in Order (completed with advanced card fields payment method) details.
 		if ( ! isset( $array['payment_source'] ) ) {
 			$required = array_merge( $required, [ 'payer', 'status' ] );
 		}
 
-		$array = array_filter( $array ); // Remove empty values.
+		// Remove empty values.
+		$array = array_filter( $array );
 
 		if ( array_diff( $required, array_keys( $array ) ) ) {
-			throw new InvalidArgumentException( sprintf( esc_html__( 'To create a PayPalOrder object, please provide valid %1$s', 'event-tickets' ), implode( ', ', $required ) ) );
+			throw new InvalidArgumentException(
+				sprintf(
+					esc_html__( 'To create a PayPalOrder object, please provide valid %1$s', 'event-tickets' ),
+					implode( ', ', $required )
+				)
+			);
 		}
 	}
 }

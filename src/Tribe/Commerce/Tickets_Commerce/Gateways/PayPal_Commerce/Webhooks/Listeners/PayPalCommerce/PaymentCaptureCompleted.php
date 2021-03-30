@@ -22,13 +22,16 @@ class PaymentCaptureCompleted extends PaymentEventListener {
 			return;
 		}
 
+		// @todo Replace this.
 		// Exit if donation status already set to publish.
-		if ( ! give_update_payment_status( $donation->ID, 'publish' ) ) {
+		if ( ! give_update_payment_status( $donation->ID ) ) {
 			return;
 		}
 
+		// @todo Replace this.
 		give_insert_payment_note( $donation->ID, __( 'Charge Completed in PayPal', 'event-tickets' ) );
 
+		// @todo Replace the action name.
 		/**
 		 * Fires when a charge has been completed via webhook
 		 *

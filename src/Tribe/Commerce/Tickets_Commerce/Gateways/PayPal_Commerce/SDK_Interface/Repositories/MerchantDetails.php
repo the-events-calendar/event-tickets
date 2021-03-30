@@ -1,11 +1,11 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\Repositories;
+namespace TEC\PaymentGateways\PayPalCommerce\SDK_Interface\Repositories;
 
 use TEC\Helpers\ArrayDataSet;
 use TEC\PaymentGateways\PayPalCommerce\SDK\Models\MerchantDetail;
 use TEC\PaymentGateways\PayPalCommerce\PayPalClient;
-use TEC\PaymentGateways\PayPalCommerce\Repositories\Traits\HasMode;
+use TEC\PaymentGateways\PayPalCommerce\SDK\Repositories\Traits\HasMode;
 
 /**
  * Class MerchantDetails
@@ -128,14 +128,19 @@ class MerchantDetails {
 		/** @var MerchantDetail $merchant */
 		$merchant = tribe( MerchantDetail::class );
 
-		$response = wp_remote_retrieve_body( wp_remote_post( tribe( PayPalClient::class )->getApiUrl( 'v1/identity/generate-token' ), [
-			'headers' => [
-				'Accept'          => 'application/json',
-				'Accept-Language' => 'en_US',
-				'Authorization'   => sprintf( 'Bearer %1$s', $merchant->accessToken ),
-				'Content-Type'    => 'application/json',
-			],
-		] ) );
+		$response = wp_remote_retrieve_body(
+			wp_remote_post(
+				tribe( PayPalClient::class )->getApiUrl( 'v1/identity/generate-token' ),
+				[
+					'headers' => [
+						'Accept'          => 'application/json',
+						'Accept-Language' => 'en_US',
+						'Authorization'   => sprintf( 'Bearer %1$s', $merchant->accessToken ),
+						'Content-Type'    => 'application/json',
+					],
+				]
+			)
+		);
 
 		if ( ! $response ) {
 			return '';
@@ -148,8 +153,8 @@ class MerchantDetails {
 			return '';
 		}
 
-		set_transient( $optionName, $response['clientToken'], $response['expiresIn'] - 60 // Expire token before one minute to prevent unnecessary race condition.
-		);
+		// Expire token before one minute to prevent unnecessary race condition.
+		set_transient( $optionName, $response['clientToken'], $response['expiresIn'] - 60 );
 
 		return $response['clientToken'];
 	}

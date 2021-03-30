@@ -336,9 +336,14 @@ class onBoardingRedirectHandler {
 		}
 
 		// Grab the PPCP_CUSTOM product from the status data
-		$customProduct = current( array_filter( $onBoardedData['products'], function ( $product ) {
-				return $product['name'] === 'PPCP_CUSTOM';
-			} ) );
+		$customProduct = current(
+			array_filter(
+				$onBoardedData['products'],
+				static function ( $product ) {
+					return 'PPCP_CUSTOM' === $product['name'];
+				}
+			)
+		);
 
 		if ( empty( $customProduct ) || $customProduct['vetting_status'] !== 'SUBSCRIBED' ) {
 			$errorMessages[] = esc_html__( 'Reach out to PayPal to enable PPCP_CUSTOM for your account', 'event-tickets' );
@@ -377,10 +382,24 @@ class onBoardingRedirectHandler {
 	 * @since TBD
 	 */
 	private function registerPayPalSSLNotice() {
-		if ( is_ssl() && empty( $this->webhooksRepository->getWebhookConfig() ) ) {
-			$logLink = sprintf( '<a href="%1$s">%2$s</a>', admin_url( '/edit.php?post_type=give_forms&page=give-tools&tab=logs' ), esc_html__( 'logs data', 'event-tickets' ) );
-
-			Give_Admin_Settings::add_error( 'paypal-webhook-error', sprintf( esc_html__( 'There was a problem setting up the webhooks for your PayPal account. Please try disconnecting and reconnecting your PayPal account. If the problem persists, please contact support and provide them with the latest %1$s', 'event-tickets' ), $logLink ) );
+		if ( ! is_ssl() || ! empty( $this->webhooksRepository->getWebhookConfig() ) ) {
+			return;
 		}
+
+		// @todo Replace the URL.
+		$logLink = sprintf(
+			'<a href="%1$s">%2$s</a>',
+			admin_url( '/edit.php?post_type=give_forms&page=give-tools&tab=logs' ),
+			esc_html__( 'logs data', 'event-tickets' )
+		);
+
+		// @todo Add the translator doc.
+		Give_Admin_Settings::add_error(
+			'paypal-webhook-error',
+			sprintf(
+				esc_html__( 'There was a problem setting up the webhooks for your PayPal account. Please try disconnecting and reconnecting your PayPal account. If the problem persists, please contact support and provide them with the latest %1$s', 'event-tickets' ),
+				$logLink
+			)
+		);
 	}
 }

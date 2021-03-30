@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\Repositories;
+namespace TEC\PaymentGateways\PayPalCommerce\SDK_Interface\Repositories;
 
 class Settings {
 
@@ -16,14 +16,14 @@ class Settings {
 	 *
 	 * @since TBD
 	 */
-	const ACCESS_TOKEN_KEY = 'temp_give_paypal_commerce_seller_access_token';
+	const ACCESS_TOKEN_KEY = 'temp_tickets_paypal_commerce_seller_access_token';
 
 	/**
 	 * wp_options key for the partner link details
 	 *
 	 * @since TBD
 	 */
-	const PARTNER_LINK_DETAIL_KEY = 'temp_give_paypal_commerce_partner_link';
+	const PARTNER_LINK_DETAIL_KEY = 'temp_tickets_paypal_commerce_partner_link';
 
 	/**
 	 * Returns the country for the account
@@ -33,6 +33,7 @@ class Settings {
 	 * @return string|null
 	 */
 	public function getAccountCountry() {
+		// @todo Replace this with a constant default value or a filtered value for setting the default country.
 		return get_option( self::COUNTRY_KEY, give_get_country() );
 	}
 

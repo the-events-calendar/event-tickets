@@ -1,11 +1,11 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\Repositories;
+namespace TEC\PaymentGateways\PayPalCommerce\SDK_Interface\Repositories;
 
 use Exception;
 use TEC\PaymentGateways\PayPalCommerce\DataTransferObjects\PayPalWebhookHeaders;
 use TEC\PaymentGateways\PayPalCommerce\PayPalClient;
-use TEC\PaymentGateways\PayPalCommerce\Repositories\Traits\HasMode;
+use TEC\PaymentGateways\PayPalCommerce\SDK\Repositories\Traits\HasMode;
 use TEC\PaymentGateways\PayPalCommerce\SDK\Models\WebhookConfig;
 use TEC\PaymentGateways\PayPalCommerce\Webhooks\WebhookRegister;
 use TEC\Route\PayPalWebhooks as WebhooksRoute;
@@ -64,23 +64,29 @@ class Webhooks {
 
 		$webhookConfig = $this->getWebhookConfig();
 
-		$response = wp_remote_post( $apiUrl, [
-			'headers' => [
-				'Content-Type'  => 'application/json',
-				'Authorization' => "Bearer $token",
-			],
-			'body'    => wp_json_encode( [
-				'transmission_id'   => $payPalHeaders->transmissionId,
-				'transmission_time' => $payPalHeaders->transmissionTime,
-				'transmission_sig'  => $payPalHeaders->transmissionSig,
-				'cert_url'          => $payPalHeaders->certUrl,
-				'auth_algo'         => $payPalHeaders->authAlgo,
-				'webhook_id'        => $webhookConfig->id,
-				'webhook_event'     => $event,
-			] ),
-		] );
+		$response = wp_remote_post(
+			$apiUrl,
+			[
+				'headers' => [
+					'Content-Type'  => 'application/json',
+					'Authorization' => "Bearer $token",
+				],
+				'body'    => wp_json_encode(
+					[
+						'transmission_id'   => $payPalHeaders->transmissionId,
+						'transmission_time' => $payPalHeaders->transmissionTime,
+						'transmission_sig'  => $payPalHeaders->transmissionSig,
+						'cert_url'          => $payPalHeaders->certUrl,
+						'auth_algo'         => $payPalHeaders->authAlgo,
+						'webhook_id'        => $webhookConfig->id,
+						'webhook_event'     => $event,
+					]
+				),
+			]
+		);
 
 		if ( is_wp_error( $response ) ) {
+			// @todo Replace this with a logging function.
 			give_record_gateway_error( 'Webhook signature failure response', print_r( $response, true ) );
 
 			return false;
@@ -109,26 +115,33 @@ class Webhooks {
 		$events     = $this->webhooksRegister->getRegisteredEvents();
 		$webhookUrl = $this->webhookRoute->getRouteUrl();
 
-		esc_html_e();
-
-		$response = wp_remote_post( $apiUrl, [
-			'headers' => [
-				'Content-Type'  => 'application/json',
-				'Authorization' => "Bearer $token",
-			],
-			'body'    => json_encode( [
-				'url'         => $webhookUrl,
-				'event_types' => array_map( static function ( $eventType ) {
-					return [
-						'name' => $eventType,
-					];
-				}, $events ),
-			] ),
-		] );
+		$response = wp_remote_post(
+			$apiUrl,
+			[
+				'headers' => [
+					'Content-Type'  => 'application/json',
+					'Authorization' => "Bearer {$token}",
+				],
+				'body'    => json_encode(
+					[
+						'url'         => $webhookUrl,
+						'event_types' => array_map(
+							static function ( $eventType ) {
+								return [
+									'name' => $eventType,
+								];
+							},
+							$events
+						),
+					]
+				),
+			]
+		);
 
 		$response = json_decode( $response['body'], false );
 
 		if ( ! isset( $response->id ) ) {
+			// @todo Replace this with a logging function.
 			give_record_gateway_error( 'Create PayPal Commerce Webhook Failure', print_r( $response, true ) );
 
 			throw new Exception( 'Failed to create webhook' );
@@ -153,33 +166,42 @@ class Webhooks {
 
 		$webhookUrl = $this->webhookRoute->getRouteUrl();
 
-		$response = wp_remote_request( $apiUrl, [
-			'method'  => 'PATCH',
-			'headers' => [
-				'Content-Type'  => 'application/json',
-				'Authorization' => "Bearer $token",
-			],
-			'body'    => json_encode( [
-				[
-					'op'    => 'replace',
-					'path'  => '/url',
-					'value' => $webhookUrl,
+		$response = wp_remote_request(
+			$apiUrl,
+			[
+				'method'  => 'PATCH',
+				'headers' => [
+					'Content-Type'  => 'application/json',
+					'Authorization' => "Bearer {$token}",
 				],
-				[
-					'op'    => 'replace',
-					'path'  => '/event_types',
-					'value' => array_map( static function ( $eventType ) {
-						return [
-							'name' => $eventType,
-						];
-					}, $this->webhooksRegister->getRegisteredEvents() ),
-				],
-			] ),
-		] );
+				'body'    => json_encode(
+					[
+						[
+							'op'    => 'replace',
+							'path'  => '/url',
+							'value' => $webhookUrl,
+						],
+						[
+							'op'    => 'replace',
+							'path'  => '/event_types',
+							'value' => array_map(
+								static function ( $eventType ) {
+									return [
+										'name' => $eventType,
+									];
+								},
+								$this->webhooksRegister->getRegisteredEvents()
+							),
+						],
+					]
+				),
+			]
+		);
 
 		$response = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		if ( empty( $response ) || ! isset( $response['id'] ) ) {
+			// @todo Replace this with a logging function.
 			give_record_gateway_error( 'Failed to update PayPal Commerce webhook', print_r( $response, true ) );
 
 			throw new Exception( 'Failed to update PayPal Commerce webhook' );
@@ -200,13 +222,16 @@ class Webhooks {
 		// @todo Move this to the SDK.
 		$apiUrl = $this->payPalClient->getApiUrl( "v1/notifications/webhooks/$webhookId" );
 
-		$response = wp_remote_request( $apiUrl, [
-			'method'  => 'DELETE',
-			'headers' => [
-				'Content-Type'  => 'application/json',
-				'Authorization' => "Bearer {$token}",
-			],
-		] );
+		$response = wp_remote_request(
+			$apiUrl,
+			[
+				'method'  => 'DELETE',
+				'headers' => [
+					'Content-Type'  => 'application/json',
+					'Authorization' => "Bearer {$token}",
+				],
+			]
+		);
 
 		$code = wp_remote_retrieve_response_code( $response );
 

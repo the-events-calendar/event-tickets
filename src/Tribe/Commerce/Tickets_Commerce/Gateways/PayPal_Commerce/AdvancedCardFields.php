@@ -19,8 +19,6 @@ class AdvancedCardFields {
 	 * @param int $formId Donation Form ID.
 	 *
 	 * @access public
-	 * @return string $form
-	 *
 	 */
 	public function addCreditCardForm( $formId ) {
 		$this->removeBillingField();

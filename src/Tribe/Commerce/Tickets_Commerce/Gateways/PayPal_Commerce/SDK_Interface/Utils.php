@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce;
+namespace TEC\PaymentGateways\PayPalCommerce\SDK_Interface;
 
 use TEC\PaymentGateways\PayPalCommerce\SDK\Models\MerchantDetail;
 
@@ -27,6 +27,7 @@ class Utils {
 	 * Return whether or not payment gateway accept payment.
 	 *
 	 * @since TBD
+	 *
 	 * @return bool
 	 */
 	public static function isAccountReadyToAcceptPayment() {

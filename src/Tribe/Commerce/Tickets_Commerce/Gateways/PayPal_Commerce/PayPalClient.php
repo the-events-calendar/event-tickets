@@ -35,7 +35,7 @@ class PayPalClient {
 	/**
 	 * Get environment.
 	 *
-	 * @sicne 2.9.0
+	 * @since TBD
 	 *
 	 * @return ProductionEnvironment|SandboxEnvironment
 	 */
@@ -43,7 +43,9 @@ class PayPalClient {
 		/* @var MerchantDetail $merchant */
 		$merchant = tribe( MerchantDetail::class );
 
-		return 'sandbox' === $this->mode ? new SandboxEnvironment( $merchant->clientId, $merchant->clientSecret ) : new ProductionEnvironment( $merchant->clientId, $merchant->clientSecret );
+		return 'sandbox' === $this->mode ?
+			new SandboxEnvironment( $merchant->clientId, $merchant->clientSecret ) :
+			new ProductionEnvironment( $merchant->clientId, $merchant->clientSecret );
 	}
 
 	/**
@@ -80,6 +82,11 @@ class PayPalClient {
 	 * @return string
 	 */
 	public function getHomePageUrl() {
-		return sprintf( 'https://%1$spaypal.com/', 'sandbox' === $this->mode ? 'sandbox.' : '' );
+		$subdomain = 'sandbox' === $this->mode ? 'sandbox.' : '';
+
+		return sprintf(
+			'https://%1$spaypal.com/',
+			$subdomain
+		);
 	}
 }

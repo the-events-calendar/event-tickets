@@ -78,7 +78,11 @@ class WebhookChecker {
 		$webhookUrl       = $this->webhooksRoute->getRouteUrl();
 		$registeredEvents = $this->webhookRegister->getRegisteredEvents();
 
-		$hasMissingEvents = ! empty( array_merge( array_diff( $registeredEvents, $webhookConfig->events ), array_diff( $webhookConfig->events, $registeredEvents ) ) );
+		$missingEvents    = array_merge(
+			array_diff( $registeredEvents, $webhookConfig->events ),
+			array_diff( $webhookConfig->events, $registeredEvents )
+		);
+		$hasMissingEvents = ! empty( $missingEvents );
 
 		// Update the webhook if the return url or events have changed
 		if ( $webhookUrl !== $webhookConfig->returnUrl || $hasMissingEvents ) {
@@ -90,7 +94,11 @@ class WebhookChecker {
 
 				$this->webhooksRepository->saveWebhookConfig( $webhookConfig );
 			} catch ( Exception $exception ) {
-				Give_Admin_Settings::add_error( 'paypal-webhook-update-error', 'There was a problem updating your PayPal Donations webhook. Please disconnect your account and reconnect it.' );
+				// @todo Replace this with a notice / log.
+				Give_Admin_Settings::add_error(
+					'paypal-webhook-update-error',
+					__( 'There was a problem updating your PayPal Donations webhook. Please disconnect your account and reconnect it.', 'event-tickets' )
+				);
 			}
 		}
 	}

@@ -80,6 +80,7 @@ class PayPalWebhookHeaders {
 		}
 
 		if ( ! empty( $missingKeys ) ) {
+			// @todo Replace this with a logging function.
 			give_record_gateway_error( 'Missing PayPal webhook header', print_r( [
 					'missingKeys' => $missingKeys,
 					'headers'     => $headers,

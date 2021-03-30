@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce;
+namespace TEC\PaymentGateways\PayPalCommerce\SDK_Interface;
 
 use Exception;
 use TEC\PaymentGateways\PayPalCommerce\SDK\Repositories\PayPalOrder;
@@ -125,6 +125,8 @@ class RefundPaymentHandler {
 	 * @return bool
 	 */
 	private function isAdminOptInToRefundPaymentOnPayPal() {
-		return ! empty( $_POST['give_paypal_donations_optin_for_refund'] ) ? (bool) absint( $_POST['give_paypal_donations_optin_for_refund'] ) : false;
+		return ! empty( $_POST['give_paypal_donations_optin_for_refund'] )
+			? (bool) absint( $_POST['give_paypal_donations_optin_for_refund'] )
+			: false;
 	}
 }

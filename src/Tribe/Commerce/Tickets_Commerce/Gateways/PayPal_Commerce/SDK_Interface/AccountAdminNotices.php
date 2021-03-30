@@ -1,16 +1,18 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce;
+namespace TEC\PaymentGateways\PayPalCommerce\SDK_Interface;
 
+// @todo Replace class usage.
 use Give_Admin_Settings;
 use TEC\PaymentGateways\PayPalCommerce\Repositories\MerchantDetails;
+use TEC\PaymentGateways\PayPalCommerce\SDK_Interface\Utils;
 
 /**
  * Account admin notices for PayPal Commerce.
  *
  * @since TBD
  *
- * @package TEC\PaymentGateways\PayPalCommerce
+ * @package TEC\PaymentGateways\PayPalCommerce\SDK_Interface
  */
 class AccountAdminNotices {
 

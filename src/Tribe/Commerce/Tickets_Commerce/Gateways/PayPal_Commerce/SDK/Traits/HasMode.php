@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\Repositories\Traits;
+namespace TEC\PaymentGateways\PayPalCommerce\SDK\Repositories\Traits;
 
 use InvalidArgumentException;
 

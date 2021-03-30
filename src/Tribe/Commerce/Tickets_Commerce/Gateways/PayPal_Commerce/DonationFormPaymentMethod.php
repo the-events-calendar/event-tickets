@@ -2,6 +2,8 @@
 
 namespace TEC\PaymentGateways\PayPalCommerce;
 
+use TEC\PaymentGateways\PayPalCommerce\SDK_Interface\Utils;
+
 /**
  * Class DonationFormPaymentMethod
  *
@@ -28,7 +30,7 @@ class DonationFormPaymentMethod {
 	/**
 	 * Disable PayPal payment option if gateway account is not setup.
 	 *
-	 * @sicne 2.9.6
+	 * @since TBD
 	 *
 	 * @param array $gateways
 	 *

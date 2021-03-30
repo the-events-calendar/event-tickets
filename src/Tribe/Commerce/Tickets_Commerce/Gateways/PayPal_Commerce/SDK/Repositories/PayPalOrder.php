@@ -4,11 +4,16 @@ namespace TEC\PaymentGateways\PayPalCommerce\SDK\Repositories;
 
 use Exception;
 use InvalidArgumentException;
+
+// @todo Implement PayPal Checkout SDK.
 use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalCheckoutSdk\Payments\CapturesRefundRequest;
+
 use TEC\PaymentGateways\PayPalCommerce\SDK\Models\MerchantDetail;
 use TEC\PaymentGateways\PayPalCommerce\PayPalClient;
+
+// @todo Replace error logger.
 use function give_record_gateway_error as logError;
 
 /**
@@ -84,7 +89,7 @@ class PayPalOrder {
 		$this->validateCreateOrderArguments( $array );
 
 		$request = new OrdersCreateRequest();
-		$request->payPalPartnerAttributionId( give( 'PAYPAL_COMMERCE_ATTRIBUTION_ID' ) );
+		$request->payPalPartnerAttributionId( Give( 'PAYPAL_COMMERCE_ATTRIBUTION_ID' ) );
 		$request->body = [
 			'intent'              => 'CAPTURE',
 			'purchase_units'      => [

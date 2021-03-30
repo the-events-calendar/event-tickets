@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\Repositories;
+namespace TEC\PaymentGateways\PayPalCommerce\SDK\Repositories;
 
 use TEC\ConnectClient\ConnectClient;
 use TEC\Helpers\ArrayDataSet;

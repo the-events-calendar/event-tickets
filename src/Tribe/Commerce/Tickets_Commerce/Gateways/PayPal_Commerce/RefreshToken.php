@@ -39,7 +39,11 @@ class RefreshToken {
 	 * @param PayPalAuth      $payPalAuth
 	 * @param MerchantDetail  $merchantDetail
 	 */
-	public function __construct( MerchantDetails $detailsRepository, PayPalAuth $payPalAuth, MerchantDetail $merchantDetail ) {
+	public function __construct(
+		MerchantDetails $detailsRepository,
+		PayPalAuth $payPalAuth,
+		MerchantDetail $merchantDetail
+	) {
 		$this->detailsRepository = $detailsRepository;
 		$this->payPalAuth        = $payPalAuth;
 		$this->merchantDetail    = $merchantDetail;
@@ -66,8 +70,11 @@ class RefreshToken {
 	 *
 	 */
 	public function registerCronJobToRefreshToken( $tokenExpires ) {
-		wp_schedule_single_event( time() + ( $tokenExpires - 1800 ), // Refresh token before half hours of expires date.
-			$this->getCronJobHookName() );
+		wp_schedule_single_event(
+			// Refresh token before half hours of expires date.
+			time() + ( $tokenExpires - 1800 ),
+			$this->getCronJobHookName()
+		);
 	}
 
 	/**

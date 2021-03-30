@@ -66,9 +66,10 @@ class AdminSettingFields {
 		// @todo Replace this with the Tribe Common form config.
 
 		/* @var Give_HTML_Elements $htmlElements */
-		$htmlElements = give( 'html' );
+		$htmlElements = Give( 'html' );
 
-		$settingHtml = $htmlElements->select( [
+		$settingHtml = $htmlElements->select(
+			[
 				'id'               => 'paypal_commerce_account_country',
 				'options'          => give_get_country_list(),
 				'chosen'           => true,
@@ -79,7 +80,8 @@ class AdminSettingFields {
 					'search-type' => 'no_ajax',
 				],
 				'selected'         => $this->merchantModel->accountCountry ?: $this->settingRepository->getAccountCountry(),
-			] );
+			]
+		);
 
 		$trClass = $this->merchantRepository->accountIsConnected() ? 'js-fields-has-custom-saving-logic hide-with-position' : 'js-fields-has-custom-saving-logic';
 		?>
@@ -89,7 +91,11 @@ class AdminSettingFields {
 			</th>
 			<td class="give-forminp">
 				<?php
-				printf( '%1$s<div class="give-field-description">%2$s</div>', $settingHtml, esc_html__( 'The country your site operates from.', 'event-tickets' ) )
+				printf(
+					'%1$s<div class="give-field-description">%2$s</div>',
+					$settingHtml,
+					esc_html__( 'The country your site operates from.', 'event-tickets' )
+				);
 				?>
 			</td>
 		</tr>
@@ -120,9 +126,7 @@ class AdminSettingFields {
 							<div>
 								<button class="button button-primary button-large" id="js-give-paypal-on-boarding-handler">
 									<i class="fab fa-paypal"></i>&nbsp;&nbsp;
-									<?php
-									esc_html_e( 'Connect with PayPal', 'event-tickets' );
-									?>
+									<?php esc_html_e( 'Connect with PayPal', 'event-tickets' ); ?>
 								</button>
 								<a class="give-hidden" target="_blank"
 									data-paypal-onboard-complete="givePayPalOnBoardedCallback" href="#"
@@ -148,7 +152,11 @@ class AdminSettingFields {
 						<span class="give-field-description">
 							<i class="fa fa-check"></i>
 							<?php
-							printf( '%1$s <span class="paypal-account-email">%2$s</span>', esc_html__( 'Connected for payments as', 'event-tickets' ), tribe( MerchantDetail::class )->merchantId );
+							printf(
+								'%1$s <span class="paypal-account-email">%2$s</span>',
+								esc_html__( 'Connected for payments as', 'event-tickets' ),
+								tribe( MerchantDetail::class )->merchantId
+							);
 							?>
 						</span> <span class="actions">
 							<a href="#"
@@ -259,9 +267,16 @@ class AdminSettingFields {
 	 */
 	public function getAdminGuidanceNotice( $completeMessage = true ) {
 		if ( $this->isCountryInNorthAmerica() ) {
-			$telephone = sprintf( '<a href="tel:%1$s">%1$s</a>', '1-855-456-1330' );
+			$telephone = sprintf(
+				'<a href="tel:%1$s">%1$s</a>',
+				'1-855-456-1330'
+			);
 
-			$message = sprintf( esc_html__( 'Please call a PayPal support representative at %1$s', 'event-tickets' ), $telephone );
+			// @todo Needs translator doc for placeholder.
+			$message = sprintf(
+				esc_html__( 'Please call a PayPal support representative at %1$s', 'event-tickets' ),
+				$telephone
+			);
 		} else {
 			$message = esc_html__( 'Please reach out to PayPal support from your PayPal account Resolution Center', 'event-tickets' );
 		}
@@ -286,7 +301,11 @@ class AdminSettingFields {
 				<p class="error-message"><?php esc_html_e( 'Warning, your account is not ready to accept donations.', 'event-tickets' ); ?></p>
 				<p>
 					<?php
-					printf( '%1$s %2$s', esc_html__( 'There is an issue with your PayPal account that is preventing you from being able to accept donations.', 'event-tickets' ), $this->getAdminGuidanceNotice() )
+					printf(
+						'%1$s %2$s',
+						esc_html__( 'There is an issue with your PayPal account that is preventing you from being able to accept donations.', 'event-tickets' ),
+						$this->getAdminGuidanceNotice()
+					);
 					?>
 				</p>
 				<div class="paypal-message-template">
@@ -299,7 +318,7 @@ class AdminSettingFields {
 
 				<?php if ( $this->merchantRepository->accountIsConnected() ) : ?>
 					<p>
-						<a href="<?php echo admin_url( 'edit.php?post_type=give_forms&page=give-settings&tab=gateways&section=paypal&paypalStatusCheck' ); ?>">
+						<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=give_forms&page=give-settings&tab=gateways&section=paypal&paypalStatusCheck' ) ); ?>">
 							<?php esc_html_e( 'Re-Check Account Status', 'event-tickets' ); ?>
 						</a>
 					</p>
@@ -321,24 +340,44 @@ class AdminSettingFields {
 	 */
 	private function formatErrors( $errors ) {
 		$isSingleError  = ! ( count( $errors ) > 1 );
-		$formattedArray = array_map( static function ( $arr ) use ( $isSingleError ) {
-			if ( is_array( $arr ) ) {
-				switch ( $arr['type'] ) {
-					case 'url':
-						return sprintf( '<%1$s>%2$s<br><code>%3$s</code></%1$s>', $isSingleError ? 'p' : 'li', $arr['message'], urldecode_deep( $arr['value'] ) );
+		$formattedArray = array_map(
+			static function ( $arr ) use ( $isSingleError ) {
+				if ( is_array( $arr ) ) {
+					switch ( $arr['type'] ) {
+						case 'url':
+							return sprintf(
+								'<%1$s>%2$s<br><code>%3$s</code></%1$s>',
+								$isSingleError ? 'p' : 'li',
+								$arr['message'],
+								urldecode_deep( $arr['value'] )
+							);
 
-					case 'json':
-						return sprintf( '<%1$s>%2$s<br><code>%3$s</code></%1$s>', $isSingleError ? 'p' : 'li', $arr['message'], $arr['value'] );
+						case 'json':
+							return sprintf(
+								'<%1$s>%2$s<br><code>%3$s</code></%1$s>',
+								$isSingleError ? 'p' : 'li',
+								$arr['message'],
+								$arr['value']
+							);
+					}
 				}
-			}
 
-			return sprintf( '<%1$s>%2$s</%1$s>', $isSingleError ? 'p' : 'li', $arr );
-		}, $errors );
+				return sprintf(
+					'<%1$s>%2$s</%1$s>',
+					$isSingleError ? 'p' : 'li',
+					$arr
+				);
+			},
+			$errors
+		);
 
 		$output = implode( '', $formattedArray );
 
 		if ( ! $isSingleError ) {
-			$output = sprintf( '<ul class="ul-disc">%1$s</ul>', $output );
+			$output = sprintf(
+				'<ul class="ul-disc">%1$s</ul>',
+				$output
+			);
 		}
 
 		return $output;

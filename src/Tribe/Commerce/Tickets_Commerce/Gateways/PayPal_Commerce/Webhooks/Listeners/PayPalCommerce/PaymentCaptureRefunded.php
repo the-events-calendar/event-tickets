@@ -7,7 +7,7 @@ namespace TEC\PaymentGateways\PayPalCommerce\Webhooks\Listeners\PayPalCommerce;
  *
  * @package TEC\PaymentGateways\PayPalCommerce\Webhooks\Listeners\PayPalCommerce
  *
- * @sicne   2.9.0
+ * @since TBD
  */
 class PaymentCaptureRefunded extends PaymentEventListener {
 
@@ -24,13 +24,16 @@ class PaymentCaptureRefunded extends PaymentEventListener {
 			return;
 		}
 
+		// @todo Replace this.
 		// Exit if donation status already set to refunded.
 		if ( ! give_update_payment_status( $donation->ID, 'refunded' ) ) {
 			return;
 		}
 
+		// @todo Replace this.
 		give_insert_payment_note( $donation->ID, __( 'Charge refunded in PayPal', 'event-tickets' ) );
 
+		// @todo Replace the action name.
 		/**
 		 * Fires when a charge has been refunded via webhook
 		 *

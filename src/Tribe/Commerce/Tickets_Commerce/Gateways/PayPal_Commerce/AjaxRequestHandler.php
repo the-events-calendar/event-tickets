@@ -16,7 +16,7 @@ use TEC\PaymentGateways\PayPalCommerce\Repositories\Webhooks;
  *
  * @package TEC\PaymentGateways\PaypalCommerce
  *
- * @sicne   2.9.0
+ * @since TBD
  */
 class AjaxRequestHandler {
 
@@ -75,7 +75,12 @@ class AjaxRequestHandler {
 	 * @param PayPalAuth      $payPalAuth
 	 */
 	public function __construct(
-		Webhooks $webhooksRepository, MerchantDetail $merchantDetails, MerchantDetails $merchantRepository, RefreshToken $refreshToken, Settings $settings, PayPalAuth $payPalAuth
+		Webhooks $webhooksRepository,
+		MerchantDetail $merchantDetails,
+		MerchantDetails $merchantRepository,
+		RefreshToken $refreshToken,
+		Settings $settings,
+		PayPalAuth $payPalAuth
 	) {
 		$this->webhooksRepository = $webhooksRepository;
 		$this->merchantDetails    = $merchantDetails;
@@ -95,7 +100,11 @@ class AjaxRequestHandler {
 
 		$partnerLinkInfo = $this->settings->getPartnerLinkDetails();
 
-		$payPalResponse = $this->payPalAuth->getTokenFromAuthorizationCode( give_clean( $_GET['authCode'] ), give_clean( $_GET['sharedId'] ), $partnerLinkInfo['nonce'] );
+		$payPalResponse = $this->payPalAuth->getTokenFromAuthorizationCode(
+			give_clean( $_GET['authCode'] ),
+			give_clean( $_GET['sharedId'] ),
+			$partnerLinkInfo['nonce']
+		);
 
 		if ( ! $payPalResponse || array_key_exists( 'error', $payPalResponse ) ) {
 			wp_send_json_error();
@@ -120,7 +129,10 @@ class AjaxRequestHandler {
 			wp_send_json_error( 'Must include valid 2-character country code' );
 		}
 
-		$data = $this->payPalAuth->getSellerPartnerLink( admin_url( 'edit.php?post_type=give_forms&page=give-settings&tab=gateways&section=paypal&group=paypal-commerce' ), $country );
+		$data = $this->payPalAuth->getSellerPartnerLink(
+			admin_url( 'edit.php?post_type=give_forms&page=give-settings&tab=gateways&section=paypal&group=paypal-commerce' ),
+			$country
+		);
 
 		if ( ! $data ) {
 			wp_send_json_error();
@@ -186,13 +198,17 @@ class AjaxRequestHandler {
 		try {
 			$result = tribe( PayPalOrder::class )->createOrder( $data );
 
-			wp_send_json_success( [
-				'id' => $result,
-			] );
-		} catch ( Exception $ex ) {
-			wp_send_json_error( [
-				'error' => json_decode( $ex->getMessage(), true ),
-			] );
+			wp_send_json_success(
+				[
+					'id' => $result,
+				]
+			);
+		} catch ( \Exception $ex ) {
+			wp_send_json_error(
+				[
+					'error' => json_decode( $ex->getMessage(), true ),
+				]
+			);
 		}
 	}
 
@@ -212,13 +228,18 @@ class AjaxRequestHandler {
 
 		try {
 			$result = tribe( PayPalOrder::class )->approveOrder( $orderId );
-			wp_send_json_success( [
-				'order' => $result,
-			] );
-		} catch ( Exception $ex ) {
-			wp_send_json_error( [
-				'error' => json_decode( $ex->getMessage(), true ),
-			] );
+
+			wp_send_json_success(
+				[
+					'order' => $result,
+				]
+			);
+		} catch ( \Exception $ex ) {
+			wp_send_json_error(
+				[
+					'error' => json_decode( $ex->getMessage(), true ),
+				]
+			);
 		}
 	}
 
@@ -239,7 +260,7 @@ class AjaxRequestHandler {
 			'<ol><li>%1$s</li><li>%2$s</li><li>%3$s %4$s</li></ol>',
 			esc_html__( 'Make sure to complete the entire PayPal process. Do not close the window you have finished the process.', 'event-tickets' ),
 			esc_html__( 'The last screen of the PayPal connect process includes a button to be sent back to your site. It is important you click this and do not close the window yourself.', 'event-tickets' ),
-			esc_html__( 'If you’re still having problems connecting: ', 'event-tickets' ),
+			esc_html__( 'If you’re still having problems connecting:', 'event-tickets' ),
 			$adminSettingFields->getAdminGuidanceNotice( false )
 		);
 
