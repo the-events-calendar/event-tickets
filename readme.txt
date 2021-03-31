@@ -176,6 +176,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.1.3] TBD =
+
+
+
 = [5.1.2.1] 2021-03-30 =
 
 * Fix - Prevent PHP errors with trailing commas outside of arrays in function calls. [ET-1084]
