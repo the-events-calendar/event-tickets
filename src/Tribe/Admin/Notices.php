@@ -35,6 +35,7 @@ class Tribe__Tickets__Admin__Notices {
 		$this->maybe_display_rsvp_new_views_options_notice();
 		$this->maybe_display_classic_editor_ecp_recurring_tickets_notice();
 		$this->maybe_display_plus_commerce_notice();
+		$this->maybe_display_ticket_settings_help_banner();
 	}
 
 	/**
@@ -236,5 +237,37 @@ class Tribe__Tickets__Admin__Notices {
 
 			tribe_notice( "event-tickets-plus-missing-{$provider}-support", $message, 'dismiss=1&type=warning' );
 		}
+	}
+
+	/**
+	 * Display Settings help banner on Event Ticket's Settings.
+	 *
+	 * @since TBD
+	 */
+	public function maybe_display_ticket_settings_help_banner() {
+
+		// Bail if we aren't in Events > Settings.
+		if ( 'tribe-common' !== tribe_get_request_var( 'page' ) ) {
+			return;
+		}
+
+		// Bail if not at wp-admin > Events > Settings > Tickets tab.
+		if ( 'event-tickets' !== tribe_get_request_var( 'tab' ) ) {
+			return;
+		}
+
+		/** @var \Tribe\Tickets\Admin\Settings\Service_Provider $settings */
+		$settings = tribe( 'tickets.admin.settings' );
+
+		echo $settings->render_settings_banner();
+
+//		tribe_notice(
+//			'test-99',
+//			"sample-notice",
+//			[
+//				'dismiss' => true,
+//				'type'    => 'success',
+//			]
+//		);
 	}
 }

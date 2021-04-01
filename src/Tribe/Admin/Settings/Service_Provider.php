@@ -33,7 +33,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 			return;
 		}
 
-		add_action( 'tribe_settings_before_content_tab_event-tickets', [ $this, 'render_settings_banner' ] );
+//		add_action( 'admin_notices', [ $this, 'render_settings_banner' ], 99 );
 	}
 
 	/**
@@ -105,9 +105,9 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 			'etp_resource_links' => $etp_resource_links,
 		];
 
-		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		/** @var \Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
-		return $admin_views->template( 'settings/getting-started', $context );
+		return $admin_views->template( 'settings/getting-started', $context, false );
 	}
 }
