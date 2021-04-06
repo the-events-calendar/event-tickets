@@ -10,12 +10,11 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	 * @return void
 	 */
 	public function hook() {
-		// Add AJAX calls
+		// Add AJAX calls.
 		add_action( 'wp_ajax_rsvp-form', [ $this, 'rsvp_form' ] );
 		add_action( 'wp_ajax_nopriv_rsvp-form', [ $this, 'rsvp_form' ] );
 		add_action( 'wp_ajax_rsvp-process', [ $this, 'rsvp_process' ] );
 		add_action( 'wp_ajax_nopriv_rsvp-process', [ $this, 'rsvp_process' ] );
-
 	}
 
 	/**
@@ -70,7 +69,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 	public function get_tickets( $post_id ) {
 		$tickets = [];
 
-		// Bail if there's no event id
+		// Bail if there's no event id.
 		if ( ! $post_id ) {
 			return $tickets;
 		}
@@ -78,10 +77,10 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 		/** @var Tribe__Tickets__RSVP $rsvp */
 		$rsvp = tribe( 'tickets.rsvp' );
 
-		// Get the tickets IDs for this event
+		// Get the tickets IDs for this event.
 		$ticket_ids = $rsvp->get_tickets_ids( $post_id );
 
-		// Bail if we don't have tickets
+		// Bail if we don't have tickets.
 		if ( ! $ticket_ids ) {
 			return $tickets;
 		}
@@ -115,7 +114,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 		$active_tickets = [];
 
 		foreach ( $tickets as $ticket ) {
-			// continue if it's not in date range
+			// Continue if it's not in date range.
 			if ( ! $ticket->date_in_range() ) {
 				continue;
 			}
@@ -192,7 +191,6 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 		 * @since 4.11.1
 		 *
 		 * @param int $show_unlimited allow showing of "unlimited".
-		 *
 		 */
 		return (bool) apply_filters( 'tribe_rsvp_block_show_unlimited_availability', false, $is_unlimited );
 	}
@@ -348,9 +346,9 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 		}
 
 		$args = [
-			'post_id'   => $ticket->get_event_id(),
-			'ticket'    => $ticket,
-			'going'     => $going,
+			'post_id' => $ticket->get_event_id(),
+			'ticket'  => $ticket,
+			'going'   => $going,
 		];
 
 		/** @var Tribe__Tickets__Editor__Template $template */
@@ -410,10 +408,10 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 			$products = (array) $_POST['product_id'];
 		}
 
-		// Iterate over each product
+		// Iterate over each product.
 		foreach ( $products as $product_id ) {
 			if ( ! $ticket_qty = $rsvp->parse_ticket_quantity( $product_id ) ) {
-				// if there were no RSVP tickets for the product added to the cart, continue
+				// if there were no RSVP tickets for the product added to the cart, continue.
 				continue;
 			}
 

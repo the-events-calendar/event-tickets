@@ -10,35 +10,35 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	 * {@inheritdoc}
 	 */
 	public function DELETE_args() {
-		return array(
-			'id' => array(
-				'type' => 'integer',
-				'in' => 'path',
-				'description' => __( 'The ticket post ID', 'event-tickets' ),
-				'required' => true,
-				'validate_callback' => array( $this->validator, 'is_positive_int' ),
-			),
-			'post_id' => array(
-				'type' => 'integer',
-				'in' => 'body',
-				'required' => true,
-				'validate_callback' => array( $this->validator, 'is_positive_int' ),
-			),
-			'remove_ticket_nonce' => array(
-				'type' => 'string',
-				'in' => 'body',
-				'required' => true,
-				'validate_callback' => array( $this->validator, 'is_string' ),
+		return [
+			'id'                  => [
+				'type'              => 'integer',
+				'in'                => 'path',
+				'description'       => __( 'The ticket post ID', 'event-tickets' ),
+				'required'          => true,
+				'validate_callback' => [ $this->validator, 'is_positive_int' ],
+			],
+			'post_id'             => [
+				'type'              => 'integer',
+				'in'                => 'body',
+				'required'          => true,
+				'validate_callback' => [ $this->validator, 'is_positive_int' ],
+			],
+			'remove_ticket_nonce' => [
+				'type'              => 'string',
+				'in'                => 'body',
+				'required'          => true,
+				'validate_callback' => [ $this->validator, 'is_string' ],
 				'sanitize_callback' => 'sanitize_text_field',
-			),
-		);
+			],
+		];
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function delete( WP_REST_Request $request ) {
-		$ticket_id = $request['id'];
+		$ticket_id   = $request['id'];
 		$ticket_data = $this->get_readable_ticket_data( $ticket_id );
 
 		if ( $ticket_data instanceof WP_Error ) {
@@ -128,28 +128,28 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	 */
 	public function EDIT_args() {
 		return array_merge(
-			array(
-				'id' => array(
-					'type' => 'integer',
-					'in' => 'path',
-					'description' => __( 'The ticket post ID', 'event-tickets' ),
-					'required' => true,
-					'validate_callback' => array( $this->validator, 'is_positive_int' ),
-				),
-				'post_id' => array(
-					'type' => 'integer',
-					'in' => 'body',
-					'required' => true,
-					'validate_callback' => array( $this->validator, 'is_positive_int' ),
-				),
-				'edit_ticket_nonce' => array(
-					'type' => 'string',
-					'in' => 'body',
-					'required' => true,
-					'validate_callback' => array( $this->validator, 'is_string' ),
+			[
+				'id'                => [
+					'type'              => 'integer',
+					'in'                => 'path',
+					'description'       => __( 'The ticket post ID', 'event-tickets' ),
+					'required'          => true,
+					'validate_callback' => [ $this->validator, 'is_positive_int' ],
+				],
+				'post_id'           => [
+					'type'              => 'integer',
+					'in'                => 'body',
+					'required'          => true,
+					'validate_callback' => [ $this->validator, 'is_positive_int' ],
+				],
+				'edit_ticket_nonce' => [
+					'type'              => 'string',
+					'in'                => 'body',
+					'required'          => true,
+					'validate_callback' => [ $this->validator, 'is_string' ],
 					'sanitize_callback' => 'sanitize_text_field',
-				),
-			),
+				],
+			],
 			$this->ticket_args()
 		);
 	}
@@ -172,31 +172,31 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	 * {@inheritdoc}
 	 */
 	public function CREATE_args() {
-		return array(
-			array(
-				'post_id' => array(
-					'type' => 'integer',
-					'in' => 'body',
-					'required' => true,
-					'validate_callback' => array( $this->validator, 'is_positive_int' ),
-				),
-				'add_ticket_nonce' => array(
-					'type' => 'string',
-					'in' => 'body',
-					'required' => true,
-					'validate_callback' => array( $this->validator, 'is_string' ),
+		return [
+			[
+				'post_id'          => [
+					'type'              => 'integer',
+					'in'                => 'body',
+					'required'          => true,
+					'validate_callback' => [ $this->validator, 'is_positive_int' ],
+				],
+				'add_ticket_nonce' => [
+					'type'              => 'string',
+					'in'                => 'body',
+					'required'          => true,
+					'validate_callback' => [ $this->validator, 'is_string' ],
 					'sanitize_callback' => 'sanitize_text_field',
-				),
-				'provider' => array(
-					'type' => 'string',
-					'in' => 'body',
-					'required' => true,
-					'validate_callback' => array( $this->validator, 'is_string' ),
+				],
+				'provider'         => [
+					'type'              => 'string',
+					'in'                => 'body',
+					'required'          => true,
+					'validate_callback' => [ $this->validator, 'is_string' ],
 					'sanitize_callback' => 'sanitize_text_field',
-				),
-			),
+				],
+			],
 			$this->ticket_args(),
-		);
+		];
 	}
 
 	/**
@@ -257,21 +257,21 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 		$ticket_args = $this->ticket_args();
 
 		$ticket_data = [
-			'ticket_name' => $body['name'],
-			'ticket_description' => $body['description'],
-			'ticket_price' => $body['price'],
+			'ticket_name'             => $body['name'],
+			'ticket_description'      => $body['description'],
+			'ticket_price'            => $body['price'],
 			'ticket_show_description' => Tribe__Utils__Array::get( $body, 'show_description', $ticket_args['show_description']['default'] ),
-			'ticket_start_date' => $body['start_date'],
-			'ticket_start_time' => $body['start_time'],
-			'ticket_end_date' => $body['end_date'],
-			'ticket_end_time' => $body['end_time'],
-			'ticket_sku' => $body['sku'],
-			'ticket_iac' => $body['iac'],
-			'ticket_menu_order' => $body['menu_order'],
-			'tribe-ticket' => $body['ticket'],
+			'ticket_start_date'       => $body['start_date'],
+			'ticket_start_time'       => $body['start_time'],
+			'ticket_end_date'         => $body['end_date'],
+			'ticket_end_time'         => $body['end_time'],
+			'ticket_sku'              => $body['sku'],
+			'ticket_iac'              => $body['iac'],
+			'ticket_menu_order'       => $body['menu_order'],
+			'tribe-ticket'            => $body['ticket'],
 		];
 
-		if ( $ticket_id !== null ) {
+		if ( null !== $ticket_id ) {
 			$ticket_data['ticket_id'] = $ticket_id;
 		}
 

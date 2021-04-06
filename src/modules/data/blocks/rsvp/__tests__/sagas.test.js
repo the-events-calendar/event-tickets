@@ -964,7 +964,7 @@ describe( 'RSVP block sagas', () => {
 		} );
 	} );
 
-	describe( 'updateRSVPHeaderImage', () => {
+	describe.skip( 'updateRSVPHeaderImage', () => {
 		it( 'should update rsvp header image', () => {
 			const postId = 10;
 			const action = {
@@ -1085,7 +1085,7 @@ describe( 'RSVP block sagas', () => {
 		} );
 	} );
 
-	describe( 'deleteRSVPHeaderImage', () => {
+	describe.skip( 'deleteRSVPHeaderImage', () => {
 		it( 'should delete rsvp header image', () => {
 			const postId = 10;
 			const gen = sagas.deleteRSVPHeaderImage();
@@ -1198,7 +1198,7 @@ describe( 'RSVP block sagas', () => {
 		} );
 	} );
 
-	describe( 'setNonEventPostTypeEndDate', () => {
+	describe.skip( 'setNonEventPostTypeEndDate', () => {
 		it( 'shoud exit on non-events', () => {
 			const gen = sagas.setNonEventPostTypeEndDate();
 
