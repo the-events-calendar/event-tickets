@@ -178,7 +178,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.1.3] TBD =
 
-
+* Fix - Added translation support for "Going" and "Not going" status labels. [ET-1056]
 
 = [5.1.2.1] 2021-03-30 =
 
