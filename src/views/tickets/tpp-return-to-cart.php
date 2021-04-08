@@ -6,8 +6,6 @@
  *
  *     [your-theme]/tribe-events/tickets/tpp-return-to-cart.php
  *
- * @package TribeEventsCalendar
- *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @version TBD

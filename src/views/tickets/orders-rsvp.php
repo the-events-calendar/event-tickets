@@ -4,8 +4,6 @@
  *
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-rsvp.php
  *
- * @package TribeEventsCalendar
- *
  * @since   4.2
  * @since   4.10.9 Uses new functions to get singular and plural texts.
  * @since   4.12.1 Account for empty post type object, such as if post type got disabled.
