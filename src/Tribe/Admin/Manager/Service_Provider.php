@@ -29,6 +29,9 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 * @since 5.1.0
 	 */
 	protected function hooks() {
+
+		add_action( 'admin_bar_menu', [ $this, 'add_attendees_view_button' ], 99 );
+
 		if ( ! is_admin() ) {
 			return;
 		}
@@ -116,5 +119,67 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		// return $template->template( 'path/to/template/error', $args, false );
 
 		return $error_message;
+	}
+
+	/**
+	 * Add the Attendee Report nav button to WP Admin Nav bar.
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Admin_Bar $admin_bar WP_Admin_Bar instance, passed by reference.
+	 */
+	public function add_attendees_view_button( $admin_bar ) {
+
+		$url     = '';
+		$post_id = 0;
+
+		// Set the URL for WP Admin.
+		if ( is_admin() && 'edit' == tribe_get_request_var( 'action' ) ) {
+			$post_id = tribe_get_request_var( 'post' );
+		}
+
+		// Set the URL for Front-end.
+		if ( is_single() ) {
+			$post = get_post();
+
+			if ( empty( $post ) ) {
+				return;
+			}
+
+			$post_id = $post->ID;
+		}
+
+		// If no valid post is found, bail out.
+		if ( 0 == $post_id ) {
+			return;
+		}
+
+		// Make sure we have tickets on this Post Type / Event.
+		$tickets = \Tribe__Tickets__Tickets::get_all_event_tickets( $post_id );
+
+		if ( empty( $tickets ) ) {
+			return;
+		}
+
+		/** @var \Tribe__Tickets__Attendees $tickets_attendees */
+		$tickets_attendees = tribe( 'tickets.attendees' );
+		$url               = $tickets_attendees->get_report_link( get_post( $post_id ) );
+
+		// If the URL is not set, don't show the button.
+		if ( empty( $url ) ) {
+			return;
+		}
+
+		// Add the Nav button node to nav menu.
+		$admin_bar->add_menu(
+			[
+				'id'    => 'event-tickets-attendees',
+				'title' => '<i class="ab-icon dashicons dashicons-groups"></i> ' . __( 'Attendees', 'event-tickets' ),
+				'href'  => $url,
+				'meta' => [
+					'title' => __( 'Manage attendees', 'event-tickets' ),
+				],
+			]
+		);
 	}
 }
