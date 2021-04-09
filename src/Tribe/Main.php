@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.1.2';
+	const VERSION = '5.1.3';
 
 	/**
 	 * Used to store the version history.
@@ -43,7 +43,7 @@ class Tribe__Tickets__Main {
 	*
 	* @since 4.10
 	*/
-	protected $min_tec_version = '5.4.0';
+	protected $min_tec_version = '5.5.0';
 
 	/**
 	 * Name of the provider
@@ -372,6 +372,9 @@ class Tribe__Tickets__Main {
 
 		// Views V2
 		tribe_register_provider( Tribe\Tickets\Events\Views\V2\Service_Provider::class );
+
+		// Admin settings.
+		tribe_register_provider( Tribe\Tickets\Admin\Settings\Service_Provider::class );
 
 		// Admin manager.
 		tribe_register_provider( Tribe\Tickets\Admin\Manager\Service_Provider::class );
