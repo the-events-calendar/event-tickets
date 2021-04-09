@@ -128,6 +128,11 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 */
 	public function add_attendees_view_button() {
 
+		// Check user permission.
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return;
+		}
+
 		$url     = '';
 		$post_id = 0;
 
