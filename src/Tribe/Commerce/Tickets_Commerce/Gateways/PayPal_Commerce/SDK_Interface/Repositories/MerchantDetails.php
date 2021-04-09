@@ -1,11 +1,11 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\SDK_Interface\Repositories;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\Repositories;
 
 use TEC\Helpers\ArrayDataSet;
-use TEC\PaymentGateways\PayPalCommerce\SDK\Models\MerchantDetail;
-use TEC\PaymentGateways\PayPalCommerce\PayPalClient;
-use TEC\PaymentGateways\PayPalCommerce\SDK\Repositories\Traits\HasMode;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\MerchantDetail;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\PayPalClient;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Repositories\Traits\HasMode;
 
 /**
  * Class MerchantDetails

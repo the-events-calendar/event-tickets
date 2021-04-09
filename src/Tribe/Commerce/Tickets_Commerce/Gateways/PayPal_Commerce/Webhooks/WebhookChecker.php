@@ -1,11 +1,11 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\Webhooks;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks;
 
 use Exception;
 use Give_Admin_Settings;
-use TEC\PaymentGateways\PayPalCommerce\SDK\Models\MerchantDetail;
-use TEC\PaymentGateways\PayPalCommerce\Repositories\Webhooks;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\MerchantDetail;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Repositories\Webhooks;
 use TEC\Route\PayPalWebhooks as WebhooksRoute;
 
 class WebhookChecker {

@@ -1,20 +1,20 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce;
 
 use Exception;
 use TEC\ConnectClient\ConnectClient;
-use TEC\PaymentGateways\PayPalCommerce\SDK\Models\MerchantDetail;
-use TEC\PaymentGateways\PayPalCommerce\Repositories\MerchantDetails;
-use TEC\PaymentGateways\PayPalCommerce\Repositories\PayPalAuth;
-use TEC\PaymentGateways\PayPalCommerce\Repositories\SDK\PayPalOrder;
-use TEC\PaymentGateways\PayPalCommerce\Repositories\Settings;
-use TEC\PaymentGateways\PayPalCommerce\Repositories\Webhooks;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\MerchantDetail;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Repositories\MerchantDetails;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Repositories\PayPalAuth;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Repositories\SDK\PayPalOrder;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Repositories\Settings;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Repositories\Webhooks;
 
 /**
  * Class AjaxRequestHandler
  *
- * @package TEC\PaymentGateways\PaypalCommerce
+ * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce
  *
  * @since TBD
  */

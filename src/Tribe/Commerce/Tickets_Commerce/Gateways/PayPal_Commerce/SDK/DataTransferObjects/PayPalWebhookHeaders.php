@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\SDK\DataTransferObjects;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\DataTransferObjects;
 
 use HttpHeaderException;
 
@@ -9,7 +9,7 @@ use HttpHeaderException;
  *
  * @since TBD
  *
- * @package TEC\PaymentGateways\PayPalCommerce\SDK\DataTransferObjects
+ * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\DataTransferObjects
  */
 class PayPalWebhookHeaders {
 

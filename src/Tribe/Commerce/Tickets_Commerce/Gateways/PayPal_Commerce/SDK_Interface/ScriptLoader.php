@@ -1,10 +1,11 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\SDK_Interface;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface;
 
-use TEC\PaymentGateways\PayPalCommerce\SDK_Interface\Utils;
-use TEC\PaymentGateways\PayPalCommerce\SDK\Models\MerchantDetail;
-use TEC\PaymentGateways\PayPalCommerce\Repositories\MerchantDetails;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\Utils;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\MerchantDetail;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Repositories\MerchantDetails;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\PayPalClient;
 
 // @todo Replace class usage.
 use Give_Admin_Settings;
@@ -13,7 +14,7 @@ use Give_Admin_Settings;
  * Class ScriptLoader
  *
  * @since TBD
- * @package TEC\PaymentGateways\PayPalCommerce
+ * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce
  *
  */
 class ScriptLoader {

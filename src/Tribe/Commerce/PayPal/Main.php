@@ -1,5 +1,8 @@
 <?php
 
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Gateway as PayPal_Commerce_Gateway;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Legacy\Gateway as PayPal_Legacy_Gateway;
+
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Main
  *
@@ -125,6 +128,15 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	public $deleted_product = '_tribe_deleted_product_name';
 
 	/**
+	 * The option name that holds the gateway for a specific ticket and attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_gateway = '_tickets_commerce_gateway';
+
+	/**
 	 * @var array An array cache to store pending attendees per ticket.
 	 */
 	public $pending_attendees_by_ticket = array();
@@ -205,6 +217,64 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Determine whether PayPal Legacy should be shown as an available gateway.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether PayPal Legacy should be shown as an available gateway.
+	 */
+	public function should_show_paypal_legacy() {
+		/**
+		 * Determine whether PayPal Legacy should be shown as an available gateway.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool                                   $should_show Whether PayPal Legacy should be shown as an available gateway.
+		 * @param Tribe__Tickets__Commerce__PayPal__Main $commerce    The Tickets Commerce provider.
+		 */
+		return (bool) apply_filters( 'tribe_tickets_commerce_paypal_should_show_paypal_legacy', false, $this );
+	}
+
+	/**
+	 * Get the list of registered Tickets Commerce gateways.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The list of registered Tickets Commerce gateways.
+	 */
+	public function get_gateways() {
+		/**
+		 * Allow filtering the list of registered Tickets Commerce gateways.
+		 *
+		 * PayPal Commerce filters at priority 10.
+		 * PayPal Standard (Legacy) filters at priority 11.
+		 *
+		 * @since TBD
+		 *
+		 * @param array                                  $gateways The list of registered Tickets Commerce gateways.
+		 * @param Tribe__Tickets__Commerce__PayPal__Main $commerce The Tickets Commerce provider.
+		 */
+		return (array) apply_filters( 'tribe_tickets_commerce_paypal_gateways', [], $this );
+	}
+
+	/**
+	 * Get the current Tickets Commerce gateway.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The current Tickets Commerce gateway.
+	 */
+	public function get_current_gateway() {
+		$default = PayPal_Legacy_Gateway::GATEWAY_KEY;
+
+		if ( ! $this->should_show_paypal_legacy() ) {
+			$default = PayPal_Commerce_Gateway::GATEWAY_KEY;
+		}
+
+		return (string) tribe_get_option( $this->option_gateway, $default );
+	}
+
+	/**
 	 * Whether PayPal tickets will be available as a provider or not.
 	 *
 	 * This will take into account the enable/disable option and the
@@ -222,22 +292,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @since 4.7
 		 *
-		 * @param bool                                   $is_active
-		 * @param Tribe__Tickets__Commerce__PayPal__Main $this
+		 * @param bool                                   $is_active Whether the provider is active.
+		 * @param Tribe__Tickets__Commerce__PayPal__Main $commerce  The Tickets Commerce provider.
 		 */
-		$is_active = apply_filters( 'tribe_tickets_commerce_paypal_is_active', null, $this );
-
-		if ( null !== $is_active ) {
-			return (bool) $is_active;
-		}
-
-		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
-		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
-		/** @var Tribe__Tickets__Commerce__PayPal__Handler__Interface $handler */
-		$handler = $gateway->build_handler();
-
-		return tribe_is_truthy( tribe_get_option( 'ticket-paypal-enable', false ) )
-		       && 'complete' === $handler->get_config_status();
+		return apply_filters( 'tribe_tickets_commerce_paypal_is_active', false, $this );
 	}
 
 	/**
@@ -250,31 +308,37 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'Tribe__Tickets__Commerce__PayPal__Main', $this );
 
 		tribe_singleton( 'tickets.commerce.paypal.view', 'Tribe__Tickets__Commerce__PayPal__Tickets_View' );
-		tribe_singleton( 'tickets.commerce.paypal.handler.ipn', 'Tribe__Tickets__Commerce__PayPal__Handler__IPN', array( 'hook' ) );
-		tribe_singleton( 'tickets.commerce.paypal.handler.pdt', 'Tribe__Tickets__Commerce__PayPal__Handler__PDT', array( 'hook' ) );
-		tribe_singleton( 'tickets.commerce.paypal.gateway', 'Tribe__Tickets__Commerce__PayPal__Gateway', array( 'build_handler' ) );
+
+		// @todo Move as much of this into the legacy service provider as possible.
+		// @todo Determine what is still needed for PayPal Commerce to function.
+
+		// @todo See if there's any overlap here.
+		tribe_singleton( 'tickets.commerce.paypal.handler.ipn', 'Tribe__Tickets__Commerce__PayPal__Handler__IPN', [ 'hook' ] );
+		tribe_singleton( 'tickets.commerce.paypal.handler.pdt', 'Tribe__Tickets__Commerce__PayPal__Handler__PDT', [ 'hook' ] );
+
+		tribe_singleton( 'tickets.commerce.paypal.gateway', 'Tribe__Tickets__Commerce__PayPal__Gateway', [ 'build_handler' ] );
 		tribe_singleton( 'tickets.commerce.paypal.notices', 'Tribe__Tickets__Commerce__PayPal__Notices' );
-		tribe_singleton( 'tickets.commerce.paypal.endpoints', 'Tribe__Tickets__Commerce__PayPal__Endpoints', array( 'hook' ) );
+		tribe_singleton( 'tickets.commerce.paypal.endpoints', 'Tribe__Tickets__Commerce__PayPal__Endpoints', [ 'hook' ] );
 		tribe_singleton( 'tickets.commerce.paypal.endpoints.templates.success', 'Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template' );
 		tribe_singleton( 'tickets.commerce.paypal.orders.tabbed-view', 'Tribe__Tickets__Commerce__Orders_Tabbed_View' );
 		tribe_singleton( 'tickets.commerce.paypal.orders.report', 'Tribe__Tickets__Commerce__PayPal__Orders__Report' );
 		tribe_singleton( 'tickets.commerce.paypal.orders.sales', 'Tribe__Tickets__Commerce__PayPal__Orders__Sales' );
-		tribe_singleton( 'tickets.commerce.paypal.screen-options', 'Tribe__Tickets__Commerce__PayPal__Screen_Options', array( 'hook' ) );
+		tribe_singleton( 'tickets.commerce.paypal.screen-options', 'Tribe__Tickets__Commerce__PayPal__Screen_Options', [ 'hook' ] );
 		tribe_singleton( 'tickets.commerce.paypal.stati', 'Tribe__Tickets__Commerce__PayPal__Stati' );
-		tribe_singleton( 'tickets.commerce.paypal.currency', 'Tribe__Tickets__Commerce__Currency', array( 'hook' ) );
+		tribe_singleton( 'tickets.commerce.paypal.currency', 'Tribe__Tickets__Commerce__Currency', [ 'hook' ] );
 		tribe_singleton( 'tickets.commerce.paypal.links', 'Tribe__Tickets__Commerce__PayPal__Links' );
 		tribe_singleton( 'tickets.commerce.paypal.oversell.policies', 'Tribe__Tickets__Commerce__PayPal__Oversell__Policies' );
 		tribe_singleton( 'tickets.commerce.paypal.oversell.request', 'Tribe__Tickets__Commerce__PayPal__Oversell__Request' );
 		tribe_singleton( 'tickets.commerce.paypal.frontend.tickets-form', 'Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form' );
 		tribe_register( 'tickets.commerce.paypal.cart', 'Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged' );
 
-		tribe()->tag( array(
+		tribe()->tag( [
 			'tickets.commerce.paypal.shortcodes.tpp-success' => 'Tribe__Tickets__Commerce__PayPal__Shortcodes__Success',
-		), 'tpp-shortcodes' );
+		], 'tpp-shortcodes' );
 
 		/** @var Tribe__Tickets__Commerce__PayPal__Shortcodes__Interface $shortcode */
 		foreach ( tribe()->tagged( 'tpp-shortcodes' ) as $shortcode ) {
-			add_shortcode( $shortcode->tag(), array( $shortcode, 'render' ) );
+			add_shortcode( $shortcode->tag(), [ $shortcode, 'render' ] );
 		}
 
 		tribe( 'tickets.commerce.paypal.gateway' );

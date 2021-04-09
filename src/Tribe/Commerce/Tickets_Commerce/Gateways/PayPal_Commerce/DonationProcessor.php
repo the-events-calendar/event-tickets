@@ -1,15 +1,16 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce;
 
-use TEC\PaymentGateways\PayPalCommerce\SDK\Models\PayPalOrder;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\PayPalOrder;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\PayPalClient;
 use PayPalCheckoutSdk\Orders\OrdersGetRequest;
 
 /**
  * Class DonationProcessor
  *
  * @since TBD
- * @package TEC\PaymentGateways\PayPalCommerce
+ * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce
  *
  */
 class DonationProcessor {

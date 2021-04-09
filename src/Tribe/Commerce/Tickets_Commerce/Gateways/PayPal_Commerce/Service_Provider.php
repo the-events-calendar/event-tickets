@@ -3,73 +3,65 @@
 namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce;
 
 use Give\Controller\PayPalWebhooks;
-use Give\PaymentGateways\PayPalCommerce\onBoardingRedirectHandler;
-use Give\PaymentGateways\PayPalCommerce\Repositories\Webhooks;
-use Give\PaymentGateways\Stripe\DonationFormElements;
 use tad_DI52_ServiceProvider;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\MerchantDetail;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\PayPalClient;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Repositories\PayPalAuth;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\Repositories\MerchantDetails;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\Repositories\Webhooks;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\ScriptLoader;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\WebhookRegister;
 
 /**
  * Service provider for the Tickets Commerce: PayPal Commerce gateway.
  *
- * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce
- *
  * @since   TBD
+ * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce
  */
 class Service_Provider extends tad_DI52_ServiceProvider {
+
 	/**
 	 * Register the provider singletons.
 	 *
 	 * @since TBD
 	 */
 	public function register() {
-		give()->bind(
-			'PAYPAL_COMMERCE_ATTRIBUTION_ID',
-			static function() {
-				return 'GiveWP_SP_PCP';
-			}
-		); // storage
+		$this->container->singleton( Gateway::class );
 
-		give()->singleton( PayPalWebhooks::class );
-		give()->singleton( Webhooks::class );
-		give()->singleton( DonationFormElements::class );
+		// @todo Bring over PayPalWebhooks.
+		$this->container->singleton( PayPalWebhooks::class );
 
-		$this->container->singleton( AdvancedCardFields::class, AdvancedCardFields::class );
-		$this->container->singleton( DonationProcessor::class, DonationProcessor::class );
-		$this->container->singleton( PayPalClient::class, PayPalClient::class );
-		$this->container->singleton( RefreshToken::class, RefreshToken::class );
-		$this->container->singleton( AjaxRequestHandler::class, AjaxRequestHandler::class );
-		$this->container->singleton( ScriptLoader::class, ScriptLoader::class );
-		$this->container->singleton( WebhookRegister::class, WebhookRegister::class );
-		$this->container->singleton( PayPalAuth::class, PayPalAuth::class );
+		// @todo This isn't the same webhooks as registered later, look into that.
+		$this->container->singleton( Webhooks::class );
 
-		$this->container->singleton(
-			MerchantDetail::class,
-			MerchantDetail::class,
-			static function () {
-				/** @var MerchantDetails $repository */
-				$repository = give( MerchantDetails::class );
+		// @todo Is this needed?
+		$this->container->singleton( DonationFormElements::class );
 
-				return $repository->getDetails();
-			}
-		);
+		$this->container->singleton( AdvancedCardFields::class );
+		$this->container->singleton( DonationProcessor::class );
+		$this->container->singleton( PayPalClient::class );
+		$this->container->singleton( RefreshToken::class );
+		$this->container->singleton( AjaxRequestHandler::class );
+		$this->container->singleton( ScriptLoader::class );
+		$this->container->singleton( WebhookRegister::class );
+		$this->container->singleton( PayPalAuth::class );
 
-		$this->container->singleton(
-			MerchantDetails::class,
-			MerchantDetails::class,
-			static function ( MerchantDetails $details ) {
-				// @todo Replace give_is_test_mode() with something for the gateway.
-				$details->setMode( give_is_test_mode() ? 'sandbox' : 'live' );
-			}
-		);
+		$this->container->singleton( MerchantDetail::class, null, static function () {
+			/** @var MerchantDetails $repository */
+			$repository = give( MerchantDetails::class );
 
-		$this->container->singleton(
-			Webhooks::class,
-			Webhooks::class,
-			static function ( Webhooks $repository ) {
-				// @todo Replace give_is_test_mode() with something for the gateway.
-				$repository->setMode( give_is_test_mode() ? 'sandbox' : 'live' );
-			}
-		);
+			return $repository->getDetails();
+		} );
+
+		$this->container->singleton( MerchantDetails::class, null, static function ( MerchantDetails $details ) {
+			// @todo Replace give_is_test_mode() with something for the gateway.
+			$details->setMode( give_is_test_mode() ? 'sandbox' : 'live' );
+		} );
+
+		$this->container->singleton( Webhooks::class, null, static function ( Webhooks $repository ) {
+			// @todo Replace give_is_test_mode() with something for the gateway.
+			$repository->setMode( give_is_test_mode() ? 'sandbox' : 'live' );
+		} );
 
 		$this->hooks();
 	}
@@ -80,9 +72,13 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function hooks() {
+		add_filter( 'tribe_tickets_commerce_paypal_gateways', $this->container->callback( Gateway::class, 'register_gateway' ), 10, 2 );
+		add_filter( 'tribe_tickets_commerce_paypal_is_active', $this->container->callback( Gateway::class, 'is_active' ), 9, 2 );
+
 		// @todo Replace the filter here.
 		add_filter( 'give_register_gateway', [ $this, 'register_gateway' ] );
 
-		add_action( 'admin_init', tribe_callback( onBoardingRedirectHandler::class, 'boot' ) );
+		add_action( 'admin_init', $this->container->callback( onBoardingRedirectHandler::class, 'boot' ) );
 	}
+
 }

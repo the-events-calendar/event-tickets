@@ -1,8 +1,8 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\SDK_Interface;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface;
 
-use TEC\PaymentGateways\PayPalCommerce\SDK\Models\MerchantDetail;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\MerchantDetail;
 
 /**
  * Class Utils

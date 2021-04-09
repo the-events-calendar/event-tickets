@@ -1,6 +1,8 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce;
+
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\PayPalClient;
 
 class DonationDetailsPage {
 

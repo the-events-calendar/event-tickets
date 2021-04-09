@@ -1,13 +1,13 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\SDK_Interface\Repositories;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\Repositories;
 
 use Exception;
-use TEC\PaymentGateways\PayPalCommerce\DataTransferObjects\PayPalWebhookHeaders;
-use TEC\PaymentGateways\PayPalCommerce\PayPalClient;
-use TEC\PaymentGateways\PayPalCommerce\SDK\Repositories\Traits\HasMode;
-use TEC\PaymentGateways\PayPalCommerce\SDK\Models\WebhookConfig;
-use TEC\PaymentGateways\PayPalCommerce\Webhooks\WebhookRegister;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\DataTransferObjects\PayPalWebhookHeaders;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\PayPalClient;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Repositories\Traits\HasMode;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\WebhookConfig;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\WebhookRegister;
 use TEC\Route\PayPalWebhooks as WebhooksRoute;
 
 class Webhooks {

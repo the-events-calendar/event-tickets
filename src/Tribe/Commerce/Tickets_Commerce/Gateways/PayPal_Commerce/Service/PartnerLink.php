@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\Service;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Service;
 
 /**
  * Class PartnerLink.
@@ -11,7 +11,7 @@ namespace TEC\PaymentGateways\PayPalCommerce\Service;
  *
  * @since TBD
  *
- * @package TEC\PaymentGateways\PayPalCommerce\Service
+ * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Service
  */
 class PartnerLink extends ApiService {
 

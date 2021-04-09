@@ -1,12 +1,12 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\Webhooks;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks;
 
 use InvalidArgumentException;
-use TEC\PaymentGateways\PayPalCommerce\Webhooks\Listeners\EventListener;
-use TEC\PaymentGateways\PayPalCommerce\Webhooks\Listeners\PayPalCommerce\PaymentCaptureCompleted;
-use TEC\PaymentGateways\PayPalCommerce\Webhooks\Listeners\PayPalCommerce\PaymentCaptureDenied;
-use TEC\PaymentGateways\PayPalCommerce\Webhooks\Listeners\PayPalCommerce\PaymentCaptureRefunded;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\Listeners\EventListener;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\Listeners\PayPalCommerce\PaymentCaptureCompleted;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\Listeners\PayPalCommerce\PaymentCaptureDenied;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\Listeners\PayPalCommerce\PaymentCaptureRefunded;
 
 class WebhookRegister {
 

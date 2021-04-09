@@ -381,6 +381,10 @@ class Tribe__Tickets__Main {
 
 		// Promoter
 		tribe_register_provider( Promoter_Service_Provider::class );
+
+		// Tickets Commerce Gateways.
+		tribe_register_provider( Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Service_Provider::class );
+		tribe_register_provider( Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Legacy\Service_Provider::class );
 	}
 
 	/**

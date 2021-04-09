@@ -1,10 +1,10 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce;
 
-use TEC\PaymentGateways\PayPalCommerce\SDK\Models\MerchantDetail;
-use TEC\PaymentGateways\PayPalCommerce\Repositories\MerchantDetails;
-use TEC\PaymentGateways\PayPalCommerce\Repositories\PayPalAuth;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\MerchantDetail;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Repositories\MerchantDetails;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Repositories\PayPalAuth;
 
 /**
  * Class RefreshToken

@@ -1,16 +1,16 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\Webhooks\Listeners\PayPalCommerce;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\Listeners\PayPalCommerce;
 
-use TEC\PaymentGateways\PayPalCommerce\Repositories\MerchantDetails;
-use TEC\PaymentGateways\PayPalCommerce\Webhooks\Listeners\EventListener;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Repositories\MerchantDetails;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\Listeners\EventListener;
 use TEC\Repositories\PaymentsRepository;
 
 /**
  * Class PaymentEventListener
  *
  * @since   TBD
- * @package TEC\PaymentGateways\PayPalCommerce\Webhooks\Listeners\PayPalCommerce
+ * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\Listeners\PayPalCommerce
  *
  */
 abstract class PaymentEventListener implements EventListener {

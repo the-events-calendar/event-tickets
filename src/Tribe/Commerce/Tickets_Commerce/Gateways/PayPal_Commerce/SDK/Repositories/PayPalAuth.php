@@ -1,10 +1,10 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\SDK\Repositories;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Repositories;
 
 use TEC\ConnectClient\ConnectClient;
 use TEC\Helpers\ArrayDataSet;
-use TEC\PaymentGateways\PayPalCommerce\PayPalClient;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\PayPalClient;
 
 class PayPalAuth {
 

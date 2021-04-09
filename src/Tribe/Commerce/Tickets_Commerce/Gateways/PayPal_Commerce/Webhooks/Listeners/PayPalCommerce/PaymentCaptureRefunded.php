@@ -1,11 +1,11 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\Webhooks\Listeners\PayPalCommerce;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\Listeners\PayPalCommerce;
 
 /**
  * Class PaymentCaptureRefunded
  *
- * @package TEC\PaymentGateways\PayPalCommerce\Webhooks\Listeners\PayPalCommerce
+ * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\Listeners\PayPalCommerce
  *
  * @since TBD
  */

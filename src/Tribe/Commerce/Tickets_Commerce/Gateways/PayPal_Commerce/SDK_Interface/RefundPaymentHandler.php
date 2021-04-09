@@ -1,9 +1,9 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\SDK_Interface;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface;
 
 use Exception;
-use TEC\PaymentGateways\PayPalCommerce\SDK\Repositories\PayPalOrder;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Repositories\PayPalOrder;
 
 /**
  * Class RefundPaymentHandler

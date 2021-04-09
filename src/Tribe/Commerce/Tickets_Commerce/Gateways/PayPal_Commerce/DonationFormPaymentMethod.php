@@ -1,14 +1,14 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce;
 
-use TEC\PaymentGateways\PayPalCommerce\SDK_Interface\Utils;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\Utils;
 
 /**
  * Class DonationFormPaymentMethod
  *
  * @since TBD
- * @package TEC\PaymentGateways\PayPalCommerce
+ * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce
  *
  */
 class DonationFormPaymentMethod {

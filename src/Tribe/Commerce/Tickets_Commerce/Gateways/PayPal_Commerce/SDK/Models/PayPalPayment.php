@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\SDK\Models;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models;
 
 use TEC\Helpers\ArrayDataSet;
 use InvalidArgumentException;
@@ -9,7 +9,7 @@ use InvalidArgumentException;
  * Class PayPalPayment
  *
  * @since TBD
- * @package TEC\PaymentGateways\PayPalCommerce
+ * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce
  *
  */
 class PayPalPayment {

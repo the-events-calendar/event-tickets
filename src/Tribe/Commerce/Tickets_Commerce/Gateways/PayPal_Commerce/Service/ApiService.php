@@ -1,13 +1,13 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\Service;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Service;
 
 /**
  * Class ApiService
  *
  * @since TBD
  *
- * @package TEC\PaymentGateways\PayPalCommerce\Service
+ * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Service
  */
 abstract class ApiService {
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce;
 
 /**
  * Class AdvancedCardFields
  *
  * @since TBD
- * @package TEC\PaymentGateways\PayPalCommerce
+ * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce
  *
  */
 class AdvancedCardFields {

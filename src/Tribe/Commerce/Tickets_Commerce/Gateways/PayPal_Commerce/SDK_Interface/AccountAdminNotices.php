@@ -1,18 +1,18 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\SDK_Interface;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface;
 
 // @todo Replace class usage.
 use Give_Admin_Settings;
-use TEC\PaymentGateways\PayPalCommerce\Repositories\MerchantDetails;
-use TEC\PaymentGateways\PayPalCommerce\SDK_Interface\Utils;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Repositories\MerchantDetails;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\Utils;
 
 /**
  * Account admin notices for PayPal Commerce.
  *
  * @since TBD
  *
- * @package TEC\PaymentGateways\PayPalCommerce\SDK_Interface
+ * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface
  */
 class AccountAdminNotices {
 

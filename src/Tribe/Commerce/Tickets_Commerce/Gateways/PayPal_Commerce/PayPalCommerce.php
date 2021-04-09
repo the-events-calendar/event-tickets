@@ -1,11 +1,11 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce;
 
-use TEC\PaymentGateways\PayPalCommerce\SDK_Interface\AccountAdminNotices;
-use TEC\PaymentGateways\PayPalCommerce\SDK_Interface\RefundPaymentHandler;
-use TEC\PaymentGateways\PayPalCommerce\SDK_Interface\ScriptLoader;
-use TEC\PaymentGateways\PayPalCommerce\Webhooks\WebhookChecker;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\AccountAdminNotices;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\RefundPaymentHandler;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\ScriptLoader;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\WebhookChecker;
 
 // @todo Replace these.
 use TEC\Helpers\Hooks;

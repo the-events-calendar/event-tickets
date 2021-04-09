@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\PaymentGateways\PayPalCommerce\SDK\Repositories;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Repositories;
 
 use Exception;
 use InvalidArgumentException;
@@ -10,8 +10,8 @@ use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalCheckoutSdk\Payments\CapturesRefundRequest;
 
-use TEC\PaymentGateways\PayPalCommerce\SDK\Models\MerchantDetail;
-use TEC\PaymentGateways\PayPalCommerce\PayPalClient;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\MerchantDetail;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\PayPalClient;
 
 // @todo Replace error logger.
 use function give_record_gateway_error as logError;
@@ -20,7 +20,7 @@ use function give_record_gateway_error as logError;
  * Class PayPalOrder
  *
  * @since   TBD
- * @package TEC\PaymentGateways\PayPalCommerce\SDK\Repositories
+ * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Repositories
  *
  */
 class PayPalOrder {
