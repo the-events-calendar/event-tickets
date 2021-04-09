@@ -26,6 +26,7 @@ class Tribe__Tickets__Theme_Compatibility {
 		'twentyseventeen',
 		'twentynineteen',
 		'twentytwenty',
+		'twentytwentyone',
 	];
 
 	/**
