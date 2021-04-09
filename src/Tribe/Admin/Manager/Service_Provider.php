@@ -30,7 +30,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 */
 	protected function hooks() {
 
-		add_action( 'admin_bar_menu', [ $this, 'add_attendees_view_button' ], 99 );
+		add_action( 'wp_before_admin_bar_render', [ $this, 'add_attendees_view_button' ], 20 );
 
 		if ( ! is_admin() ) {
 			return;
@@ -125,10 +125,8 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 * Add the Attendee Report nav button to WP Admin Nav bar.
 	 *
 	 * @since TBD
-	 *
-	 * @param \WP_Admin_Bar $admin_bar WP_Admin_Bar instance, passed by reference.
 	 */
-	public function add_attendees_view_button( $admin_bar ) {
+	public function add_attendees_view_button() {
 
 		$url     = '';
 		$post_id = 0;
@@ -170,8 +168,10 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 			return;
 		}
 
+		global $wp_admin_bar;
+
 		// Add the Nav button node to nav menu.
-		$admin_bar->add_menu(
+		$wp_admin_bar->add_menu(
 			[
 				'id'    => 'event-tickets-attendees',
 				'title' => '<i class="ab-icon dashicons dashicons-groups"></i> ' . __( 'Attendees', 'event-tickets' ),
