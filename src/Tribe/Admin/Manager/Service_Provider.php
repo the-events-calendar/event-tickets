@@ -128,13 +128,12 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 */
 	public function add_attendees_view_button() {
 
+		global $wp_admin_bar;
+
 		// Check user permission.
 		if ( ! current_user_can( 'edit_posts' ) ) {
 			return;
 		}
-
-		$url     = '';
-		$post_id = 0;
 
 		// If not is Admin Edit page Or not in front-end single view page, bail out.
 		if (
@@ -161,14 +160,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 
 		/** @var \Tribe__Tickets__Attendees $tickets_attendees */
 		$tickets_attendees = tribe( 'tickets.attendees' );
-		$url               = $tickets_attendees->get_report_link( get_post( $post_id ) );
-
-		// If the URL is not set, don't show the button.
-		if ( empty( $url ) ) {
-			return;
-		}
-
-		global $wp_admin_bar;
+		$url               = $tickets_attendees->get_report_link( $post );
 
 		// Add the Nav button node to nav menu.
 		$wp_admin_bar->add_menu(
