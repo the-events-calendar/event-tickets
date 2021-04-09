@@ -178,7 +178,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-* Tweak - A new `tribe_events_attendees_csv_export_delimiter` filter was introduced to help change the delimiter when creating a CSV export of attendees. [GTRIA-508]
+* Tweak - A new `tribe_tickets_attendees_csv_export_delimiter` filter was introduced to help change the delimiter when creating a CSV export of attendees. [ET-1055]
 
 = [5.1.2] TBD =
 

@@ -669,7 +669,7 @@ class Tribe__Tickets__Attendees {
 			 *
 			 * @param string delimiter The separator
 			 */
-			$delimiter = apply_filters( 'tribe_events_attendees_csv_export_delimiter', ',' );
+			$delimiter = apply_filters( 'tribe_tickets_attendees_csv_export_delimiter', ',' );
 			
 			// Output the lines into the file.
 			foreach ( $items as $item ) {
