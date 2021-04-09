@@ -4,7 +4,7 @@
  *
  * Override this template in your own theme by creating a file at:
  *
- *     [your-theme]/tribe-events/tickets/tpp-return-to-cart.php
+ * [your-theme]/tribe-events/tickets/tpp-return-to-cart.php
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
