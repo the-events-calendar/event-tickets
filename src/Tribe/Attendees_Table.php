@@ -494,50 +494,20 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return sprintf( $button_template, $item['order_id_link_src'], __( 'View order', 'event-tickets' ) );
 		}
 
-		$button_classes = ! empty( $item['order_status'] ) && in_array( $item['order_status'], $check_in_stati ) ?
+		$disabled_class = ! empty( $item['order_status'] ) && in_array( $item['order_status'], $check_in_stati ) ?
 			'' : 'button-disabled';
 
-		if ( empty( $this->event ) ) {
-			$checkin   = sprintf(
-				'<button data-attendee-id="%d" data-provider="%s" class="%s tickets_checkin">%s</button>',
-				esc_attr( $item['attendee_id'] ),
-				esc_attr( $provider ),
-				esc_attr( $button_classes ),
-				esc_html__( 'Check In', 'event-tickets' )
-			);
-			$uncheckin = sprintf(
-				'<span class="delete"><button data-attendee-id="%d" data-provider="%s" class="tickets_uncheckin">%s</button></span>',
-				esc_attr( $item['attendee_id'] ),
-				esc_attr( $provider ),
-				sprintf(
-					'<div>%1$s</div><div>%2$s</div>',
-					esc_html__( 'Undo', 'event-tickets' ),
-					esc_html__( 'Check In', 'event-tickets' )
-				)
-			);
-		} else {
-			// add the additional `data-event-id` attribute if this is an event
-			$checkin   = sprintf(
-				'<button data-attendee-id="%d" data-event-id="%d" data-provider="%s" class="button-primary %s tickets_checkin">%s</button>',
-				esc_attr( $item['attendee_id'] ),
-				esc_attr( $this->event->ID ),
-				esc_attr( $provider ),
-				esc_attr( $button_classes ),
-				esc_html__( 'Check In', 'event-tickets' )
-			);
-			$uncheckin = sprintf(
-				'<span class="delete"><button data-attendee-id="%d" data-event-id="%d" data-provider="%s" class="button-secondary tickets_uncheckin">%s</button></span>',
-				esc_attr( $item['attendee_id'] ),
-				esc_attr( $this->event->ID ), esc_attr( $provider ),
-				sprintf(
-					'%1$s %2$s',
-					esc_html__( 'Undo', 'event-tickets' ),
-					esc_html__( 'Check In', 'event-tickets' )
-				)
-			);
-		}
+		$context = [
+			'item'           => $item,
+			'attendee_table' => $this,
+			'provider'       => $provider,
+			'disabled_class' => $disabled_class,
+ 		];
 
-		return $checkin . $uncheckin;
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
+
+		$admin_views->template( 'attendees-table/check-in-button', $context );
 	}
 
 	/**
