@@ -136,24 +136,19 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		$url     = '';
 		$post_id = 0;
 
-		// Set the URL for WP Admin.
-		if ( is_admin() && 'edit' == tribe_get_request_var( 'action' ) ) {
-			$post_id = tribe_get_request_var( 'post' );
+		// If not is Admin Edit page Or not in front-end single view page, bail out.
+		if (
+			! ( is_admin() && 'edit' == tribe_get_request_var( 'action' ) )
+			&& ! is_single()
+		) {
+			return;
 		}
 
-		// Set the URL for Front-end.
-		if ( is_single() ) {
-			$post = get_post();
-
-			if ( empty( $post ) ) {
-				return;
-			}
-
-			$post_id = $post->ID;
-		}
+		$post    = get_post();
+		$post_id = $post ? $post->ID : 0;
 
 		// If no valid post is found, bail out.
-		if ( 0 == $post_id ) {
+		if ( 0 === $post_id ) {
 			return;
 		}
 
