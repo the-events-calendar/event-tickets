@@ -178,7 +178,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.1.3] TBD =
 
-* Tweak - A new `tribe_tickets_attendees_csv_export_delimiter` filter was introduced to help change the delimiter when creating a CSV export of attendees. [ET-1055]
+* Tweak - Added the new `tribe_tickets_attendees_csv_export_delimiter` filter to allow changing the delimiter used when generating a CSV export of attendees. [ET-1055]
 
 = [5.1.2.1] 2021-03-30 =
 
