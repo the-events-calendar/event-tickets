@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import AutosizeInput from 'react-input-autosize';
+import TextareaAutosize from 'react-textarea-autosize';
 
 /**
  * Wordpress dependencies
@@ -24,7 +24,7 @@ const TicketContainerHeaderDescription = ( {
 } ) => (
 	isSelected
 		? (
-			<AutosizeInput
+			<TextareaAutosize
 				className="tribe-editor__ticket__container-header-description-input"
 				value={ tempDescription }
 				placeholder={ __( 'Description', 'event-tickets' ) }
