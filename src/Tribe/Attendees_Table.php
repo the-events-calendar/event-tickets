@@ -494,14 +494,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return sprintf( $button_template, $item['order_id_link_src'], __( 'View order', 'event-tickets' ) );
 		}
 
-		$disabled_class = ! empty( $item['order_status'] ) && in_array( $item['order_status'], $check_in_stati ) ?
-			'' : 'button-disabled';
-
 		$context = [
 			'item'           => $item,
 			'attendee_table' => $this,
 			'provider'       => $provider,
-			'disabled_class' => $disabled_class,
+			'disable_checkin' => ! empty( $item['order_status'] ) && in_array( $item['order_status'], $check_in_stati, true ),
  		];
 
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
