@@ -10,7 +10,7 @@
  * @var bool $disable_checkin Whether check-in is disabled.
  */
 
-$event_provider = $attendee_table->event ? 'data-provider="' . $attendee_table->event->ID . '"' : '';
+$data_event_id  = $attendee_table->event ? 'data-event-id="' . $attendee_table->event->ID . '"' : '';
 $disabled_class = $disable_checkin ? 'button-disabled' : '';
 ?>
 
@@ -18,7 +18,7 @@ $disabled_class = $disable_checkin ? 'button-disabled' : '';
 	data-attendee-id="<?php echo esc_attr( $item['attendee_id'] ); ?>"
 	data-provider="<?php echo esc_attr( $provider ); ?>"
 	class="button-primary tickets_checkin <?php echo esc_attr( $disabled_class ); ?>"
-	<?php echo $event_provider; ?>
+	<?php echo $data_event_id; ?>
 	<?php disabled( $disable_checkin ); ?> >
 		<?php esc_html_e( 'Check In', 'event-tickets' ) ?>
 </button>
