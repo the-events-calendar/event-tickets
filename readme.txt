@@ -178,7 +178,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.1.3] TBD =
 
-* Fix - Fixed an issue where long descriptions were breaking the block for the Tickets and RSVP blocks. It's now using auto-size textarea. [ET-1078]
+* Fix - Fixed an issue with Tickets and RSVP blocks where long descriptions were breaking the block. They now use an auto-resizing textarea. [ET-1078]
 
 = [5.1.2.1] 2021-03-30 =
 
