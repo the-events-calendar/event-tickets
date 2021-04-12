@@ -663,7 +663,7 @@ class Tribe__Tickets__Attendees {
 			$output = fopen( 'php://output', 'w' );
 
 			/**
-			 * Allow for modifying the field delimiter in the CSV export file.
+			 * Allow filtering the field delimiter used in the CSV export file.
 			 *
 			 * @since TBD
 			 *
