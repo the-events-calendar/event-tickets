@@ -178,6 +178,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.1.3] TBD =
 
+* Fix - Fixed an issue with Tickets and RSVP blocks where long descriptions were breaking the block. They now use an auto-resizing textarea. [ET-1078]
 * Tweak - Added the new `tribe_tickets_attendees_csv_export_delimiter` filter to allow changing the delimiter used when generating a CSV export of attendees. [ET-1055]
 
 = [5.1.2.1] 2021-03-30 =
