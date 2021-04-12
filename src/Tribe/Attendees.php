@@ -662,9 +662,18 @@ class Tribe__Tickets__Attendees {
 			// Create the file pointer connected to the output stream.
 			$output = fopen( 'php://output', 'w' );
 
+			/**
+			 * Allow filtering the field delimiter used in the CSV export file.
+			 *
+			 * @since TBD
+			 *
+			 * @param string $delimiter The field delimiter used in the CSV export file.
+			 */
+			$delimiter = apply_filters( 'tribe_tickets_attendees_csv_export_delimiter', ',' );
+			
 			// Output the lines into the file.
 			foreach ( $items as $item ) {
-				fputcsv( $output, $item );
+				fputcsv( $output, $item, $delimiter );
 			}
 
 			fclose( $output );
