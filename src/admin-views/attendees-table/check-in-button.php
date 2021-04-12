@@ -10,7 +10,7 @@
  * @var bool $disable_checkin Whether check-in is disabled.
  */
 
-$data_event_id  = $attendee_table->event ? 'data-event-id="' . $attendee_table->event->ID . '"' : '';
+$data_event_id  = $attendee_table->event ? 'data-event-id="' . esc_attr( $attendee_table->event->ID ) . '"' : '';
 $disabled_class = $disable_checkin ? 'button-disabled' : '';
 ?>
 
