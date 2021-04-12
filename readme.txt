@@ -180,6 +180,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Add TwentyTwentyOne theme compatibility for Tickets and RSVPs. [ET-1047]
 * Fix - Added translation support for "Going" and "Not going" status labels. [ET-1056]
+* Fix - Disabled check-in for RSVP with "Not Going" status. [ET-984]
 * Fix - Fixed an issue with Tickets and RSVP blocks where long descriptions were breaking the block. They now use an auto-resizing textarea. [ET-1078]
 * Tweak - Introduce a new "Attendees" link to the WP Admin bar which can take you directly to the Attendees Report page. [ET-1079]
 * Tweak - Added the new `tribe_tickets_attendees_csv_export_delimiter` filter to allow changing the delimiter used when generating a CSV export of attendees. [ET-1055]
