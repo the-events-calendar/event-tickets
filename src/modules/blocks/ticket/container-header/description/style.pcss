@@ -15,27 +15,30 @@
 .tribe-editor__ticket {
 
 	.tribe-editor__ticket__container-header-description-input {
-		/* !important required to override styles from react-input-autosize */
-		display: flex !important;
-		padding-top: 7px;
+		display: flex;
+		background-color: transparent;
+		color: #545D66;
+		margin: 0;
+		padding: 0;
+		border: none;
+		font-size: 12px;
+		max-height: 108px;
+		line-height: 18px;
+		letter-spacing: 0.04px;
+		width: 100%;
+
+		&:disabled {
+			color: #AEB4BB;
+		}
+
+		&:hover,
+		&:focus {
+			box-shadow: none;
+			outline: none;
+		}
 
 		& > * {
 			flex: none;
-		}
-
-		& > input {
-			background-color: transparent;
-			color: #545D66;
-			margin: 0;
-			padding: 0;
-			border: none;
-			font-size: 12px;
-			line-height: 18px;
-			letter-spacing: 0.04px;
-
-			&:disabled {
-				color: #AEB4BB;
-			}
 		}
 	}
 }
