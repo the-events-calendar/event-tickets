@@ -135,7 +135,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 			return;
 		}
 
-		// If not is Admin Edit page Or not in front-end single view page, bail out.
+		// If this is not the Admin Edit page or not the singular frontend view, bail out.
 		if (
 			! ( is_admin() && 'edit' == tribe_get_request_var( 'action' ) )
 			&& ! is_single()
@@ -166,7 +166,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		$wp_admin_bar->add_menu(
 			[
 				'id'    => 'event-tickets-attendees',
-				'title' => '<i class="ab-icon dashicons dashicons-groups"></i> ' . __( 'Attendees', 'event-tickets' ),
+				'title' => '<i class="ab-icon dashicons dashicons-groups"></i> ' . esc_html__( 'Attendees', 'event-tickets' ),
 				'href'  => $url,
 				'meta' => [
 					'title' => __( 'Manage attendees', 'event-tickets' ),

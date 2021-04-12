@@ -178,7 +178,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.1.3] TBD =
 
-* Tweak - New nav button added on WP Admin bar for direct link to Attendee Report page. [ET-1079]
+* Tweak - Introduce a new "Attendees" link to the WP Admin bar which can take you directly to the Attendees Report page. [ET-1079]
 
 = [5.1.2.1] 2021-03-30 =
 
