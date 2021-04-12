@@ -26,6 +26,7 @@ class Tribe__Tickets__Theme_Compatibility {
 		'twentyseventeen',
 		'twentynineteen',
 		'twentytwenty',
+		'twentytwentyone',
 	];
 
 	/**
@@ -39,7 +40,7 @@ class Tribe__Tickets__Theme_Compatibility {
 		$template   = strtolower( get_template() );
 		$stylesheet = strtolower( get_stylesheet() );
 
-		// Prevents empty stylesheet or template
+		// Prevents empty stylesheet or template.
 		if ( empty( $template ) || empty( $stylesheet ) ) {
 			return false;
 		}
@@ -81,7 +82,7 @@ class Tribe__Tickets__Theme_Compatibility {
 		$child_theme  = strtolower( get_stylesheet() );
 		$parent_theme = strtolower( get_template() );
 
-		// Prevents empty stylesheet or template
+		// Prevents empty stylesheet or template.
 		if ( empty( $parent_theme ) || empty( $child_theme ) ) {
 			return $classes;
 		}
