@@ -37,7 +37,7 @@ class Gateway extends Abstract_Gateway {
 	 * @return array The list of registered Tickets Commerce gateways.
 	 */
 	public function register_gateway( array $gateways, $commerce ) {
-		if ( ! $this->should_show_paypal_legacy() ) {
+		if ( ! $this->should_show( false, $commerce ) ) {
 			return $gateways;
 		}
 
@@ -112,12 +112,13 @@ class Gateway extends Abstract_Gateway {
 		// Tribe Commerce PayPal email was previously set.
 		$paypal_email_is_set = '' !== tribe_get_option( 'ticket-paypal-email' );
 
-		// The gateway should not be shown if it was never enabled or email was previously set.
-		if ( ! $paypal_enable || ! $paypal_email_is_set ) {
-			return false;
+		// The gateway should show if it was ever enabled or email was previously set.
+		if ( $paypal_enable || $paypal_email_is_set ) {
+			return true;
 		}
 
-		return true;
+		// Default this gateway to off.
+		return false;
 	}
 
 }
