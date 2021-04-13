@@ -70,10 +70,10 @@ class Gateway extends Abstract_Gateway {
 			return $is_active;
 		}
 
-		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+		/** @var \Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
-		/** @var Tribe__Tickets__Commerce__PayPal__Handler__Interface $handler */
+		/** @var \Tribe__Tickets__Commerce__PayPal__Handler__Interface $handler */
 		$handler = $gateway->build_handler();
 
 		// Only mark as active if config status is complete.
