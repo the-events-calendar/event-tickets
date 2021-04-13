@@ -125,6 +125,7 @@
     "lodash": "^4.17.15",
     "moment": "2.19.3",
     "moment-timezone": "0.5.13",
+    "mt-a11y-dialog": "^5.1.1",
     "prop-types": "^15.6.2",
     "querystringify": "^2.0.0",
     "react": "16.3.0",
