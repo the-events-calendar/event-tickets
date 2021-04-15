@@ -385,8 +385,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$default_actions = [];
 		$provider        = ! empty( $item['provider'] ) ? $item['provider'] : null;
+		$not_going       = empty( $item['order_status'] ) || $item['order_status'] == 'no';
 
-		if ( is_object( $this->event ) && isset( $this->event->ID ) ) {
+		if ( is_object( $this->event ) && isset( $this->event->ID ) && ! $not_going ) {
 			$default_actions[] = sprintf(
 				'<span class="inline">
 					<a href="#" class="tickets_checkin" data-attendee-id="%1$d" data-event-id="%2$d" data-provider="%3$s">' . esc_html_x( 'Check In', 'row action', 'event-tickets' ) . '</a>
