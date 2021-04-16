@@ -9,6 +9,9 @@
   ],
   "homepage": "http://tri.be/shop/wordpress-events-calendar/",
   "license": "GPL-2.0",
+  "require": {
+    "paypal/paypal-checkout-sdk": "1.0.1"
+  },
   "require-dev": {
     "automattic/vipwpcs": "^2.0",
     "codeception/codeception": "^4.0",
