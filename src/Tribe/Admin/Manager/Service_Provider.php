@@ -138,7 +138,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		// If this is not the Admin Edit page or not the singular frontend view, bail out.
 		if (
 			! ( is_admin() && 'edit' == tribe_get_request_var( 'action' ) )
-			&& ! is_single()
+			&& ! is_singular()
 		) {
 			return;
 		}
