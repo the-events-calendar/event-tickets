@@ -567,6 +567,17 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Determine whether Tickets Commerce is in test mode.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether Tickets Commerce is in test mode.
+	 */
+	public function is_test_mode() {
+		return tribe_is_truthy( tribe_get_option( 'ticket-paypal-sandbox' ) );
+	}
+
+	/**
 	 * Update the PayPalTicket values for this user.
 	 *
 	 * Note that, within this method, $order_id refers to the attendee or ticket ID
