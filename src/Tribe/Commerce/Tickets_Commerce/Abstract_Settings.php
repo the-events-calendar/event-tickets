@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways;
+namespace Tribe\Tickets\Commerce\Tickets_Commerce;
 
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal_Main;
 
@@ -14,12 +14,12 @@ use Tribe__Tickets__Commerce__PayPal__Main as PayPal_Main;
 abstract class Abstract_Settings {
 
 	/**
-	 * Get the list of admin settings for the gateway.
+	 * Get the list of settings for the gateway.
 	 *
 	 * @since TBD
 	 *
-	 * @return array The list of admin settings for the gateway.
+	 * @return array The list of settings for the gateway.
 	 */
-	abstract public function get_admin_settings( );
+	abstract public function get_settings();
 
 }

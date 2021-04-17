@@ -60,4 +60,15 @@ abstract class Abstract_Gateway {
 		return true;
 	}
 
+	/**
+	 * Get the list of settings for the gateway.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The list of settings for the gateway.
+	 */
+	public function get_settings() {
+		return [];
+	}
+
 }
