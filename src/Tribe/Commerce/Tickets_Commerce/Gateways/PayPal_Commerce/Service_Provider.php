@@ -44,30 +44,9 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( ScriptLoader::class );
 		$this->container->singleton( WebhookRegister::class );
 		$this->container->singleton( PayPalAuth::class );
-
-		// @todo Replace the methods that are used for setup.
-		$this->container->singleton( MerchantDetail::class );
-
-		function testing0() {
-			/** @var MerchantDetails $repository */
-			$repository = tribe( MerchantDetails::class );
-
-			return $repository->getDetails();
-		}
-
-		$this->container->singleton( MerchantDetails::class );
-
-		function testing1( MerchantDetails $details ) {
-			// @todo Replace give_is_test_mode() with something for the gateway.
-			$details->setMode( give_is_test_mode() ? 'sandbox' : 'live' );
-		}
-
-		$this->container->singleton( Webhooks::class );
-
-		function testing2( Webhooks $repository ) {
-			// @todo Replace give_is_test_mode() with something for the gateway.
-			$repository->setMode( give_is_test_mode() ? 'sandbox' : 'live' );
-		}
+		$this->container->singleton( MerchantDetail::class, null, [ 'init' ] );
+		$this->container->singleton( MerchantDetails::class, null, [ 'init' ] );
+		$this->container->singleton( Webhooks::class, null, [ 'init' ] );
 
 		$this->hooks();
 	}
@@ -82,8 +61,6 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_tickets_commerce_paypal_is_active', $this->container->callback( Gateway::class, 'is_active' ), 9, 2 );
 
 		// @todo Replace the filter here.
-		// add_filter( 'give_register_gateway', [ $this, 'register_gateway' ] );
-
 		// add_action( 'admin_init', $this->container->callback( onBoardingRedirectHandler::class, 'boot' ) );
 	}
 
