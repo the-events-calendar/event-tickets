@@ -47,6 +47,15 @@ class Webhooks {
 	}
 
 	/**
+	 * Handle initial setup for the object singleton.
+	 *
+	 * @since TBD
+	 */
+	public function init() {
+		$this->setMode( tribe_tickets_commerce_is_test_mode() ? 'sandbox' : 'live' );
+	}
+
+	/**
 	 * Verifies with PayPal that the given event is securely from PayPal and not some sneaking sneaker
 	 *
 	 * @see   https://developer.paypal.com/docs/api/webhooks/v1/#verify-webhook-signature

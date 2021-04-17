@@ -3,6 +3,7 @@
 namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models;
 
 use InvalidArgumentException;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\Repositories\MerchantDetails;
 
 /**
  * Class MerchantDetail
@@ -93,6 +94,27 @@ class MerchantDetail {
 	 * @var array
 	 */
 	private $tokenDetails = null;
+
+	/**
+	 * Handle initial setup for the object singleton.
+	 *
+	 * @since TBD
+	 */
+	public function init() {
+		/** @var MerchantDetails $repository */
+		$repository = tribe( MerchantDetails::class );
+
+		$merchantDetails = $repository->getDetailsData();
+
+		try {
+			$this->validate( $merchantDetails );
+		} catch ( InvalidArgumentException $exception ) {
+			// Do not continue to set up the properties.
+			return;
+		}
+
+		$this->setupProperties( $merchantDetails );
+	}
 
 	/**
 	 * Return array of merchant details.

@@ -76,7 +76,7 @@ class ScriptLoader {
 						esc_html__( 'Implement an SSL certificate to keep your donations secure.', 'event-tickets' ),
 						esc_html__( 'Keep plugins up to date to ensure latest security fixes are present.', 'event-tickets' ),
 					],
-					'liveWarning'                       => give_is_test_mode()
+					'liveWarning'                       => tribe_tickets_commerce_is_test_mode()
 						? esc_html__( 'You have connected your account for test mode. You will need to connect again once you are in live mode.', 'event-tickets' )
 						: '',
 				],

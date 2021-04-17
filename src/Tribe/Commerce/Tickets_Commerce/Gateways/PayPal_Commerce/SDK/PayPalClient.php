@@ -29,7 +29,7 @@ class PayPalClient {
 	 * PayPalClient constructor.
 	 */
 	public function __construct() {
-		$this->mode = give_is_test_mode() ? 'sandbox' : 'live';
+		$this->mode = tribe_tickets_commerce_is_test_mode() ? 'sandbox' : 'live';
 	}
 
 	/**

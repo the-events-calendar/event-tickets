@@ -17,6 +17,15 @@ class MerchantDetails {
 	use HasMode;
 
 	/**
+	 * Handle initial setup for the object singleton.
+	 *
+	 * @since TBD
+	 */
+	public function init() {
+		$this->setMode( tribe_tickets_commerce_is_test_mode() ? 'sandbox' : 'live' );
+	}
+
+	/**
 	 * Returns whether or not the account has been connected
 	 *
 	 * @since TBD
@@ -24,10 +33,21 @@ class MerchantDetails {
 	 * @return bool
 	 */
 	public function accountIsConnected() {
-		/* @var $merchantDetails MerchantDetail */
-		$merchantDetails = tribe( MerchantDetail::class );
+		/* @var $merchantDetail MerchantDetail */
+		$merchantDetail = tribe( MerchantDetail::class );
 
-		return (bool) $merchantDetails->merchantIdInPayPal;
+		return (bool) $merchantDetail->merchantIdInPayPal;
+	}
+
+	/**
+	 * Get the merchant details data.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function getDetailsData() {
+		return (array) get_option( $this->getAccountKey(), [] );
 	}
 
 	/**
@@ -38,7 +58,7 @@ class MerchantDetails {
 	 * @return MerchantDetail
 	 */
 	public function getDetails() {
-		return MerchantDetail::fromArray( get_option( $this->getAccountKey(), [] ) );
+		return MerchantDetail::fromArray( $this->getDetailsData() );
 	}
 
 	/**

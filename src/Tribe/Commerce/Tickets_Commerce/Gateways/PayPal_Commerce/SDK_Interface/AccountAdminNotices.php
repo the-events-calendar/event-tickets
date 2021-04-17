@@ -41,7 +41,7 @@ class AccountAdminNotices {
 	 */
 	public function displayNotices() {
 		// @todo Add something to ET to check if a provider is in test/sandbox mode.
-		if ( Utils::gatewayIsActive() && ! give_is_test_mode() ) {
+		if ( Utils::gatewayIsActive() && ! tribe_tickets_commerce_is_test_mode() ) {
 			if ( $this->merchantRepository->accountIsConnected() ) {
 				// If account is connected, check if it is ready.
 				$this->checkForAccountReadiness();
