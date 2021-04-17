@@ -18,6 +18,15 @@ use Tribe__Tickets__Main;
 class Settings extends Abstract_Settings {
 
 	/**
+	 * The option key for account country.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_account_country = 'tickets-commerce-paypal-commerce-account-country';
+
+	/**
 	 * The merchant detail model.
 	 *
 	 * @since TBD
@@ -68,13 +77,12 @@ class Settings extends Abstract_Settings {
 		$connect_html = 'Connect to PayPal';
 
 		return [
-			'tickets-commerce-paypal-commerce-configure'       => [
+			'tickets-commerce-paypal-commerce-configure' => [
 				'type'            => 'wrapped_html',
 				'html'            => $this->get_introduction_html(),
 				'validation_type' => 'html',
 			],
-			// @todo Define setting as property.
-			'tickets-commerce-paypal-commerce-account-country' => [
+			$this->option_account_country                => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Account Country', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'This is the country your site operates from.', 'event-tickets' ),
@@ -84,8 +92,7 @@ class Settings extends Abstract_Settings {
 				'required'        => true, // @todo This is not working.
 				'can_be_empty'    => false, // @todo This is not working.
 			],
-			// @todo Define setting as property.
-			'tickets-commerce-paypal-commerce-connect'         => [
+			'tickets-commerce-paypal-commerce-connect'   => [
 				'type'            => 'wrapped_html',
 				'label'           => esc_html__( 'PayPal Connection', 'event-tickets' ),
 				'html'            => $this->get_connect_html(),
@@ -203,7 +210,7 @@ class Settings extends Abstract_Settings {
 		];
 
 		// @todo Replace the settings name with property.
-		$account_country = tribe_get_option( 'tickets-commerce-paypal-commerce-account-country' );
+		$account_country = tribe_get_option( $this->option_account_country );
 
 		return in_array( $account_country, $north_american_countries, true );
 	}

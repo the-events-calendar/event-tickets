@@ -17,6 +17,78 @@ use Tribe__Field_Conditional;
 class Settings extends Abstract_Settings {
 
 	/**
+	 * The option key for enable.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_enable = 'tickets-commerce-enable';
+
+	/**
+	 * The option key for sandbox.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_sandbox = 'ticket-paypal-sandbox';
+
+	/**
+	 * The option key for currency code.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_currency_code = 'ticket-paypal-currency-code';
+
+	/**
+	 * The option key for stock handling.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_stock_handling = 'ticket-paypal-stock-handling';
+
+	/**
+	 * The option key for success page.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_success_page = 'ticket-paypal-success-page';
+
+	/**
+	 * The option key for confirmation email sender email.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_confirmation_email_sender_email = 'ticket-paypal-confirmation-email-sender-email';
+
+	/**
+	 * The option key for confirmation email sender name.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_confirmation_email_sender_name = 'ticket-paypal-confirmation-email-sender-name';
+
+	/**
+	 * The option key for confirmation email subject.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_confirmation_email_subject = 'ticket-paypal-confirmation-email-subject';
+
+	/**
 	 * Get the list of settings for Tickets Commerce.
 	 *
 	 * @since TBD
@@ -66,35 +138,6 @@ class Settings extends Abstract_Settings {
 
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
-		// The KB article URL will change depending on whether ET+ is active or not.
-		$paypal_setup_kb_url  = class_exists( 'Tribe__Tickets_Plus__Main' ) ? 'https://evnt.is/19yk' : 'https://evnt.is/19yj';
-		$paypal_setup_kb_link = sprintf(
-			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
-			esc_url( $paypal_setup_kb_url ),
-			esc_html__( 'these instructions', 'event-tickets' )
-		);
-		$paypal_setup_note    = sprintf(
-			// Translators: %1$s: The word "ticket" in lowercase, %2$s: The "these instructions" link.
-			esc_html_x( 'In order to use Tickets Commerce to sell %1$s, you must configure your PayPal account to communicate with your WordPress site. If you need help getting set up, follow %2$s', 'tickets fields settings PayPal setup', 'event-tickets' ),
-			esc_html( tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_setup' ) ),
-			$paypal_setup_kb_link
-		);
-
-		$ipn_setup_site_link    = sprintf(
-			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
-			esc_url( $home_url ),
-			esc_html( $home_url )
-		);
-		$ipn_setup_site_address = sprintf(
-			esc_html__( 'Your site address is: %s', 'event-tickets' ),
-			$ipn_setup_site_link
-		);
-		$ipn_setup_line         = sprintf(
-			'<span class="clear">%s</span><span class="clear">%s</span>',
-			esc_html__( "Have you entered this site's address in the Notification URL field in IPN Settings?", 'event-tickets' ),
-			$ipn_setup_site_address
-		);
-
 		// @todo Fill this out and make it check if PayPal Legacy was previously active.
 		$is_tickets_commerce_enabled = false;
 
@@ -107,8 +150,7 @@ class Settings extends Abstract_Settings {
 				'type' => 'html',
 				'html' => '<p>' . $plus_message . '</p>',
 			],
-			// @todo Define setting as property.
-			'tickets-commerce-enable'         => [
+			$this->enable                     => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html__( 'Enable Tickets Commerce ', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Check this box if you wish to turn on Tickets Commerce functionality.', 'event-tickets' ),
@@ -116,7 +158,7 @@ class Settings extends Abstract_Settings {
 				'default'         => $is_tickets_commerce_enabled,
 				'validation_type' => 'boolean',
 				'attributes'      => [
-					'id' => 'tickets-commerce-enable-input',
+					'id' => $this->option_enable . '-input',
 				],
 			],
 		];
@@ -133,16 +175,14 @@ class Settings extends Abstract_Settings {
 		);
 
 		$settings = [
-			// @todo Define setting as property.
-			'ticket-paypal-sandbox'                         => [
+			$this->sandbox                         => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html__( 'Enable Test Mode', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Enables Test mode for testing payments. Any payments made will be done on "sandbox" accounts.', 'event-tickets' ),
 				'default'         => false,
 				'validation_type' => 'boolean',
 			],
-			// @todo Define setting as property.
-			'ticket-paypal-currency-code'                 => [
+			$this->currency_code                   => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions.', 'event-tickets' ),
@@ -150,8 +190,7 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'options',
 				'options'         => $paypal_currency_code_options,
 			],
-			// @todo Define setting as property.
-			'ticket-paypal-stock-handling'                  => [
+			$this->stock_handling                  => [
 				'type'            => 'radio',
 				'label'           => esc_html__( 'Stock Handling', 'event-tickets' ),
 				'tooltip'         => esc_html(
@@ -177,8 +216,7 @@ class Settings extends Abstract_Settings {
 				],
 				'tooltip_first'   => true,
 			],
-			// @todo Define setting as property.
-			'ticket-paypal-success-page'                    => [
+			$this->success_page                    => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Success page', 'event-tickets' ),
 				'tooltip'         => esc_html(
@@ -193,8 +231,7 @@ class Settings extends Abstract_Settings {
 				'options'         => $pages,
 				'required'        => true,
 			],
-			// @todo Define setting as property.
-			'ticket-paypal-confirmation-email-sender-email' => [
+			$this->confirmation_email_sender_email => [
 				'type'            => 'email',
 				'label'           => esc_html__( 'Confirmation email sender address', 'event-tickets' ),
 				'tooltip'         => esc_html(
@@ -209,8 +246,7 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'email',
 				'can_be_empty'    => true,
 			],
-			// @todo Define setting as property.
-			'ticket-paypal-confirmation-email-sender-name'  => [
+			$this->confirmation_email_sender_name  => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Confirmation email sender name', 'event-tickets' ),
 				'tooltip'             => esc_html(
@@ -225,8 +261,7 @@ class Settings extends Abstract_Settings {
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
 			],
-			// @todo Define setting as property.
-			'ticket-paypal-confirmation-email-subject'      => [
+			$this->confirmation_email_subject      => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Confirmation email subject', 'event-tickets' ),
 				'tooltip'             => esc_html(
@@ -269,12 +304,14 @@ class Settings extends Abstract_Settings {
 				continue;
 			}
 
-			// Add the gateway label to the start of settings.
-			array_unshift( $gateway_settings, [
+			$heading = [
 				'type'            => 'wrapped_html',
 				'html'            => '<h3 class="event-tickets--admin_settings_subheading">' . $gateway['label'] . '</h3>',
 				'validation_type' => 'html',
-			] );
+			];
+
+			// Add the gateway label to the start of settings.
+			array_unshift( $gateway_settings, $heading );
 
 			$gateway_setting_groups[] = $gateway_settings;
 		}
@@ -292,10 +329,9 @@ class Settings extends Abstract_Settings {
 		$settings = apply_filters( 'tribe_tickets_commerce_settings', $settings );
 
 		// Handle setting up dependencies for all of the fields.
-		// @todo Define the setting referenced here as property.
-		$validate_if         = new Tribe__Field_Conditional( 'tickets-commerce-enable', 'tribe_is_truthy' );
+		$validate_if         = new Tribe__Field_Conditional( $this->option_enable, 'tribe_is_truthy' );
 		$fieldset_attributes = [
-			'data-depends'              => '#tickets-commerce-enable-input',
+			'data-depends'              => '#' . $this->option_enable . '-input',
 			'data-condition-is-checked' => '',
 		];
 

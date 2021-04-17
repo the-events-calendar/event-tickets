@@ -17,6 +17,42 @@ use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\
 class Settings extends Abstract_Settings {
 
 	/**
+	 * The option key for email.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_email = 'ticket-paypal-email';
+
+	/**
+	 * The option key for IPN enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_ipn_enabled = 'ticket-paypal-ipn-enabled';
+
+	/**
+	 * The option key for IPN address set.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_ipn_address_set = 'ticket-paypal-ipn-address-set';
+
+	/**
+	 * The option key for IPN notify URL.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_ipn_notify_url = 'ticket-paypal-notify-url';
+
+	/**
 	 * Get the list of settings for the gateway.
 	 *
 	 * @since TBD
@@ -73,8 +109,7 @@ class Settings extends Abstract_Settings {
 				'html'            => '<p>' . $paypal_setup_note . '</p>',
 				'validation_type' => 'html',
 			],
-			// @todo Define setting as property.
-			'ticket-paypal-email'             => [
+			$this->option_email             => [
 				'type'            => 'email',
 				'label'           => esc_html__( 'PayPal email to receive payments:', 'event-tickets' ),
 				'size'            => 'large',
@@ -82,8 +117,7 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'email',
 				'class'           => 'indent light-bordered checkmark checkmark-right checkmark-hide ipn-required',
 			],
-			// @todo Define setting as property.
-			'ticket-paypal-ipn-enabled'       => [
+			$this->option_ipn_enabled       => [
 				'type'            => 'radio',
 				'label'           => esc_html__( "Have you enabled instant payment notifications (IPN) in your PayPal account's Selling Tools?", 'event-tickets' ),
 				'options'         => [
@@ -95,8 +129,7 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'options',
 				'class'           => 'indent light-bordered checkmark checkmark-right checkmark-hide ipn-required',
 			],
-			// @todo Define setting as property.
-			'ticket-paypal-ipn-address-set'   => [
+			$this->option_ipn_address_set   => [
 				'type'            => 'radio',
 				'label'           => $ipn_setup_line,
 				'options'         => [
@@ -108,7 +141,6 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'options',
 				'class'           => 'indent light-bordered checkmark checkmark-right checkmark-hide ipn-required',
 			],
-			// @todo Define setting as property.
 			'ticket-paypal-ipn-config-status' => [
 				'type'            => 'wrapped_html',
 				'html'            => $ipn_config_status,
@@ -137,7 +169,6 @@ class Settings extends Abstract_Settings {
 				$paypal_links->ipn_notification_settings( 'tag' )
 			);
 
-			// @todo Define setting as property.
 			$settings['ticket-paypal-notify-history'] = [
 				'type'            => 'wrapped_html',
 				'html'            => '<p>' . $ipn_notify_note . '</p>',
@@ -146,8 +177,7 @@ class Settings extends Abstract_Settings {
 				'class'           => 'indent light-bordered',
 			];
 
-			// @todo Define setting as property.
-			$settings['ticket-paypal-notify-url'] = [
+			$settings[ $this->option_ipn_notify_url ] = [
 				'type'            => 'text',
 				'label'           => esc_html__( 'IPN Notify URL', 'event-tickets' ),
 				'tooltip'         => $ipn_notify_url_tooltip,
