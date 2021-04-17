@@ -42,8 +42,9 @@ class Gateway extends Abstract_Gateway {
 		}
 
 		$gateways['paypal-legacy'] = [
-			'label' => __( 'PayPal Standard (Legacy)', 'event-tickets' ),
-			'class' => self::class,
+			'label'  => __( 'PayPal Standard (Legacy)', 'event-tickets' ),
+			'class'  => self::class,
+			'object' => $this,
 		];
 
 		return $gateways;
@@ -119,6 +120,20 @@ class Gateway extends Abstract_Gateway {
 
 		// Default this gateway to off.
 		return false;
+	}
+
+	/**
+	 * Get the list of settings for the gateway.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The list of settings for the gateway.
+	 */
+	public function get_settings() {
+		/** @var Settings $settings */
+		$settings = tribe( Settings::class );
+
+		return $settings->get_settings();
 	}
 
 }
