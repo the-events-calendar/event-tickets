@@ -1,6 +1,6 @@
 <?php
 
-use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Legacy\Settings as PayPal_Legacy_Settings;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Settings as Tickets_Commerce_Settings;
 
 /**
  * Filter to allow users to add/alter ignored post types
@@ -152,9 +152,9 @@ $authentication_fields = [
 	],
 ];
 
-/** @var PayPal_Legacy_Settings $paypal_legacy_settings */
-$paypal_legacy_settings = tribe( PayPal_Legacy_Settings::class );
-$paypal_legacy_fields   = $paypal_legacy_settings->get_admin_settings();
+/** @var Tickets_Commerce_Settings $commerce_settings */
+$commerce_settings = tribe( Tickets_Commerce_Settings::class );
+$commerce_fields   = $commerce_settings->get_settings();
 
 $ticket_fields_end = [
 	'tribe-form-content-end' => [
@@ -167,7 +167,7 @@ $tickets_fields = array_merge(
 	$tickets_fields,
 	$tec_fields,
 	$authentication_fields,
-	$paypal_legacy_fields,
+	$commerce_fields,
 	$ticket_fields_end
 );
 
