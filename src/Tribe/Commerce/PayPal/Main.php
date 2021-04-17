@@ -309,43 +309,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		tribe_singleton( 'tickets.commerce.paypal.view', 'Tribe__Tickets__Commerce__PayPal__Tickets_View' );
 
-		// @todo Move as much of this into the legacy service provider as possible.
-		// @todo Determine what is still needed for PayPal Commerce to function.
-
-		// @todo See if there's any overlap here.
+		// @todo See if there's any overlap with PayPal Commerce here.
 		tribe_singleton( 'tickets.commerce.paypal.handler.ipn', 'Tribe__Tickets__Commerce__PayPal__Handler__IPN', [ 'hook' ] );
 		tribe_singleton( 'tickets.commerce.paypal.handler.pdt', 'Tribe__Tickets__Commerce__PayPal__Handler__PDT', [ 'hook' ] );
-
-		tribe_singleton( 'tickets.commerce.paypal.gateway', 'Tribe__Tickets__Commerce__PayPal__Gateway', [ 'build_handler' ] );
-		tribe_singleton( 'tickets.commerce.paypal.notices', 'Tribe__Tickets__Commerce__PayPal__Notices' );
-		tribe_singleton( 'tickets.commerce.paypal.endpoints', 'Tribe__Tickets__Commerce__PayPal__Endpoints', [ 'hook' ] );
-		tribe_singleton( 'tickets.commerce.paypal.endpoints.templates.success', 'Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template' );
-		tribe_singleton( 'tickets.commerce.paypal.orders.tabbed-view', 'Tribe__Tickets__Commerce__Orders_Tabbed_View' );
-		tribe_singleton( 'tickets.commerce.paypal.orders.report', 'Tribe__Tickets__Commerce__PayPal__Orders__Report' );
-		tribe_singleton( 'tickets.commerce.paypal.orders.sales', 'Tribe__Tickets__Commerce__PayPal__Orders__Sales' );
-		tribe_singleton( 'tickets.commerce.paypal.screen-options', 'Tribe__Tickets__Commerce__PayPal__Screen_Options', [ 'hook' ] );
-		tribe_singleton( 'tickets.commerce.paypal.stati', 'Tribe__Tickets__Commerce__PayPal__Stati' );
-		tribe_singleton( 'tickets.commerce.paypal.currency', 'Tribe__Tickets__Commerce__Currency', [ 'hook' ] );
-		tribe_singleton( 'tickets.commerce.paypal.links', 'Tribe__Tickets__Commerce__PayPal__Links' );
-		tribe_singleton( 'tickets.commerce.paypal.oversell.policies', 'Tribe__Tickets__Commerce__PayPal__Oversell__Policies' );
-		tribe_singleton( 'tickets.commerce.paypal.oversell.request', 'Tribe__Tickets__Commerce__PayPal__Oversell__Request' );
-		tribe_singleton( 'tickets.commerce.paypal.frontend.tickets-form', 'Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form' );
-		tribe_register( 'tickets.commerce.paypal.cart', 'Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged' );
-
-		tribe()->tag( [
-			'tickets.commerce.paypal.shortcodes.tpp-success' => 'Tribe__Tickets__Commerce__PayPal__Shortcodes__Success',
-		], 'tpp-shortcodes' );
-
-		/** @var Tribe__Tickets__Commerce__PayPal__Shortcodes__Interface $shortcode */
-		foreach ( tribe()->tagged( 'tpp-shortcodes' ) as $shortcode ) {
-			add_shortcode( $shortcode->tag(), [ $shortcode, 'render' ] );
-		}
-
-		tribe( 'tickets.commerce.paypal.gateway' );
-		tribe( 'tickets.commerce.paypal.orders.report' );
-		tribe( 'tickets.commerce.paypal.screen-options' );
-		tribe( 'tickets.commerce.paypal.endpoints' );
-		tribe( 'tickets.commerce.paypal.currency' );
 	}
 
 	/**
@@ -367,7 +333,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_action( 'tribe_events_tickets_attendees_event_details_top', [ $this, 'setup_attendance_totals' ] );
 
 		add_action( 'init', [ $this, 'init' ] );
-		add_action( 'init', tribe_callback( 'tickets.commerce.paypal.orders.report', 'hook' ) );
 
 		add_action( 'event_tickets_attendee_update', [ $this, 'update_attendee_data' ], 10, 3 );
 		add_action( 'event_tickets_after_attendees_update', [ $this, 'maybe_send_tickets_after_status_change' ] );
