@@ -44,8 +44,9 @@ class Gateway extends Abstract_Gateway {
 	 */
 	public function register_gateway( array $gateways, $commerce ) {
 		$gateways['paypal-commerce'] = [
-			'label' => __( 'PayPal Commerce', 'event-tickets' ),
-			'class' => self::class,
+			'label'  => __( 'PayPal Commerce', 'event-tickets' ),
+			'class'  => self::class,
+			'object' => $this,
 		];
 
 		return $gateways;
@@ -84,6 +85,20 @@ class Gateway extends Abstract_Gateway {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Get the list of settings for the gateway.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The list of settings for the gateway.
+	 */
+	public function get_settings() {
+		/** @var Settings $settings */
+		$settings = tribe( Settings::class );
+
+		return $settings->get_settings();
 	}
 
 }
