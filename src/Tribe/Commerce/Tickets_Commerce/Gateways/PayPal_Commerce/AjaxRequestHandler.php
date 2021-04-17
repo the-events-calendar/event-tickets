@@ -184,7 +184,7 @@ class AjaxRequestHandler {
 		$data = [
 			'formId'              => $formId,
 			'formTitle'           => give_payment_gateway_item_title( [ 'post_data' => $postData ], 127 ),
-			'donationAmount'      => isset( $postData['give-amount'] ) ? (float) apply_filters( 'give_donation_total', give_maybe_sanitize_amount( $postData['give-amount'], [ 'currency' => give_get_currency( $formId ) ] ) ) : '0.00',
+			'paymentAmount'      => isset( $postData['give-amount'] ) ? (float) apply_filters( 'give_payment_total', give_maybe_sanitize_amount( $postData['give-amount'], [ 'currency' => give_get_currency( $formId ) ] ) ) : '0.00',
 			'payer'               => [
 				'firstName' => $postData['give_first'],
 				'lastName'  => $postData['give_last'],
@@ -293,7 +293,7 @@ class AjaxRequestHandler {
 	private function validateFrontendRequest() {
 		$formId = absint( $_POST['give-form-id'] );
 
-		if ( ! $formId || ! give_verify_donation_form_nonce( give_clean( $_POST['give-form-hash'] ), $formId ) ) {
+		if ( ! $formId || ! give_verify_payment_form_nonce( give_clean( $_POST['give-form-hash'] ), $formId ) ) {
 			wp_die();
 		}
 	}

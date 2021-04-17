@@ -97,7 +97,7 @@ class PayPalOrder {
 					'reference_id'        => get_post_field( 'post_name', $array['formId'] ),
 					'description'         => $array['formTitle'],
 					'amount'              => [
-						'value'         => give_maybe_sanitize_amount( $array['donationAmount'], [ 'currency' => give_get_currency( $array['formId'] ) ] ),
+						'value'         => give_maybe_sanitize_amount( $array['paymentAmount'], [ 'currency' => give_get_currency( $array['formId'] ) ] ),
 						'currency_code' => give_get_currency( $array['formId'] ),
 					],
 					'payee'               => [
@@ -161,11 +161,11 @@ class PayPalOrder {
 	 * @throws InvalidArgumentException
 	 */
 	private function validateCreateOrderArguments( $array ) {
-		$required = [ 'formId', 'donationAmount', 'payer' ];
+		$required = [ 'formId', 'paymentAmount', 'payer' ];
 		$array    = array_filter( $array ); // Remove empty values.
 
 		if ( array_diff( $required, array_keys( $array ) ) ) {
-			throw new InvalidArgumentException( __( 'To create a paypal order, please provide formId, donationAmount and payer', 'event-tickets' ) );
+			throw new InvalidArgumentException( __( 'To create a paypal order, please provide formId, paymentAmount and payer', 'event-tickets' ) );
 		}
 	}
 }

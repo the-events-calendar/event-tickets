@@ -4,14 +4,14 @@ namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce;
 
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\PayPalClient;
 
-class DonationDetailsPage {
+class PaymentDetailsPage {
 
 	/**
 	 * Return PayPal Commerce payment details page url.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $transactionId donation transaction id.
+	 * @param string $transactionId payment transaction id.
 	 *
 	 * @return string
 	 */

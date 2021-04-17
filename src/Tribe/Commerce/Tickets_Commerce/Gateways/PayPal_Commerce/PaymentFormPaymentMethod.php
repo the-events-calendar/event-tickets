@@ -5,13 +5,13 @@ namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\Utils;
 
 /**
- * Class DonationFormPaymentMethod
+ * Class PaymentFormPaymentMethod
  *
  * @since TBD
  * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce
  *
  */
-class DonationFormPaymentMethod {
+class PaymentFormPaymentMethod {
 
 	/**
 	 *  Setup filter hook.

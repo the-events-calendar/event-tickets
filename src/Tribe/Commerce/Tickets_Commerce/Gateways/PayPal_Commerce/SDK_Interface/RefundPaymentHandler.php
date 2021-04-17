@@ -31,31 +31,31 @@ class RefundPaymentHandler {
 	}
 
 	/**
-	 * Refunds the payment when the donation is marked as refunded
+	 * Refunds the payment when the payment is marked as refunded
 	 *
 	 * @since TBD
 	 *
-	 * @param int $donationId
+	 * @param int $paymentId
 	 *
 	 * @throws Exception
 	 */
-	public function refundPayment( $donationId ) {
+	public function refundPayment( $paymentId ) {
 		if ( ! $this->isAdminOptInToRefundPaymentOnPayPal() ) {
 			return;
 		}
 
-		$payPalPaymentId   = give_get_payment_transaction_id( $donationId );
-		$paymentGateway    = give_get_payment_gateway( $donationId );
-		$newDonationStatus = give_clean( $_POST['give-payment-status'] );
+		$payPalPaymentId   = give_get_payment_transaction_id( $paymentId );
+		$paymentGateway    = give_get_payment_gateway( $paymentId );
+		$newPaymentStatus = give_clean( $_POST['give-payment-status'] );
 
-		if ( 'refunded' !== $newDonationStatus || PayPalCommerce::GATEWAY_ID !== $paymentGateway ) {
+		if ( 'refunded' !== $newPaymentStatus || PayPalCommerce::GATEWAY_ID !== $paymentGateway ) {
 			return;
 		}
 
 		try {
 			$this->ordersRepository->refundPayment( $payPalPaymentId );
 		} catch ( Exception $ex ) {
-			wp_safe_redirect( admin_url( "edit.php?post_type=give_forms&page=give-payment-history&view=view-payment-details&id={$donationId}&paypal-error=refund-failure" ) );
+			wp_safe_redirect( admin_url( "edit.php?post_type=give_forms&page=give-payment-history&view=view-payment-details&id={$paymentId}&paypal-error=refund-failure" ) );
 			exit();
 		}
 	}
@@ -94,20 +94,20 @@ class RefundPaymentHandler {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $donationId Donation ID.
+	 * @param int $paymentId Payment ID.
 	 *
 	 * @return void
 	 */
-	public function optInForRefundFormField( $donationId ) {
+	public function optInForRefundFormField( $paymentId ) {
 		// @todo Add code to get current payment gateway for a commerce provider.
-		if ( PayPalCommerce::GATEWAY_ID !== give_get_payment_gateway( $donationId ) ) {
+		if ( PayPalCommerce::GATEWAY_ID !== give_get_payment_gateway( $paymentId ) ) {
 			return;
 		}
 
 		?>
 		<div id="give-paypal-commerce-opt-refund-wrap" class="give-paypal-commerce-opt-refund give-admin-box-inside give-hidden">
 			<p>
-				<input type="checkbox" id="give-paypal-commerce-opt-refund" name="give_paypal_donations_optin_for_refund" value="1" />
+				<input type="checkbox" id="give-paypal-commerce-opt-refund" name="give_paypal_payments_optin_for_refund" value="1" />
 				<label for="give-paypal-commerce-opt-refund">
 					<?php esc_html_e( 'Refund Charge in PayPal?', 'event-tickets' ); ?>
 				</label>
@@ -125,8 +125,8 @@ class RefundPaymentHandler {
 	 * @return bool
 	 */
 	private function isAdminOptInToRefundPaymentOnPayPal() {
-		return ! empty( $_POST['give_paypal_donations_optin_for_refund'] )
-			? (bool) absint( $_POST['give_paypal_donations_optin_for_refund'] )
+		return ! empty( $_POST['give_paypal_payments_optin_for_refund'] )
+			? (bool) absint( $_POST['give_paypal_payments_optin_for_refund'] )
 			: false;
 	}
 }

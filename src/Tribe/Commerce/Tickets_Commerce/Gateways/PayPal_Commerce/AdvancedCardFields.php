@@ -16,7 +16,7 @@ class AdvancedCardFields {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $formId Donation Form ID.
+	 * @param int $formId Payment Form ID.
 	 *
 	 * @access public
 	 */

@@ -73,7 +73,7 @@ class ScriptLoader {
 					'pciComplianceInstructions'         => [
 						esc_html__( 'Using a trusted, secure hosting provider – preferably one which claims and actively promotes PCI compliance.', 'event-tickets' ),
 						esc_html__( 'Maintain security best practices when setting passwords and limit access to your server.', 'event-tickets' ),
-						esc_html__( 'Implement an SSL certificate to keep your donations secure.', 'event-tickets' ),
+						esc_html__( 'Implement an SSL certificate to keep your payments secure.', 'event-tickets' ),
 						esc_html__( 'Keep plugins up to date to ensure latest security fixes are present.', 'event-tickets' ),
 					],
 					'liveWarning'                       => tribe_tickets_commerce_is_test_mode()
@@ -150,7 +150,7 @@ EOT;
 				],
 				'threeDsCardAuthenticationFailedNotice' => esc_html__( 'There was a problem authenticating your payment method. Please try again. If the problem persists, please try another payment method.', 'event-tickets' ),
 				'errorCodeLabel'                        => esc_html__( 'Error Code', 'event-tickets' ),
-				'genericDonorErrorMessage'              => __( 'There was an error processing your donation. Please contact the administrator.', 'event-tickets' ),
+				'genericDonorErrorMessage'              => __( 'There was an error processing your payment. Please contact the administrator.', 'event-tickets' ),
 				// List of style properties support by PayPal for advanced card fields: https://developer.paypal.com/docs/business/checkout/reference/style-guide/#style-the-card-payments-fields
 				'hostedCardFieldStyles'                 => apply_filters( 'give_paypal_commerce_hosted_field_style', [] ),
 				'supportsCustomPayments'                => $merchant->supportsCustomPayments ? 1 : '',
@@ -159,8 +159,8 @@ EOT;
 				'payPalSdkQueryParameters'              => $payPalSdkQueryParameters,
 				'textForOverlayScreen'                  => sprintf(
 					'<h3>%1$s</h3><p>%2$s</p><p>%3$s</p>',
-					esc_html__( 'Donation Processing...', 'event-tickets' ),
-					esc_html__( 'Checking donation status with PayPal.', 'event-tickets' ),
+					esc_html__( 'Payment Processing...', 'event-tickets' ),
+					esc_html__( 'Checking payment status with PayPal.', 'event-tickets' ),
 					esc_html__( 'This will only take a second!', 'event-tickets' )
 				),
 			]

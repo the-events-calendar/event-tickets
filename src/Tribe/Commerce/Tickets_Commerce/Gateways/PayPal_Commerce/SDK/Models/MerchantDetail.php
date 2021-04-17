@@ -60,7 +60,7 @@ class MerchantDetail {
 	public $accessToken = null;
 
 	/**
-	 * Whether or not the connected account is ready to process donations.
+	 * Whether or not the connected account is ready to process payments.
 	 *
 	 * @since TBD
 	 *

@@ -34,10 +34,10 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( Webhooks::class );
 
 		// @todo Is this needed?
-		// $this->container->singleton( DonationFormElements::class );
+		// $this->container->singleton( PaymentFormElements::class );
 
 		$this->container->singleton( AdvancedCardFields::class );
-		$this->container->singleton( DonationProcessor::class );
+		$this->container->singleton( PaymentProcessor::class );
 		$this->container->singleton( PayPalClient::class );
 		$this->container->singleton( RefreshToken::class );
 		$this->container->singleton( AjaxRequestHandler::class );

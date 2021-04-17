@@ -7,67 +7,67 @@ use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\PayPalC
 use PayPalCheckoutSdk\Orders\OrdersGetRequest;
 
 /**
- * Class DonationProcessor
+ * Class PaymentProcessor
  *
  * @since TBD
  * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce
  *
  */
-class DonationProcessor {
+class PaymentProcessor {
 
 	/**
 	 * @var array
 	 */
-	private $donationFormData;
+	private $paymentFormData;
 
 	/**
-	 * Handle donation form submission.
+	 * Handle payment form submission.
 	 *
 	 * @since TBD
 	 *
-	 * @param array $donationFormData
+	 * @param array $paymentFormData
 	 *
 	 */
-	public function handle( $donationFormData ) {
-		$this->donationFormData = (array) $donationFormData;
+	public function handle( $paymentFormData ) {
+		$this->paymentFormData = (array) $paymentFormData;
 
-		if ( ! $this->isOneTimeDonation() ) {
+		if ( ! $this->isOneTimePayment() ) {
 			return;
 		}
 
-		$formId = absint( $this->donationFormData['post_data']['give-form-id'] );
+		$formId = absint( $this->paymentFormData['post_data']['give-form-id'] );
 
-		$donationData = [
-			'price'           => $this->donationFormData['price'],
-			'give_form_title' => $this->donationFormData['post_data']['give-form-title'],
+		$paymentData = [
+			'price'           => $this->paymentFormData['price'],
+			'give_form_title' => $this->paymentFormData['post_data']['give-form-title'],
 			'give_form_id'    => $formId,
-			'give_price_id'   => isset( $this->donationFormData['post_data']['give-price-id'] ) ? $this->donationFormData['post_data']['give-price-id'] : '',
-			'date'            => $this->donationFormData['date'],
-			'user_email'      => $this->donationFormData['user_email'],
-			'purchase_key'    => $this->donationFormData['purchase_key'],
+			'give_price_id'   => isset( $this->paymentFormData['post_data']['give-price-id'] ) ? $this->paymentFormData['post_data']['give-price-id'] : '',
+			'date'            => $this->paymentFormData['date'],
+			'user_email'      => $this->paymentFormData['user_email'],
+			'purchase_key'    => $this->paymentFormData['purchase_key'],
 			'currency'        => give_get_currency(),
-			'user_info'       => $this->donationFormData['user_info'],
+			'user_info'       => $this->paymentFormData['user_info'],
 			'status'          => 'pending',
-			'gateway'         => $this->donationFormData['gateway'],
+			'gateway'         => $this->paymentFormData['gateway'],
 		];
 
-		$donationId = give_insert_payment( $donationData );
+		$paymentId = give_insert_payment( $paymentData );
 
-		if ( ! $donationId ) {
-			$this->redirectBackToDonationForm();
+		if ( ! $paymentId ) {
+			$this->redirectBackToPaymentForm();
 		}
 
-		$this->redirectDonorToSuccessPage( $donationId );
+		$this->redirectDonorToSuccessPage( $paymentId );
 
 		exit();
 	}
 
 	/**
-	 * Return back to donation form page after logging error.
+	 * Return back to payment form page after logging error.
 	 *
 	 * @since TBD
 	 */
-	private function redirectBackToDonationForm() {
+	private function redirectBackToPaymentForm() {
 		// Record the error.
 		// @todo Replace this with a logging function.
 		give_record_gateway_error(
@@ -75,7 +75,7 @@ class DonationProcessor {
 			sprintf(
 				/* translators: %s: payment data */
 				esc_html__( 'The payment creation failed before processing the PayPalCommerce gateway request. Payment data: %s', 'event-tickets' ),
-				print_r( $this->donationFormData, true )
+				print_r( $this->paymentFormData, true )
 			)
 		);
 
@@ -92,10 +92,10 @@ class DonationProcessor {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $donationId
+	 * @param int $paymentId
 	 */
-	private function redirectDonorToSuccessPage( $donationId ) {
-		$orderDetailRequest = new OrdersGetRequest( $this->donationFormData['post_data']['payPalOrderId'] );
+	private function redirectDonorToSuccessPage( $paymentId ) {
+		$orderDetailRequest = new OrdersGetRequest( $this->paymentFormData['post_data']['payPalOrderId'] );
 
 		$client = tribe( PayPalClient::class )->getHttpClient();
 
@@ -104,7 +104,7 @@ class DonationProcessor {
 		$order = PayPalOrder::fromArray( $orderDetails );
 
 		give_insert_payment_note(
-			$donationId,
+			$paymentId,
 			// @todo Add translator text
 			sprintf(
 				__( 'Transaction Successful. PayPal Transaction ID: %1$s    PayPal Order ID: %2$s', 'event-tickets' ),
@@ -113,13 +113,13 @@ class DonationProcessor {
 			)
 		);
 
-		give_set_payment_transaction_id( $donationId, $order->payment->id );
+		give_set_payment_transaction_id( $paymentId, $order->payment->id );
 
-		Give( 'payment_meta' )->update_meta( $donationId, '_give_order_id', $order->id );
+		Give( 'payment_meta' )->update_meta( $paymentId, '_give_order_id', $order->id );
 
-		// Do not need to set donation to complete if already completed by PayPal webhook.
+		// Do not need to set payment to complete if already completed by PayPal webhook.
 		if ( 'COMPLETED' === $order->payment->status ) {
-			give_update_payment_status( $donationId );
+			give_update_payment_status( $paymentId );
 		}
 
 		wp_safe_redirect(
@@ -135,13 +135,13 @@ class DonationProcessor {
 	}
 
 	/**
-	 * Return whether or not donation is onetime.
+	 * Return whether or not payment is onetime.
 	 *
 	 * @since TBD
 	 *
 	 * @return bool
 	 */
-	private function isOneTimeDonation() {
-		return array_key_exists( 'post_data', $this->donationFormData ) && array_key_exists( 'payPalOrderId', $this->donationFormData['post_data'] );
+	private function isOneTimePayment() {
+		return array_key_exists( 'post_data', $this->paymentFormData ) && array_key_exists( 'payPalOrderId', $this->paymentFormData['post_data'] );
 	}
 }

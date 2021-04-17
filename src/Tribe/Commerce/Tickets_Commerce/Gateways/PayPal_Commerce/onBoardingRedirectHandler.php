@@ -304,7 +304,7 @@ class onBoardingRedirectHandler {
 		];
 
 		if ( ! is_ssl() ) {
-			$errorMessages[] = esc_html__( 'A valid SSL certificate is required to accept donations and set up your PayPal account. Once a
+			$errorMessages[] = esc_html__( 'A valid SSL certificate is required to accept payments and set up your PayPal account. Once a
 					certificate is installed and the site is using https, please disconnect and reconnect your account.', 'event-tickets' );
 		}
 

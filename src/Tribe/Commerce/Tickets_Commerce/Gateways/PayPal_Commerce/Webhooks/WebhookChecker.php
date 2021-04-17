@@ -97,7 +97,7 @@ class WebhookChecker {
 				// @todo Replace this with a notice / log.
 				Give_Admin_Settings::add_error(
 					'paypal-webhook-update-error',
-					__( 'There was a problem updating your PayPal Donations webhook. Please disconnect your account and reconnect it.', 'event-tickets' )
+					__( 'There was a problem updating your PayPal Payments webhook. Please disconnect your account and reconnect it.', 'event-tickets' )
 				);
 			}
 		}

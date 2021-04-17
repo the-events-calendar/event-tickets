@@ -17,21 +17,21 @@ class PaymentCaptureRefunded extends PaymentEventListener {
 	public function processEvent( $event ) {
 		$paymentId = $this->getPaymentFromRefund( $event->resource );
 
-		$donation = $this->paymentsRepository->getDonationByPayment( $paymentId );
+		$payment = $this->paymentsRepository->getPaymentByPayment( $paymentId );
 
-		// If there's no matching donation then it's not tracked by GiveWP
-		if ( ! $donation ) {
+		// If there's no matching payment then it's not tracked by GiveWP
+		if ( ! $payment ) {
 			return;
 		}
 
 		// @todo Replace this.
-		// Exit if donation status already set to refunded.
-		if ( ! give_update_payment_status( $donation->ID, 'refunded' ) ) {
+		// Exit if payment status already set to refunded.
+		if ( ! give_update_payment_status( $payment->ID, 'refunded' ) ) {
 			return;
 		}
 
 		// @todo Replace this.
-		give_insert_payment_note( $donation->ID, __( 'Charge refunded in PayPal', 'event-tickets' ) );
+		give_insert_payment_note( $payment->ID, __( 'Charge refunded in PayPal', 'event-tickets' ) );
 
 		// @todo Replace the action name.
 		/**
@@ -39,7 +39,7 @@ class PaymentCaptureRefunded extends PaymentEventListener {
 		 *
 		 * @since TBD
 		 */
-		do_action( 'give_paypal_commerce_webhook_charge_refunded', $event, $donation );
+		do_action( 'give_paypal_commerce_webhook_charge_refunded', $event, $payment );
 	}
 
 	/**
