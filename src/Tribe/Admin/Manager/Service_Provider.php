@@ -151,9 +151,9 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 			return;
 		}
 
-		$supported_post_types = tribe_get_option( 'ticket-enabled-post-types', [] );
+		$supported_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 
-		if ( ! in_array( $post->post_type, $supported_post_types ) ) {
+		if ( ! in_array( $post->post_type, $supported_post_types, true ) ) {
 			return;
 		}
 
