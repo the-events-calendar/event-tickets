@@ -137,7 +137,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 
 		// If this is not the Admin Edit page or not the singular frontend view, bail out.
 		if (
-			! ( is_admin() && 'edit' == tribe_get_request_var( 'action' ) )
+			! ( is_admin() && 'edit' === tribe_get_request_var( 'action' ) )
 			&& ! is_singular()
 		) {
 			return;
@@ -148,6 +148,12 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 
 		// If no valid post is found, bail out.
 		if ( 0 === $post_id ) {
+			return;
+		}
+
+		$supported_post_types = tribe_get_option( 'ticket-enabled-post-types', [] );
+
+		if ( ! in_array( $post->post_type, $supported_post_types ) ) {
 			return;
 		}
 
