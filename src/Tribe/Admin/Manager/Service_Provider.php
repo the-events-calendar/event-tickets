@@ -135,10 +135,13 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 			return;
 		}
 
-		// If this is not the Admin Edit page or not the singular frontend view, bail out.
+		// Get list of supported post types for Tickets.
+		$supported_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+
+		// Only show the view button for admin edit or singular frontend view.
 		if (
 			! ( is_admin() && 'edit' === tribe_get_request_var( 'action' ) )
-			&& ! is_singular()
+			&& ! is_singular( $supported_post_types )
 		) {
 			return;
 		}
@@ -151,12 +154,6 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 			return;
 		}
 
-		$supported_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
-
-		if ( ! in_array( $post->post_type, $supported_post_types, true ) ) {
-			return;
-		}
-
 		// Make sure we have tickets on this Post Type / Event.
 		$tickets = \Tribe__Tickets__Tickets::get_all_event_tickets( $post_id );
 
@@ -166,7 +163,8 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 
 		/** @var \Tribe__Tickets__Attendees $tickets_attendees */
 		$tickets_attendees = tribe( 'tickets.attendees' );
-		$url               = $tickets_attendees->get_report_link( $post );
+
+		$url = $tickets_attendees->get_report_link( $post );
 
 		// Add the Nav button node to nav menu.
 		$wp_admin_bar->add_menu(
