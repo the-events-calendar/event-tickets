@@ -175,14 +175,14 @@ class Settings extends Abstract_Settings {
 		);
 
 		$settings = [
-			$this->sandbox                         => [
+			$this->option_sandbox                         => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html__( 'Enable Test Mode', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Enables Test mode for testing payments. Any payments made will be done on "sandbox" accounts.', 'event-tickets' ),
 				'default'         => false,
 				'validation_type' => 'boolean',
 			],
-			$this->currency_code                   => [
+			$this->option_currency_code                   => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions.', 'event-tickets' ),
@@ -190,7 +190,7 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'options',
 				'options'         => $paypal_currency_code_options,
 			],
-			$this->stock_handling                  => [
+			$this->option_stock_handling                  => [
 				'type'            => 'radio',
 				'label'           => esc_html__( 'Stock Handling', 'event-tickets' ),
 				'tooltip'         => esc_html(
@@ -216,7 +216,7 @@ class Settings extends Abstract_Settings {
 				],
 				'tooltip_first'   => true,
 			],
-			$this->success_page                    => [
+			$this->option_success_page                    => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Success page', 'event-tickets' ),
 				'tooltip'         => esc_html(
@@ -231,7 +231,7 @@ class Settings extends Abstract_Settings {
 				'options'         => $pages,
 				'required'        => true,
 			],
-			$this->confirmation_email_sender_email => [
+			$this->option_confirmation_email_sender_email => [
 				'type'            => 'email',
 				'label'           => esc_html__( 'Confirmation email sender address', 'event-tickets' ),
 				'tooltip'         => esc_html(
@@ -246,7 +246,7 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'email',
 				'can_be_empty'    => true,
 			],
-			$this->confirmation_email_sender_name  => [
+			$this->option_confirmation_email_sender_name  => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Confirmation email sender name', 'event-tickets' ),
 				'tooltip'             => esc_html(
@@ -261,7 +261,7 @@ class Settings extends Abstract_Settings {
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
 			],
-			$this->confirmation_email_subject      => [
+			$this->option_confirmation_email_subject      => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Confirmation email subject', 'event-tickets' ),
 				'tooltip'             => esc_html(

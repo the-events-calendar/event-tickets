@@ -82,6 +82,7 @@ class Settings extends Abstract_Settings {
 			esc_html( $home_url )
 		);
 		$ipn_setup_site_address = sprintf(
+			// Translators: %s: The site link.
 			esc_html__( 'Your site address is: %s', 'event-tickets' ),
 			$ipn_setup_site_link
 		);
