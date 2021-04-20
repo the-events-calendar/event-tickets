@@ -100,11 +100,11 @@ class Settings extends Abstract_Settings {
 
 		$plus_link    = sprintf(
 			'<a href="https://evnt.is/19zl" target="_blank" rel="noopener noreferrer">%s</a>',
-			esc_html__( 'Event Tickets Plus', 'tribe-common' )
+			esc_html__( 'Event Tickets Plus', 'event-tickets' )
 		);
 		$plus_link_2  = sprintf(
 			'<a href="https://evnt.is/19zl" target="_blank" rel="noopener noreferrer">%s</a>',
-			esc_html__( 'Check it out!', 'tribe-common' )
+			esc_html__( 'Check it out!', 'event-tickets' )
 		);
 		$plus_message = sprintf(
 			// Translators: %1$s: The Event Tickets Plus link, %2$s: The word "ticket" in lowercase, %3$s: The "Check it out!" link.
@@ -150,7 +150,7 @@ class Settings extends Abstract_Settings {
 				'type' => 'html',
 				'html' => '<p>' . $plus_message . '</p>',
 			],
-			$this->enable                     => [
+			$this->option_enable              => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html__( 'Enable Tickets Commerce ', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Check this box if you wish to turn on Tickets Commerce functionality.', 'event-tickets' ),

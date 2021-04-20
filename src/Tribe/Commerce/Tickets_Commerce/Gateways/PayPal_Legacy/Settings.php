@@ -122,7 +122,7 @@ class Settings extends Abstract_Settings {
 				'label'           => esc_html__( "Have you enabled instant payment notifications (IPN) in your PayPal account's Selling Tools?", 'event-tickets' ),
 				'options'         => [
 					'yes' => __( 'Yes', 'event-tickets' ),
-					'no'  => __( 'No', 'event-tic->valuekets' ),
+					'no'  => __( 'No', 'event-tickets' ),
 				],
 				'size'            => 'large',
 				'default'         => 'no',
