@@ -176,7 +176,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.1.3] 2021-04-21 =
+= [5.1.3] 2021-04-22 =
 
 * Fix - Add TwentyTwentyOne theme compatibility for Tickets and RSVPs. [ET-1047]
 * Fix - Added translation support for "Going" and "Not going" status labels. [ET-1056]
