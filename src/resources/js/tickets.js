@@ -613,6 +613,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 				obj.refreshPanels( response.data, 'ticket' );
 				obj.startWatchingMoveLinkIn( '#event_tickets' )
+
+				$tribe_tickets.trigger( 'edit-ticket.tribe', event );
 			},
 			'json'
 		);
