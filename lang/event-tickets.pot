@@ -2,17 +2,17 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.1.2\n"
+"Project-Id-Version: Event Tickets 5.1.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2021-03-26 13:58:21+00:00\n"
+"POT-Creation-Date: 2021-04-20 15:30:59+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2021-03-26 13:58\n"
+"PO-Revision-Date: 2021-04-20 15:30\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.1.2)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.1.3)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: event-tickets.php:62 src/Tribe/Admin/Notices.php:92 src/Tribe/Main.php:680
 #: src/Tribe/Privacy.php:59 src/admin-views/admin-welcome-message.php:58
@@ -29,18 +29,23 @@ msgctxt "total complete tooltip"
 msgid "Includes ticketed attendees with orders marked Completed."
 msgstr ""
 
-#: src/Tribe/Admin/Columns/Tickets.php:56 src/Tribe/Attendees.php:210
+#: src/Tribe/Admin/Columns/Tickets.php:56
+#: src/Tribe/Admin/Manager/Service_Provider.php:173 src/Tribe/Attendees.php:210
 #: src/Tribe/Commerce/PayPal/Main.php:449
 #: src/Tribe/Tabbed_View/Attendee_Report_Tab.php:22 src/admin-views/list.php:95
 msgid "Attendees"
 msgstr ""
 
-#: src/Tribe/Admin/Manager/Service_Provider.php:53
+#: src/Tribe/Admin/Manager/Service_Provider.php:56
 msgid "Insecure request."
 msgstr ""
 
-#: src/Tribe/Admin/Manager/Service_Provider.php:86 src/Tribe/RSVP.php:268
+#: src/Tribe/Admin/Manager/Service_Provider.php:89 src/Tribe/RSVP.php:268
 msgid "Something happened here."
+msgstr ""
+
+#: src/Tribe/Admin/Manager/Service_Provider.php:176
+msgid "Manage attendees"
 msgstr ""
 
 #: src/Tribe/Admin/Move_Ticket_Types.php:28
@@ -282,7 +287,7 @@ msgstr ""
 msgid "Unticketed"
 msgstr ""
 
-#: src/Tribe/Assets.php:189 src/views/tickets/tpp-success.php:99
+#: src/Tribe/Assets.php:189 src/views/tickets/tpp-success.php:97
 msgid "%s header image"
 msgstr ""
 
@@ -431,35 +436,35 @@ msgstr ""
 msgid "attendees"
 msgstr ""
 
-#: src/Tribe/Attendees.php:685
+#: src/Tribe/Attendees.php:694
 msgid "Invalid Event ID"
 msgstr ""
 
-#: src/Tribe/Attendees.php:702
+#: src/Tribe/Attendees.php:711
 msgid "Cheatin Huh?"
 msgstr ""
 
-#: src/Tribe/Attendees.php:708
+#: src/Tribe/Attendees.php:717
 msgid "Empty user and email"
 msgstr ""
 
-#: src/Tribe/Attendees.php:720
+#: src/Tribe/Attendees.php:729
 msgid "Invalid Email"
 msgstr ""
 
-#: src/Tribe/Attendees.php:726 src/Tribe/Attendees.php:742
+#: src/Tribe/Attendees.php:735 src/Tribe/Attendees.php:751
 msgid "Invalid User ID"
 msgstr ""
 
-#: src/Tribe/Attendees.php:762
+#: src/Tribe/Attendees.php:771
 msgid "Attendee List for: %s"
 msgstr ""
 
-#: src/Tribe/Attendees.php:763
+#: src/Tribe/Attendees.php:772
 msgid "Error when sending the email"
 msgstr ""
 
-#: src/Tribe/Attendees.php:770
+#: src/Tribe/Attendees.php:779
 msgid "Email sent successfully!"
 msgstr ""
 
@@ -487,48 +492,39 @@ msgctxt "attendee table"
 msgid "Check in"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:392
+#: src/Tribe/Attendees_Table.php:393
 msgctxt "row action"
 msgid "Check In"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:393
+#: src/Tribe/Attendees_Table.php:394
 msgctxt "row action"
 msgid "Undo Check In"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:402
+#: src/Tribe/Attendees_Table.php:403
 msgctxt "row action"
 msgid "Move"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:414
+#: src/Tribe/Attendees_Table.php:415
 msgctxt "row action"
 msgid "Delete"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:494
+#: src/Tribe/Attendees_Table.php:495
 msgid "View order"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:506 src/Tribe/Attendees_Table.php:515
-#: src/Tribe/Attendees_Table.php:526 src/Tribe/Attendees_Table.php:535
-msgid "Check In"
-msgstr ""
-
-#: src/Tribe/Attendees_Table.php:514 src/Tribe/Attendees_Table.php:534
-msgid "Undo"
-msgstr ""
-
-#: src/Tribe/Attendees_Table.php:636
+#: src/Tribe/Attendees_Table.php:604
 msgid "Print"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:637
+#: src/Tribe/Attendees_Table.php:605
 msgid "Export"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:644
+#: src/Tribe/Attendees_Table.php:612
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:100 src/Tribe/Privacy.php:189
 #: src/Tribe/Privacy.php:470 src/Tribe/Privacy.php:566
 #: src/views/blocks/rsvp/form/email.php:32 src/views/tickets/rsvp.php:229
@@ -537,68 +533,68 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:671 src/admin-views/list.php:41
+#: src/Tribe/Attendees_Table.php:639 src/admin-views/list.php:41
 msgid "Delete"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:672
+#: src/Tribe/Attendees_Table.php:640
 msgid "Check in"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:673
+#: src/Tribe/Attendees_Table.php:641
 msgid "Undo Check in"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:1000
+#: src/Tribe/Attendees_Table.php:968
 msgid "No matching attendees found."
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:1014
+#: src/Tribe/Attendees_Table.php:982
 msgctxt "Attendees Table search options"
 msgid "Search by Purchaser Name"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:1015
+#: src/Tribe/Attendees_Table.php:983
 msgctxt "Attendees Table search options"
 msgid "Search by Purchaser Email"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:1016
+#: src/Tribe/Attendees_Table.php:984
 msgctxt "Attendees Table search options"
 msgid "Search by Ticket Holder Name"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:1017
+#: src/Tribe/Attendees_Table.php:985
 msgctxt "Attendees Table search options"
 msgid "Search by Ticket Holder Email"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:1018
+#: src/Tribe/Attendees_Table.php:986
 msgctxt "Attendees Table search options"
 msgid "Search by User ID"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:1019
+#: src/Tribe/Attendees_Table.php:987
 msgctxt "Attendees Table search options"
 msgid "Search by Order Status"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:1020
+#: src/Tribe/Attendees_Table.php:988
 msgctxt "Attendees Table search options"
 msgid "Search by Order ID"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:1021
+#: src/Tribe/Attendees_Table.php:989
 msgctxt "Attendees Table search options"
 msgid "Search by Security Code"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:1022
+#: src/Tribe/Attendees_Table.php:990
 msgctxt "Attendees Table search options"
 msgid "Search by %s ID"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:1023
+#: src/Tribe/Attendees_Table.php:991
 msgctxt "Attendees Table search options"
 msgid "Search by Product ID"
 msgstr ""
@@ -1406,7 +1402,7 @@ msgstr ""
 msgid "Order Number"
 msgstr ""
 
-#: src/Tribe/Privacy.php:549 src/views/tickets/tpp-success.php:138
+#: src/Tribe/Privacy.php:549 src/views/tickets/tpp-success.php:136
 msgid "Order Total"
 msgstr ""
 
@@ -2151,6 +2147,14 @@ msgctxt "attendee summary"
 msgid "Not Going:"
 msgstr ""
 
+#: src/Tribe/RSVP/Status/Going.php:31
+msgid "Going"
+msgstr ""
+
+#: src/Tribe/RSVP/Status/Not_Going.php:25
+msgid "Not going"
+msgstr ""
+
 #: src/Tribe/RSVP.php:487
 msgid "Your RSVP was unsuccessful, please try again."
 msgstr ""
@@ -2315,7 +2319,7 @@ msgid "Unlimited"
 msgstr ""
 
 #: src/Tribe/Tickets_View.php:844 src/views/blocks/attendees/view-link.php:68
-#: src/views/tickets/view-link.php:78
+#: src/views/tickets/view-link.php:84
 msgctxt "separator if there are both RSVPs and Tickets"
 msgid " and "
 msgstr ""
@@ -2547,6 +2551,14 @@ msgstr ""
 
 #: src/admin-views/attendees-email.php:59
 msgid "Send Email"
+msgstr ""
+
+#: src/admin-views/attendees-table/check-in-button.php:23
+msgid "Check In"
+msgstr ""
+
+#: src/admin-views/attendees-table/check-in-button.php:31
+msgid "Undo Check In"
 msgstr ""
 
 #: src/admin-views/attendees.php:67
@@ -3724,37 +3736,37 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: src/views/blocks/attendees/view-link.php:40
-#: src/views/tickets/orders-pp-tickets.php:32
-#: src/views/tickets/orders-rsvp.php:30 src/views/tickets/orders.php:94
-#: src/views/tickets/view-link.php:50
+#: src/views/tickets/orders-pp-tickets.php:30
+#: src/views/tickets/orders-rsvp.php:28 src/views/tickets/orders.php:92
+#: src/views/tickets/view-link.php:56
 msgctxt "fallback post type singular name"
 msgid "Post"
 msgstr ""
 
 #. Translators: 1: the number one, 2: singular RSVP label.
 #: src/views/blocks/attendees/view-link.php:47
-#: src/views/tickets/view-link.php:57
+#: src/views/tickets/view-link.php:63
 msgctxt "RSVP count singular"
 msgid "%1$d %2$s"
 msgstr ""
 
 #. Translators: 1: the plural number of RSVPs, 2: plural RSVP label.
 #: src/views/blocks/attendees/view-link.php:50
-#: src/views/tickets/view-link.php:60
+#: src/views/tickets/view-link.php:66
 msgctxt "RSVP count plural"
 msgid "%1$d %2$s"
 msgstr ""
 
 #. Translators: 1: the number one, 2: singular Ticket label.
 #: src/views/blocks/attendees/view-link.php:55
-#: src/views/tickets/view-link.php:65
+#: src/views/tickets/view-link.php:71
 msgctxt "Ticket count singular"
 msgid "%1$d %2$s"
 msgstr ""
 
 #. Translators: 1: the plural number of Tickets, 2: plural Ticket label.
 #: src/views/blocks/attendees/view-link.php:58
-#: src/views/tickets/view-link.php:68
+#: src/views/tickets/view-link.php:74
 msgctxt "Ticket count plural"
 msgid "%1$d %2$s"
 msgstr ""
@@ -3764,14 +3776,14 @@ msgstr ""
 #. Translators: 1: number of RSVPs and/or Tickets with accompanying ticket type
 #. text, 2: post type label.
 #: src/views/blocks/attendees/view-link.php:68
-#: src/views/tickets/view-link.php:78
+#: src/views/tickets/view-link.php:84
 msgid "You have %1s for this %2s."
 msgstr ""
 
 #. Translators: %s: The name(s) of the type(s) of ticket(s) the specified user
 #. (optional) has for the specified event.
 #: src/views/blocks/attendees/view-link.php:73
-#: src/views/tickets/view-link.php:86
+#: src/views/tickets/view-link.php:92
 msgid "View your %s"
 msgstr ""
 
@@ -3879,7 +3891,7 @@ msgid "Total:"
 msgstr ""
 
 #: src/views/blocks/tickets/footer.php:39
-#: src/views/tickets/tpp-return-to-cart.php:6
+#: src/views/tickets/tpp-return-to-cart.php:18
 #: src/views/v2/tickets/footer/return-to-cart.php:76
 msgid "Return to Cart"
 msgstr ""
@@ -4127,7 +4139,7 @@ msgstr ""
 msgid "You have not indicated your attendance for any upcoming events."
 msgstr ""
 
-#: src/views/tickets/attendees-email.php:24
+#: src/views/tickets/attendees-email.php:22
 msgid "Attendee List"
 msgstr ""
 
@@ -4190,62 +4202,62 @@ msgid "Security Code"
 msgstr ""
 
 #. Translators: 1: plural RSVP label, 2: post type label.
-#: src/views/tickets/orders-pp-tickets.php:40
-#: src/views/tickets/orders-rsvp.php:39
+#: src/views/tickets/orders-pp-tickets.php:38
+#: src/views/tickets/orders-rsvp.php:37
 msgid "My %1$s for this %2$s"
 msgstr ""
 
-#: src/views/tickets/orders-pp-tickets.php:54
+#: src/views/tickets/orders-pp-tickets.php:52
 msgid "Purchased by %1$s (%2$s)"
 msgstr ""
 
 #. Translators: %s: date of RSVP.
-#: src/views/tickets/orders-pp-tickets.php:60
-#: src/views/tickets/orders-rsvp.php:61
+#: src/views/tickets/orders-pp-tickets.php:58
+#: src/views/tickets/orders-rsvp.php:59
 msgid " on %s"
 msgstr ""
 
-#: src/views/tickets/orders-pp-tickets.php:79
-#: src/views/tickets/orders-rsvp.php:80
+#: src/views/tickets/orders-pp-tickets.php:77
+#: src/views/tickets/orders-rsvp.php:78
 msgid "Attendee %d"
 msgstr ""
 
-#: src/views/tickets/orders-pp-tickets.php:84
+#: src/views/tickets/orders-pp-tickets.php:82
 msgctxt "order status label"
 msgid "Payment status: "
 msgstr ""
 
-#: src/views/tickets/orders-pp-tickets.php:89
-#: src/views/tickets/orders-rsvp.php:104
+#: src/views/tickets/orders-pp-tickets.php:87
+#: src/views/tickets/orders-rsvp.php:102
 msgid "Type: "
 msgstr ""
 
 #. Translators: 1: attendee name, 2: linked attendee email.
-#: src/views/tickets/orders-rsvp.php:54
+#: src/views/tickets/orders-rsvp.php:52
 msgid "Reserved by %1$s (%2$s)"
 msgstr ""
 
-#: src/views/tickets/orders-rsvp.php:85
+#: src/views/tickets/orders-rsvp.php:83
 msgctxt "order status label"
 msgid "RSVP: "
 msgstr ""
 
-#: src/views/tickets/orders.php:78
+#: src/views/tickets/orders.php:76
 msgctxt "notice if user does not have tickets"
 msgid "You don't have %s for this event"
 msgstr ""
 
-#: src/views/tickets/orders.php:83
+#: src/views/tickets/orders.php:81
 msgctxt "notice if user does not have rsvps"
 msgid "You don't have %s for this event"
 msgstr ""
 
 #. Translators: %s: post type label.
-#: src/views/tickets/orders.php:103
+#: src/views/tickets/orders.php:101
 msgid "View %s"
 msgstr ""
 
-#: src/views/tickets/orders.php:162
+#: src/views/tickets/orders.php:160
 msgid "Update %s"
 msgstr ""
 
@@ -4276,47 +4288,47 @@ msgid ""
 "JavaScript in your browser."
 msgstr ""
 
-#: src/views/tickets/tpp-success.php:46
+#: src/views/tickets/tpp-success.php:44
 msgid "No order confirmation is available because no purchase was made."
 msgstr ""
 
-#: src/views/tickets/tpp-success.php:52
+#: src/views/tickets/tpp-success.php:50
 msgid ""
 "Whoops! It looks like there was a problem with your order. Please contact "
 "the site owner for assistance."
 msgstr ""
 
-#: src/views/tickets/tpp-success.php:60
+#: src/views/tickets/tpp-success.php:58
 msgid ""
 "Your order (#%s) is currently processing. Once completed, you'll receive "
 "your ticket(s) in an email."
 msgstr ""
 
-#: src/views/tickets/tpp-success.php:69
+#: src/views/tickets/tpp-success.php:67
 msgid ""
 "Thank you for your purchase! You will receive your receipt and tickets via "
 "email."
 msgstr ""
 
-#: src/views/tickets/tpp-success.php:72
+#: src/views/tickets/tpp-success.php:70
 msgid "Purchaser Name"
 msgstr ""
 
-#: src/views/tickets/tpp-success.php:75
+#: src/views/tickets/tpp-success.php:73
 msgid "Purchaser Email"
 msgstr ""
 
-#: src/views/tickets/tpp-success.php:82
+#: src/views/tickets/tpp-success.php:80
 msgctxt "Success page tickets table header"
 msgid "Price"
 msgstr ""
 
-#: src/views/tickets/tpp-success.php:83
+#: src/views/tickets/tpp-success.php:81
 msgctxt "Success page tickets table header"
 msgid "Quantity"
 msgstr ""
 
-#: src/views/tickets/tpp-success.php:84
+#: src/views/tickets/tpp-success.php:82
 msgctxt "Success page tickets table header"
 msgid "Subtotal"
 msgstr ""
