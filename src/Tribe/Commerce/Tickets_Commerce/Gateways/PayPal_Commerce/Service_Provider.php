@@ -31,21 +31,21 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		//$this->container->singleton( PayPalWebhooks::class );
 
 		// @todo This isn't the same webhooks as registered later, look into that.
-		$this->container->singleton( Webhooks::class );
+		// $this->container->singleton( Webhooks::class );
 
 		// @todo Is this needed?
 		// $this->container->singleton( PaymentFormElements::class );
 
-		$this->container->singleton( PaymentProcessor::class );
+		/*$this->container->singleton( PaymentProcessor::class );
 		$this->container->singleton( PayPalClient::class );
 		$this->container->singleton( RefreshToken::class );
 		$this->container->singleton( AjaxRequestHandler::class );
 		$this->container->singleton( ScriptLoader::class );
 		$this->container->singleton( WebhookRegister::class );
-		$this->container->singleton( PayPalAuth::class );
+		$this->container->singleton( PayPalAuth::class );*/
 		$this->container->singleton( MerchantDetail::class, null, [ 'init' ] );
 		$this->container->singleton( MerchantDetails::class, null, [ 'init' ] );
-		$this->container->singleton( Webhooks::class, null, [ 'init' ] );
+		//$this->container->singleton( Webhooks::class, null, [ 'init' ] );
 
 		$this->hooks();
 	}
