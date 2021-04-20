@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, patriciahillebrandt, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
-Tested up to: 5.7.0
+Tested up to: 5.7.1
 Stable tag: 5.1.3
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -176,7 +176,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.1.3] TBD =
+= [5.1.3] 2021-04-21 =
 
 * Fix - Add TwentyTwentyOne theme compatibility for Tickets and RSVPs. [ET-1047]
 * Fix - Added translation support for "Going" and "Not going" status labels. [ET-1056]
@@ -185,6 +185,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Introduce a new "Attendees" link to the WP Admin bar which can take you directly to the Attendees Report page. [ET-1079]
 * Tweak - Added the new `tribe_tickets_attendees_csv_export_delimiter` filter to allow changing the delimiter used when generating a CSV export of attendees. [ET-1055]
 * Tweak - Adjusted some template override folder paths documented in some of our Tickets-related templates. [ET-1051]
+* Language - 2 new strings added, 70 updated, 0 fuzzied, and 1 obsoleted
 
 = [5.1.2.1] 2021-03-30 =
 
