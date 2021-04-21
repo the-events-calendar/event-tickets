@@ -19,7 +19,7 @@ class Tribe__Tickets__RSVP__Status__Not_Going extends Tribe__Tickets__Status__Ab
 	/**
 	 * Tribe__Tickets__RSVP__Status__Not_Going constructor.
 	 *
-	 * @since TBD
+	 * @since 5.1.3
 	 */
 	public function __construct() {
 		$this->name = __( 'Not going', 'event-tickets' );

@@ -2,7 +2,7 @@
 /**
  * Check In and Un Check In button for Attendee Table.
  *
- * @since TBD
+ * @since 5.1.3
  *
  * @var array $item Current row item data.
  * @var Tribe__Tickets__Attendees_Table $attendee_table Attendees Table Object.

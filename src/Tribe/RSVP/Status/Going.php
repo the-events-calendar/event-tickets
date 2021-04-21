@@ -25,7 +25,7 @@ class Tribe__Tickets__RSVP__Status__Going extends Tribe__Tickets__Status__Abstra
 	/**
 	 * Tribe__Tickets__RSVP__Status__Going constructor.
 	 *
-	 * @since TBD
+	 * @since 5.1.3
 	 */
 	public function __construct() {
 		$this->name = __( 'Going', 'event-tickets' );

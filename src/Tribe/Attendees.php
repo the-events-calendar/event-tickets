@@ -665,12 +665,12 @@ class Tribe__Tickets__Attendees {
 			/**
 			 * Allow filtering the field delimiter used in the CSV export file.
 			 *
-			 * @since TBD
+			 * @since 5.1.3
 			 *
 			 * @param string $delimiter The field delimiter used in the CSV export file.
 			 */
 			$delimiter = apply_filters( 'tribe_tickets_attendees_csv_export_delimiter', ',' );
-			
+
 			// Output the lines into the file.
 			foreach ( $items as $item ) {
 				fputcsv( $output, $item, $delimiter );

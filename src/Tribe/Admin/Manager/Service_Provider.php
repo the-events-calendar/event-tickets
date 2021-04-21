@@ -124,7 +124,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Add the Attendee Report nav button to WP Admin Nav bar.
 	 *
-	 * @since TBD
+	 * @since 5.1.3
 	 */
 	public function add_attendees_view_button() {
 
