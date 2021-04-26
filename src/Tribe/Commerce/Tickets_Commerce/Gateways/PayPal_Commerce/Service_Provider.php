@@ -3,6 +3,7 @@
 namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce;
 
 use tad_DI52_ServiceProvider;
+use Tribe__Tickets__Main;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\MerchantDetail;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\PayPalClient;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Repositories\PayPalAuth;
@@ -38,11 +39,11 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 
 		/*$this->container->singleton( PaymentProcessor::class );
 		$this->container->singleton( PayPalClient::class );
-		$this->container->singleton( RefreshToken::class );
-		$this->container->singleton( AjaxRequestHandler::class );
 		$this->container->singleton( ScriptLoader::class );
-		$this->container->singleton( WebhookRegister::class );
-		$this->container->singleton( PayPalAuth::class );*/
+		$this->container->singleton( WebhookRegister::class );*/
+		$this->container->singleton( AjaxRequestHandler::class );
+		$this->container->singleton( RefreshToken::class );
+		$this->container->singleton( PayPalAuth::class );
 		$this->container->singleton( MerchantDetail::class, null, [ 'init' ] );
 		$this->container->singleton( MerchantDetails::class, null, [ 'init' ] );
 		//$this->container->singleton( Webhooks::class, null, [ 'init' ] );
@@ -59,8 +60,41 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_tickets_commerce_paypal_gateways', $this->container->callback( Gateway::class, 'register_gateway' ), 10, 2 );
 		add_filter( 'tribe_tickets_commerce_paypal_is_active', $this->container->callback( Gateway::class, 'is_active' ), 9, 2 );
 
+		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_user_onboarded', $this->container->callback( AjaxRequestHandler::class, 'onBoardedUserAjaxRequestHandler' ) );
+		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_get_partner_url', $this->container->callback( AjaxRequestHandler::class, 'onGetPartnerUrlAjaxRequestHandler' ) );
+		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_disconnect_account', $this->container->callback( AjaxRequestHandler::class, 'removePayPalAccount' ) );
+		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_onboarding_trouble_notice', $this->container->callback( AjaxRequestHandler::class, 'onBoardingTroubleNotice' ) );
+
 		// @todo Replace the filter here.
 		// add_action( 'admin_init', $this->container->callback( onBoardingRedirectHandler::class, 'boot' ) );
+
+		add_action( 'admin_init', [ $this, 'register_assets' ] );
 	}
 
+	public function register_assets() {
+		tribe_asset(
+			Tribe__Tickets__Main::instance(),
+			'tribe-tickets-admin-commerce-paypal-commerce-partner-js',
+			$this->get_partner_js_url(),
+			[],
+			'admin_enqueue_scripts'
+		);
+	}
+
+	/**
+	 * Get PayPal partner JS asset url.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	private function get_partner_js_url() {
+		/** @var PayPalClient $client */
+		$client = tribe( PayPalClient::class );
+
+		return sprintf(
+			'%1$swebapps/merchantboarding/js/lib/lightbox/partner.js',
+			$client->getHomePageUrl()
+		);
+	}
 }

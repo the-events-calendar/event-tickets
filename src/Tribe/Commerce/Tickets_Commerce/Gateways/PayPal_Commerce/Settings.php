@@ -27,6 +27,24 @@ class Settings extends Abstract_Settings {
 	public $option_account_country = 'tickets-commerce-paypal-commerce-account-country';
 
 	/**
+	 * The option key for access token.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_access_token = 'tickets-commerce-paypal-commerce-access-token';
+
+	/**
+	 * The option key for partner link detail.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_partner_link_detail = 'tickets-commerce-paypal-commerce-partner-link-detail';
+
+	/**
 	 * The merchant detail model.
 	 *
 	 * @since TBD
@@ -304,6 +322,97 @@ class Settings extends Abstract_Settings {
 		}
 
 		return $formatted_errors;
+	}
+
+	/**
+	 * Returns the country for the account
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_account_country() {
+		// @todo Replace this with a constant default value or a filtered value for setting the default country.
+		return tribe_get_option( $this->option_account_country, '' );
+	}
+
+	/**
+	 * Updates the country account
+	 *
+	 * @param string $country
+	 *
+	 * @return bool
+	 */
+	public function update_account_country( $country ) {
+		return tribe_update_option( $this->option_account_country, $country );
+	}
+
+	/**
+	 * Returns the account access token
+	 *
+	 * @since TBD
+	 *
+	 * @return array|null
+	 */
+	public function get_access_token() {
+		$access_token = tribe_get_option( $this->option_access_token );
+
+		if ( ! is_array( $access_token ) ) {
+			return null;
+		}
+
+		return $access_token;
+	}
+
+	/**
+	 * Updates the account access token.
+	 *
+	 * @param array $token The account access token.
+	 *
+	 * @return bool
+	 */
+	public function update_access_token( $token ) {
+		return tribe_update_option( $this->option_access_token, $token );
+	}
+
+	/**
+	 * Deletes the account access token
+	 *
+	 * @return bool
+	 */
+	public function delete_access_token() {
+		return tribe_update_option( $this->option_access_token, '' );
+	}
+
+	/**
+	 * Returns the partner link details
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function get_partner_link_details() {
+		return tribe_get_option( $this->option_partner_link_detail, null );
+	}
+
+	/**
+	 * Updates the partner link details
+	 *
+	 * @param $linkDetails
+	 *
+	 * @return bool
+	 */
+	public function update_partner_link_details( $linkDetails ) {
+		return tribe_update_option( $this->option_partner_link_detail, $linkDetails );
+	}
+
+	/**
+	 * Deletes the partner link details
+	 *
+	 * @return bool
+	 */
+	public function delete_partner_link_details() {
+		return tribe_update_option( $this->option_partner_link_detail, '' );
 	}
 
 }

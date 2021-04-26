@@ -2,7 +2,6 @@
 
 namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\Repositories;
 
-use TEC\Helpers\ArrayDataSet;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\MerchantDetail;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\PayPalClient;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Repositories\Traits\HasMode;
@@ -169,12 +168,12 @@ class MerchantDetails {
 		// @todo Replace this with a new method somewhere else.
 		$response = ArrayDataSet::camelCaseKeys( json_decode( $response, true ) );
 
-		if ( ! array_key_exists( 'clientToken', $response ) ) {
+		if ( ! array_key_exists( 'client_token', $response ) ) {
 			return '';
 		}
 
 		// Expire token before one minute to prevent unnecessary race condition.
-		set_transient( $optionName, $response['clientToken'], $response['expiresIn'] - 60 );
+		set_transient( $optionName, $response['client_token'], $response['expires_in'] - 60 );
 
 		return $response['clientToken'];
 	}

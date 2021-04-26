@@ -176,7 +176,7 @@ class MerchantDetail {
 		$this->accountIsReady         = $merchantDetails['accountIsReady'];
 		$this->supportsCustomPayments = $merchantDetails['supportsCustomPayments'];
 		$this->accountCountry         = $merchantDetails['accountCountry'];
-		$this->accessToken            = $this->tokenDetails['accessToken'];
+		$this->accessToken            = $this->tokenDetails['access_token'];
 	}
 
 	/**

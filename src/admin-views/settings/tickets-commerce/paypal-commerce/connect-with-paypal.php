@@ -16,13 +16,13 @@
 
 <div id="give-paypal-commerce-account-manager-field-wrap">
 	<div class="connect-button-wrap">
-		<div class="button-wrap connection-setting <?php echo $account_is_connected ? 'give-hidden' : ''; ?>">
+		<div class="button-wrap connection-setting <?php echo $account_is_connected ? 'tribe-common-a11y-hidden' : ''; ?>">
 			<div>
 				<button class="button button-primary button-large" id="js-give-paypal-on-boarding-handler">
 					<i class="fab fa-paypal"></i>&nbsp;&nbsp;
 					<?php esc_html_e( 'Connect with PayPal', 'event-tickets' ); ?>
 				</button>
-				<a class="give-hidden" target="_blank"
+				<a class="tribe-common-a11y-hidden" target="_blank"
 					data-paypal-onboard-complete="givePayPalOnBoardedCallback" href="#"
 					data-paypal-button="true">
 					<?php esc_html_e( 'Sign up for PayPal', 'event-tickets' ); ?>
@@ -38,7 +38,7 @@
 			</span>
 		</div>
 
-		<div class="button-wrap disconnection-setting <?php echo ! $account_is_connected ? 'give-hidden' : ''; ?>">
+		<div class="button-wrap disconnection-setting <?php echo ! $account_is_connected ? 'tribe-common-a11y-hidden' : ''; ?>">
 			<div>
 				<button class="button button-large disabled" disabled="disabled">
 					<i class="fab fa-paypal"></i>&nbsp;&nbsp;<?php esc_html_e( 'Connected', 'event-tickets' ); ?>
