@@ -178,6 +178,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.2.0] TBD =
 
+* Tweak - Adjust the width of the Check-In column in the attendees report to make it work properly in different languages. [ET-768]
+
 = [5.1.3] 2021-04-22 =
 
 * Fix - Add TwentyTwentyOne theme compatibility for Tickets and RSVPs. [ET-1047]
