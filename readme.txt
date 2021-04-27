@@ -176,6 +176,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.2.0] TBD =
+
 = [5.1.3] 2021-04-22 =
 
 * Fix - Add TwentyTwentyOne theme compatibility for Tickets and RSVPs. [ET-1047]
