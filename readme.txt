@@ -178,6 +178,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.2.0] TBD =
 
+* Tweak - Update the footer calculations on the tickets block to only visible items so it can be used from the Attendee Registration Modal cart. [ETP-715]
+
 = [5.1.3] 2021-04-22 =
 
 * Fix - Add TwentyTwentyOne theme compatibility for Tickets and RSVPs. [ET-1047]
