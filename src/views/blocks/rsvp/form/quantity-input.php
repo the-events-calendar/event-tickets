@@ -37,7 +37,7 @@ $max_at_a_time = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
 ?>
 <label
 	class="screen-reader-text"
-	for="quantity_<?php echo absint( $ticket_id ); ?>"
+	for="quantity_<?php echo absint( $ticket->ID ); ?>"
 >
 	<?php esc_html_e( 'Quantity', 'event-tickets' ); ?>
 </label>
