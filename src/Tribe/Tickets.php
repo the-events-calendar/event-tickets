@@ -2669,9 +2669,20 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					continue;
 				}
 
+				$start_date = $ticket->start_date;
+				$end_date = $ticket->end_date;
+
+				$now = strtotime( 'now' );
+
+				if ( ( strtotime( $end_date ) < $now ) || ( strtotime( $start_date ) > $now ) ) {
+					if ( ( $key = array_search( $ticket->price, $prices ) ) !== false ) {
+						unset( $prices[ $key ] );
+					}
+					continue;
+				}
 
 				// An empty price property can be ignored (but do add if the price is explicitly set to zero)
-				elseif ( isset( $ticket->price ) && is_numeric( $ticket->price ) ) {
+				if ( isset( $ticket->price ) && is_numeric( $ticket->price ) ) {
 					$prices[] = $ticket->price;
 				}
 			}
