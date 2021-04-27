@@ -105,7 +105,7 @@ if (
 			esc_attr( $ticket->provider_class ),
 			esc_attr( $ticket->ID ),
 			esc_attr( sprintf(
-				_x( '%s ID: %d', 'ticket ID title attribute', 'event-tickets' ),
+				_x( 'Edit %s ID: %d', 'ticket ID title attribute', 'event-tickets' ),
 				tribe_get_ticket_label_singular( 'ticket_id_title_attribute' ),
 				$ticket->ID
 			) ),
