@@ -11,8 +11,9 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   5.0.3
+ * @since   TBD Add label to the input to improve accessibility.
  *
- * @version 5.0.3
+ * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
  * @var int                                $post_id                     [Global] The current Post ID to which tickets are attached.
@@ -54,8 +55,16 @@ $classes = [
 ];
 
 ?>
+
 <div <?php tribe_classes( $classes ); ?>>
+	<label
+		class="tribe-common-a11y-visual-hide"
+		for="tribe-tickets__tickets-item-quantity-number--<?php echo absint( $ticket->ID ); ?>"
+	>
+		<?php esc_html_e( 'Quantity', 'event-tickets' ); ?>
+	</label>
 	<input
+		id="tribe-tickets__tickets-item-quantity-number--<?php echo absint( $ticket->ID ); ?>"
 		type="number"
 		class="tribe-common-h3 tribe-common-h4--min-medium tribe-tickets__tickets-item-quantity-number-input"
 		step="1"

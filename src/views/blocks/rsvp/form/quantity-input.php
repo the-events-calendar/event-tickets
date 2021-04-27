@@ -15,8 +15,9 @@
  * @since   4.11.5 The input's "max" is now always set. The unused `data-remaining` attribute actually didn't get removed
  *                 in the previous change, above, so it got removed in this version.
  * @since   5.0.3 Add vars to docblock and removed duplicative vars.
+ * @since   TBD Add label to the quantity input to improve accessibility.
  *
- * @version 5.0.3
+ * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template $this    Template object.
  * @var int                              $post_id [Global] The current Post ID to which RSVPs are attached.
@@ -34,8 +35,15 @@ $tickets_handler = tribe( 'tickets.handler' );
 
 $max_at_a_time = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
 ?>
+<label
+	class="screen-reader-text"
+	for="quantity_<?php echo absint( $ticket_id ); ?>"
+>
+	<?php esc_html_e( 'Quantity', 'event-tickets' ); ?>
+</label>
 <input
 	type="number"
+	id="quantity_<?php echo absint( $ticket->ID ); ?>"
 	name="quantity_<?php echo absint( $ticket->ID ); ?>"
 	class="tribe-tickets-quantity"
 	step="1"
