@@ -178,6 +178,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.2.0] TBD =
 
+* Fix: Add label to the quantity input in the RSVP & Tickets forms to improve accessibility. [ET-767]
+
 = [5.1.3] 2021-04-22 =
 
 * Fix - Add TwentyTwentyOne theme compatibility for Tickets and RSVPs. [ET-1047]
