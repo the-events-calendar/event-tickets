@@ -37,14 +37,14 @@ $max_at_a_time = $tickets_handler->get_ticket_max_purchase( $ticket->ID );
 ?>
 <label
 	class="screen-reader-text"
-	for="quantity_<?php echo absint( $ticket->ID ); ?>"
+	for="quantity_<?php echo esc_attr( absint( $ticket->ID ) ); ?>"
 >
 	<?php esc_html_e( 'Quantity', 'event-tickets' ); ?>
 </label>
 <input
 	type="number"
-	id="quantity_<?php echo absint( $ticket->ID ); ?>"
-	name="quantity_<?php echo absint( $ticket->ID ); ?>"
+	id="quantity_<?php echo esc_attr( absint( $ticket->ID ) ); ?>"
+	name="quantity_<?php echo esc_attr( absint( $ticket->ID ) ); ?>"
 	class="tribe-tickets-quantity"
 	step="1"
 	min="1"

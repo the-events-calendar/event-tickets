@@ -31,14 +31,14 @@ $max_at_a_time = $tickets_handler->get_ticket_max_purchase( $rsvp->ID );
 ?>
 <label
 	class="tribe-common-a11y-visual-hide"
-	for="tribe-tickets__rsvp-ar-quantity-number--<?php echo absint( $rsvp->ID ); ?>"
+	for="tribe-tickets__rsvp-ar-quantity-number--<?php echo esc_attr( absint( $rsvp->ID ) ); ?>"
 >
 	<?php esc_html_e( 'Quantity', 'event-tickets' ); ?>
 </label>
 <input
 	type="number"
-	id="tribe-tickets__rsvp-ar-quantity-number--<?php echo absint( $rsvp->ID ); ?>"
-	name="tribe_tickets[<?php echo absint( $rsvp->ID ); ?>][quantity]"
+	id="tribe-tickets__rsvp-ar-quantity-number--<?php echo esc_attr( absint( $rsvp->ID ) ); ?>"
+	name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][quantity]"
 	class="tribe-common-h4"
 	step="1"
 	min="1"

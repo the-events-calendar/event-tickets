@@ -59,12 +59,12 @@ $classes = [
 <div <?php tribe_classes( $classes ); ?>>
 	<label
 		class="tribe-common-a11y-visual-hide"
-		for="tribe-tickets__tickets-item-quantity-number--<?php echo absint( $ticket->ID ); ?>"
+		for="tribe-tickets__tickets-item-quantity-number--<?php echo esc_attr( absint( $ticket->ID ) ); ?>"
 	>
 		<?php esc_html_e( 'Quantity', 'event-tickets' ); ?>
 	</label>
 	<input
-		id="tribe-tickets__tickets-item-quantity-number--<?php echo absint( $ticket->ID ); ?>"
+		id="tribe-tickets__tickets-item-quantity-number--<?php echo esc_attr( absint( $ticket->ID ) ); ?>"
 		type="number"
 		class="tribe-common-h3 tribe-common-h4--min-medium tribe-tickets__tickets-item-quantity-number-input"
 		step="1"

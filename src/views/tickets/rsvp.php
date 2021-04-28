@@ -144,7 +144,7 @@ if ( ! $already_rendered ) {
 					<?php if ( $is_there_any_rsvp_stock ) : ?>
 						<label
 							class="screen-reader-text"
-							for="quantity_<?php echo absint( $ticket_id ); ?>"
+							for="quantity_<?php echo esc_attr( absint( $ticket_id ) ); ?>"
 						>
 							<?php esc_html_e( 'Quantity', 'event-tickets' ); ?>
 						</label>
@@ -154,8 +154,8 @@ if ( ! $already_rendered ) {
 							step="1"
 							min="0"
 							max="<?php echo esc_attr( $max_at_a_time ); ?>"
-							name="quantity_<?php echo absint( $ticket_id ); ?>"
-							id="quantity_<?php echo absint( $ticket_id ); ?>"
+							name="quantity_<?php echo esc_attr( absint( $ticket_id ) ); ?>"
+							id="quantity_<?php echo esc_attr( absint( $ticket_id ) ); ?>"
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>

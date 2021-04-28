@@ -43,13 +43,13 @@ if ( $must_login ) {
 >
 	<label
 		class="screen-reader-text"
-		for="quantity_<?php echo absint( $ticket->ID ); ?>"
+		for="quantity_<?php echo esc_attr( absint( $ticket->ID ) ); ?>"
 	>
 		<?php esc_html_e( 'Quantity', 'event-tickets' ); ?>
 	</label>
 	<input
 		type="number"
-		id="quantity_<?php echo absint( $ticket->ID ); ?>"
+		id="quantity_<?php echo esc_attr( absint( $ticket->ID ) ); ?>"
 		class="tribe-common-h3 tribe-common-h4--min-medium tribe-tickets-quantity"
 		step="1"
 		min="0"
