@@ -313,4 +313,23 @@ class Attendees_List {
 
 		return $is_visible_by_meta || $has_attendee_list_shortcode;
 	}
+
+	/**
+	 * Get total number of attendees that are confirmed.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|string $post_id The post or event that is checked.
+	 *
+	 * @return int Total number of attendees attending the event.
+	 */
+	public function get_attendance_counts( $post_id ) {
+		$attendees_orm = tribe_attendees();
+
+		$attendees_orm->per_page( -1 )
+		              ->where( 'event', $post_id )
+		              ->where( 'rsvp_status__or_none', 'yes' );
+
+		return $attendees_orm->count();
+	}
 }
