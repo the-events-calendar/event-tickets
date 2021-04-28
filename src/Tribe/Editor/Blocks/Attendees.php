@@ -74,7 +74,8 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 		/** @var \Tribe\Tickets\Events\Attendees_List $attendees_list */
 		$attendees_list = tribe( 'tickets.events.attendees-list' );
 
-		$args['attendees'] = $attendees_list->get_attendees_for_post( $post_id );
+		$args['attendees']       = $attendees_list->get_attendees_for_post( $post_id );
+		$args['attendees_total'] = $attendees_list->get_attendance_counts( $post_id );
 
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
