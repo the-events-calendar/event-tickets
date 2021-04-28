@@ -717,10 +717,12 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			[
 				'[' . $ticket_id . ']',
 				'"' . $ticket_id . '"',
+				'--' . $ticket_id . '',
 			],
 			[
 				'[TICKET_ID]',
 				'"TICKET_ID"',
+				'--TICKET_ID',
 			],
 			$html
 		);
