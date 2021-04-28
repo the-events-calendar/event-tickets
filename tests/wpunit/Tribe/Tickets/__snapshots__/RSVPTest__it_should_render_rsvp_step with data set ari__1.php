@@ -31,12 +31,12 @@
 
 		<label
 	class="tribe-common-a11y-visual-hide"
-	for="tribe-tickets__rsvp-ar-quantity-number--277"
+	for="tribe-tickets__rsvp-ar-quantity-number--TICKET_ID"
 >
 	Quantity</label>
 <input
 	type="number"
-	id="tribe-tickets__rsvp-ar-quantity-number--277"
+	id="tribe-tickets__rsvp-ar-quantity-number--TICKET_ID"
 	name="tribe_tickets[TICKET_ID][quantity]"
 	class="tribe-common-h4"
 	step="1"
