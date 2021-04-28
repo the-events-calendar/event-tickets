@@ -71,7 +71,16 @@ class Quantity extends WPTestCase {
 
 		$html     = $template->template( $this->partial_path, $args, false );
 
-		$this->assertMatchesSnapshot( $html );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
+
+		$driver->setTolerableDifferences( [ $ticket->ID, $event->ID ] );
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'quantity_',
+			]
+		);
+
+		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
 	/**
@@ -97,6 +106,15 @@ class Quantity extends WPTestCase {
 
 		$html = $template->template( $this->partial_path, $args, false );
 
-		$this->assertMatchesSnapshot( $html );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
+
+		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'quantity_',
+			]
+		);
+
+		$this->assertMatchesSnapshot( $html, $driver );
 	}
 }

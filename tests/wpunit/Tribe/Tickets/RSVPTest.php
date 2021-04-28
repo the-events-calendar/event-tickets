@@ -702,6 +702,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			'quantity_',
 			'tribe-tickets-rsvp-name-',
 			'tribe-tickets-rsvp-email-',
+			'tribe-tickets__rsvp-ar-quantity-number--',
 		] );
 
 		$driver->setTimeDependentAttributes( [

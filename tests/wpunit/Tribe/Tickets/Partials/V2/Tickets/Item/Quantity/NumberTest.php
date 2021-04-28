@@ -53,6 +53,12 @@ class NumberTest extends V2TestCase {
 			]
 		);
 
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'tribe-tickets__tickets-item-quantity-number--',
+			]
+		);
+
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
@@ -75,6 +81,12 @@ class NumberTest extends V2TestCase {
 			[
 				'value',
 				'max',
+			]
+		);
+
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'tribe-tickets__tickets-item-quantity-number--',
 			]
 		);
 
