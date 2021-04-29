@@ -1116,6 +1116,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Ensure ticket prices and event costs are linked
 			add_filter( 'tribe_events_event_costs', [ $this, 'get_ticket_prices' ], 10, 2 );
+			add_filter( 'tribe_get_event_meta', [ $this, 'exclude_past_tickets_from_cost_range' ], 10, 4 );
 
 			add_action( 'event_tickets_checkin', [ $this, 'purge_attendees_transient' ] );
 			add_action( 'event_tickets_uncheckin', [ $this, 'purge_attendees_transient' ] );
@@ -2675,6 +2676,50 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return $prices;
+		}
+
+		/**
+		 * Filter past tickets from showing up in cost range.
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $costs List of ticket costs.
+		 * @param int    $post_id Target Event's ID.
+		 * @param string $meta Meta key name.
+		 * @param bool   $single determines if the requested meta should be a single item or an array of items.
+		 *
+		 * @return mixed
+		 */
+		public function exclude_past_tickets_from_cost_range( $costs, $post_id, $meta, $single ) {
+
+			if ( '_EventCost' != $meta || $single || empty( $costs )  ) {
+				return $costs;
+			}
+
+			$exclude_past_tickets = apply_filters( 'event_tickets_exclude_past_tickets_from_cost_range', true );
+
+			if ( ! $exclude_past_tickets ) {
+				return $costs;
+			}
+
+			$tickets = self::get_all_event_tickets( $post_id );
+
+			foreach ( $tickets as $ticket ) {
+
+				$start_date = $ticket->start_date;
+				$end_date = $ticket->end_date;
+
+				$now = strtotime( 'now' );
+
+				if ( ( strtotime( $end_date ) < $now ) || ( strtotime( $start_date ) > $now ) ) {
+					if ( ( $key = array_search( $ticket->price, $costs ) ) !== false ) {
+						unset( $costs[ $key ] );
+					}
+					continue;
+				}
+			}
+
+			return $costs;
 		}
 
 		/**
