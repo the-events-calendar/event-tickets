@@ -14,8 +14,9 @@
 	border: 1px solid var(--border-color);
 	margin: 20px 0;
 
-	thead {
-		background-color: #f9f9f9;
+	thead,
+	.table-header {
+		background-color: #fafafa;
 		border-bottom: 1px solid var(--border-color);
 	}
 
@@ -81,14 +82,29 @@
 		}
 	}
 
+	.tribe-tickets__tickets-editor-ticket-name {
+		display: table;
+		width: 100%;
+	}
+
+	.tribe-tickets__tickets-editor-ticket-name-sortable,
+	.tribe-tickets__tickets-editor-ticket-name-title {
+		display: table-cell;
+		vertical-align: middle;
+	}
+
+	.tribe-tickets__tickets-editor-ticket-name-sortable {
+		width: 32px;
+	}
+
 	.ticket_available,
 	.ticket_capacity,
 	.ticket_price {
-		width: 120px;
+		width: 115px;
 	}
 
 	.ticket_edit {
-		width: 35px;
+		width: 30px;
 	}
 
 	/* Edit button styles - separate for portability */
