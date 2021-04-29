@@ -40,12 +40,13 @@ tribe.tickets.admin.commerceSettings = {};
 	 *
 	 * @type {PlainObject}
 	 */
+	// @todo Replace ID/class names.
 	obj.selectors = {
 		connectButton: '#js-give-paypal-on-boarding-handler',
 		connectButtonWrap: '.connect-button-wrap',
 		connectionSettingContainer: '#give-paypal-commerce-account-manager-field-wrap .connection-setting',
 		container: '#tribe-field-tickets-commerce-paypal-commerce-configure',
-		countrySelect: '#paypal_commerce_account_country',
+		countrySelect: '#tickets-commerce-paypal-commerce-account-country-select',
 		errorMessageTemplate: '.paypal-message-template',
 		disconnectionSettingContainer: '#give-paypal-commerce-account-manager-field-wrap .disconnection-setting',
 		disconnectPayPalAccountButton: '#js-give-paypal-disconnect-paypal-account',
@@ -53,6 +54,8 @@ tribe.tickets.admin.commerceSettings = {};
 	};
 
 	obj.observePayPalModal = function() {
+		obj.paypalErrorQuickHelp = $( obj.selectors.troubleNotice );
+
 		const paypalModalObserver = new MutationObserver( function( mutationsRecord ) {
 			mutationsRecord.forEach( function( record ) {
 				record.removedNodes.forEach( function( node ) {
@@ -88,6 +91,7 @@ tribe.tickets.admin.commerceSettings = {};
 		const isLive = false;
 
 		// @todo Replace the i18n text here.
+		// @todo Replace class name.
 		const liveWarning = isLive ?
 			`<p class="give-modal__description__warning">Live warning text here</p>` :
 			'';
@@ -96,12 +100,14 @@ tribe.tickets.admin.commerceSettings = {};
 		new Give.modal.GiveSuccessAlert( {
 			classes: {
 				modalWrapper: 'paypal-commerce-connect',
+				// @todo Replace class name.
 				cancelBtn: 'give-button--primary',
 			},
 			modalContent: {
 				// @todo Replace the i18n text here.
 				title: 'Connect success title here',
 				// @todo Replace the i18n text here.
+				// @todo Replace class name.
 				body: `
 					<div class="give-modal__description">
 						${ liveWarning }
@@ -166,7 +172,7 @@ tribe.tickets.admin.commerceSettings = {};
 						}
 
 						const buttonContainer = document.querySelector( obj.selectors.connectButtonWrap );
-						paypalErrorQuickHelp && paypalErrorQuickHelp.remove();
+						obj.paypalErrorQuickHelp[0] && obj.paypalErrorQuickHelp.remove();
 						buttonContainer.append( createElementFromHTML( res.data ) );
 					} );
 			} );
@@ -180,35 +186,74 @@ tribe.tickets.admin.commerceSettings = {};
 		}
 	}
 
+	obj.buttonState = {
+		enable: () => {
+			obj.onBoardingButton.attr( 'disabled', false );
+			obj.onBoardingButton.text( obj.onBoardingButton.data( 'initial-label' ) );
+		},
+		disable: () => {
+			// Preserve initial label.
+			if ( ! obj.onBoardingButton.data( 'initial-label' ) ) {
+				obj.onBoardingButton.data( 'initial-label', obj.onBoardingButton.text().trim() );
+			}
+
+			obj.onBoardingButton.attr( 'disabled', true );
+
+			// @todo Replace the i18n text here.
+			obj.onBoardingButton.text( 'Processing text here' );
+		},
+	};
+
 	obj.handleConnectClick = function( evt ) {
 		evt.preventDefault();
 		obj.removeErrors();
 
 		const countryCode = $( obj.selectors.countrySelect ).val();
 
-		obj.buttonState = {
-			enable: () => {
-				obj.onBoardingButton.attr( 'disabled', false );
-				evt.target.innerText = obj.onBoardingButton.data( 'initial-label' );
-			},
-			disable: () => {
-				// Preserve initial label.
-				if ( ! obj.onBoardingButton.data( 'initial-label' ) ) {
-					obj.onBoardingButton.data( 'initial-label', obj.onBoardingButton.innerText );
-				}
-
-				obj.onBoardingButton.attr( 'disabled', true );
-
-				// @todo Replace the i18n text here.
-				evt.target.innerText = 'Processing text here';
-			},
-		};
-
 		obj.buttonState.disable();
+
+		obj.paypalErrorQuickHelp = $( obj.selectors.troubleNotice );
 
 		// Hide paypal quick help message.
 		obj.paypalErrorQuickHelp[0] && obj.paypalErrorQuickHelp.addClass( 'tribe-common-a11y-hidden' );
+
+		obj.requestPartnerUrl( countryCode );
 	};
+
+	obj.handleDisconnectClick = function( evt ) {
+		evt.preventDefault();
+		obj.removeErrors();
+
+		// @todo Show a confirmation modal here.
+		//title: givePayPalCommerce.translations.confirmPaypalAccountDisconnection
+		//desc: givePayPalCommerce.translations.disconnectPayPalAccount
+
+		// On modal confirmation, disconnect the account.
+		$( obj.selectors.connectionSettingContainer ).removeClass( 'tribe-common-a11y-hidden' );
+		$( obj.selectors.disconnectionSettingContainer ).addClass( 'tribe-common-a11y-hidden' );
+
+		fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_disconnect_account' );
+	};
+
+	obj.onBoardCallback = function( authCode, sharedId ) {
+		const query = '&authCode=' + authCode + '&sharedId=' + sharedId;
+
+		fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_user_on_boarded' + query )
+			.then( function ( res ) {
+				return res.json()
+			} )
+			.then( function ( res ) {
+				if ( true !== res.success ) {
+					// @todo Improve the error messaging here.
+					alert( 'Something went wrong while we were connecting your account, please try again.' );
+					return;
+				}
+
+				// Remove PayPal quick help container.
+				obj.paypalErrorQuickHelp = $( obj.selectors.troubleNotice );
+				obj.paypalErrorQuickHelp[0] && obj.paypalErrorQuickHelp.remove();
+			} );
+	}
 
 	/**
 	 * Handles the initialization of the gateway settings when Document is ready.
@@ -218,11 +263,15 @@ tribe.tickets.admin.commerceSettings = {};
 	 * @return {void}
 	 */
 	obj.ready = function() {
-		obj.onBoardingButton = $( obj.selectors.onBoardingButton );
-		obj.paypalErrorQuickHelp = $( obj.selectors.troubleNotice );
+		obj.onBoardingButton = $( obj.selectors.connectButton );
+		obj.disconnectButton = $( obj.selectors.disconnectPayPalAccountButton );
 
 		if ( obj.onBoardingButton[0] ) {
-			onBoardingButton.on( 'click', obj.handleConnectClick );
+			obj.onBoardingButton.on( 'click', obj.handleConnectClick );
+		}
+
+		if ( obj.disconnectButton[0] ) {
+			obj.disconnectButton.on( 'click', obj.handleDisconnectClick );
 		}
 
 		obj.maybeShowPCINotice();

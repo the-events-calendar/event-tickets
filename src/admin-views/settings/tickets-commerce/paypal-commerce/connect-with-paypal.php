@@ -14,7 +14,12 @@
 
 ?>
 
-<div id="give-paypal-commerce-account-manager-field-wrap">
+<script type="text/javascript">
+	function tribeTicketsAdminCommerceSettingsOnBoardCallback( authCode, sharedId ) {
+		tribe.tickets.admin.commerceSettings.onBoardCallback( authCode, sharedId );
+	}
+</script>
+<div id="give-paypal-commerce-account-manager-field-wrap" class="tribe-common">
 	<div class="connect-button-wrap">
 		<div class="button-wrap connection-setting <?php echo $account_is_connected ? 'tribe-common-a11y-hidden' : ''; ?>">
 			<div>
@@ -23,7 +28,7 @@
 					<?php esc_html_e( 'Connect with PayPal', 'event-tickets' ); ?>
 				</button>
 				<a class="tribe-common-a11y-hidden" target="_blank"
-					data-paypal-onboard-complete="givePayPalOnBoardedCallback" href="#"
+					data-paypal-onboard-complete="tribeTicketsAdminCommerceSettingsOnBoardCallback" href="#"
 					data-paypal-button="true">
 					<?php esc_html_e( 'Sign up for PayPal', 'event-tickets' ); ?>
 				</a>
