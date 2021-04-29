@@ -178,6 +178,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.2.0] TBD =
 
+* Fix - Show total Attendance count for Attendee List Block view. [ET-791]
+
 = [5.1.3] 2021-04-22 =
 
 * Fix - Add TwentyTwentyOne theme compatibility for Tickets and RSVPs. [ET-1047]
