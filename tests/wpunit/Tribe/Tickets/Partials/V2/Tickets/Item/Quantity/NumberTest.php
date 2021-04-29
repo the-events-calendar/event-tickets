@@ -40,11 +40,14 @@ class NumberTest extends V2TestCase {
 	 * @test
 	 */
 	public function test_should_render_number_html() {
-		$html = $this->template_html( $this->get_default_args() );
+		$args = $this->get_default_args();
+		$html = $this->template_html( $args );
 
 		$this->assertContains( 'tribe-tickets__tickets-item-quantity-number-input', $html );
 
 		$driver = $this->get_html_output_driver();
+
+		$driver->setTolerableDifferences( [ $args['ticket']->ID ] );
 
 		$driver->setTimeDependentAttributes(
 			[
@@ -70,12 +73,16 @@ class NumberTest extends V2TestCase {
 			'must_login' => true,
 		];
 
-		$html = $this->template_html( $this->get_args( $override ) );
+		$args = $this->get_args( $override );
+
+		$html = $this->template_html( $args );
 
 		$this->assertContains( 'tribe-tickets__tickets-item-quantity-number-input', $html );
 		$this->assertContains( 'tribe-tickets__disabled', $html );
 
 		$driver = $this->get_html_output_driver();
+
+		$driver->setTolerableDifferences( [ $args['ticket']->ID ] );
 
 		$driver->setTimeDependentAttributes(
 			[
