@@ -304,6 +304,9 @@ class Tribe__Tickets__Main {
 
 		// Customizer support.
 		tribe_register_provider( Tribe\Tickets\Service_Providers\Customizer::class );
+
+		// Shortcode support.
+		tribe_register_provider( Tribe\Tickets\Service_Providers\Shortcode::class );
 	}
 
 	/**

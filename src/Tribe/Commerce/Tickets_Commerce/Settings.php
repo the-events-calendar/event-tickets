@@ -62,6 +62,15 @@ class Settings extends Abstract_Settings {
 	public $option_success_page = 'ticket-paypal-success-page';
 
 	/**
+	 * The option key for checkout page.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_checkout_page = 'tickets-commerce-checkout-page';
+
+	/**
 	 * The option key for confirmation email sender email.
 	 *
 	 * @since TBD
@@ -129,7 +138,8 @@ class Settings extends Abstract_Settings {
 		// Add an initial empty selection to the start.
 		$pages = [ 0 => __( '-- No page set --', 'event-tickets' ) ] + $pages;
 
-		$tpp_success_shortcode = 'tribe-tpp-success';
+		$tpp_success_shortcode               = 'tribe-tpp-success';
+		$tickets_commerce_checkout_shortcode = 'tribe_tickets_checkout';
 
 		/** @var \Tribe__Tickets__Commerce__Currency $commerce_currency */
 		$commerce_currency = tribe( 'tickets.commerce.currency' );
@@ -215,6 +225,21 @@ class Settings extends Abstract_Settings {
 					),
 				],
 				'tooltip_first'   => true,
+			],
+			$this->option_checkout_page                   => [
+				'type'            => 'dropdown',
+				'label'           => esc_html__( 'Checkout page', 'event-tickets' ),
+				'tooltip'         => esc_html(
+					sprintf(
+						// Translators: %s: The [shortcode] for the success page.
+						__( 'This is the page where customers go to complete their purchase. Use the %s shortcode to display the checkout experience in the page content.', 'event-tickets' ),
+						"[$tickets_commerce_checkout_shortcode]"
+					)
+				),
+				'size'            => 'medium',
+				'validation_type' => 'options',
+				'options'         => $pages,
+				'required'        => true,
 			],
 			$this->option_success_page                    => [
 				'type'            => 'dropdown',
@@ -305,13 +330,15 @@ class Settings extends Abstract_Settings {
 			}
 
 			$heading = [
-				'type'            => 'wrapped_html',
-				'html'            => '<h3 class="event-tickets--admin_settings_subheading">' . $gateway['label'] . '</h3>',
-				'validation_type' => 'html',
+				'tickets-commerce-' . $gateway_object->gateway_key => [
+					'type'            => 'wrapped_html',
+					'html'            => '<h3 class="event-tickets--admin_settings_subheading">' . $gateway['label'] . '</h3>',
+					'validation_type' => 'html',
+				],
 			];
 
 			// Add the gateway label to the start of settings.
-			array_unshift( $gateway_settings, $heading );
+			$gateway_setting_groups[] = $heading;
 
 			$gateway_setting_groups[] = $gateway_settings;
 		}
