@@ -186,7 +186,7 @@ class MerchantDetails {
 	 * @return string
 	 */
 	public function getAccountKey() {
-		return "give_paypal_commerce_{$this->mode}_account";
+		return "tribe_tickets_paypal_commerce_{$this->mode}_account";
 	}
 
 	/**
@@ -197,7 +197,7 @@ class MerchantDetails {
 	 * @return string
 	 */
 	private function getAccountErrorsKey() {
-		return "give_paypal_commerce_{$this->mode}_account_errors";
+		return "tribe_tickets_paypal_commerce_{$this->mode}_account_errors";
 	}
 
 	/**
@@ -208,6 +208,6 @@ class MerchantDetails {
 	 * @return string
 	 */
 	private function getClientTokenKey() {
-		return "give_paypal_commerce_{$this->mode}_client_token";
+		return "tribe_tickets_paypal_commerce_{$this->mode}_client_token";
 	}
 }

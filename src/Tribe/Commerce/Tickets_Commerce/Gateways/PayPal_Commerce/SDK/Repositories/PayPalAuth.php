@@ -57,8 +57,13 @@ class PayPalAuth {
 			],
 		] );
 
-		if ( ! is_wp_error( $request ) ) {
-			// @todo Log the error.
+		if ( is_wp_error( $request ) ) {
+			tribe( 'logger' )->log_error( sprintf(
+				// Translators: %s: The error message.
+				__( 'PayPal request error: %s', 'event-tickets' ),
+				$request->get_error_message()
+			), 'tickets-commerce-paypal-commerce' );
+
 			return null;
 		}
 
@@ -66,7 +71,8 @@ class PayPalAuth {
 		$response = @json_decode( $response, true );
 
 		if ( ! is_array( $response ) ) {
-			// @todo Log the error.
+			tribe( 'logger' )->log_error( __( 'Unexpected PayPal response when getting token from client credentials', 'event-tickets' ), 'tickets-commerce-paypal-commerce' );
+
 			return null;
 		}
 
@@ -97,8 +103,13 @@ class PayPalAuth {
 			],
 		] );
 
-		if ( ! is_wp_error( $request ) ) {
-			// @todo Log the error.
+		if ( is_wp_error( $request ) ) {
+			tribe( 'logger' )->log_error( sprintf(
+				// Translators: %s: The error message.
+				__( 'PayPal request error: %s', 'event-tickets' ),
+				$request->get_error_message()
+			), 'tickets-commerce-paypal-commerce' );
+
 			return null;
 		}
 
@@ -106,7 +117,8 @@ class PayPalAuth {
 		$response = @json_decode( $response, true );
 
 		if ( ! is_array( $response ) ) {
-			// @todo Log the error.
+			tribe( 'logger' )->log_error( __( 'Unexpected PayPal response when getting token from authorization code', 'event-tickets' ), 'tickets-commerce-paypal-commerce' );
+
 			return null;
 		}
 
@@ -122,14 +134,33 @@ class PayPalAuth {
 	 * @return array|null
 	 */
 	public function getSellerPartnerLink( $returnUrl, $country ) {
-		$response = wp_remote_retrieve_body( wp_remote_post( sprintf( $this->connectClient->getApiUrl( 'paypal/?mode=%1$s&request=partner-link' ), $this->payPalClient->mode ), [
+		$request = wp_remote_post( sprintf( $this->connectClient->get_api_url( 'paypal-commerce/?mode=%1$s&request=partner-link' ), $this->payPalClient->mode ), [
 			'body' => [
 				'return_url'   => $returnUrl,
 				'country_code' => $country,
 			],
-		] ) );
+		] );
 
-		return empty( $response ) ? null : json_decode( $response, true );
+		if ( is_wp_error( $request ) ) {
+			tribe( 'logger' )->log_error( sprintf(
+				// Translators: %s: The error message.
+				__( 'PayPal Commerce Connect request error: %s', 'event-tickets' ),
+				$request->get_error_message()
+			), 'tickets-commerce-paypal-commerce' );
+
+			return null;
+		}
+
+		$response = wp_remote_retrieve_body( $request );
+		$response = @json_decode( $response, true );
+
+		if ( ! is_array( $response ) ) {
+			tribe( 'logger' )->log_error( __( 'Unexpected PayPal Commerce Connect response', 'event-tickets' ), 'tickets-commerce-paypal-commerce' );
+
+			return null;
+		}
+
+		return $response;
 	}
 
 	/**
@@ -144,14 +175,33 @@ class PayPalAuth {
 	 * @return array
 	 */
 	public function getSellerOnBoardingDetailsFromPayPal( $merchantId, $accessToken ) {
-		$request = wp_remote_post( $this->connectClient->getApiUrl( sprintf( 'paypal?mode=%1$s&request=seller-status', $this->payPalClient->mode ) ), [
+		$request = wp_remote_post( $this->connectClient->get_api_url( sprintf( 'paypal-commerce/?mode=%1$s&request=seller-status', $this->payPalClient->mode ) ), [
 			'body' => [
 				'merchant_id' => $merchantId,
 				'token'       => $accessToken,
 			],
 		] );
 
-		return json_decode( wp_remote_retrieve_body( $request ), true );
+		if ( is_wp_error( $request ) ) {
+			tribe( 'logger' )->log_error( sprintf(
+				// Translators: %s: The error message.
+				__( 'PayPal Commerce Connect request error: %s', 'event-tickets' ),
+				$request->get_error_message()
+			), 'tickets-commerce-paypal-commerce' );
+
+			return null;
+		}
+
+		$response = wp_remote_retrieve_body( $request );
+		$response = @json_decode( $response, true );
+
+		if ( ! is_array( $response ) ) {
+			tribe( 'logger' )->log_error( __( 'Unexpected PayPal Commerce Connect response', 'event-tickets' ), 'tickets-commerce-paypal-commerce' );
+
+			return null;
+		}
+
+		return $response;
 	}
 
 	/**
@@ -164,12 +214,31 @@ class PayPalAuth {
 	 * @return array
 	 */
 	public function getSellerRestAPICredentials( $accessToken ) {
-		$request = wp_remote_post( $this->connectClient->getApiUrl( sprintf( 'paypal?mode=%1$s&request=seller-credentials', $this->payPalClient->mode ) ), [
+		$request = wp_remote_post( $this->connectClient->get_api_url( sprintf( 'paypal-commerce/?mode=%1$s&request=seller-credentials', $this->payPalClient->mode ) ), [
 			'body' => [
 				'token' => $accessToken,
 			],
 		] );
 
-		return json_decode( wp_remote_retrieve_body( $request ), true );
+		if ( is_wp_error( $request ) ) {
+			tribe( 'logger' )->log_error( sprintf(
+				// Translators: %s: The error message.
+				__( 'PayPal Commerce Connect request error: %s', 'event-tickets' ),
+				$request->get_error_message()
+			), 'tickets-commerce-paypal-commerce' );
+
+			return null;
+		}
+
+		$response = wp_remote_retrieve_body( $request );
+		$response = @json_decode( $response, true );
+
+		if ( ! is_array( $response ) ) {
+			tribe( 'logger' )->log_error( __( 'Unexpected PayPal Commerce Connect response', 'event-tickets' ), 'tickets-commerce-paypal-commerce' );
+
+			return null;
+		}
+
+		return $response;
 	}
 }

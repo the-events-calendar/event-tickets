@@ -4,6 +4,7 @@ namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce;
 
 use Tribe\Tickets\Commerce\Tickets_Commerce\Abstract_Settings;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\MerchantDetail;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\WebhookConfig;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\Repositories\MerchantDetails;
 use Tribe__Languages__Locations;
 use Tribe__Tickets__Admin__Views;
@@ -43,6 +44,15 @@ class Settings extends Abstract_Settings {
 	 * @var string
 	 */
 	public $option_partner_link_detail = 'tickets-commerce-paypal-commerce-partner-link-detail';
+
+	/**
+	 * The option key for webhook config.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $option_webhook_config = 'tickets-commerce-paypal-commerce-webhook-config';
 
 	/**
 	 * The merchant detail model.
@@ -339,6 +349,8 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Updates the country account
 	 *
+	 * @since TBD
+	 *
 	 * @param string $country
 	 *
 	 * @return bool
@@ -367,16 +379,20 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Updates the account access token.
 	 *
+	 * @since TBD
+	 *
 	 * @param array $token The account access token.
 	 *
 	 * @return bool
 	 */
 	public function update_access_token( $token ) {
-		return tribe_update_option( $this->option_access_token, $token );
+		return tribe_update_option( $this->option_access_token, (array) $token );
 	}
 
 	/**
 	 * Deletes the account access token
+	 *
+	 * @since TBD
 	 *
 	 * @return bool
 	 */
@@ -389,6 +405,8 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @since TBD
 	 *
+	 * @since TBD
+	 *
 	 * @return string|null
 	 */
 	public function get_partner_link_details() {
@@ -397,6 +415,8 @@ class Settings extends Abstract_Settings {
 
 	/**
 	 * Updates the partner link details
+	 *
+	 * @since TBD
 	 *
 	 * @param $linkDetails
 	 *
@@ -409,10 +429,58 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Deletes the partner link details
 	 *
+	 * @since TBD
+	 *
 	 * @return bool
 	 */
 	public function delete_partner_link_details() {
 		return tribe_update_option( $this->option_partner_link_detail, '' );
+	}
+
+	/**
+	 * Returns the webhook config.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $mode The mode (live/sandbox).
+	 *
+	 * @return WebhookConfig|null
+	 */
+	public function get_webhook_config( $mode ) {
+		$config = tribe_get_option( "{$this->option_webhook_config}-{$mode}", null );
+
+		if ( empty( $config ) ) {
+			return null;
+		}
+
+		return WebhookConfig::fromArray( $config );
+	}
+
+	/**
+	 * Updates the webhook config.
+	 *
+	 * @since TBD
+	 *
+	 * @param string        $mode   The mode (live/sandbox).
+	 * @param WebhookConfig $config The webhook config array.
+	 *
+	 * @return bool
+	 */
+	public function update_webhook_config( $mode, WebhookConfig $config ) {
+		return tribe_update_option( "{$this->option_webhook_config}-{$mode}", $config->toArray() );
+	}
+
+	/**
+	 * Deletes the webhook config.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $mode The mode (live/sandbox).
+	 *
+	 * @return bool
+	 */
+	public function delete_webhook_config( $mode ) {
+		return tribe_update_option( "{$this->option_webhook_config}-{$mode}", '' );
 	}
 
 }

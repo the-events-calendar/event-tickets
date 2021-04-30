@@ -86,7 +86,7 @@ class GatewayTest extends \Codeception\TestCase\WPTestCase {
 			'clientId'               => 'ABCD',
 			'clientSecret'           => 'ABCDE',
 			'token'                  => [
-				'accessToken' => 'abcd',
+				'access_token' => 'abcd',
 			],
 			'accountIsReady'         => '1',
 			'supportsCustomPayments' => '1',

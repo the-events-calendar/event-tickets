@@ -3,14 +3,21 @@
 namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce;
 
 use tad_DI52_ServiceProvider;
-use Tribe__Tickets__Main;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\MerchantDetail;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\PayPalClient;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Repositories\PayPalAuth;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Repositories\PayPalOrder;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\RefreshToken;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\Repositories\MerchantDetails;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\Repositories\Webhooks;
-use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\ScriptLoader;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\Listeners\PaymentCaptureCompleted;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\Listeners\PaymentCaptureDenied;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\Listeners\PaymentCaptureRefunded;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\Listeners\PaymentCaptureReversed;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\WebhookRegister;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Webhooks\WebhooksRoute;
+use Tribe\Tickets\REST\V1\Endpoints\PayPal_Commerce\Webhook;
+use Tribe__Tickets__Main;
 
 /**
  * Service provider for the Tickets Commerce: PayPal Commerce gateway.
@@ -28,9 +35,6 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	public function register() {
 		$this->container->singleton( Gateway::class );
 
-		// @todo Bring over Give\Controller\PayPalWebhooks.
-		//$this->container->singleton( PayPalWebhooks::class );
-
 		// @todo This isn't the same webhooks as registered later, look into that.
 		// $this->container->singleton( Webhooks::class );
 
@@ -38,15 +42,36 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		// $this->container->singleton( PaymentFormElements::class );
 
 		/*$this->container->singleton( PaymentProcessor::class );
-		$this->container->singleton( PayPalClient::class );
-		$this->container->singleton( ScriptLoader::class );
-		$this->container->singleton( WebhookRegister::class );*/
+		$this->container->singleton( ScriptLoader::class );*/
 		$this->container->singleton( AjaxRequestHandler::class );
+		$this->container->singleton( onBoardingRedirectHandler::class );
 		$this->container->singleton( RefreshToken::class );
+
 		$this->container->singleton( PayPalAuth::class );
+		$this->container->singleton( PayPalClient::class );
+		$this->container->singleton( PayPalOrder::class );
+
 		$this->container->singleton( MerchantDetail::class, null, [ 'init' ] );
 		$this->container->singleton( MerchantDetails::class, null, [ 'init' ] );
-		//$this->container->singleton( Webhooks::class, null, [ 'init' ] );
+
+		$this->container->singleton( WebhookRegister::class );
+		$this->container->singleton( WebhooksRoute::class );
+		$this->container->singleton( Webhooks::class, null, [ 'init' ] );
+
+		$this->container->singleton( PaymentCaptureCompleted::class );
+		$this->container->singleton( PaymentCaptureDenied::class );
+		$this->container->singleton( PaymentCaptureRefunded::class );
+		$this->container->singleton( PaymentCaptureReversed::class );
+
+		$this->container->singleton( REST::class );
+		$this->container->singleton(
+			Webhook::class,
+			new Webhook(
+				tribe( 'tickets.rest-v1.messages' ),
+				tribe( 'tickets.rest-v1.repository' ),
+				tribe( 'tickets.rest-v1.validator' )
+			)
+		);
 
 		$this->hooks();
 	}
@@ -60,25 +85,83 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_tickets_commerce_paypal_gateways', $this->container->callback( Gateway::class, 'register_gateway' ), 10, 2 );
 		add_filter( 'tribe_tickets_commerce_paypal_is_active', $this->container->callback( Gateway::class, 'is_active' ), 9, 2 );
 
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_user_onboarded', $this->container->callback( AjaxRequestHandler::class, 'onBoardedUserAjaxRequestHandler' ) );
+		add_action( 'init', [ $this, 'register_assets' ] );
+
+		// Settings page: Connect PayPal.
+		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_user_on_boarded', $this->container->callback( AjaxRequestHandler::class, 'onBoardedUserAjaxRequestHandler' ) );
 		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_get_partner_url', $this->container->callback( AjaxRequestHandler::class, 'onGetPartnerUrlAjaxRequestHandler' ) );
 		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_disconnect_account', $this->container->callback( AjaxRequestHandler::class, 'removePayPalAccount' ) );
 		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_onboarding_trouble_notice', $this->container->callback( AjaxRequestHandler::class, 'onBoardingTroubleNotice' ) );
+		add_action( 'admin_init', $this->container->callback( onBoardingRedirectHandler::class, 'boot' ) );
 
-		// @todo Replace the filter here.
-		// add_action( 'admin_init', $this->container->callback( onBoardingRedirectHandler::class, 'boot' ) );
+		// Frontend: PayPal Checkout.
+		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_create_order', $this->container->callback( AjaxRequestHandler::class, 'createOrder' ) );
+		add_action( 'wp_ajax_nopriv_tribe_tickets_paypal_commerce_create_order', $this->container->callback( AjaxRequestHandler::class, 'createOrder' ) );
+		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_approve_order', $this->container->callback( AjaxRequestHandler::class, 'approveOrder' ) );
+		add_action( 'wp_ajax_nopriv_tribe_tickets_paypal_commerce_approve_order', $this->container->callback( AjaxRequestHandler::class, 'approveOrder' ) );
 
-		add_action( 'admin_init', [ $this, 'register_assets' ] );
+		// REST API Endpoint registration.
+		add_action( 'rest_api_init', $this->container->callback( REST::class, 'register_endpoints' ) );
+
+		// @todo Refund links?
 	}
 
+	/**
+	 * Register assets needed for PayPal Commerce.
+	 *
+	 * @since TBD
+	 */
 	public function register_assets() {
+		// @todo Add asset for frontend checkout page.
+
 		tribe_asset(
 			Tribe__Tickets__Main::instance(),
 			'tribe-tickets-admin-commerce-paypal-commerce-partner-js',
 			$this->get_partner_js_url(),
 			[],
-			'admin_enqueue_scripts'
+			'admin_enqueue_scripts',
+			[
+				'localize' => [
+					[
+						'name' => 'tribeTicketsCommercePayPaCommerce',
+						'data' => [
+							'translations' => [
+								'confirmPaypalAccountDisconnection' => esc_html__( 'Disconnect PayPal Account', 'event-tickets' ),
+								'disconnectPayPalAccount'           => esc_html__( 'Are you sure you want to disconnect your PayPal account?', 'event-tickets' ),
+								'connectSuccessTitle'               => esc_html__( 'You’re connected to PayPal! Here’s what’s next...', 'event-tickets' ),
+								'pciWarning'                        => sprintf(
+									__(
+										'PayPal allows you to accept credit or debit cards directly on your website. Because of
+										this, your site needs to maintain <a href="%1$s" target="_blank">PCI-DDS compliance</a>.
+										Event Tickets never stores sensitive information like card details to your server and works
+										seamlessly with SSL certificates. Compliance is comprised of, but not limited to:', 'event-tickets'
+									),
+									// @todo Replace this URL.
+									'https://www.theeventscalendar.com/documentation/resources/pci-compliance/'
+								),
+								'pciComplianceInstructions'         => [
+									esc_html__( 'Using a trusted, secure hosting provider – preferably one which claims and actively promotes PCI compliance.', 'event-tickets' ),
+									esc_html__( 'Maintain security best practices when setting passwords and limit access to your server.', 'event-tickets' ),
+									esc_html__( 'Implement an SSL certificate to keep your payments secure.', 'event-tickets' ),
+									esc_html__( 'Keep plugins up to date to ensure latest security fixes are present.', 'event-tickets' ),
+								],
+								'liveWarning'                       => tribe_tickets_commerce_is_test_mode()
+									? esc_html__( 'You have connected your account for test mode. You will need to connect again once you are in live mode.', 'event-tickets' )
+									: '',
+							],
+						],
+					],
+				],
+			]
 		);
+	}
+
+	/**
+	 * Register REST API endpoints.
+	 *
+	 * @since TBD
+	 */
+	public function register_endpoints() {
 	}
 
 	/**
