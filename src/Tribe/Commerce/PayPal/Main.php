@@ -29,6 +29,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	const ORDER_OBJECT = 'tribe_tpp_orders';
 
 	/**
+	 * Name of the CPT that holds Orders
+	 *
+	 * @var string
+	 */
+	public $order_object = 'tribe_tpp_orders';
+
+	/**
 	 * Meta key that relates Attendees and Events.
 	 *
 	 * @var string
