@@ -2,16 +2,14 @@
 
 namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce;
 
-use Exception;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\MerchantDetail;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Repositories\PayPalAuth;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Repositories\PayPalOrder;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\RefreshToken;
 use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\Repositories\MerchantDetails;
-use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Settings;
+use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\Repositories\Webhooks;
 
 // @todo Bring this over.
-use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK_Interface\Repositories\Webhooks;
 
 /**
  * Class AjaxRequestHandler
@@ -109,14 +107,14 @@ class AjaxRequestHandler {
 		);
 
 		if ( ! $payPalResponse || array_key_exists( 'error', $payPalResponse ) ) {
-			wp_send_json_error();
+			wp_send_json_error( __( 'Unexpected response from PayPal when onboarding', 'event-tickets' ) );
 		}
 
 		$this->settings->update_access_token( $payPalResponse );
 
 		tribe( RefreshToken::class )->registerCronJobToRefreshToken( $payPalResponse['expires_in'] );
 
-		wp_send_json_success();
+		wp_send_json_success( __( 'PayPal account onboarded', 'event-tickets' ) );
 	}
 
 	/**
@@ -127,7 +125,7 @@ class AjaxRequestHandler {
 	public function onGetPartnerUrlAjaxRequestHandler() {
 		$this->validateAdminRequest();
 
-		$country_code = tribe_get_request_var( $this->settings->option_account_country );
+		$country_code = tribe_get_request_var( 'countryCode' );
 
 		/** @var \Tribe__Languages__Locations $locations */
 		$locations = tribe( 'languages.locations' );
@@ -138,14 +136,27 @@ class AjaxRequestHandler {
 			wp_send_json_error( __( 'Must include valid 2-character country code', 'event-tickets' ) );
 		}
 
+		/** @var Tribe__Settings $settings */
+		$settings = tribe( 'settings' );
+
+		// Get link to Tickets Tab.
+		$settings_url = $settings->get_url( [
+            'page'                       => 'tribe-common',
+            'tab'                        => 'event-tickets',
+            'tickets-commerce-connected' => '1',
+		] );
+
+		// @todo They ultimately need to get here.
+		// . '#tribe-field-tickets-commerce-paypal-commerce';
+
 		$partner_link_details = $this->payPalAuth->getSellerPartnerLink(
 			// @todo Replace this URL.
-			admin_url( 'edit.php?post_type=give_forms&page=give-settings&tab=gateways&section=paypal&group=paypal-commerce' ),
+			$settings_url,
 			$country_code
 		);
 
 		if ( ! $partner_link_details ) {
-			wp_send_json_error();
+			wp_send_json_error( __( 'Partner details not found', 'event-tickets' ) );
 		}
 
 		$this->settings->update_account_country( $country_code );
@@ -173,7 +184,7 @@ class AjaxRequestHandler {
 		$this->merchantRepository->deleteClientToken();
 		$this->refreshToken->deleteRefreshTokenCronJob();
 
-		wp_send_json_success();
+		wp_send_json_success( __( 'PayPal account disconnected', 'event-tickets' ) );
 	}
 
 	/**
@@ -261,15 +272,12 @@ class AjaxRequestHandler {
 	public function onBoardingTroubleNotice() {
 		$this->validateAdminRequest();
 
-		/* @var AdminSettingFields $adminSettingFields */
-		$adminSettingFields = tribe( AdminSettingFields::class );
-
 		$actionList = sprintf(
 			'<ol><li>%1$s</li><li>%2$s</li><li>%3$s %4$s</li></ol>',
 			esc_html__( 'Make sure to complete the entire PayPal process. Do not close the window you have finished the process.', 'event-tickets' ),
 			esc_html__( 'The last screen of the PayPal connect process includes a button to be sent back to your site. It is important you click this and do not close the window yourself.', 'event-tickets' ),
 			esc_html__( 'If you’re still having problems connecting:', 'event-tickets' ),
-			$adminSettingFields->getAdminGuidanceNotice( false )
+			$this->settings->get_guidance_html()
 		);
 
 		$standardError = sprintf(
