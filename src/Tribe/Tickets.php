@@ -2704,14 +2704,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$tickets = self::get_all_event_tickets( $post_id );
 
+			$wp_timezone = Tribe__Timezones::wp_timezone_string();
+
+			if ( Tribe__Timezones::is_utc_offset( $wp_timezone ) ) {
+				$wp_timezone = Tribe__Timezones::generate_timezone_string_from_utc_offset( $wp_timezone );
+			}
+
+			$timezone = new DateTimeZone( $wp_timezone );
+
 			foreach ( $tickets as $ticket ) {
 
-				$start_date = $ticket->start_date;
-				$end_date = $ticket->end_date;
+				$now        = Tribe__Date_Utils::build_date_object( 'now', $timezone );
+				$start_date = Tribe__Date_Utils::build_date_object( $ticket->start_date, $timezone );
+				$end_date   = Tribe__Date_Utils::build_date_object( $ticket->end_date, $timezone );
 
-				$now = strtotime( 'now' );
-
-				if ( ( strtotime( $end_date ) < $now ) || ( strtotime( $start_date ) > $now ) ) {
+				if ( $now > $end_date || $now < $start_date ) {
 					if ( ( $key = array_search( $ticket->price, $costs ) ) !== false ) {
 						unset( $costs[ $key ] );
 					}
