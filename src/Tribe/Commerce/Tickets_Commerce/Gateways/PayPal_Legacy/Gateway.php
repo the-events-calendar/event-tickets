@@ -21,10 +21,8 @@ class Gateway extends Abstract_Gateway {
 	 * The Gateway key.
 	 *
 	 * @since TBD
-	 *
-	 * @const
 	 */
-	const GATEWAY_KEY = 'paypal-legacy';
+	public $gateway_key = 'paypal-legacy';
 
 	/**
 	 * Register the gateway for Tickets Commerce.
@@ -103,7 +101,7 @@ class Gateway extends Abstract_Gateway {
 		}
 
 		// @todo Future: Disable gateway if it does not match the current gateway as the next step down the road.
-		/*if ( self::GATEWAY_KEY !== tribe_get_option( $commerce->option_gateway ) ) {
+		/*if ( $this->gateway_key !== tribe_get_option( $commerce->option_gateway ) ) {
 			return false;
 		}*/
 

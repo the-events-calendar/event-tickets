@@ -18,10 +18,8 @@ class Gateway extends Abstract_Gateway {
 	 * The Gateway key.
 	 *
 	 * @since TBD
-	 *
-	 * @const
 	 */
-	const GATEWAY_KEY = 'paypal-commerce';
+	public $gateway_key = 'paypal-commerce';
 
 	/**
 	 * PayPal attribution ID for requests.

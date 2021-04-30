@@ -265,10 +265,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return string The current Tickets Commerce gateway.
 	 */
 	public function get_current_gateway() {
-		$default = PayPal_Legacy_Gateway::GATEWAY_KEY;
+		$default = tribe( PayPal_Legacy_Gateway::class )->gateway_key;
 
 		if ( ! $this->should_show_paypal_legacy() ) {
-			$default = PayPal_Commerce_Gateway::GATEWAY_KEY;
+			$default = tribe( PayPal_Commerce_Gateway::class )->gateway_key;
 		}
 
 		return (string) tribe_get_option( $this->option_gateway, $default );

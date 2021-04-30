@@ -17,10 +17,8 @@ abstract class Abstract_Gateway {
 	 * The Gateway key.
 	 *
 	 * @since TBD
-	 *
-	 * @const
 	 */
-	const GATEWAY_KEY = '';
+	public $gateway_key = '';
 
 	/**
 	 * Register the gateway for Tickets Commerce.
