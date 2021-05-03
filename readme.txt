@@ -178,8 +178,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.2.0] TBD =
 
-* Fix: Add label to the quantity input in the RSVP & Tickets forms to improve accessibility. [ET-767]
+* Fix - Add label to the quantity input in the RSVP & Tickets forms to improve accessibility. [ET-767]
 * Fix - Fix a JavaScript localization error that was breaking the manual attendees functionality. [ETP-719]
+* Tweak - Update the footer calculations on the tickets block to only visible items so it can be used from the Attendee Registration Modal cart. [ETP-715]
 * Tweak - Adjust dimensions of tickets table for the classic editor UI. [ETP-594]
 * Tweak - Adjust the width of the Check-In column in the attendees report to make it work properly in different languages. [ET-768]
 
