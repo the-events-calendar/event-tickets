@@ -34,9 +34,9 @@
 <div class="tribe-block__rsvp__form">
 	<form
 	name="tribe-rsvp-form"
-	data-product-id="5"
+	data-product-id="14"
 >
-	<input type="hidden" name="product_id[]" value="5">
+	<input type="hidden" name="product_id[]" value="14">
 	<input type="hidden" name="attendee[order_status]" value="yes">
 	<!-- Maybe add nonce over here? Try to leave templates as clean as possible -->
 
@@ -48,9 +48,15 @@
 	class="tribe-block__rsvp__number-input-button tribe-block__rsvp__number-input-button--minus"
 ></button>
 
-		<input
+		<label
+	class="screen-reader-text"
+	for="quantity_14"
+>
+	Quantity</label>
+<input
 	type="number"
-	name="quantity_5"
+	id="quantity_14"
+	name="quantity_14"
 	class="tribe-tickets-quantity"
 	step="1"
 	min="1"
@@ -58,6 +64,7 @@
 	required
 	max="100"
 	/>
+
 		<button
 	type="button"
 	class="tribe-block__rsvp__number-input-button tribe-block__rsvp__number-input-button--plus"

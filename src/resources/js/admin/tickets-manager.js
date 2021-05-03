@@ -127,7 +127,7 @@ tribe.tickets.admin.manager = {};
 		const settings = obj.getAjaxSettings( $container );
 
 		// Set the security nonce.
-		data[ 'nonce' ] = TribeTickets.tribeTicketsAdminManagerNonce;
+		data[ 'nonce' ] = TribeTicketsAdminManager.tribeTicketsAdminManagerNonce;
 
 		// Pass the data received to the $.ajax settings
 		settings.data = data;
@@ -146,7 +146,7 @@ tribe.tickets.admin.manager = {};
 	 */
 	obj.getAjaxSettings = function( $container ) {
 		const ajaxSettings = {
-			url: TribeTickets.ajaxurl,
+			url: TribeTicketsAdminManager.ajaxurl,
 			method: 'POST',
 			beforeSend: obj.ajaxBeforeSend,
 			complete: obj.ajaxComplete,

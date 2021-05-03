@@ -3,6 +3,7 @@ namespace Tribe\Tickets\Partials\Tickets;
 
 use Codeception\TestCase\WPTestCase;
 use Spatie\Snapshots\MatchesSnapshots;
+use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
 
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
@@ -71,7 +72,16 @@ class Quantity extends WPTestCase {
 
 		$html     = $template->template( $this->partial_path, $args, false );
 
-		$this->assertMatchesSnapshot( $html );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
+
+		$driver->setTolerableDifferences( [ $ticket->ID, $event->ID ] );
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'quantity_',
+			]
+		);
+
+		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
 	/**
@@ -97,6 +107,15 @@ class Quantity extends WPTestCase {
 
 		$html = $template->template( $this->partial_path, $args, false );
 
-		$this->assertMatchesSnapshot( $html );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
+
+		$driver->setTolerableDifferences( [ $ticket_id, $event_id ] );
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'quantity_',
+			]
+		);
+
+		$this->assertMatchesSnapshot( $html, $driver );
 	}
 }

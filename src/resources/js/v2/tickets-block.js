@@ -126,7 +126,14 @@ tribe.tickets.block = {
 		let footerCount = 0;
 
 		$quantities.each( function() {
-			let newQuantity = parseInt( $( this ).val(), 10 );
+			const $input = $( this );
+
+			// Only check on elements that are visible, to work with cart removals.
+			if ( ! $input.is( ':visible' ) ) {
+				return;
+			}
+
+			let newQuantity = parseInt( $input.val(), 10 );
 			newQuantity = isNaN( newQuantity ) ? 0 : newQuantity;
 			footerCount += newQuantity;
 		} );
@@ -168,8 +175,15 @@ tribe.tickets.block = {
 		let footerAmount = 0;
 
 		$quantities.each( function() {
-			const $price = $( this ).closest( obj.selectors.item ).find( obj.selectors.itemPrice ).first();
-			let quantity = parseInt( $( this ).val(), 10 );
+			const $input = $( this );
+
+			// Only check on elements that are visible, to work with cart removals.
+			if ( ! $input.is( ':visible' ) ) {
+				return;
+			}
+
+			const $price = $input.closest( obj.selectors.item ).find( obj.selectors.itemPrice ).first();
+			let quantity = parseInt( $input.val(), 10 );
 			quantity = isNaN( quantity ) ? 0 : quantity;
 			let text = $price.text();
 			text = tribe.tickets.utils.cleanNumber( text, provider );
