@@ -41,7 +41,6 @@ if (
 ?>
 <tr class="<?php echo esc_attr( $provider ); ?> is-expanded" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
 	<td class="column-primary ticket_name <?php echo esc_attr( $provider ); ?>" data-label="<?php echo esc_attr( sprintf( _x( '%s Type:', 'ticket type label', 'event-tickets' ), tribe_get_ticket_label_singular( 'ticket_type_label' ) ) ); ?>">
-		<span class="dashicons dashicons-screenoptions tribe-handle"></span>
 		<input
 			type="hidden"
 			class="tribe-ticket-field-order"
@@ -49,30 +48,39 @@ if (
 			value="<?php echo esc_attr( $ticket->menu_order ); ?>"
 			<?php echo 'Tribe__Tickets__RSVP' === $ticket->provider_class ? 'disabled' : ''; ?>
 		>
+		<div class="tribe-tickets__tickets-editor-ticket-name">
+			<div class="tribe-tickets__tickets-editor-ticket-name-sortable">
+				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
+			</div>
+			<div class="tribe-tickets__tickets-editor-ticket-name-title">
 
-		<?php
-		/**
-		 * Fires before the ticket name is printed in the tickets table.
-		 *
-		 * @since 4.6.2
-		 *
-		 * @param Tribe__Tickets__Ticket_Object $ticket       The current ticket object.
-		 * @param Tribe__Tickets__Tickets       $provider_obj The current ticket provider object.
-		 */
-		do_action( 'event_tickets_ticket_list_before_ticket_name', $ticket, $provider_obj ); ?>
+				<?php
+				/**
+				 * Fires before the ticket name is printed in the tickets table.
+				 *
+				 * @since 4.6.2
+				 *
+				 * @param Tribe__Tickets__Ticket_Object $ticket       The current ticket object.
+				 * @param Tribe__Tickets__Tickets       $provider_obj The current ticket provider object.
+				 */
+				do_action( 'event_tickets_ticket_list_before_ticket_name', $ticket, $provider_obj );
+				?>
 
-		<?php echo esc_html( $ticket->name ); ?>
+				<?php echo esc_html( $ticket->name ); ?>
 
-		<?php
-		/**
-		 * Fires after the ticket name is printed in the tickets table.
-		 *
-		 * @since 4.6.2
-		 *
-		 * @param Tribe__Tickets__Ticket_Object $ticket       The current ticket object.
-		 * @param Tribe__Tickets__Tickets       $provider_obj The current ticket provider object.
-		 */
-		do_action( 'event_tickets_ticket_list_after_ticket_name', $ticket, $provider_obj ); ?>
+				<?php
+				/**
+				 * Fires after the ticket name is printed in the tickets table.
+				 *
+				 * @since 4.6.2
+				 *
+				 * @param Tribe__Tickets__Ticket_Object $ticket       The current ticket object.
+				 * @param Tribe__Tickets__Tickets       $provider_obj The current ticket provider object.
+				 */
+				do_action( 'event_tickets_ticket_list_after_ticket_name', $ticket, $provider_obj );
+				?>
+			</div>
+		</div>
 	</td>
 
 	<?php

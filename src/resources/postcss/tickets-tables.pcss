@@ -14,8 +14,9 @@
 	border: 1px solid var(--border-color);
 	margin: 20px 0;
 
-	thead {
-		background-color: #f9f9f9;
+	thead,
+	.table-header {
+		background-color: #fafafa;
 		border-bottom: 1px solid var(--border-color);
 	}
 
@@ -53,15 +54,21 @@
 		}
 	}
 
+	tbody tr:only-child,
+	tr.Tribe__Tickets__RSVP {
+		.tribe-tickets__tickets-editor-ticket-name-sortable {
+			display: none;
+		}
+	}
+
 	td.column-primary {
 		.tribe-handle {
 			color: #ccc;
-			cursor: pointer;
+			cursor: move;
 			font-size: 1.8em;
 			margin-right: 10px;
 			position: relative;
 			float: left;
-			display: none;
 		}
 	}
 
@@ -81,8 +88,29 @@
 		}
 	}
 
+	.tribe-tickets__tickets-editor-ticket-name {
+		display: table;
+		width: 100%;
+	}
+
+	.tribe-tickets__tickets-editor-ticket-name-sortable,
+	.tribe-tickets__tickets-editor-ticket-name-title {
+		display: table-cell;
+		vertical-align: middle;
+	}
+
+	.tribe-tickets__tickets-editor-ticket-name-sortable {
+		width: 32px;
+	}
+
+	.ticket_available,
+	.ticket_capacity,
+	.ticket_price {
+		width: 115px;
+	}
+
 	.ticket_edit {
-		width: 100px;
+		width: 30px;
 	}
 
 	/* Edit button styles - separate for portability */
