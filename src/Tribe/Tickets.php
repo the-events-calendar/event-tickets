@@ -2669,7 +2669,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				if ( in_array( $ticket->price, $prices ) ) {
 					continue;
 				}
-				// An empty price property can be ignored (but do add if the price is explicitly set to zero)
+
+				// An empty price property can be ignored (but do add if the price is explicitly set to zero).
 				if ( isset( $ticket->price ) && is_numeric( $ticket->price ) ) {
 					$prices[] = $ticket->price;
 				}
@@ -2688,7 +2689,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param string $meta Meta key name.
 		 * @param bool   $single determines if the requested meta should be a single item or an array of items.
 		 *
-		 * @return mixed
+		 * @return array The list of ticket costs with past tickets excluded possibly.
 		 */
 		public function exclude_past_tickets_from_cost_range( $costs, $post_id, $meta, $single ) {
 
@@ -2696,6 +2697,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return $costs;
 			}
 
+			/**
+			 * Allow filtering of whether to exclude past tickets in the event cost range.
+			 *
+			 * @since TBD
+			 *
+			 * @param bool $exclude_past_tickets Whether to exclude past tickets in the event cost range.
+			 */
 			$exclude_past_tickets = apply_filters( 'event_tickets_exclude_past_tickets_from_cost_range', true );
 
 			if ( ! $exclude_past_tickets ) {
@@ -2718,8 +2726,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$start_date = Tribe__Date_Utils::build_date_object( $ticket->start_date, $timezone );
 				$end_date   = Tribe__Date_Utils::build_date_object( $ticket->end_date, $timezone );
 
-				if ( $now > $end_date || $now < $start_date ) {
-					if ( ( $key = array_search( $ticket->price, $costs ) ) !== false ) {
+				// If the ticket has not yet become available for sale or has already ended.
+				if ( $now < $start_date || $end_date < $now ) {
+					// Try to find the ticket price in the list of costs.
+					$key = array_search( $ticket->price, $costs );
+
+					// Remove the value from the list of costs if we found it.
+					if ( false !== $key ) {
 						unset( $costs[ $key ] );
 					}
 					continue;
