@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, sc0ttkclark, ag
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
 Tested up to: 5.7.1
-Stable tag: 5.1.3
+Stable tag: 5.1.4
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -179,7 +179,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.2.0] TBD =
 
 * Fix - Show total Attendance count for Attendee List Block view. [ET-791]
+* Fix - Add label to the quantity input in the RSVP & Tickets forms to improve accessibility. [ET-767]
 * Fix - Fix a JavaScript localization error that was breaking the manual attendees functionality. [ETP-719]
+* Tweak - Update the footer calculations on the tickets block to only visible items so it can be used from the Attendee Registration Modal cart. [ETP-715]
+* Tweak - Adjust dimensions of tickets table for the classic editor UI. [ETP-594]
+* Tweak - Adjust the width of the Check-In column in the attendees report to make it work properly in different languages. [ET-768]
 
 = [5.1.3] 2021-04-22 =
 
