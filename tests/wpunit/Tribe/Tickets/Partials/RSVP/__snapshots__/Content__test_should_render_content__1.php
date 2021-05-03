@@ -48,8 +48,14 @@
 	class="tribe-block__rsvp__number-input-button tribe-block__rsvp__number-input-button--minus"
 ></button>
 
-		<input
+		<label
+	class="screen-reader-text"
+	for="quantity_5"
+>
+	Quantity</label>
+<input
 	type="number"
+	id="quantity_5"
 	name="quantity_5"
 	class="tribe-tickets-quantity"
 	step="1"
@@ -58,6 +64,7 @@
 	required
 	max="100"
 	/>
+
 		<button
 	type="button"
 	class="tribe-block__rsvp__number-input-button tribe-block__rsvp__number-input-button--plus"
