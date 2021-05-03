@@ -179,6 +179,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.2.0] TBD =
 
 * Fix - Show total Attendance count for Attendee List Block view. [ET-791]
+* Fix - Fix a JavaScript localization error that was breaking the manual attendees functionality. [ETP-719]
 
 = [5.1.3] 2021-04-22 =
 
