@@ -330,6 +330,6 @@ class Attendees_List {
 		              ->where( 'event', $post_id )
 		              ->where( 'rsvp_status__or_none', 'yes' );
 
-		return $attendees_orm->count();
+		return $attendees_orm->found();
 	}
 }
