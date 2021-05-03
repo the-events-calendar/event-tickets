@@ -326,8 +326,7 @@ class Attendees_List {
 	public function get_attendance_counts( $post_id ) {
 		$attendees_orm = tribe_attendees();
 
-		$attendees_orm->per_page( -1 )
-		              ->where( 'event', $post_id )
+		$attendees_orm->where( 'event', $post_id )
 		              ->where( 'rsvp_status__or_none', 'yes' );
 
 		return $attendees_orm->found();
