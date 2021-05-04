@@ -1116,6 +1116,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Ensure ticket prices and event costs are linked
 			add_filter( 'tribe_events_event_costs', [ $this, 'get_ticket_prices' ], 10, 2 );
+			add_filter( 'tribe_get_event_meta', [ $this, 'exclude_past_tickets_from_cost_range' ], 10, 4 );
 
 			add_action( 'event_tickets_checkin', [ $this, 'purge_attendees_transient' ] );
 			add_action( 'event_tickets_uncheckin', [ $this, 'purge_attendees_transient' ] );
@@ -2669,14 +2670,76 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					continue;
 				}
 
-
-				// An empty price property can be ignored (but do add if the price is explicitly set to zero)
-				elseif ( isset( $ticket->price ) && is_numeric( $ticket->price ) ) {
+				// An empty price property can be ignored (but do add if the price is explicitly set to zero).
+				if ( isset( $ticket->price ) && is_numeric( $ticket->price ) ) {
 					$prices[] = $ticket->price;
 				}
 			}
 
 			return $prices;
+		}
+
+		/**
+		 * Filter past tickets from showing up in cost range.
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $costs List of ticket costs.
+		 * @param int    $post_id Target Event's ID.
+		 * @param string $meta Meta key name.
+		 * @param bool   $single determines if the requested meta should be a single item or an array of items.
+		 *
+		 * @return array The list of ticket costs with past tickets excluded possibly.
+		 */
+		public function exclude_past_tickets_from_cost_range( $costs, $post_id, $meta, $single ) {
+
+			if ( '_EventCost' != $meta || $single || empty( $costs )  ) {
+				return $costs;
+			}
+
+			/**
+			 * Allow filtering of whether to exclude past tickets in the event cost range.
+			 *
+			 * @since TBD
+			 *
+			 * @param bool $exclude_past_tickets Whether to exclude past tickets in the event cost range.
+			 */
+			$exclude_past_tickets = apply_filters( 'event_tickets_exclude_past_tickets_from_cost_range', true );
+
+			if ( ! $exclude_past_tickets ) {
+				return $costs;
+			}
+
+			$tickets = self::get_all_event_tickets( $post_id );
+
+			$wp_timezone = Tribe__Timezones::wp_timezone_string();
+
+			if ( Tribe__Timezones::is_utc_offset( $wp_timezone ) ) {
+				$wp_timezone = Tribe__Timezones::generate_timezone_string_from_utc_offset( $wp_timezone );
+			}
+
+			$timezone = new DateTimeZone( $wp_timezone );
+
+			foreach ( $tickets as $ticket ) {
+
+				$now        = Tribe__Date_Utils::build_date_object( 'now', $timezone );
+				$start_date = Tribe__Date_Utils::build_date_object( $ticket->start_date, $timezone );
+				$end_date   = Tribe__Date_Utils::build_date_object( $ticket->end_date, $timezone );
+
+				// If the ticket has not yet become available for sale or has already ended.
+				if ( $now < $start_date || $end_date < $now ) {
+					// Try to find the ticket price in the list of costs.
+					$key = array_search( $ticket->price, $costs );
+
+					// Remove the value from the list of costs if we found it.
+					if ( false !== $key ) {
+						unset( $costs[ $key ] );
+					}
+					continue;
+				}
+			}
+
+			return $costs;
 		}
 
 		/**
