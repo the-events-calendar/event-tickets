@@ -460,6 +460,10 @@ tribe.tickets.block = {
 		$ticketRows.each(
 			function() {
 				const $row = $( this );
+
+				if ( ! $row.is( ':visible' ) ) {
+					return;
+				}
 				const ticketId = $row.data( 'ticketId' );
 				const qty = $row.find( obj.selectors.itemQuantityInput ).val();
 				const $optoutInput = $row.find( '[name="attendee[optout]"]' );
