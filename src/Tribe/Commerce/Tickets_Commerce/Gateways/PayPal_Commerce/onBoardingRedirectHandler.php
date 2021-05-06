@@ -70,7 +70,11 @@ class onBoardingRedirectHandler {
 	 */
 	public function boot() {
 		if ( $this->isPayPalUserRedirected() ) {
-			$details = $this->savePayPalMerchantDetails();
+			$merchantId = tribe_get_request_var( 'merchantId' );
+			$merchantIdInPayPal = tribe_get_request_var( 'merchantIdInPayPal' );
+
+			$details = $this->savePayPalMerchantDetails( $merchantId, $merchantIdInPayPal );
+
 			$this->setUpWebhook( $details );
 			$this->redirectAccountConnected();
 
@@ -84,6 +88,7 @@ class onBoardingRedirectHandler {
 
 		if ( $this->isStatusRefresh() ) {
 			$this->refreshAccountStatus();
+			$this->redirectAccountConnected();
 
 			return;
 		}
@@ -94,15 +99,18 @@ class onBoardingRedirectHandler {
 	 *
 	 * @since TBD
 	 *
+	 * @param string $merchantId         The merchant ID.
+	 * @param string $merchantIdInPayPal The merchant ID in PayPal.
+	 *
 	 * @return MerchantDetail
 	 */
-	private function savePayPalMerchantDetails() {
+	private function savePayPalMerchantDetails( $merchantId, $merchantIdInPayPal ) {
 		$partnerLinkInfo = $this->settings->get_partner_link_details();
 		$tokenInfo       = $this->settings->get_access_token();
 
 		$payPalAccount = [
-			'merchantId'         => tribe_get_request_var( 'merchantId' ),
-			'merchantIdInPayPal' => tribe_get_request_var( 'merchantIdInPayPal' ),
+			'merchantId'         => $merchantId,
+			'merchantIdInPayPal' => $merchantIdInPayPal,
 		];
 
 		$errors = [];
@@ -327,7 +335,7 @@ class onBoardingRedirectHandler {
 
 		$this->merchantRepository->save( $merchantDetails );
 
-		$details = $this->savePayPalMerchantDetails();
+		$details = $this->savePayPalMerchantDetails( $merchantDetails->merchantId, $merchantDetails->merchantIdInPayPal );
 
 		$this->setUpWebhook( $details );
 	}
