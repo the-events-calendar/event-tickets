@@ -105,8 +105,6 @@ class Settings extends Abstract_Settings {
 	 * @return array The list of settings for Tickets Commerce.
 	 */
 	public function get_settings() {
-		$home_url = home_url();
-
 		$plus_link    = sprintf(
 			'<a href="https://evnt.is/19zl" target="_blank" rel="noopener noreferrer">%s</a>',
 			esc_html__( 'Event Tickets Plus', 'event-tickets' )
@@ -162,7 +160,7 @@ class Settings extends Abstract_Settings {
 			],
 			$this->option_enable              => [
 				'type'            => 'checkbox_bool',
-				'label'           => esc_html__( 'Enable Tickets Commerce ', 'event-tickets' ),
+				'label'           => esc_html__( 'Enable Tickets Commerce', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Check this box if you wish to turn on Tickets Commerce functionality.', 'event-tickets' ),
 				'size'            => 'medium',
 				'default'         => $is_tickets_commerce_enabled,
@@ -172,17 +170,6 @@ class Settings extends Abstract_Settings {
 				],
 			],
 		];
-
-		/** @var \Tribe__Tickets__Commerce__PayPal__Handler__IPN $ipn_handler */
-		$ipn_handler = tribe( 'tickets.commerce.paypal.handler.ipn' );
-
-		$ipn_config_status = sprintf(
-			'<strong>%1$s <span id="paypal-ipn-config-status" data-status="%2$s">%3$s</span></strong><p class="description"><i>%4$s</i></p>',
-			esc_html__( 'PayPal configuration status:', 'event-tickets' ),
-			esc_attr( $ipn_handler->get_config_status( 'slug' ) ),
-			esc_html( $ipn_handler->get_config_status( 'label' ) ),
-			esc_html__( 'For help creating and configuring your account, call PayPal at 1-844-720-4038 (USA)', 'event-tickets' )
-		);
 
 		$settings = [
 			$this->option_sandbox                         => [
