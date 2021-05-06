@@ -139,6 +139,8 @@ class PayPalAuth {
 				'return_url'   => $returnUrl,
 				'country_code' => $country,
 			],
+			// @todo Remove this when SSL is fixed.
+			'sslverify' => false,
 		] );
 
 		if ( is_wp_error( $request ) ) {
