@@ -87,6 +87,7 @@ class PayPalOrder {
 		$this->validateCreateOrderArguments( $array );
 
 		$request = new OrdersCreateRequest();
+		// @todo Replace this with our bin code from Gateway::ATTRIBUTION_ID.
 		$request->payPalPartnerAttributionId( Give( 'PAYPAL_COMMERCE_ATTRIBUTION_ID' ) );
 		$request->body = [
 			'intent'              => 'CAPTURE',
@@ -95,7 +96,9 @@ class PayPalOrder {
 					'reference_id'        => get_post_field( 'post_name', $array['formId'] ),
 					'description'         => $array['formTitle'],
 					'amount'              => [
+						// @todo Replace this.
 						'value'         => give_maybe_sanitize_amount( $array['paymentAmount'], [ 'currency' => give_get_currency( $array['formId'] ) ] ),
+						// @todo Replace this.
 						'currency_code' => give_get_currency( $array['formId'] ),
 					],
 					'payee'               => [

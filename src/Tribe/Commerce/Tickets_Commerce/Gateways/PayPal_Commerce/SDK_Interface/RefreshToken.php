@@ -73,6 +73,7 @@ class RefreshToken {
 	 * @param string $tokenExpires What time the token expires.
 	 */
 	public function registerCronJobToRefreshToken( $tokenExpires ) {
+		// @todo Verify we need this as a cron, do we lose total API access if it expires (no visitors)?
 		wp_schedule_single_event(
 			// Refresh token before half hours of expires date.
 			time() + ( $tokenExpires - 1800 ),

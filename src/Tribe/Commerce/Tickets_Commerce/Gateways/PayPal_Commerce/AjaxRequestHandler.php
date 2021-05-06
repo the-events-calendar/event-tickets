@@ -195,9 +195,9 @@ class AjaxRequestHandler {
 	 *
 	 */
 	public function createOrder() {
-		$this->validateFrontendRequest();
-
 		// @todo Set up the order with our own custom code.
+
+		$this->validateFrontendRequest();
 
 		$postData = give_clean( $_POST );
 		$formId   = absint( tribe_get_request_var( 'give-form-id' ) );
