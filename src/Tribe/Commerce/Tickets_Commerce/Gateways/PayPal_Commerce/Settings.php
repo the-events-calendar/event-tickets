@@ -309,6 +309,7 @@ class Settings extends Abstract_Settings {
 							$error['message'],
 							urldecode_deep( $error['value'] )
 						);
+						break;
 
 					case 'json':
 						$error = sprintf(
@@ -316,10 +317,12 @@ class Settings extends Abstract_Settings {
 							$error['message'],
 							$error['value']
 						);
+						break;
 
 					default:
 						// This is an unrecognized error.
 						$error = null;
+						break;
 				}
 			}
 
