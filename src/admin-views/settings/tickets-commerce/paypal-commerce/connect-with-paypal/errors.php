@@ -40,7 +40,7 @@ if ( empty( $formatted_errors ) ) {
 
 	<?php if ( $account_is_connected ) : ?>
 		<p>
-			<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=tribe_events&page=tribe-common&tab=event-tickets-payments&paypalStatusCheck' ) ); ?>">
+			<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=tribe_events&page=tribe-common&tab=event-tickets&paypalStatusCheck' ) ); ?>">
 				<?php esc_html_e( 'Re-Check Account Status', 'event-tickets' ); ?>
 			</a>
 		</p>
