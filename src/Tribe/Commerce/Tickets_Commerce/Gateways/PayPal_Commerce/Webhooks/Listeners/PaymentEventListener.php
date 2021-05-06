@@ -150,7 +150,7 @@ abstract class PaymentEventListener implements EventListener {
 		tribe( 'logger' )->log_debug(
 			sprintf(
 				// Translators: %1$s: The status name; %2$s: The payment information.
-				__( 'Charge %1$s in PayPal from webhook: %2$s', 'event-tickets' ),
+				__( 'Change %1$s in PayPal from webhook: %2$s', 'event-tickets' ),
 				$this->new_status,
 				sprintf( '[Order ID: %s; PayPal Payment ID: %s]', $payment->ID, $paymentId )
 			),
@@ -158,7 +158,19 @@ abstract class PaymentEventListener implements EventListener {
 		);
 
 		/**
-		 * Allow hooking into
+		 * Allow hooking into the listener status.
+		 *
+		 * @since TBD
+		 *
+		 * @param WP_Post $payment    The payment object.
+		 * @param string  $paymentId  The PayPal payment ID.
+		 * @param object  $event      The PayPal webhook event.
+		 * @param string  $new_status The new order status.
+		 */
+		do_action( 'tribe_tickets_commerce_gateways_paypal_commerce_webhooks_listeners', $payment, $paymentId, $event, $this->new_status );
+
+		/**
+		 * Allow hooking into the listener status for the new status.
 		 *
 		 * @since TBD
 		 *
@@ -166,7 +178,7 @@ abstract class PaymentEventListener implements EventListener {
 		 * @param string  $paymentId The PayPal payment ID.
 		 * @param object  $event     The PayPal webhook event.
 		 */
-		do_action( 'tribe_tickets_commerce_gateways_paypal_commerce_webhooks_listeners_' . $this->new_status, $payment, $paymentId, $event );
+		do_action( "tribe_tickets_commerce_gateways_paypal_commerce_webhooks_listeners_{$this->new_status}", $payment, $paymentId, $event );
 
 		return true;
 	}
