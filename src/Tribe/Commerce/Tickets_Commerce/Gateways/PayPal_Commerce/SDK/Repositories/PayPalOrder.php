@@ -93,7 +93,9 @@ class PayPalOrder {
 			'intent'              => 'CAPTURE',
 			'purchase_units'      => [
 				[
+					// @todo Replace this.
 					'reference_id'        => get_post_field( 'post_name', $array['formId'] ),
+					// @todo Replace this.
 					'description'         => $array['formTitle'],
 					'amount'              => [
 						// @todo Replace this.
@@ -106,6 +108,7 @@ class PayPalOrder {
 						'merchant_id'   => $this->merchantDetails->merchantIdInPayPal,
 					],
 					'payer'               => [
+						// @todo Replace these.
 						'given_name'    => $array['payer']['firstName'],
 						'surname'       => $array['payer']['lastName'],
 						'email_address' => $array['payer']['email'],
