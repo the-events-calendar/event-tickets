@@ -43,9 +43,6 @@ class Commerce extends Order {
 
 		// Set the order post type.
 		$this->default_args['post_type'] = $this->attendee_provider->order_object;
-
-		// Use a regular variable so we can get constants from it in a PHP <7.0 compatible way.
-		$attendee_provider = $this->attendee_provider;
 	}
 
 	/**
