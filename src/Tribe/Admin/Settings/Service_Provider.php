@@ -47,55 +47,55 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		$et_resource_links = [
 			[
 				'label' => __( 'Getting Started Guide', 'event-tickets' ),
-				'href'  => 'https://theeventscalendar.com/knowledgebase/guide/event-tickets/',
+				'href'  => 'https://evnt.is/1aot',
 			],
 
 			[
 				'label' => __( 'Configuring PayPal for Ticket Purchases', 'event-tickets' ),
-				'href'  => 'https://theeventscalendar.com/knowledgebase/k/configuring-paypal-for-ticket-purchases/',
+				'href'  => 'https://evnt.is/1aou',
 			],
 			[
 				'label' => __( 'Configuring Tribe Commerce', 'event-tickets' ),
-				'href'  => 'https://theeventscalendar.com/knowledgebase/k/configuring-tribe-commerce/',
+				'href'  => 'https://evnt.is/1aov',
 			],
 			[
 				'label' => __( 'Using RSVPs', 'event-tickets' ),
-				'href'  => 'https://theeventscalendar.com/knowledgebase/k/event-tickets-using-rsvps/',
+				'href'  => 'https://evnt.is/1aox',
 			],
 			[
 				'label' => __( 'Managing Orders and Attendees', 'event-tickets' ),
-				'href'  => 'https://theeventscalendar.com/knowledgebase/k/tickets-managing-your-orders-and-attendees/',
+				'href'  => 'https://evnt.is/1aoy',
 			],
 			[
 				'label' => __( 'Event Tickets Manual', 'event-tickets' ),
-				'href'  => 'https://theeventscalendar.com/knowledgebase/product/event-tickets/',
+				'href'  => 'https://evnt.is/1aoz',
 			],
 		];
 
 		$etp_resource_links = [
 			[
 				'label' => __( 'Switching from Tribe Commerce to WooCommerce', 'event-tickets' ),
-				'href'  => 'https://theeventscalendar.com/knowledgebase/k/switching-from-tribe-commerce-to-woocommerce/',
+				'href'  => 'https://evnt.is/1ao-',
 			],
 			[
 				'label' => __( 'Setting Up E-Commerce Plugins for Selling Tickets', 'event-tickets' ),
-				'href'  => 'https://theeventscalendar.com/knowledgebase/k/setting-up-e-commerce-plugins-for-selling-tickets/',
+				'href'  => 'https://evnt.is/1ap0',
 			],
 			[
 				'label' => __( 'Tickets & WooCommerce', 'event-tickets' ),
-				'href'  => 'https://theeventscalendar.com/knowledgebase/k/woocommerce-specific-ticket-settings/',
+				'href'  => 'https://evnt.is/1ap1',
 			],
 			[
 				'label' => __( 'Creating Tickets', 'event-tickets' ),
-				'href'  => 'https://theeventscalendar.com/knowledgebase/k/making-tickets/',
+				'href'  => 'https://evnt.is/1ap2',
 			],
 			[
 				'label' => __( 'Event Tickets and Event Tickets Plus Settings Overview', 'event-tickets' ),
-				'href'  => 'https://theeventscalendar.com/knowledgebase/k/settings-overview-event-tickets-and-event-tickets-plus/',
+				'href'  => 'https://evnt.is/1ap3',
 			],
 			[
 				'label' => __( 'Event Tickets Plus Manual', 'event-tickets' ),
-				'href'  => 'https://theeventscalendar.com/knowledgebase/product/event-tickets-plus/',
+				'href'  => 'https://evnt.is/1ap4',
 			],
 		];
 

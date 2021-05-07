@@ -4,8 +4,6 @@
  *
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/tpp-success.php
  *
- * @package TribeEventsCalendar
- *
  * @since 4.7
  * @since 4.10.9 Uses new functions to get singular and plural texts.
  *
