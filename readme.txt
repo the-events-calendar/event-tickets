@@ -176,7 +176,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.2.0] TBD =
+= [5.2.0] 2021-05-12 =
 
 * Fix - Show total Attendance count for Attendee List Block view. [ET-791]
 * Fix - Add label to the quantity input in the RSVP & Tickets forms to improve accessibility. [ET-767]
@@ -184,6 +184,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Update the footer calculations on the tickets block to only visible items so it can be used from the Attendee Registration Modal cart. [ETP-715]
 * Tweak - Adjust dimensions of tickets table for the classic editor UI. [ETP-594]
 * Tweak - Adjust the width of the Check-In column in the attendees report to make it work properly in different languages. [ET-768]
+* Tweak - Added filters: `tribe_tickets_admin_manager_request`, `event_tickets_should_enqueue_admin_settings_assets`, `tribe_tickets_assets_should_enqueue_tickets_loader`, `tribe_tickets_attendee_repository_update_attendee_data_args_before_update`, `tribe_tickets_attendee_repository_set_attendee_args`, `tribe_tickets_attendee_repository_set_attendee_args_`, `tribe_tickets_attendee_repository_save_extra_attendee_data_args`, `tribe_tickets_attendee_repository_save_extra_attendee_data_args_`, `tribe_tickets_attendee_repository_create_order_for_attendee_order_args`, `tribe_tickets_attendees_csv_export_delimiter`, `tribe_tickets_repositories_order_statuses`, `tribe_tickets_repositories_order_public_statuses`, `tribe_tickets_repositories_order_private_statuses`, `tribe_tickets_repositories_order_create_order_for_ticket_order_args`, `tribe_tickets_ticket_object_is_ticket_cache_enabled`, `tribe_tickets_attendee_activity_log_data`, `event_tickets_exclude_past_tickets_from_cost_range`, `tribe_tickets_attendee_lookup_user_from_email`, `tribe_tickets_attendee_create_user_from_email`, `tribe_tickets_attendee_create_user_from_email_send_new_user_info`, `tribe_tickets_handler_email_max_resend_limit`, `tribe_tickets_repositories_order_map`, `tribe_tickets_block_ticket_html_attributes`
+* Tweak - Removed filters: `tribe_tickets_rsvp_create_attendee_lookup_user_from_email`
+* Language - 1 new strings added, 27 updated, 1 fuzzied, and 0 obsoleted
 
 = [5.1.3] 2021-04-22 =
 
