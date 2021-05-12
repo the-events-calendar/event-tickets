@@ -176,7 +176,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.2.0] 2021-05-12 =
+= [5.1.4] 2021-05-12 =
 
 * Fix - Show total Attendance count for Attendee List Block view. [ET-791]
 * Fix - Add label to the quantity input in the RSVP & Tickets forms to improve accessibility. [ET-767]
