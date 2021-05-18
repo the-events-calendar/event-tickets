@@ -99,6 +99,10 @@ We check in on the [Event Tickets forum here on WordPress.org](https://wordpress
 
 Still have a question? Shoot us an email at support@theeventscalendar.com.
 
+== Translate ==
+
+Event Tickets is translated into multiple languages, including German, Danish, and Dutch. Help localize Event Tickets even further by adding your locale – visit [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/event-tickets/).
+
 == Installation ==
 
 1. From the dashboard of your site, navigate to Plugins --> Add New.
