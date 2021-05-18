@@ -95,7 +95,7 @@ Ready to dig deeper? Check out these resources:
 * [Help Videos](https://evnt.is/youtube)
 * [Release Notes](https://evnt.is/2v)
 
-We check in on the [Event Tickets forum here on WordPress.org](https://wordpress.org/support/plugin/event-tickets/) about once a week to help users with basic troubleshooting and identifying bugs. If you're looking for premium, personalized support, consider upgrading to Event Tickets Plus.
+We check in on the [Event Tickets forum here on WordPress.org](https://wordpress.org/support/plugin/event-tickets/) about once a week to help users with basic troubleshooting and identifying bugs. If you're looking for premium, personalized support, consider upgrading to [Event Tickets Plus](https://evnt.is/18wk).
 
 Still have a question? Shoot us an email at support@theeventscalendar.com.
 
@@ -134,13 +134,13 @@ Note that we aren't going to say “tough luck” if you identify a plugin/theme
 
 Free plugin users can post in the [Event Tickets support forum on WordPress.org](https://wordpress.org/support/plugin/event-tickets/). Our team reviews that forum weekly to look for bug reports.
 
-If you're already an Event Tickets Plus subscriber, you're entitled to our actively-monitored [Premium Support](https://evnt.is/1aoe) on our website. Generally, except in times of increased support loads, we reply to all premium support tickets within 24 hours during the business week.
+If you're already an [Event Tickets Plus](https://evnt.is/18wk) subscriber, you're entitled to our actively-monitored [Premium Support](https://evnt.is/1aoe) on our website. Generally, except in times of increased support loads, we reply to all premium support tickets within 24 hours during the business week.
 
 = What's the difference between Event Tickets and Events Tickets Plus?
 
 Event Tickets is our free ticketing plugin that has all the basics you need to sell tickets and collect RSVPs on your website. You can use Event Tickets with or without The Events Calendar.
 
-Event Tickets Plus is a premium plugin that runs alongside Event Tickets and enhances it with extra features, including custom registration fields, shortcodes, WooCommerce integration, our [mobile ticketing app](https://evnt.is/1aof) and more.
+[Event Tickets Plus](https://evnt.is/18wk) is a premium plugin that runs alongside Event Tickets and enhances it with extra features, including custom registration fields, shortcodes, WooCommerce integration, our [mobile ticketing app](https://evnt.is/1aof) and more.
 
 [Read more to learn which plugin is right for you.](https://evnt.is/1aoa)
 
