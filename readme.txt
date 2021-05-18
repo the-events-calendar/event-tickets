@@ -168,7 +168,7 @@ The following add-ons are available for The Events Calendar:
 
 = I have a feature idea. What's the best way to tell you about it? =
 
-We've got a [UserVoice](https://tribe.uservoice.com/forums/195723-feature-ideas) page where we're actively watching for feature ideas from the community. Vote up existing feature requests or add your own, and help us shape the future of the products business in a way that best meets the community's needs.
+We've got a [ProductStash](https://app.productstash.io/the-events-calendar-suite-roadmap#/ideas) page where we're actively watching for feature ideas from the community. Vote up existing feature requests or add your own, and help us shape the future of the products business in a way that best meets the community's needs.
 
 = I've still got questions. Where can I find answers? =
 
