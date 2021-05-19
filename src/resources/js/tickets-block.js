@@ -668,7 +668,11 @@ window.tribe.tickets.block = {
 		let number = passedNumber;
 		const format = obj.getCurrencyFormatting();
 
-		if ( 0 === parseInt( format.number_of_decimals ) ) {
+		// If there are no number of decimals and no thousands separator we can return the number.
+		if (
+			0 === parseInt( format.number_of_decimals ) &&
+			'' === format.thousands_sep
+		) {
 			return number;
 		}
 
