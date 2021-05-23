@@ -50,6 +50,7 @@ jobs:
       - name: Checkout tut
         uses: actions/checkout@v2
         with:
+          token: ${{ secrets.GH_BOT_TOKEN }}
           repository: the-events-calendar/tut
           ref: main
           path: tut
@@ -63,8 +64,8 @@ jobs:
         run: |
           REPO_ORG=$GITHUB_ACTOR
           REPO_NAME=$( echo $GITHUB_REPOSITORY | sed "s/the-events-calendar\///")
-          MAIN_FILE=$(jq ".plugins[] | select( .name | test(\"$REPO_NAME\") ) | .main" tut/tut.json | sed 's/"//g' )
-          VERSION_LINE=$(jq ".plugins[] | select( .name | test(\"$REPO_NAME\") ) | .version" tut/tut.json | sed 's/"//g' )
+          MAIN_FILE=$(jq ".plugins[] | select( .name | test(\"$REPO_NAME\") ) | .main" tut/tut.json | sed 's/"//g' | head -n 1 )
+          VERSION_LINE=$(jq ".plugins[] | select( .name | test(\"$REPO_NAME\") ) | .version" tut/tut.json | sed 's/"//g' | head -n 1)
           echo "-----\n"
           echo "VERSION_LINE: $VERSION_LINE\n"
           echo "-----\n"
