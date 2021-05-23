@@ -66,14 +66,8 @@ jobs:
           REPO_NAME=$( echo $GITHUB_REPOSITORY | sed "s/the-events-calendar\///")
           MAIN_FILE=$(jq ".plugins[] | select( .name | test(\"$REPO_NAME\") ) | .main" tut/tut.json | sed 's/"//g' | head -n 1 )
           VERSION_LINE=$(jq ".plugins[] | select( .name | test(\"$REPO_NAME\") ) | .version" tut/tut.json | sed 's/"//g' | head -n 1)
-          echo "-----\n"
-          echo "VERSION_LINE: $VERSION_LINE\n"
-          echo "-----\n"
           ZIP_NAME=$(jq "._zipname" package.json | sed 's/"//g' )
           VERSION=$(grep -r "$VERSION_LINE" $MAIN_FILE | head -n 1 | sed -r "s/.*${VERSION_LINE}[^']*'([^']*)'.*/\1/")
-          echo "-----\n"
-          echo "VERSION: $VERSION\n"
-          echo "-----\n"
           HASH=$(git rev-parse --short=8 HEAD)
           TIMESTAMP=$(git --no-pager show -s --format=%ct HEAD)
           FILENAME="${ZIP_NAME}.${VERSION}-dev-${TIMESTAMP}-${HASH}.zip"
