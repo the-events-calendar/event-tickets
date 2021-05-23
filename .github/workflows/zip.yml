@@ -63,21 +63,15 @@ jobs:
         run: |
           REPO_ORG=$GITHUB_ACTOR
           REPO_NAME=$( echo $GITHUB_REPOSITORY | sed "s/the-events-calendar\///")
-          printf "REPO_NAME: $REPO_NAME\n"
           MAIN_FILE=$(jq ".plugins[] | select( .name | test(\"$REPO_NAME\") ) | .main" tut/tut.json | sed 's/"//g' )
-          printf "MAIN_FILE: $MAIN_FILE\n"
           VERSION_LINE=$(jq ".plugins[] | select( .name | test(\"$REPO_NAME\") ) | .version" tut/tut.json | sed 's/"//g' )
-          printf "VERSION_LINE: $VERSION_LINE\n"
           ZIP_NAME=$(jq "._zipname" package.json | sed 's/"//g' )
-          printf "ZIP_NAME: $ZIP_NAME\n"
+          grep -r "$VERSION_LINE" $MAIN_FILE | head -n 1 | sed -r "s/.*${VERSION_LINE}[^']*'([^']*)'.*/\1/"
           VERSION=$(grep -r "$VERSION_LINE" $MAIN_FILE | head -n 1 | sed -r "s/.*${VERSION_LINE}[^']*'([^']*)'.*/\1/")
           printf "VERSION: $VERSION\n"
           HASH=$(git rev-parse --short=8 HEAD)
-          printf "HASH: $HASH\n"
           TIMESTAMP=$(git --no-pager show -s --format=%ct HEAD)
-          printf "TIMESTAMP: $TIMESTAMP\n"
           FILENAME="${ZIP_NAME}.${VERSION}-dev-${TIMESTAMP}-${HASH}.zip"
-          printf "FILENAME: $FILENAME\n"
           if [ "${JOB_FINAL}" == "1" ]; then
             FILENAME="${ZIP_NAME}.${VERSION}.zip"
           fi
