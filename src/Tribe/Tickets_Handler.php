@@ -111,7 +111,7 @@ class Tribe__Tickets__Tickets_Handler {
 		add_filter( 'tribe_tickets_my_tickets_allow_email_resend_on_attendee_email_update', [ $this, 'maybe_disable_email_resend' ], 9, 3 );
 
 		// Stock actions.
-		add_action( 'event_tickets_attendee_deleted', [ $this, 'maybe_increase_global_stock_data' ], 10, 2 );
+		add_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'maybe_increase_global_stock_data' ], 10, 2 );
 	}
 
 	/**
