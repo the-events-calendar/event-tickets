@@ -38,7 +38,7 @@ jobs:
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           ssh-add - <<< "${{ secrets.GH_ACTIONS_SSH_KEY }}"
       # ------------------------------------------------------------------------------
-      # Checkout the repo and tric
+      # Checkout the repo and tut
       # ------------------------------------------------------------------------------
       - name: Checkout the repository
         uses: actions/checkout@v2
