@@ -170,11 +170,8 @@ class SharedCapacityTest extends WPTestCase {
 		$config = $this->get_config();
 
 		$this->assertTrue( $config->global_stock->is_enabled() );
+		$this->assertEquals( $config->shared_config['total_cap'], $config->global_stock->get_stock_level() );
 		$this->assertEquals( $config->shared_config['total_cap'], tribe_get_event_capacity( $config->event_id ) );
-
-
-//		$this->assertEquals( $config->shared_config['total_cap'], $config->global_stock->get_stock_level() );
-//		$this->assertEquals( $config->shared_config['total_cap'], tribe_get_event_capacity( $config->event_id ) );
 	}
 //
 //	/**
