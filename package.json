@@ -20,7 +20,7 @@
     "waiting_strings": false
   },
   "scripts": {
-    "preinstall": "if [ -d node_modules/product-taskmaster ]; then node node_modules/product-taskmaster/scripts/syncPackageJSON.js; fi",
+    "preinstall": "if [ -d node_modules/@the-events-calendar/product-taskmaster ]; then node node_modules/@the-events-calendar/product-taskmaster/scripts/syncPackageJSON.js; fi",
     "analyze": "webpack-bundle-analyzer -m static stats.json",
     "bootstrap": "./scripts/linkDependencies",
     "build:webpack": "cross-env NODE_ENV=production webpack -p",
@@ -34,7 +34,7 @@
     "lint": "eslint --quiet --parser=babel-eslint 'src/modules/**/*.js'",
     "lint:fix": "npm run lint -- --fix",
     "test": "TZ=UTC jest --config jest.config.json",
-    "zip": "node node_modules/product-taskmaster/util/zip.js",
+    "zip": "node node_modules/@the-events-calendar/product-taskmaster/util/zip.js",
     "glotpress": "gulp glotpress"
   },
   "engines": {
