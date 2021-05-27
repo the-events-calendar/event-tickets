@@ -1675,8 +1675,10 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Increment the global stock data for an Event if Shared stock is available.
 	 *
-	 * @param $post_id
-	 * @param $attendee_id
+	 * @since TBD
+	 *
+	 * @param int $post_id Post or Event ID.
+	 * @param int $attendee_id Attendee ID.
 	 */
 	public function maybe_increase_global_stock_data( $post_id, $attendee_id ) {
 
