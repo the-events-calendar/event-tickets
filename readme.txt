@@ -183,7 +183,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.1.5] TBD =
 
 * Tweak - Move complete list of changelog entries from `readme.txt` to `changelog.txt`. [ET-1121]
-
+* Fix - Fix the price number calculation for tickets that are using no decimals and thousand separator. [ET-1114]
 
 = [5.1.4] 2021-05-12 =
 
