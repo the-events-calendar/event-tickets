@@ -379,6 +379,9 @@ class Tribe__Tickets__Main {
 		// Admin manager.
 		tribe_register_provider( Tribe\Tickets\Admin\Manager\Service_Provider::class );
 
+		// Onboarding.
+		tribe_register_provider( Tribe\Tickets\Onboarding\Service_Provider::class );
+
 		// Promoter
 		tribe_register_provider( Promoter_Service_Provider::class );
 	}
