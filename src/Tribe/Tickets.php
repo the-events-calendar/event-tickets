@@ -674,7 +674,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return mixed
 		 */
 		public function delete_ticket( $post_id, $ticket_id ) {
+
+			/**
+			 * Trigger action when any attendee is deleted.
+			 *
+			 * @since TBD
+			 *
+			 * @param int $post_id Post or Event ID.
+			 * @param int $ticket_id Attendee ID.
+			 */
+			do_action( 'event_tickets_attendee_ticket_deleted', $post_id, $ticket_id );
+
 			$this->clear_ticket_cache_for_post( $post_id );
+			$this->clear_attendees_cache( $post_id );
 		}
 
 		/**
