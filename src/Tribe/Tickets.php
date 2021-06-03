@@ -2735,8 +2735,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			foreach ( $tickets as $ticket ) {
 
 				$now        = Tribe__Date_Utils::build_date_object( 'now', $timezone );
-				$start_date = Tribe__Date_Utils::build_date_object( $ticket->start_date, $timezone );
-				$end_date   = Tribe__Date_Utils::build_date_object( $ticket->end_date, $timezone );
+				$start_date = Tribe__Date_Utils::build_date_object( $ticket->start_date . ' ' . $ticket->start_time, $timezone );
+				$end_date   = Tribe__Date_Utils::build_date_object( $ticket->end_date . ' ' . $ticket->end_time, $timezone );
 
 				// If the ticket has not yet become available for sale or has already ended.
 				if ( $now < $start_date || $end_date < $now ) {

@@ -184,6 +184,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Fixed shared capacity stock sync after attendee deletion, for TribeCommerce tickets. [ETP-285]
 * Fix - Fix the price number calculation for tickets that are using no decimals and thousand separator. [ET-1114]
+* Fix - Resolved issue where events with tickets were being shown as Free on the day of the event. [ET-1133]
 * Tweak - Move complete list of changelog entries from `readme.txt` to `changelog.txt`. [ET-1121]
 
 = [5.1.4] 2021-05-12 =
