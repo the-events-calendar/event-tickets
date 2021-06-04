@@ -2716,7 +2716,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * @param bool $exclude_past_tickets Whether to exclude past tickets in the event cost range.
 			 */
-			$exclude_past_tickets = apply_filters( 'event_tickets_exclude_past_tickets_from_cost_range', true );
+			$exclude_past_tickets = apply_filters( 'event_tickets_exclude_past_tickets_from_cost_range', false );
 
 			if ( ! $exclude_past_tickets ) {
 				return $costs;
