@@ -1675,7 +1675,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Increment the global stock data for an Event if Shared stock is available.
 	 *
-	 * @since TBD
+	 * @since 5.1.5
 	 *
 	 * @param int $post_id Post or Event ID.
 	 * @param int $attendee_id Attendee ID.

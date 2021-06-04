@@ -678,7 +678,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Trigger action when any attendee is deleted.
 			 *
-			 * @since TBD
+			 * @since 5.1.5
 			 *
 			 * @param int $post_id Post or Event ID.
 			 * @param int $ticket_id Attendee ID.
@@ -2694,7 +2694,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Filter past tickets from showing up in cost range.
 		 *
-		 * @since TBD
+		 * @since 5.1.5
 		 *
 		 * @param array  $costs List of ticket costs.
 		 * @param int    $post_id Target Event's ID.
@@ -2712,7 +2712,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allow filtering of whether to exclude past tickets in the event cost range.
 			 *
-			 * @since TBD
+			 * @since 5.1.5
 			 *
 			 * @param bool $exclude_past_tickets Whether to exclude past tickets in the event cost range.
 			 */
