@@ -2,17 +2,17 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.1.4\n"
+"Project-Id-Version: Event Tickets 5.1.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2021-05-07 04:12:34+00:00\n"
+"POT-Creation-Date: 2021-06-04 05:16:17+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2021-05-07 04:12\n"
+"PO-Revision-Date: 2021-06-04 05:16\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.1.4)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.1.5)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: event-tickets.php:62 src/Tribe/Admin/Notices.php:92 src/Tribe/Main.php:680
 #: src/Tribe/Privacy.php:59 src/admin-views/admin-welcome-message.php:58
@@ -857,39 +857,39 @@ msgstr ""
 msgid "Orders"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1716
+#: src/Tribe/Commerce/PayPal/Main.php:1717
 msgid "Sales report"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1742
+#: src/Tribe/Commerce/PayPal/Main.php:1743
 msgid "Report"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1899 src/Tribe/RSVP.php:2355
+#: src/Tribe/Commerce/PayPal/Main.php:1900 src/Tribe/RSVP.php:2355
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1906 src/Tribe/RSVP.php:2362
+#: src/Tribe/Commerce/PayPal/Main.php:1907 src/Tribe/RSVP.php:2362
 msgid "Post updated. %1$s"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1910 src/Tribe/RSVP.php:2366
+#: src/Tribe/Commerce/PayPal/Main.php:1911 src/Tribe/RSVP.php:2366
 msgid "Post published. %1$s"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1913 src/Tribe/RSVP.php:2369
+#: src/Tribe/Commerce/PayPal/Main.php:1914 src/Tribe/RSVP.php:2369
 msgid "Post submitted."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1914 src/Tribe/RSVP.php:2370
+#: src/Tribe/Commerce/PayPal/Main.php:1915 src/Tribe/RSVP.php:2370
 msgid "Post scheduled."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1915 src/Tribe/RSVP.php:2371
+#: src/Tribe/Commerce/PayPal/Main.php:1916 src/Tribe/RSVP.php:2371
 msgid "Post draft updated."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2950 src/Tribe/RSVP.php:2014
+#: src/Tribe/Commerce/PayPal/Main.php:2951 src/Tribe/RSVP.php:2014
 msgid "(deleted)"
 msgstr ""
 
@@ -1052,27 +1052,27 @@ msgstr ""
 msgid "Are you sure you want to cancel?"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:297 src/Tribe/Tickets.php:4187
+#: src/Tribe/Editor/Blocks/Tickets.php:297 src/Tribe/Tickets.php:4199
 msgctxt "Error message title, will be followed by the error code."
 msgid "API Error"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:298 src/Tribe/Tickets.php:4188
+#: src/Tribe/Editor/Blocks/Tickets.php:298 src/Tribe/Tickets.php:4200
 msgid ""
 "Refresh this page or wait a few minutes before trying again. If this happens "
 "repeatedly, please contact the Site Admin."
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:299 src/Tribe/Tickets.php:4189
+#: src/Tribe/Editor/Blocks/Tickets.php:299 src/Tribe/Tickets.php:4201
 msgid ""
 "The ticket for this event has sold out and has been removed from your cart."
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:300 src/Tribe/Tickets.php:4190
+#: src/Tribe/Editor/Blocks/Tickets.php:300 src/Tribe/Tickets.php:4202
 msgid "Whoops!"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:301 src/Tribe/Tickets.php:4191
+#: src/Tribe/Editor/Blocks/Tickets.php:301 src/Tribe/Tickets.php:4203
 msgctxt "The %s will change based on the error produced."
 msgid "You have %s ticket(s) with a field that requires information."
 msgstr ""
@@ -2268,47 +2268,47 @@ msgstr ""
 msgid "Move %s"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1744
+#: src/Tribe/Tickets.php:1756
 msgid "Shared capacity with other tickets"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1745
+#: src/Tribe/Tickets.php:1757
 msgid "Set capacity for this ticket only"
 msgstr ""
 
 #. translators: %1$s: The singular of "RSVP" or "ticket", %2$s: The plural of
 #. "RSVPs" or "tickets", %3$s: The site name.
-#: src/Tribe/Tickets.php:2362
+#: src/Tribe/Tickets.php:2374
 msgctxt "The default RSVP/ticket email subject"
 msgid "Your %1$s from %3$s"
 msgid_plural "Your %2$s from %3$s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Tribe/Tickets.php:3084
+#: src/Tribe/Tickets.php:3096
 msgid "%s are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:3120
+#: src/Tribe/Tickets.php:3132
 msgid "%s will be available on "
 msgstr ""
 
-#: src/Tribe/Tickets.php:3126
+#: src/Tribe/Tickets.php:3138
 msgid " at "
 msgstr ""
 
 #. translators: %s: Tickets label
-#: src/Tribe/Tickets.php:3129 src/views/blocks/tickets/content-inactive.php:19
+#: src/Tribe/Tickets.php:3141 src/views/blocks/tickets/content-inactive.php:19
 #: src/views/v2/tickets/item/content/inactive.php:53
 #: src/views/v2/tickets/item/inactive.php:63
 msgid "%s are not yet available"
 msgstr ""
 
-#: src/Tribe/Tickets.php:3132
+#: src/Tribe/Tickets.php:3144
 msgid "%s are no longer available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:3134
+#: src/Tribe/Tickets.php:3146
 msgid "There are no %s available at this time."
 msgstr ""
 
