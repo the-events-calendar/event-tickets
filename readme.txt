@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, patriciahillebrandt, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
-Tested up to: 5.7.1
+Tested up to: 5.7.2
 Stable tag: 5.1.5
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -180,12 +180,14 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.1.5] TBD =
+= [5.1.5] 2021-06-09 =
 
 * Fix - Fixed shared capacity stock sync after attendee deletion, for TribeCommerce tickets. [ETP-285]
 * Fix - Fix the price number calculation for tickets that are using no decimals and thousand separator. [ET-1114]
 * Fix - Resolved issue where events with tickets were being shown as Free on the day of the event. [ET-1133]
+* Tweak - When using The Events Calendar and Event Tickets split the admin footer rating link 50/50. [ET-1120]
 * Tweak - Move complete list of changelog entries from `readme.txt` to `changelog.txt`. [ET-1121]
+* Language - 0 new strings added, 24 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.1.4] 2021-05-12 =
 
