@@ -184,6 +184,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Fixed shared capacity stock sync after attendee deletion, for TribeCommerce tickets. [ETP-285]
 * Fix - Fix the price number calculation for tickets that are using no decimals and thousand separator. [ET-1114]
+* Fix - Revert to not hiding past sale tickets from Cost range in Events [ET-1133]
 * Fix - Resolved issue where events with tickets were being shown as Free on the day of the event. [ET-1133]
 * Tweak - When using The Events Calendar and Event Tickets split the admin footer rating link 50/50. [ET-1120]
 * Tweak - Move complete list of changelog entries from `readme.txt` to `changelog.txt`. [ET-1121]

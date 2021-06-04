@@ -2712,11 +2712,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allow filtering of whether to exclude past tickets in the event cost range.
 			 *
-			 * @since 5.1.5
+			 * @since 5.1.4
 			 *
-			 * @param bool $exclude_past_tickets Whether to exclude past tickets in the event cost range.
+			 * @param bool  $exclude_past_tickets Whether to exclude past tickets in the event cost range.
+			 * @param array $costs                Which costs are going to be displayed.
+			 * @param int   $post_id              Which Event/Post we are dealign with.
 			 */
-			$exclude_past_tickets = apply_filters( 'event_tickets_exclude_past_tickets_from_cost_range', true );
+			$exclude_past_tickets = apply_filters( 'event_tickets_exclude_past_tickets_from_cost_range', false, $costs, $post_id );
 
 			if ( ! $exclude_past_tickets ) {
 				return $costs;
