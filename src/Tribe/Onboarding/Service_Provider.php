@@ -37,10 +37,20 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function hooks() {
+		$this->register_tours();
+		$this->register_hints();
+	}
+
+	function register_tours() {
+
 		// Events Settings page.
 		add_filter(
 			'tribe_onboarding_tour_data',
 			tribe_callback( 'tickets.onboarding.tour.admin.events-attendees', 'maybe_localize_tour' )
 		);
+
+	}
+
+	function register_hints() {
 	}
 }
