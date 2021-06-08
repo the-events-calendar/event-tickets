@@ -275,7 +275,7 @@ class Tribe__Tickets__Assets {
 
 		$admin_manager_js_data = [
 			'tribeTicketsAdminManagerNonce' => wp_create_nonce( 'tribe_tickets_admin_manager_nonce' ),
-			'ajaxurl'                           => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+			'ajaxurl'                       => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 		];
 
 		tribe_asset(
@@ -290,7 +290,7 @@ class Tribe__Tickets__Assets {
 			[
 				'localize' => [
 					[
-						'name' => 'TribeTickets',
+						'name' => 'TribeTicketsAdminManager',
 						'data' => $admin_manager_js_data,
 					],
 				],

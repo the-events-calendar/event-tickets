@@ -9,8 +9,14 @@
 	-</button>
 		<div
 	 class="tribe-tickets__item__quantity__number" >
+	<label
+		class="screen-reader-text"
+		for="quantity_88"
+	>
+		Quantity	</label>
 	<input
 		type="number"
+		id="quantity_88"
 		class="tribe-common-h3 tribe-common-h4--min-medium tribe-tickets-quantity"
 		step="1"
 		min="0"
