@@ -179,11 +179,13 @@ class Tribe__Tickets__JSON_LD__Order {
 
 		if ( 0 === $stock ) {
 			return 'SoldOut';
-		} elseif ( $stock >= 1 && $stock <= $this->low_stock ) {
-			return 'LimitedAvailability';
-		} else {
-			return 'InStock';
 		}
+
+		if ( $stock >= 1 && $stock <= $this->low_stock ) {
+			return 'LimitedAvailability';
+		}
+
+		return 'InStock';
 	}
 
 	/**
