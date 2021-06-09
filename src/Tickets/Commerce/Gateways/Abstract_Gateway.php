@@ -14,62 +14,54 @@ use Tribe__Tickets__Commerce__PayPal__Main as PayPal_Main;
  * The gateway related functionality.
  *
  * @since   TBD
- * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways
+ * @package TEC\Tickets\Commerce\Gateways
  *
  */
-abstract class Abstract_Gateway {
+abstract class Abstract_Gateway implements Interface_Gateway {
 
 	/**
 	 * The Gateway key.
 	 *
 	 * @since TBD
 	 */
-	public $gateway_key = '';
+	protected static $key;
 
 	/**
-	 * Register the gateway for Tickets Commerce.
-	 *
-	 * @since TBD
-	 *
-	 * @param array       $gateways The list of registered Tickets Commerce gateways.
-	 * @param PayPal_Main $commerce The Tickets Commerce provider.
-	 *
-	 * @return array The list of registered Tickets Commerce gateways.
+	 * @inheritDoc
 	 */
-	abstract public function register_gateway( array $gateways, $commerce );
+	public static function get_key() {
+		return static::$key;
+	}
 
 	/**
-	 * Determine whether the provider is active depending on the gateway settings.
-	 *
-	 * @since TBD
-	 *
-	 * @param bool        $is_active Whether the provider is active.
-	 * @param PayPal_Main $commerce  The Tickets Commerce provider.
-	 *
-	 * @return bool Whether the provider is active.
+	 * @inheritDoc
 	 */
-	abstract public function is_active( $is_active, $commerce );
+	public function register_gateway( array $gateways ) {
+		$gateways[ static::get_key() ] = [
+			'label'  => static::get_label(),
+			'class'  => static::class,
+			'object' => $this,
+		];
+
+		return $gateways;
+	}
 
 	/**
-	 * Determine whether the gateway should be shown as an available gateway.
-	 *
-	 * @since TBD
-	 *
-	 * @param bool        $should_show Whether the gateway should be shown as an available gateway.
-	 * @param PayPal_Main $commerce    The Tickets Commerce provider.
-	 *
-	 * @return bool Whether the gateway should be shown as an available gateway.
+	 * @inheritDoc
 	 */
-	public function should_show( $should_show, $commerce ) {
+	public static function is_active() {
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static function should_show() {
 		return true;
 	}
 
 	/**
-	 * Get the list of settings for the gateway.
-	 *
-	 * @since TBD
-	 *
-	 * @return array The list of settings for the gateway.
+	 * @inheritDoc
 	 */
 	public function get_settings() {
 		return [];

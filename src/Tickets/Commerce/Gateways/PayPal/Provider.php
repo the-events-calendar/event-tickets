@@ -79,8 +79,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function hooks() {
-		add_filter( 'tribe_tickets_commerce_paypal_gateways', $this->container->callback( Gateway::class, 'register_gateway' ), 10, 2 );
-		add_filter( 'tribe_tickets_commerce_paypal_is_active', $this->container->callback( Gateway::class, 'is_active' ), 9, 2 );
+		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 10, 2 );
 
 		add_action( 'init', [ $this, 'register_assets' ] );
 
@@ -101,6 +100,10 @@ class Provider extends tad_DI52_ServiceProvider {
 		add_action( 'rest_api_init', $this->container->callback( REST::class, 'register_endpoints' ) );
 
 		// @todo Refund links?
+	}
+
+	public function filter_add_gateway( array $gateways = [] ) {
+		return $this->container->make( Gateway::class )->register_gateway( $gateways );
 	}
 
 	/**

@@ -8,7 +8,8 @@
 
 namespace TEC\Tickets\Commerce;
 
-use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\Abstract_Gateway;
+use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
+use TEC\Tickets\Commerce\Gateways\Manager;
 use Tribe__Field_Conditional;
 
 /**
@@ -302,10 +303,10 @@ class Settings extends Abstract_Settings {
 			],
 		];
 
-		/** @var \Tribe__Tickets__Commerce__PayPal__Main $commerce_paypal */
-		$commerce_paypal = tribe( 'tickets.commerce.paypal' );
+		/** @var Manager $manager */
+		$manager = tribe( Manager::class );
 
-		$gateways = $commerce_paypal->get_gateways();
+		$gateways = $manager->get_gateways();
 
 		$gateway_setting_groups = [];
 
@@ -313,6 +314,10 @@ class Settings extends Abstract_Settings {
 		foreach ( $gateways as $gateway ) {
 			/** @var Abstract_Gateway $gateway_object */
 			$gateway_object = $gateway['object'];
+
+			if ( ! $gateway_object::should_show() ) {
+				continue;
+			}
 
 			// Get the gateway settings.
 			$gateway_settings = $gateway_object->get_settings();
@@ -323,7 +328,7 @@ class Settings extends Abstract_Settings {
 			}
 
 			$heading = [
-				'tickets-commerce-' . $gateway_object->gateway_key => [
+				'tickets-commerce-' . $gateway_object::get_key() => [
 					'type'            => 'wrapped_html',
 					'html'            => '<h3 class="event-tickets--admin_settings_subheading">' . $gateway['label'] . '</h3>',
 					'validation_type' => 'html',
@@ -336,8 +341,10 @@ class Settings extends Abstract_Settings {
 			$gateway_setting_groups[] = $gateway_settings;
 		}
 
-		// Add the gateway setting groups.
-		$settings = array_merge( $settings, array_merge( ...$gateway_setting_groups ) );
+		if ( ! empty( $gateway_setting_groups ) ) {
+			// Add the gateway setting groups.
+			$settings = array_merge( $settings, array_merge( ...$gateway_setting_groups ) );
+		}
 
 		/**
 		 * Allow filtering the list of Tickets Commerce settings.

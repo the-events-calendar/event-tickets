@@ -17,11 +17,8 @@ class Connect_Client {
 	 * @since TBD
 	 *
 	 * @var string
-	 *
-	 * @todo Replace with final API URL.
 	 */
-	//public $api_url = 'https://tickets.theeventscalendar.com/connect';
-	public $api_url = 'http://test.tec.local/wp-content/plugins/event-tickets/src/Tribe/Commerce/Tickets_Commerce/Gateways/PayPal/Service';
+	public $api_url = 'https://whodat.theeventscalendar.com/tickets/paypal/connect';
 
 	/**
 	 * Get REST API endpoint URL for requests.

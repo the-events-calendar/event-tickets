@@ -41,10 +41,10 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( static::class, $this );
 		$this->container->singleton( 'tickets.commerce.provider', $this );
 
-		/**
-		 * @todo Create a manager class to handle registration of Commerce Gateways.
-		 */
+		// Register all singleton classes.
+		$this->container->singleton( Gateways\Manager::class, Gateways\Manager::class );
 
+		// Load any external SPs we might need.
 		$this->container->register( Gateways\PayPal\Provider::class );
 		$this->container->register( Gateways\Legacy\Provider::class );
 	}

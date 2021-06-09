@@ -1,7 +1,7 @@
 <?php
 
-use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Gateway as PayPal_Commerce_Gateway;
-use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Legacy\Gateway as PayPal_Legacy_Gateway;
+use TEC\Tickets\Commerce\Gateways\PayPal\Gateway as PayPal_Commerce_Gateway;
+use TEC\Tickets\Commerce\Gateways\Legacy\Gateway as PayPal_Legacy_Gateway;
 
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Main
@@ -135,15 +135,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	public $deleted_product = '_tribe_deleted_product_name';
 
 	/**
-	 * The option name that holds the gateway for a specific ticket and attendee.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public $option_gateway = '_tickets_commerce_gateway';
-
-	/**
 	 * @var array An array cache to store pending attendees per ticket.
 	 */
 	public $pending_attendees_by_ticket = array();
@@ -221,64 +212,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$this->hooks();
 
 		$this->is_loaded = true;
-	}
-
-	/**
-	 * Determine whether PayPal Legacy should be shown as an available gateway.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether PayPal Legacy should be shown as an available gateway.
-	 */
-	public function should_show_paypal_legacy() {
-		/**
-		 * Determine whether PayPal Legacy should be shown as an available gateway.
-		 *
-		 * @since TBD
-		 *
-		 * @param bool                                   $should_show Whether PayPal Legacy should be shown as an available gateway.
-		 * @param Tribe__Tickets__Commerce__PayPal__Main $commerce    The Tickets Commerce provider.
-		 */
-		return (bool) apply_filters( 'tribe_tickets_commerce_paypal_should_show_paypal_legacy', false, $this );
-	}
-
-	/**
-	 * Get the list of registered Tickets Commerce gateways.
-	 *
-	 * @since TBD
-	 *
-	 * @return array The list of registered Tickets Commerce gateways.
-	 */
-	public function get_gateways() {
-		/**
-		 * Allow filtering the list of registered Tickets Commerce gateways.
-		 *
-		 * PayPal Commerce filters at priority 10.
-		 * PayPal Standard (Legacy) filters at priority 11.
-		 *
-		 * @since TBD
-		 *
-		 * @param array                                  $gateways The list of registered Tickets Commerce gateways.
-		 * @param Tribe__Tickets__Commerce__PayPal__Main $commerce The Tickets Commerce provider.
-		 */
-		return (array) apply_filters( 'tribe_tickets_commerce_paypal_gateways', [], $this );
-	}
-
-	/**
-	 * Get the current Tickets Commerce gateway.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The current Tickets Commerce gateway.
-	 */
-	public function get_current_gateway() {
-		$default = tribe( PayPal_Legacy_Gateway::class )->gateway_key;
-
-		if ( ! $this->should_show_paypal_legacy() ) {
-			$default = tribe( PayPal_Commerce_Gateway::class )->gateway_key;
-		}
-
-		return (string) tribe_get_option( $this->option_gateway, $default );
 	}
 
 	/**

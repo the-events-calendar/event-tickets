@@ -45,7 +45,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function add_actions() {
-		add_action( 'admin_init', [ $this, 'register_assets' ] );
+
 	}
 
 	/**

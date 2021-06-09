@@ -14,11 +14,9 @@ use Tribe__Tickets__Commerce__PayPal__Main as PayPal_Main;
  */
 class Gateway extends Abstract_Gateway {
 	/**
-	 * The Gateway key.
-	 *
-	 * @since TBD
+	 * @inheritDoc
 	 */
-	public $gateway_key = 'paypal-commerce';
+	protected static $key = 'paypal-commerce';
 
 	/**
 	 * PayPal attribution ID for requests.
@@ -30,44 +28,19 @@ class Gateway extends Abstract_Gateway {
 	const ATTRIBUTION_ID = 'TheEventsCalendar_SP_PPCP';
 
 	/**
-	 * Register the gateway for Tickets Commerce.
-	 *
-	 * @since TBD
-	 *
-	 * @param array       $gateways The list of registered Tickets Commerce gateways.
-	 * @param PayPal_Main $commerce The Tickets Commerce provider.
-	 *
-	 * @return array The list of registered Tickets Commerce gateways.
+	 * @inheritDoc
 	 */
-	public function register_gateway( array $gateways, $commerce ) {
-		$gateways['paypal-commerce'] = [
-			'label'  => __( 'PayPal Commerce', 'event-tickets' ),
-			'class'  => self::class,
-			'object' => $this,
-		];
-
-		return $gateways;
+	public static function get_label() {
+		return __( 'PayPal Commerce', 'event-tickets' );
 	}
 
 	/**
-	 * Determine whether the provider is active depending on the gateway settings.
-	 *
-	 * @since TBD
-	 *
-	 * @param bool        $is_active Whether the provider is active.
-	 * @param PayPal_Main $commerce  The Tickets Commerce provider.
-	 *
-	 * @return bool Whether the provider is active.
+	 * @inheritDoc
 	 */
-	public function is_active( $is_active, $commerce ) {
-		// Bail if the provider is already showing as active.
-		if ( $is_active ) {
-			return $is_active;
-		}
-
+	public static function is_active() {
 		// If this gateway shouldn't be shown, then don't change the active status.
-		if ( ! $this->should_show( false, $commerce ) ) {
-			return $is_active;
+		if ( ! static::should_show() ) {
+			return false;
 		}
 
 		/** @var MerchantDetails $merchantDetails */

@@ -1,6 +1,6 @@
 <?php
 
-use Tribe\Tickets\Commerce\Tickets_Commerce\Settings as Tickets_Commerce_Settings;
+use TEC\Tickets\Commerce\Settings as TC_Settings;
 
 /**
  * Filter to allow users to add/alter ignored post types
@@ -152,8 +152,8 @@ $authentication_fields = [
 	],
 ];
 
-/** @var Tickets_Commerce_Settings $commerce_settings */
-$commerce_settings = tribe( Tickets_Commerce_Settings::class );
+/** @var TC_Settings $commerce_settings */
+$commerce_settings = tribe( TC_Settings::class );
 $commerce_fields   = $commerce_settings->get_settings();
 
 $ticket_fields_end = [
