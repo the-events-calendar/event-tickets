@@ -304,9 +304,6 @@ class Tribe__Tickets__Main {
 
 		// Customizer support.
 		tribe_register_provider( Tribe\Tickets\Service_Providers\Customizer::class );
-
-		// Shortcode support.
-		tribe_register_provider( Tribe\Tickets\Service_Providers\Shortcode::class );
 	}
 
 	/**
@@ -386,9 +383,7 @@ class Tribe__Tickets__Main {
 		tribe_register_provider( Promoter_Service_Provider::class );
 
 		// Tickets Commerce providers.
-		tribe_register_provider( Tribe\Tickets\Commerce\Tickets_Commerce\Service_Provider::class );
-		tribe_register_provider( Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\Service_Provider::class );
-		tribe_register_provider( Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Legacy\Service_Provider::class );
+		tribe_register_provider( TEC\Tickets\Provider::class );
 	}
 
 	/**

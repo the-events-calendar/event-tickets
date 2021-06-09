@@ -59,7 +59,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Tribe\\Tickets\\": "src/Tribe"
+      "Tribe\\Tickets\\": "src/Tribe",
+      "TEC\\Tickets\\": "src/Tickets"
     }
   },
   "autoload-dev": {
