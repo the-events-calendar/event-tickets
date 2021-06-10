@@ -14,9 +14,9 @@
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
  * @since   4.12.3
- * @since   TBD Add label to the input to improve accessibility.
+ * @since   5.1.5 Add label to the input to improve accessibility.
  *
- * @version TBD
+ * @version 5.1.5
  */
 
 /** @var Tribe__Tickets__Ticket_Object $rsvp */

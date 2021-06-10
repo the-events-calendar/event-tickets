@@ -1388,8 +1388,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function delete_ticket( $event_id, $ticket_id ) {
-		// Run anything we might need on parent method.
-		parent::delete_ticket( $event_id, $ticket_id );
 
 		// Ensure we know the event and product IDs (the event ID may not have been passed in)
 		if ( empty( $event_id ) ) {
@@ -1421,6 +1419,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		if ( is_wp_error( $delete ) || ! isset( $delete->ID ) ) {
 			return false;
 		}
+
+		// Run anything we might need on parent method.
+		parent::delete_ticket( $event_id, $ticket_id );
 
 		Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
 		do_action( 'tickets_tpp_ticket_deleted', $ticket_id, $event_id, $product_id );

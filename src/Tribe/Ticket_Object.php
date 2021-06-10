@@ -642,6 +642,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 					if (
 						! $attendee_ticket_stock->is_enabled()
 						|| empty( $attendee_ticket_stock_mode )
+						|| ! $provider->attendee_decreases_inventory( $attendee )
 						|| Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $attendee_ticket_stock_mode
 					) {
 						continue;

@@ -317,7 +317,7 @@ class Attendees_List {
 	/**
 	 * Get total number of attendees that are confirmed.
 	 *
-	 * @since TBD
+	 * @since 5.1.5
 	 *
 	 * @param int|string $post_id The post or event that is checked.
 	 *
