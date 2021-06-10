@@ -1,7 +1,4 @@
 <?php
-
-use TEC\Tickets\Commerce\Settings as TC_Settings;
-
 /**
  * Filter to allow users to add/alter ignored post types
  *
