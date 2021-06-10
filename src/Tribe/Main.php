@@ -345,6 +345,9 @@ class Tribe__Tickets__Main {
 	public function bind_implementations() {
 		tribe_singleton( 'tickets.main', $this );
 
+		// Tickets Commerce providers.
+		tribe_register_provider( TEC\Tickets\Provider::class );
+
 		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
 		tribe_singleton( 'tickets.commerce.cart', 'Tribe__Tickets__Commerce__Cart' );
 		tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', [ 'hook' ] );
@@ -381,9 +384,6 @@ class Tribe__Tickets__Main {
 
 		// Promoter
 		tribe_register_provider( Promoter_Service_Provider::class );
-
-		// Tickets Commerce providers.
-		tribe_register_provider( TEC\Tickets\Provider::class );
 	}
 
 	/**

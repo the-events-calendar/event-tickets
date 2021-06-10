@@ -1809,17 +1809,3 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 		return (bool) apply_filters( 'tribe_tickets_new_views_is_enabled', $enabled );
 	}
 }
-
-/**
- * Determine whether Tickets Commerce is in test mode.
- *
- * @since TBD
- *
- * @return bool Whether Tickets Commerce is in test mode.
- */
-function tribe_tickets_commerce_is_test_mode() {
-	/** @var Tribe__Tickets__Commerce__PayPal__Main $commerce */
-	$commerce = tribe( 'tickets.commerce.paypal' );
-
-	return $commerce->is_test_mode();
-}

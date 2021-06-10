@@ -152,16 +152,22 @@ $authentication_fields = [
 	],
 ];
 
-/** @var TC_Settings $commerce_settings */
-$commerce_settings = tribe( TC_Settings::class );
-$commerce_fields   = $commerce_settings->get_settings();
-
 $ticket_fields_end = [
 	'tribe-form-content-end' => [
 		'type' => 'html',
 		'html' => '</div>',
 	],
 ];
+
+$commerce_fields = include 'tribe-commerce-settings.php';
+/**
+ * Allows for the specific filtering of the commerce fields.
+ *
+ * @since TBD
+ *
+ * @param array $commerce_fields Which fields are already present from legacy.
+ */
+$commerce_fields = (array) apply_filters( 'tec_tickets_commerce_settings', $commerce_fields );
 
 $tickets_fields = array_merge(
 	$tickets_fields,

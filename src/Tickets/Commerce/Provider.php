@@ -46,7 +46,7 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		// Load any external SPs we might need.
 		$this->container->register( Gateways\PayPal\Provider::class );
-		$this->container->register( Gateways\Legacy\Provider::class );
+//		$this->container->register( Gateways\Legacy\Provider::class );
 	}
 
 	/**

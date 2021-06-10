@@ -1,6 +1,8 @@
 <?php
 /**
  *
+ * @todo This file is not being used currently but we need to remove this before we launch Tickets Commerce.
+ *
  * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Legacy

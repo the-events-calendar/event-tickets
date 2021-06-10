@@ -55,7 +55,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_shortcodes', [ $this, 'filter_register_shortcodes' ] );
+		add_filter( 'tec_tickets_commerce_settings', [ $this, 'filter_include_commerce_settings' ] );
 	}
+
 
 	/**
 	 * Register shortcodes.
@@ -72,5 +74,17 @@ class Hooks extends tad_DI52_ServiceProvider {
 		$shortcodes['tribe_tickets_checkout'] = Tribe_Tickets_Checkout::class;
 
 		return $shortcodes;
+	}
+
+
+	/**
+	 * Modify the commerce settings completely once we have Tickets Commerce active.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function filter_include_commerce_settings() {
+		return $this->make( Settings::class )->get_settings();
 	}
 }

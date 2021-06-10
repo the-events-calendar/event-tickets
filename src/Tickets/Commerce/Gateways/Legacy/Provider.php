@@ -1,6 +1,8 @@
 <?php
 /**
  *
+ * @todo This file is not being used currently but we need to remove this before we launch Tickets Commerce.
+ *
  * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Legacy
@@ -12,8 +14,6 @@ use tad_DI52_ServiceProvider;
 
 /**
  * Service provider for the Tickets Commerce: PayPal Standard (Legacy) gateway.
- *
- * @todo Determine moving this back to it's original place for compatibility reasons.
  *
  * @since   TBD
  * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Legacy

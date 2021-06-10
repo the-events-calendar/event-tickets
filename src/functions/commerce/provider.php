@@ -34,3 +34,18 @@ function tec_tickets_commerce_is_enabled() {
 	 */
 	return apply_filters( 'tec_tickets_commerce_is_enabled', $enabled );
 }
+
+
+/**
+ * Determine whether Tickets Commerce is in test mode.
+ *
+ * @since TBD
+ *
+ * @return bool Whether Tickets Commerce is in test mode.
+ */
+function tribe_tickets_commerce_is_test_mode() {
+	/**
+	 * @todo This method likely should be focused on paypal only usage as it's gateway specific conditional.
+	 */
+	return \TEC\Tickets\Commerce\Gateways\PayPal\Gateway::is_test_mode();
+}

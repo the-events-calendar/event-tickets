@@ -1,6 +1,8 @@
 <?php
 /**
  *
+ * @todo This file is not being used currently but we need to remove this before we launch Tickets Commerce.
+ *
  * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Legacy
@@ -77,7 +79,7 @@ class Settings extends Abstract_Settings {
 		);
 		$paypal_setup_note    = sprintf(
 			// Translators: %1$s: The word "ticket" in lowercase, %2$s: The "these instructions" link.
-			esc_html_x( 'In order to use Tickets Commerce to sell %1$s, you must configure your PayPal account to communicate with your WordPress site. If you need help getting set up, follow %2$s', 'tickets fields settings PayPal setup', 'event-tickets' ),
+			esc_html_x( 'Ie Tickets Commerce to sell %1$s, you must configure your PayPal account to communicate with your WordPress site. If you need help getting set up, follow %2$s', 'tickets fields settings PayPal setup', 'event-tickets' ),
 			esc_html( tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_setup' ) ),
 			$paypal_setup_kb_link
 		);

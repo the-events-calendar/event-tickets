@@ -78,7 +78,7 @@ class Gateway extends Abstract_Gateway {
 	 *
 	 * @return bool Whether Tickets Commerce is in test mode.
 	 */
-	public function is_test_mode() {
+	public static function is_test_mode() {
 		return tribe_is_truthy( tribe_get_option( 'ticket-paypal-sandbox' ) );
 	}
 }
