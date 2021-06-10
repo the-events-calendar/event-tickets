@@ -225,6 +225,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function is_active() {
+		$is_active = tec_tickets_commerce_is_enabled() ? false : null;
+
 		/**
 		 * Filters the check for the active status of the PayPal tickets module.
 		 *
@@ -235,7 +237,20 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * @param bool                                   $is_active Whether the provider is active.
 		 * @param Tribe__Tickets__Commerce__PayPal__Main $commerce  The Tickets Commerce provider.
 		 */
-		return apply_filters( 'tribe_tickets_commerce_paypal_is_active', false, $this );
+		$is_active = apply_filters( 'tribe_tickets_commerce_paypal_is_active', $is_active, $this );
+
+		if ( null !== $is_active ) {
+			return (bool) $is_active;
+		}
+
+		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
+		/** @var Tribe__Tickets__Commerce__PayPal__Handler__Interface $handler */
+		$handler = $gateway->build_handler();
+
+		return
+			tribe_is_truthy( tribe_get_option( 'ticket-paypal-enable', false ) )
+			&& 'complete' === $handler->get_config_status();
 	}
 
 	/**
@@ -264,8 +279,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'tickets.commerce.paypal.oversell.policies', 'Tribe__Tickets__Commerce__PayPal__Oversell__Policies' );
 		tribe_singleton( 'tickets.commerce.paypal.oversell.request', 'Tribe__Tickets__Commerce__PayPal__Oversell__Request' );
 		tribe_singleton( 'tickets.commerce.paypal.frontend.tickets-form', 'Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form' );
-
 		tribe_register( 'tickets.commerce.paypal.cart', 'Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged' );
+
 		tribe()->tag( array(
 			'tickets.commerce.paypal.shortcodes.tpp-success' => 'Tribe__Tickets__Commerce__PayPal__Shortcodes__Success',
 		), 'tpp-shortcodes' );
@@ -301,6 +316,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_action( 'tribe_events_tickets_attendees_event_details_top', [ $this, 'setup_attendance_totals' ] );
 
 		add_action( 'init', [ $this, 'init' ] );
+		add_action( 'init', tribe_callback( 'tickets.commerce.paypal.orders.report', 'hook' ) );
 
 		add_action( 'event_tickets_attendee_update', [ $this, 'update_attendee_data' ], 10, 3 );
 		add_action( 'event_tickets_after_attendees_update', [ $this, 'maybe_send_tickets_after_status_change' ] );
@@ -532,17 +548,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		return $this->attendance_totals;
-	}
-
-	/**
-	 * Determine whether Tickets Commerce is in test mode.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether Tickets Commerce is in test mode.
-	 */
-	public function is_test_mode() {
-		return tribe_is_truthy( tribe_get_option( 'ticket-paypal-sandbox' ) );
 	}
 
 	/**
