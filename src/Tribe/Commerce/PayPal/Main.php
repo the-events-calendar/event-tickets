@@ -1,8 +1,4 @@
 <?php
-
-use TEC\Tickets\Commerce\Gateways\PayPal\Gateway as PayPal_Commerce_Gateway;
-use TEC\Tickets\Commerce\Gateways\Legacy\Gateway as PayPal_Legacy_Gateway;
-
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Main
  *
