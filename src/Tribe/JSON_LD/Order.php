@@ -111,6 +111,7 @@ class Tribe__Tickets__JSON_LD__Order {
 		// Reset it
 		$data->offers = array();
 
+
 		foreach ( $tickets as $ticket ) {
 			$data->offers[] = $this->get_offer( $ticket, $post );
 		}
@@ -127,12 +128,15 @@ class Tribe__Tickets__JSON_LD__Order {
 	 * @return object
 	 */
 	public function get_offer( $ticket, $post ) {
-		$price = $ticket->price;
 		// We use `the-events-calendar` domain to make sure it's translate-able the correct way
 		$string_free = __( 'Free', 'the-events-calendar' );
 
 		// JSON-LD can't have free as a price
-		if ( strpos( strtolower( trim( $price ) ), $string_free ) !== false ) {
+		$price = trim( $ticket->price );
+
+		// The empty would make sure `stripos` does not use an empty string to compare against with, if that's the case
+		// use the default price as zero.
+		if ( empty( $price ) || stripos( $price, $string_free ) !== false ) {
 			$price = 0;
 		}
 
@@ -175,11 +179,13 @@ class Tribe__Tickets__JSON_LD__Order {
 
 		if ( 0 === $stock ) {
 			return 'SoldOut';
-		} elseif ( $stock >= 1 && $stock <= $this->low_stock ) {
-			return 'LimitedAvailability';
-		} else {
-			return 'InStock';
 		}
+
+		if ( $stock >= 1 && $stock <= $this->low_stock ) {
+			return 'LimitedAvailability';
+		}
+
+		return 'InStock';
 	}
 
 	/**
