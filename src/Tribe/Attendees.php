@@ -643,7 +643,6 @@ class Tribe__Tickets__Attendees {
 
 		// Sanitize items for CSV usage.
 		$items = $this->sanitize_csv_rows( $items );
-
 		/**
 		 * Allow for filtering and modifying the list of attendees that will be exported via CSV for a given event.
 		 *
