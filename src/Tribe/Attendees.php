@@ -558,6 +558,8 @@ class Tribe__Tickets__Attendees {
 
 				// Handle custom columns that might have names containing HTML tags
 				$row[ $column_id ] = wp_strip_all_tags( $row[ $column_id ] );
+				//Decode HTML Entities
+				$row[ $column_id] = html_entity_decode( $row[ $column_id ] , ENT_QUOTES | ENT_XML1, 'UTF-8');
 				// Remove line breaks (e.g. from multi-line text field) for valid CSV format. Double quotes necessary here.
 				$row[ $column_id ] = str_replace( array( "\r", "\n" ), ' ', $row[ $column_id ] );
 			}
@@ -604,7 +606,6 @@ class Tribe__Tickets__Attendees {
 			// Prefix the value with a single quote to prevent formula from being processed.
 			$value = '\'' . $value;
 		}
-
 		return $value;
 	}
 
@@ -642,6 +643,7 @@ class Tribe__Tickets__Attendees {
 
 		// Sanitize items for CSV usage.
 		$items = $this->sanitize_csv_rows( $items );
+
 
 		/**
 		 * Allow for filtering and modifying the list of attendees that will be exported via CSV for a given event.
