@@ -1,5 +1,5 @@
 == Changelog ==
-
+* Fix - Exporting Attendees with HTML entities [ETP-730]
 = [5.1.5] TBD =
 
 * Tweak - Move complete list of changelog entries from `readme.txt` to `changelog.txt`. [ET-1121]
