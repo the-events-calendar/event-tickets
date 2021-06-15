@@ -1,5 +1,5 @@
 == Changelog ==
-* Fix - Prevent Attendees with HTML entities from importing broken. [ETP-730]
+* Fix - Prevent Attendees with HTML entities from exporting broken. [ETP-730]
 = [5.1.5] TBD =
 
 * Tweak - Move complete list of changelog entries from `readme.txt` to `changelog.txt`. [ET-1121]
