@@ -1804,8 +1804,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @param int Post ID
 		 * @param string the provider class name
+		 * @param int the  id of the ticket
 		 */
-		do_action( 'tribe_events_tickets_metabox_edit_ajax_advanced', $post_id, $provider );
+		do_action( 'tribe_events_tickets_metabox_edit_ajax_advanced', $post_id, $provider, $ticket_id  );
 
 		echo '</div>';
 	}
