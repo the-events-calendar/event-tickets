@@ -85,6 +85,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array
 	 */
 	public function filter_include_commerce_settings() {
-		return $this->make( Settings::class )->get_settings();
+		return $this->container->make( Settings::class )->get_settings();
 	}
 }
