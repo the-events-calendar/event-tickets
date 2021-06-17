@@ -1,5 +1,5 @@
 == Changelog ==
-* Fix - Prevent Attendees with HTML entities from importing broken. [ETP-730]
+* Fix - Prevent Tribe Commerce 'Confirmation email sender name' from displaying improperly when a single quote is added. [ET-1134]
 = [5.1.5] TBD =
 
 * Tweak - Move complete list of changelog entries from `readme.txt` to `changelog.txt`. [ET-1121]
