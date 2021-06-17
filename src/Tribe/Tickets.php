@@ -2392,9 +2392,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$headers[] = sprintf(
 					'From: %1$s <%2$s>',
-					filter_var( $from_name, FILTER_SANITIZE_STRING ),
+					html_entity_decode(
+						filter_var( $from_name, FILTER_SANITIZE_STRING )
+						, ENT_QUOTES | ENT_XML1, 'UTF-8')
+						,
 					$from_email
 				);
+				//html_entity_decode( $row[ $column_id ] , ENT_QUOTES | ENT_XML1, 'UTF-8');
+
 
 				$headers[] = sprintf(
 					'Reply-To: %s',
