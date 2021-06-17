@@ -2392,9 +2392,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$headers[] = sprintf(
 					'From: %1$s <%2$s>',
-					html_entity_decode(
-						filter_var( $from_name, FILTER_SANITIZE_STRING )
-						, ENT_QUOTES | ENT_XML1, 'UTF-8')
+					html_entity_decode( $from_name, ENT_QUOTES | ENT_XML1, 'UTF-8')
 						,
 					$from_email
 				);
