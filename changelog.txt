@@ -1,5 +1,5 @@
 == Changelog ==
-
+* Tweak - Updated attendee_decreases_inventory to return a filter. [ETP-112]
 = [5.1.5] TBD =
 
 * Tweak - Move complete list of changelog entries from `readme.txt` to `changelog.txt`. [ET-1121]
