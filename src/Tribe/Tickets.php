@@ -988,7 +988,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return bool
 		 */
 		public function attendee_decreases_inventory( array $attendee ) {
-			return true;
+			return apply_filters( 'tribe_tickets_attendee_decreases_inventory', true, $attendee );
 		}
 
 		/**
