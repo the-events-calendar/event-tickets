@@ -2395,8 +2395,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					stripcslashes( $from_name ),
 					$from_email
 				);
-				//html_entity_decode( $row[ $column_id ] , ENT_QUOTES | ENT_XML1, 'UTF-8');
-
 
 				$headers[] = sprintf(
 					'Reply-To: %s',
