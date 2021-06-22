@@ -182,7 +182,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.1.6] TBD =
 
-
+* Fix - Fixed the ticket block allowing to add more tickets than available when using shared capacity. [ET-1137]
 
 = [5.1.5] 2021-06-09 =
 
