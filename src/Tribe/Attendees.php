@@ -604,6 +604,7 @@ class Tribe__Tickets__Attendees {
 			// Prefix the value with a single quote to prevent formula from being processed.
 			$value = '\'' . $value;
 		}
+
 		return $value;
 	}
 
@@ -641,6 +642,7 @@ class Tribe__Tickets__Attendees {
 
 		// Sanitize items for CSV usage.
 		$items = $this->sanitize_csv_rows( $items );
+
 		/**
 		 * Allow for filtering and modifying the list of attendees that will be exported via CSV for a given event.
 		 *
