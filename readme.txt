@@ -182,7 +182,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.1.6] TBD =
 
-
+* Tweak - Added $ticket_id to 'tribe_events_tickets_metabox_edit_ajax_advanced'. [ETP-111]
 
 = [5.1.5] 2021-06-09 =
 
