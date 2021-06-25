@@ -8,6 +8,8 @@
 
 namespace Tribe\Tickets\Onboarding;
 
+use Tribe\Tickets\Onboarding\Tour\Admin\EventsAttendees;
+
 /**
  * Class Service_Provider
  *
@@ -19,7 +21,7 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since 1.0.0
+	 * @since TBD
 	 */
 	public function register() {
 		$this->container->singleton( 'tickets.onboarding', self::class );
@@ -37,20 +39,23 @@ class Service_Provider extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function hooks() {
-		$this->register_tours();
-		$this->register_hints();
+		add_filter( 'tribe_onboarding_tours', [ $this, 'filter_register_tours' ] );
 	}
 
-	function register_tours() {
+	/**
+	 * Register tours.
+	 *
+	 * @see   \Tribe\Onboarding\Main::get_registered_tours()
+	 *
+	 * @since TBD
+	 *
+	 * @param array $tours An associative array of tours in the shape `[ <tour_id> => <class> ]`.
+	 *
+	 * @return array
+	 */
+	public function filter_register_tours( array $tours ) {
+		$tours['event_tickets_tour_attendees'] = EventsAttendees::class;
 
-		// Events Settings page.
-		add_filter(
-			'tribe_onboarding_tour_data',
-			tribe_callback( 'tickets.onboarding.tour.admin.events-attendees', 'maybe_localize_tour' )
-		);
-
-	}
-
-	function register_hints() {
+		return $tours;
 	}
 }
