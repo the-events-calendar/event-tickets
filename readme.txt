@@ -181,7 +181,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 == Changelog ==
 
 = [5.1.6] TBD =
-* Fix - Prevent Tribe Commerce 'Confirmation email sender name' from displaying improperly when a single quote is added. [ET-1134]
+* Fix - Prevent Tribe Commerce "Confirmation email sender name" from displaying improperly when a single quote is added. [ET-1134]
 
 
 = [5.1.5] 2021-06-09 =
