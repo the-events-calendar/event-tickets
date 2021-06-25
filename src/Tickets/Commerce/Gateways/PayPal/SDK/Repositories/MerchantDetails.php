@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK_Interface\Repositories;
+namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\MerchantDetail;
 use TEC\Tickets\Commerce\Gateways\PayPal\SDK\PayPalClient;

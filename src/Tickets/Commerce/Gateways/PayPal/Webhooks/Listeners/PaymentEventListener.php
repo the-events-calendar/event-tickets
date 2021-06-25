@@ -2,8 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK_Interface\Repositories\MerchantDetails;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK_Interface\Repositories\Webhooks;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Webhooks;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\WebhookRegister;
 use WP_Post;
 

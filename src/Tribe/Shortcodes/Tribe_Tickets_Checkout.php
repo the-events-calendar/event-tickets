@@ -9,7 +9,7 @@
 namespace Tribe\Tickets\Shortcodes;
 
 use Tribe\Shortcode\Shortcode_Abstract;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK_Interface\Repositories\MerchantDetails;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
 use TEC\Tickets\Commerce\Gateways\PayPal\Settings;
 use Tribe__Tickets__Editor__Template;
 

@@ -29,18 +29,18 @@ class Provider extends \tad_DI52_ServiceProvider {
 		/*$this->container->singleton( PaymentProcessor::class );;*/
 		$this->container->singleton( AjaxRequestHandler::class );
 		$this->container->singleton( onBoardingRedirectHandler::class );
-		$this->container->singleton( SDK_Interface\RefreshToken::class );
+		$this->container->singleton( SDK\RefreshToken::class );
 
 		$this->container->singleton( SDK\Repositories\PayPalAuth::class );
 		$this->container->singleton( SDK\PayPalClient::class );
 		$this->container->singleton( SDK\Repositories\PayPalOrder::class );
 
 		$this->container->singleton( SDK\Models\MerchantDetail::class, null, [ 'init' ] );
-		$this->container->singleton( SDK_Interface\Repositories\MerchantDetails::class, null, [ 'init' ] );
+		$this->container->singleton( SDK\Repositories\MerchantDetails::class, null, [ 'init' ] );
 
 		$this->container->singleton( Webhooks\WebhookRegister::class );
 		$this->container->singleton( Webhooks\WebhooksRoute::class );
-		$this->container->singleton( SDK_Interface\Repositories\Webhooks::class, null, [ 'init' ] );
+		$this->container->singleton( SDK\Repositories\Webhooks::class, null, [ 'init' ] );
 
 		$this->container->singleton( Webhooks\Listeners\PaymentCaptureCompleted::class );
 		$this->container->singleton( Webhooks\Listeners\PaymentCaptureDenied::class );

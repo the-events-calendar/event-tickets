@@ -1,9 +1,9 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK_Interface\Repositories;
+namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories;
 
 use Exception;
-use TEC\Tickets\Commerce\Gateways\PayPal\DataTransferObjects\PayPalWebhookHeaders;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\DataTransferObjects\PayPalWebhookHeaders;
 use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\WebhookConfig;
 use TEC\Tickets\Commerce\Gateways\PayPal\SDK\PayPalClient;
 use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Traits\HasMode;

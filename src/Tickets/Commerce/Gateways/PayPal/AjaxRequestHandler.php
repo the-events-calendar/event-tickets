@@ -5,9 +5,9 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\MerchantDetail;
 use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\PayPalAuth;
 use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\PayPalOrder;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK_Interface\RefreshToken;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK_Interface\Repositories\MerchantDetails;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK_Interface\Repositories\Webhooks;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\RefreshToken;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Webhooks;
 
 // @todo Bring this over.
 
@@ -191,7 +191,7 @@ class AjaxRequestHandler {
 	 * Create order.
 	 *
 	 * @since TBD
-	 * @todo  : handle payment create error on frontend.
+	 * @todo : handle payment create error on frontend.
 	 *
 	 */
 	public function createOrder() {

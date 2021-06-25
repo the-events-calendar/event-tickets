@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 use TEC\Tickets\Commerce\Abstract_Settings;
 use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\MerchantDetail;
 use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\WebhookConfig;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK_Interface\Repositories\MerchantDetails;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
 use Tribe__Languages__Locations;
 use Tribe__Tickets__Admin__Views;
 use Tribe__Tickets__Main;

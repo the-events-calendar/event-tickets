@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK_Interface\Repositories\MerchantDetails;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal_Main;
 
 /**

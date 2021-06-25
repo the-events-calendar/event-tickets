@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models;
 
 use InvalidArgumentException;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK_Interface\Repositories\MerchantDetails;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
 
 /**
  * Class MerchantDetail

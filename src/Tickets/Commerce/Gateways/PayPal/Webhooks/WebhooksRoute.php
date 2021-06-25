@@ -4,11 +4,11 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 
 use Exception;
 use TEC\Tickets\Commerce\Gateways\PayPal\REST;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK_Interface\Repositories\MerchantDetails;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK_Interface\Repositories\Webhooks;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Webhooks;
 use TEC\Tickets\Commerce\Gateways\PayPal\SDK\DataTransferObjects\PayPalWebhookHeaders;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\WebhookRegister;
-use Tribe\Tickets\REST\V1\Endpoints\PayPal\Webhook;
+use Tribe\Tickets\REST\V1\Endpoints\Commerce\PayPal_Webhook;
 
 class WebhooksRoute {
 	/**
@@ -59,7 +59,7 @@ class WebhooksRoute {
 		$rest = tribe( REST::class );
 
 		/** @var Webhook $endpoint */
-		$endpoint = tribe( Webhook::class );
+		$endpoint = tribe( PayPal_Webhook::class );
 
 		return rest_url( '/' . $rest->namespace . $endpoint->path, 'https' );
 	}
