@@ -183,6 +183,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.1.6] TBD =
 
 * Tweak - Added `$ticket_id` parameter to the `tribe_events_tickets_metabox_edit_ajax_advanced` filter. [ETP-111]
+* Fix - Fixed the ticket block allowing to add more tickets than available when using shared capacity. [ET-1137]
 * Fix - Sync WooCommerce decimal separator with in Ticket edit form. [ ETP-725 ]
 
 = [5.1.5] 2021-06-09 =
