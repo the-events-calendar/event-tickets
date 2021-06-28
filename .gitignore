@@ -2,8 +2,13 @@
 .DS_Store
 .idea
 *.code-workspace
+
+# Composer / Package files
 node_modules
-vendor
+/vendor
+/files
+/vcs
+/repo
 
 # Some people makes...
 Makefile
