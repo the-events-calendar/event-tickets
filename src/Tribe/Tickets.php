@@ -2392,7 +2392,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$headers[] = sprintf(
 					'From: %1$s <%2$s>',
-					filter_var( $from_name, FILTER_SANITIZE_STRING ),
+					stripcslashes( $from_name ),
 					$from_email
 				);
 
