@@ -185,7 +185,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Added support for HTML in Ticket description field. [ET-1135]
 * Tweak - Added `$ticket_id` parameter to the `tribe_events_tickets_metabox_edit_ajax_advanced` filter. [ETP-111]
 * Fix - Fixed the ticket block allowing to add more tickets than available when using shared capacity. [ET-1137]
-* Fix - Sync WooCommerce decimal separator with in Ticket edit form. [ ETP-725 ]
+* Fix - Sync WooCommerce decimal separator with in Ticket edit form. [ETP-725]
+* Fix - Prevent Tribe Commerce "Confirmation email sender name" from displaying improperly when a single quote is added. [ET-1134]
 
 = [5.1.5] 2021-06-09 =
 
