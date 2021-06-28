@@ -42,8 +42,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function add_actions() {
-		add_action( 'init', [ $this, 'register_assets' ] );
-
 		// Settings page: Connect PayPal.
 		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_user_on_boarded', [ $this, 'on_boarded_user_ajax_request_handler' ] );
 		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_get_partner_url', [ $this, 'on_get_partner_url_ajax_request_handler' ] );
