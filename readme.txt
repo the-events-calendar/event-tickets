@@ -114,15 +114,13 @@ Event Tickets is translated into multiple languages, including German, Danish, a
 
 == Screenshots ==
 
-1. RSVP and ticket on event
-2. Front-end ticket in page
-3. PayPal checkout
-4. Attendee report
-5. Emailed ticket
-6. Ticket confirmation
-7. Event settings
-8. Add new ticket
-9. Configure PayPal
+1. RSVP on event.
+2. Front-end ticket in page.
+3. PayPal checkout.
+4. Attendee report.
+5. Emailed ticket.
+6. Tickets settings.
+7. Add new ticket.
 
 == Frequently Asked Questions ==
 
@@ -184,6 +182,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Tweak - Added support for HTML in Ticket description field. [ET-1135]
 * Tweak - Added `$ticket_id` parameter to the `tribe_events_tickets_metabox_edit_ajax_advanced` filter. [ETP-111]
+* Tweak - Update the plugin screenshots on the WordPress.org page. [ET-1143]
 * Fix - Fixed the ticket block allowing to add more tickets than available when using shared capacity. [ET-1137]
 * Fix - Sync WooCommerce decimal separator with in Ticket edit form. [ETP-725]
 * Fix - Prevent Tribe Commerce "Confirmation email sender name" from displaying improperly when a single quote is added. [ET-1134]
