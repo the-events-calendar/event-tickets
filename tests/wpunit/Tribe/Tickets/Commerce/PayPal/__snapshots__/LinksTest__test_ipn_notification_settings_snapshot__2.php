@@ -1,1 +1,1 @@
-<?php return '<a href="https://www.paypal.com/customerprofileweb?cmd=_profile-ipn-notify" target="_blank">Profile and Settings &gt; My selling tools &gt; Instant Payment Notification &gt; Update</a>';
+<?php return '<a href="https://www.paypal.com/customerprofileweb?cmd=_profile-ipn-notify" target="_blank" rel="noopener noreferrer">Profile and Settings &gt; My selling tools &gt; Instant Payment Notification &gt; Update</a>';
