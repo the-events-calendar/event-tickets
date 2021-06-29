@@ -988,6 +988,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return bool
 		 */
 		public function attendee_decreases_inventory( array $attendee ) {
+			/**
+			 * Filter to skip all empty $post_ID otherwise will fallback to the current global post ID
+			 *
+			 * @since TBD
+			 *
+			 * @param bool  Default value for filter
+			 * @param int   $attendee         ID of the post being affected
+			 */
 			return apply_filters( 'tribe_tickets_attendee_decreases_inventory', true, $attendee );
 		}
 
