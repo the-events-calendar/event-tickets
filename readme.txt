@@ -182,7 +182,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Tweak - Changed the word `Purchaser` to `Attendee` when email confirmation is sent for purchasing a ticket. [ETP-655]
 
-
 = [5.1.6] TBD =
 
 * Tweak - Added support for HTML in Ticket description field. [ET-1135]
