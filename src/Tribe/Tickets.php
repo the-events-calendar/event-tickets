@@ -989,7 +989,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function attendee_decreases_inventory( array $attendee ) {
 			/**
-			 * Enables the counting of Attendees.
+			 * Filter enables the counting of Attendees.
 			 *
 			 * @since TBD
 			 *
