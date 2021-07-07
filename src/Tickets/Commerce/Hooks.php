@@ -10,7 +10,7 @@
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Commerce\Hooks::class ), 'some_method' ] );
  * remove_action( 'some_action', [ tribe( 'tickets.commerce.hooks' ), 'some_method' ] );
  *
- * @since   TBD
+ * @since   5.1.6
  *
  * @package TEC\Tickets\Commerce
  */
@@ -23,7 +23,7 @@ use Tribe\Tickets\Shortcodes\Tribe_Tickets_Checkout;
 /**
  * Class Hooks.
  *
- * @since   TBD
+ * @since   5.1.6
  *
  * @package TEC\Tickets\Commerce
  */
@@ -32,7 +32,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function register() {
 		$this->add_actions();
@@ -42,7 +42,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Adds the actions required by each Tickets Commerce component.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	protected function add_actions() {
 
@@ -51,7 +51,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Adds the filters required by each Tickets Commerce component.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_shortcodes', [ $this, 'filter_register_shortcodes' ] );
@@ -64,7 +64,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @see   \Tribe\Shortcode\Manager::get_registered_shortcodes()
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $shortcodes An associative array of shortcodes in the shape `[ <slug> => <class> ]`.
 	 *
@@ -80,7 +80,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Modify the commerce settings completely once we have Tickets Commerce active.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return array
 	 */

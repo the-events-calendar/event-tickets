@@ -10,7 +10,7 @@
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Commerce\Gateways\PayPal\Hooks::class ), 'some_method' ] );
  * remove_action( 'some_action', [ tribe( 'tickets.commerce.gateways.paypal.hooks' ), 'some_method' ] );
  *
- * @since   TBD
+ * @since   5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -20,7 +20,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 /**
  * Class Hooks.
  *
- * @since   TBD
+ * @since   5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -29,7 +29,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function register() {
 		$this->add_actions();
@@ -39,7 +39,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Adds the actions required by each Tickets Commerce component.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	protected function add_actions() {
 		// Settings page: Connect PayPal.
@@ -62,7 +62,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Adds the filters required by each Tickets Commerce component.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	protected function add_filters() {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 10, 2 );
@@ -103,7 +103,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Add this gateway to the list of available.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $gateways List of available gateways.
 	 *

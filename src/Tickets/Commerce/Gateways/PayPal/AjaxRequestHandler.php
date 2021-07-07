@@ -16,47 +16,47 @@ use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Webhooks;
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  *
- * @since TBD
+ * @since 5.1.6
  */
 class AjaxRequestHandler {
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var Webhooks
 	 */
 	private $webhooksRepository;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var MerchantDetail
 	 */
 	private $merchantDetails;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var PayPalAuth
 	 */
 	private $payPalAuth;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var MerchantDetails
 	 */
 	private $merchantRepository;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var Connect_Client
 	 */
 	private $refreshToken;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var Settings
 	 */
@@ -65,7 +65,7 @@ class AjaxRequestHandler {
 	/**
 	 * AjaxRequestHandler constructor.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param Webhooks        $webhooksRepository
 	 * @param MerchantDetail  $merchantDetails
@@ -93,7 +93,7 @@ class AjaxRequestHandler {
 	/**
 	 *  give_paypal_commerce_user_onboarded ajax action handler
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function onBoardedUserAjaxRequestHandler() {
 		$this->validateAdminRequest();
@@ -120,7 +120,7 @@ class AjaxRequestHandler {
 	/**
 	 * give_paypal_commerce_get_partner_url action handler
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function onGetPartnerUrlAjaxRequestHandler() {
 		$this->validateAdminRequest();
@@ -168,7 +168,7 @@ class AjaxRequestHandler {
 	/**
 	 * give_paypal_commerce_disconnect_account ajax request handler.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function removePayPalAccount() {
 		$this->validateAdminRequest();
@@ -190,7 +190,7 @@ class AjaxRequestHandler {
 	/**
 	 * Create order.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 * @todo : handle payment create error on frontend.
 	 *
 	 */
@@ -236,7 +236,7 @@ class AjaxRequestHandler {
 	/**
 	 * Approve order.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 * @todo  : handle payment capture error on frontend.
 	 *
 	 */
@@ -267,7 +267,7 @@ class AjaxRequestHandler {
 	/**
 	 * Return on boarding trouble notice.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function onBoardingTroubleNotice() {
 		$this->validateAdminRequest();
@@ -292,7 +292,7 @@ class AjaxRequestHandler {
 	/**
 	 * Validate admin ajax request.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	private function validateAdminRequest() {
 		// @todo Add our own capacity check.
@@ -304,7 +304,7 @@ class AjaxRequestHandler {
 	/**
 	 * Validate frontend ajax request.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	private function validateFrontendRequest() {
 		$formId = absint( $_POST['give-form-id'] );

@@ -12,7 +12,7 @@
  *
  * @since 5.0.3
  * @since 5.1.1 Display data attributes via `tribe_attributes` and make them filterable via `tribe_tickets_block_ticket_html_attributes`.
- * @since TBD Add the `data-available-count` attribute for each ticket to calculate the shared capacity availability correctly.
+ * @since 5.1.6 Add the `data-available-count` attribute for each ticket to calculate the shared capacity availability correctly.
  *
  * @version 5.1.1
  *

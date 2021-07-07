@@ -8,14 +8,14 @@ use TEC\Tickets\Commerce\Gateways\PayPal\SDK\PayPalClient;
 class PayPalAuth {
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var PayPalClient
 	 */
 	private $payPalClient;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var Connect_Client
 	 */
@@ -24,7 +24,7 @@ class PayPalAuth {
 	/**
 	 * PayPalAuth constructor.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param PayPalClient  $payPalClient
 	 * @param Connect_Client $connectClient
@@ -37,7 +37,7 @@ class PayPalAuth {
 	/**
 	 * Retrieves a token for the Client ID and Secret.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $client_id     The Client ID.
 	 * @param string $client_secret The Client Secret.
@@ -82,7 +82,7 @@ class PayPalAuth {
 	/**
 	 * Retrieves a token from the authorization code.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $sharedId Shared ID for merchant.
 	 * @param string $authCode Authorization code from onboarding.
@@ -168,7 +168,7 @@ class PayPalAuth {
 	/**
 	 * Get seller on-boarding details from seller.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $accessToken
 	 *
@@ -209,7 +209,7 @@ class PayPalAuth {
 	/**
 	 * Get seller rest API credentials
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $accessToken
 	 *

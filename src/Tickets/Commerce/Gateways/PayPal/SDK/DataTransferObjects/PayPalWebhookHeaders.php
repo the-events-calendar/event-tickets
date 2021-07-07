@@ -7,38 +7,38 @@ use Exception;
 /**
  * Class PayPalWebhookHeaders.
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\SDK\DataTransferObjects
  */
 class PayPalWebhookHeaders {
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 * @var string
 	 */
 	public $transmissionId;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 * @var string
 	 */
 	public $transmissionTime;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 * @var string
 	 */
 	public $transmissionSig;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 * @var string
 	 */
 	public $certUrl;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 * @var string
 	 */
 	public $authAlgo;
@@ -49,7 +49,7 @@ class PayPalWebhookHeaders {
 	 * A strange thing here is that the headers are inconsistent between live and sandbox mode, so this also checks for
 	 * both forms of the headers (studly case and all caps).
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $headers
 	 *

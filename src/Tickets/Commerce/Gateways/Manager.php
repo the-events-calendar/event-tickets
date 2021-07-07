@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways;
 /**
  * Class Gateways Manager.
  *
- * @since   TBD
+ * @since   5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways
  */
@@ -13,7 +13,7 @@ class Manager {
 	/**
 	 * The option name that holds the gateway for a specific ticket and attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -22,7 +22,7 @@ class Manager {
 	/**
 	 * Determine whether PayPal Legacy should be shown as an available gateway.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool Whether PayPal Legacy should be shown as an available gateway.
 	 */
@@ -30,7 +30,7 @@ class Manager {
 		/**
 		 * Determine whether PayPal Legacy should be shown as an available gateway.
 		 *
-		 * @since TBD
+		 * @since 5.1.6
 		 *
 		 * @param bool $should_show Whether PayPal Legacy should be shown as an available gateway.
 		 */
@@ -40,7 +40,7 @@ class Manager {
 	/**
 	 * Get the list of registered Tickets Commerce gateways.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return array The list of registered Tickets Commerce gateways.
 	 */
@@ -51,7 +51,7 @@ class Manager {
 		 * PayPal Commerce filters at priority 10.
 		 * PayPal Legacy filters at priority 15.
 		 *
-		 * @since TBD
+		 * @since 5.1.6
 		 *
 		 * @param array $gateways The list of registered Tickets Commerce gateways.
 		 */
@@ -61,7 +61,7 @@ class Manager {
 	/**
 	 * Get the current Tickets Commerce gateway.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string The current Tickets Commerce gateway.
 	 */

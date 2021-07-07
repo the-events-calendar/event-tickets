@@ -160,7 +160,7 @@ $commerce_fields = include 'tribe-commerce-settings.php';
 /**
  * Allows for the specific filtering of the commerce fields.
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @param array $commerce_fields Which fields are already present from legacy.
  */

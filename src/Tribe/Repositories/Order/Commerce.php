@@ -11,7 +11,7 @@ use Usage_Error;
 /**
  * The ORM/Repository class for Tribe Commerce (PayPal) orders.
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @property Tribe__Tickets__Commerce__PayPal__Main $attendee_provider
  */
@@ -51,7 +51,7 @@ class Commerce extends Order {
 	 * This can be moved in the future into each commerce provider class
 	 * when we add order status filters to the Attendees repository.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $statuses List of all order statuses.
 	 *
@@ -76,7 +76,7 @@ class Commerce extends Order {
 	 * This can be moved in the future into each commerce provider class
 	 * when we add order status filters to the Attendees repository.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $public_order_statuses List of public order statuses.
 	 *
@@ -92,7 +92,7 @@ class Commerce extends Order {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return array|null|WP_Post|false The new post object or false if unsuccessful.
 	 *

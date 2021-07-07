@@ -7,7 +7,7 @@ use InvalidArgumentException;
 /**
  * Class PayPalPayment
  *
- * @since TBD
+ * @since 5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  *
  */
@@ -16,7 +16,7 @@ class PayPalPayment {
 	/**
 	 * Payment Id.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -25,7 +25,7 @@ class PayPalPayment {
 	/**
 	 * Payment Amount.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ class PayPalPayment {
 	/**
 	 * Payment status.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -43,7 +43,7 @@ class PayPalPayment {
 	/**
 	 * Payment creation time.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -52,7 +52,7 @@ class PayPalPayment {
 	/**
 	 * Payment update time.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -61,7 +61,7 @@ class PayPalPayment {
 	/**
 	 * PayPal Payment action links.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -73,7 +73,7 @@ class PayPalPayment {
 	/**
 	 * Create PayPalPayment object from given array.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param $array
 	 *
@@ -98,7 +98,7 @@ class PayPalPayment {
 	/**
 	 * Validate order given in array format.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $array
 	 *

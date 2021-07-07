@@ -2,7 +2,7 @@
 /**
  * The main service provider for the Tickets updated and new code.
  *
- * @since   TBD
+ * @since   5.1.6
  * @package TEC\Tickets
  */
 
@@ -14,7 +14,7 @@ use \Tribe__Tickets__Main as Tickets_Plugin;
 /**
  * Class Provider for all the Tickets loading.
  *
- * @since   TBD
+ * @since   5.1.6
  * @package TEC\Tickets
  */
 class Provider extends tad_DI52_ServiceProvider {
@@ -22,7 +22,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function register() {
 		require_once Tickets_Plugin::instance()->plugin_path . 'src/functions/commerce/provider.php';
@@ -46,7 +46,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for Tickets.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	protected function register_assets() {
 		$assets = new Assets( $this->container );
@@ -58,7 +58,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for Tickets.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	protected function register_hooks() {
 		$hooks = new Hooks( $this->container );

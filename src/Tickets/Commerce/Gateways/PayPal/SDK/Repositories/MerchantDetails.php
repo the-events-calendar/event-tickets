@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Traits\HasMode;
 /**
  * Class MerchantDetails
  *
- * @since TBD
+ * @since 5.1.6
  */
 class MerchantDetails {
 
@@ -18,7 +18,7 @@ class MerchantDetails {
 	/**
 	 * Handle initial setup for the object singleton.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function init() {
 		$this->setMode( tribe_tickets_commerce_is_test_mode() ? 'sandbox' : 'live' );
@@ -27,7 +27,7 @@ class MerchantDetails {
 	/**
 	 * Returns whether or not the account has been connected
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool
 	 */
@@ -41,7 +41,7 @@ class MerchantDetails {
 	/**
 	 * Get the merchant details data.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return array
 	 */
@@ -52,7 +52,7 @@ class MerchantDetails {
 	/**
 	 * Get merchant details.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return MerchantDetail
 	 */
@@ -63,7 +63,7 @@ class MerchantDetails {
 	/**
 	 * Save merchant details.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param MerchantDetail $merchantDetails
 	 *
@@ -76,7 +76,7 @@ class MerchantDetails {
 	/**
 	 * Delete merchant details.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool
 	 */
@@ -87,7 +87,7 @@ class MerchantDetails {
 	/**
 	 * Returns the account errors if there are any
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string[]|null
 	 */
@@ -98,7 +98,7 @@ class MerchantDetails {
 	/**
 	 * Saves the account error message
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string[] $errorMessage
 	 *
@@ -111,7 +111,7 @@ class MerchantDetails {
 	/**
 	 * Deletes the errors for the account
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool
 	 */
@@ -122,7 +122,7 @@ class MerchantDetails {
 	/**
 	 * Deletes the client token for the account
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool
 	 */
@@ -133,7 +133,7 @@ class MerchantDetails {
 	/**
 	 * Get client token for hosted credit card fields.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string
 	 */
@@ -181,7 +181,7 @@ class MerchantDetails {
 	/**
 	 * Returns the options key for the account in the give mode
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string
 	 */
@@ -192,7 +192,7 @@ class MerchantDetails {
 	/**
 	 * Returns the options key for the account errors in the give mode
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string
 	 */
@@ -203,7 +203,7 @@ class MerchantDetails {
 	/**
 	 * Returns the options key for the client token in the give mode
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string
 	 */

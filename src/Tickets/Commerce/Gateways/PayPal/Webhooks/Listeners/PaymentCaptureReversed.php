@@ -7,13 +7,13 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners;
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners
  *
- * @since TBD
+ * @since 5.1.6
  */
 class PaymentCaptureReversed extends PaymentEventListener {
 	/**
 	 * The new status to set with successful event.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -22,7 +22,7 @@ class PaymentCaptureReversed extends PaymentEventListener {
 	/**
 	 * The event type.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */

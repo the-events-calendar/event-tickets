@@ -3,7 +3,7 @@
  *
  * @todo This file is not being used currently but we need to remove this before we launch Tickets Commerce.
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\Legacy
  */
@@ -15,7 +15,7 @@ use tad_DI52_ServiceProvider;
 /**
  * Service provider for the Tickets Commerce: PayPal Standard (Legacy) gateway.
  *
- * @since   TBD
+ * @since   5.1.6
  * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Legacy
  */
 class Provider extends tad_DI52_ServiceProvider {
@@ -23,13 +23,13 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Register the provider singletons.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function register() {
 		/**
 		 * Allow filtering whether the PayPal Legacy classes should be registered.
 		 *
-		 * @since TBD
+		 * @since 5.1.6
 		 *
 		 * @param bool $should_register Whether the PayPal Legacy classes should be registered.
 		 */
@@ -71,7 +71,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Add actions and filters.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	protected function hooks() {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 10, 2 );

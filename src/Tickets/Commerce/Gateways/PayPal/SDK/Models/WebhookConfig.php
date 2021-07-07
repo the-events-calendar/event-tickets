@@ -5,21 +5,21 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models;
 class WebhookConfig {
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
 	public $id;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
 	public $returnUrl;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string[]
 	 */
@@ -28,7 +28,7 @@ class WebhookConfig {
 	/**
 	 * WebhookConfig constructor.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string   $id
 	 * @param string   $returnUrl
@@ -43,7 +43,7 @@ class WebhookConfig {
 	/**
 	 * Generates an instance from serialized data
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $data
 	 *
@@ -56,7 +56,7 @@ class WebhookConfig {
 	/**
 	 * Generates an array for serialization
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return array
 	 */

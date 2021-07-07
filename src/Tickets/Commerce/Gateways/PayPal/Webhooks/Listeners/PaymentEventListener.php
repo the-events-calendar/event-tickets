@@ -10,27 +10,27 @@ use WP_Post;
 /**
  * Class PaymentEventListener
  *
- * @since   TBD
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners
  *
  */
 abstract class PaymentEventListener implements EventListener {
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var MerchantDetails
 	 */
 	private $merchantRepository;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var Webhooks
 	 */
 	private $webhookRepository;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var WebhookRegister
 	 */
@@ -39,7 +39,7 @@ abstract class PaymentEventListener implements EventListener {
 	/**
 	 * The new status to set with successful event.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ abstract class PaymentEventListener implements EventListener {
 	/**
 	 * The event type.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -57,7 +57,7 @@ abstract class PaymentEventListener implements EventListener {
 	/**
 	 * PaymentEventListener constructor.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param MerchantDetails $merchantRepository
 	 * @param WebhookRegister $register
@@ -72,7 +72,7 @@ abstract class PaymentEventListener implements EventListener {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param object $event The PayPal payment event object.
 	 *
@@ -160,7 +160,7 @@ abstract class PaymentEventListener implements EventListener {
 		/**
 		 * Allow hooking into the listener status.
 		 *
-		 * @since TBD
+		 * @since 5.1.6
 		 *
 		 * @param WP_Post $payment    The payment object.
 		 * @param string  $paymentId  The PayPal payment ID.
@@ -172,7 +172,7 @@ abstract class PaymentEventListener implements EventListener {
 		/**
 		 * Allow hooking into the listener status for the new status.
 		 *
-		 * @since TBD
+		 * @since 5.1.6
 		 *
 		 * @param WP_Post $payment   The payment object.
 		 * @param string  $paymentId The PayPal payment ID.
@@ -186,7 +186,7 @@ abstract class PaymentEventListener implements EventListener {
 	/**
 	 * Get the order using the PayPal payment ID.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $id The PayPal payment ID.
 	 *
@@ -201,7 +201,7 @@ abstract class PaymentEventListener implements EventListener {
 	/**
 	 * This uses the links property of the payment to retrieve the Parent Payment ID from PayPal
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param object $payment The payment event object.
 	 *

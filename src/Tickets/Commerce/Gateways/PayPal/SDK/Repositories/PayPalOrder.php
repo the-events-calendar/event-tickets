@@ -16,21 +16,21 @@ use TEC\Tickets\Commerce\Gateways\PayPal\SDK\PayPalClient;
 /**
  * Class PayPalOrder
  *
- * @since   TBD
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories
  *
  */
 class PayPalOrder {
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var PayPalClient
 	 */
 	private $paypalClient;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var MerchantDetail
 	 */
@@ -39,7 +39,7 @@ class PayPalOrder {
 	/**
 	 * PayPalOrder constructor.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param MerchantDetail $merchantDetails
 	 *
@@ -53,7 +53,7 @@ class PayPalOrder {
 	/**
 	 * Approve order.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $orderId
 	 *
@@ -76,7 +76,7 @@ class PayPalOrder {
 	/**
 	 * Create order.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $array
 	 *
@@ -136,7 +136,7 @@ class PayPalOrder {
 	/**
 	 * Refunds a processed payment
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param $captureId
 	 *
@@ -158,7 +158,7 @@ class PayPalOrder {
 	/**
 	 * Validate argument given to create PayPal order.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $array
 	 *
