@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 /**
  * Class Connect_Client
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -14,7 +14,7 @@ class Connect_Client {
 	/**
 	 * The API URL.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -23,7 +23,7 @@ class Connect_Client {
 	/**
 	 * Get REST API endpoint URL for requests.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $endpoint The endpoint path.
 	 *

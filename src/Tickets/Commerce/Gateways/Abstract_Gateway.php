@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways
  */
@@ -13,7 +13,7 @@ use Tribe__Tickets__Commerce__PayPal__Main as PayPal_Main;
 /**
  * The gateway related functionality.
  *
- * @since   TBD
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways
  *
  */
@@ -22,7 +22,7 @@ abstract class Abstract_Gateway implements Interface_Gateway {
 	/**
 	 * The Gateway key.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	protected static $key;
 

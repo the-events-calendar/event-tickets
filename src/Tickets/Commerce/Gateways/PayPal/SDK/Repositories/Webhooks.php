@@ -16,7 +16,7 @@ class Webhooks {
 	use HasMode;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var WebhooksRoute
 	 */
@@ -40,7 +40,7 @@ class Webhooks {
 	/**
 	 * Webhooks constructor.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param PayPalClient    $payPalClient
 	 * @param WebhookRegister $webhooksRegister
@@ -55,7 +55,7 @@ class Webhooks {
 	/**
 	 * Handle initial setup for the object singleton.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function init() {
 		$this->setMode( tribe_tickets_commerce_is_test_mode() ? 'sandbox' : 'live' );
@@ -65,7 +65,7 @@ class Webhooks {
 	 * Verifies with PayPal that the given event is securely from PayPal and not some sneaking sneaker
 	 *
 	 * @see   https://developer.paypal.com/docs/api/webhooks/v1/#verify-webhook-signature
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string               $token
 	 * @param object               $event The event to verify
@@ -127,7 +127,7 @@ class Webhooks {
 	 * Get the list of webhooks.
 	 *
 	 * @see   https://developer.paypal.com/docs/api/webhooks/v1/#webhooks_list
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $token The PayPal auth token.
 	 *
@@ -175,7 +175,7 @@ class Webhooks {
 	 * Get the webhook data from a specific webhook ID.
 	 *
 	 * @see   https://developer.paypal.com/docs/api/webhooks/v1/#webhooks_get
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $token     The PayPal auth token.
 	 * @param string $webhookId The webhook ID.
@@ -230,7 +230,7 @@ class Webhooks {
 	 * Creates a webhook with the given event types registered.
 	 *
 	 * @see   https://developer.paypal.com/docs/api/webhooks/v1/#webhooks_post
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $token
 	 *
@@ -310,7 +310,7 @@ class Webhooks {
 	/**
 	 * Updates the webhook url and events
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $token
 	 * @param string $webhookId
@@ -396,7 +396,7 @@ class Webhooks {
 	/**
 	 * Deletes the webhook with the given id.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $token
 	 * @param string $webhookId
@@ -426,7 +426,7 @@ class Webhooks {
 	/**
 	 * Saves the webhook config in the database
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param WebhookConfig $config
 	 */
@@ -437,7 +437,7 @@ class Webhooks {
 	/**
 	 * Retrieves the WebhookConfig from the database
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return WebhookConfig|null
 	 */
@@ -448,7 +448,7 @@ class Webhooks {
 	/**
 	 * Deletes the stored webhook config
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function deleteWebhookConfig() {
 		$this->settings->delete_webhook_config( $this->mode );

@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
 /**
  * Class MerchantDetail
  *
- * @since TBD
+ * @since 5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  *
  */
@@ -17,7 +17,7 @@ class MerchantDetail {
 	/**
 	 * PayPal merchant Id  (email address)
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var null|string
 	 */
@@ -26,7 +26,7 @@ class MerchantDetail {
 	/**
 	 * PayPal merchant id
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var null|string
 	 */
@@ -35,7 +35,7 @@ class MerchantDetail {
 	/**
 	 * Client id.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var null |string
 	 */
@@ -44,7 +44,7 @@ class MerchantDetail {
 	/**
 	 * Client Secret
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var null|string
 	 */
@@ -53,7 +53,7 @@ class MerchantDetail {
 	/**
 	 * Access token.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var null|string
 	 */
@@ -62,7 +62,7 @@ class MerchantDetail {
 	/**
 	 * Whether or not the connected account is ready to process payments.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var bool
 	 */
@@ -71,7 +71,7 @@ class MerchantDetail {
 	/**
 	 * Whether or not the account can make custom payments (i.e Advanced Fields & PPCP)
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var bool
 	 */
@@ -80,7 +80,7 @@ class MerchantDetail {
 	/**
 	 * PayPal account accountCountry.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var bool
 	 */
@@ -89,7 +89,7 @@ class MerchantDetail {
 	/**
 	 * Access token.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var array
 	 */
@@ -98,7 +98,7 @@ class MerchantDetail {
 	/**
 	 * Handle initial setup for the object singleton.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function init() {
 		/** @var MerchantDetails $repository */
@@ -119,7 +119,7 @@ class MerchantDetail {
 	/**
 	 * Return array of merchant details.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return array
 	 */
@@ -139,7 +139,7 @@ class MerchantDetail {
 	/**
 	 * Make MerchantDetail object from array.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $merchantDetails
 	 *
@@ -161,7 +161,7 @@ class MerchantDetail {
 	/**
 	 * Setup properties from array.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param $merchantDetails
 	 *
@@ -182,7 +182,7 @@ class MerchantDetail {
 	/**
 	 * Validate merchant details.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $merchantDetails
 	 */
@@ -206,7 +206,7 @@ class MerchantDetail {
 	/**
 	 * Get refresh token code.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $tokenDetails
 	 */

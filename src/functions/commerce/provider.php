@@ -8,7 +8,7 @@ use TEC\Tickets\Settings;
  * In order the function will check the `TEC_TICKETS_COMMERCE` constant,
  * the `TEC_TICKETS_COMMERCE` environment variable and, finally, the `Manager::$option_enabled` option.
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @return bool Whether Tickets Commerce is enabled or not.
  */
@@ -28,7 +28,7 @@ function tec_tickets_commerce_is_enabled() {
 	 * Allows filtering of the Tickets Commerce provider, doing so will render
 	 * the methods and classes no longer load-able so keep that in mind.
 	 *
-     * @since TBD
+     * @since 5.1.6
 	 *
 	 * @param boolean $enabled Determining if Tickets Commerce is enabled..
 	 */
@@ -39,7 +39,7 @@ function tec_tickets_commerce_is_enabled() {
 /**
  * Determine whether Tickets Commerce is in test mode.
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @return bool Whether Tickets Commerce is in test mode.
  */

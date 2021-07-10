@@ -12,35 +12,35 @@ use Tribe__Settings;
 /**
  * Class PayPalOnBoardingRedirectHandler
  *
- * @since TBD
+ * @since 5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  *
  */
 class onBoardingRedirectHandler {
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var PayPalAuth
 	 */
 	private $payPalAuth;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var Webhooks
 	 */
 	private $webhooksRepository;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var MerchantDetails
 	 */
 	private $merchantRepository;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var Settings
 	 */
@@ -49,7 +49,7 @@ class onBoardingRedirectHandler {
 	/**
 	 * onBoardingRedirectHandler constructor.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param Webhooks        $webhooks
 	 * @param MerchantDetails $merchantRepository
@@ -66,7 +66,7 @@ class onBoardingRedirectHandler {
 	/**
 	 * Bootstrap class
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function boot() {
 		if ( $this->isPayPalUserRedirected() ) {
@@ -97,7 +97,7 @@ class onBoardingRedirectHandler {
 	/**
 	 * Save PayPal merchant details
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $merchantId         The merchant ID.
 	 * @param string $merchantIdInPayPal The merchant ID in PayPal.
@@ -156,7 +156,7 @@ class onBoardingRedirectHandler {
 	/**
 	 * Redirects the user to the account connected url
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	private function redirectAccountConnected() {
 		$this->refreshAccountStatus();
@@ -180,7 +180,7 @@ class onBoardingRedirectHandler {
 	/**
 	 * Sets up the webhook for the connected account
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param MerchantDetail $merchant_details
 	 */
@@ -214,7 +214,7 @@ class onBoardingRedirectHandler {
 	/**
 	 * Register notice if account connect success fully.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	private function registerPayPalAccountConnectedNotice() {
 		tribe_notice(
@@ -232,7 +232,7 @@ class onBoardingRedirectHandler {
 	/**
 	 * Check whether we are on the settings page.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool Whether we are on the settings page.
 	 */
@@ -246,7 +246,7 @@ class onBoardingRedirectHandler {
 	/**
 	 * Returns whether or not the current request is for refreshing the account status
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool
 	 */
@@ -257,7 +257,7 @@ class onBoardingRedirectHandler {
 	/**
 	 * Return whether or not PayPal user redirect to setting page after successful onboarding.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool
 	 */
@@ -268,7 +268,7 @@ class onBoardingRedirectHandler {
 	/**
 	 * Return whether or not PayPal account details were saved.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool
 	 */
@@ -279,7 +279,7 @@ class onBoardingRedirectHandler {
 	/**
 	 * validate rest api credential.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $array
 	 *
@@ -319,7 +319,7 @@ class onBoardingRedirectHandler {
 	/**
 	 * Handles the request for refreshing the account status
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	private function refreshAccountStatus() {
 		$merchantDetails = $this->merchantRepository->getDetails();
@@ -343,7 +343,7 @@ class onBoardingRedirectHandler {
 	/**
 	 * Validate seller on Boarding status
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $merchantId
 	 * @param string $accessToken
@@ -431,7 +431,7 @@ class onBoardingRedirectHandler {
 	/**
 	 * Redirect admin to setting section with error.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	private function redirectWhenOnBoardingFail() {
 		/** @var Tribe__Settings $settings */
@@ -451,7 +451,7 @@ class onBoardingRedirectHandler {
 	/**
 	 * Displays a notice of the site is not using SSL
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	private function registerPayPalSSLNotice() {
 		if ( ! is_ssl() || ! empty( $this->webhooksRepository->getWebhookConfig() ) ) {

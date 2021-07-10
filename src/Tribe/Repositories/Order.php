@@ -145,7 +145,7 @@ class Order extends Tribe__Repository {
 	/**
 	 * Filters attendee to only get those related to orders with a specific status.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string|array $order_status Order status.
 	 *

@@ -3,7 +3,7 @@
  *
  * @todo This file is not being used currently but we need to remove this before we launch Tickets Commerce.
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\Legacy
  */
@@ -19,7 +19,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\MerchantDetail;
  * This class will contain all of the settings handling and admin settings config implementation from
  * Tribe__Tickets__Commerce__PayPal__Main that is PayPal Standard (Legacy) specific.
  *
- * @since   TBD
+ * @since   5.1.6
  * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Legacy
  */
 class Settings extends Abstract_Settings {
@@ -27,7 +27,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for email.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -36,7 +36,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for IPN enabled.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -45,7 +45,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for IPN address set.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -54,7 +54,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for IPN notify URL.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -63,7 +63,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Get the list of settings for the gateway.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return array The list of settings for the gateway.
 	 */

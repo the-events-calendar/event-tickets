@@ -2,7 +2,7 @@
 /**
  * Handles registering and setup for assets on Tickets.
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @package TEC\Tickets
  */
@@ -14,7 +14,7 @@ use \tad_DI52_ServiceProvider;
 /**
  * Class Assets.
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @package TEC\Tickets
  */
@@ -23,7 +23,7 @@ class Assets extends tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function register() {
 

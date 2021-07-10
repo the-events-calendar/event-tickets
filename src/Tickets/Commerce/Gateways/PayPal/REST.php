@@ -8,7 +8,7 @@ use WP_REST_Server;
 /**
  * Class REST
  *
- * @since   TBD
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class REST {
@@ -16,7 +16,7 @@ class REST {
 	/**
 	 * The REST API namespace to use.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -25,7 +25,7 @@ class REST {
 	/**
 	 * The REST API documentation endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var \Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	 */
@@ -39,7 +39,7 @@ class REST {
 	/**
 	 * Register the endpoints for handling webhooks.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function register_endpoints() {
 		/** @var PayPal_Webhook $endpoint */

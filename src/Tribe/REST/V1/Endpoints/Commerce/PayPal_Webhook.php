@@ -14,7 +14,7 @@ use WP_REST_Response;
 /**
  * Class Webhook.
  *
- * @since   TBD
+ * @since   5.1.6
  * @package Tribe\Tickets\REST\V1\Endpoints\PayPal_Commerce
  */
 class PayPal_Webhook
@@ -25,7 +25,7 @@ class PayPal_Webhook
 	/**
 	 * The REST API endpoint path.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ class PayPal_Webhook
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function get_documentation() {
 		return [
@@ -78,7 +78,7 @@ class PayPal_Webhook
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param WP_REST_Request $request   The request object.
 	 * @param bool            $return_id Whether the created post ID should be returned or the full response object.
@@ -115,7 +115,7 @@ class PayPal_Webhook
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return array
 	 */
@@ -127,7 +127,7 @@ class PayPal_Webhook
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool Whether the current user can post or not.
 	 */

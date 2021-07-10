@@ -12,21 +12,21 @@ use Tribe\Tickets\REST\V1\Endpoints\Commerce\PayPal_Webhook;
 
 class WebhooksRoute {
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var MerchantDetails
 	 */
 	private $merchantRepository;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var Webhooks
 	 */
 	private $webhookRepository;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var WebhookRegister
 	 */
@@ -35,7 +35,7 @@ class WebhooksRoute {
 	/**
 	 * WebhooksRoute constructor.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param MerchantDetails $merchantRepository
 	 * @param WebhookRegister $register
@@ -50,7 +50,7 @@ class WebhooksRoute {
 	/**
 	 * Get the REST API route URL.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string The REST API route URL.
 	 */
@@ -68,7 +68,7 @@ class WebhooksRoute {
 	 * Handles all webhook event requests. First it verifies that authenticity of the event with
 	 * PayPal, and then it passes the event along to the appropriate listener to finish.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string|object $event   The PayPal payment event object.
 	 * @param array         $headers The list of HTTP headers for the request.

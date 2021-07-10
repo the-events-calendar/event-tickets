@@ -2,7 +2,7 @@
 /**
  * The main service provider for the Tickets Commerce.
  *
- * @since   TBD
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce
  */
 
@@ -15,7 +15,7 @@ use Tribe__Tickets__Main;
 /**
  * Service provider for the Tickets Commerce.
  *
- * @since   TBD
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce
  */
 class Provider extends tad_DI52_ServiceProvider {
@@ -23,7 +23,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Register the provider singletons.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function register() {
 
@@ -52,7 +52,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	protected function register_assets() {
 		$assets = new Assets( $this->container );
@@ -64,7 +64,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	protected function register_hooks() {
 		$hooks = new Hooks( $this->container );
@@ -78,7 +78,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Registers the provider handling compatibility with legacy payments from Tribe Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	protected function register_legacy_compat() {
 		$v1_compat = new Legacy_Compat( $this->container );

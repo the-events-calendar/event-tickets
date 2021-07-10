@@ -10,7 +10,7 @@ use PayPalCheckoutSdk\Core\SandboxEnvironment;
 /**
  * Class PayPalClient
  *
- * @since TBD
+ * @since 5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal\SDK
  *
  */
@@ -19,7 +19,7 @@ class PayPalClient {
 	/**
 	 * Environment mode.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class PayPalClient {
 	/**
 	 * Get environment.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return ProductionEnvironment|SandboxEnvironment
 	 */
@@ -51,7 +51,7 @@ class PayPalClient {
 	/**
 	 * Get http client.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return PayPalHttpClient
 	 */
@@ -62,7 +62,7 @@ class PayPalClient {
 	/**
 	 * Get api url.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $endpoint
 	 *
@@ -77,7 +77,7 @@ class PayPalClient {
 	/**
 	 * Get PayPal homepage url.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string
 	 */

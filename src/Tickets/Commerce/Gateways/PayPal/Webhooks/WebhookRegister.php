@@ -17,7 +17,7 @@ class WebhookRegister {
 	 *
 	 * Structure: PayPalEventName => EventHandlerClass
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string[]
 	 */
@@ -31,7 +31,7 @@ class WebhookRegister {
 	/**
 	 * Use this to register additional events and handlers
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $payPalEvent  PayPal event to listen for, i.e. CHECKOUT.ORDER.APPROVED
 	 * @param string $eventHandler The FQCN of the event handler
@@ -55,7 +55,7 @@ class WebhookRegister {
 	/**
 	 * Registers multiple event handlers using an array where the key is the
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $handlers = [ 'PAYPAL.EVENT' => EventHandler::class ]
 	 */
@@ -68,7 +68,7 @@ class WebhookRegister {
 	/**
 	 * Returns Event Listener instance for given event
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $event
 	 *
@@ -81,7 +81,7 @@ class WebhookRegister {
 	/**
 	 * Checks whether the given event is registered
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $event
 	 *
@@ -94,7 +94,7 @@ class WebhookRegister {
 	/**
 	 * Returns an array of the registered events
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string[]
 	 */

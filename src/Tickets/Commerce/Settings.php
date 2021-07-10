@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce
  */
@@ -18,7 +18,7 @@ use Tribe__Field_Conditional;
  * This class will contain all of the settings handling and admin settings config implementation from
  * Tribe__Tickets__Commerce__PayPal__Main that is gateway-agnostic.
  *
- * @since   TBD
+ * @since   5.1.6
  * @package Tribe\Tickets\Commerce\Tickets_Commerce
  */
 class Settings extends Abstract_Settings {
@@ -26,7 +26,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for enable.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for sandbox.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for currency code.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -53,7 +53,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for stock handling.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -62,7 +62,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for success page.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -71,7 +71,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -80,7 +80,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for confirmation email sender email.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -89,7 +89,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for confirmation email sender name.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -98,7 +98,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for confirmation email subject.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -107,7 +107,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Get the list of settings for Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return array The list of settings for Tickets Commerce.
 	 */
@@ -349,7 +349,7 @@ class Settings extends Abstract_Settings {
 		/**
 		 * Allow filtering the list of Tickets Commerce settings.
 		 *
-		 * @since TBD
+		 * @since 5.1.6
 		 *
 		 * @param array $settings The list of Tickets Commerce settings.
 		 */

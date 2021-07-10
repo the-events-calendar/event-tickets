@@ -10,28 +10,28 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\WebhooksRoute;
 class WebhookChecker {
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var Webhooks
 	 */
 	private $webhooksRepository;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var WebhooksRoute
 	 */
 	private $webhooksRoute;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var WebhookRegister
 	 */
 	private $webhookRegister;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var MerchantDetail
 	 */
@@ -40,7 +40,7 @@ class WebhookChecker {
 	/**
 	 * WebhookChecker constructor.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param Webhooks        $webhooksRepository
 	 * @param MerchantDetail  $merchantDetails
@@ -57,7 +57,7 @@ class WebhookChecker {
 	/**
 	 * Checks whether the webhook configuration has changed. If it has, then update the webhook with PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function checkWebhookCriteria() {
 		if ( wp_doing_ajax() || wp_doing_cron() ) {

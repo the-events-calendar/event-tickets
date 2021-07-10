@@ -9,26 +9,26 @@ use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
 /**
  * Class RefreshToken
  *
- * @since TBD
+ * @since 5.1.6
  */
 class RefreshToken {
 
 	/*
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var MerchantDetail
 	 */
 	private $merchantDetail;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var MerchantDetails
 	 */
 	private $detailsRepository;
 
 	/**
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var PayPalAuth
 	 */
@@ -37,7 +37,7 @@ class RefreshToken {
 	/**
 	 * RefreshToken constructor.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param MerchantDetails $detailsRepository
 	 * @param PayPalAuth      $payPalAuth
@@ -56,7 +56,7 @@ class RefreshToken {
 	/**
 	 * Return cron json name which uses to refresh token.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string
 	 */
@@ -68,7 +68,7 @@ class RefreshToken {
 	 * Register cron job to refresh access token.
 	 * Note: only for internal use.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $tokenExpires What time the token expires.
 	 */
@@ -85,7 +85,7 @@ class RefreshToken {
 	 * Delete cron job which refresh access token.
 	 * Note: only for internal use.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function deleteRefreshTokenCronJob() {
 		wp_clear_scheduled_hook( $this->getCronJobHookName() );
@@ -95,7 +95,7 @@ class RefreshToken {
 	 * Refresh token.
 	 * Note: only for internal use
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function refreshToken() {
 		// Exit if account is not connected.

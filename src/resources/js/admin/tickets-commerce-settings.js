@@ -2,7 +2,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @type {PlainObject}
  */
@@ -12,7 +12,7 @@ tribe.tickets.admin = tribe.tickets.admin || {};
 /**
  * Configures admin commerce settings Object in the Global Tribe variable
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @type {PlainObject}
  */
@@ -21,7 +21,7 @@ tribe.tickets.admin.commerceSettings = {};
 /**
  * Initializes in a Strict env the code that manages the Tickets Commerce settings page.
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @param  {PlainObject} $   jQuery
  * @param  {PlainObject} _   Underscore.js
@@ -36,7 +36,7 @@ tribe.tickets.admin.commerceSettings = {};
 	/**
 	 * Selectors used for configuration and setup
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @type {PlainObject}
 	 */
@@ -137,7 +137,7 @@ tribe.tickets.admin.commerceSettings = {};
 	/**
 	 * Performs an AJAX request to get the partner URL.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param {String} countryCode The country code.
 	 *
@@ -258,7 +258,7 @@ tribe.tickets.admin.commerceSettings = {};
 	/**
 	 * Handles the initialization of the gateway settings when Document is ready.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return {void}
 	 */

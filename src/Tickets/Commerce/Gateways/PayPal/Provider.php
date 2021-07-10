@@ -7,7 +7,7 @@ use Tribe\Tickets\REST\V1\Endpoints\Commerce\PayPal_Webhook;
 /**
  * Service provider for the Tickets Commerce: PayPal Commerce gateway.
  *
- * @since   TBD
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class Provider extends \tad_DI52_ServiceProvider {
@@ -15,7 +15,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Register the provider singletons.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function register() {
 		$this->container->singleton( Gateway::class );
@@ -60,7 +60,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for this Service Provider
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	protected function register_assets() {
 		$assets = new Assets( $this->container );
@@ -72,7 +72,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for this Service Provider.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	protected function register_hooks() {
 		$hooks = new Hooks( $this->container );
@@ -85,7 +85,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Register REST API endpoints.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function register_endpoints() {
 

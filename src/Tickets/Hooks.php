@@ -10,7 +10,7 @@
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Hooks::class ), 'some_method' ] );
  * remove_action( 'some_action', [ tribe( 'tickets..hooks' ), 'some_method' ] );
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @package TEC\Tickets
  */
@@ -22,7 +22,7 @@ use \tad_DI52_ServiceProvider;
 /**
  * Class Hooks.
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @package TEC\Tickets
  */
@@ -31,7 +31,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function register() {
 		$this->add_actions();
@@ -41,7 +41,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Adds the actions required by each Tickets component.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	protected function add_actions() {
 
@@ -50,7 +50,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Adds the filters required by each Tickets component.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	protected function add_filters() {
 

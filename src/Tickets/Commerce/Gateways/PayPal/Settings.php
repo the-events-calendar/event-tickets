@@ -13,7 +13,7 @@ use Tribe__Tickets__Main;
 /**
  * The PayPal Commerce specific settings.
  *
- * @since   TBD
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class Settings extends Abstract_Settings {
@@ -21,7 +21,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for account country.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -30,7 +30,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for access token.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for partner link detail.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for webhook config.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -57,7 +57,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The merchant detail model.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var MerchantDetail
 	 */
@@ -66,7 +66,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The merchant details repository.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var MerchantDetails
 	 */
@@ -75,7 +75,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Set up the things we need for the settings.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param MerchantDetail  $merchantDetail
 	 * @param MerchantDetails $merchantDetailRepository
@@ -88,7 +88,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Get the list of settings for the gateway.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return array The list of settings for the gateway.
 	 */
@@ -132,7 +132,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Get the PayPal Commerce introduction section.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string The PayPal Commerce introduction section.
 	 */
@@ -152,7 +152,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Get the Connect with PayPal HTML.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string The Connect with PayPal HTML.
 	 */
@@ -177,7 +177,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Get the guidance HTML.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string The guidance HTML.
 	 */
@@ -205,7 +205,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Determine whether the account country is in North America.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool Whether the account country is in North America.
 	 */
@@ -246,7 +246,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Get the formatted error HTML.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $errors The list of errors.
 	 *
@@ -291,7 +291,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Format the list of errors.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $errors The list of errors to format.
 	 *
@@ -340,7 +340,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Returns the country for the account
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string
 	 */
@@ -352,7 +352,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Updates the country account
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $country
 	 *
@@ -365,7 +365,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Returns the account access token
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return array|null
 	 */
@@ -382,7 +382,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Updates the account access token.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $token The account access token.
 	 *
@@ -395,7 +395,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Deletes the account access token
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool
 	 */
@@ -406,9 +406,9 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Returns the partner link details
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string|null
 	 */
@@ -419,7 +419,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Updates the partner link details
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param $linkDetails
 	 *
@@ -432,7 +432,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Deletes the partner link details
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool
 	 */
@@ -443,7 +443,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Returns the webhook config.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $mode The mode (live/sandbox).
 	 *
@@ -462,7 +462,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Updates the webhook config.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string        $mode   The mode (live/sandbox).
 	 * @param WebhookConfig $config The webhook config array.
@@ -476,7 +476,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Deletes the webhook config.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $mode The mode (live/sandbox).
 	 *

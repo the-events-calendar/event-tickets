@@ -3,7 +3,7 @@
  *
  * @todo This file is not being used currently but we need to remove this before we launch Tickets Commerce.
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\Legacy
  */
@@ -21,7 +21,7 @@ use Tribe__Tickets__Commerce__PayPal__Main as PayPal_Main;
  * PayPal Standard (Legacy) specific. Anything we can do to split off the logic into this class would be helpful for
  * long term maintenance and reducing mess between the various Tickets Commerce gateways developed.
  *
- * @since   TBD
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal_Legacy
  */
 class Gateway extends Abstract_Gateway {

@@ -9,7 +9,7 @@ use Tribe__Tickets__Commerce__PayPal__Main as PayPal_Main;
 /**
  * Class Gateway
  *
- * @since   TBD
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class Gateway extends Abstract_Gateway {
@@ -21,7 +21,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * PayPal attribution ID for requests.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @const
 	 */
@@ -60,7 +60,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Get the list of settings for the gateway.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return array The list of settings for the gateway.
 	 */
@@ -74,7 +74,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Determine whether Tickets Commerce is in test mode.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool Whether Tickets Commerce is in test mode.
 	 */
