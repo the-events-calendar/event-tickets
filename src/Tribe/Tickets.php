@@ -988,15 +988,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return bool
 		 */
 		public function attendee_decreases_inventory( array $attendee ) {
-			/**
-			 * Filter enables the counting of Attendees.
-			 *
-			 * @since TBD
-			 *
-			 * @param bool Default value for filter.
-			 * @param array   $attendee Array of event attendees.
-			 */
-			return apply_filters( 'tribe_tickets_attendee_decreases_inventory', true, $attendee );
+			return true;
 		}
 
 		/**

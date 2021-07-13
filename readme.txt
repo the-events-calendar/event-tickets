@@ -182,8 +182,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.1.6] TBD =
 
-* Tweak - Updated attendee_decreases_inventory to return a filter. [ETP-112]
-
 = [5.1.5] 2021-06-09 =
 
 * Fix - Fixed shared capacity stock sync after attendee deletion, for TribeCommerce tickets. [ETP-285]
