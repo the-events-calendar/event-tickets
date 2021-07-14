@@ -21,6 +21,7 @@ $singular = $pto->labels->singular_name;
  * @param Tribe__Tickets__Attendees $attendees  The attendees object.
  */
 $show_title = apply_filters( 'tribe_tickets_attendees_show_title', is_admin(), $attendees );
+$export_url = tribe( 'tickets.attendees' )->get_export_url();
 ?>
 
 <div class="wrap tribe-report-page">
@@ -43,6 +44,8 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', is_admin(), $
 			 * @param int $event_id Post ID.
 			 */
 			do_action( 'tribe_report_page_after_text_label', $event_id );
+
+			echo sprintf( '<a target="_blank" href="%s" class="export action page-title-action">%s</a>', esc_url( $export_url ), esc_html__( 'Export', 'event-tickets' ) )
 			?>
 		</h1>
 	<?php endif; ?>

@@ -551,12 +551,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return;
 		}
 
-		$export_url = add_query_arg(
-			[
-				'attendees_csv'       => true,
-				'attendees_csv_nonce' => wp_create_nonce( 'attendees_csv_nonce' ),
-			]
-		);
+		$export_url = tribe( 'tickets.attendees' )->get_export_url();
 
 		/**
 		 * Include TB_iframe JS

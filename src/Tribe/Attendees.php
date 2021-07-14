@@ -934,5 +934,13 @@ class Tribe__Tickets__Attendees {
 
 		return $provider->update_attendee( $attendee, $attendee_data );
 	}
-
+	//TODO add docbloc
+	public function get_export_url (){
+		return add_query_arg(
+			[
+				'attendees_csv'       => true,
+				'attendees_csv_nonce' => wp_create_nonce( 'attendees_csv_nonce' ),
+			]
+		);
+	}
 }
