@@ -15,7 +15,6 @@ const TicketsDashboard = ( {
 	isSelected,
 	isSettingsOpen,
 } ) => {
-
 	if ( ! isSelected ) {
 		return null;
 	}
@@ -24,7 +23,7 @@ const TicketsDashboard = ( {
 		? <TicketsSettingsDashboard />
 		: <TicketsActionDashboard clientId={ clientId } />
 	);
-}
+};
 
 TicketsDashboard.propTypes = {
 	clientId: PropTypes.string,

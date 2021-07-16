@@ -48,7 +48,8 @@ export function* _fetch( params ) {
 
 /**
  * Fetches usable oost types
- * @returns {Object} JSON response
+ *
+ * @returns {object} JSON response
  */
 export function* fetchPostTypes() {
 	try {
@@ -80,7 +81,7 @@ export function* fetchPostTypes() {
  * 	post_type,
  * 	search_terms = '',
  * }
- * @returns {Object} JSON response
+ * @returns {object} JSON response
  */
 export function* fetchPostChoices( {
 	ignore,
@@ -119,7 +120,7 @@ export function* fetchPostChoices( {
  * 	ticket_type_id,
  * 	target_post_id,
  * }
- * @returns {Object} JSON response
+ * @returns {object} JSON response
  */
 export function* moveTicket( {
 	src_post_id,

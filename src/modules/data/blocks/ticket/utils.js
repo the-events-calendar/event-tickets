@@ -11,6 +11,8 @@ import { getDefaultTicketProvider, getTicketProviders } from '@moderntribe/ticke
 
 /**
  * Get currency symbol by provider
+ *
+ * @param provider
  */
 export const getProviderCurrency = ( provider ) => {
 	const tickets = ticketsConfig();

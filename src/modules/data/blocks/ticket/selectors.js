@@ -130,7 +130,7 @@ export const hasCreatedTickets = createSelector(
 	( tickets ) => tickets.reduce( ( hasCreated, ticket ) => (
 		hasCreated || ticket.hasBeenCreated
 	), false ),
-)
+);
 
 export const getIndependentTickets = createSelector(
 	[ getTicketsArray ],
@@ -162,7 +162,7 @@ export const hasATicketSelected = createSelector(
 	[ getTicketsArray ],
 	( tickets ) => tickets.reduce( ( selected, ticket ) => (
 		selected || ticket.isSelected
-	), false),
+	), false ),
 );
 
 export const getTicketsIdsInBlocks = createSelector(
@@ -670,5 +670,5 @@ export const hasTicketProviders = createSelector(
 
 export const canCreateTickets = createSelector(
 	[ hasTicketProviders, hasValidTicketProvider ],
-	( providers, validDefaultProvider ) => providers && validDefaultProvider
+	( providers, validDefaultProvider ) => providers && validDefaultProvider,
 );

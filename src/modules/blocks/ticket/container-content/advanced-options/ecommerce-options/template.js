@@ -28,7 +28,7 @@ const EcommerceOptions = ( {
 	provider,
 	reportLink,
 	showEcommerceOptions,
-}) => {
+} ) => {
 	const getEditTicketLinkLabel = ( provider ) => {
 		let label = '';
 
@@ -64,11 +64,11 @@ const EcommerceOptions = ( {
 					</Link>
 				)
 		);
-	}
+	};
 
 	return (
-		showEcommerceOptions
-			&& (
+		showEcommerceOptions &&
+			(
 				<LabeledItem
 					className={ classNames(
 						'tribe-editor__ticket__ecommerce-options',

@@ -24,7 +24,7 @@ export default {
 		'Find out who is planning to attend!',
 		'event-tickets',
 	),
-	icon: <RSVPIcon/>,
+	icon: <RSVPIcon />,
 	category: 'tribe-tickets',
 	keywords: [ 'event', 'events-gutenberg', 'tribe' ],
 

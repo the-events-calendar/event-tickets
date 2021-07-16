@@ -27,7 +27,7 @@ import './style.pcss';
  */
 
 const placeholder = __( 'Who\'s Attending?', 'event-tickets' );
-const subtitle    = __( '(X) people are attending this event', 'event-tickets' );
+const subtitle = __( '(X) people are attending this event', 'event-tickets' );
 
 const renderLabelInput = ( { isSelected, isEmpty, title, setTitle } ) => {
 	const containerClassNames = classNames( {
@@ -127,8 +127,8 @@ const Controls = ( {
 
 const Attendees = ( props ) => (
 	<Fragment>
-		<UI {...props} />
-		<Controls {...props} />
+		<UI { ...props } />
+		<Controls { ...props } />
 	</Fragment>
 );
 

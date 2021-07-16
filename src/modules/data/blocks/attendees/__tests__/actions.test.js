@@ -28,5 +28,4 @@ describe( '[STORE] - Attendees actions', () => {
 	it( 'Should set the attendees Display Subtitle', () => {
 		expect( actions.setDisplaySubtitle( true ) ).toMatchSnapshot();
 	} );
-
 } );

@@ -17,7 +17,7 @@ describe( 'Attendees Block sagas', () => {
 		it( 'should watch actions', () => {
 			const gen = watchers();
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.SET_ATTENDEES_INITIAL_STATE, sagas.setInitialState )
+				takeEvery( types.SET_ATTENDEES_INITIAL_STATE, sagas.setInitialState ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -27,7 +27,7 @@ describe( 'Attendees Block sagas', () => {
 		beforeEach( () => {
 			action = { payload: {
 				get: jest.fn(
-					( name, _default ) => DEFAULT_STATE[ name ] || _default
+					( name, _default ) => DEFAULT_STATE[ name ] || _default,
 				),
 			} };
 		} );
@@ -39,7 +39,7 @@ describe( 'Attendees Block sagas', () => {
 					put( actions.setTitle( action.payload.get( 'title', DEFAULT_STATE.title ) ) ),
 					put( actions.setDisplayTitle( action.payload.get( 'displayTitle', DEFAULT_STATE.displayTitle ) ) ),
 					put( actions.setDisplaySubtitle( action.payload.get( 'displaySubtitle', DEFAULT_STATE.displaySubtitle ) ) ),
-				] )
+				] ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );

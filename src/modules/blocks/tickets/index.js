@@ -24,7 +24,7 @@ export default {
 	id: 'tickets',
 	title: __( 'Tickets', 'event-tickets' ),
 	description: __( 'Sell tickets and register attendees.', 'event-tickets' ),
-	icon: <TicketsIcon/>,
+	icon: <TicketsIcon />,
 	category: 'tribe-tickets',
 	keywords: [ 'event', 'events-gutenberg', 'tribe' ],
 

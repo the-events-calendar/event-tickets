@@ -19,14 +19,14 @@ const HeaderImage = ( {
 	image,
 	isSettingsLoading,
 	onRemove,
-	onSelect
+	onSelect,
 } ) => {
 	const imageUploadProps = {
 		title: __( 'Ticket Header Image', 'event-tickets' ),
 		description: __(
 			/* eslint-disable-next-line max-len */
 			'Select an image from your Media Library to display on emailed tickets and RSVPs. For best results, use a .jpg, .png, or .gif at least 1160px wide.',
-			'event-tickets'
+			'event-tickets',
 		),
 		className: 'tribe-editor__rsvp__image-upload',
 		buttonDisabled: isSettingsLoading,

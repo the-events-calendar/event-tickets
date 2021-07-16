@@ -14,11 +14,11 @@ import * as actions from './actions';
 import * as selectors from './selectors';
 import { updateRSVP } from './thunks';
 import {
-	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE
+	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE,
 } from './reducers/header-image';
 import * as ticketActions from '@moderntribe/tickets/data/blocks/ticket/actions';
 import {
-	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE
+	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE,
 } from '@moderntribe/tickets/data/blocks/ticket/reducers/header-image';
 import * as utils from '@moderntribe/tickets/data/utils';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
@@ -39,7 +39,7 @@ import {
  * Set details for current RSVP
  *
  * @export
- * @param {Object} action redux action
+ * @param {object} action redux action
  */
 export function* setRSVPDetails( action ) {
 	const {
@@ -80,7 +80,7 @@ export function* setRSVPDetails( action ) {
  * Set details for current temp RSVP
  *
  * @export
- * @param {Object} action redux action
+ * @param {object} action redux action
  */
 export function* setRSVPTempDetails( action ) {
 	const {
@@ -123,11 +123,12 @@ export function* setRSVPTempDetails( action ) {
 
 /**
  * Initializes RSVP that has not been created
+ *
  * @borrows TEC - Optional functionality requires TEC to be enabled and post type to be event
  * @export
  */
 export function* initializeRSVP() {
-	const publishDate =  yield call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'date' );
+	const publishDate = yield call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'date' );
 	const {
 		moment: startMoment,
 		date: startDate,
@@ -184,8 +185,9 @@ export function* initializeRSVP() {
 
 /**
  * Will sync RSVP sale end to be the same as event start date and time, if field has not been manually edited
+ *
  * @borrows TEC - Functionality requires TEC to be enabled
- * @param {String} prevStartDate Previous start date before latest set date time changes
+ * @param {string} prevStartDate Previous start date before latest set date time changes
  * @export
  */
 export function* syncRSVPSaleEndWithEventStart( prevStartDate ) {
@@ -294,6 +296,7 @@ export function* saveRSVPWithPostSave() {
 
 /**
  * Listens for event start date and time changes after RSVP block is loaded.
+ *
  * @borrows TEC - Functionality requires TEC to be enabled and post type to be event
  * @export
  */

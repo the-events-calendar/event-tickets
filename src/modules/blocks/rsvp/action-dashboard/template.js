@@ -73,7 +73,7 @@ class RSVPActionDashboard extends PureComponent {
 					isDisabled={ isLoading }
 				>
 					{ text }
-				</WarningButton>
+				</WarningButton>,
 			);
 		}
 		return actions;

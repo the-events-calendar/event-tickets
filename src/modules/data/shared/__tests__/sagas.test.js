@@ -66,27 +66,27 @@ describe( 'Shared block sagas', () => {
 			const gen = sagas.createDates( date );
 
 			expect( gen.next().value ).toEqual(
-				call( [ globals, 'tecDateSettings' ] )
+				call( [ globals, 'tecDateSettings' ] ),
 			);
 
 			expect( gen.next( { datepickerFormat: false } ).value ).toEqual(
-				call( momentUtil.toMoment, date )
+				call( momentUtil.toMoment, date ),
 			);
 
 			expect( gen.next( {} ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, {} )
+				call( momentUtil.toDatabaseDate, {} ),
 			);
 
 			expect( gen.next( {} ).value ).toEqual(
-				call( momentUtil.toDate, {} )
+				call( momentUtil.toDate, {} ),
 			);
 
 			expect( gen.next( date ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, {} )
+				call( momentUtil.toDatabaseTime, {} ),
 			);
 
 			expect( gen.next( date ).value ).toEqual(
-				call( momentUtil.toTime, {} )
+				call( momentUtil.toTime, {} ),
 			);
 
 			expect( gen.next().done ).toEqual( true );
@@ -95,27 +95,27 @@ describe( 'Shared block sagas', () => {
 			const gen = sagas.createDates( date );
 
 			expect( gen.next().value ).toEqual(
-				call( [ globals, 'tecDateSettings' ] )
+				call( [ globals, 'tecDateSettings' ] ),
 			);
 
 			expect( gen.next( { datepickerFormat: true } ).value ).toEqual(
-				call( momentUtil.toMoment, date )
+				call( momentUtil.toMoment, date ),
 			);
 
 			expect( gen.next( {} ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, {} )
+				call( momentUtil.toDatabaseDate, {} ),
 			);
 
 			expect( gen.next( {} ).value ).toEqual(
-				call( momentUtil.toDate, {}, true )
+				call( momentUtil.toDate, {}, true ),
 			);
 
 			expect( gen.next( date ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, {} )
+				call( momentUtil.toDatabaseTime, {} ),
 			);
 
 			expect( gen.next( date ).value ).toEqual(
-				call( momentUtil.toTime, {} )
+				call( momentUtil.toTime, {} ),
 			);
 
 			expect( gen.next().done ).toEqual( true );

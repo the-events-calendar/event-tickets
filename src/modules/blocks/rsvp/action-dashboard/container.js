@@ -28,10 +28,10 @@ const getHasRecurrenceRules = ( state ) => {
 };
 
 const getIsConfirmDisabled = ( state ) => (
-	! selectors.getRSVPTempTitle( state )
-		|| ! selectors.getRSVPHasChanges( state )
-		|| selectors.getRSVPIsLoading( state )
-		|| selectors.getRSVPHasDurationError( state )
+	! selectors.getRSVPTempTitle( state ) ||
+		! selectors.getRSVPHasChanges( state ) ||
+		selectors.getRSVPIsLoading( state ) ||
+		selectors.getRSVPHasDurationError( state )
 );
 
 const onCancelClick = ( state, dispatch ) => () => {

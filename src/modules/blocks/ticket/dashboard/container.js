@@ -17,10 +17,10 @@ import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 
 const getIsConfirmDisabled = ( state, ownProps ) => (
-	! selectors.isTicketValid( state, ownProps )
-		|| ! selectors.getTicketHasChanges( state, ownProps )
-		|| selectors.isTicketDisabled( state, ownProps )
-		|| selectors.getTicketHasDurationError( state, ownProps )
+	! selectors.isTicketValid( state, ownProps ) ||
+		! selectors.getTicketHasChanges( state, ownProps ) ||
+		selectors.isTicketDisabled( state, ownProps ) ||
+		selectors.getTicketHasDurationError( state, ownProps )
 );
 
 const onCancelClick = ( state, dispatch, ownProps ) => () => {
@@ -49,7 +49,7 @@ const onCancelClick = ( state, dispatch, ownProps ) => () => {
 		) );
 		dispatch( actions.setTicketHasChanges( ownProps.clientId, false ) );
 	} else {
-		dispatch( actions.removeTicketBlock( ownProps.clientId ) )
+		dispatch( actions.removeTicketBlock( ownProps.clientId ) );
 		wpDispatch( 'core/editor' ).removeBlocks( ownProps.clientId );
 	}
 	wpDispatch( 'core/editor' ).clearSelectedBlock();

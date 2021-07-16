@@ -65,7 +65,7 @@ const TicketContainerHeaderTitle = ( {
 			}
 		</div>
 	);
-}
+};
 
 TicketContainerHeaderTitle.propTypes = {
 	hasAttendeeInfoFields: PropTypes.bool,

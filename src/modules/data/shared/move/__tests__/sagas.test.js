@@ -37,7 +37,7 @@ describe( 'Move Sagas', () => {
 				sagas.createBody, {
 					a: 1,
 					check: undefined,
-				} )
+				} ),
 			);
 
 			expect( gen.next( 'a=1&check=undefined' ).value ).toMatchSnapshot();

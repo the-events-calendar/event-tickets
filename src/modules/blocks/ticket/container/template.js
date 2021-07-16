@@ -36,7 +36,6 @@ TicketContainerIcon.propTypes = {
 	isPast: PropTypes.bool,
 };
 
-
 const TicketContainer = ( { clientId, isDisabled, isFuture, isPast, isSelected } ) => (
 	<ContainerPanel
 		className="tribe-editor__ticket__container"

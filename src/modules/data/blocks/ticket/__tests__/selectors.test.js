@@ -14,7 +14,7 @@ import {
 } from '@moderntribe/tickets/data/blocks/ticket/reducers/tickets/ticket/details';
 import {
 	DEFAULT_STATE as TEMP_DETAILS_DEFAULT_STATE,
-} from '@moderntribe/tickets/data/blocks/ticket/reducers/tickets/ticket/details';
+} from '@moderntribe/tickets/data/blocks/ticket/reducers/tickets/ticket/temp-details';
 
 jest.mock( 'moment', () => () => {
 	const moment = require.requireActual( 'moment' );
@@ -41,7 +41,7 @@ describe( 'Ticket block selectors', () => {
 									tempDetails: { ...TEMP_DETAILS_DEFAULT_STATE },
 								},
 							},
-						}
+						},
 					},
 				},
 			},

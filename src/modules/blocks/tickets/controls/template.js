@@ -30,7 +30,8 @@ const note = __(
 /**
  * @todo: create radio input element, move this over to element
  */
-const RadioInput = ( { provider, onProviderChange, ...additionalProps }) => (
+
+const RadioInput = ( { provider, onProviderChange, ...additionalProps } ) => (
 	<div className="tribe-editor__tickets-control-container">
 		<input
 			className="tribe-editor__tickets-control__input tribe-editor__tickets-control__input--radio"

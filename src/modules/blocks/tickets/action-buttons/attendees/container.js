@@ -26,7 +26,7 @@ const mapStateToProps = () => {
 		href: `${ adminURL }edit.php?post_type=${ postType }&page=tickets-attendees&event_id=${ postId }`,
 		canCreateTickets: selectors.canCreateTickets(),
 	};
-}
+};
 
 export default compose(
 	withStore(),

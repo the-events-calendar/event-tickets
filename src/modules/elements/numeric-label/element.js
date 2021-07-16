@@ -15,7 +15,7 @@ import classNames from 'classnames';
  *
  * Labels need to have a %d on it where the number will be replaced
  *
- * @param {string|array|object} className The class of the element
+ * @param {string | Array | object} className The class of the element
  * @param {int} count The amount to be compared
  * @param {bool} includeZero If true, zero is included in count
  * @param {string} singular The label for the singular case
@@ -34,10 +34,10 @@ const NumericLabel = ( {
 	useFallback,
 } ) => {
 	if (
-		useFallback
-		&& (
-			( includeZero && ! ( count >= 0 ) )
-			|| ( ! includeZero && ! ( count > 0 ) )
+		useFallback &&
+		(
+			( includeZero && ! ( count >= 0 ) ) ||
+			( ! includeZero && ! ( count > 0 ) )
 		)
 	) {
 		return fallback;
@@ -52,7 +52,7 @@ const NumericLabel = ( {
 			{ after && <span className="tribe-editor__numeric-label--after">{ after }</span> }
 		</span>
 	);
-}
+};
 
 NumericLabel.propTypes = {
 	className: PropTypes.oneOfType( [
@@ -65,7 +65,7 @@ NumericLabel.propTypes = {
 	singular: PropTypes.string,
 	plural: PropTypes.string,
 	useFallback: PropTypes.any,
-}
+};
 
 NumericLabel.defaultProps = {
 	count: 0,
@@ -75,6 +75,6 @@ NumericLabel.defaultProps = {
 	className: '',
 	fallback: null,
 	useFallback: true,
-}
+};
 
 export default NumericLabel;

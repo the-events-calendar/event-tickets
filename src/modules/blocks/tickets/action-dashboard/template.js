@@ -52,7 +52,6 @@ class TicketsDashboardAction extends PureComponent {
 
 		const actions = [ <SettingsActionButton /> ];
 		if ( hasCreatedTickets ) {
-
 			actions.push( <AttendeesActionButton /> );
 
 			if ( hasOrdersPage ) {
@@ -68,7 +67,7 @@ class TicketsDashboardAction extends PureComponent {
 					onClick={ this.onWarningClick }
 				>
 					{ text }
-				</WarningButton>
+				</WarningButton>,
 			);
 		}
 		return actions;
@@ -92,8 +91,8 @@ class TicketsDashboardAction extends PureComponent {
 					</div>
 				) }
 			</Fragment>
-		)
+		);
 	}
-};
+}
 
 export default TicketsDashboardAction;

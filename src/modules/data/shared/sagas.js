@@ -101,8 +101,8 @@ export function createWPEditorNotSavingChannel() {
  * Create date objects used throughout sagas
  *
  * @export
- * @param {String} date datetime string
- * @returns {Object} Object of dates/moments
+ * @param {string} date datetime string
+ * @returns {object} Object of dates/moments
  */
 export function* createDates( date ) {
 	const { datepickerFormat } = yield call( [ globals, 'tecDateSettings' ] );

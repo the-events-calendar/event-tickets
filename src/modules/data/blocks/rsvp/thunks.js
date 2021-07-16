@@ -8,7 +8,7 @@ import { middlewares } from '@moderntribe/common/store';
 import { globals, time, moment as momentUtil } from '@moderntribe/common/utils';
 
 const { request: {
-	actions:wpRequestActions
+	actions: wpRequestActions,
 } } = middlewares;
 
 /**
@@ -34,11 +34,11 @@ const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
 	} = payload;
 
 	const startMoment = startDateMoment.clone().startOf( 'day' ).seconds(
-		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM_SS )
+		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM_SS ),
 	);
 
 	const endMoment = endDateMoment.clone().startOf( 'day' ).seconds(
-		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM_SS )
+		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM_SS ),
 	);
 
 	let path = `${ utils.RSVP_POST_TYPE }`;
@@ -130,7 +130,7 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 					 */
 					const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 
-					const rsvp = filteredRSVPs[0];
+					const rsvp = filteredRSVPs[ 0 ];
 					const { meta = {} } = rsvp;
 					const startMoment = momentUtil.toMoment( meta[ utils.KEY_TICKET_START_DATE ] );
 					const endMoment = momentUtil.toMoment( meta[ utils.KEY_TICKET_END_DATE ] );
@@ -149,18 +149,18 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 					dispatch( actions.setRSVPId( rsvp.id ) );
 					dispatch(
 						actions.setRSVPGoingCount(
-							parseInt( meta[ utils.KEY_TICKET_GOING_COUNT ], 10 ) || 0
-						)
+							parseInt( meta[ utils.KEY_TICKET_GOING_COUNT ], 10 ) || 0,
+						),
 					);
 					dispatch(
 						actions.setRSVPNotGoingCount(
-							parseInt( meta[ utils.KEY_TICKET_NOT_GOING_COUNT ], 10 ) || 0
-						)
+							parseInt( meta[ utils.KEY_TICKET_NOT_GOING_COUNT ], 10 ) || 0,
+						),
 					);
 					dispatch(
 						actions.setRSVPHasAttendeeInfoFields(
-							meta[ utils.KEY_TICKET_HAS_ATTENDEE_INFO_FIELDS ]
-						)
+							meta[ utils.KEY_TICKET_HAS_ATTENDEE_INFO_FIELDS ],
+						),
 					);
 					dispatch( actions.setRSVPDetails( {
 						title: rsvp.title.rendered,

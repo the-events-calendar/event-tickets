@@ -39,10 +39,10 @@ export const isModalSubmitting = createSelector( _getModal, modal => modal.isSub
 
 export const getPostTypeOptionValue = createSelector(
 	[ getPostTypeOptions, getModalPostType ],
-	( postTypeOptions, postType ) => find( postTypeOptions, [ 'value', postType ] )
+	( postTypeOptions, postType ) => find( postTypeOptions, [ 'value', postType ] ),
 );
 
 export const hasSelectedPost = createSelector(
 	[ getPostOptions, getModalTarget ],
-	( posts, target ) => !! ( target && find( posts, [ 'value', target ] ) )
+	( posts, target ) => !! ( target && find( posts, [ 'value', target ] ) ),
 );

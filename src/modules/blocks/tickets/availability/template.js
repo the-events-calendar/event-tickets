@@ -19,13 +19,14 @@ import './style.pcss';
 /**
  * @todo: consider changing to _n for better translation compatibility
  */
+
 const Availability = ( { available, total } ) => {
 	const Available = (
 		<NumericLabel
 			className={ classNames(
 				'tribe-editor__tickets__availability-label',
 				'tribe-editor__tickets__availability-label--available',
-				'tribe-tooltip'
+				'tribe-tooltip',
 			) }
 			count={ available }
 			singular={ __( '%d ticket available', 'event-tickets' ) }
@@ -59,6 +60,6 @@ const Availability = ( { available, total } ) => {
 Availability.propTypes = {
 	available: PropTypes.number,
 	total: PropTypes.number,
-}
+};
 
 export default Availability;

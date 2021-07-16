@@ -20,14 +20,14 @@ import * as actions from './actions';
 import * as selectors from './selectors';
 import { DEFAULT_STATE } from './reducer';
 import {
-	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE
+	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE,
 } from './reducers/header-image';
 import {
 	DEFAULT_STATE as TICKET_DEFAULT_STATE,
 } from './reducers/tickets/ticket';
 import * as rsvpActions from '@moderntribe/tickets/data/blocks/rsvp/actions';
 import {
-	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE
+	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE,
 } from '@moderntribe/tickets/data/blocks/rsvp/reducers/header-image';
 import * as utils from '@moderntribe/tickets/data/utils';
 import {
@@ -46,7 +46,6 @@ import {
 	hasPostTypeChannel,
 	createDates,
 } from '@moderntribe/tickets/data/shared/sagas';
-
 
 const {
 	UNLIMITED,
@@ -139,7 +138,7 @@ export function* setTicketInitialState( action ) {
 	const ticketId = get( 'ticketId', TICKET_DEFAULT_STATE.ticketId );
 	const hasBeenCreated = get( 'hasBeenCreated', TICKET_DEFAULT_STATE.hasBeenCreated );
 
-	const datePickerFormat = tecDateSettings().datepickerFormat
+	const datePickerFormat = tecDateSettings().datepickerFormat;
 	const publishDate = yield call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'date' );
 	const startMoment = yield call( momentUtil.toMoment, publishDate );
 	const startDate = yield call( momentUtil.toDatabaseDate, startMoment );
@@ -242,7 +241,7 @@ export function* setBodyDetails( clientId ) {
 	body.append( 'end_time', yield select( selectors.getTicketTempEndTime, props ) );
 	body.append( 'sku', yield select( selectors.getTicketTempSku, props ) );
 	body.append( 'iac', yield select( selectors.getTicketTempIACSetting, props ) );
-	body.append( 'menu_order', yield call( [ wpSelect( 'core/editor' ), 'getBlockIndex' ], clientId, rootClientId ) )
+	body.append( 'menu_order', yield call( [ wpSelect( 'core/editor' ), 'getBlockIndex' ], clientId, rootClientId ) );
 
 	const capacityType = yield select( selectors.getTicketTempCapacityType, props );
 	const capacity = yield select( selectors.getTicketTempCapacity, props );
@@ -363,7 +362,7 @@ export function* fetchTicket( action ) {
 			] );
 		}
 	} catch ( e ) {
-		console.error( e ) ;
+		console.error( e );
 		/**
 		 * @todo handle error scenario
 		 */
@@ -395,8 +394,8 @@ export function* createNewTicket( action ) {
 			const sharedCapacity = yield select( selectors.getTicketsSharedCapacity );
 			const tempSharedCapacity = yield select( selectors.getTicketsTempSharedCapacity );
 			if (
-				sharedCapacity === ''
-					&& ( ! isNaN( tempSharedCapacity ) && tempSharedCapacity > 0 )
+				sharedCapacity === '' &&
+					( ! isNaN( tempSharedCapacity ) && tempSharedCapacity > 0 )
 			) {
 				yield put( actions.setTicketsSharedCapacity( tempSharedCapacity ) );
 			}
@@ -855,6 +854,7 @@ export function* setTicketTempDetails( action ) {
  * Allows the Ticket to be saved at the same time a post is being saved.
  * Avoids the user having to open up the Ticket block, and then click update again there, when changing the event start date.
  *
+ * @param {string} clientId Client ID of ticket block
  * @export
  */
 export function* saveTicketWithPostSave( clientId ) {
@@ -893,24 +893,27 @@ export function* saveTicketWithPostSave( clientId ) {
 
 /**
  * Will sync all tickets
- * @param {String} prevStartDate Previous start date before latest set date time changes
+ *
+ * @param {string} prevStartDate Previous start date before latest set date time changes
  * @export
  */
 export function* syncTicketsSaleEndWithEventStart( prevStartDate ) {
 	const ticketIds = yield select( selectors.getTicketsAllClientIds );
-	for (let index = 0; index < ticketIds.length; index++) {
-		const clientId = ticketIds[index];
+	for ( let index = 0; index < ticketIds.length; index++ ) {
+		const clientId = ticketIds[ index ];
 		yield call( syncTicketSaleEndWithEventStart, prevStartDate, clientId );
 	}
 }
 
 /**
  * Will sync Tickets sale end to be the same as event start date and time, if field has not been manually edited
+ *
  * @borrows TEC - Functionality requires TEC to be enabled
- * @param {String} prevStartDate Previous start date before latest set date time changes
+ * @param {string} clientId Client ID of ticket block
+ * @param {string} prevStartDate Previous start date before latest set date time changes
  * @export
  */
-export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ){
+export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ) {
 	try {
 		const tempEndMoment = yield select( selectors.getTicketTempEndDateMoment, { clientId } );
 		const endMoment = yield select( selectors.getTicketEndDateMoment, { clientId } );
@@ -970,6 +973,7 @@ export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ){
 
 /**
  * Listens for event start date and time changes after RSVP block is loaded.
+ *
  * @borrows TEC - Functionality requires TEC to be enabled and post type to be event
  * @export
  */
