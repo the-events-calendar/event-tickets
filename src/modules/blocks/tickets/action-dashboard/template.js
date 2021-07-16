@@ -27,7 +27,6 @@ class TicketsDashboardAction extends PureComponent {
 		hasCreatedTickets: PropTypes.bool,
 		hasOrdersPage: PropTypes.bool,
 		hasRecurrenceRules: PropTypes.bool,
-		hasTicketsPlus: PropTypes.bool,
 		onConfirmClick: PropTypes.func,
 	};
 
@@ -47,7 +46,6 @@ class TicketsDashboardAction extends PureComponent {
 			hasCreatedTickets,
 			hasOrdersPage,
 			hasRecurrenceRules,
-			hasTicketsPlus,
 		} = this.props;
 
 		const actions = [ <SettingsActionButton /> ];
@@ -60,7 +58,9 @@ class TicketsDashboardAction extends PureComponent {
 		}
 		if ( hasRecurrenceRules ) {
 			const icon = this.state.isWarningOpen ? 'no' : 'info-outline';
-			const text = this.state.isWarningOpen ? __( 'Hide Warning', 'event-tickets' ) : __( 'Warning', 'event-tickets' );
+			const text = this.state.isWarningOpen
+				? __( 'Hide Warning', 'event-tickets' )
+				: __( 'Warning', 'event-tickets' );
 			actions.push(
 				<WarningButton
 					icon={ icon }
@@ -87,7 +87,10 @@ class TicketsDashboardAction extends PureComponent {
 				/>
 				{ this.state.isWarningOpen && (
 					<div className="tribe-editor__tickets__warning">
-						{ __( 'This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly.', 'event-tickets' ) }
+						{ __(
+							'This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly.', // eslint-disable-line max-len
+							'event-tickets',
+						) }
 					</div>
 				) }
 			</Fragment>

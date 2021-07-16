@@ -452,7 +452,7 @@ describe( 'Ticket block selectors', () => {
 
 		it( 'should be invalid', () => {
 			expect( selectors.isTempCapacityValid( state, ownProps ) ).toBe( false );
-			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacity = 'not a number';
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacity = 'not a number'; // eslint-disable-line max-len
 			expect( selectors.isTempCapacityValid( state, ownProps ) ).toBe( false );
 		} );
 	} );
@@ -472,27 +472,27 @@ describe( 'Ticket block selectors', () => {
 
 	describe( 'isTicketValid', () => {
 		it( 'should be valid when unlimited', () => {
-			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.title = 'Modern Tribe';
-			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacityType = 'unlimited';
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.title = 'Modern Tribe'; // eslint-disable-line max-len
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacityType = 'unlimited'; // eslint-disable-line max-len
 			expect( selectors.isTicketValid( state, ownProps ) ).toBe( true );
 		} );
 
 		it( 'should be valid when shared', () => {
-			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.title = 'Modern Tribe';
-			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacityType = 'capped';
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.title = 'Modern Tribe'; // eslint-disable-line max-len
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacityType = 'capped'; // eslint-disable-line max-len
 			state.tickets.blocks.ticket.tempSharedCapacity = '10';
 			expect( selectors.isTicketValid( state, ownProps ) ).toBe( true );
 		} );
 
 		it( 'should be invalid when independent', () => {
-			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacityType = 'own';
-			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.title = 'Modern Tribe';
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacityType = 'own'; // eslint-disable-line max-len
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.title = 'Modern Tribe'; // eslint-disable-line max-len
 			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacity = '';
 			expect( selectors.isTicketValid( state, ownProps ) ).toBe( false );
 		} );
 
 		it( 'should be invalid when independent with no title', () => {
-			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacityType = 'own';
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacityType = 'own'; // eslint-disable-line max-len
 			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.title = '';
 			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacity = 1;
 			expect( selectors.isTicketValid( state, ownProps ) ).toBe( false );

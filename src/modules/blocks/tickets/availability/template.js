@@ -50,7 +50,10 @@ const Availability = ( { available, total } ) => {
 		<div className="tribe-editor__tickets__availability">
 			<span
 				class="tribe-tooltip"
-				title={ __( 'Ticket availability is based on the lowest number of inventory, stock, and capacity.', 'event-tickets' ) }
+				title={ __(
+					'Ticket availability is based on the lowest number of inventory, stock, and capacity.',
+					'event-tickets',
+				) }
 			>{ Available }<span className="dashicons dashicons-info"></span></span>
 			{ Total }
 		</div>

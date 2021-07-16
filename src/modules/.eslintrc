@@ -4,6 +4,10 @@
     "../../node_modules/@the-events-calendar/product-taskmaster/config/eslint.react.js"
   ],
   "rules": {
+    "import/namespace": [
+      "error",
+      { "allowComputed": true }
+    ],
     "import/no-unresolved": [
       "error",
       {

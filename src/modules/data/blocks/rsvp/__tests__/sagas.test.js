@@ -7,10 +7,7 @@ import { noop } from 'lodash';
 /**
  * WordPress dependencies
  */
-import {
-	dispatch as wpDispatch,
-	select as wpSelect,
-} from '@wordpress/data';
+import { dispatch as wpDispatch } from '@wordpress/data';
 
 /**
  * Internal Dependencies
@@ -30,12 +27,15 @@ import * as utils from '@moderntribe/tickets/data/utils';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import {
 	api,
-	globals,
 	moment as momentUtil,
 	time as timeUtil,
 } from '@moderntribe/common/utils';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
-import { isTribeEventPostType, createWPEditorSavingChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
+import {
+	isTribeEventPostType,
+	createWPEditorSavingChannel,
+	createDates,
+} from '@moderntribe/tickets/data/shared/sagas';
 
 function mock() {
 	return {
@@ -404,15 +404,9 @@ describe( 'RSVP block sagas', () => {
 	} );
 
 	describe( 'syncRSVPSaleEndWithEventStart', () => {
-		let prevDate, state, momentMock;
+		let prevDate, momentMock;
 		beforeEach( () => {
 			prevDate = '2018-01-01 00:00:00';
-			state = {
-				startDate: 'January 1, 2018',
-				startTime: '12:34',
-				endDate: 'January 4, 2018',
-				endTime: '23:32',
-			};
 			global.tribe = {
 				events: {
 					data: {
@@ -552,7 +546,7 @@ describe( 'RSVP block sagas', () => {
 			expect( gen.next().done ).toEqual( true );
 		} );
 
-		it( 'should set thas duration error to false if start date time is before end date time', () => {
+		it( 'should set thas duration error to false if start date time is before end date time', () => { // eslint-disable-line max-len
 			const START_DATE_MOMENT = {
 				clone: () => {},
 				isSameOrAfter: () => {},

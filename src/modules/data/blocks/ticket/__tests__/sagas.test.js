@@ -854,8 +854,14 @@ describe( 'Ticket Block sagas', () => {
 			);
 			expect( gen.next( true ).value ).toEqual(
 				all( [
-					put( actions.setTicketCapacityType( CLIENT_ID, constants.TICKET_TYPES[ constants.SHARED ] ) ),
-					put( actions.setTicketTempCapacityType( CLIENT_ID, constants.TICKET_TYPES[ constants.SHARED ] ) ),
+					put( actions.setTicketCapacityType(
+						CLIENT_ID,
+						constants.TICKET_TYPES[ constants.SHARED ],
+					) ),
+					put( actions.setTicketTempCapacityType(
+						CLIENT_ID,
+						constants.TICKET_TYPES[ constants.SHARED ],
+					) ),
 				] ),
 			);
 			expect( gen.next().value ).toEqual(
@@ -1057,10 +1063,19 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketTempDetails( CLIENT_ID, details2 ) ),
 					put( actions.setTicketSold( CLIENT_ID, apiResponse2.data.totals.sold ) ),
 					put( actions.setTicketAvailable( CLIENT_ID, apiResponse2.data.totals.stock ) ),
-					put( actions.setTicketCurrencySymbol( CLIENT_ID, apiResponse2.data.cost_details.currency_symbol ) ),
-					put( actions.setTicketCurrencyPosition( CLIENT_ID, apiResponse2.data.cost_details.currency_position ) ),
+					put( actions.setTicketCurrencySymbol(
+						CLIENT_ID,
+						apiResponse2.data.cost_details.currency_symbol,
+					) ),
+					put( actions.setTicketCurrencyPosition(
+						CLIENT_ID,
+						apiResponse2.data.cost_details.currency_position,
+					) ),
 					put( actions.setTicketProvider( CLIENT_ID, apiResponse2.data.provider ) ),
-					put( actions.setTicketHasAttendeeInfoFields( CLIENT_ID, apiResponse2.data.supports_attendee_information ) ),
+					put( actions.setTicketHasAttendeeInfoFields(
+						CLIENT_ID,
+						apiResponse2.data.supports_attendee_information,
+					) ),
 					put( actions.setTicketHasBeenCreated( CLIENT_ID, true ) ),
 				] ),
 			);
@@ -1166,10 +1181,19 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketTempDetails( CLIENT_ID, details3 ) ),
 					put( actions.setTicketSold( CLIENT_ID, apiResponse3.data.totals.sold ) ),
 					put( actions.setTicketAvailable( CLIENT_ID, apiResponse3.data.totals.stock ) ),
-					put( actions.setTicketCurrencySymbol( CLIENT_ID, apiResponse3.data.cost_details.currency_symbol ) ),
-					put( actions.setTicketCurrencyPosition( CLIENT_ID, apiResponse3.data.cost_details.currency_position ) ),
+					put( actions.setTicketCurrencySymbol(
+						CLIENT_ID,
+						apiResponse3.data.cost_details.currency_symbol,
+					) ),
+					put( actions.setTicketCurrencyPosition(
+						CLIENT_ID,
+						apiResponse3.data.cost_details.currency_position,
+					) ),
 					put( actions.setTicketProvider( CLIENT_ID, apiResponse3.data.provider ) ),
-					put( actions.setTicketHasAttendeeInfoFields( CLIENT_ID, apiResponse3.data.supports_attendee_information ) ),
+					put( actions.setTicketHasAttendeeInfoFields(
+						CLIENT_ID,
+						apiResponse3.data.supports_attendee_information,
+					) ),
 					put( actions.setTicketHasBeenCreated( CLIENT_ID, true ) ),
 				] ),
 			);
@@ -1635,9 +1659,10 @@ describe( 'Ticket Block sagas', () => {
 
 			const gen = cloneableGenerator( sagas.deleteTicket )( action );
 
-			expect( gen.next().value ).toEqual(
-				call( [ window, 'confirm' ], 'Are you sure you want to delete this ticket? It cannot be undone.' ),
-			);
+			expect( gen.next().value ).toEqual( call(
+				[ window, 'confirm' ],
+				'Are you sure you want to delete this ticket? It cannot be undone.',
+			) );
 
 			expect( gen.next( true ).value ).toEqual(
 				select( selectors.getTicketId, props ),
@@ -2177,7 +2202,7 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().done ).toEqual( true );
 		} );
 
-		it( 'should set thas duration error to false if start date time is before end date time', () => {
+		it( 'should set thas duration error to false if start date time is before end date time', () => { // eslint-disable-line max-len
 			const CLIENT_ID = 'tribe';
 			const START_DATE_MOMENT = {
 				clone: () => {},
@@ -2251,7 +2276,10 @@ describe( 'Ticket Block sagas', () => {
 				put( actions.setTicketTempStartDate( action.payload.clientId, '' ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setTicketTempStartDateInput( action.payload.clientId, action.payload.dayPickerInput.state.value ) ),
+				put( actions.setTicketTempStartDateInput(
+					action.payload.clientId,
+					action.payload.dayPickerInput.state.value,
+				) ),
 			);
 			expect( gen.next().value ).toEqual(
 				put( actions.setTicketTempStartDateMoment( action.payload.clientId, undefined ) ),
@@ -2273,7 +2301,10 @@ describe( 'Ticket Block sagas', () => {
 				put( actions.setTicketTempStartDate( action.payload.clientId, action.payload.date ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setTicketTempStartDateInput( action.payload.clientId, action.payload.dayPickerInput.state.value ) ),
+				put( actions.setTicketTempStartDateInput(
+					action.payload.clientId,
+					action.payload.dayPickerInput.state.value,
+				) ),
 			);
 			expect( gen.next().value ).toEqual(
 				put( actions.setTicketTempStartDateMoment( action.payload.clientId, action.payload.date ) ),
@@ -2307,7 +2338,10 @@ describe( 'Ticket Block sagas', () => {
 				put( actions.setTicketTempEndDate( action.payload.clientId, '' ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setTicketTempEndDateInput( action.payload.clientId, action.payload.dayPickerInput.state.value ) ),
+				put( actions.setTicketTempEndDateInput(
+					action.payload.clientId,
+					action.payload.dayPickerInput.state.value,
+				) ),
 			);
 			expect( gen.next().value ).toEqual(
 				put( actions.setTicketTempEndDateMoment( action.payload.clientId, undefined ) ),
@@ -2329,7 +2363,10 @@ describe( 'Ticket Block sagas', () => {
 				put( actions.setTicketTempEndDate( action.payload.clientId, action.payload.date ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setTicketTempEndDateInput( action.payload.clientId, action.payload.dayPickerInput.state.value ) ),
+				put( actions.setTicketTempEndDateInput(
+					action.payload.clientId,
+					action.payload.dayPickerInput.state.value,
+				) ),
 			);
 			expect( gen.next().value ).toEqual(
 				put( actions.setTicketTempEndDateMoment( action.payload.clientId, action.payload.date ) ),
@@ -2458,16 +2495,10 @@ describe( 'Ticket Block sagas', () => {
 
 	// @todo: skipping until we can come back to fix it.
 	describe.skip( 'syncTicketSaleEndWithEventStart', () => {
-		let prevDate, state, momentMock, clientId;
+		let prevDate, momentMock, clientId;
 		beforeEach( () => {
 			clientId = 'clientId';
 			prevDate = '2018-01-01 00:00:00';
-			state = {
-				startDate: 'January 1, 2018',
-				startTime: '12:34',
-				endDate: 'January 4, 2018',
-				endTime: '23:32',
-			};
 			global.tribe = {
 				events: {
 					data: {

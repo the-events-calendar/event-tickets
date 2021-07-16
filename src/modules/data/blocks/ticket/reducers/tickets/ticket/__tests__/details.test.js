@@ -15,27 +15,45 @@ describe( 'Details reducer', () => {
 	} );
 
 	it( 'should set the title', () => {
-		expect( reducer( DEFAULT_STATE, actions.setTicketTitle( 'block-id', 'new title' ) ) ).toMatchSnapshot();
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketTitle( 'block-id', 'new title' ),
+		) ).toMatchSnapshot();
 	} );
 
 	it( 'should set the description', () => {
-		expect( reducer( DEFAULT_STATE, actions.setTicketDescription( 'block-id', 'new description' ) ) ).toMatchSnapshot();
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketDescription( 'block-id', 'new description' ),
+		) ).toMatchSnapshot();
 	} );
 
 	it( 'should set the price', () => {
-		expect( reducer( DEFAULT_STATE, actions.setTicketPrice( 'block-id', 99 ) ) ).toMatchSnapshot();
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketPrice( 'block-id', 99 ),
+		) ).toMatchSnapshot();
 	} );
 
 	it( 'should set the sku', () => {
-		expect( reducer( DEFAULT_STATE, actions.setTicketSku( 'block-id', '12345678' ) ) ).toMatchSnapshot();
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketSku( 'block-id', '12345678' ),
+		) ).toMatchSnapshot();
 	} );
 
 	it( 'should set the iac setting', () => {
-		expect( reducer( DEFAULT_STATE, actions.setTicketIACSetting( 'block-id', 'none' ) ) ).toMatchSnapshot();
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketIACSetting( 'block-id', 'none' ),
+		) ).toMatchSnapshot();
 	} );
 
 	it( 'should set the start date', () => {
-		expect( reducer( DEFAULT_STATE, actions.setTicketStartDate( 'block-id', 'January 1, 2018' ) ) ).toMatchSnapshot();
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketStartDate( 'block-id', 'January 1, 2018' ),
+		) ).toMatchSnapshot();
 	} );
 
 	it( 'should set the start date moment', () => {
@@ -46,7 +64,10 @@ describe( 'Details reducer', () => {
 	} );
 
 	it( 'should set the end date', () => {
-		expect( reducer( DEFAULT_STATE, actions.setTicketEndDate( 'block-id', 'January 1, 2018' ) ) ).toMatchSnapshot();
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketEndDate( 'block-id', 'January 1, 2018' ),
+		) ).toMatchSnapshot();
 	} );
 
 	it( 'should set the end date moment', () => {
@@ -57,26 +78,44 @@ describe( 'Details reducer', () => {
 	} );
 
 	it( 'should set the start time', () => {
-		expect( reducer( DEFAULT_STATE, actions.setTicketStartTime( 'block-id', '13:45' ) ) ).toMatchSnapshot();
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketStartTime( 'block-id', '13:45' ),
+		) ).toMatchSnapshot();
 	} );
 
 	it( 'should set the end time', () => {
-		expect( reducer( DEFAULT_STATE, actions.setTicketEndTime( 'block-id', '13:45' ) ) ).toMatchSnapshot();
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketEndTime( 'block-id', '13:45' ),
+		) ).toMatchSnapshot();
 	} );
 
 	it( 'should set the start time input', () => {
-		expect( reducer( DEFAULT_STATE, actions.setTicketStartTimeInput( 'block-id', '13:45' ) ) ).toMatchSnapshot();
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketStartTimeInput( 'block-id', '13:45' ),
+		) ).toMatchSnapshot();
 	} );
 
 	it( 'should set the end time input', () => {
-		expect( reducer( DEFAULT_STATE, actions.setTicketEndTimeInput( 'block-id', '13:45' ) ) ).toMatchSnapshot();
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketEndTimeInput( 'block-id', '13:45' ),
+		) ).toMatchSnapshot();
 	} );
 
 	it( 'should set the capacity type', () => {
-		expect( reducer( DEFAULT_STATE, actions.setTicketCapacityType( 'block-id', 'unlimited' ) ) ).toMatchSnapshot();
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketCapacityType( 'block-id', 'unlimited' ),
+		) ).toMatchSnapshot();
 	} );
 
 	it( 'should set the capacity', () => {
-		expect( reducer( DEFAULT_STATE, actions.setTicketCapacity( 'block-id', 20 ) ) ).toMatchSnapshot();
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketCapacity( 'block-id', 20 ),
+		) ).toMatchSnapshot();
 	} );
 } );

@@ -20,7 +20,9 @@ describe( 'Disabled Tickets', () => {
 	} );
 
 	it( 'renders the component with classes', () => {
-		const tree = renderer.create( <InactiveBlock layout={ LAYOUT.rsvp } className="custom-class" /> );
+		const tree = renderer.create(
+			<InactiveBlock layout={ LAYOUT.rsvp } className="custom-class" />,
+		);
 		expect( tree.toJSON() ).toMatchSnapshot();
 	} );
 
@@ -30,7 +32,9 @@ describe( 'Disabled Tickets', () => {
 	} );
 
 	it( 'renders the component with description', () => {
-		const tree = renderer.create( <InactiveBlock layout={ LAYOUT.rsvp } description="Custom Description" /> );
+		const tree = renderer.create(
+			<InactiveBlock layout={ LAYOUT.rsvp } description="Custom Description" />,
+		);
 		expect( tree.toJSON() ).toMatchSnapshot();
 	} );
 

@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { takeEvery, put, call, all } from 'redux-saga/effects';
+import { takeEvery, put, all } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 
 /**
@@ -37,8 +37,12 @@ describe( 'Attendees Block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				all( [
 					put( actions.setTitle( action.payload.get( 'title', DEFAULT_STATE.title ) ) ),
-					put( actions.setDisplayTitle( action.payload.get( 'displayTitle', DEFAULT_STATE.displayTitle ) ) ),
-					put( actions.setDisplaySubtitle( action.payload.get( 'displaySubtitle', DEFAULT_STATE.displaySubtitle ) ) ),
+					put( actions.setDisplayTitle(
+						action.payload.get( 'displayTitle', DEFAULT_STATE.displayTitle ),
+					) ),
+					put( actions.setDisplaySubtitle(
+						action.payload.get( 'displaySubtitle', DEFAULT_STATE.displaySubtitle ),
+					) ),
 				] ),
 			);
 			expect( gen.next().done ).toEqual( true );

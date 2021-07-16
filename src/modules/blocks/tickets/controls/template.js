@@ -3,7 +3,6 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { noop } from 'lodash';
 
 /**
  * Wordpress dependencies
@@ -18,12 +17,12 @@ import { InspectorControls } from '@wordpress/editor';
 import './style.pcss';
 
 const message = __(
-	'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell tickets for this event. ',
+	'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell tickets for this event. ', // eslint-disable-line max-len
 	'event-tickets',
 );
 
 const note = __(
-	'Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin.',
+	'Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin.', // eslint-disable-line max-len
 	'event-tickets',
 );
 
