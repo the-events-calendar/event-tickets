@@ -31,8 +31,9 @@
     "gettext-strings": "cross-env BABEL_ENV=gettext webpack",
     "preanalyze": "cross-env NODE_ENV=production webpack -p --profile --json > stats.json",
     "rebuild": "rm -rf node_modules && composer update && npm install && npm run build",
-    "lint": "eslint --quiet --parser=babel-eslint 'src/modules/**/*.js'",
-    "lint:fix": "npm run lint -- --fix",
+    "lint": "npm run lint:eslint",
+    "lint:eslint": "npm run lint:eslint:modules",
+    "lint:eslint:modules": "gulp eslint --filePath 'src/modules/**/*.js'",
     "test": "TZ=UTC jest --config jest.config.json",
     "zip": "node node_modules/@the-events-calendar/product-taskmaster/util/zip.js",
     "glotpress": "gulp glotpress"
