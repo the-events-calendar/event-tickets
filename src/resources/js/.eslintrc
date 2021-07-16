@@ -3,9 +3,18 @@
   "extends": [
     "../../../node_modules/@the-events-calendar/product-taskmaster/config/eslint.es5.js"
   ],
+  "env": {
+    "browser": true,
+    "es6": true,
+  },
+  "rules": {
+    "es5/no-block-scoping": 0
+  },
   "globals": {
+    "Give": true,
     "jQuery": true,
     "Qs": true,
-    "tribe": true
+    "tribe": true,
+    "TribeTicketsAdminManager": true
   }
 }

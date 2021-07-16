@@ -1,4 +1,3 @@
-/* global tribe */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -44,11 +43,11 @@ tribe.tickets.admin.commerceSettings = {};
 	obj.selectors = {
 		connectButton: '#js-give-paypal-on-boarding-handler',
 		connectButtonWrap: '.connect-button-wrap',
-		connectionSettingContainer: '#give-paypal-commerce-account-manager-field-wrap .connection-setting',
+		connectionSettingContainer: '#give-paypal-commerce-account-manager-field-wrap .connection-setting', // eslint-disable-line max-len
 		container: '#tribe-field-tickets-commerce-paypal-commerce-configure',
 		countrySelect: '#tickets-commerce-paypal-commerce-account-country-select',
 		errorMessageTemplate: '.paypal-message-template',
-		disconnectionSettingContainer: '#give-paypal-commerce-account-manager-field-wrap .disconnection-setting',
+		disconnectionSettingContainer: '#give-paypal-commerce-account-manager-field-wrap .disconnection-setting', // eslint-disable-line max-len
 		disconnectPayPalAccountButton: '#js-give-paypal-disconnect-paypal-account',
 		troubleNotice: '#give-paypal-onboarding-trouble-notice',
 	};
@@ -63,7 +62,8 @@ tribe.tickets.admin.commerceSettings = {};
 						return;
 					}
 
-					obj.paypalErrorQuickHelp[0] && obj.paypalErrorQuickHelp.removeClass( 'tribe-common-a11y-hidden' );
+					obj.paypalErrorQuickHelp[0] &&
+						obj.paypalErrorQuickHelp.removeClass( 'tribe-common-a11y-hidden' );
 				} );
 			} );
 		} );
@@ -84,7 +84,9 @@ tribe.tickets.admin.commerceSettings = {};
 				'Instruction text 1 here',
 				'Instruction text 2 here',
 			]
-			.map( instruction => `<li>${ instruction }</li>` )
+			.map( function( instruction ) {
+				return '<li>' + instruction + '</li>';
+			} )
 			.join( '' );
 
 		// @todo Replace this logic.
@@ -93,8 +95,18 @@ tribe.tickets.admin.commerceSettings = {};
 		// @todo Replace the i18n text here.
 		// @todo Replace class name.
 		const liveWarning = isLive ?
-			`<p class="give-modal__description__warning">Live warning text here</p>` :
+			'<p class="give-modal__description__warning">Live warning text here</p>' :
 			'';
+
+		// @todo Replace the i18n text here.
+		// @todo Replace class name.
+		const body = '<div class="give-modal__description">'
+			+ liveWarning
+			+ '<p>PCI Warning Text Here</p>'
+			+ '<ul>'
+			+ pciWarnings
+			+ '</ul>'
+			+ '</div>';
 
 		// @todo Replace this modal.
 		new Give.modal.GiveSuccessAlert( {
@@ -106,15 +118,7 @@ tribe.tickets.admin.commerceSettings = {};
 			modalContent: {
 				// @todo Replace the i18n text here.
 				title: 'Connect success title here',
-				// @todo Replace the i18n text here.
-				// @todo Replace class name.
-				body: `
-					<div class="give-modal__description">
-						${ liveWarning }
-						<p>PCI Warning Text Here</p>
-						<ul>${ pciWarnings }</ul>
-					</div>
-				`.trim(),
+				body: body.trim(),
 				// @todo Replace the i18n text here.
 				cancelBtnTitle: 'Confirm text here',
 			},
@@ -125,7 +129,7 @@ tribe.tickets.admin.commerceSettings = {};
 	obj.setupPartnerLink = function( partnerLink ) {
 		const payPalLink = document.querySelector( '[data-paypal-button]' );
 
-		payPalLink.href = `${ partnerLink }&displayMode=minibrowser`;
+		payPalLink.href = partnerLink + '&displayMode=minibrowser';
 		payPalLink.click();
 
 		// This object will check if a class added to body or not.
@@ -145,8 +149,10 @@ tribe.tickets.admin.commerceSettings = {};
 	 */
 	obj.requestPartnerUrl = function( countryCode ) {
 		// @todo Add AJAX handler for this.
-		fetch( ajaxurl + `?action=tribe_tickets_paypal_commerce_get_partner_url&countryCode=${ countryCode }` )
-			.then( response => response.json() )
+		fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_get_partner_url&countryCode=' + countryCode ) // eslint-disable-line max-len
+			.then( function( response ) {
+				return response.json();
+			} )
 			.then( function( res ) {
 				// Handle success.
 				if ( true === res.success ) {
@@ -159,7 +165,9 @@ tribe.tickets.admin.commerceSettings = {};
 				// Handle the error notice.
 				// @todo Add AJAX handler for this.
 				fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_onboarding_trouble_notice' )
-					.then( response => response.json() )
+					.then( function( response ) {
+						return response.json();
+					} )
 					.then( function( res ) {
 						if ( true !== res.success ) {
 							return;
@@ -187,11 +195,11 @@ tribe.tickets.admin.commerceSettings = {};
 	}
 
 	obj.buttonState = {
-		enable: () => {
+		enable: function() {
 			obj.onBoardingButton.attr( 'disabled', false );
 			obj.onBoardingButton.text( obj.onBoardingButton.data( 'initial-label' ) );
 		},
-		disable: () => {
+		disable: function() {
 			// Preserve initial label.
 			if ( ! obj.onBoardingButton.data( 'initial-label' ) ) {
 				obj.onBoardingButton.data( 'initial-label', obj.onBoardingButton.text().trim() );
