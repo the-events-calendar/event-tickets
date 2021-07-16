@@ -20,7 +20,8 @@ import { withStore } from '@moderntribe/common/hoc';
 const getHasRecurrenceRules = ( state ) => {
 	let hasRules = false;
 	try {
-		hasRules = window.tribe[ plugins.constants.EVENTS_PRO_PLUGIN ].data.blocks.recurring.selectors.hasRules( state );
+		hasRules = window.tribe[ plugins.constants.EVENTS_PRO_PLUGIN ]
+			.data.blocks.recurring.selectors.hasRules( state );
 	} catch ( e ) {
 		// ¯\_(ツ)_/¯
 	}
@@ -89,7 +90,6 @@ const onConfirmClick = ( state, dispatch ) => () => {
 const mapStateToProps = ( state ) => ( {
 	created: selectors.getRSVPCreated( state ),
 	hasRecurrenceRules: getHasRecurrenceRules( state ),
-	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
 	isCancelDisabled: selectors.getRSVPIsLoading( state ),
 	isConfirmDisabled: getIsConfirmDisabled( state ),
 	isLoading: selectors.getRSVPIsLoading( state ),

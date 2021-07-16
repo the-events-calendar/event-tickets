@@ -16,6 +16,7 @@
   "globals": {
     "wp": true,
     "jQuery": true,
+    "tribe": true,
     "jest": true,
     "expect": true,
     "test": true,

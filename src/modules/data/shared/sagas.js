@@ -101,6 +101,7 @@ export function createWPEditorNotSavingChannel() {
  * Create date objects used throughout sagas
  *
  * @export
+ * @yields
  * @param {string} date datetime string
  * @returns {object} Object of dates/moments
  */

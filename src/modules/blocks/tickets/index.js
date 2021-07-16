@@ -1,8 +1,12 @@
 /**
+ * External dependencies
+ */
+import React from 'react';
+
+/**
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-
 import { InnerBlocks } from '@wordpress/editor';
 
 /**

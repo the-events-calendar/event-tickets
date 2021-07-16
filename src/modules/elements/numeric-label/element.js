@@ -15,13 +15,14 @@ import classNames from 'classnames';
  *
  * Labels need to have a %d on it where the number will be replaced
  *
- * @param {string | Array | object} className The class of the element
- * @param {int} count The amount to be compared
- * @param {bool} includeZero If true, zero is included in count
- * @param {string} singular The label for the singular case
- * @param {string} plural The label for the plural case
- * @param {bool} useFallback If true, fallback is used.
- * @param {*} fallback The value to be returned if count is zero or negative
+ * @param {object} props The props passed to this component
+ * @param {string | Array | object} props.className The class of the element
+ * @param {number} props.count The amount to be compared
+ * @param {boolean} props.includeZero If true, zero is included in count
+ * @param {string} props.singular The label for the singular case
+ * @param {string} props.plural The label for the plural case
+ * @param {*} props.fallback The value to be returned if count is zero or negative
+ * @param {boolean} props.useFallback If true, fallback is used.
  * @returns {*} return fallback if count is zero or negative otherwise singular or plural
  */
 const NumericLabel = ( {

@@ -34,7 +34,7 @@ const LabeledNumberInput = ( {
 	className,
 	id,
 	label,
-	...props,
+	...props
 } ) => (
 	<LabeledItem
 		className={ classNames(

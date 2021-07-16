@@ -154,7 +154,7 @@ export default ( selectedAttributes = null ) => ( WrappedComponent ) => {
 			}
 	}
 
-	WithSaveData.displayName = `WithSaveData( ${ WrappedComponent.displayName || WrappedComponent.name || 'Component ' }`;
+	WithSaveData.displayName = `WithSaveData( ${ WrappedComponent.displayName || WrappedComponent.name || 'Component ' }`; // eslint-disable-line max-len
 
 	return WithSaveData;
 };

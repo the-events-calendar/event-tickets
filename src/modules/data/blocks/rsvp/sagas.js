@@ -39,6 +39,7 @@ import {
  * Set details for current RSVP
  *
  * @export
+ * @yields
  * @param {object} action redux action
  */
 export function* setRSVPDetails( action ) {
@@ -80,6 +81,7 @@ export function* setRSVPDetails( action ) {
  * Set details for current temp RSVP
  *
  * @export
+ * @yields
  * @param {object} action redux action
  */
 export function* setRSVPTempDetails( action ) {
@@ -126,6 +128,7 @@ export function* setRSVPTempDetails( action ) {
  *
  * @borrows TEC - Optional functionality requires TEC to be enabled and post type to be event
  * @export
+ * @yields
  */
 export function* initializeRSVP() {
 	const publishDate = yield call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'date' );
@@ -189,6 +192,7 @@ export function* initializeRSVP() {
  * @borrows TEC - Functionality requires TEC to be enabled
  * @param {string} prevStartDate Previous start date before latest set date time changes
  * @export
+ * @yields
  */
 export function* syncRSVPSaleEndWithEventStart( prevStartDate ) {
 	try {
@@ -253,6 +257,7 @@ export function* syncRSVPSaleEndWithEventStart( prevStartDate ) {
  * Avoids the user having to open up the RSVP block, and then click update again there, when changing the event start date.
  *
  * @export
+ * @yields
  */
 export function* saveRSVPWithPostSave() {
 	let saveChannel;
@@ -299,6 +304,7 @@ export function* saveRSVPWithPostSave() {
  *
  * @borrows TEC - Functionality requires TEC to be enabled and post type to be event
  * @export
+ * @yields
  */
 export function* handleEventStartDateChanges() {
 	try {
@@ -403,6 +409,7 @@ export function* handleRSVPEndTimeInput( action ) {
  * Handles proper RSVP deletion and RSVP block removal upon moving RSVP
  *
  * @export
+ * @yields
  */
 export function* handleRSVPMove() {
 	const rsvpId = yield select( selectors.getRSVPId );
@@ -619,6 +626,7 @@ export function* handler( action ) {
  * Temporary bandaid until datepickers allow blank state
  *
  * @export
+ * @yields
  */
 export function* setNonEventPostTypeEndDate() {
 	yield take( [ types.INITIALIZE_RSVP ] );

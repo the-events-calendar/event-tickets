@@ -611,10 +611,22 @@ export const _getTotalAvailable = ( tickets ) => tickets.reduce( ( total, ticket
 	return total + available;
 }, 0 );
 
-export const getIndependentTicketsCapacity = createSelector( getIndependentTickets, _getTotalCapacity );
-export const getIndependentTicketsTempCapacity = createSelector( getIndependentTickets, _getTotalTempCapacity );
-export const getIndependentTicketsSold = createSelector( getIndependentTickets, _getTotalSold );
-export const getIndependentTicketsAvailable = createSelector( getIndependentTickets, _getTotalAvailable );
+export const getIndependentTicketsCapacity = createSelector(
+	getIndependentTickets,
+	_getTotalCapacity,
+);
+export const getIndependentTicketsTempCapacity = createSelector(
+	getIndependentTickets,
+	_getTotalTempCapacity,
+);
+export const getIndependentTicketsSold = createSelector(
+	getIndependentTickets,
+	_getTotalSold,
+);
+export const getIndependentTicketsAvailable = createSelector(
+	getIndependentTickets,
+	_getTotalAvailable,
+);
 
 export const getSharedTicketsSold = createSelector( getSharedTickets, _getTotalSold );
 export const getSharedTicketsAvailable = createSelector(
