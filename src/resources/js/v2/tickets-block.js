@@ -1,16 +1,39 @@
-/* global tribe */
+/**
+ * Makes sure we have all the required levels on the Tribe Object
+ *
+ * @since 5.0.3
+ *
+ * @type {PlainObject}
+ */
 tribe.tickets = tribe.tickets || {};
 
+/**
+ * Configures RSVP Tooltip Object in the Global Tribe variable
+ *
+ * @since 5.0.3
+ *
+ * @type {PlainObject}
+ */
 tribe.tickets.block = {
 	num_attendees: 0,
 	event: {},
 };
 
+/**
+ * Initializes in a Strict env the code that manages the Tickets Block
+ *
+ * @since 5.0.3
+ *
+ * @param  {PlainObject} $   jQuery
+ * @param  {PlainObject} obj tribe.tickets.block
+ *
+ * @return {void}
+ */
 ( function( $, obj ) {
 	'use strict';
 	const $document = $( document );
 
-	/*
+	/**
 	 * Ticket Block Selectors.
 	 *
 	 * @since 5.0.3
@@ -40,7 +63,7 @@ tribe.tickets.block = {
 		hiddenElement: '.tribe-common-a11y-hidden',
 	};
 
-	/*
+	/**
 	 * Commerce Provider "lookup table".
 	 *
 	 * @since 5.0.3
@@ -121,8 +144,10 @@ tribe.tickets.block = {
 	 * @param {object} $form The form we're updating.
 	 */
 	obj.updateFooterCount = function( $form ) {
-		const $field = $form.find( obj.selectors.blockFooter + ' ' + obj.selectors.blockFooterQuantity );
-		const $quantities = $form.find( obj.selectors.item + ' ' + obj.selectors.itemQuantityInput );
+		const $field = $form
+			.find( obj.selectors.blockFooter + ' ' + obj.selectors.blockFooterQuantity );
+		const $quantities = $form
+			.find( obj.selectors.item + ' ' + obj.selectors.itemQuantityInput );
 		let footerCount = 0;
 
 		$quantities.each( function() {
@@ -312,7 +337,9 @@ tribe.tickets.block = {
 	obj.stepDown = function( $input, originalValue ) {
 		const min = $input.attr( 'min' ) ? Number( $input.attr( 'min' ) ) : 0;
 		const step = $input.attr( 'step' ) ? Number( $input.attr( 'step' ) ) : 1;
-		const decrease = ( min <= originalValue - step && 0 < originalValue - step ) ? originalValue - step : min;
+		const decrease = ( min <= originalValue - step && 0 < originalValue - step )
+			? originalValue - step
+			: min;
 
 		if ( 'function' === typeof $input[ 0 ].stepDown ) {
 			try {
@@ -376,7 +403,9 @@ tribe.tickets.block = {
 	obj.checkSharedCapacity = function( $form, qty ) {
 		let sharedCap = [];
 		let currentLoad = [];
-		const $sharedTickets = $form.find( obj.selectors.item ).filter( '[data-has-shared-cap="true"]' );
+		const $sharedTickets = $form
+			.find( obj.selectors.item )
+			.filter( '[data-has-shared-cap="true"]' );
 		const $sharedCapTickets = $sharedTickets.find( obj.selectors.itemQuantityInput );
 
 		if ( ! $sharedTickets.length ) {
@@ -438,7 +467,10 @@ tribe.tickets.block = {
 	obj.getPrice = function( $cartItem ) {
 		const $form = $cartItem.closest( 'form' );
 		const provider = obj.getTicketsBlockProvider( $form );
-		const price = tribe.tickets.utils.cleanNumber( $cartItem.find( obj.selectors.itemPrice ).first().text(), provider );
+		const price = tribe.tickets.utils.cleanNumber(
+			$cartItem.find( obj.selectors.itemPrice ).first().text(),
+			provider
+		);
 
 		return isNaN( price ) ? 0 : price;
 	};
@@ -495,7 +527,8 @@ tribe.tickets.block = {
 	 * @return {void}
 	 */
 	obj.unbindTicketsAddRemove = function( $container ) {
-		const $addRemove = $container.find( obj.selectors.itemQuantityAdd + ', ' + obj.selectors.itemQuantityRemove );
+		const $addRemove = $container
+			.find( obj.selectors.itemQuantityAdd + ', ' + obj.selectors.itemQuantityRemove );
 
 		$addRemove.off();
 	};
@@ -510,7 +543,8 @@ tribe.tickets.block = {
 	 * @return {void}
 	 */
 	obj.bindTicketsAddRemove = function( $container ) {
-		const $addRemove = $container.find( obj.selectors.itemQuantityAdd + ', ' + obj.selectors.itemQuantityRemove );
+		const $addRemove = $container
+			.find( obj.selectors.itemQuantityAdd + ', ' + obj.selectors.itemQuantityRemove );
 
 		$addRemove.unbind( 'click' ).on(
 			'click',
@@ -682,7 +716,9 @@ tribe.tickets.block = {
 	 * @return {void}
 	 */
 	obj.bindDescriptionToggle = function( $container ) {
-		const $descriptionToggleButtons = $container.find( obj.selectors.itemDescriptionButtonMore + ', ' + obj.selectors.itemDescriptionButtonLess );
+		const $descriptionToggleButtons = $container.find(
+			obj.selectors.itemDescriptionButtonMore + ', ' + obj.selectors.itemDescriptionButtonLess
+		);
 
 		// Add keyboard support for enter key.
 		$descriptionToggleButtons.on(
@@ -706,7 +742,9 @@ tribe.tickets.block = {
 	 * @return {void}
 	 */
 	obj.unbindDescriptionToggle = function( $container ) {
-		const $descriptionToggleButtons = $container.find( obj.selectors.itemDescriptionButtonMore + ', ' + obj.selectors.itemDescriptionButtonLess );
+		const $descriptionToggleButtons = $container.find(
+			obj.selectors.itemDescriptionButtonMore + ', ' + obj.selectors.itemDescriptionButtonLess
+		);
 
 		$descriptionToggleButtons.off();
 	};
@@ -721,7 +759,6 @@ tribe.tickets.block = {
 	 * @return {void}
 	 */
 	obj.ticketsSubmit = function( $form ) {
-		const $container = $form.closest( obj.selectors.container );
 		const postId = $form.data( 'post-id' );
 		const ticketProvider = $form.data( 'provider' );
 
@@ -832,4 +869,3 @@ tribe.tickets.block = {
 	// Configure on document ready.
 	$( obj.ready );
 } )( jQuery, tribe.tickets.block );
-/* eslint-enable max-len */

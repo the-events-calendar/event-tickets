@@ -15,6 +15,12 @@
     "jQuery": true,
     "Qs": true,
     "tribe": true,
-    "TribeTicketsAdminManager": true
+    "TribeCartEndpoint": true,
+    "TribeCurrency": true,
+    "TribeMessages": true,
+    "TribeRsvp": true,
+    "TribeTicketOptions": true,
+    "TribeTicketsAdminManager": true,
+    "TribeTicketsURLs": true,
   }
 }

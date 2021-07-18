@@ -1,4 +1,3 @@
-/* global tribe */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -29,7 +28,6 @@ tribe.tickets.loader = {};
  */
 ( function( $, obj ) {
 	'use strict';
-	const $document = $( document );
 
 	/**
 	 * Selectors used for configuration and setup.
