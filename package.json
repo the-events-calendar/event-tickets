@@ -36,7 +36,7 @@
     "lint:eslint:js": "gulp eslint --filePath 'src/resources/js/admin/**/*.js' --filePath 'src/resources/js/v2/**/*.js' --filePath 'src/resources/js/rsvp-block.js' --filePath 'src/resources/js/ticket-details.js' --filePath 'src/resources/js/tickets-block.js' --filePath 'src/resources/js/tickets-registration-page.js'",
     "lint:eslint:modules": "gulp eslint --filePath 'src/modules/**/*.js'",
     "lint:stylelint": "npm run lint:stylelint:pcss",
-    "lint:stylelint:pcss": "gulp stylelint --filePath 'src/resources/postcss/*.pcss' --filePath '!src/resources/postcss/rsvp-v1.pcss' --filePath '!src/resources/postcss/tickets-report-print.pcss' --filePath '!src/resources/postcss/tickets-report.pcss' --filePath '!src/resources/postcss/tickets-v1.pcss'",
+    "lint:stylelint:pcss": "gulp stylelint --filePath 'src/resources/postcss/**/*.pcss' --filePath '!src/resources/postcss/rsvp-v1.pcss' --filePath '!src/resources/postcss/tickets-report-print.pcss' --filePath '!src/resources/postcss/tickets-report.pcss' --filePath '!src/resources/postcss/tickets-v1.pcss'",
     "test": "TZ=UTC jest --config jest.config.json",
     "zip": "node node_modules/@the-events-calendar/product-taskmaster/util/zip.js",
     "glotpress": "gulp glotpress"

@@ -77,7 +77,7 @@
 
 /* Specific goal of this rule is to prevent the number input busting the ticket form layout under Twenty Fifteen */
 .tribe-theme-twentyfifteen .tribe-events-tickets input[type='number'] {
-	padding: .375em;
+	padding: 0.375em;
 	width: 100%;
 }
 
@@ -91,11 +91,11 @@
 
 	.tooltip {
 		background-color: #efefef;
-		border-radius: 3px;
 		border: 1px solid var(--border-light-color);
+		border-radius: 3px;
 		display: none;
-		margin-left: .5em;
-		padding: .5em;
+		margin-left: 0.5em;
+		padding: 0.5em;
 		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);
@@ -128,9 +128,8 @@
 	margin-top: 12px;
 }
 
-
 .tribe-tickets-editor-blocker {
-	background: rgba(255, 255, 255, .7);
+	background: rgba(255, 255, 255, 0.7);
 	bottom: 0;
 	display: none;
 	left: 0;
@@ -154,12 +153,13 @@
 }
 
 #event_tickets {
+	font-size: 12px;
 	position: relative;
 
 	fieldset {
 		border: 0;
+		margin: 0 0 1em;
 		padding: 0;
-		margin: 0 0 1em 0;
 	}
 
 	.ticket_form_left {
@@ -193,9 +193,9 @@
 	}
 
 	.tribe-description-small {
+		color: #888;
 		font-size: 0.95em;
 		margin-top: 5px;
-		color: #888;
 	}
 }
 
@@ -205,8 +205,8 @@
 	border-radius: 5px;
 	box-sizing: border-box;
 	opacity: 1;
-	position: relative;
 	padding: 8px;
+	position: relative;
 	visibility: visible;
 	width: 100%;
 	will-change: transform;
@@ -226,12 +226,12 @@
 	}
 
 	#tribe-tickets-image {
-		margin-top: .5em;
+		margin-top: 0.5em;
 	}
 
 	&.panel_base {
 		border: 0;
-		padding: .5em 0 0;
+		padding: 0.5em 0 0;
 	}
 
 	&.panel_edit {
@@ -302,10 +302,11 @@
 }
 
 .tribe-button-icon {
-	&::before {
-		font-family: 'dashicons';
+
+	&:before {
+		font-family: 'dashicons'; /* stylelint-disable-line font-family-no-missing-generic-family-keyword */
 		font-size: 1.25em;
-		left: -.25em;
+		left: -0.25em;
 		position: relative;
 		vertical-align: middle;
 	}
@@ -314,15 +315,15 @@
 		display: none;
 	}
 
-	&.tribe-button-icon-plus::before {
+	&.tribe-button-icon-plus:before {
 		content: '\f132';
 	}
 
-	&.tribe-button-icon-edit::before {
+	&.tribe-button-icon-edit:before {
 		content: '\f464';
 	}
 
-	&.tribe-button-icon-settings::before {
+	&.tribe-button-icon-settings:before {
 		content: '\f111';
 		top: -2px;
 	}
@@ -351,7 +352,7 @@
 	}
 
 	.filename {
-		margin-left: .5em;
+		margin-left: 0.5em;
 	}
 }
 
@@ -365,21 +366,22 @@
 	}
 
 	#ticket_form_total_capacity {
-		position: relative;
 		display: inline-block;
 		line-height: 28px;
+		position: relative;
 
-		@media screen and ( max-width: 520px ) {
+		@media screen and (max-width: 520px) {
 			width: 100%;
 		}
 
 		@mixin tribe-ticket-tooltip;
+
 		.tooltip {
 			left: 100%;
 			top: 53%;
 			white-space: nowrap;
 
-			@media screen and ( max-width: 782px ) {
+			@media screen and (max-width: 782px) {
 				left: auto;
 				margin-top: 5px;
 				position: relative;
@@ -398,23 +400,23 @@
 	position: relative;
 
 	.ticket_form_left {
-		display: block;
 		box-sizing: border-box;
+		display: block;
 		float: left;
 		margin: 0;
 		padding-left: 0;
 		padding-right: 1em;
 
-		@media screen and ( max-width: 782px ) {
-			float: none;
+		@media screen and (max-width: 782px) {
 			display: inline-block;
+			float: none;
 			padding: 0 0 6px;
 		}
 	}
 
 	input,
 	textarea {
-		max-width: calc( 100% - 132px );
+		max-width: calc(100% - 132px);
 	}
 
 	.ticket_field {
@@ -448,9 +450,9 @@
 	}
 
 	.tribe_stock_block {
-		padding-left: calc(20px + .4em);
+		padding-left: calc(20px + 0.4em);
 
-		@media screen and ( max-width: 782px ) {
+		@media screen and (max-width: 782px) {
 			padding-left: 36px;
 		}
 	}
@@ -459,10 +461,9 @@
 	.tribe_stock_block.tribe-active {
 		padding-top: 1em;
 
-		@media screen and ( max-width: 782px ) {
+		@media screen and (max-width: 782px) {
 			padding-top: 5px;
 		}
-
 	}
 
 	label.ticket_form_right {
@@ -494,11 +495,7 @@
 	@mixin screen-reader-text;
 }
 
-/* Adjust font size for entire form */
-#event_tickets {
-	font-size: 12px;
-}
-
+/* Adjust font size for form title */
 h4.ticket_form_title {
 	font-size: 1.2em;
 	margin-top: 0;
@@ -507,7 +504,7 @@ h4.ticket_form_title {
 /* Ensure radios and checkboxes have some space to the right of them when inside a label */
 #ticket_form input[type=radio],
 #ticket_form input[type=checkbox] {
-	margin-right: .4em;
+	margin-right: 0.4em;
 }
 
 .tribe_soft_note,
@@ -570,7 +567,7 @@ p.description {
 	display: inline;
 	vertical-align: middle;
 
-	@media screen and ( max-width: 390px ) {
+	@media screen and (max-width: 390px) {
 		display: none;
 	}
 
@@ -580,7 +577,7 @@ p.description {
 		margin: 0;
 		width: 200px;
 
-		@media screen and ( max-width: 782px ) {
+		@media screen and (max-width: 782px) {
 			left: auto;
 			margin-top: 5px;
 			position: relative;
@@ -615,16 +612,17 @@ p.description {
 }
 
 .ticket-editor-notice {
-	padding: 10px;
-	margin-bottom: 10px;
-	font-size: 13px;
 	border-radius: 4px;
 	display: flex;
+	font-size: 13px;
+	margin-bottom: 10px;
+	padding: 10px;
 
 	&.info {
-		background-color: #EDF6FC;
+		background-color: #eff6fc;
+
 		.dashicons {
-			color: #2A709D;
+			color: #2a709d;
 		}
 	}
 
@@ -638,9 +636,9 @@ p.description {
 
 	.dashicons {
 		font-size: 20px;
-		width: 20px;
 		height: 20px;
 		margin-right: 2px;
+		width: 20px;
 	}
 }
 

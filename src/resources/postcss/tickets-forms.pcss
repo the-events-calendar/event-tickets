@@ -4,19 +4,20 @@
  * @since 5.0.0
  */
 
- @import "utilities/_all.pcss";
+@import "utilities/_all.pcss";
 
 .event-tickets .tribe-tickets__form {
 
 	.tribe-tickets__form-field {
 		display: block;
-		width: 100%;
 		padding-bottom: var(--spacer-2);
+		width: 100%;
 	}
 
 	.tribe-tickets__form-field--required {
-		header:first-child::after,
-		label:first-child::after {
+
+		header:first-child:after,
+		label:first-child:after {
 			content: '';
 		}
 	}
@@ -55,7 +56,7 @@
 		color: var(--color-icon-error);
 	}
 
-	@media(--viewport-medium) {
+	@media (--viewport-medium) {
 		.tribe-tickets__form-field-input-text,
 		.tribe-tickets__form-field-input-select {
 			label:not([for*="text-area"]) {
@@ -68,8 +69,8 @@
 	.tribe-common-form-control-checkbox__input {
 		border-color: var(--color-border-default);
 		border-width: 1px;
-		margin-right: var(--spacer-1);
 		box-shadow: none;
+		margin-right: var(--spacer-1);
 
 		&:hover,
 		&:focus {
@@ -124,7 +125,7 @@
 			box-shadow: none;
 		}
 
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			max-width: 600px;
 		}
 	}
@@ -166,7 +167,7 @@
 	input[type="email"],
 	input[type="password"] {
 
-		&::placeholder {
+		&:placeholder {
 			color: var(--color-text-secondary);
 			font-family: var(--font-family-base);
 		}
@@ -209,27 +210,27 @@
 	/* Date of birth field */
 	.tribe-tickets__form-field--birth {
 		select {
+			display: inline-block;
+			margin: 0 0 var(--spacer-1) 0;
 			min-width: 80px;
 			width: 100%;
-			margin: 0 0 var(--spacer-1) 0;
-			display: inline-block;
 
 			@media (--viewport-medium) {
-				width: calc( ( 100% / 3 ) - var(--spacer-1) - 4px ); /* 4px = safety margin */
 				margin-right: var(--spacer-1);
+				width: calc((100% / 3) - var(--spacer-1) - 4px); /* 4px = safety margin */
 			}
 		}
 	}
 
 	.tribe-tickets__button--next {
 		align-items: center;
-		border: 1px solid var(--color-border-secondary);
 		background-color: var(--color-accent-primary);
+		border: 1px solid var(--color-border-secondary);
 		color: var(--color-background);
 		display: inline-flex;
 		justify-content: center;
-		min-height: 54px;
 		max-width: 100%;
+		min-height: 54px;
 
 		&:hover {
 			color: var(--color-background);
@@ -237,14 +238,14 @@
 	}
 
 	.tribe-tickets__form-message {
-		display: flex;
 		align-items: flex-start;
 		background-color: var(--color-accent-primary-background);
 		border-radius: var(--border-radius-default);
-		padding: var(--spacer-4) var(--spacer-3);
+		display: flex;
 		margin-bottom: var(--spacer-4);
+		padding: var(--spacer-4) var(--spacer-3);
 
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			padding: var(--spacer-3);
 		}
 	}
@@ -262,13 +263,12 @@
 		}
 
 		circle#dot {
-			stroke: transparent;
 			fill: var(--color-icon-active);
+			stroke: transparent;
 		}
 
 		path {
 			stroke: var(--color-icon-active);
 		}
 	}
-
 }
