@@ -6,7 +6,6 @@
 
 .event-tickets,
 .entry .entry-content .event-tickets {
-
 	/*
 		Block details/summary and controls
 	*/
@@ -20,24 +19,22 @@
 		line-height: 1;
 		margin: var(--spacer-0) 0;
 
-		&.tribe__details--open {
-			display: block;
-		}
-	}
-
-	.tribe-tickets__tickets-item-details-content {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			display: block;
 			-ms-grid-column: 1;
 			grid-column: 1;
 			-ms-grid-row: 2;
 			grid-row: 2;
 		}
+
+		&.tribe__details--open {
+			display: block;
+		}
 	}
 
 	.tribe-tickets__tickets-item-details-summary {
 		color: var(--color-text-secondary);
-		display: -ms-grid;
+		display: -ms-grid; /* stylelint-disable-line value-no-vendor-prefix */
 		display: grid;
 		-ms-grid-column: 2;
 		grid-column: 2;
@@ -47,7 +44,7 @@
 		padding-left: var(--spacer-0);
 
 		.tribe-tickets__tickets-form & {
-			@media(--viewport-medium) {
+			@media (--viewport-medium) {
 				@mixin hidden;
 			}
 		}

@@ -6,17 +6,16 @@
 
 .event-tickets,
 .entry .entry-content .event-tickets {
-
 	/*
 		Block footer
 	*/
 	.tribe-tickets__tickets-footer {
 		align-items: baseline;
 		border-top: 1px solid var(--color-border-secondary);
-		padding: var(--spacer-4) 0 0;
 		display: flex;
 		flex-flow: row nowrap;
 		justify-content: flex-end;
+		padding: var(--spacer-4) 0 0;
 	}
 
 	.tribe-tickets__tickets-footer-total,
@@ -36,7 +35,7 @@
 	.tribe-tickets__tickets-footer-total {
 		margin-left: var(--spacer-1);
 
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			margin-left: var(--spacer-5);
 		}
 	}
@@ -51,21 +50,19 @@
 	.tribe-tickets__attendee__fields__footer_checkout-button,
 	.tribe-tickets__tickets-buy {
 		@mixin button-solid;
+
 		margin: 0;
 		padding: 11px 14px;
 
 		&.tribe-common-c-btn {
-			white-space: nowrap;
 			margin-left: auto;
+			white-space: nowrap;
 
-			@media(min-width: 400px max-width: 500px) {
-			}
-
-			@media(--viewport-xsmall) {
+			@media (--viewport-xsmall) {
 				margin-left: var(--spacer-3);
 			}
 
-			@media(--viewport-medium) {
+			@media (--viewport-medium) {
 				margin-left: var(--spacer-6);
 			}
 
