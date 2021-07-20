@@ -5,7 +5,7 @@
   ],
   "env": {
     "browser": true,
-    "es6": true,
+    "es6": true
   },
   "rules": {
     "es5/no-block-scoping": 0
@@ -21,6 +21,6 @@
     "TribeRsvp": true,
     "TribeTicketOptions": true,
     "TribeTicketsAdminManager": true,
-    "TribeTicketsURLs": true,
+    "TribeTicketsURLs": true
   }
 }
