@@ -185,7 +185,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.1.6] 2021-07-07 =
 
-
 * Tweak - Added support for HTML in Ticket description field. [ET-1135]
 * Tweak - Added `$ticket_id` parameter to the `tribe_events_tickets_metabox_edit_ajax_advanced` filter. [ETP-111]
 * Tweak - Update the plugin screenshots on the WordPress.org page. [ET-1143]
