@@ -180,7 +180,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.2.1] TBD =
 
-* Tweak - Removed the edit column when printing the Attendees list. [ETP-ETP-702]
+* Tweak - Removed the edit column when printing the Attendees list. [ETP-702]
 
 =======
 * Language -
