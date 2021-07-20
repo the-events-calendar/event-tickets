@@ -11,6 +11,7 @@
     "es5/no-block-scoping": 0
   },
   "globals": {
+    "ajaxurl": true,
     "Give": true,
     "jQuery": true,
     "Qs": true,
