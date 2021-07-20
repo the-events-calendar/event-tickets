@@ -82,6 +82,10 @@ class Order extends Tribe__Repository {
 		] );
 
 		$this->init_order_statuses();
+
+		$this->schema = [
+			'order_status' => [ $this, 'filter_by_order_status' ],
+		];
 	}
 
 	/**
@@ -136,6 +140,52 @@ class Order extends Tribe__Repository {
 		 * @param array $private_order_statuses List of private order statuses.
 		 */
 		self::$private_order_statuses = apply_filters( 'tribe_tickets_repositories_order_private_statuses', $private_order_statuses );
+	}
+
+	/**
+	 * Filters attendee to only get those related to orders with a specific status.
+	 *
+	 * @since 5.1.6
+	 *
+	 * @param string|array $order_status Order status.
+	 *
+	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
+	 */
+	public function filter_by_order_status( $order_status ) {
+		$statuses = Arr::list_to_array( $order_status );
+
+		$has_manage_access = current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
+
+		// Map the `any` meta-status.
+		if ( 1 === count( $statuses ) && 'any' === $statuses[0] ) {
+			if ( ! $has_manage_access ) {
+				$statuses = [ 'public' ];
+			} else {
+				// No need to filter if the user can read all posts.
+				return;
+			}
+		}
+
+		// Allow the user to define singular statuses or the meta-status "public".
+		if ( in_array( 'public', $statuses, true ) ) {
+			$statuses = array_unique( array_merge( $statuses, self::$public_order_statuses ) );
+		}
+
+		// Allow the user to define singular statuses or the meta-status "private".
+		if ( in_array( 'private', $statuses, true ) ) {
+			$statuses = array_unique( array_merge( $statuses, self::$private_order_statuses ) );
+		}
+
+		// Remove any status the user cannot access.
+		if ( ! $has_manage_access ) {
+			$statuses = array_intersect( $statuses, self::$public_order_statuses );
+		}
+
+		if ( empty( $statuses ) ) {
+			throw Void_Query_Exception::because_the_query_would_yield_no_results( 'The user cannot access the requested attendee order statuses.' );
+		}
+
+		$this->by( 'post_status', $statuses );
 	}
 
 	/**

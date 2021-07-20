@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.1.6';
+	const VERSION = '5.2.1';
 
 	/**
 	 * Used to store the version history.
@@ -344,6 +344,9 @@ class Tribe__Tickets__Main {
 	 */
 	public function bind_implementations() {
 		tribe_singleton( 'tickets.main', $this );
+
+		// Tickets Commerce providers.
+		tribe_register_provider( TEC\Tickets\Provider::class );
 
 		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
 		tribe_singleton( 'tickets.commerce.cart', 'Tribe__Tickets__Commerce__Cart' );
