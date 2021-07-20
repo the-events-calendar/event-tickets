@@ -2,18 +2,18 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\MerchantDetail;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\PayPalClient;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Traits\HasMode;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\Merchant_Detail;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\PayPal_Client;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Traits\Has_Mode;
 
 /**
  * Class MerchantDetails
  *
  * @since 5.1.6
  */
-class MerchantDetails {
+class Merchant_Details {
 
-	use HasMode;
+	use Has_Mode;
 
 	/**
 	 * Handle initial setup for the object singleton.
@@ -21,7 +21,7 @@ class MerchantDetails {
 	 * @since 5.1.6
 	 */
 	public function init() {
-		$this->setMode( tribe_tickets_commerce_is_test_mode() ? 'sandbox' : 'live' );
+		$this->set_mode( tribe_tickets_commerce_is_test_mode() ? 'sandbox' : 'live' );
 	}
 
 	/**
@@ -31,11 +31,11 @@ class MerchantDetails {
 	 *
 	 * @return bool
 	 */
-	public function accountIsConnected() {
-		/* @var $merchantDetail MerchantDetail */
-		$merchantDetail = tribe( MerchantDetail::class );
+	public function account_is_connected() {
+		/* @var $merchant_detail Merchant_Detail */
+		$merchant_detail = tribe( Merchant_Detail::class );
 
-		return (bool) $merchantDetail->merchantIdInPayPal;
+		return (bool) $merchant_detail->merchant_id_in_paypal;
 	}
 
 	/**
@@ -45,8 +45,8 @@ class MerchantDetails {
 	 *
 	 * @return array
 	 */
-	public function getDetailsData() {
-		return (array) get_option( $this->getAccountKey(), [] );
+	public function get_details_data() {
+		return (array) get_option( $this->get_account_key(), [] );
 	}
 
 	/**
@@ -54,10 +54,10 @@ class MerchantDetails {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @return MerchantDetail
+	 * @return Merchant_Detail
 	 */
-	public function getDetails() {
-		return MerchantDetail::fromArray( $this->getDetailsData() );
+	public function get_details() {
+		return Merchant_Detail::from_array( $this->get_details_data() );
 	}
 
 	/**
@@ -65,12 +65,12 @@ class MerchantDetails {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param MerchantDetail $merchantDetails
+	 * @param Merchant_Detail $merchant_details
 	 *
 	 * @return bool
 	 */
-	public function save( MerchantDetail $merchantDetails ) {
-		return update_option( $this->getAccountKey(), $merchantDetails->toArray() );
+	public function save( Merchant_Detail $merchant_details ) {
+		return update_option( $this->get_account_key(), $merchant_details->to_array() );
 	}
 
 	/**
@@ -81,7 +81,7 @@ class MerchantDetails {
 	 * @return bool
 	 */
 	public function delete() {
-		return delete_option( $this->getAccountKey() );
+		return delete_option( $this->get_account_key() );
 	}
 
 	/**
@@ -91,8 +91,8 @@ class MerchantDetails {
 	 *
 	 * @return string[]|null
 	 */
-	public function getAccountErrors() {
-		return get_option( $this->getAccountErrorsKey(), null );
+	public function get_account_errors() {
+		return get_option( $this->get_account_errors_key(), null );
 	}
 
 	/**
@@ -104,8 +104,8 @@ class MerchantDetails {
 	 *
 	 * @return bool
 	 */
-	public function saveAccountErrors( $errorMessage ) {
-		return update_option( $this->getAccountErrorsKey(), $errorMessage );
+	public function save_account_errors( $errorMessage ) {
+		return update_option( $this->get_account_errors_key(), $errorMessage );
 	}
 
 	/**
@@ -115,8 +115,8 @@ class MerchantDetails {
 	 *
 	 * @return bool
 	 */
-	public function deleteAccountErrors() {
-		return delete_option( $this->getAccountErrorsKey() );
+	public function delete_account_errors() {
+		return delete_option( $this->get_account_errors_key() );
 	}
 
 	/**
@@ -126,8 +126,8 @@ class MerchantDetails {
 	 *
 	 * @return bool
 	 */
-	public function deleteClientToken() {
-		return delete_transient( $this->getClientTokenKey() );
+	public function delete_client_token() {
+		return delete_transient( $this->get_client_token_key() );
 	}
 
 	/**
@@ -137,24 +137,24 @@ class MerchantDetails {
 	 *
 	 * @return string
 	 */
-	public function getClientToken() {
-		$optionName = $this->getClientTokenKey();
+	public function get_client_token() {
+		$option_name = $this->get_client_token_key();
 
-		if ( $optionValue = get_transient( $optionName ) ) {
-			return $optionValue;
+		if ( $option_value = get_transient( $option_name ) ) {
+			return $option_value;
 		}
 
-		/** @var MerchantDetail $merchant */
-		$merchant = tribe( MerchantDetail::class );
+		/** @var Merchant_Detail $merchant */
+		$merchant = tribe( Merchant_Detail::class );
 
 		$response = wp_remote_retrieve_body(
 			wp_remote_post(
-				tribe( PayPalClient::class )->getApiUrl( 'v1/identity/generate-token' ),
+				tribe( PayPal_Client::class )->get_api_url( 'v1/identity/generate-token' ),
 				[
 					'headers' => [
 						'Accept'          => 'application/json',
 						'Accept-Language' => 'en_US',
-						'Authorization'   => sprintf( 'Bearer %1$s', $merchant->accessToken ),
+						'Authorization'   => sprintf( 'Bearer %1$s', $merchant->access_token ),
 						'Content-Type'    => 'application/json',
 					],
 				]
@@ -173,7 +173,7 @@ class MerchantDetails {
 		}
 
 		// Expire token before one minute to prevent unnecessary race condition.
-		set_transient( $optionName, $response['client_token'], $response['expires_in'] - 60 );
+		set_transient( $option_name, $response['client_token'], $response['expires_in'] - 60 );
 
 		return $response['clientToken'];
 	}
@@ -185,7 +185,7 @@ class MerchantDetails {
 	 *
 	 * @return string
 	 */
-	public function getAccountKey() {
+	public function get_account_key() {
 		return "tribe_tickets_paypal_commerce_{$this->mode}_account";
 	}
 
@@ -196,7 +196,7 @@ class MerchantDetails {
 	 *
 	 * @return string
 	 */
-	private function getAccountErrorsKey() {
+	private function get_account_errors_key() {
 		return "tribe_tickets_paypal_commerce_{$this->mode}_account_errors";
 	}
 
@@ -207,7 +207,7 @@ class MerchantDetails {
 	 *
 	 * @return string
 	 */
-	private function getClientTokenKey() {
+	private function get_client_token_key() {
 		return "tribe_tickets_paypal_commerce_{$this->mode}_client_token";
 	}
 }

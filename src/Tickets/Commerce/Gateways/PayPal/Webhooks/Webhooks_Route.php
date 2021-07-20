@@ -4,17 +4,17 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 
 use Exception;
 use TEC\Tickets\Commerce\Gateways\PayPal\REST;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Merchant_Details;
 use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Webhooks;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\DataTransferObjects\PayPalWebhookHeaders;
-use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\WebhookRegister;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Webhooks\Headers;
+use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhook_Register;
 use Tribe\Tickets\REST\V1\Endpoints\Commerce\PayPal_Webhook;
 
-class WebhooksRoute {
+class Webhooks_Route {
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var MerchantDetails
+	 * @var Merchant_Details
 	 */
 	private $merchantRepository;
 
@@ -28,7 +28,7 @@ class WebhooksRoute {
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var WebhookRegister
+	 * @var Webhook_Register
 	 */
 	private $webhookRegister;
 
@@ -37,11 +37,11 @@ class WebhooksRoute {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param MerchantDetails $merchantRepository
-	 * @param WebhookRegister $register
-	 * @param Webhooks        $webhookRepository
+	 * @param Merchant_Details $merchantRepository
+	 * @param Webhook_Register $register
+	 * @param Webhooks         $webhookRepository
 	 */
-	public function __construct( MerchantDetails $merchantRepository, WebhookRegister $register, Webhooks $webhookRepository ) {
+	public function __construct( Merchant_Details $merchantRepository, Webhook_Register $register, Webhooks $webhookRepository ) {
 		$this->merchantRepository = $merchantRepository;
 		$this->webhookRegister    = $register;
 		$this->webhookRepository  = $webhookRepository;
@@ -54,7 +54,7 @@ class WebhooksRoute {
 	 *
 	 * @return string The REST API route URL.
 	 */
-	public function getRouteUrl() {
+	public function get_route_url() {
 		/** @var REST $rest */
 		$rest = tribe( REST::class );
 
@@ -78,11 +78,11 @@ class WebhooksRoute {
 	 * @throws Exception
 	 */
 	public function handle( $event, $headers = [] ) {
-		if ( ! $this->merchantRepository->accountIsConnected() ) {
+		if ( ! $this->merchantRepository->account_is_connected() ) {
 			return false;
 		}
 
-		$merchantDetails = $this->merchantRepository->getDetails();
+		$merchantDetails = $this->merchantRepository->get_details();
 
 		// Try to decode the event.
 		if ( ! is_object( $event ) ) {
@@ -117,9 +117,9 @@ class WebhooksRoute {
 			'tickets-commerce-paypal-commerce'
 		);
 
-		$payPalHeaders = PayPalWebhookHeaders::fromHeaders( $headers );
+		$payPalHeaders = Headers::from_headers( $headers );
 
-		if ( ! $this->webhookRepository->verifyEventSignature( $merchantDetails->accessToken, $event, $payPalHeaders ) ) {
+		if ( ! $this->webhookRepository->verify_event_signature( $merchantDetails->access_token, $event, $payPalHeaders ) ) {
 			tribe( 'logger' )->log_error( __( 'Failed PayPal webhook event verification', 'event-tickets' ), 'tickets-commerce-paypal-commerce' );
 
 			throw new Exception( 'Failed event verification' );
@@ -128,7 +128,7 @@ class WebhooksRoute {
 		try {
 			return $this->webhookRegister
 				->getEventHandler( $event->event_type )
-				->processEvent( $event );
+				->process_event( $event );
 		} catch ( Exception $exception ) {
 			$eventType = empty( $event->event_type ) ? 'Unknown' : $event->event_type;
 

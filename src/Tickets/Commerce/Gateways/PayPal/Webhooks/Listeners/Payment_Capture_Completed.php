@@ -9,7 +9,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners;
  * @package TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners
  *
  */
-class PaymentCaptureCompleted extends PaymentEventListener {
+class Payment_Capture_Completed extends Payment_Event_Listener {
 	/**
 	 * The new status to set with successful event.
 	 *

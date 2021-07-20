@@ -2,11 +2,11 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\MerchantDetail;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\PayPalAuth;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\PayPalOrder;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\RefreshToken;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\Merchant_Detail;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\PayPal_Auth;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\PayPal_Order;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Refresh_Token;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Merchant_Details;
 use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Webhooks;
 
 // @todo Bring this over.
@@ -18,42 +18,42 @@ use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Webhooks;
  *
  * @since 5.1.6
  */
-class AjaxRequestHandler {
+class Ajax_Request_Handler {
 
 	/**
 	 * @since 5.1.6
 	 *
 	 * @var Webhooks
 	 */
-	private $webhooksRepository;
+	private $webhooks_repository;
 
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var MerchantDetail
+	 * @var Merchant_Detail
 	 */
-	private $merchantDetails;
+	private $merchant_details;
 
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var PayPalAuth
+	 * @var PayPal_Auth
 	 */
-	private $payPalAuth;
+	private $pay_pal_auth;
 
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var MerchantDetails
+	 * @var Merchant_Details
 	 */
-	private $merchantRepository;
+	private $merchant_repository;
 
 	/**
 	 * @since 5.1.6
 	 *
 	 * @var Connect_Client
 	 */
-	private $refreshToken;
+	private $refresh_token;
 
 	/**
 	 * @since 5.1.6
@@ -67,27 +67,27 @@ class AjaxRequestHandler {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param Webhooks        $webhooksRepository
-	 * @param MerchantDetail  $merchantDetails
-	 * @param MerchantDetails $merchantRepository
-	 * @param RefreshToken    $refreshToken
-	 * @param Settings        $settings
-	 * @param PayPalAuth      $payPalAuth
+	 * @param Webhooks         $webhooks_repository
+	 * @param Merchant_Detail  $merchant_details
+	 * @param Merchant_Details $merchant_repository
+	 * @param Refresh_Token    $refresh_token
+	 * @param Settings         $settings
+	 * @param PayPal_Auth      $pay_pal_auth
 	 */
 	public function __construct(
-		Webhooks $webhooksRepository,
-		MerchantDetail $merchantDetails,
-		MerchantDetails $merchantRepository,
-		RefreshToken $refreshToken,
+		Webhooks $webhooks_repository,
+		Merchant_Detail $merchant_details,
+		Merchant_Details $merchant_repository,
+		Refresh_Token $refresh_token,
 		Settings $settings,
-		PayPalAuth $payPalAuth
+		PayPal_Auth $pay_pal_auth
 	) {
-		$this->webhooksRepository = $webhooksRepository;
-		$this->merchantDetails    = $merchantDetails;
-		$this->merchantRepository = $merchantRepository;
-		$this->refreshToken       = $refreshToken;
-		$this->settings           = $settings;
-		$this->payPalAuth         = $payPalAuth;
+		$this->webhooks_repository = $webhooks_repository;
+		$this->merchant_details    = $merchant_details;
+		$this->merchant_repository = $merchant_repository;
+		$this->refresh_token       = $refresh_token;
+		$this->settings            = $settings;
+		$this->pay_pal_auth        = $pay_pal_auth;
 	}
 
 	/**
@@ -95,12 +95,12 @@ class AjaxRequestHandler {
 	 *
 	 * @since 5.1.6
 	 */
-	public function onBoardedUserAjaxRequestHandler() {
-		$this->validateAdminRequest();
+	public function on_boarded_user_ajax_request_handler() {
+		$this->validate_admin_request();
 
 		$partnerLinkInfo = $this->settings->get_partner_link_details();
 
-		$payPalResponse = $this->payPalAuth->getTokenFromAuthorizationCode(
+		$payPalResponse = $this->pay_pal_auth->get_token_from_authorization_code(
 			tribe_get_request_var( 'sharedId' ),
 			tribe_get_request_var( 'authCode' ),
 			$partnerLinkInfo['nonce']
@@ -112,7 +112,7 @@ class AjaxRequestHandler {
 
 		$this->settings->update_access_token( $payPalResponse );
 
-		tribe( RefreshToken::class )->registerCronJobToRefreshToken( $payPalResponse['expires_in'] );
+		tribe( Refresh_Token::class )->register_cron_job_to_refresh_token( $payPalResponse['expires_in'] );
 
 		wp_send_json_success( __( 'PayPal account onboarded', 'event-tickets' ) );
 	}
@@ -122,8 +122,8 @@ class AjaxRequestHandler {
 	 *
 	 * @since 5.1.6
 	 */
-	public function onGetPartnerUrlAjaxRequestHandler() {
-		$this->validateAdminRequest();
+	public function on_get_partner_url_ajax_request_handler() {
+		$this->validate_admin_request();
 
 		$country_code = tribe_get_request_var( 'countryCode' );
 
@@ -149,7 +149,7 @@ class AjaxRequestHandler {
 		// @todo They ultimately need to get here.
 		// . '#tribe-field-tickets-commerce-paypal-commerce';
 
-		$partner_link_details = $this->payPalAuth->getSellerPartnerLink(
+		$partner_link_details = $this->pay_pal_auth->get_seller_partner_link(
 			// @todo Replace this URL.
 			$settings_url,
 			$country_code
@@ -170,19 +170,19 @@ class AjaxRequestHandler {
 	 *
 	 * @since 5.1.6
 	 */
-	public function removePayPalAccount() {
-		$this->validateAdminRequest();
+	public function remove_pay_pal_account() {
+		$this->validate_admin_request();
 
 		// Remove the webhook from PayPal if there is one
-		if ( $webhookConfig = $this->webhooksRepository->getWebhookConfig() ) {
-			$this->webhooksRepository->deleteWebhook( $this->merchantDetails->accessToken, $webhookConfig->id );
-			$this->webhooksRepository->deleteWebhookConfig();
+		if ( $webhookConfig = $this->webhooks_repository->get_webhook_config() ) {
+			$this->webhooks_repository->delete_webhook( $this->merchant_details->access_token, $webhookConfig->id );
+			$this->webhooks_repository->delete_webhook_config();
 		}
 
-		$this->merchantRepository->delete();
-		$this->merchantRepository->deleteAccountErrors();
-		$this->merchantRepository->deleteClientToken();
-		$this->refreshToken->deleteRefreshTokenCronJob();
+		$this->merchant_repository->delete();
+		$this->merchant_repository->delete_account_errors();
+		$this->merchant_repository->delete_client_token();
+		$this->refresh_token->delete_refresh_token_cron_job();
 
 		wp_send_json_success( __( 'PayPal account disconnected', 'event-tickets' ) );
 	}
@@ -194,10 +194,10 @@ class AjaxRequestHandler {
 	 * @todo : handle payment create error on frontend.
 	 *
 	 */
-	public function createOrder() {
+	public function create_order() {
 		// @todo Set up the order with our own custom code.
 
-		$this->validateFrontendRequest();
+		$this->validate_frontend_request();
 
 		$postData = give_clean( $_POST );
 		$formId   = absint( tribe_get_request_var( 'give-form-id' ) );
@@ -217,7 +217,7 @@ class AjaxRequestHandler {
 		];
 
 		try {
-			$result = tribe( PayPalOrder::class )->createOrder( $data );
+			$result = tribe( PayPal_Order::class )->create_order( $data );
 
 			wp_send_json_success(
 				[
@@ -240,15 +240,15 @@ class AjaxRequestHandler {
 	 * @todo  : handle payment capture error on frontend.
 	 *
 	 */
-	public function approveOrder() {
-		$this->validateFrontendRequest();
+	public function approve_order() {
+		$this->validate_frontend_request();
 
 		$orderId = absint( tribe_get_request_var( 'order' ) );
 
 		// @todo Handle our own order approval process.
 
 		try {
-			$result = tribe( PayPalOrder::class )->approveOrder( $orderId );
+			$result = tribe( PayPal_Order::class )->approve_order( $orderId );
 
 			wp_send_json_success(
 				[
@@ -269,8 +269,8 @@ class AjaxRequestHandler {
 	 *
 	 * @since 5.1.6
 	 */
-	public function onBoardingTroubleNotice() {
-		$this->validateAdminRequest();
+	public function on_boarding_trouble_notice() {
+		$this->validate_admin_request();
 
 		$actionList = sprintf(
 			'<ol><li>%1$s</li><li>%2$s</li><li>%3$s %4$s</li></ol>',
@@ -294,7 +294,7 @@ class AjaxRequestHandler {
 	 *
 	 * @since 5.1.6
 	 */
-	private function validateAdminRequest() {
+	private function validate_admin_request() {
 		// @todo Add our own capacity check.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( __( 'Access not allowed', 'event-tickets' ), 401 );
@@ -306,7 +306,7 @@ class AjaxRequestHandler {
 	 *
 	 * @since 5.1.6
 	 */
-	private function validateFrontendRequest() {
+	private function validate_frontend_request() {
 		$formId = absint( $_POST['give-form-id'] );
 
 		if ( ! $formId || ! give_verify_payment_form_nonce( give_clean( $_POST['give-form-hash'] ), $formId ) ) {

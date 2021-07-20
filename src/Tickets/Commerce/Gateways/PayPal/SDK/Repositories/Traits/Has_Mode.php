@@ -4,7 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Traits;
 
 use InvalidArgumentException;
 
-trait HasMode {
+trait Has_Mode {
 
 	/**
 	 * The current working mode: live or sandbox
@@ -24,7 +24,7 @@ trait HasMode {
 	 *
 	 * @return $this
 	 */
-	public function setMode( $mode ) {
+	public function set_mode( $mode ) {
 		if ( ! in_array( $mode, [ 'live', 'sandbox' ], true ) ) {
 			throw new InvalidArgumentException( "Must be either 'live' or 'sandbox', received: $mode" );
 		}

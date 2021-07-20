@@ -10,8 +10,8 @@ use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalCheckoutSdk\Payments\CapturesRefundRequest;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\MerchantDetail;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\PayPalClient;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\Merchant_Detail;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\PayPal_Client;
 
 /**
  * Class PayPalOrder
@@ -20,34 +20,34 @@ use TEC\Tickets\Commerce\Gateways\PayPal\SDK\PayPalClient;
  * @package TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories
  *
  */
-class PayPalOrder {
+class PayPal_Order {
 
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var PayPalClient
+	 * @var PayPal_Client
 	 */
-	private $paypalClient;
+	private $paypal_client;
 
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var MerchantDetail
+	 * @var Merchant_Detail
 	 */
-	private $merchantDetails;
+	private $merchant_details;
 
 	/**
 	 * PayPalOrder constructor.
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param MerchantDetail $merchantDetails
+	 * @param Merchant_Detail $merchant_details
 	 *
-	 * @param PayPalClient   $paypalClient
+	 * @param PayPal_Client   $paypal_client
 	 */
-	public function __construct( PayPalClient $paypalClient, MerchantDetail $merchantDetails ) {
-		$this->paypalClient    = $paypalClient;
-		$this->merchantDetails = $merchantDetails;
+	public function __construct( PayPal_Client $paypal_client, Merchant_Detail $merchant_details ) {
+		$this->paypal_client    = $paypal_client;
+		$this->merchant_details = $merchant_details;
 	}
 
 	/**
@@ -55,16 +55,17 @@ class PayPalOrder {
 	 *
 	 * @since 5.1.6
 	 *
+	 * @throws Exception
+	 *
 	 * @param string $orderId
 	 *
 	 * @return string
-	 * @throws Exception
 	 */
-	public function approveOrder( $orderId ) {
+	public function approve_order( $orderId ) {
 		$request = new OrdersCaptureRequest( $orderId );
 
 		try {
-			return $this->paypalClient->getHttpClient()->execute( $request )->result;
+			return $this->paypal_client->get_http_client()->execute( $request )->result;
 		} catch ( Exception $ex ) {
 			// @todo Log the error.
 			logError( 'Capture PayPal Commerce payment failure', sprintf( '<strong>Response</strong><pre>%1$s</pre>', print_r( json_decode( $ex->getMessage(), true ), true ) ) );
@@ -78,13 +79,14 @@ class PayPalOrder {
 	 *
 	 * @since 5.1.6
 	 *
+	 * @throws Exception
+	 *
 	 * @param array $array
 	 *
 	 * @return string
-	 * @throws Exception
 	 */
-	public function createOrder( $array ) {
-		$this->validateCreateOrderArguments( $array );
+	public function create_order( $array ) {
+		$this->validate_create_order_arguments( $array );
 
 		$request = new OrdersCreateRequest();
 		// @todo Replace this with our bin code from Gateway::ATTRIBUTION_ID.
@@ -104,8 +106,8 @@ class PayPalOrder {
 						'currency_code' => give_get_currency( $array['formId'] ),
 					],
 					'payee'               => [
-						'email_address' => $this->merchantDetails->merchantId,
-						'merchant_id'   => $this->merchantDetails->merchantIdInPayPal,
+						'email_address' => $this->merchant_details->merchant_id,
+						'merchant_id'   => $this->merchant_details->merchant_id_in_paypal,
 					],
 					'payer'               => [
 						// @todo Replace these.
@@ -125,7 +127,7 @@ class PayPalOrder {
 		];
 
 		try {
-			return $this->paypalClient->getHttpClient()->execute( $request )->result->id;
+			return $this->paypal_client->get_http_client()->execute( $request )->result->id;
 		} catch ( Exception $ex ) {
 			logError( 'Create PayPal Commerce order failure', sprintf( '<strong>Request</strong><pre>%1$s</pre><br><strong>Response</strong><pre>%2$s</pre>', print_r( $request->body, true ), print_r( json_decode( $ex->getMessage(), true ), true ) ) );
 
@@ -138,16 +140,17 @@ class PayPalOrder {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param $captureId
+	 * @throws Exception
+	 *
+	 * @param $capture_id
 	 *
 	 * @return string The id of the refund
-	 * @throws Exception
 	 */
-	public function refundPayment( $captureId ) {
-		$refund = new CapturesRefundRequest( $captureId );
+	public function refund_payment( $capture_id ) {
+		$refund = new CapturesRefundRequest( $capture_id );
 
 		try {
-			return $this->paypalClient->getHttpClient()->execute( $refund )->result->id;
+			return $this->paypal_client->get_http_client()->execute( $refund )->result->id;
 		} catch ( Exception $exception ) {
 			logError( 'Create PayPal Commerce payment refund failure', sprintf( '<strong>Response</strong><pre>%1$s</pre>', print_r( json_decode( $exception->getMessage(), true ), true ) ) );
 
@@ -160,11 +163,12 @@ class PayPalOrder {
 	 *
 	 * @since 5.1.6
 	 *
+	 * @throws InvalidArgumentException
+	 *
 	 * @param array $array
 	 *
-	 * @throws InvalidArgumentException
 	 */
-	private function validateCreateOrderArguments( $array ) {
+	private function validate_create_order_arguments( $array ) {
 		$required = [ 'formId', 'paymentAmount', 'payer' ];
 		$array    = array_filter( $array ); // Remove empty values.
 

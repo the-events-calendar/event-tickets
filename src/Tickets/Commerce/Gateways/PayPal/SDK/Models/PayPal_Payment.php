@@ -11,7 +11,7 @@ use InvalidArgumentException;
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  *
  */
-class PayPalPayment {
+class PayPal_Payment {
 
 	/**
 	 * Payment Id.
@@ -47,7 +47,7 @@ class PayPalPayment {
 	 *
 	 * @var string
 	 */
-	public $createTime;
+	public $create_time;
 
 	/**
 	 * Payment update time.
@@ -56,7 +56,7 @@ class PayPalPayment {
 	 *
 	 * @var string
 	 */
-	public $updateTime;
+	public $update_time;
 
 	/**
 	 * PayPal Payment action links.
@@ -77,10 +77,10 @@ class PayPalPayment {
 	 *
 	 * @param $array
 	 *
-	 * @return PayPalPayment
+	 * @return PayPal_Payment
 	 */
-	public static function fromArray( $array ) {
-		/* @var PayPalPayment $payment */
+	public static function from_array( $array ) {
+		/* @var PayPal_Payment $payment */
 		$payment = tribe( __CLASS__ );
 
 		$payment->validate( $array );
@@ -88,8 +88,8 @@ class PayPalPayment {
 		// @todo Replace this with a new method somewhere else.
 		$array = ArrayDataSet::camelCaseKeys( $array );
 
-		foreach ( $array as $itemName => $value ) {
-			$payment->{$itemName} = $value;
+		foreach ( $array as $item_name => $value ) {
+			$payment->{$item_name} = $value;
 		}
 
 		return $payment;

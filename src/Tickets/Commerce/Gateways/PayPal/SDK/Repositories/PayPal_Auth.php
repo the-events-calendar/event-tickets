@@ -3,35 +3,35 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Connect_Client;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\PayPalClient;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\PayPal_Client;
 
-class PayPalAuth {
+class PayPal_Auth {
 
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var PayPalClient
+	 * @var PayPal_Client
 	 */
-	private $payPalClient;
+	private $paypal_client;
 
 	/**
 	 * @since 5.1.6
 	 *
 	 * @var Connect_Client
 	 */
-	private $connectClient;
+	private $connect_client;
 
 	/**
 	 * PayPalAuth constructor.
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param PayPalClient  $payPalClient
-	 * @param Connect_Client $connectClient
+	 * @param PayPal_Client  $paypal_client
+	 * @param Connect_Client $connect_client
 	 */
-	public function __construct( PayPalClient $payPalClient, Connect_Client $connectClient ) {
-		$this->payPalClient  = $payPalClient;
-		$this->connectClient = $connectClient;
+	public function __construct( PayPal_Client $paypal_client, Connect_Client $connect_client ) {
+		$this->paypal_client = $paypal_client;
+		$this->connect_client = $connect_client;
 	}
 
 	/**
@@ -44,10 +44,10 @@ class PayPalAuth {
 	 *
 	 * @return array|null The token details response or null if there was a problem.
 	 */
-	public function getTokenFromClientCredentials( $client_id, $client_secret ) {
+	public function get_token_from_client_credentials( $client_id, $client_secret ) {
 		$auth = base64_encode( "$client_id:$client_secret" );
 
-		$request = wp_remote_post( $this->payPalClient->getApiUrl( 'v1/oauth2/token' ), [
+		$request = wp_remote_post( $this->paypal_client->get_api_url( 'v1/oauth2/token' ), [
 			'headers' => [
 				'Authorization' => sprintf( 'Basic %1$s', $auth ),
 				'Content-Type'  => 'application/x-www-form-urlencoded',
@@ -84,21 +84,21 @@ class PayPalAuth {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param string $sharedId Shared ID for merchant.
-	 * @param string $authCode Authorization code from onboarding.
-	 * @param string $nonce    Seller nonce from onboarding.
+	 * @param string $shared_id Shared ID for merchant.
+	 * @param string $auth_code Authorization code from onboarding.
+	 * @param string $nonce     Seller nonce from onboarding.
 	 *
 	 * @return array|null The token details response or null if there was a problem.
 	 */
-	public function getTokenFromAuthorizationCode( $sharedId, $authCode, $nonce ) {
-		$request = wp_remote_post( $this->payPalClient->getApiUrl( 'v1/oauth2/token' ), [
+	public function get_token_from_authorization_code( $shared_id, $auth_code, $nonce ) {
+		$request = wp_remote_post( $this->paypal_client->get_api_url( 'v1/oauth2/token' ), [
 			'headers' => [
-				'Authorization' => sprintf( 'Basic %1$s', base64_encode( $sharedId ) ),
+				'Authorization' => sprintf( 'Basic %1$s', base64_encode( $shared_id ) ),
 				'Content-Type'  => 'application/x-www-form-urlencoded',
 			],
 			'body'    => [
 				'grant_type'    => 'authorization_code',
-				'code'          => $authCode,
+				'code'          => $auth_code,
 				'code_verifier' => $nonce,
 			],
 		] );
@@ -133,8 +133,8 @@ class PayPalAuth {
 	 *
 	 * @return array|null
 	 */
-	public function getSellerPartnerLink( $returnUrl, $country ) {
-		$request = wp_remote_post( sprintf( $this->connectClient->get_api_url( 'paypal-commerce/?mode=%1$s&request=partner-link' ), $this->payPalClient->mode ), [
+	public function get_seller_partner_link( $returnUrl, $country ) {
+		$request = wp_remote_post( sprintf( $this->connect_client->get_api_url( 'paypal-commerce/?mode=%1$s&request=partner-link' ), $this->paypal_client->mode ), [
 			'body' => [
 				'return_url'   => $returnUrl,
 				'country_code' => $country,
@@ -170,17 +170,17 @@ class PayPalAuth {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param string $accessToken
+	 * @param string $access_token
 	 *
-	 * @param string $merchantId
+	 * @param string $merchant_id
 	 *
 	 * @return array
 	 */
-	public function getSellerOnBoardingDetailsFromPayPal( $merchantId, $accessToken ) {
-		$request = wp_remote_post( $this->connectClient->get_api_url( sprintf( 'paypal-commerce/?mode=%1$s&request=seller-status', $this->payPalClient->mode ) ), [
+	public function get_seller_on_boarding_details_from_paypal( $merchant_id, $access_token ) {
+		$request = wp_remote_post( $this->connect_client->get_api_url( sprintf( 'paypal-commerce/?mode=%1$s&request=seller-status', $this->paypal_client->mode ) ), [
 			'body' => [
-				'merchant_id' => $merchantId,
-				'token'       => $accessToken,
+				'merchant_id' => $merchant_id,
+				'token'       => $access_token,
 			],
 		] );
 
@@ -215,8 +215,8 @@ class PayPalAuth {
 	 *
 	 * @return array
 	 */
-	public function getSellerRestAPICredentials( $accessToken ) {
-		$request = wp_remote_post( $this->connectClient->get_api_url( sprintf( 'paypal-commerce/?mode=%1$s&request=seller-credentials', $this->payPalClient->mode ) ), [
+	public function get_seller_rest_api_credentials( $accessToken ) {
+		$request = wp_remote_post( $this->connect_client->get_api_url( sprintf( 'paypal-commerce/?mode=%1$s&request=seller-credentials', $this->paypal_client->mode ) ), [
 			'body' => [
 				'token' => $accessToken,
 			],

@@ -2,8 +2,8 @@
 
 namespace Tribe\Tickets\REST\V1\Endpoints\Commerce;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners\PaymentCaptureCompleted;
-use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\WebhooksRoute;
+use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners\Payment_Capture_Completed;
+use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhooks_Route;
 use Tribe__Documentation__Swagger__Provider_Interface;
 use Tribe__REST__Endpoints__CREATE_Endpoint_Interface;
 use Tribe__Tickets__REST__V1__Endpoints__Base;
@@ -89,8 +89,8 @@ class PayPal_Webhook
 		$event   = $request->get_body();
 		$headers = $request->get_headers();
 
-		/** @var WebhooksRoute $webhook */
-		$webhook = tribe( WebhooksRoute::class );
+		/** @var Webhooks_Route $webhook */
+		$webhook = tribe( Webhooks_Route::class );
 
 		try {
 			$processed = $webhook->handle( $event, $headers );

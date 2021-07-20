@@ -27,25 +27,25 @@ class Provider extends \tad_DI52_ServiceProvider {
 		// $this->container->singleton( PaymentFormElements::class );
 
 		/*$this->container->singleton( PaymentProcessor::class );;*/
-		$this->container->singleton( AjaxRequestHandler::class );
+		$this->container->singleton( Ajax_Request_Handler::class );
 		$this->container->singleton( onBoardingRedirectHandler::class );
-		$this->container->singleton( SDK\RefreshToken::class );
+		$this->container->singleton( SDK\Refresh_Token::class );
 
-		$this->container->singleton( SDK\Repositories\PayPalAuth::class );
-		$this->container->singleton( SDK\PayPalClient::class );
-		$this->container->singleton( SDK\Repositories\PayPalOrder::class );
+		$this->container->singleton( SDK\Repositories\PayPal_Auth::class );
+		$this->container->singleton( SDK\PayPal_Client::class );
+		$this->container->singleton( SDK\Repositories\PayPal_Order::class );
 
-		$this->container->singleton( SDK\Models\MerchantDetail::class, null, [ 'init' ] );
-		$this->container->singleton( SDK\Repositories\MerchantDetails::class, null, [ 'init' ] );
+		$this->container->singleton( SDK\Models\Merchant_Detail::class, null, [ 'init' ] );
+		$this->container->singleton( SDK\Repositories\Merchant_Details::class, null, [ 'init' ] );
 
-		$this->container->singleton( Webhooks\WebhookRegister::class );
-		$this->container->singleton( Webhooks\WebhooksRoute::class );
+		$this->container->singleton( Webhooks\Webhook_Register::class );
+		$this->container->singleton( Webhooks\Webhooks_Route::class );
 		$this->container->singleton( SDK\Repositories\Webhooks::class, null, [ 'init' ] );
 
-		$this->container->singleton( Webhooks\Listeners\PaymentCaptureCompleted::class );
-		$this->container->singleton( Webhooks\Listeners\PaymentCaptureDenied::class );
-		$this->container->singleton( Webhooks\Listeners\PaymentCaptureRefunded::class );
-		$this->container->singleton( Webhooks\Listeners\PaymentCaptureReversed::class );
+		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Completed::class );
+		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Denied::class );
+		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Refunded::class );
+		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Reversed::class );
 
 		$this->container->singleton( REST::class );
 		$this->container->singleton( PayPal_Webhook::class, static function() {

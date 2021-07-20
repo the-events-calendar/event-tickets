@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners;
 
-interface EventListener {
+interface Event_Listener {
 
 	/**
 	 * This processes the PayPal Commerce webhook event passed to it.
@@ -13,5 +13,5 @@ interface EventListener {
 	 *
 	 * @return bool Whether the event was processed successfully.
 	 */
-	public function processEvent( $event );
+	public function process_event( $event );
 }

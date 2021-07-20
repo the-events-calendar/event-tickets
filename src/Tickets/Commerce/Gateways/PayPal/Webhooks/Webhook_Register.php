@@ -3,13 +3,13 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 
 use InvalidArgumentException;
-use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners\EventListener;
-use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners\PaymentCaptureCompleted;
-use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners\PaymentCaptureDenied;
-use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners\PaymentCaptureRefunded;
-use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners\PaymentCaptureReversed;
+use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners\Event_Listener;
+use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners\Payment_Capture_Completed;
+use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners\Payment_Capture_Denied;
+use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners\Payment_Capture_Refunded;
+use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners\Payment_Capture_Reversed;
 
-class WebhookRegister {
+class Webhook_Register {
 
 	/**
 	 * Array of the PayPal webhook event handlers. Add-ons can use the registerEventHandler method
@@ -22,10 +22,10 @@ class WebhookRegister {
 	 * @var string[]
 	 */
 	private $eventHandlers = [
-		'PAYMENT.CAPTURE.COMPLETED' => PaymentCaptureCompleted::class,
-		'PAYMENT.CAPTURE.DENIED'    => PaymentCaptureDenied::class,
-		'PAYMENT.CAPTURE.REFUNDED'  => PaymentCaptureRefunded::class,
-		'PAYMENT.CAPTURE.REVERSED'  => PaymentCaptureReversed::class,
+		'PAYMENT.CAPTURE.COMPLETED' => Payment_Capture_Completed::class,
+		'PAYMENT.CAPTURE.DENIED'    => Payment_Capture_Denied::class,
+		'PAYMENT.CAPTURE.REFUNDED'  => Payment_Capture_Refunded::class,
+		'PAYMENT.CAPTURE.REVERSED'  => Payment_Capture_Reversed::class,
 	];
 
 	/**
@@ -43,8 +43,8 @@ class WebhookRegister {
 			throw new InvalidArgumentException( 'Cannot register an already registered event' );
 		}
 
-		if ( ! is_subclass_of( $eventHandler, EventListener::class ) ) {
-			throw new InvalidArgumentException( 'Listener must be a subclass of ' . EventListener::class );
+		if ( ! is_subclass_of( $eventHandler, Event_Listener::class ) ) {
+			throw new InvalidArgumentException( 'Listener must be a subclass of ' . Event_Listener::class );
 		}
 
 		$this->eventHandlers[ $payPalEvent ] = $eventHandler;
@@ -72,7 +72,7 @@ class WebhookRegister {
 	 *
 	 * @param string $event
 	 *
-	 * @return EventListener
+	 * @return Event_Listener
 	 */
 	public function getEventHandler( $event ) {
 		return tribe( $this->eventHandlers[ $event ] );
@@ -98,7 +98,7 @@ class WebhookRegister {
 	 *
 	 * @return string[]
 	 */
-	public function getRegisteredEvents() {
+	public function get_registered_events() {
 		return array_keys( $this->eventHandlers );
 	}
 }

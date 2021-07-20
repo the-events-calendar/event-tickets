@@ -69,19 +69,19 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	public function on_boarded_user_ajax_request_handler() {
-		$this->container->make( AjaxRequestHandler::class )->onBoardedUserAjaxRequestHandler();
+		$this->container->make( Ajax_Request_Handler::class )->on_boarded_user_ajax_request_handler();
 	}
 
 	public function on_get_partner_url_ajax_request_handler() {
-		$this->container->make( AjaxRequestHandler::class )->onGetPartnerUrlAjaxRequestHandler();
+		$this->container->make( Ajax_Request_Handler::class )->on_get_partner_url_ajax_request_handler();
 	}
 
 	public function remove_paypal_account() {
-		$this->container->make( AjaxRequestHandler::class )->removePayPalAccount();
+		$this->container->make( Ajax_Request_Handler::class )->remove_pay_pal_account();
 	}
 
 	public function on_boarding_trouble_notice() {
-		$this->container->make( AjaxRequestHandler::class )->onBoardingTroubleNotice();
+		$this->container->make( Ajax_Request_Handler::class )->on_boarding_trouble_notice();
 	}
 
 	public function on_boarding_boot() {
@@ -89,11 +89,11 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	public function create_order() {
-		$this->container->make( AjaxRequestHandler::class )->createOrder();
+		$this->container->make( Ajax_Request_Handler::class )->create_order();
 	}
 
 	public function approve_order() {
-		$this->container->make( AjaxRequestHandler::class )->approveOrder();
+		$this->container->make( Ajax_Request_Handler::class )->approve_order();
 	}
 
 	public function register_endpoints() {

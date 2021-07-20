@@ -3,34 +3,34 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories;
 
 use Exception;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\DataTransferObjects\PayPalWebhookHeaders;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\WebhookConfig;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\PayPalClient;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Traits\HasMode;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Webhooks\Headers;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\Webhook_Config;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\PayPal_Client;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Traits\Has_Mode;
 use TEC\Tickets\Commerce\Gateways\PayPal\Settings;
-use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\WebhookRegister;
-use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\WebhooksRoute;
+use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhook_Register;
+use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhooks_Route;
 
 class Webhooks {
 
-	use HasMode;
+	use Has_Mode;
 
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var WebhooksRoute
+	 * @var Webhooks_Route
 	 */
-	private $webhookRoute;
+	private $webhook_route;
 
 	/**
-	 * @var WebhookRegister
+	 * @var Webhook_Register
 	 */
-	private $webhooksRegister;
+	private $webhooks_register;
 
 	/**
-	 * @var PayPalClient
+	 * @var PayPal_Client
 	 */
-	private $payPalClient;
+	private $paypal_client;
 
 	/**
 	 * @var Settings
@@ -42,14 +42,14 @@ class Webhooks {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param PayPalClient    $payPalClient
-	 * @param WebhookRegister $webhooksRegister
-	 * @param Settings        $settings
+	 * @param PayPal_Client    $paypal_client
+	 * @param Webhook_Register $webhooks_register
+	 * @param Settings         $settings
 	 */
-	public function __construct( PayPalClient $payPalClient, WebhookRegister $webhooksRegister, Settings $settings ) {
-		$this->payPalClient     = $payPalClient;
-		$this->webhooksRegister = $webhooksRegister;
-		$this->settings         = $settings;
+	public function __construct( PayPal_Client $paypal_client, Webhook_Register $webhooks_register, Settings $settings ) {
+		$this->paypal_client    = $paypal_client;
+		$this->webhooks_register = $webhooks_register;
+		$this->settings          = $settings;
 	}
 
 	/**
@@ -58,7 +58,7 @@ class Webhooks {
 	 * @since 5.1.6
 	 */
 	public function init() {
-		$this->setMode( tribe_tickets_commerce_is_test_mode() ? 'sandbox' : 'live' );
+		$this->set_mode( tribe_tickets_commerce_is_test_mode() ? 'sandbox' : 'live' );
 	}
 
 	/**
@@ -69,18 +69,18 @@ class Webhooks {
 	 *
 	 * @param string               $token
 	 * @param object               $event The event to verify
-	 * @param PayPalWebhookHeaders $payPalHeaders
+	 * @param Headers $paypal_headers
 	 *
 	 * @return bool
 	 */
-	public function verifyEventSignature( $token, $event, $payPalHeaders ) {
+	public function verify_event_signature( $token, $event, $paypal_headers ) {
 		// @todo Move this to the SDK.
-		$apiUrl = $this->payPalClient->getApiUrl( 'v1/notifications/verify-webhook-signature' );
+		$api_url = $this->paypal_client->get_api_url( 'v1/notifications/verify-webhook-signature' );
 
-		$webhookConfig = $this->getWebhookConfig();
+		$webhook_config = $this->get_webhook_config();
 
 		$request = wp_remote_post(
-			$apiUrl,
+			$api_url,
 			[
 				'headers' => [
 					'Content-Type'  => 'application/json',
@@ -88,12 +88,12 @@ class Webhooks {
 				],
 				'body'    => wp_json_encode(
 					[
-						'transmission_id'   => $payPalHeaders->transmissionId,
-						'transmission_time' => $payPalHeaders->transmissionTime,
-						'transmission_sig'  => $payPalHeaders->transmissionSig,
-						'cert_url'          => $payPalHeaders->certUrl,
-						'auth_algo'         => $payPalHeaders->authAlgo,
-						'webhook_id'        => $webhookConfig->id,
+						'transmission_id'   => $paypal_headers->transmission_id,
+						'transmission_time' => $paypal_headers->transmission_time,
+						'transmission_sig'  => $paypal_headers->transmission_sig,
+						'cert_url'          => $paypal_headers->cert_url,
+						'auth_algo'         => $paypal_headers->auth_algo,
+						'webhook_id'        => $webhook_config->id,
 						'webhook_event'     => $event,
 					]
 				),
@@ -135,12 +135,12 @@ class Webhooks {
 	 *
 	 * @return object[] The list of PayPal webhooks.
 	 */
-	public function listWebhooks( $token ) {
+	public function list_webhooks( $token ) {
 		// @todo Move this to the SDK.
-		$apiUrl = $this->payPalClient->getApiUrl( 'v1/notifications/webhooks' );
+		$api_url = $this->paypal_client->get_api_url( 'v1/notifications/webhooks' );
 
 		$request = wp_remote_get(
-			$apiUrl,
+			$api_url,
 			[
 				'headers' => [
 					'Content-Type'  => 'application/json',
@@ -177,19 +177,19 @@ class Webhooks {
 	 * @see   https://developer.paypal.com/docs/api/webhooks/v1/#webhooks_get
 	 * @since 5.1.6
 	 *
-	 * @param string $token     The PayPal auth token.
-	 * @param string $webhookId The webhook ID.
+	 * @param string $token      The PayPal auth token.
+	 * @param string $webhook_id The webhook ID.
 	 *
 	 * @throws Exception
 	 *
 	 * @return object The PayPal webhook data.
 	 */
-	public function getWebhook( $token, $webhookId ) {
+	public function get_webhook( $token, $webhook_id ) {
 		// @todo Move this to the SDK.
-		$apiUrl = $this->payPalClient->getApiUrl( "v1/notifications/webhooks/{$webhookId}" );
+		$api_url = $this->paypal_client->get_api_url( "v1/notifications/webhooks/{$webhook_id}" );
 
 		$request = wp_remote_get(
-			$apiUrl,
+			$api_url,
 			[
 				'headers' => [
 					'Content-Type'  => 'application/json',
@@ -234,15 +234,15 @@ class Webhooks {
 	 *
 	 * @param string $token
 	 *
-	 * @return WebhookConfig
+	 * @return Webhook_Config
 	 * @throws Exception
 	 */
-	public function createWebhook( $token ) {
+	public function create_webhook( $token ) {
 		// @todo Move this to the SDK.
-		$apiUrl = $this->payPalClient->getApiUrl( 'v1/notifications/webhooks' );
+		$apiUrl = $this->paypal_client->get_api_url( 'v1/notifications/webhooks' );
 
-		$events     = $this->webhooksRegister->getRegisteredEvents();
-		$webhookUrl = tribe( WebhooksRoute::class )->getRouteUrl();
+		$events     = $this->webhooks_register->get_registered_events();
+		$webhook_url = tribe( Webhooks_Route::class )->get_route_url();
 
 		$request = wp_remote_post(
 			$apiUrl,
@@ -253,7 +253,7 @@ class Webhooks {
 				],
 				'body'    => json_encode(
 					[
-						'url'         => $webhookUrl,
+						'url'         => $webhook_url,
 						'event_types' => array_map(
 							static function ( $eventType ) {
 								return [
@@ -284,13 +284,13 @@ class Webhooks {
 			if ( ! empty( $response->name ) ) {
 				if ( 'WEBHOOK_URL_ALREADY_EXISTS' === $response->name ) {
 					// The webhook already exists, this is fine!
-					$webhooks = $this->listWebhooks( $token );
+					$webhooks = $this->list_webhooks( $token );
 
 					if ( $webhooks ) {
 						$webhooks = wp_list_pluck( $webhooks, 'id', 'url' );
 
-						if ( isset( $webhooks[ $webhookUrl ] ) ) {
-							return new WebhookConfig( $webhooks[ $webhookUrl ], $webhookUrl, $events );
+						if ( isset( $webhooks[ $webhook_url ] ) ) {
+							return new Webhook_Config( $webhooks[ $webhook_url ], $webhook_url, $events );
 						}
 					}
 				} elseif ( 'WEBHOOK_NUMBER_LIMIT_EXCEEDED' === $response->name ) {
@@ -304,7 +304,7 @@ class Webhooks {
 			throw new Exception( 'Failed to create webhook' );
 		}
 
-		return new WebhookConfig( $response->id, $webhookUrl, $events );
+		return new Webhook_Config( $response->id, $webhook_url, $events );
 	}
 
 	/**
@@ -313,21 +313,21 @@ class Webhooks {
 	 * @since 5.1.6
 	 *
 	 * @param string $token
-	 * @param string $webhookId
+	 * @param string $webhook_id
 	 *
 	 * @throws Exception
 	 *
 	 * @return bool
 	 */
-	public function updateWebhook( $token, $webhookId ) {
+	public function update_webhook( $token, $webhook_id ) {
 		// @todo Move this to the SDK.
-		$apiUrl = $this->payPalClient->getApiUrl( "v1/notifications/webhooks/{$webhookId}" );
+		$api_url = $this->paypal_client->get_api_url( "v1/notifications/webhooks/{$webhook_id}" );
 
-		$events     = $this->webhooksRegister->getRegisteredEvents();
-		$webhookUrl = tribe( WebhooksRoute::class )->getRouteUrl();
+		$events     = $this->webhooks_register->get_registered_events();
+		$webhook_url = tribe( Webhooks_Route::class )->get_route_url();
 
 		$request = wp_remote_request(
-			$apiUrl,
+			$api_url,
 			[
 				'method'  => 'PATCH',
 				'headers' => [
@@ -339,15 +339,15 @@ class Webhooks {
 						[
 							'op'    => 'replace',
 							'path'  => '/url',
-							'value' => $webhookUrl,
+							'value' => $webhook_url,
 						],
 						[
 							'op'    => 'replace',
 							'path'  => '/event_types',
 							'value' => array_map(
-								static function ( $eventType ) {
+								static function ( $event_type ) {
 									return [
-										'name' => $eventType,
+										'name' => $event_type,
 									];
 								},
 								$events
@@ -375,11 +375,11 @@ class Webhooks {
 			if ( ! empty( $response->name ) ) {
 				if ( 'INVALID_RESOURCE_ID' === $response->name ) {
 					// The webhook was not found, let's create it.
-					$webhookConfig = $this->createWebhook( $token );
+					$webhook_config = $this->create_webhook( $token );
 
 					tribe( 'logger' )->log_warning( __( 'The PayPal webhook was not able to be updated because it did not exist, attempting to create it now', 'event-tickets' ), 'tickets-commerce-paypal-commerce' );
 
-					if ( $webhookConfig ) {
+					if ( $webhook_config ) {
 						return true;
 					}
 				}
@@ -403,12 +403,12 @@ class Webhooks {
 	 *
 	 * @return bool Whether or not the deletion was successful
 	 */
-	public function deleteWebhook( $token, $webhookId ) {
+	public function delete_webhook( $token, $webhookId ) {
 		// @todo Move this to the SDK.
-		$apiUrl = $this->payPalClient->getApiUrl( "v1/notifications/webhooks/{$webhookId}" );
+		$api_url = $this->paypal_client->get_api_url( "v1/notifications/webhooks/{$webhookId}" );
 
 		$request = wp_remote_request(
-			$apiUrl,
+			$api_url,
 			[
 				'method'  => 'DELETE',
 				'headers' => [
@@ -428,9 +428,9 @@ class Webhooks {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param WebhookConfig $config
+	 * @param Webhook_Config $config
 	 */
-	public function saveWebhookConfig( WebhookConfig $config ) {
+	public function save_webhook_config( Webhook_Config $config ) {
 		$this->settings->update_webhook_config( $this->mode, $config );
 	}
 
@@ -439,9 +439,9 @@ class Webhooks {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @return WebhookConfig|null
+	 * @return Webhook_Config|null
 	 */
-	public function getWebhookConfig() {
+	public function get_webhook_config() {
 		return $this->settings->get_webhook_config( $this->mode );
 	}
 
@@ -450,7 +450,7 @@ class Webhooks {
 	 *
 	 * @since 5.1.6
 	 */
-	public function deleteWebhookConfig() {
+	public function delete_webhook_config() {
 		$this->settings->delete_webhook_config( $this->mode );
 	}
 }

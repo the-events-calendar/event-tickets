@@ -12,7 +12,7 @@ use stdClass;
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  *
  */
-class PayPalOrder {
+class PayPal_Order {
 
 	/**
 	 * Order Id.
@@ -48,7 +48,7 @@ class PayPalOrder {
 	 *
 	 * @var string
 	 */
-	public $createTime;
+	public $create_time;
 
 	/**
 	 * Order update time.
@@ -57,7 +57,7 @@ class PayPalOrder {
 	 *
 	 * @var string
 	 */
-	public $updateTime;
+	public $update_time;
 
 	/**
 	 * PayPal Order action links.
@@ -84,14 +84,14 @@ class PayPalOrder {
 	 *
 	 * @var stdClass
 	 */
-	private $purchaseUnit;
+	private $purchase_unit;
 
 	/**
 	 * Payment details for order.
 	 *
 	 * @since 5.1.6
 	 *
-	 * @var PayPalPayment
+	 * @var PayPal_Payment
 	 */
 	public $payment;
 
@@ -102,10 +102,10 @@ class PayPalOrder {
 	 *
 	 * @param $array
 	 *
-	 * @return PayPalOrder
+	 * @return PayPal_Order
 	 */
-	public static function fromArray( $array ) {
-		/* @var PayPalOrder $order */
+	public static function from_array( $array ) {
+		/* @var PayPal_Order $order */
 		$order = tribe( __CLASS__ );
 
 		$order->validate( $array );
@@ -117,8 +117,8 @@ class PayPalOrder {
 			if ( 'purchaseUnits' === $itemName ) {
 				$value = current( $value );
 
-				$order->purchaseUnit = $value;
-				$order->payment      = PayPalPayment::fromArray( (array) current( $order->purchaseUnit->payments->captures ) );
+				$order->purchase_unit = $value;
+				$order->payment       = PayPal_Payment::from_array( (array) current( $order->purchase_unit->payments->captures ) );
 
 				continue;
 			}

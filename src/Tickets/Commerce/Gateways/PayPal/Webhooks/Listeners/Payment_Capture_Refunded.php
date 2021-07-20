@@ -3,13 +3,13 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners;
 
 /**
- * Class PaymentCaptureDenied
+ * Class PaymentCaptureRefunded
  *
- * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners
  *
+ * @since 5.1.6
  */
-class PaymentCaptureDenied extends PaymentEventListener {
+class Payment_Capture_Refunded extends Payment_Event_Listener {
 	/**
 	 * The new status to set with successful event.
 	 *
@@ -17,7 +17,7 @@ class PaymentCaptureDenied extends PaymentEventListener {
 	 *
 	 * @var string
 	 */
-	protected $new_status = 'denied';
+	protected $new_status = 'refunded';
 
 	/**
 	 * The event type.
@@ -26,5 +26,5 @@ class PaymentCaptureDenied extends PaymentEventListener {
 	 *
 	 * @var string
 	 */
-	protected $event_type = 'PAYMENT.CAPTURE.DENIED';
+	protected $event_type = 'PAYMENT.CAPTURE.REFUNDED';
 }

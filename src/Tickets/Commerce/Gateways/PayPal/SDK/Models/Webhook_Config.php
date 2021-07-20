@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models;
 
-class WebhookConfig {
+class Webhook_Config {
 
 	/**
 	 * @since 5.1.6
@@ -16,7 +16,7 @@ class WebhookConfig {
 	 *
 	 * @var string
 	 */
-	public $returnUrl;
+	public $return_url;
 
 	/**
 	 * @since 5.1.6
@@ -31,13 +31,13 @@ class WebhookConfig {
 	 * @since 5.1.6
 	 *
 	 * @param string   $id
-	 * @param string   $returnUrl
+	 * @param string   $return_url
 	 * @param string[] $events
 	 */
-	public function __construct( $id, $returnUrl, $events ) {
-		$this->id        = $id;
-		$this->returnUrl = $returnUrl;
-		$this->events    = $events;
+	public function __construct( $id, $return_url, $events ) {
+		$this->id         = $id;
+		$this->return_url = $return_url;
+		$this->events     = $events;
 	}
 
 	/**
@@ -47,10 +47,10 @@ class WebhookConfig {
 	 *
 	 * @param array $data
 	 *
-	 * @return WebhookConfig
+	 * @return Webhook_Config
 	 */
-	public static function fromArray( array $data ) {
-		return new self( $data['id'], $data['returnUrl'], $data['events'] );
+	public static function from_array( array $data ) {
+		return new self( $data['id'], $data['return_url'], $data['events'] );
 	}
 
 	/**
@@ -60,11 +60,11 @@ class WebhookConfig {
 	 *
 	 * @return array
 	 */
-	public function toArray() {
+	public function to_array() {
 		return [
-			'id'        => $this->id,
-			'returnUrl' => $this->returnUrl,
-			'events'    => $this->events,
+			'id'         => $this->id,
+			'return_url' => $this->return_url,
+			'events'     => $this->events,
 		];
 	}
 }

@@ -3,9 +3,9 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Abstract_Settings;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\MerchantDetail;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\WebhookConfig;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\Merchant_Detail;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\Webhook_Config;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Merchant_Details;
 use Tribe__Languages__Locations;
 use Tribe__Tickets__Admin__Views;
 use Tribe__Tickets__Main;
@@ -59,7 +59,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @var MerchantDetail
+	 * @var Merchant_Detail
 	 */
 	private $merchant_model;
 
@@ -68,7 +68,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @var MerchantDetails
+	 * @var Merchant_Details
 	 */
 	private $merchant_repository;
 
@@ -77,10 +77,10 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param MerchantDetail  $merchantDetail
-	 * @param MerchantDetails $merchantDetailRepository
+	 * @param Merchant_Detail  $merchantDetail
+	 * @param Merchant_Details $merchantDetailRepository
 	 */
-	public function __construct( MerchantDetail $merchantDetail, MerchantDetails $merchantDetailRepository ) {
+	public function __construct( Merchant_Detail $merchantDetail, Merchant_Details $merchantDetailRepository ) {
 		$this->merchant_model      = $merchantDetail;
 		$this->merchant_repository = $merchantDetailRepository;
 	}
@@ -160,11 +160,11 @@ class Settings extends Abstract_Settings {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
-		$account_errors = $this->merchant_repository->getAccountErrors();
+		$account_errors = $this->merchant_repository->get_account_errors();
 
 		$context = [
-			'account_is_connected' => $this->merchant_repository->accountIsConnected(),
-			'merchant_id'          => $this->merchant_model->merchantId,
+			'account_is_connected' => $this->merchant_repository->account_is_connected(),
+			'merchant_id'          => $this->merchant_model->merchant_id,
 			'formatted_errors'     => $this->get_formatted_error_html( $account_errors ),
 			'guidance_html'        => $this->get_guidance_html(),
 		];
@@ -447,7 +447,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @param string $mode The mode (live/sandbox).
 	 *
-	 * @return WebhookConfig|null
+	 * @return Webhook_Config|null
 	 */
 	public function get_webhook_config( $mode ) {
 		$config = tribe_get_option( "{$this->option_webhook_config}-{$mode}", null );
@@ -456,7 +456,7 @@ class Settings extends Abstract_Settings {
 			return null;
 		}
 
-		return WebhookConfig::fromArray( $config );
+		return Webhook_Config::from_array( $config );
 	}
 
 	/**
@@ -464,13 +464,13 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param string        $mode   The mode (live/sandbox).
-	 * @param WebhookConfig $config The webhook config array.
+	 * @param string         $mode   The mode (live/sandbox).
+	 * @param Webhook_Config $config The webhook config array.
 	 *
 	 * @return bool
 	 */
-	public function update_webhook_config( $mode, WebhookConfig $config ) {
-		return tribe_update_option( "{$this->option_webhook_config}-{$mode}", $config->toArray() );
+	public function update_webhook_config( $mode, Webhook_Config $config ) {
+		return tribe_update_option( "{$this->option_webhook_config}-{$mode}", $config->to_array() );
 	}
 
 	/**

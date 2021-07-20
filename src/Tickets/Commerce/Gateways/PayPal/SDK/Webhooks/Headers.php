@@ -1,47 +1,47 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\DataTransferObjects;
+namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Webhooks;
 
 use Exception;
 
 /**
- * Class PayPalWebhookHeaders.
+ * Class Headers.
  *
  * @since 5.1.6
  *
- * @package TEC\Tickets\Commerce\Gateways\PayPal\SDK\DataTransferObjects
+ * @package TEC\Tickets\Commerce\Gateways\PayPal\SDK\Webhooks
  */
-class PayPalWebhookHeaders {
+class Headers {
 
 	/**
 	 * @since 5.1.6
 	 * @var string
 	 */
-	public $transmissionId;
+	public $transmission_id;
 
 	/**
 	 * @since 5.1.6
 	 * @var string
 	 */
-	public $transmissionTime;
+	public $transmission_time;
 
 	/**
 	 * @since 5.1.6
 	 * @var string
 	 */
-	public $transmissionSig;
+	public $transmission_sig;
 
 	/**
 	 * @since 5.1.6
 	 * @var string
 	 */
-	public $certUrl;
+	public $cert_url;
 
 	/**
 	 * @since 5.1.6
 	 * @var string
 	 */
-	public $authAlgo;
+	public $auth_algo;
 
 	/**
 	 * This grabs the headers from the webhook request to be used in the signature verification
@@ -54,20 +54,20 @@ class PayPalWebhookHeaders {
 	 * @param array $headers
 	 *
 	 * @return self
-	 * @throws HttpHeaderException
+	 * @throws \HttpHeaderException
 	 */
-	public static function fromHeaders( array $headers ) {
-		$headerKeys = [
-			'transmissionId'   => 'Paypal-Transmission-Id',
-			'transmissionTime' => 'Paypal-Transmission-Time',
-			'transmissionSig'  => 'Paypal-Transmission-Sig',
-			'certUrl'          => 'Paypal-Cert-Url',
-			'authAlgo'         => 'Paypal-Auth-Algo',
+	public static function from_headers( array $headers ) {
+		$header_keys = [
+			'transmission_id'   => 'Paypal-Transmission-Id',
+			'transmission_time' => 'Paypal-Transmission-Time',
+			'transmission_sig'  => 'Paypal-Transmission-Sig',
+			'cert_url'          => 'Paypal-Cert-Url',
+			'auth_algo'         => 'Paypal-Auth-Algo',
 		];
 
-		$payPalHeaders = new self();
-		$missingKeys   = [];
-		foreach ( $headerKeys as $property => $key ) {
+		$paypal_headers = new self();
+		$missing_keys   = [];
+		foreach ( $header_keys as $property => $key ) {
 			if ( ! isset( $headers[ $key ] ) ) {
 				$key = str_replace( '-', '_', $key );
 				$key = strtoupper( $key );
@@ -78,19 +78,19 @@ class PayPalWebhookHeaders {
 			}
 
 			if ( isset( $headers[ $key ] ) ) {
-				$payPalHeaders->$property = $headers[ $key ];
+				$paypal_headers->{$property} = $headers[ $key ];
 			} else {
-				$missingKeys[] = $key;
+				$missing_keys[] = $key;
 			}
 		}
 
-		if ( ! empty( $missingKeys ) ) {
+		if ( ! empty( $missing_keys ) ) {
 			tribe( 'logger' )->log_error(
 				sprintf(
 					// Translators: %s: The missing keys and header information.
 					__( 'Missing PayPal webhook header: %s', 'event-tickets' ),
 					json_encode( [
-						'missingKeys' => $missingKeys,
+						'missingKeys' => $missing_keys,
 						'headers'     => $headers,
 					] )
 				),
@@ -100,6 +100,6 @@ class PayPalWebhookHeaders {
 			throw new Exception( "Missing PayPal header: $key" );
 		}
 
-		return $payPalHeaders;
+		return $paypal_headers;
 	}
 }

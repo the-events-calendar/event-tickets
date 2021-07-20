@@ -3,9 +3,9 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use Exception;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\MerchantDetail;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\PayPalAuth;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\Merchant_Detail;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\PayPal_Auth;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Merchant_Details;
 use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Webhooks;
 use Tribe__Settings;
 
@@ -21,9 +21,9 @@ class onBoardingRedirectHandler {
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var PayPalAuth
+	 * @var PayPal_Auth
 	 */
-	private $payPalAuth;
+	private $paypal_auth;
 
 	/**
 	 * @since 5.1.6
@@ -35,9 +35,9 @@ class onBoardingRedirectHandler {
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var MerchantDetails
+	 * @var Merchant_Details
 	 */
-	private $merchantRepository;
+	private $merchant_repository;
 
 	/**
 	 * @since 5.1.6
@@ -51,16 +51,16 @@ class onBoardingRedirectHandler {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param Webhooks        $webhooks
-	 * @param MerchantDetails $merchantRepository
-	 * @param Settings        $settings
-	 * @param PayPalAuth      $payPalAuth
+	 * @param Webhooks         $webhooks
+	 * @param Merchant_Details $merchant_repository
+	 * @param Settings         $settings
+	 * @param PayPal_Auth      $paypal_auth
 	 */
-	public function __construct( Webhooks $webhooks, MerchantDetails $merchantRepository, Settings $settings, PayPalAuth $payPalAuth ) {
-		$this->webhooksRepository = $webhooks;
-		$this->merchantRepository = $merchantRepository;
-		$this->settings           = $settings;
-		$this->payPalAuth         = $payPalAuth;
+	public function __construct( Webhooks $webhooks, Merchant_Details $merchant_repository, Settings $settings, PayPal_Auth $paypal_auth ) {
+		$this->webhooksRepository  = $webhooks;
+		$this->merchant_repository = $merchant_repository;
+		$this->settings            = $settings;
+		$this->paypal_auth        = $paypal_auth;
 	}
 
 	/**
@@ -69,26 +69,26 @@ class onBoardingRedirectHandler {
 	 * @since 5.1.6
 	 */
 	public function boot() {
-		if ( $this->isPayPalUserRedirected() ) {
+		if ( $this->is_paypal_user_redirected() ) {
 			$merchantId = tribe_get_request_var( 'merchantId' );
 			$merchantIdInPayPal = tribe_get_request_var( 'merchantIdInPayPal' );
 
-			$details = $this->savePayPalMerchantDetails( $merchantId, $merchantIdInPayPal );
+			$details = $this->save_paypal_merchant_details( $merchantId, $merchantIdInPayPal );
 
-			$this->setUpWebhook( $details );
-			$this->redirectAccountConnected();
+			$this->set_up_webhook( $details );
+			$this->redirect_account_connected();
 
 			return;
 		}
 
-		if ( $this->werePayPalAccountDetailsSaved() ) {
-			$this->registerPayPalSSLNotice();
-			$this->registerPayPalAccountConnectedNotice();
+		if ( $this->were_paypal_account_details_saved() ) {
+			$this->register_paypal_s_s_l_notice();
+			$this->register_paypal_account_connected_notice();
 		}
 
-		if ( $this->isStatusRefresh() ) {
-			$this->refreshAccountStatus();
-			$this->redirectAccountConnected();
+		if ( $this->is_status_refresh() ) {
+			$this->refresh_account_status();
+			$this->redirect_account_connected();
 
 			return;
 		}
@@ -99,23 +99,23 @@ class onBoardingRedirectHandler {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param string $merchantId         The merchant ID.
-	 * @param string $merchantIdInPayPal The merchant ID in PayPal.
+	 * @param string $merchant_id            The merchant ID.
+	 * @param string $merchant_id_in_paypal The merchant ID in PayPal.
 	 *
-	 * @return MerchantDetail
+	 * @return Merchant_Detail
 	 */
-	private function savePayPalMerchantDetails( $merchantId, $merchantIdInPayPal ) {
-		$partnerLinkInfo = $this->settings->get_partner_link_details();
+	private function save_paypal_merchant_details( $merchant_id, $merchant_id_in_paypal ) {
+		$partner_link_info = $this->settings->get_partner_link_details();
 		$tokenInfo       = $this->settings->get_access_token();
 
 		$payPalAccount = [
-			'merchantId'         => $merchantId,
-			'merchantIdInPayPal' => $merchantIdInPayPal,
+			'merchant_id'         => $merchant_id,
+			'merchant_id_in_paypal' => $merchant_id_in_paypal,
 		];
 
 		$errors = [];
 
-		if ( empty( $payPalAccount['merchantIdInPayPal'] ) ) {
+		if ( empty( $payPalAccount['merchant_id_in_paypal'] ) ) {
 			$errors[] = [
 				'type'    => 'url',
 				'message' => esc_html__( 'There was a problem with PayPal return url and we could not find valid merchant ID. Paypal return URL is:', 'event-tickets' ) . "\n",
@@ -128,27 +128,27 @@ class onBoardingRedirectHandler {
 				tribe( 'logger' )->log_error( $errorMessage, 'tickets-commerce-paypal-commerce' );
 			}, $errors );
 
-			$this->merchantRepository->saveAccountErrors( $errors );
+			$this->merchant_repository->save_account_errors( $errors );
 
-			$this->redirectWhenOnBoardingFail();
+			$this->redirect_when_on_boarding_fail();
 		}
 
-		$restApiCredentials = (array) $this->payPalAuth->getSellerRestAPICredentials( $tokenInfo ? $tokenInfo['access_token'] : '' );
+		$rest_api_credentials = (array) $this->paypal_auth->get_seller_rest_api_credentials( $tokenInfo ? $tokenInfo['access_token'] : '' );
 
-		$this->didWeGetValidSellerRestApiCredentials( $restApiCredentials );
+		$this->didWeGetValidSellerRestApiCredentials( $rest_api_credentials );
 
-		$tokenInfo = $this->payPalAuth->getTokenFromClientCredentials( $restApiCredentials['client_id'], $restApiCredentials['client_secret'] );
+		$tokenInfo = $this->paypal_auth->get_token_from_client_credentials( $rest_api_credentials['client_id'], $rest_api_credentials['client_secret'] );
 		//$this->settings->update_access_token( $tokenInfo );
 
-		$payPalAccount['clientId']               = $restApiCredentials['client_id'];
-		$payPalAccount['clientSecret']           = $restApiCredentials['client_secret'];
+		$payPalAccount['client_id']               = $rest_api_credentials['client_id'];
+		$payPalAccount['client_secret']           = $rest_api_credentials['client_secret'];
 		$payPalAccount['token']                  = $tokenInfo;
-		$payPalAccount['supportsCustomPayments'] = 'PPCP' === $partnerLinkInfo['product'];
-		$payPalAccount['accountIsReady']         = true;
-		$payPalAccount['accountCountry']         = $this->settings->get_account_country();
+		$payPalAccount['supports_custom_payments'] = 'PPCP' === $partner_link_info['product'];
+		$payPalAccount['account_is_ready']         = true;
+		$payPalAccount['account_country']         = $this->settings->get_account_country();
 
-		$merchantDetails = MerchantDetail::fromArray( $payPalAccount );
-		$this->merchantRepository->save( $merchantDetails );
+		$merchantDetails = Merchant_Detail::from_array( $payPalAccount );
+		$this->merchant_repository->save( $merchantDetails );
 
 		return $merchantDetails;
 	}
@@ -158,8 +158,8 @@ class onBoardingRedirectHandler {
 	 *
 	 * @since 5.1.6
 	 */
-	private function redirectAccountConnected() {
-		$this->refreshAccountStatus();
+	private function redirect_account_connected() {
+		$this->refresh_account_status();
 
 		/** @var Tribe__Settings $settings */
 		$settings = tribe( 'settings' );
@@ -182,17 +182,17 @@ class onBoardingRedirectHandler {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param MerchantDetail $merchant_details
+	 * @param Merchant_Detail $merchant_details
 	 */
-	private function setUpWebhook( MerchantDetail $merchant_details ) {
+	private function set_up_webhook( Merchant_Detail $merchant_details ) {
 		if ( ! is_ssl() ) {
 			return;
 		}
 
 		try {
-			$webhookConfig = $this->webhooksRepository->createWebhook( $merchant_details->accessToken );
+			$webhookConfig = $this->webhooksRepository->create_webhook( $merchant_details->access_token );
 
-			$this->webhooksRepository->saveWebhookConfig( $webhookConfig );
+			$this->webhooksRepository->save_webhook_config( $webhookConfig );
 		} catch ( Exception $ex ) {
 			tribe( 'logger' )->log_error( $ex->getMessage(), 'tickets-commerce-paypal-commerce' );
 
@@ -206,8 +206,8 @@ class onBoardingRedirectHandler {
 				tribe( 'logger' )->log_error( $errorMessage, 'tickets-commerce-paypal-commerce' );
 			}, $errors );
 
-			$this->merchantRepository->saveAccountErrors( $errors );
-			$this->redirectWhenOnBoardingFail();
+			$this->merchant_repository->save_account_errors( $errors );
+			$this->redirect_when_on_boarding_fail();
 		}
 	}
 
@@ -216,7 +216,7 @@ class onBoardingRedirectHandler {
 	 *
 	 * @since 5.1.6
 	 */
-	private function registerPayPalAccountConnectedNotice() {
+	private function register_paypal_account_connected_notice() {
 		tribe_notice(
 			'paypal-commerce-account-connected',
 			sprintf(
@@ -250,7 +250,7 @@ class onBoardingRedirectHandler {
 	 *
 	 * @return bool
 	 */
-	private function isStatusRefresh() {
+	private function is_status_refresh() {
 		return isset( $_GET['paypalStatusCheck'] ) && $this->isSettingsPage();
 	}
 
@@ -261,7 +261,7 @@ class onBoardingRedirectHandler {
 	 *
 	 * @return bool
 	 */
-	private function isPayPalUserRedirected() {
+	private function is_paypal_user_redirected() {
 		return isset( $_GET['merchantIdInPayPal'] ) && $this->isSettingsPage();
 	}
 
@@ -272,7 +272,7 @@ class onBoardingRedirectHandler {
 	 *
 	 * @return bool
 	 */
-	private function werePayPalAccountDetailsSaved() {
+	private function were_paypal_account_details_saved() {
 		return isset( $_GET['paypal-commerce-account-connected'] ) && $this->isSettingsPage();
 	}
 
@@ -311,8 +311,8 @@ class onBoardingRedirectHandler {
 				tribe( 'logger' )->log_error( $errorMessage, 'tickets-commerce-paypal-commerce' );
 			}, $errors );
 
-			$this->merchantRepository->saveAccountErrors( $errors );
-			$this->redirectWhenOnBoardingFail();
+			$this->merchant_repository->save_account_errors( $errors );
+			$this->redirect_when_on_boarding_fail();
 		}
 	}
 
@@ -321,23 +321,23 @@ class onBoardingRedirectHandler {
 	 *
 	 * @since 5.1.6
 	 */
-	private function refreshAccountStatus() {
-		$merchantDetails = $this->merchantRepository->getDetails();
+	private function refresh_account_status() {
+		$merchantDetails = $this->merchant_repository->get_details();
 
-		$statusErrors = $this->isAdminSuccessfullyOnBoarded( $merchantDetails->merchantIdInPayPal, $merchantDetails->accessToken, $merchantDetails->supportsCustomPayments );
+		$statusErrors = $this->isAdminSuccessfullyOnBoarded( $merchantDetails->merchant_id_in_paypal, $merchantDetails->access_token, $merchantDetails->supports_custom_payments );
 		if ( $statusErrors !== true ) {
-			$merchantDetails->accountIsReady = false;
-			$this->merchantRepository->saveAccountErrors( $statusErrors );
+			$merchantDetails->account_is_ready = false;
+			$this->merchant_repository->save_account_errors( $statusErrors );
 		} else {
-			$merchantDetails->accountIsReady = true;
-			$this->merchantRepository->deleteAccountErrors();
+			$merchantDetails->account_is_ready = true;
+			$this->merchant_repository->delete_account_errors();
 		}
 
-		$this->merchantRepository->save( $merchantDetails );
+		$this->merchant_repository->save( $merchantDetails );
 
-		$details = $this->savePayPalMerchantDetails( $merchantDetails->merchantId, $merchantDetails->merchantIdInPayPal );
+		$details = $this->save_paypal_merchant_details( $merchantDetails->merchant_id, $merchantDetails->merchant_id_in_paypal );
 
-		$this->setUpWebhook( $details );
+		$this->set_up_webhook( $details );
 	}
 
 	/**
@@ -352,7 +352,7 @@ class onBoardingRedirectHandler {
 	 * @return true|string[]
 	 */
 	private function isAdminSuccessfullyOnBoarded( $merchantId, $accessToken, $usesCustomPayments ) {
-		$onBoardedData   = (array) $this->payPalAuth->getSellerOnBoardingDetailsFromPayPal( $merchantId, $accessToken );
+		$onBoardedData   = (array) $this->paypal_auth->get_seller_on_boarding_details_from_paypal( $merchantId, $accessToken );
 		$onBoardedData   = array_filter( $onBoardedData ); // Remove empty values.
 		$errorMessages[] = [
 			'type'    => 'json',
@@ -433,7 +433,7 @@ class onBoardingRedirectHandler {
 	 *
 	 * @since 5.1.6
 	 */
-	private function redirectWhenOnBoardingFail() {
+	private function redirect_when_on_boarding_fail() {
 		/** @var Tribe__Settings $settings */
 		$settings = tribe( 'settings' );
 
@@ -453,8 +453,8 @@ class onBoardingRedirectHandler {
 	 *
 	 * @since 5.1.6
 	 */
-	private function registerPayPalSSLNotice() {
-		if ( ! is_ssl() || ! empty( $this->webhooksRepository->getWebhookConfig() ) ) {
+	private function register_paypal_s_s_l_notice() {
+		if ( ! is_ssl() || ! empty( $this->webhooksRepository->get_webhook_config() ) ) {
 			return;
 		}
 

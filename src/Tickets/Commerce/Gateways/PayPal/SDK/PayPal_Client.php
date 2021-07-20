@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\MerchantDetail;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\Merchant_Detail;
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
 use PayPalCheckoutSdk\Core\ProductionEnvironment;
 use PayPalCheckoutSdk\Core\SandboxEnvironment;
@@ -14,7 +14,7 @@ use PayPalCheckoutSdk\Core\SandboxEnvironment;
  * @package TEC\Tickets\Commerce\Gateways\PayPal\SDK
  *
  */
-class PayPalClient {
+class PayPal_Client {
 
 	/**
 	 * Environment mode.
@@ -39,13 +39,13 @@ class PayPalClient {
 	 *
 	 * @return ProductionEnvironment|SandboxEnvironment
 	 */
-	public function getEnvironment() {
-		/* @var MerchantDetail $merchant */
-		$merchant = tribe( MerchantDetail::class );
+	public function get_environment() {
+		/* @var Merchant_Detail $merchant */
+		$merchant = tribe( Merchant_Detail::class );
 
 		return 'sandbox' === $this->mode ?
-			new SandboxEnvironment( $merchant->clientId, $merchant->clientSecret ) :
-			new ProductionEnvironment( $merchant->clientId, $merchant->clientSecret );
+			new SandboxEnvironment( $merchant->client_id, $merchant->client_secret ) :
+			new ProductionEnvironment( $merchant->client_id, $merchant->client_secret );
 	}
 
 	/**
@@ -55,8 +55,8 @@ class PayPalClient {
 	 *
 	 * @return PayPalHttpClient
 	 */
-	public function getHttpClient() {
-		return new PayPalHttpClient( $this->getEnvironment() );
+	public function get_http_client() {
+		return new PayPalHttpClient( $this->get_environment() );
 	}
 
 	/**
@@ -68,8 +68,8 @@ class PayPalClient {
 	 *
 	 * @return string
 	 */
-	public function getApiUrl( $endpoint ) {
-		$baseUrl = $this->getEnvironment()->baseUrl();
+	public function get_api_url( $endpoint ) {
+		$baseUrl = $this->get_environment()->baseUrl();
 
 		return "{$baseUrl}/$endpoint";
 	}
@@ -81,7 +81,7 @@ class PayPalClient {
 	 *
 	 * @return string
 	 */
-	public function getHomePageUrl() {
+	public function get_home_page_url() {
 		$subdomain = 'sandbox' === $this->mode ? 'sandbox.' : '';
 
 		return sprintf(

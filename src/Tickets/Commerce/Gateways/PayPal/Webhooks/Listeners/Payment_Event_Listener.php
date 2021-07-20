@@ -2,9 +2,9 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Merchant_Details;
 use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Webhooks;
-use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\WebhookRegister;
+use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhook_Register;
 use WP_Post;
 
 /**
@@ -14,27 +14,27 @@ use WP_Post;
  * @package TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners
  *
  */
-abstract class PaymentEventListener implements EventListener {
+abstract class Payment_Event_Listener implements Event_Listener {
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var MerchantDetails
+	 * @var Merchant_Details
 	 */
-	private $merchantRepository;
+	private $merchant_details;
 
 	/**
 	 * @since 5.1.6
 	 *
 	 * @var Webhooks
 	 */
-	private $webhookRepository;
+	private $webhook_repository;
 
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var WebhookRegister
+	 * @var Webhook_Register
 	 */
-	private $webhookRegister;
+	private $webhook_register;
 
 	/**
 	 * The new status to set with successful event.
@@ -59,14 +59,14 @@ abstract class PaymentEventListener implements EventListener {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param MerchantDetails $merchantRepository
-	 * @param WebhookRegister $register
-	 * @param Webhooks        $webhookRepository
+	 * @param Merchant_Details $merchant_details
+	 * @param Webhook_Register $register
+	 * @param Webhooks         $webhook_repository
 	 */
-	public function __construct( MerchantDetails $merchantRepository, WebhookRegister $register, Webhooks $webhookRepository ) {
-		$this->merchantRepository = $merchantRepository;
-		$this->webhookRegister    = $register;
-		$this->webhookRepository  = $webhookRepository;
+	public function __construct( Merchant_Details $merchant_details, Webhook_Register $register, Webhooks $webhook_repository ) {
+		$this->merchant_details   = $merchant_details;
+		$this->webhook_register   = $register;
+		$this->webhook_repository = $webhook_repository;
 	}
 
 	/**
@@ -78,7 +78,7 @@ abstract class PaymentEventListener implements EventListener {
 	 *
 	 * @return bool Whether the event was processed successfully.
 	 */
-	public function processEvent( $event ) {
+	public function process_event( $event ) {
 		// No status set.
 		if ( ! $this->new_status ) {
 			return false;
@@ -93,7 +93,7 @@ abstract class PaymentEventListener implements EventListener {
 		if ( $this->event_type !== $event->event_type ) {
 			tribe( 'logger' )->log_debug(
 				sprintf(
-					// Translators: %s: The PayPal payment event.
+				// Translators: %s: The PayPal payment event.
 					__( 'Mismatched event type for webhook event: %s', 'event-tickets' ),
 					json_encode( $event )
 				),
@@ -103,12 +103,12 @@ abstract class PaymentEventListener implements EventListener {
 			return false;
 		}
 
-		$paymentId = $this->getParentPaymentIdFromPayment( $event->resource );
+		$payment_id = $this->get_parent_payment_id_from_payment( $event->resource );
 
-		if ( ! $paymentId ) {
+		if ( ! $payment_id ) {
 			tribe( 'logger' )->log_debug(
 				sprintf(
-					// Translators: %s: The PayPal payment event.
+				// Translators: %s: The PayPal payment event.
 					__( 'Missing PayPal payment for webhook event: %s', 'event-tickets' ),
 					json_encode( $event )
 				),
@@ -118,15 +118,15 @@ abstract class PaymentEventListener implements EventListener {
 			return false;
 		}
 
-		$payment = $this->getOrderByPaymentId( $paymentId );
+		$payment = $this->get_order_by_payment_id( $payment_id );
 
 		// If there's no matching payment then it's not tracked by Tickets Commerce.
 		if ( ! $payment ) {
 			tribe( 'logger' )->log_debug(
 				sprintf(
-					// Translators: %s: The PayPal payment ID.
+				// Translators: %s: The PayPal payment ID.
 					__( 'Missing order for PayPal payment from webhook: %s', 'event-tickets' ),
-					$paymentId
+					$payment_id
 				),
 				'tickets-commerce-paypal-commerce'
 			);
@@ -149,10 +149,10 @@ abstract class PaymentEventListener implements EventListener {
 
 		tribe( 'logger' )->log_debug(
 			sprintf(
-				// Translators: %1$s: The status name; %2$s: The payment information.
+			// Translators: %1$s: The status name; %2$s: The payment information.
 				__( 'Change %1$s in PayPal from webhook: %2$s', 'event-tickets' ),
 				$this->new_status,
-				sprintf( '[Order ID: %s; PayPal Payment ID: %s]', $payment->ID, $paymentId )
+				sprintf( '[Order ID: %s; PayPal Payment ID: %s]', $payment->ID, $payment_id )
 			),
 			'tickets-commerce-paypal-commerce'
 		);
@@ -163,22 +163,22 @@ abstract class PaymentEventListener implements EventListener {
 		 * @since 5.1.6
 		 *
 		 * @param WP_Post $payment    The payment object.
-		 * @param string  $paymentId  The PayPal payment ID.
+		 * @param string  $payment_id The PayPal payment ID.
 		 * @param object  $event      The PayPal webhook event.
 		 * @param string  $new_status The new order status.
 		 */
-		do_action( 'tribe_tickets_commerce_gateways_paypal_commerce_webhooks_listeners', $payment, $paymentId, $event, $this->new_status );
+		do_action( 'tribe_tickets_commerce_gateways_paypal_commerce_webhooks_listeners', $payment, $payment_id, $event, $this->new_status );
 
 		/**
 		 * Allow hooking into the listener status for the new status.
 		 *
 		 * @since 5.1.6
 		 *
-		 * @param WP_Post $payment   The payment object.
-		 * @param string  $paymentId The PayPal payment ID.
-		 * @param object  $event     The PayPal webhook event.
+		 * @param WP_Post $payment    The payment object.
+		 * @param string  $payment_id The PayPal payment ID.
+		 * @param object  $event      The PayPal webhook event.
 		 */
-		do_action( "tribe_tickets_commerce_gateways_paypal_commerce_webhooks_listeners_{$this->new_status}", $payment, $paymentId, $event );
+		do_action( "tribe_tickets_commerce_gateways_paypal_commerce_webhooks_listeners_{$this->new_status}", $payment, $payment_id, $event );
 
 		return true;
 	}
@@ -192,7 +192,7 @@ abstract class PaymentEventListener implements EventListener {
 	 *
 	 * @return \WP_Post|null The matching order or null if not found.
 	 */
-	public function getOrderByPaymentId( $id ) {
+	public function get_order_by_payment_id( $id ) {
 		$orm = tribe_tickets_orders( 'tribe-commerce' );
 
 		return $orm->by( 'id', $id )->first();
@@ -207,7 +207,7 @@ abstract class PaymentEventListener implements EventListener {
 	 *
 	 * @return string|false The parent payment ID or false if not found.
 	 */
-	private function getParentPaymentIdFromPayment( $payment ) {
+	private function get_parent_payment_id_from_payment( $payment ) {
 		$link = current( array_filter( $payment->links, static function ( $link ) {
 			return $link->rel === 'up';
 		} ) );
@@ -216,19 +216,19 @@ abstract class PaymentEventListener implements EventListener {
 			return false;
 		}
 
-		$accountDetails = $this->merchantDetails->getDetails();
+		$account_details = $this->merchant_details->get_details();
 
 		$request = wp_remote_request( $link->href, [
 			'method'  => $link->method,
 			'headers' => [
 				'Content-Type'  => 'application/json',
-				'Authorization' => "Bearer {$accountDetails->accessToken}",
+				'Authorization' => "Bearer {$account_details->access_token}",
 			],
 		] );
 
 		if ( is_wp_error( $request ) ) {
 			tribe( 'logger' )->log_error( sprintf(
-				// Translators: %s: The error message.
+			// Translators: %s: The error message.
 				__( 'PayPal capture request error: %s', 'event-tickets' ),
 				$request->get_error_message()
 			), 'tickets-commerce-paypal-commerce' );
