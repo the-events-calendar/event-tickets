@@ -2392,7 +2392,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$headers[] = sprintf(
 					'From: %1$s <%2$s>',
-					filter_var( $from_name, FILTER_SANITIZE_STRING ),
+					stripcslashes( $from_name ),
 					$from_email
 				);
 
@@ -3587,7 +3587,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket                   = new Tribe__Tickets__Ticket_Object();
 			$ticket->ID               = isset( $data['ticket_id'] ) ? absint( $data['ticket_id'] ) : null;
 			$ticket->name             = isset( $data['ticket_name'] ) ? esc_html( $data['ticket_name'] ) : null;
-			$ticket->description      = isset( $data['ticket_description'] ) ? sanitize_textarea_field( $data['ticket_description'] ) : '';
+			$ticket->description      = isset( $data['ticket_description'] ) ? wp_kses_post( $data['ticket_description'] ) : '';
 			$ticket->price            = ! empty( $data['ticket_price'] ) ? filter_var( trim( $data['ticket_price'] ), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) : 0;
 			$ticket->show_description = isset( $data['ticket_show_description'] ) ? 'yes' : 'no';
 			$ticket->provider_class   = $this->class_name;

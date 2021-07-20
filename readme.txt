@@ -3,8 +3,8 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, patriciahillebrandt, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
-Tested up to: 5.7.2
-Stable tag: 5.1.6
+Tested up to: 5.8.0
+Stable tag: 5.2.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -114,15 +114,13 @@ Event Tickets is translated into multiple languages, including German, Danish, a
 
 == Screenshots ==
 
-1. RSVP and ticket on event
-2. Front-end ticket in page
-3. PayPal checkout
-4. Attendee report
-5. Emailed ticket
-6. Ticket confirmation
-7. Event settings
-8. Add new ticket
-9. Configure PayPal
+1. RSVP on event.
+2. Front-end ticket in page.
+3. PayPal checkout.
+4. Attendee report.
+5. Emailed ticket.
+6. Tickets settings.
+7. Add new ticket.
 
 == Frequently Asked Questions ==
 
@@ -180,9 +178,23 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.1.6] TBD =
+= [5.2.1] TBD =
 
 * Tweak - Removed the edit column when printing the Attendees list. [ETP-ETP-702]
+
+=======
+* Language -
+
+= [5.1.6] 2021-07-07 =
+
+* Tweak - Added support for HTML in Ticket description field. [ET-1135]
+* Tweak - Added `$ticket_id` parameter to the `tribe_events_tickets_metabox_edit_ajax_advanced` filter. [ETP-111]
+* Tweak - Update the plugin screenshots on the WordPress.org page. [ET-1143]
+* Fix - Fixed the ticket block allowing to add more tickets than available when using shared capacity. [ET-1137]
+* Fix - Sync WooCommerce decimal separator with in Ticket edit form. [ETP-725]
+* Fix - Prevent Tribe Commerce "Confirmation email sender name" from displaying improperly when a single quote is added. [ET-1134]
+* Language - 115 new strings added, 118 updated, 0 fuzzied, and 0 obsoleted
+
 
 = [5.1.5] 2021-06-09 =
 
