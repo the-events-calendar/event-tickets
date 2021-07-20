@@ -149,7 +149,8 @@ tribe.tickets.admin.commerceSettings = {};
 	 */
 	obj.requestPartnerUrl = function( countryCode ) {
 		// @todo Add AJAX handler for this.
-		fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_get_partner_url&countryCode=' + countryCode ) // eslint-disable-line max-len
+		// @todo remove no-undef from eslint-disable-line below when ajaxurl is properly implemented.
+		fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_get_partner_url&countryCode=' + countryCode ) // eslint-disable-line no-undef,max-len
 			.then( function( response ) {
 				return response.json();
 			} )
@@ -164,7 +165,8 @@ tribe.tickets.admin.commerceSettings = {};
 			.then( function() {
 				// Handle the error notice.
 				// @todo Add AJAX handler for this.
-				fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_onboarding_trouble_notice' )
+				// @todo remove no-undef,max-len from eslint-disable-line below when ajaxurl is properly implemented.
+				fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_onboarding_trouble_notice' ) // eslint-disable-line no-undef,max-len
 					.then( function( response ) {
 						return response.json();
 					} )
@@ -240,13 +242,15 @@ tribe.tickets.admin.commerceSettings = {};
 		$( obj.selectors.connectionSettingContainer ).removeClass( 'tribe-common-a11y-hidden' );
 		$( obj.selectors.disconnectionSettingContainer ).addClass( 'tribe-common-a11y-hidden' );
 
-		fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_disconnect_account' );
+		// @todo remove no-undef,max-len from eslint-disable-line below when ajaxurl is properly implemented.
+		fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_disconnect_account' ); // eslint-disable-line no-undef,max-len
 	};
 
 	obj.onBoardCallback = function( authCode, sharedId ) {
 		const query = '&authCode=' + authCode + '&sharedId=' + sharedId;
 
-		fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_user_on_boarded' + query )
+		// @todo remove no-undef,max-len from eslint-disable-line below when ajaxurl is properly implemented.
+		fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_user_on_boarded' + query ) // eslint-disable-line no-undef,max-len
 			.then( function ( res ) {
 				return res.json()
 			} )
