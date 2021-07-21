@@ -38,7 +38,7 @@ class Webhook_Checker {
 	private $merchant_details;
 
 	/**
-	 * WebhookChecker constructor.
+	 * Webhook_Checker constructor.
 	 *
 	 * @since 5.1.6
 	 *
