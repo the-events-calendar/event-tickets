@@ -125,7 +125,7 @@ class Ajax_Request_Handler {
 	public function on_get_partner_url_ajax_request_handler() {
 		$this->validate_admin_request();
 
-		$country_code = tribe_get_request_var( 'countryCode' );
+		$country_code = tribe_get_request_var( 'country_code' );
 
 		/** @var \Tribe__Languages__Locations $locations */
 		$locations = tribe( 'languages.locations' );
@@ -272,7 +272,7 @@ class Ajax_Request_Handler {
 	public function on_boarding_trouble_notice() {
 		$this->validate_admin_request();
 
-		$actionList = sprintf(
+		$action_list = sprintf(
 			'<ol><li>%1$s</li><li>%2$s</li><li>%3$s %4$s</li></ol>',
 			esc_html__( 'Make sure to complete the entire PayPal process. Do not close the window you have finished the process.', 'event-tickets' ),
 			esc_html__( 'The last screen of the PayPal connect process includes a button to be sent back to your site. It is important you click this and do not close the window yourself.', 'event-tickets' ),
@@ -280,13 +280,13 @@ class Ajax_Request_Handler {
 			$this->settings->get_guidance_html()
 		);
 
-		$standardError = sprintf(
+		$standard_error = sprintf(
 			'<div id="give-paypal-onboarding-trouble-notice" class="tribe-common-a11y-hidden"><p class="error-message">%1$s</p><p>%2$s</p></div>',
 			esc_html__( 'Having trouble connecting to PayPal?', 'event-tickets' ),
-			$actionList
+			$action_list
 		);
 
-		wp_send_json_success( $standardError );
+		wp_send_json_success( $standard_error );
 	}
 
 	/**
