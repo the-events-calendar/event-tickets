@@ -14,9 +14,9 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Webhooks;
 /**
  * Class AjaxRequestHandler
  *
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  *
- * @since 5.1.6
  */
 class Ajax_Request_Handler {
 
@@ -39,7 +39,7 @@ class Ajax_Request_Handler {
 	 *
 	 * @var PayPal_Auth
 	 */
-	private $pay_pal_auth;
+	private $paypal_auth;
 
 	/**
 	 * @since 5.1.6
@@ -72,7 +72,7 @@ class Ajax_Request_Handler {
 	 * @param Merchant_Details $merchant_repository
 	 * @param Refresh_Token    $refresh_token
 	 * @param Settings         $settings
-	 * @param PayPal_Auth      $pay_pal_auth
+	 * @param PayPal_Auth      $paypal_auth
 	 */
 	public function __construct(
 		Webhooks $webhooks_repository,
@@ -80,14 +80,14 @@ class Ajax_Request_Handler {
 		Merchant_Details $merchant_repository,
 		Refresh_Token $refresh_token,
 		Settings $settings,
-		PayPal_Auth $pay_pal_auth
+		PayPal_Auth $paypal_auth
 	) {
 		$this->webhooks_repository = $webhooks_repository;
 		$this->merchant_details    = $merchant_details;
 		$this->merchant_repository = $merchant_repository;
 		$this->refresh_token       = $refresh_token;
 		$this->settings            = $settings;
-		$this->pay_pal_auth        = $pay_pal_auth;
+		$this->paypal_auth         = $paypal_auth;
 	}
 
 	/**
@@ -100,19 +100,19 @@ class Ajax_Request_Handler {
 
 		$partnerLinkInfo = $this->settings->get_partner_link_details();
 
-		$payPalResponse = $this->pay_pal_auth->get_token_from_authorization_code(
+		$paypal_response = $this->paypal_auth->get_token_from_authorization_code(
 			tribe_get_request_var( 'sharedId' ),
 			tribe_get_request_var( 'authCode' ),
 			$partnerLinkInfo['nonce']
 		);
 
-		if ( ! $payPalResponse || array_key_exists( 'error', $payPalResponse ) ) {
+		if ( ! $paypal_response || array_key_exists( 'error', $paypal_response ) ) {
 			wp_send_json_error( __( 'Unexpected response from PayPal when onboarding', 'event-tickets' ) );
 		}
 
-		$this->settings->update_access_token( $payPalResponse );
+		$this->settings->update_access_token( $paypal_response );
 
-		tribe( Refresh_Token::class )->register_cron_job_to_refresh_token( $payPalResponse['expires_in'] );
+		tribe( Refresh_Token::class )->register_cron_job_to_refresh_token( $paypal_response['expires_in'] );
 
 		wp_send_json_success( __( 'PayPal account onboarded', 'event-tickets' ) );
 	}
@@ -141,16 +141,16 @@ class Ajax_Request_Handler {
 
 		// Get link to Tickets Tab.
 		$settings_url = $settings->get_url( [
-            'page'                       => 'tribe-common',
-            'tab'                        => 'event-tickets',
-            'tickets-commerce-connected' => '1',
+			'page'                       => 'tribe-common',
+			'tab'                        => 'event-tickets',
+			'tickets-commerce-connected' => '1',
 		] );
 
 		// @todo They ultimately need to get here.
 		// . '#tribe-field-tickets-commerce-paypal-commerce';
 
-		$partner_link_details = $this->pay_pal_auth->get_seller_partner_link(
-			// @todo Replace this URL.
+		$partner_link_details = $this->paypal_auth->get_seller_partner_link(
+		// @todo Replace this URL.
 			$settings_url,
 			$country_code
 		);
@@ -170,7 +170,7 @@ class Ajax_Request_Handler {
 	 *
 	 * @since 5.1.6
 	 */
-	public function remove_pay_pal_account() {
+	public function remove_paypal_account() {
 		$this->validate_admin_request();
 
 		// Remove the webhook from PayPal if there is one
@@ -190,9 +190,9 @@ class Ajax_Request_Handler {
 	/**
 	 * Create order.
 	 *
-	 * @since 5.1.6
-	 * @todo : handle payment create error on frontend.
+	 * @todo  : handle payment create error on frontend.
 	 *
+	 * @since 5.1.6
 	 */
 	public function create_order() {
 		// @todo Set up the order with our own custom code.
@@ -205,7 +205,7 @@ class Ajax_Request_Handler {
 		$data = [
 			'formId'              => $formId,
 			'formTitle'           => give_payment_gateway_item_title( [ 'post_data' => $postData ], 127 ),
-			'paymentAmount'      => isset( $postData['give-amount'] ) ? (float) apply_filters( 'give_payment_total', give_maybe_sanitize_amount( $postData['give-amount'], [ 'currency' => give_get_currency( $formId ) ] ) ) : '0.00',
+			'paymentAmount'       => isset( $postData['give-amount'] ) ? (float) apply_filters( 'give_payment_total', give_maybe_sanitize_amount( $postData['give-amount'], [ 'currency' => give_get_currency( $formId ) ] ) ) : '0.00',
 			'payer'               => [
 				'firstName' => $postData['give_first'],
 				'lastName'  => $postData['give_last'],
@@ -236,9 +236,9 @@ class Ajax_Request_Handler {
 	/**
 	 * Approve order.
 	 *
-	 * @since 5.1.6
 	 * @todo  : handle payment capture error on frontend.
 	 *
+	 * @since 5.1.6
 	 */
 	public function approve_order() {
 		$this->validate_frontend_request();

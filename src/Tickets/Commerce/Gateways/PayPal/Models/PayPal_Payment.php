@@ -7,7 +7,7 @@ use InvalidArgumentException;
 /**
  * Class PayPalPayment
  *
- * @since 5.1.6
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  *
  */
@@ -100,9 +100,10 @@ class PayPal_Payment {
 	 *
 	 * @since 5.1.6
 	 *
+	 * @throws InvalidArgumentException
+	 *
 	 * @param array $array
 	 *
-	 * @throws InvalidArgumentException
 	 */
 	private function validate( $array ) {
 		$required = [ 'id', 'amount', 'status', 'create_time', 'update_time', 'links' ];

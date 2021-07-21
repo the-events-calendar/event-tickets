@@ -21,7 +21,7 @@ class Webhook_Register {
 	 *
 	 * @var string[]
 	 */
-	private $eventHandlers = [
+	private $event_handlers = [
 		'PAYMENT.CAPTURE.COMPLETED' => Payment_Capture_Completed::class,
 		'PAYMENT.CAPTURE.DENIED'    => Payment_Capture_Denied::class,
 		'PAYMENT.CAPTURE.REFUNDED'  => Payment_Capture_Refunded::class,
@@ -33,21 +33,21 @@ class Webhook_Register {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param string $payPalEvent  PayPal event to listen for, i.e. CHECKOUT.ORDER.APPROVED
-	 * @param string $eventHandler The FQCN of the event handler
+	 * @param string $paypal_event  PayPal event to listen for, i.e. CHECKOUT.ORDER.APPROVED
+	 * @param string $event_handler The FQCN of the event handler
 	 *
 	 * @return $this
 	 */
-	public function registerEventHandler( $payPalEvent, $eventHandler ) {
-		if ( isset( $this->eventHandlers[ $payPalEvent ] ) ) {
+	public function register_event_handler( $paypal_event, $event_handler ) {
+		if ( isset( $this->event_handlers[ $paypal_event ] ) ) {
 			throw new InvalidArgumentException( 'Cannot register an already registered event' );
 		}
 
-		if ( ! is_subclass_of( $eventHandler, Event_Listener::class ) ) {
+		if ( ! is_subclass_of( $event_handler, Event_Listener::class ) ) {
 			throw new InvalidArgumentException( 'Listener must be a subclass of ' . Event_Listener::class );
 		}
 
-		$this->eventHandlers[ $payPalEvent ] = $eventHandler;
+		$this->event_handlers[ $paypal_event ] = $event_handler;
 
 		return $this;
 	}
@@ -59,9 +59,9 @@ class Webhook_Register {
 	 *
 	 * @param array $handlers = [ 'PAYPAL.EVENT' => EventHandler::class ]
 	 */
-	public function registerEventHandlers( array $handlers ) {
+	public function register_event_handlers( array $handlers ) {
 		foreach ( $handlers as $event => $handler ) {
-			$this->registerEventHandler( $event, $handler );
+			$this->register_event_handler( $event, $handler );
 		}
 	}
 
@@ -74,8 +74,8 @@ class Webhook_Register {
 	 *
 	 * @return Event_Listener
 	 */
-	public function getEventHandler( $event ) {
-		return tribe( $this->eventHandlers[ $event ] );
+	public function get_event_handler( $event ) {
+		return tribe( $this->event_handlers[ $event ] );
 	}
 
 	/**
@@ -87,8 +87,8 @@ class Webhook_Register {
 	 *
 	 * @return bool
 	 */
-	public function hasEventRegistered( $event ) {
-		return isset( $this->eventHandlers[ $event ] );
+	public function has_event_registered( $event ) {
+		return isset( $this->event_handlers[ $event ] );
 	}
 
 	/**
@@ -99,6 +99,6 @@ class Webhook_Register {
 	 * @return string[]
 	 */
 	public function get_registered_events() {
-		return array_keys( $this->eventHandlers );
+		return array_keys( $this->event_handlers );
 	}
 }

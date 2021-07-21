@@ -47,7 +47,7 @@ class Webhooks {
 	 * @param Settings         $settings
 	 */
 	public function __construct( PayPal_Client $paypal_client, Webhook_Register $webhooks_register, Settings $settings ) {
-		$this->paypal_client    = $paypal_client;
+		$this->paypal_client     = $paypal_client;
 		$this->webhooks_register = $webhooks_register;
 		$this->settings          = $settings;
 	}
@@ -67,8 +67,8 @@ class Webhooks {
 	 * @see   https://developer.paypal.com/docs/api/webhooks/v1/#verify-webhook-signature
 	 * @since 5.1.6
 	 *
-	 * @param string               $token
-	 * @param object               $event The event to verify
+	 * @param string  $token
+	 * @param object  $event The event to verify
 	 * @param Headers $paypal_headers
 	 *
 	 * @return bool
@@ -102,7 +102,7 @@ class Webhooks {
 
 		if ( is_wp_error( $request ) ) {
 			tribe( 'logger' )->log_error( sprintf(
-				// Translators: %s: The error message.
+			// Translators: %s: The error message.
 				__( 'PayPal request error: %s', 'event-tickets' ),
 				$request->get_error_message()
 			), 'tickets-commerce-paypal-commerce' );
@@ -151,7 +151,7 @@ class Webhooks {
 
 		if ( is_wp_error( $request ) ) {
 			tribe( 'logger' )->log_error( sprintf(
-				// Translators: %s: The error message.
+			// Translators: %s: The error message.
 				__( 'PayPal request error: %s', 'event-tickets' ),
 				$request->get_error_message()
 			), 'tickets-commerce-paypal-commerce' );
@@ -200,7 +200,7 @@ class Webhooks {
 
 		if ( is_wp_error( $request ) ) {
 			tribe( 'logger' )->log_error( sprintf(
-				// Translators: %s: The error message.
+			// Translators: %s: The error message.
 				__( 'PayPal request error: %s', 'event-tickets' ),
 				$request->get_error_message()
 			), 'tickets-commerce-paypal-commerce' );
@@ -241,7 +241,7 @@ class Webhooks {
 		// @todo Move this to the SDK.
 		$apiUrl = $this->paypal_client->get_api_url( 'v1/notifications/webhooks' );
 
-		$events     = $this->webhooks_register->get_registered_events();
+		$events      = $this->webhooks_register->get_registered_events();
 		$webhook_url = tribe( Webhooks_Route::class )->get_route_url();
 
 		$request = wp_remote_post(
@@ -269,7 +269,7 @@ class Webhooks {
 
 		if ( is_wp_error( $request ) ) {
 			tribe( 'logger' )->log_error( sprintf(
-				// Translators: %s: The error message.
+			// Translators: %s: The error message.
 				__( 'PayPal request error: %s', 'event-tickets' ),
 				$request->get_error_message()
 			), 'tickets-commerce-paypal-commerce' );
@@ -312,10 +312,11 @@ class Webhooks {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param string $token
+	 * @throws Exception
+	 *
 	 * @param string $webhook_id
 	 *
-	 * @throws Exception
+	 * @param string $token
 	 *
 	 * @return bool
 	 */
@@ -323,7 +324,7 @@ class Webhooks {
 		// @todo Move this to the SDK.
 		$api_url = $this->paypal_client->get_api_url( "v1/notifications/webhooks/{$webhook_id}" );
 
-		$events     = $this->webhooks_register->get_registered_events();
+		$events      = $this->webhooks_register->get_registered_events();
 		$webhook_url = tribe( Webhooks_Route::class )->get_route_url();
 
 		$request = wp_remote_request(
@@ -360,7 +361,7 @@ class Webhooks {
 
 		if ( is_wp_error( $request ) ) {
 			tribe( 'logger' )->log_error( sprintf(
-				// Translators: %s: The error message.
+			// Translators: %s: The error message.
 				__( 'PayPal request error: %s', 'event-tickets' ),
 				$request->get_error_message()
 			), 'tickets-commerce-paypal-commerce' );

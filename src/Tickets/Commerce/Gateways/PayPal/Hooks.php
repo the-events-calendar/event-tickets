@@ -77,7 +77,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	public function remove_paypal_account() {
-		$this->container->make( Ajax_Request_Handler::class )->remove_pay_pal_account();
+		$this->container->make( Ajax_Request_Handler::class )->remove_paypal_account();
 	}
 
 	public function on_boarding_trouble_notice() {

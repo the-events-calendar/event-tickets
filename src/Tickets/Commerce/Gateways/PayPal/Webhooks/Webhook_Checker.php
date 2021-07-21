@@ -68,30 +68,30 @@ class Webhook_Checker {
 			return;
 		}
 
-		$webhookConfig = $this->webhooks_repository->get_webhook_config();
+		$webhook_config = $this->webhooks_repository->get_webhook_config();
 
-		if ( $webhookConfig === null ) {
+		if ( $webhook_config === null ) {
 			return;
 		}
 
-		$webhookUrl       = $this->webhooks_route->get_route_url();
-		$registeredEvents = $this->webhook_register->get_registered_events();
+		$webhook_url        = $this->webhooks_route->get_route_url();
+		$registered_events = $this->webhook_register->get_registered_events();
 
 		$missingEvents    = array_merge(
-			array_diff( $registeredEvents, $webhookConfig->events ),
-			array_diff( $webhookConfig->events, $registeredEvents )
+			array_diff( $registered_events, $webhook_config->events ),
+			array_diff( $webhook_config->events, $registered_events )
 		);
 		$hasMissingEvents = ! empty( $missingEvents );
 
 		// Update the webhook if the return url or events have changed
-		if ( $webhookUrl !== $webhookConfig->return_url || $hasMissingEvents ) {
+		if ( $webhook_url !== $webhook_config->return_url || $hasMissingEvents ) {
 			try {
-				$this->webhooks_repository->update_webhook( $this->merchant_details->access_token, $webhookConfig->id );
+				$this->webhooks_repository->update_webhook( $this->merchant_details->access_token, $webhook_config->id );
 
-				$webhookConfig->return_url = $webhookUrl;
-				$webhookConfig->events     = $registeredEvents;
+				$webhook_config->return_url = $webhook_url;
+				$webhook_config->events     = $registered_events;
 
-				$this->webhooks_repository->save_webhook_config( $webhookConfig );
+				$this->webhooks_repository->save_webhook_config( $webhook_config );
 			} catch ( Exception $exception ) {
 				// @todo Replace this with a notice / log.
 				tribe( 'logger' )->log_error(

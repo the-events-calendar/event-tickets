@@ -97,6 +97,7 @@ class On_Boarding_Redirect_Handler {
 	/**
 	 * Save PayPal merchant details
 	 *_
+	 *
 	 * @since 5.1.6
 	 *
 	 * @param string $merchant_id           The merchant ID.
@@ -106,7 +107,7 @@ class On_Boarding_Redirect_Handler {
 	 */
 	private function save_paypal_merchant_details( $merchant_id, $merchant_id_in_paypal ) {
 		$partner_link_info = $this->settings->get_partner_link_details();
-		$token_info         = $this->settings->get_access_token();
+		$token_info        = $this->settings->get_access_token();
 
 		$paypal_account = [
 			'merchant_id'           => $merchant_id,
@@ -352,8 +353,8 @@ class On_Boarding_Redirect_Handler {
 	 * @return true|string[]
 	 */
 	private function is_admin_successfully_on_boarded( $merchantId, $accessToken, $usesCustomPayments ) {
-		$on_boarded_data   = (array) $this->paypal_auth->get_seller_on_boarding_details_from_paypal( $merchantId, $accessToken );
-		$on_boarded_data   = array_filter( $on_boarded_data ); // Remove empty values.
+		$on_boarded_data  = (array) $this->paypal_auth->get_seller_on_boarding_details_from_paypal( $merchantId, $accessToken );
+		$on_boarded_data  = array_filter( $on_boarded_data ); // Remove empty values.
 		$error_messages[] = [
 			'type'    => 'json',
 			'message' => esc_html__( 'PayPal merchant status check API request response is:', 'event-tickets' ),

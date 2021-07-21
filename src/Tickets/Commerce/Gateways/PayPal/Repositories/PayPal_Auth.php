@@ -30,7 +30,7 @@ class PayPal_Auth {
 	 * @param Connect_Client $connect_client
 	 */
 	public function __construct( PayPal_Client $paypal_client, Connect_Client $connect_client ) {
-		$this->paypal_client = $paypal_client;
+		$this->paypal_client  = $paypal_client;
 		$this->connect_client = $connect_client;
 	}
 
@@ -59,7 +59,7 @@ class PayPal_Auth {
 
 		if ( is_wp_error( $request ) ) {
 			tribe( 'logger' )->log_error( sprintf(
-				// Translators: %s: The error message.
+			// Translators: %s: The error message.
 				__( 'PayPal request error: %s', 'event-tickets' ),
 				$request->get_error_message()
 			), 'tickets-commerce-paypal-commerce' );
@@ -105,7 +105,7 @@ class PayPal_Auth {
 
 		if ( is_wp_error( $request ) ) {
 			tribe( 'logger' )->log_error( sprintf(
-				// Translators: %s: The error message.
+			// Translators: %s: The error message.
 				__( 'PayPal request error: %s', 'event-tickets' ),
 				$request->get_error_message()
 			), 'tickets-commerce-paypal-commerce' );
@@ -135,7 +135,7 @@ class PayPal_Auth {
 	 */
 	public function get_seller_partner_link( $returnUrl, $country ) {
 		$request = wp_remote_post( sprintf( $this->connect_client->get_api_url( 'paypal-commerce/?mode=%1$s&request=partner-link' ), $this->paypal_client->mode ), [
-			'body' => [
+			'body'      => [
 				'return_url'   => $returnUrl,
 				'country_code' => $country,
 			],
@@ -145,7 +145,7 @@ class PayPal_Auth {
 
 		if ( is_wp_error( $request ) ) {
 			tribe( 'logger' )->log_error( sprintf(
-				// Translators: %s: The error message.
+			// Translators: %s: The error message.
 				__( 'PayPal Commerce Connect request error: %s', 'event-tickets' ),
 				$request->get_error_message()
 			), 'tickets-commerce-paypal-commerce' );
@@ -186,7 +186,7 @@ class PayPal_Auth {
 
 		if ( is_wp_error( $request ) ) {
 			tribe( 'logger' )->log_error( sprintf(
-				// Translators: %s: The error message.
+			// Translators: %s: The error message.
 				__( 'PayPal Commerce Connect request error: %s', 'event-tickets' ),
 				$request->get_error_message()
 			), 'tickets-commerce-paypal-commerce' );
@@ -224,7 +224,7 @@ class PayPal_Auth {
 
 		if ( is_wp_error( $request ) ) {
 			tribe( 'logger' )->log_error( sprintf(
-				// Translators: %s: The error message.
+			// Translators: %s: The error message.
 				__( 'PayPal Commerce Connect request error: %s', 'event-tickets' ),
 				$request->get_error_message()
 			), 'tickets-commerce-paypal-commerce' );

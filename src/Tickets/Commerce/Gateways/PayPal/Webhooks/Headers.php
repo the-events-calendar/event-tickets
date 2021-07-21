@@ -7,7 +7,7 @@ use Exception;
 /**
  * Class Headers.
  *
- * @since 5.1.6
+ * @since   5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\Webhooks
  */
@@ -51,10 +51,11 @@ class Headers {
 	 *
 	 * @since 5.1.6
 	 *
+	 * @throws \HttpHeaderException
+	 *
 	 * @param array $headers
 	 *
 	 * @return self
-	 * @throws \HttpHeaderException
 	 */
 	public static function from_headers( array $headers ) {
 		$header_keys = [
@@ -87,7 +88,7 @@ class Headers {
 		if ( ! empty( $missing_keys ) ) {
 			tribe( 'logger' )->log_error(
 				sprintf(
-					// Translators: %s: The missing keys and header information.
+				// Translators: %s: The missing keys and header information.
 					__( 'Missing PayPal webhook header: %s', 'event-tickets' ),
 					json_encode( [
 						'missingKeys' => $missing_keys,

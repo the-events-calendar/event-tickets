@@ -8,7 +8,7 @@ use stdClass;
 /**
  * Class PayPalOrder
  *
- * @since 5.1.6
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  *
  */
@@ -131,9 +131,10 @@ class PayPal_Order {
 	 *
 	 * @since 5.1.6
 	 *
+	 * @throws InvalidArgumentException
+	 *
 	 * @param array $array
 	 *
-	 * @throws InvalidArgumentException
 	 */
 	private function validate( $array ) {
 		$required = [
