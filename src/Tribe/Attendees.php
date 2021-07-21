@@ -937,7 +937,15 @@ class Tribe__Tickets__Attendees {
 
 		return $provider->update_attendee( $attendee, $attendee_data );
 	}
-	//@TODO add docbloc
+
+	/**
+	 * Generate the export URL for exporting attendees
+	 *
+	 * @since TBD
+	 *
+	 *
+	 * @return string Relative URL for the export.
+	 */
 	public function get_export_url (){
 		return  add_query_arg(
 			[
@@ -946,10 +954,26 @@ class Tribe__Tickets__Attendees {
 			]
 		);
 	}
-	//@TODO add docbloc
+	/**
+	 * Echo the button for the export that appears next to the attendees page title.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id
+	 * @param Tribe__Tickets__Attendees $attendees
+	 *
+	 * @return string Relative URL for the export.
+	 */
 	public function include_export_button_title( $event_id, Tribe__Tickets__Attendees $attendees ){
+
+		// Bail early if there are no attendees
 		if ( ! $attendees->attendees_table->has_items() ) {
-			return false;
+			return;
+		}
+
+		// Bail early if user is not owner/have permissions
+		if ( ! $this->user_can_manage_attendees( 0, $event_id ) ) {
+			return;
 		}
 
 		echo sprintf( '<a target="_blank" href="%s" class="export action page-title-action">%s</a>', esc_url( $export_url = $this->get_export_url() ), esc_html__( 'Export', 'event-tickets' ) ) ;
