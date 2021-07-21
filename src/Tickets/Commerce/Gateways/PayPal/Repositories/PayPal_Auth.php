@@ -28,7 +28,7 @@ class PayPal_Auth {
 	private $connect_client;
 
 	/**
-	 * PayPalAuth constructor.
+	 * PayPal_Auth constructor.
 	 *
 	 * @since 5.1.6
 	 *
