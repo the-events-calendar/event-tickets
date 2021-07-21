@@ -103,11 +103,11 @@ class Refresh_Token {
 			return;
 		}
 
-		$tokenDetails = $this->paypal_auth->get_token_from_client_credentials( $this->merchant_detail->client_id, $this->merchant_detail->client_secret );
+		$token_details = $this->paypal_auth->get_token_from_client_credentials( $this->merchant_detail->client_id, $this->merchant_detail->client_secret );
 
-		$this->merchant_detail->set_token_details( $tokenDetails );
+		$this->merchant_detail->set_token_details( $token_details );
 		$this->details_repository->save( $this->merchant_detail );
 
-		$this->register_cron_job_to_refresh_token( $tokenDetails['expires_in'] );
+		$this->register_cron_job_to_refresh_token( $token_details['expires_in'] );
 	}
 }
