@@ -473,7 +473,7 @@ class Settings extends Abstract_Settings {
 		return tribe_update_option( "{$this->option_webhook_config}-{$mode}", $config->to_array() );
 	}
 
-	/**w
+	/**
 	 * Deletes the webhook config.
 	 *
 	 * @since 5.1.6

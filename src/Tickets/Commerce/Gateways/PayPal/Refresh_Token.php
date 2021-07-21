@@ -7,16 +7,17 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\PayPal_Auth;
 use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Merchant_Details;
 
 /**
- * Class RefreshToken
+ * Class Refresh_Token
  *
  * @since 5.1.6
+ * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class Refresh_Token {
 
 	/*
 	 * @since 5.1.6
 	 *
-	 * @var MerchantDetail
+	 * @var Merchant_Detail
 	 */
 	private $merchant_detail;
 
@@ -35,7 +36,7 @@ class Refresh_Token {
 	private $paypal_auth;
 
 	/**
-	 * RefreshToken constructor.
+	 * Refresh_Token constructor.
 	 *
 	 * @since 5.1.6
 	 *
@@ -49,7 +50,7 @@ class Refresh_Token {
 		Merchant_Detail $merchant_detail
 	) {
 		$this->details_repository = $details_repository;
-		$this->paypal_auth       = $paypal_auth;
+		$this->paypal_auth        = $paypal_auth;
 		$this->merchant_detail    = $merchant_detail;
 	}
 

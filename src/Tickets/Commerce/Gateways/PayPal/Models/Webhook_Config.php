@@ -2,6 +2,13 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\Models;
 
+/**
+ * Class Webhook_Config.
+ *
+ * @since   5.1.6
+ *
+ * @package TEC\Tickets\Commerce\Gateways\PayPal\Models
+ */
 class Webhook_Config {
 
 	/**
@@ -26,7 +33,7 @@ class Webhook_Config {
 	public $events;
 
 	/**
-	 * WebhookConfig constructor.
+	 * Webhook_Config constructor.
 	 *
 	 * @since 5.1.6
 	 *

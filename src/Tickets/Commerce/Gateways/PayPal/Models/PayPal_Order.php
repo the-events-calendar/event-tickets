@@ -6,10 +6,10 @@ use InvalidArgumentException;
 use stdClass;
 
 /**
- * Class PayPalOrder
+ * Class PayPal_Order
  *
  * @since   5.1.6
- * @package TEC\Tickets\Commerce\Gateways\PayPal
+ * @package TEC\Tickets\Commerce\Gateways\PayPal\Models
  *
  */
 class PayPal_Order {

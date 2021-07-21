@@ -10,7 +10,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Webhooks;
 use Tribe__Settings;
 
 /**
- * Class PayPalOnBoardingRedirectHandler
+ * Class On_Boarding_Redirect_Handler
  *
  * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
@@ -47,7 +47,7 @@ class On_Boarding_Redirect_Handler {
 	private $settings;
 
 	/**
-	 * onBoardingRedirectHandler constructor.
+	 * On_Boarding_Redirect_Handler constructor.
 	 *
 	 * @since 5.1.6
 	 *
@@ -96,7 +96,6 @@ class On_Boarding_Redirect_Handler {
 
 	/**
 	 * Save PayPal merchant details
-	 *_
 	 *
 	 * @since 5.1.6
 	 *
@@ -148,10 +147,10 @@ class On_Boarding_Redirect_Handler {
 		$paypal_account['account_is_ready']         = true;
 		$paypal_account['account_country']          = $this->settings->get_account_country();
 
-		$merchantDetails = Merchant_Detail::from_array( $paypal_account );
-		$this->merchant_repository->save( $merchantDetails );
+		$merchant_Details = Merchant_Detail::from_array( $paypal_account );
+		$this->merchant_repository->save( $merchant_Details );
 
-		return $merchantDetails;
+		return $merchant_Details;
 	}
 
 	/**
@@ -167,12 +166,12 @@ class On_Boarding_Redirect_Handler {
 
 		// Get link to Tickets Tab.
 		$settings_url = $settings->get_url(
-				[
-					'page'                              => 'tribe-common',
-					'tab'                               => 'event-tickets',
-					'paypal-commerce-account-connected' => '1',
-				]
-			) . '#tribe-field-tickets-commerce-paypal-commerce';
+			[
+				'page'                              => 'tribe-common',
+				'tab'                               => 'event-tickets',
+				'paypal-commerce-account-connected' => '1',
+			]
+		) . '#tribe-field-tickets-commerce-paypal-commerce';
 
 		wp_redirect( $settings_url );
 		die();
@@ -213,7 +212,7 @@ class On_Boarding_Redirect_Handler {
 	}
 
 	/**
-	 * Register notice if account connect success fully.
+	 * Register notice if account connected success fully.
 	 *
 	 * @since 5.1.6
 	 */
@@ -245,7 +244,7 @@ class On_Boarding_Redirect_Handler {
 	}
 
 	/**
-	 * Returns whether or not the current request is for refreshing the account status
+	 * Returns whether or not the current request is for refreshing the account status.
 	 *
 	 * @since 5.1.6
 	 *
@@ -278,7 +277,7 @@ class On_Boarding_Redirect_Handler {
 	}
 
 	/**
-	 * validate rest api credential.
+	 * Validate rest api credential.
 	 *
 	 * @since 5.1.6
 	 *
@@ -300,16 +299,16 @@ class On_Boarding_Redirect_Handler {
 
 			$errors[] = [
 				'type'    => 'json',
-				'message' => esc_html__( 'PayPal client rest api credentials API request response is:', 'event-tickets' ),
+				'message' => esc_html__( 'PayPal client rest API credentials API request response is:', 'event-tickets' ),
 				'value'   => wp_json_encode( $array ),
 			];
 
 			$errors[] = esc_html__( 'There was a problem with PayPal client rest API request and we could not find valid client id and secret.', 'event-tickets' );
 
 			// Log error messages.
-			array_map( static function ( $errorMessage ) {
-				$errorMessage = is_array( $errorMessage ) ? $errorMessage['message'] . ' ' . $errorMessage['value'] : $errorMessage;
-				tribe( 'logger' )->log_error( $errorMessage, 'tickets-commerce-paypal-commerce' );
+			array_map( static function ( $error_message ) {
+				$error_message = is_array( $error_message ) ? $error_message['message'] . ' ' . $error+message['value'] : $error_message;
+				tribe( 'logger' )->log_error( $error_message, 'tickets-commerce-paypal-commerce' );
 			}, $errors );
 
 			$this->merchant_repository->save_account_errors( $errors );
@@ -318,42 +317,42 @@ class On_Boarding_Redirect_Handler {
 	}
 
 	/**
-	 * Handles the request for refreshing the account status
+	 * Handles the request for refreshing the account status.
 	 *
 	 * @since 5.1.6
 	 */
 	private function refresh_account_status() {
-		$merchantDetails = $this->merchant_repository->get_details();
+		$merchant_details = $this->merchant_repository->get_details();
 
-		$status_errors = $this->is_admin_successfully_on_boarded( $merchantDetails->merchant_id_in_paypal, $merchantDetails->access_token, $merchantDetails->supports_custom_payments );
+		$status_errors = $this->is_admin_successfully_on_boarded( $merchant_details->merchant_id_in_paypal, $merchant_details->access_token, $merchant_details->supports_custom_payments );
 		if ( $status_errors !== true ) {
-			$merchantDetails->account_is_ready = false;
+			$merchant_details->account_is_ready = false;
 			$this->merchant_repository->save_account_errors( $status_errors );
 		} else {
-			$merchantDetails->account_is_ready = true;
+			$merchant_details->account_is_ready = true;
 			$this->merchant_repository->delete_account_errors();
 		}
 
-		$this->merchant_repository->save( $merchantDetails );
+		$this->merchant_repository->save( $merchant_details );
 
-		$details = $this->save_paypal_merchant_details( $merchantDetails->merchant_id, $merchantDetails->merchant_id_in_paypal );
+		$details = $this->save_paypal_merchant_details( $merchant_details->merchant_id, $merchant_details->merchant_id_in_paypal );
 
 		$this->set_up_webhook( $details );
 	}
 
 	/**
-	 * Validate seller on Boarding status
+	 * Validate seller on Boarding status.
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param string $merchantId
-	 * @param string $accessToken
-	 * @param bool   $usesCustomPayments
+	 * @param string $merchant_id
+	 * @param string $access_token
+	 * @param bool   $uses_custom_payments
 	 *
-	 * @return true|string[]
+	 * @return bool|string[]
 	 */
-	private function is_admin_successfully_on_boarded( $merchantId, $accessToken, $usesCustomPayments ) {
-		$on_boarded_data  = (array) $this->paypal_auth->get_seller_on_boarding_details_from_paypal( $merchantId, $accessToken );
+	private function is_admin_successfully_on_boarded( $merchant_id, $access_token, $uses_custom_payments ) {
+		$on_boarded_data  = (array) $this->paypal_auth->get_seller_on_boarding_details_from_paypal( $merchant_id, $access_token );
 		$on_boarded_data  = array_filter( $on_boarded_data ); // Remove empty values.
 		$error_messages[] = [
 			'type'    => 'json',
@@ -384,10 +383,10 @@ class On_Boarding_Redirect_Handler {
 		}
 
 		if ( ! $on_boarded_data['primary_email_confirmed'] ) {
-			$errorMessage[] = esc_html__( 'Confirm your primary email address', 'event-tickets' );
+			$error_message[] = esc_html__( 'Confirm your primary email address', 'event-tickets' );
 		}
 
-		if ( ! $usesCustomPayments ) {
+		if ( ! $uses_custom_payments ) {
 			return count( $error_messages ) > 1 ? $error_messages : true;
 		}
 
@@ -440,17 +439,17 @@ class On_Boarding_Redirect_Handler {
 
 		// Get link to Tickets Tab.
 		$settings_url = $settings->get_url( [
-				'page'         => 'tribe-common',
-				'tab'          => 'event-tickets',
-				'paypal-error' => '1',
-			] ) . '#tribe-field-tickets-commerce-paypal-commerce';
+			'page'         => 'tribe-common',
+			'tab'          => 'event-tickets',
+			'paypal-error' => '1',
+		] ) . '#tribe-field-tickets-commerce-paypal-commerce';
 
 		wp_redirect( $settings_url );
 		die();
 	}
 
 	/**
-	 * Displays a notice of the site is not using SSL
+	 * Displays a notice of the site is not using SSL.
 	 *
 	 * @since 5.1.6
 	 */
@@ -464,8 +463,8 @@ class On_Boarding_Redirect_Handler {
 
 		// Get link to Help page.
 		$log_url = $settings->get_url( [
-				'page' => 'tribe-help',
-			] ) . '#tribe-event-log';
+			'page' => 'tribe-help',
+		] ) . '#tribe-event-log';
 
 		$log_link = sprintf(
 			'<a href="%1$s">%2$s</a>',

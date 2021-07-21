@@ -33,7 +33,7 @@ class Webhooks_Route {
 	private $webhook_register;
 
 	/**
-	 * WebhooksRoute constructor.
+	 * Webhooks_Route constructor.
 	 *
 	 * @since 5.1.6
 	 *
@@ -130,12 +130,12 @@ class Webhooks_Route {
 				->get_event_handler( $event->event_type )
 				->process_event( $event );
 		} catch ( Exception $exception ) {
-			$eventType = empty( $event->event_type ) ? 'Unknown' : $event->event_type;
+			$event_type = empty( $event->event_type ) ? 'Unknown' : $event->event_type;
 
 			tribe( 'logger' )->log_error( sprintf(
 			// Translators: %s: The event type.
 				__( 'Error processing webhook: %s', 'event-tickets' ),
-				$eventType
+				$event_type
 			), 'tickets-commerce-paypal-commerce' );
 
 			throw $exception;

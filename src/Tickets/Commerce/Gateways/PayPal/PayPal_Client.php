@@ -8,7 +8,7 @@ use PayPalCheckoutSdk\Core\ProductionEnvironment;
 use PayPalCheckoutSdk\Core\SandboxEnvironment;
 
 /**
- * Class PayPalClient
+ * Class PayPal_Client
  *
  * @since 5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
