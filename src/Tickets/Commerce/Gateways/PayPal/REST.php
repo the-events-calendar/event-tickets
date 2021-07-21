@@ -2,7 +2,6 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use Tribe\Tickets\REST\V1\Endpoints\Commerce\PayPal_Webhook;
 use WP_REST_Server;
 
 /**
@@ -43,7 +42,7 @@ class REST {
 	 */
 	public function register_endpoints() {
 		/** @var PayPal_Webhook $endpoint */
-		$endpoint = tribe( PayPal_Webhook::class );
+		$endpoint = tribe( REST\PayPal_Webhook::class );
 
 		register_rest_route(
 			$this->namespace,
@@ -55,7 +54,20 @@ class REST {
 				'permission_callback' => '__return_true',
 			]
 		);
+		$this->documentation->register_documentation_provider( $endpoint->get_endpoint_path(), $endpoint );
 
-		$this->documentation->register_documentation_provider( $endpoint->path, $endpoint );
+		$endpoint = tribe( REST\On_Boarding::class );
+		register_rest_route(
+			$this->namespace,
+			$endpoint->get_endpoint_path(),
+			[
+				'methods'             => WP_REST_Server::CREATABLE,
+				'args'                => $endpoint->CREATE_args(),
+				'callback'            => [ $endpoint, 'create' ],
+				'permission_callback' => '__return_true',
+			]
+		);
+
+		$this->documentation->register_documentation_provider( $endpoint->get_endpoint_path(), $endpoint );
 	}
 }

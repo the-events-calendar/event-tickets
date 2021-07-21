@@ -8,7 +8,6 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Merchant_Details;
 use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Webhooks;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Headers;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhook_Register;
-use Tribe\Tickets\REST\V1\Endpoints\Commerce\PayPal_Webhook;
 
 class Webhooks_Route {
 	/**
@@ -57,9 +56,9 @@ class Webhooks_Route {
 	public function get_route_url() {
 		/** @var REST $rest */
 		$rest     = tribe( REST::class );
-		$endpoint = tribe( PayPal_Webhook::class );
+		$endpoint = tribe( REST\PayPal_Webhook::class );
 
-		return rest_url( '/' . $rest->namespace . $endpoint->path, 'https' );
+		return rest_url( '/' . $rest->namespace . $endpoint->get_endpoint_path(), 'https' );
 	}
 
 	/**

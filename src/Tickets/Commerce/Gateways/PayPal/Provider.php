@@ -2,8 +2,6 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use Tribe\Tickets\REST\V1\Endpoints\Commerce\PayPal_Webhook;
-
 /**
  * Service provider for the Tickets Commerce: PayPal Commerce gateway.
  *
@@ -48,13 +46,8 @@ class Provider extends \tad_DI52_ServiceProvider {
 		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Reversed::class );
 
 		$this->container->singleton( REST::class );
-		$this->container->singleton( PayPal_Webhook::class, static function() {
-			return new PayPal_Webhook(
-				tribe( 'tickets.rest-v1.messages' ),
-				tribe( 'tickets.rest-v1.repository' ),
-				tribe( 'tickets.rest-v1.validator' )
-			);
-		} );
+		$this->container->singleton( REST\PayPal_Webhook::class, REST\PayPal_Webhook::class );
+		$this->container->singleton( REST\On_Boarding::class, REST\On_Boarding::class );
 	}
 
 	/**

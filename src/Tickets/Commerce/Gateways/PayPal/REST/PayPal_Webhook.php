@@ -1,7 +1,8 @@
 <?php
 
-namespace Tribe\Tickets\REST\V1\Endpoints\Commerce;
+namespace TEC\Tickets\Commerce\Gateways\PayPal\REST;
 
+use TEC\Tickets\Commerce\Gateways\PayPal\REST;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners\Payment_Capture_Completed;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhooks_Route;
 use Tribe__Documentation__Swagger__Provider_Interface;
@@ -29,7 +30,31 @@ class PayPal_Webhook
 	 *
 	 * @var string
 	 */
-	public $path = '/paypal-commerce/webhook';
+	protected $path = '/tickets-commerce/paypal/webhook';
+
+	/**
+	 * Gets the Endpoint path for the on boarding process.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_endpoint_path() {
+		return $this->path;
+	}
+
+	/**
+	 * Get the REST API route URL.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The REST API route URL.
+	 */
+	public function get_route_url() {
+		$rest     = tribe( REST::class );
+
+		return rest_url( '/' . $rest->namespace . $this->get_endpoint_path(), 'https' );
+	}
 
 	/**
 	 * {@inheritDoc}
