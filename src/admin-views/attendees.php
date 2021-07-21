@@ -40,12 +40,13 @@ $export_url = tribe( 'tickets.attendees' )->get_export_url();
 			 * Add an action to render content after text title.
 			 *
 			 * @since 5.1.0
+			 * @since TBD Added the attendees information.
 			 *
 			 * @param int $event_id Post ID.
+			 * @param Tribe__Tickets__Attendees @attendees The attendees object.
 			 */
-			do_action( 'tribe_report_page_after_text_label', $event_id );
+			do_action( 'tribe_report_page_after_text_label', $event_id, $attendees );
 
-			echo sprintf( '<a target="_blank" href="%s" class="export action page-title-action">%s</a>', esc_url( $export_url ), esc_html__( 'Export', 'event-tickets' ) )
 			?>
 		</h1>
 	<?php endif; ?>

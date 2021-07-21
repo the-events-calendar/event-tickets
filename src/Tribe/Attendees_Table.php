@@ -551,8 +551,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return;
 		}
 
-		$export_url = tribe( 'tickets.attendees' )->get_export_url();
-
 		/**
 		 * Include TB_iframe JS
 		 */
@@ -597,7 +595,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$nav = [
 			'left' => [
 				'print'  => sprintf( '<input type="button" name="print" class="print button action" value="%s">', esc_attr__( 'Print', 'event-tickets' ) ),
-				'export' => sprintf( '<a target="_blank" href="%s" class="export button action">%s</a>', esc_url( $export_url ), esc_html__( 'Export', 'event-tickets' ) ),
+				'export' => sprintf( '<a target="_blank" href="%s" class="export button action">%s</a>', esc_url( tribe( 'tickets.attendees' )->get_export_url() ), esc_html__( 'Export', 'event-tickets' ) ),
 			],
 			'right' => [],
 		];
