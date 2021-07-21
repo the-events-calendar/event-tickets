@@ -3,8 +3,8 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, patriciahillebrandt, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
-Tested up to: 5.7.2
-Stable tag: 5.1.6
+Tested up to: 5.8.0
+Stable tag: 5.2.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -179,7 +179,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 == Changelog ==
 
 = [5.2.1] TBD =
-
+6
 * Feature - Added export button next to the page title on the Attendees page. [ET-1145]
 * Tweak - Added `$attendees` parameter to the `tribe_report_page_after_text_label` action. [ET-1145]
 
