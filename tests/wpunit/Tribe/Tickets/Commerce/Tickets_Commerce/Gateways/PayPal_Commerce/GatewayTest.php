@@ -81,16 +81,16 @@ class GatewayTest extends \Codeception\TestCase\WPTestCase {
 
 		// Fill in the merchant ID so it passes the conditional check coming up.
 		update_option( $merchant_details->getAccountKey(), [
-			'merchant_id'             => '12345',
-			'merchant_id_in_paypal'     => '123456',
-			'client_id'               => 'ABCD',
-			'client_secret'           => 'ABCDE',
-			'token'                  => [
+			'merchant_id'              => '12345',
+			'merchant_id_in_paypal'    => '123456',
+			'client_id'                => 'ABCD',
+			'client_secret'            => 'ABCDE',
+			'token'                    => [
 				'access_token' => 'abcd',
 			],
 			'account_is_ready'         => '1',
 			'supports_custom_payments' => '1',
-			'account_country'         => 'US',
+			'account_country'          => 'US',
 		] );
 
 		// Reset the merchant detail object.

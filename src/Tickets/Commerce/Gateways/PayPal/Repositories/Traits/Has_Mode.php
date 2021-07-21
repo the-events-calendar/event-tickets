@@ -4,6 +4,12 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Traits;
 
 use InvalidArgumentException;
 
+/**
+ * Trait Has_Mode
+ *
+ * @since 5.1.6
+ * @package TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Traits
+ */
 trait Has_Mode {
 
 	/**

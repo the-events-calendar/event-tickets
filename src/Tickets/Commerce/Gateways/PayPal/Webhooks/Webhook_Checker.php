@@ -74,17 +74,17 @@ class Webhook_Checker {
 			return;
 		}
 
-		$webhook_url        = $this->webhooks_route->get_route_url();
+		$webhook_url       = $this->webhooks_route->get_route_url();
 		$registered_events = $this->webhook_register->get_registered_events();
 
-		$missingEvents    = array_merge(
+		$missing_events     = array_merge(
 			array_diff( $registered_events, $webhook_config->events ),
 			array_diff( $webhook_config->events, $registered_events )
 		);
-		$hasMissingEvents = ! empty( $missingEvents );
+		$has_missing_events = ! empty( $missing_events );
 
 		// Update the webhook if the return url or events have changed
-		if ( $webhook_url !== $webhook_config->return_url || $hasMissingEvents ) {
+		if ( $webhook_url !== $webhook_config->return_url || $has_missing_events ) {
 			try {
 				$this->webhooks_repository->update_webhook( $this->merchant_details->access_token, $webhook_config->id );
 

@@ -6,10 +6,10 @@ use InvalidArgumentException;
 use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Merchant_Details;
 
 /**
- * Class MerchantDetail
+ * Class Merchant_Detail
  *
  * @since   5.1.6
- * @package TEC\Tickets\Commerce\Gateways\PayPal
+ * @package TEC\Tickets\Commerce\Gateways\PayPal\Models
  *
  */
 class Merchant_Detail {
@@ -167,9 +167,8 @@ class Merchant_Detail {
 	 *
 	 */
 	private function setup_properties( $merchant_details ) {
-		$this->merchant_id           = $merchant_details['merchant_id'];
-		$this->merchant_id_in_paypal = $merchant_details['merchant_id_in_paypal'];
-
+		$this->merchant_id              = $merchant_details['merchant_id'];
+		$this->merchant_id_in_paypal    = $merchant_details['merchant_id_in_paypal'];
 		$this->client_id                = $merchant_details['client_id'];
 		$this->client_secret            = $merchant_details['client_secret'];
 		$this->token_details            = $merchant_details['token'];
@@ -199,7 +198,7 @@ class Merchant_Detail {
 		];
 
 		if ( array_diff( $required, array_keys( $merchant_details ) ) ) {
-			throw new InvalidArgumentException( esc_html__( 'To create a MerchantDetail object, please provide the following: ' . implode( ', ', $required ), 'event-tickets' ) );
+			throw new InvalidArgumentException( esc_html__( 'To create a Merchant_Detail object, please provide the following: ' . implode( ', ', $required ), 'event-tickets' ) );
 		}
 	}
 

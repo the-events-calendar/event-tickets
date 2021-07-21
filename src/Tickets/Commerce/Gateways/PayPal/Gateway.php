@@ -44,13 +44,13 @@ class Gateway extends Abstract_Gateway {
 		}
 
 		/** @var Merchant_Details $merchantDetails */
-		$merchantDetails = tribe( Merchant_Details::class );
+		$merchant_details = tribe( Merchant_Details::class );
 
 		// Make sure we have details setup.
-		$merchantDetails->get_details();
+		$merchant_details->get_details();
 
 		// @todo Confirm this is the correct conditional.
-		if ( $merchantDetails->account_is_connected() ) {
+		if ( $merchant_details->account_is_connected() ) {
 			return true;
 		}
 

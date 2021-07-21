@@ -91,7 +91,7 @@ class Headers {
 				// Translators: %s: The missing keys and header information.
 					__( 'Missing PayPal webhook header: %s', 'event-tickets' ),
 					json_encode( [
-						'missingKeys' => $missing_keys,
+						'missing_keys' => $missing_keys,
 						'headers'     => $headers,
 					] )
 				),

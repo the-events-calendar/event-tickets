@@ -5,6 +5,12 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\Repositories;
 use TEC\Tickets\Commerce\Gateways\PayPal\Connect_Client;
 use TEC\Tickets\Commerce\Gateways\PayPal\PayPal_Client;
 
+/**
+ * Class PayPal_Auth
+ *
+ * @since 5.1.6
+ * @package TEC\Tickets\Commerce\Gateways\PayPal\Repositories
+ */
 class PayPal_Auth {
 
 	/**
@@ -133,10 +139,10 @@ class PayPal_Auth {
 	 *
 	 * @return array|null
 	 */
-	public function get_seller_partner_link( $returnUrl, $country ) {
+	public function get_seller_partner_link( $return_url, $country ) {
 		$request = wp_remote_post( sprintf( $this->connect_client->get_api_url( 'paypal-commerce/?mode=%1$s&request=partner-link' ), $this->paypal_client->mode ), [
 			'body'      => [
-				'return_url'   => $returnUrl,
+				'return_url'   => $return_url,
 				'country_code' => $country,
 			],
 			// @todo Remove this when SSL is fixed.
@@ -215,10 +221,10 @@ class PayPal_Auth {
 	 *
 	 * @return array
 	 */
-	public function get_seller_rest_api_credentials( $accessToken ) {
+	public function get_seller_rest_api_credentials( $access_token ) {
 		$request = wp_remote_post( $this->connect_client->get_api_url( sprintf( 'paypal-commerce/?mode=%1$s&request=seller-credentials', $this->paypal_client->mode ) ), [
 			'body' => [
-				'token' => $accessToken,
+				'token' => $access_token,
 			],
 		] );
 

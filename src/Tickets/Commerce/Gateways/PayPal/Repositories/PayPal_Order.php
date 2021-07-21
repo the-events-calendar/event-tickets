@@ -14,7 +14,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Models\Merchant_Detail;
 use TEC\Tickets\Commerce\Gateways\PayPal\PayPal_Client;
 
 /**
- * Class PayPalOrder
+ * Class PayPal_Order
  *
  * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal\Repositories
@@ -37,7 +37,7 @@ class PayPal_Order {
 	private $merchant_details;
 
 	/**
-	 * PayPalOrder constructor.
+	 * PayPal_Order constructor.
 	 *
 	 * @since 5.1.6
 	 *
@@ -57,12 +57,12 @@ class PayPal_Order {
 	 *
 	 * @throws Exception
 	 *
-	 * @param string $orderId
+	 * @param string $order_id
 	 *
 	 * @return string
 	 */
-	public function approve_order( $orderId ) {
-		$request = new OrdersCaptureRequest( $orderId );
+	public function approve_order( $order_id ) {
+		$request = new OrdersCaptureRequest( $order_id );
 
 		try {
 			return $this->paypal_client->get_http_client()->execute( $request )->result;

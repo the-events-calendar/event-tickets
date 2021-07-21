@@ -5,10 +5,10 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\Models;
 use InvalidArgumentException;
 
 /**
- * Class PayPalPayment
+ * Class PayPal_Payment
  *
  * @since   5.1.6
- * @package TEC\Tickets\Commerce\Gateways\PayPal
+ * @package TEC\Tickets\Commerce\Gateways\PayPal\Models
  *
  */
 class PayPal_Payment {

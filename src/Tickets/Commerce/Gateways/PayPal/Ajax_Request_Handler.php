@@ -12,7 +12,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Webhooks;
 // @todo Bring this over.
 
 /**
- * Class AjaxRequestHandler
+ * Class Ajax_Request_Handler
  *
  * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal

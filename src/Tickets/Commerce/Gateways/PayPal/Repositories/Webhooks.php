@@ -11,6 +11,12 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Settings;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhook_Register;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhooks_Route;
 
+/**
+ * Class Webhooks
+ *
+ * @since 5.1.6
+ * @package TEC\Tickets\Commerce\Gateways\PayPal\Repositories
+ */
 class Webhooks {
 
 	use Has_Mode;

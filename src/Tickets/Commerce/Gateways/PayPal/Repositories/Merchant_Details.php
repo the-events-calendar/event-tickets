@@ -7,9 +7,10 @@ use TEC\Tickets\Commerce\Gateways\PayPal\PayPal_Client;
 use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Traits\Has_Mode;
 
 /**
- * Class MerchantDetails
+ * Class Merchant_Details
  *
  * @since 5.1.6
+ * @package TEC\Tickets\Commerce\Gateways\PayPal\Repositories
  */
 class Merchant_Details {
 
@@ -104,8 +105,8 @@ class Merchant_Details {
 	 *
 	 * @return bool
 	 */
-	public function save_account_errors( $errorMessage ) {
-		return update_option( $this->get_account_errors_key(), $errorMessage );
+	public function save_account_errors( $error_message ) {
+		return update_option( $this->get_account_errors_key(), $error_message );
 	}
 
 	/**
