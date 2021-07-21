@@ -1,12 +1,12 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories;
+namespace TEC\Tickets\Commerce\Gateways\PayPal\Repositories;
 
 use Exception;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Webhooks\Headers;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\Webhook_Config;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\PayPal_Client;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Traits\Has_Mode;
+use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Headers;
+use TEC\Tickets\Commerce\Gateways\PayPal\Models\Webhook_Config;
+use TEC\Tickets\Commerce\Gateways\PayPal\PayPal_Client;
+use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Traits\Has_Mode;
 use TEC\Tickets\Commerce\Gateways\PayPal\Settings;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhook_Register;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhooks_Route;

@@ -28,7 +28,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 
 		/*$this->container->singleton( PaymentProcessor::class );;*/
 		$this->container->singleton( Ajax_Request_Handler::class );
-		$this->container->singleton( onBoardingRedirectHandler::class );
+		$this->container->singleton( On_Boarding_Redirect_Handler::class );
 		$this->container->singleton( SDK\Refresh_Token::class );
 
 		$this->container->singleton( SDK\Repositories\PayPal_Auth::class );

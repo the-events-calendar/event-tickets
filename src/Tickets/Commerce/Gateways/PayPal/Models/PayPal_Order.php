@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models;
+namespace TEC\Tickets\Commerce\Gateways\PayPal\Models;
 
 use InvalidArgumentException;
 use stdClass;
@@ -110,11 +110,8 @@ class PayPal_Order {
 
 		$order->validate( $array );
 
-		// @todo Replace this with a new method somewhere else.
-		$array = ArrayDataSet::camelCaseKeys( $array );
-
-		foreach ( $array as $itemName => $value ) {
-			if ( 'purchaseUnits' === $itemName ) {
+		foreach ( $array as $item_name => $value ) {
+			if ( 'purchase_units' === $item_name ) {
 				$value = current( $value );
 
 				$order->purchase_unit = $value;
@@ -123,7 +120,7 @@ class PayPal_Order {
 				continue;
 			}
 
-			$order->{$itemName} = $value;
+			$order->{$item_name} = $value;
 		}
 
 		return $order;

@@ -11,7 +11,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Legacy;
 
 use TEC\Tickets\Commerce\Abstract_Settings;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\Merchant_Detail;
+use TEC\Tickets\Commerce\Gateways\PayPal\Models\Merchant_Detail;
 
 /**
  * The PayPal Standard (Legacy) specific settings.

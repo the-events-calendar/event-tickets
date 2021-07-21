@@ -85,7 +85,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	public function on_boarding_boot() {
-		$this->container->make( onBoardingRedirectHandler::class )->boot();
+		$this->container->make( On_Boarding_Redirect_Handler::class )->boot();
 	}
 
 	public function create_order() {

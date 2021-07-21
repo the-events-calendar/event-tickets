@@ -1,9 +1,9 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories;
+namespace TEC\Tickets\Commerce\Gateways\PayPal\Repositories;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Connect_Client;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\PayPal_Client;
+use TEC\Tickets\Commerce\Gateways\PayPal\PayPal_Client;
 
 class PayPal_Auth {
 

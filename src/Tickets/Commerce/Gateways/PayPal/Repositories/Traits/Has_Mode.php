@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Traits;
+namespace TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Traits;
 
 use InvalidArgumentException;
 

@@ -3,8 +3,8 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 
 use Exception;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\Merchant_Detail;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Webhooks;
+use TEC\Tickets\Commerce\Gateways\PayPal\Models\Merchant_Detail;
+use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Webhooks;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhooks_Route;
 
 class Webhook_Checker {

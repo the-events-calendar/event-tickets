@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories;
+namespace TEC\Tickets\Commerce\Gateways\PayPal\Repositories;
 
 use Exception;
 use InvalidArgumentException;
@@ -10,14 +10,14 @@ use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalCheckoutSdk\Payments\CapturesRefundRequest;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\Merchant_Detail;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\PayPal_Client;
+use TEC\Tickets\Commerce\Gateways\PayPal\Models\Merchant_Detail;
+use TEC\Tickets\Commerce\Gateways\PayPal\PayPal_Client;
 
 /**
  * Class PayPalOrder
  *
  * @since   5.1.6
- * @package TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories
+ * @package TEC\Tickets\Commerce\Gateways\PayPal\Repositories
  *
  */
 class PayPal_Order {

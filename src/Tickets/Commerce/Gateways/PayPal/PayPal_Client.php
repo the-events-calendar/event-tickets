@@ -1,8 +1,8 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK;
+namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\Merchant_Detail;
+use TEC\Tickets\Commerce\Gateways\PayPal\Models\Merchant_Detail;
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
 use PayPalCheckoutSdk\Core\ProductionEnvironment;
 use PayPalCheckoutSdk\Core\SandboxEnvironment;
@@ -11,7 +11,7 @@ use PayPalCheckoutSdk\Core\SandboxEnvironment;
  * Class PayPalClient
  *
  * @since 5.1.6
- * @package TEC\Tickets\Commerce\Gateways\PayPal\SDK
+ * @package TEC\Tickets\Commerce\Gateways\PayPal
  *
  */
 class PayPal_Client {

@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Webhooks;
+namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 
 use Exception;
 
@@ -9,7 +9,7 @@ use Exception;
  *
  * @since 5.1.6
  *
- * @package TEC\Tickets\Commerce\Gateways\PayPal\SDK\Webhooks
+ * @package TEC\Tickets\Commerce\Gateways\PayPal\Webhooks
  */
 class Headers {
 

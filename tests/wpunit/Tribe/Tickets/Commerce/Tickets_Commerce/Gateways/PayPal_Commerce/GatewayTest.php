@@ -1,9 +1,9 @@
 <?php
 
-namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce;
+namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\MerchantDetail;
-use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Repositories\MerchantDetails;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\Merchant_Detail;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Merchant_Details;
 
 class GatewayTest extends \Codeception\TestCase\WPTestCase {
 
@@ -61,8 +61,8 @@ class GatewayTest extends \Codeception\TestCase\WPTestCase {
 		$sut      = $this->make_instance();
 		$commerce = tribe( 'tickets.commerce.paypal' );
 
-		/** @var MerchantDetails $merchant_details */
-		$merchant_details = tribe( MerchantDetails::class );
+		/** @var Merchant_Details $merchant_details */
+		$merchant_details = tribe( Merchant_Details::class );
 
 		// Delete the option so it never comes up as possibly being connected.
 		delete_option( $merchant_details->getAccountKey() );
@@ -76,25 +76,25 @@ class GatewayTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_activate_gateway_if_config_status_is_complete() {
-		/** @var MerchantDetails $merchant_details */
-		$merchant_details = tribe( MerchantDetails::class );
+		/** @var Merchant_Details $merchant_details */
+		$merchant_details = tribe( Merchant_Details::class );
 
 		// Fill in the merchant ID so it passes the conditional check coming up.
 		update_option( $merchant_details->getAccountKey(), [
-			'merchantId'             => '12345',
-			'merchantIdInPayPal'     => '123456',
-			'clientId'               => 'ABCD',
-			'clientSecret'           => 'ABCDE',
+			'merchant_id'             => '12345',
+			'merchant_id_in_paypal'     => '123456',
+			'client_id'               => 'ABCD',
+			'client_secret'           => 'ABCDE',
 			'token'                  => [
 				'access_token' => 'abcd',
 			],
-			'accountIsReady'         => '1',
-			'supportsCustomPayments' => '1',
-			'accountCountry'         => 'US',
+			'account_is_ready'         => '1',
+			'supports_custom_payments' => '1',
+			'account_country'         => 'US',
 		] );
 
 		// Reset the merchant detail object.
-		tribe_singleton( MerchantDetail::class, null, [ 'init' ] );
+		tribe_singleton( Merchant_Detail::class, null, [ 'init' ] );
 
 		$sut      = $this->make_instance();
 		$commerce = tribe( 'tickets.commerce.paypal' );

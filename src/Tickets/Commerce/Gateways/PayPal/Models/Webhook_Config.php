@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models;
+namespace TEC\Tickets\Commerce\Gateways\PayPal\Models;
 
 class Webhook_Config {
 

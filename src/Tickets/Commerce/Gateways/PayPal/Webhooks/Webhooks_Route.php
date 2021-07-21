@@ -4,9 +4,9 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 
 use Exception;
 use TEC\Tickets\Commerce\Gateways\PayPal\REST;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Merchant_Details;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Webhooks;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Webhooks\Headers;
+use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Merchant_Details;
+use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Webhooks;
+use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Headers;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhook_Register;
 use Tribe\Tickets\REST\V1\Endpoints\Commerce\PayPal_Webhook;
 

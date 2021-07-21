@@ -3,9 +3,9 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Abstract_Settings;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\Merchant_Detail;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\Webhook_Config;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Merchant_Details;
+use TEC\Tickets\Commerce\Gateways\PayPal\Models\Merchant_Detail;
+use TEC\Tickets\Commerce\Gateways\PayPal\Models\Webhook_Config;
+use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Merchant_Details;
 use Tribe__Languages__Locations;
 use Tribe__Tickets__Admin__Views;
 use Tribe__Tickets__Main;
@@ -77,12 +77,12 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param Merchant_Detail  $merchantDetail
-	 * @param Merchant_Details $merchantDetailRepository
+	 * @param Merchant_Detail  $merchant_detail
+	 * @param Merchant_Details $merchant_detail_repository
 	 */
-	public function __construct( Merchant_Detail $merchantDetail, Merchant_Details $merchantDetailRepository ) {
-		$this->merchant_model      = $merchantDetail;
-		$this->merchant_repository = $merchantDetailRepository;
+	public function __construct( Merchant_Detail $merchant_detail, Merchant_Details $merchant_detail_repository ) {
+		$this->merchant_model      = $merchant_detail;
+		$this->merchant_repository = $merchant_detail_repository;
 	}
 
 	/**
@@ -473,7 +473,7 @@ class Settings extends Abstract_Settings {
 		return tribe_update_option( "{$this->option_webhook_config}-{$mode}", $config->to_array() );
 	}
 
-	/**
+	/**w
 	 * Deletes the webhook config.
 	 *
 	 * @since 5.1.6

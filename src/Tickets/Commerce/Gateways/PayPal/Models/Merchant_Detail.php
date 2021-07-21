@@ -1,14 +1,14 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models;
+namespace TEC\Tickets\Commerce\Gateways\PayPal\Models;
 
 use InvalidArgumentException;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Merchant_Details;
+use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Merchant_Details;
 
 /**
  * Class MerchantDetail
  *
- * @since 5.1.6
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  *
  */
@@ -125,14 +125,14 @@ class Merchant_Detail {
 	 */
 	public function to_array() {
 		return [
-			'merchantId'             => $this->merchant_id,
-			'merchantIdInPayPal'     => $this->merchant_id_in_paypal,
-			'clientId'               => $this->client_id,
-			'clientSecret'           => $this->client_secret,
-			'token'                  => $this->token_details,
-			'accountIsReady'         => $this->account_is_ready,
-			'supportsCustomPayments' => $this->supports_custom_payments,
-			'accountCountry'         => $this->account_country,
+			'merchant_id'              => $this->merchant_id,
+			'merchant_id_in_paypal'    => $this->merchant_id_in_paypal,
+			'client_id'                => $this->client_id,
+			'client_secret'            => $this->client_secret,
+			'token'                    => $this->token_details,
+			'account_is_ready'         => $this->account_is_ready,
+			'supports_custom_payments' => $this->supports_custom_payments,
+			'account_country'          => $this->account_country,
 		];
 	}
 
@@ -167,15 +167,15 @@ class Merchant_Detail {
 	 *
 	 */
 	private function setup_properties( $merchant_details ) {
-		$this->merchant_id            = $merchant_details['merchantId'];
-		$this->merchant_id_in_paypal = $merchant_details['merchantIdInPayPal'];
+		$this->merchant_id           = $merchant_details['merchant_id'];
+		$this->merchant_id_in_paypal = $merchant_details['merchant_id_in_paypal'];
 
-		$this->client_id                = $merchant_details['clientId'];
-		$this->client_secret            = $merchant_details['clientSecret'];
+		$this->client_id                = $merchant_details['client_id'];
+		$this->client_secret            = $merchant_details['client_secret'];
 		$this->token_details            = $merchant_details['token'];
-		$this->account_is_ready         = $merchant_details['accountIsReady'];
-		$this->supports_custom_payments = $merchant_details['supportsCustomPayments'];
-		$this->account_country          = $merchant_details['accountCountry'];
+		$this->account_is_ready         = $merchant_details['account_is_ready'];
+		$this->supports_custom_payments = $merchant_details['supports_custom_payments'];
+		$this->account_country          = $merchant_details['account_country'];
 		$this->access_token             = $this->token_details['access_token'];
 	}
 
@@ -188,14 +188,14 @@ class Merchant_Detail {
 	 */
 	private function validate( $merchant_details ) {
 		$required = [
-			'merchantId',
-			'merchantIdInPayPal',
-			'clientId',
-			'clientSecret',
+			'merchant_id',
+			'merchant_id_in_paypal',
+			'client_id',
+			'client_secret',
 			'token',
-			'accountIsReady',
-			'supportsCustomPayments',
-			'accountCountry',
+			'account_is_ready',
+			'supports_custom_payments',
+			'account_country',
 		];
 
 		if ( array_diff( $required, array_keys( $merchant_details ) ) ) {
