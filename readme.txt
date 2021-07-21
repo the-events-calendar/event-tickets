@@ -183,8 +183,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Feature - Added export button next to the page title on the Attendees page. [ET-1145]
 * Tweak - Added `$attendees` parameter to the `tribe_report_page_after_text_label` action. [ET-1145]
 
-* Language -
-
 = [5.1.6] 2021-07-07 =
 
 * Tweak - Added support for HTML in Ticket description field. [ET-1135]
