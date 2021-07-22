@@ -3,20 +3,20 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal\Repositories;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Connect_Client;
-use TEC\Tickets\Commerce\Gateways\PayPal\PayPal_Client;
+use TEC\Tickets\Commerce\Gateways\PayPal\Client;
 
 /**
- * Class PayPal_Auth
+ * Class Authorization
  *
  * @since 5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal\Repositories
  */
-class PayPal_Auth {
+class Authorization {
 
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var PayPal_Client
+	 * @var Client
 	 */
 	private $paypal_client;
 
@@ -28,14 +28,14 @@ class PayPal_Auth {
 	private $connect_client;
 
 	/**
-	 * PayPal_Auth constructor.
+	 * Authorization constructor.
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param PayPal_Client  $paypal_client
+	 * @param Client         $paypal_client
 	 * @param Connect_Client $connect_client
 	 */
-	public function __construct( PayPal_Client $paypal_client, Connect_Client $connect_client ) {
+	public function __construct( Client $paypal_client, Connect_Client $connect_client ) {
 		$this->paypal_client  = $paypal_client;
 		$this->connect_client = $connect_client;
 	}

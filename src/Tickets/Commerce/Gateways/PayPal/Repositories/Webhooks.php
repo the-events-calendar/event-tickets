@@ -5,8 +5,8 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\Repositories;
 use Exception;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Headers;
 use TEC\Tickets\Commerce\Gateways\PayPal\Models\Webhook_Config;
-use TEC\Tickets\Commerce\Gateways\PayPal\PayPal_Client;
-use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Traits\Has_Mode;
+use TEC\Tickets\Commerce\Gateways\PayPal\Client;
+use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Settings;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhook_Register;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhooks_Route;
@@ -18,9 +18,6 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhooks_Route;
  * @package TEC\Tickets\Commerce\Gateways\PayPal\Repositories
  */
 class Webhooks {
-
-	use Has_Mode;
-
 	/**
 	 * @since 5.1.6
 	 *
@@ -34,7 +31,7 @@ class Webhooks {
 	private $webhooks_register;
 
 	/**
-	 * @var PayPal_Client
+	 * @var Client
 	 */
 	private $paypal_client;
 
@@ -48,23 +45,14 @@ class Webhooks {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param PayPal_Client    $paypal_client
+	 * @param Client           $paypal_client
 	 * @param Webhook_Register $webhooks_register
 	 * @param Settings         $settings
 	 */
-	public function __construct( PayPal_Client $paypal_client, Webhook_Register $webhooks_register, Settings $settings ) {
+	public function __construct( Client $paypal_client, Webhook_Register $webhooks_register, Settings $settings ) {
 		$this->paypal_client     = $paypal_client;
 		$this->webhooks_register = $webhooks_register;
 		$this->settings          = $settings;
-	}
-
-	/**
-	 * Handle initial setup for the object singleton.
-	 *
-	 * @since 5.1.6
-	 */
-	public function init() {
-		$this->set_mode( tribe_tickets_commerce_is_test_mode() ? 'sandbox' : 'live' );
 	}
 
 	/**
@@ -406,13 +394,13 @@ class Webhooks {
 	 * @since 5.1.6
 	 *
 	 * @param string $token
-	 * @param string $webhookId
+	 * @param string $webhook_id
 	 *
 	 * @return bool Whether or not the deletion was successful
 	 */
-	public function delete_webhook( $token, $webhookId ) {
+	public function delete_webhook( $token, $webhook_id ) {
 		// @todo Move this to the SDK.
-		$api_url = $this->paypal_client->get_api_url( "v1/notifications/webhooks/{$webhookId}" );
+		$api_url = $this->paypal_client->get_api_url( "v1/notifications/webhooks/{$webhook_id}" );
 
 		$request = wp_remote_request(
 			$api_url,
@@ -438,7 +426,7 @@ class Webhooks {
 	 * @param Webhook_Config $config
 	 */
 	public function save_webhook_config( Webhook_Config $config ) {
-		$this->settings->update_webhook_config( $this->mode, $config );
+		$this->settings->update_webhook_config( tribe( Merchant::class )->get_mode(), $config );
 	}
 
 	/**
@@ -449,7 +437,7 @@ class Webhooks {
 	 * @return Webhook_Config|null
 	 */
 	public function get_webhook_config() {
-		return $this->settings->get_webhook_config( $this->mode );
+		return $this->settings->get_webhook_config( tribe( Merchant::class )->get_mode() );
 	}
 
 	/**
@@ -458,6 +446,6 @@ class Webhooks {
 	 * @since 5.1.6
 	 */
 	public function delete_webhook_config() {
-		$this->settings->delete_webhook_config( $this->mode );
+		$this->settings->delete_webhook_config( tribe( Merchant::class )->get_mode() );
 	}
 }

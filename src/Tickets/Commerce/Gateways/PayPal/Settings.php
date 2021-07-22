@@ -3,9 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Abstract_Settings;
-use TEC\Tickets\Commerce\Gateways\PayPal\Models\Merchant_Detail;
 use TEC\Tickets\Commerce\Gateways\PayPal\Models\Webhook_Config;
-use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Merchant_Details;
 use Tribe__Languages__Locations;
 use Tribe__Tickets__Admin__Views;
 use Tribe__Tickets__Main;
@@ -59,30 +57,21 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @var Merchant_Detail
+	 * @var Merchant
 	 */
-	private $merchant_model;
-
-	/**
-	 * The merchant details repository.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @var Merchant_Details
-	 */
-	private $merchant_repository;
+	protected $merchant;
 
 	/**
 	 * Set up the things we need for the settings.
 	 *
-	 * @since 5.1.6
+	 * @since TBD
 	 *
-	 * @param Merchant_Detail  $merchant_detail
-	 * @param Merchant_Details $merchant_detail_repository
+	 * @param Merchant  $merchant
 	 */
-	public function __construct( Merchant_Detail $merchant_detail, Merchant_Details $merchant_detail_repository ) {
-		$this->merchant_model      = $merchant_detail;
-		$this->merchant_repository = $merchant_detail_repository;
+	public function __construct(
+		Merchant $merchant = null
+	) {
+		$this->merchant = $merchant ?: tribe( Merchant::class );
 	}
 
 	/**
@@ -160,11 +149,11 @@ class Settings extends Abstract_Settings {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
-		$account_errors = $this->merchant_repository->get_account_errors();
+		$account_errors = $this->merchant->get_account_errors();
 
 		$context = [
-			'account_is_connected' => $this->merchant_repository->account_is_connected(),
-			'merchant_id'          => $this->merchant_model->merchant_id,
+			'account_is_connected' => $this->merchant->account_is_connected(),
+			'merchant_id'          => $this->merchant->get_merchant_id(),
 			'formatted_errors'     => $this->get_formatted_error_html( $account_errors ),
 			'guidance_html'        => $this->get_guidance_html(),
 		];

@@ -4,7 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 
 use Exception;
 use TEC\Tickets\Commerce\Gateways\PayPal\REST;
-use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Merchant_Details;
+use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Webhooks;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Headers;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhook_Register;
@@ -13,9 +13,9 @@ class Webhooks_Route {
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var Merchant_Details
+	 * @var Merchant
 	 */
-	private $merchant_repository;
+	private $merchant;
 
 	/**
 	 * @since 5.1.6
@@ -36,14 +36,14 @@ class Webhooks_Route {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param Merchant_Details $merchant_repository
+	 * @param Merchant $merchant
 	 * @param Webhook_Register $register
 	 * @param Webhooks         $webhook_repository
 	 */
-	public function __construct( Merchant_Details $merchant_repository, Webhook_Register $register, Webhooks $webhook_repository ) {
-		$this->merchant_repository = $merchant_repository;
-		$this->webhook_register    = $register;
-		$this->webhook_repository  = $webhook_repository;
+	public function __construct( Merchant $merchant, Webhook_Register $register, Webhooks $webhook_repository ) {
+		$this->merchant           = $merchant;
+		$this->webhook_register   = $register;
+		$this->webhook_repository = $webhook_repository;
 	}
 
 	/**
@@ -56,7 +56,7 @@ class Webhooks_Route {
 	public function get_route_url() {
 		/** @var REST $rest */
 		$rest     = tribe( REST::class );
-		$endpoint = tribe( REST\PayPal_Webhook::class );
+		$endpoint = tribe( REST\_Webhook::class );
 
 		return rest_url( '/' . $rest->namespace . $endpoint->get_endpoint_path(), 'https' );
 	}
@@ -77,11 +77,9 @@ class Webhooks_Route {
 	 *
 	 */
 	public function handle( $event, $headers = [] ) {
-		if ( ! $this->merchant_repository->account_is_connected() ) {
+		if ( ! $this->merchant->account_is_connected() ) {
 			return false;
 		}
-
-		$merchantDetails = $this->merchant_repository->get_details();
 
 		// Try to decode the event.
 		if ( ! is_object( $event ) ) {
@@ -118,7 +116,7 @@ class Webhooks_Route {
 
 		$paypal_headers = Headers::from_headers( $headers );
 
-		if ( ! $this->webhook_repository->verify_event_signature( $merchantDetails->access_token, $event, $paypal_headers ) ) {
+		if ( ! $this->webhook_repository->verify_event_signature( $this->merchant->get_access_token(), $event, $paypal_headers ) ) {
 			tribe( 'logger' )->log_error( __( 'Failed PayPal webhook event verification', 'event-tickets' ), 'tickets-commerce-paypal-commerce' );
 
 			throw new Exception( 'Failed event verification' );

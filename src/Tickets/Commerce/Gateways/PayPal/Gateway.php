@@ -3,8 +3,6 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
-use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Merchant_Details;
-use Tribe__Tickets__Commerce__PayPal__Main as PayPal_Main;
 
 /**
  * Class Gateway
@@ -43,18 +41,7 @@ class Gateway extends Abstract_Gateway {
 			return false;
 		}
 
-		/** @var Merchant_Details $merchantDetails */
-		$merchant_details = tribe( Merchant_Details::class );
-
-		// Make sure we have details setup.
-		$merchant_details->get_details();
-
-		// @todo Confirm this is the correct conditional.
-		if ( $merchant_details->account_is_connected() ) {
-			return true;
-		}
-
-		return false;
+		return tribe( Merchant::class )->account_is_connected();
 	}
 
 	/**

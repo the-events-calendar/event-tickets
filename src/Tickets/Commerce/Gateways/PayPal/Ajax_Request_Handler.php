@@ -2,11 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\Models\Merchant_Detail;
-use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\PayPal_Auth;
-use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\PayPal_Order;
-use TEC\Tickets\Commerce\Gateways\PayPal\Refresh_Token;
-use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Merchant_Details;
+use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Authorization;
+use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\_Order;
 use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Webhooks;
 
 // @todo Bring this over.
@@ -30,23 +27,16 @@ class Ajax_Request_Handler {
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var Merchant_Detail
+	 * @var Merchant
 	 */
-	private $merchant_details;
+	private $merchant;
 
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var PayPal_Auth
+	 * @var Authorization
 	 */
 	private $paypal_auth;
-
-	/**
-	 * @since 5.1.6
-	 *
-	 * @var Merchant_Details
-	 */
-	private $merchant_repository;
 
 	/**
 	 * @since 5.1.6
@@ -67,24 +57,21 @@ class Ajax_Request_Handler {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param Webhooks         $webhooks_repository
-	 * @param Merchant_Detail  $merchant_details
-	 * @param Merchant_Details $merchant_repository
-	 * @param Refresh_Token    $refresh_token
-	 * @param Settings         $settings
-	 * @param PayPal_Auth      $paypal_auth
+	 * @param Webhooks      $webhooks_repository
+	 * @param Merchant      $merchant
+	 * @param Refresh_Token $refresh_token
+	 * @param Settings      $settings
+	 * @param Authorization $paypal_auth
 	 */
 	public function __construct(
 		Webhooks $webhooks_repository,
-		Merchant_Detail $merchant_details,
-		Merchant_Details $merchant_repository,
+		Merchant $merchant,
 		Refresh_Token $refresh_token,
 		Settings $settings,
-		PayPal_Auth $paypal_auth
+		Authorization $paypal_auth
 	) {
 		$this->webhooks_repository = $webhooks_repository;
-		$this->merchant_details    = $merchant_details;
-		$this->merchant_repository = $merchant_repository;
+		$this->merchant            = $merchant;
 		$this->refresh_token       = $refresh_token;
 		$this->settings            = $settings;
 		$this->paypal_auth         = $paypal_auth;
@@ -174,14 +161,14 @@ class Ajax_Request_Handler {
 		$this->validate_admin_request();
 
 		// Remove the webhook from PayPal if there is one
-		if ( $webhookConfig = $this->webhooks_repository->get_webhook_config() ) {
-			$this->webhooks_repository->delete_webhook( $this->merchant_details->access_token, $webhookConfig->id );
+		if ( $webhook_config = $this->webhooks_repository->get_webhook_config() ) {
+			$this->webhooks_repository->delete_webhook( $this->merchant->get_access_token(), $webhook_config->id );
 			$this->webhooks_repository->delete_webhook_config();
 		}
 
-		$this->merchant_repository->delete();
-		$this->merchant_repository->delete_account_errors();
-		$this->merchant_repository->delete_client_token();
+		$this->merchant->delete_data();
+		$this->merchant->delete_account_errors();
+		$this->merchant->delete_access_token_data();
 		$this->refresh_token->delete_refresh_token_cron_job();
 
 		wp_send_json_success( __( 'PayPal account disconnected', 'event-tickets' ) );
@@ -217,7 +204,7 @@ class Ajax_Request_Handler {
 		];
 
 		try {
-			$result = tribe( PayPal_Order::class )->create_order( $data );
+			$result = tribe( _Order::class )->create_order( $data );
 
 			wp_send_json_success(
 				[
@@ -248,7 +235,7 @@ class Ajax_Request_Handler {
 		// @todo Handle our own order approval process.
 
 		try {
-			$result = tribe( PayPal_Order::class )->approve_order( $orderId );
+			$result = tribe( _Order::class )->approve_order( $orderId );
 
 			wp_send_json_success(
 				[

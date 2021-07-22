@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Merchant_Details;
+use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Webhooks;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhook_Register;
 use WP_Post;
@@ -18,9 +18,9 @@ abstract class Payment_Event_Listener implements Event_Listener {
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var Merchant_Details
+	 * @var Merchant
 	 */
-	private $merchant_details;
+	private $merchant;
 
 	/**
 	 * @since 5.1.6
@@ -59,12 +59,12 @@ abstract class Payment_Event_Listener implements Event_Listener {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param Merchant_Details $merchant_details
+	 * @param Merchant $merchant
 	 * @param Webhook_Register $register
 	 * @param Webhooks         $webhook_repository
 	 */
-	public function __construct( Merchant_Details $merchant_details, Webhook_Register $register, Webhooks $webhook_repository ) {
-		$this->merchant_details   = $merchant_details;
+	public function __construct( Merchant $merchant, Webhook_Register $register, Webhooks $webhook_repository ) {
+		$this->merchant           = $merchant;
 		$this->webhook_register   = $register;
 		$this->webhook_repository = $webhook_repository;
 	}
@@ -216,13 +216,11 @@ abstract class Payment_Event_Listener implements Event_Listener {
 			return false;
 		}
 
-		$account_details = $this->merchant_details->get_details();
-
 		$request = wp_remote_request( $link->href, [
 			'method'  => $link->method,
 			'headers' => [
 				'Content-Type'  => 'application/json',
-				'Authorization' => "Bearer {$account_details->access_token}",
+				'Authorization' => "Bearer {$this->merchant->get_access_token()}",
 			],
 		] );
 

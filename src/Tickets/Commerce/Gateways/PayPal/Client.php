@@ -2,36 +2,18 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\Models\Merchant_Detail;
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
 use PayPalCheckoutSdk\Core\ProductionEnvironment;
 use PayPalCheckoutSdk\Core\SandboxEnvironment;
 
 /**
- * Class PayPal_Client
+ * Class Client
  *
  * @since 5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  *
  */
-class PayPal_Client {
-
-	/**
-	 * Environment mode.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @var string
-	 */
-	public $mode = null;
-
-	/**
-	 * PayPalClient constructor.
-	 */
-	public function __construct() {
-		$this->mode = tribe_tickets_commerce_is_test_mode() ? 'sandbox' : 'live';
-	}
-
+class Client {
 	/**
 	 * Get environment.
 	 *
@@ -40,12 +22,11 @@ class PayPal_Client {
 	 * @return ProductionEnvironment|SandboxEnvironment
 	 */
 	public function get_environment() {
-		/* @var Merchant_Detail $merchant */
-		$merchant = tribe( Merchant_Detail::class );
+		$merchant = tribe( Merchant::class );
 
-		return 'sandbox' === $this->mode ?
-			new SandboxEnvironment( $merchant->client_id, $merchant->client_secret ) :
-			new ProductionEnvironment( $merchant->client_id, $merchant->client_secret );
+		return 'sandbox' === $merchant->get_mode() ?
+			new SandboxEnvironment( $merchant->get_client_id(), $merchant->get_client_secret() ) :
+			new ProductionEnvironment( $merchant->get_client_id(), $merchant->get_client_secret() );
 	}
 
 	/**
@@ -69,9 +50,9 @@ class PayPal_Client {
 	 * @return string
 	 */
 	public function get_api_url( $endpoint ) {
-		$baseUrl = $this->get_environment()->baseUrl();
+		$base_url = $this->get_environment()->baseUrl();
 
-		return "{$baseUrl}/$endpoint";
+		return "{$base_url}/$endpoint";
 	}
 
 	/**
@@ -82,7 +63,7 @@ class PayPal_Client {
 	 * @return string
 	 */
 	public function get_home_page_url() {
-		$subdomain = 'sandbox' === $this->mode ? 'sandbox.' : '';
+		$subdomain = tribe( Merchant::class )->is_sandbox() ? 'sandbox.' : '';
 
 		return sprintf(
 			'https://%1$spaypal.com/',

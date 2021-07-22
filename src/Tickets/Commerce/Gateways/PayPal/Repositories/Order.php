@@ -10,44 +10,44 @@ use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalCheckoutSdk\Payments\CapturesRefundRequest;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\Models\Merchant_Detail;
-use TEC\Tickets\Commerce\Gateways\PayPal\PayPal_Client;
+use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
+use TEC\Tickets\Commerce\Gateways\PayPal\Client;
 
 /**
- * Class PayPal_Order
+ * Class _Order
  *
  * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal\Repositories
  *
  */
-class PayPal_Order {
+class _Order {
 
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var PayPal_Client
+	 * @var Client
 	 */
 	private $paypal_client;
 
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var Merchant_Detail
+	 * @var Merchant
 	 */
-	private $merchant_details;
+	private $merchant;
 
 	/**
-	 * PayPal_Order constructor.
+	 * _Order constructor.
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param Merchant_Detail $merchant_details
+	 * @param Merchant $merchant
 	 *
-	 * @param PayPal_Client   $paypal_client
+	 * @param Client   $paypal_client
 	 */
-	public function __construct( PayPal_Client $paypal_client, Merchant_Detail $merchant_details ) {
-		$this->paypal_client    = $paypal_client;
-		$this->merchant_details = $merchant_details;
+	public function __construct( Client $paypal_client, Merchant $merchant ) {
+		$this->paypal_client = $paypal_client;
+		$this->merchant      = $merchant;
 	}
 
 	/**
@@ -106,8 +106,8 @@ class PayPal_Order {
 						'currency_code' => give_get_currency( $array['formId'] ),
 					],
 					'payee'               => [
-						'email_address' => $this->merchant_details->merchant_id,
-						'merchant_id'   => $this->merchant_details->merchant_id_in_paypal,
+						'email_address' => $this->merchant->get_merchant_id(),
+						'merchant_id'   => $this->merchant->get_merchant_id_in_paypal(),
 					],
 					'payer'               => [
 						// @todo Replace these.

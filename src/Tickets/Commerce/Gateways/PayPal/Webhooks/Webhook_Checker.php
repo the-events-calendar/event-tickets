@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 
 use Exception;
-use TEC\Tickets\Commerce\Gateways\PayPal\Models\Merchant_Detail;
+use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Webhooks;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Webhooks_Route;
 
@@ -33,9 +33,9 @@ class Webhook_Checker {
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var Merchant_Detail
+	 * @var Merchant
 	 */
-	private $merchant_details;
+	private $merchant;
 
 	/**
 	 * Webhook_Checker constructor.
@@ -43,13 +43,13 @@ class Webhook_Checker {
 	 * @since 5.1.6
 	 *
 	 * @param Webhooks         $webhooks_repository
-	 * @param Merchant_Detail  $merchant_details
+	 * @param Merchant         $merchant
 	 * @param Webhooks_Route   $webhooks_route
 	 * @param Webhook_Register $webhook_register
 	 */
-	public function __construct( Webhooks $webhooks_repository, Merchant_Detail $merchant_details, Webhooks_Route $webhooks_route, Webhook_Register $webhook_register ) {
+	public function __construct( Webhooks $webhooks_repository, Merchant $merchant, Webhooks_Route $webhooks_route, Webhook_Register $webhook_register ) {
 		$this->webhooks_repository = $webhooks_repository;
-		$this->merchant_details    = $merchant_details;
+		$this->merchant            = $merchant;
 		$this->webhooks_route      = $webhooks_route;
 		$this->webhook_register    = $webhook_register;
 	}
@@ -64,7 +64,7 @@ class Webhook_Checker {
 			return;
 		}
 
-		if ( ! $this->merchant_details->access_token ) {
+		if ( ! $this->merchant->get_access_token() ) {
 			return;
 		}
 
@@ -86,7 +86,7 @@ class Webhook_Checker {
 		// Update the webhook if the return url or events have changed
 		if ( $webhook_url !== $webhook_config->return_url || $has_missing_events ) {
 			try {
-				$this->webhooks_repository->update_webhook( $this->merchant_details->access_token, $webhook_config->id );
+				$this->webhooks_repository->update_webhook( $this->merchant->get_access_token(), $webhook_config->id );
 
 				$webhook_config->return_url = $webhook_url;
 				$webhook_config->events     = $registered_events;

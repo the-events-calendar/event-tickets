@@ -2,14 +2,12 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\Models\Merchant_Detail;
-use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\PayPal_Auth;
-use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Merchant_Details;
+use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Authorization;
 
 /**
  * Class Refresh_Token
  *
- * @since 5.1.6
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class Refresh_Token {
@@ -17,21 +15,14 @@ class Refresh_Token {
 	/*
 	 * @since 5.1.6
 	 *
-	 * @var Merchant_Detail
+	 * @var Merchant
 	 */
-	private $merchant_detail;
+	private $merchant;
 
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var Merchant_Details
-	 */
-	private $details_repository;
-
-	/**
-	 * @since 5.1.6
-	 *
-	 * @var PayPal_Auth
+	 * @var Authorization
 	 */
 	private $paypal_auth;
 
@@ -40,18 +31,15 @@ class Refresh_Token {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param Merchant_Details $details_repository
-	 * @param PayPal_Auth      $paypal_auth
-	 * @param Merchant_Detail  $merchant_detail
+	 * @param Merchant      $merchant
+	 * @param Authorization $paypal_auth
 	 */
 	public function __construct(
-		Merchant_Details $details_repository,
-		PayPal_Auth $paypal_auth,
-		Merchant_Detail $merchant_detail
+		Merchant $merchant,
+		Authorization $paypal_auth
 	) {
-		$this->details_repository = $details_repository;
-		$this->paypal_auth        = $paypal_auth;
-		$this->merchant_detail    = $merchant_detail;
+		$this->merchant    = $merchant;
+		$this->paypal_auth = $paypal_auth;
 	}
 
 	/**
@@ -76,7 +64,7 @@ class Refresh_Token {
 	public function register_cron_job_to_refresh_token( $tokenExpires ) {
 		// @todo Verify we need this as a cron, do we lose total API access if it expires (no visitors)?
 		wp_schedule_single_event(
-			// Refresh token before half hours of expires date.
+		// Refresh token before half hours of expires date.
 			time() + ( $tokenExpires - 1800 ),
 			$this->get_cron_job_hook_name()
 		);
@@ -100,15 +88,14 @@ class Refresh_Token {
 	 */
 	public function refresh_token() {
 		// Exit if account is not connected.
-		if ( ! $this->details_repository->account_is_connected() ) {
+		if ( ! $this->merchant->account_is_connected() ) {
 			return;
 		}
 
-		$token_details = $this->paypal_auth->get_token_from_client_credentials( $this->merchant_detail->client_id, $this->merchant_detail->client_secret );
+		$token_data = $this->paypal_auth->get_token_from_client_credentials( $this->merchant->get_client_id(), $this->merchant->get_client_secret() );
 
-		$this->merchant_detail->set_token_details( $token_details );
-		$this->details_repository->save( $this->merchant_detail );
+		$this->merchant->save_access_token_data( $token_data );
 
-		$this->register_cron_job_to_refresh_token( $token_details['expires_in'] );
+		$this->register_cron_job_to_refresh_token( $token_data['expires_in'] );
 	}
 }
