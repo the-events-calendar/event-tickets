@@ -977,7 +977,7 @@ class Tribe__Tickets__Attendees {
 		echo sprintf(
 			'<a target="_blank" href="%s" class="export action page-title-action" rel="noopener noreferrer">%s</a>',
 			esc_url( $export_url = $this->get_export_url() ),
-			esc_html__( 'Export', 'event-tickets' ) ) ;
-
+			esc_html__( 'Export', 'event-tickets' )
+		) ;
 	}
 }
