@@ -123,11 +123,12 @@
 	}
 
 	.ticket_edit {
-		width: 30px;
+		width: 55px;
 	}
 
 	/* Edit button styles - separate for portability */
 	.ticket_edit_button,
+	.ticket_delete,
 	.global_capacity_edit_button {
 		background: none;
 		border: 0;
@@ -136,20 +137,33 @@
 		padding: 0;
 
 		&:hover {
-			color: #00a0d2;
+			color: #727272;
 		}
 
 		.ticket_edit_text,
-		.global_capacity_edit_text {
+		.global_capacity_edit_text,
+		.ticket_delete_text {
 			font-size: 0;
 
 			&::before {
 				content: '\f464';
 				font-family: 'dashicons';
-				font-size: x-large;
+				font-size: 20px;
 				vertical-align: top;
 			}
 		}
+
+		.ticket_delete_text {
+			font-size: 0;
+
+			&::before {
+				content: "\f182";
+			}
+		}
+	}
+
+	.ticket_delete {
+		margin-left: 12px;
 	}
 
 	.global_capacity_edit_button {
