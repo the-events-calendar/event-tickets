@@ -957,8 +957,8 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $event_id
-	 * @param Tribe__Tickets__Attendees $attendees
+	 * @param int $event_id The Post ID of the event.
+	 * @param Tribe__Tickets__Attendees $attendees The attendees object.
 	 *
 	 * @return string Relative URL for the export.
 	 */
