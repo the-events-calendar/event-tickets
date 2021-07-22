@@ -33,7 +33,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 
 		$this->container->singleton( Repositories\Authorization::class );
 		$this->container->singleton( Client::class );
-		$this->container->singleton( Repositories\_Order::class );
+		$this->container->singleton( Repositories\Order::class );
 
 		$this->container->singleton( Webhooks\Webhook_Register::class );
 		$this->container->singleton( Webhooks\Webhooks_Route::class );

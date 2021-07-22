@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Authorization;
-use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\_Order;
+use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Order;
 use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Webhooks;
 
 // @todo Bring this over.
@@ -204,7 +204,7 @@ class Ajax_Request_Handler {
 		];
 
 		try {
-			$result = tribe( _Order::class )->create_order( $data );
+			$result = tribe( Order::class )->create_order( $data );
 
 			wp_send_json_success(
 				[
@@ -235,7 +235,7 @@ class Ajax_Request_Handler {
 		// @todo Handle our own order approval process.
 
 		try {
-			$result = tribe( _Order::class )->approve_order( $orderId );
+			$result = tribe( Order::class )->approve_order( $orderId );
 
 			wp_send_json_success(
 				[

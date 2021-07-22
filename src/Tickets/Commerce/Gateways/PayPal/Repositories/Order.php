@@ -14,13 +14,13 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Client;
 
 /**
- * Class _Order
+ * Class Order
  *
  * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal\Repositories
  *
  */
-class _Order {
+class Order {
 
 	/**
 	 * @since 5.1.6
@@ -37,7 +37,7 @@ class _Order {
 	private $merchant;
 
 	/**
-	 * _Order constructor.
+	 * Order constructor.
 	 *
 	 * @since 5.1.6
 	 *

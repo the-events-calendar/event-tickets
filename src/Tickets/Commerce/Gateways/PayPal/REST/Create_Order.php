@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\REST;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\_Order;
+use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Order;
 
 /**
  * Class Create_Order
@@ -38,7 +38,7 @@ class Create_Order {
 		];
 
 		try {
-			$result = tribe( _Order::class )->create_order( $data );
+			$result = tribe( Order::class )->create_order( $data );
 
 			wp_send_json_success(
 				[
