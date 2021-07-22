@@ -180,6 +180,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.2.1] TBD =
 
+* Tweak - Added "Delete" functionality for the tickets area in the classic editor. [ET-1107]
 * Language -
 
 = [5.1.6] 2021-07-07 =
