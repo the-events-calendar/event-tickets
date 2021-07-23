@@ -2,11 +2,6 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use PayPalCheckoutSdk\Core\PayPalHttpClient;
-use PayPalCheckoutSdk\Core\ProductionEnvironment;
-use PayPalCheckoutSdk\Core\SandboxEnvironment;
-
-use TEC\Test\functions\template_tags\metaTest;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -18,18 +13,18 @@ use Tribe__Utils__Array as Arr;
  */
 class Client {
 	/**
-	 * Get environment.
+	 * Get environment base URL.
 	 *
-	 * @since 5.1.6
+	 * @since TBD
 	 *
-	 * @return ProductionEnvironment|SandboxEnvironment
+	 * @return string
 	 */
-	public function get_environment() {
+	public function get_environment_url() {
 		$merchant = tribe( Merchant::class );
 
-		return 'sandbox' === $merchant->get_mode() ?
-			new SandboxEnvironment( $merchant->get_client_id(), $merchant->get_client_secret() ) :
-			new ProductionEnvironment( $merchant->get_client_id(), $merchant->get_client_secret() );
+		return $merchant->is_sandbox() ?
+			'https://api.sandbox.paypal.com':
+			'https://api.paypal.com';
 	}
 
 	/**
@@ -41,17 +36,6 @@ class Client {
 	 */
 	public function get_access_token() {
 		return tribe( Merchant::class )->get_access_token();
-	}
-
-	/**
-	 * Get http client.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @return PayPalHttpClient
-	 */
-	public function get_http_client() {
-		return new PayPalHttpClient( $this->get_environment() );
 	}
 
 	/**
@@ -67,7 +51,7 @@ class Client {
 	 *
 	 */
 	public function get_api_url( $endpoint, array $query_args = [] ) {
-		$base_url = $this->get_environment()->baseUrl();
+		$base_url = $this->get_environment_url();
 
 		return add_query_arg( $query_args, "{$base_url}/{$endpoint}" );
 	}
@@ -87,7 +71,6 @@ class Client {
 			$subdomain
 		);
 	}
-
 
 	/**
 	 * Send a POST request to WhoDat inside of the PayPal connection path.
@@ -227,8 +210,8 @@ class Client {
 	/**
 	 * Based on a Purchase Unit creates a PayPal order.
 	 *
-	 * @link https://developer.paypal.com/docs/api/orders/v2/#orders_create
-	 * @link https://developer.paypal.com/docs/api/orders/v2/#definition-purchase_unit_request
+	 * @link  https://developer.paypal.com/docs/api/orders/v2/#orders_create
+	 * @link  https://developer.paypal.com/docs/api/orders/v2/#definition-purchase_unit_request
 	 *
 	 * @since TBD
 	 *
@@ -325,5 +308,44 @@ class Client {
 
 		return $response;
 	}
+
+	public function refund_payment( $capture_id ) {
+		$query_args = [];
+		$body       = [];
+		$args = [
+			'headers' => [
+				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+				'Prefer'                        => 'return=representation',
+			],
+			'body'    => $body,
+		];
+
+		$capture_id = urlencode( $capture_id );
+		$url = '/v2/payments/captures/{capture_id}/refund';
+		$url = str_replace( '{capture_id}', $capture_id, $url );
+		$response = $this->post( $url, $query_args, $args );
+
+		return $response;
+	}
+
+	public function capture_order( $order_id ) {
+		$query_args = [];
+		$body       = [];
+		$args = [
+			'headers' => [
+				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+				'Prefer'                        => 'return=representation',
+			],
+			'body'    => $body,
+		];
+
+		$capture_id = urlencode( $order_id );
+		$url = '/v2/checkout/orders/{order_id}/capture';
+		$url = str_replace( '{order_id}', $order_id, $url );
+		$response = $this->post( $url, $query_args, $args );
+
+		return $response;
+	}
+
 
 }
