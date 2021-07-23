@@ -45,7 +45,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Reversed::class );
 
 		$this->container->singleton( REST::class );
-		$this->container->singleton( REST\_Webhook::class, REST\_Webhook::class );
+		$this->container->singleton( REST\Webhook::class, REST\Webhook::class );
 		$this->container->singleton( REST\On_Boarding::class, REST\On_Boarding::class );
 	}
 

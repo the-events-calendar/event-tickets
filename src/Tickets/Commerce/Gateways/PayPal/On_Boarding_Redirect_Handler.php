@@ -3,8 +3,6 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use Exception;
-use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Authorization;
-use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Webhooks;
 use Tribe__Settings;
 
@@ -22,7 +20,7 @@ class On_Boarding_Redirect_Handler {
 	 *
 	 * @var Authorization
 	 */
-	private $paypal_auth;
+	private $client;
 
 	/**
 	 * @since 5.1.6
@@ -50,16 +48,21 @@ class On_Boarding_Redirect_Handler {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param Webhooks      $webhooks
-	 * @param Merchant      $merchant
-	 * @param Settings      $settings
-	 * @param Authorization $paypal_auth
+	 * @param Webhooks $webhooks
+	 * @param Merchant $merchant
+	 * @param Settings $settings
+	 * @param Client   $client
 	 */
-	public function __construct( Webhooks $webhooks, Merchant $merchant, Settings $settings, Authorization $paypal_auth ) {
-		$this->webhooks_repository = $webhooks;
-		$this->merchant            = $merchant;
-		$this->settings            = $settings;
-		$this->paypal_auth         = $paypal_auth;
+	public function __construct(
+		Webhooks $webhooks = null,
+		Merchant $merchant = null,
+		Settings $settings = null,
+		Client $client = null
+	) {
+		$this->webhooks_repository = $webhooks ?: tribe( Webhooks::class );
+		$this->merchant            = $merchant ?: tribe( Merchant::class );
+		$this->settings            = $settings ?: tribe( Settings::class );
+		$this->client              = $client ?: tribe( Client::class );
 	}
 
 	/**
@@ -124,11 +127,11 @@ class On_Boarding_Redirect_Handler {
 			$this->redirect_when_on_boarding_fail();
 		}
 
-		$rest_api_credentials = (array) $this->paypal_auth->get_seller_rest_api_credentials( $token_info ? $token_info['access_token'] : '' );
+		$rest_api_credentials = (array) tribe( WhoDat::class )->get_seller_rest_api_credentials( $token_info ? $token_info['access_token'] : '' );
 
 		$this->did_we_get_valid_seller_rest_api_credentials( $rest_api_credentials );
 
-		$token_data = $this->paypal_auth->get_token_from_client_credentials( $rest_api_credentials['client_id'], $rest_api_credentials['client_secret'] );
+		$token_data = $this->client->get_access_token_from_client_credentials( $rest_api_credentials['client_id'], $rest_api_credentials['client_secret'] );
 
 		$this->merchant->set_client_id( $rest_api_credentials['client_id'] );
 		$this->merchant->set_client_secret( $rest_api_credentials['client_secret'] );
@@ -335,7 +338,7 @@ class On_Boarding_Redirect_Handler {
 	 * @return bool|string[]
 	 */
 	private function is_admin_successfully_on_boarded( $merchant_id, $access_token, $uses_custom_payments ) {
-		$on_boarded_data  = (array) $this->paypal_auth->get_seller_on_boarding_details_from_paypal( $merchant_id, $access_token );
+		$on_boarded_data  = (array) tribe( WhoDat::class )->get_seller_on_boarding_details_from_paypal( $merchant_id, $access_token );
 		$on_boarded_data  = array_filter( $on_boarded_data ); // Remove empty values.
 		$error_messages[] = [
 			'type'    => 'json',

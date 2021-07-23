@@ -42,7 +42,7 @@ class REST {
 	 */
 	public function register_endpoints() {
 		/** @var PayPal_Webhook $endpoint */
-		$endpoint = tribe( REST\_Webhook::class );
+		$endpoint = tribe( REST\Webhook::class );
 
 		register_rest_route(
 			$this->namespace,

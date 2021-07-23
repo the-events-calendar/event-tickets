@@ -2,7 +2,6 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Authorization;
 use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Order;
 use TEC\Tickets\Commerce\Gateways\PayPal\Repositories\Webhooks;
 
@@ -34,14 +33,14 @@ class Ajax_Request_Handler {
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var Authorization
+	 * @var Client
 	 */
-	private $paypal_auth;
+	private $client;
 
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var Connect_Client
+	 * @var WhoDat
 	 */
 	private $refresh_token;
 
@@ -61,20 +60,20 @@ class Ajax_Request_Handler {
 	 * @param Merchant      $merchant
 	 * @param Refresh_Token $refresh_token
 	 * @param Settings      $settings
-	 * @param Authorization $paypal_auth
+	 * @param Client        $client
 	 */
 	public function __construct(
 		Webhooks $webhooks_repository,
 		Merchant $merchant,
 		Refresh_Token $refresh_token,
 		Settings $settings,
-		Authorization $paypal_auth
+		Client $client
 	) {
-		$this->webhooks_repository = $webhooks_repository;
-		$this->merchant            = $merchant;
-		$this->refresh_token       = $refresh_token;
-		$this->settings            = $settings;
-		$this->paypal_auth         = $paypal_auth;
+		$this->webhooks_repository = $webhooks_repository ?: tribe( Webhooks::class );
+		$this->merchant            = $merchant ?: tribe( Merchant::class );
+		$this->refresh_token       = $refresh_token ?: tribe( Refresh_Token::class );
+		$this->settings            = $settings ?: tribe( Settings::class );
+		$this->client              = $client ?: tribe( Client::class );
 	}
 
 	/**
@@ -85,16 +84,16 @@ class Ajax_Request_Handler {
 	public function on_boarded_user_ajax_request_handler() {
 		$this->validate_admin_request();
 
-		$partnerLinkInfo = $this->settings->get_partner_link_details();
+		$partner_link_info = $this->settings->get_partner_link_details();
 
-		$paypal_response = $this->paypal_auth->get_token_from_authorization_code(
+		$paypal_response = $this->client->get_access_token_from_authorization_code(
 			tribe_get_request_var( 'sharedId' ),
 			tribe_get_request_var( 'authCode' ),
-			$partnerLinkInfo['nonce']
+			$partner_link_info['nonce']
 		);
 
 		if ( ! $paypal_response || array_key_exists( 'error', $paypal_response ) ) {
-			wp_send_json_error( __( 'Unexpected response from PayPal when onboarding', 'event-tickets' ) );
+			wp_send_json_error( __( 'Unexpected response from PayPal when on boarding', 'event-tickets' ) );
 		}
 
 		$this->settings->update_access_token( $paypal_response );
@@ -123,7 +122,7 @@ class Ajax_Request_Handler {
 			wp_send_json_error( __( 'Must include valid 2-character country code', 'event-tickets' ) );
 		}
 
-		/** @var Tribe__Settings $settings */
+		/** @var \Tribe__Settings $settings */
 		$settings = tribe( 'settings' );
 
 		// Get link to Tickets Tab.
@@ -136,7 +135,7 @@ class Ajax_Request_Handler {
 		// @todo They ultimately need to get here.
 		// . '#tribe-field-tickets-commerce-paypal-commerce';
 
-		$partner_link_details = $this->paypal_auth->get_seller_partner_link(
+		$partner_link_details = tribe( WhoDat::class )->get_seller_partner_link(
 		// @todo Replace this URL.
 			$settings_url,
 			$country_code

@@ -15,8 +15,6 @@ class Create_Order {
 	/**
 	 * Create order.
 	 *
-	 * @todo  : handle payment create error on frontend.
-	 *
 	 * @since 5.1.6
 	 */
 	public function handle(  ) {
