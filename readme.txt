@@ -182,9 +182,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Tweak - Removed the edit column when printing the Attendees list. [ETP-702]
 
-=======
-* Language -
-
 = [5.1.6] 2021-07-07 =
 
 * Tweak - Added support for HTML in Ticket description field. [ET-1135]
