@@ -191,8 +191,9 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @since 4.9
 	 *
-	 * @param $categories
-	 * @param $post
+	 * @param array<array<string|string>> $categories An array of categories each an array
+	 *                                                in the format property => value.
+	 *
 	 * @return array
 	 */
 	public function block_categories( $categories ) {

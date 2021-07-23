@@ -178,6 +178,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Add a new function to add "Tickets Blocks" category to the editor for WP >= 5.8. [TBD]
+
 = [5.1.6] 2021-07-07 =
 
 * Tweak - Added support for HTML in Ticket description field. [ET-1135]
