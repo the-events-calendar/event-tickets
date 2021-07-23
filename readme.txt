@@ -180,8 +180,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.2.1] TBD =
 
+
 * Feature - Added export button next to the page title on the Attendees page. [ET-1145]
 * Tweak - Added `$attendees` parameter to the `tribe_report_page_after_text_label` action. [ET-1145]
+* Tweak - Removed the edit column when printing the Attendees list. [ETP-702]
 
 = [5.1.6] 2021-07-07 =
 
@@ -192,6 +194,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Sync WooCommerce decimal separator with in Ticket edit form. [ETP-725]
 * Fix - Prevent Tribe Commerce "Confirmation email sender name" from displaying improperly when a single quote is added. [ET-1134]
 * Language - 115 new strings added, 118 updated, 0 fuzzied, and 0 obsoleted
+
 
 = [5.1.5] 2021-06-09 =
 
