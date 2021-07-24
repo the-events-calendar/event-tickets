@@ -5,9 +5,7 @@
  * @version TBD
  */
 
-use TEC\Tickets\Commerce\Gateways\PayPal\Onboard;
-
-$paypal_connect_url = ( new Onboard() )->get_paypal_signup_link();
+$paypal_connect_url = tribe( 'tickets.commerce.paypal.signup' )->get_paypal_signup_link();
 
 $tickets_fields = [
 	'tribe-form-content-start' => [
@@ -34,7 +32,7 @@ $tickets_fields = [
 					<li>' . esc_html__( 'Accept payments from around the world', 'event-tickets' ) . '</li>
 					<li>' . esc_html__( 'Support 3D Secure Payments', 'event-tickets' ) . '</li>
 				</ul>
-				<a href=' . esc_html__( $paypal_connect_url ) . 'id="connect_to_paypal" name="connect_to_paypal" class="button">' . esc_html__( 'Connect Automatically with PayPal', 'woocommerce-quotation' ) . '</a>
+				<a href=' . esc_html__( $paypal_connect_url ) . 'id="connect_to_paypal" class="button">' . esc_html__( 'Connect Automatically with PayPal', 'woocommerce-quotation' ) . '</a>
 			</div>',
 	],
 	'tribe-form-content-end' => [
