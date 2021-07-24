@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Gateways\PayPal;
+namespace TEC\Tickets\Commerce\Gateways\PayPal\SignUp;
 
 use WP_Error;
 
@@ -19,9 +19,13 @@ class Onboard {
 	/**
 	 * The endpoint for fetching a new partner onboard link.
 	 */
-	const PAYPAL_SIGNUP_ENDPOINT = 'https://whodat.theeventscalendar.com/commerce/v1/paypal/seller/signup';
+	const PAYPAL_SIGNUP_ENDPOINT = 'https://whodatdev.theeventscalendar.com/commerce/v1/paypal/seller/signup';
 
 	/**
+	 * Request the signup link that redirects the seller to PayPal.
+	 *
+	 * @since TBD
+	 *
 	 * @return false
 	 */
 	public function get_paypal_signup_link() {
@@ -41,17 +45,10 @@ class Onboard {
 	}
 
 	/**
-	 * @return string
-	 */
-	public function get_return_url() {
-		$url = add_query_arg( [
-			'wp_nonce' => wp_create_nonce( self::PAYPAL_SIGNUP_NONCE ),
-		], admin_url() );
-
-		return esc_url( $url );
-	}
-
-	/**
+	 * Fetch the signup link from PayPal.
+	 *
+	 * @since TBD
+	 *
 	 * @return array|WP_Error
 	 */
 	public function request_signup_link() {
@@ -62,5 +59,18 @@ class Onboard {
 		], self::PAYPAL_SIGNUP_ENDPOINT );
 
 		return wp_remote_get( $url );
+	}
+
+	/**
+	 * When the seller completes the sign-up flow, they are redirected to this return URL on their site.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_return_url() {
+		return add_query_arg( [
+			'wp_nonce' => wp_create_nonce( self::PAYPAL_SIGNUP_NONCE ),
+		], site_url() );
 	}
 }
