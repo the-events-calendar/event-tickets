@@ -4,7 +4,10 @@
  *
  * @version TBD
  */
-$paypal_connect_url = esc_url( generate_signup_link() );
+
+use TEC\Tickets\Commerce\Gateways\PayPal\Onboard;
+
+$paypal_connect_url = ( new Onboard() )->get_paypal_signup_link();
 
 $tickets_fields = [
 	'tribe-form-content-start' => [
