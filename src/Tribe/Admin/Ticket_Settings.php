@@ -11,7 +11,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	 */
 	public function __construct() {
 		add_action( 'tribe_settings_do_tabs', [ $this, 'settings_ui' ] );
-		add_action( 'tribe_settings_do_tabs', [ $this, 'payment_settings_ui'] );
+		add_action( 'tribe_settings_do_tabs', [ $this, 'do_tickets_commerce_payments_settings_tab' ] );
 	}
 
 	/**
@@ -26,14 +26,14 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	}
 
 	/**
-	 * Loads the Payments Settings Tab.
+	 * Create the Tickets Commerce Payments Settings Tab.
 	 *
 	 * @since TBD
 	 */
-	public function payment_settings_ui() {
-		new Tribe__Settings_Tab( 'payments', _x( 'Payments', 'plural label for Payments', 'event-tickets' ), [
-				'priority' => 20,
-			] );
+	public function do_tickets_commerce_payments_settings_tab() {
+		include_once Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tickets-commerce.php';
+
+		new Tribe__Settings_Tab( 'payments', esc_html__( 'Payments', 'event-tickets' ), $tickets_tab );
 	}
 
 	/**
