@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use TEC\Tickets\Commerce\Gateways\PayPal\Models\Status_Manager;
+
 /**
  * Service provider for the Tickets Commerce: PayPal Commerce gateway.
  *
@@ -30,23 +32,21 @@ class Provider extends \tad_DI52_ServiceProvider {
 		$this->container->singleton( Ajax_Request_Handler::class );
 		$this->container->singleton( On_Boarding_Redirect_Handler::class );
 		$this->container->singleton( Refresh_Token::class );
+		$this->container->singleton( Client::class );
 
 		$this->container->singleton( Repositories\Authorization::class );
-		$this->container->singleton( Client::class );
 		$this->container->singleton( Repositories\Order::class );
+		$this->container->singleton( Repositories\Webhooks::class );
 
 		$this->container->singleton( Webhooks\Webhook_Register::class );
 		$this->container->singleton( Webhooks\Webhooks_Route::class );
-		$this->container->singleton( Repositories\Webhooks::class );
 
 		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Completed::class );
 		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Denied::class );
 		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Refunded::class );
 		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Reversed::class );
 
-		$this->container->singleton( REST::class );
-		$this->container->singleton( REST\_Webhook::class, REST\_Webhook::class );
-		$this->container->singleton( REST\On_Boarding::class, REST\On_Boarding::class );
+		$this->register_endpoints();
 	}
 
 	/**
@@ -80,7 +80,11 @@ class Provider extends \tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	public function register_endpoints() {
+		$hooks = new REST( $this->container );
+		$hooks->register();
 
+		// Allow Hooks to be removed, by having the them registered to the container
+		$this->container->singleton( REST::class, $hooks );
 	}
 
 }

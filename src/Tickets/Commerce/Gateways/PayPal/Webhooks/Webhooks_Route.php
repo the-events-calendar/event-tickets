@@ -56,7 +56,7 @@ class Webhooks_Route {
 	public function get_route_url() {
 		/** @var REST $rest */
 		$rest     = tribe( REST::class );
-		$endpoint = tribe( REST\_Webhook::class );
+		$endpoint = tribe( REST\Webhook::class );
 
 		return rest_url( '/' . $rest->namespace . $endpoint->get_endpoint_path(), 'https' );
 	}

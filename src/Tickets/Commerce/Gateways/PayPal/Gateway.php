@@ -14,7 +14,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * @inheritDoc
 	 */
-	protected static $key = 'paypal-commerce';
+	protected static $key = 'paypal';
 
 	/**
 	 * PayPal attribution ID for requests.

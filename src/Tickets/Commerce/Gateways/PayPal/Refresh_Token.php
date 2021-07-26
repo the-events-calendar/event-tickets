@@ -22,24 +22,24 @@ class Refresh_Token {
 	/**
 	 * @since 5.1.6
 	 *
-	 * @var Authorization
+	 * @var Client
 	 */
-	private $paypal_auth;
+	private $client;
 
 	/**
 	 * Refresh_Token constructor.
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param Merchant      $merchant
-	 * @param Authorization $paypal_auth
+	 * @param Merchant $merchant
+	 * @param Client   $client
 	 */
 	public function __construct(
-		Merchant $merchant,
-		Authorization $paypal_auth
+		Merchant $merchant = null,
+		Client $client = null
 	) {
-		$this->merchant    = $merchant;
-		$this->paypal_auth = $paypal_auth;
+		$this->merchant = $merchant ?: tribe( Merchant::class );
+		$this->client   = $client ?: tribe( Client::class );
 	}
 
 	/**
@@ -50,7 +50,7 @@ class Refresh_Token {
 	 * @return string
 	 */
 	private function get_cron_job_hook_name() {
-		return 'tribe_tickets_commerce_paypal_commerce_refresh_token';
+		return 'tec_tickets_commerce_paypal_refresh_access_token';
 	}
 
 	/**
@@ -92,7 +92,7 @@ class Refresh_Token {
 			return;
 		}
 
-		$token_data = $this->paypal_auth->get_token_from_client_credentials( $this->merchant->get_client_id(), $this->merchant->get_client_secret() );
+		$token_data = $this->client->get_access_token_from_client_credentials( $this->merchant->get_client_id(), $this->merchant->get_client_secret() );
 
 		$this->merchant->save_access_token_data( $token_data );
 

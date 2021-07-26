@@ -18,7 +18,7 @@ use WP_REST_Response;
  * @since   5.1.6
  * @package Tribe\Tickets\REST\V1\Endpoints\PayPal_Commerce
  */
-class _Webhook
+class Webhook
 	extends Tribe__Tickets__REST__V1__Endpoints__Base
 	implements Tribe__REST__Endpoints__CREATE_Endpoint_Interface,
 	Tribe__Documentation__Swagger__Provider_Interface {
