@@ -4,8 +4,26 @@
  *
  * @version TBD
  */
+$paypal_seller_status = tribe( 'tickets.commerce.paypal.signup' )->get_seller_status();
 
-$paypal_connect_url = tribe( 'tickets.commerce.paypal.signup' )->get_paypal_signup_link();
+if ( 'activee' === $paypal_seller_status ) {
+	$display = '<div id="modern-tribe-info"><p>' . esc_html__( 'PayPal Status: Connected',
+			'event-tickets' ) . '</p></div>';
+} else {
+	$paypal_connect_url = tribe( 'tickets.commerce.paypal.signup' )->get_paypal_signup_link();
+	$connect_button     = '<a href=' . esc_html__( $paypal_connect_url ) . 'id="connect_to_paypal" class="button">' . esc_html__( 'Connect Automatically with PayPal',
+			'event-tickets' ) . '</a>';
+	$display            = '<div id="modern-tribe-info">
+				<h2>' . esc_html__( 'Accept online payments with PayPal!', 'event-tickets' ) . '</h2>
+				<p>' . esc_html__( 'Start selling tickets to your events today with PayPal. Attendees can purchase tickets directly on your site using debt or credit cards with no additional fees.',
+			'event-tickets' ) . '</p>
+				<ul>
+					<li>' . esc_html__( 'Credit and debit card payments', 'event-tickets' ) . '</li>
+					<li>' . esc_html__( 'Easy, no API key connection', 'event-tickets' ) . '</li>
+					<li>' . esc_html__( 'Accept payments from around the world', 'event-tickets' ) . '</li>
+					<li>' . esc_html__( 'Support 3D Secure Payments', 'event-tickets' ) . '</li>
+				</ul>' . $connect_button . '</div>';
+}
 
 $tickets_fields = [
 	'tribe-form-content-start' => [
@@ -22,18 +40,7 @@ $tickets_fields = [
 	],
 	'tickets-commerce-paypal-description' => [
 		'type' => 'html',
-		'html' => '<div id="modern-tribe-info">
-				<h2>' . esc_html__( 'Accept online payments with PayPal!', 'event-tickets' ) . '</h2>
-				<p>' . esc_html__( 'Start selling tickets to your events today with PayPal. Attendees can purchase tickets directly on your site using debt or credit cards with no additional fees.',
-				'event-tickets' ) . '</p>
-				<ul>
-					<li>' . esc_html__( 'Credit and debit card payments', 'event-tickets' ) . '</li>
-					<li>' . esc_html__( 'Easy, no API key connection', 'event-tickets' ) . '</li>
-					<li>' . esc_html__( 'Accept payments from around the world', 'event-tickets' ) . '</li>
-					<li>' . esc_html__( 'Support 3D Secure Payments', 'event-tickets' ) . '</li>
-				</ul>
-				<a href=' . esc_html__( $paypal_connect_url ) . 'id="connect_to_paypal" class="button">' . esc_html__( 'Connect Automatically with PayPal', 'woocommerce-quotation' ) . '</a>
-			</div>',
+		'html' => $display,
 	],
 	'tribe-form-content-end' => [
 		'type' => 'html',
