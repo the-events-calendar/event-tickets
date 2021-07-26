@@ -31,6 +31,7 @@ class Tribe__Tickets__Attendees {
 	public function hook() {
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
 
+		add_action( 'tribe_report_page_after_text_label', [ $this, 'include_export_button_title' ], 25, 2 );
 		add_action( 'tribe_events_tickets_attendees_totals_top', array( $this, 'print_checkedin_totals' ), 0 );
 		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_details_top' ), 20 );
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_details_top' ), 20 );
@@ -935,4 +936,48 @@ class Tribe__Tickets__Attendees {
 		return $provider->update_attendee( $attendee, $attendee_data );
 	}
 
+	/**
+	 * Generate the export URL for exporting attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @return string Relative URL for the export.
+	 */
+	public function get_export_url() {
+		return  add_query_arg(
+			[
+				'attendees_csv'       => true,
+				'attendees_csv_nonce' => wp_create_nonce( 'attendees_csv_nonce' ),
+			]
+		);
+	}
+
+	/**
+	 * Echo the button for the export that appears next to the attendees page title.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The Post ID of the event.
+	 * @param Tribe__Tickets__Attendees $attendees The attendees object.
+	 *
+	 * @return string Relative URL for the export.
+	 */
+	public function include_export_button_title( $event_id, Tribe__Tickets__Attendees $attendees ){
+
+		// Bail early if there are no attendees.
+		if ( ! $attendees->attendees_table->has_items() ) {
+			return;
+		}
+
+		// Bail early if user is not owner/have permissions.
+		if ( ! $this->user_can_manage_attendees( 0, $event_id ) ) {
+			return;
+		}
+
+		echo sprintf(
+			'<a target="_blank" href="%s" class="export action page-title-action" rel="noopener noreferrer">%s</a>',
+			esc_url( $export_url = $this->get_export_url() ),
+			esc_html__( 'Export', 'event-tickets' )
+		) ;
+	}
 }
