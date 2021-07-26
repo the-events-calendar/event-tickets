@@ -75,7 +75,7 @@ class Onboard {
 	public function get_return_url() {
 		return add_query_arg( [
 			'wp_nonce' => wp_create_nonce( self::PAYPAL_SIGNUP_NONCE ),
-		], rest_url() . 'tickets-commerce/paypal/on-boarding/' );
+		], esc_url( rest_url() ) . 'tickets-commerce/paypal/on-boarding/' );
 	}
 
 	/**
@@ -108,6 +108,4 @@ class Onboard {
 
 		return 'inactive';
 	}
-
-
 }
