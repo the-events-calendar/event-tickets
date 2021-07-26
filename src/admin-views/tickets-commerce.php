@@ -6,12 +6,12 @@
  */
 $paypal_seller_status = tribe( 'tickets.commerce.paypal.signup' )->get_seller_status();
 
-if ( 'activee' === $paypal_seller_status ) {
+if ( 'active' === $paypal_seller_status ) {
 	$display = '<div id="modern-tribe-info"><p>' . esc_html__( 'PayPal Status: Connected',
 			'event-tickets' ) . '</p></div>';
 } else {
 	$paypal_connect_url = tribe( 'tickets.commerce.paypal.signup' )->get_paypal_signup_link();
-	$connect_button     = '<a href=' . esc_html__( $paypal_connect_url ) . 'id="connect_to_paypal" class="button">' . esc_html__( 'Connect Automatically with PayPal',
+	$connect_button     = '<a href=' . esc_url( $paypal_connect_url ) . 'id="connect_to_paypal" class="button">' . esc_html__( 'Connect Automatically with PayPal',
 			'event-tickets' ) . '</a>';
 	$display            = '<div id="modern-tribe-info">
 				<h2>' . esc_html__( 'Accept online payments with PayPal!', 'event-tickets' ) . '</h2>
