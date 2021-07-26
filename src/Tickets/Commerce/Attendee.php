@@ -196,7 +196,6 @@ class Attendee {
 		register_post_type( static::POSTTYPE, $post_type_args );
 	}
 
-
 	/**
 	 * If the post that was moved to the trash was an PayPal Ticket attendee post type, redirect to
 	 * the Attendees Report rather than the PayPal Ticket attendees post list (because that's kind of
@@ -298,7 +297,7 @@ class Attendee {
 	 *
 	 * @since TBD
 	 *
-	 * @param $event_id
+	 * @param int $event_id
 	 */
 	public function maybe_send_tickets_after_status_change( $event_id ) {
 		$transaction_ids = array();
@@ -336,7 +335,7 @@ class Attendee {
 	/**
 	 * Filter the provider object to return this class if tickets are for this provider.
 	 *
-	 * @since TBd
+	 * @since TBD
 	 *
 	 * @param object $provider_obj
 	 * @param string $provider

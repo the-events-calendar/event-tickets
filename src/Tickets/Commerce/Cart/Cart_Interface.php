@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Cart;
 /**
  * Interface Cart_Interface
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Commerce\Cart
  */
@@ -82,11 +82,20 @@ interface Cart_Interface {
 	 *
 	 * @since 4.7.3
 	 *
-	 * @param int|string $item_id   The item ID.
-	 * @param int        $quantity  The quantity to remove.
-	 * @param array      $extra_dat Extra data to save to the item.
+	 * @param int|string $item_id    The item ID.
+	 * @param int        $quantity   The quantity to remove.
+	 * @param array      $extra_data Extra data to save to the item.
 	 */
 	public function add_item( $item_id, $quantity, array $extra_data = [] );
+
+	/**
+	 * Determines if this instance of the cart has a public page.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function has_public_page();
 
 	/**
 	 * Removes an item from the cart.

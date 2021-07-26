@@ -45,6 +45,7 @@ class Tribe_Tickets_Checkout extends Shortcode_Abstract {
 			// @todo Set up args here.
 			'client_id' => $merchant->get_client_id(),
 			'custom_payments' => $merchant->get_supports_custom_payments(),
+			'request' => $_POST,
 		];
 
 		// Add the rendering attributes into global context.

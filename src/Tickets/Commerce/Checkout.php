@@ -21,6 +21,17 @@ class Checkout {
 	public function get_url() {
 		$url = home_url( '/' );
 
+		$checkout_page = tribe_get_option( tribe( Settings::class )->option_checkout_page );
+
+		if ( is_numeric( $checkout_page ) ) {
+			$checkout_page = get_post( $checkout_page );
+		}
+
+		// Only modify the URL in case we have a checkout page setup in the settings.
+		if ( $checkout_page instanceof \WP_Post ) {
+			$url = get_the_permalink( $checkout_page );
+		}
+
 		/**
 		 * Allows modifications to the checkout url for Tickets Commerce.
 		 *

@@ -24,6 +24,5 @@ namespace PHPSTORM_META {
 
 	// Allow PhpStorm IDE to resolve return types when calling tribe( Object_Type::class ) or tribe( `Object_Type` )
 	override( \tribe( 0 ), map( $map ) );
-	override( \tad_DI52_ServiceProvider::make( 0 ), map( $map ) );
 	override( \tad_DI52_Container::make( 0 ), map( $map ) );
 }

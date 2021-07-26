@@ -210,6 +210,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * A variable holder if PayPal is loaded
 	 *
+	 * @since TBD
+	 *
 	 * @var boolean
 	 */
 	protected $is_loaded = false;
@@ -227,7 +229,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Registers all actions/filters
 	 *
-	 * @since 4.7
+	 * @since TBD
 	 */
 	public function hooks() {
 		// if the hooks have already been bound, don't do it again
@@ -246,7 +248,7 @@ class Module extends \Tribe__Tickets__Tickets {
 //		add_action( 'tribe_tickets_attendees_page_inside', tribe_callback( 'tickets.commerce.paypal.orders.tabbed-view', 'render' ) );
 //		add_filter( 'tribe_tickets_stock_message_available_quantity', tribe_callback( 'tickets.commerce.paypal.orders.sales', 'filter_available' ), 10, 4 );
 //		add_action( 'admin_init', tribe_callback( 'tickets.commerce.paypal.oversell.request', 'handle' ) );
-		add_filter( 'tribe_tickets_get_default_module', [ $this, 'deprioritize_module' ], 5, 2 );
+
 
 		// @todo Address we if need to send something here.
 //		add_filter( 'tribe_tickets_cart_urls', [ $this, 'add_cart_url' ], 10, 2 );
@@ -292,7 +294,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Shows the tickets form in the front end
 	 *
-	 * @since 4.7
+	 * @since TBD
 	 *
 	 * @param $content
 	 *
@@ -334,7 +336,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * Get attendees by id and associated post type
 	 * or default to using $post_id
 	 *
-	 * @since 4.7
+	 * @since TBD
 	 *
 	 * @param      $post_id
 	 * @param null $post_type
@@ -370,7 +372,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Links to sales report for all tickets for this event.
 	 *
-	 * @since 4.7
+	 * @since TBD
 	 *
 	 * @param int  $event_id
 	 * @param bool $url_only
@@ -409,7 +411,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Links to the sales report for this product.
 	 *
-	 * @since 4.7
+	 * @since TBD
 	 *
 	 * @param $event_id
 	 * @param $ticket_id
@@ -435,7 +437,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Get's the product price html
 	 *
-	 * @since 4.7
+	 * @since TBD
 	 *
 	 * @param int|object    $product
 	 * @param array|boolean $attendee
@@ -474,7 +476,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Filters the array of statuses that will mark an ticket attendee as eligible for check-in.
 	 *
-	 * @since 4.7
+	 * @since TBD
 	 *
 	 * @param array $statuses An array of statuses that should mark an ticket attendee as
 	 *                        available for check-in.
@@ -490,7 +492,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Returns the value of a key defined by the class.
 	 *
-	 * @since 4.7
+	 * @since TBD
 	 *
 	 * @param string $key
 	 *
@@ -517,7 +519,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Returns if it's TPP checkout based on the redirect query var
 	 *
-	 * @since 4.9
+	 * @since TBD
 	 *
 	 * @return bool
 	 */
@@ -534,7 +536,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Indicates if global stock support is enabled for this provider.
 	 *
-	 * @since 4.71
+	 * @since TBD
 	 *
 	 * @return bool
 	 */
@@ -551,9 +553,9 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Gets the product price value
 	 *
-	 * @since  4.7
+	 * @since TBD
 	 *
-	 * @param int|WP_Post $product
+	 * @param int|\WP_Post $product
 	 *
 	 * @return string
 	 */
@@ -577,7 +579,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * then those attendees generated as part of a Pending Order will, for a limited time after the
 	 * order creation, cause the inventory to be decreased.
 	 *
-	 * @since 4.7
+	 * @since TBD
 	 *
 	 * @param array $attendee
 	 *
@@ -661,6 +663,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * This is useful when trying to get the "true" inventory of a ticket.
 	 *
+	 * @since TBD
+	 *
 	 * @see \Tribe__Tickets__Commerce__PayPal__Main::attendee_decreases_inventory
 	 *
 	 * @param bool $ignore_pending_stock_logic
@@ -668,32 +672,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	 */
 	public function ignore_pending_stock_logic( $ignore_pending_stock_logic ) {
 		$this->ignore_pending_stock_logic = (bool) $ignore_pending_stock_logic;
-	}
-
-	/**
-	 * If other modules are active, we should deprioritize this one (we want other commerce
-	 * modules to take priority over this one).
-	 *
-	 * @since 4.7.1
-	 *
-	 * @param string   $default_module
-	 * @param string[] $available_modules
-	 *
-	 * @return string
-	 */
-	public function deprioritize_module( $default_module, array $available_modules ) {
-		$tribe_commerce_module = get_class( $this );
-
-		// If this isn't the default (or if there isn't a choice), no need to deprioritize
-		if (
-			$default_module !== $tribe_commerce_module
-			|| count( $available_modules ) < 2
-			|| reset( $available_modules ) !== $tribe_commerce_module
-		) {
-			return $default_module;
-		}
-
-		return next( $available_modules );
 	}
 
 	/**

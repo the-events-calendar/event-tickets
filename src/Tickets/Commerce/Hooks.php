@@ -73,55 +73,149 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_attendee_registration_form_classes', [ $this, 'filter_registration_form_class' ] );
 		add_filter( 'tribe_attendee_registration_cart_provider', [ $this, 'filter_registration_cart_provider' ], 10, 2 );
 
+		add_filter( 'tribe_tickets_get_default_module', [ $this, 'filter_de_prioritize_module' ], 5, 2 );
 	}
 
-
+	/**
+	 * Initializes the Module Class.
+	 *
+	 * @since TBD
+	 */
 	public function load_commerce_module() {
 		tribe( Module::class );
 	}
 
+	/**
+	 * Register all Commerce Post Types in WordPress.
+	 *
+	 * @since TBD
+	 */
 	public function register_post_types() {
 		$this->container->make( Attendee::class )->register_post_type();
 		$this->container->make( Order::class )->register_post_type();
 		$this->container->make( Ticket::class )->register_post_type();
 	}
 
+	/**
+	 * Backwards compatibility to update stock after deletion of Ticket.
+	 *
+	 * @todo  Determine if this is still required.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id  the attendee id being deleted
+	 * @param int $post_id    the post or event id for the attendee
+	 * @param int $product_id the ticket-product id in Tribe Commerce
+	 */
 	public function update_stock_after_deletion( $ticket_id, $post_id, $product_id ) {
 		$this->container->make( Ticket::class )->update_stock_after_deletion( $ticket_id, $post_id, $product_id );
 	}
 
+	/**
+	 * Sets up the Attendance Totals Class report with the Attendee Screen
+	 *
+	 * @since TBD
+	 */
 	public function setup_attendance_totals() {
 		$this->container->make( Reports\Attendance_Totals::class )->integrate_with_attendee_screen();
 	}
 
-	public function maybe_redirect_to_attendees_report() {
-		$this->container->make( Attendee::class )->maybe_redirect_to_attendees_report();
+	/**
+	 * Redirect the user after deleting trashing an Attendee to the Reports page.
+	 *
+	 * @since TBD4
+	 *
+	 * @param int $post_id WP_Post ID
+	 */
+	public function maybe_redirect_to_attendees_report( $post_id ) {
+		$this->container->make( Attendee::class )->maybe_redirect_to_attendees_report( $post_id );
 	}
 
+	/**
+	 * Includes the metabox advanced options for Tickets Commerce.
+	 *
+	 * @since TBD
+	 *
+	 * @param int      $post_id   Which post we are attaching the metabox to.
+	 * @param null|int $ticket_id Ticket we are rendering the metabox for.
+	 */
 	public function include_metabox_advanced_options( $post_id, $ticket_id = null ) {
 		$this->container->make( Editor\Metabox::class )->include_metabox_advanced_options( $post_id, $ticket_id );
 	}
 
-	public function update_attendee_data( $attendee_data, $attendee_id, $post_id ){
+	/**
+	 * Updates the Attendee metadata after insertion.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $attendee_data Information that we are trying to save.
+	 * @param int   $attendee_id   The attendee ID.
+	 * @param int   $post_id       The event/post ID.
+	 *
+	 */
+	public function update_attendee_data( $attendee_data, $attendee_id, $post_id ) {
 		$this->container->make( Attendee::class )->update_attendee_data( $attendee_data, $attendee_id, $post_id );
 	}
 
+	/**
+	 * Fully here for compatibility initially to reduce complexity on the Module.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id Which ID we are triggering changes to.
+	 *
+	 */
 	public function maybe_send_tickets_after_status_change( $event_id ) {
 		$this->container->make( Attendee::class )->maybe_send_tickets_after_status_change( $event_id );
 	}
 
+	/**
+	 * Redirect to the Attendees registration page when trying to add tickets.
+	 *
+	 * @todo Needs to move to the Checkout page and out of the module.
+	 *
+	 * @since TBD
+	 */
 	public function maybe_redirect_to_attendees_registration_screen() {
 		$this->container->make( Module::class )->maybe_redirect_to_attendees_registration_screen();
 	}
 
+	/**
+	 * Delete expired cart items.
+	 *
+	 * @todo Needs to move to the Cart page and out of the module.
+	 *
+	 * @since TBD
+	 */
 	public function maybe_delete_expired_products() {
 		$this->container->make( Cart::class )->maybe_delete_expired_products();
 	}
 
+	/**
+	 * Add the  HTML Classes to the registration form for this module.
+	 *
+	 * @todo Determine what this is used for.
+	 *
+	 * @since TBD
+	 *
+	 * @param $classes
+	 *
+	 * @return array
+	 */
 	public function filter_registration_form_class( $classes ) {
 		return $this->container->make( Attendee::class )->registration_form_class( $classes );
 	}
 
+	/**
+	 * Included here for Event Tickets Plus compatibility.
+	 *
+	 * @since TBD
+	 *
+	 * @param object $provider_obj
+	 * @param string $provider
+	 *
+	 * @return object
+	 */
 	public function filter_registration_cart_provider( $provider_obj, $provider ) {
 		return $this->container->make( Attendee::class )->registration_cart_provider( $provider_obj, $provider );
 	}
@@ -143,7 +237,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 		return $shortcodes;
 	}
 
-
 	/**
 	 * Modify the commerce settings completely once we have Tickets Commerce active.
 	 *
@@ -153,5 +246,33 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function filter_include_commerce_settings() {
 		return $this->container->make( Settings::class )->get_settings();
+	}
+
+	/**
+	 * If other modules are active, we should de prioritize this one (we want other commerce
+	 * modules to take priority over this one).
+	 *
+	 * @todo Determine if this is still needed.
+	 *
+	 * @since TBD
+	 *
+	 * @param string   $default_module
+	 * @param string[] $available_modules
+	 *
+	 * @return string
+	 */
+	public function filter_de_prioritize_module( $default_module, array $available_modules ) {
+		$tribe_commerce_module = get_class( $this );
+
+		// If this isn't the default (or if there isn't a choice), no need to de prioritize.
+		if (
+			$default_module !== $tribe_commerce_module
+			|| count( $available_modules ) < 2
+			|| reset( $available_modules ) !== $tribe_commerce_module
+		) {
+			return $default_module;
+		}
+
+		return next( $available_modules );
 	}
 }

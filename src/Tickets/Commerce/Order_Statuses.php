@@ -145,7 +145,7 @@ class Order_Statuses {
 	 * A transaction might be completed because it successfully completed, because it
 	 * was refunded or denied.
 	 *
-	 * @since 4.7
+	 * @since  TBD
 	 *
 	 * @param string $payment_status
 	 *
