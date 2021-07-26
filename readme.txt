@@ -184,6 +184,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Feature - Added export button next to the page title on the Attendees page. [ET-1145]
 * Tweak - Added `$attendees` parameter to the `tribe_report_page_after_text_label` action. [ET-1145]
 * Tweak - Removed the edit column when printing the Attendees list. [ETP-702]
+* Tweak - Added "Delete" functionality for the tickets area in the classic editor. [ET-1107]
 
 = [5.1.6] 2021-07-07 =
 
