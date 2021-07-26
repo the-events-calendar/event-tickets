@@ -17,5 +17,14 @@ class Commerce {
 	 *
 	 * @var string
 	 */
-	const UID = 'tickets-commerce';
+	const PROVIDER = 'tickets-commerce';
+
+	/**
+	 * Internal abbreviation for Ticket Commerce.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const ABBR = 'tc';
 }

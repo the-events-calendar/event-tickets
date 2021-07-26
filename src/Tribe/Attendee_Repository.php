@@ -142,9 +142,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function attendee_types() {
 		return [
-			'rsvp'                     => 'tribe_rsvp_attendees',
-			'tribe-commerce'           => 'tribe_tpp_attendees',
-			\TEC\Tickets\Commerce::UID => \TEC\Tickets\Commerce\Attendee::POSTTYPE,
+			'rsvp'                          => 'tribe_rsvp_attendees',
+			'tribe-commerce'                => 'tribe_tpp_attendees',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::POSTTYPE,
 		];
 	}
 
@@ -159,9 +159,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function attendee_to_event_keys() {
 		return [
-			'rsvp'                     => '_tribe_rsvp_event',
-			'tribe-commerce'           => '_tribe_tpp_event',
-			\TEC\Tickets\Commerce::UID => \TEC\Tickets\Commerce\Attendee::$event_relation_meta_key,
+			'rsvp'                          => '_tribe_rsvp_event',
+			'tribe-commerce'                => '_tribe_tpp_event',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$event_relation_meta_key,
 		];
 	}
 
@@ -176,9 +176,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function attendee_to_ticket_keys() {
 		return [
-			'rsvp'                     => '_tribe_rsvp_product',
-			'tribe-commerce'           => '_tribe_tpp_product',
-			\TEC\Tickets\Commerce::UID => \TEC\Tickets\Commerce\Attendee::$ticket_relation_meta_key,
+			'rsvp'                          => '_tribe_rsvp_product',
+			'tribe-commerce'                => '_tribe_tpp_product',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$ticket_relation_meta_key,
 		];
 	}
 
@@ -192,9 +192,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	protected function attendee_to_order_keys() {
 		return [
-			'rsvp'                     => '_tribe_rsvp_order',
-			'tribe-commerce'           => '_tribe_tpp_order',
-			\TEC\Tickets\Commerce::UID => \TEC\Tickets\Commerce\Attendee::$order_relation_meta_key,
+			'rsvp'                          => '_tribe_rsvp_order',
+			'tribe-commerce'                => '_tribe_tpp_order',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$order_relation_meta_key,
 		];
 	}
 
@@ -209,9 +209,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function purchaser_name_keys() {
 		return [
-			'rsvp'                     => '_tribe_rsvp_full_name',
-			'tribe-commerce'           => '_tribe_tpp_full_name',
-			\TEC\Tickets\Commerce::UID => \TEC\Tickets\Commerce\Attendee::$purchaser_name_meta_key,
+			'rsvp'                          => '_tribe_rsvp_full_name',
+			'tribe-commerce'                => '_tribe_tpp_full_name',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$purchaser_name_meta_key,
 		];
 	}
 
@@ -226,9 +226,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function purchaser_email_keys() {
 		return [
-			'rsvp'                     => '_tribe_rsvp_email',
-			'tribe-commerce'           => '_tribe_tpp_email',
-			\TEC\Tickets\Commerce::UID => \TEC\Tickets\Commerce\Attendee::$purchaser_email_meta_key,
+			'rsvp'                          => '_tribe_rsvp_email',
+			'tribe-commerce'                => '_tribe_tpp_email',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$purchaser_email_meta_key,
 		];
 	}
 
@@ -243,9 +243,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function security_code_keys() {
 		return [
-			'rsvp'                     => '_tribe_rsvp_security_code',
-			'tribe-commerce'           => '_tribe_tpp_security_code',
-			\TEC\Tickets\Commerce::UID => \TEC\Tickets\Commerce\Attendee::$security_code_meta_key,
+			'rsvp'                          => '_tribe_rsvp_security_code',
+			'tribe-commerce'                => '_tribe_tpp_security_code',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$security_code_meta_key,
 		];
 	}
 
@@ -260,9 +260,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function attendee_optout_keys() {
 		return [
-			'rsvp'                     => '_tribe_rsvp_attendee_optout',
-			'tribe-commerce'           => '_tribe_tpp_attendee_optout',
-			\TEC\Tickets\Commerce::UID => \TEC\Tickets\Commerce\Attendee::$optout_meta_key,
+			'rsvp'                          => '_tribe_rsvp_attendee_optout',
+			'tribe-commerce'                => '_tribe_tpp_attendee_optout',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$optout_meta_key,
 		];
 	}
 
@@ -275,9 +275,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function checked_in_keys() {
 		return [
-			'rsvp'                     => '_tribe_rsvp_checkedin',
-			'tribe-commerce'           => '_tribe_tpp_checkedin',
-			\TEC\Tickets\Commerce::UID => \TEC\Tickets\Commerce\Attendee::$checked_in_meta_key,
+			'rsvp'                          => '_tribe_rsvp_checkedin',
+			'tribe-commerce'                => '_tribe_tpp_checkedin',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$checked_in_meta_key,
 		];
 	}
 

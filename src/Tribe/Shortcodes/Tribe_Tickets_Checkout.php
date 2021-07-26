@@ -9,7 +9,7 @@
 namespace Tribe\Tickets\Shortcodes;
 
 use Tribe\Shortcode\Shortcode_Abstract;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\Merchant_Details;
+use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Settings;
 use Tribe__Tickets__Editor__Template;
 
@@ -39,13 +39,12 @@ class Tribe_Tickets_Checkout extends Shortcode_Abstract {
 		/** @var Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 
-		$merchant_details = tribe( Merchant_Details::class );
-		$details = $merchant_details->get_details();
+		$merchant = tribe( Merchant::class );
 
 		$args = [
 			// @todo Set up args here.
-			'client_id' => $details->client_id,
-			'custom_payments' => $details->supports_custom_payments,
+			'client_id' => $merchant->get_client_id(),
+			'custom_payments' => $merchant->get_supports_custom_payments(),
 		];
 
 		// Add the rendering attributes into global context.

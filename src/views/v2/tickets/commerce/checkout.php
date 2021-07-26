@@ -11,21 +11,21 @@ echo 'Checkout page is here';
 
 <script>
 	const button = {
-		style          : {
-			layout : 'vertical', color : 'blue', shape : 'rect', label : 'paypal'
-		}, createOrder : function ( data, actions ) {
+		style: {
+			layout: 'vertical', color: 'blue', shape: 'rect', label: 'paypal'
+		}, createOrder: function (data, actions) {
 			// Set up the transaction
-			return actions.order.create( {
-											 purchase_units : [
-												 {
-													 amount : {
-														 value : '0.01'
-													 }
-												 }
-											 ]
-										 } );
+			return actions.order.create({
+				purchase_units: [
+					{
+						amount: {
+							value: '0.01'
+						}
+					}
+				]
+			});
 		}
 	};
 
-	paypal.Buttons( button ).render( '#paypal-button-container' );
+	paypal.Buttons(button).render('#paypal-button-container');
 </script>

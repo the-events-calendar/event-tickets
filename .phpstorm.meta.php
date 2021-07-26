@@ -11,6 +11,7 @@ namespace PHPSTORM_META {
 		'tickets.redirections'        => \Tribe__Tickets__Redirections::class,
 		'tickets.theme-compatibility' => \Tribe__Tickets__Theme_Compatibility::class,
 		'tickets.main'                => \Tribe__Tickets__Main::class,
+		'tickets.status'              => \Tribe__Tickets__Status__Manager::class,
 
 		'tickets.rest-v1.main'         => \Tribe__Tickets__REST__V1__Main::class,
 		'tickets.rest-v1.messages'     => \Tribe__Tickets__REST__V1__Messages::class,
