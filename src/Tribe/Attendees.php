@@ -32,6 +32,7 @@ class Tribe__Tickets__Attendees {
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
 
 		add_action( 'tribe_report_page_after_text_label', [ $this, 'include_export_button_title' ], 25, 2 );
+		add_action( 'tribe_tabbed_view_heading_after_text_label', [ $this, 'include_export_button_title' ], 25, 2 );
 		add_action( 'tribe_events_tickets_attendees_totals_top', array( $this, 'print_checkedin_totals' ), 0 );
 		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_details_top' ), 20 );
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_details_top' ), 20 );
@@ -962,10 +963,26 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @return string Relative URL for the export.
 	 */
-	public function include_export_button_title( $event_id, Tribe__Tickets__Attendees $attendees ){
+	public function include_export_button_title( $event_id, Tribe__Tickets__Attendees $attendees = NULL ){
+
+		// Bail if not on the Attendees page.
+		if ( 'tickets-attendees' !== tribe_get_request_var( 'page' ) ) {
+			return;
+		}
+
+		// If this function is called from the tabbed-view.php file it does not send over $event_id or $attendees.
+		// If the $event_id is not an integer we can get the information from the get scope and find the data.
+		if ( ! is_int( $event_id ) &&
+		     ! empty( tribe_get_request_var( 'event_id' ) )
+		) {
+			$event_id = tribe_get_request_var( 'event_id' );
+			$attendees = tribe( 'tickets.attendees' );
+			$attendees->attendees_table->prepare_items();
+		}
 
 		// Bail early if there are no attendees.
-		if ( ! $attendees->attendees_table->has_items() ) {
+		if ( empty( $attendees ) ||
+		     ! $attendees->attendees_table->has_items() ) {
 			return;
 		}
 
