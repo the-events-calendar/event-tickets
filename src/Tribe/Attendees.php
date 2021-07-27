@@ -982,7 +982,8 @@ class Tribe__Tickets__Attendees {
 
 		// Bail early if there are no attendees.
 		if ( empty( $attendees ) ||
-		     ! $attendees->attendees_table->has_items() ) {
+		     ! $attendees->attendees_table->has_items()
+		) {
 			return;
 		}
 
