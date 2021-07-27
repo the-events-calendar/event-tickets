@@ -1,6 +1,11 @@
 {
   "extends": "@the-events-calendar/product-taskmaster/config/stylelint",
   "rules": {
-    "font-family-no-missing-generic-family-keyword": [ "dashicons" ]
+    "font-family-no-missing-generic-family-keyword": [
+      true,
+      {
+        "ignoreFontFamilies": [ "dashicons" ]
+      }
+    ]
   }
 }
