@@ -39,7 +39,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			var $table = $( 'table.wp-list-table.attendees' ),
 				$visible_columns = $table.find( 'thead th:visible' ).length,
 				$header_and_data = $table.find( 'th,td' ),
-				hidden_in_print = 2;
+				hidden_in_print = 3;
 
 			// make the visible columns stretch to fill the available width
 			$header_and_data.css( {'width': 100 / ($visible_columns - hidden_in_print) + '%'} );

@@ -71,6 +71,11 @@ class Cart {
 	public function get_url() {
 		$url = home_url( '/' );
 
+		// If the cart doesn't have a public URL we go directly to the Checkout page.
+		if ( ! $this->get_repository()->has_public_page() ) {
+			$url = tribe( Checkout::class )->get_url();
+		}
+
 		/**
 		 * Allows modifications to the cart url for Tickets Commerce.
 		 *
@@ -122,6 +127,13 @@ class Cart {
 		return $invoice;
 	}
 
+	/**
+	 * Gets the current instance of cart handling that we are using.
+	 *
+	 * @since TBD
+	 *
+	 * @return Commerce\Cart\Cart_Interface
+	 */
 	public function get_repository() {
 		$default_cart = tribe( Cart\Unmanaged_Cart::class );
 

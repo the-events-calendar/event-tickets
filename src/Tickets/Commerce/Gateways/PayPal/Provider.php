@@ -2,8 +2,6 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\Models\Status_Manager;
-
 /**
  * Service provider for the Tickets Commerce: PayPal Commerce gateway.
  *

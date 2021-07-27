@@ -25,6 +25,13 @@ class Unmanaged_Cart implements Cart_Interface {
 	protected $items = null;
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function has_public_page() {
+		return false;
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function set_id( $id ) {

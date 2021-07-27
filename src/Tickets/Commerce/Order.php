@@ -207,7 +207,7 @@ class Order {
 	 *     provider
 	 *     provider_slug
 	 *
-	 * @since 4.7
+	 * @since  TBD
 	 *
 	 * @param string|int $order_id
 	 *
@@ -254,6 +254,14 @@ class Order {
 		return $data;
 	}
 
+	/**
+	 * @todo WIP
+	 *
+	 * @since TBD
+	 *
+	 * @throws \Tribe__Repository__Usage_Error
+	 * @return false
+	 */
 	public function create_from_cart() {
 		$cart = tribe( Cart::class );
 
