@@ -2,9 +2,10 @@
 
 namespace TEC\Tickets\Commerce\Repositories;
 
+use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Module;
 use \Tribe__Repository;
-use TEC\Tickets\Commerce\Order as Order_Manager;
+use TEC\Tickets\Commerce\Order;
 use Tribe__Repository__Usage_Error as Usage_Error;
 
 use Tribe__Utils__Array as Arr;
@@ -15,7 +16,7 @@ use Tribe__Date_Utils as Dates;
  *
  * @since TBD
  */
-class Order extends Tribe__Repository {
+class Order_Repository extends Tribe__Repository {
 	/**
 	 * The unique fragment that will be used to identify this repository filters.
 	 *
@@ -41,8 +42,8 @@ class Order extends Tribe__Repository {
 		parent::__construct();
 
 		// Set the order post type.
-		$this->default_args['post_type'] = Order_Manager::POSTTYPE;
-		$this->create_args['post_type']  = Order_Manager::POSTTYPE;
+		$this->default_args['post_type'] = Order::POSTTYPE;
+		$this->create_args['post_type']  = Order::POSTTYPE;
 
 		// @todo Currency needs to be fetched properly.
 		$this->create_args['currency'] = 'USD';
@@ -51,17 +52,19 @@ class Order extends Tribe__Repository {
 		$this->update_fields_aliases = array_merge(
 			$this->update_fields_aliases,
 			[
-				'cart_items'           => Order_Manager::$cart_items_meta_key,
-				'total_value'          => Order_Manager::$total_value_meta_key,
-				'currency'             => Order_Manager::$currency_meta_key,
-				'purchaser_full_name'  => Order_Manager::$purchaser_full_name_meta_key,
-				'purchaser_first_name' => Order_Manager::$purchaser_first_name_meta_key,
-				'purchaser_last_name'  => Order_Manager::$purchaser_last_name_meta_key,
-				'purchaser_email'      => Order_Manager::$purchaser_email_meta_key,
+				'gateway'              => Order::$gateway_meta_key,
+				'gateway_order_id'     => Order::$gateway_order_id_meta_key,
+				'gateway_payload'      => Order::$gateway_payload_meta_key,
+				'cart_items'           => Order::$cart_items_meta_key,
+				'total_value'          => Order::$total_value_meta_key,
+				'currency'             => Order::$currency_meta_key,
+				'purchaser_full_name'  => Order::$purchaser_full_name_meta_key,
+				'purchaser_first_name' => Order::$purchaser_first_name_meta_key,
+				'purchaser_last_name'  => Order::$purchaser_last_name_meta_key,
+				'purchaser_email'      => Order::$purchaser_email_meta_key,
 			]
 		);
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -112,8 +115,8 @@ class Order extends Tribe__Repository {
 	 *
 	 * @since TBD
 	 *
-	 * @param array    $postarr  Data set that needs filtering.
-	 * @param null|int $post_id  When we are dealing with an Update we have an ID here.
+	 * @param array    $postarr Data set that needs filtering.
+	 * @param null|int $post_id When we are dealing with an Update we have an ID here.
 	 *
 	 * @return array
 	 */
@@ -136,7 +139,7 @@ class Order extends Tribe__Repository {
 		}
 
 		if ( ! empty( $cart_items ) ) {
-			$postarr['meta_input'][ Order_Manager::$cart_items_meta_key ] = $cart_items;
+			$postarr['meta_input'][ Order::$cart_items_meta_key ] = $cart_items;
 		}
 
 		unset( $postarr['meta_input']['tickets'] );
@@ -149,8 +152,8 @@ class Order extends Tribe__Repository {
 	 *
 	 * @since TBD
 	 *
-	 * @param array    $postarr  Data set that needs filtering.
-	 * @param null|int $post_id  When we are dealing with an Update we have an ID here.
+	 * @param array    $postarr Data set that needs filtering.
+	 * @param null|int $post_id When we are dealing with an Update we have an ID here.
 	 *
 	 * @return array
 	 */
@@ -187,10 +190,10 @@ class Order extends Tribe__Repository {
 			}
 		}
 
-		$postarr['meta_input'][ Order_Manager::$purchaser_email_meta_key ]      = $email;
-		$postarr['meta_input'][ Order_Manager::$purchaser_full_name_meta_key ]  = $full_name;
-		$postarr['meta_input'][ Order_Manager::$purchaser_first_name_meta_key ] = $first_name;
-		$postarr['meta_input'][ Order_Manager::$purchaser_last_name_meta_key ]  = $last_name;
+		$postarr['meta_input'][ Order::$purchaser_email_meta_key ]      = $email;
+		$postarr['meta_input'][ Order::$purchaser_full_name_meta_key ]  = $full_name;
+		$postarr['meta_input'][ Order::$purchaser_first_name_meta_key ] = $first_name;
+		$postarr['meta_input'][ Order::$purchaser_last_name_meta_key ]  = $last_name;
 
 		unset( $postarr['meta_input']['purchaser'] );
 

@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Tickets\Commerce;
+
 /**
  * Class Order
  *
@@ -18,6 +20,34 @@ class Order {
 	 * @var string
 	 */
 	const POSTTYPE = 'tec_tc_order';
+
+	/**
+	 * Which meta holds which gateway was used on this order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $gateway_meta_key = '_tec_tc_order_gateway';
+
+	/**
+	 * Which meta holds which gateway order id was used on this order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $gateway_order_id_meta_key = '_tec_tc_order_gateway_order_id';
+
+	/**
+	 * Normally when dealing with the gateways we have a payload from the original creation of the Order on their side
+	 * of the API, we should store that whole Payload with this meta key so that this data can be used in the future.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $gateway_payload_meta_key = '_tec_tc_order_gateway_payload';
 
 	/**
 	 * Which meta holds the cart items used to setup this order.
@@ -195,63 +225,6 @@ class Order {
 		}
 
 		return $found;
-	}
-
-	/**
-	 * Retrieve only order related information
-	 * Important: On PayPal Ticket the order is the Attendee Object
-	 *
-	 *     order_id
-	 *     purchaser_name
-	 *     purchaser_email
-	 *     provider
-	 *     provider_slug
-	 *
-	 * @since  TBD
-	 *
-	 * @param string|int $order_id
-	 *
-	 * @return array
-	 */
-	public function get_order_data( $order_id ) {
-		$name  = tribe( Attendee::class )->get_full_name( $order_id );
-		$email = get_post_meta( $order_id, $this->email, true );
-
-		$order = \Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id(
-			$order_id,
-			[
-				'address_name',
-				'payer_email',
-			]
-		);
-
-		if ( $order ) {
-			$name  = $order->get_meta( 'address_name' );
-			$email = $order->get_meta( 'payer_email' );
-		}
-
-		$data = array(
-			'order_id'        => $order_id,
-			'purchaser_name'  => $name,
-			'purchaser_email' => $email,
-			'provider'        => __CLASS__,
-			'provider_slug'   => 'tpp',
-			'purchase_time'   => get_post_time( \Tribe__Date_Utils::DBDATETIMEFORMAT, false, $order_id ),
-		);
-
-		/**
-		 * Allow users to filter the Order Data
-		 *
-		 * @since 4.7
-		 *
-		 * @param array  $data     An associative array with the Information of the Order
-		 * @param string $provider What Provider is been used
-		 * @param string $order_id Order ID
-		 *
-		 */
-		$data = apply_filters( 'tribe_tickets_order_data', $data, 'tpp', $order_id );
-
-		return $data;
 	}
 
 	/**

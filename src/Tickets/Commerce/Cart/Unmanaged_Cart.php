@@ -32,6 +32,13 @@ class Unmanaged_Cart implements Cart_Interface {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function get_mode() {
+		return \TEC\Tickets\Commerce\Cart::REDIRECT_MODE;
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function set_id( $id ) {
@@ -42,7 +49,7 @@ class Unmanaged_Cart implements Cart_Interface {
 	 * {@inheritdoc}
 	 */
 	public function save() {
-		$invoice_number = tribe( Commerce\Cart::class )->get_invoice_number();
+		$invoice_number = tribe( Commerce\Cart::class )->get_invoice_number( true );
 
 		if ( false === $invoice_number ) {
 			return false;
@@ -55,6 +62,7 @@ class Unmanaged_Cart implements Cart_Interface {
 		}
 
 		set_transient( Commerce\Cart::get_transient_name( $invoice_number ), $this->items, DAY_IN_SECONDS );
+		tribe( Commerce\Cart::class )->set_cookie_invoice_number( $invoice_number );
 	}
 
 	/**
@@ -68,8 +76,6 @@ class Unmanaged_Cart implements Cart_Interface {
 		if ( ! $this->exists() ) {
 			return false;
 		}
-
-		$this->items = [];
 
 		$invoice_number = tribe( Commerce\Cart::class )->get_invoice_number();
 
@@ -93,13 +99,14 @@ class Unmanaged_Cart implements Cart_Interface {
 		}
 
 		delete_transient( Commerce\Cart::get_transient_name( $invoice_number ) );
+		tribe( Commerce\Cart::class )->set_cookie_invoice_number( $invoice_number );
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function exists( array $criteria = [] ) {
-		$invoice_number = $this->get_invoice_number();
+		$invoice_number = tribe( Commerce\Cart::class )->get_invoice_number();
 
 		if ( false === $invoice_number ) {
 			return false;

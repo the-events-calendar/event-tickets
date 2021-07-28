@@ -3,12 +3,12 @@
 namespace TEC\Tickets\Commerce\Repositories;
 
 /**
- * Class Tickets
+ * Class Attendees
  *
  * @since   TBD
  *
  * @package TEC\Tickets\Commerce\Repositories
  */
-class Tickets {
+class Attendees_Repository {
 
 }

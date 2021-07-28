@@ -48,6 +48,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_action( 'init', [ $this, 'register_post_types' ] );
 		add_action( 'tribe_common_loaded', [ $this, 'load_commerce_module' ] );
 
+		add_action( 'template_redirect', [ $this, 'do_cart_parse_request' ] );
+		add_action( 'template_redirect', [ $this, 'do_checkout_parse_request' ] );
+
 		add_action( 'event_tickets_attendee_update', [ $this, 'update_attendee_data' ], 10, 3 );
 		add_action( 'event_tickets_after_attendees_update', [ $this, 'maybe_send_tickets_after_status_change' ] );
 
@@ -94,6 +97,23 @@ class Hooks extends tad_DI52_ServiceProvider {
 		$this->container->make( Attendee::class )->register_post_type();
 		$this->container->make( Order::class )->register_post_type();
 		$this->container->make( Ticket::class )->register_post_type();
+	}
+
+	/**
+	 * Parse the cart request, and possibly redirect, so it happens on `template_redirect`.
+	 *
+	 * @since TBD
+	 */
+	public function do_cart_parse_request() {
+		$this->container->make( Cart::class )->parse_request();
+	}
+	/**
+	 * Parse the checkout request.
+	 *
+	 * @since TBD
+	 */
+	public function do_checkout_parse_request() {
+		$this->container->make( Checkout::class )->parse_request();
 	}
 
 	/**
@@ -232,7 +252,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array
 	 */
 	public function filter_register_shortcodes( array $shortcodes ) {
-		$shortcodes['tribe_tickets_checkout'] = Tribe_Tickets_Checkout::class;
+		$shortcodes['tec_tickets_checkout'] = Shortcodes\Checkout_Shortcode::class;
 
 		return $shortcodes;
 	}

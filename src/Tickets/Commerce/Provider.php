@@ -57,6 +57,8 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( Order::class );
 		$this->container->singleton( Ticket::class );
 		$this->container->singleton( Cart::class );
+		$this->container->singleton( Cart\Unmanaged_Cart::class );
+
 		$this->container->singleton( Checkout::class );
 		$this->container->singleton( Settings::class );
 		$this->container->singleton( Tickets_View::class );
@@ -87,6 +89,8 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		require_once $path . 'src/functions/commerce/orm.php';
 		require_once $path . 'src/functions/commerce/orders.php';
+		require_once $path . 'src/functions/commerce/attendees.php';
+		require_once $path . 'src/functions/commerce/tickets.php';
 	}
 
 	/**

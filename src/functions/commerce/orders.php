@@ -1,14 +1,14 @@
 <?php
 /**
- * Functions and template tags dedicated to Events.
+ * Functions and template tags dedicated to Orders in Ticket Commerce.
  *
- * @since 4.9.7
+ * @since TBD
  */
 
-use TEC\Tickets\Commerce\Models\Order;
+use TEC\Tickets\Commerce\Models\Order_Model;
 
 /**
- * Fetches and returns a decorated post object representing an Event.
+ * Fetches and returns a decorated post object representing an Order.
  *
  * @since TBD
  *
@@ -19,7 +19,7 @@ use TEC\Tickets\Commerce\Models\Order;
  * @param string           $filter                 Type of filter to apply.
  * @param bool             $force                  Whether to force a re-fetch ignoring cached results or not.
  *
- * @return array|mixed|void|WP_Post|null    The Event post object or array, `null` if not found.
+ * @return array|mixed|void|WP_Post|null    The Order post object or array, `null` if not found.
  */
 function tec_tc_get_order( $order = null, $output = OBJECT, $filter = 'raw', $force = false ) {
 	/**
@@ -59,7 +59,7 @@ function tec_tc_get_order( $order = null, $output = OBJECT, $filter = 'raw', $fo
 		$cache_post->post_modified,
 		// Use the `post_password` field as we show/hide some information depending on that.
 		$cache_post->post_password,
-		// We must include options on cache key, because options influence the hydrated data on the Event object.
+		// We must include options on cache key, because options influence the hydrated data on the Order object.
 		wp_json_encode( Tribe__Settings_Manager::get_options() ),
 		wp_json_encode( [
 			get_option( 'start_of_week' ),
@@ -77,7 +77,7 @@ function tec_tc_get_order( $order = null, $output = OBJECT, $filter = 'raw', $fo
 	}
 
 	if ( false === $post ) {
-		$post = Order::from_post( $order )->to_post( $output, $filter );
+		$post = Order_Model::from_post( $order )->to_post( $output, $filter );
 
 		if ( empty( $post ) ) {
 			return null;

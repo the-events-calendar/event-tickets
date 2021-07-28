@@ -196,11 +196,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	public $deleted_product = '_tribe_deleted_product_name';
 
 	/**
-	 * @var array An array cache to store pending attendees per ticket.
-	 */
-	public $pending_attendees_by_ticket = array();
-
-	/**
 	 * @var bool Whether pending stock logic should be ignored or not no matter the Settings.
 	 *           This is an internal property. Use the `tec_tickets_commerce_pending_stock_ignore`
 	 *           filter or the accessor method to manipulate this value from another class.
@@ -517,23 +512,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Returns if it's TPP checkout based on the redirect query var
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	public function is_checkout_page() {
-		if ( is_admin() ) {
-			return false;
-		}
-
-		$redirect = tribe_get_request_var( 'tribe_tickets_redirect_to', null );
-
-		return ! empty( $redirect );
-	}
-
-	/**
 	 * Indicates if global stock support is enabled for this provider.
 	 *
 	 * @since TBD
@@ -687,7 +665,21 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * {@inheritdoc}
 	 */
 	public function get_attendee( $attendee, $post_id = 0 ) {
-		return tribe( Attendee::class )->get_attendee( $attendee, $post_id );
+		return tec_tc_get_attendee( $attendee, ARRAY_A );
+	}
+
+	/**
+	 * Event Tickets Plus Admin Reports page will use this data from this method.
+	 *
+	 * @since TBD
+	 *
+	 *
+	 * @param string|int $order_id
+	 *
+	 * @return array
+	 */
+	public function get_order_data( $order_id ) {
+		return tec_tc_get_order( $order_id, ARRAY_A );
 	}
 
 	/**
@@ -788,6 +780,16 @@ class Module extends \Tribe__Tickets__Tickets {
 		parent::delete_ticket( $event_id, $ticket_id );
 
 		return $deleted;
-
 	}
+
+		/**
+		 * Return whether we're currently on the checkout page for Tickets Commerce.
+		 *
+		 * @since TBD
+		 *
+		 * @return bool
+		 */
+		public function is_checkout_page() {
+			return tribe( Checkout::class )->is_current_page();
+		}
 }
