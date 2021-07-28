@@ -183,9 +183,10 @@ tribe.tickets.block = {
 			}
 
 			const $price = $input.closest( obj.selectors.item ).find( obj.selectors.itemPrice ).first();
+			const real_price = $input.closest( obj.selectors.item ).data( 'ticket-price' );
 			let quantity = parseInt( $input.val(), 10 );
 			quantity = isNaN( quantity ) ? 0 : quantity;
-			let text = isNaN( $price.data( 'real-price' ) ) ? $price.text() : $price.data( 'real-price' ).toString();
+			let text = isNaN( real_price ) ? $price.text() : real_price.toString();
 			text = tribe.tickets.utils.cleanNumber( text, provider );
 			const cost = text * quantity;
 			footerAmount += Math.round( cost );
@@ -440,7 +441,8 @@ tribe.tickets.block = {
 		const provider = obj.getTicketsBlockProvider( $form );
 
 		let $price = $cartItem.find( obj.selectors.itemPrice ).first();
-		let text   = isNaN( $price.data( 'real-price' ) ) ? $price.text() : $price.data( 'real-price' ).toString();
+		let real_price = $cartItem.closest( obj.selectors.item ).data( 'ticket-price' );
+		let text   = isNaN( real_price ) ? $price.text() : real_price.toString();
 
 		const price = tribe.tickets.utils.cleanNumber( text, provider );
 
