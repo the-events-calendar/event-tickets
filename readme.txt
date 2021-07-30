@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, sc0ttkclark, ag
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.14
 Tested up to: 5.8.0
-Stable tag: 5.2.1
+Stable tag: 5.1.7
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -178,13 +178,14 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.2.1] TBD =
+= [5.1.7] 2021-08-03 =
 
-* Tweak - Changed the word `Purchaser` to `Attendee` when email confirmation is sent for purchasing a ticket. [ETP-655]
 * Feature - Added export button next to the page title on the Attendees page. [ET-1145]
+* Tweak - Changed the word `Purchaser` to `Attendee` when email confirmation is sent for purchasing a ticket. [ETP-655]
 * Tweak - Added `$attendees` parameter to the `tribe_report_page_after_text_label` action. [ET-1145]
 * Tweak - Removed the edit column when printing the Attendees list. [ETP-702]
 * Tweak - Added "Delete" functionality for the tickets area in the classic editor. [ET-1107]
+* Language - 1 new strings added, 61 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.1.6] 2021-07-07 =
 
@@ -195,7 +196,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Sync WooCommerce decimal separator with in Ticket edit form. [ETP-725]
 * Fix - Prevent Tribe Commerce "Confirmation email sender name" from displaying improperly when a single quote is added. [ET-1134]
 * Language - 115 new strings added, 118 updated, 0 fuzzied, and 0 obsoleted
-
 
 = [5.1.5] 2021-06-09 =
 

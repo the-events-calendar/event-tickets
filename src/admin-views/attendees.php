@@ -40,7 +40,7 @@ $export_url = tribe( 'tickets.attendees' )->get_export_url();
 			 * Add an action to render content after text title.
 			 *
 			 * @since 5.1.0
-			 * @since TBD Added the attendees information.
+			 * @since 5.1.7 Added the attendees information.
 			 *
 			 * @param int $event_id Post ID.
 			 * @param Tribe__Tickets__Attendees $attendees The attendees object.
