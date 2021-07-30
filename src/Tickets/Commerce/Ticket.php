@@ -102,7 +102,7 @@ class Ticket {
 		$return->sku              = get_post_meta( $ticket_id, '_sku', true );
 
 		// If the quantity sold wasn't set, default to zero
-		$qty_sold = $qty_sold ? $qty_sold : 0;
+                   		$qty_sold = $qty_sold ? $qty_sold : 0;
 
 		// Ticket stock is a simple reflection of remaining inventory for this item...
 		$stock = (int) get_post_meta( $ticket_id, '_stock', true );

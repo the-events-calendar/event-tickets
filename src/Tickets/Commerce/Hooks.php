@@ -77,6 +77,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_attendee_registration_cart_provider', [ $this, 'filter_registration_cart_provider' ], 10, 2 );
 
 		add_filter( 'tribe_tickets_get_default_module', [ $this, 'filter_de_prioritize_module' ], 5, 2 );
+
+		add_filter( 'tribe_tickets_checkout_urls', [ $this, 'filter_js_include_checkout_url' ] );
+		add_filter( 'tribe_tickets_cart_urls', [ $this, 'filter_js_include_cart_url' ] );
 	}
 
 	/**
@@ -294,5 +297,16 @@ class Hooks extends tad_DI52_ServiceProvider {
 		}
 
 		return next( $available_modules );
+	}
+
+	public function filter_js_include_cart_url( $urls ) {
+		$urls[ Module::class ] = tribe( Cart::class )->get_url();
+		return $urls;
+	}
+
+	public function filter_js_include_checkout_url( $urls ) {
+		// Note the checkout needs to pass by the cart URL first for AR modal.
+		$urls[ Module::class ] = tribe( Cart::class )->get_url();
+		return $urls;
 	}
 }

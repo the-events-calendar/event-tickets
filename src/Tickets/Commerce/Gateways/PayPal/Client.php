@@ -23,7 +23,7 @@ class Client {
 		$merchant = tribe( Merchant::class );
 
 		return $merchant->is_sandbox() ?
-			'https://api.sandbox.paypal.com':
+			'https://api.sandbox.paypal.com' :
 			'https://api.paypal.com';
 	}
 
@@ -54,6 +54,37 @@ class Client {
 		$base_url = $this->get_environment_url();
 
 		return add_query_arg( $query_args, "{$base_url}/{$endpoint}" );
+	}
+
+	/**
+	 * Fetches the JS SDK url.
+	 *
+	 * We use something like: https://www.paypal.com/sdk/js?client-id=sb&locale=en_US&components=buttons
+	 *
+	 * @since TBD
+	 *
+	 * @param array $query_args Which query args will be added.
+	 *
+	 * @return string
+	 */
+	public function get_js_sdk_url( array $query_args = [] ) {
+		$url        = 'https://www.paypal.com/sdk/js';
+		$query_args = array_merge( [
+			'client-id'  => 'sb',
+			'locale'     => 'en_US',
+			'components' => 'buttons',
+		], $query_args );
+		$url        = add_query_arg( $query_args, $url );
+
+		/**
+		 * Filter the PayPal JS SDK url.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $url        Which URL we are going to use to load the SDK JS.
+		 * @param array  $query_args Which URL args will be added to the JS SDK url.
+		 */
+		return apply_filters( 'tec_tickets_commerce_gateway_paypal_js_sdk_url', $url, $query_args );
 	}
 
 	/**
@@ -312,7 +343,7 @@ class Client {
 	public function refund_payment( $capture_id ) {
 		$query_args = [];
 		$body       = [];
-		$args = [
+		$args       = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
 				'Prefer'                        => 'return=representation',
@@ -321,9 +352,9 @@ class Client {
 		];
 
 		$capture_id = urlencode( $capture_id );
-		$url = '/v2/payments/captures/{capture_id}/refund';
-		$url = str_replace( '{capture_id}', $capture_id, $url );
-		$response = $this->post( $url, $query_args, $args );
+		$url        = '/v2/payments/captures/{capture_id}/refund';
+		$url        = str_replace( '{capture_id}', $capture_id, $url );
+		$response   = $this->post( $url, $query_args, $args );
 
 		return $response;
 	}
@@ -331,7 +362,7 @@ class Client {
 	public function capture_order( $order_id ) {
 		$query_args = [];
 		$body       = [];
-		$args = [
+		$args       = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
 				'Prefer'                        => 'return=representation',
@@ -340,9 +371,9 @@ class Client {
 		];
 
 		$capture_id = urlencode( $order_id );
-		$url = '/v2/checkout/orders/{order_id}/capture';
-		$url = str_replace( '{order_id}', $order_id, $url );
-		$response = $this->post( $url, $query_args, $args );
+		$url        = '/v2/checkout/orders/{order_id}/capture';
+		$url        = str_replace( '{order_id}', $order_id, $url );
+		$response   = $this->post( $url, $query_args, $args );
 
 		return $response;
 	}

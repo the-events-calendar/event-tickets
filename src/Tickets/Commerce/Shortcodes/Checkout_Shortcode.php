@@ -15,6 +15,7 @@ use Tribe\Shortcode\Shortcode_Abstract;
 use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Settings;
 use Tribe__Tickets__Editor__Template;
+use TEC\Tickets\Commerce\Utils\Price;
 
 /**
  * Class for Shortcode Tribe_Tickets_Checkout.
@@ -66,23 +67,27 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		if ( is_admin() && ! $context->doing_ajax() ) {
 			return '';
 		}
-		$merchant = tribe( Merchant::class );
+		$merchant    = tribe( Merchant::class );
 
-//		$post     = get_post( $data['post_id'] );
-//		$is_event = 'tribe_events' === $post->post_type;
-//		$event    = null;
-//		if ( $is_event && function_exists( 'tribe_get_event' ) ) {
-//			$event = tribe_get_event( $post );
-//		}
+		$items    = tribe( Cart::class )->get_tickets_in_cart();
+		$items    = array_map( static function ( $item ) {
+  			$item['obj']       = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+			$item['event_id']  = $item['obj']->get_event_id();
+			$item['sub_total'] = Price::sub_total( $item['obj']->price, $item['quantity'] );
+
+			return $item;
+		}, $items );
+		$sections = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
+		$sub_totals = array_unique( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
 
 		$args = [
 			'merchant'    => $merchant,
 			'provider_id' => Module::class,
 			'provider'    => tribe( Module::class ),
-			'items'       => tribe( Cart::class )->get_tickets_in_cart(),
+			'items'       => $items,
+			'sections'    => $sections,
+			'total_value' => tribe_format_currency( Price::total( $sub_totals ) ),
 		];
-
-		$args['paypal_attribution_id'] = \TEC\Tickets\Commerce\Gateways\PayPal\Gateway::ATTRIBUTION_ID;
 
 		// Add the rendering attributes into global context.
 		$this->get_template()->add_template_globals( $args );

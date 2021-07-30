@@ -12,7 +12,12 @@ namespace TEC\Tickets\Commerce;
 class Module extends \Tribe__Tickets__Tickets {
 
 	public function __construct() {
+		// This needs to happen before parent construct.
+		$this->plugin_name = __( 'Tickets Commerce', 'event-tickets' );
+
 		parent::__construct();
+
+		$this->attendee_object = Attendee::POSTTYPE;
 
 		$this->attendee_ticket_sent = '_tribe_tpp_attendee_ticket_sent';
 
@@ -244,10 +249,6 @@ class Module extends \Tribe__Tickets__Tickets {
 //		add_filter( 'tribe_tickets_stock_message_available_quantity', tribe_callback( 'tickets.commerce.paypal.orders.sales', 'filter_available' ), 10, 4 );
 //		add_action( 'admin_init', tribe_callback( 'tickets.commerce.paypal.oversell.request', 'handle' ) );
 
-
-		// @todo Address we if need to send something here.
-//		add_filter( 'tribe_tickets_cart_urls', [ $this, 'add_cart_url' ], 10, 2 );
-//		add_filter( 'tribe_tickets_checkout_urls', [ $this, 'add_checkout_url' ], 10, 2 );
 	}
 
 	/**

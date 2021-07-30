@@ -97,16 +97,21 @@ class Checkout {
 		return tribe_is_truthy( apply_filters( 'tec_tickets_commerce_checkout_is_current_page', $is_current_page ) );
 	}
 
+	/**
+	 * If there is any data or request management or parsing that needs to happen on the Checkout page here is where
+	 * we do it.
+	 *
+	 * @since TBD
+	 */
 	public function parse_request() {
 		if ( ! $this->is_current_page() ) {
 			return;
 		}
 
+		// In case the ID is passed we set the cookie for usage.
 		$cookie_param = tribe_get_request_var( Cart::$cookie_query_arg, false );
 		if ( $cookie_param ) {
-			tribe( Cart::class )->set_cookie_invoice_number( $cookie_param );
-			$items = tribe( Cart::class )->get_tickets_in_cart();
+			tribe( Cart::class )->set_cart_hash_cookie( $cookie_param );
 		}
-		$i=1;
 	}
 }

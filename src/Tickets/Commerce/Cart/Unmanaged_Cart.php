@@ -49,7 +49,7 @@ class Unmanaged_Cart implements Cart_Interface {
 	 * {@inheritdoc}
 	 */
 	public function save() {
-		$invoice_number = tribe( Commerce\Cart::class )->get_invoice_number( true );
+		$invoice_number = tribe( Commerce\Cart::class )->get_cart_hash( true );
 
 		if ( false === $invoice_number ) {
 			return false;
@@ -62,7 +62,7 @@ class Unmanaged_Cart implements Cart_Interface {
 		}
 
 		set_transient( Commerce\Cart::get_transient_name( $invoice_number ), $this->items, DAY_IN_SECONDS );
-		tribe( Commerce\Cart::class )->set_cookie_invoice_number( $invoice_number );
+		tribe( Commerce\Cart::class )->set_cart_hash_cookie( $invoice_number );
 	}
 
 	/**
@@ -77,9 +77,9 @@ class Unmanaged_Cart implements Cart_Interface {
 			return false;
 		}
 
-		$invoice_number = tribe( Commerce\Cart::class )->get_invoice_number();
+		$cart_hash = tribe( Commerce\Cart::class )->get_cart_hash();
 
-		$items = get_transient( Commerce\Cart::get_transient_name( $invoice_number ) );
+		$items = get_transient( Commerce\Cart::get_transient_name( $cart_hash ) );
 
 		if ( is_array( $items ) && ! empty( $items ) ) {
 			$this->items = $items;
@@ -92,27 +92,27 @@ class Unmanaged_Cart implements Cart_Interface {
 	 * {@inheritdoc}
 	 */
 	public function clear() {
-		$invoice_number = tribe( Commerce\Cart::class )->get_invoice_number();
+		$cart_hash = tribe( Commerce\Cart::class )->get_cart_hash();
 
-		if ( false === $invoice_number ) {
+		if ( false === $cart_hash ) {
 			return false;
 		}
 
-		delete_transient( Commerce\Cart::get_transient_name( $invoice_number ) );
-		tribe( Commerce\Cart::class )->set_cookie_invoice_number( $invoice_number );
+		delete_transient( Commerce\Cart::get_transient_name( $cart_hash ) );
+		tribe( Commerce\Cart::class )->set_cart_hash_cookie( $cart_hash );
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function exists( array $criteria = [] ) {
-		$invoice_number = tribe( Commerce\Cart::class )->get_invoice_number();
+		$cart_hash = tribe( Commerce\Cart::class )->get_cart_hash();
 
-		if ( false === $invoice_number ) {
+		if ( false === $cart_hash ) {
 			return false;
 		}
 
-		return (bool) get_transient( Commerce\Cart::get_transient_name( $invoice_number ) );
+		return (bool) get_transient( Commerce\Cart::get_transient_name( $cart_hash ) );
 	}
 
 	/**
@@ -148,9 +148,10 @@ class Unmanaged_Cart implements Cart_Interface {
 		$new_quantity = max( $new_quantity, 0 );
 
 		if ( 0 < $new_quantity ) {
-			$item = $extra_data;
-
+			$item['ticket_id'] = $item_id;
 			$item['quantity'] = $new_quantity;
+
+			$item['extra'] = $extra_data;
 
 			$this->items[ $item_id ] = $item;
 		} else {

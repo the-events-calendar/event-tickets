@@ -60,7 +60,7 @@ class Cart {
 	 *
 	 * @var string
 	 */
-	public static $invoice_cookie_name = 'tec-tickets-commerce-invoice';
+	public static $cart_hash_cookie_name = 'tec-tickets-commerce-invoice';
 
 	/**
 	 * Which invoice number we are using here.
@@ -69,7 +69,7 @@ class Cart {
 	 *
 	 * @var string
 	 */
-	protected $invoice_number;
+	protected $cart_hash;
 
 	/**
 	 * From the current active cart repository we fetch it's mode.
@@ -163,7 +163,7 @@ class Cart {
 	 * @return string
 	 */
 	public function get_current_cart_transient() {
-		$invoice_number = $this->get_invoice_number();
+		$invoice_number = $this->get_cart_hash();
 
 		return static::get_transient_name( $invoice_number );
 	}
@@ -197,26 +197,26 @@ class Cart {
 	 *
 	 * @return string|bool The invoice number or `false` if not found.
 	 */
-	public function get_invoice_number( $generate = false ) {
-		$invoice_length = 12;
+	public function get_cart_hash( $generate = false ) {
+		$cart_hash_length = 12;
 
-		$invoice = $this->invoice_number;
+		$cart_hash = $this->cart_hash;
 
 		if (
-			! empty( $_COOKIE[ static::$invoice_cookie_name ] )
-			&& strlen( $_COOKIE[ static::$invoice_cookie_name ] ) === $invoice_length
+			! empty( $_COOKIE[ static::$cart_hash_cookie_name ] )
+			&& strlen( $_COOKIE[ static::$cart_hash_cookie_name ] ) === $cart_hash_length
 		) {
-			$invoice = $_COOKIE[ static::$invoice_cookie_name ];
+			$cart_hash = $_COOKIE[ static::$cart_hash_cookie_name ];
 
-			$invoice_transient = get_transient( static::get_transient_name( $invoice ) );
+			$cart_hash_transient = get_transient( static::get_transient_name( $cart_hash ) );
 
-			if ( empty( $invoice_transient ) ) {
-				$invoice = false;
+			if ( empty( $cart_hash_transient ) ) {
+				$cart_hash = false;
 			}
 		}
 
-		if ( empty( $invoice ) && $generate ) {
-			$invoice = wp_generate_password( $invoice_length, false );
+		if ( empty( $cart_hash ) && $generate ) {
+			$cart_hash = wp_generate_password( $cart_hash_length, false );
 		}
 
 		/**
@@ -224,11 +224,11 @@ class Cart {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $invoice Invoice number.
+		 * @param string $cart_hash Invoice number.
 		 */
-		$this->invoice_number = apply_filters( 'tec_tickets_commerce_cart_invoice_number', $invoice );
+		$this->cart_hash = apply_filters( 'tec_tickets_commerce_cart_hash', $cart_hash );
 
-		return $this->invoice_number;
+		return $this->cart_hash;
 	}
 
 	/**
@@ -238,15 +238,15 @@ class Cart {
 	 *
 	 * @parem string $value Value used for the cookie or empty to purge the cookie.
 	 */
-	public function set_cookie_invoice_number( $value = '' ) {
-		if ( empty( $value ) && empty( $_COOKIE[ static::$invoice_cookie_name ] ) ) {
+	public function set_cart_hash_cookie( $value = '' ) {
+		if ( empty( $value ) && empty( $_COOKIE[ static::$cart_hash_cookie_name ] ) ) {
 			return;
 		}
 
 		if ( empty( $value ) ) {
-			$invoice = $_COOKIE[ static::$invoice_cookie_name ];
-			unset( $_COOKIE[ static::$invoice_cookie_name ] );
-			$deleted = delete_transient( static::get_invoice_transient_name( $invoice ) );
+			$invoice = $_COOKIE[ static::$cart_hash_cookie_name ];
+			unset( $_COOKIE[ static::$cart_hash_cookie_name ] );
+			$deleted = delete_transient( static::get_transient_name( $invoice ) );
 		}
 
 		if ( ! headers_sent() ) {
@@ -267,7 +267,8 @@ class Cart {
 				$secure = false;
 			}
 
-			$is_cookie_set = setcookie( static::$invoice_cookie_name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, $secure );
+			$is_cookie_set = setcookie( static::$cart_hash_cookie_name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, $secure );
+			$_COOKIE[ static::$cart_hash_cookie_name ] = $value;
 		}
 	}
 
@@ -324,16 +325,8 @@ class Cart {
 		// Enforces that the min to add is 1.
 		$quantity = max( 1, (int) $quantity );
 
-		$optout = isset( $extra_data[ Attendee::$optout_meta_key ] ) ? $extra_data[ Attendee::$optout_meta_key ] : false;
-		$optout = filter_var( $optout, FILTER_VALIDATE_BOOLEAN );
-		$optout = $optout ? 'yes' : 'no';
-
-		$extra_item_data = [
-			Attendee::$optout_meta_key => $optout,
-		];
-
 		// Add to / update quantity in cart.
-		$cart->add_item( $ticket_id, $quantity, $extra_item_data );
+		$cart->add_item( $ticket_id, $quantity, $extra_data );
 	}
 
 	/**
@@ -398,6 +391,12 @@ class Cart {
 	/**
 	 * Prepare the data for cart processing.
 	 *
+	 * Note that most of the data that is processed here is legacy, so you will see very weird and wonky naming.
+	 * Make sure when you are making modifications you consider:
+	 * - Event Tickets without ET+ additional data
+	 * - Event Ticket Plus IAC
+	 * - Event Tickets Plus Attendee Registration
+	 *
 	 * @since TBD
 	 *
 	 * @param array $request_data Request Data to be prepared.
@@ -436,6 +435,7 @@ class Cart {
 		$data['provider'] = sanitize_text_field( Arr::get( $raw_data, 'tribe_tickets_provider', Module::class ) );
 		$data['tickets']  = Arr::get( $raw_data, 'tribe_tickets_tickets' );
 		$data['meta']     = Arr::get( $raw_data, 'tribe_tickets_meta', [] );
+		$tickets_meta     = Arr::get( $raw_data, 'tribe_tickets', [] );
 
 		$default_ticket = [
 			'ticket_id' => 0,
@@ -445,7 +445,10 @@ class Cart {
 			'extra'     => [],
 		];
 
-		$data['tickets'] = array_map( static function ( $ticket ) use ( $default_ticket, $handler ) {
+		/**
+		 * @todo Determine if this should be moved into the Ticket Controller.
+		 */
+		$data['tickets'] = array_map( static function ( $ticket ) use ( $default_ticket, $handler, $tickets_meta ) {
 			if ( empty( $ticket['quantity'] ) ) {
 				return false;
 			}
@@ -456,6 +459,10 @@ class Cart {
 
 			if ( $ticket['quantity'] < 0 ) {
 				return false;
+			}
+
+			if ( ! empty( $tickets_meta[ $ticket['ticket_id'] ]['attendees'] ) ) {
+				$ticket['extra']['attendees'] = $tickets_meta[ $ticket['ticket_id'] ]['attendees'];
 			}
 
 			$ticket['extra']['optout'] = tribe_is_truthy( $ticket['optout'] );
@@ -536,8 +543,8 @@ class Cart {
 		if ( static::REDIRECT_MODE === $this->get_mode() ) {
 			$redirect_url = tribe( Checkout::class )->get_url();
 
-			if ( ! $_COOKIE[ $this->get_invoice_number() ] ) {
-				$redirect_url = add_query_arg( [ static::$cookie_query_arg => $this->get_invoice_number() ], $redirect_url );
+			if ( ! $_COOKIE[ $this->get_cart_hash() ] ) {
+				$redirect_url = add_query_arg( [ static::$cookie_query_arg => $this->get_cart_hash() ], $redirect_url );
 			}
 
 			/**
