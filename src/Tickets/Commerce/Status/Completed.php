@@ -1,34 +1,54 @@
 <?php
-
 namespace TEC\Tickets\Commerce\Status;
 
 /**
- * Class Completed
+ * Class Denied.
+ *
+ * This is the status we use to mark a given order as paid and delivered in our Tickets Commerce system.
  *
  * @since   TBD
  *
  * @package TEC\Tickets\Commerce\Status
  */
-class Completed extends \Tribe__Tickets__Status__Abstract {
+class Completed extends Status_Abstract {
+	/**
+	 * Slug for this Status.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const SLUG = 'completed';
 
-	//This is a payment that has been paid and the product delivered to the customer.
-	public $name          = 'Completed';
-	public $provider_name = 'completed';
-	public $post_type     = \TEC\Tickets\Commerce\Order::POSTTYPE;
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_name() {
+		return __( 'Completed', 'event-tickets' );
+	}
 
-	public $trigger_option      = true;
-	public $attendee_generation = true;
-	public $attendee_dispatch   = true;
-	public $stock_reduced       = true;
-	public $count_attendee      = true;
-	public $count_sales         = true;
-	public $count_completed     = true;
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $flags = [
+		'incomplete',
+		'trigger_option',
+		'attendee_generation',
+		'attendee_dispatch',
+		'stock_reduced',
+		'count_attendee',
+		'count_completed',
+		'count_sales',
+	];
 
-	//post status fields for tpp
-	public $public                    = true;
-	public $exclude_from_search       = false;
-	public $show_in_admin_all_list    = true;
-	public $show_in_admin_status_list = true;
-
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $wp_arguments = [
+		'public'                    => true,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+	];
 
 }

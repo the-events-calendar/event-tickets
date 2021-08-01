@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
+use TEC\Tickets\Commerce\Utils\Price;
 use \Tribe__Utils__Array as Arr;
 
 /**
@@ -267,7 +268,7 @@ class Cart {
 				$secure = false;
 			}
 
-			$is_cookie_set = setcookie( static::$cart_hash_cookie_name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, $secure );
+			$is_cookie_set                             = setcookie( static::$cart_hash_cookie_name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, $secure );
 			$_COOKIE[ static::$cart_hash_cookie_name ] = $value;
 		}
 	}
@@ -297,14 +298,26 @@ class Cart {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $provider Provider of tickets to get (if set).
+	 * @param bool $full_item_params Determines all the item params, including event_id, sub_total, and obj.
 	 *
-	 * @return array List of tickets.
+	 * @return array List of items.
 	 */
-	public function get_tickets_in_cart( $provider = null ) {
+	public function get_items_in_cart( $full_item_params = false ) {
 		$cart = $this->get_repository();
 
-		return $cart->get_items();
+		$items = $cart->get_items();
+
+		if ( $full_item_params ) {
+			$items    = array_map( static function ( $item ) {
+	            $item['obj']       = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+				$item['event_id']  = $item['obj']->get_event_id();
+				$item['sub_total'] = Price::sub_total( $item['obj']->price, $item['quantity'] );
+
+				return $item;
+			}, $items );
+		}
+
+		return $items;
 	}
 
 	/**

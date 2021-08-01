@@ -51,7 +51,6 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		$this->container->singleton( Editor\Metabox::class );
 
-		$this->container->singleton( Status_Manager::class, Status_Manager::class, [ 'boot' ] );
 		$this->container->singleton( Module::class );
 		$this->container->singleton( Attendee::class );
 		$this->container->singleton( Order::class );
@@ -62,6 +61,8 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( Checkout::class );
 		$this->container->singleton( Settings::class );
 		$this->container->singleton( Tickets_View::class );
+
+		$this->container->register( Status\Status_Handler::class );
 
 		// Load any external SPs we might need.
 		$this->container->register( Gateways\PayPal\Provider::class );

@@ -11,6 +11,9 @@ namespace TEC\Tickets\Commerce\Shortcodes;
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Created;
 use Tribe\Shortcode\Shortcode_Abstract;
 use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Settings;
@@ -69,16 +72,11 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		}
 		$merchant    = tribe( Merchant::class );
 
-		$items    = tribe( Cart::class )->get_tickets_in_cart();
-		$items    = array_map( static function ( $item ) {
-  			$item['obj']       = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
-			$item['event_id']  = $item['obj']->get_event_id();
-			$item['sub_total'] = Price::sub_total( $item['obj']->price, $item['quantity'] );
-
-			return $item;
-		}, $items );
+		$items    = tribe( Cart::class )->get_items_in_cart( true );
 		$sections = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
-		$sub_totals = array_unique( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
+		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
+
+		$possible_order = tribe( Order::class )->create_from_cart();
 
 		$args = [
 			'merchant'    => $merchant,

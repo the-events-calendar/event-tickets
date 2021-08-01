@@ -20,7 +20,7 @@ class Checkout {
 	 * @return int|null
 	 */
 	public function get_page_id() {
-		$checkout_page = (int) tribe_get_option( tribe( Settings::class )->option_checkout_page );
+		$checkout_page = (int) tribe_get_option( Settings::$option_checkout_page );
 
 		if ( empty( $checkout_page ) ) {
 			return null;

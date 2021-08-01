@@ -3,27 +3,47 @@
 namespace TEC\Tickets\Commerce\Status;
 
 /**
- * Class Denied
+ * Class Denied.
+ *
+ * Used for handling Orders where the payment process failed, whether it be a credit card rejection or some other error.
  *
  * @since   TBD
  *
  * @package TEC\Tickets\Commerce\Status
  */
-class Denied extends \Tribe__Tickets__Status__Abstract {
+class Denied extends Status_Abstract {
+	/**
+	 * Slug for this Status.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const SLUG = 'denied';
 
-	//This is a payment where the payment process failed, whether it be a credit card rejection or some other error.
-	public $name          = 'Denied';
-	public $provider_name = 'denied';
-	public $post_type     = 'tribe_tpp_orders';
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_name() {
+		return __( 'Denied', 'event-tickets' );
+	}
 
-	public $incomplete     = true;
-	public $warning        = true;
-	public $count_canceled = true;
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $flags = [
+		'incomplete',
+		'warning',
+		'count_canceled',
+	];
 
-	//post status fields for tpp
-	public $public                    = true;
-	public $exclude_from_search       = false;
-	public $show_in_admin_all_list    = true;
-	public $show_in_admin_status_list = true;
-
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $wp_arguments = [
+		'public'                    => true,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+	];
 }

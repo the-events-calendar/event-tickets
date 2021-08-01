@@ -42,11 +42,11 @@ class Order_Repository extends Tribe__Repository {
 		parent::__construct();
 
 		// Set the order post type.
-		$this->default_args['post_type'] = Order::POSTTYPE;
-		$this->create_args['post_type']  = Order::POSTTYPE;
-
-		// @todo Currency needs to be fetched properly.
-		$this->create_args['currency'] = 'USD';
+		$this->default_args['post_type']  = Order::POSTTYPE;
+		$this->default_args['post_status']  = tribe( Commerce\Status\Created::class )->get_wp_slug();
+		$this->create_args['post_status'] = tribe( Commerce\Status\Created::class )->get_wp_slug();
+		$this->create_args['post_type']   = Order::POSTTYPE;
+		$this->create_args['currency']    = tribe_get_option( Commerce\Settings::$option_currency_code, 'USD' );
 
 		// Add event specific aliases.
 		$this->update_fields_aliases = array_merge(
@@ -107,7 +107,89 @@ class Order_Repository extends Tribe__Repository {
 			$postarr = $this->filter_meta_input( $postarr, $post_id );
 		}
 
+		if ( ! empty( $postarr['tickets_in_order'] ) ) {
+			$tickets = array_filter( array_unique( (array) $postarr['tickets_in_order'] ) );
+			unset( $postarr['tickets_in_order'] );
+
+			// Delete all of the previous ones when updating.
+			delete_post_meta( $post_id, Order::$events_in_order_meta_key );
+
+			foreach ( $tickets as $ticket_id ) {
+				add_post_meta( $post_id, Order::$events_in_order_meta_key, $ticket_id );
+			}
+		}
+
+		if ( ! empty( $postarr['events_in_order'] ) ) {
+			$events = array_filter( array_unique( (array) $postarr['events_in_order'] ) );
+			unset( $postarr['events_in_order'] );
+
+
+			// Delete all of the previous ones when updating.
+			delete_post_meta( $post_id, Order::$tickets_in_order_meta_key );
+
+			foreach ( $events as $event_id ) {
+				add_post_meta( $post_id, Order::$tickets_in_order_meta_key, $event_id );
+			}
+		}
+
 		return parent::filter_postarr_for_update( $postarr, $post_id );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function get_create_callback( array $postarr ) {
+		$callback = parent::get_create_callback( $postarr );
+
+		// only modify if the filters didn't change anything.
+		if ( 'wp_insert_post' === $callback ) {
+			$callback = [ $this, 'create_order_with_meta' ];
+		}
+
+		return $callback;
+	}
+
+	/**
+	 * When creating an order via the repository there are two meta elements that need to be added using
+	 * `add_post_meta` with the $unique param set to false.
+	 *
+	 * So we hijack the default create callback for this repository to allow for that behavior to exist.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $postarr The post array that will be used for the creation.
+	 *
+	 * @return int The Post ID.
+	 */
+	protected function create_order_with_meta( array $postarr ) {
+		$callback = parent::get_create_callback( $postarr );
+
+		$tickets = [];
+		if ( ! empty( $postarr['meta_input']['tickets_in_order'] ) ) {
+			$tickets = array_filter( array_unique( (array) $postarr['meta_input']['tickets_in_order'] ) );
+			unset( $postarr['meta_input']['tickets_in_order'] );
+		}
+
+		$events = [];
+		if ( ! empty( $postarr['meta_input']['events_in_order'] ) ) {
+			$events = array_filter( array_unique( (array) $postarr['meta_input']['events_in_order'] ) );
+			unset( $postarr['meta_input']['events_in_order'] );
+		}
+
+		$created = call_user_func( $callback, $postarr );
+
+		// Dont add in case we are dealing with a failed insertion.
+		if ( ! is_wp_error( $created ) ) {
+			foreach ( $events as $event_id ) {
+				add_post_meta( $created, Order::$tickets_in_order_meta_key, $event_id );
+			}
+
+			foreach ( $tickets as $ticket_id ) {
+				add_post_meta( $created, Order::$events_in_order_meta_key, $ticket_id );
+			}
+		}
+
+		return $created;
 	}
 
 	/**
@@ -120,29 +202,19 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @return array
 	 */
-	protected function filter_tickets_into_cart_input( $postarr, $post_id = null ) {
-		$meta    = Arr::get( $postarr, 'meta_input', [] );
-		$tickets = Arr::get( $meta, 'tickets', [] );
+	protected function filter_cart_items_input( $postarr, $post_id = null ) {
+		$meta  = Arr::get( $postarr, 'meta_input', [] );
+		$items = Arr::get( $meta, Order::$cart_items_meta_key, [] );
 
-		foreach ( $tickets as $ticket_id => $cart_data ) {
-			$cart_item = [
-				'ticket_id' => $ticket_id,
-			];
+		if ( ! empty( $items ) ) {
+			$ticket_ids    = array_unique( array_filter( array_values( wp_list_pluck( $items, 'ticket_id' ) ) ) );
+			$event_objects = array_map( [ tribe( Module::class ), 'get_event_for_ticket' ], $items );
+			$event_ids     = array_unique( array_filter( array_values( wp_list_pluck( $event_objects, 'ID' ) ) ) );
 
-			if ( is_numeric( $cart_data ) ) {
-				$cart_item['qty'] = min( 1, (int) $cart_data );
-			} else {
-				$cart_item['qty']  = min( 1, (int) Arr::get( $cart_data, 'qty', 1 ) );
-				$cart_item['data'] = Arr::get( $cart_data, 'data', [] );
-			}
-			$cart_items[] = $cart_item;
+			// These will be remove right before actually creating the order.
+			$postarr['meta_input']['tickets_in_order'] = $ticket_ids;
+			$postarr['meta_input']['events_in_order']  = $event_ids;
 		}
-
-		if ( ! empty( $cart_items ) ) {
-			$postarr['meta_input'][ Order::$cart_items_meta_key ] = $cart_items;
-		}
-
-		unset( $postarr['meta_input']['tickets'] );
 
 		return $postarr;
 	}
@@ -215,8 +287,8 @@ class Order_Repository extends Tribe__Repository {
 			$postarr = $this->filter_purchaser_input( $postarr, $post_id );
 		}
 
-		if ( ! empty( $postarr['meta_input']['tickets'] ) ) {
-			$postarr = $this->filter_tickets_into_cart_input( $postarr, $post_id );
+		if ( ! empty( $postarr['meta_input'][ Order::$cart_items_meta_key ] ) ) {
+			$postarr = $this->filter_cart_items_input( $postarr, $post_id );
 		}
 
 		return $postarr;

@@ -1,18 +1,19 @@
 <?php
-
 namespace TEC\Tickets\Commerce\Status;
 
 /**
- * Class Pending.
+ * Class Created.
  *
- * This is a payment that has begun, but is not complete.  An example of this is someone who has filled out the checkout
- * form and then gone to Gateway for payment.  We have the record of sale, but they haven't completed their payment yet.
+ * This is the first Status any order will have.
+ *
+ * Used for handling the Orders that were Created in the Tickets Commerce System but never got to Pending.
+ * Normally the change to Pending will depend on the Gateway.
  *
  * @since   TBD
  *
  * @package TEC\Tickets\Commerce\Status
  */
-class Pending extends Status_Abstract {
+class Created extends Status_Abstract {
 	/**
 	 * Slug for this Status.
 	 *
@@ -20,13 +21,13 @@ class Pending extends Status_Abstract {
 	 *
 	 * @var string
 	 */
-	const SLUG = 'pending';
+	const SLUG = 'created';
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function get_name() {
-		return __( 'Pending', 'event-tickets' );
+		return __( 'Created', 'event-tickets' );
 	}
 
 	/**

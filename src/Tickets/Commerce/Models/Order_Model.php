@@ -51,6 +51,9 @@ class Order_Model extends Base {
 			$purchaser_last_name  = Arr::get( $post_meta, [ Order::$purchaser_last_name_meta_key, 0 ] );
 			$purchaser_email      = Arr::get( $post_meta, [ Order::$purchaser_email_meta_key, 0 ] );
 
+			$events_in_order  = Arr::get( $post_meta, [ Order::$events_in_order_meta_key ] );
+			$tickets_in_order = Arr::get( $post_meta, [ Order::$tickets_in_order_meta_key ] );
+
 			$properties = [
 				'provider'         => Module::class,
 				'provider_slug'    => Commerce::ABBR,
@@ -66,6 +69,8 @@ class Order_Model extends Base {
 					'email'      => $purchaser_email,
 				],
 				'cart_items'       => $cart_items,
+				'events_in_order'  => $events_in_order,
+				'tickets_in_order' => $tickets_in_order,
 			];
 		} catch ( \Exception $e ) {
 			return [];
