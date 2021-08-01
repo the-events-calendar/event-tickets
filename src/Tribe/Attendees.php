@@ -940,7 +940,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Generate the export URL for exporting attendees.
 	 *
-	 * @since TBD
+	 * @since 5.1.7
 	 *
 	 * @return string Relative URL for the export.
 	 */
@@ -956,7 +956,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Echo the button for the export that appears next to the attendees page title.
 	 *
-	 * @since TBD
+	 * @since 5.1.7
 	 *
 	 * @param int $event_id The Post ID of the event.
 	 * @param Tribe__Tickets__Attendees $attendees The attendees object.
