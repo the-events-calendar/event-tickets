@@ -389,8 +389,7 @@ window.tribe.tickets.registration = {};
 			const $price = $qty.closest( obj.selector.item ).find( obj.selector.itemPrice ).first( 0 );
 			let quantity = parseInt( $qty.text(), 10 );
 			quantity = isNaN( quantity ) ? 0 : quantity;
-			let text = isNaN( $price.data( 'real-price' ) ) ? $price.text() : $price.data( 'real-price' ).toString();
-			const cost = obj.cleanNumber( text ) * quantity;
+			const cost = obj.cleanNumber( $price.text() ) * quantity;
 			footerAmount += cost;
 		} );
 
