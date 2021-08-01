@@ -189,7 +189,7 @@ tribe.tickets.block = {
 			let text = isNaN( real_price ) ? $price.text() : real_price.toString();
 			text = tribe.tickets.utils.cleanNumber( text, provider );
 			const cost = text * quantity;
-			footerAmount += Math.round( cost );
+			footerAmount += cost;
 		} );
 
 		if ( 0 > footerAmount ) {
