@@ -31,7 +31,7 @@ class Completed extends Status_Abstract {
 	 * {@inheritdoc}
 	 */
 	protected $flags = [
-		'incomplete',
+		'complete',
 		'trigger_option',
 		'attendee_generation',
 		'attendee_dispatch',

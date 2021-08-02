@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Status;
 
+use TEC\Tickets\Commerce\Order;
+
 /**
  * Class Status_Handler
  *
@@ -31,11 +33,11 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 		Completed::class,
 		Denied::class,
 		Not_Completed::class,
-//		Pending::class,
-//		Refunded::class,
-//		Reversed::class,
-//		Undefined::class,
-//		Voided::class,
+		Pending::class,
+		Refunded::class,
+		Reversed::class,
+		Undefined::class,
+		Voided::class,
 	];
 
 	/**
@@ -68,14 +70,14 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Gets the statuses registered.
+	 * Which status an order will be created with.
 	 *
 	 * @since TBD
 	 *
-	 * @return Status_Interface[]
+	 * @return Status_Interface
 	 */
 	public function get_insert_status() {
-		return $this->statuses;
+		return $this->container->make( $this->insert_status );
 	}
 
 	/**
@@ -107,6 +109,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 
 		return null;
 	}
+
 	/**
 	 * Fetches the first status registered with a given wp slug.
 	 *
@@ -114,7 +117,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	 *
 	 * @param string $slug
 	 *
-	 * @return Status_Interface|null
+	 * @return Status_Interface
 	 */
 	public function get_by_wp_slug( $slug ) {
 		foreach ( $this->get_all() as $status ) {
@@ -133,7 +136,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	 *
 	 * @param string $class_name
 	 *
-	 * @return Status_Interface|null
+	 * @return Status_Interface
 	 */
 	public function get_by_class( $class_name ) {
 		foreach ( $this->get_all() as $status ) {
@@ -201,10 +204,14 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	 * @param \WP_Post $post       Post object.
 	 */
 	public function transition_order_post_status_hooks( $new_status, $old_status, $post ) {
+		if ( Order::POSTTYPE !== $post->post_type ) {
+			return;
+		}
+
 		$new_status = $this->get_by_wp_slug( $new_status );
 		$old_status = $this->get_by_wp_slug( $old_status );
 
-		if ( isset( $new_status, $old_status ) ) {
+		if ( ! isset( $new_status ) ) {
 			return;
 		}
 
@@ -213,25 +220,27 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 		 *
 		 * @since TBD
 		 *
-		 * @param Status_Interface  $new_status New post status.
-		 * @param Status_Interface  $old_status Old post status.
-		 * @param \WP_Post $post       Post object.
+		 * @param Status_Interface      $new_status New post status.
+		 * @param Status_Interface|null $old_status Old post status.
+		 * @param \WP_Post              $post       Post object.
 		 */
 		do_action( 'tec_tickets_commerce_order_status_transition', $new_status, $old_status, $post );
 
-		/**
-		 * Fires when a post is transitioned from one status to another.
-		 *
-		 * The dynamic portions of the hook name, `$new_status` and `$old_status`,
-		 * refer to the old and new post statuses, respectively.
-		 *
-		 * @since TBD
-		 *
-		 * @param Status_Interface  $new_status New post status.
-		 * @param Status_Interface  $old_status Old post status.
-		 * @param \WP_Post $post       Post object.
-		 */
-		do_action( "tec_tickets_commerce_order_status_{$old_status->get_slug()}_to_{$new_status->get_slug()}", $new_status, $old_status, $post );
+		if ( $old_status ) {
+			/**
+			 * Fires when a post is transitioned from one status to another.
+			 *
+			 * The dynamic portions of the hook name, `$new_status` and `$old_status`,
+			 * refer to the old and new post statuses, respectively.
+			 *
+			 * @since TBD
+			 *
+			 * @param Status_Interface      $new_status New post status.
+			 * @param Status_Interface|null $old_status Old post status.
+			 * @param \WP_Post              $post       Post object.
+			 */
+			do_action( "tec_tickets_commerce_order_status_{$old_status->get_slug()}_to_{$new_status->get_slug()}", $new_status, $old_status, $post );
+		}
 
 		/**
 		 * Fires when a post is transitioned from one status to another.
@@ -240,11 +249,60 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 		 *
 		 * @since TBD
 		 *
-		 * @param Status_Interface  $new_status New post status.
-		 * @param Status_Interface  $old_status Old post status.
-		 * @param \WP_Post $post       Post object.
+		 * @param Status_Interface      $new_status New post status.
+		 * @param Status_Interface|null $old_status Old post status.
+		 * @param \WP_Post              $post       Post object.
 		 */
 		do_action( "tec_tickets_commerce_order_status_{$new_status->get_slug()}", $new_status, $old_status, $post );
+
+		$this->trigger_status_hooks_by_flags( $new_status, $old_status, $post );
+	}
+
+	/**
+	 * When a given order is transitioned from a status to another we will pull all it's flags and trigger a couple of
+	 * extra hooks so that all the required actions can be triggered, examples:
+	 * - Generating Attendees
+	 * - Re-stocking ticket/event
+	 * - Throwing a warning
+	 * - Handling Email communication
+	 *
+	 * @since TBD
+	 *
+	 * @param Status_Interface      $new_status New post status.
+	 * @param Status_Interface|null $old_status Old post status.
+	 * @param \WP_Post              $post       Post object.
+	 */
+	public function trigger_status_hooks_by_flags( Status_Interface $new_status, $old_status, $post ) {
+		$flags = $new_status->get_flags();
+
+		foreach ( $flags as $flag ) {
+			/**
+			 * Fires when a post is transitioned from one status to another and contains a given flag.
+			 *
+			 * The dynamic portions of the hook name, `$flag`, refer to a given flag that this new status contains.
+			 *
+			 * @since TBD
+			 *
+			 * @param Status_Interface      $new_status New post status.
+			 * @param Status_Interface|null $old_status Old post status.
+			 * @param \WP_Post              $post       Post object.
+			 */
+			do_action( "tec_tickets_commerce_order_status_flag_{$flag}", $new_status, $old_status, $post );
+
+			/**
+			 * Fires when a post is transitioned from one status to another and contains a given flag.
+			 *
+			 * The dynamic portions of the hook name, `$new_status` and `$flag`, refer to the new post status and a
+			 * given flag that this new status contains.
+			 *
+			 * @since TBD
+			 *
+			 * @param Status_Interface      $new_status New post status.
+			 * @param Status_Interface|null $old_status Old post status.
+			 * @param \WP_Post              $post       Post object.
+			 */
+			do_action( "tec_tickets_commerce_order_status_{$new_status->get_slug()}_flag_{$flag}", $new_status, $old_status, $post );
+		}
 	}
 
 	/**

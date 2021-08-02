@@ -2,6 +2,9 @@
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Tickets\Commerce\Status\Denied;
+use TEC\Tickets\Commerce\Status\Pending;
+
 /**
  * Class Ticket.
  *
@@ -158,7 +161,7 @@ class Ticket {
 	protected function get_cancelled( $ticket_id ) {
 		$denied_orders = \Tribe__Tickets__Commerce__PayPal__Order::find_by( array(
 			'ticket_id'      => $ticket_id,
-			'post_status'    => Order_Statuses::$denied,
+			'post_status'    => Denied::SLUG,
 			'posts_per_page' => - 1,
 		), [
 			'items',
@@ -198,7 +201,7 @@ class Ticket {
 					'relation' => 'AND',
 					[
 						'key'   => Attendee::$status_meta_key,
-						'value' => Order_Statuses::$pending,
+						'value' => Pending::SLUG,
 					],
 				],
 			] );

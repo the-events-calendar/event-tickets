@@ -41,12 +41,14 @@ class Order_Repository extends Tribe__Repository {
 	public function __construct() {
 		parent::__construct();
 
+		$insert_status = tribe( Commerce\Status\Status_Handler::class )->get_insert_status();
+
 		// Set the order post type.
-		$this->default_args['post_type']  = Order::POSTTYPE;
-		$this->default_args['post_status']  = tribe( Commerce\Status\Created::class )->get_wp_slug();
-		$this->create_args['post_status'] = tribe( Commerce\Status\Created::class )->get_wp_slug();
-		$this->create_args['post_type']   = Order::POSTTYPE;
-		$this->create_args['currency']    = tribe_get_option( Commerce\Settings::$option_currency_code, 'USD' );
+		$this->default_args['post_type']   = Order::POSTTYPE;
+		$this->default_args['post_status'] = $insert_status->get_wp_slug();
+		$this->create_args['post_status']  = $insert_status->get_wp_slug();
+		$this->create_args['post_type']    = Order::POSTTYPE;
+		$this->create_args['currency']     = tribe_get_option( Commerce\Settings::$option_currency_code, 'USD' );
 
 		// Add event specific aliases.
 		$this->update_fields_aliases = array_merge(
@@ -62,6 +64,17 @@ class Order_Repository extends Tribe__Repository {
 				'purchaser_first_name' => Order::$purchaser_first_name_meta_key,
 				'purchaser_last_name'  => Order::$purchaser_last_name_meta_key,
 				'purchaser_email'      => Order::$purchaser_email_meta_key,
+			]
+		);
+
+
+		$this->schema = array_merge(
+			$this->schema,
+			[
+				'tickets'     => [ $this, 'filter_by_tickets' ],
+				'tickets_not' => [ $this, 'filter_by_tickets_not' ],
+				'events'      => [ $this, 'filter_by_events' ],
+				'events_not'  => [ $this, 'filter_by_events_not' ],
 			]
 		);
 	}
@@ -293,4 +306,128 @@ class Order_Repository extends Tribe__Repository {
 
 		return $postarr;
 	}
+
+	/**
+	 * Cleans up a list of Post IDs into an usable array for DB query.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post|int[]|\WP_Post[] $posts Which posts we are filtering by.
+	 *
+	 * @return array
+	 */
+	protected function clean_post_ids( $posts ) {
+		return array_unique( array_filter( array_map( static function ( $post ) {
+			if ( is_numeric( $post ) ) {
+				return $post;
+			}
+
+			if ( $post instanceof \WP_Post ) {
+				return $post->ID;
+			}
+
+			return null;
+		}, (array) $posts ) ) );
+	}
+
+	/**
+	 * Filters order by whether or not it contains a given ticket/s.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post|int[]|\WP_Post[] $tickets Which tickets we are filtering by.
+	 *
+	 * @return null
+	 */
+	public function filter_by_tickets( $tickets = null ) {
+		if ( empty( $tickets ) ) {
+			return null;
+		}
+
+		$tickets = $this->clean_post_ids( $tickets );
+
+		if ( empty( $tickets ) ) {
+			return null;
+		}
+
+		$this->by( 'meta_in', Order::$tickets_in_order_meta_key, $tickets );
+
+		return null;
+	}
+
+	/**
+	 * Filters order by whether or not it contains a given ticket/s.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post|int[]|\WP_Post[] $tickets Which tickets we are filtering by.
+	 *
+	 * @return null
+	 */
+	public function filter_by_tickets_not( $tickets = null ) {
+		if ( empty( $tickets ) ) {
+			return null;
+		}
+
+		$tickets = $this->clean_post_ids( $tickets );
+
+		if ( empty( $tickets ) ) {
+			return null;
+		}
+
+		$this->by( 'meta_not_in', Order::$tickets_in_order_meta_key, $tickets );
+
+		return null;
+	}
+
+	/**
+	 * Filters order by whether or not it contains a given ticket/s.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post|int[]|\WP_Post[] $events Which events we are filtering by.
+	 *
+	 * @return null
+	 */
+	public function filter_by_events( $events = null ) {
+		if ( empty( $events ) ) {
+			return null;
+		}
+
+		$events = $this->clean_post_ids( $events );
+
+		if ( empty( $events ) ) {
+			return null;
+		}
+
+		$this->by( 'meta_in', Order::$events_in_order_meta_key, $events );
+
+		return null;
+	}
+
+	/**
+	 * Filters order by whether or not it contains a given event/s.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post|int[]|\WP_Post[] $events Which events we are filtering by.
+	 *
+	 * @return null
+	 */
+	public function filter_by_events_not( $events = null ) {
+		if ( empty( $events ) ) {
+			return null;
+		}
+
+		$events = $this->clean_post_ids( $events );
+
+		if ( empty( $events ) ) {
+			return null;
+		}
+
+		$this->by( 'meta_not_in', Order::$events_in_order_meta_key, $events );
+
+		return null;
+	}
+
 }

@@ -63,6 +63,7 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( Tickets_View::class );
 
 		$this->container->register( Status\Status_Handler::class );
+		$this->container->register( Flag_Actions\Flag_Action_Handler::class );
 
 		// Load any external SPs we might need.
 		$this->container->register( Gateways\PayPal\Provider::class );

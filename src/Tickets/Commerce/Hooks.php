@@ -64,7 +64,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_action( 'trashed_post', [ $this, 'maybe_redirect_to_attendees_report' ] );
 		add_action( 'tickets_tpp_ticket_deleted', [ $this, 'update_stock_after_deletion' ], 10, 3 );
 
-		add_action( 'transition_post_status', [ $this, 'transition_order_post_status_hooks' ] );
+		add_action( 'transition_post_status', [ $this, 'transition_order_post_status_hooks' ], 10, 3 );
 	}
 
 	/**

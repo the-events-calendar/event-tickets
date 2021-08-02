@@ -12,19 +12,39 @@ namespace TEC\Tickets\Commerce\Status;
  *
  * @package TEC\Tickets\Commerce\Status
  */
-class Voided extends \Tribe__Tickets__Status__Abstract {
+class Voided extends Status_Abstract {
+	/**
+	 * Slug for this Status.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const SLUG = 'voided';
 
-	public $name          = 'Voided';
-	public $provider_name = 'voided';
-	public $post_type     = \TEC\Tickets\Commerce\Order::POSTTYPE;
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_name() {
+		return __( 'Voided', 'event-tickets' );
+	}
 
-	public $warning        = true;
-	public $count_refunded = true;
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $flags = [
+		'count_refunded',
+		'warning',
+	];
 
-	//post status fields for tpp
-	public $public                    = true;
-	public $exclude_from_search       = false;
-	public $show_in_admin_all_list    = true;
-	public $show_in_admin_status_list = true;
-
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $wp_arguments = [
+		'public'                    => true,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+	];
 }
+

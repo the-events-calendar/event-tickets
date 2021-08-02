@@ -36,11 +36,6 @@ class Created extends Status_Abstract {
 	protected $flags = [
 		'incomplete',
 		'trigger_option',
-		'attendee_generation',
-		'stock_reduced',
-		'count_attendee',
-		'count_incomplete',
-		'count_sales',
 	];
 
 	/**

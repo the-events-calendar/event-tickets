@@ -76,7 +76,16 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		$sections = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
 		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
 
-		$possible_order = tribe( Order::class )->create_from_cart();
+		if ( 'create-order' === tribe_get_request_var( 'tc-dev' ) ) {
+			$possible_order = tribe( Order::class )->create_from_cart();
+		}
+
+		if ( 'complete-order' === tribe_get_request_var( 'tc-dev' ) ) {
+			$order = tec_tc_orders()->by_args( [
+				'status' => tribe( Created::class )->get_wp_slug(),
+			] )->last();
+			tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+		}
 
 		$args = [
 			'merchant'    => $merchant,
