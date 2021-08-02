@@ -48,7 +48,7 @@ class Custom_ArgumentTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @test
 	 */
-	public function should_throw_if_trying_to_build_args_longer_than_pay_pal_limit() {
+	public function should_throw_if_trying_to_build_args_longer_than_paypal_limit() {
 		$limit    = Custom_Argument::$char_limit;
 		$too_long = str_repeat( 'a', $limit + 1 );
 		$args     = [ 'foo' => $too_long ];

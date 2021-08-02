@@ -23,7 +23,7 @@ $default_module_class = (string) Tribe__Tickets__Tickets::get_event_ticket_provi
 					type="radio"
 					class="tribe-ticket-editor-field-default_provider settings_field"
 					name="tribe-tickets[settings][default_provider]"
-					id="provider_<?php echo esc_attr( $active_provider['class'] . '_radio' ); ?>"
+					id="provider_<?php echo esc_attr( $active_provider['html_safe_class'] . '_radio' ); ?>"
 					value="<?php echo esc_attr( $active_provider['class'] ); ?>"
 					checked
 				>
@@ -52,12 +52,12 @@ $default_module_class = (string) Tribe__Tickets__Tickets::get_event_ticket_provi
 					?></em>
 				</p>
 				<?php foreach ( $active_providers as $active_provider ) : ?>
-					<label class="ticket_form_right" for="provider_<?php echo esc_attr( $active_provider['class'] . '_radio' ); ?>">
+					<label class="ticket_form_right" for="provider_<?php echo esc_attr( $active_provider['html_safe_class'] . '_radio' ); ?>">
 						<input
 							<?php checked( $default_module_class, $active_provider['class'] ); ?>
 							type="radio"
 							name="tribe-tickets[settings][default_provider]"
-							id="provider_<?php echo esc_attr( $active_provider['class'] . '_radio' ); ?>"
+							id="provider_<?php echo esc_attr( $active_provider['html_safe_class'] . '_radio' ); ?>"
 							value="<?php echo esc_attr( $active_provider['class'] ); ?>"
 							class="tribe-ticket-editor-field-default_provider settings_field ticket_field"
 							aria-labelledby="default_ticket_provider_legend"
