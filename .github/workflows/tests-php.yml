@@ -18,8 +18,8 @@ jobs:
       matrix:
         suite:
           # - acceptance
-          - functional
-          - integration
+#          - functional
+#          - integration
           - restv1 --group="capacity"
           - restv1 --skip-group="capacity"
           - unit
