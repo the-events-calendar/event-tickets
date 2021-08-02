@@ -125,10 +125,10 @@ class Order_Repository extends Tribe__Repository {
 			unset( $postarr['tickets_in_order'] );
 
 			// Delete all of the previous ones when updating.
-			delete_post_meta( $post_id, Order::$events_in_order_meta_key );
+			delete_post_meta( $post_id, Order::$tickets_in_order_meta_key );
 
 			foreach ( $tickets as $ticket_id ) {
-				add_post_meta( $post_id, Order::$events_in_order_meta_key, $ticket_id );
+				add_post_meta( $post_id, Order::$tickets_in_order_meta_key, $ticket_id );
 			}
 		}
 
@@ -138,10 +138,10 @@ class Order_Repository extends Tribe__Repository {
 
 
 			// Delete all of the previous ones when updating.
-			delete_post_meta( $post_id, Order::$tickets_in_order_meta_key );
+			delete_post_meta( $post_id, Order::$events_in_order_meta_key );
 
 			foreach ( $events as $event_id ) {
-				add_post_meta( $post_id, Order::$tickets_in_order_meta_key, $event_id );
+				add_post_meta( $post_id, Order::$events_in_order_meta_key, $event_id );
 			}
 		}
 
@@ -194,11 +194,11 @@ class Order_Repository extends Tribe__Repository {
 		// Dont add in case we are dealing with a failed insertion.
 		if ( ! is_wp_error( $created ) ) {
 			foreach ( $events as $event_id ) {
-				add_post_meta( $created, Order::$tickets_in_order_meta_key, $event_id );
+				add_post_meta( $created, Order::$events_in_order_meta_key, $event_id );
 			}
 
 			foreach ( $tickets as $ticket_id ) {
-				add_post_meta( $created, Order::$events_in_order_meta_key, $ticket_id );
+				add_post_meta( $created, Order::$tickets_in_order_meta_key, $ticket_id );
 			}
 		}
 
