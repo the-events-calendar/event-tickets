@@ -55,13 +55,13 @@ class Cart {
 	protected $available_modes = [ self::REDIRECT_MODE ];
 
 	/**
-	 * Which cookie we will store the invoice number.
+	 * Which cookie we will store the cart hash.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $cart_hash_cookie_name = 'tec-tickets-commerce-invoice';
+	public static $cart_hash_cookie_name = 'tec-tickets-commerce-cart';
 
 	/**
 	 * Which invoice number we are using here.
@@ -164,9 +164,9 @@ class Cart {
 	 * @return string
 	 */
 	public function get_current_cart_transient() {
-		$invoice_number = $this->get_cart_hash();
+		$cart_hash = $this->get_cart_hash();
 
-		return static::get_transient_name( $invoice_number );
+		return static::get_transient_name( $cart_hash );
 	}
 
 	/**
@@ -192,11 +192,11 @@ class Cart {
 	}
 
 	/**
-	 * Reads the invoice number from the invoice cookie.
+	 * Reads the cart hash from the cookies.
 	 *
 	 * @since TBD
 	 *
-	 * @return string|bool The invoice number or `false` if not found.
+	 * @return string|bool The cart hash or `false` if not found.
 	 */
 	public function get_cart_hash( $generate = false ) {
 		$cart_hash_length = 12;
@@ -221,7 +221,7 @@ class Cart {
 		}
 
 		/**
-		 * Filters the invoice number used for the Cart.
+		 * Filters the cart hash used for the Cart.
 		 *
 		 * @since TBD
 		 *
@@ -233,7 +233,7 @@ class Cart {
 	}
 
 	/**
-	 * Sets the invoice cookie or resets the cookie.
+	 * Sets the cart hash cookie or resets the cookie.
 	 *
 	 * @since TBD
 	 *
@@ -245,9 +245,9 @@ class Cart {
 		}
 
 		if ( empty( $value ) ) {
-			$invoice = $_COOKIE[ static::$cart_hash_cookie_name ];
+			$cart_hash = $_COOKIE[ static::$cart_hash_cookie_name ];
 			unset( $_COOKIE[ static::$cart_hash_cookie_name ] );
-			$deleted = delete_transient( static::get_transient_name( $invoice ) );
+			$deleted = delete_transient( static::get_transient_name( $cart_hash ) );
 		}
 
 		if ( ! headers_sent() ) {

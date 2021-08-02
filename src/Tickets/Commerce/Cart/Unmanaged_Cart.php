@@ -15,9 +15,9 @@ use TEC\Tickets\Commerce;
 class Unmanaged_Cart implements Cart_Interface {
 
 	/**
-	 * @var string The invoice number for this cart.
+	 * @var string The Cart hash for this cart.
 	 */
-	protected $invoice_number;
+	protected $cart_hash;
 
 	/**
 	 * @var array|null The list of items, null if not retrieved from transient yet.
@@ -42,16 +42,16 @@ class Unmanaged_Cart implements Cart_Interface {
 	 * {@inheritdoc}
 	 */
 	public function set_id( $id ) {
-		$this->invoice_number = $id;
+		$this->cart_hash = $id;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function save() {
-		$invoice_number = tribe( Commerce\Cart::class )->get_cart_hash( true );
+		$cart_hash = tribe( Commerce\Cart::class )->get_cart_hash( true );
 
-		if ( false === $invoice_number ) {
+		if ( false === $cart_hash ) {
 			return false;
 		}
 
@@ -61,8 +61,8 @@ class Unmanaged_Cart implements Cart_Interface {
 			return;
 		}
 
-		set_transient( Commerce\Cart::get_transient_name( $invoice_number ), $this->items, DAY_IN_SECONDS );
-		tribe( Commerce\Cart::class )->set_cart_hash_cookie( $invoice_number );
+		set_transient( Commerce\Cart::get_transient_name( $cart_hash ), $this->items, DAY_IN_SECONDS );
+		tribe( Commerce\Cart::class )->set_cart_hash_cookie( $cart_hash );
 	}
 
 	/**
