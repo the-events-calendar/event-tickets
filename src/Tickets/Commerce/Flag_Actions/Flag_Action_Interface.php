@@ -30,6 +30,15 @@ interface Flag_Action_Interface {
 	public function get_post_types();
 
 	/**
+	 * Which priority we will hook this particular flag action.
+	 *
+	 * @since TBD
+	 *
+	 * @return int
+	 */
+	public function get_priority();
+
+	/**
 	 * Determines if a transition of status will trigger this flag action.
 	 *
 	 * @since TBD

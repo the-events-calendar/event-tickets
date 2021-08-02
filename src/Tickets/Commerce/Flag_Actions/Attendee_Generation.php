@@ -30,6 +30,11 @@ class Attendee_Generation extends Flag_Action_Abstract {
 	/**
 	 * {@inheritDoc}
 	 */
+	protected $priority = 10;
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function handle( Status_Interface $new_status, $old_status, $post ) {
 		$i = true;
 	}

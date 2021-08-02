@@ -14,6 +14,15 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
  */
 abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
+	 * When will this particular flag wil be triggered
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	protected $priority = 10;
+
+	/**
 	 * Which flags are associated and will trigger this action.
 	 *
 	 * @since TBD
@@ -36,6 +45,13 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	 */
 	public function get_flags() {
 		return $this->flags;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function get_priority() {
+		return $this->priority;
 	}
 
 	/**
@@ -90,7 +106,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	 */
 	public function hook() {
 		foreach ( $this->get_flags() as $flag ) {
-			add_action( "tec_tickets_commerce_order_status_flag_{$flag}", [ $this, 'maybe_handle' ], 10, 3 );
+			add_action( "tec_tickets_commerce_order_status_flag_{$flag}", [ $this, 'maybe_handle' ], $this->get_priority(), 3 );
 		}
 	}
 

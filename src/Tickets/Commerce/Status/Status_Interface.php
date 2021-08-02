@@ -20,6 +20,17 @@ interface Status_Interface {
 	public function get_wp_slug();
 
 	/**
+	 * Filters and returns the flags for the get_flags method.
+	 *
+	 * @since TBD
+	 *
+	 * @param string[] $flags Which flags will be filtered.
+	 *
+	 * @return string[]
+	 */
+	public function filter_get_flags( $flags );
+
+	/**
 	 * Gets the name of this status.
 	 *
 	 * @since TBD

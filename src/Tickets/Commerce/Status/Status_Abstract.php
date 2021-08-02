@@ -14,7 +14,12 @@ use TEC\Tickets\Commerce;
 abstract class Status_Abstract implements Status_Interface {
 
 	/**
-	 * Flags associated with this status. List of pre-existing flags:
+	 * Flags associated with this status, important to remember that the Flag Actions will be triggered in the order
+	 * that these flags are returned.
+	 *
+	 * @see   static::filter_get_flags
+	 *
+	 * List of pre-existing flags from TPP/Tribe Commerce:
 	 *
 	 * - incomplete
 	 * - warning
@@ -31,7 +36,7 @@ abstract class Status_Abstract implements Status_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @var array
+	 * @var string[]
 	 */
 	protected $flags = [];
 
@@ -64,7 +69,32 @@ abstract class Status_Abstract implements Status_Interface {
 	 * {@inheritdoc}
 	 */
 	public function get_flags() {
-		return $this->flags;
+		return $this->filter_get_flags( $this->flags );
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function filter_get_flags( $flags ) {
+		/**
+		 * Allows filtering of which flags are associated with this Status.
+		 *
+		 * @since TBD
+		 *
+		 * @param string[] $flags  Set of flags we will use.
+		 * @param static   $status Which status these flags are associated with.
+		 */
+		$flags = apply_filters( 'tec_tickets_commerce_order_status_get_flags', $flags, $this );
+
+		/**
+		 * Allows filtering of which flags are associated with this Status.
+		 *
+		 * @since TBD
+		 *
+		 * @param string[] $flags  Set of flags we will use.
+		 * @param static   $status Which status these flags are associated with.
+		 */
+		return apply_filters( "tec_tickets_commerce_order_status_{$this->get_slug()}_get_flags", $flags, $this );
 	}
 
 	/**
@@ -99,7 +129,7 @@ abstract class Status_Abstract implements Status_Interface {
 	public function get_wp_arguments() {
 		$this->setup_wp_arguments();
 
-		$defaults = [
+		$defaults  = [
 
 		];
 		$arguments = array_merge( $defaults, $this->wp_arguments );
@@ -115,80 +145,7 @@ abstract class Status_Abstract implements Status_Interface {
 	 *
 	 */
 	protected function setup_wp_arguments() {
-		$this->wp_arguments['label'] = $this->get_name();
+		$this->wp_arguments['label']       = $this->get_name();
 		$this->wp_arguments['label_count'] = _n_noop( $this->get_name() . ' <span class="count">(%s)</span>', $this->get_name() . ' <span class="count">(%s)</span>', 'event-tickets' );
 	}
-
-	/**
-	 * @todo These methods/props below need to be re-evaluated before release.
-	 */
-
-	/**
-	 * Status  Quantity
-	 *
-	 * @var int
-	 */
-	protected $qty = 0;
-
-	/**
-	 * Status Line Total
-	 *
-	 * @var int
-	 */
-	protected $line_total = 0;
-
-	/**
-	 * Get this Status' Quantity of Tickets by Post Type
-	 *
-	 * @return int
-	 */
-	public function get_qty() {
-		return $this->qty;
-	}
-
-	/**
-	 * Add to the  Status' Order Quantity
-	 *
-	 * @param int $value
-	 */
-	public function add_qty( $value ) {
-		$this->qty += $value;
-	}
-
-	/**
-	 * Remove from the  Status' Order Quantity
-	 *
-	 * @param int $value
-	 */
-	public function remove_qty( $value ) {
-		$this->qty -= $value;
-	}
-
-	/**
-	 * Get  Status' Order Amount of all Orders for a Post Type
-	 *
-	 * @return int
-	 */
-	public function get_line_total() {
-		return $this->line_total;
-	}
-
-	/**
-	 * Add to the  Status' Line Total
-	 *
-	 * @param int $value
-	 */
-	public function add_line_total( $value ) {
-		$this->line_total += $value;
-	}
-
-	/**
-	 * Remove from the  Status' Line Total
-	 *
-	 * @param int $value
-	 */
-	public function remove_line_total( $value ) {
-		$this->line_total -= $value;
-	}
-
 }
