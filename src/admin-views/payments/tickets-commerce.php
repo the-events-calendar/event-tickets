@@ -22,12 +22,14 @@ $path = tribe_resource_url( 'images/admin/paypal_logo.png', false, null, Tribe__
 $display .= '</div><div class="tec-tickets-commerce-paypal-logo"><img src=' . esc_url( $path ) . ' alt="Tickets Commerce PayPal Logo">';
 
 if ( 'active' !== $paypal_seller_status ) {
-	$display .= '<ul>
-					<li>' . esc_html__( 'Credit and debit card payments', 'event-tickets' ) . '</li>
-					<li>' . esc_html__( 'Easy, no API key connection', 'event-tickets' ) . '</li>
-					<li>' . esc_html__( 'Accept payments from around the world', 'event-tickets' ) . '</li>
-					<li>' . esc_html__( 'Support 3D Secure Payments', 'event-tickets' ) . '</li>
-				</ul>';
+	$display .= '
+		<ul>
+			<li>' . esc_html__( 'Credit and debit card payments', 'event-tickets' ) . '</li>
+			<li>' . esc_html__( 'Easy, no API key connection', 'event-tickets' ) . '</li>
+			<li>' . esc_html__( 'Accept payments from around the world', 'event-tickets' ) . '</li>
+			<li>' . esc_html__( 'Support 3D Secure Payments', 'event-tickets' ) . '</li>
+		</ul>
+	';
 }
 
 $display .= '</div>';
