@@ -54,7 +54,18 @@ class Attendees_Repository extends Tribe__Repository {
 		$this->update_fields_aliases = array_merge(
 			$this->update_fields_aliases,
 			[
-
+				'order_id'          => 'post_parent',
+				'ticket_id'         => Attendee::$ticket_relation_meta_key,
+				'event_id'          => Attendee::$event_relation_meta_key,
+				'security_code'     => Attendee::$security_code_meta_key,
+				'opt_out'           => Attendee::$optout_meta_key,
+				'checked_in'        => Attendee::$checked_in_meta_key,
+				'first_name'        => Attendee::$first_name_meta_key,
+				'last_name'         => Attendee::$last_name_meta_key,
+				'email'             => Attendee::$email_meta_key,
+				'is_deleted_ticket' => Attendee::$deleted_ticket_meta_key,
+				'ticket_sent'       => Attendee::$ticket_sent_meta_key,
+				'is_subscribed'     => Attendee::$subscribed_meta_key,
 			]
 		);
 	}
