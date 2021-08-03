@@ -31,7 +31,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	 * @since TBD
 	 */
 	public function do_tickets_commerce_payments_settings_tab() {
-		include_once Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tickets-commerce.php';
+		include_once Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/payments/tickets-commerce.php';
 
 		new Tribe__Settings_Tab( 'payments', esc_html__( 'Payments', 'event-tickets' ), $tickets_tab );
 	}
