@@ -16,7 +16,7 @@ class Onboard {
 	 *
 	 * @since TBD
 	 *
-	 * @return false
+	 * @return string|false
 	 */
 	public function get_paypal_signup_link() {
 		$return_url = $this->get_return_url();
