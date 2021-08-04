@@ -14,9 +14,9 @@ class Onboard {
 	/**
 	 * Request the signup link that redirects the seller to PayPal.
 	 *
-	 * @return false
 	 * @since TBD
 	 *
+	 * @return false
 	 */
 	public function get_paypal_signup_link() {
 		$return_url = $this->get_return_url();
@@ -32,9 +32,9 @@ class Onboard {
 	/**
 	 * When the seller completes the sign-up flow, they are redirected to this return URL on their site.
 	 *
-	 * @return string
 	 * @since TBD
 	 *
+	 * @return string
 	 */
 	public function get_return_url() {
 		$nonce = str_shuffle( uniqid( '', true ) . uniqid( '', true ) );
