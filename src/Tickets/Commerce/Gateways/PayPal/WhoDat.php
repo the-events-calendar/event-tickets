@@ -14,7 +14,7 @@ class WhoDat {
 	/**
 	 * The endpoint for fetching a new partner onboard link.
 	 */
-	const TICKETS_COMMERCE_MICROSERVICE_ROUTE = 'https://whodatdev.theeventscalendar.com/commerce/v1/paypal/seller/';
+	const TICKETS_COMMERCE_MICROSERVICE_ROUTE = 'https://whodat.theeventscalendar.com/commerce/v1/paypal/seller/';
 
 	/**
 	 * Fetch the signup link from PayPal.
