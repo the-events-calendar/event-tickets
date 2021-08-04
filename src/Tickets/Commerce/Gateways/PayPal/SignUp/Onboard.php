@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\SignUp;
 
-use WP_Error;
+use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
 
 /**
  * Class Onboard
@@ -12,69 +12,37 @@ use WP_Error;
 class Onboard {
 
 	/**
-	 * The PayPal SignUp nonce.
-	 */
-	const PAYPAL_SIGNUP_NONCE = 'tickets_commerce_paypal_signup';
-
-	/**
-	 * The endpoint for fetching a new partner onboard link.
-	 */
-	const TICKETS_COMMERCE_MICROSERVICE_ROUTE = 'https://whodat.theeventscalendar.com/commerce/v1/paypal/seller/';
-
-	/**
 	 * Request the signup link that redirects the seller to PayPal.
 	 *
+	 * @return false
 	 * @since TBD
 	 *
-	 * @return false
 	 */
 	public function get_paypal_signup_link() {
-		$request = $this->request_signup_link();
+		$return_url = $this->get_return_url();
+		$signup     = tribe( WhoDat::class )->get_seller_signup_link( $return_url );
 
-		if ( is_wp_error( $request ) ) {
+		if ( empty( $signup ) || ! isset( $signup->links[1]->href ) ) {
 			return false;
 		}
 
-		$request_body = json_decode( wp_remote_retrieve_body( $request ) );
-
-		if ( empty( $request_body ) || ! isset( $request_body->links[1]->href ) ) {
-			return false;
-		}
-
-		return $request_body->links[1]->href;
-	}
-
-	/**
-	 * Fetch the signup link from PayPal.
-	 *
-	 * @since TBD
-	 *
-	 * @return array|WP_Error
-	 */
-	public function request_signup_link() {
-		if ( ! is_admin() || ! isset( $_GET['tab'] ) || 'payments' !== $_GET['tab'] ) {
-			return;
-		}
-
-		$url = add_query_arg( [
-			'nonce'        => str_shuffle( uniqid( '', true ) . uniqid( '', true ) ),
-			'return_url'   => esc_url( $this->get_return_url() ),
-			'country_code' => 'US',
-		], self::TICKETS_COMMERCE_MICROSERVICE_ROUTE . 'signup' );
-
-		return wp_remote_get( $url );
+		return $signup->links[1]->href;
 	}
 
 	/**
 	 * When the seller completes the sign-up flow, they are redirected to this return URL on their site.
 	 *
+	 * @return string
 	 * @since TBD
 	 *
-	 * @return string
 	 */
 	public function get_return_url() {
+		$nonce = str_shuffle( uniqid( '', true ) . uniqid( '', true ) );
+
+		update_option( 'tickets_commerce_nonce', $nonce );
+
 		return add_query_arg( [
-			'wp_nonce' => wp_create_nonce( self::PAYPAL_SIGNUP_NONCE ),
+			'wp_nonce' => $nonce,
 		], esc_url( rest_url() ) . 'tickets-commerce/paypal/on-boarding/' );
 	}
 
@@ -92,20 +60,68 @@ class Onboard {
 			return 'inactive';
 		}
 
-		$url     = add_query_arg( [
-			'merchant_id' => $saved_merchant_id,
-		], self::TICKETS_COMMERCE_MICROSERVICE_ROUTE . 'status' );
-		$request = wp_remote_post( $url );
-		$body    = json_decode( wp_remote_retrieve_body( $request ) );
+		$seller_status = tribe( WhoDat::class )->get_seller_status( $saved_merchant_id );
 
-		if ( ! isset( $body->payments_receivable ) || ! isset( $body->products[0]->name ) || ! isset( $body->products[0]->status ) ) {
-			return 'inactive';
-		}
+		$payments_receivable = isset( $seller_status['payments_receivable'] ) ? $seller_status['payments_receivable'] : '';
+		$paypal_product_name = isset( $seller_status['products'][0]['name'] ) ? $seller_status['products'][0]['name'] : '';
+		$paypal_product_status = isset( $seller_status['products'][0]['status'] ) ? $seller_status['products'][0]['status'] : '';
 
-		if ( true === $body->payments_receivable && 'EXPRESS_CHECKOUT' === $body->products[0]->name && 'ACTIVE' === $body->products[0]->status ) {
+		if ( true === $payments_receivable && 'EXPRESS_CHECKOUT' === $paypal_product_name && 'ACTIVE' === $paypal_product_status ) {
 			return 'active';
 		}
 
 		return 'inactive';
+	}
+
+	/**
+	 * Save the PayPal Seller data as WP Options.
+	 *
+	 * @since TBD
+	 */
+	public function save_paypal_seller_data( $request ) {
+		$saved_nonce   = get_option( 'tickets_commerce_nonce' );
+		$request_nonce = $request->get_param( 'wp_nonce' );
+		$return_url    = add_query_arg( [
+			'page'      => 'tribe-common',
+			'tab'       => 'payments',
+			'post_type' => 'tribe_events',
+		], admin_url() . 'edit.php' );
+
+		if ( $request_nonce !== $saved_nonce ) {
+			delete_option( 'tickets_commerce_nonce' );
+			wp_redirect( $return_url );
+			exit;
+		}
+
+		$merchant_id           = $request->get_param( 'merchantId' );
+		$merchant_id_in_paypal = $request->get_param( 'merchantIdInPayPal' );
+		$permissions_granted   = $request->get_param( 'permissionsGranted' );
+		$consent_status        = $request->get_param( 'consentStatus' );
+		$account_status        = $request->get_param( 'accountStatus' );
+
+		update_option( 'tickets_commerce_merchant_id', $merchant_id );
+		update_option( 'tickets_commerce_merchant_id_in_paypal', $merchant_id_in_paypal );
+		update_option( 'tickets_commerce_permissions_granted', $permissions_granted );
+		update_option( 'tickets_commerce_consent_status', $consent_status );
+		update_option( 'tickets_commerce_account_status', $account_status );
+		delete_option( 'tickets_commerce_nonce' );
+
+		wp_redirect( $return_url );
+		exit;
+	}
+
+	/**
+	 * Sanitize a request argument based on details registered to the route.
+	 *
+	 * @param  mixed  $value  Value of the 'filter' argument.
+	 *
+	 * @return string|array
+	 */
+	public function sanitize_callback( $value ) {
+		if ( is_array( $value ) ) {
+			return array_map( 'sanitize_text_field', $value );
+		}
+
+		return sanitize_text_field( $value );
 	}
 }
