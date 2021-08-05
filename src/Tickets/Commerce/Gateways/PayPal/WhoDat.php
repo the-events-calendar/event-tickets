@@ -27,7 +27,6 @@ class WhoDat {
 		$query_args = [
 			'nonce'        => str_shuffle( uniqid( '', true ) . uniqid( '', true ) ),
 			'return_url'   => esc_url( $return_url ),
-			'country_code' => 'US',
 		];
 
 		return $this->get( 'signup', $query_args );
