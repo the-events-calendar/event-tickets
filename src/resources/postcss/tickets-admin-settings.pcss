@@ -28,3 +28,218 @@
 .event-tickets__admin-banner-links h3 {
 	font-size: 14px;
 }
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.switch {
+	position: relative;
+	display: inline-block;
+	width: 40px;
+	height: 22px;
+	float: left;
+	margin-right: 15px;
+}
+
+.switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+.slider:before {
+	position: absolute;
+	content: "";
+	height: 16px;
+	width: 16px;
+	left: 3px;
+	bottom: 3px;
+	background-color: white;
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+input:checked + .slider {
+	background-color: #278DBC;
+}
+
+input:focus + .slider {
+	box-shadow: 0 0 1px #278DBC;
+}
+
+input:checked + .slider:before {
+	-webkit-transform: translateX(18px);
+	-ms-transform: translateX(18px);
+	transform: translateX(18px);
+}
+
+.slider.round {
+	border-radius: 34px;
+}
+
+.slider.round:before {
+	border-radius: 50%;
+}
+
+.tec-tickets-commerce-toggle {
+	margin-top: 45px;
+}
+
+.tec-tickets-commerce-toggle h2 {
+	font-size: 20px;
+	font-family: Helvetica, serif;
+	font-style: normal;
+	font-weight: bold;
+	line-height: 23px;
+	letter-spacing: 0.02em;
+}
+
+.tec-tickets-commerce-description {
+	font-size: 13px;
+	font-family: Helvetica, serif;
+	font-style: normal;
+	font-weight: normal;
+	max-width: 84%;
+	margin-bottom: 35px;
+}
+
+.tec-tickets-commerce-paypal {
+	background: #FFFFFF;
+	border: 1px solid #CCCCCC;
+	box-sizing: border-box;
+	border-radius: 4px;
+	height: 325px;
+	padding: 46px;
+	display:flex;
+	flex-direction:row;
+	justify-content: space-around;
+}
+
+.tec-tickets-commerce-paypal-logo img {
+	padding-right: 41px;
+}
+
+.tec-tickets-commerce-paypal-logo ul {
+	list-style: none;
+}
+
+.tec-tickets-commerce-paypal-logo li {
+	line-height: 1.8;
+}
+
+.tec-tickets-commerce-paypal-logo ul li::before {
+	content: "\2022";
+	color: #009BE1;
+	font-weight: bold;
+	display: inline-block;
+	width: 10px;
+	margin-left: -1em;
+	font-size: 14px;
+}
+
+.tec-tickets-commerce-paypal-logo {
+	font-style: italic;
+	font-family: Helvetica, sans-serif, arial;
+	font-weight: normal;
+	font-size: 14px;
+	line-height: 16px;
+	letter-spacing: 0.02em;
+}
+
+.tec-tickets-commerce-paypal-connect {
+	max-width: 552px;
+}
+
+.tec-tickets-commerce-paypal-connect,
+.tec-tickets-commerce-paypal-logo {
+	display:flex;
+	flex-direction:column;
+}
+
+.tec-tickets-commerce-connect-paypal-button a {
+	background: #009BE1;
+	border-radius: 4px;
+	color: #FFFFFF;
+	font-family: Helvetica, sans-serif, arial;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 16px;
+	line-height: 18px;
+	margin-top: 25px;
+	padding: 15px 30px;
+	position: absolute;
+	text-align: center;
+	text-decoration: none;
+}
