@@ -2,6 +2,9 @@
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Tickets\Commerce;
+use TEC\Tickets\Commerce\Status\Completed;
+
 /**
  * Class Tickets Provider class for Tickets Commerce
  *
@@ -201,13 +204,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	public $deleted_product = '_tribe_deleted_product_name';
 
 	/**
-	 * @var bool Whether pending stock logic should be ignored or not no matter the Settings.
-	 *           This is an internal property. Use the `tec_tickets_commerce_pending_stock_ignore`
-	 *           filter or the accessor method to manipulate this value from another class.
-	 */
-	protected $ignore_pending_stock_logic = false;
-
-	/**
 	 * A variable holder if PayPal is loaded
 	 *
 	 * @since TBD
@@ -238,21 +234,15 @@ class Module extends \Tribe__Tickets__Tickets {
 		}
 
 //		add_filter( 'post_updated_messages', [ $this, 'updated_messages' ] );
-//		add_action( 'tpp_checkin', [ $this, 'purge_attendees_transient' ] );
-//		add_action( 'tpp_uncheckin', [ $this, 'purge_attendees_transient' ] );
-//
 
 //		add_action( 'init', tribe_callback( 'tickets.commerce.paypal.orders.report', 'hook' ) );
-//		add_filter( 'event_tickets_attendees_tpp_checkin_stati', [ $this, 'filter_event_tickets_attendees_tpp_checkin_stati' ] );
-//		add_action( 'admin_init', tribe_callback( 'tickets.commerce.paypal.notices', 'hook' ) );\
 //		add_action( 'tribe_tickets_attendees_page_inside', tribe_callback( 'tickets.commerce.paypal.orders.tabbed-view', 'render' ) );
 //		add_filter( 'tribe_tickets_stock_message_available_quantity', tribe_callback( 'tickets.commerce.paypal.orders.sales', 'filter_available' ), 10, 4 );
-//		add_action( 'admin_init', tribe_callback( 'tickets.commerce.paypal.oversell.request', 'handle' ) );
-
+//		add_action( 'admin_init', tribe_callback( 'tickets.commerce.paypal.oversell.request', 'handle' ) );```
 	}
 
 	/**
-	 * Send RSVPs/tickets email for attendees.
+	 * Send tickets email for attendees.
 	 *
 	 * @since TBD
 	 *
@@ -276,10 +266,10 @@ class Module extends \Tribe__Tickets__Tickets {
 	public function send_tickets_email_for_attendees( $attendees, $args = [] ) {
 		$args = array_merge(
 			[
-				'subject'    => tribe_get_option( 'ticket-paypal-confirmation-email-subject', false ),
-				'from_name'  => tribe_get_option( 'ticket-paypal-confirmation-email-sender-name', false ),
-				'from_email' => tribe_get_option( 'ticket-paypal-confirmation-email-sender-email', false ),
-				'provider'   => 'tpp',
+				'subject'    => tribe_get_option( Settings::$option_confirmation_email_subject, false ),
+				'from_name'  => tribe_get_option( Settings::$option_confirmation_email_sender_name, false ),
+				'from_email' => tribe_get_option( Settings::$option_confirmation_email_sender_email, false ),
+				'provider'   => Commerce::ABBR,
 			],
 			$args
 		);
@@ -318,7 +308,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * Indicates if we currently require users to be logged in before they can obtain
 	 * tickets.
 	 *
-	 * @since 4.7
+	 * @since TBD
 	 *
 	 * @return bool
 	 */
@@ -366,126 +356,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Links to sales report for all tickets for this event.
-	 *
-	 * @since TBD
-	 *
-	 * @param int  $event_id
-	 * @param bool $url_only
-	 *
-	 * @return string
-	 */
-	public function get_event_reports_link( $event_id, $url_only = false ) {
-		$ticket_ids = (array) $this->get_tickets_ids( $event_id );
-		if ( empty( $ticket_ids ) ) {
-			return '';
-		}
-
-		$query = array(
-			'page'    => 'tpp-orders',
-			'post_id' => $event_id,
-		);
-
-		$report_url = add_query_arg( $query, admin_url( 'admin.php' ) );
-
-		/**
-		 * Filter the PayPal Ticket Orders (Sales) Report URL
-		 *
-		 * @var string $report_url Report URL
-		 * @var int    $event_id   The post ID
-		 * @var array  $ticket_ids An array of ticket IDs
-		 *
-		 * @return string
-		 */
-		$report_url = apply_filters( 'tribe_tickets_paypal_report_url', $report_url, $event_id, $ticket_ids );
-
-		return $url_only
-			? $report_url
-			: '<small> <a href="' . esc_url( $report_url ) . '">' . esc_html__( 'Sales report', 'event-tickets' ) . '</a> </small>';
-	}
-
-	/**
-	 * Links to the sales report for this product.
-	 *
-	 * @since TBD
-	 *
-	 * @param $event_id
-	 * @param $ticket_id
-	 *
-	 * @return string
-	 */
-	public function get_ticket_reports_link( $event_id, $ticket_id ) {
-		if ( empty( $ticket_id ) ) {
-			return '';
-		}
-
-		$query = array(
-			'page'        => 'tpp-orders',
-			'product_ids' => $ticket_id,
-			'post_id'     => $event_id,
-		);
-
-		$report_url = add_query_arg( $query, admin_url( 'admin.php' ) );
-
-		return '<span><a href="' . esc_url( $report_url ) . '">' . esc_html__( 'Report', 'event-tickets' ) . '</a></span>';
-	}
-
-	/**
-	 * Get's the product price html
-	 *
-	 * @since TBD
-	 *
-	 * @param int|object    $product
-	 * @param array|boolean $attendee
-	 *
-	 * @return string
-	 */
-	public function get_price_html( $product, $attendee = false ) {
-		$product_id = $product;
-
-		if ( $product instanceof \WP_Post ) {
-			$product_id = $product->ID;
-		} elseif ( is_numeric( $product_id ) ) {
-			$product = get_post( $product_id );
-		} else {
-			return '';
-		}
-
-		$price = get_post_meta( $product_id, '_price', true );
-		$price = tribe( 'tickets.commerce.paypal.currency' )->format_currency( $price, $product_id );
-
-		$price_html = '<span class="tribe-tickets-price-amount amount">' . esc_html( $price ) . '</span>';
-
-		/**
-		 * Allow filtering of the Price HTML
-		 *
-		 * @since 4.7
-		 *
-		 * @param string $price_html
-		 * @param mixed  $product
-		 * @param mixed  $attendee
-		 *
-		 */
-		return apply_filters( 'tec_tickets_commerce_ticket_price_html', $price_html, $product, $attendee );
-	}
-
-	/**
-	 * Filters the array of statuses that will mark an ticket attendee as eligible for check-in.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $statuses An array of statuses that should mark an ticket attendee as
-	 *                        available for check-in.
-	 *
-	 * @return array The original array plus the 'yes' status.
-	 */
-	public function filter_event_tickets_attendees_tpp_checkin_stati( array $statuses = array() ) {
-		$statuses[] = 'completed';
-
-		return array_unique( $statuses );
-	}
-
-	/**
 	 * Returns the value of a key defined by the class.
 	 *
 	 * @since TBD
@@ -530,6 +400,29 @@ class Module extends \Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * All the methods below here were created merely as a backwards compatibility piece for our old Code that
+	 * depends so much on the concept of a Main class handling all kinds of integration pieces.
+	 *
+	 * ! DO NOT INTRODUCE MORE LOGIC OR COMPLEXITY ON THESE METHODS !
+	 *
+	 * The methods are all focused on routing functionality to their correct handlers.
+	 */
+
+	/**
+	 * Get's the product price html
+	 *
+	 * @since TBD
+	 *
+	 * @param int|object    $product
+	 * @param array|boolean $attendee
+	 *
+	 * @return string
+	 */
+	public function get_price_html( $product, $attendee = false ) {
+		return tribe( Ticket::class )->get_price_html( $product, $attendee );
+	}
+
+	/**
 	 * Gets the product price value
 	 *
 	 * @since TBD
@@ -539,15 +432,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return string
 	 */
 	public function get_price_value( $product ) {
-		if ( ! $product instanceof \WP_Post ) {
-			$product = get_post( $product );
-		}
-
-		if ( ! $product instanceof \WP_Post ) {
-			return false;
-		}
-
-		return get_post_meta( $product->ID, '_price', true );
+		return tribe( Ticket::class )->get_price_value( $product );
 	}
 
 	/**
@@ -565,102 +450,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function attendee_decreases_inventory( array $attendee ) {
-		$order_status = \Tribe__Utils__Array::get( $attendee, 'order_status', 'undefined' );
-		$order_id     = \Tribe__Utils__Array::get( $attendee, 'order_id', false );
-		$attendee_id  = \Tribe__Utils__Array::get( $attendee, 'attendee_id', false );
-
-		/**
-		 * Whether the pending Order stock reserve logic should be ignored completely or not.
-		 *
-		 * If set to `true` then the behaviour chosen in the Settings will apply, if `false`
-		 * only Completed tickets will count to decrease the inventory. This is useful when
-		 *
-		 * @since 4.7
-		 *
-		 * @param bool  $ignore_pending
-		 * @param array $attendee An array of data defining the current Attendee
-		 */
-		$ignore_pending = apply_filters( 'tec_tickets_commerce_pending_stock_ignore', $this->ignore_pending_stock_logic );
-
-		$purchase_time = false;
-		$order         = false;
-
-		if (
-			'on-pending' === tribe_get_option( 'ticket-paypal-stock-handling', 'on-complete' )
-			&& ! $ignore_pending
-			&& Order_Statuses::$pending === $order_status
-			&& false !== $order_id
-		) {
-			$purchase_time = \Tribe__Utils__Array::get( $attendee, 'purchase_time', false );
-
-			$order = \Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id(
-				$attendee_id,
-				[
-					// Get no meta fields.
-				]
-			);
-
-			if ( false !== $order ) {
-				$purchase_time = $order->get_creation_date();
-			}
-		}
-
-		if ( $purchase_time ) {
-			$date = \Tribe__Date_Utils::build_date_object( $purchase_time );
-
-			$date->setTimezone( new \DateTimeZone( 'UTC' ) );
-
-			$order_creation_timestamp = $date->getTimestamp();
-
-			/**
-			 * Filters the amount of time a part of the stock will be reserved by a pending Order.
-			 *
-			 * The time applies from the Order creation time.
-			 * In the unlikely scenario that an Order goes from Completed to Pending then, if the
-			 * reservation time allows it, a part of the stock will be reserved for it.
-			 *
-			 * @since 4.7
-			 *
-			 * @param int                                     $pending_stock_reservation_time  The amount of seconds, from the Order creation time,
-			 *                                                                                 part of the stock will be reserved for the Order;
-			 *                                                                                 defaults to 30 minutes.
-			 * @param array                                   $attendee                        An array of data defining the current Attendee
-			 * @param \Tribe__Tickets__Commerce__PayPal__Order $order                           The object representing the Order that generated
-			 *                                                                                 the Attendee
-			 */
-			$pending_stock_reservation_time = (int) apply_filters( 'tec_tickets_commerce_pending_stock_reserve_time', 30 * 60, $attendee, $order );
-
-			return time() <= ( $order_creation_timestamp + $pending_stock_reservation_time );
-		}
-
-		return Order_Statuses::$completed === $order_status;
+		tribe( Attendee::class )->decreases_inventory( $attendee );
 	}
-
-	/**
-	 * Whether the Pending Order stock reservation logic should be ignored or
-	 * not, no matter the Settings.
-	 *
-	 * This is useful when trying to get the "true" inventory of a ticket.
-	 *
-	 * @since TBD
-	 *
-	 * @see \Tribe__Tickets__Commerce__PayPal__Main::attendee_decreases_inventory
-	 *
-	 * @param bool $ignore_pending_stock_logic
-	 *
-	 */
-	public function ignore_pending_stock_logic( $ignore_pending_stock_logic ) {
-		$this->ignore_pending_stock_logic = (bool) $ignore_pending_stock_logic;
-	}
-
-	/**
-	 * All the methods below here were created merely as a backwards compatibility piece for our old Code that
-	 * depends so much on the concept of a Main class handling all kinds of integration pieces.
-	 *
-	 * ! DO NOT INTRODUCE MORE LOGIC OR COMPLEXITY ON THESE METHODS !
-	 *
-	 * The methods are all focused on routing functionality to their correct handlers.
-	 */
 
 	/**
 	 * {@inheritdoc}
@@ -783,14 +574,42 @@ class Module extends \Tribe__Tickets__Tickets {
 		return $deleted;
 	}
 
-		/**
-		 * Return whether we're currently on the checkout page for Tickets Commerce.
-		 *
-		 * @since TBD
-		 *
-		 * @return bool
-		 */
-		public function is_checkout_page() {
-			return tribe( Checkout::class )->is_current_page();
-		}
+	/**
+	 * Return whether we're currently on the checkout page for Tickets Commerce.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_checkout_page() {
+		return tribe( Checkout::class )->is_current_page();
+	}
+
+	/**
+	 * Links to sales report for all tickets for this event.
+	 *
+	 * @since TBD
+	 *
+	 * @param int  $event_id
+	 * @param bool $url_only
+	 *
+	 * @return string
+	 */
+	public function get_event_reports_link( $event_id, $url_only = false ) {
+		return tribe( Commerce\Reports\Event::class )->get_link( $event_id, $url_only );
+	}
+
+	/**
+	 * Links to the sales report for this product.
+	 *
+	 * @since TBD
+	 *
+	 * @param $event_id
+	 * @param $ticket_id
+	 *
+	 * @return string
+	 */
+	public function get_ticket_reports_link( $event_id, $ticket_id ) {
+		return tribe( Commerce\Reports\Event::class )->get_link( $event_id, $ticket_id );
+	}
 }

@@ -349,10 +349,10 @@ class Order {
 			$qty = max( $ticket_qty, 0 );
 
 			// Throw an error if Qty is bigger then Remaining
-			if ( $payment_status === Order_Statuses::$completed && $ticket_type->managing_stock() ) {
-				tribe( Module::class )->ignore_pending_stock_logic( true );
+			if ( $payment_status === tribe( Commerce\Status\Completed::class )->get_wp_slug() && $ticket_type->managing_stock() ) {
+				add_action( 'tec_tickets_commerce_pending_stock_ignore', '__return_true' );
 				$inventory = (int) $ticket_type->inventory();
-				tribe( Module::class )->ignore_pending_stock_logic( false );
+				remove_action( 'tec_tickets_commerce_pending_stock_ignore', '__return_true' );
 
 				$inventory_is_not_unlimited = - 1 !== $inventory;
 

@@ -18,6 +18,7 @@
 namespace TEC\Tickets\Commerce;
 
 use \tad_DI52_ServiceProvider;
+use TEC\Tickets\Commerce\Status\Completed;
 use Tribe\Tickets\Shortcodes\Tribe_Tickets_Checkout;
 
 /**
@@ -83,6 +84,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		add_filter( 'tribe_tickets_checkout_urls', [ $this, 'filter_js_include_checkout_url' ] );
 		add_filter( 'tribe_tickets_cart_urls', [ $this, 'filter_js_include_cart_url' ] );
+
+		add_filter( 'event_tickets_attendees_tc_checkin_stati', [ $this, 'filter_checkin_statuses' ] );
 	}
 
 	/**
@@ -125,6 +128,24 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function transition_order_post_status_hooks( $new_status, $old_status, $post ) {
 		$this->container->make( Status\Status_Handler::class )->transition_order_post_status_hooks( $new_status, $old_status, $post );
+	}
+
+	/**
+	 * Filters the array of statuses that will mark an ticket attendee as eligible for check-in.
+	 *
+	 * @todo  TribeCommerceLegacy: Move this into a Check In Handler class.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $statuses An array of statuses that should mark an ticket attendee as
+	 *                        available for check-in.
+	 *
+	 * @return array The original array plus the 'yes' status.
+	 */
+	public function filter_checkin_statuses( array $statuses = [] ) {
+		$statuses[] = tribe( Completed::class )->get_wp_slug();
+
+		return array_unique( $statuses );
 	}
 
 	/**

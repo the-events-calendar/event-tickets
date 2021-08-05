@@ -84,7 +84,9 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			$order = tec_tc_orders()->by_args( [
 				'status' => tribe( Created::class )->get_wp_slug(),
 			] )->last();
-			tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+			if ( $order ) {
+				tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+			}
 		}
 
 		$args = [
