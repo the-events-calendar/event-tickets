@@ -1,5 +1,7 @@
 <?php
 
+use TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding;
+use TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding_Route;
 use TEC\Tickets\Commerce\Gateways\PayPal\SignUp\Onboard;
 use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
 use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
@@ -357,8 +359,9 @@ class Tribe__Tickets__Main {
 
 		tribe_singleton( 'tickets.theme-compatibility', 'Tribe__Tickets__Theme_Compatibility' );
 
-		// TicketsCommerce PayPal Signup
-		tribe_singleton( 'tickets.commerce.paypal.signup', new Onboard );
+		// TicketsCommerce PayPal.
+		tribe_singleton( 'tickets.commerce.paypal.signup', Onboard::class );
+		tribe_singleton( 'tickets.commerce.paypal.rest', On_Boarding::class );
 
 		// Event Tickets Provider to manage Events.
 		tribe_register_provider( Events_Service_Provider::class );
