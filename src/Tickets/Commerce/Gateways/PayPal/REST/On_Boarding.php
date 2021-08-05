@@ -2,13 +2,13 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\REST;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\REST;
 use Tribe__Tickets__REST__V1__Endpoints__Base;
 use Tribe__REST__Endpoints__CREATE_Endpoint_Interface;
 use Tribe__Documentation__Swagger__Provider_Interface;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
+use WP_REST_Server;
 
 
 /**
@@ -22,6 +22,111 @@ class On_Boarding
 	extends Tribe__Tickets__REST__V1__Endpoints__Base
 	implements Tribe__REST__Endpoints__CREATE_Endpoint_Interface,
 	Tribe__Documentation__Swagger__Provider_Interface {
+
+	/**
+	 * The first URL segment for the routes.
+	 */
+	const TICKETS_COMMERCE_NAMESPACE = 'tickets-commerce';
+
+	/**
+	 * The base URL route.
+	 */
+	const TICKETS_COMMERCE_ROUTE = '/paypal/on-boarding';
+
+	/**
+	 * Registers the labels REST API route.
+	 */
+	public function register() {
+		$onboard = tribe( 'tickets.commerce.paypal.signup' );
+
+		register_rest_route( self::TICKETS_COMMERCE_NAMESPACE, self::TICKETS_COMMERCE_ROUTE, [
+			'methods'             => WP_REST_Server::READABLE,
+			'callback'            => [ $onboard, 'save_paypal_seller_data' ],
+			'permission_callback' => function () {
+				return true;
+			},
+			'args'                => [
+				'wp_nonce' => [
+					'description'       => 'The nonce validation',
+					'required'          => true,
+					'type'              => 'string',
+					'validate_callback' => function ( $value ) {
+						if ( ! is_string( $value ) ) {
+							return new WP_Error( 'rest_invalid_param', 'The wp_nonce argument must be a string.', [ 'status' => 400 ] );
+						}
+
+						return $value;
+					},
+					'sanitize_callback' => [ $onboard, 'sanitize_callback' ],
+				],
+				'merchantId' => [
+					'description'       => 'The merchant ID',
+					'required'          => true,
+					'type'              => 'string',
+					'validate_callback' => function ( $value ) {
+						if ( ! is_string( $value ) ) {
+							return new WP_Error( 'rest_invalid_param', 'The merchantId argument must be a string.', [ 'status' => 400 ] );
+						}
+
+						return $value;
+					},
+					'sanitize_callback' => [ $onboard, 'sanitize_callback' ],
+				],
+				'merchantIdInPayPal' => [
+					'description'       => 'The merchant ID in PayPal',
+					'required'          => true,
+					'type'              => 'string',
+					'validate_callback' => function ( $value ) {
+						if ( ! is_string( $value ) ) {
+							return new WP_Error( 'rest_invalid_param', 'The merchantIdInPayPal argument must be a string.', [ 'status' => 400 ] );
+						}
+
+						return $value;
+					},
+					'sanitize_callback' => [ $onboard, 'sanitize_callback' ],
+				],
+				'permissionsGranted' => [
+					'description'       => 'The merchant ID in PayPal',
+					'required'          => true,
+					'type'              => 'string',
+					'validate_callback' => function ( $value ) {
+						if ( ! is_string( $value ) ) {
+							return new WP_Error( 'rest_invalid_param', 'The permissionsGranted argument must be a string.', [ 'status' => 400 ] );
+						}
+
+						return $value;
+					},
+					'sanitize_callback' => [ $onboard, 'sanitize_callback' ],
+				],
+				'consentStatus' => [
+					'description'       => 'The merchant ID in PayPal',
+					'required'          => true,
+					'type'              => 'string',
+					'validate_callback' => function ( $value ) {
+						if ( ! is_string( $value ) ) {
+							return new WP_Error( 'rest_invalid_param', 'The consentStatus argument must be a string.', [ 'status' => 400 ] );
+						}
+
+						return $value;
+					},
+					'sanitize_callback' => [ $onboard, 'sanitize_callback' ],
+				],
+				'accountStatus' => [
+					'description'       => 'The merchant ID in PayPal',
+					'required'          => true,
+					'type'              => 'string',
+					'validate_callback' => function ( $value ) {
+						if ( ! is_string( $value ) ) {
+							return new WP_Error( 'rest_invalid_param', 'The accountStatus argument must be a string.', [ 'status' => 400 ] );
+						}
+
+						return $value;
+					},
+					'sanitize_callback' => [ $onboard, 'sanitize_callback' ],
+				],
+			],
+		] );
+	}
 
 	/**
 	 * The REST API endpoint path.
