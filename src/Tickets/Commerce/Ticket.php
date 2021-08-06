@@ -69,7 +69,7 @@ class Ticket {
 	 *
 	 * @var string
 	 */
-	public static $stock_mode_meta_key = \Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE;
+	public static $stock_mode_meta_key = Event_Stock::TICKET_STOCK_MODE;
 
 	/**
 	 * Which meta holds the data for the ticket stock.
@@ -90,7 +90,7 @@ class Ticket {
 	public static $stock_status_meta_key = '_stock_status';
 
 	/**
-	 * Which meta holds the data for the ticket allows backorderds.
+	 * Which meta holds the data for the ticket allows backorders.
 	 *
 	 * @since TBD
 	 *
