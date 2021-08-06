@@ -4,12 +4,18 @@
  *
  * @version TBD
  */
-$paypal_seller_status = tribe( 'tickets.commerce.paypal.signup' )->get_seller_status();
+$paypal_seller_status = tribe( 'tickets.commerce.paypal.client' )->get_seller_status();
 
 $display = '<div class="tec-tickets-commerce-paypal-connect">';
 
 if ( 'active' === $paypal_seller_status ) {
+	$user = get_option( 'tickets_commerce_merchant_id' );
+	$disconnect = '#'; //@TODO AJAX disconnect URL.
+
+	$display .= '<div class="tec-tickets-commerce-connect-paypal-connected">';
 	$display .= '<p>' . esc_html__( 'PayPal Status: Connected', 'event-tickets' ) . '</p>';
+	$display .= '<p>' . wp_kses( "Connected as:  <b>$user</b> ", 'post' ) . '<a href=' . esc_url( $disconnect ) . ' class="paypal_disconnect">' . esc_html__( 'disconnect' ) . '</a></p>';
+	$display .= '</div>';
 } else {
 	$paypal_connect_url = tribe( 'tickets.commerce.paypal.signup' )->get_paypal_signup_link();
 	$connect_button = '<div class="tec-tickets-commerce-connect-paypal-button"><a href=' . esc_url( $paypal_connect_url ) . ' id="connect_to_paypal">' . wp_kses( 'Connect Automatically with <i>PayPal</i>', 'post' ) . '</a></div>';
