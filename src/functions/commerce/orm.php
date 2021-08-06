@@ -13,7 +13,7 @@ use \Tribe__Utils__Array as Arr;
  */
 function tec_tc_orders( $repository = 'default' ) {
 	$map = [
-		'default' => TEC\Tickets\Commerce\Repositories\Order::class,
+		'default' => TEC\Tickets\Commerce\Repositories\Order_Repository::class,
 	];
 
 	$args = func_num_args() > 1 ? array_slice( func_get_args(), 1 ) : [];
@@ -45,7 +45,7 @@ function tec_tc_orders( $repository = 'default' ) {
  */
 function tec_tc_tickets( $repository = 'default' ) {
 	$map = [
-		'default' => TEC\Tickets\Commerce\Repositories\Tickets::class,
+		'default' => TEC\Tickets\Commerce\Repositories\Tickets_Repository::class,
 	];
 
 	$args = func_num_args() > 1 ? array_slice( func_get_args(), 1 ) : [];
@@ -77,7 +77,7 @@ function tec_tc_tickets( $repository = 'default' ) {
  */
 function tec_tc_attendees( $repository = 'default' ) {
 	$map = [
-		'default' => TEC\Tickets\Commerce\Repositories\Attendees::class,
+		'default' => TEC\Tickets\Commerce\Repositories\Attendees_Repository::class,
 	];
 
 	$args = func_num_args() > 1 ? array_slice( func_get_args(), 1 ) : [];

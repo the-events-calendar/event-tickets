@@ -4,14 +4,18 @@
  *
  * @version TBD
  */
-$paypal_seller_status = tribe( 'tickets.commerce.paypal.signup' )->get_seller_status();
+
+use TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding;
+use TEC\Tickets\Commerce\Gateways\PayPal\SignUp\Onboard;
+
+$paypal_seller_status = tribe( Onboard::class )->get_seller_status();
 
 $display = '<div class="tec-tickets-commerce-paypal-connect">';
 
 if ( 'active' === $paypal_seller_status ) {
 	$display .= '<p>' . esc_html__( 'PayPal Status: Connected', 'event-tickets' ) . '</p>';
 } else {
-	$paypal_connect_url = tribe( 'tickets.commerce.paypal.signup' )->get_paypal_signup_link();
+	$paypal_connect_url = tribe( On_Boarding::class )->get_paypal_signup_link();
 	$connect_button = '<div class="tec-tickets-commerce-connect-paypal-button"><a href=' . esc_url( $paypal_connect_url ) . ' id="connect_to_paypal">' . wp_kses( 'Connect Automatically with <i>PayPal</i>', 'post' ) . '</a></div>';
 
 	$display .= '<h2>' . esc_html__( 'Accept online payments with PayPal!', 'event-tickets' ) . '</h2>

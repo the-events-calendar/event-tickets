@@ -3,20 +3,47 @@
 namespace TEC\Tickets\Commerce\Status;
 
 /**
- * Class Undefined
+ * Class Undefined.
+ *
+ * Orders that landed on Undefined are just broken in some way that we cannot define.
  *
  * @since   TBD
  *
  * @package TEC\Tickets\Commerce\Status
  */
-class Undefined extends \Tribe__Tickets__Status__Abstract {
+class Undefined extends Status_Abstract {
+	/**
+	 * Slug for this Status.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const SLUG = 'undefined';
 
-	public $name          = 'Undefined';
-	public $provider_name = 'undefined';
-	public $post_type     = \TEC\Tickets\Commerce\Order::POSTTYPE;
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_name() {
+		return __( 'Undefined', 'event-tickets' );
+	}
 
-	public $count_incomplete = true;
-	public $incomplete       = true;
-	public $warning          = true;
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $flags = [
+		'count_incomplete',
+		'incomplete',
+		'warning',
+	];
 
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $wp_arguments = [
+		'public'                    => true,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+	];
 }

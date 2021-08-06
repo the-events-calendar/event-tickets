@@ -3,27 +3,47 @@
 namespace TEC\Tickets\Commerce\Status;
 
 /**
- * Class Not_Completed
+ * Class Denied.
+ *
+ * Used for handling Orders where Pending payment but never completed it, becoming Abandoned after a week..
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Commerce\Gateways\PayPal\Status
+ * @package TEC\Tickets\Commerce\Status
  */
-class Not_Completed extends \Tribe__Tickets__Status__Abstract {
+class Not_Completed extends Status_Abstract {
+	/**
+	 * Slug for this Status.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const SLUG = 'not-completed';
 
-	//If a Pending payment is never completed it becomes Abandoned after a week.
-	public $name          = 'Not Completed';
-	public $provider_name = 'not-completed';
-	public $post_type     = \TEC\Tickets\Commerce\Order::POSTTYPE;
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_name() {
+		return __( 'Not Completed', 'event-tickets' );
+	}
 
-	public $count_incomplete = true;
-	public $incomplete       = true;
-	public $warning          = true;
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $flags = [
+		'incomplete',
+		'warning',
+		'count_incomplete',
+	];
 
-	//post status fields for tpp
-	public $public                    = true;
-	public $exclude_from_search       = false;
-	public $show_in_admin_all_list    = true;
-	public $show_in_admin_status_list = true;
-
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $wp_arguments = [
+		'public'                    => true,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+	];
 }

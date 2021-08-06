@@ -10,11 +10,53 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class WhoDat {
+	/**
+	 * The API URL.
+	 *
+	 * @since 5.1.6
+	 *
+	 * @var string
+	 */
+	protected $api_url = 'https://whodat.theeventscalendar.com/commerce/v1/paypal/';
 
 	/**
-	 * The endpoint for fetching a new partner onboard link.
+	 * Get REST API endpoint URL for requests.
+	 *
+	 * @since TBD
+	 *
+	 *
+	 * @param string $endpoint   The endpoint path.
+	 * @param array  $query_args Query args appended to the URL.
+	 *
+	 * @return string The API URL.
 	 */
-	const TICKETS_COMMERCE_MICROSERVICE_ROUTE = 'https://whodat.theeventscalendar.com/commerce/v1/paypal/seller/';
+	public function get_api_url( $endpoint, array $query_args = [] ) {
+		return add_query_arg( $query_args, "{$this->api_url}/{$endpoint}" );
+	}
+
+	/**
+	 * Generate a Unique Hash for signup. It will always be 20 characters long.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	protected function get_unique_hash() {
+		if ( defined( 'NONCE_KEY' ) ) {
+			$nonce_key = NONCE_KEY;
+		} else {
+			$nonce_key = uniqid( '', true );
+		}
+		if ( defined( 'NONCE_SALT' ) ) {
+			$nonce_salt = NONCE_SALT;
+		} else {
+			$nonce_salt = uniqid( '', true );
+		}
+
+		$unique = uniqid( '', true );
+
+		return substr( str_shuffle( implode( '-', [ $nonce_key, $nonce_salt, $unique ] ) ), 0, 20 );
+	}
 
 	/**
 	 * Fetch the signup link from PayPal.
@@ -25,11 +67,11 @@ class WhoDat {
 	 */
 	public function get_seller_signup_link( $return_url ) {
 		$query_args = [
-			'nonce'        => str_shuffle( uniqid( '', true ) . uniqid( '', true ) ),
-			'return_url'   => esc_url( $return_url ),
+			'nonce'      => $this->get_unique_hash(),
+			'return_url' => esc_url( $return_url ),
 		];
 
-		return $this->get( 'signup', $query_args );
+		return $this->get( 'seller/signup', $query_args );
 	}
 
 	/**
@@ -42,7 +84,7 @@ class WhoDat {
 	public function get_seller_status( $saved_merchant_id ) {
 		$query_args = [ 'merchant_id' => $saved_merchant_id ];
 
-		return $this->post('status', $query_args );
+		return $this->post( 'seller/status', $query_args );
 	}
 
 	/**
@@ -50,13 +92,13 @@ class WhoDat {
 	 *
 	 * @since TBD
 	 *
-	 * @param  string  $endpoint
-	 * @param  array  $query_args
+	 * @param string $endpoint
+	 * @param array  $query_args
 	 *
 	 * @return mixed|null
 	 */
 	public function get( $endpoint, array $query_args ) {
-		$url = add_query_arg( $query_args, self::TICKETS_COMMERCE_MICROSERVICE_ROUTE . $endpoint );
+		$url = $this->get_api_url( $endpoint, $query_args );
 
 		$request = wp_remote_get( $url );
 
@@ -66,7 +108,10 @@ class WhoDat {
 			return null;
 		}
 
-		return json_decode( wp_remote_retrieve_body( $request ) );
+		$body = wp_remote_retrieve_body( $request );
+		$body = json_decode( $body, true );
+
+		return $body;
 	}
 
 	/**
@@ -81,13 +126,13 @@ class WhoDat {
 	 * @return array|null
 	 */
 	public function post( $endpoint, array $query_args = [], array $request_arguments = [] ) {
-		$url = add_query_arg( $query_args, self::TICKETS_COMMERCE_MICROSERVICE_ROUTE . $endpoint );
+		$url = $this->get_api_url( $endpoint, $query_args );
 
 		$default_arguments = [
 			'body' => [],
 		];
 		$request_arguments = array_merge_recursive( $default_arguments, $request_arguments );
-		$request = wp_remote_post( $url, $request_arguments );
+		$request           = wp_remote_post( $url, $request_arguments );
 
 		if ( is_wp_error( $request ) ) {
 			$this->log_error( 'WhoDat request error:', $request->get_error_message(), $url );
@@ -95,7 +140,8 @@ class WhoDat {
 			return null;
 		}
 
-		$body = json_decode( wp_remote_retrieve_body( $request ), true );
+		$body = wp_remote_retrieve_body( $request );
+		$body = json_decode( $body, true );
 
 		if ( ! is_array( $body ) ) {
 			$this->log_error( 'WhoDat unexpected response:', $body, $url );
@@ -111,16 +157,18 @@ class WhoDat {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $error_type
-	 * @param string $error_message
+	 * @param string $type
+	 * @param string $message
 	 * @param string $url
 	 */
-	public function log_error( $error_type, $error_message, $url ) {
-		tribe( 'logger' )->log_error( sprintf(
-			'[%s] '. $error_type .' %s',
+	protected function log_error( $type, $message, $url ) {
+		$log = sprintf(
+			'[%s] %s %s',
 			$url,
-			$error_message
-		), 'whodat-connection' );
+			$type,
+			$message
+		);
+		tribe( 'logger' )->log_error( $log, 'whodat-connection' );
 	}
 
 	/**
@@ -135,18 +183,21 @@ class WhoDat {
 	 */
 	public function get_seller_on_boarding_details_from_paypal( $merchant_id, $access_token ) {
 		$query_args = [
-			'mode' => tribe( Merchant::class )->get_mode(),
+			'mode'    => tribe( Merchant::class )->get_mode(),
 			'request' => 'seller-status',
 		];
 
 		$args = [
 			'body' => [
 				'merchant_id' => $merchant_id,
-				'token' => $access_token,
+				'token'       => $access_token,
 			]
 		];
 
-		return $this->post( 'paypal-commerce', $query_args, $args );
+		/**
+		 * @todo Determine the if paypal-commerce of the WhoDat makes sense.
+		 */
+		return $this->post( 'seller/paypal-commerce', $query_args, $args );
 	}
 
 	/**
@@ -160,7 +211,7 @@ class WhoDat {
 	 */
 	public function get_seller_rest_api_credentials( $access_token ) {
 		$query_args = [
-			'mode' => tribe( Merchant::class )->get_mode(),
+			'mode'    => tribe( Merchant::class )->get_mode(),
 			'request' => 'seller-credentials',
 		];
 
@@ -170,7 +221,10 @@ class WhoDat {
 			]
 		];
 
-		return $this->post( 'paypal-commerce', $query_args, $args );
+		/**
+		 * @todo Determine the if paypal-commerce of the WhoDat makes sense.
+		 */
+		return $this->post( 'seller/paypal-commerce', $query_args, $args );
 	}
 
 }

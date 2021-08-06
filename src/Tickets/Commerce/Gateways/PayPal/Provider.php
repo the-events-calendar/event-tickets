@@ -2,6 +2,9 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding;
+use TEC\Tickets\Commerce\Gateways\PayPal\SignUp\Onboard;
+
 /**
  * Service provider for the Tickets Commerce: PayPal Commerce gateway.
  *
@@ -43,6 +46,8 @@ class Provider extends \tad_DI52_ServiceProvider {
 		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Denied::class );
 		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Refunded::class );
 		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Reversed::class );
+
+		$this->container->singleton( Onboard::class );
 
 		$this->register_endpoints();
 	}

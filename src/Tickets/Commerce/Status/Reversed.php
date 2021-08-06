@@ -3,25 +3,45 @@
 namespace TEC\Tickets\Commerce\Status;
 
 /**
- * Class Reversed
+ * Class Refunded.
+ *
  *
  * @since   TBD
  *
  * @package TEC\Tickets\Commerce\Status
  */
-class Reversed extends \Tribe__Tickets__Status__Abstract {
+class Reversed extends Status_Abstract {
+	/**
+	 * Slug for this Status.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const SLUG = 'reversed';
 
-	public $name          = 'Reversed';
-	public $provider_name = 'reversed';
-	public $post_type     = \TEC\Tickets\Commerce\Order::POSTTYPE;
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_name() {
+		return __( 'Reversed', 'event-tickets' );
+	}
 
-	public $warning        = true;
-	public $count_refunded = true;
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $flags = [
+		'warning',
+		'count_refunded',
+	];
 
-	//post status fields for tpp
-	public $public                    = true;
-	public $exclude_from_search       = false;
-	public $show_in_admin_all_list    = true;
-	public $show_in_admin_status_list = true;
-
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $wp_arguments = [
+		'public'                    => true,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+	];
 }

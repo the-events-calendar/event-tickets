@@ -2,10 +2,13 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\SignUp;
 
+use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
 
 /**
  * Class Onboard
+ *
+ * @todo This whole class needs to have it's methods moved around.
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -39,8 +42,14 @@ class Onboard {
 	public function get_return_url() {
 		$nonce = str_shuffle( uniqid( '', true ) . uniqid( '', true ) );
 
+		/**
+		 * @todo This nonce cannot be a floating option, it needs to be user related.
+		 */
 		update_option( 'tickets_commerce_nonce', $nonce );
 
+		/**
+		 * @todo we need to use the REST API actual URL from a method.
+		 */
 		return add_query_arg( [
 			'wp_nonce' => $nonce,
 		], esc_url( rest_url() ) . 'tickets-commerce/paypal/on-boarding/' );
@@ -62,8 +71,8 @@ class Onboard {
 
 		$seller_status = tribe( WhoDat::class )->get_seller_status( $saved_merchant_id );
 
-		$payments_receivable = isset( $seller_status['payments_receivable'] ) ? $seller_status['payments_receivable'] : '';
-		$paypal_product_name = isset( $seller_status['products'][0]['name'] ) ? $seller_status['products'][0]['name'] : '';
+		$payments_receivable   = isset( $seller_status['payments_receivable'] ) ? $seller_status['payments_receivable'] : '';
+		$paypal_product_name   = isset( $seller_status['products'][0]['name'] ) ? $seller_status['products'][0]['name'] : '';
 		$paypal_product_status = isset( $seller_status['products'][0]['status'] ) ? $seller_status['products'][0]['status'] : '';
 
 		if ( true === $payments_receivable && 'EXPRESS_CHECKOUT' === $paypal_product_name && 'ACTIVE' === $paypal_product_status ) {
@@ -95,33 +104,44 @@ class Onboard {
 
 		$merchant_id           = $request->get_param( 'merchantId' );
 		$merchant_id_in_paypal = $request->get_param( 'merchantIdInPayPal' );
-		$permissions_granted   = $request->get_param( 'permissionsGranted' );
-		$consent_status        = $request->get_param( 'consentStatus' );
-		$account_status        = $request->get_param( 'accountStatus' );
 
-		update_option( 'tickets_commerce_merchant_id', $merchant_id );
-		update_option( 'tickets_commerce_merchant_id_in_paypal', $merchant_id_in_paypal );
+		/**
+		 * @todo Need to figure out where this gets saved in the merchant API.
+		 */
+		$permissions_granted = $request->get_param( 'permissionsGranted' );
+		$consent_status      = $request->get_param( 'consentStatus' );
+		$account_status      = $request->get_param( 'accountStatus' );
+
+		$args = [
+			'merchant_id'              => $merchant_id,
+			'merchant_id_in_paypal'    => $merchant_id_in_paypal,
+
+			/**
+			 * @todo We are missing all of these pieces of data, not sure which we get now or later.
+			 */
+			'client_id'                => null,
+			'client_secret'            => null,
+			'account_is_ready'         => null,
+			'supports_custom_payments' => null,
+			'account_country'          => null,
+			'access_token'             => null,
+		];
+
+		$merchant = tribe( Merchant::class );
+		if ( $merchant->from_array( $args ) ) {
+			$merchant->save();
+		}
+
+		/**
+		 * @todo Need to figure out where this gets saved in the merchant API.
+		 */
 		update_option( 'tickets_commerce_permissions_granted', $permissions_granted );
 		update_option( 'tickets_commerce_consent_status', $consent_status );
 		update_option( 'tickets_commerce_account_status', $account_status );
+
 		delete_option( 'tickets_commerce_nonce' );
 
 		wp_redirect( $return_url );
 		exit;
-	}
-
-	/**
-	 * Sanitize a request argument based on details registered to the route.
-	 *
-	 * @param  mixed  $value  Value of the 'filter' argument.
-	 *
-	 * @return string|array
-	 */
-	public function sanitize_callback( $value ) {
-		if ( is_array( $value ) ) {
-			return array_map( 'sanitize_text_field', $value );
-		}
-
-		return sanitize_text_field( $value );
 	}
 }

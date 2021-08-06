@@ -63,6 +63,8 @@ class Orders
 	/**
 	 * {@inheritDoc}
 	 *
+	 * @todo WIP -- Still using pieces from Give.
+	 *
 	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request   The request object.
