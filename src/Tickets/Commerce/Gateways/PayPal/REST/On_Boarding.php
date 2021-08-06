@@ -37,11 +37,9 @@ class On_Boarding
 	 * Registers the labels REST API route.
 	 */
 	public function register() {
-		$onboard = tribe( 'tickets.commerce.paypal.signup' );
-
 		register_rest_route( self::TICKETS_COMMERCE_NAMESPACE, self::TICKETS_COMMERCE_ROUTE, [
 			'methods'             => WP_REST_Server::READABLE,
-			'callback'            => [ $onboard, 'save_paypal_seller_data' ],
+			'callback'            => [ $this, 'save_paypal_seller_data' ],
 			'permission_callback' => function () {
 				return true;
 			},
@@ -57,7 +55,7 @@ class On_Boarding
 
 						return $value;
 					},
-					'sanitize_callback' => [ $onboard, 'sanitize_callback' ],
+					'sanitize_callback' => [ $this, 'sanitize_callback' ],
 				],
 				'merchantId' => [
 					'description'       => 'The merchant ID',
@@ -70,7 +68,7 @@ class On_Boarding
 
 						return $value;
 					},
-					'sanitize_callback' => [ $onboard, 'sanitize_callback' ],
+					'sanitize_callback' => [ $this, 'sanitize_callback' ],
 				],
 				'merchantIdInPayPal' => [
 					'description'       => 'The merchant ID in PayPal',
@@ -83,7 +81,7 @@ class On_Boarding
 
 						return $value;
 					},
-					'sanitize_callback' => [ $onboard, 'sanitize_callback' ],
+					'sanitize_callback' => [ $this, 'sanitize_callback' ],
 				],
 				'permissionsGranted' => [
 					'description'       => 'The merchant ID in PayPal',
@@ -96,7 +94,7 @@ class On_Boarding
 
 						return $value;
 					},
-					'sanitize_callback' => [ $onboard, 'sanitize_callback' ],
+					'sanitize_callback' => [ $this, 'sanitize_callback' ],
 				],
 				'consentStatus' => [
 					'description'       => 'The merchant ID in PayPal',
@@ -109,7 +107,7 @@ class On_Boarding
 
 						return $value;
 					},
-					'sanitize_callback' => [ $onboard, 'sanitize_callback' ],
+					'sanitize_callback' => [ $this, 'sanitize_callback' ],
 				],
 				'accountStatus' => [
 					'description'       => 'The merchant ID in PayPal',
@@ -122,10 +120,25 @@ class On_Boarding
 
 						return $value;
 					},
-					'sanitize_callback' => [ $onboard, 'sanitize_callback' ],
+					'sanitize_callback' => [ $this, 'sanitize_callback' ],
 				],
 			],
 		] );
+	}
+
+	/**
+	 * Sanitize a request argument based on details registered to the route.
+	 *
+	 * @param  mixed  $value  Value of the 'filter' argument.
+	 *
+	 * @return string|array
+	 */
+	public function sanitize_callback( $value ) {
+		if ( is_array( $value ) ) {
+			return array_map( 'sanitize_text_field', $value );
+		}
+
+		return sanitize_text_field( $value );
 	}
 
 	/**
