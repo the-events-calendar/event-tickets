@@ -17,7 +17,7 @@ if ( 'active' === $paypal_seller_status ) {
 	$display .= '<p>' . wp_kses( "Connected as:  <b>$user</b> ", 'post' ) . '<a href=' . esc_url( $disconnect ) . ' class="paypal_disconnect">' . esc_html__( 'disconnect' ) . '</a></p>';
 	$display .= '</div>';
 } else {
-	$paypal_connect_url = tribe( 'tickets.commerce.paypal.signup' )->get_paypal_signup_link();
+	$paypal_connect_url = tribe( 'tickets.commerce.paypal.client' )->get_paypal_signup_link();
 	$connect_button = '<div class="tec-tickets-commerce-connect-paypal-button"><a href=' . esc_url( $paypal_connect_url ) . ' id="connect_to_paypal">' . wp_kses( 'Connect Automatically with <i>PayPal</i>', 'post' ) . '</a></div>';
 
 	$display .= '<h2>' . esc_html__( 'Accept online payments with PayPal!', 'event-tickets' ) . '</h2>
@@ -47,7 +47,7 @@ $tickets_fields = [
 	],
 	'tickets-commerce-header' => [
 		'type' => 'html',
-		'html' => '<div class="tec-tickets-commerce-toggle"><label class="switch"><input type="checkbox"><span class="slider round"></span></label><h2>' . esc_html__( 'Enable TicketsCommerce', 'event-tickets' ) . '</h2></div>',
+		'html' => '<div class="tec-tickets-commerce-toggle"><label class="tec-tickets-commerce-switch"><input type="checkbox"><span class="tec-tickets-commerce-slider round"></span></label><h2>' . esc_html__( 'Enable TicketsCommerce', 'event-tickets' ) . '</h2></div>',
 	],
 	'tickets-commerce-description' => [
 		'type' => 'html',
