@@ -43,7 +43,7 @@ $display .= '</div>';
 $tickets_fields = [
 	'tribe-form-content-start' => [
 		'type' => 'html',
-		'html' => '<div class="tribe-settings-form-wrap">',
+		'html' => '<div class="tribe-settings-form-wrap tec-tickets-commerce-payments">',
 	],
 	'tickets-commerce-header' => [
 		'type' => 'html',

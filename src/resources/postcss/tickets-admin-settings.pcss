@@ -29,12 +29,19 @@
 	font-size: 14px;
 }
 
+.tec-tickets-commerce-payments {
+	font-family: Helvetica, sans-serif, arial;
+	font-style: normal;
+}
+
 /* The switch - the box around the slider */
 .tec-tickets-commerce-switch {
 	display: inline-block;
-	height: 34px;
-	position: relative;
-	width: 60px;
+	float: left;
+    height: 22px;
+    margin-right: 15px;
+    position: relative;
+    width: 40px;
 }
 
 /* Hide default HTML checkbox */
@@ -53,8 +60,8 @@
 	position: absolute;
 	right: 0;
 	top: 0;
-	-webkit-transition: .4s;
 	transition: .4s;
+	-webkit-transition: .4s;
 }
 
 .tec-tickets-commerce-slider:before {
@@ -69,53 +76,12 @@
 	-webkit-transition: .4s;
 }
 
-input:checked + .tec-tickets-commerce-slider {
-	background-color: #2196F3;
-}
-
-input:focus + .tec-tickets-commerce-slider {
-	box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .tec-tickets-commerce-slider:before {
-	-webkit-transform: translateX(26px);
-	-ms-transform: translateX(26px);
-	transform: translateX(26px);
-}
-
 .tec-tickets-commerce-slider.round {
 	border-radius: 34px;
 }
 
 .tec-tickets-commerce-slider.round:before {
 	border-radius: 50%;
-}
-
-.tec-tickets-commerce-switch {
-	display: inline-block;
-	float: left;
-	height: 22px;
-	margin-right: 15px;
-	position: relative;
-	width: 40px;
-}
-
-.tec-tickets-commerce-switch input {
-	height: 0;
-	opacity: 0;
-	width: 0;
-}
-
-.tec-tickets-commerce-slider {
-	background-color: #ccc;
-	bottom: 0;
-	cursor: pointer;
-	left: 0;
-	position: absolute;
-	right: 0;
-	top: 0;
-	transition: .4s;
-	-webkit-transition: .4s;
 }
 
 .tec-tickets-commerce-slider:before {
@@ -143,22 +109,12 @@ input:checked + .tec-tickets-commerce-slider:before {
 	-webkit-transform: translateX(18px);
 }
 
-.tec-tickets-commerce-slider.round {
-	border-radius: 34px;
-}
-
-.tec-tickets-commerce-slider.round:before {
-	border-radius: 50%;
-}
-
 .tec-tickets-commerce-toggle {
 	margin-top: 45px;
 }
 
 .tec-tickets-commerce-toggle h2 {
 	font-size: 20px;
-	font-family: Helvetica, serif;
-	font-style: normal;
 	font-weight: bold;
 	line-height: 23px;
 	letter-spacing: 0.02em;
@@ -166,8 +122,6 @@ input:checked + .tec-tickets-commerce-slider:before {
 
 .tec-tickets-commerce-description {
 	font-size: 13px;
-	font-family: Helvetica, serif;
-	font-style: normal;
 	font-weight: normal;
 	max-width: 84%;
 	margin-bottom: 35px;
@@ -179,8 +133,8 @@ input:checked + .tec-tickets-commerce-slider:before {
 	box-sizing: border-box;
 	border-radius: 4px;
 	display:flex;
-    flex-direction:row;
-    height: 325px;
+	flex-direction:row;
+	height: 325px;
 	justify-content: space-around;
 	padding: 46px;
 }
@@ -201,7 +155,6 @@ input:checked + .tec-tickets-commerce-slider:before {
 	color: #009BE1;
 	content: "\2022";
 	display: inline-block;
-	font-size: 14px;
 	font-weight: bold;
 	width: 10px;
 	margin-left: -1em;
@@ -209,7 +162,6 @@ input:checked + .tec-tickets-commerce-slider:before {
 
 .tec-tickets-commerce-paypal-logo {
 	font-style: italic;
-	font-family: Helvetica, sans-serif, arial;
 	font-weight: normal;
 	font-size: 14px;
 	line-height: 16px;
@@ -230,8 +182,6 @@ input:checked + .tec-tickets-commerce-slider:before {
 	background: #009BE1;
 	border-radius: 4px;
 	color: #FFFFFF;
-	font-family: Helvetica, sans-serif, arial;
-	font-style: normal;
 	font-weight: bold;
 	font-size: 16px;
 	line-height: 18px;
