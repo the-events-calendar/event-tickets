@@ -14,7 +14,7 @@ use WP_REST_Server;
 /**
  * Class On_Boarding
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */
@@ -25,16 +25,22 @@ class On_Boarding
 
 	/**
 	 * The first URL segment for the routes.
+	 *
+	 * @since TBD
 	 */
 	const TICKETS_COMMERCE_NAMESPACE = 'tickets-commerce';
 
 	/**
 	 * The base URL route.
+	 *
+	 * @since TBD
 	 */
 	const TICKETS_COMMERCE_ROUTE = '/paypal/on-boarding';
 
 	/**
 	 * Registers the labels REST API route.
+	 *
+	 * @since TBD
 	 */
 	public function register() {
 		register_rest_route( self::TICKETS_COMMERCE_NAMESPACE, self::TICKETS_COMMERCE_ROUTE, [
@@ -128,6 +134,8 @@ class On_Boarding
 
 	/**
 	 * Sanitize a request argument based on details registered to the route.
+	 *
+	 * @since TBD
 	 *
 	 * @param  mixed  $value  Value of the 'filter' argument.
 	 *
