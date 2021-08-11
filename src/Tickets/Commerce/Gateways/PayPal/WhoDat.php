@@ -12,31 +12,65 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 class WhoDat {
 
 	/**
-	 * The API URL.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @var string
+	 * The endpoint for fetching a new partner onboard link.
 	 */
-	protected $api_url = 'https://whodat.theeventscalendar.com/tickets/paypal/connect';
+	const TICKETS_COMMERCE_MICROSERVICE_ROUTE = 'https://whodat.theeventscalendar.com/commerce/v1/paypal/seller/';
 
 	/**
-	 * Get REST API endpoint URL for requests.
+	 * Fetch the signup link from PayPal.
 	 *
 	 * @since TBD
 	 *
-	 *
-	 * @param string $endpoint   The endpoint path.
-	 * @param array  $query_args Query args appended to the URL.
-	 *
-	 * @return string The API URL.
+	 * @return array|string
 	 */
-	public function get_api_url( $endpoint, array $query_args = [] ) {
-		return add_query_arg( $query_args, "{$this->api_url}/{$endpoint}" );
+	public function get_seller_signup_link( $return_url ) {
+		$query_args = [
+			'nonce'        => str_shuffle( uniqid( '', true ) . uniqid( '', true ) ),
+			'return_url'   => esc_url( $return_url ),
+		];
+
+		return $this->get( 'signup', $query_args );
 	}
 
 	/**
-	 * Send a POST request to WhoDat inside of the PayPal connection path.
+	 * Verify if the seller was successfully onboarded.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_seller_status( $saved_merchant_id ) {
+		$query_args = [ 'merchant_id' => $saved_merchant_id ];
+
+		return $this->post('status', $query_args );
+	}
+
+	/**
+	 * Send a GET request to WhoDat.
+	 *
+	 * @since TBD
+	 *
+	 * @param  string  $endpoint
+	 * @param  array  $query_args
+	 *
+	 * @return mixed|null
+	 */
+	public function get( $endpoint, array $query_args ) {
+		$url = add_query_arg( $query_args, self::TICKETS_COMMERCE_MICROSERVICE_ROUTE . $endpoint );
+
+		$request = wp_remote_get( $url );
+
+		if ( is_wp_error( $request ) ) {
+			$this->log_error( 'WhoDat request error:', $request->get_error_message(), $url );
+
+			return null;
+		}
+
+		return json_decode( wp_remote_retrieve_body( $request ) );
+	}
+
+	/**
+	 * Send a POST request to WhoDat.
 	 *
 	 * @since TBD
 	 *
@@ -47,61 +81,46 @@ class WhoDat {
 	 * @return array|null
 	 */
 	public function post( $endpoint, array $query_args = [], array $request_arguments = [] ) {
-		$url = $this->get_api_url( $endpoint, $query_args );
+		$url = add_query_arg( $query_args, self::TICKETS_COMMERCE_MICROSERVICE_ROUTE . $endpoint );
 
 		$default_arguments = [
-			'body'      => [],
-
-			// @todo Remove this when SSL is fixed.
-			'sslverify' => false,
+			'body' => [],
 		];
 		$request_arguments = array_merge_recursive( $default_arguments, $request_arguments );
-		$response          = wp_remote_post( $url, $request_arguments );
+		$request = wp_remote_post( $url, $request_arguments );
 
-		if ( is_wp_error( $response ) ) {
-			tribe( 'logger' )->log_error( sprintf(
-				'[%s] WhoDat request error: %s',
-				$url,
-				$response->get_error_message()
-			), 'whodat-connection' );
+		if ( is_wp_error( $request ) ) {
+			$this->log_error( 'WhoDat request error:', $request->get_error_message(), $url );
 
 			return null;
 		}
 
-		$response = wp_remote_retrieve_body( $response );
-		$response = @json_decode( $response, true );
+		$body = json_decode( wp_remote_retrieve_body( $request ), true );
 
-		if ( ! is_array( $response ) ) {
-			tribe( 'logger' )->log_error( sprintf( '[%s] Unexpected WhoDat response', $url ), 'whodat-connection' );
+		if ( ! is_array( $body ) ) {
+			$this->log_error( 'WhoDat unexpected response:', $body, $url );
 
 			return null;
 		}
 
-		return $response;
+		return $body;
 	}
 
 	/**
-	 * Retrieves a Partner Link for on-boarding
+	 * Log WhoDat errors.
 	 *
-	 * @param $return_url
-	 * @param $country
+	 * @since TBD
 	 *
-	 * @return array|null
+	 * @param string $error_type
+	 * @param string $error_message
+	 * @param string $url
 	 */
-	public function get_seller_partner_link( $return_url, $country ) {
-		$query_args = [
-			'mode' => tribe( Merchant::class )->get_mode(),
-			'request' => 'partner-link',
-		];
-
-		$args = [
-			'body' => [
-				'return_url'   => $return_url,
-				'country_code' => $country,
-			]
-		];
-
-		return $this->post( 'paypal-commerce', $query_args, $args );
+	public function log_error( $error_type, $error_message, $url ) {
+		tribe( 'logger' )->log_error( sprintf(
+			'[%s] '. $error_type .' %s',
+			$url,
+			$error_message
+		), 'whodat-connection' );
 	}
 
 	/**

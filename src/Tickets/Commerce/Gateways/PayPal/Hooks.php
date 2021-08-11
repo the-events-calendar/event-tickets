@@ -57,6 +57,9 @@ class Hooks extends \tad_DI52_ServiceProvider {
 
 		// REST API Endpoint registration.
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
+    
+		// Tickets Commerce PayPal REST.
+		add_action( 'rest_api_init', tribe_callback( 'tickets.commerce.paypal.rest', 'register' ) );
 
 		add_action( 'tribe_template_before_include:tickets/commerce/checkout/page-header', [ $this, 'include_client_js_sdk_script' ], 15, 3 );
 		add_action( 'tribe_template_after_include:tickets/commerce/checkout/page-footer', [ $this, 'include_payment_buttons' ], 15, 3 );
