@@ -2,6 +2,9 @@
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Tickets\Commerce\Status\Denied;
+use TEC\Tickets\Commerce\Status\Pending;
+
 /**
  * Class Ticket.
  *
@@ -102,7 +105,7 @@ class Ticket {
 		$return->sku              = get_post_meta( $ticket_id, '_sku', true );
 
 		// If the quantity sold wasn't set, default to zero
-		$qty_sold = $qty_sold ? $qty_sold : 0;
+                   		$qty_sold = $qty_sold ? $qty_sold : 0;
 
 		// Ticket stock is a simple reflection of remaining inventory for this item...
 		$stock = (int) get_post_meta( $ticket_id, '_stock', true );
@@ -158,7 +161,7 @@ class Ticket {
 	protected function get_cancelled( $ticket_id ) {
 		$denied_orders = \Tribe__Tickets__Commerce__PayPal__Order::find_by( array(
 			'ticket_id'      => $ticket_id,
-			'post_status'    => Order_Statuses::$denied,
+			'post_status'    => Denied::SLUG,
 			'posts_per_page' => - 1,
 		), [
 			'items',
@@ -198,7 +201,7 @@ class Ticket {
 					'relation' => 'AND',
 					[
 						'key'   => Attendee::$status_meta_key,
-						'value' => Order_Statuses::$pending,
+						'value' => Pending::SLUG,
 					],
 				],
 			] );

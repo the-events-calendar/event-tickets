@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Tickets\Commerce;
+
 /**
  * Class Attendee
  *
@@ -358,138 +360,22 @@ class Attendee {
 	}
 
 	/**
-	 * Fetches the full name for attendee, based on first and last.
-	 *
-	 * @since TBD
-	 *
-	 * @param string|int|\WP_Post $attendee Attendee we are getting the full name from.
-	 *
-	 * @return string|null
-	 */
-	public function get_full_name( $attendee ) {
-		if ( is_numeric( $attendee ) ) {
-			/** @var \WP_Post $attendee */
-			$attendee = get_post( $attendee );
-		}
-
-		if ( ! $attendee instanceof \WP_Post || static::POSTTYPE !== $attendee->post_type ) {
-			return null;
-		}
-
-		$first_name = get_post_meta( $attendee->ID, static::$first_name_meta_key, true );
-		$last_name  = get_post_meta( $attendee->ID, static::$last_name_meta_key, true );
-
-		return $first_name . ' ' . $last_name;
-	}
-
-	/**
 	 * Get attendee data for attendee.
 	 *
 	 * @since TBD
-	 *
-	 * @param \WP_Post|int $attendee Attendee object or ID.
-	 * @param int          $post_id  Parent post ID.
-	 *
-	 * @return array|false The attendee data or false if the ticket is invalid.
 	 */
-	public function get_attendee( $attendee, $post_id ) {
-		if ( is_numeric( $attendee ) ) {
-			/** @var \WP_Post $attendee */
-			$attendee = get_post( $attendee );
-		}
-
-		if ( ! $attendee instanceof \WP_Post || static::POSTTYPE !== $attendee->post_type ) {
-			return false;
-		}
-
-		$product_id = get_post_meta( $attendee->ID, static::$ticket_relation_meta_key, true );
-
-		if ( empty( $product_id ) ) {
-			return false;
-		}
-
-		$product            = get_post( $product_id );
-		$is_product_deleted = empty( $product );
-
-		$order_id = get_post_meta( $attendee->ID, static::$order_relation_meta_key, true );
-		$event_id = get_post_meta( $attendee->ID, static::$event_relation_meta_key, true );
-		$user_id  = get_post_meta( $attendee->ID, static::$user_relation_meta_key, true );
-
-		$checkin              = get_post_meta( $attendee->ID, static::$checked_in_meta_key, true );
-		$security             = get_post_meta( $attendee->ID, static::$security_code_meta_key, true );
-		$optout               = tribe_is_truthy( get_post_meta( $attendee->ID, static::$optout_meta_key, true ) );
-		$status               = get_post_meta( $attendee->ID, static::$status_meta_key, true );
-		$ticket_sent          = (int) get_post_meta( $attendee->ID, static::$ticket_sent_meta_key, true );
-		$deleted_ticket_title = get_post_meta( $attendee->ID, static::$deleted_ticket_meta_key, true );
-		$full_name            = $this->get_full_name();
-		$email                = get_post_meta( $attendee->ID, static::$email_meta_key, true );
-		$is_subscribed        = tribe_is_truthy( get_post_meta( $attendee->ID, static::$subscribed_meta_key, true ) );
-
-		// Tries to determine an Attendee Unique ID.
-		$ticket_unique_id = get_post_meta( $attendee->ID, '_unique_id', true );
-		$ticket_unique_id = empty( $ticket_unique_id ) ? $attendee->ID : $ticket_unique_id;
-
-		$product_title = ( $is_product_deleted ? $product->post_title : $deleted_ticket_title . ' ' . __( '(deleted)', 'event-tickets' ) );
-
+	public function get_attendee() {
+		/**
+		 * @todo Determine if this meta piece can be moved into the ET+ codebase.
+		 */
 		$meta = '';
 		if ( class_exists( 'Tribe__Tickets_Plus__Meta', false ) ) {
 			$meta = get_post_meta( $attendee->ID, \Tribe__Tickets_Plus__Meta::META_KEY, true );
 
 			// Process Meta to include value, slug, and label
 			if ( ! empty( $meta ) ) {
-				$meta = tribe( Module::class )->process_attendee_meta( $product_id, $meta );
+				$meta = tribe( Module::class )->process_attendee_meta( $attendee['product_id'], $meta );
 			}
 		}
-
-		$attendee_data = array_merge(
-			$this->get_order_data( $attendee->ID ),
-			[
-				'optout'        => $optout,
-				'ticket'        => $product_title,
-				'attendee_id'   => $attendee->ID,
-				'security'      => $security,
-				'product_id'    => $product_id,
-				'check_in'      => $checkin,
-				'order_status'  => $status,
-				'user_id'       => $user_id,
-				'ticket_sent'   => $ticket_sent,
-
-				// This is used to find existing attendees.
-				'post_title'    => $attendee->post_title,
-
-				// Fields for Email Tickets.
-				'event_id'      => $event_id,
-				'ticket_name'   => ! empty( $product ) ? $product->post_title : false,
-				'holder_name'   => $full_name,
-				'holder_email'  => $email,
-				'order_id'      => $attendee->ID,
-				'order_hash'    => $order_id,
-				'ticket_id'     => $ticket_unique_id,
-				'qr_ticket_id'  => $attendee->ID,
-				'security_code' => $security,
-
-				// Attendee Meta.
-				'attendee_meta' => $meta,
-
-				// Handle initial Attendee flags.
-				'is_subscribed' => $is_subscribed,
-				'is_purchaser'  => true,
-			]
-		);
-
-		$attendee_data['is_purchaser'] = $attendee_data['holder_email'] === $attendee_data['purchaser_email'];
-
-		/**
-		 * Allow filtering the attendee information to return.
-		 *
-		 * @since 4.7
-		 *
-		 * @param array   $attendee_data The attendee information.
-		 * @param string  $provider_slug The provider slug.
-		 * @param WP_Post $attendee      The attendee post object.
-		 * @param int     $post_id       The post ID of the attendee ID.
-		 *
-		 */
-		return apply_filters( 'tribe_tickets_attendee_data', $attendee_data, 'tpp', $attendee, $post_id );
 	}
 }

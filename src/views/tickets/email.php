@@ -46,9 +46,9 @@
  * @since   4.7.6  Ability to filter ticket image.
  * @since   4.10.9 Use function for text.
  * @since   5.0.3 Update comments for single ticket array.
- * @since   TBD Changed the word `Purchaser` to `Attendee` in the ticket details.
+ * @since   5.1.7 Changed the word `Purchaser` to `Attendee` in the ticket details.
  *
- * @version TBD
+ * @version 5.1.7
  *
  * @var array $tickets An array of tickets in the format documented above.
  */

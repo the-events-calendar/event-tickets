@@ -2,6 +2,9 @@
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Tickets\Commerce;
+use TEC\Tickets\Commerce\Utils\Price;
+
 /**
  * Class Order
  *
@@ -20,6 +23,34 @@ class Order {
 	const POSTTYPE = 'tec_tc_order';
 
 	/**
+	 * Which meta holds which gateway was used on this order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $gateway_meta_key = '_tec_tc_order_gateway';
+
+	/**
+	 * Which meta holds which gateway order id was used on this order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $gateway_order_id_meta_key = '_tec_tc_order_gateway_order_id';
+
+	/**
+	 * Normally when dealing with the gateways we have a payload from the original creation of the Order on their side
+	 * of the API, we should store that whole Payload with this meta key so that this data can be used in the future.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $gateway_payload_meta_key = '_tec_tc_order_gateway_payload';
+
+	/**
 	 * Which meta holds the cart items used to setup this order.
 	 *
 	 * @since TBD
@@ -27,6 +58,26 @@ class Order {
 	 * @var string
 	 */
 	public static $cart_items_meta_key = '_tec_tc_order_cart_items';
+
+	/**
+	 * Which meta holds the tickets in a given order, they are added as individual meta items, allowing them to be
+	 * selected in a meta query.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $tickets_in_order_meta_key = '_tec_tc_order_tickets_in_order';
+
+	/**
+	 * Which meta holds the events in a given order, they are added as individual meta items, allowing them to be
+	 * selected in a meta query.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $events_in_order_meta_key = '_tec_tc_order_events_in_order';
 
 	/**
 	 * Which meta holds the cart items used to setup this order.
@@ -112,170 +163,61 @@ class Order {
 		$post_type_args = apply_filters( 'tec_tickets_commerce_order_post_type_args', $post_type_args );
 
 		register_post_type( static::POSTTYPE, $post_type_args );
-
-		Order_Statuses::register_order_statuses();
 	}
 
 	/**
-	 * Returns the list of PayPal tickets order stati.
-	 *
-	 * @since TBD
-	 *
-	 * @return array An associative array in the [ <slug> => <label> ] format.
-	 */
-	public function get_order_statuses() {
-		/** @var \Tribe__Tickets__Status__Manager $status_mgr */
-		$status_mgr = tribe( 'tickets.status' );
-
-		$statuses       = $status_mgr->get_all_provider_statuses( \TEC\Tickets\Commerce::ABBR );
-		$order_statuses = [];
-		foreach ( $statuses as $status ) {
-			$order_statuses[ $status->provider_name ] = _x( $status->name, 'a PayPal ticket order status', 'event-tickets' );
-		}
-
-		/**
-		 * Filters the list of PayPal tickets order stati.
-		 *
-		 * @since 4.7
-		 *
-		 * @param array $order_statuses
-		 *
-		 * @return array An associative array in the [ <slug> => <label> ] format.
-		 */
-		return apply_filters( 'tribe_tickets_commerce_paypal_order_stati', $order_statuses );
-	}
-
-	/**
-	 * Returns a list of attendees grouped by order.
-	 *
-	 * @since TBD
-	 *
-	 * @param int   $post_id
-	 * @param array $ticket_ids An optional array of ticket IDs to limit the orders by.
-	 *
-	 * @return array An associative array in the format [ <order_number> => <order_details> ]
-	 */
-	public function get_orders_by_post_id( $post_id, array $ticket_ids = null, $args = array() ) {
-		$find_by_args = wp_parse_args( $args, array(
-			'post_id'   => $post_id,
-			'ticket_id' => $ticket_ids,
-		) );
-
-		$orders = \Tribe__Tickets__Commerce__PayPal__Order::find_by( $find_by_args );
-
-		$found    = array();
-		$statuses = $this->get_order_statuses();
-
-		if ( ! empty( $orders ) ) {
-			/** @var \Tribe__Tickets__Commerce__PayPal__Order $order */
-			foreach ( $orders as $order ) {
-				$order_id        = $order->paypal_id();
-				$status          = $order->get_status();
-				$attendees       = $order->get_attendees();
-				$refund_order_id = $order->get_refund_order_id();
-
-				$found[ $order_id ] = array(
-					'url'             => tribe( 'tickets.commerce.paypal.gateway' )->get_transaction_url( $order_id ),
-					'number'          => $order_id,
-					'status'          => $status,
-					'status_label'    => \Tribe__Utils__Array::get( $statuses, $status, Order_Statuses::$undefined ),
-					'purchaser_name'  => $order->get_meta( 'address_name' ),
-					'purchaser_email' => $order->get_meta( 'payer_email' ),
-					'purchase_time'   => $order->get_meta( 'payment_date' ),
-					'attendees'       => $attendees,
-					'items'           => $order->get_meta( 'items' ),
-					'line_total'      => $order->get_line_total(),
-				);
-
-				if ( ! empty( $refund_order_id ) ) {
-					$found[ $order_id ]['refund_number'] = $refund_order_id;
-					$found[ $order_id ]['refund_url']    = tribe( 'tickets.commerce.paypal.gateway' )->get_transaction_url( $refund_order_id );
-				}
-			}
-		}
-
-		return $found;
-	}
-
-	/**
-	 * Retrieve only order related information
-	 * Important: On PayPal Ticket the order is the Attendee Object
-	 *
-	 *     order_id
-	 *     purchaser_name
-	 *     purchaser_email
-	 *     provider
-	 *     provider_slug
-	 *
-	 * @since  TBD
-	 *
-	 * @param string|int $order_id
-	 *
-	 * @return array
-	 */
-	public function get_order_data( $order_id ) {
-		$name  = tribe( Attendee::class )->get_full_name( $order_id );
-		$email = get_post_meta( $order_id, $this->email, true );
-
-		$order = \Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id(
-			$order_id,
-			[
-				'address_name',
-				'payer_email',
-			]
-		);
-
-		if ( $order ) {
-			$name  = $order->get_meta( 'address_name' );
-			$email = $order->get_meta( 'payer_email' );
-		}
-
-		$data = array(
-			'order_id'        => $order_id,
-			'purchaser_name'  => $name,
-			'purchaser_email' => $email,
-			'provider'        => __CLASS__,
-			'provider_slug'   => 'tpp',
-			'purchase_time'   => get_post_time( \Tribe__Date_Utils::DBDATETIMEFORMAT, false, $order_id ),
-		);
-
-		/**
-		 * Allow users to filter the Order Data
-		 *
-		 * @since 4.7
-		 *
-		 * @param array  $data     An associative array with the Information of the Order
-		 * @param string $provider What Provider is been used
-		 * @param string $order_id Order ID
-		 *
-		 */
-		$data = apply_filters( 'tribe_tickets_order_data', $data, 'tpp', $order_id );
-
-		return $data;
-	}
-
-	/**
-	 * @todo WIP
+	 * Modify the status of a given order based on Slug.
 	 *
 	 * @since TBD
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
-	 * @return false
+	 *
+	 * @param int    $order_id    Which order ID will be updated.
+	 * @param string $status_slug Which Order Status we are modifying to.
+	 *
+	 * @return bool
+	 */
+	public function modify_status( $order_id, $status_slug ) {
+		$status = tribe( Commerce\Status\Status_Handler::class )->get_by_slug( $status_slug );
+
+		if ( ! $status ) {
+			return false;
+		}
+
+		$updated = tec_tc_orders()->by_args( [
+			'status' => 'any',
+			'id'     => $order_id,
+		] )->set_args( [ 'status' => $status->get_wp_slug() ] )->save();
+
+		return (bool) $updated;
+	}
+
+	/**
+	 * @todo  WIP
+	 *
+	 * @since TBD
+	 *
+	 * @throws \Tribe__Repository__Usage_Error
+	 *
+	 * @return false|\WP_Post
 	 */
 	public function create_from_cart() {
 		$cart = tribe( Cart::class );
 
-		$items_in_cart = $cart->get_tickets_in_cart();
+		$items      = $cart->get_items_in_cart();
+		$items      = array_map( static function ( $item ) {
+			$ticket            = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+			$item['sub_total'] = Price::sub_total( $ticket->price, $item['quantity'] );
 
+			return $item;
+		}, $items );
+		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
+		$total      = Price::total( $sub_totals );
 
 		$order_args = [
 			'title'       => 'Order Test',
-			'purchaser'   => 1,
-			'total_value' => 30,
-			'currency'    => 'USD',
-			'tickets'     => [
-				30 => 2
-			]
+			'total_value' => $total,
+			'cart_items'  => $items,
 		];
 		$order      = tec_tc_orders()->set_args( $order_args )->create();
 
@@ -283,6 +225,8 @@ class Order {
 		if ( ! $order ) {
 			return false;
 		}
+
+		return $order;
 	}
 
 
@@ -319,71 +263,6 @@ class Order {
 	 *
 	 */
 	public function generate_order( $payment_status = 'completed', $redirect = true ) {
-		/** @var \Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
-		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
-
-		$transaction_data = $gateway->get_transaction_data();
-
-		/** @var \Tribe__Tickets__Commerce__PayPal__Cart__Interface $cart */
-		$cart = tribe( 'tickets.commerce.paypal.cart' );
-
-		/**
-		 * The `invoice` variable is a passthrough one; if passed when adding items to the cart
-		 * then it should be returned to us from PayPal. If we have it in the transaction data
-		 * we can assume the cart associated with the invoice, if any, can be removed.
-		 *
-		 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/formbasics/#variations-on-basic-variables
-		 */
-		if ( ! empty( $transaction_data['custom'] ) ) {
-			$decoded_custom = \Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction_data['custom'], true );
-			if ( isset( $decoded_custom['invoice'] ) ) {
-				$cart->set_id( $decoded_custom['invoice'] );
-				$cart->clear();
-			}
-		}
-
-		$raw_transaction_data = $gateway->get_raw_transaction_data();
-
-		if ( empty( $transaction_data ) || empty( $transaction_data['items'] ) ) {
-			return;
-		}
-
-		$has_tickets = $post_id = false;
-
-		/**
-		 * PayPal Ticket specific action fired just before a PayPalTicket-driven attendee tickets for an order are generated
-		 *
-		 * @since 4.7
-		 *
-		 * @param array $transaction_data PayPal payment data
-		 */
-		do_action( 'tribe_tickets_tpp_before_order_processing', $transaction_data );
-
-		$order_id = $transaction_data['txn_id'];
-
-		$is_refund = Order_Statuses::$refunded === $payment_status
-		             || 'refund' === \Tribe__Utils__Array::get( $transaction_data, 'reason_code', '' );
-
-		if ( $is_refund ) {
-			$transaction_data['payment_status'] = $payment_status = Order_Statuses::$refunded;
-
-			$refund_order_id = $order_id;
-			$order_id        = \Tribe__Utils__Array::get( $transaction_data, 'parent_txn_id', $order_id );
-			$order           = \Tribe__Tickets__Commerce__PayPal__Order::from_order_id( $order_id );
-
-			$order->refund_with( $refund_order_id );
-
-			unset( $transaction_data['txn_id'], $transaction_data['parent_txn_id'] );
-
-			$order->hydrate_from_transaction_data( $transaction_data );
-		} else {
-			$order = \Tribe__Tickets__Commerce__PayPal__Order::from_transaction_data( $transaction_data );
-		}
-
-		$order->set_meta( 'transaction_data', $raw_transaction_data );
-
-		$custom = \Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction_data['custom'], true );
-
 		/*
 		 * This method might run during a POST (IPN) PayPal request hence the
 		 * purchasing user ID, if any, will be stored in a custom PayPal var.

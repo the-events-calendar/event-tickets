@@ -14,6 +14,7 @@ class REST extends \tad_DI52_ServiceProvider {
 	public function register() {
 		$this->container->singleton( REST\Webhook::class, [ $this, 'boot_webhook_endpoint' ] );
 		$this->container->singleton( REST\On_Boarding::class, [ $this, 'boot_on_boarding_endpoint' ] );
+		$this->container->singleton( REST\Orders::class, [ $this, 'boot_orders_endpoint' ] );
 	}
 
 	/**
@@ -40,6 +41,18 @@ class REST extends \tad_DI52_ServiceProvider {
 		$messages = $this->container->make( 'tickets.rest-v1.messages' );
 
 		return new REST\On_Boarding( $messages );
+	}
+	/**
+	 * Properly initializes the On_Boarding class.
+	 *
+	 * @since TBD
+	 *
+	 * @return REST\On_Boarding
+	 */
+	public function boot_orders_endpoint() {
+		$messages = $this->container->make( 'tickets.rest-v1.messages' );
+
+		return new REST\Orders( $messages );
 	}
 
 	/**

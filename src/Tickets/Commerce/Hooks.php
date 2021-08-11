@@ -46,7 +46,11 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	protected function add_actions() {
 		add_action( 'init', [ $this, 'register_post_types' ] );
+		add_action( 'init', [ $this, 'register_order_statuses' ], 11 );
 		add_action( 'tribe_common_loaded', [ $this, 'load_commerce_module' ] );
+
+		add_action( 'template_redirect', [ $this, 'do_cart_parse_request' ] );
+		add_action( 'template_redirect', [ $this, 'do_checkout_parse_request' ] );
 
 		add_action( 'event_tickets_attendee_update', [ $this, 'update_attendee_data' ], 10, 3 );
 		add_action( 'event_tickets_after_attendees_update', [ $this, 'maybe_send_tickets_after_status_change' ] );
@@ -59,6 +63,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_action( 'tribe_events_tickets_attendees_event_details_top', [ $this, 'setup_attendance_totals' ] );
 		add_action( 'trashed_post', [ $this, 'maybe_redirect_to_attendees_report' ] );
 		add_action( 'tickets_tpp_ticket_deleted', [ $this, 'update_stock_after_deletion' ], 10, 3 );
+
+		add_action( 'transition_post_status', [ $this, 'transition_order_post_status_hooks' ], 10, 3 );
 	}
 
 	/**
@@ -74,6 +80,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_attendee_registration_cart_provider', [ $this, 'filter_registration_cart_provider' ], 10, 2 );
 
 		add_filter( 'tribe_tickets_get_default_module', [ $this, 'filter_de_prioritize_module' ], 5, 2 );
+
+		add_filter( 'tribe_tickets_checkout_urls', [ $this, 'filter_js_include_checkout_url' ] );
+		add_filter( 'tribe_tickets_cart_urls', [ $this, 'filter_js_include_cart_url' ] );
 	}
 
 	/**
@@ -82,7 +91,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	public function load_commerce_module() {
-		tribe( Module::class );
+		$this->container->make( Module::class );
 	}
 
 	/**
@@ -94,6 +103,46 @@ class Hooks extends tad_DI52_ServiceProvider {
 		$this->container->make( Attendee::class )->register_post_type();
 		$this->container->make( Order::class )->register_post_type();
 		$this->container->make( Ticket::class )->register_post_type();
+	}
+
+	/**
+	 * Register all Order Statuses with WP.
+	 *
+	 * @since TBD
+	 */
+	public function register_order_statuses() {
+		$this->container->make( Status\Status_Handler::class )->register_order_statuses();
+	}
+
+	/**
+	 * Fires when a post is transitioned from one status to another so that we can make another hook that is namespaced.
+	 *
+	 * @since TBD
+	 *
+	 * @param string   $new_status New post status.
+	 * @param string   $old_status Old post status.
+	 * @param \WP_Post $post       Post object.
+	 */
+	public function transition_order_post_status_hooks( $new_status, $old_status, $post ) {
+		$this->container->make( Status\Status_Handler::class )->transition_order_post_status_hooks( $new_status, $old_status, $post );
+	}
+
+	/**
+	 * Parse the cart request, and possibly redirect, so it happens on `template_redirect`.
+	 *
+	 * @since TBD
+	 */
+	public function do_cart_parse_request() {
+		$this->container->make( Cart::class )->parse_request();
+	}
+
+	/**
+	 * Parse the checkout request.
+	 *
+	 * @since TBD
+	 */
+	public function do_checkout_parse_request() {
+		$this->container->make( Checkout::class )->parse_request();
 	}
 
 	/**
@@ -172,7 +221,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Redirect to the Attendees registration page when trying to add tickets.
 	 *
-	 * @todo Needs to move to the Checkout page and out of the module.
+	 * @todo  Needs to move to the Checkout page and out of the module.
 	 *
 	 * @since TBD
 	 */
@@ -183,7 +232,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Delete expired cart items.
 	 *
-	 * @todo Needs to move to the Cart page and out of the module.
+	 * @todo  Needs to move to the Cart page and out of the module.
 	 *
 	 * @since TBD
 	 */
@@ -194,7 +243,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Add the  HTML Classes to the registration form for this module.
 	 *
-	 * @todo Determine what this is used for.
+	 * @todo  Determine what this is used for.
 	 *
 	 * @since TBD
 	 *
@@ -232,7 +281,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array
 	 */
 	public function filter_register_shortcodes( array $shortcodes ) {
-		$shortcodes['tribe_tickets_checkout'] = Tribe_Tickets_Checkout::class;
+		$shortcodes['tec_tickets_checkout'] = Shortcodes\Checkout_Shortcode::class;
 
 		return $shortcodes;
 	}
@@ -252,7 +301,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * If other modules are active, we should de prioritize this one (we want other commerce
 	 * modules to take priority over this one).
 	 *
-	 * @todo Determine if this is still needed.
+	 * @todo  Determine if this is still needed.
 	 *
 	 * @since TBD
 	 *
@@ -274,5 +323,18 @@ class Hooks extends tad_DI52_ServiceProvider {
 		}
 
 		return next( $available_modules );
+	}
+
+	public function filter_js_include_cart_url( $urls ) {
+		$urls[ Module::class ] = tribe( Cart::class )->get_url();
+
+		return $urls;
+	}
+
+	public function filter_js_include_checkout_url( $urls ) {
+		// Note the checkout needs to pass by the cart URL first for AR modal.
+		$urls[ Module::class ] = tribe( Cart::class )->get_url();
+
+		return $urls;
 	}
 }

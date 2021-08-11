@@ -77,7 +77,7 @@ class Ajax_Request_Handler {
 	}
 
 	/**
-	 *  give_paypal_commerce_user_onboarded ajax action handler
+	 * @todo WIP -- Still using pieces from Give.
 	 *
 	 * @since 5.1.6
 	 */
@@ -104,7 +104,7 @@ class Ajax_Request_Handler {
 	}
 
 	/**
-	 * give_paypal_commerce_get_partner_url action handler
+	 * @todo WIP -- Still using pieces from Give.
 	 *
 	 * @since 5.1.6
 	 */
@@ -152,7 +152,7 @@ class Ajax_Request_Handler {
 	}
 
 	/**
-	 * give_paypal_commerce_disconnect_account ajax request handler.
+	 * @todo WIP -- Still using pieces from Give.
 	 *
 	 * @since 5.1.6
 	 */
@@ -176,7 +176,7 @@ class Ajax_Request_Handler {
 	/**
 	 * Create order.
 	 *
-	 * @todo  : handle payment create error on frontend.
+	 * @todo WIP -- Still using pieces from Give.
 	 *
 	 * @since 5.1.6
 	 */
