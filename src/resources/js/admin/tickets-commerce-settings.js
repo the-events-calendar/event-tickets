@@ -1,10 +1,10 @@
-/* global tribe */
+/* global tribe, jQuery */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.1.6
  *
- * @type {PlainObject}
+ * @type {Object}
  */
 tribe.tickets = tribe.tickets || {};
 tribe.tickets.admin = tribe.tickets.admin || {};
@@ -14,7 +14,7 @@ tribe.tickets.admin = tribe.tickets.admin || {};
  *
  * @since 5.1.6
  *
- * @type {PlainObject}
+ * @type {Object}
  */
 tribe.tickets.admin.commerceSettings = {};
 
@@ -23,9 +23,9 @@ tribe.tickets.admin.commerceSettings = {};
  *
  * @since 5.1.6
  *
- * @param  {PlainObject} $   jQuery
- * @param  {PlainObject} _   Underscore.js
- * @param  {PlainObject} obj tribe.tickets.admin.commerceSettings
+ * @param  {Object} $   jQuery
+ * @param  {Object} _   Underscore.js
+ * @param  {Object} obj tribe.tickets.admin.commerceSettings
  *
  * @return {void}
  */
@@ -132,7 +132,7 @@ tribe.tickets.admin.commerceSettings = {};
 		// If class added that means modal opened.
 		// If class removed that means modal closed.
 		obj.observePayPalModal();
-	}
+	};
 
 	/**
 	 * Performs an AJAX request to get the partner URL.
@@ -145,7 +145,7 @@ tribe.tickets.admin.commerceSettings = {};
 	 */
 	obj.requestPartnerUrl = function( countryCode ) {
 		// @todo Add AJAX handler for this.
-		fetch( ajaxurl + `?action=tribe_tickets_paypal_commerce_get_partner_url&countryCode=${ countryCode }` )
+		fetch( ajaxurl + `?action=tribe_tickets_paypal_commerce_get_partner_url&country_code=${ countryCode }` )
 			.then( response => response.json() )
 			.then( function( res ) {
 				// Handle success.
@@ -184,7 +184,7 @@ tribe.tickets.admin.commerceSettings = {};
 		if ( errorsContainer ) {
 			errorsContainer.parentElement.remove();
 		}
-	}
+	};
 
 	obj.buttonState = {
 		enable: () => {

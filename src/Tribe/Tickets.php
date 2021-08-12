@@ -884,7 +884,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array List of attendees.
 		 */
-		protected function get_attendees_by_order_id( $order_id ) {
+		public function get_attendees_by_order_id( $order_id ) {
 			$ticket_id = null;
 
 			// Support an optional second argument while not causing warnings from other ticket provider classes.
@@ -3415,7 +3415,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param array       $raw_data
 		 * @param string      $save_type
 		 */
-		protected function update_capacity( $ticket, $data, $save_type ) {
+		public function update_capacity( $ticket, $data, $save_type ) {
 			if ( empty( $data ) ) {
 				return;
 			}

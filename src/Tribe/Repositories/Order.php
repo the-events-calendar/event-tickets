@@ -99,7 +99,7 @@ class Order extends Tribe__Repository {
 			return;
 		}
 
-		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		/** @var \Tribe__Tickets__Status__Manager $status_mgr */
 		$status_mgr = tribe( 'tickets.status' );
 
 		/**

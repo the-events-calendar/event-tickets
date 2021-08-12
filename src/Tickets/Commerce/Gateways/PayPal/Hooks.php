@@ -57,9 +57,12 @@ class Hooks extends \tad_DI52_ServiceProvider {
 
 		// REST API Endpoint registration.
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
+
+		add_action( 'tribe_template_before_include:tickets/commerce/checkout/page-header', [ $this, 'include_client_js_sdk_script' ], 15, 3 );
+		add_action( 'tribe_template_after_include:tickets/commerce/checkout/page-footer', [ $this, 'include_payment_buttons' ], 15, 3 );
 	}
 
-	/**
+	/**1
 	 * Adds the filters required by each Tickets Commerce component.
 	 *
 	 * @since 5.1.6
@@ -68,34 +71,67 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 10, 2 );
 	}
 
+	/**
+	 * Include the Client JS SDK script into checkout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string           $file     Which file we are loading.
+	 * @param string           $name     Name of file file
+	 * @param \Tribe__Template $template Which Template object is being used.
+	 *
+	 */
+	public function include_client_js_sdk_script( $file, $name, $template ) {
+		echo '<script src="' . tribe( Client::class )->get_js_sdk_url() . '" data-partner-attribution-id="' . esc_attr( \TEC\Tickets\Commerce\Gateways\PayPal\Gateway::ATTRIBUTION_ID ) . '"></script>';
+	}
+
+	/**
+	 * Include the Client JS SDK script into checkout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string           $file     Which file we are loading.
+	 * @param string           $name     Name of file file
+	 * @param \Tribe__Template $template Which Template object is being used.
+	 *
+	 */
+	public function include_payment_buttons( $file, $name, $template ) {
+		$template->template( 'gateway/paypal/buttons' );
+	}
+
 	public function on_boarded_user_ajax_request_handler() {
-		$this->container->make( AjaxRequestHandler::class )->onBoardedUserAjaxRequestHandler();
+		$this->container->make( Ajax_Request_Handler::class )->on_boarded_user_ajax_request_handler();
 	}
 
 	public function on_get_partner_url_ajax_request_handler() {
-		$this->container->make( AjaxRequestHandler::class )->onGetPartnerUrlAjaxRequestHandler();
+		$this->container->make( Ajax_Request_Handler::class )->on_get_partner_url_ajax_request_handler();
 	}
 
 	public function remove_paypal_account() {
-		$this->container->make( AjaxRequestHandler::class )->removePayPalAccount();
+		$this->container->make( Ajax_Request_Handler::class )->remove_paypal_account();
 	}
 
 	public function on_boarding_trouble_notice() {
-		$this->container->make( AjaxRequestHandler::class )->onBoardingTroubleNotice();
+		$this->container->make( Ajax_Request_Handler::class )->on_boarding_trouble_notice();
 	}
 
 	public function on_boarding_boot() {
-		$this->container->make( onBoardingRedirectHandler::class )->boot();
+		$this->container->make( On_Boarding_Redirect_Handler::class )->boot();
 	}
 
 	public function create_order() {
-		$this->container->make( AjaxRequestHandler::class )->createOrder();
+		$this->container->make( Ajax_Request_Handler::class )->create_order();
 	}
 
 	public function approve_order() {
-		$this->container->make( AjaxRequestHandler::class )->approveOrder();
+		$this->container->make( Ajax_Request_Handler::class )->approve_order();
 	}
 
+	/**
+	 * Register the Endpoints from Paypal.
+	 *
+	 * @since TBD
+	 */
 	public function register_endpoints() {
 		$this->container->make( REST::class )->register_endpoints();
 	}

@@ -2,38 +2,57 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use Tribe\Tickets\REST\V1\Endpoints\Commerce\PayPal_Webhook;
 use WP_REST_Server;
 
 /**
  * Class REST
  *
- * @since   5.1.6
+ * @since   TBD
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
-class REST {
+class REST extends \tad_DI52_ServiceProvider {
+	public function register() {
+		$this->container->singleton( REST\Webhook::class, [ $this, 'boot_webhook_endpoint' ] );
+		$this->container->singleton( REST\On_Boarding::class, [ $this, 'boot_on_boarding_endpoint' ] );
+		$this->container->singleton( REST\Orders::class, [ $this, 'boot_orders_endpoint' ] );
+	}
 
 	/**
-	 * The REST API namespace to use.
+	 * Properly initializes the Webhook class.
 	 *
-	 * @since 5.1.6
+	 * @since TBD
 	 *
-	 * @var string
+	 * @return REST\Webhook
 	 */
-	public $namespace = '';
+	public function boot_webhook_endpoint() {
+		$messages = $this->container->make( 'tickets.rest-v1.messages' );
+
+		return new REST\Webhook( $messages );
+	}
 
 	/**
-	 * The REST API documentation endpoint.
+	 * Properly initializes the On_Boarding class.
 	 *
-	 * @since 5.1.6
+	 * @since TBD
 	 *
-	 * @var \Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
+	 * @return REST\On_Boarding
 	 */
-	public $documentation;
+	public function boot_on_boarding_endpoint() {
+		$messages = $this->container->make( 'tickets.rest-v1.messages' );
 
-	public function __construct() {
-		$this->namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
-		$this->documentation = tribe( 'tickets.rest-v1.endpoints.documentation' );
+		return new REST\On_Boarding( $messages );
+	}
+	/**
+	 * Properly initializes the On_Boarding class.
+	 *
+	 * @since TBD
+	 *
+	 * @return REST\On_Boarding
+	 */
+	public function boot_orders_endpoint() {
+		$messages = $this->container->make( 'tickets.rest-v1.messages' );
+
+		return new REST\Orders( $messages );
 	}
 
 	/**
@@ -42,12 +61,26 @@ class REST {
 	 * @since 5.1.6
 	 */
 	public function register_endpoints() {
-		/** @var PayPal_Webhook $endpoint */
-		$endpoint = tribe( PayPal_Webhook::class );
+		$endpoint      = tribe( REST\Webhook::class );
+		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
+		$documentation = tribe( 'tickets.rest-v1.endpoints.documentation' );
 
 		register_rest_route(
-			$this->namespace,
-			$endpoint->path,
+			$namespace,
+			$endpoint->get_endpoint_path(),
+			[
+				'methods'             => WP_REST_Server::CREATABLE,
+				'args'                => $endpoint->CREATE_args(),
+				'callback'            => [ $endpoint, 'create' ],
+				'permission_callback' => '__return_true',
+			]
+		);
+		$documentation->register_documentation_provider( $endpoint->get_endpoint_path(), $endpoint );
+
+		$endpoint = tribe( REST\On_Boarding::class );
+		register_rest_route(
+			$namespace,
+			$endpoint->get_endpoint_path(),
 			[
 				'methods'             => WP_REST_Server::CREATABLE,
 				'args'                => $endpoint->CREATE_args(),
@@ -56,6 +89,20 @@ class REST {
 			]
 		);
 
-		$this->documentation->register_documentation_provider( $endpoint->path, $endpoint );
+		$documentation->register_documentation_provider( $endpoint->get_endpoint_path(), $endpoint );
+
+		$endpoint = tribe( REST\Orders::class );
+		register_rest_route(
+			$namespace,
+			$endpoint->get_endpoint_path(),
+			[
+				'methods'             => WP_REST_Server::CREATABLE,
+				'args'                => $endpoint->CREATE_args(),
+				'callback'            => [ $endpoint, 'create' ],
+				'permission_callback' => '__return_true',
+			]
+		);
+
+		$documentation->register_documentation_provider( $endpoint->get_endpoint_path(), $endpoint );
 	}
 }
