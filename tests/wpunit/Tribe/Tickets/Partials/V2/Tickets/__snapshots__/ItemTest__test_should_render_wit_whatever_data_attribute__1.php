@@ -17,7 +17,7 @@
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
 					<span class="tribe-currency-symbol">$</span>
-					<span class="tribe-amount">9.00</span>
+					<span class="tribe-amount">7.00</span>
 				</span>
 						</span>
 </div>
