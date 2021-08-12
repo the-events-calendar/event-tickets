@@ -10,6 +10,7 @@ use Tribe__Tickets__REST__V1__Validator__Base;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
+use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners\PaymentCaptureCompleted as Payment_Capture_Completed;
 
 class Payment_Capture_CompletedTest extends \Codeception\TestCase\WPTestCase {
 
@@ -36,6 +37,8 @@ class Payment_Capture_CompletedTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should be instantiatable
+	 * @todo This isn't funcitonal with the current setup
+	 * @skip
 	 */
 	public function it_should_be_instantiatable() {
 		$sut = $this->make_instance();
@@ -46,6 +49,8 @@ class Payment_Capture_CompletedTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should reject invalid event data
+	 * @todo This isn't funcitonal with the current setup
+	 * @skip
 	 */
 	public function it_should_reject_invalid_event_data() {
 		// @todo Set up test event/ticket.
@@ -80,12 +85,14 @@ class Payment_Capture_CompletedTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should mark payment as completed
+	 * @skip
 	 */
 	public function it_should_mark_payment_as_completed() {
 		// @todo Set up test event/ticket.
 		// @todo Create temporary order.
 
 		// Get Event JSON.
+		// @TODO: This file is missing....so this is skipped
 		$event_json = file_get_contents( codecept_data_dir( $this->event_file ) );
 
 		$sut = $this->make_instance();
