@@ -53,6 +53,11 @@ CREATE TABLE `wp_options` (
                               `autoload` varchar(20) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'yes'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
+ALTER TABLE `wp_options`
+    ADD PRIMARY KEY (`option_id`),
+    ADD UNIQUE KEY `option_name` (`option_name`),
+    ADD KEY `autoload` (`autoload`);
+
 INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`) VALUES
 (1, 'siteurl', 'http://wordpress.test/', 'yes'),
 (2, 'home', 'http://wordpress.test/', 'yes'),
@@ -537,11 +542,6 @@ ALTER TABLE `wp_comments`
 ALTER TABLE `wp_links`
     ADD PRIMARY KEY (`link_id`),
     ADD KEY `link_visible` (`link_visible`);
-
-ALTER TABLE `wp_options`
-    ADD PRIMARY KEY (`option_id`),
-    ADD UNIQUE KEY `option_name` (`option_name`),
-    ADD KEY `autoload` (`autoload`);
 
 ALTER TABLE `wp_postmeta`
     ADD PRIMARY KEY (`meta_id`),
