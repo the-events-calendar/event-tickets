@@ -13,8 +13,9 @@
  * @since 5.0.3
  * @since 5.1.1 Display data attributes via `tribe_attributes` and make them filterable via `tribe_tickets_block_ticket_html_attributes`.
  * @since 5.1.6 Add the `data-available-count` attribute for each ticket to calculate the shared capacity availability correctly.
+ * @since TBD Add the `data-ticket-price` attribute for each ticket to calculate the price precisely.
  *
- * @version 5.1.1
+ * @version TBD
  *
  * If RSVP:
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
