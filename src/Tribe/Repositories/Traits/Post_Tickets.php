@@ -289,4 +289,39 @@ trait Post_Tickets {
 		$repo->where_clause( "{$prefix}_ticket_event.meta_id IS NULL
 			OR {$prefix}_ticket_event.meta_key != '_tribe_rsvp_for_event'" );
 	}
+
+	/**
+	 * Filters events to include only those that match the provided RSVP or Ticket state.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $has_rsvp_or_tickets Indicates if the event should have RSVP or tickets attached to it or not.
+	 */
+	public function filter_by_has_rsvp_or_tickets( $has_rsvp_or_tickets = true ) {
+		$repo = $this;
+
+		// If the repo is decorated, use that.
+		if ( ! empty( $repo ) ) {
+			$repo = $this->decorated;
+		}
+
+		global $wpdb;
+		$prefix = 'has_rsvp_or_tickets_';
+
+		if ( (bool) $has_rsvp_or_tickets ) {
+			// Join to the meta that relates tickets to events but exclude RSVP tickets.
+			$repo->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event ON (
+					{$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID
+					AND {$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
+				)" );
+
+			return;
+		}
+
+		// Join to the meta that relates tickets to events.
+		$repo->join_clause( "LEFT JOIN {$wpdb->postmeta} {$prefix}_ticket_event
+					ON {$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID" );
+		// Keep events that have no tickets assigned or are assigned RSVP tickets.
+		$repo->where_clause( "{$prefix}_ticket_event.meta_id IS NULL" );
+	}
 }

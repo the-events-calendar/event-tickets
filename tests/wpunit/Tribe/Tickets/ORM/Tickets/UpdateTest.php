@@ -35,6 +35,11 @@ class UpdateTest extends \Codeception\TestCase\WPTestCase {
 		tribe_singleton( 'tickets.data_api', new Data_API );
 	}
 
+	public function _before() {
+		tribe_events()->per_page( -1 )->delete();
+		tribe_tickets()->per_page( -1 )->delete();
+	}
+
 	/**
 	 * It should allow updating tickets.
 	 *

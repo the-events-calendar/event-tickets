@@ -338,7 +338,7 @@ class MainTest extends Test_Case {
 		// Enable sandbox.
 		tribe_update_option( 'ticket-paypal-sandbox', '1' );
 
-		$this->assertTrue( $sut->is_test_mode() );
+		$this->assertTrue( tribe_tickets_commerce_is_test_mode() );
 	}
 
 	/**
@@ -352,7 +352,7 @@ class MainTest extends Test_Case {
 		// Disable sandbox.
 		tribe_update_option( 'ticket-paypal-sandbox', '0' );
 
-		$this->assertFalse( $sut->is_test_mode() );
+		$this->assertFalse( tribe_tickets_commerce_is_test_mode() );
 	}
 
 	/**
@@ -366,7 +366,7 @@ class MainTest extends Test_Case {
 		// Remove sandbox option.
 		tribe_update_option( 'ticket-paypal-sandbox', '' );
 
-		$this->assertFalse( $sut->is_test_mode() );
+		$this->assertFalse( tribe_tickets_commerce_is_test_mode() );
 	}
 
 	protected function make_data( $previous_status, $status, $sales, $stock = 0 ) {

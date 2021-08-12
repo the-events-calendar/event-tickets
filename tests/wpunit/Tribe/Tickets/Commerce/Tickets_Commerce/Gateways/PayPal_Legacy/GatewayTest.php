@@ -2,6 +2,8 @@
 
 namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Legacy;
 
+use TEC\Tickets\Commerce\Gateways\Legacy\Gateway;
+
 class GatewayTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
@@ -51,7 +53,7 @@ class GatewayTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( 'Foo', $gateways['some-gateway']['class'] );
 
 		// The gateway was not registered.
-		$this->assertCount( 1, $gateways );
+		$this->assertCount( 2, $gateways );
 	}
 
 	/**

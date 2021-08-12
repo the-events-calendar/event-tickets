@@ -146,6 +146,7 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 			'not-completed',
 			'pending-payment',
 			'refunded',
+			'reversed',
 			'undefined',
 		), Manager::get_instance()->get_statuses_by_action( 'all', 'tpp' ) );
 	}

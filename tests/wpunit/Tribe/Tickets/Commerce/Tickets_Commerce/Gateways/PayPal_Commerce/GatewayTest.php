@@ -2,8 +2,9 @@
 
 namespace Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce;
 
-use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Models\MerchantDetail;
-use Tribe\Tickets\Commerce\Tickets_Commerce\Gateways\PayPal_Commerce\SDK\Repositories\MerchantDetails;
+use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\MerchantDetail;
+use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
 
 class GatewayTest extends \Codeception\TestCase\WPTestCase {
 
