@@ -78,10 +78,6 @@ class ItemsTest extends V2TestCase {
 
 		$driver = $this->get_html_output_driver();
 
-		$driver->setTolerableDifferences(
-			array_merge( [ $args['post_id'] ], wp_list_pluck( $args['tickets'], 'ID' ) )
-		);
-
 		$driver->setTimeDependentAttributes( [ 'value', 'data-ticket-id', 'aria-controls' ] );
 
 		$driver->setTolerableDifferencesPrefixes( [
