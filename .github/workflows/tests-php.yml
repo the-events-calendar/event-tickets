@@ -21,7 +21,7 @@ jobs:
 #          - functional
 #          - integration
           - restv1 --group="capacity"
-#          - restv1 --skip-group="capacity"
+          - restv1 --skip-group="capacity"
 #          - unit
 #          - views_integration
 #          - wpunit --group="capacity"
