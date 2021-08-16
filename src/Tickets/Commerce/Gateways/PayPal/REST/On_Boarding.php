@@ -2,12 +2,16 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\REST;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\REST;
-use TEC\Tickets\Commerce\Gateways\PayPal\SignUp\Onboard;
+use TEC\Tickets\Commerce\Gateways\PayPal\Client;
+use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
+use TEC\Tickets\Commerce\Gateways\PayPal\Refresh_Token;
 
-use Tribe__Tickets__REST__V1__Endpoints__Base;
-use Tribe__REST__Endpoints__CREATE_Endpoint_Interface;
+use TEC\Tickets\Commerce\Gateways\PayPal\Signup;
+use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
 use Tribe__Documentation__Swagger__Provider_Interface;
+use Tribe__Settings;
+use Tribe__Utils__Array as Arr;
+
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -21,10 +25,16 @@ use WP_REST_Server;
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */
-class On_Boarding
-	extends Tribe__Tickets__REST__V1__Endpoints__Base
-	implements Tribe__REST__Endpoints__CREATE_Endpoint_Interface,
-	Tribe__Documentation__Swagger__Provider_Interface {
+class On_Boarding implements Tribe__Documentation__Swagger__Provider_Interface {
+
+	/**
+	 * The REST API endpoint path.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected $path = '/commerce/paypal/on-boarding';
 
 	/**
 	 * Register the actual endpoint on WP Rest API.
@@ -40,23 +50,25 @@ class On_Boarding
 			$this->get_endpoint_path(),
 			[
 				'methods'             => WP_REST_Server::CREATABLE,
-				'args'                => $this->CREATE_args(),
-				'callback'            => [ $this, 'create' ],
+				'args'                => $this->fetch_token_args(),
+				'callback'            => [ $this, 'handle_fetch_token' ],
+				'permission_callback' => '__return_true',
+			]
+		);
+
+		register_rest_route(
+			$namespace,
+			$this->get_endpoint_path(),
+			[
+				'methods'             => WP_REST_Server::READABLE,
+				'args'                => $this->signup_redirect_args(),
+				'callback'            => [ $this, 'handle_signup_redirect' ],
 				'permission_callback' => '__return_true',
 			]
 		);
 
 		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
 	}
-
-	/**
-	 * The REST API endpoint path.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	protected $path = '/tickets-commerce/paypal/on-boarding';
 
 	/**
 	 * Gets the Endpoint path for the on boarding process.
@@ -83,42 +95,174 @@ class On_Boarding
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Gets the Return URL pointing to this on boarding route.
 	 *
-	 * @todo WIPd
+	 * @since TBD
 	 *
-	 * @param WP_REST_Request $request   The request object.
-	 * @param bool            $return_id Whether the created post ID should be returned or the full response object.
-	 *
-	 * @return WP_Error|WP_REST_Response|int An array containing the data on success or a WP_Error instance on failure.
+	 * @return string
 	 */
-	public function create( WP_REST_Request $request, $return_id = false ) {
-		$event   = $request->get_body();
-		$headers = $request->get_headers();
-
-		/**
-		 * @todo @nefeline On Boarding redirect here.
-		 */
-
-
-		$data = [
-			'success' => true,
+	public function get_return_url( $hash = null ) {
+		$arguments = [
+			'hash' => $hash,
 		];
 
-		return new WP_REST_Response( $data );
+		return add_query_arg( $arguments, $this->get_route_url() );
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Handles the request that happens in parallel to the User Signup on PayPal but before we redirect the user from
+	 * the mini browser. So when passing error messages, they need to be registered to be fetched in the FE.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
+	 */
+	public function handle_fetch_token( WP_REST_Request $request ) {
+		$response = [
+			'success' => false,
+		];
+
+		$signup   = tribe( Signup::class );
+		$client   = tribe( Client::class );
+		$merchant = tribe( Merchant::class );
+
+		// Send a request to fetch the access token.
+		$paypal_response = $client->get_access_token_from_authorization_code(
+			$request->get_param( 'shared_id' ),
+			$request->get_param( 'auth_code' ),
+			$signup->get_transient_hash()
+		);
+
+		if ( ! $paypal_response || array_key_exists( 'error', $paypal_response ) ) {
+			$response['error'] = __( 'Unexpected response from PayPal when on boarding', 'event-tickets' );
+
+			return new WP_REST_Response( $response );
+		}
+
+		// Save the information on the merchant system.
+		$merchant->save_access_token_data( $paypal_response );
+
+		tribe( Refresh_Token::class )->register_cron_job_to_refresh_token( $paypal_response['expires_in'] );
+
+		$response['success'] = true;
+
+		return new WP_REST_Response( $response );
+	}
+
+	/**
+	 * This request is ran when the user is redirected back from the PayPal miniBrowser, and will not respond with
+	 * a JSON request, but with a redirect of the user with a success link or error link into the payments tab.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return void This is strictly a redirect response.
+	 */
+	public function handle_signup_redirect( WP_REST_Request $request ) {
+		$signup        = tribe( Signup::class );
+		$existing_hash = $signup->get_transient_hash();
+		$request_hash  = $request->get_param( 'hash' );
+		$return_url    = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', ] );
+
+		if ( $request_hash !== $existing_hash ) {
+			$this->redirect_with( 'invalid-paypal-signup-hash', $return_url );
+		}
+
+		$seller_data = tribe( WhoDat::class )->get_seller_referral_data( $signup->get_referral_data_link() );
+		$has_custom_payments = in_array( 'PPCP', Arr::get( $seller_data, [ 'referral_data', 'products' ], [] ), true );
+
+		$merchant_id           = $request->get_param( 'merchantId' );
+		$merchant_id_in_paypal = $request->get_param( 'merchantIdInPayPal' );
+
+		/**
+		 * @todo Need to figure out where this gets saved in the merchant API.
+		 */
+		$permissions_granted = $request->get_param( 'permissionsGranted' );
+		$consent_status      = $request->get_param( 'consentStatus' );
+		$account_status      = $request->get_param( 'accountStatus' );
+
+		$merchant = tribe( Merchant::class );
+
+		$merchant->save_signup_data( $seller_data );
+
+		$merchant->set_signup_hash( $request_hash );
+		$merchant->set_merchant_id( $merchant_id );
+		$merchant->set_merchant_id_in_paypal( $merchant_id_in_paypal );
+
+		$access_token = $merchant->get_access_token();
+		$credentials = tribe( WhoDat::class )->get_seller_credentials( $access_token );
+
+		if ( ! isset( $credentials['client_id'], $credentials['client_secret'] ) ) {
+			// Save what we have before moving forward.
+			$merchant->save();
+
+			$this->redirect_with( 'invalid-paypal-seller-credentials', $return_url );
+		}
+
+		$merchant->set_client_id( $credentials['client_id'] );
+		$merchant->set_client_secret( $credentials['client_secret'] );
+		$merchant->set_account_is_ready( true );
+		$merchant->set_supports_custom_payments( $has_custom_payments );
+		$merchant->save();
+
+		$token_data = tribe( Client::class )->get_access_token_from_client_credentials( $credentials['client_id'], $credentials['client_secret'] );
+
+		// Save the information on the merchant.
+		$merchant->save_access_token_data( $token_data );
+
+		/**
+		 * @todo Need to figure out where this gets saved in the merchant API.
+		 */
+		update_option( 'tickets_commerce_permissions_granted', $permissions_granted );
+		update_option( 'tickets_commerce_consent_status', $consent_status );
+		update_option( 'tickets_commerce_account_status', $account_status );
+
+		$this->redirect_with( 'paypal-signup-complete', $return_url );
+	}
+
+	/**
+	 * Using wp_safe_redirect sends the client back to a given URL after removing the Signup data acquired.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $status Which status we will add to the URL
+	 * @param string $url    Which URL we are sending the client to.
+	 * @param array  $data   Extra that that will be json encoded to the URL.
+	 *
+	 */
+	protected function redirect_with( $status, $url, array $data = [] ) {
+		$signup = tribe( Signup::class );
+
+		// We always clean signup data before redirect.
+		$signup->delete_transient_data();
+		$signup->delete_transient_hash();
+
+		$query_args = [ 'tc-status' => $status ];
+
+		if ( ! empty( $data ) ) {
+			$query_args['tc-data'] = wp_json_encode( $data );
+		}
+
+		// Add an status slug to the URL.
+		$url = add_query_arg( $query_args, $url );
+
+		wp_safe_redirect( $url );
+		exit;
+	}
+
+	/**
 	 *
 	 * @since TBD
 	 *
 	 * @return array
 	 */
-	public function CREATE_args() {
+	public function signup_redirect_args() {
 		// Webhooks do not send any arguments, only JSON content.
 		return [
-			'wp_nonce'           => [
+			'hash'               => [
 				'description'       => 'The nonce validation',
 				'required'          => true,
 				'type'              => 'string',
@@ -200,6 +344,58 @@ class On_Boarding
 	}
 
 	/**
+	 *
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function fetch_token_args() {
+		// Webhooks do not send any arguments, only JSON content.
+		return [
+			'nonce'     => [
+				'description'       => 'The nonce validation for WP',
+				'required'          => true,
+				'type'              => 'string',
+				'validate_callback' => static function ( $value ) {
+					if ( ! is_string( $value ) ) {
+						return new WP_Error( 'rest_invalid_param', 'The wp_nonce argument must be a string.', [ 'status' => 400 ] );
+					}
+
+					return $value;
+				},
+				'sanitize_callback' => [ $this, 'sanitize_callback' ],
+			],
+			'auth_code' => [
+				'description'       => 'Authorization Code from PayPal',
+				'required'          => true,
+				'type'              => 'string',
+				'validate_callback' => static function ( $value ) {
+					if ( ! is_string( $value ) ) {
+						return new WP_Error( 'rest_invalid_param', 'The merchantId auth_code must be a string.', [ 'status' => 400 ] );
+					}
+
+					return $value;
+				},
+				'sanitize_callback' => [ $this, 'sanitize_callback' ],
+			],
+			'shared_id' => [
+				'description'       => 'The shared ID from PayPal',
+				'required'          => true,
+				'type'              => 'string',
+				'validate_callback' => static function ( $value ) {
+					if ( ! is_string( $value ) ) {
+						return new WP_Error( 'rest_invalid_param', 'The shared_id argument must be a string.', [ 'status' => 400 ] );
+					}
+
+					return $value;
+				},
+				'sanitize_callback' => [ $this, 'sanitize_callback' ],
+			],
+		];
+	}
+
+	/**
 	 * Sanitize a request argument based on details registered to the route.
 	 *
 	 * @since TBD
@@ -219,56 +415,11 @@ class On_Boarding
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether the current user can post or not.
-	 */
-	public function can_create() {
-		// Always open, no further user-based validation.
-		return true;
-	}
-
-	/**
-	 * {@inheritDoc}
+	 * @TODO  We need to make sure Swagger documentation is present.
 	 *
 	 * @since TBD
 	 */
 	public function get_documentation() {
-		return [
-			'post' => [
-				'consumes'   => [
-					'application/json',
-				],
-				'parameters' => [],
-				'responses'  => [
-					'200' => [
-						'description' => __( 'Processes the Webhook as long as it includes valid Payment Event data', 'event-tickets' ),
-						'content'     => [
-							'application/json' => [
-								'schema' => [
-									'type'       => 'object',
-									'properties' => [
-										'success' => [
-											'description' => __( 'Whether the processing was successful', 'event-tickets' ),
-											'type'        => 'boolean',
-										],
-									],
-								],
-							],
-						],
-					],
-					'403' => [
-						'description' => __( 'The webhook was invalid and was not processed', 'event-tickets' ),
-						'content'     => [
-							'application/json' => [
-								'schema' => [
-									'type' => 'object',
-								],
-							],
-						],
-					],
-				],
-			],
-		];
+		return [];
 	}
 }

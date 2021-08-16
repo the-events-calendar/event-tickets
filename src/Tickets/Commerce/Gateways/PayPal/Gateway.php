@@ -26,6 +26,17 @@ class Gateway extends Abstract_Gateway {
 	const ATTRIBUTION_ID = 'TheEventsCalendar_SP_PPCP';
 
 	/**
+	 * PayPal tracking ID version.
+	 *
+	 * This shouldn't be updated unless we are modifying something on the PayPal user level.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const VERSION = '1.0.0';
+
+	/**
 	 * @inheritDoc
 	 */
 	public static function get_label() {

@@ -397,8 +397,6 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @since 5.1.6
-	 *
 	 * @return string|null
 	 */
 	public function get_partner_link_details() {

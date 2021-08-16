@@ -13,7 +13,7 @@ use WP_REST_Server;
 class REST extends \tad_DI52_ServiceProvider {
 	public function register() {
 		$this->container->singleton( REST\Webhook::class, [ $this, 'boot_webhook_endpoint' ] );
-		$this->container->singleton( REST\On_Boarding::class, [ $this, 'boot_on_boarding_endpoint' ] );
+		$this->container->singleton( REST\On_Boarding::class );
 		$this->container->singleton( REST\Orders::class, [ $this, 'boot_orders_endpoint' ] );
 	}
 
@@ -30,21 +30,6 @@ class REST extends \tad_DI52_ServiceProvider {
 		return new REST\Webhook( $messages );
 	}
 
-	/**
-	 * Properly initializes the On_Boarding class.
-	 *
-	 * @since TBD
-	 *
-	 * @return REST\On_Boarding
-	 */
-	public function boot_on_boarding_endpoint() {
-		$messages = $this->container->make( 'tickets.rest-v1.messages' );
-
-		$endpoint = new REST\On_Boarding( $messages );
-		$endpoint->register();
-
-		return $endpoint;
-	}
 	/**
 	 * Properly initializes the On_Boarding class.
 	 *
@@ -68,6 +53,8 @@ class REST extends \tad_DI52_ServiceProvider {
 		$documentation = tribe( 'tickets.rest-v1.endpoints.documentation' );
 
 		$endpoint      = tribe( REST\Webhook::class );
+
+		$this->container->make( REST\On_Boarding::class )->register();
 
 		register_rest_route(
 			$namespace,

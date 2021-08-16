@@ -70,9 +70,10 @@ class Client {
 	public function get_js_sdk_url( array $query_args = [] ) {
 		$url        = 'https://www.paypal.com/sdk/js';
 		$query_args = array_merge( [
-			'client-id'  => 'sb',
+			'client-id'  => tribe( Merchant::class )->get_client_id(),
+			'merchant-id'  => tribe( Merchant::class )->get_merchant_id_in_paypal(),
 			'locale'     => 'en_US',
-			'components' => 'buttons',
+			'components' => 'buttons,hosted-fields',
 		], $query_args );
 		$url        = add_query_arg( $query_args, $url );
 
@@ -104,7 +105,7 @@ class Client {
 	}
 
 	/**
-	 * Send a POST request to WhoDat inside of the PayPal connection path.
+	 * Send a GET request to the PayPal API.
 	 *
 	 * @since TBD
 	 *
@@ -114,23 +115,29 @@ class Client {
 	 *
 	 * @return array|null
 	 */
-	public function post( $endpoint, array $query_args = [], array $request_arguments = [] ) {
-		$url = $this->get_api_url( $endpoint, $query_args );
+	public function get( $endpoint, array $query_args = [], array $request_arguments = [] ) {
+		// If the endpoint passed is a full URL dont try to append anything.
+		if ( 0 !== strpos( 'https://', $endpoint ) ) {
+			$url = $this->get_api_url( $endpoint, $query_args );
+		} else {
+			$url = add_query_arg( $query_args, $endpoint );
+		}
 
 		$default_arguments = [
 			'headers' => [
 				'Accept'        => 'application/json',
 				'Authorization' => sprintf( 'Bearer %1$s', $this->get_access_token() ),
 				'Content-Type'  => 'application/json',
-			],
-			'body'    => [],
+			]
 		];
-		$request_arguments = array_merge_recursive( $default_arguments, $request_arguments );
-		$response          = wp_remote_post( $url, $request_arguments );
+		foreach ( $default_arguments as $key => $default_argument ) {
+			$request_argument[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
+		}
+		$response = wp_remote_get( $url, $request_arguments );
 
 		if ( is_wp_error( $response ) ) {
 			tribe( 'logger' )->log_error( sprintf(
-				'[%s] PayPal request error: %s',
+				'[%s] PayPal GET request error: %s',
 				$url,
 				$response->get_error_message()
 			), 'tickets-commerce-paypal' );
@@ -149,7 +156,68 @@ class Client {
 		$response = @json_decode( $response, true );
 
 		if ( ! is_array( $response ) ) {
-			tribe( 'logger' )->log_error( sprintf( '[%s] Unexpected PayPal response', $url ), 'tickets-commerce-paypal' );
+			tribe( 'logger' )->log_error( sprintf( '[%s] Unexpected PayPal GET response', $url ), 'tickets-commerce-paypal' );
+
+			return null;
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Send a POST request to the PayPal API.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $endpoint
+	 * @param array  $query_args
+	 * @param array  $request_arguments
+	 *
+	 * @return array|null
+	 */
+	public function post( $endpoint, array $query_args = [], array $request_arguments = [] ) {
+		// If the endpoint passed is a full URL dont try to append anything.
+		if ( 0 !== strpos( 'https://', $endpoint ) ) {
+			$url = $this->get_api_url( $endpoint, $query_args );
+		} else {
+			$url = add_query_arg( $query_args, $endpoint );
+		}
+
+		$default_arguments = [
+			'headers' => [
+				'Accept'        => 'application/json',
+				'Authorization' => sprintf( 'Bearer %1$s', $this->get_access_token() ),
+				'Content-Type'  => 'application/json',
+			],
+			'body'    => [],
+		];
+		foreach ( $default_arguments as $key => $default_argument ) {
+			$request_argument[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
+		}
+		$response = wp_remote_post( $url, $request_arguments );
+
+		if ( is_wp_error( $response ) ) {
+			tribe( 'logger' )->log_error( sprintf(
+				'[%s] PayPal POST request error: %s',
+				$url,
+				$response->get_error_message()
+			), 'tickets-commerce-paypal' );
+
+			return null;
+		}
+
+		$response_code = wp_remote_retrieve_response_code( $response );
+
+		// When we receive an error code we return the whole response.
+		if ( ! in_array( $response_code, [ 200, 201, 202, 204 ], true ) ) {
+			return $response;
+		}
+
+		$response = wp_remote_retrieve_body( $response );
+		$response = @json_decode( $response, true );
+
+		if ( ! is_array( $response ) ) {
+			tribe( 'logger' )->log_error( sprintf( '[%s] Unexpected PayPal POST response', $url ), 'tickets-commerce-paypal' );
 
 			return null;
 		}
@@ -338,6 +406,10 @@ class Client {
 		$response = $this->post( '/v2/checkout/orders', $query_args, $args );
 
 		return $response;
+	}
+
+	public function get_referral_data( $referral_url ) {
+		return $this->get( $referral_url, [], [] );
 	}
 
 	public function refund_payment( $capture_id ) {

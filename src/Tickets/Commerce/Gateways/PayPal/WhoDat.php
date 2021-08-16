@@ -2,6 +2,9 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding;
+use Tribe__Utils__Array as Arr;
+
 /**
  * Class Connect_Client
  *
@@ -17,7 +20,7 @@ class WhoDat {
 	 *
 	 * @var string
 	 */
-	protected $api_url = 'https://whodat.theeventscalendar.com/commerce/v1/paypal/';
+	protected $api_url = 'https://whodat.theeventscalendar.com/commerce/v1/paypal';
 
 	/**
 	 * Get REST API endpoint URL for requests.
@@ -35,43 +38,44 @@ class WhoDat {
 	}
 
 	/**
-	 * Generate a Unique Hash for signup. It will always be 20 characters long.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	protected function get_unique_hash() {
-		if ( defined( 'NONCE_KEY' ) ) {
-			$nonce_key = NONCE_KEY;
-		} else {
-			$nonce_key = uniqid( '', true );
-		}
-		if ( defined( 'NONCE_SALT' ) ) {
-			$nonce_salt = NONCE_SALT;
-		} else {
-			$nonce_salt = uniqid( '', true );
-		}
-
-		$unique = uniqid( '', true );
-
-		return substr( str_shuffle( implode( '-', [ $nonce_key, $nonce_salt, $unique ] ) ), 0, 20 );
-	}
-
-	/**
 	 * Fetch the signup link from PayPal.
 	 *
 	 * @since TBD
 	 *
 	 * @return array|string
 	 */
-	public function get_seller_signup_link( $return_url ) {
+	public function get_seller_signup_data( $hash ) {
+		if ( empty( $hash ) ) {
+			$hash = tribe( Signup::class )->generate_unique_signup_hash();
+		}
+
+		$return_url = tribe( On_Boarding::class )->get_return_url( $hash );
 		$query_args = [
-			'nonce'      => $this->get_unique_hash(),
-			'return_url' => esc_url( $return_url ),
+			'mode'        => tribe( Merchant::class )->get_mode(),
+			'nonce'       => $hash,
+			'tracking_id' => urlencode( tribe( Signup::class )->generate_unique_tracking_id() ),
+			'return_url'  => esc_url( $return_url ),
 		];
 
 		return $this->get( 'seller/signup', $query_args );
+	}
+
+	/**
+	 * Fetch the seller referral Data from WhoDat/PayPal.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url Which URL WhoDat needs to request.
+	 *
+	 * @return array
+	 */
+	public function get_seller_referral_data( $url ) {
+		$query_args = [
+			'mode' => tribe( Merchant::class )->get_mode(),
+			'url'  => $url
+		];
+
+		return $this->get( 'seller/referral-data', $query_args );
 	}
 
 	/**
@@ -79,12 +83,35 @@ class WhoDat {
 	 *
 	 * @since TBD
 	 *
+	 * @param string $saved_merchant_id The ID we are looking at Paypal with.
+	 *
 	 * @return array
 	 */
 	public function get_seller_status( $saved_merchant_id ) {
-		$query_args = [ 'merchant_id' => $saved_merchant_id ];
+		$query_args = [
+			'mode'        => tribe( Merchant::class )->get_mode(),
+			'merchant_id' => $saved_merchant_id
+		];
 
 		return $this->post( 'seller/status', $query_args );
+	}
+
+	/**
+	 * Get seller rest API credentials
+	 *
+	 * @since TBD
+	 *
+	 * @param string $access_token
+	 *
+	 * @return array|null
+	 */
+	public function get_seller_credentials( $access_token ) {
+		$query_args = [
+			'mode'         => tribe( Merchant::class )->get_mode(),
+			'access_token' => $access_token,
+		];
+
+		return $this->post( 'seller/credentials', $query_args );
 	}
 
 	/**
@@ -170,61 +197,4 @@ class WhoDat {
 		);
 		tribe( 'logger' )->log_error( $log, 'whodat-connection' );
 	}
-
-	/**
-	 * Get seller on-boarding details from seller.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @param string $access_token
-	 * @param string $merchant_id
-	 *
-	 * @return array|null
-	 */
-	public function get_seller_on_boarding_details_from_paypal( $merchant_id, $access_token ) {
-		$query_args = [
-			'mode'    => tribe( Merchant::class )->get_mode(),
-			'request' => 'seller-status',
-		];
-
-		$args = [
-			'body' => [
-				'merchant_id' => $merchant_id,
-				'token'       => $access_token,
-			]
-		];
-
-		/**
-		 * @todo Determine the if paypal-commerce of the WhoDat makes sense.
-		 */
-		return $this->post( 'seller/paypal-commerce', $query_args, $args );
-	}
-
-	/**
-	 * Get seller rest API credentials
-	 *
-	 * @since 5.1.6
-	 *
-	 * @param string $access_token
-	 *
-	 * @return array|null
-	 */
-	public function get_seller_rest_api_credentials( $access_token ) {
-		$query_args = [
-			'mode'    => tribe( Merchant::class )->get_mode(),
-			'request' => 'seller-credentials',
-		];
-
-		$args = [
-			'body' => [
-				'token' => $access_token,
-			]
-		];
-
-		/**
-		 * @todo Determine the if paypal-commerce of the WhoDat makes sense.
-		 */
-		return $this->post( 'seller/paypal-commerce', $query_args, $args );
-	}
-
 }
