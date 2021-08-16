@@ -207,7 +207,6 @@ class Signup {
 	 *
 	 * @since TBD
 	 *
-	 *
 	 * @return false|string
 	 */
 	public function get_referral_data_link() {
