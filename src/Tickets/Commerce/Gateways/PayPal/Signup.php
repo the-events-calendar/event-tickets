@@ -56,6 +56,7 @@ class Signup {
 
 		return $this->template;
 	}
+
 	/**
 	 * Gets the saved hash for a given user, empty when non-existent.
 	 *
