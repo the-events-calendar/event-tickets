@@ -408,10 +408,6 @@ class Client {
 		return $response;
 	}
 
-	public function get_referral_data( $referral_url ) {
-		return $this->get( $referral_url, [], [] );
-	}
-
 	public function refund_payment( $capture_id ) {
 		$query_args = [];
 		$body       = [];
