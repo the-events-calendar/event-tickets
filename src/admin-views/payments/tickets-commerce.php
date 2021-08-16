@@ -3,6 +3,8 @@
  * The Template for displaying the Tickets Commerce Payments Settings.
  *
  * @version TBD
+ *
+ * @todo This whole file needs to be completely reviewed once the designs are correct in place.
  */
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
