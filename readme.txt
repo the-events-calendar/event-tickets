@@ -178,6 +178,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] =
+
+* Fix - Fixed cart calculation inconsistency with WooCommerce while decimal point settings was set to 0. [ETP-324]
+
 = [5.1.7] 2021-08-03 =
 
 * Feature - Added export button next to the page title on the Attendees page. [ET-1145]
