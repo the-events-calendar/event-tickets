@@ -1,17 +1,16 @@
 <script>
-	function onboardedCallback(authCode, sharedId) {
-		fetch('<?php echo tribe( \TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding::class )->get_route_url() ?>', {
+	function onboardedCallback( authCode, sharedId ) {
+		fetch( '<?php echo tribe( \TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding::class )->get_route_url() ?>', {
 			method: 'POST',
-
 			headers: {
-				'content-type': 'application/json'
+				'content-type': 'application/json',
 			},
-			body: JSON.stringify({
+			body: JSON.stringify( {
 				auth_code: authCode,
 				shared_id: sharedId,
 				nonce: '<?php echo wp_create_nonce( 'tec-tc-on-boarded' ); ?>',
-			})
-		});
+			} ),
+		} );
 	}
 </script>
 
