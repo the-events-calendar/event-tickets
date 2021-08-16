@@ -1,9 +1,9 @@
 <?php
 /**
- * Tickets Commerce: Checkout Table Row
+ * Tickets Commerce: Checkout Cart Item
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/commerce/checkout/table-row.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/item.php
  *
  * See more documentation about our views templating system.
  *
@@ -23,26 +23,26 @@
  * @var array            $item                  Which item this row will be for.
  */
 
-use \TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Utils\Price;
+// Bail if there's no ticket id.
+if ( empty( $item['ticket_id'] ) ) {
+	return;
+}
+
+$classes = [
+	'tribe-tickets__commerce-checkout-cart-item',
+	get_post_class( '', $item['ticket_id'] ),
+	'tribe-common-b1',
+];
 
 ?>
-<tr>
-	<td>
-		<?php echo $item['obj']->name; ?>
-	</td>
-	<td>
-		<?php echo tribe( \TEC\Tickets\Commerce\Module::class )->get_price_html( $item['ticket_id'] ); ?>
-	</td>
-	<td>
-		<?php echo $item['quantity']; ?>
-	</td>
-	<td>
-		<?php echo $item['sub_total']; ?>
-	</td>
-</tr>
-<tr>
-	<td colspan="4">
+<div <?php tribe_classes( $classes ); ?>>
 
-	</td>
-</tr>
+	<?php $this->template( 'checkout/cart/item/details', [ 'item' => $item ] ); ?>
+
+	<?php $this->template( 'checkout/cart/item/price', [ 'item' => $item ] ); ?>
+
+	<?php $this->template( 'checkout/cart/item/quantity', [ 'item' => $item ] ); ?>
+
+	<?php $this->template( 'checkout/cart/item/sub-total', [ 'item' => $item ] ); ?>
+
+</div>
