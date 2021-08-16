@@ -93,6 +93,8 @@ class Tribe__Tickets__Assets {
 					'tribe-tickets-block-assets',
 					'tribe-tickets-rsvp',
 					'tribe-tickets-registration-page',
+					'tribe-tickets-commerce',
+					'tribe-tickets-commerce-checkout',
 				],
 			]
 		);
