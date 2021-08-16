@@ -3,7 +3,7 @@
  * Tickets Commerce: Checkout Cart Item Quantity
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2commerce/checkout/cart/item/quantity.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/item/quantity.php
  *
  * See more documentation about our views templating system.
  *

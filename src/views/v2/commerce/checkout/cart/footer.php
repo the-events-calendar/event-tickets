@@ -3,7 +3,7 @@
  * Tickets Commerce: Checkout Cart Footer
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/commerce/checkout/cart/footer.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/footer.php
  *
  * See more documentation about our views templating system.
  *
