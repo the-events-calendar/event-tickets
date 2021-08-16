@@ -134,16 +134,8 @@ class Signup {
 	 * @return string
 	 */
 	public function generate_unique_signup_hash() {
-		if ( defined( 'NONCE_KEY' ) ) {
-			$nonce_key = NONCE_KEY;
-		} else {
-			$nonce_key = uniqid( '', true );
-		}
-		if ( defined( 'NONCE_SALT' ) ) {
-			$nonce_salt = NONCE_SALT;
-		} else {
-			$nonce_salt = uniqid( '', true );
-		}
+		$nonce_key  = defined( 'NONCE_KEY' ) ? NONCE_KEY : uniqid( '', true );
+		$nonce_salt = defined( 'NONCE_SALT' ) ? NONCE_SALT : uniqid( '', true );
 
 		$unique = uniqid( '', true );
 
