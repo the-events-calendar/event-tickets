@@ -14,7 +14,7 @@ class REST extends \tad_DI52_ServiceProvider {
 	public function register() {
 		$this->container->singleton( REST\Webhook::class, [ $this, 'boot_webhook_endpoint' ] );
 		$this->container->singleton( REST\On_Boarding::class );
-		$this->container->singleton( REST\Orders::class, [ $this, 'boot_orders_endpoint' ] );
+		$this->container->singleton( REST\Order::class );
 	}
 
 	/**
@@ -28,19 +28,6 @@ class REST extends \tad_DI52_ServiceProvider {
 		$messages = $this->container->make( 'tickets.rest-v1.messages' );
 
 		return new REST\Webhook( $messages );
-	}
-
-	/**
-	 * Properly initializes the Orders class.
-	 *
-	 * @since TBD
-	 *
-	 * @return REST\Orders
-	 */
-	public function boot_orders_endpoint() {
-		$messages = $this->container->make( 'tickets.rest-v1.messages' );
-
-		return new REST\Orders( $messages );
 	}
 
 	/**
@@ -66,20 +53,6 @@ class REST extends \tad_DI52_ServiceProvider {
 				'permission_callback' => '__return_true',
 			]
 		);
-		$documentation->register_documentation_provider( $endpoint->get_endpoint_path(), $endpoint );
-
-		$endpoint = tribe( REST\Orders::class );
-		register_rest_route(
-			$namespace,
-			$endpoint->get_endpoint_path(),
-			[
-				'methods'             => WP_REST_Server::CREATABLE,
-				'args'                => $endpoint->CREATE_args(),
-				'callback'            => [ $endpoint, 'create' ],
-				'permission_callback' => '__return_true',
-			]
-		);
-
 		$documentation->register_documentation_provider( $endpoint->get_endpoint_path(), $endpoint );
 	}
 }
