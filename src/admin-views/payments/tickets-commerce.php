@@ -8,13 +8,14 @@
 use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Signup;
 
-$is_merchant_active = tribe( Merchant::class )->is_active();
+$merchant = tribe( Merchant::class );
+$is_merchant_active = $merchant->is_active();
 
 $display = '<div class="tec-tickets-commerce-paypal-connect">';
 
 if ( $is_merchant_active ) {
 	$disconnect_url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-action' => 'paypal-disconnect' ] );
-	$name = get_option( 'tickets_commerce_merchant_id' );
+	$name = $merchant->get_merchant_id();
 
 	$disconnect = ' <a href="' . esc_url( $disconnect_url ) . '">' . esc_html__( 'Disconnect', 'event-tickets' ) . '</a>';
 	$display .= '<p>' . esc_html__( 'PayPal Status: Connected', 'event-tickets' ) . '</p>';
