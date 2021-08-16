@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Tickets\Partials\V2\Commerce\Checkout\Cart\Item;
+namespace TEC\Tickets\Commerce\Partials\Checkout\Cart;
 
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
@@ -12,11 +12,11 @@ use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 
 use Tribe__Tickets__Tickets;
 
-class ItemPriceTest extends V2CommerceTestCase {
+class CartHeaderTest extends V2CommerceTestCase {
 
 	use PayPal_Ticket_Maker;
 
-	public $partial_path = 'checkout/cart/item/price';
+	public $partial_path = 'checkout/cart/header';
 
 	private $tolerables = [];
 
@@ -36,7 +36,7 @@ class ItemPriceTest extends V2CommerceTestCase {
 			'post_title' => 'Test event for partial snapshot',
 		] );
 
-		$ids = $this->create_many_paypal_tickets( 1, $event_id, [ 'price' => 99 ] );
+		$ids = $this->create_many_paypal_tickets( 2, $event_id, [ 'price' => 99 ] );
 
 		$this->tolerables[] = $event_id;
 		$items = [];
@@ -66,8 +66,8 @@ class ItemPriceTest extends V2CommerceTestCase {
 			'provider_id' => Module::class,
 			'provider'    => tribe( Module::class ),
 			'items'       => $items,
-			'item'        => $items[ $ids[0] ],
 			'sections'    => $sections,
+			'post'        => get_post( $event_id ),
 			'total_value' => tribe_format_currency( Price::total( $sub_totals ) ),
 		];
 
@@ -77,10 +77,21 @@ class ItemPriceTest extends V2CommerceTestCase {
 	/**
 	 * @test
 	 */
-	public function test_should_render_cart_item_price() {
+	public function test_should_render_cart_header() {
 		$args   = $this->get_default_args();
 		$html   = $this->template_class()->template( $this->partial_path, $args, false );
 		$driver = $this->get_html_output_driver();
+
+		// Handle variations that tolerances won't handle.
+		foreach ( $args['items'] as $item ) {
+			if ( ! empty( $item['event_id'] ) ) {
+				$html = str_replace(
+					get_the_permalink( $item['event_id'] ),
+					'http://wordpress.test/?tribe_events=event-test_event',
+					$html
+				);
+			}
+		}
 
 		$driver->setTolerableDifferences( $this->tolerables );
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Tickets\Partials\V2\Commerce\Checkout;
+namespace TEC\Tickets\Commerce\Partials\Checkout\Cart;
 
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
@@ -12,11 +12,11 @@ use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 
 use Tribe__Tickets__Tickets;
 
-class CheckoutTest extends V2CommerceTestCase {
+class CartFooterTest extends V2CommerceTestCase {
 
 	use PayPal_Ticket_Maker;
 
-	public $partial_path = 'checkout';
+	public $partial_path = 'checkout/cart/footer';
 
 	private $tolerables = [];
 
@@ -44,7 +44,7 @@ class CheckoutTest extends V2CommerceTestCase {
 
 			$ticket_obj = $provider->get_ticket( $event_id, $ticket_id );
 
-			$quantity   = 1;
+			$quantity = 1;
 
 			$items[ $ticket_id ] = [
 				'ticket_id' => $ticket_id,
@@ -76,21 +76,10 @@ class CheckoutTest extends V2CommerceTestCase {
 	/**
 	 * @test
 	 */
-	public function test_should_render() {
+	public function test_should_render_cart_footer() {
 		$args   = $this->get_default_args();
 		$html   = $this->template_class()->template( $this->partial_path, $args, false );
 		$driver = $this->get_html_output_driver();
-
-		// Handle variations that tolerances won't handle.
-		foreach ( $args['items'] as $item ) {
-			if ( ! empty( $item['event_id'] ) ) {
-				$html = str_replace(
-					get_the_permalink( $item['event_id'] ),
-					'http://wordpress.test/?tribe_events=event-test_event',
-					$html
-				);
-			}
-		}
 
 		$driver->setTolerableDifferences( $this->tolerables );
 
