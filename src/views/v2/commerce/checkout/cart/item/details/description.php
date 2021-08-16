@@ -1,9 +1,9 @@
 <?php
 /**
- * Tickets Commerce: Checkout Table
+ * Tickets Commerce: Checkout Cart Item Description
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/commerce/checkout/page.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/item/details/description.php
  *
  * See more documentation about our views templating system.
  *
@@ -19,26 +19,20 @@
  * @var array[]          $items                 [Global] List of Items on the cart to be checked out.
  * @var string           $paypal_attribution_id [Global] What is our PayPal Attribution ID.
  * @var int              $section               Which Section that we are going to render for this table.
+ * @var \WP_Post         $post                  Which Section that we are going to render for this table.
+ * @var array            $item                  Which item this row will be for.
  */
-use \TEC\Tickets\Commerce\Module;
 
-$post = get_post( $section );
+$classes = [
+	'tribe-common-b2',
+	'tribe-common-b3--min-medium',
+	'tribe-tickets__commerce-checkout-cart-item-details-description',
+	'tribe-common-a11y-hidden',
+];
+
+$item_details_id = 'tribe-tickets__commerce-checkout-cart-item-details-description--' . $item['ticket_id'];
+
 ?>
-
-<table>
-	<?php $this->template( 'checkout/table-header', [ 'section' => $section, 'post' => $post ] ); ?>
-
-	<tbody>
-	<?php foreach ( $items as $item ) : ?>
-		<?php
-		if ( $item['obj']->get_event_id() !== $section ) {
-			continue;
-		}
-		?>
-		<?php $this->template( 'checkout/table-row', [ 'section' => $section, 'post' => $post, 'item' => $item ] ); ?>
-	<?php endforeach; ?>
-	</tbody>
-
-	<?php $this->template( 'checkout/table-footer', [ 'section' => $section, 'post' => $post ] ); ?>
-</table>
-
+<div id="<?php echo esc_attr( $item_details_id ); ?>" <?php tribe_classes( $classes ); ?>>
+	<?php echo $item['obj']->description; ?>
+</div>
