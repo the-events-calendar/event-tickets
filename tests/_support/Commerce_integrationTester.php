@@ -16,7 +16,7 @@
 */
 class Commerce_integrationTester extends \Codeception\Actor
 {
-    use _generated\IntegrationTesterActions;
+    use _generated\Commerce_integrationTesterActions;
 
    /**
     * Define custom actions here
