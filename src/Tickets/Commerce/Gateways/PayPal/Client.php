@@ -117,11 +117,9 @@ class Client {
 	 */
 	public function get( $endpoint, array $query_args = [], array $request_arguments = [] ) {
 		// If the endpoint passed is a full URL dont try to append anything.
-		if ( 0 !== strpos( 'https://', $endpoint ) ) {
-			$url = $this->get_api_url( $endpoint, $query_args );
-		} else {
-			$url = add_query_arg( $query_args, $endpoint );
-		}
+		$url = 0 !== strpos( 'https://', $endpoint )
+			? $this->get_api_url( $endpoint, $query_args )
+			: add_query_arg( $query_args, $endpoint );
 
 		$default_arguments = [
 			'headers' => [
@@ -177,11 +175,9 @@ class Client {
 	 */
 	public function post( $endpoint, array $query_args = [], array $request_arguments = [] ) {
 		// If the endpoint passed is a full URL dont try to append anything.
-		if ( 0 !== strpos( 'https://', $endpoint ) ) {
-			$url = $this->get_api_url( $endpoint, $query_args );
-		} else {
-			$url = add_query_arg( $query_args, $endpoint );
-		}
+		$url = 0 !== strpos( 'https://', $endpoint )
+			? $this->get_api_url( $endpoint, $query_args )
+			: add_query_arg( $query_args, $endpoint );
 
 		$default_arguments = [
 			'headers' => [
