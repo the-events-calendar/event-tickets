@@ -66,7 +66,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		add_action( 'transition_post_status', [ $this, 'transition_order_post_status_hooks' ], 10, 3 );
 
-		// This needs to run earlier then our page setup.
+		// This needs to run earlier than our page setup.
 		add_action( 'admin_init', [ $this, 'maybe_trigger_process_action' ], 5 );
 	}
 
