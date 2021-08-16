@@ -13,8 +13,9 @@ $is_merchant_active = tribe( Merchant::class )->is_active();
 $display = '<div class="tec-tickets-commerce-paypal-connect">';
 
 if ( $is_merchant_active ) {
-	$name = 'John Doe';
 	$disconnect_url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-action' => 'paypal-disconnect' ] );
+	$name = get_option( 'tickets_commerce_merchant_id' );
+
 	$disconnect = ' <a href="' . esc_url( $disconnect_url ) . '">' . esc_html__( 'Disconnect', 'event-tickets' ) . '</a>';
 	$display .= '<p>' . esc_html__( 'PayPal Status: Connected', 'event-tickets' ) . '</p>';
 	$display .= '<p>' . esc_html( sprintf( __( 'Connected as: %1$s', 'event-tickets' ), $name ) ) . $disconnect . '</p>';
@@ -40,11 +41,11 @@ $display .= '</div>';
 $tickets_fields = [
 	'tribe-form-content-start'            => [
 		'type' => 'html',
-		'html' => '<div class="tribe-settings-form-wrap">',
+		'html' => '<div class="tribe-settings-form-wrap tec-tickets-commerce-payments">',
 	],
 	'tickets-commerce-header'             => [
 		'type' => 'html',
-		'html' => '<div class="tec-tickets-commerce-toggle"><label class="switch"><input type="checkbox"><span class="slider round"></span></label><h2>' . esc_html__( 'Enable TicketsCommerce', 'event-tickets' ) . '</h2></div>',
+		'html' => '<div class="tec-tickets-commerce-toggle"><label class="tec-tickets-commerce-switch"><input type="checkbox"><span class="tec-tickets-commerce-slider round"></span></label><h2>' . esc_html__( 'Enable TicketsCommerce', 'event-tickets' ) . '</h2></div>',
 	],
 	'tickets-commerce-description'        => [
 		'type' => 'html',

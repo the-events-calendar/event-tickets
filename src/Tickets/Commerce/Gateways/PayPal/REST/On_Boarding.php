@@ -21,7 +21,7 @@ use WP_REST_Server;
 /**
  * Class On_Boarding
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */
