@@ -254,6 +254,7 @@ class On_Boarding implements Tribe__Documentation__Swagger__Provider_Interface {
 	}
 
 	/**
+	 * Arguments used for the signup redirect.
 	 *
 	 * @since TBD
 	 *
@@ -344,7 +345,7 @@ class On_Boarding implements Tribe__Documentation__Swagger__Provider_Interface {
 	}
 
 	/**
-	 *
+	 * Arguments used for the fetching of the token request.
 	 *
 	 * @since TBD
 	 *
@@ -418,6 +419,8 @@ class On_Boarding implements Tribe__Documentation__Swagger__Provider_Interface {
 	 * @TODO  We need to make sure Swagger documentation is present.
 	 *
 	 * @since TBD
+	 *
+	 * @return array
 	 */
 	public function get_documentation() {
 		return [];

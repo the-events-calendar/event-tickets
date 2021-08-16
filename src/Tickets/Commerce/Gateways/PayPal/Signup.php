@@ -226,6 +226,13 @@ class Signup {
 		return Arr::get( $links, [ 'links', 0, 'href' ], false );
 	}
 
+	/**
+	 * Gets the content for the template used for the sign up link that paypal creates.
+	 *
+	 * @since TBD
+	 *
+	 * @return false|string
+	 */
 	public function get_link_html() {
 		$template_vars = [
 			'url' => $this->generate_url(),

@@ -31,7 +31,7 @@ class REST extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Properly initializes the On_Boarding class.
+	 * Properly initializes the Orders class.
 	 *
 	 * @since TBD
 	 *
