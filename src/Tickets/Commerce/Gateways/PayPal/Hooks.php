@@ -42,13 +42,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	protected function add_actions() {
-		// Settings page: Connect PayPal.
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_user_on_boarded', [ $this, 'on_boarded_user_ajax_request_handler' ] );
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_get_partner_url', [ $this, 'on_get_partner_url_ajax_request_handler' ] );
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_disconnect_account', [ $this, 'remove_paypal_account' ] );
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_onboarding_trouble_notice', [ $this, 'on_boarding_trouble_notice' ] );
-		add_action( 'admin_init', [ $this, 'on_boarding_boot' ] );
-
 		// Frontend: PayPal Checkout.
 		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_create_order', [ $this, 'create_order' ] );
 		add_action( 'wp_ajax_nopriv_tribe_tickets_paypal_commerce_create_order', [ $this, 'create_order' ] );
@@ -109,34 +102,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function handle_action_disconnect() {
 		$this->container->make( Merchant::class )->disconnect();
-	}
-
-	public function on_boarded_user_ajax_request_handler() {
-		$this->container->make( Ajax_Request_Handler::class )->on_boarded_user_ajax_request_handler();
-	}
-
-	public function on_get_partner_url_ajax_request_handler() {
-		$this->container->make( Ajax_Request_Handler::class )->on_get_partner_url_ajax_request_handler();
-	}
-
-	public function remove_paypal_account() {
-		$this->container->make( Ajax_Request_Handler::class )->remove_paypal_account();
-	}
-
-	public function on_boarding_trouble_notice() {
-		$this->container->make( Ajax_Request_Handler::class )->on_boarding_trouble_notice();
-	}
-
-	public function on_boarding_boot() {
-		$this->container->make( On_Boarding_Redirect_Handler::class )->boot();
-	}
-
-	public function create_order() {
-		$this->container->make( Ajax_Request_Handler::class )->create_order();
-	}
-
-	public function approve_order() {
-		$this->container->make( Ajax_Request_Handler::class )->approve_order();
 	}
 
 	/**
