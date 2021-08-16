@@ -309,7 +309,7 @@ class Cart {
 
 		if ( $full_item_params ) {
 			$items    = array_map( static function ( $item ) {
-	            $item['obj']       = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+				$item['obj']       = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 				$item['event_id']  = $item['obj']->get_event_id();
 				$item['sub_total'] = Price::sub_total( $item['obj']->price, $item['quantity'] );
 
