@@ -15,7 +15,6 @@
  *
  * @version 5.0.4
  */
-
 $provider = $this->get( 'provider' ) ?: Tribe__Tickets__Tickets::get_provider_url_slug();
 
 if ( empty( $provider ) ) {
