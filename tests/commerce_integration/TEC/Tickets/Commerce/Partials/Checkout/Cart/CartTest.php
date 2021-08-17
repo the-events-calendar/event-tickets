@@ -26,11 +26,7 @@ class CartTest extends V2CommerceTestCase {
 	 * @return array
 	 */
 	public function get_default_args() {
-
-		/**
-		 * @var \Tribe__Tickets__Commerce__PayPal__Main
-		 */
-		$provider = tribe_get_class_instance( 'Tribe__Tickets__Commerce__PayPal__Main' );
+		$provider = tribe( Module::class );
 
 		$event_id = $this->factory()->event->create( [
 			'post_title' => 'Test event for partial snapshot',
@@ -64,7 +60,7 @@ class CartTest extends V2CommerceTestCase {
 		$args = [
 			'merchant'    => $merchant,
 			'provider_id' => Module::class,
-			'provider'    => tribe( Module::class ),
+			'provider'    => $provider,
 			'items'       => $items,
 			'sections'    => $sections,
 			'section'     => $event_id,

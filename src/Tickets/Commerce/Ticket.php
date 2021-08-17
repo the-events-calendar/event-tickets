@@ -144,7 +144,7 @@ class Ticket {
 		 * @param int    $post_id
 		 * @param int    $ticket_id
 		 */
-		$return = apply_filters( 'tribe_tickets_tpp_get_ticket', $return, $event_id, $ticket_id );
+		$return = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $return, $event_id, $ticket_id );
 
 		return $return;
 	}
