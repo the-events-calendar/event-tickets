@@ -65,6 +65,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_action( 'tickets_tpp_ticket_deleted', [ $this, 'update_stock_after_deletion' ], 10, 3 );
 
 		add_action( 'transition_post_status', [ $this, 'transition_order_post_status_hooks' ], 10, 3 );
+
+		// This needs to run earlier than our page setup.
+		add_action( 'admin_init', [ $this, 'maybe_trigger_process_action' ], 5 );
 	}
 
 	/**
@@ -112,6 +115,44 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function register_order_statuses() {
 		$this->container->make( Status\Status_Handler::class )->register_order_statuses();
+	}
+
+	/**
+	 * Depending on which page, tab and if an action is present we trigger the processing.
+	 *
+	 * @since TBD
+	 */
+	public function maybe_trigger_process_action() {
+		$page = tribe_get_request_var( 'page' );
+		if ( \Tribe__Settings::instance()->adminSlug !== $page ) {
+			return;
+		}
+
+		$tab = tribe_get_request_var( 'tab' );
+		if ( 'payments' !== $tab ) {
+			return;
+		}
+
+		$action = (string) tribe_get_request_var( 'tc-action' );
+		if ( empty( $action ) ) {
+			return;
+		}
+
+		/**
+		 * Process Tickets Commerce actions when in the Payments Tab.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $action Which action we are processing.
+		 */
+		do_action( 'tec_tickets_commerce_admin_process_action', $action );
+
+		/**
+		 * Process Tickets Commerce actions when in the Payments Tab.
+		 *
+		 * @since TBD
+		 */
+		do_action( "tec_tickets_commerce_admin_process_action:{$action}" );
 	}
 
 	/**

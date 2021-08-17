@@ -24,6 +24,7 @@ jobs:
           - restv1 --skip-group="capacity"
           - unit
           - views_integration
+          - commerce_integration
           - wpunit --group="capacity"
           - wpunit --skip-group="capacity"
     runs-on: ubuntu-latest

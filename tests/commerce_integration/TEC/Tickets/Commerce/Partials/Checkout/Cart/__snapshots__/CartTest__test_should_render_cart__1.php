@@ -8,7 +8,7 @@
 </div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
-								<div  class="tribe-tickets__commerce-checkout-cart-item post-11 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry tribe-common-b1" >
+								<div  class="tribe-tickets__commerce-checkout-cart-item post-11 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry tribe-common-b1" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
 
@@ -49,7 +49,7 @@
 	99.00</div>
 
 </div>
-								<div  class="tribe-tickets__commerce-checkout-cart-item post-12 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry tribe-common-b1" >
+								<div  class="tribe-tickets__commerce-checkout-cart-item post-12 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry tribe-common-b1" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
 
@@ -104,7 +104,7 @@
 		<span class="tribe-tickets__commerce-checkout-footer-total-label">
 			Total: 		</span>
 		<span class="tribe-tickets__commerce-checkout-footer-total-wrap">
-			$198.00		</div>
+			&#x24;198.00		</div>
 </div>
 
 </div>

@@ -365,6 +365,7 @@ class Tribe__Tickets__Assets {
 		$admin_tabs = [
 			'event-tickets',
 			'event-tickets-commerce',
+			'payments',
 		];
 
 		// Load specifically on Ticket Settings page only.
