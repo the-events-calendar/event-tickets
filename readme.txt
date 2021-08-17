@@ -180,7 +180,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-* Fix - Updated deprecated hook 'block_categories' to use 'block_categories_all'
+* Fix - Updated deprecated hook `block_categories` to use `block_categories_all`. [ET-1156]
 
 = [5.1.7] 2021-08-03 =
 
