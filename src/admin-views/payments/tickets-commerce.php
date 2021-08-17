@@ -17,11 +17,14 @@ $display = '<div class="tec-tickets-commerce-paypal-connect">';
 
 if ( $is_merchant_active ) {
 	$disconnect_url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-action' => 'paypal-disconnect' ] );
+	$refresh_url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-action' => 'paypal-refresh-access-token' ] );
 	$name = $merchant->get_merchant_id();
 
 	$disconnect = ' <a href="' . esc_url( $disconnect_url ) . '">' . esc_html__( 'Disconnect', 'event-tickets' ) . '</a>';
+	$refresh = ' <a href="' . esc_url( $refresh_url ) . '">' . esc_html__( 'Refresh Access Token', 'event-tickets' ) . '</a>';
 	$display .= '<p>' . esc_html__( 'PayPal Status: Connected', 'event-tickets' ) . '</p>';
 	$display .= '<p>' . esc_html( sprintf( __( 'Connected as: %1$s', 'event-tickets' ), $name ) ) . $disconnect . '</p>';
+	$display .= '<p>' . $refresh . '</p>';
 } else {
 	$display .= '<h2>' . esc_html__( 'Accept online payments with PayPal!', 'event-tickets' ) . '</h2>
 				' . esc_html__( 'Start selling tickets to your events today with PayPal. Attendees can purchase tickets directly on your site using debt or credit cards with no additional fees.',

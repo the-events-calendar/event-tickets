@@ -1,11 +1,8 @@
 <?php
+use \TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint;
 ?>
 
-<div id="paypal-field-container"></div>
 <div id="paypal-button-container"></div>
-<div id="card-number"></div>
-<div id="cvv"></div>
-<div id="expiration-date"></div>
 
 <script>
 	const button = {
@@ -14,21 +11,40 @@
 			color: 'blue',
 			shape: 'rect',
 			label: 'paypal'
-		}, createOrder: function (data, actions) {
-			// Set up the transaction
-			return actions.order.create({
-				purchase_units: [
-					{
-						amount: {
-							value: '0.01'
-						}
+		},
+		createOrder: function ( data, actions ) {
+			return fetch(
+				'<?php echo tribe( Order_Endpoint::class )->get_route_url(); ?>',
+				{
+					method: 'POST'
+				}
+			).then(
+				function ( res ) {
+					return res.json();
+				}
+			).then(
+				function ( data ) {
+					return data.id;
+				}
+			);
+		},
+		onApprove: function ( data, actions ) {
+			return fetch(
+				'<?php echo tribe( Order_Endpoint::class )->get_route_url(); ?>/' + data.orderID,
+				{
+					method: 'POST'
+				}
+			).then(
+				function ( res ) {
+					if ( ! res.ok ) {
+						alert('Something went wrong');
 					}
-				]
-			});
+				}
+			);
 		}
 	};
 
-	paypal.Buttons( button ).render( '#paypal-button-container' );
+	paypal.Buttons(button).render('#paypal-button-container');
 </script>
 
 

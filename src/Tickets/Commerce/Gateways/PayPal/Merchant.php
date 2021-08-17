@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use Tribe__Utils__Array as Arr;
+use Tribe__Date_Utils as Dates;
 use TEC\Tickets\Commerce\Traits\Has_Mode;
 
 /**
@@ -584,6 +585,12 @@ class Merchant {
 
 		$this->set_access_token( $token_data['access_token'] );
 		$this->save();
+
+		$expires_in = Dates::interval( 'PT' . $token_data['expires_in'] . 'S' );
+
+		// Store date related data in readable formats.
+		$token_data['token_retrieval_time'] = Dates::build_date_object( 'now' )->format( Dates::DBDATETIMEFORMAT );
+		$token_data['token_expiration_time'] = Dates::build_date_object( 'now' )->add( $expires_in )->format( Dates::DBDATETIMEFORMAT );
 
 		return tribe_update_option( $this->get_access_token_data_key(), $token_data );
 	}

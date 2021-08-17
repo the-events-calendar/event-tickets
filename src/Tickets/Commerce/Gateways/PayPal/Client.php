@@ -52,6 +52,7 @@ class Client {
 	 */
 	public function get_api_url( $endpoint, array $query_args = [] ) {
 		$base_url = $this->get_environment_url();
+		$endpoint = ltrim( $endpoint, '/' );
 
 		return add_query_arg( $query_args, "{$base_url}/{$endpoint}" );
 	}
@@ -129,7 +130,7 @@ class Client {
 			]
 		];
 		foreach ( $default_arguments as $key => $default_argument ) {
-			$request_argument[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
+			$request_arguments[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
 		}
 		$response = wp_remote_get( $url, $request_arguments );
 
@@ -188,7 +189,11 @@ class Client {
 			'body'    => [],
 		];
 		foreach ( $default_arguments as $key => $default_argument ) {
-			$request_argument[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
+			$request_arguments[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
+
+			if ( 'body' === $key && ! empty( $request_arguments[ $key ] ) ) {
+				$request_arguments[ $key ] = wp_json_encode( $request_arguments[ $key ] );
+			}
 		}
 		$response = wp_remote_post( $url, $request_arguments );
 
@@ -374,9 +379,6 @@ class Client {
 				],
 			];
 
-			if ( ! empty( $unit['payer_id'] ) ) {
-				$purchase_unit['payer']['payer_id'] = Arr::get( $unit, 'payer_id' );
-			}
 			if ( ! empty( $unit['tax_id'] ) ) {
 				$purchase_unit['payer']['tax_info']['tax_id'] = Arr::get( $unit, 'tax_id' );
 			}
@@ -400,6 +402,28 @@ class Client {
 		];
 
 		$response = $this->post( '/v2/checkout/orders', $query_args, $args );
+
+		return $response;
+	}
+
+	/**
+	 * Gets the profile information from the customer in PayPal.
+	 *
+	 * @link https://developer.paypal.com/docs/api/identity/v1/#userinfo_get
+	 *
+	 * @since TBD
+	 *
+	 * @return array|null
+	 */
+	public function get_user_info() {
+		$query_args = [
+			'schema' => 'paypalv1.1',
+		];
+		$body       = [];
+		$args       = [];
+
+		$url        = '/v1/identity/oauth2/userinfo';
+		$response   = $this->post( $url, $query_args, $args );
 
 		return $response;
 	}

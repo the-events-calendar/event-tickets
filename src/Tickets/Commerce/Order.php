@@ -215,7 +215,7 @@ class Order {
 		$total      = Price::total( $sub_totals );
 
 		$order_args = [
-			'title'       => $this->generate_order_title( $items ),
+			'title'       => $this->generate_order_title( $items, $cart->get_cart_hash() ),
 			'total_value' => $total,
 			'cart_items'  => $items,
 		];
@@ -229,20 +229,24 @@ class Order {
 		return $order;
 	}
 
-	public function generate_order_title( $items ) {
-		$prefix = 'TEC-TC';
-
-		$tickets = array_filter( wp_list_pluck( $items, 'event_id', 'ticket_id' ) );
-		$groups  = [];
-		$title   = [ $prefix ];
-
-		foreach ( $tickets as $ticket_id => $event_id ) {
-			$groups[ $event_id ][] = $ticket_id;
+	/**
+	 * Generates a title based on Cart Hash, items in the cart.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $items List of events form
+	 *
+	 * @return string
+	 */
+	public function generate_order_title( $items, $hash = null ) {
+		$title = [ 'TEC-TC' ];
+		if ( $hash ) {
+			$title[] = $hash;
 		}
+		$title[] = 'T';
 
-		foreach ( $groups as $event_id => $tickets ) {
-			$title[] = implode( '-', array_merge( [ 'E', $event_id, 'T' ], $tickets ) );
-		}
+		$tickets = array_filter( wp_list_pluck( $items, 'ticket_id' ) );
+		$title   = array_merge( $title, $tickets );
 
 		return implode( '-', $title );
 	}

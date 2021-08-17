@@ -60,6 +60,17 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			]
 		);
 
+		register_rest_route(
+			$namespace,
+			$this->get_endpoint_path() . '(?P<id>\d+)',
+			[
+				'methods'             => WP_REST_Server::CREATABLE,
+				'args'                => $this->update_order_args(),
+				'callback'            => [ $this, 'handle_update_order' ],
+				'permission_callback' => '__return_true',
+			]
+		);
+
 		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
 	}
 
@@ -88,8 +99,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	}
 
 	/**
-	 * Handles the request that happens in parallel to the User Signup on PayPal but before we redirect the user from
-	 * the mini browser. So when passing error messages, they need to be registered to be fetched in the FE.
+	 * Handles the request that creates an order with Tickets Commerce and the PayPal gateway.
 	 *
 	 * @since TBD
 	 *
@@ -104,6 +114,35 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 
 		$order = tribe( Order::class )->create_from_cart();
 
+		$unit = [
+			'reference_id' => $order->ID,
+			'value' => 10,
+			'currency' => 'USD',
+			'first_name' => 'Gustavo',
+			'last_name' => 'Bordoni',
+			'email' => 'gustavo@bordoni.me',
+		];
+
+		$order = tribe( Client::class )->create_order( $unit );
+
+		return new WP_REST_Response( $response );
+	}
+
+	/**
+	 * Handles the request that updates an order with Tickets Commerce and the PayPal gateway.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
+	 */
+	public function handle_update_order( WP_REST_Request $request ) {
+		$response = [
+			'success' => false,
+		];
+
+
 		return new WP_REST_Response( $response );
 	}
 
@@ -117,71 +156,32 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	public function create_order_args() {
 		// Webhooks do not send any arguments, only JSON content.
 		return [
-			'hash'               => [
-				'description'       => 'The nonce validation',
-				'required'          => true,
-				'type'              => 'string',
-				'validate_callback' => static function ( $value ) {
-					if ( ! is_string( $value ) ) {
-						return new WP_Error( 'rest_invalid_param', 'The wp_nonce argument must be a string.', [ 'status' => 400 ] );
-					}
-
-					return $value;
-				},
-				'sanitize_callback' => [ $this, 'sanitize_callback' ],
-			],
-			'merchantId'         => [
-				'description'       => 'The merchant ID',
-				'required'          => true,
-				'type'              => 'string',
-				'validate_callback' => static function ( $value ) {
-					if ( ! is_string( $value ) ) {
-						return new WP_Error( 'rest_invalid_param', 'The merchantId argument must be a string.', [ 'status' => 400 ] );
-					}
-
-					return $value;
-				},
-				'sanitize_callback' => [ $this, 'sanitize_callback' ],
-			],
-			'merchantIdInPayPal' => [
+			'accountStatus'      => [
 				'description'       => 'The merchant ID in PayPal',
-				'required'          => true,
+				'required'          => false,
 				'type'              => 'string',
 				'validate_callback' => static function ( $value ) {
 					if ( ! is_string( $value ) ) {
-						return new WP_Error( 'rest_invalid_param', 'The merchantIdInPayPal argument must be a string.', [ 'status' => 400 ] );
+						return new WP_Error( 'rest_invalid_param', 'The accountStatus argument must be a string.', [ 'status' => 400 ] );
 					}
 
 					return $value;
 				},
 				'sanitize_callback' => [ $this, 'sanitize_callback' ],
 			],
-			'permissionsGranted' => [
-				'description'       => 'The merchant ID in PayPal',
-				'required'          => true,
-				'type'              => 'string',
-				'validate_callback' => static function ( $value ) {
-					if ( ! is_string( $value ) ) {
-						return new WP_Error( 'rest_invalid_param', 'The permissionsGranted argument must be a string.', [ 'status' => 400 ] );
-					}
+		];
+	}
 
-					return $value;
-				},
-				'sanitize_callback' => [ $this, 'sanitize_callback' ],
-			],
-			'consentStatus'      => [
-				'description'       => 'The merchant ID in PayPal',
-				'required'          => true,
-				'type'              => 'string',
-				'validate_callback' => static function ( $value ) {
-					if ( ! is_string( $value ) ) {
-						return new WP_Error( 'rest_invalid_param', 'The consentStatus argument must be a string.', [ 'status' => 400 ] );
-					}
-
-					return $value;
-				},
-				'sanitize_callback' => [ $this, 'sanitize_callback' ],
-			],
+	/**
+	 * Arguments used for the signup redirect.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function update_order_args() {
+		// Webhooks do not send any arguments, only JSON content.
+		return [
 			'accountStatus'      => [
 				'description'       => 'The merchant ID in PayPal',
 				'required'          => true,
