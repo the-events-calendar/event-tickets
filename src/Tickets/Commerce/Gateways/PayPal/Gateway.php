@@ -3,8 +3,6 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
-use Tribe__Tickets__Commerce__PayPal__Main as PayPal_Main;
 
 /**
  * Class Gateway
@@ -16,7 +14,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * @inheritDoc
 	 */
-	protected static $key = 'paypal-commerce';
+	protected static $key = 'paypal';
 
 	/**
 	 * PayPal attribution ID for requests.
@@ -26,6 +24,17 @@ class Gateway extends Abstract_Gateway {
 	 * @const
 	 */
 	const ATTRIBUTION_ID = 'TheEventsCalendar_SP_PPCP';
+
+	/**
+	 * PayPal tracking ID version.
+	 *
+	 * This shouldn't be updated unless we are modifying something on the PayPal user level.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const VERSION = '1.0.0';
 
 	/**
 	 * @inheritDoc
@@ -43,18 +52,7 @@ class Gateway extends Abstract_Gateway {
 			return false;
 		}
 
-		/** @var MerchantDetails $merchantDetails */
-		$merchantDetails = tribe( MerchantDetails::class );
-
-		// Make sure we have details setup.
-		$merchantDetails->getDetails();
-
-		// @todo Confirm this is the correct conditional.
-		if ( $merchantDetails->accountIsConnected() ) {
-			return true;
-		}
-
-		return false;
+		return tribe( Merchant::class )->account_is_connected();
 	}
 
 	/**

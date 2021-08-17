@@ -74,12 +74,11 @@ class Assets extends \tad_DI52_ServiceProvider {
 	 * @return string
 	 */
 	private function get_partner_js_url() {
-		/** @var PayPalClient $client */
-		$client = tribe( SDK\PayPalClient::class );
+		$client = tribe( Client::class );
 
 		return sprintf(
 			'%1$swebapps/merchantboarding/js/lib/lightbox/partner.js',
-			$client->getHomePageUrl()
+			$client->get_home_page_url()
 		);
 	}
 }

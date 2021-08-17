@@ -25,6 +25,7 @@ class Tribe__Tickets__Status__Manager {
 		'Tribe__Tickets__RSVP'                             => 'rsvp',
 		'Tribe__Tickets__Commerce__PayPal__Main'           => 'tpp',
 		'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' => 'woo',
+//		\TEC\Tickets\Commerce\Module::class                => \TEC\Tickets\Commerce::ABBR,
 	];
 	/**
 	 * Active Modules
@@ -39,10 +40,11 @@ class Tribe__Tickets__Status__Manager {
 	 * @var array
 	 */
 	protected $status_managers = [
-		'edd'  => 'Tribe__Tickets_Plus__Commerce__EDD__Status_Manager',
-		'rsvp' => 'Tribe__Tickets__RSVP__Status_Manager',
-		'tpp'  => 'Tribe__Tickets__Commerce__PayPal__Status_Manager',
-		'woo'  => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
+		'edd'                       => 'Tribe__Tickets_Plus__Commerce__EDD__Status_Manager',
+		'rsvp'                      => 'Tribe__Tickets__RSVP__Status_Manager',
+		'tpp'                       => 'Tribe__Tickets__Commerce__PayPal__Status_Manager',
+		'woo'                       => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
+//		\TEC\Tickets\Commerce::ABBR => \TEC\Tickets\Commerce\Status_Manager::class,
 	];
 
 	/**

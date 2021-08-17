@@ -1598,7 +1598,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function get_attendees_by_order_id( $order_id, $ticket_id = null ) {
+	public function get_attendees_by_order_id( $order_id, $ticket_id = null ) {
 		if ( ! is_numeric( $order_id ) ) {
 			return parent::get_attendees_by_order_id( $order_id, $ticket_id );
 		}

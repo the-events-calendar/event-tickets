@@ -1,7 +1,8 @@
 <?php
-echo 'Checkout page is here';
+var_dump( $tickets );
+var_dump( $event );
 ?>
-<script src="https://www.paypal.com/sdk/js?client-id=sb&locale=en_US&components=buttons" data-partner-attribution-id="TheEventsCalendar_SP_PPCP"></script>
+<script src="<?php echo tribe( \TEC\Tickets\Commerce\Gateways\PayPal\Client::class )->get_js_sdk_url(); ?>" data-partner-attribution-id="<?php echo esc_atrr( $paypal_attribution_id ); ?> "></script>
 
 <div id="paypal-field-container"></div>
 <div id="paypal-button-container"></div>
@@ -11,21 +12,24 @@ echo 'Checkout page is here';
 
 <script>
 	const button = {
-		style          : {
-			layout : 'vertical', color : 'blue', shape : 'rect', label : 'paypal'
-		}, createOrder : function ( data, actions ) {
+		style: {
+			layout: 'vertical',
+			color: 'blue',
+			shape: 'rect',
+			label: 'paypal'
+		}, createOrder: function (data, actions) {
 			// Set up the transaction
-			return actions.order.create( {
-											 purchase_units : [
-												 {
-													 amount : {
-														 value : '0.01'
-													 }
-												 }
-											 ]
-										 } );
+			return actions.order.create({
+				purchase_units: [
+					{
+						amount: {
+							value: '0.01'
+						}
+					}
+				]
+			});
 		}
 	};
 
-	paypal.Buttons( button ).render( '#paypal-button-container' );
+	paypal.Buttons(button).render('#paypal-button-container');
 </script>
