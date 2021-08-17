@@ -215,7 +215,7 @@ class Order {
 		$total      = Price::total( $sub_totals );
 
 		$order_args = [
-			'title'       => 'Order Test',
+			'title'       => $this->generate_order_title( $items ),
 			'total_value' => $total,
 			'cart_items'  => $items,
 		];
@@ -229,6 +229,23 @@ class Order {
 		return $order;
 	}
 
+	public function generate_order_title( $items ) {
+		$prefix = 'TEC-TC';
+
+		$tickets = array_filter( wp_list_pluck( $items, 'event_id', 'ticket_id' ) );
+		$groups  = [];
+		$title   = [ $prefix ];
+
+		foreach ( $tickets as $ticket_id => $event_id ) {
+			$groups[ $event_id ][] = $ticket_id;
+		}
+
+		foreach ( $groups as $event_id => $tickets ) {
+			$title[] = implode( '-', array_merge( [ 'E', $event_id, 'T' ], $tickets ) );
+		}
+
+		return implode( '-', $title );
+	}
 
 	/**
 	 * Redirects to the source post after a recoverable (logic) error.

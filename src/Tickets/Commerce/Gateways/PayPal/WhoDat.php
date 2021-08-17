@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding;
+use TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding_Endpoint;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -49,7 +49,7 @@ class WhoDat {
 			$hash = tribe( Signup::class )->generate_unique_signup_hash();
 		}
 
-		$return_url = tribe( On_Boarding::class )->get_return_url( $hash );
+		$return_url = tribe( On_Boarding_Endpoint::class )->get_return_url( $hash );
 		$query_args = [
 			'mode'        => tribe( Merchant::class )->get_mode(),
 			'nonce'       => $hash,

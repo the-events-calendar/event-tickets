@@ -2,12 +2,16 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\REST;
 
+use TEC\Tickets\Commerce\Order;
+
 use TEC\Tickets\Commerce\Gateways\PayPal\Client;
 use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Refresh_Token;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Signup;
 use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
+
+
 use Tribe__Documentation__Swagger__Provider_Interface;
 use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
@@ -19,13 +23,13 @@ use WP_REST_Server;
 
 
 /**
- * Class On_Boarding
+ * Class Order Endpoint.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */
-class Order implements Tribe__Documentation__Swagger__Provider_Interface {
+class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interface {
 
 	/**
 	 * The REST API endpoint path.
@@ -98,7 +102,7 @@ class Order implements Tribe__Documentation__Swagger__Provider_Interface {
 			'success' => false,
 		];
 
-
+		$order = tribe( Order::class )->create_from_cart();
 
 		return new WP_REST_Response( $response );
 	}

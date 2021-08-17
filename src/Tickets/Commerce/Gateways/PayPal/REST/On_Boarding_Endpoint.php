@@ -19,13 +19,13 @@ use WP_REST_Server;
 
 
 /**
- * Class On_Boarding
+ * Class On_Boarding_Endpoint
  *
  * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */
-class On_Boarding implements Tribe__Documentation__Swagger__Provider_Interface {
+class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_Interface {
 
 	/**
 	 * The REST API endpoint path.

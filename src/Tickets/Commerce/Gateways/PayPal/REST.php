@@ -12,9 +12,9 @@ use WP_REST_Server;
  */
 class REST extends \tad_DI52_ServiceProvider {
 	public function register() {
-		$this->container->singleton( REST\Webhook::class, [ $this, 'boot_webhook_endpoint' ] );
-		$this->container->singleton( REST\On_Boarding::class );
-		$this->container->singleton( REST\Order::class );
+		$this->container->singleton( REST\Webhook_Endpoint::class, [ $this, 'boot_webhook_endpoint' ] );
+		$this->container->singleton( REST\On_Boarding_Endpoint::class );
+		$this->container->singleton( REST\Order_Endpoint::class );
 	}
 
 	/**
@@ -41,7 +41,8 @@ class REST extends \tad_DI52_ServiceProvider {
 
 		$endpoint      = tribe( REST\Webhook::class );
 
-		$this->container->make( REST\On_Boarding::class )->register();
+		$this->container->make( REST\On_Boarding_Endpoint::class )->register();
+		$this->container->make( REST\Order_Endpoint::class )->register();
 
 		register_rest_route(
 			$namespace,
