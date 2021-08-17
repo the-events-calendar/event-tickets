@@ -42,13 +42,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	protected function add_actions() {
-		// Settings page: Connect PayPal.
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_user_on_boarded', [ $this, 'on_boarded_user_ajax_request_handler' ] );
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_get_partner_url', [ $this, 'on_get_partner_url_ajax_request_handler' ] );
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_disconnect_account', [ $this, 'remove_paypal_account' ] );
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_onboarding_trouble_notice', [ $this, 'on_boarding_trouble_notice' ] );
-		add_action( 'admin_init', [ $this, 'on_boarding_boot' ] );
-
 		// Frontend: PayPal Checkout.
 		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_create_order', [ $this, 'create_order' ] );
 		add_action( 'wp_ajax_nopriv_tribe_tickets_paypal_commerce_create_order', [ $this, 'create_order' ] );
@@ -57,9 +50,10 @@ class Hooks extends \tad_DI52_ServiceProvider {
 
 		// REST API Endpoint registration.
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
+		add_action( 'tec_tickets_commerce_admin_process_action:paypal-disconnect', [ $this, 'handle_action_disconnect' ] );
 
-		add_action( 'tribe_template_before_include:tickets/commerce/checkout/page-header', [ $this, 'include_client_js_sdk_script' ], 15, 3 );
-		add_action( 'tribe_template_after_include:tickets/commerce/checkout/page-footer', [ $this, 'include_payment_buttons' ], 15, 3 );
+		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout/header', [ $this, 'include_client_js_sdk_script' ], 15, 3 );
+		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
 	}
 
 	/**1
@@ -99,32 +93,15 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		$template->template( 'gateway/paypal/buttons' );
 	}
 
-	public function on_boarded_user_ajax_request_handler() {
-		$this->container->make( Ajax_Request_Handler::class )->on_boarded_user_ajax_request_handler();
-	}
-
-	public function on_get_partner_url_ajax_request_handler() {
-		$this->container->make( Ajax_Request_Handler::class )->on_get_partner_url_ajax_request_handler();
-	}
-
-	public function remove_paypal_account() {
-		$this->container->make( Ajax_Request_Handler::class )->remove_paypal_account();
-	}
-
-	public function on_boarding_trouble_notice() {
-		$this->container->make( Ajax_Request_Handler::class )->on_boarding_trouble_notice();
-	}
-
-	public function on_boarding_boot() {
-		$this->container->make( On_Boarding_Redirect_Handler::class )->boot();
-	}
-
-	public function create_order() {
-		$this->container->make( Ajax_Request_Handler::class )->create_order();
-	}
-
-	public function approve_order() {
-		$this->container->make( Ajax_Request_Handler::class )->approve_order();
+	/**
+	 * Handles the disconnecting of the merchant.
+	 *
+	 * @since TBD
+	 *
+	 * @todo Display some message when disconnecting.
+	 */
+	public function handle_action_disconnect() {
+		$this->container->make( Merchant::class )->disconnect();
 	}
 
 	/**

@@ -2,6 +2,9 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding;
+use Tribe__Utils__Array as Arr;
+
 /**
  * Class Connect_Client
  *
@@ -10,7 +13,6 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class WhoDat {
-
 	/**
 	 * The API URL.
 	 *
@@ -18,7 +20,7 @@ class WhoDat {
 	 *
 	 * @var string
 	 */
-	protected $api_url = 'https://whodat.theeventscalendar.com/tickets/paypal/connect';
+	protected $api_url = 'https://whodat.theeventscalendar.com/commerce/v1/paypal';
 
 	/**
 	 * Get REST API endpoint URL for requests.
@@ -36,7 +38,111 @@ class WhoDat {
 	}
 
 	/**
-	 * Send a POST request to WhoDat inside of the PayPal connection path.
+	 * Fetch the signup link from PayPal.
+	 *
+	 * @since TBD
+	 *
+	 * @return array|string
+	 */
+	public function get_seller_signup_data( $hash ) {
+		if ( empty( $hash ) ) {
+			$hash = tribe( Signup::class )->generate_unique_signup_hash();
+		}
+
+		$return_url = tribe( On_Boarding::class )->get_return_url( $hash );
+		$query_args = [
+			'mode'        => tribe( Merchant::class )->get_mode(),
+			'nonce'       => $hash,
+			'tracking_id' => urlencode( tribe( Signup::class )->generate_unique_tracking_id() ),
+			'return_url'  => esc_url( $return_url ),
+		];
+
+		return $this->get( 'seller/signup', $query_args );
+	}
+
+	/**
+	 * Fetch the seller referral Data from WhoDat/PayPal.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url Which URL WhoDat needs to request.
+	 *
+	 * @return array
+	 */
+	public function get_seller_referral_data( $url ) {
+		$query_args = [
+			'mode' => tribe( Merchant::class )->get_mode(),
+			'url'  => $url
+		];
+
+		return $this->get( 'seller/referral-data', $query_args );
+	}
+
+	/**
+	 * Verify if the seller was successfully onboarded.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $saved_merchant_id The ID we are looking at Paypal with.
+	 *
+	 * @return array
+	 */
+	public function get_seller_status( $saved_merchant_id ) {
+		$query_args = [
+			'mode'        => tribe( Merchant::class )->get_mode(),
+			'merchant_id' => $saved_merchant_id
+		];
+
+		return $this->post( 'seller/status', $query_args );
+	}
+
+	/**
+	 * Get seller rest API credentials
+	 *
+	 * @since TBD
+	 *
+	 * @param string $access_token
+	 *
+	 * @return array|null
+	 */
+	public function get_seller_credentials( $access_token ) {
+		$query_args = [
+			'mode'         => tribe( Merchant::class )->get_mode(),
+			'access_token' => $access_token,
+		];
+
+		return $this->post( 'seller/credentials', $query_args );
+	}
+
+	/**
+	 * Send a GET request to WhoDat.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $endpoint
+	 * @param array  $query_args
+	 *
+	 * @return mixed|null
+	 */
+	public function get( $endpoint, array $query_args ) {
+		$url = $this->get_api_url( $endpoint, $query_args );
+
+		$request = wp_remote_get( $url );
+
+		if ( is_wp_error( $request ) ) {
+			$this->log_error( 'WhoDat request error:', $request->get_error_message(), $url );
+
+			return null;
+		}
+
+		$body = wp_remote_retrieve_body( $request );
+		$body = json_decode( $body, true );
+
+		return $body;
+	}
+
+	/**
+	 * Send a POST request to WhoDat.
 	 *
 	 * @since TBD
 	 *
@@ -50,108 +156,45 @@ class WhoDat {
 		$url = $this->get_api_url( $endpoint, $query_args );
 
 		$default_arguments = [
-			'body'      => [],
-
-			// @todo Remove this when SSL is fixed.
-			'sslverify' => false,
+			'body' => [],
 		];
 		$request_arguments = array_merge_recursive( $default_arguments, $request_arguments );
-		$response          = wp_remote_post( $url, $request_arguments );
+		$request           = wp_remote_post( $url, $request_arguments );
 
-		if ( is_wp_error( $response ) ) {
-			tribe( 'logger' )->log_error( sprintf(
-				'[%s] WhoDat request error: %s',
-				$url,
-				$response->get_error_message()
-			), 'whodat-connection' );
+		if ( is_wp_error( $request ) ) {
+			$this->log_error( 'WhoDat request error:', $request->get_error_message(), $url );
 
 			return null;
 		}
 
-		$response = wp_remote_retrieve_body( $response );
-		$response = @json_decode( $response, true );
+		$body = wp_remote_retrieve_body( $request );
+		$body = json_decode( $body, true );
 
-		if ( ! is_array( $response ) ) {
-			tribe( 'logger' )->log_error( sprintf( '[%s] Unexpected WhoDat response', $url ), 'whodat-connection' );
+		if ( ! is_array( $body ) ) {
+			$this->log_error( 'WhoDat unexpected response:', $body, $url );
 
 			return null;
 		}
 
-		return $response;
+		return $body;
 	}
 
 	/**
-	 * Retrieves a Partner Link for on-boarding
+	 * Log WhoDat errors.
 	 *
-	 * @param $return_url
-	 * @param $country
+	 * @since TBD
 	 *
-	 * @return array|null
+	 * @param string $type
+	 * @param string $message
+	 * @param string $url
 	 */
-	public function get_seller_partner_link( $return_url, $country ) {
-		$query_args = [
-			'mode' => tribe( Merchant::class )->get_mode(),
-			'request' => 'partner-link',
-		];
-
-		$args = [
-			'body' => [
-				'return_url'   => $return_url,
-				'country_code' => $country,
-			]
-		];
-
-		return $this->post( 'paypal-commerce', $query_args, $args );
+	protected function log_error( $type, $message, $url ) {
+		$log = sprintf(
+			'[%s] %s %s',
+			$url,
+			$type,
+			$message
+		);
+		tribe( 'logger' )->log_error( $log, 'whodat-connection' );
 	}
-
-	/**
-	 * Get seller on-boarding details from seller.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @param string $access_token
-	 * @param string $merchant_id
-	 *
-	 * @return array|null
-	 */
-	public function get_seller_on_boarding_details_from_paypal( $merchant_id, $access_token ) {
-		$query_args = [
-			'mode' => tribe( Merchant::class )->get_mode(),
-			'request' => 'seller-status',
-		];
-
-		$args = [
-			'body' => [
-				'merchant_id' => $merchant_id,
-				'token' => $access_token,
-			]
-		];
-
-		return $this->post( 'paypal-commerce', $query_args, $args );
-	}
-
-	/**
-	 * Get seller rest API credentials
-	 *
-	 * @since 5.1.6
-	 *
-	 * @param string $access_token
-	 *
-	 * @return array|null
-	 */
-	public function get_seller_rest_api_credentials( $access_token ) {
-		$query_args = [
-			'mode' => tribe( Merchant::class )->get_mode(),
-			'request' => 'seller-credentials',
-		];
-
-		$args = [
-			'body' => [
-				'token' => $access_token,
-			]
-		];
-
-		return $this->post( 'paypal-commerce', $query_args, $args );
-	}
-
 }

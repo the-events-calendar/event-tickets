@@ -2,7 +2,7 @@
 var_dump( $tickets );
 var_dump( $event );
 ?>
-<script src="https://www.paypal.com/sdk/js?client-id=sb&locale=en_US&components=buttons" data-partner-attribution-id="<?php echo esc_atrr( $paypal_attribution_id ); ?> "></script>
+<script src="<?php echo tribe( \TEC\Tickets\Commerce\Gateways\PayPal\Client::class )->get_js_sdk_url(); ?>" data-partner-attribution-id="<?php echo esc_atrr( $paypal_attribution_id ); ?> "></script>
 
 <div id="paypal-field-container"></div>
 <div id="paypal-button-container"></div>
