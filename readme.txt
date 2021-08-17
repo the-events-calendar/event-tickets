@@ -178,7 +178,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= TBD =
+= [TBD] TBD =
+
 * Fix - Updated deprecated hook 'block_categories' to use 'block_categories_all'
 
 = [5.1.7] 2021-08-03 =
