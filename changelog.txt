@@ -1,8 +1,5 @@
 == Changelog ==
 
-= TBD =
-* Fix - Updated deprecated hook 'block_categories' to use 'block_categories_all'
-
 = [5.1.6] TBD =
 
 * Tweak - Added `$ticket_id` parameter to the `tribe_events_tickets_metabox_edit_ajax_advanced` filter. [ETP-111]
