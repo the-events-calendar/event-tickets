@@ -17,6 +17,7 @@ class Tribe__Tickets__Commerce__PayPal__Status_Manager extends Tribe__Tickets__S
 		'Not_Completed',
 		'Pending',
 		'Refunded',
+		'Reversed',
 		'Undefined',
 	);
 

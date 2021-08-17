@@ -1,4 +1,7 @@
 <?php
+
+use Tribe__Utils__Array as Arr;
+
 class Tribe__Tickets__Assets {
 	/**
 	 * Enqueue scripts for front end
@@ -197,22 +200,6 @@ class Tribe__Tickets__Assets {
 			'ajaxurl'             => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 		];
 
-		$locale  = localeconv();
-		$decimal = isset( $locale['decimal_point'] ) ? $locale['decimal_point'] : '.';
-
-		/**
-		 * Filter the decimal point character used in the price.
-		 *
-		 * @since 4.6
-		 *
-		 * @param string $decimal The decimal character to filter.
-		 */
-		$decimal = apply_filters( 'tribe_event_ticket_decimal_point', $decimal );
-
-		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
-		$tickets_handler = tribe( 'tickets.handler' );
-		$global_stock_mode = $tickets_handler->get_default_capacity_mode();
-
 		$ticket_js_deps = [ 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'tribe-moment', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'tribe-timepicker' ];
 
 		// While TEC is active, make sure we are loading TEC admin JS as dependency.
@@ -248,7 +235,13 @@ class Tribe__Tickets__Assets {
 					],
 					[
 						'name' => 'tribe_ticket_vars',
-						'data' => [ 'stock_mode' => $global_stock_mode ],
+						'data' => static function() {
+							/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
+							$tickets_handler = tribe( 'tickets.handler' );
+							$global_stock_mode = $tickets_handler->get_default_capacity_mode();
+
+							return [ 'stock_mode' => $global_stock_mode ];
+						},
 					],
 					[
 						'name' => 'tribe_ticket_notices',
@@ -264,10 +257,24 @@ class Tribe__Tickets__Assets {
 					],
 					[
 						'name' => 'price_format',
-						'data' => [
-							'decimal' => $decimal,
-							'decimal_error' => __( 'Please enter in without thousand separators and currency symbols.', 'event-tickets' ),
-						],
+						'data' => static function() {
+							$locale  = localeconv();
+							$decimal = Arr::get( $locale, 'decimal_point', '.' );
+
+							/**
+							 * Filter the decimal point character used in the price.
+							 *
+							 * @since 4.6
+							 *
+							 * @param string $decimal The decimal character to filter.
+							 */
+							$decimal = apply_filters( 'tribe_event_ticket_decimal_point', $decimal );
+
+							return [
+								'decimal'       => $decimal,
+								'decimal_error' => __( 'Please enter in without thousand separators and currency symbols.', 'event-tickets' ),
+							];
+						},
 					],
 				],
 			]

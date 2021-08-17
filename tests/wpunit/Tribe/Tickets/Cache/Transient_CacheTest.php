@@ -21,6 +21,11 @@ class Transient_CacheTest extends \Codeception\TestCase\WPTestCase {
 		parent::tearDown();
 	}
 
+	public function _before() {
+		tribe_events()->per_page( -1 )->delete();
+		tribe_tickets()->per_page( -1 )->delete();
+	}
+
 	/**
 	 * @test
 	 * it should be instantiatable
