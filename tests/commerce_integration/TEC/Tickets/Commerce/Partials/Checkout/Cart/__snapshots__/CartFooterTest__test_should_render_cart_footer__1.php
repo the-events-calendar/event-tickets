@@ -10,6 +10,6 @@
 		<span class="tribe-tickets__commerce-checkout-footer-total-label">
 			Total: 		</span>
 		<span class="tribe-tickets__commerce-checkout-footer-total-wrap">
-			$198.00		</div>
+			&#x24;198.00		</div>
 </div>
 ';

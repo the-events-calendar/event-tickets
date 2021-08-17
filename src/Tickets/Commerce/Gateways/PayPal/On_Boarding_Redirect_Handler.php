@@ -9,6 +9,8 @@ use Tribe__Settings;
 /**
  * Class On_Boarding_Redirect_Handler
  *
+ * @todo This whole file will stop exsiting once we deprecate all Give's code usage.
+ *
  * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  *
@@ -301,7 +303,7 @@ class On_Boarding_Redirect_Handler {
 			}, $errors );
 
 			$this->merchant->save_account_errors( $errors );
-			$this->redirect_when_on_boarding_fail();
+			//$this->redirect_when_on_boarding_fail();
 		}
 	}
 
@@ -412,26 +414,6 @@ class On_Boarding_Redirect_Handler {
 
 		// If there were errors then redirect the user with notices
 		return count( $error_messages ) > 1 ? $error_messages : true;
-	}
-
-	/**
-	 * Redirect admin to setting section with error.
-	 *
-	 * @since 5.1.6
-	 */
-	private function redirect_when_on_boarding_fail() {
-		/** @var Tribe__Settings $settings */
-		$settings = tribe( 'settings' );
-
-		// Get link to Tickets Tab.
-		$settings_url = $settings->get_url( [
-				'page'         => 'tribe-common',
-				'tab'          => 'event-tickets',
-				'paypal-error' => '1',
-			] ) . '#tribe-field-tickets-commerce-paypal-commerce';
-
-		wp_redirect( $settings_url );
-		die();
 	}
 
 	/**

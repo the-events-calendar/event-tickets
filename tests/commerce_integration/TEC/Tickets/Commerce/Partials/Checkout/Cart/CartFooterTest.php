@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Tickets\Partials\V2\Commerce\Checkout\Cart\Item;
+namespace TEC\Tickets\Commerce\Partials\Checkout\Cart;
 
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
@@ -12,11 +12,11 @@ use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 
 use Tribe__Tickets__Tickets;
 
-class ItemDetailsTest extends V2CommerceTestCase {
+class CartFooterTest extends V2CommerceTestCase {
 
 	use PayPal_Ticket_Maker;
 
-	public $partial_path = 'checkout/cart/item/details';
+	public $partial_path = 'checkout/cart/footer';
 
 	private $tolerables = [];
 
@@ -36,7 +36,7 @@ class ItemDetailsTest extends V2CommerceTestCase {
 			'post_title' => 'Test event for partial snapshot',
 		] );
 
-		$ids = $this->create_many_paypal_tickets( 1, $event_id, [ 'price' => 99 ] );
+		$ids = $this->create_many_paypal_tickets( 2, $event_id, [ 'price' => 99 ] );
 
 		$this->tolerables[] = $event_id;
 		$items = [];
@@ -66,7 +66,6 @@ class ItemDetailsTest extends V2CommerceTestCase {
 			'provider_id' => Module::class,
 			'provider'    => tribe( Module::class ),
 			'items'       => $items,
-			'item'        => $items[ $ids[0] ],
 			'sections'    => $sections,
 			'total_value' => tribe_format_currency( Price::total( $sub_totals ) ),
 		];
@@ -77,7 +76,7 @@ class ItemDetailsTest extends V2CommerceTestCase {
 	/**
 	 * @test
 	 */
-	public function test_should_render_cart_item_details() {
+	public function test_should_render_cart_footer() {
 		$args   = $this->get_default_args();
 		$html   = $this->template_class()->template( $this->partial_path, $args, false );
 		$driver = $this->get_html_output_driver();

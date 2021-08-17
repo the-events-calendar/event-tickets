@@ -307,6 +307,11 @@ class Cart {
 
 		$items = $cart->get_items();
 
+		// When Items is empty in any capacity return an empty array.
+		if ( empty( $items ) ) {
+			return [];
+		}
+
 		if ( $full_item_params ) {
 			$items    = array_map( static function ( $item ) {
 				$item['obj']       = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
