@@ -53,7 +53,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		if ( empty( $this->template ) ) {
 			$this->template = new \Tribe__Template();
 			$this->template->set_template_origin( \Tribe__Tickets__Main::instance() );
-			$this->template->set_template_folder( 'src/views/commerce' );
+			$this->template->set_template_folder( 'src/views/v2/commerce' );
 			$this->template->set_template_context_extract( true );
 			$this->template->set_template_folder_lookup( true );
 		}
@@ -70,10 +70,10 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		if ( is_admin() && ! $context->doing_ajax() ) {
 			return '';
 		}
-		$merchant    = tribe( Merchant::class );
 
-		$items    = tribe( Cart::class )->get_items_in_cart( true );
-		$sections = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
+		$merchant   = tribe( Merchant::class );
+		$items      = tribe( Cart::class )->get_items_in_cart( true );
+		$sections   = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
 		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
 
 		if ( 'create-order' === tribe_get_request_var( 'tc-dev' ) ) {
@@ -104,7 +104,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		// Enqueue assets.
 		tribe_asset_enqueue_group( 'tribe-tickets-commerce-checkout' );
 
-		return $this->get_template()->template( 'checkout/page', $args, false );
+		return $this->get_template()->template( 'checkout', $args, false );
 	}
 
 }

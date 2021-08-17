@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Commerce\Traits\Has_Mode;
 
 /**
@@ -13,6 +14,25 @@ use TEC\Tickets\Commerce\Traits\Has_Mode;
  */
 class Merchant {
 	use Has_Mode;
+
+	/**
+	 * All account Props we use for the merchant
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	protected $account_props = [
+		'signup_hash',
+		'merchant_id',
+		'merchant_id_in_paypal',
+		'client_id',
+		'client_secret',
+		'account_is_ready',
+		'supports_custom_payments',
+		'account_country',
+		'access_token',
+	];
 
 	/**
 	 * Determines if the data needs to be saved to the Database
@@ -31,6 +51,15 @@ class Merchant {
 	 * @var null|string
 	 */
 	protected $merchant_id;
+
+	/**
+	 * A Hash used during signup that should be associated with the merchant.
+	 *
+	 * @since TBD
+	 *
+	 * @var null|string
+	 */
+	protected $signup_hash;
 
 	/**
 	 * PayPal merchant id.
@@ -102,7 +131,7 @@ class Merchant {
 	 *
 	 * @var bool
 	 */
-	protected $supports_custom_payments;
+	protected $supports_custom_payments = false;
 
 	/**
 	 * PayPal account account country.
@@ -113,6 +142,28 @@ class Merchant {
 	 */
 	protected $account_country;
 
+	/**
+	 * Fetches the current signup hash.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function get_signup_hash() {
+		return $this->signup_hash;
+	}
+
+	/**
+	 * Sets the value for signup hash locally, in this instance of the Merchant.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed   $value      Value used for the signup hash.
+	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
+	 */
+	public function set_signup_hash( $value, $needs_save = true ) {
+		$this->set_value( 'signup_hash', $value, $needs_save );
+	}
 	/**
 	 * Fetches the current Merchant ID.
 	 *
@@ -338,6 +389,22 @@ class Merchant {
 	}
 
 	/**
+	 * Returns the data retrieved from the signup process.
+	 *
+	 * Uses normal WP options to be saved, instead of the normal tribe_update_option.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_signup_data_key() {
+		$gateway_key   = Gateway::get_key();
+		$merchant_mode = $this->get_mode();
+
+		return "tec_tickets_commerce_{$gateway_key}_{$merchant_mode}_signup_data";
+	}
+
+	/**
 	 * Returns the options key for the account errors in the merchant mode.
 	 *
 	 * @since TBD
@@ -350,7 +417,6 @@ class Merchant {
 
 		return "tickets_commerce_{$gateway_key}_{$merchant_mode}_account_errors";
 	}
-
 
 	/**
 	 * Handle initial setup for the object singleton.
@@ -371,6 +437,7 @@ class Merchant {
 	 */
 	public function to_array() {
 		return [
+			'signup_hash'              => $this->get_signup_hash(),
 			'merchant_id'              => $this->get_merchant_id(),
 			'merchant_id_in_paypal'    => $this->get_merchant_id_in_paypal(),
 			'client_id'                => $this->get_client_id(),
@@ -420,28 +487,31 @@ class Merchant {
 	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
 	 */
 	protected function setup_properties( array $data, $needs_save = true ) {
-		if ( isset( $data['merchant_id'] ) ) {
+		if ( array_key_exists( 'signup_hash', $data ) ) {
+			$this->set_signup_hash( $data['signup_hash'], $needs_save );
+		}
+		if ( array_key_exists( 'merchant_id', $data ) ) {
 			$this->set_merchant_id( $data['merchant_id'], $needs_save );
 		}
-		if ( isset( $data['merchant_id_in_paypal'] ) ) {
+		if ( array_key_exists( 'merchant_id_in_paypal', $data ) ) {
 			$this->set_merchant_id_in_paypal( $data['merchant_id_in_paypal'], $needs_save );
 		}
-		if ( isset( $data['client_id'] ) ) {
+		if ( array_key_exists( 'client_id', $data ) ) {
 			$this->set_client_id( $data['client_id'], $needs_save );
 		}
-		if ( isset( $data['client_secret'] ) ) {
+		if ( array_key_exists( 'client_secret', $data ) ) {
 			$this->set_client_secret( $data['client_secret'], $needs_save );
 		}
-		if ( isset( $data['account_is_ready'] ) ) {
+		if ( array_key_exists( 'account_is_ready', $data ) ) {
 			$this->set_account_is_ready( $data['account_is_ready'], $needs_save );
 		}
-		if ( isset( $data['supports_custom_payments'] ) ) {
+		if ( array_key_exists( 'supports_custom_payments', $data ) ) {
 			$this->set_supports_custom_payments( $data['supports_custom_payments'], $needs_save );
 		}
-		if ( isset( $data['account_country'] ) ) {
+		if ( array_key_exists( 'account_country', $data ) ) {
 			$this->set_account_country( $data['account_country'], $needs_save );
 		}
-		if ( isset( $data['access_token'] ) ) {
+		if ( array_key_exists( 'access_token', $data ) ) {
 			$this->set_access_token( $data['access_token'], $needs_save );
 		}
 	}
@@ -454,16 +524,7 @@ class Merchant {
 	 * @param array $merchant_details
 	 */
 	public function validate( $merchant_details ) {
-		$required = [
-			'merchant_id',
-			'merchant_id_in_paypal',
-			'client_id',
-			'client_secret',
-			'account_is_ready',
-			'supports_custom_payments',
-			'account_country',
-			'access_token',
-		];
+		$required = $this->account_props;
 
 		if ( array_diff( $required, array_keys( $merchant_details ) ) ) {
 			return false;
@@ -528,6 +589,30 @@ class Merchant {
 	}
 
 	/**
+	 * Saves signup data from the transient into permanent option.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $signup_data
+	 *
+	 * @return bool
+	 */
+	public function save_signup_data( $signup_data ) {
+		return update_option( $this->get_signup_data_key(), $signup_data );
+	}
+
+	/**
+	 * Saves signup data from the transient into
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_signup_data( $signup_data ) {
+		return get_option( $this->get_signup_data_key(), [] );
+	}
+
+	/**
 	 * Returns whether or not the account has been connected
 	 *
 	 * @since TBD
@@ -568,7 +653,15 @@ class Merchant {
 	 * @return bool
 	 */
 	public function delete_data() {
-		return tribe_update_option( $this->get_account_key(), null );
+		$status = tribe_update_option( $this->get_account_key(), null );
+
+		if ( $status ) {
+			$data = array_fill_keys( $this->account_props, null );
+			// reset internal values.
+			$this->setup_properties( $data, false );
+		}
+
+		return $status;
 	}
 
 	/**
@@ -591,5 +684,57 @@ class Merchant {
 	 */
 	public function delete_account_errors() {
 		return tribe_update_option( $this->get_account_errors_key(), null );
+	}
+
+	/**
+	 * Disconnects the merchant completely.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function disconnect() {
+		$statuses = [
+			$this->delete_data(),
+			$this->delete_access_token_data(),
+			$this->delete_access_token_data(),
+			$this->delete_account_errors(),
+		];
+
+		return in_array( false, $statuses, true );
+	}
+
+	/**
+	 * Determines if the Merchant is active.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_active( $recheck = false ) {
+		$saved_merchant_id = $this->get_merchant_id_in_paypal();
+
+		if ( ! $saved_merchant_id ) {
+			return false;
+		}
+
+		if ( ! $recheck && true === $this->get_account_is_ready() ) {
+			return true;
+		}
+
+		$seller_status = tribe( WhoDat::class )->get_seller_status( $saved_merchant_id );
+
+		$payments_receivable   = Arr::get( $seller_status, 'payments_receivable' );
+		$paypal_product_name   = Arr::get( $seller_status, [ 'products', 0, 'name' ] );
+		$paypal_product_status = Arr::get( $seller_status, [ 'products', 0, 'status' ] );
+
+		$is_active = ( true === $payments_receivable && 'EXPRESS_CHECKOUT' === $paypal_product_name && 'ACTIVE' === $paypal_product_status );
+
+		if ( $is_active ) {
+			$this->set_account_is_ready( true );
+			$this->save();
+		}
+
+		return $is_active;
 	}
 }

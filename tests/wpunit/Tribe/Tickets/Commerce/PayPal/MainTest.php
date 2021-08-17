@@ -327,48 +327,6 @@ class MainTest extends Test_Case {
 		$this->assertEquals( 10, $sut->get_attendees_count_by_user( $post_id, $user_id ) );
 	}
 
-	/**
-	 * @test
-	 *
-	 * It should be in test mode if sandbox is on.
-	 */
-	public function it_should_be_in_test_mode_if_sandbox_is_on() {
-		$sut = $this->make_instance();
-
-		// Enable sandbox.
-		tribe_update_option( 'ticket-paypal-sandbox', '1' );
-
-		$this->assertTrue( $sut->is_test_mode() );
-	}
-
-	/**
-	 * @test
-	 *
-	 * It should not be in test mode if sandbox is off.
-	 */
-	public function it_should_not_be_in_test_mode_if_sandbox_is_off() {
-		$sut = $this->make_instance();
-
-		// Disable sandbox.
-		tribe_update_option( 'ticket-paypal-sandbox', '0' );
-
-		$this->assertFalse( $sut->is_test_mode() );
-	}
-
-	/**
-	 * @test
-	 *
-	 * It should not be in test mode if sandbox is not set.
-	 */
-	public function it_should_not_be_in_test_mode_if_sandbox_is_not_set() {
-		$sut = $this->make_instance();
-
-		// Remove sandbox option.
-		tribe_update_option( 'ticket-paypal-sandbox', '' );
-
-		$this->assertFalse( $sut->is_test_mode() );
-	}
-
 	protected function make_data( $previous_status, $status, $sales, $stock = 0 ) {
 		$base_data = $this->make_base_data( $sales, $stock );
 
