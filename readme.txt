@@ -178,6 +178,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Removed RSVP kitchen sink template and functionality. [ET-1162]
+
 = [5.1.7] 2021-08-03 =
 
 * Feature - Added export button next to the page title on the Attendees page. [ET-1145]
