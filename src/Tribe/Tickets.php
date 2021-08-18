@@ -4218,7 +4218,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Return the URL slug to be used by the provider method
+		 * Return the URL slug to be used by the provider method.
 		 *
 		 * @since TBD
 		 *
@@ -4232,7 +4232,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * @param string  String for which the slug should be named.
 			 */
-			return apply_filters( 'tribe_tickets_get_provider_url_slug', 'tickets_provider' );
+			return apply_filters( 'tribe_tickets_provider_url_slug', 'tickets_provider' );
 		}
 
 		/************************
