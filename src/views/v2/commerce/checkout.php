@@ -22,10 +22,10 @@
  */
 
 ?>
-<div class="tribe-common event-tickets tribe-tickets__commerce-checkout">
+<section class="tribe-common event-tickets tribe-tickets__commerce-checkout">
 	<?php $this->template( 'checkout/header' ); ?>
 	<?php foreach ( $sections as $section ) : ?>
 		<?php $this->template( 'checkout/cart', [ 'section' => $section ] ); ?>
 	<?php endforeach; ?>
 	<?php $this->template( 'checkout/footer' ); ?>
-</div>
+</section>
