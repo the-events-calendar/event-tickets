@@ -181,6 +181,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] =
 
 * Fix - Fixed cart calculation inconsistency with WooCommerce when the "Number of decimals" setting was set to `0`. [ETP-324]
+* Fix - Updated deprecated hook `block_categories` to use `block_categories_all`. [ET-1156]
 
 = [5.1.7] 2021-08-03 =
 
