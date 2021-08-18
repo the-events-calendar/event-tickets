@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\REST;
 
+use tad\WPBrowser\Adapters\WP;
+use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Order;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Client;
@@ -12,6 +14,9 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Signup;
 use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
 
 
+use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Created;
 use Tribe__Documentation__Swagger__Provider_Interface;
 use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
@@ -112,18 +117,35 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			'success' => false,
 		];
 
-		$order = tribe( Order::class )->create_from_cart();
+		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ) );
 
 		$unit = [
 			'reference_id' => $order->ID,
-			'value' => 10,
-			'currency' => 'USD',
-			'first_name' => 'Gustavo',
-			'last_name' => 'Bordoni',
-			'email' => 'gustavo@bordoni.me',
+			'value'        => $order->total_value,
+			'currency'     => $order->currency,
+			'first_name'   => 'Gustavo',
+			'last_name'    => 'Bordoni',
+			'email'        => 'gustavo@bordoni.me',
 		];
 
-		$order = tribe( Client::class )->create_order( $unit );
+		$paypal_order = tribe( Client::class )->create_order( $unit );
+
+		if ( empty( $paypal_order['id'] ) || empty( $paypal_order['create_time'] ) ) {
+			return new WP_Error( 'tec-tc-gateway-paypal-failed-creating-order', null, $order );
+		}
+
+		$updated = tec_tc_orders()->by_args( [
+			'status' => tribe( Created::class )->get_wp_slug(),
+			'id'     => $order->ID,
+		] )->set_args( [
+			'gateway_payload'  => $paypal_order,
+			'gateway_order_id' => $paypal_order['id'],
+		] )->save();
+
+		tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
+
+		// Respond with the ID for Paypal Usage.
+		$response['id'] = $paypal_order['id'];
 
 		return new WP_REST_Response( $response );
 	}
@@ -156,7 +178,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	public function create_order_args() {
 		// Webhooks do not send any arguments, only JSON content.
 		return [
-			'accountStatus'      => [
+			'accountStatus' => [
 				'description'       => 'The merchant ID in PayPal',
 				'required'          => false,
 				'type'              => 'string',
@@ -182,7 +204,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	public function update_order_args() {
 		// Webhooks do not send any arguments, only JSON content.
 		return [
-			'accountStatus'      => [
+			'accountStatus' => [
 				'description'       => 'The merchant ID in PayPal',
 				'required'          => true,
 				'type'              => 'string',

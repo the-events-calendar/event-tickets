@@ -70,9 +70,10 @@ class Client {
 	 */
 	public function get_js_sdk_url( array $query_args = [] ) {
 		$url        = 'https://www.paypal.com/sdk/js';
+		$merchant = tribe( Merchant::class );
 		$query_args = array_merge( [
-			'client-id'   => tribe( Merchant::class )->get_client_id(),
-			'merchant-id' => tribe( Merchant::class )->get_merchant_id_in_paypal(),
+			'client-id'   => $merchant->is_sandbox() ? 'sb' : $merchant->get_client_id(),
+			'merchant-id' => $merchant->get_merchant_id_in_paypal(),
 			'locale'      => 'en_US',
 			'components'  => 'buttons,hosted-fields',
 		], $query_args );
@@ -345,6 +346,7 @@ class Client {
 	 * @return array|null
 	 */
 	public function create_order( array $units = [] ) {
+		$merchant = tribe( Merchant::class );
 		$query_args = [];
 		$body       = [
 			'intent'              => 'CAPTURE',
@@ -372,8 +374,7 @@ class Client {
 					'currency_code' => Arr::get( $unit, 'currency' ),
 				],
 				'payee'               => [
-					'email_address' => Arr::get( $unit, 'merchant_id', tribe( Merchant::class )->get_merchant_id() ),
-					'merchant_id'   => Arr::get( $unit, 'merchant_paypal_id', tribe( Merchant::class )->get_merchant_id_in_paypal() ),
+					'merchant_id'   => Arr::get( $unit, 'merchant_paypal_id', $merchant->get_merchant_id_in_paypal() ),
 				],
 				'payer'               => [
 					'name'          => [
@@ -388,9 +389,17 @@ class Client {
 				],
 			];
 
+			/**
+			 * @todo Need to figure out how to get this email address still.
+			 */
+			if ( ! $merchant->is_sandbox() ) {
+				$purchase_unit['payee']['email_address'] = Arr::get( $unit, 'merchant_id', $merchant->get_merchant_id() );
+			}
+
 			if ( ! empty( $unit['tax_id'] ) ) {
 				$purchase_unit['payer']['tax_info']['tax_id'] = Arr::get( $unit, 'tax_id' );
 			}
+
 			if ( ! empty( $unit['tax_id_type'] ) ) {
 				$purchase_unit['payer']['tax_info']['tax_id_type'] = Arr::get( $unit, 'tax_id_type' );
 			}

@@ -166,6 +166,19 @@ class Order {
 	}
 
 	/**
+	 * Gets the meta Key for a given Order Status gateway_payload.
+	 *
+	 * @since TBD
+	 *
+	 * @param Status\Status_Interface $status
+	 *
+	 * @return string
+	 */
+	public static function get_gateway_payload_meta_key( Commerce\Status\Status_Interface $status ) {
+		return static::$gateway_payload_meta_key . '_' . $status->get_slug();
+	}
+
+	/**
 	 * Modify the status of a given order based on Slug.
 	 *
 	 * @since TBD
@@ -201,7 +214,7 @@ class Order {
 	 *
 	 * @return false|\WP_Post
 	 */
-	public function create_from_cart() {
+	public function create_from_cart( Commerce\Gateways\Interface_Gateway $gateway ) {
 		$cart = tribe( Cart::class );
 
 		$items      = $cart->get_items_in_cart();
@@ -218,6 +231,7 @@ class Order {
 			'title'       => $this->generate_order_title( $items, $cart->get_cart_hash() ),
 			'total_value' => $total,
 			'cart_items'  => $items,
+			'gateway'     => $gateway::get_key(),
 		];
 		$order      = tec_tc_orders()->set_args( $order_args )->create();
 
