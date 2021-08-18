@@ -35,7 +35,7 @@ $classes = [
 ];
 
 ?>
-<div <?php tribe_classes( $classes ); ?>>
+<article <?php tribe_classes( $classes ); ?>>
 
 	<?php $this->template( 'checkout/cart/item/details', [ 'item' => $item ] ); ?>
 
@@ -45,4 +45,4 @@ $classes = [
 
 	<?php $this->template( 'checkout/cart/item/sub-total', [ 'item' => $item ] ); ?>
 
-</div>
+</article>
