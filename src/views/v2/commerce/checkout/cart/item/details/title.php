@@ -3,7 +3,7 @@
  * Tickets Commerce: Checkout Cart Item title
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/item/title.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/item/details/title.php
  *
  * See more documentation about our views templating system.
  *
