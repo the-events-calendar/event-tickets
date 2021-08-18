@@ -208,10 +208,15 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 		$merchant->set_supports_custom_payments( $has_custom_payments );
 		$merchant->save();
 
-		$token_data = tribe( Client::class )->get_access_token_from_client_credentials( $credentials['client_id'], $credentials['client_secret'] );
+		$client = tribe( Client::class );
 
-		// Save the information on the merchant.
+		// Pull Access token data.
+		$token_data = $client->get_access_token_from_client_credentials( $credentials['client_id'], $credentials['client_secret'] );
 		$merchant->save_access_token_data( $token_data );
+
+		// Pull user info from PayPal.
+		$user_info = $client->get_user_info();
+		$merchant->save_user_info( $user_info );
 
 		/**
 		 * @todo Need to figure out where this gets saved in the merchant API.

@@ -52,6 +52,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-disconnect', [ $this, 'handle_action_disconnect' ] );
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-access-token', [ $this, 'handle_action_refresh_token' ] );
+		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-user-info', [ $this, 'handle_action_refresh_user_info' ] );
 
 		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout/header', [ $this, 'include_client_js_sdk_script' ], 15, 3 );
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
@@ -117,6 +118,20 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		$token_data = $this->container->make( Client::class )->get_access_token_from_client_credentials( $merchant->get_client_id(), $merchant->get_client_secret() );
 
 		$saved = $merchant->save_access_token_data( $token_data );
+	}
+
+	/**
+	 * Handles the refreshing of the user info from PayPal for this merchant.
+	 *
+	 * @since TBD
+	 *
+	 * @todo Display some message when refreshing user info.
+	 */
+	public function handle_action_refresh_user_info() {
+		$merchant = $this->container->make( Merchant::class );
+		$user_info = $this->container->make( Client::class )->get_user_info();
+
+		$saved = $merchant->save_user_info( $user_info );
 	}
 
 	/**

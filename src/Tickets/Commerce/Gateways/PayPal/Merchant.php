@@ -165,6 +165,7 @@ class Merchant {
 	public function set_signup_hash( $value, $needs_save = true ) {
 		$this->set_value( 'signup_hash', $value, $needs_save );
 	}
+
 	/**
 	 * Fetches the current Merchant ID.
 	 *
@@ -372,7 +373,7 @@ class Merchant {
 		$gateway_key   = Gateway::get_key();
 		$merchant_mode = $this->get_mode();
 
-		return "tickets_commerce_{$gateway_key}_{$merchant_mode}_account";
+		return "tec_tickets_commerce_{$gateway_key}_{$merchant_mode}_account";
 	}
 
 	/**
@@ -386,7 +387,7 @@ class Merchant {
 		$gateway_key   = Gateway::get_key();
 		$merchant_mode = $this->get_mode();
 
-		return "tickets_commerce_{$gateway_key}_{$merchant_mode}_access_token_data";
+		return "tec_tickets_commerce_{$gateway_key}_{$merchant_mode}_access_token_data";
 	}
 
 	/**
@@ -416,7 +417,21 @@ class Merchant {
 		$gateway_key   = Gateway::get_key();
 		$merchant_mode = $this->get_mode();
 
-		return "tickets_commerce_{$gateway_key}_{$merchant_mode}_account_errors";
+		return "tec_tickets_commerce_{$gateway_key}_{$merchant_mode}_account_errors";
+	}
+
+	/**
+	 * Returns the options key for the account account information.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_user_info_key() {
+		$gateway_key   = Gateway::get_key();
+		$merchant_mode = $this->get_mode();
+
+		return "tec_tickets_commerce_{$gateway_key}_{$merchant_mode}_user_info";
 	}
 
 	/**
@@ -470,6 +485,16 @@ class Merchant {
 		return true;
 	}
 
+	/**
+	 * Saves a given base value into the class props.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $key
+	 * @param mixed  $value
+	 * @param bool   $needs_save
+	 *
+	 */
 	protected function set_value( $key, $value, $needs_save = true ) {
 		$this->{$key} = $value;
 
@@ -546,7 +571,7 @@ class Merchant {
 			return false;
 		}
 
-		$saved = tribe_update_option( $this->get_account_key(), $this->to_array() );
+		$saved = update_option( $this->get_account_key(), $this->to_array() );
 
 		// If we were able to save, we reset the needs save.
 		if ( $saved ) {
@@ -554,6 +579,47 @@ class Merchant {
 		}
 
 		return $saved;
+	}
+
+	/**
+	 * Get the merchant details data.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	protected function get_details_data() {
+		return (array) get_option( $this->get_account_key(), [] );
+	}
+
+	/**
+	 * Delete merchant account details on the Database.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function delete_data() {
+		$status = update_option( $this->get_account_key(), null );
+
+		if ( $status ) {
+			$data = array_fill_keys( $this->account_props, null );
+			// reset internal values.
+			$this->setup_properties( $data, false );
+		}
+
+		return $status;
+	}
+
+	/**
+	 * Returns the account errors if there are any.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]|null
+	 */
+	public function get_account_errors() {
+		return get_option( $this->get_account_errors_key(), null );
 	}
 
 	/**
@@ -566,19 +632,42 @@ class Merchant {
 	 * @return bool
 	 */
 	public function save_account_errors( $error_message ) {
-		return tribe_update_option( $this->get_account_errors_key(), $error_message );
+		return update_option( $this->get_account_errors_key(), $error_message );
 	}
 
 	/**
-	 * Saves the account error message.
+	 * Deletes the errors for the account.
 	 *
 	 * @since TBD
 	 *
-	 * @param string[] $error_message
+	 * @return bool
+	 */
+	public function delete_account_errors() {
+		return delete_option( $this->get_account_errors_key() );
+	}
+
+
+	/**
+	 * Saves signup data from the transient into a permanent storage.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_access_token_data() {
+		return get_option( $this->get_access_token_data_key(), [] );
+	}
+
+	/**
+	 * Saves the access token data, and adds some extra information for better usage.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $token_data
 	 *
 	 * @return bool
 	 */
-	public function save_access_token_data( $token_data ) {
+	public function save_access_token_data( array $token_data ) {
 		if ( empty( $token_data['access_token'] ) ) {
 			return false;
 		}
@@ -586,13 +675,26 @@ class Merchant {
 		$this->set_access_token( $token_data['access_token'] );
 		$this->save();
 
-		$expires_in = Dates::interval( 'PT' . $token_data['expires_in'] . 'S' );
+		if ( ! empty( $token_data['expires_in'] ) ) {
+			$expires_in = Dates::interval( 'PT' . $token_data['expires_in'] . 'S' );
 
-		// Store date related data in readable formats.
-		$token_data['token_retrieval_time'] = Dates::build_date_object( 'now' )->format( Dates::DBDATETIMEFORMAT );
-		$token_data['token_expiration_time'] = Dates::build_date_object( 'now' )->add( $expires_in )->format( Dates::DBDATETIMEFORMAT );
+			// Store date related data in readable formats.
+			$token_data['token_retrieval_time']  = Dates::build_date_object( 'now' )->format( Dates::DBDATETIMEFORMAT );
+			$token_data['token_expiration_time'] = Dates::build_date_object( 'now' )->add( $expires_in )->format( Dates::DBDATETIMEFORMAT );
+		}
 
-		return tribe_update_option( $this->get_access_token_data_key(), $token_data );
+		return update_option( $this->get_access_token_data_key(), $token_data );
+	}
+
+	/**
+	 * Delete access token data.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function delete_access_token_data() {
+		return update_option( $this->get_access_token_data_key(), null );
 	}
 
 	/**
@@ -604,8 +706,54 @@ class Merchant {
 	 *
 	 * @return bool
 	 */
-	public function save_signup_data( $signup_data ) {
+	public function save_signup_data( array $signup_data ) {
 		return update_option( $this->get_signup_data_key(), $signup_data );
+	}
+
+	/**
+	 * Saves signup data from the transient into a permanent storage.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_signup_data() {
+		return get_option( $this->get_signup_data_key(), [] );
+	}
+
+	/**
+	 * Deletes signup data from the DB.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function delete_signup_data() {
+		return delete_option( $this->get_signup_data_key() );
+	}
+
+	/**
+	 * Saves user info to make sure we have full access later on.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $user_info User info from the PayPal API.
+	 *
+	 * @return bool
+	 */
+	public function save_user_info( array $user_info = [] ) {
+		return update_option( $this->get_user_info_key(), $user_info );
+	}
+
+	/**
+	 * Deletes the user info from the DB.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function delete_user_info() {
+		return delete_option( $this->get_user_info_key() );
 	}
 
 	/**
@@ -615,8 +763,8 @@ class Merchant {
 	 *
 	 * @return array
 	 */
-	public function get_signup_data( $signup_data ) {
-		return get_option( $this->get_signup_data_key(), [] );
+	public function get_user_info() {
+		return get_option( $this->get_user_info_key(), [] );
 	}
 
 	/**
@@ -631,69 +779,6 @@ class Merchant {
 	}
 
 	/**
-	 * Get the merchant details data.
-	 *
-	 * @since TBD
-	 *
-	 * @return array
-	 */
-	protected function get_details_data() {
-		return (array) tribe_get_option( $this->get_account_key(), [] );
-	}
-
-	/**
-	 * Returns the account errors if there are any.
-	 *
-	 * @since TBD
-	 *
-	 * @return string[]|null
-	 */
-	public function get_account_errors() {
-		return tribe_get_option( $this->get_account_errors_key(), null );
-	}
-
-	/**
-	 * Delete merchant account details on the Database.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	public function delete_data() {
-		$status = tribe_update_option( $this->get_account_key(), null );
-
-		if ( $status ) {
-			$data = array_fill_keys( $this->account_props, null );
-			// reset internal values.
-			$this->setup_properties( $data, false );
-		}
-
-		return $status;
-	}
-
-	/**
-	 * Delete access token data.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	public function delete_access_token_data() {
-		return tribe_update_option( $this->get_access_token_data_key(), null );
-	}
-
-	/**
-	 * Deletes the errors for the account.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	public function delete_account_errors() {
-		return tribe_update_option( $this->get_account_errors_key(), null );
-	}
-
-	/**
 	 * Disconnects the merchant completely.
 	 *
 	 * @since TBD
@@ -704,7 +789,8 @@ class Merchant {
 		$statuses = [
 			$this->delete_data(),
 			$this->delete_access_token_data(),
-			$this->delete_access_token_data(),
+			$this->delete_signup_data(),
+			$this->delete_user_info(),
 			$this->delete_account_errors(),
 		];
 

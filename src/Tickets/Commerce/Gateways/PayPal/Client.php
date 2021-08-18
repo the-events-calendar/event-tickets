@@ -71,10 +71,10 @@ class Client {
 	public function get_js_sdk_url( array $query_args = [] ) {
 		$url        = 'https://www.paypal.com/sdk/js';
 		$query_args = array_merge( [
-			'client-id'  => tribe( Merchant::class )->get_client_id(),
-			'merchant-id'  => tribe( Merchant::class )->get_merchant_id_in_paypal(),
-			'locale'     => 'en_US',
-			'components' => 'buttons,hosted-fields',
+			'client-id'   => tribe( Merchant::class )->get_client_id(),
+			'merchant-id' => tribe( Merchant::class )->get_merchant_id_in_paypal(),
+			'locale'      => 'en_US',
+			'components'  => 'buttons,hosted-fields',
 		], $query_args );
 		$url        = add_query_arg( $query_args, $url );
 
@@ -190,11 +190,20 @@ class Client {
 		];
 		foreach ( $default_arguments as $key => $default_argument ) {
 			$request_arguments[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
-
-			if ( 'body' === $key && ! empty( $request_arguments[ $key ] ) ) {
-				$request_arguments[ $key ] = wp_json_encode( $request_arguments[ $key ] );
-			}
 		}
+
+		$content_type = Arr::get( $request_arguments, [ 'headers', 'Content-Type' ] );
+		if ( empty( $content_type ) ) {
+			$content_type = Arr::get( $request_arguments, [ 'headers', 'content-type' ] );
+		}
+
+		if (
+			! empty( $request_arguments['body'] )
+			&& 'application/json' === strtolower( $content_type )
+		) {
+			$request_arguments['body'] = wp_json_encode( $request_arguments[ $key ] );
+		}
+
 		$response = wp_remote_post( $url, $request_arguments );
 
 		if ( is_wp_error( $response ) ) {
@@ -409,7 +418,7 @@ class Client {
 	/**
 	 * Gets the profile information from the customer in PayPal.
 	 *
-	 * @link https://developer.paypal.com/docs/api/identity/v1/#userinfo_get
+	 * @link  https://developer.paypal.com/docs/api/identity/v1/#userinfo_get
 	 *
 	 * @since TBD
 	 *
@@ -422,8 +431,8 @@ class Client {
 		$body       = [];
 		$args       = [];
 
-		$url        = '/v1/identity/oauth2/userinfo';
-		$response   = $this->post( $url, $query_args, $args );
+		$url      = '/v1/identity/oauth2/userinfo';
+		$response = $this->get( $url, $query_args, $args );
 
 		return $response;
 	}
