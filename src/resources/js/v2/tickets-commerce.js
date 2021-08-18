@@ -101,7 +101,7 @@ tribe.tickets.commerce = {};
 		const $descriptionToggleButtons = $container.find( obj.selectors.checkoutItemDescriptionButtonMore + ', ' + obj.selectors.checkoutItemDescriptionButtonLess );
 
 		$descriptionToggleButtons
-			.on( 'keyup', obj.checkoutItemDescriptionToggle )
+			.on( 'keydown', obj.checkoutItemDescriptionToggle )
 			.on( 'click', obj.checkoutItemDescriptionToggle );
 	};
 
