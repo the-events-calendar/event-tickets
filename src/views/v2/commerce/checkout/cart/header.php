@@ -21,10 +21,10 @@
  */
 
 ?>
-<div class="tribe-tickets__commerce-checkout-cart-header">
+<header class="tribe-tickets__commerce-checkout-cart-header">
 	<h4 class="tribe-common-h4 tribe-common-h4--min-medium tribe-common-h--alt tribe-tickets__commerce-checkout-cart-header-title">
 		<a href="<?php the_permalink( $post ); ?>">
 			<?php echo get_the_title( $post ); ?>
 		</a>
 	</h4>
-</div>
+</header>
