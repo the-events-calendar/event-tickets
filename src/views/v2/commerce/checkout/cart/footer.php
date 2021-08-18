@@ -23,9 +23,9 @@
 $classes = [
 	'tribe-tickets__commerce-checkout-cart-footer',
 	'tribe-common-b1',
-]
+];
 ?>
-<div <?php tribe_classes( $classes ); ?>>
+<footer <?php tribe_classes( $classes ); ?>>
 	<div class="tribe-tickets__commerce-checkout-footer-quantity">
 		<span class="tribe-tickets__commerce-checkout-footer-quantity-label">
 			<?php esc_html_e( 'Quantity: ', 'event-tickets' ); ?>
@@ -42,4 +42,5 @@ $classes = [
 		<span class="tribe-tickets__commerce-checkout-footer-total-wrap">
 			<?php echo esc_html( $total_value ); ?>
 		</div>
-</div>
+	</div>
+</footer>
