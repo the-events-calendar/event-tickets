@@ -17,28 +17,27 @@
 			@mixin button-link;
 
 			background-color: transparent;
-			color: var(--color-accent-primary);
+			color: var(--tec-color-accent-primary);
 			padding: 11px 20px;
 			width: 100%;
 
-			@media (--viewport-medium) {
+			@media (--tec-viewport-medium) {
 				background-color: transparent;
 				width: auto;
 			}
 
 			&:focus,
 			&:hover {
-				color: var(--color-accent-primary-hover);
+				color: var(--tec-color-accent-primary-hover);
 			}
 
 			&:active {
-				color: var(--color-accent-primary-active);
+				color: var(--tec-color-accent-primary-active);
 			}
 
 			&:disabled {
-				color: var(--color-accent-primary-background);
+				color: var(--tec-color-accent-primary-background);
 			}
 		}
 	}
 }
-
