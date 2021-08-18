@@ -28,7 +28,7 @@ $aria_controls = 'tribe-tickets__commerce-checkout-cart-item-details-description
 <div class="tribe-tickets__commerce-checkout-cart-item-details-toggle">
 	<button
 		type="button"
-		class="tribe-common-b3 tribe-tickets__commerce-checkout-cart-item-details-button--more"
+		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--more"
 		aria-controls="<?php echo esc_attr( $aria_controls ); ?>"
 		tabindex="0"
 	>
@@ -37,7 +37,7 @@ $aria_controls = 'tribe-tickets__commerce-checkout-cart-item-details-description
 	</button>
 	<button
 		type="button"
-		class="tribe-common-b3 tribe-tickets__commerce-checkout-cart-item-details-button--less"
+		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--less"
 		aria-controls="<?php echo esc_attr( $aria_controls ); ?>"
 		tabindex="0"
 	>
