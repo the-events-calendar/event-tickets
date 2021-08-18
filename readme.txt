@@ -180,6 +180,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Fix - Removed RSVP V2 preview templates and functionality. [ET-1162]
 * Fix - Updated deprecated hook `block_categories` to use `block_categories_all`. [ET-1156]
 
 = [5.1.7] 2021-08-03 =
