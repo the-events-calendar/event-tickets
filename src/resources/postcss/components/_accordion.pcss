@@ -16,7 +16,7 @@
 	text-align: left;
 	width: 100%;
 
-	&::before {
+	&:before {
 		background-color: #000;
 		border-radius: 100%;
 		box-sizing: border-box;
@@ -36,7 +36,7 @@
 		padding-right: 1px;
 	}
 
-	&::after {
+	&:after {
 		content: '';
 		border-bottom: 1px solid #ddd;
 		position: absolute;
@@ -47,7 +47,7 @@
 	}
 
 	&.is-active {
-		&::before {
+		&:before {
 			content: '\f460';
 			line-height: calc(var(--tec-base-font-size) + 3px);
 		}

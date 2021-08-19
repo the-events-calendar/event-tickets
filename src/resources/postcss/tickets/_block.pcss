@@ -4,6 +4,10 @@
  * @since 5.0.3
  */
 
+:root {
+	--tec-color-text-primary-disabled: rgba(20, 24, 39, 0.8);
+}
+
 .event-tickets,
 .entry .entry-content .event-tickets {
 
@@ -20,7 +24,7 @@
 		position: relative;
 		width: 100%;
 
-		@media (--tec-viewport-medium) {
+		@media (--viewport-medium) {
 			padding: var(--tec-spacer-5) var(--tec-spacer-5) var(--tec-spacer-4);
 		}
 
@@ -34,7 +38,7 @@
 		margin: 0 0 var(--tec-spacer-1);
 
 		/* Override since we don't have a header at this size */
-		@media (--tec-viewport-medium) {
+		@media (--viewport-medium) {
 			font-size: var(--tec-font-size-5);
 		}
 	}
@@ -55,7 +59,7 @@
 		margin: 0;
 		padding: 12px 0 16px;
 
-		@media (--tec-viewport-medium) {
+		@media (--viewport-medium) {
 			-ms-grid-columns: 6.5fr 2fr;
 			grid-template-columns: 6.5fr 2fr;
 			-ms-grid-rows: 1fr 1.5fr 1fr;
@@ -71,7 +75,7 @@
 			-ms-grid-rows: 1fr 1.5fr 1fr 1fr;
 			grid-template-rows: auto;
 
-			@media (--tec-viewport-medium) {
+			@media (--viewport-medium) {
 				-ms-grid-columns: 6.5fr 2fr 1fr;
 				grid-template-columns: 6.5fr 2fr 1fr;
 				-ms-grid-rows: 1fr 1.5fr 1fr;
@@ -80,7 +84,7 @@
 
 		&.tribe-tickets__tickets-item--price-suffix,
 		&.tribe-tickets__tickets-item--price-suffix.show-optout {
-			@media (--tec-viewport-medium) {
+			@media (--viewport-medium) {
 				-ms-grid-columns:  5.5fr 3fr;
 				grid-template-columns: 5.5fr 3fr;
 			}
@@ -99,7 +103,7 @@
 		grid-row: 1;
 		line-height: 1;
 
-		@media (--tec-viewport-medium) {
+		@media (--viewport-medium) {
 			line-height: 1;
 
 			&.tribe-tickets--no-description {
@@ -127,7 +131,7 @@
 		-ms-grid-row: 4;
 		grid-row: 4;
 
-		@media (--tec-viewport-medium) {
+		@media (--viewport-medium) {
 			-ms-grid-row: 3;
 			grid-row: 3;
 		}
@@ -140,7 +144,7 @@
 				display: flex;
 				font-size: var(--tec-font-size-1);
 
-				@media (--tec-viewport-medium) {
+				@media (--viewport-medium) {
 					font-size: var(--tec-font-size-2);
 				}
 			}
@@ -152,7 +156,7 @@
 	*/
 	.tribe-tickets__tickets-item--disabled {
 		* {
-			color: rgba( var(--tec-color-text-primary), 0.8);
+			color: var(--tec-color-text-primary-disabled);
 			color: var(--tec-color-scroll-bar);
 		}
 
@@ -160,7 +164,7 @@
 		.tribe-tickets__tickets-item-quantity-add,
 		.tribe-tickets__tickets-item-quantity-remove,
 		.tribe-tickets__tickets-item-quantity-number-input {
-			color: rgba( var(--tec-color-text-primary), 0.8);
+			color: var(--tec-color-text-primary-disabled);
 			color: var(--tec-color-scroll-bar);
 		}
 	}
