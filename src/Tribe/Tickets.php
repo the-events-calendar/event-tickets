@@ -4224,7 +4224,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return string
 		 */
-		public static function get_provider_url_slug(){
+		public static function get_provider_url_slug() {
 			/**
 			 * Allow filtering of the tickets_provider slug.
 			 *
