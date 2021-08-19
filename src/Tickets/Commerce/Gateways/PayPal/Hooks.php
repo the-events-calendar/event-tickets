@@ -42,12 +42,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	protected function add_actions() {
-		// Frontend: PayPal Checkout.
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_create_order', [ $this, 'create_order' ] );
-		add_action( 'wp_ajax_nopriv_tribe_tickets_paypal_commerce_create_order', [ $this, 'create_order' ] );
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_approve_order', [ $this, 'approve_order' ] );
-		add_action( 'wp_ajax_nopriv_tribe_tickets_paypal_commerce_approve_order', [ $this, 'approve_order' ] );
-
 		// REST API Endpoint registration.
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-disconnect', [ $this, 'handle_action_disconnect' ] );
