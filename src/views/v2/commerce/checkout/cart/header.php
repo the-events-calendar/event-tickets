@@ -18,6 +18,7 @@
  * @var string           $provider_id           [Global] The tickets provider class name.
  * @var array[]          $items                 [Global] List of Items on the cart to be checked out.
  * @var string           $paypal_attribution_id [Global] What is our PayPal Attribution ID.
+ * @var \WP_Post         $post                  Which Section that we are going to render for this table.
  */
 
 ?>
