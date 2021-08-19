@@ -93,6 +93,8 @@ class Tribe__Tickets__Assets {
 					'tribe-tickets-block-assets',
 					'tribe-tickets-rsvp',
 					'tribe-tickets-registration-page',
+					'tribe-tickets-commerce',
+					'tribe-tickets-commerce-checkout',
 				],
 			]
 		);
@@ -363,6 +365,7 @@ class Tribe__Tickets__Assets {
 		$admin_tabs = [
 			'event-tickets',
 			'event-tickets-commerce',
+			'payments',
 		];
 
 		// Load specifically on Ticket Settings page only.

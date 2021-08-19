@@ -7,12 +7,14 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since 4.11.0
- * @since 4.11.3 Reformat a bit of the code around the button - no functional changes.
- * @since 4.11.3.1 Fix PHP errors when there are no tickets.
- * @since 5.0.3 Updated template link.
+ * @since   4.11.0
+ * @since   4.11.3 Reformat a bit of the code around the button - no functional changes.
+ * @since   4.11.3.1 Fix PHP errors when there are no tickets.
+ * @since   5.0.3 Updated template link.
  *
  * @version 5.0.3
+ *
+ * @var string $provider_id Which provider we are using here.
  *
  */
 /** @var Tribe__Tickets__Attendee_Registration__View $view */
@@ -30,10 +32,11 @@ $non_meta_count = 0;
 $meta = tribe( 'tickets-plus.meta' );
 
 if ( ! empty( $providers ) ) {
-	$providers_arr  = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
-	$provider       = $providers[0];
-	$provider_class = $view->get_form_class( $providers_arr[0] );
-	$has_tpp        = in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers, true );
+	$providers_arr       = array_unique( wp_list_pluck( $providers, 'attendee_object' ) );
+	$provider            = $providers[0];
+	$provider_class      = $view->get_form_class( $providers_arr[0] );
+	$has_tpp             = in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers, true );
+	$is_tickets_commerce = tec_tickets_commerce_is_enabled() && ( $provider_id === \TEC\Tickets\Commerce\Module::class || in_array( \TEC\Tickets\Commerce\Module::class, $providers, true ) );
 }
 ?>
 <div class="tribe-tickets__item__attendee__fields">
@@ -41,19 +44,19 @@ if ( ! empty( $providers ) ) {
 	<?php $template->template(
 		'components/notice',
 		[
-			'id' => 'tribe-tickets__notice__attendee-modal',
+			'id'             => 'tribe-tickets__notice__attendee-modal',
 			'notice_classes' => [
 				'tribe-tickets__notice--error',
 				'tribe-tickets__validation-notice',
 			],
-			'content' => sprintf(
+			'content'        => sprintf(
 				esc_html_x(
 					'You have %s ticket(s) with a field that requires information.',
 					'Note about missing required fields, %s is the html-wrapped number of tickets.',
 					'event-tickets'
 				),
 				'<span class="tribe-tickets__notice--error__count">1</span>'
-		)
+			)
 		]
 	); ?>
 	<div
@@ -68,16 +71,16 @@ if ( ! empty( $providers ) ) {
 			<?php
 			// Only include tickets with meta.
 			if ( ! $meta->ticket_has_meta( $ticket['id'] ) ) {
-				$non_meta_count++;
+				$non_meta_count ++;
 
 				continue;
 			}
 			?>
-				<div class="tribe-tickets__item__attendee__fields__container" data-ticket-id="<?php echo esc_attr( $ticket['id'] ); ?>">
-					<h3 class="tribe-common-h5 tribe-common-h5--min-medium tribe-common-h--alt tribe-ticket__heading">
-						<?php echo esc_html( get_the_title( $ticket['id'] ) ); ?>
-					</h3>
-				</div>
+			<div class="tribe-tickets__item__attendee__fields__container" data-ticket-id="<?php echo esc_attr( $ticket['id'] ); ?>">
+				<h3 class="tribe-common-h5 tribe-common-h5--min-medium tribe-common-h--alt tribe-ticket__heading">
+					<?php echo esc_html( get_the_title( $ticket['id'] ) ); ?>
+				</h3>
+			</div>
 		<?php endforeach; ?>
 
 		<?php
@@ -93,7 +96,7 @@ if ( ! empty( $providers ) ) {
 			'components/notice',
 			[
 				'notice_classes' => $notice_classes,
-				'content' => sprintf(
+				'content'        => sprintf(
 					esc_html_x(
 						'There are %s other tickets in your cart that do not require attendee information.',
 						'Note that there are more tickets in the cart, %s is the html-wrapped number.',
@@ -107,8 +110,8 @@ if ( ! empty( $providers ) ) {
 		<input type="hidden" name="tribe_tickets_saving_attendees" value="1"/>
 		<input type="hidden" name="tribe_tickets_ar" value="1"/>
 		<input type="hidden" name="tribe_tickets_ar_data" value="" id="tribe_tickets_ar_data"/>
-		<div  class="tribe-tickets__item__attendee__fields__footer">
-			<?php if ( $has_tpp ) : ?>
+		<div class="tribe-tickets__item__attendee__fields__footer">
+			<?php if ( $has_tpp || $is_tickets_commerce ) : ?>
 				<button
 					type="submit"
 					name="checkout-button"
@@ -121,7 +124,7 @@ if ( ! empty( $providers ) ) {
 					class="tribe-common-c-btn-link tribe-common-c-btn--small tribe-block__tickets__item__attendee__fields__footer_submit tribe-tickets__attendee__fields__footer_cart-button tribe-validation-submit"
 					name="cart-button"
 				>
-						<?php esc_html_e( 'Save and View Cart', 'event-tickets' ); ?>
+					<?php esc_html_e( 'Save and View Cart', 'event-tickets' ); ?>
 				</button>
 				<span class="tribe-block__tickets__item__attendee__fields__footer__divider"><?php esc_html_e( 'or', 'event-tickets' ); ?></span>
 				<button
@@ -129,9 +132,9 @@ if ( ! empty( $providers ) ) {
 					class="tribe-common-c-btn tribe-common-c-btn--small tribe-block__tickets__item__attendee__fields__footer_submit tribe-tickets__attendee__fields__footer_checkout-button tribe-validation-submit"
 					name="checkout-button"
 				>
-						<?php esc_html_e( 'Checkout Now', 'event-tickets' ); ?>
+					<?php esc_html_e( 'Checkout Now', 'event-tickets' ); ?>
 				</button>
 			<?php endif; ?>
 		</div>
-	</form>
-</div>
+		</form>
+	</div>

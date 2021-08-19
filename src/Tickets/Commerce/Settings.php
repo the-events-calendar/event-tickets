@@ -30,7 +30,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public $option_enable = 'tickets-commerce-enable';
+	public static $option_enable = 'tickets-commerce-enable';
 
 	/**
 	 * The option key for sandbox.
@@ -39,7 +39,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public $option_sandbox = 'ticket-paypal-sandbox';
+	public static $option_sandbox = 'ticket-paypal-sandbox';
 
 	/**
 	 * The option key for currency code.
@@ -48,7 +48,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public $option_currency_code = 'ticket-paypal-currency-code';
+	public static $option_currency_code = 'tickets-commerce-currency-code';
 
 	/**
 	 * The option key for stock handling.
@@ -57,7 +57,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public $option_stock_handling = 'ticket-paypal-stock-handling';
+	public static $option_stock_handling = 'tickets-commerce-stock-handling';
 
 	/**
 	 * The option key for success page.
@@ -66,7 +66,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public $option_success_page = 'ticket-paypal-success-page';
+	public static $option_success_page = 'tickets-commerce-success-page';
 
 	/**
 	 * The option key for checkout page.
@@ -75,7 +75,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public $option_checkout_page = 'tickets-commerce-checkout-page';
+	public static $option_checkout_page = 'tickets-commerce-checkout-page';
 
 	/**
 	 * The option key for confirmation email sender email.
@@ -84,7 +84,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public $option_confirmation_email_sender_email = 'ticket-paypal-confirmation-email-sender-email';
+	public static $option_confirmation_email_sender_email = 'ticket-paypal-confirmation-email-sender-email';
 
 	/**
 	 * The option key for confirmation email sender name.
@@ -93,7 +93,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public $option_confirmation_email_sender_name = 'ticket-paypal-confirmation-email-sender-name';
+	public static $option_confirmation_email_sender_name = 'tickets-commerce-confirmation-email-sender-name';
 
 	/**
 	 * The option key for confirmation email subject.
@@ -102,7 +102,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public $option_confirmation_email_subject = 'ticket-paypal-confirmation-email-subject';
+	public static $option_confirmation_email_subject = 'tickets-commerce-confirmation-email-subject';
 
 	/**
 	 * Get the list of settings for Tickets Commerce.
@@ -165,7 +165,7 @@ class Settings extends Abstract_Settings {
 				'type' => 'html',
 				'html' => '<p>' . $plus_message . '</p>',
 			],
-			$this->option_enable              => [
+			static::$option_enable              => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html__( 'Enable Tickets Commerce', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Check this box if you wish to turn on Tickets Commerce functionality.', 'event-tickets' ),
@@ -173,20 +173,20 @@ class Settings extends Abstract_Settings {
 				'default'         => $is_tickets_commerce_enabled,
 				'validation_type' => 'boolean',
 				'attributes'      => [
-					'id' => $this->option_enable . '-input',
+					'id' => static::$option_enable . '-input',
 				],
 			],
 		];
 
 		$settings = [
-			$this->option_sandbox                         => [
+			static::$option_sandbox                         => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html__( 'Enable Test Mode', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Enables Test mode for testing payments. Any payments made will be done on "sandbox" accounts.', 'event-tickets' ),
 				'default'         => false,
 				'validation_type' => 'boolean',
 			],
-			$this->option_currency_code                   => [
+			static::$option_currency_code                   => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions.', 'event-tickets' ),
@@ -194,7 +194,7 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'options',
 				'options'         => $paypal_currency_code_options,
 			],
-			$this->option_stock_handling                  => [
+			static::$option_stock_handling                  => [
 				'type'            => 'radio',
 				'label'           => esc_html__( 'Stock Handling', 'event-tickets' ),
 				'tooltip'         => esc_html(
@@ -220,7 +220,7 @@ class Settings extends Abstract_Settings {
 				],
 				'tooltip_first'   => true,
 			],
-			$this->option_checkout_page                   => [
+			static::$option_checkout_page                   => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Checkout page', 'event-tickets' ),
 				'tooltip'         => esc_html(
@@ -235,7 +235,7 @@ class Settings extends Abstract_Settings {
 				'options'         => $pages,
 				'required'        => true,
 			],
-			$this->option_success_page                    => [
+			static::$option_success_page                    => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Success page', 'event-tickets' ),
 				'tooltip'         => esc_html(
@@ -250,7 +250,7 @@ class Settings extends Abstract_Settings {
 				'options'         => $pages,
 				'required'        => true,
 			],
-			$this->option_confirmation_email_sender_email => [
+			static::$option_confirmation_email_sender_email => [
 				'type'            => 'email',
 				'label'           => esc_html__( 'Confirmation email sender address', 'event-tickets' ),
 				'tooltip'         => esc_html(
@@ -265,7 +265,7 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'email',
 				'can_be_empty'    => true,
 			],
-			$this->option_confirmation_email_sender_name  => [
+			static::$option_confirmation_email_sender_name  => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Confirmation email sender name', 'event-tickets' ),
 				'tooltip'             => esc_html(
@@ -280,7 +280,7 @@ class Settings extends Abstract_Settings {
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
 			],
-			$this->option_confirmation_email_subject      => [
+			static::$option_confirmation_email_subject      => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Confirmation email subject', 'event-tickets' ),
 				'tooltip'             => esc_html(
@@ -356,9 +356,9 @@ class Settings extends Abstract_Settings {
 		$settings = apply_filters( 'tribe_tickets_commerce_settings', $settings );
 
 		// Handle setting up dependencies for all of the fields.
-		$validate_if         = new Tribe__Field_Conditional( $this->option_enable, 'tribe_is_truthy' );
+		$validate_if         = new Tribe__Field_Conditional( static::$option_enable, 'tribe_is_truthy' );
 		$fieldset_attributes = [
-			'data-depends'              => '#' . $this->option_enable . '-input',
+			'data-depends'              => '#' . static::$option_enable . '-input',
 			'data-condition-is-checked' => '',
 		];
 

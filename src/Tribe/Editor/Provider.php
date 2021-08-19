@@ -126,10 +126,21 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 			tribe_callback( 'tickets.editor.blocks.attendees', 'register' )
 		);
 
-		add_action(
-			'block_categories',
-			tribe_callback( 'tickets.editor', 'block_categories' )
-		);
+		global $wp_version;
+		if( version_compare( $wp_version, '5.8', '<' ) ) {
+			// WP version is less then 5.8.
+			add_action(
+				'block_categories',
+				tribe_callback( 'tickets.editor', 'block_categories' )
+			);
+		} else {
+			// WP version is 5.8 or above.
+			add_action(
+				'block_categories_all',
+				tribe_callback( 'tickets.editor', 'block_categories' )
+			);
+		}
+		
 	}
 
 	/**

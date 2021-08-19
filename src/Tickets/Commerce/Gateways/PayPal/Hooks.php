@@ -42,13 +42,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	protected function add_actions() {
-		// Settings page: Connect PayPal.
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_user_on_boarded', [ $this, 'on_boarded_user_ajax_request_handler' ] );
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_get_partner_url', [ $this, 'on_get_partner_url_ajax_request_handler' ] );
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_disconnect_account', [ $this, 'remove_paypal_account' ] );
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_onboarding_trouble_notice', [ $this, 'on_boarding_trouble_notice' ] );
-		add_action( 'admin_init', [ $this, 'on_boarding_boot' ] );
-
 		// Frontend: PayPal Checkout.
 		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_create_order', [ $this, 'create_order' ] );
 		add_action( 'wp_ajax_nopriv_tribe_tickets_paypal_commerce_create_order', [ $this, 'create_order' ] );
@@ -57,9 +50,13 @@ class Hooks extends \tad_DI52_ServiceProvider {
 
 		// REST API Endpoint registration.
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
+		add_action( 'tec_tickets_commerce_admin_process_action:paypal-disconnect', [ $this, 'handle_action_disconnect' ] );
+
+		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout/header', [ $this, 'include_client_js_sdk_script' ], 15, 3 );
+		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
 	}
 
-	/**
+	/**1
 	 * Adds the filters required by each Tickets Commerce component.
 	 *
 	 * @since 5.1.6
@@ -68,34 +65,50 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 10, 2 );
 	}
 
-	public function on_boarded_user_ajax_request_handler() {
-		$this->container->make( AjaxRequestHandler::class )->onBoardedUserAjaxRequestHandler();
+	/**
+	 * Include the Client JS SDK script into checkout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string           $file     Which file we are loading.
+	 * @param string           $name     Name of file file
+	 * @param \Tribe__Template $template Which Template object is being used.
+	 *
+	 */
+	public function include_client_js_sdk_script( $file, $name, $template ) {
+		echo '<script src="' . tribe( Client::class )->get_js_sdk_url() . '" data-partner-attribution-id="' . esc_attr( \TEC\Tickets\Commerce\Gateways\PayPal\Gateway::ATTRIBUTION_ID ) . '"></script>';
 	}
 
-	public function on_get_partner_url_ajax_request_handler() {
-		$this->container->make( AjaxRequestHandler::class )->onGetPartnerUrlAjaxRequestHandler();
+	/**
+	 * Include the Client JS SDK script into checkout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string           $file     Which file we are loading.
+	 * @param string           $name     Name of file file
+	 * @param \Tribe__Template $template Which Template object is being used.
+	 *
+	 */
+	public function include_payment_buttons( $file, $name, $template ) {
+		$template->template( 'gateway/paypal/buttons' );
 	}
 
-	public function remove_paypal_account() {
-		$this->container->make( AjaxRequestHandler::class )->removePayPalAccount();
+	/**
+	 * Handles the disconnecting of the merchant.
+	 *
+	 * @since TBD
+	 *
+	 * @todo Display some message when disconnecting.
+	 */
+	public function handle_action_disconnect() {
+		$this->container->make( Merchant::class )->disconnect();
 	}
 
-	public function on_boarding_trouble_notice() {
-		$this->container->make( AjaxRequestHandler::class )->onBoardingTroubleNotice();
-	}
-
-	public function on_boarding_boot() {
-		$this->container->make( onBoardingRedirectHandler::class )->boot();
-	}
-
-	public function create_order() {
-		$this->container->make( AjaxRequestHandler::class )->createOrder();
-	}
-
-	public function approve_order() {
-		$this->container->make( AjaxRequestHandler::class )->approveOrder();
-	}
-
+	/**
+	 * Register the Endpoints from Paypal.
+	 *
+	 * @since TBD
+	 */
 	public function register_endpoints() {
 		$this->container->make( REST::class )->register_endpoints();
 	}

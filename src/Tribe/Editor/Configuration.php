@@ -134,9 +134,12 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 				$currency_position = $currency->get_provider_symbol_position( $class_name, null );
 			}
 
+			$html_safe_class = str_replace( [ '\\' ], [ '_' ], $class_name );
+
 			$providers[] = [
 				'name'              => $modules[ $class_name ],
 				'class'             => $class_name,
+				'html_safe_class'   => sanitize_html_class( $html_safe_class ),
 				'currency'          => html_entity_decode( $currency_symbol ),
 				'currency_position' => $currency_position,
 			];
