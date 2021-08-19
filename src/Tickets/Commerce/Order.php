@@ -187,20 +187,23 @@ class Order {
 	 *
 	 * @param int    $order_id    Which order ID will be updated.
 	 * @param string $status_slug Which Order Status we are modifying to.
+	 * @param array  $extra_args  Extra repository arguments.
 	 *
 	 * @return bool
 	 */
-	public function modify_status( $order_id, $status_slug ) {
+	public function modify_status( $order_id, $status_slug, array $extra_args = [] ) {
 		$status = tribe( Commerce\Status\Status_Handler::class )->get_by_slug( $status_slug );
 
 		if ( ! $status ) {
 			return false;
 		}
 
+		$args = array_merge( $extra_args, [ 'status' => $status->get_wp_slug() ] );
+
 		$updated = tec_tc_orders()->by_args( [
 			'status' => 'any',
 			'id'     => $order_id,
-		] )->set_args( [ 'status' => $status->get_wp_slug() ] )->save();
+		] )->set_args( $args )->save();
 
 		return (bool) $updated;
 	}

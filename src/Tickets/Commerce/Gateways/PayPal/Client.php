@@ -70,12 +70,13 @@ class Client {
 	 */
 	public function get_js_sdk_url( array $query_args = [] ) {
 		$url        = 'https://www.paypal.com/sdk/js';
-		$merchant = tribe( Merchant::class );
+		$merchant   = tribe( Merchant::class );
 		$query_args = array_merge( [
 			'client-id'   => $merchant->is_sandbox() ? 'sb' : $merchant->get_client_id(),
 			'merchant-id' => $merchant->get_merchant_id_in_paypal(),
-			'locale'      => 'en_US',
 			'components'  => 'buttons,hosted-fields',
+			'intent'      => 'capture',
+			'currency'    => tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_currency_code, 'USD' ),
 		], $query_args );
 		$url        = add_query_arg( $query_args, $url );
 
@@ -346,7 +347,7 @@ class Client {
 	 * @return array|null
 	 */
 	public function create_order( array $units = [] ) {
-		$merchant = tribe( Merchant::class );
+		$merchant   = tribe( Merchant::class );
 		$query_args = [];
 		$body       = [
 			'intent'              => 'CAPTURE',
@@ -374,7 +375,7 @@ class Client {
 					'currency_code' => Arr::get( $unit, 'currency' ),
 				],
 				'payee'               => [
-					'merchant_id'   => Arr::get( $unit, 'merchant_paypal_id', $merchant->get_merchant_id_in_paypal() ),
+					'merchant_id' => Arr::get( $unit, 'merchant_paypal_id', $merchant->get_merchant_id_in_paypal() ),
 				],
 				'payer'               => [
 					'name'          => [
@@ -425,6 +426,34 @@ class Client {
 	}
 
 	/**
+	 * Captures an order for a given ID in PayPal.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order_id
+	 *
+	 * @return array|null
+	 */
+	public function capture_order( $order_id ) {
+		$query_args = [];
+		$body       = [];
+		$args       = [
+			'headers' => [
+				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+				'Prefer'                        => 'return=representation',
+			],
+			'body'    => $body,
+		];
+
+		$capture_id = urlencode( $order_id );
+		$url        = '/v2/checkout/orders/{order_id}/capture';
+		$url        = str_replace( '{order_id}', $order_id, $url );
+		$response   = $this->post( $url, $query_args, $args );
+
+		return $response;
+	}
+
+	/**
 	 * Gets the profile information from the customer in PayPal.
 	 *
 	 * @link  https://developer.paypal.com/docs/api/identity/v1/#userinfo_get
@@ -460,25 +489,6 @@ class Client {
 		$capture_id = urlencode( $capture_id );
 		$url        = '/v2/payments/captures/{capture_id}/refund';
 		$url        = str_replace( '{capture_id}', $capture_id, $url );
-		$response   = $this->post( $url, $query_args, $args );
-
-		return $response;
-	}
-
-	public function capture_order( $order_id ) {
-		$query_args = [];
-		$body       = [];
-		$args       = [
-			'headers' => [
-				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
-				'Prefer'                        => 'return=representation',
-			],
-			'body'    => $body,
-		];
-
-		$capture_id = urlencode( $order_id );
-		$url        = '/v2/checkout/orders/{order_id}/capture';
-		$url        = str_replace( '{order_id}', $order_id, $url );
 		$response   = $this->post( $url, $query_args, $args );
 
 		return $response;

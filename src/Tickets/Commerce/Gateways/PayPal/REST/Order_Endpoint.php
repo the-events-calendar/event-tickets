@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\REST;
 
 use tad\WPBrowser\Adapters\WP;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
+use TEC\Tickets\Commerce\Gateways\PayPal\Status;
 use TEC\Tickets\Commerce\Order;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Client;
@@ -67,7 +68,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 
 		register_rest_route(
 			$namespace,
-			$this->get_endpoint_path() . '(?P<id>\d+)',
+			$this->get_endpoint_path() . '/(?P<order_id>[0-9a-zA-Z]+)',
 			[
 				'methods'             => WP_REST_Server::CREATABLE,
 				'args'                => $this->update_order_args(),
@@ -134,17 +135,13 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			return new WP_Error( 'tec-tc-gateway-paypal-failed-creating-order', null, $order );
 		}
 
-		$updated = tec_tc_orders()->by_args( [
-			'status' => tribe( Created::class )->get_wp_slug(),
-			'id'     => $order->ID,
-		] )->set_args( [
+		tribe( Order::class )->modify_status( $order->ID, Pending::SLUG, [
 			'gateway_payload'  => $paypal_order,
 			'gateway_order_id' => $paypal_order['id'],
-		] )->save();
-
-		tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
+		] );
 
 		// Respond with the ID for Paypal Usage.
+		$response['success'] = true;
 		$response['id'] = $paypal_order['id'];
 
 		return new WP_REST_Response( $response );
@@ -164,6 +161,36 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			'success' => false,
 		];
 
+		$paypal_order_id = $request->get_param( 'order_id' );
+		$order           = tec_tc_orders()->by_args( [
+			'status'           => tribe( Pending::class )->get_wp_slug(),
+			'gateway_order_id' => $paypal_order_id,
+		] )->first();
+
+		if ( ! $order ) {
+			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', null, $order );
+		}
+
+		$paypal_capture_response = tribe( Client::class )->capture_order( $paypal_order_id );
+
+		if ( ! $paypal_capture_response ) {
+			return new WP_Error( 'tec-tc-gateway-paypal-failed-capture', null, $paypal_capture_response );
+		}
+
+		$paypal_capture_status = Arr::get( $paypal_capture_response, [ 'status' ] );
+		$status                = tribe( Status::class )->convert_to_commerce_status( $paypal_capture_status );
+
+		if ( ! $status ) {
+			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', null, $paypal_capture_response );
+		}
+
+		tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
+			'gateway_payload' => $paypal_capture_response,
+		] );
+
+		$response['success'] = true;
+		$response['status'] = $status->get_slug();
+		$response['order_id'] = $order->ID;
 
 		return new WP_REST_Response( $response );
 	}
@@ -176,22 +203,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	 * @return array
 	 */
 	public function create_order_args() {
-		// Webhooks do not send any arguments, only JSON content.
-		return [
-			'accountStatus' => [
-				'description'       => 'The merchant ID in PayPal',
-				'required'          => false,
-				'type'              => 'string',
-				'validate_callback' => static function ( $value ) {
-					if ( ! is_string( $value ) ) {
-						return new WP_Error( 'rest_invalid_param', 'The accountStatus argument must be a string.', [ 'status' => 400 ] );
-					}
-
-					return $value;
-				},
-				'sanitize_callback' => [ $this, 'sanitize_callback' ],
-			],
-		];
+		return [];
 	}
 
 	/**
@@ -202,15 +214,14 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	 * @return array
 	 */
 	public function update_order_args() {
-		// Webhooks do not send any arguments, only JSON content.
 		return [
-			'accountStatus' => [
-				'description'       => 'The merchant ID in PayPal',
+			'order_id' => [
+				'description'       => __( 'Order ID in PayPal', 'event-tickets' ),
 				'required'          => true,
 				'type'              => 'string',
 				'validate_callback' => static function ( $value ) {
 					if ( ! is_string( $value ) ) {
-						return new WP_Error( 'rest_invalid_param', 'The accountStatus argument must be a string.', [ 'status' => 400 ] );
+						return new WP_Error( 'rest_invalid_param', 'The order ID argument must be a string.', [ 'status' => 400 ] );
 					}
 
 					return $value;

@@ -66,7 +66,6 @@ class Order_Repository extends Tribe__Repository {
 			]
 		);
 
-
 		$this->schema = array_merge(
 			$this->schema,
 			[
@@ -76,6 +75,14 @@ class Order_Repository extends Tribe__Repository {
 				'events_not'  => [ $this, 'filter_by_events_not' ],
 			]
 		);
+
+		$this->add_simple_meta_schema_entry( 'gateway', Order::$gateway_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'gateway_order_id', Order::$gateway_order_id_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'currency', Order::$currency_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'purchaser_full_name', Order::$purchaser_full_name_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'purchaser_first_name', Order::$purchaser_first_name_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'purchaser_last_name', Order::$purchaser_last_name_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'purchaser_email', Order::$purchaser_email_meta_key, 'meta_equals' );
 	}
 
 	/**
@@ -106,6 +113,17 @@ class Order_Repository extends Tribe__Repository {
 	public function filter_postarr_for_create( array $postarr ) {
 		if ( isset( $postarr['meta_input'] ) ) {
 			$postarr = $this->filter_meta_input( $postarr );
+		}
+
+		if ( ! empty( $postarr['gateway_payload'] ) ) {
+			$payload = $postarr['gateway_payload'];
+			unset( $postarr['gateway_payload'] );
+
+			$status = tribe( Commerce\Status\Status_Handler::class )->get_by_wp_slug( $this->create_args['post_status'] );
+
+			if ( $status ) {
+				$postarr['meta_input'][ Order::get_gateway_payload_meta_key( $status ) ] = $payload;
+			}
 		}
 
 		return parent::filter_postarr_for_create( $postarr );
@@ -140,6 +158,17 @@ class Order_Repository extends Tribe__Repository {
 
 			foreach ( $events as $event_id ) {
 				add_post_meta( $post_id, Order::$events_in_order_meta_key, $event_id );
+			}
+		}
+
+		if ( ! empty( $postarr['meta_input']['gateway_payload'] ) ) {
+			$payload = $postarr['meta_input']['gateway_payload'];
+			unset( $postarr['meta_input']['gateway_payload'] );
+
+			$status = tribe( Commerce\Status\Status_Handler::class )->get_by_wp_slug( $postarr['post_status'] );
+
+			if ( $status ) {
+				add_post_meta( $post_id, Order::get_gateway_payload_meta_key( $status ), $payload );
 			}
 		}
 
@@ -218,7 +247,7 @@ class Order_Repository extends Tribe__Repository {
 		$items = Arr::get( $meta, 'gateway_payload', [] );
 
 		if ( ! empty( $items ) ) {
-
+			$statuses = tribe( Commerce\Status\Status_Handler::class )->get_all();
 
 		}
 

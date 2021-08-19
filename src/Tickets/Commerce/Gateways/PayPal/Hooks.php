@@ -78,7 +78,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 *
 	 */
 	public function include_client_js_sdk_script( $file, $name, $template ) {
-		echo '<script src="' . tribe( Client::class )->get_js_sdk_url() . '" data-partner-attribution-id="' . esc_attr( \TEC\Tickets\Commerce\Gateways\PayPal\Gateway::ATTRIBUTION_ID ) . '"></script>';
+		echo tribe( Buttons::class )->get_checkout_script();
 	}
 
 	/**
