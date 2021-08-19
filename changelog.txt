@@ -1,12 +1,26 @@
 == Changelog ==
 
-= [5.1.6] TBD =
+
+= [TBD] =
+
+* Fix - Fixed cart calculation inconsistency with WooCommerce when the "Number of decimals" setting was set to `0`. [ETP-324]
+
+= [5.1.7] 2021-08-03 =
+
+* Feature - Added export button next to the page title on the Attendees page. [ET-1145]
+* Tweak - Changed the word `Purchaser` to `Attendee` when email confirmation is sent for purchasing a ticket. [ETP-655]
+* Tweak - Added `$attendees` parameter to the `tribe_report_page_after_text_label` action. [ET-1145]
+* Tweak - Removed the edit column when printing the Attendees list. [ETP-702]
+* Tweak - Added "Delete" functionality for the tickets area in the classic editor. [ET-1107]
+* Language - 1 new strings added, 61 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.1.6] 2021-07-07 =
 
 * Tweak - Added `$ticket_id` parameter to the `tribe_events_tickets_metabox_edit_ajax_advanced` filter. [ETP-111]
 * Fix - Prevent Attendees with HTML entities from exporting broken. [ETP-730]
 * Fix - Prevent Tribe Commerce "Confirmation email sender name" from displaying improperly when a single quote is added. [ET-1134]
 
-= [5.1.5] TBD =
+= [5.1.5] 2021-06-09 =
 
 * Tweak - Move complete list of changelog entries from `readme.txt` to `changelog.txt`. [ET-1121]
 
