@@ -1,6 +1,6 @@
 :root {
-	--border-radius: 3px;
-	--border-color: #ccc;
+	--tec-border-radius: 3px;
+	--tec-border-color: #ccc;
 }
 
 /* fix a z-index issue with postbox and tooltips */
@@ -9,15 +9,15 @@
 }
 
 .tribe-tickets-editor-table {
-	border-radius: var(--border-radius);
+	border-radius: var(--tec-border-radius);
 	border-spacing: 0;
-	border: 1px solid var(--border-color);
+	border: 1px solid var(--tec-border-color);
 	margin: 20px 0;
 
 	thead,
 	.table-header {
 		background-color: #fafafa;
-		border-bottom: 1px solid var(--border-color);
+		border-bottom: 1px solid var(--tec-border-color);
 	}
 
 	tr {
@@ -25,32 +25,32 @@
 	}
 
 	tr td {
-		border-bottom: 1px solid var(--border-color);
+		border-bottom: 1px solid var(--tec-border-color);
 	}
 
 	tr:first-child {
-		border-top-left-radius: var(--border-radius);
-		border-top-right-radius: var(--border-radius);
+		border-top-left-radius: var(--tec-border-radius);
+		border-top-right-radius: var(--tec-border-radius);
 
 		td:first-child {
-			border-top-left-radius: var(--border-radius);
+			border-top-left-radius: var(--tec-border-radius);
 		}
 
 		td:last-child {
-			border-top-right-radius: var(--border-radius);
+			border-top-right-radius: var(--tec-border-radius);
 		}
 	}
 
 	tr:last-child {
-		border-bottom-left-radius: var(--border-radius);
-		border-bottom-right-radius: var(--border-radius);
+		border-bottom-left-radius: var(--tec-border-radius);
+		border-bottom-right-radius: var(--tec-border-radius);
 
 		td:first-child {
-			border-bottom-left-radius: var(--border-radius);
+			border-bottom-left-radius: var(--tec-border-radius);
 		}
 
 		td:last-child {
-			border-bottom-right-radius: var(--border-radius);
+			border-bottom-right-radius: var(--tec-border-radius);
 		}
 	}
 
@@ -83,7 +83,7 @@
 	.tribe-mobile-only {
 		display: none;
 
-		@media screen and ( max-width: 782px ) {
+		@media screen and (max-width: 782px) {
 			display: inline-block;
 		}
 	}
@@ -102,7 +102,7 @@
 
 	.tribe-tickets__tickets-editor-ticket-name-title {
 		.dashicons {
-			heigth: 16px;
+			height: 16px;
 			width: 16px;
 			line-height: 16px;
 
@@ -173,16 +173,16 @@
 		tbody tr {
 			box-shadow: none;
 
-
-			@media screen and ( max-width: 782px ) {
-				border-bottom: 1px solid var(--border-color);
+			@media screen and (max-width: 782px) {
+				border-bottom: 1px solid var(--tec-border-color);
 				display: block;
 
 				&:before,
 				&:after {
-					content: "";
+					content: '';
 					display: table;
 				}
+
 				&:after {
 					clear: both;
 				}
@@ -200,7 +200,7 @@
 			}
 
 			td {
-				border-bottom: 1px solid var(--border-color);
+				border-bottom: 1px solid var(--tec-border-color);
 			}
 		}
 
@@ -210,7 +210,7 @@
 		}
 
 		tbody tr:last-child td {
-			border-top: 1px dashed var(--border-color);
+			border-top: 1px dashed var(--tec-border-color);
 		}
 	}
 
@@ -229,7 +229,7 @@
 		}
 	}
 
-	@media screen and ( max-width: 782px ) {
+	@media screen and (max-width: 782px) {
 		.tribe-mobile-hidden {
 			display: none;
 		}
@@ -243,10 +243,10 @@
 
 		tr {
 			position: relative;
-			border-bottom: 1px solid var(--border-color);
+			border-bottom: 1px solid var(--tec-border-color);
 		}
 
-		th:not( .column-primary ) {
+		th:not(.column-primary) {
 			display: none;
 		}
 
@@ -256,7 +256,7 @@
 
 		&.tribe-tickets-editor-capacity-table {
 			td:first-child,
-			td[colspan="2"] {
+			td[colspan='2'] {
 				width: 100%;
 			}
 		}
