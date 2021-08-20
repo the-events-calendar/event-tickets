@@ -1,7 +1,9 @@
-@import "tickets-common.pcss";
 /**
  * Compatibility
 */
+
+/* Import Mixins */
+@import '_mixins.pcss';
 
 body.page-tribe-attendee-registration {
 
@@ -17,7 +19,7 @@ body.page-tribe-attendee-registration {
 	span.edit-link {
 		display: none;
 
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			display: none;
 		}
 	}
@@ -30,7 +32,7 @@ body.page-tribe-attendee-registration {
 	}
 
 	.tribe-tickets__registration {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			margin: auto auto;
 			max-width: 960px;
 		}
@@ -55,34 +57,34 @@ body.page-tribe-attendee-registration {
 
 		.tribe-tickets__registration__event {
 			border-radius: 0;
-			margin: var(--spacer-8) auto var(--spacer-7);
+			margin: var(--tec-spacer-8) auto var(--tec-spacer-7);
 			max-width: 800px;
 			width: 100%;
 
-			@media(--viewport-full) {
-				padding: 0 var(--spacer-5) var(--spacer-1) 0;
+			@media (--viewport-full) {
+				padding: 0 var(--tec-spacer-5) var(--tec-spacer-1) 0;
 				margin: 0;
 			}
 
-			@media(min-width: 1440px) {
+			@media (min-width: 1440px) {
 				max-width: 100%;
 			}
 		}
 
 		.tribe-tickets__registration__actions {
-			margin: var(--spacer-7) auto var(--spacer-1);
+			margin: var(--tec-spacer-7) auto var(--tec-spacer-1);
 
-			@media(--viewport-medium) {
-				margin: var(--spacer-13) auto var(--spacer-6);
+			@media (--viewport-medium) {
+				margin: var(--tec-spacer-13) auto var(--tec-spacer-6);
 			}
 		}
 
 		.tribe-tickets__registration__back__to__cart {
-			color: var(--color-text-primary);
+			color: var(--tec-color-text-primary);
 			box-shadow: initial;
 			border: 0;
 			&:before {
-				margin-right: var(--spacer-0);
+				margin-right: var(--tec-spacer-0);
 				content: svg-inline(arrow);
 				vertical-align: baseline;
 			}
@@ -93,11 +95,11 @@ body.page-tribe-attendee-registration {
 		}
 
 		.tribe-tickets__registration__page-title {
-			margin: var(--spacer-1) 0 var(--spacer-5);
+			margin: var(--tec-spacer-1) 0 var(--tec-spacer-5);
 			padding: 0;
 
-			@media(--viewport-medium) {
-				margin: var(--spacer-6) 0 var(--spacer-7);
+			@media (--viewport-medium) {
+				margin: var(--tec-spacer-6) 0 var(--tec-spacer-7);
 			}
 		}
 
@@ -108,11 +110,11 @@ body.page-tribe-attendee-registration {
 			-ms-grid-rows: auto;
 			grid-template-rows: auto;
 
-			@media(--viewport-full) {
-				border-top: 1px solid var(--color-border-secondary);
+			@media (--viewport-full) {
+				border-top: 1px solid var(--tec-color-border-secondary);
 				-ms-grid-columns: calc(100% - 360px) 360px;
 				grid-template-columns: calc(100% - 360px) 360px;
-				padding-top: var(--spacer-10);
+				padding-top: var(--tec-spacer-10);
 			}
 		}
 
@@ -123,12 +125,12 @@ body.page-tribe-attendee-registration {
 			-ms-grid-row: 2;
 			grid-row: 2;
 
-			@media(--viewport-full) {
+			@media (--viewport-full) {
 				-ms-grid-column: 1;
 				grid-column: 1;
 				-ms-grid-row: 1;
 				grid-row: 1;
-				margin-right: var(--spacer-5);
+				margin-right: var(--tec-spacer-5);
 			}
 		}
 
@@ -138,7 +140,7 @@ body.page-tribe-attendee-registration {
 			-ms-grid-row: 3;
 			grid-row: 3;
 
-			@media(--viewport-full) {
+			@media (--viewport-full) {
 				-ms-grid-column: 1;
 				grid-column: 1;
 				-ms-grid-row: 2;
@@ -150,29 +152,29 @@ body.page-tribe-attendee-registration {
 		/* Mini-Cart Styles */
 		.tribe-tickets__mini-cart {
 			background-color: white;
-			border-top:  1px solid var(--color-border-secondary);
+			border-top:  1px solid var(--tec-color-border-secondary);
 			-ms-grid-column: 1;
 			grid-column: 1;
 			-ms-grid-row: 1;
 			grid-row: 1;
 			margin: auto auto;
 			max-width: 800px;
-			padding-top: var(--spacer-5);
+			padding-top: var(--tec-spacer-5);
 			width: 100%;
 
-			@media(--viewport-full) {
+			@media (--viewport-full) {
 				align-self: baseline;
-				border-radius: var(--border-radius-default);
-				border: 1px solid var(--color-border-secondary);
+				border-radius: var(--tec-border-radius-default);
+				border: 1px solid var(--tec-color-border-secondary);
 				-ms-grid-column: 2;
 				grid-column: 2;
 				-ms-grid-row: 1;
 				-ms-grid-row-span: 2;
 				grid-row: 1/span 2;
-				margin: 160px 0 var(--spacer-5) 0;
-				padding: var(--spacer-5) var(--spacer-3);
+				margin: 160px 0 var(--tec-spacer-5) 0;
+				padding: var(--tec-spacer-5) var(--tec-spacer-3);
 				position: sticky;
-				top: var(--spacer-5);
+				top: var(--tec-spacer-5);
 				width: 360px;
 			}
 
@@ -204,18 +206,18 @@ body.page-tribe-attendee-registration {
 			}
 
 			.tribe-tickets__item__total__wrap {
-				font-weight: var(--font-weight-bold);
+				font-weight: var(--tec-font-weight-bold);
 			}
 
 			.tribe-ticket-quantity,
 			.tribe-tickets__item__total,
 			.tribe-tickets__item__extra__price {
-				font-family: var(--font-family-sans-serif);
-				font-size: var(--font-size-2);
-				font-weight: var(--font-weight-bold);
+				font-family: var(--tec-font-family-sans-serif);
+				font-size: var(--tec-font-size-2);
+				font-weight: var(--tec-font-weight-bold);
 
-				@media(--viewport-medium) {
-					font-size: var(--font-size-2);
+				@media (--viewport-medium) {
+					font-size: var(--tec-font-size-2);
 				}
 			}
 
@@ -228,45 +230,45 @@ body.page-tribe-attendee-registration {
 			}
 
 			.tribe-tickets__item__content__subtitle {
-				color: var(--color-text-secondary);
+				color: var(--tec-color-text-secondary);
 
-				@media(--viewport-medium) {
-					font-size: var(--font-size-0);
+				@media (--viewport-medium) {
+					font-size: var(--tec-font-size-0);
 				}
 			}
 
 			.tribe-tickets__footer {
-				padding-top: var(--spacer-5);
+				padding-top: var(--tec-spacer-5);
 			}
 
 			a.tribe-tickets__footer__back-link {
 				box-shadow: none;
-				color: var(--color-text-secondary);
+				color: var(--tec-color-text-secondary);
 				display: none;
 				margin-right: auto;
-				box-shadow: inset 0 -1px 0 0 var(--color-text-secondary);
+				box-shadow: inset 0 -1px 0 0 var(--tec-color-text-secondary);
 				text-decoration: none;
 
-				@media(--viewport-medium) {
+				@media (--viewport-medium) {
 					display: block;
 				}
 
 				&:visited {
 					box-shadow: none;
-					color: var(--color-text-secondary);
+					color: var(--tec-color-text-secondary);
 				}
 
 				&:active,
 				&:focus,
 				&:hover {
-					color: var(--color-text-primary);
-					box-shadow: inset 0 -1px 0 0 var(--color-text-primary);
+					color: var(--tec-color-text-primary);
+					box-shadow: inset 0 -1px 0 0 var(--tec-color-text-primary);
 				}
 			}
 
 			.tribe-tickets__footer__total,
 			.tribe-tickets__footer__quantity {
-				font-size: var(--font-size-2);
+				font-size: var(--tec-font-size-2);
 			}
 
 			.tribe-tickets__footer__total__label {
@@ -275,35 +277,35 @@ body.page-tribe-attendee-registration {
 
 			.tribe-common-form-control-radio__input,
 			.tribe-common-form-control-checkbox__input {
-				border-color: var(--form-color-border-secondary);
-				margin-right: var(--spacer-3);
+				border-color: var(--tec-form-color-border-secondary);
+				margin-right: var(--tec-spacer-3);
 
 				&:active,
 				&:hover {
-					border-color: var(--form-color-border-secondary);
+					border-color: var(--tec-form-color-border-secondary);
 					border-width: 1px;
 				}
 			}
 		}
 
 		.tribe-tickets__mini-cart__title {
-			margin: 0 0 var(--spacer-3) 0;
+			margin: 0 0 var(--tec-spacer-3) 0;
 
-			@media(--viewport-medium) {
+			@media (--viewport-medium) {
 				border: 0;
 			}
 		}
 
 		.tribe-tickets__registration__summary {
-			margin-bottom: var(--spacer-4);
+			margin-bottom: var(--tec-spacer-4);
 
-			@media(--viewport-medium) {
-				margin-bottom: var(--spacer-7);
+			@media (--viewport-medium) {
+				margin-bottom: var(--tec-spacer-7);
 			}
 		}
 
 		.tribe-tickets__registration__description {
-			margin: 0 0 var(--spacer-1);
+			margin: 0 0 var(--tec-spacer-1);
 		}
 
 		.tribe-tickets__registration__title {
@@ -320,18 +322,18 @@ body.page-tribe-attendee-registration {
 				&:active,
 				&:focus,
 				&:hover {
-					box-shadow: inset 0 -2px 0 0 var(--color-text-primary);
+					box-shadow: inset 0 -2px 0 0 var(--tec-color-text-primary);
 				}
 			}
 		}
 
 		.tribe-ticket__heading {
-			font-size: var(--font-size-3);
-			margin-bottom: var(--spacer-3);
+			font-size: var(--tec-font-size-3);
+			margin-bottom: var(--tec-spacer-3);
 
-			@media(--viewport-medium) {
-				font-size: var(--font-size-4);
-				margin-bottom: var(--spacer-4);
+			@media (--viewport-medium) {
+				font-size: var(--tec-font-size-4);
+				margin-bottom: var(--tec-spacer-4);
 			}
 		}
 
@@ -339,24 +341,24 @@ body.page-tribe-attendee-registration {
 			margin: 0;
 
 			.tribe-ticket {
-				padding-bottom: var(--spacer-5);
+				padding-bottom: var(--tec-spacer-5);
 				padding-top: 0;
 
 				h4 {
-					margin: var(--spacer-3) 0 var(--spacer-2);
+					margin: var(--tec-spacer-3) 0 var(--tec-spacer-2);
 
-					@media(--viewport-medium) {
-						margin: var(--spacer-3) 0;
+					@media (--viewport-medium) {
+						margin: var(--tec-spacer-3) 0;
 					}
 				}
 			}
 		}
 
 		.tribe-field {
-			margin-top: var(--spacer-2);
+			margin-top: var(--tec-spacer-2);
 
-			@media(--viewport-medium) {
-				margin-top: var(--spacer-3);
+			@media (--viewport-medium) {
+				margin-top: var(--tec-spacer-3);
 			}
 		}
 
@@ -364,21 +366,21 @@ body.page-tribe-attendee-registration {
 			display: flex;
 			flex-flow: row wrap;
 			justify-content: flex-end;
-			margin-bottom: var(--spacer-8);
+			margin-bottom: var(--tec-spacer-8);
 
-			@media(--viewport-medium) {
-				margin-bottom: var(--spacer-13);
+			@media (--viewport-medium) {
+				margin-bottom: var(--tec-spacer-13);
 				max-width: calc(100% - 384px);
 				width: 100%;
 			}
 
 			.tribe-tickets__notice.tribe-tickets__notice--non-ar {
-				margin: 0 0 var(--spacer-7);
-				padding-bottom: var(--spacer-5);
+				margin: 0 0 var(--tec-spacer-7);
+				padding-bottom: var(--tec-spacer-5);
 				width: 100%;
 
-				@media(--viewport-medium) {
-					margin-bottom: var(--spacer-5);
+				@media (--viewport-medium) {
+					margin-bottom: var(--tec-spacer-5);
 				}
 			}
 		}
@@ -438,6 +440,6 @@ body.page-tribe-attendee-registration {
 
 /* Theme overrides */
 .page-tribe-attendee-registration .wrap {
-	padding-left: var(--spacer-4);
-	padding-right: var(--spacer-4);
+	padding-left: var(--tec-spacer-4);
+	padding-right: var(--tec-spacer-4);
 }

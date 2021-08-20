@@ -7,7 +7,7 @@
 .event-tickets {
 
 	.tribe-common-c-btn:disabled {
-		background-color: var(--color-accent-primary);
+		background-color: var(--tec-color-accent-primary);
 		cursor: not-allowed;
 	}
 
@@ -16,25 +16,25 @@
 	}
 
 	.tribe-tickets__rsvp-form-wrapper {
-		padding: var(--spacer-5);
+		padding: var(--tec-spacer-5);
 	}
 
 	.tribe-tickets__rsvp-form-title {
-		border-bottom: 1px dashed var(--color-border-secondary);
-		padding-bottom: var(--spacer-5);
+		border-bottom: 1px dashed var(--tec-color-border-secondary);
+		padding-bottom: var(--tec-spacer-5);
 
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			border: none;
 			padding-bottom: 0;
 		}
 	}
 
 	.tribe-tickets__rsvp-form-content {
-		margin-bottom: var(--spacer-1);
-		margin-top: var(--spacer-8);
+		margin-bottom: var(--tec-spacer-1);
+		margin-top: var(--tec-spacer-8);
 
-		@media(--viewport-medium) {
-			margin-top: var(--spacer-5);
+		@media (--viewport-medium) {
+			margin-top: var(--tec-spacer-5);
 		}
 	}
 
@@ -42,16 +42,16 @@
 		display: flex;
 		align-items: baseline;
 		justify-content: flex-end;
-		padding-top: var(--spacer-4);
+		padding-top: var(--tec-spacer-4);
 
 		> * {
-			margin-left: var(--spacer-4);
+			margin-left: var(--tec-spacer-4);
 		}
 	}
 
 	.tribe-tickets__form input[type="number"].tribe-tickets__rsvp-form-input-number {
 
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			max-width: 140px;
 		}
 	}
@@ -61,16 +61,16 @@
 	}
 
 	.tribe-tickets__rsvp-form-button--cancel {
-		color: var(--color-text-secondary);
+		color: var(--tec-color-text-secondary);
 
 		&:focus,
 		&:hover {
-			color: var(--color-text-primary);
+			color: var(--tec-color-text-primary);
 		}
 	}
 
 	.tribe-tickets__rsvp-form-button--submit {
-		padding-left: var(--spacer-6);
-		padding-right: var(--spacer-6);
+		padding-left: var(--tec-spacer-6);
+		padding-right: var(--tec-spacer-6);
 	}
 }

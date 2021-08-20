@@ -1,6 +1,6 @@
 <script>
 	function onboardedCallback( authCode, sharedId ) {
-		fetch( '<?php echo tribe( \TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding::class )->get_route_url() ?>', {
+		fetch( '<?php echo tribe( \TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding_Endpoint::class )->get_route_url() ?>', {
 			method: 'POST',
 			headers: {
 				'content-type': 'application/json',

@@ -69,6 +69,29 @@ interface Status_Interface {
 	 */
 	public function has_flags( $flags, $operator = 'AND' );
 
+
+	/**
+	 * Determines if a given order can be modified to this status.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post $order Which order we are testing against.
+	 *
+	 * @return boolean|\WP_Error
+	 */
+	public function can_apply_to( $order );
+
+	/**
+	 * Filters the WP arguments used to register the status.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $arguments Which arguments we are passing.
+	 *
+	 * @return array
+	 */
+	public function filter_wp_arguments( array $arguments = [] );
+
 	/**
 	 * Fetches the WordPress arguments required to register this Status.
 	 *

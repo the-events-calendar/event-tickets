@@ -41,10 +41,10 @@ class Order_Model extends Base {
 
 			$cart_items       = maybe_unserialize( Arr::get( $post_meta, [ Order::$cart_items_meta_key, 0 ] ) );
 			$total_value      = Arr::get( $post_meta, [ Order::$total_value_meta_key, 0 ] );
-			$currency         = Arr::get( $post_meta, [ Order::$currency_meta_key, 0 ] );
+			$currency         = Arr::get( $post_meta, [ Order::$currency_meta_key, 0 ], 'USD' );
 			$gateway_slug     = Arr::get( $post_meta, [ Order::$gateway_meta_key, 0 ] );
 			$gateway_order_id = Arr::get( $post_meta, [ Order::$gateway_order_id_meta_key, 0 ] );
-			$gateway_payload  = Arr::get( $post_meta, [ Order::$gateway_payload_meta_key, 0 ] );
+			$gateway_payload  = $this->get_gateway_payloads( $post_meta );
 
 			$purchaser_full_name  = Arr::get( $post_meta, [ Order::$purchaser_full_name_meta_key, 0 ] );
 			$purchaser_first_name = Arr::get( $post_meta, [ Order::$purchaser_first_name_meta_key, 0 ] );
@@ -63,6 +63,7 @@ class Order_Model extends Base {
 				'total_value'      => $total_value,
 				'currency'         => $currency,
 				'purchaser'        => [
+					'user_id'    => $this->post->post_author,
 					'first_name' => $purchaser_first_name,
 					'last_name'  => $purchaser_last_name,
 					'full_name'  => $purchaser_full_name,
@@ -77,6 +78,19 @@ class Order_Model extends Base {
 		}
 
 		return $properties;
+	}
+
+	protected function get_gateway_payloads( $post_meta ) {
+		$statuses = tribe( Commerce\Status\Status_Handler::class )->get_all();
+		$meta = [];
+
+		foreach ( $statuses as $status ) {
+			$status_payloads = Arr::get( $post_meta, [ Order::get_gateway_payload_meta_key( $status ) ], [] );
+
+			$meta[ $status->get_slug() ] = $status_payloads;
+		}
+
+		return array_filter( $meta );
 	}
 
 	/**

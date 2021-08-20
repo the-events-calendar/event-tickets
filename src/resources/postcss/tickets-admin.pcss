@@ -1,4 +1,4 @@
-@import "tickets-common.pcss";
+@import 'tickets-common.pcss';
 
 .tribe-tickets-column-attendees-link {
 	display: inline-block;
@@ -82,8 +82,8 @@
 }
 
 :root {
-	--border-light-color: #a3a3a3;
-	--button-text-color: #555;
+	--tec-border-light-color: #a3a3a3;
+	--tec-button-text-color: #555;
 }
 
 @define-mixin tribe-ticket-tooltip {
@@ -92,7 +92,7 @@
 	.tooltip {
 		background-color: #efefef;
 		border-radius: 3px;
-		border: 1px solid var(--border-light-color);
+		border: 1px solid var(--tec-border-light-color);
 		display: none;
 		margin-left: .5em;
 		padding: .5em;
@@ -201,7 +201,7 @@
 
 /* Panels */
 .ticket_panel {
-	border: 1px solid var(--border-light-color);
+	border: 1px solid var(--tec-border-light-color);
 	border-radius: 5px;
 	box-sizing: border-box;
 	opacity: 1;
@@ -302,7 +302,7 @@
 }
 
 .tribe-button-icon {
-	&::before {
+	&:before {
 		font-family: 'dashicons';
 		font-size: 1.25em;
 		left: -.25em;
