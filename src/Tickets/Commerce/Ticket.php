@@ -151,17 +151,18 @@ class Ticket {
 	 *
 	 * @since TBD
 	 *
-	 * @param $event_id
-	 * @param $ticket_id
+	 * @param int|\WP_Post $ticket_id
 	 *
 	 * @return null|\Tribe__Tickets__Ticket_Object
 	 */
-	public function get_ticket( $event_id, $ticket_id ) {
+	public function get_ticket( $ticket_id ) {
 		$product = get_post( $ticket_id );
 
 		if ( ! $product ) {
 			return null;
 		}
+
+		$event_id = get_post_meta( $ticket_id, static::$event_relation_meta_key, true );
 
 		$return = new \Tribe__Tickets__Ticket_Object();
 

@@ -2,17 +2,19 @@
 /**
  * Handles registering and setup for assets on Ticket Commerce.
  *
- * @since 5.1.6
+ * @since   5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint;
+
 /**
  * Class Assets.
  *
- * @since 5.1.6
+ * @since   5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -24,8 +26,9 @@ class Assets extends \tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	public function register() {
+		$plugin = \Tribe__Tickets__Main::instance();
 		tribe_asset(
-			\Tribe__Tickets__Main::instance(),
+			$plugin,
 			'tribe-tickets-admin-commerce-paypal-commerce-partner-js',
 			$this->get_partner_js_url(),
 			[],
@@ -64,6 +67,32 @@ class Assets extends \tad_DI52_ServiceProvider {
 				],
 			]
 		);
+
+
+		tribe_asset(
+			$plugin,
+			'tec-tickets-commerce-gateway-paypal-checkout',
+			'commerce/gateway/paypal/checkout.js',
+			[
+				'jquery',
+				'tribe-common',
+			],
+			null,
+			[
+				'groups'   => [
+					'tec-tickets-commerce-gateway-paypal',
+				],
+				'localize' => [
+					'name' => 'tecTicketsCommerceGatewayPayPalCheckout',
+					'data' => static function () {
+						return [
+							'orderEndpoint' => tribe( Order_Endpoint::class )->get_route_url(),
+						];
+					},
+				],
+			]
+		);
+
 	}
 
 	/**

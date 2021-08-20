@@ -12,12 +12,12 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
-class Attendee_Generation extends Flag_Action_Abstract {
+class Generate_Attendees extends Flag_Action_Abstract {
 	/**
 	 * {@inheritDoc}
 	 */
 	protected $flags = [
-		'attendee_generation',
+		'generate_attendees',
 	];
 
 	/**

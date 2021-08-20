@@ -11,6 +11,8 @@ class ItemsTest extends V2TestCase {
 
 	public $partial_path = 'v2/tickets/items';
 
+	private $tolerables = [];
+
 	/**
 	 * Get all the default args required for this template
 	 *
@@ -27,8 +29,11 @@ class ItemsTest extends V2TestCase {
 		$ids     = $this->create_many_paypal_tickets( 2, $event->ID, [ 'price' => 99 ] );
 		$tickets = [];
 
+		$this->tolerables[] = $event->ID;
+
 		foreach ( $ids as $ticket ) {
 			$tickets[] = $provider->get_ticket( $event->ID, $ticket );
+			$this->tolerables[] = $ticket;
 		}
 
 		return [
@@ -78,20 +83,7 @@ class ItemsTest extends V2TestCase {
 
 		$driver = $this->get_html_output_driver();
 
-		$driver->setTolerableDifferences(
-			array_merge( [ $args['post_id'] ], wp_list_pluck( $args['tickets'], 'ID' ) )
-		);
-
-		$driver->setTimeDependentAttributes( [ 'value', 'data-ticket-id', 'aria-controls' ] );
-
-		$driver->setTolerableDifferencesPrefixes( [
-			'post-',
-			'tribe-block-tickets-item-',
-			'Test ticket for ',
-			'Test ticket description for ',
-			'tribe__details__content--',
-			'class="tribe-amount">',
-		] );
+		$driver->setTolerableDifferences( $this->tolerables );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}

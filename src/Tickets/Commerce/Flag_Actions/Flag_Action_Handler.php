@@ -27,7 +27,7 @@ class Flag_Action_Handler extends \tad_DI52_ServiceProvider {
 	 * @var string[]
 	 */
 	protected $default_flag_actions = [
-		Attendee_Generation::class,
+		Generate_Attendees::class,
 	];
 
 	/**

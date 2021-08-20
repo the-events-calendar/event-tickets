@@ -105,8 +105,10 @@ class Tickets_Form {
 	/**
 	 * Modifies the passed content to inject the front-end tickets form.
 	 *
-	 * @since 4.7
-	 * @since 4.10.9 Use customizable ticket name functions.
+	 * @todo @juanfra We need to move this to use a whole new set of templates. This is currently still using
+	 *       Tribe Commerce templates and the old system.
+	 *
+	 * @since TBR
 	 *
 	 * @return void The method will echo in the context of a buffered output.
 	 *

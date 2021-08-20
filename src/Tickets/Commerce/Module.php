@@ -516,13 +516,13 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param $event_id
-	 * @param $ticket_id
+	 * @param int|\WP_Post $post_id
+	 * @param int|\WP_Post $ticket_id
 	 *
 	 * @return null|\Tribe__Tickets__Ticket_Object
 	 */
-	public function get_ticket( $event_id, $ticket_id ) {
-		return tribe( Ticket::class )->get_ticket( $event_id, $ticket_id );
+	public function get_ticket( $post_id, $ticket_id ) {
+		return tribe( Ticket::class )->get_ticket( $ticket_id );
 	}
 
 	/**

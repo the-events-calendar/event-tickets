@@ -56,7 +56,6 @@ class Order_Repository extends Tribe__Repository {
 			[
 				'gateway'              => Order::$gateway_meta_key,
 				'gateway_order_id'     => Order::$gateway_order_id_meta_key,
-				'gateway_payload'      => Order::$gateway_payload_meta_key,
 				'cart_items'           => Order::$cart_items_meta_key,
 				'total_value'          => Order::$total_value_meta_key,
 				'currency'             => Order::$currency_meta_key,
@@ -67,7 +66,6 @@ class Order_Repository extends Tribe__Repository {
 			]
 		);
 
-
 		$this->schema = array_merge(
 			$this->schema,
 			[
@@ -77,6 +75,14 @@ class Order_Repository extends Tribe__Repository {
 				'events_not'  => [ $this, 'filter_by_events_not' ],
 			]
 		);
+
+		$this->add_simple_meta_schema_entry( 'gateway', Order::$gateway_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'gateway_order_id', Order::$gateway_order_id_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'currency', Order::$currency_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'purchaser_full_name', Order::$purchaser_full_name_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'purchaser_first_name', Order::$purchaser_first_name_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'purchaser_last_name', Order::$purchaser_last_name_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'purchaser_email', Order::$purchaser_email_meta_key, 'meta_equals' );
 	}
 
 	/**
@@ -109,6 +115,17 @@ class Order_Repository extends Tribe__Repository {
 			$postarr = $this->filter_meta_input( $postarr );
 		}
 
+		if ( ! empty( $postarr['gateway_payload'] ) ) {
+			$payload = $postarr['gateway_payload'];
+			unset( $postarr['gateway_payload'] );
+
+			$status = tribe( Commerce\Status\Status_Handler::class )->get_by_wp_slug( $this->create_args['post_status'] );
+
+			if ( $status ) {
+				$postarr['meta_input'][ Order::get_gateway_payload_meta_key( $status ) ] = $payload;
+			}
+		}
+
 		return parent::filter_postarr_for_create( $postarr );
 	}
 
@@ -136,12 +153,22 @@ class Order_Repository extends Tribe__Repository {
 			$events = array_filter( array_unique( (array) $postarr['events_in_order'] ) );
 			unset( $postarr['events_in_order'] );
 
-
 			// Delete all of the previous ones when updating.
 			delete_post_meta( $post_id, Order::$events_in_order_meta_key );
 
 			foreach ( $events as $event_id ) {
 				add_post_meta( $post_id, Order::$events_in_order_meta_key, $event_id );
+			}
+		}
+
+		if ( ! empty( $postarr['meta_input']['gateway_payload'] ) ) {
+			$payload = $postarr['meta_input']['gateway_payload'];
+			unset( $postarr['meta_input']['gateway_payload'] );
+
+			$status = tribe( Commerce\Status\Status_Handler::class )->get_by_wp_slug( $postarr['post_status'] );
+
+			if ( $status ) {
+				add_post_meta( $post_id, Order::get_gateway_payload_meta_key( $status ), $payload );
 			}
 		}
 
@@ -215,13 +242,35 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @return array
 	 */
+	protected function filter_gateway_payload( $postarr, $post_id = null ) {
+		$meta  = Arr::get( $postarr, 'meta_input', [] );
+		$items = Arr::get( $meta, 'gateway_payload', [] );
+
+		if ( ! empty( $items ) ) {
+			$statuses = tribe( Commerce\Status\Status_Handler::class )->get_all();
+
+		}
+
+		return $postarr;
+	}
+
+	/**
+	 * Filters the tickets data from the input so we can properly save the cart items.
+	 *
+	 * @since TBD
+	 *
+	 * @param array    $postarr Data set that needs filtering.
+	 * @param null|int $post_id When we are dealing with an Update we have an ID here.
+	 *
+	 * @return array
+	 */
 	protected function filter_cart_items_input( $postarr, $post_id = null ) {
 		$meta  = Arr::get( $postarr, 'meta_input', [] );
 		$items = Arr::get( $meta, Order::$cart_items_meta_key, [] );
 
 		if ( ! empty( $items ) ) {
 			$ticket_ids    = array_unique( array_filter( array_values( wp_list_pluck( $items, 'ticket_id' ) ) ) );
-			$event_objects = array_map( [ tribe( Module::class ), 'get_event_for_ticket' ], $items );
+			$event_objects = array_map( [ tribe( Module::class ), 'get_event_for_ticket' ], $ticket_ids );
 			$event_ids     = array_unique( array_filter( array_values( wp_list_pluck( $event_objects, 'ID' ) ) ) );
 
 			// These will be remove right before actually creating the order.
@@ -298,6 +347,10 @@ class Order_Repository extends Tribe__Repository {
 	protected function filter_meta_input( array $postarr, $post_id = null ) {
 		if ( ! empty( $postarr['meta_input']['purchaser'] ) ) {
 			$postarr = $this->filter_purchaser_input( $postarr, $post_id );
+		}
+
+		if ( ! empty( $postarr['meta_input']['gateway_payload'] ) ) {
+			$postarr = $this->filter_gateway_payload( $postarr, $post_id );
 		}
 
 		if ( ! empty( $postarr['meta_input'][ Order::$cart_items_meta_key ] ) ) {
