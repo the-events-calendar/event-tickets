@@ -21,7 +21,7 @@
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */
 
-$passed_provider = tribe_get_request_var( Tribe__Tickets__Tickets::get_provider_url_slug() );
+$passed_provider = tribe_get_request_var( tribe_tickets_get_provider_slug() );
 
 $passed_provider_class = $this->get_form_class( $passed_provider );
 
