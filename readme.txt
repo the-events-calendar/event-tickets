@@ -23,7 +23,7 @@ https://vimeo.com/480516958
 
 See Event Tickets in action on our [demo site](https://evnt.is/1ajs). Just getting started? Check out the [Getting Started Guide](https://evnt.is/1aoc) for an introduction to features, settings, and functionality.
 
-Looking for additional features like custom registration fields, QR check-in, Zoom integration, and more? <strong>Check out [Event Tickets Plus](https://evnt.is/18th) and our [other add-ons](https://evnt.is/2a)</strong>. ...and all of them are on sale from November 23-30 during our annual 💰[Black Friday Sale](https://evnt.is/1aod)💰
+Looking for additional features like custom registration fields, QR check-in, Zoom integration, and more? <strong>Check out [Event Tickets Plus](https://evnt.is/18th) and our [other add-ons](https://evnt.is/2a)</strong>.
 
 = 🔌🎨 Plug and Play or Customize =
 
@@ -178,8 +178,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [TBD] =
 
+* Fix - Fixed cart calculation inconsistency with WooCommerce when the "Number of decimals" setting was set to `0`. [ETP-324]
 * Fix - Removed RSVP V2 preview templates and functionality. [ET-1162]
 * Fix - Updated deprecated hook `block_categories` to use `block_categories_all`. [ET-1156]
 

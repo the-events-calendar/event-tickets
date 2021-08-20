@@ -12,8 +12,8 @@
 	*/
 	.tribe-tickets__tickets-footer {
 		align-items: baseline;
-		border-top: 1px solid var(--color-border-secondary);
-		padding: var(--spacer-4) 0 0;
+		border-top: 1px solid var(--tec-color-border-secondary);
+		padding: var(--tec-spacer-4) 0 0;
 		display: flex;
 		flex-flow: row nowrap;
 		justify-content: flex-end;
@@ -21,7 +21,7 @@
 
 	.tribe-tickets__tickets-footer-total,
 	.tribe-tickets__tickets-footer-quantity {
-		color: var(--color-text-secondary);
+		color: var(--tec-color-text-secondary);
 		display: none;
 		text-align: center;
 	}
@@ -34,18 +34,18 @@
 	}
 
 	.tribe-tickets__tickets-footer-total {
-		margin-left: var(--spacer-1);
+		margin-left: var(--tec-spacer-1);
 
-		@media(--viewport-medium) {
-			margin-left: var(--spacer-5);
+		@media (--viewport-medium) {
+			margin-left: var(--tec-spacer-5);
 		}
 	}
 
 	.tribe-tickets__tickets-footer-total-wrap,
 	.tribe-tickets__tickets-footer-total-number,
 	.tribe-tickets__tickets-footer-quantity-number {
-		color: var(--color-text-primary);
-		font-weight: var(--font-weight-bold);
+		color: var(--tec-color-text-primary);
+		font-weight: var(--tec-font-weight-bold);
 	}
 
 	.tribe-tickets__attendee__fields__footer_checkout-button,
@@ -58,28 +58,28 @@
 			white-space: nowrap;
 			margin-left: auto;
 
-			@media(min-width: 400px max-width: 500px) {
+			@media (min-width: 400px max-width: 500px) {
 			}
 
-			@media(--viewport-xsmall) {
-				margin-left: var(--spacer-3);
+			@media (--viewport-xsmall) {
+				margin-left: var(--tec-spacer-3);
 			}
 
-			@media(--viewport-medium) {
-				margin-left: var(--spacer-6);
+			@media (--viewport-medium) {
+				margin-left: var(--tec-spacer-6);
 			}
 
 			&:focus,
 			&:hover {
-				background-color: var(--color-accent-primary-hover);
+				background-color: var(--tec-color-accent-primary-hover);
 			}
 
 			&:active {
-				background-color: var(--color-accent-primary-active);
+				background-color: var(--tec-color-accent-primary-active);
 			}
 
 			&:disabled {
-				background-color: var(--color-accent-primary);
+				background-color: var(--tec-color-accent-primary);
 				cursor: not-allowed;
 			}
 		}

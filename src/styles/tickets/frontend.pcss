@@ -4,7 +4,7 @@
  * @since  0.3.0-alpha
  */
 .tribe-common.tribe-tickets {
-	border: 1px solid var(--color-border-secondary);
+	border: 1px solid var(--tec-color-border-secondary);
 	border-radius: 4px;
 	margin-top: 30px;
 	margin-bottom: 30px;
@@ -16,9 +16,9 @@
 	.tribe-tickets__item {
 		display: flex;
 		flex-flow: row wrap;
-		background: var(--color-background);
-		border-bottom: 1px solid var(--color-border-secondary);
-		border-top: 1px solid var(--color-border-secondary);
+		background: var(--tec-color-background);
+		border-bottom: 1px solid var(--tec-color-border-secondary);
+		border-top: 1px solid var(--tec-color-border-secondary);
 		padding: .875em 0;
 
 		&:last-of-type {
@@ -50,7 +50,7 @@
 		flex: 1 1 100%;
 		order: 1;
 
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			flex: 0 0 80%;
 		}
 	}
@@ -61,14 +61,14 @@
 		margin-left: .5em;
 		order: 3;
 
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			margin-left: 0;
 			order: 2;
 		}
 	}
 
 	.tribe-tickets__item__content__description__more {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			display: none;
 		}
 
@@ -82,7 +82,7 @@
 	.tribe-tickets__item__content__description__content {
 		display: none;
 
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			display: block;
 		}
 	}
@@ -98,7 +98,7 @@
 		text-align: center;
 
 
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			align-items: center;
 			flex: 0 0 20%;
 			flex-flow: column;
@@ -107,8 +107,8 @@
 	}
 
 	.tribe-tickets__item__extra__price {
-		color: var(--color-icon-secondary);
-		font-weight: var(--font-weight-bold);
+		color: var(--tec-color-icon-secondary);
+		font-weight: var(--tec-font-weight-bold);
 	}
 
 	.tribe-tickets__item__extra__available {
@@ -123,14 +123,14 @@
 	.tribe-tickets__item__quantity__add,
 	.tribe-tickets__item__quantity__remove {
 		background-color: transparent;
-		color: var(--color-icon-secondary);
+		color: var(--tec-color-icon-secondary);
 		display: inline-block;
 		font-size: 24px;
 
 		&:hover,
 		&:focus {
 			background-color: transparent;
-			color: var(--color-icon-primary);
+			color: var(--tec-color-icon-primary);
 		}
 	}
 
@@ -248,7 +248,7 @@
 			-webkit-appearance: none;
 			-moz-appearance:    none;
 			appearance:         none;
-			background: var(--color-background);
+			background: var(--tec-color-background);
 			height: auto;
 			min-width: 400px;
 		}
