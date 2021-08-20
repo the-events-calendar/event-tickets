@@ -42,15 +42,11 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	protected function add_actions() {
-		// Frontend: PayPal Checkout.
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_create_order', [ $this, 'create_order' ] );
-		add_action( 'wp_ajax_nopriv_tribe_tickets_paypal_commerce_create_order', [ $this, 'create_order' ] );
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_approve_order', [ $this, 'approve_order' ] );
-		add_action( 'wp_ajax_nopriv_tribe_tickets_paypal_commerce_approve_order', [ $this, 'approve_order' ] );
-
 		// REST API Endpoint registration.
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-disconnect', [ $this, 'handle_action_disconnect' ] );
+		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-access-token', [ $this, 'handle_action_refresh_token' ] );
+		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-user-info', [ $this, 'handle_action_refresh_user_info' ] );
 
 		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout/header', [ $this, 'include_client_js_sdk_script' ], 15, 3 );
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
@@ -76,7 +72,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 *
 	 */
 	public function include_client_js_sdk_script( $file, $name, $template ) {
-		echo '<script src="' . tribe( Client::class )->get_js_sdk_url() . '" data-partner-attribution-id="' . esc_attr( \TEC\Tickets\Commerce\Gateways\PayPal\Gateway::ATTRIBUTION_ID ) . '"></script>';
+		echo tribe( Buttons::class )->get_checkout_script();
 	}
 
 	/**
@@ -102,6 +98,34 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function handle_action_disconnect() {
 		$this->container->make( Merchant::class )->disconnect();
+	}
+
+	/**
+	 * Handles the refreshing of the token from PayPal for this merchant.
+	 *
+	 * @since TBD
+	 *
+	 * @todo Display some message when refreshing token.
+	 */
+	public function handle_action_refresh_token() {
+		$merchant = $this->container->make( Merchant::class );
+		$token_data = $this->container->make( Client::class )->get_access_token_from_client_credentials( $merchant->get_client_id(), $merchant->get_client_secret() );
+
+		$saved = $merchant->save_access_token_data( $token_data );
+	}
+
+	/**
+	 * Handles the refreshing of the user info from PayPal for this merchant.
+	 *
+	 * @since TBD
+	 *
+	 * @todo Display some message when refreshing user info.
+	 */
+	public function handle_action_refresh_user_info() {
+		$merchant = $this->container->make( Merchant::class );
+		$user_info = $this->container->make( Client::class )->get_user_info();
+
+		$saved = $merchant->save_user_info( $user_info );
 	}
 
 	/**

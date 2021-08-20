@@ -4,6 +4,10 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Event;
+
+use Tribe__Utils__Array as Arr;
+use Tribe__Tickets__Global_Stock as Event_Stock;
 
 /**
  * Class Ticket.
@@ -30,6 +34,78 @@ class Ticket {
 	 * @var string
 	 */
 	public static $event_relation_meta_key = '_tec_tickets_commerce_event';
+
+	/**
+	 * Which meta holds the data for showing the ticket description.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $show_description_meta_key = '_tribe_ticket_show_description';
+
+	/**
+	 * Which meta holds the data for the ticket sku.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $sku_meta_key = '_sku';
+
+	/**
+	 * Which meta holds the data for the ticket price.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $price_meta_key = '_price';
+
+	/**
+	 * Which meta holds the data for the ticket stock mode.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $stock_mode_meta_key = Event_Stock::TICKET_STOCK_MODE;
+
+	/**
+	 * Which meta holds the data for the ticket stock.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $stock_meta_key = '_stock';
+
+	/**
+	 * Which meta holds the data for the ticket stock status.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $stock_status_meta_key = '_stock_status';
+
+	/**
+	 * Which meta holds the data for the ticket allows backorders.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $allow_backorders_meta_key = '_backorders';
+
+	/**
+	 * Which meta holds the data for the ticket is managing stock.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $should_manage_stock_meta_key = '_manage_stock';
 
 	/**
 	 * Register this Class post type into WP.
@@ -69,21 +145,24 @@ class Ticket {
 	}
 
 	/**
-	 * Gets an individual ticket
+	 * Gets an individual ticket.
 	 *
-	 * @since 4.7
+	 * @todo  TribeCommerceLegacy: This method needs to make use of the Ticket Model.
 	 *
-	 * @param $event_id
-	 * @param $ticket_id
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post $ticket_id
 	 *
 	 * @return null|\Tribe__Tickets__Ticket_Object
 	 */
-	public function get_ticket( $event_id, $ticket_id ) {
+	public function get_ticket( $ticket_id ) {
 		$product = get_post( $ticket_id );
 
 		if ( ! $product ) {
 			return null;
 		}
+
+		$event_id = get_post_meta( $ticket_id, static::$event_relation_meta_key, true );
 
 		$return = new \Tribe__Tickets__Ticket_Object();
 
@@ -105,7 +184,7 @@ class Ticket {
 		$return->sku              = get_post_meta( $ticket_id, '_sku', true );
 
 		// If the quantity sold wasn't set, default to zero
-                   		$qty_sold = $qty_sold ? $qty_sold : 0;
+		$qty_sold = $qty_sold ? $qty_sold : 0;
 
 		// Ticket stock is a simple reflection of remaining inventory for this item...
 		$stock = (int) get_post_meta( $ticket_id, '_stock', true );
@@ -138,7 +217,7 @@ class Ticket {
 		/**
 		 * Use this Filter to change any information you want about this ticket
 		 *
-		 * @since 4.7
+		 * @since TBD
 		 *
 		 * @param object $ticket
 		 * @param int    $post_id
@@ -151,6 +230,8 @@ class Ticket {
 
 	/**
 	 * Returns the total number of cancelled tickets.
+	 *
+	 * @todo  TribeCommerceLegacy: Move this method into the another place.
 	 *
 	 * @since TBD
 	 *
@@ -178,6 +259,8 @@ class Ticket {
 	/**
 	 * Returns the number of pending attendees by ticket.
 	 *
+	 * @todo  TribeCommerceLegacy: Move this method into the another place.
+	 *
 	 * @since TBD
 	 *
 	 * @param int  $ticket_id The ticket post ID
@@ -201,7 +284,7 @@ class Ticket {
 					'relation' => 'AND',
 					[
 						'key'   => Attendee::$status_meta_key,
-						'value' => Pending::SLUG,
+						'value' => tribe( Pending::class )->get_wp_slug(),
 					],
 				],
 			] );
@@ -212,8 +295,21 @@ class Ticket {
 		return $pending_attendees_by_ticket[ $ticket_id ];
 	}
 
-
-	public function save( $post_id, $ticket, $raw_data = array() ) {
+	/**
+	 * Legacy method ported from Tribe Commerce (TPP), we are specifically avoiding refactoring anything on the first
+	 * stage of Tickets Commerce
+	 *
+	 * @todo  TribeCommerceLegacy: This method needs to be split into `create` and `update`
+	 *
+	 * @since TBD
+	 *
+	 * @param       $post_id
+	 * @param       $ticket
+	 * @param array $raw_data
+	 *
+	 * @return false|int|\WP_Error
+	 */
+	public function save( $post_id, $ticket, $raw_data = [] ) {
 		$save_type = 'update';
 
 		if ( empty( $ticket->ID ) ) {
@@ -268,7 +364,7 @@ class Ticket {
 		$ticket_data = \Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
 		tribe( Module::class )->update_capacity( $ticket, $ticket_data, $save_type );
 
-		foreach ( array( 'start_date', 'start_time', 'end_date', 'end_time' ) as $time_key ) {
+		foreach ( [ 'start_date', 'start_time', 'end_date', 'end_time' ] as $time_key ) {
 			if ( isset( $ticket->{$time_key} ) ) {
 				update_post_meta( $ticket->ID, "_ticket_{$time_key}", $ticket->{$time_key} );
 			} else {
@@ -431,14 +527,14 @@ class Ticket {
 		/**
 		 * Generic action fired after saving a ticket (by type)
 		 *
-		 * @since 4.7
+		 * @since TBD
 		 *
 		 * @param int                            $post_id  Post ID of post the ticket is tied to
 		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
 		 * @param array                          $raw_data Ticket data
 		 * @param string                         $class    Commerce engine class
 		 */
-		do_action( 'event_tickets_after_' . $save_type . '_ticket', $post_id, $ticket, $raw_data, static::class );
+		do_action( "tec_tickets_commerce_after_{$save_type}_ticket", $post_id, $ticket, $raw_data, static::class );
 
 		/**
 		 * Generic action fired after saving a ticket
@@ -450,11 +546,23 @@ class Ticket {
 		 * @param array                          $raw_data Ticket data
 		 * @param string                         $class    Commerce engine class
 		 */
-		do_action( 'event_tickets_after_save_ticket', $post_id, $ticket, $raw_data, static::class );
+		do_action( 'tec_tickets_commerce_after_save_ticket', $post_id, $ticket, $raw_data, static::class );
 
 		return $ticket->ID;
 	}
 
+	/**
+	 * Deletes a given ticket.
+	 *
+	 * @todo  TribeCommerceLegacy: This method needs to be refactored to Tickets Commerce standards.
+	 *
+	 * @since TBD
+	 *
+	 * @param $event_id
+	 * @param $ticket_id
+	 *
+	 * @return bool
+	 */
 	public function delete( $event_id, $ticket_id ) {
 		// Ensure we know the event and product IDs (the event ID may not have been passed in)
 		if ( empty( $event_id ) ) {
@@ -487,15 +595,16 @@ class Ticket {
 		}
 
 		\Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
-		do_action( 'tickets_tpp_ticket_deleted', $ticket_id, $event_id, $product_id );
+		do_action( 'tec_tickets_commerce_ticket_deleted', $ticket_id, $event_id, $product_id );
 		\Tribe__Post_Transient::instance()->delete( $event_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 
 		return true;
-
 	}
 
 	/**
 	 * Update Stock and Global Stock when deleting an Attendee
+	 *
+	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
 	 *
 	 * @since TBD
 	 *
@@ -512,11 +621,13 @@ class Ticket {
 		}
 
 		tribe( Module::class )->decrease_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
-
 	}
 
 	/**
 	 * Update Global Stock.
+	 *
+	 * @todo  TribeCommerceLegacy: Not sure where this method fits, might just need to integrate it it into the
+	 *        create/update methods and delete this.
 	 *
 	 * @since TBD
 	 *
@@ -538,6 +649,8 @@ class Ticket {
 
 	/**
 	 * Increase the sales for a ticket by a specific quantity.
+	 *
+	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
 	 *
 	 * @since TBD
 	 *
@@ -564,6 +677,8 @@ class Ticket {
 	/**
 	 * Decrease the sales for a ticket by a specific quantity.
 	 *
+	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
+	 *
 	 * @since TBD
 	 *
 	 * @param int                                $ticket_id       The ticket post ID.
@@ -589,4 +704,65 @@ class Ticket {
 		return $sales;
 	}
 
+	/**
+	 * Gets the product price value.
+	 *
+	 * @todo  TribeCommerceLegacy: This should not be used, the model should be used.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post $product
+	 *
+	 * @return string
+	 */
+	public function get_price_value( $product ) {
+		$product = get_post( $product );
+
+		if ( ! $product instanceof \WP_Post ) {
+			return false;
+		}
+
+		return get_post_meta( $product->ID, static::$stock_meta_key, true );
+	}
+
+	/**
+	 * Get's the product price html
+	 *
+	 * @todo  TribeCommerceLegacy: This should not be used, the model and a template should be used.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|object    $product
+	 * @param array|boolean $attendee
+	 *
+	 * @return string
+	 */
+	public function get_price_html( $product, $attendee = false ) {
+		$product_id = $product;
+
+		if ( $product instanceof \WP_Post ) {
+			$product_id = $product->ID;
+		} elseif ( is_numeric( $product_id ) ) {
+			$product = get_post( $product_id );
+		} else {
+			return '';
+		}
+
+		$price = $this->get_price_value( $product );
+		$price = tribe( 'tickets.commerce.paypal.currency' )->format_currency( $price, $product_id );
+
+		$price_html = '<span class="tribe-tickets-price-amount amount">' . esc_html( $price ) . '</span>';
+
+		/**
+		 * Allow filtering of the Price HTML
+		 *
+		 * @since TBD
+		 *
+		 * @param string $price_html
+		 * @param mixed  $product
+		 * @param mixed  $attendee
+		 *
+		 */
+		return apply_filters( 'tec_tickets_commerce_ticket_price_html', $price_html, $product, $attendee );
+	}
 }

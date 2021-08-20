@@ -48,6 +48,8 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( Gateways\Manager::class, Gateways\Manager::class );
 
 		$this->container->singleton( Reports\Attendance_Totals::class );
+		$this->container->singleton( Reports\Event::class );
+		$this->container->singleton( Reports\Ticket::class );
 
 		$this->container->singleton( Editor\Metabox::class );
 

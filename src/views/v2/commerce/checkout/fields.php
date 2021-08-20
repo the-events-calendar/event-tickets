@@ -1,9 +1,9 @@
 <?php
 /**
- * Tickets Commerce: Checkout Page
+ * Tickets Commerce: Checkout Page Fields.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/checkout.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/fields.php
  *
  * See more documentation about our views templating system.
  *
@@ -21,12 +21,7 @@
  * @var array[]          $sections              [Global] Which events we have tickets for.
  */
 
+use \TEC\Tickets\Commerce\Checkout;
+use \TEC\Tickets\Commerce\Module;
 ?>
-<div class="tribe-common event-tickets tribe-tickets__commerce-checkout">
-	<?php $this->template( 'checkout/fields' ); ?>
-	<?php $this->template( 'checkout/header' ); ?>
-	<?php foreach ( $sections as $section ) : ?>
-		<?php $this->template( 'checkout/cart', [ 'section' => $section ] ); ?>
-	<?php endforeach; ?>
-	<?php $this->template( 'checkout/footer' ); ?>
-</div>
+<?php wp_nonce_field( 'wp_rest', 'tec-tc-checkout-nonce' ); ?>

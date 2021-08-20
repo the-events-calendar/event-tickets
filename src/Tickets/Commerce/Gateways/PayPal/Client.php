@@ -52,6 +52,7 @@ class Client {
 	 */
 	public function get_api_url( $endpoint, array $query_args = [] ) {
 		$base_url = $this->get_environment_url();
+		$endpoint = ltrim( $endpoint, '/' );
 
 		return add_query_arg( $query_args, "{$base_url}/{$endpoint}" );
 	}
@@ -69,11 +70,13 @@ class Client {
 	 */
 	public function get_js_sdk_url( array $query_args = [] ) {
 		$url        = 'https://www.paypal.com/sdk/js';
+		$merchant   = tribe( Merchant::class );
 		$query_args = array_merge( [
-			'client-id'  => tribe( Merchant::class )->get_client_id(),
-			'merchant-id'  => tribe( Merchant::class )->get_merchant_id_in_paypal(),
-			'locale'     => 'en_US',
-			'components' => 'buttons,hosted-fields',
+			'client-id'   => $merchant->is_sandbox() ? 'sb' : $merchant->get_client_id(),
+			'merchant-id' => $merchant->get_merchant_id_in_paypal(),
+			'components'  => 'buttons,hosted-fields',
+			'intent'      => 'capture',
+			'currency'    => tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_currency_code, 'USD' ),
 		], $query_args );
 		$url        = add_query_arg( $query_args, $url );
 
@@ -129,7 +132,7 @@ class Client {
 			]
 		];
 		foreach ( $default_arguments as $key => $default_argument ) {
-			$request_argument[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
+			$request_arguments[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
 		}
 		$response = wp_remote_get( $url, $request_arguments );
 
@@ -188,8 +191,21 @@ class Client {
 			'body'    => [],
 		];
 		foreach ( $default_arguments as $key => $default_argument ) {
-			$request_argument[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
+			$request_arguments[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
 		}
+
+		$content_type = Arr::get( $request_arguments, [ 'headers', 'Content-Type' ] );
+		if ( empty( $content_type ) ) {
+			$content_type = Arr::get( $request_arguments, [ 'headers', 'content-type' ] );
+		}
+
+		if (
+			! empty( $request_arguments['body'] )
+			&& 'application/json' === strtolower( $content_type )
+		) {
+			$request_arguments['body'] = wp_json_encode( $request_arguments[ $key ] );
+		}
+
 		$response = wp_remote_post( $url, $request_arguments );
 
 		if ( is_wp_error( $response ) ) {
@@ -331,6 +347,7 @@ class Client {
 	 * @return array|null
 	 */
 	public function create_order( array $units = [] ) {
+		$merchant   = tribe( Merchant::class );
 		$query_args = [];
 		$body       = [
 			'intent'              => 'CAPTURE',
@@ -358,8 +375,7 @@ class Client {
 					'currency_code' => Arr::get( $unit, 'currency' ),
 				],
 				'payee'               => [
-					'email_address' => Arr::get( $unit, 'merchant_id', tribe( Merchant::class )->get_merchant_id() ),
-					'merchant_id'   => Arr::get( $unit, 'merchant_paypal_id', tribe( Merchant::class )->get_merchant_id_in_paypal() ),
+					'merchant_id' => Arr::get( $unit, 'merchant_paypal_id', $merchant->get_merchant_id_in_paypal() ),
 				],
 				'payer'               => [
 					'name'          => [
@@ -374,12 +390,17 @@ class Client {
 				],
 			];
 
-			if ( ! empty( $unit['payer_id'] ) ) {
-				$purchase_unit['payer']['payer_id'] = Arr::get( $unit, 'payer_id' );
+			/**
+			 * @todo Need to figure out how to get this email address still.
+			 */
+			if ( ! $merchant->is_sandbox() ) {
+				$purchase_unit['payee']['email_address'] = Arr::get( $unit, 'merchant_id', $merchant->get_merchant_id() );
 			}
+
 			if ( ! empty( $unit['tax_id'] ) ) {
 				$purchase_unit['payer']['tax_info']['tax_id'] = Arr::get( $unit, 'tax_id' );
 			}
+
 			if ( ! empty( $unit['tax_id_type'] ) ) {
 				$purchase_unit['payer']['tax_info']['tax_id_type'] = Arr::get( $unit, 'tax_id_type' );
 			}
@@ -404,25 +425,15 @@ class Client {
 		return $response;
 	}
 
-	public function refund_payment( $capture_id ) {
-		$query_args = [];
-		$body       = [];
-		$args       = [
-			'headers' => [
-				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
-				'Prefer'                        => 'return=representation',
-			],
-			'body'    => $body,
-		];
-
-		$capture_id = urlencode( $capture_id );
-		$url        = '/v2/payments/captures/{capture_id}/refund';
-		$url        = str_replace( '{capture_id}', $capture_id, $url );
-		$response   = $this->post( $url, $query_args, $args );
-
-		return $response;
-	}
-
+	/**
+	 * Captures an order for a given ID in PayPal.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order_id
+	 *
+	 * @return array|null
+	 */
 	public function capture_order( $order_id ) {
 		$query_args = [];
 		$body       = [];
@@ -437,6 +448,47 @@ class Client {
 		$capture_id = urlencode( $order_id );
 		$url        = '/v2/checkout/orders/{order_id}/capture';
 		$url        = str_replace( '{order_id}', $order_id, $url );
+		$response   = $this->post( $url, $query_args, $args );
+
+		return $response;
+	}
+
+	/**
+	 * Gets the profile information from the customer in PayPal.
+	 *
+	 * @link  https://developer.paypal.com/docs/api/identity/v1/#userinfo_get
+	 *
+	 * @since TBD
+	 *
+	 * @return array|null
+	 */
+	public function get_user_info() {
+		$query_args = [
+			'schema' => 'paypalv1.1',
+		];
+		$body       = [];
+		$args       = [];
+
+		$url      = '/v1/identity/oauth2/userinfo';
+		$response = $this->get( $url, $query_args, $args );
+
+		return $response;
+	}
+
+	public function refund_payment( $capture_id ) {
+		$query_args = [];
+		$body       = [];
+		$args       = [
+			'headers' => [
+				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+				'Prefer'                        => 'return=representation',
+			],
+			'body'    => $body,
+		];
+
+		$capture_id = urlencode( $capture_id );
+		$url        = '/v2/payments/captures/{capture_id}/refund';
+		$url        = str_replace( '{capture_id}', $capture_id, $url );
 		$response   = $this->post( $url, $query_args, $args );
 
 		return $response;

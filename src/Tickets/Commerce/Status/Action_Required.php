@@ -3,15 +3,16 @@
 namespace TEC\Tickets\Commerce\Status;
 
 /**
- * Class Denied.
+ * Class Pending.
  *
- * Used for handling Orders where Pending payment but never completed it, becoming Abandoned after a week..
+ * This is a payment that has begun, but is not complete.  An example of this is someone who has filled out the checkout
+ * form and then gone to Gateway for payment.  We have the record of sale, but they haven't completed their payment yet.
  *
  * @since   TBD
  *
  * @package TEC\Tickets\Commerce\Status
  */
-class Not_Completed extends Status_Abstract {
+class Action_Required extends Status_Abstract {
 	/**
 	 * Slug for this Status.
 	 *
@@ -19,13 +20,13 @@ class Not_Completed extends Status_Abstract {
 	 *
 	 * @var string
 	 */
-	const SLUG = 'not-completed';
+	const SLUG = 'action-required';
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function get_name() {
-		return __( 'Not Completed', 'event-tickets' );
+		return __( 'Action Required', 'event-tickets' );
 	}
 
 	/**
@@ -33,9 +34,12 @@ class Not_Completed extends Status_Abstract {
 	 */
 	protected $flags = [
 		'incomplete',
-		'warning',
-		'revert_stock',
-		'archive_attendee'
+		'trigger_option',
+		'attendee_generation',
+		'stock_reduced',
+		'count_attendee',
+		'count_incomplete',
+		'count_sales',
 	];
 
 	/**

@@ -53,7 +53,9 @@ class Tickets_Repository extends Tribe__Repository {
 		$this->update_fields_aliases = array_merge(
 			$this->update_fields_aliases,
 			[
-
+				'event'            => Ticket::$event_relation_meta_key,
+				'show_description' => Ticket::$show_description_meta_key,
+				'price'            => Ticket::$price_meta_key,
 			]
 		);
 	}

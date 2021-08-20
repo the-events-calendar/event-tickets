@@ -19,7 +19,7 @@ use TEC\Tickets\Commerce\Models\Order_Model;
  * @param string           $filter                 Type of filter to apply.
  * @param bool             $force                  Whether to force a re-fetch ignoring cached results or not.
  *
- * @return array|mixed|void|WP_Post|null    The Order post object or array, `null` if not found.
+ * @return array|WP_Post|null    The Order post object or array, `null` if not found.
  */
 function tec_tc_get_order( $order = null, $output = OBJECT, $filter = 'raw', $force = false ) {
 	/**

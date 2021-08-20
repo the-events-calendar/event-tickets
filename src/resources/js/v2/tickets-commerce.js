@@ -1,10 +1,10 @@
-/* global tribe */
+/* global tribe, jQuery */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since TBD
  *
- * @type   {PlainObject}
+ * @type   {Object}
  */
 tribe.tickets = tribe.tickets || {};
 
@@ -13,7 +13,7 @@ tribe.tickets = tribe.tickets || {};
  *
  * @since TBD
  *
- * @type   {PlainObject}
+ * @type   {Object}
  */
 tribe.tickets.commerce = {};
 
@@ -22,8 +22,8 @@ tribe.tickets.commerce = {};
  *
  * @since TBD
  *
- * @param  {PlainObject} $   jQuery
- * @param  {PlainObject} obj tribe.tickets.commerce
+ * @param  {Object} $   jQuery
+ * @param  {Object} obj tribe.tickets.commerce
  *
  * @return {void}
  */
@@ -44,6 +44,7 @@ tribe.tickets.commerce = {};
 		checkoutItemDescriptionButtonMore: '.tribe-tickets__commerce-checkout-cart-item-details-button--more',
 		checkoutItemDescriptionButtonLess: '.tribe-tickets__commerce-checkout-cart-item-details-button--less',
 		hiddenElement: '.tribe-common-a11y-hidden',
+		nonce: '#tec-tc-checkout-nonce',
 	};
 
 	/**

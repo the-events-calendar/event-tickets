@@ -10,7 +10,6 @@ namespace TEC\Tickets\Commerce;
  * @package TEC\Tickets\Commerce
  */
 class Checkout {
-
 	/**
 	 * Get the Checkout page ID.
 	 *
