@@ -22,9 +22,13 @@
 
 ?>
 <script
+	class="tec-tc-gateway-paypal-checkout-script"
 	src="<?php echo esc_url( $url ); ?>"
 	data-partner-attribution-id="<?php echo esc_attr( $attribution_id ); ?>"
 	<?php if ( ! empty( $client_token ) ) : ?>
 		data-client-token="<?php echo esc_attr( $client_token ); ?>"
 	<?php endif; ?>
-></script>'
+	<?php if ( ! empty( $client_token_expires_in ) ) : ?>
+		data-client-token-expires-in="<?php echo esc_attr( $client_token_expires_in ); ?>"
+	<?php endif; ?>
+></script>

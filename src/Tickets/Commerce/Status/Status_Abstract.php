@@ -126,6 +126,13 @@ abstract class Status_Abstract implements Status_Interface {
 	/**
 	 * {@inheritdoc}
 	 */
+	public function can_apply_to( $order ) {
+		return true;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function get_wp_arguments() {
 		$this->setup_wp_arguments();
 
@@ -134,7 +141,33 @@ abstract class Status_Abstract implements Status_Interface {
 		];
 		$arguments = array_merge( $defaults, $this->wp_arguments );
 
-		return $arguments;
+		return $this->filter_wp_arguments( $arguments );
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function filter_wp_arguments( array $arguments = [] ) {
+		/**
+		 * Allows filtering of which arguments are associated with this Status registering in WP.
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $arguments Which arguments we are passing.
+		 * @param static $status    Which status these arguments are associated with.
+		 */
+		$arguments = apply_filters( 'tec_tickets_commerce_order_status_get_wp_arguments', $arguments, $this );
+
+		/**
+		 * Allows filtering of which arguments are associated with this Status registering in WP.
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $arguments Which arguments we are passing.
+		 * @param static $status    Which status these arguments are associated with.
+		 */
+		return apply_filters( "tec_tickets_commerce_order_status_{$this->get_slug()}_get_wp_arguments", $arguments, $this );
+
 	}
 
 	/**

@@ -2,6 +2,10 @@
 
 namespace TEC\Tickets\Commerce\Status;
 
+use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Ticket;
+use WP_Error;
+
 /**
  * Class Pending.
  *
@@ -33,10 +37,8 @@ class Pending extends Status_Abstract {
 	 * {@inheritdoc}
 	 */
 	protected $flags = [
-		'incomplete',
-		'trigger_option',
-		'attendee_generation',
-		'stock_reduced',
+		'generate_attendees',
+		'reduce_stock',
 		'count_attendee',
 		'count_incomplete',
 		'count_sales',
@@ -51,4 +53,103 @@ class Pending extends Status_Abstract {
 		'show_in_admin_all_list'    => true,
 		'show_in_admin_status_list' => true,
 	];
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function can_apply_to( $order ) {
+		$status = parent::can_apply_to( $order );
+
+		// If the parent status or abstract has an error already we dont even run.
+		if ( is_wp_error( $status ) ) {
+			return $status;
+		}
+
+		$order = tec_tc_get_order( $order );
+
+		// Since there are no cart items we can do anything.
+		if ( empty( $order->cart_items ) || ! is_array( $order->cart_items ) ) {
+			return true;
+		}
+
+		foreach ( $order->cart_items as $item ) {
+			// Skip if we dont have a ticket id.
+			if ( empty( $item['ticket_id'] ) ) {
+				continue;
+			}
+
+			// If item quantity is empty, continue
+			if ( empty( $item['quantity'] ) ) {
+				continue;
+			}
+
+			/** @var \Tribe__Tickets__Ticket_Object $ticket_type */
+			$ticket = tribe( Ticket::class )->get_ticket( $item['ticket_id'] );
+
+			if ( null === $ticket ) {
+				return new WP_Error(
+					'tec-tc-invalid-ticket-id',
+					sprintf( __( 'This order contained an invalid Ticket (ID: %1$d)', 'event-tickets' ), $item['ticket_id'] ),
+					[
+						'ticket'     => $item['ticket_id'],
+						'order'      => $order,
+						'new_status' => $this
+					]
+				);
+			}
+
+			// Get the event this tickets is for
+			$post = $ticket->get_event();
+
+			if ( empty( $post ) ) {
+				return new WP_Error(
+					'tec-tc-invalid-event-id',
+					sprintf( __( 'This order contained a Ticket with an invalid Event (Event ID: %1$d)', 'event-tickets' ), $item['ticket_id'] ),
+					[
+						'ticket'     => $item['ticket_id'],
+						'order'      => $order,
+						'new_status' => $this
+					]
+				);
+			}
+
+			$qty = max( (int) $item['quantity'], 0 );
+
+			if ( $qty === 0 ) {
+				return new WP_Error(
+					'tec-tc-cannot-purchase-zero',
+					sprintf( __( 'Cannot purchase zero of "%1$s"', 'event-tickets' ), $ticket->name ),
+					[
+						'ticket'     => $item['ticket_id'],
+						'order'      => $order,
+						'new_status' => $this
+					]
+				);
+			}
+
+			// Throw an error if Qty is bigger then Remaining
+			if ( $ticket->managing_stock() ) {
+				$inventory                  = (int) $ticket->inventory();
+				$inventory_is_not_unlimited = - 1 !== $inventory;
+
+				if ( $inventory_is_not_unlimited && $qty > $inventory ) {
+					return new WP_Error(
+						'tec-tc-ticket-insufficient-stock',
+						sprintf( __( 'Insufficient stock for "%1$s"', 'event-tickets' ), $ticket->name ),
+						[
+							'ticket'     => $item['ticket_id'],
+							'order'      => $order,
+							'new_status' => $this
+						]
+					);
+				}
+			}
+
+			/**
+			 * @todo Determine if we need to check for the sale date.
+			 */
+		}
+
+		return true;
+	}
 }

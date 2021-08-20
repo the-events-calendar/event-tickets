@@ -44,6 +44,7 @@ tribe.tickets.commerce = {};
 		checkoutItemDescriptionButtonMore: '.tribe-tickets__commerce-checkout-cart-item-details-button--more',
 		checkoutItemDescriptionButtonLess: '.tribe-tickets__commerce-checkout-cart-item-details-button--less',
 		hiddenElement: '.tribe-common-a11y-hidden',
+		nonce: '#tec-tc-checkout-nonce',
 	};
 
 	/**

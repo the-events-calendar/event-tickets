@@ -63,6 +63,7 @@ class Order_Model extends Base {
 				'total_value'      => $total_value,
 				'currency'         => $currency,
 				'purchaser'        => [
+					'user_id'    => $this->post->post_author,
 					'first_name' => $purchaser_first_name,
 					'last_name'  => $purchaser_last_name,
 					'full_name'  => $purchaser_full_name,

@@ -189,13 +189,18 @@ class Order {
 	 * @param string $status_slug Which Order Status we are modifying to.
 	 * @param array  $extra_args  Extra repository arguments.
 	 *
-	 * @return bool
+	 * @return bool|\WP_Error
 	 */
 	public function modify_status( $order_id, $status_slug, array $extra_args = [] ) {
 		$status = tribe( Commerce\Status\Status_Handler::class )->get_by_slug( $status_slug );
 
 		if ( ! $status ) {
 			return false;
+		}
+
+		$can_apply = $status->can_apply_to( $order_id );
+		if ( ! $can_apply ) {
+			return $can_apply;
 		}
 
 		$args = array_merge( $extra_args, [ 'status' => $status->get_wp_slug() ] );
@@ -217,7 +222,7 @@ class Order {
 	 *
 	 * @return false|\WP_Post
 	 */
-	public function create_from_cart( Commerce\Gateways\Interface_Gateway $gateway ) {
+	public function create_from_cart( Commerce\Gateways\Interface_Gateway $gateway, $purchaser = null ) {
 		$cart = tribe( Cart::class );
 
 		$items      = $cart->get_items_in_cart();
@@ -236,7 +241,17 @@ class Order {
 			'cart_items'  => $items,
 			'gateway'     => $gateway::get_key(),
 		];
-		$order      = tec_tc_orders()->set_args( $order_args )->create();
+
+		// When purchaser data-set is not passed we pull from the current user.
+		if ( empty( $purchaser ) && is_user_logged_in() && $user = wp_get_current_user() ) {
+			$order_args['author'] = $user->ID;
+			$order_args['purchaser_full_name'] = $user->first_name . ' ' . $user->last_name;
+			$order_args['purchaser_first_name'] = $user->first_name;
+			$order_args['purchaser_last_name'] = $user->last_name;
+			$order_args['purchaser_email'] = $user->user_email;
+		}
+
+		$order = tec_tc_orders()->set_args( $order_args )->create();
 
 		// We were unable to create the order bail from here.
 		if ( ! $order ) {

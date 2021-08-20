@@ -68,13 +68,67 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.orderEndpointUrl = tecTicketsCommerceGatewayPayPalCheckout.orderEndpoint;
 
 	/**
+	 * Set of timeout IDs so we can clear when the process of purchasing starts.
+	 *
+	 * @since TBD
+	 *
+	 * @type {Array}
+	 */
+	obj.timeouts = [];
+
+	/**
 	 * PayPal Checkout Selectors.
 	 *
 	 * @since TBD
 	 *
 	 * @type {Object}
 	 */
-	obj.selectors = {};
+	obj.selectors = {
+		checkoutScript: '.tec-tc-gateway-paypal-checkout-script',
+		activePayment: '.tec-tc-gateway-paypal-payment-active',
+		buttons: '#tec-tc-gateway-paypal-checkout-buttons',
+	};
+
+	/**
+	 * Handles the creation of the orders via PayPal.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} data PayPal data passed to this method.
+	 * @param {jQuery} $container jQuery object of the tickets container.
+	 *
+	 * @return {void}
+	 */
+	obj.handleCancel = function ( data, $container ) {
+		$container.removeClass( obj.selectors.activePayment.className() );
+	};
+
+	/**
+	 * Handles the creation of the orders via PayPal.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} error PayPal data passed to this method.
+	 * @param {jQuery} $container jQuery object of the tickets container.
+	 *
+	 * @return {void}
+	 */
+	obj.handleGenericError = function ( error, $container ) {
+		$container.removeClass( obj.selectors.activePayment.className() );
+	};
+
+	/**
+	 * Handles the click when one of the buttons were clicked.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container jQuery object of the tickets container.
+	 *
+	 * @return {void}
+	 */
+	obj.handleClick = function ( $container ) {
+		$container.addClass( obj.selectors.activePayment.className() );
+	};
 
 	/**
 	 * Handles the creation of the orders via PayPal.
@@ -83,14 +137,18 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @param {Object} data PayPal data passed to this method.
 	 * @param {Object} actions PayPal actions available on order creation.
+	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
 	 * @return {void}
 	 */
-	obj.handleCreateOrder = function ( data, actions ) {
+	obj.handleCreateOrder = function ( data, actions, $container ) {
 		return fetch(
 			obj.orderEndpointUrl,
 			{
-				method: 'POST'
+				method: 'POST',
+				headers: {
+					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+				}
 			}
 		)
 			.then( response => response.json() )
@@ -151,10 +209,11 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @param {Object} data PayPal data passed to this method.
 	 * @param {Object} actions PayPal actions available on approve.
+	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
 	 * @return {void}
 	 */
-	obj.handleApprove = function ( data, actions ) {
+	obj.handleApprove = function ( data, actions, $container ) {
 		/**
 		 * @todo On approval we receive a bit more than just the orderID on the data object
 		 *       we should be passing those to the BE.
@@ -162,7 +221,10 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		return fetch(
 			obj.orderEndpointUrl + '/' + data.orderID,
 			{
-				method: 'POST'
+				method: 'POST',
+				headers: {
+					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+				}
 			}
 		)
 			.then( response => response.json() )
@@ -233,26 +295,52 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 				shape: 'rect',
 				label: 'paypal'
 			},
-			createOrder: obj.handleCreateOrder,
-			onApprove: obj.handleApprove
+			createOrder: ( data, actions ) => { return obj.handleCreateOrder( data, actions, $container ); },
+			onApprove: ( data, actions ) => { return obj.handleApprove( data, actions, $container ); },
+			onCancel: ( data ) => { return obj.handleCancel( data, $container ); },
+			onError: ( data ) => { return obj.handleGenericError( data, $container ); },
+			onClick: () => { return obj.handleClick( $container ); }
 		};
 
 		return configs;
 	};
 
-	/**w
-	 * Setup the Buttons for PayPal Checkout..
+	/**
+	 * Redirect the user back to the checkout page when the Token is expired so it gets refreshed properly.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container jQuery Object.
+	 */
+	obj.timeoutRedirect = ( $container ) => {
+		// Prevent redirecting when a payment is engaged.
+		if ( $container.is( obj.selectors.activePayment.className() ) ) {
+			return;
+		}
+
+		// When this Token has expired we just refresh the browser.
+		window.location.replace( window.location.href );
+	};
+
+	/**
+	 * Setup the Buttons for PayPal Checkout.
 	 *
 	 * @since TBD
 	 *
 	 * @param  {Event}   event      event object for 'afterSetup.tribeTicketsCommerceCheckout' event
-	 * @param  {int}     index      jQuery.each index param from 'afterSetup.tribeTicketsCommerceCheckout' event.
 	 * @param  {jQuery}  $container jQuery object of checkout container.
 	 *
 	 * @return {void}
 	 */
-	obj.setupButtons = function ( event, index, $container ) {
-		paypal.Buttons( obj.getButtonConfig( $container ) ).render( '#paypal-button-container' );
+	obj.setupButtons = function ( event, $container ) {
+		paypal.Buttons( obj.getButtonConfig( $container ) ).render( obj.selectors.buttons );
+
+		const $checkoutScript = $container.find( obj.selectors.checkoutScript );
+
+		if ( $checkoutScript.length && $checkoutScript.is( '[data-client-token-expires-in]' ) ) {
+			const timeout = parseInt( $checkoutScript.data( 'clientTokenExpiresIn' ), 10 ) * 1000;
+			obj.timeouts.push( setTimeout( obj.timeoutRedirect, timeout, $container ) );
+		}
 	};
 
 	/**
