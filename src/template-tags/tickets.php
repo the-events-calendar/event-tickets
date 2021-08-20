@@ -1809,3 +1809,16 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 		return (bool) apply_filters( 'tribe_tickets_new_views_is_enabled', $enabled );
 	}
 }
+
+if ( ! function_exists( 'tribe_tickets_get_provider_slug' ) ) {
+	/**
+	 * Returns the slug for providers
+	 *
+	 * @since TBD
+	 *
+	 * @return string String for which the slug should be named.
+	 */
+	function tribe_tickets_get_provider_slug() {
+		return Tribe__Tickets__Tickets::get_provider_url_slug();
+	}
+}
