@@ -178,6 +178,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.1.8] TBD =
+
+* Tweak - Add new event repository schema for finding all events with RSVPs or Tickets.
+
 = [5.1.7] 2021-08-03 =
 
 * Feature - Added export button next to the page title on the Attendees page. [ET-1145]
