@@ -3959,7 +3959,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$url = $attendee_reg->get_url();
 
 			if ( ! empty( $q_provider ) ) {
-				$provider_slug = Tribe__Tickets__Tickets::get_provider_url_slug();
+				$provider_slug = tribe_tickets_get_provider_query_slug();
 				$url = add_query_arg( $provider_slug, $q_provider, $url );
 			}
 
