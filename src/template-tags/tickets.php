@@ -1826,5 +1826,5 @@ function tribe_tickets_get_provider_query_slug() {
 	 *
 	 * @param string  String for which the slug should be named.
 	 */
-	return apply_filters( 'tribe_tickets_provider_url_slug', 'tickets_provider' );
+	return apply_filters( 'tribe_tickets_get_provider_query_slug', 'tickets_provider' );
 }
