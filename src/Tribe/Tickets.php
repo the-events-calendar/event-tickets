@@ -4218,24 +4218,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			return $this->class_name;
 		}
 
-		/**
-		 * Return the URL slug to be used by the provider method.
-		 *
-		 * @since TBD
-		 *
-		 * @return string
-		 */
-		public static function get_provider_url_slug() {
-			/**
-			 * Allow filtering of the tickets_provider slug.
-			 *
-			 * @since TBD
-			 *
-			 * @param string  String for which the slug should be named.
-			 */
-			return apply_filters( 'tribe_tickets_provider_url_slug', 'tickets_provider' );
-		}
-
 		/************************
 		 *                      *
 		 *  Deprecated Methods  *

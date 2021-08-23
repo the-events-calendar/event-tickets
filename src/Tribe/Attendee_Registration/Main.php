@@ -172,7 +172,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		 */
 		$checkout_url = apply_filters( 'tribe_tickets_attendee_registration_checkout_url', null );
 
-		if ( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === tribe_get_request_var( tribe_tickets_get_provider_slug() ) ) {
+		if ( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === tribe_get_request_var( tribe_tickets_get_provider_query_slug() ) ) {
 			return null;
 		}
 

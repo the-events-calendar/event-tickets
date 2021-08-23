@@ -39,7 +39,7 @@ class Tribe__Tickets__Commerce__Cart {
 		}
 
 		$post_id  = isset( $data['tribe_tickets_post_id'] ) ? absint( $data['tribe_tickets_post_id'] ) : null;
-		$provider = isset( $data['tribe_tickets_provider'] ) ? sanitize_text_field( $data['tribe_tickets_provider'] ) : tribe_get_request_var( tribe_tickets_get_provider_slug() );
+		$provider = isset( $data['tribe_tickets_provider'] ) ? sanitize_text_field( $data['tribe_tickets_provider'] ) : tribe_get_request_var( tribe_tickets_get_provider_query_slug() );
 		$tickets  = isset( $data['tribe_tickets_tickets'] ) ? $data['tribe_tickets_tickets'] : null;
 		$meta     = isset( $data['tribe_tickets_meta'] ) ? $data['tribe_tickets_meta'] : null;
 

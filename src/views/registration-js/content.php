@@ -22,7 +22,7 @@
  * @var Tribe__Tickets__Attendee_Registration__View $this
  */
 
-$provider = $this->get( 'provider' ) ?: tribe_get_request_var( tribe_tickets_get_provider_slug() );
+$provider = $this->get( 'provider' ) ?: tribe_get_request_var( tribe_tickets_get_provider_query_slug() );
 $events   = (array) $this->get( 'events' );
 
 /** @var Tribe__Tickets_Plus__Meta $meta */
