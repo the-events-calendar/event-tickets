@@ -43,7 +43,7 @@
 </div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-price">
-	<span class="tribe-tickets-price-amount amount">&#x24;[EVENT_ID]0.00</span></div>
+	<span class="tribe-tickets-price-amount amount">&#x24;97.00</span></div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-quantity">
 	1</div>
@@ -87,7 +87,7 @@
 </div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-price">
-	<span class="tribe-tickets-price-amount amount">&#x24;[EVENT_ID]0.00</span></div>
+	<span class="tribe-tickets-price-amount amount">&#x24;97.00</span></div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-quantity">
 	1</div>
