@@ -28,7 +28,7 @@ class Customizer extends \tad_DI52_ServiceProvider {
 			return;
 		}
 
-		add_filter( 'tribe_customizer_css_template', [ $this, 'filter_accent_color_css' ], 100, 1 );
+		//add_filter( 'tribe_customizer_css_template', [ $this, 'filter_accent_color_css' ], 100, 1 );
 	}
 
 	/**
