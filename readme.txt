@@ -178,9 +178,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.1.8] TBD =
+= [5.1.8] 2021-08-24 =
 
 * Tweak - Add new event repository schema for finding all events with RSVPs or Tickets.
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.1.7] 2021-08-03 =
 

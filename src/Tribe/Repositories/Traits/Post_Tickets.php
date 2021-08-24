@@ -293,7 +293,7 @@ trait Post_Tickets {
 	/**
 	 * Filters events to include only those that match the provided RSVP or Ticket state.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param bool $has_rsvp_or_tickets Indicates if the event should have RSVP or tickets attached to it or not.
 	 */

@@ -48,7 +48,7 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 	/**
 	 * Get the previously declared event repository so that we can decorate it.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return Tribe__Repository
 	 */
@@ -58,7 +58,7 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 		 *
 		 * @see tribe_events()
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array  $map        A map in the shape [ <repository_slug> => <service_name> ]
 		 * @param string $repository The currently requested implementation.
