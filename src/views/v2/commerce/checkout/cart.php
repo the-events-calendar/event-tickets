@@ -25,7 +25,7 @@ $post = get_post( $section );
 ?>
 
 <div class="tribe-tickets__commerce-checkout-cart">
-	<?php $this->template( 'checkout/cart/header', [ 'section' => $section, 'post' => $post ] ); ?>
+	<?php $this->template( 'checkout/cart/header', [ 'post' => $post ] ); ?>
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
 		<?php foreach ( $items as $item ) : ?>
@@ -38,6 +38,6 @@ $post = get_post( $section );
 		<?php endforeach; ?>
 	</div>
 
-	<?php $this->template( 'checkout/cart/footer', [ 'section' => $section, 'post' => $post ] ); ?>
+	<?php $this->template( 'checkout/cart/footer' ); ?>
 
 </div>

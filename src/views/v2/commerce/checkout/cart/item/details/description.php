@@ -32,5 +32,5 @@ $item_details_id = 'tribe-tickets__commerce-checkout-cart-item-details-descripti
 
 ?>
 <div id="<?php echo esc_attr( $item_details_id ); ?>" <?php tribe_classes( $classes ); ?>>
-	<?php echo $item['obj']->description; ?>
+	<?php echo wp_kses_post( $item['obj']->description ); ?>
 </div>

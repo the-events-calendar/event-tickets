@@ -56,11 +56,11 @@ tribe.tickets.commerce = {};
 	 * @return {void}
 	 */
 	obj.checkoutItemDescriptionToggle = function( event ) {
-		if ( 'keyup' === event.type && 13 !== event.keyCode ) {
+		if ( 'keydown' === event.type && 13 !== event.keyCode ) {
 			return;
 		}
 
-		const trigger = event.target;
+		const trigger = event.currentTarget;
 
 		if ( ! trigger ) {
 			return;

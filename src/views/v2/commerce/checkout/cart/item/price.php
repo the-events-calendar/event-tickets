@@ -23,5 +23,5 @@
 
 ?>
 <div class="tribe-tickets__commerce-checkout-cart-item-price">
-	<?php echo $provider->get_price_html( $item['ticket_id'] ); ?>
+	<?php echo wp_kses_post( $provider->get_price_html( $item['ticket_id'] ) ); ?>
 </div>

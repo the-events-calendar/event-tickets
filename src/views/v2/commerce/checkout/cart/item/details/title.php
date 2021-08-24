@@ -23,5 +23,5 @@
 
 ?>
 <div class="tribe-common-h6 tribe-tickets__commerce-checkout-cart-item-details-title">
-	<?php echo $item['obj']->name; ?>
+	<?php echo esc_html( $item['obj']->name ); ?>
 </div>
