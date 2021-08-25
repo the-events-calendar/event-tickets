@@ -4,10 +4,6 @@
  * @since 5.0.3
  */
 
-:root {
-	--tec-color-text-primary-disabled: rgba(20, 24, 39, 0.8);
-}
-
 .event-tickets,
 .entry .entry-content .event-tickets {
 
@@ -17,7 +13,6 @@
 		border: 1px solid var(--tec-color-border-secondary);
 		-moz-osx-font-smoothing: grayscale;
 		-webkit-font-smoothing: antialiased;
-		font-smoothing: antialiased;
 		margin: var(--tec-spacer-5) 0;
 		max-width: 580px;
 		padding: var(--tec-spacer-3) var(--tec-spacer-3)  var(--tec-spacer-4);
@@ -156,7 +151,7 @@
 	*/
 	.tribe-tickets__tickets-item--disabled {
 		* {
-			color: var(--tec-color-text-primary-disabled);
+			color: var(--tec-color-text-disabled);
 			color: var(--tec-color-scroll-bar);
 		}
 
@@ -164,7 +159,7 @@
 		.tribe-tickets__tickets-item-quantity-add,
 		.tribe-tickets__tickets-item-quantity-remove,
 		.tribe-tickets__tickets-item-quantity-number-input {
-			color: var(--tec-color-text-primary-disabled);
+			color: var(--tec-color-text-disabled);
 			color: var(--tec-color-scroll-bar);
 		}
 	}
