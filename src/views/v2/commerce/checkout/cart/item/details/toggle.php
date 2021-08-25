@@ -27,7 +27,8 @@ $aria_controls = 'tribe-tickets__commerce-checkout-cart-item-details-description
 	<button
 		type="button"
 		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--more"
-		aria-controls="<?php echo esc_attr( $aria_controls ); ?>"	>
+		aria-controls="<?php echo esc_attr( $aria_controls ); ?>"
+	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">
 			<?php esc_html_e( 'Open the ticket description in checkout.', 'event-tickets' ); ?>
 		</span>
