@@ -22,6 +22,8 @@ class Tribe__Tickets__Assets {
 
 		if ( $this->should_enqueue_common_full() ) {
 			$tickets_deps[] = 'tribe-common-full-style';
+		} else {
+			$tickets_deps[] = 'tec-variables-full';
 		}
 
 		// Check wether we use v1 or v2. We need to update this when we deprecate tickets v1.
