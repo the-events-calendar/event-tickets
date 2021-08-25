@@ -17,16 +17,6 @@ use Tribe__Tickets__Main;
 class Settings extends Abstract_Settings {
 
 	/**
-	 * The option key for account country.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @var string
-	 */
-	public $option_account_country = 'tickets-commerce-paypal-commerce-account-country';
-
-
-	/**
 	 * The merchant detail model.
 	 *
 	 * @since 5.1.6
@@ -72,16 +62,6 @@ class Settings extends Abstract_Settings {
 				'type'            => 'wrapped_html',
 				'html'            => $this->get_introduction_html(),
 				'validation_type' => 'html',
-			],
-			$this->option_account_country                => [
-				'type'            => 'dropdown',
-				'label'           => esc_html__( 'Account Country', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'This is the country your site operates from.', 'event-tickets' ),
-				'size'            => 'medium',
-				'validation_type' => 'options',
-				'options'         => $countries,
-				'required'        => true, // @todo This is not working.
-				'can_be_empty'    => false, // @todo This is not working.
 			],
 			'tickets-commerce-paypal-commerce-connect'   => [
 				'type'            => 'wrapped_html',
