@@ -66,7 +66,7 @@ class Manager {
 	 * @return string The current Tickets Commerce gateway.
 	 */
 	public function get_current_gateway() {
-		$default = Legacy\Gateway::get_key();
+		$default = null;
 
 		if ( ! $this->should_show_legacy() ) {
 			$default = PayPal\Gateway::get_key();

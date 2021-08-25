@@ -343,7 +343,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array
 	 */
 	public function filter_register_shortcodes( array $shortcodes ) {
-		$shortcodes['tec_tickets_checkout'] = Shortcodes\Checkout_Shortcode::class;
+		$shortcodes[ Shortcodes\Checkout_Shortcode::get_wp_slug() ] = Shortcodes\Checkout_Shortcode::class;
+		$shortcodes[ Shortcodes\Success_Shortcode::get_wp_slug() ]  = Shortcodes\Success_Shortcode::class;
 
 		return $shortcodes;
 	}
