@@ -81,18 +81,13 @@
 	width: 100%;
 }
 
-:root {
-	--tec-border-light-color: #a3a3a3;
-	--tec-button-text-color: #555;
-}
-
 @define-mixin tribe-ticket-tooltip {
 	position: relative;
 
 	.tooltip {
 		background-color: #efefef;
 		border-radius: 3px;
-		border: 1px solid var(--tec-border-light-color);
+		border: 1px solid var(--tec-color-border-secondary);
 		display: none;
 		margin-left: 0.5em;
 		padding: 0.5em;
@@ -200,7 +195,7 @@
 
 /* Panels */
 .ticket_panel {
-	border: 1px solid var(--tec-border-light-color);
+	border: 1px solid var(--tec-color-border-secondary);
 	border-radius: 5px;
 	box-sizing: border-box;
 	opacity: 1;

@@ -5,11 +5,7 @@
  */
 
 /* Import Mixins */
-@import '_mixins.pcss';
-
-:root {
-	--tec-color-text-primary-disabled: rgba(20, 24, 39, 0.8);
-}
+@import 'tickets-common.pcss';
 
 .tribe-common.tribe-tickets {
 	background-color: var(--tec-color-background);
@@ -592,7 +588,7 @@
 	*/
 	.tribe-tickets__item__disabled {
 		* {
-			color: var(--tec-color-text-primary-disabled);
+			color: var(--tec-color-text-disabled);
 			color: var(--tec-color-scroll-bar);
 		}
 
@@ -600,7 +596,7 @@
 		.tribe-tickets__item__quantity__add,
 		.tribe-tickets__item__quantity__remove,
 		.tribe-tickets__item__quantity__number .tribe-tickets-quantity {
-			color: var(--tec-color-text-primary-disabled);
+			color: var(--tec-color-text-disabled);
 			color: var(--tec-color-scroll-bar);
 		}
 	}
