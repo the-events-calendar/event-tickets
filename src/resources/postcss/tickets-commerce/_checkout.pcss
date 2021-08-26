@@ -8,14 +8,14 @@
 
 	.tribe-tickets__commerce-checkout {
 		max-width: 600px;
-		width: 100%;
 		position: relative;
+		width: 100%;
 	}
 
 	.tribe-tickets__commerce-checkout-header {
+		align-items: center;
 		display: flex;
 		flex-wrap: wrap;
-		align-items: center;
 	}
 
 	.tribe-tickets__commerce-checkout-header-title {
@@ -48,9 +48,9 @@
 
 	.tribe-tickets__commerce-checkout-cart-item {
 		border-top: 1px solid var(--color-border-secondary);
-		padding: var(--spacer-4) 0;
 		display: flex;
 		flex-wrap: wrap;
+		padding: var(--spacer-4) 0;
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item-details {
@@ -65,8 +65,6 @@
 
 	.tribe-tickets__commerce-checkout-cart-item-details-button--more,
 	.tribe-tickets__commerce-checkout-cart-item-details-button--less {
-		@mixin mobile-body-2;
-
 		background-color: transparent;
 		color: var(--color-text-primary-light);
 		position: relative;
@@ -132,12 +130,12 @@
 	}
 
 	.tribe-tickets__commerce-checkout-cart-footer {
-		border-top: 1px solid var(--color-border-secondary);
-		padding: var(--spacer-4) 0;
 		align-items: baseline;
+		border-top: 1px solid var(--color-border-secondary);
 		display: flex;
 		flex-flow: row nowrap;
 		justify-content: flex-end;
+		padding: var(--spacer-4) 0;
 	}
 
 	.tribe-tickets__commerce-checkout-footer-total,
@@ -172,7 +170,10 @@
 
 	.tribe-theme-twentytwenty .entry-content & {
 
-		h1, h2, h3, h4 {
+		h1,
+		h2,
+		h3,
+		h4 {
 			margin: initial;
 		}
 	}

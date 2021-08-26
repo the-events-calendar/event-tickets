@@ -6,20 +6,23 @@
 	<div class="tribe-tickets__commerce-checkout-cart-item-details-toggle">
 	<button
 		type="button"
-		class="tribe-common-b3 tribe-tickets__commerce-checkout-cart-item-details-button--more"
-		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--14"
-		tabindex="0"
-	>
-		<span class="screen-reader-text tribe-common-a11y-visual-hide">Open the ticket description in checkout.</span>
-		More info	</button>
+		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--more"
+		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--14"	>
+		<span class="screen-reader-text tribe-common-a11y-visual-hide">
+			Open the ticket description in checkout.		</span>
+		<span class="tribe-tickets__commerce-checkout-cart-item-details-button-text">
+			More info		</span>
+	</button>
 	<button
 		type="button"
-		class="tribe-common-b3 tribe-tickets__commerce-checkout-cart-item-details-button--less"
+		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--less"
 		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--14"
-		tabindex="0"
 	>
-		<span class="screen-reader-text tribe-common-a11y-visual-hide">Close the ticket description in checkout.</span>
-		Less info	</button>
+		<span class="screen-reader-text tribe-common-a11y-visual-hide">
+			Close the ticket description in checkout.		</span>
+		<span class="tribe-tickets__commerce-checkout-cart-item-details-button-text">
+			Less info		</span>
+	</button>
 </div>
 
 	<div id="tribe-tickets__commerce-checkout-cart-item-details-description--14"  class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-description tribe-common-a11y-hidden" >
