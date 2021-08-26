@@ -33,7 +33,7 @@ if ( empty( get_option( 'users_can_register' ) ) ) {
 	<?php
 	echo wp_kses_post(
 		sprintf(
-			// Translators: %1$s: Opening a tag for "create a new account" link; %2$s: Closing </a> tag for "create a new account" link.
+			// Translators: %1$s: Opening <a> tag for "create a new account" link; %2$s: Closing </a> tag for "create a new account" link.
 			__( 'or %1$screate a new account%2$s', 'event-tickets' ),
 			'<a class="tribe-common-cta tribe-common-cta--alt tribe-common-b2 tribe-tickets__commerce-checkout-must-login-registration-link">',
 			'</a>'
