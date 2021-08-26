@@ -37,8 +37,17 @@ $classes = [
 	'tribe-common-b1',
 ];
 
+$attributes = [
+	'data-ticket-id'       => (string) $item['ticket_id'],
+	'data-ticket-quantity' => (string) $item['quantity'],
+	'data-ticket-price'    => (string) $provider->get_price_value( $item['ticket_id'] ),
+];
+
 ?>
-<article <?php tribe_classes( $classes ); ?>>
+<article
+	<?php tribe_classes( $classes ); ?>
+	<?php tribe_attributes( $attributes ); ?>
+>
 
 	<?php $this->template( 'checkout/cart/item/details', [ 'item' => $item ] ); ?>
 
