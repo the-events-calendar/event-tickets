@@ -6,7 +6,6 @@
 
 .event-tickets,
 .entry .entry-content .event-tickets {
-
 	.tribe-tickets__tickets-form {
 		background-color: var(--tec-color-background);
 		border-radius: var(--tec-border-radius-default);
@@ -60,8 +59,8 @@
 			-ms-grid-rows: 1fr 1.5fr 1fr;
 		}
 
-		&[data-available="false"] {
-			opacity: .5;
+		&[data-available='false'] {
+			opacity: 0.5;
 		}
 
 		&.show-optout {
@@ -80,7 +79,7 @@
 		&.tribe-tickets__tickets-item--price-suffix,
 		&.tribe-tickets__tickets-item--price-suffix.show-optout {
 			@media (--viewport-medium) {
-				-ms-grid-columns:  5.5fr 3fr;
+				-ms-grid-columns: 5.5fr 3fr;
 				grid-template-columns: 5.5fr 3fr;
 			}
 		}
@@ -112,7 +111,6 @@
 	}
 
 	.tribe-tickets__tickets-item.show-optout {
-
 		.tribe-tickets-attendees-list-optout--wrapper {
 			display: block;
 		}

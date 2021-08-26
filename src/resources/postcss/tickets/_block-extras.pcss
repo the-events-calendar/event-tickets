@@ -6,7 +6,6 @@
 
 .event-tickets,
 .entry .entry-content .event-tickets {
-
 	/*
 		Block "extras"
 	*/
@@ -14,7 +13,7 @@
 		align-items: baseline;
 		-ms-grid-row: 2;
 		grid-row: 2;
-		-ms-grid-columns:  min-content max-content auto;
+		-ms-grid-columns: min-content max-content auto;
 		grid-template-columns: min-content max-content auto;
 
 		@media (--viewport-medium) {
@@ -25,13 +24,12 @@
 			grid-row-start: 1;
 			-ms-grid-row-end: 3;
 			grid-row-end: 3;
-
 			padding: 0 var(--tec-spacer-2);
 		}
 
 		&.tribe-tickets__tickets-item-extra--price-suffix {
-			text-align: left;
 			overflow: hidden;
+			text-align: left;
 		}
 	}
 
@@ -40,10 +38,9 @@
 	}
 
 	.tribe-tickets__tickets-item-extra-price {
-
-		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		white-space: nowrap;
 
 		.tribe-formatted-currency-wrap {
 			font-weight: var(--tec-font-weight-bold);
