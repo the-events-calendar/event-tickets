@@ -1,23 +1,18 @@
-:root {
-	--tec-border-radius: 3px;
-	--tec-border-color: #ccc;
-}
-
 /* fix a z-index issue with postbox and tooltips */
 #tribetickets {
 	z-index: 1;
 }
 
 .tribe-tickets-editor-table {
-	border-radius: var(--tec-border-radius);
+	border-radius: var(--tec-border-radius-default);
 	border-spacing: 0;
-	border: 1px solid var(--tec-border-color);
+	border: 1px solid var(--tec-color-border-default);
 	margin: 20px 0;
 
 	thead,
 	.table-header {
 		background-color: #fafafa;
-		border-bottom: 1px solid var(--tec-border-color);
+		border-bottom: 1px solid var(--tec-color-border-default);
 	}
 
 	tr {
@@ -25,32 +20,32 @@
 	}
 
 	tr td {
-		border-bottom: 1px solid var(--tec-border-color);
+		border-bottom: 1px solid var(--tec-color-border-default);
 	}
 
 	tr:first-child {
-		border-top-left-radius: var(--tec-border-radius);
-		border-top-right-radius: var(--tec-border-radius);
+		border-top-left-radius: var(--tec-border-radius-default);
+		border-top-right-radius: var(--tec-border-radius-default);
 
 		td:first-child {
-			border-top-left-radius: var(--tec-border-radius);
+			border-top-left-radius: var(--tec-border-radius-default);
 		}
 
 		td:last-child {
-			border-top-right-radius: var(--tec-border-radius);
+			border-top-right-radius: var(--tec-border-radius-default);
 		}
 	}
 
 	tr:last-child {
-		border-bottom-left-radius: var(--tec-border-radius);
-		border-bottom-right-radius: var(--tec-border-radius);
+		border-bottom-left-radius: var(--tec-border-radius-default);
+		border-bottom-right-radius: var(--tec-border-radius-default);
 
 		td:first-child {
-			border-bottom-left-radius: var(--tec-border-radius);
+			border-bottom-left-radius: var(--tec-border-radius-default);
 		}
 
 		td:last-child {
-			border-bottom-right-radius: var(--tec-border-radius);
+			border-bottom-right-radius: var(--tec-border-radius-default);
 		}
 	}
 
@@ -174,7 +169,7 @@
 			box-shadow: none;
 
 			@media screen and (max-width: 782px) {
-				border-bottom: 1px solid var(--tec-border-color);
+				border-bottom: 1px solid var(--tec-color-border-default);
 				display: block;
 
 				&:before,
@@ -200,7 +195,7 @@
 			}
 
 			td {
-				border-bottom: 1px solid var(--tec-border-color);
+				border-bottom: 1px solid var(--tec-color-border-default);
 			}
 		}
 
@@ -210,7 +205,7 @@
 		}
 
 		tbody tr:last-child td {
-			border-top: 1px dashed var(--tec-border-color);
+			border-top: 1px dashed var(--tec-color-border-default);
 		}
 	}
 
@@ -243,7 +238,7 @@
 
 		tr {
 			position: relative;
-			border-bottom: 1px solid var(--tec-border-color);
+			border-bottom: 1px solid var(--tec-color-border-default);
 		}
 
 		th:not(.column-primary) {

@@ -301,8 +301,17 @@ class Tribe__Tickets__Main {
 
 		add_action( 'tribe_common_loaded', [ $this, 'bootstrap' ], 0 );
 
-		// Customizer support.
-		tribe_register_provider( Tribe\Tickets\Service_Providers\Customizer::class );
+		// Customizer support - only loaded on older version of TEC for backwards compatibility.
+		if (
+			class_exists( 'Tribe__Events__Main' )
+			&& (
+				! function_exists( 'tribe_events_views_v2_is_enabled' )
+				|| ! tribe_events_views_v2_is_enabled()
+			)
+		) {
+			tribe_register_provider( Tribe\Tickets\Service_Providers\Customizer::class );
+		}
+
 	}
 
 	/**

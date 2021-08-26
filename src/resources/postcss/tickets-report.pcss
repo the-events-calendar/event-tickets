@@ -109,7 +109,7 @@
 
 			.order-total {
 				font-size: 16px;
-				margin: 1.20em 0 0;
+				margin: 1.2em 0 0;
 				font-weight: 600;
 			}
 		}
@@ -165,7 +165,7 @@
 
 	.tickets_checked {
 		td {
-			opacity: .6;
+			opacity: 0.6;
 		}
 
 		td.check_in {
@@ -244,7 +244,7 @@
 	ul {
 		font-size: 13px;
 		line-height: 1.5;
-		margin: .5em 0;
+		margin: 0.5em 0;
 		padding: 2px;
 
 		li:last-child {
@@ -288,6 +288,7 @@
 
 .wp-list-table {
 	font-size: 14px;
+
 	td.check_in {
 		.delete {
 			text-align: center;
@@ -312,8 +313,7 @@
  * mobile view but under the upper limits of "tablet" views. The weird class names and !important declarations
  * are unfortunately needed to override Thickbox's inline styles.
  */
-@media screen and ( max-width: 782px ) {
-
+@media screen and (max-width: 782px) {
 	#TB_window {
 		height: auto !important;
 	}
@@ -346,7 +346,9 @@
 
 table.orders {
 	tr {
-		&.refunded, &.denied, &.pending {
+		&.refunded,
+		&.denied,
+		&.pending {
 			font-style: italic;
 		}
 	}
