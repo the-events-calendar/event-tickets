@@ -33,7 +33,19 @@ $classes = [
 
 $item_details_id = 'tribe-tickets__commerce-checkout-cart-item-details-description--' . $item['ticket_id'];
 
+// @todo @bordoni: We need to populate `tribe-tickets__commerce-checkout-cart-item-details-description-attendee` with the AR data (if available). Connect with ET+.
 ?>
 <div id="<?php echo esc_attr( $item_details_id ); ?>" <?php tribe_classes( $classes ); ?>>
 	<?php echo wp_kses_post( $item['obj']->description ); ?>
+
+	<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee">
+		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-name">John Smith</div>
+		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-fields">t-shirt: large, meal: vegan, eyes: crossed</div>
+	</div>
+
+	<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee">
+		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-name">Karen Schmidt</div>
+		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-fields">t-shirt: small, meal: very carnivorous, eyes: dotted</div>
+	</div>
+
 </div>
