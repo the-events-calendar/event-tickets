@@ -722,7 +722,7 @@ class Ticket {
 			return false;
 		}
 
-		return get_post_meta( $product->ID, static::$stock_meta_key, true );
+		return get_post_meta( $product->ID, static::$price_meta_key, true );
 	}
 
 	/**

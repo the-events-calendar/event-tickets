@@ -1,4 +1,3 @@
-/* global tribe, jQuery */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -57,11 +56,11 @@ tribe.tickets.commerce = {};
 	 * @return {void}
 	 */
 	obj.checkoutItemDescriptionToggle = function( event ) {
-		if ( 'keyup' === event.type && 13 !== event.keyCode ) {
+		if ( 'keydown' === event.type && 13 !== event.keyCode ) {
 			return;
 		}
 
-		const trigger = event.target;
+		const trigger = event.currentTarget;
 
 		if ( ! trigger ) {
 			return;
@@ -102,16 +101,9 @@ tribe.tickets.commerce = {};
 	obj.bindCheckoutItemDescriptionToggle = function( $container ) {
 		const $descriptionToggleButtons = $container.find( obj.selectors.checkoutItemDescriptionButtonMore + ', ' + obj.selectors.checkoutItemDescriptionButtonLess );
 
-		// Add keyboard support for enter key.
-		$descriptionToggleButtons.on(
-			'keyup',
-			obj.checkoutItemDescriptionToggle
-		);
-
-		$descriptionToggleButtons.on(
-			'click',
-			obj.checkoutItemDescriptionToggle
-		);
+		$descriptionToggleButtons
+			.on( 'keydown', obj.checkoutItemDescriptionToggle )
+			.on( 'click', obj.checkoutItemDescriptionToggle );
 	};
 
 	/**

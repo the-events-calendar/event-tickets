@@ -18,8 +18,6 @@
  * @var string           $provider_id           [Global] The tickets provider class name.
  * @var array[]          $items                 [Global] List of Items on the cart to be checked out.
  * @var string           $paypal_attribution_id [Global] What is our PayPal Attribution ID.
- * @var int              $section               Which Section that we are going to render for this table.
- * @var \WP_Post         $post                  Which Section that we are going to render for this table.
  * @var array            $item                  Which item this row will be for.
  */
 
@@ -28,20 +26,26 @@ $aria_controls = 'tribe-tickets__commerce-checkout-cart-item-details-description
 <div class="tribe-tickets__commerce-checkout-cart-item-details-toggle">
 	<button
 		type="button"
-		class="tribe-common-b3 tribe-tickets__commerce-checkout-cart-item-details-button--more"
+		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--more"
 		aria-controls="<?php echo esc_attr( $aria_controls ); ?>"
-		tabindex="0"
 	>
-		<span class="screen-reader-text tribe-common-a11y-visual-hide"><?php esc_html_e( 'Open the ticket description in checkout.', 'event-tickets' ); ?></span>
-		<?php echo esc_html_x( 'More info', 'Opens the ticket description', 'event-tickets' ); ?>
+		<span class="screen-reader-text tribe-common-a11y-visual-hide">
+			<?php esc_html_e( 'Open the ticket description in checkout.', 'event-tickets' ); ?>
+		</span>
+		<span class="tribe-tickets__commerce-checkout-cart-item-details-button-text">
+			<?php echo esc_html_x( 'More info', 'Opens the ticket description', 'event-tickets' ); ?>
+		</span>
 	</button>
 	<button
 		type="button"
-		class="tribe-common-b3 tribe-tickets__commerce-checkout-cart-item-details-button--less"
+		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--less"
 		aria-controls="<?php echo esc_attr( $aria_controls ); ?>"
-		tabindex="0"
 	>
-		<span class="screen-reader-text tribe-common-a11y-visual-hide"><?php esc_html_e( 'Close the ticket description in checkout.', 'event-tickets' ); ?></span>
-		<?php echo esc_html_x( 'Less info', 'Closes the ticket description', 'event-tickets' ); ?>
+		<span class="screen-reader-text tribe-common-a11y-visual-hide">
+			<?php esc_html_e( 'Close the ticket description in checkout.', 'event-tickets' ); ?>
+		</span>
+		<span class="tribe-tickets__commerce-checkout-cart-item-details-button-text">
+			<?php echo esc_html_x( 'Less info', 'Closes the ticket description', 'event-tickets' ); ?>
+		</span>
 	</button>
 </div>
