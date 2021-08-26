@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Abstract_Settings;
-use TEC\Tickets\Commerce\Gateways\PayPal\Models\Webhook_Config;
+
 use Tribe__Languages__Locations;
 use Tribe__Tickets__Admin__Views;
 use Tribe__Tickets__Main;
@@ -15,29 +15,6 @@ use Tribe__Tickets__Main;
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class Settings extends Abstract_Settings {
-
-	/**
-	 * The merchant detail model.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @var Merchant
-	 */
-	protected $merchant;
-
-	/**
-	 * Set up the things we need for the settings.
-	 *
-	 * @since TBD
-	 *
-	 * @param Merchant  $merchant
-	 */
-	public function __construct(
-		Merchant $merchant = null
-	) {
-		$this->merchant = $merchant ?: tribe( Merchant::class );
-	}
-
 	/**
 	 * Get the list of settings for the gateway.
 	 *
@@ -63,12 +40,6 @@ class Settings extends Abstract_Settings {
 				'html'            => $this->get_introduction_html(),
 				'validation_type' => 'html',
 			],
-			'tickets-commerce-paypal-commerce-connect'   => [
-				'type'            => 'wrapped_html',
-				'label'           => esc_html__( 'PayPal Connection', 'event-tickets' ),
-				'html'            => $this->get_connect_html(),
-				'validation_type' => 'html',
-			],
 		];
 	}
 
@@ -90,31 +61,6 @@ class Settings extends Abstract_Settings {
 		$admin_views->add_template_globals( $context );
 
 		return $admin_views->template( 'settings/tickets-commerce/paypal-commerce/introduction', [], false );
-	}
-
-	/**
-	 * Get the Connect with PayPal HTML.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @return string The Connect with PayPal HTML.
-	 */
-	public function get_connect_html() {
-		/** @var Tribe__Tickets__Admin__Views $admin_views */
-		$admin_views = tribe( 'tickets.admin.views' );
-
-		$account_errors = $this->merchant->get_account_errors();
-
-		$context = [
-			'account_is_connected' => $this->merchant->account_is_connected(),
-			'merchant_id'          => $this->merchant->get_merchant_id(),
-			'formatted_errors'     => $this->get_formatted_error_html( $account_errors ),
-			'guidance_html'        => $this->get_guidance_html(),
-		];
-
-		$admin_views->add_template_globals( $context );
-
-		return $admin_views->template( 'settings/tickets-commerce/paypal-commerce/connect-with-paypal', [], false );
 	}
 
 	/**

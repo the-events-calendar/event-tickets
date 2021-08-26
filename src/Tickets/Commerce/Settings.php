@@ -84,7 +84,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public static $option_confirmation_email_sender_email = 'ticket-paypal-confirmation-email-sender-email';
+	public static $option_confirmation_email_sender_email = 'ticket-commerce-confirmation-email-sender-email';
 
 	/**
 	 * The option key for confirmation email sender name.
@@ -105,6 +105,21 @@ class Settings extends Abstract_Settings {
 	public static $option_confirmation_email_subject = 'tickets-commerce-confirmation-email-subject';
 
 	/**
+	 * Create the Tickets Commerce Payments Settings Tab.
+	 *
+	 * @since TBD
+	 */
+	public function register_tab() {
+		$tab_settings = [
+			'priority'  => 25,
+			'fields'    => $this->get_settings(),
+			'show_save' => false,
+		];
+
+		new \Tribe__Settings_Tab( 'payments', esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
+	}
+
+	/**
 	 * Get the list of settings for Tickets Commerce.
 	 *
 	 * @since 5.1.6
@@ -112,6 +127,8 @@ class Settings extends Abstract_Settings {
 	 * @return array The list of settings for Tickets Commerce.
 	 */
 	public function get_settings() {
+		$gateways_manager = tribe( Manager::class );
+
 		$plus_link    = sprintf(
 			'<a href="https://evnt.is/19zl" target="_blank" rel="noopener noreferrer">%s</a>',
 			esc_html__( 'Event Tickets Plus', 'event-tickets' )
@@ -154,29 +171,23 @@ class Settings extends Abstract_Settings {
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
 		// @todo Fill this out and make it check if PayPal Legacy was previously active.
-		$is_tickets_commerce_enabled = false;
+		$is_tickets_commerce_enabled = tec_tickets_commerce_is_enabled();
 
 		$top_level_settings = [
-			'tickets-commerce-heading'        => [
+			'tickets-commerce-header'      => [
 				'type' => 'html',
-				'html' => '<h3>' . __( 'Tickets Commerce', 'event-tickets' ) . '</h3>',
+				'html' => '<div class="tec-tickets-commerce-toggle"><label class="tec-tickets-commerce-switch"><input type="checkbox" name="' . static::$option_enable . '" value="' . $is_tickets_commerce_enabled . '" ' . checked( $is_tickets_commerce_enabled, true, false ) . ' id="tickets-commerce-enable-input" class="tribe-dependency tribe-dependency-verified"><span class="tec-tickets-commerce-slider round"></span></label><h2>' . esc_html__( 'Enable Tickets Commerce', 'event-tickets' ) . '</h2></div>',
 			],
-			'tickets-commerce-et-plus-header' => [
+			'tickets-commerce-description' => [
 				'type' => 'html',
-				'html' => '<p>' . $plus_message . '</p>',
+				'html' => '<div class="tec-tickets-commerce-description">' . $plus_message . '</div>',
 			],
-			static::$option_enable            => [
-				'type'            => 'checkbox_bool',
-				'label'           => esc_html__( 'Enable Tickets Commerce', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Check this box if you wish to turn on Tickets Commerce functionality.', 'event-tickets' ),
-				'size'            => 'medium',
-				'default'         => $is_tickets_commerce_enabled,
+			static::$option_enable         => [
+				'type'            => 'hidden',
 				'validation_type' => 'boolean',
-				'attributes'      => [
-					'id' => static::$option_enable . '-input',
-				],
 			],
 		];
+
 
 		$settings = [
 			static::$option_sandbox                         => [
@@ -303,48 +314,7 @@ class Settings extends Abstract_Settings {
 			],
 		];
 
-		/** @var Manager $manager */
-		$manager = tribe( Manager::class );
-
-		$gateways = $manager->get_gateways();
-
-		$gateway_setting_groups = [];
-
-		// Get all of the gateway settings.
-		foreach ( $gateways as $gateway ) {
-			/** @var Abstract_Gateway $gateway_object */
-			$gateway_object = $gateway['object'];
-
-			if ( ! $gateway_object::should_show() ) {
-				continue;
-			}
-
-			// Get the gateway settings.
-			$gateway_settings = $gateway_object->get_settings();
-
-			// If there are no gateway settings, don't show this section at all.
-			if ( empty( $gateway_settings ) ) {
-				continue;
-			}
-
-			$heading = [
-				'tickets-commerce-' . $gateway_object::get_key() => [
-					'type'            => 'wrapped_html',
-					'html'            => '<h3 class="event-tickets--admin_settings_subheading">' . $gateway['label'] . '</h3>',
-					'validation_type' => 'html',
-				],
-			];
-
-			// Add the gateway label to the start of settings.
-			$gateway_setting_groups[] = $heading;
-
-			$gateway_setting_groups[] = $gateway_settings;
-		}
-
-		if ( ! empty( $gateway_setting_groups ) ) {
-			// Add the gateway setting groups.
-			$settings = array_merge( $settings, array_merge( ...$gateway_setting_groups ) );
-		}
+		$settings = array_merge( $gateways_manager->get_gateway_settings(), $settings );
 
 		/**
 		 * Allow filtering the list of Tickets Commerce settings.

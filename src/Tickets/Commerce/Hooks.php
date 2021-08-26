@@ -46,6 +46,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	protected function add_actions() {
+		add_action( 'tribe_settings_do_tabs', [ $this, 'register_payments_tab' ], 15 );
+
 		add_action( 'init', [ $this, 'register_post_types' ] );
 		add_action( 'init', [ $this, 'register_order_statuses' ], 11 );
 		add_action( 'tribe_common_loaded', [ $this, 'load_commerce_module' ] );
@@ -78,7 +80,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_shortcodes', [ $this, 'filter_register_shortcodes' ] );
-		add_filter( 'tec_tickets_commerce_settings', [ $this, 'filter_include_commerce_settings' ] );
 
 		add_filter( 'tribe_attendee_registration_form_classes', [ $this, 'filter_registration_form_class' ] );
 		add_filter( 'tribe_attendee_registration_cart_provider', [ $this, 'filter_registration_cart_provider' ], 10, 2 );
@@ -98,6 +99,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function load_commerce_module() {
 		$this->container->make( Module::class );
+	}
+
+	public function register_payments_tab() {
+		$this->container->make( Settings::class )->register_tab();
 	}
 
 	/**
@@ -347,17 +352,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 		$shortcodes[ Shortcodes\Success_Shortcode::get_wp_slug() ]  = Shortcodes\Success_Shortcode::class;
 
 		return $shortcodes;
-	}
-
-	/**
-	 * Modify the commerce settings completely once we have Tickets Commerce active.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @return array
-	 */
-	public function filter_include_commerce_settings() {
-		return $this->container->make( Settings::class )->get_settings();
 	}
 
 	/**

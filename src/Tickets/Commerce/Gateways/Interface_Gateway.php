@@ -62,7 +62,7 @@ interface Interface_Gateway {
 	 *
 	 * @param array       $gateways The list of registered Tickets Commerce gateways.
 	 *
-	 * @return array The list of registered Tickets Commerce gateways.
+	 * @return Abstract_Gateway[] The list of registered Tickets Commerce gateways.
 	 */
 	public function register_gateway( array $gateways );
 }
