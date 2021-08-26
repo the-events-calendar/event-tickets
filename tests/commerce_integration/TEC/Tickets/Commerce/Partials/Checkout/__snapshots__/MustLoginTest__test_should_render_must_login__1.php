@@ -1,0 +1,12 @@
+<?php return '<div class="tribe-tickets__commerce-checkout-must-login">
+
+	
+<a
+	class="tribe-common-c-btn tribe-common-b1 tribe-tickets__commerce-checkout-must-login-link"
+	href="https://wordpress.test/wp-login.php"
+>
+	Log in to complete your purchase</a>
+
+	
+</div>
+';
