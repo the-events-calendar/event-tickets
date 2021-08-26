@@ -1,29 +1,20 @@
 name: 'Codeception Tests'
 on:
   pull_request:
-    paths:
-      - 'common/src/**.php'
-      - 'common/tests/**'
-      - 'common/*.php'
-      - 'src/**.php'
-      - 'tests/**'
-      - '*.php'
-      - 'composer.json'
-      - 'codeception.*.yml'
-      - '.github/workflows/tests-php.yml'
 jobs:
   test:
     strategy:
       fail-fast: false
       matrix:
         suite:
-          - acceptance
+          # - acceptance
           - functional
           - integration
           - restv1 --group="capacity"
           - restv1 --skip-group="capacity"
           - unit
           - views_integration
+          - commerce_integration
           - wpunit --group="capacity"
           - wpunit --skip-group="capacity"
     runs-on: ubuntu-latest
@@ -159,13 +150,13 @@ jobs:
           docker network prune -f
           ${TRIC_BIN} use event-tickets/common
           ${TRIC_BIN} composer install
-          ${TRIC_BIN} npm run build
       # ------------------------------------------------------------------------------
       # Set up ET Common (npm install and build)
       # ------------------------------------------------------------------------------
       - name: Set up ET Common (npm)
         if: ${{ matrix.suite == 'acceptance' }}
         run: |
+          ${TRIC_BIN} nvm use
           ${TRIC_BIN} npm install
           ${TRIC_BIN} npm run build
       # ------------------------------------------------------------------------------
@@ -181,6 +172,7 @@ jobs:
       - name: Set up ET (npm)
         if: ${{ matrix.suite == 'acceptance' }}
         run: |
+          ${TRIC_BIN} nvm use
           ${TRIC_BIN} npm install
           ${TRIC_BIN} npm run build
       # ------------------------------------------------------------------------------

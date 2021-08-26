@@ -3,9 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Abstract_Settings;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\MerchantDetail;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\WebhookConfig;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
+use TEC\Tickets\Commerce\Gateways\PayPal\Models\Webhook_Config;
 use Tribe__Languages__Locations;
 use Tribe__Tickets__Admin__Views;
 use Tribe__Tickets__Main;
@@ -13,7 +11,7 @@ use Tribe__Tickets__Main;
 /**
  * The PayPal Commerce specific settings.
  *
- * @since   TBD
+ * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class Settings extends Abstract_Settings {
@@ -21,7 +19,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for account country.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -30,7 +28,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for access token.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -39,7 +37,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for partner link detail.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -48,7 +46,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The option key for webhook config.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */
@@ -57,38 +55,29 @@ class Settings extends Abstract_Settings {
 	/**
 	 * The merchant detail model.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
-	 * @var MerchantDetail
+	 * @var Merchant
 	 */
-	private $merchant_model;
-
-	/**
-	 * The merchant details repository.
-	 *
-	 * @since TBD
-	 *
-	 * @var MerchantDetails
-	 */
-	private $merchant_repository;
+	protected $merchant;
 
 	/**
 	 * Set up the things we need for the settings.
 	 *
 	 * @since TBD
 	 *
-	 * @param MerchantDetail  $merchantDetail
-	 * @param MerchantDetails $merchantDetailRepository
+	 * @param Merchant  $merchant
 	 */
-	public function __construct( MerchantDetail $merchantDetail, MerchantDetails $merchantDetailRepository ) {
-		$this->merchant_model      = $merchantDetail;
-		$this->merchant_repository = $merchantDetailRepository;
+	public function __construct(
+		Merchant $merchant = null
+	) {
+		$this->merchant = $merchant ?: tribe( Merchant::class );
 	}
 
 	/**
 	 * Get the list of settings for the gateway.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return array The list of settings for the gateway.
 	 */
@@ -132,7 +121,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Get the PayPal Commerce introduction section.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string The PayPal Commerce introduction section.
 	 */
@@ -152,7 +141,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Get the Connect with PayPal HTML.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string The Connect with PayPal HTML.
 	 */
@@ -160,11 +149,11 @@ class Settings extends Abstract_Settings {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
-		$account_errors = $this->merchant_repository->getAccountErrors();
+		$account_errors = $this->merchant->get_account_errors();
 
 		$context = [
-			'account_is_connected' => $this->merchant_repository->accountIsConnected(),
-			'merchant_id'          => $this->merchant_model->merchantId,
+			'account_is_connected' => $this->merchant->account_is_connected(),
+			'merchant_id'          => $this->merchant->get_merchant_id(),
 			'formatted_errors'     => $this->get_formatted_error_html( $account_errors ),
 			'guidance_html'        => $this->get_guidance_html(),
 		];
@@ -177,7 +166,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Get the guidance HTML.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string The guidance HTML.
 	 */
@@ -205,7 +194,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Determine whether the account country is in North America.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool Whether the account country is in North America.
 	 */
@@ -246,7 +235,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Get the formatted error HTML.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $errors The list of errors.
 	 *
@@ -291,7 +280,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Format the list of errors.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $errors The list of errors to format.
 	 *
@@ -340,7 +329,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Returns the country for the account
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string
 	 */
@@ -352,7 +341,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Updates the country account
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $country
 	 *
@@ -365,7 +354,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Returns the account access token
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return array|null
 	 */
@@ -382,7 +371,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Updates the account access token.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array $token The account access token.
 	 *
@@ -395,7 +384,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Deletes the account access token
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool
 	 */
@@ -406,9 +395,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Returns the partner link details
 	 *
-	 * @since TBD
-	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string|null
 	 */
@@ -419,7 +406,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Updates the partner link details
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param $linkDetails
 	 *
@@ -432,7 +419,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Deletes the partner link details
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool
 	 */
@@ -443,11 +430,11 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Returns the webhook config.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $mode The mode (live/sandbox).
 	 *
-	 * @return WebhookConfig|null
+	 * @return Webhook_Config|null
 	 */
 	public function get_webhook_config( $mode ) {
 		$config = tribe_get_option( "{$this->option_webhook_config}-{$mode}", null );
@@ -456,27 +443,27 @@ class Settings extends Abstract_Settings {
 			return null;
 		}
 
-		return WebhookConfig::fromArray( $config );
+		return Webhook_Config::from_array( $config );
 	}
 
 	/**
 	 * Updates the webhook config.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
-	 * @param string        $mode   The mode (live/sandbox).
-	 * @param WebhookConfig $config The webhook config array.
+	 * @param string         $mode   The mode (live/sandbox).
+	 * @param Webhook_Config $config The webhook config array.
 	 *
 	 * @return bool
 	 */
-	public function update_webhook_config( $mode, WebhookConfig $config ) {
-		return tribe_update_option( "{$this->option_webhook_config}-{$mode}", $config->toArray() );
+	public function update_webhook_config( $mode, Webhook_Config $config ) {
+		return tribe_update_option( "{$this->option_webhook_config}-{$mode}", $config->to_array() );
 	}
 
 	/**
 	 * Deletes the webhook config.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string $mode The mode (live/sandbox).
 	 *

@@ -1,23 +1,18 @@
-:root {
-	--border-radius: 3px;
-	--border-color: #ccc;
-}
-
 /* fix a z-index issue with postbox and tooltips */
 #tribetickets {
 	z-index: 1;
 }
 
 .tribe-tickets-editor-table {
-	border: 1px solid var(--border-color);
-	border-radius: var(--border-radius);
+	border: 1px solid var(--tec-color-border-default);
+	border-radius: var(--tec-border-radius-default);
 	border-spacing: 0;
 	margin: 20px 0;
 
 	thead,
 	.table-header {
 		background-color: #fafafa;
-		border-bottom: 1px solid var(--border-color);
+		border-bottom: 1px solid var(--tec-color-border-default);
 	}
 
 	tr {
@@ -25,32 +20,32 @@
 	}
 
 	tr td {
-		border-bottom: 1px solid var(--border-color);
+		border-bottom: 1px solid var(--tec-color-border-default);
 	}
 
 	tr:first-child {
-		border-top-left-radius: var(--border-radius);
-		border-top-right-radius: var(--border-radius);
+		border-top-left-radius: var(--tec-border-radius-default);
+		border-top-right-radius: var(--tec-border-radius-default);
 
 		td:first-child {
-			border-top-left-radius: var(--border-radius);
+			border-top-left-radius: var(--tec-border-radius-default);
 		}
 
 		td:last-child {
-			border-top-right-radius: var(--border-radius);
+			border-top-right-radius: var(--tec-border-radius-default);
 		}
 	}
 
 	tr:last-child {
-		border-bottom-left-radius: var(--border-radius);
-		border-bottom-right-radius: var(--border-radius);
+		border-bottom-left-radius: var(--tec-border-radius-default);
+		border-bottom-right-radius: var(--tec-border-radius-default);
 
 		td:first-child {
-			border-bottom-left-radius: var(--border-radius);
+			border-bottom-left-radius: var(--tec-border-radius-default);
 		}
 
 		td:last-child {
-			border-bottom-right-radius: var(--border-radius);
+			border-bottom-right-radius: var(--tec-border-radius-default);
 		}
 	}
 
@@ -124,11 +119,12 @@
 	}
 
 	.ticket_edit {
-		width: 30px;
+		width: 60px;
 	}
 
 	/* Edit button styles - separate for portability */
 	.ticket_edit_button,
+	.ticket_delete,
 	.global_capacity_edit_button {
 		background: none;
 		border: 0;
@@ -137,20 +133,31 @@
 		padding: 0;
 
 		&:hover {
-			color: #00a0d2;
+			color: #727272;
 		}
 
 		.ticket_edit_text,
-		.global_capacity_edit_text {
+		.global_capacity_edit_text,
+		.ticket_delete_text {
 			font-size: 0;
 
 			&:before {
 				content: '\f464';
 				font-family: 'dashicons';
-				font-size: x-large;
+				font-size: 20px;
 				vertical-align: top;
 			}
 		}
+
+		.ticket_delete_text {
+			&:before {
+				content: '\f182';
+			}
+		}
+	}
+
+	.ticket_delete {
+		margin-left: 12px;
 	}
 
 	.global_capacity_edit_button {
@@ -163,12 +170,12 @@
 			box-shadow: none;
 
 			@media screen and (max-width: 782px) {
-				border-bottom: 1px solid var(--border-color);
+				border-bottom: 1px solid var(--tec-color-border-default);
 				display: block;
 
 				&:before,
 				&:after {
-					content: "";
+					content: '';
 					display: table;
 				}
 
@@ -189,7 +196,7 @@
 			}
 
 			td {
-				border-bottom: 1px solid var(--border-color);
+				border-bottom: 1px solid var(--tec-color-border-default);
 			}
 		}
 
@@ -199,7 +206,7 @@
 		}
 
 		tbody tr:last-child td {
-			border-top: 1px dashed var(--border-color);
+			border-top: 1px dashed var(--tec-color-border-default);
 		}
 	}
 
@@ -231,7 +238,7 @@
 		}
 
 		tr {
-			border-bottom: 1px solid var(--border-color);
+			border-bottom: 1px solid var(--tec-color-border-default);
 			position: relative;
 		}
 
@@ -245,7 +252,7 @@
 
 		&.tribe-tickets-editor-capacity-table {
 			td:first-child,
-			td[colspan="2"] {
+			td[colspan='2'] {
 				width: 100%;
 			}
 		}

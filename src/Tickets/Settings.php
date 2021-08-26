@@ -2,7 +2,7 @@
 /**
  * The main class for managing settings related to Tickets Commerce.
  *
- * @since   TBD
+ * @since   5.1.6
  * @package TEC\Tickets
  */
 
@@ -11,7 +11,7 @@ namespace TEC\Tickets;
 /**
  * Class Settings.
  *
- * @since   TBD
+ * @since   5.1.6
  *
  * @package TEC\Tickets
  */
@@ -19,7 +19,7 @@ class Settings {
 	/**
 	 * Holds the setting for loading or not the tickets commerce.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @var string
 	 */

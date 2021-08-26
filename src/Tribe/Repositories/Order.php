@@ -99,7 +99,7 @@ class Order extends Tribe__Repository {
 			return;
 		}
 
-		/** @var Tribe__Tickets__Status__Manager $status_mgr */
+		/** @var \Tribe__Tickets__Status__Manager $status_mgr */
 		$status_mgr = tribe( 'tickets.status' );
 
 		/**
@@ -145,7 +145,7 @@ class Order extends Tribe__Repository {
 	/**
 	 * Filters attendee to only get those related to orders with a specific status.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param string|array $order_status Order status.
 	 *

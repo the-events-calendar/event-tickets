@@ -36,7 +36,7 @@ class Tribe__Tickets__Service_Providers__ORM extends tad_DI52_ServiceProvider {
 
 		$this->container->bind( 'tickets.repositories.order', Order::class );
 
-		add_filter( 'tribe_events_event_repository_map', array( $this, 'filter_events_repository_map' ) );
+		add_filter( 'tribe_events_event_repository_map', [ $this, 'filter_events_repository_map' ], 15 );
 	}
 
 	/**
@@ -50,7 +50,11 @@ class Tribe__Tickets__Service_Providers__ORM extends tad_DI52_ServiceProvider {
 	 * @return array The filtered repository map.
 	 */
 	public function filter_events_repository_map( array $map ) {
-		$map['default'] = 'tickets.event-repository';
+		if ( ! isset( $map['tickets_event_previous'] ) ) {
+			$map['tickets_event_previous'] = $map['default'];
+		}
+
+		$map['default']  = 'tickets.event-repository';
 
 		return $map;
 	}

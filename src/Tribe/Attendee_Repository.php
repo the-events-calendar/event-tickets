@@ -47,7 +47,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	protected static $public_order_statuses = [
 		'yes',     // RSVP
-		'completed', // PayPal
+		'completed', // PayPal Legacy
 		'wc-completed', // WooCommerce
 		'publish', // Easy Digital Downloads
 	];
@@ -142,8 +142,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function attendee_types() {
 		return [
-			'rsvp'           => 'tribe_rsvp_attendees',
-			'tribe-commerce' => 'tribe_tpp_attendees',
+			'rsvp'                          => 'tribe_rsvp_attendees',
+			'tribe-commerce'                => 'tribe_tpp_attendees',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::POSTTYPE,
 		];
 	}
 
@@ -158,8 +159,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function attendee_to_event_keys() {
 		return [
-			'rsvp'           => '_tribe_rsvp_event',
-			'tribe-commerce' => '_tribe_tpp_event',
+			'rsvp'                          => '_tribe_rsvp_event',
+			'tribe-commerce'                => '_tribe_tpp_event',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$event_relation_meta_key,
 		];
 	}
 
@@ -174,8 +176,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function attendee_to_ticket_keys() {
 		return [
-			'rsvp'           => '_tribe_rsvp_product',
-			'tribe-commerce' => '_tribe_tpp_product',
+			'rsvp'                          => '_tribe_rsvp_product',
+			'tribe-commerce'                => '_tribe_tpp_product',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$ticket_relation_meta_key,
 		];
 	}
 
@@ -189,8 +192,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	protected function attendee_to_order_keys() {
 		return [
-			'rsvp'           => '_tribe_rsvp_order',
-			'tribe-commerce' => '_tribe_tpp_order',
+			'rsvp'                          => '_tribe_rsvp_order',
+			'tribe-commerce'                => '_tribe_tpp_order',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$order_relation_meta_key,
 		];
 	}
 
@@ -205,8 +209,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function purchaser_name_keys() {
 		return [
-			'rsvp'           => '_tribe_rsvp_full_name',
-			'tribe-commerce' => '_tribe_tpp_full_name',
+			'rsvp'                          => '_tribe_rsvp_full_name',
+			'tribe-commerce'                => '_tribe_tpp_full_name',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$purchaser_name_meta_key,
 		];
 	}
 
@@ -221,8 +226,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function purchaser_email_keys() {
 		return [
-			'rsvp'           => '_tribe_rsvp_email',
-			'tribe-commerce' => '_tribe_tpp_email',
+			'rsvp'                          => '_tribe_rsvp_email',
+			'tribe-commerce'                => '_tribe_tpp_email',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$purchaser_email_meta_key,
 		];
 	}
 
@@ -237,8 +243,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function security_code_keys() {
 		return [
-			'rsvp'           => '_tribe_rsvp_security_code',
-			'tribe-commerce' => '_tribe_tpp_security_code',
+			'rsvp'                          => '_tribe_rsvp_security_code',
+			'tribe-commerce'                => '_tribe_tpp_security_code',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$security_code_meta_key,
 		];
 	}
 
@@ -253,8 +260,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function attendee_optout_keys() {
 		return [
-			'rsvp'           => '_tribe_rsvp_attendee_optout',
-			'tribe-commerce' => '_tribe_tpp_attendee_optout',
+			'rsvp'                          => '_tribe_rsvp_attendee_optout',
+			'tribe-commerce'                => '_tribe_tpp_attendee_optout',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$optout_meta_key,
 		];
 	}
 
@@ -267,8 +275,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function checked_in_keys() {
 		return [
-			'rsvp'           => '_tribe_rsvp_checkedin',
-			'tribe-commerce' => '_tribe_tpp_checkedin',
+			'rsvp'                          => '_tribe_rsvp_checkedin',
+			'tribe-commerce'                => '_tribe_tpp_checkedin',
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$checked_in_meta_key,
 		];
 	}
 
@@ -399,9 +408,10 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since 4.8
 	 *
+	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
+	 *
 	 * @param string|array $event_status
 	 *
-	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
 	 */
 	public function filter_by_event_status( $event_status ) {
 		$statuses = Arr::list_to_array( $event_status );
@@ -470,10 +480,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since 4.8
 	 *
-	 * @param string|array $order_status Order status.
+	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
+	 *
 	 * @param string       $type         Type of matching (in, not_in, like).
 	 *
-	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
+	 * @param string|array $order_status Order status.
 	 */
 	public function filter_by_order_status( $order_status, $type = 'in' ) {
 		$statuses = Arr::list_to_array( $order_status );
@@ -561,9 +572,10 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since 4.10.6
 	 *
+	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
+	 *
 	 * @param string|array $order_status
 	 *
-	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
 	 */
 	public function filter_by_order_status_not_in( $order_status ) {
 		$this->filter_by_order_status( $order_status, 'not_in' );
@@ -725,12 +737,14 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param Tribe__Tickets__Ticket_Object|int $ticket        The ticket object or ID.
+	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
+	 *
 	 * @param array                             $attendee_data List of additional attendee data.
+	 *
+	 * @param Tribe__Tickets__Ticket_Object|int $ticket        The ticket object or ID.
 	 *
 	 * @return WP_Post|false The new post object or false if unsuccessful.
 	 *
-	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
 	 */
 	public function create_attendee_for_ticket( $ticket, $attendee_data ) {
 		// Attempt to get the ticket object from the ticket ID.
@@ -768,17 +782,19 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param array $attendee_data  List of attendee data to be saved.
+	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
+	 *
 	 * @param bool  $return_promise Whether to return a promise object or just the ids
 	 *                              of the updated posts; if `true` then a promise will
 	 *                              be returned whether the update is happening in background
 	 *                              or not.
 	 *
+	 * @param array $attendee_data  List of attendee data to be saved.
+	 *
 	 * @return array|Tribe__Promise A list of the post IDs that have been (synchronous) or will
 	 *                              be (asynchronous) updated if `$return_promise` is set to `false`;
 	 *                              the Promise object if `$return_promise` is set to `true`.
 	 *
-	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
 	 */
 	public function update_attendee( $attendee_data, $return_promise = false ) {
 		if ( empty( $attendee_data['attendee_id'] ) ) {
@@ -807,7 +823,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			$repository = $this;
 
 			return $saved->then(
-				static function() use ( $repository, $attendee_data ) {
+				static function () use ( $repository, $attendee_data ) {
 					// Trigger the update actions.
 					$repository->trigger_update_actions( $attendee_data );
 				}
@@ -825,10 +841,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param array                         $attendee_data List of additional attendee data.
+	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
+	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket        The ticket object or null if not relying on it.
 	 *
-	 * @throws Tribe__Repository__Usage_Error If the argument types are not set as expected.
+	 * @param array                         $attendee_data List of additional attendee data.
 	 */
 	public function set_attendee_args( $attendee_data, $ticket = null ) {
 		$args = [
@@ -1038,6 +1055,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			$query->set_args( $args );
 		} catch ( Tribe__Repository__Usage_Error $e ) {
 			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
+
 			return;
 		}
 
@@ -1103,7 +1121,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param array $attendee_data  List of attendee data to be saved.
+	 * @param array $attendee_data List of attendee data to be saved.
 	 */
 	public function trigger_update_actions( $attendee_data ) {
 		/**

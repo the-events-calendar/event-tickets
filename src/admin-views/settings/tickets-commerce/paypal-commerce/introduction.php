@@ -2,7 +2,7 @@
 /**
  * Introduction section for the Tickets Commerce > PayPal Commerce gateway settings.
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @var string $plugin_url [Global] The plugin URL.
  */

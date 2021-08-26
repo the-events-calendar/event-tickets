@@ -69,8 +69,6 @@ class TitleTest extends V2TestCase {
 		$this->assertContains( 'tribe-tickets--no-description', $html );
 		$this->assertContains( 'tribe-tickets__tickets-item-content-subtitle', $html );
 
-		codecept_debug( $args['ticket']);
-
 		$driver = $this->get_html_output_driver();
 
 		$driver->setTolerableDifferences( [

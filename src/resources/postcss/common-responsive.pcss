@@ -5,7 +5,8 @@
  * @todo @juanfra: Check this once we define https://github.com/the-events-calendar/tribe-common/pull/1379
  */
 
-@import "utilities/_all.pcss";
+/* Import Mixins */
+@import 'tickets-common.pcss';
 
 .event-tickets {
 	/* From: base/full/forms/_text.pcss */
@@ -186,7 +187,7 @@
 
 	.tribe-common-form-control-text__input { /* stylelint-disable-line no-duplicate-selectors */
 		@media (--viewport-medium) {
-			padding: var(--spacer-4) var(--spacer-4) var(--spacer-4) var(--spacer-8);
+			padding: var(--tec-spacer-4) var(--tec-spacer-4) var(--tec-spacer-4) var(--tec-spacer-8);
 		}
 	}
 
@@ -194,14 +195,14 @@
 
 	.tribe-common-g-row--gutters {
 		@media (--viewport-medium) {
-			margin-left: var(--grid-gutter-half-negative);
-			margin-right: var(--grid-gutter-half-negative);
+			margin-left: var(--tec-grid-gutter-half-negative);
+			margin-right: var(--tec-grid-gutter-half-negative);
 		}
 
 		& > .tribe-common-g-col {
 			@media (--viewport-medium) {
-				padding-left: var(--grid-gutter-half);
-				padding-right: var(--grid-gutter-half);
+				padding-left: var(--tec-grid-gutter-half);
+				padding-right: var(--tec-grid-gutter-half);
 			}
 		}
 	}

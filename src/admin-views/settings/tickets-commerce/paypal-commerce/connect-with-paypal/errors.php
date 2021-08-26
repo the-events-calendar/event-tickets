@@ -2,7 +2,7 @@
 /**
  * Account errors list for the Tickets Commerce > PayPal Commerce gateway settings.
  *
- * @since TBD
+ * @since 5.1.6
  *
  * @var bool   $account_is_connected [Global] Whether the account is connected.
  * @var string $merchant_id          [Global] The merchant ID (if there is any).

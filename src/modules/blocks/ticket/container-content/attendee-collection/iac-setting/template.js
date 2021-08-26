@@ -51,7 +51,7 @@ class IACSetting extends PureComponent {
 					<RadioControl
 						className="tribe-editor__ticket__iac-setting-input"
 						id={ this.id }
-						type="text"
+						type="radio"
 						selected={ iac }
 						onChange={ onChange }
 						disabled={ isDisabled }

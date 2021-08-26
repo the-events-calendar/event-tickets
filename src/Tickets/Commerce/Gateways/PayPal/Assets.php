@@ -2,17 +2,19 @@
 /**
  * Handles registering and setup for assets on Ticket Commerce.
  *
- * @since TBD
+ * @since   5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint;
+
 /**
  * Class Assets.
  *
- * @since TBD
+ * @since   5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -21,11 +23,12 @@ class Assets extends \tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 */
 	public function register() {
+		$plugin = \Tribe__Tickets__Main::instance();
 		tribe_asset(
-			\Tribe__Tickets__Main::instance(),
+			$plugin,
 			'tribe-tickets-admin-commerce-paypal-commerce-partner-js',
 			$this->get_partner_js_url(),
 			[],
@@ -64,22 +67,47 @@ class Assets extends \tad_DI52_ServiceProvider {
 				],
 			]
 		);
+
+
+		tribe_asset(
+			$plugin,
+			'tec-tickets-commerce-gateway-paypal-checkout',
+			'commerce/gateway/paypal/checkout.js',
+			[
+				'jquery',
+				'tribe-common',
+			],
+			null,
+			[
+				'groups'   => [
+					'tec-tickets-commerce-gateway-paypal',
+				],
+				'localize' => [
+					'name' => 'tecTicketsCommerceGatewayPayPalCheckout',
+					'data' => static function () {
+						return [
+							'orderEndpoint' => tribe( Order_Endpoint::class )->get_route_url(),
+						];
+					},
+				],
+			]
+		);
+
 	}
 
 	/**
 	 * Get PayPal partner JS asset url.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return string
 	 */
 	private function get_partner_js_url() {
-		/** @var PayPalClient $client */
-		$client = tribe( SDK\PayPalClient::class );
+		$client = tribe( Client::class );
 
 		return sprintf(
 			'%1$swebapps/merchantboarding/js/lib/lightbox/partner.js',
-			$client->getHomePageUrl()
+			$client->get_home_page_url()
 		);
 	}
 }

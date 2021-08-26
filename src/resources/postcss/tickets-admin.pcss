@@ -1,4 +1,4 @@
-@import "tickets-common.pcss";
+@import 'tickets-common.pcss';
 
 .tribe-tickets-column-attendees-link {
 	display: inline-block;
@@ -81,17 +81,12 @@
 	width: 100%;
 }
 
-:root {
-	--border-light-color: #a3a3a3;
-	--button-text-color: #555;
-}
-
 @define-mixin tribe-ticket-tooltip {
 	position: relative;
 
 	.tooltip {
 		background-color: #efefef;
-		border: 1px solid var(--border-light-color);
+		border: 1px solid var(--tec-color-border-secondary);
 		border-radius: 3px;
 		display: none;
 		margin-left: 0.5em;
@@ -170,21 +165,21 @@
 		font-weight: normal;
 	}
 
-	input[type="text"],
-	input[type="email"],
-	input[type="url"],
-	input[type="password"],
-	input[type="search"],
-	input[type="number"],
-	input[type="tel"],
-	input[type="range"],
-	input[type="date"],
-	input[type="month"],
-	input[type="week"],
-	input[type="time"],
-	input[type="datetime"],
-	input[type="datetime-local"],
-	input[type="color"],
+	input[type='text'],
+	input[type='email'],
+	input[type='url'],
+	input[type='password'],
+	input[type='search'],
+	input[type='number'],
+	input[type='tel'],
+	input[type='range'],
+	input[type='date'],
+	input[type='month'],
+	input[type='week'],
+	input[type='time'],
+	input[type='datetime'],
+	input[type='datetime-local'],
+	input[type='color'],
 	textarea,
 	label {
 		&.ticket_form_right {
@@ -201,7 +196,7 @@
 
 /* Panels */
 .ticket_panel {
-	border: 1px solid var(--border-light-color);
+	border: 1px solid var(--tec-color-border-secondary);
 	border-radius: 5px;
 	box-sizing: border-box;
 	opacity: 1;
@@ -358,7 +353,6 @@
 
 /* Styles for Initial View */
 .ticket_table_intro {
-
 	.button-secondary {
 		float: right;
 		margin-bottom: 15px;
@@ -619,7 +613,7 @@ p.description {
 	padding: 10px;
 
 	&.info {
-		background-color: #eff6fc;
+		background-color: #edf6fc;
 
 		.dashicons {
 			color: #2a709d;

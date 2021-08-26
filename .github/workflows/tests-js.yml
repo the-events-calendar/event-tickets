@@ -4,7 +4,9 @@ jobs:
   test:
     strategy:
       matrix:
-        suite: [ 'test' ]
+        suite: [
+#            'test'
+        ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository

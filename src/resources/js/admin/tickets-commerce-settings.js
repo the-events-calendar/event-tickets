@@ -1,9 +1,9 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since 5.1.6
  *
- * @type {PlainObject}
+ * @type {Object}
  */
 tribe.tickets = tribe.tickets || {};
 tribe.tickets.admin = tribe.tickets.admin || {};
@@ -11,20 +11,20 @@ tribe.tickets.admin = tribe.tickets.admin || {};
 /**
  * Configures admin commerce settings Object in the Global Tribe variable
  *
- * @since TBD
+ * @since 5.1.6
  *
- * @type {PlainObject}
+ * @type {Object}
  */
 tribe.tickets.admin.commerceSettings = {};
 
 /**
  * Initializes in a Strict env the code that manages the Tickets Commerce settings page.
  *
- * @since TBD
+ * @since 5.1.6
  *
- * @param  {PlainObject} $   jQuery
- * @param  {PlainObject} _   Underscore.js
- * @param  {PlainObject} obj tribe.tickets.admin.commerceSettings
+ * @param  {Object} $   jQuery
+ * @param  {Object} _   Underscore.js
+ * @param  {Object} obj tribe.tickets.admin.commerceSettings
  *
  * @return {void}
  */
@@ -35,7 +35,7 @@ tribe.tickets.admin.commerceSettings = {};
 	/**
 	 * Selectors used for configuration and setup
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @type {PlainObject}
 	 */
@@ -136,12 +136,12 @@ tribe.tickets.admin.commerceSettings = {};
 		// If class added that means modal opened.
 		// If class removed that means modal closed.
 		obj.observePayPalModal();
-	}
+	};
 
 	/**
 	 * Performs an AJAX request to get the partner URL.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param {String} countryCode The country code.
 	 *
@@ -149,7 +149,7 @@ tribe.tickets.admin.commerceSettings = {};
 	 */
 	obj.requestPartnerUrl = function( countryCode ) {
 		// @todo Add AJAX handler for this.
-		fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_get_partner_url&countryCode=' + countryCode ) // eslint-disable-line max-len
+		fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_get_partner_url&country_code=' + countryCode ) // eslint-disable-line max-len
 			.then( function( response ) {
 				return response.json();
 			} )
@@ -192,7 +192,7 @@ tribe.tickets.admin.commerceSettings = {};
 		if ( errorsContainer ) {
 			errorsContainer.parentElement.remove();
 		}
-	}
+	};
 
 	obj.buttonState = {
 		enable: function() {
@@ -266,7 +266,7 @@ tribe.tickets.admin.commerceSettings = {};
 	/**
 	 * Handles the initialization of the gateway settings when Document is ready.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return {void}
 	 */

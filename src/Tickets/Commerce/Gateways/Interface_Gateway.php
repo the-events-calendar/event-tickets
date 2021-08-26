@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways;
 /**
  * Class Interface_Gateway
  *
- * @since   TBD
+ * @since   5.1.6
  *
  * @package TEC\Tickets\Commerce\Gateways
  */
@@ -13,16 +13,25 @@ interface Interface_Gateway {
 	/**
 	 * Get's the key for this Commerce Gateway.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
-	 * @return bool Whether the provider is active.
+	 * @return string What is the Key used.
 	 */
 	public static function get_key();
 
 	/**
-	 * Get's the label for this Commerce Gateway.
+	 * Get's the provider key for this Commerce Gateway.
 	 *
 	 * @since TBD
+	 *
+	 * @return string What is the ORM Provider Key used.
+	 */
+	public static function get_provider_key();
+
+	/**
+	 * Get's the label for this Commerce Gateway.
+	 *
+	 * @since 5.1.6
 	 *
 	 * @return string What label we are using for this gateway.
 	 */
@@ -31,7 +40,7 @@ interface Interface_Gateway {
 	/**
 	 * Determine whether the gateway is active.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool Whether the provider is active.
 	 */
@@ -40,7 +49,7 @@ interface Interface_Gateway {
 	/**
 	 * Determine whether the gateway should be shown as an available gateway.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @return bool Whether the gateway should be shown as an available gateway.
 	 */
@@ -49,7 +58,7 @@ interface Interface_Gateway {
 	/**
 	 * Register the gateway for Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.1.6
 	 *
 	 * @param array       $gateways The list of registered Tickets Commerce gateways.
 	 *

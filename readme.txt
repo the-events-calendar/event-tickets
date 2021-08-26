@@ -2,9 +2,9 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, patriciahillebrandt, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
-Requires at least: 4.9.14
-Tested up to: 5.7.2
-Stable tag: 5.1.6
+Requires at least: 4.9.18
+Tested up to: 5.8.0
+Stable tag: 5.1.9
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -23,7 +23,7 @@ https://vimeo.com/480516958
 
 See Event Tickets in action on our [demo site](https://evnt.is/1ajs). Just getting started? Check out the [Getting Started Guide](https://evnt.is/1aoc) for an introduction to features, settings, and functionality.
 
-Looking for additional features like custom registration fields, QR check-in, Zoom integration, and more? <strong>Check out [Event Tickets Plus](https://evnt.is/18th) and our [other add-ons](https://evnt.is/2a)</strong>. ...and all of them are on sale from November 23-30 during our annual 💰[Black Friday Sale](https://evnt.is/1aod)💰
+Looking for additional features like custom registration fields, QR check-in, Zoom integration, and more? <strong>Check out [Event Tickets Plus](https://evnt.is/18th) and our [other add-ons](https://evnt.is/2a)</strong>.
 
 = 🔌🎨 Plug and Play or Customize =
 
@@ -178,7 +178,27 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.1.6] TBD =
+= [5.1.9] TBD =
+
+* Fix - Fixed cart calculation inconsistency with WooCommerce when the "Number of decimals" setting was set to `0`. [ETP-324]
+* Fix - Removed RSVP V2 preview templates and functionality. [ET-1162]
+* Fix - Updated deprecated hook `block_categories` to use `block_categories_all`. [ET-1156]
+
+= [5.1.8] 2021-08-24 =
+
+* Tweak - Add new event repository schema for finding all events with RSVPs or Tickets.
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.1.7] 2021-08-03 =
+
+* Feature - Added export button next to the page title on the Attendees page. [ET-1145]
+* Tweak - Changed the word `Purchaser` to `Attendee` when email confirmation is sent for purchasing a ticket. [ETP-655]
+* Tweak - Added `$attendees` parameter to the `tribe_report_page_after_text_label` action. [ET-1145]
+* Tweak - Removed the edit column when printing the Attendees list. [ETP-702]
+* Tweak - Added "Delete" functionality for the tickets area in the classic editor. [ET-1107]
+* Language - 1 new strings added, 61 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.1.6] 2021-07-07 =
 
 * Tweak - Added support for HTML in Ticket description field. [ET-1135]
 * Tweak - Added `$ticket_id` parameter to the `tribe_events_tickets_metabox_edit_ajax_advanced` filter. [ETP-111]
@@ -186,6 +206,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Fixed the ticket block allowing to add more tickets than available when using shared capacity. [ET-1137]
 * Fix - Sync WooCommerce decimal separator with in Ticket edit form. [ETP-725]
 * Fix - Prevent Tribe Commerce "Confirmation email sender name" from displaying improperly when a single quote is added. [ET-1134]
+* Language - 115 new strings added, 118 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.1.5] 2021-06-09 =
 
