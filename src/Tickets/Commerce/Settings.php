@@ -120,14 +120,14 @@ class Settings extends Abstract_Settings {
 	}
 
 	/**
-	 * Get the list of settings for Tickets Commerce.
+	 * Gets the top level settings for Tickets Commerce.
 	 *
-	 * @since 5.1.6
+	 * @since TBD
 	 *
-	 * @return array The list of settings for Tickets Commerce.
+	 *
+	 * @return array[]
 	 */
-	public function get_settings() {
-		$gateways_manager = tribe( Manager::class );
+	public function get_top_level_settings() {
 
 		$plus_link    = sprintf(
 			'<a href="https://evnt.is/19zl" target="_blank" rel="noopener noreferrer">%s</a>',
@@ -144,6 +144,44 @@ class Settings extends Abstract_Settings {
 			esc_html( tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_about_tribe_commerce' ) ),
 			$plus_link_2
 		);
+
+		// @todo Fill this out and make it check if PayPal Legacy was previously active.
+		$is_tickets_commerce_enabled = tec_tickets_commerce_is_enabled();
+
+		$top_level_settings = [
+			'tickets-commerce-header'      => [
+				'type' => 'html',
+				'html' => '<div class="tec-tickets-commerce-toggle"><label class="tec-tickets-commerce-switch"><input type="checkbox" name="' . static::$option_enable . '" value="' . $is_tickets_commerce_enabled . '" ' . checked( $is_tickets_commerce_enabled, true, false ) . ' id="tickets-commerce-enable-input" class="tribe-dependency tribe-dependency-verified"><span class="tec-tickets-commerce-slider round"></span></label><h2>' . esc_html__( 'Enable Tickets Commerce', 'event-tickets' ) . '</h2></div>',
+			],
+			'tickets-commerce-description' => [
+				'type' => 'html',
+				'html' => '<div class="tec-tickets-commerce-description">' . $plus_message . '</div>',
+			],
+			static::$option_enable         => [
+				'type'            => 'hidden',
+				'validation_type' => 'boolean',
+			],
+		];
+
+		/**
+		 * Hook to modify the top level settings for Tickets Commerce.
+		 *
+		 * @since TBD
+		 *
+		 * @param array[] $top_level_settings Top level settings.
+		 */
+		return apply_filters( 'tec_tickets_commerce_settings_top_level', $top_level_settings );
+	}
+
+	/**
+	 * Get the list of settings for Tickets Commerce.
+	 *
+	 * @since 5.1.6
+	 *
+	 * @return array The list of settings for Tickets Commerce.
+	 */
+	public function get_settings() {
+		$gateways_manager = tribe( Manager::class );
 
 		// @todo Replace this with a better and more performant REST API based solution.
 		$page_args = [
@@ -169,25 +207,6 @@ class Settings extends Abstract_Settings {
 		$paypal_currency_code_options = $commerce_currency->generate_currency_code_options();
 
 		$current_user = get_user_by( 'id', get_current_user_id() );
-
-		// @todo Fill this out and make it check if PayPal Legacy was previously active.
-		$is_tickets_commerce_enabled = tec_tickets_commerce_is_enabled();
-
-		$top_level_settings = [
-			'tickets-commerce-header'      => [
-				'type' => 'html',
-				'html' => '<div class="tec-tickets-commerce-toggle"><label class="tec-tickets-commerce-switch"><input type="checkbox" name="' . static::$option_enable . '" value="' . $is_tickets_commerce_enabled . '" ' . checked( $is_tickets_commerce_enabled, true, false ) . ' id="tickets-commerce-enable-input" class="tribe-dependency tribe-dependency-verified"><span class="tec-tickets-commerce-slider round"></span></label><h2>' . esc_html__( 'Enable Tickets Commerce', 'event-tickets' ) . '</h2></div>',
-			],
-			'tickets-commerce-description' => [
-				'type' => 'html',
-				'html' => '<div class="tec-tickets-commerce-description">' . $plus_message . '</div>',
-			],
-			static::$option_enable         => [
-				'type'            => 'hidden',
-				'validation_type' => 'boolean',
-			],
-		];
-
 
 		$settings = [
 			static::$option_sandbox                         => [
@@ -325,7 +344,19 @@ class Settings extends Abstract_Settings {
 		 */
 		$settings = apply_filters( 'tribe_tickets_commerce_settings', $settings );
 
-		// Handle setting up dependencies for all of the fields.
+		return array_merge( $this->get_top_level_settings(), $settings );
+	}
+
+	/**
+	 * Handle setting up dependencies for all of the fields.
+	 *
+	 * @since TBD
+	 *
+	 * @param array[] $settings Which settings we are applying conditioanls to.
+	 *
+	 * @return array[]
+	 */
+	public function apply_commerce_enabled_conditional( $settings ) {
 		$validate_if         = new Tribe__Field_Conditional( static::$option_enable, 'tribe_is_truthy' );
 		$fieldset_attributes = [
 			'data-depends'              => '#' . static::$option_enable . '-input',
@@ -348,9 +379,7 @@ class Settings extends Abstract_Settings {
 			$commerce_field['validate_if'] = $validate_if;
 		}
 
-		unset( $commerce_field );
-
-		return array_merge( $top_level_settings, $settings );
+		return $settings;
 	}
 
 }
