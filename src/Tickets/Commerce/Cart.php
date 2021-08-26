@@ -233,44 +233,67 @@ class Cart {
 	}
 
 	/**
+	 * Clear the cart.
+	 *
+	 * @since TBD
+	 *
+	 * @return false
+	 */
+	public function clear_cart() {
+		$is_empty = empty( $_COOKIE[ static::$cart_hash_cookie_name ] );
+		$this->set_cart_hash_cookie( null );
+
+		if ( $is_empty ) {
+			return false;
+		}
+
+		$cart_hash = $_COOKIE[ static::$cart_hash_cookie_name ];
+		unset( $_COOKIE[ static::$cart_hash_cookie_name ] );
+
+		return delete_transient( static::get_transient_name( $cart_hash ) );
+	}
+
+	/**
 	 * Sets the cart hash cookie or resets the cookie.
 	 *
 	 * @since TBD
 	 *
 	 * @parem string $value Value used for the cookie or empty to purge the cookie.
+	 *
+	 * @return boolean
 	 */
 	public function set_cart_hash_cookie( $value = '' ) {
-		if ( empty( $value ) && empty( $_COOKIE[ static::$cart_hash_cookie_name ] ) ) {
-			return;
+		if ( headers_sent() ) {
+			return false;
 		}
 
-		if ( empty( $value ) ) {
-			$cart_hash = $_COOKIE[ static::$cart_hash_cookie_name ];
-			unset( $_COOKIE[ static::$cart_hash_cookie_name ] );
-			$deleted = delete_transient( static::get_transient_name( $cart_hash ) );
+		/**
+		 * Filters the life span of the Cart Cookie.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $expires The expiry time, as passed to setcookie().
+		 */
+		$expire  = apply_filters( 'tec_tickets_commerce_cart_expiration', time() + 1 * HOUR_IN_SECONDS );
+		$referer = wp_get_referer();
+
+		if ( $referer ) {
+			$secure = ( 'https' === parse_url( $referer, PHP_URL_SCHEME ) );
+		} else {
+			$secure = false;
 		}
 
-		if ( ! headers_sent() ) {
-
-			/**
-			 * Filters the life span of the Cart Cookie.
-			 *
-			 * @since TBD
-			 *
-			 * @param int $expires The expiry time, as passed to setcookie().
-			 */
-			$expire  = apply_filters( 'tec_tickets_commerce_cart_expiration', time() + 1 * HOUR_IN_SECONDS );
-			$referer = wp_get_referer();
-
-			if ( $referer ) {
-				$secure = ( 'https' === parse_url( $referer, PHP_URL_SCHEME ) );
-			} else {
-				$secure = false;
-			}
-
-			$is_cookie_set                             = setcookie( static::$cart_hash_cookie_name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, $secure );
-			$_COOKIE[ static::$cart_hash_cookie_name ] = $value;
+		// When null means we are deleting.
+		if ( null === $value ) {
+			$expire = 1;
 		}
+
+		$is_cookie_set = setcookie( static::$cart_hash_cookie_name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, $secure );
+
+		// Overwrite local variable so we can use it right away.
+		$_COOKIE[ static::$cart_hash_cookie_name ] = $value;
+
+		return $is_cookie_set;
 	}
 
 	/**
@@ -313,7 +336,7 @@ class Cart {
 		}
 
 		if ( $full_item_params ) {
-			$items    = array_map( static function ( $item ) {
+			$items = array_map( static function ( $item ) {
 				$item['obj']       = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 				$item['event_id']  = $item['obj']->get_event_id();
 				$item['sub_total'] = Price::sub_total( $item['obj']->price, $item['quantity'] );

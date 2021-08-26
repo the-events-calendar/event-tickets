@@ -23,7 +23,7 @@
 
 // @todo @bordoni @juanfra: Maybe move the modify attendees link to ET+.
 ?>
-<div class="tribe-tickets__commerce-checkout-header">
+<header class="tribe-tickets__commerce-checkout-header">
 	<h3 class="tribe-common-h2 tribe-tickets__commerce-checkout-header-title">
 		<?php esc_html_e( 'Purchase Tickets', 'event-tickets' ); ?>
 	</h3>
@@ -38,4 +38,4 @@
 			href="<?php the_permalink( $sections[ key( $sections ) ] ); ?>"
 		><?php esc_html_e( 'back to event', 'event-tickets' ); ?></a>
 	</div>
-</div>
+</header>

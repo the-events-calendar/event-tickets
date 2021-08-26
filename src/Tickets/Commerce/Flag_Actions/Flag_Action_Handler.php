@@ -28,6 +28,8 @@ class Flag_Action_Handler extends \tad_DI52_ServiceProvider {
 	 */
 	protected $default_flag_actions = [
 		Generate_Attendees::class,
+		Increase_Stock::class,
+		Decrease_Stock::class,
 	];
 
 	/**

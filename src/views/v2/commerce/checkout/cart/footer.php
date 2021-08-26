@@ -23,23 +23,12 @@
 $classes = [
 	'tribe-tickets__commerce-checkout-cart-footer',
 	'tribe-common-b1',
-]
+];
 ?>
-<div <?php tribe_classes( $classes ); ?>>
-	<div class="tribe-tickets__commerce-checkout-footer-quantity">
-		<span class="tribe-tickets__commerce-checkout-footer-quantity-label">
-			<?php esc_html_e( 'Quantity: ', 'event-tickets' ); ?>
-		</span>
-		<span class="tribe-tickets__commerce-checkout-footer-quantity-number">
-			<?php echo array_sum( wp_list_pluck( $items, 'quantity' ) ); ?>
-		</span>
-	</div>
+<footer <?php tribe_classes( $classes ); ?>>
 
-	<div class="tribe-tickets__commerce-checkout-footer-total">
-		<span class="tribe-tickets__commerce-checkout-footer-total-label">
-			<?php esc_html_e( 'Total: ', 'event-tickets' ); ?>
-		</span>
-		<span class="tribe-tickets__commerce-checkout-footer-total-wrap">
-			<?php echo esc_html( $total_value ); ?>
-		</div>
-</div>
+	<?php $this->template( 'checkout/cart/footer/quantity' ); ?>
+
+	<?php $this->template( 'checkout/cart/footer/total' ); ?>
+
+</footer>

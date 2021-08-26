@@ -18,8 +18,6 @@
  * @var string           $provider_id           [Global] The tickets provider class name.
  * @var array[]          $items                 [Global] List of Items on the cart to be checked out.
  * @var string           $paypal_attribution_id [Global] What is our PayPal Attribution ID.
- * @var int              $section               Which Section that we are going to render for this table.
- * @var \WP_Post         $post                  Which Section that we are going to render for this table.
  * @var array            $item                  Which item this row will be for.
  */
 
@@ -34,5 +32,5 @@ $item_details_id = 'tribe-tickets__commerce-checkout-cart-item-details-descripti
 
 ?>
 <div id="<?php echo esc_attr( $item_details_id ); ?>" <?php tribe_classes( $classes ); ?>>
-	<?php echo $item['obj']->description; ?>
+	<?php echo wp_kses_post( $item['obj']->description ); ?>
 </div>
