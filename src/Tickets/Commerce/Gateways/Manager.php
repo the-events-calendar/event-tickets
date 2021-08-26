@@ -75,6 +75,13 @@ class Manager {
 		return (string) tribe_get_option( static::$option_gateway, $default );
 	}
 
+	/**
+	 * Get the gateway settings from all gateways.
+	 *
+	 * @since TBD
+	 *
+	 * @return array[]
+	 */
 	public function get_gateway_settings() {
 		$gateways = $this->get_gateways();
 

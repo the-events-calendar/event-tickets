@@ -249,7 +249,8 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleApproveSuccess = function ( data ) {
-
+		// When this Token has expired we just refresh the browser.
+		window.location.replace( data.redirect_url );
 	};
 
 	/**
