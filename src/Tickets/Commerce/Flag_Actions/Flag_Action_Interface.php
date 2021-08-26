@@ -82,7 +82,7 @@ interface Flag_Action_Interface {
 	 * @param Status_Interface|null $old_status Old post status.
 	 * @param \WP_Post              $post       Post object.
 	 */
-	public function handle( Status_Interface $new_status, $old_status, $post );
+	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post );
 
 	/**
 	 * Triggers the handle method if should_trigger method is true.
