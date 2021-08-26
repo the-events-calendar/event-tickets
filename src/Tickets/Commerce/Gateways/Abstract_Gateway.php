@@ -44,11 +44,7 @@ abstract class Abstract_Gateway implements Interface_Gateway {
 	 * @inheritDoc
 	 */
 	public function register_gateway( array $gateways ) {
-		$gateways[ static::get_key() ] = [
-			'label'  => static::get_label(),
-			'class'  => static::class,
-			'object' => $this,
-		];
+		$gateways[ static::get_key() ] = $this;
 
 		return $gateways;
 	}
