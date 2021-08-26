@@ -29,5 +29,5 @@
 	class="tribe-common-c-btn tribe-common-b1 tribe-tickets__commerce-checkout-must-login-link"
 	href="<?php echo esc_url( $login_url ); ?>"
 >
-	<?php echo esc_html_x( 'Log in to complete your purchase', 'event-tickets' ); ?>
+	<?php esc_html_e( 'Log in to complete your purchase', 'event-tickets' ); ?>
 </a>
