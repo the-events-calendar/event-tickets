@@ -23,7 +23,7 @@
  * @var string           $registration_url      [Global] The site's registration URL.
  */
 
-// Bail if there are no items and they don't have to log in.
+// Bail if there are no items or if they don't have to log in to complete the purchase.
 if ( empty( $items ) || empty( $must_login ) ) {
 	return;
 }
