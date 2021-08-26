@@ -23,7 +23,7 @@
  * @var string           $registration_url      [Global] The site's registration URL.
  */
 
-// Bail if WordPress is not open to registering.
+// Bail if WordPress is not open to user registration.
 if ( empty( get_option( 'users_can_register' ) ) ) {
 	return;
 }
