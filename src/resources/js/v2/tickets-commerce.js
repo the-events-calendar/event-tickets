@@ -1,4 +1,3 @@
-/* global tribe, jQuery */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -41,8 +40,8 @@ tribe.tickets.commerce = {};
 		checkoutItem: '.tribe-tickets__commerce-checkout-cart-item',
 		checkoutItemDescription: '.tribe-tickets__commerce-checkout-cart-item-details-description',
 		checkoutItemDescriptionOpen: '.tribe-tickets__commerce-checkout-cart-item-details--open',
-		checkoutItemDescriptionButtonMore: '.tribe-tickets__commerce-checkout-cart-item-details-button--more',
-		checkoutItemDescriptionButtonLess: '.tribe-tickets__commerce-checkout-cart-item-details-button--less',
+		checkoutItemDescriptionButtonMore: '.tribe-tickets__commerce-checkout-cart-item-details-button--more', // eslint-disable-line max-len
+		checkoutItemDescriptionButtonLess: '.tribe-tickets__commerce-checkout-cart-item-details-button--less', // eslint-disable-line max-len
 		hiddenElement: '.tribe-common-a11y-hidden',
 		nonce: '#tec-tc-checkout-nonce',
 	};
@@ -100,7 +99,7 @@ tribe.tickets.commerce = {};
 	 * @return {void}
 	 */
 	obj.bindCheckoutItemDescriptionToggle = function( $container ) {
-		const $descriptionToggleButtons = $container.find( obj.selectors.checkoutItemDescriptionButtonMore + ', ' + obj.selectors.checkoutItemDescriptionButtonLess );
+		const $descriptionToggleButtons = $container.find( obj.selectors.checkoutItemDescriptionButtonMore + ', ' + obj.selectors.checkoutItemDescriptionButtonLess ); // eslint-disable-line max-len
 
 		// Add keyboard support for enter key.
 		$descriptionToggleButtons.on(
@@ -124,7 +123,7 @@ tribe.tickets.commerce = {};
 	 * @return {void}
 	 */
 	obj.unbindCheckoutItemDescriptionToggle = function( $container ) {
-		const $descriptionToggleButtons = $container.find( obj.selectors.checkoutItemDescriptionButtonMore + ', ' + obj.selectors.checkoutItemDescriptionButtonLess );
+		const $descriptionToggleButtons = $container.find( obj.selectors.checkoutItemDescriptionButtonMore + ', ' + obj.selectors.checkoutItemDescriptionButtonLess ); // eslint-disable-line max-len
 
 		$descriptionToggleButtons.off();
 	};

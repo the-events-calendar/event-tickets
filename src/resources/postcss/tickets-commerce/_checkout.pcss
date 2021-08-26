@@ -4,18 +4,18 @@
  * @since TBD
  */
 
- .event-tickets {
+.event-tickets {
 
 	.tribe-tickets__commerce-checkout {
 		max-width: 600px;
-		width: 100%;
 		position: relative;
+		width: 100%;
 	}
 
 	.tribe-tickets__commerce-checkout-header {
+		align-items: center;
 		display: flex;
 		flex-wrap: wrap;
-		align-items: center;
 	}
 
 	.tribe-tickets__commerce-checkout-header-title {
@@ -48,9 +48,9 @@
 
 	.tribe-tickets__commerce-checkout-cart-item {
 		border-top: 1px solid var(--color-border-secondary);
-		padding: var(--spacer-4) 0;
 		display: flex;
 		flex-wrap: wrap;
+		padding: var(--spacer-4) 0;
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item-details {
@@ -132,12 +132,12 @@
 	}
 
 	.tribe-tickets__commerce-checkout-cart-footer {
-		border-top: 1px solid var(--color-border-secondary);
-		padding: var(--spacer-4) 0;
 		align-items: baseline;
+		border-top: 1px solid var(--color-border-secondary);
 		display: flex;
 		flex-flow: row nowrap;
 		justify-content: flex-end;
+		padding: var(--spacer-4) 0;
 	}
 
 	.tribe-tickets__commerce-checkout-footer-total,
@@ -149,7 +149,7 @@
 	.tribe-tickets__commerce-checkout-footer-total {
 		margin-left: var(--spacer-1);
 
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			margin-left: var(--spacer-5);
 		}
 	}
@@ -163,7 +163,8 @@
 
 	.paypal-buttons-context-iframe {
 		background-color: #fafafa !important;
-		/* @todo: more TBD for the PayPal Iframe*/
+
+		/* @todo: more TBD for the PayPal Iframe */
 	}
 
 	/* -------------------------------------------------------------------------
@@ -172,9 +173,11 @@
 
 	.tribe-theme-twentytwenty .entry-content & {
 
-		h1, h2, h3, h4 {
+		h1,
+		h2,
+		h3,
+		h4 {
 			margin: initial;
 		}
 	}
 }
-
