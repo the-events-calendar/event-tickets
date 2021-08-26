@@ -98,8 +98,8 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 			return;
 		}
 		/**
-		 * For now Flag actions are only for order, so we use `tec_tc_get_order()` but if in the future we add any other
-		 * post types to the mix we will need to provide a way to pass the post via a formatting method.
+		 * @todo For now Flag actions are only for order, so we use `tec_tc_get_order()` but if in the future we add any
+		 *       other post types to the mix we will need to provide a way to pass the post via a formatting method.
 		 */
 		$post = tec_tc_get_order( $post );
 

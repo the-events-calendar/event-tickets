@@ -39,7 +39,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public static $option_sandbox = 'ticket-paypal-sandbox';
+	public static $option_sandbox = 'tickets-commerce-sandbox';
 
 	/**
 	 * The option key for currency code.
@@ -84,7 +84,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @var string
 	 */
-	public static $option_confirmation_email_sender_email = 'ticket-commerce-confirmation-email-sender-email';
+	public static $option_confirmation_email_sender_email = 'tickets-commerce-confirmation-email-sender-email';
 
 	/**
 	 * The option key for confirmation email sender name.
