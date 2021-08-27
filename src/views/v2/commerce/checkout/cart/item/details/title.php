@@ -3,7 +3,7 @@
  * Tickets Commerce: Checkout Cart Item title
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/item/title.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/item/details/title.php
  *
  * See more documentation about our views templating system.
  *
@@ -18,12 +18,13 @@
  * @var string           $provider_id           [Global] The tickets provider class name.
  * @var array[]          $items                 [Global] List of Items on the cart to be checked out.
  * @var string           $paypal_attribution_id [Global] What is our PayPal Attribution ID.
- * @var int              $section               Which Section that we are going to render for this table.
- * @var \WP_Post         $post                  Which Section that we are going to render for this table.
+ * @var bool             $must_login            [Global] Whether login is required to buy tickets or not.
+ * @var string           $login_url             [Global] The site's login URL.
+ * @var string           $registration_url      [Global] The site's registration URL.
  * @var array            $item                  Which item this row will be for.
  */
 
 ?>
 <div class="tribe-common-h6 tribe-tickets__commerce-checkout-cart-item-details-title">
-	<?php echo $item['obj']->name; ?>
+	<?php echo esc_html( $item['obj']->name ); ?>
 </div>

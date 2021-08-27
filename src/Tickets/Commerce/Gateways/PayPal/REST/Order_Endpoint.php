@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal\REST;
 
 use tad\WPBrowser\Adapters\WP;
+use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Gateways\PayPal\Status;
 use TEC\Tickets\Commerce\Order;
@@ -18,6 +19,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Created;
+use TEC\Tickets\Commerce\Success;
 use Tribe__Documentation__Swagger__Provider_Interface;
 use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
@@ -199,6 +201,11 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		$response['success']  = true;
 		$response['status']   = $status->get_slug();
 		$response['order_id'] = $order->ID;
+
+		// When we have success we clear the cart.
+		tribe( Cart::class )->clear_cart();
+
+		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $paypal_order_id ], tribe( Success::class )->get_url() );
 
 		return new WP_REST_Response( $response );
 	}

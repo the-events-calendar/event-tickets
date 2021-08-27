@@ -63,12 +63,7 @@ class Gateway extends Abstract_Gateway {
 	 * @return array The list of settings for the gateway.
 	 */
 	public function get_settings() {
-		return [];
-
-		/** @var Settings $settings */
-		$settings = tribe( Settings::class );
-
-		return $settings->get_settings();
+		return tribe( Settings::class )->get_settings();
 	}
 
 	/**

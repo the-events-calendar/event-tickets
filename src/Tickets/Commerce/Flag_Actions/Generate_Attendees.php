@@ -30,7 +30,7 @@ class Generate_Attendees extends Flag_Action_Abstract {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function handle( Status_Interface $new_status, $old_status, $post ) {
+	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
 		$i = true;
 	}
 }

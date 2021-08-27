@@ -14,6 +14,8 @@ use Tribe__Tickets__Tickets;
 
 class CartFooterTest extends V2CommerceTestCase {
 
+	// @todo @bordoni: We need to implement post remapping instead of the ticket maker.
+	// Something like we did for views v2.
 	use PayPal_Ticket_Maker;
 
 	public $partial_path = 'checkout/cart/footer';

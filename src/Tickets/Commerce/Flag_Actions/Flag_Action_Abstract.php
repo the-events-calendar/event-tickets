@@ -97,6 +97,11 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 		if ( ! $this->should_trigger( $new_status, $old_status, $post ) ) {
 			return;
 		}
+		/**
+		 * @todo For now Flag actions are only for order, so we use `tec_tc_get_order()` but if in the future we add any
+		 *       other post types to the mix we will need to provide a way to pass the post via a formatting method.
+		 */
+		$post = tec_tc_get_order( $post );
 
 		$this->handle( $new_status, $old_status, $post );
 	}
@@ -113,5 +118,5 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * {@inheritDoc}
 	 */
-	abstract public function handle( Status_Interface $new_status, $old_status, $post );
+	abstract public function handle( Status_Interface $new_status, $old_status, \WP_Post $post );
 }

@@ -18,12 +18,13 @@
  * @var string           $provider_id           [Global] The tickets provider class name.
  * @var array[]          $items                 [Global] List of Items on the cart to be checked out.
  * @var string           $paypal_attribution_id [Global] What is our PayPal Attribution ID.
- * @var int              $section               Which Section that we are going to render for this table.
- * @var \WP_Post         $post                  Which Section that we are going to render for this table.
+ * @var bool             $must_login            [Global] Whether login is required to buy tickets or not.
+ * @var string           $login_url             [Global] The site's login URL.
+ * @var string           $registration_url      [Global] The site's registration URL.
  * @var array            $item                  Which item this row will be for.
  */
 
 ?>
 <div class="tribe-tickets__commerce-checkout-cart-item-quantity">
-	<?php echo $item['quantity']; ?>
+	<?php echo esc_html( $item['quantity'] ); ?>
 </div>
