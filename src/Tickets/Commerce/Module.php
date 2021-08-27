@@ -450,7 +450,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function attendee_decreases_inventory( array $attendee ) {
-		tribe( Attendee::class )->decreases_inventory( $attendee );
+		return tribe( Attendee::class )->decreases_inventory( $attendee );
 	}
 
 	/**

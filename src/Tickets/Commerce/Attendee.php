@@ -165,6 +165,24 @@ class Attendee {
 	 */
 	public static $email_meta_key = '_tec_tickets_commerce_email';
 
+	/**
+	 * Meta key holding price paid for this attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $price_paid_meta_key = '_tec_tickets_commerce_price_paid';
+
+	/**
+	 * Meta key holding currency which the price was paid in.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $currency_meta_key = '_tec_tickets_commerce_currency';
+
 
 	/**
 	 * Register this Class post type into WP.
@@ -368,6 +386,8 @@ class Attendee {
 	 * order creation, cause the inventory to be decreased.
 	 *
 	 * @todo  TribeCommerceLegacy: Move this method a Flag action.
+	 * @todo  For some forsaken reason the calculation of inventory is happening on the fly instead of when orders
+	 *        are modified we need to address that for performance reasons.
 	 *
 	 * @since TBD
 	 *
@@ -376,77 +396,10 @@ class Attendee {
 	 * @return bool
 	 */
 	public function decreases_inventory( $attendee ) {
-		$order_status = \Tribe__Utils__Array::get( $attendee, 'order_status', 'undefined' );
-		$order_id     = \Tribe__Utils__Array::get( $attendee, 'order_id', false );
-		$attendee_id  = \Tribe__Utils__Array::get( $attendee, 'attendee_id', false );
+		$attendee = tec_tc_get_attendee( $attendee['ID'] );
+		$order = tec_tc_get_order( $attendee->post_parent );
 
-		/**
-		 * Whether the pending Order stock reserve logic should be ignored completely or not.
-		 *
-		 * If set to `true` then the behaviour chosen in the Settings will apply, if `false`
-		 * only Completed tickets will count to decrease the inventory. This is useful when
-		 *
-		 * @todo  TribeCommerceLegacy: Move this method a Flag action.
-		 *
-		 * @since TBD
-		 *
-		 * @param bool  $ignore_pending
-		 * @param array $attendee An array of data defining the current Attendee
-		 */
-		$ignore_pending = apply_filters( 'tec_tickets_commerce_pending_stock_ignore', false );
-
-		$purchase_time = false;
-		$order         = false;
-
-		if (
-			'on-pending' === tribe_get_option( 'ticket-paypal-stock-handling', 'on-complete' )
-			&& ! $ignore_pending
-			&& Order_Statuses::$pending === $order_status
-			&& false !== $order_id
-		) {
-			$purchase_time = \Tribe__Utils__Array::get( $attendee, 'purchase_time', false );
-
-			$order = \Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id(
-				$attendee_id,
-				[
-					// Get no meta fields.
-				]
-			);
-
-			if ( false !== $order ) {
-				$purchase_time = $order->get_creation_date();
-			}
-		}
-
-		if ( $purchase_time ) {
-			$date = \Tribe__Date_Utils::build_date_object( $purchase_time );
-
-			$date->setTimezone( new \DateTimeZone( 'UTC' ) );
-
-			$order_creation_timestamp = $date->getTimestamp();
-
-			/**
-			 * Filters the amount of time a part of the stock will be reserved by a pending Order.
-			 *
-			 * The time applies from the Order creation time.
-			 * In the unlikely scenario that an Order goes from Completed to Pending then, if the
-			 * reservation time allows it, a part of the stock will be reserved for it.
-			 *
-			 * @since 4.7
-			 *
-			 * @param int                                      $pending_stock_reservation_time The amount of seconds, from the Order creation time,
-			 *                                                                                 part of the stock will be reserved for the Order;
-			 *                                                                                 defaults to 30 minutes.
-			 * @param array                                    $attendee                       An array of data defining the current Attendee
-			 * @param \Tribe__Tickets__Commerce__PayPal__Order $order                          The object representing the Order that generated
-			 *                                                                                 the Attendee
-			 */
-			$pending_stock_reservation_time = (int) apply_filters( 'tec_tickets_commerce_pending_stock_reserve_time', 30 * 60, $attendee, $order );
-
-			return time() <= ( $order_creation_timestamp + $pending_stock_reservation_time );
-		}
-
-		return Completed::SLUG === $order_status;
+		return tribe( Commerce\Status\Completed::class )->get_wp_slug() === $order->post_status;
 	}
 
 	/**

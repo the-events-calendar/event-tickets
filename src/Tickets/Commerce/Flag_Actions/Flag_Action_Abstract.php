@@ -43,8 +43,19 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function get_flags() {
-		return $this->flags;
+	public function get_flags( \WP_Post $post = null ) {
+		$flags = $this->flags;
+
+		/**
+		 * Allows the modifications of which flags will trigger this Action.
+		 *
+		 * @since TBD
+		 *
+		 * @param string[] $flags       Which flags will trigger this action.
+		 * @param \WP_Post $post        Post object.
+		 * @param static   $action_flag Instance of action flag we are triggering.
+		 */
+		return apply_filters( 'tec_tickets_commerce_flag_actions_get_flags', $flags, $post, $this );
 	}
 
 	/**
@@ -65,7 +76,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	 * {@inheritDoc}
 	 */
 	public function should_trigger( Status_Interface $new_status, $old_status, $post ) {
-		if ( ! $this->has_flags( $new_status ) ) {
+		if ( ! $this->has_flags( $new_status, $post ) ) {
 			return false;
 		}
 
@@ -79,8 +90,8 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function has_flags( Status_Interface $status ) {
-		return $status->has_flags( $this->get_flags() );
+	public function has_flags( Status_Interface $status, $operator = 'AND', \WP_Post $post = null ) {
+		return $status->has_flags( $this->get_flags( $post ), $operator, $post );
 	}
 
 	/**

@@ -18,7 +18,7 @@
 
 use \TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint;
 
-if ( empty( $must_login ) ) {
+if ( $must_login ) {
 	return;
 }
 ?>

@@ -21,7 +21,7 @@
  * @var bool             $must_login              [Global] Whether login is required to buy tickets or not.
  */
 
-if ( empty( $must_login ) ) {
+if ( $must_login ) {
 	return;
 }
 ?>

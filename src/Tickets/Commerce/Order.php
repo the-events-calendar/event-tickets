@@ -229,6 +229,7 @@ class Order {
 		$items      = array_map( static function ( $item ) {
 			$ticket            = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 			$item['sub_total'] = Price::sub_total( $ticket->price, $item['quantity'] );
+			$item['price']     = $ticket->price;
 
 			return $item;
 		}, $items );
@@ -244,11 +245,11 @@ class Order {
 
 		// When purchaser data-set is not passed we pull from the current user.
 		if ( empty( $purchaser ) && is_user_logged_in() && $user = wp_get_current_user() ) {
-			$order_args['author'] = $user->ID;
-			$order_args['purchaser_full_name'] = $user->first_name . ' ' . $user->last_name;
+			$order_args['author']               = $user->ID;
+			$order_args['purchaser_full_name']  = $user->first_name . ' ' . $user->last_name;
 			$order_args['purchaser_first_name'] = $user->first_name;
-			$order_args['purchaser_last_name'] = $user->last_name;
-			$order_args['purchaser_email'] = $user->user_email;
+			$order_args['purchaser_last_name']  = $user->last_name;
+			$order_args['purchaser_email']      = $user->user_email;
 		}
 
 		$order = tec_tc_orders()->set_args( $order_args )->create();
@@ -597,8 +598,6 @@ class Order {
 			\Tribe__Post_Transient::instance()->delete( $post_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 		}
 
-		$order->update();
-
 		/**
 		 * Fires when an PayPal attendee tickets have been generated.
 		 *
@@ -626,17 +625,6 @@ class Order {
 			&& $attendee_order_status === Order_Statuses::$completed
 		) {
 			$this->send_tickets_email( $order_id, $post_id );
-		}
-
-		// Redirect to the same page to prevent double purchase on refresh
-		if ( ! empty( $post_id ) ) {
-			/** @var \Tribe__Tickets__Commerce__PayPal__Endpoints $endpoints */
-			$endpoints = tribe( 'tickets.commerce.paypal.endpoints' );
-			$url       = $endpoints->success_url( $order_id, $post_id );
-			if ( $redirect ) {
-				wp_redirect( esc_url_raw( $url ) );
-			}
-			tribe_exit();
 		}
 	}
 }

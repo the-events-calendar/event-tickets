@@ -10,6 +10,8 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Manager;
+use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Pending;
 use Tribe__Field_Conditional;
 
 /**
@@ -113,7 +115,7 @@ class Settings extends Abstract_Settings {
 		$tab_settings = [
 			'priority'  => 25,
 			'fields'    => $this->get_settings(),
-			'show_save' => false,
+			'show_save' => true,
 		];
 
 		new \Tribe__Settings_Tab( 'payments', esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
@@ -234,15 +236,15 @@ class Settings extends Abstract_Settings {
 						tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_stock_handling' )
 					)
 				),
-				'default'         => 'on-pending',
+				'default'         => Pending::SLUG,
 				'validation_type' => 'options',
 				'options'         => [
-					'on-pending'  => sprintf(
+					Pending::SLUG  => sprintf(
 					// Translators: %s: The word "ticket" in lowercase.
 						esc_html__( 'Decrease available %s stock as soon as a Pending order is created.', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'stock_handling' )
 					),
-					'on-complete' => sprintf(
+					Completed::SLUG => sprintf(
 					// Translators: %s: The word "ticket" in lowercase.
 						esc_html__( 'Only decrease available %s stock if an order is confirmed as Completed by the payment gateway.', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'stock_handling' )
