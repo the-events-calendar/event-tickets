@@ -90,6 +90,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_tickets_cart_urls', [ $this, 'filter_js_include_cart_url' ] );
 
 		add_filter( 'event_tickets_attendees_tc_checkin_stati', [ $this, 'filter_checkin_statuses' ] );
+
+		// Add a post display state for special Event Tickets pages.
+		add_filter( 'display_post_states', [ $this, 'add_display_post_states' ], 10, 2 );
 	}
 
 	/**
@@ -394,4 +397,26 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		return $urls;
 	}
+
+	/**
+	 * Add a post display state for special Event Tickets pages in the page list table.
+	 *
+	 * @since TBD
+	 *
+	 * @param array   $post_states An array of post display states.
+	 * @param WP_Post $post        The current post object.
+	 */
+	public function add_display_post_states( $post_states, $post ) {
+
+		if ( tribe( Checkout::class )->get_page_id() === $post->ID ) {
+			$post_states['tec_tickets_commerce_page_checkout'] = __( 'Tickets Commerce Checkout Page', 'event-tickets' );
+		}
+
+		if ( tribe( Success::class )->get_page_id() === $post->ID ) {
+			$post_states['tec_tickets_commerce_page_success'] = __( 'Tickets Commerce Success Page', 'event-tickets' );
+		}
+
+		return $post_states;
+	}
+
 }
