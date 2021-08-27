@@ -29,4 +29,5 @@
 		<?php $this->template( 'checkout/cart', [ 'section' => $section ] ); ?>
 	<?php endforeach; ?>
 	<?php $this->template( 'checkout/footer' ); ?>
+	<?php $this->template( 'checkout/must-login' ); ?>
 </section>

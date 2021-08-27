@@ -42,7 +42,10 @@ class Assets extends tad_DI52_ServiceProvider {
 			$tickets_main,
 			'tribe-tickets-commerce-style',
 			'tickets-commerce.css',
-			[],
+			[
+				'tribe-common-skeleton-style',
+				'tribe-common-full-style',
+			],
 			null,
 			[
 				'groups' => [

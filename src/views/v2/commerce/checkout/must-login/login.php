@@ -1,9 +1,9 @@
 <?php
 /**
- * Tickets Commerce: Checkout Cart Header
+ * Tickets Commerce: Checkout Page Must Login Button
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/header.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/must-login/login.php
  *
  * See more documentation about our views templating system.
  *
@@ -21,14 +21,13 @@
  * @var bool             $must_login            [Global] Whether login is required to buy tickets or not.
  * @var string           $login_url             [Global] The site's login URL.
  * @var string           $registration_url      [Global] The site's registration URL.
- * @var \WP_Post         $post                  Which Section that we are going to render for this table.
  */
 
 ?>
-<header class="tribe-tickets__commerce-checkout-cart-header">
-	<h4 class="tribe-common-h4 tribe-common-h4--min-medium tribe-common-h--alt tribe-tickets__commerce-checkout-cart-header-title">
-		<a href="<?php the_permalink( $post ); ?>">
-			<?php echo get_the_title( $post ); ?>
-		</a>
-	</h4>
-</header>
+
+<a
+	class="tribe-common-c-btn tribe-common-b1 tribe-tickets__commerce-checkout-must-login-link"
+	href="<?php echo esc_url( $login_url ); ?>"
+>
+	<?php esc_html_e( 'Log in to complete your purchase', 'event-tickets' ); ?>
+</a>

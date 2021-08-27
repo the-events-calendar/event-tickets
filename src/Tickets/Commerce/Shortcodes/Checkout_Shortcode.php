@@ -46,10 +46,13 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 
 		$args = [
 			'provider_id' => Module::class,
-			'provider'    => tribe( Module::class ),
-			'items'       => $items,
-			'sections'    => $sections,
-			'total_value' => tribe_format_currency( Price::total( $sub_totals ) ),
+			'provider'         => tribe( Module::class ),
+			'items'            => $items,
+			'sections'         => $sections,
+			'total_value'      => tribe_format_currency( Price::total( $sub_totals ) ),
+			'must_login'       => ! is_user_logged_in() && tribe( Module::class )->login_required(),
+			'login_url'        => tribe( Checkout::class )->get_login_url(),
+			'registration_url' => tribe( Checkout::class )->get_registration_url(),
 		];
 
 		$this->template_vars = $args;
@@ -70,7 +73,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		// Add the rendering attributes into global context.
 		$this->get_template()->add_template_globals( $args );
 
-		$html =  $this->get_template()->template( 'checkout', $args, false );
+		$html = $this->get_template()->template( 'checkout', $args, false );
 
 		// Enqueue assets.
 		tribe_asset_enqueue_group( 'tribe-tickets-commerce-checkout' );

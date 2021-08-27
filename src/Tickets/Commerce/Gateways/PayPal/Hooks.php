@@ -17,6 +17,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Shortcodes\Shortcode_Abstract;
 
 /**
@@ -122,7 +123,9 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 *
 	 */
 	public function include_payment_buttons( $file, $name, $template ) {
-		$template->template( 'gateway/paypal/buttons' );
+		$must_login = ! is_user_logged_in() && tribe( Module::class )->login_required();
+
+		$template->template( 'gateway/paypal/buttons', [ 'must_login' => $must_login ] );
 	}
 
 	/**

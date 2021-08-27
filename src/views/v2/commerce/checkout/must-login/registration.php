@@ -1,9 +1,9 @@
 <?php
 /**
- * Tickets Commerce: Checkout Cart Header
+ * Tickets Commerce: Checkout Page Must Login Registration link
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/header.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/must-login/registration.php
  *
  * See more documentation about our views templating system.
  *
@@ -21,14 +21,23 @@
  * @var bool             $must_login            [Global] Whether login is required to buy tickets or not.
  * @var string           $login_url             [Global] The site's login URL.
  * @var string           $registration_url      [Global] The site's registration URL.
- * @var \WP_Post         $post                  Which Section that we are going to render for this table.
  */
 
+// Bail if WordPress is not open to user registration.
+if ( empty( get_option( 'users_can_register' ) ) ) {
+	return;
+}
+
+;
+
 ?>
-<header class="tribe-tickets__commerce-checkout-cart-header">
-	<h4 class="tribe-common-h4 tribe-common-h4--min-medium tribe-common-h--alt tribe-tickets__commerce-checkout-cart-header-title">
-		<a href="<?php the_permalink( $post ); ?>">
-			<?php echo get_the_title( $post ); ?>
-		</a>
-	</h4>
-</header>
+<div class="tribe-common-b1 tribe-tickets__commerce-checkout-must-login-registration">
+	<?php
+	echo wp_kses_post(
+		_x( 'or ', 'or <- create a new account', 'event-tickets' ) .
+		'<a class="tribe-common-cta tribe-common-cta--alt tribe-common-b2 tribe-tickets__commerce-checkout-must-login-registration-link">' .
+		__( 'create a new account', 'event-tickets' ) .
+		'</a>'
+	);
+	?>
+</div>

@@ -8,7 +8,8 @@
 </header>
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
-								<article  class="tribe-tickets__commerce-checkout-cart-item post-TICKET_ID tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry tribe-common-b1" >
+								<article
+	 class="tribe-tickets__commerce-checkout-cart-item post-TICKET_ID tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry tribe-common-b1" 	 data-ticket-id="TICKET_ID" data-ticket-quantity="1" data-ticket-price="97" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
 
@@ -19,7 +20,8 @@
 	<button
 		type="button"
 		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--more"
-		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--TICKET_ID"	>
+		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--TICKET_ID"
+	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">
 			Open the ticket description in checkout.		</span>
 		<span class="tribe-tickets__commerce-checkout-cart-item-details-button-text">
@@ -38,7 +40,18 @@
 </div>
 
 	<div id="tribe-tickets__commerce-checkout-cart-item-details-description--TICKET_ID"  class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-description tribe-common-a11y-hidden" >
-	Test ticket description for [EVENT_ID]</div>
+	Test ticket description for [EVENT_ID]
+	<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee">
+		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-name">John Smith</div>
+		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-fields">t-shirt: large, meal: vegan, eyes: crossed</div>
+	</div>
+
+	<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee">
+		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-name">Karen Schmidt</div>
+		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-fields">t-shirt: small, meal: very carnivorous, eyes: dotted</div>
+	</div>
+
+</div>
 
 </div>
 
@@ -52,7 +65,8 @@
 	97.00</div>
 
 </article>
-								<article  class="tribe-tickets__commerce-checkout-cart-item post-TICKET_ID tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry tribe-common-b1" >
+								<article
+	 class="tribe-tickets__commerce-checkout-cart-item post-TICKET_ID tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry tribe-common-b1" 	 data-ticket-id="TICKET_ID" data-ticket-quantity="1" data-ticket-price="97" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
 
@@ -63,7 +77,8 @@
 	<button
 		type="button"
 		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--more"
-		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--TICKET_ID"	>
+		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--TICKET_ID"
+	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">
 			Open the ticket description in checkout.		</span>
 		<span class="tribe-tickets__commerce-checkout-cart-item-details-button-text">
@@ -82,7 +97,18 @@
 </div>
 
 	<div id="tribe-tickets__commerce-checkout-cart-item-details-description--TICKET_ID"  class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-description tribe-common-a11y-hidden" >
-	Test ticket description for [EVENT_ID]</div>
+	Test ticket description for [EVENT_ID]
+	<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee">
+		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-name">John Smith</div>
+		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-fields">t-shirt: large, meal: vegan, eyes: crossed</div>
+	</div>
+
+	<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee">
+		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-name">Karen Schmidt</div>
+		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-fields">t-shirt: small, meal: very carnivorous, eyes: dotted</div>
+	</div>
+
+</div>
 
 </div>
 

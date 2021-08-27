@@ -113,4 +113,50 @@ class Checkout {
 			tribe( Cart::class )->set_cart_hash_cookie( $cookie_param );
 		}
 	}
+
+	/**
+	 * Get the login URL.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_login_url() {
+		$login_url = get_site_url( null, 'wp-login.php' );
+
+		$login_url = add_query_arg( 'redirect_to', $this->get_url(), $login_url );
+
+		/**
+		 * Provides an opportunity to modify the login URL used within frontend
+		 * checkout (typically when they need to login before they can proceed).
+		 *
+		 * @since TBD
+		 *
+		 * @param string $login_url
+		 */
+		return apply_filters( 'tec_tickets_commerce_checkout_login_url', $login_url );
+	}
+
+	/**
+	 * Get the registration URL.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_registration_url() {
+		$registration_url = wp_registration_url();
+
+		$registration_url = add_query_arg( 'redirect_to', $this->get_url(), $registration_url );
+
+		/**
+		 * Provides an opportunity to modify the registration URL used within frontend
+		 * checkout (typically when they need to login before they can proceed).
+		 *
+		 * @since TBD
+		 *
+		 * @param string $login_url
+		 */
+		return apply_filters( 'tec_tickets_commerce_checkout_registration_url', $registration_url );
+	}
 }
