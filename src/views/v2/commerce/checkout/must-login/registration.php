@@ -28,8 +28,6 @@ if ( empty( get_option( 'users_can_register' ) ) ) {
 	return;
 }
 
-;
-
 ?>
 <div class="tribe-common-b1 tribe-tickets__commerce-checkout-must-login-registration">
 	<?php
