@@ -86,7 +86,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Include All function files.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	protected function load_functions() {
 		$path = Tickets_Plugin::instance()->plugin_path;

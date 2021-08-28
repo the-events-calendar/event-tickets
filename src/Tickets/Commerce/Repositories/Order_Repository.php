@@ -14,13 +14,13 @@ use Tribe__Date_Utils as Dates;
 /**
  * Class Order
  *
- * @since TBD
+ * @since 5.1.9
  */
 class Order_Repository extends Tribe__Repository {
 	/**
 	 * The unique fragment that will be used to identify this repository filters.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -29,7 +29,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Key name to use when limiting lists of keys.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -96,7 +96,7 @@ class Order_Repository extends Tribe__Repository {
 		/**
 		 * Filters a single formatted order result.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param mixed|\WP_Post                $formatted The formatted event result, usually a post object.
 		 * @param int                           $id        The formatted post ID.
@@ -195,7 +195,7 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * So we hijack the default create callback for this repository to allow for that behavior to exist.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $postarr The post array that will be used for the creation.
 	 *
@@ -235,7 +235,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Filters the tickets data from the input so we can properly save the cart items.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array    $postarr Data set that needs filtering.
 	 * @param null|int $post_id When we are dealing with an Update we have an ID here.
@@ -257,7 +257,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Filters the tickets data from the input so we can properly save the cart items.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array    $postarr Data set that needs filtering.
 	 * @param null|int $post_id When we are dealing with an Update we have an ID here.
@@ -284,7 +284,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Filters the Purchaser data from the input so we can properly save the data.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array    $postarr Data set that needs filtering.
 	 * @param null|int $post_id When we are dealing with an Update we have an ID here.
@@ -337,7 +337,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Filters and updates the order meta to make sure it makes sense.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $postarr The update post array, passed entirely for context purposes.
 	 * @param int   $post_id The ID of the event that's being updated.
@@ -363,7 +363,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Cleans up a list of Post IDs into an usable array for DB query.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int|\WP_Post|int[]|\WP_Post[] $posts Which posts we are filtering by.
 	 *
@@ -386,7 +386,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Filters order by whether or not it contains a given ticket/s.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int|\WP_Post|int[]|\WP_Post[] $tickets Which tickets we are filtering by.
 	 *
@@ -411,7 +411,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Filters order by whether or not it contains a given ticket/s.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int|\WP_Post|int[]|\WP_Post[] $tickets Which tickets we are filtering by.
 	 *
@@ -436,7 +436,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Filters order by whether or not it contains a given ticket/s.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int|\WP_Post|int[]|\WP_Post[] $events Which events we are filtering by.
 	 *
@@ -461,7 +461,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Filters order by whether or not it contains a given event/s.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int|\WP_Post|int[]|\WP_Post[] $events Which events we are filtering by.
 	 *

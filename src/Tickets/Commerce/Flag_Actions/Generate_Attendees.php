@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
 /**
  * Class Attendee_Generation
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */

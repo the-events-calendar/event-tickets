@@ -33,7 +33,7 @@ use WP_REST_Server;
 /**
  * Class Order Endpoint.
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */
@@ -42,7 +42,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	/**
 	 * The REST API endpoint path.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function register() {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
@@ -85,7 +85,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	/**
 	 * Gets the Endpoint path for the on boarding process.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -96,7 +96,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	/**
 	 * Get the REST API route URL.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string The REST API route URL.
 	 */
@@ -109,7 +109,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	/**
 	 * Handles the request that creates an order with Tickets Commerce and the PayPal gateway.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -156,7 +156,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	/**
 	 * Handles the request that updates an order with Tickets Commerce and the PayPal gateway.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -213,7 +213,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	/**
 	 * Arguments used for the signup redirect.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array
 	 */
@@ -224,7 +224,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	/**
 	 * Arguments used for the signup redirect.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array
 	 */
@@ -249,7 +249,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	/**
 	 * Sanitize a request argument based on details registered to the route.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param mixed $value Value of the 'filter' argument.
 	 *
@@ -268,7 +268,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	 *
 	 * @TODO  We need to make sure Swagger documentation is present.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array
 	 */

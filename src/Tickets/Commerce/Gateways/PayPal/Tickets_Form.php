@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Module;
 /**
  * Class Tickets_Form
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */

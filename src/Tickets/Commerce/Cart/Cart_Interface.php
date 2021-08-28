@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Cart;
 /**
  * Interface Cart_Interface
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Cart
  */
@@ -14,7 +14,7 @@ interface Cart_Interface {
 	/**
 	 * Sets the cart id.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $id
 	 */
@@ -23,7 +23,7 @@ interface Cart_Interface {
 	/**
 	 * Gets the Cart mode based.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -34,7 +34,7 @@ interface Cart_Interface {
 	 *
 	 * This method should include any persistence by the cart implementation.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array
 	 */
@@ -46,7 +46,7 @@ interface Cart_Interface {
 	 * This method should include any persistence, request and redirection required
 	 * by the cart implementation.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function save();
 
@@ -61,7 +61,7 @@ interface Cart_Interface {
 	/**
 	 * Whether a cart exists meeting the specified criteria.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $criteria
 	 */
@@ -70,7 +70,7 @@ interface Cart_Interface {
 	/**
 	 * Whether the cart contains items or not.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool|int The number of products in the cart (regardless of the products quantity) or `false`
 	 *
@@ -80,7 +80,7 @@ interface Cart_Interface {
 	/**
 	 * Whether an item is in the cart or not.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $item_id
 	 *
@@ -91,7 +91,7 @@ interface Cart_Interface {
 	/**
 	 * Adds a specified quantity of the item to the cart.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int|string $item_id    The item ID.
 	 * @param int        $quantity   The quantity to remove.
@@ -102,7 +102,7 @@ interface Cart_Interface {
 	/**
 	 * Determines if this instance of the cart has a public page.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -111,7 +111,7 @@ interface Cart_Interface {
 	/**
 	 * Removes an item from the cart.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int|string $item_id  The item ID.
 	 * @param null|int   $quantity The quantity to remove.

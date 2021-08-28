@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Traits;
 /**
  * Trait Has_Mode.
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Traits
  */
@@ -14,7 +14,7 @@ trait Has_Mode {
 	/**
 	 * The current working mode: live or sandbox.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -23,7 +23,7 @@ trait Has_Mode {
 	/**
 	 * Valid modes.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var array
 	 */
@@ -35,7 +35,7 @@ trait Has_Mode {
 	/**
 	 * Sets the mode for the Merchant for handling operations.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $mode
 	 *
@@ -54,7 +54,7 @@ trait Has_Mode {
 	/**
 	 * Gets the mode for Merchant for handling operations.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string Which mode we are using the Merchant.
 	 */
@@ -65,7 +65,7 @@ trait Has_Mode {
 	/**
 	 * Determines if we are using sandbox mode.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */

@@ -7,7 +7,7 @@ namespace TEC\Tickets\Commerce\Status;
  *
  * Used for handling Orders where Pending payment but never completed it, becoming Abandoned after a week..
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Status
  */
@@ -15,7 +15,7 @@ class Not_Completed extends Status_Abstract {
 	/**
 	 * Slug for this Status.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */

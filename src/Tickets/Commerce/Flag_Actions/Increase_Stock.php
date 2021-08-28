@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
 /**
  * Class Increase_Stock
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */

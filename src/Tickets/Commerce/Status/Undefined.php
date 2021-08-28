@@ -7,7 +7,7 @@ namespace TEC\Tickets\Commerce\Status;
  *
  * Orders that landed on Undefined are just broken in some way that we cannot define.
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Status
  */
@@ -15,7 +15,7 @@ class Undefined extends Status_Abstract {
 	/**
 	 * Slug for this Status.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */

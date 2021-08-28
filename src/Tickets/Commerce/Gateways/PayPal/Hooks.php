@@ -69,7 +69,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Filters the shortcode template vars for the Checkout page template.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array              $template_vars
 	 * @param Shortcode_Abstract $shortcode
@@ -85,7 +85,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Filters the shortcode template vars for the Checkout page template.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array              $template_vars
 	 * @param Shortcode_Abstract $shortcode
@@ -101,7 +101,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Include the Client JS SDK script into checkout.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string           $file     Which file we are loading.
 	 * @param string           $name     Name of file file
@@ -115,7 +115,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Include the Client JS SDK script into checkout.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string           $file     Which file we are loading.
 	 * @param string           $name     Name of file file
@@ -132,7 +132,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * Handles the disconnecting of the merchant.
 	 *
 	 * @todo  Display some message when disconnecting.
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 */
 	public function handle_action_disconnect() {
@@ -143,7 +143,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * Handles the refreshing of the token from PayPal for this merchant.
 	 *
 	 * @todo  Display some message when refreshing token.
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 */
 	public function handle_action_refresh_token() {
@@ -157,7 +157,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * Handles the refreshing of the user info from PayPal for this merchant.
 	 *
 	 * @todo  Display some message when refreshing user info.
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 */
 	public function handle_action_refresh_user_info() {
@@ -170,7 +170,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Register the Endpoints from Paypal.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function register_endpoints() {
 		$this->container->make( REST::class )->register_endpoints();

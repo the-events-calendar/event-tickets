@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Module;
 /**
  * Class Buttons
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -17,7 +17,7 @@ class Buttons {
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the elements.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var \Tribe__Template
 	 */
@@ -26,7 +26,7 @@ class Buttons {
 	/**
 	 * Gets the template instance used to setup the rendering of the page.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return \Tribe__Template
 	 */

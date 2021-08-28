@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Status\Completed;
 /**
  * Class Tickets Provider class for Tickets Commerce
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -53,7 +53,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Name of the CPT that holds Attendees (tickets holders).
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -62,7 +62,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Name of the CPT that holds Orders
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -71,7 +71,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Meta key that relates Attendees and Events.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -80,7 +80,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Meta key that relates Attendees and Products.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -89,7 +89,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Meta key that relates Attendees and Orders.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -98,7 +98,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Indicates if a ticket for this attendee was sent out via email.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -107,7 +107,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Meta key that if this attendee wants to show on the attendee list
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -116,7 +116,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Meta key that if this attendee PayPal status
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -125,7 +125,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Name of the CPT that holds Tickets
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -134,7 +134,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Meta key that relates Products and Events
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -143,7 +143,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Meta key that stores if an attendee has checked in to an event
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -152,7 +152,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Meta key that ties attendees together by order
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -161,7 +161,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Meta key that ties attendees together by refunded order
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -170,7 +170,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Meta key that holds the security code that's printed in the tickets
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -179,7 +179,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Meta key that holds the full name of the tickets PayPal "buyer"
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -188,7 +188,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Meta key that holds the email of the tickets PayPal "buyer"
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -197,7 +197,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Meta key that holds the name of a ticket to be used in reports if the Product is deleted
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -206,7 +206,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * A variable holder if PayPal is loaded
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var boolean
 	 */
@@ -215,7 +215,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * This method is required for the module to properly load.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 
 	 * @return static
 	 */
@@ -225,7 +225,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Registers all actions/filters
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function hooks() {
 		// if the hooks have already been bound, don't do it again
@@ -244,7 +244,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Send tickets email for attendees.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array       $attendees   List of attendees.
 	 * @param array       $args        {
@@ -280,7 +280,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Shows the tickets form in the front end
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param $content
 	 *
@@ -308,7 +308,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * Indicates if we currently require users to be logged in before they can obtain
 	 * tickets.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -322,7 +322,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * Get attendees by id and associated post type
 	 * or default to using $post_id
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param      $post_id
 	 * @param null $post_type
@@ -358,7 +358,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Returns the value of a key defined by the class.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $key
 	 *
@@ -385,7 +385,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Indicates if global stock support is enabled for this provider.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -411,7 +411,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Get's the product price html
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int|object    $product
 	 * @param array|boolean $attendee
@@ -425,7 +425,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Gets the product price value
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int|\WP_Post $product
 	 *
@@ -443,7 +443,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * then those attendees generated as part of a Pending Order will, for a limited time after the
 	 * order creation, cause the inventory to be decreased.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $attendee
 	 *
@@ -463,7 +463,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Event Tickets Plus Admin Reports page will use this data from this method.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 *
 	 * @param string|int $order_id
@@ -479,7 +479,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * Using the method, providers can add as many fields as
 	 * they want, specific to their implementation.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int $post_id
 	 * @param int $ticket_id
@@ -491,7 +491,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Maps to the Cart Class method to get the cart.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -502,7 +502,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Generate and store all the attendees information for a new order.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.
 	 * @param bool   $redirect       Whether the client should be redirected or not.
@@ -514,7 +514,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Gets an individual ticket.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int|\WP_Post $post_id
 	 * @param int|\WP_Post $ticket_id
@@ -528,7 +528,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Saves a Tickets Commerce ticket.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int                           $post_id  Post ID.
 	 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket object.
@@ -550,7 +550,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Deletes a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param $event_id
 	 * @param $ticket_id
@@ -577,7 +577,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Return whether we're currently on the checkout page for Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -588,7 +588,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Links to sales report for all tickets for this event.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int  $event_id
 	 * @param bool $url_only
@@ -602,7 +602,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Links to the sales report for this product.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param $event_id
 	 * @param $ticket_id

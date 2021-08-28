@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce;
 /**
  * Class Attendee
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -15,7 +15,7 @@ class Attendee {
 	/**
 	 * Tickets Commerce Attendee Post Type slug.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -24,7 +24,7 @@ class Attendee {
 	/**
 	 * Which meta holds the Relation ship between an attendee and which user it's registered to.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ class Attendee {
 	/**
 	 * Which meta holds the Relation ship between an attendee and which event it's registered to.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ class Attendee {
 	/**
 	 * Which meta holds the Relation ship between an attendee and which ticket it was created from.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ class Attendee {
 	/**
 	 * Which meta holds the Relation ship between an attendee and which order it belongs to.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -60,7 +60,7 @@ class Attendee {
 	/**
 	 * Which meta holds the purchaser name for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -69,7 +69,7 @@ class Attendee {
 	/**
 	 * Which meta holds the purchaser email for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -78,7 +78,7 @@ class Attendee {
 	/**
 	 * Which meta holds the security code for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -87,7 +87,7 @@ class Attendee {
 	/**
 	 * Which meta holds the status value for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -96,7 +96,7 @@ class Attendee {
 	/**
 	 * Which meta holds the optout value for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -105,7 +105,7 @@ class Attendee {
 	/**
 	 * Which meta holds the checked in status for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -114,7 +114,7 @@ class Attendee {
 	/**
 	 * Which meta holds the checked in status for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -123,7 +123,7 @@ class Attendee {
 	/**
 	 * Indicates if a ticket for this attendee was sent out via email.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -132,7 +132,7 @@ class Attendee {
 	/**
 	 * Meta key holding an indication if this attendee was subscribed.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -141,7 +141,7 @@ class Attendee {
 	/**
 	 * Meta key holding the first name for the attendee. (not purchaser)
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -150,7 +150,7 @@ class Attendee {
 	/**
 	 * Meta key holding the last name for the attendee. (not purchaser)
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -159,7 +159,7 @@ class Attendee {
 	/**
 	 * Meta key holding the email for the attendee. (not purchaser)
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -169,7 +169,7 @@ class Attendee {
 	/**
 	 * Register this Class post type into WP.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function register_post_type() {
 		$post_type_args = [
@@ -189,7 +189,7 @@ class Attendee {
 		 *
 		 * @see   register_post_type
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
 		 */
@@ -203,7 +203,7 @@ class Attendee {
 	 * the Attendees Report rather than the PayPal Ticket attendees post list (because that's kind of
 	 * confusing)
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int $post_id WP_Post ID
 	 */
@@ -236,7 +236,7 @@ class Attendee {
 	 *
 	 * @todo  Adjust to the Ticket Commerce data.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $attendee_data Information that we are trying to save.
 	 * @param int   $attendee_id   The attendee ID.
@@ -297,7 +297,7 @@ class Attendee {
 	 * attending, at which point we should send tickets out for any of those
 	 * newly attending persons.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int $event_id
 	 */
@@ -337,7 +337,7 @@ class Attendee {
 	/**
 	 * Filter the provider object to return this class if tickets are for this provider.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param object $provider_obj
 	 * @param string $provider
@@ -369,7 +369,7 @@ class Attendee {
 	 *
 	 * @todo  TribeCommerceLegacy: Move this method a Flag action.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $attendee
 	 *
@@ -388,7 +388,7 @@ class Attendee {
 		 *
 		 * @todo  TribeCommerceLegacy: Move this method a Flag action.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param bool  $ignore_pending
 		 * @param array $attendee An array of data defining the current Attendee
@@ -452,7 +452,7 @@ class Attendee {
 	/**
 	 * Get attendee data for attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function get_attendee() {
 		/**

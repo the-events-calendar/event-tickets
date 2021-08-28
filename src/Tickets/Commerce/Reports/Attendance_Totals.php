@@ -14,7 +14,7 @@ namespace TEC\Tickets\Commerce\Reports;
  * or if PayPal Tickets are added/deleted later in the request, it would be necessary
  * to obtain a new object of this type to get accurate results.
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Reports
  */
