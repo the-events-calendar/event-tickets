@@ -4,6 +4,8 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Utils\Price;
+use Tribe__Date_Utils as Dates;
+
 
 /**
  * Class Order
@@ -134,6 +136,24 @@ class Order {
 	public static $purchaser_email_meta_key = '_tec_tc_order_purchaser_email';
 
 	/**
+	 * Prefix for the log of when a given status was applied.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $status_log_meta_key_prefix = '_tec_tc_order_status_log';
+
+	/**
+	 * Prefix for the Status Flag Action marker meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $flag_action_status_marker_meta_key_prefix = '_tec_tc_order_fa_marker';
+
+	/**
 	 * Register this Class post type into WP.
 	 *
 	 * @since TBD
@@ -174,8 +194,37 @@ class Order {
 	 *
 	 * @return string
 	 */
+	public static function get_status_log_meta_key( Commerce\Status\Status_Interface $status ) {
+		return static::$status_log_meta_key_prefix . '_' . $status->get_slug();
+	}
+
+	/**
+	 * Gets the meta Key for a given Order Status gateway_payload.
+	 *
+	 * @since TBD
+	 *
+	 * @param Status\Status_Interface $status
+	 *
+	 * @return string
+	 */
 	public static function get_gateway_payload_meta_key( Commerce\Status\Status_Interface $status ) {
 		return static::$gateway_payload_meta_key . '_' . $status->get_slug();
+	}
+
+	/**
+	 * Gets the key for a Flag Action marker for given status and flag.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $flag   Which flag we are getting the meta key for.
+	 * @param string $status Which status ID we are getting the meta key for.
+	 *
+	 * @return string
+	 */
+	public static function get_flag_action_marker_meta_key( $flag, Commerce\Status\Status_Interface $status ) {
+		$prefix = static::$flag_action_status_marker_meta_key_prefix;
+
+		return "{$prefix}:{$status->get_slug()}:{$flag}";
 	}
 
 	/**
@@ -210,11 +259,17 @@ class Order {
 			'id'     => $order_id,
 		] )->set_args( $args )->save();
 
+		// After modifying the status we add a meta to flag when it was modified.
+		if ( $updated ) {
+			$time = Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT );
+			add_post_meta( $order_id, static::get_status_log_meta_key( $status ), $time );
+		}
+
 		return (bool) $updated;
 	}
 
 	/**
-	 * @todo  WIP
+	 * Creates a order from the items in the cart.
 	 *
 	 * @since TBD
 	 *
@@ -227,12 +282,17 @@ class Order {
 
 		$items      = $cart->get_items_in_cart();
 		$items      = array_map( static function ( $item ) {
-			$ticket            = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+			if ( null === $ticket ) {
+				return null;
+			}
+
 			$item['sub_total'] = Price::sub_total( $ticket->price, $item['quantity'] );
 			$item['price']     = $ticket->price;
 
 			return $item;
 		}, $items );
+		$items      = array_filter( $items );
 		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
 		$total      = Price::total( $sub_totals );
 
@@ -282,29 +342,6 @@ class Order {
 		$title   = array_merge( $title, $tickets );
 
 		return implode( '-', $title );
-	}
-
-	/**
-	 * Redirects to the source post after a recoverable (logic) error.
-	 *
-	 * @todo  Determine if redirecting should be something relegated to some other method, and here we just actually
-	 *       generate the order/Attendees.
-	 *
-	 * @see   \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
-	 * @since TBD
-	 *
-	 * @param bool $redirect   Whether to really redirect or not.
-	 * @param int  $post_id    A post ID
-	 *
-	 * @param int  $error_code The current error code
-	 *
-	 */
-	protected function redirect_after_error( $error_code, $redirect, $post_id ) {
-		$url = add_query_arg( 'tpp_error', $error_code, get_permalink( $post_id ) );
-		if ( $redirect ) {
-			wp_redirect( esc_url_raw( $url ) );
-		}
-		tribe_exit();
 	}
 
 	/**

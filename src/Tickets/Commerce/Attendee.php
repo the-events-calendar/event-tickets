@@ -3,6 +3,8 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
+use \Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Attendee
@@ -217,6 +219,79 @@ class Attendee {
 	}
 
 	/**
+	 * Creates an individual attendee given an Order and Ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Post      $order  Which order generated this attendee.
+	 * @param Ticket_Object $ticket Which ticket generated this Attendee.
+	 * @param array         $args   Set of extra arguments used to populate the data for the attendee.
+	 *
+	 * @return \WP_Error|\WP_Post
+	 */
+	public function create( \WP_Post $order, $ticket, array $args = [] ) {
+		$create_args = [
+			'order_id'      => $order->ID,
+			'ticket_id'     => $ticket->ID,
+			'event_id'      => $ticket->get_event_id(),
+			'security_code' => Arr::get( $args, 'security_code' ),
+			'opt_out'       => Arr::get( $args, 'optout' ),
+			'price_paid'    => Arr::get( $args, 'price' ),
+			'currency'      => Arr::get( $args, 'currency' ),
+		];
+
+		/**
+		 * Allow the filtering of the create arguments for attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param array         $create_args Which arguments we are going to use to create the attendee.
+		 * @param \WP_Post      $order       Which order generated this attendee.
+		 * @param Ticket_Object $ticket      Which ticket generated this Attendee.
+		 * @param array         $args        Set of extra arguments used to populate the data for the attendee.
+		 */
+		$create_args = apply_filters( 'tec_tickets_commerce_attendee_create_args', $create_args, $order, $ticket, $args );
+
+		/**
+		 * Allow the actions before creating the attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param array         $create_args Which arguments we are going to use to create the attendee.
+		 * @param \WP_Post      $order       Which order generated this attendee.
+		 * @param Ticket_Object $ticket      Which ticket generated this Attendee.
+		 * @param array         $args        Set of extra arguments used to populate the data for the attendee.
+		 */
+		do_action( 'tec_tickets_commerce_attendee_before_create', $create_args, $order, $ticket, $args );
+
+		$attendee = tec_tc_attendees()->set_args( $create_args )->create();
+
+		/**
+		 * Allow the actions after creating the attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param \WP_Post      $attendee Post object for the attendee.
+		 * @param \WP_Post      $order    Which order generated this attendee.
+		 * @param Ticket_Object $ticket   Which ticket generated this Attendee.
+		 * @param array         $args     Set of extra arguments used to populate the data for the attendee.
+		 */
+		do_action( 'tec_tickets_commerce_attendee_after_create', $attendee, $order, $ticket, $args );
+
+		/**
+		 * Allow the filtering of the attendee WP_Post after creating attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param \WP_Post      $attendee Post object for the attendee.
+		 * @param \WP_Post      $order    Which order generated this attendee.
+		 * @param Ticket_Object $ticket   Which ticket generated this Attendee.
+		 * @param array         $args     Set of extra arguments used to populate the data for the attendee.
+		 */
+		return apply_filters( 'tec_tickets_commerce_attendee_create', $attendee, $order, $ticket, $args );
+	}
+
+	/**
 	 * If the post that was moved to the trash was an PayPal Ticket attendee post type, redirect to
 	 * the Attendees Report rather than the PayPal Ticket attendees post list (because that's kind of
 	 * confusing)
@@ -397,7 +472,7 @@ class Attendee {
 	 */
 	public function decreases_inventory( $attendee ) {
 		$attendee = tec_tc_get_attendee( $attendee['ID'] );
-		$order = tec_tc_get_order( $attendee->post_parent );
+		$order    = tec_tc_get_order( $attendee->post_parent );
 
 		return tribe( Commerce\Status\Completed::class )->get_wp_slug() === $order->post_status;
 	}

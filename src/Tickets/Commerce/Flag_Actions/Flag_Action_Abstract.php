@@ -2,7 +2,9 @@
 
 namespace TEC\Tickets\Commerce\Flag_Actions;
 
+use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use Tribe__Date_Utils as Dates;
 
 
 /**
@@ -39,6 +41,25 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	 * @var string[]
 	 */
 	protected $post_types;
+
+	/**
+	 * Marks a given order with all the flags for this given status update.
+	 * The value of those markers is the time where the update happened.
+	 *
+	 * @since TBD
+	 *
+	 * @param Status_Interface      $new_status
+	 * @param null|Status_Interface $old_status
+	 * @param \WP_Post $post
+	 *
+	 */
+	protected function mark( Status_Interface $new_status, $old_status, \WP_Post $post ) {
+		$time = Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT );
+		foreach ( $this->get_flags( $post ) as $flag ) {
+			$marker_meta_key = Order::get_flag_action_marker_meta_key( $flag, $new_status );
+			add_post_meta( $post->ID, $marker_meta_key, $time );
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -115,6 +136,9 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 		$post = tec_tc_get_order( $post );
 
 		$this->handle( $new_status, $old_status, $post );
+
+		// After handling we mark this order with the flags from this action.
+		$this->mark( $new_status, $old_status, $post );
 	}
 
 	/**

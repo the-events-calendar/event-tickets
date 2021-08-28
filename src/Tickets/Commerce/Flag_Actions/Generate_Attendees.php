@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Flag_Actions;
 
+use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Settings;
@@ -35,13 +36,17 @@ class Generate_Attendees extends Flag_Action_Abstract {
 		Order::POSTTYPE
 	];
 
+	/**
+	 * Hooks any WordPress filters related to this Flag Action.
+	 *
+	 * @since TBD
+	 */
 	public function hook() {
 		parent::hook();
 
 		$status = $this->get_status_when_to_trigger();
 		add_filter( "tec_tickets_commerce_order_status_{$status->get_slug()}_get_flags", [ $this, 'modify_status_with_attendee_generation_flag' ], 10, 3 );
 	}
-
 
 	/**
 	 * Returns the instance of the status we trigger attendee generation.
@@ -102,20 +107,15 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				continue;
 			}
 
-			$event_id = $ticket->get_event_id();
-
 			for ( $i = 0; $i < $quantity; $i ++ ) {
 				$args = [
-					'order_id'      => $post->ID,
-					'ticket_id'     => $ticket->ID,
-					'event_id'      => $event_id,
-					'security_code' => tribe( Module::class )->generate_security_code( time() . '-' . $i ),
 					'opt_out'       => Arr::get( $extra, 'optout' ),
 					'price_paid'    => Arr::get( $item, 'price' ),
 					'currency'      => Arr::get( $item, 'currency', $default_currency ),
+					'security_code' => tribe( Module::class )->generate_security_code( time() . '-' . $i )
 				];
 
-				$attendee = tec_tc_attendees()->set_args( $args )->create();
+				$attendee = tribe( Attendee::class )->create( $post, $ticket, $args );
 			}
 		}
 	}

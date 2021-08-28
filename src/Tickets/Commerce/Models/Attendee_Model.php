@@ -46,7 +46,7 @@ class Attendee_Model extends Base {
 			$user_id   = Arr::get( $post_meta, [ Attendee::$user_relation_meta_key, 0 ] );
 
 			$ticket = tec_tc_get_ticket( $ticket_id );
-			$order  = tec_tc_get_order( $order_id );
+			$order  = tec_tc_get_order( $this->post->post_parent );
 
 			$is_product_deleted = empty( $ticket ) && ! $ticket instanceof \WP_Post;
 
@@ -73,6 +73,7 @@ class Attendee_Model extends Base {
 			$is_purchaser = $email === $order->purchaser_email;
 
 			$properties = [
+				'order_id'      => $this->post->post_parent,
 				'optout'        => $opt_out,
 				'ticket'        => $ticket_title,
 				'attendee_id'   => $post_id,
@@ -90,7 +91,6 @@ class Attendee_Model extends Base {
 				'ticket_name'   => $ticket_title,
 				'holder_name'   => $full_name,
 				'holder_email'  => $email,
-				'order_id'      => $order_id,
 				'ticket_id'     => $ticket_unique_id,
 				'qr_ticket_id'  => $post_id,
 				'security_code' => $security,

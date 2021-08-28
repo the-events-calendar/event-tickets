@@ -26,8 +26,6 @@ class Module extends \Tribe__Tickets__Tickets {
 
 		$this->attendee_optout_key = Attendee::$optout_meta_key;
 
-		$this->attendee_tpp_key = Attendee::$status_meta_key;
-
 		$this->ticket_object = Ticket::POSTTYPE;
 
 		$this->event_key = Attendee::$event_relation_meta_key;
@@ -112,15 +110,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @var string
 	 */
 	public $attendee_optout_key;
-
-	/**
-	 * Meta key that if this attendee PayPal status
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public $attendee_tpp_key;
 
 	/**
 	 * Name of the CPT that holds Tickets
@@ -373,7 +362,6 @@ class Module extends \Tribe__Tickets__Tickets {
 			'attendee_product_key' => $instance->attendee_product_key,
 			'attendee_order_key'   => $instance->order_key,
 			'attendee_optout_key'  => $instance->attendee_optout_key,
-			'attendee_tpp_key'     => $instance->attendee_tpp_key,
 			'event_key'            => $instance->get_event_key(),
 			'checkin_key'          => $instance->checkin_key,
 			'order_key'            => $instance->order_key,
