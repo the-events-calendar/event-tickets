@@ -346,7 +346,7 @@ class Settings extends Abstract_Settings {
 		 */
 		$settings = apply_filters( 'tribe_tickets_commerce_settings', $settings );
 
-		return array_merge( $this->get_top_level_settings(), $settings );
+		return array_merge( $this->get_top_level_settings(), $this->apply_commerce_enabled_conditional( $settings ) );
 	}
 
 	/**
@@ -354,7 +354,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @since TBD
 	 *
-	 * @param array[] $settings Which settings we are applying conditioanls to.
+	 * @param array[] $settings Which settings we are applying conditionals to.
 	 *
 	 * @return array[]
 	 */
