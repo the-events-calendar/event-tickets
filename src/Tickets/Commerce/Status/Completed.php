@@ -32,8 +32,6 @@ class Completed extends Status_Abstract {
 	 */
 	protected $flags = [
 		'complete',
-		'trigger_option',
-		'attendee_generation',
 		'attendee_dispatch',
 		'stock_reduced',
 		'count_attendee',

@@ -1,4 +1,5 @@
 <?php
+
 namespace TEC\Tickets\Commerce\Flag_Actions;
 
 use TEC\Tickets\Commerce\Status\Status_Interface;
@@ -16,9 +17,11 @@ interface Flag_Action_Interface {
 	 *
 	 * @since TBD
 	 *
+	 * @param \WP_Post $post Post object.
+	 *
 	 * @return string[]
 	 */
-	public function get_flags();
+	public function get_flags( \WP_Post $post );
 
 	/**
 	 * Gets the post types that we could trigger this flag action for.
@@ -56,11 +59,13 @@ interface Flag_Action_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param Status_Interface $status
+	 * @param Status_Interface $status   Which status we are checking for.
+	 * @param string           $operator Which conditional we are using for checking.
+	 * @param \WP_Post         $post     Post object.
 	 *
 	 * @return bool
 	 */
-	public function has_flags( Status_Interface $status );
+	public function has_flags( Status_Interface $status, $operator = 'AND', \WP_Post $post = null );
 
 	/**
 	 * Determines if a given post object is the correct post type to trigger this flag action
