@@ -408,13 +408,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function add_display_post_states( $post_states, $post ) {
 
-		if ( tribe( Checkout::class )->get_page_id() === $post->ID ) {
-			$post_states['tec_tickets_commerce_page_checkout'] = __( 'Tickets Commerce Checkout Page', 'event-tickets' );
-		}
-
-		if ( tribe( Success::class )->get_page_id() === $post->ID ) {
-			$post_states['tec_tickets_commerce_page_success'] = __( 'Tickets Commerce Success Page', 'event-tickets' );
-		}
+		$post_states = tribe( Checkout::class )->maybe_add_display_post_states( $post_states, $post );
+		$post_states = tribe( Success::class )->maybe_add_display_post_states( $post_states, $post );
 
 		return $post_states;
 	}
