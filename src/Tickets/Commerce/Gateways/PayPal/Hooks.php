@@ -17,6 +17,9 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Shortcodes\Shortcode_Abstract;
+
 /**
  * Class Hooks.
  *
@@ -42,60 +45,133 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	protected function add_actions() {
-		// Settings page: Connect PayPal.
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_user_on_boarded', [ $this, 'on_boarded_user_ajax_request_handler' ] );
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_get_partner_url', [ $this, 'on_get_partner_url_ajax_request_handler' ] );
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_disconnect_account', [ $this, 'remove_paypal_account' ] );
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_onboarding_trouble_notice', [ $this, 'on_boarding_trouble_notice' ] );
-		add_action( 'admin_init', [ $this, 'on_boarding_boot' ] );
-
-		// Frontend: PayPal Checkout.
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_create_order', [ $this, 'create_order' ] );
-		add_action( 'wp_ajax_nopriv_tribe_tickets_paypal_commerce_create_order', [ $this, 'create_order' ] );
-		add_action( 'wp_ajax_tribe_tickets_paypal_commerce_approve_order', [ $this, 'approve_order' ] );
-		add_action( 'wp_ajax_nopriv_tribe_tickets_paypal_commerce_approve_order', [ $this, 'approve_order' ] );
-
 		// REST API Endpoint registration.
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
+		add_action( 'tec_tickets_commerce_admin_process_action:paypal-disconnect', [ $this, 'handle_action_disconnect' ] );
+		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-access-token', [ $this, 'handle_action_refresh_token' ] );
+		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-user-info', [ $this, 'handle_action_refresh_user_info' ] );
+
+		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout/header', [ $this, 'include_client_js_sdk_script' ], 15, 3 );
+		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
 	}
 
-	/**
+	/**1
 	 * Adds the filters required by each Tickets Commerce component.
 	 *
 	 * @since 5.1.6
 	 */
 	protected function add_filters() {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_success_shortcode_checkout_page_paypal_template_vars', [ $this, 'include_checkout_page_vars' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_success_shortcode_success_page_paypal_template_vars', [ $this, 'include_success_page_vars' ], 10, 2 );
 	}
 
-	public function on_boarded_user_ajax_request_handler() {
-		$this->container->make( AjaxRequestHandler::class )->onBoardedUserAjaxRequestHandler();
+	/**
+	 * Filters the shortcode template vars for the Checkout page template.
+	 *
+	 * @since TBD
+	 *
+	 * @param array              $template_vars
+	 * @param Shortcode_Abstract $shortcode
+	 *
+	 * @return array
+	 */
+	public function include_checkout_page_vars( $template_vars, $shortcode ) {
+		$template_vars['merchant'] = tribe( Merchant::class );
+
+		return $template_vars;
 	}
 
-	public function on_get_partner_url_ajax_request_handler() {
-		$this->container->make( AjaxRequestHandler::class )->onGetPartnerUrlAjaxRequestHandler();
+	/**
+	 * Filters the shortcode template vars for the Checkout page template.
+	 *
+	 * @since TBD
+	 *
+	 * @param array              $template_vars
+	 * @param Shortcode_Abstract $shortcode
+	 *
+	 * @return array
+	 */
+	public function include_success_page_vars( $template_vars, $shortcode ) {
+		$template_vars['merchant'] = tribe( Merchant::class );
+
+		return $template_vars;
 	}
 
-	public function remove_paypal_account() {
-		$this->container->make( AjaxRequestHandler::class )->removePayPalAccount();
+	/**
+	 * Include the Client JS SDK script into checkout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string           $file     Which file we are loading.
+	 * @param string           $name     Name of file file
+	 * @param \Tribe__Template $template Which Template object is being used.
+	 *
+	 */
+	public function include_client_js_sdk_script( $file, $name, $template ) {
+		echo tribe( Buttons::class )->get_checkout_script();
 	}
 
-	public function on_boarding_trouble_notice() {
-		$this->container->make( AjaxRequestHandler::class )->onBoardingTroubleNotice();
+	/**
+	 * Include the Client JS SDK script into checkout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string           $file     Which file we are loading.
+	 * @param string           $name     Name of file file
+	 * @param \Tribe__Template $template Which Template object is being used.
+	 *
+	 */
+	public function include_payment_buttons( $file, $name, $template ) {
+		$must_login = ! is_user_logged_in() && tribe( Module::class )->login_required();
+
+		$template->template( 'gateway/paypal/buttons', [ 'must_login' => $must_login ] );
 	}
 
-	public function on_boarding_boot() {
-		$this->container->make( onBoardingRedirectHandler::class )->boot();
+	/**
+	 * Handles the disconnecting of the merchant.
+	 *
+	 * @todo  Display some message when disconnecting.
+	 * @since TBD
+	 *
+	 */
+	public function handle_action_disconnect() {
+		$this->container->make( Merchant::class )->disconnect();
 	}
 
-	public function create_order() {
-		$this->container->make( AjaxRequestHandler::class )->createOrder();
+	/**
+	 * Handles the refreshing of the token from PayPal for this merchant.
+	 *
+	 * @todo  Display some message when refreshing token.
+	 * @since TBD
+	 *
+	 */
+	public function handle_action_refresh_token() {
+		$merchant   = $this->container->make( Merchant::class );
+		$token_data = $this->container->make( Client::class )->get_access_token_from_client_credentials( $merchant->get_client_id(), $merchant->get_client_secret() );
+
+		$saved = $merchant->save_access_token_data( $token_data );
 	}
 
-	public function approve_order() {
-		$this->container->make( AjaxRequestHandler::class )->approveOrder();
+	/**
+	 * Handles the refreshing of the user info from PayPal for this merchant.
+	 *
+	 * @todo  Display some message when refreshing user info.
+	 * @since TBD
+	 *
+	 */
+	public function handle_action_refresh_user_info() {
+		$merchant  = $this->container->make( Merchant::class );
+		$user_info = $this->container->make( Client::class )->get_user_info();
+
+		$saved = $merchant->save_user_info( $user_info );
 	}
 
+	/**
+	 * Register the Endpoints from Paypal.
+	 *
+	 * @since TBD
+	 */
 	public function register_endpoints() {
 		$this->container->make( REST::class )->register_endpoints();
 	}

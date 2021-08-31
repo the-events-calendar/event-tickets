@@ -1,16 +1,6 @@
 name: 'Codeception Tests'
 on:
   pull_request:
-    paths:
-      - 'common/src/**.php'
-      - 'common/tests/**'
-      - 'common/*.php'
-      - 'src/**.php'
-      - 'tests/**'
-      - '*.php'
-      - 'composer.json'
-      - 'codeception.*.yml'
-      - '.github/workflows/tests-php.yml'
 jobs:
   test:
     strategy:
@@ -24,6 +14,7 @@ jobs:
           - restv1 --skip-group="capacity"
           - unit
           - views_integration
+          - commerce_integration
           - wpunit --group="capacity"
           - wpunit --skip-group="capacity"
     runs-on: ubuntu-latest

@@ -1,14 +1,16 @@
 <?php
+
 /**
  * Manages the admin settings UI in relation to ticket configuration.
  */
 class Tribe__Tickets__Admin__Ticket_Settings {
+
 	/**
 	 * Sets up the display of timezone-related settings and listeners to deal with timezone-update
 	 * requests (which are initiated from within the settings screen).
 	 */
 	public function __construct() {
-		add_action( 'tribe_settings_do_tabs', array( $this, 'settings_ui' ) );
+		add_action( 'tribe_settings_do_tabs', [ $this, 'settings_ui' ] );
 	}
 
 	/**

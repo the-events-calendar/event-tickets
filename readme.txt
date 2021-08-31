@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, sc0ttkclark, ag
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.18
 Tested up to: 5.8.0
-Stable tag: 5.1.8
+Stable tag: 5.1.9
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -177,6 +177,12 @@ We've got a [ProductStash](https://app.productstash.io/the-events-calendar-suite
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.1.9] TBD =
+
+* Fix - Fixed cart calculation inconsistency with WooCommerce when the "Number of decimals" setting was set to `0`. [ETP-324]
+* Fix - Removed RSVP V2 preview templates and functionality. [ET-1162]
+* Fix - Updated deprecated hook `block_categories` to use `block_categories_all`. [ET-1156]
 
 = [5.1.8] 2021-08-24 =
 

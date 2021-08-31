@@ -1,2 +1,2 @@
 # All changes require Lead review
-* @bordoni
+event-tickets.php src/Tribe/Main.php src/Tribe/Tickets.php @bordoni

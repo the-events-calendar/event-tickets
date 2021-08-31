@@ -8,7 +8,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways;
 
-use Tribe__Tickets__Commerce__PayPal__Main as PayPal_Main;
+use TEC\Tickets\Commerce;
 
 /**
  * The gateway related functionality.
@@ -36,12 +36,15 @@ abstract class Abstract_Gateway implements Interface_Gateway {
 	/**
 	 * @inheritDoc
 	 */
+	public static function get_provider_key() {
+		return Commerce::PROVIDER . '-' . static::get_key();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function register_gateway( array $gateways ) {
-		$gateways[ static::get_key() ] = [
-			'label'  => static::get_label(),
-			'class'  => static::class,
-			'object' => $this,
-		];
+		$gateways[ static::get_key() ] = $this;
 
 		return $gateways;
 	}

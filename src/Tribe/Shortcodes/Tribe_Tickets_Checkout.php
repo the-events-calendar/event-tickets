@@ -8,8 +8,9 @@
 
 namespace Tribe\Tickets\Shortcodes;
 
+use TEC\Tickets\Commerce\Checkout;
 use Tribe\Shortcode\Shortcode_Abstract;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
+use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Settings;
 use Tribe__Tickets__Editor__Template;
 
@@ -39,14 +40,26 @@ class Tribe_Tickets_Checkout extends Shortcode_Abstract {
 		/** @var Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 
-		$merchant_details = tribe( MerchantDetails::class );
-		$details = $merchant_details->getDetails();
+		$merchant = tribe( Merchant::class );
+
+		$data = tribe( Checkout::class )->prepare_data_for_template( $_POST );
+
+		$post     = get_post( $data['post_id'] );
+		$is_event = 'tribe_events' === $post->post_type;
+		$event    = null;
+		if ( $is_event && function_exists( 'tribe_get_event' ) ) {
+			$event = tribe_get_event( $post );
+		}
 
 		$args = [
-			// @todo Set up args here.
-			'client_id' => $details->clientId,
-			'custom_payments' => $details->supportsCustomPayments,
+			'merchant' => $merchant,
+			'post'     => $post,
+			'event'    => $event,
+			'provider' => $data['provider'],
+			'tickets'  => $data['tickets'],
 		];
+
+		$args['paypal_attribution_id'] = \TEC\Tickets\Commerce\Gateways\PayPal\Gateway::ATTRIBUTION_ID;
 
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );

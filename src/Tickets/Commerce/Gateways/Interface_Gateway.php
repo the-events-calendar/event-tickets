@@ -15,9 +15,18 @@ interface Interface_Gateway {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @return bool Whether the provider is active.
+	 * @return string What is the Key used.
 	 */
 	public static function get_key();
+
+	/**
+	 * Get's the provider key for this Commerce Gateway.
+	 *
+	 * @since TBD
+	 *
+	 * @return string What is the ORM Provider Key used.
+	 */
+	public static function get_provider_key();
 
 	/**
 	 * Get's the label for this Commerce Gateway.
@@ -53,7 +62,7 @@ interface Interface_Gateway {
 	 *
 	 * @param array       $gateways The list of registered Tickets Commerce gateways.
 	 *
-	 * @return array The list of registered Tickets Commerce gateways.
+	 * @return Abstract_Gateway[] The list of registered Tickets Commerce gateways.
 	 */
 	public function register_gateway( array $gateways );
 }

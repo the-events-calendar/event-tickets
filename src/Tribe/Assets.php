@@ -22,6 +22,8 @@ class Tribe__Tickets__Assets {
 
 		if ( $this->should_enqueue_common_full() ) {
 			$tickets_deps[] = 'tribe-common-full-style';
+		} else {
+			$tickets_deps[] = 'tec-variables-full';
 		}
 
 		// Check wether we use v1 or v2. We need to update this when we deprecate tickets v1.
@@ -32,7 +34,7 @@ class Tribe__Tickets__Assets {
 			[
 				[ 'event-tickets-reset-css', 'reset.css' ],
 				[ 'event-tickets-tickets-css', $tickets_stylesheet, $tickets_deps ],
-				[ 'event-tickets-tickets-rsvp-css', 'rsvp-v1.css', [] ],
+				[ 'event-tickets-tickets-rsvp-css', 'rsvp-v1.css', [ 'tec-variables-full' ] ],
 				[ 'event-tickets-tickets-rsvp-js', 'rsvp.js', [ 'jquery' ] ],
 				[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
 				[ 'event-tickets-details-js', 'ticket-details.js', [] ],
@@ -47,7 +49,7 @@ class Tribe__Tickets__Assets {
 			$tickets_main,
 			'tribe-tickets-forms-style',
 			'tickets-forms.css',
-			[],
+			[ 'tec-variables-full' ],
 			null,
 			[
 				'groups' => [
@@ -85,7 +87,7 @@ class Tribe__Tickets__Assets {
 			$tickets_main,
 			'tribe-common-responsive',
 			'common-responsive.css',
-			[ 'tribe-common-skeleton-style' ],
+			[ 'tribe-common-skeleton-style', 'tec-variables-full' ],
 			null,
 			[
 				'conditionals' => [ $this, 'should_enqueue_tickets_loader' ],
@@ -93,6 +95,8 @@ class Tribe__Tickets__Assets {
 					'tribe-tickets-block-assets',
 					'tribe-tickets-rsvp',
 					'tribe-tickets-registration-page',
+					'tribe-tickets-commerce',
+					'tribe-tickets-commerce-checkout',
 				],
 			]
 		);
@@ -165,7 +169,7 @@ class Tribe__Tickets__Assets {
 				$tickets_main,
 				'tribe-tickets-registration-page-styles',
 				'tickets-registration-page.css',
-				[],
+				[ 'tec-variables-full' ],
 				null,
 				[
 					'groups' => [
@@ -210,7 +214,7 @@ class Tribe__Tickets__Assets {
 		$assets = [
 			[ 'event-tickets-admin-css', 'tickets-admin.css', [ 'tribe-validation-style', 'tribe-jquery-timepicker-css', 'tribe-common-admin' ] ],
 			[ 'event-tickets-admin-refresh-css', 'tickets-refresh.css', [ 'event-tickets-admin-css', 'tribe-common-admin' ] ],
-			[ 'event-tickets-admin-tables-css', 'tickets-tables.css', [ 'event-tickets-admin-css' ] ],
+			[ 'event-tickets-admin-tables-css', 'tickets-tables.css', [  'tec-variables-full', 'event-tickets-admin-css' ] ],
 			[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
 			[ 'event-tickets-admin-accordion-js', 'accordion.js', [] ],
 			[ 'event-tickets-admin-accordion-css', 'accordion.css', [] ],
@@ -363,6 +367,7 @@ class Tribe__Tickets__Assets {
 		$admin_tabs = [
 			'event-tickets',
 			'event-tickets-commerce',
+			'payments',
 		];
 
 		// Load specifically on Ticket Settings page only.

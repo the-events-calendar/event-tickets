@@ -5,28 +5,28 @@
  * @todo @juanfra: Check this once we define https://github.com/the-events-calendar/tribe-common/pull/1379
  */
 
-@import "utilities/_all.pcss";
+/* Import Mixins */
+@import 'tickets-common.pcss';
 
 .event-tickets {
-
 	/* From: base/full/forms/_text.pcss */
 
 	.tribe-common-form-control-text__input {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin desktop-body-2;
 
 			border: 0;
 		}
 	}
 
-	/* From: base/full/typography/_body.pcss*/
+	/* From: base/full/typography/_body.pcss */
 
 	/* -------------------------------------------------------------------------
 	 * Body 1
 	 * ------------------------------------------------------------------------- */
 
 	.tribe-common-b1 {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin desktop-body-1-sup;
 		}
 	}
@@ -36,18 +36,17 @@
 	 * ------------------------------------------------------------------------- */
 
 	.tribe-common-b2 {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin desktop-body-2-sup;
 		}
 	}
-
 
 	/* -------------------------------------------------------------------------
 	 * Body 3
 	 * ------------------------------------------------------------------------- */
 
 	.tribe-common-b3 {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin desktop-body-3-sup;
 		}
 	}
@@ -59,7 +58,7 @@
 	 * ------------------------------------------------------------------------- */
 
 	.tribe-common-h1 {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin desktop-heading-1;
 		}
 	}
@@ -69,7 +68,7 @@
 	 * ------------------------------------------------------------------------- */
 
 	.tribe-common-h2 {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin desktop-heading-2;
 		}
 	}
@@ -79,7 +78,7 @@
 	 * ------------------------------------------------------------------------- */
 
 	.tribe-common-h3 {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin desktop-heading-3;
 		}
 	}
@@ -89,7 +88,7 @@
 	 * ------------------------------------------------------------------------- */
 
 	.tribe-common-h4 {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin desktop-heading-4;
 		}
 	}
@@ -99,7 +98,7 @@
 	 * ------------------------------------------------------------------------- */
 
 	.tribe-common-h6 {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin desktop-heading-6;
 		}
 	}
@@ -109,7 +108,7 @@
 	 * ------------------------------------------------------------------------- */
 
 	.tribe-common-b1--min-medium {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin desktop-body-1-sup;
 		}
 	}
@@ -119,7 +118,7 @@
 	 * ------------------------------------------------------------------------- */
 
 	.tribe-common-b2--min-medium {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin desktop-body-2-sup;
 		}
 	}
@@ -129,7 +128,7 @@
 	 * ------------------------------------------------------------------------- */
 
 	.tribe-common-b3--min-medium {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin desktop-body-3-sup;
 		}
 	}
@@ -139,7 +138,7 @@
 	 * ------------------------------------------------------------------------- */
 
 	.tribe-common-h3--min-medium {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin desktop-heading-3;
 		}
 	}
@@ -149,7 +148,7 @@
 	 * ------------------------------------------------------------------------- */
 
 	.tribe-common-h4--min-medium {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin desktop-heading-4;
 		}
 	}
@@ -159,7 +158,7 @@
 	 * ------------------------------------------------------------------------- */
 
 	.tribe-common-h5--min-medium {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin heading-5;
 		}
 	}
@@ -169,7 +168,7 @@
 	 * ------------------------------------------------------------------------- */
 
 	.tribe-common-h6--min-medium {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin desktop-heading-6;
 		}
 	}
@@ -179,7 +178,7 @@
 	 * ------------------------------------------------------------------------- */
 
 	.tribe-common-h7--min-medium {
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			@mixin heading-7;
 		}
 	}
@@ -187,24 +186,23 @@
 	/* From: base/skeleton/forms/_text.pcss */
 
 	.tribe-common-form-control-text__input {
-		@media(--viewport-medium) {
-			padding: var(--spacer-4) var(--spacer-4) var(--spacer-4) var(--spacer-8);
+		@media (--viewport-medium) {
+			padding: var(--tec-spacer-4) var(--tec-spacer-4) var(--tec-spacer-4) var(--tec-spacer-8);
 		}
 	}
 
-	/* From: base/skeleton/grid/_rows.pcss*/
+	/* From: base/skeleton/grid/_rows.pcss */
 
 	.tribe-common-g-row--gutters {
-		@media(--viewport-medium) {
-			margin-left: var(--grid-gutter-half-negative);
-			margin-right: var(--grid-gutter-half-negative);
+		@media (--viewport-medium) {
+			margin-left: var(--tec-grid-gutter-half-negative);
+			margin-right: var(--tec-grid-gutter-half-negative);
 		}
 
 		& > .tribe-common-g-col {
-
-			@media(--viewport-medium) {
-				padding-left: var(--grid-gutter-half);
-				padding-right: var(--grid-gutter-half);
+			@media (--viewport-medium) {
+				padding-left: var(--tec-grid-gutter-half);
+				padding-right: var(--tec-grid-gutter-half);
 			}
 		}
 	}

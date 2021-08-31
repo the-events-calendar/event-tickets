@@ -25,7 +25,7 @@ class ItemTest extends V2TestCase {
 
 		$event = $this->get_mock_event( 'events/single/1.json' );
 
-		$ids = $this->create_many_paypal_tickets( 1, $event->ID );
+		$ids = $this->create_many_paypal_tickets( 1, $event->ID, [ 'price' => 99 ] );
 
 		/** @var \Tribe__Tickets__Ticket_Object $ticket */
 		$ticket = $provider->get_ticket( $event->ID, $ids[0] );
@@ -126,16 +126,6 @@ class ItemTest extends V2TestCase {
 
 		$driver = $this->get_html_output_driver();
 
-		$driver->setTolerableDifferences(
-			[
-				$args['post_id'],
-				$args['ticket']->price,
-				$args['ticket']->ID,
-			]
-		);
-
-		$driver->setTimeDependentAttributes( [ 'value', 'data-ticket-id', 'aria-controls' ] );
-
 		$driver->setTolerableDifferencesPrefixes(
 			[
 				'post-',
@@ -195,17 +185,6 @@ class ItemTest extends V2TestCase {
 
 		$driver = $this->get_html_output_driver();
 
-
-		$driver->setTolerableDifferences(
-			[
-				$args['post_id'],
-				$args['ticket']->price,
-				$args['ticket']->ID,
-			]
-		);
-
-		$driver->setTimeDependentAttributes( [ 'value', 'data-ticket-id', 'aria-controls' ] );
-
 		$driver->setTolerableDifferencesPrefixes(
 			[
 				'post-',
@@ -215,7 +194,6 @@ class ItemTest extends V2TestCase {
 				'tribe__details__content--',
 			]
 		);
-
 		// Handle variations that tolerances won't handle.
 		$html = str_replace(
 			[

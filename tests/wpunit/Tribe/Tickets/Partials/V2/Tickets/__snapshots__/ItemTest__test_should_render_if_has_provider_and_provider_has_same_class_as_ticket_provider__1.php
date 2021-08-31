@@ -1,9 +1,6 @@
 <?php return '<div
 	id="tribe-block-tickets-item-[TICKET_ID]"
-	 class="tribe-tickets__tickets-item post-[TICKET_ID] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	data-ticket-id="[TICKET_ID]"
-	data-available="false"
-	data-has-shared-cap="false"
-	>
+	 class="tribe-tickets__tickets-item post-[TICKET_ID] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	 data-ticket-id="[TICKET_ID]" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
 		Test ticket for [EVENT_ID]</div>
@@ -20,7 +17,7 @@
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
 					<span class="tribe-currency-symbol">$</span>
-					<span class="tribe-amount">6.00</span>
+					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
 </div>

@@ -3,9 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Abstract_Settings;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\MerchantDetail;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Models\WebhookConfig;
-use TEC\Tickets\Commerce\Gateways\PayPal\SDK\Repositories\MerchantDetails;
+
 use Tribe__Languages__Locations;
 use Tribe__Tickets__Admin__Views;
 use Tribe__Tickets__Main;
@@ -17,74 +15,6 @@ use Tribe__Tickets__Main;
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class Settings extends Abstract_Settings {
-
-	/**
-	 * The option key for account country.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @var string
-	 */
-	public $option_account_country = 'tickets-commerce-paypal-commerce-account-country';
-
-	/**
-	 * The option key for access token.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @var string
-	 */
-	public $option_access_token = 'tickets-commerce-paypal-commerce-access-token';
-
-	/**
-	 * The option key for partner link detail.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @var string
-	 */
-	public $option_partner_link_detail = 'tickets-commerce-paypal-commerce-partner-link-detail';
-
-	/**
-	 * The option key for webhook config.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @var string
-	 */
-	public $option_webhook_config = 'tickets-commerce-paypal-commerce-webhook-config';
-
-	/**
-	 * The merchant detail model.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @var MerchantDetail
-	 */
-	private $merchant_model;
-
-	/**
-	 * The merchant details repository.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @var MerchantDetails
-	 */
-	private $merchant_repository;
-
-	/**
-	 * Set up the things we need for the settings.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @param MerchantDetail  $merchantDetail
-	 * @param MerchantDetails $merchantDetailRepository
-	 */
-	public function __construct( MerchantDetail $merchantDetail, MerchantDetails $merchantDetailRepository ) {
-		$this->merchant_model      = $merchantDetail;
-		$this->merchant_repository = $merchantDetailRepository;
-	}
-
 	/**
 	 * Get the list of settings for the gateway.
 	 *
@@ -110,22 +40,6 @@ class Settings extends Abstract_Settings {
 				'html'            => $this->get_introduction_html(),
 				'validation_type' => 'html',
 			],
-			$this->option_account_country                => [
-				'type'            => 'dropdown',
-				'label'           => esc_html__( 'Account Country', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'This is the country your site operates from.', 'event-tickets' ),
-				'size'            => 'medium',
-				'validation_type' => 'options',
-				'options'         => $countries,
-				'required'        => true, // @todo This is not working.
-				'can_be_empty'    => false, // @todo This is not working.
-			],
-			'tickets-commerce-paypal-commerce-connect'   => [
-				'type'            => 'wrapped_html',
-				'label'           => esc_html__( 'PayPal Connection', 'event-tickets' ),
-				'html'            => $this->get_connect_html(),
-				'validation_type' => 'html',
-			],
 		];
 	}
 
@@ -147,31 +61,6 @@ class Settings extends Abstract_Settings {
 		$admin_views->add_template_globals( $context );
 
 		return $admin_views->template( 'settings/tickets-commerce/paypal-commerce/introduction', [], false );
-	}
-
-	/**
-	 * Get the Connect with PayPal HTML.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @return string The Connect with PayPal HTML.
-	 */
-	public function get_connect_html() {
-		/** @var Tribe__Tickets__Admin__Views $admin_views */
-		$admin_views = tribe( 'tickets.admin.views' );
-
-		$account_errors = $this->merchant_repository->getAccountErrors();
-
-		$context = [
-			'account_is_connected' => $this->merchant_repository->accountIsConnected(),
-			'merchant_id'          => $this->merchant_model->merchantId,
-			'formatted_errors'     => $this->get_formatted_error_html( $account_errors ),
-			'guidance_html'        => $this->get_guidance_html(),
-		];
-
-		$admin_views->add_template_globals( $context );
-
-		return $admin_views->template( 'settings/tickets-commerce/paypal-commerce/connect-with-paypal', [], false );
 	}
 
 	/**
@@ -361,129 +250,4 @@ class Settings extends Abstract_Settings {
 	public function update_account_country( $country ) {
 		return tribe_update_option( $this->option_account_country, $country );
 	}
-
-	/**
-	 * Returns the account access token
-	 *
-	 * @since 5.1.6
-	 *
-	 * @return array|null
-	 */
-	public function get_access_token() {
-		$access_token = tribe_get_option( $this->option_access_token );
-
-		if ( ! is_array( $access_token ) ) {
-			return null;
-		}
-
-		return $access_token;
-	}
-
-	/**
-	 * Updates the account access token.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @param array $token The account access token.
-	 *
-	 * @return bool
-	 */
-	public function update_access_token( $token ) {
-		return tribe_update_option( $this->option_access_token, (array) $token );
-	}
-
-	/**
-	 * Deletes the account access token
-	 *
-	 * @since 5.1.6
-	 *
-	 * @return bool
-	 */
-	public function delete_access_token() {
-		return tribe_update_option( $this->option_access_token, '' );
-	}
-
-	/**
-	 * Returns the partner link details
-	 *
-	 * @since 5.1.6
-	 *
-	 * @since 5.1.6
-	 *
-	 * @return string|null
-	 */
-	public function get_partner_link_details() {
-		return tribe_get_option( $this->option_partner_link_detail, null );
-	}
-
-	/**
-	 * Updates the partner link details
-	 *
-	 * @since 5.1.6
-	 *
-	 * @param $linkDetails
-	 *
-	 * @return bool
-	 */
-	public function update_partner_link_details( $linkDetails ) {
-		return tribe_update_option( $this->option_partner_link_detail, $linkDetails );
-	}
-
-	/**
-	 * Deletes the partner link details
-	 *
-	 * @since 5.1.6
-	 *
-	 * @return bool
-	 */
-	public function delete_partner_link_details() {
-		return tribe_update_option( $this->option_partner_link_detail, '' );
-	}
-
-	/**
-	 * Returns the webhook config.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @param string $mode The mode (live/sandbox).
-	 *
-	 * @return WebhookConfig|null
-	 */
-	public function get_webhook_config( $mode ) {
-		$config = tribe_get_option( "{$this->option_webhook_config}-{$mode}", null );
-
-		if ( empty( $config ) ) {
-			return null;
-		}
-
-		return WebhookConfig::fromArray( $config );
-	}
-
-	/**
-	 * Updates the webhook config.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @param string        $mode   The mode (live/sandbox).
-	 * @param WebhookConfig $config The webhook config array.
-	 *
-	 * @return bool
-	 */
-	public function update_webhook_config( $mode, WebhookConfig $config ) {
-		return tribe_update_option( "{$this->option_webhook_config}-{$mode}", $config->toArray() );
-	}
-
-	/**
-	 * Deletes the webhook config.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @param string $mode The mode (live/sandbox).
-	 *
-	 * @return bool
-	 */
-	public function delete_webhook_config( $mode ) {
-		return tribe_update_option( "{$this->option_webhook_config}-{$mode}", '' );
-	}
-
 }
