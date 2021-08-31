@@ -404,6 +404,8 @@ class Tribe__Tickets__Commerce__Currency {
 
 			if ( empty( $default_provider ) ) {
 				$default_provider = '';
+			} else {
+				$default_provider = get_class( $default_provider );
 			}
 
 			switch ( $meta_key ) {
