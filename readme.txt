@@ -183,7 +183,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Fixed cart calculation inconsistency with WooCommerce when the "Number of decimals" setting was set to `0`. [ETP-324]
 * Fix - Removed RSVP V2 preview templates and functionality. [ET-1162]
 * Fix - Updated deprecated hook `block_categories` to use `block_categories_all`. [ET-1156]
-* Language -
+* Language - 37 new strings added, 162 updated, 6 fuzzied, and 20 obsoleted
 
 = [5.1.8] 2021-08-24 =
 
