@@ -1,7 +1,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @type   {Object}
  */
@@ -10,7 +10,7 @@ tribe.tickets = tribe.tickets || {};
 /**
  * Configures ET Tickets Commerce Object in the Global Tribe variable
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @type   {Object}
  */
@@ -19,7 +19,7 @@ tribe.tickets.commerce = {};
 /**
  * Initializes in a Strict env the code that manages the plugin tickets commerce.
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @param  {Object} $   jQuery
  * @param  {Object} obj tribe.tickets.commerce
@@ -33,7 +33,7 @@ tribe.tickets.commerce = {};
 	/*
 	 * Tickets Commerce Selectors.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	obj.selectors = {
 		checkoutContainer: '.tribe-tickets__commerce-checkout',
@@ -49,18 +49,18 @@ tribe.tickets.commerce = {};
 	/**
 	 * Toggle the checkout item description visibility.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {event} event The event.
 	 *
 	 * @return {void}
 	 */
 	obj.checkoutItemDescriptionToggle = function( event ) {
-		if ( 'keyup' === event.type && 13 !== event.keyCode ) {
+		if ( 'keydown' === event.type && 13 !== event.keyCode ) {
 			return;
 		}
 
-		const trigger = event.target;
+		const trigger = event.currentTarget;
 
 		if ( ! trigger ) {
 			return;
@@ -92,7 +92,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Binds the checkout item description toggle.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
@@ -101,22 +101,15 @@ tribe.tickets.commerce = {};
 	obj.bindCheckoutItemDescriptionToggle = function( $container ) {
 		const $descriptionToggleButtons = $container.find( obj.selectors.checkoutItemDescriptionButtonMore + ', ' + obj.selectors.checkoutItemDescriptionButtonLess ); // eslint-disable-line max-len
 
-		// Add keyboard support for enter key.
-		$descriptionToggleButtons.on(
-			'keyup',
-			obj.checkoutItemDescriptionToggle
-		);
-
-		$descriptionToggleButtons.on(
-			'click',
-			obj.checkoutItemDescriptionToggle
-		);
+		$descriptionToggleButtons
+			.on( 'keydown', obj.checkoutItemDescriptionToggle )
+			.on( 'click', obj.checkoutItemDescriptionToggle );
 	};
 
 	/**
 	 * Unbinds the description toggle.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
@@ -131,7 +124,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Binds events for checkout container.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {jQuery} $container jQuery object of object of the tickets container.
 	 *
@@ -149,7 +142,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Handles the initialization of the tickets commerce events when Document is ready.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return {void}
 	 */

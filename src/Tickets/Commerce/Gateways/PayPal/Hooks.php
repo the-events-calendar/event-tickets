@@ -17,6 +17,9 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Shortcodes\Shortcode_Abstract;
+
 /**
  * Class Hooks.
  *
@@ -59,12 +62,46 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	protected function add_filters() {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_success_shortcode_checkout_page_paypal_template_vars', [ $this, 'include_checkout_page_vars' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_success_shortcode_success_page_paypal_template_vars', [ $this, 'include_success_page_vars' ], 10, 2 );
+	}
+
+	/**
+	 * Filters the shortcode template vars for the Checkout page template.
+	 *
+	 * @since 5.1.9
+	 *
+	 * @param array              $template_vars
+	 * @param Shortcode_Abstract $shortcode
+	 *
+	 * @return array
+	 */
+	public function include_checkout_page_vars( $template_vars, $shortcode ) {
+		$template_vars['merchant'] = tribe( Merchant::class );
+
+		return $template_vars;
+	}
+
+	/**
+	 * Filters the shortcode template vars for the Checkout page template.
+	 *
+	 * @since 5.1.9
+	 *
+	 * @param array              $template_vars
+	 * @param Shortcode_Abstract $shortcode
+	 *
+	 * @return array
+	 */
+	public function include_success_page_vars( $template_vars, $shortcode ) {
+		$template_vars['merchant'] = tribe( Merchant::class );
+
+		return $template_vars;
 	}
 
 	/**
 	 * Include the Client JS SDK script into checkout.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string           $file     Which file we are loading.
 	 * @param string           $name     Name of file file
@@ -78,7 +115,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Include the Client JS SDK script into checkout.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string           $file     Which file we are loading.
 	 * @param string           $name     Name of file file
@@ -86,15 +123,17 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 *
 	 */
 	public function include_payment_buttons( $file, $name, $template ) {
-		$template->template( 'gateway/paypal/buttons' );
+		$must_login = ! is_user_logged_in() && tribe( Module::class )->login_required();
+
+		$template->template( 'gateway/paypal/buttons', [ 'must_login' => $must_login ] );
 	}
 
 	/**
 	 * Handles the disconnecting of the merchant.
 	 *
-	 * @since TBD
+	 * @todo  Display some message when disconnecting.
+	 * @since 5.1.9
 	 *
-	 * @todo Display some message when disconnecting.
 	 */
 	public function handle_action_disconnect() {
 		$this->container->make( Merchant::class )->disconnect();
@@ -103,12 +142,12 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Handles the refreshing of the token from PayPal for this merchant.
 	 *
-	 * @since TBD
+	 * @todo  Display some message when refreshing token.
+	 * @since 5.1.9
 	 *
-	 * @todo Display some message when refreshing token.
 	 */
 	public function handle_action_refresh_token() {
-		$merchant = $this->container->make( Merchant::class );
+		$merchant   = $this->container->make( Merchant::class );
 		$token_data = $this->container->make( Client::class )->get_access_token_from_client_credentials( $merchant->get_client_id(), $merchant->get_client_secret() );
 
 		$saved = $merchant->save_access_token_data( $token_data );
@@ -117,12 +156,12 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Handles the refreshing of the user info from PayPal for this merchant.
 	 *
-	 * @since TBD
+	 * @todo  Display some message when refreshing user info.
+	 * @since 5.1.9
 	 *
-	 * @todo Display some message when refreshing user info.
 	 */
 	public function handle_action_refresh_user_info() {
-		$merchant = $this->container->make( Merchant::class );
+		$merchant  = $this->container->make( Merchant::class );
 		$user_info = $this->container->make( Client::class )->get_user_info();
 
 		$saved = $merchant->save_user_info( $user_info );
@@ -131,7 +170,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Register the Endpoints from Paypal.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function register_endpoints() {
 		$this->container->make( REST::class )->register_endpoints();

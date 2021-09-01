@@ -9,7 +9,7 @@ use \Tribe__Utils__Array as Arr;
 /**
  * Class Cart
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -19,7 +19,7 @@ class Cart {
 	 * Which URL param we use to identify a given page as the cart.
 	 * Keep in mind this is not the only way, please use `is_current_page()` to determine that.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -29,7 +29,7 @@ class Cart {
 	 * Which URL param we use to tell the checkout page to set a cookie, since you cannot set a cookie on a 302
 	 * redirect.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -38,7 +38,7 @@ class Cart {
 	/**
 	 * Redirect mode string, which will be used to determine which kind of cart the repository might be.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ class Cart {
 	 * Which URL param we use to identify a given page as the cart.
 	 * Keep in mind this is not the only way, please use `is_current_page()` to determine that.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string[]
 	 */
@@ -57,7 +57,7 @@ class Cart {
 	/**
 	 * Which cookie we will store the cart hash.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -66,7 +66,7 @@ class Cart {
 	/**
 	 * Which invoice number we are using here.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -75,7 +75,7 @@ class Cart {
 	/**
 	 * From the current active cart repository we fetch it's mode.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -86,7 +86,7 @@ class Cart {
 	/**
 	 * Gets the list of available modes we can use for the cart.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string[]
 	 */
@@ -97,7 +97,7 @@ class Cart {
 	/**
 	 * If a given string is a valid and available mode.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $mode Which mode we are testing.
 	 *
@@ -111,7 +111,7 @@ class Cart {
 	/**
 	 * If the current page is the cart page or not.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -133,7 +133,7 @@ class Cart {
 	/**
 	 * Returns the name of the transient used by the cart.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $id
 	 *
@@ -146,7 +146,7 @@ class Cart {
 	/**
 	 * Returns the name of the transient used by the cart for invoice numbers
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $id
 	 *
@@ -159,7 +159,7 @@ class Cart {
 	/**
 	 * Determine the Current cart Transient Key based on invoice number.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -172,7 +172,7 @@ class Cart {
 	/**
 	 * Determine the Current cart URL.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -184,7 +184,7 @@ class Cart {
 		/**
 		 * Allows modifications to the cart url for Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param string $url URL for the cart.
 		 */
@@ -194,7 +194,7 @@ class Cart {
 	/**
 	 * Reads the cart hash from the cookies.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string|bool The cart hash or `false` if not found.
 	 */
@@ -223,7 +223,7 @@ class Cart {
 		/**
 		 * Filters the cart hash used for the Cart.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param string $cart_hash Invoice number.
 		 */
@@ -233,50 +233,73 @@ class Cart {
 	}
 
 	/**
+	 * Clear the cart.
+	 *
+	 * @since 5.1.9
+	 *
+	 * @return false
+	 */
+	public function clear_cart() {
+		$is_empty = empty( $_COOKIE[ static::$cart_hash_cookie_name ] );
+		$this->set_cart_hash_cookie( null );
+
+		if ( $is_empty ) {
+			return false;
+		}
+
+		$cart_hash = $_COOKIE[ static::$cart_hash_cookie_name ];
+		unset( $_COOKIE[ static::$cart_hash_cookie_name ] );
+
+		return delete_transient( static::get_transient_name( $cart_hash ) );
+	}
+
+	/**
 	 * Sets the cart hash cookie or resets the cookie.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @parem string $value Value used for the cookie or empty to purge the cookie.
+	 *
+	 * @return boolean
 	 */
 	public function set_cart_hash_cookie( $value = '' ) {
-		if ( empty( $value ) && empty( $_COOKIE[ static::$cart_hash_cookie_name ] ) ) {
-			return;
+		if ( headers_sent() ) {
+			return false;
 		}
 
-		if ( empty( $value ) ) {
-			$cart_hash = $_COOKIE[ static::$cart_hash_cookie_name ];
-			unset( $_COOKIE[ static::$cart_hash_cookie_name ] );
-			$deleted = delete_transient( static::get_transient_name( $cart_hash ) );
+		/**
+		 * Filters the life span of the Cart Cookie.
+		 *
+		 * @since 5.1.9
+		 *
+		 * @param int $expires The expiry time, as passed to setcookie().
+		 */
+		$expire  = apply_filters( 'tec_tickets_commerce_cart_expiration', time() + 1 * HOUR_IN_SECONDS );
+		$referer = wp_get_referer();
+
+		if ( $referer ) {
+			$secure = ( 'https' === parse_url( $referer, PHP_URL_SCHEME ) );
+		} else {
+			$secure = false;
 		}
 
-		if ( ! headers_sent() ) {
-
-			/**
-			 * Filters the life span of the Cart Cookie.
-			 *
-			 * @since TBD
-			 *
-			 * @param int $expires The expiry time, as passed to setcookie().
-			 */
-			$expire  = apply_filters( 'tec_tickets_commerce_cart_expiration', time() + 1 * HOUR_IN_SECONDS );
-			$referer = wp_get_referer();
-
-			if ( $referer ) {
-				$secure = ( 'https' === parse_url( $referer, PHP_URL_SCHEME ) );
-			} else {
-				$secure = false;
-			}
-
-			$is_cookie_set                             = setcookie( static::$cart_hash_cookie_name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, $secure );
-			$_COOKIE[ static::$cart_hash_cookie_name ] = $value;
+		// When null means we are deleting.
+		if ( null === $value ) {
+			$expire = 1;
 		}
+
+		$is_cookie_set = setcookie( static::$cart_hash_cookie_name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, $secure );
+
+		// Overwrite local variable so we can use it right away.
+		$_COOKIE[ static::$cart_hash_cookie_name ] = $value;
+
+		return $is_cookie_set;
 	}
 
 	/**
 	 * Gets the current instance of cart handling that we are using.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return Commerce\Cart\Cart_Interface
 	 */
@@ -286,7 +309,7 @@ class Cart {
 		/**
 		 * Filters the cart repository, by default we use Unmanaged Cart.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param Cart\Cart_Interface $cart Instance of the cart repository managing the cart.
 		 */
@@ -296,7 +319,7 @@ class Cart {
 	/**
 	 * Get the tickets currently in the cart for a given provider.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param bool $full_item_params Determines all the item params, including event_id, sub_total, and obj.
 	 *
@@ -313,7 +336,7 @@ class Cart {
 		}
 
 		if ( $full_item_params ) {
-			$items    = array_map( static function ( $item ) {
+			$items = array_map( static function ( $item ) {
 				$item['obj']       = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 				$item['event_id']  = $item['obj']->get_event_id();
 				$item['sub_total'] = Price::sub_total( $item['obj']->price, $item['quantity'] );
@@ -331,7 +354,7 @@ class Cart {
 	 * If the cart contains a line item for the product, this will replace the previous quantity.
 	 * If the quantity is zero and the cart contains a line item for the product, this will remove it.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int   $ticket_id  Ticket ID.
 	 * @param int   $quantity   Ticket quantity to add.
@@ -353,7 +376,7 @@ class Cart {
 	 * If the cart contains a line item for the product, this will replace the previous quantity.
 	 * If the quantity is zero and the cart contains a line item for the product, this will remove it.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int $ticket_id Ticket ID.
 	 * @param int $quantity  Ticket quantity to remove.
@@ -372,7 +395,7 @@ class Cart {
 	 *
 	 * @filter wp_loaded 0
 	 *
-	 * @since  TBD
+	 * @since  5.1.9
 	 */
 	public function maybe_delete_expired_products() {
 		$delete = tribe_get_request_var( 'clear_product_cache', null );
@@ -415,7 +438,7 @@ class Cart {
 	 * - Event Ticket Plus IAC
 	 * - Event Tickets Plus Attendee Registration
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $request_data Request Data to be prepared.
 	 *
@@ -425,7 +448,7 @@ class Cart {
 		/**
 		 * Filters the Cart data before sending to the prepare method.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array $request_data The cart data before processing.
 		 */
@@ -504,7 +527,7 @@ class Cart {
 		/**
 		 * Filters the Meta on the Data before processing.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array $meta Meta information on the cart.
 		 * @param array $data Data used for the cart.w
@@ -514,7 +537,7 @@ class Cart {
 		/**
 		 * Filters the Cart data before sending to to the Cart Repository.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array $data The cart data after processing.
 		 */
@@ -524,7 +547,7 @@ class Cart {
 	/**
 	 * Prepares the data from the Tickets form.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -540,7 +563,7 @@ class Cart {
 		 * Hook to inject behavior before cart is processed, if you need to change the data that will be used, you
 		 * should look into `tec_tickets_commerce_cart_prepare_data`.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array $data Data used to process the cart.
 		 */
@@ -551,7 +574,7 @@ class Cart {
 		/**
 		 * Hook to inject behavior after cart is processed.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array $data      Data used to process the cart.
 		 * @param bool  $processed Whether or not we processed the data.
@@ -568,7 +591,7 @@ class Cart {
 			/**
 			 * Which url it redirects after the processing of the cart.
 			 *
-			 * @since TBD
+			 * @since 5.1.9
 			 *
 			 * @param string $redirect_url Which url we will direct after processing the cart. Defaults to Checkout page.
 			 * @param array  $data         Data that we just processed on the cart.
@@ -587,7 +610,7 @@ class Cart {
 	/**
 	 * Process a given cart data into this cart instance.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $data
 	 *

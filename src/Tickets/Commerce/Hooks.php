@@ -46,6 +46,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	protected function add_actions() {
+		add_action( 'tribe_settings_do_tabs', [ $this, 'register_payments_tab' ], 15 );
+
 		add_action( 'init', [ $this, 'register_post_types' ] );
 		add_action( 'init', [ $this, 'register_order_statuses' ], 11 );
 		add_action( 'tribe_common_loaded', [ $this, 'load_commerce_module' ] );
@@ -78,7 +80,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_shortcodes', [ $this, 'filter_register_shortcodes' ] );
-		add_filter( 'tec_tickets_commerce_settings', [ $this, 'filter_include_commerce_settings' ] );
 
 		add_filter( 'tribe_attendee_registration_form_classes', [ $this, 'filter_registration_form_class' ] );
 		add_filter( 'tribe_attendee_registration_cart_provider', [ $this, 'filter_registration_cart_provider' ], 10, 2 );
@@ -94,16 +95,20 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Initializes the Module Class.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function load_commerce_module() {
 		$this->container->make( Module::class );
 	}
 
+	public function register_payments_tab() {
+		$this->container->make( Settings::class )->register_tab();
+	}
+
 	/**
 	 * Register all Commerce Post Types in WordPress.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function register_post_types() {
 		$this->container->make( Attendee::class )->register_post_type();
@@ -114,7 +119,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Register all Order Statuses with WP.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function register_order_statuses() {
 		$this->container->make( Status\Status_Handler::class )->register_order_statuses();
@@ -123,7 +128,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Depending on which page, tab and if an action is present we trigger the processing.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function maybe_trigger_process_action() {
 		$page = tribe_get_request_var( 'page' );
@@ -144,7 +149,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 		/**
 		 * Process Tickets Commerce actions when in the Payments Tab.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param string $action Which action we are processing.
 		 */
@@ -153,7 +158,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 		/**
 		 * Process Tickets Commerce actions when in the Payments Tab.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 */
 		do_action( "tec_tickets_commerce_admin_process_action:{$action}" );
 	}
@@ -161,7 +166,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Fires when a post is transitioned from one status to another so that we can make another hook that is namespaced.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string   $new_status New post status.
 	 * @param string   $old_status Old post status.
@@ -176,7 +181,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @todo  TribeCommerceLegacy: Move this into a Check In Handler class.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $statuses An array of statuses that should mark an ticket attendee as
 	 *                        available for check-in.
@@ -192,7 +197,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Parse the cart request, and possibly redirect, so it happens on `template_redirect`.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function do_cart_parse_request() {
 		$this->container->make( Cart::class )->parse_request();
@@ -201,7 +206,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Parse the checkout request.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function do_checkout_parse_request() {
 		$this->container->make( Checkout::class )->parse_request();
@@ -212,7 +217,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @todo  Determine if this is still required.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int $ticket_id  the attendee id being deleted
 	 * @param int $post_id    the post or event id for the attendee
@@ -225,7 +230,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Sets up the Attendance Totals Class report with the Attendee Screen
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function setup_attendance_totals() {
 		$this->container->make( Reports\Attendance_Totals::class )->integrate_with_attendee_screen();
@@ -234,7 +239,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Redirect the user after deleting trashing an Attendee to the Reports page.
 	 *
-	 * @since TBD4
+	 * @since 5.1.94
 	 *
 	 * @param int $post_id WP_Post ID
 	 */
@@ -245,7 +250,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Includes the metabox advanced options for Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int      $post_id   Which post we are attaching the metabox to.
 	 * @param null|int $ticket_id Ticket we are rendering the metabox for.
@@ -257,7 +262,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Updates the Attendee metadata after insertion.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $attendee_data Information that we are trying to save.
 	 * @param int   $attendee_id   The attendee ID.
@@ -271,7 +276,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Fully here for compatibility initially to reduce complexity on the Module.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int $event_id Which ID we are triggering changes to.
 	 *
@@ -285,7 +290,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @todo  Needs to move to the Checkout page and out of the module.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function maybe_redirect_to_attendees_registration_screen() {
 		$this->container->make( Module::class )->maybe_redirect_to_attendees_registration_screen();
@@ -296,7 +301,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @todo  Needs to move to the Cart page and out of the module.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function maybe_delete_expired_products() {
 		$this->container->make( Cart::class )->maybe_delete_expired_products();
@@ -307,7 +312,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @todo  Determine what this is used for.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param $classes
 	 *
@@ -320,7 +325,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Included here for Event Tickets Plus compatibility.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param object $provider_obj
 	 * @param string $provider
@@ -343,20 +348,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array
 	 */
 	public function filter_register_shortcodes( array $shortcodes ) {
-		$shortcodes['tec_tickets_checkout'] = Shortcodes\Checkout_Shortcode::class;
+		$shortcodes[ Shortcodes\Checkout_Shortcode::get_wp_slug() ] = Shortcodes\Checkout_Shortcode::class;
+		$shortcodes[ Shortcodes\Success_Shortcode::get_wp_slug() ]  = Shortcodes\Success_Shortcode::class;
 
 		return $shortcodes;
-	}
-
-	/**
-	 * Modify the commerce settings completely once we have Tickets Commerce active.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @return array
-	 */
-	public function filter_include_commerce_settings() {
-		return $this->container->make( Settings::class )->get_settings();
 	}
 
 	/**
@@ -365,7 +360,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @todo  Determine if this is still needed.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string   $default_module
 	 * @param string[] $available_modules

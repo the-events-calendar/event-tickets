@@ -2,7 +2,7 @@
 /**
  * Shortcode [tec_tickets_checkout].
  *
- * @since   TBD
+ * @since   5.1.9
  * @package TEC\Tickets\Commerce
  */
 
@@ -14,7 +14,6 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Created;
-use Tribe\Shortcode\Shortcode_Abstract;
 use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Settings;
 use Tribe__Tickets__Editor__Template;
@@ -23,42 +22,40 @@ use TEC\Tickets\Commerce\Utils\Price;
 /**
  * Class for Shortcode Tribe_Tickets_Checkout.
  *
- * @since   TBD
+ * @since   5.1.9
  * @package Tribe\Tickets\Shortcodes
  */
 class Checkout_Shortcode extends Shortcode_Abstract {
 
 	/**
+	 * Id of the current shortcode for filtering purposes.
+	 *
+	 * @since 5.1.9
+	 *
+	 * @var string
+	 */
+	public static $shortcode_id = 'checkout';
+
+	/**
 	 * {@inheritDoc}
 	 */
-	protected $slug = 'tec_tickets_checkout';
+	public function setup_template_vars() {
+		$items      = tribe( Cart::class )->get_items_in_cart( true );
+		$sections   = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
+		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
 
-	/**
-	 * Stores the instance of the template engine that we will use for rendering the page.
-	 *
-	 * @since TBD
-	 *
-	 * @var \Tribe__Template
-	 */
-	protected $template;
+		$args = [
+			'provider_id' => Module::class,
+			'provider'         => tribe( Module::class ),
+			'items'            => $items,
+			'sections'         => $sections,
+			'total_value'      => tribe_format_currency( Price::total( $sub_totals ) ),
+			'must_login'       => ! is_user_logged_in() && tribe( Module::class )->login_required(),
+			'login_url'        => tribe( Checkout::class )->get_login_url(),
+			'registration_url' => tribe( Checkout::class )->get_registration_url(),
+		];
 
-	/**
-	 * Gets the template instance used to setup the rendering of the page.
-	 *
-	 * @since TBD
-	 *
-	 * @return \Tribe__Template
-	 */
-	public function get_template() {
-		if ( empty( $this->template ) ) {
-			$this->template = new \Tribe__Template();
-			$this->template->set_template_origin( \Tribe__Tickets__Main::instance() );
-			$this->template->set_template_folder( 'src/views/v2/commerce' );
-			$this->template->set_template_context_extract( true );
-			$this->template->set_template_folder_lookup( true );
-		}
-
-		return $this->template;
+		$this->template_vars = $args;
 	}
 
 	/**
@@ -71,24 +68,12 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			return '';
 		}
 
-		$merchant   = tribe( Merchant::class );
-		$items      = tribe( Cart::class )->get_items_in_cart( true );
-		$sections   = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
-		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
-
-		$args = [
-			'merchant'    => $merchant,
-			'provider_id' => Module::class,
-			'provider'    => tribe( Module::class ),
-			'items'       => $items,
-			'sections'    => $sections,
-			'total_value' => tribe_format_currency( Price::total( $sub_totals ) ),
-		];
+		$args = $this->get_template_vars();
 
 		// Add the rendering attributes into global context.
 		$this->get_template()->add_template_globals( $args );
 
-		$html =  $this->get_template()->template( 'checkout', $args, false );
+		$html = $this->get_template()->template( 'checkout', $args, false );
 
 		// Enqueue assets.
 		tribe_asset_enqueue_group( 'tribe-tickets-commerce-checkout' );

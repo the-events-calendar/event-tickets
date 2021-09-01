@@ -6,7 +6,7 @@ namespace TEC\Tickets\Commerce\Status;
  * Class Refunded.
  *
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Status
  */
@@ -14,7 +14,7 @@ class Refunded extends Status_Abstract {
 	/**
 	 * Slug for this Status.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */

@@ -14,6 +14,8 @@ use Tribe__Tickets__Tickets;
 
 class CartTest extends V2CommerceTestCase {
 
+	// @todo @bordoni: We need to implement post remapping instead of the ticket maker.
+	// Something like we did for views v2.
 	use PayPal_Ticket_Maker;
 
 	public $partial_path = 'checkout/cart';
@@ -32,7 +34,7 @@ class CartTest extends V2CommerceTestCase {
 			'post_title' => 'Test event for partial snapshot',
 		] );
 
-		$ids = $this->create_many_paypal_tickets( 2, $event_id, [ 'price' => 99 ] );
+		$ids = $this->create_many_paypal_tickets( 2, $event_id, [ 'price' => 97 ] );
 
 		$this->tolerables[] = $event_id;
 		$items = [];
@@ -81,9 +83,26 @@ class CartTest extends V2CommerceTestCase {
 		// Handle variations that tolerances won't handle.
 		foreach ( $args['items'] as $item ) {
 			if ( ! empty( $item['event_id'] ) ) {
+				$ticket_id = $item['ticket_id'];
+
+				// Handle ticket ID variations that tolerances won't handle
 				$html = str_replace(
-					get_the_permalink( $item['event_id'] ),
-					'http://wordpress.test/?tribe_events=event-test_event',
+					[
+						get_the_permalink( $item['event_id'] ),
+						$item['event_id'],
+						'[' . $ticket_id . ']',
+						'post-' . $ticket_id,
+						'"' . $ticket_id . '"',
+						'--' . $ticket_id . '',
+					],
+					[
+						'http://wordpress.test/?tribe_events=event-test_event',
+						'[EVENT_ID]',
+						'[TICKET_ID]',
+						'post-TICKET_ID',
+						'"TICKET_ID"',
+						'--TICKET_ID',
+					],
 					$html
 				);
 			}

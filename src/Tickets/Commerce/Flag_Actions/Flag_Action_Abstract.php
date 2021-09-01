@@ -2,13 +2,15 @@
 
 namespace TEC\Tickets\Commerce\Flag_Actions;
 
+use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use Tribe__Date_Utils as Dates;
 
 
 /**
  * Class Flag Action Abstract.
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
@@ -16,7 +18,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * When will this particular flag wil be triggered
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var int
 	 */
@@ -25,7 +27,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * Which flags are associated and will trigger this action.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string[]
 	 */
@@ -34,17 +36,47 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * Which Post Types we check for this flag action.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string[]
 	 */
 	protected $post_types;
 
 	/**
+	 * Marks a given order with all the flags for this given status update.
+	 * The value of those markers is the time where the update happened.
+	 *
+	 * @since TBD
+	 *
+	 * @param Status_Interface      $new_status
+	 * @param null|Status_Interface $old_status
+	 * @param \WP_Post $post
+	 *
+	 */
+	protected function mark( Status_Interface $new_status, $old_status, \WP_Post $post ) {
+		$time = Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT );
+		foreach ( $this->get_flags( $post ) as $flag ) {
+			$marker_meta_key = Order::get_flag_action_marker_meta_key( $flag, $new_status );
+			add_post_meta( $post->ID, $marker_meta_key, $time );
+		}
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
-	public function get_flags() {
-		return $this->flags;
+	public function get_flags( \WP_Post $post = null ) {
+		$flags = $this->flags;
+
+		/**
+		 * Allows the modifications of which flags will trigger this Action.
+		 *
+		 * @since TBD
+		 *
+		 * @param string[] $flags       Which flags will trigger this action.
+		 * @param \WP_Post $post        Post object.
+		 * @param static   $action_flag Instance of action flag we are triggering.
+		 */
+		return apply_filters( 'tec_tickets_commerce_flag_actions_get_flags', $flags, $post, $this );
 	}
 
 	/**
@@ -65,7 +97,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	 * {@inheritDoc}
 	 */
 	public function should_trigger( Status_Interface $new_status, $old_status, $post ) {
-		if ( ! $this->has_flags( $new_status ) ) {
+		if ( ! $this->has_flags( $new_status, $post ) ) {
 			return false;
 		}
 
@@ -79,8 +111,8 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function has_flags( Status_Interface $status ) {
-		return $status->has_flags( $this->get_flags() );
+	public function has_flags( Status_Interface $status, $operator = 'AND', \WP_Post $post = null ) {
+		return $status->has_flags( $this->get_flags( $post ), $operator, $post );
 	}
 
 	/**
@@ -97,8 +129,16 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 		if ( ! $this->should_trigger( $new_status, $old_status, $post ) ) {
 			return;
 		}
+		/**
+		 * @todo For now Flag actions are only for order, so we use `tec_tc_get_order()` but if in the future we add any
+		 *       other post types to the mix we will need to provide a way to pass the post via a formatting method.
+		 */
+		$post = tec_tc_get_order( $post );
 
 		$this->handle( $new_status, $old_status, $post );
+
+		// After handling we mark this order with the flags from this action.
+		$this->mark( $new_status, $old_status, $post );
 	}
 
 	/**
@@ -113,5 +153,5 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * {@inheritDoc}
 	 */
-	abstract public function handle( Status_Interface $new_status, $old_status, $post );
+	abstract public function handle( Status_Interface $new_status, $old_status, \WP_Post $post );
 }

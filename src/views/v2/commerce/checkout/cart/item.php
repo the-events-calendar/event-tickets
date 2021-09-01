@@ -9,15 +9,18 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   TBD
+ * @since   5.1.9
  *
- * @version TBD
+ * @version 5.1.9
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.
  * @var string           $provider_id           [Global] The tickets provider class name.
  * @var array[]          $items                 [Global] List of Items on the cart to be checked out.
  * @var string           $paypal_attribution_id [Global] What is our PayPal Attribution ID.
+ * @var bool             $must_login            [Global] Whether login is required to buy tickets or not.
+ * @var string           $login_url             [Global] The site's login URL.
+ * @var string           $registration_url      [Global] The site's registration URL.
  * @var int              $section               Which Section that we are going to render for this table.
  * @var \WP_Post         $post                  Which Section that we are going to render for this table.
  * @var array            $item                  Which item this row will be for.
@@ -34,8 +37,17 @@ $classes = [
 	'tribe-common-b1',
 ];
 
+$attributes = [
+	'data-ticket-id'       => (string) $item['ticket_id'],
+	'data-ticket-quantity' => (string) $item['quantity'],
+	'data-ticket-price'    => (string) $provider->get_price_value( $item['ticket_id'] ),
+];
+
 ?>
-<div <?php tribe_classes( $classes ); ?>>
+<article
+	<?php tribe_classes( $classes ); ?>
+	<?php tribe_attributes( $attributes ); ?>
+>
 
 	<?php $this->template( 'checkout/cart/item/details', [ 'item' => $item ] ); ?>
 
@@ -45,4 +57,4 @@ $classes = [
 
 	<?php $this->template( 'checkout/cart/item/sub-total', [ 'item' => $item ] ); ?>
 
-</div>
+</article>

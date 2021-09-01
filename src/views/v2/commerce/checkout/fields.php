@@ -9,9 +9,9 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   TBD
+ * @since   5.1.9
  *
- * @version TBD
+ * @version 5.1.9
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.
@@ -19,6 +19,9 @@
  * @var array[]          $items                 [Global] List of Items on the cart to be checked out.
  * @var string           $paypal_attribution_id [Global] What is our PayPal Attribution ID.
  * @var array[]          $sections              [Global] Which events we have tickets for.
+ * @var bool             $must_login            [Global] Whether login is required to buy tickets or not.
+ * @var string           $login_url             [Global] The site's login URL.
+ * @var string           $registration_url      [Global] The site's registration URL.
  */
 
 use \TEC\Tickets\Commerce\Checkout;

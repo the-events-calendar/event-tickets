@@ -22,7 +22,7 @@ interface Interface_Gateway {
 	/**
 	 * Get's the provider key for this Commerce Gateway.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string What is the ORM Provider Key used.
 	 */
@@ -62,7 +62,7 @@ interface Interface_Gateway {
 	 *
 	 * @param array       $gateways The list of registered Tickets Commerce gateways.
 	 *
-	 * @return array The list of registered Tickets Commerce gateways.
+	 * @return Abstract_Gateway[] The list of registered Tickets Commerce gateways.
 	 */
 	public function register_gateway( array $gateways );
 }

@@ -9,17 +9,21 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   TBD
+ * @since   5.1.9
  *
- * @version TBD
+ * @version 5.1.9
  *
  * @var \Tribe__Template $this                    [Global] Template object.
  * @var string           $url                     [Global] Script URL.
  * @var string           $client_token            [Global] One time use client Token.
  * @var string           $client_token_expires_in [Global] How much time to when the Token in this script will take to expire.
  * @var string           $attribution_id          [Global] What is our PayPal Attribution ID.
+ * @var bool             $must_login              [Global] Whether login is required to buy tickets or not.
  */
 
+if ( $must_login ) {
+	return;
+}
 ?>
 <script
 	class="tec-tc-gateway-paypal-checkout-script"

@@ -9,9 +9,9 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   TBD
+ * @since   5.1.9
  *
- * @version TBD
+ * @version 5.1.9
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.
@@ -19,11 +19,14 @@
  * @var array[]          $items                 [Global] List of Items on the cart to be checked out.
  * @var string           $paypal_attribution_id [Global] What is our PayPal Attribution ID.
  * @var array[]          $sections              [Global] Which events we have tickets for.
+ * @var bool             $must_login            [Global] Whether login is required to buy tickets or not.
+ * @var string           $login_url             [Global] The site's login URL.
+ * @var string           $registration_url      [Global] The site's registration URL.
  */
 
 // @todo @bordoni @juanfra: Maybe move the modify attendees link to ET+.
 ?>
-<div class="tribe-tickets__commerce-checkout-header">
+<header class="tribe-tickets__commerce-checkout-header">
 	<h3 class="tribe-common-h2 tribe-tickets__commerce-checkout-header-title">
 		<?php esc_html_e( 'Purchase Tickets', 'event-tickets' ); ?>
 	</h3>
@@ -38,4 +41,4 @@
 			href="<?php the_permalink( $sections[ key( $sections ) ] ); ?>"
 		><?php esc_html_e( 'back to event', 'event-tickets' ); ?></a>
 	</div>
-</div>
+</header>

@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Traits\Has_Mode;
 /**
  * Class Merchant.
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -19,7 +19,7 @@ class Merchant {
 	/**
 	 * All account Props we use for the merchant
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string[]
 	 */
@@ -38,7 +38,7 @@ class Merchant {
 	/**
 	 * Determines if the data needs to be saved to the Database
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var boolean
 	 */
@@ -47,7 +47,7 @@ class Merchant {
 	/**
 	 * PayPal merchant Id  (email address).
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var null|string
 	 */
@@ -56,7 +56,7 @@ class Merchant {
 	/**
 	 * A Hash used during signup that should be associated with the merchant.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var null|string
 	 */
@@ -65,7 +65,7 @@ class Merchant {
 	/**
 	 * PayPal merchant id.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -74,7 +74,7 @@ class Merchant {
 	/**
 	 * Client id.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -83,7 +83,7 @@ class Merchant {
 	/**
 	 * Client Secret.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -92,7 +92,7 @@ class Merchant {
 	/**
 	 * Client token.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var array
 	 */
@@ -101,7 +101,7 @@ class Merchant {
 	/**
 	 * How long till the Client token expires
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var int
 	 */
@@ -110,7 +110,7 @@ class Merchant {
 	/**
 	 * Access token.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -119,7 +119,7 @@ class Merchant {
 	/**
 	 * Whether or not the connected account is ready to process payments.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var bool
 	 */
@@ -128,7 +128,7 @@ class Merchant {
 	/**
 	 * Whether or not the account can make custom payments (i.e Advanced Fields & PPCP)
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var bool
 	 */
@@ -137,7 +137,7 @@ class Merchant {
 	/**
 	 * PayPal account account country.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -146,7 +146,7 @@ class Merchant {
 	/**
 	 * Fetches the current signup hash.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string|null
 	 */
@@ -157,7 +157,7 @@ class Merchant {
 	/**
 	 * Sets the value for signup hash locally, in this instance of the Merchant.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param mixed   $value      Value used for the signup hash.
 	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
@@ -169,7 +169,7 @@ class Merchant {
 	/**
 	 * Fetches the current Merchant ID.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string|null
 	 */
@@ -180,7 +180,7 @@ class Merchant {
 	/**
 	 * Sets the value for Merchant ID locally, in this instance of the Merchant.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param mixed   $value      Value used for the Merchant ID.
 	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
@@ -192,7 +192,7 @@ class Merchant {
 	/**
 	 * Gets the value stored for the Merchant ID in PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -203,7 +203,7 @@ class Merchant {
 	/**
 	 * Sets the value for Merchant ID in PayPal locally, in this instance of the Merchant.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param mixed   $value      Value used for the Merchant ID in PayPal.
 	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
@@ -215,7 +215,7 @@ class Merchant {
 	/**
 	 * Gets the value stored for the Client ID.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -226,7 +226,7 @@ class Merchant {
 	/**
 	 * Sets the value for Merchant ID locally, in this instance of the Merchant.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param mixed   $value      Value used for the Merchant ID.
 	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
@@ -238,7 +238,7 @@ class Merchant {
 	/**
 	 * Gets the value stored for the Client Secret.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -249,7 +249,7 @@ class Merchant {
 	/**
 	 * Sets the value for Client Secret locally, in this instance of the Merchant.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param mixed   $value      Value used for the Client Secret.
 	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
@@ -261,7 +261,7 @@ class Merchant {
 	/**
 	 * Gets the value stored for the Access Token.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -272,7 +272,7 @@ class Merchant {
 	/**
 	 * Sets the value for Access Token locally, in this instance of the Merchant.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param mixed   $value      Value used for the Access Token.
 	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
@@ -284,7 +284,7 @@ class Merchant {
 	/**
 	 * Gets the value stored for if the account is ready for usage.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -295,7 +295,7 @@ class Merchant {
 	/**
 	 * Sets the value for if this account is ready for usage locally, in this instance of the Merchant.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param mixed   $value      Value used for the Account is Ready.
 	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
@@ -307,7 +307,7 @@ class Merchant {
 	/**
 	 * Gets the value stored for if this account supports custom payments.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -318,7 +318,7 @@ class Merchant {
 	/**
 	 * Sets the value determining if this supports custom payments locally, in this instance of the Merchant.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param mixed   $value      Value used for the Support for Custom Payments.
 	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
@@ -330,7 +330,7 @@ class Merchant {
 	/**
 	 * Gets the value stored for the Country Code.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -341,7 +341,7 @@ class Merchant {
 	/**
 	 * Sets the value for Account Country locally, in this instance of the Merchant.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param mixed   $value      Value used for the Account Country.
 	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
@@ -353,7 +353,7 @@ class Merchant {
 	/**
 	 * Determines if this instances needs to be saved to the DB.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -365,7 +365,7 @@ class Merchant {
 	/**
 	 * Returns the options key for the account in the merchant mode.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -379,7 +379,7 @@ class Merchant {
 	/**
 	 * Returns the data retrieved from the access token refreshing process.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -395,7 +395,7 @@ class Merchant {
 	 *
 	 * Uses normal WP options to be saved, instead of the normal tribe_update_option.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -409,7 +409,7 @@ class Merchant {
 	/**
 	 * Returns the options key for the account errors in the merchant mode.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -423,7 +423,7 @@ class Merchant {
 	/**
 	 * Returns the options key for the account account information.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -437,7 +437,7 @@ class Merchant {
 	/**
 	 * Handle initial setup for the object singleton.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function init() {
 		$this->set_mode( tribe_tickets_commerce_is_test_mode() ? 'sandbox' : 'live' );
@@ -447,7 +447,7 @@ class Merchant {
 	/**
 	 * Return array of merchant details.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array
 	 */
@@ -468,7 +468,7 @@ class Merchant {
 	/**
 	 * Make Merchant object from array.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array   $data       Which values need to .
 	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
@@ -488,7 +488,7 @@ class Merchant {
 	/**
 	 * Saves a given base value into the class props.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $key
 	 * @param mixed  $value
@@ -507,7 +507,7 @@ class Merchant {
 	/**
 	 * Setup properties from array.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array   $data       Which values need to be saved.
 	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
@@ -562,7 +562,7 @@ class Merchant {
 	/**
 	 * Save merchant details.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -584,7 +584,7 @@ class Merchant {
 	/**
 	 * Get the merchant details data.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array
 	 */
@@ -595,7 +595,7 @@ class Merchant {
 	/**
 	 * Delete merchant account details on the Database.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -614,7 +614,7 @@ class Merchant {
 	/**
 	 * Returns the account errors if there are any.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string[]|null
 	 */
@@ -625,7 +625,7 @@ class Merchant {
 	/**
 	 * Saves the account error message.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string[] $error_message
 	 *
@@ -638,7 +638,7 @@ class Merchant {
 	/**
 	 * Deletes the errors for the account.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -650,7 +650,7 @@ class Merchant {
 	/**
 	 * Saves signup data from the transient into a permanent storage.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array
 	 */
@@ -661,7 +661,7 @@ class Merchant {
 	/**
 	 * Saves the access token data, and adds some extra information for better usage.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $token_data
 	 *
@@ -689,7 +689,7 @@ class Merchant {
 	/**
 	 * Delete access token data.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -700,7 +700,7 @@ class Merchant {
 	/**
 	 * Saves signup data from the transient into permanent option.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $signup_data
 	 *
@@ -713,7 +713,7 @@ class Merchant {
 	/**
 	 * Saves signup data from the transient into a permanent storage.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array
 	 */
@@ -724,7 +724,7 @@ class Merchant {
 	/**
 	 * Deletes signup data from the DB.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -735,7 +735,7 @@ class Merchant {
 	/**
 	 * Saves user info to make sure we have full access later on.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $user_info User info from the PayPal API.
 	 *
@@ -748,7 +748,7 @@ class Merchant {
 	/**
 	 * Deletes the user info from the DB.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -759,7 +759,7 @@ class Merchant {
 	/**
 	 * Saves signup data from the transient into
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array
 	 */
@@ -770,7 +770,7 @@ class Merchant {
 	/**
 	 * Returns whether or not the account has been connected
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -781,7 +781,7 @@ class Merchant {
 	/**
 	 * Disconnects the merchant completely.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -800,7 +800,7 @@ class Merchant {
 	/**
 	 * Determines if the Merchant is active.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */

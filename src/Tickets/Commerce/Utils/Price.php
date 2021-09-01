@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Utils;
 /**
  * Class Price
  *
- * @since TBD
+ * @since 5.1.9
  *
  */
 class Price {
@@ -15,7 +15,7 @@ class Price {
 	 *
 	 * We only allow two decimal points.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string      $value        Which value we are going to multiply for the subtotal.
 	 * @param int         $quantity     Quantity that the value will be multiplied..
@@ -42,7 +42,7 @@ class Price {
 	 *
 	 * We only allow two decimal points.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array       $values       Values that need to be summed.
 	 * @param null|string $decimal      Which Decimal separator.

@@ -9,9 +9,9 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   TBD
+ * @since   5.1.9
  *
- * @version TBD
+ * @version 5.1.9
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.
@@ -22,11 +22,12 @@
  */
 
 ?>
-<div class="tribe-common event-tickets tribe-tickets__commerce-checkout">
+<section class="tribe-common event-tickets tribe-tickets__commerce-checkout">
 	<?php $this->template( 'checkout/fields' ); ?>
 	<?php $this->template( 'checkout/header' ); ?>
 	<?php foreach ( $sections as $section ) : ?>
 		<?php $this->template( 'checkout/cart', [ 'section' => $section ] ); ?>
 	<?php endforeach; ?>
 	<?php $this->template( 'checkout/footer' ); ?>
-</div>
+	<?php $this->template( 'checkout/must-login' ); ?>
+</section>

@@ -3,11 +3,13 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
+use \Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Attendee
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -15,7 +17,7 @@ class Attendee {
 	/**
 	 * Tickets Commerce Attendee Post Type slug.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -24,7 +26,7 @@ class Attendee {
 	/**
 	 * Which meta holds the Relation ship between an attendee and which user it's registered to.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -33,7 +35,7 @@ class Attendee {
 	/**
 	 * Which meta holds the Relation ship between an attendee and which event it's registered to.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -42,7 +44,7 @@ class Attendee {
 	/**
 	 * Which meta holds the Relation ship between an attendee and which ticket it was created from.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -51,7 +53,7 @@ class Attendee {
 	/**
 	 * Which meta holds the Relation ship between an attendee and which order it belongs to.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -60,7 +62,7 @@ class Attendee {
 	/**
 	 * Which meta holds the purchaser name for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -69,7 +71,7 @@ class Attendee {
 	/**
 	 * Which meta holds the purchaser email for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -78,7 +80,7 @@ class Attendee {
 	/**
 	 * Which meta holds the security code for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -87,7 +89,7 @@ class Attendee {
 	/**
 	 * Which meta holds the status value for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -96,7 +98,7 @@ class Attendee {
 	/**
 	 * Which meta holds the optout value for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -105,7 +107,7 @@ class Attendee {
 	/**
 	 * Which meta holds the checked in status for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -114,7 +116,7 @@ class Attendee {
 	/**
 	 * Which meta holds the checked in status for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -123,7 +125,7 @@ class Attendee {
 	/**
 	 * Indicates if a ticket for this attendee was sent out via email.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -132,7 +134,7 @@ class Attendee {
 	/**
 	 * Meta key holding an indication if this attendee was subscribed.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -141,7 +143,7 @@ class Attendee {
 	/**
 	 * Meta key holding the first name for the attendee. (not purchaser)
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -150,7 +152,7 @@ class Attendee {
 	/**
 	 * Meta key holding the last name for the attendee. (not purchaser)
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -159,17 +161,35 @@ class Attendee {
 	/**
 	 * Meta key holding the email for the attendee. (not purchaser)
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
 	public static $email_meta_key = '_tec_tickets_commerce_email';
 
+	/**
+	 * Meta key holding price paid for this attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $price_paid_meta_key = '_tec_tickets_commerce_price_paid';
+
+	/**
+	 * Meta key holding currency which the price was paid in.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $currency_meta_key = '_tec_tickets_commerce_currency';
+
 
 	/**
 	 * Register this Class post type into WP.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function register_post_type() {
 		$post_type_args = [
@@ -189,7 +209,7 @@ class Attendee {
 		 *
 		 * @see   register_post_type
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
 		 */
@@ -199,11 +219,84 @@ class Attendee {
 	}
 
 	/**
+	 * Creates an individual attendee given an Order and Ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Post      $order  Which order generated this attendee.
+	 * @param Ticket_Object $ticket Which ticket generated this Attendee.
+	 * @param array         $args   Set of extra arguments used to populate the data for the attendee.
+	 *
+	 * @return \WP_Error|\WP_Post
+	 */
+	public function create( \WP_Post $order, $ticket, array $args = [] ) {
+		$create_args = [
+			'order_id'      => $order->ID,
+			'ticket_id'     => $ticket->ID,
+			'event_id'      => $ticket->get_event_id(),
+			'security_code' => Arr::get( $args, 'security_code' ),
+			'opt_out'       => Arr::get( $args, 'optout' ),
+			'price_paid'    => Arr::get( $args, 'price' ),
+			'currency'      => Arr::get( $args, 'currency' ),
+		];
+
+		/**
+		 * Allow the filtering of the create arguments for attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param array         $create_args Which arguments we are going to use to create the attendee.
+		 * @param \WP_Post      $order       Which order generated this attendee.
+		 * @param Ticket_Object $ticket      Which ticket generated this Attendee.
+		 * @param array         $args        Set of extra arguments used to populate the data for the attendee.
+		 */
+		$create_args = apply_filters( 'tec_tickets_commerce_attendee_create_args', $create_args, $order, $ticket, $args );
+
+		/**
+		 * Allow the actions before creating the attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param array         $create_args Which arguments we are going to use to create the attendee.
+		 * @param \WP_Post      $order       Which order generated this attendee.
+		 * @param Ticket_Object $ticket      Which ticket generated this Attendee.
+		 * @param array         $args        Set of extra arguments used to populate the data for the attendee.
+		 */
+		do_action( 'tec_tickets_commerce_attendee_before_create', $create_args, $order, $ticket, $args );
+
+		$attendee = tec_tc_attendees()->set_args( $create_args )->create();
+
+		/**
+		 * Allow the actions after creating the attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param \WP_Post      $attendee Post object for the attendee.
+		 * @param \WP_Post      $order    Which order generated this attendee.
+		 * @param Ticket_Object $ticket   Which ticket generated this Attendee.
+		 * @param array         $args     Set of extra arguments used to populate the data for the attendee.
+		 */
+		do_action( 'tec_tickets_commerce_attendee_after_create', $attendee, $order, $ticket, $args );
+
+		/**
+		 * Allow the filtering of the attendee WP_Post after creating attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param \WP_Post      $attendee Post object for the attendee.
+		 * @param \WP_Post      $order    Which order generated this attendee.
+		 * @param Ticket_Object $ticket   Which ticket generated this Attendee.
+		 * @param array         $args     Set of extra arguments used to populate the data for the attendee.
+		 */
+		return apply_filters( 'tec_tickets_commerce_attendee_create', $attendee, $order, $ticket, $args );
+	}
+
+	/**
 	 * If the post that was moved to the trash was an PayPal Ticket attendee post type, redirect to
 	 * the Attendees Report rather than the PayPal Ticket attendees post list (because that's kind of
 	 * confusing)
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int $post_id WP_Post ID
 	 */
@@ -236,7 +329,7 @@ class Attendee {
 	 *
 	 * @todo  Adjust to the Ticket Commerce data.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $attendee_data Information that we are trying to save.
 	 * @param int   $attendee_id   The attendee ID.
@@ -297,7 +390,7 @@ class Attendee {
 	 * attending, at which point we should send tickets out for any of those
 	 * newly attending persons.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int $event_id
 	 */
@@ -337,7 +430,7 @@ class Attendee {
 	/**
 	 * Filter the provider object to return this class if tickets are for this provider.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param object $provider_obj
 	 * @param string $provider
@@ -368,14 +461,18 @@ class Attendee {
 	 * order creation, cause the inventory to be decreased.
 	 *
 	 * @todo  TribeCommerceLegacy: Move this method a Flag action.
+	 * @todo  For some forsaken reason the calculation of inventory is happening on the fly instead of when orders
+	 *        are modified we need to address that for performance reasons.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $attendee
 	 *
 	 * @return bool
 	 */
 	public function decreases_inventory( $attendee ) {
+		$attendee = tec_tc_get_attendee( $attendee['ID'] );
+
 		$order_status = \Tribe__Utils__Array::get( $attendee, 'order_status', 'undefined' );
 		$order_id     = \Tribe__Utils__Array::get( $attendee, 'order_id', false );
 		$attendee_id  = \Tribe__Utils__Array::get( $attendee, 'attendee_id', false );
@@ -388,7 +485,7 @@ class Attendee {
 		 *
 		 * @todo  TribeCommerceLegacy: Move this method a Flag action.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param bool  $ignore_pending
 		 * @param array $attendee An array of data defining the current Attendee
@@ -446,13 +543,15 @@ class Attendee {
 			return time() <= ( $order_creation_timestamp + $pending_stock_reservation_time );
 		}
 
-		return Completed::SLUG === $order_status;
+		$order = tec_tc_get_order( $attendee->post_parent );
+
+		return tribe( Commerce\Status\Completed::class )->get_wp_slug() === $order->post_status;
 	}
 
 	/**
 	 * Get attendee data for attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function get_attendee() {
 		/**
