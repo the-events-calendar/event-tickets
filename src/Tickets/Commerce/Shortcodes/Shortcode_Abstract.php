@@ -8,7 +8,7 @@ use Tribe\Shortcode\Shortcode_Abstract as Common_Shortcode_Abstract;
 /**
  * Class Shortcode_Abstract
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Shortcodes
  */
@@ -16,7 +16,7 @@ abstract class Shortcode_Abstract extends Common_Shortcode_Abstract {
 	/**
 	 * Configures this instance of the shortcode.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function __construct() {
 		$this->slug = static::get_wp_slug();
@@ -25,7 +25,7 @@ abstract class Shortcode_Abstract extends Common_Shortcode_Abstract {
 	/**
 	 * The Shortcode Slug inside of WordPress.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -36,7 +36,7 @@ abstract class Shortcode_Abstract extends Common_Shortcode_Abstract {
 	/**
 	 * Set of template variable used to generate this shortcode.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var array
 	 */
@@ -45,7 +45,7 @@ abstract class Shortcode_Abstract extends Common_Shortcode_Abstract {
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the page.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var \Tribe__Template
 	 */
@@ -54,7 +54,7 @@ abstract class Shortcode_Abstract extends Common_Shortcode_Abstract {
 	/**
 	 * Gets the template instance used to setup the rendering of the page.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return \Tribe__Template
 	 */
@@ -73,7 +73,7 @@ abstract class Shortcode_Abstract extends Common_Shortcode_Abstract {
 	/**
 	 * Method used to save the template vars for this instance of shortcode.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return void
 	 */
@@ -82,7 +82,7 @@ abstract class Shortcode_Abstract extends Common_Shortcode_Abstract {
 	/**
 	 * Gets the current active gateway slug.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -93,7 +93,7 @@ abstract class Shortcode_Abstract extends Common_Shortcode_Abstract {
 	/**
 	 * Calls the template vars setup and returns after filtering.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array
 	 */
@@ -106,7 +106,7 @@ abstract class Shortcode_Abstract extends Common_Shortcode_Abstract {
 	/**
 	 * Enables filtering of the template variables.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $template_vars Which set of variables we are passing to the filters.
 	 *
@@ -116,7 +116,7 @@ abstract class Shortcode_Abstract extends Common_Shortcode_Abstract {
 		/**
 		 * Applies a filter to template vars for this shortcode.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array  $template_vars Current set of callbacks for arguments.
 		 * @param static $instance      Which instance of shortcode we are dealing with.
@@ -128,7 +128,7 @@ abstract class Shortcode_Abstract extends Common_Shortcode_Abstract {
 		/**
 		 * Applies a filter to template vars for this shortcode, using ID.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array  $template_vars Current set of callbacks for arguments.
 		 * @param static $instance      Which instance of shortcode we are dealing with.
@@ -140,7 +140,7 @@ abstract class Shortcode_Abstract extends Common_Shortcode_Abstract {
 		/**
 		 * Applies a filter to template vars for this shortcode, using ID and gateway.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array  $template_vars Current set of callbacks for arguments.
 		 * @param static $instance      Which instance of shortcode we are dealing with.

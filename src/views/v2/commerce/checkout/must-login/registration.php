@@ -9,9 +9,9 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   TBD
+ * @since   5.1.9
  *
- * @version TBD
+ * @version 5.1.9
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.
@@ -27,9 +27,6 @@
 if ( empty( get_option( 'users_can_register' ) ) ) {
 	return;
 }
-
-;
-
 ?>
 <div class="tribe-common-b1 tribe-tickets__commerce-checkout-must-login-registration">
 	<?php

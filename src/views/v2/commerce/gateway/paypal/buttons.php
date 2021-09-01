@@ -9,16 +9,16 @@
 *
 * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
 *
-* @since   TBD
+* @since   5.1.9
 *
-* @version TBD
+* @version 5.1.9
 
 * @var bool $must_login [Global] Whether login is required to buy tickets or not.
 */
 
 use \TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint;
 
-if ( empty( $must_login ) ) {
+if ( $must_login ) {
 	return;
 }
 ?>

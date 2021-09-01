@@ -22,7 +22,7 @@ interface Interface_Gateway {
 	/**
 	 * Get's the provider key for this Commerce Gateway.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string What is the ORM Provider Key used.
 	 */

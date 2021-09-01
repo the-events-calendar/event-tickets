@@ -4,11 +4,13 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Utils\Price;
+use Tribe__Date_Utils as Dates;
+
 
 /**
  * Class Order
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -16,7 +18,7 @@ class Order {
 	/**
 	 * Tickets Commerce Order Post Type slug.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -25,7 +27,7 @@ class Order {
 	/**
 	 * Which meta holds which gateway was used on this order.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -34,7 +36,7 @@ class Order {
 	/**
 	 * Which meta holds which gateway order id was used on this order.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -44,7 +46,7 @@ class Order {
 	 * Normally when dealing with the gateways we have a payload from the original creation of the Order on their side
 	 * of the API, we should store that whole Payload with this meta key so that this data can be used in the future.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -53,7 +55,7 @@ class Order {
 	/**
 	 * Which meta holds the cart items used to setup this order.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -63,7 +65,7 @@ class Order {
 	 * Which meta holds the tickets in a given order, they are added as individual meta items, allowing them to be
 	 * selected in a meta query.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -73,7 +75,7 @@ class Order {
 	 * Which meta holds the events in a given order, they are added as individual meta items, allowing them to be
 	 * selected in a meta query.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -82,7 +84,7 @@ class Order {
 	/**
 	 * Which meta holds the cart items used to setup this order.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -91,7 +93,7 @@ class Order {
 	/**
 	 * Which meta holds the cart items used to setup this order.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -100,7 +102,7 @@ class Order {
 	/**
 	 * Which meta holds the purchaser full name.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -109,7 +111,7 @@ class Order {
 	/**
 	 * Which meta holds the purchaser first name.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -118,7 +120,7 @@ class Order {
 	/**
 	 * Which meta holds the purchaser last name.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -127,16 +129,34 @@ class Order {
 	/**
 	 * Which meta holds the cart items used to setup this order.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
 	public static $purchaser_email_meta_key = '_tec_tc_order_purchaser_email';
 
 	/**
-	 * Register this Class post type into WP.
+	 * Prefix for the log of when a given status was applied.
 	 *
 	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $status_log_meta_key_prefix = '_tec_tc_order_status_log';
+
+	/**
+	 * Prefix for the Status Flag Action marker meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $flag_action_status_marker_meta_key_prefix = '_tec_tc_order_fa_marker';
+
+	/**
+	 * Register this Class post type into WP.
+	 *
+	 * @since 5.1.9
 	 */
 	public function register_post_type() {
 		$post_type_args = [
@@ -156,13 +176,26 @@ class Order {
 		 *
 		 * @see   register_post_type
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
 		 */
 		$post_type_args = apply_filters( 'tec_tickets_commerce_order_post_type_args', $post_type_args );
 
 		register_post_type( static::POSTTYPE, $post_type_args );
+	}
+
+	/**
+	 * Gets the meta Key for a given Order Status gateway_payload.
+	 *
+	 * @since 5.1.9
+	 *
+	 * @param Status\Status_Interface $status
+	 *
+	 * @return string
+	 */
+	public static function get_status_log_meta_key( Commerce\Status\Status_Interface $status ) {
+		return static::$status_log_meta_key_prefix . '_' . $status->get_slug();
 	}
 
 	/**
@@ -179,9 +212,25 @@ class Order {
 	}
 
 	/**
-	 * Modify the status of a given order based on Slug.
+	 * Gets the key for a Flag Action marker for given status and flag.
 	 *
 	 * @since TBD
+	 *
+	 * @param string $flag   Which flag we are getting the meta key for.
+	 * @param string $status Which status ID we are getting the meta key for.
+	 *
+	 * @return string
+	 */
+	public static function get_flag_action_marker_meta_key( $flag, Commerce\Status\Status_Interface $status ) {
+		$prefix = static::$flag_action_status_marker_meta_key_prefix;
+
+		return "{$prefix}:{$status->get_slug()}:{$flag}";
+	}
+
+	/**
+	 * Modify the status of a given order based on Slug.
+	 *
+	 * @since 5.1.9
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
@@ -210,13 +259,19 @@ class Order {
 			'id'     => $order_id,
 		] )->set_args( $args )->save();
 
+		// After modifying the status we add a meta to flag when it was modified.
+		if ( $updated ) {
+			$time = Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT );
+			add_post_meta( $order_id, static::get_status_log_meta_key( $status ), $time );
+		}
+
 		return (bool) $updated;
 	}
 
 	/**
-	 * @todo  WIP
+	 * Creates a order from the items in the cart.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
@@ -227,11 +282,17 @@ class Order {
 
 		$items      = $cart->get_items_in_cart();
 		$items      = array_map( static function ( $item ) {
-			$ticket            = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+			if ( null === $ticket ) {
+				return null;
+			}
+
 			$item['sub_total'] = Price::sub_total( $ticket->price, $item['quantity'] );
+			$item['price']     = $ticket->price;
 
 			return $item;
 		}, $items );
+		$items      = array_filter( $items );
 		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
 		$total      = Price::total( $sub_totals );
 
@@ -244,11 +305,11 @@ class Order {
 
 		// When purchaser data-set is not passed we pull from the current user.
 		if ( empty( $purchaser ) && is_user_logged_in() && $user = wp_get_current_user() ) {
-			$order_args['author'] = $user->ID;
-			$order_args['purchaser_full_name'] = $user->first_name . ' ' . $user->last_name;
+			$order_args['author']               = $user->ID;
+			$order_args['purchaser_full_name']  = $user->first_name . ' ' . $user->last_name;
 			$order_args['purchaser_first_name'] = $user->first_name;
-			$order_args['purchaser_last_name'] = $user->last_name;
-			$order_args['purchaser_email'] = $user->user_email;
+			$order_args['purchaser_last_name']  = $user->last_name;
+			$order_args['purchaser_email']      = $user->user_email;
 		}
 
 		$order = tec_tc_orders()->set_args( $order_args )->create();
@@ -264,7 +325,7 @@ class Order {
 	/**
 	 * Generates a title based on Cart Hash, items in the cart.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $items List of events form
 	 *
@@ -290,7 +351,7 @@ class Order {
 	 *       generate the order/Attendees.
 	 *
 	 * @see   \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param bool $redirect   Whether to really redirect or not.
 	 * @param int  $post_id    A post ID
@@ -309,7 +370,7 @@ class Order {
 	/**
 	 * Generate and store all the attendees information for a new order.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.
 	 * @param bool   $redirect       Whether the client should be redirected or not.
@@ -597,8 +658,6 @@ class Order {
 			\Tribe__Post_Transient::instance()->delete( $post_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 		}
 
-		$order->update();
-
 		/**
 		 * Fires when an PayPal attendee tickets have been generated.
 		 *
@@ -626,17 +685,6 @@ class Order {
 			&& $attendee_order_status === Order_Statuses::$completed
 		) {
 			$this->send_tickets_email( $order_id, $post_id );
-		}
-
-		// Redirect to the same page to prevent double purchase on refresh
-		if ( ! empty( $post_id ) ) {
-			/** @var \Tribe__Tickets__Commerce__PayPal__Endpoints $endpoints */
-			$endpoints = tribe( 'tickets.commerce.paypal.endpoints' );
-			$url       = $endpoints->success_url( $order_id, $post_id );
-			if ( $redirect ) {
-				wp_redirect( esc_url_raw( $url ) );
-			}
-			tribe_exit();
 		}
 	}
 }

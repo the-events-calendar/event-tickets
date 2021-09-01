@@ -6,7 +6,7 @@ namespace TEC\Tickets\Commerce\Status;
  *
  * This is the status we use to mark a given order as paid and delivered in our Tickets Commerce system.
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Status
  */
@@ -14,7 +14,7 @@ class Completed extends Status_Abstract {
 	/**
 	 * Slug for this Status.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -32,8 +32,6 @@ class Completed extends Status_Abstract {
 	 */
 	protected $flags = [
 		'complete',
-		'trigger_option',
-		'attendee_generation',
 		'attendee_dispatch',
 		'stock_reduced',
 		'count_attendee',

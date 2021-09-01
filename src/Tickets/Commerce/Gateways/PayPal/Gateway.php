@@ -30,7 +30,7 @@ class Gateway extends Abstract_Gateway {
 	 *
 	 * This shouldn't be updated unless we are modifying something on the PayPal user level.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */

@@ -10,6 +10,8 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Manager;
+use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Pending;
 use Tribe__Field_Conditional;
 
 /**
@@ -107,13 +109,13 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Create the Tickets Commerce Payments Settings Tab.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function register_tab() {
 		$tab_settings = [
 			'priority'  => 25,
 			'fields'    => $this->get_settings(),
-			'show_save' => false,
+			'show_save' => true,
 		];
 
 		new \Tribe__Settings_Tab( 'payments', esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
@@ -122,7 +124,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Gets the top level settings for Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 *
 	 * @return array[]
@@ -166,7 +168,7 @@ class Settings extends Abstract_Settings {
 		/**
 		 * Hook to modify the top level settings for Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array[] $top_level_settings Top level settings.
 		 */
@@ -234,15 +236,15 @@ class Settings extends Abstract_Settings {
 						tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_stock_handling' )
 					)
 				),
-				'default'         => 'on-pending',
+				'default'         => Pending::SLUG,
 				'validation_type' => 'options',
 				'options'         => [
-					'on-pending'  => sprintf(
+					Pending::SLUG  => sprintf(
 					// Translators: %s: The word "ticket" in lowercase.
 						esc_html__( 'Decrease available %s stock as soon as a Pending order is created.', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'stock_handling' )
 					),
-					'on-complete' => sprintf(
+					Completed::SLUG => sprintf(
 					// Translators: %s: The word "ticket" in lowercase.
 						esc_html__( 'Only decrease available %s stock if an order is confirmed as Completed by the payment gateway.', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'stock_handling' )
@@ -344,15 +346,15 @@ class Settings extends Abstract_Settings {
 		 */
 		$settings = apply_filters( 'tribe_tickets_commerce_settings', $settings );
 
-		return array_merge( $this->get_top_level_settings(), $settings );
+		return array_merge( $this->get_top_level_settings(), $this->apply_commerce_enabled_conditional( $settings ) );
 	}
 
 	/**
 	 * Handle setting up dependencies for all of the fields.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
-	 * @param array[] $settings Which settings we are applying conditioanls to.
+	 * @param array[] $settings Which settings we are applying conditionals to.
 	 *
 	 * @return array[]
 	 */

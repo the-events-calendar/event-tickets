@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Module;
 /**
  * Class Buttons
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -17,7 +17,7 @@ class Buttons {
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the elements.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var \Tribe__Template
 	 */
@@ -26,7 +26,7 @@ class Buttons {
 	/**
 	 * Gets the template instance used to setup the rendering of the page.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return \Tribe__Template
 	 */
@@ -42,6 +42,13 @@ class Buttons {
 		return $this->template;
 	}
 
+	/**
+	 * Get the checkout script tag for PayPal buttons.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
 	public function get_checkout_script() {
 		$client            = tribe( Client::class );
 		$client_token_data = $client->get_client_token();
@@ -54,8 +61,10 @@ class Buttons {
 			'must_login'              => $must_login,
 		];
 
+		$html = $this->get_template()->template( 'checkout-script', $template_vars, false );
+
 		tribe_asset_enqueue( 'tec-tickets-commerce-gateway-paypal-checkout' );
 
-		return $this->get_template()->template( 'checkout-script', $template_vars, false );
+		return $html;
 	}
 }

@@ -5,7 +5,7 @@ namespace TEC\Tickets;
 /**
  * Class Event
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets
  */
@@ -14,7 +14,7 @@ class Event {
 	/**
 	 * Value stored for the Events from TEC.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -24,7 +24,7 @@ class Event {
 	 * Gets the TEC events CPT, will fallback into the Static variable on this class, but will try to pull from
 	 * TEC main class constant first.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 *
 	 * @return string
