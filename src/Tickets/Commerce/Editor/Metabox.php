@@ -9,7 +9,7 @@ use Tribe__Tickets__Main as Tickets_Plugin;
 /**
  * Class Metabox.
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Editor
  */
@@ -59,7 +59,7 @@ class Metabox {
 	 * Using the method, providers can add as many fields as
 	 * they want, specific to their implementation.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int $post_id
 	 * @param int $ticket_id

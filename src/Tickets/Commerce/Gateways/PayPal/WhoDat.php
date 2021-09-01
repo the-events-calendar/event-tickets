@@ -25,7 +25,7 @@ class WhoDat {
 	/**
 	 * Get REST API endpoint URL for requests.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 *
 	 * @param string $endpoint   The endpoint path.
@@ -40,7 +40,7 @@ class WhoDat {
 	/**
 	 * Fetch the signup link from PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array|string
 	 */
@@ -63,7 +63,7 @@ class WhoDat {
 	/**
 	 * Fetch the seller referral Data from WhoDat/PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $url Which URL WhoDat needs to request.
 	 *
@@ -81,7 +81,7 @@ class WhoDat {
 	/**
 	 * Verify if the seller was successfully onboarded.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $saved_merchant_id The ID we are looking at Paypal with.
 	 *
@@ -99,7 +99,7 @@ class WhoDat {
 	/**
 	 * Get seller rest API credentials
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $access_token
 	 *
@@ -117,7 +117,7 @@ class WhoDat {
 	/**
 	 * Send a GET request to WhoDat.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $endpoint
 	 * @param array  $query_args
@@ -144,7 +144,7 @@ class WhoDat {
 	/**
 	 * Send a POST request to WhoDat.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $endpoint
 	 * @param array  $query_args
@@ -182,7 +182,7 @@ class WhoDat {
 	/**
 	 * Log WhoDat errors.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $type
 	 * @param string $message

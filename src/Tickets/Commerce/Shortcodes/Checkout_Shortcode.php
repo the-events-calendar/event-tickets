@@ -2,7 +2,7 @@
 /**
  * Shortcode [tec_tickets_checkout].
  *
- * @since   TBD
+ * @since   5.1.9
  * @package TEC\Tickets\Commerce
  */
 
@@ -22,7 +22,7 @@ use TEC\Tickets\Commerce\Utils\Price;
 /**
  * Class for Shortcode Tribe_Tickets_Checkout.
  *
- * @since   TBD
+ * @since   5.1.9
  * @package Tribe\Tickets\Shortcodes
  */
 class Checkout_Shortcode extends Shortcode_Abstract {
@@ -30,7 +30,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Id of the current shortcode for filtering purposes.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */

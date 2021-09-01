@@ -7,7 +7,7 @@ namespace TEC\Tickets\Commerce\Status;
  *
  * Used for handling Orders where the payment process failed, whether it be a credit card rejection or some other error.
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Status
  */
@@ -15,7 +15,7 @@ class Denied extends Status_Abstract {
 	/**
 	 * Slug for this Status.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */

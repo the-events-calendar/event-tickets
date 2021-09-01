@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce;
 /**
  * Class Status_Abstract
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Status
  */
@@ -34,7 +34,7 @@ abstract class Status_Abstract implements Status_Interface {
 	 * - count_refunded
 	 * - count_not_going
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string[]
 	 */
@@ -43,7 +43,7 @@ abstract class Status_Abstract implements Status_Interface {
 	/**
 	 * Which arguments will be used to register this Status with WordPress.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var array
 	 */
@@ -79,7 +79,7 @@ abstract class Status_Abstract implements Status_Interface {
 		/**
 		 * Allows filtering of which flags are associated with this Status.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param string[] $flags  Set of flags we will use.
 		 * @param \WP_Post $post   Which order we are testing against.
@@ -90,7 +90,7 @@ abstract class Status_Abstract implements Status_Interface {
 		/**
 		 * Allows filtering of which flags are associated with this Status.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param string[] $flags  Set of flags we will use.
 		 * @param \WP_Post $post   Which order we are testing against.
@@ -110,6 +110,19 @@ abstract class Status_Abstract implements Status_Interface {
 		}
 
 		return 0 < count( $intersection );
+	}
+
+	/**
+	 * When trying to get a param that doesnt exist we test if it's a flag.
+	 *
+	 * @since 5.1.9
+	 *
+	 * @param string $name Which flag to check.
+	 *
+	 * @return bool
+	 */
+	public function __get( $name ) {
+		return $this->has_flags( $name );
 	}
 
 	/**
@@ -140,7 +153,7 @@ abstract class Status_Abstract implements Status_Interface {
 		/**
 		 * Allows filtering of which arguments are associated with this Status registering in WP.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array  $arguments Which arguments we are passing.
 		 * @param static $status    Which status these arguments are associated with.
@@ -150,7 +163,7 @@ abstract class Status_Abstract implements Status_Interface {
 		/**
 		 * Allows filtering of which arguments are associated with this Status registering in WP.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array  $arguments Which arguments we are passing.
 		 * @param static $status    Which status these arguments are associated with.
@@ -163,7 +176,7 @@ abstract class Status_Abstract implements Status_Interface {
 	 * Allows the configuration of the wp arguments before getting it, specifically used for dynamic arguments like
 	 * the ones that will require a translation.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 */
 	protected function setup_wp_arguments() {

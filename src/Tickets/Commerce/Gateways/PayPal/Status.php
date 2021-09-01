@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Status as Commerce_Status;
 /**
  * Class Status
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -16,7 +16,7 @@ class Status {
 	/**
 	 * Order Status in PayPal for created.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -25,7 +25,7 @@ class Status {
 	/**
 	 * Order Status in PayPal for saved.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ class Status {
 	/**
 	 * Order Status in PayPal for approved.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -43,7 +43,7 @@ class Status {
 	/**
 	 * Order Status in PayPal for voided.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -52,7 +52,7 @@ class Status {
 	/**
 	 * Order Status in PayPal for completed.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -61,7 +61,7 @@ class Status {
 	/**
 	 * Order Status in PayPal for payer action required.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -70,7 +70,7 @@ class Status {
 	/**
 	 * Default mapping from PayPal Status to Tickets Commerce
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var array
 	 */
@@ -86,7 +86,7 @@ class Status {
 	/**
 	 * Gets the valid mapping of the statuses.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array
 	 */
@@ -97,7 +97,7 @@ class Status {
 	/**
 	 * Checks if a given PayPal status is valid.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $status Status from PayPal.
 	 *
@@ -111,7 +111,7 @@ class Status {
 	/**
 	 * Converts a valid PayPal status into a commerce status object.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $paypal_status A PayPal status string.
 	 *

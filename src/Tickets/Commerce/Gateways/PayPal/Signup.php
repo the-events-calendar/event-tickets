@@ -6,7 +6,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Signup
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -15,7 +15,7 @@ class Signup {
 	/**
 	 * Holds the transient key used to store hash passed to PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -24,7 +24,7 @@ class Signup {
 	/**
 	 * Holds the transient key used to link PayPal to this site.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ class Signup {
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the page.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var \Tribe__Template
 	 */
@@ -42,7 +42,7 @@ class Signup {
 	/**
 	 * Gets the template instance used to setup the rendering of the page.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return \Tribe__Template
 	 */
@@ -60,7 +60,7 @@ class Signup {
 	/**
 	 * Gets the saved hash for a given user, empty when non-existent.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -71,7 +71,7 @@ class Signup {
 	/**
 	 * Gets the saved hash for a given user, empty when non-existent.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $value Hash for signup.
 	 *
@@ -84,7 +84,7 @@ class Signup {
 	/**
 	 * Delete Hash transient from the DB.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -95,7 +95,7 @@ class Signup {
 	/**
 	 * Gets the saved hash for a given user, empty when non-existent.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array
 	 */
@@ -106,7 +106,7 @@ class Signup {
 	/**
 	 * Saves the URL in a transient for later use.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $value URL for signup.
 	 *
@@ -119,7 +119,7 @@ class Signup {
 	/**
 	 * Delete url transient from the DB.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return bool
 	 */
@@ -130,7 +130,7 @@ class Signup {
 	/**
 	 * Generate a Unique Hash for signup. It will always be 20 characters long.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -149,7 +149,7 @@ class Signup {
 	/**
 	 * Generates a Tracking it for this website.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -164,7 +164,7 @@ class Signup {
 		/**
 		 * Tracking ID sent to PayPal.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param string $url Which ID we are using normally a URL, cannot be longer than 127 chars.
 		 */
@@ -177,7 +177,7 @@ class Signup {
 	/**
 	 * Request the signup link that redirects the seller to PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string|false
 	 */
@@ -205,7 +205,7 @@ class Signup {
 	/**
 	 * From the Transient data store we get the referral data link.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return false|string
 	 */
@@ -221,7 +221,7 @@ class Signup {
 	/**
 	 * Gets the content for the template used for the sign up link that paypal creates.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return false|string
 	 */

@@ -9,7 +9,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Attendee
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -17,7 +17,7 @@ class Attendee {
 	/**
 	 * Tickets Commerce Attendee Post Type slug.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -26,7 +26,7 @@ class Attendee {
 	/**
 	 * Which meta holds the Relation ship between an attendee and which user it's registered to.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Attendee {
 	/**
 	 * Which meta holds the Relation ship between an attendee and which event it's registered to.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ class Attendee {
 	/**
 	 * Which meta holds the Relation ship between an attendee and which ticket it was created from.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -53,7 +53,7 @@ class Attendee {
 	/**
 	 * Which meta holds the Relation ship between an attendee and which order it belongs to.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -62,7 +62,7 @@ class Attendee {
 	/**
 	 * Which meta holds the purchaser name for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -71,7 +71,7 @@ class Attendee {
 	/**
 	 * Which meta holds the purchaser email for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -80,7 +80,7 @@ class Attendee {
 	/**
 	 * Which meta holds the security code for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -89,7 +89,7 @@ class Attendee {
 	/**
 	 * Which meta holds the status value for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -98,7 +98,7 @@ class Attendee {
 	/**
 	 * Which meta holds the optout value for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -107,7 +107,7 @@ class Attendee {
 	/**
 	 * Which meta holds the checked in status for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -116,7 +116,7 @@ class Attendee {
 	/**
 	 * Which meta holds the checked in status for an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -125,7 +125,7 @@ class Attendee {
 	/**
 	 * Indicates if a ticket for this attendee was sent out via email.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -134,7 +134,7 @@ class Attendee {
 	/**
 	 * Meta key holding an indication if this attendee was subscribed.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -143,7 +143,7 @@ class Attendee {
 	/**
 	 * Meta key holding the first name for the attendee. (not purchaser)
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -152,7 +152,7 @@ class Attendee {
 	/**
 	 * Meta key holding the last name for the attendee. (not purchaser)
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -161,7 +161,7 @@ class Attendee {
 	/**
 	 * Meta key holding the email for the attendee. (not purchaser)
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -189,7 +189,7 @@ class Attendee {
 	/**
 	 * Register this Class post type into WP.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function register_post_type() {
 		$post_type_args = [
@@ -209,7 +209,7 @@ class Attendee {
 		 *
 		 * @see   register_post_type
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
 		 */
@@ -296,7 +296,7 @@ class Attendee {
 	 * the Attendees Report rather than the PayPal Ticket attendees post list (because that's kind of
 	 * confusing)
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int $post_id WP_Post ID
 	 */
@@ -329,7 +329,7 @@ class Attendee {
 	 *
 	 * @todo  Adjust to the Ticket Commerce data.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $attendee_data Information that we are trying to save.
 	 * @param int   $attendee_id   The attendee ID.
@@ -390,7 +390,7 @@ class Attendee {
 	 * attending, at which point we should send tickets out for any of those
 	 * newly attending persons.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int $event_id
 	 */
@@ -430,7 +430,7 @@ class Attendee {
 	/**
 	 * Filter the provider object to return this class if tickets are for this provider.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param object $provider_obj
 	 * @param string $provider
@@ -464,7 +464,7 @@ class Attendee {
 	 * @todo  For some forsaken reason the calculation of inventory is happening on the fly instead of when orders
 	 *        are modified we need to address that for performance reasons.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $attendee
 	 *
@@ -472,7 +472,78 @@ class Attendee {
 	 */
 	public function decreases_inventory( $attendee ) {
 		$attendee = tec_tc_get_attendee( $attendee['ID'] );
-		$order    = tec_tc_get_order( $attendee->post_parent );
+
+		$order_status = \Tribe__Utils__Array::get( $attendee, 'order_status', 'undefined' );
+		$order_id     = \Tribe__Utils__Array::get( $attendee, 'order_id', false );
+		$attendee_id  = \Tribe__Utils__Array::get( $attendee, 'attendee_id', false );
+
+		/**
+		 * Whether the pending Order stock reserve logic should be ignored completely or not.
+		 *
+		 * If set to `true` then the behaviour chosen in the Settings will apply, if `false`
+		 * only Completed tickets will count to decrease the inventory. This is useful when
+		 *
+		 * @todo  TribeCommerceLegacy: Move this method a Flag action.
+		 *
+		 * @since 5.1.9
+		 *
+		 * @param bool  $ignore_pending
+		 * @param array $attendee An array of data defining the current Attendee
+		 */
+		$ignore_pending = apply_filters( 'tec_tickets_commerce_pending_stock_ignore', false );
+
+		$purchase_time = false;
+		$order         = false;
+
+		if (
+			'on-pending' === tribe_get_option( 'ticket-paypal-stock-handling', 'on-complete' )
+			&& ! $ignore_pending
+			&& Order_Statuses::$pending === $order_status
+			&& false !== $order_id
+		) {
+			$purchase_time = \Tribe__Utils__Array::get( $attendee, 'purchase_time', false );
+
+			$order = \Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id(
+				$attendee_id,
+				[
+					// Get no meta fields.
+				]
+			);
+
+			if ( false !== $order ) {
+				$purchase_time = $order->get_creation_date();
+			}
+		}
+
+		if ( $purchase_time ) {
+			$date = \Tribe__Date_Utils::build_date_object( $purchase_time );
+
+			$date->setTimezone( new \DateTimeZone( 'UTC' ) );
+
+			$order_creation_timestamp = $date->getTimestamp();
+
+			/**
+			 * Filters the amount of time a part of the stock will be reserved by a pending Order.
+			 *
+			 * The time applies from the Order creation time.
+			 * In the unlikely scenario that an Order goes from Completed to Pending then, if the
+			 * reservation time allows it, a part of the stock will be reserved for it.
+			 *
+			 * @since 4.7
+			 *
+			 * @param int                                      $pending_stock_reservation_time The amount of seconds, from the Order creation time,
+			 *                                                                                 part of the stock will be reserved for the Order;
+			 *                                                                                 defaults to 30 minutes.
+			 * @param array                                    $attendee                       An array of data defining the current Attendee
+			 * @param \Tribe__Tickets__Commerce__PayPal__Order $order                          The object representing the Order that generated
+			 *                                                                                 the Attendee
+			 */
+			$pending_stock_reservation_time = (int) apply_filters( 'tec_tickets_commerce_pending_stock_reserve_time', 30 * 60, $attendee, $order );
+
+			return time() <= ( $order_creation_timestamp + $pending_stock_reservation_time );
+		}
+
+		$order = tec_tc_get_order( $attendee->post_parent );
 
 		return tribe( Commerce\Status\Completed::class )->get_wp_slug() === $order->post_status;
 	}
@@ -480,7 +551,7 @@ class Attendee {
 	/**
 	 * Get attendee data for attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function get_attendee() {
 		/**

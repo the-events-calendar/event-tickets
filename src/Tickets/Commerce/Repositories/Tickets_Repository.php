@@ -14,7 +14,7 @@ use Tribe__Date_Utils as Dates;
 /**
  * Class Tickets Repository.
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Repositories
  */
@@ -22,7 +22,7 @@ class Tickets_Repository extends Tribe__Repository {
 	/**
 	 * The unique fragment that will be used to identify this repository filters.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -31,7 +31,7 @@ class Tickets_Repository extends Tribe__Repository {
 	/**
 	 * Key name to use when limiting lists of keys.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -71,7 +71,7 @@ class Tickets_Repository extends Tribe__Repository {
 		/**
 		 * Filters a single formatted ticket result.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param mixed|\WP_Post                $formatted The formatted event result, usually a post object.
 		 * @param int                           $id        The formatted post ID.
@@ -107,7 +107,7 @@ class Tickets_Repository extends Tribe__Repository {
 	/**
 	 * Filters and updates the order meta to make sure it makes sense.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $postarr The update post array, passed entirely for context purposes.
 	 * @param int   $post_id The ID of the event that's being updated.

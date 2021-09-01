@@ -35,7 +35,7 @@ class Webhook_Endpoint
 	/**
 	 * Gets the Endpoint path for the on boarding process.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -46,7 +46,7 @@ class Webhook_Endpoint
 	/**
 	 * Get the REST API route URL.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string The REST API route URL.
 	 */
