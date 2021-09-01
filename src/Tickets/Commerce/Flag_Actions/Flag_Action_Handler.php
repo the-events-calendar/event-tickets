@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Flag_Actions;
 /**
  * Class Flag_Action_Handler
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
@@ -13,7 +13,7 @@ class Flag_Action_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Flag Actions registered.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var Flag_Action_Interface[]
 	 */
@@ -22,7 +22,7 @@ class Flag_Action_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Which classes we will load for order flag actions by default.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string[]
 	 */
@@ -36,7 +36,7 @@ class Flag_Action_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Gets the flag actions registered.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return Flag_Action_Interface[]
 	 */
@@ -47,7 +47,7 @@ class Flag_Action_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Sets up all the Flag Action instances for the Classes registered in $default_flag_actions.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function register() {
 		foreach ( $this->default_flag_actions as $flag_action_class ) {
@@ -67,7 +67,7 @@ class Flag_Action_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Register a given flag action into the Handler, and hook the handling to WP.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param Flag_Action_Interface $flag_action Which flag action we are registering.
 	 */

@@ -10,7 +10,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Increase_Stock, normally triggered when refunding on orders get set to not-completed.
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */

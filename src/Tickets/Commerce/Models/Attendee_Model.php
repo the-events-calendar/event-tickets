@@ -2,7 +2,7 @@
 /**
  * Models an Tickets Commerce Attendee.
  *
- * @since    TBD
+ * @since    5.1.9
  *
  * @package  TEC\Tickets\Commerce\Models
  */
@@ -24,7 +24,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Attendee.
  *
- * @since    TBD
+ * @since    5.1.9
  *
  * @package  TEC\Tickets\Commerce\Models
  */

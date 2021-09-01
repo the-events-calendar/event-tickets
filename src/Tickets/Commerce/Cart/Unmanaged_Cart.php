@@ -10,7 +10,7 @@ use TEC\Tickets\Commerce;
  * Models a transitional, not managed, cart implementation; cart management functionality
  * is offloaded to PayPal.
  *
- * @since TBD
+ * @since 5.1.9
  */
 class Unmanaged_Cart implements Cart_Interface {
 

@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Reports;
 /**
  * Class Ticket Report management.
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Reports
  */
@@ -15,7 +15,7 @@ class Ticket {
 	/**
 	 * Links to the sales report for this product.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param $event_id
 	 * @param $ticket_id

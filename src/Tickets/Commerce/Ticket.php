@@ -12,7 +12,7 @@ use Tribe__Tickets__Global_Stock as Event_Stock;
 /**
  * Class Ticket.
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -20,7 +20,7 @@ class Ticket {
 	/**
 	 * Tickets Commerce Ticket Post Type slug.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -29,7 +29,7 @@ class Ticket {
 	/**
 	 * Which meta holds the Relation ship between an ticket and which event it's registered to.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -38,7 +38,7 @@ class Ticket {
 	/**
 	 * Which meta holds the data for showing the ticket description.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -47,7 +47,7 @@ class Ticket {
 	/**
 	 * Which meta holds the data for the ticket sku.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -56,7 +56,7 @@ class Ticket {
 	/**
 	 * Which meta holds the data for the ticket price.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -65,7 +65,7 @@ class Ticket {
 	/**
 	 * Which meta holds the data for the ticket stock mode.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -74,7 +74,7 @@ class Ticket {
 	/**
 	 * Which meta holds the data for the ticket stock.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -83,7 +83,7 @@ class Ticket {
 	/**
 	 * Which meta holds the data for the ticket stock status.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -92,7 +92,7 @@ class Ticket {
 	/**
 	 * Which meta holds the data for the ticket allows backorders.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -101,7 +101,7 @@ class Ticket {
 	/**
 	 * Which meta holds the data for the ticket is managing stock.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -110,7 +110,7 @@ class Ticket {
 	/**
 	 * Register this Class post type into WP.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function register_post_type() {
 
@@ -135,7 +135,7 @@ class Ticket {
 		 *
 		 * @see   register_post_type
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
 		 */
@@ -149,7 +149,7 @@ class Ticket {
 	 *
 	 * @todo  TribeCommerceLegacy: This method needs to make use of the Ticket Model.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int|\WP_Post $ticket_id
 	 *
@@ -217,7 +217,7 @@ class Ticket {
 		/**
 		 * Use this Filter to change any information you want about this ticket
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param object $ticket
 		 * @param int    $post_id
@@ -233,7 +233,7 @@ class Ticket {
 	 *
 	 * @todo  TribeCommerceLegacy: Move this method into the another place.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *
@@ -261,7 +261,7 @@ class Ticket {
 	 *
 	 * @todo  TribeCommerceLegacy: Move this method into the another place.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int  $ticket_id The ticket post ID
 	 * @param bool $refresh   Whether to try and use the cached value or not.
@@ -301,7 +301,7 @@ class Ticket {
 	 *
 	 * @todo  TribeCommerceLegacy: This method needs to be split into `create` and `update`
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param       $post_id
 	 * @param       $ticket
@@ -527,7 +527,7 @@ class Ticket {
 		/**
 		 * Generic action fired after saving a ticket (by type)
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param int                            $post_id  Post ID of post the ticket is tied to
 		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
@@ -556,7 +556,7 @@ class Ticket {
 	 *
 	 * @todo  TribeCommerceLegacy: This method needs to be refactored to Tickets Commerce standards.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param $event_id
 	 * @param $ticket_id
@@ -606,7 +606,7 @@ class Ticket {
 	 *
 	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int $ticket_id  the attendee id being deleted
 	 * @param int $post_id    the post or event id for the attendee
@@ -629,7 +629,7 @@ class Ticket {
 	 * @todo  TribeCommerceLegacy: Not sure where this method fits, might just need to integrate it it into the
 	 *        create/update methods and delete this.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param \Tribe__Tickets__Global_Stock $global_stock The global stock object.
 	 * @param int                           $qty          The quantity to modify stock.
@@ -652,7 +652,7 @@ class Ticket {
 	 *
 	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int                                $ticket_id       The ticket post ID.
 	 * @param int                                $quantity        The quantity to increase the ticket sales by.
@@ -679,7 +679,7 @@ class Ticket {
 	 *
 	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int                                $ticket_id       The ticket post ID.
 	 * @param int                                $quantity        The quantity to increase the ticket sales by.
@@ -709,7 +709,7 @@ class Ticket {
 	 *
 	 * @todo  TribeCommerceLegacy: This should not be used, the model should be used.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int|\WP_Post $product
 	 *
@@ -730,7 +730,7 @@ class Ticket {
 	 *
 	 * @todo  TribeCommerceLegacy: This should not be used, the model and a template should be used.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int|object    $product
 	 * @param array|boolean $attendee
@@ -756,7 +756,7 @@ class Ticket {
 		/**
 		 * Allow filtering of the Price HTML
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param string $price_html
 		 * @param mixed  $product

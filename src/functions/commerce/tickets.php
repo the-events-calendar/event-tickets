@@ -2,7 +2,7 @@
 /**
  * Functions and template tags dedicated to tickets in Ticket Commerce.
  *
- * @since TBD
+ * @since 5.1.9
  */
 
 use TEC\Tickets\Commerce\Models\Ticket_Model;
@@ -10,7 +10,7 @@ use TEC\Tickets\Commerce\Models\Ticket_Model;
 /**
  * Fetches and returns a decorated post object representing an ticket.
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @param null|int|WP_Post $ticket                 The ticket ID or post object or `null` to use the global one.
  * @param string|null      $output                 The required return type. One of `OBJECT`, `ARRAY_A`, or `ARRAY_N`, which
@@ -28,7 +28,7 @@ function tec_tc_get_ticket( $ticket = null, $output = OBJECT, $filter = 'raw', $
 	 * Returning a non `null` value here will short-circuit the function and return the value.
 	 * Note: this value will not be cached and the caching of this value is a duty left to the filtering function.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param mixed       $return      The ticket object to return.
 	 * @param mixed       $ticket      The ticket object to fetch.
@@ -90,7 +90,7 @@ function tec_tc_get_ticket( $ticket = null, $output = OBJECT, $filter = 'raw', $
 		 * If you need to filter the output value on each call of this function then use the `tec_tickets_commerce_get_ticket_before`
 		 * filter.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param WP_Post $post   The ticket post object, decorated with a set of custom properties.
 		 * @param string  $output The output format to use.
@@ -109,7 +109,7 @@ function tec_tc_get_ticket( $ticket = null, $output = OBJECT, $filter = 'raw', $
 	 *
 	 * Note: this value will not be cached and the caching of this value is a duty left to the filtering function.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param WP_Post     $post        The ticket post object to filter and return.
 	 * @param int|WP_Post $ticket      The ticket object to fetch.

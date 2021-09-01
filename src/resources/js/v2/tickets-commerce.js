@@ -1,7 +1,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @type   {Object}
  */
@@ -10,7 +10,7 @@ tribe.tickets = tribe.tickets || {};
 /**
  * Configures ET Tickets Commerce Object in the Global Tribe variable
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @type   {Object}
  */
@@ -19,7 +19,7 @@ tribe.tickets.commerce = {};
 /**
  * Initializes in a Strict env the code that manages the plugin tickets commerce.
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @param  {Object} $   jQuery
  * @param  {Object} obj tribe.tickets.commerce
@@ -33,7 +33,7 @@ tribe.tickets.commerce = {};
 	/*
 	 * Tickets Commerce Selectors.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	obj.selectors = {
 		checkoutContainer: '.tribe-tickets__commerce-checkout',
@@ -49,7 +49,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Toggle the checkout item description visibility.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {event} event The event.
 	 *
@@ -92,7 +92,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Binds the checkout item description toggle.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
@@ -109,7 +109,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Unbinds the description toggle.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
@@ -124,7 +124,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Binds events for checkout container.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {jQuery} $container jQuery object of object of the tickets container.
 	 *
@@ -142,7 +142,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Handles the initialization of the tickets commerce events when Document is ready.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return {void}
 	 */

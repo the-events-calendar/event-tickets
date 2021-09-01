@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Order;
 /**
  * Class Status_Handler
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Status
  */
@@ -15,7 +15,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Statuses registered.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var Status_Interface[]
 	 */
@@ -24,7 +24,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Which classes we will load for order statuses by default.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string[]
 	 */
@@ -43,7 +43,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Which status every order will be created with.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -52,7 +52,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Sets up all the Status instances for the Classes registered in $default_statuses.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function register() {
 		foreach ( $this->default_statuses as $status_class ) {
@@ -72,7 +72,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Which status an order will be created with.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return Status_Interface
 	 */
@@ -83,7 +83,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Gets the statuses registered.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return Status_Interface[]
 	 */
@@ -94,7 +94,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Fetches the first status registered with a given slug.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $slug
 	 *
@@ -113,7 +113,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Fetches the first status registered with a given wp slug.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $slug
 	 *
@@ -132,7 +132,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Fetches the status registered with a given class.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $class_name
 	 *
@@ -153,7 +153,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Using `wp_list_filter` fetches which Statuses match the flags and operator passed.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string|array $flags
 	 * @param string       $operator
@@ -169,7 +169,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Register a given status into the Handler.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param Status_Interface $status Which status we are registering.
 	 */
@@ -180,7 +180,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Registers the post statuses with WordPress.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function register_order_statuses() {
 
@@ -197,7 +197,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Fires when a post is transitioned from one status to another so that we can make another hook that is namespaced.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string   $new_status New post status.
 	 * @param string   $old_status Old post status.
@@ -218,7 +218,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 		/**
 		 * Fires when a post is transitioned from one status to another.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param Status_Interface      $new_status New post status.
 		 * @param Status_Interface|null $old_status Old post status.
@@ -233,7 +233,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 			 * The dynamic portions of the hook name, `$new_status` and `$old_status`,
 			 * refer to the old and new post statuses, respectively.
 			 *
-			 * @since TBD
+			 * @since 5.1.9
 			 *
 			 * @param Status_Interface      $new_status New post status.
 			 * @param Status_Interface|null $old_status Old post status.
@@ -247,7 +247,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 		 *
 		 * The dynamic portions of the hook name, `$new_status`, refer to the new post status.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param Status_Interface      $new_status New post status.
 		 * @param Status_Interface|null $old_status Old post status.
@@ -266,7 +266,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	 * - Throwing a warning
 	 * - Handling Email communication
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param Status_Interface      $new_status New post status.
 	 * @param Status_Interface|null $old_status Old post status.
@@ -281,7 +281,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 			 *
 			 * The dynamic portions of the hook name, `$flag`, refer to a given flag that this new status contains.
 			 *
-			 * @since TBD
+			 * @since 5.1.9
 			 *
 			 * @param Status_Interface      $new_status New post status.
 			 * @param Status_Interface|null $old_status Old post status.
@@ -295,7 +295,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 			 * The dynamic portions of the hook name, `$new_status` and `$flag`, refer to the new post status and a
 			 * given flag that this new status contains.
 			 *
-			 * @since TBD
+			 * @since 5.1.9
 			 *
 			 * @param Status_Interface      $new_status New post status.
 			 * @param Status_Interface|null $old_status Old post status.
@@ -311,7 +311,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	 * A transaction might be completed because it successfully completed, because it
 	 * was refunded or denied.
 	 *
-	 * @since  TBD
+	 * @since  5.1.9
 	 *
 	 * @param string $payment_status
 	 *
@@ -330,7 +330,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Whether an order status will mark a transaction as generating revenue or not.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $payment_status
 	 *

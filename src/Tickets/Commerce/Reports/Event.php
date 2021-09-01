@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Module;
 /**
  * Class Event Report management.
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Reports
  */
@@ -17,7 +17,7 @@ class Event {
 	/**
 	 * Links to sales report for all tickets for this event.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int  $event_id
 	 * @param bool $url_only
