@@ -130,6 +130,8 @@ class Success {
 	 *
 	 * @param array   $post_states An array of post display states.
 	 * @param WP_Post $post        The current post object.
+	 *
+	 * @return array  $post_states An array of post display states.
 	 */
 	public function maybe_add_display_post_states( $post_states, $post ) {
 

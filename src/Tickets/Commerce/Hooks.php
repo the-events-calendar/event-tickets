@@ -405,6 +405,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @param array   $post_states An array of post display states.
 	 * @param WP_Post $post        The current post object.
+	 *
+	 * @return array  $post_states An array of post display states.
 	 */
 	public function add_display_post_states( $post_states, $post ) {
 
