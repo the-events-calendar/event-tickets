@@ -3,6 +3,8 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
+use \Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Attendee
@@ -165,6 +167,24 @@ class Attendee {
 	 */
 	public static $email_meta_key = '_tec_tickets_commerce_email';
 
+	/**
+	 * Meta key holding price paid for this attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $price_paid_meta_key = '_tec_tickets_commerce_price_paid';
+
+	/**
+	 * Meta key holding currency which the price was paid in.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $currency_meta_key = '_tec_tickets_commerce_currency';
+
 
 	/**
 	 * Register this Class post type into WP.
@@ -196,6 +216,79 @@ class Attendee {
 		$post_type_args = apply_filters( 'tec_tickets_commerce_attendee_post_type_args', $post_type_args );
 
 		register_post_type( static::POSTTYPE, $post_type_args );
+	}
+
+	/**
+	 * Creates an individual attendee given an Order and Ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Post      $order  Which order generated this attendee.
+	 * @param Ticket_Object $ticket Which ticket generated this Attendee.
+	 * @param array         $args   Set of extra arguments used to populate the data for the attendee.
+	 *
+	 * @return \WP_Error|\WP_Post
+	 */
+	public function create( \WP_Post $order, $ticket, array $args = [] ) {
+		$create_args = [
+			'order_id'      => $order->ID,
+			'ticket_id'     => $ticket->ID,
+			'event_id'      => $ticket->get_event_id(),
+			'security_code' => Arr::get( $args, 'security_code' ),
+			'opt_out'       => Arr::get( $args, 'optout' ),
+			'price_paid'    => Arr::get( $args, 'price' ),
+			'currency'      => Arr::get( $args, 'currency' ),
+		];
+
+		/**
+		 * Allow the filtering of the create arguments for attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param array         $create_args Which arguments we are going to use to create the attendee.
+		 * @param \WP_Post      $order       Which order generated this attendee.
+		 * @param Ticket_Object $ticket      Which ticket generated this Attendee.
+		 * @param array         $args        Set of extra arguments used to populate the data for the attendee.
+		 */
+		$create_args = apply_filters( 'tec_tickets_commerce_attendee_create_args', $create_args, $order, $ticket, $args );
+
+		/**
+		 * Allow the actions before creating the attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param array         $create_args Which arguments we are going to use to create the attendee.
+		 * @param \WP_Post      $order       Which order generated this attendee.
+		 * @param Ticket_Object $ticket      Which ticket generated this Attendee.
+		 * @param array         $args        Set of extra arguments used to populate the data for the attendee.
+		 */
+		do_action( 'tec_tickets_commerce_attendee_before_create', $create_args, $order, $ticket, $args );
+
+		$attendee = tec_tc_attendees()->set_args( $create_args )->create();
+
+		/**
+		 * Allow the actions after creating the attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param \WP_Post      $attendee Post object for the attendee.
+		 * @param \WP_Post      $order    Which order generated this attendee.
+		 * @param Ticket_Object $ticket   Which ticket generated this Attendee.
+		 * @param array         $args     Set of extra arguments used to populate the data for the attendee.
+		 */
+		do_action( 'tec_tickets_commerce_attendee_after_create', $attendee, $order, $ticket, $args );
+
+		/**
+		 * Allow the filtering of the attendee WP_Post after creating attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param \WP_Post      $attendee Post object for the attendee.
+		 * @param \WP_Post      $order    Which order generated this attendee.
+		 * @param Ticket_Object $ticket   Which ticket generated this Attendee.
+		 * @param array         $args     Set of extra arguments used to populate the data for the attendee.
+		 */
+		return apply_filters( 'tec_tickets_commerce_attendee_create', $attendee, $order, $ticket, $args );
 	}
 
 	/**
@@ -368,6 +461,8 @@ class Attendee {
 	 * order creation, cause the inventory to be decreased.
 	 *
 	 * @todo  TribeCommerceLegacy: Move this method a Flag action.
+	 * @todo  For some forsaken reason the calculation of inventory is happening on the fly instead of when orders
+	 *        are modified we need to address that for performance reasons.
 	 *
 	 * @since 5.1.9
 	 *
@@ -376,6 +471,8 @@ class Attendee {
 	 * @return bool
 	 */
 	public function decreases_inventory( $attendee ) {
+		$attendee = tec_tc_get_attendee( $attendee['ID'] );
+
 		$order_status = \Tribe__Utils__Array::get( $attendee, 'order_status', 'undefined' );
 		$order_id     = \Tribe__Utils__Array::get( $attendee, 'order_id', false );
 		$attendee_id  = \Tribe__Utils__Array::get( $attendee, 'attendee_id', false );
@@ -446,7 +543,9 @@ class Attendee {
 			return time() <= ( $order_creation_timestamp + $pending_stock_reservation_time );
 		}
 
-		return Completed::SLUG === $order_status;
+		$order = tec_tc_get_order( $attendee->post_parent );
+
+		return tribe( Commerce\Status\Completed::class )->get_wp_slug() === $order->post_status;
 	}
 
 	/**
