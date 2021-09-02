@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 1
           token: ${{ secrets.GH_BOT_TOKEN }}
           submodules: recursive
-        run: |
+      - run: |
           git fetch origin $GITHUB_BASE_REF:$GITHUB_BASE_REF
       # ------------------------------------------------------------------------------
       # Check if any PHP files have changed
