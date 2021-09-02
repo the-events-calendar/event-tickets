@@ -24,7 +24,7 @@ jobs:
       - name: Checkout the base branch of repository
         uses: actions/checkout@v2
         with:
-          ref: $GITHUB_BASE_REF
+          ref: ${{ github.base_ref }}
           fetch-depth: 1
           token: ${{ secrets.GH_BOT_TOKEN }}
           submodules: recursive
