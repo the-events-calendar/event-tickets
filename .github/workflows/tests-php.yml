@@ -24,11 +24,9 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
         with:
-          fetch-depth: 1
+          fetch-depth: 1000
           token: ${{ secrets.GH_BOT_TOKEN }}
           submodules: recursive
-      - run: |
-          git fetch origin $GITHUB_BASE_REF:$GITHUB_BASE_REF
       # ------------------------------------------------------------------------------
       # Check if any PHP files have changed
       # ------------------------------------------------------------------------------
@@ -36,7 +34,7 @@ jobs:
         id: skip
         run: |
           echo "git diff $GITHUB_BASE_REF HEAD --name-only | grep .php | wc -l"
-          num_php_files=$(git diff $GITHUB_BASE_REF HEAD --name-only | grep .php | wc -l)
+          num_php_files=$(git diff ${{ github.event.pull_request.base.sha }} HEAD --name-only | grep .php | wc -l)
           if [[ "$num_php_files" == "0" ]]; then
             echo "::set-output name=value::1"
           else
