@@ -21,10 +21,17 @@ jobs:
       # ------------------------------------------------------------------------------
       # Checkout the repo and tric
       # ------------------------------------------------------------------------------
+      - name: Checkout the base branch of repository
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ GITHUB_BASE_REF }}
+          fetch-depth: 1
+          token: ${{ secrets.GH_BOT_TOKEN }}
+          submodules: recursive
       - name: Checkout the repository
         uses: actions/checkout@v2
         with:
-          fetch-depth: 500
+          fetch-depth: 1
           token: ${{ secrets.GH_BOT_TOKEN }}
           submodules: recursive
       # ------------------------------------------------------------------------------
