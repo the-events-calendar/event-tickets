@@ -21,19 +21,14 @@ jobs:
       # ------------------------------------------------------------------------------
       # Checkout the repo and tric
       # ------------------------------------------------------------------------------
-      - name: Checkout the base branch of repository
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.base_ref }}
-          fetch-depth: 1
-          token: ${{ secrets.GH_BOT_TOKEN }}
-          submodules: recursive
       - name: Checkout the repository
         uses: actions/checkout@v2
         with:
           fetch-depth: 1
           token: ${{ secrets.GH_BOT_TOKEN }}
           submodules: recursive
+        run: |
+          git fetch origin $GITHUB_BASE_REF:$GITHUB_BASE_REF
       # ------------------------------------------------------------------------------
       # Check if any PHP files have changed
       # ------------------------------------------------------------------------------
