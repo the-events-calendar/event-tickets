@@ -126,6 +126,13 @@ class ItemTest extends V2TestCase {
 
 		$driver = $this->get_html_output_driver();
 
+		$driver->setTolerableDifferences(
+			[
+				$args['post_id'],
+				$args['ticket']->ID,
+			]
+		);
+
 		$driver->setTolerableDifferencesPrefixes(
 			[
 				'post-',
@@ -134,19 +141,6 @@ class ItemTest extends V2TestCase {
 				'Test ticket description for ',
 				'tribe__details__content--',
 			]
-		);
-
-		// Handle variations that tolerances won't handle.
-		$html = str_replace(
-			[
-				$args['post_id'],
-				$args['ticket']->ID,
-			],
-			[
-				'[EVENT_ID]',
-				'[TICKET_ID]',
-			],
-			$html
 		);
 
 		$this->assertMatchesSnapshot( $html, $driver );
@@ -185,6 +179,13 @@ class ItemTest extends V2TestCase {
 
 		$driver = $this->get_html_output_driver();
 
+		$driver->setTolerableDifferences(
+			[
+				$args['post_id'],
+				$args['ticket']->ID,
+			]
+		);
+
 		$driver->setTolerableDifferencesPrefixes(
 			[
 				'post-',
@@ -193,18 +194,6 @@ class ItemTest extends V2TestCase {
 				'Test ticket description for ',
 				'tribe__details__content--',
 			]
-		);
-		// Handle variations that tolerances won't handle.
-		$html = str_replace(
-			[
-				$args['post_id'],
-				$args['ticket']->ID,
-			],
-			[
-				'[EVENT_ID]',
-				'[TICKET_ID]',
-			],
-			$html
 		);
 
 		$this->assertMatchesSnapshot( $html, $driver );
