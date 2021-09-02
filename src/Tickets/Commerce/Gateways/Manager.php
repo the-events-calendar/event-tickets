@@ -78,7 +78,7 @@ class Manager {
 	/**
 	 * Get the gateway settings from all gateways.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array[]
 	 */

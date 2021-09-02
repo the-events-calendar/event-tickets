@@ -7,7 +7,7 @@ use WP_REST_Server;
 /**
  * Class REST
  *
- * @since   TBD
+ * @since   5.1.9
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class REST extends \tad_DI52_ServiceProvider {

@@ -21,7 +21,7 @@ use WP_REST_Server;
 /**
  * Class On_Boarding_Endpoint
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */
@@ -30,7 +30,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 	/**
 	 * The REST API endpoint path.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function register() {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
@@ -73,7 +73,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 	/**
 	 * Gets the Endpoint path for the on boarding process.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -84,7 +84,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 	/**
 	 * Get the REST API route URL.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string The REST API route URL.
 	 */
@@ -97,7 +97,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 	/**
 	 * Gets the Return URL pointing to this on boarding route.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -113,7 +113,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 	 * Handles the request that happens in parallel to the User Signup on PayPal but before we redirect the user from
 	 * the mini browser. So when passing error messages, they need to be registered to be fetched in the FE.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -155,7 +155,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 	 * This request is ran when the user is redirected back from the PayPal miniBrowser, and will not respond with
 	 * a JSON request, but with a redirect of the user with a success link or error link into the payments tab.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -231,7 +231,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 	/**
 	 * Using wp_safe_redirect sends the client back to a given URL after removing the Signup data acquired.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $status Which status we will add to the URL
 	 * @param string $url    Which URL we are sending the client to.
@@ -261,7 +261,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 	/**
 	 * Arguments used for the signup redirect.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array
 	 */
@@ -352,7 +352,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 	/**
 	 * Arguments used for the fetching of the token request.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array
 	 */
@@ -404,7 +404,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 	/**
 	 * Sanitize a request argument based on details registered to the route.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param mixed $value Value of the 'filter' argument.
 	 *
@@ -423,7 +423,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 	 *
 	 * @TODO  We need to make sure Swagger documentation is present.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array
 	 */

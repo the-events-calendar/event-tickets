@@ -109,7 +109,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Create the Tickets Commerce Payments Settings Tab.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function register_tab() {
 		$tab_settings = [
@@ -124,7 +124,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Gets the top level settings for Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 *
 	 * @return array[]
@@ -168,7 +168,7 @@ class Settings extends Abstract_Settings {
 		/**
 		 * Hook to modify the top level settings for Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array[] $top_level_settings Top level settings.
 		 */
@@ -352,7 +352,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Handle setting up dependencies for all of the fields.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array[] $settings Which settings we are applying conditionals to.
 	 *

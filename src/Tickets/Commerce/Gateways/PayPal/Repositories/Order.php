@@ -49,7 +49,7 @@ class Order {
 	/**
 	 * Create order based on Event Ticket Order ID we send the data to Paypal to create the order there.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string|int $order_id Which Order Post Type ID we are going to create a PayPal Order from.
 	 *

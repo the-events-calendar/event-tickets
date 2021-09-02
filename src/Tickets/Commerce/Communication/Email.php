@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Communications;
 /**
  * Class Email
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @package TEC\Tickets\Commerce\Communications
  */

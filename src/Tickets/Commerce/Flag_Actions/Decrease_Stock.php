@@ -16,7 +16,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Decrease_Stock
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
