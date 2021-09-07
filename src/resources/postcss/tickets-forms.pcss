@@ -6,11 +6,12 @@
 .event-tickets .tribe-tickets__form {
 	.tribe-tickets__form-field {
 		display: block;
-		width: 100%;
 		padding-bottom: var(--tec-spacer-2);
+		width: 100%;
 	}
 
 	.tribe-tickets__form-field--required {
+
 		header:first-child:after,
 		label:first-child:after {
 			content: '';
@@ -64,8 +65,8 @@
 	.tribe-common-form-control-checkbox__input {
 		border-color: var(--tec-color-border-default);
 		border-width: 1px;
-		margin-right: var(--tec-spacer-1);
 		box-shadow: none;
+		margin-right: var(--tec-spacer-1);
 
 		&:hover,
 		&:focus {
@@ -154,13 +155,14 @@
 		}
 	}
 
-	input[type='text'],
-	input[type='search'],
-	input[type='url'],
-	input[type='tel'],
-	input[type='email'],
-	input[type='password'] {
-		&::placeholder {
+	input[type="text"],
+	input[type="search"],
+	input[type="url"],
+	input[type="tel"],
+	input[type="email"],
+	input[type="password"] {
+
+		&:placeholder {
 			color: var(--tec-color-text-secondary);
 			font-family: var(--tec-font-family-sans-serif);
 		}
@@ -203,27 +205,27 @@
 	/* Date of birth field */
 	.tribe-tickets__form-field--birth {
 		select {
+			display: inline-block;
+			margin: 0 0 var(--tec-spacer-1) 0;
 			min-width: 80px;
 			width: 100%;
-			margin: 0 0 var(--tec-spacer-1) 0;
-			display: inline-block;
 
 			@media (--viewport-medium) {
-				width: calc(( 100% / 3 ) - var(--tec-spacer-1) - 4px); /* 4px = safety margin */
 				margin-right: var(--tec-spacer-1);
+				width: calc((100% / 3) - var(--tec-spacer-1) - 4px); /* 4px = safety margin */
 			}
 		}
 	}
 
 	.tribe-tickets__button--next {
 		align-items: center;
-		border: 1px solid var(--tec-color-border-secondary);
 		background-color: var(--tec-color-accent-primary);
+		border: 1px solid var(--tec-color-border-secondary);
 		color: var(--tec-color-background);
 		display: inline-flex;
 		justify-content: center;
-		min-height: 54px;
 		max-width: 100%;
+		min-height: 54px;
 
 		&:hover {
 			color: var(--tec-color-background);
@@ -231,12 +233,12 @@
 	}
 
 	.tribe-tickets__form-message {
-		display: flex;
 		align-items: flex-start;
 		background-color: var(--tec-color-accent-primary-background);
 		border-radius: var(--tec-border-radius-default);
-		padding: var(--tec-spacer-4) var(--tec-spacer-3);
+		display: flex;
 		margin-bottom: var(--tec-spacer-4);
+		padding: var(--tec-spacer-4) var(--tec-spacer-3);
 
 		@media (--viewport-medium) {
 			padding: var(--tec-spacer-3);
@@ -256,8 +258,8 @@
 		}
 
 		circle#dot {
-			stroke: transparent;
 			fill: var(--tec-color-icon-active);
+			stroke: transparent;
 		}
 
 		path {

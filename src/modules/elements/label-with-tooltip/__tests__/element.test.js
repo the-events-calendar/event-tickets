@@ -28,7 +28,7 @@ describe( 'Tooltip Element', () => {
 			tooltipPosition: 'bottom left',
 			tooltipText: 'here is the tooltip text',
 		};
-		const component = renderer.create( <LabelWithTooltip { ...props } />)
-		expect( component.toJSON() ).toMatchSnapshot()
+		const component = renderer.create( <LabelWithTooltip { ...props } /> );
+		expect( component.toJSON() ).toMatchSnapshot();
 	} );
 } );

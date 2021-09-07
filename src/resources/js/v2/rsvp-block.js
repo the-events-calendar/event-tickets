@@ -1,4 +1,3 @@
-/* globals jQuery, tribe */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -240,7 +239,7 @@ tribe.tickets.rsvp.block = {};
 	 *
 	 * @return {void}
 	 */
-	obj.unbindEvents = function( event, jqXHR, settings ) {
+	obj.unbindEvents = function( event, jqXHR, settings ) { // eslint-disable-line no-unused-vars
 		const $container = event.data.container;
 		const $goingButton = $container.find( obj.selectors.goingButton );
 		const $notGoingButton = $container.find( obj.selectors.notGoingButton );

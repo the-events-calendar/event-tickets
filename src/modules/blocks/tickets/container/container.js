@@ -12,18 +12,18 @@ import { withStore } from '@moderntribe/common/hoc';
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 
 const getHasOverlay = ( state, ownProps ) => (
-	selectors.getTicketsIsSettingsOpen( state )
-		|| (
-			! selectors.hasATicketSelected( state )
-				&& ! ownProps.isSelected
+	selectors.getTicketsIsSettingsOpen( state ) ||
+		(
+			! selectors.hasATicketSelected( state ) &&
+				! ownProps.isSelected
 		)
 );
 
 const getShowInactiveBlock = ( state, ownProps ) => {
 	const showIfBlockIsSelected = ownProps.isSelected && ! selectors.hasTickets( state );
-	const showIfBlockIsNotSelected = ! ownProps.isSelected
-		&& ! selectors.hasATicketSelected( state )
-		&& ( ! selectors.hasCreatedTickets( state ) || ! selectors.hasTicketOnSale( state ) );
+	const showIfBlockIsNotSelected = ! ownProps.isSelected &&
+		! selectors.hasATicketSelected( state ) &&
+		( ! selectors.hasCreatedTickets( state ) || ! selectors.hasTicketOnSale( state ) );
 
 	return showIfBlockIsSelected || showIfBlockIsNotSelected;
 };

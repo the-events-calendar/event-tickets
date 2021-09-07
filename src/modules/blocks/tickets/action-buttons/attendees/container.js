@@ -23,10 +23,10 @@ const mapStateToProps = () => {
 	const postId = select( 'core/editor' ).getCurrentPostId();
 
 	return {
-		href: `${ adminURL }edit.php?post_type=${ postType }&page=tickets-attendees&event_id=${ postId }`,
+		href: `${ adminURL }edit.php?post_type=${ postType }&page=tickets-attendees&event_id=${ postId }`, // eslint-disable-line max-len
 		canCreateTickets: selectors.canCreateTickets(),
 	};
-}
+};
 
 export default compose(
 	withStore(),
