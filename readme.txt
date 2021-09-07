@@ -178,10 +178,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.1.9] 2021-08-31 =
+= [TBD] TBD =
 
 * Tweak - Added a new filter `tribe_tickets_get_provider_query_slug` to allow customization of the provider URL variable name. [ET-543]
-* Tweak - Changed the `provider` URL variable name to `tickets_provider`. The filter `tribe_tickets_provider_url_slug` allows for customization. [ET-543]
+* Tweak - Changed the `provider` URL variable name to `tickets_provider`. The filter `tribe_tickets_get_provider_query_slug` allows for customization. [ET-543]
+
+= [5.1.9] 2021-08-31 =
+
 * Fix - Fixed cart calculation inconsistency with WooCommerce when the "Number of decimals" setting was set to `0`. [ETP-324]
 * Fix - Removed RSVP V2 preview templates and functionality. [ET-1162]
 * Fix - Updated deprecated hook `block_categories` to use `block_categories_all`. [ET-1156]

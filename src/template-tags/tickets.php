@@ -1812,11 +1812,11 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 
 
 /**
- * Returns the slug for providers
+ * Returns the tickets provider slug.
  *
  * @since TBD
  *
- * @return string String for which the slug should be named.
+ * @return string String containing the tickets provider slug.
  */
 function tribe_tickets_get_provider_query_slug() {
 	/**
