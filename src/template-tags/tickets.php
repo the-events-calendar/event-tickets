@@ -1809,7 +1809,6 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 		return (bool) apply_filters( 'tribe_tickets_new_views_is_enabled', $enabled );
 	}
 }
-
 /**
  * Returns the tickets provider slug.
  *
