@@ -16,20 +16,22 @@
 			body: JSON.stringify( {
 				auth_code: authCode,
 				shared_id: sharedId,
-				nonce: \'a9268542af\',
+				nonce: \'THE_PAYPAL_NONCE\',
 			} ),
 		} );
 	}
 </script>
 
-<div class="tec-tickets-commerce-connect-paypal-button">
+<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connect-button">
 	<a
 		target="_blank"
 		data-paypal-onboard-complete="onboardedCallback"
-		href="https://www.sandbox.paypal.com/us/merchantsignup/partner/onboardingentry?token=YzlmMDdlYjAtODgwZi00N2VmLWE5NzctZDhmMjM4MzViNjk3NUdjWGF5dmI5MHJlNnkxUC9GVDhQSVV5WUxIaUlyYk5jMkhsMVpUU0lUdz12Mg==&displayMode=minibrowser"
+		href="http://thepaypalsandboxlink.tec.com/hash&displayMode=minibrowser"
 		data-paypal-button="true"
 		id="connect_to_paypal"
+		class="tec-tickets__admin-settings-tickets-commerce-paypal-connect-button-link"
 	>
 		Connect Automatically with <i>PayPal</i>	</a>
-</div></div>
+</div>
+</div>
 ';
