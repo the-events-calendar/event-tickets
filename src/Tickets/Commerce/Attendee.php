@@ -496,7 +496,7 @@ class Attendee {
 		$order         = false;
 
 		if (
-			'on-pending' === tribe_get_option( 'ticket-paypal-stock-handling', 'on-complete' )
+			'on-pending' === tribe_get_option( 'ticket-commerce-stock-handling', 'on-complete' )
 			&& ! $ignore_pending
 			&& Order_Statuses::$pending === $order_status
 			&& false !== $order_id
