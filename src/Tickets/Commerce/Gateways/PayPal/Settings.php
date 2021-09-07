@@ -32,8 +32,6 @@ class Settings extends Abstract_Settings {
 		// Add an initial empty selection to the start.
 		$countries = [ '' => __( '-- Please select a country --', 'event-tickets' ) ] + $countries;
 
-		$connect_html = 'Connect to PayPal';
-
 		return [
 			'tickets-commerce-paypal-commerce-configure' => [
 				'type'            => 'wrapped_html',
