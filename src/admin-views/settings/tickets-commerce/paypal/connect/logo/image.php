@@ -1,6 +1,6 @@
 <?php
 /**
- * The Template for displaying the Tickets Commerce Payments Settings.
+ * The Template for displaying the Tickets Commerce PayPal Settings, the PayPal logo specifically.
  *
  * @version TBD
  *

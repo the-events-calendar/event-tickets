@@ -1,6 +1,6 @@
 <?php
 /**
- * The Template for displaying the Tickets Commerce Payments Settings.
+ * The Template for displaying the Tickets Commerce PayPal connection details.
  *
  * @version TBD
  *
@@ -13,7 +13,7 @@
  * @var bool                                          $is_merchant_active [Global] Whether the merchant is active or not.
  */
 
-if ( ! $is_merchant_active ) {
+if ( empty( $is_merchant_active ) ) {
 	return;
 }
 

@@ -216,7 +216,7 @@ class Settings extends Abstract_Settings {
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
 		$settings = [
-			/**/'tickets-commerce-general-settings-heading'     => [
+			'tickets-commerce-general-settings-heading'     => [
 				'type'            => 'html',
 				'html'            => '<h3 class="my-awesome-class tribe-dependent"  data-depends="#' . static::$option_enable . '-input" data-condition-is-checked>' . __( 'Tickets Commerce Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
 			],
@@ -285,7 +285,7 @@ class Settings extends Abstract_Settings {
 				'label'           => esc_html__( 'Success page', 'event-tickets' ),
 				'tooltip'         => esc_html(
 					sprintf(
-					// Translators: %s: The [shortcode] for the success page.
+						// Translators: %s: The [shortcode] for the success page.
 						__( 'After a successful order, users will be redirected to this page. Use the %s shortcode to display the order confirmation to the user in the page content.', 'event-tickets' ),
 						"[$success_shortcode]"
 					)
@@ -300,7 +300,7 @@ class Settings extends Abstract_Settings {
 				'label'           => esc_html__( 'Confirmation email sender address', 'event-tickets' ),
 				'tooltip'         => esc_html(
 					sprintf(
-					// Translators: %s: The word "tickets" in lowercase.
+						// Translators: %s: The word "tickets" in lowercase.
 						_x( 'Email address that %s customers will receive confirmation from. Leave empty to use the default WordPress site email address.', 'tickets fields settings confirmation email', 'event-tickets' ),
 						tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_paypal_confirmation_email' )
 					)
@@ -315,7 +315,7 @@ class Settings extends Abstract_Settings {
 				'label'               => esc_html__( 'Confirmation email sender name', 'event-tickets' ),
 				'tooltip'             => esc_html(
 					sprintf(
-					// Translators: %s: The word "ticket" in lowercase.
+						// Translators: %s: The word "ticket" in lowercase.
 						_x( 'Sender name of the confirmation email sent to customers when confirming a %s purchase.', 'tickets fields settings paypal email sender', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_email_sender' )
 					)
@@ -330,7 +330,7 @@ class Settings extends Abstract_Settings {
 				'label'               => esc_html__( 'Confirmation email subject', 'event-tickets' ),
 				'tooltip'             => esc_html(
 					sprintf(
-					// Translators: %s: The word "ticket" in lowercase.
+						// Translators: %s: The word "ticket" in lowercase.
 						_x( 'Subject of the confirmation email sent to customers when confirming a %s purchase.', 'tickets fields settings paypal email subject', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_email_subject' )
 					)
@@ -338,7 +338,7 @@ class Settings extends Abstract_Settings {
 				'size'                => 'large',
 				'default'             => esc_html(
 					sprintf(
-					// Translators: %s: The word "tickets" in lowercase.
+						// Translators: %s: The word "tickets" in lowercase.
 						_x( 'You have %s!', 'tickets fields settings paypal email subject', 'event-tickets' ),
 						tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_paypal_email_subject' )
 					)
