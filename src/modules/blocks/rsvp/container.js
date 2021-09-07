@@ -62,7 +62,7 @@ const setInitialState = ( dispatch, ownProps ) => () => {
 	}
 	if ( attributes.notGoingCount ) {
 		dispatch( actions.setRSVPNotGoingCount(
-			parseInt( attributes.notGoingCount, 10 )
+			parseInt( attributes.notGoingCount, 10 ),
 		) );
 	}
 };
@@ -76,7 +76,7 @@ const mapStateToProps = ( state ) => {
 		isLoading: selectors.getRSVPIsLoading( state ),
 		isModalShowing: isModalShowing( state ) && getModalTicketId( state ) === rsvpId,
 		rsvpId,
-	}
+	};
 };
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {

@@ -16,7 +16,7 @@ const getSharedSold = ( state, isShared ) => (
 );
 
 const mapStateToProps = ( state, ownProps ) => {
-	const isShared = selectors.isSharedTicket( state, ownProps )
+	const isShared = selectors.isSharedTicket( state, ownProps );
 
 	return {
 		isDisabled: selectors.isTicketDisabled( state, ownProps ),

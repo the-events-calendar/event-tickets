@@ -8,7 +8,7 @@ import { delay } from 'redux-saga';
 /**
  * Wordpress dependencies
  */
-import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
+import { select as wpSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -48,7 +48,9 @@ export function* _fetch( params ) {
 
 /**
  * Fetches usable oost types
- * @returns {Object} JSON response
+ *
+ * @yields
+ * @returns {object} JSON response
  */
 export function* fetchPostTypes() {
 	try {
@@ -75,12 +77,13 @@ export function* fetchPostTypes() {
  * Fetches filtered posts based on criteria
  *
  * @export
+ * @yields
  * @param {*} {
  * 	ignore,
  * 	post_type,
  * 	search_terms = '',
  * }
- * @returns {Object} JSON response
+ * @returns {object} JSON response
  */
 export function* fetchPostChoices( {
 	ignore,
@@ -114,12 +117,13 @@ export function* fetchPostChoices( {
  * Moves ticket/RSVP from one post to another
  *
  * @export
+ * @yields
  * @param {*} {
  * 	src_post_id,
  * 	ticket_type_id,
  * 	target_post_id,
  * }
- * @returns {Object} JSON response
+ * @returns {object} JSON response
  */
 export function* moveTicket( {
 	src_post_id,

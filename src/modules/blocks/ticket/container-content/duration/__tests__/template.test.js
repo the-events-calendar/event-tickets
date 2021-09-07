@@ -15,7 +15,7 @@ describe( 'Ticket Duration picker and label', () => {
 				fromTime="00:00"
 				toTime="23:59"
 				current="12:34"
-			/>
+			/>,
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );

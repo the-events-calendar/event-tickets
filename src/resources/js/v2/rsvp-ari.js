@@ -1,4 +1,3 @@
-/* global jQuery, tribe */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -19,12 +18,12 @@ tribe.tickets.rsvp = tribe.tickets.rsvp || {};
 tribe.tickets.rsvp.ari = {};
 
 /**
- * Initializes in a Strict env the code that manages the RSVP block.
+ * Initializes in a Strict env the code that manages the RSVP ARI.
  *
  * @since 5.0.0
  *
  * @param  {Object} $   jQuery
- * @param  {Object} obj tribe.tickets.rsvp.block
+ * @param  {Object} obj tribe.tickets.rsvp.ari
  *
  * @return {void}
  */
@@ -74,11 +73,14 @@ tribe.tickets.rsvp.ari = {};
 	 */
 	obj.goToGuest = function( $container, guestNumber ) {
 		const $guestFormWrapper = $container.find( obj.selectors.guestFormWrapper );
-		const $targetGuestForm = $guestFormWrapper.find( obj.selectors.guestFormFields + '[data-guest-number="' + guestNumber + '"]' );
+		const $targetGuestForm = $guestFormWrapper
+			.find( obj.selectors.guestFormFields + '[data-guest-number="' + guestNumber + '"]' );
 		const $guestListButtons = $container.find( obj.selectors.guestListItemButton );
 
 		// Set all forms as hidden.
-		$container.find( obj.selectors.guestFormFields ).addClass( obj.selectors.hiddenElement.className() );
+		$container
+			.find( obj.selectors.guestFormFields )
+			.addClass( obj.selectors.hiddenElement.className() );
 		$container.find( obj.selectors.guestFormFields ).prop( 'hidden', true );
 
 		// Show the selected guest.
@@ -90,7 +92,8 @@ tribe.tickets.rsvp.ari = {};
 		$guestListButtons.attr( 'aria-selected', 'false' );
 
 		// Set the active class for the current.
-		const $targetGuestButton = $container.find( obj.selectors.guestListItemButton + '[data-guest-number="' + guestNumber + '"]' );
+		const $targetGuestButton = $container
+			.find( obj.selectors.guestListItemButton + '[data-guest-number="' + guestNumber + '"]' );
 		$targetGuestButton.removeClass( obj.selectors.guestListItemButtonInactive.className() );
 		$targetGuestButton.attr( 'aria-selected', 'true' );
 	};
@@ -202,7 +205,8 @@ tribe.tickets.rsvp.ari = {};
 		}
 
 		// Get the current guest form.
-		const $currentGuestForm = $container.find( obj.selectors.guestFormFields + '[data-guest-number="' + currentGuest + '"]' );
+		const $currentGuestForm = $container
+			.find( obj.selectors.guestFormFields + '[data-guest-number="' + currentGuest + '"]' );
 
 		// Get if there are required fields in the current.
 		const isCurrentGuestValid = obj.isGuestValid( $currentGuestForm );
@@ -249,12 +253,12 @@ tribe.tickets.rsvp.ari = {};
 	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
 	 * @param {jQuery} $button jQuery object of the button.
-	 * @param {number} guestNumber The guest number.
+	 * @param {number} guestNumberVal The guest number.
 	 *
 	 * @return {void}
 	 */
-	obj.bindGoToGuest = function( $container, $button, guestNumber ) {
-		var guestNumber = guestNumber || 1;
+	obj.bindGoToGuest = function( $container, $button, guestNumberVal ) {
+		var guestNumber = guestNumberVal || 1;
 
 		$button.on( 'click', function() {
 			const guestNumberDataAttribute = $( this ).data( 'guest-number' );
@@ -286,8 +290,12 @@ tribe.tickets.rsvp.ari = {};
 		const totalGuests = obj.getTotalGuests( $container );
 
 		const rsvpId = $container.data( 'rsvp-id' );
-		const rsvpFieldsTemplate = window.wp.template( obj.selectors.guestFormFieldsTemplate.className() + '-' + rsvpId );
-		const guestListItemTemplate = window.wp.template( obj.selectors.guestListItemTemplate.className() + '-' + rsvpId );
+		const rsvpFieldsTemplate = window.wp.template(
+			obj.selectors.guestFormFieldsTemplate.className() + '-' + rsvpId
+		);
+		const guestListItemTemplate = window.wp.template(
+			obj.selectors.guestListItemTemplate.className() + '-' + rsvpId
+		);
 		const data = { attendee_id: totalGuests };
 
 		// Append the new guest list item and new guest form.
@@ -462,7 +470,8 @@ tribe.tickets.rsvp.ari = {};
 	 * @return {number} Number representing the current guests.
 	 */
 	obj.getCurrentGuest = function( $container ) {
-		const $currentFormFields = $container.find( obj.selectors.guestFormFields + ':not(' + obj.selectors.hiddenElement + ')' );
+		const $currentFormFields = $container
+			.find( obj.selectors.guestFormFields + ':not(' + obj.selectors.hiddenElement + ')' );
 
 		return $currentFormFields.data( 'guest-number' );
 	};
@@ -496,10 +505,14 @@ tribe.tickets.rsvp.ari = {};
 					}
 					$input[ 0 ].stepUp();
 				} catch ( ex ) {
-					$input[ 0 ].value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
+					$input[ 0 ].value = ( -1 === max || max >= originalValue + step )
+						? originalValue + step
+						: max;
 				}
 			} else {
-				$input[ 0 ].value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
+				$input[ 0 ].value = ( -1 === max || max >= originalValue + step )
+					? originalValue + step
+					: max;
 			}
 		} else {
 			const min = $input.attr( 'min' ) ? Number( $input.attr( 'min' )) : 0;
@@ -508,10 +521,14 @@ tribe.tickets.rsvp.ari = {};
 				try {
 					$input[ 0 ].stepDown();
 				} catch ( ex ) {
-					$input[ 0 ].value = ( min <= originalValue - step ) ? originalValue - step : min;
+					$input[ 0 ].value = ( min <= originalValue - step )
+						? originalValue - step
+						: min;
 				}
 			} else {
-				$input[ 0 ].value = ( min <= originalValue - step ) ? originalValue - step : min;
+				$input[ 0 ].value = ( min <= originalValue - step )
+					? originalValue - step
+					: min;
 			}
 		}
 
@@ -534,7 +551,8 @@ tribe.tickets.rsvp.ari = {};
 		const $addGuestButton = $container.find( obj.selectors.addGuestButton );
 		const $removeGuestButton = $container.find( obj.selectors.removeGuestButton );
 		const $guestListItemButton = $container.find( obj.selectors.guestListItemButton );
-		const $qtyInput = $container.find( '.tribe-tickets__rsvp-ar-quantity-input input[type="number"]' );
+		const $qtyInput = $container
+			.find( '.tribe-tickets__rsvp-ar-quantity-input input[type="number"]' );
 
 		obj.bindGoToGuest( $container, $guestListItemButton );
 
@@ -577,7 +595,7 @@ tribe.tickets.rsvp.ari = {};
 	 *
 	 * @return {void}
 	 */
-	obj.unbindEvents = function( event, jqXHR, settings ) {
+	obj.unbindEvents = function( event, jqXHR, settings ) { // eslint-disable-line no-unused-vars
 		const $container = event.data.container;
 		const $addGuestButton = $container.find( obj.selectors.addGuestButton );
 		const $removeGuestButton = $container.find( obj.selectors.removeGuestButton );
