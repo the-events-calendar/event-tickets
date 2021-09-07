@@ -178,6 +178,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Fixed text overlapping description in the ticket AR modal.
+
 = [5.1.9] 2021-08-31 =
 
 * Fix - Fixed cart calculation inconsistency with WooCommerce when the "Number of decimals" setting was set to `0`. [ETP-324]
