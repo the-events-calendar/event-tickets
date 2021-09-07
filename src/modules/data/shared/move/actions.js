@@ -4,7 +4,7 @@
  */
 import * as types from './types';
 
-export const showModal = ( ticketId, clientId, ) => ( {
+export const showModal = ( ticketId, clientId ) => ( {
 	type: types.SHOW_MODAL,
 	payload: { ticketId, clientId },
 } );

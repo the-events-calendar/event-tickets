@@ -22,7 +22,7 @@ describe( '<CapacityRow />', () => {
 	test( 'Custom right value', () => {
 		const Button = () => <button>Click Me!</button>;
 		const component = renderer.create(
-			<CapacityRow label="Modern Tribe" items="(20 items)" right={ <Button /> } />
+			<CapacityRow label="Modern Tribe" items="(20 items)" right={ <Button /> } />,
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );

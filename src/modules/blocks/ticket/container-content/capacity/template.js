@@ -19,7 +19,7 @@ import { Dashicon } from '@wordpress/components';
 import { constants, options } from '@moderntribe/tickets/data/blocks/ticket';
 import { LabeledItem, NumberInput, Select } from '@moderntribe/common/elements';
 import { LabelWithTooltip } from '@moderntribe/tickets/elements';
-import { ReactSelectOption } from '@moderntribe/common/data/plugins/proptypes'
+import { ReactSelectOption } from '@moderntribe/common/data/plugins/proptypes';
 import './style.pcss';
 
 const {
@@ -34,7 +34,7 @@ const LabeledNumberInput = ( {
 	className,
 	id,
 	label,
-	...props,
+	...props
 } ) => (
 	<LabeledItem
 		className={ classNames(
@@ -108,7 +108,7 @@ class Capacity extends PureComponent {
 					disabled={ isDisabled }
 					min={ 0 }
 					required={ true }
-				/>
+				/>,
 			);
 		}
 
@@ -121,8 +121,8 @@ class Capacity extends PureComponent {
 			const ticketType = tempCapacityType === TICKET_TYPES[ SHARED ] ? SHARED : INDEPENDENT;
 
 			if (
-				tempCapacityType === TICKET_TYPES[ SHARED ]
-					&& ( sharedCapacity || tempSharedCapacity )
+				tempCapacityType === TICKET_TYPES[ SHARED ] &&
+					( sharedCapacity || tempSharedCapacity )
 			) {
 				const max = sharedCapacity ? sharedCapacity : tempSharedCapacity;
 				extraProps.max = parseInt( max, 10 ) || 0;
@@ -150,7 +150,7 @@ class Capacity extends PureComponent {
 					disabled={ isDisabled }
 					min={ 0 }
 					{ ...extraProps }
-				/>
+				/>,
 			);
 		}
 
@@ -210,9 +210,9 @@ class Capacity extends PureComponent {
 
 		return (
 			<div className={ classNames(
-					'tribe-editor__ticket__capacity',
-					'tribe-editor__ticket__content-row',
-					'tribe-editor__ticket__content-row--capacity',
+				'tribe-editor__ticket__capacity',
+				'tribe-editor__ticket__content-row',
+				'tribe-editor__ticket__content-row--capacity',
 			) }>
 				<LabelWithTooltip
 					className="tribe-editor__ticket__capacity-label-with-tooltip"
@@ -223,7 +223,12 @@ class Capacity extends PureComponent {
 						'Ticket capacity will only be used by attendees buying this ticket type',
 						'event-tickets',
 					) }
-					tooltipLabel={ <Dashicon className="tribe-editor__ticket__tooltip-label" icon="info-outline" /> }
+					tooltipLabel={
+						<Dashicon
+							className="tribe-editor__ticket__tooltip-label"
+							icon="info-outline"
+						/>
+					}
 				/>
 				<div className="tribe-editor__ticket__capacity-form">
 					{ hasTicketsPlus ? this.getCapacityForm() : this.getNoPlusCapacityForm() }
