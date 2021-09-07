@@ -180,7 +180,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.1.9.1] 2021-09-08 =
 
-
+* Fix - Fixed conflict with WooCommerce Payments plugin showing error on Ticket Form. [ET-1174]
 
 = [5.1.9] 2021-08-31 =
 
