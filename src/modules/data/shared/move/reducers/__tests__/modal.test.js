@@ -15,22 +15,22 @@ describe( 'Move modal reducer', () => {
 
 	it( 'should set data', () => {
 		expect(
-			reducer( undefined, actions.setModalData( { post_type: 'some' } ) )
+			reducer( undefined, actions.setModalData( { post_type: 'some' } ) ),
 		).toMatchSnapshot();
 	} );
 	it( 'should move ticket', () => {
 		expect(
-			reducer( undefined, { type: types.MOVE_TICKET } )
+			reducer( undefined, { type: types.MOVE_TICKET } ),
 		).toMatchSnapshot();
 	} );
 	it( 'should move ticket with success', () => {
 		expect(
-			reducer( undefined, { type: types.MOVE_TICKET_SUCCESS } )
+			reducer( undefined, { type: types.MOVE_TICKET_SUCCESS } ),
 		).toMatchSnapshot();
 	} );
 	it( 'should move ticket with error', () => {
 		expect(
-			reducer( undefined, { type: types.MOVE_TICKET_ERROR } )
+			reducer( undefined, { type: types.MOVE_TICKET_ERROR } ),
 		).toMatchSnapshot();
 	} );
 } );

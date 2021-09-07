@@ -1,16 +1,7 @@
 /**
- * External dependencies
- */
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-
-/**
  * Internal dependencies
  */
 import { actions } from '@moderntribe/tickets/data/blocks/attendees';
-
-const middlewares = [ thunk ];
-const mockStore = configureStore( middlewares );
 
 describe( '[STORE] - Attendees actions', () => {
 	it( 'Should set initial state', () => {
@@ -28,5 +19,4 @@ describe( '[STORE] - Attendees actions', () => {
 	it( 'Should set the attendees Display Subtitle', () => {
 		expect( actions.setDisplaySubtitle( true ) ).toMatchSnapshot();
 	} );
-
 } );

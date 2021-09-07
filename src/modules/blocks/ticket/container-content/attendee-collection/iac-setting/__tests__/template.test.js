@@ -26,7 +26,7 @@ describe.skip( 'IACSetting', () => {
 				iacDefault={ iacDefault }
 				iacOptions={ iacOptions }
 				isDisabled={ false }
-			/>
+			/>,
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );

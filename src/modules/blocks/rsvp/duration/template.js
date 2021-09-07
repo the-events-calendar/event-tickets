@@ -21,7 +21,10 @@ const RSVPDuration = ( { hasDurationError } ) => (
 		<RSVPDurationPicker />
 		{ hasDurationError && (
 			<span className="tribe-editor__rsvp-duration__error">
-				{ __( 'There is an error with the selected sales duration. Please fix the issue before saving.', 'event-tickets' ) }
+				{ __(
+					'There is an error with the selected sales duration. Please fix the issue before saving.', // eslint-disable-line max-len
+					'event-tickets',
+				) }
 			</span>
 		) }
 	</div>
