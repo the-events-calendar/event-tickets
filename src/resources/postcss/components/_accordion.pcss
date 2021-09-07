@@ -2,12 +2,12 @@
 .accordion-header {
 	background: none;
 	border: 0;
+	box-sizing: border-box;
 	color: inherit;
 	cursor: pointer;
 	font-size: 12px;
 	font-weight: bold;
 	padding: 10px 20px;
-	box-sizing: border-box;
 	position: relative;
 	text-align: left;
 	width: 100%;
@@ -20,29 +20,30 @@
 		content: '\f132';
 		font-family: 'dashicons';
 		font-size: 10px;
-		line-height: 17px;
 		font-weight: 400;
 		height: 14px;
 		left: 0;
+		line-height: 17px;
 		padding: 0;
+		padding-right: 1px;
 		position: absolute;
+		text-align: center;
 		top: 12px;
 		width: 15px;
-		text-align: center;
-		padding-right: 1px;
 	}
 
 	&:after {
-		content: '';
 		border-bottom: 1px solid #ddd;
+		content: '';
 		position: absolute;
 		right: 0;
-		width: 80%;
 		top: 50%;
 		transform: translateY(-50%);
+		width: 80%;
 	}
 
 	&.is-active {
+
 		&:before {
 			content: '\f460';
 			line-height: 15px;
@@ -58,15 +59,15 @@
 	}
 }
 
-.tribe-tickets-editor-history::after {
+.tribe-tickets-editor-history:after {
 	width: calc(100% - 80px);
 }
 
-.tribe_attendee_meta::after {
+.tribe_attendee_meta:after {
 	width: calc(100% - 170px);
 }
 
-.tribe_advanced_meta::after {
+.tribe_advanced_meta:after {
 	width: calc(100% - 105px);
 }
 

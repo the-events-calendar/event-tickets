@@ -9,11 +9,11 @@ import { compose } from 'redux';
  */
 import { withStore } from '@moderntribe/common/hoc';
 import * as selectors from '@moderntribe/tickets/data/shared/move/selectors';
-import { INITIALIZE_MODAL, SET_MODAL_DATA, SUBMIT_MODAL } from '@moderntribe/tickets/data/shared/move/types';
+import { INITIALIZE_MODAL, SUBMIT_MODAL } from '@moderntribe/tickets/data/shared/move/types';
 import { hideModal, setModalData } from '@moderntribe/tickets/data/shared/move/actions';
 import Template from './template';
 
-const mapStateToProps = ( state, ownProps ) => ( {
+const mapStateToProps = ( state ) => ( {
 	hasSelectedPost: selectors.hasSelectedPost( state ),
 	isFetchingPosts: selectors.isFetchingPosts( state ),
 	isFetchingPostTypes: selectors.isFetchingPostTypes( state ),
@@ -25,7 +25,7 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	search: selectors.getModalSearch( state ),
 } );
 
-const mapDispatchToProps = ( dispatch, ownProps ) => ( {
+const mapDispatchToProps = ( dispatch ) => ( {
 	initialize: () => dispatch( { type: INITIALIZE_MODAL } ),
 	hideModal: () => dispatch( hideModal() ),
 	onSearchChange: ( e ) => dispatch( setModalData( { search_terms: e.target.value } ) ),

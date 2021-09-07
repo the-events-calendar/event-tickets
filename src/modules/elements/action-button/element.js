@@ -53,7 +53,7 @@ const ActionButton = ( {
 		}
 
 		return elemProps;
-	}
+	};
 
 	return (
 		<Element
@@ -64,7 +64,7 @@ const ActionButton = ( {
 			<span className="tribe-editor__action-button__label">{ children }</span>
 		</Element>
 	);
-}
+};
 
 ActionButton.propTypes = {
 	asLink: PropTypes.bool,

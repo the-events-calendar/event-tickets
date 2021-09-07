@@ -18,7 +18,7 @@ describe( '<CapacityTable />', () => {
 					{ name: 'Balcony', quantity: 20 },
 				] }
 				totalCapacity={ 30 }
-			/>
+			/>,
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );

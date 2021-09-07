@@ -548,7 +548,6 @@ export const handleTicketEndTime = ( clientId, seconds ) => ( {
 	},
 } );
 
-
 export const fetchTicket = ( clientId, ticketId ) => ( {
 	type: types.FETCH_TICKET,
 	payload: {
@@ -575,7 +574,7 @@ export const deleteTicket = ( clientId ) => ( {
 	type: types.DELETE_TICKET,
 	payload: {
 		clientId,
-	}
+	},
 } );
 
 export const setTicketInitialState = ( props ) => ( {

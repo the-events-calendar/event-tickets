@@ -1,8 +1,6 @@
-/* eslint-disable max-len */
-/* global TribeTicketOptions, TribeCartEndpoint, TribeCurrency, TribeMessages, TribeTicketsURLs */
 // @TODO: Take this line off once we _know_ actually have the tribe object
 if ( 'undefined' === typeof window.tribe ) {
-	window.tribe = {}; // eslint-disable-line no-unused-vars
+	window.tribe = {};
 }
 
 window.tribe.tickets = window.tribe.tickets || {};
@@ -269,7 +267,9 @@ window.tribe.tickets.block = {
 			item.$optOut = $( optoutSelector );
 			const $optoutInput = $( optoutSelector + '-modal' );
 
-			( item.$optOut.length && item.$optOut.is( ':checked' ) ) ? $optoutInput.val( '1' ) : $optoutInput.val( '0' );
+			( item.$optOut.length && item.$optOut.is( ':checked' ) )
+				? $optoutInput.val( '1' )
+				: $optoutInput.val( '0' );
 		}
 
 		obj.updateTotal( item.qty, item.price, $modalCartItem );
@@ -321,7 +321,9 @@ window.tribe.tickets.block = {
 			function() {
 				const $cartItem = $( this );
 				const ticketID = $cartItem.closest( obj.selector.item ).data( 'ticket-id' );
-				const $ticketContainer = $( obj.modalSelector.metaForm ).find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]' );
+				const $ticketContainer = $( obj.modalSelector.metaForm ).find(
+					'.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]'
+				);
 
 				// Ticket does not have meta - no need to jump through hoops ( and throw errors ).
 				if ( ! $ticketContainer.length ) {
@@ -414,7 +416,9 @@ window.tribe.tickets.block = {
 
 				if ( $cartItem.is( ':visible' ) ) {
 					const ticketID = $cartItem.closest( obj.selector.item ).data( 'ticket-id' );
-					const $ticketContainer = $( obj.modalSelector.metaForm ).find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]' );
+					const $ticketContainer = $( obj.modalSelector.metaForm ).find(
+						'.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]'
+					);
 
 					// Ticket does not have meta - no need to jump through hoops ( and throw errors ).
 					if ( ! $ticketContainer.length ) {
@@ -434,7 +438,9 @@ window.tribe.tickets.block = {
 					if ( $existing.length > qty ) {
 						const removeCount = $existing.length - qty;
 
-						$ticketContainer.find( '.tribe-ticket:nth-last-child( -n+' + removeCount + ' )' ).remove();
+						$ticketContainer
+							.find( '.tribe-ticket:nth-last-child( -n+' + removeCount + ' )' )
+							.remove();
 					} else if ( $existing.length < qty ) {
 						const ticketTemplate = window.wp.template( 'tribe-registration--' + ticketID );
 						const counter = 0 < $existing.length ? $existing.length + 1 : 1;
@@ -514,7 +520,9 @@ window.tribe.tickets.block = {
 	obj.stepDown = function( $input, originalValue ) {
 		const min = $input.attr( 'min' ) ? Number( $input.attr( 'min' ) ) : 0;
 		const step = $input.attr( 'step' ) ? Number( $input.attr( 'step' ) ) : 1;
-		const decrease = ( min <= originalValue - step && 0 < originalValue - step ) ? originalValue - step : min;
+		const decrease = ( min <= originalValue - step && 0 < originalValue - step )
+			? originalValue - step
+			: min;
 
 		if ( 'function' === typeof $input[ 0 ].stepDown ) {
 			try {
@@ -886,7 +894,9 @@ window.tribe.tickets.block = {
 
 		$.each( meta, function( idx, ticket ) {
 			let current = 0;
-			const $currentContainers = $containers.find( obj.modalSelector.metaItem ).filter( '[data-ticket-id="' + ticket.ticket_id + '"]' );
+			const $currentContainers = $containers
+				.find( obj.modalSelector.metaItem )
+				.filter( '[data-ticket-id="' + ticket.ticket_id + '"]' );
 
 			if ( ! $currentContainers.length ) {
 				return;
@@ -966,7 +976,9 @@ window.tribe.tickets.block = {
 					let $eventCount = 0;
 
 					tickets.forEach( function( ticket ) {
-						const $ticketRow = $( '.tribe-tickets__item[data-ticket-id="' + ticket.ticket_id + '"]' );
+						const $ticketRow = $(
+							'.tribe-tickets__item[data-ticket-id="' + ticket.ticket_id + '"]'
+						);
 						if ( 'true' === $ticketRow.attr( 'data-available' ) ) {
 							const $field = $ticketRow.find( obj.selector.itemQuantityInput );
 							const $optout = $ticketRow.find( obj.selector.itemOptOutInput + ticket.ticket_id );
@@ -994,8 +1006,12 @@ window.tribe.tickets.block = {
 				$errorNotice
 					.removeClass( 'tribe-tickets__notice--barred tribe-tickets__notice--barred-left' )
 					.addClass( 'tribe-tickets__notice--error' );
-				$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.api_error_title );
-				$errorNotice.find( '.tribe-tickets-notice__content' ).text( TribeMessages.connection_error );
+				$errorNotice
+					.find( '.tribe-tickets-notice__title' )
+					.text( TribeMessages.api_error_title );
+				$errorNotice
+					.find( '.tribe-tickets-notice__content' )
+					.text( TribeMessages.connection_error );
 				$errorNotice.fadeIn();
 
 				obj.loaderHide();
@@ -1246,7 +1262,9 @@ window.tribe.tickets.block = {
 		ret.meta = {};
 		ret.tickets = {};
 		const deferred = $.Deferred();
-		const meta = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_attendees-' + obj.postId ) );
+		const meta = window.JSON.parse(
+			sessionStorage.getItem( 'tribe_tickets_attendees-' + obj.postId )
+		);
 
 		if ( null !== meta ) {
 			ret.meta = meta;
@@ -1254,7 +1272,9 @@ window.tribe.tickets.block = {
 
 		// If we haven't reloaded the page, assume the cart hasn't changed since we did.
 		if ( ! pageLoad ) {
-			const tickets = window.JSON.parse( sessionStorage.getItem( 'tribe_tickets_cart-' + obj.postId ) );
+			const tickets = window.JSON.parse(
+				sessionStorage.getItem( 'tribe_tickets_cart-' + obj.postId )
+			);
 
 			if ( null !== tickets && tickets.length ) {
 				ret.tickets = tickets;
@@ -1405,9 +1425,9 @@ window.tribe.tickets.block = {
 		}
 
 		const wrapper = $input.closest( obj.selector.horizontal_datepicker.container );
-		const day = wrapper.find( obj.selector.horizontal_datepicker.day );
-		const month = wrapper.find( obj.selector.horizontal_datepicker.month );
-		const year = wrapper.find( obj.selector.horizontal_datepicker.year );
+		const day = wrapper.find( obj.selector.horizontal_datepicker.day );  // eslint-disable-line es5/no-es6-methods,max-len
+		const month = wrapper.find( obj.selector.horizontal_datepicker.month );  // eslint-disable-line es5/no-es6-methods,max-len
+		const year = wrapper.find( obj.selector.horizontal_datepicker.year );  // eslint-disable-line es5/no-es6-methods,max-len
 
 		let isValidDatePicker = true;
 
@@ -1683,12 +1703,16 @@ window.tribe.tickets.block = {
 			obj.loaderShow( obj.modalSelector.loader );
 
 			if ( ! isValidForm[ 0 ] ) {
-				$errorNotice.find( '.tribe-tickets-notice__title' ).text( TribeMessages.validation_error_title );
+				$errorNotice
+					.find( '.tribe-tickets-notice__title' )
+					.text( TribeMessages.validation_error_title );
 				$errorNotice.find( 'p' ).html( TribeMessages.validation_error );
 				$( obj.selector.validationNotice + '__count' ).text( isValidForm[ 1 ] );
 				$errorNotice.show();
 				obj.loaderHide( obj.modalSelector.loader );
-				document.getElementById( 'tribe-tickets__notice__attendee-modal' ).scrollIntoView( { behavior: 'smooth', block: 'start' } );
+				document
+					.getElementById( 'tribe-tickets__notice__attendee-modal' )
+					.scrollIntoView( { behavior: 'smooth', block: 'start' } );
 				return false;
 			}
 
@@ -1826,4 +1850,3 @@ window.tribe.tickets.block = {
 		}
 	} );
 } )( jQuery, window.tribe.tickets.block, window.tribe.dialogs.events );
-/* eslint-enable max-len */

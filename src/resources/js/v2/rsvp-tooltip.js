@@ -18,7 +18,7 @@ tribe.tickets.rsvp = tribe.tickets.rsvp || {};
 tribe.tickets.rsvp.tooltip = {};
 
 /**
- * Initializes in a Strict env the code that manages the Event Views
+ * Initializes in a Strict env the code that manages the RSVP Tooltip
  *
  * @since 5.0.0
  *
@@ -72,7 +72,9 @@ tribe.tickets.rsvp.tooltip = {};
 		setTimeout( function() {
 			if (
 				event.data.target.is( ':focus' ) ||
-				event.data.target.hasClass( obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className() )
+				event.data.target.hasClass(
+					obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className()
+				)
 			) {
 				event.data.target.tooltipster( 'open' );
 			}
@@ -102,7 +104,9 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @return {void}
 	 */
 	obj.handleOriginHoverIn = function( event ) {
-		event.data.target.addClass( obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className() );
+		event.data.target.addClass(
+			obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className()
+		);
 	};
 
 	/**
@@ -115,7 +119,9 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @return {void}
 	 */
 	obj.handleOriginHoverOut = function( event ) {
-		event.data.target.removeClass( obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className() );
+		event.data.target.removeClass(
+			obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className()
+		);
 	};
 
 	/**
@@ -128,7 +134,9 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @return {void}
 	 */
 	obj.handleTooltipHoverIn = function( event ) {
-		event.data.target.addClass( obj.selectors.tribeTicketsRsvpTooltipThemeHoverClass.className() );
+		event.data.target.addClass(
+			obj.selectors.tribeTicketsRsvpTooltipThemeHoverClass.className()
+		);
 	};
 
 	/**
@@ -141,7 +149,9 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @return {void}
 	 */
 	obj.handleTooltipHoverOut = function( event ) {
-		event.data.target.removeClass( obj.selectors.tribeTicketsRsvpTooltipThemeHoverClass.className() );
+		event.data.target.removeClass(
+			obj.selectors.tribeTicketsRsvpTooltipThemeHoverClass.className()
+		);
 	};
 
 	/**
@@ -303,7 +313,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 *
 	 * @return {void}
 	 */
-	obj.deinit = function( event, jqXHR, settings ) {
+	obj.deinit = function( event, jqXHR, settings ) { // eslint-disable-line no-unused-vars
 		var $container = event.data.container;
 		obj.deinitTooltips( $container );
 		$container.off( 'beforeAjaxSuccess.tribeTicketsRsvp', obj.deinit );

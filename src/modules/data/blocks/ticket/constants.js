@@ -21,9 +21,9 @@ export const TC_ORDERS = 'tpp-orders';
 export const WOO_ORDERS = 'tickets-orders';
 
 export const TICKET_ORDERS_PAGE_SLUG = {
-	[EDD_CLASS]: EDD_ORDERS,
-	[TC_CLASS]: TC_ORDERS,
-	[WOO_CLASS]: WOO_ORDERS,
+	[ EDD_CLASS ]: EDD_ORDERS,
+	[ TC_CLASS ]: TC_ORDERS,
+	[ WOO_CLASS ]: WOO_ORDERS,
 };
 
 export const UNLIMITED = 'unlimited';

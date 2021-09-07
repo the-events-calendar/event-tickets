@@ -1,4 +1,3 @@
-/* global tribe */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -19,7 +18,7 @@ tribe.tickets.rsvp = tribe.tickets.rsvp || {};
 tribe.tickets.rsvp.manager = {};
 
 /**
- * Initializes in a Strict env the code that manages the Event Views
+ * Initializes in a Strict env the code that manages the RSVP Manager
  *
  * @since 5.0.0
  *
@@ -31,7 +30,6 @@ tribe.tickets.rsvp.manager = {};
  */
 ( function( $, _, obj ) {
 	'use strict';
-	const $document = $( document );
 
 	/**
 	 * Selectors used for configuration and setup

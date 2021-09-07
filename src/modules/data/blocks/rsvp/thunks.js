@@ -2,13 +2,12 @@
  * Internal dependencies
  */
 import * as actions from './actions';
-import { DEFAULT_STATE } from './reducers/header-image';
 import * as utils from '@moderntribe/tickets/data/utils';
 import { middlewares } from '@moderntribe/common/store';
 import { globals, time, moment as momentUtil } from '@moderntribe/common/utils';
 
 const { request: {
-	actions:wpRequestActions
+	actions: wpRequestActions,
 } } = middlewares;
 
 /**
@@ -34,15 +33,15 @@ const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
 	} = payload;
 
 	const startMoment = startDateMoment.clone().startOf( 'day' ).seconds(
-		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM_SS )
+		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM_SS ),
 	);
 
 	const endMoment = endDateMoment.clone().startOf( 'day' ).seconds(
-		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM_SS )
+		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM_SS ),
 	);
 
 	let path = `${ utils.RSVP_POST_TYPE }`;
-	const body = {
+	const reqBody = {
 		title,
 		excerpt: description,
 		meta: {
@@ -54,12 +53,12 @@ const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
 	};
 
 	if ( method === METHODS.POST ) {
-		body.status = 'publish';
-		body.meta[ utils.KEY_RSVP_FOR_EVENT ] = `${ payload.postId }`;
+		reqBody.status = 'publish';
+		reqBody.meta[ utils.KEY_RSVP_FOR_EVENT ] = `${ payload.postId }`;
 		/* This is hardcoded value until we can sort out BE */
-		body.meta[ utils.KEY_TICKET_SHOW_DESCRIPTION ] = 'yes';
+		reqBody.meta[ utils.KEY_TICKET_SHOW_DESCRIPTION ] = 'yes';
 		/* This is hardcoded value until we can sort out BE */
-		body.meta[ utils.KEY_PRICE ] = '0';
+		reqBody.meta[ utils.KEY_PRICE ] = '0';
 	} else if ( method === METHODS.PUT ) {
 		path += `/${ payload.id }`;
 	}
@@ -68,7 +67,7 @@ const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
 		path,
 		params: {
 			method,
-			body: JSON.stringify( body ),
+			body: JSON.stringify( reqBody ),
 		},
 		actions: {
 			start: () => dispatch( actions.setRSVPIsLoading( true ) ),
@@ -116,7 +115,7 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 			start: () => dispatch( actions.setRSVPIsLoading( true ) ),
 			success: ( { body, headers } ) => {
 				const filteredRSVPs = body.filter( ( rsvp ) => (
-					rsvp.meta[ utils.KEY_RSVP_FOR_EVENT ] == postId
+					rsvp.meta[ utils.KEY_RSVP_FOR_EVENT ] == postId // eslint-disable-line eqeqeq
 				) );
 				const totalPages = headers.get( 'x-wp-totalpages' );
 
@@ -130,7 +129,7 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 					 */
 					const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 
-					const rsvp = filteredRSVPs[0];
+					const rsvp = filteredRSVPs[ 0 ];
 					const { meta = {} } = rsvp;
 					const startMoment = momentUtil.toMoment( meta[ utils.KEY_TICKET_START_DATE ] );
 					const endMoment = momentUtil.toMoment( meta[ utils.KEY_TICKET_END_DATE ] );
@@ -149,18 +148,18 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 					dispatch( actions.setRSVPId( rsvp.id ) );
 					dispatch(
 						actions.setRSVPGoingCount(
-							parseInt( meta[ utils.KEY_TICKET_GOING_COUNT ], 10 ) || 0
-						)
+							parseInt( meta[ utils.KEY_TICKET_GOING_COUNT ], 10 ) || 0,
+						),
 					);
 					dispatch(
 						actions.setRSVPNotGoingCount(
-							parseInt( meta[ utils.KEY_TICKET_NOT_GOING_COUNT ], 10 ) || 0
-						)
+							parseInt( meta[ utils.KEY_TICKET_NOT_GOING_COUNT ], 10 ) || 0,
+						),
 					);
 					dispatch(
 						actions.setRSVPHasAttendeeInfoFields(
-							meta[ utils.KEY_TICKET_HAS_ATTENDEE_INFO_FIELDS ]
-						)
+							meta[ utils.KEY_TICKET_HAS_ATTENDEE_INFO_FIELDS ],
+						),
 					);
 					dispatch( actions.setRSVPDetails( {
 						title: rsvp.title.rendered,
