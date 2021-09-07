@@ -2,24 +2,31 @@
 
 namespace TEC\Tickets\Commerce\Flag_Actions;
 
+use TEC\Tickets\Commerce\Attendee;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Settings;
+use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Status\Status_Abstract;
+use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Ticket;
 use Tribe__Utils__Array as Arr;
 
 /**
- * Class Increase_Stock, normally triggered when refunding on orders get set to not-completed.
+ * Class Archive_Attendees normally triggers when handling refunds and stuff like that.
  *
- * @since   5.1.9
+ * @since   TBD
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
-class Increase_Stock extends Flag_Action_Abstract {
+class Archive_Attendees extends Flag_Action_Abstract {
 	/**
 	 * {@inheritDoc}
 	 */
 	protected $flags = [
-		'increase_stock',
+		'archive_attendees',
 	];
 
 	/**
@@ -33,6 +40,7 @@ class Increase_Stock extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
+		// @todo we need an error handling piece here.
 		if ( empty( $post->cart_items ) ) {
 			return;
 		}
@@ -43,10 +51,6 @@ class Increase_Stock extends Flag_Action_Abstract {
 				continue;
 			}
 
-			if ( ! $ticket->manage_stock() ) {
-				continue;
-			}
-
 			$quantity = Arr::get( $item, 'quantity', 1 );
 
 			// Skip generating for zero-ed items.
@@ -54,7 +58,10 @@ class Increase_Stock extends Flag_Action_Abstract {
 				continue;
 			}
 
-			update_post_meta( $ticket->ID, Ticket::$stock_meta_key, $ticket->stock() + $quantity );
+			for ( $i = 0; $i < $quantity; $i ++ ) {
+
+				// @todo handle the archival of attendees.
+			}
 		}
 	}
 }

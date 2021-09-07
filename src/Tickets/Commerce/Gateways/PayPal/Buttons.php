@@ -42,6 +42,13 @@ class Buttons {
 		return $this->template;
 	}
 
+	/**
+	 * Get the checkout script tag for PayPal buttons.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
 	public function get_checkout_script() {
 		$client            = tribe( Client::class );
 		$client_token_data = $client->get_client_token();
@@ -54,8 +61,10 @@ class Buttons {
 			'must_login'              => $must_login,
 		];
 
+		$html = $this->get_template()->template( 'checkout-script', $template_vars, false );
+
 		tribe_asset_enqueue( 'tec-tickets-commerce-gateway-paypal-checkout' );
 
-		return $this->get_template()->template( 'checkout-script', $template_vars, false );
+		return $html;
 	}
 }
