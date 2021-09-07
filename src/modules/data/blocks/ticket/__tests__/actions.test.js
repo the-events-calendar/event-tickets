@@ -50,7 +50,8 @@ describe( 'Ticket actions', () => {
 		} );
 
 		test( 'set tickets provider', () => {
-			expect( actions.setTicketsProvider( 'Tribe__Tickets__Commerce__PayPal__Main' ) ).toMatchSnapshot();
+			expect( actions.setTicketsProvider( 'Tribe__Tickets__Commerce__PayPal__Main' ) )
+				.toMatchSnapshot();
 		} );
 
 		test( 'set tickets shared capacity', () => {
@@ -68,7 +69,8 @@ describe( 'Ticket actions', () => {
 		} );
 
 		test( 'update tickets header image', () => {
-			expect( actions.updateTicketsHeaderImage( { id: 1, alt: 'hi', src: '#' } ) ).toMatchSnapshot();
+			expect( actions.updateTicketsHeaderImage( { id: 1, alt: 'hi', src: '#' } ) )
+				.toMatchSnapshot();
 		} );
 
 		test( 'delete tickets header image', () => {
@@ -155,8 +157,10 @@ describe( 'Ticket actions', () => {
 		} );
 
 		test( 'set ticket temp description', () => {
-			expect( actions.setTicketTempDescription( clientId, 'The Next Generation of Digital Agency' ) )
-				.toMatchSnapshot();
+			expect( actions.setTicketTempDescription(
+				clientId,
+				'The Next Generation of Digital Agency',
+			) ).toMatchSnapshot();
 		} );
 
 		test( 'set ticket temp price', () => {
@@ -176,11 +180,13 @@ describe( 'Ticket actions', () => {
 		} );
 
 		test( 'set ticket temp start date input', () => {
-			expect( actions.setTicketTempStartDateInput( clientId, 'January 1, 2018' ) ).toMatchSnapshot();
+			expect( actions.setTicketTempStartDateInput( clientId, 'January 1, 2018' ) )
+				.toMatchSnapshot();
 		} );
 
 		test( 'set ticket temp start moment', () => {
-			expect( actions.setTicketTempStartDateMoment( clientId, { type: 'moment' } ) ).toMatchSnapshot();
+			expect( actions.setTicketTempStartDateMoment( clientId, { type: 'moment' } ) )
+				.toMatchSnapshot();
 			expect( actions.setTicketTempStartDateMoment( clientId, null ) ).toMatchSnapshot();
 		} );
 
@@ -189,11 +195,13 @@ describe( 'Ticket actions', () => {
 		} );
 
 		test( 'set ticket temp end date input', () => {
-			expect( actions.setTicketTempEndDateInput( clientId, 'January 10, 2018' ) ).toMatchSnapshot();
+			expect( actions.setTicketTempEndDateInput( clientId, 'January 10, 2018' ) )
+				.toMatchSnapshot();
 		} );
 
 		test( 'set ticket temp end moment', () => {
-			expect( actions.setTicketTempEndDateMoment( clientId, { type: 'moment' } ) ).toMatchSnapshot();
+			expect( actions.setTicketTempEndDateMoment( clientId, { type: 'moment' } ) )
+				.toMatchSnapshot();
 			expect( actions.setTicketTempEndDateMoment( clientId, null ) ).toMatchSnapshot();
 		} );
 
@@ -272,7 +280,7 @@ describe( 'Ticket actions', () => {
 		test( 'set ticket is modal open', () => {
 			expect( actions.setTicketIsModalOpen( clientId, true ) ).toMatchSnapshot();
 			expect( actions.setTicketIsModalOpen( clientId, false ) ).toMatchSnapshot();
-		})
+		} );
 
 		test( 'set ticket has been created', () => {
 			expect( actions.setTicketHasBeenCreated( clientId, true ) ).toMatchSnapshot();

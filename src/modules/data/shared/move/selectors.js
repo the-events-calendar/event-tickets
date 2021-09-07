@@ -11,7 +11,10 @@ export const _getPosts = createSelector( getMove, move => move.posts );
 export const _getModal = createSelector( getMove, move => move.modal );
 
 export const isModalShowing = createSelector( _getUI, ui => ui.showModal );
-export const isFetchingPostTypes = createSelector( _getPostTypes, postTypes => postTypes.isFetching );
+export const isFetchingPostTypes = createSelector(
+	_getPostTypes,
+	postTypes => postTypes.isFetching,
+);
 export const isFetchingPosts = createSelector( _getPosts, posts => posts.isFetching );
 
 export const getPostTypes = createSelector( _getPostTypes, postTypes => postTypes.posts );
@@ -39,10 +42,10 @@ export const isModalSubmitting = createSelector( _getModal, modal => modal.isSub
 
 export const getPostTypeOptionValue = createSelector(
 	[ getPostTypeOptions, getModalPostType ],
-	( postTypeOptions, postType ) => find( postTypeOptions, [ 'value', postType ] )
+	( postTypeOptions, postType ) => find( postTypeOptions, [ 'value', postType ] ),
 );
 
 export const hasSelectedPost = createSelector(
 	[ getPostOptions, getModalTarget ],
-	( posts, target ) => !! ( target && find( posts, [ 'value', target ] ) )
+	( posts, target ) => !! ( target && find( posts, [ 'value', target ] ) ),
 );

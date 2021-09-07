@@ -21,7 +21,9 @@ var tribe_tickets_rsvp_block = {
 	my.tribe_rsvp_toggle_actions = function( $button ) {
 		// Check if is the going or not going button
 		var going      = $button.hasClass( 'tribe-block__rsvp__status-button--going' );
-		var sibling    = going ? '.tribe-block__rsvp__status-button--not-going' : '.tribe-block__rsvp__status-button--going';
+		var sibling    = going
+			? '.tribe-block__rsvp__status-button--not-going'
+			: '.tribe-block__rsvp__status-button--going';
 		var $siblingEl = $button.closest( '.tribe-block__rsvp__status' ).find( sibling );
 
 		// Add active classs to the current button
@@ -114,10 +116,14 @@ var tribe_tickets_rsvp_block = {
 					}
 					$input[ 0 ].stepUp();
 				} catch ( ex ) {
-					$input[ 0 ].value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
+					$input[ 0 ].value = ( -1 === max || max >= originalValue + step )
+						? originalValue + step
+						: max;
 				}
 			} else {
-				$input[ 0 ].value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
+				$input[ 0 ].value = ( -1 === max || max >= originalValue + step )
+					? originalValue + step
+					: max;
 			}
 		} else {
 			var min = $input[ 0 ].min ? Number( $input[ 0 ].min ) : 0;
@@ -126,10 +132,14 @@ var tribe_tickets_rsvp_block = {
 				try {
 					$input[ 0 ].stepDown();
 				} catch ( ex ) {
-					$input[ 0 ].value = ( min <= originalValue - step ) ? originalValue - step : min;
+					$input[ 0 ].value = ( min <= originalValue - step )
+						? originalValue - step
+						: min;
 				}
 			} else {
-				$input[ 0 ].value = ( min <= originalValue - step ) ? originalValue - step : min;
+				$input[ 0 ].value = ( min <= originalValue - step )
+					? originalValue - step
+					: min;
 			}
 		}
 
@@ -150,7 +160,6 @@ var tribe_tickets_rsvp_block = {
 		e.preventDefault();
 
 		const $this = $( e.target );
-		const $form = $this.closest( 'form' );
 		const max = $this.attr( 'max' );
 		let maxQty = 0;
 		let newQuantity = parseInt( $this.val(), 10 );
@@ -190,7 +199,7 @@ var tribe_tickets_rsvp_block = {
 	 *
 	 * @param {obj} $ticket ticket object
 	 */
-	my.tribe_rsvp_loader_start = function( $ticket ) {
+	my.tribe_rsvp_loader_start = function( $ticket ) { // eslint-disable-line no-unused-vars
 		var loader_class = '.tribe-block__rsvp__loading';
 		var $loader = $( '.tribe-block__rsvp' ).find( loader_class );
 
@@ -204,7 +213,7 @@ var tribe_tickets_rsvp_block = {
 	 *
 	 * @param {obj} $ticket ticket object
 	 */
-	my.tribe_rsvp_loader_end = function( $ticket ) {
+	my.tribe_rsvp_loader_end = function( $ticket ) { // eslint-disable-line no-unused-vars
 		var loader_class = '.tribe-block__rsvp__loading';
 		var $loader = $( '.tribe-block__rsvp' ).find( loader_class );
 
@@ -282,7 +291,9 @@ var tribe_tickets_rsvp_block = {
 					var remaining = response.data.remaining;
 
 					// Update templates
-					$ticket.find( '.tribe-block__rsvp__details .tribe-block__rsvp__availability' ).replaceWith( response.data.remaining_html );
+					$ticket
+						.find( '.tribe-block__rsvp__details .tribe-block__rsvp__availability' )
+						.replaceWith( response.data.remaining_html );
 					$ticket.find( '.tribe-block__rsvp__form' ).empty()
 					$ticket.closest( '.tribe-block__rsvp' ).append( response.data.html );
 
@@ -310,7 +321,7 @@ var tribe_tickets_rsvp_block = {
 			.on( 'click', 'button[type="submit"]', my.events.handle_submission )
 			.on(
 				'click',
-				'.tribe-block__rsvp__number-input-button--minus, .tribe-block__rsvp__number-input-button--plus',
+				'.tribe-block__rsvp__number-input-button--minus, .tribe-block__rsvp__number-input-button--plus', // eslint-disable-line max-len
 				my.events.handle_quantity_change
 			)
 			.on(

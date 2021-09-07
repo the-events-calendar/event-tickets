@@ -1,20 +1,11 @@
 /**
  * External Dependencies
  */
-import { put, all, select, takeLatest, call, fork, take } from 'redux-saga/effects';
-import { delay } from 'redux-saga';
-
-/**
- * Wordpress dependencies
- */
-import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
+import { call } from 'redux-saga/effects';
 
 /**
  * Internal dependencies
  */
-import { globals } from '@moderntribe/common/utils';
-import * as selectors from '@moderntribe/tickets/data/shared/move/selectors';
-import * as actions from '@moderntribe/tickets/data/shared/move/actions';
 import * as types from '../types';
 import watchers, * as sagas from '../sagas';
 
@@ -37,7 +28,7 @@ describe( 'Move Sagas', () => {
 				sagas.createBody, {
 					a: 1,
 					check: undefined,
-				} )
+				} ),
 			);
 
 			expect( gen.next( 'a=1&check=undefined' ).value ).toMatchSnapshot();

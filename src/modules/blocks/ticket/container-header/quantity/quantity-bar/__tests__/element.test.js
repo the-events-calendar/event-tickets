@@ -16,20 +16,28 @@ describe( '<QuantityBar>', () => {
 	} );
 
 	test( 'shared capacity', () => {
-		const component = renderer.create( <QuantityBar sold={ 20 } sharedSold={ 80 } total={ 100 } /> );
+		const component = renderer.create(
+			<QuantityBar sold={ 20 } sharedSold={ 80 } total={ 100 } />,
+		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );
 
 	test( 'with limited capacity', () => {
 		const component = renderer.create(
-			<QuantityBar sold={ 20 } sharedSold={ 80 } capacity={ 50 } total={ 100 } />
+			<QuantityBar sold={ 20 } sharedSold={ 80 } capacity={ 50 } total={ 100 } />,
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );
 
 	test( 'avoid render percentage on disabled', () => {
 		const component = renderer.create(
-			<QuantityBar sold={ 20 } sharedSold={ 80 } capacity={ 50 } total={ 100 } isDisabled={ true } />
+			<QuantityBar
+				sold={ 20 }
+				sharedSold={ 80 }
+				capacity={ 50 }
+				total={ 100 }
+				isDisabled={ true }
+			/>,
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );

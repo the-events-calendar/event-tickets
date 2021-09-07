@@ -52,7 +52,7 @@ const onToTimePickerClick = ( dispatch ) => ( value, onClose ) => {
 const onFromTimePickerBlur = ( state, dispatch ) => ( e ) => {
 	let startTimeMoment = momentUtil.toMoment( e.target.value, momentUtil.TIME_FORMAT, false );
 	if ( ! startTimeMoment.isValid() ) {
-		const startTimeInput = selectors.getRSVPStartTimeInput( state )
+		const startTimeInput = selectors.getRSVPStartTimeInput( state );
 		startTimeMoment = momentUtil.toMoment( startTimeInput, momentUtil.TIME_FORMAT, false );
 	}
 	const seconds = momentUtil.totalSeconds( startTimeMoment );
@@ -62,7 +62,7 @@ const onFromTimePickerBlur = ( state, dispatch ) => ( e ) => {
 const onToTimePickerBlur = ( state, dispatch ) => ( e ) => {
 	let endTimeMoment = momentUtil.toMoment( e.target.value, momentUtil.TIME_FORMAT, false );
 	if ( ! endTimeMoment.isValid() ) {
-		const endTimeInput = selectors.getRSVPEndTimeInput( state )
+		const endTimeInput = selectors.getRSVPEndTimeInput( state );
 		endTimeMoment = momentUtil.toMoment( endTimeInput, momentUtil.TIME_FORMAT, false );
 	}
 	const seconds = momentUtil.totalSeconds( endTimeMoment );
@@ -73,8 +73,8 @@ const mapStateToProps = ( state ) => {
 	const datePickerFormat = globals.tecDateSettings().datepickerFormat
 		? momentUtil.toFormat( globals.tecDateSettings().datepickerFormat )
 		: 'LL';
-	const isDisabled = selectors.getRSVPIsLoading( state )
-		|| selectors.getRSVPSettingsOpen( state );
+	const isDisabled = selectors.getRSVPIsLoading( state ) ||
+		selectors.getRSVPSettingsOpen( state );
 
 	const startDateMoment = selectors.getRSVPTempStartDateMoment( state );
 	const endDateMoment = selectors.getRSVPTempEndDateMoment( state );
@@ -118,7 +118,7 @@ const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
 		...restDispatchProps,
 		onFromTimePickerBlur: onFromTimePickerBlur( state, dispatch ),
 		onToTimePickerBlur: onToTimePickerBlur( state, dispatch ),
-	}
+	};
 };
 
 export default compose(

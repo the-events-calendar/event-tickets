@@ -28,13 +28,13 @@ const EcommerceOptions = ( {
 	provider,
 	reportLink,
 	showEcommerceOptions,
-}) => {
-	const getEditTicketLinkLabel = ( provider ) => {
+} ) => {
+	const getEditTicketLinkLabel = ( ticketProvider ) => {
 		let label = '';
 
-		if ( provider === EDD ) {
+		if ( ticketProvider === EDD ) {
 			label = __( 'Edit Ticket in Easy Digital Downloads', 'event-tickets' );
-		} else if ( provider === WOO ) {
+		} else if ( ticketProvider === WOO ) {
 			label = __( 'Edit Ticket in WooCommerce', 'event-tickets' );
 		}
 
@@ -64,11 +64,11 @@ const EcommerceOptions = ( {
 					</Link>
 				)
 		);
-	}
+	};
 
 	return (
-		showEcommerceOptions
-			&& (
+		showEcommerceOptions &&
+			(
 				<LabeledItem
 					className={ classNames(
 						'tribe-editor__ticket__ecommerce-options',
@@ -79,7 +79,10 @@ const EcommerceOptions = ( {
 				>
 					<div className="tribe-editor__ticket__ecommerce-options-links">
 						{ LINK_TYPES.map( ( linkType ) => (
-							<span key={ linkType } className="tribe-editor__ticket__ecommerce-options-link-wrapper">
+							<span
+								key={ linkType }
+								className="tribe-editor__ticket__ecommerce-options-link-wrapper"
+							>
 								{ getLink( linkType ) }
 							</span>
 						) ) }
