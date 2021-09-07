@@ -30,7 +30,7 @@ const RSVPInactiveBlock = ( { created } ) => {
 		? __( 'Edit this block to change RSVP settings.', 'event-tickets' )
 		: __( 'Edit this block to create an RSVP form.', 'event-tickets' );
 
-	return <InactiveBlock { ...inactiveBlockProps } />
+	return <InactiveBlock { ...inactiveBlockProps } />;
 };
 
 RSVPInactiveBlock.propTypes = {

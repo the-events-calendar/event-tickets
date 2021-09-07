@@ -37,7 +37,10 @@ const TicketsContainer = ( {
 
 	if ( ! canCreateTickets ) {
 		messages.title = __( 'There is no ecommerce available', 'event-tickets' );
-		messages.description = __( 'To create tickets, you\'ll need to enable an ecommerce solution.', 'event-tickets' );
+		messages.description = __(
+			'To create tickets, you\'ll need to enable an ecommerce solution.',
+			'event-tickets',
+		);
 	} else if ( ! hasCreatedTickets ) {
 		messages.title = __( 'There are no tickets yet', 'event-tickets' );
 		messages.description = __( 'Edit this block to create your first ticket.', 'event-tickets' );

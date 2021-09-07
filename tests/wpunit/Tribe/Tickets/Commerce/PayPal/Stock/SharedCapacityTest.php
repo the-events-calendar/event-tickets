@@ -126,7 +126,7 @@ class SharedCapacityTest extends WPTestCase {
 	 */
 	public function it_should_create_tickets_correctly() {
 
-		$config = $this->get_config();
+		$config = new ConfigState();
 		// Make sure both tickets are valid Ticket Object.
 		$this->assertInstanceOf( \Tribe__Tickets__Ticket_Object::class, $config->ticket_a );
 		$this->assertInstanceOf( \Tribe__Tickets__Ticket_Object::class, $config->ticket_b );
@@ -149,7 +149,7 @@ class SharedCapacityTest extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_set_event_shared_meta_properly() {
-		$config = $this->get_config();
+		$config = new ConfigState();
 
 		$this->assertTrue( $config->global_stock->is_enabled() );
 		$this->assertEquals( $config->shared_config['total_cap'], $config->global_stock->get_stock_level() );

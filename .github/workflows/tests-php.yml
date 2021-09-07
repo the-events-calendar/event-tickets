@@ -1,6 +1,5 @@
 name: 'Codeception Tests'
-on:
-  pull_request:
+on: [ pull_request ]
 jobs:
   test:
     strategy:
@@ -25,11 +24,29 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
         with:
-          fetch-depth: 1
+          fetch-depth: 1000
           token: ${{ secrets.GH_BOT_TOKEN }}
           submodules: recursive
+      # ------------------------------------------------------------------------------
+      # Check if any PHP files have changed
+      # ------------------------------------------------------------------------------
+      - name: Check changed files
+        id: skip
+        run: |
+          num_php_files=$(git diff ${{ github.event.pull_request.base.sha }} HEAD --name-only | grep -P "\.php" | wc -l)
+          if [[ -z "$num_php_files" ]]; then
+            echo "::set-output name=value::1"
+          elif [[ "$num_php_files" == "0" || "$num_php_files" == "" ]]; then
+            echo "::set-output name=value::1"
+          else
+            echo "::set-output name=value::0"
+          fi
+      # ------------------------------------------------------------------------------
+      # Checkout tric
+      # ------------------------------------------------------------------------------
       - name: Checkout tric
         uses: actions/checkout@v2
+        if: steps.skip.outputs.value != 1
         with:
           repository: the-events-calendar/tric
           ref: main
@@ -40,10 +57,12 @@ jobs:
       # ------------------------------------------------------------------------------
       - name: Get Composer Cache Directory
         id: get-composer-cache-dir
+        if: steps.skip.outputs.value != 1
         run: |
           echo "::set-output name=dir::$(composer config cache-files-dir)"
       - uses: actions/cache@v2
         id: composer-cache
+        if: steps.skip.outputs.value != 1
         with:
           path: ${{ steps.get-composer-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -53,19 +72,24 @@ jobs:
       # Initialize tric
       # ------------------------------------------------------------------------------
       - name: Set up tric env vars
+        if: steps.skip.outputs.value != 1
         run: |
           echo "TRIC_BIN=${GITHUB_WORKSPACE}/tric/tric" >> $GITHUB_ENV
           echo "TRIC_WP_DIR=${GITHUB_WORKSPACE}/tric/_wordpress" >> $GITHUB_ENV
           echo "TRIC_WORDPRESS_DOCKERFILE=Dockerfile.base" >> $GITHUB_ENV
       - name: Set run context for tric
+        if: steps.skip.outputs.value != 1
         run: echo "TRIC=1" >> $GITHUB_ENV && echo "CI=1" >> $GITHUB_ENV
       - name: Start ssh-agent
+        if: steps.skip.outputs.value != 1
         run: |
           mkdir -p "${HOME}/.ssh";
           ssh-agent -a /tmp/ssh_agent.sock;
       - name: Export SSH_AUTH_SOCK env var
+        if: steps.skip.outputs.value != 1
         run: echo "SSH_AUTH_SOCK=/tmp/ssh_agent.sock" >> $GITHUB_ENV
       - name: Set up tric for CI
+        if: steps.skip.outputs.value != 1
         run: |
           cd ${GITHUB_WORKSPACE}/..
           ${TRIC_BIN} here
@@ -81,13 +105,14 @@ jobs:
       # Start the Chrome container
       # ------------------------------------------------------------------------------
       - name: Start the Chrome container
-        if: ${{ matrix.suite == 'acceptance' }}
+        if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
         run: ${TRIC_BIN} up chrome
       # ------------------------------------------------------------------------------
       # Fetch branches for dependent repos
       # ------------------------------------------------------------------------------
       - name: Fetch head branch from TEC
         uses: octokit/request-action@v2.x
+        if: steps.skip.outputs.value != 1
         id: fetch-tec-head-branch
         with:
           route: GET /repos/{owner}/{repo}/branches/${{ github.head_ref }}
@@ -99,7 +124,7 @@ jobs:
       - name: Fetch base branch from TEC
         uses: octokit/request-action@v2.x
         id: fetch-tec-base-branch
-        if: steps.fetch-tec-head-branch.outcome != 'success'
+        if: steps.skip.outputs.value != 1 && steps.fetch-tec-head-branch.outcome != 'success'
         with:
           route: GET /repos/{owner}/{repo}/branches/${{ github.base_ref }}
           owner: the-events-calendar
@@ -111,19 +136,20 @@ jobs:
       # Set TEC branch
       # ------------------------------------------------------------------------------
       - name: Set TEC with head branch
-        if: steps.fetch-tec-head-branch.outcome == 'success'
+        if: steps.skip.outputs.value != 1 && steps.fetch-tec-head-branch.outcome == 'success'
         run: echo "TEC_BRANCH=${{ github.head_ref }}" >> $GITHUB_ENV
       - name: Set TEC with base branch
-        if: steps.fetch-tec-head-branch.outcome != 'success' && steps.fetch-tec-base-branch.outcome == 'success'
+        if: steps.skip.outputs.value != 1 && steps.fetch-tec-head-branch.outcome != 'success' && steps.fetch-tec-base-branch.outcome == 'success'
         run: echo "TEC_BRANCH=${{ github.base_ref }}" >> $GITHUB_ENV
       - name: Set TEC with master branch
-        if: steps.fetch-tec-head-branch.outcome != 'success' && steps.fetch-tec-base-branch.outcome != 'success'
+        if: steps.skip.outputs.value != 1 && steps.fetch-tec-head-branch.outcome != 'success' && steps.fetch-tec-base-branch.outcome != 'success'
         run: echo "TEC_BRANCH=master" >> $GITHUB_ENV
       # ------------------------------------------------------------------------------
       # Clone and init TEC
       # ------------------------------------------------------------------------------
       - name: Clone TEC
         uses: actions/checkout@v2
+        if: steps.skip.outputs.value != 1
         with:
           fetch-depth: 1
           repository: the-events-calendar/the-events-calendar
@@ -132,12 +158,14 @@ jobs:
           path: the-events-calendar
           submodules: recursive
       - name: Init TEC
+        if: steps.skip.outputs.value != 1
         run: |
           mv ${GITHUB_WORKSPACE}/the-events-calendar ${GITHUB_WORKSPACE}/../the-events-calendar
           docker network prune -f
           ${TRIC_BIN} use the-events-calendar
           ${TRIC_BIN} composer install --no-dev
       - name: Set up TEC Common
+        if: steps.skip.outputs.value != 1
         run: |
           docker network prune -f
           ${TRIC_BIN} use the-events-calendar/common
@@ -146,6 +174,7 @@ jobs:
       # Set up ET Common
       # ------------------------------------------------------------------------------
       - name: Set up ET Common
+        if: steps.skip.outputs.value != 1
         run: |
           docker network prune -f
           ${TRIC_BIN} use event-tickets/common
@@ -154,7 +183,7 @@ jobs:
       # Set up ET Common (npm install and build)
       # ------------------------------------------------------------------------------
       - name: Set up ET Common (npm)
-        if: ${{ matrix.suite == 'acceptance' }}
+        if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
         run: |
           ${TRIC_BIN} nvm use
           ${TRIC_BIN} npm install
@@ -163,6 +192,7 @@ jobs:
       # Set up ET
       # ------------------------------------------------------------------------------
       - name: Set up ET
+        if: steps.skip.outputs.value != 1
         run: |
           ${TRIC_BIN} use event-tickets
           ${TRIC_BIN} composer install
@@ -170,7 +200,7 @@ jobs:
       # Set up ET (npm install and build)
       # ------------------------------------------------------------------------------
       - name: Set up ET (npm)
-        if: ${{ matrix.suite == 'acceptance' }}
+        if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
         run: |
           ${TRIC_BIN} nvm use
           ${TRIC_BIN} npm install
@@ -179,6 +209,7 @@ jobs:
       # Init WordPress container
       # ------------------------------------------------------------------------------
       - name: Init the WordPress container
+        if: steps.skip.outputs.value != 1
         run: |
           ${TRIC_BIN} up wordpress
           ${TRIC_BIN} site-cli core version
@@ -186,19 +217,20 @@ jobs:
       # Install and activate TwentyTwenty
       # ------------------------------------------------------------------------------
       - name: Install and activate TwentyTwenty
-        if: ${{ matrix.suite == 'acceptance' }}
+        if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
         run:  ${TRIC_BIN} site-cli theme install twentytwenty --activate
       # ------------------------------------------------------------------------------
       # Run tests
       # ------------------------------------------------------------------------------
       - name: Run suite tests
+        if: steps.skip.outputs.value != 1
         run: ${TRIC_BIN} run ${{ matrix.suite }} --ext DotReporter
       # ------------------------------------------------------------------------------
       # Upload artifacts (On failure)
       # ------------------------------------------------------------------------------
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
-        if: failure()
+        if: steps.skip.outputs.value != 1 && failure()
         with:
           name: output ${{ matrix.suite }}
           path: tests/_output/

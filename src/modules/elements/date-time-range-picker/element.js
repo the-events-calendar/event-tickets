@@ -240,7 +240,7 @@ class DateTimeRangePicker extends Component {
 					<TimePicker { ...this.getToTimePickerProps() } />
 				</div>
 			</div>
-		)
+		);
 	}
 }
 

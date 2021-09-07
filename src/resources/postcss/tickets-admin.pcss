@@ -86,8 +86,8 @@
 
 	.tooltip {
 		background-color: #efefef;
-		border-radius: 3px;
 		border: 1px solid var(--tec-color-border-secondary);
+		border-radius: 3px;
 		display: none;
 		margin-left: 0.5em;
 		padding: 0.5em;
@@ -148,6 +148,7 @@
 }
 
 #event_tickets {
+	font-size: 12px;
 	position: relative;
 
 	fieldset {
@@ -187,9 +188,9 @@
 	}
 
 	.tribe-description-small {
+		color: #888;
 		font-size: 0.95em;
 		margin-top: 5px;
-		color: #888;
 	}
 }
 
@@ -199,8 +200,8 @@
 	border-radius: 5px;
 	box-sizing: border-box;
 	opacity: 1;
-	position: relative;
 	padding: 8px;
+	position: relative;
 	visibility: visible;
 	width: 100%;
 	will-change: transform;
@@ -296,6 +297,7 @@
 }
 
 .tribe-button-icon {
+
 	&:before {
 		font-family: 'dashicons';
 		font-size: 1.25em;
@@ -358,9 +360,9 @@
 	}
 
 	#ticket_form_total_capacity {
-		position: relative;
 		display: inline-block;
 		line-height: 28px;
+		position: relative;
 
 		@media screen and (max-width: 520px) {
 			width: 100%;
@@ -392,16 +394,16 @@
 	position: relative;
 
 	.ticket_form_left {
-		display: block;
 		box-sizing: border-box;
+		display: block;
 		float: left;
 		margin: 0;
 		padding-left: 0;
 		padding-right: 1em;
 
 		@media screen and (max-width: 782px) {
-			float: none;
 			display: inline-block;
+			float: none;
 			padding: 0 0 6px;
 		}
 	}
@@ -487,11 +489,7 @@
 	@mixin screen-reader-text;
 }
 
-/* Adjust font size for entire form */
-#event_tickets {
-	font-size: 12px;
-}
-
+/* Adjust font size for form title */
 h4.ticket_form_title {
 	font-size: 1.2em;
 	margin-top: 0;
@@ -608,11 +606,11 @@ p.description {
 }
 
 .ticket-editor-notice {
-	padding: 10px;
-	margin-bottom: 10px;
-	font-size: 13px;
 	border-radius: 4px;
 	display: flex;
+	font-size: 13px;
+	margin-bottom: 10px;
+	padding: 10px;
 
 	&.info {
 		background-color: #edf6fc;
@@ -632,9 +630,9 @@ p.description {
 
 	.dashicons {
 		font-size: 20px;
-		width: 20px;
 		height: 20px;
 		margin-right: 2px;
+		width: 20px;
 	}
 }
 

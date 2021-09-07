@@ -14,10 +14,10 @@ export function* setInitialState( action ) {
 	const { get } = action.payload;
 
 	yield all( [
-			put( actions.setTitle( get( 'title', DEFAULT_STATE.title ) ) ),
-			put( actions.setDisplayTitle( get( 'displayTitle', DEFAULT_STATE.displayTitle ) ) ),
-			put( actions.setDisplaySubtitle( get( 'displaySubtitle', DEFAULT_STATE.displaySubtitle ) ) ),
-		] );
+		put( actions.setTitle( get( 'title', DEFAULT_STATE.title ) ) ),
+		put( actions.setDisplayTitle( get( 'displayTitle', DEFAULT_STATE.displayTitle ) ) ),
+		put( actions.setDisplaySubtitle( get( 'displaySubtitle', DEFAULT_STATE.displaySubtitle ) ) ),
+	] );
 }
 
 export default function* watchers() {
