@@ -8,7 +8,7 @@
 tribe.tickets = tribe.tickets || {};
 
 /**
- * Configures RSVP Tooltip Object in the Global Tribe variable
+ * Configures Tickets Block Object in the Global Tribe variable
  *
  * @since 5.0.3
  *
