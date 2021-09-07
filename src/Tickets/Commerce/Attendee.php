@@ -498,7 +498,7 @@ class Attendee {
 		if (
 			'on-pending' === tribe_get_option( 'ticket-commerce-stock-handling', 'on-complete' )
 			&& ! $ignore_pending
-			&& Order_Statuses::$pending === $order_status
+			&& Order_Statuses::$pending === $order_status // Todo @gustavo undefined Order_Statuses
 			&& false !== $order_id
 		) {
 			$purchase_time = \Tribe__Utils__Array::get( $attendee, 'purchase_time', false );
