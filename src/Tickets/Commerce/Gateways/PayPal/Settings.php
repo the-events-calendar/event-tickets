@@ -37,30 +37,35 @@ class Settings extends Abstract_Settings {
 		return [
 			'tickets-commerce-paypal-commerce-configure' => [
 				'type'            => 'wrapped_html',
-				'html'            => $this->get_introduction_html(),
+				'html'            => $this->get_connection_settings_html(),
 				'validation_type' => 'html',
 			],
 		];
 	}
 
 	/**
-	 * Get the PayPal Commerce introduction section.
+	 * Get the PayPal Commerce Connection Settings section.
 	 *
 	 * @since 5.1.6
 	 *
 	 * @return string The PayPal Commerce introduction section.
 	 */
-	public function get_introduction_html() {
+	public function get_connection_settings_html() {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
+		$merchant    = tribe( Merchant::class );
+		$signup      = tribe( SignUp::class );
 
 		$context = [
-			'plugin_url' => Tribe__Tickets__Main::instance()->plugin_url,
+			'plugin_url'         => Tribe__Tickets__Main::instance()->plugin_url,
+			'merchant'           => $merchant,
+			'is_merchant_active' => $merchant->is_active(),
+			'signup'             => $signup,
 		];
 
 		$admin_views->add_template_globals( $context );
 
-		return $admin_views->template( 'settings/tickets-commerce/paypal-commerce/introduction', [], false );
+		return $admin_views->template( 'settings/tickets-commerce/paypal/main', [], false );
 	}
 
 	/**
@@ -101,29 +106,29 @@ class Settings extends Abstract_Settings {
 	private function account_is_in_north_america() {
 		// Countries list: https://en.wikipedia.org/wiki/List_of_North_American_countries_by_area#Countries
 		$north_american_countries = [
-			'CA', // Canada
-			'US', // United States
-			'MX', // Mexico
-			'NI', // Nicaragua
-			'HN', // Honduras
-			'CU', // Cuba
-			'GT', // Guatemala
-			'PA', // Panama
-			'CR', // Costa Rica
-			'DO', // Dominican Republic
-			'HT', // Haiti
-			'BZ', // Belize
-			'SV', // EL Salvador
-			'BS', // The Bahamas
-			'JM', // Jamaica
-			'TT', // Trinidad and Tobago
-			'DM', // Dominica
-			'LC', // Saint Lucia
-			'AG', // Antigua and Barbuda
-			'BB', // Barbados
-			'VC', // Saint Vincent and the Grenadines
-			'GD', // Grenada
-			'KN', // Saint Kitts and Nevis
+			'CA', // Canada.
+			'US', // United States.
+			'MX', // Mexico.
+			'NI', // Nicaragua.
+			'HN', // Honduras.
+			'CU', // Cuba.
+			'GT', // Guatemala.
+			'PA', // Panama.
+			'CR', // Costa Rica.
+			'DO', // Dominican Republic.
+			'HT', // Haiti.
+			'BZ', // Belize.
+			'SV', // EL Salvador.
+			'BS', // The Bahamas.
+			'JM', // Jamaica.
+			'TT', // Trinidad and Tobago.
+			'DM', // Dominica.
+			'LC', // Saint Lucia.
+			'AG', // Antigua and Barbuda.
+			'BB', // Barbados.
+			'VC', // Saint Vincent and the Grenadines.
+			'GD', // Grenada.
+			'KN', // Saint Kitts and Nevis.
 		];
 
 		// @todo Replace the settings name with property.

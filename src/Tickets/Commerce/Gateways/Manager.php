@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Gateways;
 
+use TEC\Tickets\Commerce\Settings;
+
 /**
  * Class Gateways Manager.
  *
@@ -103,8 +105,8 @@ class Manager {
 
 			$heading = [
 				'tickets-commerce-' . $gateway_key => [
-					'type'            => 'wrapped_html',
-					'html'            => '<h3 class="event-tickets--admin_settings_subheading">' . $gateway::get_label() . '</h3>',
+					'type'            => 'html',
+					'html'            => '<h3 class="event-tickets__admin-settings-subheading" class="tribe-dependent" data-depends="#' . Settings::$option_enable . '-input" data-condition-is-checked>' . $gateway::get_label() . '</h3>',
 					'validation_type' => 'html',
 				],
 			];

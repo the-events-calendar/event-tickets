@@ -140,7 +140,7 @@ class Settings extends Abstract_Settings {
 			esc_html__( 'Check it out!', 'event-tickets' )
 		);
 		$plus_message = sprintf(
-		// Translators: %1$s: The Event Tickets Plus link, %2$s: The word "ticket" in lowercase, %3$s: The "Check it out!" link.
+			// Translators: %1$s: The Event Tickets Plus link, %2$s: The word "ticket" in lowercase, %3$s: The "Check it out!" link.
 			esc_html_x( 'Tickets Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check users in via QR codes, and share stock between %2$s. %3$s', 'about Tickets Commerce', 'event-tickets' ),
 			$plus_link,
 			esc_html( tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_about_tribe_commerce' ) ),
@@ -151,13 +151,18 @@ class Settings extends Abstract_Settings {
 		$is_tickets_commerce_enabled = tec_tickets_commerce_is_enabled();
 
 		$top_level_settings = [
+			'tribe-form-content-start'           => [
+				'type' => 'html',
+				'html' => '<div class="tribe-settings-form-wrap">',
+			],
 			'tickets-commerce-header'      => [
 				'type' => 'html',
-				'html' => '<div class="tec-tickets-commerce-toggle"><label class="tec-tickets-commerce-switch"><input type="checkbox" name="' . static::$option_enable . '" value="' . $is_tickets_commerce_enabled . '" ' . checked( $is_tickets_commerce_enabled, true, false ) . ' id="tickets-commerce-enable-input" class="tribe-dependency tribe-dependency-verified"><span class="tec-tickets-commerce-slider round"></span></label><h2>' . esc_html__( 'Enable Tickets Commerce', 'event-tickets' ) . '</h2></div>',
+				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-toggle-wrapper"><label class="tec-tickets__admin-settings-tickets-commerce-toggle"><input type="checkbox" name="' . static::$option_enable . '" value="' . $is_tickets_commerce_enabled . '" ' . checked( $is_tickets_commerce_enabled, true, false ) . ' id="tickets-commerce-enable-input" class="tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified"><span class="tec-tickets__admin-settings-tickets-commerce-toggle-switch"></span><span class="tec-tickets__admin-settings-tickets-commerce-toggle-label">' . esc_html__( 'Enable Tickets Commerce', 'event-tickets' ) . '</span></label></div>',
+
 			],
 			'tickets-commerce-description' => [
 				'type' => 'html',
-				'html' => '<div class="tec-tickets-commerce-description">' . $plus_message . '</div>',
+				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-description">' . $plus_message . '</div>',
 			],
 			static::$option_enable         => [
 				'type'            => 'hidden',
@@ -211,6 +216,10 @@ class Settings extends Abstract_Settings {
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
 		$settings = [
+			/**/'tickets-commerce-general-settings-heading'     => [
+				'type'            => 'html',
+				'html'            => '<h3 class="my-awesome-class tribe-dependent"  data-depends="#' . static::$option_enable . '-input" data-condition-is-checked>' . __( 'Tickets Commerce Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
+			],
 			static::$option_sandbox                         => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html__( 'Enable Test Mode', 'event-tickets' ),
@@ -231,7 +240,7 @@ class Settings extends Abstract_Settings {
 				'label'           => esc_html__( 'Stock Handling', 'event-tickets' ),
 				'tooltip'         => esc_html(
 					sprintf(
-					// Translators: %s: The word "ticket" in lowercase.
+						// Translators: %s: The word "ticket" in lowercase.
 						_x( 'When a customer purchases a %s, the payment gateway might flag the order as Pending. The order will be Complete once payment is confirmed by the payment gateway.', 'tickets fields settings paypal stock handling', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_stock_handling' )
 					)
@@ -240,14 +249,18 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'options',
 				'options'         => [
 					Pending::SLUG  => sprintf(
-					// Translators: %s: The word "ticket" in lowercase.
-						esc_html__( 'Decrease available %s stock as soon as a Pending order is created.', 'event-tickets' ),
-						tribe_get_ticket_label_singular_lowercase( 'stock_handling' )
+						// Translators: %1$s: The word "ticket" in lowercase. %2$s: `<strong>` opening tag. %3$s: `</strong>` closing tag.
+						esc_html__( 'Decrease available %1$s stock as soon as a %2$sPending%3$s order is created.', 'event-tickets' ),
+						tribe_get_ticket_label_singular_lowercase( 'stock_handling' ),
+						'<strong>',
+						'</strong>'
 					),
 					Completed::SLUG => sprintf(
-					// Translators: %s: The word "ticket" in lowercase.
-						esc_html__( 'Only decrease available %s stock if an order is confirmed as Completed by the payment gateway.', 'event-tickets' ),
-						tribe_get_ticket_label_singular_lowercase( 'stock_handling' )
+						// Translators: %1$s: The word "ticket" in lowercase. %2$s: `<strong>` opening tag. %3$s: `</strong>` closing tag.
+						esc_html__( 'Only decrease available %1$s stock if an order is confirmed as %2$sCompleted%3$s by the payment gateway.', 'event-tickets' ),
+						tribe_get_ticket_label_singular_lowercase( 'stock_handling' ),
+						'<strong>',
+						'</strong>'
 					),
 				],
 				'tooltip_first'   => true,
@@ -257,7 +270,7 @@ class Settings extends Abstract_Settings {
 				'label'           => esc_html__( 'Checkout page', 'event-tickets' ),
 				'tooltip'         => esc_html(
 					sprintf(
-					// Translators: %s: The [shortcode] for the success page.
+						// Translators: %s: The [shortcode] for the success page.
 						__( 'This is the page where customers go to complete their purchase. Use the %s shortcode to display the checkout experience in the page content.', 'event-tickets' ),
 						"[$checkout_shortcode]"
 					)
