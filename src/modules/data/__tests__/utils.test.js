@@ -58,7 +58,8 @@ describe( 'Tickets Utils', () => {
 		} );
 
 		test( 'ticket not going count', () => {
-			expect( utils.KEY_TICKET_HAS_ATTENDEE_INFO_FIELDS ).toBe( '_tribe_ticket_has_attendee_info_fields' );
+			expect( utils.KEY_TICKET_HAS_ATTENDEE_INFO_FIELDS )
+				.toBe( '_tribe_ticket_has_attendee_info_fields' );
 		} );
 	} );
 } );

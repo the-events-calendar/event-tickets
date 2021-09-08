@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
+use TEC\Tickets\Commerce\Status\Status_Handler;
 use \Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Utils__Array as Arr;
 
@@ -449,7 +450,7 @@ class Attendee {
 			return tribe( Module::class );
 		}
 
-		return $provider_obj;
+		return $provider_obj;1
 	}
 
 	/**
@@ -473,8 +474,9 @@ class Attendee {
 	public function decreases_inventory( $attendee ) {
 		$attendee = tec_tc_get_attendee( $attendee['ID'] );
 		$order    = tec_tc_get_order( $attendee->post_parent );
+		$statuses = array_unique( [ tribe( Status_Handler::class )->get_inventory_decrease_status()->get_wp_slug(), tribe( Commerce\Status\Pending::class )->get_wp_slug() ] );
 
-		return tribe( Commerce\Status\Completed::class )->get_wp_slug() === $order->post_status;
+		return  in_array( $order->post_status, $statuses, true );
 	}
 
 	/**

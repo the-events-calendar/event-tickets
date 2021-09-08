@@ -4,9 +4,9 @@
 }
 
 .tribe-tickets-editor-table {
+	border: 1px solid var(--tec-color-border-default);
 	border-radius: var(--tec-border-radius-default);
 	border-spacing: 0;
-	border: 1px solid var(--tec-color-border-default);
 	margin: 20px 0;
 
 	thead,
@@ -60,10 +60,10 @@
 		.tribe-handle {
 			color: #ccc;
 			cursor: move;
+			float: left;
 			font-size: 1.8em;
 			margin-right: 10px;
 			position: relative;
-			float: left;
 		}
 	}
 
@@ -96,10 +96,11 @@
 	}
 
 	.tribe-tickets__tickets-editor-ticket-name-title {
+
 		.dashicons {
 			height: 16px;
-			width: 16px;
 			line-height: 16px;
+			width: 16px;
 
 			&:before {
 				font-size: 16px;
@@ -237,8 +238,8 @@
 		}
 
 		tr {
-			position: relative;
 			border-bottom: 1px solid var(--tec-color-border-default);
+			position: relative;
 		}
 
 		th:not(.column-primary) {

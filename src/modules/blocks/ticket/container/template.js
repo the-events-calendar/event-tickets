@@ -27,7 +27,9 @@ const TicketIcon = ( { isDisabled } ) => (
 );
 
 const TicketContainerIcon = ( { isDisabled, isFuture, isPast } ) => (
-	isFuture || isPast ? <ClockIcon isDisabled={ isDisabled } /> : <TicketIcon isDisabled={ isDisabled } />
+	isFuture || isPast
+		? <ClockIcon isDisabled={ isDisabled } />
+		: <TicketIcon isDisabled={ isDisabled } />
 );
 
 TicketContainerIcon.propTypes = {
@@ -36,12 +38,17 @@ TicketContainerIcon.propTypes = {
 	isPast: PropTypes.bool,
 };
 
-
 const TicketContainer = ( { clientId, isDisabled, isFuture, isPast, isSelected } ) => (
 	<ContainerPanel
 		className="tribe-editor__ticket__container"
 		layout={ LAYOUT.ticket }
-		icon={ <TicketContainerIcon isDisabled={ isDisabled } isFuture={ isFuture } isPast={ isPast } /> }
+		icon={
+			<TicketContainerIcon
+				isDisabled={ isDisabled }
+				isFuture={ isFuture }
+				isPast={ isPast }
+			/>
+		}
 		header={ <TicketContainerHeader clientId={ clientId } isSelected={ isSelected } /> }
 		content={ <TicketContainerContent clientId={ clientId } /> }
 	/>

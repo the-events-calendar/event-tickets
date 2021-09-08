@@ -32,7 +32,7 @@ const mapDispatchToProps = ( dispatch ) => ( {
 		dispatch( actions.setRSVPHasChanges( true ) );
 	},
 	onTempTitleChange: ( e ) => {
-		dispatch( actions.setRSVPTempTitle( e.target.value ) )
+		dispatch( actions.setRSVPTempTitle( e.target.value ) );
 		dispatch( actions.setRSVPHasChanges( true ) );
 	},
 } );

@@ -15,22 +15,22 @@ describe( 'Move posts reducer', () => {
 
 	it( 'should set data', () => {
 		expect(
-			reducer( undefined, actions.setModalData( { post_type: 'some' } ) )
+			reducer( undefined, actions.setModalData( { post_type: 'some' } ) ),
 		).toMatchSnapshot();
 	} );
 	it( 'should fetch choices', () => {
 		expect(
-			reducer( undefined, { type: types.FETCH_POST_CHOICES } )
+			reducer( undefined, { type: types.FETCH_POST_CHOICES } ),
 		).toMatchSnapshot();
 	} );
 	it( 'should fetch choices with success', () => {
 		expect(
-			reducer( undefined, { type: types.FETCH_POST_CHOICES_SUCCESS, data: { posts: { a: 1 } } } )
+			reducer( undefined, { type: types.FETCH_POST_CHOICES_SUCCESS, data: { posts: { a: 1 } } } ),
 		).toMatchSnapshot();
 	} );
 	it( 'should fetch choices with error', () => {
 		expect(
-			reducer( undefined, { type: types.FETCH_POST_CHOICES_ERROR } )
+			reducer( undefined, { type: types.FETCH_POST_CHOICES_ERROR } ),
 		).toMatchSnapshot();
 	} );
 } );

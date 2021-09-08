@@ -105,7 +105,7 @@ export const getRSVPAvailable = createSelector(
 		 * of the substraction operation or zero if the operation is lower than zero it will return zero insted.
 		 */
 		return Math.max( total - going, 0 );
-	}
+	},
 );
 
 export const getRSVPNotGoingResponses = createSelector(

@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { SHARED, INDEPENDENT, UNLIMITED, TICKET_TYPES } from './constants'
+import { SHARED, INDEPENDENT, UNLIMITED, TICKET_TYPES } from './constants';
 
 export const CAPACITY_TYPE_OPTIONS = [
 	{

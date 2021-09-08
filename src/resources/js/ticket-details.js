@@ -4,7 +4,7 @@ var tribe_ticket_details = tribe_ticket_details || {};
 	'use strict';
 	var $document = $( document );
 
-	obj.init = function( detailsElems ) {
+	obj.init = function( detailsElems ) { // eslint-disable-line no-unused-vars
 		obj.event_listeners();
 	}
 
