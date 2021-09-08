@@ -70,6 +70,8 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 
 		$args = $this->get_template_vars();
 
+		// @todo @rafsutaskin @gustavo skip showing form for empty cart.
+
 		// Add the rendering attributes into global context.
 		$this->get_template()->add_template_globals( $args );
 
