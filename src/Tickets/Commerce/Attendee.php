@@ -450,7 +450,7 @@ class Attendee {
 			return tribe( Module::class );
 		}
 
-		return $provider_obj;1
+		return $provider_obj;
 	}
 
 	/**
