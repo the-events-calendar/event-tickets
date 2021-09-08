@@ -30,6 +30,16 @@ tribe.tickets.commerce = {};
 	'use strict';
 	const $document = $( document );
 
+	/**
+	 * Ticket Commerce custom Events.
+	 *
+	 * @since TBD
+	 */
+	obj.customEvents = {
+		showLoader : 'tribeTicketsCommerceCheckout.showLoader',
+		hideLoader : 'tribeTicketsCommerceCheckout.hideLoader',
+	}
+
 	/*
 	 * Tickets Commerce Selectors.
 	 *
@@ -138,9 +148,21 @@ tribe.tickets.commerce = {};
 		// Bind container based events.
 		obj.bindCheckoutItemDescriptionToggle( $container );
 
+		// Bind loader visibility.
+		obj.bindLoaderEvents();
+
 		$document.trigger( 'afterSetup.tribeTicketsCommerceCheckout', [ $container ] );
 	};
 
+	/**
+	 * Bind loader events.
+	 *
+	 * @since TBD
+	 */
+	obj.bindLoaderEvents = function () {
+		$document.on( obj.customEvents.showLoader, obj.loaderShow );
+		$document.on( obj.customEvents.hideLoader, obj.loaderHide );
+	}
 
 	/**
 	 * Show the loader/spinner.
