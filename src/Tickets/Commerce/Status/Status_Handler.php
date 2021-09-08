@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Status;
 
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Settings;
 
 /**
  * Class Status_Handler
@@ -303,6 +304,23 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 			 */
 			do_action( "tec_tickets_commerce_order_status_{$new_status->get_slug()}_flag_{$flag}", $new_status, $old_status, $post );
 		}
+	}
+
+	/**
+	 * Gets the status in which we decrease inventory and add an attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @return Status_Abstract
+	 */
+	public function get_inventory_decrease_status() {
+		$status = $this->get_by_slug( tribe_get_option( Settings::$option_stock_handling, Pending::SLUG ) );
+
+		if ( ! $status instanceof Status_Abstract ) {
+			$status = tribe( Pending::class );
+		}
+
+		return $status;
 	}
 
 	/**

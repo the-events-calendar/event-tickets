@@ -584,7 +584,7 @@ class Cart {
 		if ( static::REDIRECT_MODE === $this->get_mode() ) {
 			$redirect_url = tribe( Checkout::class )->get_url();
 
-			if ( ! $_COOKIE[ $this->get_cart_hash() ] ) {
+			if ( ! $_COOKIE[ $this->get_cart_hash() ] ) {   //@todo @rafsuntaskin @gustavo this had undefined index error.
 				$redirect_url = add_query_arg( [ static::$cookie_query_arg => $this->get_cart_hash() ], $redirect_url );
 			}
 
