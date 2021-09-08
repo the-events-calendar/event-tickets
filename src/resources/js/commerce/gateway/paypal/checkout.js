@@ -345,6 +345,24 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	};
 
 	/**
+	 * Setup the triggers for Ticket Commerce loader view.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	obj.setupLoader = function() {
+
+		// Show loader.
+		$document.trigger( tribe.tickets.commerce.customEvents.showLoader );
+
+		// Hide loader when Paypal buttons are added.
+		$document.on( 'DOMNodeInserted', obj.selectors.buttons, function() {
+			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
+		});
+	}
+
+	/**
 	 * Handles the initialization of the tickets commerce events when Document is ready.
 	 *
 	 * @since 5.1.9
@@ -352,6 +370,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.ready = function () {
+		$document.on( 'afterSetup.tribeTicketsCommerceCheckout', obj.setupLoader );
 		$document.on( 'afterSetup.tribeTicketsCommerceCheckout', obj.setupButtons );
 	};
 
