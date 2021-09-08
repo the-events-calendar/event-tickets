@@ -373,8 +373,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.ready = function () {
 
-		obj.setupLoader();
-
+		$document.on( 'afterSetup.tribeTicketsCommerceCheckout', obj.setupLoader );
 		$document.on( 'afterSetup.tribeTicketsCommerceCheckout', obj.setupButtons );
 	};
 
