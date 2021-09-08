@@ -358,10 +358,6 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.setupLoader = function() {
-
-		// Show loader.
-		$document.trigger( tribe.tickets.commerce.customEvents.showLoader );
-
 		// Hide loader when Paypal buttons are added.
 		$document.on( 'DOMNodeInserted', obj.selectors.buttons, function() {
 			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
@@ -376,7 +372,9 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.ready = function () {
-		$document.on( 'afterSetup.tribeTicketsCommerceCheckout', obj.setupLoader );
+
+		obj.setupLoader();
+
 		$document.on( 'afterSetup.tribeTicketsCommerceCheckout', obj.setupButtons );
 	};
 
