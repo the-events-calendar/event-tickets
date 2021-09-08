@@ -14,13 +14,17 @@
  * @version 5.0.4
  */
 
-$classes = $this->get( 'classes' ) ?: [];
+$classes        = $this->get( 'classes' ) ?: [];
+$visible        = tribe_is_truthy( $this->get( 'visible' ) ) || false;
 
 $spinner_classes = [
 	'tribe-tickets-loader__dots',
 	'tribe-common-c-loader',
-	'tribe-common-a11y-hidden',
 ];
+
+if ( ! $visible ) {
+	$spinner_classes[] = 'tribe-common-a11y-hidden';
+}
 
 if ( ! empty( $classes ) ) {
 	$spinner_classes = array_merge( $spinner_classes, (array) $classes );
