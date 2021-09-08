@@ -11,9 +11,7 @@
 #tribe-field-tickets-commerce-paypal-commerce-configure {
 	padding-left: 0;
 	width: 100%;
-}
 
-#tribe-field-tickets-commerce-paypal-commerce-configure {
 	/*
 		@todo @juanfra: This was already here, inherited. We need to move to common.
 	*/
@@ -38,17 +36,18 @@
 	border-radius: 16px;
 	display: inline-block;
 	height: 22px;
-	width: 40px;
 	position: relative;
 	transition: background 0.4s;
 	vertical-align: middle;
+	width: 40px;
 
 	&:before,
 	&:after {
 		content: "";
 	}
+
 	&:before {
-		background: linear-gradient(to bottom, #fff 0%,#eee 100%);
+		background: linear-gradient(to bottom, #fff 0%, #eee 100%);
 		border-radius: 50%;
 		display: block;
 		height: 16px;
@@ -60,7 +59,7 @@
 	}
 
 	.tec-tickets__admin-settings-tickets-commerce-toggle:hover &:before {
-		background: linear-gradient(to bottom, #fff 0%,#fff 100%);
+		background: linear-gradient(to bottom, #fff 0%, #fff 100%);
 	}
 
 	.tec-tickets__admin-settings-tickets-commerce-toggle-checkbox:checked + & {
@@ -108,9 +107,6 @@
 	font-size: 20px;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-paypal-description {
-}
-
 .tec-tickets__admin-settings-tickets-commerce-paypal-logo-image {
 	height: auto;
 	max-width: 240px;
@@ -137,8 +133,8 @@
 
 .tec-tickets__admin-settings-tickets-commerce-paypal-logo {
 	flex-basis: 290px;
-	font-style: italic;
 	font-size: 14px;
+	font-style: italic;
 	font-weight: normal;
 	letter-spacing: 0.02em;
 	line-height: 16px;
@@ -150,7 +146,7 @@
 }
 
 .tec-tickets__admin-settings-tickets-commerce-paypal-connect-text--connected {
-	color: #1EB056;
+	color: #1eb056;
 	font-weight: 600;
 }
 
@@ -194,14 +190,14 @@
 	&:hover,
 	&:active,
 	&:visited,
-	&:focused {
+	&:focus {
 		color: #fff;
 	}
 }
 
 .tec-tickets__admin-settings-tickets-commerce-paypal-connected p {
-	font-weight: normal;
 	font-size: 16px;
+	font-weight: normal;
 	line-height: 18px;
 	text-align: left;
 }
