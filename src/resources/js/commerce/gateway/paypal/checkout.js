@@ -142,6 +142,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleCreateOrder = function ( data, actions, $container ) {
+		console.log( 'handleCreateOrder', arguments );
 		return fetch(
 			obj.orderEndpointUrl,
 			{
@@ -173,6 +174,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {string}
 	 */
 	obj.handleCreateOrderSuccess = function ( data ) {
+		console.log( 'handleCreateOrderSuccess', arguments );
 		return data.id;
 	};
 
@@ -186,7 +188,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleCreateOrderFail = function ( data ) {
-
+		console.log( 'handleCreateOrderFail', arguments );
 	};
 
 	/**
@@ -199,7 +201,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleCreateOrderError = function ( error ) {
-
+		console.log( 'handleCreateOrderError', arguments );
 	};
 
 	/**
@@ -214,6 +216,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleApprove = function ( data, actions, $container ) {
+		console.log( 'handleApprove', arguments );
 		/**
 		 * @todo On approval we receive a bit more than just the orderID on the data object
 		 *       we should be passing those to the BE.
@@ -249,6 +252,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleApproveSuccess = function ( data ) {
+		console.log( 'handleApproveSuccess', arguments );
 		// When this Token has expired we just refresh the browser.
 		window.location.replace( data.redirect_url );
 	};
@@ -263,6 +267,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleApproveFail = function ( data ) {
+		console.log( 'handleApproveFail', arguments );
 
 	};
 
@@ -276,6 +281,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleApproveError = function ( error ) {
+		console.log( 'handleApproveError', arguments );
 
 	};
 
