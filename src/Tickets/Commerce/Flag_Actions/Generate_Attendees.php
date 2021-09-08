@@ -56,13 +56,7 @@ class Generate_Attendees extends Flag_Action_Abstract {
 	 * @return Status_Abstract
 	 */
 	public function get_status_when_to_trigger() {
-		$status = tribe( Status_Handler::class )->get_by_slug( tribe_get_option( Settings::$option_stock_handling, Pending::SLUG ) );
-
-		if ( ! $status instanceof Status_Abstract ) {
-			$status = tribe( Pending::class );
-		}
-
-		return $status;
+		return tribe( Status_Handler::class )->get_inventory_decrease_status();
 	}
 
 	/**

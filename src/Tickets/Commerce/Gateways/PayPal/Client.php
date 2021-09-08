@@ -447,7 +447,7 @@ class Client {
 
 		$capture_id = urlencode( $order_id );
 		$url        = '/v2/checkout/orders/{order_id}/capture';
-		$url        = str_replace( '{order_id}', $order_id, $url );
+		$url        = str_replace( '{order_id}', $capture_id, $url );
 		$response   = $this->post( $url, $query_args, $args );
 
 		return $response;
