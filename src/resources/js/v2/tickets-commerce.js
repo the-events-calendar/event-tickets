@@ -44,6 +44,8 @@ tribe.tickets.commerce = {};
 		checkoutItemDescriptionButtonLess: '.tribe-tickets__commerce-checkout-cart-item-details-button--less', // eslint-disable-line max-len
 		hiddenElement: '.tribe-common-a11y-hidden',
 		nonce: '#tec-tc-checkout-nonce',
+		loader: '.tribe-common-c-loader',
+		hidden: 'tribe-common-a11y-hidden',
 	};
 
 	/**
@@ -137,6 +139,27 @@ tribe.tickets.commerce = {};
 		obj.bindCheckoutItemDescriptionToggle( $container );
 
 		$document.trigger( 'afterSetup.tribeTicketsCommerceCheckout', [ $container ] );
+	};
+
+
+	/**
+	 * Show the loader/spinner.
+	 *
+	 * @since TBD
+	 */
+	obj.loaderShow = function() {
+		const loadClass = obj.selectors.loader;
+		$( loadClass ).removeClass( obj.selectors.hidden );
+	};
+
+	/**
+	 * Hide the loader/spinner.
+	 *
+	 * @since TBD
+	 */
+	obj.loaderHide = function() {
+		const loadClass = obj.selectors.loader;
+		$( loadClass ).addClass( obj.selectors.hidden );
 	};
 
 	/**
