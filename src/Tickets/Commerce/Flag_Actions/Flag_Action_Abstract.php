@@ -97,7 +97,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	 * {@inheritDoc}
 	 */
 	public function should_trigger( Status_Interface $new_status, $old_status, $post ) {
-		if ( ! $this->has_flags( $new_status, $post ) ) {
+		if ( ! $this->has_flags( $new_status, 'AND', $post ) ) {
 			return false;
 		}
 
