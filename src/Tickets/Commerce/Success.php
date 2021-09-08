@@ -122,4 +122,23 @@ class Success {
 			tribe( Cart::class )->set_cart_hash_cookie( $cookie_param );
 		}
 	}
+
+	/**
+	 * Maybe add a post display state for special Tickets Commerce Success Page in the page list table.
+	 *
+	 * @since TBD
+	 *
+	 * @param array   $post_states An array of post display states.
+	 * @param WP_Post $post        The current post object.
+	 *
+	 * @return array  $post_states An array of post display states.
+	 */
+	public function maybe_add_display_post_states( $post_states, $post ) {
+
+		if ( $this->get_page_id() === $post->ID ) {
+			$post_states['tec_tickets_commerce_page_success'] = __( 'Tickets Commerce Success Page', 'event-tickets' );
+		}
+
+		return $post_states;
+	}
 }
