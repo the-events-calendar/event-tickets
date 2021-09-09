@@ -361,7 +361,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		// Hide loader when Paypal buttons are added.
 		$document.on( 'DOMNodeInserted', obj.selectors.buttons, function() {
 			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
-		});
+		} );
 	}
 
 	/**

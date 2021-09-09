@@ -36,8 +36,8 @@ tribe.tickets.commerce = {};
 	 * @since TBD
 	 */
 	obj.customEvents = {
-		showLoader : 'tribeTicketsCommerceCheckout.showLoader',
-		hideLoader : 'tribeTicketsCommerceCheckout.hideLoader',
+		showLoader : 'showLoader.tecTicketsCommerce',
+		hideLoader : 'hideLoader.tecTicketsCommerce',
 	}
 
 	/*
