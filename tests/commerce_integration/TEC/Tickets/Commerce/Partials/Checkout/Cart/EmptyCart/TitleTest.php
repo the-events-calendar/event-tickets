@@ -16,7 +16,7 @@ class TitleTest extends V2CommerceTestCase {
 	public function get_default_args() {
 		$args = [
 			'items'      => [],
-			'tec_active' => class_exists( 'Tribe__Events__Main' ),
+			'is_tec_active' => class_exists( 'Tribe__Events__Main' ),
 		];
 
 		return $args;

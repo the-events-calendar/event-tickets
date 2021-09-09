@@ -53,7 +53,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			'must_login'       => ! is_user_logged_in() && tribe( Module::class )->login_required(),
 			'login_url'        => tribe( Checkout::class )->get_login_url(),
 			'registration_url' => tribe( Checkout::class )->get_registration_url(),
-			'tec_active'       => class_exists( 'Tribe__Events__Main' ),
+			'is_tec_active'    => defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'Tribe__Events__Main' ),
 		];
 
 		$this->template_vars = $args;

@@ -19,7 +19,7 @@
  * @var array[]          $items                 [Global] List of Items on the cart to be checked out.
  * @var string           $paypal_attribution_id [Global] What is our PayPal Attribution ID.
  * @var array[]          $sections              [Global] Which events we have tickets for.
- * @var bool             $tec_active            [Global] Whether `The Events Calendar` is active or not.
+ * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
 ?>

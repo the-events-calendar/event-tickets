@@ -22,14 +22,14 @@
  * @var bool             $must_login            [Global] Whether login is required to buy tickets or not.
  * @var string           $login_url             [Global] The site's login URL.
  * @var string           $registration_url      [Global] The site's registration URL.
- * @var bool             $tec_active            [Global] Whether `The Events Calendar` is active or not.
+ * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
 if ( empty( $items ) ) {
 	return;
 }
 
-$anchor_text = $tec_active ? __( 'back to event', 'event-tickets' ) : __( 'back', 'event-tickets' );
+$anchor_text = $is_tec_active ? __( 'back to event', 'event-tickets' ) : __( 'back', 'event-tickets' );
 ?>
 
 <a

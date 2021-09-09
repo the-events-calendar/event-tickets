@@ -21,7 +21,7 @@
  * @var bool             $must_login            [Global] Whether login is required to buy tickets or not.
  * @var string           $login_url             [Global] The site's login URL.
  * @var string           $registration_url      [Global] The site's registration URL.
- * @var bool             $tec_active            [Global] Whether `The Events Calendar` is active or not.
+ * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  * @var int              $section               Which Section that we are going to render for this table.
  * @var \WP_Post         $post                  Which Section that we are going to render for this table.
  */
@@ -30,7 +30,7 @@ if ( ! empty( $items ) ) {
 	return;
 }
 
-if ( $tec_active ) {
+if ( $is_tec_active ) {
 	$description = sprintf(
 		// Translators: %1$s: Opening `<a>` tag. %2$s: Plural `events` in lowercase. %3$s: Closing `</a>` tag. %4$s: Plural `tickets` in lowercase.
 		__( 'Please %1$sbrowse %2$s%3$s and add %4$s to check out.', 'event-tickets' ),
