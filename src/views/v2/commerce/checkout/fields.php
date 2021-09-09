@@ -22,6 +22,7 @@
  * @var bool             $must_login            [Global] Whether login is required to buy tickets or not.
  * @var string           $login_url             [Global] The site's login URL.
  * @var string           $registration_url      [Global] The site's registration URL.
+ * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
 use \TEC\Tickets\Commerce\Checkout;
