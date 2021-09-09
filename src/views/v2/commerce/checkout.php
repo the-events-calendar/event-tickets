@@ -19,6 +19,7 @@
  * @var array[]          $items                 [Global] List of Items on the cart to be checked out.
  * @var string           $paypal_attribution_id [Global] What is our PayPal Attribution ID.
  * @var array[]          $sections              [Global] Which events we have tickets for.
+ * @var bool             $tec_active            [Global] Whether `The Events Calendar` is active or not.
  */
 
 ?>
@@ -28,6 +29,7 @@
 	<?php foreach ( $sections as $section ) : ?>
 		<?php $this->template( 'checkout/cart', [ 'section' => $section ] ); ?>
 	<?php endforeach; ?>
+	<?php $this->template( 'checkout/cart/empty' ); ?>
 	<?php $this->template( 'checkout/footer' ); ?>
 	<?php $this->template( 'checkout/must-login' ); ?>
 </section>

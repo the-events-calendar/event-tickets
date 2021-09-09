@@ -1,17 +1,17 @@
 <?php
 /**
- * Tickets Commerce: Checkout Cart Item
+ * Tickets Commerce: Checkout with Empty Cart Description
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/item.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/empty/description.php
  *
  * See more documentation about our views templating system.
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.9
+ * @since   TBD
  *
- * @version 5.1.9
+ * @version TBD
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.
@@ -24,38 +24,31 @@
  * @var bool             $tec_active            [Global] Whether `The Events Calendar` is active or not.
  * @var int              $section               Which Section that we are going to render for this table.
  * @var \WP_Post         $post                  Which Section that we are going to render for this table.
- * @var array            $item                  Which item this row will be for.
  */
 
-// Bail if there's no ticket id.
-if ( empty( $item['ticket_id'] ) ) {
+if ( ! empty( $items ) ) {
 	return;
 }
 
-$classes = [
-	'tribe-tickets__commerce-checkout-cart-item',
-	get_post_class( '', $item['ticket_id'] ),
-	'tribe-common-b1',
-];
-
-$attributes = [
-	'data-ticket-id'       => (string) $item['ticket_id'],
-	'data-ticket-quantity' => (string) $item['quantity'],
-	'data-ticket-price'    => (string) $provider->get_price_value( $item['ticket_id'] ),
-];
+if ( $tec_active ) {
+	$description = sprintf(
+		// Translators: %1$s: Opening `<a>` tag.
+		__( 'Please %1$sbrowse %2$s%3$s and add %4$s to check out.', 'event-tickets' ),
+		'<a href="' . tribe_events_get_url(). '" class="tribe-common-anchor-alt tribe-tickets__commerce-checkout-cart-empty-description-link">',
+		tribe_get_event_label_plural_lowercase( 'tickets_commerce_checkout_empty_description' ),
+		'</a>',
+		tribe_get_ticket_label_plural_lowercase( 'tickets_commerce_checkout_empty_description' )
+	);
+} else {
+	$description = sprintf(
+		// Translators:
+		__( 'Please add %1$s to check out.', 'event-tickets' ),
+		tribe_get_ticket_label_plural_lowercase( 'tickets_commerce_checkout_empty_description' )
+	);
+}
 
 ?>
-<article
-	<?php tribe_classes( $classes ); ?>
-	<?php tribe_attributes( $attributes ); ?>
->
+<div class="tribe-common-b1 tribe-tickets__commerce-checkout-cart-empty-description">
+	<?php echo wp_kses_post( $description ); ?>
+</div>
 
-	<?php $this->template( 'checkout/cart/item/details', [ 'item' => $item ] ); ?>
-
-	<?php $this->template( 'checkout/cart/item/price', [ 'item' => $item ] ); ?>
-
-	<?php $this->template( 'checkout/cart/item/quantity', [ 'item' => $item ] ); ?>
-
-	<?php $this->template( 'checkout/cart/item/sub-total', [ 'item' => $item ] ); ?>
-
-</article>

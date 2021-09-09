@@ -21,6 +21,7 @@
  * @var bool             $must_login            [Global] Whether login is required to buy tickets or not.
  * @var string           $login_url             [Global] The site's login URL.
  * @var string           $registration_url      [Global] The site's registration URL.
+ * @var bool             $tec_active            [Global] Whether `The Events Calendar` is active or not.
  * @var int              $section               Which Section that we are going to render for this table.
  */
 
@@ -28,18 +29,10 @@ $post = get_post( $section );
 ?>
 
 <div class="tribe-tickets__commerce-checkout-cart">
+
 	<?php $this->template( 'checkout/cart/header', [ 'post' => $post ] ); ?>
 
-	<div class="tribe-tickets__commerce-checkout-cart-items">
-		<?php foreach ( $items as $item ) : ?>
-			<?php
-			if ( $item['event_id'] !== $section ) {
-				continue;
-			}
-			?>
-			<?php $this->template( 'checkout/cart/item', [ 'section' => $section, 'post' => $post, 'item' => $item ] ); ?>
-		<?php endforeach; ?>
-	</div>
+	<?php $this->template( 'checkout/cart/items', [ 'post' => $post ] ); ?>
 
 	<?php $this->template( 'checkout/cart/footer' ); ?>
 

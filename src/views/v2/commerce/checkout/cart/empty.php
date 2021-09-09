@@ -1,17 +1,17 @@
 <?php
 /**
- * Tickets Commerce: Checkout Page Must Login
+ * Tickets Commerce: Checkout with Empty Cart
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/checkout/must-login.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/empty.php
  *
  * See more documentation about our views templating system.
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.9
+ * @since   TBD
  *
- * @version 5.1.9
+ * @version TBD
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.
@@ -22,18 +22,16 @@
  * @var string           $login_url             [Global] The site's login URL.
  * @var string           $registration_url      [Global] The site's registration URL.
  * @var bool             $tec_active            [Global] Whether `The Events Calendar` is active or not.
+ * @var int              $section               Which Section that we are going to render for this table.
+ * @var \WP_Post         $post                  Which Section that we are going to render for this table.
  */
 
-// Bail if there are no items or if they don't have to log in to complete the purchase.
-if ( empty( $items ) || empty( $must_login ) ) {
+if ( ! empty( $items ) ) {
 	return;
 }
 
 ?>
-<div class="tribe-tickets__commerce-checkout-must-login">
-
-	<?php $this->template( 'checkout/must-login/login' ); ?>
-
-	<?php $this->template( 'checkout/must-login/registration' ); ?>
-
+<div class="tribe-tickets__commerce-checkout-cart-empty">
+	<?php $this->template( 'checkout/cart/empty/title' ); ?>
+	<?php $this->template( 'checkout/cart/empty/description' ); ?>
 </div>
