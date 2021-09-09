@@ -21,15 +21,15 @@
  */
 
 ?>
-<div class="tribe-tickets__commerce-checkout-footer-total">
+<div class="tribe-tickets__commerce-checkout-cart-footer-total">
 	<?php
 	echo wp_kses_post(
 		sprintf(
 			// Translators: %1$s: Opening span for "Total:" string; %2$s: Closing span for "Total:" string; %3$s: Opening span for the total value; %4$s: The total value; %5$s: Closing span for the total value.
 			__( '%1$sTotal: %2$s%3$s%4$s%5$s', 'event-tickets' ),
-			'<span class="tribe-tickets__commerce-checkout-footer-total-label">',
+			'<span class="tribe-tickets__commerce-checkout-cart-footer-total-label">',
 			'</span>',
-			'<span class="tribe-tickets__commerce-checkout-footer-total-wrap">',
+			'<span class="tribe-tickets__commerce-checkout-cart-footer-total-wrap">',
 			$total_value,
 			'</span>'
 		)
