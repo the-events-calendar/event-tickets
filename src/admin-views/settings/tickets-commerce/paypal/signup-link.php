@@ -14,13 +14,14 @@
 	}
 </script>
 
-<div class="tec-tickets-commerce-connect-paypal-button">
+<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connect-button">
 	<a
 		target="_blank"
 		data-paypal-onboard-complete="onboardedCallback"
 		href="<?php echo esc_url( $url ) ?>&displayMode=minibrowser"
 		data-paypal-button="true"
 		id="connect_to_paypal"
+		class="tec-tickets__admin-settings-tickets-commerce-paypal-connect-button-link"
 	>
 		<?php echo wp_kses( __( 'Connect Automatically with <i>PayPal</i>', 'event-tickets' ), 'post' ); ?>
 	</a>

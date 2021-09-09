@@ -22,23 +22,11 @@
  * @var bool             $must_login            [Global] Whether login is required to buy tickets or not.
  * @var string           $login_url             [Global] The site's login URL.
  * @var string           $registration_url      [Global] The site's registration URL.
+ * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
-// @todo @bordoni @juanfra: Maybe move the modify attendees link to ET+.
 ?>
 <header class="tribe-tickets__commerce-checkout-header">
-	<h3 class="tribe-common-h2 tribe-tickets__commerce-checkout-header-title">
-		<?php esc_html_e( 'Purchase Tickets', 'event-tickets' ); ?>
-	</h3>
-
-	<div class="tribe-common-b2 tribe-tickets__commerce-checkout-header-links">
-		<a
-			class="tribe-common-anchor-alt tribe-tickets__commerce-checkout-header-link-modify-attendees"
-			href="#"
-		><?php esc_html_e( 'modify attendees', 'event-tickets' ); ?></a>
-		<a
-			class="tribe-common-anchor-alt tribe-tickets__commerce-checkout-header-link-back-to-event"
-			href="<?php the_permalink( $sections[ key( $sections ) ] ); ?>"
-		><?php esc_html_e( 'back to event', 'event-tickets' ); ?></a>
-	</div>
+	<?php $this->template( 'checkout/header/title' ); ?>
+	<?php $this->template( 'checkout/header/links' ); ?>
 </header>
