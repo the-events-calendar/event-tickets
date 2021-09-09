@@ -180,7 +180,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-* Fix - Fixed text overlapping description in the ticket AR modal.
+* Fix - Fixed text overlapping description in the ticket AR modal. [ET-1179]
 
 = [5.1.9] 2021-08-31 =
 
