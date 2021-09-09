@@ -180,7 +180,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-* Fix - Fixed ticket total formatting when using non-standard thousands and decimal separators. [ET-1197]
+* Fix - Fixed ticket total formatting when using custom thousands and decimal separators. [ET-1197]
 
 = [5.1.9] 2021-08-31 =
 
