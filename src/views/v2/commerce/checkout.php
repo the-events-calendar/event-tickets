@@ -29,6 +29,7 @@
 	<?php foreach ( $sections as $section ) : ?>
 		<?php $this->template( 'checkout/cart', [ 'section' => $section ] ); ?>
 	<?php endforeach; ?>
+	<?php tribe( 'tickets.editor.template' )->template( 'v2/components/loader/loader', [ 'visible' => true ] ); ?>
 	<?php $this->template( 'checkout/cart/empty' ); ?>
 	<?php $this->template( 'checkout/footer' ); ?>
 	<?php $this->template( 'checkout/must-login' ); ?>
