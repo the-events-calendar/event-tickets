@@ -3,7 +3,7 @@
  * Tickets Commerce: Checkout Cart Item
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/checkout/item.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/item.php
  *
  * See more documentation about our views templating system.
  *
@@ -21,6 +21,7 @@
  * @var bool             $must_login            [Global] Whether login is required to buy tickets or not.
  * @var string           $login_url             [Global] The site's login URL.
  * @var string           $registration_url      [Global] The site's registration URL.
+ * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  * @var int              $section               Which Section that we are going to render for this table.
  * @var \WP_Post         $post                  Which Section that we are going to render for this table.
  * @var array            $item                  Which item this row will be for.
