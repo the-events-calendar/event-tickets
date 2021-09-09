@@ -47,13 +47,12 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		$args = [
 			'provider_id'      => Module::class,
 			'provider'         => tribe( Module::class ),
-			'items'            => [], //$items,
-			'sections'         => [], //$sections,
+			'items'            => $items,
+			'sections'         => $sections,
 			'total_value'      => tribe_format_currency( Price::total( $sub_totals ) ),
 			'must_login'       => ! is_user_logged_in() && tribe( Module::class )->login_required(),
 			'login_url'        => tribe( Checkout::class )->get_login_url(),
 			'registration_url' => tribe( Checkout::class )->get_registration_url(),
-			'et_template'      => tribe( 'tickets.editor.template' ),
 			'tec_active'       => class_exists( 'Tribe__Events__Main' ),
 		];
 
