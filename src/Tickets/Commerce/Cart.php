@@ -541,9 +541,8 @@ class Cart {
 		 *
 		 * @param array $data The cart data after processing.
 		 */
-		$data = apply_filters( 'tec_tickets_commerce_cart_prepare_data', $data );
+		return apply_filters( 'tec_tickets_commerce_cart_prepare_data', $this->get_repository()->prepare_data( $data ) );
 
-		return $this->get_repository()->prepare_data( $data );
 	}
 
 	/**
