@@ -541,7 +541,9 @@ class Cart {
 		 *
 		 * @param array $data The cart data after processing.
 		 */
-		return apply_filters( 'tec_tickets_commerce_cart_prepare_data', $data );
+		$data = apply_filters( 'tec_tickets_commerce_cart_prepare_data', $data );
+
+		return $this->get_repository()->prepare_data( $data );
 	}
 
 	/**
@@ -584,7 +586,10 @@ class Cart {
 		if ( static::REDIRECT_MODE === $this->get_mode() ) {
 			$redirect_url = tribe( Checkout::class )->get_url();
 
-			if ( ! $_COOKIE[ $this->get_cart_hash() ] ) {   //@todo @rafsuntaskin @gustavo this had undefined index error.
+			if (
+				! isset( $_COOKIE[ $this->get_cart_hash() ] )
+				|| ! $_COOKIE[ $this->get_cart_hash() ]
+			) {
 				$redirect_url = add_query_arg( [ static::$cookie_query_arg => $this->get_cart_hash() ], $redirect_url );
 			}
 
@@ -621,40 +626,8 @@ class Cart {
 			return false;
 		}
 
-		/** @var \Tribe__Tickets__REST__V1__Messages $messages */
-		$messages = tribe( 'tickets.rest-v1.messages' );
-
-		// Get the number of available tickets.
-		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
-		$tickets_handler = tribe( 'tickets.handler' );
-
-		$errors = [];
-
-		foreach ( $data['tickets'] as $ticket ) {
-			$available = $tickets_handler->get_ticket_max_purchase( $ticket['ticket_id'] );
-
-			// Bail if ticket does not have enough available capacity.
-			if ( ( - 1 !== $available && $available < $ticket['quantity'] ) || ! $ticket['obj']->date_in_range() ) {
-				$error_code = 'ticket-capacity-not-available';
-
-				$errors[] = new \WP_Error( $error_code, sprintf( $messages->get_message( $error_code ), $ticket['obj']->name ), [
-					'ticket'        => $ticket,
-					'max_available' => $available,
-				] );
-				continue;
-			}
-
-			$this->add_ticket( $ticket['ticket_id'], $ticket['quantity'], $ticket['extra'] );
-		}
-
-		// Saved added items to the cart.
-		$this->get_repository()->save();
-
-		if ( ! empty( $errors ) ) {
-			return $errors;
-		}
-
-		return true;
+		// Before we start we clear the existing cart.
+		return $this->get_repository()->process( $data );
 	}
 
 }
