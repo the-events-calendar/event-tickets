@@ -35,7 +35,7 @@ if ( ! empty( $items ) ) {
 	<?php
 		echo esc_html(
 			sprintf(
-				// Translators: %1$s: Tickets lowercased.
+				// Translators: %1$s: Plural `tickets` in lowercase.
 				__( 'Oops, no %1$s!', 'event-tickets' ),
 				tribe_get_ticket_label_plural_lowercase( 'tickets_commerce_checkout_empty_title' )
 			)

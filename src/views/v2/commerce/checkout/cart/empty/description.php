@@ -32,16 +32,16 @@ if ( ! empty( $items ) ) {
 
 if ( $tec_active ) {
 	$description = sprintf(
-		// Translators: %1$s: Opening `<a>` tag.
+		// Translators: %1$s: Opening `<a>` tag. %2$s: Plural `events` in lowercase. %3$s: Closing `</a>` tag. %4$s: Plural `tickets` in lowercase.
 		__( 'Please %1$sbrowse %2$s%3$s and add %4$s to check out.', 'event-tickets' ),
-		'<a href="' . tribe_events_get_url(). '" class="tribe-common-anchor-alt tribe-tickets__commerce-checkout-cart-empty-description-link">',
+		'<a href="' . tribe_events_get_url() . '" class="tribe-common-anchor-alt tribe-tickets__commerce-checkout-cart-empty-description-link">',
 		tribe_get_event_label_plural_lowercase( 'tickets_commerce_checkout_empty_description' ),
 		'</a>',
 		tribe_get_ticket_label_plural_lowercase( 'tickets_commerce_checkout_empty_description' )
 	);
 } else {
 	$description = sprintf(
-		// Translators:
+		// Translators:  %1$s: Plural `tickets` in lowercase.
 		__( 'Please add %1$s to check out.', 'event-tickets' ),
 		tribe_get_ticket_label_plural_lowercase( 'tickets_commerce_checkout_empty_description' )
 	);
