@@ -173,4 +173,61 @@ class Unmanaged_Cart implements Cart_Interface {
 			unset( $this->items[ $item_id ] );
 		}
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function process( array $data = [] ) {
+		if ( empty( $data ) ) {
+			return false;
+		}
+
+		$this->clear();
+
+		/** @var \Tribe__Tickets__REST__V1__Messages $messages */
+		$messages = tribe( 'tickets.rest-v1.messages' );
+
+		// Get the number of available tickets.
+		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+
+		$errors = [];
+
+		foreach ( $data['tickets'] as $ticket ) {
+			$available = $tickets_handler->get_ticket_max_purchase( $ticket['ticket_id'] );
+
+			// Bail if ticket does not have enough available capacity.
+			if ( ( - 1 !== $available && $available < $ticket['quantity'] ) || ! $ticket['obj']->date_in_range() ) {
+				$error_code = 'ticket-capacity-not-available';
+
+				$errors[] = new \WP_Error( $error_code, sprintf( $messages->get_message( $error_code ), $ticket['obj']->name ), [
+					'ticket'        => $ticket,
+					'max_available' => $available,
+				] );
+				continue;
+			}
+
+			// Enforces that the min to add is 1.
+			$ticket['quantity'] = max( 1, (int) $ticket['quantity'] );
+
+			// Add to / update quantity in cart.
+			$this->add_item( $ticket['ticket_id'], $ticket['quantity'], $ticket['extra'] );
+		}
+
+		// Saved added items to the cart.
+		$this->save();
+
+		if ( ! empty( $errors ) ) {
+			return $errors;
+		}
+
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function prepare_data( array $data = [] ) {
+		return $data;
+	}
 }
