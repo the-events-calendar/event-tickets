@@ -2,10 +2,10 @@
 .event-tickets__admin-banner {
 	background-color: #f9f9f9;
 	border: 1px solid #ccc;
+	border-left: 5px solid #0073aa;
 	border-radius: 4px;
 	margin: 20px 0;
 	padding: 8px 24px 12px;
-	border-left: 5px solid #0073aa;
 
 	a {
 		text-decoration: none;
@@ -27,10 +27,6 @@
 
 .event-tickets__admin-banner-links h3 {
 	font-size: 14px;
-}
-
-.tec-tickets-commerce-payments {
-
 }
 
 #tribe-field-tickets-commerce-paypal-commerce-configure {
@@ -66,20 +62,8 @@
 	position: absolute;
 	right: 0;
 	top: 0;
-	transition: .4s;
-	-webkit-transition: .4s;
-}
-
-.tec-tickets-commerce-slider:before {
-	background-color: white;
-	bottom: 4px;
-	content: '';
-	height: 26px;
-	left: 4px;
-	position: absolute;
-	transition: .4s;
-	width: 26px;
-	-webkit-transition: .4s;
+	-webkit-transition: 0.4s;
+	transition: 0.4s;
 }
 
 .tec-tickets-commerce-slider.round {
@@ -93,12 +77,13 @@
 .tec-tickets-commerce-slider:before {
 	background-color: white;
 	bottom: 3px;
+	content: '';
 	height: 16px;
 	left: 3px;
 	position: absolute;
-	transition: .4s;
+	-webkit-transition: 0.4s;
+	transition: 0.4s;
 	width: 16px;
-	-webkit-transition: .4s;
 }
 
 input:checked + .tec-tickets-commerce-slider {
@@ -110,9 +95,9 @@ input:focus + .tec-tickets-commerce-slider {
 }
 
 input:checked + .tec-tickets-commerce-slider:before {
-	transform: translateX(18px);
 	-ms-transform: translateX(18px);
 	-webkit-transform: translateX(18px);
+	transform: translateX(18px);
 }
 
 .tec-tickets-commerce-toggle {
@@ -122,22 +107,22 @@ input:checked + .tec-tickets-commerce-slider:before {
 .tec-tickets-commerce-toggle h2 {
 	font-size: 20px;
 	font-weight: bold;
-	line-height: 23px;
 	letter-spacing: 0.02em;
+	line-height: 23px;
 }
 
 .tec-tickets-commerce-description {
 	font-size: 13px;
 	font-weight: normal;
-	max-width: 84%;
 	margin-bottom: 35px;
+	max-width: 84%;
 }
 
 .tec-tickets-commerce-paypal {
 	background: #fff;
 	border: 1px solid #ccc;
-	box-sizing: border-box;
 	border-radius: 4px;
+	box-sizing: border-box;
 	display: flex;
 	flex-direction: row;
 	height: 325px;
@@ -157,7 +142,7 @@ input:checked + .tec-tickets-commerce-slider:before {
 	line-height: 1.8;
 }
 
-.tec-tickets-commerce-paypal-logo ul li::before {
+.tec-tickets-commerce-paypal-logo ul li:before {
 	color: #009be1;
 	content: '\2022';
 	display: inline-block;
@@ -167,11 +152,11 @@ input:checked + .tec-tickets-commerce-slider:before {
 }
 
 .tec-tickets-commerce-paypal-logo {
+	font-size: 14px;
 	font-style: italic;
 	font-weight: normal;
-	font-size: 14px;
-	line-height: 16px;
 	letter-spacing: 0.02em;
+	line-height: 16px;
 }
 
 .tec-tickets-commerce-paypal-connect {
@@ -199,8 +184,8 @@ input:checked + .tec-tickets-commerce-slider:before {
 }
 
 .tec-tickets-commerce-connect-paypal-connected p {
-	font-weight: normal;
 	font-size: 16px;
+	font-weight: normal;
 	line-height: 18px;
 	text-align: left;
 }

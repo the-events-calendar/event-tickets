@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce;
 /**
  * Class Tickets_View
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -13,7 +13,7 @@ class Tickets_View extends \Tribe__Tickets__Tickets_View {
 	/**
 	 * Groups PayPal ticket attendees by purchaser name/email
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int      $post_id The post ID it relates to
 	 * @param int|null $user_id An optional user ID
@@ -46,7 +46,7 @@ class Tickets_View extends \Tribe__Tickets__Tickets_View {
 	 *
 	 * Important to note that this method will bring the attendees from PayPal tickets
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int      $event_id The Event ID it relates to
 	 * @param int|null $user_id  An Optional User ID
@@ -66,7 +66,7 @@ class Tickets_View extends \Tribe__Tickets__Tickets_View {
 	/**
 	 * Verifies if the Given Event has Ticket participation restricted
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int $event_id  The Event/Post ID (optional)
 	 * @param int $ticket_id The Ticket/RSVP ID (optional)
@@ -96,7 +96,7 @@ class Tickets_View extends \Tribe__Tickets__Tickets_View {
 	/**
 	 * Gets a HTML Attribute for input/select/textarea to be disabled
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param int $event_id  The Event/Post ID (optional)
 	 * @param int $ticket_id The Ticket/RSVP ID (optional)
@@ -115,7 +115,7 @@ class Tickets_View extends \Tribe__Tickets__Tickets_View {
 	/**
 	 * Creates the HTML for the status of the PayPal ticket.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $status The ticket order status
 	 *
@@ -130,7 +130,7 @@ class Tickets_View extends \Tribe__Tickets__Tickets_View {
 	/**
 	 * Returns the ticket status corresponding to the ticket status slug.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $status
 	 *

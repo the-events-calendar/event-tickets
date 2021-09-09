@@ -2,7 +2,6 @@
  * Internal dependencies
  */
 import reducer, { DEFAULT_STATE } from '../posts';
-import * as actions from '../../actions';
 import * as types from '../../types';
 
 describe( 'Move UI reducer', () => {
@@ -11,12 +10,12 @@ describe( 'Move UI reducer', () => {
 	} );
 	it( 'should fetch types', () => {
 		expect(
-			reducer( undefined, { type: types.SHOW_MODAL } )
+			reducer( undefined, { type: types.SHOW_MODAL } ),
 		).toMatchSnapshot();
 	} );
 	it( 'should fetch types with success', () => {
 		expect(
-			reducer( undefined, { type: types.HIDE_MODAL } )
+			reducer( undefined, { type: types.HIDE_MODAL } ),
 		).toMatchSnapshot();
 	} );
 } );

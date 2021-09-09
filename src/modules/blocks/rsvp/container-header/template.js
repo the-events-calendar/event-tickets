@@ -98,7 +98,7 @@ const getCapacityLabel = ( capacity ) => {
 			plural={ plural }
 			fallback={ fallback }
 		/>
-	)
+	);
 };
 
 const RSVPContainerHeader = ( {
@@ -136,7 +136,7 @@ const RSVPContainerHeader = ( {
 			</div>
 			<RSVPCounters />
 		</Fragment>
-	)
+	);
 };
 
 RSVPContainerHeader.propTypes = {

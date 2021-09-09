@@ -10,7 +10,7 @@ use Tribe__Date_Utils as Dates;
 /**
  * Class Order
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -18,7 +18,7 @@ class Order {
 	/**
 	 * Tickets Commerce Order Post Type slug.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -27,7 +27,7 @@ class Order {
 	/**
 	 * Which meta holds which gateway was used on this order.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -36,7 +36,7 @@ class Order {
 	/**
 	 * Which meta holds which gateway order id was used on this order.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -46,7 +46,7 @@ class Order {
 	 * Normally when dealing with the gateways we have a payload from the original creation of the Order on their side
 	 * of the API, we should store that whole Payload with this meta key so that this data can be used in the future.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -55,7 +55,7 @@ class Order {
 	/**
 	 * Which meta holds the cart items used to setup this order.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -65,7 +65,7 @@ class Order {
 	 * Which meta holds the tickets in a given order, they are added as individual meta items, allowing them to be
 	 * selected in a meta query.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -75,7 +75,7 @@ class Order {
 	 * Which meta holds the events in a given order, they are added as individual meta items, allowing them to be
 	 * selected in a meta query.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -84,7 +84,7 @@ class Order {
 	/**
 	 * Which meta holds the cart items used to setup this order.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -93,7 +93,7 @@ class Order {
 	/**
 	 * Which meta holds the cart items used to setup this order.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -102,7 +102,7 @@ class Order {
 	/**
 	 * Which meta holds the purchaser full name.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -111,7 +111,7 @@ class Order {
 	/**
 	 * Which meta holds the purchaser first name.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -120,7 +120,7 @@ class Order {
 	/**
 	 * Which meta holds the purchaser last name.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -129,7 +129,7 @@ class Order {
 	/**
 	 * Which meta holds the cart items used to setup this order.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -156,7 +156,7 @@ class Order {
 	/**
 	 * Register this Class post type into WP.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function register_post_type() {
 		$post_type_args = [
@@ -176,7 +176,7 @@ class Order {
 		 *
 		 * @see   register_post_type
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
 		 */
@@ -188,7 +188,7 @@ class Order {
 	/**
 	 * Gets the meta Key for a given Order Status gateway_payload.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param Status\Status_Interface $status
 	 *
@@ -230,7 +230,7 @@ class Order {
 	/**
 	 * Modify the status of a given order based on Slug.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
@@ -271,7 +271,7 @@ class Order {
 	/**
 	 * Creates a order from the items in the cart.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
@@ -325,7 +325,7 @@ class Order {
 	/**
 	 * Generates a title based on Cart Hash, items in the cart.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $items List of events form
 	 *
@@ -345,9 +345,32 @@ class Order {
 	}
 
 	/**
+	 * Redirects to the source post after a recoverable (logic) error.
+	 *
+	 * @todo  Determine if redirecting should be something relegated to some other method, and here we just actually
+	 *       generate the order/Attendees.
+	 *
+	 * @see   \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
+	 * @since 5.1.9
+	 *
+	 * @param bool $redirect   Whether to really redirect or not.
+	 * @param int  $post_id    A post ID
+	 *
+	 * @param int  $error_code The current error code
+	 *
+	 */
+	protected function redirect_after_error( $error_code, $redirect, $post_id ) {
+		$url = add_query_arg( 'tpp_error', $error_code, get_permalink( $post_id ) );
+		if ( $redirect ) {
+			wp_redirect( esc_url_raw( $url ) );
+		}
+		tribe_exit();
+	}
+
+	/**
 	 * Generate and store all the attendees information for a new order.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.
 	 * @param bool   $redirect       Whether the client should be redirected or not.

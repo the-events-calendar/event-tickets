@@ -1,14 +1,14 @@
 .tribe-common {
 
 	.tribe-tickets__notice {
-		padding: var(--tec-spacer-3);
 		background-color: var(--tec-color-background-secondary);
 		border-radius: var(--tec-border-radius-default);
 		margin: var(--tec-spacer-4) 0;
+		padding: var(--tec-spacer-3);
 
 		> *:last-child {
-			padding-bottom: 0;
 			margin-bottom: 0;
+			padding-bottom: 0;
 		}
 	}
 
@@ -34,11 +34,11 @@
 		position: relative;
 
 		&:before {
-			background-image: svg-inline( 'error-active' );
+			background-image: svg-inline('error-active');
 			background-size: contain;
 			content: '';
 			height: var(--tec-spacer-3);
-			left: calc( -1 * var(--tec-spacer-7) );
+			left: calc(-1 * var(--tec-spacer-7));
 			position: absolute;
 			top: 2px;
 			width: var(--tec-spacer-3);
@@ -66,5 +66,4 @@
 		border-left: 0;
 		padding: 0 var(--tec-spacer-2) 0 0;
 	}
-
 }

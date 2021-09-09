@@ -2,7 +2,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @type   {Object}
  */
@@ -11,7 +11,7 @@ tribe.tickets = tribe.tickets || {};
 /**
  * Path to this script in the global tribe Object.
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @type   {Object}
  */
@@ -20,7 +20,7 @@ tribe.tickets.commerce = tribe.tickets.commerce || {};
 /**
  * Path to this script in the global tribe Object.
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @type   {Object}
  */
@@ -29,7 +29,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 /**
  * Path to this script in the global tribe Object.
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @type   {Object}
  */
@@ -38,7 +38,7 @@ tribe.tickets.commerce.gateway.paypal = tribe.tickets.commerce.gateway.paypal ||
 /**
  * This script Object for public usage of the methods.
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @type   {Object}
  */
@@ -47,7 +47,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 /**
  * Initializes in a Strict env the code that manages the checkout for PayPal.
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @param  {Object} $   jQuery
  * @param  {Object} obj tribe.tickets.commerce.gateway.paypal.checkout
@@ -61,7 +61,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * PayPal Order handling endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @type {string}
 	 */
@@ -70,7 +70,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Set of timeout IDs so we can clear when the process of purchasing starts.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @type {Array}
 	 */
@@ -79,7 +79,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * PayPal Checkout Selectors.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @type {Object}
 	 */
@@ -92,7 +92,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Handles the creation of the orders via PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {Object} data PayPal data passed to this method.
 	 * @param {jQuery} $container jQuery object of the tickets container.
@@ -106,7 +106,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Handles the creation of the orders via PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {Object} error PayPal data passed to this method.
 	 * @param {jQuery} $container jQuery object of the tickets container.
@@ -120,7 +120,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Handles the click when one of the buttons were clicked.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
@@ -133,7 +133,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Handles the creation of the orders via PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {Object} data PayPal data passed to this method.
 	 * @param {Object} actions PayPal actions available on order creation.
@@ -142,6 +142,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleCreateOrder = function ( data, actions, $container ) {
+		console.log( 'handleCreateOrder', arguments );
 		return fetch(
 			obj.orderEndpointUrl,
 			{
@@ -166,46 +167,47 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * When a successful request is completed to our Create Order endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {Object} data Data returning from our endpoint.
 	 *
 	 * @return {string}
 	 */
 	obj.handleCreateOrderSuccess = function ( data ) {
+		console.log( 'handleCreateOrderSuccess', arguments );
 		return data.id;
 	};
 
 	/**
 	 * When a failed request is completed to our Create Order endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {Object} data Data returning from our endpoint.
 	 *
 	 * @return {void}
 	 */
 	obj.handleCreateOrderFail = function ( data ) {
-
+		console.log( 'handleCreateOrderFail', arguments );
 	};
 
 	/**
 	 * When a error happens on the fetch request to our Create Order endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {Object} error Which error the fetch() threw on requesting our endpoints.
 	 *
 	 * @return {void}
 	 */
 	obj.handleCreateOrderError = function ( error ) {
-
+		console.log( 'handleCreateOrderError', arguments );
 	};
 
 	/**
 	 * Handles the Approval of the orders via PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {Object} data PayPal data passed to this method.
 	 * @param {Object} actions PayPal actions available on approve.
@@ -214,6 +216,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleApprove = function ( data, actions, $container ) {
+		console.log( 'handleApprove', arguments );
 		/**
 		 * @todo On approval we receive a bit more than just the orderID on the data object
 		 *       we should be passing those to the BE.
@@ -242,13 +245,14 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * When a successful request is completed to our Approval endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {Object} data Data returning from our endpoint.
 	 *
 	 * @return {void}
 	 */
 	obj.handleApproveSuccess = function ( data ) {
+		console.log( 'handleApproveSuccess', arguments );
 		// When this Token has expired we just refresh the browser.
 		window.location.replace( data.redirect_url );
 	};
@@ -256,33 +260,35 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * When a failed request is completed to our Approval endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {Object} data Data returning from our endpoint.
 	 *
 	 * @return {void}
 	 */
 	obj.handleApproveFail = function ( data ) {
+		console.log( 'handleApproveFail', arguments );
 
 	};
 
 	/**
 	 * When a error happens on the fetch request to our Approval endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {Object} error Which error the fetch() threw on requesting our endpoints.
 	 *
 	 * @return {void}
 	 */
 	obj.handleApproveError = function ( error ) {
+		console.log( 'handleApproveError', arguments );
 
 	};
 
 	/**
 	 * Unbinds the description toggle.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
@@ -309,7 +315,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Redirect the user back to the checkout page when the Token is expired so it gets refreshed properly.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param {jQuery} $container jQuery Object.
 	 */
@@ -326,7 +332,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Setup the Buttons for PayPal Checkout.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param  {Event}   event      event object for 'afterSetup.tribeTicketsCommerceCheckout' event
 	 * @param  {jQuery}  $container jQuery object of checkout container.
@@ -347,7 +353,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Handles the initialization of the tickets commerce events when Document is ready.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return {void}
 	 */

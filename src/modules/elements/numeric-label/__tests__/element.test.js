@@ -26,28 +26,28 @@ describe( 'NumericLabel', () => {
 				count={ 0 }
 				fallback="My fallback value"
 				useFallback={ false }
-			/>
+			/>,
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );
 
 	test( 'render with singular label', () => {
 		const component = renderer.create(
-			<NumericLabel count={ 0 } singular="Just %d item" />
+			<NumericLabel count={ 0 } singular="Just %d item" />,
 		);
 		expect( component.toJSON() ).toBe( null );
 	} );
 
 	test( 'render with empty and fallback', () => {
 		const component = renderer.create(
-			<NumericLabel count={ 0 } singular="Just %d item" fallback={ '' } />
+			<NumericLabel count={ 0 } singular="Just %d item" fallback={ '' } />,
 		);
 		expect( component.toJSON() ).toBe( '' );
 	} );
 
 	test( 'render with negative number', () => {
 		const component = renderer.create(
-			<NumericLabel count={ -10 } />
+			<NumericLabel count={ -10 } />,
 		);
 		expect( component.toJSON() ).toBe( null );
 	} );
@@ -57,7 +57,7 @@ describe( 'NumericLabel', () => {
 			<NumericLabel
 				count={ 1 }
 				singular="Just Item"
-			/>
+			/>,
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );
@@ -67,7 +67,7 @@ describe( 'NumericLabel', () => {
 			<NumericLabel
 				count={ 1 }
 				singular="Just %d Item"
-			/>
+			/>,
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );
@@ -77,7 +77,7 @@ describe( 'NumericLabel', () => {
 			<NumericLabel
 				count={ 1 }
 				singular="Just %d Item %d more text over here"
-			/>
+			/>,
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );
@@ -87,7 +87,7 @@ describe( 'NumericLabel', () => {
 			<NumericLabel
 				count={ 3 }
 				plural="We have items"
-			/>
+			/>,
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );
@@ -97,7 +97,7 @@ describe( 'NumericLabel', () => {
 			<NumericLabel
 				count={ 3 }
 				plural="We have %d items"
-			/>
+			/>,
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );
@@ -107,7 +107,7 @@ describe( 'NumericLabel', () => {
 			<NumericLabel
 				count={ 3 }
 				plural="We have %d items, more %d items over here"
-			/>
+			/>,
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );
@@ -119,7 +119,7 @@ describe( 'NumericLabel', () => {
 				includeZero={ true }
 				singular="We have %d item"
 				plural="We have %d items"
-			/>
+			/>,
 		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );

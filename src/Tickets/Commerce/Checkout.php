@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce;
 /**
  * Class Checkout
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -13,7 +13,7 @@ class Checkout {
 	/**
 	 * Get the Checkout page ID.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 *
 	 * @return int|null
@@ -28,7 +28,7 @@ class Checkout {
 		/**
 		 * Allows filtering of the Page ID for the Checkout page.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param int|null $checkout_page Which page is used in the settings.
 		 */
@@ -38,7 +38,7 @@ class Checkout {
 	/**
 	 * Determine the Current checkout URL.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -58,7 +58,7 @@ class Checkout {
 		/**
 		 * Allows modifications to the checkout url for Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param string $url URL for the cart.
 		 */
@@ -68,7 +68,7 @@ class Checkout {
 	/**
 	 * Determines if the current page is the Checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 *
 	 * @return bool
@@ -89,7 +89,7 @@ class Checkout {
 		/**
 		 * Allows modifications to the conditional of if we are in the checkout page.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param bool $is_current_page Are we in the current page for checkout.
 		 */
@@ -100,7 +100,7 @@ class Checkout {
 	 * If there is any data or request management or parsing that needs to happen on the Checkout page here is where
 	 * we do it.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function parse_request() {
 		if ( ! $this->is_current_page() ) {
@@ -117,7 +117,7 @@ class Checkout {
 	/**
 	 * Get the login URL.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -130,7 +130,7 @@ class Checkout {
 		 * Provides an opportunity to modify the login URL used within frontend
 		 * checkout (typically when they need to login before they can proceed).
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param string $login_url
 		 */
@@ -140,7 +140,7 @@ class Checkout {
 	/**
 	 * Get the registration URL.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -153,10 +153,29 @@ class Checkout {
 		 * Provides an opportunity to modify the registration URL used within frontend
 		 * checkout (typically when they need to login before they can proceed).
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param string $login_url
 		 */
 		return apply_filters( 'tec_tickets_commerce_checkout_registration_url', $registration_url );
+	}
+
+	/**
+	 * Maybe add a post display state for special Tickets Commerce Checkout Page in the page list table.
+	 *
+	 * @since TBD
+	 *
+	 * @param array   $post_states An array of post display states.
+	 * @param WP_Post $post        The current post object.
+	 *
+	 * @return array  $post_states An array of post display states.
+	 */
+	public function maybe_add_display_post_states( $post_states, $post ) {
+
+		if ( $this->get_page_id() === $post->ID ) {
+			$post_states['tec_tickets_commerce_page_checkout'] = __( 'Tickets Commerce Checkout Page', 'event-tickets' );
+		}
+
+		return $post_states;
 	}
 }

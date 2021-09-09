@@ -1,0 +1,37 @@
+{
+  "root": true,
+  "extends": [
+    "../../node_modules/@the-events-calendar/product-taskmaster/config/eslint.react.js"
+  ],
+  "rules": {
+    "import/namespace": [
+      "error",
+      { "allowComputed": true }
+    ],
+    "import/no-unresolved": [
+      "error",
+      {
+        "ignore": [
+          "^@wordpress/"
+        ]
+      }
+    ]
+  },
+  "globals": {
+    "wp": true,
+    "jQuery": true,
+    "tribe": true,
+    "jest": true,
+    "expect": true,
+    "test": true,
+    "describe": true,
+    "afterAll": true,
+    "beforeAll": true,
+    "beforeEach": true,
+    "afterEach": true,
+    "it": true,
+    "mount": true,
+    "shallow": true,
+    "renderer": true
+  }
+}

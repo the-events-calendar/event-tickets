@@ -15,7 +15,7 @@ class Client {
 	/**
 	 * Get environment base URL.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -30,7 +30,7 @@ class Client {
 	/**
 	 * Safely checks if we have an access token to be used.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -41,7 +41,7 @@ class Client {
 	/**
 	 * Get REST API endpoint URL for requests.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 *
 	 * @param string $endpoint   The endpoint path.
@@ -62,7 +62,7 @@ class Client {
 	 *
 	 * We use something like: https://www.paypal.com/sdk/js?client-id=sb&locale=en_US&components=buttons
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array $query_args Which query args will be added.
 	 *
@@ -83,7 +83,7 @@ class Client {
 		/**
 		 * Filter the PayPal JS SDK url.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param string $url        Which URL we are going to use to load the SDK JS.
 		 * @param array  $query_args Which URL args will be added to the JS SDK url.
@@ -110,7 +110,7 @@ class Client {
 	/**
 	 * Send a GET request to the PayPal API.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $endpoint
 	 * @param array  $query_args
@@ -168,7 +168,7 @@ class Client {
 	/**
 	 * Send a POST request to the PayPal API.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $endpoint
 	 * @param array  $query_args
@@ -240,7 +240,7 @@ class Client {
 	/**
 	 * Retrieves an Access Token for the Client ID and Secret.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $client_id     The Client ID.
 	 * @param string $client_secret The Client Secret.
@@ -267,7 +267,7 @@ class Client {
 	/**
 	 * Retrieves an Access Token from the authorization code.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $shared_id Shared ID for merchant.
 	 * @param string $auth_code Authorization code from on boarding.
@@ -299,7 +299,7 @@ class Client {
 	 *
 	 * @link  https://developer.paypal.com/docs/business/checkout/advanced-card-payments/
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array|null The client token details response or null if there was a problem.
 	 */
@@ -324,7 +324,7 @@ class Client {
 	 * @link  https://developer.paypal.com/docs/api/orders/v2/#orders_create
 	 * @link  https://developer.paypal.com/docs/api/orders/v2/#definition-purchase_unit_request
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array<string,mixed>|array<array> $units              {
 	 *                                                             Purchase unit used to setup the order in PayPal.
@@ -428,7 +428,7 @@ class Client {
 	/**
 	 * Captures an order for a given ID in PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param string $order_id
 	 *
@@ -447,7 +447,7 @@ class Client {
 
 		$capture_id = urlencode( $order_id );
 		$url        = '/v2/checkout/orders/{order_id}/capture';
-		$url        = str_replace( '{order_id}', $order_id, $url );
+		$url        = str_replace( '{order_id}', $capture_id, $url );
 		$response   = $this->post( $url, $query_args, $args );
 
 		return $response;
@@ -458,7 +458,7 @@ class Client {
 	 *
 	 * @link  https://developer.paypal.com/docs/api/identity/v1/#userinfo_get
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return array|null
 	 */

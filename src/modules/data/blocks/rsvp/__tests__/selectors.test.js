@@ -9,7 +9,7 @@ const state = {
 		blocks: {
 			rsvp: DEFAULT_STATE,
 		},
-	}
+	},
 };
 
 describe( 'RSVP block selectors', () => {

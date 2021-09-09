@@ -10,7 +10,7 @@ use Tribe__Date_Utils as Dates;
 /**
  * Class Flag Action Abstract.
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
@@ -18,7 +18,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * When will this particular flag wil be triggered
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var int
 	 */
@@ -27,7 +27,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * Which flags are associated and will trigger this action.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string[]
 	 */
@@ -36,7 +36,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
 	 * Which Post Types we check for this flag action.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string[]
 	 */
@@ -97,7 +97,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	 * {@inheritDoc}
 	 */
 	public function should_trigger( Status_Interface $new_status, $old_status, $post ) {
-		if ( ! $this->has_flags( $new_status, $post ) ) {
+		if ( ! $this->has_flags( $new_status, 'AND', $post ) ) {
 			return false;
 		}
 

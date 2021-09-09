@@ -4,7 +4,7 @@ use \Tribe__Utils__Array as Arr;
 /**
  * Builds and returns the correct Orders repository.
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @param string $repository The slug of the repository to build/return.
  *
@@ -21,7 +21,7 @@ function tec_tc_orders( $repository = 'default' ) {
 	/**
 	 * Filters the map relating orders repository slugs to service container bindings.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array  $map        A map in the shape [ <repository_slug> => <service_name> ]
 	 * @param string $repository The currently requested implementation.
@@ -36,7 +36,7 @@ function tec_tc_orders( $repository = 'default' ) {
 /**
  * Builds and returns the correct Tickets repository.
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @param string $repository The slug of the repository to build/return.
  *
@@ -53,7 +53,7 @@ function tec_tc_tickets( $repository = 'default' ) {
 	/**
 	 * Filters the map relating tickets repository slugs to service container bindings.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array  $map        A map in the shape [ <repository_slug> => <service_name> ]
 	 * @param string $repository The currently requested implementation.
@@ -68,7 +68,7 @@ function tec_tc_tickets( $repository = 'default' ) {
 /**
  * Builds and returns the correct Attendees repository.
  *
- * @since TBD
+ * @since 5.1.9
  *
  * @param string $repository The slug of the repository to build/return.
  *
@@ -85,7 +85,7 @@ function tec_tc_attendees( $repository = 'default' ) {
 	/**
 	 * Filters the map relating attendees repository slugs to service container bindings.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @param array  $map        A map in the shape [ <repository_slug> => <service_name> ]
 	 * @param string $repository The currently requested implementation.

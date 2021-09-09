@@ -11,7 +11,6 @@ import Template from './template';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 
-
 const mapStateToProps = ( state ) => ( {
 	image: {
 		id: selectors.getTicketsHeaderImageId( state ),
@@ -26,6 +25,7 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	 * Full payload from gutenberg media upload is not used,
 	 * only id, alt, and medium src are used for this specific case.
 	 */
+
 	onSelect: ( image ) => dispatch( actions.updateTicketsHeaderImage( image ) ),
 	onRemove: () => dispatch( actions.deleteTicketsHeaderImage() ),
 } );

@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce;
 /**
  * Class Success
  *
- * @since   TBD
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce
  */
@@ -13,7 +13,7 @@ class Success {
 	/**
 	 * Param we use to store the order ID.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @var string
 	 */
@@ -22,7 +22,7 @@ class Success {
 	/**
 	 * Get the Success page ID.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 *
 	 * @return int|null
@@ -37,7 +37,7 @@ class Success {
 		/**
 		 * Allows filtering of the Page ID for the Success page.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param int|null $success_page Which page is used in the settings.
 		 */
@@ -47,7 +47,7 @@ class Success {
 	/**
 	 * Determine the Current success URL.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 * @return string
 	 */
@@ -67,7 +67,7 @@ class Success {
 		/**
 		 * Allows modifications to the success url for Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param string $url URL for the cart.
 		 */
@@ -77,7 +77,7 @@ class Success {
 	/**
 	 * Determines if the current page is the success page.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 *
 	 *
 	 * @return bool
@@ -98,7 +98,7 @@ class Success {
 		/**
 		 * Allows modifications to the conditional of if we are in the success page.
 		 *
-		 * @since TBD
+		 * @since 5.1.9
 		 *
 		 * @param bool $is_current_page Are we in the current page for checkout.
 		 */
@@ -109,7 +109,7 @@ class Success {
 	 * If there is any data or request management or parsing that needs to happen on the success page here is where
 	 * we do it.
 	 *
-	 * @since TBD
+	 * @since 5.1.9
 	 */
 	public function parse_request() {
 		if ( ! $this->is_current_page() ) {
@@ -121,5 +121,24 @@ class Success {
 		if ( $cookie_param ) {
 			tribe( Cart::class )->set_cart_hash_cookie( $cookie_param );
 		}
+	}
+
+	/**
+	 * Maybe add a post display state for special Tickets Commerce Success Page in the page list table.
+	 *
+	 * @since TBD
+	 *
+	 * @param array   $post_states An array of post display states.
+	 * @param WP_Post $post        The current post object.
+	 *
+	 * @return array  $post_states An array of post display states.
+	 */
+	public function maybe_add_display_post_states( $post_states, $post ) {
+
+		if ( $this->get_page_id() === $post->ID ) {
+			$post_states['tec_tickets_commerce_page_success'] = __( 'Tickets Commerce Success Page', 'event-tickets' );
+		}
+
+		return $post_states;
 	}
 }
