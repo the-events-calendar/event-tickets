@@ -181,6 +181,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Fix - Fixed ticket total formatting when using custom thousands and decimal separators. [ET-1197]
+* Enhancement - When editing an RSVP or ticket in the block editor, allow title to wrap to multiple lines. [ET-1089]
 
 = [5.1.9] 2021-08-31 =
 
