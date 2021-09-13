@@ -85,6 +85,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_attendee_registration_cart_provider', [ $this, 'filter_registration_cart_provider' ], 10, 2 );
 
 		add_filter( 'tribe_tickets_get_default_module', [ $this, 'filter_de_prioritize_module' ], 5, 2 );
+		add_filter( 'tribe_events_tickets_module_name', [ $this, 'set_displayed_module_name' ] );
 
 		add_filter( 'tribe_tickets_checkout_urls', [ $this, 'filter_js_include_checkout_url' ] );
 		add_filter( 'tribe_tickets_cart_urls', [ $this, 'filter_js_include_cart_url' ] );
@@ -416,4 +417,21 @@ class Hooks extends tad_DI52_ServiceProvider {
 		return $post_states;
 	}
 
+	/**
+	 * Show the legacy PayPal as not recommended.
+	 *
+	 * @since TBD
+	 *
+	 * @param $name string Name of the provider.
+	 *
+	 * @return string
+	 */
+	public function set_displayed_module_name( $name ) {
+
+		if ( $name === 'Tribe Commerce' ) {
+			return __( 'Tribe Commerce ( Legacy PayPal, not recommended )', 'event-tickets' );
+		}
+
+		return $name;
+	}
 }
