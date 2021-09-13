@@ -21,15 +21,15 @@
  */
 
 ?>
-<div class="tribe-tickets__commerce-checkout-footer-quantity">
+<div class="tribe-tickets__commerce-checkout-cart-footer-quantity">
 	<?php
 	echo wp_kses_post(
 		sprintf(
 			// Translators: %1$s: Opening span for "Quantity:" string; %2$s: Closing span for "Quantity:" string; %3$s: Opening span for the quantity; %4$s: The quantity; %5$s: Closing span for the quantity.
 			__( '%1$sQuantity: %2$s%3$s%4$s%5$s', 'event-tickets' ),
-			'<span class="tribe-tickets__commerce-checkout-footer-quantity-label">',
+			'<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-label">',
 			'</span>',
-			'<span class="tribe-tickets__commerce-checkout-footer-quantity-number">',
+			'<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-number">',
 			array_sum( wp_list_pluck( $items, 'quantity' ) ),
 			'</span>'
 		)
