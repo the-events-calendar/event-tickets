@@ -87,6 +87,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_tickets_get_default_module', [ $this, 'filter_de_prioritize_module' ], 5, 2 );
 		add_filter( 'tribe_events_tickets_module_name', [ $this, 'set_displayed_module_name' ] );
 
+		// Disable TribeCommerce for new installations.
+		add_filter( 'tribe_tickets_commerce_paypal_is_active', 'tec_tribe_commerce_is_available' );
+
 		add_filter( 'tribe_tickets_checkout_urls', [ $this, 'filter_js_include_checkout_url' ] );
 		add_filter( 'tribe_tickets_cart_urls', [ $this, 'filter_js_include_cart_url' ] );
 

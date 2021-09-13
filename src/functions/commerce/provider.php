@@ -49,3 +49,35 @@ function tribe_tickets_commerce_is_test_mode() {
 	 */
 	return \TEC\Tickets\Commerce\Gateways\PayPal\Gateway::is_test_mode();
 }
+
+/**
+ * Determine whether the legacy TribeCommerce should be shown or not.
+ *
+ * @since TBD
+ *
+ * @return boolean
+ */
+function tec_tribe_commerce_is_available() {
+
+	if ( defined( 'TEC_TRIBE_COMMERCE_ENABLED' ) ) {
+		return (bool) TEC_TRIBE_COMMERCE_ENABLED;
+	}
+
+	$env_var = getenv( 'TEC_TRIBE_COMMERCE_ENABLED' );
+
+	if ( false !== $env_var ) {
+		return (bool) $env_var;
+	}
+
+	// Todo, @juanfra @rafsuntaskin decide the proper version.
+	$active = tribe_installed_before( 'Tribe__Tickets__Main', '5.1' );
+
+	/**
+	 * Filter whether we should disable TribeCommerce PayPal or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param $active boolean Should be active or not.
+	 */
+	return apply_filters( 'tec_tribe_commerce_is_available', $active );
+}
