@@ -59,11 +59,11 @@ function tribe_tickets_commerce_is_test_mode() {
  */
 function tec_tribe_commerce_is_available() {
 
-	if ( defined( 'TEC_TRIBE_COMMERCE_ENABLED' ) ) {
-		return (bool) TEC_TRIBE_COMMERCE_ENABLED;
+	if ( defined( 'TEC_TRIBE_COMMERCE_AVAILABLE' ) ) {
+		return (bool) TEC_TRIBE_COMMERCE_AVAILABLE;
 	}
 
-	$env_var = getenv( 'TEC_TRIBE_COMMERCE_ENABLED' );
+	$env_var = getenv( 'TEC_TRIBE_COMMERCE_AVAILABLE' );
 
 	if ( false !== $env_var ) {
 		return (bool) $env_var;
@@ -77,7 +77,7 @@ function tec_tribe_commerce_is_available() {
 	 *
 	 * @since TBD
 	 *
-	 * @param $active boolean Should be active or not.
+	 * @param boolean $available should be available or not.
 	 */
-	return apply_filters( 'tec_tribe_commerce_is_available', $active );
+	return apply_filters( 'tec_tribe_commerce_is_available', $available );
 }
