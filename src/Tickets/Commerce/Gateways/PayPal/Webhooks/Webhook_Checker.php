@@ -96,7 +96,7 @@ class Webhook_Checker {
 				// @todo Replace this with a notice / log.
 				tribe( 'logger' )->log_error(
 					__( 'There was a problem updating your PayPal Payments webhook. Please disconnect your account and reconnect it.', 'event-tickets' ),
-					'tickets-commerce-paypal-commerce'
+					'tickets-commerce-gateway-paypal'
 				);
 			}
 		}

@@ -57,7 +57,7 @@ class On_Boarding_Redirect_Handler {
 
 			$this->webhooks_repository->save_webhook_config( $webhook_config );
 		} catch ( Exception $ex ) {
-			tribe( 'logger' )->log_error( $ex->getMessage(), 'tickets-commerce-paypal-commerce' );
+			tribe( 'logger' )->log_error( $ex->getMessage(), 'tickets-commerce-gateway-paypal' );
 
 			$errors = [];
 
@@ -66,7 +66,7 @@ class On_Boarding_Redirect_Handler {
 			// Log error messages.
 			array_map( static function ( $error_message ) {
 				$error_message = is_array( $error_message ) ? $error_message['message'] . ' ' . $error_message['value'] : $error_message;
-				tribe( 'logger' )->log_error( $error_message, 'tickets-commerce-paypal-commerce' );
+				tribe( 'logger' )->log_error( $error_message, 'tickets-commerce-gateway-paypal' );
 			}, $errors );
 
 			$this->merchant->save_account_errors( $errors );
@@ -106,7 +106,7 @@ class On_Boarding_Redirect_Handler {
 			// Log error messages.
 			array_map( static function ( $error_message ) {
 				$error_message = is_array( $error_message ) ? $error_message['message'] . ' ' . $error_message['value'] : $error_message;
-				tribe( 'logger' )->log_error( $error_message, 'tickets-commerce-paypal-commerce' );
+				tribe( 'logger' )->log_error( $error_message, 'tickets-commerce-gateway-paypal' );
 			}, $errors );
 
 			$this->merchant->save_account_errors( $errors );
@@ -145,7 +145,7 @@ class On_Boarding_Redirect_Handler {
 			// Log error messages.
 			array_map( static function ( $error_message ) {
 				$error_message = is_array( $error_message ) ? $error_message['message'] . ' ' . $error_message['value'] : $error_message;
-				tribe( 'logger' )->log_error( $error_message, 'tickets-commerce-paypal-commerce' );
+				tribe( 'logger' )->log_error( $error_message, 'tickets-commerce-gateway-paypal' );
 			}, $error_messages );
 
 			// Return here since the rest of the validations will definitely fail
