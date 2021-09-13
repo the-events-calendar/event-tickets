@@ -182,6 +182,14 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Fixed text overlapping description in the ticket AR modal. [ET-1179]
 
+= [5.1.10] TBD =
+
+* Fix - Fixed ticket total formatting when using custom thousands and decimal separators. [ET-1197]
+
+= [5.1.9.1] 2021-09-08 =
+
+* Fix - Fixed conflict with WooCommerce Payments plugin showing error on Ticket Form. [ET-1174]
+
 = [5.1.9] 2021-08-31 =
 
 * Fix - Fixed cart calculation inconsistency with WooCommerce when the "Number of decimals" setting was set to `0`. [ETP-324]

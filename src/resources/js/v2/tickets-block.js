@@ -211,8 +211,12 @@ tribe.tickets.block = {
 			const realPrice = $input.closest( obj.selectors.item ).data( 'ticket-price' );
 			let quantity = parseInt( $input.val(), 10 );
 			quantity = isNaN( quantity ) ? 0 : quantity;
-			const selectedPrice = isNaN( realPrice ) ? $price.text() : realPrice.toString();
-			const ticketPrice = tribe.tickets.utils.cleanNumber( selectedPrice, provider );
+
+			// Only use tribe.tickets.utils.cleanNumber() if getting price from text block.
+			const ticketPrice = isNaN( realPrice ) 
+				? tribe.tickets.utils.cleanNumber( $price.text(), provider )
+				: realPrice.toString();
+
 			const cost = ticketPrice * quantity;
 			footerAmount += cost;
 		} );
