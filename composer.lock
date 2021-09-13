@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eaff32185e51f783d376a0b87ed9dffa",
+    "content-hash": "6a657b62ea24fa4c05836b148b659f03",
     "packages": [],
     "packages-dev": [
         {
@@ -160,10 +160,10 @@
         },
         {
             "name": "bordoni/phpass",
-            "version": "0.3.0",
+            "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "https://github.com/bordoni/phpass.git",
+                "url": "https://github.com/bordoni/phpass",
                 "reference": "fd57c109213e95150b7de1dc8908c55605cd8e55"
             },
             "dist": {
@@ -184,7 +184,6 @@
                     "Hautelook": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Public Domain"
             ],
@@ -203,7 +202,7 @@
             "description": "Portable PHP password hashing framework",
             "homepage": "http://github.com/hautelook/phpass/",
             "keywords": [
-                "blowfish",
+                "Blowfish",
                 "crypt",
                 "password",
                 "security"
@@ -1729,20 +1728,21 @@
         },
         {
             "name": "lucatume/wp-browser",
-            "version": "3.0.8",
+            "version": "3.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/wp-browser.git",
-                "reference": "22e7ff337c8e5966eedec5551d93b9ed3148799a"
+                "reference": "c84c7d984fb83dc2559b9ad435aa19b7d33d8c70"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/22e7ff337c8e5966eedec5551d93b9ed3148799a",
-                "reference": "22e7ff337c8e5966eedec5551d93b9ed3148799a",
+                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/c84c7d984fb83dc2559b9ad435aa19b7d33d8c70",
+                "reference": "c84c7d984fb83dc2559b9ad435aa19b7d33d8c70",
                 "shasum": ""
             },
             "require": {
                 "antecedent/patchwork": "^2.0",
+                "bordoni/phpass": "dev-main",
                 "codeception/codeception": "^2.5 || ^3.0 || ^4.0",
                 "dg/mysql-dump": "^1.3",
                 "ext-fileinfo": "*",
@@ -1814,7 +1814,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-07-05T08:24:12+00:00"
+            "time": "2021-09-10T09:21:52+00:00"
         },
         {
             "name": "lucatume/wp-snaphot-assertions",
@@ -1905,20 +1905,20 @@
         },
         {
             "name": "mikemclin/laravel-wp-password",
-            "version": "2.0.1",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mikemclin/laravel-wp-password.git",
-                "reference": "84ff1113ff6866cdb0350c176dc3c843383e4819"
+                "reference": "f08ebb2c77ada2edb220a039361868e180f4c3fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikemclin/laravel-wp-password/zipball/84ff1113ff6866cdb0350c176dc3c843383e4819",
-                "reference": "84ff1113ff6866cdb0350c176dc3c843383e4819",
+                "url": "https://api.github.com/repos/mikemclin/laravel-wp-password/zipball/f08ebb2c77ada2edb220a039361868e180f4c3fe",
+                "reference": "f08ebb2c77ada2edb220a039361868e180f4c3fe",
                 "shasum": ""
             },
             "require": {
-                "hautelook/phpass": "0.3.*",
+                "bordoni/phpass": "dev-main",
                 "illuminate/support": ">=4.0.0",
                 "php": ">=5.3.0"
             },
@@ -1928,7 +1928,7 @@
             "require-dev": {
                 "mockery/mockery": "~0.9",
                 "phpunit/phpunit": "~4.0",
-                "satooshi/php-coveralls": "dev-master"
+                "satooshi/php-coveralls": "^2.2"
             },
             "type": "laravel-package",
             "extra": {
@@ -1965,7 +1965,7 @@
                 "password",
                 "wordpress"
             ],
-            "time": "2018-01-11T14:12:02+00:00"
+            "time": "2021-09-11T11:31:02+00:00"
         },
         {
             "name": "mustache/mustache",
@@ -5804,6 +5804,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "bordoni/phpass": 20,
         "the-events-calendar/tec-testing-facilities": 20,
         "the-events-calendar/tribalscents": 20
     },
