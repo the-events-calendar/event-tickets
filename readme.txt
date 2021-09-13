@@ -183,6 +183,14 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Added a new filter `tribe_tickets_get_provider_query_slug` to allow customization of the provider URL variable name. [ET-543]
 * Tweak - Changed the `provider` URL variable name to `tickets_provider`. The filter `tribe_tickets_get_provider_query_slug` allows for customization. [ET-543]
 
+= [5.1.10] TBD =
+
+* Fix - Fixed ticket total formatting when using custom thousands and decimal separators. [ET-1197]
+
+= [5.1.9.1] 2021-09-08 =
+
+* Fix - Fixed conflict with WooCommerce Payments plugin showing error on Ticket Form. [ET-1174]
+
 = [5.1.9] 2021-08-31 =
 
 * Fix - Fixed cart calculation inconsistency with WooCommerce when the "Number of decimals" setting was set to `0`. [ETP-324]
