@@ -434,9 +434,14 @@ class Client {
 	 *
 	 * @return array|null
 	 */
-	public function capture_order( $order_id ) {
+	public function capture_order( $order_id, $order_data ) {
 		$query_args = [];
-		$body       = [];
+
+		// Todo @rafsuntaskin handle $data validation to avoid errors.
+		$body       = [
+			'payerID' => $order_data['payerID'],
+		];
+
 		$args       = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
