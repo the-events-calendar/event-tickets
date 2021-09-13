@@ -69,8 +69,8 @@ function tec_tribe_commerce_is_available() {
 		return (bool) $env_var;
 	}
 
-	// Todo, @juanfra @rafsuntaskin decide the proper version.
-	$active = tribe_installed_before( 'Tribe__Tickets__Main', '5.1' );
+	// Available if PayPal was completely setup previously.
+	$available = tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'slug' ) === 'complete';
 
 	/**
 	 * Filter whether we should disable TribeCommerce PayPal or not.
