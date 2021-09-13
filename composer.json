@@ -12,7 +12,7 @@
   "require": {
   },
   "require-dev": {
-    "bordoni/phpass": "^0.3.0",
+    "bordoni/phpass": "dev-main",
     "automattic/vipwpcs": "^2.0",
     "codeception/codeception": "^4.0",
     "codeception/module-asserts": "^1.0",
@@ -46,6 +46,12 @@
       "name": "the-events-calendar/TribalScents",
       "type": "github",
       "url": "https://github.com/the-events-calendar/TribalScents",
+      "no-api": true
+    },
+    {
+      "name": "bordoni/phpass",
+      "type": "github",
+      "url": "https://github.com/bordoni/phpass",
       "no-api": true
     }
   ],
