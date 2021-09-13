@@ -14,13 +14,20 @@ use TEC\Tickets\Commerce\Order;
  */
 class Handler {
 
+	/**
+	 * Gets the parent payment link from the list of Links on the response.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $links
+	 *
+	 * @return array
+	 */
 	protected function get_parent_payment_link( $links ) {
 		return current( array_filter( $links, static function ( $link ) {
 			return 'parent_payment' === $link['rel'];
 		} ) );
 	}
-
-
 
 	/**
 	 * Process a given PayPal Webhook event, possibly updating the local order with the status sent by the request.
