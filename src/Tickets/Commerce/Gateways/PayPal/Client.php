@@ -656,7 +656,9 @@ class Client {
 		$response   = $this->get( $url, $query_args, $args );
 
 		if ( ! isset( $response['id'], $response['name'] ) ) {
-			if ( 'INVALID_RESOURCE_ID' === $response['name'] ) {
+			$error = @json_decode( $response['body'], true );
+
+			if ( 'INVALID_RESOURCE_ID' === $error['name'] ) {
 				// The webhook was not found.
 				tribe( 'logger' )->log_warning( __( 'The PayPal webhook does not exist', 'event-tickets' ), 'tickets-commerce-gateway-paypal' );
 			} else {
@@ -706,21 +708,22 @@ class Client {
 		$response = $this->post( $url, $query_args, $args );
 
 		if ( ! $response || empty( $response['id'] ) ) {
-			if ( empty( $response['name'] ) ) {
+			$error = @json_decode( $response['body'], true );
+			if ( empty( $error['name'] ) ) {
 				tribe( 'logger' )->log_error( __( 'Unexpected PayPal response when creating webhook', 'event-tickets' ), 'tickets-commerce-gateway-paypal' );
 
-				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-unexpected' );
+				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-unexpected', null, $response );
 			}
 
-			if ( 'WEBHOOK_URL_ALREADY_EXISTS' === $response['name'] ) {
-				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-url-already-exists' );
+			if ( 'WEBHOOK_URL_ALREADY_EXISTS' === $error['name'] ) {
+				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-url-already-exists', null, $response );
 			}
 
-			if ( 'WEBHOOK_NUMBER_LIMIT_EXCEEDED' === $response['name'] ) {
+			if ( 'WEBHOOK_NUMBER_LIMIT_EXCEEDED' === $error['name'] ) {
 				// Limit has been reached, we cannot just delete all webhooks without permission.
 				tribe( 'logger' )->log_error( __( 'PayPal webhook limit has been reached, you need to go into your developer.paypal.com account and remove webhooks from the associated account', 'event-tickets' ), 'tickets-commerce-gateway-paypal' );
 
-				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-limit-exceeded' );
+				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-limit-exceeded', null, $response );
 			}
 		}
 
@@ -773,13 +776,14 @@ class Client {
 		$response   = $this->patch( $url, $query_args, $args );
 
 		if ( ! $response || empty( $response['id'] ) ) {
-			if ( empty( $response['name'] ) ) {
+			$error = @json_decode( $response['body'], true );
+			if ( empty( $error['name'] ) ) {
 				tribe( 'logger' )->log_error( __( 'Unexpected PayPal response when updating webhook', 'event-tickets' ), 'tickets-commerce-gateway-paypal' );
 
 				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-update-unexpected' );
 			}
 
-			if ( 'INVALID_RESOURCE_ID' === $response['name'] ) {
+			if ( 'INVALID_RESOURCE_ID' === $error['name'] ) {
 				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-update-invalid-id' );
 			}
 		}

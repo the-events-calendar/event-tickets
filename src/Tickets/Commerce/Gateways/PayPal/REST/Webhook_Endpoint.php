@@ -76,9 +76,9 @@ class Webhook_Endpoint implements Tribe__Documentation__Swagger__Provider_Interf
 	 * @return string The REST API route URL.
 	 */
 	public function get_route_url() {
-		$rest = tribe( REST::class );
+		$namespace = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
 
-		return rest_url( '/' . $rest->namespace . $this->get_endpoint_path(), 'https' );
+		return rest_url( '/' . $namespace . $this->get_endpoint_path(), 'https' );
 	}
 
 	/**
