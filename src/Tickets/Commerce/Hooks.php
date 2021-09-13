@@ -93,6 +93,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		// Add a post display state for special Event Tickets pages.
 		add_filter( 'display_post_states', [ $this, 'add_display_post_states' ], 10, 2 );
+
+		// Todo make the following filters dynamic.
+		add_filter( 'sanitize_post_meta__tribe_default_ticket_provider_for_tribe_events' , [ $this, 'skip_sanitization' ], 10, 2 );
+		add_filter( 'sanitize_post_meta__tribe_default_ticket_provider_for_post' , [ $this, 'skip_sanitization' ], 10, 2 );
 	}
 
 	/**
@@ -416,4 +420,12 @@ class Hooks extends tad_DI52_ServiceProvider {
 		return $post_states;
 	}
 
+	public function skip_sanitization( $meta_value, $meta_key ) {
+
+		if ( $meta_value != wp_unslash( tribe( Module::class )->class_name ) ) {
+			return $meta_value;
+		}
+
+		return tribe( Module::class )->class_name;
+	}
 }
