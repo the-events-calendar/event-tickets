@@ -41,7 +41,9 @@ class Order {
 	 * @return string
 	 */
 	public function approve( $order_id ) {
-		$response = $this->client->capture_order( $order_id );
+
+		// ToDo @rafsuntaskin @gustavo update sinature with $order_data array.
+		$response = $this->client->capture_order( $order_id, [] );
 
 		return $response;
 	}
