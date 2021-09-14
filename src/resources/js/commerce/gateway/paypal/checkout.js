@@ -379,4 +379,4 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 	$( obj.ready );
 
-} )( jQuery, tribe.tickets.commerce );
+} )( jQuery, tribe.tickets.commerce.gateway.paypal.checkout );
