@@ -186,6 +186,23 @@ class Attendee {
 	 */
 	public static $currency_meta_key = '_tec_tickets_commerce_currency';
 
+	/**
+	 * Meta key holding currency which the price was paid in.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $holder_name_meta_key = '_tec_tickets_commerce_holder_name';
+
+	/**
+	 * Meta key holding price paid for this attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $holder_email_meta_key = '_tec_tickets_commerce_holder_email';
 
 	/**
 	 * Register this Class post type into WP.
