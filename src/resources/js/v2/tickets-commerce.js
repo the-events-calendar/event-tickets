@@ -73,7 +73,7 @@ tribe.tickets.commerce = {};
 	obj.loaderHide = function() {
 		tribe.tickets.loader.hide( $( obj.selectors.checkoutContainer ) );
 	};
-	
+
 	/**
 	 * Bind loader events.
 	 *
@@ -169,7 +169,7 @@ tribe.tickets.commerce = {};
 	 * @return {void}
 	 */
 	obj.bindCheckoutEvents = function( $container ) {
-		$document.trigger( 'beforeSetup.tribeTicketsCommerceCheckout', [ $container ] );
+		$document.trigger( 'beforeSetup.TicketsCommerceCheckout', [ $container ] );
 
 		// Bind container based events.
 		obj.bindCheckoutItemDescriptionToggle( $container );
@@ -177,7 +177,7 @@ tribe.tickets.commerce = {};
 		// Bind loader visibility.
 		obj.bindLoaderEvents();
 
-		$document.trigger( 'afterSetup.tribeTicketsCommerceCheckout', [ $container ] );
+		$document.trigger( 'afterSetup.TicketsCommerceCheckout', [ $container ] );
 	};
 
 	/**

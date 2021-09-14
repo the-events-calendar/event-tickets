@@ -334,7 +334,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param  {Event}   event      event object for 'afterSetup.tribeTicketsCommerceCheckout' event
+	 * @param  {Event}   event      event object for 'afterSetup.TicketsCommerceCheckout' event
 	 * @param  {jQuery}  $container jQuery object of checkout container.
 	 *
 	 * @return {void}
@@ -372,9 +372,8 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.ready = function () {
-
-		$document.on( 'afterSetup.tribeTicketsCommerceCheckout', obj.setupLoader );
-		$document.on( 'afterSetup.tribeTicketsCommerceCheckout', obj.setupButtons );
+		$document.on( 'afterSetup.TicketsCommerceCheckout', obj.setupLoader );
+		$document.on( 'afterSetup.TicketsCommerceCheckout', obj.setupButtons );
 	};
 
 	$( obj.ready );
