@@ -3,7 +3,7 @@
  */
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import AutosizeInput from 'react-input-autosize';
+import TextareaAutosize from 'react-textarea-autosize';
 
 /**
  * Wordpress dependencies
@@ -42,7 +42,7 @@ const TicketContainerHeaderTitle = ( {
 				isSelected
 					? (
 						<Fragment>
-							<AutosizeInput
+							<TextareaAutosize
 								className="tribe-editor__ticket__container-header-title-input"
 								value={ tempTitle }
 								placeholder={ __( 'Ticket Type *', 'event-tickets' ) }
