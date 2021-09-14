@@ -57,6 +57,34 @@ tribe.tickets.commerce = {};
 	};
 
 	/**
+	 * Show the loader/spinner.
+	 *
+	 * @since TBD
+	 */
+	obj.loaderShow = function() {
+		tribe.tickets.loader.show( $( obj.selectors.checkoutContainer ) );
+	};
+
+	/**
+	 * Hide the loader/spinner.
+	 *
+	 * @since TBD
+	 */
+	obj.loaderHide = function() {
+		tribe.tickets.loader.hide( $( obj.selectors.checkoutContainer ) );
+	};
+	
+	/**
+	 * Bind loader events.
+	 *
+	 * @since TBD
+	 */
+	obj.bindLoaderEvents = function () {
+		$document.on( obj.customEvents.showLoader, obj.loaderShow );
+		$document.on( obj.customEvents.hideLoader, obj.loaderHide );
+	}
+
+	/**
 	 * Toggle the checkout item description visibility.
 	 *
 	 * @since 5.1.9
@@ -150,34 +178,6 @@ tribe.tickets.commerce = {};
 		obj.bindLoaderEvents();
 
 		$document.trigger( 'afterSetup.tribeTicketsCommerceCheckout', [ $container ] );
-	};
-
-	/**
-	 * Bind loader events.
-	 *
-	 * @since TBD
-	 */
-	obj.bindLoaderEvents = function () {
-		$document.on( obj.customEvents.showLoader, obj.loaderShow );
-		$document.on( obj.customEvents.hideLoader, obj.loaderHide );
-	}
-
-	/**
-	 * Show the loader/spinner.
-	 *
-	 * @since TBD
-	 */
-	obj.loaderShow = function() {
-		tribe.tickets.loader.show( $( obj.selectors.checkoutContainer ) );
-	};
-
-	/**
-	 * Hide the loader/spinner.
-	 *
-	 * @since TBD
-	 */
-	obj.loaderHide = function() {
-		tribe.tickets.loader.hide( $( obj.selectors.checkoutContainer ) );
 	};
 
 	/**
