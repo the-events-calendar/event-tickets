@@ -62,12 +62,7 @@ class Legacy_Compat extends tad_DI52_ServiceProvider {
 	 * @return string
 	 */
 	public function set_legacy_module_name( $name ) {
-
-		if ( $name === 'Tribe Commerce' ) {
-			return __( 'Tribe Commerce ( Legacy PayPal, not recommended )', 'event-tickets' );
-		}
-
-		return $name;
+		return $name != 'Tribe Commerce' ? $name : __( 'Tribe Commerce ( Legacy PayPal, not recommended )', 'event-tickets' );
 	}
 
 }

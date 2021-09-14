@@ -70,7 +70,15 @@ function tec_tribe_commerce_is_available() {
 	}
 
 	// Available if PayPal was completely setup previously.
-	$available = tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'slug' ) === 'complete';
+	$available = tribe()->offsetExists( 'tickets.commerce.paypal.handler.ipn' ) ? tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'slug' ) === 'complete' : null;
+
+	if ( is_null( $available ) ) {
+		_doing_it_wrong(
+			__FUNCTION__,
+			'tickets.commerce.paypal.handler.ipn - is not a registered callback.',
+			'TBD'
+		);
+	}
 
 	/**
 	 * Filter whether we should disable TribeCommerce PayPal or not.
