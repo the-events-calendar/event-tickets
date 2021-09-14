@@ -182,7 +182,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Fixed ticket total formatting when using custom thousands and decimal separators. [ET-1197]
 * Enhancement - When editing an RSVP or ticket in the block editor, allow title to wrap to multiple lines. [ET-1089]
-* Enhancement - Ensure that text for the RSVP going/not going dropdown on front end isn't cut off. [ET-1169]
+* Enhancement - Ensure that text for the RSVP going/not going dropdown on front end isn't cut off and arrows aren't hidden. [ET-1169]
 
 = [5.1.9.1] 2021-09-08 =
 
