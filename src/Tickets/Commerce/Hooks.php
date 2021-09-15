@@ -440,7 +440,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 		 */
 		$ticket_handler = tribe( 'tickets.handler' );
 
-		add_filter( "sanitize_post_meta_{$ticket_handler->key_provider_field}" , [ $this, 'filter_modify_sanitization_provider_meta' ], 10, 2 );
+		add_filter( "sanitize_post_meta_{$ticket_handler->key_provider_field}" , [ $this, 'filter_modify_sanitization_provider_meta' ] );
 	}
 
 	/**
@@ -448,12 +448,11 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $meta_key   Metadata key.
 	 * @param mixed  $meta_value Metadata value.
 	 *
 	 * @return string
 	 */
-	public function filter_modify_sanitization_provider_meta( $meta_value, $meta_key ) {
-		return tribe( Settings::class )->skip_sanitization( $meta_value, $meta_key );
+	public function filter_modify_sanitization_provider_meta( $meta_value ) {
+		return tribe( Settings::class )->skip_sanitization( $meta_value );
 	}
 }
