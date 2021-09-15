@@ -134,13 +134,12 @@ class Webhook_Endpoint implements Tribe__Documentation__Swagger__Provider_Interf
 	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request   The request object.
-	 * @param bool            $return_id Whether the created post ID should be returned or the full response object.
 	 *
-	 * @return WP_Error|WP_REST_Response|int An array containing the data on success or a WP_Error instance on failure.
+	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
-	public function handle_request( WP_REST_Request $request, $return_id = false ) {
+	public function handle_request( WP_REST_Request $request ) {
 		if ( ! tribe( Merchant::class )->is_active() ) {
-			return new WP_Error();
+			return new WP_Error( 'tec-tickets-commerce-paypal-merchant-inactive' );
 		}
 
 		$event = $request->get_body_params();
@@ -165,7 +164,7 @@ class Webhook_Endpoint implements Tribe__Documentation__Swagger__Provider_Interf
 				'tickets-commerce-gateway-paypal'
 			);
 
-			return new WP_Error();
+			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-invalid-type', null, $event );
 		}
 
 		$webhook_id = tribe( Webhooks::class )->get_setting( 'id' );
@@ -174,10 +173,14 @@ class Webhook_Endpoint implements Tribe__Documentation__Swagger__Provider_Interf
 		if ( ! tribe( Client::class )->verify_webhook_signature( $webhook_id, $event, $headers ) ) {
 			tribe( 'logger' )->log_error( __( 'Failed PayPal webhook event verification', 'event-tickets' ), 'tickets-commerce-gateway-paypal' );
 
-			return new WP_Error();
+			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-signature-error', null, [  'webhook_id' => $webhook_id, 'event' => $event, 'headers' => $headers ] );
 		}
 
 		$order = tribe( Webhooks\Handler::class )->process_event( $event );
+
+		if ( is_wp_error( $order ) ) {
+			return $order;
+		}
 
 		$data = [
 			'success' => true,

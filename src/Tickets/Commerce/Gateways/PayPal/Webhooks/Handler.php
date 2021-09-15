@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Client;
 use TEC\Tickets\Commerce\Order;
+use WP_Error;
 
 /**
  * Class Handler
@@ -36,12 +37,12 @@ class Handler {
 	 *
 	 * @param array $event The PayPal payment event object.
 	 *
-	 * @return bool Whether the event was processed successfully.
+	 * @return \WP_Post|WP_Error Whether the event was processed successfully.
 	 */
 	public function process_event( $event ) {
 		// Invalid event.
 		if ( empty( $event['event_type'] ) || empty( $event['resource'] ) ) {
-			return false;
+			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-invalid-payload', null, [ 'event' => $event ] );
 		}
 
 		// Check if the event type matches.
@@ -55,7 +56,7 @@ class Handler {
 				'tickets-commerce-gateway-paypal'
 			);
 
-			return false;
+			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-invalid-type', null, [ 'event' => $event ] );
 		}
 
 		$new_status = tribe( Events::class )->convert_to_commerce_status( $event['event_type'] );
@@ -74,7 +75,10 @@ class Handler {
 				'tickets-commerce-gateway-paypal'
 			);
 
-			return false;
+			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-invalid-parent-payment', null, [
+				'parent_payment' => $parent_payment,
+				'event'          => $event
+			] );
 		}
 
 		$order = tec_tc_orders()->by_args( [
@@ -93,7 +97,11 @@ class Handler {
 				'tickets-commerce-gateway-paypal'
 			);
 
-			return false;
+			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-order-not-found', null, [
+				'parent_payment' => $parent_payment,
+				'order'          => $order,
+				'event'          => $event
+			] );
 		}
 
 		// Don't do anything if the status is already set.
@@ -109,11 +117,16 @@ class Handler {
 				'tickets-commerce-gateway-paypal'
 			);
 
-			return false;
+			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-order-status-already-updated', null, [
+				'parent_payment' => $parent_payment,
+				'order'          => $order,
+				'new_status'     => $new_status,
+				'event'          => $event
+			] );
 		}
 
 		$updated = tribe( Order::class )->modify_status( $order->ID, $new_status->get_slug(), [
-			'gateway_payload'  => $event,
+			'gateway_payload' => $event,
 		] );
 
 		tribe( 'logger' )->log_debug(
