@@ -532,7 +532,7 @@ class Client {
 	}
 
 	/**
-	 * This uses the links property of the payment to retrieve the Parent Payment ID from PayPal
+	 * This uses the links property of the payment to retrieve the Parent Payment ID from PayPal.
 	 *
 	 * @since TBD
 	 *
