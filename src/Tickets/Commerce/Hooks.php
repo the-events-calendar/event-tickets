@@ -94,9 +94,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 		// Add a post display state for special Event Tickets pages.
 		add_filter( 'display_post_states', [ $this, 'add_display_post_states' ], 10, 2 );
 
-		// @todo make the following filters dynamic.
-		add_filter( 'sanitize_post_meta__tribe_default_ticket_provider_for_tribe_events' , [ $this, 'filter_modify_sanitization_provider_meta' ], 10, 2 );
-		add_filter( 'sanitize_post_meta__tribe_default_ticket_provider_for_post' , [ $this, 'filter_modify_sanitization_provider_meta' ], 10, 2 );
+		$this->provider_meta_sanitization_filters();
 	}
 
 	/**
@@ -418,6 +416,31 @@ class Hooks extends tad_DI52_ServiceProvider {
 		$post_states = tribe( Success::class )->maybe_add_display_post_states( $post_states, $post );
 
 		return $post_states;
+	}
+
+	/**
+	 * Add the filter for provider meta sanitization.
+	 *
+	 * @since TBD
+	 */
+	public function provider_meta_sanitization_filters() {
+
+		if ( ! tribe()->offsetExists( 'tickets.handler' ) ) {
+			_doing_it_wrong(
+				__FUNCTION__,
+				'tickets.handler - is not registered.',
+				'TBD'
+			);
+
+			return;
+		}
+
+		/**
+		 * @var \Tribe__Tickets__Tickets_Handler $ticket_handler
+		 */
+		$ticket_handler = tribe( 'tickets.handler' );
+
+		add_filter( "sanitize_post_meta_{$ticket_handler->key_provider_field}" , [ $this, 'filter_modify_sanitization_provider_meta' ], 10, 2 );
 	}
 
 	/**
