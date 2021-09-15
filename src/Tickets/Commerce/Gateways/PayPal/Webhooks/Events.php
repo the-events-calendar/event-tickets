@@ -49,7 +49,7 @@ class Events {
 	const PAYMENT_CAPTURE_REVERSED = 'PAYMENT.CAPTURE.REVERSED';
 
 	/**
-	 * Default mapping from PayPal Status to Tickets Commerce
+	 * Default mapping from PayPal Status to Tickets Commerce.
 	 *
 	 * @since TBD
 	 *
