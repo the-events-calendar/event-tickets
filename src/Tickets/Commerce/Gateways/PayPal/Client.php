@@ -689,9 +689,9 @@ class Client {
 		$body       = [
 			'url'         => $webhook_url,
 			'event_types' => array_map(
-				static function ( $eventType ) {
+				static function ( $event_type ) {
 					return [
-						'name' => $eventType,
+						'name' => $event_type,
 					];
 				},
 				$events
