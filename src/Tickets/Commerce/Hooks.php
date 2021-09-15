@@ -415,5 +415,4 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		return $post_states;
 	}
-
 }
