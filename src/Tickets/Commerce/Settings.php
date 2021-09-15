@@ -408,7 +408,6 @@ class Settings extends Abstract_Settings {
 	 * @return string
 	 */
 	public function skip_sanitization( $meta_value, $meta_key ) {
-
 		if ( $meta_value === wp_unslash( Module::class ) ) {
 			return Module::class;
 		}

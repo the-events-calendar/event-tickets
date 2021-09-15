@@ -95,8 +95,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'display_post_states', [ $this, 'add_display_post_states' ], 10, 2 );
 
 		// @todo make the following filters dynamic.
-		add_filter( 'sanitize_post_meta__tribe_default_ticket_provider_for_tribe_events' , [ $this, 'handle_provider_meta' ], 10, 2 );
-		add_filter( 'sanitize_post_meta__tribe_default_ticket_provider_for_post' , [ $this, 'handle_provider_meta' ], 10, 2 );
+		add_filter( 'sanitize_post_meta__tribe_default_ticket_provider_for_tribe_events' , [ $this, 'filter_modify_sanitization_provider_meta' ], 10, 2 );
+		add_filter( 'sanitize_post_meta__tribe_default_ticket_provider_for_post' , [ $this, 'filter_modify_sanitization_provider_meta' ], 10, 2 );
 	}
 
 	/**
@@ -430,7 +430,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @return string
 	 */
-	public function handle_provider_meta( $meta_value, $meta_key ) {
+	public function filter_modify_sanitization_provider_meta( $meta_value, $meta_key ) {
 		return tribe( Settings::class )->skip_sanitization( $meta_value, $meta_key );
 	}
 }
