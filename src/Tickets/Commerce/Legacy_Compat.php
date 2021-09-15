@@ -45,7 +45,6 @@ class Legacy_Compat extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function add_filters() {
-
 		add_filter( 'tribe_events_tickets_module_name', [ $this, 'set_legacy_module_name' ] );
 
 		// Disable TribeCommerce for new installations.
