@@ -221,8 +221,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function is_active() {
-		$is_active = tec_tickets_commerce_is_enabled() ? false : null;
-
 		/**
 		 * Filters the check for the active status of the PayPal tickets module.
 		 *
@@ -233,7 +231,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * @param bool                                   $is_active Whether the provider is active.
 		 * @param Tribe__Tickets__Commerce__PayPal__Main $commerce  The Tickets Commerce provider.
 		 */
-		$is_active = apply_filters( 'tribe_tickets_commerce_paypal_is_active', $is_active, $this );
+		$is_active = apply_filters( 'tribe_tickets_commerce_paypal_is_active', true, $this );
 
 		if ( null !== $is_active ) {
 			return (bool) $is_active;
