@@ -178,6 +178,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Bug - Removed the ability to resend tickets from the Attendees page to Attendees who cancelled or refunded their ticket. [ETP-703]
+
 = [5.1.10] TBD =
 
 * Fix - Fixed ticket total formatting when using custom thousands and decimal separators. [ET-1197]
