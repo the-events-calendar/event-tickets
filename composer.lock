@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6a657b62ea24fa4c05836b148b659f03",
+    "content-hash": "31730256729227c388fdcc5ca73a235a",
     "packages": [],
     "packages-dev": [
         {
@@ -160,7 +160,7 @@
         },
         {
             "name": "bordoni/phpass",
-            "version": "dev-main",
+            "version": "0.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bordoni/phpass",
@@ -1728,21 +1728,21 @@
         },
         {
             "name": "lucatume/wp-browser",
-            "version": "3.0.9",
+            "version": "3.0.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/wp-browser.git",
-                "reference": "c84c7d984fb83dc2559b9ad435aa19b7d33d8c70"
+                "reference": "0754da8955c97762976379a9b2ab7175594ff815"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/c84c7d984fb83dc2559b9ad435aa19b7d33d8c70",
-                "reference": "c84c7d984fb83dc2559b9ad435aa19b7d33d8c70",
+                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/0754da8955c97762976379a9b2ab7175594ff815",
+                "reference": "0754da8955c97762976379a9b2ab7175594ff815",
                 "shasum": ""
             },
             "require": {
                 "antecedent/patchwork": "^2.0",
-                "bordoni/phpass": "dev-main",
+                "bordoni/phpass": "^0.3",
                 "codeception/codeception": "^2.5 || ^3.0 || ^4.0",
                 "dg/mysql-dump": "^1.3",
                 "ext-fileinfo": "*",
@@ -1814,7 +1814,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-09-10T09:21:52+00:00"
+            "time": "2021-09-13T18:16:58+00:00"
         },
         {
             "name": "lucatume/wp-snaphot-assertions",
@@ -1905,20 +1905,20 @@
         },
         {
             "name": "mikemclin/laravel-wp-password",
-            "version": "2.0.2",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mikemclin/laravel-wp-password.git",
-                "reference": "f08ebb2c77ada2edb220a039361868e180f4c3fe"
+                "reference": "84ff1113ff6866cdb0350c176dc3c843383e4819"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikemclin/laravel-wp-password/zipball/f08ebb2c77ada2edb220a039361868e180f4c3fe",
-                "reference": "f08ebb2c77ada2edb220a039361868e180f4c3fe",
+                "url": "https://api.github.com/repos/mikemclin/laravel-wp-password/zipball/84ff1113ff6866cdb0350c176dc3c843383e4819",
+                "reference": "84ff1113ff6866cdb0350c176dc3c843383e4819",
                 "shasum": ""
             },
             "require": {
-                "bordoni/phpass": "dev-main",
+                "hautelook/phpass": "0.3.*",
                 "illuminate/support": ">=4.0.0",
                 "php": ">=5.3.0"
             },
@@ -1928,7 +1928,7 @@
             "require-dev": {
                 "mockery/mockery": "~0.9",
                 "phpunit/phpunit": "~4.0",
-                "satooshi/php-coveralls": "^2.2"
+                "satooshi/php-coveralls": "dev-master"
             },
             "type": "laravel-package",
             "extra": {
@@ -1965,7 +1965,7 @@
                 "password",
                 "wordpress"
             ],
-            "time": "2021-09-11T11:31:02+00:00"
+            "time": "2018-01-11T14:12:02+00:00"
         },
         {
             "name": "mustache/mustache",
@@ -5804,7 +5804,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "bordoni/phpass": 20,
         "the-events-calendar/tec-testing-facilities": 20,
         "the-events-calendar/tribalscents": 20
     },
