@@ -13,3 +13,6 @@ if ( ! function_exists( 'tribe_is_recurring_event' ) ) {
 		return apply_filters( 'tribe_is_recurring_event', false, $post_id );
 	}
 }
+
+update_option( 'theme', 'twentytwenty' );
+update_option( 'stylesheet', 'twentytwenty' );
