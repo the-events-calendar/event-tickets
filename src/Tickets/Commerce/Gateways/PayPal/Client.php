@@ -138,6 +138,7 @@ class Client {
 			]
 		];
 
+		// By default it's important that we have a body set for any method that is not the GET method.
 		if ( 'GET' !== $method ) {
 			$default_arguments['body'] = [];
 		}
@@ -152,6 +153,7 @@ class Client {
 				$content_type = Arr::get( $request_arguments, [ 'headers', 'content-type' ] );
 			}
 
+			// For all other methods we try to make the body into the correct type.
 			if (
 				! empty( $request_arguments['body'] )
 				&& 'application/json' === strtolower( $content_type )

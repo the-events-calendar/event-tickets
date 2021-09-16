@@ -70,7 +70,14 @@ class Events {
 	 * @return array
 	 */
 	public function get_valid() {
-		return $this->default_map;
+		/**
+		 * Allows filtering of the Webhook map of events for each one of the types we listen for.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $map The default map of which event types that translate to a given Status class.
+		 */
+		return apply_filters( 'tec_tickets_commerce_gateway_paypal_webook_events_map', $this->default_map );
 	}
 
 	/**
