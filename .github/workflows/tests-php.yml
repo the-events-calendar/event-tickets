@@ -227,7 +227,7 @@ jobs:
       # Install and activate TwentyTwenty
       # ------------------------------------------------------------------------------
       - name: Install and activate TwentyTwenty
-        if: steps.skip.outputs.value != 1
+        if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
         run:  ${TRIC_BIN} site-cli theme install twentytwenty --activate
       # ------------------------------------------------------------------------------
       # Run tests
