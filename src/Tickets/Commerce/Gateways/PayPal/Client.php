@@ -430,17 +430,20 @@ class Client {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param string $order_id
+	 * @since TBD Added support for passing `payerID` param for PayPal API.
+	 *
+	 * @param string $order_id Order ID to capture.
+	 * @param string $payer_id Payer ID for given order from PayPal.
 	 *
 	 * @return array|null
 	 */
-	public function capture_order( $order_id, $order_data ) {
+	public function capture_order( $order_id, $payer_id = '' ) {
 		$query_args = [];
+		$body       = [];
 
-		// Todo @rafsuntaskin handle $data validation to avoid errors.
-		$body       = [
-			'payerID' => $order_data['payerID'],
-		];
+		if ( ! empty( $payer_id ) ) {
+			$body['payerID'] = $payer_id;
+		}
 
 		$args       = [
 			'headers' => [
