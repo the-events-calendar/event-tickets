@@ -27,24 +27,15 @@ class Provider extends \tad_DI52_ServiceProvider {
 
 		$this->container->singleton( Merchant::class, Merchant::class, [ 'init' ] );
 
-		$this->container->singleton( Ajax_Request_Handler::class );
 		$this->container->singleton( On_Boarding_Redirect_Handler::class );
 		$this->container->singleton( Refresh_Token::class );
 		$this->container->singleton( Client::class );
 		$this->container->singleton( Signup::class );
 		$this->container->singleton( Status::class );
 
-		$this->container->singleton( Repositories\Authorization::class );
-		$this->container->singleton( Repositories\Order::class );
-		$this->container->singleton( Repositories\Webhooks::class );
-
-		$this->container->singleton( Webhooks\Webhook_Register::class );
-		$this->container->singleton( Webhooks\Webhooks_Route::class );
-
-		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Completed::class );
-		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Denied::class );
-		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Refunded::class );
-		$this->container->singleton( Webhooks\Listeners\Payment_Capture_Reversed::class );
+		$this->container->singleton( Webhooks::class );
+		$this->container->singleton( Webhooks\Events::class );
+		$this->container->singleton( Webhooks\Handler::class );
 
 		$this->register_endpoints();
 	}
