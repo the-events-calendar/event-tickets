@@ -35,7 +35,7 @@
 
 		<div
 	id="tribe-block-tickets-item-[TICKET_ID_1]"
-	 class="tribe-tickets__tickets-item post-[TICKET_ID_1] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	 data-ticket-id="[TICKET_ID_1]" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
+	 class="tribe-tickets__tickets-item post-[TICKET_ID_1] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="[TICKET_ID_1]" data-available="true" data-has-shared-cap="false" data-ticket-price="99" >
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
 		Test ticket for [EVENT_ID]</div>
@@ -51,7 +51,7 @@
 		<span class="tribe-tickets__tickets-sale-price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">$</span>
+					<span class="tribe-currency-symbol">&#x24;</span>
 					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
@@ -68,8 +68,38 @@
 </div>
 
 	<div  class="tribe-common-h4 tribe-tickets__tickets-item-quantity" >
-			<div class="tribe-common-b2 tribe-common-b2--bold tribe-tickets__tickets-item-quantity-unavailable">
-	Sold Out</div>
+			<button
+	class="tribe-tickets__tickets-item-quantity-remove"
+	title="Decrease ticket quantity for Test ticket for [EVENT_ID]"
+	type="button"
+>
+	<span class="screen-reader-text tribe-common-a11y-visual-hide">Decrease ticket quantity for Test ticket for [EVENT_ID]</span>
+	-</button>
+		
+<div  class="tribe-tickets__tickets-item-quantity-number" >
+	<label
+		class="tribe-common-a11y-visual-hide"
+		for="tribe-tickets__tickets-item-quantity-number--[TICKET_ID_1]"
+	>
+		Quantity	</label>
+	<input
+		id="tribe-tickets__tickets-item-quantity-number--[TICKET_ID_1]"
+		type="number"
+		class="tribe-common-h3 tribe-common-h4--min-medium tribe-tickets__tickets-item-quantity-number-input"
+		step="1"
+		min="0"
+		max="100"
+		value="0"
+		autocomplete="off"
+			/>
+</div>
+		<button
+	class="tribe-tickets__tickets-item-quantity-add"
+	title="Increase ticket quantity for Test ticket for [EVENT_ID]"
+	type="button"
+>
+	<span class="screen-reader-text tribe-common-a11y-visual-hide">Increase ticket quantity for Test ticket for [EVENT_ID]</span>
+	+</button>
 	</div>
 
 	
@@ -82,7 +112,7 @@
 </div>
 <div
 	id="tribe-block-tickets-item-[TICKET_ID_2]"
-	 class="tribe-tickets__tickets-item post-[TICKET_ID_2] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	 data-ticket-id="[TICKET_ID_2]" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
+	 class="tribe-tickets__tickets-item post-[TICKET_ID_2] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="[TICKET_ID_2]" data-available="true" data-has-shared-cap="false" data-ticket-price="99" >
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
 		Test ticket for [EVENT_ID]</div>
@@ -98,7 +128,7 @@
 		<span class="tribe-tickets__tickets-sale-price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">$</span>
+					<span class="tribe-currency-symbol">&#x24;</span>
 					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
@@ -115,8 +145,38 @@
 </div>
 
 	<div  class="tribe-common-h4 tribe-tickets__tickets-item-quantity" >
-			<div class="tribe-common-b2 tribe-common-b2--bold tribe-tickets__tickets-item-quantity-unavailable">
-	Sold Out</div>
+			<button
+	class="tribe-tickets__tickets-item-quantity-remove"
+	title="Decrease ticket quantity for Test ticket for [EVENT_ID]"
+	type="button"
+>
+	<span class="screen-reader-text tribe-common-a11y-visual-hide">Decrease ticket quantity for Test ticket for [EVENT_ID]</span>
+	-</button>
+		
+<div  class="tribe-tickets__tickets-item-quantity-number" >
+	<label
+		class="tribe-common-a11y-visual-hide"
+		for="tribe-tickets__tickets-item-quantity-number--[TICKET_ID_2]"
+	>
+		Quantity	</label>
+	<input
+		id="tribe-tickets__tickets-item-quantity-number--[TICKET_ID_2]"
+		type="number"
+		class="tribe-common-h3 tribe-common-h4--min-medium tribe-tickets__tickets-item-quantity-number-input"
+		step="1"
+		min="0"
+		max="100"
+		value="0"
+		autocomplete="off"
+			/>
+</div>
+		<button
+	class="tribe-tickets__tickets-item-quantity-add"
+	title="Increase ticket quantity for Test ticket for [EVENT_ID]"
+	type="button"
+>
+	<span class="screen-reader-text tribe-common-a11y-visual-hide">Increase ticket quantity for Test ticket for [EVENT_ID]</span>
+	+</button>
 	</div>
 
 	
@@ -143,7 +203,7 @@
 	<span class="tribe-tickets__tickets-footer-total-wrap">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">$</span>
+					<span class="tribe-currency-symbol">&#x24;</span>
 					<span class="tribe-amount">0.00</span>
 				</span>
 				</span>
