@@ -1,6 +1,6 @@
 <?php return '<div
 	id="tribe-block-tickets-item-3556"
-	 class="tribe-tickets__tickets-item post-3556 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="3556" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
+	 class="tribe-tickets__tickets-item post-3556 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	 data-ticket-id="3556" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
 		Test ticket for 8</div>
