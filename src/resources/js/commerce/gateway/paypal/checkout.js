@@ -100,6 +100,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleCancel = function ( data, $container ) {
+		console.log( 'handleCancel', arguments );
 		$container.removeClass( obj.selectors.activePayment.className() );
 	};
 
@@ -114,6 +115,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleGenericError = function ( error, $container ) {
+		console.log( 'handleGenericError', arguments );
 		$container.removeClass( obj.selectors.activePayment.className() );
 	};
 
@@ -189,6 +191,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleCreateOrderFail = function ( data ) {
 		console.log( 'handleCreateOrderFail', arguments );
+		tribe.tickets.commerce.showNotice( data );
 	};
 
 	/**
@@ -268,7 +271,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleApproveFail = function ( data ) {
 		console.log( 'handleApproveFail', arguments );
-
+		tribe.tickets.commerce.showNotice( data );
 	};
 
 	/**

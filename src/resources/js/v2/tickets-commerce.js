@@ -85,6 +85,17 @@ tribe.tickets.commerce = {};
 	}
 
 	/**
+	 * Display the notice component.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} data Data for notice.
+	 */
+	obj.showNotice = function( data ) {
+		alert( data.message ?? 'Something went wrong !' );
+	}
+
+	/**
 	 * Toggle the checkout item description visibility.
 	 *
 	 * @since 5.1.9
