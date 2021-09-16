@@ -26,7 +26,7 @@
 </div>
 
 
-	<p> <a href="http://wordpress.test/wp-admin/edit.php?page=tribe-common&#038;tab=payments&#038;tc-action=paypal-refresh-access-token&#038;post_type=tribe_events">Refresh Access Token</a> <a href="http://wordpress.test/wp-admin/edit.php?page=tribe-common&#038;tab=payments&#038;tc-action=paypal-refresh-user-info&#038;post_type=tribe_events">Refresh User Info</a></p>
+	<p> <a href="http://wordpress.test/wp-admin/edit.php?page=tribe-common&#038;tab=payments&#038;tc-action=paypal-refresh-access-token&#038;post_type=tribe_events">Refresh Access Token</a> <a href="http://wordpress.test/wp-admin/edit.php?page=tribe-common&#038;tab=payments&#038;tc-action=paypal-refresh-user-info&#038;post_type=tribe_events">Refresh User Info</a> <a href="http://wordpress.test/wp-admin/edit.php?page=tribe-common&#038;tab=payments&#038;tc-action=paypal-refresh-webhook&#038;post_type=tribe_events">Refresh Webhook</a></p>
 
 </div>
 ';
