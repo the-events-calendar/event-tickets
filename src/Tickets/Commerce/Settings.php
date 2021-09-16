@@ -397,4 +397,21 @@ class Settings extends Abstract_Settings {
 		return $settings;
 	}
 
+	/**
+	 * If the provided meta value is from Ticket Commerce Module then re-slash the meta value.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $meta_value Metadata value.
+	 *
+	 * @return string
+	 */
+	public function skip_sanitization( $meta_value ) {
+		if ( $meta_value === wp_unslash( Module::class ) ) {
+			return Module::class;
+		}
+
+		return $meta_value;
+	}
+
 }
