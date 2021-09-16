@@ -10,7 +10,7 @@
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
 					<article
-	 class="tribe-tickets__commerce-checkout-cart-item post-TICKET_ID tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry tribe-common-b1" 	 data-ticket-id="TICKET_ID" data-ticket-quantity="1" data-ticket-price="97" >
+	 class="tribe-tickets__commerce-checkout-cart-item post-TICKET_ID tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry tribe-common-b1" 	 data-ticket-id="TICKET_ID" data-ticket-quantity="1" data-ticket-price="97" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
 
@@ -67,7 +67,7 @@
 
 </article>
 					<article
-	 class="tribe-tickets__commerce-checkout-cart-item post-TICKET_ID tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry tribe-common-b1" 	 data-ticket-id="TICKET_ID" data-ticket-quantity="1" data-ticket-price="97" >
+	 class="tribe-tickets__commerce-checkout-cart-item post-TICKET_ID tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry tribe-common-b1" 	 data-ticket-id="TICKET_ID" data-ticket-quantity="1" data-ticket-price="97" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
 
