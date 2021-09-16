@@ -49,3 +49,43 @@ function tribe_tickets_commerce_is_test_mode() {
 	 */
 	return \TEC\Tickets\Commerce\Gateways\PayPal\Gateway::is_test_mode();
 }
+
+/**
+ * Determine whether the legacy TribeCommerce should be shown or not.
+ *
+ * @since TBD
+ *
+ * @return boolean
+ */
+function tec_tribe_commerce_is_available() {
+
+	if ( defined( 'TEC_TRIBE_COMMERCE_AVAILABLE' ) ) {
+		return (bool) TEC_TRIBE_COMMERCE_AVAILABLE;
+	}
+
+	$env_var = getenv( 'TEC_TRIBE_COMMERCE_AVAILABLE' );
+
+	if ( false !== $env_var ) {
+		return (bool) $env_var;
+	}
+
+	// Available if PayPal was completely setup previously.
+	$available = tribe()->offsetExists( 'tickets.commerce.paypal.handler.ipn' ) ? tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'slug' ) === 'complete' : null;
+
+	if ( is_null( $available ) ) {
+		_doing_it_wrong(
+			__FUNCTION__,
+			'tickets.commerce.paypal.handler.ipn - is not a registered callback.',
+			'TBD'
+		);
+	}
+
+	/**
+	 * Filter whether we should disable TribeCommerce PayPal or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param boolean $available should be available or not.
+	 */
+	return apply_filters( 'tec_tribe_commerce_is_available', $available );
+}

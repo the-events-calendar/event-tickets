@@ -180,13 +180,15 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Tweak - Added a new filter `tribe_tickets_get_provider_query_slug` to allow customization of the provider URL variable name. [ET-543]
+* Tweak - Changed the `provider` URL variable name to `tickets_provider`. The filter `tribe_tickets_get_provider_query_slug` allows for customization. [ET-543]
 * Fix - Fixed text overlapping description in the ticket AR modal. [ET-1179]
 
 = [5.1.10] TBD =
 
 * Fix - Fixed ticket total formatting when using custom thousands and decimal separators. [ET-1197]
 * Enhancement - When editing an RSVP or ticket in the block editor, allow title to wrap to multiple lines. [ET-1089]
-* Enhancement - Ensure that text for the RSVP going/not going dropdown on front end isn't cut off. [ET-1169]
+* Enhancement - Ensure that text for the RSVP going/not going dropdown on front end isn't cut off and arrows aren't hidden. [ET-1169]
 
 = [5.1.9.1] 2021-09-08 =
 
