@@ -22,7 +22,7 @@
 <div
 	id="tribe-block-tickets-item-[TICKET_ID]"
 	 class="tribe-tickets__item post-[TICKET_ID] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	data-ticket-id="[TICKET_ID]"
-	data-available="true"
+	data-available="false"
 	data-has-shared-cap="false"
 	
 >
@@ -67,38 +67,10 @@
 
 			<div
 	 class="tribe-common-h4 tribe-tickets__item__quantity" >
-			<button
-	class="tribe-tickets__item__quantity__remove"
-	title="Decrease ticket quantity for Test PayPal ticket for [EVENT_ID]"
-	type="button"
+			<div
+	class="tribe-common-b2 tribe-common-b2--bold tribe-tickets__item__quantity__unavailable"
 >
-	<span class="screen-reader-text tribe-common-a11y-visual-hide">Decrease ticket quantity for Test PayPal ticket for [EVENT_ID]</span>
-	-</button>
-		<div
-	 class="tribe-tickets__item__quantity__number" >
-	<label
-		class="screen-reader-text"
-		for="quantity_[TICKET_ID]"
-	>
-		Quantity	</label>
-	<input
-		type="number"
-		id="quantity_[TICKET_ID]"
-		class="tribe-common-h3 tribe-common-h4--min-medium tribe-tickets-quantity"
-		step="1"
-		min="0"
-		max="100"
-		value="0"
-		autocomplete="off"
-			/>
-</div>
-		<button
-	class="tribe-tickets__item__quantity__add"
-	title="Increase ticket quantity for Test PayPal ticket for [EVENT_ID]"
-	type="button"
->
-	<span class="screen-reader-text tribe-common-a11y-visual-hide">Increase ticket quantity for Test PayPal ticket for [EVENT_ID]</span>
-	+</button>
+	Sold Out</div>
 	</div>	
 	
 				<input name="attendee[optout]" value="1" type="hidden" />
