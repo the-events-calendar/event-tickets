@@ -534,7 +534,7 @@ class Client {
 	}
 
 	/**
-	 * This uses the links property of the payment to retrieve the Parent Payment ID from PayPal
+	 * This uses the links property of the payment to retrieve the Parent Payment ID from PayPal.
 	 *
 	 * @since TBD
 	 *
@@ -691,9 +691,9 @@ class Client {
 		$body       = [
 			'url'         => $webhook_url,
 			'event_types' => array_map(
-				static function ( $eventType ) {
+				static function ( $event_type ) {
 					return [
-						'name' => $eventType,
+						'name' => $event_type,
 					];
 				},
 				$events
