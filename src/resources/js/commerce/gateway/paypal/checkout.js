@@ -362,6 +362,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
 		$( tribe.tickets.commerce.selectors.checkoutContainer ).off( 'DOMNodeInserted', obj.selectors.buttons, obj.buttonsLoaded );
 	}
+
 	/**
 	 * Setup the triggers for Ticket Commerce loader view.
 	 *
