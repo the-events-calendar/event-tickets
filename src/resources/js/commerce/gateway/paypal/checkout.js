@@ -362,7 +362,23 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 		// Hide loader when Paypal buttons are added.
 		$document.on( 'DOMNodeInserted', obj.selectors.buttons, function() {
+	
+	/**
+	 * Bind script loader to trigger script dependent methods.
+	 *
+	 * @since TBD
+	 */
+	obj.bindScriptLoader = function() {
+
+		const $script = $( obj.selectors.checkoutScript );
+
+		if ( ! $script.length ) {
 			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
+			return;
+		}
+
+		$script.on( 'load', function ( e ) {
+			obj.setupButtons( e, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
 		} );
 	}
 
@@ -375,10 +391,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.ready = function () {
 		obj.setupLoader();
-
-		window.onload = (event) => {
-			obj.setupButtons( event, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
-		};
+		obj.bindScriptLoader();
 	};
 
 	$( obj.ready );
