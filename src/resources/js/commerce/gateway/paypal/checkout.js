@@ -229,7 +229,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
 				},
 				body: {
-					'payer_id' : data.payerID ?? '',
+					'payer_id': data.payerID ?? '',
 				}
 			}
 		)
