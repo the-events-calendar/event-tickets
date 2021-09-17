@@ -334,7 +334,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param  {Event}   event      event object for 'afterSetup.TicketsCommerceCheckout' event
+	 * @param  {Event}   event      event object for 'afterSetup.tecTicketsCommerce' event
 	 * @param  {jQuery}  $container jQuery object of checkout container.
 	 *
 	 * @return {void}

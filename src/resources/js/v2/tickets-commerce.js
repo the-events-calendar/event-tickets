@@ -169,7 +169,7 @@ tribe.tickets.commerce = {};
 	 * @return {void}
 	 */
 	obj.bindCheckoutEvents = function( $container ) {
-		$document.trigger( 'beforeSetup.TicketsCommerceCheckout', [ $container ] );
+		$document.trigger( 'beforeSetup.tecTicketsCommerce', [ $container ] );
 
 		// Bind container based events.
 		obj.bindCheckoutItemDescriptionToggle( $container );
@@ -177,7 +177,7 @@ tribe.tickets.commerce = {};
 		// Bind loader visibility.
 		obj.bindLoaderEvents();
 
-		$document.trigger( 'afterSetup.TicketsCommerceCheckout', [ $container ] );
+		$document.trigger( 'afterSetup.tecTicketsCommerce', [ $container ] );
 	};
 
 	/**
