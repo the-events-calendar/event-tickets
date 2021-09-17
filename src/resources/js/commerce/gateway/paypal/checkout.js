@@ -354,6 +354,15 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	};
 
 	/**
+	 * Handle actions when checkout buttons are loaded.
+	 *
+	 * @since TBD
+	 */
+	obj.buttonsLoaded = function () {
+		$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
+		$( tribe.tickets.commerce.selectors.checkoutContainer ).off( 'DOMNodeInserted', obj.selectors.buttons, obj.buttonsLoaded );
+	}
+	/**
 	 * Setup the triggers for Ticket Commerce loader view.
 	 *
 	 * @since TBD
@@ -364,9 +373,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		$document.trigger( tribe.tickets.commerce.customEvents.showLoader );
 
 		// Hide loader when Paypal buttons are added.
-		$document.on( 'DOMNodeInserted', obj.selectors.buttons, function() {
-			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
-		} );
+		$( tribe.tickets.commerce.selectors.checkoutContainer ).on( 'DOMNodeInserted', obj.selectors.buttons, obj.buttonsLoaded );
 	}
 
 	/**
