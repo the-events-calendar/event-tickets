@@ -376,15 +376,16 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.bindScriptLoader = function() {
 
-		const script = document.querySelector( obj.selectors.checkoutScript );
+		const $script = $( obj.selectors.checkoutScript );
 
-		if ( ! script ) {
+		if ( ! $script.length ) {
+			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
 			return;
 		}
 
-		script.onload = ( event ) => {
-			obj.setupButtons( event, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
-		};
+		$script.load( function ( e ) {
+			obj.setupButtons( e, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
+		} );
 	}
 
 	/**
