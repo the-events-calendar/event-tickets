@@ -19,9 +19,13 @@ if ( empty( $is_merchant_active ) ) {
 
 
 $refresh_url           = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-action' => 'paypal-refresh-access-token' ] );
-$refresh_user_info_url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-action' => 'paypal-refresh-user-info' ] );
 $refresh               = ' <a href="' . esc_url( $refresh_url ) . '">' . esc_html__( 'Refresh Access Token', 'event-tickets' ) . '</a>';
+
+$refresh_user_info_url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-action' => 'paypal-refresh-user-info' ] );
 $refresh_user_info     = ' <a href="' . esc_url( $refresh_user_info_url ) . '">' . esc_html__( 'Refresh User Info', 'event-tickets' ) . '</a>';
+
+$refresh_webhook_url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-action' => 'paypal-refresh-webhook' ] );
+$refresh_webhook     = ' <a href="' . esc_url( $refresh_webhook_url ) . '">' . esc_html__( 'Refresh Webhook', 'event-tickets' ) . '</a>';
 
 ?>
 
@@ -32,6 +36,6 @@ $refresh_user_info     = ' <a href="' . esc_url( $refresh_user_info_url ) . '">'
 	<?php $this->template( 'settings/tickets-commerce/paypal/connect/active/connection' ); ?>
 
 
-	<p><?php echo $refresh . $refresh_user_info; // phpcs:ignore  ?></p>
+	<p><?php echo $refresh . $refresh_user_info . $refresh_webhook; // phpcs:ignore  ?></p>
 
 </div>

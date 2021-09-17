@@ -7,6 +7,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Refresh_Token;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Signup;
+use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
 use Tribe__Documentation__Swagger__Provider_Interface;
 use Tribe__Settings;
@@ -217,6 +218,9 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 		// Pull user info from PayPal.
 		$user_info = $client->get_user_info();
 		$merchant->save_user_info( $user_info );
+
+		// Configures the Webhooks when setting up the new merchant.
+		tribe( Webhooks::class )->create_or_update_existing();
 
 		/**
 		 * @todo Need to figure out where this gets saved in the merchant API.
