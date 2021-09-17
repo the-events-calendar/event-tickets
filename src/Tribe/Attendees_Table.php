@@ -385,7 +385,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$default_actions = [];
 		$provider        = ! empty( $item['provider'] ) ? $item['provider'] : null;
-		$not_going       = empty( $item['order_status'] ) || $item['order_status'] === 'no';
+		$not_going       = empty( $item['order_status'] ) || $item['order_status'] === 'no' || 'cancelled' === $item['order_status'] || 'refunded' === $item['order_status'];
 
 		if ( is_object( $this->event ) && isset( $this->event->ID ) && ! $not_going ) {
 			$default_actions[] = sprintf(
