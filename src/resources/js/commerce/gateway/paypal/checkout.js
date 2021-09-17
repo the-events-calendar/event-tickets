@@ -383,7 +383,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			return;
 		}
 
-		$script.load( function ( e ) {
+		$script.on( 'load', function ( e ) {
 			obj.setupButtons( e, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
 		} );
 	}
