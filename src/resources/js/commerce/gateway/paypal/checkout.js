@@ -370,6 +370,24 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	}
 
 	/**
+	 * Bind script loader to trigger script dependent methods.
+	 *
+	 * @since TBD
+	 */
+	obj.bindScriptLoader = function() {
+
+		const script = document.querySelector( obj.selectors.checkoutScript );
+
+		if ( ! script ) {
+			return;
+		}
+
+		script.onload = ( event ) => {
+			obj.setupButtons( event, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
+		};
+	}
+
+	/**
 	 * Handles the initialization of the tickets commerce events when Document is ready.
 	 *
 	 * @since 5.1.9
@@ -378,10 +396,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.ready = function () {
 		obj.setupLoader();
-
-		window.onload = (event) => {
-			obj.setupButtons( event, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
-		};
+		obj.bindScriptLoader();
 	};
 
 	$( obj.ready );
