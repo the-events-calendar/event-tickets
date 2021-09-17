@@ -168,6 +168,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		];
 
 		$paypal_order_id = $request->get_param( 'order_id' );
+
 		$order           = tec_tc_orders()->by_args( [
 			'status'           => tribe( Pending::class )->get_wp_slug(),
 			'gateway_order_id' => $paypal_order_id,
@@ -177,7 +178,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', null, $order );
 		}
 
-		$payer_id = $request->get_param( 'payerID' ) ? $request->get_param( 'payerID' ) : '';
+		$payer_id = $request->get_param( 'payer_id' );
 		$paypal_capture_response = tribe( Client::class )->capture_order( $paypal_order_id, $payer_id );
 
 		if ( ! $paypal_capture_response ) {
