@@ -100,7 +100,9 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleCancel = function ( data, $container ) {
+		console.log( 'handleCancel', arguments );
 		$container.removeClass( obj.selectors.activePayment.className() );
+		obj.triggerFailOrder( $container, data.orderID, null, null );
 	};
 
 	/**
@@ -114,6 +116,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleGenericError = function ( error, $container ) {
+		console.log( 'handleGenericError', arguments );
 		$container.removeClass( obj.selectors.activePayment.className() );
 	};
 
@@ -127,6 +130,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleClick = function ( $container ) {
+		console.log( 'handleClick', arguments );
 		$container.addClass( obj.selectors.activePayment.className() );
 	};
 
@@ -286,7 +290,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	};
 
 	/**
-	 * Unbinds the description toggle.
+	 * Fetches the configuration object for the PayPal buttons.
 	 *
 	 * @since 5.1.9
 	 *
@@ -302,14 +306,69 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 				shape: 'rect',
 				label: 'paypal'
 			},
-			createOrder: ( data, actions ) => { return obj.handleCreateOrder( data, actions, $container ); },
-			onApprove: ( data, actions ) => { return obj.handleApprove( data, actions, $container ); },
-			onCancel: ( data ) => { return obj.handleCancel( data, $container ); },
-			onError: ( data ) => { return obj.handleGenericError( data, $container ); },
-			onClick: () => { return obj.handleClick( $container ); }
+			createOrder: ( data, actions ) => {
+				return obj.handleCreateOrder( data, actions, $container );
+			},
+			onApprove: ( data, actions ) => {
+				return obj.handleApprove( data, actions, $container );
+			},
+			onCancel: ( data ) => {
+				return obj.handleCancel( data, $container );
+			},
+			onError: ( data ) => {
+				return obj.handleGenericError( data, $container );
+			},
+			onClick: () => {
+				return obj.handleClick( $container );
+			}
 		};
 
 		return configs;
+	};
+
+	/**
+	 * Triggers an AJAX request to handle the failing of an order.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container jQuery object of the tickets container.
+	 * @param {string} orderId PayPal Order ID.
+	 * @param {string} status To which status in Tickets Commerce we should move this order to.
+	 * @param {string} reason What is the reason this order is failing.
+	 *
+	 * @return {void}
+	 */
+	obj.triggerFailOrder = ( $container, orderId, status, reason ) => {
+		const data = {
+			failed_status: status,
+			failed_reason: reason,
+		};
+		return fetch(
+			obj.orderEndpointUrl + '/' + orderId,
+			{
+				method: 'DELETE',
+				headers: {
+					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+				},
+				body: JSON.stringify( data )
+			}
+		)
+			.then( response => response.json() )
+			.then( data => {
+				console.log( data );
+			} )
+			.catch( obj.handleFailOrderError );
+	};
+
+	/**
+	 * If the failing of an order AJAX request returns an error we need to be able to catch it.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	obj.handleFailOrderError = () => {
+
 	};
 
 	/**

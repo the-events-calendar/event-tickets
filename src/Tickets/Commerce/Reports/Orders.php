@@ -233,8 +233,8 @@ class Orders extends Report_Abstract {
 			$page_title,
 			$page_title,
 			$cap,
-			self::$page_slug,
-			[ $this, 'orders_page_inside' ]
+			static::$page_slug,
+			[ $this, 'render_page' ]
 		);
 
 		/** @var \Tribe__Tickets__Attendees $attendees */
@@ -272,7 +272,7 @@ class Orders extends Report_Abstract {
 
 		wp_enqueue_script( 'jquery-ui-dialog' );
 
-		add_filter( 'admin_title', [ $this, 'orders_admin_title' ] );
+		add_filter( 'admin_title', [ $this, 'filter_admin_title' ] );
 	}
 
 	/**
@@ -280,22 +280,17 @@ class Orders extends Report_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param $admin_title
-	 *
+	 * @param string $admin_title
 	 *
 	 * @return string
 	 */
-	public function orders_admin_title( $admin_title ) {
+	public function filter_admin_title( $admin_title ) {
 		if ( ! empty( $_GET['post_id'] ) ) {
 			$event       = get_post( $_GET['post_id'] );
-			$admin_title = sprintf( esc_html_x( '%s - PayPal Orders', 'Browser title', 'event-tickets' ), $event->post_title );
+			$admin_title = sprintf( esc_html_x( '%s - Tickets Commerce Orders', 'Browser title', 'event-tickets' ), $event->post_title );
 		}
 
 		return $admin_title;
-	}
-
-	public function get_orders( $event_ids = null, $ticket_ids = null, array $extras = [] ) {
-
 	}
 
 	/**
@@ -303,10 +298,17 @@ class Orders extends Report_Abstract {
 	 *
 	 * @since TBD
 	 */
-	public function orders_page_inside() {
+	public function render_page() {
 		$this->get_template()->template( 'orders', $this->get_template_vars() );
 	}
 
+	/**
+	 * Sets up the template variables used to render the Orders Report Page.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
 	public function setup_template_vars() {
 		$post_id = tribe_get_request_var( 'post_id' );
 		$post_id = tribe_get_request_var( 'event_id', $post_id );
