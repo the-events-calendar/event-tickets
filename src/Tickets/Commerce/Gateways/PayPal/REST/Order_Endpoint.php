@@ -172,6 +172,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		$messages = $this->get_error_messages();
 
 		$paypal_order_id = $request->get_param( 'order_id' );
+
 		$order           = tec_tc_orders()->by_args( [
 			'status'           => tribe( Pending::class )->get_wp_slug(),
 			'gateway_order_id' => $paypal_order_id,
@@ -181,7 +182,8 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', $messages['nonexistent-order-id'], $order );
 		}
 
-		$paypal_capture_response = tribe( Client::class )->capture_order( $paypal_order_id );
+		$payer_id = $request->get_param( 'payer_id' );
+		$paypal_capture_response = tribe( Client::class )->capture_order( $paypal_order_id, $payer_id );
 
 		if ( ! $paypal_capture_response ) {
 			return new WP_Error( 'tec-tc-gateway-paypal-failed-capture', $messages['failed-capture'], $paypal_capture_response );
