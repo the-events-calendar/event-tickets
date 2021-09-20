@@ -1,9 +1,9 @@
 <?php
 /**
- * Tickets Commerce: Success Order Page
+ * Tickets Commerce: Success Order Page Footer Links > Browse events.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/success.php
+ * [your-theme]/tribe/tickets/v2/commerce/order/footer/links/browse-events.php
  *
  * See more documentation about our views templating system.
  *
@@ -19,10 +19,19 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
+if ( empty( $is_tec_active ) ) {
+	return;
+}
 ?>
-<section class="tribe-common event-tickets tribe-tickets__commerce-order">
-	<?php $this->template( 'order/header' ); ?>
-	<?php $this->template( 'order/description' ); ?>
-	<?php $this->template( 'order/details' ); ?>
-	<?php $this->template( 'order/footer' ); ?>
-</section>
+<a
+	class="tribe-common-anchor-alt tribe-tickets__commerce-order-footer-link tribe-tickets__commerce-order-footer-link--browse-events"
+	href="<?php echo tribe_events_get_url(); // phpcs:ignore ?>"
+>
+	<?php
+		printf(
+			// Translators: %1$s: Plural `events` in lowercase.
+			esc_html__( 'browse more %1$s', 'event-tickets' ),
+			tribe_get_event_label_plural_lowercase( 'tickets_commerce_order_footer_link' ) // phpcs:ignore
+		);
+		?>
+</a>

@@ -1,9 +1,9 @@
 <?php
 /**
- * Tickets Commerce: Success Order Page
+ * Tickets Commerce: Success Order Page Footer Links > Back home.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/success.php
+ * [your-theme]/tribe/tickets/v2/commerce/order/footer/links/back-home.php
  *
  * See more documentation about our views templating system.
  *
@@ -20,9 +20,8 @@
  */
 
 ?>
-<section class="tribe-common event-tickets tribe-tickets__commerce-order">
-	<?php $this->template( 'order/header' ); ?>
-	<?php $this->template( 'order/description' ); ?>
-	<?php $this->template( 'order/details' ); ?>
-	<?php $this->template( 'order/footer' ); ?>
-</section>
+<a
+	class="tribe-common-anchor-alt tribe-tickets__commerce-order-footer-link tribe-tickets__commerce-order-footer-link--back-home"
+	href="<?php echo esc_url( home_url() ); ?>">
+	<?php esc_html_e( 'back home', 'event-tickets' ); ?>
+</a>
