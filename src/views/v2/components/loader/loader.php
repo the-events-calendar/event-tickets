@@ -10,8 +10,9 @@
  * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 5.0.4 Update template to use icons from Tribe Common.
+ * @since TBD Added support for showing the loader immediately while rendering HTML.
  *
- * @version 5.0.4
+ * @version TBD
  */
 
 $classes = $this->get( 'classes' ) ?: [];
@@ -19,7 +20,7 @@ $classes = $this->get( 'classes' ) ?: [];
 $spinner_classes = [
 	'tribe-tickets-loader__dots',
 	'tribe-common-c-loader',
-	'tribe-common-a11y-hidden',
+	'tribe-common-a11y-hidden' => empty( $this->get( 'visible' ) ),
 ];
 
 if ( ! empty( $classes ) ) {
