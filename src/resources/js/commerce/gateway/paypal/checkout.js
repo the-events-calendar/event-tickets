@@ -227,6 +227,9 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 				method: 'POST',
 				headers: {
 					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+				},
+				body: {
+					'payer_id': data.payerID ?? '',
 				}
 			}
 		)
