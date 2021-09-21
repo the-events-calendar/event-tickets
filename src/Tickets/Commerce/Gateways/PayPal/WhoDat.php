@@ -158,7 +158,11 @@ class WhoDat {
 		$default_arguments = [
 			'body' => [],
 		];
-		$request_arguments = array_merge_recursive( $default_arguments, $request_arguments );
+
+
+		foreach ( $default_arguments as $key => $default_argument ) {
+			$request_arguments[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
+		}
 		$request           = wp_remote_post( $url, $request_arguments );
 
 		if ( is_wp_error( $request ) ) {
@@ -172,6 +176,7 @@ class WhoDat {
 
 		if ( ! is_array( $body ) ) {
 			$this->log_error( 'WhoDat unexpected response:', $body, $url );
+			$this->log_error( 'Response:', print_r( $request, true ), '--->' );
 
 			return null;
 		}
