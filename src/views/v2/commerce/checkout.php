@@ -31,18 +31,16 @@
 	<?php endforeach; ?>
 	<?php tribe( 'tickets.editor.template' )->template( 'v2/components/loader/loader' ); ?>
 	<?php
-
-	$notice_classes = [
-		'tribe-tickets__notice--error',
-		'tribe-tickets__commerce-checkout__notice',
-	];
 	tribe( 'tickets.editor.template' )->template(
 		'components/notice',
 		[
-			'notice_classes'  => $notice_classes,
+			'notice_classes'  => [
+					'tribe-tickets__notice--error',
+					'tribe-tickets__commerce-checkout__notice',
+			],
 			'content_classes' => [ 'tribe-tickets__commerce-checkout__notice__content' ],
-			'title'           => 'Checkout Error',
-			'content'         => 'Checkout Not Available',
+			'title'           => __( 'Checkout Error!', 'event-tickets' ),
+			'content'         => __( 'Something went wrong!', 'event-tickets' ),
 		]
 	);
 	?>
