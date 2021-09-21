@@ -130,6 +130,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleClick = function ( $container ) {
 		$container.addClass( obj.selectors.activePayment.className() );
+		tribe.tickets.commerce.hideNotice();
 	};
 
 	/**

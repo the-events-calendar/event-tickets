@@ -108,6 +108,17 @@ tribe.tickets.commerce = {};
 	}
 
 	/**
+	 * Hide the notice component.
+	 *
+	 * @since TBD
+	 */
+	obj.hideNotice = function() {
+		const $notice  = $( obj.selectors.noticeItem );
+
+		$notice.hide();
+	}
+
+	/**
 	 * Toggle the checkout item description visibility.
 	 *
 	 * @since 5.1.9
