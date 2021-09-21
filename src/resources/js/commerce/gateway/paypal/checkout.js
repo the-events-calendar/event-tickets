@@ -231,6 +231,9 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 				method: 'POST',
 				headers: {
 					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+				},
+				body: {
+					'payer_id': data.payerID ?? '',
 				}
 			}
 		)
@@ -393,7 +396,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param  {Event}   event      event object for 'afterSetup.tribeTicketsCommerceCheckout' event
+	 * @param  {Event}   event      event object for 'afterSetup.tecTicketsCommerce' event
 	 * @param  {jQuery}  $container jQuery object of checkout container.
 	 *
 	 * @return {void}
@@ -410,6 +413,49 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	};
 
 	/**
+	 * Handle actions when checkout buttons are loaded.
+	 *
+	 * @since TBD
+	 */
+	obj.buttonsLoaded = function () {
+		$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
+		$( tribe.tickets.commerce.selectors.checkoutContainer ).off( 'DOMNodeInserted', obj.selectors.buttons, obj.buttonsLoaded );
+	}
+
+	/**
+	 * Setup the triggers for Ticket Commerce loader view.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	obj.setupLoader = function() {
+		$document.trigger( tribe.tickets.commerce.customEvents.showLoader );
+
+		// Hide loader when Paypal buttons are added.
+		$( tribe.tickets.commerce.selectors.checkoutContainer ).on( 'DOMNodeInserted', obj.selectors.buttons, obj.buttonsLoaded );
+	}
+
+	/**
+	 * Bind script loader to trigger script dependent methods.
+	 *
+	 * @since TBD
+	 */
+	obj.bindScriptLoader = function() {
+
+		const $script = $( obj.selectors.checkoutScript );
+
+		if ( ! $script.length ) {
+			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
+			return;
+		}
+
+		$script.on( 'load', function ( e ) {
+			obj.setupButtons( e, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
+		} );
+	}
+
+	/**
 	 * Handles the initialization of the tickets commerce events when Document is ready.
 	 *
 	 * @since 5.1.9
@@ -417,9 +463,10 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.ready = function () {
-		$document.on( 'afterSetup.tribeTicketsCommerceCheckout', obj.setupButtons );
+		obj.setupLoader();
+		obj.bindScriptLoader();
 	};
 
 	$( obj.ready );
 
-} )( jQuery, tribe.tickets.commerce );
+} )( jQuery, tribe.tickets.commerce.gateway.paypal.checkout );
