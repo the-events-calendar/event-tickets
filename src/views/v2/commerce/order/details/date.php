@@ -25,6 +25,6 @@
 		<?php esc_html_e( 'Date:', 'event-tickets' ); ?>
 	</div>
 	<div class="tribe-tickets__commerce-order-details-col2">
-		<?php the_date( '', $order->ID ); ?>
+		<?php echo esc_html( get_the_date( get_option( 'date_format' ), $order->ID ) ); ?>
 	</div>
 </div>
