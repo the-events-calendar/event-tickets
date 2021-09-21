@@ -1,3 +1,4 @@
+/* global tribe, tecTicketsCommerceData */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -99,8 +100,8 @@ tribe.tickets.commerce = {};
 		const $content = $notice.find( obj.selectors.noticeContent );
 		const $title   = $notice.find( obj.selectors.noticeTitle );
 
-		let title   = data.title ?? 'Checkout Error';
-		let message = data.message ?? 'Something went wrong!';
+		let title   = data.title ?? tecTicketsCommerceData.default_notice.title;
+		let message = data.message ?? tecTicketsCommerceData.default_notice.content;
 
 		$title.text( title );
 		$content.text( message );

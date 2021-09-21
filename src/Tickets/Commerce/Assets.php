@@ -70,6 +70,17 @@ class Assets extends tad_DI52_ServiceProvider {
 					'tribe-tickets-commerce',
 					'tribe-tickets-commerce-checkout',
 				],
+				'localize' => [
+					'name' => 'tecTicketsCommerceData',
+					'data' => static function () {
+						return [
+							'default_notice' => [
+								'title'   => __( 'Checkout Unavailable!' , 'event-tickets' ),
+								'content' => __( 'Checkout is not available at this time because a payment method has not been set up for this event. Please notify the site administrator.' , 'event-tickets' ),
+							],
+						];
+					},
+				],
 			]
 		);
 	}
