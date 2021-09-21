@@ -178,7 +178,9 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', null, $order );
 		}
 
-		$payer_id = $request->get_param( 'payer_id' );
+		$order_data = (array) json_decode( $request->get_body() );
+		$payer_id   = isset( $order_data['payer_id'] ) ? $order_data['payer_id'] : '';
+
 		$paypal_capture_response = tribe( Client::class )->capture_order( $paypal_order_id, $payer_id );
 
 		if ( ! $paypal_capture_response ) {
