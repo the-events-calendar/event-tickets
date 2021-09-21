@@ -1,17 +1,17 @@
 <?php
 /**
- * Tickets Commerce: Checkout Cart Item Details
+ * Tickets Commerce: Checkout Page Footer > Gateway error
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/item/details.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/footer/gateway-error.php
  *
  * See more documentation about our views templating system.
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.9
+ * @since   TBD
  *
- * @version 5.1.9
+ * @version TBD
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.
@@ -23,16 +23,22 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  * @var array[]          $gateways              [Global] An array with the gateways.
  * @var int              $gateways_active       [Global] The number of active gateways.
- * @var array            $item                  Which item this row will be for.
  */
 
-?>
-<div class="tribe-tickets__commerce-checkout-cart-item-details">
+// Bail if the cart is empty or if there's active gateways
+if ( empty( $items ) || tribe_is_truthy( $gateways_active ) ) {
+	return;
+}
 
-	<?php $this->template( 'checkout/cart/item/details/title', [ 'item' => $item ] ); ?>
-
-	<?php $this->template( 'checkout/cart/item/details/toggle', [ 'item' => $item ] ); ?>
-
-	<?php $this->template( 'checkout/cart/item/details/description', [ 'item' => $item ] ); ?>
-
-</div>
+tribe( 'tickets.editor.template' )->template(
+	'components/notice',
+	[
+		'id'             => 'my-notice',
+		'notice_classes' => [
+			'tribe-tickets__notice--error',
+			'tribe-tickets__commerce-checkout-footer-notice-error--no-gateway',
+		],
+		'title'          => __( 'Checkout Unavailable!', 'event-tickets' ),
+		'content'        => __( 'Checkout is not available at this time because a payment method has not been set up. Please notify the site administrator.', 'event-tickets' ),
+	]
+);
