@@ -33,7 +33,7 @@ if ( empty( $items ) || tribe_is_truthy( $gateways_active ) ) {
 tribe( 'tickets.editor.template' )->template(
 	'components/notice',
 	[
-		'id'             => 'my-notice',
+		'id'             => 'tickets-commerce-no-gateway-error',
 		'notice_classes' => [
 			'tribe-tickets__notice--error',
 			'tribe-tickets__commerce-checkout-footer-notice-error--no-gateway',
