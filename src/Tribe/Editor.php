@@ -51,6 +51,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @since 4.9
 	 *
+	 *
 	 * @param array $template Array of all the templates used by default
 	 * @param string $post_type The current post type
 	 *
