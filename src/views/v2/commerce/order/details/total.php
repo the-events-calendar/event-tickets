@@ -29,6 +29,6 @@ if ( empty( $order->total_value ) ) {
 		<?php esc_html_e( 'Total:', 'event-tickets' ); ?>
 	</div>
 	<div class="tribe-tickets__commerce-order-details-col2">
-		<?php echo esc_html( $order->$total_value ); ?>
+		<?php echo esc_html( $order->total_value ); ?>
 	</div>
 </div>
