@@ -19,12 +19,16 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
+if ( empty( $order->gateway_order_id ) ) {
+	return;
+}
+
 ?>
 <div class="tribe-tickets__commerce-order-details-row">
 	<div class="tribe-tickets__commerce-order-details-col1">
 		<?php esc_html_e( 'Order number:', 'event-tickets' ); ?>
 	</div>
 	<div class="tribe-tickets__commerce-order-details-col2">
-		001
+		<?php echo esc_html( $order->gateway_order_id ); ?>
 	</div>
 </div>

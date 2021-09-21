@@ -19,12 +19,16 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
+if ( empty( $order->total_value ) ) {
+	return;
+}
+
 ?>
 <div class="tribe-tickets__commerce-order-details-row">
 	<div class="tribe-tickets__commerce-order-details-col1">
 		<?php esc_html_e( 'Total:', 'event-tickets' ); ?>
 	</div>
 	<div class="tribe-tickets__commerce-order-details-col2">
-		$25
+		<?php echo esc_html( $order->$total_value ); ?>
 	</div>
 </div>

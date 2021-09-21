@@ -19,12 +19,16 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
+if ( empty( $order->purchaser['email'] ) ) {
+	return;
+}
+
 ?>
 <div class="tribe-tickets__commerce-order-details-row">
 	<div class="tribe-tickets__commerce-order-details-col1">
 		<?php esc_html_e( 'Email:', 'event-tickets' ); ?>
 	</div>
 	<div class="tribe-tickets__commerce-order-details-col2">
-		john@doe.com
+		<?php echo esc_html( $order->purchaser['email'] ); ?>
 	</div>
 </div>

@@ -25,6 +25,6 @@
 		<?php esc_html_e( 'Date:', 'event-tickets' ); ?>
 	</div>
 	<div class="tribe-tickets__commerce-order-details-col2">
-		August 30, 2021
+		<?php the_date( '', $order->ID ); ?>
 	</div>
 </div>
