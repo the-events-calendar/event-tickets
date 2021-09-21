@@ -29,7 +29,13 @@ if ( empty( $items ) ) {
 	return;
 }
 
-$anchor_text = $is_tec_active ? __( 'back to event', 'event-tickets' ) : __( 'back', 'event-tickets' );
+$anchor_text = $is_tec_active ?
+	sprintf(
+		// Translators: %1$s: Singular `event` in lowercase.
+		__( 'back to %1$s', 'event-tickets' ),
+		tribe_get_event_label_singular_lowercase( 'tickets_commerce_checkout_header_link' )
+	)
+	: __( 'back', 'event-tickets' );
 ?>
 
 <a

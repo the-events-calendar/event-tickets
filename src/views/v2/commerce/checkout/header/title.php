@@ -25,7 +25,12 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
+$the_title = sprintf(
+	// Translators: %1$s: Plural `Tickets` label.
+	__( 'Purchase %1$s', 'event-tickets' ),
+	tribe_get_ticket_label_plural( 'tickets_commerce_checkout_title' ) // phpcs:ignore
+);
 ?>
 <h3 class="tribe-common-h2 tribe-tickets__commerce-checkout-header-title">
-	<?php esc_html_e( 'Purchase Tickets', 'event-tickets' ); ?>
+	<?php echo esc_html( $the_title ); ?>
 </h3>
