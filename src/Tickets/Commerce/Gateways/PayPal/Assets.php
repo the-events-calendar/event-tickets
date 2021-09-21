@@ -80,10 +80,11 @@ class Assets extends \tad_DI52_ServiceProvider {
 			],
 			null,
 			[
-				'groups'   => [
+				'groups'       => [
 					'tec-tickets-commerce-gateway-paypal',
 				],
-				'localize' => [
+				'conditionals' => [ $this, 'should_enqueue_assets' ],
+				'localize'     => [
 					'name' => 'tecTicketsCommerceGatewayPayPalCheckout',
 					'data' => static function () {
 						return [
@@ -110,5 +111,16 @@ class Assets extends \tad_DI52_ServiceProvider {
 			'%1$swebapps/merchantboarding/js/lib/lightbox/partner.js',
 			$client->get_home_page_url()
 		);
+	}
+
+	/**
+	 * Define if the assets for `PayPal` should be enqueued or not.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool If the `PayPal` assets should be enqueued or not.
+	 */
+	public function should_enqueue_assets() {
+		return tribe( Gateway::class )->is_active();
 	}
 }
