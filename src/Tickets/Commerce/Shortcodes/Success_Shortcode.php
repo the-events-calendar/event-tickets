@@ -68,7 +68,7 @@ class Success_Shortcode extends Shortcode_Abstract {
 		$html = $this->get_template()->template( 'success', $args, false );
 
 		// Enqueue assets.
-		tribe_asset_enqueue_group( 'tec-tickets-commerce' );
+		tribe_asset_enqueue_group( 'tribe-tickets-commerce' );
 
 		return $html;
 	}
