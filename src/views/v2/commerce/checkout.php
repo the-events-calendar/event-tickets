@@ -39,8 +39,10 @@
 	tribe( 'tickets.editor.template' )->template(
 		'components/notice',
 		[
-			'notice_classes' => $notice_classes,
-			'content'        => 'Checkout Not Available',
+			'notice_classes'  => $notice_classes,
+			'content_classes' => [ 'tribe-tickets__commerce-checkout__notice__content' ],
+			'title'           => 'Checkout Error',
+			'content'         => 'Checkout Not Available',
 		]
 	);
 	?>
