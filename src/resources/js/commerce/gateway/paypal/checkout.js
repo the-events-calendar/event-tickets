@@ -117,6 +117,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.handleGenericError = function ( error, $container ) {
 		console.log( 'handleGenericError', arguments );
 		$container.removeClass( obj.selectors.activePayment.className() );
+		tribe.tickets.commerce.showNotice( error );
 	};
 
 	/**
