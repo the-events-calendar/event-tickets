@@ -28,7 +28,7 @@ function tec_tickets_commerce_is_enabled() {
 	 * Allows filtering of the Tickets Commerce provider, doing so will render
 	 * the methods and classes no longer load-able so keep that in mind.
 	 *
-     * @since 5.1.6
+	 * @since 5.1.6
 	 *
 	 * @param boolean $enabled Determining if Tickets Commerce is enabled..
 	 */
@@ -44,10 +44,7 @@ function tec_tickets_commerce_is_enabled() {
  * @return bool Whether Tickets Commerce is in test mode.
  */
 function tribe_tickets_commerce_is_test_mode() {
-	/**
-	 * @todo This method likely should be focused on paypal only usage as it's gateway specific conditional.
-	 */
-	return \TEC\Tickets\Commerce\Gateways\PayPal\Gateway::is_test_mode();
+	return tribe_is_truthy( tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_sandbox ) );
 }
 
 /**
