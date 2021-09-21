@@ -450,9 +450,12 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			return;
 		}
 
-		$script.on( 'load', function ( e ) {
-			obj.setupButtons( e, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
-		} );
+		/**
+		 * Setup PayPal buttons when everything is loaded.
+		 */
+		window.onload = ( event ) => {
+			obj.setupButtons( event, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
+		};
 	}
 
 	/**
