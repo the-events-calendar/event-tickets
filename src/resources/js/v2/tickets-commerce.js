@@ -95,7 +95,7 @@ tribe.tickets.commerce = {};
 	 *
 	 * @param {Object} data Data for notice.
 	 */
-	obj.showNotice = function( data ) {
+	obj.showNotice = function( data = {} ) {
 		const $notice  = $( obj.selectors.noticeItem );
 		const $content = $notice.find( obj.selectors.noticeContent );
 		const $title   = $notice.find( obj.selectors.noticeTitle );

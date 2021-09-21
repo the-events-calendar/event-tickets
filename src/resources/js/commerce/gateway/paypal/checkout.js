@@ -393,6 +393,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 		if ( ! $script.length ) {
 			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
+			tribe.tickets.commerce.showNotice();
 			return;
 		}
 
