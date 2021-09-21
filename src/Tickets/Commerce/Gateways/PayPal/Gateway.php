@@ -52,7 +52,7 @@ class Gateway extends Abstract_Gateway {
 			return false;
 		}
 
-		return tribe( Merchant::class )->account_is_connected();
+		return tribe( Merchant::class )->is_active();
 	}
 
 	/**

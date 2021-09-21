@@ -1,4 +1,5 @@
-.tribe-common {
+.tribe-common,
+.event-tickets {
 
 	.tribe-tickets__notice {
 		background-color: var(--tec-color-background-secondary);
@@ -28,9 +29,6 @@
 		background-color: var(--tec-color-background-error);
 		display: none;
 		padding-left: 50px;
-	}
-
-	.tribe-tickets__notice--error .tribe-tickets-notice__title {
 		position: relative;
 
 		&:before {
@@ -38,9 +36,9 @@
 			background-size: contain;
 			content: '';
 			height: var(--tec-spacer-3);
-			left: calc(-1 * var(--tec-spacer-7));
+			left: var(--tec-spacer-4);
 			position: absolute;
-			top: 2px;
+			top: var(--tec-spacer-4);
 			width: var(--tec-spacer-3);
 		}
 	}
