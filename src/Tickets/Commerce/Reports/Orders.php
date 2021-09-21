@@ -19,7 +19,6 @@ use Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce\Reports
  */
 class Orders extends Report_Abstract {
-
 	/**
 	 * Slug of the admin page for orders
 	 *
@@ -30,15 +29,21 @@ class Orders extends Report_Abstract {
 	public static $page_slug = 'tickets-commerce-orders';
 
 	/**
-	 * @var string
-	 */
-	public static $tab_slug = 'tribe-tickets-paypal-orders-report';
-
-	/**
+	 * Order Pages ID on the menu.
+	 *
+	 * @since TBD
+	 *
 	 * @var string The menu slug of the orders page
 	 */
 	public $orders_page;
 
+	/**
+	 * Gets the Orders Report.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
 	public function get_title() {
 		return __( 'Orders Report', 'event-tickets' );
 	}
@@ -58,6 +63,7 @@ class Orders extends Report_Abstract {
 		if ( empty( $ticket_ids ) ) {
 			return '';
 		}
+
 		$post = get_post( $event_id );
 
 		$query = [
@@ -69,7 +75,9 @@ class Orders extends Report_Abstract {
 		$report_url = add_query_arg( $query, admin_url( 'admin.php' ) );
 
 		/**
-		 * Filter the PayPal Ticket Orders (Sales) Report URL
+		 * Filter the Reports Events Orders Report URL.
+		 *
+		 * @since TBD
 		 *
 		 * @var string $report_url Report URL
 		 * @var int    $event_id   The post ID
@@ -77,7 +85,7 @@ class Orders extends Report_Abstract {
 		 *
 		 * @return string
 		 */
-		$report_url = apply_filters( 'tribe_tickets_paypal_report_url', $report_url, $event_id, $ticket_ids );
+		$report_url = apply_filters( 'tec_tickets_commerce_reports_orders_event_link', $report_url, $event_id, $ticket_ids );
 
 		return $url_only
 			? $report_url
@@ -109,6 +117,19 @@ class Orders extends Report_Abstract {
 
 		$report_url = add_query_arg( $query, admin_url( 'admin.php' ) );
 
+		/**
+		 * Filter the Reports Tickets Orders Report URL.
+		 *
+		 * @since TBD
+		 *
+		 * @var string $report_url Report URL
+		 * @var int    $event_id   The post ID
+		 * @var array  $ticket_ids An array of ticket IDs
+		 *
+		 * @return string
+		 */
+		$report_url = apply_filters( 'tec_tickets_commerce_reports_orders_ticket_link', $report_url, $event_id, $ticket_ids );
+
 		return '<span><a href="' . esc_url( $report_url ) . '">' . esc_html__( 'Report', 'event-tickets' ) . '</a></span>';
 	}
 
@@ -138,12 +159,7 @@ class Orders extends Report_Abstract {
 	 */
 	public function hook() {
 		add_filter( 'post_row_actions', [ $this, 'add_orders_row_action' ], 10, 2 );
-		add_action( 'tribe_tickets_attendees_page_inside', [ $this, 'render_tabbed_view' ] );
 		add_action( 'admin_menu', [ $this, 'register_orders_page' ] );
-
-		// register the tabbed view
-		$paypal_tabbed_view = new \Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View();
-		$paypal_tabbed_view->register();
 	}
 
 	/**
@@ -176,37 +192,16 @@ class Orders extends Report_Abstract {
 
 		$actions['tickets_orders'] = sprintf(
 			'<a title="%s" href="%s">%s</a>',
-			sprintf( esc_html__( 'See PayPal purchases for this %s', 'event-tickets' ), $post_type ),
+			sprintf( esc_html__( 'See Tickets Commerce purchases for this %s', 'event-tickets' ), $post_type ),
 			esc_url( $url ),
-			esc_html__( 'PayPal Orders', 'event-tickets' )
+			esc_html__( 'Tickets Commerce Orders', 'event-tickets' )
 		);
 
 		return $actions;
 	}
 
 	/**
-	 * Renders the tabbed view header before the report.
-	 *
-	 * @since TBD
-	 *
-	 * @param \Tribe__Tickets__Attendees $attendees
-	 */
-	public function render_tabbed_view( \Tribe__Tickets__Attendees $attendees ) {
-		$post = $attendees->get_post();
-
-		$commerce = tribe( Module::class );
-
-		$has_tickets = $commerce->get_attendees_count( $post->ID );
-		if ( ! $has_tickets ) {
-			return;
-		}
-
-		$tabbed_view = new \Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View();
-		$tabbed_view->register();
-	}
-
-	/**
-	 * Registers the PayPal orders page as a plugin options page.
+	 * Registers the Tickets Commerce orders page as a plugin options page.
 	 *
 	 * @since TBD
 	 */
@@ -227,7 +222,7 @@ class Orders extends Report_Abstract {
 			}
 		}
 
-		$page_title        = __( 'PayPal Orders', 'event-tickets' );
+		$page_title        = __( 'Tickets Commerce Orders', 'event-tickets' );
 		$this->orders_page = add_submenu_page(
 			null,
 			$page_title,
@@ -376,6 +371,4 @@ class Orders extends Report_Abstract {
 
 		return $this->template_vars;
 	}
-
-
 }
