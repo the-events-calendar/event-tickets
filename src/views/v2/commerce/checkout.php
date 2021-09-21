@@ -30,6 +30,20 @@
 		<?php $this->template( 'checkout/cart', [ 'section' => $section ] ); ?>
 	<?php endforeach; ?>
 	<?php tribe( 'tickets.editor.template' )->template( 'v2/components/loader/loader' ); ?>
+	<?php
+
+	$notice_classes = [
+		'tribe-tickets__notice--error',
+		'tribe-tickets__commerce-checkout__notice',
+	];
+	tribe( 'tickets.editor.template' )->template(
+		'components/notice',
+		[
+			'notice_classes' => $notice_classes,
+			'content'        => 'Checkout Not Available',
+		]
+	);
+	?>
 	<?php $this->template( 'checkout/cart/empty' ); ?>
 	<?php $this->template( 'checkout/footer' ); ?>
 	<?php $this->template( 'checkout/must-login' ); ?>
