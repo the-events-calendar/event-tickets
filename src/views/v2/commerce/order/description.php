@@ -1,9 +1,9 @@
 <?php
 /**
- * Tickets Commerce: Success Order Page
+ * Tickets Commerce: Success Order Page Description
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/success.php
+ * [your-theme]/tribe/tickets/v2/commerce/order/description.php
  *
  * See more documentation about our views templating system.
  *
@@ -22,9 +22,12 @@
  */
 
 ?>
-<section class="tribe-common event-tickets tribe-tickets__commerce-order">
-	<?php $this->template( 'order/header' ); ?>
-	<?php $this->template( 'order/description' ); ?>
-	<?php $this->template( 'order/details' ); ?>
-	<?php $this->template( 'order/footer' ); ?>
-</section>
+<div class="tribe-common-b1 tribe-tickets__commerce-order-description">
+	<?php
+	printf(
+		// Translators: %1$s: Plural `tickets` in lowercase.
+		esc_html__( 'Thank you. Your order has been received. A receipt for purchase and any digital %1$s ordered will be emailed to you shortly.', 'event-tickets' ),
+		tribe_get_ticket_label_plural_lowercase( 'tickets_commerce_order_description' ) // phpcs:ignore
+	);
+	?>
+</div>
