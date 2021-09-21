@@ -194,7 +194,7 @@ class Orders extends Report_Abstract {
 			'<a title="%s" href="%s">%s</a>',
 			sprintf( esc_html__( 'See Tickets Commerce purchases for this %s', 'event-tickets' ), $post_type ),
 			esc_url( $url ),
-			esc_html__( 'Tickets Commerce Orders', 'event-tickets' )
+			esc_html__( 'Orders', 'event-tickets' )
 		);
 
 		return $actions;
