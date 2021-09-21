@@ -1,9 +1,9 @@
 <?php
 /**
- * Tickets Commerce: Success Order Page
+ * Tickets Commerce: Success Order Page Details > Order number
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/success.php
+ * [your-theme]/tribe/tickets/v2/commerce/order/details/order-number.php
  *
  * See more documentation about our views templating system.
  *
@@ -21,10 +21,16 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
+if ( empty( $order->gateway_order_id ) ) {
+	return;
+}
+
 ?>
-<section class="tribe-common event-tickets tribe-tickets__commerce-order">
-	<?php $this->template( 'order/header' ); ?>
-	<?php $this->template( 'order/description' ); ?>
-	<?php $this->template( 'order/details' ); ?>
-	<?php $this->template( 'order/footer' ); ?>
-</section>
+<div class="tribe-tickets__commerce-order-details-row">
+	<div class="tribe-tickets__commerce-order-details-col1">
+		<?php esc_html_e( 'Order number:', 'event-tickets' ); ?>
+	</div>
+	<div class="tribe-tickets__commerce-order-details-col2">
+		<?php echo esc_html( $order->gateway_order_id ); ?>
+	</div>
+</div>

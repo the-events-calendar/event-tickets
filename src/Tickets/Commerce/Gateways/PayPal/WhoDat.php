@@ -27,7 +27,6 @@ class WhoDat {
 	 *
 	 * @since 5.1.9
 	 *
-	 *
 	 * @param string $endpoint   The endpoint path.
 	 * @param array  $query_args Query args appended to the URL.
 	 *
@@ -72,7 +71,7 @@ class WhoDat {
 	public function get_seller_referral_data( $url ) {
 		$query_args = [
 			'mode' => tribe( Merchant::class )->get_mode(),
-			'url'  => $url
+			'url'  => $url,
 		];
 
 		return $this->get( 'seller/referral-data', $query_args );
@@ -90,7 +89,7 @@ class WhoDat {
 	public function get_seller_status( $saved_merchant_id ) {
 		$query_args = [
 			'mode'        => tribe( Merchant::class )->get_mode(),
-			'merchant_id' => $saved_merchant_id
+			'merchant_id' => $saved_merchant_id,
 		];
 
 		return $this->post( 'seller/status', $query_args );

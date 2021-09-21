@@ -125,7 +125,7 @@ class Client {
 	public function request( $method, $url, array $query_args = [], array $request_arguments = [], $raw = false ) {
 		$method = strtoupper( $method );
 
-		// If the endpoint passed is a full URL dont try to append anything.
+		// If the endpoint passed is a full URL don't try to append anything.
 		$url = 0 !== strpos( 'https://', $url )
 			? $this->get_api_url( $url, $query_args )
 			: add_query_arg( $query_args, $url );
