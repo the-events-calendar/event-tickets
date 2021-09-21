@@ -25,7 +25,7 @@
  * @var int              $gateways_active       [Global] The number of active gateways.
  */
 
-// Bail if the cart is empty or if there's active gateways
+// Bail if the cart is empty or if there's active gateways.
 if ( empty( $items ) || tribe_is_truthy( $gateways_active ) ) {
 	return;
 }
