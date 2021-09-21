@@ -54,6 +54,9 @@ tribe.tickets.commerce = {};
 		checkoutItemDescriptionButtonLess: '.tribe-tickets__commerce-checkout-cart-item-details-button--less', // eslint-disable-line max-len
 		hiddenElement: '.tribe-common-a11y-hidden',
 		nonce: '#tec-tc-checkout-nonce',
+		noticeItem: '.tribe-tickets__commerce-checkout__notice',
+		noticeContent: '.tribe-tickets__commerce-checkout__notice__content',
+		noticeTitle: '.tribe-tickets-notice__title',
 	};
 
 	/**
@@ -92,7 +95,16 @@ tribe.tickets.commerce = {};
 	 * @param {Object} data Data for notice.
 	 */
 	obj.showNotice = function( data ) {
-		alert( data.message ?? 'Something went wrong !' );
+		const $notice  = $( obj.selectors.noticeItem );
+		const $content = $notice.find( obj.selectors.noticeContent );
+		const $title   = $notice.find( obj.selectors.noticeTitle );
+
+		let title   = data.title ?? 'Checkout Error';
+		let message = data.message ?? 'Something went wrong!';
+
+		$title.text( title );
+		$content.text( message );
+		$notice.show();
 	}
 
 	/**
