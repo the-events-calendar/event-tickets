@@ -178,6 +178,24 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Show warning while creating new tickets with `0` price for TribeCommerce. [ET-1201]
+* Tweak - Added a new filter `tribe_tickets_get_provider_query_slug` to allow customization of the provider URL variable name. [ET-543]
+* Tweak - Changed the `provider` URL variable name to `tickets_provider`. The filter `tribe_tickets_get_provider_query_slug` allows for customization. [ET-543]
+* Fix - Fixed text overlapping description in the ticket AR modal. [ET-1179]
+* Bug - Removed the ability to resend tickets from the Attendees page to Attendees who cancelled or refunded their ticket. [ETP-703]
+
+= [5.1.10] TBD =
+
+* Fix - Fixed ticket total formatting when using custom thousands and decimal separators. [ET-1197]
+* Enhancement - When editing an RSVP or ticket in the block editor, allow title to wrap to multiple lines. [ET-1089]
+* Enhancement - Ensure that text for the RSVP going/not going dropdown on front end isn't cut off and arrows aren't hidden. [ET-1169]
+
+= [5.1.9.1] 2021-09-08 =
+
+* Fix - Fixed conflict with WooCommerce Payments plugin showing error on Ticket Form. [ET-1174]
+
 = [5.1.9] 2021-08-31 =
 
 * Fix - Fixed cart calculation inconsistency with WooCommerce when the "Number of decimals" setting was set to `0`. [ETP-324]

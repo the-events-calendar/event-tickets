@@ -90,24 +90,13 @@ class ConfigState {
  * @package Tribe\Tickets_Plus\Commerce\WooCommerce\Stock
  */
 class SharedCapacityTest extends WPTestCase {
-
 	use PayPal_Ticket_Maker;
 	use PayPal_Order_Maker;
 
-	/**
-	 * @var ConfigState
-	 */
-	public static $config_state;
-
-	public static function setUpBeforeClass() {
-		parent::setUpBeforeClass();
-
-		self::$config_state = new ConfigState();
-
-
-	}
-
 	public function setUp() {
+    	parent::setUp();
+
+
 		// Enable Tribe Commerce.
 		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
 		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
@@ -115,10 +104,6 @@ class SharedCapacityTest extends WPTestCase {
 
 			return $modules;
 		} );
-	}
-
-	public function get_config() {
-		return self::$config_state;
 	}
 
 	/**
