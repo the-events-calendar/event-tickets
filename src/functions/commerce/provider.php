@@ -55,6 +55,12 @@ function tribe_tickets_commerce_is_test_mode() {
  * @return boolean
  */
 function tec_tribe_commerce_is_available() {
+	/**
+	 * @todo Before launch of Tickets Commerce remove this conditional from here.
+	 */
+	if ( ! tec_tickets_commerce_is_enabled() ) {
+		return true;
+	}
 
 	if ( defined( 'TEC_TRIBE_COMMERCE_AVAILABLE' ) ) {
 		return (bool) TEC_TRIBE_COMMERCE_AVAILABLE;
