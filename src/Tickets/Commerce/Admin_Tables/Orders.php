@@ -105,9 +105,8 @@ class Orders extends WP_List_Table {
 			'gateway'          => __( 'Gateway', 'event-tickets' ),
 			'gateway_order_id' => __( 'Gateway ID', 'event-tickets' ),
 			'status'           => __( 'Status', 'event-tickets' ),
+			'total'            => __( 'Total', 'event-tickets' ),
 		];
-
-		$columns['total'] = __( 'Total', 'event-tickets' );
 
 		return $columns;
 	}
