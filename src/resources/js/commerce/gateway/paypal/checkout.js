@@ -222,17 +222,13 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		 *       we should be passing those to the BE.
 		 */
 
-		let body = {
-			'payer_id' : data.payerID ?? ''
-		};
 		return fetch(
-			obj.orderEndpointUrl + '/' + data.orderID,
+			obj.orderEndpointUrl + '/' + data.orderID + '/' + data.payerID ?? '',
 			{
 				method: 'POST',
 				headers: {
 					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
 				},
-				body: JSON.stringify( body ),
 			}
 		)
 			.then( response => response.json() )
