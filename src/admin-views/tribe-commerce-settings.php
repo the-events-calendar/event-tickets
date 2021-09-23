@@ -10,7 +10,7 @@ $plus_link_2 = sprintf(
 );
 
 $plus_message = sprintf(
-	_x( 'Tribe Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check users in via QR codes, and share stock between %2$s. %3$s', 'about Tribe Commerce', 'event-tickets' ),
+	_x( 'Tribe Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check attendees in via QR codes, and share stock between %2$s. %3$s', 'about Tribe Commerce', 'event-tickets' ),
 	$plus_link,
 	tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_about_tribe_commerce' ),
 	$plus_link_2
