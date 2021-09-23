@@ -1,26 +1,36 @@
 name: 'PHP CodeSniffer'
 on:
   pull_request:
-    paths:
-      - 'src/**.php'
-      - '*.php'
 jobs:
   phpcs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-        with:
-          fetch-depth: 100
+      # ------------------------------------------------------------------------------
+      # Prepare our composer cache directory
+      # ------------------------------------------------------------------------------
       - name: Get Composer Cache Directory
-        id: composer-cache
+        id: get-composer-cache-dir
         run: |
           echo "::set-output name=dir::$(composer config cache-files-dir)"
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
+        id: composer-cache
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
+          path: ${{ steps.get-composer-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-
-      - uses: the-events-calendar/action-tribe-phpcs@master
+      - uses: "shivammathur/setup-php@v2"
         with:
-          github-bot-token: ${{ secrets.GH_BOT_TOKEN }}
+          php-version: "7.4"
+      - uses: "ramsey/composer-install@v1"
+        with:
+          composer-options: "--ignore-platform-reqs"
+      # ------------------------------------------------------------------------------
+      # Run PHPCS
+      # ------------------------------------------------------------------------------
+      - uses: hrysd/action-php_codesniffer@v1
+        with:
+          github_token: ${{ secrets.GH_BOT_TOKEN }}
+          standard: TribalScents
+          target_directory: '.'
