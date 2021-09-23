@@ -1,9 +1,9 @@
 <?php
 /**
- * Tickets Commerce: Success Order Page
+ * Tickets Commerce: Success Order Page Details
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/success.php
+ * [your-theme]/tribe/tickets/v2/commerce/order/details.php
  *
  * See more documentation about our views templating system.
  *
@@ -22,9 +22,10 @@
  */
 
 ?>
-<section class="tribe-common event-tickets tribe-tickets__commerce-order">
-	<?php $this->template( 'order/header' ); ?>
-	<?php $this->template( 'order/description' ); ?>
-	<?php $this->template( 'order/details' ); ?>
-	<?php $this->template( 'order/footer' ); ?>
-</section>
+<div class="tribe-common-b1 tribe-tickets__commerce-order-details">
+	<?php $this->template( 'order/details/order-number' ); ?>
+	<?php $this->template( 'order/details/date' ); ?>
+	<?php $this->template( 'order/details/email' ); ?>
+	<?php $this->template( 'order/details/total' ); ?>
+	<?php $this->template( 'order/details/payment-method' ); ?>
+</div>
