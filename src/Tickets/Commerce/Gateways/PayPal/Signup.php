@@ -50,7 +50,7 @@ class Signup {
 		if ( empty( $this->template ) ) {
 			$this->template = new \Tribe__Template();
 			$this->template->set_template_origin( \Tribe__Tickets__Main::instance() );
-			$this->template->set_template_folder( 'src/admin-views/commerce/gateways/paypal' );
+			$this->template->set_template_folder( 'src/admin-views/settings/tickets-commerce/paypal' );
 			$this->template->set_template_context_extract( true );
 		}
 
@@ -210,7 +210,7 @@ class Signup {
 	 * @return false|string
 	 */
 	public function get_referral_data_link() {
-		$links =  $this->get_transient_data();
+		$links = $this->get_transient_data();
 		if ( empty( $links ) ) {
 			return false;
 		}

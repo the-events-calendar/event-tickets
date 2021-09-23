@@ -83,7 +83,10 @@ export default class MoveModal extends PureComponent {
 				/>
 
 				<label htmlFor="search">
-					{ __( 'You can also enter keywords to help find the target event by title or description', 'event-tickets' ) }
+					{ __(
+						'You can also enter keywords to help find the target event by title or description',
+						'event-tickets',
+					) }
 				</label>
 				<Input
 					id="search"

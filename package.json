@@ -1,6 +1,6 @@
 {
   "name": "event-tickets",
-  "version": "5.1.9",
+  "version": "5.1.10",
   "repository": "git@github.com:the-events-calendar/event-tickets.git",
   "_zipname": "event-tickets",
   "_zipfoldername": "event-tickets",
@@ -10,7 +10,10 @@
   "_glotPressUrl": "https://translate.wordpress.org",
   "_glotPressSlug": "wp-plugins/event-tickets/stable",
   "_glotPressFileFormat": "%textdomain%-%wp_locale%.%format%",
-  "_glotPressFormats": ["po", "mo"],
+  "_glotPressFormats": [
+    "po",
+    "mo"
+  ],
   "_glotPressFilter": {
     "translation_sets": false,
     "minimum_percentage": 30,
@@ -28,13 +31,20 @@
     "gettext-strings": "cross-env BABEL_ENV=gettext webpack",
     "preanalyze": "cross-env NODE_ENV=production webpack -p --profile --json > stats.json",
     "rebuild": "rm -rf node_modules && composer update && npm install && npm run build",
-    "lint": "eslint --quiet --parser=babel-eslint 'src/modules/**/*.js'",
-    "lint:fix": "npm run lint -- --fix",
+    "lint": "npm run lint:eslint && npm run lint:stylelint",
+    "lint:eslint": "npm run lint:eslint:js && npm run lint:eslint:modules",
+    "lint:eslint:js": "gulp eslint --filePath 'src/resources/js/admin/**/*.js' --filePath 'src/resources/js/v2/**/*.js' --filePath '!src/resources/js/*.min.js' --filePath '!src/resources/js/accordion.js' --filePath '!src/resources/js/move-tickets-dialog.js' --filePath '!src/resources/js/rsvp.js' --filePath '!src/resources/js/tickets-attendees.js' --filePath '!src/resources/js/tickets.js' --filePath '!src/resources/js/tpp-admin.js'",
+    "lint:eslint:modules": "gulp eslint --filePath 'src/modules/**/*.js'",
+    "lint:stylelint": "npm run lint:stylelint:pcss",
+    "lint:stylelint:pcss": "gulp stylelint --filePath 'src/resources/postcss/**/*.pcss' --filePath '!src/resources/postcss/rsvp-v1.pcss' --filePath '!src/resources/postcss/tickets-report-print.pcss' --filePath '!src/resources/postcss/tickets-report.pcss' --filePath '!src/resources/postcss/tickets-v1.pcss'",
     "test": "TZ=UTC jest --config jest.config.json",
     "zip": "node node_modules/@the-events-calendar/product-taskmaster/util/zip.js",
     "glotpress": "gulp glotpress"
   },
-  "engines": { "node": "10.16.0", "npm": "6.9.0" },
+  "engines": {
+    "node": "10.16.0",
+    "npm": "6.9.0"
+  },
   "devDependencies": {
     "@babel/runtime": "7.0.0-beta.52",
     "@the-events-calendar/product-taskmaster": "^1.3.1",
@@ -42,7 +52,6 @@
     "archiver": "^3.0.0",
     "autoprefixer": "6.7.7",
     "babel-core": "^6.26.3",
-    "babel-eslint": "^8.2.6",
     "babel-jest": "^23.6.0",
     "babel-loader": "^7.1.5",
     "babel-plugin-import-glob": "2.0.0",
@@ -62,10 +71,6 @@
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.6.0",
     "eslint": "^7.28.0",
-    "eslint-config-products": "github:the-events-calendar/eslint-config-products#v0.1.1",
-    "eslint-import-resolver-babel-module": "^4.0.0",
-    "eslint-plugin-import": "^2.13.0",
-    "eslint-plugin-react": "^7.11.1",
     "gettext-parser": "1.3.0",
     "glob": "~4.0.5",
     "gulp": "^3.9.1",

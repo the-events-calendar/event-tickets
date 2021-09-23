@@ -29,7 +29,10 @@ const RSVPDurationLabel = ( { tooltipDisabled } ) => (
 		tooltipDisabled={ tooltipDisabled }
 		tooltipLabel={ tooltipLabel }
 		// @TODO: get tooltip text based on post type
-		tooltipText={ __( 'By default, sales will begin as soon as you save the ticket and end when the event begins', 'event-tickets' ) }
+		tooltipText={ __(
+			'By default, sales will begin as soon as you save the ticket and end when the event begins',
+			'event-tickets',
+		) }
 	/>
 );
 

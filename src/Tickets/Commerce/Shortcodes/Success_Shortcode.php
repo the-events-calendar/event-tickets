@@ -40,10 +40,11 @@ class Success_Shortcode extends Shortcode_Abstract {
 		] )->first();
 
 		$args = [
-			'provider_id' => Module::class,
-			'provider'    => tribe( Module::class ),
-			'order_id'    => $order_id,
-			'order'       => $order,
+			'provider_id'   => Module::class,
+			'provider'      => tribe( Module::class ),
+			'order_id'      => $order_id,
+			'order'         => $order,
+			'is_tec_active' => defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'Tribe__Events__Main' ),
 		];
 
 		$this->template_vars = $args;
@@ -67,7 +68,7 @@ class Success_Shortcode extends Shortcode_Abstract {
 		$html = $this->get_template()->template( 'success', $args, false );
 
 		// Enqueue assets.
-		tribe_asset_enqueue_group( 'tec-tickets-commerce-success' );
+		tribe_asset_enqueue_group( 'tribe-tickets-commerce' );
 
 		return $html;
 	}

@@ -28,15 +28,15 @@ const QuantityBar = ( { sharedSold, sold, capacity, total, isDisabled } ) => {
 						total={ total }
 					/>
 					{ !! capacity && ! ( capacity === total ) && (
-							<Bar
-								className="tribe-editor__quantity-bar__bar--capacity"
-								value={ capacity }
-								total={ total }
-							>
-								<span className="tribe-editor__quantity-bar__bar-label">
-									{ __( 'cap', 'event-tickets' ) }
-								</span>
-							</Bar>
+						<Bar
+							className="tribe-editor__quantity-bar__bar--capacity"
+							value={ capacity }
+							total={ total }
+						>
+							<span className="tribe-editor__quantity-bar__bar-label">
+								{ __( 'cap', 'event-tickets' ) }
+							</span>
+						</Bar>
 					) }
 				</Fragment>
 			) }
@@ -50,7 +50,7 @@ QuantityBar.propTypes = {
 	sold: PropTypes.number,
 	total: PropTypes.number,
 	isDisabled: PropTypes.bool,
-}
+};
 
 QuantityBar.defaultProps = {
 	sharedSold: 0,

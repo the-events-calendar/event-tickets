@@ -3,8 +3,8 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.18
-Tested up to: 5.8.0
-Stable tag: 5.1.9.1
+Tested up to: 5.8.1
+Stable tag: 5.1.10
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -177,6 +177,18 @@ We've got a [ProductStash](https://app.productstash.io/the-events-calendar-suite
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.1.10] 2021-09-28 =
+
+* Enhancement - When editing an RSVP or ticket in the block editor, allow title to wrap to multiple lines. [ET-1089]
+* Enhancement - Ensure that text for the RSVP going/not going dropdown on front end isn't cut off and arrows aren't hidden. [ET-1169]
+* Tweak - Added a new filter `tribe_tickets_get_provider_query_slug` to allow customization of the provider URL variable name. [ET-543]
+* Tweak - Changed the `provider` URL variable name to `tickets_provider`. The filter `tribe_tickets_get_provider_query_slug` allows for customization. [ET-543]
+* Fix - Fixed ticket total formatting when using custom thousands and decimal separators. [ET-1197]
+* Fix - Show warning while creating new tickets with `0` price for TribeCommerce. [ET-1201]
+* Fix - Prevent text overlapping description in the ticket AR modal. [ET-1179]
+* Fix - Removed the ability to resend tickets from the Attendees page to Attendees who cancelled or refunded their ticket. [ETP-703]
+* Language - 26 new strings added, 116 updated, 2 fuzzied, and 35 obsoleted
 
 = [5.1.9.1] 2021-09-08 =
 

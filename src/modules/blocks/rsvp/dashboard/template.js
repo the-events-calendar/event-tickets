@@ -11,7 +11,6 @@ import RSVPActionDashboard from '@moderntribe/tickets/blocks/rsvp/action-dashboa
 import RSVPSettingsDashboard from '@moderntribe/tickets/blocks/rsvp/settings-dashboard/container';
 
 const RSVPDashboard = ( { isSelected, isSettingsOpen } ) => {
-
 	if ( ! isSelected ) {
 		return null;
 	}

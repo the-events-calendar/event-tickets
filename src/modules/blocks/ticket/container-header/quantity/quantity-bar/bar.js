@@ -14,7 +14,6 @@ import {
 } from '@moderntribe/common/utils';
 
 const Bar = ( { children, className, value, total } ) => {
-
 	if ( value === 0 || total === 0 ) {
 		return null;
 	}
@@ -44,7 +43,7 @@ const Bar = ( { children, className, value, total } ) => {
 			{ children }
 		</span>
 	);
-}
+};
 
 Bar.propTypes = {
 	children: PropTypes.node,
@@ -55,12 +54,12 @@ Bar.propTypes = {
 	] ),
 	value: PropTypes.number,
 	total: PropTypes.number,
-}
+};
 
 Bar.defaultProps = {
 	className: null,
 	value: 0,
 	total: 0,
-}
+};
 
 export default Bar;

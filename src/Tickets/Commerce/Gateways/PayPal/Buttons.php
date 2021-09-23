@@ -42,7 +42,19 @@ class Buttons {
 		return $this->template;
 	}
 
+	/**
+	 * Get the checkout script tag for PayPal buttons.
+	 *
+	 * @since 5.1.10
+	 *
+	 * @return string
+	 */
 	public function get_checkout_script() {
+		// Bail if PayPal is not configured and active.
+		if ( ! tribe( Merchant::class )->is_active() ) {
+			return;
+		}
+
 		$client            = tribe( Client::class );
 		$client_token_data = $client->get_client_token();
 		$must_login        = ! is_user_logged_in() && tribe( Module::class )->login_required();
@@ -54,8 +66,10 @@ class Buttons {
 			'must_login'              => $must_login,
 		];
 
+		$html = $this->get_template()->template( 'checkout-script', $template_vars, false );
+
 		tribe_asset_enqueue( 'tec-tickets-commerce-gateway-paypal-checkout' );
 
-		return $this->get_template()->template( 'checkout-script', $template_vars, false );
+		return $html;
 	}
 }

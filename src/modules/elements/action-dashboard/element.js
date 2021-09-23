@@ -24,12 +24,11 @@ const ActionDashboard = ( {
 	showCancel,
 	showConfirm,
 } ) => {
-
 	const actionsList = ( actions && !! actions.length ) && (
 		<div className="tribe-editor__action-dashboard__group-left">
 			{ actions.map( ( action, index ) => (
 				<span
-					key={ `action-${index}` }
+					key={ `action-${ index }` }
 					className="tribe-editor__action-dashboard__action-wrapper"
 				>
 					{ action }
@@ -75,7 +74,7 @@ const ActionDashboard = ( {
 			{ actionsList }
 			{ groupRight }
 		</section>
-	)
+	);
 };
 
 ActionDashboard.defaultProps = {

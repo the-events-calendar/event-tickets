@@ -1,0 +1,4 @@
+<?php return '<h3 class="tribe-common-h3 tribe-tickets__commerce-checkout-cart-empty-title">
+	Oops, no tickets!</h3>
+
+';

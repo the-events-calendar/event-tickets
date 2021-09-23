@@ -9,10 +9,11 @@
 
 	.tribe-tickets__tickets-form {
 		background-color: var(--tec-color-background);
-		border-radius: var(--tec-border-radius-default);
 		border: 1px solid var(--tec-color-border-secondary);
+		border-radius: var(--tec-border-radius-default);
 		-moz-osx-font-smoothing: grayscale;
 		-webkit-font-smoothing: antialiased;
+		font-smoothing: antialiased; /* stylelint-disable-line property-no-unknown */
 		margin: var(--tec-spacer-5) 0;
 		max-width: 580px;
 		padding: var(--tec-spacer-3) var(--tec-spacer-3)  var(--tec-spacer-4);
@@ -45,42 +46,46 @@
 	.tribe-tickets__tickets-item {
 		align-items: center;
 		border-top: 1px solid var(--tec-color-border-secondary);
-		display: -ms-grid;
+		display: -ms-grid; /* stylelint-disable-line value-no-vendor-prefix */
 		display: grid;
 		-ms-grid-columns: 10fr 1fr;
-		grid-template-columns: 10fr 1fr;
 		-ms-grid-rows: 1fr 1.5fr;
+		grid-template-columns: 10fr 1fr;
 		grid-template-rows: auto;
 		margin: 0;
 		padding: 12px 0 16px;
 
 		@media (--viewport-medium) {
 			-ms-grid-columns: 6.5fr 2fr;
-			grid-template-columns: 6.5fr 2fr;
 			-ms-grid-rows: 1fr 1.5fr 1fr;
+			grid-template-columns: 6.5fr 2fr;
 		}
 
 		&[data-available="false"] {
-			opacity: .5;
+			opacity: 0.5;
 		}
 
 		&.show-optout {
 			-ms-grid-columns: 10fr 1fr;
-			grid-template-columns: 10fr 1fr;
 			-ms-grid-rows: 1fr 1.5fr 1fr 1fr;
+			grid-template-columns: 10fr 1fr;
 			grid-template-rows: auto;
 
 			@media (--viewport-medium) {
 				-ms-grid-columns: 6.5fr 2fr 1fr;
-				grid-template-columns: 6.5fr 2fr 1fr;
 				-ms-grid-rows: 1fr 1.5fr 1fr;
+				grid-template-columns: 6.5fr 2fr 1fr;
+			}
+
+			.tribe-tickets-attendees-list-optout--wrapper {
+				display: block;
 			}
 		}
 
 		&.tribe-tickets__tickets-item--price-suffix,
 		&.tribe-tickets__tickets-item--price-suffix.show-optout {
 			@media (--viewport-medium) {
-				-ms-grid-columns:  5.5fr 3fr;
+				-ms-grid-columns: 5.5fr 3fr;
 				grid-template-columns: 5.5fr 3fr;
 			}
 		}
@@ -104,32 +109,20 @@
 			&.tribe-tickets--no-description {
 				align-self: start;
 				-ms-grid-row: 1;
-				-ms-grid-row-span: 2;
 				grid-row: 1 / span 2;
+				-ms-grid-row-span: 2;
 				padding-top: 0;
 			}
-		}
-	}
-
-	.tribe-tickets__tickets-item.show-optout {
-
-		.tribe-tickets-attendees-list-optout--wrapper {
-			display: block;
 		}
 	}
 
 	.tribe-tickets-attendees-list-optout--wrapper {
 		display: none;
 		-ms-grid-column: 1;
-		-ms-grid-column-span: 3;
 		grid-column: 1/span all;
+		-ms-grid-column-span: 3;
 		-ms-grid-row: 4;
 		grid-row: 4;
-
-		@media (--viewport-medium) {
-			-ms-grid-row: 3;
-			grid-row: 3;
-		}
 	}
 
 	.tribe-tickets__form {

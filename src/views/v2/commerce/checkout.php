@@ -17,8 +17,10 @@
  * @var Module           $provider              [Global] The tickets provider instance.
  * @var string           $provider_id           [Global] The tickets provider class name.
  * @var array[]          $items                 [Global] List of Items on the cart to be checked out.
- * @var string           $paypal_attribution_id [Global] What is our PayPal Attribution ID.
  * @var array[]          $sections              [Global] Which events we have tickets for.
+ * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
+ * @var array[]          $gateways              [Global] An array with the gateways.
+ * @var int              $gateways_active       [Global] The number of active gateways.
  */
 
 ?>
@@ -28,6 +30,8 @@
 	<?php foreach ( $sections as $section ) : ?>
 		<?php $this->template( 'checkout/cart', [ 'section' => $section ] ); ?>
 	<?php endforeach; ?>
+	<?php tribe( 'tickets.editor.template' )->template( 'v2/components/loader/loader' ); ?>
+	<?php $this->template( 'checkout/cart/empty' ); ?>
 	<?php $this->template( 'checkout/footer' ); ?>
 	<?php $this->template( 'checkout/must-login' ); ?>
 </section>

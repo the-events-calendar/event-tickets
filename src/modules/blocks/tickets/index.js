@@ -1,8 +1,12 @@
 /**
+ * External dependencies
+ */
+import React from 'react';
+
+/**
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-
 import { InnerBlocks } from '@wordpress/editor';
 
 /**
@@ -24,7 +28,7 @@ export default {
 	id: 'tickets',
 	title: __( 'Tickets', 'event-tickets' ),
 	description: __( 'Sell tickets and register attendees.', 'event-tickets' ),
-	icon: <TicketsIcon/>,
+	icon: <TicketsIcon />,
 	category: 'tribe-tickets',
 	keywords: [ 'event', 'events-gutenberg', 'tribe' ],
 

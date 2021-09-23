@@ -5,11 +5,6 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * Wordpress dependencies
- */
-import { __ } from '@wordpress/i18n';
-
-/**
  * Internal dependencies
  */
 import TicketContainerHeaderTitle from './title/container';

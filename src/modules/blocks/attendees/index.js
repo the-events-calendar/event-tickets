@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import React from 'react';
 
 /**
  * WordPress dependencies
@@ -21,9 +22,9 @@ export default {
 	title: __( 'Attendee List', 'event-tickets' ),
 	description: __(
 		'Show the gravatars of people coming to this event.',
-		'event-tickets'
+		'event-tickets',
 	),
-	icon: <AttendeesIcon/>,
+	icon: <AttendeesIcon />,
 	category: 'tribe-tickets',
 	keywords: [ 'event', 'events-gutenberg', 'tribe' ],
 
