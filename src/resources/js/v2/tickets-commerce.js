@@ -1,4 +1,4 @@
-/* global tribe, tecTicketsCommerceData */
+/* global tecTicketsCommerceData */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -96,12 +96,12 @@ tribe.tickets.commerce = {};
 	 * @param {Object} data Data for notice.
 	 */
 	obj.showNotice = function( data = {} ) {
-		const $notice  = $( obj.selectors.noticeItem );
+		const $notice = $( obj.selectors.noticeItem );
 		const $content = $notice.find( obj.selectors.noticeContent );
-		const $title   = $notice.find( obj.selectors.noticeTitle );
+		const $title = $notice.find( obj.selectors.noticeTitle );
 
-		let title   = data.title ?? tecTicketsCommerceData.default_notice.title;
-		let message = data.message ?? tecTicketsCommerceData.default_notice.content;
+		const title = data.title ?? tecTicketsCommerceData.default_notice.title;
+		const message = data.message ?? tecTicketsCommerceData.default_notice.content;
 
 		$title.text( title );
 		$content.text( message );
@@ -114,7 +114,7 @@ tribe.tickets.commerce = {};
 	 * @since TBD
 	 */
 	obj.hideNotice = function() {
-		const $notice  = $( obj.selectors.noticeItem );
+		const $notice = $( obj.selectors.noticeItem );
 
 		$notice.hide();
 	}
