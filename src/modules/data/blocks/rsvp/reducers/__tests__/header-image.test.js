@@ -2,7 +2,9 @@
  * Internal dependencies
  */
 import { actions } from '@moderntribe/tickets/data/blocks/rsvp';
-import reducer, { DEFAULT_STATE } from '@moderntribe/tickets/data/blocks/rsvp/reducers/header-image';
+import reducer, {
+	DEFAULT_STATE,
+} from '@moderntribe/tickets/data/blocks/rsvp/reducers/header-image';
 
 describe( 'Header image reducer', () => {
 	it( 'should set the default state', () => {

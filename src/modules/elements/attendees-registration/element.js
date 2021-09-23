@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
  * Wordpress dependencies
  */
 import { Spinner } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -58,6 +59,7 @@ class AttendeesRegistration extends PureComponent {
 					onLoad={ () => onIframeLoad( this.iframe.current ) }
 					ref={ this.iframe }
 					src={ iframeURL }
+					title={ __( 'Attendee registration', 'event-tickets' ) }
 				>
 				</iframe>
 				<div className="tribe-editor__attendee-registration__modal-overlay">

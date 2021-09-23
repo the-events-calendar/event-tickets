@@ -30,7 +30,6 @@ const cancelLabel = __( 'Cancel', 'event-tickets' );
 class RSVPActionDashboard extends PureComponent {
 	static propTypes = {
 		created: PropTypes.bool.isRequired,
-		hasTicketsPlus: PropTypes.bool.isRequired,
 		hasRecurrenceRules: PropTypes.bool.isRequired,
 		isCancelDisabled: PropTypes.bool.isRequired,
 		isConfirmDisabled: PropTypes.bool.isRequired,
@@ -54,7 +53,6 @@ class RSVPActionDashboard extends PureComponent {
 	getActions = () => {
 		const {
 			created,
-			hasTicketsPlus,
 			hasRecurrenceRules,
 			isLoading,
 		} = this.props;
@@ -65,7 +63,9 @@ class RSVPActionDashboard extends PureComponent {
 		}
 		if ( hasRecurrenceRules ) {
 			const icon = this.state.isWarningOpen ? 'no' : 'info-outline';
-			const text = this.state.isWarningOpen ? __( 'Hide Warning', 'event-tickets' ) : __( 'Warning', 'event-tickets' );
+			const text = this.state.isWarningOpen
+				? __( 'Hide Warning', 'event-tickets' )
+				: __( 'Warning', 'event-tickets' );
 			actions.push(
 				<WarningButton
 					icon={ icon }
@@ -73,7 +73,7 @@ class RSVPActionDashboard extends PureComponent {
 					isDisabled={ isLoading }
 				>
 					{ text }
-				</WarningButton>
+				</WarningButton>,
 			);
 		}
 		return actions;
@@ -89,6 +89,7 @@ class RSVPActionDashboard extends PureComponent {
 			showCancel,
 		} = this.props;
 
+		/* eslint-disable max-len */
 		return (
 			<Fragment>
 				<ActionDashboard
@@ -109,6 +110,7 @@ class RSVPActionDashboard extends PureComponent {
 				) }
 			</Fragment>
 		);
+		/* eslint-enable max-len */
 	}
 }
 

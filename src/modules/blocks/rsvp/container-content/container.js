@@ -32,7 +32,7 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	onTempNotGoingResponsesChange: ( e ) => {
 		dispatch( actions.setRSVPTempNotGoingResponses( e.target.checked ) );
 		dispatch( actions.setRSVPHasChanges( true ) );
-	}
+	},
 } );
 
 export default compose(

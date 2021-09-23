@@ -4,7 +4,7 @@
  * @since 5.1.9
  */
 
- .event-tickets {
+.event-tickets {
 
 	.tribe-tickets__commerce-checkout {
 		max-width: 600px;
@@ -150,30 +150,48 @@
 		padding: var(--tec-spacer-4) 0;
 	}
 
-	.tribe-tickets__commerce-checkout-footer-total,
-	.tribe-tickets__commerce-checkout-footer-quantity {
+	.tribe-tickets__commerce-checkout-cart-footer-total,
+	.tribe-tickets__commerce-checkout-cart-footer-quantity {
 		color: var(--tec-color-text-primary-light);
 		text-align: center;
 	}
 
-	.tribe-tickets__commerce-checkout-footer-total {
+	.tribe-tickets__commerce-checkout-cart-footer-total {
 		margin-left: var(--tec-spacer-1);
 
-		@media(--viewport-medium) {
+		@media (--viewport-medium) {
 			margin-left: var(--tec-spacer-5);
 		}
 	}
 
-	.tribe-tickets__commerce-checkout-footer-total-wrap,
-	.tribe-tickets__commerce-checkout-footer-total-number,
-	.tribe-tickets__commerce-checkout-footer-quantity-number {
+	.tribe-tickets__commerce-checkout-cart-footer-total-wrap,
+	.tribe-tickets__commerce-checkout-cart-footer-total-number,
+	.tribe-tickets__commerce-checkout-cart-footer-quantity-number {
 		color: var(--tec-color-text-primary);
 		font-weight: var(--tec-font-weight-bold);
 	}
 
+	.tribe-tickets__commerce-checkout-cart-empty {
+		margin: var(--tec-spacer-9) 0;
+	}
+
+	.tribe-tickets__commerce-checkout-cart-empty-description {
+		margin-top: var(--tec-spacer-3);
+	}
+
+	.tribe-tickets__commerce-checkout-cart-empty-description-link {
+
+		&,
+		&:focus,
+		&:hover,
+		&:visited {
+			color: var(--tec-color-accent-primary);
+		}
+	}
+
 	.tribe-tickets__commerce-checkout-must-login {
-		text-align: center;
 		margin-top: var(--tec-spacer-8);
+		text-align: center;
 	}
 
 	a.tribe-tickets__commerce-checkout-must-login-link {
@@ -193,9 +211,14 @@
 		font-weight: normal;
 	}
 
+	.tribe-tickets__commerce-checkout-footer-notice-error--no-gateway {
+		display: block;
+	}
+
 	.paypal-buttons-context-iframe {
 		background-color: #fafafa !important;
-		/* @todo: more 5.1.9 for the PayPal Iframe*/
+
+		/* @todo: more 5.1.10 for the PayPal Iframe */
 	}
 
 	/* -------------------------------------------------------------------------
@@ -210,6 +233,9 @@
 		h4 {
 			margin: initial;
 		}
+
+		&.tribe-tickets__commerce-checkout {
+			padding: initial;
+		}
 	}
 }
-

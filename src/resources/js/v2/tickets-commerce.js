@@ -30,6 +30,16 @@ tribe.tickets.commerce = {};
 	'use strict';
 	const $document = $( document );
 
+	/**
+	 * Ticket Commerce custom Events.
+	 *
+	 * @since 5.1.10
+	 */
+	obj.customEvents = {
+		showLoader : 'showLoader.tecTicketsCommerce',
+		hideLoader : 'hideLoader.tecTicketsCommerce',
+	}
+
 	/*
 	 * Tickets Commerce Selectors.
 	 *
@@ -40,11 +50,39 @@ tribe.tickets.commerce = {};
 		checkoutItem: '.tribe-tickets__commerce-checkout-cart-item',
 		checkoutItemDescription: '.tribe-tickets__commerce-checkout-cart-item-details-description',
 		checkoutItemDescriptionOpen: '.tribe-tickets__commerce-checkout-cart-item-details--open',
-		checkoutItemDescriptionButtonMore: '.tribe-tickets__commerce-checkout-cart-item-details-button--more',
-		checkoutItemDescriptionButtonLess: '.tribe-tickets__commerce-checkout-cart-item-details-button--less',
+		checkoutItemDescriptionButtonMore: '.tribe-tickets__commerce-checkout-cart-item-details-button--more', // eslint-disable-line max-len
+		checkoutItemDescriptionButtonLess: '.tribe-tickets__commerce-checkout-cart-item-details-button--less', // eslint-disable-line max-len
 		hiddenElement: '.tribe-common-a11y-hidden',
 		nonce: '#tec-tc-checkout-nonce',
 	};
+
+	/**
+	 * Show the loader/spinner.
+	 *
+	 * @since 5.1.10
+	 */
+	obj.loaderShow = function() {
+		tribe.tickets.loader.show( $( obj.selectors.checkoutContainer ) );
+	};
+
+	/**
+	 * Hide the loader/spinner.
+	 *
+	 * @since 5.1.10
+	 */
+	obj.loaderHide = function() {
+		tribe.tickets.loader.hide( $( obj.selectors.checkoutContainer ) );
+	};
+
+	/**
+	 * Bind loader events.
+	 *
+	 * @since 5.1.10
+	 */
+	obj.bindLoaderEvents = function () {
+		$document.on( obj.customEvents.showLoader, obj.loaderShow );
+		$document.on( obj.customEvents.hideLoader, obj.loaderHide );
+	}
 
 	/**
 	 * Toggle the checkout item description visibility.
@@ -99,7 +137,7 @@ tribe.tickets.commerce = {};
 	 * @return {void}
 	 */
 	obj.bindCheckoutItemDescriptionToggle = function( $container ) {
-		const $descriptionToggleButtons = $container.find( obj.selectors.checkoutItemDescriptionButtonMore + ', ' + obj.selectors.checkoutItemDescriptionButtonLess );
+		const $descriptionToggleButtons = $container.find( obj.selectors.checkoutItemDescriptionButtonMore + ', ' + obj.selectors.checkoutItemDescriptionButtonLess ); // eslint-disable-line max-len
 
 		$descriptionToggleButtons
 			.on( 'keydown', obj.checkoutItemDescriptionToggle )
@@ -116,7 +154,7 @@ tribe.tickets.commerce = {};
 	 * @return {void}
 	 */
 	obj.unbindCheckoutItemDescriptionToggle = function( $container ) {
-		const $descriptionToggleButtons = $container.find( obj.selectors.checkoutItemDescriptionButtonMore + ', ' + obj.selectors.checkoutItemDescriptionButtonLess );
+		const $descriptionToggleButtons = $container.find( obj.selectors.checkoutItemDescriptionButtonMore + ', ' + obj.selectors.checkoutItemDescriptionButtonLess ); // eslint-disable-line max-len
 
 		$descriptionToggleButtons.off();
 	};
@@ -131,12 +169,15 @@ tribe.tickets.commerce = {};
 	 * @return {void}
 	 */
 	obj.bindCheckoutEvents = function( $container ) {
-		$document.trigger( 'beforeSetup.tribeTicketsCommerceCheckout', [ $container ] );
+		$document.trigger( 'beforeSetup.tecTicketsCommerce', [ $container ] );
 
 		// Bind container based events.
 		obj.bindCheckoutItemDescriptionToggle( $container );
 
-		$document.trigger( 'afterSetup.tribeTicketsCommerceCheckout', [ $container ] );
+		// Bind loader visibility.
+		obj.bindLoaderEvents();
+
+		$document.trigger( 'afterSetup.tecTicketsCommerce', [ $container ] );
 	};
 
 	/**

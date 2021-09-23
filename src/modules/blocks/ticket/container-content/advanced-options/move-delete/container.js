@@ -27,7 +27,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	moveTicket: ( ticketId ) => dispatch( showModal( ticketId, ownProps.clientId ) ),
 } );
 
-const mergeProps = ( stateProps, dispatchProps, ownProps, ) => ( {
+const mergeProps = ( stateProps, dispatchProps, ownProps ) => ( {
 	...stateProps,
 	...dispatchProps,
 	...ownProps,

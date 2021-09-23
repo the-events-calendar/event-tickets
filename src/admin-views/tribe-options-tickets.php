@@ -156,7 +156,15 @@ $ticket_fields_end = [
 	],
 ];
 
-$commerce_fields = include 'tribe-commerce-settings.php';
+$commerce_fields = [];
+
+/**
+ * Hide Legacy PayPal settings for new installations.
+ */
+if ( tec_tribe_commerce_is_available() ) {
+	$commerce_fields = include 'tribe-commerce-settings.php';
+}
+
 /**
  * Allows for the specific filtering of the commerce fields.
  *

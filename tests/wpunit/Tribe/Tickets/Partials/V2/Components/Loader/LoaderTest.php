@@ -35,4 +35,19 @@ class LoaderTest extends WPTestCase {
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
+
+	/**
+	 * @test
+	 */
+	public function test_should_render_loader_without_hidden_class() {
+
+		$template = tribe( 'tickets.editor.template' );
+		$html     = $template->template( $this->partial_path, [ 'classes' => [], 'visible' => true ], false );
+		$driver   = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
+
+		// Reset argument to avoid polluting template data for other templates while running test suite.
+		$template->set_values( [ 'visible' => false ] );
+
+		$this->assertMatchesSnapshot( $html, $driver );
+	}
 }

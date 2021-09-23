@@ -35,13 +35,17 @@ describe( 'Settings Dashboard Element', () => {
 
 	it( 'renders settings dashboard with close button disabled', () => {
 		const closeButtonDisabled = true;
-		const component = renderer.create( <SettingsDashboard closeButtonDisabled={ closeButtonDisabled } /> );
+		const component = renderer.create(
+			<SettingsDashboard closeButtonDisabled={ closeButtonDisabled } />,
+		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );
 
 	it( 'renders settings dashboard with close button label', () => {
 		const closeButtonLabel = <span>Close Button Label</span>;
-		const component = renderer.create( <SettingsDashboard closeButtonLabel={ closeButtonLabel } /> );
+		const component = renderer.create(
+			<SettingsDashboard closeButtonLabel={ closeButtonLabel } />,
+		);
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );
 

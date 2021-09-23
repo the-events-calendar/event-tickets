@@ -15,7 +15,7 @@
  *
  * @version 5.0.4
  */
-$provider = $this->get( 'provider' ) ?: tribe_get_request_var( 'provider' );
+$provider = $this->get( 'provider' ) ?: tribe_get_request_var( tribe_tickets_get_provider_query_slug() );
 
 if ( empty( $provider ) ) {
 	$event_keys = array_keys( $events );

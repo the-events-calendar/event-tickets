@@ -25,10 +25,11 @@ interface Status_Interface {
 	 * @since 5.1.9
 	 *
 	 * @param string[] $flags Which flags will be filtered.
+	 * @param \WP_Post $post  Which order we are testing against.
 	 *
 	 * @return string[]
 	 */
-	public function filter_get_flags( $flags );
+	public function filter_get_flags( $flags, \WP_Post $post = null );
 
 	/**
 	 * Gets the name of this status.
@@ -53,9 +54,11 @@ interface Status_Interface {
 	 *
 	 * @since 5.1.9
 	 *
+	 * @param \WP_Post $post Which order we are testing against.
+	 *
 	 * @return array
 	 */
-	public function get_flags();
+	public function get_flags( \WP_Post $post = null );
 
 	/**
 	 * Determines if this Status has a set of flags.
@@ -64,11 +67,11 @@ interface Status_Interface {
 	 *
 	 * @param array|string $flags    Which flags we are testing.
 	 * @param string       $operator Operator for the test.
+	 * @param \WP_Post     $post     Which order we are testing against.
 	 *
 	 * @return bool
 	 */
-	public function has_flags( $flags, $operator = 'AND' );
-
+	public function has_flags( $flags, $operator = 'AND', \WP_Post $post = null );
 
 	/**
 	 * Determines if a given order can be modified to this status.

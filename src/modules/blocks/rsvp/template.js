@@ -63,8 +63,8 @@ class RSVP extends PureComponent {
 								{ isLoading && <Spinner /> }
 							</div>
 						)
-					}
-					{ isModalShowing && <MoveModal /> }
+				}
+				{ isModalShowing && <MoveModal /> }
 			</Fragment>
 		);
 	}

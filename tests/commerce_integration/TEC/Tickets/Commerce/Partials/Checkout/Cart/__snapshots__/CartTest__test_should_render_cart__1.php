@@ -1,5 +1,6 @@
 <?php return '
 <div class="tribe-tickets__commerce-checkout-cart">
+
 	<header class="tribe-tickets__commerce-checkout-cart-header">
 	<h4 class="tribe-common-h4 tribe-common-h4--min-medium tribe-common-h--alt tribe-tickets__commerce-checkout-cart-header-title">
 		<a href="http://wordpress.test/?tribe_events=event-test_event">
@@ -8,7 +9,7 @@
 </header>
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
-								<article
+					<article
 	 class="tribe-tickets__commerce-checkout-cart-item post-TICKET_ID tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry tribe-common-b1" 	 data-ticket-id="TICKET_ID" data-ticket-quantity="1" data-ticket-price="97" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
@@ -65,7 +66,7 @@
 	97.00</div>
 
 </article>
-								<article
+					<article
 	 class="tribe-tickets__commerce-checkout-cart-item post-TICKET_ID tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry tribe-common-b1" 	 data-ticket-id="TICKET_ID" data-ticket-quantity="1" data-ticket-price="97" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
@@ -122,15 +123,15 @@
 	97.00</div>
 
 </article>
-			</div>
+	</div>
 
 	<footer  class="tribe-tickets__commerce-checkout-cart-footer tribe-common-b1" >
 
-	<div class="tribe-tickets__commerce-checkout-footer-quantity">
-	<span class="tribe-tickets__commerce-checkout-footer-quantity-label">Quantity: </span><span class="tribe-tickets__commerce-checkout-footer-quantity-number">2</span></div>
+	<div class="tribe-tickets__commerce-checkout-cart-footer-quantity">
+	<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-label">Quantity: </span><span class="tribe-tickets__commerce-checkout-cart-footer-quantity-number">2</span></div>
 
-	<div class="tribe-tickets__commerce-checkout-footer-total">
-	<span class="tribe-tickets__commerce-checkout-footer-total-label">Total: </span><span class="tribe-tickets__commerce-checkout-footer-total-wrap">$194.00</span></div>
+	<div class="tribe-tickets__commerce-checkout-cart-footer-total">
+	<span class="tribe-tickets__commerce-checkout-cart-footer-total-label">Total: </span><span class="tribe-tickets__commerce-checkout-cart-footer-total-wrap">$194.00</span></div>
 
 </footer>
 

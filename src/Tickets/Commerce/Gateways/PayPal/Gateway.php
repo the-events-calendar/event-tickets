@@ -52,7 +52,7 @@ class Gateway extends Abstract_Gateway {
 			return false;
 		}
 
-		return tribe( Merchant::class )->account_is_connected();
+		return tribe( Merchant::class )->is_active();
 	}
 
 	/**
@@ -74,6 +74,6 @@ class Gateway extends Abstract_Gateway {
 	 * @return bool Whether Tickets Commerce is in test mode.
 	 */
 	public static function is_test_mode() {
-		return tribe_is_truthy( tribe_get_option( 'ticket-paypal-sandbox' ) );
+		return tribe_is_truthy( tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_sandbox ) );
 	}
 }

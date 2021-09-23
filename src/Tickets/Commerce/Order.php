@@ -4,6 +4,8 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Utils\Price;
+use Tribe__Date_Utils as Dates;
+
 
 /**
  * Class Order
@@ -134,6 +136,24 @@ class Order {
 	public static $purchaser_email_meta_key = '_tec_tc_order_purchaser_email';
 
 	/**
+	 * Prefix for the log of when a given status was applied.
+	 *
+	 * @since 5.1.10
+	 *
+	 * @var string
+	 */
+	public static $status_log_meta_key_prefix = '_tec_tc_order_status_log';
+
+	/**
+	 * Prefix for the Status Flag Action marker meta key.
+	 *
+	 * @since 5.1.10
+	 *
+	 * @var string
+	 */
+	public static $flag_action_status_marker_meta_key_prefix = '_tec_tc_order_fa_marker';
+
+	/**
 	 * Register this Class post type into WP.
 	 *
 	 * @since 5.1.9
@@ -174,8 +194,37 @@ class Order {
 	 *
 	 * @return string
 	 */
+	public static function get_status_log_meta_key( Commerce\Status\Status_Interface $status ) {
+		return static::$status_log_meta_key_prefix . '_' . $status->get_slug();
+	}
+
+	/**
+	 * Gets the meta Key for a given Order Status gateway_payload.
+	 *
+	 * @since 5.1.10
+	 *
+	 * @param Status\Status_Interface $status
+	 *
+	 * @return string
+	 */
 	public static function get_gateway_payload_meta_key( Commerce\Status\Status_Interface $status ) {
 		return static::$gateway_payload_meta_key . '_' . $status->get_slug();
+	}
+
+	/**
+	 * Gets the key for a Flag Action marker for given status and flag.
+	 *
+	 * @since 5.1.10
+	 *
+	 * @param string $flag   Which flag we are getting the meta key for.
+	 * @param string $status Which status ID we are getting the meta key for.
+	 *
+	 * @return string
+	 */
+	public static function get_flag_action_marker_meta_key( $flag, Commerce\Status\Status_Interface $status ) {
+		$prefix = static::$flag_action_status_marker_meta_key_prefix;
+
+		return "{$prefix}:{$status->get_slug()}:{$flag}";
 	}
 
 	/**
@@ -210,11 +259,17 @@ class Order {
 			'id'     => $order_id,
 		] )->set_args( $args )->save();
 
+		// After modifying the status we add a meta to flag when it was modified.
+		if ( $updated ) {
+			$time = Dates::build_date_object()->format( Dates::DBDATETIMEFORMAT );
+			add_post_meta( $order_id, static::get_status_log_meta_key( $status ), $time );
+		}
+
 		return (bool) $updated;
 	}
 
 	/**
-	 * @todo  WIP
+	 * Creates a order from the items in the cart.
 	 *
 	 * @since 5.1.9
 	 *
@@ -227,11 +282,17 @@ class Order {
 
 		$items      = $cart->get_items_in_cart();
 		$items      = array_map( static function ( $item ) {
-			$ticket            = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+			if ( null === $ticket ) {
+				return null;
+			}
+
 			$item['sub_total'] = Price::sub_total( $ticket->price, $item['quantity'] );
+			$item['price']     = $ticket->price;
 
 			return $item;
 		}, $items );
+		$items      = array_filter( $items );
 		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
 		$total      = Price::total( $sub_totals );
 
@@ -244,11 +305,11 @@ class Order {
 
 		// When purchaser data-set is not passed we pull from the current user.
 		if ( empty( $purchaser ) && is_user_logged_in() && $user = wp_get_current_user() ) {
-			$order_args['author'] = $user->ID;
-			$order_args['purchaser_full_name'] = $user->first_name . ' ' . $user->last_name;
+			$order_args['author']               = $user->ID;
+			$order_args['purchaser_full_name']  = $user->first_name . ' ' . $user->last_name;
 			$order_args['purchaser_first_name'] = $user->first_name;
-			$order_args['purchaser_last_name'] = $user->last_name;
-			$order_args['purchaser_email'] = $user->user_email;
+			$order_args['purchaser_last_name']  = $user->last_name;
+			$order_args['purchaser_email']      = $user->user_email;
 		}
 
 		$order = tec_tc_orders()->set_args( $order_args )->create();
@@ -597,8 +658,6 @@ class Order {
 			\Tribe__Post_Transient::instance()->delete( $post_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 		}
 
-		$order->update();
-
 		/**
 		 * Fires when an PayPal attendee tickets have been generated.
 		 *
@@ -626,17 +685,6 @@ class Order {
 			&& $attendee_order_status === Order_Statuses::$completed
 		) {
 			$this->send_tickets_email( $order_id, $post_id );
-		}
-
-		// Redirect to the same page to prevent double purchase on refresh
-		if ( ! empty( $post_id ) ) {
-			/** @var \Tribe__Tickets__Commerce__PayPal__Endpoints $endpoints */
-			$endpoints = tribe( 'tickets.commerce.paypal.endpoints' );
-			$url       = $endpoints->success_url( $order_id, $post_id );
-			if ( $redirect ) {
-				wp_redirect( esc_url_raw( $url ) );
-			}
-			tribe_exit();
 		}
 	}
 }

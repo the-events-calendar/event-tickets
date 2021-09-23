@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use TEC\Tickets\Commerce\Gateways\PayPal\REST\Webhook_Endpoint;
+use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Events;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -108,21 +110,25 @@ class Client {
 	}
 
 	/**
-	 * Send a GET request to the PayPal API.
+	 * Send a given method request to a given URL in the PayPal API.
 	 *
-	 * @since 5.1.9
+	 * @since 5.1.10
 	 *
-	 * @param string $endpoint
+	 * @param string $method
+	 * @param string $url
 	 * @param array  $query_args
 	 * @param array  $request_arguments
+	 * @param bool   $raw
 	 *
-	 * @return array|null
+	 * @return array|\WP_Error
 	 */
-	public function get( $endpoint, array $query_args = [], array $request_arguments = [] ) {
-		// If the endpoint passed is a full URL dont try to append anything.
-		$url = 0 !== strpos( 'https://', $endpoint )
-			? $this->get_api_url( $endpoint, $query_args )
-			: add_query_arg( $query_args, $endpoint );
+	public function request( $method, $url, array $query_args = [], array $request_arguments = [], $raw = false ) {
+		$method = strtoupper( $method );
+
+		// If the endpoint passed is a full URL don't try to append anything.
+		$url = 0 !== strpos( 'https://', $url )
+			? $this->get_api_url( $url, $query_args )
+			: add_query_arg( $query_args, $url );
 
 		$default_arguments = [
 			'headers' => [
@@ -131,19 +137,54 @@ class Client {
 				'Content-Type'  => 'application/json',
 			]
 		];
+
+		// By default it's important that we have a body set for any method that is not the GET method.
+		if ( 'GET' !== $method ) {
+			$default_arguments['body'] = [];
+		}
+
 		foreach ( $default_arguments as $key => $default_argument ) {
 			$request_arguments[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
 		}
-		$response = wp_remote_get( $url, $request_arguments );
+
+		if ( 'GET' !== $method ) {
+			$content_type = Arr::get( $request_arguments, [ 'headers', 'Content-Type' ] );
+			if ( empty( $content_type ) ) {
+				$content_type = Arr::get( $request_arguments, [ 'headers', 'content-type' ] );
+			}
+
+			// For all other methods we try to make the body into the correct type.
+			if (
+				! empty( $request_arguments['body'] )
+				&& 'application/json' === strtolower( $content_type )
+			) {
+				$request_arguments['body'] = wp_json_encode( $request_arguments[ $key ] );
+			}
+		}
+
+		if ( 'GET' === $method ) {
+			$response = wp_remote_get( $url, $request_arguments );
+		} elseif ( 'POST' === $method ) {
+			$response = wp_remote_post( $url, $request_arguments );
+		} else {
+			$request_arguments['method'] = $method;
+			$response                    = wp_remote_request( $url, $request_arguments );
+		}
 
 		if ( is_wp_error( $response ) ) {
 			tribe( 'logger' )->log_error( sprintf(
-				'[%s] PayPal GET request error: %s',
+				'[%s] PayPal "%s" request error: %s',
+				$method,
 				$url,
 				$response->get_error_message()
 			), 'tickets-commerce-paypal' );
 
-			return null;
+			return $response;
+		}
+
+		// When raw is true means we dont do any logic.
+		if ( true === $raw ) {
+			return $response;
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
@@ -157,12 +198,34 @@ class Client {
 		$response = @json_decode( $response, true );
 
 		if ( ! is_array( $response ) ) {
-			tribe( 'logger' )->log_error( sprintf( '[%s] Unexpected PayPal GET response', $url ), 'tickets-commerce-paypal' );
+			tribe( 'logger' )->log_error( sprintf( '[%s] Unexpected PayPal %s response', $url, $method ), 'tickets-commerce-paypal' );
 
-			return null;
+			return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-client-unexpected', null, [
+				'method'            => $method,
+				'url'               => $url,
+				'query_args'        => $query_args,
+				'request_arguments' => $request_arguments,
+				'response'          => $response,
+			] );
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Send a GET request to the PayPal API.
+	 *
+	 * @since 5.1.9
+	 *
+	 * @param string $endpoint
+	 * @param array  $query_args
+	 * @param array  $request_arguments
+	 * @param bool   $raw
+	 *
+	 * @return array|null
+	 */
+	public function get( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ) {
+		return $this->request( 'GET', $endpoint, $query_args, $request_arguments, $raw );
 	}
 
 	/**
@@ -173,68 +236,44 @@ class Client {
 	 * @param string $endpoint
 	 * @param array  $query_args
 	 * @param array  $request_arguments
+	 * @param bool   $raw
 	 *
 	 * @return array|null
 	 */
-	public function post( $endpoint, array $query_args = [], array $request_arguments = [] ) {
-		// If the endpoint passed is a full URL dont try to append anything.
-		$url = 0 !== strpos( 'https://', $endpoint )
-			? $this->get_api_url( $endpoint, $query_args )
-			: add_query_arg( $query_args, $endpoint );
+	public function post( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ) {
+		return $this->request( 'POST', $endpoint, $query_args, $request_arguments, $raw );
+	}
 
-		$default_arguments = [
-			'headers' => [
-				'Accept'        => 'application/json',
-				'Authorization' => sprintf( 'Bearer %1$s', $this->get_access_token() ),
-				'Content-Type'  => 'application/json',
-			],
-			'body'    => [],
-		];
-		foreach ( $default_arguments as $key => $default_argument ) {
-			$request_arguments[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
-		}
+	/**
+	 * Send a PATCH request to the PayPal API.
+	 *
+	 * @since 5.1.10
+	 *
+	 * @param string $endpoint
+	 * @param array  $query_args
+	 * @param array  $request_arguments
+	 * @param bool   $raw
+	 *
+	 * @return array|null
+	 */
+	public function patch( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ) {
+		return $this->request( 'PATCH', $endpoint, $query_args, $request_arguments, $raw );
+	}
 
-		$content_type = Arr::get( $request_arguments, [ 'headers', 'Content-Type' ] );
-		if ( empty( $content_type ) ) {
-			$content_type = Arr::get( $request_arguments, [ 'headers', 'content-type' ] );
-		}
-
-		if (
-			! empty( $request_arguments['body'] )
-			&& 'application/json' === strtolower( $content_type )
-		) {
-			$request_arguments['body'] = wp_json_encode( $request_arguments[ $key ] );
-		}
-
-		$response = wp_remote_post( $url, $request_arguments );
-
-		if ( is_wp_error( $response ) ) {
-			tribe( 'logger' )->log_error( sprintf(
-				'[%s] PayPal POST request error: %s',
-				$url,
-				$response->get_error_message()
-			), 'tickets-commerce-paypal' );
-
-			return null;
-		}
-
-		$response_code = wp_remote_retrieve_response_code( $response );
-
-		// When we receive an error code we return the whole response.
-		if ( ! in_array( $response_code, [ 200, 201, 202, 204 ], true ) ) {
-			return $response;
-		}
-
-		$response = wp_remote_retrieve_body( $response );
-		$response = @json_decode( $response, true );
-
-		if ( ! is_array( $response ) ) {
-			tribe( 'logger' )->log_error( sprintf( '[%s] Unexpected PayPal POST response', $url ), 'tickets-commerce-paypal' );
-
-			return null;
-		}
-
-		return $response;
+	/**
+	 * Send a DELETE request to the PayPal API.
+	 *
+	 * @since 5.1.10
+	 *
+	 * @param string $endpoint
+	 * @param array  $query_args
+	 * @param array  $request_arguments
+	 * @param bool   $raw
+	 *
+	 * @return array|null
+	 */
+	public function delete( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ) {
+		return $this->request( 'DELETE', $endpoint, $query_args, $request_arguments, $raw );
 	}
 
 	/**
@@ -430,13 +469,21 @@ class Client {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param string $order_id
+	 * @since 5.1.10 Added support for passing `payerID` param for PayPal API.
+	 *
+	 * @param string $order_id Order ID to capture.
+	 * @param string $payer_id Payer ID for given order from PayPal.
 	 *
 	 * @return array|null
 	 */
-	public function capture_order( $order_id ) {
+	public function capture_order( $order_id, $payer_id = '' ) {
 		$query_args = [];
 		$body       = [];
+
+		if ( ! empty( $payer_id ) ) {
+			$body['payerID'] = $payer_id;
+		}
+
 		$args       = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
@@ -447,7 +494,7 @@ class Client {
 
 		$capture_id = urlencode( $order_id );
 		$url        = '/v2/checkout/orders/{order_id}/capture';
-		$url        = str_replace( '{order_id}', $order_id, $url );
+		$url        = str_replace( '{order_id}', $capture_id, $url );
 		$response   = $this->post( $url, $query_args, $args );
 
 		return $response;
@@ -494,5 +541,292 @@ class Client {
 		return $response;
 	}
 
+	/**
+	 * This uses the links property of the payment to retrieve the Parent Payment ID from PayPal.
+	 *
+	 * @since 5.1.10
+	 *
+	 * @param string $payment The payment event object.
+	 *
+	 * @return string|false The parent payment ID or false if not found.
+	 */
+	public function get_payment_authorization( $payment ) {
+		$query_args = [];
+		$args       = [
+			'headers' => [
+				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+				'Prefer'                        => 'return=representation',
+			],
+		];
 
+		if ( ! wp_http_validate_url( $payment ) ) {
+			$payment = urlencode( $payment );
+			$url     = '/v2/payments/authorizations/{payment_id}';
+			$url     = str_replace( '{payment_id}', $payment, $url );
+		} else {
+			$url = $payment;
+		}
+
+		$response = $this->get( $url, $query_args, $args );
+
+		return $response;
+	}
+
+	/**
+	 * Verify the identity of the Webhook request, to avoid any security problems.
+	 *
+	 * @link  https://developer.paypal.com/docs/api/webhooks/v1/#verify-webhook-signature_post
+	 *
+	 * @since 5.1.10
+	 *
+	 * @param string $webhook_id Which webhook id we have currently stored on the database.
+	 * @param array  $event      The Event received by the endpoint from PayPal.
+	 * @param array  $headers    Headers from the PayPal request that we use to verify the signature.
+	 *
+	 * @return bool
+	 */
+	public function verify_webhook_signature( $webhook_id, $event, $headers ) {
+		$query_args = [];
+		$body       = [
+			'transmission_id'   => Arr::get( $headers, 'transmission_id' ),
+			'transmission_time' => Arr::get( $headers, 'transmission_time' ),
+			'transmission_sig'  => Arr::get( $headers, 'transmission_sig' ),
+			'cert_url'          => Arr::get( $headers, 'cert_url' ),
+			'auth_algo'         => Arr::get( $headers, 'auth_algo' ),
+			'webhook_id'        => $webhook_id,
+			'webhook_event'     => $event,
+		];
+		$args       = [
+			'headers' => [
+				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+			],
+			'body'    => $body,
+		];
+
+		$url      = 'v1/notifications/verify-webhook-signature';
+		$response = $this->post( $url, $query_args, $args );
+
+		return 'SUCCESS' === Arr::get( $response, 'verification_status', false );
+	}
+
+
+	/**
+	 * Get the list of webhooks.
+	 *
+	 * @see   https://developer.paypal.com/docs/api/webhooks/v1/#webhooks_list
+	 * @since 5.1.10
+	 *
+	 * @return array[] The list of PayPal webhooks.
+	 */
+	public function list_webhooks() {
+		$query_args = [];
+		$body       = [];
+		$args       = [
+			'headers' => [
+				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+				'Prefer'                        => 'return=representation',
+			],
+			'body'    => $body,
+		];
+
+		$url      = '/v1/notifications/webhooks';
+		$response = $this->get( $url, $query_args, $args );
+
+		if ( empty( $response['webhooks'] ) ) {
+			return [];
+		}
+
+		return $response['webhooks'];
+	}
+
+
+	/**
+	 * Get the webhook data from a specific webhook ID.
+	 *
+	 * @see   https://developer.paypal.com/docs/api/webhooks/v1/#webhooks_get
+	 * @since 5.1.10
+	 *
+	 * @param string $webhook_id The webhook ID.
+	 *
+	 * @return array|null The PayPal webhook data.
+	 */
+	public function get_webhook( $webhook_id ) {
+		$query_args = [];
+		$body       = [];
+		$args       = [
+			'headers' => [
+				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+			],
+			'body'    => $body,
+		];
+
+		$webhook_id = urlencode( $webhook_id );
+		$url        = '/v1/notifications/webhooks/{webhook_id}';
+		$url        = str_replace( '{webhook_id}', $webhook_id, $url );
+		$response   = $this->get( $url, $query_args, $args );
+
+		if ( ! isset( $response['id'], $response['name'] ) ) {
+			$error = @json_decode( $response['body'], true );
+
+			if ( 'INVALID_RESOURCE_ID' === $error['name'] ) {
+				// The webhook was not found.
+				tribe( 'logger' )->log_warning( __( 'The PayPal webhook does not exist', 'event-tickets' ), 'tickets-commerce-gateway-paypal' );
+			} else {
+				// Other unexpected response.
+				tribe( 'logger' )->log_warning( __( 'Unexpected PayPal response when getting webhook', 'event-tickets' ), 'tickets-commerce-gateway-paypal' );
+			}
+
+			return null;
+		}
+
+		return $response;
+	}
+
+
+	/**
+	 * Creates a webhook with the given event types registered.
+	 *
+	 * @see   https://developer.paypal.com/docs/api/webhooks/v1/#webhooks_post
+	 * @since 5.1.10
+	 *
+	 * @return array|\WP_Error
+	 */
+	public function create_webhook() {
+		$events      = tribe( Events::class )->get_registered_events();
+		$webhook_url = tribe( Webhook_Endpoint::class )->get_route_url();
+
+		$query_args = [];
+		$body       = [
+			'url'         => $webhook_url,
+			'event_types' => array_map(
+				static function ( $event_type ) {
+					return [
+						'name' => $event_type,
+					];
+				},
+				$events
+			),
+		];
+		$args       = [
+			'headers' => [
+				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+			],
+			'body'    => $body,
+		];
+
+		$url      = '/v1/notifications/webhooks';
+		$response = $this->post( $url, $query_args, $args );
+
+		if ( ! $response || empty( $response['id'] ) ) {
+			$error = @json_decode( $response['body'], true );
+			if ( empty( $error['name'] ) ) {
+				tribe( 'logger' )->log_error( __( 'Unexpected PayPal response when creating webhook', 'event-tickets' ), 'tickets-commerce-gateway-paypal' );
+
+				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-unexpected', null, $response );
+			}
+
+			if ( 'WEBHOOK_URL_ALREADY_EXISTS' === $error['name'] ) {
+				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-url-already-exists', null, $response );
+			}
+
+			if ( 'WEBHOOK_NUMBER_LIMIT_EXCEEDED' === $error['name'] ) {
+				// Limit has been reached, we cannot just delete all webhooks without permission.
+				tribe( 'logger' )->log_error( __( 'PayPal webhook limit has been reached, you need to go into your developer.paypal.com account and remove webhooks from the associated account', 'event-tickets' ), 'tickets-commerce-gateway-paypal' );
+
+				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-limit-exceeded', null, $response );
+			}
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Updates the webhook url and events
+	 *
+	 * @since 5.1.10
+	 *
+	 * @param string $webhook_id
+	 *
+	 * @return array|\WP_Error
+	 */
+	public function update_webhook( $webhook_id ) {
+		$events      = tribe( Events::class )->get_registered_events();
+		$webhook_url = tribe( Webhook_Endpoint::class )->get_route_url();
+
+		$query_args = [];
+		$body       = [
+			[
+				'op'    => 'replace',
+				'path'  => '/url',
+				'value' => $webhook_url,
+			],
+			[
+				'op'    => 'replace',
+				'path'  => '/event_types',
+				'value' => array_map(
+					static function ( $event_type ) {
+						return [
+							'name' => $event_type,
+						];
+					},
+					$events
+				),
+			],
+		];
+		$args       = [
+			'headers' => [
+				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+			],
+			'body'    => $body,
+		];
+
+		$webhook_id = urlencode( $webhook_id );
+		$url        = '/v1/notifications/webhooks/{webhook_id}';
+		$url        = str_replace( '{webhook_id}', $webhook_id, $url );
+		$response   = $this->patch( $url, $query_args, $args );
+
+		if ( ! $response || empty( $response['id'] ) ) {
+			$error = @json_decode( $response['body'], true );
+			if ( empty( $error['name'] ) ) {
+				tribe( 'logger' )->log_error( __( 'Unexpected PayPal response when updating webhook', 'event-tickets' ), 'tickets-commerce-gateway-paypal' );
+
+				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-update-unexpected' );
+			}
+
+			if ( 'INVALID_RESOURCE_ID' === $error['name'] ) {
+				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-update-invalid-id' );
+			}
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Deletes the webhook with the given id.
+	 *
+	 * @since 5.1.10
+	 *
+	 * @param string $webhook_id
+	 *
+	 * @return bool|\WP_Error Whether or not the deletion was successful
+	 */
+	public function delete_webhook( $webhook_id ) {
+		$query_args = [];
+		$args       = [
+			'headers' => [
+				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+			],
+		];
+
+		$webhook_id = urlencode( $webhook_id );
+		$url        = '/v1/notifications/webhooks/{webhook_id}';
+		$url        = str_replace( '{webhook_id}', $webhook_id, $url );
+		$response   = $this->delete( $url, $query_args, $args, true );
+
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
+
+		return 204 === wp_remote_retrieve_response_code( $response );
+	}
 }

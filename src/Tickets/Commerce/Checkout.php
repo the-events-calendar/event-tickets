@@ -159,4 +159,23 @@ class Checkout {
 		 */
 		return apply_filters( 'tec_tickets_commerce_checkout_registration_url', $registration_url );
 	}
+
+	/**
+	 * Maybe add a post display state for special Tickets Commerce Checkout Page in the page list table.
+	 *
+	 * @since 5.1.10
+	 *
+	 * @param array   $post_states An array of post display states.
+	 * @param WP_Post $post        The current post object.
+	 *
+	 * @return array  $post_states An array of post display states.
+	 */
+	public function maybe_add_display_post_states( $post_states, $post ) {
+
+		if ( $this->get_page_id() === $post->ID ) {
+			$post_states['tec_tickets_commerce_page_checkout'] = __( 'Tickets Commerce Checkout Page', 'event-tickets' );
+		}
+
+		return $post_states;
+	}
 }

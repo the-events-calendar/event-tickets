@@ -60,6 +60,8 @@ class Attendees_Repository extends Tribe__Repository {
 				'security_code'     => Attendee::$security_code_meta_key,
 				'opt_out'           => Attendee::$optout_meta_key,
 				'checked_in'        => Attendee::$checked_in_meta_key,
+				'price_paid'        => Attendee::$price_paid_meta_key,
+				'currency'          => Attendee::$currency_meta_key,
 				'first_name'        => Attendee::$first_name_meta_key,
 				'last_name'         => Attendee::$last_name_meta_key,
 				'email'             => Attendee::$email_meta_key,

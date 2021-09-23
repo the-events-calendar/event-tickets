@@ -90,24 +90,13 @@ class ConfigState {
  * @package Tribe\Tickets_Plus\Commerce\WooCommerce\Stock
  */
 class SharedCapacityTest extends WPTestCase {
-
 	use PayPal_Ticket_Maker;
 	use PayPal_Order_Maker;
 
-	/**
-	 * @var ConfigState
-	 */
-	public static $config_state;
-
-	public static function setUpBeforeClass() {
-		parent::setUpBeforeClass();
-
-		self::$config_state = new ConfigState();
-
-
-	}
-
 	public function setUp() {
+    	parent::setUp();
+
+
 		// Enable Tribe Commerce.
 		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
 		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
@@ -117,16 +106,12 @@ class SharedCapacityTest extends WPTestCase {
 		} );
 	}
 
-	public function get_config() {
-		return self::$config_state;
-	}
-
 	/**
 	 * @test
 	 */
 	public function it_should_create_tickets_correctly() {
 
-		$config = $this->get_config();
+		$config = new ConfigState();
 		// Make sure both tickets are valid Ticket Object.
 		$this->assertInstanceOf( \Tribe__Tickets__Ticket_Object::class, $config->ticket_a );
 		$this->assertInstanceOf( \Tribe__Tickets__Ticket_Object::class, $config->ticket_b );
@@ -149,7 +134,7 @@ class SharedCapacityTest extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_set_event_shared_meta_properly() {
-		$config = $this->get_config();
+		$config = new ConfigState();
 
 		$this->assertTrue( $config->global_stock->is_enabled() );
 		$this->assertEquals( $config->shared_config['total_cap'], $config->global_stock->get_stock_level() );

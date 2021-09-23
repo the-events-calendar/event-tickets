@@ -142,6 +142,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleCreateOrder = function ( data, actions, $container ) {
+		console.log( 'handleCreateOrder', arguments );
 		return fetch(
 			obj.orderEndpointUrl,
 			{
@@ -173,6 +174,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {string}
 	 */
 	obj.handleCreateOrderSuccess = function ( data ) {
+		console.log( 'handleCreateOrderSuccess', arguments );
 		return data.id;
 	};
 
@@ -186,7 +188,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleCreateOrderFail = function ( data ) {
-
+		console.log( 'handleCreateOrderFail', arguments );
 	};
 
 	/**
@@ -199,7 +201,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleCreateOrderError = function ( error ) {
-
+		console.log( 'handleCreateOrderError', arguments );
 	};
 
 	/**
@@ -214,6 +216,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleApprove = function ( data, actions, $container ) {
+		console.log( 'handleApprove', arguments );
 		/**
 		 * @todo On approval we receive a bit more than just the orderID on the data object
 		 *       we should be passing those to the BE.
@@ -224,6 +227,9 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 				method: 'POST',
 				headers: {
 					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+				},
+				body: {
+					'payer_id': data.payerID ?? '',
 				}
 			}
 		)
@@ -249,6 +255,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleApproveSuccess = function ( data ) {
+		console.log( 'handleApproveSuccess', arguments );
 		// When this Token has expired we just refresh the browser.
 		window.location.replace( data.redirect_url );
 	};
@@ -263,6 +270,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleApproveFail = function ( data ) {
+		console.log( 'handleApproveFail', arguments );
 
 	};
 
@@ -276,6 +284,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleApproveError = function ( error ) {
+		console.log( 'handleApproveError', arguments );
 
 	};
 
@@ -328,7 +337,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param  {Event}   event      event object for 'afterSetup.tribeTicketsCommerceCheckout' event
+	 * @param  {Event}   event      event object for 'afterSetup.tecTicketsCommerce' event
 	 * @param  {jQuery}  $container jQuery object of checkout container.
 	 *
 	 * @return {void}
@@ -345,6 +354,52 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	};
 
 	/**
+	 * Handle actions when checkout buttons are loaded.
+	 *
+	 * @since 5.1.10
+	 */
+	obj.buttonsLoaded = function () {
+		$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
+		$( tribe.tickets.commerce.selectors.checkoutContainer ).off( 'DOMNodeInserted', obj.selectors.buttons, obj.buttonsLoaded );
+	}
+
+	/**
+	 * Setup the triggers for Ticket Commerce loader view.
+	 *
+	 * @since 5.1.10
+	 *
+	 * @return {void}
+	 */
+	obj.setupLoader = function() {
+		$document.trigger( tribe.tickets.commerce.customEvents.showLoader );
+
+		// Hide loader when Paypal buttons are added.
+		$( tribe.tickets.commerce.selectors.checkoutContainer ).on( 'DOMNodeInserted', obj.selectors.buttons, obj.buttonsLoaded );
+	}
+
+	/**
+	 * Bind script loader to trigger script dependent methods.
+	 *
+	 * @since 5.1.10
+	 */
+	obj.bindScriptLoader = function() {
+
+		const $script = $( obj.selectors.checkoutScript );
+
+		if ( ! $script.length ) {
+			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
+			return;
+		}
+
+		/**
+		 * Setup PayPal buttons when everything is loaded.
+		 */
+		window.onload = ( event ) => {
+			obj.setupButtons( event, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
+		};
+	}
+
+	/**
 	 * Handles the initialization of the tickets commerce events when Document is ready.
 	 *
 	 * @since 5.1.9
@@ -352,9 +407,10 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.ready = function () {
-		$document.on( 'afterSetup.tribeTicketsCommerceCheckout', obj.setupButtons );
+		obj.setupLoader();
+		obj.bindScriptLoader();
 	};
 
 	$( obj.ready );
 
-} )( jQuery, tribe.tickets.commerce );
+} )( jQuery, tribe.tickets.commerce.gateway.paypal.checkout );

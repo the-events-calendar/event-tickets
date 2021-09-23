@@ -50,6 +50,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-disconnect', [ $this, 'handle_action_disconnect' ] );
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-access-token', [ $this, 'handle_action_refresh_token' ] );
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-user-info', [ $this, 'handle_action_refresh_user_info' ] );
+		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-webhook', [ $this, 'handle_action_refresh_webhook' ] );
 
 		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout/header', [ $this, 'include_client_js_sdk_script' ], 15, 3 );
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
@@ -165,6 +166,17 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		$user_info = $this->container->make( Client::class )->get_user_info();
 
 		$saved = $merchant->save_user_info( $user_info );
+	}
+
+	/**
+	 * Handles the refreshing of the webhook on PayPal for this site/merchant.
+	 *
+	 * @todo  Display some message when refreshing user info.
+	 * @since 5.1.10
+	 *
+	 */
+	public function handle_action_refresh_webhook() {
+		$updated = $this->container->make( Webhooks::class )->create_or_update_existing();
 	}
 
 	/**

@@ -7,11 +7,11 @@
 .event-tickets {
 
 	.tribe-tickets__rsvp-actions-wrapper {
-		flex: none;
+		align-items: center;
 		display: flex;
+		flex: none;
 		justify-content: center;
 		text-align: center;
-		align-items: center;
 
 		@media (--viewport-medium) {
 			border-left: 1px dashed var(--tec-color-border-secondary);
@@ -24,7 +24,6 @@
 		margin-top: var(--tec-spacer-10);
 		padding: var(--tec-spacer-10) 0;
 		width: 100%;
-
 
 		@media (--viewport-medium) {
 			border-top: 0;
@@ -86,8 +85,8 @@
 	 * RSVP Success
 	 * ------------------------------------------------------------------------- */
 	.tribe-tickets__rsvp-actions-success-going {
-		display: flex;
 		align-items: center;
+		display: flex;
 		justify-content: center;
 
 		@media (--viewport-medium) {
@@ -98,13 +97,13 @@
 	.tribe-tickets__rsvp-actions-success-going-check-icon {
 		background-color: var(--tec-color-accent-primary);
 		background-image: svg-inline(check-white);
-		background-repeat: no-repeat;
 		background-position: center;
+		background-repeat: no-repeat;
 		border-radius: 100%;
 		display: inline-block;
 		height: var(--tec-spacer-7);
-		width: var(--tec-spacer-7);
 		margin: 0 var(--tec-spacer-0);
+		width: var(--tec-spacer-7);
 	}
 
 	.tribe-tickets__rsvp-actions-success-going-text {
@@ -113,9 +112,9 @@
 	}
 
 	.tribe-tickets__rsvp-actions-success-going-toggle {
-		margin-top: var(--tec-spacer-4);
 		display: flex;
 		justify-content: center;
+		margin-top: var(--tec-spacer-4);
 
 		@media (--viewport-medium) {
 			justify-content: flex-start;

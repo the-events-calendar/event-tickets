@@ -68,23 +68,24 @@ abstract class Status_Abstract implements Status_Interface {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_flags() {
-		return $this->filter_get_flags( $this->flags );
+	public function get_flags( \WP_Post $post = null ) {
+		return $this->filter_get_flags( $this->flags, $post );
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function filter_get_flags( $flags ) {
+	public function filter_get_flags( $flags, \WP_Post $post = null ) {
 		/**
 		 * Allows filtering of which flags are associated with this Status.
 		 *
 		 * @since 5.1.9
 		 *
 		 * @param string[] $flags  Set of flags we will use.
+		 * @param \WP_Post $post   Which order we are testing against.
 		 * @param static   $status Which status these flags are associated with.
 		 */
-		$flags = apply_filters( 'tec_tickets_commerce_order_status_get_flags', $flags, $this );
+		$flags = apply_filters( 'tec_tickets_commerce_order_status_get_flags', $flags, $post, $this );
 
 		/**
 		 * Allows filtering of which flags are associated with this Status.
@@ -92,16 +93,17 @@ abstract class Status_Abstract implements Status_Interface {
 		 * @since 5.1.9
 		 *
 		 * @param string[] $flags  Set of flags we will use.
+		 * @param \WP_Post $post   Which order we are testing against.
 		 * @param static   $status Which status these flags are associated with.
 		 */
-		return apply_filters( "tec_tickets_commerce_order_status_{$this->get_slug()}_get_flags", $flags, $this );
+		return apply_filters( "tec_tickets_commerce_order_status_{$this->get_slug()}_get_flags", $flags, $post, $this );
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function has_flags( $flags, $operator = 'AND' ) {
-		$intersection = array_intersect( (array) $flags, $this->get_flags() );
+	public function has_flags( $flags, $operator = 'AND', \WP_Post $post = null ) {
+		$intersection = array_intersect( (array) $flags, $this->get_flags( $post ) );
 
 		if ( 'AND' === strtoupper( $operator ) ) {
 			return count( $flags ) === count( $intersection );
