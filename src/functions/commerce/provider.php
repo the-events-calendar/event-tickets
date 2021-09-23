@@ -50,7 +50,7 @@ function tribe_tickets_commerce_is_test_mode() {
 /**
  * Determine whether the legacy TribeCommerce should be shown or not.
  *
- * @since TBD
+ * @since 5.1.10
  *
  * @return boolean
  */
@@ -79,14 +79,14 @@ function tec_tribe_commerce_is_available() {
 		_doing_it_wrong(
 			__FUNCTION__,
 			'tickets.commerce.paypal.handler.ipn - is not a registered callback.',
-			'TBD'
+			'5.1.10'
 		);
 	}
 
 	/**
 	 * Filter whether we should disable TribeCommerce PayPal or not.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param boolean $available should be available or not.
 	 */

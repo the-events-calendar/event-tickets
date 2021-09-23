@@ -9,7 +9,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Webhooks
  *
- * @since   TBD
+ * @since   5.1.10
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -18,7 +18,7 @@ class Webhooks {
 	/**
 	 * Returns the options key for webhook settings in the merchant mode.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @return string
 	 */
@@ -32,7 +32,7 @@ class Webhooks {
 	/**
 	 * Retrieves the settings for the webhooks from the database.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param array|string $key       Specify each nested index in order.
 	 *                                Example: array( 'lvl1', 'lvl2' );
@@ -49,7 +49,7 @@ class Webhooks {
 	/**
 	 * Saves the webhook settings in the database.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param array $settings []
 	 *
@@ -62,7 +62,7 @@ class Webhooks {
 	/**
 	 * Retrieves the settings for the webhooks from the database.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @return array|null
 	 */
@@ -80,7 +80,7 @@ class Webhooks {
 	/**
 	 * Deletes the stored webhook settings.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @return bool
 	 */
@@ -91,7 +91,7 @@ class Webhooks {
 	/**
 	 * Creates or updates the Webhook associated with this site.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @return bool|\WP_Error
 	 */
@@ -160,7 +160,7 @@ class Webhooks {
 	/**
 	 * Determines if a given webhook set needs to be updated based on the current values.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param array $webhook Current webhook set, if null will pull from DB.
 	 *
