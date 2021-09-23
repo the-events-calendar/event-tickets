@@ -29,8 +29,9 @@ jobs:
       # ------------------------------------------------------------------------------
       # Run PHPCS
       # ------------------------------------------------------------------------------
-      - uses: hrysd/action-php_codesniffer@v1
+      - name: phpcs
+        uses: shirobrak/action-phpcs@v1.0.0
         with:
           github_token: ${{ secrets.GH_BOT_TOKEN }}
-          standard: TribalScents
-          target_directory: '.'
+          reporter: github-pr-review  # Change reporter.
+          phpcs_flags: '--standard=phpcs.xml ./'
