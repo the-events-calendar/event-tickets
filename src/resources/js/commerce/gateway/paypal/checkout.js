@@ -59,6 +59,15 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	const $document = $( document );
 
 	/**
+	 * Generated PayPal Order ID.
+	 *
+	 * @since TBD
+	 *
+	 * @type {string}
+	 */
+	obj.orderID = '';
+
+	/**
 	 * PayPal Order handling endpoint.
 	 *
 	 * @since 5.1.9
@@ -145,10 +154,15 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @param {Object} actions PayPal actions available on order creation.
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 *
-	 * @return {void}
+	 * @return {string}
 	 */
 	obj.handleCreateOrder = function ( data, actions, $container ) {
 		tribe.tickets.debug.log( 'handleCreateOrder', arguments );
+
+		if ( obj.orderID !== '' ) {
+			return obj.orderID;
+		}
+
 		return fetch(
 			obj.orderEndpointUrl,
 			{
@@ -181,6 +195,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleCreateOrderSuccess = function ( data ) {
 		tribe.tickets.debug.log( 'handleCreateOrderSuccess', arguments );
+		obj.orderID = data.id;
 		return data.id;
 	};
 

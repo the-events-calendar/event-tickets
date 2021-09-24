@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Signup;
 use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
 
 
+use TEC\Tickets\Commerce\Status\Not_Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Created;
@@ -186,7 +187,10 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		$paypal_order_id = $request->get_param( 'order_id' );
 
 		$order           = tec_tc_orders()->by_args( [
-			'status'           => tribe( Pending::class )->get_wp_slug(),
+			'status'           => [
+				tribe( Pending::class )->get_wp_slug(),
+				tribe( Not_Completed::class )->get_wp_slug(),
+			],
 			'gateway_order_id' => $paypal_order_id,
 		] )->first();
 
