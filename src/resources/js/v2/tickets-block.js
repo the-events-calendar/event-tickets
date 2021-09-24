@@ -475,9 +475,7 @@ tribe.tickets.block = {
 
 		const $price = $cartItem.find( obj.selectors.itemPrice ).first();
 		const realPrice = $cartItem.closest( obj.selectors.item ).data( 'ticket-price' );
-		const text = isNaN( realPrice ) ? $price.text() : realPrice.toString();
-
-		const price = tribe.tickets.utils.cleanNumber( text, provider );
+		const price = isNaN( realPrice ) ? tribe.tickets.utils.cleanNumber( $price.text(), provider ) : realPrice.toString();
 
 		return isNaN( price ) ? 0 : price;
 	};
