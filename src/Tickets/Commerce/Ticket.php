@@ -4,6 +4,8 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Status\Status_Handler;
+use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Event;
 
 use Tribe__Utils__Array as Arr;
@@ -108,6 +110,15 @@ class Ticket {
 	public static $should_manage_stock_meta_key = '_manage_stock';
 
 	/**
+	 * Prefix for the counter for a given status..
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $status_count_meta_key_prefix = '_tec_tc_ticket_status_count';
+
+	/**
 	 * Register this Class post type into WP.
 	 *
 	 * @since 5.1.9
@@ -145,6 +156,88 @@ class Ticket {
 	}
 
 	/**
+	 * Gets the meta Key for a given status count on a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param Status_Interface $status
+	 *
+	 * @return string
+	 */
+	public static function get_status_count_meta_key( Status_Interface $status ) {
+		return static::$status_count_meta_key_prefix . ':' . $status->get_slug();
+	}
+
+	/**
+	 * Modify the counters for all the tickets involved on this particular order.
+	 *
+	 * @since TBD
+	 *
+	 * @param Status_Interface      $new_status New post status.
+	 * @param Status_Interface|null $old_status Old post status.
+	 * @param \WP_Post              $post       Post object.
+	 */
+	public function modify_counters_by_status( $new_status, $old_status, $post ) {
+		$order = tec_tc_get_order( $post );
+
+		// This should never be the case, but lets be safe.
+		if ( empty( $order->cart_items ) ) {
+			return;
+		}
+
+		foreach ( $order->cart_items as $item ) {
+			$ticket_id = $item['ticket_id'];
+			$new_status_meta_key    = static::get_status_count_meta_key( $new_status );
+			$current_new_status_qty = get_post_meta( $ticket_id, $new_status_meta_key, true );
+			if ( ! $current_new_status_qty ) {
+				$current_new_status_qty = 0;
+			}
+			update_post_meta( $ticket_id, $new_status_meta_key, (int) $current_new_status_qty + $item['quantity'] );
+
+			if ( $old_status ) {
+				$old_status_meta_key    = static::get_status_count_meta_key( $old_status );
+				$current_old_status_qty = get_post_meta( $ticket_id, $old_status_meta_key, true );
+				if ( ! $current_old_status_qty ) {
+					$current_old_status_qty = 0;
+				}
+				update_post_meta( $ticket_id, $old_status_meta_key, max( 0, (int) $current_old_status_qty - $item['quantity'] ) );
+			}
+		}
+	}
+
+	/**
+	 * Given a valid ticket will fetch the quantity of orders on each one of the registered status based on the counting
+	 * that is handled by the Order status transitions system.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|string|\WP_Post $ticket_id Which ticket we are fetching the count for.
+	 *
+	 * @return array<string,int>|\WP_Error
+	 */
+	public function get_status_quantity( $ticket_id ) {
+		$ticket = get_post( $ticket_id );
+
+		if ( ! $ticket ) {
+			return new \WP_Error( 'tec-tickets-commerce-non-existent-ticket' );
+		}
+
+		$all_statuses = tribe( Status_Handler::class )->get_all();
+		$status_qty = [];
+
+		foreach ( $all_statuses as $status ) {
+			$value = get_post_meta( $ticket->ID, static::get_status_count_meta_key( $status ), true );
+			if ( empty( $value ) ) {
+				$value = 0;
+			}
+
+			$status_qty[ $status->get_slug() ] = (int) $value;
+		}
+
+		return $status_qty;
+	}
+
+	/**
 	 * Gets an individual ticket.
 	 *
 	 * @todo  TribeCommerceLegacy: This method needs to make use of the Ticket Model.
@@ -166,8 +259,6 @@ class Ticket {
 
 		$return = new \Tribe__Tickets__Ticket_Object();
 
-		$qty_sold = get_post_meta( $ticket_id, 'total_sales', true );
-
 		$return->description      = $product->post_excerpt;
 		$return->ID               = $ticket_id;
 		$return->name             = $product->post_title;
@@ -182,6 +273,8 @@ class Ticket {
 		$return->start_time       = get_post_meta( $ticket_id, '_ticket_start_time', true );
 		$return->end_time         = get_post_meta( $ticket_id, '_ticket_end_time', true );
 		$return->sku              = get_post_meta( $ticket_id, '_sku', true );
+
+		$qty_sold = get_post_meta( $ticket_id, 'total_sales', true );
 
 		// If the quantity sold wasn't set, default to zero
 		$qty_sold = $qty_sold ? $qty_sold : 0;
