@@ -133,6 +133,15 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			'success' => false,
 		];
 
+		$order_generated = get_transient( 'tec_tc_order-paypal-' . tribe( Cart::class )->get_cart_hash() );
+
+		if ( $order_generated ) {
+			$response['success'] = true;
+			$response['id']      = $order_generated;
+
+			return new WP_REST_Response( $response );
+		}
+
 		$messages = $this->get_error_messages();
 
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ) );
@@ -151,6 +160,9 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		if ( empty( $paypal_order['id'] ) || empty( $paypal_order['create_time'] ) ) {
 			return new WP_Error( 'tec-tc-gateway-paypal-failed-creating-order', $messages['failed-creating-order'] , $order );
 		}
+
+		// Store PayPal Order ID for current cart hash.
+		set_transient( 'tec_tc_order-paypal-' . tribe( Cart::class )->get_cart_hash(), $paypal_order['id'], HOUR_IN_SECONDS * 8 );
 
 		$updated = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG, [
 			'gateway_payload'  => $paypal_order,
