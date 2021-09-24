@@ -71,7 +71,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 
 		register_rest_route(
 			$namespace,
-			$this->get_endpoint_path() . '/(?P<order_id>[0-9a-zA-Z]+)(?:/(?P<payer_id>[0-9a-zA-Z]+))?',
+			$this->get_endpoint_path() . '/(?P<order_id>[0-9a-zA-Z]+)',
 			[
 				'methods'             => WP_REST_Server::CREATABLE,
 				'args'                => $this->update_order_args(),
