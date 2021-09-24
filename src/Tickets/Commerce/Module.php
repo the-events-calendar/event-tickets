@@ -593,7 +593,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return string
 	 */
 	public function get_event_reports_link( $event_id, $url_only = false ) {
-		return tribe( Commerce\Reports\Event::class )->get_link( $event_id, $url_only );
+		return tribe( Commerce\Reports\Orders::class )->get_event_link( $event_id, $url_only );
 	}
 
 	/**
@@ -607,6 +607,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return string
 	 */
 	public function get_ticket_reports_link( $event_id, $ticket_id ) {
-		return tribe( Commerce\Reports\Event::class )->get_link( $event_id, $ticket_id );
+		return tribe( Commerce\Reports\Orders::class )->get_ticket_link( $event_id, $ticket_id );
 	}
 }
