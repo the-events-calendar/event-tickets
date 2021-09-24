@@ -19,6 +19,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Created;
+use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Success;
 use Tribe__Documentation__Swagger__Provider_Interface;
 use Tribe__Settings;
@@ -75,6 +76,17 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 				'methods'             => WP_REST_Server::CREATABLE,
 				'args'                => $this->update_order_args(),
 				'callback'            => [ $this, 'handle_update_order' ],
+				'permission_callback' => '__return_true',
+			]
+		);
+
+		register_rest_route(
+			$namespace,
+			$this->get_endpoint_path() . '/(?P<order_id>[0-9a-zA-Z]+)',
+			[
+				'methods'             => WP_REST_Server::DELETABLE,
+				'args'                => $this->fail_order_args(),
+				'callback'            => [ $this, 'handle_fail_order' ],
 				'permission_callback' => '__return_true',
 			]
 		);
@@ -217,6 +229,58 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	}
 
 	/**
+	 * Handles the request that handles failing an order with Tickets Commerce and the PayPal gateway.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
+	 */
+	public function handle_fail_order( WP_REST_Request $request ) {
+		$response = [
+			'success' => false,
+		];
+
+		$paypal_order_id = $request->get_param( 'order_id' );
+		$order           = tec_tc_orders()->by_args( [
+			'status'           => 'any',
+			'gateway_order_id' => $paypal_order_id,
+		] )->first();
+
+		if ( ! $order ) {
+			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', null, $order );
+		}
+
+		$failed_reason = $request->get_param( 'failed_reason' );
+		$failed_status = $request->get_param( 'failed_status' );
+		if ( empty( $failed_status ) ) {
+			$failed_status = 'not-completed';
+		}
+
+		$status = tribe( Status_Handler::class )->get_by_slug( $failed_status );
+
+		if ( ! $status ) {
+			return new WP_Error( 'tec-tc-gateway-paypal-invalid-failed-status', null, [ 'failed_status' => $failed_status, 'failed_reason' => $failed_reason ] );
+		}
+
+		/**
+		 * @todo possible determine if we should have error code associated with the failing of this order.
+		 */
+		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug() );
+
+		if ( is_wp_error( $updated ) ) {
+			return $updated;
+		}
+
+		$response['success']  = true;
+		$response['status']   = $status->get_slug();
+		$response['order_id'] = $order->ID;
+
+		return new WP_REST_Response( $response );
+	}
+
+	/**
 	 * Arguments used for the signup redirect.
 	 *
 	 * @since 5.1.9
@@ -228,7 +292,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	}
 
 	/**
-	 * Arguments used for the signup redirect.
+	 * Arguments used for the updating order for PayPal.
 	 *
 	 * @since 5.1.9
 	 *
@@ -243,6 +307,57 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 				'validate_callback' => static function ( $value ) {
 					if ( ! is_string( $value ) ) {
 						return new WP_Error( 'rest_invalid_param', 'The order ID argument must be a string.', [ 'status' => 400 ] );
+					}
+
+					return $value;
+				},
+				'sanitize_callback' => [ $this, 'sanitize_callback' ],
+			],
+		];
+	}
+
+	/**
+	 * Arguments used for the deleting order for PayPal.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function fail_order_args() {
+		return [
+			'order_id' => [
+				'description'       => __( 'Order ID in PayPal', 'event-tickets' ),
+				'required'          => true,
+				'type'              => 'string',
+				'validate_callback' => static function ( $value ) {
+					if ( ! is_string( $value ) ) {
+						return new WP_Error( 'rest_invalid_param', 'The order ID argument must be a string.', [ 'status' => 400 ] );
+					}
+
+					return $value;
+				},
+				'sanitize_callback' => [ $this, 'sanitize_callback' ],
+			],
+			'failed_status' => [
+				'description'       => __( 'To which status the failing should change this order to', 'event-tickets' ),
+				'required'          => false,
+				'type'              => 'string',
+				'validate_callback' => static function ( $value ) {
+					if ( ! is_string( $value ) ) {
+						return new WP_Error( 'rest_invalid_param', 'The failed status argument must be a string.', [ 'status' => 400 ] );
+					}
+
+					return $value;
+				},
+				'sanitize_callback' => [ $this, 'sanitize_callback' ],
+			],
+			'failed_reason' => [
+				'description'       => __( 'Why this particular order has failed.', 'event-tickets' ),
+				'required'          => false,
+				'type'              => 'string',
+				'validate_callback' => static function ( $value ) {
+					if ( ! is_string( $value ) ) {
+						return new WP_Error( 'rest_invalid_param', 'The failed reason argument must be a string.', [ 'status' => 400 ] );
 					}
 
 					return $value;
