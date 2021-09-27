@@ -30,10 +30,12 @@ if ( empty( $is_tec_active ) ) {
 	href="<?php echo tribe_events_get_url(); // phpcs:ignore ?>"
 >
 	<?php
-		printf(
-			// Translators: %1$s: Plural `events` in lowercase.
-			esc_html__( 'browse more %1$s', 'event-tickets' ),
-			tribe_get_event_label_plural_lowercase( 'tickets_commerce_order_footer_link' ) // phpcs:ignore
+		echo esc_html(
+			sprintf(
+				// Translators: %1$s: Plural `events` in lowercase.
+				__( 'browse more %1$s', 'event-tickets' ),
+				tribe_get_event_label_plural_lowercase( 'tickets_commerce_order_footer_link' ) // phpcs:ignore
+			)
 		);
 		?>
 </a>

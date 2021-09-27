@@ -24,6 +24,7 @@
 ?>
 <a
 	class="tribe-common-anchor-alt tribe-tickets__commerce-order-footer-link tribe-tickets__commerce-order-footer-link--back-home"
-	href="<?php echo esc_url( home_url() ); ?>">
+	href="<?php echo esc_url( home_url() ); ?>"
+>
 	<?php esc_html_e( 'back home', 'event-tickets' ); ?>
 </a>

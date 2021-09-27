@@ -4,7 +4,7 @@
 
 <div class="tec-tickets__admin-settings-tickets-commerce-paypal-description">
 	<p>
-		Start selling tickets to your events today with PayPal. Attendees can purchase tickets directly on your site using debt or credit cards with no additional fees.	</p>
+		Start selling tickets to your events today with PayPal. Attendees can purchase tickets directly on your site using debit or credit cards with no additional fees.	</p>
 
 	<script>
 	function onboardedCallback( authCode, sharedId ) {

@@ -38,7 +38,7 @@ tribe.tickets.commerce = {};
 	obj.customEvents = {
 		showLoader : 'showLoader.tecTicketsCommerce',
 		hideLoader : 'hideLoader.tecTicketsCommerce',
-	}
+	};
 
 	/*
 	 * Tickets Commerce Selectors.
