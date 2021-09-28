@@ -225,16 +225,20 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		 * @todo On approval we receive a bit more than just the orderID on the data object
 		 *       we should be passing those to the BE.
 		 */
+
+		const body = {
+			'payer_id' : data.payerID ?? '',
+		};
+
 		return fetch(
 			obj.orderEndpointUrl + '/' + data.orderID,
 			{
 				method: 'POST',
 				headers: {
 					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+					'Content-Type': 'application/json',
 				},
-				body: {
-					'payer_id': data.payerID ?? '',
-				}
+				body: JSON.stringify( body ),
 			}
 		)
 			.then( response => response.json() )
