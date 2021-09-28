@@ -431,7 +431,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		 *
 		 * @since TBD
 		 *
-		 * @param array Array of error messages.
+		 * @param array $messages Array of error messages.
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_endpoint_error_messages', $messages );
 	}
