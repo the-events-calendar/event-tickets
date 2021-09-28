@@ -56,8 +56,10 @@ class Buttons {
 			return;
 		}
 
+		$items = tribe( Cart::class )->get_items_in_cart( true );
+
 		// Bail if there are no tickets in cart.
-		if ( empty( tribe( Cart::class )->get_items_in_cart( true ) ) ) {
+		if ( empty( $items ) ) {
 			return;
 		}
 
