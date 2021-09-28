@@ -11,7 +11,17 @@ use WP_List_Table;
 
 class Attendees extends WP_List_Table {
 
-	public function __construct( $args = array() ) {
+	private $legacy_attendees_table;
+
+	public function __construct() {
+		$args = [
+			'singular' => 'attendee',
+			'plural'   => 'attendees',
+			'ajax'     => true,
+		];
+
+		$this->legacy_attendees_table = new \Tribe__Tickets__Attendees_Table();
+
 		parent::__construct( $args );
 	}
 
@@ -123,5 +133,86 @@ class Attendees extends WP_List_Table {
 		return $columns;
 	}
 
+	/**
+	 * Prepares the list of items for displaying.
+	 *
+	 * @since TBD
+	 */
+	public function prepare_items() {
+		$post_id = tribe_get_request_var( 'post_id', 0 );
+		$post_id = tribe_get_request_var( 'event_id', $post_id );
+
+		$this->post_id = $post_id;
+
+		$search    = tribe_get_request_var( 's' );
+		$page      = absint( tribe_get_request_var( 'paged', 0 ) );
+		$arguments = [
+			'status'         => 'any',
+			'paged'          => $page,
+			'posts_per_page' => $this->per_page_option,
+		];
+
+		if ( $search ) {
+			$arguments['search'] = $search;
+		}
+
+		if ( ! empty( $post_id ) ) {
+			$arguments['events'] = $post_id;
+		}
+
+		$orders_repository = \tec_tc_orders()->by_args( $arguments );
+
+		$total_items = $orders_repository->found();
+
+		$this->items = $orders_repository->all();
+
+		$this->set_pagination_args( [
+			'total_items' => $total_items,
+			'per_page'    => $this->per_page_option,
+		] );
+	}
+
+	/**
+	 * Generates content for a single row of the table
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $item The current item
+	 */
+	public function single_row( $item ) {
+		echo '<tr class="' . esc_attr( $item->post_status ) . '">';
+		$this->single_row_columns( $item );
+		echo '</tr>';
+	}
+
+	public function column_ticket( $item ) {
+		return esc_html( $item->primary_info['full_name'] );
+	}
+	/**
+	 * Returns the customer name.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $item The current item.
+	 *
+	 * @return string
+	 */
+	public function column_primary_info( $item ) {
+		$item->purchaser_name = $item->purchaser['full_name'];
+		$item->purchaser_email = $item->purchaser['email'];
+		return $this->legacy_attendees_table->column_primary_info( (array) $item );
+	}
+
+	public function column_security_code( $item ) {
+		return $this->legacy_attendees_table->column_default( (array) $item, 'security' );
+	}
+
+	public function column_status( $item ) {
+		return $this->legacy_attendees_table->column_status( (array) $item );
+	}
+
+	public function column_check_in( $item ) {
+		return $this->legacy_attendees_table->column_check_in( (array) $item );
+	}
 
 }
