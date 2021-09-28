@@ -195,6 +195,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		}
 
 		$payer_id = $request->get_param( 'payer_id' );
+
 		$paypal_capture_response = tribe( Client::class )->capture_order( $paypal_order_id, $payer_id );
 
 		if ( ! $paypal_capture_response ) {
@@ -307,6 +308,19 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 				'validate_callback' => static function ( $value ) {
 					if ( ! is_string( $value ) ) {
 						return new WP_Error( 'rest_invalid_param', 'The order ID argument must be a string.', [ 'status' => 400 ] );
+					}
+
+					return $value;
+				},
+				'sanitize_callback' => [ $this, 'sanitize_callback' ],
+			],
+			'payer_id' => [
+				'description'       => __( 'Payer ID token from PayPal', 'event-tickets' ),
+				'required'          => false,
+				'type'              => 'string',
+				'validate_callback' => static function ( $value ) {
+					if ( ! is_string( $value ) ) {
+						return new WP_Error( 'rest_invalid_param', 'The payer ID argument must be a string.', [ 'status' => 400 ] );
 					}
 
 					return $value;
