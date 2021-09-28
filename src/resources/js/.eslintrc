@@ -23,6 +23,6 @@
     "TribeTicketOptions": true,
     "TribeTicketsAdminManager": true,
     "TribeTicketsURLs": true,
-	"tecTicketsCommerceData": true
+    "tecTicketsCommerceData": true
   }
 }

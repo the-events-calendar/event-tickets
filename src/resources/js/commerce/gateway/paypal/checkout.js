@@ -458,6 +458,14 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		}
 
 		/**
+		 * If PayPal is loaded already then setup PayPal buttons.
+		 */
+		if ( typeof paypal !== 'undefined' ) {
+			obj.setupButtons( {}, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
+			return;
+		}
+
+		/**
 		 * Setup PayPal buttons when everything is loaded.
 		 */
 		window.onload = ( event ) => {
