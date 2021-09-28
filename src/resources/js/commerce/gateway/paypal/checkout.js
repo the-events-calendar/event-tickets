@@ -451,6 +451,13 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 		if ( ! $script.length ) {
 			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
+		}
+
+		/**
+		 * If PayPal is loaded already then setup PayPal buttons.
+		 */
+		if ( typeof paypal !== 'undefined' ) {
+			obj.setupButtons( {}, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
 			return;
 		}
 
