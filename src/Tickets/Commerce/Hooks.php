@@ -53,6 +53,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_action( 'init', [ $this, 'register_order_statuses' ], 11 );
 
 		add_action( 'init', [ $this, 'register_order_reports' ] );
+		add_action( 'init', [ $this, 'register_attendee_reports' ] );
 
 		add_action( 'tribe_common_loaded', [ $this, 'load_commerce_module' ] );
 
@@ -153,6 +154,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function register_order_statuses() {
 		$this->container->make( Status\Status_Handler::class )->register_order_statuses();
+	}
+
+	public function register_attendee_reports() {
+		$this->container->make( Reports\Attendees::class )->hook();
 	}
 
 	/**

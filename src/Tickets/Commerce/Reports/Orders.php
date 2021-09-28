@@ -232,8 +232,8 @@ class Orders extends Report_Abstract {
 			[ $this, 'render_page' ]
 		);
 
-		/** @var \Tribe__Tickets__Attendees $attendees */
-		$attendees = tribe( 'tickets.attendees' );
+		/** @var Commerce\Admin_Tables\Attendees $attendees */
+		$attendees = tribe( Commerce\Admin_Tables\Attendees::class );
 
 		add_filter( 'tribe_filter_attendee_page_slug', [ $this, 'add_attendee_resources_page_slug' ] );
 		add_action( 'admin_enqueue_scripts', [ $attendees, 'enqueue_assets' ] );
