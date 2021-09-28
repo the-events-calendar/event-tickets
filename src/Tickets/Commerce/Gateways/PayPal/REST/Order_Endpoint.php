@@ -402,7 +402,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	 *
 	 * @since TBD
 	 *
-	 * @return array Collection of error messages.
+	 * @return array $messages Array of error messages.
 	 */
 	public function get_error_messages() {
 		$messages = [

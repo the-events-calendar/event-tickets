@@ -100,8 +100,12 @@ tribe.tickets.commerce = {};
 		const $content = $notice.find( obj.selectors.noticeContent );
 		const $title = $notice.find( obj.selectors.noticeTitle );
 
-		const title = data.title ?? tecTicketsCommerceData.default_notice.title;
-		const message = data.message ?? tecTicketsCommerceData.default_notice.content;
+		if ( ! $notice.length || ! $content.length || ! $title.length ) {
+			return;
+		}
+
+		const title = data.title ? data.title : tecTicketsCommerceData.default_notice.title;
+		const message = data.message ? data.message : tecTicketsCommerceData.default_notice.content;
 
 		$title.text( title );
 		$content.text( message );
