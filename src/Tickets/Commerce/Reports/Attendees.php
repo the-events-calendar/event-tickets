@@ -220,7 +220,7 @@ class Attendees extends Report_Abstract {
 
 	public function can_export_attendees( $event_id ) {
 
-		if ( self::$page_slug !== \tribe_get_request_var( 'page' ) ) {
+		if ( static::$page_slug !== tribe_get_request_var( 'page' ) ) {
 			return false;
 		}
 
