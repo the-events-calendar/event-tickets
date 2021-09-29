@@ -156,6 +156,11 @@ class Hooks extends tad_DI52_ServiceProvider {
 		$this->container->make( Status\Status_Handler::class )->register_order_statuses();
 	}
 
+	/**
+	 * Register the Attendees Report
+	 *
+	 * @since TBD
+	 */
 	public function register_attendee_reports() {
 		$this->container->make( Reports\Attendees::class )->hook();
 	}

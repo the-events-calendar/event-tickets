@@ -1,4 +1,9 @@
 <?php
+/**
+ * Attendees Report
+ *
+ * @package TEC\Tickets
+ */
 
 namespace TEC\Tickets\Commerce\Reports;
 
@@ -7,6 +12,11 @@ use TEC\Tickets\Commerce\Admin_Tables;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Utils\Price;
 
+/**
+ * Class Reports for Attendees
+ *
+ * @since TBD
+ */
 class Attendees extends Report_Abstract {
 
 	/**
@@ -30,13 +40,13 @@ class Attendees extends Report_Abstract {
 	/**
 	 * Gets the Orders Report.
 	 *
-	 * @return string
 	 * @since TBD
-	 *
+	 * @return string
 	 */
 	public function get_title() {
 		$post_id = tribe_get_request_var( 'event_id' );
 
+		// translators: The title of an event's Attendee List page in the dashboard. %1$s is the name of the event. %2$d is numeric the event ID.
 		return \sprintf( __( 'Attendees for: %1$s [#%2$d]', 'event-tickets' ), esc_html( \get_the_title( $post_id ) ), (int) $post_id );
 	}
 
@@ -46,7 +56,7 @@ class Attendees extends Report_Abstract {
 	 * @since TBD
 	 */
 	public function hook() {
-		//	add_filter( 'post_row_actions', [ $this, 'add_orders_row_action' ], 10, 2 );
+		// add_filter( 'post_row_actions', [ $this, 'add_orders_row_action' ], 10, 2 );
 		add_action( 'admin_menu', [ $this, 'register_attendees_page' ] );
 	}
 
@@ -58,8 +68,9 @@ class Attendees extends Report_Abstract {
 	public function register_attendees_page() {
 		$candidate_post_id = tribe_get_request_var( 'post_id', 0 );
 		$candidate_post_id = tribe_get_request_var( 'event_id', $candidate_post_id );
+		$post_id           = absint( $candidate_post_id );
 
-		if ( ( $post_id = absint( $candidate_post_id ) ) != $candidate_post_id ) {
+		if ( $post_id !== (int) $candidate_post_id ) {
 			return;
 		}
 
@@ -94,16 +105,17 @@ class Attendees extends Report_Abstract {
 	 * Sets the browser title for the Attendees admin page.
 	 * Uses the event title.
 	 *
-	 * @param $admin_title
+	 * @since TBD
+	 *
+	 * @param string $admin_title The page title in the admin.
 	 *
 	 * @return string
-	 * @since 4.6.2
-	 *
 	 */
 	public function filter_admin_title( $admin_title ) {
-		if ( ! empty( $_GET['event_id'] ) ) {
-			$event       = get_post( $_GET['event_id'] );
-			$admin_title = sprintf( __( '%s - Attendee list', 'event-tickets' ), $event->post_title );
+		if ( ! empty( (int) $_GET['event_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$event = get_post( (int) $_GET['event_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			// translators: The title of an event's Attendee List page in the dashboard. %1$s is the name of the event.
+			$admin_title = sprintf( __( '%1$s - Attendee list', 'event-tickets' ), $event->post_title );
 		}
 
 		return $admin_title;
@@ -112,11 +124,11 @@ class Attendees extends Report_Abstract {
 	/**
 	 * Filter the page slugs that the attendee resources will load to add the order page
 	 *
-	 * @param $slugs
-	 *
-	 * @return array
 	 * @since TBD
 	 *
+	 * @param array $slugs an array of admin slugs.
+	 *
+	 * @return array
 	 */
 	public function add_attendee_resources_page_slug( $slugs ) {
 		$slugs[] = $this->attendees_page;
@@ -163,15 +175,21 @@ class Attendees extends Report_Abstract {
 
 		if ( false !== $ticket_ids ) {
 			$ticket_ids = array_map( 'absint', explode( ',', $ticket_ids ) );
-			$ticket_ids = array_filter( $ticket_ids, static function ( $ticket_id ) {
-				return get_post_type( $ticket_id ) === Commerce\Ticket::POSTTYPE;
-			} );
+			$ticket_ids = array_filter(
+				$ticket_ids,
+				static function ( $ticket_id ) {
+					return get_post_type( $ticket_id ) === Commerce\Ticket::POSTTYPE;
+				}
+			);
 			$tickets    = array_map( [ tribe( Commerce\Ticket::class ), 'get_ticket' ], $ticket_ids );
 		}
 
-		$tickets = array_filter( $tickets, static function ( $ticket ) {
-			return Module::class === $ticket->provider_class;
-		} );
+		$tickets = array_filter(
+			$tickets,
+			static function ( $ticket ) {
+				return Module::class === $ticket->provider_class;
+			}
+		);
 
 		$event_data   = [];
 		$tickets_data = [];
@@ -187,7 +205,8 @@ class Attendees extends Report_Abstract {
 					$event_data['total_by_status'][ $status_slug ] = [];
 				}
 
-				$event_data['total_by_status'][ $status_slug ][] = $total_by_status[ $status_slug ] = Price::sub_total( $ticket->price, $status_count );
+				$total_by_status[ $status_slug ]                 = Price::sub_total( $ticket->price, $status_count );
+				$event_data['total_by_status'][ $status_slug ][] = $total_by_status[ $status_slug ];
 
 				$event_data['qty_by_status'][ $status_slug ] += (int) $status_count;
 			}
@@ -197,9 +216,12 @@ class Attendees extends Report_Abstract {
 			];
 		}
 
-		$event_data['total_by_status'] = array_map( static function ( $sub_totals ) {
-			return Price::total( $sub_totals );
-		}, $event_data['total_by_status'] );
+		$event_data['total_by_status'] = array_map(
+			static function ( $sub_totals ) {
+				return Price::total( $sub_totals );
+			},
+			$event_data['total_by_status']
+		);
 
 		$this->template_vars = [
 			'title'               => $this->get_title(),
@@ -218,9 +240,16 @@ class Attendees extends Report_Abstract {
 		return $this->template_vars;
 	}
 
+	/**
+	 * Determines if the "export" button will be displayed by the the title
+	 *
+	 * @param int $event_id The event whose attendees may be exported.
+	 *
+	 * @return bool
+	 */
 	public function can_export_attendees( $event_id ) {
 
-		if ( static::$page_slug !== tribe_get_request_var( 'page' ) ) {
+		if ( tribe_get_request_var( 'page' ) !== static::$page_slug ) {
 			return false;
 		}
 
@@ -239,17 +268,17 @@ class Attendees extends Report_Abstract {
 	 * Determines if the current user (or an ID-specified one) is allowed to delete, check-in, and
 	 * undo check-in attendees.
 	 *
-	 * @param int $user_id Optional. The ID of the user whose access we're checking.
+	 * @param int    $user_id  Optional. The ID of the user whose access we're checking.
+	 * @param string $event_id Optional. The ID of the event the user is managing.
 	 *
 	 * @return boolean
-	 * @since 4.6.3
-	 *
+	 * @since TBD
 	 */
 	public function user_can_manage_attendees( $user_id = 0, $event_id = '' ) {
 		$user_id  = 0 === $user_id ? get_current_user_id() : $user_id;
 		$user_can = true;
 
-		// bail quickly here as we don't have a user to check
+		// bail quickly here as we don't have a user to check.
 		if ( empty( $user_id ) ) {
 			return false;
 		}
@@ -257,21 +286,25 @@ class Attendees extends Report_Abstract {
 		/**
 		 * Allows customizing the caps a user must have to be allowed to manage attendees.
 		 *
-		 * @param array $default_caps The caps a user must have to be allowed to manage attendees.
+		 * @since TBD
+		 *
 		 * @param int   $user_id      The ID of the user whose capabilities are being checked.
 		 *
-		 * @since 4.6.3
-		 *
+		 * @param array $default_caps The caps a user must have to be allowed to manage attendees.
 		 */
-		$required_caps = apply_filters( 'tribe_tickets_caps_can_manage_attendees', array(
-			'edit_others_posts',
-		), $user_id );
+		$required_caps = apply_filters(
+			'tribe_tickets_caps_can_manage_attendees',
+			[
+				'edit_others_posts',
+			],
+			$user_id
+		);
 
 		// Next make sure the user has proper caps in their role.
 		foreach ( $required_caps as $cap ) {
 			if ( ! user_can( $user_id, $cap ) ) {
 				$user_can = false;
-				// break on first fail
+				// break on first fail.
 				break;
 			}
 		}
@@ -283,8 +316,7 @@ class Attendees extends Report_Abstract {
 		 * @param int  $user_id  id of the user we're checking
 		 * @param int  $event_id id of the event we're checking (matter for checks on event authorship)
 		 *
-		 * @since 4.10.1
-		 *
+		 * @since TBD
 		 */
 		$user_can = apply_filters( 'tribe_tickets_user_can_manage_attendees', $user_can, $user_id, $event_id );
 

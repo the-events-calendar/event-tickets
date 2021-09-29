@@ -1,18 +1,34 @@
 <?php
+/**
+ * Attendees Table
+ *
+ * @package TEC\Tickets
+ */
 
 namespace TEC\Tickets\Commerce\Admin_Tables;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once( ABSPATH . 'wp-admin/includes/screen.php' );
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+	require_once ABSPATH . 'wp-admin/includes/screen.php';
+	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
 use WP_List_Table;
 
+/**
+ * Class Admin Tables for Attendees
+ */
 class Attendees extends WP_List_Table {
 
+	/**
+	 * Legacy Attendees Table Controller
+	 *
+	 * @var \Tribe__Tickets__Attendees_Table
+	 */
 	private $legacy_attendees_table;
 
+	/**
+	 *  Documented in WP_List_Table
+	 */
 	public function __construct() {
 		$args = [
 			'singular' => 'attendee',
@@ -28,11 +44,11 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Enqueues the JS and CSS for the attendees page in the admin
 	 *
-	 * @since 4.6.2
+	 * @since TBD
 	 *
-	 * @todo this needs to use tribe_assets()
+	 * @param string $hook The current admin page.
 	 *
-	 * @param $hook
+	 * @todo  this needs to use tribe_assets()
 	 */
 	public function enqueue_assets( $hook ) {
 		/**
@@ -40,15 +56,15 @@ class Attendees extends WP_List_Table {
 		 *
 		 * @param array array( $this->page_id ) an array of admin slugs
 		 */
-		if ( ! in_array( $hook, apply_filters( 'tribe_filter_attendee_page_slug', array( $this->page_id ) ) ) ) {
+		if ( ! in_array( $hook, apply_filters( 'tribe_filter_attendee_page_slug', [ $this->page_id ] ) ) ) {
 			return;
 		}
 
 		$resources_url = plugins_url( 'src/resources', dirname( dirname( __FILE__ ) ) );
 
-		wp_enqueue_style( 'tickets-report-css', $resources_url . '/css/tickets-report.css', array(), \Tribe__Tickets__Main::instance()->css_version() );
-		wp_enqueue_style( 'tickets-report-print-css', $resources_url . '/css/tickets-report-print.css', array(), \Tribe__Tickets__Main::instance()->css_version(), 'print' );
-		wp_enqueue_script( $this->slug() . '-js', $resources_url . '/js/tickets-attendees.js', array( 'jquery' ), \Tribe__Tickets__Main::instance()->js_version() );
+		wp_enqueue_style( 'tickets-report-css', $resources_url . '/css/tickets-report.css', [], \Tribe__Tickets__Main::instance()->css_version() );
+		wp_enqueue_style( 'tickets-report-print-css', $resources_url . '/css/tickets-report-print.css', [], \Tribe__Tickets__Main::instance()->css_version(), 'print' );
+		wp_enqueue_script( $this->slug() . '-js', $resources_url . '/js/tickets-attendees.js', [ 'jquery' ], \Tribe__Tickets__Main::instance()->js_version(), true );
 
 		add_thickbox();
 
@@ -74,7 +90,7 @@ class Attendees extends WP_List_Table {
 		/**
 		 * Allow filtering the configuration data for the Attendee objects on Attendees report page.
 		 *
-		 * @since 5.0.4
+		 * @since TBD
 		 *
 		 * @param array $config_data List of configuration data to be localized.
 		 */
@@ -86,27 +102,30 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Loads the WP-Pointer for the Attendees screen
 	 *
-	 * @since 4.6.2
+	 * @since TBD
 	 *
-	 * @param $hook
+	 * @param string $hook The current admin page.
 	 */
 	public function load_pointers( $hook ) {
 		if ( $hook != $this->page_id ) {
-		//	return;
+			// return;
 		}
 
 		$dismissed = explode( ',', (string) get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) );
 		$pointer   = [];
 
 		if ( version_compare( get_bloginfo( 'version' ), '3.3', '>' ) && ! in_array( 'attendees_filters', $dismissed ) ) {
-			$pointer = array(
+			$pointer = [
 				'pointer_id' => 'attendees_filters',
 				'target'     => '#screen-options-link-wrap',
-				'options'    => array(
-					'content' => sprintf( '<h3> %s </h3> <p> %s </p>', esc_html__( 'Columns', 'event-tickets' ), esc_html__( 'You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export.', 'event-tickets' ) ),
-					'position' => array( 'edge' => 'top', 'align' => 'right' ),
-				),
-			);
+				'options'    => [
+					'content'  => sprintf( '<h3> %s </h3> <p> %s </p>', esc_html__( 'Columns', 'event-tickets' ), esc_html__( 'You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export.', 'event-tickets' ) ),
+					'position' => [
+						'edge'  => 'top',
+						'align' => 'right',
+					],
+				],
+			];
 			wp_enqueue_script( 'wp-pointer' );
 			wp_enqueue_style( 'wp-pointer' );
 		}
@@ -117,9 +136,8 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Returns the  list of columns.
 	 *
-	 * @return array An associative array in the format [ <slug> => <title> ]
 	 * @since TBD
-	 *
+	 * @return array An associative array in the format [ <slug> => <title> ]
 	 */
 	public function get_columns() {
 		$columns = [
@@ -166,10 +184,12 @@ class Attendees extends WP_List_Table {
 
 		$this->items = $orders_repository->all();
 
-		$this->set_pagination_args( [
-			'total_items' => $total_items,
-			'per_page'    => $this->per_page_option,
-		] );
+		$this->set_pagination_args(
+			[
+				'total_items' => $total_items,
+				'per_page'    => $this->per_page_option,
+			]
+		);
 	}
 
 	/**
@@ -177,7 +197,7 @@ class Attendees extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_Post $item The current item
+	 * @param WP_Post $item The current item.
 	 */
 	public function single_row( $item ) {
 		echo '<tr class="' . esc_attr( $item->post_status ) . '">';
@@ -185,32 +205,70 @@ class Attendees extends WP_List_Table {
 		echo '</tr>';
 	}
 
-	public function column_ticket( $item ) {
-		return esc_html( $item->primary_info['full_name'] );
-	}
 	/**
-	 * Returns the customer name.
+	 * Content for the ticket column
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_Post $item The current item.
+	 * @param array $item the array of row information.
+	 *
+	 * @return string
+	 */
+	public function column_ticket( $item ) {
+		return esc_html( $item->primary_info['full_name'] );
+	}
+
+	/**
+	 * Content for the primary info column
+	 *
+	 * @since TBD
+	 *
+	 * @param array $item the array of row information.
 	 *
 	 * @return string
 	 */
 	public function column_primary_info( $item ) {
-		$item->purchaser_name = $item->purchaser['full_name'];
+		$item->purchaser_name  = $item->purchaser['full_name'];
 		$item->purchaser_email = $item->purchaser['email'];
+
 		return $this->legacy_attendees_table->column_primary_info( (array) $item );
 	}
 
+	/**
+	 * Content for the security code column
+	 *
+	 * @since TBD
+	 *
+	 * @param array $item the array of row information.
+	 *
+	 * @return string
+	 */
 	public function column_security_code( $item ) {
 		return $this->legacy_attendees_table->column_default( (array) $item, 'security' );
 	}
 
+	/**
+	 * Content for the status column
+	 *
+	 * @since TBD
+	 *
+	 * @param array $item the array of row information.
+	 *
+	 * @return string
+	 */
 	public function column_status( $item ) {
 		return $this->legacy_attendees_table->column_status( (array) $item );
 	}
 
+	/**
+	 * Content for the check in column
+	 *
+	 * @since TBD
+	 *
+	 * @param array $item the array of row information.
+	 *
+	 * @return false|string
+	 */
 	public function column_check_in( $item ) {
 		return $this->legacy_attendees_table->column_check_in( (array) $item );
 	}

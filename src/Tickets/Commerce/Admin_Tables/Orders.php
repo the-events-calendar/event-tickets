@@ -52,7 +52,7 @@ class Orders extends WP_List_Table {
 		parent::__construct( $args );
 	}
 
-	/*
+	/**
 	 * Overrides the list of CSS classes for the WP_List_Table table tag.
 	 * This function is not hookable in core, so it needs to be overridden!
 	 *
