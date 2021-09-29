@@ -9,7 +9,7 @@ use WP_Error;
 /**
  * Class Handler
  *
- * @since   TBD
+ * @since   5.1.10
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\Webhooks
  */
@@ -18,7 +18,7 @@ class Handler {
 	/**
 	 * Gets the parent payment link from the list of Links on the response.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param array $links
 	 *
@@ -33,7 +33,7 @@ class Handler {
 	/**
 	 * Process a given PayPal Webhook event, possibly updating the local order with the status sent by the request.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param array $event The PayPal payment event object.
 	 *

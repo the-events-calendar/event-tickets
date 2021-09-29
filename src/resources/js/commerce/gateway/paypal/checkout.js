@@ -225,16 +225,20 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		 * @todo On approval we receive a bit more than just the orderID on the data object
 		 *       we should be passing those to the BE.
 		 */
+
+		const body = {
+			'payer_id' : data.payerID ?? '',
+		};
+
 		return fetch(
 			obj.orderEndpointUrl + '/' + data.orderID,
 			{
 				method: 'POST',
 				headers: {
 					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+					'Content-Type': 'application/json',
 				},
-				body: {
-					'payer_id': data.payerID ?? '',
-				}
+				body: JSON.stringify( body ),
 			}
 		)
 			.then( response => response.json() )
@@ -415,7 +419,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Handle actions when checkout buttons are loaded.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 */
 	obj.buttonsLoaded = function () {
 		$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
@@ -425,7 +429,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Setup the triggers for Ticket Commerce loader view.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @return {void}
 	 */
@@ -439,7 +443,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Bind script loader to trigger script dependent methods.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 */
 	obj.bindScriptLoader = function() {
 
@@ -447,6 +451,13 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 		if ( ! $script.length ) {
 			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
+		}
+
+		/**
+		 * If PayPal is loaded already then setup PayPal buttons.
+		 */
+		if ( typeof paypal !== 'undefined' ) {
+			obj.setupButtons( {}, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
 			return;
 		}
 

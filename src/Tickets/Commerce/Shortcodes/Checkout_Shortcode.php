@@ -88,7 +88,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Get the number of active gateways.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @return int The number of active gateways.
 	 */
