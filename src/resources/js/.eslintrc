@@ -8,7 +8,8 @@
     "es6": true
   },
   "rules": {
-    "es5/no-block-scoping": 0
+    "es5/no-block-scoping": 0,
+    "es5/no-default-parameters": 0
   },
   "globals": {
     "ajaxurl": true,
