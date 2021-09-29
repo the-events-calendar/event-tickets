@@ -25,7 +25,7 @@ class Notice_Handler {
 	 *
 	 * @param string $slug    Slug to store the notice.
 	 * @param string $message Content to display as notice.
-	 * @param string $type    Type of notice; Supported types: error | info | warning.
+	 * @param string $type    Type of notice; Supported types: success | error | info | warning.
 	 */
 	public function admin_notice( $slug, $message, $type = 'error' ) {
 
