@@ -33,7 +33,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Ticket Commerce custom Events.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 */
 	obj.customEvents = {
 		showLoader : 'showLoader.tecTicketsCommerce',
@@ -62,7 +62,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Show the loader/spinner.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 */
 	obj.loaderShow = function() {
 		tribe.tickets.loader.show( $( obj.selectors.checkoutContainer ) );
@@ -71,7 +71,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Hide the loader/spinner.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 */
 	obj.loaderHide = function() {
 		tribe.tickets.loader.hide( $( obj.selectors.checkoutContainer ) );
@@ -80,7 +80,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Bind loader events.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 */
 	obj.bindLoaderEvents = function () {
 		$document.on( obj.customEvents.showLoader, obj.loaderShow );

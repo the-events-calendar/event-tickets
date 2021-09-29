@@ -46,7 +46,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	 * Marks a given order with all the flags for this given status update.
 	 * The value of those markers is the time where the update happened.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param Status_Interface      $new_status
 	 * @param null|Status_Interface $old_status
@@ -70,7 +70,7 @@ abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 		/**
 		 * Allows the modifications of which flags will trigger this Action.
 		 *
-		 * @since TBD
+		 * @since 5.1.10
 		 *
 		 * @param string[] $flags       Which flags will trigger this action.
 		 * @param \WP_Post $post        Post object.

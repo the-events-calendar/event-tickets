@@ -126,7 +126,7 @@ class Success {
 	/**
 	 * Maybe add a post display state for special Tickets Commerce Success Page in the page list table.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param array   $post_states An array of post display states.
 	 * @param WP_Post $post        The current post object.

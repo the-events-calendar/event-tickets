@@ -421,7 +421,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Handle actions when checkout buttons are loaded.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 */
 	obj.buttonsLoaded = function () {
 		$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
@@ -431,7 +431,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Setup the triggers for Ticket Commerce loader view.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @return {void}
 	 */
@@ -445,7 +445,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Bind script loader to trigger script dependent methods.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 */
 	obj.bindScriptLoader = function() {
 
