@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Status as Commerce_Status;
 /**
  * Class Events
  *
- * @since   TBD
+ * @since   5.1.10
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\Webhooks
  */
@@ -15,7 +15,7 @@ class Events {
 	/**
 	 * Webhook Event name for a capture of completed payment.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @var string
 	 */
@@ -24,7 +24,7 @@ class Events {
 	/**
 	 * Webhook Event name for a capture of denied payment.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ class Events {
 	/**
 	 * Webhook Event name for a capture of refunded payment.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ class Events {
 	/**
 	 * Webhook Event name for a capture of reversed payment.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ class Events {
 	/**
 	 * Default mapping from PayPal Status to Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @var array
 	 */
@@ -65,7 +65,7 @@ class Events {
 	/**
 	 * Gets the valid mapping of the webhook events.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @return array
 	 */
@@ -73,7 +73,7 @@ class Events {
 		/**
 		 * Allows filtering of the Webhook map of events for each one of the types we listen for.
 		 *
-		 * @since TBD
+		 * @since 5.1.10
 		 *
 		 * @param array $map The default map of which event types that translate to a given Status class.
 		 */
@@ -83,7 +83,7 @@ class Events {
 	/**
 	 * Returns of a list of the Webhook events we are listening to.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @return string[]
 	 */
@@ -94,7 +94,7 @@ class Events {
 	/**
 	 * Checks if a given PayPal webhook event name is valid.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param string $event_name A PayPal Event String.
 	 *
@@ -109,7 +109,7 @@ class Events {
 	/**
 	 * Converts a valid PayPal webhook event name into a commerce status object.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param string $event_name A PayPal Event String.
 	 *

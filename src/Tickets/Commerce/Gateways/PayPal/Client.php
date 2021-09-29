@@ -112,7 +112,7 @@ class Client {
 	/**
 	 * Send a given method request to a given URL in the PayPal API.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param string $method
 	 * @param string $url
@@ -247,7 +247,7 @@ class Client {
 	/**
 	 * Send a PATCH request to the PayPal API.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param string $endpoint
 	 * @param array  $query_args
@@ -263,7 +263,7 @@ class Client {
 	/**
 	 * Send a DELETE request to the PayPal API.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param string $endpoint
 	 * @param array  $query_args
@@ -469,7 +469,7 @@ class Client {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @since TBD Added support for passing `payerID` param for PayPal API.
+	 * @since 5.1.10 Added support for passing `payerID` param for PayPal API.
 	 *
 	 * @param string $order_id Order ID to capture.
 	 * @param string $payer_id Payer ID for given order from PayPal.
@@ -544,7 +544,7 @@ class Client {
 	/**
 	 * This uses the links property of the payment to retrieve the Parent Payment ID from PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param string $payment The payment event object.
 	 *
@@ -577,7 +577,7 @@ class Client {
 	 *
 	 * @link  https://developer.paypal.com/docs/api/webhooks/v1/#verify-webhook-signature_post
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param string $webhook_id Which webhook id we have currently stored on the database.
 	 * @param array  $event      The Event received by the endpoint from PayPal.
@@ -614,7 +614,7 @@ class Client {
 	 * Get the list of webhooks.
 	 *
 	 * @see   https://developer.paypal.com/docs/api/webhooks/v1/#webhooks_list
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @return array[] The list of PayPal webhooks.
 	 */
@@ -644,7 +644,7 @@ class Client {
 	 * Get the webhook data from a specific webhook ID.
 	 *
 	 * @see   https://developer.paypal.com/docs/api/webhooks/v1/#webhooks_get
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param string $webhook_id The webhook ID.
 	 *
@@ -687,7 +687,7 @@ class Client {
 	 * Creates a webhook with the given event types registered.
 	 *
 	 * @see   https://developer.paypal.com/docs/api/webhooks/v1/#webhooks_post
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @return array|\WP_Error
 	 */
@@ -743,7 +743,7 @@ class Client {
 	/**
 	 * Updates the webhook url and events
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param string $webhook_id
 	 *
@@ -804,7 +804,7 @@ class Client {
 	/**
 	 * Deletes the webhook with the given id.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param string $webhook_id
 	 *
