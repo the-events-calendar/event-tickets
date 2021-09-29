@@ -85,7 +85,7 @@ tribe.tickets.commerce = {};
 	obj.bindLoaderEvents = function () {
 		$document.on( obj.customEvents.showLoader, obj.loaderShow );
 		$document.on( obj.customEvents.hideLoader, obj.loaderHide );
-	}
+	};
 
 	/**
 	 * Display the notice component.
@@ -109,7 +109,7 @@ tribe.tickets.commerce = {};
 		$title.text( title );
 		$content.text( message );
 		$notice.show();
-	}
+	};
 
 	/**
 	 * Hide the notice component.
@@ -120,7 +120,7 @@ tribe.tickets.commerce = {};
 		const $notice = $( obj.selectors.noticeItem );
 
 		$notice.hide();
-	}
+	};
 
 	/**
 	 * Toggle the checkout item description visibility.
