@@ -46,7 +46,7 @@ class Buttons {
 	/**
 	 * Get the checkout script tag for PayPal buttons.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @return string
 	 */

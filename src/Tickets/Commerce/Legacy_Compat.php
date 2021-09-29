@@ -33,7 +33,7 @@ class Legacy_Compat extends tad_DI52_ServiceProvider {
 	/**
 	 * Adds the actions required to handle legacy compatibility.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 */
 	protected function add_actions() {
 
@@ -42,7 +42,7 @@ class Legacy_Compat extends tad_DI52_ServiceProvider {
 	/**
 	 * Adds the filters required to handle legacy compatibility.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_events_tickets_module_name', [ $this, 'set_legacy_module_name' ] );
@@ -54,7 +54,7 @@ class Legacy_Compat extends tad_DI52_ServiceProvider {
 	/**
 	 * Show the legacy PayPal as not recommended.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param $name string Name of the provider.
 	 *

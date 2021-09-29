@@ -2,9 +2,9 @@
 /**
  * The Template for displaying the Tickets Commerce PayPal Settings, the PayPal logo specifically.
  *
- * @version TBD
+ * @version 5.1.10
  *
- * @since TBD
+ * @since 5.1.10
  *
  * @var Tribe__Tickets__Admin__Views                  $this               [Global] Template object.
  * @var string                                        $plugin_url         [Global] The plugin URL.
