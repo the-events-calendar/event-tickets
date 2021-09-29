@@ -1,4 +1,3 @@
-/* global tribe */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -19,7 +18,7 @@ tribe.tickets.admin = tribe.tickets.admin || {};
 tribe.tickets.admin.manager = {};
 
 /**
- * Initializes in a Strict env the code that manages the Event Views
+ * Initializes in a Strict env the code that manages the Tickets Manager
  *
  * @since 5.1.0
  *

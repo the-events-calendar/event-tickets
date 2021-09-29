@@ -385,7 +385,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$default_actions = [];
 		$provider        = ! empty( $item['provider'] ) ? $item['provider'] : null;
-		$not_going       = empty( $item['order_status'] ) || $item['order_status'] === 'no';
+		$not_going       = empty( $item['order_status'] ) || $item['order_status'] === 'no' || 'cancelled' === $item['order_status'] || 'refunded' === $item['order_status'];
 
 		if ( is_object( $this->event ) && isset( $this->event->ID ) && ! $not_going ) {
 			$default_actions[] = sprintf(
@@ -551,13 +551,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return;
 		}
 
-		$export_url = add_query_arg(
-			[
-				'attendees_csv'       => true,
-				'attendees_csv_nonce' => wp_create_nonce( 'attendees_csv_nonce' ),
-			]
-		);
-
 		/**
 		 * Include TB_iframe JS
 		 */
@@ -602,7 +595,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$nav = [
 			'left' => [
 				'print'  => sprintf( '<input type="button" name="print" class="print button action" value="%s">', esc_attr__( 'Print', 'event-tickets' ) ),
-				'export' => sprintf( '<a target="_blank" href="%s" class="export button action">%s</a>', esc_url( $export_url ), esc_html__( 'Export', 'event-tickets' ) ),
+				'export' => sprintf( '<a target="_blank" href="%s" class="export button action" rel="noopener noreferrer">%s</a>', esc_url( tribe( 'tickets.attendees' )->get_export_url() ), esc_html__( 'Export', 'event-tickets' ) ),
 			],
 			'right' => [],
 		];

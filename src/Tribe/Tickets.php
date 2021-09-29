@@ -674,7 +674,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return mixed
 		 */
 		public function delete_ticket( $post_id, $ticket_id ) {
+
+			/**
+			 * Trigger action when any attendee is deleted.
+			 *
+			 * @since 5.1.5
+			 *
+			 * @param int $post_id Post or Event ID.
+			 * @param int $ticket_id Attendee ID.
+			 */
+			do_action( 'event_tickets_attendee_ticket_deleted', $post_id, $ticket_id );
+
 			$this->clear_ticket_cache_for_post( $post_id );
+			$this->clear_attendees_cache( $post_id );
 		}
 
 		/**
@@ -872,7 +884,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array List of attendees.
 		 */
-		protected function get_attendees_by_order_id( $order_id ) {
+		public function get_attendees_by_order_id( $order_id ) {
 			$ticket_id = null;
 
 			// Support an optional second argument while not causing warnings from other ticket provider classes.
@@ -2380,7 +2392,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$headers[] = sprintf(
 					'From: %1$s <%2$s>',
-					filter_var( $from_name, FILTER_SANITIZE_STRING ),
+					stripcslashes( $from_name ),
 					$from_email
 				);
 
@@ -2682,7 +2694,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Filter past tickets from showing up in cost range.
 		 *
-		 * @since TBD
+		 * @since 5.1.5
 		 *
 		 * @param array  $costs List of ticket costs.
 		 * @param int    $post_id Target Event's ID.
@@ -2700,11 +2712,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allow filtering of whether to exclude past tickets in the event cost range.
 			 *
-			 * @since TBD
+			 * @since 5.1.4
 			 *
-			 * @param bool $exclude_past_tickets Whether to exclude past tickets in the event cost range.
+			 * @param bool  $exclude_past_tickets Whether to exclude past tickets in the event cost range.
+			 * @param array $costs                Which costs are going to be displayed.
+			 * @param int   $post_id              Which Event/Post we are dealign with.
 			 */
-			$exclude_past_tickets = apply_filters( 'event_tickets_exclude_past_tickets_from_cost_range', true );
+			$exclude_past_tickets = apply_filters( 'event_tickets_exclude_past_tickets_from_cost_range', false, $costs, $post_id );
 
 			if ( ! $exclude_past_tickets ) {
 				return $costs;
@@ -2723,8 +2737,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			foreach ( $tickets as $ticket ) {
 
 				$now        = Tribe__Date_Utils::build_date_object( 'now', $timezone );
-				$start_date = Tribe__Date_Utils::build_date_object( $ticket->start_date, $timezone );
-				$end_date   = Tribe__Date_Utils::build_date_object( $ticket->end_date, $timezone );
+				$start_date = Tribe__Date_Utils::build_date_object( $ticket->start_date . ' ' . $ticket->start_time, $timezone );
+				$end_date   = Tribe__Date_Utils::build_date_object( $ticket->end_date . ' ' . $ticket->end_time, $timezone );
 
 				// If the ticket has not yet become available for sale or has already ended.
 				if ( $now < $start_date || $end_date < $now ) {
@@ -3401,7 +3415,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param array       $raw_data
 		 * @param string      $save_type
 		 */
-		protected function update_capacity( $ticket, $data, $save_type ) {
+		public function update_capacity( $ticket, $data, $save_type ) {
 			if ( empty( $data ) ) {
 				return;
 			}
@@ -3573,7 +3587,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket                   = new Tribe__Tickets__Ticket_Object();
 			$ticket->ID               = isset( $data['ticket_id'] ) ? absint( $data['ticket_id'] ) : null;
 			$ticket->name             = isset( $data['ticket_name'] ) ? esc_html( $data['ticket_name'] ) : null;
-			$ticket->description      = isset( $data['ticket_description'] ) ? sanitize_textarea_field( $data['ticket_description'] ) : '';
+			$ticket->description      = isset( $data['ticket_description'] ) ? wp_kses_post( $data['ticket_description'] ) : '';
 			$ticket->price            = ! empty( $data['ticket_price'] ) ? filter_var( trim( $data['ticket_price'] ), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) : 0;
 			$ticket->show_description = isset( $data['ticket_show_description'] ) ? 'yes' : 'no';
 			$ticket->provider_class   = $this->class_name;
@@ -3945,7 +3959,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$url = $attendee_reg->get_url();
 
 			if ( ! empty( $q_provider ) ) {
-				$url = add_query_arg( 'provider', $q_provider, $url );
+				$provider_slug = tribe_tickets_get_provider_query_slug();
+				$url = add_query_arg( $provider_slug, $q_provider, $url );
 			}
 
 			if ( ! empty( $redirect ) ) {

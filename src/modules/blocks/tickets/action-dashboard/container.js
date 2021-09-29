@@ -21,7 +21,8 @@ import { selectors, constants } from '@moderntribe/tickets/data/blocks/ticket';
 const getHasRecurrenceRules = ( state ) => {
 	let hasRules = false;
 	try {
-		hasRules = window.tribe[ plugins.constants.EVENTS_PRO_PLUGIN ].data.blocks.recurring.selectors.hasRules( state );
+		hasRules = window.tribe[ plugins.constants.EVENTS_PRO_PLUGIN ]
+			.data.blocks.recurring.selectors.hasRules( state );
 	} catch ( e ) {
 		// ¯\_(ツ)_/¯
 	}
@@ -36,7 +37,6 @@ const mapStateToProps = ( state, ownProps ) => {
 		hasCreatedTickets: selectors.hasCreatedTickets( state ),
 		hasOrdersPage: Boolean( page ),
 		hasRecurrenceRules: getHasRecurrenceRules( state ),
-		hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
 		onConfirmClick: () => { // eslint-disable-line wpcalypso/redux-no-bound-selectors
 			const { clientId } = ownProps;
 			const { getBlockCount } = select( 'core/editor' );

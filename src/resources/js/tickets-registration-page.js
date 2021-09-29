@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-/* global TribeCartEndpoint, TribeCurrency */
 // For compatibility purposes we add this
 if ( 'undefined' === typeof window.tribe ) {
 	window.tribe = {};
@@ -246,7 +244,9 @@ window.tribe.tickets.registration = {};
 
 		$.each( tickets, function( index, ticket ) {
 			const ticketTemplate    = window.wp.template( 'tribe-registration--' + ticket.ticket_id );
-			const $ticketContainer  = $tribeRegistration.find( '.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticket.ticket_id + '"]' );
+			const $ticketContainer  = $tribeRegistration.find(
+				'.tribe-tickets__item__attendee__fields__container[data-ticket-id="' + ticket.ticket_id + '"]' // eslint-disable-line max-len
+			);
 			const counter           = 1;
 
 			if ( ! $ticketContainer.length ) {
@@ -307,7 +307,8 @@ window.tribe.tickets.registration = {};
 		}
 
 		$.each( meta, function( metaIndex, ticket ) {
-			const $currentContainers = $containers.filter( '[data-ticket-id="' + ticket.ticket_id + '"]' );
+			const $currentContainers = $containers
+				.filter( '[data-ticket-id="' + ticket.ticket_id + '"]' );
 
 			if ( ! $currentContainers.length ) {
 				return;
@@ -386,10 +387,10 @@ window.tribe.tickets.registration = {};
 
 		$qtys.each( function() {
 			const $qty = $( this );
-			const $price   = $qty.closest( obj.selector.item ).find( obj.selector.itemPrice ).first( 0 );
+			const $price = $qty.closest( obj.selector.item ).find( obj.selector.itemPrice ).first( 0 );
 			let quantity = parseInt( $qty.text(), 10 );
 			quantity = isNaN( quantity ) ? 0 : quantity;
-			const cost     = obj.cleanNumber( $price.text() ) * quantity;
+			const cost = obj.cleanNumber( $price.text() ) * quantity;
 			footerAmount += cost;
 		} );
 
@@ -551,9 +552,9 @@ window.tribe.tickets.registration = {};
 		// Validation for Tribe Horizontal Date Picker
 		if ( $input.hasClass( obj.selector.horizontal_datepicker.value.replace( /^\./, '' ) ) ) {
 			const wrapper = $input.closest( obj.selector.horizontal_datepicker.container );
-			const day = wrapper.find( obj.selector.horizontal_datepicker.day );
-			const month = wrapper.find( obj.selector.horizontal_datepicker.month );
-			const year = wrapper.find( obj.selector.horizontal_datepicker.year );
+			const day = wrapper.find( obj.selector.horizontal_datepicker.day ); // eslint-disable-line es5/no-es6-methods,max-len
+			const month = wrapper.find( obj.selector.horizontal_datepicker.month ); // eslint-disable-line es5/no-es6-methods,max-len
+			const year = wrapper.find( obj.selector.horizontal_datepicker.year ); // eslint-disable-line es5/no-es6-methods,max-len
 
 			[ day, month, year ].forEach( function( el ) {
 				// Check if given value is a positive number, even if it's a string
@@ -808,4 +809,3 @@ window.tribe.tickets.registration = {};
 
 	$( obj.init );
 } )( jQuery, window.tribe.tickets.registration );
-/* eslint-enable max-len */

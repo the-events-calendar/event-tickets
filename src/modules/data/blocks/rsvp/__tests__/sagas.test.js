@@ -7,10 +7,7 @@ import { noop } from 'lodash';
 /**
  * WordPress dependencies
  */
-import {
-	dispatch as wpDispatch,
-	select as wpSelect,
-} from '@wordpress/data';
+import { dispatch as wpDispatch } from '@wordpress/data';
 
 /**
  * Internal Dependencies
@@ -20,22 +17,25 @@ import * as actions from '../actions';
 import * as selectors from '../selectors';
 import watchers, * as sagas from '../sagas';
 import {
-	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE
+	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE,
 } from '../reducers/header-image';
 import * as ticketActions from '@moderntribe/tickets/data/blocks/ticket/actions';
 import {
-	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE
+	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE,
 } from '@moderntribe/tickets/data/blocks/ticket/reducers/header-image';
 import * as utils from '@moderntribe/tickets/data/utils';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import {
 	api,
-	globals,
 	moment as momentUtil,
 	time as timeUtil,
 } from '@moderntribe/common/utils';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
-import { isTribeEventPostType, createWPEditorSavingChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
+import {
+	isTribeEventPostType,
+	createWPEditorSavingChannel,
+	createDates,
+} from '@moderntribe/tickets/data/shared/sagas';
 
 function mock() {
 	return {
@@ -76,13 +76,13 @@ describe( 'RSVP block sagas', () => {
 					types.UPDATE_RSVP_HEADER_IMAGE,
 					types.DELETE_RSVP_HEADER_IMAGE,
 					MOVE_TICKET_SUCCESS,
-				], sagas.handler )
+				], sagas.handler ),
 			);
 			expect( gen.next().value ).toEqual(
-				fork( sagas.handleEventStartDateChanges )
+				fork( sagas.handleEventStartDateChanges ),
 			);
 			expect( gen.next().value ).toEqual(
-				fork( sagas.setNonEventPostTypeEndDate )
+				fork( sagas.setNonEventPostTypeEndDate ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -99,7 +99,7 @@ describe( 'RSVP block sagas', () => {
 			action.type = types.SET_RSVP_DETAILS;
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				call( sagas.setRSVPDetails, action )
+				call( sagas.setRSVPDetails, action ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -108,7 +108,7 @@ describe( 'RSVP block sagas', () => {
 			action.type = types.SET_RSVP_TEMP_DETAILS;
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				call( sagas.setRSVPTempDetails, action )
+				call( sagas.setRSVPTempDetails, action ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -117,7 +117,7 @@ describe( 'RSVP block sagas', () => {
 			action.type = types.INITIALIZE_RSVP;
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				call( sagas.initializeRSVP )
+				call( sagas.initializeRSVP ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -126,13 +126,13 @@ describe( 'RSVP block sagas', () => {
 			action.type = types.HANDLE_RSVP_START_DATE;
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				call( sagas.handleRSVPStartDate, action )
+				call( sagas.handleRSVPStartDate, action ),
 			);
 			expect( gen.next().value ).toEqual(
-				call( sagas.handleRSVPDurationError )
+				call( sagas.handleRSVPDurationError ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPHasChanges( true ) )
+				put( actions.setRSVPHasChanges( true ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -141,13 +141,13 @@ describe( 'RSVP block sagas', () => {
 			action.type = types.HANDLE_RSVP_END_DATE;
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				call( sagas.handleRSVPEndDate, action )
+				call( sagas.handleRSVPEndDate, action ),
 			);
 			expect( gen.next().value ).toEqual(
-				call( sagas.handleRSVPDurationError )
+				call( sagas.handleRSVPDurationError ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPHasChanges( true ) )
+				put( actions.setRSVPHasChanges( true ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -156,16 +156,16 @@ describe( 'RSVP block sagas', () => {
 			action.type = types.HANDLE_RSVP_START_TIME;
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				call( sagas.handleRSVPStartTime, action )
+				call( sagas.handleRSVPStartTime, action ),
 			);
 			expect( gen.next().value ).toEqual(
-				call( sagas.handleRSVPStartTimeInput, action )
+				call( sagas.handleRSVPStartTimeInput, action ),
 			);
 			expect( gen.next().value ).toEqual(
-				call( sagas.handleRSVPDurationError )
+				call( sagas.handleRSVPDurationError ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPHasChanges( true ) )
+				put( actions.setRSVPHasChanges( true ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -174,16 +174,16 @@ describe( 'RSVP block sagas', () => {
 			action.type = types.HANDLE_RSVP_END_TIME;
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				call( sagas.handleRSVPEndTime, action )
+				call( sagas.handleRSVPEndTime, action ),
 			);
 			expect( gen.next().value ).toEqual(
-				call( sagas.handleRSVPEndTimeInput, action )
+				call( sagas.handleRSVPEndTimeInput, action ),
 			);
 			expect( gen.next().value ).toEqual(
-				call( sagas.handleRSVPDurationError )
+				call( sagas.handleRSVPDurationError ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPHasChanges( true ) )
+				put( actions.setRSVPHasChanges( true ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -192,7 +192,7 @@ describe( 'RSVP block sagas', () => {
 			action.type = types.FETCH_RSVP_HEADER_IMAGE;
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				call( sagas.fetchRSVPHeaderImage, action )
+				call( sagas.fetchRSVPHeaderImage, action ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -201,7 +201,7 @@ describe( 'RSVP block sagas', () => {
 			action.type = types.UPDATE_RSVP_HEADER_IMAGE;
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				call( sagas.updateRSVPHeaderImage, action )
+				call( sagas.updateRSVPHeaderImage, action ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -210,7 +210,7 @@ describe( 'RSVP block sagas', () => {
 			action.type = types.DELETE_RSVP_HEADER_IMAGE;
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				call( sagas.deleteRSVPHeaderImage )
+				call( sagas.deleteRSVPHeaderImage ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -219,7 +219,7 @@ describe( 'RSVP block sagas', () => {
 			action.type = MOVE_TICKET_SUCCESS;
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				call( sagas.handleRSVPMove )
+				call( sagas.handleRSVPMove ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -264,7 +264,7 @@ describe( 'RSVP block sagas', () => {
 					put( actions.setRSVPEndTime( '23:32' ) ),
 					put( actions.setRSVPStartTimeInput( '12:34 pm' ) ),
 					put( actions.setRSVPEndTimeInput( '11:32 pm' ) ),
-				] )
+				] ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -309,7 +309,7 @@ describe( 'RSVP block sagas', () => {
 					put( actions.setRSVPTempEndTime( '23:32' ) ),
 					put( actions.setRSVPTempStartTimeInput( '12:34 pm' ) ),
 					put( actions.setRSVPTempEndTimeInput( '11:32 pm' ) ),
-				] )
+				] ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -367,13 +367,13 @@ describe( 'RSVP block sagas', () => {
 					put( actions.setRSVPTempStartDateMoment( state.startDate ) ),
 					put( actions.setRSVPTempStartTime( state.startTime ) ),
 					put( actions.setRSVPTempStartTimeInput( state.startTime ) ),
-				] )
+				] ),
 			);
 			expect( gen.next().value ).toEqual(
-				call( isTribeEventPostType )
+				call( isTribeEventPostType ),
 			);
 			expect( gen.next( true ).value ).toEqual(
-				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( state.endDate ).value ).toMatchSnapshot();
 			expect( gen.next( {
@@ -394,25 +394,19 @@ describe( 'RSVP block sagas', () => {
 					put( actions.setRSVPTempEndDateMoment( state.endDate ) ),
 					put( actions.setRSVPTempEndTime( state.endTime ) ),
 					put( actions.setRSVPTempEndTimeInput( state.endTime ) ),
-				] )
+				] ),
 			);
 			expect( gen.next().value ).toEqual(
-				call( sagas.handleRSVPDurationError )
+				call( sagas.handleRSVPDurationError ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
 
 	describe( 'syncRSVPSaleEndWithEventStart', () => {
-		let prevDate, state, momentMock;
+		let prevDate, momentMock;
 		beforeEach( () => {
 			prevDate = '2018-01-01 00:00:00';
-			state = {
-				startDate: 'January 1, 2018',
-				startTime: '12:34',
-				endDate: 'January 4, 2018',
-				endTime: '23:32',
-			};
 			global.tribe = {
 				events: {
 					data: {
@@ -440,13 +434,13 @@ describe( 'RSVP block sagas', () => {
 		it( 'should not sync', () => {
 			const gen = sagas.syncRSVPSaleEndWithEventStart( prevDate );
 			expect( gen.next().value ).toEqual(
-				select( selectors.getRSVPTempEndDateMoment )
+				select( selectors.getRSVPTempEndDateMoment ),
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
-				select( selectors.getRSVPEndDateMoment )
+				select( selectors.getRSVPEndDateMoment ),
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
-				call( createDates, prevDate )
+				call( createDates, prevDate ),
 			);
 			expect( gen.next( { moment: momentMock } ).value ).toMatchSnapshot();
 			expect( gen.next( false ).value ).toMatchSnapshot();
@@ -457,23 +451,23 @@ describe( 'RSVP block sagas', () => {
 		it( 'should sync', () => {
 			const gen = sagas.syncRSVPSaleEndWithEventStart( prevDate );
 			expect( gen.next().value ).toEqual(
-				select( selectors.getRSVPTempEndDateMoment )
+				select( selectors.getRSVPTempEndDateMoment ),
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
-				select( selectors.getRSVPEndDateMoment )
+				select( selectors.getRSVPEndDateMoment ),
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
-				call( createDates, prevDate )
+				call( createDates, prevDate ),
 			);
 			expect( gen.next( { moment: momentMock } ).value ).toMatchSnapshot();
 			expect( gen.next( true ).value ).toMatchSnapshot();
 			expect( gen.next( true ).value ).toMatchSnapshot();
 
 			expect( gen.next( true ).value ).toEqual(
-				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( '2018-02-02 02:00:00' ).value ).toEqual(
-				call( createDates, '2018-02-02 02:00:00' )
+				call( createDates, '2018-02-02 02:00:00' ),
 			);
 
 			expect( gen.next( {
@@ -485,7 +479,7 @@ describe( 'RSVP block sagas', () => {
 			} ).value ).toMatchSnapshot();
 
 			expect( gen.next().value ).toEqual(
-				fork( sagas.saveRSVPWithPostSave )
+				fork( sagas.saveRSVPWithPostSave ),
 			);
 		} );
 	} );
@@ -494,13 +488,13 @@ describe( 'RSVP block sagas', () => {
 		it( 'should set has duration error to true if start or end moment is invalid', () => {
 			const gen = sagas.handleRSVPDurationError();
 			expect( gen.next().value ).toEqual(
-				select( selectors.getRSVPTempStartDateMoment )
+				select( selectors.getRSVPTempStartDateMoment ),
 			);
 			expect( gen.next( undefined ).value ).toEqual(
-				select( selectors.getRSVPTempEndDateMoment )
+				select( selectors.getRSVPTempEndDateMoment ),
 			);
 			expect( gen.next( undefined ).value ).toEqual(
-				put( actions.setRSVPHasDurationError( true ) )
+				put( actions.setRSVPHasDurationError( true ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -520,39 +514,39 @@ describe( 'RSVP block sagas', () => {
 			const END_TIME_SECONDS = 46800;
 			const gen = sagas.handleRSVPDurationError();
 			expect( gen.next().value ).toEqual(
-				select( selectors.getRSVPTempStartDateMoment )
+				select( selectors.getRSVPTempStartDateMoment ),
 			);
 			expect( gen.next( START_DATE_MOMENT ).value ).toEqual(
-				select( selectors.getRSVPTempEndDateMoment )
+				select( selectors.getRSVPTempEndDateMoment ),
 			);
 			expect( gen.next( END_DATE_MOMENT ).value ).toEqual(
-				select( selectors.getRSVPTempStartTime )
+				select( selectors.getRSVPTempStartTime ),
 			);
 			expect( gen.next( START_TIME ).value ).toEqual(
-				select( selectors.getRSVPTempEndTime )
+				select( selectors.getRSVPTempEndTime ),
 			);
 			expect( gen.next( END_TIME ).value ).toEqual(
-				call( timeUtil.toSeconds, START_TIME, timeUtil.TIME_FORMAT_HH_MM_SS )
+				call( timeUtil.toSeconds, START_TIME, timeUtil.TIME_FORMAT_HH_MM_SS ),
 			);
 			expect( gen.next( START_TIME_SECONDS ).value ).toEqual(
-				call( timeUtil.toSeconds, END_TIME, timeUtil.TIME_FORMAT_HH_MM_SS )
+				call( timeUtil.toSeconds, END_TIME, timeUtil.TIME_FORMAT_HH_MM_SS ),
 			);
 			expect( gen.next( END_TIME_SECONDS ).value ).toEqual(
-				call( momentUtil.setTimeInSeconds, START_DATE_MOMENT.clone(), START_TIME_SECONDS )
+				call( momentUtil.setTimeInSeconds, START_DATE_MOMENT.clone(), START_TIME_SECONDS ),
 			);
 			expect( gen.next( START_DATE_MOMENT ).value ).toEqual(
-				call( momentUtil.setTimeInSeconds, END_DATE_MOMENT.clone(), END_TIME_SECONDS )
+				call( momentUtil.setTimeInSeconds, END_DATE_MOMENT.clone(), END_TIME_SECONDS ),
 			);
 			expect( gen.next( END_DATE_MOMENT ).value ).toEqual(
-				call( [ START_DATE_MOMENT, 'isSameOrAfter' ], END_DATE_MOMENT )
+				call( [ START_DATE_MOMENT, 'isSameOrAfter' ], END_DATE_MOMENT ),
 			);
 			expect( gen.next( true ).value ).toEqual(
-				put( actions.setRSVPHasDurationError( true ) )
+				put( actions.setRSVPHasDurationError( true ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
 
-		it( 'should set thas duration error to false if start date time is before end date time', () => {
+		it( 'should set thas duration error to false if start date time is before end date time', () => { // eslint-disable-line max-len
 			const START_DATE_MOMENT = {
 				clone: () => {},
 				isSameOrAfter: () => {},
@@ -567,34 +561,34 @@ describe( 'RSVP block sagas', () => {
 			const END_TIME_SECONDS = 46800;
 			const gen = sagas.handleRSVPDurationError();
 			expect( gen.next().value ).toEqual(
-				select( selectors.getRSVPTempStartDateMoment )
+				select( selectors.getRSVPTempStartDateMoment ),
 			);
 			expect( gen.next( START_DATE_MOMENT ).value ).toEqual(
-				select( selectors.getRSVPTempEndDateMoment )
+				select( selectors.getRSVPTempEndDateMoment ),
 			);
 			expect( gen.next( END_DATE_MOMENT ).value ).toEqual(
-				select( selectors.getRSVPTempStartTime )
+				select( selectors.getRSVPTempStartTime ),
 			);
 			expect( gen.next( START_TIME ).value ).toEqual(
-				select( selectors.getRSVPTempEndTime )
+				select( selectors.getRSVPTempEndTime ),
 			);
 			expect( gen.next( END_TIME ).value ).toEqual(
-				call( timeUtil.toSeconds, START_TIME, timeUtil.TIME_FORMAT_HH_MM_SS )
+				call( timeUtil.toSeconds, START_TIME, timeUtil.TIME_FORMAT_HH_MM_SS ),
 			);
 			expect( gen.next( START_TIME_SECONDS ).value ).toEqual(
-				call( timeUtil.toSeconds, END_TIME, timeUtil.TIME_FORMAT_HH_MM_SS )
+				call( timeUtil.toSeconds, END_TIME, timeUtil.TIME_FORMAT_HH_MM_SS ),
 			);
 			expect( gen.next( END_TIME_SECONDS ).value ).toEqual(
-				call( momentUtil.setTimeInSeconds, START_DATE_MOMENT.clone(), START_TIME_SECONDS )
+				call( momentUtil.setTimeInSeconds, START_DATE_MOMENT.clone(), START_TIME_SECONDS ),
 			);
 			expect( gen.next( START_DATE_MOMENT ).value ).toEqual(
-				call( momentUtil.setTimeInSeconds, END_DATE_MOMENT.clone(), END_TIME_SECONDS )
+				call( momentUtil.setTimeInSeconds, END_DATE_MOMENT.clone(), END_TIME_SECONDS ),
 			);
 			expect( gen.next( END_DATE_MOMENT ).value ).toEqual(
-				call( [ START_DATE_MOMENT, 'isSameOrAfter' ], END_DATE_MOMENT )
+				call( [ START_DATE_MOMENT, 'isSameOrAfter' ], END_DATE_MOMENT ),
 			);
 			expect( gen.next( false ).value ).toEqual(
-				put( actions.setRSVPHasDurationError( false ) )
+				put( actions.setRSVPHasDurationError( false ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -621,13 +615,13 @@ describe( 'RSVP block sagas', () => {
 			expect( gen.next().value ).toEqual( undefined );
 			expect( gen.next( undefined ).value ).toEqual( '' );
 			expect( gen.next( '' ).value ).toEqual(
-				put( actions.setRSVPTempStartDate( '' ) )
+				put( actions.setRSVPTempStartDate( '' ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPTempStartDateInput( action.payload.dayPickerInput.state.value ) )
+				put( actions.setRSVPTempStartDateInput( action.payload.dayPickerInput.state.value ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPTempStartDateMoment( undefined ) )
+				put( actions.setRSVPTempStartDateMoment( undefined ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -637,19 +631,19 @@ describe( 'RSVP block sagas', () => {
 			action.payload.dayPickerInput.state.value = 'January 1, 2018';
 			const gen = sagas.handleRSVPStartDate( action );
 			expect( gen.next().value ).toEqual(
-				call( momentUtil.toMoment, action.payload.date )
+				call( momentUtil.toMoment, action.payload.date ),
 			);
 			expect( gen.next( action.payload.date ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, action.payload.date )
+				call( momentUtil.toDatabaseDate, action.payload.date ),
 			);
 			expect( gen.next( action.payload.date ).value ).toEqual(
-				put( actions.setRSVPTempStartDate( action.payload.date ) )
+				put( actions.setRSVPTempStartDate( action.payload.date ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPTempStartDateInput( action.payload.dayPickerInput.state.value ) )
+				put( actions.setRSVPTempStartDateInput( action.payload.dayPickerInput.state.value ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPTempStartDateMoment( action.payload.date ) )
+				put( actions.setRSVPTempStartDateMoment( action.payload.date ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -666,21 +660,21 @@ describe( 'RSVP block sagas', () => {
 			const gen = sagas.saveRSVPWithPostSave();
 
 			expect( gen.next().value ).toEqual(
-				select( selectors.getRSVPCreated )
+				select( selectors.getRSVPCreated ),
 			);
 
 			expect( gen.next( true ).value ).toEqual(
-				call( createWPEditorSavingChannel )
+				call( createWPEditorSavingChannel ),
 			);
 
 			expect( gen.next( channel ).value ).toEqual(
-				take( channel )
+				take( channel ),
 			);
 			expect( gen.next( true ).value ).toMatchSnapshot();
 			expect( gen.next( {} ).value ).toMatchSnapshot();
 
 			expect( gen.next().value ).toEqual(
-				call( [ channel, 'close' ] )
+				call( [ channel, 'close' ] ),
 			);
 
 			expect( gen.next().done ).toEqual( true );
@@ -689,7 +683,7 @@ describe( 'RSVP block sagas', () => {
 			const gen = sagas.saveRSVPWithPostSave();
 
 			expect( gen.next().value ).toEqual(
-				select( selectors.getRSVPCreated )
+				select( selectors.getRSVPCreated ),
 			);
 
 			expect( gen.next( false ).done ).toEqual( true );
@@ -725,23 +719,23 @@ describe( 'RSVP block sagas', () => {
 			const gen = sagas.handleEventStartDateChanges();
 
 			expect( gen.next( true ).value ).toEqual(
-				take( [ types.INITIALIZE_RSVP, types.SET_RSVP_DETAILS ] )
+				take( [ types.INITIALIZE_RSVP, types.SET_RSVP_DETAILS ] ),
 			);
 
 			expect( gen.next().value ).toEqual(
-				call( isTribeEventPostType )
+				call( isTribeEventPostType ),
 			);
 
 			expect( gen.next( true ).value ).toEqual(
-				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
 			);
 
 			expect( gen.next( '2018-01-01 12:00:00' ).value ).toEqual(
-				take( [ 'SET_START_DATE_TIME', 'SET_START_TIME' ] )
+				take( [ 'SET_START_DATE_TIME', 'SET_START_TIME' ] ),
 			);
 
 			expect( gen.next().value ).toEqual(
-				fork( sagas.syncRSVPSaleEndWithEventStart, '2018-01-01 12:00:00' )
+				fork( sagas.syncRSVPSaleEndWithEventStart, '2018-01-01 12:00:00' ),
 			);
 
 			expect( gen.next().done ).toEqual( false );
@@ -769,13 +763,13 @@ describe( 'RSVP block sagas', () => {
 			expect( gen.next().value ).toEqual( undefined );
 			expect( gen.next( undefined ).value ).toEqual( '' );
 			expect( gen.next( '' ).value ).toEqual(
-				put( actions.setRSVPTempEndDate( '' ) )
+				put( actions.setRSVPTempEndDate( '' ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPTempEndDateInput( action.payload.dayPickerInput.state.value ) )
+				put( actions.setRSVPTempEndDateInput( action.payload.dayPickerInput.state.value ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPTempEndDateMoment( undefined ) )
+				put( actions.setRSVPTempEndDateMoment( undefined ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -785,19 +779,19 @@ describe( 'RSVP block sagas', () => {
 			action.payload.dayPickerInput.state.value = 'January 1, 2018';
 			const gen = sagas.handleRSVPEndDate( action );
 			expect( gen.next().value ).toEqual(
-				call( momentUtil.toMoment, action.payload.date )
+				call( momentUtil.toMoment, action.payload.date ),
 			);
 			expect( gen.next( action.payload.date ).value ).toEqual(
-				call( momentUtil.toDatabaseDate, action.payload.date )
+				call( momentUtil.toDatabaseDate, action.payload.date ),
 			);
 			expect( gen.next( action.payload.date ).value ).toEqual(
-				put( actions.setRSVPTempEndDate( action.payload.date ) )
+				put( actions.setRSVPTempEndDate( action.payload.date ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPTempEndDateInput( action.payload.dayPickerInput.state.value ) )
+				put( actions.setRSVPTempEndDateInput( action.payload.dayPickerInput.state.value ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPTempEndDateMoment( action.payload.date ) )
+				put( actions.setRSVPTempEndDateMoment( action.payload.date ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -813,10 +807,10 @@ describe( 'RSVP block sagas', () => {
 			const startTime = '01:00';
 			const gen = sagas.handleRSVPStartTime( action );
 			expect( gen.next().value ).toEqual(
-				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM )
+				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM ),
 			);
 			expect( gen.next( startTime ).value ).toEqual(
-				put( actions.setRSVPTempStartTime( `${ startTime }:00` ) )
+				put( actions.setRSVPTempStartTime( `${ startTime }:00` ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -832,16 +826,16 @@ describe( 'RSVP block sagas', () => {
 			};
 			const gen = sagas.handleRSVPStartTimeInput( action );
 			expect( gen.next().value ).toEqual(
-				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM )
+				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM ),
 			);
 			expect( gen.next( startTimeInput ).value ).toEqual(
-				call( momentUtil.toMoment, startTimeInput, momentUtil.TIME_FORMAT, false )
+				call( momentUtil.toMoment, startTimeInput, momentUtil.TIME_FORMAT, false ),
 			);
 			expect( gen.next( startTimeInput ).value ).toEqual(
-				call( momentUtil.toTime, startTimeInput )
+				call( momentUtil.toTime, startTimeInput ),
 			);
 			expect( gen.next( startTimeInput ).value ).toEqual(
-				put( actions.setRSVPTempStartTimeInput( startTimeInput ) )
+				put( actions.setRSVPTempStartTimeInput( startTimeInput ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -857,10 +851,10 @@ describe( 'RSVP block sagas', () => {
 			const endTime = '01:00';
 			const gen = sagas.handleRSVPEndTime( action );
 			expect( gen.next().value ).toEqual(
-				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM )
+				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM ),
 			);
 			expect( gen.next( endTime ).value ).toEqual(
-				put( actions.setRSVPTempEndTime( `${ endTime }:00` ) )
+				put( actions.setRSVPTempEndTime( `${ endTime }:00` ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -876,16 +870,16 @@ describe( 'RSVP block sagas', () => {
 			};
 			const gen = sagas.handleRSVPEndTimeInput( action );
 			expect( gen.next().value ).toEqual(
-				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM )
+				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM ),
 			);
 			expect( gen.next( endTimeInput ).value ).toEqual(
-				call( momentUtil.toMoment, endTimeInput, momentUtil.TIME_FORMAT, false )
+				call( momentUtil.toMoment, endTimeInput, momentUtil.TIME_FORMAT, false ),
 			);
 			expect( gen.next( endTimeInput ).value ).toEqual(
-				call( momentUtil.toTime, endTimeInput )
+				call( momentUtil.toTime, endTimeInput ),
 			);
 			expect( gen.next( endTimeInput ).value ).toEqual(
-				put( actions.setRSVPTempEndTimeInput( endTimeInput ) )
+				put( actions.setRSVPTempEndTimeInput( endTimeInput ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -897,14 +891,14 @@ describe( 'RSVP block sagas', () => {
 			const action = {
 				payload: {
 					id,
-				}
+				},
 			};
 			const gen = sagas.fetchRSVPHeaderImage( action );
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPIsSettingsLoading( true ) )
+				put( actions.setRSVPIsSettingsLoading( true ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				call( api.wpREST, { path: `media/${ id }` } )
+				call( api.wpREST, { path: `media/${ id }` } ),
 			);
 
 			const apiResponse = {
@@ -928,10 +922,10 @@ describe( 'RSVP block sagas', () => {
 					id: apiResponse.data.id,
 					alt: apiResponse.data.alt_text,
 					src: apiResponse.data.media_details.sizes.medium.source_url,
-				} ) )
+				} ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPIsSettingsLoading( false ) )
+				put( actions.setRSVPIsSettingsLoading( false ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -941,14 +935,14 @@ describe( 'RSVP block sagas', () => {
 			const action = {
 				payload: {
 					id,
-				}
+				},
 			};
 			const gen = sagas.fetchRSVPHeaderImage( action );
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPIsSettingsLoading( true ) )
+				put( actions.setRSVPIsSettingsLoading( true ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				call( api.wpREST, { path: `media/${ id }` } )
+				call( api.wpREST, { path: `media/${ id }` } ),
 			);
 
 			const apiResponse = {
@@ -958,7 +952,7 @@ describe( 'RSVP block sagas', () => {
 				data: {},
 			};
 			expect( gen.next( apiResponse ).value ).toEqual(
-				put( actions.setRSVPIsSettingsLoading( false ) )
+				put( actions.setRSVPIsSettingsLoading( false ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -983,10 +977,10 @@ describe( 'RSVP block sagas', () => {
 			const gen = sagas.updateRSVPHeaderImage( action );
 			expect( gen.next().value ).toMatchSnapshot();
 			expect( gen.next( postId ).value ).toEqual(
-				put( actions.setRSVPIsSettingsLoading( true ) )
+				put( actions.setRSVPIsSettingsLoading( true ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( ticketActions.setTicketsIsSettingsLoading( true ) )
+				put( ticketActions.setTicketsIsSettingsLoading( true ) ),
 			);
 			expect( gen.next().value ).toEqual(
 				call( api.wpREST, {
@@ -1002,7 +996,7 @@ describe( 'RSVP block sagas', () => {
 							},
 						} ),
 					},
-				} )
+				} ),
 			);
 
 			const apiResponse = {
@@ -1016,16 +1010,16 @@ describe( 'RSVP block sagas', () => {
 				src: action.payload.image.sizes.medium.url,
 			};
 			expect( gen.next( apiResponse ).value ).toEqual(
-				put( actions.setRSVPHeaderImage( headerImage ) )
+				put( actions.setRSVPHeaderImage( headerImage ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( ticketActions.setTicketsHeaderImage( headerImage ) )
+				put( ticketActions.setTicketsHeaderImage( headerImage ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPIsSettingsLoading( false ) )
+				put( actions.setRSVPIsSettingsLoading( false ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( ticketActions.setTicketsIsSettingsLoading( false ) )
+				put( ticketActions.setTicketsIsSettingsLoading( false ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -1048,10 +1042,10 @@ describe( 'RSVP block sagas', () => {
 			const gen = sagas.updateRSVPHeaderImage( action );
 			expect( gen.next().value ).toMatchSnapshot();
 			expect( gen.next( postId ).value ).toEqual(
-				put( actions.setRSVPIsSettingsLoading( true ) )
+				put( actions.setRSVPIsSettingsLoading( true ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( ticketActions.setTicketsIsSettingsLoading( true ) )
+				put( ticketActions.setTicketsIsSettingsLoading( true ) ),
 			);
 			expect( gen.next().value ).toEqual(
 				call( api.wpREST, {
@@ -1067,7 +1061,7 @@ describe( 'RSVP block sagas', () => {
 							},
 						} ),
 					},
-				} )
+				} ),
 			);
 
 			const apiResponse = {
@@ -1076,10 +1070,10 @@ describe( 'RSVP block sagas', () => {
 				},
 			};
 			expect( gen.next( apiResponse ).value ).toEqual(
-				put( actions.setRSVPIsSettingsLoading( false ) )
+				put( actions.setRSVPIsSettingsLoading( false ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( ticketActions.setTicketsIsSettingsLoading( false ) )
+				put( ticketActions.setTicketsIsSettingsLoading( false ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -1091,10 +1085,10 @@ describe( 'RSVP block sagas', () => {
 			const gen = sagas.deleteRSVPHeaderImage();
 			expect( gen.next().value ).toMatchSnapshot();
 			expect( gen.next( postId ).value ).toEqual(
-				put( actions.setRSVPIsSettingsLoading( true ) )
+				put( actions.setRSVPIsSettingsLoading( true ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( ticketActions.setTicketsIsSettingsLoading( true ) )
+				put( ticketActions.setTicketsIsSettingsLoading( true ) ),
 			);
 			expect( gen.next().value ).toEqual(
 				call( api.wpREST, {
@@ -1110,7 +1104,7 @@ describe( 'RSVP block sagas', () => {
 							},
 						} ),
 					},
-				} )
+				} ),
 			);
 
 			const apiResponse = {
@@ -1119,16 +1113,16 @@ describe( 'RSVP block sagas', () => {
 				},
 			};
 			expect( gen.next( apiResponse ).value ).toEqual(
-				put( actions.setRSVPHeaderImage( RSVP_HEADER_IMAGE_DEFAULT_STATE ) )
+				put( actions.setRSVPHeaderImage( RSVP_HEADER_IMAGE_DEFAULT_STATE ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( ticketActions.setTicketsHeaderImage( TICKET_HEADER_IMAGE_DEFAULT_STATE ) )
+				put( ticketActions.setTicketsHeaderImage( TICKET_HEADER_IMAGE_DEFAULT_STATE ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( actions.setRSVPIsSettingsLoading( false ) )
+				put( actions.setRSVPIsSettingsLoading( false ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( ticketActions.setTicketsIsSettingsLoading( false ) )
+				put( ticketActions.setTicketsIsSettingsLoading( false ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -1138,10 +1132,10 @@ describe( 'RSVP block sagas', () => {
 			const gen = sagas.deleteRSVPHeaderImage();
 			expect( gen.next().value ).toMatchSnapshot();
 			expect( gen.next( postId ).value ).toEqual(
-				put( actions.setRSVPIsSettingsLoading( true ) )
+				put( actions.setRSVPIsSettingsLoading( true ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( ticketActions.setTicketsIsSettingsLoading( true ) )
+				put( ticketActions.setTicketsIsSettingsLoading( true ) ),
 			);
 			expect( gen.next().value ).toEqual(
 				call( api.wpREST, {
@@ -1157,7 +1151,7 @@ describe( 'RSVP block sagas', () => {
 							},
 						} ),
 					},
-				} )
+				} ),
 			);
 
 			const apiResponse = {
@@ -1166,10 +1160,10 @@ describe( 'RSVP block sagas', () => {
 				},
 			};
 			expect( gen.next( apiResponse ).value ).toEqual(
-				put( actions.setRSVPIsSettingsLoading( false ) )
+				put( actions.setRSVPIsSettingsLoading( false ) ),
 			);
 			expect( gen.next().value ).toEqual(
-				put( ticketActions.setTicketsIsSettingsLoading( false ) )
+				put( ticketActions.setTicketsIsSettingsLoading( false ) ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -1180,19 +1174,19 @@ describe( 'RSVP block sagas', () => {
 			const gen = sagas.handleRSVPMove();
 
 			expect( gen.next().value ).toEqual(
-				select( selectors.getRSVPId )
+				select( selectors.getRSVPId ),
 			);
 			expect( gen.next( 1 ).value ).toEqual(
-				select( moveSelectors.getModalTicketId )
+				select( moveSelectors.getModalTicketId ),
 			);
 			expect( gen.next( 1 ).value ).toEqual(
-				select( moveSelectors.getModalClientId )
+				select( moveSelectors.getModalClientId ),
 			);
 			expect( gen.next( '111111' ).value ).toEqual(
-				put( actions.deleteRSVP() )
+				put( actions.deleteRSVP() ),
 			);
 			expect( gen.next().value ).toEqual(
-				call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ '111111' ] )
+				call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ '111111' ] ),
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -1203,11 +1197,11 @@ describe( 'RSVP block sagas', () => {
 			const gen = sagas.setNonEventPostTypeEndDate();
 
 			expect( gen.next().value ).toEqual(
-				take( [ types.INITIALIZE_RSVP ] )
+				take( [ types.INITIALIZE_RSVP ] ),
 			);
 
 			expect( gen.next().value ).toEqual(
-				call( isTribeEventPostType )
+				call( isTribeEventPostType ),
 			);
 
 			expect( gen.next( true ).done ).toEqual( true );
@@ -1222,22 +1216,22 @@ describe( 'RSVP block sagas', () => {
 			};
 
 			expect( gen.next().value ).toEqual(
-				take( [ types.INITIALIZE_RSVP ] )
+				take( [ types.INITIALIZE_RSVP ] ),
 			);
 			expect( gen.next().value ).toEqual(
-				call( isTribeEventPostType )
+				call( isTribeEventPostType ),
 			);
 			expect( gen.next( false ).value ).toEqual(
-				select( selectors.getRSVPTempEndDateMoment )
+				select( selectors.getRSVPTempEndDateMoment ),
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
-				call( [ momentMock, 'clone' ] )
+				call( [ momentMock, 'clone' ] ),
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
-				call( [ momentMock, 'add' ], 100, 'years' )
+				call( [ momentMock, 'add' ], 100, 'years' ),
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
-				call( createDates, momentMock.toDate() )
+				call( createDates, momentMock.toDate() ),
 			);
 			expect( gen.next( {
 				date: '2018-01-01',

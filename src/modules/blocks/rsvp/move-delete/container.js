@@ -41,7 +41,7 @@ const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
 		...restDispatchProps,
 		removeRSVP: () => {
 			if ( window.confirm( // eslint-disable-line no-alert
-				__( 'Are you sure you want to delete this RSVP? It cannot be undone.', 'event-tickets' )
+				__( 'Are you sure you want to delete this RSVP? It cannot be undone.', 'event-tickets' ),
 			) ) {
 				dispatch( actions.deleteRSVP() );
 				if ( stateProps.created && stateProps.rsvpId ) {

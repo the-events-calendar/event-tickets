@@ -3,6 +3,7 @@
 if ( ! isset( $post_id ) ) {
 	$post_id = get_the_ID();
 }
+
 $validation_attrs = [
 	'data-validation-error="' . esc_attr( sprintf(
 		// Translators: %s: singular version of the Ticket label.
@@ -11,54 +12,50 @@ $validation_attrs = [
 	) ) . '"'
 ];
 
-$provider          = null;
 $ticket            = null;
 $is_paypal_ticket  = false;
 $price_description = '';
 $price             = null;
 $sale_price        = null;
 $disabled          = false;
-if ( ! isset( $ticket_id ) ) {
-	$ticket_id = null;
-} else {
-	$provider         = tribe_tickets_get_ticket_provider( $ticket_id );
-	$is_paypal_ticket = $provider instanceof Tribe__Tickets__Commerce__PayPal__Main;
 
-	$description_string = sprintf( _x( 'Leave blank for free %s', 'price description', 'event-tickets' ), tribe_get_ticket_label_singular( 'price_description' ) );
-	$description_string = esc_html( apply_filters( 'tribe_tickets_price_description', $description_string, $ticket_id ) );
-	$price_description  = $is_paypal_ticket ? '' : $description_string;
+$provider         = ! empty( $ticket_id ) ? tribe_tickets_get_ticket_provider( $ticket_id ) : $provider;
 
-	if ( $is_paypal_ticket ) {
-		$validation_attrs[] = 'data-required';
-		$validation_attrs[] = 'data-validation-is-greater-than="0"';
+$is_paypal_ticket = $provider instanceof Tribe__Tickets__Commerce__PayPal__Main || $provider instanceof \TEC\Tickets\Commerce\Module;
 
-	}
+$description_string = sprintf( _x( 'Leave blank for free %s', 'price description', 'event-tickets' ), tribe_get_ticket_label_singular( 'price_description' ) );
+$description_string = esc_html( apply_filters( 'tribe_tickets_price_description', $description_string, $ticket_id ) );
+$price_description  = $is_paypal_ticket ? '' : $description_string;
 
-	/**
-	 * Filters whether we should disable the ticket - separate from tribe-dependency.
-	 *
-	 * @since 4.10.8
-	 *
-	 * @param boolean     $disabled  Whether the price field is disabled.
-	 * @param WP_Post|int $ticket_id The current ticket object or its ID
-	 */
-	$disabled = apply_filters( 'tribe_tickets_price_disabled', false, $ticket_id );
-	$disabled = (bool) filter_var( $disabled, FILTER_VALIDATE_BOOLEAN );
-	$ticket   = empty( $provider ) ? $ticket : $provider->get_ticket( $post_id, $ticket_id );
+if ( $is_paypal_ticket ) {
+	$validation_attrs[] = 'data-required';
+	$validation_attrs[] = 'data-validation-is-greater-than="0"';
+}
 
-	// If the ticket has a WC Memberships discount for the currently-logged-in user.
-	$ticket_has_wc_member_discount = tribe_tickets_ticket_in_wc_membership_for_user( $ticket_id );
+/**
+ * Filters whether we should disable the ticket - separate from tribe-dependency.
+ *
+ * @since 4.10.8
+ *
+ * @param boolean     $disabled  Whether the price field is disabled.
+ * @param WP_Post|int $ticket_id The current ticket object or its ID
+ */
+$disabled = apply_filters( 'tribe_tickets_price_disabled', false, $ticket_id );
+$disabled = (bool) filter_var( $disabled, FILTER_VALIDATE_BOOLEAN );
+$ticket   = empty( $provider ) ? $ticket : $provider->get_ticket( $post_id, $ticket_id );
 
-	if ( ! empty( $ticket ) ) {
-		if (
-			$ticket->on_sale
-			|| $ticket_has_wc_member_discount
-		) {
-			$price      = $ticket->regular_price;
-			$sale_price = $ticket->price;
-		} else {
-			$price = $ticket->price;
-		}
+// If the ticket has a WC Memberships discount for the currently-logged-in user.
+$ticket_has_wc_member_discount = tribe_tickets_ticket_in_wc_membership_for_user( $ticket_id );
+
+if ( ! empty( $ticket ) ) {
+	if (
+		$ticket->on_sale
+		|| $ticket_has_wc_member_discount
+	) {
+		$price      = $ticket->regular_price;
+		$sale_price = $ticket->price;
+	} else {
+		$price = $ticket->price;
 	}
 }
 
@@ -128,4 +125,4 @@ if ( ! isset( $ticket_id ) ) {
 			<p class="description ticket_form_right"><?php echo esc_html( $sale_price_desc ); ?></p>
 		</div>
 	<?php endif; ?>
-	</div>
+</div>

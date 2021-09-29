@@ -42,6 +42,11 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 		parent::tearDown();
 	}
 
+	public function _before() {
+		tribe_events()->per_page( -1 )->delete();
+		tribe_tickets()->per_page( -1 )->delete();
+	}
+
 	protected function allow_posts() {
 		tribe_update_option( 'ticket-enabled-post-types', [
 			'tribe_events',
@@ -1123,6 +1128,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 			],
 		] );
 
+		$updated_event = tribe_tickets_update_capacity( $event_id, 10 );
 		$deleted_event = tribe_tickets_delete_capacity( $event_id );
 
 		$this->assertTrue( $deleted_event, 'Could not delete capacity for event' );
@@ -1150,6 +1156,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 			],
 		] );
 
+		$updated_event = tribe_tickets_update_capacity( $post_id, 10 );
 		$deleted_event = tribe_tickets_delete_capacity( $post_id );
 
 		$this->assertTrue( $deleted_event, 'Could not delete capacity for post' );
@@ -1205,7 +1212,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$updated_event = tribe_tickets_update_capacity( $event_id, 10 );
 
-		$this->assertEquals( 10, $updated_event, 'Could not update capacity for event' );
+		$this->assertTrue( (bool) $updated_event, 'Could not update capacity for event' );
 	}
 
 	/**
@@ -1232,7 +1239,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$updated_event = tribe_tickets_update_capacity( $post_id, 10 );
 
-		$this->assertEquals( 10, $updated_event, 'Could not update capacity for post' );
+		$this->assertTrue( (bool) $updated_event, 'Could not update capacity for post' );
 	}
 
 	/**

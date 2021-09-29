@@ -38,9 +38,9 @@ const getReportLink = ( state, ownProps, provider ) => {
 		let path = '';
 
 		if ( provider === EDD ) {
-			path = `edit.php?page=edd-reports&view=sales&post_type=download&tab=logs&download=${ ticketId }`;
+			path = `edit.php?page=edd-reports&view=sales&post_type=download&tab=logs&download=${ ticketId }`; // eslint-disable-line max-len
 		} else if ( provider === WOO ) {
-			path = `admin.php?page=wc-reports&tab=orders&report=sales_by_product&product_ids=${ ticketId }`;
+			path = `admin.php?page=wc-reports&tab=orders&report=sales_by_product&product_ids=${ ticketId }`; // eslint-disable-line max-len
 		}
 
 		reportLink = `${ adminURL }${ path }`;

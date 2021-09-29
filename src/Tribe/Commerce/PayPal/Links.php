@@ -25,7 +25,7 @@ class Tribe__Tickets__Commerce__PayPal__Links {
 		);
 		$tag  = '<a href="'
 		        . esc_url( $link )
-		        . '" target="_blank">'
+		        . '" target="_blank" rel="noopener noreferrer">'
 		        . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > IPN History Page', 'event-tickets' )
 		        . '</a>';
 		$map  = array(
@@ -53,7 +53,7 @@ class Tribe__Tickets__Commerce__PayPal__Links {
 
 		$tag = '<a href="'
 		       . esc_url( $link )
-		       . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > Update', 'event-tickets' )
+		       . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > Update', 'event-tickets' )
 		       . '</a>';
 
 		$map = array(
@@ -82,7 +82,7 @@ class Tribe__Tickets__Commerce__PayPal__Links {
 		$link = Tribe__Tickets__Commerce__PayPal__Order::get_order_link( $order_id );
 		$tag  = '<a href="'
 		        . esc_url( $link )
-		        . '" target="_blank">' . esc_html__( $text )
+		        . '" target="_blank" rel="noopener noreferrer">' . esc_html__( $text )
 		        . '</a>';
 
 		$map = array(

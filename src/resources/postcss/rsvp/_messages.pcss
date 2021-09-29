@@ -7,14 +7,14 @@
 .event-tickets {
 
 	.tribe-tickets__rsvp-message {
-		display: flex;
 		align-items: center;
-		background-color: var(--color-accent-primary-background);
-		border-radius: var(--border-radius-default);
-		padding: var(--spacer-4) var(--spacer-3);
+		background-color: var(--tec-color-accent-primary-background);
+		border-radius: var(--tec-border-radius-default);
+		display: flex;
+		padding: var(--tec-spacer-4) var(--tec-spacer-3);
 
-		@media(--viewport-medium) {
-			padding: var(--spacer-3);
+		@media (--viewport-medium) {
+			padding: var(--tec-spacer-3);
 		}
 	}
 
@@ -22,42 +22,41 @@
 
 		&,
 		&.tribe-tickets__rsvp-message {
-			background-color: var(--color-background-error);
+			background-color: var(--tec-color-background-error);
 		}
-
 	}
 
 	.tribe-tickets__rsvp-message--success-icon {
 		display: inline-block;
-		width: var(--spacer-3);
-		height: var(--spacer-3);
-		margin-right: var(--spacer-2);
+		height: var(--tec-spacer-3);
+		margin-right: var(--tec-spacer-2);
+		width: var(--tec-spacer-3);
 
 		path {
-			stroke: var(--color-icon-active);
+			stroke: var(--tec-color-icon-active);
 		}
 	}
 
 	.tribe-tickets__rsvp-message--must-login-icon,
 	.tribe-tickets__rsvp-message--error-icon {
 		display: inline-block;
-		margin-right: var(--spacer-2);
+		margin-right: var(--tec-spacer-2);
 
 		circle {
-			stroke: var(--color-icon-active);
+			stroke: var(--tec-color-icon-active);
 		}
 
 		circle#dot {
+			fill: var(--tec-color-icon-active);
 			stroke: transparent;
-			fill: var(--color-icon-active);
 		}
 
 		path {
-			stroke: var(--color-icon-active);
+			stroke: var(--tec-color-icon-active);
 		}
 	}
 
 	.tribe-tickets__rsvp-message-link {
-		color: var(--color-accent-primary);
+		color: var(--tec-color-accent-primary);
 	}
 }

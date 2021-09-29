@@ -1604,10 +1604,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return string $cost
 	 */
 	public function trigger_get_cost( $cost, $post_id, $unused_with_currency_symbol ) {
-
 		if (
 			empty( $cost )
 			&& tribe_events_has_tickets( get_post( $post_id ) )
+			&& tribe_tickets( 'rsvp' )->where( 'event', $post_id )->found()
 		) {
 			$cost = __( 'Free', 'event-tickets' );
 		}

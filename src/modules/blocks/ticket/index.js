@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import React from 'react';
+
+/**
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
@@ -14,7 +19,7 @@ export default {
 	id: 'tickets-item',
 	title: __( 'Event Ticket', 'event-tickets' ),
 	description: __( 'A single configured ticket type.', 'event-tickets' ),
-	icon: <TicketsIcon/>,
+	icon: <TicketsIcon />,
 	category: 'tribe-tickets',
 	keywords: [ 'event', 'event-tickets', 'tribe' ],
 

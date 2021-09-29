@@ -22,7 +22,7 @@ const getAttendeeRegistrationUrl = ( state, ownProps ) => {
 	const postType = select( 'core/editor' ).getCurrentPostType();
 	const ticketId = selectors.getTicketId( state, ownProps );
 
-	return `${ adminURL }edit.php?post_type=${ postType }&page=attendee-registration&ticket_id=${ ticketId }&tribe_events_modal=1`;
+	return `${ adminURL }edit.php?post_type=${ postType }&page=attendee-registration&ticket_id=${ ticketId }&tribe_events_modal=1`; // eslint-disable-line max-len
 };
 
 const mapStateToProps = ( state, ownProps ) => {
@@ -47,7 +47,10 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 				dispatch( actions.setTicketIsModalOpen( ownProps.clientId, false ) );
 			}
 
-			if ( e.type === 'click' && e.target.classList.contains( 'components-modal__screen-overlay' ) ) {
+			if (
+				e.type === 'click' &&
+					e.target.classList.contains( 'components-modal__screen-overlay' )
+			) {
 				dispatch( actions.setTicketIsModalOpen( ownProps.clientId, false ) );
 			}
 		},
@@ -56,7 +59,10 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 
 			// show overlay
 			const showOverlay = () => {
-				iframe.nextSibling.classList.add( 'tribe-editor__attendee-registration__modal-overlay--show' );
+				iframe
+					.nextSibling
+					.classList
+					.add( 'tribe-editor__attendee-registration__modal-overlay--show' );
 			};
 
 			// add event listener for form submit
@@ -65,7 +71,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 
 			// remove listeners
 			const removeListeners = () => {
-				iframeWindow.removeEventListener( 'unload', handleUnload );
+				iframeWindow.removeEventListener( 'unload', handleUnload ); // eslint-disable-line no-use-before-define,max-len
 				form.removeEventListener( 'submit', showOverlay );
 			};
 
@@ -75,7 +81,9 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 				removeListeners( iframeWindow );
 
 				// check if there are meta fields
-				const metaFields = iframeWindow.document.querySelector( '#tribe-tickets-attendee-sortables' );
+				const metaFields = iframeWindow
+					.document
+					.querySelector( '#tribe-tickets-attendee-sortables' );
 				const hasFields = Boolean( metaFields.firstElementChild );
 
 				// dispatch actions

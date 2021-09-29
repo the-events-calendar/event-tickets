@@ -8,15 +8,15 @@
 .event-tickets {
 
 	.tribe-tickets__rsvp-wrapper {
-		background-color: var(--color-background);
-		border-radius: var(--border-radius-default);
-		border: 1px solid var(--color-border-secondary);
+		background-color: var(--tec-color-background);
+		border: 1px solid var(--tec-color-border-secondary);
+		border-radius: var(--tec-border-radius-default);
+		margin-top: var(--tec-spacer-6);
 		max-width: 580px;
 		overflow: hidden;
 		position: relative;
-		width: 100%;
 		transition: all 0.3s ease;
-		margin-top: var(--spacer-6);
+		width: 100%;
 
 		@media (prefers-reduced-motion: reduce) {
 			transition: none;
@@ -24,16 +24,10 @@
 	}
 
 	.tribe-tickets__rsvp {
-		padding-left: var(--grid-gutter-small-half);
-		padding-right: var(--grid-gutter-small-half);
-		padding-top: var(--spacer-10);
-		padding-bottom: var(--spacer-10);
+		padding: var(--tec-spacer-10) var(--tec-grid-gutter-small-half);
 
-		@media(--viewport-medium) {
-			padding-left: var(--grid-gutter-half);
-			padding-right: var(--grid-gutter-half);
-			padding-top: var(--spacer-5);
-			padding-bottom: var(--spacer-5);
+		@media (--viewport-medium) {
+			padding: var(--tec-spacer-5) var(-tec-grid-gutter-half);
 		}
 	}
 }

@@ -9,7 +9,10 @@
   ],
   "homepage": "http://tri.be/shop/wordpress-events-calendar/",
   "license": "GPL-2.0",
+  "require": {
+  },
   "require-dev": {
+    "bordoni/phpass": "^0.3.5",
     "automattic/vipwpcs": "^2.0",
     "codeception/codeception": "^4.0",
     "codeception/module-asserts": "^1.0",
@@ -24,7 +27,7 @@
     "fzaninotto/faker": "^1.8",
     "lucatume/function-mocker": "^1.3.8",
     "lucatume/function-mocker-le": "^1.0.1",
-    "lucatume/wp-browser": "^3.0.5",
+    "lucatume/wp-browser": "^3.0.10",
     "lucatume/wp-snaphot-assertions": "^1.0",
     "phpunit/phpunit": "^6.5.14",
     "spatie/phpunit-snapshot-assertions": "^1.4.2",
@@ -44,6 +47,12 @@
       "type": "github",
       "url": "https://github.com/the-events-calendar/TribalScents",
       "no-api": true
+    },
+    {
+      "name": "bordoni/phpass",
+      "type": "github",
+      "url": "https://github.com/bordoni/phpass",
+      "no-api": true
     }
   ],
   "minimum-stability": "stable",
@@ -56,7 +65,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Tribe\\Tickets\\": "src/Tribe"
+      "Tribe\\Tickets\\": "src/Tribe",
+      "TEC\\Tickets\\": "src/Tickets"
     }
   },
   "autoload-dev": {

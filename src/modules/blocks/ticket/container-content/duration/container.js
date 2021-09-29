@@ -16,7 +16,7 @@ import {
 } from '@moderntribe/common/utils';
 
 const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
-	dispatch( actions.handleTicketStartDate( ownProps.clientId, date, dayPickerInput ) )
+	dispatch( actions.handleTicketStartDate( ownProps.clientId, date, dayPickerInput ) );
 };
 
 const onFromTimePickerChange = ( dispatch, ownProps ) => ( e ) => {
@@ -29,7 +29,7 @@ const onFromTimePickerClick = ( dispatch, ownProps ) => ( value, onClose ) => {
 };
 
 const onToDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
-	dispatch( actions.handleTicketEndDate( ownProps.clientId, date, dayPickerInput ) )
+	dispatch( actions.handleTicketEndDate( ownProps.clientId, date, dayPickerInput ) );
 };
 
 const onToTimePickerChange = ( dispatch, ownProps ) => ( e ) => {
@@ -44,7 +44,7 @@ const onToTimePickerClick = ( dispatch, ownProps ) => ( value, onClose ) => {
 const onFromTimePickerBlur = ( state, dispatch, ownProps ) => ( e ) => {
 	let startTimeMoment = momentUtil.toMoment( e.target.value, momentUtil.TIME_FORMAT, false );
 	if ( ! startTimeMoment.isValid() ) {
-		const startTimeInput = selectors.getTicketStartTimeInput( state, ownProps )
+		const startTimeInput = selectors.getTicketStartTimeInput( state, ownProps );
 		startTimeMoment = momentUtil.toMoment( startTimeInput, momentUtil.TIME_FORMAT, false );
 	}
 	const seconds = momentUtil.totalSeconds( startTimeMoment );
@@ -54,7 +54,7 @@ const onFromTimePickerBlur = ( state, dispatch, ownProps ) => ( e ) => {
 const onToTimePickerBlur = ( state, dispatch, ownProps ) => ( e ) => {
 	let endTimeMoment = momentUtil.toMoment( e.target.value, momentUtil.TIME_FORMAT, false );
 	if ( ! endTimeMoment.isValid() ) {
-		const endTimeInput = selectors.getTicketEndTimeInput( state, ownProps )
+		const endTimeInput = selectors.getTicketEndTimeInput( state, ownProps );
 		endTimeMoment = momentUtil.toMoment( endTimeInput, momentUtil.TIME_FORMAT, false );
 	}
 	const seconds = momentUtil.totalSeconds( endTimeMoment );
@@ -111,7 +111,7 @@ const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
 		onFromTimePickerBlur: onFromTimePickerBlur( state, dispatch, ownProps ),
 		onToTimePickerBlur: onToTimePickerBlur( state, dispatch, ownProps ),
 	};
-}
+};
 
 export default compose(
 	withStore(),

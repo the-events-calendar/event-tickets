@@ -33,7 +33,12 @@ const TicketDuration = ( {
 				'If you do not set a start sale date, tickets will be available immediately.',
 				'event-tickets',
 			) }
-			tooltipLabel={ <Dashicon className="tribe-editor__ticket__tooltip-label" icon="info-outline" /> }
+			tooltipLabel={
+				<Dashicon
+					className="tribe-editor__ticket__tooltip-label"
+					icon="info-outline"
+				/>
+			}
 		/>
 		<DateTimeRangePicker
 			className="tribe-editor__ticket__duration-picker"
@@ -41,7 +46,10 @@ const TicketDuration = ( {
 		/>
 		{ hasDurationError && (
 			<span className="tribe-editor__ticket__duration-error">
-				{ __( 'There is an error with the selected sales duration. Please fix the issue before saving.', 'event-tickets' ) }
+				{ __(
+					'There is an error with the selected sales duration. Please fix the issue before saving.', // eslint-disable-line max-len
+					'event-tickets',
+				) }
 			</span>
 		) }
 	</div>

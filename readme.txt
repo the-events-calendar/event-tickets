@@ -1,10 +1,10 @@
 === Event Tickets ===
 
-Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, patriciahillebrandt, vicskf, zbtirrell, juanfra
+Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
-Requires at least: 4.9.14
-Tested up to: 5.7.1
-Stable tag: 5.1.5
+Requires at least: 4.9.18
+Tested up to: 5.8.1
+Stable tag: 5.1.11
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -23,7 +23,7 @@ https://vimeo.com/480516958
 
 See Event Tickets in action on our [demo site](https://evnt.is/1ajs). Just getting started? Check out the [Getting Started Guide](https://evnt.is/1aoc) for an introduction to features, settings, and functionality.
 
-Looking for additional features like custom registration fields, QR check-in, Zoom integration, and more? <strong>Check out [Event Tickets Plus](https://evnt.is/18th) and our [other add-ons](https://evnt.is/2a)</strong>. ...and all of them are on sale from November 23-30 during our annual 💰[Black Friday Sale](https://evnt.is/1aod)💰
+Looking for additional features like custom registration fields, QR check-in, Zoom integration, and more? <strong>Check out [Event Tickets Plus](https://evnt.is/18th) and our [other add-ons](https://evnt.is/2a)</strong>.
 
 = 🔌🎨 Plug and Play or Customize =
 
@@ -114,15 +114,13 @@ Event Tickets is translated into multiple languages, including German, Danish, a
 
 == Screenshots ==
 
-1. RSVP and ticket on event
-2. Front-end ticket in page
-3. PayPal checkout
-4. Attendee report
-5. Emailed ticket
-6. Ticket confirmation
-7. Event settings
-8. Add new ticket
-9. Configure PayPal
+1. RSVP on event.
+2. Front-end ticket in page.
+3. PayPal checkout.
+4. Attendee report.
+5. Emailed ticket.
+6. Tickets settings.
+7. Add new ticket.
 
 == Frequently Asked Questions ==
 
@@ -180,10 +178,66 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.1.5] TBD =
+= [5.1.11] TBD =
 
-* Tweak - Move complete list of changelog entries from `readme.txt` to `changelog.txt`. [ET-1121]
+
+
+= [5.1.10] 2021-09-27 =
+
+* Enhancement - When editing an RSVP or ticket in the block editor, allow title to wrap to multiple lines. [ET-1089]
+* Enhancement - Ensure that text for the RSVP going/not going dropdown on front end isn't cut off and arrows aren't hidden. [ET-1169]
+* Tweak - Added a new filter `tribe_tickets_get_provider_query_slug` to allow customization of the provider URL variable name. [ET-543]
+* Tweak - Changed the `provider` URL variable name to `tickets_provider`. The filter `tribe_tickets_get_provider_query_slug` allows for customization. [ET-543]
+* Fix - Fixed ticket total formatting when using custom thousands and decimal separators. [ET-1197]
+* Fix - Show warning while creating new tickets with `0` price for TribeCommerce. [ET-1201]
+* Fix - Prevent text overlapping description in the ticket AR modal. [ET-1179]
+* Fix - Removed the ability to resend tickets from the Attendees page to Attendees who cancelled or refunded their ticket. [ETP-703]
+* Language - 26 new strings added, 116 updated, 2 fuzzied, and 35 obsoleted
+
+= [5.1.9.1] 2021-09-08 =
+
+* Fix - Fixed conflict with WooCommerce Payments plugin showing error on Ticket Form. [ET-1174]
+
+= [5.1.9] 2021-08-31 =
+
+* Fix - Fixed cart calculation inconsistency with WooCommerce when the "Number of decimals" setting was set to `0`. [ETP-324]
+* Fix - Removed RSVP V2 preview templates and functionality. [ET-1162]
+* Fix - Updated deprecated hook `block_categories` to use `block_categories_all`. [ET-1156]
+* Language - 37 new strings added, 162 updated, 6 fuzzied, and 20 obsoleted
+
+= [5.1.8] 2021-08-24 =
+
+* Tweak - Add new event repository schema for finding all events with RSVPs or Tickets.
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.1.7] 2021-08-03 =
+
+* Feature - Added export button next to the page title on the Attendees page. [ET-1145]
+* Tweak - Changed the word `Purchaser` to `Attendee` when email confirmation is sent for purchasing a ticket. [ETP-655]
+* Tweak - Added `$attendees` parameter to the `tribe_report_page_after_text_label` action. [ET-1145]
+* Tweak - Removed the edit column when printing the Attendees list. [ETP-702]
+* Tweak - Added "Delete" functionality for the tickets area in the classic editor. [ET-1107]
+* Language - 1 new strings added, 61 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.1.6] 2021-07-07 =
+
+* Tweak - Added support for HTML in Ticket description field. [ET-1135]
+* Tweak - Added `$ticket_id` parameter to the `tribe_events_tickets_metabox_edit_ajax_advanced` filter. [ETP-111]
+* Tweak - Update the plugin screenshots on the WordPress.org page. [ET-1143]
+* Fix - Fixed the ticket block allowing to add more tickets than available when using shared capacity. [ET-1137]
+* Fix - Sync WooCommerce decimal separator with in Ticket edit form. [ETP-725]
+* Fix - Prevent Tribe Commerce "Confirmation email sender name" from displaying improperly when a single quote is added. [ET-1134]
+* Language - 115 new strings added, 118 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.1.5] 2021-06-09 =
+
+* Fix - Fixed shared capacity stock sync after attendee deletion, for TribeCommerce tickets. [ETP-285]
 * Fix - Fix the price number calculation for tickets that are using no decimals and thousand separator. [ET-1114]
+* Fix - Revert to not hiding past sale tickets from Cost range in Events [ET-1133]
+* Fix - Resolved issue where events with tickets were being shown as Free on the day of the event. [ET-1133]
+* Tweak - When using The Events Calendar and Event Tickets split the admin footer rating link 50/50. [ET-1120]
+* Tweak - Move complete list of changelog entries from `readme.txt` to `changelog.txt`. [ET-1121]
+* Language - 0 new strings added, 24 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.1.4] 2021-05-12 =
 
