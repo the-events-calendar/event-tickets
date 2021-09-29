@@ -18,6 +18,7 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Notice_Handler;
 use TEC\Tickets\Commerce\Shortcodes\Shortcode_Abstract;
 
 /**
@@ -132,12 +133,19 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Handles the disconnecting of the merchant.
 	 *
-	 * @todo  Display some message when disconnecting.
 	 * @since 5.1.9
 	 *
+	 * @since TBD Display info on disconnect.
 	 */
 	public function handle_action_disconnect() {
-		$this->container->make( Merchant::class )->disconnect();
+		$disconnected = $this->container->make( Merchant::class )->disconnect();
+
+		if ( ! $disconnected ) {
+			tribe( Notice_Handler::class )->admin_notice( 'tc-paypal-disconnect-failed', __( 'Failed to disconnect PayPal account.', 'event-tickets' ) );
+			return;
+		}
+
+		tribe( Notice_Handler::class )->admin_notice( 'tc-paypal-disconnected', __( 'PayPal was disconnected', 'event-tickets' ), 'info' );
 	}
 
 	/**
