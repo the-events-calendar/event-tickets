@@ -154,6 +154,15 @@ class Order {
 	public static $flag_action_status_marker_meta_key_prefix = '_tec_tc_order_fa_marker';
 
 	/**
+	 * Meta that holds the cart hash for this order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $cart_hash = '_tec_tc_order_cart_hash';
+
+	/**
 	 * Register this Class post type into WP.
 	 *
 	 * @since 5.1.9
@@ -301,6 +310,7 @@ class Order {
 			'total_value' => $total,
 			'cart_items'  => $items,
 			'gateway'     => $gateway::get_key(),
+			'cart_hash'   => $cart->get_cart_hash(),
 		];
 
 		// When purchaser data-set is not passed we pull from the current user.
