@@ -441,7 +441,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Add a post display state for special Event Tickets pages in the page list table.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param array   $post_states An array of post display states.
 	 * @param WP_Post $post        The current post object.
@@ -459,7 +459,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Add the filter for provider meta sanitization.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 */
 	public function provider_meta_sanitization_filters() {
 
@@ -467,7 +467,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 			_doing_it_wrong(
 				__FUNCTION__,
 				'tickets.handler - is not registered.',
-				'TBD'
+				'5.1.10'
 			);
 
 			return;
@@ -484,7 +484,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Handle saving of Ticket provider meta data.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param mixed $meta_value Metadata value.
 	 *

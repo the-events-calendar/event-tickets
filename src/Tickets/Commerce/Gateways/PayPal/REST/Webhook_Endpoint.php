@@ -37,7 +37,7 @@ class Webhook_Endpoint implements Tribe__Documentation__Swagger__Provider_Interf
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 */
 	public function register() {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
@@ -87,7 +87,7 @@ class Webhook_Endpoint implements Tribe__Documentation__Swagger__Provider_Interf
 	 * A strange thing here is that the headers are inconsistent between live and sandbox mode, so this also checks for
 	 * both forms of the headers (studly case and all caps).
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param array $paypal_headers
 	 *
@@ -131,7 +131,7 @@ class Webhook_Endpoint implements Tribe__Documentation__Swagger__Provider_Interf
 	/**
 	 * Handle the Webhook requests coming from PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param WP_REST_Request $request   The request object.
 	 *
@@ -193,7 +193,7 @@ class Webhook_Endpoint implements Tribe__Documentation__Swagger__Provider_Interf
 	/**
 	 * Arguments used for the signup redirect.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @return array
 	 */

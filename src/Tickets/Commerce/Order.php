@@ -138,7 +138,7 @@ class Order {
 	/**
 	 * Prefix for the log of when a given status was applied.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @var string
 	 */
@@ -147,7 +147,7 @@ class Order {
 	/**
 	 * Prefix for the Status Flag Action marker meta key.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @var string
 	 */
@@ -201,7 +201,7 @@ class Order {
 	/**
 	 * Gets the meta Key for a given Order Status gateway_payload.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param Status\Status_Interface $status
 	 *
@@ -214,7 +214,7 @@ class Order {
 	/**
 	 * Gets the key for a Flag Action marker for given status and flag.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param string $flag   Which flag we are getting the meta key for.
 	 * @param string $status Which status ID we are getting the meta key for.

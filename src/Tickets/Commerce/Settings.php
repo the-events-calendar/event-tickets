@@ -400,7 +400,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * If the provided meta value is from Ticket Commerce Module then re-slash the meta value.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param mixed $meta_value Metadata value.
 	 *

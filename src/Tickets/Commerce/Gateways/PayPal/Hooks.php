@@ -172,7 +172,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * Handles the refreshing of the webhook on PayPal for this site/merchant.
 	 *
 	 * @todo  Display some message when refreshing user info.
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 */
 	public function handle_action_refresh_webhook() {
