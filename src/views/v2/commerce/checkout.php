@@ -24,7 +24,12 @@
  */
 
 ?>
-<section class="tribe-common event-tickets tribe-tickets__commerce-checkout">
+<section
+	class="tribe-common event-tickets tribe-tickets__commerce-checkout"
+	data-js="tec-tickets-commerce-notice"
+	data-notice-default-title="<?php esc_attr_e( 'Checkout Unavailable!' , 'event-tickets' ); ?>"
+	data-notice-default-content="<?php esc_attr_e( 'Checkout is not available at this time because a payment method has not been set up for this event. Please notify the site administrator.' , 'event-tickets' ); ?>"
+>
 	<?php $this->template( 'checkout/fields' ); ?>
 	<?php $this->template( 'checkout/header' ); ?>
 	<?php foreach ( $sections as $section ) : ?>

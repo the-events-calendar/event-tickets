@@ -1,3 +1,4 @@
+/* global tribe, jQuery */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -85,41 +86,6 @@ tribe.tickets.commerce = {};
 	obj.bindLoaderEvents = function () {
 		$document.on( obj.customEvents.showLoader, obj.loaderShow );
 		$document.on( obj.customEvents.hideLoader, obj.loaderHide );
-	};
-
-	/**
-	 * Display the notice component.
-	 *
-	 * @since TBD
-	 *
-	 * @param {Object} data Data for notice.
-	 */
-	obj.showNotice = function( data = {} ) {
-		const $notice = $( obj.selectors.noticeItem );
-		const $content = $notice.find( obj.selectors.noticeContent );
-		const $title = $notice.find( obj.selectors.noticeTitle );
-
-		if ( ! $notice.length || ! $content.length || ! $title.length ) {
-			return;
-		}
-
-		const title = data.title ? data.title : tecTicketsCommerceData.default_notice.title;
-		const message = data.message ? data.message : tecTicketsCommerceData.default_notice.content;
-
-		$title.text( title );
-		$content.text( message );
-		$notice.show();
-	};
-
-	/**
-	 * Hide the notice component.
-	 *
-	 * @since TBD
-	 */
-	obj.hideNotice = function() {
-		const $notice = $( obj.selectors.noticeItem );
-
-		$notice.hide();
 	};
 
 	/**
