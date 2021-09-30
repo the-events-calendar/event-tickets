@@ -230,7 +230,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 		update_option( 'tickets_commerce_consent_status', $consent_status );
 		update_option( 'tickets_commerce_account_status', $account_status );
 
-		tribe( Notice_Handler::class )->admin_notice( 'tc-paypal-signup-complete', __( 'PayPal is now connected.', 'event-tickets' ), 'info' );
+		tribe( Notice_Handler::class )->trigger_admin( 'tc-paypal-signup-complete' );
 
 		$this->redirect_with( 'paypal-signup-complete', $return_url );
 	}

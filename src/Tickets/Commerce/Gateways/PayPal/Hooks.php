@@ -139,41 +139,59 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function handle_action_disconnect() {
 		$disconnected = $this->container->make( Merchant::class )->disconnect();
+		$notices      = $this->container->make( Notice_Handler::class );
 
 		if ( ! $disconnected ) {
-			tribe( Notice_Handler::class )->admin_notice( 'tc-paypal-disconnect-failed', __( 'Failed to disconnect PayPal account.', 'event-tickets' ) );
+			$notices->trigger_admin( 'tc-paypal-disconnected-failed' );
+
 			return;
 		}
 
-		tribe( Notice_Handler::class )->admin_notice( 'tc-paypal-disconnected', __( 'PayPal was disconnected', 'event-tickets' ), 'info' );
+		$notices->trigger_admin( 'tc-paypal-disconnected' );
 	}
 
 	/**
 	 * Handles the refreshing of the token from PayPal for this merchant.
 	 *
-	 * @todo  Display some message when refreshing token.
 	 * @since 5.1.9
-	 *
 	 */
 	public function handle_action_refresh_token() {
 		$merchant   = $this->container->make( Merchant::class );
 		$token_data = $this->container->make( Client::class )->get_access_token_from_client_credentials( $merchant->get_client_id(), $merchant->get_client_secret() );
+		$notices    = $this->container->make( Notice_Handler::class );
 
 		$saved = $merchant->save_access_token_data( $token_data );
+
+		if ( ! $saved ) {
+			$notices->trigger_admin( 'tc-paypal-refresh-token-failed' );
+
+			return;
+		}
+
+		$notices->trigger_admin( 'tc-paypal-refresh-token' );
 	}
 
 	/**
 	 * Handles the refreshing of the user info from PayPal for this merchant.
 	 *
-	 * @todo  Display some message when refreshing user info.
 	 * @since 5.1.9
 	 *
 	 */
 	public function handle_action_refresh_user_info() {
 		$merchant  = $this->container->make( Merchant::class );
 		$user_info = $this->container->make( Client::class )->get_user_info();
+		$notices    = $this->container->make( Notice_Handler::class );
 
 		$saved = $merchant->save_user_info( $user_info );
+
+		if ( ! $saved ) {
+			$notices->trigger_admin( 'tc-paypal-refresh-user-info-failed' );
+
+			return;
+		}
+
+		$notices->trigger_admin( 'tc-paypal-refresh-user-info' );
+
 	}
 
 	/**
