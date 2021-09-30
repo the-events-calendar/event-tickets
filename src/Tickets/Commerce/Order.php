@@ -160,7 +160,7 @@ class Order {
 	 *
 	 * @var string
 	 */
-	public static $cart_hash = '_tec_tc_order_cart_hash';
+	public static $cart_hash_meta_key = '_tec_tc_order_cart_hash';
 
 	/**
 	 * Register this Class post type into WP.
