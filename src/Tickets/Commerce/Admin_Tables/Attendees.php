@@ -12,6 +12,9 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
+use TEC\Tickets\Commerce\Attendee;
+use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Ticket;
 use WP_List_Table;
 
 /**
@@ -25,6 +28,13 @@ class Attendees extends WP_List_Table {
 	 * @var \Tribe__Tickets__Attendees_Table
 	 */
 	private $legacy_attendees_table;
+
+	/**
+	 * The name attribute of the search box input
+	 *
+	 * @var string
+	 */
+	private $search_box_input_name = 's';
 
 	/**
 	 *  Documented in WP_List_Table
@@ -162,34 +172,129 @@ class Attendees extends WP_List_Table {
 
 		$this->post_id = $post_id;
 
-		$search    = tribe_get_request_var( 's' );
-		$page      = absint( tribe_get_request_var( 'paged', 0 ) );
+		$search = tribe_get_request_var( $this->search_box_input_name );
+		$page   = absint( tribe_get_request_var( 'paged', 0 ) );
+
 		$arguments = [
-			'status'         => 'any',
-			'paged'          => $page,
-			'posts_per_page' => $this->per_page_option,
+			'page'               => $page,
+			'posts_per_page'     => $this->per_page_option,
+			'return_total_found' => true,
 		];
 
-		if ( $search ) {
+		if ( ! empty( $search ) ) {
 			$arguments['search'] = $search;
+
+			$search_keys = array_keys( $this->get_search_options() );
+
+			/**
+			 * Filters the item keys that can be used to filter attendees while searching them.
+			 *
+			 * @since TBD
+			 * @since TBD
+			 *
+			 * @param array  $search_keys The keys that can be used to search attendees.
+			 * @param array  $items       (deprecated) The attendees list.
+			 * @param string $search      The current search string.
+			 */
+			$search_keys = apply_filters( 'tribe_tickets_search_attendees_by', $search_keys, [], $search );
+
+			// Default selection.
+			$search_key = 'purchaser_name';
+
+			$search_type = sanitize_text_field( tribe_get_request_var( 'tribe_attendee_search_type' ) );
+
+			if (
+				$search_type
+				&& in_array( $search_type, $search_keys, true )
+			) {
+				$search_key = $search_type;
+			}
+
+			$search_like_keys = [
+				'purchaser_name',
+				'purchaser_email',
+				'holder_name',
+				'holder_email',
+			];
+
+			/**
+			 * Filters the item keys that support LIKE matching to filter attendees while searching them.
+			 *
+			 * @since TBD
+			 *
+			 * @param array  $search_like_keys The keys that support LIKE matching.
+			 * @param array  $search_keys      The keys that can be used to search attendees.
+			 * @param string $search           The current search string.
+			 */
+			$search_like_keys = apply_filters( 'tribe_tickets_search_attendees_by_like', $search_like_keys, $search_keys, $search );
+
+			// Update search key if it supports LIKE matching.
+			if ( in_array( $search_key, $search_like_keys, true ) ) {
+				$search_key .= '__like';
+				$search     = '%' . $search . '%';
+			}
+
+			// Only get matches that have search phrase in the key.
+			$arguments['by'] = [
+				$search_key => [
+					$search,
+				],
+			];
 		}
 
 		if ( ! empty( $post_id ) ) {
 			$arguments['events'] = $post_id;
 		}
 
-		$orders_repository = \tec_tc_orders()->by_args( $arguments );
+		$attendee_repos = \tec_tc_attendees( 'all' );
+		$rsvp           = [];
 
-		$total_items = $orders_repository->found();
+		foreach ( $attendee_repos as $repo ) {
+			$repo->by( 'event', $post_id );
+			$repo->by_args( $arguments );
+			$rsvp = array_merge( $rsvp, $repo->all() );
+		}
 
-		$this->items = $orders_repository->all();
+		foreach ( $rsvp as $attendee ) {
+			$attendees[] = tribe( Attendee::class )->get_attendee( $attendee );
+		}
 
-		$this->set_pagination_args(
-			[
-				'total_items' => $total_items,
-				'per_page'    => $this->per_page_option,
-			]
-		);
+		$pagination_args = [
+			'total_items' => $total_items,
+			'per_page'    => $this->per_page_option,
+		];
+
+		if ( ! empty( $this->items ) ) {
+			$pagination_args['total_items'] = count( $this->items );
+		}
+
+		$this->items = $attendees;
+
+		$this->set_pagination_args( $pagination_args );
+	}
+
+	/**
+	 * Get the allowed search types and their descriptions.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 * @see   \Tribe__Tickets__Attendee_Repository::__construct() List of valid ORM args.
+	 *
+	 */
+	private function get_search_options() {
+		return [
+			'purchaser_name'  => esc_html_x( 'Search by Purchaser Name', 'Attendees Table search options', 'event-tickets' ),
+			'purchaser_email' => esc_html_x( 'Search by Purchaser Email', 'Attendees Table search options', 'event-tickets' ),
+			'holder_name'     => esc_html_x( 'Search by Ticket Holder Name', 'Attendees Table search options', 'event-tickets' ),
+			'holder_email'    => esc_html_x( 'Search by Ticket Holder Email', 'Attendees Table search options', 'event-tickets' ),
+			'user'            => esc_html_x( 'Search by User ID', 'Attendees Table search options', 'event-tickets' ),
+			'order_status'    => esc_html_x( 'Search by Order Status', 'Attendees Table search options', 'event-tickets' ),
+			'order'           => esc_html_x( 'Search by Order ID', 'Attendees Table search options', 'event-tickets' ),
+			'security_code'   => esc_html_x( 'Search by Security Code', 'Attendees Table search options', 'event-tickets' ),
+			'ID'              => esc_html( sprintf( _x( 'Search by %s ID', 'Attendees Table search options', 'event-tickets' ), tribe_get_ticket_label_singular( 'attendees_table_search_box_ticket_id' ) ) ),
+			'product_id'      => esc_html_x( 'Search by Product ID', 'Attendees Table search options', 'event-tickets' ),
+		];
 	}
 
 	/**
@@ -215,7 +320,10 @@ class Attendees extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_ticket( $item ) {
-		return esc_html( $item->primary_info['full_name'] );
+		$unique_id = tribe( Attendee::class )->get_unique_id( $item );
+		$ticket    = get_post( tribe( Attendee::class )->get_ticket_id( $item ) );
+
+		return esc_html( "$unique_id [#$item->ID] - $ticket->post_title" );
 	}
 
 	/**
@@ -228,10 +336,18 @@ class Attendees extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_primary_info( $item ) {
-		$item->purchaser_name  = $item->purchaser['full_name'];
-		$item->purchaser_email = $item->purchaser['email'];
 
-		return $this->legacy_attendees_table->column_primary_info( (array) $item );
+		$name  = $item->holder_name ?? '';
+		$email = $item->holder_email ?? '';
+
+		return sprintf(
+			'
+				<div class="purchaser_name">%1$s</div>
+				<div class="purchaser_email">%2$s</div>
+			',
+			esc_html( $name ),
+			esc_html( $email )
+		);
 	}
 
 	/**
@@ -244,7 +360,9 @@ class Attendees extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_security_code( $item ) {
-		return $this->legacy_attendees_table->column_default( (array) $item, 'security' );
+		$security_code = tribe( Attendee::class )->get_security_code( $item );
+
+		return esc_html( $security_code );
 	}
 
 	/**
@@ -257,7 +375,9 @@ class Attendees extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_status( $item ) {
-		return $this->legacy_attendees_table->column_status( (array) $item );
+		$status = tribe( Attendee::class )->get_status( $item );
+
+		return esc_html( $status );
 	}
 
 	/**

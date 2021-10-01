@@ -78,6 +78,7 @@ function tec_tc_tickets( $repository = 'default' ) {
 function tec_tc_attendees( $repository = 'default' ) {
 	$map = [
 		'default' => TEC\Tickets\Commerce\Repositories\Attendees_Repository::class,
+		'rsvp'    => Tribe__Tickets__Repositories__Attendee__RSVP::class,
 	];
 
 	$args = func_num_args() > 1 ? array_slice( func_get_args(), 1 ) : [];
@@ -93,6 +94,12 @@ function tec_tc_attendees( $repository = 'default' ) {
 	 *                           repository slug.
 	 */
 	$map = apply_filters( 'tec_tickets_commerce_attendees_repository_map', $map, $repository, $args );
+
+	if ( 'all' === $repository ) {
+		return array_map( function ( $repo ) use ( $map ) {
+			return tribe( Arr::get( $map, $repo, $map[ $repo ] ) );
+		}, array_keys( $map ) );
+	}
 
 	return tribe( Arr::get( $map, $repository, $map['default'] ) );
 }

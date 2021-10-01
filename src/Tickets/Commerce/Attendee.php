@@ -15,6 +15,7 @@ use Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce
  */
 class Attendee {
+
 	/**
 	 * Tickets Commerce Attendee Post Type slug.
 	 *
@@ -186,6 +187,11 @@ class Attendee {
 	 */
 	public static $currency_meta_key = '_tec_tickets_commerce_currency';
 
+	public static $unique_id_meta_key = '_unique_id';
+
+	public function __construct() {
+		$this->legacy_rsvp_repo = tribe( 'tickets.rsvp' );
+	}
 
 	/**
 	 * Register this Class post type into WP.
@@ -208,11 +214,12 @@ class Attendee {
 		/**
 		 * Filter the arguments that craft the attendee post type.
 		 *
-		 * @see   register_post_type
-		 *
 		 * @since 5.1.9
 		 *
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
+		 *
+		 * @see   register_post_type
+		 *
 		 */
 		$post_type_args = apply_filters( 'tec_tickets_commerce_attendee_post_type_args', $post_type_args );
 
@@ -308,11 +315,11 @@ class Attendee {
 			return;
 		}
 
-		$args = array(
+		$args = [
 			'post_type' => 'tribe_events',
 			'page'      => \Tribe__Tickets__Tickets_Handler::$attendees_slug,
 			'event_id'  => get_post_meta( $post_id, static::$event_relation_meta_key, true ),
-		);
+		];
 
 		$url = add_query_arg( $args, admin_url( 'edit.php' ) );
 		$url = esc_url_raw( $url );
@@ -474,28 +481,59 @@ class Attendee {
 	public function decreases_inventory( $attendee ) {
 		$attendee = tec_tc_get_attendee( $attendee['ID'] );
 		$order    = tec_tc_get_order( $attendee->post_parent );
-		$statuses = array_unique( [ tribe( Status_Handler::class )->get_inventory_decrease_status()->get_wp_slug(), tribe( Commerce\Status\Pending::class )->get_wp_slug() ] );
+		$statuses = array_unique( [
+			tribe( Status_Handler::class )->get_inventory_decrease_status()->get_wp_slug(),
+			tribe( Commerce\Status\Pending::class )->get_wp_slug(),
+		] );
 
-		return  in_array( $order->post_status, $statuses, true );
+		return in_array( $order->post_status, $statuses, true );
 	}
 
 	/**
-	 * Get attendee data for attendee.
+	 * Hydrate attendee object with ticket data
 	 *
-	 * @since 5.1.9
+	 * @since TBD
+	 *
+	 * @return \WP_Post
 	 */
-	public function get_attendee() {
-		/**
-		 * @todo Determine if this meta piece can be moved into the ET+ codebase.
-		 */
-		$meta = '';
-		if ( class_exists( 'Tribe__Tickets_Plus__Meta', false ) ) {
-			$meta = get_post_meta( $attendee->ID, \Tribe__Tickets_Plus__Meta::META_KEY, true );
+	public function get_attendee( \WP_Post $attendee ) {
 
-			// Process Meta to include value, slug, and label
-			if ( ! empty( $meta ) ) {
-				$meta = tribe( Module::class )->process_attendee_meta( $attendee['product_id'], $meta );
+		if ( static::POSTTYPE !== $attendee->post_type ) {
+			$attendee_data = tribe( \Tribe__Tickets__RSVP::class )->get_attendee( $attendee );
+
+			foreach ( $attendee_data as $key => $value ) {
+				$attendee->{$key} = $value;
 			}
 		}
+
+		return $attendee;
+	}
+
+	public function get_unique_id( \WP_Post $attendee ) {
+		return get_post_meta( $attendee->ID, static::$unique_id_meta_key, true );
+	}
+
+	public function get_ticket_id( \WP_Post $attendee ) {
+		if ( static::POSTTYPE !== $attendee->post_type ) {
+			return $attendee->product_id;
+		}
+
+		return get_post_meta( $attendee->ID, static::$ticket_relation_meta_key, true );
+	}
+
+	public function get_security_code( \WP_Post $attendee ) {
+		if ( static::POSTTYPE !== $attendee->post_type ) {
+			return $attendee->security_code;
+		}
+
+		return get_post_meta( $attendee->ID, static::$security_code_meta_key, true );
+	}
+
+	public function get_status( \WP_Post $attendee ) {
+		if ( static::POSTTYPE !== $attendee->post_type ) {
+			return $attendee->order_status_label;
+		}
+
+		return get_post_meta( $attendee->ID, static::$status_meta_key, true );
 	}
 }

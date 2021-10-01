@@ -6,7 +6,6 @@ use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Utils\Price;
 use Tribe__Date_Utils as Dates;
 
-
 /**
  * Class Order
  *
@@ -15,6 +14,7 @@ use Tribe__Date_Utils as Dates;
  * @package TEC\Tickets\Commerce
  */
 class Order {
+
 	/**
 	 * Tickets Commerce Order Post Type slug.
 	 *
@@ -174,11 +174,12 @@ class Order {
 		/**
 		 * Filter the arguments that craft the order post type.
 		 *
-		 * @see   register_post_type
-		 *
 		 * @since 5.1.9
 		 *
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
+		 *
+		 * @see   register_post_type
+		 *
 		 */
 		$post_type_args = apply_filters( 'tec_tickets_commerce_order_post_type_args', $post_type_args );
 
@@ -232,11 +233,11 @@ class Order {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @throws \Tribe__Repository__Usage_Error
-	 *
 	 * @param int    $order_id    Which order ID will be updated.
 	 * @param string $status_slug Which Order Status we are modifying to.
 	 * @param array  $extra_args  Extra repository arguments.
+	 *
+	 * @throws \Tribe__Repository__Usage_Error
 	 *
 	 * @return bool|\WP_Error
 	 */
@@ -347,10 +348,6 @@ class Order {
 	/**
 	 * Redirects to the source post after a recoverable (logic) error.
 	 *
-	 * @todo  Determine if redirecting should be something relegated to some other method, and here we just actually
-	 *       generate the order/Attendees.
-	 *
-	 * @see   \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
 	 * @since 5.1.9
 	 *
 	 * @param bool $redirect   Whether to really redirect or not.
@@ -358,6 +355,10 @@ class Order {
 	 *
 	 * @param int  $error_code The current error code
 	 *
+	 * @todo  Determine if redirecting should be something relegated to some other method, and here we just actually
+	 *        generate the order/Attendees.
+	 *
+	 * @see   \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
 	 */
 	protected function redirect_after_error( $error_code, $redirect, $post_id ) {
 		$url = add_query_arg( 'tpp_error', $error_code, get_permalink( $post_id ) );
@@ -555,7 +556,11 @@ class Order {
 
 				// check if we already have an attendee or not
 				$post_title        = $individual_attendee_name . ' | ' . ( $i + 1 );
-				$criteria          = [ 'post_title' => $post_title, 'product_id' => $product_id, 'event_id' => $post_id ];
+				$criteria          = [
+					'post_title' => $post_title,
+					'product_id' => $product_id,
+					'event_id'   => $post_id,
+				];
 				$existing_attendee = wp_list_filter( $existing_attendees, $criteria );
 
 				if ( ! empty( $existing_attendee ) ) {
@@ -618,7 +623,7 @@ class Order {
 				$order_attendee_id ++;
 
 				if ( ! empty( $existing_attendee ) ) {
-					$existing_attendees = wp_list_filter( $existing_attendees, array( 'attendee_id' => $existing_attendee['attendee_id'] ), 'NOT' );
+					$existing_attendees = wp_list_filter( $existing_attendees, [ 'attendee_id' => $existing_attendee['attendee_id'] ], 'NOT' );
 				}
 			}
 
@@ -687,4 +692,25 @@ class Order {
 			$this->send_tickets_email( $order_id, $post_id );
 		}
 	}
+
+	public function get_attendees( \WP_Post $order ) {
+		$order->attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+
+		if ( empty( $order->attendees ) ) {
+			$order->attendees = [
+				'name'  => \get_post_meta( $order->ID, static::$purchaser_full_name_meta_key, true ),
+				'email' => \get_post_meta( $order->ID, static::$purchaser_email_meta_key, true ),
+			];
+
+			return [ $order ];
+		}
+
+		return $order;
+
+	}
+
+	public function get_ticket_id( \WP_Post $attendee ) {
+		return get_post_meta( $attendee->ID, static::$tickets_in_order_meta_key, true );
+	}
+
 }
