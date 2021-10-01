@@ -120,22 +120,28 @@ class Notice_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug
+	 * @param string $slug Slug to retrieve the message data.
 	 *
-	 * @return array|null
+	 * @return array
 	 */
-	public function get_message_data( $slug ) {
-		if ( ! $this->message_slug_exists( $slug ) ) {
-			return null;
-		}
+	public function get_message_data( $slug, $overrides = [] ) {
 
 		$default_args = [
-			'expire' => true,
-			'wrap'   => 'p',
+			'expire'  => true,
+			'wrap'     => 'p',
+			'type'     => 'error',
+			'content'  => '',
+			'priority' => 10,
 		];
-		$message      = array_values( wp_list_filter( $this->get_messages(), [ 'slug' => $slug ] ) )[0];
 
-		return array_merge( $default_args, $message );
+		// If not found in message array, return with defaults.
+		if ( ! $this->message_slug_exists( $slug ) ) {
+			return array_merge( $default_args, $overrides );
+		}
+
+		$message = array_values( wp_list_filter( $this->get_messages(), [ 'slug' => $slug ] ) )[0];
+
+		return array_merge( $default_args, $message, $overrides );
 	}
 
 	/**
@@ -167,31 +173,14 @@ class Notice_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $slug            Slug to store the notice.
-	 * @param string $message_content Content to display as notice.
-	 * @param string $message_type    Type of notice; Supported types: success | error | info | warning.
+	 * @param string $slug Slug to store the notice.
+	 * @param array $args  Arguments to Setup a notice.
+	 *
+	 * @see Tribe__Admin__Notices::register for available $args options.
 	 */
-	public function trigger_admin( $slug, $message_content = null, $message_type = null ) {
-		$default_message = [
-			'content' => $message_content,
-			'type'    => $message_type
-		];
-		$message         = $this->get_message_data( $slug );
+	public function trigger_admin( $slug, $args = [] ) {
 
-		if ( ! $message ) {
-			$message = $default_message;
-		} else {
-			if ( null !== $message_content ) {
-				$message['content'] = $message_content;
-			}
-			if ( null !== $message_type ) {
-				$message['type'] = $message_content;
-			}
-		}
-
-		if ( empty( $message['type'] ) ) {
-			$message['type'] = 'error';
-		}
+		$message = $this->get_message_data( $slug, $args );
 
 		tribe_transient_notice( $slug, $message['content'], $message, $this->get_expiration() );
 
