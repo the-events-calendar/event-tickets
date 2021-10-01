@@ -361,6 +361,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			failed_status: status,
 			failed_reason: reason,
 		};
+		$document.trigger( tribe.tickets.commerce.customEvents.showLoader );
 		return fetch(
 			obj.orderEndpointUrl + '/' + orderId,
 			{
@@ -372,7 +373,8 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			}
 		)
 			.then( response => response.json() )
-			.then(  data => {
+			.then( data => {
+				$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
 				tribe.tickets.debug.log( data );
 				if ( data.success ) {
 					return obj.handleCancelOrderSuccess( $container, data );
