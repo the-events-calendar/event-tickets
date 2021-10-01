@@ -68,15 +68,6 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.orderEndpointUrl = tecTicketsCommerceGatewayPayPalCheckout.orderEndpoint;
 
 	/**
-	 * PayPal Order error strings
-	 *
-	 * @since TBD
-	 *
-	 * @type {string}
-	 */
-	obj.errors = tecTicketsCommerceGatewayPayPalCheckout.errors;
-
-	/**
 	 * Set of timeout IDs so we can clear when the process of purchasing starts.
 	 *
 	 * @since 5.1.9

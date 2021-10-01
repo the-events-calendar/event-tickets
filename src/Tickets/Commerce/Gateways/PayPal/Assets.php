@@ -90,9 +90,6 @@ class Assets extends \tad_DI52_ServiceProvider {
 					'data' => static function () {
 						return [
 							'orderEndpoint' => tribe( Order_Endpoint::class )->get_route_url(),
-							'errors' => [
-
-							]
 						];
 					},
 				],
