@@ -166,7 +166,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 		$signup        = tribe( Signup::class );
 		$existing_hash = $signup->get_transient_hash();
 		$request_hash  = $request->get_param( 'hash' );
-		$return_url    = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', ] );
+		$return_url    = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] );
 
 		if ( $request_hash !== $existing_hash ) {
 			$this->redirect_with( 'invalid-paypal-signup-hash', $return_url );

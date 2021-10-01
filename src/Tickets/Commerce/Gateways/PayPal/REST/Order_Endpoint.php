@@ -282,7 +282,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		$response['success']  = true;
 		$response['status']   = $status->get_slug();
 		$response['order_id'] = $order->ID;
-		$response['title']  = $messages['canceled-creating-order'];
+		$response['title']    = $messages['canceled-creating-order'];
 
 		return new WP_REST_Response( $response );
 	}
@@ -427,7 +427,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	public function get_error_messages() {
 		$messages = [
 			'failed-creating-order'   => __( 'Creating new PayPal order failed. Please try again.', 'event-tickets' ),
-			'canceled-creating-order' => __( 'Creating of the new PayPal order was canceled.', 'event-tickets' ),
+			'canceled-creating-order' => __( 'Your PayPal order was cancelled.', 'event-tickets' ),
 			'nonexistent-order-id'    => __( 'Provided Order id is not valid.', 'event-tickets' ),
 			'failed-capture'          => __( 'Failed to capture Payment!', 'event-tickets' ),
 			'invalid-capture-status'  => __( 'Invalid Payment capture status', 'event-tickets' ),
