@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce;
 /**
  * Notice Handler for managing Admin view notices.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce
  */
@@ -127,6 +127,7 @@ class Notice_Handler {
 	public function get_message_data( $slug, $overrides = [] ) {
 
 		$default_args = [
+			'slug'    => $slug,
 			'expire'  => true,
 			'wrap'     => 'p',
 			'type'     => 'error',
@@ -149,9 +150,9 @@ class Notice_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $slugs
+	 * @param array $slugs Array of slugs that will be merged.
 	 *
-	 * @return string
+	 * @return string $html List with message content from each slug.
 	 */
 	public function merge_contents( array $slugs ) {
 		$messages = array_map( [ $this, 'get_message_data' ], $slugs );
@@ -174,7 +175,7 @@ class Notice_Handler {
 	 * @since TBD
 	 *
 	 * @param string $slug Slug to store the notice.
-	 * @param array $args  Arguments to Setup a notice.
+	 * @param array  $args Arguments to set up a notice.
 	 *
 	 * @see Tribe__Admin__Notices::register for available $args options.
 	 */
