@@ -88,6 +88,12 @@ class Notice_Handler {
 				'type'     => 'info',
 				'priority' => 10,
 			],
+			[
+				'slug'     => 'tc-paypal-ssl-not-available',
+				'content'  => __( 'A valid SSL certificate is required to set up your PayPal account and accept payments', 'event-tickets' ),
+				'type'     => 'error',
+				'priority' => 10,
+			],
 		];
 
 		/**
@@ -127,8 +133,8 @@ class Notice_Handler {
 	public function get_message_data( $slug, $overrides = [] ) {
 
 		$default_args = [
-			'slug'    => $slug,
-			'expire'  => true,
+			'slug'     => $slug,
+			'expire'   => true,
 			'wrap'     => 'p',
 			'type'     => 'error',
 			'content'  => '',

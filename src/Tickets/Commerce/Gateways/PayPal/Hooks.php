@@ -55,6 +55,8 @@ class Hooks extends \tad_DI52_ServiceProvider {
 
 		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout/header', [ $this, 'include_client_js_sdk_script' ], 15, 3 );
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
+
+		add_action( 'admin_init', [ $this, 'render_ssl_notice' ] );
 	}
 
 	/**1
@@ -180,7 +182,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	public function handle_action_refresh_user_info() {
 		$merchant  = $this->container->make( Merchant::class );
 		$user_info = $this->container->make( Client::class )->get_user_info();
-		$notices    = $this->container->make( Notice_Handler::class );
+		$notices   = $this->container->make( Notice_Handler::class );
 
 		$saved = $merchant->save_user_info( $user_info );
 
@@ -225,5 +227,21 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function filter_add_gateway( array $gateways = [] ) {
 		return $this->container->make( Gateway::class )->register_gateway( $gateways );
+	}
+
+	/**
+	 * Render SSL requirement notice.
+	 *
+	 * @since TBD
+	 */
+	public function render_ssl_notice() {
+		$page = tribe_get_request_var( 'page' ) === 'tribe-common';
+		$tab  = tribe_get_request_var( 'tab' ) === 'payments';
+
+		if ( ! $page || ! $tab || is_ssl() ) {
+			return;
+		}
+
+		$this->container->make( Notice_Handler::class )->trigger_admin( 'tc-paypal-ssl-not-available' );
 	}
 }
