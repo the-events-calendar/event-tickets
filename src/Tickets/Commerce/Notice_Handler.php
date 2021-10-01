@@ -90,7 +90,14 @@ class Notice_Handler {
 			],
 		];
 
-		return $messages;
+		/**
+		 * Filters the available notice messages.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $messages Array of notice messages.
+		 */
+		return (array) apply_filters( 'tec_tickets_commerce_notice_messages', $messages );
 	}
 
 	/**
@@ -148,7 +155,7 @@ class Notice_Handler {
 			$list_class = sanitize_html_class( 'tec-tickets-commerce-notice-item-' . $message['slug'] );
 			$html[]     = "<li class='{$list_class}'>";
 			$html[]     = $message['content'];
-			$html[]     = "</li>";
+			$html[]     = '</li>';
 		}
 		$html[] = '</ul>';
 
