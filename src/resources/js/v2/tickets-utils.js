@@ -236,7 +236,9 @@ tribe.tickets.utils = {};
 	obj.getPrice = function( $ticketItem, provider ) {
 		if ( $ticketItem ) {
 			const realPrice = $ticketItem.data( 'ticket-price' );
-			const formattedPrice = $ticketItem.find( '.tribe-tickets__tickets-sale-price .tribe-amount' ).text();
+			const formattedPrice = $ticketItem
+				.find( '.tribe-tickets__tickets-sale-price .tribe-amount' )
+				.text();
 			const priceString = isNaN( realPrice ) 
 				? obj.cleanNumber( formattedPrice, provider ) 
 				: realPrice;
