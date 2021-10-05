@@ -25,4 +25,4 @@ if ( ! empty( $order ) ) {
 	return;
 }
 
-esc_html_e( 'No order confirmation is available because no purchase was made.', 'event-tickets' );
+esc_html_e( 'No order information is available because no purchase was made.', 'event-tickets' );
