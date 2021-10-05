@@ -24,10 +24,12 @@
 ?>
 <div class="tribe-common-b1 tribe-tickets__commerce-order-description">
 	<?php
-	printf(
-		// Translators: %1$s: Plural `tickets` in lowercase.
-		esc_html__( 'Thank you. Your order has been received. A receipt for purchase and any digital %1$s ordered will be emailed to you shortly.', 'event-tickets' ),
-		tribe_get_ticket_label_plural_lowercase( 'tickets_commerce_order_description' ) // phpcs:ignore
+	echo esc_html(
+		sprintf(
+			// Translators: %1$s: Plural `tickets` in lowercase.
+			__( 'Thank you. Your order has been received. A receipt for purchase and any digital %1$s ordered will be emailed to you shortly.', 'event-tickets' ),
+			tribe_get_ticket_label_plural_lowercase( 'tickets_commerce_order_description' ) // phpcs:ignore
+		)
 	);
 	?>
 </div>

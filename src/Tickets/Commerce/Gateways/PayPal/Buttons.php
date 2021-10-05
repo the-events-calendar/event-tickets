@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Cart;
 
 /**
  * Class Buttons
@@ -52,6 +53,13 @@ class Buttons {
 	public function get_checkout_script() {
 		// Bail if PayPal is not configured and active.
 		if ( ! tribe( Merchant::class )->is_active() ) {
+			return;
+		}
+
+		$items = tribe( Cart::class )->get_items_in_cart( true );
+
+		// Bail if there are no tickets in cart.
+		if ( empty( $items ) ) {
 			return;
 		}
 

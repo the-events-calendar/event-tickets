@@ -100,7 +100,9 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleCancel = function ( data, $container ) {
+		tribe.tickets.debug.log( 'handleCancel', arguments );
 		$container.removeClass( obj.selectors.activePayment.className() );
+		obj.triggerFailOrder( $container, data.orderID, null, null );
 	};
 
 	/**
@@ -114,6 +116,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleGenericError = function ( error, $container ) {
+		tribe.tickets.debug.log( 'handleGenericError', arguments );
 		$container.removeClass( obj.selectors.activePayment.className() );
 	};
 
@@ -127,6 +130,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleClick = function ( $container ) {
+		tribe.tickets.debug.log( 'handleClick', arguments );
 		$container.addClass( obj.selectors.activePayment.className() );
 	};
 
@@ -142,7 +146,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleCreateOrder = function ( data, actions, $container ) {
-		console.log( 'handleCreateOrder', arguments );
+		tribe.tickets.debug.log( 'handleCreateOrder', arguments );
 		return fetch(
 			obj.orderEndpointUrl,
 			{
@@ -154,7 +158,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		)
 			.then( response => response.json() )
 			.then( data => {
-				console.log( data );
+				tribe.tickets.debug.log( data );
 				if ( data.success ) {
 					return obj.handleCreateOrderSuccess( data );
 				} else {
@@ -174,7 +178,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {string}
 	 */
 	obj.handleCreateOrderSuccess = function ( data ) {
-		console.log( 'handleCreateOrderSuccess', arguments );
+		tribe.tickets.debug.log( 'handleCreateOrderSuccess', arguments );
 		return data.id;
 	};
 
@@ -188,7 +192,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleCreateOrderFail = function ( data ) {
-		console.log( 'handleCreateOrderFail', arguments );
+		tribe.tickets.debug.log( 'handleCreateOrderFail', arguments );
 	};
 
 	/**
@@ -201,7 +205,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleCreateOrderError = function ( error ) {
-		console.log( 'handleCreateOrderError', arguments );
+		tribe.tickets.debug.log( 'handleCreateOrderError', arguments );
 	};
 
 	/**
@@ -216,26 +220,30 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleApprove = function ( data, actions, $container ) {
-		console.log( 'handleApprove', arguments );
+		tribe.tickets.debug.log( 'handleApprove', arguments );
 		/**
 		 * @todo On approval we receive a bit more than just the orderID on the data object
 		 *       we should be passing those to the BE.
 		 */
+
+		const body = {
+			'payer_id' : data.payerID ?? '',
+		};
+
 		return fetch(
 			obj.orderEndpointUrl + '/' + data.orderID,
 			{
 				method: 'POST',
 				headers: {
 					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+					'Content-Type': 'application/json',
 				},
-				body: {
-					'payer_id': data.payerID ?? '',
-				}
+				body: JSON.stringify( body ),
 			}
 		)
 			.then( response => response.json() )
 			.then( data => {
-				console.log( data );
+				tribe.tickets.debug.log( data );
 				if ( data.success ) {
 					return obj.handleApproveSuccess( data );
 				} else {
@@ -255,7 +263,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleApproveSuccess = function ( data ) {
-		console.log( 'handleApproveSuccess', arguments );
+		tribe.tickets.debug.log( 'handleApproveSuccess', arguments );
 		// When this Token has expired we just refresh the browser.
 		window.location.replace( data.redirect_url );
 	};
@@ -270,7 +278,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleApproveFail = function ( data ) {
-		console.log( 'handleApproveFail', arguments );
+		tribe.tickets.debug.log( 'handleApproveFail', arguments );
 
 	};
 
@@ -284,12 +292,12 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleApproveError = function ( error ) {
-		console.log( 'handleApproveError', arguments );
+		tribe.tickets.debug.log( 'handleApproveError', arguments );
 
 	};
 
 	/**
-	 * Unbinds the description toggle.
+	 * Fetches the configuration object for the PayPal buttons.
 	 *
 	 * @since 5.1.9
 	 *
@@ -305,14 +313,69 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 				shape: 'rect',
 				label: 'paypal'
 			},
-			createOrder: ( data, actions ) => { return obj.handleCreateOrder( data, actions, $container ); },
-			onApprove: ( data, actions ) => { return obj.handleApprove( data, actions, $container ); },
-			onCancel: ( data ) => { return obj.handleCancel( data, $container ); },
-			onError: ( data ) => { return obj.handleGenericError( data, $container ); },
-			onClick: () => { return obj.handleClick( $container ); }
+			createOrder: ( data, actions ) => {
+				return obj.handleCreateOrder( data, actions, $container );
+			},
+			onApprove: ( data, actions ) => {
+				return obj.handleApprove( data, actions, $container );
+			},
+			onCancel: ( data ) => {
+				return obj.handleCancel( data, $container );
+			},
+			onError: ( data ) => {
+				return obj.handleGenericError( data, $container );
+			},
+			onClick: () => {
+				return obj.handleClick( $container );
+			}
 		};
 
 		return configs;
+	};
+
+	/**
+	 * Triggers an AJAX request to handle the failing of an order.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container jQuery object of the tickets container.
+	 * @param {string} orderId PayPal Order ID.
+	 * @param {string} status To which status in Tickets Commerce we should move this order to.
+	 * @param {string} reason What is the reason this order is failing.
+	 *
+	 * @return {void}
+	 */
+	obj.triggerFailOrder = ( $container, orderId, status, reason ) => {
+		const data = {
+			failed_status: status,
+			failed_reason: reason,
+		};
+		return fetch(
+			obj.orderEndpointUrl + '/' + orderId,
+			{
+				method: 'DELETE',
+				headers: {
+					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+				},
+				body: JSON.stringify( data )
+			}
+		)
+			.then( response => response.json() )
+			.then( data => {
+				tribe.tickets.debug.log( data );
+			} )
+			.catch( obj.handleFailOrderError );
+	};
+
+	/**
+	 * If the failing of an order AJAX request returns an error we need to be able to catch it.
+	 *
+	 * @since TBD
+	 *
+	 * @return {void}
+	 */
+	obj.handleFailOrderError = () => {
+
 	};
 
 	/**
@@ -361,7 +424,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.buttonsLoaded = function () {
 		$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
 		$( tribe.tickets.commerce.selectors.checkoutContainer ).off( 'DOMNodeInserted', obj.selectors.buttons, obj.buttonsLoaded );
-	}
+	};
 
 	/**
 	 * Setup the triggers for Ticket Commerce loader view.
@@ -375,7 +438,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 		// Hide loader when Paypal buttons are added.
 		$( tribe.tickets.commerce.selectors.checkoutContainer ).on( 'DOMNodeInserted', obj.selectors.buttons, obj.buttonsLoaded );
-	}
+	};
 
 	/**
 	 * Bind script loader to trigger script dependent methods.
@@ -388,6 +451,13 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 		if ( ! $script.length ) {
 			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
+		}
+
+		/**
+		 * If PayPal is loaded already then setup PayPal buttons.
+		 */
+		if ( typeof paypal !== 'undefined' ) {
+			obj.setupButtons( {}, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
 			return;
 		}
 
@@ -397,7 +467,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		window.onload = ( event ) => {
 			obj.setupButtons( event, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
 		};
-	}
+	};
 
 	/**
 	 * Handles the initialization of the tickets commerce events when Document is ready.

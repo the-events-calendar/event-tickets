@@ -19,6 +19,7 @@ namespace TEC\Tickets\Commerce;
 
 use \tad_DI52_ServiceProvider;
 use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Status_Interface;
 use Tribe\Tickets\Shortcodes\Tribe_Tickets_Checkout;
 
 /**
@@ -50,6 +51,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		add_action( 'init', [ $this, 'register_post_types' ] );
 		add_action( 'init', [ $this, 'register_order_statuses' ], 11 );
+
+		add_action( 'init', [ $this, 'register_order_reports' ] );
+
 		add_action( 'tribe_common_loaded', [ $this, 'load_commerce_module' ] );
 
 		add_action( 'template_redirect', [ $this, 'do_cart_parse_request' ] );
@@ -71,6 +75,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		// This needs to run earlier than our page setup.
 		add_action( 'admin_init', [ $this, 'maybe_trigger_process_action' ], 5 );
+
+		add_action( 'tec_tickets_commerce_order_status_transition', [ $this, 'modify_tickets_counters_by_status' ], 15, 3 );
 	}
 
 	/**
@@ -106,6 +112,11 @@ class Hooks extends tad_DI52_ServiceProvider {
 		$this->container->make( Module::class );
 	}
 
+	/**
+	 * Adds the payments tab to the settings.
+	 *
+	 * @since TBD
+	 */
 	public function register_payments_tab() {
 		$this->container->make( Settings::class )->register_tab();
 	}
@@ -119,6 +130,20 @@ class Hooks extends tad_DI52_ServiceProvider {
 		$this->container->make( Attendee::class )->register_post_type();
 		$this->container->make( Order::class )->register_post_type();
 		$this->container->make( Ticket::class )->register_post_type();
+	}
+
+	/**
+	 * Register the Orders report.
+	 *
+	 * @todo  Currently this is attaching the hook method to the init, which is incorrect we should not be attaching these
+	 *       filters from the orders class if we can avoid it.
+	 *
+	 * @since TBD
+	 *
+	 *
+	 */
+	public function register_order_reports() {
+		$this->container->make( Reports\Orders::class )->hook();
 	}
 
 	/**
@@ -197,6 +222,19 @@ class Hooks extends tad_DI52_ServiceProvider {
 		$statuses[] = tribe( Completed::class )->get_wp_slug();
 
 		return array_unique( $statuses );
+	}
+
+	/**
+	 * Modify the counters for all the tickets involved on this particular order.
+	 *
+	 * @since TBD
+	 *
+	 * @param Status_Interface      $new_status New post status.
+	 * @param Status_Interface|null $old_status Old post status.
+	 * @param \WP_Post              $post       Post object.
+	 */
+	public function modify_tickets_counters_by_status( $new_status, $old_status, $post ) {
+		$this->container->make( Ticket::class )->modify_counters_by_status( $new_status, $old_status, $post );
 	}
 
 	/**
@@ -440,7 +478,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 		 */
 		$ticket_handler = tribe( 'tickets.handler' );
 
-		add_filter( "sanitize_post_meta_{$ticket_handler->key_provider_field}" , [ $this, 'filter_modify_sanitization_provider_meta' ] );
+		add_filter( "sanitize_post_meta_{$ticket_handler->key_provider_field}", [ $this, 'filter_modify_sanitization_provider_meta' ] );
 	}
 
 	/**
@@ -448,7 +486,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.1.10
 	 *
-	 * @param mixed  $meta_value Metadata value.
+	 * @param mixed $meta_value Metadata value.
 	 *
 	 * @return string
 	 */
