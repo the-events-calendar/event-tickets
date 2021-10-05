@@ -517,26 +517,27 @@ class Attendee {
 	}
 
 	public function load_attendee_data( $attendee ) {
-		$attendee->attendee_id        = $attendee->ID;
-		$attendee->attendee_meta      = null;
-		$attendee->check_in           = null;
-		$attendee->event_id           = $this->get_event_id( $attendee );
-		$attendee->holder_email       = $this->get_holder_email( $attendee );
-		$attendee->holder_name        = $this->get_holder_name( $attendee );
-		$attendee->is_purchaser       = true;
-		$attendee->is_subscribed      = null;
-		$attendee->optout             = null;
-		$attendee->product_id         = null;
-		$attendee->provider_slug      = static::$legacy_provider_slug;
-		$attendee->purchase_time      = get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee->order_id );
-		$attendee->qr_ticket_id       = null;
-		$attendee->security           = $this->get_security_code( $attendee );
-		$attendee->security_code      = $this->get_security_code( $attendee );
-		$attendee->ticket             = $this->get_product_title( $attendee );
-		$attendee->ticket_id          = $this->get_unique_id( $attendee );
-		$attendee->ticket_name        = $this->get_product_title( $attendee );
-		$attendee->ticket_sent        = null;
-		$attendee->user_id            = null;
+		$attendee->attendee_id   = $attendee->ID;
+		$attendee->attendee_meta = null;
+		$attendee->check_in      = $this->get_check_in_status( $attendee );
+		$attendee->event_id      = $this->get_event_id( $attendee );
+		$attendee->holder_email  = $this->get_holder_email( $attendee );
+		$attendee->holder_name   = $this->get_holder_name( $attendee );
+		$attendee->is_purchaser  = true;
+		$attendee->is_subscribed = null;
+		$attendee->optout        = null;
+		$attendee->product_id    = null;
+		$attendee->provider      = static::$legacy_provider_slug;
+		$attendee->provider_slug = static::$legacy_provider_slug;
+		$attendee->purchase_time = get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee->order_id );
+		$attendee->qr_ticket_id  = null;
+		$attendee->security      = $this->get_security_code( $attendee );
+		$attendee->security_code = $this->get_security_code( $attendee );
+		$attendee->ticket        = $this->get_product_title( $attendee );
+		$attendee->ticket_id     = $this->get_unique_id( $attendee );
+		$attendee->ticket_name   = $this->get_product_title( $attendee );
+		$attendee->ticket_sent   = null;
+		$attendee->user_id       = null;
 
 		$order = $this->get_order( $attendee );
 
@@ -544,10 +545,9 @@ class Attendee {
 			$attendee->order_id           = $order->ID;
 			$attendee->order_status       = $order->post_status;
 			$attendee->order_status_label = tribe( Tickets_View::class )->get_rsvp_options( $attendee->order_status );
-			$attendee->purchaser_name = get_post_meta( $order->ID, Order::$purchaser_full_name_meta_key, true );
-			$attendee->purchaser_email = get_post_meta( $order->ID, Order::$purchaser_email_meta_key, true );
+			$attendee->purchaser_name     = get_post_meta( $order->ID, Order::$purchaser_full_name_meta_key, true );
+			$attendee->purchaser_email    = get_post_meta( $order->ID, Order::$purchaser_email_meta_key, true );
 		}
-
 
 		if ( empty( $attendee->ticket_id ) ) {
 			$attendee->ticket_id = $attendee->ID;
@@ -586,12 +586,26 @@ class Attendee {
 		return get_post_meta( $attendee->ID, static::$security_code_meta_key, true );
 	}
 
-	public function get_status( \WP_Post $item ) {
+	public function get_check_in_status( \WP_Post $item ) {
+		if ( static::POSTTYPE !== $item->post_type ) {
+			return $item->check_in;
+		}
+
+		return get_post_meta( $item->ID, static::$checked_in_meta_key, true );
+	}
+
+	public function get_check_in_label( \WP_Post $item ) {
 		if ( static::POSTTYPE !== $item->post_type ) {
 			return $item->order_status_label;
 		}
 
-		return get_post_meta( $item->ID, static::$status_meta_key, true );
+		$checked_in = $this->get_check_in_status( $item );
+
+		if ( empty( $checked_in ) ) {
+			return '';
+		}
+
+		return tribe( Tickets_View::class )->get_rsvp_options( $checked_in === '1' ? 'yes' : 'no' );
 	}
 
 	public function get_order( \WP_Post $attendee ) {

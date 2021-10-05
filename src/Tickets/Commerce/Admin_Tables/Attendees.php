@@ -310,9 +310,26 @@ class Attendees extends WP_List_Table {
 	 * @param WP_Post $item The current item.
 	 */
 	public function single_row( $item ) {
-		echo '<tr class="' . esc_attr( $item->post_status ) . '">';
+		$checked = '';
+		if ( (int) $item->check_in === 1 ) {
+			$checked = ' tickets_checked ';
+		}
+
+		$status = 'complete';
+		if ( ! empty( $item->order_status ) ) {
+			$status = $item->order_status;
+		}
+
+		echo '<tr class="' . esc_attr( $checked . $status ) . '">';
 		$this->single_row_columns( $item );
 		echo '</tr>';
+
+		/**
+		 * Hook to allow for the insertion of data after an attendee table row.
+		 *
+		 * @var $item array of an Attendee's data
+		 */
+		do_action( 'event_tickets_commerce_attendees_table_after_row', $item );
 	}
 
 	/**
@@ -402,7 +419,7 @@ class Attendees extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_status( $item ) {
-		$status = tribe( Attendee::class )->get_status( $item );
+		$status = tribe( Attendee::class )->get_check_in_label( $item );
 
 		return esc_html( $status );
 	}
