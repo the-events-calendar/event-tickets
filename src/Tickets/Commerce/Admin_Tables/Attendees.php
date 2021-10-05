@@ -259,7 +259,7 @@ class Attendees extends WP_List_Table {
 		foreach ( $rsvp as $attendee ) {
 			$attendee = tribe( Attendee::class )->get_attendee( $attendee );
 
-			if ( ! empty( $attendee->event_id ) ) {
+			if ( ! empty( $attendee->event_id ) && $attendee->event_id === $post_id ) {
 				$attendees[] = $attendee;
 			}
 		}

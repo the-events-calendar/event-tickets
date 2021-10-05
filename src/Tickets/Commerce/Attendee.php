@@ -190,6 +190,8 @@ class Attendee {
 
 	public static $unique_id_meta_key = '_unique_id';
 
+	public static $legacy_provider_slug = 'tc';
+
 	public function __construct() {
 		$this->legacy_rsvp_repo = tribe( 'tickets.rsvp' );
 	}
@@ -482,7 +484,10 @@ class Attendee {
 	public function decreases_inventory( $attendee ) {
 		$attendee = tec_tc_get_attendee( $attendee['ID'] );
 		$order    = tec_tc_get_order( $attendee->post_parent );
-		$statuses = array_unique( [ tribe( Status_Handler::class )->get_inventory_decrease_status()->get_wp_slug(), tribe( Commerce\Status\Completed::class )->get_wp_slug() ] );
+		$statuses = array_unique( [
+			tribe( Status_Handler::class )->get_inventory_decrease_status()->get_wp_slug(),
+			tribe( Commerce\Status\Completed::class )->get_wp_slug(),
+		] );
 
 		return in_array( $order->post_status, $statuses, true );
 	}
@@ -497,7 +502,9 @@ class Attendee {
 	public function get_attendee( \WP_Post $attendee ) {
 
 		if ( static::POSTTYPE !== $attendee->post_type ) {
-			$attendee_data = tribe( \Tribe__Tickets__RSVP::class )->get_attendee( $attendee );
+
+			$legacy_provider = tribe_tickets_get_ticket_provider( $attendee->ID );
+			$attendee_data   = $legacy_provider->get_attendee( $attendee );
 
 			foreach ( $attendee_data as $key => $value ) {
 				$attendee->{$key} = $value;
@@ -514,17 +521,13 @@ class Attendee {
 		$attendee->attendee_meta      = null;
 		$attendee->check_in           = null;
 		$attendee->event_id           = $this->get_event_id( $attendee );
-		$attendee->holder_email       = 'hardcoded@email.org'; // @todo implement saving further attendee data
-		$attendee->holder_name        = 'Hardcoded Name';
+		$attendee->holder_email       = $this->get_holder_email( $attendee );
+		$attendee->holder_name        = $this->get_holder_name( $attendee );
 		$attendee->is_purchaser       = true;
 		$attendee->is_subscribed      = null;
 		$attendee->optout             = null;
-		$attendee->order_id           = null;
-		$attendee->order_status       = null;
-		$attendee->order_status_label = null;
 		$attendee->product_id         = null;
-		$attendee->provider           = __CLASS__;
-		$attendee->provider_slug      = 'tickets-commerce'; // ???
+		$attendee->provider_slug      = static::$legacy_provider_slug;
 		$attendee->purchase_time      = get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee->order_id );
 		$attendee->qr_ticket_id       = null;
 		$attendee->security           = $this->get_security_code( $attendee );
@@ -534,6 +537,17 @@ class Attendee {
 		$attendee->ticket_name        = $this->get_product_title( $attendee );
 		$attendee->ticket_sent        = null;
 		$attendee->user_id            = null;
+
+		$order = $this->get_order( $attendee );
+
+		if ( $order ) {
+			$attendee->order_id           = $order->ID;
+			$attendee->order_status       = $order->post_status;
+			$attendee->order_status_label = tribe( Tickets_View::class )->get_rsvp_options( $attendee->order_status );
+			$attendee->purchaser_name = get_post_meta( $order->ID, Order::$purchaser_full_name_meta_key, true );
+			$attendee->purchaser_email = get_post_meta( $order->ID, Order::$purchaser_email_meta_key, true );
+		}
+
 
 		if ( empty( $attendee->ticket_id ) ) {
 			$attendee->ticket_id = $attendee->ID;
@@ -545,7 +559,7 @@ class Attendee {
 	public function get_product_title( \WP_Post $attendee ) {
 		$ticket = get_post( $attendee->ticket_id );
 
-		return $ticket->post_title; // @todo add logic for deleted tickets
+		return $ticket->post_title ?: 'no product title'; // @todo add logic for deleted tickets
 	}
 
 	public function get_event_id( \WP_Post $attendee ) {
@@ -572,11 +586,37 @@ class Attendee {
 		return get_post_meta( $attendee->ID, static::$security_code_meta_key, true );
 	}
 
-	public function get_status( \WP_Post $attendee ) {
-		if ( static::POSTTYPE !== $attendee->post_type ) {
-			return $attendee->order_status_label;
+	public function get_status( \WP_Post $item ) {
+		if ( static::POSTTYPE !== $item->post_type ) {
+			return $item->order_status_label;
 		}
 
-		return get_post_meta( $attendee->ID, static::$status_meta_key, true );
+		return get_post_meta( $item->ID, static::$status_meta_key, true );
+	}
+
+	public function get_order( \WP_Post $attendee ) {
+		return tec_tc_get_order(
+			get_post_meta( $attendee->ID, static::$order_relation_meta_key, true )
+		);
+	}
+
+	public function get_holder_name( \WP_Post $attendee ) {
+		$name = get_post_meta( $attendee->ID, static::$purchaser_name_meta_key, true );
+
+		if ( $name ) {
+			return $name;
+		}
+
+		return esc_html__( 'Name not available', 'event-tickets' );
+	}
+
+	public function get_holder_email( \WP_Post $attendee ) {
+		$email = \get_post_meta( $attendee->ID, static::$purchaser_email_meta_key, true );
+
+		if ( $email ) {
+			return $email;
+		}
+
+		return esc_html__( 'Email not available', 'event-tickets' );
 	}
 }
