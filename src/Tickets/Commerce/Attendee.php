@@ -6,6 +6,7 @@ use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use \Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Utils__Array as Arr;
+use Tribe__Date_Utils;
 
 /**
  * Class Attendee
@@ -214,11 +215,11 @@ class Attendee {
 		/**
 		 * Filter the arguments that craft the attendee post type.
 		 *
+		 * @see   register_post_type
+		 *
 		 * @since 5.1.9
 		 *
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
-		 *
-		 * @see   register_post_type
 		 *
 		 */
 		$post_type_args = apply_filters( 'tec_tickets_commerce_attendee_post_type_args', $post_type_args );
@@ -403,7 +404,7 @@ class Attendee {
 	 * @param int $event_id
 	 */
 	public function maybe_send_tickets_after_status_change( $event_id ) {
-		$transaction_ids = array();
+		$transaction_ids = [];
 
 		foreach ( tribe( Module::class )->get_event_attendees( $event_id ) as $attendee ) {
 			$transaction = get_post_meta( $attendee['attendee_id'], static::$order_relation_meta_key, true );
@@ -504,9 +505,54 @@ class Attendee {
 			foreach ( $attendee_data as $key => $value ) {
 				$attendee->{$key} = $value;
 			}
+		} else {
+			$attendee = $this->load_attendee_data( $attendee );
 		}
 
 		return $attendee;
+	}
+
+	public function load_attendee_data( $attendee ) {
+		$attendee->attendee_id        = $attendee->ID;
+		$attendee->attendee_meta      = null;
+		$attendee->check_in           = null;
+		$attendee->event_id           = $this->get_event_id( $attendee );
+		$attendee->holder_email       = 'hardcoded@email.org'; // @todo implement saving further attendee data
+		$attendee->holder_name        = 'Hardcoded Name';
+		$attendee->is_purchaser       = true;
+		$attendee->is_subscribed      = null;
+		$attendee->optout             = null;
+		$attendee->order_id           = null;
+		$attendee->order_status       = null;
+		$attendee->order_status_label = null;
+		$attendee->product_id         = null;
+		$attendee->provider           = __CLASS__;
+		$attendee->provider_slug      = 'tickets-commerce'; // ???
+		$attendee->purchase_time      = get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee->order_id );
+		$attendee->qr_ticket_id       = null;
+		$attendee->security           = $this->get_security_code( $attendee );
+		$attendee->security_code      = $this->get_security_code( $attendee );
+		$attendee->ticket             = $this->get_product_title( $attendee );
+		$attendee->ticket_id          = $this->get_unique_id( $attendee );
+		$attendee->ticket_name        = $this->get_product_title( $attendee );
+		$attendee->ticket_sent        = null;
+		$attendee->user_id            = null;
+
+		if ( empty( $attendee->ticket_id ) ) {
+			$attendee->ticket_id = $attendee->ID;
+		}
+
+		return $attendee;
+	}
+
+	public function get_product_title( \WP_Post $attendee ) {
+		$ticket = get_post( $attendee->ticket_id );
+
+		return $ticket->post_title; // @todo add logic for deleted tickets
+	}
+
+	public function get_event_id( \WP_Post $attendee ) {
+		return get_post_meta( $attendee->ID, static::$event_relation_meta_key, true );
 	}
 
 	public function get_unique_id( \WP_Post $attendee ) {
