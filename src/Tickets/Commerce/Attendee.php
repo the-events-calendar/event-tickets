@@ -173,7 +173,7 @@ class Attendee {
 	/**
 	 * Meta key holding price paid for this attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @var string
 	 */
@@ -182,7 +182,7 @@ class Attendee {
 	/**
 	 * Meta key holding currency which the price was paid in.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @var string
 	 */
@@ -230,7 +230,7 @@ class Attendee {
 	/**
 	 * Creates an individual attendee given an Order and Ticket.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param \WP_Post      $order  Which order generated this attendee.
 	 * @param Ticket_Object $ticket Which ticket generated this Attendee.
@@ -252,7 +252,7 @@ class Attendee {
 		/**
 		 * Allow the filtering of the create arguments for attendee.
 		 *
-		 * @since TBD
+		 * @since 5.1.10
 		 *
 		 * @param array         $create_args Which arguments we are going to use to create the attendee.
 		 * @param \WP_Post      $order       Which order generated this attendee.
@@ -264,7 +264,7 @@ class Attendee {
 		/**
 		 * Allow the actions before creating the attendee.
 		 *
-		 * @since TBD
+		 * @since 5.1.10
 		 *
 		 * @param array         $create_args Which arguments we are going to use to create the attendee.
 		 * @param \WP_Post      $order       Which order generated this attendee.
@@ -278,7 +278,7 @@ class Attendee {
 		/**
 		 * Allow the actions after creating the attendee.
 		 *
-		 * @since TBD
+		 * @since 5.1.10
 		 *
 		 * @param \WP_Post      $attendee Post object for the attendee.
 		 * @param \WP_Post      $order    Which order generated this attendee.
@@ -290,7 +290,7 @@ class Attendee {
 		/**
 		 * Allow the filtering of the attendee WP_Post after creating attendee.
 		 *
-		 * @since TBD
+		 * @since 5.1.10
 		 *
 		 * @param \WP_Post      $attendee Post object for the attendee.
 		 * @param \WP_Post      $order    Which order generated this attendee.
@@ -482,10 +482,7 @@ class Attendee {
 	public function decreases_inventory( $attendee ) {
 		$attendee = tec_tc_get_attendee( $attendee['ID'] );
 		$order    = tec_tc_get_order( $attendee->post_parent );
-		$statuses = array_unique( [
-			tribe( Status_Handler::class )->get_inventory_decrease_status()->get_wp_slug(),
-			tribe( Commerce\Status\Pending::class )->get_wp_slug(),
-		] );
+		$statuses = array_unique( [ tribe( Status_Handler::class )->get_inventory_decrease_status()->get_wp_slug(), tribe( Commerce\Status\Completed::class )->get_wp_slug() ] );
 
 		return in_array( $order->post_status, $statuses, true );
 	}

@@ -37,7 +37,7 @@ class Decrease_Stock extends Flag_Action_Abstract {
 	/**
 	 * Hooks any WordPress filters related to this Flag Action.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 */
 	public function hook() {
 		parent::hook();
@@ -49,7 +49,7 @@ class Decrease_Stock extends Flag_Action_Abstract {
 	/**
 	 * Returns the instance of the status we trigger this flag action.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @return Status_Abstract
 	 */
@@ -66,7 +66,7 @@ class Decrease_Stock extends Flag_Action_Abstract {
 	/**
 	 * Include generate_attendee flag to either Completed or Pending
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param string[]        $flags  Which flags will trigger this action.
 	 * @param \WP_Post        $post   Post object.

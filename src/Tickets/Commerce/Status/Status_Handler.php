@@ -309,7 +309,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Gets the status in which we decrease inventory and add an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @return Status_Abstract
 	 */

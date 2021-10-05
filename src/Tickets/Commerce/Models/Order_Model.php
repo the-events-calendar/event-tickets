@@ -87,7 +87,7 @@ class Order_Model extends Base {
 	/**
 	 * Modifies the Gateway payload meta into a more easily consumable array of data.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param array $post_meta Current existing meta.
 	 *
@@ -109,7 +109,7 @@ class Order_Model extends Base {
 	/**
 	 * Modifies the status log meta into a more easily consumable array of data.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param array $post_meta Current existing meta.
 	 *
@@ -131,7 +131,7 @@ class Order_Model extends Base {
 	/**
 	 * Modifies the markers for flag actions log meta into a more easily consumable array of data.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param array $post_meta Current existing meta.
 	 *
