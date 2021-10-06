@@ -31,10 +31,20 @@ class Notice_Handler {
 	 *
 	 * @since TBD
 	 *
+	 * @param string $slug Slug for the notice.
+	 *
 	 * @return int
 	 */
-	protected function get_expiration() {
-		return 10;
+	protected function get_expiration( $slug ) {
+		/**
+		 * Filters the available notice messages.
+		 *
+		 * @since TBD
+		 *
+		 * @param int    $duration Duration in seconds to expire.
+		 * @param string $slug     Slug for the notice to display.
+		 */
+		return (int) apply_filters( 'tec_tickets_commerce_notice_expiration', 10, $slug );
 	}
 
 	/**
@@ -140,7 +150,7 @@ class Notice_Handler {
 
 		$message = $this->get_message_data( $slug, $args );
 
-		tribe_transient_notice( $slug, $message['content'], $message, $this->get_expiration() );
+		tribe_transient_notice( $slug, $message['content'], $message, $this->get_expiration( $slug ) );
 
 		// This is here because of a possible bug in common.
 		$this->clear_request_cache();
