@@ -187,7 +187,7 @@ class Attendee {
 	public static $currency_meta_key = '_tec_tickets_commerce_currency';
 
 	/**
-	 * Meta key holding currency which the price was paid in.
+	 * Meta key holding the ticket holder name.
 	 *
 	 * @since TBD
 	 *
@@ -196,7 +196,7 @@ class Attendee {
 	public static $holder_name_meta_key = '_tec_tickets_commerce_holder_name';
 
 	/**
-	 * Meta key holding price paid for this attendee.
+	 * Meta key holding the ticket holder email.
 	 *
 	 * @since TBD
 	 *

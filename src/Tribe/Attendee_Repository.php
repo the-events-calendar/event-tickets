@@ -88,14 +88,12 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		$this->add_simple_meta_schema_entry( 'purchaser_email', $this->purchaser_email_keys(), 'meta_in' );
 		$this->add_simple_meta_schema_entry( 'purchaser_email__not_in', $this->purchaser_email_keys(), 'meta_not_in' );
 		$this->add_simple_meta_schema_entry( 'purchaser_email__like', $this->purchaser_email_keys(), 'meta_like' );
-
 		$this->add_simple_meta_schema_entry( 'holder_name', $this->holder_name_keys(), 'meta_in' );
 		$this->add_simple_meta_schema_entry( 'holder_name__not_in', $this->holder_name_keys(), 'meta_not_in' );
 		$this->add_simple_meta_schema_entry( 'holder_name__like', $this->holder_name_keys(), 'meta_like' );
 		$this->add_simple_meta_schema_entry( 'holder_email', $this->holder_email_keys(), 'meta_in' );
 		$this->add_simple_meta_schema_entry( 'holder_email__not_in', $this->holder_email_keys(), 'meta_not_in' );
 		$this->add_simple_meta_schema_entry( 'holder_email__like', $this->holder_email_keys(), 'meta_like' );
-
 		$this->add_simple_meta_schema_entry( 'security_code', $this->security_code_keys(), 'meta_in' );
 		$this->add_simple_meta_schema_entry( 'security_code__not_in', $this->security_code_keys(), 'meta_not_in' );
 		$this->add_simple_meta_schema_entry( 'user', '_tribe_tickets_attendee_user_id', 'meta_in' );
@@ -245,7 +243,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * Extending repository classes should override this to add more keys.
 	 *
-	 * @since 4.10.6
+	 * @since TBD
 	 *
 	 * @return array
 	 */
@@ -262,7 +260,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * Extending repository classes should override this to add more keys.
 	 *
-	 * @since 4.10.6
+	 * @since TBD
 	 *
 	 * @return array
 	 */
