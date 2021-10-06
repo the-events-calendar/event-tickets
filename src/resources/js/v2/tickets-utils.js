@@ -234,17 +234,17 @@ tribe.tickets.utils = {};
 	 * @return {float|int} The ticket price.
 	 */
 	obj.getPrice = function( $ticketItem, provider ) {
-		if ( $ticketItem ) {
-			const realPrice = $ticketItem.data( 'ticket-price' );
-			const formattedPrice = $ticketItem
-				.find( '.tribe-tickets__tickets-sale-price .tribe-amount' )
-				.text();
-			const priceString = isNaN( realPrice ) 
-				? obj.cleanNumber( formattedPrice, provider ) 
-				: realPrice;
-				return parseFloat( priceString );
+		if ( ! $ticketItem ) {
+			return 0;
 		}
-		return 0;
+		const realPrice = $ticketItem.data( 'ticket-price' );
+		const formattedPrice = $ticketItem
+			.find( '.tribe-tickets__tickets-sale-price .tribe-amount' )
+			.text();
+		const priceString = isNaN( realPrice ) 
+			? obj.cleanNumber( formattedPrice, provider ) 
+			: realPrice;
+			return parseFloat( priceString );
 	};
 
 } )( jQuery, tribe.tickets.utils );
