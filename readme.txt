@@ -178,6 +178,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Bug - Searching Ticket Holder Email / Ticket Holder Name through the Attendee page now functions. [ET-1171]
+
 = [5.1.10] 2021-09-27 =
 
 * Enhancement - When editing an RSVP or ticket in the block editor, allow title to wrap to multiple lines. [ET-1089]
