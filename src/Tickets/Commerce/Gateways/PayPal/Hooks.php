@@ -18,6 +18,7 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Notice_Handler;
 use TEC\Tickets\Commerce\Shortcodes\Shortcode_Abstract;
 
 /**
@@ -54,6 +55,8 @@ class Hooks extends \tad_DI52_ServiceProvider {
 
 		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout/header', [ $this, 'include_client_js_sdk_script' ], 15, 3 );
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
+
+		add_action( 'admin_init', [ $this, 'render_ssl_notice' ] );
 	}
 
 	/**1
@@ -65,6 +68,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_success_shortcode_checkout_page_paypal_template_vars', [ $this, 'include_checkout_page_vars' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_success_shortcode_success_page_paypal_template_vars', [ $this, 'include_success_page_vars' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_notice_messages', [ $this, 'include_admin_notices' ] );
 	}
 
 	/**
@@ -132,40 +136,65 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Handles the disconnecting of the merchant.
 	 *
-	 * @todo  Display some message when disconnecting.
 	 * @since 5.1.9
 	 *
+	 * @since TBD Display info on disconnect.
 	 */
 	public function handle_action_disconnect() {
-		$this->container->make( Merchant::class )->disconnect();
+		$disconnected = $this->container->make( Merchant::class )->disconnect();
+		$notices      = $this->container->make( Notice_Handler::class );
+
+		if ( ! $disconnected ) {
+			$notices->trigger_admin( 'tc-paypal-disconnected-failed' );
+
+			return;
+		}
+
+		$notices->trigger_admin( 'tc-paypal-disconnected' );
 	}
 
 	/**
 	 * Handles the refreshing of the token from PayPal for this merchant.
 	 *
-	 * @todo  Display some message when refreshing token.
 	 * @since 5.1.9
-	 *
 	 */
 	public function handle_action_refresh_token() {
 		$merchant   = $this->container->make( Merchant::class );
 		$token_data = $this->container->make( Client::class )->get_access_token_from_client_credentials( $merchant->get_client_id(), $merchant->get_client_secret() );
+		$notices    = $this->container->make( Notice_Handler::class );
 
 		$saved = $merchant->save_access_token_data( $token_data );
+
+		if ( ! $saved ) {
+			$notices->trigger_admin( 'tc-paypal-refresh-token-failed' );
+
+			return;
+		}
+
+		$notices->trigger_admin( 'tc-paypal-refresh-token' );
 	}
 
 	/**
 	 * Handles the refreshing of the user info from PayPal for this merchant.
 	 *
-	 * @todo  Display some message when refreshing user info.
 	 * @since 5.1.9
 	 *
 	 */
 	public function handle_action_refresh_user_info() {
 		$merchant  = $this->container->make( Merchant::class );
 		$user_info = $this->container->make( Client::class )->get_user_info();
+		$notices   = $this->container->make( Notice_Handler::class );
 
 		$saved = $merchant->save_user_info( $user_info );
+
+		if ( ! $saved ) {
+			$notices->trigger_admin( 'tc-paypal-refresh-user-info-failed' );
+
+			return;
+		}
+
+		$notices->trigger_admin( 'tc-paypal-refresh-user-info' );
+
 	}
 
 	/**
@@ -199,5 +228,34 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function filter_add_gateway( array $gateways = [] ) {
 		return $this->container->make( Gateway::class )->register_gateway( $gateways );
+	}
+
+	/**
+	 * Render SSL requirement notice.
+	 *
+	 * @since TBD
+	 */
+	public function render_ssl_notice() {
+		$page = tribe_get_request_var( 'page' ) === 'tribe-common';
+		$tab  = tribe_get_request_var( 'tab' ) === 'payments';
+
+		if ( ! $page || ! $tab || is_ssl() ) {
+			return;
+		}
+
+		$this->container->make( Notice_Handler::class )->trigger_admin( 'tc-paypal-ssl-not-available' );
+	}
+
+	/**
+	 * Include PayPal admin notices for Ticket Commerce.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $messages Array of messages.
+	 *
+	 * @return array
+	 */
+	public function include_admin_notices( $messages ) {
+		return array_merge( $messages, $this->container->make( Gateway::class )->get_admin_notices() );
 	}
 }
