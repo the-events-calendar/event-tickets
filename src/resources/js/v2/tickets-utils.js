@@ -227,7 +227,7 @@ tribe.tickets.utils = {};
 	};
 
 	/**
-	 * Get the price of the ticket from the ticket item element
+	 * Get the price of the ticket from the ticket item element.
 	 *
 	 * @since TBD
 	 *
