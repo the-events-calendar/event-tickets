@@ -273,33 +273,21 @@ class Attendees extends WP_List_Table {
 			$arguments['events'] = $post_id;
 		}
 
-		$attendee_repos = \tec_tc_attendees( 'all' );
-		$rsvp           = [];
+		$item_data = \Tribe__Tickets__Tickets::get_event_attendees_by_args( $post_id, $arguments );
 
-		foreach ( $attendee_repos as $repo ) {
-			$repo->by( 'event', $post_id );
-			$repo->by_args( $arguments );
-			$rsvp = array_merge( $rsvp, $repo->all() );
-		}
-
-		foreach ( $rsvp as $attendee ) {
-			$attendee = tribe( Attendee::class )->get_attendee( $attendee );
-
-			if ( ! empty( $attendee->event_id ) && $attendee->event_id === $post_id ) {
-				$attendees[] = $attendee;
-			}
-		}
+		$this->items = array_map( function ( $attendee ) {
+			$attendee = new \WP_Post( (object) $attendee );
+			return tribe( Attendee::class )->get_attendee( $attendee );
+		}, $item_data['attendees'] );
 
 		$pagination_args = [
-			'total_items' => count( $attendees ),
+			'total_items' => count( $this->items ),
 			'per_page'    => $this->per_page_option,
 		];
 
 		if ( ! empty( $this->items ) ) {
 			$pagination_args['total_items'] = count( $this->items );
 		}
-
-		$this->items = $attendees;
 
 		$this->set_pagination_args( $pagination_args );
 	}
@@ -530,7 +518,7 @@ class Attendees extends WP_List_Table {
 
 		$default_actions[] = '<span class="trash"><a href="' . $delete_url . '">' . esc_html_x( 'Delete', 'row action', 'event-tickets' ) . '</a></span>';
 
-		$default_actions = apply_filters( 'tec_tickets_commerce_attendees_table_row_actions', $default_actions );
+		$default_actions = apply_filters( 'event_tickets_attendees_table_row_actions', $default_actions, (array) $item );
 
 		$row_actions = implode( ' | ', $default_actions );
 

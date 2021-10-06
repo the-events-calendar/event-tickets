@@ -502,9 +502,9 @@ class Attendee {
 	public function get_attendee( \WP_Post $attendee ) {
 
 		if ( static::POSTTYPE !== $attendee->post_type ) {
-
-			$legacy_provider = tribe_tickets_get_ticket_provider( $attendee->ID );
-			$attendee_data   = $legacy_provider->get_attendee( $attendee );
+			$attendee->is_legacy_attendee = true;
+			$legacy_provider              = tribe_tickets_get_ticket_provider( $attendee->ID );
+			$attendee_data                = (array) $legacy_provider->get_attendee( $attendee );
 
 			foreach ( $attendee_data as $key => $value ) {
 				$attendee->{$key} = $value;
@@ -517,28 +517,30 @@ class Attendee {
 	}
 
 	public function load_attendee_data( $attendee ) {
-		$attendee->attendee_id   = $attendee->ID;
-		$attendee->attendee_meta = null;
-		$attendee->check_in      = $this->get_check_in_status( $attendee );
-		$attendee->event_id      = $this->get_event_id( $attendee );
-		$attendee->holder_email  = $this->get_holder_email( $attendee );
-		$attendee->holder_name   = $this->get_holder_name( $attendee );
-		$attendee->is_purchaser  = true;
-		$attendee->is_subscribed = null;
-		$attendee->optout        = null;
-		$attendee->order_id      = 0;
-		$attendee->product_id    = null;
-		$attendee->provider      = static::$legacy_provider_slug;
-		$attendee->provider_slug = static::$legacy_provider_slug;
-		$attendee->purchase_time = get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee->order_id );
-		$attendee->qr_ticket_id  = null;
-		$attendee->security      = $this->get_security_code( $attendee );
-		$attendee->security_code = $this->get_security_code( $attendee );
-		$attendee->ticket        = $this->get_product_title( $attendee );
-		$attendee->ticket_id     = $this->get_unique_id( $attendee );
-		$attendee->ticket_name   = $this->get_product_title( $attendee );
-		$attendee->ticket_sent   = null;
-		$attendee->user_id       = null;
+		$attendee->attendee_id        = $attendee->ID;
+		$attendee->attendee_meta      = null;
+		$attendee->check_in           = $this->get_check_in_status( $attendee );
+		$attendee->event_id           = $this->get_event_id( $attendee );
+		$attendee->holder_email       = $this->get_holder_email( $attendee );
+		$attendee->holder_name        = $this->get_holder_name( $attendee );
+		$attendee->is_legacy_attendee = false;
+		$attendee->is_purchaser       = true;
+		$attendee->is_subscribed      = null;
+		$attendee->optout             = null;
+		$attendee->order_id           = 0;
+		$attendee->product            = $this->get_product( $attendee );
+		$attendee->product_id         = $this->get_product_id( $attendee );
+		$attendee->provider           = static::$legacy_provider_slug;
+		$attendee->provider_slug      = static::$legacy_provider_slug;
+		$attendee->purchase_time      = get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee->order_id );
+		$attendee->qr_ticket_id       = null;
+		$attendee->security           = $this->get_security_code( $attendee );
+		$attendee->security_code      = $this->get_security_code( $attendee );
+		$attendee->ticket             = $this->get_product_title( $attendee );
+		$attendee->ticket_id          = $this->get_unique_id( $attendee );
+		$attendee->ticket_name        = $this->get_product_title( $attendee );
+		$attendee->ticket_sent        = null;
+		$attendee->user_id            = null;
 
 		$order = $this->get_order( $attendee );
 
@@ -557,10 +559,30 @@ class Attendee {
 		return $attendee;
 	}
 
+	public function get_product( \WP_Post $attendee ) {
+		$product = \get_post_meta( $attendee->ID, Module::ATTENDEE_PRODUCT_KEY, true );
+
+		if ( $product ) {
+			return get_post( $product );
+		}
+
+		return (object) [];
+	}
+
+	public function get_product_id( \WP_Post $attendee ) {
+		if ( empty( $attendee->product->ID ) ) {
+			return '';
+		}
+
+		return (string) $attendee->product->ID;
+	}
+
 	public function get_product_title( \WP_Post $attendee ) {
 		$ticket = get_post( $attendee->ticket_id );
 
-		return ! empty( $ticket->post_title ) ? esc_html( $this->post_title ) : 'no product title'; // @todo add logic for deleted tickets
+		return ! empty( $ticket->post_title ) ?
+			esc_html( $this->post_title ) :
+			get_post_meta( $attendee->ID, static::$deleted_ticket_meta_key, true );
 	}
 
 	public function get_event_id( \WP_Post $attendee ) {
@@ -572,7 +594,7 @@ class Attendee {
 	}
 
 	public function get_ticket_id( \WP_Post $attendee ) {
-		if ( static::POSTTYPE !== $attendee->post_type ) {
+		if ( $attendee->is_legacy_attendee ) {
 			return $attendee->product_id;
 		}
 
@@ -580,7 +602,7 @@ class Attendee {
 	}
 
 	public function get_security_code( \WP_Post $attendee ) {
-		if ( static::POSTTYPE !== $attendee->post_type ) {
+		if ( $attendee->is_legacy_attendee ) {
 			return $attendee->security_code;
 		}
 
@@ -588,7 +610,7 @@ class Attendee {
 	}
 
 	public function get_check_in_status( \WP_Post $item ) {
-		if ( static::POSTTYPE !== $item->post_type ) {
+		if ( $item->is_legacy_attendee ) {
 			return $item->check_in;
 		}
 
@@ -596,7 +618,7 @@ class Attendee {
 	}
 
 	public function get_check_in_label( \WP_Post $item ) {
-		if ( static::POSTTYPE !== $item->post_type ) {
+		if ( $item->is_legacy_attendee ) {
 			return $item->order_status_label;
 		}
 
