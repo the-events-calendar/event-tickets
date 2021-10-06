@@ -28,10 +28,8 @@ class Price {
 		$decimal      = $decimal ?: tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'decimal_point' );
 		$thousand_sep = $thousand_sep ?: tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'thousands_sep' );
 		$number       = number_format( $value, 2, $decimal, $thousand_sep );
-		$number       = (int) str_replace( [ $decimal, $thousand_sep ], '', $number );
-
-		$sub_total = $number * $quantity;
-		$sub_total = substr_replace( (string) $sub_total, $decimal, - 2, 0 );
+		$number       = str_replace( $thousand_sep, '', $number );
+		$sub_total    = $number * $quantity;
 
 		return number_format( $sub_total, 2, $decimal, $thousand_sep );
 	}
@@ -57,12 +55,10 @@ class Price {
 		$values = array_map( static function ( $value ) use ( $decimal, $thousand_sep ) {
 			$number = number_format( $value, 2, $decimal, $thousand_sep );
 
-			return (int) str_replace( [ $decimal, $thousand_sep ], '', $number );
+			return str_replace( $thousand_sep, '', $number );
 		}, $values );
 
-
 		$total = array_sum( array_filter( $values ) );
-		$total = substr_replace( (string) $total, $decimal, - 2, 0 );
 
 		return number_format( $total, 2, $decimal, $thousand_sep );
 	}
