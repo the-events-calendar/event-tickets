@@ -68,6 +68,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_success_shortcode_checkout_page_paypal_template_vars', [ $this, 'include_checkout_page_vars' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_success_shortcode_success_page_paypal_template_vars', [ $this, 'include_success_page_vars' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_notice_messages', [ $this, 'include_admin_notices' ] );
 	}
 
 	/**
@@ -243,5 +244,18 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		}
 
 		$this->container->make( Notice_Handler::class )->trigger_admin( 'tc-paypal-ssl-not-available' );
+	}
+
+	/**
+	 * Include PayPal admin notices for Ticket Commerce.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $messages Array of messages.
+	 *
+	 * @return array
+	 */
+	public function include_admin_notices( $messages ) {
+		return array_merge( $messages, $this->container->make( Gateway::class )->get_admin_notices() );
 	}
 }

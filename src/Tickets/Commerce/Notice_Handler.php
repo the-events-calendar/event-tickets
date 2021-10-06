@@ -45,56 +45,7 @@ class Notice_Handler {
 	 * @return array[]
 	 */
 	public function get_messages() {
-		$messages = [
-			[
-				'slug'     => 'tc-paypal-signup-complete',
-				'content'  => __( 'PayPal is now connected.', 'event-tickets' ),
-				'type'     => 'info',
-				'priority' => 10,
-			],
-			[
-				'slug'     => 'tc-paypal-disconnect-failed',
-				'content'  => __( 'Failed to disconnect PayPal account.', 'event-tickets' ),
-				'type'     => 'error',
-				'priority' => 10,
-			],
-			[
-				'slug'     => 'tc-paypal-disconnect',
-				'content'  => __( 'Disconnect PayPal account.', 'event-tickets' ),
-				'type'     => 'info',
-				'priority' => 10,
-			],
-			[
-				'slug'     => 'tc-paypal-refresh-token-failed',
-				'content'  => __( 'Failed to refresh PayPal access token.', 'event-tickets' ),
-				'type'     => 'error',
-				'priority' => 10,
-			],
-			[
-				'slug'     => 'tc-paypal-refresh-token',
-				'content'  => __( 'PayPal access token was refresh successfully.', 'event-tickets' ),
-				'type'     => 'info',
-				'priority' => 10,
-			],
-			[
-				'slug'     => 'tc-paypal-refresh-user-info-failed',
-				'content'  => __( 'Failed to refresh PayPal user info.', 'event-tickets' ),
-				'type'     => 'error',
-				'priority' => 10,
-			],
-			[
-				'slug'     => 'tc-paypal-refresh-user-info',
-				'content'  => __( 'PayPal user info was refresh successfully.', 'event-tickets' ),
-				'type'     => 'info',
-				'priority' => 10,
-			],
-			[
-				'slug'     => 'tc-paypal-ssl-not-available',
-				'content'  => __( 'A valid SSL certificate is required to set up your PayPal account and accept payments', 'event-tickets' ),
-				'type'     => 'error',
-				'priority' => 10,
-			],
-		];
+		$messages = [];
 
 		/**
 		 * Filters the available notice messages.
