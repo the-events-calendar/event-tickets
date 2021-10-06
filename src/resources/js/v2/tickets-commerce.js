@@ -55,9 +55,6 @@ tribe.tickets.commerce = {};
 		checkoutItemDescriptionButtonLess: '.tribe-tickets__commerce-checkout-cart-item-details-button--less', // eslint-disable-line max-len
 		hiddenElement: '.tribe-common-a11y-hidden',
 		nonce: '#tec-tc-checkout-nonce',
-		noticeItem: '.tribe-tickets__commerce-checkout__notice',
-		noticeContent: '.tribe-tickets__commerce-checkout__notice__content',
-		noticeTitle: '.tribe-tickets-notice__title',
 	};
 
 	/**

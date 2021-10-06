@@ -46,8 +46,8 @@ tribe.tickets.commerce.notice = tribe.tickets.commerce.notice || {};
 	 */
 	obj.selectors = {
 		hiddenElement: '.tribe-common-a11y-hidden',
-		item: '.tribe-tickets__commerce-checkout__notice',
-		content: '.tribe-tickets__commerce-checkout__notice__content',
+		item: '.tribe-tickets__commerce-checkout-notice',
+		content: '.tribe-tickets__commerce-checkout-notice-content',
 		title: '.tribe-tickets-notice__title',
 		container: '[data-js="tec-tickets-commerce-notice"]',
 	};

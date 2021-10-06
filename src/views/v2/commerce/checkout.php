@@ -42,9 +42,9 @@
 		[
 			'notice_classes'  => [
 					'tribe-tickets__notice--error',
-					'tribe-tickets__commerce-checkout__notice',
+					'tribe-tickets__commerce-checkout-notice',
 			],
-			'content_classes' => [ 'tribe-tickets__commerce-checkout__notice__content' ],
+			'content_classes' => [ 'tribe-tickets__commerce-checkout-notice-content' ],
 			'title'           => __( 'Checkout Error!', 'event-tickets' ),
 			'content'         => __( 'Something went wrong!', 'event-tickets' ),
 		]
