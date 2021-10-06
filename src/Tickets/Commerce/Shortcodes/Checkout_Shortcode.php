@@ -14,10 +14,11 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Created;
-use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
-use TEC\Tickets\Commerce\Gateways\PayPal\Settings;
 use Tribe__Tickets__Editor__Template;
 use TEC\Tickets\Commerce\Utils\Price;
+
+use TEC\Tickets\Commerce\Gateways\Manager;
+use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 
 /**
  * Class for Shortcode Tribe_Tickets_Checkout.
@@ -54,6 +55,8 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			'login_url'        => tribe( Checkout::class )->get_login_url(),
 			'registration_url' => tribe( Checkout::class )->get_registration_url(),
 			'is_tec_active'    => defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'Tribe__Events__Main' ),
+			'gateways'         => tribe( Manager::class )->get_gateways(),
+			'gateways_active'  => $this->get_gateways_active(),
 		];
 
 		$this->template_vars = $args;
@@ -71,8 +74,6 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 
 		$args = $this->get_template_vars();
 
-		// @todo @rafsutaskin @gustavo skip showing form for empty cart.
-
 		// Add the rendering attributes into global context.
 		$this->get_template()->add_template_globals( $args );
 
@@ -82,6 +83,25 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		tribe_asset_enqueue_group( 'tribe-tickets-commerce-checkout' );
 
 		return $html;
+	}
+
+	/**
+	 * Get the number of active gateways.
+	 *
+	 * @since 5.1.10
+	 *
+	 * @return int The number of active gateways.
+	 */
+	public function get_gateways_active() {
+		$gateways        = tribe( Manager::class )->get_gateways();
+		$gateways_active = 0;
+
+		// Get all of the gateways.
+		foreach ( $gateways as $gateway_key => $gateway ) {
+			$gateways_active += (int) $gateway->is_active();
+		}
+
+		return $gateways_active;
 	}
 
 }

@@ -30,6 +30,16 @@ tribe.tickets.commerce = {};
 	'use strict';
 	const $document = $( document );
 
+	/**
+	 * Ticket Commerce custom Events.
+	 *
+	 * @since 5.1.10
+	 */
+	obj.customEvents = {
+		showLoader : 'showLoader.tecTicketsCommerce',
+		hideLoader : 'hideLoader.tecTicketsCommerce',
+	}
+
 	/*
 	 * Tickets Commerce Selectors.
 	 *
@@ -45,6 +55,34 @@ tribe.tickets.commerce = {};
 		hiddenElement: '.tribe-common-a11y-hidden',
 		nonce: '#tec-tc-checkout-nonce',
 	};
+
+	/**
+	 * Show the loader/spinner.
+	 *
+	 * @since 5.1.10
+	 */
+	obj.loaderShow = function() {
+		tribe.tickets.loader.show( $( obj.selectors.checkoutContainer ) );
+	};
+
+	/**
+	 * Hide the loader/spinner.
+	 *
+	 * @since 5.1.10
+	 */
+	obj.loaderHide = function() {
+		tribe.tickets.loader.hide( $( obj.selectors.checkoutContainer ) );
+	};
+
+	/**
+	 * Bind loader events.
+	 *
+	 * @since 5.1.10
+	 */
+	obj.bindLoaderEvents = function () {
+		$document.on( obj.customEvents.showLoader, obj.loaderShow );
+		$document.on( obj.customEvents.hideLoader, obj.loaderHide );
+	}
 
 	/**
 	 * Toggle the checkout item description visibility.
@@ -131,12 +169,15 @@ tribe.tickets.commerce = {};
 	 * @return {void}
 	 */
 	obj.bindCheckoutEvents = function( $container ) {
-		$document.trigger( 'beforeSetup.tribeTicketsCommerceCheckout', [ $container ] );
+		$document.trigger( 'beforeSetup.tecTicketsCommerce', [ $container ] );
 
 		// Bind container based events.
 		obj.bindCheckoutItemDescriptionToggle( $container );
 
-		$document.trigger( 'afterSetup.tribeTicketsCommerceCheckout', [ $container ] );
+		// Bind loader visibility.
+		obj.bindLoaderEvents();
+
+		$document.trigger( 'afterSetup.tecTicketsCommerce', [ $container ] );
 	};
 
 	/**

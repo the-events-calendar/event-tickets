@@ -121,7 +121,7 @@ interface Cart_Interface {
 	/**
 	 * Removes an item from the cart.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param array $data to be processed by the cart.
 	 *
@@ -132,7 +132,7 @@ interface Cart_Interface {
 	/**
 	 * Prepare the data for cart processing.
 	 *
-	 * @since TBD
+	 * @since 5.1.10
 	 *
 	 * @param array $data To be processed by the cart.
 	 *

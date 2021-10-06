@@ -17,7 +17,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Archive_Attendees normally triggers when handling refunds and stuff like that.
  *
- * @since   TBD
+ * @since   5.1.10
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
