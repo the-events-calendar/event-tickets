@@ -526,6 +526,7 @@ class Attendee {
 		$attendee->is_purchaser  = true;
 		$attendee->is_subscribed = null;
 		$attendee->optout        = null;
+		$attendee->order_id      = 0;
 		$attendee->product_id    = null;
 		$attendee->provider      = static::$legacy_provider_slug;
 		$attendee->provider_slug = static::$legacy_provider_slug;
@@ -559,7 +560,7 @@ class Attendee {
 	public function get_product_title( \WP_Post $attendee ) {
 		$ticket = get_post( $attendee->ticket_id );
 
-		return $ticket->post_title ?: 'no product title'; // @todo add logic for deleted tickets
+		return ! empty( $ticket->post_title ) ? esc_html( $this->post_title ) : 'no product title'; // @todo add logic for deleted tickets
 	}
 
 	public function get_event_id( \WP_Post $attendee ) {

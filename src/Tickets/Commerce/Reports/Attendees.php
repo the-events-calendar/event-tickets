@@ -224,16 +224,17 @@ class Attendees extends Report_Abstract {
 		);
 
 		$this->template_vars = [
-			'title'               => $this->get_title(),
-			'table'               => tribe( Admin_Tables\Attendees::class ),
-			'report'              => tribe( $this ),
+			'event_data'          => $event_data,
+			'export_url'          => '',
 			'post'                => $post,
 			'post_id'             => $post_id,
-			'post_type_object'    => $post_type_object,
 			'post_singular_label' => $post_singular_label,
+			'post_type_object'    => $post_type_object,
+			'report'              => tribe( $this ),
+			'table'               => tribe( Admin_Tables\Attendees::class ),
 			'tickets'             => $tickets,
 			'tickets_data'        => $tickets_data,
-			'event_data'          => $event_data,
+			'title'               => $this->get_title(),
 			'tooltip'             => tribe( 'tooltip.view' ),
 		];
 

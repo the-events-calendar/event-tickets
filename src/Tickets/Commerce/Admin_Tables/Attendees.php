@@ -39,16 +39,41 @@ class Attendees extends WP_List_Table {
 	/**
 	 *  Documented in WP_List_Table
 	 */
-	public function __construct() {
-		$args = [
+	public function __construct( $args = [] ) {
+		$this->legacy_attendees_table = new \Tribe__Tickets__Attendees_Table();
+
+		/**
+		 * This class' parent defaults to 's', but we want to change that on the front-end (e.g. Community) to avoid
+		 * the possibility of triggering the theme's Search template.
+		 */
+		if ( ! is_admin() ) {
+			$this->search_box_input_name = 'search';
+		}
+
+		$screen = get_current_screen();
+
+		$args = wp_parse_args( $args, [
 			'singular' => 'attendee',
 			'plural'   => 'attendees',
 			'ajax'     => true,
-		];
+			'screen'   => $screen,
+		] );
 
-		$this->legacy_attendees_table = new \Tribe__Tickets__Attendees_Table();
+		$this->per_page_option = \Tribe__Tickets__Admin__Screen_Options__Attendees::$per_page_user_option;
 
-		parent::__construct( $args );
+		if ( ! is_null( $screen ) ) {
+			$screen->add_option( 'per_page', [
+				'label'  => __( 'Number of attendees per page:', 'event-tickets' ),
+				'option' => $this->per_page_option,
+			] );
+		}
+
+		// Fetch the event Object
+		if ( ! empty( $_GET['event_id'] ) ) {
+			$this->event = get_post( absint( $_GET['event_id'] ) );
+		}
+
+		parent::__construct( apply_filters( 'tribe_events_tickets_attendees_table_args', $args ) );
 	}
 
 	/**
@@ -510,6 +535,54 @@ class Attendees extends WP_List_Table {
 		$row_actions = implode( ' | ', $default_actions );
 
 		return empty( $row_actions ) ? '' : '<div class="row-actions">' . $row_actions . '</div>';
+	}
+
+	public function search_box( $text, $input_id ) {
+		return $this->legacy_attendees_table->search_box( $text, $input_id );
+	}
+
+	public function get_bulk_actions() {
+		return $this->legacy_attendees_table->get_bulk_actions();
+	}
+
+	public function extra_tablenav( $which ) {
+		return $this->legacy_attendees_table->extra_tablenav( $which );
+	}
+
+	/**
+	 * Message to be displayed when there are no items
+	 *
+	 * @since TBD
+	 */
+	public function no_items() {
+		esc_html_e( 'No matching attendees found.', 'event-tickets' );
+	}
+
+	/**
+	 * Overrides the list of CSS classes for the WP_List_Table table tag.
+	 * This function is not hookable in core, so it needs to be overridden!
+	 *
+	 * @since TBD
+	 *
+	 * @return array List of CSS classes for the table tag.
+	 */
+	protected function get_table_classes() {
+		$classes = [ 'widefat', 'striped', 'attendees', 'tribe-attendees' ];
+
+		if ( is_admin() ) {
+			$classes[] = 'fixed';
+		}
+
+		/**
+		 * Filters the default classes added to the attendees report `WP_List_Table`.
+		 *
+		 * @since 4.10.7
+		 *
+		 * @param array $classes The array of classes to be applied.
+		 */
+		$classes = apply_filters( 'tribe_tickets_attendees_table_classes', $classes );
+
+		return $classes;
 	}
 
 }
