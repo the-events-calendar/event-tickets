@@ -154,6 +154,7 @@ class Attendees extends WP_List_Table {
 			'cb'            => __( 'Checkbox', 'event-tickets' ),
 			'ticket'        => __( 'Ticket', 'event-tickets' ),
 			'primary_info'  => __( 'Primary Information', 'event-tickets' ),
+			'meta_details'  => __( 'Details', 'event-tickets' ),
 			'security_code' => __( 'Security Code', 'event-tickets' ),
 			'status'        => __( 'Status', 'event-tickets' ),
 			'check_in'      => __( 'Check In', 'event-tickets' ),
@@ -330,6 +331,20 @@ class Attendees extends WP_List_Table {
 		 * @var $item array of an Attendee's data
 		 */
 		do_action( 'event_tickets_commerce_attendees_table_after_row', $item );
+	}
+
+	/**
+	 * Handler for the columns that don't have a specific column_{name} handler function.
+	 *
+	 * @param $item
+	 * @param $column
+	 *
+	 * @return string
+	 */
+	public function column_default( $item, $column ) {
+		$value = empty( $item->{$column} ) ? '' : $item->{$column};
+
+		return apply_filters( 'tribe_events_tickets_attendees_table_column', $value, (array) $item, $column );
 	}
 
 	/**

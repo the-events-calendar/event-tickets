@@ -618,7 +618,7 @@ class Attendee {
 		$name = get_post_meta( $attendee->ID, static::$purchaser_name_meta_key, true );
 
 		if ( $name ) {
-			return $name;
+			return esc_html( $name );
 		}
 
 		return esc_html__( 'Name not available', 'event-tickets' );
@@ -628,7 +628,7 @@ class Attendee {
 		$email = \get_post_meta( $attendee->ID, static::$purchaser_email_meta_key, true );
 
 		if ( $email ) {
-			return $email;
+			return esc_html( $email );
 		}
 
 		return esc_html__( 'Email not available', 'event-tickets' );
