@@ -77,7 +77,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 				'jquery',
 				'tribe-common',
 				'tribe-tickets-commerce-js',
-				'tec-tickets-commerce-notice-js',
+				'tribe-tickets-commerce-notice-js',
 			],
 			null,
 			[
