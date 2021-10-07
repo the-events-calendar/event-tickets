@@ -1,4 +1,3 @@
-/* global tribe, jQuery, paypal, tecTicketsCommerceGatewayPayPalCheckout */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *

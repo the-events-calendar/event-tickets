@@ -24,6 +24,8 @@
     "TribeTicketOptions": true,
     "TribeTicketsAdminManager": true,
     "TribeTicketsURLs": true,
-    "tecTicketsCommerceData": true
+    "tecTicketsCommerceData": true,
+    "tecTicketsCommerceGatewayPayPalCheckout": true,
+	"paypal": true
   }
 }
