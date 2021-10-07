@@ -178,6 +178,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Enhancement - Add `getPrice` method to utilities JS object to centralize the way we get ticket prices. [ET-1238]
+* Fix - Fixed ticket total formatting within the attendee registration modal when using custom thousands and decimal separators. [ET-1216]
+
 = [5.1.10] 2021-09-27 =
 
 * Enhancement - When editing an RSVP or ticket in the block editor, allow title to wrap to multiple lines. [ET-1089]
