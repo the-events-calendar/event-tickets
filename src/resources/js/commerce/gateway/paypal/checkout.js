@@ -472,11 +472,13 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Shows the notice for the checkout container for PayPal.
 	 *
-	 * @param $container
-	 * @param title
-	 * @param content
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container Parent container of notice element.
+	 * @param {string} title Notice Title.
+	 * @param {string} content Notice message content.
 	 */
-	obj.showNotice = ( $container, title, content ) => {
+	obj.showNotice = ( $container = {}, title, content ) => {
 		if ( ! $container.length ) {
 			$container = $( tribe.tickets.commerce.selectors.checkoutContainer );
 		}
@@ -489,7 +491,9 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Hides the notice for the checkout container for PayPal.
 	 *
-	 * @param $container
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container Parent container of notice element.
 	 */
 	obj.hideNotice = ( $container ) => {
 		if ( ! $container.length ) {
@@ -542,6 +546,12 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		 * Setup PayPal buttons when everything is loaded.
 		 */
 		window.onload = ( event ) => {
+
+			if ( typeof paypal === 'undefined' ) {
+				obj.showNotice();
+				$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
+				return;
+			}
 			obj.setupButtons( event, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
 		};
 	};
