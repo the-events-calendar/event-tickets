@@ -178,6 +178,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Enhancement - Add `getPrice` method to utilities JS object to centralize the way we get ticket prices. [ET-1238]
+
 = [5.1.10] 2021-09-27 =
 
 * Enhancement - When editing an RSVP or ticket in the block editor, allow title to wrap to multiple lines. [ET-1089]
