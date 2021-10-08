@@ -590,7 +590,8 @@ class Attendee {
 	}
 
 	public function get_unique_id( \WP_Post $attendee ) {
-		return get_post_meta( $attendee->ID, static::$unique_id_meta_key, true );
+		$id = ! empty( $attendee->attendee_id ) ? $attendee->attendee_id : $attendee->ID;
+		return get_post_meta( $id, static::$unique_id_meta_key, true );
 	}
 
 	public function get_ticket_id( \WP_Post $attendee ) {

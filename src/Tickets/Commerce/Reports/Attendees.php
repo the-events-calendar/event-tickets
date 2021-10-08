@@ -184,13 +184,6 @@ class Attendees extends Report_Abstract {
 			$tickets    = array_map( [ tribe( Commerce\Ticket::class ), 'get_ticket' ], $ticket_ids );
 		}
 
-		$tickets = array_filter(
-			$tickets,
-			static function ( $ticket ) {
-				return Module::class === $ticket->provider_class;
-			}
-		);
-
 		$event_data   = [];
 		$tickets_data = [];
 

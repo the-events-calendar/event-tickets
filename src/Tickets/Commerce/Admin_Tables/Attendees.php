@@ -194,6 +194,8 @@ class Attendees extends WP_List_Table {
 	 * @since TBD
 	 */
 	public function prepare_items() {
+		$this->legacy_attendees_table->process_actions();
+
 		$post_id = tribe_get_request_var( 'post_id', 0 );
 		$post_id = tribe_get_request_var( 'event_id', $post_id );
 
@@ -343,7 +345,7 @@ class Attendees extends WP_List_Table {
 		 *
 		 * @var $item array of an Attendee's data
 		 */
-		do_action( 'event_tickets_commerce_attendees_table_after_row', $item );
+		do_action( 'event_tickets_attendees_table_after_row', (array) $item );
 	}
 
 	/**
@@ -374,6 +376,7 @@ class Attendees extends WP_List_Table {
 		$ticket    = get_post( tribe( Attendee::class )->get_ticket_id( $item ) );
 		$dash      = '';
 		$title     = $ticket->post_title;
+		$attendee_id = ! empty( $item->attendee_id ) ? $item->attendee_id : $item->ID;
 
 		if ( ! empty( $title ) ) {
 			$dash = ' &ndash; ';
@@ -381,7 +384,7 @@ class Attendees extends WP_List_Table {
 
 		$output[] = sprintf( '<div class="event-tickets-ticket-name">%1$s [#%2$d]%3$s %4$s</div>',
 			esc_html( $unique_id ),
-			(int) $item->ID,
+			(int) $attendee_id,
 			esc_html( $dash ),
 			esc_html( $title )
 		);
