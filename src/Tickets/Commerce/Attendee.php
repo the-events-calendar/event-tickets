@@ -618,7 +618,7 @@ class Attendee {
 		return get_post_meta( $item->ID, static::$checked_in_meta_key, true );
 	}
 
-	public function get_check_in_label( \WP_Post $item ) {
+	public function get_status_label( \WP_Post $item ) {
 		if ( $item->is_legacy_attendee ) {
 			return $item->order_status_label;
 		}

@@ -279,6 +279,7 @@ class Attendees extends WP_List_Table {
 
 		$this->items = array_map( function ( $attendee ) {
 			$attendee = new \WP_Post( (object) $attendee );
+
 			return tribe( Attendee::class )->get_attendee( $attendee );
 		}, $item_data['attendees'] );
 
@@ -372,10 +373,10 @@ class Attendees extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_ticket( $item ) {
-		$unique_id = tribe( Attendee::class )->get_unique_id( $item );
-		$ticket    = get_post( tribe( Attendee::class )->get_ticket_id( $item ) );
-		$dash      = '';
-		$title     = $ticket->post_title;
+		$unique_id   = tribe( Attendee::class )->get_unique_id( $item );
+		$ticket      = get_post( tribe( Attendee::class )->get_ticket_id( $item ) );
+		$dash        = '';
+		$title       = $ticket->post_title;
 		$attendee_id = ! empty( $item->attendee_id ) ? $item->attendee_id : $item->ID;
 
 		if ( ! empty( $title ) ) {
@@ -450,9 +451,11 @@ class Attendees extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_status( $item ) {
-		$status = tribe( Attendee::class )->get_check_in_label( $item );
+		if ( $item->is_legacy_attendee ) {
+			return $this->legacy_attendees_table->column_status( (array) $item );
+		}
 
-		return esc_html( $status );
+		return tribe( Attendee::class )->get_status_label( $item );
 	}
 
 	/**
