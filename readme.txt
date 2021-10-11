@@ -183,6 +183,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Enhancement - Add `getPrice` method to utilities JS object to centralize the way we get ticket prices. [ET-1238]
 * Fix - Fixed ticket total formatting within the attendee registration modal when using custom thousands and decimal separators. [ET-1216]
 * Bug - Searching Ticket Holder Email / Ticket Holder Name through the Attendee page now functions as expected. [ET-1171]
+* Fix - QR Code API generation settings not working if `The Events Calendar` plugin was not active. [ETP-754]
 
 = [5.1.10] 2021-09-27 =
 
