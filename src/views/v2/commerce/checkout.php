@@ -23,12 +23,16 @@
  * @var int              $gateways_active       [Global] The number of active gateways.
  */
 
+$attributes = [
+	'data-js' => 'tec-tickets-commerce-notice',
+	'data-notice-default-title' => esc_attr__( 'Checkout Unavailable!' , 'event-tickets' ),
+	'data-notice-default-content' => esc_attr__( 'Checkout is not available at this time because a payment method has not been set up for this event. Please notify the site administrator.' , 'event-tickets' ),
+];
+
 ?>
 <section
 	class="tribe-common event-tickets tribe-tickets__commerce-checkout"
-	data-js="tec-tickets-commerce-notice"
-	data-notice-default-title="<?php esc_attr_e( 'Checkout Unavailable!' , 'event-tickets' ); ?>"
-	data-notice-default-content="<?php esc_attr_e( 'Checkout is not available at this time because a payment method has not been set up for this event. Please notify the site administrator.' , 'event-tickets' ); ?>"
+	<?php tribe_attributes( $attributes ); ?>
 >
 	<?php $this->template( 'checkout/fields' ); ?>
 	<?php $this->template( 'checkout/header' ); ?>
