@@ -24,6 +24,7 @@
 ?>
 <header class="tribe-tickets__commerce-order-header">
 	<h3 class="tribe-common-h2 tribe-tickets__commerce-order-header-title">
-		<?php esc_html_e( 'Order Received!', 'event-tickets' ); ?>
+		<?php $this->template( 'order/header/title-empty' ); ?>
+		<?php $this->template( 'order/header/title' ); ?>
 	</h3>
 </header>

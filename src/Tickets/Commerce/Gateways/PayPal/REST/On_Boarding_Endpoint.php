@@ -9,6 +9,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Refresh_Token;
 use TEC\Tickets\Commerce\Gateways\PayPal\Signup;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
+use TEC\Tickets\Commerce\Notice_Handler;
 use Tribe__Documentation__Swagger__Provider_Interface;
 use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
@@ -166,7 +167,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 		$signup        = tribe( Signup::class );
 		$existing_hash = $signup->get_transient_hash();
 		$request_hash  = $request->get_param( 'hash' );
-		$return_url    = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', ] );
+		$return_url    = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] );
 
 		if ( $request_hash !== $existing_hash ) {
 			$this->redirect_with( 'invalid-paypal-signup-hash', $return_url );
@@ -228,6 +229,8 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 		update_option( 'tickets_commerce_permissions_granted', $permissions_granted );
 		update_option( 'tickets_commerce_consent_status', $consent_status );
 		update_option( 'tickets_commerce_account_status', $account_status );
+
+		tribe( Notice_Handler::class )->trigger_admin( 'tc-paypal-signup-complete' );
 
 		$this->redirect_with( 'paypal-signup-complete', $return_url );
 	}
