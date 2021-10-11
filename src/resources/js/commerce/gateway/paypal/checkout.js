@@ -548,7 +548,6 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		 * Setup PayPal buttons when everything is loaded.
 		 */
 		window.onload = ( event ) => {
-
 			if ( typeof paypal === 'undefined' ) {
 				obj.showNotice();
 				$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
