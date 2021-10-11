@@ -360,7 +360,9 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			failed_status: status,
 			failed_reason: reason,
 		};
+
 		$document.trigger( tribe.tickets.commerce.customEvents.showLoader );
+		
 		return fetch(
 			obj.orderEndpointUrl + '/' + orderId,
 			{
