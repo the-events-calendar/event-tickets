@@ -992,6 +992,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Handles if email sending is allowed.
+		 *
+		 * @since TBD
+		 *
+		 * @param WP_Post|null $ticket                The ticket post object if available, otherwise null.
+		 * @param array|null   $attendee              The attendee information if available, otherwise null.
+		 */
+		public function allow_resending_email( $ticket = null, $attendee = null ) {
+			// Fallback logic, function should return true.
+			return true;
+		}
+
+		/**
 		 * Mark an attendee as checked in
 		 *
 		 * @abstract
