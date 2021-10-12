@@ -180,6 +180,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Fix - Added `allow_resending_email` method which can be used to enable or disable resending email. [ETP-703]
 * Enhancement - Add `getPrice` method to utilities JS object to centralize the way we get ticket prices. [ET-1238]
 * Fix - Fixed ticket total formatting within the attendee registration modal when using custom thousands and decimal separators. [ET-1216]
 
