@@ -6,12 +6,9 @@ use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Settings;
-use TEC\Tickets\Commerce\Status\Completed;
-use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Abstract;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
-use TEC\Tickets\Commerce\Ticket;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -56,7 +53,16 @@ class Generate_Attendees extends Flag_Action_Abstract {
 	 * @return Status_Abstract
 	 */
 	public function get_status_when_to_trigger() {
-		return tribe( Status_Handler::class )->get_inventory_decrease_status();
+		$status = tribe( Status_Handler::class )->get_inventory_decrease_status();
+
+		/**
+		 * Filters the status we use to trigger attendee generation.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $status The status we use to trigger attendee generation.
+		 */
+		return apply_filters( 'tec_tickets_flag_action_generate_attendees_trigger_status', $status );
 	}
 
 	/**
@@ -101,6 +107,8 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				continue;
 			}
 
+			$attendees = [];
+
 			for ( $i = 0; $i < $quantity; $i ++ ) {
 				$args = [
 					'opt_out'       => Arr::get( $extra, 'optout' ),
@@ -109,8 +117,43 @@ class Generate_Attendees extends Flag_Action_Abstract {
 					'security_code' => tribe( Module::class )->generate_security_code( time() . '-' . $i )
 				];
 
+				/**
+				 * Filters the attendee data before it is saved.
+				 *
+				 * @since TBD
+				 *
+				 * @param array<mixed> $args The attendee creation args.
+				 * @param \Tribe__Tickets__Tickets $ticket The ticket the attendee is generated for.
+				 * @param \WP_Post $post The order the attendee is generated for.
+				 */
+				$args = apply_filters( 'tec_tickets_attendee_generation_args', $args, $ticket, $post );
+
 				$attendee = tribe( Attendee::class )->create( $post, $ticket, $args );
+
+				/**
+				 * Fires after an attendee is generated for an order.
+				 *
+				 * @since TBD
+				 *
+				 * @param Attendee $attendee The generated attendee.
+				 * @param \Tribe__Tickets__Tickets $ticket The ticket the attendee is generated for.
+				 * @param \WP_Post $post The order the attendee is generated for.
+				 */
+				do_action( 'tec_tickets_attendee_generated', $attendee, $ticket, $post );
+
+				$attendees[] = $attendee;
 			}
+
+			/**
+			 * Fires after all attendees are generated for an order.
+			 *
+			 * @since TBD
+			 *
+			 * @param array<Attendee> $attendees The generated attendees.
+			 * @param \Tribe__Tickets__Tickets $ticket The ticket the attendee is generated for.
+			 * @param \WP_Post $post The order the attendee is generated for.
+			 */
+			do_action( 'tec_tickets_attendees_generated', $attendees, $ticket, $post );
 		}
 	}
 }
