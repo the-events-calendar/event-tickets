@@ -44,7 +44,7 @@ class Backfill_Purchaser extends Flag_Action_Abstract {
 
 		$payload = $order->gateway_payload[ Completed::class ];
 
-		if ( empty( $payload['payer']['email_address'] ) {
+		if ( empty( $payload['payer']['email_address'] ) ) {
 			return;
 		}
 
