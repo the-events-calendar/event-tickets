@@ -1,14 +1,16 @@
 <?php
 /**
- * @var int                                          $post_id            The current post ID.
+ * @var string                                       $export_url          The url to generate the export file
  * @var WP_Post                                      $post                The current post object.
+ * @var int                                          $post_id             The current post ID.
  * @var string                                       $post_singular_label The post type singular label.
- * @var int                                          $total_sold          The total number of tickets sold.
- * @var array                                        $tickets_sold        A list of PayPal tickets that have at least
- *      one sale.
- * @var \TEC\Tickets\Commerce\Admin_Tables\Attendees $table               The orders table output.
  * @var \TEC\Tickets\Commerce\Reports\Attendees      $report              The orders table output.
+ * @var \TEC\Tickets\Commerce\Admin_Tables\Attendees $table               The orders table output.
+ * @var array                                        $tickets_sold        A list of PayPal tickets that have at least one sale.
+ * @var string                                       $title               The page title.
+ * @var int                                          $total_sold          The total number of tickets sold.
  */
+
 ?>
 
 <div class="wrap tribe-report-page">
@@ -19,9 +21,9 @@
 
 			if ( $report->can_export_attendees( $post_id ) ) {
 				echo sprintf(
-						'<a target="_blank" href="%s" class="export action page-title-action" rel="noopener noreferrer">%s</a>',
-						esc_url( $export_url ),
-						esc_html__( 'Export', 'event-tickets' )
+					'<a target="_blank" href="%s" class="export action page-title-action" rel="noopener noreferrer">%s</a>',
+					esc_url( $export_url ),
+					esc_html__( 'Export', 'event-tickets' )
 				);
 			}
 			?>
@@ -46,7 +48,7 @@
 				value="<?php echo esc_attr( $post->post_type ); ?>"
 		/>
 		<?php
-		$table->search_box( __( 'Search Orders', 'event-tickets' ), 'tpp-orders' );
+		$table->search_box( __( 'Search Orders', 'event-tickets' ), 'tc-orders' );
 		$table->display();
 		?>
 	</form>

@@ -96,9 +96,12 @@ function tec_tc_attendees( $repository = 'default' ) {
 	$map = apply_filters( 'tec_tickets_commerce_attendees_repository_map', $map, $repository, $args );
 
 	if ( 'all' === $repository ) {
-		return array_map( function ( $repo ) use ( $map ) {
-			return tribe( Arr::get( $map, $repo, $map[ $repo ] ) );
-		}, array_keys( $map ) );
+		return array_map(
+			function ( $repo ) use ( $map ) {
+				return tribe( Arr::get( $map, $repo, $map[ $repo ] ) );
+			},
+			array_keys( $map ) 
+		);
 	}
 
 	return tribe( Arr::get( $map, $repository, $map['default'] ) );

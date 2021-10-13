@@ -138,12 +138,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Register the Orders report.
 	 *
-	 * @todo  Currently this is attaching the hook method to the init, which is incorrect we should not be attaching these
-	 *       filters from the orders class if we can avoid it.
+	 * @todo  Currently this is attaching the hook method to the init, which is incorrect we should not be attaching
+	 *        these filters from the orders class if we can avoid it.
 	 *
 	 * @since TBD
-	 *
-	 *
 	 */
 	public function register_order_reports() {
 		$this->container->make( Reports\Orders::class )->hook();
@@ -322,7 +320,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @param array $attendee_data Information that we are trying to save.
 	 * @param int   $attendee_id   The attendee ID.
 	 * @param int   $post_id       The event/post ID.
-	 *
 	 */
 	public function update_attendee_data( $attendee_data, $attendee_id, $post_id ) {
 		$this->container->make( Attendee::class )->update_attendee_data( $attendee_data, $attendee_id, $post_id );
@@ -334,7 +331,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since 5.1.9
 	 *
 	 * @param int $event_id Which ID we are triggering changes to.
-	 *
 	 */
 	public function maybe_send_tickets_after_status_change( $event_id ) {
 		$this->container->make( Attendee::class )->maybe_send_tickets_after_status_change( $event_id );
@@ -490,7 +486,13 @@ class Hooks extends tad_DI52_ServiceProvider {
 		 */
 		$ticket_handler = tribe( 'tickets.handler' );
 
-		add_filter( "sanitize_post_meta_{$ticket_handler->key_provider_field}", [ $this, 'filter_modify_sanitization_provider_meta' ] );
+		add_filter(
+			"sanitize_post_meta_{$ticket_handler->key_provider_field}",
+			[
+				$this,
+				'filter_modify_sanitization_provider_meta',
+			]
+		);
 	}
 
 	/**
@@ -506,6 +508,14 @@ class Hooks extends tad_DI52_ServiceProvider {
 		return tribe( Settings::class )->skip_sanitization( $meta_value );
 	}
 
+	/**
+	 * If an event is using Tickets Commerce, use the new Attendees View URL
+	 *
+	 * @param string $url     the current Attendees View url.
+	 * @param int    $post_id the event id.
+	 *
+	 * @return string
+	 */
 	public function filter_attendee_report_link( $url, $post_id ) {
 
 		$tc_module = tribe( Module::class )::get_event_ticket_provider( $post_id );

@@ -38,6 +38,8 @@ class Attendees extends WP_List_Table {
 
 	/**
 	 *  Documented in WP_List_Table
+	 *
+	 * @param array|string $args Array or string of arguments.
 	 */
 	public function __construct( $args = [] ) {
 		$this->legacy_attendees_table = new \Tribe__Tickets__Attendees_Table();
@@ -52,25 +54,31 @@ class Attendees extends WP_List_Table {
 
 		$screen = get_current_screen();
 
-		$args = wp_parse_args( $args, [
-			'singular' => 'attendee',
-			'plural'   => 'attendees',
-			'ajax'     => true,
-			'screen'   => $screen,
-		] );
+		$args = wp_parse_args(
+			$args,
+			[
+				'singular' => 'attendee',
+				'plural'   => 'attendees',
+				'ajax'     => true,
+				'screen'   => $screen,
+			]
+		);
 
 		$this->per_page_option = \Tribe__Tickets__Admin__Screen_Options__Attendees::$per_page_user_option;
 
 		if ( ! is_null( $screen ) ) {
-			$screen->add_option( 'per_page', [
-				'label'  => __( 'Number of attendees per page:', 'event-tickets' ),
-				'option' => $this->per_page_option,
-			] );
+			$screen->add_option(
+				'per_page',
+				[
+					'label'  => __( 'Number of attendees per page:', 'event-tickets' ),
+					'option' => $this->per_page_option,
+				]
+			);
 		}
 
-		// Fetch the event Object
-		if ( ! empty( $_GET['event_id'] ) ) {
-			$this->event = get_post( absint( $_GET['event_id'] ) );
+		// Fetch the event Object.
+		if ( ! empty( $_GET['event_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$this->event = get_post( absint( $_GET['event_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		}
 
 		parent::__construct( apply_filters( 'tribe_events_tickets_attendees_table_args', $args ) );
@@ -83,7 +91,6 @@ class Attendees extends WP_List_Table {
 	 * @since TBD
 	 *
 	 * @param string $hook The current admin page.
-	 *
 	 */
 	public function enqueue_assets( $hook ) {
 		/**
@@ -142,9 +149,6 @@ class Attendees extends WP_List_Table {
 	 * @param string $hook The current admin page.
 	 */
 	public function load_pointers( $hook ) {
-		if ( $hook != $this->page_id ) {
-			// return;
-		}
 
 		$dismissed = explode( ',', (string) get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) );
 		$pointer   = [];
@@ -260,7 +264,7 @@ class Attendees extends WP_List_Table {
 			// Update search key if it supports LIKE matching.
 			if ( in_array( $search_key, $search_like_keys, true ) ) {
 				$search_key .= '__like';
-				$search     = '%' . $search . '%';
+				$search      = '%' . $search . '%';
 			}
 
 			// Only get matches that have search phrase in the key.
@@ -277,11 +281,14 @@ class Attendees extends WP_List_Table {
 
 		$item_data = \Tribe__Tickets__Tickets::get_event_attendees_by_args( $post_id, $arguments );
 
-		$this->items = array_map( function ( $attendee ) {
-			$attendee = new \WP_Post( (object) $attendee );
+		$this->items = array_map(
+			function ( $attendee ) {
+				$attendee = new \WP_Post( (object) $attendee );
 
-			return tribe( Attendee::class )->get_attendee( $attendee );
-		}, $item_data['attendees'] );
+				return tribe( Attendee::class )->get_attendee( $attendee );
+			},
+			$item_data['attendees']
+		);
 
 		$pagination_args = [
 			'total_items' => count( $this->items ),
@@ -324,11 +331,11 @@ class Attendees extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_Post $item The current item.
+	 * @param \WP_Post $item row object.
 	 */
 	public function single_row( $item ) {
 		$checked = '';
-		if ( (int) $item->check_in === 1 ) {
+		if ( 1 === (int) $item->check_in ) {
 			$checked = ' tickets_checked ';
 		}
 
@@ -352,8 +359,8 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Handler for the columns that don't have a specific column_{name} handler function.
 	 *
-	 * @param $item
-	 * @param $column
+	 * @param \WP_Post $item   row object.
+	 * @param string   $column the column name.
 	 *
 	 * @return string
 	 */
@@ -368,7 +375,7 @@ class Attendees extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $item the array of row information.
+	 * @param \WP_Post $item row object.
 	 *
 	 * @return string
 	 */
@@ -383,7 +390,8 @@ class Attendees extends WP_List_Table {
 			$dash = ' &ndash; ';
 		}
 
-		$output[] = sprintf( '<div class="event-tickets-ticket-name">%1$s [#%2$d]%3$s %4$s</div>',
+		$output[] = sprintf(
+			'<div class="event-tickets-ticket-name">%1$s [#%2$d]%3$s %4$s</div>',
 			esc_html( $unique_id ),
 			(int) $attendee_id,
 			esc_html( $dash ),
@@ -395,7 +403,7 @@ class Attendees extends WP_List_Table {
 		/**
 		 * Hook to allow for the insertion of additional content in the ticket table cell
 		 *
-		 * @var array $item Attendee row item
+		 * @param \WP_Post $item row object.
 		 */
 		do_action( 'event_tickets_attendees_table_ticket_column', $item );
 
@@ -407,7 +415,7 @@ class Attendees extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $item the array of row information.
+	 * @param \WP_Post $item row object.
 	 *
 	 * @return string
 	 */
@@ -431,7 +439,7 @@ class Attendees extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $item the array of row information.
+	 * @param \WP_Post $item row object.
 	 *
 	 * @return string
 	 */
@@ -446,7 +454,7 @@ class Attendees extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $item the array of row information.
+	 * @param \WP_Post $item row object.
 	 *
 	 * @return string
 	 */
@@ -463,7 +471,7 @@ class Attendees extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $item the array of row information.
+	 * @param \WP_Post $item row object.
 	 *
 	 * @return false|string
 	 */
@@ -471,6 +479,13 @@ class Attendees extends WP_List_Table {
 		return $this->legacy_attendees_table->column_check_in( (array) $item );
 	}
 
+	/**
+	 * Content for the checkbox column
+	 *
+	 * @param \WP_Post $item row object.
+	 *
+	 * @return string
+	 */
 	public function column_cb( $item ) {
 		$provider = ! empty( $item->provider ) ? $item->provider : null;
 
@@ -480,10 +495,9 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Adds a set of default row actions to each item in the attendee list table.
 	 *
-	 * @param array $row_actions
-	 * @param array $item
+	 * @param \WP_Post $item row object.
 	 *
-	 * @return array
+	 * @return string
 	 */
 	public function get_row_actions( $item ) {
 		/** @var Tribe__Tickets__Attendees $attendees */
@@ -495,7 +509,7 @@ class Attendees extends WP_List_Table {
 
 		$default_actions = [];
 		$provider        = ! empty( $item->provider ) ? $item->provider : null;
-		$not_going       = empty( $item->order_status ) || $item->order_status === 'no' || 'cancelled' === $item->order_status || 'refunded' === $item->order_status;
+		$not_going       = empty( $item->order_status ) || 'no' === $item->order_status || 'cancelled' === $item->order_status || 'refunded' === $item->order_status;
 
 		if ( ! $not_going ) {
 			$default_actions[] = sprintf(
@@ -516,11 +530,15 @@ class Attendees extends WP_List_Table {
 		$attendee = esc_attr( $item->attendee_id . '|' . $provider );
 		$nonce    = wp_create_nonce( 'do_item_action_' . $attendee );
 
-		$delete_url = esc_url( add_query_arg( [
-			'action'   => 'delete_attendee',
-			'nonce'    => $nonce,
-			'attendee' => $attendee,
-		] ) );
+		$delete_url = esc_url(
+			add_query_arg(
+				[
+					'action'   => 'delete_attendee',
+					'nonce'    => $nonce,
+					'attendee' => $attendee,
+				]
+			)
+		);
 
 		$default_actions[] = '<span class="trash"><a href="' . $delete_url . '">' . esc_html_x( 'Delete', 'row action', 'event-tickets' ) . '</a></span>';
 
@@ -531,14 +549,30 @@ class Attendees extends WP_List_Table {
 		return empty( $row_actions ) ? '' : '<div class="row-actions">' . $row_actions . '</div>';
 	}
 
+	/**
+	 * Displays the search box.
+	 *
+	 * @param string $text     The 'submit' button label.
+	 * @param string $input_id ID attribute value for the search input field.
+	 */
 	public function search_box( $text, $input_id ) {
 		return $this->legacy_attendees_table->search_box( $text, $input_id );
 	}
 
+	/**
+	 * Retrieves the list of bulk actions available for this table.
+	 *
+	 * @return array
+	 */
 	public function get_bulk_actions() {
 		return $this->legacy_attendees_table->get_bulk_actions();
 	}
 
+	/**
+	 * Extra controls to be displayed between bulk actions and pagination.
+	 *
+	 * @param string $which the control name.
+	 */
 	public function extra_tablenav( $which ) {
 		return $this->legacy_attendees_table->extra_tablenav( $which );
 	}

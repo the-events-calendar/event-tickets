@@ -56,7 +56,6 @@ class Attendees extends Report_Abstract {
 	 * @since TBD
 	 */
 	public function hook() {
-		// add_filter( 'post_row_actions', [ $this, 'add_orders_row_action' ], 10, 2 );
 		add_action( 'admin_menu', [ $this, 'register_attendees_page' ] );
 	}
 
@@ -154,27 +153,27 @@ class Attendees extends Report_Abstract {
 		if ( $action ) {
 			define( 'IFRAME_REQUEST', true );
 
-			// Use iFrame Header -- WP Method
+			// Use iFrame Header -- WP Method.
 			iframe_header();
 
 			// Check if we need to send an Email!
 			$status = false;
-			if ( isset( $_POST['tribe-send-email'] ) && $_POST['tribe-send-email'] ) {
+			if ( isset( $_POST['tribe-send-email'] ) && $_POST['tribe-send-email'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$status = tribe( \Tribe__Tickets__Attendees::class )->send_mail_list();
 			}
 
-			tribe( 'tickets.admin.views' )->template( 'attendees-email', array( 'status' => $status ) );
+			tribe( 'tickets.admin.views' )->template( 'attendees-email', [ 'status' => $status ] );
 
-			// Use iFrame Footer -- WP Method
+			// Use iFrame Footer -- WP Method.
 			iframe_footer();
 
-			// We need nothing else here
+			// We need nothing else here.
 			exit;
 		} else {
 			$this->maybe_generate_csv();
 
-			add_filter( 'admin_title', array( $this, 'filter_admin_title' ), 10, 2 );
-			add_filter( 'admin_body_class', array( $this, 'filter_admin_body_class' ) );
+			add_filter( 'admin_title', [ $this, 'filter_admin_title' ], 10, 2 );
+			add_filter( 'admin_body_class', [ $this, 'filter_admin_body_class' ] );
 		}
 	}
 
@@ -353,8 +352,6 @@ class Attendees extends Report_Abstract {
 	 * If so, generates the download and finishes the execution.
 	 *
 	 * @sincTBD
-	 *
-	 *
 	 */
 	public function maybe_generate_csv() {
 		if ( empty( $_GET['attendees_csv'] ) || empty( $_GET['attendees_csv_nonce'] ) || empty( $_GET['event_id'] ) ) {
@@ -364,7 +361,7 @@ class Attendees extends Report_Abstract {
 		$event_id = absint( $_GET['event_id'] );
 
 		// Verify event ID is a valid integer and the nonce is accepted.
-		if ( empty( $event_id ) || ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) ) {
+		if ( empty( $event_id ) || ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			return;
 		}
 
@@ -414,7 +411,7 @@ class Attendees extends Report_Abstract {
 
 			// Output the lines into the file.
 			foreach ( $items as $item ) {
-				fputcsv( $output, $item, $delimiter );
+				fputcsv( $output, $item, $delimiter ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fputcsv
 			}
 
 			fclose( $output );
@@ -428,7 +425,7 @@ class Attendees extends Report_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param $event_id
+	 * @param int $event_id The Event ID.
 	 *
 	 * @return array
 	 */
@@ -445,34 +442,37 @@ class Attendees extends Report_Abstract {
 			$this->page_id = 'tribe_events_page_tickets-attendees';
 		}
 
-		//Add in Columns or get_column_headers() returns nothing
+		// Add in Columns or get_column_headers() returns nothing.
 		$filter_name = "manage_{$this->page_id}_columns";
-		add_filter( $filter_name, array( $this->attendees_table, 'get_columns' ), 15 );
+		add_filter( $filter_name, [ $this->attendees_table, 'get_columns' ], 15 );
 
 		$items = tribe( \Tribe__Tickets__Tickets::class )::get_event_attendees( $event_id );
 
-		//Add Handler for Community Tickets to Prevent Notices in Exports
+		// Add Handler for Community Tickets to Prevent Notices in Exports.
 		if ( ! is_admin() ) {
-			$columns = apply_filters( $filter_name, array() );
+			$columns = apply_filters( $filter_name, [] );
 		} else {
 			$columns = array_filter( (array) get_column_headers( get_current_screen() ) );
-			$columns = array_map( 'wp_strip_all_tags', $columns  );
+			$columns = array_map( 'wp_strip_all_tags', $columns );
 		}
 
-		// We dont want HTML inputs, private data or other columns that are superfluous in a CSV export
-		$hidden = array_merge( get_hidden_columns( $this->page_id ), array(
-			'cb',
-			'meta_details',
-			'primary_info',
-			'provider',
-			'purchaser',
-			'status',
-		) );
+		// We dont want HTML inputs, private data or other columns that are superfluous in a CSV export.
+		$hidden = array_merge(
+			get_hidden_columns( $this->page_id ),
+			[
+				'cb',
+				'meta_details',
+				'primary_info',
+				'provider',
+				'purchaser',
+				'status',
+			]
+		);
 
 		$hidden         = array_flip( $hidden );
 		$export_columns = array_diff_key( $columns, $hidden );
 
-		// Add additional expected columns
+		// Add additional expected columns.
 		$export_columns['order_id']           = esc_html_x( 'Order ID', 'attendee export', 'event-tickets' );
 		$export_columns['order_status_label'] = esc_html_x( 'Order Status', 'attendee export', 'event-tickets' );
 		$export_columns['attendee_id']        = esc_html( sprintf( _x( '%s ID', 'attendee export', 'event-tickets' ), tribe_get_ticket_label_singular( 'attendee_export_ticket_id' ) ) );
@@ -491,43 +491,43 @@ class Attendees extends Report_Abstract {
 		 */
 		$export_columns = apply_filters( 'tribe_events_tickets_attendees_csv_export_columns', $export_columns, $items, $event_id );
 
-		// Add the export column headers as the first row
-		$rows = array(
+		// Add the export column headers as the first row.
+		$rows = [
 			array_values( $export_columns ),
-		);
+		];
 
 		foreach ( $items as $single_item ) {
 			// Fresh row!
-			$row = array();
-			$attendee = tribe( Commerce\Attendee::class )->load_attendee_data( new \WP_Post( (object) $single_item ) );
+			$row         = [];
+			$attendee    = tribe( Commerce\Attendee::class )->load_attendee_data( new \WP_Post( (object) $single_item ) );
 			$single_item = (array) $attendee;
 
 			foreach ( $export_columns as $column_id => $column_name ) {
 				// If additional columns have been added to the attendee list table we can obtain the
 				// values by calling the table object's column_default() method - any other values
-				// should simply be passed back unmodified
+				// should simply be passed back unmodified.
 				$row[ $column_id ] = $this->attendees_table->column_default( $attendee, $column_id );
 
-				// Special handling for the check_in column
+				// Special handling for the check_in column.
 				if ( 'check_in' === $column_id && 1 == $single_item[ $column_id ] ) {
 					$row[ $column_id ] = esc_html__( 'Yes', 'event-tickets' );
 				}
 
-				// Special handling for new human readable id
+				// Special handling for new human readable id.
 				if ( 'attendee_id' === $column_id ) {
 					if ( isset( $single_item[ $column_id ] ) ) {
 						$ticket_unique_id  = get_post_meta( $single_item[ $column_id ], '_unique_id', true );
-						$ticket_unique_id  = $ticket_unique_id === '' ? $single_item[ $column_id ] : $ticket_unique_id;
+						$ticket_unique_id  = '' === $ticket_unique_id ? $single_item[ $column_id ] : $ticket_unique_id;
 						$row[ $column_id ] = esc_html( $ticket_unique_id );
 					}
 				}
 
-				// Handle custom columns that might have names containing HTML tags
+				// Handle custom columns that might have names containing HTML tags.
 				$row[ $column_id ] = wp_strip_all_tags( $row[ $column_id ] );
 				// Decode HTML Entities.
-				$row[ $column_id ] = html_entity_decode( $row[ $column_id ] , ENT_QUOTES | ENT_XML1, 'UTF-8' );
+				$row[ $column_id ] = html_entity_decode( $row[ $column_id ], ENT_QUOTES | ENT_XML1, 'UTF-8' );
 				// Remove line breaks (e.g. from multi-line text field) for valid CSV format. Double quotes necessary here.
-				$row[ $column_id ] = str_replace( array( "\r", "\n" ), ' ', $row[ $column_id ] );
+				$row[ $column_id ] = str_replace( [ "\r", "\n" ], ' ', $row[ $column_id ] );
 			}
 
 			$rows[] = array_values( $row );

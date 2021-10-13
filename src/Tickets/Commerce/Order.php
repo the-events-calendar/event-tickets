@@ -188,7 +188,6 @@ class Order {
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
 		 *
 		 * @see   register_post_type
-		 *
 		 */
 		$post_type_args = apply_filters( 'tec_tickets_commerce_order_post_type_args', $post_type_args );
 
@@ -264,10 +263,12 @@ class Order {
 
 		$args = array_merge( $extra_args, [ 'status' => $status->get_wp_slug() ] );
 
-		$updated = tec_tc_orders()->by_args( [
-			'status' => 'any',
-			'id'     => $order_id,
-		] )->set_args( $args )->save();
+		$updated = tec_tc_orders()->by_args(
+			[
+				'status' => 'any',
+				'id'     => $order_id,
+			]
+		)->set_args( $args )->save();
 
 		// After modifying the status we add a meta to flag when it was modified.
 		if ( $updated ) {
@@ -291,17 +292,20 @@ class Order {
 		$cart = tribe( Cart::class );
 
 		$items      = $cart->get_items_in_cart();
-		$items      = array_map( static function ( $item ) {
-			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
-			if ( null === $ticket ) {
-				return null;
-			}
+		$items      = array_map(
+			static function ( $item ) {
+				$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+				if ( null === $ticket ) {
+					return null;
+				}
 
-			$item['sub_total'] = Price::sub_total( $ticket->price, $item['quantity'] );
-			$item['price']     = $ticket->price;
+				$item['sub_total'] = Price::sub_total( $ticket->price, $item['quantity'] );
+				$item['price']     = $ticket->price;
 
-			return $item;
-		}, $items );
+				return $item;
+			},
+			$items
+		);
 		$items      = array_filter( $items );
 		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
 		$total      = Price::total( $sub_totals );
@@ -338,7 +342,7 @@ class Order {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param array $items List of events form
+	 * @param array $items List of events form.
 	 *
 	 * @return string
 	 */
@@ -360,10 +364,9 @@ class Order {
 	 *
 	 * @since 5.1.9
 	 *
+	 * @param int  $error_code The current error code.
 	 * @param bool $redirect   Whether to really redirect or not.
-	 * @param int  $post_id    A post ID
-	 *
-	 * @param int  $error_code The current error code
+	 * @param int  $post_id    A post ID.
 	 *
 	 * @todo  Determine if redirecting should be something relegated to some other method, and here we just actually
 	 *        generate the order/Attendees.
@@ -385,7 +388,6 @@ class Order {
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.
 	 * @param bool   $redirect       Whether the client should be redirected or not.
-	 *
 	 */
 	public function generate_order( $payment_status = 'completed', $redirect = true ) {
 		/*
@@ -435,7 +437,7 @@ class Order {
 			return;
 		}
 
-		// Iterate over each product
+		// Iterate over each product.
 		foreach ( (array) $transaction_data['items'] as $item ) {
 			$order_attendee_id = 0;
 
@@ -447,7 +449,7 @@ class Order {
 			$ticket_type = $item['ticket'];
 			$product_id  = $ticket_type->ID;
 
-			// Get the event this tickets is for
+			// Get the event this tickets is for.
 			$post = $ticket_type->get_event();
 
 			if ( empty( $post ) ) {
@@ -456,24 +458,24 @@ class Order {
 
 			$post_id = $post->ID;
 
-			// if there were no PayPal tickets for the product added to the cart, continue
+			// if there were no PayPal tickets for the product added to the cart, continue.
 			if ( empty( $item['quantity'] ) ) {
 				continue;
 			}
 
-			// get the PayPal status `decrease_stock_by` value
+			// get the PayPal status `decrease_stock_by` value.
 			$status_stock_size = 1;
 
 			$ticket_qty = (int) $item['quantity'];
 
 			// to avoid tickets from not being created on a status stock size of 0
 			// let's take the status stock size into account and create a number of tickets
-			// at least equal to the number of tickets the user requested
+			// at least equal to the number of tickets the user requested.
 			$ticket_qty = $status_stock_size < 1 ? $ticket_qty : $status_stock_size * $ticket_qty;
 
 			$qty = max( $ticket_qty, 0 );
 
-			// Throw an error if Qty is bigger then Remaining
+			// Throw an error if Qty is bigger then Remaining.
 			if ( $payment_status === tribe( Commerce\Status\Completed::class )->get_wp_slug() && $ticket_type->managing_stock() ) {
 				add_action( 'tec_tickets_commerce_pending_stock_ignore', '__return_true' );
 				$inventory = (int) $ticket_type->inventory();
@@ -504,7 +506,7 @@ class Order {
 				}
 			}
 
-			if ( $qty === 0 ) {
+			if ( 0 === $qty ) {
 				$this->redirect_after_error( 103, $redirect, $post_id );
 
 				return;
@@ -531,7 +533,7 @@ class Order {
 			$currency        = tribe( 'tickets.commerce.currency' );
 			$currency_symbol = $currency->get_currency_symbol( $product_id, true );
 
-			// Iterate over all the amount of tickets purchased (for this product)
+			// Iterate over all the amount of tickets purchased (for this product).
 			for ( $i = 0; $i < $qty; $i ++ ) {
 				$attendee_id       = null;
 				$updating_attendee = false;
@@ -564,7 +566,7 @@ class Order {
 				 */
 				$individual_attendee_email = apply_filters( 'tribe_tickets_attendee_create_individual_email', $attendee_email, $i, $order_id, $product_id, $post_id, $this );
 
-				// check if we already have an attendee or not
+				// check if we already have an attendee or not.
 				$post_title        = $individual_attendee_name . ' | ' . ( $i + 1 );
 				$criteria          = [
 					'post_title' => $post_title,
@@ -583,7 +585,7 @@ class Order {
 						'post_title' => $post_title,
 					];
 
-					// since we are creating at least one
+					// since we are creating at least one.
 					$has_generated_new_tickets = true;
 				}
 
@@ -669,7 +671,7 @@ class Order {
 			 */
 			do_action( 'event_tickets_tpp_tickets_generated_for_product', $product_id, $order_id, $qty );
 
-			// After Adding the Values we Update the Transient
+			// After Adding the Values we Update the Transient.
 			\Tribe__Post_Transient::instance()->delete( $post_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 		}
 
@@ -697,12 +699,19 @@ class Order {
 		if (
 			$send_mail
 			&& $has_tickets
-			&& $attendee_order_status === Order_Statuses::$completed
+			&& Order_Statuses::$completed === $attendee_order_status
 		) {
 			$this->send_tickets_email( $order_id, $post_id );
 		}
 	}
 
+	/**
+	 * Loads an order object with information about its attendees
+	 *
+	 * @param \WP_Post $order the order object.
+	 *
+	 * @return \WP_Post|\WP_Post[]
+	 */
 	public function get_attendees( \WP_Post $order ) {
 		$order->attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
 
@@ -719,8 +728,14 @@ class Order {
 
 	}
 
+	/**
+	 * Returns the Ticket ID that is associated with the attendee
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return mixed
+	 */
 	public function get_ticket_id( \WP_Post $attendee ) {
 		return get_post_meta( $attendee->ID, static::$tickets_in_order_meta_key, true );
 	}
-
 }
