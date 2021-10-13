@@ -132,6 +132,8 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			'success' => false,
 		];
 
+		$messages = $this->get_error_messages();
+
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ) );
 
 		$unit = [
@@ -146,7 +148,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		$paypal_order = tribe( Client::class )->create_order( $unit );
 
 		if ( empty( $paypal_order['id'] ) || empty( $paypal_order['create_time'] ) ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-failed-creating-order', null, $order );
+			return new WP_Error( 'tec-tc-gateway-paypal-failed-creating-order', $messages['failed-creating-order'], $order );
 		}
 
 		$updated = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG, [
@@ -179,15 +181,17 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			'success' => false,
 		];
 
+		$messages = $this->get_error_messages();
+
 		$paypal_order_id = $request->get_param( 'order_id' );
 
-		$order           = tec_tc_orders()->by_args( [
+		$order = tec_tc_orders()->by_args( [
 			'status'           => tribe( Pending::class )->get_wp_slug(),
 			'gateway_order_id' => $paypal_order_id,
 		] )->first();
 
 		if ( ! $order ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', null, $order );
+			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', $messages['nonexistent-order-id'], $order );
 		}
 
 		$payer_id = $request->get_param( 'payer_id' );
@@ -195,14 +199,14 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		$paypal_capture_response = tribe( Client::class )->capture_order( $paypal_order_id, $payer_id );
 
 		if ( ! $paypal_capture_response ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-failed-capture', null, $paypal_capture_response );
+			return new WP_Error( 'tec-tc-gateway-paypal-failed-capture', $messages['failed-capture'], $paypal_capture_response );
 		}
 
 		$paypal_capture_status = Arr::get( $paypal_capture_response, [ 'status' ] );
 		$status                = tribe( Status::class )->convert_to_commerce_status( $paypal_capture_status );
 
 		if ( ! $status ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', null, $paypal_capture_response );
+			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', $messages['invalid-capture-status'], $paypal_capture_response );
 		}
 
 		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
@@ -245,6 +249,8 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			'gateway_order_id' => $paypal_order_id,
 		] )->first();
 
+		$messages = $this->get_error_messages();
+
 		if ( ! $order ) {
 			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', null, $order );
 		}
@@ -258,7 +264,10 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		$status = tribe( Status_Handler::class )->get_by_slug( $failed_status );
 
 		if ( ! $status ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-invalid-failed-status', null, [ 'failed_status' => $failed_status, 'failed_reason' => $failed_reason ] );
+			return new WP_Error( 'tec-tc-gateway-paypal-invalid-failed-status', null, [
+				'failed_status' => $failed_status,
+				'failed_reason' => $failed_reason
+			] );
 		}
 
 		/**
@@ -273,6 +282,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		$response['success']  = true;
 		$response['status']   = $status->get_slug();
 		$response['order_id'] = $order->ID;
+		$response['title']    = $messages['canceled-creating-order'];
 
 		return new WP_REST_Response( $response );
 	}
@@ -335,7 +345,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	 */
 	public function fail_order_args() {
 		return [
-			'order_id' => [
+			'order_id'      => [
 				'description'       => __( 'Order ID in PayPal', 'event-tickets' ),
 				'required'          => true,
 				'type'              => 'string',
@@ -405,5 +415,31 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	 */
 	public function get_documentation() {
 		return [];
+	}
+
+	/**
+	 * Returns an array of error messages that are used by the API responses.
+	 *
+	 * @since TBD
+	 *
+	 * @return array $messages Array of error messages.
+	 */
+	public function get_error_messages() {
+		$messages = [
+			'failed-creating-order'   => __( 'Creating new PayPal order failed. Please try again.', 'event-tickets' ),
+			'canceled-creating-order' => __( 'Your PayPal order was cancelled.', 'event-tickets' ),
+			'nonexistent-order-id'    => __( 'Provided Order id is not valid.', 'event-tickets' ),
+			'failed-capture'          => __( 'Failed to capture Payment!', 'event-tickets' ),
+			'invalid-capture-status'  => __( 'Invalid Payment capture status', 'event-tickets' ),
+		];
+
+		/**
+		 * Filter the error messages for PayPal checkout.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $messages Array of error messages.
+		 */
+		return apply_filters( 'tec_tickets_commerce_order_endpoint_error_messages', $messages );
 	}
 }
