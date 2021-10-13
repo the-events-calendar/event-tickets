@@ -161,13 +161,14 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	public function handle_action_refresh_token() {
 		$merchant   = $this->container->make( Merchant::class );
 		$token_data = $this->container->make( Client::class )->get_access_token_from_client_credentials( $merchant->get_client_id(), $merchant->get_client_secret() );
+		$notices    = $this->container->make( Notice_Handler::class );
 
+		// Check if API response is valid for token data.
 		if ( ! is_array( $token_data ) || ! isset( $token_data[ 'access_token' ] ) ) {
-			$this->handle_invalid_response( $token_data );
+			$message = $notices->get_message_data( 'tc-paypal-refresh-token-failed' );
+			$this->container->make( Gateway::class )->handle_invalid_response( $token_data, $message[ 'content' ] );
 			return;
 		}
-
-		$notices    = $this->container->make( Notice_Handler::class );
 
 		$saved = $merchant->save_access_token_data( $token_data );
 
@@ -191,15 +192,16 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		$user_info = $this->container->make( Client::class )->get_user_info();
 		$notices   = $this->container->make( Notice_Handler::class );
 
+		// Check if API response is valid for user info.
 		if ( ! isset( $user_info['user_id'] ) ) {
-			$this->handle_invalid_response( $user_info, 'tc-invalid-user-info-response' );
+			$message = $notices->get_message_data( 'tc-paypal-refresh-user-info-failed' );
+			$this->container->make( Gateway::class )->handle_invalid_response( $user_info, $message['content'], 'tc-invalid-user-info-response' );
 			return;
 		}
 
 		$merchant->save_user_info( $user_info );
 
 		$notices->trigger_admin( 'tc-paypal-refresh-user-info' );
-
 	}
 
 	/**
@@ -262,28 +264,5 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function include_admin_notices( $messages ) {
 		return array_merge( $messages, $this->container->make( Gateway::class )->get_admin_notices() );
-	}
-
-	/**
-	 *
-	 * @since TBD
-	 *
-	 * @param $response
-	 * @param string $slug
-	 */
-	public function handle_invalid_response( $response, $slug = 'error' ) {
-
-		$notices = $this->container->make( Notice_Handler::class );
-		$body = (array) json_decode( wp_remote_retrieve_body( $response ) );
-
-		$error_message = isset( $body['error_description'] ) ? $body['error_description'] : __( 'Unexpected response recieved.' , 'event-tickets' );
-
-		$notices->trigger_admin(
-			$slug,
-			[
-				'content' => $error_message,
-				'type'    => 'error',
-			]
-		);
 	}
 }
