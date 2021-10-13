@@ -142,12 +142,40 @@ class Attendees extends Report_Abstract {
 	 * @since TBD
 	 */
 	public function attendees_page_screen_setup() {
+		$action = tribe_get_request_var( 'tribe-send-email', false );
+
 		$orders_table = tribe( Commerce\Admin_Tables\Attendees::class );
 		$orders_table->prepare_items();
 
 		wp_enqueue_script( 'jquery-ui-dialog' );
 
 		add_filter( 'admin_title', [ $this, 'filter_admin_title' ] );
+
+		if ( $action ) {
+			define( 'IFRAME_REQUEST', true );
+
+			// Use iFrame Header -- WP Method
+			iframe_header();
+
+			// Check if we need to send an Email!
+			$status = false;
+			if ( isset( $_POST['tribe-send-email'] ) && $_POST['tribe-send-email'] ) {
+				$status = tribe( \Tribe__Tickets__Attendees::class )->send_mail_list();
+			}
+
+			tribe( 'tickets.admin.views' )->template( 'attendees-email', array( 'status' => $status ) );
+
+			// Use iFrame Footer -- WP Method
+			iframe_footer();
+
+			// We need nothing else here
+			exit;
+		} else {
+			$this->maybe_generate_csv();
+
+			add_filter( 'admin_title', array( $this, 'filter_admin_title' ), 10, 2 );
+			add_filter( 'admin_body_class', array( $this, 'filter_admin_body_class' ) );
+		}
 	}
 
 	/**
@@ -318,5 +346,233 @@ class Attendees extends Report_Abstract {
 		$user_can = apply_filters( 'tribe_tickets_user_can_manage_attendees', $user_can, $user_id, $event_id );
 
 		return $user_can;
+	}
+
+	/**
+	 * Checks if the user requested a CSV export from the attendees list.
+	 * If so, generates the download and finishes the execution.
+	 *
+	 * @sincTBD
+	 *
+	 *
+	 */
+	public function maybe_generate_csv() {
+		if ( empty( $_GET['attendees_csv'] ) || empty( $_GET['attendees_csv_nonce'] ) || empty( $_GET['event_id'] ) ) {
+			return;
+		}
+
+		$event_id = absint( $_GET['event_id'] );
+
+		// Verify event ID is a valid integer and the nonce is accepted.
+		if ( empty( $event_id ) || ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) ) {
+			return;
+		}
+
+		$event = get_post( $event_id );
+
+		// Verify event exists and current user has access to it.
+		if (
+			! $event instanceof \WP_Post
+			|| ! current_user_can( 'edit_posts', $event_id )
+		) {
+			return;
+		}
+
+		// Generate filtered list of attendees.
+		$items = $this->generate_filtered_list( $event_id );
+
+		// Sanitize items for CSV usage.
+		$items = $this->sanitize_csv_rows( $items );
+
+		/**
+		 * Allow for filtering and modifying the list of attendees that will be exported via CSV for a given event.
+		 *
+		 * @param array $items    The array of attendees that will be exported in this CSV file.
+		 * @param int   $event_id The ID of the event these attendees are associated with.
+		 */
+		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $items, $event_id );
+
+		if ( ! empty( $items ) ) {
+			$charset  = get_option( 'blog_charset' );
+			$filename = sanitize_file_name( $event->post_title . '-' . __( 'attendees', 'event-tickets' ) );
+
+			// Output headers so that the file is downloaded rather than displayed.
+			header( "Content-Type: text/csv; charset=$charset" );
+			header( "Content-Disposition: attachment; filename=$filename.csv" );
+
+			// Create the file pointer connected to the output stream.
+			$output = fopen( 'php://output', 'w' );
+
+			/**
+			 * Allow filtering the field delimiter used in the CSV export file.
+			 *
+			 * @since 5.1.3
+			 *
+			 * @param string $delimiter The field delimiter used in the CSV export file.
+			 */
+			$delimiter = apply_filters( 'tribe_tickets_attendees_csv_export_delimiter', ',' );
+
+			// Output the lines into the file.
+			foreach ( $items as $item ) {
+				fputcsv( $output, $item, $delimiter );
+			}
+
+			fclose( $output );
+			exit;
+		}
+	}
+
+	/**
+	 * Generates a list of attendees taking into account the Screen Options.
+	 * It's used both for the Email functionality, as well as the CSV export.
+	 *
+	 * @since TBD
+	 *
+	 * @param $event_id
+	 *
+	 * @return array
+	 */
+	private function generate_filtered_list( $event_id ) {
+		$this->attendees_table = tribe( Admin_Tables\Attendees::class );
+		/**
+		 * Fire immediately prior to the generation of a filtered (exportable) attendee list.
+		 *
+		 * @param int $event_id
+		 */
+		do_action( 'tribe_events_tickets_generate_filtered_attendees_list', $event_id );
+
+		if ( empty( $this->page_id ) ) {
+			$this->page_id = 'tribe_events_page_tickets-attendees';
+		}
+
+		//Add in Columns or get_column_headers() returns nothing
+		$filter_name = "manage_{$this->page_id}_columns";
+		add_filter( $filter_name, array( $this->attendees_table, 'get_columns' ), 15 );
+
+		$items = tribe( \Tribe__Tickets__Tickets::class )::get_event_attendees( $event_id );
+
+		//Add Handler for Community Tickets to Prevent Notices in Exports
+		if ( ! is_admin() ) {
+			$columns = apply_filters( $filter_name, array() );
+		} else {
+			$columns = array_filter( (array) get_column_headers( get_current_screen() ) );
+			$columns = array_map( 'wp_strip_all_tags', $columns  );
+		}
+
+		// We dont want HTML inputs, private data or other columns that are superfluous in a CSV export
+		$hidden = array_merge( get_hidden_columns( $this->page_id ), array(
+			'cb',
+			'meta_details',
+			'primary_info',
+			'provider',
+			'purchaser',
+			'status',
+		) );
+
+		$hidden         = array_flip( $hidden );
+		$export_columns = array_diff_key( $columns, $hidden );
+
+		// Add additional expected columns
+		$export_columns['order_id']           = esc_html_x( 'Order ID', 'attendee export', 'event-tickets' );
+		$export_columns['order_status_label'] = esc_html_x( 'Order Status', 'attendee export', 'event-tickets' );
+		$export_columns['attendee_id']        = esc_html( sprintf( _x( '%s ID', 'attendee export', 'event-tickets' ), tribe_get_ticket_label_singular( 'attendee_export_ticket_id' ) ) );
+		$export_columns['holder_name']        = esc_html_x( 'Ticket Holder Name', 'attendee export', 'event-tickets' );
+		$export_columns['holder_email']       = esc_html_x( 'Ticket Holder Email Address', 'attendee export', 'event-tickets' );
+		$export_columns['purchaser_name']     = esc_html_x( 'Purchaser Name', 'attendee export', 'event-tickets' );
+		$export_columns['purchaser_email']    = esc_html_x( 'Purchaser Email Address', 'attendee export', 'event-tickets' );
+
+		/**
+		 * Used to modify what columns should be shown on the CSV export
+		 * The column name should be the Array Index and the Header is the array Value
+		 *
+		 * @param array Columns, associative array
+		 * @param array Items to be exported
+		 * @param int   Event ID
+		 */
+		$export_columns = apply_filters( 'tribe_events_tickets_attendees_csv_export_columns', $export_columns, $items, $event_id );
+
+		// Add the export column headers as the first row
+		$rows = array(
+			array_values( $export_columns ),
+		);
+
+		foreach ( $items as $single_item ) {
+			// Fresh row!
+			$row = array();
+			$attendee = tribe( Commerce\Attendee::class )->load_attendee_data( new \WP_Post( (object) $single_item ) );
+			$single_item = (array) $attendee;
+
+			foreach ( $export_columns as $column_id => $column_name ) {
+				// If additional columns have been added to the attendee list table we can obtain the
+				// values by calling the table object's column_default() method - any other values
+				// should simply be passed back unmodified
+				$row[ $column_id ] = $this->attendees_table->column_default( $attendee, $column_id );
+
+				// Special handling for the check_in column
+				if ( 'check_in' === $column_id && 1 == $single_item[ $column_id ] ) {
+					$row[ $column_id ] = esc_html__( 'Yes', 'event-tickets' );
+				}
+
+				// Special handling for new human readable id
+				if ( 'attendee_id' === $column_id ) {
+					if ( isset( $single_item[ $column_id ] ) ) {
+						$ticket_unique_id  = get_post_meta( $single_item[ $column_id ], '_unique_id', true );
+						$ticket_unique_id  = $ticket_unique_id === '' ? $single_item[ $column_id ] : $ticket_unique_id;
+						$row[ $column_id ] = esc_html( $ticket_unique_id );
+					}
+				}
+
+				// Handle custom columns that might have names containing HTML tags
+				$row[ $column_id ] = wp_strip_all_tags( $row[ $column_id ] );
+				// Decode HTML Entities.
+				$row[ $column_id ] = html_entity_decode( $row[ $column_id ] , ENT_QUOTES | ENT_XML1, 'UTF-8' );
+				// Remove line breaks (e.g. from multi-line text field) for valid CSV format. Double quotes necessary here.
+				$row[ $column_id ] = str_replace( array( "\r", "\n" ), ' ', $row[ $column_id ] );
+			}
+
+			$rows[] = array_values( $row );
+		}
+
+		return array_filter( $rows );
+	}
+
+	/**
+	 * Sanitize rows for CSV usage.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $rows Rows to be sanitized.
+	 *
+	 * @return array Sanitized rows.
+	 */
+	public function sanitize_csv_rows( array $rows ) {
+		foreach ( $rows as &$row ) {
+			$row = array_map( [ $this, 'sanitize_csv_value' ], $row );
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * Sanitize a value for CSV usage.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value Value to be sanitized.
+	 *
+	 * @return string Sanitized value.
+	 */
+	public function sanitize_csv_value( $value ) {
+		if (
+			0 === tribe_strpos( $value, '=' )
+			|| 0 === tribe_strpos( $value, '+' )
+			|| 0 === tribe_strpos( $value, '-' )
+			|| 0 === tribe_strpos( $value, '@' )
+		) {
+			// Prefix the value with a single quote to prevent formula from being processed.
+			$value = '\'' . $value;
+		}
+
+		return $value;
 	}
 }

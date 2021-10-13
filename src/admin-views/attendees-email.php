@@ -22,7 +22,7 @@ if ( ! current_user_can( 'list_users' ) ) {
 $users_args = apply_filters( 'tribe_event_tickets_email_attendee_list_dropdown', $users_args );
 
 ?><div id="tribe-loading"><span></span></div>
-<form method="POST" class="tribe-attendees-email">
+<form method="POST" class="tribe-attendees-email" action="<?php echo $_SERVER['HTTP_REFERER']; ?>">
 	<div id="plugin-information-title">
 		<?php esc_html_e( 'Send the attendee list by email', 'event-tickets' ); ?>
 	</div>
