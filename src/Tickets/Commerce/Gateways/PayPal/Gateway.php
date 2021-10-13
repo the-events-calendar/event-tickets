@@ -76,4 +76,58 @@ class Gateway extends Abstract_Gateway {
 	public static function is_test_mode() {
 		return tribe_is_truthy( tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_sandbox ) );
 	}
+
+	/**
+	 * Get all the admin notices.
+	 *
+	 * @since TBD.
+	 *
+	 * @return array
+	 */
+	public function get_admin_notices() {
+		$notices = [
+			[
+				'slug'     => 'tc-paypal-signup-complete',
+				'content'  => __( 'PayPal is now connected.', 'event-tickets' ),
+				'type'     => 'info',
+			],
+			[
+				'slug'     => 'tc-paypal-disconnect-failed',
+				'content'  => __( 'Failed to disconnect PayPal account.', 'event-tickets' ),
+				'type'     => 'error',
+			],
+			[
+				'slug'     => 'tc-paypal-disconnect',
+				'content'  => __( 'Disconnect PayPal account.', 'event-tickets' ),
+				'type'     => 'info',
+			],
+			[
+				'slug'     => 'tc-paypal-refresh-token-failed',
+				'content'  => __( 'Failed to refresh PayPal access token.', 'event-tickets' ),
+				'type'     => 'error',
+			],
+			[
+				'slug'     => 'tc-paypal-refresh-token',
+				'content'  => __( 'PayPal access token was refresh successfully.', 'event-tickets' ),
+				'type'     => 'info',
+			],
+			[
+				'slug'     => 'tc-paypal-refresh-user-info-failed',
+				'content'  => __( 'Failed to refresh PayPal user info.', 'event-tickets' ),
+				'type'     => 'error',
+			],
+			[
+				'slug'     => 'tc-paypal-refresh-user-info',
+				'content'  => __( 'PayPal user info was refreshed successfully.', 'event-tickets' ),
+				'type'     => 'info',
+			],
+			[
+				'slug'     => 'tc-paypal-ssl-not-available',
+				'content'  => __( 'A valid SSL certificate is required to set up your PayPal account and accept payments', 'event-tickets' ),
+				'type'     => 'error',
+			],
+		];
+
+		 return $notices;
+	}
 }

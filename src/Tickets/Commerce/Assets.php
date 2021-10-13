@@ -73,5 +73,16 @@ class Assets extends tad_DI52_ServiceProvider {
 				],
 			]
 		);
+
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-commerce-notice-js',
+			'commerce/notice.js',
+			[
+				'jquery',
+				'tribe-common',
+			],
+			null
+		);
 	}
 }

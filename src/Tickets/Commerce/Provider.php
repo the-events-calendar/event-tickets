@@ -54,6 +54,7 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( Admin_Tables\Attendees::class );
 
 		$this->container->singleton( Editor\Metabox::class );
+		$this->container->singleton( Notice_Handler::class );
 
 		$this->container->singleton( Module::class );
 		$this->container->singleton( Attendee::class );
