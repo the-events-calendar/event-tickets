@@ -244,6 +244,10 @@ class Signup {
 		}
 
 		$country = tribe_get_request_var( 'country_code', 'US' );
+
+		// Save to the DB.
+		tribe( Country::class )->save_setting( $country );
+
 		$new_url = $this->generate_url( $country, true );
 		if ( empty( $new_url ) ) {
 			wp_send_json_error( new \WP_Error( 'tec-tickets-commerce-paypal-refresh-connect-url-error' ) );

@@ -17,6 +17,8 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\Location;
  */
 class Country {
 
+	public static $country_option_key = 'tickets-commerce-gateway-paypal-merchant-country';
+
 	/**
 	 * Default two char string for the default country code.
 	 *
@@ -34,7 +36,7 @@ class Country {
 	 * @return string $country The two letter country code for the site's base country
 	 */
 	public function get_setting() {
-		$country = tribe_get_option( 'tec-tickets-commerce-gateway-paypal-merchant-country' );
+		$country = tribe_get_option( static::$country_option_key );
 
 		/**
 		 * Fetches the country associated with the PayPal setting.
@@ -51,6 +53,17 @@ class Country {
 		}
 
 		return $country;
+	}
+
+	/**
+	 * Saves the paypal base country to the Options array.
+	 *
+	 * @since TBD
+	 *
+	 * @return boolean
+	 */
+	public function save_setting( $value ) {
+		return tribe_update_option( static::$country_option_key, $value );
 	}
 
 	/**

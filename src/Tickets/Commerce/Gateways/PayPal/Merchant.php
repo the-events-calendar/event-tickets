@@ -845,6 +845,13 @@ class Merchant {
 	public function get_locale() {
 		$locale = get_locale();
 
+		/**
+		 * Allows filtering of the locale for the Merchant.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $locale
+		 */
 		return apply_filters( 'tec_tickets_commerce_gateway_paypal_merchant_locale', $locale );
 	}
 }
