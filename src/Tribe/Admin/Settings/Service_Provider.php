@@ -49,14 +49,19 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 				'label' => __( 'Getting Started Guide', 'event-tickets' ),
 				'href'  => 'https://evnt.is/1aot',
 			],
-
 			[
-				'label' => __( 'Configuring PayPal for Ticket Purchases', 'event-tickets' ),
-				'href'  => 'https://evnt.is/1aou',
+				'label' => __( 'Event Tickets Manual', 'event-tickets' ),
+				'href'  => 'https://evnt.is/1aoz',
 			],
 			[
-				'label' => __( 'Configuring Tribe Commerce', 'event-tickets' ),
-				'href'  => 'https://evnt.is/1aov',
+				'label' => __( 'What is Tickets Commerce?', 'event-tickets' ),
+				'href'  => 'https://evnt.is/1axs',
+				'new'   => true,
+			],
+			[
+				'label' => __( 'Configuring Tickets Commerce', 'event-tickets' ),
+				'href'  => 'https://evnt.is/1axt',
+				'new'   => true,
 			],
 			[
 				'label' => __( 'Using RSVPs', 'event-tickets' ),
@@ -65,10 +70,6 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 			[
 				'label' => __( 'Managing Orders and Attendees', 'event-tickets' ),
 				'href'  => 'https://evnt.is/1aoy',
-			],
-			[
-				'label' => __( 'Event Tickets Manual', 'event-tickets' ),
-				'href'  => 'https://evnt.is/1aoz',
 			],
 		];
 
