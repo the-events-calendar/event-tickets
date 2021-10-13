@@ -173,7 +173,6 @@ class Attendees extends Report_Abstract {
 			$this->maybe_generate_csv();
 
 			add_filter( 'admin_title', [ $this, 'filter_admin_title' ], 10, 2 );
-			add_filter( 'admin_body_class', [ $this, 'filter_admin_body_class' ] );
 		}
 	}
 
