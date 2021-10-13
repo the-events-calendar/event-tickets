@@ -48,6 +48,7 @@ class Order_Model extends Base {
 			$status_log          = $this->get_status_log( $post_meta );
 			$flag_action_markers = $this->get_flag_action_markers( $post_meta );
 
+			$purchaser_user_id    = Arr::get( $post_meta, [ Order::$purchaser_user_id_meta_key, 0 ] );
 			$purchaser_full_name  = Arr::get( $post_meta, [ Order::$purchaser_full_name_meta_key, 0 ] );
 			$purchaser_first_name = Arr::get( $post_meta, [ Order::$purchaser_first_name_meta_key, 0 ] );
 			$purchaser_last_name  = Arr::get( $post_meta, [ Order::$purchaser_last_name_meta_key, 0 ] );
@@ -66,7 +67,7 @@ class Order_Model extends Base {
 				'total_value'         => $total_value,
 				'currency'            => $currency,
 				'purchaser'           => [
-					'user_id'    => $this->post->post_author,
+					'user_id'    => (int) $purchaser_user_id,
 					'first_name' => $purchaser_first_name,
 					'last_name'  => $purchaser_last_name,
 					'full_name'  => $purchaser_full_name,

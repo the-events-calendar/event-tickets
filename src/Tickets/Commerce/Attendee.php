@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
+use TEC\Tickets\Commerce\Communications\Email;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use \Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Utils__Array as Arr;
@@ -241,6 +242,22 @@ class Attendee {
 			'currency'      => Arr::get( $args, 'currency' ),
 		];
 
+		if ( ! empty( $order->purchaser['user_id'] ) ) {
+			$create_args['user_id'] = $order->purchaser['user_id'];
+		}
+
+		if ( ! empty( $order->purchaser['email'] ) ) {
+			$create_args['email'] = $order->purchaser['email'];
+		}
+
+		if ( ! empty( $order->purchaser['first_name'] ) ) {
+			$create_args['first_name'] = $order->purchaser['first_name'];
+		}
+
+		if ( ! empty( $order->purchaser['last_name'] ) ) {
+			$create_args['last_name'] = $order->purchaser['last_name'];
+		}
+
 		/**
 		 * Allow the filtering of the create arguments for attendee.
 		 *
@@ -344,7 +361,7 @@ class Attendee {
 
 		$user_id = get_current_user_id();
 
-		$ticket_attendees    = $this->tickets_view->get_post_ticket_attendees( $post_id, $user_id );
+		$ticket_attendees    = tribe( Module::class )->get_attendees_by_user_id( $user_id, $post_id );
 		$ticket_attendee_ids = wp_list_pluck( $ticket_attendees, 'attendee_id' );
 
 		// This makes sure we don't save attendees for attendees that are not from this current user and event.
@@ -409,7 +426,7 @@ class Attendee {
 		foreach ( $transaction_ids as $transaction ) {
 			// This method takes care of intelligently sending out emails only when
 			// required, for attendees that have not yet received their tickets
-			tribe( Module::class )->send_tickets_email( $transaction, $event_id );
+			tribe( Email::class )->send_tickets_email( $transaction, $event_id );
 		}
 	}
 

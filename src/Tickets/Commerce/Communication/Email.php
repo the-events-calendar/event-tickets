@@ -2,6 +2,9 @@
 
 namespace TEC\Tickets\Commerce\Communications;
 
+use TEC\Tickets\Commerce;
+use TEC\Tickets\Commerce\Settings;
+
 /**
  * Class Email
  *
@@ -19,7 +22,7 @@ class Email {
 	 * @param int    $post_id  Parent post ID (optional)
 	 */
 	public function send_tickets_email( $order_id, $post_id = null ) {
-		$all_attendees = $this->get_attendees_by_order_id( $order_id );
+		$all_attendees = tribe( Module::class )->get_attendees_by_order_id( $order_id );
 
 		$to_send = array();
 
@@ -64,6 +67,6 @@ class Email {
 		];
 
 		// Send the emails.
-		$this->send_tickets_email_for_attendees( $to_send, $send_args );
+		tribe( Module::class )->send_tickets_email_for_attendees( $to_send, $send_args );
 	}
 }

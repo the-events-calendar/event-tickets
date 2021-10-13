@@ -68,7 +68,7 @@ class Attendee_Model extends Base {
 			$ticket_unique_id = Arr::get( $post_meta, [ '_unique_id', 0 ] );
 			$ticket_unique_id = empty( $ticket_unique_id ) ? $post_id : $ticket_unique_id;
 
-			$ticket_title = ( $is_product_deleted ? $ticket->post_title : $deleted_ticket_title . ' ' . __( '(deleted)', 'event-tickets' ) );
+			$ticket_title = ( ! $is_product_deleted ? $ticket->post_title : $deleted_ticket_title . ' ' . __( '(deleted)', 'event-tickets' ) );
 
 			$is_purchaser = $email === $order->purchaser_email;
 

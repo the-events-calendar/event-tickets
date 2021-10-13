@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Signup;
 use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
 
 
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Created;

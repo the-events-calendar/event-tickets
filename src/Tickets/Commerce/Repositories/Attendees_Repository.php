@@ -57,6 +57,7 @@ class Attendees_Repository extends Tribe__Repository {
 				'order_id'          => 'post_parent',
 				'ticket_id'         => Attendee::$ticket_relation_meta_key,
 				'event_id'          => Attendee::$event_relation_meta_key,
+				'user_id'           => Attendee::$user_relation_meta_key,
 				'security_code'     => Attendee::$security_code_meta_key,
 				'opt_out'           => Attendee::$optout_meta_key,
 				'checked_in'        => Attendee::$checked_in_meta_key,

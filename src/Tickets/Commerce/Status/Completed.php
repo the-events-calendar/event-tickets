@@ -29,11 +29,14 @@ class Completed extends Status_Abstract {
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * Do not change the order arbitrarily. Flag actions are triggered in the order represented in this array.
 	 */
 	protected $flags = [
 		'complete',
 		'attendee_dispatch',
 		'stock_reduced',
+		'send_email',
 		'count_attendee',
 		'count_completed',
 		'count_sales',

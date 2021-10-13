@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
+use TEC\Tickets\Commerce\Communications\Email;
 use TEC\Tickets\Commerce\Utils\Price;
 use Tribe__Date_Utils as Dates;
 
@@ -134,6 +135,15 @@ class Order {
 	 * @var string
 	 */
 	public static $purchaser_email_meta_key = '_tec_tc_order_purchaser_email';
+
+	/**
+	 * Which meta holds the purchaser user id.
+	 *
+	 * @since 5.1.9
+	 *
+	 * @var string
+	 */
+	public static $purchaser_user_id_meta_key = '_tec_tc_order_purchaser_user_id';
 
 	/**
 	 * Prefix for the log of when a given status was applied.
@@ -315,11 +325,17 @@ class Order {
 
 		// When purchaser data-set is not passed we pull from the current user.
 		if ( empty( $purchaser ) && is_user_logged_in() && $user = wp_get_current_user() ) {
-			$order_args['author']               = $user->ID;
+			$order_args['purchaser_user_id']    = $user->ID;
 			$order_args['purchaser_full_name']  = $user->first_name . ' ' . $user->last_name;
 			$order_args['purchaser_first_name'] = $user->first_name;
 			$order_args['purchaser_last_name']  = $user->last_name;
 			$order_args['purchaser_email']      = $user->user_email;
+		} elseif ( empty( $purchaser ) ) {
+			$order_args['purchaser_user_id']    = 0;
+			$order_args['purchaser_full_name']  = 'Pending...';
+			$order_args['purchaser_first_name'] = 'Pending...';
+			$order_args['purchaser_last_name']  = 'Pending...';
+			$order_args['purchaser_email']      = '';
 		}
 
 		$order = tec_tc_orders()->set_args( $order_args )->create();
@@ -694,7 +710,7 @@ class Order {
 			&& $has_tickets
 			&& $attendee_order_status === Order_Statuses::$completed
 		) {
-			$this->send_tickets_email( $order_id, $post_id );
+			tribe( Email::class )->send_tickets_email( $order_id, $post_id );
 		}
 	}
 }

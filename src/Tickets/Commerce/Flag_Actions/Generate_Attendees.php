@@ -53,16 +53,7 @@ class Generate_Attendees extends Flag_Action_Abstract {
 	 * @return Status_Abstract
 	 */
 	public function get_status_when_to_trigger() {
-		$status = tribe( Status_Handler::class )->get_inventory_decrease_status();
-
-		/**
-		 * Filters the status we use to trigger attendee generation.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $status The status we use to trigger attendee generation.
-		 */
-		return apply_filters( 'tec_tickets_flag_action_generate_attendees_trigger_status', $status );
+		return tribe( Status_Handler::class )->get_inventory_decrease_status();
 	}
 
 	/**
@@ -85,15 +76,15 @@ class Generate_Attendees extends Flag_Action_Abstract {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
+	public function handle( Status_Interface $new_status, $old_status, \WP_Post $order ) {
 		// @todo we need an error handling piece here.
-		if ( empty( $post->cart_items ) ) {
+		if ( empty( $order->cart_items ) ) {
 			return;
 		}
 
 		$default_currency = tribe_get_option( Settings::$option_currency_code, 'USD' );
 
-		foreach ( $post->cart_items as $ticket_id => $item ) {
+		foreach ( $order->cart_items as $ticket_id => $item ) {
 			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 			if ( null === $ticket ) {
 				continue;
@@ -124,11 +115,11 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				 *
 				 * @param array<mixed> $args The attendee creation args.
 				 * @param \Tribe__Tickets__Tickets $ticket The ticket the attendee is generated for.
-				 * @param \WP_Post $post The order the attendee is generated for.
+				 * @param \WP_Post $order The order the attendee is generated for.
 				 */
-				$args = apply_filters( 'tec_tickets_attendee_generation_args', $args, $ticket, $post );
+				$args = apply_filters( 'tec_tickets_attendee_generation_args', $args, $ticket, $order );
 
-				$attendee = tribe( Attendee::class )->create( $post, $ticket, $args );
+				$attendee = tribe( Attendee::class )->create( $order, $ticket, $args );
 
 				/**
 				 * Fires after an attendee is generated for an order.
@@ -137,9 +128,9 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				 *
 				 * @param Attendee $attendee The generated attendee.
 				 * @param \Tribe__Tickets__Tickets $ticket The ticket the attendee is generated for.
-				 * @param \WP_Post $post The order the attendee is generated for.
+				 * @param \WP_Post $order The order the attendee is generated for.
 				 */
-				do_action( 'tec_tickets_attendee_generated', $attendee, $ticket, $post );
+				do_action( 'tec_tickets_attendee_generated', $attendee, $ticket, $order );
 
 				$attendees[] = $attendee;
 			}
@@ -151,9 +142,9 @@ class Generate_Attendees extends Flag_Action_Abstract {
 			 *
 			 * @param array<Attendee> $attendees The generated attendees.
 			 * @param \Tribe__Tickets__Tickets $ticket The ticket the attendee is generated for.
-			 * @param \WP_Post $post The order the attendee is generated for.
+			 * @param \WP_Post $order The order the attendee is generated for.
 			 */
-			do_action( 'tec_tickets_attendees_generated', $attendees, $ticket, $post );
+			do_action( 'tec_tickets_attendees_generated', $attendees, $ticket, $order );
 		}
 	}
 }
