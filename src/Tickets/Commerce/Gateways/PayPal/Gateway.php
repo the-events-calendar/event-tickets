@@ -123,6 +123,16 @@ class Gateway extends Abstract_Gateway {
 				'type'     => 'info',
 			],
 			[
+				'slug'     => 'tc-paypal-refresh-webhook-failed',
+				'content'  => __( 'Failed to refresh PayPal webhooks.', 'event-tickets' ),
+				'type'     => 'error',
+			],
+			[
+				'slug'     => 'tc-paypal-refresh-webhook-success',
+				'content'  => __( 'PayPal webhooks refreshed successfully.', 'event-tickets' ),
+				'type'     => 'info',
+			],
+			[
 				'slug'     => 'tc-paypal-ssl-not-available',
 				'content'  => __( 'A valid SSL certificate is required to set up your PayPal account and accept payments', 'event-tickets' ),
 				'type'     => 'error',

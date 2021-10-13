@@ -207,12 +207,27 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Handles the refreshing of the webhook on PayPal for this site/merchant.
 	 *
-	 * @todo  Display some message when refreshing user info.
 	 * @since 5.1.10
 	 *
+	 * @since TBD Display error|success messages.
 	 */
 	public function handle_action_refresh_webhook() {
 		$updated = $this->container->make( Webhooks::class )->create_or_update_existing();
+		$notices = $this->container->make( Notice_Handler::class );
+
+		if ( is_wp_error( $updated ) ) {
+			$content = empty( $updated->get_error_message() ) ? $updated->get_error_code() : $updated->get_error_message();
+			$notices->trigger_admin( 'tc-paypal-refresh-webhook-api-error', [ 'content' => $content ] );
+			$notices->trigger_admin( 'tc-paypal-refresh-webhook-failed' );
+			return;
+		}
+
+		if ( ! $updated ) {
+			$notices->trigger_admin( 'tc-paypal-refresh-webhook-failed' );
+			return;
+		}
+
+		$notices->trigger_admin( 'tc-paypal-refresh-webhook-success' );
 	}
 
 	/**
