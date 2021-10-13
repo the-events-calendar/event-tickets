@@ -9,16 +9,8 @@
 
 namespace TEC\Tickets\Commerce\Models;
 
-use DateInterval;
-use DatePeriod;
-use DateTimeZone;
-use TEC\Tickets\Commerce\Module;
 use Tribe\Models\Post_Types\Base;
 use TEC\Tickets\Commerce\Attendee;
-use Tribe\Utils\Lazy_Collection;
-use Tribe\Utils\Lazy_String;
-use Tribe\Utils\Post_Thumbnail;
-use Tribe__Date_Utils as Dates;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -53,7 +45,7 @@ class Attendee_Model extends Base {
 			$checked_in           = Arr::get( $post_meta, [ Attendee::$checked_in_meta_key, 0 ] );
 			$security             = Arr::get( $post_meta, [ Attendee::$security_code_meta_key, 0 ] );
 			$opt_out              = tribe_is_truthy( Arr::get( $post_meta, [ Attendee::$optout_meta_key, 0 ] ) );
-			$status               = Arr::get( $post_meta, [ Attendee::$status_meta_key, 0 ] );
+			$status               = $order->status_name;
 			$ticket_sent          = (int) Arr::get( $post_meta, [ Attendee::$ticket_sent_meta_key, 0 ] );
 			$deleted_ticket_title = Arr::get( $post_meta, [ Attendee::$deleted_ticket_meta_key, 0 ] );
 			$first_name           = Arr::get( $post_meta, [ Attendee::$first_name_meta_key, 0 ] );
@@ -74,17 +66,19 @@ class Attendee_Model extends Base {
 
 			$properties = [
 				'order_id'      => $this->post->post_parent,
+				'order_status'  => $status,
 				'optout'        => $opt_out,
 				'ticket'        => $ticket_title,
 				'attendee_id'   => $post_id,
 				'security'      => $security,
 				'product_id'    => $ticket_id,
 				'check_in'      => $checked_in,
-				'order_status'  => $status,
 				'user_id'       => $user_id,
 				'ticket_sent'   => $ticket_sent,
 				'price_paid'    => $price_paid,
 				'currency'      => $currency,
+				'provider'      => $order->provider,
+				'provider_slug' => $order->provider_slug,
 
 				// Fields for Email Tickets.
 				'event_id'      => $event_id,

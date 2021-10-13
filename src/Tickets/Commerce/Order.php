@@ -397,6 +397,7 @@ class Order {
 	 * Generate and store all the attendees information for a new order.
 	 *
 	 * @since 5.1.9
+	 * @todo borkweb - REMOVE in a separate PR. This is unused.
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.
 	 * @param bool   $redirect       Whether the client should be redirected or not.

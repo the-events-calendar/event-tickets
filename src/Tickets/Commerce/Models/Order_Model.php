@@ -12,10 +12,8 @@ namespace TEC\Tickets\Commerce\Models;
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Status_Handler;
 use Tribe\Models\Post_Types\Base;
-use Tribe\Utils\Lazy_Collection;
-use Tribe\Utils\Lazy_String;
-use Tribe\Utils\Post_Thumbnail;
 use Tribe__Date_Utils as Dates;
 use Tribe__Utils__Array as Arr;
 
@@ -46,6 +44,7 @@ class Order_Model extends Base {
 			$gateway_order_id    = Arr::get( $post_meta, [ Order::$gateway_order_id_meta_key, 0 ] );
 			$gateway_payload     = $this->get_gateway_payloads( $post_meta );
 			$status_log          = $this->get_status_log( $post_meta );
+			$status              = tribe( Status_Handler::class )->get_by_wp_slug( $this->post->post_status );
 			$flag_action_markers = $this->get_flag_action_markers( $post_meta );
 
 			$purchaser_user_id    = Arr::get( $post_meta, [ Order::$purchaser_user_id_meta_key, 0 ] );
@@ -61,6 +60,7 @@ class Order_Model extends Base {
 				'provider'            => Module::class,
 				'provider_slug'       => Commerce::ABBR,
 				'status_log'          => $status_log,
+				'status_name'         => $status->get_name(),
 				'gateway'             => $gateway_slug,
 				'gateway_order_id'    => $gateway_order_id,
 				'gateway_payload'     => $gateway_payload,
