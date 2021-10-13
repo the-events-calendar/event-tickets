@@ -156,6 +156,9 @@ class Attendees extends Report_Abstract {
 	 * @since TBD
 	 */
 	public function render_page() {
+
+		do_action( 'tribe_tickets_attendees_page_inside', tribe( \Tribe__Tickets__Attendees::class ) );
+
 		$this->get_template()->template( 'attendees', $this->get_template_vars() );
 	}
 

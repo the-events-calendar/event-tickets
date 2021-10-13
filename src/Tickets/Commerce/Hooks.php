@@ -96,6 +96,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_tickets_checkout_urls', [ $this, 'filter_js_include_checkout_url' ] );
 		add_filter( 'tribe_tickets_cart_urls', [ $this, 'filter_js_include_cart_url' ] );
 
+		add_filter( 'tribe_ticket_filter_attendee_report_link', [ $this, 'filter_attendee_report_link' ], 10, 2 );
+
 		add_filter( 'event_tickets_attendees_tc_checkin_stati', [ $this, 'filter_checkin_statuses' ] );
 
 		// Add a post display state for special Event Tickets pages.
@@ -502,5 +504,16 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function filter_modify_sanitization_provider_meta( $meta_value ) {
 		return tribe( Settings::class )->skip_sanitization( $meta_value );
+	}
+
+	public function filter_attendee_report_link( $url, $post_id ) {
+
+		$tc_module = tribe( Module::class )::get_event_ticket_provider( $post_id );
+
+		if ( Module::class === $tc_module ) {
+			$url = \str_replace( 'page=tickets-attendees', 'page=tickets-commerce-attendees', $url );
+		}
+
+		return $url;
 	}
 }
