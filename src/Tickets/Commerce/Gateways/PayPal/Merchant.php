@@ -440,7 +440,7 @@ class Merchant {
 	 * @since 5.1.9
 	 */
 	public function init() {
-		$this->set_mode( tribe_tickets_commerce_is_test_mode() ? 'sandbox' : 'live' );
+		$this->set_mode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' );
 		$this->from_array( $this->get_details_data(), false );
 	}
 
@@ -821,7 +821,11 @@ class Merchant {
 		$paypal_product_name   = Arr::get( $seller_status, [ 'products', 0, 'name' ] );
 		$paypal_product_status = Arr::get( $seller_status, [ 'products', 0, 'status' ] );
 
-		$is_active = ( true === $payments_receivable && 'EXPRESS_CHECKOUT' === $paypal_product_name && 'ACTIVE' === $paypal_product_status );
+		$is_active = (
+			true === $payments_receivable
+			&& in_array( $paypal_product_name, [ 'EXPRESS_CHECKOUT', 'PPCP_CUSTOM' ], true )
+			&& 'ACTIVE' === $paypal_product_status
+		);
 
 		if ( $is_active ) {
 			$this->set_account_is_ready( true );
@@ -829,5 +833,18 @@ class Merchant {
 		}
 
 		return $is_active;
+	}
+
+	/**
+	 * Fetches the locale for the website, but pass it on a filter to allow changing of the locale here.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_locale() {
+		$locale = get_locale();
+
+		return apply_filters( 'tec_tickets_commerce_gateway_paypal_merchant_locale', $locale );
 	}
 }

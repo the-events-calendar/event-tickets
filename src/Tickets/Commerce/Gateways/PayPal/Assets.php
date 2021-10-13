@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding_Endpoint;
 use TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint;
 
 /**
@@ -58,7 +59,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 									esc_html__( 'Implement an SSL certificate to keep your payments secure.', 'event-tickets' ),
 									esc_html__( 'Keep plugins up to date to ensure latest security fixes are present.', 'event-tickets' ),
 								],
-								'liveWarning'                       => tribe_tickets_commerce_is_test_mode()
+								'liveWarning'                       => tec_tickets_commerce_is_sandbox_mode()
 									? esc_html__( 'You have connected your account for test mode. You will need to connect again once you are in live mode.', 'event-tickets' )
 									: '',
 							],
@@ -68,6 +69,17 @@ class Assets extends \tad_DI52_ServiceProvider {
 			]
 		);
 
+		/**
+		 * This file is intentionally enqueued on every page of the administration.
+		 */
+		tribe_asset(
+			$plugin,
+			'tec-tickets-commerce-gateway-paypal-global-admin-styles',
+			'tickets-commerce/gateway/paypal/admin-global.css',
+			[],
+			'admin_enqueue_scripts',
+			[]
+		);
 
 		tribe_asset(
 			$plugin,
@@ -89,6 +101,31 @@ class Assets extends \tad_DI52_ServiceProvider {
 					'data' => static function () {
 						return [
 							'orderEndpoint' => tribe( Order_Endpoint::class )->get_route_url(),
+						];
+					},
+				],
+			]
+		);
+
+		tribe_asset(
+			$plugin,
+			'tec-tickets-commerce-gateway-paypal-signup',
+			'commerce/gateway/paypal/signup.js',
+			[
+				'jquery',
+				'tribe-common',
+				'tribe-tickets-commerce-js',
+			],
+			'admin_enqueue_scripts',
+			[
+				'conditionals' => [ $this, 'should_enqueue_assets_payments_tab' ],
+				'localize'     => [
+					'name' => 'tecTicketsCommerceGatewayPayPalSignup',
+					'data' => static function () {
+						return [
+							'onboardNonce'          => wp_create_nonce( 'tec-tc-on-boarded' ),
+							'refreshConnectNonce'   => wp_create_nonce( 'tec-tickets-commerce-gateway-paypal-refresh-connect-url' ),
+							'onboardingEndpointUrl' => tribe( On_Boarding_Endpoint::class )->get_route_url(),
 						];
 					},
 				],
@@ -122,5 +159,16 @@ class Assets extends \tad_DI52_ServiceProvider {
 	 */
 	public function should_enqueue_assets() {
 		return tribe( Gateway::class )->is_active();
+	}
+
+	/**
+	 * Define if the assets for `PayPal` should be enqueued or not.
+	 *
+	 * @since 5.1.10
+	 *
+	 * @return bool If the `PayPal` assets should be enqueued or not.
+	 */
+	public function should_enqueue_assets_payments_tab() {
+		return 'payments' === tribe_get_request_var( 'tab' ) && \Tribe__Settings::instance()->adminSlug === tribe_get_request_var( 'page' );
 	}
 }

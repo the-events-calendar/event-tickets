@@ -54,6 +54,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 
 		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout/header', [ $this, 'include_client_js_sdk_script' ], 15, 3 );
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
+		add_action( 'wp_ajax_tec_tickets_commerce_gateway_paypal_refresh_connect_url', [ $this, 'ajax_refresh_refresh_connect_url' ] );
 	}
 
 	/**1
@@ -65,6 +66,18 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_success_shortcode_checkout_page_paypal_template_vars', [ $this, 'include_checkout_page_vars' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_success_shortcode_success_page_paypal_template_vars', [ $this, 'include_success_page_vars' ], 10, 2 );
+	}
+
+	/**
+	 * Resolve the refresh of the URL when the coutry changes.
+	 *
+	 * @since TBD
+	 *
+	 *
+	 * @return false|string
+	 */
+	public function ajax_refresh_refresh_connect_url() {
+		return $this->container->make( Signup::class )->ajax_refresh_connect_url();
 	}
 
 	/**

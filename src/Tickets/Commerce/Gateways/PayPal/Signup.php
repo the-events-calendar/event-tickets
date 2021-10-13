@@ -1,6 +1,9 @@
 <?php
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
+
+use TEC\Tickets\Commerce\Gateways\PayPal\Location\Country;
+use TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding_Endpoint;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -179,19 +182,25 @@ class Signup {
 	 *
 	 * @since 5.1.9
 	 *
+	 * @param string $country Which country code we are generating the URL for.
+	 * @param bool   $force   It prevents the system from using the cached version of the URL.
+	 *
 	 * @return string|false
 	 */
-	public function generate_url() {
+	public function generate_url( $country, $force = false ) {
 		// Fetch the cached value for this user.
 		$signup = $this->get_transient_data();
-		if ( $signup_url = Arr::get( $signup, [ 'links', 1, 'href' ] ) ) {
+		if (
+			false === $force
+			&& $signup_url = Arr::get( $signup, [ 'links', 1, 'href' ] )
+		) {
 			return $signup_url;
 		}
 
 		$hash = $this->generate_unique_signup_hash();
 		$this->update_transient_hash( $hash );
 
-		$signup = tribe( WhoDat::class )->get_seller_signup_data( $hash );
+		$signup = tribe( WhoDat::class )->get_seller_signup_data( $hash, $country );
 
 		if ( ! $signup_url = Arr::get( $signup, [ 'links', 1, 'href' ] ) ) {
 			return false;
@@ -219,6 +228,36 @@ class Signup {
 	}
 
 	/**
+	 * Refresh the Connect link when someone changes the country.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function ajax_refresh_connect_url() {
+		$data  = [];
+		$nonce = tribe_get_request_var( 'nonce' );
+
+		if ( ! wp_verify_nonce( $nonce, 'tec-tickets-commerce-gateway-paypal-refresh-connect-url' ) ) {
+			wp_send_json_error( new \WP_Error( 'tec-tickets-commerce-paypal-nonce-problem' ) );
+			return;
+		}
+
+		$country = tribe_get_request_var( 'country_code', 'US' );
+		$new_url = $this->generate_url( $country, true );
+		if ( empty( $new_url ) ) {
+			wp_send_json_error( new \WP_Error( 'tec-tickets-commerce-paypal-refresh-connect-url-error' ) );
+			return;
+		}
+
+		// Append the minibrowser query arg.
+		$data['new_url'] = $new_url . '&displayMode=minibrowser';
+
+		wp_send_json_success( $data );
+		return;
+	}
+
+	/**
 	 * Gets the content for the template used for the sign up link that paypal creates.
 	 *
 	 * @since 5.1.9
@@ -226,8 +265,10 @@ class Signup {
 	 * @return false|string
 	 */
 	public function get_link_html() {
+		$country       = tribe( Country::class )->get_setting();
 		$template_vars = [
-			'url' => $this->generate_url(),
+			'url'          => $this->generate_url( $country ),
+			'country_code' => $country,
 		];
 
 		return $this->get_template()->template( 'signup-link', $template_vars, false );

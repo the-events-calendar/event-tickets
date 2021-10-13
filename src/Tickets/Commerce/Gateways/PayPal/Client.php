@@ -74,11 +74,13 @@ class Client {
 		$url        = 'https://www.paypal.com/sdk/js';
 		$merchant   = tribe( Merchant::class );
 		$query_args = array_merge( [
-			'client-id'   => $merchant->is_sandbox() ? 'sb' : $merchant->get_client_id(),
-			'merchant-id' => $merchant->get_merchant_id_in_paypal(),
-			'components'  => 'buttons,hosted-fields',
-			'intent'      => 'capture',
-			'currency'    => tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_currency_code, 'USD' ),
+			'client-id'       => $merchant->is_sandbox() ? 'sb' : $merchant->get_client_id(),
+			'merchant-id'     => $merchant->get_merchant_id_in_paypal(),
+			'components'      => 'buttons,hosted-fields',
+			'intent'          => 'capture',
+			'locale'          => $merchant->get_locale(),
+			'disable-funding' => 'credit',
+			'currency'        => tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_currency_code, 'USD' ),
 		], $query_args );
 		$url        = add_query_arg( $query_args, $url );
 
@@ -484,7 +486,7 @@ class Client {
 			$body['payerID'] = $payer_id;
 		}
 
-		$args       = [
+		$args = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
 				'Prefer'                        => 'return=representation',
