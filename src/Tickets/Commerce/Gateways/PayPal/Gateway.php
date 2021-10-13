@@ -133,25 +133,26 @@ class Gateway extends Abstract_Gateway {
 	}
 
 	/**
-	 * Displays error notice for invalid API responses, with error message from API response.
+	 * Displays error notice for invalid API responses, with error message from API response data.
 	 *
 	 * @since TBD
 	 *
-	 * @param \WP_REST_Response $response Raw Response data.
-	 * @param string            $message Additional message to show with error message.
-	 * @param string            $slug Slug for notice container.
+	 * @param array  $response Raw Response data.
+	 * @param string $message  Additional message to show with error message.
+	 * @param string $slug     Slug for notice container.
 	 */
 	public function handle_invalid_response( $response, $message, $slug = 'error' ) {
 
 		$notices = tribe( Notice_Handler::class );
-		$body = (array) json_decode( wp_remote_retrieve_body( $response ) );
+		$body    = (array) json_decode( wp_remote_retrieve_body( $response ) );
 
+		$error = isset( $body['error'] ) ? $body['error'] : __( 'Something went wrong!' , 'event-tickets' );
 		$error_message = isset( $body['error_description'] ) ? $body['error_description'] : __( 'Unexpected response recieved.' , 'event-tickets' );
 
 		$notices->trigger_admin(
 			$slug,
 			[
-				'content' => $error_message . ' - ' . $message,
+				'content' => sprintf( 'Error - %s : %s - %s', $error, $error_message, $message ),
 				'type'    => 'error',
 			]
 		);
