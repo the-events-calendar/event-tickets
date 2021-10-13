@@ -2688,16 +2688,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public function get_ticket_prices( array $prices, $post_id ) {
+			$currency = tribe( 'tickets.commerce.currency' );
 			// Iterate through all tickets from all providers
 			foreach ( self::get_all_event_tickets( $post_id ) as $ticket ) {
+				// Get formatted price here.
+				$formatted_price = $currency->get_formatted_currency( $ticket->price, null, $ticket->provider_class );
+
 				// No need to add the pricepoint if it is already in the array
-				if ( in_array( $ticket->price, $prices ) ) {
+				if ( in_array( $formatted_price, $prices ) ) {
 					continue;
 				}
 
 				// An empty price property can be ignored (but do add if the price is explicitly set to zero).
 				if ( isset( $ticket->price ) && is_numeric( $ticket->price ) ) {
-					$prices[] = $ticket->price;
+					// Check the unformatted price above, but only add formatted price to array.
+					$prices[] = $formatted_price;
 				}
 			}
 

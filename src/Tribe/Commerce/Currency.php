@@ -428,6 +428,12 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @return string
 	 */
 	public function get_provider_symbol( $provider, $object_id = null ) {
+
+		// Convert to class name if object is passed.
+		if ( is_object( $provider ) ) {
+			$provider = get_class( $provider );
+		}
+
 		if ( ! class_exists( $provider ) ) {
 			return $this->get_currency_symbol( $object_id );
 		}
@@ -494,6 +500,12 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @return string
 	 */
 	public function get_provider_symbol_position( $provider, $object_id ) {
+
+		// Convert to class name if object is passed.
+		if ( is_object( $provider ) ) {
+			$provider = get_class( $provider );
+		}
+
 		if ( ! class_exists( $provider ) ) {
 			return $this->get_currency_symbol_position( $object_id );
 		}
