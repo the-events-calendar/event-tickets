@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Flag_Actions;
 
+use TEC\Tickets\Commerce\Communication\Email;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Ticket;
@@ -32,8 +33,11 @@ class Send_Email extends Flag_Action_Abstract {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
-		// Send for every order.
-		$whee = 1;
+	public function handle( Status_Interface $new_status, $old_status, \WP_Post $order ) {
+		$events = $order->events_in_order;
+
+		foreach ( $events as $event ) {
+			tribe( Email::class )->send_tickets_email( $order->ID, $event->ID );
+		}
 	}
 }
