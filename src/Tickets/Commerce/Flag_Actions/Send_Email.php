@@ -34,9 +34,7 @@ class Send_Email extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $order ) {
-		$events = $order->events_in_order;
-
-		foreach ( $events as $event ) {
+		foreach ( $order->events_in_order as $event ) {
 			tribe( Email::class )->send_tickets_email( $order->ID, $event->ID );
 		}
 	}
