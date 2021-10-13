@@ -57,7 +57,7 @@ class WhoDat {
 			'nonce'       => $hash,
 			'tracking_id' => urlencode( tribe( Signup::class )->generate_unique_tracking_id() ),
 			'return_url'  => esc_url( $return_url ),
-//			'country'     => $country,
+			'country'     => $country,
 		];
 
 		return $this->get( 'seller/signup', $query_args );
