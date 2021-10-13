@@ -149,16 +149,7 @@ class Attendee {
 	 *
 	 * @var string
 	 */
-	public static $first_name_meta_key = '_tec_tickets_commerce_first_name';
-
-	/**
-	 * Meta key holding the last name for the attendee. (not purchaser)
-	 *
-	 * @since 5.1.9
-	 *
-	 * @var string
-	 */
-	public static $last_name_meta_key = '_tec_tickets_commerce_last_name';
+	public static $full_name_meta_key = '_tec_tickets_commerce_full_name';
 
 	/**
 	 * Meta key holding the email for the attendee. (not purchaser)
@@ -250,12 +241,8 @@ class Attendee {
 			$create_args['email'] = $order->purchaser['email'];
 		}
 
-		if ( ! empty( $order->purchaser['first_name'] ) ) {
-			$create_args['first_name'] = $order->purchaser['first_name'];
-		}
-
-		if ( ! empty( $order->purchaser['last_name'] ) ) {
-			$create_args['last_name'] = $order->purchaser['last_name'];
+		if ( ! empty( $order->purchaser['full_name'] ) ) {
+			$create_args['full_name'] = $order->purchaser['full_name'];
 		}
 
 		/**

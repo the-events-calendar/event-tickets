@@ -34,7 +34,7 @@ class Backfill_Purchaser extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $order ) {
-		if ( empty( $order->gateway_payload[ Completed::class ] ) ) {
+		if ( empty( $order->gateway_payload[ Completed::SLUG ] ) ) {
 			return;
 		}
 
@@ -42,7 +42,7 @@ class Backfill_Purchaser extends Flag_Action_Abstract {
 			return;
 		}
 
-		$payload = $order->gateway_payload[ Completed::class ];
+		$payload = end( $order->gateway_payload[ Completed::SLUG ] );
 
 		if ( empty( $payload['payer']['email_address'] ) ) {
 			return;
@@ -57,12 +57,12 @@ class Backfill_Purchaser extends Flag_Action_Abstract {
 		$last_name  = null;
 		$full_name  = null;
 
-		if ( ! empty( $payload['name']['given_name'] ) ) {
-			$first_name = trim( $payload['name']['given_name'] );
+		if ( ! empty( $payload['payer']['name']['given_name'] ) ) {
+			$first_name = trim( $payload['payer']['name']['given_name'] );
 		}
 
-		if ( ! empty( $payload['name']['surname'] ) ) {
-			$last_name = trim( $payload['name']['surname'] );
+		if ( ! empty( $payload['payer']['name']['surname'] ) ) {
+			$last_name = trim( $payload['payer']['name']['surname'] );
 		}
 
 		$full_name = trim( $first_name . ' ' . $last_name );
@@ -72,27 +72,19 @@ class Backfill_Purchaser extends Flag_Action_Abstract {
 		update_post_meta( $order->ID, Order::$purchaser_last_name_meta_key, $last_name );
 		update_post_meta( $order->ID, Order::$purchaser_full_name_meta_key, $full_name );
 
-		$attendees = tribe( Module::class )->get_attendees( $order->ID );
+		$attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
 
 		if ( empty( $attendees ) ) {
 			return;
 		}
 
 		foreach ( $attendees as $attendee ) {
-			if ( empty( $attendee->email ) ) {
-				update_post_meta( $attendee->ID, Attendee::$email_meta_key, $email );
+			if ( empty( $attendee['holder_email'] ) ) {
+				update_post_meta( $attendee['ID'], Attendee::$email_meta_key, $email );
 			}
 
-			if ( Order::$placeholder_name == $attendee->first_name ) {
-				update_post_meta( $attendee->ID, Attendee::$first_name_meta_key, $first_name );
-			}
-
-			if ( Order::$placeholder_name == $attendee->last_name ) {
-				update_post_meta( $attendee->ID, Attendee::$last_name_meta_key, $last_name );
-			}
-
-			if ( Order::$placeholder_name == $attendee->full_name ) {
-				update_post_meta( $attendee->ID, Attendee::$full_name_meta_key, $full_name );
+			if ( empty( $attendee['holder_name'] ) || Order::$placeholder_name === $attendee['holder_name'] ) {
+				update_post_meta( $attendee['ID'], Attendee::$full_name_meta_key, $full_name );
 			}
 		}
 	}
