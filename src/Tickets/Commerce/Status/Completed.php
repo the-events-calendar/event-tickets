@@ -34,6 +34,7 @@ class Completed extends Status_Abstract {
 	 */
 	protected $flags = [
 		'complete',
+		'backfill_purchaser',
 		'attendee_dispatch',
 		'stock_reduced',
 		'send_email',

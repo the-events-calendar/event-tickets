@@ -33,6 +33,7 @@ class Voided extends Status_Abstract {
 	 * {@inheritdoc}
 	 */
 	protected $flags = [
+		'backfill_purchaser',
 		'count_refunded',
 		'warning',
 	];

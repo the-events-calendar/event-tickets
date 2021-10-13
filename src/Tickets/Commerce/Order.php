@@ -173,6 +173,13 @@ class Order {
 	public static $cart_hash_meta_key = '_tec_tc_order_cart_hash';
 
 	/**
+	 * Meta value for placeholder names.
+	 *
+	 * @var string
+	 */
+	public static $placeholder_name = 'Unknown';
+
+	/**
 	 * Register this Class post type into WP.
 	 *
 	 * @since 5.1.9
@@ -332,9 +339,9 @@ class Order {
 			$order_args['purchaser_email']      = $user->user_email;
 		} elseif ( empty( $purchaser ) ) {
 			$order_args['purchaser_user_id']    = 0;
-			$order_args['purchaser_full_name']  = 'Pending...';
-			$order_args['purchaser_first_name'] = 'Pending...';
-			$order_args['purchaser_last_name']  = 'Pending...';
+			$order_args['purchaser_full_name']  = static::$placeholder_name;
+			$order_args['purchaser_first_name'] = static::$placeholder_name;
+			$order_args['purchaser_last_name']  = static::$placeholder_name;
 			$order_args['purchaser_email']      = '';
 		}
 

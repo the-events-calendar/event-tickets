@@ -35,6 +35,7 @@ class Action_Required extends Status_Abstract {
 	protected $flags = [
 		'incomplete',
 		'trigger_option',
+		'backfill_purchaser',
 		'attendee_generation',
 		'stock_reduced',
 		'count_attendee',

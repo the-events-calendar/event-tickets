@@ -34,5 +34,6 @@ class Send_Email extends Flag_Action_Abstract {
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
 		// Send for every order.
+		$whee = 1;
 	}
 }

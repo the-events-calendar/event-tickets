@@ -83,6 +83,10 @@ class Attendee_Model extends Base {
 				// Fields for Email Tickets.
 				'event_id'      => $event_id,
 				'ticket_name'   => $ticket_title,
+				'first_name'    => $first_name,
+				'last_name'     => $last_name,
+				'full_name'     => $full_name,
+				'email'         => $email,
 				'holder_name'   => $full_name,
 				'holder_email'  => $email,
 				'ticket_id'     => $ticket_unique_id,

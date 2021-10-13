@@ -35,6 +35,7 @@ class Created extends Status_Abstract {
 	 */
 	protected $flags = [
 		'incomplete',
+		'backfill_purchaser',
 		'trigger_option',
 	];
 
