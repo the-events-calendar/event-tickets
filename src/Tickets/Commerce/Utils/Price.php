@@ -53,12 +53,11 @@ class Price {
 		$thousand_sep = $thousand_sep ?: tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'thousands_sep' );
 
 		$values = array_map( static function ( $value ) use ( $decimal, $thousand_sep ) {
-			$number = number_format( $value, 2, $decimal, $thousand_sep );
-
-			return str_replace( $thousand_sep, '', $number );
+			return str_replace( [ $decimal, $thousand_sep ], '', $value );
 		}, $values );
 
-		$total = array_sum( array_filter( $values ) );
+		$total = array_sum( $values );
+		$total = round( $total / 100 , 2 );
 
 		return number_format( $total, 2, $decimal, $thousand_sep );
 	}
