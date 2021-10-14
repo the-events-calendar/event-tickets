@@ -1,16 +1,15 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Communications;
+namespace TEC\Tickets\Commerce\Communication;
 
-use TEC\Tickets\Commerce;
-use TEC\Tickets\Commerce\Settings;
+use TEC\Tickets\Commerce\Module;
 
 /**
  * Class Email
  *
  * @since 5.1.9
  *
- * @package TEC\Tickets\Commerce\Communications
+ * @package TEC\Tickets\Commerce\Communication
  */
 class Email {
 	/**
