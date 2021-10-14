@@ -4190,6 +4190,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Checks if the current provider has managed/editable cart.
+		 *
+		 * @since TBD
+		 *
+		 * @return bool
+		 */
+		public function has_managed_cart() {
+			/**
+			 * Filters the default value for managed cart.
+			 *
+			 * @since TBD
+			 *
+			 * @param bool Has managed cart or not.
+			 * @param Tribe__Tickets__Tickets $this Provider object.
+			 */
+			return (bool) apply_filters( 'tec_tickets_provider_has_cart_default', true, $this );
+		}
+
+		/**
 		 * Localized messages for errors, etc in javascript. Added in assets() above.
 		 * Set up this way to amke it easier to add messages as needed.
 		 *
