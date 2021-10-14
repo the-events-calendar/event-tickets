@@ -385,9 +385,9 @@ class Orders extends Report_Abstract {
 	public function filter_editor_orders_link( $url, $post_id ) {
 		$provider = \Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 
-		if ( $provider !== Module::class ) {
+		if ( Module::class !== $provider ) {
 			return $url;
 		}
-		return add_query_arg( [ 'page' => self::get_page_slug() ], $url );
+		return add_query_arg( [ 'page' => static::get_page_slug() ], $url );
 	}
 }
