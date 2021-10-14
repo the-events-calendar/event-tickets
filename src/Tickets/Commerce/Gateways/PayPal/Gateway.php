@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
+use TEC\Tickets\Commerce\Notice_Handler;
 
 /**
  * Class Gateway
@@ -98,7 +99,7 @@ class Gateway extends Abstract_Gateway {
 			],
 			[
 				'slug'     => 'tc-paypal-disconnect',
-				'content'  => __( 'Disconnect PayPal account.', 'event-tickets' ),
+				'content'  => __( 'Disconnected PayPal account.', 'event-tickets' ),
 				'type'     => 'info',
 			],
 			[
@@ -108,7 +109,7 @@ class Gateway extends Abstract_Gateway {
 			],
 			[
 				'slug'     => 'tc-paypal-refresh-token',
-				'content'  => __( 'PayPal access token was refresh successfully.', 'event-tickets' ),
+				'content'  => __( 'PayPal access token was refreshed successfully.', 'event-tickets' ),
 				'type'     => 'info',
 			],
 			[
@@ -122,6 +123,16 @@ class Gateway extends Abstract_Gateway {
 				'type'     => 'info',
 			],
 			[
+				'slug'     => 'tc-paypal-refresh-webhook-failed',
+				'content'  => __( 'Failed to refresh PayPal webhooks.', 'event-tickets' ),
+				'type'     => 'error',
+			],
+			[
+				'slug'     => 'tc-paypal-refresh-webhook-success',
+				'content'  => __( 'PayPal webhooks refreshed successfully.', 'event-tickets' ),
+				'type'     => 'info',
+			],
+			[
 				'slug'     => 'tc-paypal-ssl-not-available',
 				'content'  => __( 'A valid SSL certificate is required to set up your PayPal account and accept payments', 'event-tickets' ),
 				'type'     => 'error',
@@ -129,5 +140,31 @@ class Gateway extends Abstract_Gateway {
 		];
 
 		 return $notices;
+	}
+
+	/**
+	 * Displays error notice for invalid API responses, with error message from API response data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array  $response Raw Response data.
+	 * @param string $message  Additional message to show with error message.
+	 * @param string $slug     Slug for notice container.
+	 */
+	public function handle_invalid_response( $response, $message, $slug = 'error' ) {
+
+		$notices = tribe( Notice_Handler::class );
+		$body    = (array) json_decode( wp_remote_retrieve_body( $response ) );
+
+		$error = isset( $body['error'] ) ? $body['error'] : __( 'Something went wrong!' , 'event-tickets' );
+		$error_message = isset( $body['error_description'] ) ? $body['error_description'] : __( 'Unexpected response recieved.' , 'event-tickets' );
+
+		$notices->trigger_admin(
+			$slug,
+			[
+				'content' => sprintf( 'Error - %s : %s - %s', $error, $error_message, $message ),
+				'type'    => 'error',
+			]
+		);
 	}
 }
