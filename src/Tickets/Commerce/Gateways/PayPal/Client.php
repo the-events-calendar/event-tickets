@@ -64,6 +64,8 @@ class Client {
 	 *
 	 * We use something like: https://www.paypal.com/sdk/js?client-id=sb&locale=en_US&components=buttons
 	 *
+	 * @link  https://developer.paypal.com/docs/checkout/reference/customize-sdk/#query-parameters
+	 *
 	 * @since 5.1.9
 	 *
 	 * @param array $query_args Which query args will be added.
@@ -74,9 +76,9 @@ class Client {
 		$url        = 'https://www.paypal.com/sdk/js';
 		$merchant   = tribe( Merchant::class );
 		$query_args = array_merge( [
-			'client-id'       => $merchant->is_sandbox() ? 'sb' : $merchant->get_client_id(),
+			'client-id'       => $merchant->get_client_id(),
 			'merchant-id'     => $merchant->get_merchant_id_in_paypal(),
-			'components'      => 'buttons,hosted-fields',
+			'components'      => 'hosted-fields,buttons',
 			'intent'          => 'capture',
 			'locale'          => $merchant->get_locale(),
 			'disable-funding' => 'credit',
@@ -205,8 +207,9 @@ class Client {
 
 			// If we properly saved, just re-try the request.
 			if ( $saved ) {
-				$arguments = func_get_args();
+				$arguments   = func_get_args();
 				$arguments[] = $retries + 1;
+
 				return call_user_func_array( [ $this, 'request' ], $arguments );
 			}
 		}

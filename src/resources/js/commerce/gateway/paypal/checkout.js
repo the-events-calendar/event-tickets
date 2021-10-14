@@ -1,3 +1,4 @@
+/* global tribe, jQuery, paypal, ajaxurl */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -238,7 +239,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		 */
 
 		const body = {
-			'payer_id' : data.payerID ?? '',
+			'payer_id': data.payerID ?? '',
 		};
 
 		return fetch(
@@ -362,7 +363,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		};
 
 		$document.trigger( tribe.tickets.commerce.customEvents.showLoader );
-		
+
 		return fetch(
 			obj.orderEndpointUrl + '/' + orderId,
 			{
@@ -382,7 +383,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 				} else {
 					return obj.handleCancelOrderFail( $container, data );
 				}
-			}  )
+			} )
 			.catch( () => {
 				obj.handleCancelOrderError( $container );
 			} );
@@ -514,7 +515,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @return {void}
 	 */
-	obj.setupLoader = function() {
+	obj.setupLoader = function () {
 		$document.trigger( tribe.tickets.commerce.customEvents.showLoader );
 
 		// Hide loader when Paypal buttons are added.
@@ -526,7 +527,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.1.10
 	 */
-	obj.bindScriptLoader = function() {
+	obj.bindScriptLoader = function () {
 
 		const $script = $( obj.selectors.checkoutScript );
 
@@ -541,6 +542,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		 */
 		if ( typeof paypal !== 'undefined' ) {
 			obj.setupButtons( {}, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
+			obj.setupAdvancedCardPayments( {}, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
 			return;
 		}
 
@@ -555,6 +557,142 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			}
 			obj.setupButtons( event, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
 		};
+	};
+
+	obj.setupAdvancedCardPayments = ( event, $container ) => {
+		// If this returns false or the card fields aren't visible, see Step #1.
+		if ( ! paypal.HostedFields.isEligible() ) {
+			// Hides card fields if the merchant isn't eligible
+			$container.find( '#card-form' ).hide();
+
+			return;
+		}
+
+		// Renders card fields
+		paypal.HostedFields.render( {
+			createOrder: ( data, actions ) => {
+				return obj.handleCreateOrder( data, actions, $container );
+			},
+
+			styles: {
+				'.valid': {
+					'color': 'green'
+				},
+				'.invalid': {
+					'color': 'red'
+				}
+			},
+
+			fields: {
+				number: {
+					selector: "#card-number",
+					placeholder: "4111 1111 1111 1111"
+				},
+				cvv: {
+					selector: "#cvv",
+					placeholder: "123"
+				},
+				expirationDate: {
+					selector: "#expiration-date",
+					placeholder: "MM/YY"
+				}
+			}
+		} ).then( ( cardFields ) => {
+			return obj.handleHostedFields( cardFields, $container );
+		} );
+	};
+
+	obj.handleHostedFields = ( cardFields, $container ) => {
+		$container.find( "#card-form" ).on( 'submit', ( event ) => {
+			return obj.onHostedSubmit( event, cardFields, $container );
+		} );
+	};
+
+	obj.onHostedSubmit = ( event, cardFields, $container ) => {
+		event.preventDefault();
+
+		cardFields.submit( {
+			// Cardholder's first and last name
+			cardholderName: $container.find( '#card-holder-name' ).val(),
+		} ).then( () => {
+			console.log( arguments );
+			obj.handleHostedApprove( {}, $container );
+		} ).catch( obj.handleHostedCaptureError );
+	};
+
+	obj.handleHostedCaptureError = ( error ) => {
+		console.log( error );
+	};
+
+	/**
+	 * Handles the Approval of the orders via PayPal.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} data PayPal data passed to this method.
+	 * @param {Object} actions PayPal actions available on approve.
+	 * @param {jQuery} $container jQuery object of the tickets container.
+	 *
+	 * @return {void}
+	 */
+	obj.handleHostedApprove = function ( data, $container ) {
+		tribe.tickets.debug.log( 'handleHostedApprove', arguments );
+		/**
+		 * @todo On approval we receive a bit more than just the orderID on the data object
+		 *       we should be passing those to the BE.
+		 */
+
+		const body = {
+			'payer_id': data.payerID ?? '',
+		};
+
+		fetch( '/your-server/api/order/' + orderId + '/capture/', {
+			method: 'post'
+		} ).then( function ( res ) {
+			return res.json();
+		} ).then( function ( orderData ) {
+			// Three cases to handle:
+			//   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
+			//   (2) Other non-recoverable errors -> Show a failure message
+			//   (3) Successful transaction -> Show confirmation or thank you
+			// This example reads a v2/checkout/orders capture response, propagated from the server
+			// You could use a different API or structure for your 'orderData'
+			var errorDetail = Array.isArray( orderData.details ) && orderData.details[ 0 ];
+			if ( errorDetail && errorDetail.issue === 'INSTRUMENT_DECLINED' ) {
+				return actions.restart(); // Recoverable state, per:
+				// https://developer.paypal.com/docs/checkout/integration-features/funding-failure/
+			}
+			if ( errorDetail ) {
+				var msg = 'Sorry, your transaction could not be processed.';
+				if ( errorDetail.description ) msg += '\n\n' + errorDetail.description;
+				if ( orderData.debug_id ) msg += ' (' + orderData.debug_id + ')';
+				return alert( msg ); // Show a failure message
+			}
+			// Show a success message or redirect
+			alert( 'Transaction completed!' );
+		} );
+
+		return fetch(
+			obj.orderEndpointUrl + '/' + data.orderID,
+			{
+				method: 'POST',
+				headers: {
+					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify( body ),
+			}
+		)
+			.then( response => response.json() )
+			.then( data => {
+				tribe.tickets.debug.log( data );
+				if ( data.success ) {
+					return obj.handleHostedApproveSuccess( data );
+				} else {
+					return obj.handleHostedApproveFail( data );
+				}
+			} )
+			.catch( obj.handleHostedApproveError );
 	};
 
 	/**
