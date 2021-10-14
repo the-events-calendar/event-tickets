@@ -3149,4 +3149,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		return $provider_obj;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function has_managed_cart() {
+		// TribeCommerce has no cart.
+		return false;
+	}
 }

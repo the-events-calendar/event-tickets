@@ -609,4 +609,12 @@ class Module extends \Tribe__Tickets__Tickets {
 	public function get_ticket_reports_link( $event_id, $ticket_id ) {
 		return tribe( Commerce\Reports\Orders::class )->get_ticket_link( $event_id, $ticket_id );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function has_managed_cart() {
+		$mode = tribe( Cart::class )->get_mode();
+		return 'redirect' != $mode;
+	}
 }
