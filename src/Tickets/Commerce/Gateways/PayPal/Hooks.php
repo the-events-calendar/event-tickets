@@ -185,6 +185,13 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		$token_data = $this->container->make( Client::class )->get_access_token_from_client_credentials( $merchant->get_client_id(), $merchant->get_client_secret() );
 		$notices    = $this->container->make( Notice_Handler::class );
 
+		// Check if API response is valid for token data.
+		if ( ! is_array( $token_data ) || ! isset( $token_data[ 'access_token' ] ) ) {
+			$message = $notices->get_message_data( 'tc-paypal-refresh-token-failed' );
+			$this->container->make( Gateway::class )->handle_invalid_response( $token_data, $message[ 'content' ] );
+			return;
+		}
+
 		$saved = $merchant->save_access_token_data( $token_data );
 
 		if ( ! $saved ) {
@@ -207,27 +214,42 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		$user_info = $this->container->make( Client::class )->get_user_info();
 		$notices   = $this->container->make( Notice_Handler::class );
 
-		$saved = $merchant->save_user_info( $user_info );
-
-		if ( ! $saved ) {
-			$notices->trigger_admin( 'tc-paypal-refresh-user-info-failed' );
-
+		// Check if API response is valid for user info.
+		if ( ! isset( $user_info['user_id'] ) ) {
+			$message = $notices->get_message_data( 'tc-paypal-refresh-user-info-failed' );
+			$this->container->make( Gateway::class )->handle_invalid_response( $user_info, $message['content'], 'tc-invalid-user-info-response' );
 			return;
 		}
 
-		$notices->trigger_admin( 'tc-paypal-refresh-user-info' );
+		$merchant->save_user_info( $user_info );
 
+		$notices->trigger_admin( 'tc-paypal-refresh-user-info' );
 	}
 
 	/**
 	 * Handles the refreshing of the webhook on PayPal for this site/merchant.
 	 *
-	 * @todo  Display some message when refreshing user info.
 	 * @since 5.1.10
 	 *
+	 * @since TBD Display error|success messages.
 	 */
 	public function handle_action_refresh_webhook() {
 		$updated = $this->container->make( Webhooks::class )->create_or_update_existing();
+		$notices = $this->container->make( Notice_Handler::class );
+
+		if ( is_wp_error( $updated ) ) {
+			$content = empty( $updated->get_error_message() ) ? $updated->get_error_code() : $updated->get_error_message();
+			$notices->trigger_admin( 'tc-paypal-refresh-webhook-api-error', [ 'content' => $content ] );
+			$notices->trigger_admin( 'tc-paypal-refresh-webhook-failed' );
+			return;
+		}
+
+		if ( ! $updated ) {
+			$notices->trigger_admin( 'tc-paypal-refresh-webhook-failed' );
+			return;
+		}
+
+		$notices->trigger_admin( 'tc-paypal-refresh-webhook-success' );
 	}
 
 	/**
