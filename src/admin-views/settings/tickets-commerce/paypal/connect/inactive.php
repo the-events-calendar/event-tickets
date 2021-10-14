@@ -28,5 +28,9 @@ if ( ! empty( $is_merchant_active ) ) {
 		<?php esc_html_e( 'Start selling tickets to your events today with PayPal. Attendees can purchase tickets directly on your site using debit or credit cards with no additional fees.', 'event-tickets' ); ?>
 	</p>
 
-	<?php echo $signup->get_link_html(); // phpcs:ignore ?>
+	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-signup-links">
+		<?php echo $signup->get_link_html(); // phpcs:ignore ?>
+	</div>
+
+	<?php $this->template( 'settings/tickets-commerce/paypal/connect/help-links' ); ?>
 </div>
