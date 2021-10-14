@@ -66,7 +66,7 @@ class Tribe__Tickets__Attendees {
 	 * @return array|bool|null|WP_Post
 	 */
 	public function get_post() {
-		return $this->attendees_table->event ? $this->attendees_table->event : false;
+		return empty( $this->attendees_table->event ) ? false : $this->attendees_table->event;
 	}
 
 	/**
