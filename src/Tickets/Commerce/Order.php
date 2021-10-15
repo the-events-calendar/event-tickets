@@ -378,6 +378,29 @@ class Order {
 	}
 
 	/**
+	 * Return payment method label for the order.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post $order Order Object.
+	 *
+	 * @return string
+	 */
+	public function get_payment_method( $order ) {
+		if ( is_numeric( $order ) ) {
+			$order = tec_tc_get_order( $order );
+		}
+
+		if ( ! $order instanceof \WP_Post) {
+			return '';
+		}
+
+		$gateway = tribe( Commerce\Gateways\Manager::class )->get_gateway_by_key( $order->gateway );
+
+		return $gateway ? $gateway->get_label() : '';
+	}
+
+	/**
 	 * Redirects to the source post after a recoverable (logic) error.
 	 *
 	 * @todo  Determine if redirecting should be something relegated to some other method, and here we just actually
