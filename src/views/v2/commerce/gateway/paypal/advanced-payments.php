@@ -28,24 +28,45 @@ if ( ! $supports_custom_payments ) {
 ?>
 
 <!-- Advanced credit and debit card payments form -->
-<div class="card_container">
-	<form id="card-form">
+<div class="tec-tickets__commerce-advanced-payments-container">
+	<form class="tec-tickets__commerce-advanced-payments-form">
 
-		<label for="card-number">Card Number</label>
-		<div id="card-number" class="card_field"></div>
-
-		<div>
-			<label for="expiration-date">Expiration Date</label>
-			<div id="expiration-date" class="card_field"></div>
+		<div class="">
+			<label for="tec-tc-card-number">
+				<?php esc_html_e( 'Card Number', 'event-tickets' ); ?>
+			</label>
+			<div id="tec-tc-card-number" class="card_field"></div>
 		</div>
 
-		<div>
-			<label for="cvv">CVV</label>
-			<div id="cvv" class="card_field"></div>
+		<div class="">
+			<label for="tec-tc-expiration-date">
+				<?php esc_html_e( 'Expiration Date', 'event-tickets' ); ?>
+			</label>
+			<div id="tec-tc-expiration-date" class="card_field"></div>
 		</div>
-		<label for="card-holder-name">Name on Card</label>
-		<input type="text" id="card-holder-name" name="card-holder-name" autocomplete="off" placeholder="card holder name"/>
 
-		<button value="submit" id="submit" class="btn">Pay</button>
+		<div class="">
+			<label for="tec-tc-cvv">
+				<?php esc_html_e( 'CVV', 'event-tickets' ); ?>
+			</label>
+			<div id="tec-tc-cvv" class="card_field"></div>
+		</div>
+
+		<div class="">
+			<label for="tec-tc-card-holder-name">
+				<?php esc_html_e( 'Name on Card', 'event-tickets' ); ?>
+			</label>
+			<input
+				type="text"
+				id="tec-tc-card-holder-name"
+				name="card-holder-name"
+				autocomplete="off"
+				placeholder="card holder name"
+			/>
+		</div>
+
+		<button value="submit" id="submit" class="btn">
+			<?php esc_html_e( 'Purchase Tickets', 'event-tickets' ); ?>
+		</button>
 	</form>
 </div>

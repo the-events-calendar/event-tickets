@@ -68,6 +68,15 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.orderEndpointUrl = tecTicketsCommerceGatewayPayPalCheckout.orderEndpoint;
 
 	/**
+	 * PayPal advanced Payment settings.
+	 *
+	 * @since TBD
+	 *
+	 * @type {string}
+	 */
+	obj.advancedPayments = tecTicketsCommerceGatewayPayPalCheckout.advancedPayments;
+
+	/**
 	 * Set of timeout IDs so we can clear when the process of purchasing starts.
 	 *
 	 * @since 5.1.9
@@ -87,6 +96,14 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		checkoutScript: '.tec-tc-gateway-paypal-checkout-script',
 		activePayment: '.tec-tc-gateway-paypal-payment-active',
 		buttons: '#tec-tc-gateway-paypal-checkout-buttons',
+		advancedPayments: {
+			container: '.tec-tickets__commerce-advanced-payments-container',
+			form: '.tec-tickets__commerce-advanced-payments-form',
+			cardField: '#tec-tc-card-number',
+			cvvField: '#tec-tc-cvv',
+			nameField: '#tec-tc-card-holder-name',
+			expirationField: '#tec-tc-expiration-date',
+		},
 	};
 
 	/**
@@ -568,7 +585,10 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			return;
 		}
 
-		// Renders card fields
+		/**
+		 * See references on how to use:
+		 * https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#paypalhostedfields
+		 */
 		paypal.HostedFields.render( {
 			createOrder: ( data, actions ) => {
 				return obj.handleCreateOrder( data, actions, $container );
@@ -585,16 +605,16 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 			fields: {
 				number: {
-					selector: "#card-number",
-					placeholder: "4111 1111 1111 1111"
+					selector: obj.selectors.advancedPayments.cardField,
+					placeholder: obj.advancedPayments.fieldPlaceholders.number,
 				},
 				cvv: {
-					selector: "#cvv",
-					placeholder: "123"
+					selector: obj.selectors.advancedPayments.cvvField,
+					placeholder: obj.advancedPayments.fieldPlaceholders.cvv,
 				},
 				expirationDate: {
-					selector: "#expiration-date",
-					placeholder: "MM/YY"
+					selector: obj.selectors.advancedPayments.expirationField,
+					placeholder: obj.advancedPayments.fieldPlaceholders.expirationDate,
 				}
 			}
 		} ).then( ( cardFields ) => {
@@ -603,24 +623,29 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	};
 
 	obj.handleHostedFields = ( cardFields, $container ) => {
-		$container.find( "#card-form" ).on( 'submit', ( event ) => {
+		$container.find( obj.selectors.advancedPayments.form ).on( 'submit', ( event ) => {
 			return obj.onHostedSubmit( event, cardFields, $container );
 		} );
+	};
+
+	obj.getExtraCardFields = ( $container ) => {
+		return {
+			// Cardholder's first and last name
+			cardholderName: $container.find( obj.selectors.advancedPayments.nameField ).val(),
+		};
 	};
 
 	obj.onHostedSubmit = ( event, cardFields, $container ) => {
 		event.preventDefault();
 
-		cardFields.submit( {
-			// Cardholder's first and last name
-			cardholderName: $container.find( '#card-holder-name' ).val(),
-		} ).then( () => {
-			console.log( arguments );
-			obj.handleHostedApprove( {}, $container );
-		} ).catch( obj.handleHostedCaptureError );
+		cardFields.submit( obj.getExtraCardFields( $container ) ).then( ( data, actions ) => {
+			obj.handleHostedApprove( data, actions, $container );
+		} ).catch( ( error ) => {
+			obj.handleHostedCaptureError( error, $container );
+		} );
 	};
 
-	obj.handleHostedCaptureError = ( error ) => {
+	obj.handleHostedCaptureError = ( error, $container ) => {
 		console.log( error );
 	};
 
@@ -635,45 +660,15 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @return {void}
 	 */
-	obj.handleHostedApprove = function ( data, $container ) {
+	obj.handleHostedApprove = function ( data, actions, $container ) {
 		tribe.tickets.debug.log( 'handleHostedApprove', arguments );
-		/**
-		 * @todo On approval we receive a bit more than just the orderID on the data object
-		 *       we should be passing those to the BE.
-		 */
 
 		const body = {
-			'payer_id': data.payerID ?? '',
+			'advanced_payment': true,
 		};
 
-		fetch( '/your-server/api/order/' + orderId + '/capture/', {
-			method: 'post'
-		} ).then( function ( res ) {
-			return res.json();
-		} ).then( function ( orderData ) {
-			// Three cases to handle:
-			//   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-			//   (2) Other non-recoverable errors -> Show a failure message
-			//   (3) Successful transaction -> Show confirmation or thank you
-			// This example reads a v2/checkout/orders capture response, propagated from the server
-			// You could use a different API or structure for your 'orderData'
-			var errorDetail = Array.isArray( orderData.details ) && orderData.details[ 0 ];
-			if ( errorDetail && errorDetail.issue === 'INSTRUMENT_DECLINED' ) {
-				return actions.restart(); // Recoverable state, per:
-				// https://developer.paypal.com/docs/checkout/integration-features/funding-failure/
-			}
-			if ( errorDetail ) {
-				var msg = 'Sorry, your transaction could not be processed.';
-				if ( errorDetail.description ) msg += '\n\n' + errorDetail.description;
-				if ( orderData.debug_id ) msg += ' (' + orderData.debug_id + ')';
-				return alert( msg ); // Show a failure message
-			}
-			// Show a success message or redirect
-			alert( 'Transaction completed!' );
-		} );
-
 		return fetch(
-			obj.orderEndpointUrl + '/' + data.orderID,
+			obj.orderEndpointUrl + '/' + data.orderId,
 			{
 				method: 'POST',
 				headers: {
@@ -687,12 +682,64 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			.then( data => {
 				tribe.tickets.debug.log( data );
 				if ( data.success ) {
-					return obj.handleHostedApproveSuccess( data );
+					return obj.handleHostedApproveSuccess( data, actions, $container );
 				} else {
-					return obj.handleHostedApproveFail( data );
+					return obj.handleHostedApproveFail( data, actions, $container );
 				}
 			} )
-			.catch( obj.handleHostedApproveError );
+			.catch( ( error ) => {
+				obj.handleHostedApproveError( error, $container );
+			} );
+	};
+
+	/**
+	 * When a successful request is completed to our Approval endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} data Data returning from our endpoint.
+	 *
+	 * @return {void}
+	 */
+	obj.handleHostedApproveSuccess = function ( data, actions, $container ) {
+		tribe.tickets.debug.log( 'handleHostedApproveSuccess', arguments );
+		// When this Token has expired we just refresh the browser.
+		window.location.replace( data.redirect_url );
+	};
+
+	/**
+	 * When a failed request is completed to our Approval endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} data Data returning from our endpoint.
+	 *
+	 * @return {void}
+	 */
+	obj.handleHostedApproveFail = function ( data, actions, $container ) {
+		tribe.tickets.debug.log( 'handleHostedApproveFail', arguments );
+
+		obj.showNotice( data );
+
+		if ( 'INSTRUMENT_DECLINED' === data.error ) {
+			return actions.restart();
+
+			// Recoverable state, per:
+			// https://developer.paypal.com/docs/checkout/integration-features/funding-failure/
+		}
+	};
+
+	/**
+	 * When a error happens on the fetch request to our Approval endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} error Which error the fetch() threw on requesting our endpoints.
+	 *
+	 * @return {void}
+	 */
+	obj.handleHostedApproveError = function ( error, $container ) {
+		tribe.tickets.debug.log( 'handleHostedApproveError', arguments );
 	};
 
 	/**

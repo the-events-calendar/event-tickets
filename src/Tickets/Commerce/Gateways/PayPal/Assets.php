@@ -102,6 +102,14 @@ class Assets extends \tad_DI52_ServiceProvider {
 					'data' => static function () {
 						return [
 							'orderEndpoint' => tribe( Order_Endpoint::class )->get_route_url(),
+							'advancedPayments' => [
+								'fieldPlaceholders' => [
+									'cvv' => esc_html__( 'E.g.: 123', 'event-tickets' ),
+									'expirationDate' => esc_html__( 'E.g.: 03/26', 'event-tickets' ),
+									'number' => esc_html__( 'E.g.: 4111 1111 1111 1111', 'event-tickets' ),
+									'zipCode' => esc_html__( 'E.g.: 01020', 'event-tickets' ),
+								]
+							],
 						];
 					},
 				],
