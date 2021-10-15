@@ -72,15 +72,29 @@ class Events {
 	 * @return string The Webhook label, false on error.
 	 */
 	public function get_webhook_label( $event_name ) {
-		$nice_name = [
-			self::PAYMENT_CAPTURE_COMPLETED => __( 'Completed payments', 'event-tickets' ),
-			self::PAYMENT_CAPTURE_DENIED    => __( 'Denied payments', 'event-tickets' ),
-			self::PAYMENT_CAPTURE_REFUNDED  => __( 'Refunds', 'event-tickets' ),
-			self::PAYMENT_CAPTURE_REVERSED  => __( 'Reversed', 'event-tickets' ),
+		$labels = [
+			static::PAYMENT_CAPTURE_COMPLETED => __( 'Completed payments', 'event-tickets' ),
+			static::PAYMENT_CAPTURE_DENIED    => __( 'Denied payments', 'event-tickets' ),
+			static::PAYMENT_CAPTURE_REFUNDED  => __( 'Refunds', 'event-tickets' ),
+			static::PAYMENT_CAPTURE_REVERSED  => __( 'Reversed', 'event-tickets' ),
 		];
 
-		if ( isset( $nice_name[ $event_name ] ) ) {
-			return $nice_name[ $event_name ];
+		/**
+		 * Allows filtering of the Webhook map of events for each one of the types we listen for.
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $labels     The default map of which event types that translate to a given label string.
+		 * @param string $event_name Which event name we are looking for.
+		 */
+		$labels = apply_filters( 'tec_tickets_commerce_gateway_paypal_webhook_events_labels_map', $labels, $event_name );
+
+		if ( ! $this->is_valid( $event_name ) ) {
+			return false;
+		}
+
+		if ( isset( $labels[ $event_name ] ) ) {
+			return $labels[ $event_name ];
 		}
 
 		return false;
@@ -101,7 +115,7 @@ class Events {
 		 *
 		 * @param array $map The default map of which event types that translate to a given Status class.
 		 */
-		return apply_filters( 'tec_tickets_commerce_gateway_paypal_webook_events_map', $this->default_map );
+		return apply_filters( 'tec_tickets_commerce_gateway_paypal_webhook_events_map', $this->default_map );
 	}
 
 	/**
