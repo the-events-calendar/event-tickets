@@ -46,7 +46,7 @@ class Backfill_Purchaser extends Flag_Action_Abstract {
 		// @todo move this piece out the flag action since it's PayPal gateway specific.
 		if (
 			empty( $order->gateway )
-			||1 PayPal_Gateway::get_key() !== $order->gateway
+			|| PayPal_Gateway::get_key() !== $order->gateway
 		) {
 			return;
 		}
