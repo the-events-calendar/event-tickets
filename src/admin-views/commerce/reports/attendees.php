@@ -31,7 +31,7 @@
 	<?php endif; ?>
 	<div id="icon-edit" class="icon32 icon32-tickets-orders"><br></div>
 
-	<?php $this->template( 'orders/summary' ); ?>
+	<?php $this->template( 'attendees/summary' ); ?>
 
 	<form id="topics-filter" method="get">
 		<input
