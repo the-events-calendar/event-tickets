@@ -164,6 +164,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Display admin bar when using the Test Mode for payments.
 	 *
+	 * @since TBD
+	 *
 	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance, passed by reference.
 	 *
 	 * @return bool

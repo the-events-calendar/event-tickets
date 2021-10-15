@@ -137,6 +137,8 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Display admin bar when using the Test Mode for payments.
 	 *
+	 * @since TBD
+	 *
 	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance, passed by reference.
 	 *
 	 * @return bool
