@@ -676,7 +676,6 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		tribe.tickets.loader.show( $container );
 
 		cardFields.submit( obj.getExtraCardFields( $container ) ).then( ( data, actions ) => {
-			tribe.tickets.loader.hide( $container );
 			obj.handleHostedApprove( data, actions, $container );
 		} ).catch( ( error ) => {
 			obj.handleHostedCaptureError( error, $container );
@@ -694,11 +693,24 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleHostedCaptureError = ( error, $container ) => {
 		tribe.tickets.debug.log( 'handleHostedCaptureError', error );
+		tribe.tickets.loader.hide( $container );
+
 		let errorTitle = '';
 		let errorContent = '';
 
-		if ( 'INVALID_REQUEST' === error.name ) {
+		if ( [ 'INVALID_REQUEST', 'UNPROCESSABLE_ENTITY' ].includes( error.name ) ) {
 			errorContent = error.message;
+		}
+
+		if ( 'VALIDATION_ERROR' === error.name ) {
+			errorContent = $( '<div>' );
+
+			if ( Array.isArray( error.details ) ) {
+				error.details.map( ( item ) => {
+					const $item = $( '<p>' ).text( item.description );
+					errorContent.append( $item );
+				} );
+			}
 		}
 
 		// For now show no error, but eventually generic error needs to be done here.
@@ -763,6 +775,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleHostedApproveSuccess = function ( data, actions, $container ) {
 		tribe.tickets.debug.log( 'handleHostedApproveSuccess', arguments );
+		tribe.tickets.loader.hide( $container );
 		// When this Token has expired we just refresh the browser.
 		window.location.replace( data.redirect_url );
 	};
@@ -779,6 +792,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.handleHostedApproveFail = ( data, actions, $container ) => {
 		tribe.tickets.debug.log( 'handleHostedApproveFail', data, actions, $container );
 
+		tribe.tickets.loader.hide( $container );
 		obj.showNotice( data );
 
 		if ( 'INSTRUMENT_DECLINED' === data.error ) {
@@ -799,6 +813,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleHostedApproveError = ( error, $container, ...rest ) => {
+		tribe.tickets.loader.hide( $container );
 		tribe.tickets.debug.log( 'handleHostedApproveError', error, rest );
 	};
 
