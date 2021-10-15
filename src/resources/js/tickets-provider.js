@@ -29,26 +29,33 @@ tribe.tickets = tribe.tickets || {};
 	obj.settings = tecTicketsSettings;
 
 	obj.debug = {
-		log: () => {
+		log: ( ...args ) => {
 			if ( ! obj.settings.debug ) {
 				return;
 			}
 
-			console.log( arguments );
+			console.log( args );
 		},
-		error: () => {
+		error: ( ...args ) => {
 			if ( ! obj.settings.debug ) {
 				return;
 			}
 
-			console.error( arguments );
+			console.error( args );
 		},
-		info: () => {
+		info: ( ...args ) => {
 			if ( ! obj.settings.debug ) {
 				return;
 			}
 
-			console.info( arguments );
+			console.info( args );
+		},
+		trace: ( ...args ) => {
+			if ( ! obj.settings.debug ) {
+				return;
+			}
+
+			console.trace( args );
 		},
 	};
 

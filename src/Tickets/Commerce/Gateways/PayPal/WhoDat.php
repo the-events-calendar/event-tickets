@@ -41,9 +41,12 @@ class WhoDat {
 	 *
 	 * @since 5.1.9
 	 *
+	 * @param string $hash    Which unique hash we are passing to the PayPal system.
+	 * @param string $country Which country code we are using.
+	 *
 	 * @return array|string
 	 */
-	public function get_seller_signup_data( $hash ) {
+	public function get_seller_signup_data( $hash, $country ) {
 		if ( empty( $hash ) ) {
 			$hash = tribe( Signup::class )->generate_unique_signup_hash();
 		}
@@ -54,6 +57,7 @@ class WhoDat {
 			'nonce'       => $hash,
 			'tracking_id' => urlencode( tribe( Signup::class )->generate_unique_tracking_id() ),
 			'return_url'  => esc_url( $return_url ),
+			'country'     => $country,
 		];
 
 		return $this->get( 'seller/signup', $query_args );
@@ -158,11 +162,11 @@ class WhoDat {
 			'body' => [],
 		];
 
-
 		foreach ( $default_arguments as $key => $default_argument ) {
 			$request_arguments[ $key ] = array_merge( $default_argument, Arr::get( $request_arguments, $key, [] ) );
 		}
-		$request           = wp_remote_post( $url, $request_arguments );
+		$request_arguments = array_filter( $request_arguments );
+		$request = wp_remote_post( $url, $request_arguments );
 
 		if ( is_wp_error( $request ) ) {
 			$this->log_error( 'WhoDat request error:', $request->get_error_message(), $url );

@@ -12,7 +12,9 @@ use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Traits\Has_Mode;
 use Tribe__Field_Conditional;
+use WP_Admin_Bar;
 
 /**
  * The Tickets Commerce settings.
@@ -24,6 +26,7 @@ use Tribe__Field_Conditional;
  * @package Tribe\Tickets\Commerce\Tickets_Commerce
  */
 class Settings extends Abstract_Settings {
+	use Has_Mode;
 
 	/**
 	 * The option key for enable.
@@ -107,6 +110,16 @@ class Settings extends Abstract_Settings {
 	public static $option_confirmation_email_subject = 'tickets-commerce-confirmation-email-subject';
 
 	/**
+	 * Settings constructor.
+	 *
+	 * @since TBD
+	 */
+	public function __construct() {
+		// Configure which mode we are in.
+		$this->set_mode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' );
+	}
+
+	/**
 	 * Create the Tickets Commerce Payments Settings Tab.
 	 *
 	 * @since 5.1.9
@@ -119,6 +132,43 @@ class Settings extends Abstract_Settings {
 		];
 
 		new \Tribe__Settings_Tab( 'payments', esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
+	}
+
+	/**
+	 * Display admin bar when using the Test Mode for payments.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance, passed by reference.
+	 *
+	 * @return bool
+	 */
+	public function include_admin_bar_test_mode( WP_Admin_Bar $wp_admin_bar ) {
+		if (
+			! $this->is_sandbox() ||
+			! current_user_can( 'manage_options' )
+		) {
+			return false;
+		}
+		$url = \Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] );
+
+		// Add the main site admin menu item.
+		$wp_admin_bar->add_menu(
+			[
+				'id'     => 'tec-tickets-commerce-sandbox-notice',
+				'href'   => $url,
+				'parent' => 'top-secondary',
+				'title'  => __( 'Tickets Commerce Test Mode Active', 'event-tickets' ),
+				'meta'   => [
+					'class' => 'tec-tickets-commerce-sandbox-mode-active',
+				],
+			]
+		);
+
+		// Force this asset to load whn we add this to the menu.
+		tribe_asset_enqueue( 'tec-tickets-commerce-gateway-paypal-global-admin-styles' );
+
+		return true;
 	}
 
 	/**
@@ -140,7 +190,7 @@ class Settings extends Abstract_Settings {
 			esc_html__( 'Check it out!', 'event-tickets' )
 		);
 		$plus_message = sprintf(
-			// Translators: %1$s: The Event Tickets Plus link, %2$s: The word "ticket" in lowercase, %3$s: The "Check it out!" link.
+		// Translators: %1$s: The Event Tickets Plus link, %2$s: The word "ticket" in lowercase, %3$s: The "Check it out!" link.
 			esc_html_x( 'Tickets Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check attendees in via QR codes, and share stock between %2$s. %3$s', 'about Tickets Commerce', 'event-tickets' ),
 			$plus_link,
 			esc_html( tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_about_tribe_commerce' ) ),
@@ -151,7 +201,7 @@ class Settings extends Abstract_Settings {
 		$is_tickets_commerce_enabled = tec_tickets_commerce_is_enabled();
 
 		$top_level_settings = [
-			'tribe-form-content-start'           => [
+			'tribe-form-content-start'     => [
 				'type' => 'html',
 				'html' => '<div class="tribe-settings-form-wrap">',
 			],
@@ -217,8 +267,8 @@ class Settings extends Abstract_Settings {
 
 		$settings = [
 			'tickets-commerce-general-settings-heading'     => [
-				'type'            => 'html',
-				'html'            => '<h3 class="my-awesome-class tribe-dependent"  data-depends="#' . static::$option_enable . '-input" data-condition-is-checked>' . __( 'Tickets Commerce Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
+				'type' => 'html',
+				'html' => '<h3 class="my-awesome-class tribe-dependent"  data-depends="#' . static::$option_enable . '-input" data-condition-is-checked>' . __( 'Tickets Commerce Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
 			],
 			static::$option_sandbox                         => [
 				'type'            => 'checkbox_bool',
@@ -240,7 +290,7 @@ class Settings extends Abstract_Settings {
 				'label'           => esc_html__( 'Stock Handling', 'event-tickets' ),
 				'tooltip'         => esc_html(
 					sprintf(
-						// Translators: %s: The word "ticket" in lowercase.
+					// Translators: %s: The word "ticket" in lowercase.
 						_x( 'When a customer purchases a %s, the payment gateway might flag the order as Pending. The order will be Complete once payment is confirmed by the payment gateway.', 'tickets fields settings paypal stock handling', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_stock_handling' )
 					)
@@ -248,15 +298,15 @@ class Settings extends Abstract_Settings {
 				'default'         => Pending::SLUG,
 				'validation_type' => 'options',
 				'options'         => [
-					Pending::SLUG  => sprintf(
-						// Translators: %1$s: The word "ticket" in lowercase. %2$s: `<strong>` opening tag. %3$s: `</strong>` closing tag.
+					Pending::SLUG   => sprintf(
+					// Translators: %1$s: The word "ticket" in lowercase. %2$s: `<strong>` opening tag. %3$s: `</strong>` closing tag.
 						esc_html__( 'Decrease available %1$s stock as soon as a %2$sPending%3$s order is created.', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'stock_handling' ),
 						'<strong>',
 						'</strong>'
 					),
 					Completed::SLUG => sprintf(
-						// Translators: %1$s: The word "ticket" in lowercase. %2$s: `<strong>` opening tag. %3$s: `</strong>` closing tag.
+					// Translators: %1$s: The word "ticket" in lowercase. %2$s: `<strong>` opening tag. %3$s: `</strong>` closing tag.
 						esc_html__( 'Only decrease available %1$s stock if an order is confirmed as %2$sCompleted%3$s by the payment gateway.', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'stock_handling' ),
 						'<strong>',
@@ -270,7 +320,7 @@ class Settings extends Abstract_Settings {
 				'label'           => esc_html__( 'Checkout page', 'event-tickets' ),
 				'tooltip'         => esc_html(
 					sprintf(
-						// Translators: %s: The [shortcode] for the success page.
+					// Translators: %s: The [shortcode] for the success page.
 						__( 'This is the page where customers go to complete their purchase. Use the %s shortcode to display the checkout experience in the page content.', 'event-tickets' ),
 						"[$checkout_shortcode]"
 					)
@@ -285,7 +335,7 @@ class Settings extends Abstract_Settings {
 				'label'           => esc_html__( 'Success page', 'event-tickets' ),
 				'tooltip'         => esc_html(
 					sprintf(
-						// Translators: %s: The [shortcode] for the success page.
+					// Translators: %s: The [shortcode] for the success page.
 						__( 'After a successful order, users will be redirected to this page. Use the %s shortcode to display the order confirmation to the user in the page content.', 'event-tickets' ),
 						"[$success_shortcode]"
 					)
@@ -300,7 +350,7 @@ class Settings extends Abstract_Settings {
 				'label'           => esc_html__( 'Confirmation email sender address', 'event-tickets' ),
 				'tooltip'         => esc_html(
 					sprintf(
-						// Translators: %s: The word "tickets" in lowercase.
+					// Translators: %s: The word "tickets" in lowercase.
 						_x( 'Email address that %s customers will receive confirmation from. Leave empty to use the default WordPress site email address.', 'tickets fields settings confirmation email', 'event-tickets' ),
 						tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_paypal_confirmation_email' )
 					)
@@ -315,7 +365,7 @@ class Settings extends Abstract_Settings {
 				'label'               => esc_html__( 'Confirmation email sender name', 'event-tickets' ),
 				'tooltip'             => esc_html(
 					sprintf(
-						// Translators: %s: The word "ticket" in lowercase.
+					// Translators: %s: The word "ticket" in lowercase.
 						_x( 'Sender name of the confirmation email sent to customers when confirming a %s purchase.', 'tickets fields settings paypal email sender', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_email_sender' )
 					)
@@ -330,7 +380,7 @@ class Settings extends Abstract_Settings {
 				'label'               => esc_html__( 'Confirmation email subject', 'event-tickets' ),
 				'tooltip'             => esc_html(
 					sprintf(
-						// Translators: %s: The word "ticket" in lowercase.
+					// Translators: %s: The word "ticket" in lowercase.
 						_x( 'Subject of the confirmation email sent to customers when confirming a %s purchase.', 'tickets fields settings paypal email subject', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_email_subject' )
 					)
@@ -338,7 +388,7 @@ class Settings extends Abstract_Settings {
 				'size'                => 'large',
 				'default'             => esc_html(
 					sprintf(
-						// Translators: %s: The word "tickets" in lowercase.
+					// Translators: %s: The word "tickets" in lowercase.
 						_x( 'You have %s!', 'tickets fields settings paypal email subject', 'event-tickets' ),
 						tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_paypal_email_subject' )
 					)

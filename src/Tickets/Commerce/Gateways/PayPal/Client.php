@@ -64,6 +64,8 @@ class Client {
 	 *
 	 * We use something like: https://www.paypal.com/sdk/js?client-id=sb&locale=en_US&components=buttons
 	 *
+	 * @link  https://developer.paypal.com/docs/checkout/reference/customize-sdk/#query-parameters
+	 *
 	 * @since 5.1.9
 	 *
 	 * @param array $query_args Which query args will be added.
@@ -74,11 +76,13 @@ class Client {
 		$url        = 'https://www.paypal.com/sdk/js';
 		$merchant   = tribe( Merchant::class );
 		$query_args = array_merge( [
-			'client-id'   => $merchant->is_sandbox() ? 'sb' : $merchant->get_client_id(),
-			'merchant-id' => $merchant->get_merchant_id_in_paypal(),
-			'components'  => 'buttons,hosted-fields',
-			'intent'      => 'capture',
-			'currency'    => tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_currency_code, 'USD' ),
+			'client-id'       => $merchant->get_client_id(),
+			'merchant-id'     => $merchant->get_merchant_id_in_paypal(),
+			'components'      => 'hosted-fields,buttons',
+			'intent'          => 'capture',
+			'locale'          => $merchant->get_locale(),
+			'disable-funding' => 'credit',
+			'currency'        => tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_currency_code, 'USD' ),
 		], $query_args );
 		$url        = add_query_arg( $query_args, $url );
 
@@ -113,16 +117,18 @@ class Client {
 	 * Send a given method request to a given URL in the PayPal API.
 	 *
 	 * @since 5.1.10
+	 * @since TBD Included $retries param.
 	 *
 	 * @param string $method
 	 * @param string $url
 	 * @param array  $query_args
 	 * @param array  $request_arguments
 	 * @param bool   $raw
+	 * @param int    $retries Param used to determine the amount of time this particular request was retried.
 	 *
 	 * @return array|\WP_Error
 	 */
-	public function request( $method, $url, array $query_args = [], array $request_arguments = [], $raw = false ) {
+	public function request( $method, $url, array $query_args = [], array $request_arguments = [], $raw = false, $retries = 0 ) {
 		$method = strtoupper( $method );
 
 		// If the endpoint passed is a full URL don't try to append anything.
@@ -188,6 +194,26 @@ class Client {
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
+
+		// When we get specifically a 401 and we are not trying to generate a token we try once more.
+		if (
+			401 === $response_code
+			&& 2 >= $retries
+			&& false === strpos( $url, 'v1/oauth2/token' )
+		) {
+			$merchant   = tribe( Merchant::class );
+			$token_data = $this->get_access_token_from_client_credentials( $merchant->get_client_id(), $merchant->get_client_secret() );
+			$saved      = $merchant->save_access_token_data( $token_data );
+
+			// If we properly saved, just re-try the request.
+			if ( $saved ) {
+				$arguments   = func_get_args();
+				array_pop( $arguments );
+				$arguments[] = $retries + 1;
+
+				return call_user_func_array( [ $this, 'request' ], $arguments );
+			}
+		}
 
 		// When we receive an error code we return the whole response.
 		if ( ! in_array( $response_code, [ 200, 201, 202, 204 ], true ) ) {
@@ -484,7 +510,7 @@ class Client {
 			$body['payerID'] = $payer_id;
 		}
 
-		$args       = [
+		$args = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
 				'Prefer'                        => 'return=representation',
