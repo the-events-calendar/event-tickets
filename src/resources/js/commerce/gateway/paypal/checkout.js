@@ -97,8 +97,8 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		activePayment: '.tec-tc-gateway-paypal-payment-active',
 		buttons: '#tec-tc-gateway-paypal-checkout-buttons',
 		advancedPayments: {
-			container: '.tec-tickets__commerce-advanced-payments-container',
-			form: '.tec-tickets__commerce-advanced-payments-form',
+			container: '.tribe-tickets__commerce-checkout-paypal-advanced-payments-container',
+			form: '.tribe-tickets__commerce-checkout-paypal-advanced-payments-form',
 			cardField: '#tec-tc-card-number',
 			cvvField: '#tec-tc-cvv',
 			nameField: '#tec-tc-card-holder-name',
