@@ -56,7 +56,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_client_js_sdk_script' ], 30, 3 );
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_advanced_payments' ], 20, 3 );
-		add_action( 'wp_ajax_tec_tickets_commerce_gateway_paypal_refresh_connect_url', [ $this, 'ajax_refresh_refresh_connect_url' ] );
+		add_action( 'wp_ajax_tec_tickets_commerce_gateway_paypal_refresh_connect_url', [ $this, 'ajax_refresh_connect_url' ] );
 		add_action( 'admin_init', [ $this, 'render_ssl_notice' ] );
 	}
 
@@ -80,7 +80,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 *
 	 * @return false|string
 	 */
-	public function ajax_refresh_refresh_connect_url() {
+	public function ajax_refresh_connect_url() {
 		return $this->container->make( Signup::class )->ajax_refresh_connect_url();
 	}
 
@@ -280,10 +280,10 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	public function render_ssl_notice() {
-		$page = tribe_get_request_var( 'page' ) === 'tribe-common';
-		$tab  = tribe_get_request_var( 'tab' ) === 'payments';
+		$page = tribe_get_request_var( 'page' );
+		$tab  = tribe_get_request_var( 'tab' );
 
-		if ( ! $page || ! $tab || is_ssl() ) {
+		if ( \Tribe__Settings::instance()->adminSlug !== $page || 'payments' !== $tab || is_ssl() ) {
 			return;
 		}
 
