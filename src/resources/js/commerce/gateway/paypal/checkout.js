@@ -559,7 +559,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		 */
 		if ( typeof paypal !== 'undefined' ) {
 			obj.setupButtons( {}, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
-			obj.setupAdvancedCardPayments( {}, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
+			obj.setupAdvancedPayments( {}, $( tribe.tickets.commerce.selectors.checkoutContainer ) );
 			return;
 		}
 
@@ -576,11 +576,19 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		};
 	};
 
-	obj.setupAdvancedCardPayments = ( event, $container ) => {
+	/**
+	 * Configures the Advanced Payments to the checkout page.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Event|Object} event
+	 * @param {jQuery} $container
+	 */
+	obj.setupAdvancedPayments = ( event, $container ) => {
 		// If this returns false or the card fields aren't visible, see Step #1.
 		if ( ! paypal.HostedFields.isEligible() ) {
 			// Hides card fields if the merchant isn't eligible
-			$container.find( '#card-form' ).hide();
+			$container.find( obj.selectors.advancedPayments.form ).hide();
 
 			return;
 		}
@@ -622,12 +630,30 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		} );
 	};
 
+	/**
+	 * Handles the Hosted Fields from PayPal.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} cardFields
+	 * @param {jQuery} $container
+	 */
 	obj.handleHostedFields = ( cardFields, $container ) => {
 		$container.find( obj.selectors.advancedPayments.form ).on( 'submit', ( event ) => {
 			return obj.onHostedSubmit( event, cardFields, $container );
 		} );
 	};
 
+	/**
+	 * Fetches the configuration for the any extra fields that need to be passed to PayPal, if we implement address later
+	 * to how we handle Hosted fields, we use this.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container
+	 *
+	 * @return {Object}
+	 */
 	obj.getExtraCardFields = ( $container ) => {
 		return {
 			// Cardholder's first and last name
@@ -635,6 +661,15 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		};
 	};
 
+	/**
+	 * When the Hosted Fields form is submitted we need to trigger some actions on PayPal, so we use this method for that.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Event} event
+	 * @param {Object} cardFields
+	 * @param {jQuery} $container
+	 */
 	obj.onHostedSubmit = ( event, cardFields, $container ) => {
 		event.preventDefault();
 
@@ -645,8 +680,17 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		} );
 	};
 
+	/**
+	 * When submitting the Hosted Fields there might be an error due to some problem in configuration so we make sure
+	 * we handle that.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} error
+	 * @param {jQuery} $container
+	 */
 	obj.handleHostedCaptureError = ( error, $container ) => {
-		console.log( error );
+		tribe.tickets.debug.log( 'handleHostedCaptureError', arguments );
 	};
 
 	/**
