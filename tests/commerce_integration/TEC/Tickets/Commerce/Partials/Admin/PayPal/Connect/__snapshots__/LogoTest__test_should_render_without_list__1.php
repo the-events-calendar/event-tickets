@@ -8,6 +8,16 @@
 	class="tec-tickets__admin-settings-tickets-commerce-paypal-logo-image"
 >
 
-	
+	<ul>
+	<li>
+		Credit and debit card payments	</li>
+	<li>
+		Easy no-API key connection	</li>
+	<li>
+		Accept payments from around the world	</li>
+	<li>
+		Supports 3D Secure payments	</li>
+</ul>
+
 </div>
 ';
