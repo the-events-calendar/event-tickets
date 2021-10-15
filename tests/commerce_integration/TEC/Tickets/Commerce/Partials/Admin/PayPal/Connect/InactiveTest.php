@@ -1,6 +1,7 @@
 <?php
 namespace TEC\Tickets\Commerce\Partials\Admin\PayPal\Connect;
 
+use TEC\Tickets\Commerce\Gateways\PayPal\Location\Country;
 use Tribe__Tickets__Main;
 use Tribe\Tickets\Test\Partials\V2AdminTestCase;
 use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
@@ -51,7 +52,7 @@ class InactiveTest extends V2AdminTestCase {
 		$html = $this->replace_nonce( $html );
 
 		// Replace link.
-		$html = str_replace( $args['signup']->generate_url(), 'http://thepaypalsandboxlink.tec.com/hash', $html );
+		$html = str_replace( $args['signup']->generate_url( Country::DEFAULT_COUNTRY_CODE, true ), 'http://thepaypalsandboxlink.tec.com/hash', $html );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
