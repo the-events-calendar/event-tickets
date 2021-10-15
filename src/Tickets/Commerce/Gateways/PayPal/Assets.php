@@ -88,6 +88,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 			[
 				'jquery',
 				'tribe-common',
+				'tribe-tickets-loader',
 				'tribe-tickets-commerce-js',
 				'tribe-tickets-commerce-notice-js',
 			],
@@ -137,6 +138,24 @@ class Assets extends \tad_DI52_ServiceProvider {
 							'onboardingEndpointUrl' => tribe( On_Boarding_Endpoint::class )->get_route_url(),
 						];
 					},
+				],
+			]
+		);
+
+		// Tickets Commerce PayPal main frontend styles.
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-commerce-paypal-style',
+			'tickets-commerce/gateway/paypal.css',
+			[
+				'tribe-common-skeleton-style',
+				'tribe-common-full-style',
+			],
+			null,
+			[
+				'groups' => [
+					'tribe-tickets-commerce',
+					'tribe-tickets-commerce-checkout',
 				],
 			]
 		);

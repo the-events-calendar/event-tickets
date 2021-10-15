@@ -97,8 +97,8 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		activePayment: '.tec-tc-gateway-paypal-payment-active',
 		buttons: '#tec-tc-gateway-paypal-checkout-buttons',
 		advancedPayments: {
-			container: '.tec-tickets__commerce-advanced-payments-container',
-			form: '.tec-tickets__commerce-advanced-payments-form',
+			container: '.tribe-tickets__commerce-checkout-paypal-advanced-payments-container',
+			form: '.tribe-tickets__commerce-checkout-paypal-advanced-payments-form',
 			cardField: '#tec-tc-card-number',
 			cvvField: '#tec-tc-cvv',
 			nameField: '#tec-tc-card-holder-name',
@@ -603,11 +603,11 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			},
 
 			styles: {
-				'.valid': {
-					'color': 'green'
-				},
 				'.invalid': {
-					'color': 'red'
+					'color': '#DA394D'
+				},
+				'input::placeholder': {
+					color: '#5d5d5d'
 				}
 			},
 
@@ -673,7 +673,10 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.onHostedSubmit = ( event, cardFields, $container ) => {
 		event.preventDefault();
 
+		tribe.tickets.loader.show( $container );
+
 		cardFields.submit( obj.getExtraCardFields( $container ) ).then( ( data, actions ) => {
+			tribe.tickets.loader.hide( $container );
 			obj.handleHostedApprove( data, actions, $container );
 		} ).catch( ( error ) => {
 			obj.handleHostedCaptureError( error, $container );

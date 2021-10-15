@@ -110,6 +110,13 @@ class Buttons {
 	 *
 	 */
 	public function include_advanced_payments( $file, $name, $template ) {
+		$items = tribe( Cart::class )->get_items_in_cart( true );
+
+		// Bail if there are no tickets in cart.
+		if ( empty( $items ) ) {
+			return;
+		}
+
 		$must_login = ! is_user_logged_in() && tribe( Module::class )->login_required();
 		$merchant   = tribe( Merchant::class );
 
