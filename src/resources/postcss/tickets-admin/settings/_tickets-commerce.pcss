@@ -217,15 +217,15 @@
 
 .tec-tickets__admin-settings-tickets-commerce-paypal-connect-text--connected {
 	color: #1eb056;
+	font-size: 16px;
 	font-weight: 600;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-paypal-connected-row {
 	display: flex;
-	font-size: 16px;
+	font-size: 13px;
 	font-weight: normal;
-	line-height: 18px;
-	margin: 1em 0;
+	margin: 20px 0;
 	text-align: left;
 }
 
@@ -266,13 +266,6 @@
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-paypal-connected p {
-	font-size: 16px;
-	font-weight: normal;
-	line-height: 18px;
-	text-align: left;
-}
-
 .tec-tickets__admin-settings-tickets-commerce-paypal-connected-text-name {
 	font-weight: 700;
 }
@@ -288,4 +281,65 @@
 .tec-tickets__admin-settings-tickets-commerce-paypal-signup-settings {
 	max-width: 350px;
 	width: 100%;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook {
+	&:not(last-of-type) {
+		margin-bottom: 8px;
+	}
+}
+
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook--active {
+	.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook-error {
+		@mixin hidden;
+	}
+}
+
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook:not(.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook--active) {
+	.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook-name {
+		color: var(--tec-color-text-primary-light);
+		text-decoration: line-through;
+	}
+}
+
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook-error {
+	color: var(--color-icon-error);
+	margin-left: 8px;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-actions-debug {
+	margin-top: 20px;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-resync-button {
+	@mixin button-solid;
+
+	background-color: var(--tec-color-button-primary);
+	display: inline-flex;
+	padding: 11px 20px 11px;
+	width: auto;
+
+	&:focus,
+	&:hover {
+		background-color: var(--tec-color-button-primary-hover);
+		color: white;
+	}
+
+	&:active {
+		background-color: var(--tec-color-button-primary-active);
+	}
+
+	&:disabled {
+		background-color: var(--tec-color-button-primary-background);
+	}
+}
+
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-resync-button-icon {
+	stroke: white;
+	width: 16px;
+	margin-right: 8px;
+
+	path {
+		fill: none;
+	}
 }

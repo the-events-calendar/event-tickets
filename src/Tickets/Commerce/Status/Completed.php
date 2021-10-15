@@ -2,7 +2,7 @@
 namespace TEC\Tickets\Commerce\Status;
 
 /**
- * Class Denied.
+ * Class Completed.
  *
  * This is the status we use to mark a given order as paid and delivered in our Tickets Commerce system.
  *
@@ -25,6 +25,13 @@ class Completed extends Status_Abstract {
 	 */
 	public function get_name() {
 		return __( 'Completed', 'event-tickets' );
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_nicename() {
+		return __( 'Completed payments', 'event-tickets' );
 	}
 
 	/**
