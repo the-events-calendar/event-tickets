@@ -442,9 +442,9 @@ class Attendee {
 	/**
 	 * Add our class to the list of classes for the attendee registration form
 	 *
-	 * @since TBd
+	 * @since TBD
 	 *
-	 * @param array $classes existing array of classes
+	 * @param array $classes existing array of classes.
 	 *
 	 * @return array $classes with our class added
 	 */
@@ -539,6 +539,8 @@ class Attendee {
 	/**
 	 * Loads event, ticket, order and other data into an attendee object
 	 *
+	 * @since TBD
+	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
 	 * @return \WP_Post
@@ -589,6 +591,8 @@ class Attendee {
 	/**
 	 * Returns the product object related to an attendee
 	 *
+	 * @since TBD
+	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
 	 * @return \WP_Post|\stdClass
@@ -606,6 +610,8 @@ class Attendee {
 	/**
 	 * Returns the product id related to an attendee
 	 *
+	 * @since TBD
+	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
 	 * @return string
@@ -620,6 +626,8 @@ class Attendee {
 
 	/**
 	 * Returns the product title related to an attendee
+	 *
+	 * @since TBD
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -636,6 +644,8 @@ class Attendee {
 	/**
 	 * Returns the event id related to an attendee
 	 *
+	 * @since TBD
+	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
 	 * @return string
@@ -646,6 +656,8 @@ class Attendee {
 
 	/**
 	 * Returns the ticket unique id related to an attendee
+	 *
+	 * @since TBD
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -659,6 +671,8 @@ class Attendee {
 
 	/**
 	 * Returns the ticket id related to an attendee
+	 *
+	 * @since TBD
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -675,6 +689,8 @@ class Attendee {
 	/**
 	 * Returns the security code for an attendee
 	 *
+	 * @since TBD
+	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
 	 * @return string
@@ -689,6 +705,8 @@ class Attendee {
 
 	/**
 	 * Returns the check in status of an attendee
+	 *
+	 * @since TBD
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -705,6 +723,8 @@ class Attendee {
 	/**
 	 * Returns the status label used in the Status column
 	 *
+	 * @since TBD
+	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
 	 * @return string
@@ -720,11 +740,13 @@ class Attendee {
 			return '';
 		}
 
-		return tribe( Tickets_View::class )->get_rsvp_options( $checked_in === '1' ? 'yes' : 'no' );
+		return tribe( Tickets_View::class )->get_rsvp_options( '1' === $checked_in ? 'yes' : 'no' );
 	}
 
 	/**
 	 * Returns the order object related to an attendee
+	 *
+	 * @since TBD
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -738,6 +760,8 @@ class Attendee {
 
 	/**
 	 * Returns the purchaser name if available
+	 *
+	 * @since TBD
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -755,6 +779,8 @@ class Attendee {
 
 	/**
 	 * Returns the purchaser email if available
+	 *
+	 * @since TBD
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *

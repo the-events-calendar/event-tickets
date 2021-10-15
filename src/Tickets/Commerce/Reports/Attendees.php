@@ -190,6 +190,8 @@ class Attendees extends Report_Abstract {
 
 	/**
 	 * @inheritDoc
+	 *
+	 * @since TBD
 	 */
 	public function setup_template_vars() {
 		$post_id = tribe_get_request_var( 'post_id' );
@@ -266,6 +268,8 @@ class Attendees extends Report_Abstract {
 	/**
 	 * Determines if the "export" button will be displayed by the the title
 	 *
+	 * @since TBD
+	 *
 	 * @param int $event_id The event whose attendees may be exported.
 	 *
 	 * @return bool
@@ -335,11 +339,11 @@ class Attendees extends Report_Abstract {
 		/**
 		 * Filter our return value to let other plugins hook in and alter things
 		 *
+		 * @since TBD
+		 *
 		 * @param bool $user_can return value, user can or can't
 		 * @param int  $user_id  id of the user we're checking
 		 * @param int  $event_id id of the event we're checking (matter for checks on event authorship)
-		 *
-		 * @since TBD
 		 */
 		$user_can = apply_filters( 'tribe_tickets_user_can_manage_attendees', $user_can, $user_id, $event_id );
 
@@ -350,7 +354,7 @@ class Attendees extends Report_Abstract {
 	 * Checks if the user requested a CSV export from the attendees list.
 	 * If so, generates the download and finishes the execution.
 	 *
-	 * @sincTBD
+	 * @since TBD
 	 */
 	public function maybe_generate_csv() {
 		if ( empty( $_GET['attendees_csv'] ) || empty( $_GET['attendees_csv_nonce'] ) || empty( $_GET['event_id'] ) ) {
@@ -382,6 +386,8 @@ class Attendees extends Report_Abstract {
 
 		/**
 		 * Allow for filtering and modifying the list of attendees that will be exported via CSV for a given event.
+		 *
+		 * @since TBD
 		 *
 		 * @param array $items    The array of attendees that will be exported in this CSV file.
 		 * @param int   $event_id The ID of the event these attendees are associated with.
@@ -433,6 +439,8 @@ class Attendees extends Report_Abstract {
 		/**
 		 * Fire immediately prior to the generation of a filtered (exportable) attendee list.
 		 *
+		 * @since TBD
+		 *
 		 * @param int $event_id
 		 */
 		do_action( 'tribe_events_tickets_generate_filtered_attendees_list', $event_id );
@@ -483,6 +491,8 @@ class Attendees extends Report_Abstract {
 		/**
 		 * Used to modify what columns should be shown on the CSV export
 		 * The column name should be the Array Index and the Header is the array Value
+		 *
+		 * @since TBD
 		 *
 		 * @param array Columns, associative array
 		 * @param array Items to be exported

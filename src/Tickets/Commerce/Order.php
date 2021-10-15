@@ -407,8 +407,8 @@ class Order {
   
 	/**
 	 * Loads an order object with information about its attendees
-   *
-   * @since TBD
+	 *
+	 * @since TBD
 	 *
 	 * @param \WP_Post $order the order object.
 	 *
@@ -432,8 +432,8 @@ class Order {
 
 	/**
 	 * Returns the Ticket ID that is associated with the attendee
-   *
-   * @since TBD
+	 *
+	 * @since TBD
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *

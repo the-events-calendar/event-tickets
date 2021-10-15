@@ -19,6 +19,8 @@ use WP_List_Table;
 
 /**
  * Class Admin Tables for Attendees
+ *
+ * @since TBD
  */
 class Attendees extends WP_List_Table {
 
@@ -38,6 +40,8 @@ class Attendees extends WP_List_Table {
 
 	/**
 	 *  Documented in WP_List_Table
+	 *
+	 * @since TBD
 	 *
 	 * @param array|string $args Array or string of arguments.
 	 */
@@ -292,7 +296,7 @@ class Attendees extends WP_List_Table {
 			// Update search key if it supports LIKE matching.
 			if ( in_array( $search_key, $search_like_keys, true ) ) {
 				$search_key .= '__like';
-				$search     = '%' . $search . '%';
+				$search      = '%' . $search . '%';
 			}
 
 			// Only get matches that have search phrase in the key.
@@ -510,6 +514,8 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Content for the checkbox column
 	 *
+	 * @since TBD
+	 *
 	 * @param \WP_Post $item row object.
 	 *
 	 * @return string
@@ -522,6 +528,8 @@ class Attendees extends WP_List_Table {
 
 	/**
 	 * Adds a set of default row actions to each item in the attendee list table.
+	 *
+	 * @since TBD
 	 *
 	 * @param \WP_Post $item row object.
 	 *
@@ -580,6 +588,8 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Displays the search box.
 	 *
+	 * @since TBD
+	 *
 	 * @param string $text     The 'submit' button label.
 	 * @param string $input_id ID attribute value for the search input field.
 	 */
@@ -590,6 +600,8 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Retrieves the list of bulk actions available for this table.
 	 *
+	 * @since TBD
+	 *
 	 * @return array
 	 */
 	public function get_bulk_actions() {
@@ -598,6 +610,8 @@ class Attendees extends WP_List_Table {
 
 	/**
 	 * Extra controls to be displayed between bulk actions and pagination.
+	 *
+	 * @since TBD
 	 *
 	 * @param string $which the control name.
 	 */

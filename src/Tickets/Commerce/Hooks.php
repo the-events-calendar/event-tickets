@@ -238,7 +238,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array The original array plus the 'yes' status.
 	 */
 	public function filter_checkin_statuses( array $statuses = [] ) {
-		$statuses[] = 'tec-tc-'. Completed::SLUG;
+		$statuses[] = 'tec-tc-' . Completed::SLUG;
 
 		return array_unique( $statuses );
 	}
@@ -281,9 +281,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int $ticket_id  the attendee id being deleted
-	 * @param int $post_id    the post or event id for the attendee
-	 * @param int $product_id the ticket-product id in Tribe Commerce
+	 * @param int $ticket_id  the attendee id being deleted.
+	 * @param int $post_id    the post or event id for the attendee.
+	 * @param int $product_id the ticket-product id in Tribe Commerce.
 	 */
 	public function update_stock_after_deletion( $ticket_id, $post_id, $product_id ) {
 		$this->container->make( Ticket::class )->update_stock_after_deletion( $ticket_id, $post_id, $product_id );
@@ -303,7 +303,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.1.94
 	 *
-	 * @param int $post_id WP_Post ID
+	 * @param int $post_id WP_Post ID.
 	 */
 	public function maybe_redirect_to_attendees_report( $post_id ) {
 		$this->container->make( Attendee::class )->maybe_redirect_to_attendees_report( $post_id );
@@ -519,8 +519,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 	/**
 	 * If an event is using Tickets Commerce, use the new Attendees View URL
-   *
-   * @since TBD
+	 *
+	 * @since TBD
 	 *
 	 * @param string $url     the current Attendees View url.
 	 * @param int    $post_id the event id.
@@ -543,10 +543,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function enable_manual_attendee_modal() {
 		if ( ! class_exists( Modal::class ) ) {
-      return;
+			return;
 		}
 
-    tribe( Modal::class )->render_modal();
+		tribe( Modal::class )->render_modal();
 	}
 
 	/**
