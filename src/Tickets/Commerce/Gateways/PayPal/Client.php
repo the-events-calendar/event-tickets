@@ -208,6 +208,7 @@ class Client {
 			// If we properly saved, just re-try the request.
 			if ( $saved ) {
 				$arguments   = func_get_args();
+				array_pop( $arguments );
 				$arguments[] = $retries + 1;
 
 				return call_user_func_array( [ $this, 'request' ], $arguments );
