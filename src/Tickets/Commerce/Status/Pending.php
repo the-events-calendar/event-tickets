@@ -40,6 +40,7 @@ class Pending extends Status_Abstract {
 	 * {@inheritdoc}
 	 */
 	protected $flags = [
+		'backfill_purchaser',
 		'count_attendee',
 		'count_incomplete',
 		'count_sales',

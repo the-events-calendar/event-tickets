@@ -18,6 +18,7 @@
 namespace TEC\Tickets\Commerce;
 
 use \tad_DI52_ServiceProvider;
+use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use Tribe\Tickets\Plus\Manual_Attendees\Modal;
@@ -105,6 +106,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		// Add a post display state for special Event Tickets pages.
 		add_filter( 'display_post_states', [ $this, 'add_display_post_states' ], 10, 2 );
+
+		// Filter the 'View Orders` link from ticket editor.
+		add_filter( 'tribe_filter_attendee_order_link', [ $this, 'filter_editor_orders_link' ], 10, 2 );
 
 		$this->provider_meta_sanitization_filters();
 	}
@@ -232,7 +236,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array The original array plus the 'yes' status.
 	 */
 	public function filter_checkin_statuses( array $statuses = [] ) {
-		$statuses[] = tribe( Completed::class )->get_wp_slug();
+		$statuses[] = tribe( Completed::class )->get_name();
 
 		return array_unique( $statuses );
 	}
@@ -513,6 +517,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 	/**
 	 * If an event is using Tickets Commerce, use the new Attendees View URL
+   * 
+   * @since TBD
 	 *
 	 * @param string $url     the current Attendees View url.
 	 * @param int    $post_id the event id.
@@ -520,13 +526,15 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return string
 	 */
 	public function filter_attendee_report_link( $url, $post_id ) {
+		$tc_module = Module::get_event_ticket_provider( $post_id );
 
-		$tc_module = tribe( Module::class )::get_event_ticket_provider( $post_id );
-
-		if ( Module::class === $tc_module ) {
-			$url = \str_replace( 'page=tickets-attendees', 'page=tickets-commerce-attendees', $url );
+    // Bail when not dealing with a TC provider.
+		if ( Module::class !== $tc_module ) {
+      return $url;
 		}
 
+    $url = add_query_arg( [ 'page' => 'tickets-commerce-attendees' ], $url );
+    
 		return $url;
 	}
 
@@ -536,8 +544,24 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	public function enable_manual_attendee_modal() {
-		if ( class_exists( Modal::class ) ) {
-			tribe( Modal::class )->render_modal();
+		if ( ! class_exists( Modal::class ) ) {
+      return;
 		}
+    
+    tribe( Modal::class )->render_modal();
+	}
+  
+	/**
+	 * Filters the ticket editor order link for Tickets Commerce Module orders.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url     Url for the order page for ticketed event/post.
+	 * @param int    $post_id The post ID for the current event/post.
+	 *
+	 * @return string
+	 */
+	public function filter_editor_orders_link( $url, $post_id ) {
+		return $this->container->make( Orders::class )->filter_editor_orders_link( $url, $post_id );
 	}
 }

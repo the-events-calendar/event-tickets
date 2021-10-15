@@ -500,7 +500,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'attendee_table'  => $this,
 			'provider'        => $provider,
 			'disable_checkin' => empty( $item['order_status'] ) || ! in_array( $item['order_status'], $check_in_stati, true ),
- 		];
+		];
 
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
