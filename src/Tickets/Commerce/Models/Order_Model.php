@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Status\Status_Handler;
 use Tribe\Models\Post_Types\Base;
 use Tribe__Date_Utils as Dates;
 use Tribe__Utils__Array as Arr;
+use TEC\Tickets\Commerce\Gateways\Manager as Gateway_Manager;
 
 /**
  * Class Order.
@@ -41,6 +42,7 @@ class Order_Model extends Base {
 			$total_value         = Arr::get( $post_meta, [ Order::$total_value_meta_key, 0 ] );
 			$currency            = Arr::get( $post_meta, [ Order::$currency_meta_key, 0 ], 'USD' );
 			$gateway_slug        = Arr::get( $post_meta, [ Order::$gateway_meta_key, 0 ] );
+			$gateway             = tribe( Gateway_Manager::class )->get_gateway_by_key( $gateway_slug );
 			$gateway_order_id    = Arr::get( $post_meta, [ Order::$gateway_order_id_meta_key, 0 ] );
 			$gateway_payload     = $this->get_gateway_payloads( $post_meta );
 			$status_log          = $this->get_status_log( $post_meta );
@@ -63,6 +65,7 @@ class Order_Model extends Base {
 				'status_log'          => $status_log,
 				'status_name'         => $status->get_name(),
 				'gateway'             => $gateway_slug,
+				'gateway_label'       => $gateway ? $gateway->get_label() : '',
 				'gateway_order_id'    => $gateway_order_id,
 				'gateway_payload'     => $gateway_payload,
 				'total_value'         => $total_value,
