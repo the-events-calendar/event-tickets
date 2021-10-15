@@ -63,7 +63,7 @@ class Events {
 	];
 
 	/**
-	 * Default mapping from PayPal Status to Tickets Commerce.
+	 * Return webhook label's "Nice name".
 	 *
 	 * @since TBD
 	 *
