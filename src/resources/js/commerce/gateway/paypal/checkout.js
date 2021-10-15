@@ -498,7 +498,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @param {string} title Notice Title.
 	 * @param {string} content Notice message content.
 	 */
-	obj.showNotice = ( $container = {}, title, content ) => {
+	obj.showNotice = ( $container, title, content ) => {
 		if ( ! $container.length ) {
 			$container = $( tribe.tickets.commerce.selectors.checkoutContainer );
 		}
@@ -693,7 +693,20 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @param {jQuery} $container
 	 */
 	obj.handleHostedCaptureError = ( error, $container ) => {
-		tribe.tickets.debug.log( 'handleHostedCaptureError', arguments );
+		tribe.tickets.debug.log( 'handleHostedCaptureError', error );
+		let errorTitle = '';
+		let errorContent = '';
+
+		if ( 'INVALID_REQUEST' === error.name ) {
+			errorContent = error.message;
+		}
+
+		// For now show no error, but eventually generic error needs to be done here.
+		if ( '' === errorContent && '' === errorTitle ) {
+			return;
+		}
+
+		obj.showNotice( $container, errorTitle, errorContent );
 	};
 
 	/**
@@ -763,8 +776,8 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @return {void}
 	 */
-	obj.handleHostedApproveFail = function ( data, actions, $container ) {
-		tribe.tickets.debug.log( 'handleHostedApproveFail', arguments );
+	obj.handleHostedApproveFail = ( data, actions, $container ) => {
+		tribe.tickets.debug.log( 'handleHostedApproveFail', data, actions, $container );
 
 		obj.showNotice( data );
 
@@ -785,8 +798,8 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @return {void}
 	 */
-	obj.handleHostedApproveError = function ( error, $container ) {
-		tribe.tickets.debug.log( 'handleHostedApproveError', arguments );
+	obj.handleHostedApproveError = ( error, $container, ...rest ) => {
+		tribe.tickets.debug.log( 'handleHostedApproveError', error, rest );
 	};
 
 	/**
