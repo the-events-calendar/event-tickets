@@ -845,11 +845,16 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return $failed;
 		}
 
-		$addon = call_user_func( [ $parts[1], 'get_instance' ] );
+		if ( 'tc' === $parts[1] ) {
+			$addon = tribe( \TEC\Tickets\Commerce\Module::class );
+		} else {
+			$addon = call_user_func( [ $parts[1], 'get_instance' ] );
 
-		if ( ! is_subclass_of( $addon, 'Tribe__Tickets__Tickets' ) ) {
-			return $failed;
+			if ( ! is_subclass_of( $addon, 'Tribe__Tickets__Tickets' ) ) {
+				return $failed;
+			}
 		}
+
 
 		return [ $id, $addon ];
 	}
