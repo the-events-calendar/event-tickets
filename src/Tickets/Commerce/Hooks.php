@@ -107,6 +107,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_filter_attendee_order_link', [ $this, 'filter_editor_orders_link' ], 10, 2 );
 
 		$this->provider_meta_sanitization_filters();
+
+		add_filter( 'tribe_template_context:tickets-plus/v2/tickets/submit/button-modal', [ $this, 'filter_showing_cart_button' ] );
 	}
 
 	/**
@@ -523,5 +525,28 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function filter_editor_orders_link( $url, $post_id ) {
 		return $this->container->make( Orders::class )->filter_editor_orders_link( $url, $post_id );
+	}
+
+	/**
+	 * Hide the 'save and view cart` button from AR Modal depending on Cart type.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args Context arraay for the modal template.
+	 *
+	 * @return array
+	 */
+	public function filter_showing_cart_button( $args ) {
+		if ( ! isset( $args['has_tpp'] ) || ! isset( $args['provider'] ) ) {
+			return $args;
+		}
+
+		if ( Module::class !== $args['provider']->class_name ) {
+			return $args;
+		}
+
+		$args['has_tpp'] = 'redirect' === $this->container->make( Cart::class )->get_mode();
+
+		return $args;
 	}
 }
