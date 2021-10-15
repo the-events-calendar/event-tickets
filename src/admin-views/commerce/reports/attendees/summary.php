@@ -66,7 +66,7 @@
 				<ul>
 					<?php
 					/** @var Tribe__Tickets__Ticket_Object $ticket */
-					foreach ( $tickets_sold as $ticket ) {
+					foreach ( $tickets as $ticket ) {
 						$ticket_name = sprintf( '%s [#%d]', $ticket->name, $ticket->ID );
 						?>
 						<li>

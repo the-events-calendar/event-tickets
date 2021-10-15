@@ -6,7 +6,8 @@
  * @var string                                       $post_singular_label The post type singular label.
  * @var \TEC\Tickets\Commerce\Reports\Attendees      $report              The orders table output.
  * @var \TEC\Tickets\Commerce\Admin_Tables\Attendees $table               The orders table output.
- * @var array                                        $tickets_sold        A list of PayPal tickets that have at least one sale.
+ * @var array                                        $tickets      		  A list of all tickets.
+ * @var array                                        $tickets_data        Data for all tickets.
  * @var string                                       $title               The page title.
  * @var int                                          $total_sold          The total number of tickets sold.
  */

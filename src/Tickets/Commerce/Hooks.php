@@ -238,7 +238,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array The original array plus the 'yes' status.
 	 */
 	public function filter_checkin_statuses( array $statuses = [] ) {
-		$statuses[] = tribe( Completed::class )->get_name();
+		$statuses[] = 'tec-tc-'. Completed::SLUG;
 
 		return array_unique( $statuses );
 	}
