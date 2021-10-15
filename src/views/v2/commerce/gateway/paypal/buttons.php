@@ -20,4 +20,4 @@ if ( $must_login ) {
 }
 ?>
 
-<div id="tec-tc-gateway-paypal-checkout-buttons"></div>
+<div id="tec-tc-gateway-paypal-checkout-buttons" class="tribe-tickets__commerce-checkout-paypal-buttons"></div>
