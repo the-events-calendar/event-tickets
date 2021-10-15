@@ -31,6 +31,6 @@ if ( empty( $order->gateway ) ) {
 		<?php esc_html_e( 'Payment method:', 'event-tickets' ); ?>
 	</div>
 	<div class="tribe-tickets__commerce-order-details-col2">
-		<?php echo esc_html( $order->gateway ); ?>
+		<?php echo esc_html( $order->gateway_label ); ?>
 	</div>
 </div>
