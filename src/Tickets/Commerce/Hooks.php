@@ -18,6 +18,7 @@
 namespace TEC\Tickets\Commerce;
 
 use \tad_DI52_ServiceProvider;
+use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use Tribe\Tickets\Shortcodes\Tribe_Tickets_Checkout;
@@ -99,6 +100,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		// Add a post display state for special Event Tickets pages.
 		add_filter( 'display_post_states', [ $this, 'add_display_post_states' ], 10, 2 );
+
+		// Filter the 'View Orders` link from ticket editor.
+		add_filter( 'tribe_filter_attendee_order_link', [ $this, 'filter_editor_orders_link' ], 10, 2 );
 
 		$this->provider_meta_sanitization_filters();
 	}
@@ -492,5 +496,19 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function filter_modify_sanitization_provider_meta( $meta_value ) {
 		return tribe( Settings::class )->skip_sanitization( $meta_value );
+	}
+
+	/**
+	 * Filters the ticket editor order link for Tickets Commerce Module orders.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url     Url for the order page for ticketed event/post.
+	 * @param int    $post_id The post ID for the current event/post.
+	 *
+	 * @return string
+	 */
+	public function filter_editor_orders_link( $url, $post_id ) {
+		return $this->container->make( Orders::class )->filter_editor_orders_link( $url, $post_id );
 	}
 }
