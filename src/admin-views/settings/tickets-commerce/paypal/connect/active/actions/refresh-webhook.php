@@ -22,4 +22,4 @@ if ( empty( $is_merchant_active ) || ! $debug ) {
 $url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-action' => 'paypal-refresh-webhook' ] );
 ?>
 
-<a href="<?php esc_url( $url ); ?>"><?php esc_html_e( 'Refresh Webhook', 'event-tickets' ); ?></a>
+<a href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'Refresh Webhook', 'event-tickets' ); ?></a>

@@ -21,7 +21,7 @@ $resync_connection_url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payme
 ?>
 
 <a
-	href="#"
+	href="<?php echo esc_url( $resync_connection_url ); ?>"
 	class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-resync-button"
 >
 	<?php tribe( 'tickets.editor.template' )->template( 'v2/components/icons/reset', [ 'classes' => [ 'tec-tickets__admin-settings-tickets-commerce-paypal-connected-resync-button-icon' ] ] ); ?>
