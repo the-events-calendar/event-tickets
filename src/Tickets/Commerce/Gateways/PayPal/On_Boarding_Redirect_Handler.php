@@ -201,41 +201,4 @@ class On_Boarding_Redirect_Handler {
 		// If there were errors then redirect the user with notices
 		return count( $error_messages ) > 1 ? $error_messages : true;
 	}
-
-	/**
-	 * Displays a notice of the site is not using SSL.
-	 *
-	 * @since 5.1.6
-	 */
-	private function register_paypal_ssl_notice() {
-		if ( ! is_ssl() || ! empty( $this->webhooks_repository->get_webhook_config() ) ) {
-			return;
-		}
-
-		/** @var Tribe__Settings $settings */
-		$settings = tribe( 'settings' );
-
-		// Get link to Help page.
-		$log_url = $settings->get_url( [
-				'page' => 'tribe-help',
-			] ) . '#tribe-event-log';
-
-		$log_link = sprintf(
-			'<a href="%1$s">%2$s</a>',
-			$log_url,
-			esc_html__( 'logged data', 'event-tickets' )
-		);
-
-		tribe_error(
-			'paypal-webhook-error',
-			sprintf(
-			// Translators: %1$s: The logged data link.
-				esc_html__( 'There was a problem setting up the webhooks for your PayPal account. Please try disconnecting and reconnecting your PayPal account. If the problem persists, please contact support and provide them with the latest %1$s', 'event-tickets' ),
-				$log_link
-			),
-			[
-				'type' => 'error',
-			]
-		);
-	}
 }
