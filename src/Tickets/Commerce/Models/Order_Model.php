@@ -57,6 +57,7 @@ class Order_Model extends Base {
 			$tickets_in_order = Arr::get( $post_meta, [ Order::$tickets_in_order_meta_key ] );
 
 			$properties = [
+				'order_id'            => $post_id,
 				'provider'            => Module::class,
 				'provider_slug'       => Commerce::ABBR,
 				'status_log'          => $status_log,
@@ -73,6 +74,9 @@ class Order_Model extends Base {
 					'full_name'  => $purchaser_full_name,
 					'email'      => $purchaser_email,
 				],
+				'purchaser_name'      => $purchaser_full_name,
+				'purchaser_email'     => $purchaser_email,
+				'purchase_time'       => get_post_time( \Tribe__Date_Utils::DBDATETIMEFORMAT, false, $this->post ),
 				'cart_items'          => $cart_items,
 				'events_in_order'     => $events_in_order,
 				'tickets_in_order'    => $tickets_in_order,
