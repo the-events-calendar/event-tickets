@@ -52,6 +52,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-access-token', [ $this, 'handle_action_refresh_token' ] );
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-user-info', [ $this, 'handle_action_refresh_user_info' ] );
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-webhook', [ $this, 'handle_action_refresh_webhook' ] );
+		add_action( 'tec_tickets_commerce_admin_process_action:paypal-resync-connection', [ $this, 'handle_action_refresh_connection' ] );
 
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_client_js_sdk_script' ], 30, 3 );
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
@@ -60,7 +61,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_action( 'admin_init', [ $this, 'render_ssl_notice' ] );
 	}
 
-	/**1
+	/**
 	 * Adds the filters required by each Tickets Commerce component.
 	 *
 	 * @since 5.1.6
@@ -250,6 +251,17 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		}
 
 		$notices->trigger_admin( 'tc-paypal-refresh-webhook-success' );
+	}
+
+	/**
+	 * Handles the refreshing the entire connection with PayPal.
+	 *
+	 * @since TBD
+	 */
+	public function handle_action_refresh_connection() {
+		$this->handle_action_refresh_token();
+		$this->handle_action_refresh_user_info();
+		$this->handle_action_refresh_webhook();
 	}
 
 	/**

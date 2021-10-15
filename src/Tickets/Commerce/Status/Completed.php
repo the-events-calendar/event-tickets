@@ -2,7 +2,7 @@
 namespace TEC\Tickets\Commerce\Status;
 
 /**
- * Class Denied.
+ * Class Completed.
  *
  * This is the status we use to mark a given order as paid and delivered in our Tickets Commerce system.
  *
