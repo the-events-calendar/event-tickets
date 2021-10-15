@@ -87,7 +87,6 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Enqueues the JS and CSS for the attendees page in the admin
 	 *
-	 * @todo  this needs to use tribe_assets()
 	 * @since TBD
 	 *
 	 * @param string $hook The current admin page.
@@ -102,11 +101,40 @@ class Attendees extends WP_List_Table {
 			return;
 		}
 
-		$resources_url = plugins_url( 'src/resources', dirname( dirname( __FILE__ ) ) );
+		$tickets_main = tribe( 'tickets.main' );
 
-		wp_enqueue_style( 'tickets-report-css', $resources_url . '/css/tickets-report.css', [], \Tribe__Tickets__Main::instance()->css_version() );
-		wp_enqueue_style( 'tickets-report-print-css', $resources_url . '/css/tickets-report-print.css', [], \Tribe__Tickets__Main::instance()->css_version(), 'print' );
-		wp_enqueue_script( $this->slug() . '-js', $resources_url . '/js/tickets-attendees.js', [ 'jquery' ], \Tribe__Tickets__Main::instance()->js_version(), true );
+		tribe_asset(
+			$tickets_main,
+			'tickets-report-css',
+			'tickets-report.css',
+			[],
+			null,
+			[]
+		);
+
+		tribe_asset(
+			$tickets_main,
+			'tickets-report-print-css',
+			'tickets-report-print.css',
+			[],
+			null,
+			[
+				'media' => 'print',
+			]
+		);
+
+		tribe_asset(
+			$tickets_main,
+			'tickets-commerce-report-attendees',
+			'tickets-attendees.js',
+			[ 'jquery' ],
+			null,
+			[]
+		);
+
+		tribe_asset_enqueue( 'tickets-report-css' );
+		tribe_asset_enqueue( 'tickets-report-print-css' );
+		tribe_asset_enqueue( 'tickets-commerce-report-attendees' );
 
 		add_thickbox();
 
@@ -264,7 +292,7 @@ class Attendees extends WP_List_Table {
 			// Update search key if it supports LIKE matching.
 			if ( in_array( $search_key, $search_like_keys, true ) ) {
 				$search_key .= '__like';
-				$search      = '%' . $search . '%';
+				$search     = '%' . $search . '%';
 			}
 
 			// Only get matches that have search phrase in the key.

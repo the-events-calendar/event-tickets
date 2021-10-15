@@ -519,7 +519,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 	/**
 	 * If an event is using Tickets Commerce, use the new Attendees View URL
-   * 
+   *
    * @since TBD
 	 *
 	 * @param string $url     the current Attendees View url.
@@ -528,16 +528,12 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return string
 	 */
 	public function filter_attendee_report_link( $url, $post_id ) {
-		$tc_module = Module::get_event_ticket_provider( $post_id );
 
-    // Bail when not dealing with a TC provider.
-		if ( Module::class !== $tc_module ) {
-      return $url;
+		if ( Module::class !== Module::get_event_ticket_provider( $post_id ) ) {
+			return $url;
 		}
 
-    $url = add_query_arg( [ 'page' => 'tickets-commerce-attendees' ], $url );
-    
-		return $url;
+		return add_query_arg( [ 'page' => 'tickets-commerce-attendees' ], $url );
 	}
 
 	/**
@@ -549,10 +545,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 		if ( ! class_exists( Modal::class ) ) {
       return;
 		}
-    
+
     tribe( Modal::class )->render_modal();
 	}
-  
+
 	/**
 	 * Filters the ticket editor order link for Tickets Commerce Module orders.
 	 *
