@@ -354,6 +354,38 @@ class Module extends \Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Get attendees for a ticket by order ID, optionally by ticket ID.
+	 *
+	 * This overrides the parent method because Tickets Commerce stores the order ID in the post_parent.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|string $order_id  Order ID.
+	 * @param null|int   $ticket_id (optional) Ticket ID.
+	 *
+	 * @return array List of attendees.
+	 */
+	public function get_attendees_by_order_id( $order_id ) {
+		$ticket_id = null;
+
+		// Support an optional second argument while not causing warnings from other ticket provider classes.
+		if ( 1 < func_num_args() ) {
+			$ticket_id = func_get_arg( 1 );
+		}
+
+		/** @var Tribe__Tickets__Attendee_Repository $repository */
+		$repository = tribe_attendees( $this->orm_provider );
+
+		$repository->by( 'parent', $order_id );
+
+		if ( $ticket_id ) {
+			$repository->by( 'ticket', $ticket_id );
+		}
+
+		return $this->get_attendees_from_module( $repository->all() );
+	}
+
+	/**
 	 * Returns the value of a key defined by the class.
 	 *
 	 * @since 5.1.9
@@ -500,12 +532,13 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * Generate and store all the attendees information for a new order.
 	 *
 	 * @since 5.1.9
+	 * @deprecated TBD
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.
 	 * @param bool   $redirect       Whether the client should be redirected or not.
 	 */
 	public function generate_tickets( $payment_status = 'completed', $redirect = true ) {
-		tribe( Order::class )->generate_order( $payment_status, $redirect );
+		_deprecated_function( __METHOD__, 'TBD' );
 	}
 
 	/**
