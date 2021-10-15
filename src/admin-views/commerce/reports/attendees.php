@@ -39,7 +39,7 @@
 				value="<?php echo esc_attr( tribe_get_request_var( 'page' ) ); ?>"
 		/>
 		<input
-				type="hidden" name="<?php echo esc_attr( is_admin() ? 'post_id' : 'tribe[post_id]' ); ?>"
+				type="hidden" name="<?php echo esc_attr( is_admin() ? 'event_id' : 'tribe[post_id]' ); ?>"
 				id="post_id"
 				value="<?php echo esc_attr( $post_id ); ?>"
 		/>
