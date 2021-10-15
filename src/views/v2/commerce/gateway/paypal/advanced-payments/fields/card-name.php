@@ -40,5 +40,6 @@ $field_classes = [
 		autocomplete="off"
 		<?php tribe_classes( $field_classes ); ?>
 		placeholder="<?php esc_attr_e( 'Name on Card', 'event-tickets' ); ?>"
+		required
 	/>
 </div>
