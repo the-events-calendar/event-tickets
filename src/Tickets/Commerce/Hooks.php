@@ -20,7 +20,7 @@ namespace TEC\Tickets\Commerce;
 use \tad_DI52_ServiceProvider;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
-use Tribe\Tickets\Shortcodes\Tribe_Tickets_Checkout;
+use Tribe\Tickets\Plus\Manual_Attendees\Modal;
 
 /**
  * Class Hooks.
@@ -78,7 +78,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_action( 'admin_init', [ $this, 'maybe_trigger_process_action' ], 5 );
 
 		add_action( 'tec_tickets_commerce_order_status_transition', [ $this, 'modify_tickets_counters_by_status' ], 15, 3 );
+
+		add_action( 'admin_footer', [ $this, 'enable_manual_attendee_modal' ] );
 	}
+
 
 	/**
 	 * Adds the filters required by each Tickets Commerce component.
@@ -525,5 +528,16 @@ class Hooks extends tad_DI52_ServiceProvider {
 		}
 
 		return $url;
+	}
+
+	/**
+	 * Enables the manual attendee edit modal if ET+ is active
+	 *
+	 * @since TBD
+	 */
+	public function enable_manual_attendee_modal() {
+		if ( class_exists( Modal::class ) ) {
+			tribe( Modal::class )->render_modal();
+		}
 	}
 }
