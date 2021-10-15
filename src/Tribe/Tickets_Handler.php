@@ -380,6 +380,9 @@ class Tribe__Tickets__Tickets_Handler {
 				'_tribe_tpp_event'           => 'tpp',
 				'_tribe_tpp_for_event'       => 'tpp',
 
+				// Tickets Commerce.
+				\TEC\Tickets\Commerce\Attendee::$event_relation_meta_key => 'tc',
+
 				// EDD
 				'_tribe_eddticket_event'     => 'edd',
 				'_tribe_eddticket_for_event' => 'edd',
@@ -408,6 +411,9 @@ class Tribe__Tickets__Tickets_Handler {
 				// PayPal tickets
 				'_tribe_tpp_order'       => 'tpp',
 
+				// Tickets Commerce.
+				\TEC\Tickets\Commerce\Attendee::$order_relation_meta_key => 'tc',
+
 				// EDD
 				'_tribe_eddticket_order' => 'edd',
 
@@ -418,6 +424,9 @@ class Tribe__Tickets__Tickets_Handler {
 			'order_item' => [
 				// PayPal tickets
 				'_tribe_tpp_order'            => 'tpp',
+
+				// Tickets Commerce.
+				\TEC\Tickets\Commerce\Attendee::$order_relation_meta_key => 'tc',
 
 				// Woo
 				'_tribe_wooticket_order_item' => 'woo',

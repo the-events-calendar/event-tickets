@@ -419,6 +419,9 @@ class Tribe__Tickets__Status__Manager {
 	 * @return string|false Provider class name or false if not found.
 	 */
 	public function get_provider_class_from_slug( $slug ) {
+		// Change \\ to \ for class namespacing.
+		$slug = str_replace( '\\\\', '\\', $slug );
+
 		if ( $slug instanceof Tribe__Tickets__Tickets ) {
 			$slug = $slug->class_name;
 		}

@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Signup;
 use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
 
 
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Created;
@@ -140,9 +141,9 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			'reference_id' => $order->ID,
 			'value'        => $order->total_value,
 			'currency'     => $order->currency,
-			'first_name'   => $order->purchaser_first_name,
-			'last_name'    => $order->purchaser_last_name,
-			'email'        => $order->purchaser_email,
+			'first_name'   => $order->purchaser['first_name'],
+			'last_name'    => $order->purchaser['last_name'],
+			'email'        => $order->purchaser['email'],
 		];
 
 		$paypal_order = tribe( Client::class )->create_order( $unit );
