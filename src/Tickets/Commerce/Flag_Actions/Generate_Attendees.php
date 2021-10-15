@@ -113,11 +113,13 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				 *
 				 * @since TBD
 				 *
-				 * @param array<mixed> $args The attendee creation args.
-				 * @param \Tribe__Tickets__Tickets $ticket The ticket the attendee is generated for.
-				 * @param \WP_Post $order The order the attendee is generated for.
+				 * @param array<mixed>             $args       The attendee creation args.
+				 * @param \Tribe__Tickets__Tickets $ticket     The ticket the attendee is generated for.
+				 * @param \WP_Post                 $order      The order the attendee is generated for.
+				 * @param Status_Interface         $new_status New post status.
+				 * @param Status_Interface|null    $old_status Old post status.
 				 */
-				$args = apply_filters( 'tec_tickets_attendee_generation_args', $args, $ticket, $order );
+				$args = apply_filters( 'tec_tickets_attendee_generation_args', $args, $ticket, $order, $new_status, $old_status );
 
 				$attendee = tribe( Attendee::class )->create( $order, $ticket, $args );
 
@@ -126,11 +128,13 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				 *
 				 * @since TBD
 				 *
-				 * @param Attendee $attendee The generated attendee.
-				 * @param \Tribe__Tickets__Tickets $ticket The ticket the attendee is generated for.
-				 * @param \WP_Post $order The order the attendee is generated for.
+				 * @param Attendee                 $attendee   The generated attendee.
+				 * @param \Tribe__Tickets__Tickets $ticket     The ticket the attendee is generated for.
+				 * @param \WP_Post                 $order      The order the attendee is generated for.
+				 * @param Status_Interface         $new_status New post status.
+				 * @param Status_Interface|null    $old_status Old post status.
 				 */
-				do_action( 'tec_tickets_attendee_generated', $attendee, $ticket, $order );
+				do_action( 'tec_tickets_attendee_generated', $attendee, $ticket, $order, $new_status, $old_status );
 
 				$attendees[] = $attendee;
 			}
@@ -140,11 +144,13 @@ class Generate_Attendees extends Flag_Action_Abstract {
 			 *
 			 * @since TBD
 			 *
-			 * @param array<Attendee> $attendees The generated attendees.
-			 * @param \Tribe__Tickets__Tickets $ticket The ticket the attendee is generated for.
-			 * @param \WP_Post $order The order the attendee is generated for.
+			 * @param array<Attendee>          $attendees  The generated attendees.
+			 * @param \Tribe__Tickets__Tickets $ticket     The ticket the attendee is generated for.
+			 * @param \WP_Post                 $order      The order the attendee is generated for.
+			 * @param Status_Interface         $new_status New post status.
+			 * @param Status_Interface|null    $old_status Old post status.
 			 */
-			do_action( 'tec_tickets_attendees_generated', $attendees, $ticket, $order );
+			do_action( 'tec_tickets_attendees_generated', $attendees, $ticket, $order, $new_status, $old_status );
 		}
 	}
 }

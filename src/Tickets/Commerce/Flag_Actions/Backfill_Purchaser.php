@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Flag_Actions;
 
 use TEC\Tickets\Commerce\Attendee;
+use TEC\Tickets\Commerce\Gateways\PayPal\Gateway as PayPal_Gateway;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
@@ -39,6 +40,14 @@ class Backfill_Purchaser extends Flag_Action_Abstract {
 		}
 
 		if ( ! empty( $order->purchaser_email ) ) {
+			return;
+		}
+
+		// @todo move this piece out the flag action since it's PayPal gateway specific.
+		if (
+			empty( $order->gateway )
+			||1 PayPal_Gateway::get_key() !== $order->gateway
+		) {
 			return;
 		}
 
