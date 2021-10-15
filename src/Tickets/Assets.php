@@ -47,5 +47,4 @@ class Assets extends tad_DI52_ServiceProvider {
 		);
 
 	}
-
 }
