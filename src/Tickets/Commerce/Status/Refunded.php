@@ -30,13 +30,6 @@ class Refunded extends Status_Abstract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_nicename() {
-		return __( 'Refunds', 'event-tickets' );
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
 	protected $flags = [
 		'warning',
 		'backfill_purchaser',

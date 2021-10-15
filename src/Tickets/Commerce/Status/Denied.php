@@ -31,13 +31,6 @@ class Denied extends Status_Abstract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_nicename() {
-		return __( 'Denied payments', 'event-tickets' );
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
 	protected $flags = [
 		'incomplete',
 		'warning',

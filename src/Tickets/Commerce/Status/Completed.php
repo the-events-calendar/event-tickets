@@ -29,13 +29,6 @@ class Completed extends Status_Abstract {
 
 	/**
 	 * {@inheritdoc}
-	 */
-	public function get_nicename() {
-		return __( 'Completed payments', 'event-tickets' );
-	}
-
-	/**
-	 * {@inheritdoc}
 	 *
 	 * Do not change the order arbitrarily. Flag actions are triggered in the order represented in this array.
 	 */

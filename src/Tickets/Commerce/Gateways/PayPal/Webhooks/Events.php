@@ -63,6 +63,30 @@ class Events {
 	];
 
 	/**
+	 * Default mapping from PayPal Status to Tickets Commerce.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $event_name A PayPal Event String.
+	 *
+	 * @return string The Webhook label, false on error.
+	 */
+	public function get_webhook_label( $event_name ) {
+		$nice_name = [
+			self::PAYMENT_CAPTURE_COMPLETED => __( 'Completed payments', 'event-tickets' ),
+			self::PAYMENT_CAPTURE_DENIED    => __( 'Denied payments', 'event-tickets' ),
+			self::PAYMENT_CAPTURE_REFUNDED  => __( 'Refunds', 'event-tickets' ),
+			self::PAYMENT_CAPTURE_REVERSED  => __( 'Reversed', 'event-tickets' ),
+		];
+
+		if ( isset( $nice_name[ $event_name ] ) ) {
+			return $nice_name[ $event_name ];
+		}
+
+		return false;
+	}
+
+	/**
 	 * Gets the valid mapping of the webhook events.
 	 *
 	 * @since 5.1.10

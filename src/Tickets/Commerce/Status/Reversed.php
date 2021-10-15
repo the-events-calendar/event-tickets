@@ -30,13 +30,6 @@ class Reversed extends Status_Abstract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_nicename() {
-		return __( 'Reversed', 'event-tickets' );
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
 	protected $flags = [
 		'warning',
 		'backfill_purchaser',

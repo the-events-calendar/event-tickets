@@ -32,7 +32,7 @@ if ( empty( $is_merchant_active ) ) {
 		$event_types = tribe( Webhooks::class )->get_settings()['event_types'];
 
 		foreach ( $event_types as $key => $event ) {
-			$webhook_name = $webhooks_events->convert_to_commerce_status( $event['name'] )->get_nicename();
+			$webhook_name = $webhooks_events->get_webhook_label( $event['name'] );
 			$is_valid     = $webhooks_events->is_valid( $event['name'] );
 			$classes      = [
 				'tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook',
