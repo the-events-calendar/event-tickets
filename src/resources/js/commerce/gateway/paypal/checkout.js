@@ -603,9 +603,6 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			},
 
 			styles: {
-				'.valid': {
-					'color': 'green'
-				},
 				'.invalid': {
 					'color': '#DA394D'
 				},
@@ -676,7 +673,10 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.onHostedSubmit = ( event, cardFields, $container ) => {
 		event.preventDefault();
 
+		tribe.tickets.loader.show( $container );
+
 		cardFields.submit( obj.getExtraCardFields( $container ) ).then( ( data, actions ) => {
+			tribe.tickets.loader.hide( $container );
 			obj.handleHostedApprove( data, actions, $container );
 		} ).catch( ( error ) => {
 			obj.handleHostedCaptureError( error, $container );
