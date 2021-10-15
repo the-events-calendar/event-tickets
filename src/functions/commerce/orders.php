@@ -6,6 +6,7 @@
  */
 
 use TEC\Tickets\Commerce\Models\Order_Model;
+use \TEC\Tickets\Commerce\Order;
 
 /**
  * Fetches and returns a decorated post object representing an Order.
@@ -50,7 +51,7 @@ function tec_tc_get_order( $order = null, $output = OBJECT, $filter = 'raw', $fo
 
 	$cache_post = get_post( $order );
 
-	if ( empty( $cache_post ) ) {
+	if ( empty( $cache_post ) || ! Order::is_valid( $cache_post ) ) {
 		return null;
 	}
 
