@@ -59,6 +59,7 @@ class Order_Repository extends Tribe__Repository {
 				'cart_items'           => Order::$cart_items_meta_key,
 				'total_value'          => Order::$total_value_meta_key,
 				'currency'             => Order::$currency_meta_key,
+				'purchaser_user_id'    => Order::$purchaser_user_id_meta_key,
 				'purchaser_full_name'  => Order::$purchaser_full_name_meta_key,
 				'purchaser_first_name' => Order::$purchaser_first_name_meta_key,
 				'purchaser_last_name'  => Order::$purchaser_last_name_meta_key,

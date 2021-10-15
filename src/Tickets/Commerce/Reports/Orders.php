@@ -371,4 +371,23 @@ class Orders extends Report_Abstract {
 
 		return $this->template_vars;
 	}
+
+	/**
+	 * Filters the Order Link to Ticket Orders in the ticket editor.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url     Url for the order page for ticketed event/post.
+	 * @param int    $post_id The post ID for the current event/post.
+	 *
+	 * @return string
+	 */
+	public function filter_editor_orders_link( $url, $post_id ) {
+		$provider = \Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+
+		if ( Module::class !== $provider ) {
+			return $url;
+		}
+		return add_query_arg( [ 'page' => static::get_page_slug() ], $url );
+	}
 }
