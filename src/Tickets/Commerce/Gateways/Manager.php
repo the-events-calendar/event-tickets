@@ -132,6 +132,6 @@ class Manager {
 	public function get_gateway_by_key( $key ) {
 		$gateways = $this->get_gateways();
 
-		return isset( $gateways[ $key ] ) ? $gateways[ $key ] : false;
+		return isset( $gateways[ $key ] ) ? $gateways[ $key ] : null;
 	}
 }

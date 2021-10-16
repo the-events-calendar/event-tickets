@@ -386,18 +386,18 @@ class Order {
 	 *
 	 * @return string
 	 */
-	public function get_payment_method( $order ) {
+	public function get_gateway_label( $order ) {
 		if ( is_numeric( $order ) ) {
 			$order = tec_tc_get_order( $order );
 		}
 
 		if ( ! $order instanceof \WP_Post) {
-			return '';
+			return null;
 		}
 
 		$gateway = tribe( Commerce\Gateways\Manager::class )->get_gateway_by_key( $order->gateway );
 
-		return $gateway ? $gateway->get_label() : '';
+		return $gateway ? $gateway->get_label() : null;
 	}
 
 	/**
