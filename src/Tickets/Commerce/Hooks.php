@@ -22,6 +22,7 @@ use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use Tribe\Tickets\Plus\Manual_Attendees\Modal;
+use WP_Admin_Bar;
 
 /**
  * Class Hooks.
@@ -67,7 +68,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_action( 'wp_loaded', [ $this, 'maybe_delete_expired_products' ], 0 );
 		add_action( 'wp_loaded', [ $this, 'maybe_redirect_to_attendees_registration_screen' ], 1 );
 
-		add_action( 'tribe_events_tickets_metabox_edit_advanced', [ $this, 'include_metabox_advanced_options' ], 10, 2 );
+		add_action( 'tribe_events_tickets_metabox_edit_advanced', [
+			$this,
+			'include_metabox_advanced_options',
+		], 10, 2 );
 
 		add_action( 'tribe_events_tickets_attendees_event_details_top', [ $this, 'setup_attendance_totals' ] );
 		add_action( 'trashed_post', [ $this, 'maybe_redirect_to_attendees_report' ] );
@@ -78,11 +82,14 @@ class Hooks extends tad_DI52_ServiceProvider {
 		// This needs to run earlier than our page setup.
 		add_action( 'admin_init', [ $this, 'maybe_trigger_process_action' ], 5 );
 
-		add_action( 'tec_tickets_commerce_order_status_transition', [ $this, 'modify_tickets_counters_by_status' ], 15, 3 );
+		add_action( 'tec_tickets_commerce_order_status_transition', [
+			$this,
+			'modify_tickets_counters_by_status',
+		], 15, 3 );
 
 		add_action( 'admin_footer', [ $this, 'enable_manual_attendee_modal' ] );
+		add_action( 'admin_bar_menu', [ $this, 'include_admin_bar_test_mode' ], 1000, 1 );
 	}
-
 
 	/**
 	 * Adds the filters required by each Tickets Commerce component.
@@ -93,7 +100,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_shortcodes', [ $this, 'filter_register_shortcodes' ] );
 
 		add_filter( 'tribe_attendee_registration_form_classes', [ $this, 'filter_registration_form_class' ] );
-		add_filter( 'tribe_attendee_registration_cart_provider', [ $this, 'filter_registration_cart_provider' ], 10, 2 );
+		add_filter( 'tribe_attendee_registration_cart_provider', [
+			$this,
+			'filter_registration_cart_provider',
+		], 10, 2 );
 
 		add_filter( 'tribe_tickets_get_default_module', [ $this, 'filter_de_prioritize_module' ], 5, 2 );
 
@@ -112,7 +122,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		$this->provider_meta_sanitization_filters();
 
-		add_filter( 'tribe_template_context:tickets-plus/v2/tickets/submit/button-modal', [ $this, 'filter_showing_cart_button' ] );
+		add_filter( 'tribe_template_context:tickets-plus/v2/tickets/submit/button-modal', [
+			$this,
+			'filter_showing_cart_button',
+		] );
 	}
 
 	/**
@@ -172,6 +185,19 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function register_attendee_reports() {
 		$this->container->make( Reports\Attendees::class )->hook();
+	}
+
+	/**
+	 * Display admin bar when using the Test Mode for payments.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance, passed by reference.
+	 *
+	 * @return bool
+	 */
+	public function include_admin_bar_test_mode( WP_Admin_Bar $wp_admin_bar ) {
+		return $this->container->make( Settings::class )->include_admin_bar_test_mode( $wp_admin_bar );
 	}
 
 	/**

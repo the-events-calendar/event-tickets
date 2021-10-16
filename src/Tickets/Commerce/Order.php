@@ -200,11 +200,11 @@ class Order {
 		/**
 		 * Filter the arguments that craft the order post type.
 		 *
+		 * @see   register_post_type
 		 * @since 5.1.9
 		 *
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
 		 *
-		 * @see   register_post_type
 		 */
 		$post_type_args = apply_filters( 'tec_tickets_commerce_order_post_type_args', $post_type_args );
 
@@ -385,16 +385,16 @@ class Order {
 	/**
 	 * Redirects to the source post after a recoverable (logic) error.
 	 *
-	 * @since 5.1.9
-	 *
-	 * @param int  $error_code The current error code.
-	 * @param bool $redirect   Whether to really redirect or not.
-	 * @param int  $post_id    A post ID.
-	 *
 	 * @todo  Determine if redirecting should be something relegated to some other method, and here we just actually
 	 *        generate the order/Attendees.
 	 *
 	 * @see   \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
+	 * @since 5.1.9
+	 *
+	 * @param int  $post_id    A post ID.
+	 *
+	 * @param int  $error_code The current error code.
+	 * @param bool $redirect   Whether to really redirect or not.
 	 */
 	protected function redirect_after_error( $error_code, $redirect, $post_id ) {
 		$url = add_query_arg( 'tpp_error', $error_code, get_permalink( $post_id ) );
@@ -403,7 +403,6 @@ class Order {
 		}
 		tribe_exit();
 	}
-
 
 	/**
 	 * Loads an order object with information about its attendees
@@ -441,5 +440,24 @@ class Order {
 	 */
 	public function get_ticket_id( \WP_Post $attendee ) {
 		return get_post_meta( $attendee->ID, static::$tickets_in_order_meta_key, true );
+	}
+
+	/**
+	 * Check if the order is of valid type.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post $order The Order object to check.
+	 *
+	 * @return bool
+	 */
+	public static function is_valid( $order ) {
+		$order = get_post( $order );
+
+		if ( ! $order ) {
+			return false;
+		}
+
+		return static::POSTTYPE === $order->post_type;
 	}
 }

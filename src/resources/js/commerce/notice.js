@@ -36,7 +36,7 @@ tribe.tickets.commerce.notice = tribe.tickets.commerce.notice || {};
  *
  * @return {void}
  */
-( function( $, obj ) {
+( function ( $, obj ) {
 	'use strict';
 
 	/*
@@ -60,7 +60,7 @@ tribe.tickets.commerce.notice = tribe.tickets.commerce.notice || {};
 	 * @param {jQuery} $item Container element for notice to be shown.
 	 */
 	obj.show = ( $item ) => {
-		if ( ! $item.length  ) {
+		if ( ! $item.length ) {
 			return;
 		}
 		const $container = $item.parents( obj.selectors.container ).eq( 0 );
@@ -80,7 +80,7 @@ tribe.tickets.commerce.notice = tribe.tickets.commerce.notice || {};
 	 * @param {jQuery} $item Container element for notice.
 	 */
 	obj.hide = ( $item ) => {
-		if ( ! $item.length  ) {
+		if ( ! $item.length ) {
 			return;
 		}
 		const $container = $item.parents( obj.selectors.container ).eq( 0 );
@@ -116,8 +116,16 @@ tribe.tickets.commerce.notice = tribe.tickets.commerce.notice || {};
 
 		$item.trigger( 'beforePopulateNotice.tecTicketsCommerce', [ $container ] );
 
-		$title.text( title );
-		$content.text( content );
+		if ( title instanceof jQuery ) {
+			$title.empty().append( title );
+		} else {
+			$title.text( title );
+		}
+		if ( content instanceof jQuery ) {
+			$content.empty().append( content );
+		} else {
+			$content.text( content );
+		}
 
 		$item.trigger( 'afterPopulateNotice.tecTicketsCommerce', [ $container ] );
 	};

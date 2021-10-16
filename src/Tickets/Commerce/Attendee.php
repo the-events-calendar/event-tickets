@@ -788,4 +788,23 @@ class Attendee {
 
 		return esc_html__( 'Email not available', 'event-tickets' );
 	}
+
+	/**
+	 * Check if the attendee is of valid type.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post $attendee The attendee object to check.
+	 *
+	 * @return bool
+	 */
+	public static function is_valid( $attendee ) {
+		$attendee = get_post( $attendee );
+
+		if ( ! $attendee ) {
+			return false;
+		}
+
+		return static::POSTTYPE === $attendee->post_type;
+	}
 }
