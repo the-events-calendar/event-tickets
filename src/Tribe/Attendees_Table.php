@@ -845,7 +845,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return $failed;
 		}
 
-		if ( 'tc' === $parts[1] ) {
+		if ( \TEC\Tickets\Commerce::ABBR === $parts[1] ) {
 			$addon = tribe( \TEC\Tickets\Commerce\Module::class );
 		} else {
 			$addon = call_user_func( [ $parts[1], 'get_instance' ] );

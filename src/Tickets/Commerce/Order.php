@@ -404,7 +404,7 @@ class Order {
 		tribe_exit();
 	}
 
-  
+
 	/**
 	 * Loads an order object with information about its attendees
 	 *
@@ -419,8 +419,8 @@ class Order {
 
 		if ( empty( $order->attendees ) ) {
 			$order->attendees = [
-				'name'  => \get_post_meta( $order->ID, static::$purchaser_full_name_meta_key, true ),
-				'email' => \get_post_meta( $order->ID, static::$purchaser_email_meta_key, true ),
+				'name'  => get_post_meta( $order->ID, static::$purchaser_full_name_meta_key, true ),
+				'email' => get_post_meta( $order->ID, static::$purchaser_email_meta_key, true ),
 			];
 
 			return [ $order ];

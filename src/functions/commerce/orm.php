@@ -98,9 +98,9 @@ function tec_tc_attendees( $repository = 'default' ) {
 	if ( 'all' === $repository ) {
 		return array_map(
 			function ( $repo ) use ( $map ) {
-				return tribe( Arr::get( $map, $repo, $map[ $repo ] ) );
+				return Arr::get( $map, $repo, $map[ $repo ] );
 			},
-			array_keys( $map ) 
+			array_keys( $map )
 		);
 	}
 

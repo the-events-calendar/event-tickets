@@ -49,7 +49,7 @@
 				value="<?php echo esc_attr( $post->post_type ); ?>"
 		/>
 		<?php
-		$table->search_box( __( 'Search Orders', 'event-tickets' ), 'tc-orders' );
+		$table->search_box( __( 'Search Orders', 'event-tickets' ), 'tc-attendees' );
 		$table->display();
 		?>
 	</form>

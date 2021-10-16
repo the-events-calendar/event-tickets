@@ -188,13 +188,6 @@ class Attendee {
 	public static $unique_id_meta_key = '_unique_id';
 
 	/**
-	 * Slug used when identifying Tickets Commerce along legacy providers.
-	 *
-	 * @var string
-	 */
-	public static $legacy_provider_slug = 'tc';
-
-	/**
 	 * Constructor
 	 */
 	public function __construct() {
@@ -559,8 +552,8 @@ class Attendee {
 		$attendee->order_id           = 0;
 		$attendee->product            = $this->get_product( $attendee );
 		$attendee->product_id         = $this->get_product_id( $attendee );
-		$attendee->provider           = static::$legacy_provider_slug;
-		$attendee->provider_slug      = static::$legacy_provider_slug;
+		$attendee->provider           = Commerce::ABBR;
+		$attendee->provider_slug      = Commerce::ABBR;
 		$attendee->purchase_time      = get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee->order_id );
 		$attendee->qr_ticket_id       = null;
 		$attendee->security           = $this->get_security_code( $attendee );
@@ -598,7 +591,7 @@ class Attendee {
 	 * @return \WP_Post|\stdClass
 	 */
 	public function get_product( \WP_Post $attendee ) {
-		$product = \get_post_meta( $attendee->ID, Module::ATTENDEE_PRODUCT_KEY, true );
+		$product = get_post_meta( $attendee->ID, Module::ATTENDEE_PRODUCT_KEY, true );
 
 		if ( $product ) {
 			return get_post( $product );
@@ -787,7 +780,7 @@ class Attendee {
 	 * @return string
 	 */
 	public function get_holder_email( \WP_Post $attendee ) {
-		$email = \get_post_meta( $attendee->ID, static::$purchaser_email_meta_key, true );
+		$email = get_post_meta( $attendee->ID, static::$purchaser_email_meta_key, true );
 
 		if ( $email ) {
 			return esc_html( $email );
