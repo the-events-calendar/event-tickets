@@ -21,7 +21,7 @@ use \tad_DI52_ServiceProvider;
 use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
-use Tribe\Tickets\Shortcodes\Tribe_Tickets_Checkout;
+use WP_Admin_Bar;
 
 /**
  * Class Hooks.
@@ -78,6 +78,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_action( 'admin_init', [ $this, 'maybe_trigger_process_action' ], 5 );
 
 		add_action( 'tec_tickets_commerce_order_status_transition', [ $this, 'modify_tickets_counters_by_status' ], 15, 3 );
+
+		add_action( 'admin_bar_menu', [ $this, 'include_admin_bar_test_mode' ], 1000, 1 );
 	}
 
 	/**
@@ -105,6 +107,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_filter_attendee_order_link', [ $this, 'filter_editor_orders_link' ], 10, 2 );
 
 		$this->provider_meta_sanitization_filters();
+
+		add_filter( 'tribe_template_context:tickets-plus/v2/tickets/submit/button-modal', [ $this, 'filter_showing_cart_button' ] );
 	}
 
 	/**
@@ -157,6 +161,19 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function register_order_statuses() {
 		$this->container->make( Status\Status_Handler::class )->register_order_statuses();
+	}
+
+	/**
+	 * Display admin bar when using the Test Mode for payments.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance, passed by reference.
+	 *
+	 * @return bool
+	 */
+	public function include_admin_bar_test_mode( WP_Admin_Bar $wp_admin_bar ) {
+		return $this->container->make( Settings::class )->include_admin_bar_test_mode( $wp_admin_bar );
 	}
 
 	/**
@@ -510,5 +527,28 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function filter_editor_orders_link( $url, $post_id ) {
 		return $this->container->make( Orders::class )->filter_editor_orders_link( $url, $post_id );
+	}
+
+	/**
+	 * Hide the 'save and view cart` button from AR Modal depending on Cart type.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args Context arraay for the modal template.
+	 *
+	 * @return array
+	 */
+	public function filter_showing_cart_button( $args ) {
+		if ( ! isset( $args['has_tpp'] ) || ! isset( $args['provider'] ) ) {
+			return $args;
+		}
+
+		if ( Module::class !== $args['provider']->class_name ) {
+			return $args;
+		}
+
+		$args['has_tpp'] = 'redirect' === $this->container->make( Cart::class )->get_mode();
+
+		return $args;
 	}
 }

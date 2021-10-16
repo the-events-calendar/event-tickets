@@ -52,14 +52,16 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-access-token', [ $this, 'handle_action_refresh_token' ] );
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-user-info', [ $this, 'handle_action_refresh_user_info' ] );
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-webhook', [ $this, 'handle_action_refresh_webhook' ] );
+		add_action( 'tec_tickets_commerce_admin_process_action:paypal-resync-connection', [ $this, 'handle_action_refresh_connection' ] );
 
-		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout/header', [ $this, 'include_client_js_sdk_script' ], 15, 3 );
+		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_client_js_sdk_script' ], 30, 3 );
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
-
+		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_advanced_payments' ], 20, 3 );
+		add_action( 'wp_ajax_tec_tickets_commerce_gateway_paypal_refresh_connect_url', [ $this, 'ajax_refresh_connect_url' ] );
 		add_action( 'admin_init', [ $this, 'render_ssl_notice' ] );
 	}
 
-	/**1
+	/**
 	 * Adds the filters required by each Tickets Commerce component.
 	 *
 	 * @since 5.1.6
@@ -69,6 +71,18 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_commerce_success_shortcode_checkout_page_paypal_template_vars', [ $this, 'include_checkout_page_vars' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_success_shortcode_success_page_paypal_template_vars', [ $this, 'include_success_page_vars' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_notice_messages', [ $this, 'include_admin_notices' ] );
+	}
+
+	/**
+	 * Resolve the refresh of the URL when the coutry changes.
+	 *
+	 * @since TBD
+	 *
+	 *
+	 * @return false|string
+	 */
+	public function ajax_refresh_connect_url() {
+		return $this->container->make( Signup::class )->ajax_refresh_connect_url();
 	}
 
 	/**
@@ -118,19 +132,28 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Include the Client JS SDK script into checkout.
+	 * Include the payment buttons from PayPal into the Checkout page.
 	 *
 	 * @since 5.1.9
 	 *
 	 * @param string           $file     Which file we are loading.
 	 * @param string           $name     Name of file file
 	 * @param \Tribe__Template $template Which Template object is being used.
-	 *
 	 */
 	public function include_payment_buttons( $file, $name, $template ) {
-		$must_login = ! is_user_logged_in() && tribe( Module::class )->login_required();
-
-		$template->template( 'gateway/paypal/buttons', [ 'must_login' => $must_login ] );
+		$this->container->make( Buttons::class )->include_payment_buttons( $file, $name, $template );
+	}
+	/**
+	 * Include the advanced payment fields from PayPal into the Checkout page.
+	 *
+	 * @since TBD
+	 *
+	 * @param string           $file     Which file we are loading.
+	 * @param string           $name     Name of file file
+	 * @param \Tribe__Template $template Which Template object is being used.
+	 */
+	public function include_advanced_payments( $file, $name, $template ) {
+		$this->container->make( Buttons::class )->include_advanced_payments( $file, $name, $template );
 	}
 
 	/**
@@ -231,6 +254,17 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
+	 * Handles the refreshing the entire connection with PayPal.
+	 *
+	 * @since TBD
+	 */
+	public function handle_action_refresh_connection() {
+		$this->handle_action_refresh_token();
+		$this->handle_action_refresh_user_info();
+		$this->handle_action_refresh_webhook();
+	}
+
+	/**
 	 * Register the Endpoints from Paypal.
 	 *
 	 * @since 5.1.9
@@ -258,10 +292,10 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	public function render_ssl_notice() {
-		$page = tribe_get_request_var( 'page' ) === 'tribe-common';
-		$tab  = tribe_get_request_var( 'tab' ) === 'payments';
+		$page = tribe_get_request_var( 'page' );
+		$tab  = tribe_get_request_var( 'tab' );
 
-		if ( ! $page || ! $tab || is_ssl() ) {
+		if ( \Tribe__Settings::instance()->adminSlug !== $page || 'payments' !== $tab || is_ssl() ) {
 			return;
 		}
 

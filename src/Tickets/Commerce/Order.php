@@ -399,4 +399,23 @@ class Order {
 		}
 		tribe_exit();
 	}
+
+	/**
+	 * Check if the order is of valid type.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post $order The Order object to check.
+	 *
+	 * @return bool
+	 */
+	public static function is_valid( $order ) {
+		$order = get_post( $order );
+
+		if ( ! $order ) {
+			return false;
+		}
+
+		return static::POSTTYPE === $order->post_type;
+	}
 }

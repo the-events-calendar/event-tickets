@@ -37,14 +37,24 @@ function tec_tickets_commerce_is_enabled() {
 
 
 /**
- * Determine whether Tickets Commerce is in test mode.
+ * Determine whether Tickets Commerce is in sandbox mode.
  *
  * @since 5.1.6
+ * @since TBD Modified the name of the method to `tec_tickets_commerce_is_sandbox_mode`
  *
  * @return bool Whether Tickets Commerce is in test mode.
  */
-function tribe_tickets_commerce_is_test_mode() {
-	return tribe_is_truthy( tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_sandbox ) );
+function tec_tickets_commerce_is_sandbox_mode() {
+	$sandbox_mode = tribe_is_truthy( tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_sandbox ) );
+
+	/**
+	 * Filter whether we should disable TribeCommerce PayPal or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param boolean $sandbox_mode should be available or not.
+	 */
+	return apply_filters( 'tec_tickets_commerce_is_sandbox_mode', $sandbox_mode );
 }
 
 /**
