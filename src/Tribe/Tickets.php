@@ -1133,6 +1133,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_action( 'event_tickets_checkin', [ $this, 'purge_attendees_transient' ] );
 			add_action( 'event_tickets_uncheckin', [ $this, 'purge_attendees_transient' ] );
 			add_action( 'template_redirect', [ $this, 'maybe_redirect_to_attendees_registration_screen' ], 0 );
+
+			// Event cost may need to be formatted to the provider's currency settings.
+			add_filter( 'tribe_currency_cost', [ $this, 'maybe_format_event_cost' ], 10, 2 );
 		}
 
 		/**
@@ -2667,6 +2670,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Formats the cost based on the provider of a ticket of an event.
+		 *
+		 * @param  float|string $cost
+		 * @param  int   		$post_id
+		 * 
+		 * @return string
+		 */
+		public function maybe_format_event_cost( $cost, $post_id ) {
+			$tickets = self::get_all_event_tickets( $post_id );
+			// If $cost isn't a number or there are no tickets, no filter needed.
+			if ( ! is_numeric( $cost ) || empty( $tickets ) ) {
+				return $cost;
+			}
+			$currency = tribe( 'tickets.commerce.currency' );
+			// We will convert to the format of the first ticket's provider class.
+			return $currency->get_formatted_currency( $cost, null, $tickets[0]->provider_class );
+		}
+
+		/**
 		 * Queries ticketing providers to establish the range of tickets/pricepoints for the specified
 		 * event and ensures those costs are included in the $costs array.
 		 *
@@ -2675,21 +2697,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public function get_ticket_prices( array $prices, $post_id ) {
-			$currency = tribe( 'tickets.commerce.currency' );
 			// Iterate through all tickets from all providers
 			foreach ( self::get_all_event_tickets( $post_id ) as $ticket ) {
-				// Get formatted price here.
-				$formatted_price = $currency->get_formatted_currency( $ticket->price, null, $ticket->provider_class );
-
 				// No need to add the pricepoint if it is already in the array
-				if ( in_array( $formatted_price, $prices ) ) {
+				if ( in_array( $ticket->price, $prices ) ) {
 					continue;
 				}
 
 				// An empty price property can be ignored (but do add if the price is explicitly set to zero).
 				if ( isset( $ticket->price ) && is_numeric( $ticket->price ) ) {
-					// Check the unformatted price above, but only add formatted price to array.
-					$prices[] = $formatted_price;
+					$prices[] = $ticket->price;
 				}
 			}
 
