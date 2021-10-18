@@ -303,4 +303,17 @@ class Orders extends WP_List_Table {
 	public function column_total( $item ) {
 		return tribe_format_currency( $item->total_value, $this->post_id );
 	}
+
+	/**
+	 * Handler for gateway order id.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $item
+	 *
+	 * @return string
+	 */
+	public function column_gateway_order_id( $item ) {
+		return $item->gateway_order_id;
+	}
 }

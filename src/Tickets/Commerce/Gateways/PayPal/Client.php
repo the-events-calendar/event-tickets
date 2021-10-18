@@ -245,7 +245,7 @@ class Client {
 
 			// If we properly saved, just re-try the request.
 			if ( $saved ) {
-				$arguments   = func_get_args();
+				$arguments = func_get_args();
 				array_pop( $arguments );
 				$arguments[] = $retries + 1;
 
@@ -486,12 +486,22 @@ class Client {
 						'surname'    => Arr::get( $unit, 'last_name' ),
 					],
 					'email_address' => Arr::get( $unit, 'email' ),
-
 				],
 				'payment_instruction' => [
 					'disbursement_mode' => Arr::get( $unit, 'disbursement_mode', 'INSTANT' ),
 				],
 			];
+
+			$items = Arr::get( $unit, 'items' );
+			if ( ! empty( $items ) ) {
+				$purchase_unit['items']               = $items;
+				$purchase_unit['amount']['breakdown'] = [
+					'item_total' => [
+						'value'         => Arr::get( $unit, 'value' ),
+						'currency_code' => Arr::get( $unit, 'currency' ),
+					],
+				];
+			}
 
 			/**
 			 * @todo Need to figure out how to get this email address still.
