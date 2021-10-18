@@ -15,6 +15,15 @@ use Tribe__Utils__Array as Arr;
  */
 class Client {
 	/**
+	 * Debug ID from PayPal.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected $debug_header;
+
+	/**
 	 * Get environment base URL.
 	 *
 	 * @since 5.1.9
@@ -114,6 +123,29 @@ class Client {
 	}
 
 	/**
+	 * Stores the debug header from a given PayPal request, which allows for us to store it with the gateway payload.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id Which ID we are storing.
+	 *
+	 */
+	protected function set_debug_header( $id ) {
+		$this->debug_header = $id;
+	}
+
+	/**
+	 * Fetches the last stored debug id from PayPal.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function get_debug_header() {
+		return $this->debug_header;
+	}
+
+	/**
 	 * Send a given method request to a given URL in the PayPal API.
 	 *
 	 * @since 5.1.10
@@ -194,6 +226,12 @@ class Client {
 		}
 
 		$response_code = wp_remote_retrieve_response_code( $response );
+
+		// If the debug header was set we pass it or reset it.
+		$this->set_debug_header( null );
+		if ( ! empty( $response['headers']['Paypal-Debug-Id'] ) ) {
+			$this->set_debug_header( $response['headers']['Paypal-Debug-Id'] );
+		}
 
 		// When we get specifically a 401 and we are not trying to generate a token we try once more.
 		if (
