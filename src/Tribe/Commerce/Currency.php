@@ -422,7 +422,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @since 4.7
 	 *
-	 * @param string $provider  The ticket provider class name
+	 * @param mixed  $provider  The ticket provider class name or object.
 	 * @param int    $object_id The post ID
 	 *
 	 * @return string
@@ -494,7 +494,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @since 4.7
 	 *
-	 * @param string $provider  The ticket provider class name
+	 * @param mixed  $provider  The ticket provider class name or object.
 	 * @param int    $object_id The post ID
 	 *
 	 * @return string
