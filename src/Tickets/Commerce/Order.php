@@ -388,6 +388,8 @@ class Order {
 	 * @todo  Determine if redirecting should be something relegated to some other method, and here we just actually
 	 *        generate the order/Attendees.
 	 *
+	 * @todo Deprecate tpp_error
+	 *
 	 * @see   \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
 	 * @since 5.1.9
 	 *
