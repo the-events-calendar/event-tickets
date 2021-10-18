@@ -16,13 +16,13 @@
 
 			<div class="welcome-panel-column welcome-panel-first">
 				<h3>
-				<?php
+					<?php
 					echo esc_html(
-						sprintf(
-							_x( '%s Details', 'attendee screen summary', 'event-tickets' ),
-							$post_singular_label
-						)
-					); 
+							sprintf(
+									_x( '%s Details', 'attendee screen summary', 'event-tickets' ),
+									$post_singular_label
+							)
+					);
 					?>
 				</h3>
 
@@ -68,7 +68,7 @@
 				 *
 				 * @param int $post_id
 				 */
-				do_action( 'tribe_events_tickets_attendees_event_details_bottom', $post_id ); 
+				do_action( 'tribe_events_tickets_attendees_event_details_bottom', $post_id );
 				?>
 
 			</div>
@@ -84,17 +84,17 @@
 						?>
 						<li>
 							<strong><?php echo esc_html( $ticket_name ); ?>:&nbsp;</strong>
-											   <?php
-												echo esc_html( tribe_tickets_get_ticket_stock_message( $ticket ) );
+							<?php
+							echo esc_html( tribe_tickets_get_ticket_stock_message( $ticket ) );
 
-												/**
-												 * Adds an entry point to inject additional info for ticket.
-												 *
-												 * @since 5.0.3
-												 */
-												$this->set( 'ticket_item_for_overview', $ticket );
-												$this->do_entry_point( 'overview_section_after_ticket_name' );
-												?>
+							/**
+							 * Adds an entry point to inject additional info for ticket.
+							 *
+							 * @since 5.0.3
+							 */
+							$this->set( 'ticket_item_for_overview', $ticket );
+							$this->do_entry_point( 'overview_section_after_ticket_name' );
+							?>
 						</li>
 					<?php } ?>
 				</ul>
