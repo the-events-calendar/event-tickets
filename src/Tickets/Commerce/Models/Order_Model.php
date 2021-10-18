@@ -81,6 +81,7 @@ class Order_Model extends Base {
 				'events_in_order'     => $events_in_order,
 				'tickets_in_order'    => $tickets_in_order,
 				'flag_action_markers' => $flag_action_markers,
+				'formatted_total'     => tribe_format_currency( $total_value ),
 			];
 		} catch ( \Exception $e ) {
 			return [];
