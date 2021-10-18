@@ -77,9 +77,11 @@ class Notice_Handler {
 	 * @return bool
 	 */
 	public function message_slug_exists( $slug ) {
-		$message = array_values( wp_list_filter( $this->get_messages(), [ 'slug' => $slug ] ) );
+		$messages = $this->get_messages();
+		$messages = wp_list_filter( $messages, [ 'slug' => $slug ] );
+		$messages = array_values( $messages );
 
-		return ! empty( $message[0] );
+		return ! empty( $messages[0] );
 	}
 
 	/**

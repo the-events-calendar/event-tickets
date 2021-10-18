@@ -168,7 +168,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		$notices      = $this->container->make( Notice_Handler::class );
 
 		if ( ! $disconnected ) {
-			$notices->trigger_admin( 'tc-paypal-disconnected-failed' );
+			$notices->trigger_admin( 'tc-paypal-disconnect-failed' );
 
 			return;
 		}

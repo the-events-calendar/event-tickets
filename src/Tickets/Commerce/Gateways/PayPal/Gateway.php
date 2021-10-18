@@ -98,7 +98,7 @@ class Gateway extends Abstract_Gateway {
 				'type'     => 'error',
 			],
 			[
-				'slug'     => 'tc-paypal-disconnect',
+				'slug'     => 'tc-paypal-disconnected',
 				'content'  => __( 'Disconnected PayPal account.', 'event-tickets' ),
 				'type'     => 'info',
 			],

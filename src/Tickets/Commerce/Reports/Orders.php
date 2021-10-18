@@ -143,11 +143,14 @@ class Orders extends Report_Abstract {
 	 * @return string The absolute URL.
 	 */
 	public static function get_tickets_report_link( $post ) {
-		$url = add_query_arg( [
-			'post_type' => $post->post_type,
-			'page'      => static::$page_slug,
-			'post_id'   => $post->ID,
-		], admin_url( 'edit.php' ) );
+		$url = add_query_arg(
+			[
+				'post_type' => $post->post_type,
+				'page'      => static::$page_slug,
+				'post_id'   => $post->ID,
+			],
+			admin_url( 'edit.php' ) 
+		);
 
 		return $url;
 	}
@@ -232,8 +235,8 @@ class Orders extends Report_Abstract {
 			[ $this, 'render_page' ]
 		);
 
-		/** @var \Tribe__Tickets__Attendees $attendees */
-		$attendees = tribe( 'tickets.attendees' );
+		/** @var Commerce\Admin_Tables\Attendees $attendees */
+		$attendees = tribe( Commerce\Admin_Tables\Attendees::class );
 
 		add_filter( 'tribe_filter_attendee_page_slug', [ $this, 'add_attendee_resources_page_slug' ] );
 		add_action( 'admin_enqueue_scripts', [ $attendees, 'enqueue_assets' ] );
@@ -317,15 +320,21 @@ class Orders extends Report_Abstract {
 
 		if ( false !== $ticket_ids ) {
 			$ticket_ids = array_map( 'absint', explode( ',', $ticket_ids ) );
-			$ticket_ids = array_filter( $ticket_ids, static function ( $ticket_id ) {
-				return get_post_type( $ticket_id ) === Commerce\Ticket::POSTTYPE;
-			} );
+			$ticket_ids = array_filter(
+				$ticket_ids,
+				static function ( $ticket_id ) {
+					return get_post_type( $ticket_id ) === Commerce\Ticket::POSTTYPE;
+				} 
+			);
 			$tickets    = array_map( [ tribe( Commerce\Ticket::class ), 'get_ticket' ], $ticket_ids );
 		}
 
-		$tickets = array_filter( $tickets, static function ( $ticket ) {
-			return Module::class === $ticket->provider_class;
-		} );
+		$tickets = array_filter(
+			$tickets,
+			static function ( $ticket ) {
+				return Module::class === $ticket->provider_class;
+			} 
+		);
 
 		$event_data   = [];
 		$tickets_data = [];
@@ -351,9 +360,12 @@ class Orders extends Report_Abstract {
 			];
 		}
 
-		$event_data['total_by_status'] = array_map( static function ( $sub_totals ) {
-			return Price::total( $sub_totals );
-		}, $event_data['total_by_status'] );
+		$event_data['total_by_status'] = array_map(
+			static function ( $sub_totals ) {
+				return Price::total( $sub_totals );
+			},
+			$event_data['total_by_status'] 
+		);
 
 
 		$this->template_vars = [

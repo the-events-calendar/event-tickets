@@ -21,6 +21,7 @@ use \tad_DI52_ServiceProvider;
 use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use Tribe\Tickets\Plus\Manual_Attendees\Modal;
 use WP_Admin_Bar;
 
 /**
@@ -54,6 +55,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_action( 'init', [ $this, 'register_order_statuses' ], 11 );
 
 		add_action( 'init', [ $this, 'register_order_reports' ] );
+		add_action( 'init', [ $this, 'register_attendee_reports' ] );
 
 		add_action( 'tribe_common_loaded', [ $this, 'load_commerce_module' ] );
 
@@ -66,7 +68,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_action( 'wp_loaded', [ $this, 'maybe_delete_expired_products' ], 0 );
 		add_action( 'wp_loaded', [ $this, 'maybe_redirect_to_attendees_registration_screen' ], 1 );
 
-		add_action( 'tribe_events_tickets_metabox_edit_advanced', [ $this, 'include_metabox_advanced_options' ], 10, 2 );
+		add_action( 'tribe_events_tickets_metabox_edit_advanced', [
+			$this,
+			'include_metabox_advanced_options',
+		], 10, 2 );
 
 		add_action( 'tribe_events_tickets_attendees_event_details_top', [ $this, 'setup_attendance_totals' ] );
 		add_action( 'trashed_post', [ $this, 'maybe_redirect_to_attendees_report' ] );
@@ -77,8 +82,12 @@ class Hooks extends tad_DI52_ServiceProvider {
 		// This needs to run earlier than our page setup.
 		add_action( 'admin_init', [ $this, 'maybe_trigger_process_action' ], 5 );
 
-		add_action( 'tec_tickets_commerce_order_status_transition', [ $this, 'modify_tickets_counters_by_status' ], 15, 3 );
+		add_action( 'tec_tickets_commerce_order_status_transition', [
+			$this,
+			'modify_tickets_counters_by_status',
+		], 15, 3 );
 
+		add_action( 'admin_footer', [ $this, 'enable_manual_attendee_modal' ] );
 		add_action( 'admin_bar_menu', [ $this, 'include_admin_bar_test_mode' ], 1000, 1 );
 	}
 
@@ -91,12 +100,17 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_shortcodes', [ $this, 'filter_register_shortcodes' ] );
 
 		add_filter( 'tribe_attendee_registration_form_classes', [ $this, 'filter_registration_form_class' ] );
-		add_filter( 'tribe_attendee_registration_cart_provider', [ $this, 'filter_registration_cart_provider' ], 10, 2 );
+		add_filter( 'tribe_attendee_registration_cart_provider', [
+			$this,
+			'filter_registration_cart_provider',
+		], 10, 2 );
 
 		add_filter( 'tribe_tickets_get_default_module', [ $this, 'filter_de_prioritize_module' ], 5, 2 );
 
 		add_filter( 'tribe_tickets_checkout_urls', [ $this, 'filter_js_include_checkout_url' ] );
 		add_filter( 'tribe_tickets_cart_urls', [ $this, 'filter_js_include_cart_url' ] );
+
+		add_filter( 'tribe_ticket_filter_attendee_report_link', [ $this, 'filter_attendee_report_link' ], 10, 2 );
 
 		add_filter( 'event_tickets_attendees_tc_checkin_stati', [ $this, 'filter_checkin_statuses' ] );
 
@@ -108,7 +122,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		$this->provider_meta_sanitization_filters();
 
-		add_filter( 'tribe_template_context:tickets-plus/v2/tickets/submit/button-modal', [ $this, 'filter_showing_cart_button' ] );
+		add_filter( 'tribe_template_context:tickets-plus/v2/tickets/submit/button-modal', [
+			$this,
+			'filter_showing_cart_button',
+		] );
 	}
 
 	/**
@@ -143,12 +160,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Register the Orders report.
 	 *
-	 * @todo  Currently this is attaching the hook method to the init, which is incorrect we should not be attaching these
-	 *       filters from the orders class if we can avoid it.
+	 * @todo  Currently this is attaching the hook method to the init, which is incorrect we should not be attaching
+	 *        these filters from the orders class if we can avoid it.
 	 *
 	 * @since TBD
-	 *
-	 *
 	 */
 	public function register_order_reports() {
 		$this->container->make( Reports\Orders::class )->hook();
@@ -161,6 +176,15 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function register_order_statuses() {
 		$this->container->make( Status\Status_Handler::class )->register_order_statuses();
+	}
+
+	/**
+	 * Register the Attendees Report
+	 *
+	 * @since TBD
+	 */
+	public function register_attendee_reports() {
+		$this->container->make( Reports\Attendees::class )->hook();
 	}
 
 	/**
@@ -240,7 +264,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array The original array plus the 'yes' status.
 	 */
 	public function filter_checkin_statuses( array $statuses = [] ) {
-		$statuses[] = tribe( Completed::class )->get_name();
+		$statuses[] = tribe( Completed::class )->get_wp_slug();
 
 		return array_unique( $statuses );
 	}
@@ -283,9 +307,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int $ticket_id  the attendee id being deleted
-	 * @param int $post_id    the post or event id for the attendee
-	 * @param int $product_id the ticket-product id in Tribe Commerce
+	 * @param int $ticket_id  the attendee id being deleted.
+	 * @param int $post_id    the post or event id for the attendee.
+	 * @param int $product_id the ticket-product id in Tribe Commerce.
 	 */
 	public function update_stock_after_deletion( $ticket_id, $post_id, $product_id ) {
 		$this->container->make( Ticket::class )->update_stock_after_deletion( $ticket_id, $post_id, $product_id );
@@ -305,7 +329,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.1.94
 	 *
-	 * @param int $post_id WP_Post ID
+	 * @param int $post_id WP_Post ID.
 	 */
 	public function maybe_redirect_to_attendees_report( $post_id ) {
 		$this->container->make( Attendee::class )->maybe_redirect_to_attendees_report( $post_id );
@@ -331,7 +355,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @param array $attendee_data Information that we are trying to save.
 	 * @param int   $attendee_id   The attendee ID.
 	 * @param int   $post_id       The event/post ID.
-	 *
 	 */
 	public function update_attendee_data( $attendee_data, $attendee_id, $post_id ) {
 		$this->container->make( Attendee::class )->update_attendee_data( $attendee_data, $attendee_id, $post_id );
@@ -343,7 +366,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since 5.1.9
 	 *
 	 * @param int $event_id Which ID we are triggering changes to.
-	 *
 	 */
 	public function maybe_send_tickets_after_status_change( $event_id ) {
 		$this->container->make( Attendee::class )->maybe_send_tickets_after_status_change( $event_id );
@@ -499,7 +521,13 @@ class Hooks extends tad_DI52_ServiceProvider {
 		 */
 		$ticket_handler = tribe( 'tickets.handler' );
 
-		add_filter( "sanitize_post_meta_{$ticket_handler->key_provider_field}", [ $this, 'filter_modify_sanitization_provider_meta' ] );
+		add_filter(
+			"sanitize_post_meta_{$ticket_handler->key_provider_field}",
+			[
+				$this,
+				'filter_modify_sanitization_provider_meta',
+			]
+		);
 	}
 
 	/**
@@ -513,6 +541,38 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function filter_modify_sanitization_provider_meta( $meta_value ) {
 		return tribe( Settings::class )->skip_sanitization( $meta_value );
+	}
+
+	/**
+	 * If an event is using Tickets Commerce, use the new Attendees View URL
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url     the current Attendees View url.
+	 * @param int    $post_id the event id.
+	 *
+	 * @return string
+	 */
+	public function filter_attendee_report_link( $url, $post_id ) {
+
+		if ( Module::class !== Module::get_event_ticket_provider( $post_id ) ) {
+			return $url;
+		}
+
+		return add_query_arg( [ 'page' => 'tickets-commerce-attendees' ], $url );
+	}
+
+	/**
+	 * Enables the manual attendee edit modal if ET+ is active
+	 *
+	 * @since TBD
+	 */
+	public function enable_manual_attendee_modal() {
+		if ( ! class_exists( Modal::class ) ) {
+			return;
+		}
+
+		tribe( Modal::class )->render_modal();
 	}
 
 	/**
