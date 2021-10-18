@@ -152,6 +152,11 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			return new WP_Error( 'tec-tc-gateway-paypal-failed-creating-order', $messages['failed-creating-order'], $order );
 		}
 
+		$debug_header = tribe( Client::class )->get_debug_header();
+		if ( ! empty( $debug_header ) ) {
+			$paypal_order['debug_id'] = $debug_header;
+		}
+
 		$updated = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG, [
 			'gateway_payload'  => $paypal_order,
 			'gateway_order_id' => $paypal_order['id'],
@@ -199,6 +204,11 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 
 		$paypal_capture_response = tribe( Client::class )->capture_order( $paypal_order_id, $payer_id );
 
+		$debug_header = tribe( Client::class )->get_debug_header();
+		if ( ! empty( $debug_header ) ) {
+			$paypal_capture_response['debug_id'] = $debug_header;
+		}
+
 		if ( ! $paypal_capture_response ) {
 			return new WP_Error( 'tec-tc-gateway-paypal-failed-capture', $messages['failed-capture'], $paypal_capture_response );
 		}
@@ -209,6 +219,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		if ( ! $status ) {
 			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', $messages['invalid-capture-status'], $paypal_capture_response );
 		}
+
 
 		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
 			'gateway_payload' => $paypal_capture_response,
