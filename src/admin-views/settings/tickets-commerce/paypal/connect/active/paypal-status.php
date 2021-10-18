@@ -17,8 +17,6 @@ if ( empty( $is_merchant_active ) ) {
 	return;
 }
 $errors = $signup->get_errors_from_on_boarded_data();
-
-
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-row">
 	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-col1">
