@@ -47,7 +47,7 @@ class Attendees extends Report_Abstract {
 		$post_id = tribe_get_request_var( 'event_id' );
 
 		// translators: The title of an event's Attendee List page in the dashboard. %1$s is the name of the event. %2$d is numeric the event ID.
-		return \sprintf( __( 'Attendees for: %1$s [#%2$d]', 'event-tickets' ), esc_html( \get_the_title( $post_id ) ), (int) $post_id );
+		return sprintf( __( 'Attendees for: %1$s [#%2$d]', 'event-tickets' ), esc_html( get_the_title( $post_id ) ), (int) $post_id );
 	}
 
 	/**
