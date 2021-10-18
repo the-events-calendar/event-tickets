@@ -206,7 +206,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 
 		$debug_header = tribe( Client::class )->get_debug_header();
 		if ( ! empty( $debug_header ) ) {
-			$paypal_capture_status['debug_id'] = $debug_header;
+			$paypal_capture_response['debug_id'] = $debug_header;
 		}
 
 		if ( ! $paypal_capture_response ) {
