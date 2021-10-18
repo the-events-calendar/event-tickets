@@ -129,8 +129,14 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 			<?php $template->template( 'tickets/orders-rsvp' ); ?>
 
 			<?php
-			if ( ! class_exists( 'Tribe__Tickets_Plus__Commerce__PayPal__Meta' ) ) {
+			if ( ! class_exists( 'Tribe__Tickets_Plus__Commerce__PayPal__Meta' ) && 'Tribe__Tickets__Commerce__PayPal__Main' === $provider->class_name ) {
 				$template->template( 'tickets/orders-pp-tickets' );
+			}
+			?>
+
+			<?php
+			if ( 'TEC\Tickets\Commerce\Module' === $provider->class_name && ! class_exists( 'Tribe__Tickets_Plus__Meta' ) ) {
+				$template->template( 'v2/commerce/my-tickets' );
 			}
 			?>
 
