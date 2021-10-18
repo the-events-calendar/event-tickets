@@ -7,7 +7,6 @@ use TEC\Tickets\Commerce\Communications\Email;
 use TEC\Tickets\Commerce\Utils\Price;
 use Tribe__Date_Utils as Dates;
 
-
 /**
  * Class Order
  *
@@ -16,6 +15,7 @@ use Tribe__Date_Utils as Dates;
  * @package TEC\Tickets\Commerce
  */
 class Order {
+
 	/**
 	 * Tickets Commerce Order Post Type slug.
 	 *
@@ -201,10 +201,10 @@ class Order {
 		 * Filter the arguments that craft the order post type.
 		 *
 		 * @see   register_post_type
-		 *
 		 * @since 5.1.9
 		 *
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
+		 *
 		 */
 		$post_type_args = apply_filters( 'tec_tickets_commerce_order_post_type_args', $post_type_args );
 
@@ -258,11 +258,11 @@ class Order {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @throws \Tribe__Repository__Usage_Error
-	 *
 	 * @param int    $order_id    Which order ID will be updated.
 	 * @param string $status_slug Which Order Status we are modifying to.
 	 * @param array  $extra_args  Extra repository arguments.
+	 *
+	 * @throws \Tribe__Repository__Usage_Error
 	 *
 	 * @return bool|\WP_Error
 	 */
@@ -280,10 +280,12 @@ class Order {
 
 		$args = array_merge( $extra_args, [ 'status' => $status->get_wp_slug() ] );
 
-		$updated = tec_tc_orders()->by_args( [
-			'status' => 'any',
-			'id'     => $order_id,
-		] )->set_args( $args )->save();
+		$updated = tec_tc_orders()->by_args(
+			[
+				'status' => 'any',
+				'id'     => $order_id,
+			]
+		)->set_args( $args )->save();
 
 		// After modifying the status we add a meta to flag when it was modified.
 		if ( $updated ) {
@@ -307,17 +309,20 @@ class Order {
 		$cart = tribe( Cart::class );
 
 		$items      = $cart->get_items_in_cart();
-		$items      = array_map( static function ( $item ) {
-			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
-			if ( null === $ticket ) {
-				return null;
-			}
+		$items      = array_map(
+			static function ( $item ) {
+				$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+				if ( null === $ticket ) {
+					return null;
+				}
 
-			$item['sub_total'] = Price::sub_total( $ticket->price, $item['quantity'] );
-			$item['price']     = $ticket->price;
+				$item['sub_total'] = Price::sub_total( $ticket->price, $item['quantity'] );
+				$item['price']     = $ticket->price;
 
-			return $item;
-		}, $items );
+				return $item;
+			},
+			$items
+		);
 		$items      = array_filter( $items );
 		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
 		$total      = Price::total( $sub_totals );
@@ -360,7 +365,7 @@ class Order {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param array $items List of events form
+	 * @param array $items List of events form.
 	 *
 	 * @return string
 	 */
@@ -404,16 +409,17 @@ class Order {
 	 * Redirects to the source post after a recoverable (logic) error.
 	 *
 	 * @todo  Determine if redirecting should be something relegated to some other method, and here we just actually
-	 *       generate the order/Attendees.
+	 *        generate the order/Attendees.
+	 *
+	 * @todo Deprecate tpp_error
 	 *
 	 * @see   \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
 	 * @since 5.1.9
 	 *
+	 * @param int  $post_id    A post ID.
+	 *
+	 * @param int  $error_code The current error code.
 	 * @param bool $redirect   Whether to really redirect or not.
-	 * @param int  $post_id    A post ID
-	 *
-	 * @param int  $error_code The current error code
-	 *
 	 */
 	protected function redirect_after_error( $error_code, $redirect, $post_id ) {
 		$url = add_query_arg( 'tpp_error', $error_code, get_permalink( $post_id ) );
@@ -421,6 +427,44 @@ class Order {
 			wp_redirect( esc_url_raw( $url ) );
 		}
 		tribe_exit();
+	}
+
+	/**
+	 * Loads an order object with information about its attendees
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Post $order the order object.
+	 *
+	 * @return \WP_Post|\WP_Post[]
+	 */
+	public function get_attendees( \WP_Post $order ) {
+		$order->attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+
+		if ( empty( $order->attendees ) ) {
+			$order->attendees = [
+				'name'  => get_post_meta( $order->ID, static::$purchaser_full_name_meta_key, true ),
+				'email' => get_post_meta( $order->ID, static::$purchaser_email_meta_key, true ),
+			];
+
+			return [ $order ];
+		}
+
+		return $order;
+
+	}
+
+	/**
+	 * Returns the Ticket ID that is associated with the attendee
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return mixed
+	 */
+	public function get_ticket_id( \WP_Post $attendee ) {
+		return get_post_meta( $attendee->ID, static::$tickets_in_order_meta_key, true );
 	}
 
 	/**

@@ -1,11 +1,11 @@
 <?php
 
-$users_args = array(
+$users_args = [
 	'name'             => 'email_to_user',
 	'id'               => 'email_to_user',
 	'show_option_none' => esc_html__( 'Select...', 'event-tickets' ),
 	'selected'         => '',
-);
+];
 
 if ( ! current_user_can( 'list_users' ) ) {
 	$users_args['include'] = get_current_user_id();
@@ -20,9 +20,10 @@ if ( ! current_user_can( 'list_users' ) ) {
  * @param array $users_args Args that get passed to wp_dropdown_users()
  */
 $users_args = apply_filters( 'tribe_event_tickets_email_attendee_list_dropdown', $users_args );
+$referer    = ! empty( $_SERVER['HTTP_REFERER'] ) ? "action='" . esc_url( $_SERVER['HTTP_REFERER'] ) . "'" : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 ?><div id="tribe-loading"><span></span></div>
-<form method="POST" class="tribe-attendees-email">
+<form method="POST" class="tribe-attendees-email" <?php echo $referer; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
 	<div id="plugin-information-title">
 		<?php esc_html_e( 'Send the attendee list by email', 'event-tickets' ); ?>
 	</div>
@@ -46,11 +47,11 @@ $users_args = apply_filters( 'tribe_event_tickets_email_attendee_list_dropdown',
 			if ( is_wp_error( $status ) ) {
 				echo '<ul>';
 				foreach ( $status->errors as $key => $error ) {
-					echo '<li>' . wp_kses( reset( $error ), array() ) . '</li>';
+					echo '<li>' . wp_kses( reset( $error ), [] ) . '</li>';
 				}
 				echo '</ul>';
 			} else {
-				echo '<p>' . wp_kses( $status, array() ) . '</p>';
+				echo '<p>' . wp_kses( $status, [] ) . '</p>';
 			}
 			echo '</div>';
 		}
