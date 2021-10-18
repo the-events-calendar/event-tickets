@@ -1,0 +1,44 @@
+<?php return '<form class="tribe-tickets__commerce-checkout-paypal-advanced-payments-form">
+
+	<div class="tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field-wrapper">
+	<label for="tec-tc-card-number"  class="tribe-common-b3 tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field-label" >
+		Card Number	</label>
+	<div
+		id="tec-tc-card-number"
+		 class="card_field tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field--card-number" 	></div>
+</div>
+
+	<div class="tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field-wrapper">
+	<label for="tec-tc-expiration-date"  class="tribe-common-b3 tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field-label" >
+		Expiration Date	</label>
+	<div
+		id="tec-tc-expiration-date"
+		 class="card_field tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field--expiration-date" 	></div>
+</div>
+
+	<div class="tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field-wrapper">
+	<label for="tec-tc-card-holder-name"  class="tribe-common-b3 tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field-label" >
+		Name on Card	</label>
+	<input
+		type="text"
+		id="tec-tc-card-holder-name"
+		name="card-holder-name"
+		autocomplete="off"
+		 class="card_field tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field--card-name" 		placeholder="Name on Card"
+		required
+	/>
+</div>
+
+	<div class="tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field-wrapper">
+	<label for="tec-tc-cvv"  class="tribe-common-b3 tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field-label" >
+		CVV	</label>
+	<div
+		id="tec-tc-cvv"
+		 class="card_field tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field--cvv" 	></div>
+</div>
+
+	<button value="submit" id="submit"  class="tribe-common-c-btn tribe-tickets__commerce-checkout-paypal-advanced-payments-form-submit-button" >
+	Purchase Tickets</button>
+
+</form>
+';
