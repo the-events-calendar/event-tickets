@@ -14,6 +14,8 @@ class Price {
 	 * The precision to use in decimal places. This is currently statically set to 2,
 	 * but may become variable for supporting 3 digit decimals
 	 *
+	 * @since TBD
+	 *
 	 * @var int
 	 */
 	private static $precision = 2;
@@ -85,6 +87,8 @@ class Price {
 	 *      $value is a float and neither $decimal or $thousand_sep are '.'.
 	 *        We should expand this to remove any possible combination of decimal/thousands marks from numbers.
 	 *
+	 * @since TBD
+	 *
 	 * @param array       $value        Numeric value to clean.
 	 * @param null|string $decimal      Which Decimal separator.
 	 * @param null|string $thousand_sep Which thousand separator.
@@ -127,6 +131,8 @@ class Price {
 
 	/**
 	 * Converts an int, float or numerical string to a float with the specified precision.
+	 *
+	 * @since TBD
 	 *
 	 * @param int|float|string $total     the total value to convert
 	 * @param int              $precision the number of decimal values to keep
