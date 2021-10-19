@@ -76,6 +76,7 @@ class PriceTest extends \Codeception\Test\Unit {
 			[ [ '789012 34', '56789012' ], ' ', '&lt;', '1&lt;356&lt;902 46', 135690246 ], // space as decimal separator and html entity as thousands separator
 			[ [ '78901234.', '56789012' ], '.', ',', '79,469,124.12', 7946912412 ], // decimal at the end of the string means string.00
 			[ [ '.78', '567890.12' ], '.', ',', '567,890.90', 56789090 ], // decimal at the start of the string means 0.string
+			[ [ '99.00', '99.00' ], '.', ',', '198.00', 19800 ], // Copy of snapshot test
 		];
 	}
 
@@ -101,6 +102,7 @@ class PriceTest extends \Codeception\Test\Unit {
 			[ '1010.', 101, '.', ',', '102,010.00' ], // decimal at the end of the string
 			[ '.10', 10, '.', ',', '1.00' ], // decimal at the start of the string
 			[ '1.102', 10, '.', ',', '11.00' ], // 3 decimals
+			[ '99.00', 2, '.', ',', '198.00' ], // Copy of snapshot test
 		];
 	}
 }

@@ -38,7 +38,11 @@ class CartFooterTest extends V2CommerceTestCase {
 			'post_title' => 'Test event for partial snapshot',
 		] );
 
-		$ids = $this->create_many_paypal_tickets( 2, $event_id, [ 'price' => 99 ] );
+		// @todo @ricardo: remove all of this and use Html_Partial_Test_Case as we do on Events Virtual
+		// price is set at 9900 because that's how the legacy paypal provider will render
+		// tickets with the proper string needed for Price::sub_total and Price::total.
+		// Specific unit tests for 99.00 exist in the unit test suite.
+		$ids = $this->create_many_paypal_tickets( 2, $event_id, [ 'price' => 9900 ] );
 
 		$this->tolerables[] = $event_id;
 		$items = [];
