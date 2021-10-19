@@ -253,6 +253,9 @@ class Client {
 			}
 		}
 
+		/**
+		 * @todo we need to log and be more verbose about the responses. Specially around failed JSON strings.
+		 */
 		$response_body = wp_remote_retrieve_body( $response );
 		$response_body = @json_decode( $response_body, true );
 		if ( empty( $response_body ) ) {
@@ -566,7 +569,6 @@ class Client {
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
 				'Prefer'                        => 'return=representation',
-//				'PayPal-Mock-Response'          => '{"mock_application_codes" : "INSTRUMENT_DECLINED"}',
 			],
 			'body'    => $body,
 		];

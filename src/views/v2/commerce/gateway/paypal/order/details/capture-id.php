@@ -9,9 +9,9 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.10
+ * @since   TBD
  *
- * @version 5.1.10
+ * @version TBD
  *
  * @var \Tribe__Template $this          [Global] Template object.
  * @var Module           $provider      [Global] The tickets provider instance.
@@ -19,6 +19,7 @@
  * @var \WP_Post         $order         [Global] The order object.
  * @var int              $order_id      [Global] The order ID.
  * @var bool             $is_tec_active [Global] Whether `The Events Calendar` is active or not.
+ * @var string           $capture_id    PayPal Capture ID for this order.
  */
 
 if (
