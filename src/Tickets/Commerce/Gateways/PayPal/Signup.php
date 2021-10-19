@@ -290,6 +290,10 @@ class Signup {
 		$error_messages = [];
 		$merchant = tribe( Merchant::class );
 		$saved_merchant_id = $merchant->get_merchant_id_in_paypal();
+		if ( ! $saved_merchant_id ) {
+			return [];
+		}
+
 		$seller_status = tribe( WhoDat::class )->get_seller_status( $saved_merchant_id );
 
 		if ( array_diff( [ 'payments_receivable', 'primary_email_confirmed' ], array_keys( $seller_status ) ) ) {
