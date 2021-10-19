@@ -8,7 +8,12 @@
 		<span class="tec-tickets__admin-settings-tickets-commerce-paypal-connect-text--connected">
 			Connected <span class="dashicons dashicons-saved"></span>
 		</span>
-	</div>
+
+					<ul>
+									<li><span class="dashicons dashicons-warning" style="color: red;"></span> There was a problem with the status check for your account. Please try disconnecting and connecting again. If the problem persists, please contact support.</li>
+							</ul>
+			</div>
+
 </div>
 
 	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-row">
