@@ -3,6 +3,8 @@
 /**
  * Tickets Commerce: Checkout Page
  *
+ * @todo TribeCommerceLegacy: We need to change this template to V2 structure. For now it's following the legacy template `orders-tickets.php` from ETP to minimize the impact to core templates from TicketsCommerce changes.
+ *
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/commerce/my-tickets.php
  *
