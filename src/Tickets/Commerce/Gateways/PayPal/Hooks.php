@@ -152,7 +152,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Include the advanced payment fields from PayPal into the Checkout page.
+	 * Include the advanced payment fields from PayPal in the Checkout page.
 	 *
 	 * @since TBD
 	 *
@@ -328,18 +328,18 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Includes the Capture ID int he success page of the PayPal Gateway orders.
+	 * Includes the Capture ID in the success page of the PayPal Gateway orders.
 	 *
 	 * @since TBD
 	 *
 	 * @param string           $file     Which file we are loading.
-	 * @param string           $name     Name of file file
+	 * @param string           $name     The name of the file.
 	 * @param \Tribe__Template $template Which Template object is being used.
 	 */
 	public function include_capture_id_success_page( $file, $name, $template ) {
 		$order = $template->get( 'order' );
 
-		// Bail when the order is not set to complete.
+		// Bail if the order is not set to complete.
 		if ( empty( $order->gateway_payload[ Completed::SLUG ] ) ) {
 			return;
 		}

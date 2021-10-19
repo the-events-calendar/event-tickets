@@ -224,7 +224,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		if (
 			'UNPROCESSABLE_ENTITY' === Arr::get( $paypal_capture_response, 'name' )
 		) {
-			// Flag the order to Denied.
+			// Flag the order as Denied.
 			tribe( Order::class )->modify_status( $order->ID, Denied::SLUG, [
 				'gateway_payload' => $paypal_capture_response,
 			] );
