@@ -11,13 +11,21 @@ namespace TEC\Tickets\Commerce\Utils;
 class Price {
 
 	/**
+	 * The precision to use in decimal places. This is currently statically set to 2,
+	 * but may become variable for supporting 3 digit decimals
+	 *
+	 * @var int
+	 */
+	private static $precision = 2;
+
+	/**
 	 * Taking a given numerical price it will multiply the by the quantity passed it will not convert the values into
 	 * float at any point, it will use full integers and strings to calculate, to avoid float point problems.
 	 *
 	 * This function expects that the incoming value will be either an integer with decimals as the last 2 digits
 	 * or a formatted string using the same decimal and thousands separators as set in the system.
 	 *
-	 * We only allow two decimal points.
+	 * Currently, we only allow two decimal digits.
 	 *
 	 * @since 5.1.9
 	 *
@@ -73,9 +81,9 @@ class Price {
 	 * Removes decimal and thousands separator from a numeric string, transforming it into an int
 	 *
 	 * @todo currently this requires that the $value be formatted using $decimal and $thousand_sep, which
-	 *       can be an issue in migrated sites, or sites that changed number formatting. If $value is a
-	 *       float and neither $decimal or $thousand_sep are '.'. We should expand this to remove any
-	 *         possible combination of decimal/thousands marks from numbers.
+	 *      can be an issue in migrated sites, or sites that changed number formatting. It will also fail if
+	 *      $value is a float and neither $decimal or $thousand_sep are '.'.
+	 *        We should expand this to remove any possible combination of decimal/thousands marks from numbers.
 	 *
 	 * @param array       $value        Numeric value to clean.
 	 * @param null|string $decimal      Which Decimal separator.
@@ -84,7 +92,37 @@ class Price {
 	 * @return int
 	 */
 	private static function clean_formatting( $value, $decimal, $thousand_sep ) {
-		return (int) str_replace( [ $decimal, $thousand_sep ], '', $value );
+
+		// If the string is formatted with thousands separators but not with decimals, pad with decimals
+		if ( false !== strpos( $value, $thousand_sep ) && false === strpos( $value, $decimal ) ) {
+			$value = $value . '.00';
+		}
+
+		// We're done with thousands separators
+		$value = str_replace( $thousand_sep, '', $value );
+
+		// If the last char on the value is a decimal point, pad with two zeros
+		if ( substr( $value, - 1 ) === $decimal ) {
+			$value = $value . '00';
+		}
+
+		$value_arr = explode( $decimal, $value );
+
+		// If the decimal part is longer than the precision, round it to the precision
+		if ( isset( $value_arr[1] ) && strlen( $value_arr[1] ) > static::$precision ) {
+			$rounded = round( $value, static::$precision );
+
+			// If the decimal part should end w/ zeros after rounding
+			// those zeros are now lost, so we add them back here
+			$rounded_arr = explode( $decimal, $rounded );
+			if ( isset( $rounded_arr[1] ) && strlen( $rounded_arr[1] ) < static::$precision ) {
+				$rounded = str_pad( $rounded, (strlen( $rounded_arr[0] ) + 1 + static::$precision ), '0' );
+			}
+
+			$value = $rounded;
+		}
+
+		return (int) str_replace( $decimal, '', $value );
 	}
 
 	/**
@@ -95,7 +133,7 @@ class Price {
 	 *
 	 * @return float
 	 */
-	private static function convert_to_decimal( $total, $precision = 2 ) {
-		return round( $total / pow( 10, $precision ), $precision );
+	private static function convert_to_decimal( $total ) {
+		return round( $total / pow( 10, static::$precision ), static::$precision );
 	}
 }
