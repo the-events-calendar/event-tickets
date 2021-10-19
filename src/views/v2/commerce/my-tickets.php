@@ -15,9 +15,7 @@
  * @version TBD
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	die( '-1' );
-}
+// @todo Move these variables to template vars.
 
 $view      = Tribe__Tickets__Tickets_View::instance();
 $post_id   = get_the_ID();
