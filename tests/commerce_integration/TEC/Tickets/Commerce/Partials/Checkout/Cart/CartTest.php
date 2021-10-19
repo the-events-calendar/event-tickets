@@ -34,7 +34,10 @@ class CartTest extends V2CommerceTestCase {
 			'post_title' => 'Test event for partial snapshot',
 		] );
 
-		$ids = $this->create_many_paypal_tickets( 2, $event_id, [ 'price' => 97 ] );
+		// price is set at 9700 because that's how the legacy paypal provider will render
+		// tickets with the proper string needed for Price::sub_total and Price::total.
+		// see TODO comment in CartFooterTest.php
+		$ids = $this->create_many_paypal_tickets( 2, $event_id, [ 'price' => 9700 ] );
 
 		$this->tolerables[] = $event_id;
 		$items = [];
