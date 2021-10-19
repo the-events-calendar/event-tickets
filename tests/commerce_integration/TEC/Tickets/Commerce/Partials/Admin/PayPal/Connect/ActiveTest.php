@@ -17,7 +17,7 @@ class ActiveTest extends V2AdminTestCase {
 	 */
 	public function get_default_args() {
 		$merchant = tribe( Merchant::class );
-		$signup   = tribe( SignUp::class );
+		$signup   = tribe( Signup::class );
 
 		$args = [
 			'plugin_url'         => Tribe__Tickets__Main::instance()->plugin_url,
