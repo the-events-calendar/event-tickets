@@ -253,15 +253,13 @@ class Client {
 			}
 		}
 
-		// When we receive an error code we return the whole response.
-		if ( ! in_array( $response_code, [ 200, 201, 202, 204 ], true ) ) {
+		$response_body = wp_remote_retrieve_body( $response );
+		$response_body = @json_decode( $response_body, true );
+		if ( empty( $response_body ) ) {
 			return $response;
 		}
 
-		$response = wp_remote_retrieve_body( $response );
-		$response = @json_decode( $response, true );
-
-		if ( ! is_array( $response ) ) {
+		if ( ! is_array( $response_body ) ) {
 			tribe( 'logger' )->log_error( sprintf( '[%s] Unexpected PayPal %s response', $url, $method ), 'tickets-commerce-paypal' );
 
 			return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-client-unexpected', null, [
@@ -273,7 +271,7 @@ class Client {
 			] );
 		}
 
-		return $response;
+		return $response_body;
 	}
 
 	/**
@@ -558,10 +556,17 @@ class Client {
 			$body['payerID'] = $payer_id;
 		}
 
+		/**
+		 * If we need to handle failures.
+		 *
+		 * @link https://developer.paypal.com/docs/platforms/checkout/add-capabilities/handle-funding-failures/
+		 * 'PayPal-Mock-Response'          => '{"mock_application_codes" : "INSTRUMENT_DECLINED"}',
+		 */
 		$args = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
 				'Prefer'                        => 'return=representation',
+//				'PayPal-Mock-Response'          => '{"mock_application_codes" : "INSTRUMENT_DECLINED"}',
 			],
 			'body'    => $body,
 		];

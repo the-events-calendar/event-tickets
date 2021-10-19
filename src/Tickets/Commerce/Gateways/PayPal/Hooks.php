@@ -20,6 +20,11 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Notice_Handler;
 use TEC\Tickets\Commerce\Shortcodes\Shortcode_Abstract;
+use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
+use TEC\Tickets\Commerce\Status\Completed;
+
+use Tribe__Utils__Array as Arr;
+
 
 /**
  * Class Hooks.
@@ -59,6 +64,8 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_advanced_payments' ], 20, 3 );
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_paypal_refresh_connect_url', [ $this, 'ajax_refresh_connect_url' ] );
 		add_action( 'admin_init', [ $this, 'render_ssl_notice' ] );
+
+		add_action( 'tribe_template_after_include:tickets/v2/commerce/order/details/order-number', [ $this, 'include_capture_id_success_page' ], 10, 3 );
 	}
 
 	/**
@@ -143,6 +150,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	public function include_payment_buttons( $file, $name, $template ) {
 		$this->container->make( Buttons::class )->include_payment_buttons( $file, $name, $template );
 	}
+
 	/**
 	 * Include the advanced payment fields from PayPal into the Checkout page.
 	 *
@@ -187,9 +195,10 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		$notices    = $this->container->make( Notice_Handler::class );
 
 		// Check if API response is valid for token data.
-		if ( ! is_array( $token_data ) || ! isset( $token_data[ 'access_token' ] ) ) {
+		if ( ! is_array( $token_data ) || ! isset( $token_data['access_token'] ) ) {
 			$message = $notices->get_message_data( 'tc-paypal-refresh-token-failed' );
-			$this->container->make( Gateway::class )->handle_invalid_response( $token_data, $message[ 'content' ] );
+			$this->container->make( Gateway::class )->handle_invalid_response( $token_data, $message['content'] );
+
 			return;
 		}
 
@@ -219,6 +228,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		if ( ! isset( $user_info['user_id'] ) ) {
 			$message = $notices->get_message_data( 'tc-paypal-refresh-user-info-failed' );
 			$this->container->make( Gateway::class )->handle_invalid_response( $user_info, $message['content'], 'tc-invalid-user-info-response' );
+
 			return;
 		}
 
@@ -242,11 +252,13 @@ class Hooks extends \tad_DI52_ServiceProvider {
 			$content = empty( $updated->get_error_message() ) ? $updated->get_error_code() : $updated->get_error_message();
 			$notices->trigger_admin( 'tc-paypal-refresh-webhook-api-error', [ 'content' => $content ] );
 			$notices->trigger_admin( 'tc-paypal-refresh-webhook-failed' );
+
 			return;
 		}
 
 		if ( ! $updated ) {
 			$notices->trigger_admin( 'tc-paypal-refresh-webhook-failed' );
+
 			return;
 		}
 
@@ -313,5 +325,33 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function include_admin_notices( $messages ) {
 		return array_merge( $messages, $this->container->make( Gateway::class )->get_admin_notices() );
+	}
+
+	/**
+	 * Includes the Capture ID int he success page of the PayPal Gateway orders.
+	 *
+	 * @since TBD
+	 *
+	 * @param string           $file     Which file we are loading.
+	 * @param string           $name     Name of file file
+	 * @param \Tribe__Template $template Which Template object is being used.
+	 */
+	public function include_capture_id_success_page( $file, $name, $template ) {
+		$order = $template->get( 'order' );
+
+		// Bail when the order is not set to complete.
+		if ( empty( $order->gateway_payload[ Completed::SLUG ] ) ) {
+			return;
+		}
+
+		$capture_payload = end( $order->gateway_payload[ Completed::SLUG ] );
+		$capture_id      = Arr::get( $capture_payload, [ 'purchase_units', 0, 'payments', 'captures', 0, 'id' ] );
+
+		// Couldn't find a valid Capture ID.
+		if ( ! $capture_id ) {
+			return;
+		}
+
+		$template->template( 'gateway/paypal/order/details/capture-id', [ 'capture_id' => $capture_id ] );
 	}
 }

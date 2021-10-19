@@ -41,7 +41,7 @@ class Gateway extends Abstract_Gateway {
 	 * @inheritDoc
 	 */
 	public static function get_label() {
-		return __( 'PayPal Commerce', 'event-tickets' );
+		return __( 'PayPal', 'event-tickets' );
 	}
 
 	/**

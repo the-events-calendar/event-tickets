@@ -17,6 +17,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
 
 
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Created;
@@ -152,7 +153,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 				'name'        => $ticket->name,
 				'unit_amount' => [ 'value' => $item['price'], 'currency_code' => $order->currency ],
 				'quantity'    => $item['quantity'],
-				'item_total'  =>  [ 'value' => $item['sub_total'], 'currency_code' => $order->currency ],
+				'item_total'  => [ 'value' => $item['sub_total'], 'currency_code' => $order->currency ],
 				'sku'         => $ticket->sku,
 			];
 		}
@@ -220,7 +221,14 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			$paypal_capture_response['debug_id'] = $debug_header;
 		}
 
-		if ( ! $paypal_capture_response ) {
+		if (
+			'UNPROCESSABLE_ENTITY' === Arr::get( $paypal_capture_response, 'name' )
+		) {
+			// Flag the order to Denied.
+			tribe( Order::class )->modify_status( $order->ID, Denied::SLUG, [
+				'gateway_payload' => $paypal_capture_response,
+			] );
+
 			return new WP_Error( 'tec-tc-gateway-paypal-failed-capture', $messages['failed-capture'], $paypal_capture_response );
 		}
 
@@ -230,7 +238,6 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		if ( ! $status ) {
 			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', $messages['invalid-capture-status'], $paypal_capture_response );
 		}
-
 
 		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
 			'gateway_payload' => $paypal_capture_response,
