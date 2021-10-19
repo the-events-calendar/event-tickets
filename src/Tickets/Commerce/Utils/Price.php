@@ -40,7 +40,7 @@ class Price {
 		$decimal      = ! is_null( $decimal ) ? $decimal : tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'decimal_point' );
 		$thousand_sep = ! is_null( $thousand_sep ) ? $thousand_sep : tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'thousands_sep' );
 
-		$number    = static::clean_formatting( $value, $decimal, $thousand_sep );
+		$number    = static::clear_formatting( $value, $decimal, $thousand_sep );
 		$sub_total = static::convert_to_decimal( $number * $quantity );
 
 		return number_format( $sub_total, 2, $decimal, $thousand_sep );
@@ -68,7 +68,7 @@ class Price {
 		$thousand_sep = ! is_null( $thousand_sep ) ? $thousand_sep : tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'thousands_sep' );
 
 		$values = array_map( static function ( $value ) use ( $decimal, $thousand_sep ) {
-			return static::clean_formatting( $value, $decimal, $thousand_sep );
+			return static::clear_formatting( $value, $decimal, $thousand_sep );
 		}, $values );
 
 		$total = array_sum( $values );
@@ -91,7 +91,7 @@ class Price {
 	 *
 	 * @return int
 	 */
-	private static function clean_formatting( $value, $decimal, $thousand_sep ) {
+	public static function clear_formatting( $value, $decimal, $thousand_sep ) {
 
 		// If the string is formatted with thousands separators but not with decimals, pad with decimals
 		if ( false !== strpos( $value, $thousand_sep ) && false === strpos( $value, $decimal ) ) {

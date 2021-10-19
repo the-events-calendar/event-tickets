@@ -9,13 +9,20 @@ class PriceTest extends \Codeception\Test\Unit {
 	/**
 	 * @dataProvider totals_provider
 	 */
-	public function test_total_is_acurate( $values, $decimal, $thousands_sep, $result ) {
+	public function test_total_is_acurate( $values, $decimal, $thousands_sep, $result, $result_int ) {
 		$total = Price::total( $values, $decimal, $thousands_sep );
+		$total_as_int = Price::clear_formatting( $total, $decimal, $thousands_sep );
 
-		$expected_as_int = $this->convert_to_int( $result, $decimal, $thousands_sep );
-		$total_as_int = $this->convert_to_int( $total, $decimal, $thousands_sep );
+		$this->assertEquals( $result_int, $total_as_int );
+	}
 
-		$this->assertEquals( $expected_as_int, $total_as_int );
+	/**
+	 * @dataProvider totals_provider
+	 */
+	public function test_clear_formatting( $values, $decimal, $thousands_sep, $result, $result_int ) {
+		$total_as_int = Price::clear_formatting( $result, $decimal, $thousands_sep );
+
+		$this->assertEquals( $result_int, $total_as_int );
 	}
 
 	/**
@@ -33,8 +40,8 @@ class PriceTest extends \Codeception\Test\Unit {
 	public function test_sub_total_is_acurate( $value, $quantity, $decimal, $thousands_sep, $result ) {
 		$sub_total = Price::sub_total( $value, $quantity, $decimal, $thousands_sep );
 
-		$expected_as_int = $this->convert_to_int( $result, $decimal, $thousands_sep );
-		$sub_total_as_int = $this->convert_to_int( $sub_total, $decimal, $thousands_sep );
+		$expected_as_int = Price::clear_formatting( $result, $decimal, $thousands_sep );
+		$sub_total_as_int = Price::clear_formatting( $sub_total, $decimal, $thousands_sep );
 
 		$this->assertEquals( $expected_as_int, $sub_total_as_int );
 	}
@@ -50,25 +57,25 @@ class PriceTest extends \Codeception\Test\Unit {
 
 	/**
 	 * Provider item structure:
-	 * [ $values, $decimal, $thousand_sep, $total ]
+	 * [ $values, $decimal, $thousand_sep, $formatted_total, $int_total ]
 	 *
 	 * @return array[]
 	 */
 	public function totals_provider() {
 		return [
-			[ [ '0.2', '2.75' ], '.', ',', '2.77' ], // formatted string with decimals
-			[ [ 1, 2 ], '.', ',', '0.03' ], // integers
-			[ [ 34, 56 ], '.', ',', '0.90' ], // integers
-			[ [ 789, '012' ], '.', ',', '8.01' ], // integer + unformatted string w/ leading zero
-			[ [ 3456, '7890' ], '.', ',', '113.46' ], // integer + unformatted string without decimals
-			[ [ '12,345', 67890 ], '.', ',', '13,023.90' ], // formatted text without decimals
-			[ [ '12,345.983', 67890 ], '.', ',', '13,024.88' ], // formatted text with 3 decimals
-			[ [ '1.234,56', '7.890,12' ], ',', '.', '9.124,68' ], // comma as decimal separator and dot as thousands separator
-			[ [ '34 567.89', '0123456' ], '.', ' ', '35 802.45' ], // space as thousands separator
-			[ [ '789\'012.34', '56789012' ], '.', '\'', '1\'356\'902.46' ], // apostrophe as thousands separator
-			[ [ '789012 34', '56789012' ], ' ', '&lt;', '1&lt;356&lt;902 46' ], // space as decimal separator and html entity as thousands separator
-			[ [ '78901234.', '56789012' ], '.', ',', '79,469,124.12' ], // decimal at the end of the string means string.00
-			[ [ '.78', '567890.12' ], '.', ',', '567,890.90' ], // decimal at the start of the string means 0.string
+			[ [ '0.2', '2.75' ], '.', ',', '2.77', 277 ], // formatted string with decimals
+			[ [ 1, 2 ], '.', ',', '0.03', 3 ], // integers
+			[ [ 34, 56 ], '.', ',', '0.90', 90 ], // integers
+			[ [ 789, '012' ], '.', ',', '8.01', 801 ], // integer + unformatted string w/ leading zero
+			[ [ 3456, '7890' ], '.', ',', '113.46', 11346 ], // integer + unformatted string without decimals
+			[ [ '12,345', 67890 ], '.', ',', '13,023.90', 1302390 ], // formatted text without decimals
+			[ [ '12,345.983', 67890 ], '.', ',', '13,024.88', 1302488 ], // formatted text with 3 decimals
+			[ [ '1.234,56', '7.890,12' ], ',', '.', '9.124,68', 912468 ], // comma as decimal separator and dot as thousands separator
+			[ [ '34 567.89', '0123456' ], '.', ' ', '35 802.45', 3580245 ], // space as thousands separator
+			[ [ '789\'012.34', '56789012' ], '.', '\'', '1\'356\'902.46', 135690246 ], // apostrophe as thousands separator
+			[ [ '789012 34', '56789012' ], ' ', '&lt;', '1&lt;356&lt;902 46', 135690246 ], // space as decimal separator and html entity as thousands separator
+			[ [ '78901234.', '56789012' ], '.', ',', '79,469,124.12', 7946912412 ], // decimal at the end of the string means string.00
+			[ [ '.78', '567890.12' ], '.', ',', '567,890.90', 56789090 ], // decimal at the start of the string means 0.string
 		];
 	}
 
@@ -95,9 +102,5 @@ class PriceTest extends \Codeception\Test\Unit {
 			[ '.10', 10, '.', ',', '1.00' ], // decimal at the start of the string
 			[ '1.102', 10, '.', ',', '11.00' ], // 3 decimals
 		];
-	}
-
-	public function convert_to_int( $value, $decimal, $thousand_sep ) {
-		return (int) str_replace( [ $decimal, $thousand_sep ], '', $value );
 	}
 }
