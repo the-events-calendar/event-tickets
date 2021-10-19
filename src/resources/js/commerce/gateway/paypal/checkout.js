@@ -292,7 +292,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleApproveSuccess = ( data, actions, $container ) => {
 		tribe.tickets.debug.log( 'handleApproveSuccess', data, actions );
-		// When this Token has expired we just refresh the browser.
+		// If the Token has expired we refresh the browser.
 		window.location.replace( data.redirect_url );
 	};
 
