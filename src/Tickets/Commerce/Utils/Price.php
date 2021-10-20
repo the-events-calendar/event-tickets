@@ -89,7 +89,7 @@ class Price {
 	 *
 	 * @since TBD
 	 *
-	 * @param array  $value        Numeric value to clean.
+	 * @param string $value        Numeric value to clean.
 	 * @param string $decimal      Which Decimal separator.
 	 * @param string $thousand_sep Which thousand separator.
 	 *
@@ -156,7 +156,7 @@ class Price {
 	 */
 	public static function to_string( $value, $decimal = '.', $thousand_sep = ',' ) {
 		if ( ! is_float( $value ) ) {
-			$value = static::to_decimal( $value );
+			$value = static::to_decimal( static::to_integer( $value ) );
 		}
 
 		return number_format( $value, static::$precision, $decimal, $thousand_sep );
