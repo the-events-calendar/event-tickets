@@ -11,7 +11,7 @@ class PriceTest extends \Codeception\Test\Unit {
 	 */
 	public function test_total_is_acurate( $values, $decimal, $thousands_sep, $result, $result_int ) {
 		$total = Price::total( $values, $decimal, $thousands_sep );
-		$total_as_int = Price::clear_formatting( $total, $decimal, $thousands_sep );
+		$total_as_int = Price::to_integer( $total, $decimal, $thousands_sep );
 
 		$this->assertEquals( $result_int, $total_as_int );
 	}
@@ -20,7 +20,7 @@ class PriceTest extends \Codeception\Test\Unit {
 	 * @dataProvider totals_provider
 	 */
 	public function test_clear_formatting( $values, $decimal, $thousands_sep, $result, $result_int ) {
-		$total_as_int = Price::clear_formatting( $result, $decimal, $thousands_sep );
+		$total_as_int = Price::to_integer( $result, $decimal, $thousands_sep );
 
 		$this->assertEquals( $result_int, $total_as_int );
 	}
@@ -40,8 +40,8 @@ class PriceTest extends \Codeception\Test\Unit {
 	public function test_sub_total_is_acurate( $value, $quantity, $decimal, $thousands_sep, $result ) {
 		$sub_total = Price::sub_total( $value, $quantity, $decimal, $thousands_sep );
 
-		$expected_as_int = Price::clear_formatting( $result, $decimal, $thousands_sep );
-		$sub_total_as_int = Price::clear_formatting( $sub_total, $decimal, $thousands_sep );
+		$expected_as_int = Price::to_integer( $result, $decimal, $thousands_sep );
+		$sub_total_as_int = Price::to_integer( $sub_total, $decimal, $thousands_sep );
 
 		$this->assertEquals( $expected_as_int, $sub_total_as_int );
 	}

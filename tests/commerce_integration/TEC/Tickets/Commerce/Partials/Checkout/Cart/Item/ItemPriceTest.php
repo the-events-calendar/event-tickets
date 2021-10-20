@@ -38,7 +38,7 @@ class ItemPriceTest extends V2CommerceTestCase {
 			'post_title' => 'Test event for partial snapshot',
 		] );
 
-		$ids = $this->create_many_paypal_tickets( 1, $event_id, [ 'price' => 99 ] );
+		$ids = $this->create_many_paypal_tickets( 1, $event_id, [ 'price' => 9900 ] );
 
 		$this->tolerables[] = $event_id;
 		$items = [];

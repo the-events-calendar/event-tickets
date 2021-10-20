@@ -42,8 +42,8 @@ class Price {
 		$decimal      = ! is_null( $decimal ) ? $decimal : tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'decimal_point' );
 		$thousand_sep = ! is_null( $thousand_sep ) ? $thousand_sep : tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'thousands_sep' );
 
-		$number    = static::clear_formatting( $value, $decimal, $thousand_sep );
-		$sub_total = static::convert_to_decimal( $number * $quantity );
+		$number    = static::to_integer( $value, $decimal, $thousand_sep );
+		$sub_total = static::to_decimal( $number * $quantity );
 
 		return number_format( $sub_total, 2, $decimal, $thousand_sep );
 	}
@@ -70,11 +70,11 @@ class Price {
 		$thousand_sep = ! is_null( $thousand_sep ) ? $thousand_sep : tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'thousands_sep' );
 
 		$values = array_map( static function ( $value ) use ( $decimal, $thousand_sep ) {
-			return static::clear_formatting( $value, $decimal, $thousand_sep );
+			return static::to_integer( $value, $decimal, $thousand_sep );
 		}, $values );
 
 		$total = array_sum( $values );
-		$total = static::convert_to_decimal( $total );
+		$total = static::to_decimal( $total );
 
 		return number_format( $total, 2, $decimal, $thousand_sep );
 	}
@@ -82,20 +82,20 @@ class Price {
 	/**
 	 * Removes decimal and thousands separator from a numeric string, transforming it into an int
 	 *
-	 * @todo currently this requires that the $value be formatted using $decimal and $thousand_sep, which
+	 * @todo  currently this requires that the $value be formatted using $decimal and $thousand_sep, which
 	 *      can be an issue in migrated sites, or sites that changed number formatting. It will also fail if
 	 *      $value is a float and neither $decimal or $thousand_sep are '.'.
 	 *        We should expand this to remove any possible combination of decimal/thousands marks from numbers.
 	 *
 	 * @since TBD
 	 *
-	 * @param array       $value        Numeric value to clean.
-	 * @param null|string $decimal      Which Decimal separator.
-	 * @param null|string $thousand_sep Which thousand separator.
+	 * @param array  $value        Numeric value to clean.
+	 * @param string $decimal      Which Decimal separator.
+	 * @param string $thousand_sep Which thousand separator.
 	 *
 	 * @return int
 	 */
-	public static function clear_formatting( $value, $decimal, $thousand_sep ) {
+	public static function to_integer( $value, $decimal, $thousand_sep ) {
 
 		// If the string is formatted with thousands separators but not with decimals, pad with decimals
 		if ( false !== strpos( $value, $thousand_sep ) && false === strpos( $value, $decimal ) ) {
@@ -120,7 +120,7 @@ class Price {
 			// those zeros are now lost, so we add them back here
 			$rounded_arr = explode( $decimal, $rounded );
 			if ( isset( $rounded_arr[1] ) && strlen( $rounded_arr[1] ) < static::$precision ) {
-				$rounded = str_pad( $rounded, (strlen( $rounded_arr[0] ) + 1 + static::$precision ), '0' );
+				$rounded = str_pad( $rounded, ( strlen( $rounded_arr[0] ) + 1 + static::$precision ), '0' );
 			}
 
 			$value = $rounded;
@@ -139,7 +139,39 @@ class Price {
 	 *
 	 * @return float
 	 */
-	private static function convert_to_decimal( $total ) {
+	public static function to_decimal( $total ) {
 		return round( $total / pow( 10, static::$precision ), static::$precision );
+	}
+
+	/**
+	 * Takes a float, formats it to the proper separators, then format as currency
+	 *
+	 * @since TBD
+	 *
+	 * @param float  $value        The value to format.
+	 * @param string $decimal      Which Decimal separator.
+	 * @param string $thousand_sep Which thousand separator.
+	 *
+	 * @return string
+	 */
+	public static function to_string( $value, $decimal = '.', $thousand_sep = ',' ) {
+		if ( ! is_float( $value ) ) {
+			$value = static::to_decimal( $value );
+		}
+
+		return number_format( $value, static::$precision, $decimal, $thousand_sep );
+	}
+
+	/**
+	 * Takes a string and formats it to the proper currency value
+	 *
+	 * @since TBD
+	 *
+	 * @param string $value The value to format.
+	 *
+	 * @return string
+	 */
+	public static function to_currency( $value ) {
+		return tribe( 'tickets.commerce.paypal.currency' )->format_currency( $value );
 	}
 }

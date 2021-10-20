@@ -106,7 +106,7 @@ $attributes = [
 	'data-ticket-id'      => (string) $ticket->ID,
 	'data-available'      => $this->get( 'data_available' ),
 	'data-has-shared-cap' => $this->get( 'data_has_shared_cap' ),
-	'data-ticket-price'   => (string) $ticket->price,
+	'data-ticket-price'   => (string) ($ticket->price / 100),
 ];
 
 if ( $has_shared_cap ) {
