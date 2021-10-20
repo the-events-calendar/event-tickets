@@ -459,8 +459,8 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			'failed-creating-order'   => __( 'Creating new PayPal order failed. Please try again.', 'event-tickets' ),
 			'canceled-creating-order' => __( 'Your PayPal order was cancelled.', 'event-tickets' ),
 			'nonexistent-order-id'    => __( 'Provided Order id is not valid.', 'event-tickets' ),
-			'failed-capture'          => __( 'Failed to capture Payment!', 'event-tickets' ),
-			'invalid-capture-status'  => __( 'Invalid Payment capture status', 'event-tickets' ),
+			'failed-capture'          => __( 'There was a problem while processing your payment, please try again.', 'event-tickets' ),
+			'invalid-capture-status'  => __( 'There was a problem with the Order status change, please try again.', 'event-tickets' ),
 		];
 
 		/**
