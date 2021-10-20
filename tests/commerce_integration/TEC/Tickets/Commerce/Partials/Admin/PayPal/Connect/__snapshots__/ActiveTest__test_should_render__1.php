@@ -8,7 +8,11 @@
 		<span class="tec-tickets__admin-settings-tickets-commerce-paypal-connect-text--connected">
 			Connected <span class="dashicons dashicons-saved"></span>
 		</span>
-	</div>
+
+					<ul>
+							</ul>
+			</div>
+
 </div>
 
 	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-row">
