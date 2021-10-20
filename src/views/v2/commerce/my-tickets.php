@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Tickets Commerce: My Tickets Page
  *
