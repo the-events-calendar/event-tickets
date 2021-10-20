@@ -235,7 +235,7 @@ class Price {
 	public static function to_currency( $value ) {
 
 		if ( ! is_numeric( $value ) ) {
-			$value = static::to_string( static::to_numeric( $value ) );
+			$value = static::to_numeric( $value );
 		}
 
 		return tribe( 'tickets.commerce.paypal.currency' )->format_currency( $value );
