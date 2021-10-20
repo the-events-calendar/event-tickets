@@ -53,22 +53,22 @@
         },
         {
             "name": "automattic/vipwpcs",
-            "version": "2.3.3",
+            "version": "2.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Automattic/VIP-Coding-Standards.git",
-                "reference": "6cd0a6a82bc0ac988dbf9d6a7c2e293dc8ac640b"
+                "reference": "efacebef421334d54b99afa92fb8fa645336a8a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Automattic/VIP-Coding-Standards/zipball/6cd0a6a82bc0ac988dbf9d6a7c2e293dc8ac640b",
-                "reference": "6cd0a6a82bc0ac988dbf9d6a7c2e293dc8ac640b",
+                "url": "https://api.github.com/repos/Automattic/VIP-Coding-Standards/zipball/efacebef421334d54b99afa92fb8fa645336a8a7",
+                "reference": "efacebef421334d54b99afa92fb8fa645336a8a7",
                 "shasum": ""
             },
             "require": {
                 "dealerdirect/phpcodesniffer-composer-installer": "^0.4.1 || ^0.5 || ^0.6.2 || ^0.7",
                 "php": ">=5.4",
-                "sirbrillig/phpcs-variable-analysis": "^2.11.1",
+                "sirbrillig/phpcs-variable-analysis": "^2.8.3",
                 "squizlabs/php_codesniffer": "^3.5.5",
                 "wp-coding-standards/wpcs": "^2.3"
             },
@@ -96,7 +96,7 @@
                 "standards",
                 "wordpress"
             ],
-            "time": "2021-09-29T16:20:23+00:00"
+            "time": "2021-04-28T16:41:50+00:00"
         },
         {
             "name": "behat/gherkin",
@@ -656,22 +656,22 @@
         },
         {
             "name": "codeception/module-rest",
-            "version": "1.3.2",
+            "version": "1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/module-rest.git",
-                "reference": "2f35e75d4a5a7fd1fe77d7f5bd56a9123c453e3b"
+                "reference": "293a0103d5257b7c884ef276147a9a06914e878f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/module-rest/zipball/2f35e75d4a5a7fd1fe77d7f5bd56a9123c453e3b",
-                "reference": "2f35e75d4a5a7fd1fe77d7f5bd56a9123c453e3b",
+                "url": "https://api.github.com/repos/Codeception/module-rest/zipball/293a0103d5257b7c884ef276147a9a06914e878f",
+                "reference": "293a0103d5257b7c884ef276147a9a06914e878f",
                 "shasum": ""
             },
             "require": {
                 "codeception/codeception": "^4.0",
                 "justinrainbow/json-schema": "~5.2.9",
-                "php": ">=5.6.6 <9.0",
+                "php": ">=5.6.0 <9.0",
                 "softcreatr/jsonpath": "^0.5 || ^0.7"
             },
             "require-dev": {
@@ -702,7 +702,7 @@
                 "codeception",
                 "rest"
             ],
-            "time": "2021-10-08T09:33:46+00:00"
+            "time": "2021-04-23T08:12:24+00:00"
         },
         {
             "name": "codeception/module-webdriver",
@@ -1255,16 +1255,16 @@
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "1.5.0",
+            "version": "1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "136a635e2b4a49b9d79e9c8fee267ffb257fdba0"
+                "reference": "8e7d04f1f6450fef59366c399cfad4b9383aa30d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/136a635e2b4a49b9d79e9c8fee267ffb257fdba0",
-                "reference": "136a635e2b4a49b9d79e9c8fee267ffb257fdba0",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/8e7d04f1f6450fef59366c399cfad4b9383aa30d",
+                "reference": "8e7d04f1f6450fef59366c399cfad4b9383aa30d",
                 "shasum": ""
             },
             "require": {
@@ -1276,7 +1276,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.5-dev"
+                    "dev-master": "1.4-dev"
                 }
             },
             "autoload": {
@@ -1293,58 +1293,29 @@
             ],
             "authors": [
                 {
-                    "name": "Graham Campbell",
-                    "email": "hello@gjcampbell.co.uk",
-                    "homepage": "https://github.com/GrahamCampbell"
-                },
-                {
                     "name": "Michael Dowling",
                     "email": "mtdowling@gmail.com",
                     "homepage": "https://github.com/mtdowling"
-                },
-                {
-                    "name": "Tobias Nyholm",
-                    "email": "tobias.nyholm@gmail.com",
-                    "homepage": "https://github.com/Nyholm"
-                },
-                {
-                    "name": "Tobias Schultze",
-                    "email": "webmaster@tubo-world.de",
-                    "homepage": "https://github.com/Tobion"
                 }
             ],
             "description": "Guzzle promises library",
             "keywords": [
                 "promise"
             ],
-            "funding": [
-                {
-                    "url": "https://github.com/GrahamCampbell",
-                    "type": "github"
-                },
-                {
-                    "url": "https://github.com/Nyholm",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/promises",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2021-10-07T13:05:22+00:00"
+            "time": "2021-03-07T09:25:29+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.8.3",
+            "version": "1.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "1afdd860a2566ed3c2b0b4a3de6e23434a79ec85"
+                "reference": "dc960a912984efb74d0a90222870c72c87f10c91"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/1afdd860a2566ed3c2b0b4a3de6e23434a79ec85",
-                "reference": "1afdd860a2566ed3c2b0b4a3de6e23434a79ec85",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/dc960a912984efb74d0a90222870c72c87f10c91",
+                "reference": "dc960a912984efb74d0a90222870c72c87f10c91",
                 "shasum": ""
             },
             "require": {
@@ -1382,33 +1353,12 @@
             ],
             "authors": [
                 {
-                    "name": "Graham Campbell",
-                    "email": "hello@gjcampbell.co.uk",
-                    "homepage": "https://github.com/GrahamCampbell"
-                },
-                {
                     "name": "Michael Dowling",
                     "email": "mtdowling@gmail.com",
                     "homepage": "https://github.com/mtdowling"
                 },
                 {
-                    "name": "George Mponos",
-                    "email": "gmponos@gmail.com",
-                    "homepage": "https://github.com/gmponos"
-                },
-                {
-                    "name": "Tobias Nyholm",
-                    "email": "tobias.nyholm@gmail.com",
-                    "homepage": "https://github.com/Nyholm"
-                },
-                {
-                    "name": "Márk Sági-Kazár",
-                    "email": "mark.sagikazar@gmail.com",
-                    "homepage": "https://github.com/sagikazarmark"
-                },
-                {
                     "name": "Tobias Schultze",
-                    "email": "webmaster@tubo-world.de",
                     "homepage": "https://github.com/Tobion"
                 }
             ],
@@ -1423,21 +1373,7 @@
                 "uri",
                 "url"
             ],
-            "funding": [
-                {
-                    "url": "https://github.com/GrahamCampbell",
-                    "type": "github"
-                },
-                {
-                    "url": "https://github.com/Nyholm",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/psr7",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2021-10-05T13:56:00+00:00"
+            "time": "2021-04-26T09:17:50+00:00"
         },
         {
             "name": "illuminate/contracts",
@@ -1792,16 +1728,16 @@
         },
         {
             "name": "lucatume/wp-browser",
-            "version": "3.0.11",
+            "version": "3.0.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/wp-browser.git",
-                "reference": "c215ae0aff4a4ea58e2172e7014a2a7b0c160e25"
+                "reference": "0754da8955c97762976379a9b2ab7175594ff815"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/c215ae0aff4a4ea58e2172e7014a2a7b0c160e25",
-                "reference": "c215ae0aff4a4ea58e2172e7014a2a7b0c160e25",
+                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/0754da8955c97762976379a9b2ab7175594ff815",
+                "reference": "0754da8955c97762976379a9b2ab7175594ff815",
                 "shasum": ""
             },
             "require": {
@@ -1878,7 +1814,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-09-20T17:00:45+00:00"
+            "time": "2021-09-13T18:16:58+00:00"
         },
         {
             "name": "lucatume/wp-snaphot-assertions",
@@ -1969,20 +1905,20 @@
         },
         {
             "name": "mikemclin/laravel-wp-password",
-            "version": "2.0.3",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mikemclin/laravel-wp-password.git",
-                "reference": "5225c95f75aa0a5ad4040ec2074d1c8d7f10b5f4"
+                "reference": "84ff1113ff6866cdb0350c176dc3c843383e4819"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikemclin/laravel-wp-password/zipball/5225c95f75aa0a5ad4040ec2074d1c8d7f10b5f4",
-                "reference": "5225c95f75aa0a5ad4040ec2074d1c8d7f10b5f4",
+                "url": "https://api.github.com/repos/mikemclin/laravel-wp-password/zipball/84ff1113ff6866cdb0350c176dc3c843383e4819",
+                "reference": "84ff1113ff6866cdb0350c176dc3c843383e4819",
                 "shasum": ""
             },
             "require": {
-                "bordoni/phpass": "0.3.*",
+                "hautelook/phpass": "0.3.*",
                 "illuminate/support": ">=4.0.0",
                 "php": ">=5.3.0"
             },
@@ -1992,7 +1928,7 @@
             "require-dev": {
                 "mockery/mockery": "~0.9",
                 "phpunit/phpunit": "~4.0",
-                "satooshi/php-coveralls": "^2.2"
+                "satooshi/php-coveralls": "dev-master"
             },
             "type": "laravel-package",
             "extra": {
@@ -2029,7 +1965,7 @@
                 "password",
                 "wordpress"
             ],
-            "time": "2021-09-30T13:48:57+00:00"
+            "time": "2018-01-11T14:12:02+00:00"
         },
         {
             "name": "mustache/mustache",
@@ -2387,16 +2323,16 @@
         },
         {
             "name": "php-webdriver/webdriver",
-            "version": "1.12.0",
+            "version": "1.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-webdriver/php-webdriver.git",
-                "reference": "99d4856ed7dffcdf6a52eccd6551e83d8d557ceb"
+                "reference": "da16e39968f8dd5cfb7d07eef91dc2b731c69880"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-webdriver/php-webdriver/zipball/99d4856ed7dffcdf6a52eccd6551e83d8d557ceb",
-                "reference": "99d4856ed7dffcdf6a52eccd6551e83d8d557ceb",
+                "url": "https://api.github.com/repos/php-webdriver/php-webdriver/zipball/da16e39968f8dd5cfb7d07eef91dc2b731c69880",
+                "reference": "da16e39968f8dd5cfb7d07eef91dc2b731c69880",
                 "shasum": ""
             },
             "require": {
@@ -2405,19 +2341,20 @@
                 "ext-zip": "*",
                 "php": "^5.6 || ~7.0 || ^8.0",
                 "symfony/polyfill-mbstring": "^1.12",
-                "symfony/process": "^2.8 || ^3.1 || ^4.0 || ^5.0 || ^6.0"
+                "symfony/process": "^2.8 || ^3.1 || ^4.0 || ^5.0"
             },
             "replace": {
                 "facebook/webdriver": "*"
             },
             "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.0",
                 "ondram/ci-detector": "^2.1 || ^3.5 || ^4.0",
                 "php-coveralls/php-coveralls": "^2.4",
                 "php-mock/php-mock-phpunit": "^1.1 || ^2.0",
                 "php-parallel-lint/php-parallel-lint": "^1.2",
                 "phpunit/phpunit": "^5.7 || ^7 || ^8 || ^9",
                 "squizlabs/php_codesniffer": "^3.5",
-                "symfony/var-dumper": "^3.3 || ^4.0 || ^5.0 || ^6.0"
+                "symfony/var-dumper": "^3.3 || ^4.0 || ^5.0"
             },
             "suggest": {
                 "ext-SimpleXML": "For Firefox profile creation"
@@ -2444,7 +2381,7 @@
                 "selenium",
                 "webdriver"
             ],
-            "time": "2021-10-14T09:30:02+00:00"
+            "time": "2021-05-21T15:12:49+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -4094,16 +4031,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.6.1",
+            "version": "3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "f268ca40d54617c6e06757f83f699775c9b3ff2e"
+                "reference": "ffced0d2c8fa8e6cdc4d695a743271fab6c38625"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/f268ca40d54617c6e06757f83f699775c9b3ff2e",
-                "reference": "f268ca40d54617c6e06757f83f699775c9b3ff2e",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/ffced0d2c8fa8e6cdc4d695a743271fab6c38625",
+                "reference": "ffced0d2c8fa8e6cdc4d695a743271fab6c38625",
                 "shasum": ""
             },
             "require": {
@@ -4141,7 +4078,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2021-10-11T04:00:11+00:00"
+            "time": "2021-04-09T00:54:41+00:00"
         },
         {
             "name": "symfony/browser-kit",
