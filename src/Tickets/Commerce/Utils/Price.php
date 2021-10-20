@@ -126,7 +126,11 @@ class Price {
 			$value = $rounded;
 		}
 
-		return (int) str_replace( $decimal, '', $value );
+		if ( is_numeric( $value ) ) {
+			$value = $value * 100;
+		}
+
+		return str_replace( $decimal, '', $value );
 	}
 
 	/**

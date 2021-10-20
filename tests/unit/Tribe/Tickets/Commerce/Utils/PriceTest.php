@@ -63,18 +63,18 @@ class PriceTest extends \Codeception\Test\Unit {
 	 */
 	public function totals_provider() {
 		return [
-			[ [ '0.2', '2.75' ], '.', ',', '2.77', 277 ], // formatted string with decimals
-			[ [ 1, 2 ], '.', ',', '0.03', 3 ], // integers
-			[ [ 34, 56 ], '.', ',', '0.90', 90 ], // integers
-			[ [ 789, '012' ], '.', ',', '8.01', 801 ], // integer + unformatted string w/ leading zero
-			[ [ 3456, '7890' ], '.', ',', '113.46', 11346 ], // integer + unformatted string without decimals
-			[ [ '12,345', 67890 ], '.', ',', '13,023.90', 1302390 ], // formatted text without decimals
-			[ [ '12,345.983', 67890 ], '.', ',', '13,024.88', 1302488 ], // formatted text with 3 decimals
+			[ [ '0.2', '2.75' ], '.', ',', '2.95', 295 ], // formatted string with decimals
+			[ [ 1, 2 ], '.', ',', '3.00', 300 ], // integers
+			[ [ 34, 56 ], '.', ',', '90.00', 9000 ], // integers
+			[ [ 789, '012' ], '.', ',', '801.00', 80100 ], // integer + unformatted string w/ leading zero
+			[ [ 3456, '7890' ], '.', ',', '11,346.00', 1134600 ], // integer + unformatted string without decimals
+			[ [ '12,345', 67890 ], '.', ',', '80,235.00', 8023500 ], // formatted text without decimals
+			[ [ '12,345.983', 67890 ], '.', ',', '80,235.98', 8023598 ], // formatted text with 3 decimals
 			[ [ '1.234,56', '7.890,12' ], ',', '.', '9.124,68', 912468 ], // comma as decimal separator and dot as thousands separator
-			[ [ '34 567.89', '0123456' ], '.', ' ', '35 802.45', 3580245 ], // space as thousands separator
-			[ [ '789\'012.34', '56789012' ], '.', '\'', '1\'356\'902.46', 135690246 ], // apostrophe as thousands separator
-			[ [ '789012 34', '56789012' ], ' ', '&lt;', '1&lt;356&lt;902 46', 135690246 ], // space as decimal separator and html entity as thousands separator
-			[ [ '78901234.', '56789012' ], '.', ',', '79,469,124.12', 7946912412 ], // decimal at the end of the string means string.00
+			[ [ '34 567.89', '0123456' ], '.', ' ', '158 023.89', 15802389 ], // space as thousands separator
+			[ [ '789\'012.34', '56789012' ], '.', '\'', '57\'578\'024.34', 5757802434 ], // apostrophe as thousands separator
+			[ [ '789012 34', '56789012' ], ' ', '&lt;', '57&lt;578&lt;024 34', 5757802434 ], // space as decimal separator and html entity as thousands separator
+			[ [ '78901234.', '56789012' ], '.', ',', '135,690,246.00', 13569024600 ], // decimal at the end of the string means string.00
 			[ [ '.78', '567890.12' ], '.', ',', '567,890.90', 56789090 ], // decimal at the start of the string means 0.string
 			[ [ '99.00', '99.00' ], '.', ',', '198.00', 19800 ], // Copy of snapshot test
 		];
