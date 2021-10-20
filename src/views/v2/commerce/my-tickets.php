@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Tickets Commerce: Checkout Page
+ * Tickets Commerce: My Tickets Page
  *
  * @todo TribeCommerceLegacy: We need to change this template to V2 structure. For now it's following the legacy template `orders-tickets.php` from ETP to minimize the impact to core templates from TicketsCommerce changes.
  *
@@ -17,7 +17,7 @@
  * @version TBD
  */
 
-// @todo Move these variables to template vars.
+// @todo TribeCommerceLegacy: Move these variables to template vars.
 
 $view      = Tribe__Tickets__Tickets_View::instance();
 $post_id   = get_the_ID();
