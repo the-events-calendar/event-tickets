@@ -167,6 +167,63 @@ class Price {
 	}
 
 	/**
+	 * Transform a formatted string into a numeric value, regardless of what format it uses
+	 *
+	 * @since TBD
+	 *
+	 * @param string $value the formatted string.
+	 *
+	 * @return float
+	 */
+	public static function to_numeric( $value ) {
+		// Get all non-digits from the value
+		preg_match_all( '/[^\d]/', $value, $matches );
+
+		// if the string is all digits, it is numeric
+		if ( empty( $matches ) ) {
+			return $value;
+		}
+
+		$tokens = array_unique( $matches[0] );
+
+		foreach ( $tokens as $token ) {
+			if ( static::is_decimal_separator( $token, $value ) ) {
+				$value = str_replace( $token, '.', $value );
+				continue;
+			}
+
+			$value = str_replace( $token, '', $value );
+		}
+
+		return (float) $value;
+	}
+
+	/**
+	 * Tries to determine if a token is serving as a decimal separator or something else
+	 * in a string;
+	 *
+	 * The rule to determine a decimal is straightforward. It needs to exist only once
+	 * in the string and the piece of the string after the separator cannot be longer
+	 * than 2 digits. Anything else is serving another purpose.
+	 *
+	 * @since TBD
+	 *
+	 * @param $separator string a separator token, like . or ,
+	 * @param $value     string a number formatted as a string
+	 *
+	 * @return bool
+	 */
+	private static function is_decimal_separator( $separator, $value ) {
+		$pieces = explode( $separator, $value );
+
+		if ( 2 === count( $pieces ) ) {
+			return strlen( $pieces[1] ) < 3;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Takes a string and formats it to the proper currency value
 	 *
 	 * @since TBD
@@ -176,6 +233,11 @@ class Price {
 	 * @return string
 	 */
 	public static function to_currency( $value ) {
+
+		if ( ! is_numeric( $value ) ) {
+			$value = static::to_string( static::to_numeric( $value ) );
+		}
+
 		return tribe( 'tickets.commerce.paypal.currency' )->format_currency( $value );
 	}
 }
