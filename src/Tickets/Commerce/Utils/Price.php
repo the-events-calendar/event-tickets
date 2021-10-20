@@ -156,7 +156,7 @@ class Price {
 	 */
 	public static function to_string( $value, $decimal = '.', $thousand_sep = ',' ) {
 		if ( ! is_float( $value ) ) {
-			$value = static::to_decimal( static::to_integer( $value ) );
+			$value = static::to_decimal( static::to_integer( $value, $decimal, $thousand_sep ) );
 		}
 
 		return number_format( $value, static::$precision, $decimal, $thousand_sep );
