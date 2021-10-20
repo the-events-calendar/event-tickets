@@ -277,4 +277,83 @@ class Signup {
 
 		return $this->get_template()->template( 'signup-link', $template_vars, false );
 	}
+
+
+	/**
+	 * Validate seller on Boarding status data.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public function get_errors_from_on_boarded_data() {
+		$error_messages = [];
+		$merchant = tribe( Merchant::class );
+		$saved_merchant_id = $merchant->get_merchant_id_in_paypal();
+		if ( ! $saved_merchant_id ) {
+			return [];
+		}
+
+		$seller_status = tribe( WhoDat::class )->get_seller_status( $saved_merchant_id );
+
+		if ( array_diff( [ 'payments_receivable', 'primary_email_confirmed' ], array_keys( $seller_status ) ) ) {
+			$error_messages[] = esc_html__( 'There was a problem with the status check for your account. Please try disconnecting and connecting again. If the problem persists, please contact support.', 'event-tickets' );
+
+			// Return here since the rest of the validations will definitely fail
+			return $error_messages;
+		}
+
+		if ( ! $seller_status['payments_receivable'] ) {
+			$error_messages[] = esc_html__( 'Set up an account to receive payment from PayPal', 'event-tickets' );
+		}
+
+		if ( ! $seller_status['primary_email_confirmed'] ) {
+			$error_messages[] = esc_html__( 'Confirm your primary email address', 'event-tickets' );
+		}
+
+		if ( ! $merchant->get_supports_custom_payments() ) {
+			return count( $error_messages ) > 1 ? $error_messages : true;
+		}
+
+		if ( array_diff( [ 'products', 'capabilities' ], array_keys( $seller_status ) ) ) {
+			$error_messages[] = esc_html__( 'Your account was expected to be able to accept custom payments, but is not. Please make sure your
+				account country matches the country setting. If the problem persists, please contact PayPal.', 'event-tickets' );
+
+			// Return here since the rest of the validations will definitely fail
+			return $error_messages;
+		}
+
+		// Grab the PPCP_CUSTOM product from the status data
+		$custom_product = current(
+			array_filter(
+				$seller_status['products'],
+				static function ( $product ) {
+					return 'PPCP_CUSTOM' === $product['name'];
+				}
+			)
+		);
+
+		if (
+			empty( $custom_product )
+			|| empty( $custom_product['vetting_status'] )
+			|| 'SUBSCRIBED' !== $custom_product['vetting_status']
+		) {
+			$error_messages[] = esc_html__( 'Reach out to PayPal to enable PPCP_CUSTOM for your account', 'event-tickets' );
+		}
+
+		// Loop through the capabilities and see if any are not active
+		$invalid_capabilities = [];
+		foreach ( $seller_status['capabilities'] as $capability ) {
+			if ( $capability['status'] !== 'ACTIVE' ) {
+				$invalid_capabilities[] = $capability['name'];
+			}
+		}
+
+		if ( ! empty( $invalid_capabilities ) ) {
+			$error_messages[] = esc_html__( 'Reach out to PayPal to resolve the following capabilities:', 'event-tickets' ) . ' ' . implode( ', ', $invalid_capabilities );
+		}
+
+		// If there were errors then redirect the user with notices
+		return $error_messages;
+	}
 }

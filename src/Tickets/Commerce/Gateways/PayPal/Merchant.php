@@ -817,13 +817,11 @@ class Merchant {
 
 		$seller_status = tribe( WhoDat::class )->get_seller_status( $saved_merchant_id );
 
-		$payments_receivable   = Arr::get( $seller_status, 'payments_receivable' );
 		$paypal_product_name   = Arr::get( $seller_status, [ 'products', 0, 'name' ] );
 		$paypal_product_status = Arr::get( $seller_status, [ 'products', 0, 'status' ] );
 
 		$is_active = (
-			true === $payments_receivable
-			&& in_array( $paypal_product_name, [ 'EXPRESS_CHECKOUT', 'PPCP_CUSTOM' ], true )
+			in_array( $paypal_product_name, [ 'EXPRESS_CHECKOUT', 'PPCP_CUSTOM' ], true )
 			&& 'ACTIVE' === $paypal_product_status
 		);
 

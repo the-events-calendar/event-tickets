@@ -272,11 +272,10 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		)
 			.then( response => response.json() )
 			.then( data => {
-				tribe.tickets.debug.log( data );
 				if ( data.success ) {
-					return obj.handleApproveSuccess( data );
+					return obj.handleApproveSuccess( data, actions, $container );
 				} else {
-					return obj.handleApproveFail( data );
+					return obj.handleApproveFail( data, actions, $container );
 				}
 			} )
 			.catch( obj.handleApproveError );
@@ -291,9 +290,9 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @return {void}
 	 */
-	obj.handleApproveSuccess = function ( data ) {
-		tribe.tickets.debug.log( 'handleApproveSuccess', arguments );
-		// When this Token has expired we just refresh the browser.
+	obj.handleApproveSuccess = ( data, actions, $container ) => {
+		tribe.tickets.debug.log( 'handleApproveSuccess', data, actions );
+		// If the Token has expired we refresh the browser.
 		window.location.replace( data.redirect_url );
 	};
 
@@ -306,9 +305,19 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @return {void}
 	 */
-	obj.handleApproveFail = function ( data ) {
-		tribe.tickets.debug.log( 'handleApproveFail', arguments );
-		obj.showNotice( data );
+	obj.handleApproveFail = ( data, actions, $container ) => {
+		tribe.tickets.debug.log( 'handleApproveFail', data, actions );
+
+		if ( 'UNPROCESSABLE_ENTITY' === data.data.name ) {
+			if ( 'INSTRUMENT_DECLINED' === data.data.details[0].issue ) {
+				obj.showNotice( $container, '', data.data.details[0].description );
+				// Recoverable state, per:
+				// return actions.restart();
+				// https://developer.paypal.com/docs/checkout/integration-features/funding-failure/
+			}
+		}
+
+		tribe.tickets.loader.hide( $container );
 	};
 
 	/**
@@ -791,16 +800,16 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleHostedApproveFail = ( data, actions, $container ) => {
 		tribe.tickets.debug.log( 'handleHostedApproveFail', data, actions, $container );
+		if ( 'UNPROCESSABLE_ENTITY' === data.data.name ) {
+			if ( 'INSTRUMENT_DECLINED' === data.data.details[0].issue ) {
+				obj.showNotice( $container, '', data.data.details[0].description );
+				// Recoverable state, per:
+				// return actions.restart();
+				// https://developer.paypal.com/docs/checkout/integration-features/funding-failure/
+			}
+		}
 
 		tribe.tickets.loader.hide( $container );
-		obj.showNotice( data );
-
-		if ( 'INSTRUMENT_DECLINED' === data.error ) {
-			return actions.restart();
-
-			// Recoverable state, per:
-			// https://developer.paypal.com/docs/checkout/integration-features/funding-failure/
-		}
 	};
 
 	/**

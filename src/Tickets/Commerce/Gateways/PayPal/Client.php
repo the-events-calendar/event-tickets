@@ -245,7 +245,7 @@ class Client {
 
 			// If we properly saved, just re-try the request.
 			if ( $saved ) {
-				$arguments   = func_get_args();
+				$arguments = func_get_args();
 				array_pop( $arguments );
 				$arguments[] = $retries + 1;
 
@@ -253,15 +253,16 @@ class Client {
 			}
 		}
 
-		// When we receive an error code we return the whole response.
-		if ( ! in_array( $response_code, [ 200, 201, 202, 204 ], true ) ) {
+		/**
+		 * @todo we need to log and be more verbose about the responses. Specially around failed JSON strings.
+		 */
+		$response_body = wp_remote_retrieve_body( $response );
+		$response_body = @json_decode( $response_body, true );
+		if ( empty( $response_body ) ) {
 			return $response;
 		}
 
-		$response = wp_remote_retrieve_body( $response );
-		$response = @json_decode( $response, true );
-
-		if ( ! is_array( $response ) ) {
+		if ( ! is_array( $response_body ) ) {
 			tribe( 'logger' )->log_error( sprintf( '[%s] Unexpected PayPal %s response', $url, $method ), 'tickets-commerce-paypal' );
 
 			return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-client-unexpected', null, [
@@ -273,7 +274,7 @@ class Client {
 			] );
 		}
 
-		return $response;
+		return $response_body;
 	}
 
 	/**
@@ -486,12 +487,22 @@ class Client {
 						'surname'    => Arr::get( $unit, 'last_name' ),
 					],
 					'email_address' => Arr::get( $unit, 'email' ),
-
 				],
 				'payment_instruction' => [
 					'disbursement_mode' => Arr::get( $unit, 'disbursement_mode', 'INSTANT' ),
 				],
 			];
+
+			$items = Arr::get( $unit, 'items' );
+			if ( ! empty( $items ) ) {
+				$purchase_unit['items']               = $items;
+				$purchase_unit['amount']['breakdown'] = [
+					'item_total' => [
+						'value'         => Arr::get( $unit, 'value' ),
+						'currency_code' => Arr::get( $unit, 'currency' ),
+					],
+				];
+			}
 
 			/**
 			 * @todo Need to figure out how to get this email address still.
@@ -548,6 +559,12 @@ class Client {
 			$body['payerID'] = $payer_id;
 		}
 
+		/**
+		 * If we need to handle failures.
+		 *
+		 * @link https://developer.paypal.com/docs/platforms/checkout/add-capabilities/handle-funding-failures/
+		 * 'PayPal-Mock-Response'          => '{"mock_application_codes" : "INSTRUMENT_DECLINED"}',
+		 */
 		$args = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
