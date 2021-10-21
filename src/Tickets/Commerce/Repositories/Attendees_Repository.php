@@ -50,25 +50,36 @@ class Attendees_Repository extends Tribe__Repository {
 		$this->create_args['post_status']  = 'publish';
 		$this->create_args['post_type']    = Attendee::POSTTYPE;
 
+		$aliases = [
+			'order_id'          => 'post_parent',
+			'ticket_id'         => Attendee::$ticket_relation_meta_key,
+			'event_id'          => Attendee::$event_relation_meta_key,
+			'user_id'           => Attendee::$user_relation_meta_key,
+			'security_code'     => Attendee::$security_code_meta_key,
+			'opt_out'           => Attendee::$optout_meta_key,
+			'checked_in'        => Attendee::$checked_in_meta_key,
+			'price_paid'        => Attendee::$price_paid_meta_key,
+			'currency'          => Attendee::$currency_meta_key,
+			'full_name'         => Attendee::$full_name_meta_key,
+			'email'             => Attendee::$email_meta_key,
+			'is_deleted_ticket' => Attendee::$deleted_ticket_meta_key,
+			'ticket_sent'       => Attendee::$ticket_sent_meta_key,
+			'is_subscribed'     => Attendee::$subscribed_meta_key,
+		];
+
+		/**
+		 * Allows for filtering the repository aliases.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $aliases Repository aliases.
+		 */
+		$aliases = apply_filters( 'tec_tickets_commerce_attendees_repository_aliases', $aliases );
+
 		// Add event specific aliases.
 		$this->update_fields_aliases = array_merge(
 			$this->update_fields_aliases,
-			[
-				'order_id'          => 'post_parent',
-				'ticket_id'         => Attendee::$ticket_relation_meta_key,
-				'event_id'          => Attendee::$event_relation_meta_key,
-				'user_id'           => Attendee::$user_relation_meta_key,
-				'security_code'     => Attendee::$security_code_meta_key,
-				'opt_out'           => Attendee::$optout_meta_key,
-				'checked_in'        => Attendee::$checked_in_meta_key,
-				'price_paid'        => Attendee::$price_paid_meta_key,
-				'currency'          => Attendee::$currency_meta_key,
-				'full_name'         => Attendee::$full_name_meta_key,
-				'email'             => Attendee::$email_meta_key,
-				'is_deleted_ticket' => Attendee::$deleted_ticket_meta_key,
-				'ticket_sent'       => Attendee::$ticket_sent_meta_key,
-				'is_subscribed'     => Attendee::$subscribed_meta_key,
-			]
+			$aliases
 		);
 	}
 

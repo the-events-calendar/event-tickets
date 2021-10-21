@@ -21,7 +21,6 @@ use \tad_DI52_ServiceProvider;
 use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
-use Tribe\Tickets\Plus\Manual_Attendees\Modal;
 use WP_Admin_Bar;
 
 /**
@@ -87,7 +86,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 			'modify_tickets_counters_by_status',
 		], 15, 3 );
 
-		add_action( 'admin_footer', [ $this, 'enable_manual_attendee_modal' ] );
 		add_action( 'admin_bar_menu', [ $this, 'include_admin_bar_test_mode' ], 1000, 1 );
 	}
 
@@ -110,7 +108,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_tickets_checkout_urls', [ $this, 'filter_js_include_checkout_url' ] );
 		add_filter( 'tribe_tickets_cart_urls', [ $this, 'filter_js_include_cart_url' ] );
 
-		add_filter( 'tribe_ticket_filter_attendee_report_link', [ $this, 'filter_attendee_report_link' ], 10, 2 );
+		// @todo @backend We need to revisit the refactoring of this report.
+		// add_filter( 'tribe_ticket_filter_attendee_report_link', [ $this, 'filter_attendee_report_link' ], 10, 2 );
 
 		add_filter( 'event_tickets_attendees_tc_checkin_stati', [ $this, 'filter_checkin_statuses' ] );
 
@@ -560,19 +559,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 		}
 
 		return add_query_arg( [ 'page' => 'tickets-commerce-attendees' ], $url );
-	}
-
-	/**
-	 * Enables the manual attendee edit modal if ET+ is active
-	 *
-	 * @since TBD
-	 */
-	public function enable_manual_attendee_modal() {
-		if ( ! class_exists( Modal::class ) ) {
-			return;
-		}
-
-		tribe( Modal::class )->render_modal();
 	}
 
 	/**

@@ -52,6 +52,13 @@ abstract class Abstract_Gateway implements Interface_Gateway {
 	/**
 	 * @inheritDoc
 	 */
+	public static function is_connected() {
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static function is_active() {
 		return false;
 	}

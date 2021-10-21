@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Models;
 
 use Tribe\Models\Post_Types\Base;
 use TEC\Tickets\Commerce\Attendee;
+use Tribe\Tickets\Plus\Attendee_Registration\IAC;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -90,12 +91,9 @@ class Attendee_Model extends Base {
 				'user_id'         => $user_id,
 				'holder_name'     => $full_name,
 				'holder_email'    => $email,
-				'ticket_id'       => $ticket_unique_id,
+				'ticket_id'       => $ticket_id,
 				'qr_ticket_id'    => $post_id,
 				'security_code'   => $security,
-
-				// Attendee Meta, should be populated later by ET+
-				'attendee_meta'   => [],
 
 				// Handle initial Attendee flags.
 				'is_subscribed'   => $is_subscribed,

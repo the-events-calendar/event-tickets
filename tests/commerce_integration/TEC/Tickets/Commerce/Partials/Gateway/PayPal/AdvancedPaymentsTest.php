@@ -1,4 +1,5 @@
 <?php
+
 namespace TEC\Tickets\Commerce\Partials\Gateway\PayPal;
 
 use Tribe\Tickets\Test\Partials\V2CommerceTestCase;
@@ -16,6 +17,7 @@ class AdvancedPayments extends V2CommerceTestCase {
 		$args = [
 			'must_login'               => false,
 			'supports_custom_payments' => true,
+			'active_custom_payments'   => true,
 		];
 
 		return $args;
@@ -36,10 +38,10 @@ class AdvancedPayments extends V2CommerceTestCase {
 	 * @test
 	 */
 	public function test_should_render_empty_if_no_custom_payments_support() {
-		$args                             = $this->get_default_args();
-		$args['supports_custom_payments'] = false;
-		$html                             = $this->template_class()->template( $this->partial_path, $args, false );
-		$driver                           = $this->get_html_output_driver();
+		$args                           = $this->get_default_args();
+		$args['active_custom_payments'] = false;
+		$html                           = $this->template_class()->template( $this->partial_path, $args, false );
+		$driver                         = $this->get_html_output_driver();
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
