@@ -115,7 +115,7 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				 *
 				 * @param array<mixed>             $args       The attendee creation args.
 				 * @param \Tribe__Tickets__Tickets $ticket     The ticket the attendee is generated for.
-				 * @param \WP_Post                 $order      The order the attendee is generated for.ww
+				 * @param \WP_Post                 $order      The order the attendee is generated for.
 				 * @param Status_Interface         $new_status New post status.
 				 * @param Status_Interface|null    $old_status Old post status.
 				 * @param array                    $item       Which cart item this args are for.
