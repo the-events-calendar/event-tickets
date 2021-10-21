@@ -18,6 +18,7 @@
 namespace TEC\Tickets\Commerce;
 
 use \tad_DI52_ServiceProvider;
+use TEC\Tickets\Commerce as Base_Commerce;
 use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
@@ -107,6 +108,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		add_filter( 'tribe_tickets_checkout_urls', [ $this, 'filter_js_include_checkout_url' ] );
 		add_filter( 'tribe_tickets_cart_urls', [ $this, 'filter_js_include_cart_url' ] );
+
+		add_filter( 'tribe_tickets_tickets_in_cart', [ $this, 'filter_tickets_in_cart' ], 10, 2 );
+		add_filter( 'tribe_tickets_commerce_cart_get_tickets_' . Base_Commerce::PROVIDER, [ $this, 'filter_rest_get_tickets_in_cart' ] );
 
 		// @todo @backend We need to revisit the refactoring of this report.
 		// add_filter( 'tribe_ticket_filter_attendee_report_link', [ $this, 'filter_attendee_report_link' ], 10, 2 );
@@ -596,5 +600,49 @@ class Hooks extends tad_DI52_ServiceProvider {
 		$args['has_tpp'] = 'redirect' === $this->container->make( Cart::class )->get_mode();
 
 		return $args;
+	}
+
+	/**
+	 * Filters to add Tickets Commerce into the "tickets in cart" array.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int> $tickets Tickets in cart. Format: [ ticket_id => quantity ].
+	 * @param string $provider Commerce provider.
+	 * @return array
+	 */
+	public function filter_tickets_in_cart( $tickets, $provider ) {
+		if ( \TEC\Tickets\Commerce::PROVIDER !== $provider ) {
+			return $tickets;
+		}
+
+		$tickets = [];
+		$items   = tribe( Cart::class )->get_items_in_cart();
+
+		foreach ( $items as $data ) {
+			$tickets[ $data['ticket_id'] ] = $data['quantity'];
+		}
+
+		return $tickets;
+	}
+
+	public function filter_rest_get_tickets_in_cart( $tickets ) {
+		$tickets = [];
+		/* @var Cart $cart */
+		$cart    = tribe( Cart::class );
+		$items   = $cart->get_items_in_cart( true );
+
+		foreach ( $items as $data ) {
+			$tickets[] = [
+				'ticket_id' => $data['ticket_id'],
+				'quantity'  => $data['quantity'],
+				'post_id'   => $data['event_id'],
+				'optout'    => $data['extra']['optout'],
+				'iac'       => $data['extra']['iac'],
+				'provider'  => \TEC\Tickets\Commerce::PROVIDER,
+			];
+		}
+
+		return $tickets;
 	}
 }

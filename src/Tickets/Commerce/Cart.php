@@ -584,6 +584,16 @@ class Cart {
 		if ( static::REDIRECT_MODE === $this->get_mode() ) {
 			$redirect_url = tribe( Checkout::class )->get_url();
 
+			/**
+			 * Filter the base redirect URL for cart to checkout.
+			 *
+			 * @since TBD
+			 *
+			 * @param string $redirect_url Redirect URL.
+			 * @param array  $data         Data that we just processed on the cart.
+			 */
+			$redirect_url = apply_filters( 'tec_tickets_commerce_cart_to_checkout_redirect_url_base', $redirect_url, $data );
+
 			if (
 				! isset( $_COOKIE[ $this->get_cart_hash() ] )
 				|| ! $_COOKIE[ $this->get_cart_hash() ]
