@@ -263,12 +263,13 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			$provider_class = get_class( $provider_class );
 		}
 
-		$map = array(
+		$map = [
 			'Tribe__Tickets__RSVP'                             => 'rsvp',
 			'Tribe__Tickets__Commerce__PayPal__Main'           => 'tribe-commerce',
 			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' => 'woo',
 			'Tribe__Tickets_Plus__Commerce__EDD__Main'         => 'edd',
-		);
+			'TEC\Tickets\Commerce\Module'                      => 'tc',
+		];
 
 		/**
 		 * Filters the provider class to slug map.
