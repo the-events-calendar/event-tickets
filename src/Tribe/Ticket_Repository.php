@@ -66,7 +66,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		return [
 			'rsvp'             => 'tribe_rsvp_tickets',
 			'tribe-commerce'   => 'tribe_tpp_tickets',
-			'tickets-commerce' => TEC\Tickets\Commerce\Ticket::POSTTYPE,
+			TEC\Tickets\Commerce::PROVIDER => TEC\Tickets\Commerce\Ticket::POSTTYPE,
 		];
 	}
 
