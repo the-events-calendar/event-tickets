@@ -608,7 +608,7 @@ class Cart {
 					// In cases where ET is running alongside TEC and the home page is set to be the Events page, this
 					// redirect will trigger a hook in TEC that was designed to prevent funky page loads out of context.
 					// We don't need those checks to run here.
-					remove_action( 'wp_redirect', 'Tribe\Events\Views\V2\Hooks\filter_redirect_canonical' );
+					remove_filter( 'wp_redirect', 'Tribe\Events\Views\V2\Hooks\filter_redirect_canonical' );
 				}
 
 				wp_safe_redirect( $redirect_url );
