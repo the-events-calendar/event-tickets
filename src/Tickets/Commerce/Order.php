@@ -3,7 +3,8 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
-use TEC\Tickets\Commerce\Communications\Email;
+use TEC\Tickets\Commerce\Communication\Email;
+use TEC\Tickets\Commerce\Gateways\Interface_Gateway;
 use TEC\Tickets\Commerce\Utils\Price;
 use Tribe__Date_Utils as Dates;
 
@@ -175,6 +176,8 @@ class Order {
 	/**
 	 * Meta value for placeholder names.
 	 *
+	 * @since TBD
+	 *
 	 * @var string
 	 */
 	public static $placeholder_name = 'Unknown';
@@ -258,11 +261,11 @@ class Order {
 	 *
 	 * @since 5.1.9
 	 *
+	 * @throws \Tribe__Repository__Usage_Error
+	 *
 	 * @param int    $order_id    Which order ID will be updated.
 	 * @param string $status_slug Which Order Status we are modifying to.
 	 * @param array  $extra_args  Extra repository arguments.
-	 *
-	 * @throws \Tribe__Repository__Usage_Error
 	 *
 	 * @return bool|\WP_Error
 	 */
@@ -350,7 +353,7 @@ class Order {
 			$order_args['purchaser_email']      = '';
 		}
 
-		$order = tec_tc_orders()->set_args( $order_args )->create();
+		$order = $this->create( $gateway, $order_args );
 
 		// We were unable to create the order bail from here.
 		if ( ! $order ) {
@@ -358,6 +361,44 @@ class Order {
 		}
 
 		return $order;
+	}
+
+	/**
+	 * Filters the values and creates a new Order with Tickets Commerce.
+	 *
+	 * @since TBD
+	 *
+	 * @throws \Tribe__Repository__Usage_Error
+	 *
+	 * @param Interface_Gateway $gateway
+	 * @param array             $args
+	 *
+	 * @return false|\WP_Post
+	 */
+	public function create( Interface_Gateway $gateway, $args ) {
+		$gateway_key = $gateway::get_key();
+
+		/**
+		 * Allows filtering of the order creation arguments for all orders created via Tickets Commerce.
+		 *
+		 * @since TBD
+		 *
+		 * @param array             $args
+		 * @param Interface_Gateway $gateway
+		 */
+		$args = apply_filters( "tec_tickets_commerce_order_{$gateway_key}_create_args", $args, $gateway );
+
+		/**
+		 * Allows filtering of the order creation arguments for all orders created via Tickets Commerce.
+		 *
+		 * @since TBD
+		 *
+		 * @param array             $args
+		 * @param Interface_Gateway $gateway
+		 */
+		$args = apply_filters( 'tec_tickets_commerce_order_create_args', $args, $gateway );
+
+		return tec_tc_orders()->set_args( $args )->create();
 	}
 
 	/**
@@ -396,7 +437,7 @@ class Order {
 			$order = tec_tc_get_order( $order );
 		}
 
-		if ( ! $order instanceof \WP_Post) {
+		if ( ! $order instanceof \WP_Post ) {
 			return null;
 		}
 
@@ -411,7 +452,7 @@ class Order {
 	 * @todo  Determine if redirecting should be something relegated to some other method, and here we just actually
 	 *        generate the order/Attendees.
 	 *
-	 * @todo Deprecate tpp_error
+	 * @todo  Deprecate tpp_error
 	 *
 	 * @see   \Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
 	 * @since 5.1.9

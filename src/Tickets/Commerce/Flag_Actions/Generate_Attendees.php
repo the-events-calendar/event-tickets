@@ -105,7 +105,7 @@ class Generate_Attendees extends Flag_Action_Abstract {
 					'opt_out'       => Arr::get( $extra, 'optout' ),
 					'price_paid'    => Arr::get( $item, 'price' ),
 					'currency'      => Arr::get( $item, 'currency', $default_currency ),
-					'security_code' => tribe( Module::class )->generate_security_code( time() . '-' . $i )
+					'security_code' => tribe( Module::class )->generate_security_code( time() . '-' . $i ),
 				];
 
 				/**
@@ -118,8 +118,10 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				 * @param \WP_Post                 $order      The order the attendee is generated for.
 				 * @param Status_Interface         $new_status New post status.
 				 * @param Status_Interface|null    $old_status Old post status.
+				 * @param array                    $item       Which cart item this args are for.
+				 * @param int                      $i          Which Attendee index we are generating.
 				 */
-				$args = apply_filters( 'tec_tickets_attendee_generation_args', $args, $ticket, $order, $new_status, $old_status );
+				$args = apply_filters( 'tec_tickets_commerce_flag_action_generate_attendee_args', $args, $ticket, $order, $new_status, $old_status, $item, $i );
 
 				$attendee = tribe( Attendee::class )->create( $order, $ticket, $args );
 
@@ -133,8 +135,10 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				 * @param \WP_Post                 $order      The order the attendee is generated for.
 				 * @param Status_Interface         $new_status New post status.
 				 * @param Status_Interface|null    $old_status Old post status.
+				 * @param array                    $item       Which cart item this was generated for.
+				 * @param int                      $i          Which Attendee index we are generating.
 				 */
-				do_action( 'tec_tickets_attendee_generated', $attendee, $ticket, $order, $new_status, $old_status );
+				do_action( 'tec_tickets_commerce_flag_action_generated_attendee', $attendee, $ticket, $order, $new_status, $old_status, $item, $i );
 
 				$attendees[] = $attendee;
 			}
@@ -150,7 +154,7 @@ class Generate_Attendees extends Flag_Action_Abstract {
 			 * @param Status_Interface         $new_status New post status.
 			 * @param Status_Interface|null    $old_status Old post status.
 			 */
-			do_action( 'tec_tickets_attendees_generated', $attendees, $ticket, $order, $new_status, $old_status );
+			do_action( 'tec_tickets_commerce_flag_action_generated_attendees', $attendees, $ticket, $order, $new_status, $old_status );
 		}
 	}
 }

@@ -429,6 +429,51 @@ class Module extends \Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Update an attendee for the Commerce provider.
+	 *
+	 * @since 5.1.0
+	 *
+	 * @param array|int $attendee      The attendee data or ID for the attendee to update.
+	 * @param array     $attendee_data The attendee data to update to.
+	 *
+	 * @return WP_Post|false The updated post object or false if unsuccessful.
+	 */
+	public function update_attendee( $attendee, $attendee_data ) {
+		if ( is_numeric( $attendee ) ) {
+			$attendee_id = (int) $attendee;
+		} elseif ( is_array( $attendee ) && isset( $attendee['attendee_id'] ) ) {
+			$attendee_id = (int) $attendee['attendee_id'];
+		} else {
+			return false;
+		}
+
+		/** @var Tribe__Tickets__Attendee_Repository $orm */
+		$attendee = tec_tc_attendees( $this->orm_provider )
+			->where( 'ID', $attendee_id );
+
+		try {
+			if ( ! empty( $attendee_data['attendee_meta'] ) ) {
+				$attendee->set( 'fields', $attendee_data['attendee_meta'] );
+			}
+
+			if ( ! empty( $attendee_data['full_name'] ) ) {
+				$attendee->set( 'full_name', $attendee_data['full_name'] );
+			}
+
+			if ( ! empty( $attendee_data['email'] ) && filter_var( $attendee_data['email'], FILTER_VALIDATE_EMAIL ) ) {
+				$attendee->set( 'email', $attendee_data['email'] );
+			}
+
+			$attendee->save();
+		} catch ( \Tribe__Repository__Usage_Error $e ) {
+			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
+			return false;
+		}
+
+		return $attendee;
+	}
+
+	/**
 	 * All the methods below here were created merely as a backwards compatibility piece for our old Code that
 	 * depends so much on the concept of a Main class handling all kinds of integration pieces.
 	 *

@@ -47,6 +47,18 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * @inheritDoc
 	 */
+	public static function is_connected() {
+		// If this gateway shouldn't be shown, then don't change the active status.
+		if ( ! static::should_show() ) {
+			return false;
+		}
+
+		return tribe( Merchant::class )->is_connected();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static function is_active() {
 		// If this gateway shouldn't be shown, then don't change the active status.
 		if ( ! static::should_show() ) {
