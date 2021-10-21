@@ -44,7 +44,7 @@ class TEC_Compat extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 *
 	 * @param string $location the URL we're redirecting to.
-	 * @param int $status The redirect status code.
+	 * @param int    $status The redirect status code.
 	 *
 	 * @return string
 	 */
