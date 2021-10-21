@@ -268,7 +268,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'Tribe__Tickets__Commerce__PayPal__Main'           => 'tribe-commerce',
 			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' => 'woo',
 			'Tribe__Tickets_Plus__Commerce__EDD__Main'         => 'edd',
-			\TEC\Tickets\Commerce\Module::class                      => \TEC\Tickets\Commerce::ABBR,
+			\TEC\Tickets\Commerce\Module::class                => \TEC\Tickets\Commerce::ABBR,
 		];
 
 		/**
