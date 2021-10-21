@@ -91,7 +91,7 @@ class Attendee_Model extends Base {
 				'user_id'         => $user_id,
 				'holder_name'     => $full_name,
 				'holder_email'    => $email,
-				'ticket_id'       => $ticket_unique_id,
+				'ticket_id'       => $ticket_id,
 				'qr_ticket_id'    => $post_id,
 				'security_code'   => $security,
 

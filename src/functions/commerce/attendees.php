@@ -78,7 +78,7 @@ function tec_tc_get_attendee( $attendee = null, $output = OBJECT, $filter = 'raw
 	}
 
 	if ( false === $post ) {
-		$post = Attendee_Model::from_post( $attendee )->to_post( $output, $filter );
+		$post = Attendee_Model::from_post( $attendee )->to_post( OBJECT, $filter );
 
 		if ( empty( $post ) ) {
 			return null;
