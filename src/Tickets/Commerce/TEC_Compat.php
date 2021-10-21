@@ -2,7 +2,7 @@
 /**
  * Handles registering and setup for Tickets Commerce compatibility with The Events Calendar.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Commerce
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Commerce;
 /**
  * Class TEC_Compat.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Commerce
  */
@@ -33,7 +33,7 @@ class TEC_Compat extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function add_filters() {
-		add_filter( 'wp_redirect', [ $this, 'prevent_filter_redirect_canonical' ], 10, -1 );
+		add_filter( 'wp_redirect', [ $this, 'prevent_filter_redirect_canonical' ], 1, 2 );
 	}
 
 	/**
@@ -44,7 +44,7 @@ class TEC_Compat extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 *
 	 * @param string $location the URL we're redirecting to.
-	 * @param int    $status The redirect status code.
+	 * @param int    $status   The redirect status code.
 	 *
 	 * @return string
 	 */
@@ -54,9 +54,7 @@ class TEC_Compat extends \tad_DI52_ServiceProvider {
 			return $location;
 		}
 
-		if ( is_plugin_active( 'the-events-calendar' ) ) {
-			remove_filter( 'wp_redirect', 'Tribe\Events\Views\V2\Hooks\filter_redirect_canonical' );
-		}
+		remove_filter( 'wp_redirect', 'Tribe\Events\Views\V2\Hooks\filter_redirect_canonical' );
 
 		return $location;
 	}

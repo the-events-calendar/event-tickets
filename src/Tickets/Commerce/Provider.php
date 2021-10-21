@@ -40,6 +40,8 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		$this->register_legacy_compat();
 
+		$this->register_tec_compat();
+
 		// Register the SP on the container.
 		$this->container->singleton( static::class, $this );
 		$this->container->singleton( 'tickets.commerce.provider', $this );
@@ -125,5 +127,20 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		$this->container->singleton( Legacy_Compat::class, $v1_compat );
 		$this->container->singleton( 'tickets.commerce.legacy-compat', $v1_compat );
+	}
+
+	/**
+	 * Register the provider to handle compatibility with The Events Calendar
+	 *
+	 * @since TBD
+	 */
+	protected function register_tec_compat() {
+		if ( class_exists( 'Tribe__Events__Main' ) ) {
+			$tec_compat = new TEC_Compat( $this->container );
+			$tec_compat->register();
+
+			$this->container->singleton( TEC_Compat::class, $tec_compat );
+			$this->container->singleton( 'tickets.commerce.tec-compat', $tec_compat );
+		}
 	}
 }
