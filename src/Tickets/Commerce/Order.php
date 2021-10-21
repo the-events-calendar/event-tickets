@@ -174,15 +174,6 @@ class Order {
 	public static $cart_hash_meta_key = '_tec_tc_order_cart_hash';
 
 	/**
-	 * Meta that holds attendee meta template this order.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public static $attendee_fields_meta_key = '_tec_tc_order_attendee_fields';
-
-	/**
 	 * Meta value for placeholder names.
 	 *
 	 * @since TBD
@@ -272,10 +263,9 @@ class Order {
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
+	 * @param int    $order_id    Which order ID will be updated.
 	 * @param string $status_slug Which Order Status we are modifying to.
 	 * @param array  $extra_args  Extra repository arguments.
-	 *
-	 * @param int    $order_id    Which order ID will be updated.
 	 *
 	 * @return bool|\WP_Error
 	 */
