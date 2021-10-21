@@ -142,8 +142,8 @@ class Tribe__Tickets__Commerce__Currency {
 
 	/**
 	 * Format the currency using the currency_code_options_map
-	 * @param      $cost
-	 * @param null $post_id
+	 * @param numeric $cost
+	 * @param null    $post_id
 	 *
 	 * @return string
 	 */
