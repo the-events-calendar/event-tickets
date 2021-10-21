@@ -39,7 +39,8 @@ class TEC_Compat extends \tad_DI52_ServiceProvider {
 	/**
 	 * In cases where ET is running alongside TEC and the home page is set to be the Events page, this
 	 * redirect will trigger a hook in TEC that was designed to prevent funky page loads out of context.
-	 * We don't need those checks to run when redirecting to the Cart page in Tickets Commerce.
+	 * We don't need those checks to run when redirecting to the Cart page in Tickets Commerce so we
+	 * short-circuit the context.
 	 *
 	 * @since TBD
 	 *
@@ -54,7 +55,7 @@ class TEC_Compat extends \tad_DI52_ServiceProvider {
 			return $location;
 		}
 
-		remove_filter( 'wp_redirect', 'Tribe\Events\Views\V2\Hooks\filter_redirect_canonical' );
+		add_filter( 'tribe_context_view_request', '__return_false' );
 
 		return $location;
 	}
