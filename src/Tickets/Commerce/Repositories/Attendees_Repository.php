@@ -68,6 +68,7 @@ class Attendees_Repository extends Tribe__Repository {
 				'is_deleted_ticket' => Attendee::$deleted_ticket_meta_key,
 				'ticket_sent'       => Attendee::$ticket_sent_meta_key,
 				'is_subscribed'     => Attendee::$subscribed_meta_key,
+				'fields'            => Attendee::$fields_meta_key,
 			]
 		);
 	}

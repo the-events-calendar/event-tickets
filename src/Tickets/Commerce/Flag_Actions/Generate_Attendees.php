@@ -10,6 +10,7 @@ use TEC\Tickets\Commerce\Status\Status_Abstract;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use Tribe__Utils__Array as Arr;
+use Tribe\Tickets\Plus\Attendee_Registration\IAC;
 
 /**
  * Class Attendee_Generation
@@ -84,6 +85,12 @@ class Generate_Attendees extends Flag_Action_Abstract {
 
 		$default_currency = tribe_get_option( Settings::$option_currency_code, 'USD' );
 
+		// @todo @bordoni move to ET+
+		/* @var $iac IAC */
+		$iac             = tribe( 'tickets-plus.attendee-registration.iac' );
+		$iac_name_field  = $iac->get_iac_ticket_field_slug_for_name();
+		$iac_email_field = $iac->get_iac_ticket_field_slug_for_email();
+
 		foreach ( $order->cart_items as $ticket_id => $item ) {
 			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 			if ( null === $ticket ) {
@@ -105,8 +112,23 @@ class Generate_Attendees extends Flag_Action_Abstract {
 					'opt_out'       => Arr::get( $extra, 'optout' ),
 					'price_paid'    => Arr::get( $item, 'price' ),
 					'currency'      => Arr::get( $item, 'currency', $default_currency ),
-					'security_code' => tribe( Module::class )->generate_security_code( time() . '-' . $i )
+					'security_code' => tribe( Module::class )->generate_security_code( time() . '-' . $i ),
 				];
+
+				$args['fields'] = Arr::get( $extra, [ 'attendees', $i + 1, 'meta' ], [] );
+
+				// @todo @bordoni move to ET+
+				if ( IAC::NONE_KEY !== $iac->get_iac_setting_for_ticket( $ticket_id ) ) {
+					$full_name = Arr::get( $args['fields'], $iac_name_field );
+					if ( ! empty( $full_name ) ) {
+						$args['full_name'] = $full_name;
+					}
+
+					$email = Arr::get( $args['fields'], $iac_email_field );
+					if ( ! empty( $email ) ) {
+						$args['email'] = $email;
+					}
+				}
 
 				/**
 				 * Filters the attendee data before it is saved.
@@ -115,7 +137,7 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				 *
 				 * @param array<mixed>             $args       The attendee creation args.
 				 * @param \Tribe__Tickets__Tickets $ticket     The ticket the attendee is generated for.
-				 * @param \WP_Post                 $order      The order the attendee is generated for.
+				 * @param \WP_Post                 $order      The order the attendee is generated for.ww
 				 * @param Status_Interface         $new_status New post status.
 				 * @param Status_Interface|null    $old_status Old post status.
 				 */

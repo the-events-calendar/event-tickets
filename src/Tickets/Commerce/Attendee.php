@@ -181,7 +181,18 @@ class Attendee {
 	public static $currency_meta_key = '_tec_tickets_commerce_currency';
 
 	/**
+	 * Meta key holding attendee field data.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $fields_meta_key = '_tec_tickets_commerce_attendee_fields';
+
+	/**
 	 * Meta key holding the attendee's unique id
+	 *
+	 * @since TBD
 	 *
 	 * @var string
 	 */
@@ -243,8 +254,8 @@ class Attendee {
 			'ticket_id'     => $ticket->ID,
 			'event_id'      => $ticket->get_event_id(),
 			'security_code' => Arr::get( $args, 'security_code' ),
-			'opt_out'       => Arr::get( $args, 'optout' ),
-			'price_paid'    => Arr::get( $args, 'price' ),
+			'opt_out'       => Arr::get( $args, 'opt_out' ),
+			'price_paid'    => Arr::get( $args, 'price_paid' ),
 			'currency'      => Arr::get( $args, 'currency' ),
 		];
 
@@ -252,12 +263,31 @@ class Attendee {
 			$create_args['user_id'] = $order->purchaser['user_id'];
 		}
 
-		if ( ! empty( $order->purchaser['email'] ) ) {
+		if ( ! empty( $args['email'] ) ) {
+			$create_args['email'] = $args['email'];
+		}
+
+		if (
+			empty( $args['email'] )
+			&& ! empty( $order->purchaser['email'] )
+		) {
 			$create_args['email'] = $order->purchaser['email'];
 		}
 
-		if ( ! empty( $order->purchaser['full_name'] ) ) {
+		if ( ! empty( $args['full_name'] ) ) {
+			$create_args['full_name'] = $args['full_name'];
+		}
+
+		if (
+			empty( $args['full_name'] )
+			&& ! empty( $order->purchaser['full_name'] )
+		) {
 			$create_args['full_name'] = $order->purchaser['full_name'];
+		}
+
+		$fields = Arr::get( $args, 'fields', [] );
+		if ( ! empty( $fields ) ) {
+			$create_args['fields'] = $fields;
 		}
 
 		/**

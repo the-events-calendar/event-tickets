@@ -322,6 +322,8 @@ class Attendees extends WP_List_Table {
 			$item_data['attendees']
 		);
 
+//		$this->items = $item_data['attendees'];
+
 		$pagination_args = [
 			'total_items' => count( $this->items ),
 			'per_page'    => $this->per_page_option,

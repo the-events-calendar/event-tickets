@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Models;
 
 use Tribe\Models\Post_Types\Base;
 use TEC\Tickets\Commerce\Attendee;
+use Tribe\Tickets\Plus\Attendee_Registration\IAC;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -62,6 +63,25 @@ class Attendee_Model extends Base {
 
 			$is_purchaser = $email === $order->purchaser_email;
 
+			// @todo @bordoni move this to ET+
+			$fields = maybe_unserialize( Arr::get( $post_meta, [ Attendee::$fields_meta_key, 0 ] ) );
+
+			// @todo @bordoni move this to ET+
+			/* @var $iac IAC */
+			$iac = tribe( 'tickets-plus.attendee-registration.iac' );
+			if ( IAC::NONE_KEY !== $iac->get_iac_setting_for_ticket( $ticket_id ) ) {
+				$iac_name_field  = $iac->get_iac_ticket_field_slug_for_name();
+				$iac_email_field = $iac->get_iac_ticket_field_slug_for_email();
+
+				if ( isset( $fields[ $iac_name_field ] ) ) {
+					unset( $fields[ $iac_name_field ] );
+				}
+
+				if ( isset( $fields[ $iac_email_field ] ) ) {
+					unset( $fields[ $iac_email_field ] );
+				}
+			}
+
 			$properties = [
 				'order_id'        => $this->post->post_parent,
 				'order_status'    => $status,
@@ -95,7 +115,7 @@ class Attendee_Model extends Base {
 				'security_code'   => $security,
 
 				// Attendee Meta, should be populated later by ET+
-				'attendee_meta'   => [],
+				'attendee_meta'   => $fields,
 
 				// Handle initial Attendee flags.
 				'is_subscribed'   => $is_subscribed,

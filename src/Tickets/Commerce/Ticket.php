@@ -620,7 +620,7 @@ class Ticket {
 		/**
 		 * Generic action fired after saving a ticket (by type)
 		 *
-		 * @since 5.1.9
+		 * @since TBD
 		 *
 		 * @param int                            $post_id  Post ID of post the ticket is tied to
 		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
@@ -631,6 +631,34 @@ class Ticket {
 
 		/**
 		 * Generic action fired after saving a ticket.
+		 *
+		 * @since TBD
+		 *
+		 * @param int                            $post_id  Post ID of post the ticket is tied to
+		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
+		 * @param array                          $raw_data Ticket data
+		 * @param string                         $class    Commerce engine class
+		 */
+		do_action( 'tec_tickets_commerce_after_save_ticket', $post_id, $ticket, $raw_data, static::class );
+
+		/**
+		 * Generic action fired after saving a ticket (by type)
+		 *
+		 * @todo TribeCommerceLegacy
+		 *
+		 * @since TBD
+		 *
+		 * @param int                            $post_id  Post ID of post the ticket is tied to
+		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
+		 * @param array                          $raw_data Ticket data
+		 * @param string                         $class    Commerce engine class
+		 */
+		do_action( "event_tickets_after_{$save_type}_ticket", $post_id, $ticket, $raw_data, static::class );
+
+		/**
+		 * Generic action fired after saving a ticket.
+		 *
+		 * @todo TribeCommerceLegacy
 		 *
 		 * @since TBD
 		 *
