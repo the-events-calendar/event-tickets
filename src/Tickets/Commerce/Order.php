@@ -373,6 +373,18 @@ class Order {
 		return $order;
 	}
 
+	/**
+	 * Filters the values and creates a new Order with Tickets Commerce.
+	 *
+	 * @since TBD
+	 *
+	 * @throws \Tribe__Repository__Usage_Error
+	 *
+	 * @param Interface_Gateway $gateway
+	 * @param array             $args
+	 *
+	 * @return false|\WP_Post
+	 */
 	public function create( Interface_Gateway $gateway, $args ) {
 		$gateway_key = $gateway::get_key();
 
