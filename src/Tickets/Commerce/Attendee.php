@@ -181,15 +181,6 @@ class Attendee {
 	public static $currency_meta_key = '_tec_tickets_commerce_currency';
 
 	/**
-	 * Meta key holding attendee field data.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public static $fields_meta_key = '_tec_tickets_commerce_attendee_fields';
-
-	/**
 	 * Meta key holding the attendee's unique id
 	 *
 	 * @since TBD
