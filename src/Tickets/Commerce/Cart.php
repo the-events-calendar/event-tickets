@@ -603,6 +603,14 @@ class Cart {
 			$redirect_url = apply_filters( 'tec_tickets_commerce_cart_to_checkout_redirect_url', $redirect_url, $data );
 
 			if ( null !== $redirect_url ) {
+
+				if ( class_exists( 'Tribe\Events\Views\V2\Hooks' ) ) {
+					// In cases where ET is running alongside TEC and the home page is set to be the Events page, this
+					// redirect will trigger a hook in TEC that was designed to prevent funky page loads out of context.
+					// We don't need those checks to run here.
+					remove_action( 'wp_redirect', 'Tribe\Events\Views\V2\Hooks\filter_redirect_canonical' );
+				}
+
 				wp_safe_redirect( $redirect_url );
 				tribe_exit();
 			}
