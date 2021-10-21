@@ -1,4 +1,5 @@
 <?php
+
 namespace TEC\Tickets\Commerce\Partials\Admin\PayPal\Connect;
 
 use Tribe__Tickets__Main;
@@ -20,10 +21,10 @@ class ActiveTest extends V2AdminTestCase {
 		$signup   = tribe( Signup::class );
 
 		$args = [
-			'plugin_url'         => Tribe__Tickets__Main::instance()->plugin_url,
-			'merchant'           => $merchant,
-			'is_merchant_active' => true,
-			'signup'             => $signup,
+			'plugin_url'            => Tribe__Tickets__Main::instance()->plugin_url,
+			'merchant'              => $merchant,
+			'is_merchant_connected' => true,
+			'signup'                => $signup,
 		];
 
 		return $args;
@@ -44,10 +45,10 @@ class ActiveTest extends V2AdminTestCase {
 	 * @test
 	 */
 	public function test_should_render_empty() {
-		$args                       = $this->get_default_args();
-		$args['is_merchant_active'] = false;
-		$html                       = $this->template_class()->template( $this->partial_path, $args, false );
-		$driver                     = $this->get_html_output_driver();
+		$args                          = $this->get_default_args();
+		$args['is_merchant_connected'] = false;
+		$html                          = $this->template_class()->template( $this->partial_path, $args, false );
+		$driver                        = $this->get_html_output_driver();
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}

@@ -98,7 +98,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 
 		// Get all of the gateways.
 		foreach ( $gateways as $gateway_key => $gateway ) {
-			$gateways_active += (int) $gateway->is_active();
+			$gateways_active += (int) $gateway::is_active();
 		}
 
 		return $gateways_active;
