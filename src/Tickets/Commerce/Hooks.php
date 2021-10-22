@@ -56,6 +56,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_action( 'init', [ $this, 'register_order_reports' ] );
 		add_action( 'init', [ $this, 'register_attendee_reports' ] );
 
+		// Compatibility Hooks
+		add_action( 'init', [ $this, 'register_event_compatibility_hooks' ] );
+
 		add_action( 'tribe_common_loaded', [ $this, 'load_commerce_module' ] );
 
 		add_action( 'template_redirect', [ $this, 'do_cart_parse_request' ] );
@@ -596,5 +599,22 @@ class Hooks extends tad_DI52_ServiceProvider {
 		$args['has_tpp'] = 'redirect' === $this->container->make( Cart::class )->get_mode();
 
 		return $args;
+	}
+
+	/**
+	 * Hooks for Compatibility with The Events Calendar
+	 *
+	 * @since TBD
+	 */
+	public function register_event_compatibility_hooks() {
+
+		if ( ! tribe( \Tribe__Dependency::class )->is_plugin_active( 'Tribe__Events__Main' ) ) {
+			return;
+		}
+
+		add_filter( 'wp_redirect', [
+			tribe( Compatibility\Events::class ),
+			'prevent_filter_redirect_canonical',
+		], 1, 2 );
 	}
 }
