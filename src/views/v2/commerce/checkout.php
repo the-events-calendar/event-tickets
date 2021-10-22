@@ -30,31 +30,33 @@ $attributes = [
 ];
 
 ?>
-<section
-	class="tribe-common event-tickets tribe-tickets__commerce-checkout"
-	<?php tribe_attributes( $attributes ); ?>
->
-	<?php $this->template( 'checkout/fields' ); ?>
-	<?php $this->template( 'checkout/header' ); ?>
-	<?php foreach ( $sections as $section ) : ?>
-		<?php $this->template( 'checkout/cart', [ 'section' => $section ] ); ?>
-	<?php endforeach; ?>
-	<?php tribe( 'tickets.editor.template' )->template( 'v2/components/loader/loader' ); ?>
-	<?php
-	tribe( 'tickets.editor.template' )->template(
-		'components/notice',
-		[
-			'notice_classes'  => [
-					'tribe-tickets__notice--error',
-					'tribe-tickets__commerce-checkout-notice',
-			],
-			'content_classes' => [ 'tribe-tickets__commerce-checkout-notice-content' ],
-			'title'           => __( 'Checkout Error!', 'event-tickets' ),
-			'content'         => __( 'Something went wrong!', 'event-tickets' ),
-		]
-	);
-	?>
-	<?php $this->template( 'checkout/cart/empty' ); ?>
-	<?php $this->template( 'checkout/footer' ); ?>
-	<?php $this->template( 'checkout/must-login' ); ?>
-</section>
+<div class="tribe-common event-tickets">
+	<section
+		class="tribe-tickets__commerce-checkout"
+		<?php tribe_attributes( $attributes ); ?>
+	>
+		<?php $this->template( 'checkout/fields' ); ?>
+		<?php $this->template( 'checkout/header' ); ?>
+		<?php foreach ( $sections as $section ) : ?>
+			<?php $this->template( 'checkout/cart', [ 'section' => $section ] ); ?>
+		<?php endforeach; ?>
+		<?php tribe( 'tickets.editor.template' )->template( 'v2/components/loader/loader' ); ?>
+		<?php
+		tribe( 'tickets.editor.template' )->template(
+			'components/notice',
+			[
+				'notice_classes'  => [
+						'tribe-tickets__notice--error',
+						'tribe-tickets__commerce-checkout-notice',
+				],
+				'content_classes' => [ 'tribe-tickets__commerce-checkout-notice-content' ],
+				'title'           => __( 'Checkout Error!', 'event-tickets' ),
+				'content'         => __( 'Something went wrong!', 'event-tickets' ),
+			]
+		);
+		?>
+		<?php $this->template( 'checkout/cart/empty' ); ?>
+		<?php $this->template( 'checkout/footer' ); ?>
+		<?php $this->template( 'checkout/must-login' ); ?>
+	</section>
+</div>
