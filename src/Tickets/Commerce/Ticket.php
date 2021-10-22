@@ -6,6 +6,7 @@ use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use TEC\Tickets\Commerce\Utils\Price;
 use TEC\Tickets\Event;
 
 use Tribe__Utils__Array as Arr;
@@ -869,8 +870,7 @@ class Ticket {
 			return '';
 		}
 
-		$price = $this->get_price_value( $product );
-		$price = tribe( 'tickets.commerce.paypal.currency' )->format_currency( $price, $product_id );
+		$price = Price::to_currency( Price::to_string( $this->get_price_value( $product ) ) );
 
 		$price_html = '<span class="tribe-tickets-price-amount amount">' . esc_html( $price ) . '</span>';
 

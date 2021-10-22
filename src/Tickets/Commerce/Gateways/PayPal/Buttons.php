@@ -124,6 +124,7 @@ class Buttons {
 			'gateway/paypal/advanced-payments',
 			[
 				'supports_custom_payments' => $merchant->get_supports_custom_payments(),
+				'active_custom_payments'   => $merchant->get_active_custom_payments(),
 				'must_login'               => $must_login,
 			]
 		);

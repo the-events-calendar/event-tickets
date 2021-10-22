@@ -14,10 +14,11 @@
  * @version TBD
  *
  * @var bool $must_login              [Global] Whether login is required to buy tickets or not.
- * @var bool $support_custom_payments [Global] Determines if this site supports custom payments.
+ * @var bool $supports_custom_payments [Global] Determines if this site supports custom payments.
+ * @var bool $active_custom_payments  [Global] Determines if this site supports custom payments.
  */
 
-if ( $must_login || ! $supports_custom_payments ) {
+if ( $must_login || ! $active_custom_payments ) {
 	return;
 }
 

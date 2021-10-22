@@ -89,7 +89,8 @@ class CartTest extends V2CommerceTestCase {
 				$html = str_replace(
 					[
 						get_the_permalink( $item['event_id'] ),
-						$item['event_id'],
+						'"'.$item['event_id'].'"',
+						' '.$item['event_id'].'',
 						'[' . $ticket_id . ']',
 						'post-' . $ticket_id,
 						'"' . $ticket_id . '"',
@@ -98,6 +99,7 @@ class CartTest extends V2CommerceTestCase {
 					[
 						'http://wordpress.test/?tribe_events=event-test_event',
 						'[EVENT_ID]',
+						' [EVENT_ID]',
 						'[TICKET_ID]',
 						'post-TICKET_ID',
 						'"TICKET_ID"',
