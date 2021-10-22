@@ -1,4 +1,5 @@
 <?php
+
 namespace TEC\Tickets\Commerce\Partials\Admin\PayPal\Connect;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Location\Country;
@@ -23,7 +24,7 @@ class InactiveTest extends V2AdminTestCase {
 		$args = [
 			'plugin_url'         => Tribe__Tickets__Main::instance()->plugin_url,
 			'merchant'           => $merchant,
-			'is_merchant_active' => false,
+			'is_merchant_connected' => false,
 			'signup'             => $signup,
 		];
 
@@ -61,10 +62,10 @@ class InactiveTest extends V2AdminTestCase {
 	 * @test
 	 */
 	public function test_should_render_empty() {
-		$args                       = $this->get_default_args();
-		$args['is_merchant_active'] = true;
-		$html                       = $this->template_class()->template( $this->partial_path, $args, false );
-		$driver                     = $this->get_html_output_driver();
+		$args                          = $this->get_default_args();
+		$args['is_merchant_connected'] = true;
+		$html                          = $this->template_class()->template( $this->partial_path, $args, false );
+		$driver                        = $this->get_html_output_driver();
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}

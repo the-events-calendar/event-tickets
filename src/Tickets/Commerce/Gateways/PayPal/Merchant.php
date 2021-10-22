@@ -30,7 +30,9 @@ class Merchant {
 		'client_id',
 		'client_secret',
 		'account_is_ready',
+		'account_is_connected',
 		'supports_custom_payments',
+		'active_custom_payments',
 		'account_country',
 		'access_token',
 	];
@@ -126,13 +128,32 @@ class Merchant {
 	protected $account_is_ready = false;
 
 	/**
-	 * Whether or not the account can make custom payments (i.e Advanced Fields & PPCP)
+	 * Whether or not an account is connected.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	protected $account_is_connected = false;
+
+	/**
+	 * Whether or not the account is setup make custom payments (i.e Advanced Fields & PPCP), doesn't necessarily mean
+	 * that the account can accept payments yet.
 	 *
 	 * @since 5.1.9
 	 *
 	 * @var bool
 	 */
 	protected $supports_custom_payments = false;
+
+	/**
+	 * Whether or not the account is ready to take custom payments (i.e Advanced Fields & PPCP).
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	protected $active_custom_payments = false;
 
 	/**
 	 * PayPal account account country.
@@ -305,6 +326,29 @@ class Merchant {
 	}
 
 	/**
+	 * Gets the value stored for if the account is ready for usage.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_account_is_connected() {
+		return $this->account_is_connected;
+	}
+
+	/**
+	 * Sets the value for if this account is connected for usage locally, in this instance of the Merchant.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed   $value      Value used for the Account is Connect.
+	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
+	 */
+	public function set_account_is_connected( $value, $needs_save = true ) {
+		$this->set_value( 'account_is_connected', $value, $needs_save );
+	}
+
+	/**
 	 * Gets the value stored for if this account supports custom payments.
 	 *
 	 * @since 5.1.9
@@ -312,7 +356,7 @@ class Merchant {
 	 * @return bool
 	 */
 	public function get_supports_custom_payments() {
-		return $this->supports_custom_payments;
+		return tribe_is_truthy( $this->supports_custom_payments );
 	}
 
 	/**
@@ -325,6 +369,29 @@ class Merchant {
 	 */
 	public function set_supports_custom_payments( $value, $needs_save = true ) {
 		$this->set_value( 'supports_custom_payments', $value, $needs_save );
+	}
+
+	/**
+	 * Gets the value stored for if this account supports custom payments.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function get_active_custom_payments() {
+		return tribe_is_truthy( $this->active_custom_payments );
+	}
+
+	/**
+	 * Sets the value determining if this supports custom payments locally, in this instance of the Merchant.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed   $value      Value used for the Support for Custom Payments.
+	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
+	 */
+	public function set_active_custom_payments( $value, $needs_save = true ) {
+		$this->set_value( 'active_custom_payments', $value, $needs_save );
 	}
 
 	/**
@@ -459,7 +526,9 @@ class Merchant {
 			'client_id'                => $this->get_client_id(),
 			'client_secret'            => $this->get_client_secret(),
 			'account_is_ready'         => $this->get_account_is_ready(),
+			'account_is_connected'     => $this->get_account_is_connected(),
 			'supports_custom_payments' => $this->get_supports_custom_payments(),
+			'active_custom_payments'   => $this->get_active_custom_payments(),
 			'account_country'          => $this->get_account_country(),
 			'access_token'             => $this->get_access_token(),
 		];
@@ -530,6 +599,12 @@ class Merchant {
 		}
 		if ( array_key_exists( 'account_is_ready', $data ) ) {
 			$this->set_account_is_ready( $data['account_is_ready'], $needs_save );
+		}
+		if ( array_key_exists( 'account_is_connected', $data ) ) {
+			$this->set_account_is_connected( $data['account_is_connected'], $needs_save );
+		}
+		if ( array_key_exists( 'active_custom_payments', $data ) ) {
+			$this->set_active_custom_payments( $data['active_custom_payments'], $needs_save );
 		}
 		if ( array_key_exists( 'supports_custom_payments', $data ) ) {
 			$this->set_supports_custom_payments( $data['supports_custom_payments'], $needs_save );
@@ -798,6 +873,37 @@ class Merchant {
 	}
 
 	/**
+	 * Determines if the Merchant is connected.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_connected( $recheck = false ) {
+		$saved_merchant_id = $this->get_merchant_id_in_paypal();
+
+		if ( ! $saved_merchant_id ) {
+			return false;
+		}
+
+		if ( ! $recheck && true === $this->get_account_is_connected() ) {
+			return true;
+		}
+
+		$seller_status = tribe( WhoDat::class )->get_seller_status( $saved_merchant_id );
+		$product_names = wp_list_pluck( Arr::get( $seller_status, [ 'products' ] ), 'name' );
+
+		$is_connected = count( array_intersect( $product_names, [ 'EXPRESS_CHECKOUT', 'PPCP_CUSTOM', 'PPCP_STANDARD' ] ) ) >= 1;
+
+		if ( $is_connected ) {
+			$this->set_account_is_connected( true );
+			$this->save();
+		}
+
+		return $is_connected;
+	}
+
+	/**
 	 * Determines if the Merchant is active.
 	 *
 	 * @since 5.1.9
@@ -811,19 +917,36 @@ class Merchant {
 			return false;
 		}
 
+		if ( ! $this->is_connected( $recheck ) ) {
+			return false;
+		}
+
 		if ( ! $recheck && true === $this->get_account_is_ready() ) {
 			return true;
 		}
 
-		$seller_status = tribe( WhoDat::class )->get_seller_status( $saved_merchant_id );
+		$seller_status           = tribe( WhoDat::class )->get_seller_status( $saved_merchant_id );
+		$payments_receivable     = tribe_is_truthy( Arr::get( $seller_status, 'payments_receivable' ) );
+		$primary_email_confirmed = tribe_is_truthy( Arr::get( $seller_status, 'primary_email_confirmed' ) );
 
-		$paypal_product_name   = Arr::get( $seller_status, [ 'products', 0, 'name' ] );
-		$paypal_product_status = Arr::get( $seller_status, [ 'products', 0, 'status' ] );
+		$is_active = ( $payments_receivable && $primary_email_confirmed );
 
-		$is_active = (
-			in_array( $paypal_product_name, [ 'EXPRESS_CHECKOUT', 'PPCP_CUSTOM' ], true )
-			&& 'ACTIVE' === $paypal_product_status
-		);
+		if ( $is_active && $this->get_supports_custom_payments() ) {
+			// Grab the PPCP_CUSTOM product from the status data
+			$custom_product         = current(
+				array_filter(
+					$seller_status['products'],
+					static function ( $product ) {
+						return 'PPCP_CUSTOM' === $product['name'];
+					}
+				)
+			);
+			$active_custom_payments = 'SUBSCRIBED' === Arr::get( $custom_product, 'vetting_status' );
+
+			// For custom payments we save here.
+			$this->set_active_custom_payments( $active_custom_payments );
+			$this->save();
+		}
 
 		if ( $is_active ) {
 			$this->set_account_is_ready( true );

@@ -303,16 +303,22 @@ class Signup {
 			return $error_messages;
 		}
 
-		if ( ! $seller_status['payments_receivable'] ) {
+		$payments_receivable = tribe_is_truthy( Arr::get( $seller_status, 'payments_receivable' ) );
+		$primary_email_confirmed = tribe_is_truthy( Arr::get( $seller_status, 'primary_email_confirmed' ) );
+
+		if ( ! $payments_receivable ) {
 			$error_messages[] = esc_html__( 'Set up an account to receive payment from PayPal', 'event-tickets' );
 		}
 
-		if ( ! $seller_status['primary_email_confirmed'] ) {
+		if ( ! $primary_email_confirmed ) {
 			$error_messages[] = esc_html__( 'Confirm your primary email address', 'event-tickets' );
 		}
 
+		$merchant->set_account_is_ready( $payments_receivable && $primary_email_confirmed );
+		$merchant->save();
+
 		if ( ! $merchant->get_supports_custom_payments() ) {
-			return count( $error_messages ) > 1 ? $error_messages : true;
+			return ! empty( $error_messages ) ? $error_messages : [];
 		}
 
 		if ( array_diff( [ 'products', 'capabilities' ], array_keys( $seller_status ) ) ) {
@@ -333,11 +339,8 @@ class Signup {
 			)
 		);
 
-		if (
-			empty( $custom_product )
-			|| empty( $custom_product['vetting_status'] )
-			|| 'SUBSCRIBED' !== $custom_product['vetting_status']
-		) {
+		$has_custom_payments = 'SUBSCRIBED' === Arr::get( $custom_product, 'vetting_status' );
+		if ( ! $has_custom_payments ) {
 			$error_messages[] = esc_html__( 'Reach out to PayPal to enable PPCP_CUSTOM for your account', 'event-tickets' );
 		}
 

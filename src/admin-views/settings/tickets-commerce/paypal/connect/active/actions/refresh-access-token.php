@@ -15,7 +15,7 @@
 
 $debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
 
-if ( empty( $is_merchant_active ) || ! $debug ) {
+if ( empty( $is_merchant_connected ) || ! $debug ) {
 	return;
 }
 
