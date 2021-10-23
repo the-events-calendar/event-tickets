@@ -15,6 +15,8 @@ use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Traits\Has_Mode;
 use Tribe__Field_Conditional;
 use WP_Admin_Bar;
+use Tribe__Settings_Manager;
+use Tribe__Template;
 
 /**
  * The Tickets Commerce settings.
@@ -265,6 +267,25 @@ class Settings extends Abstract_Settings {
 
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
+		$show_checkout_page_notice = true;
+		$checkout_page_id = intval( Tribe__Settings_Manager::get_option( static::$option_checkout_page, 0 ) );
+		if( $checkout_page_id > 0 ) {
+			$checkout_page = get_post( $checkout_page_id );
+			$show_checkout_page_notice = ! has_shortcode( $checkout_page->post_content, $checkout_shortcode );
+		}
+		$show_success_page_notice = true;
+		$success_page_id = intval( Tribe__Settings_Manager::get_option( static::$option_success_page, 0 ) );
+		if( $success_page_id > 0 ) {
+			$success_page = get_post( $success_page_id );
+			$show_success_page_notice = ! has_shortcode( $success_page->post_content, $success_shortcode );
+		}
+
+		$template = new Tribe__Template();
+		$template->set_template_folder( 'src/admin-views/settings/tickets-commerce/notices' );
+
+		$checkout_page_notice = ! $show_checkout_page_notice ? '' : $template->template( 'checkout-page-not-set', [], false );
+		$success_page_notice  = ! $show_success_page_notice  ? '' : $template->template( 'success-page-not-set', [], false );
+
 		$settings = [
 			'tickets-commerce-general-settings-heading'     => [
 				'type' => 'html',
@@ -315,6 +336,10 @@ class Settings extends Abstract_Settings {
 				],
 				'tooltip_first'   => true,
 			],
+			static::$option_checkout_page . '-notice'		=> [
+				'type'            => 'html',
+				'html'			  => $checkout_page_notice,
+			],
 			static::$option_checkout_page                   => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Checkout page', 'event-tickets' ),
@@ -329,6 +354,10 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'options',
 				'options'         => $pages,
 				'required'        => true,
+			],
+			static::$option_success_page . '-notice'		=> [
+				'type'            => 'html',
+				'html'			  => $success_page_notice,
 			],
 			static::$option_success_page                    => [
 				'type'            => 'dropdown',
