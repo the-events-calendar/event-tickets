@@ -33,14 +33,15 @@
     "phpunit/phpunit": "^6.5.14",
     "spatie/phpunit-snapshot-assertions": "^1.4.2",
     "the-events-calendar/tribalscents": "dev-master",
+    "the-events-calendar/tec-testing-facilities": "dev-feature/introduce-post-remapping-tests-for-legacy-templates",
     "wp-coding-standards/wpcs": "^2.1",
     "lucatume/codeception-snapshot-assertions": "^0.2.4"
   },
   "repositories": [
     {
       "name": "the-events-calendar/tec-testing-facilities",
-      "type": "path",
-      "url": "/home/ricardo/dev/tec/tec-testing-facilities",
+      "type": "github",
+      "url": "https://github.com/the-events-calendar/tec-testing-facilities",
       "no-api": true
     },
     {
