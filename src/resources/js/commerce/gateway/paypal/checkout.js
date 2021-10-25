@@ -348,7 +348,6 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		let configs = {
 			style: {
 				layout: 'vertical',
-				color: 'blue',
 				shape: 'rect',
 				label: 'paypal'
 			},
