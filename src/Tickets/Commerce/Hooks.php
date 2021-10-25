@@ -632,8 +632,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 	public function filter_rest_get_tickets_in_cart( $tickets ) {
 		$tickets = [];
 		/* @var Cart $cart */
-		$cart    = tribe( Cart::class );
-		$items   = $cart->get_items_in_cart( true );
+		$cart  = tribe( Cart::class );
+		$items = $cart->get_items_in_cart( true );
 
 		foreach ( $items as $data ) {
 			$tickets[] = [
@@ -647,6 +647,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 		}
 
 		return $tickets;
+	}
 
   /**
 	 * Hooks for Compatibility with The Events Calendar
