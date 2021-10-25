@@ -574,6 +574,17 @@ class Module extends \Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Maps to the Checkout Class method to get the checkout.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_checkout_url() {
+		return tribe( Checkout::class )->get_url();
+	}
+
+	/**
 	 * Generate and store all the attendees information for a new order.
 	 *
 	 * @since 5.1.9

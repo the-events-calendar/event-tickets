@@ -32,6 +32,5 @@ if ( empty( $items ) ) {
 
 ?>
 <div class="tribe-common-b2 tribe-tickets__commerce-checkout-header-links">
-	<?php $this->template( 'checkout/header/links/modify-attendees' ); ?>
 	<?php $this->template( 'checkout/header/links/back' ); ?>
 </div>
