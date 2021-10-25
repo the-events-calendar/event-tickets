@@ -10,8 +10,6 @@ class CartHeaderTest extends Html_Partial_Test_Case {
 
 	/**
 	 * Test render cart header
-	 *
-	 * @todo: replace the inner HTML with a new `get_mock_order` method and data
 	 */
 	public function test_should_render_cart_header() {
 		$event = $this->get_mock_event( 'events/single/1.json' );
