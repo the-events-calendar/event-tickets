@@ -7,7 +7,7 @@ use Tribe\Tickets\Test\Testcases\Html_Partial_Test_Case;
 
 class ItemDetailsTest extends Html_Partial_Test_Case {
 
-	public $partial_path = 'checkout/cart/item/details';
+	protected $partial_path = 'src/views/v2/commerce/checkout/cart/item/details';
 
 	public function test_should_render_cart_item_details() {
 

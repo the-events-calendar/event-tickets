@@ -6,7 +6,7 @@ use Tribe\Tickets\Test\Testcases\Html_Partial_Test_Case;
 
 class CartFooterTest extends Html_Partial_Test_Case {
 
-	protected $partial_path = 'checkout/cart/footer';
+	protected $partial_path = 'src/views/v2/commerce/checkout/cart/footer';
 
 	/**
 	 * Test render cart footer
