@@ -1,46 +1,26 @@
 <?php
 namespace TEC\Tickets\Commerce\Partials\Admin\PayPal\Connect;
 
-use Tribe\Tickets\Test\Partials\V2AdminTestCase;
+use Tribe\Tickets\Test\Testcases\Html_Partial_Test_Case;
 
-class LogoTest extends V2AdminTestCase {
+class LogoTest extends Html_Partial_Test_Case {
 
-	public $partial_path = 'settings/tickets-commerce/paypal/connect/logo';
-
-	/**
-	 * Get all the default args required for this template
-	 *
-	 * @return array
-	 */
-	public function get_default_args() {
-		$args = [
-			'is_merchant_active' => false,
-		];
-
-		return $args;
-	}
+	protected $partial_path = 'src/admin-views/settings/tickets-commerce/paypal/connect/logo';
 
 	/**
-	 * @test
+	 * Test render cart footer
 	 */
 	public function test_should_render() {
-		$args   = $this->get_default_args();
-		$html   = $this->template_class()->template( $this->partial_path, $args, false );
-		$driver = $this->get_html_output_driver();
-
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertMatchesHtmlSnapshot( $this->get_partial_html( [
+				'is_merchant_active' => false,
+			]
+		) );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_should_render_without_list() {
-		$args   = $this->get_default_args();
-		$args['is_merchant_active'] = true;
-		$html   = $this->template_class()->template( $this->partial_path, $args, false );
-		$driver = $this->get_html_output_driver();
-
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertMatchesHtmlSnapshot( $this->get_partial_html( [
+				'is_merchant_active' => true,
+			]
+		) );
 	}
-
 }
