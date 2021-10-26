@@ -15,8 +15,6 @@ use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Traits\Has_Mode;
 use Tribe__Field_Conditional;
 use WP_Admin_Bar;
-use Tribe__Settings_Manager;
-use Tribe__Template;
 
 /**
  * The Tickets Commerce settings.
