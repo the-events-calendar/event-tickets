@@ -269,11 +269,11 @@ class Settings extends Abstract_Settings {
 	public function get_notice( $option_key = '', $shortcode = '' ) {
 
 		$hide_notice = $this->is_set_with_shortcode( $option_key, $shortcode );
-		if( $hide_notice ) {
+		if ( $hide_notice ) {
 			return '';
 		}
 
-		switch( $option_key ) {
+		switch ( $option_key ) {
 			case static::$option_checkout_page:
 				$notice_heading = esc_html__( 'Set up your checkout page', 'event-tickets' );
 				$notice_content = sprintf( 
