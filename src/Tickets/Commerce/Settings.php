@@ -268,7 +268,7 @@ class Settings extends Abstract_Settings {
 	 */
 	public function get_notice( $option_key = '', $shortcode = '' ) {
 
-		$hide_notice = $this->set_with_shortcode( $option_key, $shortcode );
+		$hide_notice = $this->is_set_with_shortcode( $option_key, $shortcode );
 		if( $hide_notice ) {
 			return '';
 		}
@@ -323,7 +323,7 @@ class Settings extends Abstract_Settings {
 	 * 
 	 * @return bool If setting is set and shortcode included in page content.
 	 */
-	public function set_with_shortcode( $option_key = '', $shortcode = '' ) {
+	public function is_set_with_shortcode( $option_key = '', $shortcode = '' ) {
 		if ( empty( $option_key ) || empty( $shortcode ) ) {
 			return false;
 		}
