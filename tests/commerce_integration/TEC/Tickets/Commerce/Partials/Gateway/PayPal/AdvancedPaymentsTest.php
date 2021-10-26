@@ -2,8 +2,32 @@
 
 namespace TEC\Tickets\Commerce\Partials\Gateway\PayPal;
 
-use Tribe\Tickets\Test\Partials\V2CommerceTestCase;
+use Tribe\Tickets\Test\Testcases\Html_Partial_Test_Case;
 
+class AdvancedPaymentsTest extends Html_Partial_Test_Case {
+
+	protected $partial_path = 'src/views/v2/commerce/gateway/paypal/advanced-payments';
+
+	public function test_should_render() {
+		$this->assertMatchesHtmlSnapshot( $this->get_partial_html( [
+				'must_login'               => false,
+				'supports_custom_payments' => true,
+				'active_custom_payments'   => true,
+			]
+		) );
+	}
+
+	public function test_should_render_empty_if_no_custom_payments_support() {
+		$this->assertEmpty( $this->get_partial_html( [
+				'must_login'               => false,
+				'supports_custom_payments' => true,
+				'active_custom_payments'   => false,
+			]
+		) );
+	}
+}
+
+/*
 class AdvancedPayments extends V2CommerceTestCase {
 
 	public $partial_path = 'gateway/paypal/advanced-payments';
@@ -12,7 +36,7 @@ class AdvancedPayments extends V2CommerceTestCase {
 	 * Get all the default args required for this template
 	 *
 	 * @return array
-	 */
+	 *
 	public function get_default_args() {
 		$args = [
 			'must_login'               => false,
@@ -25,7 +49,7 @@ class AdvancedPayments extends V2CommerceTestCase {
 
 	/**
 	 * @test
-	 */
+	 *
 	public function test_should_render() {
 		$args   = $this->get_default_args();
 		$html   = $this->template_class()->template( $this->partial_path, $args, false );
@@ -36,7 +60,7 @@ class AdvancedPayments extends V2CommerceTestCase {
 
 	/**
 	 * @test
-	 */
+	 *
 	public function test_should_render_empty_if_no_custom_payments_support() {
 		$args                           = $this->get_default_args();
 		$args['active_custom_payments'] = false;
