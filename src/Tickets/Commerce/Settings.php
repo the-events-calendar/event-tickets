@@ -112,6 +112,15 @@ class Settings extends Abstract_Settings {
 	public static $option_confirmation_email_subject = 'tickets-commerce-confirmation-email-subject';
 
 	/**
+	 * Stores the instance of the template engine that we will use for retrieving notice HTML.
+	 * 
+	 * @since TBD
+	 * 
+	 * @var \Tribe_Template
+	 */
+	protected $template;
+
+	/**
 	 * Settings constructor.
 	 *
 	 * @since TBD
@@ -233,6 +242,105 @@ class Settings extends Abstract_Settings {
 	}
 
 	/**
+	 * Gets the template instance used to show notices.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return \Tribe_Template
+	 */
+	public function get_template() {
+		if ( empty( $this->template ) ) {
+			$this->template = new \Tribe__Template();
+			$this->template->set_template_origin( \Tribe__Tickets__Main::instance() );
+			$this->template->set_template_folder( 'src/admin-views/settings/tickets-commerce' );
+			$this->template->set_template_context_extract( true );
+		}
+
+		return $this->template;
+	}
+
+	/**
+	 * Show TC settings notice
+	 * 
+	 * @since TBD
+	 * 
+	 * @param string $option_key The options setting key.
+	 * 
+	 * @return string HTML of the notice.
+	 */
+	public function get_notice( $option_key = '', $shortcode = '' ) {
+
+		$hide_notice = $this->set_with_shortcode( $option_key, $shortcode );
+		if( $hide_notice ) {
+			return '';
+		}
+
+		switch( $option_key ) {
+			case static::$option_checkout_page:
+				$notice_heading = esc_html__( 'Set up your checkout page', 'event-tickets' );
+				$notice_content = sprintf( 
+					esc_html__( 
+						"In order to start selling with Tickets Commerce, you'll need to set up " . 
+						'your checkout page. Please configure the setting on Settings > Payments and ' . 
+						'confirm that the page you have selected has the proper shortcode. ' . 
+						'%sLearn more%s',
+						'event-tickets'
+					),
+					'<a href="https://evnt.is/1axv" target="_blank" rel="noopener noreferrer">',
+					'</a>'
+				);
+				break;
+			case static::$option_success_page:
+				$notice_heading = esc_html__( 'Set up your order success page', 'event-tickets' );
+				$notice_content = sprintf( 
+					esc_html__( 
+						"In order to start selling with Tickets Commerce, you'll need to set up your " .
+						'order success page. Please configure the setting on Settings > Payments and ' .
+						'confirm that the page you have selected has the proper shortcode. ' . 
+						'%sLearn more%s',
+						'event-tickets'
+					),
+					'<a href="https://evnt.is/1axv" target="_blank" rel="noopener noreferrer">',
+					'</a>'
+				);
+				break;
+			default:
+				return '';
+		}
+
+		$template = $this->get_template();
+		return $template->template( 'notice', [
+			'notice_heading' => $notice_heading,
+			'notice_content' => $notice_content,
+		], false );
+	}
+
+	/**
+	 * Determine whether setting is set and page has shortcode included in the content.
+	 * 
+	 * @since TBD
+	 * 
+	 * @param string $option_key The option to check if set.
+	 * @param string $shortcode  Shortcode to see if included on page.
+	 * 
+	 * @return bool If setting is set and shortcode included in page content.
+	 */
+	public function set_with_shortcode( $option_key = '', $shortcode = '' ) {
+		if ( empty( $option_key ) || empty( $shortcode ) ) {
+			return false;
+		}
+		$page_id = intval( tribe_get_option( $option_key ) );
+		if ( 0 === $page_id ) {
+			return false;
+		}
+		$page = get_post( $page_id );
+		if ( ! $page ) {
+			return false;
+		}
+		return has_shortcode( $page->post_content, $shortcode );
+	}
+
+	/**
 	 * Get the list of settings for Tickets Commerce.
 	 *
 	 * @since 5.1.6
@@ -267,26 +375,15 @@ class Settings extends Abstract_Settings {
 
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
-		$show_checkout_page_notice = true;
-		$checkout_page_id = intval( Tribe__Settings_Manager::get_option( static::$option_checkout_page, 0 ) );
-		if( $checkout_page_id > 0 ) {
-			$checkout_page = get_post( $checkout_page_id );
-			$show_checkout_page_notice = ! has_shortcode( $checkout_page->post_content, $checkout_shortcode );
-		}
-		$show_success_page_notice = true;
-		$success_page_id = intval( Tribe__Settings_Manager::get_option( static::$option_success_page, 0 ) );
-		if( $success_page_id > 0 ) {
-			$success_page = get_post( $success_page_id );
-			$show_success_page_notice = ! has_shortcode( $success_page->post_content, $success_shortcode );
-		}
-
-		$template = new Tribe__Template();
-		$template->set_template_folder( 'src/admin-views/settings/tickets-commerce/notices' );
-
-		$checkout_page_notice = ! $show_checkout_page_notice ? '' : $template->template( 'checkout-page-not-set', [], false );
-		$success_page_notice  = ! $show_success_page_notice  ? '' : $template->template( 'success-page-not-set', [], false );
+		$notice_html  = '';
+		$notice_html .= $this->get_notice( static::$option_checkout_page, $checkout_shortcode );
+		$notice_html .= $this->get_notice( static::$option_success_page, $success_shortcode );
 
 		$settings = [
+			'tickets-commerce-notices'						=> [
+				'type' => 'html',
+				'html' => $notice_html,
+			],
 			'tickets-commerce-general-settings-heading'     => [
 				'type' => 'html',
 				'html' => '<h3 class="my-awesome-class tribe-dependent"  data-depends="#' . static::$option_enable . '-input" data-condition-is-checked>' . __( 'Tickets Commerce Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
@@ -336,10 +433,6 @@ class Settings extends Abstract_Settings {
 				],
 				'tooltip_first'   => true,
 			],
-			static::$option_checkout_page . '-notice'		=> [
-				'type'            => 'html',
-				'html'			  => $checkout_page_notice,
-			],
 			static::$option_checkout_page                   => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Checkout page', 'event-tickets' ),
@@ -354,10 +447,6 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'options',
 				'options'         => $pages,
 				'required'        => true,
-			],
-			static::$option_success_page . '-notice'		=> [
-				'type'            => 'html',
-				'html'			  => $success_page_notice,
 			],
 			static::$option_success_page                    => [
 				'type'            => 'dropdown',
