@@ -2,11 +2,11 @@
 
 namespace TEC\Tickets\Commerce\Partials\Checkout\Cart;
 
-use Tribe\Tickets\Test\Testcases\Html_Partial_Test_Case;
+use Tribe\Tickets\Test\Testcases\TicketsCommerceSnapshotTestCase;
 
-class CartTest extends Html_Partial_Test_Case {
+class CartTest extends TicketsCommerceSnapshotTestCase {
 
-	protected $partial_path = 'src/views/v2/commerce/checkout/cart';
+	protected $partial_path = 'checkout/cart';
 
 	/**
 	 * Test render cart header

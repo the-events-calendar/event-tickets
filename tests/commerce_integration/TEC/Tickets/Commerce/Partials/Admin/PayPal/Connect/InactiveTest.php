@@ -11,7 +11,8 @@ use Tribe\Tickets\Test\Testcases\Html_Partial_Test_Case;
 
 class InactiveTest extends Html_Partial_Test_Case {
 
-	protected $partial_path = 'src/admin-views/settings/tickets-commerce/paypal/connect/inactive';
+	protected $partial_path = 'settings/tickets-commerce/paypal/connect/inactive';
+	protected $folder_path = 'src/admin-views';
 
 	public function test_should_render() {
 		$merchant = tribe( Merchant::class );

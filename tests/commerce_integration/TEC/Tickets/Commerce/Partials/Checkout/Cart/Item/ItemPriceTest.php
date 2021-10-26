@@ -3,11 +3,11 @@
 namespace TEC\Tickets\Commerce\Partials\Checkout\Cart\Item;
 
 use TEC\Tickets\Commerce\Ticket;
-use Tribe\Tickets\Test\Testcases\Html_Partial_Test_Case;
+use Tribe\Tickets\Test\Testcases\TicketsCommerceSnapshotTestCase;
 
-class ItemPriceTest extends Html_Partial_Test_Case {
+class ItemPriceTest extends TicketsCommerceSnapshotTestCase {
 
-	protected $partial_path = 'src/views/v2/commerce/checkout/cart/item/price';
+	protected $partial_path = 'checkout/cart/item/price';
 
 	public function test_should_render_cart_item_details() {
 

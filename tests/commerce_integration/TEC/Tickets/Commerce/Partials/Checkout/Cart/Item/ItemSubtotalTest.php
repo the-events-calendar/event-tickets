@@ -2,12 +2,11 @@
 
 namespace TEC\Tickets\Commerce\Partials\Checkout\Cart\Item;
 
-use TEC\Tickets\Commerce\Ticket;
-use Tribe\Tickets\Test\Testcases\Html_Partial_Test_Case;
+use Tribe\Tickets\Test\Testcases\TicketsCommerceSnapshotTestCase;
 
-class ItemSubtotalTest extends Html_Partial_Test_Case {
+class ItemSubtotalTest extends TicketsCommerceSnapshotTestCase {
 
-	protected $partial_path = 'src/views/v2/commerce/checkout/cart/item/sub-total';
+	protected $partial_path = 'checkout/cart/item/sub-total';
 
 	public function test_should_render_cart_item_subtotal() {
 

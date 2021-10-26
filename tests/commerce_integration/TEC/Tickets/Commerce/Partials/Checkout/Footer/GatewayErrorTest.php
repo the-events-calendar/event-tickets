@@ -1,11 +1,11 @@
 <?php
 namespace TEC\Tickets\Commerce\Partials\Checkout\Footer;
 
-use Tribe\Tickets\Test\Testcases\Html_Partial_Test_Case;
+use Tribe\Tickets\Test\Testcases\TicketsCommerceSnapshotTestCase;
 
-class GatewayErrorTest extends Html_Partial_Test_Case {
+class GatewayErrorTest extends TicketsCommerceSnapshotTestCase {
 
-	protected $partial_path = 'src/views/v2/commerce/checkout/footer/gateway-error';
+	protected $partial_path = 'checkout/footer/gateway-error';
 
 	/**
 	 * Test render cart footer
