@@ -28,11 +28,6 @@ class Provider extends tad_DI52_ServiceProvider {
 	 */
 	public function register() {
 
-		// Specifically prevents anything else from loading.
-		if ( ! tec_tickets_commerce_is_enabled() ) {
-			return;
-		}
-
 		$this->register_hooks();
 		$this->register_assets();
 
