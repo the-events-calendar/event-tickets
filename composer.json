@@ -10,7 +10,6 @@
   "homepage": "http://tri.be/shop/wordpress-events-calendar/",
   "license": "GPL-2.0",
   "require": {
-    "the-events-calendar/tec-testing-facilities": "@dev"
   },
   "require-dev": {
     "bordoni/phpass": "^0.3.5",
