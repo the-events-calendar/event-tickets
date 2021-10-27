@@ -617,7 +617,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 					'color': '#DA394D'
 				},
 				'input::placeholder': {
-					color: '#5d5d5d'
+					color: '#999999'
 				}
 			},
 
