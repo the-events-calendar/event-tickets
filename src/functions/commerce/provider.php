@@ -87,6 +87,9 @@ function tec_tribe_commerce_is_available() {
 		);
 	}
 
+	$should_be_active    = tec_tribe_commerce_should_be_active();
+	$should_be_available = $available || $should_be_active;
+
 	/**
 	 * Filter whether we should disable TribeCommerce PayPal or not.
 	 *
@@ -94,7 +97,7 @@ function tec_tribe_commerce_is_available() {
 	 *
 	 * @param boolean $available should be available or not.
 	 */
-	return apply_filters( 'tec_tribe_commerce_is_available', $available );
+	return apply_filters( 'tec_tribe_commerce_is_available', $should_be_available );
 }
 
 /**
@@ -111,10 +114,30 @@ function tec_tribe_commerce_should_be_active() {
 		return false;
 	}
 
-	// Otherwise check for existing tickets. If any ticket found then we should keep things as it is.
+	$should_be_active = tec_tribe_commerce_has_active_tickets();
+
+	/**
+	 * Filter whether TribeCommerce should be active or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param boolean $should_be_active Should TribeCommerce be kept activated or not.
+	 */
+	return apply_filters( 'tec_tribe_commerce_should_be_active', $should_be_active );
+}
+
+/**
+ * Check if the site has created tickets using TribeCommerce.
+ *
+ * @since TBD
+ *
+ * @return bool
+ */
+function tec_tribe_commerce_has_active_tickets() {
+	// Check for existing tickets.
 	$tribe_tickets = tribe_tickets()
-						->where( 'post_type','tribe_tpp_tickets' )
-						->count();
+		->where( 'post_type','tribe_tpp_tickets' )
+		->count();
 
 	return $tribe_tickets > 0;
 }
