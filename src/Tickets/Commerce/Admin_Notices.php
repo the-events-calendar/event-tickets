@@ -6,6 +6,8 @@ namespace TEC\Tickets\Commerce;
  * Class Admin_Notices
  *
  * @since TBD
+ * 
+ * @package TEC\Tickets\Commerce
  */
 class Admin_Notices extends \Tribe__Tickets__Admin__Notices {
 
