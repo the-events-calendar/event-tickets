@@ -77,6 +77,20 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 		}
 	}
 
+	public function test_has_item_finds_item_by_id() {
+		$cart  = new Unmanaged_Cart();
+		$items = $this->items_data_provider();
+		$item = reset( $items );
+
+		$cart->add_item( $item[0], $item[1] );
+
+		$this->assertEquals( $item[1], $cart->has_item( $item[0] ) );
+		$this->assertFalse( $cart->has_item( $item[0] + 10 ) );
+		$this->assertFalse( $cart->has_item( 0 ) );
+		$this->assertFalse( $cart->has_item( 'abc' ) );
+
+	}
+
 	public function items_data_provider() {
 		return [
 			// Int inputs, with named extra values
