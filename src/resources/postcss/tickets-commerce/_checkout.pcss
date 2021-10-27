@@ -4,6 +4,7 @@
  * @since 5.1.9
  */
 
+.tribe-common,
 .event-tickets {
 
 	.tribe-tickets__commerce-checkout {
@@ -13,7 +14,7 @@
 	}
 
 	.tribe-tickets__commerce-checkout-header {
-		align-items: center;
+		align-items: baseline;
 		display: flex;
 		flex-wrap: wrap;
 	}
@@ -38,12 +39,16 @@
 	}
 
 	.tribe-tickets__commerce-checkout-cart {
-		margin: var(--tec-spacer-4) 0;
+		margin: var(--tec-spacer-9) 0;
 		position: relative;
 	}
 
 	.tribe-tickets__commerce-checkout-cart-header {
 		padding-bottom: var(--tec-spacer-4);
+	}
+
+	.tribe-tickets__commerce-checkout-cart-header-title {
+		font-size: var(--tec-font-size-5);
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item {
@@ -133,6 +138,7 @@
 	.tribe-tickets__commerce-checkout-cart-item-price,
 	.tribe-tickets__commerce-checkout-cart-item-quantity,
 	.tribe-tickets__commerce-checkout-cart-item-subtotal {
+		align-self: center;
 		flex: 0 0 60px;
 		text-align: center;
 	}
@@ -169,6 +175,11 @@
 	.tribe-tickets__commerce-checkout-cart-footer-quantity-number {
 		color: var(--tec-color-text-primary);
 		font-weight: var(--tec-font-weight-bold);
+	}
+
+	.tribe-tickets__commerce-checkout-cart-footer-quantity-number,
+	.tribe-tickets__commerce-checkout-cart-footer-total-wrap {
+		margin-left: var(--tec-spacer-0);
 	}
 
 	.tribe-tickets__commerce-checkout-cart-empty {
