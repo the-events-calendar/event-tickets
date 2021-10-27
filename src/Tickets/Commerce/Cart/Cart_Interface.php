@@ -12,13 +12,23 @@ namespace TEC\Tickets\Commerce\Cart;
 interface Cart_Interface {
 
 	/**
-	 * Sets the cart id.
+	 * Sets the cart hash.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Renamed to set_hash instead of set_id
 	 *
-	 * @param string $id
+	 * @param string $hash
 	 */
-	public function set_id( $id );
+	public function set_hash( $hash );
+
+	/**
+	 * Gets the cart hash.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_hash();
 
 	/**
 	 * Gets the Cart mode based.

@@ -11,6 +11,15 @@ namespace TEC\Tickets\Commerce;
  */
 class Checkout {
 	/**
+	 * Which URL param we use to identify a given page as the checkout.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $url_query_arg = 'tec-tc-checkout';
+
+	/**
 	 * Get the Checkout page ID.
 	 *
 	 * @since 5.1.9
