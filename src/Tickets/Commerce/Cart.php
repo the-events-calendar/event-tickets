@@ -160,7 +160,7 @@ class Cart {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public function get_current_cart_transient() {
 		$cart_hash = $this->get_cart_hash();
@@ -404,7 +404,7 @@ class Cart {
 		$transient_key = $this->get_current_cart_transient();
 
 		// Bail if we have no data key.
-		if ( ! $transient_key ) {
+		if ( ! empty( $transient_key ) ) {
 			return;
 		}
 
