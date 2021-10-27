@@ -130,7 +130,7 @@ class Unmanaged_Cart implements Cart_Interface {
 	public function has_item( $item_id ) {
 		$items = $this->get_items();
 
-		return ! empty( $items[ $item_id ] ) ? (int) $items[ $item_id ]['quantity'] : false;
+		return ! empty( $items[ $item_id ]['quantity'] ) ? (int) $items[ $item_id ]['quantity'] : false;
 	}
 
 	/**
