@@ -74,7 +74,7 @@ class Unmanaged_Cart implements Cart_Interface {
 		}
 
 		if ( ! $this->exists() ) {
-			return false;
+			return [];
 		}
 
 		$cart_hash = tribe( Commerce\Cart::class )->get_cart_hash();
