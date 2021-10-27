@@ -15,6 +15,6 @@
 <!-- 🎥 screencast(s) or 📷 screenshot(s) -->
 
 ### ✔️ Checklist
-- [ ] I've included a changelog entry both in readme.txt and changelog.txt files. <!-- Confirm that it includes the ticket ID, and it is in both files. -->
+- [ ] I've included a changelog entry in the readme.txt file. <!-- Confirm that it includes the ticket ID. -->
 - [ ] My code is tested. <!-- Check that tests are passing and DO NOT merge if they're failing. -->
 - [ ] My code has [proper inline documentation](https://the-events-calendar.github.io/products-engineering/docs/code-standards/).

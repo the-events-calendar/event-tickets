@@ -13,10 +13,6 @@
  * @var bool                                          $is_merchant_active [Global] Whether the merchant is active or not.
  */
 
-// Bail if PayPal is active.
-if ( $is_merchant_active ) {
-	return;
-}
 ?>
 <ul>
 	<li>

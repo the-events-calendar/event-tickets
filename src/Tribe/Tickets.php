@@ -1,6 +1,7 @@
 <?php
 
 use Tribe__Utils__Array as Arr;
+use TEC\Tickets\Commerce\Attendee;
 
 if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	/**
@@ -2257,6 +2258,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				// If the attendee data is not provided, get it from the provider.
 				if ( ! is_array( $attendee ) ) {
 					$attendee = $this->get_attendee( $attendee );
+
+					if ( Attendee::POSTTYPE === $attendee['post_type'] ) {
+						$attendee = (array) tribe( Attendee::class )->get_attendee( get_post( $attendee['ID'] ) );
+					}
 				}
 
 				// If invalid attendee is set, skip it.
@@ -3926,10 +3931,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			/** @var Tribe__Tickets_Plus__Main $tickets_plus_main */
-			$tickets_plus_main = tribe( 'tickets-plus.main' );
-
-			$meta = $tickets_plus_main->meta();
+			/** @var Tribe__Tickets_Plus__Meta $meta */
+			$meta = tribe( 'tickets-plus.meta' );
 
 			$cart_has_meta = true;
 

@@ -66,7 +66,7 @@ class Tribe__Tickets__Attendees {
 	 * @return array|bool|null|WP_Post
 	 */
 	public function get_post() {
-		return $this->attendees_table->event;
+		return empty( $this->attendees_table->event ) ? false : $this->attendees_table->event;
 	}
 
 	/**
@@ -545,7 +545,7 @@ class Tribe__Tickets__Attendees {
 				$row[ $column_id ] = $this->attendees_table->column_default( $single_item, $column_id );
 
 				// Special handling for the check_in column
-				if ( 'check_in' === $column_id && 1 == $single_item[ $column_id ] ) {
+				if ( ! empty( $single_item[ $column_id ] ) && 'check_in' === $column_id && 1 == $single_item[ $column_id ] ) {
 					$row[ $column_id ] = esc_html__( 'Yes', 'event-tickets' );
 				}
 

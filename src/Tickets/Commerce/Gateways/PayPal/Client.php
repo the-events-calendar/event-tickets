@@ -15,6 +15,15 @@ use Tribe__Utils__Array as Arr;
  */
 class Client {
 	/**
+	 * Debug ID from PayPal.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected $debug_header;
+
+	/**
 	 * Get environment base URL.
 	 *
 	 * @since 5.1.9
@@ -64,6 +73,8 @@ class Client {
 	 *
 	 * We use something like: https://www.paypal.com/sdk/js?client-id=sb&locale=en_US&components=buttons
 	 *
+	 * @link  https://developer.paypal.com/docs/checkout/reference/customize-sdk/#query-parameters
+	 *
 	 * @since 5.1.9
 	 *
 	 * @param array $query_args Which query args will be added.
@@ -74,11 +85,13 @@ class Client {
 		$url        = 'https://www.paypal.com/sdk/js';
 		$merchant   = tribe( Merchant::class );
 		$query_args = array_merge( [
-			'client-id'   => $merchant->is_sandbox() ? 'sb' : $merchant->get_client_id(),
-			'merchant-id' => $merchant->get_merchant_id_in_paypal(),
-			'components'  => 'buttons,hosted-fields',
-			'intent'      => 'capture',
-			'currency'    => tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_currency_code, 'USD' ),
+			'client-id'       => $merchant->get_client_id(),
+			'merchant-id'     => $merchant->get_merchant_id_in_paypal(),
+			'components'      => 'hosted-fields,buttons',
+			'intent'          => 'capture',
+			'locale'          => $merchant->get_locale(),
+			'disable-funding' => 'credit',
+			'currency'        => tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_currency_code, 'USD' ),
 		], $query_args );
 		$url        = add_query_arg( $query_args, $url );
 
@@ -110,19 +123,44 @@ class Client {
 	}
 
 	/**
+	 * Stores the debug header from a given PayPal request, which allows for us to store it with the gateway payload.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $id Which ID we are storing.
+	 *
+	 */
+	protected function set_debug_header( $id ) {
+		$this->debug_header = $id;
+	}
+
+	/**
+	 * Fetches the last stored debug id from PayPal.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function get_debug_header() {
+		return $this->debug_header;
+	}
+
+	/**
 	 * Send a given method request to a given URL in the PayPal API.
 	 *
 	 * @since 5.1.10
+	 * @since TBD Included $retries param.
 	 *
 	 * @param string $method
 	 * @param string $url
 	 * @param array  $query_args
 	 * @param array  $request_arguments
 	 * @param bool   $raw
+	 * @param int    $retries Param used to determine the amount of time this particular request was retried.
 	 *
 	 * @return array|\WP_Error
 	 */
-	public function request( $method, $url, array $query_args = [], array $request_arguments = [], $raw = false ) {
+	public function request( $method, $url, array $query_args = [], array $request_arguments = [], $raw = false, $retries = 0 ) {
 		$method = strtoupper( $method );
 
 		// If the endpoint passed is a full URL don't try to append anything.
@@ -189,15 +227,42 @@ class Client {
 
 		$response_code = wp_remote_retrieve_response_code( $response );
 
-		// When we receive an error code we return the whole response.
-		if ( ! in_array( $response_code, [ 200, 201, 202, 204 ], true ) ) {
+		// If the debug header was set we pass it or reset it.
+		$this->set_debug_header( null );
+		if ( ! empty( $response['headers']['Paypal-Debug-Id'] ) ) {
+			$this->set_debug_header( $response['headers']['Paypal-Debug-Id'] );
+		}
+
+		// When we get specifically a 401 and we are not trying to generate a token we try once more.
+		if (
+			401 === $response_code
+			&& 2 >= $retries
+			&& false === strpos( $url, 'v1/oauth2/token' )
+		) {
+			$merchant   = tribe( Merchant::class );
+			$token_data = $this->get_access_token_from_client_credentials( $merchant->get_client_id(), $merchant->get_client_secret() );
+			$saved      = $merchant->save_access_token_data( $token_data );
+
+			// If we properly saved, just re-try the request.
+			if ( $saved ) {
+				$arguments = func_get_args();
+				array_pop( $arguments );
+				$arguments[] = $retries + 1;
+
+				return call_user_func_array( [ $this, 'request' ], $arguments );
+			}
+		}
+
+		/**
+		 * @todo we need to log and be more verbose about the responses. Specially around failed JSON strings.
+		 */
+		$response_body = wp_remote_retrieve_body( $response );
+		$response_body = @json_decode( $response_body, true );
+		if ( empty( $response_body ) ) {
 			return $response;
 		}
 
-		$response = wp_remote_retrieve_body( $response );
-		$response = @json_decode( $response, true );
-
-		if ( ! is_array( $response ) ) {
+		if ( ! is_array( $response_body ) ) {
 			tribe( 'logger' )->log_error( sprintf( '[%s] Unexpected PayPal %s response', $url, $method ), 'tickets-commerce-paypal' );
 
 			return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-client-unexpected', null, [
@@ -209,7 +274,7 @@ class Client {
 			] );
 		}
 
-		return $response;
+		return $response_body;
 	}
 
 	/**
@@ -422,12 +487,22 @@ class Client {
 						'surname'    => Arr::get( $unit, 'last_name' ),
 					],
 					'email_address' => Arr::get( $unit, 'email' ),
-
 				],
 				'payment_instruction' => [
 					'disbursement_mode' => Arr::get( $unit, 'disbursement_mode', 'INSTANT' ),
 				],
 			];
+
+			$items = Arr::get( $unit, 'items' );
+			if ( ! empty( $items ) ) {
+				$purchase_unit['items']               = $items;
+				$purchase_unit['amount']['breakdown'] = [
+					'item_total' => [
+						'value'         => Arr::get( $unit, 'value' ),
+						'currency_code' => Arr::get( $unit, 'currency' ),
+					],
+				];
+			}
 
 			/**
 			 * @todo Need to figure out how to get this email address still.
@@ -484,7 +559,13 @@ class Client {
 			$body['payerID'] = $payer_id;
 		}
 
-		$args       = [
+		/**
+		 * If we need to handle failures.
+		 *
+		 * @link https://developer.paypal.com/docs/platforms/checkout/add-capabilities/handle-funding-failures/
+		 * 'PayPal-Mock-Response'          => '{"mock_application_codes" : "INSTRUMENT_DECLINED"}',
+		 */
+		$args = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
 				'Prefer'                        => 'return=representation',
@@ -720,20 +801,22 @@ class Client {
 		if ( ! $response || empty( $response['id'] ) ) {
 			$error = @json_decode( $response['body'], true );
 			if ( empty( $error['name'] ) ) {
-				tribe( 'logger' )->log_error( __( 'Unexpected PayPal response when creating webhook', 'event-tickets' ), 'tickets-commerce-gateway-paypal' );
+				$message = __( 'Unexpected PayPal response when creating webhook', 'event-tickets' );
+				tribe( 'logger' )->log_error( $message, 'tickets-commerce-gateway-paypal' );
 
-				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-unexpected', null, $response );
+				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-unexpected', $message, $response );
 			}
 
 			if ( 'WEBHOOK_URL_ALREADY_EXISTS' === $error['name'] ) {
-				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-url-already-exists', null, $response );
+				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-url-already-exists', $error['message'], $response );
 			}
 
 			if ( 'WEBHOOK_NUMBER_LIMIT_EXCEEDED' === $error['name'] ) {
+				$message = __( 'PayPal webhook limit has been reached, you need to go into your developer.paypal.com account and remove webhooks from the associated account', 'event-tickets' );
 				// Limit has been reached, we cannot just delete all webhooks without permission.
-				tribe( 'logger' )->log_error( __( 'PayPal webhook limit has been reached, you need to go into your developer.paypal.com account and remove webhooks from the associated account', 'event-tickets' ), 'tickets-commerce-gateway-paypal' );
+				tribe( 'logger' )->log_error( $message, 'tickets-commerce-gateway-paypal' );
 
-				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-limit-exceeded', null, $response );
+				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-limit-exceeded', $message, $response );
 			}
 		}
 
@@ -788,13 +871,14 @@ class Client {
 		if ( ! $response || empty( $response['id'] ) ) {
 			$error = @json_decode( $response['body'], true );
 			if ( empty( $error['name'] ) ) {
-				tribe( 'logger' )->log_error( __( 'Unexpected PayPal response when updating webhook', 'event-tickets' ), 'tickets-commerce-gateway-paypal' );
+				$message = __( 'Unexpected PayPal response when updating webhook', 'event-tickets' );
+				tribe( 'logger' )->log_error( $message, 'tickets-commerce-gateway-paypal' );
 
-				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-update-unexpected' );
+				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-update-unexpected', $message );
 			}
 
 			if ( 'INVALID_RESOURCE_ID' === $error['name'] ) {
-				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-update-invalid-id' );
+				return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-update-invalid-id', $error['message'] );
 			}
 		}
 

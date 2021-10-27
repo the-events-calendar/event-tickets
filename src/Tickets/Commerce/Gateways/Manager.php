@@ -119,4 +119,19 @@ class Manager {
 
 		return array_merge( ...$gateway_setting_groups );
 	}
+
+	/**
+	 * Get gateway by key.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $key Key for expected gateway.
+	 *
+	 * @return false|Abstract_Gateway
+	 */
+	public function get_gateway_by_key( $key ) {
+		$gateways = $this->get_gateways();
+
+		return isset( $gateways[ $key ] ) ? $gateways[ $key ] : null;
+	}
 }

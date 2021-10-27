@@ -67,7 +67,7 @@ class Metabox {
 	public function include_metabox_advanced_options( $post_id, $ticket_id ) {
 		$provider = __CLASS__;
 
-		echo '<div id="' . sanitize_html_class( $provider ) . '_advanced" class="tribe-dependent" data-depends="#' . sanitize_html_class( $provider ) . '_radio" data-condition-is-checked>';
+		echo '<div id="' . sanitize_html_class( $provider ) . '_advanced" class="tribe-dependent" data-depends="#provider_TEC_Tickets_Commerce_Module_radio" data-condition-is-checked>';
 
 		if ( ! tribe_is_frontend() ) {
 			$this->do_metabox_sku_options( $post_id, $ticket_id );

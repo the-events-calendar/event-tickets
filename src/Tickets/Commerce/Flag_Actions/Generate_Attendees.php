@@ -6,12 +6,9 @@ use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Settings;
-use TEC\Tickets\Commerce\Status\Completed;
-use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Abstract;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
-use TEC\Tickets\Commerce\Ticket;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -79,15 +76,15 @@ class Generate_Attendees extends Flag_Action_Abstract {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
+	public function handle( Status_Interface $new_status, $old_status, \WP_Post $order ) {
 		// @todo we need an error handling piece here.
-		if ( empty( $post->cart_items ) ) {
+		if ( empty( $order->cart_items ) ) {
 			return;
 		}
 
 		$default_currency = tribe_get_option( Settings::$option_currency_code, 'USD' );
 
-		foreach ( $post->cart_items as $ticket_id => $item ) {
+		foreach ( $order->cart_items as $ticket_id => $item ) {
 			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 			if ( null === $ticket ) {
 				continue;
@@ -101,16 +98,63 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				continue;
 			}
 
+			$attendees = [];
+
 			for ( $i = 0; $i < $quantity; $i ++ ) {
 				$args = [
 					'opt_out'       => Arr::get( $extra, 'optout' ),
 					'price_paid'    => Arr::get( $item, 'price' ),
 					'currency'      => Arr::get( $item, 'currency', $default_currency ),
-					'security_code' => tribe( Module::class )->generate_security_code( time() . '-' . $i )
+					'security_code' => tribe( Module::class )->generate_security_code( time() . '-' . $i ),
 				];
 
-				$attendee = tribe( Attendee::class )->create( $post, $ticket, $args );
+				/**
+				 * Filters the attendee data before it is saved.
+				 *
+				 * @since TBD
+				 *
+				 * @param array<mixed>             $args       The attendee creation args.
+				 * @param \Tribe__Tickets__Tickets $ticket     The ticket the attendee is generated for.
+				 * @param \WP_Post                 $order      The order the attendee is generated for.
+				 * @param Status_Interface         $new_status New post status.
+				 * @param Status_Interface|null    $old_status Old post status.
+				 * @param array                    $item       Which cart item this args are for.
+				 * @param int                      $i          Which Attendee index we are generating.
+				 */
+				$args = apply_filters( 'tec_tickets_commerce_flag_action_generate_attendee_args', $args, $ticket, $order, $new_status, $old_status, $item, $i );
+
+				$attendee = tribe( Attendee::class )->create( $order, $ticket, $args );
+
+				/**
+				 * Fires after an attendee is generated for an order.
+				 *
+				 * @since TBD
+				 *
+				 * @param Attendee                 $attendee   The generated attendee.
+				 * @param \Tribe__Tickets__Tickets $ticket     The ticket the attendee is generated for.
+				 * @param \WP_Post                 $order      The order the attendee is generated for.
+				 * @param Status_Interface         $new_status New post status.
+				 * @param Status_Interface|null    $old_status Old post status.
+				 * @param array                    $item       Which cart item this was generated for.
+				 * @param int                      $i          Which Attendee index we are generating.
+				 */
+				do_action( 'tec_tickets_commerce_flag_action_generated_attendee', $attendee, $ticket, $order, $new_status, $old_status, $item, $i );
+
+				$attendees[] = $attendee;
 			}
+
+			/**
+			 * Fires after all attendees are generated for an order.
+			 *
+			 * @since TBD
+			 *
+			 * @param array<Attendee>          $attendees  The generated attendees.
+			 * @param \Tribe__Tickets__Tickets $ticket     The ticket the attendee is generated for.
+			 * @param \WP_Post                 $order      The order the attendee is generated for.
+			 * @param Status_Interface         $new_status New post status.
+			 * @param Status_Interface|null    $old_status Old post status.
+			 */
+			do_action( 'tec_tickets_commerce_flag_action_generated_attendees', $attendees, $ticket, $order, $new_status, $old_status );
 		}
 	}
 }

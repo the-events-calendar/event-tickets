@@ -2,7 +2,7 @@
 <div class="tribe-tickets__commerce-checkout-cart">
 
 	<header class="tribe-tickets__commerce-checkout-cart-header">
-	<h4 class="tribe-common-h4 tribe-common-h4--min-medium tribe-common-h--alt tribe-tickets__commerce-checkout-cart-header-title">
+	<h4 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__commerce-checkout-cart-header-title">
 		<a href="http://wordpress.test/?tribe_events=event-test_event">
 			Test event for partial snapshot		</a>
 	</h4>
@@ -42,17 +42,7 @@
 
 	<div id="tribe-tickets__commerce-checkout-cart-item-details-description--TICKET_ID"  class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-description tribe-common-a11y-hidden" >
 	Test ticket description for [EVENT_ID]
-	<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee">
-		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-name">John Smith</div>
-		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-fields">t-shirt: large, meal: vegan, eyes: crossed</div>
 	</div>
-
-	<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee">
-		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-name">Karen Schmidt</div>
-		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-fields">t-shirt: small, meal: very carnivorous, eyes: dotted</div>
-	</div>
-
-</div>
 
 </div>
 
@@ -99,17 +89,7 @@
 
 	<div id="tribe-tickets__commerce-checkout-cart-item-details-description--TICKET_ID"  class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-description tribe-common-a11y-hidden" >
 	Test ticket description for [EVENT_ID]
-	<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee">
-		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-name">John Smith</div>
-		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-fields">t-shirt: large, meal: vegan, eyes: crossed</div>
 	</div>
-
-	<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee">
-		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-name">Karen Schmidt</div>
-		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-fields">t-shirt: small, meal: very carnivorous, eyes: dotted</div>
-	</div>
-
-</div>
 
 </div>
 

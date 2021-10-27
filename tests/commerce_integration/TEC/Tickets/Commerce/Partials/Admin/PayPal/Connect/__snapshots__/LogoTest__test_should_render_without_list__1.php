@@ -3,11 +3,21 @@
 
 	
 <img
-	src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/images/admin/paypal-logo.svg"
+	src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/images/admin/paypal-logo.png"
 	alt="PayPal Logo Image"
 	class="tec-tickets__admin-settings-tickets-commerce-paypal-logo-image"
 >
 
-	
+	<ul>
+	<li>
+		Credit and debit card payments	</li>
+	<li>
+		Easy no-API key connection	</li>
+	<li>
+		Accept payments from around the world	</li>
+	<li>
+		Supports 3D Secure payments	</li>
+</ul>
+
 </div>
 ';

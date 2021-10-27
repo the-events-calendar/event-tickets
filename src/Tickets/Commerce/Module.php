@@ -354,6 +354,38 @@ class Module extends \Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Get attendees for a ticket by order ID, optionally by ticket ID.
+	 *
+	 * This overrides the parent method because Tickets Commerce stores the order ID in the post_parent.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|string $order_id  Order ID.
+	 * @param null|int   $ticket_id (optional) Ticket ID.
+	 *
+	 * @return array List of attendees.
+	 */
+	public function get_attendees_by_order_id( $order_id ) {
+		$ticket_id = null;
+
+		// Support an optional second argument while not causing warnings from other ticket provider classes.
+		if ( 1 < func_num_args() ) {
+			$ticket_id = func_get_arg( 1 );
+		}
+
+		/** @var Tribe__Tickets__Attendee_Repository $repository */
+		$repository = tribe_attendees( $this->orm_provider );
+
+		$repository->by( 'parent', $order_id );
+
+		if ( $ticket_id ) {
+			$repository->by( 'ticket', $ticket_id );
+		}
+
+		return $this->get_attendees_from_module( $repository->all() );
+	}
+
+	/**
 	 * Returns the value of a key defined by the class.
 	 *
 	 * @since 5.1.9
@@ -394,6 +426,51 @@ class Module extends \Tribe__Tickets__Tickets {
 		 * @param bool $enable_global_stock_support
 		 */
 		return (bool) apply_filters( 'tec_tickets_commerce_enable_global_stock', true );
+	}
+
+	/**
+	 * Update an attendee for the Commerce provider.
+	 *
+	 * @since 5.1.0
+	 *
+	 * @param array|int $attendee      The attendee data or ID for the attendee to update.
+	 * @param array     $attendee_data The attendee data to update to.
+	 *
+	 * @return WP_Post|false The updated post object or false if unsuccessful.
+	 */
+	public function update_attendee( $attendee, $attendee_data ) {
+		if ( is_numeric( $attendee ) ) {
+			$attendee_id = (int) $attendee;
+		} elseif ( is_array( $attendee ) && isset( $attendee['attendee_id'] ) ) {
+			$attendee_id = (int) $attendee['attendee_id'];
+		} else {
+			return false;
+		}
+
+		/** @var Tribe__Tickets__Attendee_Repository $orm */
+		$attendee = tec_tc_attendees( $this->orm_provider )
+			->where( 'ID', $attendee_id );
+
+		try {
+			if ( ! empty( $attendee_data['attendee_meta'] ) ) {
+				$attendee->set( 'fields', $attendee_data['attendee_meta'] );
+			}
+
+			if ( ! empty( $attendee_data['full_name'] ) ) {
+				$attendee->set( 'full_name', $attendee_data['full_name'] );
+			}
+
+			if ( ! empty( $attendee_data['email'] ) && filter_var( $attendee_data['email'], FILTER_VALIDATE_EMAIL ) ) {
+				$attendee->set( 'email', $attendee_data['email'] );
+			}
+
+			$attendee->save();
+		} catch ( \Tribe__Repository__Usage_Error $e ) {
+			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
+			return false;
+		}
+
+		return $attendee;
 	}
 
 	/**
@@ -497,15 +574,27 @@ class Module extends \Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Maps to the Checkout Class method to get the checkout.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_checkout_url() {
+		return tribe( Checkout::class )->get_url();
+	}
+
+	/**
 	 * Generate and store all the attendees information for a new order.
 	 *
 	 * @since 5.1.9
+	 * @deprecated TBD
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.
 	 * @param bool   $redirect       Whether the client should be redirected or not.
 	 */
 	public function generate_tickets( $payment_status = 'completed', $redirect = true ) {
-		tribe( Order::class )->generate_order( $payment_status, $redirect );
+		_deprecated_function( __METHOD__, 'TBD' );
 	}
 
 	/**
@@ -593,7 +682,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return string
 	 */
 	public function get_event_reports_link( $event_id, $url_only = false ) {
-		return tribe( Commerce\Reports\Event::class )->get_link( $event_id, $url_only );
+		return tribe( Commerce\Reports\Orders::class )->get_event_link( $event_id, $url_only );
 	}
 
 	/**
@@ -607,6 +696,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return string
 	 */
 	public function get_ticket_reports_link( $event_id, $ticket_id ) {
-		return tribe( Commerce\Reports\Event::class )->get_link( $event_id, $ticket_id );
+		return tribe( Commerce\Reports\Orders::class )->get_ticket_link( $event_id, $ticket_id );
 	}
 }

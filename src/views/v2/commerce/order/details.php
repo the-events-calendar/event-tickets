@@ -21,6 +21,9 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
+if ( empty( $order ) ) {
+	return;
+}
 ?>
 <div class="tribe-common-b1 tribe-tickets__commerce-order-details">
 	<?php $this->template( 'order/details/order-number' ); ?>

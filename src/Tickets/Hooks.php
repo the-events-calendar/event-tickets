@@ -44,7 +44,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	protected function add_actions() {
-
 	}
 
 	/**
@@ -53,12 +52,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	protected function add_filters() {
-//		add_filter( 'tribe_tickets_get_default_module', [ $this, 'filter_include_tickets_commerce' ], 10, 2 );
-	}
-
-	public function filter_include_tickets_commerce( $module, $modules ) {
-
-		return $module;
 	}
 
 }

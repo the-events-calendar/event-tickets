@@ -48,10 +48,13 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( Gateways\Manager::class, Gateways\Manager::class );
 
 		$this->container->singleton( Reports\Attendance_Totals::class );
-		$this->container->singleton( Reports\Event::class );
-		$this->container->singleton( Reports\Ticket::class );
+		$this->container->singleton( Reports\Attendees::class );
+		$this->container->singleton( Reports\Orders::class );
+		$this->container->singleton( Admin_Tables\Orders::class );
+		$this->container->singleton( Admin_Tables\Attendees::class );
 
 		$this->container->singleton( Editor\Metabox::class );
+		$this->container->singleton( Notice_Handler::class );
 
 		$this->container->singleton( Module::class );
 		$this->container->singleton( Attendee::class );
@@ -66,6 +69,9 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		$this->container->register( Status\Status_Handler::class );
 		$this->container->register( Flag_Actions\Flag_Action_Handler::class );
+
+		// Register Compatibility Classes
+		$this->container->singleton( Compatibility\Events::class );
 
 		// Load any external SPs we might need.
 		$this->container->register( Gateways\PayPal\Provider::class );

@@ -72,8 +72,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$this->event = get_post( absint( $_GET['event_id'] ) );
 		}
 
-		add_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'add_default_row_actions' ], 10, 2 );
-
 		parent::__construct( apply_filters( 'tribe_events_tickets_attendees_table_args', $args ) );
 	}
 
@@ -161,7 +159,14 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_default( $item, $column ) {
-		$value = empty( $item[ $column ] ) ? '' : $item[ $column ];
+		$value = '';
+
+		// @todo Move the attendee meta bit into ET+ using the filter below.
+		if ( ! empty( $item[ $column ] ) ) {
+			$value = $item[ $column ];
+		} elseif ( ! empty( $item['attendee_meta'][ $column ] ) ) {
+			$value = $item['attendee_meta'][ $column ];
+		}
 
 		return apply_filters( 'tribe_events_tickets_attendees_table_column', $value, $item, $column );
 	}
@@ -355,6 +360,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return '';
 		}
 
+		$default_row_actions = $this->add_default_row_actions( [], $item );
+
 		/**
 		 * Sets the row action links that display within the ticket column of the
 		 * attendee list table.
@@ -362,7 +369,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 * @param array $row_actions
 		 * @param array $item
 		 */
-		$row_actions = (array) apply_filters( 'event_tickets_attendees_table_row_actions', [], $item );
+		$row_actions = (array) apply_filters( 'event_tickets_attendees_table_row_actions', $default_row_actions, $item );
 		$row_actions = join( ' | ', $row_actions );
 		return empty( $row_actions ) ? '' : '<div class="row-actions">' . $row_actions . '</div>';
 	}
@@ -500,7 +507,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'attendee_table'  => $this,
 			'provider'        => $provider,
 			'disable_checkin' => empty( $item['order_status'] ) || ! in_array( $item['order_status'], $check_in_stati, true ),
- 		];
+		];
 
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
@@ -845,11 +852,16 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return $failed;
 		}
 
-		$addon = call_user_func( [ $parts[1], 'get_instance' ] );
+		if ( \TEC\Tickets\Commerce::ABBR === $parts[1] ) {
+			$addon = tribe( \TEC\Tickets\Commerce\Module::class );
+		} else {
+			$addon = call_user_func( [ $parts[1], 'get_instance' ] );
 
-		if ( ! is_subclass_of( $addon, 'Tribe__Tickets__Tickets' ) ) {
-			return $failed;
+			if ( ! is_subclass_of( $addon, 'Tribe__Tickets__Tickets' ) ) {
+				return $failed;
+			}
 		}
+
 
 		return [ $id, $addon ];
 	}
