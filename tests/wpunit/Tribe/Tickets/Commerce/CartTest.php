@@ -64,4 +64,20 @@ class CartTest extends \Codeception\TestCase\WPTestCase {
 		$transient_name = Cart::get_transient_name( $id );
 		$this->assertEquals( Commerce::ABBR . '-cart-' . $hash, $transient_name );
 	}
+
+	public function test_current_page_detection_parameters_are_valid() {
+		$cart = new Cart();
+
+		// Empty request
+		$this->assertFalse( $cart->is_current_page() );
+
+		// Redirect request
+		$_REQUEST[ Cart::$url_query_arg ] = Cart::REDIRECT_MODE;
+		$this->assertTrue( $cart->is_current_page() );
+	}
+
+	public function test_redirect_mode_is_available() {
+		$cart = new Cart();
+		$this->assertContains( Cart::REDIRECT_MODE, $cart->get_available_modes() );
+	}
 }
