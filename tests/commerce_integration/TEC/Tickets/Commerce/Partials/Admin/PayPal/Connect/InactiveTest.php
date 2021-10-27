@@ -4,70 +4,41 @@ namespace TEC\Tickets\Commerce\Partials\Admin\PayPal\Connect;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Location\Country;
 use Tribe__Tickets__Main;
-use Tribe\Tickets\Test\Partials\V2AdminTestCase;
 use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Signup;
 
-class InactiveTest extends V2AdminTestCase {
+use Tribe\Tickets\Test\Testcases\Html_Partial_Test_Case;
 
-	public $partial_path = 'settings/tickets-commerce/paypal/connect/inactive';
+class InactiveTest extends Html_Partial_Test_Case {
 
-	/**
-	 * Get all the default args required for this template
-	 *
-	 * @return array
-	 */
-	public function get_default_args() {
+	protected $partial_path = 'settings/tickets-commerce/paypal/connect/inactive';
+	protected $folder_path = 'src/admin-views';
+
+	public function test_should_render() {
 		$merchant = tribe( Merchant::class );
 		$signup   = tribe( SignUp::class );
 
-		$args = [
-			'plugin_url'         => Tribe__Tickets__Main::instance()->plugin_url,
-			'merchant'           => $merchant,
-			'is_merchant_connected' => false,
-			'signup'             => $signup,
-		];
+		$html = $this->get_partial_html( [
+				'plugin_url'            => Tribe__Tickets__Main::instance()->plugin_url,
+				'merchant'              => $merchant,
+				'is_merchant_connected' => false,
+				'signup'                => $signup,
+			]
+		);
 
-		return $args;
+		$html = str_replace( $signup->generate_url( Country::DEFAULT_COUNTRY_CODE, true ), 'http://thepaypalsandboxlink.tec.com/hash', $html );
+
+		$html = preg_replace( '/referralToken=([^&]+)/', 'referralToken=[PAYPAL_TOKEN_STRING]', $html );
+
+		$this->assertMatchesHtmlSnapshot( $html );
+
 	}
 
-	private function replace_nonce( $html ) {
-		$start     = strpos( $html, "nonce: '" );
-		$end       = strpos( $html, "',", $start ); // Use the start as the offset.
-		$sub_start = $start + strlen( "nonce: '" );
-		$nonce     = substr( $html, $sub_start, ( $end - $sub_start ) );
-		$html      = str_replace( $nonce, 'THE_PAYPAL_NONCE', $html );
-
-		return $html;
-	}
-
-	/**
-	 * @test
-	 */
-	public function test_should_render() {
-		$args   = $this->get_default_args();
-		$html   = $this->template_class()->template( $this->partial_path, $args, false );
-		$driver = $this->get_html_output_driver();
-
-		// Replace nonce.
-		$html = $this->replace_nonce( $html );
-
-		// Replace link.
-		$html = str_replace( $args['signup']->generate_url( Country::DEFAULT_COUNTRY_CODE, true ), 'http://thepaypalsandboxlink.tec.com/hash', $html );
-
-		$this->assertMatchesSnapshot( $html, $driver );
-	}
-
-	/**
-	 * @test
-	 */
 	public function test_should_render_empty() {
-		$args                          = $this->get_default_args();
-		$args['is_merchant_connected'] = true;
-		$html                          = $this->template_class()->template( $this->partial_path, $args, false );
-		$driver                        = $this->get_html_output_driver();
-
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertEmpty( $this->get_partial_html( [
+				'plugin_url'            => Tribe__Tickets__Main::instance()->plugin_url,
+				'is_merchant_connected' => true,
+			]
+		) );
 	}
-
 }

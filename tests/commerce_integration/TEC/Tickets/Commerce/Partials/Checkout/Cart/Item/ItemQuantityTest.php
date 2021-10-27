@@ -2,12 +2,11 @@
 
 namespace TEC\Tickets\Commerce\Partials\Checkout\Cart\Item;
 
-use TEC\Tickets\Commerce\Ticket;
-use Tribe\Tickets\Test\Testcases\Html_Partial_Test_Case;
+use Tribe\Tickets\Test\Testcases\TicketsCommerceSnapshotTestCase;
 
-class ItemQuantityTest extends Html_Partial_Test_Case {
+class ItemQuantityTest extends TicketsCommerceSnapshotTestCase {
 
-	protected $partial_path = 'src/views/v2/commerce/checkout/cart/item/quantity';
+	protected $partial_path = 'checkout/cart/item/quantity';
 
 	public function test_should_render_cart_item_details() {
 

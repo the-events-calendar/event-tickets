@@ -1,11 +1,11 @@
 <?php
 namespace TEC\Tickets\Commerce\Partials\Checkout;
 
-use Tribe\Tickets\Test\Testcases\Html_Partial_Test_Case;
+use Tribe\Tickets\Test\Testcases\TicketsCommerceSnapshotTestCase;
 
-class MustLoginTest extends Html_Partial_Test_Case {
+class MustLoginTest extends TicketsCommerceSnapshotTestCase {
 
-	protected $partial_path = 'src/views/v2/commerce/checkout/must-login';
+	protected $partial_path = 'checkout/must-login';
 
 	public function test_should_render_must_login() {
 		$this->assertMatchesHtmlSnapshot( $this->get_partial_html( [
