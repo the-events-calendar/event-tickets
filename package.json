@@ -111,7 +111,7 @@
     "react-day-picker": "^7.2.4",
     "react-dom": "16.3.0",
     "react-input-autosize": "^2.2.1",
-    "react-textarea-autosize": "^8.3.2",
+    "react-textarea-autosize": "^7.1.2",
     "react-places-autocomplete": "^6.1.2",
     "react-redux": "^5.0.7",
     "react-scroll-to": "^1.2.2",
