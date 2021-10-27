@@ -60,6 +60,52 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 		}
 	}
 
+	public function test_remove_item_removes_correct_quantities() {
+		$cart     = new Unmanaged_Cart();
+		$i        = 0;
+		$quantity = [ PHP_INT_MAX, PHP_INT_MIN, PHP_INT_SIZE ];
+
+		while ( $i < 3 ) {
+			$i ++;
+			$cart->add_item( $i, $quantity[ $i - 1 ] );
+
+			$to_remove = random_int( 1, PHP_INT_MAX );
+			$cart->remove_item( $i, $to_remove );
+
+			if ( $to_remove <= $quantity[ $i - 1 ] ) {
+				$expected = $quantity[ $i - 1 ] - $to_remove;
+
+				// Assert that there is still one item with the ID
+				$this->assertEquals( 1, $cart->has_items() );
+				// Assert that the item quantity was reduced properly
+				$this->assertEquals( $expected, $cart->has_item( $i ) );
+			} else {
+				// Some weirdness around negative values
+				// @todo fix this
+				$this->assertEquals( 0, $cart->has_items() );
+			}
+		}
+
+	}
+
+	public function test_remove_item_removes_all_items_by_id() {
+		$cart     = new Unmanaged_Cart();
+		$i        = 0;
+		$quantity = [ PHP_INT_MAX, PHP_INT_MIN, PHP_INT_SIZE ];
+
+		while ( $i < 3 ) {
+			$i ++;
+			$cart->add_item( $i, $quantity[ $i - 1 ] );
+		}
+
+		while ( $i > 0 ) {
+			$cart->remove_item( $i );
+			$i --;
+		}
+
+		$this->assertEquals( 0, $cart->has_items() );
+	}
+
 	public function test_has_items_returns_ticket_count() {
 		$cart  = new Unmanaged_Cart();
 		$items = $this->items_data_provider();
@@ -80,7 +126,7 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 	public function test_has_item_finds_item_by_id() {
 		$cart  = new Unmanaged_Cart();
 		$items = $this->items_data_provider();
-		$item = reset( $items );
+		$item  = reset( $items );
 
 		$cart->add_item( $item[0], $item[1] );
 
@@ -88,6 +134,20 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertFalse( $cart->has_item( $item[0] + 10 ) );
 		$this->assertFalse( $cart->has_item( 0 ) );
 		$this->assertFalse( $cart->has_item( 'abc' ) );
+	}
+
+	public function test_does_not_process_empty_data() {
+		$cart = new Unmanaged_Cart();
+		$this->assertFalse( $cart->process() );
+		$this->assertFalse( $cart->process( [] ) );
+	}
+
+	public function test_prepare_data_does_not_modify_data() {
+		$cart  = new Unmanaged_Cart();
+		$items = $this->items_data_provider();
+		$data  = $cart->prepare_data( $items );
+
+		$this->assertEquals( $items, $data );
 
 	}
 
