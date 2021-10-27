@@ -28,6 +28,8 @@ class InactiveTest extends Html_Partial_Test_Case {
 
 		$html = str_replace( $signup->generate_url( Country::DEFAULT_COUNTRY_CODE, true ), 'http://thepaypalsandboxlink.tec.com/hash', $html );
 
+		$html = preg_replace( '/referralToken=([^&]+)/', 'referralToken=[PAYPAL_TOKEN_STRING]', $html );
+
 		$this->assertMatchesHtmlSnapshot( $html );
 
 	}
