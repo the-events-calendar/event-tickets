@@ -998,6 +998,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @param WP_Post|null $ticket                The ticket post object if available, otherwise null.
 		 * @param array|null   $attendee              The attendee information if available, otherwise null.
+		 *
+		 *  @return boolean
 		 */
 		public function allow_resending_email($ticket = null, $attendee = null) {
 			/**
@@ -1010,8 +1012,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * @param WP_Post|null $ticket The ticket post object if available, otherwise null.
 			 * @param array|null $attendee The attendee information if available, otherwise null.
-			 *
-			 * @return bool Whether to allow email resending.
 			 *
 			 */
 			return (bool) apply_filters( 'tribe_tickets_my_tickets_allow_email_resend_on_attendee_email_update', true, $ticket, $attendee );
