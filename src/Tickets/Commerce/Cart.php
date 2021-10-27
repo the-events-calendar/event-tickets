@@ -64,13 +64,26 @@ class Cart {
 	public static $cart_hash_cookie_name = 'tec-tickets-commerce-cart';
 
 	/**
-	 * Which invoice number we are using here.
+	 * Gets the current instance of cart handling that we are using.
+	 * Most of the pieces should be handled in the Repository for the cart, only piece fully handled by the
+	 * parent class is the cookie handling.
 	 *
 	 * @since 5.1.9
 	 *
-	 * @var string
+	 * @return Commerce\Cart\Cart_Interface
 	 */
-	protected $cart_hash;
+	public function get_repository() {
+		$default_cart = tribe( Cart\Unmanaged_Cart::class );
+
+		/**
+		 * Filters the cart repository, by default we use Unmanaged Cart.
+		 *
+		 * @since 5.1.9
+		 *
+		 * @param Cart\Cart_Interface $cart Instance of the cart repository managing the cart.
+		 */
+		return apply_filters( 'tec_tickets_commerce_cart_repository', $default_cart );
+	}
 
 	/**
 	 * From the current active cart repository we fetch it's mode.
@@ -105,7 +118,6 @@ class Cart {
 	 */
 	public function is_available_mode( $mode ) {
 		return in_array( $mode, $this->get_available_modes(), true );
-
 	}
 
 	/**
@@ -144,19 +156,6 @@ class Cart {
 	}
 
 	/**
-	 * Returns the name of the transient used by the cart for invoice numbers
-	 *
-	 * @since 5.1.9
-	 *
-	 * @param string $id
-	 *
-	 * @return string
-	 */
-	public static function get_invoice_transient_name( $id ) {
-		return Commerce::ABBR . '-invoice-' . md5( $id );
-	}
-
-	/**
 	 * Determine the Current cart Transient Key based on invoice number.
 	 *
 	 * @since 5.1.9
@@ -165,6 +164,10 @@ class Cart {
 	 */
 	public function get_current_cart_transient() {
 		$cart_hash = $this->get_cart_hash();
+
+		if ( empty( $cart_hash ) ) {
+			return null;
+		}
 
 		return static::get_transient_name( $cart_hash );
 	}
@@ -201,7 +204,7 @@ class Cart {
 	public function get_cart_hash( $generate = false ) {
 		$cart_hash_length = 12;
 
-		$cart_hash = $this->cart_hash;
+		$cart_hash = $this->get_repository()->get_hash();
 
 		if (
 			! empty( $_COOKIE[ static::$cart_hash_cookie_name ] )
@@ -217,19 +220,36 @@ class Cart {
 		}
 
 		if ( empty( $cart_hash ) && $generate ) {
-			$cart_hash = wp_generate_password( $cart_hash_length, false );
+			$tries     = 1;
+			$max_tries = 20;
+			// While we dont find an empty transient to store this cart we loop, but avoid more than 20 tries.
+			while (
+				( ! empty( $cart_hash_transient ) || empty( $cart_hash ) )
+				&& $max_tries >= $tries
+			) {
+				$cart_hash           = wp_generate_password( $cart_hash_length, false );
+				$cart_hash_transient = get_transient( static::get_transient_name( $cart_hash ) );
+
+				// Make sure we increment.
+				$tries ++;
+			}
 		}
 
-		/**
-		 * Filters the cart hash used for the Cart.
-		 *
-		 * @since 5.1.9
-		 *
-		 * @param string $cart_hash Invoice number.
-		 */
-		$this->cart_hash = apply_filters( 'tec_tickets_commerce_cart_hash', $cart_hash );
+		$this->set_cart_hash( $cart_hash );
 
-		return $this->cart_hash;
+		return $this->get_repository()->get_hash();
+	}
+
+	/**
+	 * Configures the Cart hash on the class object
+	 *
+	 * @since TBD
+	 *
+	 * @param string $cart_hash Cart hash value.
+	 *
+	 */
+	public function set_cart_hash( $cart_hash ) {
+		$this->get_repository()->set_hash( $cart_hash );
 	}
 
 	/**
@@ -240,17 +260,15 @@ class Cart {
 	 * @return false
 	 */
 	public function clear_cart() {
-		$is_empty = empty( $_COOKIE[ static::$cart_hash_cookie_name ] );
 		$this->set_cart_hash_cookie( null );
+		$this->get_repository()->clear();
 
-		if ( $is_empty ) {
-			return false;
+		if ( isset( $_COOKIE[ static::$cart_hash_cookie_name ] ) ) {
+			$cart_hash = $_COOKIE[ static::$cart_hash_cookie_name ];
+			unset( $_COOKIE[ static::$cart_hash_cookie_name ] );
+
+			return delete_transient( static::get_transient_name( $cart_hash ) );
 		}
-
-		$cart_hash = $_COOKIE[ static::$cart_hash_cookie_name ];
-		unset( $_COOKIE[ static::$cart_hash_cookie_name ] );
-
-		return delete_transient( static::get_transient_name( $cart_hash ) );
 	}
 
 	/**
@@ -297,26 +315,6 @@ class Cart {
 	}
 
 	/**
-	 * Gets the current instance of cart handling that we are using.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return Commerce\Cart\Cart_Interface
-	 */
-	public function get_repository() {
-		$default_cart = tribe( Cart\Unmanaged_Cart::class );
-
-		/**
-		 * Filters the cart repository, by default we use Unmanaged Cart.
-		 *
-		 * @since 5.1.9
-		 *
-		 * @param Cart\Cart_Interface $cart Instance of the cart repository managing the cart.
-		 */
-		return apply_filters( 'tec_tickets_commerce_cart_repository', $default_cart );
-	}
-
-	/**
 	 * Get the tickets currently in the cart for a given provider.
 	 *
 	 * @since 5.1.9
@@ -326,8 +324,7 @@ class Cart {
 	 * @return array List of items.
 	 */
 	public function get_items_in_cart( $full_item_params = false ) {
-		$cart = $this->get_repository();
-
+		$cart  = $this->get_repository();
 		$items = $cart->get_items();
 
 		// When Items is empty in any capacity return an empty array.
@@ -407,7 +404,7 @@ class Cart {
 		$transient_key = $this->get_current_cart_transient();
 
 		// Bail if we have no data key.
-		if ( false === $transient_key ) {
+		if ( ! $transient_key ) {
 			return;
 		}
 

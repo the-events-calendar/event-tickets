@@ -71,10 +71,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_action( 'wp_loaded', [ $this, 'maybe_delete_expired_products' ], 0 );
 		add_action( 'wp_loaded', [ $this, 'maybe_redirect_to_attendees_registration_screen' ], 1 );
 
-		add_action( 'tribe_events_tickets_metabox_edit_advanced', [
-			$this,
-			'include_metabox_advanced_options',
-		], 10, 2 );
+		add_action( 'tribe_events_tickets_metabox_edit_advanced', [ $this, 'include_metabox_advanced_options', ], 10, 2 );
 
 		add_action( 'tribe_events_tickets_attendees_event_details_top', [ $this, 'setup_attendance_totals' ] );
 		add_action( 'trashed_post', [ $this, 'maybe_redirect_to_attendees_report' ] );
@@ -85,10 +82,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 		// This needs to run earlier than our page setup.
 		add_action( 'admin_init', [ $this, 'maybe_trigger_process_action' ], 5 );
 
-		add_action( 'tec_tickets_commerce_order_status_transition', [
-			$this,
-			'modify_tickets_counters_by_status',
-		], 15, 3 );
+		add_action( 'tec_tickets_commerce_order_status_transition', [ $this, 'modify_tickets_counters_by_status', ], 15, 3 );
 
 		add_action( 'admin_bar_menu', [ $this, 'include_admin_bar_test_mode' ], 1000, 1 );
 	}
@@ -102,10 +96,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_shortcodes', [ $this, 'filter_register_shortcodes' ] );
 
 		add_filter( 'tribe_attendee_registration_form_classes', [ $this, 'filter_registration_form_class' ] );
-		add_filter( 'tribe_attendee_registration_cart_provider', [
-			$this,
-			'filter_registration_cart_provider',
-		], 10, 2 );
+		add_filter( 'tribe_attendee_registration_cart_provider', [ $this, 'filter_registration_cart_provider', ], 10, 2 );
 
 		add_filter( 'tribe_tickets_get_default_module', [ $this, 'filter_de_prioritize_module' ], 5, 2 );
 
@@ -114,6 +105,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		add_filter( 'tribe_tickets_tickets_in_cart', [ $this, 'filter_tickets_in_cart' ], 10, 2 );
 		add_filter( 'tribe_tickets_commerce_cart_get_tickets_' . Base_Commerce::PROVIDER, [ $this, 'filter_rest_get_tickets_in_cart' ] );
+		add_filter( 'tribe_rest_url', [ $this, 'filter_rest_cart_url' ], 15, 4 );
 
 		// @todo @backend We need to revisit the refactoring of this report.
 		// add_filter( 'tribe_ticket_filter_attendee_report_link', [ $this, 'filter_attendee_report_link' ], 10, 2 );
@@ -128,10 +120,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		$this->provider_meta_sanitization_filters();
 
-		add_filter( 'tribe_template_context:tickets-plus/v2/tickets/submit/button-modal', [
-			$this,
-			'filter_showing_cart_button',
-		] );
+		add_filter( 'tribe_template_context:tickets-plus/v2/tickets/submit/button-modal', [ $this, 'filter_showing_cart_button' ] );
 	}
 
 	/**
@@ -610,8 +599,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<int> $tickets Tickets in cart. Format: [ ticket_id => quantity ].
-	 * @param string $provider Commerce provider.
+	 * @param array<int> $tickets  Tickets in cart. Format: [ ticket_id => quantity ].
+	 * @param string     $provider Commerce provider.
+	 *
 	 * @return array
 	 */
 	public function filter_tickets_in_cart( $tickets, $provider ) {
@@ -629,10 +619,28 @@ class Hooks extends tad_DI52_ServiceProvider {
 		return $tickets;
 	}
 
+
+	/**
+	 * Modify the cart contents for the Rest call around TTickets Commerce cart.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $tickets
+	 *
+	 * @return array
+	 */
 	public function filter_rest_get_tickets_in_cart( $tickets ) {
+		$cookie = tribe_get_request_var( Cart::$cookie_query_arg );
+		if ( empty( $cookie ) ) {
+			return $tickets;
+		}
+
+		// We reset the tickets passed.
 		$tickets = [];
 		/* @var Cart $cart */
-		$cart  = tribe( Cart::class );
+		$cart   = tribe( Cart::class );
+		$cookie = tribe_get_request_var( Cart::$cookie_query_arg );
+		$cart->set_cart_hash( $cookie );
 		$items = $cart->get_items_in_cart( true );
 
 		foreach ( $items as $data ) {
@@ -649,7 +657,32 @@ class Hooks extends tad_DI52_ServiceProvider {
 		return $tickets;
 	}
 
-  /**
+	/**
+	 * Modify the Rest URL for the cart to include the TC Cookie.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url
+	 * @param string $path
+	 * @param int    $blog_id
+	 * @param string $scheme
+	 *
+	 * @return string
+	 */
+	public function filter_rest_cart_url( $url, $path, $blog_id, $scheme ) {
+		if ( '/cart/' !== $path ) {
+			return $url;
+		}
+
+		$cookie = tribe_get_request_var( Cart::$cookie_query_arg );
+		if ( empty( $cookie ) ) {
+			return $url;
+		}
+
+		return add_query_arg( [ Cart::$cookie_query_arg => $cookie ], $url );
+	}
+
+	/**
 	 * Hooks for Compatibility with The Events Calendar
 	 *
 	 * @since TBD
@@ -660,9 +693,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 			return;
 		}
 
-		add_filter( 'wp_redirect', [
-			tribe( Compatibility\Events::class ),
-			'prevent_filter_redirect_canonical',
-		], 1, 2 );
+		add_filter( 'wp_redirect', [ tribe( Compatibility\Events::class ), 'prevent_filter_redirect_canonical' ], 1, 2 );
 	}
 }
