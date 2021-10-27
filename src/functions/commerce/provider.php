@@ -96,3 +96,25 @@ function tec_tribe_commerce_is_available() {
 	 */
 	return apply_filters( 'tec_tribe_commerce_is_available', $available );
 }
+
+/**
+ * Check if TribeCommerce should be active or not.
+ *
+ * @since TBD
+ *
+ * @return bool
+ */
+function tec_tribe_commerce_should_be_active() {
+
+	// If new install then just return false.
+	if ( tribe_get_first_ever_installed_version( \Tribe__Tickets__Main::class ) === tribe_get_currently_installed_version( \Tribe__Tickets__Main::class ) ) {
+		return false;
+	}
+
+	// Otherwise check for existing tickets. If any ticket found then we should keep things as it is.
+	$tribe_tickets = tribe_tickets()
+						->where( 'post_type','tribe_tpp_tickets' )
+						->count();
+
+	return $tribe_tickets > 0;
+}
