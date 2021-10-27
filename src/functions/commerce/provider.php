@@ -107,7 +107,7 @@ function tec_tribe_commerce_is_available() {
 function tec_tribe_commerce_should_be_active() {
 
 	// If new install then just return false.
-	if ( tribe_get_first_ever_installed_version( \Tribe__Tickets__Main::class ) === tribe_get_currently_installed_version( \Tribe__Tickets__Main::class ) ) {
+	if ( tribe_installed_after( 'Tribe__Tickets__Main', '5.1.10' ) ) {
 		return false;
 	}
 
