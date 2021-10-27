@@ -999,9 +999,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param WP_Post|null $ticket                The ticket post object if available, otherwise null.
 		 * @param array|null   $attendee              The attendee information if available, otherwise null.
 		 */
-		public function allow_resending_email( $ticket = null, $attendee = null ) {
-			// Fallback logic, function should return true.
-			return true;
+		public function allow_resending_email($ticket = null, $attendee = null) {
+			/**
+			 *
+			 * Shared filter between Woo, EDD, and the default logic.
+			 * This filter allows the admin to control the re-send email option when an attendee's email is updated per a payment type (EDD, Woo, etc).
+			 * True means allow email resend, false means disallow email resend.
+			 *
+			 * @param bool $allow_resending_email Whether to allow email resending.
+			 * @param WP_Post|null $ticket The ticket post object if available, otherwise null.
+			 * @param array|null $attendee The attendee information if available, otherwise null.
+			 * @since 5.1.0
+			 *
+			 * @since TBD - Added $allow_resending_email variable to check if provider allows emailing to occur.
+			 */
+			return (bool)apply_filters('tribe_tickets_my_tickets_allow_email_resend_on_attendee_email_update', true, $ticket, $attendee);
 		}
 
 		/**
@@ -2687,7 +2699,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @param  float|string $cost
 		 * @param  int   		$post_id
-		 * 
+		 *
 		 * @return string
 		 */
 		public function maybe_format_event_cost( $cost, $post_id ) {
