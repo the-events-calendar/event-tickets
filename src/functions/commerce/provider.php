@@ -88,7 +88,7 @@ function tec_tribe_commerce_is_available() {
 	}
 
 	$should_be_active    = tec_tribe_commerce_should_be_active();
-	$should_be_available = $available || $should_be_active;
+	$should_be_available = $available && $should_be_active;
 
 	/**
 	 * Filter whether we should disable TribeCommerce PayPal or not.
