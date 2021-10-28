@@ -21,10 +21,6 @@ class Provider extends \tad_DI52_ServiceProvider {
 		$this->register_hooks();
 		$this->register_assets();
 
-		// @todo Is this needed?
-		// $this->container->singleton( PaymentFormElements::class );
-		// $this->container->singleton( PaymentProcessor::class );
-
 		$this->container->singleton( Merchant::class, Merchant::class, [ 'init' ] );
 
 		$this->container->singleton( On_Boarding_Redirect_Handler::class );
