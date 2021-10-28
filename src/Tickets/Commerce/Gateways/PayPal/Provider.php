@@ -23,7 +23,6 @@ class Provider extends \tad_DI52_ServiceProvider {
 
 		$this->container->singleton( Merchant::class, Merchant::class, [ 'init' ] );
 
-		$this->container->singleton( On_Boarding_Redirect_Handler::class );
 		$this->container->singleton( Refresh_Token::class );
 		$this->container->singleton( Client::class );
 		$this->container->singleton( Signup::class );
