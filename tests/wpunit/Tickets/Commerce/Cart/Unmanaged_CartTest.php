@@ -61,28 +61,30 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function test_remove_item_removes_correct_quantities() {
-		$cart     = new Unmanaged_Cart();
-		$i        = 0;
-		$quantity = [ PHP_INT_MAX, PHP_INT_MIN, PHP_INT_SIZE ];
+		$cart = new Unmanaged_Cart();
+		$i    = 0;
 
 		while ( $i < 3 ) {
 			$i ++;
-			$cart->add_item( $i, $quantity[ $i - 1 ] );
+			$quantity = pow( $i, 2 );
+			$cart->add_item( $i, $quantity );
 
-			$to_remove = random_int( 1, PHP_INT_MAX );
-			$cart->remove_item( $i, $to_remove );
-
-			if ( $to_remove <= $quantity[ $i - 1 ] ) {
-				$expected = $quantity[ $i - 1 ] - $to_remove;
-
-				// Assert that there is still one item with the ID
-				$this->assertEquals( 1, $cart->has_items() );
-				// Assert that the item quantity was reduced properly
-				$this->assertEquals( $expected, $cart->has_item( $i ) );
-			} else {
-				// Some weirdness around negative values
-				// @todo fix this
-				$this->assertEquals( 0, $cart->has_items() );
+			switch ( $i ) {
+				case 1:
+					// Removing the exact quantity available should remove the item
+					$cart->remove_item( $i, $quantity );
+					$this->assertEquals( 0, $cart->has_item( $i ) );
+					break;
+				case 2:
+					// Removing fewer items than available should result in a positive amount
+					$cart->remove_item( $i, $quantity / 2 );
+					$this->assertEquals( $quantity / 2, $cart->has_item( $i ) );
+					break;
+				case 3:
+					// Removing more items than available should remove the item
+					$cart->remove_item( $i, pow( $quantity, 2 ) );
+					$this->assertEquals( 0, $cart->has_item( $i ) );
+					break;
 			}
 		}
 
@@ -91,9 +93,9 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 	public function test_remove_item_removes_all_items_by_id() {
 		$cart     = new Unmanaged_Cart();
 		$i        = 0;
-		$quantity = [ PHP_INT_MAX, PHP_INT_MIN, PHP_INT_SIZE ];
+		$quantity = [ PHP_INT_MAX, PHP_INT_SIZE ];
 
-		while ( $i < 3 ) {
+		while ( $i < 2 ) {
 			$i ++;
 			$cart->add_item( $i, $quantity[ $i - 1 ] );
 		}
