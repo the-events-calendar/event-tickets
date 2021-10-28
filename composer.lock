@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "24e1fc1550b7e757e6c9a280a6a47d62",
+    "content-hash": "7299c7da97678fe90073c1173ae6a3bc",
     "packages": [],
     "packages-dev": [
         {
@@ -5271,16 +5271,16 @@
         },
         {
             "name": "the-events-calendar/tec-testing-facilities",
-            "version": "dev-feature/introduce-post-remapping-tests-for-legacy-templates",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/the-events-calendar/tec-testing-facilities",
-                "reference": "c02c5eb06b64d7556abeb6e928dcabbd6ae0d876"
+                "reference": "aaae6bba800ac8ceb314830227784b7238241f0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/the-events-calendar/tec-testing-facilities/zipball/c02c5eb06b64d7556abeb6e928dcabbd6ae0d876",
-                "reference": "c02c5eb06b64d7556abeb6e928dcabbd6ae0d876",
+                "url": "https://api.github.com/repos/the-events-calendar/tec-testing-facilities/zipball/aaae6bba800ac8ceb314830227784b7238241f0f",
+                "reference": "aaae6bba800ac8ceb314830227784b7238241f0f",
                 "shasum": ""
             },
             "require": {
@@ -5344,7 +5344,7 @@
                 }
             ],
             "description": "Testing facilities, helpers and examples.",
-            "time": "2021-10-27T01:16:31+00:00"
+            "time": "2021-10-28T17:45:13+00:00"
         },
         {
             "name": "the-events-calendar/tribalscents",
