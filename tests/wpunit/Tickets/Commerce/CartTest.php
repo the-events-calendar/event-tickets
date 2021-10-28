@@ -59,15 +59,6 @@ class CartTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertContains( Cart::$url_query_arg . '=' . Cart::REDIRECT_MODE, $cart_url, $assertion_msg );
 	}
 
-	public function test_invoice_transient_name_format_is_valid() {
-		$id             = '10';
-		$hash           = md5( $id );
-		$transient_name = Cart::get_invoice_transient_name( $id );
-
-		$assertion_msg = 'Invoice transient names should be in the format Commerce::ABBR-invoice-ID_HASH.';
-		$this->assertEquals( Commerce::ABBR . '-invoice-' . $hash, $transient_name, $assertion_msg );
-	}
-
 	public function test_cart_transient_name_format_is_valid() {
 		$id             = '10';
 		$hash           = md5( $id );
