@@ -709,7 +709,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @param \Tribe__Tickets__Ticket_Object|int $ticket        Ticket object or ID to create the attendee for.
 	 * @param array                              $attendee_data Attendee data to create from.
 	 *
-	 * @return \WP_Post|false The new post object or false if unsuccessful.
+	 * @return \WP_Post|\WP_Error|false The new post object or false if we can't resolve to a Ticket object. WP_Error if modifying status fails
 	 */
 	public function create_attendee( $ticket, $attendee_data ) {
 		// Get the ticket object from the ID.

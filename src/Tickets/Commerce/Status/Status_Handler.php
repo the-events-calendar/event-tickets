@@ -300,7 +300,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 			 *
 			 * @param Status_Interface      $new_status New post status.
 			 * @param Status_Interface|null $old_status Old post status.
-			 * @param \WP_Post              $post       Post object.ww
+			 * @param \WP_Post              $post       Post object.
 			 */
 			do_action( "tec_tickets_commerce_order_status_{$new_status->get_slug()}_flag_{$flag}", $new_status, $old_status, $post );
 		}
