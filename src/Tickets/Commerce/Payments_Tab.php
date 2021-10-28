@@ -72,7 +72,18 @@ class Payments_Tab {
 			],
 			'tickets-commerce-header'      => [
 				'type' => 'html',
-				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-toggle-wrapper"><label class="tec-tickets__admin-settings-tickets-commerce-toggle"><input type="checkbox" name="' . $this->option_activated . '"' . checked( $is_tickets_commerce_enabled, true, false ) . ' id="tickets-commerce-enable-input" class="tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified"><span class="tec-tickets__admin-settings-tickets-commerce-toggle-switch"></span><span class="tec-tickets__admin-settings-tickets-commerce-toggle-label">' . esc_html__( 'Enable Tickets Commerce', 'event-tickets' ) . '</span></label></div>',
+				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-toggle-wrapper">
+								<label class="tec-tickets__admin-settings-tickets-commerce-toggle">
+									<input
+										type="checkbox"
+										name="' . $this->option_activated . '"
+										' . checked( $is_tickets_commerce_enabled, true, false ) . '
+										id="tickets-commerce-enable-input"
+										class="tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified">
+										<span class="tec-tickets__admin-settings-tickets-commerce-toggle-switch"></span>
+										<span class="tec-tickets__admin-settings-tickets-commerce-toggle-label">' . esc_html__( 'Enable Tickets Commerce', 'event-tickets' ) . '</span>
+								</label>
+							</div>',
 
 			],
 			'tickets-commerce-description' => [
