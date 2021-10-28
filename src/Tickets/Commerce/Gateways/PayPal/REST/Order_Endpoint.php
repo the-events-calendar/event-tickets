@@ -147,7 +147,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			'email'        => $order->purchaser['email'],
 		];
 
-		foreach ( $order->cart_items as $item ) {
+		foreach ( $order->items as $item ) {
 			$ticket          = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 			$unit['items'][] = [
 				'name'        => $ticket->name,

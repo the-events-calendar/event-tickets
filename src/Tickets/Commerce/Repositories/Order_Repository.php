@@ -56,7 +56,7 @@ class Order_Repository extends Tribe__Repository {
 			[
 				'gateway'              => Order::$gateway_meta_key,
 				'gateway_order_id'     => Order::$gateway_order_id_meta_key,
-				'cart_items'           => Order::$cart_items_meta_key,
+				'items'                => Order::$items_meta_key,
 				'total_value'          => Order::$total_value_meta_key,
 				'currency'             => Order::$currency_meta_key,
 				'purchaser_user_id'    => Order::$purchaser_user_id_meta_key,
@@ -64,7 +64,7 @@ class Order_Repository extends Tribe__Repository {
 				'purchaser_first_name' => Order::$purchaser_first_name_meta_key,
 				'purchaser_last_name'  => Order::$purchaser_last_name_meta_key,
 				'purchaser_email'      => Order::$purchaser_email_meta_key,
-				'cart_hash'            => Order::$cart_hash_meta_key,
+				'hash'                 => Order::$hash_meta_key,
 			]
 		);
 
@@ -85,7 +85,7 @@ class Order_Repository extends Tribe__Repository {
 		$this->add_simple_meta_schema_entry( 'purchaser_first_name', Order::$purchaser_first_name_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_last_name', Order::$purchaser_last_name_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_email', Order::$purchaser_email_meta_key, 'meta_equals' );
-		$this->add_simple_meta_schema_entry( 'cart_hash', Order::$cart_hash_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'hash', Order::$hash_meta_key, 'meta_equals' );
 	}
 
 	/**
@@ -267,9 +267,9 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @return array
 	 */
-	protected function filter_cart_items_input( $postarr, $post_id = null ) {
+	protected function filter_items_input( $postarr, $post_id = null ) {
 		$meta  = Arr::get( $postarr, 'meta_input', [] );
-		$items = Arr::get( $meta, Order::$cart_items_meta_key, [] );
+		$items = Arr::get( $meta, Order::$items_meta_key, [] );
 
 		if ( ! empty( $items ) ) {
 			$ticket_ids    = array_unique( array_filter( array_values( wp_list_pluck( $items, 'ticket_id' ) ) ) );
@@ -356,8 +356,8 @@ class Order_Repository extends Tribe__Repository {
 			$postarr = $this->filter_gateway_payload( $postarr, $post_id );
 		}
 
-		if ( ! empty( $postarr['meta_input'][ Order::$cart_items_meta_key ] ) ) {
-			$postarr = $this->filter_cart_items_input( $postarr, $post_id );
+		if ( ! empty( $postarr['meta_input'][ Order::$items_meta_key ] ) ) {
+			$postarr = $this->filter_items_input( $postarr, $post_id );
 		}
 
 		return $postarr;
