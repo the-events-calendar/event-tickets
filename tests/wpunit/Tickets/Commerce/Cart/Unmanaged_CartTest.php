@@ -10,21 +10,21 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 	public function test_does_not_have_public_page() {
 		$cart = new Unmanaged_Cart();
 
-		$assertion_msg = 'UnmanagedCart->has_public_page() should return false.';
+		$assertion_msg = 'Unmanaged_Cart->has_public_page() should return false.';
 		$this->assertFalse( $cart->has_public_page(), $assertion_msg );
 	}
 
 	public function test_default_mode_is_redirect() {
 		$cart = new Unmanaged_Cart();
 
-		$assertion_msg = 'UnmanagedCart->get_mode() should return the value of Cart::REDIRECT_MODE.';
+		$assertion_msg = 'Unmanaged_Cart->get_mode() should return the value of Cart::REDIRECT_MODE.';
 		$this->assertEquals( Cart::REDIRECT_MODE, $cart->get_mode(), $assertion_msg );
 	}
 
 	public function test_get_items_returns_false_if_no_items() {
 		$cart = new Unmanaged_Cart();
 
-		$assertion_msg = 'UnmanagedCart->get_items() should return an empty array if no items were added';
+		$assertion_msg = 'Unmanaged_Cart->get_items() should return an empty array if no items were added';
 		$this->assertEmpty( $cart->get_items(), $assertion_msg );
 	}
 
@@ -49,7 +49,7 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 		$items    = $this->items_data_provider();
 		$quantity = (int) $cart->has_items();
 
-		$assertion_msg = 'UnmanagedCart->has_items() should return zero if no items were added.';
+		$assertion_msg = 'Unmanaged_Cart->has_items() should return zero if no items were added.';
 		$this->assertEquals( 0, $quantity, $assertion_msg );
 
 		foreach ( $items as $item ) {
@@ -147,10 +147,10 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 
 		$cart->add_item( $item[0], $item[1] );
 
-		$assertion_msg = '`UnmanagedCart->has_item( $id )` should return the quantity of that item currently in the cart.';
+		$assertion_msg = '`Unmanaged_Cart->has_item( $id )` should return the quantity of that item currently in the cart.';
 		$this->assertEquals( $item[1], $cart->has_item( $item[0] ), $assertion_msg );
 
-		$assertion_msg = '`UnmanagedCart->has_item( $id )` should return false if the ID does not exist.';
+		$assertion_msg = '`Unmanaged_Cart->has_item( $id )` should return false if the ID does not exist.';
 		$this->assertFalse( $cart->has_item( $item[0] + 10 ), $assertion_msg );
 		$this->assertFalse( $cart->has_item( 0 ), $assertion_msg );
 		$this->assertFalse( $cart->has_item( 'abc' ), $assertion_msg );
@@ -159,7 +159,7 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 	public function test_does_not_process_empty_data() {
 		$cart = new Unmanaged_Cart();
 
-		$assertion_msg = '`UnmanagedCart->process( $data )` should return false if no data was passed in.';
+		$assertion_msg = '`Unmanaged_Cart->process( $data )` should return false if no data was passed in.';
 		$this->assertFalse( $cart->process(), $assertion_msg );
 		$this->assertFalse( $cart->process( [] ), $assertion_msg );
 	}
@@ -169,7 +169,7 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 		$items = $this->items_data_provider();
 		$data  = $cart->prepare_data( $items );
 
-		$assertion_msg = '`UnmanagedCart->prepare_data( $items )` should not modify the data passed in.';
+		$assertion_msg = '`Unmanaged_Cart->prepare_data( $items )` should not modify the data passed in.';
 		$this->assertEquals( $items, $data, $assertion_msg );
 
 	}
