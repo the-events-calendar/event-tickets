@@ -187,4 +187,38 @@ class Checkout {
 
 		return $post_states;
 	}
+
+	/**
+	 * Determines whether or not the success page option is set.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return bool
+	 */
+	public function is_option_set() {
+		$page = $this->get_page_id();
+		return ! empty( $page );
+	}
+
+	/**
+	 * Determines whether or not the success page has the appropriate shortcode in the content.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return bool
+	 */
+	public function page_has_shortcode() {
+		if ( ! $this->is_option_set() ) {
+			return false;
+		}
+
+		$page = get_post( $this->get_page_id() );
+
+		if ( ! $page instanceof \WP_Post ) {
+			return false;
+		}
+
+		$shortcode = Shortcodes\Checkout_Shortcode::get_wp_slug();
+		return has_shortcode( $page->post_content, $shortcode );
+	}
 }
