@@ -119,6 +119,23 @@ class Hooks extends tad_DI52_ServiceProvider {
 		$this->provider_meta_sanitization_filters();
 
 		add_filter( 'tribe_template_context:tickets-plus/v2/tickets/submit/button-modal', [ $this, 'filter_showing_cart_button' ] );
+
+		add_filter( 'tec_tickets_commerce_payments_tab_settings', [ $this, 'filter_payments_tab_settings' ] );
+	}
+
+	/**
+	 * Filters the Settings for Payments tab to add the Commerce Provider related fields.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $settings Settings array data for Payments tab.
+	 *
+	 * @return array
+	 */
+	public function filter_payments_tab_settings( $settings ) {
+		$settings['fields'] = array_merge( $settings['fields'], tribe( Settings::class )->get_settings() );
+
+		return $settings;
 	}
 
 	/**
