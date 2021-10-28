@@ -29,6 +29,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	public function register() {
 
 		$this->container->make( Payments_Tab::class );
+		$this->register_assets();
 
 		// Specifically prevents anything else from loading.
 		if ( ! tec_tickets_commerce_is_enabled() ) {
@@ -36,7 +37,6 @@ class Provider extends tad_DI52_ServiceProvider {
 		}
 
 		$this->register_hooks();
-		$this->register_assets();
 
 		$this->load_functions();
 
