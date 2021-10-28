@@ -143,19 +143,38 @@ class Success {
 	}
 
 	/**
-	 * Determines whether or not the success page setting is unset.
+	 * Determines whether or not the success page option is set.
 	 * 
 	 * @since TBD
 	 * 
-	 * @return bool True, if unset.
+	 * @return bool
 	 */
-	public function is_unset() {
+	public function is_option_set() {
+		return ! empty( $this->get_page_id() );
+	}
+
+	/**
+	 * Determines whether or not the success page has the appropriate shortcode in the content.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return bool
+	 */
+	public function page_has_shortcode() {
 		$page = get_post( $this->get_page_id() );
 		$shortcode = Shortcodes\Success_Shortcode::get_wp_slug();
-		if ( empty( $page ) || ! has_shortcode( $page->post_content, $shortcode ) ) {
-			return true;
-		}
-		return false;
+		return has_shortcode( $page->post_content, $shortcode );
+	}
+
+	/**
+	 * Determines whether or not we need to show the unset notice.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return bool
+	 */
+	public function show_unset_notice() {
+		return ! $this->is_option_set() || ! $this->page_has_shortcode();
 	}
 
 	/**

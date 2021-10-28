@@ -45,7 +45,7 @@ class Notices {
 			'event-tickets-tickets-commerce-checkout-not-set',
 			[ tribe( Checkout::class ), 'unset_notice' ],
 			[ 'dismiss' => false, 'type' => 'error' ],
-			[ tribe( Checkout::class ), 'is_unset' ]
+			[ tribe( Checkout::class ), 'show_unset_notice' ]
 		);
 	}
 
@@ -64,7 +64,7 @@ class Notices {
 			'event-tickets-tickets-commerce-success-not-set',
 			[ tribe( Success::class ), 'unset_notice' ],
 			[ 'dismiss' => false, 'type' => 'error' ],
-			[ tribe( Success::class ), 'is_unset' ]
+			[ tribe( Success::class ), 'show_unset_notice' ]
 		);
 	}
 }
