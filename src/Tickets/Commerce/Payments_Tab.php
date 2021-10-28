@@ -5,16 +5,17 @@ namespace TEC\Tickets\Commerce;
 class Payments_Tab {
 
 	/**
-	 * The option key for enable.
+	 * The option key to check TicketsCommerce status.
 	 *
-	 * @since 5.1.6
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $option_enable = 'tickets-commerce-enable';
+	public $option_activated;
 
 	public function __construct() {
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_tab' ], 15 );
+		$this->option_activated = \TEC\Tickets\Settings::$tickets_commerce_enabled;
 	}
 
 	/**
@@ -71,14 +72,14 @@ class Payments_Tab {
 			],
 			'tickets-commerce-header'      => [
 				'type' => 'html',
-				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-toggle-wrapper"><label class="tec-tickets__admin-settings-tickets-commerce-toggle"><input type="checkbox" name="' . static::$option_enable . '" value="' . $is_tickets_commerce_enabled . '" ' . checked( $is_tickets_commerce_enabled, true, false ) . ' id="tickets-commerce-enable-input" class="tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified"><span class="tec-tickets__admin-settings-tickets-commerce-toggle-switch"></span><span class="tec-tickets__admin-settings-tickets-commerce-toggle-label">' . esc_html__( 'Enable Tickets Commerce', 'event-tickets' ) . '</span></label></div>',
+				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-toggle-wrapper"><label class="tec-tickets__admin-settings-tickets-commerce-toggle"><input type="checkbox" name="' . $this->option_activated . '" value="' . $is_tickets_commerce_enabled . '" ' . checked( $is_tickets_commerce_enabled, true, false ) . ' id="tickets-commerce-enable-input" class="tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified"><span class="tec-tickets__admin-settings-tickets-commerce-toggle-switch"></span><span class="tec-tickets__admin-settings-tickets-commerce-toggle-label">' . esc_html__( 'Enable Tickets Commerce', 'event-tickets' ) . '</span></label></div>',
 
 			],
 			'tickets-commerce-description' => [
 				'type' => 'html',
 				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-description">' . $plus_message . '</div>',
 			],
-			static::$option_enable         => [
+			$this->option_activated        => [
 				'type'            => 'hidden',
 				'validation_type' => 'boolean',
 			],

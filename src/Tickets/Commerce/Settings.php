@@ -29,13 +29,13 @@ class Settings extends Abstract_Settings {
 	use Has_Mode;
 
 	/**
-	 * The option key for enable.
+	 * The option key to check TicketsCommerce status.
 	 *
-	 * @since 5.1.6
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $option_enable = 'tickets-commerce-enable';
+	public $option_activated;
 
 	/**
 	 * The option key for sandbox.
@@ -117,6 +117,7 @@ class Settings extends Abstract_Settings {
 	public function __construct() {
 		// Configure which mode we are in.
 		$this->set_mode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' );
+		$this->option_activated = \TEC\Tickets\Settings::$tickets_commerce_enabled;
 	}
 
 	/**
@@ -194,7 +195,7 @@ class Settings extends Abstract_Settings {
 		$settings = [
 			'tickets-commerce-general-settings-heading'     => [
 				'type' => 'html',
-				'html' => '<h3 class="my-awesome-class tribe-dependent"  data-depends="#' . static::$option_enable . '-input" data-condition-is-checked>' . __( 'Tickets Commerce Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
+				'html' => '<h3 class="my-awesome-class tribe-dependent"  data-depends="#' . $this->option_activated . '-input" data-condition-is-checked>' . __( 'Tickets Commerce Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
 			],
 			static::$option_sandbox                         => [
 				'type'            => 'checkbox_bool',
@@ -349,9 +350,9 @@ class Settings extends Abstract_Settings {
 	 * @return array[]
 	 */
 	public function apply_commerce_enabled_conditional( $settings ) {
-		$validate_if         = new Tribe__Field_Conditional( static::$option_enable, 'tribe_is_truthy' );
+		$validate_if         = new Tribe__Field_Conditional( $this->option_activated, 'tribe_is_truthy' );
 		$fieldset_attributes = [
-			'data-depends'              => '#' . static::$option_enable . '-input',
+			'data-depends'              => '#' . $this->option_activated . '-input',
 			'data-condition-is-checked' => '',
 		];
 
