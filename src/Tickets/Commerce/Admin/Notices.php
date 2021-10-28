@@ -31,7 +31,7 @@ class Notices {
 	}
 
 	/**
-	 * Display a notice when Tickets Commerce is enabled, yet a checkout page is not setup properly
+	 * Display a notice when Tickets Commerce is enabled, yet a checkout page is not setup properly.
 	 *
 	 * @since TBD
 	 */
@@ -50,7 +50,7 @@ class Notices {
 	}
 
 	/**
-	 * Display a notice when Tickets Commerce is enabled, yet a success page is not setup properly
+	 * Display a notice when Tickets Commerce is enabled, yet a success page is not setup properly.
 	 *
 	 * @since TBD
 	 */
