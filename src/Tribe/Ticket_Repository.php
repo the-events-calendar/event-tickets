@@ -50,6 +50,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			'event_status'      => [ $this, 'filter_by_event_status' ],
 			'has_attendee_meta' => [ $this, 'filter_by_attendee_meta_existence' ],
 			'currency_code'     => [ $this, 'filter_by_currency_code' ],
+			'is_active'         => [ $this, 'filter_by_active' ],
 		] );
 	}
 
@@ -363,6 +364,38 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 						'key'     => '_ticket_end_date',
 						'compare' => '<=',
 						'value'   => $until,
+					],
+				],
+			],
+		];
+	}
+
+	/**
+	 * Filters tickets by if they are currently available or available in the future.
+	 *
+	 * @since TBD
+	 *
+	 * @throws Exception
+	 *
+	 * @return array
+	 */
+	public function filter_by_active() {
+		// the input is a UTC date or timestamp
+		$utc_date        = new DateTime( 'now', new DateTimeZone( 'UTC' ) );
+		$now           = Tribe__Timezones::to_tz( $utc_date->format( Tribe__Date_Utils::DBDATETIMEFORMAT ), Tribe__Timezones::wp_timezone_string() );
+
+		return [
+			'meta_query' => [
+				'available-until' => [
+					'not-exists' => [
+						'key'     => '_ticket_end_date',
+						'compare' => 'NOT EXISTS',
+					],
+					'relation'   => 'OR',
+					'from'       => [
+						'key'     => '_ticket_end_date',
+						'compare' => '>',
+						'value'   => $now,
 					],
 				],
 			],
