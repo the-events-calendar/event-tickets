@@ -45,7 +45,7 @@ class Notices extends tad_DI52_ServiceProvider {
 	 */
 	public function should_render_checkout_notice() {
 		// If we're not on our own settings page, bail.
-		if ( Tribe__Settings::$parent_slug !== twribe_get_request_var( 'page' ) ) {
+		if ( Tribe__Settings::$parent_slug !== tribe_get_request_var( 'page' ) ) {
 			return false;
 		}
 
