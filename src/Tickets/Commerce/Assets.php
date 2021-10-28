@@ -45,6 +45,7 @@ class Assets extends tad_DI52_ServiceProvider {
 			[
 				'tribe-common-skeleton-style',
 				'tribe-common-full-style',
+				'tribe-common-responsive',
 			],
 			null,
 			[

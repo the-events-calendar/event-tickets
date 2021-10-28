@@ -78,13 +78,13 @@ class Generate_Attendees extends Flag_Action_Abstract {
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $order ) {
 		// @todo we need an error handling piece here.
-		if ( empty( $order->cart_items ) ) {
+		if ( empty( $order->items ) ) {
 			return;
 		}
 
 		$default_currency = tribe_get_option( Settings::$option_currency_code, 'USD' );
 
-		foreach ( $order->cart_items as $ticket_id => $item ) {
+		foreach ( $order->items as $ticket_id => $item ) {
 			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 			if ( null === $ticket ) {
 				continue;

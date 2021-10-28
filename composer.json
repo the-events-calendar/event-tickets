@@ -32,7 +32,7 @@
     "phpunit/phpunit": "^6.5.14",
     "spatie/phpunit-snapshot-assertions": "^1.4.2",
     "the-events-calendar/tribalscents": "dev-master",
-    "the-events-calendar/tec-testing-facilities": "dev-feature/introduce-post-remapping-tests-for-legacy-templates",
+    "the-events-calendar/tec-testing-facilities": "dev-master",
     "wp-coding-standards/wpcs": "^2.1",
     "lucatume/codeception-snapshot-assertions": "^0.2.4"
   },

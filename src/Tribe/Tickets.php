@@ -3931,10 +3931,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			/** @var Tribe__Tickets_Plus__Main $tickets_plus_main */
-			$tickets_plus_main = tribe( 'tickets-plus.main' );
-
-			$meta = $tickets_plus_main->meta();
+			/** @var Tribe__Tickets_Plus__Meta $meta */
+			$meta = tribe( 'tickets-plus.meta' );
 
 			$cart_has_meta = true;
 
