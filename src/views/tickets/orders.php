@@ -139,7 +139,7 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 
 			<?php
 			if ( ! class_exists( 'Tribe__Tickets_Plus__Meta' ) && \TEC\Tickets\Commerce\Module::class === $provider_class ) {
-				$template->template( 'v2/commerce/my-tickets' );
+				$template->template( 'tickets/orders-tc-tickets' );
 			}
 			?>
 
