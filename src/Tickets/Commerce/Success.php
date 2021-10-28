@@ -141,4 +141,46 @@ class Success {
 
 		return $post_states;
 	}
+
+	/**
+	 * Determines whether or not the success page setting is unset.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return bool True, if unset.
+	 */
+	public function is_unset() {
+		$page = get_post( $this->get_page_id() );
+		$shortcode = Shortcodes\Success_Shortcode::get_wp_slug();
+		if ( empty( $page ) || ! has_shortcode( $page->post_content, $shortcode ) ) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Gets the HTML for the notice that is shown when checkout setting is not set.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return string Notice HTML.
+	 */
+	public function unset_notice() {
+		$notice_link = sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+			esc_url( 'https://evnt.is/1axv' ),
+			esc_html__( 'Learn More', 'event-tickets' )
+		);
+		$notice_header = esc_html__( 'Set up your order success page', 'event-tickets' );
+		$notice_text = sprintf( 
+			// translators: %1$s: Link to knowledgebase article.
+			esc_html__( 'In order to start selling with Tickets Commerce, you\'ll need to set up your order success page. Please configure the setting on Settings > Payments and confirm that the page you have selected has the proper shortcode. %1$s', 'event-tickets' ),
+			$notice_link
+		);
+		return sprintf(
+			'<p><strong>%1$s</strong></p><p>%2$s</p>',
+			$notice_header,
+			$notice_text
+		);
+	}
 }
