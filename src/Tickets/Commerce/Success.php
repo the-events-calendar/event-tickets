@@ -196,6 +196,7 @@ class Success {
 			esc_html__( 'In order to start selling with Tickets Commerce, you\'ll need to set up your order success page. Please configure the setting on Settings > Payments and confirm that the page you have selected has the proper shortcode. %1$s', 'event-tickets' ),
 			$notice_link
 		);
+		
 		return sprintf(
 			'<p><strong>%1$s</strong></p><p>%2$s</p>',
 			$notice_header,
