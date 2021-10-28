@@ -9,17 +9,23 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 
 	public function test_does_not_have_public_page() {
 		$cart = new Unmanaged_Cart();
-		$this->assertFalse( $cart->has_public_page() );
+
+		$assertion_msg = 'UnmanagedCart->has_public_page() should return false.';
+		$this->assertFalse( $cart->has_public_page(), $assertion_msg );
 	}
 
 	public function test_default_mode_is_redirect() {
 		$cart = new Unmanaged_Cart();
-		$this->assertEquals( Cart::REDIRECT_MODE, $cart->get_mode() );
+
+		$assertion_msg = 'UnmanagedCart->get_mode() should return the value of Cart::REDIRECT_MODE.';
+		$this->assertEquals( Cart::REDIRECT_MODE, $cart->get_mode(), $assertion_msg );
 	}
 
 	public function test_get_items_returns_false_if_no_items() {
 		$cart = new Unmanaged_Cart();
-		$this->assertEmpty( $cart->get_items() );
+
+		$assertion_msg = 'UnmanagedCart->get_items() should return an empty array if no items were added';
+		$this->assertEmpty( $cart->get_items(), $assertion_msg );
 	}
 
 	/**
@@ -34,14 +40,17 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 			$cart->add_item( $ticket_id, $quantity );
 		}
 
-		$this->assertEquals( $formatted_item, $cart->get_items() );
+		$assertion_msg = 'Adding an item to the cart should sanitize and format it properly before storing.';
+		$this->assertEquals( $formatted_item, $cart->get_items(), $assertion_msg );
 	}
 
 	public function test_add_item_updates_items_by_id() {
 		$cart     = new Unmanaged_Cart();
 		$items    = $this->items_data_provider();
 		$quantity = (int) $cart->has_items();
-		$this->assertEmpty( $quantity );
+
+		$assertion_msg = 'UnmanagedCart->has_items() should return zero if no items were added.';
+		$this->assertEquals( 0, $quantity, $assertion_msg );
 
 		foreach ( $items as $item ) {
 
@@ -49,12 +58,14 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 				$quantity += $item[1];
 				$cart->add_item( $item[0], $item[1], $item[2] ?? [] );
 
-				// All items have the same ID so this count should not change
-				$this->assertEquals( 1, $cart->has_items() );
-
 				// Update quantities as each item gets updated
 				$item[3][ $item[0] ]['quantity'] = $quantity;
-				$this->assertEquals( $item[3], $cart->get_items() );
+
+				$assertion_msg = 'Adding items with an id already existing in the cart should not create new items in the cart.';
+				$this->assertEquals( 1, $cart->has_items(), $assertion_msg );
+
+				$assertion_msg = 'Adding items with an id already existing in the cart should change the quantity of that item in the cart.';
+				$this->assertEquals( $item[3], $cart->get_items(), $assertion_msg );
 			}
 
 		}
@@ -71,19 +82,22 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 
 			switch ( $i ) {
 				case 1:
-					// Removing the exact quantity available should remove the item
 					$cart->remove_item( $i, $quantity );
-					$this->assertEquals( 0, $cart->has_item( $i ) );
+
+					$assertion_msg = 'Removing the exact quantity available should remove the item.';
+					$this->assertFalse( $cart->has_item( $i ), $assertion_msg );
 					break;
 				case 2:
-					// Removing fewer items than available should result in a positive amount
 					$cart->remove_item( $i, $quantity / 2 );
-					$this->assertEquals( $quantity / 2, $cart->has_item( $i ) );
+
+					$assertion_msg = 'Removing fewer items than available should result in a positive amount.';
+					$this->assertEquals( $quantity / 2, $cart->has_item( $i ), $assertion_msg );
 					break;
 				case 3:
-					// Removing more items than available should remove the item
 					$cart->remove_item( $i, pow( $quantity, 2 ) );
-					$this->assertEquals( 0, $cart->has_item( $i ) );
+
+					$assertion_msg = 'Removing more items than available should remove the item.';
+					$this->assertEquals( 0, $cart->has_item( $i ), $assertion_msg );
 					break;
 			}
 		}
@@ -105,7 +119,8 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 			$i --;
 		}
 
-		$this->assertEquals( 0, $cart->has_items() );
+		$assertion_msg = 'Removing all items added should result in an empty cart.';
+		$this->assertEmpty( $cart->has_items(), $assertion_msg );
 	}
 
 	public function test_has_items_returns_ticket_count() {
@@ -114,14 +129,14 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 		$count = 0;
 
 		foreach ( $items as $item ) {
-
 			if ( is_numeric( $item[0] ) ) {
 				$count ++;
 				// Add $count to the item_id so they count as different tickets
 				$cart->add_item( $item[0] + $count, $item[1] );
-				$this->assertEquals( $count, $cart->has_items() );
-			}
 
+				$assertion_msg = 'Adding items with unique ids should properly update the item count in the cart.';
+				$this->assertEquals( $count, $cart->has_items(), $assertion_msg );
+			}
 		}
 	}
 
@@ -132,16 +147,21 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 
 		$cart->add_item( $item[0], $item[1] );
 
-		$this->assertEquals( $item[1], $cart->has_item( $item[0] ) );
-		$this->assertFalse( $cart->has_item( $item[0] + 10 ) );
-		$this->assertFalse( $cart->has_item( 0 ) );
-		$this->assertFalse( $cart->has_item( 'abc' ) );
+		$assertion_msg = '`UnmanagedCart->has_item( $id )` should return the quantity of that item currently in the cart.';
+		$this->assertEquals( $item[1], $cart->has_item( $item[0] ), $assertion_msg );
+
+		$assertion_msg = '`UnmanagedCart->has_item( $id )` should return false if the ID does not exist.';
+		$this->assertFalse( $cart->has_item( $item[0] + 10 ), $assertion_msg );
+		$this->assertFalse( $cart->has_item( 0 ), $assertion_msg );
+		$this->assertFalse( $cart->has_item( 'abc' ), $assertion_msg );
 	}
 
 	public function test_does_not_process_empty_data() {
 		$cart = new Unmanaged_Cart();
-		$this->assertFalse( $cart->process() );
-		$this->assertFalse( $cart->process( [] ) );
+
+		$assertion_msg = '`UnmanagedCart->process( $data )` should return false if no data was passed in.';
+		$this->assertFalse( $cart->process(), $assertion_msg );
+		$this->assertFalse( $cart->process( [] ), $assertion_msg );
 	}
 
 	public function test_prepare_data_does_not_modify_data() {
@@ -149,7 +169,8 @@ class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 		$items = $this->items_data_provider();
 		$data  = $cart->prepare_data( $items );
 
-		$this->assertEquals( $items, $data );
+		$assertion_msg = '`UnmanagedCart->prepare_data( $items )` should not modify the data passed in.';
+		$this->assertEquals( $items, $data, $assertion_msg );
 
 	}
 
