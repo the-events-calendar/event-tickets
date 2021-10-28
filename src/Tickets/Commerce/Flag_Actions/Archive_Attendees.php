@@ -41,11 +41,11 @@ class Archive_Attendees extends Flag_Action_Abstract {
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
 		// @todo we need an error handling piece here.
-		if ( empty( $post->cart_items ) ) {
+		if ( empty( $post->items ) ) {
 			return;
 		}
 
-		foreach ( $post->cart_items as $ticket_id => $item ) {
+		foreach ( $post->items as $ticket_id => $item ) {
 			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 			if ( null === $ticket ) {
 				continue;

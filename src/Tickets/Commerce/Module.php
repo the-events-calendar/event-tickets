@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Status\Completed;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Tickets Provider class for Tickets Commerce
@@ -214,12 +215,12 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * This method is required for the module to properly load.
 	 *
 	 * @since 5.1.9
-
 	 * @return static
 	 */
 	public static function get_instance() {
 		return tribe( static::class );
 	}
+
 	/**
 	 * Registers all actions/filters
 	 *
@@ -467,6 +468,7 @@ class Module extends \Tribe__Tickets__Tickets {
 			$attendee->save();
 		} catch ( \Tribe__Repository__Usage_Error $e ) {
 			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
+
 			return false;
 		}
 
@@ -587,7 +589,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Generate and store all the attendees information for a new order.
 	 *
-	 * @since 5.1.9
+	 * @since      5.1.9
 	 * @deprecated TBD
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.
@@ -616,9 +618,9 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int                           $post_id  Post ID.
+	 * @param int                            $post_id  Post ID.
 	 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket object.
-	 * @param array                         $raw_data Ticket data.
+	 * @param array                          $raw_data Ticket data.
 	 *
 	 * @return int|false The updated/created ticket post ID or false if no ticket ID.
 	 */
@@ -697,5 +699,75 @@ class Module extends \Tribe__Tickets__Tickets {
 	 */
 	public function get_ticket_reports_link( $event_id, $ticket_id ) {
 		return tribe( Commerce\Reports\Orders::class )->get_ticket_link( $event_id, $ticket_id );
+	}
+
+	/**
+	 * Create an attendee for the Commerce provider from a ticket.
+	 *
+	 * @since 5.1.0
+	 *
+	 * @param \Tribe__Tickets__Ticket_Object|int $ticket        Ticket object or ID to create the attendee for.
+	 * @param array                              $attendee_data Attendee data to create from.
+	 *
+	 * @return \WP_Post|\WP_Error|false The new post object or false if we can't resolve to a Ticket object. WP_Error if modifying status fails
+	 */
+	public function create_attendee( $ticket, $attendee_data ) {
+		// Get the ticket object from the ID.
+		if ( is_numeric( $ticket ) ) {
+			$ticket = $this->get_ticket( 0, (int) $ticket );
+		}
+
+		// If the ticket is not valid, stop creating the attendee.
+		if ( ! $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
+			return false;
+		}
+
+		$extra              = [];
+		$extra['attendees'] = [
+			1 => [
+				'meta' => Arr::get( $attendee_data, 'attendee_meta', [] )
+			]
+		];
+		$extra['optout']    = Arr::get( $attendee_data, 'send_ticket_email', true );
+		$extra['iac']       = false;
+
+		// The Manual Order takes the same format as the cart items.
+		$items = [
+			$ticket->ID => [
+				'ticket_id' => $ticket->ID,
+				'quantity'  => 1,
+				'extra'     => $extra,
+			]
+		];
+
+		$purchaser = [
+			'full_name' => $attendee_data['full_name'],
+			'email'     => $attendee_data['email'],
+
+			// By default user ID is zero here.
+			'user_id'   => 0,
+		];
+
+		$order = tribe( Gateways\Manual\Order::class )->create( $items, $purchaser );
+
+		/**
+		 * For now we need to make sure we move to pending before completed.
+		 *
+		 * @todo @backend when an order is moved into completed they need to update to pending first.
+		 *       likely we should have this be developed by implementing a dependent status.
+		 */
+		$updated = tribe( Order::class )->modify_status( $order->ID, 'pending' );
+		if ( is_wp_error( $updated ) ) {
+			return $updated;
+		}
+
+		$updated = tribe( Order::class )->modify_status( $order->ID, 'completed' );
+		if ( is_wp_error( $updated ) ) {
+			return $updated;
+		}
+
+		$attendee = tec_tc_attendees()->by( 'order_id', $order->ID )->first();
+
+		return $attendee;
 	}
 }
