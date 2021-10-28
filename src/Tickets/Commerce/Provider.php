@@ -78,8 +78,7 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->container->register( Gateways\Manual\Provider::class );
 
 		// Register and add hooks for admin notices.
-		$this->container->singleton( Admin\Notices::class );
-		tribe( Admin\Notices::class )->hook();
+		$this->container->register( Admin\Notices::class );
 	}
 
 	/**

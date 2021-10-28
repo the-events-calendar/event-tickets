@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Admin;
 
+use \tad_DI52_ServiceProvider;
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Success;
 use \Tribe__Settings;
@@ -13,39 +14,72 @@ use \Tribe__Settings;
  * 
  * @package TEC\Tickets\Commerce\Admin
  */
-class Notices {
+class Notices extends tad_DI52_ServiceProvider {
 
 	/**
 	 * @inheritdoc
 	 */
-	public function hook() {
-		add_action( 'admin_init', [ $this, 'maybe_display_notices' ] );
-	}
+	public function register() {
 
-	/**
-	 * @inheritdoc
-	 */
-	public function maybe_display_notices() {
-		$this->maybe_display_checkout_setting_notice();
-		$this->maybe_display_success_setting_notice();
+		tribe_notice(
+			'event-tickets-tickets-commerce-checkout-not-set',
+			[ $this, 'render_checkout_notice' ],
+			[ 'dismiss' => false, 'type' => 'error' ],
+			[ $this, 'should_render_checkout_notice' ]
+		);
+
+		tribe_notice(
+			'event-tickets-tickets-commerce-success-not-set',
+			[ $this, 'render_success_notice' ],
+			[ 'dismiss' => false, 'type' => 'error' ],
+			[ $this, 'should_render_success_notice' ]
+		);
 	}
 
 	/**
 	 * Display a notice when Tickets Commerce is enabled, yet a checkout page is not setup properly.
 	 *
 	 * @since TBD
+	 * 
+	 * @return bool
 	 */
-	public function maybe_display_checkout_setting_notice() {
+	public function should_render_checkout_notice() {
 		// If we're not on our own settings page, bail.
-		if ( Tribe__Settings::$parent_slug !== tribe_get_request_var( 'page' ) ) {
-			return;
+		if ( Tribe__Settings::$parent_slug !== twribe_get_request_var( 'page' ) ) {
+			return false;
 		}
 
-		tribe_notice(
-			'event-tickets-tickets-commerce-checkout-not-set',
-			[ tribe( Checkout::class ), 'unset_notice' ],
-			[ 'dismiss' => false, 'type' => 'error' ],
-			[ tribe( Checkout::class ), 'show_unset_notice' ]
+		if ( tribe( Checkout::class )->page_has_shortcode() ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Gets the HTML for the notice that is shown when checkout setting is not set.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return string Notice HTML.
+	 */
+	public function render_checkout_notice() {
+		$notice_link = sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+			esc_url( 'https://evnt.is/1axv' ),
+			esc_html__( 'Learn More', 'event-tickets' )
+		);
+		$notice_header = esc_html__( 'Set up your checkout page', 'event-tickets' );
+		$notice_text = sprintf( 
+			// translators: %1$s: Link to knowledgebase article.
+			esc_html__( 'In order to start selling with Tickets Commerce, you\'ll need to set up your checkout page. Please configure the setting on Settings > Payments and confirm that the page you have selected has the proper shortcode. %1$s', 'event-tickets' ),
+			$notice_link
+		);
+		
+		return sprintf(
+			'<p><strong>%1$s</strong></p><p>%2$s</p>',
+			$notice_header,
+			$notice_text
 		);
 	}
 
@@ -54,17 +88,43 @@ class Notices {
 	 *
 	 * @since TBD
 	 */
-	public function maybe_display_success_setting_notice() {
+	public function should_render_success_notice() {
 		// If we're not on our own settings page, bail.
 		if ( Tribe__Settings::$parent_slug !== tribe_get_request_var( 'page' ) ) {
-			return;
+			return false;
 		}
 
-		tribe_notice(
-			'event-tickets-tickets-commerce-success-not-set',
-			[ tribe( Success::class ), 'unset_notice' ],
-			[ 'dismiss' => false, 'type' => 'error' ],
-			[ tribe( Success::class ), 'show_unset_notice' ]
+		if ( tribe( Success::class )->page_has_shortcode() ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Gets the HTML for the notice that is shown when checkout setting is not set.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return string Notice HTML.
+	 */
+	public function render_success_notice() {
+		$notice_link = sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+			esc_url( 'https://evnt.is/1axv' ),
+			esc_html__( 'Learn More', 'event-tickets' )
+		);
+		$notice_header = esc_html__( 'Set up your order success page', 'event-tickets' );
+		$notice_text = sprintf( 
+			// translators: %1$s: Link to knowledgebase article.
+			esc_html__( 'In order to start selling with Tickets Commerce, you\'ll need to set up your order success page. Please configure the setting on Settings > Payments and confirm that the page you have selected has the proper shortcode. %1$s', 'event-tickets' ),
+			$notice_link
+		);
+		
+		return sprintf(
+			'<p><strong>%1$s</strong></p><p>%2$s</p>',
+			$notice_header,
+			$notice_text
 		);
 	}
 }
