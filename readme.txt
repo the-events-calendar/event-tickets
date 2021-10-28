@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, aguseo, bordoni
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 4.9.18
 Tested up to: 5.8.1
-Stable tag: 5.1.11
+Stable tag: 5.2.0
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -178,7 +178,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.1.11] TBD =
+= [5.2.0] TBD =
 
 
 
