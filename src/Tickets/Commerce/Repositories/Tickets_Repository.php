@@ -58,8 +58,6 @@ class Tickets_Repository extends Tribe__Repository {
 				'price'            => Ticket::$price_meta_key,
 			]
 		);
-
-		$this->schema['is_active'] = [ $this, 'filter_by_active' ];
 	}
 
 	/**
@@ -122,48 +120,5 @@ class Tickets_Repository extends Tribe__Repository {
 //		}
 
 		return $postarr;
-	}
-
-	/**
-	 * Filters tickets by if they are active
-	 * 
-	 * @since TBD
-	 * 
-	 * @return array
-	 */
-	public function filter_by_active() {
-
-		// We define active as tickets with a start date before now and an end date after now.
-		$utc_now  = new \DateTime( 'now', new \DateTimeZone( 'UTC' ) );
-		$now      = \Tribe__Timezones::to_tz( $utc_now->format( \Tribe__Date_Utils::DBDATETIMEFORMAT ), \Tribe__Timezones::wp_timezone_string() );
-
-		return [
-			'meta_query' => [
-				'available-after' => [
-					'not-exists' => [
-						'key'     => '_ticket_end_date',
-						'compare' => 'NOT EXISTS',
-					],
-					'relation' => 'OR',
-					'from' => [
-						'key' => '_ticket_end_date',
-						'compare' => '>',
-						'value' => $now
-					],
-				],
-				'available-before' => [
-					'not-exists' => [
-						'key'     => '_ticket_start_date',
-						'compare' => 'NOT EXISTS',
-					],
-					'relation' => 'OR',
-					'from' => [
-						'key' => '_ticket_start_date',
-						'compare' => '<',
-						'value' => $now
-					],
-				],
-			]
-		];
 	}
 }
