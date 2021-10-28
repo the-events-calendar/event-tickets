@@ -14,6 +14,18 @@ use Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce\Gateways\Manual
  */
 class Order {
+	/**
+	 * Creates a manual Order based on set of items and a purchaser.
+	 *
+	 * @since TBD
+	 *
+	 * @throws \Tribe__Repository__Usage_Error
+	 *
+	 * @param array $items
+	 * @param array $purchaser
+	 *
+	 * @return false|\WP_Post
+	 */
 	public function create( $items, $purchaser = [] ) {
 		$order   = tribe( Commerce_Order::class );
 		$gateway = tribe( Gateway::class );

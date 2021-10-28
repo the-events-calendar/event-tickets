@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Manual;
 
 /**
- * Service provider for the Tickets Commerce: PayPal Commerce gateway.
+ * Service provider for the Tickets Commerce: Manual Gateway.
  *
  * @since   TBD
  * @package TEC\Tickets\Commerce\Gateways\Manual
