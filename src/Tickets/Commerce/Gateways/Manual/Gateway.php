@@ -26,6 +26,7 @@ class Gateway extends Abstract_Gateway {
 	public static function get_label() {
 		return __( 'Manually Generated', 'event-tickets' );
 	}
+
 	/**
 	 * @inheritDoc
 	 *

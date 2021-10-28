@@ -67,7 +67,7 @@ class Order {
 			$order_args['purchaser_user_id']    = 0;
 			$order_args['purchaser_full_name']  = Commerce_Order::$placeholder_name;
 			$order_args['purchaser_first_name'] = Commerce_Order::$placeholder_name;
-			$order_args['purchaser_last_name'] = Commerce_Order::$placeholder_name;
+			$order_args['purchaser_last_name']  = Commerce_Order::$placeholder_name;
 			$order_args['purchaser_email']      = '';
 		} else {
 			$order_args['purchaser_user_id'] = Arr::get( $purchaser, 'user_id', 0 );

@@ -27,7 +27,7 @@ use Tribe__Utils__Array as Arr;
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Commerce\Gateways\PayPal
+ * @package TEC\Tickets\Commerce\Gateways\Manual
  */
 class Hooks extends \tad_DI52_ServiceProvider {
 
