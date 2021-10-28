@@ -49,8 +49,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	protected function add_actions() {
-		add_action( 'tribe_settings_do_tabs', [ $this, 'register_payments_tab' ], 15 );
-
 		add_action( 'init', [ $this, 'register_post_types' ] );
 		add_action( 'init', [ $this, 'register_order_statuses' ], 11 );
 
@@ -130,15 +128,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function load_commerce_module() {
 		$this->container->make( Module::class );
-	}
-
-	/**
-	 * Adds the payments tab to the settings.
-	 *
-	 * @since TBD
-	 */
-	public function register_payments_tab() {
-		$this->container->make( Settings::class )->register_tab();
 	}
 
 	/**

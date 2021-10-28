@@ -52,6 +52,11 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	protected function add_filters() {
+		add_filter( 'tec_tickets_commerce_is_enabled', [ $this, 'maybe_force_enable_tickets_commerce' ] );
+	}
+
+	public function maybe_force_enable_tickets_commerce( $enabled ) {
+		return Settings::force_enable_tickets_commerce( $enabled );
 	}
 
 }
