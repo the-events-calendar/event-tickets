@@ -41,8 +41,31 @@ class Unmanaged_Cart implements Cart_Interface {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function set_id( $id ) {
-		$this->cart_hash = $id;
+	public function set_hash( $hash ) {
+		/**
+		 * Filters the cart setting of a hash used for the Cart.
+		 *
+		 * @since TBD
+		 *
+		 * @param string         $cart_hash Cart hash value.
+		 * @param Cart_Interface $cart      Which cart object we are using here.
+		 */
+		$this->cart_hash = apply_filters( 'tec_tickets_commerce_cart_set_hash', $hash, $this );
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_hash() {
+		/**
+		 * Filters the cart hash used for the Cart.
+		 *
+		 * @since TBD
+		 *
+		 * @param string         $cart_hash Cart hash value.
+		 * @param Cart_Interface $cart      Which cart object we are using here.
+		 */
+		return apply_filters( 'tec_tickets_commerce_cart_get_hash', $this->cart_hash, $this );
 	}
 
 	/**
@@ -55,10 +78,11 @@ class Unmanaged_Cart implements Cart_Interface {
 			return false;
 		}
 
+		$this->set_hash( $cart_hash );
+
 		if ( ! $this->has_items() ) {
 			$this->clear();
-
-			return;
+			return false;
 		}
 
 		set_transient( Commerce\Cart::get_transient_name( $cart_hash ), $this->items, DAY_IN_SECONDS );
@@ -77,7 +101,7 @@ class Unmanaged_Cart implements Cart_Interface {
 			return [];
 		}
 
-		$cart_hash = tribe( Commerce\Cart::class )->get_cart_hash();
+		$cart_hash = $this->get_hash();
 
 		$items = get_transient( Commerce\Cart::get_transient_name( $cart_hash ) );
 
@@ -98,6 +122,7 @@ class Unmanaged_Cart implements Cart_Interface {
 			return false;
 		}
 
+		$this->set_hash( null );
 		delete_transient( Commerce\Cart::get_transient_name( $cart_hash ) );
 		tribe( Commerce\Cart::class )->set_cart_hash_cookie( $cart_hash );
 	}
@@ -149,7 +174,7 @@ class Unmanaged_Cart implements Cart_Interface {
 
 		if ( 0 < $new_quantity ) {
 			$item['ticket_id'] = $item_id;
-			$item['quantity'] = $new_quantity;
+			$item['quantity']  = $new_quantity;
 
 			$item['extra'] = $extra_data;
 

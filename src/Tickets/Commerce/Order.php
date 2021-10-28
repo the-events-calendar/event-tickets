@@ -2,8 +2,7 @@
 
 namespace TEC\Tickets\Commerce;
 
-use TEC\Tickets\Commerce;
-use TEC\Tickets\Commerce\Communication\Email;
+use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Interface_Gateway;
 use TEC\Tickets\Commerce\Utils\Price;
 use Tribe__Date_Utils as Dates;
@@ -55,13 +54,14 @@ class Order {
 	public static $gateway_payload_meta_key = '_tec_tc_order_gateway_payload';
 
 	/**
-	 * Which meta holds the cart items used to setup this order.
+	 * Which meta holds the items used to setup this order.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Updated to use `_tec_tc_order_items` instead of `_tec_tc_order_items`.
 	 *
 	 * @var string
 	 */
-	public static $cart_items_meta_key = '_tec_tc_order_cart_items';
+	public static $items_meta_key = '_tec_tc_order_items';
 
 	/**
 	 * Which meta holds the tickets in a given order, they are added as individual meta items, allowing them to be
@@ -165,13 +165,13 @@ class Order {
 	public static $flag_action_status_marker_meta_key_prefix = '_tec_tc_order_fa_marker';
 
 	/**
-	 * Meta that holds the cart hash for this order.
+	 * Meta that holds the hash for this order, which at the time of purchase was unique.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $cart_hash_meta_key = '_tec_tc_order_cart_hash';
+	public static $hash_meta_key = '_tec_tc_order_hash';
 
 	/**
 	 * Meta value for placeholder names.
@@ -223,7 +223,7 @@ class Order {
 	 *
 	 * @return string
 	 */
-	public static function get_status_log_meta_key( Commerce\Status\Status_Interface $status ) {
+	public static function get_status_log_meta_key( Status\Status_Interface $status ) {
 		return static::$status_log_meta_key_prefix . '_' . $status->get_slug();
 	}
 
@@ -236,7 +236,7 @@ class Order {
 	 *
 	 * @return string
 	 */
-	public static function get_gateway_payload_meta_key( Commerce\Status\Status_Interface $status ) {
+	public static function get_gateway_payload_meta_key( Status\Status_Interface $status ) {
 		return static::$gateway_payload_meta_key . '_' . $status->get_slug();
 	}
 
@@ -250,7 +250,7 @@ class Order {
 	 *
 	 * @return string
 	 */
-	public static function get_flag_action_marker_meta_key( $flag, Commerce\Status\Status_Interface $status ) {
+	public static function get_flag_action_marker_meta_key( $flag, Status\Status_Interface $status ) {
 		$prefix = static::$flag_action_status_marker_meta_key_prefix;
 
 		return "{$prefix}:{$status->get_slug()}:{$flag}";
@@ -270,7 +270,7 @@ class Order {
 	 * @return bool|\WP_Error
 	 */
 	public function modify_status( $order_id, $status_slug, array $extra_args = [] ) {
-		$status = tribe( Commerce\Status\Status_Handler::class )->get_by_slug( $status_slug );
+		$status = tribe( Status\Status_Handler::class )->get_by_slug( $status_slug );
 
 		if ( ! $status ) {
 			return false;
@@ -308,7 +308,7 @@ class Order {
 	 *
 	 * @return false|\WP_Post
 	 */
-	public function create_from_cart( Commerce\Gateways\Interface_Gateway $gateway, $purchaser = null ) {
+	public function create_from_cart( Interface_Gateway $gateway, $purchaser = null ) {
 		$cart = tribe( Cart::class );
 
 		$items      = $cart->get_items_in_cart();
@@ -333,9 +333,9 @@ class Order {
 		$order_args = [
 			'title'       => $this->generate_order_title( $items, $cart->get_cart_hash() ),
 			'total_value' => $total,
-			'cart_items'  => $items,
+			'items'       => $items,
 			'gateway'     => $gateway::get_key(),
-			'cart_hash'   => $cart->get_cart_hash(),
+			'hash'        => $cart->get_cart_hash(),
 		];
 
 		// When purchaser data-set is not passed we pull from the current user.
@@ -413,7 +413,7 @@ class Order {
 	public function generate_order_title( $items, $hash = null ) {
 		$title = [ 'TEC-TC' ];
 		if ( $hash ) {
-			$title[] = $hash;
+			$title[] = implode( '-', (array) $hash );
 		}
 		$title[] = 'T';
 
@@ -441,9 +441,9 @@ class Order {
 			return null;
 		}
 
-		$gateway = tribe( Commerce\Gateways\Manager::class )->get_gateway_by_key( $order->gateway );
+		$gateway = tribe( Gateways\Manager::class )->get_gateway_by_key( $order->gateway );
 
-		return $gateway ? $gateway->get_label() : null;
+		return $gateway ? $gateway::get_label() : null;
 	}
 
 	/**

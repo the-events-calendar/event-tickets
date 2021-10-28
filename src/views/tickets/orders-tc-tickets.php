@@ -1,22 +1,13 @@
 <?php
 /**
- * Tickets Commerce: My Tickets Page
+ * List of Tickets Commerce tickets orders.
  *
- * @todo TribeCommerceLegacy: We need to change this template to V2 structure. For now it's following the legacy template `orders-tickets.php` from ETP to minimize the impact to core templates from TicketsCommerce changes.
- *
- * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/my-tickets.php
- *
- * See more documentation about our views templating system.
- *
- * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
+ * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-tc-tickets.php
  *
  * @since TBD
  *
  * @version TBD
  */
-
-// @todo TribeCommerceLegacy: Move these variables to template vars.
 
 $view      = Tribe__Tickets__Tickets_View::instance();
 $post_id   = get_the_ID();
