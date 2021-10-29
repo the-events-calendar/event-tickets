@@ -36,9 +36,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Class constructor
 	 *
-	 * @param array $args  additional arguments/overrides
-	 *
 	 * @see WP_List_Table::__construct()
+	 *
+	 * @param array $args additional arguments/overrides
+	 *
 	 */
 	public function __construct( $args = [] ) {
 		/**
@@ -179,7 +180,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_cb( $item ) {
-		$provider = ! empty(  $item['provider'] ) ? $item['provider'] : null;
+		$provider = ! empty( $item['provider'] ) ? $item['provider'] : null;
 
 		return sprintf( '<input type="checkbox" name="%1$s[]" value="%2$s" />', esc_attr( $this->_args['singular'] ), esc_attr( $item['attendee_id'] . '|' . $provider ) );
 	}
@@ -257,8 +258,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$order_id_url = $this->get_order_id_url( $item );
 
-		if ( ! empty( $order_id_url ) && ! empty( $item[ 'order_id' ] ) ) {
-			$label = '<a href="' . esc_url( $order_id_url ) . '">#' . esc_html( $item[ 'order_id' ] ) . ' &ndash; ' . $label . '</a>';
+		if ( ! empty( $order_id_url ) && ! empty( $item['order_id'] ) ) {
+			$label = '<a href="' . esc_url( $order_id_url ) . '">#' . esc_html( $item['order_id'] ) . ' &ndash; ' . $label . '</a>';
 		}
 
 		/**
@@ -371,6 +372,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 */
 		$row_actions = (array) apply_filters( 'event_tickets_attendees_table_row_actions', $default_row_actions, $item );
 		$row_actions = join( ' | ', $row_actions );
+
 		return empty( $row_actions ) ? '' : '<div class="row-actions">' . $row_actions . '</div>';
 	}
 
@@ -411,7 +413,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		$attendee = esc_attr( $item['attendee_id'] . '|' . $provider );
-		$nonce = wp_create_nonce( 'do_item_action_' . $attendee );
+		$attendee = str_replace( '\\', '', $attendee );
+		$nonce    = wp_create_nonce( 'do_item_action_' . $attendee );
 
 		$delete_url = esc_url( add_query_arg( [
 			'action'   => 'delete_attendee',
@@ -476,7 +479,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 * @since 4.1
 		 *
 		 * @param array  $default_checkin_stati An array of default order stati that will make a ticket eligible for check-in.
-		 * @param string $provider_slug              The ticket provider slug.
+		 * @param string $provider_slug         The ticket provider slug.
 		 * @param int    $order_id              The order post ID.
 		 */
 		$check_in_stati = apply_filters( 'event_tickets_attendees_checkin_stati', $default_checkin_stati, $provider_slug, $order_id );
@@ -486,8 +489,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 *
 		 * @since 4.1
 		 *
-		 * @param array  $default_checkin_stati An array of default order stati that will make a ticket eligible for check-in.
-		 * @param int    $order_id              The order post ID.
+		 * @param array $default_checkin_stati An array of default order stati that will make a ticket eligible for check-in.
+		 * @param int   $order_id              The order post ID.
 		 */
 		$check_in_stati = apply_filters( "event_tickets_attendees_{$provider_slug}_checkin_stati", $check_in_stati, $order_id );
 
@@ -548,8 +551,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 *
 	 * Used for the Print, Email and Export buttons, and for the jQuery based search.
 	 *
-	 * @param string $which (top|bottom)
 	 * @see WP_List_Table::display()
+	 *
+	 * @param string $which (top|bottom)
 	 */
 	public function extra_tablenav( $which ) {
 
@@ -592,7 +596,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$email_link = str_replace( '/wp-admin/', '/', $email_link );
 			$email_link = add_query_arg(
 				[
-					'page' => null,
+					'page'      => null,
 					'post_type' => null,
 				],
 				$email_link
@@ -600,7 +604,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		$nav = [
-			'left' => [
+			'left'  => [
 				'print'  => sprintf( '<input type="button" name="print" class="print button action" value="%s">', esc_attr__( 'Print', 'event-tickets' ) ),
 				'export' => sprintf( '<a target="_blank" href="%s" class="export button action" rel="noopener noreferrer">%s</a>', esc_url( tribe( 'tickets.attendees' )->get_export_url() ), esc_html__( 'Export', 'event-tickets' ) ),
 			],
@@ -615,7 +619,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/**
 		 * Allows for customization of the buttons/options available above and below the Attendees table.
 		 *
-		 * @param array $nav The array of items in the nav, where keys are the name of the item and values are the HTML of the buttons/inputs.
+		 * @param array  $nav   The array of items in the nav, where keys are the name of the item and values are the HTML of the buttons/inputs.
 		 * @param string $which Either 'top' or 'bottom'; the location of the current nav items being filtered.
 		 */
 		$nav = apply_filters( 'tribe_events_tickets_attendees_table_nav', $nav, $which );
@@ -710,10 +714,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	protected function get_action_ids() {
 		$action_ids = [];
 
-		if ( isset( $_POST[ 'attendee' ] ) ) {
-			$action_ids = (array) $_POST[ 'attendee' ];
-		} elseif ( isset( $_GET[ 'attendee' ] ) ) {
-			$action_ids = (array) $_GET[ 'attendee' ];
+		if ( isset( $_POST['attendee'] ) ) {
+			$action_ids = (array) $_POST['attendee'];
+		} elseif ( isset( $_GET['attendee'] ) ) {
+			$action_ids = (array) $_GET['attendee'];
 		}
 
 		return $action_ids;
@@ -731,7 +735,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$event_id = isset( $_GET['event_id'] ) ? $_GET['event_id'] : 0;
 
 		//if not event_id try to use post_id
-		$event_id = empty( $event_id ) && isset( $_GET['post_id'] )  ? $_GET['post_id'] : $event_id;
+		$event_id = empty( $event_id ) && isset( $_GET['post_id'] ) ? $_GET['post_id'] : $event_id;
 
 		return absint( $event_id );
 	}
@@ -852,7 +856,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return $failed;
 		}
 
-		if ( \TEC\Tickets\Commerce::ABBR === $parts[1] ) {
+		if (
+			tec_tickets_commerce_is_enabled()
+			&& get_post_type( $id ) === \TEC\Tickets\Commerce\Attendee::POSTTYPE
+		) {
 			$addon = tribe( \TEC\Tickets\Commerce\Module::class );
 		} else {
 			$addon = call_user_func( [ $parts[1], 'get_instance' ] );
@@ -976,9 +983,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Get the allowed search types and their descriptions.
 	 *
-	 * @since 4.10.8
-	 *
 	 * @see   \Tribe__Tickets__Attendee_Repository::__construct() List of valid ORM args.
+	 *
+	 * @since 4.10.8
 	 *
 	 * @return array
 	 */
