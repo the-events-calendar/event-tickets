@@ -20,6 +20,8 @@
         <h4 class="event-tickets__admin-tc_banner-header-title"><?php echo esc_html( $banner_title ); ?></h4>
         <?php $this->template( 'settings/tickets-commerce/banner/new-badge' ); ?>
     </div>
-	<p class="event-tickets__admin-banner-help-text"><?php echo wp_kses( $banner_content, 'post' ); ?></p>
+	<p class="event-tickets__admin-tc_banner-content">
+        <?php echo wp_kses( $banner_content, 'post' ); ?>
+    </p>
     <?php $this->template( 'settings/tickets-commerce/banner/footer' ); ?>
 </div>
