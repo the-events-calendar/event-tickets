@@ -70,11 +70,11 @@ class Pending extends Status_Abstract {
 		$order = tec_tc_get_order( $order );
 
 		// Since there are no cart items we can do anything.
-		if ( empty( $order->cart_items ) || ! is_array( $order->cart_items ) ) {
+		if ( empty( $order->items ) || ! is_array( $order->items ) ) {
 			return true;
 		}
 
-		foreach ( $order->cart_items as $item ) {
+		foreach ( $order->items as $item ) {
 			// Skip if we dont have a ticket id.
 			if ( empty( $item['ticket_id'] ) ) {
 				continue;
