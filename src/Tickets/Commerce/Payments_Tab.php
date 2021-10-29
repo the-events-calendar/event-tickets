@@ -18,16 +18,6 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 * @inheritdoc
 	 */
 	public function register() {
-		$this->register_hooks();
-	}
-
-	/**
-	 * Registers the all the 1st level filters and actions for Payments Tab.
-	 *
-	 * @since TBD
-	 */
-	public function register_hooks() {
-		add_action( 'tribe_settings_do_tabs', [ $this, 'register_tab' ], 15 );
 	}
 
 	/**

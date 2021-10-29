@@ -18,6 +18,7 @@
 namespace TEC\Tickets;
 
 use \tad_DI52_ServiceProvider;
+use TEC\Tickets\Commerce\Payments_Tab;
 
 /**
  * Class Hooks.
@@ -44,6 +45,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	protected function add_actions() {
+		add_action( 'tribe_settings_do_tabs', [ tribe( Payments_Tab::class ), 'register_tab' ], 15 );
 	}
 
 	/**
