@@ -53,7 +53,7 @@
 	1</div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-subtotal">
-	97.00</div>
+	$97.00</div>
 
 </article>
 					<article
@@ -100,7 +100,7 @@
 	1</div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-subtotal">
-	97.00</div>
+	$97.00</div>
 
 </article>
 	</div>
