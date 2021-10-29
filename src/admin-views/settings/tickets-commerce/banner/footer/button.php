@@ -19,6 +19,6 @@ if ( empty( $button_url ) || empty( $button_text ) ) {
 }
 
 ?>
-<a class="event-tickets__admin-tc_banner-button" href="<?php echo esc_url( $button_url ); ?>">
+<a class="event-tickets__admin-tc-banner-button" href="<?php echo esc_url( $button_url ); ?>">
     <?php echo esc_html( $button_text ); ?>
 </a>

@@ -22,7 +22,7 @@ if ( $hide_button && $hide_link ) {
 }
 
 ?>
-<div class="event-tickets__admin-tc_banner-footer">
+<div class="event-tickets__admin-tc-banner-footer">
     <?php $this->template( 'settings/tickets-commerce/banner/footer/button' ); ?>
     <?php $this->template( 'settings/tickets-commerce/banner/footer/link' ); ?>
 </div>

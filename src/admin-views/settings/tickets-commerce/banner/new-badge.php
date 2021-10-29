@@ -19,6 +19,6 @@ if ( ! tribe_is_truthy( $show_new ) ) {
 }
 
 ?>
-<span class="event-tickets__admin-tc_banner-label--new">
+<span class="event-tickets__admin-tc-banner-label--new">
     <?php esc_html_e( 'New!', 'event-tickets' ); ?>
 </span>

@@ -20,7 +20,7 @@ if ( empty( $link_text ) || empty( $link_url ) ) {
 
 ?>
 <a 
-    class="event-tickets__admin-tc_banner-link"
+    class="event-tickets__admin-tc-banner-link"
     href="<?php echo esc_url( $link_url ); ?>" 
     rel="noopener noreferrer"
     target="_blank"
