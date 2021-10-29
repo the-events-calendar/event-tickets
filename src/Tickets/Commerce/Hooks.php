@@ -49,8 +49,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	protected function add_actions() {
-		add_action( 'tribe_settings_do_tabs', [ $this, 'register_payments_tab' ], 15 );
-
 		add_action( 'init', [ $this, 'register_post_types' ] );
 		add_action( 'init', [ $this, 'register_order_statuses' ], 11 );
 
@@ -121,6 +119,23 @@ class Hooks extends tad_DI52_ServiceProvider {
 		$this->provider_meta_sanitization_filters();
 
 		add_filter( 'tribe_template_context:tickets-plus/v2/tickets/submit/button-modal', [ $this, 'filter_showing_cart_button' ] );
+
+		add_filter( 'tec_tickets_commerce_payments_tab_settings', [ $this, 'filter_payments_tab_settings' ] );
+	}
+
+	/**
+	 * Filters the Settings for Payments tab to add the Commerce Provider related fields.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $settings Settings array data for Payments tab.
+	 *
+	 * @return array
+	 */
+	public function filter_payments_tab_settings( $settings ) {
+		$settings['fields'] = array_merge( $settings['fields'], tribe( Settings::class )->get_settings() );
+
+		return $settings;
 	}
 
 	/**
@@ -130,15 +145,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function load_commerce_module() {
 		$this->container->make( Module::class );
-	}
-
-	/**
-	 * Adds the payments tab to the settings.
-	 *
-	 * @since TBD
-	 */
-	public function register_payments_tab() {
-		$this->container->make( Settings::class )->register_tab();
 	}
 
 	/**
