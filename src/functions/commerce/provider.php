@@ -138,7 +138,7 @@ function tec_tribe_commerce_should_be_active() {
 function tec_tribe_commerce_has_active_tickets( $force_check = false ) {
 
 	$cache_key = 'tec_tribe_commerce_has_active_tickets';
-	
+
 	if ( ! $force_check ) {
 		// If we don't find any cached value, we keep things activated.
 		return get_option( $cache_key, true );
