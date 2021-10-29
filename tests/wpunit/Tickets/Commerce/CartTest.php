@@ -77,6 +77,9 @@ class CartTest extends \Codeception\TestCase\WPTestCase {
 		$assertion_msg = 'Cart hash should return null if not re-generated after clearing';
 		$this->assertNull( $cart_hash, $assertion_msg );
 
+		// Make sure there is a transient set before generating a new hash.
+		set_transient( Cart::get_transient_name( static::$cart_hash ), ['items'] );
+
 		$cart_hash = $cart->get_cart_hash( true );
 
 		$assertion_msg = 'Cart hash should be unique if re-generated after clearing';
