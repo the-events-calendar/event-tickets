@@ -40,13 +40,20 @@ class CartTest extends \Codeception\TestCase\WPTestCase {
 
 		static::$cart_hash = $cart1_hash1;
 
+		$assertion_msg = 'Cart hash should be a string';
+		$this->assertIsString( $cart1_hash1, $assertion_msg );
+
 		$assertion_msg = 'Cart hashes should be 12 characters long';
 		$this->assertTrue( mb_strlen( $cart1_hash1, 'utf-8' ) === 12, $assertion_msg );
 
-		preg_match( '/[^a-zA-Z0-9]/', $cart1_hash1, $matches );
+		preg_match( '/[a-zA-Z0-9]/', $cart1_hash1, $positive_matches );
+		preg_match( '/[^a-zA-Z0-9]/', $cart1_hash1, $negative_matches );
 
-		$assertion_msg = 'Cart hashes should contain only alphanumeric characters.';
-		$this->assertEmpty( $matches, $assertion_msg );
+		$assertion_msg = 'Cart hashes should contain alphanumeric characters.';
+		$this->assertNotEmpty( $positive_matches, $assertion_msg );
+
+		$assertion_msg = 'Cart hashes should not contain non-alphanumeric characters.';
+		$this->assertEmpty( $negative_matches, $assertion_msg );
 
 		$assertion_msg = 'Cart hash should remain the same and not be regenerated within the same instance.';
 		$this->assertEquals( $cart1_hash1, $cart1_hash2, $assertion_msg );
