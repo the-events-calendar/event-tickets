@@ -122,12 +122,12 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 * @return string The help banner HTML content.
 	 */
 	public function maybe_render_tickets_commerce_upgrade_banner( $commerce_fields ) {
-		// If Tribe Commerce isn't available or enabled, return.
-		// @toDo @rafsuntaskin check if tribeCommerce is active.
 
-		// If no Tribe Commerce tickets are active.
-		$has_active_tickets = tribe_tickets()->by( 'post_type', 'tribe_tpp_tickets' )->where( 'is_active' )->count();
-		if ( ! $has_active_tickets ) {
+		// Check if Tribe Commerce tickets are active.
+		$has_active_tickets = tec_tribe_commerce_has_active_tickets( true );
+		$available          = tec_tribe_commerce_is_available();
+
+		if ( ! $has_active_tickets || ! $available ) {
 			return $commerce_fields;
 		}
 
