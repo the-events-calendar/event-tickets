@@ -265,12 +265,9 @@ class Cart {
 		$this->set_cart_hash_cookie( null );
 		$this->get_repository()->clear();
 
-		if ( isset( $_COOKIE[ static::$cart_hash_cookie_name ] ) ) {
-			$cart_hash = $_COOKIE[ static::$cart_hash_cookie_name ];
-			unset( $_COOKIE[ static::$cart_hash_cookie_name ] );
-		}
+		unset( $_COOKIE[ static::$cart_hash_cookie_name ] );
 
-		return delete_transient( static::get_transient_name( $cart_hash ) );
+		return delete_transient( static::get_current_cart_transient() );
 	}
 
 	/**
