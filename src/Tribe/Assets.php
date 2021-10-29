@@ -101,6 +101,19 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-orders-style',
+			'my-tickets.css',
+			[ 'tec-variables-full' ],
+			null,
+			[
+				'groups' => [
+					'tribe-tickets-page-assets',
+				],
+			]
+		);
+
 		if ( tribe_tickets_new_views_is_enabled() ) {
 			// Tribe tickets utils.
 			tribe_asset(

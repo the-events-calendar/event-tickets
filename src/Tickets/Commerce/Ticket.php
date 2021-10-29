@@ -182,12 +182,12 @@ class Ticket {
 		$order = tec_tc_get_order( $post );
 
 		// This should never be the case, but lets be safe.
-		if ( empty( $order->cart_items ) ) {
+		if ( empty( $order->items ) ) {
 			return;
 		}
 
-		foreach ( $order->cart_items as $item ) {
-			$ticket_id = $item['ticket_id'];
+		foreach ( $order->items as $item ) {
+			$ticket_id              = $item['ticket_id'];
 			$new_status_meta_key    = static::get_status_count_meta_key( $new_status );
 			$current_new_status_qty = get_post_meta( $ticket_id, $new_status_meta_key, true );
 			if ( ! $current_new_status_qty ) {
@@ -224,7 +224,7 @@ class Ticket {
 		}
 
 		$all_statuses = tribe( Status_Handler::class )->get_all();
-		$status_qty = [];
+		$status_qty   = [];
 
 		foreach ( $all_statuses as $status ) {
 			$value = get_post_meta( $ticket->ID, static::get_status_count_meta_key( $status ), true );
@@ -645,7 +645,7 @@ class Ticket {
 		/**
 		 * Generic action fired after saving a ticket (by type)
 		 *
-		 * @todo TribeCommerceLegacy
+		 * @todo  TribeCommerceLegacy
 		 *
 		 * @since TBD
 		 *
@@ -659,7 +659,7 @@ class Ticket {
 		/**
 		 * Generic action fired after saving a ticket.
 		 *
-		 * @todo TribeCommerceLegacy
+		 * @todo  TribeCommerceLegacy
 		 *
 		 * @since TBD
 		 *
