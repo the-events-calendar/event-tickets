@@ -124,7 +124,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	public function maybe_render_tickets_commerce_upgrade_banner( $commerce_fields ) {
 
 		// Check if Tribe Commerce tickets are active.
-		$has_active_tickets = tec_tribe_commerce_has_active_tickets( true );
+		$has_active_tickets = tec_tribe_commerce_has_active_tickets();
 		$available          = tec_tribe_commerce_is_available();
 
 		if ( ! $has_active_tickets || ! $available ) {
