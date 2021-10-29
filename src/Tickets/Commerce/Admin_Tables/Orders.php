@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Admin_Tables;
 
+use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Status_Handler;
@@ -315,5 +316,22 @@ class Orders extends WP_List_Table {
 	 */
 	public function column_gateway_order_id( $item ) {
 		return $item->gateway_order_id;
+	}
+
+	/**
+	 * Handler for gateway column
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $item
+	 *
+	 * @return string
+	 */
+	public function column_gateway( $item ) {
+		$gateway = tribe( Manager::class )->get_gateway_by_key( $item->gateway );
+		if ( ! $gateway ) {
+			return $item->gateway;
+		}
+		return $gateway::get_label();
 	}
 }
