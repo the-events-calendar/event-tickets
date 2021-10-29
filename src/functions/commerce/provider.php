@@ -131,23 +131,21 @@ function tec_tribe_commerce_should_be_active() {
  *
  * @since TBD
  *
- * @param bool $force_check Setting this as true will bypass the cached/default value.
- *
  * @return bool
  */
-function tec_tribe_commerce_has_active_tickets( $force_check = false ) {
+function tec_tribe_commerce_has_active_tickets() {
 
 	$cache_key = 'tec_tribe_commerce_has_active_tickets';
+	$cached    = (bool) get_transient( $cache_key );
 
-	if ( ! $force_check ) {
-		// If we don't find any cached value, we keep things activated.
-		return (bool) get_option( $cache_key, true );
+	if ( $cached ) {
+		return $cached;
 	}
 
 	$has_active_tickets = (bool) tribe_tickets()->by( 'post_type', 'tribe_tpp_tickets' )->where( 'is_active' )->count();
 
 	// Cache the data.
-	update_option( $cache_key, $has_active_tickets );
+	set_transient( $cache_key, $has_active_tickets, 24 * HOUR_IN_SECONDS );
 
 	return $has_active_tickets;
 }
