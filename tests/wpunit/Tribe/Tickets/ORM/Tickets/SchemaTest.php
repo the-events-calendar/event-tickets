@@ -43,9 +43,9 @@ class SchemaTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @test
 	 */
-	public function it_should_count_active_tickets_correctly_from_tribe_commerce_context() {
+	public function it_should_count_active_tickets_correctly() {
 		/** @var Ticket_Repository $tickets */
-		$tickets = tribe_tickets( 'tribe-commerce' );
+		$tickets = tribe_tickets();
 
 		$post_id = $this->factory->post->create();
 
@@ -62,7 +62,7 @@ class SchemaTest extends \Codeception\TestCase\WPTestCase {
 
 		$active_tickets_count = $tickets->where( 'is_active' )->count();
 
-		$this->assertEquals( $active_tickets_count, 5 );
+		$this->assertEquals( 5, $active_tickets_count );
 	}
 
 }
