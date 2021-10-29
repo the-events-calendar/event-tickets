@@ -18,6 +18,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 * @inheritdoc
 	 */
 	public function register() {
+		$this->container->singleton( static::class, $this );
 	}
 
 	/**
