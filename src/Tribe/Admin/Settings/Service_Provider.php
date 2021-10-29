@@ -141,13 +141,13 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 		$banner_html = $admin_views->template( 'settings/tickets-commerce/banner', [
-			'banner_title' => __( 'Upgrade to Tickets Commerce', 'event-tickets' ),
+			'banner_title'   => __( 'Upgrade to Tickets Commerce', 'event-tickets' ),
 			'banner_content' => __( 'Try our new Tickets Commerce payment system! It’s fast and simple to set up and offers a better experience and features. Best of all, <i>it’s free!</i>', 'event-tickets' ),
-			'button_text' => __( 'Click here', 'event-tickets' ),
-			'button_url' => \Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] ),
-			'link_text' => __( 'Learn more', 'event-tickets' ),
-			'link_url' => 'https://evnt.is/1axt',
-			'show_new' => true,
+			'button_text'    => __( 'Click here', 'event-tickets' ),
+			'button_url'     => \Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] ),
+			'link_text'      => __( 'Learn more', 'event-tickets' ),
+			'link_url'       => 'https://evnt.is/1axt',
+			'show_new'       => true,
 		], false );
 
 		// Add the banner html after the Tribe Commerce settings header.
