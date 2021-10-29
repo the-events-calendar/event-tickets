@@ -28,7 +28,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	 */
 	public function register() {
 
-		$this->container->make( Payments_Tab::class );
+		$this->container->register( Payments_Tab::class );
 		$this->register_assets();
 
 		// Specifically prevents anything else from loading.
