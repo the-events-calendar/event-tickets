@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways;
 
-use TEC\Tickets\Commerce\Settings;
+use TEC\Tickets\Settings;
 
 /**
  * Class Gateways Manager.

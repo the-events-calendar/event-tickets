@@ -65,12 +65,6 @@ function tec_tickets_commerce_is_sandbox_mode() {
  * @return boolean
  */
 function tec_tribe_commerce_is_available() {
-	/**
-	 * @todo Before launch of Tickets Commerce remove this conditional from here.
-	 */
-	if ( ! tec_tickets_commerce_is_enabled() ) {
-		return true;
-	}
 
 	if ( defined( 'TEC_TRIBE_COMMERCE_AVAILABLE' ) ) {
 		return (bool) TEC_TRIBE_COMMERCE_AVAILABLE;
@@ -93,6 +87,9 @@ function tec_tribe_commerce_is_available() {
 		);
 	}
 
+	$should_be_active    = tec_tribe_commerce_should_be_active();
+	$should_be_available = $available && $should_be_active;
+
 	/**
 	 * Filter whether we should disable TribeCommerce PayPal or not.
 	 *
@@ -100,5 +97,55 @@ function tec_tribe_commerce_is_available() {
 	 *
 	 * @param boolean $available should be available or not.
 	 */
-	return apply_filters( 'tec_tribe_commerce_is_available', $available );
+	return apply_filters( 'tec_tribe_commerce_is_available', $should_be_available );
+}
+
+/**
+ * Check if TribeCommerce should be active or not.
+ *
+ * @since TBD
+ *
+ * @return bool
+ */
+function tec_tribe_commerce_should_be_active() {
+
+	// If new install then just return false.
+	if ( tribe_installed_after( 'Tribe__Tickets__Main', '5.1.10' ) ) {
+		return false;
+	}
+
+	$should_be_active = tec_tribe_commerce_has_active_tickets();
+
+	/**
+	 * Filter whether TribeCommerce should be active or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param boolean $should_be_active Should TribeCommerce be kept activated or not.
+	 */
+	return apply_filters( 'tec_tribe_commerce_should_be_active', $should_be_active );
+}
+
+/**
+ * Check if the site has created tickets using TribeCommerce.
+ *
+ * @since TBD
+ *
+ * @return bool
+ */
+function tec_tribe_commerce_has_active_tickets() {
+
+	$cache_key = 'tec_tribe_commerce_has_active_tickets';
+	$cached    = (bool) get_transient( $cache_key );
+
+	if ( $cached ) {
+		return $cached;
+	}
+
+	$has_active_tickets = (bool) tribe_tickets()->by( 'post_type', 'tribe_tpp_tickets' )->where( 'is_active' )->count();
+
+	// Cache the data.
+	set_transient( $cache_key, $has_active_tickets, 24 * HOUR_IN_SECONDS );
+
+	return $has_active_tickets;
 }
