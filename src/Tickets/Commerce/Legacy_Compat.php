@@ -46,9 +46,6 @@ class Legacy_Compat extends tad_DI52_ServiceProvider {
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_events_tickets_module_name', [ $this, 'set_legacy_module_name' ] );
-
-		// Disable TribeCommerce for new installations.
-		add_filter( 'tribe_tickets_commerce_paypal_is_active', 'tec_tribe_commerce_is_available' );
 	}
 
 	/**
