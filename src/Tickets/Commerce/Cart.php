@@ -199,7 +199,7 @@ class Cart {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @return string|bool The cart hash or `false` if not found.
+	 * @return string|null The cart hash or `null` if not found.
 	 */
 	public function get_cart_hash( $generate = false ) {
 		$cart_hash_length = 12;
@@ -215,7 +215,7 @@ class Cart {
 			$cart_hash_transient = get_transient( static::get_transient_name( $cart_hash ) );
 
 			if ( empty( $cart_hash_transient ) ) {
-				$cart_hash = false;
+				$cart_hash = null;
 			}
 		}
 

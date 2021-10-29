@@ -7,6 +7,8 @@ use TEC\Tickets\Commerce\Cart;
 
 class CartTest extends \Codeception\TestCase\WPTestCase {
 
+	private static $cart_hash;
+
 	public function test_repository_is_returned() {
 		$cart       = new Cart();
 		$repository = $cart->get_repository();
@@ -36,6 +38,8 @@ class CartTest extends \Codeception\TestCase\WPTestCase {
 		$cart1_hash2 = $cart1->get_cart_hash( true );
 		$cart2_hash1 = $cart2->get_cart_hash( true );
 
+		static::$cart_hash = $cart1_hash1;
+
 		$assertion_msg = 'Cart hashes should be 12 characters long';
 		$this->assertTrue( mb_strlen( $cart1_hash1, 'utf-8' ) === 12, $assertion_msg );
 
@@ -47,8 +51,29 @@ class CartTest extends \Codeception\TestCase\WPTestCase {
 		$assertion_msg = 'Cart hash should remain the same and not be regenerated within the same instance.';
 		$this->assertEquals( $cart1_hash1, $cart1_hash2, $assertion_msg );
 
-		$assertion_msg = 'Cart hash should be unique to the cart and not repeated in different cart instances.';
-		$this->assertNotEquals( $cart1_hash1, $cart2_hash1, $assertion_msg );
+		$assertion_msg = 'Cart hash should remain the same across different cart instances in the same request.';
+		$this->assertEquals( $cart1_hash1, $cart2_hash1, $assertion_msg );
+	}
+
+	/**
+	 * @depends test_generates_valid_cart_hash_when_requested
+	 */
+	public function test_cart_hash_changes_when_cart_is_cleared() {
+		if ( empty( static::$cart_hash ) ) {
+			$this->markTestSkipped( 'Cart hash was empty' );
+		}
+
+		$cart = new Cart();
+		$cart->clear_cart();
+		$cart_hash = $cart->get_cart_hash();
+
+		$assertion_msg = 'Cart hash should return null if not re-generated after clearing';
+		$this->assertNull( $cart_hash, $assertion_msg );
+
+		$cart_hash = $cart->get_cart_hash( true );
+
+		$assertion_msg = 'Cart hash should be unique if re-generated after clearing';
+		$this->assertNotEquals( static::$cart_hash, $cart_hash, $assertion_msg );
 	}
 
 	public function test_cart_has_valid_url() {
