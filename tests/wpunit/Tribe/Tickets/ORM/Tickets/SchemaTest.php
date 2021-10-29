@@ -62,7 +62,7 @@ class SchemaTest extends \Codeception\TestCase\WPTestCase {
 
 		$active_tickets_count = $tickets->where( 'is_active' )->count();
 
-		$this->assertEqualSets( $active_tickets_count, 5 );
+		$this->assertEquals( $active_tickets_count, 5 );
 	}
 
 }
