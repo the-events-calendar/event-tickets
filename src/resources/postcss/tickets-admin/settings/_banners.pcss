@@ -53,14 +53,6 @@
 }
 
 .event-tickets__admin-tc_banner {
-	h4 {
-		font-family: var(--tec-font-family-sans-serif);
-		font-size: var(--tec-font-size-5);
-		line-height: var(--tec-line-height-0);
-		margin: 0;
-		padding: 0;
-	}
-
 	.event-tickets__admin-banner-links-link-label--new {
 		letter-spacing: 1px;
 	}
@@ -68,6 +60,28 @@
 	@media (--viewport-full) {
 		background-image: url("../images/background-tc-banner.png");
 	}
+}
+
+.event-tickets__admin-tc_banner-header-title {
+	font-family: var(--tec-font-family-sans-serif);
+	font-size: var(--tec-font-size-5);
+	line-height: var(--tec-line-height-0);
+	margin: 0;
+	padding: 0;
+}
+
+.event-tickets__admin-tc_banner-label--new {
+	background-color: #ffcf48;
+	border-radius: 80px;
+	color: #23282d;
+	font-size: 10px;
+	font-weight: 600;
+	letter-spacing: 1px;
+	line-height: 1;
+	margin-bottom: 3px;
+	margin-left: 8px;
+	padding: 3px 8px;
+	text-transform: uppercase;
 }
 
 .event-tickets__admin-tc_banner-header {
@@ -106,9 +120,9 @@
 	}
 }
 
-.event-tickets__admin-tc_banner-link {
+a.event-tickets__admin-tc_banner-link {
 	color: #405bfb;
-	text-decoration: underline !important;
+	text-decoration: underline;
 
 	&:hover,
 	&:focus {
