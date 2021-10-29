@@ -381,8 +381,8 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 */
 	public function filter_by_active() {
 		// the input is a UTC date or timestamp
-		$utc_date        = new DateTime( 'now', new DateTimeZone( 'UTC' ) );
-		$now           = Tribe__Timezones::to_tz( $utc_date->format( Tribe__Date_Utils::DBDATETIMEFORMAT ), Tribe__Timezones::wp_timezone_string() );
+		$utc_date = new DateTime( 'now', new DateTimeZone( 'UTC' ) );
+		$now      = Tribe__Timezones::to_tz( $utc_date->format( Tribe__Date_Utils::DBDATETIMEFORMAT ), Tribe__Timezones::wp_timezone_string() );
 
 		return [
 			'meta_query' => [
