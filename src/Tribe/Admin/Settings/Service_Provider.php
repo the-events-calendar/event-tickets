@@ -34,6 +34,8 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		}
 
 		add_action( 'tribe_settings_before_content_tab_event-tickets', [ $this, 'render_settings_banner' ] );
+
+		add_filter( 'tec_tickets_commerce_settings', [ $this, 'maybe_render_tickets_commerce_upgrade_banner' ] );
 	}
 
 	/**
@@ -110,5 +112,45 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		$admin_views = tribe( 'tickets.admin.views' );
 
 		return $admin_views->template( 'settings/getting-started', $context );
+	}
+
+	/**
+	 * Render the Tickets Commerce Upgrade banner for the Ticket Settings Tab.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The help banner HTML content array.
+	 */
+	public function maybe_render_tickets_commerce_upgrade_banner( $commerce_fields ) {
+
+		// Check if Tribe Commerce tickets are active.
+		$has_active_tickets = tec_tribe_commerce_has_active_tickets( true );
+		$available          = tec_tribe_commerce_is_available();
+
+		if ( ! $has_active_tickets || ! $available ) {
+			return $commerce_fields;
+		}
+
+		// Don't load for new installs, where TribeCommerce settings are not shown.
+		if ( ! isset( $commerce_fields['ticket-paypal-heading'] ) ) {
+			return $commerce_fields;
+		}
+
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
+		$banner_html = $admin_views->template( 'settings/tickets-commerce/banner', [
+			'banner_title'   => __( 'Upgrade to Tickets Commerce', 'event-tickets' ),
+			'banner_content' => __( 'Try our new Tickets Commerce payment system! It’s fast and simple to set up and offers a better experience and features. Best of all, <i>it’s free!</i>', 'event-tickets' ),
+			'button_text'    => __( 'Click here', 'event-tickets' ),
+			'button_url'     => \Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] ),
+			'link_text'      => __( 'Learn more', 'event-tickets' ),
+			'link_url'       => 'https://evnt.is/1axt',
+			'show_new'       => true,
+		], false );
+
+		// Add the banner html after the Tribe Commerce settings header.
+		$commerce_fields['ticket-paypal-heading']['html'] .= $banner_html;
+
+		return $commerce_fields;
 	}
 }
