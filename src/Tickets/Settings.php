@@ -8,8 +8,6 @@
 
 namespace TEC\Tickets;
 
-use TEC\Tickets\Commerce\Payments_Tab;
-
 /**
  * Class Settings.
  *

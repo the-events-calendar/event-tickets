@@ -2,6 +2,13 @@
 
 namespace TEC\Tickets\Commerce;
 
+/**
+ * Class Payments_Tab
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce
+ */
 class Payments_Tab {
 
 	/**
@@ -13,6 +20,9 @@ class Payments_Tab {
 	 */
 	public $option_activated;
 
+	/**
+	 * Constructor method.
+	 */
 	public function __construct() {
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_tab' ], 15 );
 		$this->option_activated = \TEC\Tickets\Settings::$tickets_commerce_enabled;
@@ -21,7 +31,7 @@ class Payments_Tab {
 	/**
 	 * Create the Tickets Commerce Payments Settings Tab.
 	 *
-	 * @since 5.1.9
+	 * @since TBD
 	 */
 	public function register_tab() {
 		$tab_settings = [
@@ -39,8 +49,7 @@ class Payments_Tab {
 	/**
 	 * Gets the top level settings for Tickets Commerce.
 	 *
-	 * @since 5.1.9
-	 *
+	 * @since TBD
 	 *
 	 * @return array[]
 	 */
@@ -99,7 +108,7 @@ class Payments_Tab {
 		/**
 		 * Hook to modify the top level settings for Tickets Commerce.
 		 *
-		 * @since 5.1.9
+		 * @since TBD
 		 *
 		 * @param array[] $top_level_settings Top level settings.
 		 */
