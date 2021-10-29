@@ -80,17 +80,6 @@ class Manager {
 				continue;
 			}
 
-			$heading = [
-				'tickets-commerce-' . $gateway_key => [
-					'type'            => 'html',
-					'html'            => '<h3 class="event-tickets__admin-settings-subheading" class="tribe-dependent" data-depends="#' . Settings::$tickets_commerce_enabled . '-input" data-condition-is-checked>' . $gateway::get_label() . '</h3>',
-					'validation_type' => 'html',
-				],
-			];
-
-			// Add the gateway label to the start of settings.
-			$gateway_setting_groups[] = $heading;
-
 			$gateway_setting_groups[] = $gateway_settings;
 		}
 

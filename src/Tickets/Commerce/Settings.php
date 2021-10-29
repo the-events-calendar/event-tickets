@@ -186,7 +186,7 @@ class Settings extends Abstract_Settings {
 		$settings = [
 			'tickets-commerce-general-settings-heading'     => [
 				'type' => 'html',
-				'html' => '<h3 class="my-awesome-class tribe-dependent"  data-depends="#' . Tickets_Settings::$tickets_commerce_enabled . '-input" data-condition-is-checked>' . __( 'Tickets Commerce Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
+				'html' => '<h3 class="tribe-dependent"  data-depends="#' . Tickets_Settings::$tickets_commerce_enabled . '-input" data-condition-is-checked>' . __( 'Tickets Commerce Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
 			],
 			static::$option_sandbox                         => [
 				'type'            => 'checkbox_bool',
