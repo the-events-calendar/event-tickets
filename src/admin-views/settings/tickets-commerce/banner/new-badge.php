@@ -1,6 +1,6 @@
 <?php
 /**
- * Tickets Commerce styled, generic banner.
+ * "New!" badge for Tickets Commerce styled, generic banner.
  *
  * @since TBD
  *
@@ -14,12 +14,11 @@
  * @var bool                         $show_new       Show "New!" badge.
  */
 
+if ( ! tribe_is_truthy( $show_new ) ) {
+    return;
+}
+
 ?>
-<div class="event-tickets__admin-banner event-tickets__admin-tc_banner">
-    <div class="event-tickets__admin-tc_banner-header">
-        <h4 class="event-tickets__admin-tc_banner-header-title"><?php echo esc_html( $banner_title ); ?></h4>
-        <?php $this->template( 'settings/tickets-commerce/banner/new-badge' ); ?>
-    </div>
-	<p class="event-tickets__admin-banner-help-text"><?php echo wp_kses( $banner_content, 'post' ); ?></p>
-    <?php $this->template( 'settings/tickets-commerce/banner/footer' ); ?>
-</div>
+<span class="event-tickets__admin-tc_banner-label--new">
+    <?php esc_html_e( 'New!', 'event-tickets' ); ?>
+</span>
