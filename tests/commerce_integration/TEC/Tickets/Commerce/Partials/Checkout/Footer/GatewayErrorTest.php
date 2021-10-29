@@ -1,58 +1,36 @@
 <?php
 namespace TEC\Tickets\Commerce\Partials\Checkout\Footer;
 
-use Tribe\Tickets\Test\Partials\V2CommerceTestCase;
+use Tribe\Tickets\Test\Testcases\TicketsCommerceSnapshotTestCase;
 
-class GatewayErrorTest extends V2CommerceTestCase {
+class GatewayErrorTest extends TicketsCommerceSnapshotTestCase {
 
-	public $partial_path = 'checkout/footer/gateway-error';
-
-	/**
-	 * Get all the default args required for this template
-	 *
-	 * @return array
-	 */
-	public function get_default_args() {
-		$args = [
-			'items'           => [ 'Ticket 1', 'Ticket 2' ],
-			'gateways_active' => 0,
-		];
-
-		return $args;
-	}
+	protected $partial_path = 'checkout/footer/gateway-error';
 
 	/**
-	 * @test
+	 * Test render cart footer
 	 */
 	public function test_should_render_notice() {
-		$args   = $this->get_default_args();
-		$html   = $this->template_class()->template( $this->partial_path, $args, false );
-		$driver = $this->get_html_output_driver();
-
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertMatchesHtmlSnapshot( $this->get_partial_html( [
+				'items'           => [ 'Ticket 1', 'Ticket 2' ],
+				'gateways_active' => 0,
+			]
+		) );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_should_render_empty_if_no_tickets() {
-		$args   = $this->get_default_args();
-		$args['items'] = [];
-		$html   = $this->template_class()->template( $this->partial_path, $args, false );
-		$driver = $this->get_html_output_driver();
-
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertEmpty( $this->get_partial_html( [
+				'items'           => [],
+				'gateways_active' => 0,
+			]
+		) );
 	}
 
-	/**
-	 * @test
-	 */
 	public function test_should_render_empty_if_gateway_active() {
-		$args   = $this->get_default_args();
-		$args['gateways_active'] = 1;
-		$html   = $this->template_class()->template( $this->partial_path, $args, false );
-		$driver = $this->get_html_output_driver();
-
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertEmpty( $this->get_partial_html( [
+				'items'           => [ 'Ticket 1', 'Ticket 2' ],
+				'gateways_active' => 1,
+			]
+		) );
 	}
 }
