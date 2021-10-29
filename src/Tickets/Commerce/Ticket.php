@@ -256,6 +256,10 @@ class Ticket {
 			return null;
 		}
 
+		if ( static::POSTTYPE !== get_post_type( $product ) ) {
+			return null;
+		}
+
 		$event_id = get_post_meta( $ticket_id, static::$event_relation_meta_key, true );
 
 		$return = new \Tribe__Tickets__Ticket_Object();
