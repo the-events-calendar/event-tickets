@@ -119,7 +119,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 *
-	 * @return string The help banner HTML content.
+	 * @return array The help banner HTML content array.
 	 */
 	public function maybe_render_tickets_commerce_upgrade_banner( $commerce_fields ) {
 
@@ -128,6 +128,11 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		$available          = tec_tribe_commerce_is_available();
 
 		if ( ! $has_active_tickets || ! $available ) {
+			return $commerce_fields;
+		}
+
+		// Don't load for new installs, where TribeCommerce settings are not shown.
+		if ( ! isset( $commerce_fields['ticket-paypal-heading'] ) ) {
 			return $commerce_fields;
 		}
 
