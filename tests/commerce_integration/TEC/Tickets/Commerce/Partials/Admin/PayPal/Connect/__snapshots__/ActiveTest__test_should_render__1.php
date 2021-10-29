@@ -62,13 +62,18 @@
 
 	
 <div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-actions">
-	
-<a
-	href="http://wordpress.test/wp-admin/edit.php?page=tribe-common&#038;tab=payments&#038;tc-action=paypal-resync-connection&#038;post_type=tribe_events"
-	class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-resync-button"
->
-	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--reset tec-tickets__admin-settings-tickets-commerce-paypal-connected-resync-button-icon"  viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="M12.268 7.5a5.633 5.633 0 11-.886-3.033M11.4 1v3.467H7.934" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-	Resync payment connection</a>
+	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-row">
+	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-col1"></div>
+	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-col2">
+	<a
+		href="http://wordpress.test/wp-admin/edit.php?page=tribe-common&#038;tab=payments&#038;tc-action=paypal-resync-connection&#038;post_type=tribe_events"
+		class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-resync-button"
+	>
+		<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--reset tec-tickets__admin-settings-tickets-commerce-paypal-connected-resync-button-icon"  viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="M12.268 7.5a5.633 5.633 0 11-.886-3.033M11.4 1v3.467H7.934" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+		Resync payment connection	</a>
+	</div>
+</div>
+
 
 	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-actions-debug">
 		
