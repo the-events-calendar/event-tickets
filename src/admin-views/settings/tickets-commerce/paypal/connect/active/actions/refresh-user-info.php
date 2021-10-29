@@ -23,4 +23,7 @@ if ( empty( $is_merchant_connected ) || ! $debug ) {
 $url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-action' => 'paypal-refresh-user-info' ] );
 ?>
 
-<a href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'Refresh User Info', 'event-tickets' ); ?></a>
+<a
+	href="<?php echo esc_url( $url ); ?>"
+	class="tec-tickets__admin-settings-tickets-commerce-paypal-refresh-link"
+><?php esc_html_e( 'Refresh User Info', 'event-tickets' ); ?></a>
