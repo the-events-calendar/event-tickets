@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Tickets\Settings as Tickets_Settings;
+
 /**
  * Class Payments_Tab
  *
@@ -12,20 +14,10 @@ namespace TEC\Tickets\Commerce;
 class Payments_Tab {
 
 	/**
-	 * The option key to check TicketsCommerce status.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public $option_activated;
-
-	/**
 	 * Constructor method.
 	 */
 	public function __construct() {
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_tab' ], 15 );
-		$this->option_activated = \TEC\Tickets\Settings::$tickets_commerce_enabled;
 	}
 
 	/**
@@ -71,7 +63,6 @@ class Payments_Tab {
 			$plus_link_2
 		);
 
-		// @todo Fill this out and make it check if PayPal Legacy was previously active.
 		$is_tickets_commerce_enabled = tec_tickets_commerce_is_enabled();
 
 		$top_level_settings = [
@@ -85,7 +76,7 @@ class Payments_Tab {
 								<label class="tec-tickets__admin-settings-tickets-commerce-toggle">
 									<input
 										type="checkbox"
-										name="' . $this->option_activated . '"
+										name="' . Tickets_Settings::$tickets_commerce_enabled . '"
 										' . checked( $is_tickets_commerce_enabled, true, false ) . '
 										id="tickets-commerce-enable-input"
 										class="tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified">
@@ -99,7 +90,7 @@ class Payments_Tab {
 				'type' => 'html',
 				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-description">' . $plus_message . '</div>',
 			],
-			$this->option_activated        => [
+			Tickets_Settings::$tickets_commerce_enabled => [
 				'type'            => 'hidden',
 				'validation_type' => 'boolean',
 			],

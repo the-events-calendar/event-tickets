@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Traits\Has_Mode;
+use TEC\Tickets\Settings as Tickets_Settings;
 use Tribe__Field_Conditional;
 use WP_Admin_Bar;
 
@@ -27,15 +28,6 @@ use WP_Admin_Bar;
  */
 class Settings extends Abstract_Settings {
 	use Has_Mode;
-
-	/**
-	 * The option key to check TicketsCommerce status.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public $option_activated;
 
 	/**
 	 * The option key for sandbox.
@@ -117,7 +109,6 @@ class Settings extends Abstract_Settings {
 	public function __construct() {
 		// Configure which mode we are in.
 		$this->set_mode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' );
-		$this->option_activated = \TEC\Tickets\Settings::$tickets_commerce_enabled;
 	}
 
 	/**
@@ -195,7 +186,7 @@ class Settings extends Abstract_Settings {
 		$settings = [
 			'tickets-commerce-general-settings-heading'     => [
 				'type' => 'html',
-				'html' => '<h3 class="my-awesome-class tribe-dependent"  data-depends="#' . $this->option_activated . '-input" data-condition-is-checked>' . __( 'Tickets Commerce Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
+				'html' => '<h3 class="my-awesome-class tribe-dependent"  data-depends="#' . Tickets_Settings::$tickets_commerce_enabled . '-input" data-condition-is-checked>' . __( 'Tickets Commerce Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
 			],
 			static::$option_sandbox                         => [
 				'type'            => 'checkbox_bool',
@@ -350,9 +341,9 @@ class Settings extends Abstract_Settings {
 	 * @return array[]
 	 */
 	public function apply_commerce_enabled_conditional( $settings ) {
-		$validate_if         = new Tribe__Field_Conditional( $this->option_activated, 'tribe_is_truthy' );
+		$validate_if         = new Tribe__Field_Conditional( Tickets_Settings::$tickets_commerce_enabled, 'tribe_is_truthy' );
 		$fieldset_attributes = [
-			'data-depends'              => '#' . $this->option_activated . '-input',
+			'data-depends'              => '#' . Tickets_Settings::$tickets_commerce_enabled . '-input',
 			'data-condition-is-checked' => '',
 		];
 
