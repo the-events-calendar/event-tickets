@@ -15,12 +15,12 @@
  */
 
 ?>
-<div class="event-tickets__admin-banner event-tickets__admin-tc_banner">
-    <div class="event-tickets__admin-tc_banner-header">
-        <h4 class="event-tickets__admin-tc_banner-header-title"><?php echo esc_html( $banner_title ); ?></h4>
+<div class="event-tickets__admin-banner event-tickets__admin-tc-banner">
+    <div class="event-tickets__admin-tc-banner-header">
+        <h4 class="event-tickets__admin-tc-banner-header-title"><?php echo esc_html( $banner_title ); ?></h4>
         <?php $this->template( 'settings/tickets-commerce/banner/new-badge' ); ?>
     </div>
-	<p class="event-tickets__admin-tc_banner-content">
+	<p class="event-tickets__admin-tc-banner-content">
         <?php echo wp_kses( $banner_content, 'post' ); ?>
     </p>
     <?php $this->template( 'settings/tickets-commerce/banner/footer' ); ?>
