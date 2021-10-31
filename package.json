@@ -11,6 +11,11 @@
   "_glotPressSlug": "wp-plugins/event-tickets/stable",
   "_glotPressFileFormat": "%textdomain%-%wp_locale%.%format%",
   "_glotPressFormats": ["po", "mo"],
+  "_glotPressFilter": {
+    "translation_sets": false,
+    "minimum_percentage": 30,
+    "waiting_strings": false
+  },
   "_filePath": {
     "eslint": [
       "src/modules/**/*.js",
@@ -31,11 +36,6 @@
       "!src/resources/postcss/tickets-report.pcss",
       "!src/resources/postcss/tickets-v1.pcss"
     ]
-  },
-  "_glotPressFilter": {
-    "translation_sets": false,
-    "minimum_percentage": 30,
-    "waiting_strings": false
   },
   "scripts": {
     "preinstall": "if [ -d node_modules/@the-events-calendar/product-taskmaster ]; then node node_modules/@the-events-calendar/product-taskmaster/scripts/syncPackageJSON.js; fi",
