@@ -168,6 +168,11 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 			return $commerce_fields;
 		}
 
+		// Hide the notice, once tickets commerce is enabled.
+		if ( tec_tickets_commerce_is_enabled() ) {
+			return $commerce_fields;
+		}
+
 		// If new install, bail.
 		if ( tribe_installed_after( 'Tribe__Tickets__Main', '5.1.10' ) ) {
 			return $commerce_fields;
