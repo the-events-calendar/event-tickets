@@ -26,7 +26,7 @@
 	<a
 		target="_blank"
 		data-paypal-onboard-complete="onboardedCallback"
-		href="&displayMode=minibrowser"
+		href="http://thepaypalsandboxlink.tec.com/hash&displayMode=minibrowser"
 		data-paypal-button="true"
 		id="connect_to_paypal"
 		class="tec-tickets__admin-settings-tickets-commerce-paypal-connect-button-link"
