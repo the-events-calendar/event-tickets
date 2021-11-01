@@ -199,7 +199,7 @@ class Cart {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @return string|bool The cart hash or `false` if not found.
+	 * @return string|null The cart hash or `null` if not found.
 	 */
 	public function get_cart_hash( $generate = false ) {
 		$cart_hash_length = 12;
@@ -215,13 +215,15 @@ class Cart {
 			$cart_hash_transient = get_transient( static::get_transient_name( $cart_hash ) );
 
 			if ( empty( $cart_hash_transient ) ) {
-				$cart_hash = false;
+				$cart_hash = null;
 			}
 		}
 
 		if ( empty( $cart_hash ) && $generate ) {
 			$tries     = 1;
 			$max_tries = 20;
+
+			$this->clear_cart();
 			// While we dont find an empty transient to store this cart we loop, but avoid more than 20 tries.
 			while (
 				( ! empty( $cart_hash_transient ) || empty( $cart_hash ) )
@@ -257,18 +259,15 @@ class Cart {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @return false
+	 * @return bool
 	 */
 	public function clear_cart() {
 		$this->set_cart_hash_cookie( null );
 		$this->get_repository()->clear();
 
-		if ( isset( $_COOKIE[ static::$cart_hash_cookie_name ] ) ) {
-			$cart_hash = $_COOKIE[ static::$cart_hash_cookie_name ];
-			unset( $_COOKIE[ static::$cart_hash_cookie_name ] );
+		unset( $_COOKIE[ static::$cart_hash_cookie_name ] );
 
-			return delete_transient( static::get_transient_name( $cart_hash ) );
-		}
+		return delete_transient( static::get_current_cart_transient() );
 	}
 
 	/**
