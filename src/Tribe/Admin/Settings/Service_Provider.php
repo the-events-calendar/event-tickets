@@ -124,16 +124,15 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 */
 	public function maybe_render_tickets_commerce_upgrade_banner( $commerce_fields ) {
 
-		// Check if Tribe Commerce tickets are active.
-		$has_active_tickets = tec_tribe_commerce_has_active_tickets();
-		$available          = tec_tribe_commerce_is_available();
-
-		if ( ! $has_active_tickets || ! $available ) {
+		// Don't load for new installs, where TribeCommerce settings are not shown.
+		if ( ! isset( $commerce_fields['ticket-paypal-heading'] ) ) {
 			return $commerce_fields;
 		}
 
-		// Don't load for new installs, where TribeCommerce settings are not shown.
-		if ( ! isset( $commerce_fields['ticket-paypal-heading'] ) ) {
+		// Check if Tribe Commerce tickets are active.
+		$has_active_tickets = tec_tribe_commerce_has_active_tickets();
+
+		if ( ! $has_active_tickets ) {
 			return $commerce_fields;
 		}
 
