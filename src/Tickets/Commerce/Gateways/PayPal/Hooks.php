@@ -67,7 +67,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_action( 'admin_init', [ $this, 'render_ssl_notice' ] );
 
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/order/details/order-number', [ $this, 'include_capture_id_success_page' ], 10, 3 );
-		add_filter( 'tribe-events-save-options', [ $this, 'flush_transients_when_toggling_sandbox_mode' ] );
 	}
 
 	/**
@@ -80,6 +79,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_commerce_success_shortcode_checkout_page_paypal_template_vars', [ $this, 'include_checkout_page_vars' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_success_shortcode_success_page_paypal_template_vars', [ $this, 'include_success_page_vars' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_notice_messages', [ $this, 'include_admin_notices' ] );
+		add_filter( 'tribe-events-save-options', [ tribe( Signup::class ), 'flush_transients_when_toggling_sandbox_mode' ] );
 	}
 
 	/**
@@ -355,31 +355,5 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		}
 
 		$template->template( 'gateway/paypal/order/details/capture-id', [ 'capture_id' => $capture_id ] );
-	}
-
-	/**
-	 * When toggling between PayPal test mode and live mode, we need to re-generate
-	 * the transients to make sure the proper URLs are used.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $options the list of plugin options set for saving
-	 *
-	 * @return array
-	 */
-	public function flush_transients_when_toggling_sandbox_mode( $options ) {
-
-		if ( ! isset( $options[ Settings::$option_sandbox ] ) ) {
-			return $options;
-		}
-
-		if ( tec_tickets_commerce_is_sandbox_mode() === $options[ Settings::$option_sandbox ] ) {
-			return $options;
-		}
-
-		$signup = tribe( Signup::class );
-		$signup->delete_transient_data();
-
-		return $options;
 	}
 }
