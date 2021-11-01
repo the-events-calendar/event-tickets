@@ -1001,7 +1001,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 *  @return boolean
 		 */
-		public function allow_resending_email($ticket = null, $attendee = null) {
+		public function allow_resending_email( $ticket = null, $attendee = null ) {
 			/**
 			 *
 			 * Shared filter between Woo, EDD, and the default logic.
