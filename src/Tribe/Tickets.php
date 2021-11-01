@@ -996,8 +996,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @param WP_Post|null $ticket                The ticket post object if available, otherwise null.
-		 * @param array|null   $attendee              The attendee information if available, otherwise null.
+		 * @param WP_Post|null $ticket   The ticket post object if available, otherwise null.
+		 * @param array|null   $attendee The attendee information if available, otherwise null.
 		 *
 		 *  @return boolean
 		 */
