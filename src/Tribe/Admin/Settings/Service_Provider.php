@@ -124,16 +124,15 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 */
 	public function maybe_render_tickets_commerce_upgrade_banner( $commerce_fields ) {
 
-		// Check if Tribe Commerce tickets are active.
-		$has_active_tickets = tec_tribe_commerce_has_active_tickets();
-		$available          = tec_tribe_commerce_is_available();
-
-		if ( ! $has_active_tickets || ! $available ) {
+		// Don't load for new installs, where TribeCommerce settings are not shown.
+		if ( ! isset( $commerce_fields['ticket-paypal-heading'] ) ) {
 			return $commerce_fields;
 		}
 
-		// Don't load for new installs, where TribeCommerce settings are not shown.
-		if ( ! isset( $commerce_fields['ticket-paypal-heading'] ) ) {
+		// Check if Tribe Commerce tickets are active.
+		$has_active_tickets = tec_tribe_commerce_has_active_tickets();
+
+		if ( ! $has_active_tickets ) {
 			return $commerce_fields;
 		}
 
@@ -163,8 +162,14 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 * @return array The help banner HTML content array.
 	 */
 	public function maybe_render_tickets_commerce_notice_banner( $commerce_fields ) {
-		// If Tribe Commerce settings exist, bail.
+
+		// If fields are already set, that means TribeCommerce is active and we should not show this notice.
 		if ( isset( $commerce_fields['ticket-paypal-heading'] ) ) {
+			return $commerce_fields;
+		}
+
+		// Hide the notice, once tickets commerce is enabled.
+		if ( tec_tickets_commerce_is_enabled() ) {
 			return $commerce_fields;
 		}
 
@@ -189,10 +194,14 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 
 		// Add the banner html after the Tribe Commerce settings header.
 		$commerce_fields = [
+			'ticket-paypal-heading' => [
+				'type' => 'html',
+				'html' => '<h3>' . __( 'Tribe Commerce', 'event-tickets' ) . '</h3>',
+			],
 			'ticket-paypal-notice' => [
 				'type' => 'html',
 				'html' => $banner_html,
-			]
+			],
 		];
 
 		return $commerce_fields;
