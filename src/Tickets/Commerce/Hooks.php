@@ -122,7 +122,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		add_filter( 'tec_tickets_commerce_payments_tab_settings', [ $this, 'filter_payments_tab_settings' ] );
 
-		add_filter( 'tribe-events-save-options', [ $this, 'flush_transients_when_toggling_sandbox_mode' ] );
 	}
 
 	/**
@@ -704,25 +703,4 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'wp_redirect', [ tribe( Compatibility\Events::class ), 'prevent_filter_redirect_canonical' ], 1, 2 );
 	}
 
-	/**
-	 * When toggling between PayPal test mode and live mode, we need to re-generate
-	 * the transients to make sure the proper URLs are used.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $options the list of plugin options set for saving
-	 *
-	 * @return array
-	 */
-	public function flush_transients_when_toggling_sandbox_mode( $options ) {
-
-		if ( isset( $options[ Settings::$option_sandbox ] ) &&
-			 tec_tickets_commerce_is_sandbox_mode() !== $options[ Settings::$option_sandbox ]
-		) {
-			$signup = tribe( Base_Commerce\Gateways\PayPal\Signup::class );
-			$signup->delete_transient_data();
-		}
-
-		return $options;
-	}
 }
