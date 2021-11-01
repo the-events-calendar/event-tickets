@@ -385,7 +385,6 @@ class Tribe__Tickets__Attendees {
 			return;
 		}
 
-
 		if ( 'email' === $action ) {
 			define( 'IFRAME_REQUEST', true );
 
