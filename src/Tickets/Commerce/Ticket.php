@@ -66,6 +66,15 @@ class Ticket {
 	public static $price_meta_key = '_price';
 
 	/**
+	 * Which meta holds the data for the ticket sales.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $sales_meta_key = 'total_sales';
+
+	/**
 	 * Which meta holds the data for the ticket stock mode.
 	 *
 	 * @since 5.1.9
@@ -279,7 +288,7 @@ class Ticket {
 		$return->end_time         = get_post_meta( $ticket_id, '_ticket_end_time', true );
 		$return->sku              = get_post_meta( $ticket_id, '_sku', true );
 
-		$qty_sold = get_post_meta( $ticket_id, 'total_sales', true );
+		$qty_sold = get_post_meta( $ticket_id,  static::$sales_meta_key, true );
 
 		// If the quantity sold wasn't set, default to zero
 		$qty_sold = $qty_sold ? $qty_sold : 0;
@@ -789,11 +798,11 @@ class Ticket {
 	 */
 	public function increase_ticket_sales_by( $ticket_id, $quantity = 1, $shared_capacity = false, $global_stock = null ) {
 		// Adjust sales.
-		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true ) + $quantity;
+		$sales = (int) get_post_meta( $ticket_id,  static::$sales_meta_key, true ) + $quantity;
 
-		update_post_meta( $ticket_id, 'total_sales', $sales );
+		update_post_meta( $ticket_id,  static::$sales_meta_key, $sales );
 
-		if ( $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
+		if (  'own' !== $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
 			$this->update_global_stock( $global_stock, $quantity );
 		}
 
@@ -816,12 +825,12 @@ class Ticket {
 	 */
 	public function decrease_ticket_sales_by( $ticket_id, $quantity = 1, $shared_capacity = false, $global_stock = null ) {
 		// Adjust sales.
-		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true ) - $quantity;
+		$sales = (int) get_post_meta( $ticket_id,  static::$sales_meta_key, true ) - $quantity;
 
 		// Prevent negatives.
 		$sales = max( $sales, 0 );
 
-		update_post_meta( $ticket_id, 'total_sales', $sales );
+		update_post_meta( $ticket_id,  static::$sales_meta_key, $sales );
 
 		if ( $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
 			$this->update_global_stock( $global_stock, $quantity, true );
