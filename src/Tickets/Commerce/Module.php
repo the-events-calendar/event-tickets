@@ -728,7 +728,7 @@ class Module extends \Tribe__Tickets__Tickets {
 				'meta' => Arr::get( $attendee_data, 'attendee_meta', [] )
 			]
 		];
-		$extra['optout']    = Arr::get( $attendee_data, 'send_ticket_email', true );
+		$extra['optout']    = ! Arr::get( $attendee_data, 'send_ticket_email', true );
 		$extra['iac']       = false;
 
 		// The Manual Order takes the same format as the cart items.

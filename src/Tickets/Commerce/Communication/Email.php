@@ -15,7 +15,7 @@ class Email {
 	/**
 	 * Sends ticket email
 	 *
-	 * @since 4.7.6 added $post_id parameter
+	 * @since TBD
 	 *
 	 * @param string $order_id Order post ID
 	 * @param int    $post_id  Parent post ID (optional)
@@ -44,8 +44,7 @@ class Email {
 		/**
 		 * Controls the list of tickets which will be emailed out.
 		 *
-		 * @since 4.7
-		 * @since 4.7.6 added new parameter $post_id
+		 * @since TBD
 		 *
 		 * @param array  $to_send       list of tickets to be sent out by email
 		 * @param array  $all_attendees list of all attendees/tickets, including those already sent out
@@ -53,7 +52,7 @@ class Email {
 		 * @param string $order_id
 		 *
 		 */
-		$to_send = (array) apply_filters( 'tribe_tickets_tpp_tickets_to_send', $to_send, $all_attendees, $post_id, $order_id );
+		$to_send = (array) apply_filters( 'tec_tickets_commerce_legacy_email_tickets_to_send', $to_send, $all_attendees, $post_id, $order_id );
 
 		if ( empty( $to_send ) ) {
 			return;
