@@ -57,11 +57,11 @@ class Count_Sales extends Flag_Action_Abstract {
 			}
 
 			if ( in_array( 'increase_stock', $new_status->flags, true ) ) {
-				$this->increase_sales_by( $quantity );
+				$this->decrease_sales_by( $quantity );
 			}
 
 			if ( in_array( 'decrease_stock', $new_status->flags, true ) ) {
-				$this->decrease_sales_by( $quantity );
+				$this->increase_sales_by( $quantity );
 			}
 		}
 	}
