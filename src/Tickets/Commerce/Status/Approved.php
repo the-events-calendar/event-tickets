@@ -41,6 +41,7 @@ class Approved extends Status_Abstract {
 		'count_attendee',
 		'count_incomplete',
 		'count_sales',
+		'increase_sales',
 	];
 
 	/**

@@ -36,7 +36,8 @@ class Not_Completed extends Status_Abstract {
 		'warning',
 		'backfill_purchaser',
 		'increase_stock',
-		'archive_attendees'
+		'archive_attendees',
+		'decrease_sales',
 	];
 
 	/**
