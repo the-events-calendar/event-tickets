@@ -79,7 +79,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_commerce_success_shortcode_checkout_page_paypal_template_vars', [ $this, 'include_checkout_page_vars' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_success_shortcode_success_page_paypal_template_vars', [ $this, 'include_success_page_vars' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_notice_messages', [ $this, 'include_admin_notices' ] );
-		add_filter( 'tribe-events-save-options', [ tribe( Signup::class ), 'flush_transients_when_toggling_sandbox_mode' ] );
+		add_filter( 'tribe-events-save-options', [ $this, 'flush_transients_when_toggling_sandbox_mode' ] );
 	}
 
 	/**
@@ -355,5 +355,18 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		}
 
 		$template->template( 'gateway/paypal/order/details/capture-id', [ 'capture_id' => $capture_id ] );
+	}
+
+	/**
+	 * Checks if the transient data needs to be flushed when saving options and deletes it if appropriate
+	 *
+	 * @since TBD
+	 *
+	 * @param array $options the list of plugin options set for saving
+	 *
+	 * @return array
+	 */
+	public function flush_transients_when_toggling_sandbox_mode( $options ) {
+		return $this->container->make( Signup::class )->maybe_delete_transient_data( $options );
 	}
 }

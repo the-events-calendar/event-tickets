@@ -371,7 +371,7 @@ class Signup {
 	 *
 	 * @return array
 	 */
-	public function flush_transients_when_toggling_sandbox_mode( $options ) {
+	public function maybe_delete_transient_data( $options ) {
 
 		if ( ! isset( $options[ Settings::$option_sandbox ] ) ) {
 			return $options;
