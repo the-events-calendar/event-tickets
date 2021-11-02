@@ -149,7 +149,7 @@ class Orders extends Report_Abstract {
 				'page'      => static::$page_slug,
 				'post_id'   => $post->ID,
 			],
-			admin_url( 'edit.php' ) 
+			admin_url( 'edit.php' )
 		);
 
 		return $url;
@@ -324,7 +324,7 @@ class Orders extends Report_Abstract {
 				$ticket_ids,
 				static function ( $ticket_id ) {
 					return get_post_type( $ticket_id ) === Commerce\Ticket::POSTTYPE;
-				} 
+				}
 			);
 			$tickets    = array_map( [ tribe( Commerce\Ticket::class ), 'get_ticket' ], $ticket_ids );
 		}
@@ -333,11 +333,12 @@ class Orders extends Report_Abstract {
 			$tickets,
 			static function ( $ticket ) {
 				return Module::class === $ticket->provider_class;
-			} 
+			}
 		);
 
-		$event_data   = [];
-		$tickets_data = [];
+		$event_data    = [];
+		$tickets_data  = [];
+		$thousands_sep = tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'thousands_sep' );
 
 		foreach ( $tickets as $ticket ) {
 			$quantities      = tribe( Commerce\Ticket::class )->get_status_quantity( $ticket->ID );
@@ -350,7 +351,7 @@ class Orders extends Report_Abstract {
 					$event_data['total_by_status'][ $status_slug ] = [];
 				}
 
-				$event_data['total_by_status'][ $status_slug ][] = $total_by_status[ $status_slug ] = Price::sub_total( $ticket->price, $status_count );
+				$event_data['total_by_status'][ $status_slug ][] = $total_by_status[ $status_slug ] = str_replace( $thousands_sep, '', Price::sub_total( $ticket->price, $status_count ) );
 
 				$event_data['qty_by_status'][ $status_slug ] += (int) $status_count;
 			}
@@ -361,10 +362,10 @@ class Orders extends Report_Abstract {
 		}
 
 		$event_data['total_by_status'] = array_map(
-			static function ( $sub_totals ) {
-				return Price::total( $sub_totals );
+			static function ( $sub_totals ) use ( $thousands_sep ) {
+				return str_replace( $thousands_sep, '', Price::total( $sub_totals ) );
 			},
-			$event_data['total_by_status'] 
+			$event_data['total_by_status']
 		);
 
 
@@ -379,6 +380,7 @@ class Orders extends Report_Abstract {
 			'tickets_data'        => $tickets_data,
 			'event_data'          => $event_data,
 			'tooltip'             => tribe( 'tooltip.view' ),
+			'thousands_sep'       => $thousands_sep,
 		];
 
 		return $this->template_vars;
@@ -400,6 +402,7 @@ class Orders extends Report_Abstract {
 		if ( Module::class !== $provider ) {
 			return $url;
 		}
+
 		return add_query_arg( [ 'page' => static::get_page_slug() ], $url );
 	}
 }
