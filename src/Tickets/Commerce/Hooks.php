@@ -705,12 +705,11 @@ class Hooks extends tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Includes the Assets to the checkout page.
+	 * Includes the Assets to the checkout page shortcode.
 	 *
 	 * @since TBD
 	 */
 	public function include_assets_checkout_shortcode() {
-		// Enqueue assets.
-		tribe_asset_enqueue_group( 'tribe-tickets-commerce-checkout' );
+		Shortcodes\Checkout_Shortcode::enqueue_assets();
 	}
 }

@@ -99,4 +99,14 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		return $gateways_active;
 	}
 
+	/**
+	 * Enqueue the assets related to this shortcode, static method to avoid having to generate a new instance.
+	 *
+	 * @since TBD
+	 */
+	public static function enqueue_assets() {
+		// Enqueue assets.
+		tribe_asset_enqueue_group( 'tribe-tickets-commerce-checkout' );
+	}
+
 }
