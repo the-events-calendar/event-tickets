@@ -46,17 +46,18 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
 
 		$args = [
-			'provider_id'      => Module::class,
-			'provider'         => tribe( Module::class ),
-			'items'            => $items,
-			'sections'         => $sections,
-			'total_value'      => tribe_format_currency( Price::total( $sub_totals ) ),
-			'must_login'       => ! is_user_logged_in() && tribe( Module::class )->login_required(),
-			'login_url'        => tribe( Checkout::class )->get_login_url(),
-			'registration_url' => tribe( Checkout::class )->get_registration_url(),
-			'is_tec_active'    => defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'Tribe__Events__Main' ),
-			'gateways'         => tribe( Manager::class )->get_gateways(),
-			'gateways_active'  => $this->get_gateways_active(),
+			'provider_id'        => Module::class,
+			'provider'           => tribe( Module::class ),
+			'items'              => $items,
+			'sections'           => $sections,
+			'total_value'        => tribe_format_currency( Price::total( $sub_totals ) ),
+			'must_login'         => ! is_user_logged_in() && tribe( Module::class )->login_required(),
+			'login_url'          => tribe( Checkout::class )->get_login_url(),
+			'registration_url'   => tribe( Checkout::class )->get_registration_url(),
+			'is_tec_active'      => defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'Tribe__Events__Main' ),
+			'gateways'           => tribe( Manager::class )->get_gateways(),
+			'gateways_active'    => $this->get_gateways_active(),
+			'gateways_connected' => $this->get_gateways_connected(),
 		];
 
 		$this->template_vars = $args;
@@ -89,14 +90,28 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	 */
 	public function get_gateways_active() {
 		$gateways        = tribe( Manager::class )->get_gateways();
-		$gateways_active = 0;
+		$gateways_active = array_filter( array_map( static function ( $gateway ) {
+			return $gateway::is_active() && $gateway::should_show() ? $gateway : null;
+		}, $gateways ) );
 
-		// Get all of the gateways.
-		foreach ( $gateways as $gateway_key => $gateway ) {
-			$gateways_active += (int) $gateway::is_active();
-		}
+		return count( $gateways_active );
+	}
 
-		return $gateways_active;
+	/**
+	 * Get the number of connected gateways.
+	 *
+	 * @since TBD
+	 *
+	 * @return int The number of connected gateways.
+	 */
+	public function get_gateways_connected() {
+		$gateways = tribe( Manager::class )->get_gateways();
+
+		$gateways_connected = array_filter( array_map( static function ( $gateway ) {
+			return $gateway::is_connected() && $gateway::should_show() ? $gateway : null;
+		}, $gateways ) );
+
+		return count( $gateways_connected );
 	}
 
 	/**
