@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Location\Country;
 use TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding_Endpoint;
+use TEC\Tickets\Commerce\Settings;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -358,5 +359,30 @@ class Signup {
 
 		// If there were errors then redirect the user with notices
 		return $error_messages;
+	}
+
+	/**
+	 * When toggling between PayPal test mode and live mode, we need to re-generate
+	 * the transients to make sure the proper URLs are used.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $options the list of plugin options set for saving
+	 *
+	 * @return array
+	 */
+	public function maybe_delete_transient_data( $options ) {
+
+		if ( ! isset( $options[ Settings::$option_sandbox ] ) ) {
+			return $options;
+		}
+
+		if ( tec_tickets_commerce_is_sandbox_mode() === $options[ Settings::$option_sandbox ] ) {
+			return $options;
+		}
+
+		$this->delete_transient_data();
+
+		return $options;
 	}
 }
