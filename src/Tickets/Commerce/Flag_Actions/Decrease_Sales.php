@@ -16,19 +16,20 @@ use Tribe__Utils__Array as Arr;
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
-class Count_Sales extends Flag_Action_Abstract {
+class Decrease_Sales extends Flag_Action_Abstract {
+
 	/**
 	 * {@inheritDoc}
 	 */
 	protected $flags = [
-		'count_sales',
+		'decrease_sales',
 	];
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected $post_types = [
-		Order::POSTTYPE
+		Order::POSTTYPE,
 	];
 
 	protected $ticket;
@@ -42,7 +43,7 @@ class Count_Sales extends Flag_Action_Abstract {
 		}
 
 		foreach ( $post->items as $ticket_id => $item ) {
-			$this->ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+			$this->ticket       = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 			$this->global_stock = new \Tribe__Tickets__Global_Stock( $this->ticket->get_event_id() );
 
 			if ( null === $this->ticket ) {
@@ -56,18 +57,8 @@ class Count_Sales extends Flag_Action_Abstract {
 				continue;
 			}
 
-			if ( in_array( 'increase_stock', $new_status->flags, true ) ) {
-				$this->decrease_sales_by( $quantity );
-			}
-
-			if ( in_array( 'decrease_stock', $new_status->flags, true ) ) {
-				$this->increase_sales_by( $quantity );
-			}
+			$this->decrease_sales_by( $quantity );
 		}
-	}
-
-	private function increase_sales_by( $quantity ) {
-		tribe( Ticket::class )->increase_ticket_sales_by( $this->ticket->ID, $quantity, $this->ticket->global_stock_mode(), $this->global_stock );
 	}
 
 	private function decrease_sales_by( $quantity ) {
