@@ -527,6 +527,8 @@ class Attendee {
 	/**
 	 * Hydrate attendee object with ticket data
 	 *
+	 * @todo We should not be using this particular piece of the code until it's using `tec_tc_get_attendee`.
+	 *
 	 * @since TBD
 	 *
 	 * @param \WP_Post $attendee the attendee object.
@@ -552,6 +554,8 @@ class Attendee {
 
 	/**
 	 * Loads event, ticket, order and other data into an attendee object
+	 *
+	 * @todo We should not be using this particular piece of the code until it's using `tec_tc_get_attendee`.
 	 *
 	 * @since TBD
 	 *
