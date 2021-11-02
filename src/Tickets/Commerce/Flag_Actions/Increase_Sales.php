@@ -32,8 +32,6 @@ class Increase_Sales extends Flag_Action_Abstract {
 		Order::POSTTYPE,
 	];
 
-	protected $ticket;
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -43,25 +41,25 @@ class Increase_Sales extends Flag_Action_Abstract {
 		}
 
 		foreach ( $post->items as $ticket_id => $item ) {
-			$this->ticket       = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
-			$this->global_stock = new \Tribe__Tickets__Global_Stock( $this->ticket->get_event_id() );
-
-			if ( null === $this->ticket ) {
+			$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+			if ( null === $ticket ) {
 				continue;
 			}
 
-			$quantity = Arr::get( $item, 'quantity', 1 );
+			$quantity = Arr::get( $item, 'quantity' );
+
+			if ( ! $quantity ) {
+				continue;
+			}
 
 			// Skip generating for zero-ed items.
 			if ( 0 >= $quantity ) {
 				continue;
 			}
 
-			$this->increase_sales_by( $quantity );
-		}
-	}
+			$global_stock = new \Tribe__Tickets__Global_Stock( $ticket->get_event_id() );
 
-	private function increase_sales_by( $quantity ) {
-		tribe( Ticket::class )->increase_ticket_sales_by( $this->ticket->ID, $quantity, $this->ticket->global_stock_mode(), $this->global_stock );
+			tribe( Ticket::class )->increase_ticket_sales_by( $ticket->ID, $quantity, $ticket->global_stock_mode(), $global_stock );
+		}
 	}
 }
