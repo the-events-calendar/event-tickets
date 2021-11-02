@@ -53,8 +53,8 @@ class Order_Model extends Base {
 			$purchaser_last_name  = Arr::get( $post_meta, [ Order::$purchaser_last_name_meta_key, 0 ] );
 			$purchaser_email      = Arr::get( $post_meta, [ Order::$purchaser_email_meta_key, 0 ] );
 
-			$events_in_order  = Arr::get( $post_meta, [ Order::$events_in_order_meta_key ] );
-			$tickets_in_order = Arr::get( $post_meta, [ Order::$tickets_in_order_meta_key ] );
+			$events_in_order  = (array) Arr::get( $post_meta, [ Order::$events_in_order_meta_key ] );
+			$tickets_in_order = (array) Arr::get( $post_meta, [ Order::$tickets_in_order_meta_key ] );
 
 			$properties = [
 				'order_id'            => $post_id,
