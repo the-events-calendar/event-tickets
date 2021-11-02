@@ -410,12 +410,7 @@ class Client {
 	public function get_client_token() {
 		$query_args = [];
 		$args       = [
-			'headers' => [
-				'Accept'          => 'application/json',
-				'Accept-Language' => 'en_US',
-				'Authorization'   => sprintf( 'Bearer %1$s', $this->get_access_token() ),
-				'Content-Type'    => 'application/json',
-			],
+			'headers' => [],
 			'body'    => [],
 		];
 
