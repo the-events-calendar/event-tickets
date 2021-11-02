@@ -77,12 +77,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		// Add the rendering attributes into global context.
 		$this->get_template()->add_template_globals( $args );
 
-		$html = $this->get_template()->template( 'checkout', $args, false );
-
-		// Enqueue assets.
-		tribe_asset_enqueue_group( 'tribe-tickets-commerce-checkout' );
-
-		return $html;
+		return $this->get_template()->template( 'checkout', $args, false );
 	}
 
 	/**
@@ -102,6 +97,16 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		}
 
 		return $gateways_active;
+	}
+
+	/**
+	 * Enqueue the assets related to this shortcode, static method to avoid having to generate a new instance.
+	 *
+	 * @since TBD
+	 */
+	public static function enqueue_assets() {
+		// Enqueue assets.
+		tribe_asset_enqueue_group( 'tribe-tickets-commerce-checkout' );
 	}
 
 }

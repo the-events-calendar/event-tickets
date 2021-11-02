@@ -189,6 +189,10 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		$banner_html = $admin_views->template( 'settings/tickets-commerce/banner', [
 			'banner_title'   => __( 'Upgrade to Tickets Commerce', 'event-tickets' ),
 			'banner_content' => __( 'Tribe Commerce has been replaced by our new payments system, Tickets Commerce. It’s fast, free and simple to set up! You can <a href="https://evnt.is/1axu" rel="noopener noreferrer" target="_blank">still continue using Tribe Commerce</a> but we highly recommend upgrading to Tickets Commerce.', 'event-tickets' ),
+			'button_text'    => __( 'Get Started', 'event-tickets' ),
+			'button_url'     => \Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] ),
+			'link_text'      => __( 'Learn more', 'event-tickets' ),
+			'link_url'       => 'https://evnt.is/1axt',
 			'show_new'       => true,
 		], false );
 
