@@ -83,6 +83,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_action( 'tec_tickets_commerce_order_status_transition', [ $this, 'modify_tickets_counters_by_status', ], 15, 3 );
 
 		add_action( 'admin_bar_menu', [ $this, 'include_admin_bar_test_mode' ], 1000, 1 );
+
+		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout', [ $this, 'include_assets_checkout_shortcode' ] );
 	}
 
 	/**
@@ -700,5 +702,14 @@ class Hooks extends tad_DI52_ServiceProvider {
 		}
 
 		add_filter( 'wp_redirect', [ tribe( Compatibility\Events::class ), 'prevent_filter_redirect_canonical' ], 1, 2 );
+	}
+
+	/**
+	 * Includes the Assets to the checkout page shortcode.
+	 *
+	 * @since TBD
+	 */
+	public function include_assets_checkout_shortcode() {
+		Shortcodes\Checkout_Shortcode::enqueue_assets();
 	}
 }
