@@ -38,7 +38,12 @@ class Send_Email extends Flag_Action_Abstract {
 			return;
 		}
 
-		foreach ( $order->events_in_order as $event ) {
+		foreach ( $order->events_in_order as $event_id ) {
+			$event = get_post( $event_id );
+			if ( ! $event instanceof \WP_Post ) {
+				continue;
+			}
+
 			tribe( Email::class )->send_tickets_email( $order->ID, $event->ID );
 		}
 	}
