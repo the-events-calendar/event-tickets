@@ -178,9 +178,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.2.0] TBD =
+= [5.2.0] 2021-11-04 =
 
-
+*
 
 = [5.1.10] 2021-09-27 =
 
