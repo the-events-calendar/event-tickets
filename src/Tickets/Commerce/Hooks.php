@@ -128,7 +128,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Filters the Settings for Payments tab to add the Commerce Provider related fields.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array $settings Settings array data for Payments tab.
 	 *
@@ -166,7 +166,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @todo  Currently this is attaching the hook method to the init, which is incorrect we should not be attaching
 	 *        these filters from the orders class if we can avoid it.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function register_order_reports() {
 		$this->container->make( Reports\Orders::class )->hook();
@@ -184,7 +184,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Register the Attendees Report
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function register_attendee_reports() {
 		$this->container->make( Reports\Attendees::class )->hook();
@@ -193,7 +193,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Display admin bar when using the Test Mode for payments.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance, passed by reference.
 	 *
@@ -275,7 +275,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Modify the counters for all the tickets involved on this particular order.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param Status_Interface      $new_status New post status.
 	 * @param Status_Interface|null $old_status Old post status.
@@ -549,7 +549,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * If an event is using Tickets Commerce, use the new Attendees View URL
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $url     the current Attendees View url.
 	 * @param int    $post_id the event id.
@@ -568,7 +568,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Filters the ticket editor order link for Tickets Commerce Module orders.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $url     Url for the order page for ticketed event/post.
 	 * @param int    $post_id The post ID for the current event/post.
@@ -582,7 +582,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Hide the 'save and view cart` button from AR Modal depending on Cart type.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array $args Context arraay for the modal template.
 	 *
@@ -605,7 +605,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Filters to add Tickets Commerce into the "tickets in cart" array.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array<int> $tickets  Tickets in cart. Format: [ ticket_id => quantity ].
 	 * @param string     $provider Commerce provider.
@@ -631,7 +631,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Modify the cart contents for the Rest call around TTickets Commerce cart.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array $tickets
 	 *
@@ -668,7 +668,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Modify the Rest URL for the cart to include the TC Cookie.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $url
 	 * @param string $path
@@ -693,7 +693,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Hooks for Compatibility with The Events Calendar
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function register_event_compatibility_hooks() {
 
@@ -707,7 +707,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Includes the Assets to the checkout page shortcode.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function include_assets_checkout_shortcode() {
 		Shortcodes\Checkout_Shortcode::enqueue_assets();

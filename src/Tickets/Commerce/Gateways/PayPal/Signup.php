@@ -231,7 +231,7 @@ class Signup {
 	/**
 	 * Refresh the Connect link when someone changes the country.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return void
 	 */
@@ -283,7 +283,7 @@ class Signup {
 	/**
 	 * Validate seller on Boarding status data.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return string[]
 	 */
@@ -365,7 +365,7 @@ class Signup {
 	 * When toggling between PayPal test mode and live mode, we need to re-generate
 	 * the transients to make sure the proper URLs are used.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array $options the list of plugin options set for saving
 	 *

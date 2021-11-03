@@ -245,7 +245,7 @@ class Cart {
 	/**
 	 * Configures the Cart hash on the class object
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $cart_hash Cart hash value.
 	 *
@@ -583,7 +583,7 @@ class Cart {
 			/**
 			 * Filter the base redirect URL for cart to checkout.
 			 *
-			 * @since TBD
+			 * @since 5.2.0
 			 *
 			 * @param string $redirect_url Redirect URL.
 			 * @param array  $data         Data that we just processed on the cart.

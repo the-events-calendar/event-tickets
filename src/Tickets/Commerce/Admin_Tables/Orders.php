@@ -19,7 +19,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 /**
  * Class Admin Tables for Orders.
  *
- * @since TBD
+ * @since 5.2.0
  *
  */
 class Orders extends WP_List_Table {
@@ -41,7 +41,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Orders Table constructor.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function __construct() {
 		$args = [
@@ -57,7 +57,7 @@ class Orders extends WP_List_Table {
 	 * Overrides the list of CSS classes for the WP_List_Table table tag.
 	 * This function is not hookable in core, so it needs to be overridden!
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array List of CSS classes for the table tag.
 	 */
@@ -71,7 +71,7 @@ class Orders extends WP_List_Table {
 		/**
 		 * Filters the default classes added to the Tickets Commerce order report `WP_List_Table`.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array $classes The array of classes to be applied.
 		 */
@@ -81,7 +81,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Checks the current user's permissions
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function ajax_user_can() {
 		$post_type = get_post_type_object( $this->screen->post_type );
@@ -92,7 +92,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Returns the  list of columns.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array An associative array in the format [ <slug> => <title> ]
 	 */
@@ -115,7 +115,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Generates content for a single row of the table
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param WP_Post $item The current item
 	 */
@@ -128,7 +128,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Prepares the list of items for displaying.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function prepare_items() {
 		$post_id = tribe_get_request_var( 'post_id', 0 );
@@ -172,7 +172,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Message to be displayed when there are no items
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function no_items() {
 		_e( 'No matching orders found.', 'event-tickets' );
@@ -181,7 +181,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Handler for the columns that don't have a specific column_{name} handler function.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param WP_Post $item
 	 * @param         $column
@@ -195,7 +195,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Returns the customer name.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -208,7 +208,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Returns the customer email.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -221,7 +221,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Returns the order status.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param WP_Post $item
 	 *
@@ -236,7 +236,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Handler for the date column
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param WP_Post $item
 	 *
@@ -249,7 +249,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Handler for the purchased column
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param WP_Post $item
 	 *
@@ -271,7 +271,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Handler for the order column
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param WP_Post $item
 	 *
@@ -295,7 +295,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Handler for the total column
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param WP_Post $item
 	 *
@@ -308,7 +308,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Handler for gateway order id.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param WP_Post $item
 	 *
@@ -321,7 +321,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Handler for gateway column
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param WP_Post $item
 	 *

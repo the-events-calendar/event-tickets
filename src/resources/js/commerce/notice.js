@@ -2,7 +2,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @type   {Object}
  */
@@ -11,7 +11,7 @@ tribe.tickets = tribe.tickets || {};
 /**
  * Configures ET Tickets Commerce Object in the Global Tribe variable
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @type   {Object}
  */
@@ -20,7 +20,7 @@ tribe.tickets.commerce = tribe.tickets.commerce || {};
 /**
  * Configures ET Tickets Commerce Notice Object in the Global Tribe variable
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @type   {Object}
  */
@@ -29,7 +29,7 @@ tribe.tickets.commerce.notice = tribe.tickets.commerce.notice || {};
 /**
  * Initializes in a Strict env the code that manages the plugin tickets commerce notice.
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @param  {Object} $   jQuery
  * @param  {Object} obj tribe.tickets.commerce.notice
@@ -42,7 +42,7 @@ tribe.tickets.commerce.notice = tribe.tickets.commerce.notice || {};
 	/*
 	 * Tickets Commerce Selectors.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	obj.selectors = {
 		hiddenElement: '.tribe-common-a11y-hidden',
@@ -55,7 +55,7 @@ tribe.tickets.commerce.notice = tribe.tickets.commerce.notice || {};
 	/**
 	 * Show the populated notice component.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param {jQuery} $item Container element for notice to be shown.
 	 */
@@ -75,7 +75,7 @@ tribe.tickets.commerce.notice = tribe.tickets.commerce.notice || {};
 	/**
 	 * Hide the notice component.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param {jQuery} $item Container element for notice.
 	 */
@@ -95,7 +95,7 @@ tribe.tickets.commerce.notice = tribe.tickets.commerce.notice || {};
 	/**
 	 * Populate the contents of the notice component.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param {jQuery} $item Target container for notice component.
 	 * @param {string} title Notice title data.

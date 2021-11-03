@@ -118,7 +118,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Render the Tickets Commerce Upgrade banner for the Ticket Settings Tab.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array The help banner HTML content array.
 	 */
@@ -157,7 +157,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Render the Tickets Commerce Notice banner for the Ticket Settings Tab.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array The help banner HTML content array.
 	 */

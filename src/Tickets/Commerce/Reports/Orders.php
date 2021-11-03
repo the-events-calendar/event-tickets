@@ -14,7 +14,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Orders Report.
  *
- * @since   TBD
+ * @since   5.2.0
  *
  * @package TEC\Tickets\Commerce\Reports
  */
@@ -22,7 +22,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Slug of the admin page for orders
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string
 	 */
@@ -31,7 +31,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Order Pages ID on the menu.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string The menu slug of the orders page
 	 */
@@ -40,7 +40,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Gets the Orders Report.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return string
 	 */
@@ -51,7 +51,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Links to sales report for all tickets in Tickets Commerce for this event.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param int  $event_id
 	 * @param bool $url_only
@@ -77,7 +77,7 @@ class Orders extends Report_Abstract {
 		/**
 		 * Filter the Reports Events Orders Report URL.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @var string $report_url Report URL
 		 * @var int    $event_id   The post ID
@@ -95,7 +95,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Links to the sales report for a given ticket.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param int|string $event_id
 	 * @param int|string $ticket_id
@@ -120,7 +120,7 @@ class Orders extends Report_Abstract {
 		/**
 		 * Filter the Reports Tickets Orders Report URL.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @var string $report_url Report URL
 		 * @var int    $event_id   The post ID
@@ -136,7 +136,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Returns the link to the "Orders" report for this post.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param WP_Post $post
 	 *
@@ -158,7 +158,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Hooks the actions and filter required by the class.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function hook() {
 		add_filter( 'post_row_actions', [ $this, 'add_orders_row_action' ], 10, 2 );
@@ -168,7 +168,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Adds order related actions to the available row actions for the post.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array $actions
 	 * @param       $post
@@ -206,7 +206,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Registers the Tickets Commerce orders page as a plugin options page.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function register_orders_page() {
 		$candidate_post_id = tribe_get_request_var( 'post_id', 0 );
@@ -247,7 +247,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Filter the page slugs that the attendee resources will load to add the order page
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param $slugs
 	 *
@@ -262,7 +262,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Sets up the attendees page screen.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function attendees_page_screen_setup() {
 		$orders_table = tribe( Commerce\Admin_Tables\Orders::class );
@@ -276,7 +276,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Sets the browser title for the Orders admin page.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $admin_title
 	 *
@@ -294,7 +294,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Renders the order page
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function render_page() {
 		$this->get_template()->template( 'orders', $this->get_template_vars() );
@@ -303,7 +303,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Sets up the template variables used to render the Orders Report Page.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array
 	 */
@@ -389,7 +389,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Filters the Order Link to Ticket Orders in the ticket editor.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $url     Url for the order page for ticketed event/post.
 	 * @param int    $post_id The post ID for the current event/post.

@@ -10,8 +10,8 @@ use \Tribe__Settings;
 /**
  * Class Notices
  *
- * @since TBD
- * 
+ * @since 5.2.0
+ *
  * @package TEC\Tickets\Commerce\Admin
  */
 class Notices extends tad_DI52_ServiceProvider {
@@ -39,8 +39,8 @@ class Notices extends tad_DI52_ServiceProvider {
 	/**
 	 * Display a notice when Tickets Commerce is enabled, yet a checkout page is not setup properly.
 	 *
-	 * @since TBD
-	 * 
+	 * @since 5.2.0
+	 *
 	 * @return bool
 	 */
 	public function should_render_checkout_notice() {
@@ -58,9 +58,9 @@ class Notices extends tad_DI52_ServiceProvider {
 
 	/**
 	 * Gets the HTML for the notice that is shown when checkout setting is not set.
-	 * 
-	 * @since TBD
-	 * 
+	 *
+	 * @since 5.2.0
+	 *
 	 * @return string Notice HTML.
 	 */
 	public function render_checkout_notice() {
@@ -70,12 +70,12 @@ class Notices extends tad_DI52_ServiceProvider {
 			esc_html__( 'Learn More', 'event-tickets' )
 		);
 		$notice_header = esc_html__( 'Set up your checkout page', 'event-tickets' );
-		$notice_text = sprintf( 
+		$notice_text = sprintf(
 			// translators: %1$s: Link to knowledgebase article.
 			esc_html__( 'In order to start selling with Tickets Commerce, you\'ll need to set up your checkout page. Please configure the setting on Settings > Payments and confirm that the page you have selected has the proper shortcode. %1$s', 'event-tickets' ),
 			$notice_link
 		);
-		
+
 		return sprintf(
 			'<p><strong>%1$s</strong></p><p>%2$s</p>',
 			$notice_header,
@@ -86,7 +86,7 @@ class Notices extends tad_DI52_ServiceProvider {
 	/**
 	 * Display a notice when Tickets Commerce is enabled, yet a success page is not setup properly.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function should_render_success_notice() {
 		// If we're not on our own settings page, bail.
@@ -103,9 +103,9 @@ class Notices extends tad_DI52_ServiceProvider {
 
 	/**
 	 * Gets the HTML for the notice that is shown when checkout setting is not set.
-	 * 
-	 * @since TBD
-	 * 
+	 *
+	 * @since 5.2.0
+	 *
 	 * @return string Notice HTML.
 	 */
 	public function render_success_notice() {
@@ -115,12 +115,12 @@ class Notices extends tad_DI52_ServiceProvider {
 			esc_html__( 'Learn More', 'event-tickets' )
 		);
 		$notice_header = esc_html__( 'Set up your order success page', 'event-tickets' );
-		$notice_text = sprintf( 
+		$notice_text = sprintf(
 			// translators: %1$s: Link to knowledgebase article.
 			esc_html__( 'In order to start selling with Tickets Commerce, you\'ll need to set up your order success page. Please configure the setting on Settings > Payments and confirm that the page you have selected has the proper shortcode. %1$s', 'event-tickets' ),
 			$notice_link
 		);
-		
+
 		return sprintf(
 			'<p><strong>%1$s</strong></p><p>%2$s</p>',
 			$notice_header,

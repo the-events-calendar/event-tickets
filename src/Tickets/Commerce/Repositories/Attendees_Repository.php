@@ -70,7 +70,7 @@ class Attendees_Repository extends Tribe__Repository {
 		/**
 		 * Allows for filtering the repository aliases.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array $aliases Repository aliases.
 		 */

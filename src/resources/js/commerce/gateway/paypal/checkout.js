@@ -70,7 +70,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * PayPal advanced Payment settings.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @type {string}
 	 */
@@ -194,7 +194,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * When a successful request is completed to our Create Order endpoint.
 	 *
 	 * @since 5.1.9
-	 * @since TBD $container Param added.
+	 * @since 5.2.0 $container Param added.
 	 *
 	 * @param {jQuery} $container To which container this handling is for.
 	 * @param {Object} data Data returning from our endpoint.
@@ -210,7 +210,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * When a failed request is completed to our Create Order endpoint.
 	 *
 	 * @since 5.1.9
-	 * @since TBD $container Param added.
+	 * @since 5.2.0 $container Param added.
 	 *
 	 * @param {jQuery} $container To which container this handling is for.
 	 * @param {Object} data Data returning from our endpoint.
@@ -226,7 +226,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * When a error happens on the fetch request to our Create Order endpoint.
 	 *
 	 * @since 5.1.9
-	 * @since TBD $container Param added.
+	 * @since 5.2.0 $container Param added.
 	 *
 	 * @param {jQuery} $container To which container this handling is for.
 	 * @param {Object} error Which error the fetch() threw on requesting our endpoints.
@@ -374,7 +374,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Triggers an AJAX request to handle the failing of an order.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
 	 * @param {string} orderId PayPal Order ID.
@@ -419,7 +419,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * If the failing of an order AJAX request returns an error we need to be able to catch it.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return {void}
 	 */
@@ -431,7 +431,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * If the failing of an order AJAX request returns an error we need to be able to catch it.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return {void}
 	 */
@@ -442,7 +442,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * If the failing of an order AJAX request returns an error we need to be able to catch it.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return {void}
 	 */
@@ -502,7 +502,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Shows the notice for the checkout container for PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param {jQuery} $container Parent container of notice element.
 	 * @param {string} title Notice Title.
@@ -521,7 +521,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Hides the notice for the checkout container for PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param {jQuery} $container Parent container of notice element.
 	 */
@@ -589,7 +589,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Configures the Advanced Payments to the checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param {Event|Object} event
 	 * @param {jQuery} $container
@@ -643,7 +643,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Handles the Hosted Fields from PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param {Object} cardFields
 	 * @param {jQuery} $container
@@ -658,7 +658,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Fetches the configuration for the any extra fields that need to be passed to PayPal, if we implement address later
 	 * to how we handle Hosted fields, we use this.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param {jQuery} $container
 	 *
@@ -674,7 +674,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * When the Hosted Fields form is submitted we need to trigger some actions on PayPal, so we use this method for that.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param {Event} event
 	 * @param {Object} cardFields
@@ -696,7 +696,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * When submitting the Hosted Fields there might be an error due to some problem in configuration so we make sure
 	 * we handle that.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param {Object} error
 	 * @param {jQuery} $container
@@ -734,7 +734,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Handles the Approval of the orders via PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param {Object} data PayPal data passed to this method.
 	 * @param {Object} actions PayPal actions available on approve.
@@ -777,7 +777,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * When a successful request is completed to our Approval endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param {Object} data Data returning from our endpoint.
 	 *
@@ -793,7 +793,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * When a failed request is completed to our Approval endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param {Object} data Data returning from our endpoint.
 	 *
@@ -818,7 +818,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * When a error happens on the fetch request to our Approval endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param {Object} error Which error the fetch() threw on requesting our endpoints.
 	 *

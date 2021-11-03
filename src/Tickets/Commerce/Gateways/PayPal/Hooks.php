@@ -85,7 +85,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Resolve the refresh of the URL when the coutry changes.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 *
 	 * @return false|string
@@ -156,7 +156,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Include the advanced payment fields from PayPal in the Checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string           $file     Which file we are loading.
 	 * @param string           $name     Name of file file
@@ -171,7 +171,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @since TBD Display info on disconnect.
+	 * @since 5.2.0 Display info on disconnect.
 	 */
 	public function handle_action_disconnect() {
 		$disconnected = $this->container->make( Merchant::class )->disconnect();
@@ -244,7 +244,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.1.10
 	 *
-	 * @since TBD Display error|success messages.
+	 * @since 5.2.0 Display error|success messages.
 	 */
 	public function handle_action_refresh_webhook() {
 		$updated = $this->container->make( Webhooks::class )->create_or_update_existing();
@@ -270,7 +270,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Handles the refreshing the entire connection with PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function handle_action_refresh_connection() {
 		$this->handle_action_refresh_token();
@@ -303,7 +303,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Render SSL requirement notice.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function render_ssl_notice() {
 		$page = tribe_get_request_var( 'page' );
@@ -319,7 +319,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Include PayPal admin notices for Ticket Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array $messages Array of messages.
 	 *
@@ -332,7 +332,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Includes the Capture ID in the success page of the PayPal Gateway orders.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string           $file     Which file we are loading.
 	 * @param string           $name     The name of the file.
@@ -360,7 +360,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Checks if the transient data needs to be flushed when saving options and deletes it if appropriate
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array $options the list of plugin options set for saving
 	 *

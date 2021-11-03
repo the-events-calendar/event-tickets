@@ -4,9 +4,9 @@
  *
  * See more documentation about our views templating system.
  *
- * @since TBD
+ * @since 5.2.0
  *
- * @version TBD
+ * @version 5.2.0
  *
  * @var array<string> $classes Additional classes to add to the svg icon.
  */

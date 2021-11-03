@@ -65,7 +65,7 @@ class Events {
 	/**
 	 * Return webhook label's "Nice name".
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $event_name A PayPal Event String.
 	 *
@@ -82,7 +82,7 @@ class Events {
 		/**
 		 * Allows filtering of the Webhook map of events for each one of the types we listen for.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array  $labels     The default map of which event types that translate to a given label string.
 		 * @param string $event_name Which event name we are looking for.

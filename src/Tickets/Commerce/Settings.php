@@ -104,7 +104,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Settings constructor.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function __construct() {
 		// Configure which mode we are in.
@@ -114,7 +114,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Display admin bar when using the Test Mode for payments.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance, passed by reference.
 	 *

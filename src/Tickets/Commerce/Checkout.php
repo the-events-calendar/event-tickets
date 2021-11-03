@@ -13,7 +13,7 @@ class Checkout {
 	/**
 	 * Which URL param we use to identify a given page as the checkout.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string
 	 */
@@ -190,9 +190,9 @@ class Checkout {
 
 	/**
 	 * Determines whether or not the success page option is set.
-	 * 
-	 * @since TBD
-	 * 
+	 *
+	 * @since 5.2.0
+	 *
 	 * @return bool
 	 */
 	public function is_option_set() {
@@ -202,9 +202,9 @@ class Checkout {
 
 	/**
 	 * Determines whether or not the success page has the appropriate shortcode in the content.
-	 * 
-	 * @since TBD
-	 * 
+	 *
+	 * @since 5.2.0
+	 *
 	 * @return bool
 	 */
 	public function page_has_shortcode() {

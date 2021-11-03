@@ -262,7 +262,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	/**
 	 * Handles the request that handles failing an order with Tickets Commerce and the PayPal gateway.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -369,7 +369,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	/**
 	 * Arguments used for the deleting order for PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array
 	 */
@@ -450,7 +450,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	/**
 	 * Returns an array of error messages that are used by the API responses.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $messages Array of error messages.
 	 */
@@ -466,7 +466,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		/**
 		 * Filter the error messages for PayPal checkout.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array $messages Array of error messages.
 		 */

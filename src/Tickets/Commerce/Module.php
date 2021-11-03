@@ -359,7 +359,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * This overrides the parent method because Tickets Commerce stores the order ID in the post_parent.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param int|string $order_id  Order ID.
 	 * @param null|int   $ticket_id (optional) Ticket ID.
@@ -532,7 +532,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Maps to the Checkout Class method to get the checkout.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return string
 	 */
@@ -544,13 +544,13 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * Generate and store all the attendees information for a new order.
 	 *
 	 * @since      5.1.9
-	 * @deprecated TBD
+	 * @deprecated 5.2.0
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.
 	 * @param bool   $redirect       Whether the client should be redirected or not.
 	 */
 	public function generate_tickets( $payment_status = 'completed', $redirect = true ) {
-		_deprecated_function( __METHOD__, 'TBD' );
+		_deprecated_function( __METHOD__, '5.2.0' );
 	}
 
 	/**
@@ -728,7 +728,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Update an attendee for the Commerce provider.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @todo TribeLegacyCommerce We need to move this into the Attendee class.
 	 *

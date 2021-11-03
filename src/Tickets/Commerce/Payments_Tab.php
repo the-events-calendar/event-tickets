@@ -8,7 +8,7 @@ use \tad_DI52_ServiceProvider;
 /**
  * Class Payments_Tab
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @package TEC\Tickets\Commerce
  */
@@ -24,7 +24,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Create the Tickets Commerce Payments Settings Tab.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function register_tab() {
 		$tab_settings = [
@@ -42,7 +42,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Gets the top level settings for Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array[]
 	 */
@@ -100,7 +100,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		/**
 		 * Hook to modify the top level settings for Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array[] $top_level_settings Top level settings.
 		 */

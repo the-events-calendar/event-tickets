@@ -93,7 +93,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Get all the admin notices.
 	 *
-	 * @since TBD.
+	 * @since 5.2.0.
 	 *
 	 * @return array
 	 */
@@ -157,7 +157,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * Displays error notice for invalid API responses, with error message from API response data.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array  $response Raw Response data.
 	 * @param string $message  Additional message to show with error message.

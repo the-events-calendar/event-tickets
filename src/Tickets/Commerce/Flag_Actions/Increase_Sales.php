@@ -12,7 +12,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Increase_Sales, normally triggered when refunding on orders get set to not-completed.
  *
- * @since   TBD
+ * @since   5.2.0
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
@@ -21,7 +21,7 @@ class Increase_Sales extends Flag_Action_Abstract {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	protected $flags = [
 		'increase_sales',
@@ -30,7 +30,7 @@ class Increase_Sales extends Flag_Action_Abstract {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	protected $post_types = [
 		Order::POSTTYPE,
@@ -39,7 +39,7 @@ class Increase_Sales extends Flag_Action_Abstract {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
 		if ( empty( $post->items ) ) {

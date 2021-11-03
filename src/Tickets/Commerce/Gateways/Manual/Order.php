@@ -9,7 +9,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Order
  *
- * @since   TBD
+ * @since   5.2.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Manual
  */
@@ -17,7 +17,7 @@ class Order {
 	/**
 	 * Creates a manual Order based on set of items and a purchaser.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
 	 *

@@ -183,7 +183,7 @@ class Attendee {
 	/**
 	 * Meta key holding the attendee's unique id
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string
 	 */
@@ -456,7 +456,7 @@ class Attendee {
 	/**
 	 * Add our class to the list of classes for the attendee registration form
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array $classes existing array of classes.
 	 *
@@ -529,7 +529,7 @@ class Attendee {
 	 *
 	 * @todo We should not be using this particular piece of the code until it's using `tec_tc_get_attendee`.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -557,7 +557,7 @@ class Attendee {
 	 *
 	 * @todo We should not be using this particular piece of the code until it's using `tec_tc_get_attendee`.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -609,7 +609,7 @@ class Attendee {
 	/**
 	 * Returns the product object related to an attendee
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -628,7 +628,7 @@ class Attendee {
 	/**
 	 * Returns the product id related to an attendee
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -645,7 +645,7 @@ class Attendee {
 	/**
 	 * Returns the product title related to an attendee
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -662,7 +662,7 @@ class Attendee {
 	/**
 	 * Returns the event id related to an attendee
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -675,7 +675,7 @@ class Attendee {
 	/**
 	 * Returns the ticket unique id related to an attendee
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -690,7 +690,7 @@ class Attendee {
 	/**
 	 * Returns the ticket id related to an attendee
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -707,7 +707,7 @@ class Attendee {
 	/**
 	 * Returns the security code for an attendee
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -724,7 +724,7 @@ class Attendee {
 	/**
 	 * Returns the check in status of an attendee
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -741,7 +741,7 @@ class Attendee {
 	/**
 	 * Returns the status label used in the Status column
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -764,7 +764,7 @@ class Attendee {
 	/**
 	 * Returns the order object related to an attendee
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -779,7 +779,7 @@ class Attendee {
 	/**
 	 * Returns the purchaser name if available
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -798,7 +798,7 @@ class Attendee {
 	/**
 	 * Returns the purchaser email if available
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -817,7 +817,7 @@ class Attendee {
 	/**
 	 * Check if the attendee is of valid type.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param int|\WP_Post $attendee The attendee object to check.
 	 *

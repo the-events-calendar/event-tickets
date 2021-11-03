@@ -2,7 +2,7 @@
 /**
  * Footer for Tickets Commerce styled, generic banner.
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @var Tribe__Tickets__Admin__Views $this           Template object.
  * @var string                       $banner_title   Banner title.

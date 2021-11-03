@@ -40,7 +40,7 @@ function tec_tickets_commerce_is_enabled() {
  * Determine whether Tickets Commerce is in sandbox mode.
  *
  * @since 5.1.6
- * @since TBD Modified the name of the method to `tec_tickets_commerce_is_sandbox_mode`
+ * @since 5.2.0 Modified the name of the method to `tec_tickets_commerce_is_sandbox_mode`
  *
  * @return bool Whether Tickets Commerce is in test mode.
  */
@@ -50,7 +50,7 @@ function tec_tickets_commerce_is_sandbox_mode() {
 	/**
 	 * Filter whether we should disable TribeCommerce PayPal or not.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param boolean $sandbox_mode should be available or not.
 	 */
@@ -103,7 +103,7 @@ function tec_tribe_commerce_is_available() {
 /**
  * Check if TribeCommerce should be active or not.
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @return bool
  */
@@ -119,7 +119,7 @@ function tec_tribe_commerce_should_be_active() {
 	/**
 	 * Filter whether TribeCommerce should be active or not.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param boolean $should_be_active Should TribeCommerce be kept activated or not.
 	 */
@@ -129,7 +129,7 @@ function tec_tribe_commerce_should_be_active() {
 /**
  * Check if the site has created tickets using TribeCommerce.
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @return bool
  */

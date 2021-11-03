@@ -130,7 +130,7 @@ class Merchant {
 	/**
 	 * Whether or not an account is connected.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var bool
 	 */
@@ -149,7 +149,7 @@ class Merchant {
 	/**
 	 * Whether or not the account is ready to take custom payments (i.e Advanced Fields & PPCP).
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var bool
 	 */
@@ -328,7 +328,7 @@ class Merchant {
 	/**
 	 * Gets the value stored for if the account is ready for usage.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return string
 	 */
@@ -339,7 +339,7 @@ class Merchant {
 	/**
 	 * Sets the value for if this account is connected for usage locally, in this instance of the Merchant.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param mixed   $value      Value used for the Account is Connect.
 	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
@@ -374,7 +374,7 @@ class Merchant {
 	/**
 	 * Gets the value stored for if this account supports custom payments.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return bool
 	 */
@@ -385,7 +385,7 @@ class Merchant {
 	/**
 	 * Sets the value determining if this supports custom payments locally, in this instance of the Merchant.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param mixed   $value      Value used for the Support for Custom Payments.
 	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
@@ -875,7 +875,7 @@ class Merchant {
 	/**
 	 * Determines if the Merchant is connected.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return bool
 	 */
@@ -959,7 +959,7 @@ class Merchant {
 	/**
 	 * Fetches the locale for the website, but pass it on a filter to allow changing of the locale here.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return string
 	 */
@@ -969,7 +969,7 @@ class Merchant {
 		/**
 		 * Allows filtering of the locale for the Merchant.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param string $locale
 		 */

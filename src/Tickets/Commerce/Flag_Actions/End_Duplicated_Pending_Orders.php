@@ -12,7 +12,7 @@ use Tribe__Utils__Array as Arr;
  * Class End_Duplicated_Pending_Orders, normally triggered when a given order is completed it will modify the status of all the
  * other orders created with the same Hash cart key, which prevents leaving pending orders open when one was completed.
  *
- * @since    TBD
+ * @since    5.2.0
  *
  * @package  TEC\Tickets\Commerce\Flag_Actions
  */
@@ -21,7 +21,7 @@ class End_Duplicated_Pending_Orders extends Flag_Action_Abstract {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	protected $flags = [
 		'end_duplicated_pending_orders',
@@ -30,7 +30,7 @@ class End_Duplicated_Pending_Orders extends Flag_Action_Abstract {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	protected $post_types = [
 		Order::POSTTYPE,
@@ -39,7 +39,7 @@ class End_Duplicated_Pending_Orders extends Flag_Action_Abstract {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
 		if ( empty( $post->hash ) ) {

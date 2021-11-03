@@ -45,7 +45,7 @@ class Unmanaged_Cart implements Cart_Interface {
 		/**
 		 * Filters the cart setting of a hash used for the Cart.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param string         $cart_hash Cart hash value.
 		 * @param Cart_Interface $cart      Which cart object we are using here.
@@ -60,7 +60,7 @@ class Unmanaged_Cart implements Cart_Interface {
 		/**
 		 * Filters the cart hash used for the Cart.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param string         $cart_hash Cart hash value.
 		 * @param Cart_Interface $cart      Which cart object we are using here.

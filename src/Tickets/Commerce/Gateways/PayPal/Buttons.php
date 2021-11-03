@@ -90,7 +90,7 @@ class Buttons {
 	/**
 	 * Include the payment buttons from PayPal into the Checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string           $file     Which file we are loading.
 	 * @param string           $name     Name of file file
@@ -107,7 +107,7 @@ class Buttons {
 	/**
 	 * Include the advanced payment fields from PayPal into the Checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string           $file     Which file we are loading.
 	 * @param string           $name     Name of file file

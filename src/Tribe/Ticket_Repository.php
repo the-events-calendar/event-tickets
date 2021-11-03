@@ -373,7 +373,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Filters tickets by if they are currently available or available in the future.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @throws Exception
 	 *

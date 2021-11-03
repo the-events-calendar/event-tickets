@@ -15,7 +15,7 @@ class Email {
 	/**
 	 * Sends ticket email
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $order_id Order post ID
 	 * @param int    $post_id  Parent post ID (optional)
@@ -44,7 +44,7 @@ class Email {
 		/**
 		 * Controls the list of tickets which will be emailed out.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array  $to_send       list of tickets to be sent out by email
 		 * @param array  $all_attendees list of all attendees/tickets, including those already sent out

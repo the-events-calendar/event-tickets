@@ -7,7 +7,7 @@ use Tribe__Template;
 /**
  * Class Report_Abstract
  *
- * @since   TBD
+ * @since   5.2.0
  *
  * @package TEC\Tickets\Commerce\Reports
  */
@@ -15,7 +15,7 @@ abstract class Report_Abstract {
 	/**
 	 * The Shortcode Slug inside of WordPress.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return string
 	 */
@@ -26,7 +26,7 @@ abstract class Report_Abstract {
 	/**
 	 * Fetches the Page slug
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 *
 	 * @return string
@@ -38,7 +38,7 @@ abstract class Report_Abstract {
 	/**
 	 * Set of template variable used to generate this shortcode.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var array
 	 */
@@ -47,7 +47,7 @@ abstract class Report_Abstract {
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the page.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var Tribe__Template
 	 */
@@ -56,7 +56,7 @@ abstract class Report_Abstract {
 	/**
 	 * Gets the template instance used to setup the rendering of the page.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return Tribe__Template
 	 */
@@ -74,7 +74,7 @@ abstract class Report_Abstract {
 	/**
 	 * Method used to save the template vars for this instance of shortcode.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return void
 	 */
@@ -83,7 +83,7 @@ abstract class Report_Abstract {
 	/**
 	 * Calls the template vars setup and returns after filtering.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array
 	 */
@@ -96,7 +96,7 @@ abstract class Report_Abstract {
 	/**
 	 * Enables filtering of the template variables.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array $template_vars Which set of variables we are passing to the filters.
 	 *
@@ -106,7 +106,7 @@ abstract class Report_Abstract {
 		/**
 		 * Applies a filter to template vars for this shortcode.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array  $template_vars Current set of callbacks for arguments.
 		 * @param static $instance      Which instance of shortcode we are dealing with.
@@ -118,7 +118,7 @@ abstract class Report_Abstract {
 		/**
 		 * Applies a filter to template vars for this shortcode, using ID and gateway.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array  $template_vars Current set of callbacks for arguments.
 		 * @param static $instance      Which instance of shortcode we are dealing with.

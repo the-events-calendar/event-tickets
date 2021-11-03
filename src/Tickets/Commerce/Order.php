@@ -57,7 +57,7 @@ class Order {
 	 * Which meta holds the items used to setup this order.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Updated to use `_tec_tc_order_items` instead of `_tec_tc_order_items`.
+	 * @since 5.2.0 Updated to use `_tec_tc_order_items` instead of `_tec_tc_order_items`.
 	 *
 	 * @var string
 	 */
@@ -167,7 +167,7 @@ class Order {
 	/**
 	 * Meta that holds the hash for this order, which at the time of purchase was unique.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string
 	 */
@@ -176,7 +176,7 @@ class Order {
 	/**
 	 * Meta value for placeholder names.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string
 	 */
@@ -366,7 +366,7 @@ class Order {
 	/**
 	 * Filters the values and creates a new Order with Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
@@ -381,7 +381,7 @@ class Order {
 		/**
 		 * Allows filtering of the order creation arguments for all orders created via Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array             $args
 		 * @param Interface_Gateway $gateway
@@ -391,7 +391,7 @@ class Order {
 		/**
 		 * Allows filtering of the order creation arguments for all orders created via Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array             $args
 		 * @param Interface_Gateway $gateway
@@ -426,7 +426,7 @@ class Order {
 	/**
 	 * Return payment method label for the order.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param int|\WP_Post $order Order Object.
 	 *
@@ -473,7 +473,7 @@ class Order {
 	/**
 	 * Loads an order object with information about its attendees
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $order the order object.
 	 *
@@ -498,7 +498,7 @@ class Order {
 	/**
 	 * Returns the Ticket ID that is associated with the attendee
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -511,7 +511,7 @@ class Order {
 	/**
 	 * Check if the order is of valid type.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param int|\WP_Post $order The Order object to check.
 	 *

@@ -2,7 +2,7 @@
 /**
  * Handles all the Country handling for PayPal Gateway.
  *
- * @since   TBD
+ * @since   5.2.0
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\Location;
 /**
  * Class Country
  *
- * @since TBD
+ * @since 5.2.0
  *
  */
 class Country {
@@ -22,7 +22,7 @@ class Country {
 	/**
 	 * Default two char string for the default country code.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string
 	 */
@@ -31,7 +31,7 @@ class Country {
 	/**
 	 * Get PayPal base country.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return string $country The two letter country code for the site's base country
 	 */
@@ -41,7 +41,7 @@ class Country {
 		/**
 		 * Fetches the country associated with the PayPal setting.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param string $country Two letter country code in the settings.
 		 */
@@ -58,7 +58,7 @@ class Country {
 	/**
 	 * Saves the paypal base country to the Options array.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return boolean
 	 */
@@ -69,7 +69,7 @@ class Country {
 	/**
 	 * Determines based on a country code if it's valid.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $country
 	 *
@@ -343,7 +343,7 @@ class Country {
 		 *
 		 * Using the two-character ISO-3166-1 code for their index.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array $countries Which countries are available.
 		 */
@@ -353,7 +353,7 @@ class Country {
 	/**
 	 * Get Country List without postal/zip codes.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return string[] $countries A list of countries without postal/zip codes.
 	 */
@@ -429,7 +429,7 @@ class Country {
 		/**
 		 * Filter list of countries codes that do not require postal/zip codes.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param string[] $countries List of the countries.
 		 */
@@ -439,7 +439,7 @@ class Country {
 	/**
 	 * Get country locale settings.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array
 	 */
@@ -447,7 +447,7 @@ class Country {
 		/**
 		 * Filter list of countries locale settings, which is used to determine how certain fields are displayed.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param string[] $countries List of the countries.
 		 */
@@ -770,7 +770,7 @@ class Country {
 	 *
 	 * There are some country which does not have states init Example: germany.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $country_list
 	 */
@@ -786,7 +786,7 @@ class Country {
 		/**
 		 * Filter can be used to add or remove the Country that does not have states init.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array $country Contain key as there country code & value as there country name.
 		 */
@@ -798,7 +798,7 @@ class Country {
 	 *
 	 * There are some country in which states fields is not required Example: United Kingdom ( uk ).
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $country_list
 	 */
@@ -814,7 +814,7 @@ class Country {
 		/**
 		 * Filter can be used to add or remove the Country in which states fields is not required.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array $country Contain key as there country code & value as there country name.
 		 */
@@ -826,7 +826,7 @@ class Country {
 	 *
 	 * There are some country in which city fields is not required Example: Singapore ( sk ).
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $country_list
 	 */
@@ -842,7 +842,7 @@ class Country {
 		/**
 		 * Filter can be used to add or remove the Country in which city fields is not required.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array $country_list Contain key as there country code & value as there country name.
 		 */

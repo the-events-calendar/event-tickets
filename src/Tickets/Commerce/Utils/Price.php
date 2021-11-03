@@ -14,7 +14,7 @@ class Price {
 	 * The precision to use in decimal places. This is currently statically set to 2,
 	 * but may become variable for supporting 3 digit decimals
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var int
 	 */
@@ -87,7 +87,7 @@ class Price {
 	 *      $value is a float and neither $decimal or $thousand_sep are '.'.
 	 *        We should expand this to remove any possible combination of decimal/thousands marks from numbers.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $value        Numeric value to clean.
 	 * @param string $decimal      Which Decimal separator.
@@ -136,7 +136,7 @@ class Price {
 	/**
 	 * Converts an int, float or numerical string to a float with the specified precision.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param int|float|string $total     the total value to convert
 	 * @param int              $precision the number of decimal values to keep
@@ -150,7 +150,7 @@ class Price {
 	/**
 	 * Takes a float, formats it to the proper separators, then format as currency
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param float  $value        The value to format.
 	 * @param string $decimal      Which Decimal separator.
@@ -169,7 +169,7 @@ class Price {
 	/**
 	 * Transform a formatted string into a numeric value, regardless of what format it uses
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $value the formatted string.
 	 *
@@ -206,7 +206,7 @@ class Price {
 	 * in the string and the piece of the string after the separator cannot be longer
 	 * than 2 digits. Anything else is serving another purpose.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param $separator string a separator token, like . or ,
 	 * @param $value     string a number formatted as a string
@@ -226,7 +226,7 @@ class Price {
 	/**
 	 * Takes a string and formats it to the proper currency value
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $value The value to format.
 	 *

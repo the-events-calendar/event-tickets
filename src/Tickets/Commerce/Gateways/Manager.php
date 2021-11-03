@@ -89,7 +89,7 @@ class Manager {
 	/**
 	 * Get gateway by key.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $key Key for expected gateway.
 	 *

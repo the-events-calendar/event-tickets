@@ -100,7 +100,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Get the number of connected gateways.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return int The number of connected gateways.
 	 */
@@ -117,7 +117,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	/**
 	 * Enqueue the assets related to this shortcode, static method to avoid having to generate a new instance.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public static function enqueue_assets() {
 		// Enqueue assets.

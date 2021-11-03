@@ -2,7 +2,7 @@
 /**
  * Footer link for Tickets Commerce styled, generic banner.
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @var Tribe__Tickets__Admin__Views $this           Template object.
  * @var string                       $banner_title   Banner title.
@@ -19,9 +19,9 @@ if ( empty( $link_text ) || empty( $link_url ) ) {
 }
 
 ?>
-<a 
+<a
     class="event-tickets__admin-tc-banner-link"
-    href="<?php echo esc_url( $link_url ); ?>" 
+    href="<?php echo esc_url( $link_url ); ?>"
     rel="noopener noreferrer"
     target="_blank"
 >

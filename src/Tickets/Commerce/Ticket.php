@@ -68,7 +68,7 @@ class Ticket {
 	/**
 	 * Which meta holds the data for the ticket sales.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string
 	 */
@@ -122,7 +122,7 @@ class Ticket {
 	/**
 	 * Prefix for the counter for a given status..
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string
 	 */
@@ -168,7 +168,7 @@ class Ticket {
 	/**
 	 * Gets the meta Key for a given status count on a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param Status_Interface $status
 	 *
@@ -181,7 +181,7 @@ class Ticket {
 	/**
 	 * Modify the counters for all the tickets involved on this particular order.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param Status_Interface      $new_status New post status.
 	 * @param Status_Interface|null $old_status Old post status.
@@ -219,7 +219,7 @@ class Ticket {
 	 * Given a valid ticket will fetch the quantity of orders on each one of the registered status based on the counting
 	 * that is handled by the Order status transitions system.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param int|string|\WP_Post $ticket_id Which ticket we are fetching the count for.
 	 *
@@ -634,7 +634,7 @@ class Ticket {
 		/**
 		 * Generic action fired after saving a ticket (by type)
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param int                            $post_id  Post ID of post the ticket is tied to
 		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
@@ -646,7 +646,7 @@ class Ticket {
 		/**
 		 * Generic action fired after saving a ticket.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param int                            $post_id  Post ID of post the ticket is tied to
 		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
@@ -660,7 +660,7 @@ class Ticket {
 		 *
 		 * @todo  TribeCommerceLegacy
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param int                            $post_id  Post ID of post the ticket is tied to
 		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
@@ -674,7 +674,7 @@ class Ticket {
 		 *
 		 * @todo  TribeCommerceLegacy
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param int                            $post_id  Post ID of post the ticket is tied to
 		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved

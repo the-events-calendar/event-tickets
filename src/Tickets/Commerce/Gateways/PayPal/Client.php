@@ -17,7 +17,7 @@ class Client {
 	/**
 	 * Debug ID from PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string
 	 */
@@ -125,7 +125,7 @@ class Client {
 	/**
 	 * Stores the debug header from a given PayPal request, which allows for us to store it with the gateway payload.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $id Which ID we are storing.
 	 *
@@ -137,7 +137,7 @@ class Client {
 	/**
 	 * Fetches the last stored debug id from PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return string|null
 	 */
@@ -149,7 +149,7 @@ class Client {
 	 * Send a given method request to a given URL in the PayPal API.
 	 *
 	 * @since 5.1.10
-	 * @since TBD Included $retries param.
+	 * @since 5.2.0 Included $retries param.
 	 *
 	 * @param string $method
 	 * @param string $url
