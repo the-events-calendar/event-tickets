@@ -42,7 +42,7 @@ class Completed extends Status_Abstract {
 		'count_completed',
 		'count_sales',
 		'increase_sales',
-		'duplicated_pending_orders',
+		'end_duplicated_pending_orders',
 	];
 
 	/**

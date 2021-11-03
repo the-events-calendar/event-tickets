@@ -9,14 +9,14 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
 use Tribe__Utils__Array as Arr;
 
 /**
- * Class Duplicated_Pending_Orders, normally triggered when a given order is completed it will modify the status of all the
+ * Class End_Duplicated_Pending_Orders, normally triggered when a given order is completed it will modify the status of all the
  * other orders created with the same Hash cart key, which prevents leaving pending orders open when one was completed.
  *
  * @since    TBD
  *
  * @package  TEC\Tickets\Commerce\Flag_Actions
  */
-class Duplicated_Pending_Orders extends Flag_Action_Abstract {
+class End_Duplicated_Pending_Orders extends Flag_Action_Abstract {
 
 	/**
 	 * {@inheritDoc}
@@ -24,7 +24,7 @@ class Duplicated_Pending_Orders extends Flag_Action_Abstract {
 	 * @since TBD
 	 */
 	protected $flags = [
-		'duplicated_pending_orders',
+		'end_duplicated_pending_orders',
 	];
 
 	/**
