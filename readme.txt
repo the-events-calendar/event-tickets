@@ -180,7 +180,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.2.0] 2021-11-04 =
 
-*
+* Feature - Introduction of Tickets Commerce, the new and improved solution you can set up to sell tickets with Event Tickets.
+* Language - 840 new strings added, 432 updated, 26 fuzzied, and 16 obsoleted
 
 = [5.1.10] 2021-09-27 =
 
