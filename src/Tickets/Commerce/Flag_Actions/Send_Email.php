@@ -34,6 +34,14 @@ class Send_Email extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $order ) {
+
+		// temporary fix for manual attendees first email
+		// @todo backend review this logic
+		if ( ! empty( $order->gateway ) && 'manual' === $order->gateway && empty( $order->events_in_order ) ) {
+			$order->events_in_order[] = $order;
+		}
+
+
 		if ( empty( $order->events_in_order ) || ! is_array( $order->events_in_order ) ) {
 			return;
 		}
