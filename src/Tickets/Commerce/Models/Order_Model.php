@@ -39,6 +39,7 @@ class Order_Model extends Base {
 
 			$items               = maybe_unserialize( Arr::get( $post_meta, [ Order::$items_meta_key, 0 ] ) );
 			$total_value         = Arr::get( $post_meta, [ Order::$total_value_meta_key, 0 ] );
+			$hash                = Arr::get( $post_meta, [ Order::$hash_meta_key, 0 ] );
 			$currency            = Arr::get( $post_meta, [ Order::$currency_meta_key, 0 ], 'USD' );
 			$gateway_slug        = Arr::get( $post_meta, [ Order::$gateway_meta_key, 0 ] );
 			$gateway_order_id    = Arr::get( $post_meta, [ Order::$gateway_order_id_meta_key, 0 ] );
@@ -77,7 +78,8 @@ class Order_Model extends Base {
 				'purchaser_name'      => $purchaser_full_name,
 				'purchaser_email'     => $purchaser_email,
 				'purchase_time'       => get_post_time( \Tribe__Date_Utils::DBDATETIMEFORMAT, false, $this->post ),
-				'items'                => $items,
+				'items'               => $items,
+				'hash'                => $hash,
 				'events_in_order'     => $events_in_order,
 				'tickets_in_order'    => $tickets_in_order,
 				'flag_action_markers' => $flag_action_markers,

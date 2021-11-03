@@ -35,6 +35,7 @@ class Flag_Action_Handler extends \tad_DI52_ServiceProvider {
 		Send_Email::class,
 		Increase_Sales::class,
 		Decrease_Sales::class,
+		Duplicated_Pending_Orders::class,
 	];
 
 	/**
