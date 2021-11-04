@@ -62,17 +62,38 @@ class Success_Shortcode extends Shortcode_Abstract {
 			return '';
 		}
 
+		// Bail if we're in the blocks editor context.
+		if ( $context->doing_rest() ) {
+			return '';
+		}
+
 		$args = $this->get_template_vars();
 
 		// Add the rendering attributes into global context.
 		$this->get_template()->add_template_globals( $args );
 
+		$this->enqueue_assets();
+
 		$html = $this->get_template()->template( 'success', $args, false );
+
+		return $html;
+	}
+
+	/**
+	 * Enqueue the assets related to this shortcode.
+	 *
+	 * @since 5.2.0
+	 */
+	public static function enqueue_assets() {
+		$context = tribe_context();
+
+		// Bail if we're in the blocks editor context.
+		if ( $context->doing_rest() ) {
+			return;
+		}
 
 		// Enqueue assets.
 		tribe_asset_enqueue_group( 'tribe-tickets-commerce' );
-
-		return $html;
 	}
 
 }
