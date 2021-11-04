@@ -5,7 +5,6 @@
   "lang/**/*.txt",
   "license.txt",
   "readme.txt",
-  "site_owner_data_collection_statement.html",
   "src/**/*",
   "vendor/autoload.php",
   "vendor/autoload_commands.php",
