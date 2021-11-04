@@ -7,7 +7,5 @@
   "readme.txt",
   "src/**/*",
   "vendor/autoload.php",
-  "vendor/autoload_commands.php",
-  "vendor/autoload_framework.php",
   "vendor/composer/*"
 ]
