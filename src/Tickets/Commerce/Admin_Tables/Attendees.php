@@ -455,8 +455,8 @@ class Attendees extends WP_List_Table {
 	 */
 	public function column_primary_info( $item ) {
 
-		$name  = $item->holder_name ?? '';
-		$email = $item->holder_email ?? '';
+		$name  = $item->holder_name ? $item->holder_name : '';
+		$email = $item->holder_email ? $item->holder_email : '';
 
 		return sprintf(
 			'
