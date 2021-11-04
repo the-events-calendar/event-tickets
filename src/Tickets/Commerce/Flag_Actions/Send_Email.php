@@ -52,6 +52,20 @@ class Send_Email extends Flag_Action_Abstract {
 				continue;
 			}
 
+			/**
+			 * If this request is being generated via ajax in the Attendees View admin page, we need to
+			 * make sure the email only goes out after all the work to register the order and attendees is
+			 * finished, so we hook it to the same hook used to process everything, but make sure it's the last
+			 * function to run.
+			 */
+			if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+				add_filter( 'tribe_tickets_admin_manager_request', function( $response ) use ( $order, $event ) {
+					tribe( Email::class )->send_tickets_email( $order->ID, $event->ID );
+					return $response;
+				}, 9999 );
+				return;
+			}
+
 			tribe( Email::class )->send_tickets_email( $order->ID, $event->ID );
 		}
 	}
