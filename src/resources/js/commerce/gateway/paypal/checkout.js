@@ -509,7 +509,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @param {string} content Notice message content.
 	 */
 	obj.showNotice = ( $container, title, content ) => {
-		if ( ! $container.length ) {
+		if ( ! $container || ! $container.length ) {
 			$container = $( tribe.tickets.commerce.selectors.checkoutContainer );
 		}
 		const notice = tribe.tickets.commerce.notice;
