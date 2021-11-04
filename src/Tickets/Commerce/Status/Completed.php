@@ -2,7 +2,7 @@
 namespace TEC\Tickets\Commerce\Status;
 
 /**
- * Class Denied.
+ * Class Completed.
  *
  * This is the status we use to mark a given order as paid and delivered in our Tickets Commerce system.
  *
@@ -29,14 +29,20 @@ class Completed extends Status_Abstract {
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * Do not change the order arbitrarily. Flag actions are triggered in the order represented in this array.
 	 */
 	protected $flags = [
 		'complete',
+		'backfill_purchaser',
 		'attendee_dispatch',
 		'stock_reduced',
+		'send_email',
 		'count_attendee',
 		'count_completed',
 		'count_sales',
+		'increase_sales',
+		'end_duplicated_pending_orders',
 	];
 
 	/**

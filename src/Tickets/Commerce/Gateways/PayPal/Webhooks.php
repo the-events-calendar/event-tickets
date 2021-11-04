@@ -108,6 +108,7 @@ class Webhooks {
 			}
 
 			if ( 'tec-tickets-commerce-gateway-paypal-webhook-url-already-exists' === $webhook->get_error_code() ) {
+				$error_message     = $webhook->get_error_message();
 				$existing_webhooks = $client->list_webhooks();
 				$existing_webhooks = array_filter( array_map( static function ( $webhook ) {
 					if ( tribe( Webhook_Endpoint::class )->get_route_url() !== $webhook['url'] ) {
@@ -117,7 +118,7 @@ class Webhooks {
 					return $webhook;
 				}, $existing_webhooks ) );
 				if ( empty( $existing_webhooks ) ) {
-					return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-unexpected-update-create' );
+					return new \WP_Error( 'tec-tickets-commerce-gateway-paypal-webhook-unexpected-update-create', $error_message );
 				}
 				$existing_webhook = current( $existing_webhooks );
 

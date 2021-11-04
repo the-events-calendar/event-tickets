@@ -101,6 +101,19 @@ class Tribe__Tickets__Assets {
 			]
 		);
 
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-orders-style',
+			'my-tickets.css',
+			[ 'tec-variables-full' ],
+			null,
+			[
+				'groups' => [
+					'tribe-tickets-page-assets',
+				],
+			]
+		);
+
 		if ( tribe_tickets_new_views_is_enabled() ) {
 			// Tribe tickets utils.
 			tribe_asset(
@@ -332,10 +345,17 @@ class Tribe__Tickets__Assets {
 	 *
 	 * @since  4.6
 	 *
+	 * @since TBD Always enqueue scripts for Ticket settings page.
+	 *
 	 * @return bool
 	 */
 	public function should_enqueue_admin() {
 		global $post;
+
+		// Should enqueue if Ticket settings page.
+		if ( 'tribe-common' === tribe_get_request_var( 'page' ) && 'event-tickets' === tribe_get_request_var( 'tab' ) ) {
+			return true;
+		}
 
 		/**
 		 * Filter the array of module names.

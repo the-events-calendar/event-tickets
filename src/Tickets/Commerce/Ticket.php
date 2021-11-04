@@ -4,6 +4,9 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Commerce\Status\Status_Handler;
+use TEC\Tickets\Commerce\Status\Status_Interface;
+use TEC\Tickets\Commerce\Utils\Price;
 use TEC\Tickets\Event;
 
 use Tribe__Utils__Array as Arr;
@@ -63,6 +66,15 @@ class Ticket {
 	public static $price_meta_key = '_price';
 
 	/**
+	 * Which meta holds the data for the ticket sales.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @var string
+	 */
+	public static $sales_meta_key = 'total_sales';
+
+	/**
 	 * Which meta holds the data for the ticket stock mode.
 	 *
 	 * @since 5.1.9
@@ -108,6 +120,15 @@ class Ticket {
 	public static $should_manage_stock_meta_key = '_manage_stock';
 
 	/**
+	 * Prefix for the counter for a given status..
+	 *
+	 * @since 5.2.0
+	 *
+	 * @var string
+	 */
+	public static $status_count_meta_key_prefix = '_tec_tc_ticket_status_count';
+
+	/**
 	 * Register this Class post type into WP.
 	 *
 	 * @since 5.1.9
@@ -145,6 +166,88 @@ class Ticket {
 	}
 
 	/**
+	 * Gets the meta Key for a given status count on a ticket.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param Status_Interface $status
+	 *
+	 * @return string
+	 */
+	public static function get_status_count_meta_key( Status_Interface $status ) {
+		return static::$status_count_meta_key_prefix . ':' . $status->get_slug();
+	}
+
+	/**
+	 * Modify the counters for all the tickets involved on this particular order.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param Status_Interface      $new_status New post status.
+	 * @param Status_Interface|null $old_status Old post status.
+	 * @param \WP_Post              $post       Post object.
+	 */
+	public function modify_counters_by_status( $new_status, $old_status, $post ) {
+		$order = tec_tc_get_order( $post );
+
+		// This should never be the case, but lets be safe.
+		if ( empty( $order->items ) ) {
+			return;
+		}
+
+		foreach ( $order->items as $item ) {
+			$ticket_id              = $item['ticket_id'];
+			$new_status_meta_key    = static::get_status_count_meta_key( $new_status );
+			$current_new_status_qty = get_post_meta( $ticket_id, $new_status_meta_key, true );
+			if ( ! $current_new_status_qty ) {
+				$current_new_status_qty = 0;
+			}
+			update_post_meta( $ticket_id, $new_status_meta_key, (int) $current_new_status_qty + $item['quantity'] );
+
+			if ( $old_status ) {
+				$old_status_meta_key    = static::get_status_count_meta_key( $old_status );
+				$current_old_status_qty = get_post_meta( $ticket_id, $old_status_meta_key, true );
+				if ( ! $current_old_status_qty ) {
+					$current_old_status_qty = 0;
+				}
+				update_post_meta( $ticket_id, $old_status_meta_key, max( 0, (int) $current_old_status_qty - $item['quantity'] ) );
+			}
+		}
+	}
+
+	/**
+	 * Given a valid ticket will fetch the quantity of orders on each one of the registered status based on the counting
+	 * that is handled by the Order status transitions system.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param int|string|\WP_Post $ticket_id Which ticket we are fetching the count for.
+	 *
+	 * @return array<string,int>|\WP_Error
+	 */
+	public function get_status_quantity( $ticket_id ) {
+		$ticket = get_post( $ticket_id );
+
+		if ( ! $ticket ) {
+			return new \WP_Error( 'tec-tickets-commerce-non-existent-ticket' );
+		}
+
+		$all_statuses = tribe( Status_Handler::class )->get_all();
+		$status_qty   = [];
+
+		foreach ( $all_statuses as $status ) {
+			$value = get_post_meta( $ticket->ID, static::get_status_count_meta_key( $status ), true );
+			if ( empty( $value ) ) {
+				$value = 0;
+			}
+
+			$status_qty[ $status->get_slug() ] = (int) $value;
+		}
+
+		return $status_qty;
+	}
+
+	/**
 	 * Gets an individual ticket.
 	 *
 	 * @todo  TribeCommerceLegacy: This method needs to make use of the Ticket Model.
@@ -162,11 +265,13 @@ class Ticket {
 			return null;
 		}
 
+		if ( static::POSTTYPE !== get_post_type( $product ) ) {
+			return null;
+		}
+
 		$event_id = get_post_meta( $ticket_id, static::$event_relation_meta_key, true );
 
 		$return = new \Tribe__Tickets__Ticket_Object();
-
-		$qty_sold = get_post_meta( $ticket_id, 'total_sales', true );
 
 		$return->description      = $product->post_excerpt;
 		$return->ID               = $ticket_id;
@@ -182,6 +287,8 @@ class Ticket {
 		$return->start_time       = get_post_meta( $ticket_id, '_ticket_start_time', true );
 		$return->end_time         = get_post_meta( $ticket_id, '_ticket_end_time', true );
 		$return->sku              = get_post_meta( $ticket_id, '_sku', true );
+
+		$qty_sold = get_post_meta( $ticket_id,  static::$sales_meta_key, true );
 
 		// If the quantity sold wasn't set, default to zero
 		$qty_sold = $qty_sold ? $qty_sold : 0;
@@ -527,7 +634,7 @@ class Ticket {
 		/**
 		 * Generic action fired after saving a ticket (by type)
 		 *
-		 * @since 5.1.9
+		 * @since 5.2.0
 		 *
 		 * @param int                            $post_id  Post ID of post the ticket is tied to
 		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
@@ -537,9 +644,9 @@ class Ticket {
 		do_action( "tec_tickets_commerce_after_{$save_type}_ticket", $post_id, $ticket, $raw_data, static::class );
 
 		/**
-		 * Generic action fired after saving a ticket
+		 * Generic action fired after saving a ticket.
 		 *
-		 * @since 4.7
+		 * @since 5.2.0
 		 *
 		 * @param int                            $post_id  Post ID of post the ticket is tied to
 		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
@@ -547,6 +654,34 @@ class Ticket {
 		 * @param string                         $class    Commerce engine class
 		 */
 		do_action( 'tec_tickets_commerce_after_save_ticket', $post_id, $ticket, $raw_data, static::class );
+
+		/**
+		 * Generic action fired after saving a ticket (by type)
+		 *
+		 * @todo  TribeCommerceLegacy
+		 *
+		 * @since 5.2.0
+		 *
+		 * @param int                            $post_id  Post ID of post the ticket is tied to
+		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
+		 * @param array                          $raw_data Ticket data
+		 * @param string                         $class    Commerce engine class
+		 */
+		do_action( "event_tickets_after_{$save_type}_ticket", $post_id, $ticket, $raw_data, static::class );
+
+		/**
+		 * Generic action fired after saving a ticket.
+		 *
+		 * @todo  TribeCommerceLegacy
+		 *
+		 * @since 5.2.0
+		 *
+		 * @param int                            $post_id  Post ID of post the ticket is tied to
+		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
+		 * @param array                          $raw_data Ticket data
+		 * @param string                         $class    Commerce engine class
+		 */
+		do_action( 'event_tickets_after_save_ticket', $post_id, $ticket, $raw_data, static::class );
 
 		return $ticket->ID;
 	}
@@ -663,11 +798,11 @@ class Ticket {
 	 */
 	public function increase_ticket_sales_by( $ticket_id, $quantity = 1, $shared_capacity = false, $global_stock = null ) {
 		// Adjust sales.
-		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true ) + $quantity;
+		$sales = (int) get_post_meta( $ticket_id,  static::$sales_meta_key, true ) + $quantity;
 
-		update_post_meta( $ticket_id, 'total_sales', $sales );
+		update_post_meta( $ticket_id,  static::$sales_meta_key, $sales );
 
-		if ( $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
+		if (  'own' !== $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
 			$this->update_global_stock( $global_stock, $quantity );
 		}
 
@@ -690,12 +825,12 @@ class Ticket {
 	 */
 	public function decrease_ticket_sales_by( $ticket_id, $quantity = 1, $shared_capacity = false, $global_stock = null ) {
 		// Adjust sales.
-		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true ) - $quantity;
+		$sales = (int) get_post_meta( $ticket_id,  static::$sales_meta_key, true ) - $quantity;
 
 		// Prevent negatives.
 		$sales = max( $sales, 0 );
 
-		update_post_meta( $ticket_id, 'total_sales', $sales );
+		update_post_meta( $ticket_id,  static::$sales_meta_key, $sales );
 
 		if ( $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
 			$this->update_global_stock( $global_stock, $quantity, true );
@@ -748,8 +883,7 @@ class Ticket {
 			return '';
 		}
 
-		$price = $this->get_price_value( $product );
-		$price = tribe( 'tickets.commerce.paypal.currency' )->format_currency( $price, $product_id );
+		$price = Price::to_currency( Price::to_string( $this->get_price_value( $product ) ) );
 
 		$price_html = '<span class="tribe-tickets-price-amount amount">' . esc_html( $price ) . '</span>';
 

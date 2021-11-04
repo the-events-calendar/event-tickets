@@ -35,6 +35,7 @@ class Undefined extends Status_Abstract {
 		'count_incomplete',
 		'incomplete',
 		'warning',
+		'backfill_purchaser',
 	];
 
 	/**

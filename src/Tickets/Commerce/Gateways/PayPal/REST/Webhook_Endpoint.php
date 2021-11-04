@@ -176,6 +176,11 @@ class Webhook_Endpoint implements Tribe__Documentation__Swagger__Provider_Interf
 			return new WP_Error( 'tec-tickets-commerce-paypal-webhook-signature-error', null, [  'webhook_id' => $webhook_id, 'event' => $event, 'headers' => $headers ] );
 		}
 
+		$debug_header = $request->get_header( 'Paypal-Debug-Id' );
+		if ( ! empty( $debug_header ) ) {
+			$event['debug_id'] = $debug_header;
+		}
+
 		$order = tribe( Webhooks\Handler::class )->process_event( $event );
 
 		if ( is_wp_error( $order ) ) {

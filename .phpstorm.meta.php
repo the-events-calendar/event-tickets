@@ -20,6 +20,7 @@ namespace PHPSTORM_META {
 		'tickets.rest-v1.system'       => \Tribe__Tickets__REST__V1__System::class,
 		'tickets.rest-v1.validator'    => \Tribe__Tickets__REST__V1__Validator__Base::class,
 		'tickets.rest-v1.repository'   => \Tribe__Tickets__REST__V1__Post_Repository::class,
+
 	];
 
 	// Allow PhpStorm IDE to resolve return types when calling tribe( Object_Type::class ) or tribe( `Object_Type` )

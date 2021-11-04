@@ -1,6 +1,6 @@
 {
   "name": "event-tickets",
-  "version": "5.1.10",
+  "version": "5.2.1",
   "repository": "git@github.com:the-events-calendar/event-tickets.git",
   "_zipname": "event-tickets",
   "_zipfoldername": "event-tickets",
@@ -120,7 +120,8 @@
     "url-loader": "^0.6.2",
     "validator": "^9.4.1",
     "whatwg-fetch": "^2.0.4",
-    "zero-fill": "^2.2.3"
+    "zero-fill": "^2.2.3",
+    "intro.js": "^3.4.0"
   },
   "browserslist": [
     "last 2 Chrome versions",

@@ -6,11 +6,11 @@
 
 <div
 	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
-	data-depends="#provider_TEC_Tickets_Commerce_Module_radio"
-	data-condition-is-checked
+	data-depends="#Tribe__Tickets__RSVP_radio"
+	data-condition-is-not-checked
 >
 	<label
-		for="Tribe__Tickets__Commerce__PayPal__Main_capacity"
+		for="TEC_Tickets_Commerce_Module_capacity"
 		class="ticket_form_label ticket_form_left"
 	>
 		<?php esc_html_e( 'Capacity:', 'event-tickets' ); ?>

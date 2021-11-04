@@ -32,6 +32,7 @@ class Refunded extends Status_Abstract {
 	 */
 	protected $flags = [
 		'warning',
+		'backfill_purchaser',
 		'count_refunded',
 	];
 

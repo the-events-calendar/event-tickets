@@ -1,5 +1,22 @@
 == Changelog ==
 
+= [5.2.0] 2021-11-04 =
+
+* Feature - Introduction of Tickets Commerce, the new and improved solution you can set up to sell tickets with Event Tickets.
+* Language - 840 new strings added, 432 updated, 26 fuzzied, and 16 obsoleted
+
+= [5.1.10] 2021-09-27 =
+
+* Enhancement - When editing an RSVP or ticket in the block editor, allow title to wrap to multiple lines. [ET-1089]
+* Enhancement - Ensure that text for the RSVP going/not going dropdown on front end isn't cut off and arrows aren't hidden. [ET-1169]
+* Tweak - Added a new filter `tribe_tickets_get_provider_query_slug` to allow customization of the provider URL variable name. [ET-543]
+* Tweak - Changed the `provider` URL variable name to `tickets_provider`. The filter `tribe_tickets_get_provider_query_slug` allows for customization. [ET-543]
+* Fix - Fixed ticket total formatting when using custom thousands and decimal separators. [ET-1197]
+* Fix - Show warning while creating new tickets with `0` price for TribeCommerce. [ET-1201]
+* Fix - Prevent text overlapping description in the ticket AR modal. [ET-1179]
+* Fix - Removed the ability to resend tickets from the Attendees page to Attendees who cancelled or refunded their ticket. [ETP-703]
+* Language - 26 new strings added, 116 updated, 2 fuzzied, and 35 obsoleted
+
 = [5.1.9.1] 2021-09-08 =
 
 * Fix - Fixed conflict with WooCommerce Payments plugin showing error on Ticket Form. [ET-1174]
@@ -27,13 +44,24 @@
 
 = [5.1.6] 2021-07-07 =
 
+* Tweak - Added support for HTML in Ticket description field. [ET-1135]
 * Tweak - Added `$ticket_id` parameter to the `tribe_events_tickets_metabox_edit_ajax_advanced` filter. [ETP-111]
+* Tweak - Update the plugin screenshots on the WordPress.org page. [ET-1143]
 * Fix - Prevent Attendees with HTML entities from exporting broken. [ETP-730]
+* Fix - Fixed the ticket block allowing to add more tickets than available when using shared capacity. [ET-1137]
+* Fix - Sync WooCommerce decimal separator with in Ticket edit form. [ETP-725]
 * Fix - Prevent Tribe Commerce "Confirmation email sender name" from displaying improperly when a single quote is added. [ET-1134]
+* Language - 115 new strings added, 118 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.1.5] 2021-06-09 =
 
+* Fix - Fixed shared capacity stock sync after attendee deletion, for TribeCommerce tickets. [ETP-285]
+* Fix - Fix the price number calculation for tickets that are using no decimals and thousand separator. [ET-1114]
+* Fix - Revert to not hiding past sale tickets from Cost range in Events [ET-1133]
+* Fix - Resolved issue where events with tickets were being shown as Free on the day of the event. [ET-1133]
+* Tweak - When using The Events Calendar and Event Tickets split the admin footer rating link 50/50. [ET-1120]
 * Tweak - Move complete list of changelog entries from `readme.txt` to `changelog.txt`. [ET-1121]
+* Language - 0 new strings added, 24 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.1.4] 2021-05-12 =
 

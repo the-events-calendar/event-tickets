@@ -40,14 +40,5 @@ $item_details_id = 'tribe-tickets__commerce-checkout-cart-item-details-descripti
 <div id="<?php echo esc_attr( $item_details_id ); ?>" <?php tribe_classes( $classes ); ?>>
 	<?php echo wp_kses_post( $item['obj']->description ); ?>
 
-	<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee">
-		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-name">John Smith</div>
-		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-fields">t-shirt: large, meal: vegan, eyes: crossed</div>
-	</div>
-
-	<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee">
-		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-name">Karen Schmidt</div>
-		<div class="tribe-tickets__commerce-checkout-cart-item-details-description-attendee-fields">t-shirt: small, meal: very carnivorous, eyes: dotted</div>
-	</div>
-
+	<?php $this->template( 'checkout/cart/item/details/extra' ); ?>
 </div>

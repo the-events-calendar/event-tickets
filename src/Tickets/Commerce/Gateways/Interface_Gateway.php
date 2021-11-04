@@ -42,9 +42,18 @@ interface Interface_Gateway {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @return bool Whether the provider is active.
+	 * @return bool Whether the gateway is active.
 	 */
 	public static function is_active();
+
+	/**
+	 * Determine whether the gateway is connected.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @return bool Whether the gateway is connected.
+	 */
+	public static function is_connected();
 
 	/**
 	 * Determine whether the gateway should be shown as an available gateway.
