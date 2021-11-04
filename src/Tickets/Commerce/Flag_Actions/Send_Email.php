@@ -59,7 +59,7 @@ class Send_Email extends Flag_Action_Abstract {
 			 * function to run.
 			 */
 			if ( doing_action( 'wp_ajax_tribe_tickets_admin_manager' ) ) {
-				add_filter( 'tribe_tickets_admin_manager_request', function( $response ) use ( $order, $event ) {
+				add_filter( 'tribe_tickets_admin_manager_request', static function( $response ) use ( $order, $event ) {
 					tribe( Email::class )->send_tickets_email( $order->ID, $event->ID );
 					return $response;
 				}, 9999 );
