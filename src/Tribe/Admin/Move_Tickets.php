@@ -172,6 +172,11 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		$attendee_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $event_id, $args );
 
 		foreach ( $attendee_data['attendees'] as $attendee ) {
+
+			if ( empty( $attendee['attendee_id'] ) ) {
+				$attendee['attendee_id'] = $attendee['ID'];
+			}
+
 			$attendee_id = (int) $attendee['attendee_id'];
 
 			$this->attendees[ $attendee_id ] = $attendee;
@@ -402,7 +407,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		$ticket_ids = array_map( 'absint', array_filter( $ticket_ids, 'is_numeric' ) );
 
 		foreach ( Tribe__Tickets__Tickets::get_event_tickets( $target_post_id ) as $ticket ) {
-			if ( $provider !== $ticket->provider_class ) {
+			if ( stripslashes( $provider ) !== $ticket->provider_class ) {
 				continue;
 			}
 

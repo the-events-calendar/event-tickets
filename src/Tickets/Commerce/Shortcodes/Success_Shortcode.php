@@ -9,6 +9,7 @@
 namespace TEC\Tickets\Commerce\Shortcodes;
 
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Success;
 
@@ -40,11 +41,12 @@ class Success_Shortcode extends Shortcode_Abstract {
 		] )->first();
 
 		$args = [
-			'provider_id'   => Module::class,
-			'provider'      => tribe( Module::class ),
-			'order_id'      => $order_id,
-			'order'         => $order,
-			'is_tec_active' => defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'Tribe__Events__Main' ),
+			'provider_id'    => Module::class,
+			'provider'       => tribe( Module::class ),
+			'order_id'       => $order_id,
+			'order'          => $order,
+			'is_tec_active'  => defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'Tribe__Events__Main' ),
+			'payment_method' => tribe( Order::class )->get_gateway_label( $order ),
 		];
 
 		$this->template_vars = $args;
@@ -60,17 +62,38 @@ class Success_Shortcode extends Shortcode_Abstract {
 			return '';
 		}
 
+		// Bail if we're in the blocks editor context.
+		if ( $context->doing_rest() ) {
+			return '';
+		}
+
 		$args = $this->get_template_vars();
 
 		// Add the rendering attributes into global context.
 		$this->get_template()->add_template_globals( $args );
 
+		$this->enqueue_assets();
+
 		$html = $this->get_template()->template( 'success', $args, false );
+
+		return $html;
+	}
+
+	/**
+	 * Enqueue the assets related to this shortcode.
+	 *
+	 * @since 5.2.0
+	 */
+	public static function enqueue_assets() {
+		$context = tribe_context();
+
+		// Bail if we're in the blocks editor context.
+		if ( $context->doing_rest() ) {
+			return;
+		}
 
 		// Enqueue assets.
 		tribe_asset_enqueue_group( 'tribe-tickets-commerce' );
-
-		return $html;
 	}
 
 }

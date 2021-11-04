@@ -5,7 +5,8 @@
  * @since 5.1.9
  */
 
-use TEC\Tickets\Commerce\Models\Ticket_Model;
+use TEC\Tickets\Commerce\Models\Attendee_Model;
+use \TEC\Tickets\Commerce\Attendee;
 
 /**
  * Fetches and returns a decorated post object representing an attendee.
@@ -50,7 +51,7 @@ function tec_tc_get_attendee( $attendee = null, $output = OBJECT, $filter = 'raw
 
 	$cache_post = get_post( $attendee );
 
-	if ( empty( $cache_post ) ) {
+	if ( empty( $cache_post ) || ! Attendee::is_valid( $cache_post ) ) {
 		return null;
 	}
 
@@ -77,7 +78,7 @@ function tec_tc_get_attendee( $attendee = null, $output = OBJECT, $filter = 'raw
 	}
 
 	if ( false === $post ) {
-		$post = Ticket_Model::from_post( $attendee )->to_post( $output, $filter );
+		$post = Attendee_Model::from_post( $attendee )->to_post( OBJECT, $filter );
 
 		if ( empty( $post ) ) {
 			return null;

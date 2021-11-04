@@ -34,6 +34,7 @@ class Denied extends Status_Abstract {
 	protected $flags = [
 		'incomplete',
 		'warning',
+		'backfill_purchaser',
 		'count_canceled',
 	];
 

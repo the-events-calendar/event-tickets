@@ -22,9 +22,11 @@
  */
 
 ?>
-<section class="tribe-common event-tickets tribe-tickets__commerce-order">
-	<?php $this->template( 'order/header' ); ?>
-	<?php $this->template( 'order/description' ); ?>
-	<?php $this->template( 'order/details' ); ?>
-	<?php $this->template( 'order/footer' ); ?>
-</section>
+<div class="tribe-common event-tickets">
+	<section class="tribe-tickets__commerce-order">
+		<?php $this->template( 'order/header' ); ?>
+		<?php $this->template( 'order/description' ); ?>
+		<?php $this->template( 'order/details' ); ?>
+		<?php $this->template( 'order/footer' ); ?>
+	</section>
+</div>

@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways;
 
-use TEC\Tickets\Commerce\Settings;
+use TEC\Tickets\Settings;
 
 /**
  * Class Gateways Manager.
@@ -22,24 +22,6 @@ class Manager {
 	public static $option_gateway = '_tickets_commerce_gateway';
 
 	/**
-	 * Determine whether PayPal Legacy should be shown as an available gateway.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @return bool Whether PayPal Legacy should be shown as an available gateway.
-	 */
-	public function should_show_legacy() {
-		/**
-		 * Determine whether PayPal Legacy should be shown as an available gateway.
-		 *
-		 * @since 5.1.6
-		 *
-		 * @param bool $should_show Whether PayPal Legacy should be shown as an available gateway.
-		 */
-		return (bool) apply_filters( 'tec_tickets_commerce_display_legacy', ! tec_tickets_commerce_is_enabled() );
-	}
-
-	/**
 	 * Get the list of registered Tickets Commerce gateways.
 	 *
 	 * @since 5.1.6
@@ -51,7 +33,6 @@ class Manager {
 		 * Allow filtering the list of registered Tickets Commerce gateways.
 		 *
 		 * PayPal Commerce filters at priority 10.
-		 * PayPal Legacy filters at priority 15.
 		 *
 		 * @since 5.1.6
 		 *
@@ -68,11 +49,7 @@ class Manager {
 	 * @return string The current Tickets Commerce gateway.
 	 */
 	public function get_current_gateway() {
-		$default = null;
-
-		if ( ! $this->should_show_legacy() ) {
-			$default = PayPal\Gateway::get_key();
-		}
+		$default = PayPal\Gateway::get_key();
 
 		return (string) tribe_get_option( static::$option_gateway, $default );
 	}
@@ -103,20 +80,24 @@ class Manager {
 				continue;
 			}
 
-			$heading = [
-				'tickets-commerce-' . $gateway_key => [
-					'type'            => 'html',
-					'html'            => '<h3 class="event-tickets__admin-settings-subheading" class="tribe-dependent" data-depends="#' . Settings::$option_enable . '-input" data-condition-is-checked>' . $gateway::get_label() . '</h3>',
-					'validation_type' => 'html',
-				],
-			];
-
-			// Add the gateway label to the start of settings.
-			$gateway_setting_groups[] = $heading;
-
 			$gateway_setting_groups[] = $gateway_settings;
 		}
 
 		return array_merge( ...$gateway_setting_groups );
+	}
+
+	/**
+	 * Get gateway by key.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param string $key Key for expected gateway.
+	 *
+	 * @return Abstract_Gateway
+	 */
+	public function get_gateway_by_key( $key ) {
+		$gateways = $this->get_gateways();
+
+		return isset( $gateways[ $key ] ) ? $gateways[ $key ] : null;
 	}
 }

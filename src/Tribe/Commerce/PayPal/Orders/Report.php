@@ -121,6 +121,10 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	public function render_tabbed_view( Tribe__Tickets__Attendees $attendees ) {
 		$post = $attendees->get_post();
 
+		if ( ! $post ) {
+			return;
+		}
+
 		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
 		$paypal = tribe( 'tickets.commerce.paypal' );
 

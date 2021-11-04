@@ -99,7 +99,7 @@ if ( $has_plus ) {
 					<a href="post-new.php?post_type=tribe_events" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Create RSVP', 'event-tickets' ); ?></a>
 				</li>
 				<li class="tribe-events-admin-quick-nav__link-item">
-					<a href="https://evnt.is/1an7" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Setup PayPal', 'event-tickets' ); ?></a>
+					<a href="https://evnt.is/1axt" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Set Up Tickets Commerce', 'event-tickets' ); ?></a>
 				</li>
 			<?php else : // ET without TEC. ?>
 				<li class="tribe-events-admin-quick-nav__link-item">
@@ -109,7 +109,7 @@ if ( $has_plus ) {
 					<a href="plugin-install.php?tab=plugin-information&amp;plugin=the-events-calendar&amp;TB_iframe=true" class="tribe-events-admin-quick-nav__link thickbox open-plugin-details-modal"><?php esc_html_e( 'Install The Events Calendar', 'event-tickets' ); ?></a>
 				</li>
 				<li class="tribe-events-admin-quick-nav__link-item">
-					<a href="https://evnt.is/1an8" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Setup PayPal', 'event-tickets' ); ?></a>
+					<a href="https://evnt.is/1axt" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Set Up Tickets Commerce', 'event-tickets' ); ?></a>
 				</li>
 			<?php endif; ?>
 		</ul>

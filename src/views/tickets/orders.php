@@ -38,9 +38,12 @@ $provider  = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $event_i
 $template = tribe( 'tickets.editor.template' );
 
 $event_has_tickets = $event_has_rsvp = false;
+$provider_class    = '';
+
 if ( $provider ) {
 	$event_has_tickets = ! empty( $provider->get_tickets( $event_id ) );
 	$event_has_rsvp    = ! empty( $rsvp->get_tickets( $event ) );
+	$provider_class    = $provider->class_name;
 }
 
 $user_has_tickets           = $view->has_ticket_attendees( $event_id, $user_id );
@@ -129,8 +132,14 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 			<?php $template->template( 'tickets/orders-rsvp' ); ?>
 
 			<?php
-			if ( ! class_exists( 'Tribe__Tickets_Plus__Commerce__PayPal__Meta' ) ) {
+			if ( ! class_exists( 'Tribe__Tickets_Plus__Commerce__PayPal__Meta' ) && Tribe__Tickets__Commerce__PayPal__Main::class === $provider_class ) {
 				$template->template( 'tickets/orders-pp-tickets' );
+			}
+			?>
+
+			<?php
+			if ( ! class_exists( 'Tribe__Tickets_Plus__Meta' ) && \TEC\Tickets\Commerce\Module::class === $provider_class ) {
+				$template->template( 'tickets/orders-tc-tickets' );
 			}
 			?>
 

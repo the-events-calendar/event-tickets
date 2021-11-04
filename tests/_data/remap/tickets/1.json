@@ -1,0 +1,58 @@
+{
+  "ID": 423,
+  "post_author": 1,
+  "post_date": "2021-10-21 10:54:41",
+  "post_date_gmt": "2021-10-21 13:54:41",
+  "post_content": "",
+  "post_title": "Ticket A",
+  "post_excerpt": "Ticket Description for Ticket A",
+  "post_status": "publish",
+  "comment_status": "closed",
+  "ping_status": "closed",
+  "post_password": "",
+  "post_name": "ticket-a-2",
+  "to_ping": "",
+  "pinged": "",
+  "post_modified": "2021-10-21 10:55:28",
+  "post_modified_gmt": "2021-10-21 13:55:28",
+  "post_content_filtered": "",
+  "post_parent": 0,
+  "guid": "https:\/\/test.tri.be\/?post_type=tec_tc_ticket&#038;p=423",
+  "menu_order": 0,
+  "post_type": "tec_tc_ticket",
+  "post_mime_type": "",
+  "comment_count": 0,
+  "filter": "raw",
+  "meta_input": {
+    "_tec_tickets_commerce_event": [
+      "422"
+    ],
+    "_tribe_ticket_show_description": [
+      "yes"
+    ],
+    "_price": [
+      "0.45"
+    ],
+    "_manage_stock": [
+      "yes"
+    ],
+    "_tribe_ticket_capacity": [
+      "-1"
+    ],
+    "_tribe_ticket_version": [
+      "5.1.11"
+    ],
+    "_sku": [
+      "423-1-TICKET-A"
+    ],
+    "_global_stock_mode": [
+      "own"
+    ],
+    "_stock": [
+      "-2"
+    ],
+    "_stock_status": [
+      "outofstock"
+    ]
+  }
+}

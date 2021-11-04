@@ -45,6 +45,27 @@ class Assets extends tad_DI52_ServiceProvider {
 			[
 				'tribe-common-skeleton-style',
 				'tribe-common-full-style',
+				'tribe-common-responsive',
+			],
+			null,
+			[
+				'groups' => [
+					'tribe-tickets-commerce',
+					'tribe-tickets-commerce-checkout',
+				],
+				'print'  => true,
+			]
+		);
+
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-commerce-js',
+			'v2/tickets-commerce.js',
+			[
+				'jquery',
+				'tribe-common',
+				'tribe-tickets-provider',
+				'tribe-tickets-loader',
 			],
 			null,
 			[
@@ -57,20 +78,13 @@ class Assets extends tad_DI52_ServiceProvider {
 
 		tribe_asset(
 			$tickets_main,
-			'tribe-tickets-commerce-js',
-			'v2/tickets-commerce.js',
+			'tribe-tickets-commerce-notice-js',
+			'commerce/notice.js',
 			[
 				'jquery',
 				'tribe-common',
-				'tribe-tickets-loader',
 			],
-			null,
-			[
-				'groups' => [
-					'tribe-tickets-commerce',
-					'tribe-tickets-commerce-checkout',
-				],
-			]
+			null
 		);
 	}
 }
