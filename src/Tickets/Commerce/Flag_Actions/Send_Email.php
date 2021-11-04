@@ -57,6 +57,8 @@ class Send_Email extends Flag_Action_Abstract {
 			 * make sure the email only goes out after all the work to register the order and attendees is
 			 * finished, so we hook it to the same hook used to process everything, but make sure it's the last
 			 * function to run.
+			 *
+			 * @todo TribeLegacyCommerce
 			 */
 			if ( doing_action( 'wp_ajax_tribe_tickets_admin_manager' ) ) {
 				add_filter( 'tribe_tickets_admin_manager_request', static function( $response ) use ( $order, $event ) {
