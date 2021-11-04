@@ -453,7 +453,8 @@ class Attendees extends Report_Abstract {
 		$filter_name = "manage_{$this->page_id}_columns";
 		add_filter( $filter_name, [ $this->attendees_table, 'get_columns' ], 15 );
 
-		$items = tribe( \Tribe__Tickets__Tickets::class )::get_event_attendees( $event_id );
+		$tickets_class = tribe( \Tribe__Tickets__Tickets::class );
+		$items = $tickets_class::get_event_attendees( $event_id );
 
 		// Add Handler for Community Tickets to Prevent Notices in Exports.
 		if ( ! is_admin() ) {
