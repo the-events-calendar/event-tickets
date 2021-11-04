@@ -116,11 +116,12 @@ Event Tickets is translated into multiple languages, including German, Danish, a
 
 1. RSVP on event.
 2. Front-end ticket in page.
-3. PayPal checkout.
+3. Tickets Commerce PayPal checkout.
 4. Attendee report.
 5. Emailed ticket.
 6. Tickets settings.
 7. Add new ticket.
+8. Tickets Commerce settings.
 
 == Frequently Asked Questions ==
 
@@ -170,7 +171,7 @@ The following add-ons are available for The Events Calendar:
 
 = I have a feature idea. What's the best way to tell you about it? =
 
-We've got a [ProductStash](https://app.productstash.io/the-events-calendar-suite-roadmap#/ideas) page where we're actively watching for feature ideas from the community. Vote up existing feature requests or add your own, and help us shape the future of the products business in a way that best meets the community's needs.
+We've got a [LoopedIn](https://app.loopedin.io/the-events-calendar-suite-roadmap#/ideas) page where we're actively watching for feature ideas from the community. Vote up existing feature requests or add your own, and help us shape the future of the products business in a way that best meets the community's needs.
 
 = I've still got questions. Where can I find answers? =
 
@@ -205,62 +206,5 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Removed RSVP V2 preview templates and functionality. [ET-1162]
 * Fix - Updated deprecated hook `block_categories` to use `block_categories_all`. [ET-1156]
 * Language - 37 new strings added, 162 updated, 6 fuzzied, and 20 obsoleted
-
-= [5.1.8] 2021-08-24 =
-
-* Tweak - Add new event repository schema for finding all events with RSVPs or Tickets.
-* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted
-
-= [5.1.7] 2021-08-03 =
-
-* Feature - Added export button next to the page title on the Attendees page. [ET-1145]
-* Tweak - Changed the word `Purchaser` to `Attendee` when email confirmation is sent for purchasing a ticket. [ETP-655]
-* Tweak - Added `$attendees` parameter to the `tribe_report_page_after_text_label` action. [ET-1145]
-* Tweak - Removed the edit column when printing the Attendees list. [ETP-702]
-* Tweak - Added "Delete" functionality for the tickets area in the classic editor. [ET-1107]
-* Language - 1 new strings added, 61 updated, 0 fuzzied, and 0 obsoleted
-
-= [5.1.6] 2021-07-07 =
-
-* Tweak - Added support for HTML in Ticket description field. [ET-1135]
-* Tweak - Added `$ticket_id` parameter to the `tribe_events_tickets_metabox_edit_ajax_advanced` filter. [ETP-111]
-* Tweak - Update the plugin screenshots on the WordPress.org page. [ET-1143]
-* Fix - Fixed the ticket block allowing to add more tickets than available when using shared capacity. [ET-1137]
-* Fix - Sync WooCommerce decimal separator with in Ticket edit form. [ETP-725]
-* Fix - Prevent Tribe Commerce "Confirmation email sender name" from displaying improperly when a single quote is added. [ET-1134]
-* Language - 115 new strings added, 118 updated, 0 fuzzied, and 0 obsoleted
-
-= [5.1.5] 2021-06-09 =
-
-* Fix - Fixed shared capacity stock sync after attendee deletion, for TribeCommerce tickets. [ETP-285]
-* Fix - Fix the price number calculation for tickets that are using no decimals and thousand separator. [ET-1114]
-* Fix - Revert to not hiding past sale tickets from Cost range in Events [ET-1133]
-* Fix - Resolved issue where events with tickets were being shown as Free on the day of the event. [ET-1133]
-* Tweak - When using The Events Calendar and Event Tickets split the admin footer rating link 50/50. [ET-1120]
-* Tweak - Move complete list of changelog entries from `readme.txt` to `changelog.txt`. [ET-1121]
-* Language - 0 new strings added, 24 updated, 0 fuzzied, and 0 obsoleted
-
-= [5.1.4] 2021-05-12 =
-
-* Fix - Show total Attendance count for Attendee List Block view. [ET-791]
-* Fix - Add label to the quantity input in the RSVP & Tickets forms to improve accessibility. [ET-767]
-* Fix - Fix a JavaScript localization error that was breaking the manual attendees functionality. [ETP-719]
-* Tweak - Update the footer calculations on the tickets block to only visible items so it can be used from the Attendee Registration Modal cart. [ETP-715]
-* Tweak - Adjust dimensions of tickets table for the classic editor UI. [ETP-594]
-* Tweak - Adjust the width of the Check-In column in the attendees report to make it work properly in different languages. [ET-768]
-* Tweak - Added filters: `tribe_tickets_admin_manager_request`, `event_tickets_should_enqueue_admin_settings_assets`, `tribe_tickets_assets_should_enqueue_tickets_loader`, `tribe_tickets_attendee_repository_update_attendee_data_args_before_update`, `tribe_tickets_attendee_repository_set_attendee_args`, `tribe_tickets_attendee_repository_set_attendee_args_`, `tribe_tickets_attendee_repository_save_extra_attendee_data_args`, `tribe_tickets_attendee_repository_save_extra_attendee_data_args_`, `tribe_tickets_attendee_repository_create_order_for_attendee_order_args`, `tribe_tickets_attendees_csv_export_delimiter`, `tribe_tickets_repositories_order_statuses`, `tribe_tickets_repositories_order_public_statuses`, `tribe_tickets_repositories_order_private_statuses`, `tribe_tickets_repositories_order_create_order_for_ticket_order_args`, `tribe_tickets_ticket_object_is_ticket_cache_enabled`, `tribe_tickets_attendee_activity_log_data`, `event_tickets_exclude_past_tickets_from_cost_range`, `tribe_tickets_attendee_lookup_user_from_email`, `tribe_tickets_attendee_create_user_from_email`, `tribe_tickets_attendee_create_user_from_email_send_new_user_info`, `tribe_tickets_handler_email_max_resend_limit`, `tribe_tickets_repositories_order_map`, `tribe_tickets_block_ticket_html_attributes`
-* Tweak - Removed filters: `tribe_tickets_rsvp_create_attendee_lookup_user_from_email`
-* Language - 1 new strings added, 27 updated, 1 fuzzied, and 0 obsoleted
-
-= [5.1.3] 2021-04-22 =
-
-* Fix - Add TwentyTwentyOne theme compatibility for Tickets and RSVPs. [ET-1047]
-* Fix - Added translation support for "Going" and "Not going" status labels. [ET-1056]
-* Fix - Disabled check-in for RSVP with "Not Going" status. [ET-984]
-* Fix - Fixed an issue with Tickets and RSVP blocks where long descriptions were breaking the block. They now use an auto-resizing textarea. [ET-1078]
-* Tweak - Introduce a new "Attendees" link to the WP Admin bar which can take you directly to the Attendees Report page. [ET-1079]
-* Tweak - Added the new `tribe_tickets_attendees_csv_export_delimiter` filter to allow changing the delimiter used when generating a CSV export of attendees. [ET-1055]
-* Tweak - Adjusted some template override folder paths documented in some of our Tickets-related templates. [ET-1051]
-* Language - 2 new strings added, 70 updated, 0 fuzzied, and 1 obsoleted
 
 [See changelog for all versions](https://raw.githubusercontent.com/the-events-calendar/event-tickets/master/changelog.txt)
