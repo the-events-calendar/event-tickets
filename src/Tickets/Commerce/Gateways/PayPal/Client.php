@@ -164,7 +164,7 @@ class Client {
 		$method = strtoupper( $method );
 
 		// If the endpoint passed is a full URL don't try to append anything.
-		$url = 0 !== strpos( 'https://', $url )
+		$url = 0 !== strpos( $url, 'https://' )
 			? $this->get_api_url( $url, $query_args )
 			: add_query_arg( $query_args, $url );
 
@@ -497,13 +497,6 @@ class Client {
 						'currency_code' => Arr::get( $unit, 'currency' ),
 					],
 				];
-			}
-
-			/**
-			 * @todo Need to figure out how to get this email address still.
-			 */
-			if ( ! $merchant->is_sandbox() ) {
-				$purchase_unit['payee']['email_address'] = Arr::get( $unit, 'merchant_id', $merchant->get_merchant_id() );
 			}
 
 			if ( ! empty( $unit['tax_id'] ) ) {
