@@ -334,6 +334,11 @@ class Cart {
 		if ( $full_item_params ) {
 			$items = array_map( static function ( $item ) {
 				$item['obj']       = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+				// If it's an invalid ticket we just remove it.
+				if ( ! $item['obj'] instanceof \Tribe__Tickets__Ticket_Object ) {
+					return null;
+				}
+
 				$item['event_id']  = $item['obj']->get_event_id();
 				$item['sub_total'] = Price::sub_total( $item['obj']->price, $item['quantity'] );
 
@@ -341,7 +346,7 @@ class Cart {
 			}, $items );
 		}
 
-		return $items;
+		return array_filter( $items );
 	}
 
 	/**
