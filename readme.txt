@@ -2,10 +2,10 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
-Requires at least: 4.9.18
+Requires at least: 5.5
 Tested up to: 5.8.1
 Stable tag: 5.2.0
-Requires PHP: 5.6
+Requires PHP: 7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
