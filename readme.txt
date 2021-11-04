@@ -5,7 +5,7 @@ Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee m
 Requires at least: 5.6
 Tested up to: 5.8.1
 Stable tag: 5.2.1
-Requires PHP: 5.6
+Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -179,7 +179,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-<<<<<<< HEAD
 = [TBD] TBD =
 
 * Enhancement - Added filter `tribe_tickets_manual_attendee_allow_email_resend` to allow customization of email resending via Manual Attendees depending on status. [ETP-703]
@@ -189,12 +188,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - QR Code API generation settings not working if `The Events Calendar` plugin was not active. [ETP-754]
 * Fix - Fixed the event cost formatting issues showing the wrong currency symbol, symbol location and separators. [ET-1251]
 * Bug - Searching Ticket Holder Email / Ticket Holder Name through the Attendee page now functions as expected. [ET-1171]
-=======
+
 = [5.2.0] 2021-11-04 =
 
 * Feature - Introduction of Tickets Commerce, the new and improved solution you can set up to sell tickets with Event Tickets.
 * Language - 840 new strings added, 432 updated, 26 fuzzied, and 16 obsoleted
->>>>>>> 382cefc1cf850461fd992aa0ec22e967df31777f
 
 = [5.1.10] 2021-09-27 =
 
