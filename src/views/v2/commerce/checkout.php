@@ -23,15 +23,40 @@
  * @var int              $gateways_active       [Global] The number of active gateways.
  */
 
+$attributes = [
+	'data-js' => 'tec-tickets-commerce-notice',
+	'data-notice-default-title' => esc_attr__( 'Checkout Unavailable!' , 'event-tickets' ),
+	'data-notice-default-content' => esc_attr__( 'Checkout is not available at this time because a payment method has not been set up for this event. Please notify the site administrator.' , 'event-tickets' ),
+];
+
 ?>
-<section class="tribe-common event-tickets tribe-tickets__commerce-checkout">
-	<?php $this->template( 'checkout/fields' ); ?>
-	<?php $this->template( 'checkout/header' ); ?>
-	<?php foreach ( $sections as $section ) : ?>
-		<?php $this->template( 'checkout/cart', [ 'section' => $section ] ); ?>
-	<?php endforeach; ?>
-	<?php tribe( 'tickets.editor.template' )->template( 'v2/components/loader/loader' ); ?>
-	<?php $this->template( 'checkout/cart/empty' ); ?>
-	<?php $this->template( 'checkout/footer' ); ?>
-	<?php $this->template( 'checkout/must-login' ); ?>
-</section>
+<div class="tribe-common event-tickets">
+	<section
+		class="tribe-tickets__commerce-checkout"
+		<?php tribe_attributes( $attributes ); ?>
+	>
+		<?php $this->template( 'checkout/fields' ); ?>
+		<?php $this->template( 'checkout/header' ); ?>
+		<?php foreach ( $sections as $section ) : ?>
+			<?php $this->template( 'checkout/cart', [ 'section' => $section ] ); ?>
+		<?php endforeach; ?>
+		<?php tribe( 'tickets.editor.template' )->template( 'v2/components/loader/loader' ); ?>
+		<?php
+		tribe( 'tickets.editor.template' )->template(
+			'components/notice',
+			[
+				'notice_classes'  => [
+						'tribe-tickets__notice--error',
+						'tribe-tickets__commerce-checkout-notice',
+				],
+				'content_classes' => [ 'tribe-tickets__commerce-checkout-notice-content' ],
+				'title'           => __( 'Checkout Error!', 'event-tickets' ),
+				'content'         => __( 'Something went wrong!', 'event-tickets' ),
+			]
+		);
+		?>
+		<?php $this->template( 'checkout/cart/empty' ); ?>
+		<?php $this->template( 'checkout/footer' ); ?>
+		<?php $this->template( 'checkout/must-login' ); ?>
+	</section>
+</div>

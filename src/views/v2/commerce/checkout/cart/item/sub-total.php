@@ -28,5 +28,5 @@
 
 ?>
 <div class="tribe-tickets__commerce-checkout-cart-item-subtotal">
-	<?php echo esc_html( $item['sub_total'] ); ?>
+	<?php echo esc_html( tribe_format_currency( $item['sub_total'] ) ); ?>
 </div>

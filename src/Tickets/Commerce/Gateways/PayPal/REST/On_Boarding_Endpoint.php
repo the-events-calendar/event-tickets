@@ -9,6 +9,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Refresh_Token;
 use TEC\Tickets\Commerce\Gateways\PayPal\Signup;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
+use TEC\Tickets\Commerce\Notice_Handler;
 use Tribe__Documentation__Swagger__Provider_Interface;
 use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
@@ -22,7 +23,7 @@ use WP_REST_Server;
 /**
  * Class On_Boarding_Endpoint
  *
- * @since 5.1.9
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */
@@ -166,14 +167,14 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 		$signup        = tribe( Signup::class );
 		$existing_hash = $signup->get_transient_hash();
 		$request_hash  = $request->get_param( 'hash' );
-		$return_url    = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', ] );
+		$return_url    = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] );
 
 		if ( $request_hash !== $existing_hash ) {
 			$this->redirect_with( 'invalid-paypal-signup-hash', $return_url );
 		}
 
-		$seller_data = tribe( WhoDat::class )->get_seller_referral_data( $signup->get_referral_data_link() );
-		$has_custom_payments = in_array( 'PPCP', Arr::get( $seller_data, [ 'referral_data', 'products' ], [] ), true );
+		$seller_data              = tribe( WhoDat::class )->get_seller_referral_data( $signup->get_referral_data_link() );
+		$supports_custom_payments = in_array( 'PPCP', Arr::get( $seller_data, [ 'referral_data', 'products' ], [] ), true );
 
 		$merchant_id           = $request->get_param( 'merchantId' );
 		$merchant_id_in_paypal = $request->get_param( 'merchantIdInPayPal' );
@@ -194,7 +195,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 		$merchant->set_merchant_id_in_paypal( $merchant_id_in_paypal );
 
 		$access_token = $merchant->get_access_token();
-		$credentials = tribe( WhoDat::class )->get_seller_credentials( $access_token );
+		$credentials  = tribe( WhoDat::class )->get_seller_credentials( $access_token );
 
 		if ( ! isset( $credentials['client_id'], $credentials['client_secret'] ) ) {
 			// Save what we have before moving forward.
@@ -205,8 +206,12 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 
 		$merchant->set_client_id( $credentials['client_id'] );
 		$merchant->set_client_secret( $credentials['client_secret'] );
-		$merchant->set_account_is_ready( true );
-		$merchant->set_supports_custom_payments( $has_custom_payments );
+
+		$merchant->set_supports_custom_payments( $supports_custom_payments );
+
+		$merchant->set_account_is_connected( true );
+		$merchant->set_account_is_ready( false );
+
 		$merchant->save();
 
 		$client = tribe( Client::class );
@@ -222,12 +227,18 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 		// Configures the Webhooks when setting up the new merchant.
 		tribe( Webhooks::class )->create_or_update_existing();
 
+		// Force the recheck of if the merchant is active.
+		// This will also check if the custom payments are active.
+		$merchant->is_active( true );
+
 		/**
 		 * @todo Need to figure out where this gets saved in the merchant API.
 		 */
 		update_option( 'tickets_commerce_permissions_granted', $permissions_granted );
 		update_option( 'tickets_commerce_consent_status', $consent_status );
 		update_option( 'tickets_commerce_account_status', $account_status );
+
+		tribe( Notice_Handler::class )->trigger_admin( 'tc-paypal-signup-complete' );
 
 		$this->redirect_with( 'paypal-signup-complete', $return_url );
 	}

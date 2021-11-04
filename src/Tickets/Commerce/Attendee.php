@@ -3,9 +3,11 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
+use TEC\Tickets\Commerce\Communications\Email;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use \Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Utils__Array as Arr;
+use Tribe__Date_Utils;
 
 /**
  * Class Attendee
@@ -15,6 +17,7 @@ use Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce
  */
 class Attendee {
+
 	/**
 	 * Tickets Commerce Attendee Post Type slug.
 	 *
@@ -148,16 +151,7 @@ class Attendee {
 	 *
 	 * @var string
 	 */
-	public static $first_name_meta_key = '_tec_tickets_commerce_first_name';
-
-	/**
-	 * Meta key holding the last name for the attendee. (not purchaser)
-	 *
-	 * @since 5.1.9
-	 *
-	 * @var string
-	 */
-	public static $last_name_meta_key = '_tec_tickets_commerce_last_name';
+	public static $full_name_meta_key = '_tec_tickets_commerce_full_name';
 
 	/**
 	 * Meta key holding the email for the attendee. (not purchaser)
@@ -186,6 +180,14 @@ class Attendee {
 	 */
 	public static $currency_meta_key = '_tec_tickets_commerce_currency';
 
+	/**
+	 * Meta key holding the attendee's unique id
+	 *
+	 * @since 5.2.0
+	 *
+	 * @var string
+	 */
+	public static $unique_id_meta_key = '_unique_id';
 
 	/**
 	 * Register this Class post type into WP.
@@ -236,10 +238,41 @@ class Attendee {
 			'ticket_id'     => $ticket->ID,
 			'event_id'      => $ticket->get_event_id(),
 			'security_code' => Arr::get( $args, 'security_code' ),
-			'opt_out'       => Arr::get( $args, 'optout' ),
-			'price_paid'    => Arr::get( $args, 'price' ),
+			'opt_out'       => Arr::get( $args, 'opt_out' ),
+			'price_paid'    => Arr::get( $args, 'price_paid' ),
 			'currency'      => Arr::get( $args, 'currency' ),
 		];
+
+		if ( ! empty( $order->purchaser['user_id'] ) ) {
+			$create_args['user_id'] = $order->purchaser['user_id'];
+		}
+
+		if ( ! empty( $args['email'] ) ) {
+			$create_args['email'] = $args['email'];
+		}
+
+		if (
+			empty( $args['email'] )
+			&& ! empty( $order->purchaser['email'] )
+		) {
+			$create_args['email'] = $order->purchaser['email'];
+		}
+
+		if ( ! empty( $args['full_name'] ) ) {
+			$create_args['full_name'] = $args['full_name'];
+		}
+
+		if (
+			empty( $args['full_name'] )
+			&& ! empty( $order->purchaser['full_name'] )
+		) {
+			$create_args['full_name'] = $order->purchaser['full_name'];
+		}
+
+		$fields = Arr::get( $args, 'fields', [] );
+		if ( ! empty( $fields ) ) {
+			$create_args['fields'] = $fields;
+		}
 
 		/**
 		 * Allow the filtering of the create arguments for attendee.
@@ -299,7 +332,7 @@ class Attendee {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int $post_id WP_Post ID
+	 * @param int $post_id WP_Post ID.
 	 */
 	public function maybe_redirect_to_attendees_report( $post_id ) {
 		$post = get_post( $post_id );
@@ -308,11 +341,11 @@ class Attendee {
 			return;
 		}
 
-		$args = array(
+		$args = [
 			'post_type' => 'tribe_events',
 			'page'      => \Tribe__Tickets__Tickets_Handler::$attendees_slug,
 			'event_id'  => get_post_meta( $post_id, static::$event_relation_meta_key, true ),
-		);
+		];
 
 		$url = add_query_arg( $args, admin_url( 'edit.php' ) );
 		$url = esc_url_raw( $url );
@@ -344,7 +377,7 @@ class Attendee {
 
 		$user_id = get_current_user_id();
 
-		$ticket_attendees    = $this->tickets_view->get_post_ticket_attendees( $post_id, $user_id );
+		$ticket_attendees    = tribe( Module::class )->get_attendees_by_user_id( $user_id, $post_id );
 		$ticket_attendee_ids = wp_list_pluck( $ticket_attendees, 'attendee_id' );
 
 		// This makes sure we don't save attendees for attendees that are not from this current user and event.
@@ -393,10 +426,10 @@ class Attendee {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int $event_id
+	 * @param int $event_id the event id.
 	 */
 	public function maybe_send_tickets_after_status_change( $event_id ) {
-		$transaction_ids = array();
+		$transaction_ids = [];
 
 		foreach ( tribe( Module::class )->get_event_attendees( $event_id ) as $attendee ) {
 			$transaction = get_post_meta( $attendee['attendee_id'], static::$order_relation_meta_key, true );
@@ -409,16 +442,16 @@ class Attendee {
 		foreach ( $transaction_ids as $transaction ) {
 			// This method takes care of intelligently sending out emails only when
 			// required, for attendees that have not yet received their tickets
-			tribe( Module::class )->send_tickets_email( $transaction, $event_id );
+			tribe( Email::class )->send_tickets_email( $transaction, $event_id );
 		}
 	}
 
 	/**
 	 * Add our class to the list of classes for the attendee registration form
 	 *
-	 * @since TBd
+	 * @since 5.2.0
 	 *
-	 * @param array $classes existing array of classes
+	 * @param array $classes existing array of classes.
 	 *
 	 * @return array $classes with our class added
 	 */
@@ -467,35 +500,329 @@ class Attendee {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param array $attendee
+	 * @param array $attendee array of attendee information.
 	 *
 	 * @return bool
 	 */
 	public function decreases_inventory( $attendee ) {
 		$attendee = tec_tc_get_attendee( $attendee['ID'] );
 		$order    = tec_tc_get_order( $attendee->post_parent );
-		$statuses = array_unique( [ tribe( Status_Handler::class )->get_inventory_decrease_status()->get_wp_slug(), tribe( Commerce\Status\Pending::class )->get_wp_slug() ] );
+		$statuses = array_unique(
+			[
+				tribe( Status_Handler::class )->get_inventory_decrease_status()->get_wp_slug(),
+				tribe( Commerce\Status\Completed::class )->get_wp_slug(),
+			]
+		);
 
-		return  in_array( $order->post_status, $statuses, true );
+		return in_array( $order->post_status, $statuses, true );
 	}
 
 	/**
-	 * Get attendee data for attendee.
+	 * Hydrate attendee object with ticket data
 	 *
-	 * @since 5.1.9
+	 * @todo We should not be using this particular piece of the code until it's using `tec_tc_get_attendee`.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return \WP_Post
 	 */
-	public function get_attendee() {
-		/**
-		 * @todo Determine if this meta piece can be moved into the ET+ codebase.
-		 */
-		$meta = '';
-		if ( class_exists( 'Tribe__Tickets_Plus__Meta', false ) ) {
-			$meta = get_post_meta( $attendee->ID, \Tribe__Tickets_Plus__Meta::META_KEY, true );
+	public function get_attendee( \WP_Post $attendee ) {
 
-			// Process Meta to include value, slug, and label
-			if ( ! empty( $meta ) ) {
-				$meta = tribe( Module::class )->process_attendee_meta( $attendee['product_id'], $meta );
+		if ( static::POSTTYPE !== $attendee->post_type ) {
+			$attendee->is_legacy_attendee = true;
+			$legacy_provider              = tribe_tickets_get_ticket_provider( $attendee->ID );
+			$attendee_data                = (array) $legacy_provider->get_attendee( $attendee );
+
+			foreach ( $attendee_data as $key => $value ) {
+				$attendee->{$key} = $value;
 			}
+		} else {
+			$attendee = $this->load_attendee_data( $attendee );
 		}
+
+		return $attendee;
+	}
+
+	/**
+	 * Loads event, ticket, order and other data into an attendee object
+	 *
+	 * @todo We should not be using this particular piece of the code until it's using `tec_tc_get_attendee`.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return \WP_Post
+	 */
+	public function load_attendee_data( \WP_Post $attendee ) {
+		$attendee->attendee_id        = $attendee->ID;
+		$attendee->attendee_meta      = null;
+		$attendee->check_in           = $this->get_check_in_status( $attendee );
+		$attendee->event_id           = $this->get_event_id( $attendee );
+		$attendee->holder_email       = $this->get_holder_email( $attendee );
+		$attendee->holder_name        = $this->get_holder_name( $attendee );
+		$attendee->is_legacy_attendee = false;
+		$attendee->is_purchaser       = true;
+		$attendee->is_subscribed      = null;
+		$attendee->optout             = null;
+		$attendee->order_id           = 0;
+		$attendee->product            = $this->get_product( $attendee );
+		$attendee->product_id         = $this->get_product_id( $attendee );
+		$attendee->provider           = Commerce::ABBR;
+		$attendee->provider_slug      = Commerce::ABBR;
+		$attendee->purchase_time      = get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee->order_id );
+		$attendee->qr_ticket_id       = null;
+		$attendee->security           = $this->get_security_code( $attendee );
+		$attendee->security_code      = $this->get_security_code( $attendee );
+		$attendee->ticket             = $this->get_product_title( $attendee );
+		$attendee->ticket_id          = $this->get_unique_id( $attendee );
+		$attendee->ticket_name        = $this->get_product_title( $attendee );
+		$attendee->ticket_sent        = null;
+		$attendee->user_id            = null;
+
+		$order = $this->get_order( $attendee );
+
+		if ( $order ) {
+			$attendee->order_id           = $order->ID;
+			$attendee->order_status       = $order->post_status;
+			$attendee->order_status_label = tribe( Tickets_View::class )->get_rsvp_options( $attendee->order_status );
+			$attendee->purchaser_name     = get_post_meta( $order->ID, Order::$purchaser_full_name_meta_key, true );
+			$attendee->purchaser_email    = get_post_meta( $order->ID, Order::$purchaser_email_meta_key, true );
+		}
+
+		if ( empty( $attendee->ticket_id ) ) {
+			$attendee->ticket_id = $attendee->ID;
+		}
+
+		return $attendee;
+	}
+
+	/**
+	 * Returns the product object related to an attendee
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return \WP_Post|\stdClass
+	 */
+	public function get_product( \WP_Post $attendee ) {
+		$product = get_post_meta( $attendee->ID, Module::ATTENDEE_PRODUCT_KEY, true );
+
+		if ( $product ) {
+			return get_post( $product );
+		}
+
+		return (object) [];
+	}
+
+	/**
+	 * Returns the product id related to an attendee
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return string
+	 */
+	public function get_product_id( \WP_Post $attendee ) {
+		if ( empty( $attendee->product->ID ) ) {
+			return '';
+		}
+
+		return (string) $attendee->product->ID;
+	}
+
+	/**
+	 * Returns the product title related to an attendee
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return string
+	 */
+	public function get_product_title( \WP_Post $attendee ) {
+		$ticket = get_post( $attendee->ticket_id );
+
+		return ! empty( $ticket->post_title ) ?
+			esc_html( $this->post_title ) :
+			get_post_meta( $attendee->ID, static::$deleted_ticket_meta_key, true );
+	}
+
+	/**
+	 * Returns the event id related to an attendee
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return string
+	 */
+	public function get_event_id( \WP_Post $attendee ) {
+		return get_post_meta( $attendee->ID, static::$event_relation_meta_key, true );
+	}
+
+	/**
+	 * Returns the ticket unique id related to an attendee
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return string
+	 */
+	public function get_unique_id( \WP_Post $attendee ) {
+		$id = ! empty( $attendee->attendee_id ) ? $attendee->attendee_id : $attendee->ID;
+
+		return get_post_meta( $id, static::$unique_id_meta_key, true );
+	}
+
+	/**
+	 * Returns the ticket id related to an attendee
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return string
+	 */
+	public function get_ticket_id( \WP_Post $attendee ) {
+		if ( $attendee->is_legacy_attendee ) {
+			return $attendee->product_id;
+		}
+
+		return get_post_meta( $attendee->ID, static::$ticket_relation_meta_key, true );
+	}
+
+	/**
+	 * Returns the security code for an attendee
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return string
+	 */
+	public function get_security_code( \WP_Post $attendee ) {
+		if ( $attendee->is_legacy_attendee ) {
+			return $attendee->security_code;
+		}
+
+		return get_post_meta( $attendee->ID, static::$security_code_meta_key, true );
+	}
+
+	/**
+	 * Returns the check in status of an attendee
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return string
+	 */
+	public function get_check_in_status( \WP_Post $attendee ) {
+		if ( $attendee->is_legacy_attendee ) {
+			return $attendee->check_in;
+		}
+
+		return get_post_meta( $attendee->ID, static::$checked_in_meta_key, true );
+	}
+
+	/**
+	 * Returns the status label used in the Status column
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return string
+	 */
+	public function get_status_label( \WP_Post $attendee ) {
+		if ( $attendee->is_legacy_attendee ) {
+			return $attendee->order_status_label;
+		}
+
+		$checked_in = $this->get_check_in_status( $attendee );
+
+		if ( empty( $checked_in ) ) {
+			return '';
+		}
+
+		return tribe( Tickets_View::class )->get_rsvp_options( '1' === $checked_in ? 'yes' : 'no' );
+	}
+
+	/**
+	 * Returns the order object related to an attendee
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return array|WP_Post|null    The Order post object or array, `null` if not found.
+	 */
+	public function get_order( \WP_Post $attendee ) {
+		return tec_tc_get_order(
+			get_post_meta( $attendee->ID, static::$order_relation_meta_key, true )
+		);
+	}
+
+	/**
+	 * Returns the purchaser name if available
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return string
+	 */
+	public function get_holder_name( \WP_Post $attendee ) {
+		$name = get_post_meta( $attendee->ID, static::$purchaser_name_meta_key, true );
+
+		if ( $name ) {
+			return esc_html( $name );
+		}
+
+		return esc_html__( 'Name not available', 'event-tickets' );
+	}
+
+	/**
+	 * Returns the purchaser email if available
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param \WP_Post $attendee the attendee object.
+	 *
+	 * @return string
+	 */
+	public function get_holder_email( \WP_Post $attendee ) {
+		$email = get_post_meta( $attendee->ID, static::$purchaser_email_meta_key, true );
+
+		if ( $email ) {
+			return esc_html( $email );
+		}
+
+		return esc_html__( 'Email not available', 'event-tickets' );
+	}
+
+	/**
+	 * Check if the attendee is of valid type.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param int|\WP_Post $attendee The attendee object to check.
+	 *
+	 * @return bool
+	 */
+	public static function is_valid( $attendee ) {
+		$attendee = get_post( $attendee );
+
+		if ( ! $attendee ) {
+			return false;
+		}
+
+		return static::POSTTYPE === $attendee->post_type;
 	}
 }

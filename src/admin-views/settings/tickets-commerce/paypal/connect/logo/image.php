@@ -13,7 +13,7 @@
  * @var bool                                          $is_merchant_active [Global] Whether the merchant is active or not.
  */
 
-$image_src = tribe_resource_url( 'images/admin/paypal-logo.svg', false, null, Tribe__Tickets__Main::instance() );
+$image_src = tribe_resource_url( 'images/admin/paypal-logo.png', false, null, Tribe__Tickets__Main::instance() );
 
 ?>
 

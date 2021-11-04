@@ -55,10 +55,11 @@ class Settings extends Abstract_Settings {
 		$signup      = tribe( SignUp::class );
 
 		$context = [
-			'plugin_url'         => Tribe__Tickets__Main::instance()->plugin_url,
-			'merchant'           => $merchant,
-			'is_merchant_active' => $merchant->is_active(),
-			'signup'             => $signup,
+			'plugin_url'            => Tribe__Tickets__Main::instance()->plugin_url,
+			'merchant'              => $merchant,
+			'is_merchant_connected' => $merchant->is_connected(),
+			'is_merchant_active'    => $merchant->is_active(),
+			'signup'                => $signup,
 		];
 
 		$admin_views->add_template_globals( $context );
@@ -81,7 +82,7 @@ class Settings extends Abstract_Settings {
 			);
 
 			$message = sprintf(
-				// Translators: %s: The PayPal telephone number.
+			// Translators: %s: The PayPal telephone number.
 				esc_html__( 'Please call a PayPal support representative at %s', 'event-tickets' ),
 				$telephone
 			);

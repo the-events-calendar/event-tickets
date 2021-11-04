@@ -28,13 +28,15 @@ class Provider extends tad_DI52_ServiceProvider {
 	 */
 	public function register() {
 
+		$this->container->register( Payments_Tab::class );
+		$this->register_assets();
+
 		// Specifically prevents anything else from loading.
 		if ( ! tec_tickets_commerce_is_enabled() ) {
 			return;
 		}
 
 		$this->register_hooks();
-		$this->register_assets();
 
 		$this->load_functions();
 
@@ -48,10 +50,13 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( Gateways\Manager::class, Gateways\Manager::class );
 
 		$this->container->singleton( Reports\Attendance_Totals::class );
-		$this->container->singleton( Reports\Event::class );
-		$this->container->singleton( Reports\Ticket::class );
+		$this->container->singleton( Reports\Attendees::class );
+		$this->container->singleton( Reports\Orders::class );
+		$this->container->singleton( Admin_Tables\Orders::class );
+		$this->container->singleton( Admin_Tables\Attendees::class );
 
 		$this->container->singleton( Editor\Metabox::class );
+		$this->container->singleton( Notice_Handler::class );
 
 		$this->container->singleton( Module::class );
 		$this->container->singleton( Attendee::class );
@@ -67,8 +72,15 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->container->register( Status\Status_Handler::class );
 		$this->container->register( Flag_Actions\Flag_Action_Handler::class );
 
+		// Register Compatibility Classes
+		$this->container->singleton( Compatibility\Events::class );
+
 		// Load any external SPs we might need.
 		$this->container->register( Gateways\PayPal\Provider::class );
+		$this->container->register( Gateways\Manual\Provider::class );
+
+		// Register and add hooks for admin notices.
+		$this->container->register( Admin\Notices::class );
 	}
 
 	/**

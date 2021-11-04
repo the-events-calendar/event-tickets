@@ -26,7 +26,6 @@ if ( $must_login ) {
 }
 ?>
 <script
-	async
 	class="tec-tc-gateway-paypal-checkout-script"
 	src="<?php echo esc_url( $url ); ?>"
 	data-partner-attribution-id="<?php echo esc_attr( $attribution_id ); ?>"

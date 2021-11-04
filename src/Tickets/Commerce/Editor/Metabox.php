@@ -9,7 +9,7 @@ use Tribe__Tickets__Main as Tickets_Plugin;
 /**
  * Class Metabox.
  *
- * @since 5.1.9
+ * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Editor
  */
@@ -31,7 +31,7 @@ class Metabox {
 
 		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
-		$provider_obj = tribe( Module::class );
+		$provider_obj    = tribe( Module::class );
 
 		$is_correct_provider = $tickets_handler->is_correct_provider( $post_id, $provider_obj );
 
@@ -67,7 +67,7 @@ class Metabox {
 	public function include_metabox_advanced_options( $post_id, $ticket_id ) {
 		$provider = __CLASS__;
 
-		echo '<div id="' . sanitize_html_class( $provider ) . '_advanced" class="tribe-dependent" data-depends="#' . sanitize_html_class( $provider ) . '_radio" data-condition-is-checked>';
+		echo '<div id="' . sanitize_html_class( $provider ) . '_advanced" class="tribe-dependent" data-depends="#provider_TEC_Tickets_Commerce_Module_radio" data-condition-is-checked>';
 
 		if ( ! tribe_is_frontend() ) {
 			$this->do_metabox_sku_options( $post_id, $ticket_id );
@@ -93,7 +93,7 @@ class Metabox {
 	 * Using the method, providers can add as many fields as
 	 * they want, specific to their implementation.
 	 *
-	 * @since 4.7
+	 * @since 5.2.0
 	 *
 	 * @param int $post_id
 	 * @param int $ticket_id
@@ -103,7 +103,7 @@ class Metabox {
 	public function do_metabox_capacity_options( $post_id, $ticket_id ) {
 		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
-		$provider = tribe( Module::class );
+		$provider        = tribe( Module::class );
 
 		$is_correct_provider = $tickets_handler->is_correct_provider( $post_id, $provider );
 
@@ -142,13 +142,13 @@ class Metabox {
 		/**
 		 * Filters the absolute path to the file containing the metabox capacity HTML.
 		 *
-		 * @since 4.7
+		 * @since 5.2.0
 		 *
 		 * @param string     $file The absolute path to the file containing the metabox capacity HTML
 		 * @param int|string $ticket_capacity
 		 * @param int|string $post_capacity
 		 */
-		$file = apply_filters( 'tribe_tickets_tc_metabox_capacity_file', $file, $ticket_capacity, $post_capacity );
+		$file = apply_filters( 'tec_tickets_commerce_metabox_capacity_file', $file, $ticket_capacity, $post_capacity );
 
 		if ( file_exists( $file ) ) {
 			include $file;

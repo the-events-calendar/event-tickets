@@ -16,9 +16,10 @@ if ( ! $display_sku ) {
 }
 ?>
 
-<div class="'ticket_advanced_<?php echo $html_safe_provider_class; ?> input_block tribe-dependent"
-     data-depends="#provider_TEC_Tickets_Commerce_Module_radio"
-     data-condition-is-checked
+<div
+	class="ticket_advanced_<?php echo $html_safe_provider_class; ?> input_block tribe-dependent"
+	data-depends="#provider_TEC_Tickets_Commerce_Module_radio"
+	data-condition-is-checked
 >
 	<label for="ticket_tpp_sku" class="ticket_form_label ticket_form_left"><?php esc_html_e( 'SKU:', 'event-tickets' ); ?></label>
 	<input

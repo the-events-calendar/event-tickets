@@ -1,6 +1,7 @@
 <?php
 
 use Tribe__Utils__Array as Arr;
+use TEC\Tickets\Commerce\Attendee;
 
 if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	/**
@@ -992,6 +993,32 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Handles if email sending is allowed.
+		 *
+		 * @since TBD
+		 *
+		 * @param WP_Post|null $ticket   The ticket post object if available, otherwise null.
+		 * @param array|null   $attendee The attendee information if available, otherwise null.
+		 *
+		 *  @return boolean
+		 */
+		public function allow_resending_email( $ticket = null, $attendee = null ) {
+			/**
+			 *
+			 * Shared filter between Woo, EDD, and the default logic.
+			 * This filter allows the admin to control the re-send email option when an attendee's email is updated per a payment type (EDD, Woo, etc).
+			 * True means allow email resend, false means disallow email resend.
+			 *
+			 * @since TBD
+			 *
+			 * @param WP_Post|null $ticket The ticket post object if available, otherwise null.
+			 * @param array|null $attendee The attendee information if available, otherwise null.
+			 *
+			 */
+			return (bool) apply_filters( 'tribe_tickets_my_tickets_allow_email_resend_on_attendee_email_update', true, $ticket, $attendee );
+		}
+
+		/**
 		 * Mark an attendee as checked in
 		 *
 		 * @abstract
@@ -1133,6 +1160,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_action( 'event_tickets_checkin', [ $this, 'purge_attendees_transient' ] );
 			add_action( 'event_tickets_uncheckin', [ $this, 'purge_attendees_transient' ] );
 			add_action( 'template_redirect', [ $this, 'maybe_redirect_to_attendees_registration_screen' ], 0 );
+
+			// Event cost may need to be formatted to the provider's currency settings.
+			add_filter( 'tribe_currency_cost', [ $this, 'maybe_format_event_cost' ], 10, 2 );
 		}
 
 		/**
@@ -2667,6 +2697,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Formats the cost based on the provider of a ticket of an event.
+		 *
+		 * @param  float|string $cost
+		 * @param  int   		$post_id
+		 *
+		 * @return string
+		 */
+		public function maybe_format_event_cost( $cost, $post_id ) {
+			$tickets = self::get_all_event_tickets( $post_id );
+			// If $cost isn't a number or there are no tickets, no filter needed.
+			if ( ! is_numeric( $cost ) || empty( $tickets ) ) {
+				return $cost;
+			}
+			$currency = tribe( 'tickets.commerce.currency' );
+			// We will convert to the format of the first ticket's provider class.
+			return $currency->get_formatted_currency( $cost, null, $tickets[0]->provider_class );
+		}
+
+		/**
 		 * Queries ticketing providers to establish the range of tickets/pricepoints for the specified
 		 * event and ensures those costs are included in the $costs array.
 		 *
@@ -3926,10 +3975,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			/** @var Tribe__Tickets_Plus__Main $tickets_plus_main */
-			$tickets_plus_main = tribe( 'tickets-plus.main' );
-
-			$meta = $tickets_plus_main->meta();
+			/** @var Tribe__Tickets_Plus__Meta $meta */
+			$meta = tribe( 'tickets-plus.meta' );
 
 			$cart_has_meta = true;
 

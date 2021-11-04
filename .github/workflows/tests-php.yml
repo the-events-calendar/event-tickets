@@ -206,16 +206,6 @@ jobs:
           ${TRIC_BIN} npm install
           ${TRIC_BIN} npm run build
       # ------------------------------------------------------------------------------
-      # Clean `.htaccess` files (remove once this is solved: https://github.com/the-events-calendar/tric/issues/75)
-      # ------------------------------------------------------------------------------
-      - name: Cleanup .htaccess files
-        if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
-        run: |
-          rm -f .htaccess
-          rm -f common/.htaccess
-          rm -f ../the-events-calendar/.htaccess
-          rm -f ../the-events-calendar/common/.htaccess
-      # ------------------------------------------------------------------------------
       # Init WordPress container
       # ------------------------------------------------------------------------------
       - name: Init the WordPress container

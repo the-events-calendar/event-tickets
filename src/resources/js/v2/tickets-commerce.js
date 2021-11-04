@@ -38,7 +38,7 @@ tribe.tickets.commerce = {};
 	obj.customEvents = {
 		showLoader : 'showLoader.tecTicketsCommerce',
 		hideLoader : 'hideLoader.tecTicketsCommerce',
-	}
+	};
 
 	/*
 	 * Tickets Commerce Selectors.
@@ -82,7 +82,7 @@ tribe.tickets.commerce = {};
 	obj.bindLoaderEvents = function () {
 		$document.on( obj.customEvents.showLoader, obj.loaderShow );
 		$document.on( obj.customEvents.hideLoader, obj.loaderHide );
-	}
+	};
 
 	/**
 	 * Toggle the checkout item description visibility.
