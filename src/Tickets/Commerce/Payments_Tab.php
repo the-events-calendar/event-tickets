@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 use TEC\Tickets\Settings as Tickets_Settings;
 use \tad_DI52_ServiceProvider;
 
@@ -129,6 +130,45 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			return;
 		}
 
+		$this->maybe_auto_generate_checkout_page();
 
+	}
+
+	/**
+	 * Generate Checkout page with shortcode if not available.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function maybe_auto_generate_checkout_page() {
+		if ( tribe( Checkout::class )->page_has_shortcode() ) {
+			return false;
+		}
+
+		$page_exists = get_page_by_path( 'tickets-checkout' );
+
+		if ( $page_exists ) {
+			return false;
+		}
+
+		$page_data = [
+			'post_status'    => 'publish',
+			'post_type'      => 'page',
+			'post_author'    => 1,
+			'post_name'      => 'tickets-checkout',
+			'post_title'     => 'Tickets Checkout',
+			'post_content'   => '<!-- wp:shortcode -->[' . Checkout_Shortcode::get_wp_slug() . ']<!-- /wp:shortcode -->',
+			'post_parent'    => 0,
+			'comment_status' => 'closed',
+		];
+
+		$page_id = wp_insert_post( $page_data );
+
+		if ( is_wp_error( $page_id ) ) {
+			return false;
+		}
+
+		return tribe_update_option( Settings::$option_checkout_page, $page_id );
 	}
 }
