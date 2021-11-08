@@ -115,4 +115,20 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		 */
 		return apply_filters( 'tec_tickets_commerce_settings_top_level', $top_level_settings );
 	}
+
+	/**
+	 * Generate Chceckout and Success page if not found.
+	 *
+	 * @since TBD
+	 */
+	public function maybe_generate_pages() {
+
+		$tc_enabled = tribe_get_request_var( Tickets_Settings::$tickets_commerce_enabled );
+
+		if ( ! tribe_is_truthy( $tc_enabled ) ) {
+			return;
+		}
+
+
+	}
 }
