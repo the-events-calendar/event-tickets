@@ -15,6 +15,15 @@ use \tad_DI52_ServiceProvider;
 class Payments_Tab extends tad_DI52_ServiceProvider {
 
 	/**
+	 * Slug for the tab.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $slug = 'payments';
+
+	/**
 	 * @inheritdoc
 	 */
 	public function register() {
@@ -35,7 +44,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 
 		$tab_settings = apply_filters( 'tec_tickets_commerce_payments_tab_settings', $tab_settings );
 
-		new \Tribe__Settings_Tab( 'payments', esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
+		new \Tribe__Settings_Tab( static::$slug, esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
 	}
 
 
