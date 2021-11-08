@@ -9,7 +9,7 @@ namespace Tribe\Tickets\Test\Testcases;
 
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe\Test\PHPUnit\Traits\With_Post_Remapping;
-use Tribe\Test\Products\WPBrowser\Views\V2\PartialTestCase;
+use Tribe\Test\Products\WPBrowser\Views\V2\Legacy\PartialTestCase;
 
 /**
  * Class Html_Partial_Test_Case
