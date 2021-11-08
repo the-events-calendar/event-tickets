@@ -183,6 +183,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Enhancement - Added filter `tribe_tickets_manual_attendee_allow_email_resend` to allow customization of email resending via Manual Attendees depending on status. [ETP-703]
 * Enhancement - Add `getPrice` method to utilities JS object to centralize the way we get ticket prices. [ET-1238]
+* Fix - Fixes error being caused when trying to load attendee information. [ET-1320]
 * Fix - Added `allow_resending_email` method which can be used to enable or disable resending email. [ETP-703]
 * Fix - Fixed ticket total formatting within the attendee registration modal when using custom thousands and decimal separators. [ET-1216]
 * Fix - QR Code API generation settings not working if `The Events Calendar` plugin was not active. [ETP-754]
