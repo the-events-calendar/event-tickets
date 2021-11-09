@@ -159,7 +159,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			'post_type'      => 'page',
 			'post_author'    => 1,
 			'post_name'      => $page_slug,
-			'post_title'     => 'Tickets Checkout',
+			'post_title'     => __( 'Tickets Checkout', 'event-tickets' ),
 			'post_content'   => '<!-- wp:shortcode -->[' . Checkout_Shortcode::get_wp_slug() . ']<!-- /wp:shortcode -->',
 			'post_parent'    => 0,
 			'comment_status' => 'closed',
