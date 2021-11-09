@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
+use TEC\Tickets\Commerce\Shortcodes\Success_Shortcode;
 use TEC\Tickets\Settings as Tickets_Settings;
 use \tad_DI52_ServiceProvider;
 
@@ -131,7 +132,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		}
 
 		$this->maybe_auto_generate_checkout_page();
-
+		$this->maybe_auto_generate_order_success_page();
 	}
 
 	/**
@@ -170,5 +171,44 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		}
 
 		return tribe_update_option( Settings::$option_checkout_page, $page_id );
+	}
+
+	/**
+	 * Generate Order Success page with shortcode if not available.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function maybe_auto_generate_order_success_page() {
+		if ( tribe( Success::class )->page_has_shortcode() ) {
+			return false;
+		}
+
+		$page_slug   = 'tickets-order';
+		$page_exists = get_page_by_path( $page_slug );
+
+		if ( $page_exists ) {
+			return false;
+		}
+
+		$page_data = [
+			'post_status'    => 'publish',
+			'post_type'      => 'page',
+			'post_author'    => 1,
+			'post_name'      => $page_slug,
+			'post_title'     => __( 'Order Completed', 'event-tickets' ),
+			'post_content'   => '<!-- wp:shortcode -->[' . Success_Shortcode::get_wp_slug() . ']<!-- /wp:shortcode -->',
+			'post_parent'    => 0,
+			'comment_status' => 'closed',
+		];
+
+		$page_id = wp_insert_post( $page_data );
+
+		if ( is_wp_error( $page_id ) ) {
+			return false;
+		}
+
+		return tribe_update_option( Settings::$option_success_page, $page_id );
 	}
 }
