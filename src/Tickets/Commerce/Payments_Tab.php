@@ -147,7 +147,8 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			return false;
 		}
 
-		$page_exists = get_page_by_path( 'tickets-checkout' );
+		$page_slug   = 'tickets-checkout';
+		$page_exists = get_page_by_path( $page_slug );
 
 		if ( $page_exists ) {
 			return false;
@@ -157,7 +158,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			'post_status'    => 'publish',
 			'post_type'      => 'page',
 			'post_author'    => 1,
-			'post_name'      => 'tickets-checkout',
+			'post_name'      => $page_slug,
 			'post_title'     => 'Tickets Checkout',
 			'post_content'   => '<!-- wp:shortcode -->[' . Checkout_Shortcode::get_wp_slug() . ']<!-- /wp:shortcode -->',
 			'post_parent'    => 0,
