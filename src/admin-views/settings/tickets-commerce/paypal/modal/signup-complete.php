@@ -15,7 +15,7 @@ if ( empty( $request_vars['tc-status'] ) || 'paypal-signup-complete' !== $reques
 }
 
 $dialog_view = tribe( 'dialog.view' );
-$content     = $this->template( 'settings/tickets-commerce/paypal/modal/paypal-signup-complete/content', [], false );
+$content     = $this->template( 'settings/tickets-commerce/paypal/modal/signup-complete/content', [], false );
 
 $args = [
 	'append_target'           => '#paypal-connected-modal-target',

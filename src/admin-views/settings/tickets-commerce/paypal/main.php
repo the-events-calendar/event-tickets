@@ -33,4 +33,4 @@ $classes = [
 
 </div>
 
-<?php $this->template( 'settings/tickets-commerce/paypal/modal/paypal-signup-complete' ); ?>
+<?php $this->template( 'settings/tickets-commerce/paypal/modal/signup-complete' ); ?>

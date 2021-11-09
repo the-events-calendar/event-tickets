@@ -10,7 +10,7 @@
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-paypal-modal-content tec-tickets__admin-modal tribe-common-b2">
 
-	<?php $this->template( 'settings/tickets-commerce/paypal/modal/paypal-signup-complete/notice-test-mode' ); ?>
+	<?php $this->template( 'settings/tickets-commerce/paypal/modal/signup-complete/notice-test-mode' ); ?>
 
 	<p>
 		<?php
