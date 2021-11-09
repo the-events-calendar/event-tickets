@@ -26,13 +26,13 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	public static $slug = 'payments';
 
 	/**
-	 * Option key prefix for page creation flag.
+	 * Meta key for page creation flag.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $option_page_created = 'tec_tc_payments_page_created_';
+	public static $option_page_created_meta_key = 'tec_tc_payments_page_created';
 
 	/**
 	 * @inheritdoc
@@ -156,7 +156,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			return false;
 		}
 
-		$page_slug   = 'tickets-checkout';
+		$page_slug = 'tickets-checkout';
 
 		if ( $this->is_page_created( $page_slug ) ) {
 			return false;
@@ -168,8 +168,6 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		if ( is_wp_error( $page_id ) ) {
 			return false;
 		}
-
-		$this->flag_page_created( $page_slug );
 
 		return tribe_update_option( Settings::$option_checkout_page, $page_id );
 	}
@@ -186,7 +184,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			return false;
 		}
 
-		$page_slug   = 'tickets-order';
+		$page_slug = 'tickets-order';
 
 		if ( $this->is_page_created( $page_slug ) ) {
 			return false;
@@ -198,8 +196,6 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		if ( is_wp_error( $page_id ) ) {
 			return false;
 		}
-
-		$this->flag_page_created( $page_slug );
 
 		return tribe_update_option( Settings::$option_success_page, $page_id );
 	}
@@ -213,9 +209,14 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 * @param string $page_name Name for page title.
 	 * @param string $shortcode_name Shortcode name that needs to be inserted in page content.
 	 *
-	 * @return int|\WP_Error
+	 * @return int|bool|\WP_Error
 	 */
 	public function create_page_with_shortcode( $page_slug, $page_name, $shortcode_name ) {
+
+		if ( ! current_user_can( 'edit_pages' ) ) {
+			return false;
+		};
+
 		$page_data = [
 			'post_status'    => 'publish',
 			'post_type'      => 'page',
@@ -225,20 +226,12 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			'post_content'   => '<!-- wp:shortcode -->[' . $shortcode_name . ']<!-- /wp:shortcode -->',
 			'post_parent'    => 0,
 			'comment_status' => 'closed',
+			'meta_input'     => [
+				static::$option_page_created_meta_key => $page_slug,
+			],
 		];
 
 		return wp_insert_post( $page_data );
-	}
-
-	/**
-	 * Set option to mark a page as created.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $page_slug URL slug of the page that needs to be flagged.
-	 */
-	public function flag_page_created( $page_slug ) {
-		tribe_update_option( static::$option_page_created . $page_slug, true );
 	}
 
 	/**
@@ -251,6 +244,15 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 * @return bool
 	 */
 	public function is_page_created( $page_slug ) {
-		return tribe_is_truthy( tribe_get_option( static::$option_page_created . $page_slug ) );
+
+		$args = [
+			'post_type'  => 'page',
+			'meta_key'   => static::$option_page_created_meta_key,
+			'meta_value' => $page_slug,
+		];
+
+		$query = new \WP_Query( $args );
+
+		return (bool) $query->post_count;
 	}
 }
