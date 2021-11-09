@@ -157,13 +157,14 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		}
 
 		$page_slug = 'tickets-checkout';
+		$shortcode = Checkout_Shortcode::get_wp_slug();
 
-		if ( $this->is_page_created( $page_slug ) ) {
+		if ( $this->is_page_created( $shortcode ) ) {
 			return false;
 		}
 
 		$page_name = __( 'Tickets Checkout', 'event-tickets' );
-		$page_id   = $this->create_page_with_shortcode( $page_slug, $page_name, Checkout_Shortcode::get_wp_slug() );
+		$page_id   = $this->create_page_with_shortcode( $page_slug, $page_name, $shortcode );
 
 		if ( is_wp_error( $page_id ) ) {
 			return false;
@@ -185,13 +186,14 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		}
 
 		$page_slug = 'tickets-order';
+		$shortcode = Success_Shortcode::get_wp_slug();
 
-		if ( $this->is_page_created( $page_slug ) ) {
+		if ( $this->is_page_created( $shortcode ) ) {
 			return false;
 		}
 
 		$page_name = __( 'Order Completed', 'event-tickets' );
-		$page_id   = $this->create_page_with_shortcode( $page_slug, $page_name, Success_Shortcode::get_wp_slug() );
+		$page_id   = $this->create_page_with_shortcode( $page_slug, $page_name, $shortcode );
 
 		if ( is_wp_error( $page_id ) ) {
 			return false;
@@ -227,7 +229,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			'post_parent'    => 0,
 			'comment_status' => 'closed',
 			'meta_input'     => [
-				static::$option_page_created_meta_key => $page_slug,
+				static::$option_page_created_meta_key => $shortcode_name,
 			],
 		];
 
@@ -239,16 +241,16 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $page_slug URL slug of the page that needs to be checked.
+	 * @param string $shortcode_name Shortcode name that was inserted in page content.
 	 *
 	 * @return bool
 	 */
-	public function is_page_created( $page_slug ) {
+	public function is_page_created( $shortcode_name ) {
 
 		$args = [
 			'post_type'  => 'page',
 			'meta_key'   => static::$option_page_created_meta_key,
-			'meta_value' => $page_slug,
+			'meta_value' => $shortcode_name,
 		];
 
 		$query = new \WP_Query( $args );
