@@ -326,7 +326,16 @@ class Tribe__Tickets__Assets {
 
 		// Register Ticket Admin Settings page assets.
 		$settings_assets = [
-			[ 'event-tickets-admin-settings-css', 'tickets-admin-settings.css', [ 'tribe-common-admin' ] ],
+			[
+				'event-tickets-admin-settings-css',
+				'tickets-admin-settings.css',
+				[
+					'tribe-common-admin',
+					'tribe-common-full-style',
+					'tribe-common-responsive',
+					'tribe-dialog',
+				],
+			],
 		];
 
 		tribe_assets(

@@ -32,3 +32,5 @@ $classes = [
 	<?php $this->template( 'settings/tickets-commerce/paypal/connect/logo' ); ?>
 
 </div>
+
+<?php $this->template( 'settings/tickets-commerce/paypal/modal/paypal-signup-complete' ); ?>
