@@ -154,18 +154,8 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			return false;
 		}
 
-		$page_data = [
-			'post_status'    => 'publish',
-			'post_type'      => 'page',
-			'post_author'    => 1,
-			'post_name'      => $page_slug,
-			'post_title'     => __( 'Tickets Checkout', 'event-tickets' ),
-			'post_content'   => '<!-- wp:shortcode -->[' . Checkout_Shortcode::get_wp_slug() . ']<!-- /wp:shortcode -->',
-			'post_parent'    => 0,
-			'comment_status' => 'closed',
-		];
-
-		$page_id = wp_insert_post( $page_data );
+		$page_name = __( 'Tickets Checkout', 'event-tickets' );
+		$page_id   = $this->create_page_with_shortcode( $page_slug, $page_name, Checkout_Shortcode::get_wp_slug() );
 
 		if ( is_wp_error( $page_id ) ) {
 			return false;
@@ -194,8 +184,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		}
 
 		$page_name = __( 'Order Completed', 'event-tickets' );
-
-		$page_id = $this->create_page_with_shortcode( $page_slug, $page_name, Success_Shortcode::get_wp_slug() );
+		$page_id   = $this->create_page_with_shortcode( $page_slug, $page_name, Success_Shortcode::get_wp_slug() );
 
 		if ( is_wp_error( $page_id ) ) {
 			return false;
@@ -211,7 +200,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 *
 	 * @param string $page_slug URL slug of the page.
 	 * @param string $page_name Name for page title.
-	 * @param string $shortcode_name Shortcode text that needs to be isnterted.
+	 * @param string $shortcode_name Shortcode name that needs to be inserted in page content.
 	 *
 	 * @return int|\WP_Error
 	 */
