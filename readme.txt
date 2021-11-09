@@ -183,7 +183,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Enhancement - Auto generate checkout page when enabling Tickets Commerce. [ET-1232]
 * Enhancement - Auto generate order success page when enabling Tickets Commerce. [ET-1233]
-
 * Enhancement - Added filter `tribe_tickets_manual_attendee_allow_email_resend` to allow customization of email resending via Manual Attendees depending on status. [ETP-703]
 * Enhancement - Add `getPrice` method to utilities JS object to centralize the way we get ticket prices. [ET-1238]
 * Enhancement - Add a modal with more information about the PayPal connection after connecting with PayPal via Tickets Commerce. [ET-1321]
