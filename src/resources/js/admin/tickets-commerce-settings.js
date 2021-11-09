@@ -7,6 +7,8 @@
  */
 tribe.tickets = tribe.tickets || {};
 tribe.tickets.admin = tribe.tickets.admin || {};
+tribe.dialogs = tribe.dialogs || {};
+tribe.dialogs.events = tribe.dialogs.events || {};
 
 /**
  * Configures admin commerce settings Object in the Global Tribe variable
@@ -75,55 +77,24 @@ tribe.tickets.admin.commerceSettings = {};
 	}
 
 	obj.maybeShowPCINotice = function() {
-		if ( ! window.location.search.match( /paypal-commerce-account-connected=1/i ) ) {
+
+		if ( ! window.location.search.match( /tc-status=paypal-signup-complete/i ) ) {
 			return;
 		}
 
-		// @todo Replace the i18n text here.
-		const pciWarnings = [
-				'Instruction text 1 here',
-				'Instruction text 2 here',
-			]
-			.map( function( instruction ) {
-				return '<li>' + instruction + '</li>';
-			} )
-			.join( '' );
+		tribe.dialogs.dialogs.forEach( function( dialog ) {
+			if ( 'paypal-connected-modal-id' === dialog.id ) {
+				dialog.a11yInstance.show();
+			}
 
-		// @todo Replace this logic.
-		const isLive = false;
+			dialog.a11yInstance.node.querySelectorAll( '[data-js="a11y-close-button"]' )
+				.forEach( function( closeButton ) {
+					$( closeButton ).on( 'click', function() {
+						dialog.a11yInstance.hide();
+					} );
+			} );
+		} );
 
-		// @todo Replace the i18n text here.
-		// @todo Replace class name.
-		const liveWarning = isLive ?
-			'<p class="give-modal__description__warning">Live warning text here</p>' :
-			'';
-
-		// @todo Replace the i18n text here.
-		// @todo Replace class name.
-		const body = '<div class="give-modal__description">'
-			+ liveWarning
-			+ '<p>PCI Warning Text Here</p>'
-			+ '<ul>'
-			+ pciWarnings
-			+ '</ul>'
-			+ '</div>';
-
-		// @todo Replace this modal.
-		new Give.modal.GiveSuccessAlert( {
-			classes: {
-				modalWrapper: 'paypal-commerce-connect',
-				// @todo Replace class name.
-				cancelBtn: 'give-button--primary',
-			},
-			modalContent: {
-				// @todo Replace the i18n text here.
-				title: 'Connect success title here',
-				body: body.trim(),
-				// @todo Replace the i18n text here.
-				cancelBtnTitle: 'Confirm text here',
-			},
-			closeOnBgClick: true,
-		} ).render();
 	};
 
 	obj.setupPartnerLink = function( partnerLink ) {
