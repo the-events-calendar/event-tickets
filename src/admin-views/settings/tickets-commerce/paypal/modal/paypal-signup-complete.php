@@ -31,7 +31,7 @@ $args = [
 ];
 
 ob_start();
-$dialog_view->render_modal( $content, $args, 'paypal-modal-id' );
+$dialog_view->render_modal( $content, $args, 'paypal-connected-modal-id' );
 $modal_content = ob_get_clean();
 
 $modal  = '<div class="tribe-common event-tickets">';
