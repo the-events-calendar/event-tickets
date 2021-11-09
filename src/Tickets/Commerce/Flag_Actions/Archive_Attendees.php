@@ -40,8 +40,8 @@ class Archive_Attendees extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
-		// @todo we need an error handling piece here.
-		if ( empty( $post->items ) ) {
+		
+		if ( empty( $post->items ) || $new_status->wp_arguments['label'] !== $post->status_name ) {
 			return;
 		}
 
@@ -51,16 +51,20 @@ class Archive_Attendees extends Flag_Action_Abstract {
 				continue;
 			}
 
-			$quantity = Arr::get( $item, 'quantity', 1 );
+			$attendees = tribe_tickets_get_attendees( $ticket->ID );
+			$quantity  = count( $attendees );
 
-			// Skip generating for zero-ed items.
+			// Skip archiving for zero-ed items.
 			if ( 0 >= $quantity ) {
 				continue;
 			}
 
-			for ( $i = 0; $i < $quantity; $i ++ ) {
+			foreach ( $attendees as $attendee ) {
+				if ( empty( $attendee['ID'] ) || empty( $attendee['order_id'] ) || $post->ID !== $attendee['order_id'] ) {
+					continue;
+				}
 
-				// @todo handle the archival of attendees.
+				tribe( Attendee::class )->archive( $attendee['ID'] );
 			}
 		}
 	}

@@ -229,6 +229,13 @@ class Attendee {
 	}
 
 	/**
+	 * Archives an attendee. In WordPress this means the attendee post will have `trash` status, but it won't be deleted.
+	 */
+	public function archive( $attendee_id ) {
+		wp_trash_post( $attendee_id );
+	}
+
+	/**
 	 * Creates an individual attendee given an Order and Ticket.
 	 *
 	 * @since 5.1.10
