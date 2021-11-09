@@ -356,11 +356,11 @@ class Attendee {
 		$post = get_post( $post_id );
 		$flag = 'archive_attendees';
 
-		if ( did_action( "tec_tickets_commerce_order_status_flag_{$flag}" ) ) {
+		if ( static::POSTTYPE !== $post->post_type ) {
 			return;
 		}
 
-		if ( static::POSTTYPE !== $post->post_type ) {
+		if ( did_action( "tec_tickets_commerce_order_status_flag_{$flag}" ) ) {
 			return;
 		}
 
