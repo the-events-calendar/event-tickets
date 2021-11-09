@@ -357,3 +357,42 @@
 		fill: none;
 	}
 }
+
+.tribe-common,
+.event-tickets {
+	&.tribe-modal__wrapper--paypal-connected {
+		.tribe-tickets__notice {
+			display: block;
+		}
+
+		.tribe-common-c-btn {
+			width: auto;
+		}
+
+		.tec-tickets__admin-modal-list {
+			list-style: initial;
+			margin: 1em 0;
+			padding-left: 16px;
+		}
+
+		p {
+			margin: 1em 0;
+		}
+
+		.tec-tickets__admin-modal-buttons {
+			display: flex;
+			justify-content: flex-end;
+			margin-top: 26px;
+		}
+	}
+
+	body.events-cal & {
+		div.tribe-dialog {
+			z-index: 99999;
+		}
+	}
+}
+
+#paypal-connected-modal-button {
+	display: none;
+}
