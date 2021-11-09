@@ -230,6 +230,8 @@ class Attendee {
 
 	/**
 	 * Archives an attendee. In WordPress this means the attendee post will have `trash` status, but it won't be deleted.
+	 *
+	 * @since TBD
 	 */
 	public function archive( $attendee_id ) {
 		wp_trash_post( $attendee_id );
