@@ -251,7 +251,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		return [
 			'rsvp'                          => '_tribe_rsvp_full_name',
 			'tribe-commerce'                => '_tribe_tickets_full_name',
-			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$holder_name_meta_key,
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$full_name_meta_key,
 		];
 	}
 
@@ -268,7 +268,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		return [
 			'rsvp'                          => '_tribe_rsvp_email',
 			'tribe-commerce'                => '_tribe_tickets_email',
-			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$holder_email_meta_key,
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$email_meta_key,
 		];
 	}
 
