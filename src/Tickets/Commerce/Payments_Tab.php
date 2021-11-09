@@ -193,23 +193,40 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			return false;
 		}
 
-		$page_data = [
-			'post_status'    => 'publish',
-			'post_type'      => 'page',
-			'post_author'    => 1,
-			'post_name'      => $page_slug,
-			'post_title'     => __( 'Order Completed', 'event-tickets' ),
-			'post_content'   => '<!-- wp:shortcode -->[' . Success_Shortcode::get_wp_slug() . ']<!-- /wp:shortcode -->',
-			'post_parent'    => 0,
-			'comment_status' => 'closed',
-		];
+		$page_name = __( 'Order Completed', 'event-tickets' );
 
-		$page_id = wp_insert_post( $page_data );
+		$page_id = $this->create_page_with_shortcode( $page_slug, $page_name, Success_Shortcode::get_wp_slug() );
 
 		if ( is_wp_error( $page_id ) ) {
 			return false;
 		}
 
 		return tribe_update_option( Settings::$option_success_page, $page_id );
+	}
+
+	/**
+	 * Create a page with given properties.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $page_slug URL slug of the page.
+	 * @param string $page_name Name for page title.
+	 * @param string $shortcode_name Shortcode text that needs to be isnterted.
+	 *
+	 * @return int|\WP_Error
+	 */
+	public function create_page_with_shortcode( $page_slug, $page_name, $shortcode_name ) {
+		$page_data = [
+			'post_status'    => 'publish',
+			'post_type'      => 'page',
+			'post_author'    => get_current_user_id(),
+			'post_name'      => $page_slug,
+			'post_title'     => $page_name,
+			'post_content'   => '<!-- wp:shortcode -->[' . $shortcode_name . ']<!-- /wp:shortcode -->',
+			'post_parent'    => 0,
+			'comment_status' => 'closed',
+		];
+
+		return wp_insert_post( $page_data );
 	}
 }
