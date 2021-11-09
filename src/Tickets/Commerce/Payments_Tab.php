@@ -157,9 +157,8 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		}
 
 		$page_slug   = 'tickets-checkout';
-		$page_exists = get_page_by_path( $page_slug );
 
-		if ( $page_exists ) {
+		if ( $this->is_page_created( $page_slug ) ) {
 			return false;
 		}
 
@@ -169,6 +168,8 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		if ( is_wp_error( $page_id ) ) {
 			return false;
 		}
+
+		$this->flag_page_created( $page_slug );
 
 		return tribe_update_option( Settings::$option_checkout_page, $page_id );
 	}
@@ -186,9 +187,8 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		}
 
 		$page_slug   = 'tickets-order';
-		$page_exists = get_page_by_path( $page_slug );
 
-		if ( $page_exists ) {
+		if ( $this->is_page_created( $page_slug ) ) {
 			return false;
 		}
 
@@ -198,6 +198,8 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		if ( is_wp_error( $page_id ) ) {
 			return false;
 		}
+
+		$this->flag_page_created( $page_slug );
 
 		return tribe_update_option( Settings::$option_success_page, $page_id );
 	}
