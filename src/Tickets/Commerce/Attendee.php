@@ -346,10 +346,17 @@ class Attendee {
 	 *
 	 * @since 5.1.9
 	 *
+	 * @todo @backend this should probably be moved to the Archive Attendees flag action and handled from there.
+	 *
 	 * @param int $post_id WP_Post ID.
 	 */
 	public function maybe_redirect_to_attendees_report( $post_id ) {
 		$post = get_post( $post_id );
+		$flag = 'archive_attendees';
+
+		if ( did_action( "tec_tickets_commerce_order_status_flag_{$flag}" ) ) {
+			return;
+		}
 
 		if ( static::POSTTYPE !== $post->post_type ) {
 			return;

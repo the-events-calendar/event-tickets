@@ -40,8 +40,9 @@ class Archive_Attendees extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
-		
-		if ( empty( $post->items ) || $new_status->wp_arguments['label'] !== $post->status_name ) {
+		$status_args = $new_status->get_wp_arguments();
+
+		if ( empty( $post->items ) || $status_args['label'] !== $post->status_name ) {
 			return;
 		}
 
