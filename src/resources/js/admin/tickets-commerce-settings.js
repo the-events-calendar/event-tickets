@@ -82,7 +82,7 @@ tribe.tickets.admin.commerceSettings = {};
 			return;
 		}
 
-		tribe.dialogs.dialogs.forEach( function( dialog, index ) {
+		tribe.dialogs.dialogs.forEach( function( dialog ) {
 			if ( 'paypal-connected-modal-id' === dialog.id ) {
 				dialog.a11yInstance.show();
 			}
