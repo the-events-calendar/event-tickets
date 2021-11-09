@@ -181,6 +181,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Enhancement - Auto generate TicketsCommerce Checkout page and Order success page. [ET-1232] [ET-1233]
 * Enhancement - Added filter `tribe_tickets_manual_attendee_allow_email_resend` to allow customization of email resending via Manual Attendees depending on status. [ETP-703]
 * Enhancement - Add `getPrice` method to utilities JS object to centralize the way we get ticket prices. [ET-1238]
 * Fix - Added `allow_resending_email` method which can be used to enable or disable resending email. [ETP-703]
