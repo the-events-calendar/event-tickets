@@ -37,6 +37,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	public function register() {
 		$this->add_actions();
 		$this->add_filters();
+		// this is an empty line
 	}
 
 	/**
