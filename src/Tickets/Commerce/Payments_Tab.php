@@ -26,6 +26,15 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	public static $slug = 'payments';
 
 	/**
+	 * Option key prefix for page creation flag.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_page_created = 'tec_tc_payments_page_created_';
+
+	/**
 	 * @inheritdoc
 	 */
 	public function register() {
@@ -217,5 +226,29 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		];
 
 		return wp_insert_post( $page_data );
+	}
+
+	/**
+	 * Set option to mark a page as created.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $page_slug URL slug of the page that needs to be flagged.
+	 */
+	public function flag_page_created( $page_slug ) {
+		tribe_update_option( static::$option_page_created . $page_slug, true );
+	}
+
+	/**
+	 * Check if the provided page was created.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $page_slug URL slug of the page that needs to be checked.
+	 *
+	 * @return bool
+	 */
+	public function is_page_created( $page_slug ) {
+		return tribe_is_truthy( tribe_get_option( static::$option_page_created . $page_slug ) );
 	}
 }
