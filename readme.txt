@@ -193,6 +193,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Fixed the event cost formatting issues showing the wrong currency symbol, symbol location and separators. [ET-1251]
 * Bug - Searching Ticket Holder Email / Ticket Holder Name through the Attendee page now functions as expected. [ET-1171]
 
+= [5.2.0.1] 2021-11-10 =
+
+* Fix - Ensures that Tickets Commerce attendees get archived properly when an order is canceled or not completed. [ET-1322]
+
 = [5.2.0] 2021-11-04 =
 
 * Feature - Introduction of Tickets Commerce, the new and improved solution you can set up to sell tickets with Event Tickets.
