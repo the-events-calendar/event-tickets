@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
+use TEC\Tickets\Commerce\Shortcodes\Success_Shortcode;
 use TEC\Tickets\Settings as Tickets_Settings;
 use \tad_DI52_ServiceProvider;
 
@@ -13,6 +15,24 @@ use \tad_DI52_ServiceProvider;
  * @package TEC\Tickets\Commerce
  */
 class Payments_Tab extends tad_DI52_ServiceProvider {
+
+	/**
+	 * Slug for the tab.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $slug = 'payments';
+
+	/**
+	 * Meta key for page creation flag.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_page_created_meta_key = 'tec_tc_payments_page_created';
 
 	/**
 	 * @inheritdoc
@@ -35,7 +55,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 
 		$tab_settings = apply_filters( 'tec_tickets_commerce_payments_tab_settings', $tab_settings );
 
-		new \Tribe__Settings_Tab( 'payments', esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
+		new \Tribe__Settings_Tab( static::$slug, esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
 	}
 
 
@@ -105,5 +125,136 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		 * @param array[] $top_level_settings Top level settings.
 		 */
 		return apply_filters( 'tec_tickets_commerce_settings_top_level', $top_level_settings );
+	}
+
+	/**
+	 * Maybe Generate Checkout and Success page if not found.
+	 *
+	 * @since TBD
+	 */
+	public function maybe_generate_pages() {
+
+		$tc_enabled = tribe_get_request_var( Tickets_Settings::$tickets_commerce_enabled );
+
+		if ( ! tribe_is_truthy( $tc_enabled ) ) {
+			return;
+		}
+
+		$this->maybe_auto_generate_checkout_page();
+		$this->maybe_auto_generate_order_success_page();
+	}
+
+	/**
+	 * Generate Checkout page with the shortcode if the page is non-existent.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function maybe_auto_generate_checkout_page() {
+		if ( tribe( Checkout::class )->page_has_shortcode() ) {
+			return false;
+		}
+
+		$page_slug = 'tickets-checkout';
+		$shortcode = Checkout_Shortcode::get_wp_slug();
+
+		if ( $this->is_page_created( $shortcode ) ) {
+			return false;
+		}
+
+		$page_name = __( 'Tickets Checkout', 'event-tickets' );
+		$page_id   = $this->create_page_with_shortcode( $page_slug, $page_name, $shortcode );
+
+		if ( is_wp_error( $page_id ) ) {
+			return false;
+		}
+
+		return tribe_update_option( Settings::$option_checkout_page, $page_id );
+	}
+
+	/**
+	 * Generate Order Success page with the shortcode if the page is non-existent.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function maybe_auto_generate_order_success_page() {
+		if ( tribe( Success::class )->page_has_shortcode() ) {
+			return false;
+		}
+
+		$page_slug = 'tickets-order';
+		$shortcode = Success_Shortcode::get_wp_slug();
+
+		if ( $this->is_page_created( $shortcode ) ) {
+			return false;
+		}
+
+		$page_name = __( 'Order Completed', 'event-tickets' );
+		$page_id   = $this->create_page_with_shortcode( $page_slug, $page_name, $shortcode );
+
+		if ( is_wp_error( $page_id ) ) {
+			return false;
+		}
+
+		return tribe_update_option( Settings::$option_success_page, $page_id );
+	}
+
+	/**
+	 * Create a page with given properties.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $page_slug URL slug of the page.
+	 * @param string $page_name Name for page title.
+	 * @param string $shortcode_name Shortcode name that needs to be inserted in page content.
+	 *
+	 * @return int|bool|\WP_Error
+	 */
+	public function create_page_with_shortcode( $page_slug, $page_name, $shortcode_name ) {
+
+		if ( ! current_user_can( 'edit_pages' ) ) {
+			return false;
+		};
+
+		$page_data = [
+			'post_status'    => 'publish',
+			'post_type'      => 'page',
+			'post_author'    => get_current_user_id(),
+			'post_name'      => $page_slug,
+			'post_title'     => $page_name,
+			'post_content'   => '<!-- wp:shortcode -->[' . $shortcode_name . ']<!-- /wp:shortcode -->',
+			'post_parent'    => 0,
+			'comment_status' => 'closed',
+			'meta_input'     => [
+				static::$option_page_created_meta_key => $shortcode_name,
+			],
+		];
+
+		return wp_insert_post( $page_data );
+	}
+
+	/**
+	 * Check if the provided page was created.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $shortcode_name Shortcode name that was inserted in page content.
+	 *
+	 * @return bool
+	 */
+	public function is_page_created( $shortcode_name ) {
+
+		$args = [
+			'post_type'  => 'page',
+			'meta_key'   => static::$option_page_created_meta_key,
+			'meta_value' => $shortcode_name,
+		];
+
+		$query = new \WP_Query( $args );
+
+		return (bool) $query->post_count;
 	}
 }
