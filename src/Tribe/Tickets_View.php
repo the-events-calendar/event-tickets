@@ -770,6 +770,7 @@ class Tribe__Tickets__Tickets_View {
 		$args = [
 			'by' => [
 				'provider__not_in' => 'rsvp',
+				'status'           => 'publish',
 			],
 		];
 

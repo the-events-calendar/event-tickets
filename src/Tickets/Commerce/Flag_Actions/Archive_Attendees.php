@@ -22,6 +22,7 @@ use Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
 class Archive_Attendees extends Flag_Action_Abstract {
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -33,15 +34,14 @@ class Archive_Attendees extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 */
 	protected $post_types = [
-		Order::POSTTYPE
+		Order::POSTTYPE,
 	];
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
-		// @todo we need an error handling piece here.
-		if ( empty( $post->items ) ) {
+		if ( empty( $post->items ) || $new_status->get_slug() !== $post->status_obj->get_slug() ) {
 			return;
 		}
 
@@ -51,16 +51,39 @@ class Archive_Attendees extends Flag_Action_Abstract {
 				continue;
 			}
 
-			$quantity = Arr::get( $item, 'quantity', 1 );
+			$attendees_repo = tec_tc_attendees();
+			$attendees_repo->by( 'ticket_id', $ticket->ID );
+			$attendees_repo->by( 'parent', $post->ID );
+			$attendees_repo->by( 'status', 'any' );
 
-			// Skip generating for zero-ed items.
-			if ( 0 >= $quantity ) {
+			$attendees = $attendees_repo->all();
+
+			// Skip archiving for zero-ed items.
+			if ( ! $attendees_repo->found() ) {
 				continue;
 			}
 
-			for ( $i = 0; $i < $quantity; $i ++ ) {
+			foreach ( $attendees as $attendee ) {
+				/**
+				 * Allows filtering whether an attendee should archived, or hard-deleted from the database.
+				 *
+				 * To permanently delete an attendee, this filter must return a boolean false. Any other value will fallback to archiving.
+				 *
+				 * @since TBD
+				 *
+				 * @param \WP_Post                       $attendee the attendee data
+				 * @param \Tribe__Tickets__Ticket_Object $ticket   the ticket
+				 * @param \WP_Post                       $post     the order
+				 */
+				$archive_attendee = apply_filters( 'tec_tickets_commerce_archive_attendee_delete_permanently', true, $attendee, $ticket, $post );
 
-				// @todo handle the archival of attendees.
+				if ( false === $archive_attendee ) {
+					tribe( Attendee::class )->delete( $attendee->ID );
+
+					return;
+				}
+
+				tribe( Attendee::class )->archive( $attendee->ID );
 			}
 		}
 	}

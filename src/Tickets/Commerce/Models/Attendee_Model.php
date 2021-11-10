@@ -46,7 +46,7 @@ class Attendee_Model extends Base {
 			$checked_in           = Arr::get( $post_meta, [ Attendee::$checked_in_meta_key, 0 ] );
 			$security             = Arr::get( $post_meta, [ Attendee::$security_code_meta_key, 0 ] );
 			$opt_out              = tribe_is_truthy( Arr::get( $post_meta, [ Attendee::$optout_meta_key, 0 ] ) );
-			$status               = $order->status_name;
+			$status               = $order->status_obj->get_name();
 			$ticket_sent          = (int) Arr::get( $post_meta, [ Attendee::$ticket_sent_meta_key, 0 ] );
 			$deleted_ticket_title = Arr::get( $post_meta, [ Attendee::$deleted_ticket_meta_key, 0 ] );
 			$full_name            = Arr::get( $post_meta, [ Attendee::$full_name_meta_key, 0 ] );

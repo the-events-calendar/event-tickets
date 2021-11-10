@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Status\Status_Handler;
 use \Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils;
+use WP_Post;
 
 /**
  * Class Attendee
@@ -229,6 +230,110 @@ class Attendee {
 	}
 
 	/**
+	 * Archives an attendee. In WordPress this means the attendee post will have `trash` status, but it won't be
+	 * deleted.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The Attendee ID.
+	 */
+	public function archive( $attendee_id ) {
+		/**
+		 * Allows filtering the Attendee ID for archival.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $attendee_id The Attendee ID.
+		 */
+		$attendee_id = apply_filters( 'tec_tickets_commerce_attendee_to_archive', $attendee_id );
+
+		/**
+		 * Allows actions to run right before archiving an attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $attendee_id The Attendee ID.
+		 */
+		do_action( 'tec_tickets_commerce_attendee_before_archive', $attendee_id );
+
+		$result = wp_trash_post( $attendee_id );
+
+		/**
+		 * Allows actions to run right after archiving an attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param int                $attendee_id The Attendee ID.
+		 * @param WP_Post|false|null $result      Attendee post data on success, false or null on failure.
+		 */
+		do_action( 'tec_tickets_commerce_attendee_after_archive', $attendee_id, $result );
+
+		/**
+		 * Allows filtering of the return from the `wp_trash_post`.
+		 *
+		 * @since TBD
+		 *
+		 * @param WP_Post|false|null $result      Attendee post data on success, false or null on failure.
+		 * @param int                $attendee_id The Attendee ID.
+		 */
+		return apply_filters( 'tec_tickets_commerce_attendee_archived', $result, $attendee_id );
+	}
+
+	/**
+	 * Permanently deletes an attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param int     $attendee_id The Attendee ID.
+	 * @param boolean $force       Force the deletion.
+	 */
+	public function delete( $attendee_id, $force = true ) {
+		/**
+		 * Allows filtering the Attendee ID for deletion.
+		 *
+		 * @since TBD
+		 *
+		 * @param int     $attendee_id The Attendee ID
+		 * @param boolean $force       Force the deletion.
+		 */
+		$attendee_id = apply_filters( 'tec_tickets_commerce_attendee_to_delete', $attendee_id, $force );
+
+		/**
+		 * Allows actions to run right before deleting an attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param int     $attendee_id The Attendee ID.
+		 * @param boolean $force       Force the deletion.
+		 */
+		do_action( 'tec_tickets_commerce_attendee_before_delete', $attendee_id, $force );
+
+		$result = wp_delete_post( $attendee_id, true );
+
+		/**
+		 * Allows actions to run right after deleting an attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param int                $attendee_id The Attendee ID.
+		 * @param WP_Post|false|null $result      Attendee post data on success, false or null on failure.
+		 * @param boolean            $force       Force the deletion.
+		 */
+		do_action( 'tec_tickets_commerce_attendee_after_delete', $attendee_id, $result, $force );
+
+		/**
+		 * Allows filtering of the return from the `wp_delete_post`.
+		 *
+		 * @since TBD
+		 *
+		 * @param WP_Post|false|null $result      Attendee post data on success, false or null on failure.
+		 * @param int                $attendee_id The Attendee ID.
+		 * @param boolean            $force       Force the deletion.
+		 */
+		return apply_filters( 'tec_tickets_commerce_attendee_deleted', $result, $attendee_id, $force );
+	}
+
+	/**
 	 * Creates an individual attendee given an Order and Ticket.
 	 *
 	 * @since 5.1.10
@@ -337,6 +442,8 @@ class Attendee {
 	 * the Attendees Report rather than the PayPal Ticket attendees post list (because that's kind of
 	 * confusing)
 	 *
+	 * @todo  @backend this should probably be moved to the Archive Attendees flag action and handled from there.
+	 *
 	 * @since 5.1.9
 	 *
 	 * @param int $post_id WP_Post ID.
@@ -345,6 +452,11 @@ class Attendee {
 		$post = get_post( $post_id );
 
 		if ( static::POSTTYPE !== $post->post_type ) {
+			return;
+		}
+
+		// Do not redirect if this status change is being handled by a Flag Action.
+		if ( did_action( 'tec_tickets_commerce_order_status_flag_archive_attendees' ) ) {
 			return;
 		}
 
@@ -527,7 +639,7 @@ class Attendee {
 	/**
 	 * Hydrate attendee object with ticket data
 	 *
-	 * @todo We should not be using this particular piece of the code until it's using `tec_tc_get_attendee`.
+	 * @todo  We should not be using this particular piece of the code until it's using `tec_tc_get_attendee`.
 	 *
 	 * @since 5.2.0
 	 *
@@ -555,7 +667,7 @@ class Attendee {
 	/**
 	 * Loads event, ticket, order and other data into an attendee object
 	 *
-	 * @todo We should not be using this particular piece of the code until it's using `tec_tc_get_attendee`.
+	 * @todo  We should not be using this particular piece of the code until it's using `tec_tc_get_attendee`.
 	 *
 	 * @since 5.2.0
 	 *

@@ -81,6 +81,19 @@ class Attendees_Repository extends Tribe__Repository {
 			$this->update_fields_aliases,
 			$aliases
 		);
+
+		$this->schema = array_merge(
+			$this->schema,
+			[
+				'tickets'     => [ $this, 'filter_by_tickets' ],
+				'tickets_not' => [ $this, 'filter_by_tickets_not' ],
+				'events'      => [ $this, 'filter_by_events' ],
+				'events_not'  => [ $this, 'filter_by_events_not' ],
+			]
+		);
+
+		$this->add_simple_meta_schema_entry( 'ticket_id', Attendee::$ticket_relation_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'event_id', Attendee::$event_relation_meta_key, 'meta_equals' );
 	}
 
 	/**
@@ -143,5 +156,128 @@ class Attendees_Repository extends Tribe__Repository {
 //		}
 
 		return $postarr;
+	}
+
+	/**
+	 * Cleans up a list of Post IDs into an usable array for DB query.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post|int[]|\WP_Post[] $posts Which posts we are filtering by.
+	 *
+	 * @return array
+	 */
+	protected function clean_post_ids( $posts ) {
+		return array_unique( array_filter( array_map( static function ( $post ) {
+			if ( is_numeric( $post ) ) {
+				return $post;
+			}
+
+			if ( $post instanceof \WP_Post ) {
+				return $post->ID;
+			}
+
+			return null;
+		}, (array) $posts ) ) );
+	}
+
+	/**
+	 * Filters order by whether or not it contains a given ticket/s.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post|int[]|\WP_Post[] $tickets Which tickets we are filtering by.
+	 *
+	 * @return null
+	 */
+	public function filter_by_tickets( $tickets = null ) {
+		if ( empty( $tickets ) ) {
+			return null;
+		}
+
+		$tickets = $this->clean_post_ids( $tickets );
+
+		if ( empty( $tickets ) ) {
+			return null;
+		}
+
+		$this->by( 'meta_in', Attendee::$ticket_relation_meta_key, $tickets );
+
+		return null;
+	}
+
+	/**
+	 * Filters order by whether or not it contains a given ticket/s.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post|int[]|\WP_Post[] $tickets Which tickets we are filtering by.
+	 *
+	 * @return null
+	 */
+	public function filter_by_tickets_not( $tickets = null ) {
+		if ( empty( $tickets ) ) {
+			return null;
+		}
+
+		$tickets = $this->clean_post_ids( $tickets );
+
+		if ( empty( $tickets ) ) {
+			return null;
+		}
+
+		$this->by( 'meta_not_in', Attendee::$ticket_relation_meta_key, $tickets );
+
+		return null;
+	}
+
+	/**
+	 * Filters order by whether or not it contains a given ticket/s.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post|int[]|\WP_Post[] $events Which events we are filtering by.
+	 *
+	 * @return null
+	 */
+	public function filter_by_events( $events = null ) {
+		if ( empty( $events ) ) {
+			return null;
+		}
+
+		$events = $this->clean_post_ids( $events );
+
+		if ( empty( $events ) ) {
+			return null;
+		}
+
+		$this->by( 'meta_in', Attendee::$event_relation_meta_key, $events );
+
+		return null;
+	}
+
+	/**
+	 * Filters order by whether or not it contains a given event/s.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|\WP_Post|int[]|\WP_Post[] $events Which events we are filtering by.
+	 *
+	 * @return null
+	 */
+	public function filter_by_events_not( $events = null ) {
+		if ( empty( $events ) ) {
+			return null;
+		}
+
+		$events = $this->clean_post_ids( $events );
+
+		if ( empty( $events ) ) {
+			return null;
+		}
+
+		$this->by( 'meta_not_in', Attendee::$event_relation_meta_key, $events );
+
+		return null;
 	}
 }
