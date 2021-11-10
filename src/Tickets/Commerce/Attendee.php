@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Status\Status_Handler;
 use \Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils;
+use WP_Post;
 
 /**
  * Class Attendee
@@ -233,6 +234,8 @@ class Attendee {
 	 * deleted.
 	 *
 	 * @since TBD
+	 *
+	 * @param int $attendee_id The Attendee ID.
 	 */
 	public function archive( $attendee_id ) {
 		/**
@@ -240,67 +243,94 @@ class Attendee {
 		 *
 		 * @since TBD
 		 *
-		 * @param int $attendee_id The Attendee ID
+		 * @param int $attendee_id The Attendee ID.
 		 */
 		$attendee_id = apply_filters( 'tec_tickets_commerce_attendee_to_archive', $attendee_id );
 
 		/**
-		 * Allows actions to run right before archiving an attendee
+		 * Allows actions to run right before archiving an attendee.
 		 *
 		 * @since TBD
 		 *
-		 * @param int $attendee_id The Attendee ID
+		 * @param int $attendee_id The Attendee ID.
 		 */
 		do_action( 'tec_tickets_commerce_attendee_before_archive', $attendee_id );
 
 		$result = wp_trash_post( $attendee_id );
 
 		/**
-		 * Allows actions to run right after archiving an attendee
+		 * Allows actions to run right after archiving an attendee.
 		 *
 		 * @since TBD
 		 *
-		 * @param int                $attendee_id The Attendee ID
+		 * @param int                $attendee_id The Attendee ID.
 		 * @param WP_Post|false|null $result      Attendee post data on success, false or null on failure.
 		 */
 		do_action( 'tec_tickets_commerce_attendee_after_archive', $attendee_id, $result );
+
+		/**
+		 * Allows filtering of the return from the `wp_trash_post`.
+		 *
+		 * @since TBD
+		 *
+		 * @param WP_Post|false|null $result      Attendee post data on success, false or null on failure.
+		 * @param int                $attendee_id The Attendee ID.
+		 */
+		return apply_filters( 'tec_tickets_commerce_attendee_archived', $result, $attendee_id );
 	}
 
 	/**
 	 * Permanently deletes an attendee.
 	 *
 	 * @since TBD
+	 *
+	 * @param int     $attendee_id The Attendee ID.
+	 * @param boolean $force       Force the deletion.
 	 */
-	public function delete( $attendee_id ) {
+	public function delete( $attendee_id, $force = true ) {
 		/**
 		 * Allows filtering the Attendee ID for deletion.
 		 *
 		 * @since TBD
 		 *
-		 * @param int $attendee_id The Attendee ID
+		 * @param int     $attendee_id The Attendee ID
+		 * @param boolean $force       Force the deletion.
 		 */
-		$attendee_id = apply_filters( 'tec_tickets_commerce_attendee_to_delete', $attendee_id );
+		$attendee_id = apply_filters( 'tec_tickets_commerce_attendee_to_delete', $attendee_id, $force );
 
 		/**
-		 * Allows actions to run right before deleting an attendee
+		 * Allows actions to run right before deleting an attendee.
 		 *
 		 * @since TBD
 		 *
-		 * @param int $attendee_id The Attendee ID
+		 * @param int     $attendee_id The Attendee ID.
+		 * @param boolean $force       Force the deletion.
 		 */
-		do_action( 'tec_tickets_commerce_attendee_before_delete', $attendee_id );
+		do_action( 'tec_tickets_commerce_attendee_before_delete', $attendee_id, $force );
 
 		$result = wp_delete_post( $attendee_id, true );
 
 		/**
-		 * Allows actions to run right after deleting an attendee
+		 * Allows actions to run right after deleting an attendee.
 		 *
 		 * @since TBD
 		 *
-		 * @param int                $attendee_id The Attendee ID
+		 * @param int                $attendee_id The Attendee ID.
 		 * @param WP_Post|false|null $result      Attendee post data on success, false or null on failure.
+		 * @param boolean            $force       Force the deletion.
 		 */
-		do_action( 'tec_tickets_commerce_attendee_after_delete', $attendee_id, $result );
+		do_action( 'tec_tickets_commerce_attendee_after_delete', $attendee_id, $result, $force );
+
+		/**
+		 * Allows filtering of the return from the `wp_delete_post`.
+		 *
+		 * @since TBD
+		 *
+		 * @param WP_Post|false|null $result      Attendee post data on success, false or null on failure.
+		 * @param int                $attendee_id The Attendee ID.
+		 * @param boolean            $force       Force the deletion.
+		 */
+		return apply_filters( 'tec_tickets_commerce_attendee_deleted', $result, $attendee_id, $force );
 	}
 
 	/**

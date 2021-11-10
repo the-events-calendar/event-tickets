@@ -41,9 +41,7 @@ class Archive_Attendees extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $post ) {
-		$status_args = $new_status->get_wp_arguments();
-
-		if ( empty( $post->items ) || $status_args['label'] !== $post->status_name ) {
+		if ( empty( $post->items ) || $new_status->get_slug() !== $post->status_obj->get_slug() ) {
 			return;
 		}
 
@@ -53,23 +51,19 @@ class Archive_Attendees extends Flag_Action_Abstract {
 				continue;
 			}
 
-			$attendees_repo = tec_tc_attendees( $ticket->ID );
-			$attendees_repo->by( 'ticket', $ticket->ID );
+			$attendees_repo = tec_tc_attendees();
+			$attendees_repo->by( 'ticket_id', $ticket->ID );
+			$attendees_repo->by( 'parent', $post->ID );
+			$attendees_repo->by( 'status', 'any' );
 
 			$attendees = $attendees_repo->all();
 
-			$quantity = count( $attendees );
-
 			// Skip archiving for zero-ed items.
-			if ( 0 >= $quantity ) {
+			if ( ! $attendees_repo->found() ) {
 				continue;
 			}
 
 			foreach ( $attendees as $attendee ) {
-				if ( empty( $attendee['ID'] ) || empty( $attendee['order_id'] ) || $post->ID !== $attendee['order_id'] ) {
-					continue;
-				}
-
 				/**
 				 * Allows filtering whether an attendee should archived, or hard-deleted from the database.
 				 *
@@ -77,19 +71,19 @@ class Archive_Attendees extends Flag_Action_Abstract {
 				 *
 				 * @since TBD
 				 *
-				 * @param array                          $attendee the attendee data
+				 * @param \WP_Post                       $attendee the attendee data
 				 * @param \Tribe__Tickets__Ticket_Object $ticket   the ticket
 				 * @param \WP_Post                       $post     the order
 				 */
 				$archive_attendee = apply_filters( 'tec_tickets_commerce_archive_attendee_delete_permanently', true, $attendee, $ticket, $post );
 
 				if ( false === $archive_attendee ) {
-					tribe( Attendee::class )->delete( $attendee['ID'] );
+					tribe( Attendee::class )->delete( $attendee->ID );
 
 					return;
 				}
 
-				tribe( Attendee::class )->archive( $attendee['ID'] );
+				tribe( Attendee::class )->archive( $attendee->ID );
 			}
 		}
 	}
