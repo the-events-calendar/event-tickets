@@ -22,6 +22,7 @@ use Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce\Flag_Actions
  */
 class Archive_Attendees extends Flag_Action_Abstract {
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -33,7 +34,7 @@ class Archive_Attendees extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 */
 	protected $post_types = [
-		Order::POSTTYPE
+		Order::POSTTYPE,
 	];
 
 	/**
@@ -63,6 +64,24 @@ class Archive_Attendees extends Flag_Action_Abstract {
 			foreach ( $attendees as $attendee ) {
 				if ( empty( $attendee['ID'] ) || empty( $attendee['order_id'] ) || $post->ID !== $attendee['order_id'] ) {
 					continue;
+				}
+
+				/**
+				 * Allows filtering whether an attendee should archived, or hard-deleted from the database.
+				 *
+				 * To permanently delete an attendee, this filter must return a boolean false. Any other value will fallback to archiving.
+				 *
+				 * @since TBD
+				 *
+				 * @param array $attendee the attendee data
+				 * @param \Tribe__Tickets__Ticket_Object $ticket the ticket
+				 * @param \WP_Post $post the order
+				 */
+				$archive_attendee = apply_filters( 'tec_tickets_commerce_archive_attendee_delete_permanently', true, $attendee, $ticket, $post );
+
+				if ( false === $archive_attendee ) {
+					tribe( Attendee::class )->delete( $attendee['ID'] );
+					return;
 				}
 
 				tribe( Attendee::class )->archive( $attendee['ID'] );
