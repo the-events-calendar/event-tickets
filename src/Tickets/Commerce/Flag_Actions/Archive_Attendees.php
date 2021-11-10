@@ -53,8 +53,12 @@ class Archive_Attendees extends Flag_Action_Abstract {
 				continue;
 			}
 
-			$attendees = tribe_tickets_get_attendees( $ticket->ID );
-			$quantity  = count( $attendees );
+			$attendees_repo = tec_tc_attendees( $ticket->ID );
+			$attendees_repo->by( 'ticket', $ticket->ID );
+
+			$attendees = $attendees_repo->all();
+
+			$quantity = count( $attendees );
 
 			// Skip archiving for zero-ed items.
 			if ( 0 >= $quantity ) {
@@ -73,14 +77,15 @@ class Archive_Attendees extends Flag_Action_Abstract {
 				 *
 				 * @since TBD
 				 *
-				 * @param array $attendee the attendee data
-				 * @param \Tribe__Tickets__Ticket_Object $ticket the ticket
-				 * @param \WP_Post $post the order
+				 * @param array                          $attendee the attendee data
+				 * @param \Tribe__Tickets__Ticket_Object $ticket   the ticket
+				 * @param \WP_Post                       $post     the order
 				 */
 				$archive_attendee = apply_filters( 'tec_tickets_commerce_archive_attendee_delete_permanently', true, $attendee, $ticket, $post );
 
 				if ( false === $archive_attendee ) {
 					tribe( Attendee::class )->delete( $attendee['ID'] );
+
 					return;
 				}
 
