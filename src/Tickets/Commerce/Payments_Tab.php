@@ -128,7 +128,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Generate Chceckout and Success page if not found.
+	 * Maybe Generate Checkout and Success page if not found.
 	 *
 	 * @since TBD
 	 */
@@ -145,7 +145,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Generate Checkout page with shortcode if not available.
+	 * Generate Checkout page with the shortcode if the page is non-existent.
 	 *
 	 * @since TBD
 	 *
@@ -174,7 +174,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Generate Order Success page with shortcode if not available.
+	 * Generate Order Success page with the shortcode if the page is non-existent.
 	 *
 	 * @since TBD
 	 *
