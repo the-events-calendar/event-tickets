@@ -62,7 +62,7 @@ class Order_Model extends Base {
 				'provider'            => Module::class,
 				'provider_slug'       => Commerce::ABBR,
 				'status_log'          => $status_log,
-				'status_name'         => $status->get_name(),
+				'status_obj'          => $status,
 				'gateway'             => $gateway_slug,
 				'gateway_order_id'    => $gateway_order_id,
 				'gateway_payload'     => $gateway_payload,

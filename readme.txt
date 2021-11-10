@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, aguseo, bordoni
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 5.6
 Tested up to: 5.8.1
-Stable tag: 5.2.0
+Stable tag: 5.2.0.1
 Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -178,6 +178,10 @@ We've got a [LoopedIn](https://app.loopedin.io/the-events-calendar-suite-roadmap
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.2.0.1] 2021-11-10 =
+
+* Fix - Ensures that Tickets Commerce attendees get archived properly when an order is canceled or not completed. [ET-1322]
 
 = [5.2.0] 2021-11-04 =
 
