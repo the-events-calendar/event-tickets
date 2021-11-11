@@ -326,7 +326,16 @@ class Tribe__Tickets__Assets {
 
 		// Register Ticket Admin Settings page assets.
 		$settings_assets = [
-			[ 'event-tickets-admin-settings-css', 'tickets-admin-settings.css', [ 'tribe-common-admin' ] ],
+			[
+				'event-tickets-admin-settings-css',
+				'tickets-admin-settings.css',
+				[
+					'tribe-common-admin',
+					'tribe-common-full-style',
+					'tribe-common-responsive',
+					'tribe-dialog',
+				],
+			],
 		];
 
 		tribe_assets(
@@ -345,10 +354,17 @@ class Tribe__Tickets__Assets {
 	 *
 	 * @since  4.6
 	 *
+	 * @since TBD Always enqueue scripts for Ticket settings page.
+	 *
 	 * @return bool
 	 */
 	public function should_enqueue_admin() {
 		global $post;
+
+		// Should enqueue if Ticket settings page.
+		if ( 'tribe-common' === tribe_get_request_var( 'page' ) && 'event-tickets' === tribe_get_request_var( 'tab' ) ) {
+			return true;
+		}
 
 		/**
 		 * Filter the array of module names.
