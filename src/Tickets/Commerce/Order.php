@@ -336,6 +336,7 @@ class Order {
 			'items'       => $items,
 			'gateway'     => $gateway::get_key(),
 			'hash'        => $cart->get_cart_hash(),
+			'currency'    => Currency::get_currency(),
 		];
 
 		// When purchaser data-set is not passed we pull from the current user.
