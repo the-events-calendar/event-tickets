@@ -191,6 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Fixed ticket total formatting within the attendee registration modal when using custom thousands and decimal separators. [ET-1216]
 * Fix - QR Code API generation settings not working if `The Events Calendar` plugin was not active. [ETP-754]
 * Fix - Fixed the event cost formatting issues showing the wrong currency symbol, symbol location and separators. [ET-1251]
+* Fix - Disable "Connect to PayPal" button while a new URL is not available, after changing countries. [ET-1318]
 * Bug - Searching Ticket Holder Email / Ticket Holder Name through the Attendee page now functions as expected. [ET-1171]
 
 = [5.2.0.1] 2021-11-10 =
