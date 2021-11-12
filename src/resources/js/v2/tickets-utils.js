@@ -84,6 +84,7 @@ tribe.tickets.utils = {};
 	 * Removes separator characters and converts decimal character to '.'
 	 * So they play nice with other functions.
 	 *
+	 * @since TBD major refactoring of the internal logic
 	 * @since 5.0.3
 	 *
 	 * @todo clean up all calls to obj.cleanNumber to do not send a provider
@@ -124,6 +125,8 @@ tribe.tickets.utils = {};
 	 * The rule to determine a decimal is straightforward. It needs to exist only once
 	 * in the string and the piece of the string after the separator cannot be longer
 	 * than 2 digits. Anything else is serving another purpose.
+	 *
+	 * @since TBD
 	 *
 	 * @param {string} separator a separator token, like . or ,
 	 * @param {number} number    the number
