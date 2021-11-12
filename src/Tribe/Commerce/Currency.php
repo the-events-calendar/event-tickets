@@ -16,7 +16,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @since 4.7
 	 */
 	public function __construct() {
-		$this->currency_code = \TEC\Tickets\Commerce\Currency::get_currency();
+		$this->currency_code = \TEC\Tickets\Commerce\Currency::get_currency_code();
 		$this->generate_default_currency_map();
 	}
 

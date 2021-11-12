@@ -24,7 +24,7 @@ class Currency {
 	 * @return string
 	 */
 
-	public static function get_currency() {
+	public static function get_currency_code() {
 		// New key
 		$currency = tribe_get_option( 'tickets-commerce-currency-code' );
 
