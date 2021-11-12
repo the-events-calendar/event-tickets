@@ -94,18 +94,20 @@ tribe.tickets.utils = {};
 	 *
 	 * @returns {string} The cleaned number.
 	 */
-	obj.cleanNumber = function( passedNumber, provider ) {
+	obj.cleanNumber = function( passedNumber, provider ) { // eslint:ignore no-unused-vars
 		let nonDigits;
 		let value;
 
-		// If there are no number of decimals and no thousands separator we can return the number.
+		// If there are no decimals and no thousands separator we can return the number.
 		nonDigits = passedNumber.match(/[^\d]/);
 
 		if ( ! nonDigits ) {
 			return passedNumber;
 		}
 
-		nonDigits = [...new Set(nonDigits)];
+		nonDigits = nonDigits.filter( function( value, index, self ) {
+			return self.indexOf(value) === index;
+		});
 
 		for ( let i = 0; i < nonDigits.length; i++ ) {
 			if ( this.isDecimalSeparator( nonDigits[i], passedNumber ) ) {
@@ -258,8 +260,8 @@ tribe.tickets.utils = {};
 		const formattedPrice = $ticketItem
 			.find( '.tribe-tickets__tickets-sale-price .tribe-amount' )
 			.text();
-		const priceString = isNaN( realPrice ) 
-			? obj.cleanNumber( formattedPrice, provider ) 
+		const priceString = isNaN( realPrice )
+			? obj.cleanNumber( formattedPrice, provider )
 			: realPrice;
 			return parseFloat( priceString );
 	};
