@@ -94,7 +94,7 @@ tribe.tickets.utils = {};
 	 *
 	 * @returns {string} The cleaned number.
 	 */
-	obj.cleanNumber = function( passedNumber, provider ) { // eslint:ignore no-unused-vars
+	obj.cleanNumber = function( passedNumber, provider ) { // eslint-disable-line no-unused-vars
 		let nonDigits;
 		let value;
 
