@@ -84,10 +84,10 @@ tribe.tickets.utils = {};
 	 * Removes separator characters and converts decimal character to '.'
 	 * So they play nice with other functions.
 	 *
-	 * @since TBD major refactoring of the internal logic
+	 * @since TBD major refactoring of the internal logic.
 	 * @since 5.0.3
 	 *
-	 * @todo clean up all calls to obj.cleanNumber to do not send a provider
+	 * @todo clean up all calls to obj.cleanNumber to do not send a provider.
 	 *
 	 * @param {number} passedNumber The number to clean.
 	 * @param {string} provider The provider.
@@ -131,7 +131,7 @@ tribe.tickets.utils = {};
 	 * @since TBD
 	 *
 	 * @param {string} separator a separator token, like . or ,
-	 * @param {number} number    the number
+	 * @param {number} number    the number.
 	 *
 	 * @returns {boolean}
 	 */
