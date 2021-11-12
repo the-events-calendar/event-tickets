@@ -207,16 +207,10 @@ tribe.tickets.block = {
 				return;
 			}
 
-			const $price = $input.closest( obj.selectors.item ).find( obj.selectors.itemPrice ).first();
-			const realPrice = $input.closest( obj.selectors.item ).data( 'ticket-price' );
 			let quantity = parseInt( $input.val(), 10 );
 			quantity = isNaN( quantity ) ? 0 : quantity;
-
-			// Only use tribe.tickets.utils.cleanNumber() if getting price from text block.
-			const ticketPrice = isNaN( realPrice ) 
-				? tribe.tickets.utils.cleanNumber( $price.text(), provider )
-				: realPrice.toString();
-
+			const $ticketItem = $input.closest( obj.selectors.item );
+			const ticketPrice = obj.getPrice( $ticketItem, provider );
 			const cost = ticketPrice * quantity;
 			footerAmount += cost;
 		} );
@@ -465,21 +459,12 @@ tribe.tickets.block = {
 	 *
 	 * @since 5.0.3
 	 *
-	 * @param {jQuery} $cartItem The jQuery object of the cart item to update.
+	 * @param {jQuery} $item The jQuery object of the ticket item to update.
 	 *
 	 * @returns {number} The item price.
 	 */
-	obj.getPrice = function( $cartItem ) {
-		const $form = $cartItem.closest( 'form' );
-		const provider = obj.getTicketsBlockProvider( $form );
-
-		const $price = $cartItem.find( obj.selectors.itemPrice ).first();
-		const realPrice = $cartItem.closest( obj.selectors.item ).data( 'ticket-price' );
-		const text = isNaN( realPrice ) ? $price.text() : realPrice.toString();
-
-		const price = tribe.tickets.utils.cleanNumber( text, provider );
-
-		return isNaN( price ) ? 0 : price;
+	obj.getPrice = function( $item ) {
+		return tribe.tickets.utils.getPrice( $item, obj.tribe_tickets_provider );
 	};
 
 	/**

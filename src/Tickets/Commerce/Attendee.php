@@ -191,13 +191,6 @@ class Attendee {
 	public static $unique_id_meta_key = '_unique_id';
 
 	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		$this->legacy_rsvp_repo = tribe( 'tickets.rsvp' );
-	}
-
-	/**
 	 * Register this Class post type into WP.
 	 *
 	 * @since 5.1.9

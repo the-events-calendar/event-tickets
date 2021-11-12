@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, aguseo, bordoni
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 5.6
 Tested up to: 5.8.1
-Stable tag: 5.2.0.1
+Stable tag: 5.2.1
 Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -178,6 +178,21 @@ We've got a [LoopedIn](https://app.loopedin.io/the-events-calendar-suite-roadmap
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [TBD] TBD =
+
+* Enhancement - Auto generate checkout page when enabling Tickets Commerce. [ET-1232]
+* Enhancement - Auto generate order success page when enabling Tickets Commerce. [ET-1233]
+* Enhancement - Added filter `tribe_tickets_manual_attendee_allow_email_resend` to allow customization of email resending via Manual Attendees depending on status. [ETP-703]
+* Enhancement - Add `getPrice` method to utilities JS object to centralize the way we get ticket prices. [ET-1238]
+* Enhancement - Add a modal with more information about the PayPal connection after connecting with PayPal via Tickets Commerce. [ET-1321]
+* Fix - Fixes error being caused when trying to load attendee information. [ET-1320]
+* Fix - Added `allow_resending_email` method which can be used to enable or disable resending email. [ETP-703]
+* Fix - Fixed ticket total formatting within the attendee registration modal when using custom thousands and decimal separators. [ET-1216]
+* Fix - QR Code API generation settings not working if `The Events Calendar` plugin was not active. [ETP-754]
+* Fix - Fixed the event cost formatting issues showing the wrong currency symbol, symbol location and separators. [ET-1251]
+* Fix - Disable "Connect to PayPal" button while a new URL is not available, after changing countries. [ET-1318]
+* Bug - Searching Ticket Holder Email / Ticket Holder Name through the Attendee page now functions as expected. [ET-1171]
 
 = [5.2.0.1] 2021-11-10 =
 

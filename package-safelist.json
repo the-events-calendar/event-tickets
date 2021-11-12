@@ -1,15 +1,11 @@
 [
-  "data_collection_disclosure.html",
   "event-tickets.php",
   "lang/**/*.mo",
   "lang/**/*.pot",
   "lang/**/*.txt",
   "license.txt",
   "readme.txt",
-  "site_owner_data_collection_statement.html",
   "src/**/*",
   "vendor/autoload.php",
-  "vendor/autoload_commands.php",
-  "vendor/autoload_framework.php",
   "vendor/composer/*"
 ]
