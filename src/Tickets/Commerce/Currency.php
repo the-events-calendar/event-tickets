@@ -29,7 +29,7 @@ class Currency {
 		$currency = tribe_get_option( 'tickets-commerce-currency-code' );
 
 		if ( ! $currency ) {
-			// Old key
+			// Old key.
 			$currency = tribe_get_option( 'ticket-commerce-currency-code', 'USD' );
 
 			// Duplicate the currency code in the new key
