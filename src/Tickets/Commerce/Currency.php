@@ -34,7 +34,7 @@ class Currency {
 	 */
 
 	public static function get_currency_code() {
-		// New key
+		// New key.
 		$currency = tribe_get_option( static::$currency_code_option );
 
 		if ( empty( $currency ) ) {
