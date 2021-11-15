@@ -2,9 +2,9 @@
 /**
  * The Template for displaying the Tickets Commerce PayPal Modal when connected.
  *
- * @version TBD
+ * @version 5.2.1
  *
- * @since   TBD
+ * @since   5.2.1
  */
 
 $request_vars = tribe_get_request_vars();

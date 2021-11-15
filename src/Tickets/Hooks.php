@@ -52,7 +52,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Generate TicketsCommerce Pages.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 */
 	public function generate_payments_pages() {
 		$this->container->make( Payments_Tab::class )->maybe_generate_pages();

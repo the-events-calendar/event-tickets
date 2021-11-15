@@ -2,9 +2,9 @@
 /**
  * The Template for displaying the Tickets Commerce PayPal modal content when connected.
  *
- * @version TBD
+ * @version 5.2.1
  *
- * @since   TBD
+ * @since   5.2.1
  */
 
 ?>

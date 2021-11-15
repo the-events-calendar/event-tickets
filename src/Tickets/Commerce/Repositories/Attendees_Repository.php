@@ -161,7 +161,7 @@ class Attendees_Repository extends Tribe__Repository {
 	/**
 	 * Cleans up a list of Post IDs into an usable array for DB query.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 *
 	 * @param int|\WP_Post|int[]|\WP_Post[] $posts Which posts we are filtering by.
 	 *
@@ -184,7 +184,7 @@ class Attendees_Repository extends Tribe__Repository {
 	/**
 	 * Filters order by whether or not it contains a given ticket/s.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 *
 	 * @param int|\WP_Post|int[]|\WP_Post[] $tickets Which tickets we are filtering by.
 	 *
@@ -209,7 +209,7 @@ class Attendees_Repository extends Tribe__Repository {
 	/**
 	 * Filters order by whether or not it contains a given ticket/s.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 *
 	 * @param int|\WP_Post|int[]|\WP_Post[] $tickets Which tickets we are filtering by.
 	 *
@@ -234,7 +234,7 @@ class Attendees_Repository extends Tribe__Repository {
 	/**
 	 * Filters order by whether or not it contains a given ticket/s.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 *
 	 * @param int|\WP_Post|int[]|\WP_Post[] $events Which events we are filtering by.
 	 *
@@ -259,7 +259,7 @@ class Attendees_Repository extends Tribe__Repository {
 	/**
 	 * Filters order by whether or not it contains a given event/s.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 *
 	 * @param int|\WP_Post|int[]|\WP_Post[] $events Which events we are filtering by.
 	 *

@@ -243,7 +243,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * Extending repository classes should override this to add more keys.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 *
 	 * @return array
 	 */
@@ -260,7 +260,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * Extending repository classes should override this to add more keys.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 *
 	 * @return array
 	 */

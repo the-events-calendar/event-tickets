@@ -995,7 +995,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Handles if email sending is allowed.
 		 *
-		 * @since TBD
+		 * @since 5.2.1
 		 *
 		 * @param WP_Post|null $ticket   The ticket post object if available, otherwise null.
 		 * @param array|null   $attendee The attendee information if available, otherwise null.
@@ -1009,7 +1009,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * This filter allows the admin to control the re-send email option when an attendee's email is updated per a payment type (EDD, Woo, etc).
 			 * True means allow email resend, false means disallow email resend.
 			 *
-			 * @since TBD
+			 * @since 5.2.1
 			 *
 			 * @param WP_Post|null $ticket The ticket post object if available, otherwise null.
 			 * @param array|null $attendee The attendee information if available, otherwise null.

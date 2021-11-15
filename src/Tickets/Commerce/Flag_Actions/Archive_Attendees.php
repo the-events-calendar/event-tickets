@@ -69,7 +69,7 @@ class Archive_Attendees extends Flag_Action_Abstract {
 				 *
 				 * To permanently delete an attendee, this filter must return a boolean false. Any other value will fallback to archiving.
 				 *
-				 * @since TBD
+				 * @since 5.2.1
 				 *
 				 * @param \WP_Post                       $attendee the attendee data
 				 * @param \Tribe__Tickets__Ticket_Object $ticket   the ticket

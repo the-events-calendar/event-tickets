@@ -226,7 +226,7 @@ class Attendee {
 	 * Archives an attendee. In WordPress this means the attendee post will have `trash` status, but it won't be
 	 * deleted.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 *
 	 * @param int $attendee_id The Attendee ID.
 	 */
@@ -234,7 +234,7 @@ class Attendee {
 		/**
 		 * Allows filtering the Attendee ID for archival.
 		 *
-		 * @since TBD
+		 * @since 5.2.1
 		 *
 		 * @param int $attendee_id The Attendee ID.
 		 */
@@ -243,7 +243,7 @@ class Attendee {
 		/**
 		 * Allows actions to run right before archiving an attendee.
 		 *
-		 * @since TBD
+		 * @since 5.2.1
 		 *
 		 * @param int $attendee_id The Attendee ID.
 		 */
@@ -254,7 +254,7 @@ class Attendee {
 		/**
 		 * Allows actions to run right after archiving an attendee.
 		 *
-		 * @since TBD
+		 * @since 5.2.1
 		 *
 		 * @param int                $attendee_id The Attendee ID.
 		 * @param WP_Post|false|null $result      Attendee post data on success, false or null on failure.
@@ -264,7 +264,7 @@ class Attendee {
 		/**
 		 * Allows filtering of the return from the `wp_trash_post`.
 		 *
-		 * @since TBD
+		 * @since 5.2.1
 		 *
 		 * @param WP_Post|false|null $result      Attendee post data on success, false or null on failure.
 		 * @param int                $attendee_id The Attendee ID.
@@ -275,7 +275,7 @@ class Attendee {
 	/**
 	 * Permanently deletes an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 *
 	 * @param int     $attendee_id The Attendee ID.
 	 * @param boolean $force       Force the deletion.
@@ -284,7 +284,7 @@ class Attendee {
 		/**
 		 * Allows filtering the Attendee ID for deletion.
 		 *
-		 * @since TBD
+		 * @since 5.2.1
 		 *
 		 * @param int     $attendee_id The Attendee ID
 		 * @param boolean $force       Force the deletion.
@@ -294,7 +294,7 @@ class Attendee {
 		/**
 		 * Allows actions to run right before deleting an attendee.
 		 *
-		 * @since TBD
+		 * @since 5.2.1
 		 *
 		 * @param int     $attendee_id The Attendee ID.
 		 * @param boolean $force       Force the deletion.
@@ -306,7 +306,7 @@ class Attendee {
 		/**
 		 * Allows actions to run right after deleting an attendee.
 		 *
-		 * @since TBD
+		 * @since 5.2.1
 		 *
 		 * @param int                $attendee_id The Attendee ID.
 		 * @param WP_Post|false|null $result      Attendee post data on success, false or null on failure.
@@ -317,7 +317,7 @@ class Attendee {
 		/**
 		 * Allows filtering of the return from the `wp_delete_post`.
 		 *
-		 * @since TBD
+		 * @since 5.2.1
 		 *
 		 * @param WP_Post|false|null $result      Attendee post data on success, false or null on failure.
 		 * @param int                $attendee_id The Attendee ID.
