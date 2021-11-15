@@ -229,7 +229,7 @@ tribe.tickets.utils = {};
 	/**
 	 * Get the price of the ticket from the ticket item element.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 *
 	 * @return {float|int} The ticket price.
 	 */
@@ -241,8 +241,8 @@ tribe.tickets.utils = {};
 		const formattedPrice = $ticketItem
 			.find( '.tribe-tickets__tickets-sale-price .tribe-amount' )
 			.text();
-		const priceString = isNaN( realPrice ) 
-			? obj.cleanNumber( formattedPrice, provider ) 
+		const priceString = isNaN( realPrice )
+			? obj.cleanNumber( formattedPrice, provider )
 			: realPrice;
 			return parseFloat( priceString );
 	};

@@ -354,7 +354,7 @@ class Tribe__Tickets__Assets {
 	 *
 	 * @since  4.6
 	 *
-	 * @since TBD Always enqueue scripts for Ticket settings page.
+	 * @since 5.2.1 Always enqueue scripts for Ticket settings page.
 	 *
 	 * @return bool
 	 */

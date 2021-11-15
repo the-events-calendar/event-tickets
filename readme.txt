@@ -179,7 +179,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.2.1] 2021-11-17 =
 
 * Enhancement - Auto generate checkout page when enabling Tickets Commerce. [ET-1232]
 * Enhancement - Auto generate order success page when enabling Tickets Commerce. [ET-1233]

@@ -19,7 +19,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Slug for the tab.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 *
 	 * @var string
 	 */
@@ -28,7 +28,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Meta key for page creation flag.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 *
 	 * @var string
 	 */
@@ -130,7 +130,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Maybe Generate Checkout and Success page if not found.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 */
 	public function maybe_generate_pages() {
 
@@ -147,7 +147,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Generate Checkout page with the shortcode if the page is non-existent.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 *
 	 * @return bool
 	 */
@@ -176,7 +176,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Generate Order Success page with the shortcode if the page is non-existent.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 *
 	 * @return bool
 	 */
@@ -205,7 +205,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Create a page with given properties.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 *
 	 * @param string $page_slug URL slug of the page.
 	 * @param string $page_name Name for page title.
@@ -239,7 +239,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Check if the provided page was created.
 	 *
-	 * @since TBD
+	 * @since 5.2.1
 	 *
 	 * @param string $shortcode_name Shortcode name that was inserted in page content.
 	 *
