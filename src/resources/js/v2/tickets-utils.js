@@ -84,66 +84,47 @@ tribe.tickets.utils = {};
 	 * Removes separator characters and converts decimal character to '.'
 	 * So they play nice with other functions.
 	 *
-	 * @since TBD major refactoring of the internal logic.
 	 * @since 5.0.3
-	 *
-	 * @todo clean up all calls to obj.cleanNumber to do not send a provider.
 	 *
 	 * @param {number} passedNumber The number to clean.
 	 * @param {string} provider The provider.
 	 *
 	 * @returns {string} The cleaned number.
 	 */
-	obj.cleanNumber = function( passedNumber, provider ) { // eslint-disable-line no-unused-vars
-		let nonDigits;
-		let value;
+	obj.cleanNumber = function( passedNumber, provider ) {
+		let number = passedNumber;
+		const format = obj.getCurrencyFormatting( provider );
 
-		// If there are no decimals and no thousands separator we can return the number.
-		nonDigits = passedNumber.match(/[^\d]/);
-
-		if ( ! nonDigits ) {
-			return passedNumber;
+		// If there are no number of decimals and no thousands separator we can return the number.
+		if (
+			0 === parseInt( format.number_of_decimals ) &&
+			'' === format.thousands_sep
+		) {
+			return number;
 		}
 
-		nonDigits = nonDigits.filter( function( value, index, self ) {
-			return self.indexOf(value) === index;
-		});
+		// we run into issue when the two symbols are the same -
+		// which appears to happen by default with some providers.
+		const same = format.thousands_sep === format.decimal_point;
 
-		for ( let i = 0; i < nonDigits.length; i++ ) {
-			if ( this.isDecimalSeparator( nonDigits[i], passedNumber ) ) {
-				value = passedNumber.replace( nonDigits[i], '.' );
-				continue;
+		if ( ! same ) {
+			if ( '' !== format.thousands_sep ) {
+				number = number.split( format.thousands_sep ).join( '' );
 			}
-
-			value = passedNumber.replaceAll( nonDigits[i], '' );
+			if ( '' !== format.decimal_point ) {
+				number = number.split( format.decimal_point ).join( '.' );
+			}
+		} else {
+			const decPlace = number.length - ( format.number_of_decimals + 1 );
+			number = number.substr( 0, decPlace ) + '_' + number.substr( decPlace + 1 );
+			if ( '' !== format.thousands_sep ) {
+				number = number.split( format.thousands_sep ).join( '' );
+			}
+			number = number.split( '_' ).join( '.' );
 		}
 
-		return value;
+		return number;
 	};
-
-	/**
-	 * Determines if a given separator acts as a decimal separator or something else in a string.
-	 *
-	 * The rule to determine a decimal is straightforward. It needs to exist only once
-	 * in the string and the piece of the string after the separator cannot be longer
-	 * than 2 digits. Anything else is serving another purpose.
-	 *
-	 * @since TBD
-	 *
-	 * @param {string} separator a separator token, like . or ,
-	 * @param {number} number    the number.
-	 *
-	 * @returns {boolean}
-	 */
-	obj.isDecimalSeparator = function( separator, number ) {
-		const pieces = number.split( separator );
-
-		if ( pieces && 2 === pieces.length ) {
-			return pieces[1].length < 3;
-		}
-
-		return false;
-	}
 
 	/**
 	 * Format the number according to provider settings.
@@ -260,8 +241,8 @@ tribe.tickets.utils = {};
 		const formattedPrice = $ticketItem
 			.find( '.tribe-tickets__tickets-sale-price .tribe-amount' )
 			.text();
-		const priceString = isNaN( realPrice )
-			? obj.cleanNumber( formattedPrice, provider )
+		const priceString = isNaN( realPrice ) 
+			? obj.cleanNumber( formattedPrice, provider ) 
 			: realPrice;
 			return parseFloat( priceString );
 	};
