@@ -4,6 +4,8 @@ class Tribe__Tickets__Commerce__Currency {
 
 	/**
 	 * @var string
+	 *
+	 * @depreacated TBD
 	 */
 	public $currency_code;
 
@@ -16,7 +18,6 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @since 4.7
 	 */
 	public function __construct() {
-		$this->currency_code = tribe_get_option( 'ticket-commerce-currency-code', 'USD' );
 		$this->generate_default_currency_map();
 	}
 
@@ -44,7 +45,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @return string
 	 */
 	public function get_currency_symbol( $post_id = null, $decode = false ) {
-		$symbol = $this->currency_code_options_map[ $this->currency_code ]['symbol'];
+		$symbol = $this->currency_code_options_map[ $this->get_currency_code() ]['symbol'];
 		$symbol = apply_filters( 'tribe_commerce_currency_symbol', $symbol, $post_id );
 
 		return $decode ? html_entity_decode( $symbol ) : $symbol;
@@ -98,10 +99,10 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @return string
 	 */
 	public function get_currency_symbol_position( $post_id = null ) {
-		if ( ! isset( $this->currency_code_options_map[ $this->currency_code ]['position'] ) ) {
+		if ( ! isset( $this->currency_code_options_map[ $this->get_currency_code() ]['position'] ) ) {
 			$currency_position = 'prefix';
 		} else {
-			$currency_position = $this->currency_code_options_map[ $this->currency_code ]['position'];
+			$currency_position = $this->currency_code_options_map[ $this->get_currency_code() ]['position'];
 		}
 
 		if (
@@ -538,7 +539,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @return string
 	 */
 	public function get_currency_locale( $key, $currency_code = null ) {
-		$currency_code = null === $currency_code ? $this->currency_code : strtoupper( $currency_code );
+		$currency_code = null === $currency_code ? $this->get_currency_code() : strtoupper( $currency_code );
 
 		$default       = reset( $this->currency_code_options_map );
 		$currency_data = Tribe__Utils__Array::get( $this->currency_code_options_map, $currency_code, $default );
@@ -604,7 +605,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *                e.g. "USD".
 	 */
 	public function get_currency_code() {
-		return $this->currency_code;
+		return tribe_get_option( 'ticket-commerce-currency-code', 'USD' );
 	}
 
 	/**
