@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Utils;
 
+use TEC\Tickets\Commerce\Legacy_Compat;
+
 /**
  * Class Price
  *
@@ -39,8 +41,11 @@ class Price {
 	 * @return string
 	 */
 	public static function sub_total( $value, $quantity, $decimal = null, $thousand_sep = null ) {
+		/** @todo TribeCommerceLegacy: Remove the usage of Currency from Tribe Commerce totally, leave that behind. */
+		add_filter( 'tribe_get_option_ticket-commerce-currency-code', [ tribe( Legacy_Compat::class ), 'maybe_load_currency_code_from_tribe_commerce' ] );
 		$decimal      = ! is_null( $decimal ) ? $decimal : tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'decimal_point' );
 		$thousand_sep = ! is_null( $thousand_sep ) ? $thousand_sep : tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'thousands_sep' );
+		remove_filter( 'tribe_get_option_ticket-commerce-currency-code', [ tribe( Legacy_Compat::class ), 'maybe_load_currency_code_from_tribe_commerce' ] );
 
 		$number    = static::to_numeric( $value );
 		$sub_total = $number * $quantity;
@@ -66,8 +71,11 @@ class Price {
 	 * @return string
 	 */
 	public static function total( array $values, $decimal = null, $thousand_sep = null ) {
+		/** @todo TribeCommerceLegacy: Remove the usage of Currency from Tribe Commerce totally, leave that behind. */
+		add_filter( 'tribe_get_option_ticket-commerce-currency-code', [ tribe( Legacy_Compat::class ), 'maybe_load_currency_code_from_tribe_commerce' ] );
 		$decimal      = ! is_null( $decimal ) ? $decimal : tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'decimal_point' );
 		$thousand_sep = ! is_null( $thousand_sep ) ? $thousand_sep : tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'thousands_sep' );
+		remove_filter( 'tribe_get_option_ticket-commerce-currency-code', [ tribe( Legacy_Compat::class ), 'maybe_load_currency_code_from_tribe_commerce' ] );
 
 		$values = array_map( static function ( $value ) use ( $decimal, $thousand_sep ) {
 			return static::to_integer( $value, $decimal, $thousand_sep );
@@ -138,8 +146,7 @@ class Price {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param int|float|string $total     the total value to convert
-	 * @param int              $precision the number of decimal values to keep
+	 * @param int|float|string $total the total value to convert
 	 *
 	 * @return float
 	 */
@@ -238,6 +245,11 @@ class Price {
 			$value = static::to_numeric( $value );
 		}
 
-		return tribe( 'tickets.commerce.paypal.currency' )->format_currency( $value );
+		/** @todo TribeCommerceLegacy: Remove the usage of Currency from Tribe Commerce totally, leave that behind. */
+		add_filter( 'tribe_get_option_ticket-commerce-currency-code', [ tribe( Legacy_Compat::class ), 'maybe_load_currency_code_from_tribe_commerce' ] );
+		$currency = tribe( 'tickets.commerce.paypal.currency' )->format_currency( $value );
+		remove_filter( 'tribe_get_option_ticket-commerce-currency-code', [ tribe( Legacy_Compat::class ), 'maybe_load_currency_code_from_tribe_commerce' ] );
+
+		return $currency;
 	}
 }

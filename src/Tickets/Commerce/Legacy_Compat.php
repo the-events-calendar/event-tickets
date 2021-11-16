@@ -46,7 +46,6 @@ class Legacy_Compat extends tad_DI52_ServiceProvider {
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_events_tickets_module_name', [ $this, 'set_legacy_module_name' ] );
-		add_filter( 'tribe_get_option_ticket-commerce-currency-code', [ $this, 'maybe_load_currency_code_from_tribe_commerce' ] );
 	}
 
 	/**
