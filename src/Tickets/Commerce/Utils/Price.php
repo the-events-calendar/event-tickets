@@ -42,8 +42,8 @@ class Price {
 		$decimal      = ! is_null( $decimal ) ? $decimal : tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'decimal_point' );
 		$thousand_sep = ! is_null( $thousand_sep ) ? $thousand_sep : tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'thousands_sep' );
 
-		$number    = static::to_integer( $value, $decimal, $thousand_sep );
-		$sub_total = static::to_decimal( $number * $quantity );
+		$number    = static::to_numeric( $value );
+		$sub_total = $number * $quantity;
 
 		return number_format( $sub_total, 2, $decimal, $thousand_sep );
 	}
