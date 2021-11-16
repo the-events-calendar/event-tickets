@@ -101,7 +101,7 @@ class PriceTest extends \Codeception\Test\Unit {
 			[ 2999123.99, 2, '.', ' ', '5 998 247.98' ], // multiply a float with . as the decimal
 			[ '1010.', 101, '.', ',', '102,010.00' ], // decimal at the end of the string
 			[ '.10', 10, '.', ',', '1.00' ], // decimal at the start of the string
-			[ '1.102', 10, '.', ',', '11.00' ], // 3 decimals
+			[ '1.102', 10, '.', ',', '11,020.00' ], // 3 decimals
 			[ '99.00', 2, '.', ',', '198.00' ], // Copy of snapshot test
 		];
 	}
