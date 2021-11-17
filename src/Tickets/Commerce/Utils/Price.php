@@ -183,6 +183,9 @@ class Price {
 	 * @return float
 	 */
 	public static function to_numeric( $value ) {
+
+		$value = preg_replace( '/&[^;]+;/', '', $value );
+
 		// Get all non-digits from the value
 		preg_match_all( '/[^\d]/', $value, $matches );
 
