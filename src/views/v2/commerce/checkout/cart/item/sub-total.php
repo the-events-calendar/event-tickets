@@ -28,5 +28,5 @@
 
 ?>
 <div class="tribe-tickets__commerce-checkout-cart-item-subtotal">
-	<?php echo esc_html( tribe_format_currency( $item['sub_total'] ) ); ?>
+	<?php echo wp_kses_post( \TEC\Tickets\Commerce\Utils\Price::to_currency( $item['sub_total'] ) ); ?>
 </div>

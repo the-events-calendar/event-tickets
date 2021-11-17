@@ -31,7 +31,7 @@
 			'<span class="tribe-tickets__commerce-checkout-cart-footer-total-label">',
 			'</span>',
 			'<span class="tribe-tickets__commerce-checkout-cart-footer-total-wrap">',
-			$total_value,
+			\TEC\Tickets\Commerce\Utils\Price::to_currency( $total_value ),
 			'</span>'
 		)
 	);
