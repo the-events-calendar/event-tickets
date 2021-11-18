@@ -217,15 +217,4 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Removed the ability to resend tickets from the Attendees page to Attendees who cancelled or refunded their ticket. [ETP-703]
 * Language - 26 new strings added, 116 updated, 2 fuzzied, and 35 obsoleted
 
-= [5.1.9.1] 2021-09-08 =
-
-* Fix - Fixed conflict with WooCommerce Payments plugin showing error on Ticket Form. [ET-1174]
-
-= [5.1.9] 2021-08-31 =
-
-* Fix - Fixed cart calculation inconsistency with WooCommerce when the "Number of decimals" setting was set to `0`. [ETP-324]
-* Fix - Removed RSVP V2 preview templates and functionality. [ET-1162]
-* Fix - Updated deprecated hook `block_categories` to use `block_categories_all`. [ET-1156]
-* Language - 37 new strings added, 162 updated, 6 fuzzied, and 20 obsoleted
-
 [See changelog for all versions](https://raw.githubusercontent.com/the-events-calendar/event-tickets/master/changelog.txt)
