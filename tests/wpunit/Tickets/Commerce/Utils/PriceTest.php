@@ -1,10 +1,7 @@
 <?php
+namespace TEC\Tickets\Commerce\Utils;
 
-namespace Tribe\Tickets\Commerce;
-
-use TEC\Tickets\Commerce\Utils\Price;
-
-class PriceTest extends \Codeception\Test\Unit {
+class PriceTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @dataProvider totals_provider
@@ -28,7 +25,7 @@ class PriceTest extends \Codeception\Test\Unit {
 	/**
 	 * @dataProvider totals_provider
 	 */
-	public function test_total_formattting_is_proper( $values, $decimal, $thousands_sep, $result ) {
+	public function test_total_formatting_is_proper( $values, $decimal, $thousands_sep, $result ) {
 		$total = Price::total( $values, $decimal, $thousands_sep );
 
 		$this->assertEquals( $result, $total );
@@ -37,7 +34,7 @@ class PriceTest extends \Codeception\Test\Unit {
 	/**
 	 * @dataProvider sub_totals_provider
 	 */
-	public function test_sub_total_is_acurate( $value, $quantity, $decimal, $thousands_sep, $result ) {
+	public function test_sub_total_is_accurate( $value, $quantity, $decimal, $thousands_sep, $result ) {
 		$sub_total = Price::sub_total( $value, $quantity, $decimal, $thousands_sep );
 
 		$expected_as_int = Price::to_integer( $result, $decimal, $thousands_sep );
@@ -93,7 +90,7 @@ class PriceTest extends \Codeception\Test\Unit {
 			[ '0.10', 1, '.', ',', '0.10' ], // multiply value < 1 formatted with .
 			[ '0,05', 3, ',', '.', '0,15' ], // multiply value < 1 formatted with ,
 			[ '10 10', 1, ' ', ',', '10 10' ], // value formatted with space decimal
-			[ '2345&nbsp;50', 2, '&nbsp;', '&quot;', '4&quot;691&nbsp;00' ], // html entities as separators
+			[ '2345&nbsp;50', 2, '&nbsp;', '&quot;', '469&quot;100&nbsp;00' ], // html entities as separators
 			[ '1,250.45', 2, '.', ',', '2,500.90' ], // formatted larger value
 			[ '1,250.45', 999999, '.', ',', '1,250,448,749.55' ], // super-large result
 			[ '99999.99', 15, '.', ',', '1,499,999.85' ], // semi-formatted input with large result
