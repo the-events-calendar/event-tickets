@@ -58,6 +58,9 @@ class Currency {
 	 * @return string
 	 */
 	public static function get_currency_code_fallback() {
+		// @todo TribeCommerceLegacy
+		// Prevent an infinite loop here.
+		remove_filter( 'tribe_get_option_ticket-commerce-currency-code', [ tribe( Legacy_Compat::class ), 'maybe_load_currency_code_from_tribe_commerce' ] );
 
 		// Check if we have a value set from Tribe Commerce
 		$currency_code = tribe_get_option( static::$legacy_currency_code_option, static::$currency_code_fallback );

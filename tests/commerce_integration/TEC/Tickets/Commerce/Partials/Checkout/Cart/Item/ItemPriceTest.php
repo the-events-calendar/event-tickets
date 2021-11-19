@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Partials\Checkout\Cart\Item;
 
 use TEC\Tickets\Commerce\Ticket;
 use Tribe\Tickets\Test\Testcases\TicketsCommerceSnapshotTestCase;
+use TEC\TIckets\Commerce\Order;
 
 class ItemPriceTest extends TicketsCommerceSnapshotTestCase {
 
@@ -13,7 +14,7 @@ class ItemPriceTest extends TicketsCommerceSnapshotTestCase {
 
 		$order        = $this->get_mock_thing( 'orders/1.json' );
 		$ticket        = $this->get_mock_thing( 'tickets/1.json' );
-		$cart_items = get_post_meta( $order, '_tec_tc_order_cart_items', true );
+		$cart_items = get_post_meta( $order, Order::$items_meta_key, true );
 		$item = reset( $cart_items );
 		$item['ticket_id'] = $ticket;
 

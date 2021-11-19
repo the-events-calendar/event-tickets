@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Partials\Checkout\Cart;
 
+use TEC\Tickets\Commerce\Order;
 use Tribe\Tickets\Test\Testcases\TicketsCommerceSnapshotTestCase;
 
 class CartFooterTest extends TicketsCommerceSnapshotTestCase {
@@ -13,8 +14,8 @@ class CartFooterTest extends TicketsCommerceSnapshotTestCase {
 	 */
 	public function test_should_render_cart() {
 		$order      = $this->get_mock_thing( 'orders/1.json' );
-		$cart_items = get_post_meta( $order, '_tec_tc_order_cart_items', true );
-		$total      = get_post_meta( $order, '_tec_tc_order_total_value', true );
+		$cart_items = get_post_meta( $order, Order::$items_meta_key, true );
+		$total      = get_post_meta( $order, Order::$total_value_meta_key, true );
 
 		$this->assertMatchesHtmlSnapshot( $this->get_partial_html( [
 				'total_value' => '$' . $total,
