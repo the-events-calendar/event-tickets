@@ -14,7 +14,7 @@ use Tribe\Test\Products\WPBrowser\Views\Legacy\PartialTestCase;
 /**
  * Class Html_Partial_Test_Case
  *
- * @package Tribe\Events\Virtual\Tests\Test_Cases
+ * @package Tribe\Tickets\Test\Testcases
  */
 class Html_Partial_Test_Case extends PartialTestCase {
 	use SnapshotAssertions;

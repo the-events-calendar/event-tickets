@@ -5,7 +5,7 @@ use \TEC\Tickets\Provider as Tickets_Provider;
 $tec_support = dirname( __DIR__, 3 ) . '/the-events-calendar/tests/_support';
 Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
 
-// Let's  make sure Views v2 are activated if not.
+// Let's  make sure Tickets Commerce is active.
 putenv( 'TEC_TICKETS_COMMERCE=1' );
 tribe_register_provider( Tickets_Provider::class );
 
