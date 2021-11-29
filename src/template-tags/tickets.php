@@ -1247,6 +1247,7 @@ if ( ! function_exists( 'tribe_tickets' ) ) {
 			'rsvp'           => 'tickets.ticket-repository.rsvp',
 			'tribe-commerce' => 'tickets.ticket-repository.commerce',
 			'restv1'         => 'tickets.rest-v1.ticket-repository',
+			'tickets-commerce' => 'TEC\Tickets\Commerce\Repositories\Tickets_Repository',
 		];
 
 		/**
