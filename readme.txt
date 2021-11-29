@@ -179,6 +179,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Fixed an issue where shared capcity on the ticket block page wasn't calculated correctly. [ET-1291]
+
 = [5.2.1] 2021-11-17 =
 
 * Enhancement - Auto generate checkout page when enabling Tickets Commerce. [ET-1232]
