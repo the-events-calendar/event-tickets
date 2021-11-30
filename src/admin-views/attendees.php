@@ -21,6 +21,7 @@ $singular = $pto->labels->singular_name;
  * @param Tribe__Tickets__Attendees $attendees  The attendees object.
  */
 $show_title = apply_filters( 'tribe_tickets_attendees_show_title', is_admin(), $attendees );
+$export_url = tribe( 'tickets.attendees' )->get_export_url();
 ?>
 
 <div class="wrap tribe-report-page">
@@ -39,10 +40,13 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', is_admin(), $
 			 * Add an action to render content after text title.
 			 *
 			 * @since 5.1.0
+			 * @since 5.1.7 Added the attendees information.
 			 *
 			 * @param int $event_id Post ID.
+			 * @param Tribe__Tickets__Attendees $attendees The attendees object.
 			 */
-			do_action( 'tribe_report_page_after_text_label', $event_id );
+			do_action( 'tribe_report_page_after_text_label', $event_id, $attendees );
+
 			?>
 		</h1>
 	<?php endif; ?>
@@ -162,7 +166,7 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', is_admin(), $
 	</div>
 	<?php do_action( 'tribe_events_tickets_attendees_event_summary_table_after', $event_id ); ?>
 
-	<form id="topics-filter" class="topics-filter" method="post">
+	<form id="event-tickets__attendees-admin-form" class="topics-filter event-tickets__attendees-admin-form" method="post">
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'page' : 'tribe[page]' ); ?>" value="<?php echo esc_attr( isset( $_GET['page'] ) ? $_GET['page'] : '' ); ?>" />
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'event_id' : 'tribe[event_id]' ); ?>" id="event_id" value="<?php echo esc_attr( $event_id ); ?>" />
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'post_type' : 'tribe[post_type]' ); ?>" value="<?php echo esc_attr( $event->post_type ); ?>" />

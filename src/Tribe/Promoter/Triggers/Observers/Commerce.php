@@ -56,7 +56,7 @@ class Commerce {
 	 */
 	private function trigger( $type, $attendee_id ) {
 		/** @var Tribe__Tickets__Commerce__PayPal__Main $ticket */
-		$ticket   = tribe( 'Tribe__Tickets__Commerce__PayPal__Main' );
+		$ticket   = tribe( 'tickets.commerce.paypal' );
 		$attendee = new Attendee( $ticket->get_attendee( $attendee_id ) );
 
 		/**

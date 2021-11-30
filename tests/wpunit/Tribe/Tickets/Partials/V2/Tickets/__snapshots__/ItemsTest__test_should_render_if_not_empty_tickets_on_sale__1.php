@@ -1,16 +1,13 @@
 <?php return '<div
-	id="tribe-block-tickets-item-8"
-	 class="tribe-tickets__tickets-item post-8 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	data-ticket-id="8"
-	data-available="false"
-	data-has-shared-cap="false"
-	>
+	id="tribe-block-tickets-item-3563"
+	 class="tribe-tickets__tickets-item post-3563 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	 data-ticket-id="3563" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
 		Test ticket for 8</div>
 
 
 <div
-	id="tribe__details__content--8"
+	id="tribe__details__content--3563"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
 	Test ticket description for 8</div>
 <div  class="tribe-tickets__tickets-item-extra" >
@@ -19,7 +16,7 @@
 		<span class="tribe-tickets__tickets-sale-price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">$</span>
+					<span class="tribe-currency-symbol">&#x24;</span>
 					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>
@@ -49,18 +46,15 @@
 	
 </div>
 <div
-	id="tribe-block-tickets-item-9"
-	 class="tribe-tickets__tickets-item post-9 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	data-ticket-id="9"
-	data-available="false"
-	data-has-shared-cap="false"
-	>
+	id="tribe-block-tickets-item-3564"
+	 class="tribe-tickets__tickets-item post-3564 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	 data-ticket-id="3564" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
 		Test ticket for 8</div>
 
 
 <div
-	id="tribe__details__content--9"
+	id="tribe__details__content--3564"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
 	Test ticket description for 8</div>
 <div  class="tribe-tickets__tickets-item-extra" >
@@ -69,7 +63,7 @@
 		<span class="tribe-tickets__tickets-sale-price">
 		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
-					<span class="tribe-currency-symbol">$</span>
+					<span class="tribe-currency-symbol">&#x24;</span>
 					<span class="tribe-amount">99.00</span>
 				</span>
 						</span>

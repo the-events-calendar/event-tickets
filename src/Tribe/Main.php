@@ -1,5 +1,4 @@
 <?php
-
 use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
 use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
 
@@ -8,7 +7,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.1.1';
+	const VERSION = '5.2.1';
 
 	/**
 	 * Used to store the version history.
@@ -43,7 +42,7 @@ class Tribe__Tickets__Main {
 	*
 	* @since 4.10
 	*/
-	protected $min_tec_version = '5.4.0';
+	protected $min_tec_version = '5.5.0';
 
 	/**
 	 * Name of the provider
@@ -302,8 +301,17 @@ class Tribe__Tickets__Main {
 
 		add_action( 'tribe_common_loaded', [ $this, 'bootstrap' ], 0 );
 
-		// Customizer support.
-		tribe_register_provider( Tribe\Tickets\Service_Providers\Customizer::class );
+		// Customizer support - only loaded on older version of TEC for backwards compatibility.
+		if (
+			class_exists( 'Tribe__Events__Main' )
+			&& (
+				! function_exists( 'tribe_events_views_v2_is_enabled' )
+				|| ! tribe_events_views_v2_is_enabled()
+			)
+		) {
+			tribe_register_provider( Tribe\Tickets\Service_Providers\Customizer::class );
+		}
+
 	}
 
 	/**
@@ -345,6 +353,9 @@ class Tribe__Tickets__Main {
 	public function bind_implementations() {
 		tribe_singleton( 'tickets.main', $this );
 
+		// Tickets Commerce providers.
+		tribe_register_provider( TEC\Tickets\Provider::class );
+
 		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
 		tribe_singleton( 'tickets.commerce.cart', 'Tribe__Tickets__Commerce__Cart' );
 		tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', [ 'hook' ] );
@@ -372,6 +383,9 @@ class Tribe__Tickets__Main {
 
 		// Views V2
 		tribe_register_provider( Tribe\Tickets\Events\Views\V2\Service_Provider::class );
+
+		// Admin settings.
+		tribe_register_provider( Tribe\Tickets\Admin\Settings\Service_Provider::class );
 
 		// Admin manager.
 		tribe_register_provider( Tribe\Tickets\Admin\Manager\Service_Provider::class );

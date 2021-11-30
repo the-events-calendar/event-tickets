@@ -36,6 +36,12 @@ class GlobalStockTest extends Ticket_Object_TestCase {
 		parent::tearDown();
 	}
 
+	public function _before() {
+		tribe_attendees()->per_page( -1 )->delete();
+		tribe_events()->per_page( -1 )->delete();
+		tribe_tickets()->per_page( -1 )->delete();
+	}
+
 	/**
 	 * @test
 	 *

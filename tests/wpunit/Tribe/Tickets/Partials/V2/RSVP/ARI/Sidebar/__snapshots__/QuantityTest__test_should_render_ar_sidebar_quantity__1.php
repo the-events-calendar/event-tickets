@@ -10,9 +10,15 @@
 	<span class="tribe-common-a11y-hidden">Minus</span>
 </button>
 
-		<input
+		<label
+	class="tribe-common-a11y-visual-hide"
+	for="tribe-tickets__rsvp-ar-quantity-number--94"
+>
+	Quantity</label>
+<input
 	type="number"
-	name="tribe_tickets[7][quantity]"
+	id="tribe-tickets__rsvp-ar-quantity-number--94"
+	name="tribe_tickets[94][quantity]"
 	class="tribe-common-h4"
 	step="1"
 	min="1"

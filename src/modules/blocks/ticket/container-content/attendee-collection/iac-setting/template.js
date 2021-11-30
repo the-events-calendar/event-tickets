@@ -38,7 +38,10 @@ class IACSetting extends PureComponent {
 		return (
 			<div>
 				<div className="tribe-editor__ticket__content-row--iac-setting-description">
-					{ __( 'Select the default way to sell tickets. Enabling Individual Attendee Collection will allow purchasers to enter a name and email for each ticket.', 'event-tickets' ) }
+					{ __(
+						'Select the default way to sell tickets. Enabling Individual Attendee Collection will allow purchasers to enter a name and email for each ticket.', // eslint-disable-line max-len
+						'event-tickets',
+					) }
 				</div>
 				<div className={ classNames(
 					'tribe-editor__ticket__iac-setting',
@@ -48,7 +51,7 @@ class IACSetting extends PureComponent {
 					<RadioControl
 						className="tribe-editor__ticket__iac-setting-input"
 						id={ this.id }
-						type="text"
+						type="radio"
 						selected={ iac }
 						onChange={ onChange }
 						disabled={ isDisabled }

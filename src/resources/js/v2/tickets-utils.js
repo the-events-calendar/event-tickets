@@ -1,4 +1,3 @@
-/* global tribe */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -96,7 +95,11 @@ tribe.tickets.utils = {};
 		let number = passedNumber;
 		const format = obj.getCurrencyFormatting( provider );
 
-		if ( 0 === parseInt( format.number_of_decimals ) ) {
+		// If there are no number of decimals and no thousands separator we can return the number.
+		if (
+			0 === parseInt( format.number_of_decimals ) &&
+			'' === format.thousands_sep
+		) {
 			return number;
 		}
 
@@ -156,13 +159,7 @@ tribe.tickets.utils = {};
 			return Math.round( num * k ) / k;
 		};
 
-		let s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( dec );
-
-		// if period is the thousands_sep we have to spilt using the decimal and not the comma as we work
-		// with numbers using the period as the decimal in JavaScript.
-		if ( '.' === format.thousands_sep ) {
-			s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( '.' );
-		}
+		let s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( '.' );
 
 		if ( s[ 0 ].length > 3 ) {
 			s[ 0 ] = s[ 0 ].replace( /\B(?=(?:\d{3})+(?!\d))/g, sep );
@@ -228,4 +225,26 @@ tribe.tickets.utils = {};
 		// Return the post id for the first ticket block.
 		return $ticketsBlock.getAttribute( 'data-post-id' ) || false;
 	};
+
+	/**
+	 * Get the price of the ticket from the ticket item element.
+	 *
+	 * @since 5.2.1
+	 *
+	 * @return {float|int} The ticket price.
+	 */
+	obj.getPrice = function( $ticketItem, provider ) {
+		if ( ! $ticketItem ) {
+			return 0;
+		}
+		const realPrice = $ticketItem.data( 'ticket-price' );
+		const formattedPrice = $ticketItem
+			.find( '.tribe-tickets__tickets-sale-price .tribe-amount' )
+			.text();
+		const priceString = isNaN( realPrice )
+			? obj.cleanNumber( formattedPrice, provider )
+			: realPrice;
+			return parseFloat( priceString );
+	};
+
 } )( jQuery, tribe.tickets.utils );

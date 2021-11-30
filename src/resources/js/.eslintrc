@@ -1,0 +1,31 @@
+{
+  "root": true,
+  "extends": [
+    "../../../node_modules/@the-events-calendar/product-taskmaster/config/eslint.es5.js"
+  ],
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "rules": {
+    "es5/no-block-scoping": 0,
+    "es5/no-default-parameters": 0
+  },
+  "globals": {
+    "ajaxurl": true,
+    "Give": true,
+    "jQuery": true,
+    "Qs": true,
+    "tribe": true,
+    "TribeCartEndpoint": true,
+    "TribeCurrency": true,
+    "TribeMessages": true,
+    "TribeRsvp": true,
+    "TribeTicketOptions": true,
+    "TribeTicketsAdminManager": true,
+    "TribeTicketsURLs": true,
+    "tecTicketsCommerceData": true,
+    "tecTicketsCommerceGatewayPayPalCheckout": true,
+    "paypal": true
+  }
+}

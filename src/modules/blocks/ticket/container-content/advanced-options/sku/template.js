@@ -48,7 +48,12 @@ class SKU extends PureComponent {
 						'A unique identifying code for each ticket type you\'re selling',
 						'event-tickets',
 					) }
-					tooltipLabel={ <Dashicon className="tribe-editor__ticket__tooltip-label" icon="info-outline" /> }
+					tooltipLabel={
+						<Dashicon
+							className="tribe-editor__ticket__tooltip-label"
+							icon="info-outline"
+						/>
+					}
 				/>
 				<Input
 					className="tribe-editor__ticket__sku-input"

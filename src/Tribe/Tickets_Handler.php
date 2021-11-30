@@ -109,6 +109,9 @@ class Tribe__Tickets__Tickets_Handler {
 		add_action( 'wp_insert_post', array( $this, 'update_start_date' ), 15, 3 );
 
 		add_filter( 'tribe_tickets_my_tickets_allow_email_resend_on_attendee_email_update', [ $this, 'maybe_disable_email_resend' ], 9, 3 );
+
+		// Stock actions.
+		add_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'maybe_increase_global_stock_data' ], 10, 2 );
 	}
 
 	/**
@@ -377,6 +380,9 @@ class Tribe__Tickets__Tickets_Handler {
 				'_tribe_tpp_event'           => 'tpp',
 				'_tribe_tpp_for_event'       => 'tpp',
 
+				// Tickets Commerce.
+				\TEC\Tickets\Commerce\Attendee::$event_relation_meta_key => 'tc',
+
 				// EDD
 				'_tribe_eddticket_event'     => 'edd',
 				'_tribe_eddticket_for_event' => 'edd',
@@ -405,6 +411,9 @@ class Tribe__Tickets__Tickets_Handler {
 				// PayPal tickets
 				'_tribe_tpp_order'       => 'tpp',
 
+				// Tickets Commerce.
+				\TEC\Tickets\Commerce\Attendee::$order_relation_meta_key => 'tc',
+
 				// EDD
 				'_tribe_eddticket_order' => 'edd',
 
@@ -415,6 +424,9 @@ class Tribe__Tickets__Tickets_Handler {
 			'order_item' => [
 				// PayPal tickets
 				'_tribe_tpp_order'            => 'tpp',
+
+				// Tickets Commerce.
+				\TEC\Tickets\Commerce\Attendee::$order_relation_meta_key => 'tc',
 
 				// Woo
 				'_tribe_wooticket_order_item' => 'woo',
@@ -1667,6 +1679,27 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public static function instance() {
 		return tribe( 'tickets.handler' );
+	}
+
+	/**
+	 * Increment the global stock data for an Event if Shared stock is available.
+	 *
+	 * @since 5.1.5
+	 *
+	 * @param int $post_id Post or Event ID.
+	 * @param int $attendee_id Attendee ID.
+	 */
+	public function maybe_increase_global_stock_data( $post_id, $attendee_id ) {
+
+		$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
+
+		if ( ! $global_stock->is_enabled() ) {
+			return;
+		}
+
+		$prev_stock = $global_stock->get_stock_level();
+
+		$global_stock->set_stock_level( $prev_stock + 1 );
 	}
 
 	/************************

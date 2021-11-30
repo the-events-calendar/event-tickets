@@ -14,7 +14,7 @@ describe( 'SKU', () => {
 
 	test( 'Triggers the onChange callback', () => {
 		const onChange = jest.fn();
-		const component = mount( <SKU onChange={ onChange } value={ 'modern-tribe'} /> );
+		const component = mount( <SKU onChange={ onChange } value={ 'modern-tribe' } /> );
 		component.find( 'input' ).simulate( 'change' );
 		expect( onChange ).toHaveBeenCalled();
 	} );

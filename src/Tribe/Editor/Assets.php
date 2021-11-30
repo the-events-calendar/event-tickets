@@ -20,7 +20,7 @@ class Tribe__Tickets__Editor__Assets {
 			/**
 			 * @todo revise this dependencies
 			 */
-			array(
+			[
 				'react',
 				'react-dom',
 				'thickbox',
@@ -29,14 +29,14 @@ class Tribe__Tickets__Editor__Assets {
 				'wp-i18n',
 				'wp-element',
 				'wp-editor',
-			),
+			],
 			'enqueue_block_editor_assets',
-			array(
+			[
 				'in_footer'    => false,
-				'localize'     => array(),
+				'localize'     => [],
 				'conditionals' => tribe_callback( 'tickets.editor', 'current_type_support_tickets' ),
 				'priority'     => 200,
-			)
+			]
 		);
 
 		tribe_asset(
@@ -46,14 +46,14 @@ class Tribe__Tickets__Editor__Assets {
 			/**
 			 * @todo revise this dependencies
 			 */
-			array(),
+			[],
 			'enqueue_block_editor_assets',
-			array(
+			[
 				'in_footer'    => false,
-				'localize'     => array(),
+				'localize'     => [],
 				'conditionals' => tribe_callback( 'tickets.editor', 'current_type_support_tickets' ),
 				'priority'     => 201,
-			)
+			]
 		);
 
 		tribe_asset(
@@ -63,14 +63,14 @@ class Tribe__Tickets__Editor__Assets {
 			/**
 			 * @todo revise this dependencies
 			 */
-			array(),
+			[],
 			'enqueue_block_editor_assets',
-			array(
+			[
 				'in_footer'    => false,
-				'localize'     => array(),
+				'localize'     => [],
 				'conditionals' => tribe_callback( 'tickets.editor', 'current_type_support_tickets' ),
 				'priority'     => 202,
-			)
+			]
 		);
 
 		tribe_asset(
@@ -89,26 +89,26 @@ class Tribe__Tickets__Editor__Assets {
 				'wp-editor',
 			],
 			'enqueue_block_editor_assets',
-			array(
+			[
 				'in_footer'    => false,
-				'localize'     => array(),
+				'localize'     => [],
 				'conditionals' => tribe_callback( 'tickets.editor', 'current_type_support_tickets' ),
 				'priority'     => 203,
-			)
+			]
 		);
 
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-blocks-styles',
 			'app/blocks.css',
-			array(),
+			[],
 			'enqueue_block_editor_assets',
-			array(
+			[
 				'in_footer'    => false,
-				'localize'     => array(),
+				'localize'     => [],
 				'conditionals' => tribe_callback( 'tickets.editor', 'current_type_support_tickets' ),
 				'priority'     => 15,
-			)
+			]
 		);
 	}
 }

@@ -1,5 +1,4 @@
-/* global jQuery */
-(function ( $, obj ) {
+( function ( $, obj ) {
 	'use strict';
 
 	obj.$window = $( window );

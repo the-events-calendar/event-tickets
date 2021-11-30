@@ -17,7 +17,7 @@ exports[`Ticket Constants PREFIX 1`] = `"prefix"`;
 exports[`Ticket Constants PRICE_POSITIONS 1`] = `
 Array [
   "prefix",
-  "suffix",
+  "postfix",
 ]
 `;
 
@@ -43,7 +43,7 @@ exports[`Ticket Constants RSVP_CLASS 1`] = `"Tribe__Tickets__RSVP"`;
 
 exports[`Ticket Constants SHARED 1`] = `"shared"`;
 
-exports[`Ticket Constants SUFFIX 1`] = `"suffix"`;
+exports[`Ticket Constants SUFFIX 1`] = `"postfix"`;
 
 exports[`Ticket Constants TC 1`] = `"tribe-commerce"`;
 
@@ -53,6 +53,7 @@ exports[`Ticket Constants TC_ORDERS 1`] = `"tpp-orders"`;
 
 exports[`Ticket Constants TICKET_ORDERS_PAGE_SLUG 1`] = `
 Object {
+  "Tribe__Tickets_Plus__Commerce__EDD__Main": "edd-orders",
   "Tribe__Tickets_Plus__Commerce__WooCommerce__Main": "tickets-orders",
   "Tribe__Tickets__Commerce__PayPal__Main": "tpp-orders",
 }

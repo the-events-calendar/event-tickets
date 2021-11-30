@@ -14,8 +14,9 @@
  * @since   4.10.8 Tweaked logic for unlimited maximum quantity allowed.
  * @since   4.11.5 The input's "max" is now always set.
  * @since   5.0.3 Removed duplicative vars.
+ * @since   5.1.5 Add label to the quantity input to improve accessibility.
  *
- * @version 5.0.3
+ * @version 5.1.5
  *
  * @var Tribe__Tickets__Ticket_Object    $ticket
  * @var Tribe__Tickets__Editor__Template $this
@@ -40,8 +41,15 @@ if ( $must_login ) {
 <div
 	<?php tribe_classes( $classes ); ?>
 >
+	<label
+		class="screen-reader-text"
+		for="quantity_<?php echo esc_attr( absint( $ticket->ID ) ); ?>"
+	>
+		<?php esc_html_e( 'Quantity', 'event-tickets' ); ?>
+	</label>
 	<input
 		type="number"
+		id="quantity_<?php echo esc_attr( absint( $ticket->ID ) ); ?>"
 		class="tribe-common-h3 tribe-common-h4--min-medium tribe-tickets-quantity"
 		step="1"
 		min="0"

@@ -770,6 +770,7 @@ class Tribe__Tickets__Tickets_View {
 		$args = [
 			'by' => [
 				'provider__not_in' => 'rsvp',
+				'status'           => 'publish',
 			],
 		];
 
@@ -1235,20 +1236,6 @@ class Tribe__Tickets__Tickets_View {
 		 * @var bool                             $block_html_id       [Global] The RSVP block HTML ID. $doing_shortcode may alter it.
 		 */
 		$template->add_template_globals( $args );
-
-		// Determine whether to show the previews on the page.
-		if (
-			defined( 'TRIBE_TICKETS_RSVP_NEW_VIEWS_PREVIEW' )
-			&& TRIBE_TICKETS_RSVP_NEW_VIEWS_PREVIEW
-		) {
-			// Enqueue new assets.
-			tribe_asset_enqueue( 'tribe-tickets-rsvp-style' );
-			tribe_asset_enqueue( 'tribe-tickets-forms-style' );
-			// @todo: Remove this once we solve the common breakpoints vs container based.
-			tribe_asset_enqueue( 'tribe-common-responsive' );
-
-			return $template->template( 'v2/rsvp-kitchen-sink', $args, $echo );
-		}
 
 		ob_start();
 

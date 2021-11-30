@@ -11,8 +11,9 @@
  * @since   4.11.0 Added RSVP/ticket view link to template.
  * @since   4.11.1 Corrected amount of available/remaining tickets when threshold is empty.
  * @since   4.11.5 Display total available separately from setting max allowed to purchase at once.
+ * @since   5.1.5 Add label to the quantity input to improve accessibility.
  *
- * @version 4.11.5
+ * @version 5.1.5
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login
@@ -141,13 +142,20 @@ if ( ! $already_rendered ) {
 				<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket_id ); ?>">
 					<input type="hidden" name="product_id[]" value="<?php echo absint( $ticket_id ); ?>">
 					<?php if ( $is_there_any_rsvp_stock ) : ?>
+						<label
+							class="screen-reader-text"
+							for="quantity_<?php echo esc_attr( absint( $ticket_id ) ); ?>"
+						>
+							<?php esc_html_e( 'Quantity', 'event-tickets' ); ?>
+						</label>
 						<input
 							type="number"
 							class="tribe-tickets-quantity"
 							step="1"
 							min="0"
 							max="<?php echo esc_attr( $max_at_a_time ); ?>"
-							name="quantity_<?php echo absint( $ticket_id ); ?>"
+							name="quantity_<?php echo esc_attr( absint( $ticket_id ) ); ?>"
+							id="quantity_<?php echo esc_attr( absint( $ticket_id ) ); ?>"
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>

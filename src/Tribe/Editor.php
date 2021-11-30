@@ -51,6 +51,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @since 4.9
 	 *
+	 *
 	 * @param array $template Array of all the templates used by default
 	 * @param string $post_type The current post type
 	 *
@@ -222,10 +223,13 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 * @return string
 	 */
 	public function filter_get_price_fields( $post_id, $ticket_id ) {
-		$context = array(
+		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post_id );
+
+		$context = [
 			'post_id'   => $post_id,
 			'ticket_id' => $ticket_id,
-		);
+			'provider'  => $provider,
+		];
 
 		return tribe( 'tickets.admin.views' )->template( 'editor/fieldset/price', $context );
 	}

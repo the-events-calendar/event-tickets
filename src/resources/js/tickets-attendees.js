@@ -4,7 +4,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 ( function( $, obj ) {
 
 	function init() {
-		if ( typeof AttendeesPointer !== 'undefined' && null !== AttendeesPointer ) {
+		if ( typeof AttendeesPointer !== 'undefined' && AttendeesPointer.length ) {
 			options = $.extend( AttendeesPointer.options, {
 				close: function() {
 					$.post( Attendees.ajaxurl, {
@@ -39,7 +39,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			var $table = $( 'table.wp-list-table.attendees' ),
 				$visible_columns = $table.find( 'thead th:visible' ).length,
 				$header_and_data = $table.find( 'th,td' ),
-				hidden_in_print = 2;
+				hidden_in_print = 3;
 
 			// make the visible columns stretch to fill the available width
 			$header_and_data.css( {'width': 100 / ($visible_columns - hidden_in_print) + '%'} );
@@ -62,6 +62,21 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		$( 'span.trash a' ).on( 'click', function ( e ) {
 			return confirm( Attendees.confirmation );
 		});
+
+		$( '.event-tickets__attendees-admin-form' ).on( 'submit', function ( e ) {
+
+			// If not the delete action, return.
+			if ( 'delete_attendee' !== $( '#bulk-action-selector-top' ).val() ) {
+				return;
+			}
+
+			// If no attendee was selected, bail out.
+			if ( ! $( this ).serialize().includes( '&attendee' ) )  {
+				return;
+			}
+
+			return confirm( Attendees.bulk_confirmation );
+		} );
 
 		$( '.tickets_checkin' ).on( 'click', function( e ) {
 

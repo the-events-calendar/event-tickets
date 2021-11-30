@@ -3,7 +3,7 @@
  */
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import AutosizeInput from 'react-input-autosize';
+import TextareaAutosize from 'react-textarea-autosize';
 
 /**
  * WordPress dependencies
@@ -41,7 +41,7 @@ const getTitle = (
 	isSelected
 		? (
 			<div className="tribe-editor__rsvp-container-header__title-input-wrapper">
-				<AutosizeInput
+				<TextareaAutosize
 					className="tribe-editor__rsvp-container-header__title-input"
 					value={ tempTitle }
 					placeholder={ __( 'RSVP Title', 'event-tickets' ) }
@@ -63,10 +63,10 @@ const getDescription = (
 ) => (
 	isSelected
 		? (
-			<AutosizeInput
+			<TextareaAutosize
 				className="tribe-editor__rsvp-container-header__description-input"
 				value={ tempDescription }
-				placeholder={ __( 'description', 'event-tickets' ) }
+				placeholder={ __( 'RSVP description', 'event-tickets' ) }
 				onChange={ onTempDescriptionChange }
 				disabled={ isDisabled }
 			/>
@@ -97,7 +97,7 @@ const getCapacityLabel = ( capacity ) => {
 			plural={ plural }
 			fallback={ fallback }
 		/>
-	)
+	);
 };
 
 const RSVPContainerHeader = ( {
@@ -135,7 +135,7 @@ const RSVPContainerHeader = ( {
 			</div>
 			<RSVPCounters />
 		</Fragment>
-	)
+	);
 };
 
 RSVPContainerHeader.propTypes = {

@@ -23,9 +23,9 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 	 */
 	public function default_attributes() {
 
-		$defaults = array(
+		$defaults = [
 			'title' => __( "Who's coming?", 'event-tickets' ),
-		);
+		];
 
 		return $defaults;
 	}
@@ -60,7 +60,7 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 	 *
 	 * @return string
 	 */
-	public function render( $attributes = array() ) {
+	public function render( $attributes = [] ) {
 		/** @var Tribe__Tickets__Editor__Template $template */
 		$template        = tribe( 'tickets.editor.template' );
 		$args['post_id'] = $post_id = $template->get( 'post_id', null, false );
@@ -74,15 +74,16 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 		/** @var \Tribe\Tickets\Events\Attendees_List $attendees_list */
 		$attendees_list = tribe( 'tickets.events.attendees-list' );
 
-		$args['attendees'] = $attendees_list->get_attendees_for_post( $post_id );
+		$args['attendees']       = $attendees_list->get_attendees_for_post( $post_id );
+		$args['attendees_total'] = $attendees_list->get_attendance_counts( $post_id );
 
-		// Add the rendering attributes into global context
+		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
 
-		// enqueue assets
+		// enqueue assets.
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-attendees-style' );
 
-		return $template->template( array( 'blocks', $this->slug() ), $args, false );
+		return $template->template( [ 'blocks', $this->slug() ], $args, false );
 	}
 
 	/**

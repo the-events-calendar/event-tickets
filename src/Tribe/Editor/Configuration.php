@@ -15,11 +15,11 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	 * @since 4.9
 	 */
 	public function hook() {
-		add_filter( 'tribe_editor_config', array( $this, 'editor_config' ) );
+		add_filter( 'tribe_editor_config', [ $this, 'editor_config' ] );
 	}
 
 	/**
-	 * Hook into "tribe_editor_config" to attach new variables for tickets
+	 * Hook into "tribe_editor_config" to attach new variables for tickets.
 	 *
 	 * @since 4.9
 	 *
@@ -79,11 +79,11 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	 */
 	public function set_defaults( $editor_config ) {
 		if ( empty( $editor_config['common']['rest'] ) ) {
-			$editor_config['common']['rest'] = array();
+			$editor_config['common']['rest'] = [];
 		}
 
 		if ( empty( $editor_config['common']['rest']['nonce'] ) ) {
-			$editor_config['common']['rest']['nonce'] = array();
+			$editor_config['common']['rest']['nonce'] = [];
 		}
 
 		return $editor_config;
@@ -97,11 +97,11 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	 * @return array
 	 */
 	public function localize() {
-		return array(
+		return [
 			'providers'        => $this->get_providers(),
 			'default_provider' => Tribe__Tickets__Tickets::get_default_module(),
 			'default_currency' => tribe_get_option( 'defaultCurrencySymbol', '$' ),
-		);
+		];
 	}
 
 	/**
@@ -134,9 +134,12 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 				$currency_position = $currency->get_provider_symbol_position( $class_name, null );
 			}
 
+			$html_safe_class = str_replace( [ '\\' ], [ '_' ], $class_name );
+
 			$providers[] = [
 				'name'              => $modules[ $class_name ],
 				'class'             => $class_name,
+				'html_safe_class'   => sanitize_html_class( $html_safe_class ),
 				'currency'          => html_entity_decode( $currency_symbol ),
 				'currency_position' => $currency_position,
 			];

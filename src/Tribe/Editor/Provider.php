@@ -71,7 +71,7 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 		 */
 		$this->load_compatibility_tickets();
 
-		// Initialize the correct Singleton
+		// Initialize the correct Singleton.
 		tribe( 'tickets.editor.assets' );
 		tribe( 'tickets.editor.configuration' );
 		tribe( 'tickets.editor.template.overwrite' )->hook();
@@ -83,10 +83,9 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	 * In place of delegating the hooking responsibility to the single classes they are all hooked here.
 	 *
 	 * @since 4.9
-	 *
 	 */
 	protected function hook() {
-		// Setup the Meta registration
+		// Setup the Meta registration.
 		add_action( 'init', tribe_callback( 'tickets.editor.meta', 'register' ), 15 );
 		add_filter(
 			'register_meta_args',
@@ -103,10 +102,10 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 			3
 		);
 
-		// Setup the Rest compatibility layer for WP
+		// Setup the Rest compatibility layer for WP.
 		tribe( 'tickets.editor.rest.compatibility' );
 
-		// Register blocks
+		// Register blocks.
 		add_action(
 			'tribe_editor_register_blocks',
 			tribe_callback( 'tickets.editor.blocks.rsvp', 'register' )
@@ -127,10 +126,21 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 			tribe_callback( 'tickets.editor.blocks.attendees', 'register' )
 		);
 
-		add_action(
-			'block_categories',
-			tribe_callback( 'tickets.editor', 'block_categories' )
-		);
+		global $wp_version;
+		if( version_compare( $wp_version, '5.8', '<' ) ) {
+			// WP version is less then 5.8.
+			add_action(
+				'block_categories',
+				tribe_callback( 'tickets.editor', 'block_categories' )
+			);
+		} else {
+			// WP version is 5.8 or above.
+			add_action(
+				'block_categories_all',
+				tribe_callback( 'tickets.editor', 'block_categories' )
+			);
+		}
+		
 	}
 
 	/**

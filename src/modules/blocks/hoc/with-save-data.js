@@ -29,7 +29,7 @@ const blockRegister = {};
  * component to extract the keys of those to do the comparision.
  *
  * @param {object} selectedAttributes Set of attributes to only update fallback to this.props.attributes
- * @returns {function} Return a new HOC
+ * @returns {Function} Return a new HOC
  */
 export default ( selectedAttributes = null ) => ( WrappedComponent ) => {
 	class WithSaveData extends Component {
@@ -154,7 +154,7 @@ export default ( selectedAttributes = null ) => ( WrappedComponent ) => {
 			}
 	}
 
-	WithSaveData.displayName = `WithSaveData( ${ WrappedComponent.displayName || WrappedComponent.name || 'Component ' }`;
+	WithSaveData.displayName = `WithSaveData( ${ WrappedComponent.displayName || WrappedComponent.name || 'Component ' }`; // eslint-disable-line max-len
 
 	return WithSaveData;
 };

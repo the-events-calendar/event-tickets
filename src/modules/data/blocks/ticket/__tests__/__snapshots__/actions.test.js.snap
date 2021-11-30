@@ -344,6 +344,16 @@ Object {
 }
 `;
 
+exports[`Ticket actions Ticket details actions set ticket iac setting 1`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "iac": "allowed",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_IAC_SETTING",
+}
+`;
+
 exports[`Ticket actions Ticket details actions set ticket price 1`] = `
 Object {
   "payload": Object {
@@ -361,16 +371,6 @@ Object {
     "sku": "my-sku",
   },
   "type": "@@MT/TICKETS/SET_TICKET_SKU",
-}
-`;
-
-exports[`Ticket actions Ticket details actions set ticket iac setting 1`] = `
-Object {
-  "payload": Object {
-    "clientId": "modern-tribe",
-    "iac": "allowed",
-  },
-  "type": "@@MT/TICKETS/SET_TICKET_IAC_SETTING",
 }
 `;
 
@@ -639,6 +639,16 @@ Object {
 }
 `;
 
+exports[`Ticket actions Ticket temp details actions set ticket temp iac setting 1`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "iac": "allowed",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_TEMP_IAC_SETTING",
+}
+`;
+
 exports[`Ticket actions Ticket temp details actions set ticket temp price 1`] = `
 Object {
   "payload": Object {
@@ -656,16 +666,6 @@ Object {
     "sku": "my-sku",
   },
   "type": "@@MT/TICKETS/SET_TICKET_TEMP_SKU",
-}
-`;
-
-exports[`Ticket actions Ticket temp details actions set ticket temp iac setting 1`] = `
-Object {
-  "payload": Object {
-    "clientId": "modern-tribe",
-    "iac": "allowed",
-  },
-  "type": "@@MT/TICKETS/SET_TICKET_TEMP_IAC_SETTING",
 }
 `;
 

@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import React from 'react';
+
+/**
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
@@ -24,7 +29,7 @@ export default {
 		'Find out who is planning to attend!',
 		'event-tickets',
 	),
-	icon: <RSVPIcon/>,
+	icon: <RSVPIcon />,
 	category: 'tribe-tickets',
 	keywords: [ 'event', 'events-gutenberg', 'tribe' ],
 

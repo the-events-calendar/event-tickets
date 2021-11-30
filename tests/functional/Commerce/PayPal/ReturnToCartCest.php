@@ -51,7 +51,7 @@ class ReturnToCartCest {
 	 *
 	 * @test
 	 */
-	public function should_not_display_a_return_to_cart_link_if_there_are_no_pay_pal_tickets_in_the_cart( FunctionalTester $I ) {
+	public function should_not_display_a_return_to_cart_link_if_there_are_no_paypal_tickets_in_the_cart( FunctionalTester $I ) {
 		$post_id = $I->havePostInDatabase( [ 'post_status' => 'publish' ] );
 		$this->create_paypal_ticket_basic( $post_id, 1 );
 
@@ -69,7 +69,7 @@ class ReturnToCartCest {
 	 *
 	 * @test
 	 */
-	public function should_display_a_return_to_cart_link_if_there_are_pay_pal_tickets_in_the_cart( FunctionalTester $I ) {
+	public function should_display_a_return_to_cart_link_if_there_are_paypal_tickets_in_the_cart( FunctionalTester $I ) {
 		$post_id   = $I->havePostInDatabase( [ 'post_status' => 'publish' ] );
 		$ticket_id = $this->create_paypal_ticket_basic( $post_id, 1 );
 		$transient = \Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged::get_transient_name( '123foo' );

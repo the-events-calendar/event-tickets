@@ -10,6 +10,8 @@
  *
  * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
+ * @var	int	$attendees_total Total number of attendees confirmed for the event.
+ *
  * @since 4.9.2
  * @version 4.11.3
  *
@@ -21,7 +23,6 @@ if ( is_bool( $display_subtitle ) && ! $display_subtitle ) {
 }
 
 $post_id         = $this->get( 'post_id' );
-$attendees_total = count( $attendees );
 $message         = _n( 'One person is attending %2$s', '%d people are attending %s', $attendees_total, 'event-tickets' );
 ?>
 <p><?php

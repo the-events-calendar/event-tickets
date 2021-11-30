@@ -27,6 +27,7 @@ Object {
   ],
   "save": [Function],
   "supports": Object {
+    "customClassName": false,
     "html": false,
   },
   "title": "Event Ticket",

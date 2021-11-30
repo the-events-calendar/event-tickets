@@ -15,6 +15,7 @@ import { withStore } from '@moderntribe/common/hoc';
  * Full payload from gutenberg media upload is not used,
  * only id, alt, and src are used for this specific case.
  */
+
 const mapStateToProps = ( state ) => ( {
 	image: {
 		id: selectors.getRSVPHeaderImageId( state ),
@@ -29,6 +30,7 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	 * Full payload from gutenberg media upload is not used,
 	 * only id, alt, and medium src are used for this specific case.
 	 */
+
 	onSelect: ( image ) => dispatch( actions.updateRSVPHeaderImage( image ) ),
 	onRemove: () => dispatch( actions.deleteRSVPHeaderImage() ),
 

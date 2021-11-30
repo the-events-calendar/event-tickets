@@ -21,6 +21,7 @@ const mapStateToProps = ( state ) => ( {
 	isDisabled: getIsDisabled( state ),
 	tempCapacity: selectors.getRSVPTempCapacity( state ),
 	tempNotGoingResponses: selectors.getRSVPTempNotGoingResponses( state ),
+	hasBeenCreated: selectors.getRSVPCreated( state ),
 } );
 
 const mapDispatchToProps = ( dispatch ) => ( {
@@ -31,7 +32,7 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	onTempNotGoingResponsesChange: ( e ) => {
 		dispatch( actions.setRSVPTempNotGoingResponses( e.target.checked ) );
 		dispatch( actions.setRSVPHasChanges( true ) );
-	}
+	},
 } );
 
 export default compose(

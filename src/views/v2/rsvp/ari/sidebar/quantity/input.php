@@ -14,8 +14,9 @@
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  *
  * @since   4.12.3
+ * @since   5.1.5 Add label to the input to improve accessibility.
  *
- * @version 4.12.3
+ * @version 5.1.5
  */
 
 /** @var Tribe__Tickets__Ticket_Object $rsvp */
@@ -28,9 +29,16 @@ $tickets_handler = tribe( 'tickets.handler' );
 
 $max_at_a_time = $tickets_handler->get_ticket_max_purchase( $rsvp->ID );
 ?>
+<label
+	class="tribe-common-a11y-visual-hide"
+	for="tribe-tickets__rsvp-ar-quantity-number--<?php echo esc_attr( absint( $rsvp->ID ) ); ?>"
+>
+	<?php esc_html_e( 'Quantity', 'event-tickets' ); ?>
+</label>
 <input
 	type="number"
-	name="tribe_tickets[<?php echo absint( $rsvp->ID ); ?>][quantity]"
+	id="tribe-tickets__rsvp-ar-quantity-number--<?php echo esc_attr( absint( $rsvp->ID ) ); ?>"
+	name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][quantity]"
 	class="tribe-common-h4"
 	step="1"
 	min="1"
