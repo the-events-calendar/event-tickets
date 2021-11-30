@@ -270,7 +270,7 @@ class Ticket {
 		}
 
 		/** @todo TribeCommerceLegacy: Remove the usage of Currency from Tribe Commerce totally, leave that behind. */
-		add_filter( 'tribe_get_option_ticket-commerce-currency-code', [ tribe( Legacy_Compat::class ), 'maybe_load_currency_code_from_tribe_commerce' ] );
+		add_filter( 'tribe_get_option_tickets-commerce-currency-code', [ tribe( Legacy_Compat::class ), 'maybe_load_currency_code_from_tribe_commerce' ] );
 
 		$event_id = get_post_meta( $ticket_id, static::$event_relation_meta_key, true );
 
