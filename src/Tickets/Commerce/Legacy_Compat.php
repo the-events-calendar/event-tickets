@@ -72,8 +72,10 @@ class Legacy_Compat extends tad_DI52_ServiceProvider {
 	 */
 	public function maybe_load_currency_code_from_tribe_commerce( $value ) {
 
-		if ( ! empty( $value ) ) {
-			return $value;
+		$currency = Currency::get_currency_code();
+
+		if ( ! empty( $currency ) ) {
+			return $currency;
 		}
 
 		return Currency::get_currency_code_fallback();
