@@ -1144,10 +1144,11 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @param WP_Post|int $post The post object or ID.
 	 * @param boolean     $echo Whether to echo the output or not.
+	 * @param int[]       $include_tickets Array of ticket IDs to include, excluding all others.
 	 *
 	 * @return string The block HTML.
 	 */
-	public function get_rsvp_block( $post, $echo = true ) {
+	public function get_rsvp_block( $post, $echo = true, $include_tickets = [] ) {
 		if ( empty( $post ) ) {
 			return '';
 		}
@@ -1192,6 +1193,12 @@ class Tribe__Tickets__Tickets_View {
 		$tickets        = $blocks_rsvp->get_tickets( $post_id );
 		$active_tickets = $blocks_rsvp->get_active_tickets( $tickets );
 		$past_tickets   = $blocks_rsvp->get_all_tickets_past( $tickets );
+		
+		if( ! empty( $include_tickets ) ) {
+			$tickets        = Tribe__Tickets_Plus__Tickets::filter_tickets_by_ids( $tickets, $include_tickets );
+			$active_tickets = Tribe__Tickets_Plus__Tickets::filter_tickets_by_ids( $active_tickets, $include_tickets );
+			$past_tickets   = Tribe__Tickets_Plus__Tickets::filter_tickets_by_ids( $past_tickets, $include_tickets );
+		}
 
 		$args = [
 			'post_id'             => $post_id,
