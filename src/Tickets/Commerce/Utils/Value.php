@@ -27,6 +27,17 @@ class Value extends Abstract_Currency  {
 		$this->currency_separator_thousands = Currency::get_currency_separator_thousands( $this->get_currency_code() );
 	}
 
+	public static function build_list( $values ) {
+		return array_map( function( $value ) {
+
+			if ( \is_a(  $value,'Tribe\Values\Abstract_Currency' ) ) {
+				return $value;
+			}
+
+			return new self( $value );
+		}, $values );
+	}
+
 	/**
 	 * @inheritDoc
 	 */

@@ -470,7 +470,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * Gets the product price value object
 	 *
 	 * @since 5.1.9
-	 * @since TBD method changed to return an instance of Value instead of a string.
+	 * @since TBD method signature changed to return an instance of Value instead of a string.
 	 *
 	 * @version TBD
 	 *
