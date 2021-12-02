@@ -462,7 +462,8 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return string
 	 */
 	public function get_price_value( $product ) {
-		return tribe( Ticket::class )->get_price_value( $product );
+		$ticket = Commerce\Models\Ticket_Model::from_post( $product );
+		return $ticket->get_value();
 	}
 
 	/**

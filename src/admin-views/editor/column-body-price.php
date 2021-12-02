@@ -9,8 +9,7 @@ if ( method_exists( $provider_obj, 'get_price_value' ) ) {
 <td class="ticket_price" data-label="<?php esc_html_e( 'Price:', 'event-tickets' ); ?>">
 	<?php
 	if ( $price ) {
-		// outputs HTML - can't escape
-		echo $provider_obj->get_price_html( $ticket->ID );
+		echo esc_html( $price->get_currency() );
 	} else {
 		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
 			echo esc_html( tribe_get_rsvp_label_singular( basename( __FILE__ ) ) );
