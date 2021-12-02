@@ -70,12 +70,21 @@ class Legacy_Compat extends tad_DI52_ServiceProvider {
 	 *
 	 * @return string
 	 */
-	public function maybe_load_currency_code_from_tribe_commerce( $value ) {
-
-		if ( ! empty( $value ) ) {
+	public function maybe_load_currency_code_from_tribe_commerce( $value, $option_name, $default ) {
+		
+		// First, get code from Tickets Commerce and return if exists.
+		$currency = Currency::get_currency_code();
+		if ( ! empty( $currency ) ) {
+			return $currency;
+		}
+		
+		// Then, if Tribe Commerce value exists, update the Tickets Commerce setting and return it.
+		if( ! empty( $value ) ) {
+			tribe_update_option( Currency::$currency_code_option, $value );
 			return $value;
 		}
 
-		return Currency::get_currency_code_fallback();
+		// Otherwise, return the default.
+		return $default;
 	}
 }
