@@ -449,17 +449,34 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return string
 	 */
 	public function get_price_html( $product, $attendee = false ) {
-		return tribe( Ticket::class )->get_price_html( $product, $attendee );
+		$value = $this->get_price_value( $product );
+
+		$price_html = '<span class="tribe-tickets-price-amount amount">' . esc_html( $value->get_currency() ) . '</span>';
+
+		/**
+		 * Allow filtering of the Price HTML
+		 *
+		 * @since TBD
+		 *
+		 * @param string $price_html
+		 * @param mixed  $product
+		 * @param mixed  $attendee
+		 *
+		 */
+		return apply_filters( 'tec_tickets_commerce_ticket_price_html', $price_html, $product, $attendee );
 	}
 
 	/**
-	 * Gets the product price value
+	 * Gets the product price value object
 	 *
 	 * @since 5.1.9
+	 * @since TBD method changed to return an instance of Value instead of a string.
+	 *
+	 * @version TBD
 	 *
 	 * @param int|\WP_Post $product
 	 *
-	 * @return string
+	 * @return Commerce\Utils\Value;
 	 */
 	public function get_price_value( $product ) {
 		$ticket = Commerce\Models\Ticket_Model::from_post( $product );
