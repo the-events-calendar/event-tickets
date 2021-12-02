@@ -248,10 +248,7 @@ class Price {
 			$value = static::to_numeric( $value );
 		}
 
-		/** @todo TribeCommerceLegacy: Remove the usage of Currency from Tribe Commerce totally, leave that behind. */
-		add_filter( 'tribe_get_option_ticket-commerce-currency-code', [ tribe( Legacy_Compat::class ), 'maybe_load_currency_code_from_tribe_commerce' ], 10, 3 );
 		$currency = tribe( 'tickets.commerce.paypal.currency' )->format_currency( $value );
-		remove_filter( 'tribe_get_option_ticket-commerce-currency-code', [ tribe( Legacy_Compat::class ), 'maybe_load_currency_code_from_tribe_commerce' ] );
 
 		return $currency;
 	}
