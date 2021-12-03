@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, aguseo, bordoni
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 5.6
 Tested up to: 5.8.1
-Stable tag: 5.2.1
+Stable tag: 5.2.2
 Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -179,8 +179,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.2.2] TBD =
 
+* Enhancement - Allow for filtering of tickets within the RSVP template block handler. [ETP-763]
 * Fix - Remove use of `wp_cache_flush()` and use conditional when using an external object cache. (props to @r-a-y for this change!) [ET-1343]
 * Fix - Fixes error being caused by an endless loop when currency settings are saved. [ET-1344]
 
