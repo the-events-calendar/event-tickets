@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Manual;
 use TEC\Tickets\Commerce\Models\Ticket_Model;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order as Commerce_Order;
+use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Utils__Array as Arr;
 
@@ -36,7 +37,7 @@ class Order {
 			static function ( $item ) {
 
 				/** @var Value $ticket_value */
-				$ticket_value = tribe( Module::class )->get_price_value( $item['ticket_id'] );
+				$ticket_value = tribe( TicketS::class )->get_price_value( $item['ticket_id'] );
 
 				if ( null === $ticket_value ) {
 					return null;

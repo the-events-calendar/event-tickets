@@ -129,6 +129,34 @@ class Ticket {
 	public static $status_count_meta_key_prefix = '_tec_tc_ticket_status_count';
 
 	/**
+	 * Stores the instance of the template engine that we will use for rendering the elements.
+	 *
+	 * @since TBD
+	 *
+	 * @var \Tribe__Template
+	 */
+	protected $template;
+
+	/**
+	 * Gets the template instance used to setup the rendering html
+	 *
+	 * @since TBD
+	 *
+	 * @return \Tribe__Template
+	 */
+	public function get_template() {
+		if ( empty( $this->template ) ) {
+			$this->template = new \Tribe__Template();
+			$this->template->set_template_origin( \Tribe__Tickets__Main::instance() );
+			$this->template->set_template_folder( 'src/views/v2/commerce/ticket' );
+			$this->template->set_template_context_extract( true );
+			$this->template->set_template_folder_lookup( true );
+		}
+
+		return $this->template;
+	}
+
+	/**
 	 * Register this Class post type into WP.
 	 *
 	 * @since 5.1.9
@@ -841,5 +869,43 @@ class Ticket {
 		}
 
 		return $sales;
+	}
+
+	/**
+	 * Gets the product price value object
+	 *
+	 * @since   5.1.9
+	 * @since   TBD method signature changed to return an instance of Value instead of a string.
+	 *
+	 * @param int|\WP_Post $product
+	 *
+	 * @return Commerce\Utils\Value;
+	 * @version TBD
+	 *
+	 */
+	public function get_price_value( $product ) {
+		$ticket = Models\Ticket_Model::from_post( $product );
+
+		if ( ! is_a( $ticket, 'TEC\Tickets\Commerce\Models\Ticket_Model' ) ) {
+			return;
+		}
+
+		return $ticket->get_value();
+	}
+
+	/**
+	 * Returns the ticket price html template
+	 *
+	 * @since 5.1.9
+	 *
+	 * @param int|object    $product
+	 * @param array|boolean $attendee
+	 *
+	 * @return string
+	 */
+	public function get_price_html( $product, $attendee = false ) {
+		$value = $this->get_price_value( $product );
+
+		return $this->get_template()->template( 'price', [ 'price' => $value ], false );
 	}
 }
