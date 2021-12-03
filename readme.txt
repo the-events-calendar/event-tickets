@@ -179,6 +179,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Enhancement - Allow for filtering of tickets within the RSVP template block handler. [ETP-763]
+
 = [5.2.1] 2021-11-17 =
 
 * Enhancement - Auto generate checkout page when enabling Tickets Commerce. [ET-1232]
