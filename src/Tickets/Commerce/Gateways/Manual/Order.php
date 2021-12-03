@@ -37,7 +37,7 @@ class Order {
 			static function ( $item ) {
 
 				/** @var Value $ticket_value */
-				$ticket_value = tribe( TicketS::class )->get_price_value( $item['ticket_id'] );
+				$ticket_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
 
 				if ( null === $ticket_value ) {
 					return null;

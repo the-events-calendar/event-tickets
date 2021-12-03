@@ -60,6 +60,13 @@ class Ticket_Model extends Base {
 		return 'tc_tickets';
 	}
 
+	/**
+	 * Returns the Value object representing this Ticket price.
+	 *
+	 * @since TBD
+	 *
+	 * @return Value
+	 */
 	public function get_value() {
 		$props = $this->get_properties( 'raw' );
 
