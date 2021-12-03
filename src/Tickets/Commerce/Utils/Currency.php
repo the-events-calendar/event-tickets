@@ -86,6 +86,26 @@ class Currency {
 			$symbol = $map[ $code ]['symbol'];
 		}
 
+		/**
+		 * Filter the specific currency symbol before returning. $code is the 3-letter currency code.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $symbol The currency symbol.
+		 *
+		 * @return string
+		 */
+		$symbol = apply_filters( "tec_tickets_commerce_currency_{$code}_symbol", $symbol );
+
+		/**
+		 * Filter all currency symbols before returning.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $symbol The currency symbol.
+		 *
+		 * @return string
+		 */
 		return apply_filters( 'tec_tickets_commerce_currency_symbol', $symbol );
 	}
 
@@ -105,8 +125,26 @@ class Currency {
 			$separator = $map[ $code ]['decimal_point'];
 		}
 
+		/**
+		 * Filter the specific currency decimal separator before returning. $code is the 3-letter currency code.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $separator The currency decimal separator character.
+		 *
+		 * @return string
+		 */
 		$separator = apply_filters( "tec_tickets_commerce_currency_{$code}_separator_decimal", $separator );
 
+		/**
+		 * Filter all currency decimal separators before returning.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $separator The currency decimal separator character.
+		 *
+		 * @return string
+		 */
 		return apply_filters( 'tec_tickets_commerce_currency_separator_decimal', $separator );
 	}
 
@@ -127,7 +165,7 @@ class Currency {
 		}
 
 		/**
-		 * Filter the specific currency thousands separator before returning.
+		 * Filter the specific currency thousands separator before returning. $code is the 3-letter currency code.
 		 *
 		 * @since TBD
 		 *
@@ -186,7 +224,6 @@ class Currency {
 		 * @since TBD
 		 *
 		 * @param string   $currency_position The currency position string.
-		 * @param null|int $post_id           The post ID.
 		 *
 		 * @return string
 		 */
