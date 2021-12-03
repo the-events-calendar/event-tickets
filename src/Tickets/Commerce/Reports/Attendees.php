@@ -10,7 +10,6 @@ namespace TEC\Tickets\Commerce\Reports;
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Admin_Tables;
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Utils\Price;
 
 /**
  * Class Reports for Attendees

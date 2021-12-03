@@ -4,7 +4,6 @@ namespace TEC\Tickets\Commerce\Reports;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Utils\Price;
 use WP_Post;
 
 use Tribe__Tickets__Main as Plugin;

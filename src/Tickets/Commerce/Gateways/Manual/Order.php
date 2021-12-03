@@ -4,7 +4,6 @@ namespace TEC\Tickets\Commerce\Gateways\Manual;
 
 use TEC\Tickets\Commerce\Models\Ticket_Model;
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Utils\Price;
 use TEC\Tickets\Commerce\Order as Commerce_Order;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Utils__Array as Arr;

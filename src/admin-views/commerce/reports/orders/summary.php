@@ -2,7 +2,7 @@
 
 use \TEC\Tickets\Commerce\Status\Completed;
 use \TEC\Tickets\Commerce\Status\Pending;
-use TEC\Tickets\Commerce\Utils\Price;
+use TEC\Tickets\Commerce\Utils\Value;
 
 ?>
 <div id="tribe-order-summary" class="welcome-panel tribe-report-panel">
@@ -73,7 +73,7 @@ use TEC\Tickets\Commerce\Utils\Price;
 					 */
 					foreach ( $tickets as $ticket ) :
 						$data = $tickets_data[ $ticket->ID ];
-						$total = new \TEC\Tickets\Commerce\Utils\Value();
+						$total = new Value();
 						$total->total( [
 							$data['total_by_status'][ Completed::SLUG ],
 							$data['total_by_status'][ Pending::SLUG ]
@@ -99,7 +99,7 @@ use TEC\Tickets\Commerce\Utils\Price;
 							esc_html__( 'Total %s Sales', 'event-tickets' ),
 							tribe_get_ticket_label_singular( 'total_sales' )
 						);
-						$total_sales_value = new \TEC\Tickets\Commerce\Utils\Value( $event_data['total_by_status'][ Completed::SLUG ] );
+						$total_sales_value = new Value( $event_data['total_by_status'][ Completed::SLUG ] );
 
 						$totals_header = sprintf(
 							'%1$s: %2$s (%3$s)',
@@ -122,7 +122,7 @@ use TEC\Tickets\Commerce\Utils\Price;
 							tribe_get_ticket_label_plural( 'total_ordered' )
 						);
 
-						$total = new \TEC\Tickets\Commerce\Utils\Value();
+						$total = new Value();
 						$total->total( [
 								$data['total_by_status'][ Completed::SLUG ],
 								$data['total_by_status'][ Pending::SLUG ]
@@ -145,7 +145,7 @@ use TEC\Tickets\Commerce\Utils\Price;
 					// Loop on all status to get items
 					foreach ( $event_data['qty_by_status'] as $status_slug => $quantity ) :
 						$status = tribe( \TEC\Tickets\Commerce\Status\Status_Handler::class )->get_by_slug( $status_slug );
-						$total = new \TEC\Tickets\Commerce\Utils\Value( $event_data['total_by_status'][ $status_slug ] );
+						$total = new Value( $event_data['total_by_status'][ $status_slug ] );
 						// do not show status if no tickets
 						if ( 0 >= (int) $quantity ) {
 							continue;

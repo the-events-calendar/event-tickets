@@ -16,7 +16,6 @@ use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Editor__Template;
-use TEC\Tickets\Commerce\Utils\Price;
 
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;

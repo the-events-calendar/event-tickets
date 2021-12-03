@@ -6,7 +6,6 @@ use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
-use TEC\Tickets\Commerce\Utils\Price;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Event;
 
