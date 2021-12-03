@@ -1194,7 +1194,7 @@ class Tribe__Tickets__Tickets_View {
 		$active_tickets = $blocks_rsvp->get_active_tickets( $tickets );
 		$past_tickets   = $blocks_rsvp->get_all_tickets_past( $tickets );
 		
-		if( ! empty( $include_tickets ) ) {
+		if( class_exists( 'Tribe__Tickets_Plus__Main' ) && ! empty( $include_tickets ) ) {
 			$tickets        = Tribe__Tickets_Plus__Tickets::filter_tickets_by_ids( $tickets, $include_tickets );
 			$active_tickets = Tribe__Tickets_Plus__Tickets::filter_tickets_by_ids( $active_tickets, $include_tickets );
 			$past_tickets   = Tribe__Tickets_Plus__Tickets::filter_tickets_by_ids( $past_tickets, $include_tickets );
