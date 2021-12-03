@@ -73,15 +73,15 @@ use TEC\Tickets\Commerce\Utils\Price;
 					 */
 					foreach ( $tickets as $ticket ) :
 						$data = $tickets_data[ $ticket->ID ];
-						$total = Price::total( [
+						$total = new \TEC\Tickets\Commerce\Utils\Value();
+						$total->total( [
 							$data['total_by_status'][ Completed::SLUG ],
 							$data['total_by_status'][ Pending::SLUG ]
 						] );
-						$total = str_replace( $thousands_sep, '', $total );
 						$ticket_sales = sprintf(
 							'%1$s: %2$s (%3$s)',
 							$ticket->name,
-							tribe_format_currency( number_format( $total, 2 ), $post_id ), // Price
+							$total->get_currency(),
 							$data['qty_by_status'][ Completed::SLUG ] + $data['qty_by_status'][ Pending::SLUG ]
 						);
 						?>
@@ -99,11 +99,12 @@ use TEC\Tickets\Commerce\Utils\Price;
 							esc_html__( 'Total %s Sales', 'event-tickets' ),
 							tribe_get_ticket_label_singular( 'total_sales' )
 						);
+						$total_sales_value = new \TEC\Tickets\Commerce\Utils\Value( $event_data['total_by_status'][ Completed::SLUG ] );
 
 						$totals_header = sprintf(
 							'%1$s: %2$s (%3$s)',
 							$text_total_sales,
-							tribe_format_currency( number_format( $event_data['total_by_status'][ Completed::SLUG ], 2 ), $post_id ), // Price
+							$total_sales_value->get_currency(),
 							$event_data['qty_by_status'][ Completed::SLUG ]
 						);
 						echo esc_html( $totals_header );
@@ -121,15 +122,16 @@ use TEC\Tickets\Commerce\Utils\Price;
 							tribe_get_ticket_label_plural( 'total_ordered' )
 						);
 
-						$total         = Price::total( [
-							$event_data['total_by_status'][ Completed::SLUG ],
-							$event_data['total_by_status'][ Pending::SLUG ]
+						$total = new \TEC\Tickets\Commerce\Utils\Value();
+						$total->total( [
+								$data['total_by_status'][ Completed::SLUG ],
+								$data['total_by_status'][ Pending::SLUG ]
 						] );
-						$total         = str_replace( $thousands_sep, '', $total );
+
 						$totals_header = sprintf(
 							'%1$s: %2$s (%3$s)',
 							$text_total_ordered,
-							tribe_format_currency( number_format( $total, 2 ), $post_id ),
+							$total->get_currency(),
 							$event_data['qty_by_status'][ Completed::SLUG ] + $event_data['qty_by_status'][ Pending::SLUG ]
 						);
 						echo esc_html( $totals_header );
@@ -143,7 +145,7 @@ use TEC\Tickets\Commerce\Utils\Price;
 					// Loop on all status to get items
 					foreach ( $event_data['qty_by_status'] as $status_slug => $quantity ) :
 						$status = tribe( \TEC\Tickets\Commerce\Status\Status_Handler::class )->get_by_slug( $status_slug );
-						$total = $event_data['total_by_status'][ $status_slug ];
+						$total = new \TEC\Tickets\Commerce\Utils\Value( $event_data['total_by_status'][ $status_slug ] );
 						// do not show status if no tickets
 						if ( 0 >= (int) $quantity ) {
 							continue;
@@ -151,7 +153,7 @@ use TEC\Tickets\Commerce\Utils\Price;
 						?>
 						<li>
 							<strong><?php echo esc_html( $status->get_name() ) ?>:</strong>
-							<?php echo esc_html( tribe_format_currency( number_format( $total, 2 ), $post_id ) ); ?>
+							<?php echo esc_html( $total->get_currency() ); ?>
 							<span id="total_issued">(<?php echo esc_html( $quantity ); ?>)</span>
 						</li>
 					<?php endforeach; ?>

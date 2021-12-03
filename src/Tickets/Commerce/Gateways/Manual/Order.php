@@ -2,8 +2,11 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Manual;
 
+use TEC\Tickets\Commerce\Models\Ticket_Model;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Utils\Price;
 use TEC\Tickets\Commerce\Order as Commerce_Order;
+use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -32,22 +35,23 @@ class Order {
 
 		$items      = array_map(
 			static function ( $item ) {
-				$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
-				if ( null === $ticket ) {
+
+				/** @var Value $ticket_value */
+				$ticket_value = tribe( Module::class )->get_price_value( $item['ticket_id'] );
+
+				if ( null === $ticket_value ) {
 					return null;
 				}
 
-				$item['sub_total'] = Price::sub_total( $ticket->price, $item['quantity'] );
-				$item['price']     = $ticket->price;
+				$item['price']     = $ticket_value->get_decimal();
+				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] );
 
 				return $item;
 			},
 			$items
 		);
-		$items      = array_filter( $items );
-		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
-		$total      = Price::total( $sub_totals );
-		$hash       = wp_generate_password( 12, false );
+		$total = $this->get_order_total_value( array_filter( $items ) );
+		$hash  = wp_generate_password( 12, false );
 
 		$order_args = [
 			'title'       => $order->generate_order_title( $items, [ 'M', $hash ] ),

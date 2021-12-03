@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Interface_Gateway;
 use TEC\Tickets\Commerce\Utils\Price;
+use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Date_Utils as Dates;
 
 /**
@@ -314,25 +315,25 @@ class Order {
 		$items      = $cart->get_items_in_cart();
 		$items      = array_map(
 			static function ( $item ) {
-				$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
-				if ( null === $ticket ) {
+				/** @var Value $ticket_value */
+				$ticket_value = tribe( Module::class )->get_price_value( $item['ticket_id'] );
+
+				if ( null === $ticket_value ) {
 					return null;
 				}
 
-				$item['sub_total'] = Price::sub_total( $ticket->price, $item['quantity'] );
-				$item['price']     = $ticket->price;
+				$item['price']     = $ticket_value->get_decimal();
+				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] );
 
 				return $item;
 			},
 			$items
 		);
-		$items      = array_filter( $items );
-		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
-		$total      = Price::total( $sub_totals );
+		$total = $this->get_order_total_value( array_filter( $items ) );
 
 		$order_args = [
 			'title'       => $this->generate_order_title( $items, $cart->get_cart_hash() ),
-			'total_value' => Price::to_numeric( $total ),
+			'total_value' => $total,
 			'items'       => $items,
 			'gateway'     => $gateway::get_key(),
 			'hash'        => $cart->get_cart_hash(),
@@ -507,6 +508,12 @@ class Order {
 	 */
 	public function get_ticket_id( \WP_Post $attendee ) {
 		return get_post_meta( $attendee->ID, static::$tickets_in_order_meta_key, true );
+	}
+
+	public function get_order_total_value( $items ) {
+		$sub_totals = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
+		$total_value = new Value();
+		return $total_value->total( $sub_totals );
 	}
 
 	/**

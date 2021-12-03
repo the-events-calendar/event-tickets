@@ -480,6 +480,11 @@ class Module extends \Tribe__Tickets__Tickets {
 	 */
 	public function get_price_value( $product ) {
 		$ticket = Commerce\Models\Ticket_Model::from_post( $product );
+
+		if ( ! is_a( $ticket, 'TEC\Tickets\Commerce\Models\Ticket_Model' ) ) {
+			return;
+		}
+
 		return $ticket->get_value();
 	}
 

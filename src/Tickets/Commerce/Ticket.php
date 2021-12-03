@@ -7,6 +7,7 @@ use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Utils\Price;
+use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Event;
 
 use Tribe__Utils__Array as Arr;
@@ -282,6 +283,7 @@ class Ticket {
 		$return->menu_order       = $product->menu_order;
 		$return->post_type        = $product->post_type;
 		$return->price            = get_post_meta( $ticket_id, '_price', true );
+		$return->value            = new Value( $return->price );
 		$return->provider_class   = Module::class;
 		$return->admin_link       = '';
 		$return->show_description = $return->show_description();
