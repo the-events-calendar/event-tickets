@@ -328,7 +328,7 @@ class Order {
 			},
 			$items
 		);
-		$total = $this->get_order_total_value( array_filter( $items ) );
+		$total = $this->get_value_total( array_filter( $items ) );
 
 		$order_args = [
 			'title'       => $this->generate_order_title( $items, $cart->get_cart_hash() ),
@@ -509,7 +509,16 @@ class Order {
 		return get_post_meta( $attendee->ID, static::$tickets_in_order_meta_key, true );
 	}
 
-	public function get_order_total_value( $items ) {
+	/**
+	 * Get a value object set with the combined price of a list of tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param int[]|float[] $items a list of values
+	 *
+	 * @return Value;
+	 */
+	public function get_value_total( $items ) {
 		$sub_totals = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
 		$total_value = new Value();
 		return $total_value->total( $sub_totals );

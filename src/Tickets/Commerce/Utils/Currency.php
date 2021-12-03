@@ -70,6 +70,15 @@ class Currency {
 		return $currency_code;
 	}
 
+	/**
+	 * Return the currency symbol to use as defined in the currency map
+	 *
+	 * @since TBD
+	 *
+	 * @param string $code the currency 3-letter code
+	 *
+	 * @return string
+	 */
 	public static function get_currency_symbol( $code ) {
 		$map = static::get_default_currency_map();
 
@@ -80,6 +89,15 @@ class Currency {
 		return apply_filters( 'tec_tickets_commerce_currency_symbol', $symbol );
 	}
 
+	/**
+	 * Return the currency decimal separator character to use as defined in the currency map
+	 *
+	 * @since TBD
+	 *
+	 * @param string $code the currency 3-letter code
+	 *
+	 * @return string
+	 */
 	public static function get_currency_separator_decimal( $code ) {
 		$map = static::get_default_currency_map();
 
@@ -92,6 +110,15 @@ class Currency {
 		return apply_filters( 'tec_tickets_commerce_currency_separator_decimal', $separator );
 	}
 
+	/**
+	 * Return the currency thousands separator character to use as defined in the currency map
+	 *
+	 * @since TBD
+	 *
+	 * @param string $code the currency 3-letter code
+	 *
+	 * @return string
+	 */
 	public static function get_currency_separator_thousands( $code ) {
 		$map = static::get_default_currency_map();
 
@@ -99,8 +126,26 @@ class Currency {
 			$separator = $map[ $code ]['thousands_sep'];
 		}
 
+		/**
+		 * Filter the specific currency thousands separator before returning.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $separator The currency thousands separator character.
+		 *
+		 * @return string
+		 */
 		$separator = apply_filters( "tec_tickets_commerce_currency_{$code}_separator_thousands", $separator );
 
+		/**
+		 * Filter all currency thousands separators before returning.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $separator The currency thousands separator character.
+		 *
+		 * @return string
+		 */
 		return apply_filters( 'tec_tickets_commerce_currency_separator_thousands', $separator );
 	}
 
@@ -138,7 +183,9 @@ class Currency {
 		/**
 		 * Whether the currency position should be 'prefix' or 'postfix' (i.e. suffix).
 		 *
-		 * @param string   $currency_position The currency position string.
+		 * @since TBD
+		 *
+		 * @param string   $currency_position The currency position string.
 		 * @param null|int $post_id           The post ID.
 		 *
 		 * @return string
@@ -154,13 +201,24 @@ class Currency {
 	}
 
 	/**
-	 * Generates the default map.
+	 * Returns the default currency settings mapping.
 	 *
 	 * @see   https://en.wikipedia.org/wiki/Decimal_separator for separators informmation
 	 * @since TBD
 	 *
 	 */
 	public static function get_default_currency_map() {
+
+		/**
+		 * Filter the default currency map before returning. This filter can be used to add or remove or modify how
+		 * currencies are formatted in Event Tickets.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $currency_map The currency position string.
+		 *
+		 * @return array
+		 */
 		return apply_filters( 'tec_tickets_commerce_default_currency_map', [
 			'AUD' => [
 				'name'          => __( 'Australian Dollar (AUD)', 'event-tickets' ),
