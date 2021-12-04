@@ -4,12 +4,12 @@ namespace Tribe\Tickets\Commerce\Utils;
 
 use TEC\Tickets\Commerce\Utils\Price;
 
-class PriceTest extends \Codeception\Test\Unit {
+class PriceTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @dataProvider totals_provider
 	 */
-	public function test_total_is_acurate( $values, $decimal, $thousands_sep, $result, $result_int ) {
+	public function test_total_is_accurate( $values, $decimal, $thousands_sep, $result, $result_int ) {
 		$total = Price::total( $values, $decimal, $thousands_sep );
 		$total_as_int = Price::to_integer( $total, $decimal, $thousands_sep );
 
@@ -28,7 +28,7 @@ class PriceTest extends \Codeception\Test\Unit {
 	/**
 	 * @dataProvider totals_provider
 	 */
-	public function test_total_formattting_is_proper( $values, $decimal, $thousands_sep, $result ) {
+	public function test_total_formatting_is_proper( $values, $decimal, $thousands_sep, $result ) {
 		$total = Price::total( $values, $decimal, $thousands_sep );
 
 		$this->assertEquals( $result, $total );
@@ -37,7 +37,7 @@ class PriceTest extends \Codeception\Test\Unit {
 	/**
 	 * @dataProvider sub_totals_provider
 	 */
-	public function test_sub_total_is_acurate( $value, $quantity, $decimal, $thousands_sep, $result ) {
+	public function test_sub_total_is_accurate( $value, $quantity, $decimal, $thousands_sep, $result ) {
 		$sub_total = Price::sub_total( $value, $quantity, $decimal, $thousands_sep );
 
 		$expected_as_int = Price::to_integer( $result, $decimal, $thousands_sep );

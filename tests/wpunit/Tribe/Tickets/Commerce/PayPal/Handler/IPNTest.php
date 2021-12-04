@@ -3,9 +3,8 @@
 namespace Tribe\Tickets\Commerce\PayPal\Handler;
 
 use Tribe__Tickets__Commerce__PayPal__Handler__IPN as IPN;
-use function tad\FunctionMockerLe\define as define_function;
 
-class IPNTest extends \Codeception\Test\Unit {
+class IPNTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
