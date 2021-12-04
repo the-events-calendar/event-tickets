@@ -65,7 +65,7 @@ jobs:
         if: steps.skip.outputs.value != 1
         with:
           path: ${{ steps.get-composer-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          key: ${{ runner.os }}-composer-${{ secrets.COMPOSER_CACHE_KEY }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-
       # ------------------------------------------------------------------------------
