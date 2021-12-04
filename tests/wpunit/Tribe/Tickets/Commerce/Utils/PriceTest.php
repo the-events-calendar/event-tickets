@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Tickets\Commerce;
+namespace Tribe\Tickets\Commerce\Utils;
 
 use TEC\Tickets\Commerce\Utils\Price;
 
