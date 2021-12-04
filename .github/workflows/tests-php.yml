@@ -62,7 +62,7 @@ jobs:
           echo "::set-output name=dir::$(composer config cache-files-dir)-${{ secrets.COMPOSER_CACHE_KEY }}"
       - uses: actions/cache@v2
         id: composer-cache
-        if: steps.skip.outputs.value != 1w
+        if: steps.skip.outputs.value != 1
         with:
           path: ${{ steps.get-composer-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ secrets.COMPOSER_CACHE_KEY }}-${{ hashFiles('**/composer.lock') }}
