@@ -2,7 +2,6 @@
 
 namespace Tribe\Tickets\Commerce\PayPal\Handler;
 
-
 use Tribe__Tickets__Commerce__PayPal__Handler__IPN as IPN;
 
 
@@ -136,6 +135,4 @@ class IPNTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertFalse( $ipn->get_config_status( 'slug', 'foo' ) );
 		$this->assertFalse( $ipn->get_config_status( 'label', 'foo' ) );
 	}
-
-
 }
