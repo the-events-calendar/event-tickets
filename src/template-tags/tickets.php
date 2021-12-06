@@ -5,6 +5,9 @@
  * Helpers to work with and customize ticketing-related features.
  */
 
+use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
+
+
 // Don't load directly
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( '-1' );
@@ -1247,6 +1250,7 @@ if ( ! function_exists( 'tribe_tickets' ) ) {
 			'rsvp'           => 'tickets.ticket-repository.rsvp',
 			'tribe-commerce' => 'tickets.ticket-repository.commerce',
 			'restv1'         => 'tickets.rest-v1.ticket-repository',
+			'tickets-commerce' => Tickets_Repository::class,
 		];
 
 		/**
