@@ -520,7 +520,7 @@ class Order {
 	 */
 	public function get_value_total( $items ) {
 		$sub_totals = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
-		$total_value = new Value();
+		$total_value = Value::create();
 		return $total_value->total( $sub_totals );
 	}
 

@@ -70,6 +70,6 @@ class Ticket_Model extends Base {
 	public function get_value() {
 		$props = $this->get_properties( 'raw' );
 
-		return new Value( $props['price'] );
+		return Value::create( $props['price'] );
 	}
 }

@@ -10,29 +10,9 @@ class Value extends Abstract_Currency  {
 	use Value_Update;
 
 	/**
-	 * @var string
+	 * @inheritdoc
 	 */
-	private $currency_code = 'USD';
-
-	/**
-	 * @var string
-	 */
-	private $currency_separator_decimal = '.';
-
-	/**
-	 * @var string
-	 */
-	private $currency_separator_thousands = ',';
-
-	/**
-	 * @var string
-	 */
-	private $currency_symbol = '$';
-
-	/**
-	 * @var string
-	 */
-	private $currency_symbol_position = 'prefix';
+	public $value_type = 'tec_tc_value';
 
 	/**
 	 * @inheritDoc
@@ -65,52 +45,4 @@ class Value extends Abstract_Currency  {
 		}, $values );
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public function get_currency_code() {
-		return $this->currency_code;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function get_currency_symbol() {
-		return $this->currency_symbol;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function get_currency_symbol_position() {
-		return $this->currency_symbol_position;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function get_currency_separator_decimal() {
-		return $this->currency_separator_decimal;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function get_currency_separator_thousands() {
-		return $this->currency_separator_thousands;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function set_class_name() {
-		$this->class_name = 'tickets_commerce_value';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function get_class_name() {
-		return $this->class_name;
-	}
 }

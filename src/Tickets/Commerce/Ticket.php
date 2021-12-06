@@ -7,9 +7,6 @@ use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
-use TEC\Tickets\Event;
-
-use Tribe__Utils__Array as Arr;
 use Tribe__Tickets__Global_Stock as Event_Stock;
 
 /**
@@ -310,7 +307,7 @@ class Ticket {
 		$return->menu_order       = $product->menu_order;
 		$return->post_type        = $product->post_type;
 		$return->price            = get_post_meta( $ticket_id, '_price', true );
-		$return->value            = new Value( $return->price );
+		$return->value            = Value::create( $return->price );
 		$return->provider_class   = Module::class;
 		$return->admin_link       = '';
 		$return->show_description = $return->show_description();
@@ -886,7 +883,7 @@ class Ticket {
 	public function get_price_value( $product ) {
 		$ticket = Models\Ticket_Model::from_post( $product );
 
-		if ( ! is_a( $ticket, 'TEC\Tickets\Commerce\Models\Ticket_Model' ) ) {
+		if ( ! $ticket instanceof Models\Ticket_Model ) {
 			return;
 		}
 

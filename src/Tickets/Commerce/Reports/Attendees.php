@@ -228,7 +228,7 @@ class Attendees extends Report_Abstract {
 					$event_data['total_by_status'][ $status_slug ] = [];
 				}
 
-				$status_value = new Commerce\Utils\Value( $ticket->price );
+				$status_value = Commerce\Utils\Value::create( $ticket->price );
 				$total_by_status[ $status_slug ]                 = $status_value->sub_total( $status_count );
 				$event_data['total_by_status'][ $status_slug ][] = $total_by_status[ $status_slug ];
 

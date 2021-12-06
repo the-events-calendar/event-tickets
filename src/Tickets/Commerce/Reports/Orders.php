@@ -350,7 +350,7 @@ class Orders extends Report_Abstract {
 					$event_data['total_by_status'][ $status_slug ] = [];
 				}
 
-				$status_value = new Commerce\Utils\Value( $ticket->price );
+				$status_value = Commerce\Utils\Value::create( $ticket->price );
 				$event_data['total_by_status'][ $status_slug ][] = $total_by_status[ $status_slug ] = $status_value->sub_total( $status_count );
 
 				$event_data['qty_by_status'][ $status_slug ] += (int) $status_count;
@@ -363,7 +363,7 @@ class Orders extends Report_Abstract {
 
 		$event_data['total_by_status'] = array_map(
 			static function ( $sub_totals ) {
-				$status_grand_total = new Commerce\Utils\Value();
+				$status_grand_total = Commerce\Utils\Value::create();
 				$status_grand_total->total( $sub_totals );
 				return $status_grand_total->get_currency();
 			},

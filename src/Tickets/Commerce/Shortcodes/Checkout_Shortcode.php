@@ -44,7 +44,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		$items      = tribe( Cart::class )->get_items_in_cart( true );
 		$sections   = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
 		$sub_totals = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
-		$total_value = new Value();
+		$total_value = Value::create();
 
 		$args = [
 			'provider_id'        => Module::class,

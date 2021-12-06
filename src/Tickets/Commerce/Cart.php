@@ -338,7 +338,7 @@ class Cart {
 					return null;
 				}
 
-				$sub_total_value = new Commerce\Utils\Value();
+				$sub_total_value = Commerce\Utils\Value::create();
 				$sub_total_value->set_value( $item['obj']->price );
 
 				$item['event_id']  = $item['obj']->get_event_id();
