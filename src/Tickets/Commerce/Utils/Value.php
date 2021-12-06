@@ -3,17 +3,35 @@
 namespace TEC\Tickets\Commerce\Utils;
 
 use Tribe\Values\Abstract_Currency;
+use Tribe\Values\Value_Update;
 
 class Value extends Abstract_Currency  {
 
+	use Value_Update;
+
+	/**
+	 * @var string
+	 */
 	private $currency_code = 'USD';
 
+	/**
+	 * @var string
+	 */
 	private $currency_separator_decimal = '.';
 
+	/**
+	 * @var string
+	 */
 	private $currency_separator_thousands = ',';
 
+	/**
+	 * @var string
+	 */
 	private $currency_symbol = '$';
 
+	/**
+	 * @var string
+	 */
 	private $currency_symbol_position = 'prefix';
 
 	/**
@@ -27,6 +45,15 @@ class Value extends Abstract_Currency  {
 		$this->currency_separator_thousands = Currency::get_currency_separator_thousands( $this->get_currency_code() );
 	}
 
+	/**
+	 * Builds a list of Value objects from a list of numeric values
+	 *
+	 * @since TBD
+	 *
+	 * @param int[]|float[] $values
+	 *
+	 * @return Value[]
+	 */
 	public static function build_list( $values ) {
 		return array_map( function( $value ) {
 
