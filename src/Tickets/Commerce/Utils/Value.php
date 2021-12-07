@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Utils;
 use Tribe\Values\Abstract_Currency;
 use Tribe\Values\Value_Update;
 
-class Value extends Abstract_Currency  {
+class Value extends Abstract_Currency {
 
 	use Value_Update;
 
@@ -18,10 +18,10 @@ class Value extends Abstract_Currency  {
 	 * @inheritDoc
 	 */
 	public function set_up_currency_details() {
-		$this->currency_code = Currency::get_currency_code();
-		$this->currency_symbol = Currency::get_currency_symbol( $this->get_currency_code() );
-		$this->currency_symbol_position = Currency::get_currency_symbol_position( $this->get_currency_code() );
-		$this->currency_separator_decimal = Currency::get_currency_separator_decimal( $this->get_currency_code() );
+		$this->currency_code                = Currency::get_currency_code();
+		$this->currency_symbol              = Currency::get_currency_symbol( $this->get_currency_code() );
+		$this->currency_symbol_position     = Currency::get_currency_symbol_position( $this->get_currency_code() );
+		$this->currency_separator_decimal   = Currency::get_currency_separator_decimal( $this->get_currency_code() );
 		$this->currency_separator_thousands = Currency::get_currency_separator_thousands( $this->get_currency_code() );
 	}
 
@@ -35,14 +35,44 @@ class Value extends Abstract_Currency  {
 	 * @return Value[]
 	 */
 	public static function build_list( $values ) {
-		return array_map( function( $value ) {
+		return array_map( function ( $value ) {
 
-			if ( \is_a(  $value,'Tribe\Values\Abstract_Currency' ) ) {
+			if ( \is_a( $value, 'Tribe\Values\Abstract_Currency' ) ) {
 				return $value;
 			}
 
 			return new self( $value );
 		}, $values );
+	}
+
+	/**
+	 * Get formatted html block with formatted currency and symbol
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_shortcode_price_html() {
+
+		$position = 'prefix' === $this->get_currency_symbol_position() ? 'prefix' : 'postfix';
+
+		$html[] = "<span class'tribe-formatted-currency-wrap tribe-currency-{$position}'>";
+		$html[] = '<span class="tribe-currency-symbol">%1$s</span>';
+		$html[] = '<span class="tribe-amount">%2$s</span>';
+		$html[] = '</span>';
+
+		if ( $position !== 'prefix' ) {
+			// If position is not prefix, swap the symbol and amount span tags
+			$hold    = $html[1];
+			$html[1] = $html[2];
+			$html[2] = $hold;
+		}
+
+		return sprintf( implode( '', $html ),
+			esc_html( $this->get_currency_symbol() ),
+			esc_html( $this->get_string() ),
+		);
+
 	}
 
 }

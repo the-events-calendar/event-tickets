@@ -687,6 +687,17 @@ class Tribe__Tickets__Commerce__Currency {
 	 */
 	public function get_formatted_currency_with_symbol( $amount, $post_id, $provider = null, $html = true ) {
 
+		if ( \TEC\Tickets\Commerce\Module::class === $provider ) {
+			$value = \TEC\Tickets\Commerce\Utils\Value::create( $amount );
+
+			if ( $html ) {
+				return $value->get_shortcode_price_html();
+			}
+
+			return $value->get_currency();
+		}
+
+
 		$amount   = $this->get_formatted_currency( $amount, $post_id, $provider );
 		$currency = $this->get_currency_by_provider( $post_id, $provider );
 
