@@ -148,7 +148,7 @@ Object {
   "TAKE": Object {
     "channel": Object {
       "close": [MockFunction],
-      "name": "nodejs",
+      "name": "",
       "take": [MockFunction],
     },
   },
