@@ -2,7 +2,6 @@
 
 namespace TEC\Tickets\Commerce;
 
-use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Interface_Gateway;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Date_Utils as Dates;
@@ -322,7 +321,7 @@ class Order {
 				}
 
 				$item['price']     = $ticket_value->get_decimal();
-				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] );
+				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
 
 				return $item;
 			},
@@ -332,11 +331,11 @@ class Order {
 
 		$order_args = [
 			'title'       => $this->generate_order_title( $items, $cart->get_cart_hash() ),
-			'total_value' => $total,
+			'total_value' => $total->get_decimal(),
 			'items'       => $items,
 			'gateway'     => $gateway::get_key(),
 			'hash'        => $cart->get_cart_hash(),
-			'currency'    => Currency::get_currency_code(),
+			'currency'    => Utils\Currency::get_currency_code(),
 		];
 
 		// When purchaser data-set is not passed we pull from the current user.
