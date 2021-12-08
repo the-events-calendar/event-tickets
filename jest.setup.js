@@ -8,12 +8,22 @@ import $ from 'jquery';
 import Enzyme, { shallow, render, mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
+process.env.TZ = 'UTC';
+
 Enzyme.configure( { adapter: new Adapter() } );
 
 global.jQuery = $;
 global.$ = $;
 global.wp = {
 	element: React,
+	api: {},
+	apiRequest: {},
+	editor: {},
+	components: {},
+	data: {},
+	blockEditor: {},
+	editor: {},
+	hooks: {},
 };
 global.shallow = shallow;
 global.render = render;
