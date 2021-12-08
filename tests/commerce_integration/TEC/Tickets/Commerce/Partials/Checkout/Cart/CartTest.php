@@ -20,13 +20,12 @@ class CartTest extends TicketsCommerceSnapshotTestCase {
 
 		foreach ( $cart_items as $key => $item ) {
 			$cart_items[ $key ]['event_id'] = $event->ID;
-			$cart_items[ $key ]['total_value'] = Value::create( 197 );
 		}
 
 		$this->assertMatchesHtmlSnapshot( $this->get_partial_html( [
 				'section'     => $event,
 				'event_id'    => $event->ID,
-				'total_value' => '$' . $total,
+				'total_value' => Value::create( $total ),
 				'items'       => $cart_items,
 			]
 		) );

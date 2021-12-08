@@ -49,7 +49,7 @@ class Currency {
 	 */
 
 	public static function get_currency_code() {
-		return tribe_get_option( static::$currency_code_option );
+		return tribe_get_option( static::$currency_code_option, static::$currency_code_fallback );
 	}
 
 	/**
@@ -161,6 +161,7 @@ class Currency {
 	 */
 	public static function get_currency_separator_thousands( $code ) {
 		$map = static::get_default_currency_map();
+		$separator = '';
 
 		if ( isset( $map[ $code ] ) ) {
 			$separator = $map[ $code ]['thousands_sep'];
