@@ -81,6 +81,7 @@ class Currency {
 	 */
 	public static function get_currency_symbol( $code ) {
 		$map = static::get_default_currency_map();
+		$symbol = '';
 
 		if ( isset( $map[ $code ] ) ) {
 			$symbol = $map[ $code ]['symbol'];
@@ -120,6 +121,7 @@ class Currency {
 	 */
 	public static function get_currency_separator_decimal( $code ) {
 		$map = static::get_default_currency_map();
+		$separator = '';
 
 		if ( isset( $map[ $code ] ) ) {
 			$separator = $map[ $code ]['decimal_point'];

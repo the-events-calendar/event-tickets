@@ -37,7 +37,7 @@ class Value extends Abstract_Currency {
 	public static function build_list( $values ) {
 		return array_map( function ( $value ) {
 
-			if ( \is_a( $value, 'Tribe\Values\Abstract_Currency' ) ) {
+			if ( $value instanceof Value ) {
 				return $value;
 			}
 
