@@ -578,7 +578,7 @@ describe( 'Ticket Block sagas', () => {
 				] ),
 			);
 			expect( gen.next().value ).toEqual(
-				call( isTribeEventPostType )
+				call( isTribeEventPostType ),
 			);
 			expect( gen.next( true ).value ).toEqual(
 				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
@@ -711,7 +711,7 @@ describe( 'Ticket Block sagas', () => {
 				] ),
 			);
 			expect( gen.next().value ).toEqual(
-				call( isTribeEventPostType )
+				call( isTribeEventPostType ),
 			);
 			expect( gen.next( true ).value ).toEqual(
 				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
@@ -832,7 +832,7 @@ describe( 'Ticket Block sagas', () => {
 				] ),
 			);
 			expect( gen.next().value ).toEqual(
-				call( isTribeEventPostType )
+				call( isTribeEventPostType ),
 			);
 			expect( gen.next( true ).value ).toEqual(
 				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
@@ -2554,7 +2554,7 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next( false ).value ).toMatchSnapshot();
 			expect( gen.next( true ).value ).toMatchSnapshot();
 			expect( gen.next().value ).toEqual(
-				call( isTribeEventPostType )
+				call( isTribeEventPostType ),
 			);
 			expect( gen.next( true ).done ).toEqual( true );
 		} );
@@ -2574,7 +2574,7 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next( true ).value ).toMatchSnapshot();
 			expect( gen.next( true ).value ).toMatchSnapshot();
 			expect( gen.next( true ).value ).toEqual(
-				call( isTribeEventPostType )
+				call( isTribeEventPostType ),
 			);
 			expect( gen.next( true ).value ).toEqual(
 				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
