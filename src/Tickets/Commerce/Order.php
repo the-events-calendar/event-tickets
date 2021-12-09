@@ -13,7 +13,7 @@ use Tribe__Date_Utils as Dates;
  *
  * @package TEC\Tickets\Commerce
  */
-class Order {
+class Order extends Abstract_Order {
 
 	/**
 	 * Tickets Commerce Order Post Type slug.
@@ -506,21 +506,6 @@ class Order {
 	 */
 	public function get_ticket_id( \WP_Post $attendee ) {
 		return get_post_meta( $attendee->ID, static::$tickets_in_order_meta_key, true );
-	}
-
-	/**
-	 * Get a value object set with the combined price of a list of tickets.
-	 *
-	 * @since TBD
-	 *
-	 * @param int[]|float[] $items a list of values
-	 *
-	 * @return Value;
-	 */
-	public function get_value_total( $items ) {
-		$sub_totals = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
-		$total_value = Value::create();
-		return $total_value->total( $sub_totals );
 	}
 
 	/**

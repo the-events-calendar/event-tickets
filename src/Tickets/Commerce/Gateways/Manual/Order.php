@@ -2,8 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Manual;
 
-use TEC\Tickets\Commerce\Models\Ticket_Model;
-use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Abstract_Order;
 use TEC\Tickets\Commerce\Order as Commerce_Order;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Utils\Value;
@@ -16,7 +15,7 @@ use Tribe__Utils__Array as Arr;
  *
  * @package TEC\Tickets\Commerce\Gateways\Manual
  */
-class Order {
+class Order extends Abstract_Order {
 	/**
 	 * Creates a manual Order based on set of items and a purchaser.
 	 *
@@ -44,18 +43,18 @@ class Order {
 				}
 
 				$item['price']     = $ticket_value->get_decimal();
-				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] );
+				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
 
 				return $item;
 			},
 			$items
 		);
-		$total = $this->get_order_total_value( array_filter( $items ) );
+		$total = $this->get_value_total( array_filter( $items ) );
 		$hash  = wp_generate_password( 12, false );
 
 		$order_args = [
 			'title'       => $order->generate_order_title( $items, [ 'M', $hash ] ),
-			'total_value' => $total,
+			'total_value' => $total->get_decimal(),
 			'items'       => $items,
 			'gateway'     => $gateway::get_key(),
 		];
