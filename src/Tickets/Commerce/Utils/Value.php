@@ -12,7 +12,7 @@ class Value extends Abstract_Currency {
 	/**
 	 * @inheritdoc
 	 */
-	public $value_type = 'tec_tc_value';
+	public $value_type = 'tickets-commerce';
 
 	/**
 	 * @inheritDoc
