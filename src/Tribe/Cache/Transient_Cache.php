@@ -25,13 +25,13 @@ class Tribe__Tickets__Cache__Transient_Cache extends Tribe__Tickets__Cache__Abst
 		}
 
 		$hash = md5( serialize( $post_types ) );
-		foreach ( $this->keys as $key ) {
+
+		array_walk( $this->keys, function( $key ) use ( $hash ) {
 			delete_transient( __CLASS__ . $key );
 			delete_transient( __CLASS__ . $key . $hash );
-		}
-
-		// Flush WordPress cache for cache compatibility
-		wp_cache_flush();
+			wp_cache_delete( __CLASS__ . $key );
+			wp_cache_delete( __CLASS__ . $key . $hash );
+		} );
 
 	}
 
