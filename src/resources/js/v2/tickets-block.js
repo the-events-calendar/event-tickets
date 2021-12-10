@@ -413,7 +413,7 @@ tribe.tickets.block = {
 
 		$sharedTickets.each(
 			function() {
-				sharedCap.push( parseInt( $( this ).attr( 'data-available-count' ), 10 ) );
+				sharedCap.push( parseInt( $( this ).attr( 'data-available-cap' ), 10 ) );
 			}
 		);
 
