@@ -10,6 +10,7 @@ namespace TEC\Tickets\Commerce\Reports;
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Admin_Tables;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Utils\Price;
 
 /**
  * Class Reports for Attendees
@@ -228,8 +229,7 @@ class Attendees extends Report_Abstract {
 					$event_data['total_by_status'][ $status_slug ] = [];
 				}
 
-				$status_value = Commerce\Utils\Value::create( $ticket->price );
-				$total_by_status[ $status_slug ]                 = $status_value->sub_total( $status_count );
+				$total_by_status[ $status_slug ]                 = Price::sub_total( $ticket->price, $status_count );
 				$event_data['total_by_status'][ $status_slug ][] = $total_by_status[ $status_slug ];
 
 				$event_data['qty_by_status'][ $status_slug ] += (int) $status_count;
@@ -242,7 +242,7 @@ class Attendees extends Report_Abstract {
 
 		$event_data['total_by_status'] = array_map(
 			static function ( $sub_totals ) {
-				return $sub_totals->get_decimal();
+				return Price::total( $sub_totals );
 			},
 			$event_data['total_by_status']
 		);

@@ -2,7 +2,6 @@
 
 namespace TEC\Tickets\Commerce\Partials\Checkout\Cart;
 
-use TEC\Tickets\Commerce\Utils\Value;
 use Tribe\Tickets\Test\Testcases\TicketsCommerceSnapshotTestCase;
 
 class CartTest extends TicketsCommerceSnapshotTestCase {
@@ -25,7 +24,7 @@ class CartTest extends TicketsCommerceSnapshotTestCase {
 		$this->assertMatchesHtmlSnapshot( $this->get_partial_html( [
 				'section'     => $event,
 				'event_id'    => $event->ID,
-				'total_value' => Value::create( $total ),
+				'total_value' => '$' . $total,
 				'items'       => $cart_items,
 			]
 		) );
