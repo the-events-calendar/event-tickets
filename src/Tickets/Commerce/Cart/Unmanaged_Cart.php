@@ -175,6 +175,7 @@ class Unmanaged_Cart implements Cart_Interface {
 		if ( 0 < $new_quantity ) {
 			$item['ticket_id'] = $item_id;
 			$item['quantity']  = $new_quantity;
+
 			$item['extra'] = $extra_data;
 
 			$this->items[ $item_id ] = $item;
