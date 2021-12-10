@@ -94,6 +94,7 @@ class Attendees_Repository extends Tribe__Repository {
 
 		$this->add_simple_meta_schema_entry( 'ticket_id', Attendee::$ticket_relation_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'event_id', Attendee::$event_relation_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'user_id', Attendee::$user_relation_meta_key, 'meta_equals' );
 	}
 
 	/**
