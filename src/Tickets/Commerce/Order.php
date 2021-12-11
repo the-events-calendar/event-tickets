@@ -2,8 +2,9 @@
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Interface_Gateway;
-use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Commerce\Utils\Price;
 use Tribe__Date_Utils as Dates;
 
 /**
@@ -13,7 +14,7 @@ use Tribe__Date_Utils as Dates;
  *
  * @package TEC\Tickets\Commerce
  */
-class Order extends Abstract_Order {
+class Order {
 
 	/**
 	 * Tickets Commerce Order Post Type slug.
@@ -313,29 +314,29 @@ class Order extends Abstract_Order {
 		$items      = $cart->get_items_in_cart();
 		$items      = array_map(
 			static function ( $item ) {
-				/** @var Value $ticket_value */
-				$ticket_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
-
-				if ( null === $ticket_value ) {
+				$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+				if ( null === $ticket ) {
 					return null;
 				}
 
-				$item['price']     = $ticket_value->get_decimal();
-				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
+				$item['sub_total'] = Price::sub_total( $ticket->price, $item['quantity'] );
+				$item['price']     = $ticket->price;
 
 				return $item;
 			},
 			$items
 		);
-		$total = $this->get_value_total( array_filter( $items ) );
+		$items      = array_filter( $items );
+		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
+		$total      = Price::total( $sub_totals );
 
 		$order_args = [
 			'title'       => $this->generate_order_title( $items, $cart->get_cart_hash() ),
-			'total_value' => $total->get_decimal(),
+			'total_value' => Price::to_numeric( $total ),
 			'items'       => $items,
 			'gateway'     => $gateway::get_key(),
 			'hash'        => $cart->get_cart_hash(),
-			'currency'    => Utils\Currency::get_currency_code(),
+			'currency'    => Currency::get_currency_code(),
 		];
 
 		// When purchaser data-set is not passed we pull from the current user.
