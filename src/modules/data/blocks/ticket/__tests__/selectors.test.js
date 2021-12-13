@@ -17,7 +17,7 @@ import {
 } from '@moderntribe/tickets/data/blocks/ticket/reducers/tickets/ticket/temp-details';
 
 jest.mock( 'moment', () => () => {
-	const moment = require.requireActual( 'moment' );
+	const moment = jest.requireActual( 'moment' );
 	return moment( 'September 1, 2018 10:30 pm', 'MMMM D, Y h:mm a' );
 } );
 
