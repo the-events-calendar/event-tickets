@@ -17,7 +17,7 @@ class Tribe__Tickets__Redirections {
 		}
 
 		$url = rawurldecode( $_GET['tribe_tickets_redirect_to'] );
-		wp_redirect( $url );
+		wp_safe_redirect( $url );
 		die();
 	}
 }
