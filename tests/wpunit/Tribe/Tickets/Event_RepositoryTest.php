@@ -17,7 +17,7 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	protected $events = [];
 
-	public function setUp() {
+	public function setUp() : void {
 		// before
 		parent::setUp();
 
