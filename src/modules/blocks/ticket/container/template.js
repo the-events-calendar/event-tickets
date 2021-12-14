@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { ContainerPanel } from '@moderntribe/tickets/elements';
 import TicketContainerHeader from '@moderntribe/tickets/blocks/ticket/container-header/template';
 import TicketContainerContent from '@moderntribe/tickets/blocks/ticket/container-content/container';
-import { LAYOUT } from '@moderntribe/tickets/elements/container-panel/element';
+import { LAYOUT } from '@moderntribe/tickets/elements/container-panel';
 import {
 	ClockActive,
 	ClockInactive,

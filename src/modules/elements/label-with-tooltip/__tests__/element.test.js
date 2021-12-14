@@ -7,7 +7,7 @@ import renderer from 'react-test-renderer';
 /**
  * Internal dependencies
  */
-import LabelWithTooltip from '@moderntribe/tickets/elements/label-with-tooltip/element';
+import LabelWithTooltip from '../element';
 
 jest.mock( '@wordpress/components', () => ( {
 	Tooltip: ( { text, position, children } ) => (
