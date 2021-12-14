@@ -6,7 +6,7 @@ import React from 'react';
 /**
  * Internal dependencies
  */
-import InactiveBlock, { LAYOUT } from './../element';
+import InactiveBlock, { LAYOUT } from '../element';
 
 describe( 'Disabled Tickets', () => {
 	it( 'renders the component as rsvp layout', () => {

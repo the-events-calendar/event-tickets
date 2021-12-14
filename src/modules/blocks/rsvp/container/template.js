@@ -14,7 +14,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { ContainerPanel } from '@moderntribe/tickets/elements';
-import { LAYOUT } from '@moderntribe/tickets/elements/container-panel/element';
+import { LAYOUT } from '@moderntribe/tickets/elements/container-panel';
 import RSVPContainerHeader from '@moderntribe/tickets/blocks/rsvp/container-header/container';
 import RSVPContainerContent from '@moderntribe/tickets/blocks/rsvp/container-content/container';
 import { RSVPActive, RSVPInactive } from '@moderntribe/tickets/icons';
