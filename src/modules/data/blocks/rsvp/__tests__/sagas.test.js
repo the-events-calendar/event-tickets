@@ -48,6 +48,14 @@ function mock() {
 						}
 					},
 					getCurrentPostId: () => 10,
+					getCurrentPostType: () => 'tribe_events',
+				};
+			}
+			if ( key === 'core' ) {
+				return {
+					getPostType: () => ( {
+						rest_base: 'tribe_events',
+					} ),
 				};
 			}
 		},
@@ -958,7 +966,7 @@ describe( 'RSVP block sagas', () => {
 		} );
 	} );
 
-	describe.skip( 'updateRSVPHeaderImage', () => {
+	describe( 'updateRSVPHeaderImage', () => {
 		it( 'should update rsvp header image', () => {
 			const postId = 10;
 			const action = {
@@ -1079,7 +1087,7 @@ describe( 'RSVP block sagas', () => {
 		} );
 	} );
 
-	describe.skip( 'deleteRSVPHeaderImage', () => {
+	describe( 'deleteRSVPHeaderImage', () => {
 		it( 'should delete rsvp header image', () => {
 			const postId = 10;
 			const gen = sagas.deleteRSVPHeaderImage();
@@ -1192,7 +1200,7 @@ describe( 'RSVP block sagas', () => {
 		} );
 	} );
 
-	describe.skip( 'setNonEventPostTypeEndDate', () => {
+	describe( 'setNonEventPostTypeEndDate', () => {
 		it( 'shoud exit on non-events', () => {
 			const gen = sagas.setNonEventPostTypeEndDate();
 
@@ -1226,9 +1234,6 @@ describe( 'RSVP block sagas', () => {
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
 				call( [ momentMock, 'clone' ] ),
-			);
-			expect( gen.next( momentMock ).value ).toEqual(
-				call( [ momentMock, 'add' ], 100, 'years' ),
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
 				call( createDates, momentMock.toDate() ),

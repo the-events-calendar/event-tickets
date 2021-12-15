@@ -7,9 +7,8 @@ import renderer from 'react-test-renderer';
 /**
  * Internal dependencies
  */
-import { ActionButton } from '@moderntribe/tickets/elements';
-import { positions } from '@moderntribe/tickets/elements/action-button/element';
-import { Button } from '@moderntribe/common/elements';
+import ActionButton, { positions } from '../element';
+import Button from '@moderntribe/common/elements/button';
 
 const Icon = () => ( <span role="img" aria-label="Emoji">🦖</span> );
 
