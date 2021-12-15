@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
-use TEC\Tickets\Commerce\Gateways\Interface_Gateway;
+use TEC\Tickets\Commerce\Gateways\Gateway_Interface;
 use TEC\Tickets\Commerce\Utils\Price;
 use Tribe__Date_Utils as Dates;
 
@@ -308,7 +308,7 @@ class Order {
 	 *
 	 * @return false|\WP_Post
 	 */
-	public function create_from_cart( Interface_Gateway $gateway, $purchaser = null ) {
+	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null ) {
 		$cart = tribe( Cart::class );
 
 		$items      = $cart->get_items_in_cart();
@@ -369,14 +369,14 @@ class Order {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @throws \Tribe__Repository__Usage_Error
-	 *
-	 * @param Interface_Gateway $gateway
+	 * @param Gateway_Interface $gateway
 	 * @param array             $args
+	 *
+	 * @throws \Tribe__Repository__Usage_Error
 	 *
 	 * @return false|\WP_Post
 	 */
-	public function create( Interface_Gateway $gateway, $args ) {
+	public function create( Gateway_Interface $gateway, $args ) {
 		$gateway_key = $gateway::get_key();
 
 		/**
@@ -385,7 +385,7 @@ class Order {
 		 * @since 5.2.0
 		 *
 		 * @param array             $args
-		 * @param Interface_Gateway $gateway
+		 * @param Gateway_Interface $gateway
 		 */
 		$args = apply_filters( "tec_tickets_commerce_order_{$gateway_key}_create_args", $args, $gateway );
 
@@ -395,7 +395,7 @@ class Order {
 		 * @since 5.2.0
 		 *
 		 * @param array             $args
-		 * @param Interface_Gateway $gateway
+		 * @param Gateway_Interface $gateway
 		 */
 		$args = apply_filters( 'tec_tickets_commerce_order_create_args', $args, $gateway );
 

@@ -18,7 +18,7 @@ use Tribe__Field_Conditional;
 use WP_Admin_Bar;
 
 /**
- * The Tickets Commerce settings.
+ * The Tickets Commerce Global settings.
  *
  * This class will contain all of the settings handling and admin settings config implementation from
  * Tribe__Tickets__Commerce__PayPal__Main that is gateway-agnostic.
@@ -26,7 +26,7 @@ use WP_Admin_Bar;
  * @since   5.1.6
  * @package Tribe\Tickets\Commerce\Tickets_Commerce
  */
-class Settings extends Abstract_Settings {
+class Settings {
 	use Has_Mode;
 
 	/**
@@ -109,6 +109,18 @@ class Settings extends Abstract_Settings {
 	public function __construct() {
 		// Configure which mode we are in.
 		$this->set_mode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' );
+	}
+
+	/**
+	 * Determine whether Tickets Commerce is in test mode.
+	 *
+	 * @since TBD    moved to Settings class
+	 * @since 5.1.6
+	 *
+	 * @return bool Whether Tickets Commerce is in test mode.
+	 */
+	public static function is_test_mode() {
+		return tribe_is_truthy( tribe_get_option( static::$option_sandbox ) );
 	}
 
 	/**

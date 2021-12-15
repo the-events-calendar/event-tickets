@@ -15,12 +15,14 @@ use Tribe__Tickets__Main;
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class Settings extends Abstract_Settings {
+
 	/**
-	 * Get the list of settings for the gateway.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @return array The list of settings for the gateway.
+	 * @inheritDoc
+	 */
+	public static $option_sandbox = 'tickets-commerce-paypal-sandbox';
+
+	/**
+	 * @inheritDoc
 	 */
 	public function get_settings() {
 		$home_url = home_url();

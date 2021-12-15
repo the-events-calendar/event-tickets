@@ -18,6 +18,16 @@ class Gateway extends Abstract_Gateway {
 	protected static $key = 'paypal';
 
 	/**
+	 * @inheritDoc
+	 */
+	protected static $settings = Settings::class;
+
+	/**
+	 * @inheritDoc
+	 */
+	protected static $merchant = Merchant::class;
+
+	/**
 	 * PayPal attribution ID for requests.
 	 *
 	 * @since 5.1.6
@@ -46,56 +56,6 @@ class Gateway extends Abstract_Gateway {
 
 	/**
 	 * @inheritDoc
-	 */
-	public static function is_connected() {
-		// If this gateway shouldn't be shown, then don't change the active status.
-		if ( ! static::should_show() ) {
-			return false;
-		}
-
-		return tribe( Merchant::class )->is_connected();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public static function is_active() {
-		// If this gateway shouldn't be shown, then don't change the active status.
-		if ( ! static::should_show() ) {
-			return false;
-		}
-
-		return tribe( Merchant::class )->is_active();
-	}
-
-	/**
-	 * Get the list of settings for the gateway.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @return array The list of settings for the gateway.
-	 */
-	public function get_settings() {
-		return tribe( Settings::class )->get_settings();
-	}
-
-	/**
-	 * Determine whether Tickets Commerce is in test mode.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @return bool Whether Tickets Commerce is in test mode.
-	 */
-	public static function is_test_mode() {
-		return tribe_is_truthy( tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_sandbox ) );
-	}
-
-	/**
-	 * Get all the admin notices.
-	 *
-	 * @since 5.2.0.
-	 *
-	 * @return array
 	 */
 	public function get_admin_notices() {
 		$notices = [
@@ -154,29 +114,4 @@ class Gateway extends Abstract_Gateway {
 		 return $notices;
 	}
 
-	/**
-	 * Displays error notice for invalid API responses, with error message from API response data.
-	 *
-	 * @since 5.2.0
-	 *
-	 * @param array  $response Raw Response data.
-	 * @param string $message  Additional message to show with error message.
-	 * @param string $slug     Slug for notice container.
-	 */
-	public function handle_invalid_response( $response, $message, $slug = 'error' ) {
-
-		$notices = tribe( Notice_Handler::class );
-		$body    = (array) json_decode( wp_remote_retrieve_body( $response ) );
-
-		$error = isset( $body['error'] ) ? $body['error'] : __( 'Something went wrong!' , 'event-tickets' );
-		$error_message = isset( $body['error_description'] ) ? $body['error_description'] : __( 'Unexpected response recieved.' , 'event-tickets' );
-
-		$notices->trigger_admin(
-			$slug,
-			[
-				'content' => sprintf( 'Error - %s : %s - %s', $error, $error_message, $message ),
-				'type'    => 'error',
-			]
-		);
-	}
 }

@@ -9,7 +9,8 @@ namespace TEC\Tickets\Commerce\Gateways;
  *
  * @package TEC\Tickets\Commerce\Gateways
  */
-interface Interface_Gateway {
+interface Gateway_Interface {
+
 	/**
 	 * Get's the key for this Commerce Gateway.
 	 *
@@ -36,6 +37,15 @@ interface Interface_Gateway {
 	 * @return string What label we are using for this gateway.
 	 */
 	public static function get_label();
+
+	/**
+	 * Get the list of settings for the gateway.
+	 *
+	 * @since 5.1.6
+	 *
+	 * @return array The list of settings for the gateway.
+	 */
+	public function get_settings();
 
 	/**
 	 * Determine whether the gateway is active.
@@ -69,9 +79,29 @@ interface Interface_Gateway {
 	 *
 	 * @since 5.1.6
 	 *
-	 * @param array       $gateways The list of registered Tickets Commerce gateways.
+	 * @param array $gateways The list of registered Tickets Commerce gateways.
 	 *
 	 * @return Abstract_Gateway[] The list of registered Tickets Commerce gateways.
 	 */
 	public function register_gateway( array $gateways );
+
+	/**
+	 * Get all the admin notices.
+	 *
+	 * @since 5.2.0.
+	 *
+	 * @return array
+	 */
+	public function get_admin_notices();
+
+	/**
+	 * Displays error notice for invalid API responses, with error message from API response data.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param array  $response Raw Response data.
+	 * @param string $message  Additional message to show with error message.
+	 * @param string $slug     Slug for notice container.
+	 */
+	public function handle_invalid_response( $response, $message, $slug = 'error' );
 }
