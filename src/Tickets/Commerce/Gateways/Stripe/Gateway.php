@@ -38,4 +38,11 @@ class Gateway extends Gateways\Abstract_Gateway {
 	public static function get_label() {
 		return __( 'Stripe', 'event-tickets' );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get_admin_notices() {
+		// TODO: Implement get_admin_notices() method.
+	}
 }

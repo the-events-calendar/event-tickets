@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
-use TEC\Tickets\Commerce\Abstract_Settings;
+use TEC\Tickets\Commerce\Gateways\Abstract_Settings;
 
 /**
  * The Stripe specific settings.
@@ -21,6 +21,19 @@ class Settings extends Abstract_Settings {
 	 * @inheritDoc
 	 */
 	public function get_settings() {
-		// TODO: Implement get_settings() method.
+		return [
+			'tickets-commerce-stripe-commerce-configure' => [
+				'type'            => 'wrapped_html',
+				'html'            => $this->get_connection_settings_html(),
+				'validation_type' => 'html',
+			],
+		];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get_connection_settings_html() {
+		return 'hi';
 	}
 }

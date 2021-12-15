@@ -53,4 +53,8 @@ class Gateway extends Abstract_Gateway {
 	public static function should_show() {
 		return false;
 	}
+
+	public function get_admin_notices() {
+		return [];
+	}
 }

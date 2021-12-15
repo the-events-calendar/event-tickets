@@ -6,7 +6,7 @@
  * @package TEC\Tickets\Commerce
  */
 
-namespace TEC\Tickets\Commerce;
+namespace TEC\Tickets\Commerce\Gateways;
 
 /**
  * The gateway settings related functionality.
@@ -34,6 +34,15 @@ abstract class Abstract_Settings {
 	 * @return array The list of settings for the gateway.
 	 */
 	abstract public function get_settings();
+
+	/**
+	 * Get the HTML for the connection box in the admin
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	abstract function get_connection_settings_html();
 
 	/**
 	 * Check if this gateway is currently in test mode.
