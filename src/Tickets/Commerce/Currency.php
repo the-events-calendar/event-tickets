@@ -14,7 +14,7 @@ class Currency {
 	/**
 	 * The option key that stores the currency code in Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.2.2
 	 *
 	 * @var string
 	 */
@@ -23,7 +23,7 @@ class Currency {
 	/**
 	 * The option key that was used to store the currency code in Tribe Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.2.2
 	 *
 	 * @var string
 	 */
@@ -32,7 +32,7 @@ class Currency {
 	/**
 	 * The fallback currency code to use if none is found.
 	 *
-	 * @since TBD
+	 * @since 5.2.2
 	 *
 	 * @var string
 	 */
@@ -41,7 +41,7 @@ class Currency {
 	/**
 	 * Retrieves the working currency code.
 	 *
-	 * @since TBD
+	 * @since 5.2.2
 	 *
 	 * @return string
 	 */
@@ -53,7 +53,7 @@ class Currency {
 	/**
 	 * Retrieve a fallback currency code.
 	 *
-	 * @since TBD
+	 * @since 5.2.2
 	 *
 	 * @return string
 	 */

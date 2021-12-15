@@ -181,11 +181,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.2.2] 2021-12-15 =
 
+* Feature - Included Price, Currency and Value classes to improve monetary handling for Tickets Commerce [ET-1331]
 * Enhancement - Allow for filtering of tickets within the RSVP template block handler. [ETP-763]
 * Fix - Remove use of `wp_cache_flush()` and use conditional when using an external object cache. (props to @r-a-y for this change!) [ET-1343]
 * Fix - Fixes error being caused by an endless loop when currency settings are saved. [ET-1344]
 * Fix - Fixed an issue where shared capacity on the ticket block page wasn't calculated correctly. [ET-1291]
 * Fix - Fixed the `Add Attendee` modal from generating a 500 error when two or more tickets have been enabled for an event. [ETP-764]
+* Language - 0 new strings added, 50 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.2.1] 2021-11-17 =
 
