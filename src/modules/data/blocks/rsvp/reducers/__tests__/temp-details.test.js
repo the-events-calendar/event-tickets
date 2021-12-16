@@ -6,7 +6,7 @@ import reducer from '@moderntribe/tickets/data/blocks/rsvp/reducers/temp-details
 import { DEFAULT_STATE } from '@moderntribe/tickets/data/blocks/rsvp/reducers/details';
 
 jest.mock( 'moment', () => () => {
-	const moment = require.requireActual( 'moment' );
+	const moment = jest.requireActual( 'moment' );
 	return moment( 'July 19, 2018 7:30 pm', 'MMMM D, Y h:mm a' );
 } );
 

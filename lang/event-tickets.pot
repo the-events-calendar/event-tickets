@@ -2,17 +2,17 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.2.1\n"
+"Project-Id-Version: Event Tickets 5.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2021-11-15 18:10:02+00:00\n"
+"POT-Creation-Date: 2021-12-15 04:34:31+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2021-11-15 18:10\n"
+"PO-Revision-Date: 2021-12-15 04:34\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.2.1)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.2.2)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: event-tickets.php:61 src/Tribe/Admin/Notices.php:92 src/Tribe/Main.php:691
 #: src/Tribe/Privacy.php:59 src/admin-views/admin-welcome-message.php:58
@@ -5503,103 +5503,103 @@ msgstr ""
 msgid "Recurring event tickets are not supported, event %s."
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:196
+#: src/Tribe/Commerce/Currency.php:197
 msgid "Australian Dollar (AUD)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:202
+#: src/Tribe/Commerce/Currency.php:203
 msgid "Brazilian Real  (BRL)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:208
+#: src/Tribe/Commerce/Currency.php:209
 msgid "Canadian Dollar (CAD)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:214
+#: src/Tribe/Commerce/Currency.php:215
 msgid "Swiss Franc (CHF)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:220
+#: src/Tribe/Commerce/Currency.php:221
 msgid "Czech Koruna (CZK)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:227
+#: src/Tribe/Commerce/Currency.php:228
 msgid "Danish Krone (DKK)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:233
+#: src/Tribe/Commerce/Currency.php:234
 msgid "Euro (EUR)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:239
+#: src/Tribe/Commerce/Currency.php:240
 msgid "Pound Sterling (GBP)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:245
+#: src/Tribe/Commerce/Currency.php:246
 msgid "Hong Kong Dollar (HKD)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:251
+#: src/Tribe/Commerce/Currency.php:252
 msgid "Hungarian Forint (HUF)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:257
+#: src/Tribe/Commerce/Currency.php:258
 msgid "Israeli New Sheqel (ILS)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:263
+#: src/Tribe/Commerce/Currency.php:264
 msgid "Indian Rupee (INR)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:269
+#: src/Tribe/Commerce/Currency.php:270
 msgid "Japanese Yen (JPY)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:275
+#: src/Tribe/Commerce/Currency.php:276
 msgid "Malaysian Ringgit (MYR)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:281
+#: src/Tribe/Commerce/Currency.php:282
 msgid "Mexican Peso (MXN)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:287
+#: src/Tribe/Commerce/Currency.php:288
 msgid "Norwegian Krone (NOK)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:293
+#: src/Tribe/Commerce/Currency.php:294
 msgid "New Zealand Dollar (NZD)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:299
+#: src/Tribe/Commerce/Currency.php:300
 msgid "Philippine Peso (PHP)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:305
+#: src/Tribe/Commerce/Currency.php:306
 msgid "Polish Zloty (PLN)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:311
+#: src/Tribe/Commerce/Currency.php:312
 msgid "Russian Ruble (RUB)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:317
+#: src/Tribe/Commerce/Currency.php:318
 msgid "Swedish Krona (SEK)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:323
+#: src/Tribe/Commerce/Currency.php:324
 msgid "Singapore Dollar (SGD)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:329
+#: src/Tribe/Commerce/Currency.php:330
 msgid "Thai Baht (THB)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:335
+#: src/Tribe/Commerce/Currency.php:336
 msgid "Taiwan New Dollar (TWD)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:341
+#: src/Tribe/Commerce/Currency.php:342
 msgid "U.S. Dollar (USD)"
 msgstr ""
 
@@ -8448,119 +8448,119 @@ msgid ""
 "latest version of PHP."
 msgstr ""
 
-#: src/template-tags/tickets.php:223
+#: src/template-tags/tickets.php:226
 msgctxt "list view stock sold out"
 msgid "Sold out"
 msgstr ""
 
 #. Translators: %s number of RSVP spots left.
-#: src/template-tags/tickets.php:266
+#: src/template-tags/tickets.php:269
 msgid "%s spot left"
 msgid_plural "%s spots left"
 msgstr[0] ""
 msgstr[1] ""
 
 #. Translators: %s number of tickets left.
-#: src/template-tags/tickets.php:269
+#: src/template-tags/tickets.php:272
 msgid "%s ticket left"
 msgid_plural "%s tickets left"
 msgstr[0] ""
 msgstr[1] ""
 
 #. Translators: %s RSVP singular or plural.
-#: src/template-tags/tickets.php:282
+#: src/template-tags/tickets.php:285
 msgctxt "list view rsvp now ticket button"
 msgid "%s Now!"
 msgstr ""
 
-#: src/template-tags/tickets.php:285
+#: src/template-tags/tickets.php:288
 msgctxt "list view buy now ticket button"
 msgid "Buy Now!"
 msgstr ""
 
-#: src/template-tags/tickets.php:526
+#: src/template-tags/tickets.php:529
 msgid "issued"
 msgstr ""
 
-#: src/template-tags/tickets.php:528
+#: src/template-tags/tickets.php:531
 msgctxt "RSVPs going"
 msgid "%s'd going"
 msgstr ""
 
 #. translators: %1$s: formatted quantity remaining
-#: src/template-tags/tickets.php:535
+#: src/template-tags/tickets.php:538
 msgctxt "unlimited remaining stock message"
 msgid "%1$s available"
 msgstr ""
 
 #. translators: %1$s: formatted quantity remaining
-#: src/template-tags/tickets.php:545
+#: src/template-tags/tickets.php:548
 msgctxt "ticket shared capacity message (remaining stock)"
 msgid "%1$s available of shared capacity"
 msgstr ""
 
 #. translators: %1$s: formatted quantity remaining
-#: src/template-tags/tickets.php:556
+#: src/template-tags/tickets.php:559
 msgctxt "ticket stock message (remaining stock)"
 msgid "%1$s available"
 msgstr ""
 
-#: src/template-tags/tickets.php:1348
+#: src/template-tags/tickets.php:1352
 msgctxt "singular label for RSVP"
 msgid "RSVP"
 msgstr ""
 
-#: src/template-tags/tickets.php:1372
+#: src/template-tags/tickets.php:1376
 msgctxt "lowercase singular label for RSVP"
 msgid "rsvp"
 msgstr ""
 
-#: src/template-tags/tickets.php:1396
+#: src/template-tags/tickets.php:1400
 msgctxt "plural label for RSVPs"
 msgid "RSVPs"
 msgstr ""
 
-#: src/template-tags/tickets.php:1420
+#: src/template-tags/tickets.php:1424
 msgctxt "lowercase plural label for RSVPs"
 msgid "rsvps"
 msgstr ""
 
-#: src/template-tags/tickets.php:1444
+#: src/template-tags/tickets.php:1448
 msgctxt "singular label for Ticket"
 msgid "Ticket"
 msgstr ""
 
-#: src/template-tags/tickets.php:1468
+#: src/template-tags/tickets.php:1472
 msgctxt "lowercase singular label for Ticket"
 msgid "ticket"
 msgstr ""
 
-#: src/template-tags/tickets.php:1492
+#: src/template-tags/tickets.php:1496
 msgctxt "plural label for Tickets"
 msgid "Tickets"
 msgstr ""
 
-#: src/template-tags/tickets.php:1516
+#: src/template-tags/tickets.php:1520
 msgctxt "lowercase plural label for Tickets"
 msgid "tickets"
 msgstr ""
 
-#: src/template-tags/tickets.php:1659
+#: src/template-tags/tickets.php:1663
 msgctxt "singular label for Guest"
 msgid "Guest"
 msgstr ""
 
-#: src/template-tags/tickets.php:1683
+#: src/template-tags/tickets.php:1687
 msgctxt "lowercase singular label for Guest"
 msgid "guest"
 msgstr ""
 
-#: src/template-tags/tickets.php:1707
+#: src/template-tags/tickets.php:1711
 msgctxt "plural label for Guest"
 msgid "Guests"
 msgstr ""
 
-#: src/template-tags/tickets.php:1731
+#: src/template-tags/tickets.php:1735
 msgctxt "lowercase plural label for Guest"
 msgid "guests"
 msgstr ""
@@ -9219,7 +9219,7 @@ msgstr ""
 #. Translators: %1$s: Opening span for "Total:" string; %2$s: Closing span for
 #. "Total:" string; %3$s: Opening span for the total value; %4$s: The total
 #. value; %5$s: Closing span for the total value.
-#: src/views/v2/commerce/checkout/cart/footer/total.php:30
+#: src/views/v2/commerce/checkout/cart/footer/total.php:31
 msgid "%1$sTotal: %2$s%3$s%4$s%5$s"
 msgstr ""
 
@@ -9345,7 +9345,7 @@ msgstr ""
 msgid "Payment method:"
 msgstr ""
 
-#: src/views/v2/commerce/order/details/total.php:31
+#: src/views/v2/commerce/order/details/total.php:32
 msgid "Total:"
 msgstr ""
 

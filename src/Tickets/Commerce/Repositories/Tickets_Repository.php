@@ -128,7 +128,7 @@ class Tickets_Repository extends Tribe__Repository {
 	/**
 	 * Filters tickets by a specific event.
 	 *
-	 * @since TBD
+	 * @since 5.2.2
 	 *
 	 * @param int|array $event_id
 	 */

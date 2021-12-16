@@ -6,7 +6,7 @@ import React from 'react';
 /**
  * Internal dependencies
  */
-import ContainerPanel, { LAYOUT } from '@moderntribe/tickets/elements/container-panel/element';
+import ContainerPanel, { LAYOUT } from '../element';
 
 describe( 'Container Panel Element', () => {
 	it( 'renders container panel in rsvp layout', () => {

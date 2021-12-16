@@ -60,11 +60,19 @@ jest.mock( '@wordpress/data', () => {
 					getBlocks: () => {},
 					getCurrentPostId: () => 10,
 					getCurrentPostAttribute: () => {},
+					getCurrentPostType: () => 'tribe_events',
 					getEditedPostAttribute: ( attr ) => {
 						if ( attr === 'date' ) {
 							return '2018-11-09T19:48:42';
 						}
 					},
+				};
+			}
+			if ( key === 'core' ) {
+				return {
+					getPostType: () => ( {
+						rest_base: 'tribe_events',
+					} ),
 				};
 			}
 		},
@@ -478,7 +486,7 @@ describe( 'Ticket Block sagas', () => {
 		} );
 	} );
 
-	describe.skip( 'setTicketInitialState', () => {
+	describe( 'setTicketInitialState', () => {
 		let publishDate,
 			startMoment,
 			startDate,
@@ -570,6 +578,9 @@ describe( 'Ticket Block sagas', () => {
 				] ),
 			);
 			expect( gen.next().value ).toEqual(
+				call( isTribeEventPostType ),
+			);
+			expect( gen.next( true ).value ).toEqual(
 				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( eventStart ).value ).toEqual(
@@ -700,6 +711,9 @@ describe( 'Ticket Block sagas', () => {
 				] ),
 			);
 			expect( gen.next().value ).toEqual(
+				call( isTribeEventPostType ),
+			);
+			expect( gen.next( true ).value ).toEqual(
 				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( eventStart ).value ).toEqual(
@@ -818,6 +832,9 @@ describe( 'Ticket Block sagas', () => {
 				] ),
 			);
 			expect( gen.next().value ).toEqual(
+				call( isTribeEventPostType ),
+			);
+			expect( gen.next( true ).value ).toEqual(
 				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
 			);
 			expect( gen.next( eventStart ).value ).toEqual(
@@ -1778,7 +1795,7 @@ describe( 'Ticket Block sagas', () => {
 		} );
 	} );
 
-	describe.skip( 'updateTicketsHeaderImage', () => {
+	describe( 'updateTicketsHeaderImage', () => {
 		it( 'should update tickets header image', () => {
 			const postId = 10;
 			const action = {
@@ -1901,7 +1918,7 @@ describe( 'Ticket Block sagas', () => {
 		} );
 	} );
 
-	describe.skip( 'deleteTicketsHeaderImage', () => {
+	describe( 'deleteTicketsHeaderImage', () => {
 		it( 'should delete tickets header image', () => {
 			const postId = 10;
 
@@ -2493,8 +2510,7 @@ describe( 'Ticket Block sagas', () => {
 		} );
 	} );
 
-	// @todo: skipping until we can come back to fix it.
-	describe.skip( 'syncTicketSaleEndWithEventStart', () => {
+	describe( 'syncTicketSaleEndWithEventStart', () => {
 		let prevDate, momentMock, clientId;
 		beforeEach( () => {
 			clientId = 'clientId';
@@ -2537,7 +2553,10 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next( { moment: momentMock } ).value ).toMatchSnapshot();
 			expect( gen.next( false ).value ).toMatchSnapshot();
 			expect( gen.next( true ).value ).toMatchSnapshot();
-			expect( gen.next().done ).toEqual( true );
+			expect( gen.next().value ).toEqual(
+				call( isTribeEventPostType ),
+			);
+			expect( gen.next( true ).done ).toEqual( true );
 		} );
 
 		it( 'should sync', () => {
@@ -2554,7 +2573,9 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next( { moment: momentMock } ).value ).toMatchSnapshot();
 			expect( gen.next( true ).value ).toMatchSnapshot();
 			expect( gen.next( true ).value ).toMatchSnapshot();
-
+			expect( gen.next( true ).value ).toEqual(
+				call( isTribeEventPostType ),
+			);
 			expect( gen.next( true ).value ).toEqual(
 				select( global.tribe.events.data.blocks.datetime.selectors.getStart ),
 			);
