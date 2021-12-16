@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Abstract_Settings;
+use Tribe__Tickets__Main;
 
 /**
  * The Stripe specific settings.
@@ -34,6 +35,20 @@ class Settings extends Abstract_Settings {
 	 * @inheritDoc
 	 */
 	public function get_connection_settings_html() {
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
+
+		$context = [
+			'plugin_url'            => Tribe__Tickets__Main::instance()->plugin_url,
+//			'merchant'              => $merchant,
+//			'is_merchant_connected' => $merchant->is_connected(),
+//			'is_merchant_active'    => $merchant->is_active(),
+//		'signup'                => $signup,
+		];
+
+		$admin_views->add_template_globals( $context );
+
+		return $admin_views->template( 'settings/tickets-commerce/stripe/main', [], false );
 		return 'hi';
 	}
 }
