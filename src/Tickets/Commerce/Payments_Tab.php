@@ -46,7 +46,11 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.2.0
 	 */
-	public function register_tab() {
+	public function register_tab( $admin_page ) {
+		if ( ! empty( $admin_page ) && \Tribe__Tickets__Admin__Ticket_Settings::$settings_page_id !== $admin_page ) {
+			return;
+		}
+
 		$tab_settings = [
 			'priority'  => 25,
 			'fields'    => $this->get_top_level_settings(),
