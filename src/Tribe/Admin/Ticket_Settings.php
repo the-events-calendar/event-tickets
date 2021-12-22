@@ -177,7 +177,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 
 		$settings = $this->get_settings_array();
 
-		new Tribe__Settings_Tab( 'event-tickets', 'General', $settings );
+		new Tribe__Settings_Tab( 'event-tickets', esc_html__( 'General', 'event-tickets' ), $settings );
 	}
 
 	/**
