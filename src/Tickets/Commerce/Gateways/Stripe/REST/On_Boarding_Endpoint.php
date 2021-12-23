@@ -47,18 +47,15 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
 		$documentation = tribe( 'tickets.rest-v1.endpoints.documentation' );
 
-		/*
 		register_rest_route(
 			$namespace,
 			$this->get_endpoint_path(),
 			[
 				'methods'             => WP_REST_Server::CREATABLE,
-				'args'                => $this->fetch_token_args(),
-				'callback'            => [ $this, 'handle_fetch_token' ],
+				'callback'            => [ $this, 'onboard' ],
 				'permission_callback' => '__return_true',
 			]
 		);
-		*/
 
 		register_rest_route(
 			$namespace,
@@ -75,6 +72,12 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 
 	public function connect( WP_REST_Request $request ) {
 		return tribe( WhoDat::class )->connect_account();
+	}
+
+	public function onboard( WP_REST_Request $request ) {
+		$data = $request->get_json_params();
+
+		return tribe( WhoDat::class )->onboard_account( $data );
 	}
 
 	/**

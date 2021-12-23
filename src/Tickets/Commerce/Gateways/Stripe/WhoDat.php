@@ -27,57 +27,66 @@ class WhoDat extends Abstract_WhoDat {
 	 * Creates a new account link for the client and redirects the user to setup the account details.
 	 *
 	 * @since TBD
+	 *
+	 * @return string
 	 */
 	public function connect_account() {
 		$token_url = tribe( Gateway::class )->generate_unique_tracking_id();
 
 		$return_url = tribe( On_Boarding_Endpoint::class )->get_return_url();
 		$query_args = [
-			'token'       => esc_url( $token_url ),
+			'token'      => $token_url,
 			'return_url' => esc_url( $return_url ),
 		];
 
-		return $this->get( 'connect', $query_args );
+		$connection_url = $this->get( 'connect', $query_args );
+
+		wp_safe_redirect( $connection_url );
+		exit();
 	}
 
 	/**
-	 * @todo Once the user finishes onboarding in the Stripe screens, WhoDat should send back the user
-	 *        account to this method, which will fetch the information and store it.
-	 */
-	public function onboard_account( $account ) {
-		$data = $this->get_seller_signup_data( $account );
-
-		$this->store_seller_data();
-	}
-
-	/**
-	 * @todo  calls WhoDat to get the onboarded seller data
+	 * De-authorize the current seller account in Stripe oAuth
 	 *
 	 * @since TBD
 	 *
-	 * @param $account_id
+	 * @return string
 	 */
-	public function get_seller_signup_data( $account_id ) {
-		$data = wp_remote_get();
+	public function disconnect_account() {
+		$account_id = tribe( Merchant::class )->get_account_id();
 
-		return $data;
-	}
-
-	/**
-	 * Verify if the seller was successfully onboarded.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $saved_merchant_id The ID we are looking at Paypal with.
-	 *
-	 * @return array
-	 */
-	public function get_seller_status( $saved_merchant_id ) {
+		$return_url = tribe( On_Boarding_Endpoint::class )->get_return_url();
 		$query_args = [
-			'mode'        => tribe( Merchant::class )->get_mode(),
-			'merchant_id' => $saved_merchant_id,
+			'stripe_user_id' => $account_id,
+			'return_url'     => esc_url( $return_url ),
 		];
 
-		return $this->post( 'seller/status', $query_args );
+		return $this->get( 'disconnect', $query_args );
+	}
+
+	/**
+	 * Register a newly connected stripe account to the website
+	 *
+	 * @param array $account_data array of data returned from stripe after a successful connection
+	 */
+	public function onboard_account( $account_data ) {
+		$this->store_seller_data(); // @todo implement
+	}
+
+	/**
+	 * Requests WhoDat to refresh the oAuth tokens
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function refresh_token() {
+		$token_url = tribe( Gateway::class )->generate_unique_tracking_id();
+
+		$query_args = [
+			'token' => $token_url,
+		];
+
+		return $this->get( 'token', $query_args );
 	}
 }
