@@ -65,8 +65,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 			$this->get_endpoint_path(),
 			[
 				'methods'             => WP_REST_Server::READABLE,
-//				'args'                => $this->signup_redirect_args(),
-				'callback'            => [ $this, 'start_onboarding' ],
+				'callback'            => [ $this, 'connect' ],
 				'permission_callback' => '__return_true',
 			]
 		);
@@ -74,7 +73,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
 	}
 
-	public function start_onboarding( WP_REST_Request $request ) {
+	public function connect( WP_REST_Request $request ) {
 		return tribe( WhoDat::class )->connect_account();
 	}
 

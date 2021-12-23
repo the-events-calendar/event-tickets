@@ -147,7 +147,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * The Tracking ID is a site-specific identifier that links the client and platform accounts in the Payment Gateway
 	 * without exposing sensitive data. By default, the identifier generated is a URL in the format:
 	 *
-	 * http://{SITE_URL}?v={GATEWAY_VERSION}-{RANDOM_6_CHAR_HASH}
+	 * {SITE_URL}?v={GATEWAY_VERSION}-{RANDOM_6_CHAR_HASH}
 	 *
 	 * @since TBD moved to Abstract_Gateway
 	 * @since 5.1.9
