@@ -6,7 +6,7 @@ use TEC\Tickets\Commerce\Gateways\Abstract_WhoDat;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\On_Boarding_Endpoint;
 
 /**
- * Class Connect_Client
+ * Class WhoDat. Handles connection to Stripe when the platform keys are needed
  *
  * @since   TBD
  *
@@ -66,6 +66,8 @@ class WhoDat extends Abstract_WhoDat {
 
 	/**
 	 * Register a newly connected stripe account to the website
+	 *
+	 * @since TBD
 	 *
 	 * @param array $account_data array of data returned from stripe after a successful connection
 	 */

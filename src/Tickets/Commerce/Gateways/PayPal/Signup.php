@@ -2,8 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use TEC\Tickets\Commerce\Gateways\Abstract_Signup;
 use TEC\Tickets\Commerce\Gateways\PayPal\Location\Country;
-use TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding_Endpoint;
 use TEC\Tickets\Commerce\Settings;
 use Tribe__Utils__Array as Arr;
 
@@ -14,7 +14,7 @@ use Tribe__Utils__Array as Arr;
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
-class Signup {
+class Signup extends Abstract_Signup {
 
 	/**
 	 * Holds the transient key used to store hash passed to PayPal.
@@ -33,33 +33,6 @@ class Signup {
 	 * @var string
 	 */
 	public static $signup_data_meta_key = 'tec_tc_paypal_signup_data';
-
-	/**
-	 * Stores the instance of the template engine that we will use for rendering the page.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @var \Tribe__Template
-	 */
-	protected $template;
-
-	/**
-	 * Gets the template instance used to setup the rendering of the page.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return \Tribe__Template
-	 */
-	public function get_template() {
-		if ( empty( $this->template ) ) {
-			$this->template = new \Tribe__Template();
-			$this->template->set_template_origin( \Tribe__Tickets__Main::instance() );
-			$this->template->set_template_folder( 'src/admin-views/settings/tickets-commerce/paypal' );
-			$this->template->set_template_context_extract( true );
-		}
-
-		return $this->template;
-	}
 
 	/**
 	 * Gets the saved hash for a given user, empty when non-existent.
@@ -94,41 +67,6 @@ class Signup {
 	 */
 	public function delete_transient_hash() {
 		return delete_transient( static::$signup_hash_meta_key );
-	}
-
-	/**
-	 * Gets the saved hash for a given user, empty when non-existent.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return array
-	 */
-	public function get_transient_data() {
-		return get_transient( static::$signup_data_meta_key );
-	}
-
-	/**
-	 * Saves the URL in a transient for later use.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @param string $value URL for signup.
-	 *
-	 * @return bool
-	 */
-	public function update_transient_data( $value ) {
-		return set_transient( static::$signup_data_meta_key, $value, DAY_IN_SECONDS );
-	}
-
-	/**
-	 * Delete url transient from the DB.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return bool
-	 */
-	public function delete_transient_data() {
-		return delete_transient( static::$signup_data_meta_key );
 	}
 
 	/**
