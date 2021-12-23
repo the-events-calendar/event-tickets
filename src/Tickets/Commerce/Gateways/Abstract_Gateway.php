@@ -141,4 +141,48 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 		);
 	}
 
+	/**
+	 * Generates a Tracking ID for this website.
+	 *
+	 * The Tracking ID is a site-specific identifier that links the client and platform accounts in the Payment Gateway
+	 * without exposing sensitive data. By default, the identifier generated is a URL in the format:
+	 *
+	 * http://{SITE_URL}?v={GATEWAY_VERSION}-{RANDOM_6_CHAR_HASH}
+	 *
+	 * @since TBD moved to Abstract_Gateway
+	 * @since 5.1.9
+	 *
+	 * @return string
+	 */
+	public function generate_unique_tracking_id() {
+		$gateway = static::$key;
+		$id      = wp_generate_password( 6, false, false );;
+		$url_frags = wp_parse_url( home_url() );
+		$url       = Arr::get( $url_frags, 'host' ) . Arr::get( $url_frags, 'path' );
+		$url       = add_query_arg( [
+			'v' => static::VERSION . '-' . $id,
+		], $url );
+
+		/**
+		 * Tracking ID sent to the Payment Gateway.
+		 *
+		 * @since TBD moved to Abstract_Gateway using a variable filter name
+		 * @since 5.1.9
+		 *
+		 * @param string $url Which ID we are using normally a URL, cannot be longer than 127 chars.
+		 */
+		$url = apply_filters( "tec_tickets_commerce_gateway_{$gateway}_tracking_id", $url );
+
+		/**
+		 * Tracking ID sent to all Payment Gateways
+		 *
+		 * @since TBD
+		 *
+		 * @param string $url Which ID we are using normally a URL, cannot be longer than 127 chars.
+		 */
+		$url = apply_filters( "tec_tickets_commerce_gateway_tracking_id", $url );
+
+		// Always limit it to 127 chars.
+		return substr( (string) $url, 0, 127 );
+	}
 }

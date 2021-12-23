@@ -8,7 +8,16 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @inheritDoc
 	 */
 	public function register() {
+		$this->add_actions();
 		$this->add_filters();
+	}
+
+	/**
+	 * @since TBD
+	 * @return mixed
+	 */
+	protected function add_actions() {
+		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
 	}
 
 	/**
@@ -32,4 +41,14 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	public function filter_add_gateway( array $gateways = [] ) {
 		return $this->container->make( Gateway::class )->register_gateway( $gateways );
 	}
+
+	/**
+	 * Register the Endpoints from Stripe.
+	 *
+	 * @since TBD
+	 */
+	public function register_endpoints() {
+		$this->container->make( REST::class )->register_endpoints();
+	}
+
 }

@@ -49,6 +49,5 @@ class Settings extends Abstract_Settings {
 		$admin_views->add_template_globals( $context );
 
 		return $admin_views->template( 'settings/tickets-commerce/stripe/main', [], false );
-		return 'hi';
 	}
 }
