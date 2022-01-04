@@ -405,7 +405,7 @@ class Tribe__Tickets__Metabox {
 			]
 		];
 
-		// Do the actual adding
+		// Add the ticket.
 		$duplicate_ticket_id = $provider->ticket_add( $post_id, $data );
 
 		// Successful?
@@ -440,9 +440,9 @@ class Tribe__Tickets__Metabox {
 			}
 						
 			/**
-			 * Fire action when a ticket has been added
+			 * Fire action when a ticket has been added.
 			 *
-			 * @param int $post_id ID of parent "event" post
+			 * @param int $post_id ID of parent "event" post.
 			 */
 			do_action( 'tribe_tickets_ticket_added', $post_id );
 		} else {
@@ -453,10 +453,10 @@ class Tribe__Tickets__Metabox {
 		$return['notice'] = $this->notice( 'ticket-duplicate' );
 
 		/**
-		 * Filters the return data for ticket add
+		 * Filters the return data for ticket duplicate.
 		 *
-		 * @param array $return Array of data to return to the ajax call
-		 * @param int $post_id ID of parent "event" post
+		 * @param array $return  Array of data to return to the ajax call.
+		 * @param int   $post_id ID of parent "event" post.
 		 */
 		$return = apply_filters( 'event_tickets_ajax_ticket_duplicate_data', $return, $post_id );
 
