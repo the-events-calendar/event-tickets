@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Gateways;
+namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 interface Signup_Interface {
 

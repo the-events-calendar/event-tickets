@@ -2,9 +2,9 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
-use TEC\Tickets\Commerce\Gateways;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 
-class Gateway extends Gateways\Abstract_Gateway {
+class Gateway extends Abstract_Gateway {
 
 	/**
 	 * @inheritDoc

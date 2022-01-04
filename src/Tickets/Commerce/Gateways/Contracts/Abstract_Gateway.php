@@ -6,7 +6,7 @@
  * @package TEC\Tickets\Commerce\Gateways
  */
 
-namespace TEC\Tickets\Commerce\Gateways;
+namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 use TEC\Tickets\Commerce;
 

@@ -6,7 +6,7 @@
  * @package TEC\Tickets\Commerce
  */
 
-namespace TEC\Tickets\Commerce\Gateways;
+namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 /**
  * The gateway settings related functionality.

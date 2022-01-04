@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Manual;
 
-use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 
 /**
  * Class Manual Gateway.

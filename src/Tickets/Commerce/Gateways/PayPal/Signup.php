@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use TEC\Tickets\Commerce\Gateways\Abstract_Signup;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Signup;
 use TEC\Tickets\Commerce\Gateways\PayPal\Location\Country;
 use TEC\Tickets\Commerce\Settings;
 use Tribe__Utils__Array as Arr;

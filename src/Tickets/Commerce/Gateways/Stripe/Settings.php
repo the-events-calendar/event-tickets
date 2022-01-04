@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
-use TEC\Tickets\Commerce\Gateways\Abstract_Settings;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Settings;
 use Tribe__Tickets__Main;
 
 /**

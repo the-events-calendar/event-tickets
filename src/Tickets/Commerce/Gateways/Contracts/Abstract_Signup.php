@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Commerce\Gateways;
+namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 class Abstract_Signup implements Signup_Interface {
 

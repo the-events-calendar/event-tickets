@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\PayPal\REST;
 
 use TEC\Tickets\Commerce\Cart;
-use TEC\Tickets\Commerce\Gateways\Abstract_REST_Endpoint;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Gateways\PayPal\Status;
 use TEC\Tickets\Commerce\Order;

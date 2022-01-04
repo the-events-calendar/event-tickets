@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use TEC\Tickets\Commerce\Gateways\Abstract_Settings;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Settings;
 
 use Tribe__Languages__Locations;
 use Tribe__Tickets__Admin__Views;
