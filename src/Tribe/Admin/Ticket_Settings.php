@@ -110,6 +110,15 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 
 		$admin_pages->register_page(
 			[
+				'id'     => 'tec-tickets', // @todo @juanfra: this to constant (?)
+				'path'   => 'tec-tickets',
+				'parent' => 'tec-tickets',
+				'title'  => esc_html__( 'Home', 'event-tickets' ),
+			]
+		);
+
+		$admin_pages->register_page(
+			[
 				'id'       => self::$settings_page_id,
 				'parent'   => 'tec-tickets',
 				'title'    => esc_html__( 'Settings', 'tribe-common' ),
