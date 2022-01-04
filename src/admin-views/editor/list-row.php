@@ -113,6 +113,7 @@ if (
 			esc_attr( $ticket->provider_class ),
 			esc_attr( $ticket->ID ),
 			esc_attr( sprintf(
+				// Translators: %s: dynamic "ticket" text, %d: ticket ID #.
 				_x( 'Duplicate %s ID: %d', 'ticket ID title attribute', 'event-tickets' ),
 				tribe_get_ticket_label_singular( 'ticket_id_title_attribute' ),
 				$ticket->ID

@@ -361,11 +361,19 @@ class Tribe__Tickets__Metabox {
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 
 		if ( ! $ticket_id ) {
-			wp_send_json_error( esc_html( sprintf( __( 'Invalid %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' ) ) ) );
+			wp_send_json_error( esc_html( sprintf( 
+				// Translators: %s: dynamic "ticket" text.
+				__( 'Invalid %s', 'event-tickets' ), 
+				tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' ) 
+			) ) );
 		}
 
 		if ( ! $this->has_permission( $post_id, $_POST, 'duplicate_ticket_nonce' ) ) {
-			wp_send_json_error( esc_html( sprintf( __( 'Failed to duplicate the %s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' ) ) ) );
+			wp_send_json_error( esc_html( sprintf( 
+				// Translators: %s: dynamic "ticket" text.
+				__( 'Failed to duplicate the %s. Refresh the page to try again.', 'event-tickets' ), 
+				tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' ) 
+			) ) );
 		}
 
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
@@ -391,7 +399,7 @@ class Tribe__Tickets__Metabox {
 		
 		// Create data for duplicate ticket.
 		$data = [
-			'ticket_name'             => $ticket->name . __( ' (duplicate)', 'event-tickets'),
+			'ticket_name'             => $ticket->name . __( '(copy)', 'event-tickets' ),
 			'ticket_description'      => $ticket->description,
 			'ticket_price'            => $ticket->price,
 			'ticket_show_description' => $ticket->show_description,
@@ -424,7 +432,7 @@ class Tribe__Tickets__Metabox {
 				foreach ( $ticket_meta as $meta_key => $meta_values ) {
 					
 					// Skip meta we don't want to duplicate.
-					if ( strpos( $meta_key, '_tec_tc_ticket_status_count' ) !== false ){
+					if ( false !== strpos( $meta_key, '_tec_tc_ticket_status_count' ) ){
 						continue;
 					}
 					if ( in_array( $meta_key, $ignore_meta ) ) {
@@ -454,6 +462,8 @@ class Tribe__Tickets__Metabox {
 
 		/**
 		 * Filters the return data for ticket duplicate.
+		 * 
+		 * @since TBD
 		 *
 		 * @param array $return  Array of data to return to the ajax call.
 		 * @param int   $post_id ID of parent "event" post.
