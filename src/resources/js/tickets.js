@@ -697,14 +697,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 	/* "Duplicate Ticket" link action */
 	$document.on( 'click', '.ticket_duplicate', function( event ) {
-		console.log('.ticket_duplicate clicked', event);
-		// Prevent Form Submit on button click
+		// Prevent Form Submit on button click.
 		event.preventDefault();
 
-		// Where we clicked
+		// Where we clicked.
 		var $button = $( this );
 
-		// Prep the Params for the Request
+		// Prep the Params for the Request.
 		var params = {
 			action: 'tribe-ticket-duplicate',
 			post_id: $post_id.val(),
@@ -726,7 +725,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			'json'
 		);
 
-		// Make it safe that it wont submit
+		// Make it safe that it wont submit.
 		return false;
 	} );
 
