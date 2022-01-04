@@ -695,6 +695,41 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		);
 	} );
 
+	/* "Duplicate Ticket" link action */
+	$document.on( 'click', '.ticket_duplicate', function( event ) {
+		console.log('.ticket_duplicate clicked', event);
+		// Prevent Form Submit on button click
+		event.preventDefault();
+
+		// Where we clicked
+		var $button = $( this );
+
+		// Prep the Params for the Request
+		var params = {
+			action: 'tribe-ticket-duplicate',
+			post_id: $post_id.val(),
+			ticket_id: $button.data( 'ticketId' ),
+			nonce: TribeTickets.duplicate_ticket_nonce,
+			is_admin: $( 'body' ).hasClass( 'wp-admin' )
+		};
+
+		$.post(
+			ajaxurl,
+			params,
+			function( response ) {
+				if ( ! response.success ) {
+					return;
+				}
+
+				obj.refreshPanels( response.data );
+			},
+			'json'
+		);
+
+		// Make it safe that it wont submit
+		return false;
+	} );
+
 	/* Change global stock type if we've put a value in global_stock_cap */
 	$document.on( 'change', '.tribe-ticket-field-capacity', function( e ) {
 		var $this = $( this );

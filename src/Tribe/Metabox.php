@@ -24,6 +24,7 @@ class Tribe__Tickets__Metabox {
 		add_action( 'wp_ajax_tribe-ticket-add', array( $this, 'ajax_ticket_add' ) );
 		add_action( 'wp_ajax_tribe-ticket-edit', array( $this, 'ajax_ticket_edit' ) );
 		add_action( 'wp_ajax_tribe-ticket-delete', array( $this, 'ajax_ticket_delete' ) );
+		add_action( 'wp_ajax_tribe-ticket-duplicate', array( $this, 'ajax_ticket_duplicate' ) );
 
 		add_action( 'wp_ajax_tribe-ticket-checkin', array( $this, 'ajax_attendee_checkin' ) );
 		add_action( 'wp_ajax_tribe-ticket-uncheckin', array( $this, 'ajax_attendee_uncheckin' ) );
@@ -341,6 +342,123 @@ class Tribe__Tickets__Metabox {
 			 */
 			do_action( 'tribe_tickets_ticket_deleted', $post_id );
 		}
+
+		wp_send_json_success( $return );
+	}
+
+	/**
+	 * Sanitizes the data for the duplicate ticket ajax call, then duplicates the ticket and meta.
+	 *
+	 * @since TBD.
+	 */
+	public function ajax_ticket_duplicate() {
+		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
+
+		if ( ! $post_id ) {
+			wp_send_json_error( esc_html__( 'Invalid parent Post', 'event-tickets' ) );
+		}
+
+		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
+
+		if ( ! $ticket_id ) {
+			wp_send_json_error( esc_html( sprintf( __( 'Invalid %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' ) ) ) );
+		}
+
+		if ( ! $this->has_permission( $post_id, $_POST, 'duplicate_ticket_nonce' ) ) {
+			wp_send_json_error( esc_html( sprintf( __( 'Failed to duplicate the %s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' ) ) ) );
+		}
+
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+
+		if ( empty( $provider ) || ! $provider instanceof Tribe__Tickets__Tickets ) {
+			return new WP_Error(
+				'bad_request',
+				__( 'Commerce Module invalid', 'event-tickets' ),
+				[ 'status' => 400 ]
+			);
+		}
+		
+		// Get ticket data.
+		$ticket = $provider->get_ticket( $post_id, $ticket_id );
+		
+		if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+			return new WP_Error(
+				'bad_request',
+				__( 'Ticket ID invalid', 'event-tickets' ),
+				[ 'status' => 400 ]
+			);
+		}
+		
+		// Create data for duplicate ticket.
+		$data = [
+			'ticket_name'             => $ticket->name . __( ' (duplicate)', 'event-tickets'),
+			'ticket_description'      => $ticket->description,
+			'ticket_price'            => $ticket->price,
+			'ticket_show_description' => $ticket->show_description,
+			'ticket_start_date'       => $ticket->start_date,
+			'ticket_start_time'       => $ticket->start_time,
+			'ticket_end_date'         => $ticket->end_date,
+			'ticket_end_time'         => $ticket->end_time,
+			'tribe-ticket'            => [
+				'capacity' => $ticket->capacity(),
+				'mode'     => $ticket->global_stock_mode(),
+			]
+		];
+
+		// Do the actual adding
+		$duplicate_ticket_id = $provider->ticket_add( $post_id, $data );
+
+		// Successful?
+		if ( $duplicate_ticket_id ) {
+			
+			// Copy ticket meta from old ticket to new ticket.
+			$ignore_meta = [
+				'_sku',
+				'_tribe_ticket_manual_updated',
+				'_wp_old_slug',
+				'total_sales',
+			];
+			$ticket_meta = get_post_meta( $ticket->ID );
+			
+			if ( $ticket_meta ) {
+				foreach ( $ticket_meta as $meta_key => $meta_values ) {
+					
+					// Skip meta we don't want to duplicate.
+					if ( strpos( $meta_key, '_tec_tc_ticket_status_count' ) !== false ){
+						continue;
+					}
+					if ( in_array( $meta_key, $ignore_meta ) ) {
+						continue;
+					}
+	
+					foreach ( $meta_values as $meta_value ) {
+						// Maybe convert to object, in case meta is serialized.
+						$meta_value_obj = maybe_unserialize( $meta_value );
+						add_post_meta( $duplicate_ticket_id, $meta_key, $meta_value_obj );
+					}
+				}
+			}
+						
+			/**
+			 * Fire action when a ticket has been added
+			 *
+			 * @param int $post_id ID of parent "event" post
+			 */
+			do_action( 'tribe_tickets_ticket_added', $post_id );
+		} else {
+			wp_send_json_error( esc_html( sprintf( __( 'Failed to duplicate the %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' ) ) ) );
+		}
+
+		$return = $this->get_panels( $post_id );
+		$return['notice'] = $this->notice( 'ticket-duplicate' );
+
+		/**
+		 * Filters the return data for ticket add
+		 *
+		 * @param array $return Array of data to return to the ajax call
+		 * @param int $post_id ID of parent "event" post
+		 */
+		$return = apply_filters( 'event_tickets_ajax_ticket_duplicate_data', $return, $post_id );
 
 		wp_send_json_success( $return );
 	}

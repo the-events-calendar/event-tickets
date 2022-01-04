@@ -109,6 +109,18 @@ if (
 	<td class="ticket_edit">
 		<?php
 		printf(
+			"<button data-provider='%s' data-ticket-id='%s' title='%s' class='ticket_duplicate'><span class='ticket_duplicate_text'>%s</span></a>",
+			esc_attr( $ticket->provider_class ),
+			esc_attr( $ticket->ID ),
+			esc_attr( sprintf(
+				_x( 'Duplicate %s ID: %d', 'ticket ID title attribute', 'event-tickets' ),
+				tribe_get_ticket_label_singular( 'ticket_id_title_attribute' ),
+				$ticket->ID
+			) ),
+			esc_html( $ticket->name )
+		);
+		
+		printf(
 			"<button data-provider='%s' data-ticket-id='%s' title='%s' class='ticket_edit_button'><span class='ticket_edit_text'>%s</span></a>",
 			esc_attr( $ticket->provider_class ),
 			esc_attr( $ticket->ID ),
