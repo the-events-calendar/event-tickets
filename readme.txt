@@ -179,6 +179,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Enhancement - Added a warniong when Tickets Commerce is enable, but users aren't required to log in before purchasing tickets. [ET-1352]
+
 = [5.2.2] 2021-12-15 =
 
 * Feature - Included Price, Currency and Value classes to improve monetary handling for Tickets Commerce [ET-1331]
