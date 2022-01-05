@@ -181,7 +181,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-* Feature - Added teh TEC Tickets icon in the block editor Tickets category section. [ET-1350]
+* Feature - Added the TEC Tickets icon in the block editor Tickets category section. [ET-1350]
 
 = [5.2.2] 2021-12-15 =
 
