@@ -59,7 +59,7 @@ class Notices extends tad_DI52_ServiceProvider {
 
 		$options = get_option( Tribe__Main::OPTIONNAME, [] );
 		
-		if( 
+		if ( 
 			empty( $options[ 'ticket-authentication-requirements' ] ) || 
 			! is_array( $options[ 'ticket-authentication-requirements' ] ) || 
 			! in_array( 'event-tickets_all', $options[ 'ticket-authentication-requirements' ] ) 
