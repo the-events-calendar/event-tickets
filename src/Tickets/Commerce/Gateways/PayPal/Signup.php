@@ -35,6 +35,11 @@ class Signup extends Abstract_Signup {
 	public static $signup_data_meta_key = 'tec_tc_paypal_signup_data';
 
 	/**
+	 * @inheritDoc
+	 */
+	public $template_folder = 'src/admin-views/settings/tickets-commerce/paypal';
+
+	/**
 	 * Gets the saved hash for a given user, empty when non-existent.
 	 *
 	 * @since 5.1.9

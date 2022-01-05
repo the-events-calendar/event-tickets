@@ -30,8 +30,7 @@ if ( ! empty( $is_merchant_connected ) ) {
 	</p>
 
 	<div class="tec-tickets__admin-settings-tickets-commerce-stripe-signup-links">
-		<?php // echo $signup->get_link_html(); // phpcs:ignore ?>
-		Signup Link
+		<?php $signup->get_link_html(); ?>
 	</div>
 
 	<?php $this->template( 'settings/tickets-commerce/stripe/connect/help-links' ); ?>

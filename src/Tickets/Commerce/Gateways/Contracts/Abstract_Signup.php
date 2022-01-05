@@ -25,6 +25,16 @@ class Abstract_Signup implements Signup_Interface {
 	public static $signup_data_meta_key;
 
 	/**
+	 * Must be implemented in each Signup class, represents the folder from which to load the
+	 * templates.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $template_folder;
+
+	/**
 	 * Stores the instance of the template engine that we will use for rendering the page.
 	 *
 	 * @since TBD moved to Abstract_Signup
@@ -41,7 +51,7 @@ class Abstract_Signup implements Signup_Interface {
 		if ( empty( $this->template ) ) {
 			$this->template = new \Tribe__Template();
 			$this->template->set_template_origin( \Tribe__Tickets__Main::instance() );
-			$this->template->set_template_folder( 'src/admin-views/settings/tickets-commerce/paypal' );
+			$this->template->set_template_folder( $this->template_folder );
 			$this->template->set_template_context_extract( true );
 		}
 

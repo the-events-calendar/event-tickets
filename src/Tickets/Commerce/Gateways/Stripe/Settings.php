@@ -8,7 +8,7 @@ use Tribe__Tickets__Main;
 /**
  * The Stripe specific settings.
  *
- * @since TBD
+ * @since   TBD
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
 class Settings extends Abstract_Settings {
@@ -39,15 +39,15 @@ class Settings extends Abstract_Settings {
 		$admin_views = tribe( 'tickets.admin.views' );
 
 		$context = [
-			'plugin_url'            => Tribe__Tickets__Main::instance()->plugin_url,
+			'plugin_url' => Tribe__Tickets__Main::instance()->plugin_url,
 //			'merchant'              => $merchant,
 //			'is_merchant_connected' => $merchant->is_connected(),
 //			'is_merchant_active'    => $merchant->is_active(),
-//		'signup'                => $signup,
+			'signup'     => tribe( Signup::class ),
 		];
 
-		$admin_views->add_template_globals( $context );
+		// $admin_views->add_template_globals( $context );
 
-		return $admin_views->template( 'settings/tickets-commerce/stripe/main', [], false );
+		return $admin_views->template( 'settings/tickets-commerce/stripe/main', $context, false );
 	}
 }
