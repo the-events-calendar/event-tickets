@@ -386,67 +386,10 @@ class Tribe__Tickets__Metabox {
 			);
 		}
 		
-		// Get ticket data.
-		$ticket = $provider->get_ticket( $post_id, $ticket_id );
-		
-		if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
-			return new WP_Error(
-				'bad_request',
-				__( 'Ticket ID invalid', 'event-tickets' ),
-				[ 'status' => 400 ]
-			);
-		}
-		
-		// Create data for duplicate ticket.
-		$data = [
-			'ticket_name'             => $ticket->name . __( '(copy)', 'event-tickets' ),
-			'ticket_description'      => $ticket->description,
-			'ticket_price'            => $ticket->price,
-			'ticket_show_description' => $ticket->show_description,
-			'ticket_start_date'       => $ticket->start_date,
-			'ticket_start_time'       => $ticket->start_time,
-			'ticket_end_date'         => $ticket->end_date,
-			'ticket_end_time'         => $ticket->end_time,
-			'tribe-ticket'            => [
-				'capacity' => $ticket->capacity(),
-				'mode'     => $ticket->global_stock_mode(),
-			]
-		];
-
-		// Add the ticket.
-		$duplicate_ticket_id = $provider->ticket_add( $post_id, $data );
+		$duplicate_ticket_id = $provider->duplicate_ticket( $post_id, $ticket_id );
 
 		// Successful?
-		if ( $duplicate_ticket_id ) {
-			
-			// Copy ticket meta from old ticket to new ticket.
-			$ignore_meta = [
-				'_sku',
-				'_tribe_ticket_manual_updated',
-				'_wp_old_slug',
-				'total_sales',
-			];
-			$ticket_meta = get_post_meta( $ticket->ID );
-			
-			if ( $ticket_meta ) {
-				foreach ( $ticket_meta as $meta_key => $meta_values ) {
-					
-					// Skip meta we don't want to duplicate.
-					if ( false !== strpos( $meta_key, '_tec_tc_ticket_status_count' ) ){
-						continue;
-					}
-					if ( in_array( $meta_key, $ignore_meta ) ) {
-						continue;
-					}
-	
-					foreach ( $meta_values as $meta_value ) {
-						// Maybe convert to object, in case meta is serialized.
-						$meta_value_obj = maybe_unserialize( $meta_value );
-						add_post_meta( $duplicate_ticket_id, $meta_key, $meta_value_obj );
-					}
-				}
-			}
-						
+		if ( $duplicate_ticket_id ) {		
 			/**
 			 * Fire action when a ticket has been added.
 			 *
