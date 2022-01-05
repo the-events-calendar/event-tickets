@@ -546,6 +546,16 @@ class Tribe__Tickets__Tickets_Handler {
 		return $this->sync_shared_capacity( $object_id, $event_capacity );
 	}
 
+	/**
+	 * Sync shared capacity for the given Post/Event object.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $object_id      Which Post we are dealing with.
+	 * @param string $event_capacity To which value the event Capacity was update to.
+	 *
+	 * @return bool
+	 */
 	public function sync_shared_capacity( $object_id, $event_capacity ) {
 
 		// Make sure we are updating the Shared Stock when we update it's capacity.
@@ -614,6 +624,15 @@ class Tribe__Tickets__Tickets_Handler {
 		return true;
 	}
 
+	/**
+	 * Trigger shared cap sync on ticket updates.
+	 *
+	 * @since TBD
+	 *
+	 * @param $post_id  int                     Target post/Event ID.
+	 * @param $ticket   Tribe__Tickets__Tickets Ticket Object.
+	 * @param $raw_data array                   Raw data from Ticket update.
+	 */
 	public function trigger_shared_cap_sync( $post_id, $ticket, $raw_data ) {
 		$ticket_capacity_data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', [] );
 		$ticket_capacity      = Tribe__Utils__Array::get( $ticket_capacity_data, 'capacity', [] );
