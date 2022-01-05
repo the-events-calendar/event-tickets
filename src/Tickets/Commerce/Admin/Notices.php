@@ -80,7 +80,7 @@ class Notices extends tad_DI52_ServiceProvider {
 	public function render_anonymous_purchases_notice() {
 		$notice_link = sprintf(
 			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
-			esc_url( 'https://evnt.is/1axv' ),
+			esc_url( 'https://evnt.is/1b1t' ),
 			esc_html__( 'Learn More', 'event-tickets' )
 		);
 		$notice_header = esc_html__( 'Anonymous purchases are enabled', 'event-tickets' );
