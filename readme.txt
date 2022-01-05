@@ -179,6 +179,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Added the post_type to the attendee page on Posts/Pages so that additional logic would function correctly. [ET-1319]
+
 = [5.2.2] 2021-12-15 =
 
 * Feature - Included Price, Currency and Value classes to improve monetary handling for Tickets Commerce [ET-1331]
