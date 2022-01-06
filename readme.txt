@@ -179,6 +179,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+* Fix - Fixed toggling of shared capacity data for tickets. [ETP-497]
+
 = [5.2.2] 2021-12-15 =
 
 * Feature - Included Price, Currency and Value classes to improve monetary handling for Tickets Commerce [ET-1331]
