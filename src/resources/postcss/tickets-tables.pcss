@@ -159,16 +159,19 @@
 
 		.ticket_duplicate_text {
 			&:before {
-				content: '\f105';
+				background-image: url(../icons/ticket-copy.svg);
+				background-position: center center;
+				background-repeat: no-repeat;
+				content: '';
+				display: inline-block;
+				height: 20px;
+				width: 20px;
 			}
 		}
 	}
 
-	.ticket_edit_button {
-		margin-left: 12px;
-	}
-
-	.ticket_delete {
+	.ticket_delete, 
+	.ticket_duplicate {
 		margin-left: 12px;
 	}
 
