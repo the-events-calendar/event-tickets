@@ -3627,6 +3627,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Creates a duplicate ticket based on post id and ticket id.
 		 *
+		 * @since TBD
+		 *
 		 * @param int $post_id   ID of parent "event" post.
 		 * @param int $ticket_id ID of ticket to duplicate.
 		 *
