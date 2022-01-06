@@ -538,11 +538,6 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
-		// We don't accept any non-numeric values here.
-		if ( ! is_numeric( $event_capacity ) ) {
-			return false;
-		}
-
 		return $this->sync_shared_capacity( $object_id, $event_capacity );
 	}
 
@@ -558,6 +553,11 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function sync_shared_capacity( $object_id, $event_capacity ) {
 
+		// We don't accept any non-numeric values here.
+		if ( ! is_numeric( $event_capacity ) ) {
+			return false;
+		}
+		
 		// Make sure we are updating the Shared Stock when we update it's capacity.
 		$object_stock = new Tribe__Tickets__Global_Stock( $object_id );
 
