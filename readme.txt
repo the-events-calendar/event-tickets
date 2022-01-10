@@ -180,9 +180,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 == Changelog ==
 
 = [TBD] TBD =
-
+* Fix - Fixed toggling of shared capacity data for tickets. [ETP-497]
+* Feature - Allow duplicating a ticket when using the Classic Editor. [ET-1349]
 * Feature - Added the TEC Tickets icon in the block editor Tickets category section. [ET-1350]
-* Enhancement - Added a warning when Tickets Commerce is enabled, but users aren't required to log in before purchasing tickets. [ET-1352]
+* Enhancement - Added a warning when Tickets Commerce is enabled, but users aren't required to log in before purchasing tickets. [ET-1352
+* Fix - Added the post_type to the attendee page on Posts/Pages so that additional logic would function correctly. [ET-1319]
 
 = [5.2.2] 2021-12-15 =
 

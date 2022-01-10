@@ -121,6 +121,19 @@ if (
 		);
 
 		printf(
+			"<button data-provider='%s' data-ticket-id='%s' title='%s' class='ticket_duplicate'><span class='ticket_duplicate_text'>%s</span></a>",
+			esc_attr( $ticket->provider_class ),
+			esc_attr( $ticket->ID ),
+			esc_attr( sprintf(
+				// Translators: %s: dynamic "ticket" text, %d: ticket ID #.
+				_x( 'Duplicate %s ID: %d', 'ticket ID title attribute', 'event-tickets' ),
+				tribe_get_ticket_label_singular( 'ticket_id_title_attribute' ),
+				$ticket->ID
+			) ),
+			esc_html( $ticket->name )
+		);
+		
+		printf(
 			"<button attr-provider='%s' attr-ticket-id='%s' title='%s' class='ticket_delete'><span class='ticket_delete_text'>%s</span></a>",
 			esc_attr( $ticket->provider_class ),
 			esc_attr( $ticket->ID ),
