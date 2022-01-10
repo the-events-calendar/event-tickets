@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Utils;
 /**
  * Class Currency Utils
  *
- * This class holds stateless methods used to properly set-up currencies in Tickets Commerce
+ * This class holds stateless methods used to properly set-up currencies in Tickets Commerce.
  *
  * @since   5.1.9
  *
@@ -61,7 +61,7 @@ class Currency {
 	 */
 	public static function get_currency_code_fallback() {
 
-		// Check if we have a value set from Tribe Commerce
+		// Check if we have a value set from Tribe Commerce.
 		$currency_code = tribe_get_option( static::$legacy_currency_code_option, static::$currency_code_fallback );
 
 		// Duplicate the currency code in the Tickets Commerce key.
@@ -71,7 +71,7 @@ class Currency {
 	}
 
 	/**
-	 * Return the currency symbol to use as defined in the currency map
+	 * Return the currency symbol to use as defined in the currency map.
 	 *
 	 * @since TBD
 	 *
@@ -111,7 +111,7 @@ class Currency {
 	}
 
 	/**
-	 * Return the currency decimal separator character to use as defined in the currency map
+	 * Return the currency decimal separator character to use as defined in the currency map.
 	 *
 	 * @since TBD
 	 *
@@ -151,7 +151,7 @@ class Currency {
 	}
 
 	/**
-	 * Return the currency thousands separator character to use as defined in the currency map
+	 * Return the currency thousands separator character to use as defined in the currency map.
 	 *
 	 * @since TBD
 	 *
@@ -191,7 +191,7 @@ class Currency {
 	}
 
 	/**
-	 * Get and allow filtering of the currency symbol position
+	 * Get and allow filtering of the currency symbol position.
 	 *
 	 * @since                                            4.7
 	 * @since                                            4.10.8 Set the default position of the Euro currency symbol to
@@ -232,7 +232,7 @@ class Currency {
 		 */
 		$currency_position = apply_filters( 'tec_tickets_commerce_currency_symbol_position', $currency_position );
 
-		// Plugin's other code only accounts for one of these two values
+		// Plugin's other code only accounts for one of these two values.
 		if ( ! in_array( $currency_position, [ 'prefix', 'postfix' ], true ) ) {
 			$currency_position = 'prefix';
 		}
