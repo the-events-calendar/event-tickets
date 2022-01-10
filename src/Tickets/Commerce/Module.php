@@ -439,7 +439,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 */
 
 	/**
-	 * Returns the ticket price html template
+	 * Returns the ticket price html template.
 	 *
 	 * @since 5.1.9
 	 *
