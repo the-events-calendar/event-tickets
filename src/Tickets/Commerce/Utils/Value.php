@@ -26,7 +26,7 @@ class Value extends Abstract_Currency {
 	}
 
 	/**
-	 * Builds a list of Value objects from a list of numeric values
+	 * Builds a list of Value objects from a list of numeric values.
 	 *
 	 * @since TBD
 	 *
@@ -46,7 +46,7 @@ class Value extends Abstract_Currency {
 	}
 
 	/**
-	 * Get formatted html block with formatted currency and symbol
+	 * Get formatted html block with formatted currency and symbol.
 	 *
 	 * @since TBD
 	 *
@@ -62,7 +62,7 @@ class Value extends Abstract_Currency {
 		$html[] = '</span>';
 
 		if ( $position !== 'prefix' ) {
-			// If position is not prefix, swap the symbol and amount span tags
+			// If position is not prefix, swap the symbol and amount span tags.
 			$hold    = $html[1];
 			$html[1] = $html[2];
 			$html[2] = $hold;

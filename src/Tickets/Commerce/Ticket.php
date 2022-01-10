@@ -135,7 +135,7 @@ class Ticket {
 	protected $template;
 
 	/**
-	 * Gets the template instance used to setup the rendering html
+	 * Gets the template instance used to setup the rendering html.
 	 *
 	 * @since TBD
 	 *

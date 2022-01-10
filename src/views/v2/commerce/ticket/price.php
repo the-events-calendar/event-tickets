@@ -13,7 +13,7 @@
  *
  * @version TBD
  *
- * @var \TEC\Tickets\Commerce\Utils\Value $price The Value instance of the ticket price
+ * @var \TEC\Tickets\Commerce\Utils\Value $price The Value instance of the ticket price.
  */
 ?>
 
