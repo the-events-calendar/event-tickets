@@ -100,7 +100,7 @@ class Tribe__Tickets__Editor__Assets {
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-blocks-styles',
-			'app/blocks.css',
+			'tickets-admin-blocks.css',
 			[],
 			'enqueue_block_editor_assets',
 			[
