@@ -182,6 +182,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Feature - Allow duplicating a ticket when using the Classic Editor. [ET-1349]
+* Enhancement - Added a warning when Tickets Commerce is enabled, but users aren't required to log in before purchasing tickets. [ET-1352]
 
 = [5.2.2] 2021-12-15 =
 
