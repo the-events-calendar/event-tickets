@@ -632,12 +632,18 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @param $post_id  int                     Target post/Event ID.
 	 * @param $ticket   Tribe__Tickets__Tickets Ticket Object.
 	 * @param $raw_data array                   Raw data from Ticket update.
+	 *
+	 * @return bool|WP_Error
 	 */
 	public function trigger_shared_cap_sync( $post_id, $ticket, $raw_data ) {
 		$ticket_capacity_data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', [] );
-		$ticket_capacity      = Tribe__Utils__Array::get( $ticket_capacity_data, 'capacity', [] );
+		$ticket_capacity      = Tribe__Utils__Array::get( $ticket_capacity_data, 'capacity', false );
 
-		$this->sync_shared_capacity( $post_id, $ticket_capacity );
+		if ( empty( $ticket_capacity_data ) || ! $ticket_capacity ) {
+			return new WP_Error( 'invalid_capacity', __( 'Invalid ticket capacity data.', 'event-tickets' ), $raw_data );
+		}
+
+		return $this->sync_shared_capacity( $post_id, $ticket_capacity );
 	}
 
 	/**
