@@ -4,7 +4,6 @@ namespace TEC\Tickets\Commerce\Reports;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Utils\Price;
 use WP_Post;
 
 use Tribe__Tickets__Main as Plugin;
@@ -351,7 +350,8 @@ class Orders extends Report_Abstract {
 					$event_data['total_by_status'][ $status_slug ] = [];
 				}
 
-				$event_data['total_by_status'][ $status_slug ][] = $total_by_status[ $status_slug ] = str_replace( $thousands_sep, '', Price::sub_total( $ticket->price, $status_count ) );
+				$status_value = Commerce\Utils\Value::create( $ticket->price );
+				$event_data['total_by_status'][ $status_slug ][] = $total_by_status[ $status_slug ] = $status_value->sub_total( $status_count );
 
 				$event_data['qty_by_status'][ $status_slug ] += (int) $status_count;
 			}
@@ -362,8 +362,10 @@ class Orders extends Report_Abstract {
 		}
 
 		$event_data['total_by_status'] = array_map(
-			static function ( $sub_totals ) use ( $thousands_sep ) {
-				return str_replace( $thousands_sep, '', Price::total( $sub_totals ) );
+			static function ( $sub_totals ) {
+				$status_grand_total = Commerce\Utils\Value::create();
+				$status_grand_total->total( $sub_totals );
+				return $status_grand_total->get_currency();
 			},
 			$event_data['total_by_status']
 		);
