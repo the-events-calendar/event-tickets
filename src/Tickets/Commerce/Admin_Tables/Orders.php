@@ -302,7 +302,7 @@ class Orders extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_total( $item ) {
-		return tribe_format_currency( $item->total_value, $this->post_id );
+		return $item->total_value->get_currency();
 	}
 
 	/**
