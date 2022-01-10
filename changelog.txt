@@ -1,5 +1,9 @@
 == Changelog ==
 
+= [TBD] =
+
+* Enhancement - Implement common curency and price handling for Tickets Commerce. [ET-1331]
+
 = [5.2.0] 2021-11-04 =
 
 * Feature - Introduction of Tickets Commerce, the new and improved solution you can set up to sell tickets with Event Tickets.
