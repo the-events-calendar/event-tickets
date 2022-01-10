@@ -22,6 +22,7 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
+/** @var \TEC\Tickets\Commerce\Utils\Value $total_value */
 if ( empty( $order->total_value ) ) {
 	return;
 }
@@ -32,6 +33,6 @@ if ( empty( $order->total_value ) ) {
 		<?php esc_html_e( 'Total:', 'event-tickets' ); ?>
 	</div>
 	<div class="tribe-tickets__commerce-order-details-col2">
-		<?php echo esc_html( \TEC\Tickets\Commerce\Utils\Price::to_currency( $order->formatted_total ) ); ?>
+		<?php echo esc_html( $order->total_value->get_currency() ); ?>
 	</div>
 </div>
