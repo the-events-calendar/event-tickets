@@ -119,12 +119,13 @@
 	}
 
 	.ticket_edit {
-		width: 60px;
+		width: 84px;
 	}
 
 	/* Edit button styles - separate for portability */
 	.ticket_edit_button,
 	.ticket_delete,
+	.ticket_duplicate,
 	.global_capacity_edit_button {
 		background: none;
 		border: 0;
@@ -138,7 +139,8 @@
 
 		.ticket_edit_text,
 		.global_capacity_edit_text,
-		.ticket_delete_text {
+		.ticket_delete_text,
+		.ticket_duplicate_text {
 			font-size: 0;
 
 			&:before {
@@ -154,9 +156,22 @@
 				content: '\f182';
 			}
 		}
+
+		.ticket_duplicate_text {
+			&:before {
+				background-image: url("../icons/ticket-copy.svg");
+				background-position: center center;
+				background-repeat: no-repeat;
+				content: '';
+				display: inline-block;
+				height: 20px;
+				width: 20px;
+			}
+		}
 	}
 
-	.ticket_delete {
+	.ticket_delete,
+	.ticket_duplicate {
 		margin-left: 12px;
 	}
 
