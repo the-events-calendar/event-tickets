@@ -140,7 +140,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 
 		$unit = [
 			'reference_id' => $order->ID,
-			'value'        => $order->total_value,
+			'value'        => $order->total_value->get_decimal(),
 			'currency'     => $order->currency,
 			'first_name'   => $order->purchaser['first_name'],
 			'last_name'    => $order->purchaser['last_name'],
