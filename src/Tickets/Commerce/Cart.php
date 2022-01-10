@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
-use TEC\Tickets\Commerce\Utils\Price;
 use \Tribe__Utils__Array as Arr;
 
 /**
@@ -339,8 +338,11 @@ class Cart {
 					return null;
 				}
 
+				$sub_total_value = Commerce\Utils\Value::create();
+				$sub_total_value->set_value( $item['obj']->price );
+
 				$item['event_id']  = $item['obj']->get_event_id();
-				$item['sub_total'] = Price::sub_total( $item['obj']->price, $item['quantity'] );
+				$item['sub_total'] = $sub_total_value->sub_total( $item['quantity'] );
 
 				return $item;
 			}, $items );
