@@ -3694,6 +3694,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 			
+			// Update SKU of new ticket to remove '(COPY)'.
+			$old_sku = get_post_meta( $duplicate_ticket_id, '_sku', true );
+			$new_sku = str_replace( '(COPY)', '', $old_sku );
+			update_post_meta( $duplicate_ticket_id, '_sku', $new_sku, $old_sku );
+			
 			return $duplicate_ticket_id;
 		}
 
