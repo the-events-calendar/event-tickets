@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce;
 
 use \tad_DI52_ServiceProvider;
+use TEC\Tickets\Commerce\Utils\Value;
 
 /**
  * Class Legacy Compat.
@@ -46,6 +47,29 @@ class Legacy_Compat extends tad_DI52_ServiceProvider {
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_events_tickets_module_name', [ $this, 'set_legacy_module_name' ] );
+		add_filter( 'tribe_currency_formatted', [ $this, 'maybe_reset_cost_format' ], 99, 2 );
+	}
+
+	/**
+	 * In some instances, the cost format is still handled by legacy code. This replaces it for Tickets Commerce code.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $cost    a formatted price string
+	 * @param int    $post_id the event id
+	 *
+	 * @return string
+	 */
+	public function maybe_reset_cost_format( $cost, $post_id ) {
+		$provider = tribe_get_event_meta( $post_id, tribe( 'tickets.handler' )->key_provider_field );
+
+		if ( Module::class === $provider ) {
+			$value = Value::create( $cost );
+
+			return $value->get_currency();
+		}
+
+		return $cost;
 	}
 
 	/**
@@ -59,32 +83,5 @@ class Legacy_Compat extends tad_DI52_ServiceProvider {
 	 */
 	public function set_legacy_module_name( $name ) {
 		return $name != 'Tribe Commerce' ? $name : __( 'Tribe Commerce ( Legacy PayPal, not recommended )', 'event-tickets' );
-	}
-
-	/**
-	 * Tribe Commerce stored currency codes in a different option key. If we can't find values from Tickets Commerce,
-	 * try to load values from Tribe Commerce before falling back to the default - and update Tickets Commerce with
-	 * what we found.
-	 *
-	 * @since 5.2.2
-	 *
-	 * @return string
-	 */
-	public function maybe_load_currency_code_from_tribe_commerce( $value, $option_name, $default ) {
-
-		// First, get code from Tickets Commerce and return if exists.
-		$currency = Currency::get_currency_code();
-		if ( ! empty( $currency ) ) {
-			return $currency;
-		}
-
-		// Then, if Tribe Commerce value exists, update the Tickets Commerce setting and return it.
-		if( ! empty( $value ) ) {
-			tribe_update_option( Currency::$currency_code_option, $value );
-			return $value;
-		}
-
-		// Otherwise, return the default.
-		return $default;
 	}
 }
