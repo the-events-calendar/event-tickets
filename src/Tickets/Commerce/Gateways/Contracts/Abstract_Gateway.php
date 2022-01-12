@@ -9,6 +9,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 use TEC\Tickets\Commerce;
+use Tribe__Utils__Array as Arr;
 
 /**
  * The gateway related functionality.
@@ -162,25 +163,6 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 		$url       = add_query_arg( [
 			'v' => static::VERSION . '-' . $id,
 		], $url );
-
-		/**
-		 * Tracking ID sent to the Payment Gateway.
-		 *
-		 * @since TBD moved to Abstract_Gateway using a variable filter name
-		 * @since 5.1.9
-		 *
-		 * @param string $url Which ID we are using normally a URL, cannot be longer than 127 chars.
-		 */
-		$url = apply_filters( "tec_tickets_commerce_gateway_{$gateway}_tracking_id", $url );
-
-		/**
-		 * Tracking ID sent to all Payment Gateways
-		 *
-		 * @since TBD
-		 *
-		 * @param string $url Which ID we are using normally a URL, cannot be longer than 127 chars.
-		 */
-		$url = apply_filters( "tec_tickets_commerce_gateway_tracking_id", $url );
 
 		// Always limit it to 127 chars.
 		return substr( (string) $url, 0, 127 );

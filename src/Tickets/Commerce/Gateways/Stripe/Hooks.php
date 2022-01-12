@@ -18,6 +18,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	protected function add_actions() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
+		add_action( 'init', [ $this, 'handle_action_connected' ] );
 	}
 
 	/**
@@ -51,4 +52,12 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		$this->container->make( REST::class )->register_endpoints();
 	}
 
+	public function handle_action_connected() {
+
+		if ( empty( $_GET['stripe'] ) ) {
+			return;
+		}
+
+		tribe( Signup::class )->handle_connection_established();
+	}
 }

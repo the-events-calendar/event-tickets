@@ -21,7 +21,9 @@ class WhoDat extends Abstract_WhoDat {
 	 *
 	 * @var string
 	 */
-	protected $api_url = 'https://whodat.theeventscalendar.com/commerce/v1/stripe';
+//	protected $api_url = 'https://whodat.theeventscalendar.com/commerce/v1/stripe';
+	protected $api_url = 'https://localhost/whodat/index.php/commerce/v1/stripe';
+
 
 	/**
 	 * Creates a new account link for the client and redirects the user to setup the account details.
@@ -31,12 +33,9 @@ class WhoDat extends Abstract_WhoDat {
 	 * @return string
 	 */
 	public function connect_account() {
-		$token_url = tribe( Gateway::class )->generate_unique_tracking_id();
-
-		$return_url = tribe( On_Boarding_Endpoint::class )->get_return_url();
 		$query_args = [
-			'token'      => $token_url,
-			'return_url' => esc_url( $return_url ),
+			'token'      => urlencode( tribe( Gateway::class )->generate_unique_tracking_id() ),
+			'return_url' => tribe( On_Boarding_Endpoint::class )->get_return_url(),
 		];
 
 		$connection_url = $this->get( 'connect', $query_args );
@@ -72,7 +71,13 @@ class WhoDat extends Abstract_WhoDat {
 	 * @param array $account_data array of data returned from stripe after a successful connection
 	 */
 	public function onboard_account( $account_data ) {
-		$this->store_seller_data(); // @todo implement
+
+		$query_args = [
+			'grant_type' => 'authorization_code',
+			'code' => $account_data['code'],
+		];
+
+		return $this->get( 'token', $query_args );
 	}
 
 	/**
@@ -83,10 +88,11 @@ class WhoDat extends Abstract_WhoDat {
 	 * @return string
 	 */
 	public function refresh_token() {
-		$token_url = tribe( Gateway::class )->generate_unique_tracking_id();
+		$refresh_token = tribe( Gateway::class )->get_current_refresh_token();
 
 		$query_args = [
-			'token' => $token_url,
+			'grant_type' => 'refresh_token',
+			'refresh_token' => $refresh_token,
 		];
 
 		return $this->get( 'token', $query_args );

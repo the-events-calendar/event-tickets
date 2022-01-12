@@ -14,7 +14,7 @@
  * @var bool                                          $is_merchant_connected [Global] Whether the merchant is connected or not.
  */
 
-if ( empty( $is_merchant_connected ) ) {
+if ( ! empty( $is_merchant_connected ) ) {
 	return;
 }
 
