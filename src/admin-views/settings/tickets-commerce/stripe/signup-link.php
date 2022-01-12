@@ -5,7 +5,7 @@
 		<a
 			target="_blank"
 			data-stripe-onboard-complete="tecTicketsCommerceGatewayStripeSignupCallback"
-			href="<?php echo esc_url( $url ) ?>&displayMode=minibrowser"
+			href="<?php echo esc_url( $url ) ?>"
 			data-stripe-button="true"
 			id="connect_to_stripe"
 			class="tec-tickets__admin-settings-tickets-commerce-stripe-connect-button-link"
