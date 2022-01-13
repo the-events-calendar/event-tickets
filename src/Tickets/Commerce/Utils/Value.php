@@ -70,7 +70,7 @@ class Value extends Abstract_Currency {
 
 		return sprintf( implode( '', $html ),
 			esc_html( $this->get_currency_symbol() ),
-			esc_html( $this->get_string() ),
+			esc_html( $this->get_string() )
 		);
 
 	}
