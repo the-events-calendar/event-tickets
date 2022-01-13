@@ -3677,7 +3677,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			
 			if ( $ticket_meta ) {
 				foreach ( $ticket_meta as $meta_key => $meta_values ) {
-					
 					// Skip meta we don't want to duplicate.
 					if ( false !== strpos( $meta_key, '_tec_tc_ticket_status_count' ) ){
 						continue;
@@ -3686,6 +3685,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 						continue;
 					}
 	
+					// Delete duplicate tickets meta before adding new meta.
+					delete_post_meta( $duplicate_ticket_id, $meta_key );
+					
 					foreach ( $meta_values as $meta_value ) {
 						// Maybe convert to object, in case meta is serialized.
 						$meta_value_obj = maybe_unserialize( $meta_value );
@@ -3693,6 +3695,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					}
 				}
 			}
+			
+			// Update SKU of new ticket to remove '(COPY)'.
+			$old_sku = get_post_meta( $duplicate_ticket_id, '_sku', true );
+			$new_sku = str_replace( '(COPY)', '', $old_sku );
+			update_post_meta( $duplicate_ticket_id, '_sku', $new_sku, $old_sku );
 			
 			return $duplicate_ticket_id;
 		}
