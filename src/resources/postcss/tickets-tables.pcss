@@ -160,12 +160,13 @@
 
 		.ticket_duplicate_text {
 			&:before {
-				background-image: url("../icons/ticket-copy.svg");
-				background-position: center center;
-				background-repeat: no-repeat;
+				background-color: #ccc;
 				content: '';
 				display: inline-block;
 				height: 22px;
+				mask-image: url("../icons/ticket-copy.svg");
+				mask-position: center;
+				mask-repeat: no-repeat;
 				width: 20px;
 			}
 		}
@@ -174,6 +175,12 @@
 	.ticket_delete,
 	.ticket_duplicate {
 		margin-left: 12px;
+	}
+	
+	.ticket_duplicate:hover {
+		.ticket_duplicate_text:before {
+			background-color: #727272;
+		}
 	}
 
 	.global_capacity_edit_button {
