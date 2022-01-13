@@ -81,9 +81,21 @@ class Signup extends Abstract_Signup {
 			return;
 		}
 
-		tribe( Merchant::class )->save_signup_data( (array) $data );
+		if ( $this->is_success( $data ) ) {
+			tribe( Merchant::class )->save_signup_data( (array) $data );
+		} else {
+			$data->{'tc-stripe-signup-error'} = true;
+			$this->signup_return_path = add_query_arg( (array) $data, $this->signup_return_path );
+		}
 
 		wp_safe_redirect( admin_url( $this->signup_return_path ) );
 		exit();
+	}
+
+	public function is_success( $data ) {
+
+		return ! empty( $data->stripe_user_id )
+			&& ! empty( $data->live->access_token )
+			&& ! empty( $data->sandbox->access_token );
 	}
 }

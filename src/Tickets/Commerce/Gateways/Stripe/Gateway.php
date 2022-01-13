@@ -43,6 +43,19 @@ class Gateway extends Abstract_Gateway {
 	 * @inheritDoc
 	 */
 	public function get_admin_notices() {
-		// TODO: Implement get_admin_notices() method.
+		$notices = [
+			[
+				'slug'    => 'tc-stripe-signup-error',
+				'content' => __( 'Stripe wasn\'t able to complete your connection request. Try again.', 'event-tickets' ),
+				'type'    => 'error',
+			],
+			[
+				'slug'    => 'tc-stripe-token-error',
+				'content' => __( 'Stripe signup was successful but the authentication tokens could not be retrieved. Try refreshing the tokens. Try again.', 'event-tickets' ),
+				'type'    => 'error',
+			],
+		];
+
+		return $notices;
 	}
 }
