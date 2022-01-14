@@ -228,7 +228,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 	}
 
 	protected function register_single_attendee_endpoint() {
-		/** @var Tribe__Tickets__REST__V1__Endpoints__Single_Ticket $endpoint */
+		/** @var Tribe__Tickets__REST__V1__Endpoints__Single_Attendee $endpoint */
 		$endpoint = tribe( 'tickets.rest-v1.endpoints.attendees-single' );
 
 		register_rest_route( $this->namespace, '/attendees/(?P<id>\\d+)', array(
@@ -237,6 +237,13 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 			'callback'            => array( $endpoint, 'get' ),
 			'permission_callback' => '__return_true',
 		) );
+
+		register_rest_route( $this->namespace, '/attendees/', [
+			'methods'             => WP_REST_Server::CREATABLE,
+			'args'                => $endpoint->CREATE_args(),
+			'callback'            => [ $endpoint, 'create' ],
+			'permission_callback' => '__return_true',
+		] );
 
 		tribe( 'tickets.rest-v1.endpoints.documentation' )->register_documentation_provider( '/attendees/{id}', $endpoint );
 
