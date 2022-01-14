@@ -119,8 +119,12 @@
 	}
 
 	.ticket_edit {
-		white-space: nowrap;
+		white-space: normal;
 		width: 84px;
+
+		@media screen and (--viewport-wpadmin) {
+			white-space: nowrap;
+		}
 	}
 
 	/* Edit button styles - separate for portability */
