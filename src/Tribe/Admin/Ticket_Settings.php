@@ -20,6 +20,10 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	public function __construct() {
 		add_action( 'tribe_settings_do_tabs', [ $this, 'settings_ui' ] );
 		add_action( 'admin_menu', [ $this, 'add_admin_pages' ] );
+		add_action( 'network_admin_menu', [ $this, 'maybe_add_network_settings_page' ] );
+		add_action( 'tribe_settings_do_tabs', [ $this, 'do_network_settings_tab' ], 400 );
+
+		// @todo @juanfra: We'll need to add a method to sync the network settings.
 
 		add_filter( 'tribe_settings_page_title', [ $this, 'settings_page_title' ] );
 		add_filter( 'tec_admin_pages_with_tabs', [ $this, 'add_to_pages_with_tabs' ], 20, 1 );
@@ -121,7 +125,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 			[
 				'id'       => self::$settings_page_id,
 				'parent'   => 'tec-tickets',
-				'title'    => esc_html__( 'Settings', 'tribe-common' ),
+				'title'    => esc_html__( 'Settings', 'event-tickets' ),
 				'path'     => self::$settings_page_id,
 				'callback' => [
 					tribe( 'settings' ),
@@ -134,7 +138,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 			[
 				'id'       => 'tec-tickets-help',
 				'parent'   => 'tec-tickets',
-				'title'    => esc_html__( 'Help', 'tribe-common' ),
+				'title'    => esc_html__( 'Help', 'event-tickets' ),
 				'path'     => 'tec-tickets-help',
 				'callback' => [
 					tribe( 'settings.manager' ),
@@ -179,6 +183,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	 * Loads the ticket settings from an admin-view file and returns them as an array.
 	 *
 	 * @since 4.10.9 Use customizable ticket name functions.
+	 * @since TBD Use admin page and only show the General tab if we're in the Event Tickets menu.
 	 */
 	public function settings_ui( $admin_page ) {
 		if ( ! empty( $admin_page ) && self::$settings_page_id !== $admin_page ) {
@@ -201,5 +206,48 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 
 		/** @var array $tickets_tab Set in the file included above*/
 		return $tickets_tab;
+	}
+
+	/**
+	 * Maybe add network settings page for Event Tickets.
+	 *
+	 * @since TBD
+	 */
+	public function maybe_add_network_settings_page() {
+		$admin_pages = tribe( 'admin.pages' );
+		$settings    = Tribe__Settings::instance();
+
+		if ( ! $settings->should_setup_network_pages() ) {
+			return;
+		}
+
+		$admin_pages->register_page(
+			[
+				'id'         => self::$settings_page_id,
+				'parent'     => 'settings.php',
+				'title'      => esc_html__( 'Tickets Settings', 'event-tickets' ),
+				'path'       => self::$settings_page_id,
+				'capability' => $admin_pages->get_capability(),
+				'callback'   => [
+					$settings,
+					'generatePage',
+				],
+			]
+		);
+	}
+
+	/**
+	 * Generate network settings page for Event Tickets.
+	 *
+	 * @since TBD
+	 */
+	public function do_network_settings_tab( $admin_page ) {
+		if ( ! empty( $admin_page ) && self::$settings_page_id !== $admin_page ) {
+			return;
+		}
+
+		include_once Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tec-tickets-options-network.php';
+
+		new Tribe__Settings_Tab( 'network', esc_html__( 'Network', 'event-tickets' ), $networkTab );
 	}
 }
