@@ -92,4 +92,35 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 
 		return tribe_attendees( 'restv1' )->by_primary_key( $request['id'] );
 	}
+	/**
+	 * Returns the content of the `args` array that should be used to register the endpoint
+	 * with the `register_rest_route` function.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function CREATE_args() {
+		$args = [
+			'ticket_id'             => [
+				'required'          => true,
+				'validate_callback' => 'tribe_events_product_is_ticket',
+				'type'              => 'integer',
+				'description'       => __( 'The Ticket ID, where the attendee is registered.', 'event-tickets' ),
+			],
+			'name'                  => [
+				'required'          => true,
+				'type'              => 'string',
+				'description'       => __( 'Full name of the attendee.', 'event-tickets' ),
+			],
+			'email'                 => [
+				'required'          => true,
+				'validate_callback' => 'is_email',
+				'type'              => 'email',
+				'description'       => __( 'Email of the attendeee', 'event-tickets' ),
+			],
+		];
+
+		return apply_filters( 'tribe_ticket_rest_api_post_attendee_args',$args );
+	}
 }
