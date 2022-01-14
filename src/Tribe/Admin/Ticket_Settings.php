@@ -227,7 +227,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 				'parent'     => 'settings.php',
 				'title'      => esc_html__( 'Tickets Settings', 'event-tickets' ),
 				'path'       => self::$settings_page_id,
-				'capability' => $admin_pages->get_capability(),
+				'capability' => $admin_pages->get_capability( 'manage_network_options' ),
 				'callback'   => [
 					$settings,
 					'generatePage',
