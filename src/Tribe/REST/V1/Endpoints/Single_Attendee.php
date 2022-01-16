@@ -92,6 +92,38 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 
 		return tribe_attendees( 'restv1' )->by_primary_key( $request['id'] );
 	}
+
+	/**
+	 * Handles POST requests on the endpoint.
+	 *
+	 * @param WP_REST_Request $request
+	 * @param bool            $return_id Whether the created post ID should be returned or the full response object.
+	 *
+	 * @return WP_Error|WP_REST_Response|int An array containing the data on success or a WP_Error instance on failure.
+	 */
+	public function create( WP_REST_Request $request, $return_id = false ) {
+
+		$post_data = $this->prepare_attendee_data( $request );
+
+		if ( is_wp_error( $post_data ) ) {
+			return $post_data;
+		}
+
+		/** @var Tribe__Tickets__Attendees $attendees */
+		$attendees       = tribe( 'tickets.attendees' );
+		$attendee_object = $attendees->create_attendee( $post_data['ticket'], $post_data['data'] );
+
+		if ( ! $attendee_object ) {
+			return new WP_Error( 'attendee-creation-failed', __( 'Something went wrong! Attendee creation failed.', 'event-tickets' ) );
+		}
+
+		$attendee = $post_data['provider']->get_attendee( $attendee_object->ID );
+		$response = new WP_REST_Response( $attendee );
+		$response->set_status( 201 );
+
+		return $response;
+	}
+
 	/**
 	 * Returns the content of the `args` array that should be used to register the endpoint
 	 * with the `register_rest_route` function.
@@ -122,5 +154,45 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 		];
 
 		return apply_filters( 'tribe_ticket_rest_api_post_attendee_args',$args );
+	}
+
+	/**
+	 * Process Request data.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return array|WP_Error
+	 */
+	public function prepare_attendee_data( WP_REST_Request $request ) {
+
+		$ticket_id = (int) $request->get_param( 'ticket_id' );
+		$provider  = tribe_tickets_get_ticket_provider( $ticket_id );
+
+		if ( ! $provider ) {
+			return new WP_Error( 'invalid-provider', __( 'Ticket Provider not found.', 'event-tickets' ) );
+		}
+
+		// Set up the attendee data for the creation/save.
+		$attendee_data = [
+			'full_name'       => $request->get_param( 'name' ),
+			'email'           => $request->get_param( 'email' ),
+			'attendee_source' => 'rest-api',
+		];
+
+		/**
+		 * Filter REST API attendee data before creating an attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $attendee_data Attendee data.
+		 * @param WP_REST_Request $request Request object.
+		 */
+		$attendee_data = apply_filters( 'tribe_tickets_rest_api_post_attendee_data', $attendee_data, $request );
+
+		return [
+			'ticket'   => $ticket_id,
+			'provider' => $provider,
+			'data'     => $attendee_data,
+		];
 	}
 }
