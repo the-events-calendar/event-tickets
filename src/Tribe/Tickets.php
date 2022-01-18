@@ -3623,11 +3623,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			return $ticket_form_hook;
 		}
-		
+
 		/**
 		 * Creates a duplicate ticket based on post id and ticket id.
 		 *
-		 * @since TBD
+		 * @since 5.2.3
 		 *
 		 * @param int $post_id   ID of parent "event" post.
 		 * @param int $ticket_id ID of ticket to duplicate.
@@ -3635,14 +3635,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return int|boolean $duplicate_ticket_id New ticket ID or false, if unable to create duplicate.
 		 */
 		public function duplicate_ticket( $post_id, $ticket_id ) {
-			
+
 			// Get ticket data.
 			$ticket = $this->get_ticket( $post_id, $ticket_id );
-			
+
 			if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
 				return false;
 			}
-			
+
 			// Create data for duplicate ticket.
 			$data = [
 				'ticket_name'             => $ticket->name . __( '(copy)', 'event-tickets' ),
@@ -3661,11 +3661,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Add the ticket.
 			$duplicate_ticket_id = $this->ticket_add( $post_id, $data );
-			
+
 			if ( ! $duplicate_ticket_id ) {
 				return false;
 			}
-			
+
 			// Copy ticket meta from old ticket to new ticket.
 			$ignore_meta = [
 				'_sku',
@@ -3674,7 +3674,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'total_sales',
 			];
 			$ticket_meta = get_post_meta( $ticket->ID );
-			
+
 			if ( $ticket_meta ) {
 				foreach ( $ticket_meta as $meta_key => $meta_values ) {
 					// Skip meta we don't want to duplicate.
@@ -3684,10 +3684,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					if ( in_array( $meta_key, $ignore_meta ) ) {
 						continue;
 					}
-	
+
 					// Delete duplicate tickets meta before adding new meta.
 					delete_post_meta( $duplicate_ticket_id, $meta_key );
-					
+
 					foreach ( $meta_values as $meta_value ) {
 						// Maybe convert to object, in case meta is serialized.
 						$meta_value_obj = maybe_unserialize( $meta_value );
@@ -3695,12 +3695,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					}
 				}
 			}
-			
+
 			// Update SKU of new ticket to remove '(COPY)'.
 			$old_sku = get_post_meta( $duplicate_ticket_id, '_sku', true );
 			$new_sku = str_replace( '(COPY)', '', $old_sku );
 			update_post_meta( $duplicate_ticket_id, '_sku', $new_sku, $old_sku );
-			
+
 			return $duplicate_ticket_id;
 		}
 

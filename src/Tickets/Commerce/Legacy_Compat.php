@@ -48,12 +48,13 @@ class Legacy_Compat extends tad_DI52_ServiceProvider {
 	protected function add_filters() {
 		add_filter( 'tribe_events_tickets_module_name', [ $this, 'set_legacy_module_name' ] );
 		add_filter( 'tribe_currency_formatted', [ $this, 'maybe_reset_cost_format' ], 99, 2 );
+		add_filter( 'tribe_events_cost_unformatted', [ $this, 'maybe_reset_cost_format' ], 99, 2 );
 	}
 
 	/**
 	 * In some instances, the cost format is still handled by legacy code. This replaces it for Tickets Commerce code.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @param string $cost    a formatted price string
 	 * @param int    $post_id the event id

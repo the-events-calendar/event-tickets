@@ -63,7 +63,7 @@ class Ticket_Model extends Base {
 	/**
 	 * Returns the Value object representing this Ticket price.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @return Value
 	 */

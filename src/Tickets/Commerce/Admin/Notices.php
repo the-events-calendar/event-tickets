@@ -47,7 +47,7 @@ class Notices extends tad_DI52_ServiceProvider {
 	/**
 	 * Display a notice when Tickets Commerce is enabled, but users aren't required to log in.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @return bool
 	 */
@@ -58,11 +58,11 @@ class Notices extends tad_DI52_ServiceProvider {
 		}
 
 		$options = get_option( Tribe__Main::OPTIONNAME, [] );
-		
-		if ( 
-			empty( $options[ 'ticket-authentication-requirements' ] ) || 
-			! is_array( $options[ 'ticket-authentication-requirements' ] ) || 
-			! in_array( 'event-tickets_all', $options[ 'ticket-authentication-requirements' ] ) 
+
+		if (
+			empty( $options[ 'ticket-authentication-requirements' ] ) ||
+			! is_array( $options[ 'ticket-authentication-requirements' ] ) ||
+			! in_array( 'event-tickets_all', $options[ 'ticket-authentication-requirements' ] )
 		) {
 			return true;
 		}
@@ -73,7 +73,7 @@ class Notices extends tad_DI52_ServiceProvider {
 	/**
 	 * Gets the HTML for the notice that is shown when users aren't required to log in.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @return string Notice HTML.
 	 */

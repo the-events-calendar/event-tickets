@@ -12,7 +12,7 @@ abstract class Abstract_Order {
 	/**
 	 * Get a value object set with the combined price of a list of tickets.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @param int[]|float[] $items a list of values
 	 *

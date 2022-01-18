@@ -28,7 +28,7 @@ class Value extends Abstract_Currency {
 	/**
 	 * Builds a list of Value objects from a list of numeric values.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @param int[]|float[] $values
 	 *
@@ -48,7 +48,7 @@ class Value extends Abstract_Currency {
 	/**
 	 * Get formatted html block with formatted currency and symbol.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @return string
 	 */
