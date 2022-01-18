@@ -9,7 +9,7 @@ $needs_warning         = false;
 $stk_warning           = false;
 $mode                  = $ticket->global_stock_mode();
 $event                 = $ticket->get_event();
-$show_duplicate_button = is_admin();
+$show_duplicate_button = ! function_exists( 'tribe_is_community_edit_event_page' ) || ! tribe_is_community_edit_event_page();
 
 // If we don't have an event we shouldn't even continue
 if ( ! $event ) {
