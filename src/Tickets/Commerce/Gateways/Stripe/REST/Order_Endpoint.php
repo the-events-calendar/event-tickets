@@ -102,7 +102,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ) );
 
-		$stripe_request = tribe( Client::class )->create_payment_intent( $order->currency, $order->total_value );
+		$stripe_request = tribe( Client::class )->create_payment_intent( $order->currency, $order->total_value->get_integer() );
 
 		$payment_intent = json_decode( $stripe_request['body'] );
 
