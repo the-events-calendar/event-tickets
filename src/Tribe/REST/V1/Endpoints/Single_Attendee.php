@@ -164,6 +164,27 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	}
 
 	/**
+	 * Returns the content of the `args` array that should be used to register the endpoint
+	 * with the `register_rest_route` function.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function EDIT_args() {
+		$args = [
+			'id' => [
+				'type'              => 'integer',
+				'in'                => 'path',
+				'description'       => __( 'The attendee post ID', 'event-tickets' ),
+				'required'          => true,
+			],
+		];
+
+		return apply_filters( 'tribe_ticket_rest_api_edit_attendee_args', $args );
+	}
+
+	/**
 	 * Process Request data.
 	 *
 	 * @param WP_REST_Request $request
