@@ -29,13 +29,36 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			'Accept': 'application/json',
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify( {nonce: obj.checkout.keyNonce } )
+		body: JSON.stringify( { nonce: obj.checkout.keyNonce } )
 	} ).then( function( response ) {
 		return response.json();
 	} );
 
-	var stripe = Stripe( response );
-	obj.stripeElements = stripe.elements();
+	obj.stripeLib = Stripe( response );
+	obj.stripeElements = obj.stripeLib.elements();
+
+	obj.submitPayment = async function( secret ) {
+
+		obj.stripeLib.confirmCardPayment( secret, {
+			payment_method: {
+				card: obj.checkout.card,
+				billing_details: {
+					name: 'user name' // @todo get this value
+				}
+			}
+		} ).then( function( result ) {
+			console.log( result );
+			if ( result.error ) {
+				console.log( result.error.message );
+				return false;
+			}
+
+			if ( result.paymentIntent.status === 'succeeded' ) {
+				console.log( 'great success!' );
+			}
+		} );
+
+	};
 
 	/**
 	 * Create an order
@@ -49,12 +72,16 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 				'Accept': 'application/json',
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify( {nonce: obj.checkout.keyNonce } )
+			body: JSON.stringify( { nonce: obj.checkout.orderNonce } )
 		} ).then( function( response ) {
 			return response.json();
 		} );
 
-		console.log('create order');
+		if ( true === response.success ) {
+			obj.submitPayment( response.client_secret );
+		}
+
+		console.log( response );
 	};
 
 	/**
@@ -62,7 +89,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @param event
 	 */
-	obj.submitPayment = function( event ) {
+	obj.handlePayment = function( event ) {
 		event.preventDefault();
 
 		obj.createOrder();
@@ -76,7 +103,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @type {Object}
 	 */
 	obj.selectors = {
-		button: 'tec-tc-gateway-stripe-checkout-button',
+		button: 'tec-tc-gateway-stripe-checkout-button'
 	};
 
 	/**
@@ -84,7 +111,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @type {{submit: tribe.tickets.commerce.gateway.stripe.submitPayment}}
 	 */
 	obj.callbacks = {
-		submit: obj.submitPayment,
+		submit: obj.handlePayment
 	}
 
 	/**
@@ -102,10 +129,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 				}
 			};
 
-			var card = obj.stripeElements.create( "card", { style: style } );
-			card.mount( "#card-element" );
+			obj.checkout.card = obj.stripeElements.create( "card", { style: style } );
+			obj.checkout.card.mount( "#card-element" );
 
-			card.on( 'change', ( { error } ) => {
+			obj.checkout.card.on( 'change', ( { error } ) => {
 				let displayError = document.getElementById( 'card-errors' );
 				if ( error ) {
 					displayError.textContent = error.message;
@@ -117,7 +144,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 
 		// Handle submit
 		var paymentButton = document.getElementById( obj.selectors.button );
-		paymentButton.addEventListener( 'click', obj.callbacks.submit )
+		paymentButton.addEventListener( 'click', obj.callbacks.submit );
 	};
 
 	obj.bindEvents();

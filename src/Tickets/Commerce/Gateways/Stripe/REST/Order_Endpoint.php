@@ -102,41 +102,17 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ) );
 
-		$unit = [
-			'reference_id' => $order->ID,
-			'value'        => $order->total_value,
-			'currency'     => $order->currency,
-			'first_name'   => $order->purchaser['first_name'], // @todo get from request
-			'last_name'    => $order->purchaser['last_name'], // @todo get from request
-			'email'        => $order->purchaser['email'], // @todo get from request
-		];
+		$stripe_request = tribe( Client::class )->create_payment_intent( $order->currency, $order->total_value );
 
-		foreach ( $order->items as $item ) {
-			$ticket          = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
-			$unit['items'][] = [
-				'name'        => $ticket->name,
-				'unit_amount' => [ 'value' => $item['price'], 'currency_code' => $order->currency ],
-				'quantity'    => $item['quantity'],
-				'item_total'  => [ 'value' => $item['sub_total'], 'currency_code' => $order->currency ],
-				'sku'         => $ticket->sku,
-			];
-		}
+		$payment_intent = json_decode( $stripe_request['body'] );
 
-		$payment_intent = tribe( Client::class )->create_payment_intent( $order->currency, $order->total_value );
-		\wp_send_json( $payment_intent );
-
-		if ( empty( $payment_intent['id'] ) || empty( $payment_intent['create_time'] ) ) {
+		if ( empty( $payment_intent->id ) || empty( $payment_intent->created ) ) {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-order', $messages['failed-creating-order'], $order );
-		}
-
-		$debug_header = tribe( Client::class )->get_debug_header();
-		if ( ! empty( $debug_header ) ) {
-			$payment_intent['debug_id'] = $debug_header;
 		}
 
 		$updated = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG, [
 			'gateway_payload'  => $payment_intent,
-			'gateway_order_id' => $payment_intent['id'],
+			'gateway_order_id' => $payment_intent->id,
 		] );
 
 		if ( is_wp_error( $updated ) ) {
@@ -145,7 +121,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		// Respond with the ID for Stripe Usage.
 		$response['success'] = true;
-		$response['id']      = $payment_intent['id'];
+		$response['client_secret']      = $payment_intent->client_secret;
 
 		return new WP_REST_Response( $response );
 	}
