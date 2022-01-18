@@ -1,14 +1,15 @@
 <?php
-$provider      = $ticket->provider_class;
-$provider_obj  = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider );
-$inventory     = $ticket->inventory();
-$available     = $ticket->available();
-$capacity      = $ticket->capacity();
-$stock         = $ticket->stock();
-$needs_warning = false;
-$stk_warning   = false;
-$mode          = $ticket->global_stock_mode();
-$event         = $ticket->get_event();
+$provider              = $ticket->provider_class;
+$provider_obj          = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider );
+$inventory             = $ticket->inventory();
+$available             = $ticket->available();
+$capacity              = $ticket->capacity();
+$stock                 = $ticket->stock();
+$needs_warning         = false;
+$stk_warning           = false;
+$mode                  = $ticket->global_stock_mode();
+$event                 = $ticket->get_event();
+$show_duplicate_button = is_admin();
 
 // If we don't have an event we shouldn't even continue
 if ( ! $event ) {
@@ -120,18 +121,20 @@ if (
 			esc_html( $ticket->name )
 		);
 
-		printf(
-			"<button data-provider='%s' data-ticket-id='%s' title='%s' class='ticket_duplicate'><span class='ticket_duplicate_text'>%s</span></a>",
-			esc_attr( $ticket->provider_class ),
-			esc_attr( $ticket->ID ),
-			esc_attr( sprintf(
-				// Translators: %s: dynamic "ticket" text, %d: ticket ID #.
-				_x( 'Duplicate %s ID: %d', 'ticket ID title attribute', 'event-tickets' ),
-				tribe_get_ticket_label_singular( 'ticket_id_title_attribute' ),
-				$ticket->ID
-			) ),
-			esc_html( $ticket->name )
-		);
+        if ( $show_duplicate_button ) {
+            printf(
+                "<button data-provider='%s' data-ticket-id='%s' title='%s' class='ticket_duplicate'><span class='ticket_duplicate_text'>%s</span></a>",
+                esc_attr($ticket->provider_class),
+                esc_attr($ticket->ID),
+                esc_attr(sprintf(
+                    // Translators: %s: dynamic "ticket" text, %d: ticket ID #.
+                    _x('Duplicate %s ID: %d', 'ticket ID title attribute', 'event-tickets'),
+                    tribe_get_ticket_label_singular('ticket_id_title_attribute'),
+                    $ticket->ID
+                )),
+                esc_html($ticket->name)
+            );
+        }
 		
 		printf(
 			"<button attr-provider='%s' attr-ticket-id='%s' title='%s' class='ticket_delete'><span class='ticket_delete_text'>%s</span></a>",
