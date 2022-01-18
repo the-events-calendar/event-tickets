@@ -16,7 +16,7 @@ class Currency {
 	/**
 	 * The option key that stores the currency code in Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @var string
 	 */
@@ -25,7 +25,7 @@ class Currency {
 	/**
 	 * The option key that was used to store the currency code in Tribe Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ class Currency {
 	/**
 	 * The fallback currency code to use if none is found.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @var string
 	 */
@@ -43,7 +43,7 @@ class Currency {
 	/**
 	 * Retrieves the working currency code.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @return string
 	 */
@@ -55,7 +55,7 @@ class Currency {
 	/**
 	 * Retrieve a fallback currency code.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @return string
 	 */
@@ -73,7 +73,7 @@ class Currency {
 	/**
 	 * Return the currency symbol to use as defined in the currency map.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @param string $code the currency 3-letter code
 	 *
@@ -90,7 +90,7 @@ class Currency {
 		/**
 		 * Filter the specific currency symbol before returning. $code is the 3-letter currency code.
 		 *
-		 * @since TBD
+		 * @since 5.2.3
 		 *
 		 * @param string $symbol The currency symbol.
 		 *
@@ -101,7 +101,7 @@ class Currency {
 		/**
 		 * Filter all currency symbols before returning.
 		 *
-		 * @since TBD
+		 * @since 5.2.3
 		 *
 		 * @param string $symbol The currency symbol.
 		 *
@@ -113,7 +113,7 @@ class Currency {
 	/**
 	 * Return the currency decimal separator character to use as defined in the currency map.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @param string $code the currency 3-letter code
 	 *
@@ -130,7 +130,7 @@ class Currency {
 		/**
 		 * Filter the specific currency decimal separator before returning. $code is the 3-letter currency code.
 		 *
-		 * @since TBD
+		 * @since 5.2.3
 		 *
 		 * @param string $separator The currency decimal separator character.
 		 *
@@ -141,7 +141,7 @@ class Currency {
 		/**
 		 * Filter all currency decimal separators before returning.
 		 *
-		 * @since TBD
+		 * @since 5.2.3
 		 *
 		 * @param string $separator The currency decimal separator character.
 		 *
@@ -153,7 +153,7 @@ class Currency {
 	/**
 	 * Return the currency thousands separator character to use as defined in the currency map.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @param string $code the currency 3-letter code
 	 *
@@ -170,7 +170,7 @@ class Currency {
 		/**
 		 * Filter the specific currency thousands separator before returning. $code is the 3-letter currency code.
 		 *
-		 * @since TBD
+		 * @since 5.2.3
 		 *
 		 * @param string $separator The currency thousands separator character.
 		 *
@@ -181,7 +181,7 @@ class Currency {
 		/**
 		 * Filter all currency thousands separators before returning.
 		 *
-		 * @since TBD
+		 * @since 5.2.3
 		 *
 		 * @param string $separator The currency thousands separator character.
 		 *
@@ -224,7 +224,7 @@ class Currency {
 		/**
 		 * Whether the currency position should be 'prefix' or 'postfix' (i.e. suffix).
 		 *
-		 * @since TBD
+		 * @since 5.2.3
 		 *
 		 * @param string   $currency_position The currency position string.
 		 *
@@ -244,7 +244,7 @@ class Currency {
 	 * Returns the default currency settings mapping.
 	 *
 	 * @see   https://en.wikipedia.org/wiki/Decimal_separator for separators informmation
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 */
 	public static function get_default_currency_map() {
@@ -253,7 +253,7 @@ class Currency {
 		 * Filter the default currency map before returning. This filter can be used to add or remove or modify how
 		 * currencies are formatted in Event Tickets.
 		 *
-		 * @since TBD
+		 * @since 5.2.3
 		 *
 		 * @param array $currency_map The currency position string.
 		 *

@@ -54,7 +54,7 @@ class Legacy_Compat extends tad_DI52_ServiceProvider {
 	/**
 	 * In some instances, the cost format is still handled by legacy code. This replaces it for Tickets Commerce code.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @param string $cost    a formatted price string
 	 * @param int    $post_id the event id
