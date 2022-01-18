@@ -51,7 +51,7 @@ class Publishable_Key_Endpoint implements Tribe__Documentation__Swagger__Provide
 			$namespace,
 			$this->get_endpoint_path(),
 			[
-				'methods'             => WP_REST_Server::READABLE,
+				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => [ $this, 'get_key' ],
 				'permission_callback' => '__return_true',
 			]

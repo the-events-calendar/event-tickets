@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
+use TEC\Tickets\Commerce\Gateways\Stripe\REST\Order_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Publishable_Key_Endpoint;
 
 class Assets extends \tad_DI52_ServiceProvider {
@@ -48,6 +49,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 					'data' => static function () {
 						return [
 							'keyEndpoint' => tribe( Publishable_Key_Endpoint::class )->get_route_url(),
+							'orderEndpoint' => tribe( Order_Endpoint::class )->get_route_url(),
 						];
 					},
 				],

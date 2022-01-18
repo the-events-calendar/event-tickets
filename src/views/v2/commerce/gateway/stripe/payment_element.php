@@ -27,5 +27,5 @@ if ( $must_login ) {
 	<!-- We'll put the error messages in this element -->
 	<div id="card-errors" role="alert"></div>
 
-	<button id="submit">Submit Payment</button>
+	<button id="tec-tc-gateway-stripe-checkout-button">Submit Payment</button>
 </form>
