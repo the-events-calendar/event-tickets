@@ -61,6 +61,12 @@ class Merchant extends Abstract_Merchant {
 		return "tec_tickets_commerce_{$gateway_key}_signup_data";
 	}
 
+	public function get_client_secret() {
+		$keys = get_option( $this->get_signup_data_key() );
+
+		return $keys['sandbox']->access_token;
+	}
+
 	/**
 	 * Return array of merchant details.
 	 *

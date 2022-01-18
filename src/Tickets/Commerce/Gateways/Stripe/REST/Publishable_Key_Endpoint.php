@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 
+use TEC\Tickets\Commerce\Gateways\Stripe\Assets;
 use TEC\Tickets\Commerce\Gateways\Stripe\Client;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 use TEC\Tickets\Commerce\Gateways\Stripe\Refresh_Token;
@@ -18,7 +19,6 @@ use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
-
 
 /**
  * Class Publishable_Key_Endpoint
@@ -61,7 +61,17 @@ class Publishable_Key_Endpoint implements Tribe__Documentation__Swagger__Provide
 	}
 
 	public function get_key( WP_REST_Request $request ) {
+
+		$params = $request->get_json_params();
+
+		/* @todo fixme
+		if ( ! wp_verify_nonce( $params['nonce'], Assets::PUBLISHABLE_KEY_NONCE_ACTION ) ) {
+			wp_send_json_error( 'Invalid nonce ' . $params['nonce'] );
+		}
+		 */
+
 		$keys = get_option( tribe( Merchant::class )->get_signup_data_key() );
+
 		return $keys['sandbox']->publishable_key;
 	}
 

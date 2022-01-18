@@ -7,6 +7,10 @@ use TEC\Tickets\Commerce\Gateways\Stripe\REST\Publishable_Key_Endpoint;
 
 class Assets extends \tad_DI52_ServiceProvider {
 
+	const PUBLISHABLE_KEY_NONCE_ACTION = 'stripe_pubkey';
+
+	const ORDER_NONCE_ACTION = 'stripe_order';
+
 	/**
 	 * @inheritDoc
 	 */
@@ -49,7 +53,9 @@ class Assets extends \tad_DI52_ServiceProvider {
 					'data' => static function () {
 						return [
 							'keyEndpoint' => tribe( Publishable_Key_Endpoint::class )->get_route_url(),
+							'keyNonce' => wp_create_nonce( static::PUBLISHABLE_KEY_NONCE_ACTION ),
 							'orderEndpoint' => tribe( Order_Endpoint::class )->get_route_url(),
+							'orderNonce' => wp_create_nonce( static::ORDER_NONCE_ACTION ),
 						];
 					},
 				],

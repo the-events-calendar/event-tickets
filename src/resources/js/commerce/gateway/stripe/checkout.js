@@ -20,14 +20,16 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	'use strict';
 	const $document = $( document );
 
+	obj.checkout = tecTicketsCommerceGatewayStripeCheckout;
+
 	// Fetch Publishable API Key and Initialize Stripe Elements on Ready
-	var response = await fetch( tecTicketsCommerceGatewayStripeCheckout.keyEndpoint, {
+	var response = await fetch( obj.checkout.keyEndpoint, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify( {payload: true} )
+		body: JSON.stringify( {nonce: obj.checkout.keyNonce } )
 	} ).then( function( response ) {
 		return response.json();
 	} );
@@ -38,7 +40,19 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Create an order
 	 */
-	obj.createOrder = function() {
+	obj.createOrder = async function() {
+
+		// Fetch Publishable API Key and Initialize Stripe Elements on Ready
+		var response = await fetch( obj.checkout.orderEndpoint, {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify( {nonce: obj.checkout.keyNonce } )
+		} ).then( function( response ) {
+			return response.json();
+		} );
 
 		console.log('create order');
 	};
