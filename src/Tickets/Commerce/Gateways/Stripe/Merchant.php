@@ -10,6 +10,29 @@ class Merchant extends Abstract_Merchant {
 
 	protected $refresh_tokens;
 
+
+	/**
+	 * Determines if the Merchant is active.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_active( $recheck = false ) {
+		return true;
+	}
+
+	/**
+	 * Determines if the Merchant is connected.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_connected( $recheck = false ) {
+		return true;
+	}
+
 	/**
 	 * Returns the options key for the account in the merchant mode.
 	 *

@@ -21,6 +21,8 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	protected function add_actions() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
 		add_action( 'plugins_loaded', [ $this, 'handle_action_connected' ] );
+		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
+
 		add_action( 'admin_init', [ $this, 'handle_stripe_errors' ] );
 	}
 
@@ -91,5 +93,18 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function include_admin_notices( $messages ) {
 		return array_merge( $messages, $this->container->make( Gateway::class )->get_admin_notices() );
+	}
+
+	/**
+	 * Include the payment element from Stripe into the Checkout page.
+	 *
+	 * @since TBD
+	 *
+	 * @param string           $file     Which file we are loading.
+	 * @param string           $name     Name of file file
+	 * @param \Tribe__Template $template Which Template object is being used.
+	 */
+	public function include_payment_buttons( $file, $name, $template ) {
+		$this->container->make( PaymentElement::class )->include_payment_element( $file, $name, $template );
 	}
 }

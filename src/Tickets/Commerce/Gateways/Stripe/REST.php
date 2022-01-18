@@ -12,7 +12,7 @@ use WP_REST_Server;
  */
 class REST extends \tad_DI52_ServiceProvider {
 	public function register() {
-		$this->container->singleton( REST\On_Boarding_Endpoint::class );
+		$this->container->singleton( REST\Publishable_Key_Endpoint::class );
 	}
 
 	/**
@@ -21,6 +21,6 @@ class REST extends \tad_DI52_ServiceProvider {
 	 * @since 5.1.6
 	 */
 	public function register_endpoints() {
-		$this->container->make( REST\On_Boarding_Endpoint::class )->register();
+		$this->container->make( REST\Publishable_Key_Endpoint::class )->register();
 	}
 }
