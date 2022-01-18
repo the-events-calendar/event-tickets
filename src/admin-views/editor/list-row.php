@@ -1,14 +1,14 @@
 <?php
-$provider      = $ticket->provider_class;
-$provider_obj  = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider );
-$inventory     = $ticket->inventory();
-$available     = $ticket->available();
-$capacity      = $ticket->capacity();
-$stock         = $ticket->stock();
-$needs_warning = false;
-$stk_warning   = false;
-$mode          = $ticket->global_stock_mode();
-$event         = $ticket->get_event();
+$provider              = $ticket->provider_class;
+$provider_obj          = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider );
+$inventory             = $ticket->inventory();
+$available             = $ticket->available();
+$capacity              = $ticket->capacity();
+$stock                 = $ticket->stock();
+$needs_warning         = false;
+$stk_warning           = false;
+$mode                  = $ticket->global_stock_mode();
+$event                 = $ticket->get_event();
 $show_duplicate_button = is_admin();
 
 // If we don't have an event we shouldn't even continue
