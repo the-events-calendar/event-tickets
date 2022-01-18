@@ -151,9 +151,16 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 				'type'              => 'email',
 				'description'       => __( 'Email of the attendeee', 'event-tickets' ),
 			],
+			'order_status'          => [
+				'required'          => false,
+				'validate_callback' => 'is_string',
+				'type'              => 'string',
+				'description'       => __( 'Order Status for the attendee.', 'event-tickets' ),
+			],
+
 		];
 
-		return apply_filters( 'tribe_ticket_rest_api_post_attendee_args',$args );
+		return apply_filters( 'tribe_ticket_rest_api_post_attendee_args', $args );
 	}
 
 	/**
@@ -177,6 +184,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			'full_name'       => $request->get_param( 'name' ),
 			'email'           => $request->get_param( 'email' ),
 			'attendee_source' => 'rest-api',
+			'attendee_status' => $request->get_param( 'order_status' ),
 		];
 
 		/**
