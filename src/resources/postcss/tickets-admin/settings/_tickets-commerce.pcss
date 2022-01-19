@@ -8,7 +8,7 @@
 	@todo @juanfra: This was already here, inherited. We need to move to common.
 */
 
-#tribe-field-tickets-commerce-stripe-commerce-configure {
+#tribe-field-tickets-commerce-paypal-commerce-configure {
 	padding-left: 0;
 	width: 100%;
 
@@ -93,10 +93,7 @@
 	max-width: 84%;
 }
 
-/**
- * Gateway: Paypal
- */
-.tec-tickets__admin-settings-tickets-commerce-stripe {
+.tec-tickets__admin-settings-tickets-commerce-paypal {
 	background: #fff;
 	border: 1px solid #ccc;
 	border-radius: 4px;
@@ -107,17 +104,17 @@
 	padding: 45px 32px 20px 32px;
 
 	@media (--viewport-medium) {
-		background-image: url("../images/background-stripe-connect.png");
+		background-image: url("../images/background-paypal-connect.png");
 		background-position: center right;
 		background-repeat: no-repeat;
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-title {
+.tec-tickets__admin-settings-tickets-commerce-paypal-title {
 	font-size: 20px;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-description {
+.tec-tickets__admin-settings-tickets-commerce-paypal-description {
 	margin-bottom: 20px;
 
 	p {
@@ -125,15 +122,15 @@
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-signup-links {
+.tec-tickets__admin-settings-tickets-commerce-paypal-signup-links {
 	margin-top: var(--tec-spacer-8);
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-help-links {
+.tec-tickets__admin-settings-tickets-commerce-paypal-help-links {
 	margin-top: var(--tec-spacer-8);
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-help-link {
+.tec-tickets__admin-settings-tickets-commerce-paypal-help-link {
 	align-items: center;
 	display: flex;
 
@@ -142,8 +139,8 @@
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-refresh-link,
-.tec-tickets__admin-settings-tickets-commerce-stripe-help-link-url {
+.tec-tickets__admin-settings-tickets-commerce-paypal-refresh-link,
+.tec-tickets__admin-settings-tickets-commerce-paypal-help-link-url {
 	margin-left: 8px;
 
 	&,
@@ -155,7 +152,7 @@
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-merchant-country-container {
+.tec-tickets__admin-settings-tickets-commerce-paypal-merchant-country-container {
 	@media (--viewport-medium) {
 
 		.tribe-dropdown .select2-selection--single {
@@ -174,17 +171,17 @@
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-logo ul {
+.tec-tickets__admin-settings-tickets-commerce-paypal-logo ul {
 	list-style: none;
 	margin: inherit;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-logo li {
+.tec-tickets__admin-settings-tickets-commerce-paypal-logo li {
 	line-height: 1.8;
 	margin-bottom: 16px;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-logo ul li:before {
+.tec-tickets__admin-settings-tickets-commerce-paypal-logo ul li:before {
 	background-color: #405bfb;
 	border-radius: 100%;
 	content: '';
@@ -194,7 +191,7 @@
 	width: 7px;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-logo {
+.tec-tickets__admin-settings-tickets-commerce-paypal-logo {
 	display: none;
 	flex-basis: 290px;
 	font-size: 13px;
@@ -208,14 +205,14 @@
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-logo-image {
+.tec-tickets__admin-settings-tickets-commerce-paypal-logo-image {
 	height: auto;
 	margin-bottom: 32px;
 	max-width: 232px;
 	width: 100%;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-connect {
+.tec-tickets__admin-settings-tickets-commerce-paypal-connect {
 	display: flex;
 	flex: 1;
 
@@ -224,13 +221,13 @@
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-connect-text--connected {
+.tec-tickets__admin-settings-tickets-commerce-paypal-connect-text--connected {
 	color: #1eb056;
 	font-size: 16px;
 	font-weight: 600;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-connected-row {
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-row {
 	display: flex;
 	font-size: 13px;
 	font-weight: normal;
@@ -238,21 +235,21 @@
 	text-align: left;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-connected-col1 {
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-col1 {
 	flex-basis: 20%;
 	min-width: 125px;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-connected-col2 {
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-col2 {
 	flex-basis: 80%;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-connect,
-.tec-tickets__admin-settings-tickets-commerce-stripe-logo {
+.tec-tickets__admin-settings-tickets-commerce-paypal-connect,
+.tec-tickets__admin-settings-tickets-commerce-paypal-logo {
 	flex-direction: column;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-connect-button-link {
+.tec-tickets__admin-settings-tickets-commerce-paypal-connect-button-link {
 	background: #405bfb;
 	border-radius: 4px;
 	color: #fff;
@@ -280,11 +277,11 @@
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-connected-text-name {
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-text-name {
 	font-weight: 700;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-connected-text-disconnect-link {
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-text-disconnect-link {
 	border-bottom: 1px solid #405bfb;
 	font-size: 13px;
 	margin-left: 10px;
@@ -299,40 +296,40 @@
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-signup-settings {
+.tec-tickets__admin-settings-tickets-commerce-paypal-signup-settings {
 	max-width: 340px;
 	width: 100%;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-connected-webhook {
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook {
 	&:not(last-of-type) {
 		margin-bottom: 8px;
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-connected-webhook--active {
-	.tec-tickets__admin-settings-tickets-commerce-stripe-connected-webhook-error {
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook--active {
+	.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook-error {
 		@mixin hidden;
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-connected-webhook:not(.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook--active) {
-	.tec-tickets__admin-settings-tickets-commerce-stripe-connected-webhook-name {
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook:not(.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook--active) {
+	.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook-name {
 		color: var(--tec-color-text-primary-light);
 		text-decoration: line-through;
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-connected-webhook-error {
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook-error {
 	color: var(--color-icon-error);
 	margin-left: 8px;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-connected-actions-debug {
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-actions-debug {
 	margin-top: 20px;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-connected-resync-button {
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-resync-button {
 	@mixin button-solid;
 
 	background-color: var(--tec-color-button-primary);
@@ -354,7 +351,7 @@
 	}
 }
 
-.tec-tickets__admin-settings-tickets-commerce-stripe-connected-resync-button-icon {
+.tec-tickets__admin-settings-tickets-commerce-paypal-connected-resync-button-icon {
 	margin-right: 8px;
 	position: relative;
 	stroke: white;
@@ -368,7 +365,7 @@
 
 .tribe-common,
 .event-tickets {
-	&.tribe-modal__wrapper--stripe-connected {
+	&.tribe-modal__wrapper--paypal-connected {
 		.tribe-tickets__notice {
 			display: block;
 		}
@@ -401,7 +398,7 @@
 	}
 }
 
-#stripe-connected-modal-button {
+#paypal-connected-modal-button {
 	display: none;
 }
 
