@@ -20,12 +20,12 @@ if ( $must_login ) {
 }
 ?>
 <form id="payment-form">
-	<div id="card-element">
+	<div id="tec-tc-gateway-stripe-card-element">
 		<!-- Elements will create input elements here -->
 	</div>
 
 	<!-- We'll put the error messages in this element -->
-	<div id="card-errors" role="alert"></div>
+	<div id="tec-tc-gateway-stripe-card-errors" role="alert"></div>
 
 	<button id="tec-tc-gateway-stripe-checkout-button">Submit Payment</button>
 </form>

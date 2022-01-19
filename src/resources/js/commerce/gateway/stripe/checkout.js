@@ -91,7 +91,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.handlePayment = function( event ) {
 		event.preventDefault();
-
 		obj.createOrder();
 	};
 
@@ -103,7 +102,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @type {Object}
 	 */
 	obj.selectors = {
-		button: 'tec-tc-gateway-stripe-checkout-button'
+		cardElementDiv: '#tec-tc-gateway-stripe-card-element',
+		cardErrorsDiv: 'tec-tc-gateway-stripe-card-errors',
+		submitButton: 'tec-tc-gateway-stripe-checkout-button',
 	};
 
 	/**
@@ -130,10 +131,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			};
 
 			obj.checkout.card = obj.stripeElements.create( "card", { style: style } );
-			obj.checkout.card.mount( "#card-element" );
+			obj.checkout.card.mount( obj.selectors.cardElementDiv );
 
 			obj.checkout.card.on( 'change', ( { error } ) => {
-				let displayError = document.getElementById( 'card-errors' );
+				let displayError = document.getElementById( obj.selectors.cardErrorsDiv );
 				if ( error ) {
 					displayError.textContent = error.message;
 				} else {
@@ -143,10 +144,11 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		};
 
 		// Handle submit
-		var paymentButton = document.getElementById( obj.selectors.button );
+		var paymentButton = document.getElementById( obj.selectors.submitButton );
 		paymentButton.addEventListener( 'click', obj.callbacks.submit );
 	};
 
+	// Initialize
 	obj.bindEvents();
 
 })( jQuery, tribe.tickets.commerce.gateway.stripe, Stripe );
