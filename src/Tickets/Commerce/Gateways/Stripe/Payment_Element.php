@@ -4,12 +4,19 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Module;
 
+/**
+ * Class Payment_Element
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Stripe
+ */
 class Payment_Element {
 
 	/**
 	 * Include the payment buttons from PayPal into the Checkout page.
 	 *
-	 * @since 5.2.0
+	 * @since TBD
 	 *
 	 * @param string           $file     Which file we are loading.
 	 * @param string           $name     Name of file file
