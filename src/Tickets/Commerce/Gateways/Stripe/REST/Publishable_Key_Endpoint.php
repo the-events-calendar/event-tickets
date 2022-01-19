@@ -2,22 +2,13 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 
-use TEC\Tickets\Commerce\Gateways\Stripe\Assets;
-use TEC\Tickets\Commerce\Gateways\Stripe\Client;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 use TEC\Tickets\Commerce\Gateways\Stripe\Refresh_Token;
 
-use TEC\Tickets\Commerce\Gateways\Stripe\Signup;
 use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
-use TEC\Tickets\Commerce\Gateways\Stripe\WhoDat;
-use TEC\Tickets\Commerce\Notice_Handler;
 use Tribe__Documentation__Swagger__Provider_Interface;
-use Tribe__Settings;
-use Tribe__Utils__Array as Arr;
 
-use WP_Error;
 use WP_REST_Request;
-use WP_REST_Response;
 use WP_REST_Server;
 
 /**
@@ -60,6 +51,17 @@ class Publishable_Key_Endpoint implements Tribe__Documentation__Swagger__Provide
 		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
 	}
 
+	/**
+	 * Fetch the key requested
+	 *
+	 * @todo this needs to differentiate between sandbox and live keys based on test mode
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return mixed
+	 */
 	public function get_key( WP_REST_Request $request ) {
 
 		$params = $request->get_json_params();

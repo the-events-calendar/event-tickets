@@ -2,18 +2,13 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 
-use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Status;
 use TEC\Tickets\Commerce\Order;
 
 use TEC\Tickets\Commerce\Gateways\Stripe\Client;
-use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
-use TEC\Tickets\Commerce\Status\Status_Handler;
-use TEC\Tickets\Commerce\Success;
-use Tribe__Utils__Array as Arr;
 
 use WP_Error;
 use WP_REST_Request;
