@@ -5,6 +5,13 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Signup;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\On_Boarding_Endpoint;
 
+/**
+ * Class Signuo.
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Stripe
+ */
 class Signup extends Abstract_Signup {
 
 	/**

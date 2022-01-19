@@ -22,7 +22,7 @@ class WhoDat extends Abstract_WhoDat {
 	 * @var string
 	 */
 //	protected $api_url = 'https://whodat.theeventscalendar.com/commerce/v1/stripe';
-	protected $api_url = 'https://localhost/whodat/index.php/commerce/v1/stripe';
+	protected $api_url = 'https://localhost/whodat/index.php/commerce/v1/stripe'; // @todo remove localdev setting
 
 
 	/**

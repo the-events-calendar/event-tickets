@@ -2,15 +2,18 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
-use WP_REST_Server;
-
 /**
  * Class REST
  *
- * @since   5.1.9
+ * @since   TBD
+ *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
 class REST extends \tad_DI52_ServiceProvider {
+
+	/**
+	 * @inheritDoc
+	 */
 	public function register() {
 		$this->container->singleton( REST\Publishable_Key_Endpoint::class );
 		$this->container->singleton( REST\Order_Endpoint::class );
@@ -19,7 +22,7 @@ class REST extends \tad_DI52_ServiceProvider {
 	/**
 	 * Register the endpoints for handling webhooks.
 	 *
-	 * @since 5.1.6
+	 * @since TBD
 	 */
 	public function register_endpoints() {
 		$this->container->make( REST\Publishable_Key_Endpoint::class )->register();

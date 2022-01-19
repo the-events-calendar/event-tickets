@@ -2,6 +2,13 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
+/**
+ * Class Provider
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Stripe
+ */
 class Provider extends \tad_DI52_ServiceProvider {
 
 	/**

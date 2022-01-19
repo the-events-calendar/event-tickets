@@ -4,6 +4,13 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Notice_Handler;
 
+/**
+ * Class Hooks
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Stripe
+ */
 class Hooks extends \tad_DI52_ServiceProvider {
 
 	/**
@@ -15,8 +22,9 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
+	 * Adds the actions required by each Stripe component.
+	 *
 	 * @since TBD
-	 * @return mixed
 	 */
 	protected function add_actions() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
@@ -27,7 +35,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Adds the filters required by each Tickets Commerce component.
+	 * Adds the filters required by each Stripe component.
 	 *
 	 * @since TBD
 	 */
@@ -65,7 +73,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function handle_action_connected() {
 
-		if ( empty( $_GET['stripe'] ) ) {
+		if ( empty( tribe_get_request_var( 'stripe' ) ) ) {
 			return;
 		}
 
@@ -74,11 +82,11 @@ class Hooks extends \tad_DI52_ServiceProvider {
 
 	public function handle_stripe_errors() {
 
-		if ( empty( $_GET['tc-stripe-error'] ) ) {
+		if ( empty( tribe_get_request_var( 'tc-stripe-error' ) ) ) {
 			return;
 		}
 
-		tribe( Notice_Handler::class )->trigger_admin( $_GET[ 'tc-stripe-error' ] );
+		tribe( Notice_Handler::class )->trigger_admin( tribe_get_request_var( 'tc-stripe-error' ) );
 
 	}
 
