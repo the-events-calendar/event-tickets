@@ -20,7 +20,6 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 
-
 /**
  * Class Order Endpoint.
  *
@@ -104,6 +103,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$stripe_request = tribe( Client::class )->create_payment_intent( $order->currency, $order->total_value->get_integer() );
 
+		if ( is_wp_error( $stripe_request ) ) {
+			return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-payment-intent', $messages['failed-creating-payment-intent'], $order );
+		}
+
 		$payment_intent = json_decode( $stripe_request['body'] );
 
 		if ( empty( $payment_intent->id ) || empty( $payment_intent->created ) ) {
@@ -119,9 +122,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return $updated;
 		}
 
-		// Respond with the ID for Stripe Usage.
-		$response['success'] = true;
-		$response['client_secret']      = $payment_intent->client_secret;
+		// Respond with the client_secret for Stripe Usage.
+		$response['success']       = true;
+		$response['client_secret'] = $payment_intent->client_secret;
 
 		return new WP_REST_Response( $response );
 	}
@@ -237,7 +240,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		if ( ! $status ) {
 			return new WP_Error( 'tec-tc-gateway-stripe-invalid-failed-status', null, [
 				'failed_status' => $failed_status,
-				'failed_reason' => $failed_reason
+				'failed_reason' => $failed_reason,
 			] );
 		}
 
@@ -384,11 +387,12 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 */
 	public function get_error_messages() {
 		$messages = [
-			'failed-creating-order'   => __( 'Creating new Stripe order failed. Please try again.', 'event-tickets' ),
-			'canceled-creating-order' => __( 'Your Stripe order was cancelled.', 'event-tickets' ),
-			'nonexistent-order-id'    => __( 'Provided Order id is not valid.', 'event-tickets' ),
-			'failed-capture'          => __( 'There was a problem while processing your payment, please try again.', 'event-tickets' ),
-			'invalid-capture-status'  => __( 'There was a problem with the Order status change, please try again.', 'event-tickets' ),
+			'failed-creating-payment-intent' => __( 'Creating new Stripe PaymentIntent failed. Please try again.', 'event-tickets' ),
+			'failed-creating-order'          => __( 'Creating new Stripe order failed. Please try again.', 'event-tickets' ),
+			'canceled-creating-order'        => __( 'Your Stripe order was cancelled.', 'event-tickets' ),
+			'nonexistent-order-id'           => __( 'Provided Order id is not valid.', 'event-tickets' ),
+			'failed-capture'                 => __( 'There was a problem while processing your payment, please try again.', 'event-tickets' ),
+			'invalid-capture-status'         => __( 'There was a problem with the Order status change, please try again.', 'event-tickets' ),
 		];
 
 		/**
