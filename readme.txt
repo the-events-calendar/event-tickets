@@ -3,8 +3,8 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 5.6
-Tested up to: 5.8.1
-Stable tag: 5.2.2
+Tested up to: 5.8.2
+Stable tag: 5.2.3
 Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -179,13 +179,24 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.2.3] 2022-01-19 =
+
+* Feature - Allow duplicating a ticket when using the Classic Editor. [ET-1349]
+* Feature - Added the TEC Tickets icon in the block editor Tickets category section. [ET-1350]
+* Enhancement - Added a warning when Tickets Commerce is enabled, but users aren't required to log in before purchasing tickets. [ET-1352
+* Fix - Added the post_type to the attendee page on Posts/Pages so that additional logic would function correctly. [ET-1319]
+* Fix - Fixed toggling of shared capacity data for tickets. [ETP-497]
+* Language - 7 new strings added, 99 updated, 0 fuzzied, and 0 obsoleted
+
 = [5.2.2] 2021-12-15 =
 
+* Feature - Included Price, Currency and Value classes to improve monetary handling for Tickets Commerce [ET-1331]
 * Enhancement - Allow for filtering of tickets within the RSVP template block handler. [ETP-763]
 * Fix - Remove use of `wp_cache_flush()` and use conditional when using an external object cache. (props to @r-a-y for this change!) [ET-1343]
 * Fix - Fixes error being caused by an endless loop when currency settings are saved. [ET-1344]
 * Fix - Fixed an issue where shared capacity on the ticket block page wasn't calculated correctly. [ET-1291]
 * Fix - Fixed the `Add Attendee` modal from generating a 500 error when two or more tickets have been enabled for an event. [ETP-764]
+* Language - 0 new strings added, 50 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.2.1] 2021-11-17 =
 
