@@ -1,6 +1,7 @@
 <?php
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
+
 /**
  * Class Client
  *

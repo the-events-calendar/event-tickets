@@ -4,12 +4,14 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 
+/**
+ * Class Merchant
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Stripe
+ */
 class Merchant extends Abstract_Merchant {
-
-	protected $client_id;
-
-	protected $refresh_tokens;
-
 
 	/**
 	 * Determines if the Merchant is active.
@@ -61,6 +63,15 @@ class Merchant extends Abstract_Merchant {
 		return "tec_tickets_commerce_{$gateway_key}_signup_data";
 	}
 
+	/**
+	 * Returns the stripe client secret stored for server-side transactions.
+	 *
+	 * @todo this needs to differentiate between sandbox and live keys based on test mode
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
 	public function get_client_secret() {
 		$keys = get_option( $this->get_signup_data_key() );
 
