@@ -4,6 +4,13 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 use TEC\Tickets\Commerce\Traits\Has_Mode;
 
+/**
+ * Abstract Merchant Contract
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Contracts
+ */
 abstract class Abstract_Merchant implements Merchant_Interface {
 
 	use Has_Mode;

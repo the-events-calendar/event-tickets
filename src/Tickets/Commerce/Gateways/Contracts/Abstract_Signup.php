@@ -2,7 +2,14 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
-class Abstract_Signup implements Signup_Interface {
+/**
+ * Abstract Signup Contract
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Contracts
+ */
+abstract class Abstract_Signup implements Signup_Interface {
 
 	/**
 	 * Holds the transient key used to store hash passed to PayPal.

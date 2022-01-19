@@ -3,11 +3,11 @@
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 /**
- * Class Interface_Gateway
+ * Gateway Interface
  *
  * @since   5.1.6
  *
- * @package TEC\Tickets\Commerce\Gateways
+ * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
 interface Gateway_Interface {
 

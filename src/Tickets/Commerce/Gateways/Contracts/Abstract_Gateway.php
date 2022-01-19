@@ -12,11 +12,11 @@ use TEC\Tickets\Commerce;
 use Tribe__Utils__Array as Arr;
 
 /**
- * The gateway related functionality.
+ * Abstract Gateway Contract
  *
- * @since   5.1.6
- * @package TEC\Tickets\Commerce\Gateways
+ * @since   TBD
  *
+ * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
 abstract class Abstract_Gateway implements Gateway_Interface {
 

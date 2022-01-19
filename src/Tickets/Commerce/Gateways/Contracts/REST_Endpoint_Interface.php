@@ -2,6 +2,13 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
+/**
+ * REST Endpoint Interface
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Contracts
+ */
 interface REST_Endpoint_Interface {
 
 	/**
