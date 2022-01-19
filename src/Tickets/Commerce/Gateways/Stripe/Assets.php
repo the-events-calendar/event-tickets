@@ -5,10 +5,31 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Order_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Publishable_Key_Endpoint;
 
+/**
+ * Class Assets.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Stripe
+ */
 class Assets extends \tad_DI52_ServiceProvider {
 
+	/**
+	 * The nonce action to use when requesting a stripe publishable_key
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	const PUBLISHABLE_KEY_NONCE_ACTION = 'stripe_pubkey';
 
+	/**
+	 * The nonce action to use when requesting the creation of a new order
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	const ORDER_NONCE_ACTION = 'stripe_order';
 
 	/**
@@ -71,7 +92,6 @@ class Assets extends \tad_DI52_ServiceProvider {
 	 * @return bool If the `Stripe` assets should be enqueued or not.
 	 */
 	public function should_enqueue_assets() {
-		return true;
 		return tribe( Gateway::class )->is_active();
 	}
 }
