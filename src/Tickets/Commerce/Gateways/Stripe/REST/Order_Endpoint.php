@@ -74,13 +74,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ) );
 
-		$stripe_request = tribe( Client::class )->create_payment_intent( $order->currency, $order->total_value->get_integer() );
+		$payment_intent = tribe( Client::class )->create_payment_intent( $order->currency, $order->total_value->get_integer() );
 
-		if ( is_wp_error( $stripe_request ) ) {
+		if ( is_wp_error( $payment_intent ) ) {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-payment-intent', $messages['failed-creating-payment-intent'], $order );
 		}
-
-		$payment_intent = json_decode( $stripe_request['body'] );
 
 		if ( empty( $payment_intent->id ) || empty( $payment_intent->created ) ) {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-order', $messages['failed-creating-order'], $order );
