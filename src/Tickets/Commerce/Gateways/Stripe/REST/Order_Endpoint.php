@@ -124,4 +124,15 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_endpoint_error_messages', $messages );
 	}
+
+	/**
+	 * Arguments used for the endpoint
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function create_order_args() {
+		return [];
+	}
 }

@@ -15,15 +15,13 @@ use TEC\Tickets\Commerce\Gateways\Stripe\REST\On_Boarding_Endpoint;
 class WhoDat extends Abstract_WhoDat {
 
 	/**
-	 * The API URL.
+	 * The API Path.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-//	protected $api_url = 'https://whodat.theeventscalendar.com/commerce/v1/stripe';
-	protected $api_url = 'https://localhost/whodat/index.php/commerce/v1/stripe'; // @todo remove localdev setting
-
+	public $api_endpoint = 'stripe';
 
 	/**
 	 * Creates a new account link for the client and redirects the user to setup the account details.

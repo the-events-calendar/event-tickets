@@ -102,7 +102,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @type {Object}
 	 */
 	obj.selectors = {
-		cardElementDiv: '#tec-tc-gateway-stripe-card-element',
+		cardElementDiv: 'tec-tc-gateway-stripe-card-element',
 		cardErrorsDiv: 'tec-tc-gateway-stripe-card-errors',
 		submitButton: 'tec-tc-gateway-stripe-checkout-button',
 	};
@@ -131,7 +131,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			};
 
 			obj.checkout.card = obj.stripeElements.create( "card", { style: style } );
-			obj.checkout.card.mount( obj.selectors.cardElementDiv );
+			obj.checkout.card.mount( document.getElementById( obj.selectors.cardElementDiv ) );
 
 			obj.checkout.card.on( 'change', ( { error } ) => {
 				let displayError = document.getElementById( obj.selectors.cardErrorsDiv );
