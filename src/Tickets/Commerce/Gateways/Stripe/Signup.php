@@ -40,7 +40,7 @@ class Signup extends Abstract_Signup {
 	 *
 	 * @return string
 	 */
-	public function generate_url() {
+	public function generate_signup_url() {
 
 		return tribe( WhoDat::class )->get_api_url(
 			'connect',
@@ -52,11 +52,30 @@ class Signup extends Abstract_Signup {
 	}
 
 	/**
+	 * Generates a stripe disconnection URL from WhoDat
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function generate_disconnect_url() {
+
+		return tribe( WhoDat::class )->get_api_url(
+			'disconnect',
+			[
+				'stripe_user_id'      => tribe( Merchant::class )->get_client_id(),
+				'return_url' => admin_url( $this->signup_return_path ),
+			] );
+
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function get_link_html() {
 		$template_vars = [
-			'url' => $this->generate_url(),
+			'url' => $this->generate_signup_url(),
+			'disconnect_url' => $this->generate_disconnect_url(),
 		];
 
 		$this->get_template()->template( 'signup-link', $template_vars );

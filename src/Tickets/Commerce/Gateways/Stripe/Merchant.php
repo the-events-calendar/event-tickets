@@ -79,6 +79,19 @@ class Merchant extends Abstract_Merchant {
 	}
 
 	/**
+	 * Returns the stripe client id stored for server-side transactions.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_client_id() {
+		$keys = get_option( $this->get_signup_data_key() );
+
+		return $keys['stripe_user_id'];
+	}
+
+	/**
 	 * Return array of merchant details.
 	 *
 	 * @since TBD
