@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
+use Tribe__Utils__Array as Arr;
+
 /**
  * Class Client
  *
@@ -20,6 +22,7 @@ class Client {
 	public function get_environment_url() {
 		$merchant = tribe( Merchant::class );
 
+		// @todo determine if the sandbox of stripe has a diff URL.
 		return $merchant->is_sandbox() ?
 			'https://api.stripe.com/v1' :
 			'https://api.stripe.com/v1';
