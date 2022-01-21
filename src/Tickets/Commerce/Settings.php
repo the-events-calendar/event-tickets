@@ -8,6 +8,7 @@
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Tickets\Commerce\Admin\Featured_Settings;
 use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Completed;
@@ -168,7 +169,11 @@ class Settings {
 	 * @return array The list of settings for Tickets Commerce.
 	 */
 	public function get_settings() {
-		$gateways_manager = tribe( Manager::class );
+		
+		$section_gateway = tribe( Payments_Tab::class )->get_section_gateway();
+		if( ! empty( $section_gateway ) ) {
+			return $section_gateway->get_settings();
+		}
 
 		// @todo Replace this with a better and more performant REST API based solution.
 		$page_args = [
@@ -327,8 +332,34 @@ class Settings {
 				'validation_type'     => 'textarea',
 			],
 		];
-
-		$settings = array_merge( $gateways_manager->get_gateway_settings(), $settings );
+		
+		// Add featured settings to top of other settings.
+		$featured_settings = [
+			'tc_featured_settings' => [
+				'type' => 'html',
+				'html' => tribe( Featured_Settings::class )->get_html([
+					'title'            => __( 'Payment Gateways', 'event-tickets' ),
+					'description'      => __( 
+						'Set up a payment gateway to get started with Tickets Commerce. Enable multiple ' .
+						'gateways for providing users additional options for users when purchasing tickets.', 
+						'event-tickets' 
+					),
+					'content_template' => '',
+					'links'            => [
+						[
+							'slug'         => 'help-1',
+							'priority'     => 10,
+							'link'         => esc_url( '#' ),
+							'html'         => __('Learn more about configuring payment options with Tickets Commerce'),
+							'target'       => '_blank',
+							'classes'      => [],
+						]
+					],
+					'classes'          => [],
+				]),
+			]
+		];
+		$settings = array_merge( $featured_settings, $settings );
 
 		/**
 		 * Allow filtering the list of Tickets Commerce settings.

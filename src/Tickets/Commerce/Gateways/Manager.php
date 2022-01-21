@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways;
 
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Settings;
 
 /**
@@ -20,6 +21,16 @@ class Manager {
 	 * @var string
 	 */
 	public static $option_gateway = '_tickets_commerce_gateway';
+	
+	/**
+	 * The option name prefix that configured whether or not a gateway is enabled. 
+	 * It is followed by the gateway 'key'
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_gateway_enabled_prefix = '_tickets_commerce_gateway_enabled_';
 
 	/**
 	 * Get the list of registered Tickets Commerce gateways.
@@ -99,5 +110,41 @@ class Manager {
 		$gateways = $this->get_gateways();
 
 		return isset( $gateways[ $key ] ) ? $gateways[ $key ] : null;
+	}
+
+	/**
+	 * Get gateway enabled option by key.
+	 *
+	 * @since TBD
+	 *
+	 * @param Abstract_Gateway|string $gateway Key or Gateway object for gateway.
+	 *
+	 * @return string
+	 */
+	public function get_enabled_option_by_key( $gateway ) {
+		$key = $gateway;
+		if ( $gateway instanceof Abstract_Gateway ) {
+			$key = $gateway->get_key();
+		}
+
+		return $this->option_gateway_enabled_prefix . $key;
+	}
+
+	/**
+	 * Return if gateway is enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @param Abstract_Gateway|string $gateway Key or Gateway object for gateway.
+	 *
+	 * @return boolean 
+	 */
+	public function is_gateway_enabled( $gateway ) {
+		$key = $gateway;
+		if ( $gateway instanceof Abstract_Gateway ) {
+			$key = $gateway->get_key();
+		}
+
+		return (bool) tribe_get_option( $this->get_enabled_option_by_key( $key ) );
 	}
 }

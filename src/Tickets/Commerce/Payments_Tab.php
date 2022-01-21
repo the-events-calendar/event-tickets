@@ -4,6 +4,8 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 use TEC\Tickets\Commerce\Shortcodes\Success_Shortcode;
+use TEC\Tickets\Commerce\Gateways\Manager;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway as Gateway;
 use TEC\Tickets\Settings as Tickets_Settings;
 use \tad_DI52_ServiceProvider;
 
@@ -35,6 +37,15 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	public static $option_page_created_meta_key = 'tec_tc_payments_page_created';
 
 	/**
+	 * Meta key for page creation flag.
+	 *
+	 * @since 5.2.1
+	 *
+	 * @var string
+	 */
+	public static $option_gateway_enabled_prefix = 'tec_tc_payments_gateway_enabled_';
+
+	/**
 	 * @inheritdoc
 	 */
 	public function register() {
@@ -57,41 +68,97 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 
 		new \Tribe__Settings_Tab( static::$slug, esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
 	}
-
-
+	
 	/**
-	 * Gets the top level settings for Tickets Commerce.
+	 * Returns the settings item for the section menu at the top of the Payments settings tab.
 	 *
-	 * @since 5.2.0
+	 * @since TBD
 	 *
-	 * @return array[]
+	 * @return []
 	 */
-	public function get_top_level_settings() {
-
-		$plus_link    = sprintf(
-			'<a href="https://evnt.is/19zl" target="_blank" rel="noopener noreferrer">%s</a>',
-			esc_html__( 'Event Tickets Plus', 'event-tickets' )
+	public function get_section_menu() {
+		
+		$gateways = tribe( Manager::class )->get_gateways();
+		$selected_section = tribe_get_request_var( 'tc-section', 'main' );
+		$menu_html = '<div class="tec-tickets__admin-settings-tickets-commerce-section-menu">';
+		$menu_html .= sprintf(
+			'<a class="%s" href="%s">%s</a>',
+			'main' === $selected_section ? 'active' : '',
+			\Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] ),
+			esc_html__( 'Tickets Commerce', 'event-tickets' ),
 		);
-		$plus_link_2  = sprintf(
-			'<a href="https://evnt.is/19zl" target="_blank" rel="noopener noreferrer">%s</a>',
-			esc_html__( 'Check it out!', 'event-tickets' )
-		);
-		$plus_message = sprintf(
-		// Translators: %1$s: The Event Tickets Plus link, %2$s: The word "ticket" in lowercase, %3$s: The "Check it out!" link.
-			esc_html_x( 'Tickets Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check attendees in via QR codes, and share stock between %2$s. %3$s', 'about Tickets Commerce', 'event-tickets' ),
-			$plus_link,
-			esc_html( tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_about_tribe_commerce' ) ),
-			$plus_link_2
-		);
-
-		$is_tickets_commerce_enabled = tec_tickets_commerce_is_enabled();
-
+        foreach ($gateways as $gateway_key => $gateway) {
+			if ( ! $gateway::should_show() ) {
+				continue;
+			}
+			$menu_html .= sprintf(
+				'<a class="%s" href="%s">%s</a>',
+				$gateway_key === $selected_section ? 'active' : '',
+				\Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-section' => $gateway_key ] ),
+				$gateway->get_label()
+			);
+        }
+		$menu_html .= '</div>';
+		
+		return [
+			'tc-section-menu' => [
+				'type' => 'html',
+				'html' => $menu_html,
+			]
+		];
+		
+	}
+	
+	/**
+	 * Returns the settings item for the section menu at the top of the Payments settings tab.
+	 *
+	 * @since TBD
+	 *
+	 * @return Gateway | null
+	 */
+	public function get_section_gateway(){
+		$selected_section = tribe_get_request_var( 'tc-section', 'main' );
+		return tribe( Manager::class )->get_gateway_by_key( $selected_section );
+	}
+	
+	/**
+	 * Get selected section top level menu.
+	 *
+	 * @since TBD
+	 *
+	 * @return []
+	 */
+	public function get_section_top_level_menu() {
+		
+		$section_gateway = $this->get_section_gateway();
+		$selected_section = tribe_get_request_var( 'tc-section', 'main' );
+		
 		$top_level_settings = [
 			'tribe-form-content-start'     => [
 				'type' => 'html',
 				'html' => '<div class="tribe-settings-form-wrap">',
-			],
-			'tickets-commerce-header'      => [
+			]
+		];
+		
+		if( empty( $section_gateway ) ) {
+			// If no gateway section is selected, show main settings.
+			$plus_link    = sprintf(
+				'<a href="https://evnt.is/19zl" target="_blank" rel="noopener noreferrer">%s</a>',
+				esc_html__( 'Event Tickets Plus', 'event-tickets' )
+			);
+			$plus_link_2  = sprintf(
+				'<a href="https://evnt.is/19zl" target="_blank" rel="noopener noreferrer">%s</a>',
+				esc_html__( 'Check it out!', 'event-tickets' )
+			);
+			$plus_message = sprintf(
+				// Translators: %1$s: The Event Tickets Plus link, %2$s: The word "ticket" in lowercase, %3$s: The "Check it out!" link.
+				esc_html_x( 'Tickets Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check attendees in via QR codes, and share stock between %2$s. %3$s', 'about Tickets Commerce', 'event-tickets' ),
+				$plus_link,
+				esc_html( tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_about_tribe_commerce' ) ),
+				$plus_link_2
+			);
+			$is_tickets_commerce_enabled = tec_tickets_commerce_is_enabled();
+			$top_level_settings[ 'tickets-commerce-header' ] = [
 				'type' => 'html',
 				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-toggle-wrapper">
 								<label class="tec-tickets__admin-settings-tickets-commerce-toggle">
@@ -106,16 +173,64 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 								</label>
 							</div>',
 
-			],
-			'tickets-commerce-description' => [
+			];
+			$top_level_settings[ 'tickets-commerce-description' ] = [
 				'type' => 'html',
 				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-description">' . $plus_message . '</div>',
-			],
-			Tickets_Settings::$tickets_commerce_enabled => [
+			];
+			$top_level_settings[ Tickets_Settings::$tickets_commerce_enabled ] = [
 				'type'            => 'hidden',
 				'validation_type' => 'boolean',
-			],
+			];
+			
+			return $top_level_settings;
+		}
+		
+		// Show the switch to enable/disable gateway at the top.
+		$manager = tribe( Manager::class );
+		$option_key = $manager->get_enabled_option_by_key( $section_gateway );
+		$enable_label = sprintf(
+			// Translators: %s: Name of payment gateway
+			esc_html__( 'Enable %s', 'event-tickets' ),
+			$section_gateway->get_label()
+		);
+		
+		$top_level_settings[ 'tickets-commerce-header' ] = [
+			'type' => 'html',
+			'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-toggle-wrapper">
+							<label class="tec-tickets__admin-settings-tickets-commerce-toggle">
+								<input
+									type="checkbox"
+									name="' . $option_key . '"
+									' . checked( $manager->is_gateway_enabled( $section_gateway ), true, false ) . '
+									id="tickets-commerce-enable-input"
+									class="tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified">
+									<span class="tec-tickets__admin-settings-tickets-commerce-toggle-switch"></span>
+									<span class="tec-tickets__admin-settings-tickets-commerce-toggle-label">' . $enable_label . '</span>
+							</label>
+						</div>',
+
 		];
+		$top_level_settings[ $option_key ] = [
+			'type'            => 'hidden',
+			'validation_type' => 'boolean',
+		];
+		
+		return $top_level_settings;
+		
+	}
+
+
+	/**
+	 * Gets the top level settings for Tickets Commerce.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @return array[]
+	 */
+	public function get_top_level_settings() {
+
+		$top_level_settings = $this->get_section_top_level_menu();;
 
 		/**
 		 * Hook to modify the top level settings for Tickets Commerce.
@@ -124,7 +239,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		 *
 		 * @param array[] $top_level_settings Top level settings.
 		 */
-		return apply_filters( 'tec_tickets_commerce_settings_top_level', $top_level_settings );
+		return apply_filters( 'tec_tickets_commerce_settings_top_level', array_merge( $this->get_section_menu(), $top_level_settings ) );
 	}
 
 	/**
