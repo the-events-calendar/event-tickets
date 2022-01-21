@@ -164,6 +164,38 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	}
 
 	/**
+	 * Handles Update requests on the endpoint.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response|int An array containing the data on success or a WP_Error instance on failure.
+	 */
+	public function update( WP_REST_Request $request ) {
+
+		$post_data = $this->prepare_update_attendee_data( $request );
+
+		if ( is_wp_error( $post_data ) ) {
+			return $post_data;
+		}
+
+		$provider = tribe_tickets_get_ticket_provider( $post_data['attendee_id'] );
+
+		/** @var Tribe__Tickets__Attendees $attendees */
+		$attendees       = tribe( 'tickets.attendees' );
+		$attendee_object = $attendees->update_attendee( $post_data['attendee'], $post_data['data'] );
+
+		if ( ! $attendee_object ) {
+			return new WP_Error( 'attendee-update-failed', __( 'Something went wrong! Attendee update failed.', 'event-tickets' ) );
+		}
+
+		$attendee = $provider->get_attendee( $post_data['attendee_id'] );
+		$response = new WP_REST_Response( $attendee );
+		$response->set_status( 201 );
+
+		return $response;
+	}
+
+	/**
 	 * Returns the content of the `args` array that should be used to register the endpoint
 	 * with the `register_rest_route` function.
 	 *
@@ -222,6 +254,71 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			'ticket'   => $ticket_id,
 			'provider' => $provider,
 			'data'     => $attendee_data,
+		];
+	}
+
+	/**
+	 * Process Request data for updating an attendee.
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return array|WP_Error
+	 */
+	public function prepare_update_attendee_data( WP_REST_Request $request ) {
+
+		$attendee_id = (int) $request->get_param( 'id' );
+		$found       = tribe_attendees()->by( 'id', $attendee_id )->found();
+
+		if ( ! $found ) {
+			return new WP_Error( 'invalid-attendee-id', __( 'Attendee ID is not valid.', 'event-tickets' ) );
+		}
+
+		$provider = tribe_tickets_get_ticket_provider( $attendee_id );
+
+		if ( ! $provider ) {
+			return new WP_Error( 'invalid-attendee-provider', __( 'Attendee provider not found.', 'event-tickets' ) );
+		}
+
+		$attendee = $provider->get_attendee( $attendee_id );
+
+		// Set up the attendee data for the update.
+//		$new_data = [
+//			'attendee_source' => 'rest-api',
+//		];
+
+//		if ( ! empty( $request['name'] ) ) {
+//			$new_data['full_name'] = $request['name'];
+//		}
+//
+//		if ( ! empty( $request['email'] ) ) {
+//			$new_data['email'] = $request['email'];
+//		}
+//
+//		if ( ! empty( $request['order_status'] ) ) {
+//			$new_data['attendee_status'] = $request['order_status'];
+//		}
+
+		$updated_data = $request->get_params();
+//		$new_data['attendee_id'] = $attendee_id;
+
+//		unset( $new_data['id'] );
+
+//		$updated_data = wp_parse_args( $new_data, $attendee );
+
+		/**
+		 * Filter REST API attendee data before creating an attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $attendee_data Attendee data.
+		 * @param WP_REST_Request $request Request object.
+		 */
+		$attendee_data = apply_filters( 'tribe_tickets_rest_api_update_attendee_data', $updated_data, $request );
+
+		return [
+			'attendee_id' => $attendee_id,
+			'attendee'    => $attendee,
+			'data'        => $attendee_data,
 		];
 	}
 }
