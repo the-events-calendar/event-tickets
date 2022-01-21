@@ -43,7 +43,7 @@ class Merchant extends Abstract_Merchant {
 	 * @return string
 	 */
 	public function get_account_key() {
-		$gateway_key   = Gateway::get_key();
+		$gateway_key = Gateway::get_key();
 
 		return "tec_tickets_commerce_{$gateway_key}_account";
 	}
@@ -58,15 +58,13 @@ class Merchant extends Abstract_Merchant {
 	 * @return string
 	 */
 	public function get_signup_data_key() {
-		$gateway_key   = Gateway::get_key();
+		$gateway_key = Gateway::get_key();
 
 		return "tec_tickets_commerce_{$gateway_key}_signup_data";
 	}
 
 	/**
 	 * Returns the stripe client secret stored for server-side transactions.
-	 *
-	 * @todo this needs to differentiate between sandbox and live keys based on test mode
 	 *
 	 * @since TBD
 	 *
@@ -75,7 +73,20 @@ class Merchant extends Abstract_Merchant {
 	public function get_client_secret() {
 		$keys = get_option( $this->get_signup_data_key() );
 
-		return $keys['sandbox']->access_token;
+		return $keys[ $this->get_mode() ]->access_token;
+	}
+
+	/**
+	 * Fetch the Publishable key for the user.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_publishable_key() {
+		$keys = get_option( $this->get_signup_data_key() );
+
+		return $keys[ $this->get_mode() ]->publishable_key;
 	}
 
 	/**
@@ -100,8 +111,9 @@ class Merchant extends Abstract_Merchant {
 	 */
 	public function to_array() {
 		return [
-			'client_id'      => $this->get_client_id(),
-			'refresh_tokens' => $this->get_refresh_tokens(),
+			'client_id'       => $this->get_client_id(),
+			'client_secret'   => $this->get_client_secret(),
+			'publishable_key' => $this->get_client_id(),
 		];
 	}
 

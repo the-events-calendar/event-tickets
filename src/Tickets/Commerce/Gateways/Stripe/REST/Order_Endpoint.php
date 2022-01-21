@@ -80,13 +80,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-payment-intent', $messages['failed-creating-payment-intent'], $order );
 		}
 
-		if ( empty( $payment_intent->id ) || empty( $payment_intent->created ) ) {
+		if ( empty( $payment_intent['id'] ) || empty( $payment_intent['created'] ) ) {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-order', $messages['failed-creating-order'], $order );
 		}
 
 		$updated = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG, [
 			'gateway_payload'  => $payment_intent,
-			'gateway_order_id' => $payment_intent->id,
+			'gateway_order_id' => $payment_intent['id'],
 		] );
 
 		if ( is_wp_error( $updated ) ) {
@@ -95,7 +95,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		// Respond with the client_secret for Stripe Usage.
 		$response['success']       = true;
-		$response['client_secret'] = $payment_intent->client_secret;
+		$response['client_secret'] = $payment_intent['client_secret'];
 
 		return new WP_REST_Response( $response );
 	}

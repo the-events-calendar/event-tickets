@@ -1,3 +1,5 @@
+/* global tribe, jQuery, Stripe, tecTicketsCommerceGatewayStripeCheckout */
+
 /**
  * Path to this script in the global tribe Object.
  *
@@ -16,10 +18,17 @@ tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe ||
  */
 tribe.tickets.commerce.gateway.stripe.checkout = {};
 
-(( $, obj, Stripe ) => {
+( ( $, obj, Stripe, ky ) => {
 	'use strict';
 	const $document = $( document );
 
+	/**
+	 * Pull the variables from the PHP backend.
+	 *
+	 * @since TBD
+	 *
+	 * @type {Object}
+	 */
 	obj.checkout = tecTicketsCommerceGatewayStripeCheckout;
 
 	/**
@@ -30,92 +39,191 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @type {Object}
 	 */
 	obj.selectors = {
-		cardElementDiv: 'tec-tc-gateway-stripe-card-element',
-		cardErrorsDiv: 'tec-tc-gateway-stripe-card-errors',
-		submitButton: 'tec-tc-gateway-stripe-checkout-button',
+		cardElement: '#tec-tc-gateway-stripe-card-element',
+		cardErrors: '#tec-tc-gateway-stripe-card-errors',
+		submitButton: '#tec-tc-gateway-stripe-checkout-button',
 	};
 
 	/**
-	 * Event callbacks
-	 * @type {{submit: tribe.tickets.commerce.gateway.stripe.submitPayment}}
+	 * Stripe JS library.
+	 *
+	 * @since TBD
+	 *
+	 * @type {Object|null}
 	 */
-	obj.callbacks = {
-		submit: obj.handlePayment
+	obj.stripeLib = Stripe( obj.checkout.publishableKey );
+
+	/**
+	 * Stripe JS library elements.
+	 *
+	 * @since TBD
+	 *
+	 * @type {Object|null}
+	 */
+	obj.stripeElements = obj.stripeLib.elements();
+
+	/**
+	 * URL object of the Success page.
+	 *
+	 * @since TBD
+	 *
+	 * @type {URL}
+	 */
+	obj.successUrl = new URL( obj.checkout.successUrl );
+
+	/**
+	 * Settings for the Card Element from Stripe.
+	 *
+	 * @since TBD
+	 *
+	 * @return {{style: {base: {color: string}}}}
+	 */
+	obj.getCardOptions = () => {
+		return {
+			style: {
+				base: {
+					color: "#32325d"
+				}
+			}
+		};
 	};
 
+	/**
+	 * Setup and initialize Stripe API.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Promise<void>}
+	 */
 	obj.setupStripe = async () => {
-		// Fetch Publishable API Key and Initialize Stripe Elements on Ready
-		let response = await fetch( obj.checkout.keyEndpoint, {
-				method: 'POST',
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify( { nonce: obj.checkout.keyNonce } )
-			} )
-			.then( response => response.json() );
-
-		obj.stripeLib = Stripe( response );
-		obj.stripeElements = obj.stripeLib.elements();
+		obj.stripeCard = obj.stripeElements.create( 'card', obj.getCardOptions() );
+		obj.stripeCard.mount( obj.selectors.cardElement );
+		obj.stripeCard.on( 'change', obj.onCardChange );
 	};
 
-	obj.submitPayment = async ( secret ) => {
+	/**
+	 * Handles the changing of the card field.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} error Which error we are dealing with.
+	 */
+	obj.onCardChange = ( { error } ) => {
+		let displayError = $( obj.selectors.cardErrors );
+		if ( error ) {
+			displayError.text( error.message );
+		} else {
+			displayError.text( '' );
+		}
+	};
 
-		obj.stripeLib.confirmCardPayment( secret, {
+	/**
+	 * Receive the Payment from Stripe.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} result Result from the payment request.
+	 *
+	 * @return {boolean}
+	 */
+	obj.handleReceivePayment = ( result ) => {
+		tribe.tickets.debug.log( 'stripe', 'handleReceivePayment', result );
+		if ( result.error ) {
+			return obj.handlePaymentError( result );
+		}
+
+		if ( 'succeeded' === result.paymentIntent.status ) {
+			return obj.handlePaymentSuccess( result );
+		}
+	};
+
+	/**
+	 * When a successful request is completed to our Approval endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} data Data returning from our endpoint.
+	 *
+	 * @return {boolean}
+	 */
+	obj.handlePaymentError = ( data ) => {
+		tribe.tickets.debug.log( 'handlePaymentError', data );
+		return false;
+	};
+
+	/**
+	 * When a successful request is completed to our Approval endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} data Data returning from our endpoint.
+	 *
+	 * @return {boolean}
+	 */
+	obj.handlePaymentSuccess = ( data ) => {
+		tribe.tickets.debug.log( 'handlePaymentSuccess', data );
+
+		const params = Qs.parse( obj.successUrl.search.replace( /\?/g, '' ) );
+		params['tc-order-id'] = data.paymentIntent.id;
+
+		obj.successUrl.search = '?' + Qs.stringify( params );
+
+		// Redirect the user to the success page.
+		window.location.replace( obj.successUrl.toString() );
+		return true;
+	};
+
+	/**
+	 * Submit the payment to stripe code.
+	 *
+	 * @param {String} secret Which secret we need to use to confirm the Payment.
+	 *
+	 * @return {Promise<*>}
+	 */
+	obj.submitPayment = async ( secret ) => {
+		return obj.stripeLib.confirmCardPayment( secret, {
 			payment_method: {
-				card: obj.checkout.card,
+				card: obj.stripeCard,
 				billing_details: {
 					name: 'user name' // @todo get this value
 				}
 			}
-		} ).then( ( result ) => {
-			console.log( result );
-			if ( result.error ) {
-				console.log( result.error.message );
-				return false;
-			}
-
-			if ( result.paymentIntent.status === 'succeeded' ) {
-				console.log( 'great success!' );
-			}
-		} );
-
+		} ).then( obj.handleReceivePayment );
 	};
 
 	/**
-	 * Create an order
+	 * Create an order and start the payment process.
 	 *
 	 * @since TBD
+	 *
+	 * @return {Promise<*>}
 	 */
-	obj.createOrder = async () => {
-
+	obj.handleCreateOrder = async () => {
+		const args = {
+			json: {
+				nonce: obj.checkout.orderNonce
+			}
+		};
 		// Fetch Publishable API Key and Initialize Stripe Elements on Ready
-		let response = await fetch( obj.checkout.orderEndpoint, {
-			method: 'POST',
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify( { nonce: obj.checkout.orderNonce } )
-		} ).then( response => response.json() );
+		let response = await ky.post( obj.checkout.orderEndpoint, args ).json();
+
+		tribe.tickets.debug.log( 'stripe', 'createOrder', response );
 
 		if ( true === response.success ) {
-			obj.submitPayment( response.client_secret );
+			return await obj.submitPayment( response.client_secret );
 		}
-
-		console.log( response );
 	};
 
 	/**
-	 * Starts the process to submit a payment
+	 * Starts the process to submit a payment.
 	 *
 	 * @since TBD
 	 *
-	 * @param event
+	 * @param {Event} event The Click event from the payment.
 	 */
 	obj.handlePayment = ( event ) => {
 		event.preventDefault();
-		obj.createOrder();
+		obj.handleCreateOrder();
 	};
 
 	/**
@@ -125,39 +233,18 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.bindEvents = () => {
 		// Handle submit
-		$( obj.selectors.submitButton ).on( 'click', obj.callbacks.submit );
+		$( obj.selectors.submitButton ).on( 'click', obj.handlePayment );
 	};
 
+	/**
+	 * When the page is ready.
+	 *
+	 * @since TBD
+	 */
 	obj.ready = () => {
 		obj.setupStripe();
-
-		// Initialize
 		obj.bindEvents();
 	};
 
-	obj.onCardChange = ( { error } ) => {
-		let displayError = document.getElementById( obj.selectors.cardErrorsDiv );
-		if ( error ) {
-			displayError.textContent = error.message;
-		} else {
-			displayError.textContent = '';
-		}
-	};
-
-	obj.onLoad =  ( event ) => {
-		const style = {
-			base: {
-				color: "#32325d"
-			}
-		};
-
-		obj.checkout.card = obj.stripeElements.create( 'card', { style: style } );
-		obj.checkout.card.mount( document.getElementById( obj.selectors.cardElementDiv ) );
-		obj.checkout.card.on( 'change', obj.onCardChange );
-	};
-
-	// Bind the onload of the page.
-	$( window ).load( obj.onLoad );
-
 	$( obj.ready );
-} )( jQuery, tribe.tickets.commerce.gateway.stripe, Stripe );
+} )( jQuery, tribe.tickets.commerce.gateway.stripe, Stripe, tribe.ky );

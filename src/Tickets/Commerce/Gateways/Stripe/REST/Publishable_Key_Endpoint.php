@@ -14,6 +14,8 @@ use WP_REST_Server;
 /**
  * Class Publishable_Key_Endpoint
  *
+ * @todo Determine if this whole file is needed.
+ *
  * @since   TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\REST
@@ -70,7 +72,7 @@ class Publishable_Key_Endpoint implements Tribe__Documentation__Swagger__Provide
 		if ( ! wp_verify_nonce( $params['nonce'], Assets::PUBLISHABLE_KEY_NONCE_ACTION ) ) {
 			wp_send_json_error( 'Invalid nonce ' . $params['nonce'] );
 		}
-		 */
+		*/
 
 		$keys = get_option( tribe( Merchant::class )->get_signup_data_key() );
 

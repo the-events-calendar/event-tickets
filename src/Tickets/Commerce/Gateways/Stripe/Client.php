@@ -99,9 +99,7 @@ class Client {
 
 		$default_arguments = [
 			'headers' => [
-				'Accept'        => 'application/json',
 				'Authorization' => 'Bearer ' . tribe( Merchant::class )->get_client_secret(),
-				'Content-Type'  => 'application/json',
 			]
 		];
 
