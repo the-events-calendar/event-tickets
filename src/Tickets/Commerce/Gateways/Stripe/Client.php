@@ -72,6 +72,32 @@ class Client {
 		return $this->post( $url, $query_args, $args );
 	}
 
+	/**
+	 * Calls the Stripe API and returns an existing Payment Intent based ona PI Client Secret.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $payment_intent_id Payment Intent ID formatted from client `pi_*`
+	 * @param string $client_secret     Client Secret formatted from client `pi_*`
+	 *
+	 * @return array|\WP_Error
+	 */
+	public function get_payment_intent( $payment_intent_id, $client_secret ) {
+		$query_args = [
+//			'client_secret' => $client_secret,
+		];
+		$body       = [
+		];
+		$args       = [
+			'body' => $body,
+		];
+
+		$payment_intent_id = urlencode( $payment_intent_id );
+		$url               = '/payment_intents/{payment_intent_id}';
+		$url               = str_replace( '{payment_intent_id}', $payment_intent_id, $url );
+
+		return $this->get( $url, $query_args, $args );
+	}
 
 	/**
 	 * Send a given method request to a given URL in the Stripe API.

@@ -27,5 +27,5 @@ if ( $must_login ) {
 	<!-- We'll put the error messages in this element -->
 	<div id="tec-tc-gateway-stripe-card-errors" role="alert"></div>
 
-	<button id="tec-tc-gateway-stripe-checkout-button">Submit Payment</button>
+	<button id="tec-tc-gateway-stripe-checkout-button" class="tribe-common-c-btn"><?php esc_html_e( 'Submit Payment', 'events-tickets' ) ?></button>
 </form>

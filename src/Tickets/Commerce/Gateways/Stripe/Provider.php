@@ -16,6 +16,13 @@ class Provider extends \tad_DI52_ServiceProvider {
 	 */
 	public function register() {
 		$this->container->singleton( Gateway::class );
+		$this->container->singleton( Merchant::class );
+		$this->container->singleton( REST::class );
+		$this->container->singleton( Settings::class );
+		$this->container->singleton( Signup::class );
+		$this->container->singleton( Payment_Element::class );
+		$this->container->singleton( Status::class );
+		$this->container->singleton( WhoDat::class );
 
 		$this->register_hooks();
 		$this->register_assets();

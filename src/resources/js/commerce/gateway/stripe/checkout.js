@@ -126,14 +126,14 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @return {boolean}
 	 */
-	obj.handleReceivePayment = ( result ) => {
+	obj.handleReceivePayment = async ( result ) => {
 		tribe.tickets.debug.log( 'stripe', 'handleReceivePayment', result );
 		if ( result.error ) {
 			return obj.handlePaymentError( result );
 		}
 
 		if ( 'succeeded' === result.paymentIntent.status ) {
-			return obj.handlePaymentSuccess( result );
+			return ( await obj.handlePaymentSuccess( result ) );
 		}
 	};
 
@@ -147,7 +147,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {boolean}
 	 */
 	obj.handlePaymentError = ( data ) => {
-		tribe.tickets.debug.log( 'handlePaymentError', data );
+		tribe.tickets.debug.log( 'stripe', 'handlePaymentError', data );
 		return false;
 	};
 
@@ -160,17 +160,31 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @return {boolean}
 	 */
-	obj.handlePaymentSuccess = ( data ) => {
-		tribe.tickets.debug.log( 'handlePaymentSuccess', data );
+	obj.handlePaymentSuccess = async ( data ) => {
+		tribe.tickets.debug.log( 'stripe', 'handlePaymentSuccess', data );
 
-		const params = Qs.parse( obj.successUrl.search.replace( /\?/g, '' ) );
-		params['tc-order-id'] = data.paymentIntent.id;
-
-		obj.successUrl.search = '?' + Qs.stringify( params );
+		const response = await obj.handleUpdateOrder( data.paymentIntent );
 
 		// Redirect the user to the success page.
-		window.location.replace( obj.successUrl.toString() );
+		window.location.replace( response.redirect_url );
 		return true;
+	};
+
+	obj.handleUpdateOrder = async ( paymentIntent ) => {
+		const args = {
+			json: {
+				client_secret: paymentIntent.client_secret,
+			},
+			headers: {
+				'X-WP-Nonce': obj.checkout.nonce,
+			}
+		};
+
+		const response = await ky.post( `${obj.checkout.orderEndpoint}/${paymentIntent.id}`, args ).json();
+
+		tribe.tickets.debug.log( 'stripe', 'updateOrder', response );
+
+		return response;
 	};
 
 	/**
@@ -185,8 +199,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			payment_method: {
 				card: obj.stripeCard,
 				billing_details: {
-					name: 'user name' // @todo get this value
-				}
+					name: 'user name', // @todo get this value
+				},
 			}
 		} ).then( obj.handleReceivePayment );
 	};
@@ -200,8 +214,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.handleCreateOrder = async () => {
 		const args = {
-			json: {
-				nonce: obj.checkout.orderNonce
+			json: {},
+			headers: {
+				'X-WP-Nonce': obj.checkout.nonce,
 			}
 		};
 		// Fetch Publishable API Key and Initialize Stripe Elements on Ready

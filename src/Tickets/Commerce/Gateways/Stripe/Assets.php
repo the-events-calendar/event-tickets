@@ -14,16 +14,6 @@ use TEC\Tickets\Commerce\Success;
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
 class Assets extends \tad_DI52_ServiceProvider {
-
-	/**
-	 * The nonce action to use when requesting a stripe publishable_key
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	const PUBLISHABLE_KEY_NONCE_ACTION = 'stripe_pubkey';
-
 	/**
 	 * The nonce action to use when requesting the creation of a new order
 	 *
@@ -31,7 +21,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 	 *
 	 * @var string
 	 */
-	const ORDER_NONCE_ACTION = 'stripe_order';
+	const ORDER_NONCE_ACTION = 'tec_stripe_order';
 
 	/**
 	 * @inheritDoc
@@ -78,7 +68,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 						return [
 							'successUrl'   => tribe( Success::class )->get_url(),
 							'orderEndpoint' => tribe( Order_Endpoint::class )->get_route_url(),
-							'orderNonce'    => wp_create_nonce( static::ORDER_NONCE_ACTION ),
+							'nonce'    => wp_create_nonce( 'wp_rest' ),
 							'publishableKey' => tribe( Merchant::class )->get_publishable_key(),
 						];
 					},
@@ -95,6 +85,6 @@ class Assets extends \tad_DI52_ServiceProvider {
 	 * @return bool If the `Stripe` assets should be enqueued or not.
 	 */
 	public function should_enqueue_assets() {
-		return tribe( Gateway::class )->is_active();
+		return tribe( Gateway::class )->is_active() && tribe( Success::class )->is_current_page();
 	}
 }
