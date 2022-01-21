@@ -9,10 +9,10 @@
  *
  * @link     https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since    TBD  enforcing proper currency formatting
+ * @since    5.2.3  enforcing proper currency formatting
  * @since    5.1.9
  *
- * @version  TBD
+ * @version  5.2.3
  *
  * @var \Tribe__Template                  $this            [Global] Template object.
  * @var Module                            $provider        [Global] The tickets provider instance.

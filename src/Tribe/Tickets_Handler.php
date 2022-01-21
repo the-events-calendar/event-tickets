@@ -544,7 +544,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Sync shared capacity for the given Post/Event object.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @param int    $object_id      Which Post we are dealing with.
 	 * @param string $event_capacity To which value the event Capacity was update to.
@@ -557,7 +557,7 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( ! is_numeric( $event_capacity ) ) {
 			return false;
 		}
-		
+
 		// Make sure we are updating the Shared Stock when we update it's capacity.
 		$object_stock = new Tribe__Tickets__Global_Stock( $object_id );
 
@@ -569,7 +569,8 @@ class Tribe__Tickets__Tickets_Handler {
 		// Get all Tickets.
 		$tickets = $this->get_tickets_ids( $object_id );
 
-		$has_shared_cap_tickets = false;
+		// If no tickets are available and capacity is set then it should be true.
+		$has_shared_cap_tickets = empty( $tickets );
 
 		foreach ( $tickets as $ticket ) {
 			$mode = get_post_meta( $ticket, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
@@ -627,7 +628,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Trigger shared cap sync on ticket updates.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @param $post_id  int                     Target post/Event ID.
 	 * @param $ticket   Tribe__Tickets__Tickets Ticket Object.

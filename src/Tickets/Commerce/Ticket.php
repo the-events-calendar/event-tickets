@@ -128,7 +128,7 @@ class Ticket {
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the elements.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @var \Tribe__Template
 	 */
@@ -137,7 +137,7 @@ class Ticket {
 	/**
 	 * Gets the template instance used to setup the rendering html.
 	 *
-	 * @since TBD
+	 * @since 5.2.3
 	 *
 	 * @return \Tribe__Template
 	 */
@@ -869,12 +869,12 @@ class Ticket {
 	 * Gets the product price value object
 	 *
 	 * @since   5.1.9
-	 * @since   TBD method signature changed to return an instance of Value instead of a string.
+	 * @since   5.2.3 method signature changed to return an instance of Value instead of a string.
 	 *
 	 * @param int|\WP_Post $product
 	 *
 	 * @return Commerce\Utils\Value;
-	 * @version TBD
+	 * @version 5.2.3
 	 *
 	 */
 	public function get_price_value( $product ) {

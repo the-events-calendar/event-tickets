@@ -9,9 +9,9 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   TBD
+ * @since   5.2.3
  *
- * @version TBD
+ * @version 5.2.3
  *
  * @var \TEC\Tickets\Commerce\Utils\Value $price The Value instance of the ticket price.
  */

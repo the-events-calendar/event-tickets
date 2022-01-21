@@ -349,7 +349,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Sanitizes the data for the duplicate ticket ajax call, then duplicates the ticket and meta.
 	 *
-	 * @since TBD.
+	 * @since 5.2.3.
 	 */
 	public function ajax_ticket_duplicate() {
 		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
@@ -361,18 +361,18 @@ class Tribe__Tickets__Metabox {
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 
 		if ( ! $ticket_id ) {
-			wp_send_json_error( esc_html( sprintf( 
+			wp_send_json_error( esc_html( sprintf(
 				// Translators: %s: dynamic "ticket" text.
-				__( 'Invalid %s', 'event-tickets' ), 
-				tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' ) 
+				__( 'Invalid %s', 'event-tickets' ),
+				tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' )
 			) ) );
 		}
 
 		if ( ! $this->has_permission( $post_id, $_POST, 'duplicate_ticket_nonce' ) ) {
-			wp_send_json_error( esc_html( sprintf( 
+			wp_send_json_error( esc_html( sprintf(
 				// Translators: %s: dynamic "ticket" text.
-				__( 'Failed to duplicate the %s. Refresh the page to try again.', 'event-tickets' ), 
-				tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' ) 
+				__( 'Failed to duplicate the %s. Refresh the page to try again.', 'event-tickets' ),
+				tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' )
 			) ) );
 		}
 
@@ -385,11 +385,11 @@ class Tribe__Tickets__Metabox {
 				[ 'status' => 400 ]
 			);
 		}
-		
+
 		$duplicate_ticket_id = $provider->duplicate_ticket( $post_id, $ticket_id );
 
 		// Successful?
-		if ( $duplicate_ticket_id ) {		
+		if ( $duplicate_ticket_id ) {
 			/**
 			 * Fire action when a ticket has been added.
 			 *
@@ -405,8 +405,8 @@ class Tribe__Tickets__Metabox {
 
 		/**
 		 * Filters the return data for ticket duplicate.
-		 * 
-		 * @since TBD
+		 *
+		 * @since 5.2.3
 		 *
 		 * @param array $return  Array of data to return to the ajax call.
 		 * @param int   $post_id ID of parent "event" post.
