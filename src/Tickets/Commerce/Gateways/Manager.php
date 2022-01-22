@@ -121,13 +121,13 @@ class Manager {
 	 *
 	 * @return string
 	 */
-	public function get_enabled_option_by_key( $gateway ) {
+	public static function get_enabled_option_by_key( $gateway ) {
 		$key = $gateway;
 		if ( $gateway instanceof Abstract_Gateway ) {
 			$key = $gateway->get_key();
 		}
 
-		return $this->option_gateway_enabled_prefix . $key;
+		return self::$option_gateway_enabled_prefix . $key;
 	}
 
 	/**

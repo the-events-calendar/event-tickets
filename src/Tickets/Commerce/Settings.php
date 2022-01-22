@@ -344,7 +344,7 @@ class Settings {
 						'gateways for providing users additional options for users when purchasing tickets.', 
 						'event-tickets' 
 					),
-					'content_template' => '',
+					'content_template' => 'settings/tickets-commerce/gateways',
 					'links'            => [
 						[
 							'slug'         => 'help-1',

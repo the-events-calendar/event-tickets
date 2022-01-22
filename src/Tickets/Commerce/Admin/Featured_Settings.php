@@ -59,6 +59,7 @@ class Featured_Settings {
             'description'      => '',
             'links'            => [],
             'content_template' => '',
+            'content_context'  => [],
             'classes'          => [],
         ];
         $template = $this->get_template();
