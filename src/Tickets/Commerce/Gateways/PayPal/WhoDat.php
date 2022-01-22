@@ -13,14 +13,15 @@ use TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding_Endpoint;
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class WhoDat extends Abstract_WhoDat {
+
 	/**
-	 * The API URL.
+	 * The API Path.
 	 *
-	 * @since 5.1.6
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	protected $api_url = 'https://whodat.theeventscalendar.com/commerce/v1/paypal';
+	public $api_endpoint = 'paypal';
 
 	/**
 	 * Fetch the signup link from PayPal.

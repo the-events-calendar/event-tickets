@@ -2,6 +2,13 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
+/**
+ * Class Provider
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Stripe
+ */
 class Provider extends \tad_DI52_ServiceProvider {
 
 	/**
@@ -9,14 +16,22 @@ class Provider extends \tad_DI52_ServiceProvider {
 	 */
 	public function register() {
 		$this->container->singleton( Gateway::class );
+		$this->container->singleton( Merchant::class );
+		$this->container->singleton( REST::class );
+		$this->container->singleton( Settings::class );
+		$this->container->singleton( Signup::class );
+		$this->container->singleton( Payment_Element::class );
+		$this->container->singleton( Status::class );
+		$this->container->singleton( WhoDat::class );
 
 		$this->register_hooks();
+		$this->register_assets();
 	}
 
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for this Service Provider.
 	 *
-	 * @since 5.1.6
+	 * @since TBD
 	 */
 	protected function register_hooks() {
 		$hooks = new Hooks( $this->container );
@@ -24,5 +39,17 @@ class Provider extends \tad_DI52_ServiceProvider {
 
 		// Allow Hooks to be removed, by having the them registered to the container
 		$this->container->singleton( Hooks::class, $hooks );
+	}
+
+	/**
+	 * Registers the provider handling all the 1st level filters and actions for this Service Provider
+	 *
+	 * @since TBD
+	 */
+	protected function register_assets() {
+		$assets = new Assets( $this->container );
+		$assets->register();
+
+		$this->container->singleton( Assets::class, $assets );
 	}
 }

@@ -2,32 +2,25 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 
-use TEC\Tickets\Commerce\Gateways\Stripe\Client;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 use TEC\Tickets\Commerce\Gateways\Stripe\Refresh_Token;
 
-use TEC\Tickets\Commerce\Gateways\Stripe\Signup;
 use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
-use TEC\Tickets\Commerce\Gateways\Stripe\WhoDat;
-use TEC\Tickets\Commerce\Notice_Handler;
 use Tribe__Documentation__Swagger__Provider_Interface;
-use Tribe__Settings;
-use Tribe__Utils__Array as Arr;
 
-use WP_Error;
 use WP_REST_Request;
-use WP_REST_Response;
 use WP_REST_Server;
 
-
 /**
- * Class On_Boarding_Endpoint
+ * Class Publishable_Key_Endpoint
+ *
+ * @todo Determine if this whole file is needed.
  *
  * @since   TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\REST
  */
-class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_Interface {
+class Publishable_Key_Endpoint implements Tribe__Documentation__Swagger__Provider_Interface {
 
 	/**
 	 * The REST API endpoint path.
@@ -36,7 +29,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 	 *
 	 * @var string
 	 */
-	protected $path = '/commerce/stripe/on-boarding';
+	protected $path = '/commerce/stripe/key';
 
 	/**
 	 * Register the actual endpoint on WP Rest API.
@@ -52,17 +45,7 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 			$this->get_endpoint_path(),
 			[
 				'methods'             => WP_REST_Server::CREATABLE,
-				'callback'            => [ $this, 'onboard' ],
-				'permission_callback' => '__return_true',
-			]
-		);
-
-		register_rest_route(
-			$namespace,
-			$this->get_endpoint_path(),
-			[
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => [ $this, 'connect' ],
+				'callback'            => [ $this, 'get_key' ],
 				'permission_callback' => '__return_true',
 			]
 		);
@@ -70,14 +53,30 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
 	}
 
-	public function connect( WP_REST_Request $request ) {
-		return tribe( WhoDat::class )->connect_account();
-	}
+	/**
+	 * Fetch the key requested
+	 *
+	 * @todo this needs to differentiate between sandbox and live keys based on test mode
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return mixed
+	 */
+	public function get_key( WP_REST_Request $request ) {
 
-	public function onboard( WP_REST_Request $request ) {
-		$data = $request->get_json_params();
+		$params = $request->get_json_params();
 
-		return tribe( WhoDat::class )->onboard_account( $data );
+		/* @todo fixme
+		if ( ! wp_verify_nonce( $params['nonce'], Assets::PUBLISHABLE_KEY_NONCE_ACTION ) ) {
+			wp_send_json_error( 'Invalid nonce ' . $params['nonce'] );
+		}
+		*/
+
+		$keys = get_option( tribe( Merchant::class )->get_signup_data_key() );
+
+		return $keys['sandbox']->publishable_key;
 	}
 
 	/**
@@ -102,23 +101,6 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 		$namespace = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
 
 		return rest_url( '/' . $namespace . $this->get_endpoint_path(), 'https' );
-	}
-
-	/**
-	 * Gets the Return URL pointing to this on boarding route.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public function get_return_url( $hash = null ) {
-		$arguments = [];
-
-		if ( $hash ) {
-			$arguments['hash'] = $hash;
-		}
-
-		return add_query_arg( $arguments, $this->get_route_url() );
 	}
 
 	/**
