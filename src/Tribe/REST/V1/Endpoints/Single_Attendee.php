@@ -279,31 +279,15 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			return new WP_Error( 'invalid-attendee-provider', __( 'Attendee provider not found.', 'event-tickets' ) );
 		}
 
-		$attendee = $provider->get_attendee( $attendee_id );
-
-		// Set up the attendee data for the update.
-//		$new_data = [
-//			'attendee_source' => 'rest-api',
-//		];
-
-//		if ( ! empty( $request['name'] ) ) {
-//			$new_data['full_name'] = $request['name'];
-//		}
-//
-//		if ( ! empty( $request['email'] ) ) {
-//			$new_data['email'] = $request['email'];
-//		}
-//
-//		if ( ! empty( $request['order_status'] ) ) {
-//			$new_data['attendee_status'] = $request['order_status'];
-//		}
-
+		$attendee     = $provider->get_attendee( $attendee_id );
 		$updated_data = $request->get_params();
-//		$new_data['attendee_id'] = $attendee_id;
 
-//		unset( $new_data['id'] );
-
-//		$updated_data = wp_parse_args( $new_data, $attendee );
+		if ( isset( $updated_data['attendee_status'] ) ) {
+			$statuses = tribe( 'tickets.status' )->get_statuses_by_action( 'all', $provider );
+			if ( ! in_array( $updated_data['attendee_status'], $statuses ) ) {
+				return new WP_Error( 'invalid-attendee-status', sprintf( __( 'Supported statuses for this attendee are: %s', 'event-tickets' ), implode( $statuses, ' | ' ) ), [ 'status' => 401 ] );
+			}
+		}
 
 		/**
 		 * Filter REST API attendee data before creating an attendee.
