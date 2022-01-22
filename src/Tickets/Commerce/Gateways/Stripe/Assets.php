@@ -2,9 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
+use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Order_Endpoint;
-use TEC\Tickets\Commerce\Gateways\Stripe\REST\Publishable_Key_Endpoint;
-use TEC\Tickets\Commerce\Success;
 
 /**
  * Class Assets.
@@ -61,12 +60,11 @@ class Assets extends \tad_DI52_ServiceProvider {
 				'groups'   => [
 					'tec-tickets-commerce-gateway-stripe',
 				],
-				//'conditionals' => [ $this, 'should_enqueue_assets' ],
+				'conditionals' => [ $this, 'should_enqueue_assets' ],
 				'localize' => [
 					'name' => 'tecTicketsCommerceGatewayStripeCheckout',
 					'data' => static function () {
 						return [
-							'successUrl'   => tribe( Success::class )->get_url(),
 							'orderEndpoint' => tribe( Order_Endpoint::class )->get_route_url(),
 							'nonce'    => wp_create_nonce( 'wp_rest' ),
 							'publishableKey' => tribe( Merchant::class )->get_publishable_key(),
@@ -85,6 +83,6 @@ class Assets extends \tad_DI52_ServiceProvider {
 	 * @return bool If the `Stripe` assets should be enqueued or not.
 	 */
 	public function should_enqueue_assets() {
-		return tribe( Gateway::class )->is_active() && tribe( Success::class )->is_current_page();
+		return tribe( Gateway::class )->is_active() && tribe( Checkout::class )->is_current_page();
 	}
 }

@@ -63,15 +63,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.stripeElements = obj.stripeLib.elements();
 
 	/**
-	 * URL object of the Success page.
-	 *
-	 * @since TBD
-	 *
-	 * @type {URL}
-	 */
-	obj.successUrl = new URL( obj.checkout.successUrl );
-
-	/**
 	 * Settings for the Card Element from Stripe.
 	 *
 	 * @since TBD
@@ -170,6 +161,15 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		return true;
 	};
 
+	/**
+	 * Updates the Order based on a paymentIntent from Stripe.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} paymentIntent Payment intent Object from Stripe.
+	 *
+	 * @return {Promise<*>}
+	 */
 	obj.handleUpdateOrder = async ( paymentIntent ) => {
 		const args = {
 			json: {
