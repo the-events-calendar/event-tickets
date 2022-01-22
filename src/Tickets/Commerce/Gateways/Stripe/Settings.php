@@ -35,7 +35,7 @@ class Settings extends Abstract_Settings {
 	 * @inheritDoc
 	 */
 	public function get_connection_settings_html() {
-		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		/** @var \Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
 		$context = [

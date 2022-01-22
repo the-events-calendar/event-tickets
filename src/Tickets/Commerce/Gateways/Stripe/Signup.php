@@ -65,8 +65,8 @@ class Signup extends Abstract_Signup {
 			[
 				'stripe_user_id'      => tribe( Merchant::class )->get_client_id(),
 				'return_url' => admin_url( $this->signup_return_path ),
-			] );
-
+			]
+		);
 	}
 
 	/**
@@ -118,6 +118,15 @@ class Signup extends Abstract_Signup {
 		exit();
 	}
 
+	/**
+	 * Determines if the signup was successful.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data
+	 *
+	 * @return bool
+	 */
 	public function is_success( $data ) {
 
 		return ! empty( $data->stripe_user_id )

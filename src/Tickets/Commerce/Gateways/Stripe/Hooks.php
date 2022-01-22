@@ -80,6 +80,11 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		tribe( Signup::class )->handle_connection_established();
 	}
 
+	/**
+	 * Handle stripe errors into the admin UI.
+	 *
+	 * @since TBD
+	 */
 	public function handle_stripe_errors() {
 
 		if ( empty( tribe_get_request_var( 'tc-stripe-error' ) ) ) {
@@ -87,7 +92,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		}
 
 		tribe( Notice_Handler::class )->trigger_admin( tribe_get_request_var( 'tc-stripe-error' ) );
-
 	}
 
 	/**
