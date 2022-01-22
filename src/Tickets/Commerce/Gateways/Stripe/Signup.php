@@ -5,6 +5,13 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Signup;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\On_Boarding_Endpoint;
 
+/**
+ * Class Signuo.
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Stripe
+ */
 class Signup extends Abstract_Signup {
 
 	/**
@@ -13,13 +20,13 @@ class Signup extends Abstract_Signup {
 	public static $signup_data_meta_key = 'tec_tc_stripe_signup_data';
 
 	/**
-	 * The return path the user will be redirected to after signing up
+	 * The return path the user will be redirected to after signing up.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public $signup_return_path = '/edit.php?post_type=tribe_events&page=tribe-common&tab=payments';
+	public $signup_return_path = '/admin.php?page=tribe-common&tab=payments';
 
 	/**
 	 * @inheritDoc
@@ -27,13 +34,13 @@ class Signup extends Abstract_Signup {
 	public $template_folder = 'src/admin-views/settings/tickets-commerce/stripe';
 
 	/**
-	 * Generates a stripe connection URL from WhoDat
+	 * Generates a stripe connection URL from WhoDat.
 	 *
 	 * @since TBD
 	 *
 	 * @return string
 	 */
-	public function generate_url() {
+	public function generate_signup_url() {
 
 		return tribe( WhoDat::class )->get_api_url(
 			'connect',
@@ -45,18 +52,37 @@ class Signup extends Abstract_Signup {
 	}
 
 	/**
+	 * Generates a stripe disconnection URL from WhoDat
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function generate_disconnect_url() {
+
+		return tribe( WhoDat::class )->get_api_url(
+			'disconnect',
+			[
+				'stripe_user_id'      => tribe( Merchant::class )->get_client_id(),
+				'return_url' => admin_url( $this->signup_return_path ),
+			] );
+
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function get_link_html() {
 		$template_vars = [
-			'url' => $this->generate_url(),
+			'url' => $this->generate_signup_url(),
+			'disconnect_url' => $this->generate_disconnect_url(),
 		];
 
 		$this->get_template()->template( 'signup-link', $template_vars );
 	}
 
 	/**
-	 * Get a unique tracking ID to identify this client on stripe
+	 * Get a unique tracking ID to identify this client on stripe.
 	 *
 	 * @since TBD
 	 *
@@ -67,7 +93,7 @@ class Signup extends Abstract_Signup {
 	}
 
 	/**
-	 * Handle returning requests for established stripe connections
+	 * Handle returning requests for established stripe connections.
 	 *
 	 * @since TBD
 	 */

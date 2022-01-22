@@ -2,6 +2,13 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
+/**
+ * Abstract REST Endpoint Contract
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Contracts
+ */
 abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe__Documentation__Swagger__Provider_Interface {
 
 	/**

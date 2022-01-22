@@ -2,6 +2,13 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
+/**
+ * Merchant Interface
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Contracts
+ */
 interface Merchant_Interface {
 
 	public function get_account_key();

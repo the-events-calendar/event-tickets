@@ -4,6 +4,13 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 
+/**
+ * Class Gateway
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Stripe
+ */
 class Gateway extends Abstract_Gateway {
 
 	/**

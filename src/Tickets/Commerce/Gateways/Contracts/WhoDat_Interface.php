@@ -2,6 +2,13 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
+/**
+ * WhoDat Interface
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Contracts
+ */
 interface WhoDat_Interface {
 
 	/**

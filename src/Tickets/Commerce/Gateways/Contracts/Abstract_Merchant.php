@@ -4,6 +4,13 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 use TEC\Tickets\Commerce\Traits\Has_Mode;
 
+/**
+ * Abstract Merchant Contract
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Contracts
+ */
 abstract class Abstract_Merchant implements Merchant_Interface {
 
 	use Has_Mode;
@@ -14,7 +21,6 @@ abstract class Abstract_Merchant implements Merchant_Interface {
 	 * @since 5.1.9
 	 */
 	public function init() {
-		$this->set_mode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' );
 		$this->from_array( $this->get_details_data(), false );
 	}
 

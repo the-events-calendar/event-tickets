@@ -2,7 +2,14 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
-class Abstract_Signup implements Signup_Interface {
+/**
+ * Abstract Signup Contract
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Contracts
+ */
+abstract class Abstract_Signup implements Signup_Interface {
 
 	/**
 	 * Holds the transient key used to store hash passed to PayPal.
@@ -84,7 +91,7 @@ class Abstract_Signup implements Signup_Interface {
 	 */
 	public function get_link_html() {
 		$template_vars = [
-			'url'          => $this->generate_url(),
+			'url' => $this->generate_url(),
 		];
 
 		return $this->get_template()->template( 'signup-link', $template_vars, false );

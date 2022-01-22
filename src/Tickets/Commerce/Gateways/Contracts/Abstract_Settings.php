@@ -9,11 +9,11 @@
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 /**
- * The gateway settings related functionality.
+ * Abstract Settings
  *
- * @since   5.1.6
- * @package Tribe\Tickets\Commerce\Tickets_Commerce\Gateways
+ * @since   TBD
  *
+ * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
 abstract class Abstract_Settings {
 

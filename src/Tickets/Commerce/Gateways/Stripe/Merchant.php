@@ -4,11 +4,36 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 
+/**
+ * Class Merchant
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Stripe
+ */
 class Merchant extends Abstract_Merchant {
 
-	protected $client_id;
+	/**
+	 * Determines if the Merchant is active.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_active( $recheck = false ) {
+		return true;
+	}
 
-	protected $refresh_tokens;
+	/**
+	 * Determines if the Merchant is connected.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_connected( $recheck = false ) {
+		return true;
+	}
 
 	/**
 	 * Returns the options key for the account in the merchant mode.
@@ -18,7 +43,7 @@ class Merchant extends Abstract_Merchant {
 	 * @return string
 	 */
 	public function get_account_key() {
-		$gateway_key   = Gateway::get_key();
+		$gateway_key = Gateway::get_key();
 
 		return "tec_tickets_commerce_{$gateway_key}_account";
 	}
@@ -33,9 +58,48 @@ class Merchant extends Abstract_Merchant {
 	 * @return string
 	 */
 	public function get_signup_data_key() {
-		$gateway_key   = Gateway::get_key();
+		$gateway_key = Gateway::get_key();
 
 		return "tec_tickets_commerce_{$gateway_key}_signup_data";
+	}
+
+	/**
+	 * Returns the stripe client secret stored for server-side transactions.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_client_secret() {
+		$keys = get_option( $this->get_signup_data_key() );
+
+		return $keys[ $this->get_mode() ]->access_token;
+	}
+
+	/**
+	 * Fetch the Publishable key for the user.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_publishable_key() {
+		$keys = get_option( $this->get_signup_data_key() );
+
+		return $keys[ $this->get_mode() ]->publishable_key;
+	}
+
+	/**
+	 * Returns the stripe client id stored for server-side transactions.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_client_id() {
+		$keys = get_option( $this->get_signup_data_key() );
+
+		return $keys['stripe_user_id'];
 	}
 
 	/**
@@ -47,8 +111,9 @@ class Merchant extends Abstract_Merchant {
 	 */
 	public function to_array() {
 		return [
-			'client_id'      => $this->get_client_id(),
-			'refresh_tokens' => $this->get_refresh_tokens(),
+			'client_id'       => $this->get_client_id(),
+			'client_secret'   => $this->get_client_secret(),
+			'publishable_key' => $this->get_client_id(),
 		];
 	}
 

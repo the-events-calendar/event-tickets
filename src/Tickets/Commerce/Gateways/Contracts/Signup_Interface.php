@@ -2,6 +2,13 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
+/**
+ * Signup Interface
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Contracts
+ */
 interface Signup_Interface {
 
 	/**
