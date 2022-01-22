@@ -20,13 +20,13 @@ class Signup extends Abstract_Signup {
 	public static $signup_data_meta_key = 'tec_tc_stripe_signup_data';
 
 	/**
-	 * The return path the user will be redirected to after signing up
+	 * The return path the user will be redirected to after signing up.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public $signup_return_path = '/edit.php?post_type=tribe_events&page=tribe-common&tab=payments';
+	public $signup_return_path = '/admin.php?page=tribe-common&tab=payments';
 
 	/**
 	 * @inheritDoc
@@ -34,7 +34,7 @@ class Signup extends Abstract_Signup {
 	public $template_folder = 'src/admin-views/settings/tickets-commerce/stripe';
 
 	/**
-	 * Generates a stripe connection URL from WhoDat
+	 * Generates a stripe connection URL from WhoDat.
 	 *
 	 * @since TBD
 	 *
@@ -82,7 +82,7 @@ class Signup extends Abstract_Signup {
 	}
 
 	/**
-	 * Get a unique tracking ID to identify this client on stripe
+	 * Get a unique tracking ID to identify this client on stripe.
 	 *
 	 * @since TBD
 	 *
@@ -93,7 +93,7 @@ class Signup extends Abstract_Signup {
 	}
 
 	/**
-	 * Handle returning requests for established stripe connections
+	 * Handle returning requests for established stripe connections.
 	 *
 	 * @since TBD
 	 */
