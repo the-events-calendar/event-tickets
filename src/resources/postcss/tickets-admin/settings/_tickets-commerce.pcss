@@ -401,3 +401,65 @@
 #paypal-connected-modal-button {
 	display: none;
 }
+
+/**
+ * Gateway: Stripe
+ */
+.tec-tickets__admin-settings-tickets-commerce-stripe {
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	padding: 45px 32px 20px 32px;
+
+	@media (--viewport-medium) {
+		background-image: url("../images/background-stripe-connect.png");
+		background-position: center right;
+		background-repeat: no-repeat;
+	}
+}
+
+.tec-tickets__admin-settings-tickets-commerce-stripe-title {
+	font-size: 20px;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-stripe-description {
+	margin-bottom: 20px;
+
+	p {
+		max-width: 470px;
+	}
+}
+
+.tec-tickets__admin-settings-tickets-commerce-stripe-signup-links {
+	margin-top: var(--tec-spacer-8);
+}
+
+.tec-tickets__admin-settings-tickets-commerce-stripe-help-links {
+	margin-top: var(--tec-spacer-8);
+}
+
+.tec-tickets__admin-settings-tickets-commerce-stripe-help-link {
+	align-items: center;
+	display: flex;
+
+	&:not(:last-of-type) {
+		margin-bottom: 8px;
+	}
+}
+
+.tec-tickets__admin-settings-tickets-commerce-stripe-refresh-link,
+.tec-tickets__admin-settings-tickets-commerce-stripe-help-link-url {
+	margin-left: 8px;
+
+	&,
+	&:hover,
+	&:active,
+	&:visited,
+	&:focus {
+		color: #405bfb;
+	}
+}
