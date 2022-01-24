@@ -54,6 +54,11 @@ class Gateway extends Abstract_Gateway {
 		return false;
 	}
 
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
 	public function get_admin_notices() {
 		return [];
 	}
