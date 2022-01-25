@@ -140,7 +140,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 				'type'              => 'integer',
 				'description'       => __( 'The Ticket ID, where the attendee is registered.', 'event-tickets' ),
 			],
-			'name'                  => [
+			'full_name'             => [
 				'required'          => true,
 				'type'              => 'string',
 				'description'       => __( 'Full name of the attendee.', 'event-tickets' ),
@@ -149,9 +149,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 				'required'          => true,
 				'validate_callback' => 'is_email',
 				'type'              => 'email',
-				'description'       => __( 'Email of the attendeee', 'event-tickets' ),
+				'description'       => __( 'Email of the attendeee.', 'event-tickets' ),
 			],
-			'order_status'          => [
+			'attendee_status'       => [
 				'required'          => false,
 				'validate_callback' => 'is_string',
 				'type'              => 'string',
@@ -232,13 +232,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			return new WP_Error( 'invalid-provider', __( 'Ticket Provider not found.', 'event-tickets' ) );
 		}
 
-		// Set up the attendee data for the creation/save.
-		$attendee_data = [
-			'full_name'       => $request->get_param( 'name' ),
-			'email'           => $request->get_param( 'email' ),
-			'attendee_source' => 'rest-api',
-			'attendee_status' => $request->get_param( 'order_status' ),
-		];
+		$attendee_data = $request->get_params();
+		$attendee_data[ 'attendee_source' ] = 'rest-api';
 
 		/**
 		 * Filter REST API attendee data before creating an attendee.
@@ -249,6 +244,10 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 		 * @param WP_REST_Request $request Request object.
 		 */
 		$attendee_data = apply_filters( 'tribe_tickets_rest_api_post_attendee_data', $attendee_data, $request );
+
+		if ( is_wp_error( $attendee_data ) ) {
+			return $attendee_data;
+		}
 
 		return [
 			'ticket'   => $ticket_id,
@@ -284,8 +283,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 
 		if ( isset( $updated_data['attendee_status'] ) ) {
 			$statuses = tribe( 'tickets.status' )->get_statuses_by_action( 'all', $provider );
-			if ( ! in_array( $updated_data['attendee_status'], $statuses ) ) {
-				return new WP_Error( 'invalid-attendee-status', sprintf( __( 'Supported statuses for this attendee are: %s', 'event-tickets' ), implode( $statuses, ' | ' ) ), [ 'status' => 401 ] );
+			if ( ! in_array( $updated_data['attendee_status'], $statuses, true ) ) {
+				return new WP_Error( 'invalid-attendee-status', sprintf( __( 'Supported statuses for this attendee are: %s', 'event-tickets' ), implode( $statuses, ' | ' ) ), [ 'status' => 400 ] );
 			}
 		}
 
@@ -294,10 +293,15 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 		 *
 		 * @since TBD
 		 *
-		 * @param array $attendee_data Attendee data.
+		 * @param array $updated_data Data that needs to be updated.
 		 * @param WP_REST_Request $request Request object.
+		 * @param array $attendee_data Attendee data that will be updated.
 		 */
-		$attendee_data = apply_filters( 'tribe_tickets_rest_api_update_attendee_data', $updated_data, $request );
+		$attendee_data = apply_filters( 'tribe_tickets_rest_api_update_attendee_data', $updated_data, $request, $attendee );
+
+		if ( is_wp_error( $attendee_data ) ) {
+			return $attendee_data;
+		}
 
 		return [
 			'attendee_id' => $attendee_id,
