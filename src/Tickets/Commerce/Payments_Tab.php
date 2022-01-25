@@ -7,6 +7,7 @@ use TEC\Tickets\Commerce\Shortcodes\Success_Shortcode;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway as Gateway;
 use TEC\Tickets\Settings as Tickets_Settings;
+use \Tribe__Settings;
 use \tad_DI52_ServiceProvider;
 
 /**
@@ -46,6 +47,15 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	public static $option_gateway_enabled_prefix = 'tec_tc_payments_gateway_enabled_';
 
 	/**
+	 * Key to determine current section.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $key_current_section = 'tec_tc_payments_current_section';
+
+	/**
 	 * @inheritdoc
 	 */
 	public function register() {
@@ -67,6 +77,8 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		$tab_settings = apply_filters( 'tec_tickets_commerce_payments_tab_settings', $tab_settings );
 
 		new \Tribe__Settings_Tab( static::$slug, esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
+		
+		$this->filters();
 	}
 	
 	/**
@@ -84,7 +96,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		$menu_html .= sprintf(
 			'<a class="%s" href="%s">%s</a>',
 			'main' === $selected_section ? 'active' : '',
-			\Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] ),
+			Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] ),
 			esc_html__( 'Tickets Commerce', 'event-tickets' ),
 		);
         foreach ($gateways as $gateway_key => $gateway) {
@@ -94,10 +106,15 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			$menu_html .= sprintf(
 				'<a class="%s" href="%s">%s</a>',
 				$gateway_key === $selected_section ? 'active' : '',
-				\Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-section' => $gateway_key ] ),
+				Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-section' => $gateway_key ] ),
 				$gateway->get_label()
 			);
         }
+		if( 'main' !== $selected_section ) {
+			$current_section_key = self::$key_current_section;
+			$menu_html .= '<input type="hidden" name="' . esc_attr( $current_section_key ) . '" ' . 
+				'id="' . esc_attr( $current_section_key ) . '" value="' . esc_attr( $selected_section ) . '" />';
+		}
 		$menu_html .= '</div>';
 		
 		return [
@@ -107,6 +124,51 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			]
 		];
 		
+	}
+	
+	/**
+	 * Method to load filters for payments tab.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function filters(){
+		add_filter( 'wp_redirect', [ $this, 'filter_redirect_url' ] );
+	}
+	
+	/**
+	 * Filters the redirect URL to include section, if applicable.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url URL of redirection.
+	 *
+	 * @return string
+	 */
+	public function filter_redirect_url( $url ) {
+		
+		// Parse URL to get query string info.
+		$url_query = wp_parse_url( $url, PHP_URL_QUERY );
+		wp_parse_str( $url_query, $args );
+		
+		// If not on the TEC Payments tab, bail.
+		if ( 
+			( empty( $args['page'] ) || Tribe__Settings::$parent_slug !== $args['page'] ) || 
+			( empty( $args['tab'] )  || self::$slug !== $args['tab'] ) 
+		) {
+			return $url;
+		}
+		
+		// If valid section not posted, bail.
+		$current_section_key = Payments_Tab::$key_current_section;
+		if ( empty( $_POST[$current_section_key] ) || 'main' === $_POST[$current_section_key] ) {
+			return $url;
+		}
+		
+		// Add section info to URL before redirecting.
+		$current_section = $_POST[$current_section_key];
+		return add_query_arg( 'tc-section', esc_attr( $current_section ), $url );
 	}
 	
 	/**
