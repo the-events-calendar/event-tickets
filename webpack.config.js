@@ -5,12 +5,9 @@ const { resolve } = require( 'path' );
 const { reduce, zipObject } = require( 'lodash' );
 const merge = require( 'webpack-merge' );
 const common = require( '@the-events-calendar/product-taskmaster/webpack/common/webpack.config' );
-const eventsPlugin = require( '@the-events-calendar/product-taskmaster/webpack/externals/tribe/events' );
 const { getDirectoryNames, getDirectories } = require( '@the-events-calendar/product-taskmaster/webpack/utils/directories' );
 const { getJSFileNames, getJSFiles } = require( '@the-events-calendar/product-taskmaster/webpack/utils/files' );
-const { generateEntries } = require( '@the-events-calendar/product-taskmaster/webpack/entry/tribe' );
 
-const directoryNames = getDirectoryNames( resolve( __dirname, './src/modules' ) );
 const PLUGIN_SCOPE = 'tickets';
 
 //
@@ -19,14 +16,13 @@ const PLUGIN_SCOPE = 'tickets';
 // ──────────────────────────────────────────────────────────────────────────────────────────────
 //
 
-const config = merge.strategy( {
-	externals: 'append',
-} )( common, {
-	entry: generateEntries( __dirname, directoryNames ),
-	externals: [ eventsPlugin ],
+const config = merge( common, {
+	entry: {
+		main: resolve( __dirname, './src/modules/index.js' ),
+	},
 	output: {
 		path: __dirname,
-		library: [ 'tribe', PLUGIN_SCOPE, '[name]' ],
+		library: [ 'tribe', PLUGIN_SCOPE ],
 	},
 } );
 
