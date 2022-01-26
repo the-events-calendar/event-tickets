@@ -5,6 +5,13 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use \Tribe__Tickets__Main;
 
+/**
+ * Class Gateway
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Stripe
+ */
 class Gateway extends Abstract_Gateway {
 
 	/**
@@ -59,7 +66,7 @@ class Gateway extends Abstract_Gateway {
 
 		return $notices;
 	}
-
+  
 	/**
 	 * @inheritDoc
 	 */
@@ -73,4 +80,5 @@ class Gateway extends Abstract_Gateway {
 	public function get_subtitle() {
 		return __( 'Enable credit card payment and afterpay', 'event-tickets' );
 	}
+  
 }

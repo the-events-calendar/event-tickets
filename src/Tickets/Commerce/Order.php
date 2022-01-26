@@ -2,10 +2,7 @@
 
 namespace TEC\Tickets\Commerce;
 
-use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
-use TEC\Tickets\Commerce\Gateways\Gateway_Interface;
-use TEC\Tickets\Commerce\Utils\Price;
-use TEC\Tickets\Commerce\Gateways\Interface_Gateway;
+use TEC\Tickets\Commerce\Gateways\Contracts\Gateway_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Date_Utils as Dates;
 

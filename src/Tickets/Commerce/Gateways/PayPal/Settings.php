@@ -64,7 +64,7 @@ class Settings extends Abstract_Settings {
 			'signup'                => $signup,
 		];
 
-		// $admin_views->add_template_globals( $context );
+		$admin_views->add_template_globals( $context );
 
 		return $admin_views->template( 'settings/tickets-commerce/paypal/main', $context, false );
 	}
