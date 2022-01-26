@@ -17,15 +17,18 @@
  * @var bool $card_element [Global] Whether to load the Stripe Card Element.
  */
 
-if ( $must_login || ! $payment_element ) {
+if ( $must_login || ! $card_element ) {
 	return;
 }
 ?>
-<div id="tec-tc-gateway-stripe-payment-element">
-	<!--Stripe.js injects the Payment Element-->
+<div id="tec-tc-gateway-stripe-card-element">
+	<!-- Elements will create input elements here -->
 </div>
-<button id="tec-tc-gateway-stripe-checkout-button">
-	<div class="spinner hidden" id="spinner"></div>
-	<span id="button-text">Pay now</span>
+
+<!-- We'll put the error messages in this element -->
+<div id="tec-tc-gateway-stripe-card-errors" role="alert"></div>
+
+<button id="tec-tc-gateway-stripe-checkout-button"
+		class="tribe-common-c-btn">
+	<?php esc_html_e( 'Submit Payment', 'events-tickets' ) ?>
 </button>
-<div id="payment-message" class="hidden"></div>

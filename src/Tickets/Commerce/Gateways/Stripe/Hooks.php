@@ -117,6 +117,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @param \Tribe__Template $template Which Template object is being used.
 	 */
 	public function include_payment_buttons( $file, $name, $template ) {
-		$this->container->make( Payment_Element::class )->include_payment_element( $file, $name, $template );
+		$this->container->make( Stripe_Elements::class )->include_form( $file, $name, $template );
 	}
 }
