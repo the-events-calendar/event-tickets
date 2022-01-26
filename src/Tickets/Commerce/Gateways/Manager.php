@@ -112,7 +112,7 @@ class Manager {
 		}
 		
 		$gateways = $this->get_gateways();
-		if( ! isset( $gateways[ $key ] ) ) {
+		if ( ! isset( $gateways[ $key ] ) ) {
 			return;
 		}
 
@@ -129,10 +129,7 @@ class Manager {
 	 * @return string
 	 */
 	public static function get_enabled_option_by_key( $gateway ) {
-		$key = $gateway;
-		if ( $gateway instanceof Abstract_Gateway ) {
-			$key = $gateway->get_key();
-		}
+		$key = $gateway instanceof Abstract_Gateway ? $gateway->get_key() : $gateway;
 
 		return self::$option_gateway_enabled_prefix . $key;
 	}
@@ -147,10 +144,7 @@ class Manager {
 	 * @return boolean 
 	 */
 	public function is_gateway_enabled( $gateway ) {
-		$key = $gateway;
-		if ( $gateway instanceof Abstract_Gateway ) {
-			$key = $gateway->get_key();
-		}
+		$key = $gateway instanceof Abstract_Gateway ? $gateway->get_key() : $gateway;
 
 		return (bool) tribe_get_option( $this->get_enabled_option_by_key( $key ) );
 	}

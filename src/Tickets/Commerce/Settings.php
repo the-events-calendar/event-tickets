@@ -172,7 +172,7 @@ class Settings {
 	public function get_settings() {
 		
 		$section_gateway = tribe( Payments_Tab::class )->get_section_gateway();
-		if( ! empty( $section_gateway ) ) {
+		if ( ! empty( $section_gateway ) ) {
 			return $section_gateway->get_settings();
 		}
 
@@ -338,7 +338,7 @@ class Settings {
 		$featured_settings = [
 			'tc_featured_settings' => [
 				'type' => 'html',
-				'html' => tribe( Featured_Settings::class )->get_html([
+				'html' => tribe( Featured_Settings::class )->get_html( [
 					'title'            => __( 'Payment Gateways', 'event-tickets' ),
 					'description'      => __( 
 						'Set up a payment gateway to get started with Tickets Commerce. Enable multiple ' .
@@ -350,14 +350,14 @@ class Settings {
 						[
 							'slug'         => 'help-1',
 							'priority'     => 10,
-							'link'         => esc_url( '#' ),
-							'html'         => __('Learn more about configuring payment options with Tickets Commerce'),
+							'link'         => esc_url( '#' ), // @todo Get a URL for this link.
+							'html'         => __( 'Learn more about configuring payment options with Tickets Commerce', 'event-tickets' ),
 							'target'       => '_blank',
 							'classes'      => [],
 						]
 					],
 					'classes'          => [],
-				]),
+				] ),
 			]
 		];
 		$settings = array_merge( $featured_settings, $settings );

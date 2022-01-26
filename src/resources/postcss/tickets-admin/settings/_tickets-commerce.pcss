@@ -466,28 +466,29 @@
 
 .tec-tickets__admin-settings-tickets-commerce-section-menu {
 	padding-top: var(--tec-spacer-6);
+}
 
-	a {
-		border-bottom-color: #c4c4c4;
-		border-bottom-style: solid;
-		border-bottom-width: 1px;
-		color: #23282d;
-		display: inline-block;
-		font-size: var(--tec-font-size-2);
-		margin-right: var(--tec-spacer-5);
-		padding-bottom: var(--tec-spacer-1);
-		text-decoration: none;
-	}
+.tec-tickets__admin-settings-tickets-commerce-section-menu-link {
+	border-bottom-color: #c4c4c4;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	color: #23282d;
+	display: inline-block;
+	font-size: var(--tec-font-size-2);
+	margin-right: var(--tec-spacer-5);
+	padding-bottom: var(--tec-spacer-1);
+	text-decoration: none;
+}
 
-	a.active {
-		font-weight: bold;
-	}
+.tec-tickets__admin-settings-tickets-commerce-section-menu-link.active {
+	border-bottom-width: var(--tec-spacer-0);
+	font-weight: bold;
+}
 
-	a.active,
-	a:hover {
-		border-bottom-color: #50b078;
-		border-bottom-width: var(--tec-spacer-0);
-	}
+.tec-tickets__admin-settings-tickets-commerce-section-menu-link.active,
+.tec-tickets__admin-settings-tickets-commerce-section-menu-link:hover {
+	border-bottom-color: var(--tec-color-accent-primary);
+	color: #23282d;
 }
 
 .tec-tickets__admin-settings-featured {
@@ -534,10 +535,8 @@
 	flex-grow: 1;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-gateways-item-brand-logo {
-	img {
-		max-height: var(--tec-spacer-10);
-	}
+.tec-tickets__admin-settings-tickets-commerce-gateways-item-brand-logo-image {
+	max-height: var(--tec-spacer-10);
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateways-item-brand-subtitle {
@@ -545,19 +544,17 @@
 	font-style: italic;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-gateways-item-button {
-	a {
-		background-color: #405bfb;
-		border-radius: 4px;
-		color: #fcfcfc;
-		display: inline-block;
-		font-size: 16px;
-		font-weight: 700;
-		padding: 19px;
-		text-align: center;
-		text-decoration: none;
-		width: 233px;
-	}
+.tec-tickets__admin-settings-tickets-commerce-gateways-item-button-link {
+	background-color: #405bfb;
+	border-radius: 4px;
+	color: #fcfcfc;
+	display: inline-block;
+	font-size: 16px;
+	font-weight: 700;
+	padding: 19px;
+	text-align: center;
+	text-decoration: none;
+	width: 233px;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateways-item-toggle .tec-tickets__admin-settings-tickets-commerce-toggle-checkbox:checked + .tec-tickets__admin-settings-tickets-commerce-toggle-switch {

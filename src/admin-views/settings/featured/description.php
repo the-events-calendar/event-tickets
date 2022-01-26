@@ -8,11 +8,11 @@
  * @var string                       $description    Featured settings description.
  */
 
-if( empty( $description ) ) {
+if ( empty( $description ) ) {
     return;
 }
 
 ?>
 <div class="tec-tickets__admin-settings-featured-description">
-    <?php echo esc_html( $description ); ?>
+    <?php echo $description; ?>
 </div>

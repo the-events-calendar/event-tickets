@@ -4,8 +4,8 @@
  *
  * @since TBD
  *
- * @var Tribe__Tickets__Admin__Views    $this   Template object.
- * @var string[]                        $link  Array of link arguments.
+ * @var Tribe__Tickets__Admin__Views    $this  Template object.
+ * @var array                           $link  Array of link arguments.
  */
 
  $defaults = [
@@ -17,13 +17,13 @@
     'classes'  => [],
  ];
 
- $link = array_merge( $defaults, (array) $link );
- $classes = array_merge( ['tec-tickets__admin-settings-featured-link'], (array) $defaults['classes'] );
+ $link = wp_parse_args( $link, $defaults );
+ $link['classes'][] = 'tec-tickets__admin-settings-featured-link';
  
  $admin_views = tribe( Tribe__Tickets__Admin__Views::class );
 
 ?>
-<div <?php tribe_classes( $classes ); ?> >
+<div <?php tribe_classes( $link['classes'] ); ?> >
 	<?php $admin_views->template( 'components/icons/lightbulb' ); ?>
 	<a
 		href="<?php echo esc_attr( $link['link'] ); ?>"

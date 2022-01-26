@@ -13,10 +13,10 @@
  * @var array                        $links             Array of arrays for links.
  */
 
-$default_classes = ['tec-tickets__admin-settings-featured'];
+$classes[] = 'tec-tickets__admin-settings-featured';
 
 ?>
-<div <?php tribe_classes( array_merge( $default_classes, (array) $classes ) ); ?> >
+<div <?php tribe_classes( $classes ); ?> >
     <?php $this->template( 'title' ); ?>
     <?php $this->template( 'description' ); ?>
     <?php $this->template( 'content' ); ?>

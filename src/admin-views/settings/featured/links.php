@@ -8,7 +8,7 @@
  * @var array                        $links  Array of links.
  */
 
-if( empty( $links ) ) {
+if ( empty( $links ) ) {
     return;
 }
  

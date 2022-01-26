@@ -11,7 +11,7 @@
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 
-if( 
+if ( 
     empty( $gateway ) || 
     ! ( $gateway instanceof Abstract_Gateway ) || 
     ! $gateway::should_show() 
@@ -19,7 +19,7 @@ if(
     return;
 }
 
-$key = $gateway->get_key();
+$key     = $gateway->get_key();
 $enabled = $manager->is_gateway_enabled( $gateway );
 
 ?>

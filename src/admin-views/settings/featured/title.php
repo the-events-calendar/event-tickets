@@ -8,7 +8,7 @@
  * @var string                       $title          Featured settings title.
  */
 
-if( empty( $title ) ) {
+if ( empty( $title ) ) {
     return;
 }
 

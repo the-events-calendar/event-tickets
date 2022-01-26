@@ -57,6 +57,7 @@ class Featured_Settings {
             'classes'          => [],
         ];
         $template = $this->get_template();
-        return $template->template( 'container', array_merge( $defaults, $context ), $echo );
+		
+        return $template->template( 'container', wp_parse_args( $context, $defaults ), $echo );
     }
 }

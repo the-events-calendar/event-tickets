@@ -13,7 +13,7 @@
 <div class="tec-tickets__admin-settings-tickets-commerce-gateways">
     <?php 
     foreach ($gateways as $gateway) {
-        $this->template('item', [ 'gateway' => $gateway, 'manager' => $manager ]);
+        $this->template( 'item', [ 'gateway' => $gateway, 'manager' => $manager ] );
     } 
     ?>
 </div>

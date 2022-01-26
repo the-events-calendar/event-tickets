@@ -40,7 +40,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Meta key for page creation flag.
 	 *
-	 * @since 5.2.1
+	 * @since TBD
 	 *
 	 * @var string
 	 */
@@ -111,23 +111,23 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		$selected_section = tribe_get_request_var( self::$key_current_section_get_var );
 		$menu_html = '<div class="tec-tickets__admin-settings-tickets-commerce-section-menu">';
 		$menu_html .= sprintf(
-			'<a class="%s" href="%s">%s</a>',
+			'<a class="tec-tickets__admin-settings-tickets-commerce-section-menu-link %s" href="%s">%s</a>',
 			empty( $selected_section ) ? 'active' : '',
 			Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] ),
 			esc_html__( 'Tickets Commerce', 'event-tickets' ),
 		);
-        foreach ($gateways as $gateway_key => $gateway) {
+        foreach ( $gateways as $gateway_key => $gateway ) {
 			if ( ! $gateway::should_show() ) {
 				continue;
 			}
 			$menu_html .= sprintf(
-				'<a class="%s" href="%s">%s</a>',
+				'<a class="tec-tickets__admin-settings-tickets-commerce-section-menu-link %s" href="%s">%s</a>',
 				$gateway_key === $selected_section ? 'active' : '',
 				Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', self::$key_current_section_get_var => $gateway_key ] ),
 				$gateway->get_label()
 			);
         }
-		if( 'main' !== $selected_section ) {
+		if ( 'main' !== $selected_section ) {
 			$current_section_key = self::$key_current_section;
 			$menu_html .= '<input type="hidden" name="' . esc_attr( $current_section_key ) . '" ' . 
 				'id="' . esc_attr( $current_section_key ) . '" value="' . esc_attr( $selected_section ) . '" />';
@@ -184,7 +184,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 *
 	 * @return Gateway | null
 	 */
-	public function get_section_gateway(){
+	public function get_section_gateway() {
 		$selected_section = tribe_get_request_var( self::$key_current_section_get_var );
 		return tribe( Manager::class )->get_gateway_by_key( $selected_section );
 	}
@@ -207,7 +207,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			]
 		];
 		
-		if( empty( $section_gateway ) ) {
+		if ( empty( $section_gateway ) ) {
 			// If no gateway section is selected, show main settings.
 			$plus_link    = sprintf(
 				'<a href="https://evnt.is/19zl" target="_blank" rel="noopener noreferrer">%s</a>',
@@ -291,7 +291,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Gets the top level settings for Tickets Commerce.
 	 *
-	 * @since 5.2.0
+	 * @since TBD
 	 *
 	 * @return array[]
 	 */

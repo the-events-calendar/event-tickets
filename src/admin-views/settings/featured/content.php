@@ -8,7 +8,7 @@
  * @var string                       $content_template  Template used for the content section.
  */
 
-if( empty( $content_template ) ) {
+if ( empty( $content_template ) ) {
     return;
 }
 
