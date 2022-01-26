@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Commerce\Notice_Handler;
+use \Tribe__Tickets__Main;
 
 /**
  * Class Gateway
@@ -114,4 +115,17 @@ class Gateway extends Abstract_Gateway {
 		 return $notices;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function get_logo_url() {
+		return Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/images/admin/paypal_logo.png';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get_subtitle() {
+		return __( 'Enable payments through PayPal, Venmo, and credit card', 'event-tickets' );
+	}
 }

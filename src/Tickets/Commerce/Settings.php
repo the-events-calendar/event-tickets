@@ -335,7 +335,6 @@ class Settings {
 		];
 		
 		// Add featured settings to top of other settings.
-		$admin_views = tribe( Tribe__Tickets__Admin__Views::class );
 		$featured_settings = [
 			'tc_featured_settings' => [
 				'type' => 'html',
@@ -346,7 +345,7 @@ class Settings {
 						'gateways for providing users additional options for users when purchasing tickets.', 
 						'event-tickets' 
 					),
-					'content_template' => $admin_views->template( 'settings/tickets-commerce/gateways', [], false ),
+					'content_template' => $this->get_featured_gateways_html(),
 					'links'            => [
 						[
 							'slug'         => 'help-1',
@@ -375,6 +374,23 @@ class Settings {
 
 		return array_merge( tribe( Payments_Tab::class )->get_top_level_settings(), $this->apply_commerce_enabled_conditional( $settings ) );
 	}
+	
+	/**
+	 * Returns the content for the main featured settings which displays the list of gateways.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_featured_gateways_html() {
+		$admin_views = tribe( Tribe__Tickets__Admin__Views::class );
+		$admin_views->set_template_folder( 'src/admin-views/settings/tickets-commerce/gateways' );
+		
+		$manager = tribe( Manager::class );
+		$gateways = $manager->get_gateways();
+		
+		return $admin_views->template( 'container', [ 'gateways' => $gateways, 'manager' => $manager ], false );
+    }
 
 	/**
 	 * Handle setting up dependencies for all of the fields.
