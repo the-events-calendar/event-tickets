@@ -9,6 +9,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway as Gateway;
 use TEC\Tickets\Settings as Tickets_Settings;
 use \Tribe__Settings;
 use \tad_DI52_ServiceProvider;
+use \Tribe__Tickets__Admin__Views;
 
 /**
  * Class Payments_Tab
@@ -107,32 +108,50 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 */
 	public function get_section_menu() {
 		
-		$gateways = tribe( Manager::class )->get_gateways();
 		$selected_section = tribe_get_request_var( self::$key_current_section_get_var );
-		$menu_html = '<div class="tec-tickets__admin-settings-tickets-commerce-section-menu">';
-		$menu_html .= sprintf(
-			'<a class="tec-tickets__admin-settings-tickets-commerce-section-menu-link %s" href="%s">%s</a>',
-			empty( $selected_section ) ? 'active' : '',
-			Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] ),
-			esc_html__( 'Tickets Commerce', 'event-tickets' ),
-		);
+		
+		$sections = [
+			[
+				'classes' => [],
+				'url' => Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] ),
+				'text' => __( 'Tickets Commerce', 'event-tickets' )
+			]
+		];
+		if ( empty( $selected_section ) ) {
+			$sections[0]['classes'][] = 'active';
+		}
+		
+		$gateways = tribe( Manager::class )->get_gateways();
+		
         foreach ( $gateways as $gateway_key => $gateway ) {
 			if ( ! $gateway::should_show() ) {
 				continue;
 			}
-			$menu_html .= sprintf(
-				'<a class="tec-tickets__admin-settings-tickets-commerce-section-menu-link %s" href="%s">%s</a>',
-				$gateway_key === $selected_section ? 'active' : '',
-				Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', self::$key_current_section_get_var => $gateway_key ] ),
-				$gateway->get_label()
-			);
+			$new_section = [
+				'classes' => [],
+				'url' => Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', self::$key_current_section_get_var => $gateway->get_key() ] ),
+				'text' => $gateway->get_label(),
+			];
+			if ( $selected_section === $gateway->get_key() ) {
+				$new_section['classes'][] = 'active';
+			}
+			$sections[] = $new_section;
         }
-		if ( 'main' !== $selected_section ) {
+		
+		$admin_views = tribe( Tribe__Tickets__Admin__Views::class );
+		$admin_views->set_template_folder( 'src/admin-views/settings/tickets-commerce/section' );
+		
+		$manager = tribe( Manager::class );
+		$gateways = $manager->get_gateways();
+		
+		$menu_html = $admin_views->template( 'menu', [ 'sections' => $sections ], false );
+		
+		// Add hidden input field to determine what section we're in.
+		if ( ! empty( $selected_section ) ) {
 			$current_section_key = self::$key_current_section;
 			$menu_html .= '<input type="hidden" name="' . esc_attr( $current_section_key ) . '" ' . 
 				'id="' . esc_attr( $current_section_key ) . '" value="' . esc_attr( $selected_section ) . '" />';
 		}
-		$menu_html .= '</div>';
 		
 		return [
 			self::$key_section_menu => [
