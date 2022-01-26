@@ -13,4 +13,6 @@ if( empty( $description ) ) {
 }
 
 ?>
-<div class="tec-tickets__admin-settings-featured-description"><?php echo esc_html( $description ); ?></div>
+<div class="tec-tickets__admin-settings-featured-description">
+    <?php echo esc_html( $description ); ?>
+</div>

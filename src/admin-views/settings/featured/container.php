@@ -17,12 +17,8 @@ $default_classes = ['tec-tickets__admin-settings-featured'];
 
 ?>
 <div <?php tribe_classes( array_merge( $default_classes, (array) $classes ) ); ?> >
-    <?php $this->template( 'settings/featured/title' ); ?>
-    <?php $this->template( 'settings/featured/description' ); ?>
-    <?php if( ! empty ( $content_template ) ) : ?>
-        <div class="tec-tickets__admin-settings-featured-content">
-            <?php $this->template( $content_template, $content_context ); ?>
-        </div>
-    <?php endif; ?>
-    <?php $this->template( 'settings/featured/links' ); ?>
+    <?php $this->template( 'title' ); ?>
+    <?php $this->template( 'description' ); ?>
+    <?php $this->template( 'content' ); ?>
+    <?php $this->template( 'links' ); ?>
 </div>

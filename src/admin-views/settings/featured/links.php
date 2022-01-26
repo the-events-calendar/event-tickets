@@ -17,7 +17,7 @@ if( empty( $links ) ) {
 <div class="tec-tickets__admin-settings-featured-links">
 	<?php 
 	foreach ( $links as $link ) {
-		$this->template( 'settings/featured/link', [ 'link' => $link ] ); 
+		$this->template( 'link', [ 'link' => $link ] ); 
 	}
 	?>
 </div>

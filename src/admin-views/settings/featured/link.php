@@ -19,10 +19,12 @@
 
  $link = array_merge( $defaults, (array) $link );
  $classes = array_merge( ['tec-tickets__admin-settings-featured-link'], (array) $defaults['classes'] );
+ 
+ $admin_views = tribe( Tribe__Tickets__Admin__Views::class );
 
 ?>
 <div <?php tribe_classes( $classes ); ?> >
-	<?php $this->template( 'components/icons/lightbulb' ); ?>
+	<?php $admin_views->template( 'components/icons/lightbulb' ); ?>
 	<a
 		href="<?php echo esc_attr( $link['link'] ); ?>"
 		target="<?php echo esc_attr( $link['target'] ); ?>"

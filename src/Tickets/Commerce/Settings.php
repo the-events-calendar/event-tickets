@@ -15,6 +15,7 @@ use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Traits\Has_Mode;
 use TEC\Tickets\Settings as Tickets_Settings;
+use \Tribe__Tickets__Admin__Views;
 use Tribe__Field_Conditional;
 use WP_Admin_Bar;
 
@@ -334,6 +335,7 @@ class Settings {
 		];
 		
 		// Add featured settings to top of other settings.
+		$admin_views = tribe( Tribe__Tickets__Admin__Views::class );
 		$featured_settings = [
 			'tc_featured_settings' => [
 				'type' => 'html',
@@ -344,7 +346,7 @@ class Settings {
 						'gateways for providing users additional options for users when purchasing tickets.', 
 						'event-tickets' 
 					),
-					'content_template' => 'settings/tickets-commerce/gateways',
+					'content_template' => $admin_views->template( 'settings/tickets-commerce/gateways', [], false ),
 					'links'            => [
 						[
 							'slug'         => 'help-1',

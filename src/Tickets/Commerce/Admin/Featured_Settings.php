@@ -38,7 +38,7 @@ class Featured_Settings {
 		if ( empty( $this->template ) ) {
 			$this->template = new \Tribe__Template();
 			$this->template->set_template_origin( \Tribe__Tickets__Main::instance() );
-			$this->template->set_template_folder( 'src/admin-views' );
+			$this->template->set_template_folder( 'src/admin-views/settings/featured' );
 			$this->template->set_template_context_extract( true );
 			$this->template->set_template_folder_lookup( true );
 		}
@@ -59,10 +59,9 @@ class Featured_Settings {
             'description'      => '',
             'links'            => [],
             'content_template' => '',
-            'content_context'  => [],
             'classes'          => [],
         ];
         $template = $this->get_template();
-        return $template->template( 'settings/featured', array_merge( $defaults, $context ), $echo );
+        return $template->template( 'container', array_merge( $defaults, $context ), $echo );
     }
 }
