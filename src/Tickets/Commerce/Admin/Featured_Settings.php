@@ -2,11 +2,6 @@
 
 namespace TEC\Tickets\Commerce\Admin;
 
-use \tad_DI52_ServiceProvider;
-use TEC\Tickets\Commerce\Checkout;
-use TEC\Tickets\Commerce\Success;
-use \Tribe__Settings;
-use \Tribe__Main;
 use \Tribe__Template;
 
 /**
