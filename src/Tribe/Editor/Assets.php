@@ -15,8 +15,8 @@ class Tribe__Tickets__Editor__Assets {
 
 		tribe_asset(
 			$plugin,
-			'tribe-tickets-gutenberg-data',
-			'app/data.js',
+			'tribe-tickets-gutenberg-vendor',
+			'app/vendor.js',
 			/**
 			 * @todo revise this dependencies
 			 */
@@ -41,8 +41,8 @@ class Tribe__Tickets__Editor__Assets {
 
 		tribe_asset(
 			$plugin,
-			'tribe-tickets-gutenberg-icons',
-			'app/icons.js',
+			'tribe-tickets-gutenberg-main',
+			'app/main.js',
 			/**
 			 * @todo revise this dependencies
 			 */
@@ -58,49 +58,8 @@ class Tribe__Tickets__Editor__Assets {
 
 		tribe_asset(
 			$plugin,
-			'tribe-tickets-gutenberg-elements',
-			'app/elements.js',
-			/**
-			 * @todo revise this dependencies
-			 */
-			[],
-			'enqueue_block_editor_assets',
-			[
-				'in_footer'    => false,
-				'localize'     => [],
-				'conditionals' => tribe_callback( 'tickets.editor', 'current_type_support_tickets' ),
-				'priority'     => 202,
-			]
-		);
-
-		tribe_asset(
-			$plugin,
-			'tribe-tickets-gutenberg-blocks',
-			'app/blocks.js',
-			[
-				'react',
-				'react-dom',
-				'wp-components',
-				'wp-api',
-				'wp-api-request',
-				'wp-blocks',
-				'wp-i18n',
-				'wp-element',
-				'wp-editor',
-			],
-			'enqueue_block_editor_assets',
-			[
-				'in_footer'    => false,
-				'localize'     => [],
-				'conditionals' => tribe_callback( 'tickets.editor', 'current_type_support_tickets' ),
-				'priority'     => 203,
-			]
-		);
-
-		tribe_asset(
-			$plugin,
-			'tribe-tickets-gutenberg-blocks-styles',
-			'app/blocks.css',
+			'tribe-tickets-gutenberg-main-styles',
+			'app/main.css',
 			[],
 			'enqueue_block_editor_assets',
 			[
@@ -110,7 +69,7 @@ class Tribe__Tickets__Editor__Assets {
 				'priority'     => 15,
 			]
 		);
-		
+
 		tribe_asset(
 			$plugin,
 			'tec-tickets-blocks-category-icon-styles',
