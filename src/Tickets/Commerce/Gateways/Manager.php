@@ -107,9 +107,16 @@ class Manager {
 	 * @return Abstract_Gateway
 	 */
 	public function get_gateway_by_key( $key ) {
+		if ( empty( $key ) ) {
+			return;
+		}
+		
 		$gateways = $this->get_gateways();
+		if( ! isset( $gateways[ $key ] ) ) {
+			return;
+		}
 
-		return isset( $gateways[ $key ] ) ? $gateways[ $key ] : null;
+		return $gateways[ $key ];
 	}
 
 	/**

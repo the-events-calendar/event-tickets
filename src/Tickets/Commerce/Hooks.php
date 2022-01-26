@@ -22,6 +22,7 @@ use TEC\Tickets\Commerce as Base_Commerce;
 use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use TEC\Tickets\Commerce\Payments_Tab;
 use WP_Admin_Bar;
 
 /**
@@ -123,6 +124,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_template_context:tickets-plus/v2/tickets/submit/button-modal', [ $this, 'filter_showing_cart_button' ] );
 
 		add_filter( 'tec_tickets_commerce_payments_tab_settings', [ $this, 'filter_payments_tab_settings' ] );
+		
+		add_filter( 'wp_redirect', [ tribe( Payments_Tab::class ), 'filter_redirect_url' ]);
 	}
 
 	/**

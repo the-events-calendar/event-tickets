@@ -54,6 +54,25 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 * @var string
 	 */
 	public static $key_current_section = 'tec_tc_payments_current_section';
+	
+	/**
+	 * Key to use in GET variable for currently selected section.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $key_current_section_get_var = 'tc-section';
+
+	/**
+	 * Key to use for section menu.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $key_section_menu = 'tec_tc_section_menu';
+
 
 	/**
 	 * @inheritdoc
@@ -77,8 +96,6 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		$tab_settings = apply_filters( 'tec_tickets_commerce_payments_tab_settings', $tab_settings );
 
 		new \Tribe__Settings_Tab( static::$slug, esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
-		
-		$this->filters();
 	}
 	
 	/**
@@ -86,16 +103,16 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 *
-	 * @return []
+	 * @return array[]
 	 */
 	public function get_section_menu() {
 		
 		$gateways = tribe( Manager::class )->get_gateways();
-		$selected_section = tribe_get_request_var( 'tc-section', 'main' );
+		$selected_section = tribe_get_request_var( self::$key_current_section_get_var );
 		$menu_html = '<div class="tec-tickets__admin-settings-tickets-commerce-section-menu">';
 		$menu_html .= sprintf(
 			'<a class="%s" href="%s">%s</a>',
-			'main' === $selected_section ? 'active' : '',
+			empty( $selected_section ) ? 'active' : '',
 			Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] ),
 			esc_html__( 'Tickets Commerce', 'event-tickets' ),
 		);
@@ -106,7 +123,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			$menu_html .= sprintf(
 				'<a class="%s" href="%s">%s</a>',
 				$gateway_key === $selected_section ? 'active' : '',
-				Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-section' => $gateway_key ] ),
+				Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', self::$key_current_section_get_var => $gateway_key ] ),
 				$gateway->get_label()
 			);
         }
@@ -118,23 +135,12 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		$menu_html .= '</div>';
 		
 		return [
-			'tc-section-menu' => [
+			self::$key_section_menu => [
 				'type' => 'html',
 				'html' => $menu_html,
 			]
 		];
 		
-	}
-	
-	/**
-	 * Method to load filters for payments tab.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public function filters(){
-		add_filter( 'wp_redirect', [ $this, 'filter_redirect_url' ] );
 	}
 	
 	/**
@@ -168,7 +174,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		
 		// Add section info to URL before redirecting.
 		$current_section = $_POST[$current_section_key];
-		return add_query_arg( 'tc-section', esc_attr( $current_section ), $url );
+		return add_query_arg( self::$key_current_section_get_var, esc_attr( $current_section ), $url );
 	}
 	
 	/**
@@ -179,7 +185,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 * @return Gateway | null
 	 */
 	public function get_section_gateway(){
-		$selected_section = tribe_get_request_var( 'tc-section', 'main' );
+		$selected_section = tribe_get_request_var( self::$key_current_section_get_var );
 		return tribe( Manager::class )->get_gateway_by_key( $selected_section );
 	}
 	
@@ -193,7 +199,6 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	public function get_section_top_level_menu() {
 		
 		$section_gateway = $this->get_section_gateway();
-		$selected_section = tribe_get_request_var( 'tc-section', 'main' );
 		
 		$top_level_settings = [
 			'tribe-form-content-start'     => [
