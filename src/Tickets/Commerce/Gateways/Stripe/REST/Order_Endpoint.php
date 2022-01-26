@@ -135,6 +135,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// Respond with the client_secret for Stripe Usage.
 		$response['success']       = true;
 		$response['client_secret'] = $payment_intent['client_secret'];
+		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
 
 		return new WP_REST_Response( $response );
 	}

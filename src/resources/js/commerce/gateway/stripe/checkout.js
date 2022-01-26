@@ -192,12 +192,13 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @return {Promise<*>}
 	 */
-	obj.submitMultiPayment = async () => {
+	obj.submitMultiPayment = async ( order ) => {
 		var elements = obj.stripeElements;
+		var order = order;
 		return obj.stripeLib.confirmPayment( {
 			elements,
 			confirmParams: {
-				return_url: "http://localhost:4242/public/checkout.html"
+				return_url: order.redirect_url
 			}
 		} );
 	};
@@ -226,6 +227,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			} else {
 				// The payment has been processed!
 				if ( result.paymentIntent.status === 'succeeded' ) {
+					obj.handlePaymentSuccess();
 					// Show a success message to your customer
 					// There's a risk of the customer closing the window before callback
 					// execution. Set up a webhook or plugin to listen for the
@@ -294,7 +296,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 
 		if ( order.success ) {
 			if ( obj.checkout.paymentElement ) {
-				obj.submitMultiPayment();
+				obj.submitMultiPayment( order );
 			} else {
 				obj.submitCardPayment();
 			}
