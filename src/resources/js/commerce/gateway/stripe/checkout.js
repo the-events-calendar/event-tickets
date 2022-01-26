@@ -28,7 +28,7 @@ tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe ||
  */
 tribe.tickets.commerce.gateway.stripe.checkout = {};
 
-( ( $, obj, Stripe, ky ) => {
+(( $, obj, Stripe, ky ) => {
 	'use strict';
 	const $document = $( document );
 
@@ -51,7 +51,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.selectors = {
 		cardElement: '#tec-tc-gateway-stripe-card-element',
 		cardErrors: '#tec-tc-gateway-stripe-card-errors',
-		submitButton: '#tec-tc-gateway-stripe-checkout-button',
+		paymentElement: '#tec-tc-gateway-stripe-payment-element',
+		paymentMessage: '#tec-tc-gateway-stripe-payment-message',
+		submitButton: '#tec-tc-gateway-stripe-checkout-button'
 	};
 
 	/**
@@ -120,7 +122,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		}
 
 		if ( 'succeeded' === result.paymentIntent.status ) {
-			return ( await obj.handlePaymentSuccess( result ) );
+			return (await obj.handlePaymentSuccess( result ));
 		}
 	};
 
@@ -169,10 +171,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.handleUpdateOrder = async ( paymentIntent ) => {
 		const args = {
 			json: {
-				client_secret: paymentIntent.client_secret,
+				client_secret: paymentIntent.client_secret
 			},
 			headers: {
-				'X-WP-Nonce': obj.checkout.nonce,
+				'X-WP-Nonce': obj.checkout.nonce
 			}
 		};
 
@@ -190,14 +192,48 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @return {Promise<*>}
 	 */
-	obj.submitPayment = async () => {
+	obj.submitMultiPayment = async () => {
 		var elements = obj.stripeElements;
-		return obj.stripeLib.confirmPayment({
+		return obj.stripeLib.confirmPayment( {
 			elements,
 			confirmParams: {
-				return_url: "http://localhost:4242/public/checkout.html",
+				return_url: "http://localhost:4242/public/checkout.html"
 			}
-		});
+		} );
+	};
+
+	/**
+	 * Submit the payment to stripe code.
+	 *
+	 * @param {String} secret Which secret we need to use to confirm the Payment.
+	 *
+	 * @return {Promise<*>}
+	 */
+	obj.submitCardPayment = async () => {
+		var elements = obj.stripeElements;
+
+		obj.stripeLib.confirmCardPayment( obj.secret.clientSecret, {
+			payment_method: {
+				card: obj.cardElement,
+				billing_details: {
+					name: 'John Doe'
+				}
+			}
+		} ).then( function( result ) {
+			if ( result.error ) {
+				// Show error to your customer (for example, insufficient funds)
+				console.log( result.error.message );
+			} else {
+				// The payment has been processed!
+				if ( result.paymentIntent.status === 'succeeded' ) {
+					// Show a success message to your customer
+					// There's a risk of the customer closing the window before callback
+					// execution. Set up a webhook or plugin to listen for the
+					// payment_intent.succeeded event that handles any business critical
+					// post-payment actions.
+				}
+			}
+		} );
 	};
 
 	/**
@@ -211,7 +247,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		const args = {
 			json: {},
 			headers: {
-				'X-WP-Nonce': obj.checkout.nonce,
+				'X-WP-Nonce': obj.checkout.nonce
 			}
 		};
 		// Fetch Publishable API Key and Initialize Stripe Elements on Ready
@@ -220,10 +256,28 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		tribe.tickets.debug.log( 'stripe', 'createOrder', response );
 
 		return response;
+	};
 
-		if ( true === response.success ) {
-// 			return await obj.submitPayment( response.client_secret );
-		}
+	/**
+	 * Create an order and start the payment process.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Promise<*>}
+	 */
+	obj.getClientSecret = async () => {
+		const args = {
+			json: {},
+			headers: {
+				'X-WP-Nonce': obj.checkout.nonce
+			}
+		};
+		// Fetch Publishable API Key and Initialize Stripe Elements on Ready
+		let response = await ky.post( obj.checkout.paymentIntentEndpoint, args ).json();
+
+		tribe.tickets.debug.log( 'stripe', 'getClientSecret', response );
+
+		return response;
 	};
 
 	/**
@@ -233,10 +287,18 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @param {Event} event The Click event from the payment.
 	 */
-	obj.handlePayment = ( event ) => {
+	obj.handlePayment = async ( event ) => {
 		event.preventDefault();
-		obj.submitPayment();
-//		obj.handleCreateOrder();
+
+		let order = await obj.handleCreateOrder();
+
+		if ( order.success ) {
+			if ( obj.checkout.paymentElement ) {
+				obj.submitMultiPayment();
+			} else {
+				obj.submitCardPayment();
+			}
+		}
 	};
 
 	/**
@@ -247,11 +309,19 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {Promise<void>}
 	 */
 	obj.setupStripe = async () => {
-		var response = await obj.handleCreateOrder();
-		obj.stripeElements = obj.stripeLib.elements( { clientSecret: response.client_secret } );
-		obj.paymentElement = obj.stripeElements.create( 'payment', obj.getOptions() );
-		obj.paymentElement.mount( obj.selectors.cardElement );
-		obj.paymentElement.on( 'change', obj.onCardChange );
+		var response = await obj.getClientSecret();
+		obj.secret = { clientSecret: response };
+		obj.stripeElements = obj.stripeLib.elements( obj.secret );
+
+		if ( obj.checkout.paymentElement ) {
+			obj.paymentElement = obj.stripeElements.create( 'payment', obj.getOptions() );
+			obj.paymentElement.mount( obj.selectors.paymentElement );
+			return false;
+		}
+
+		obj.cardElement = obj.stripeElements.create( 'card', obj.getOptions() );
+		obj.cardElement.mount( obj.selectors.cardElement );
+		obj.cardElement.on( 'change', obj.onCardChange );
 	};
 
 	/**
@@ -260,7 +330,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since TBD
 	 */
 	obj.bindEvents = () => {
-		// Handle submit
 		$( obj.selectors.submitButton ).on( 'click', obj.handlePayment );
 	};
 
@@ -275,4 +344,4 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	$( obj.ready );
-} )( jQuery, tribe.tickets.commerce.gateway.stripe, Stripe, ky );
+})( jQuery, tribe.tickets.commerce.gateway.stripe, Stripe, ky );

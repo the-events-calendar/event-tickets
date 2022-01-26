@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Order_Endpoint;
+use TEC\Tickets\Commerce\Gateways\Stripe\REST\Payment_Intent_Secret_Endpoint;
 
 /**
  * Class Assets.
@@ -65,8 +66,10 @@ class Assets extends \tad_DI52_ServiceProvider {
 					'name' => 'tecTicketsCommerceGatewayStripeCheckout',
 					'data' => static function () {
 						return [
-							'orderEndpoint' => tribe( Order_Endpoint::class )->get_route_url(),
-							'nonce'    => wp_create_nonce( 'wp_rest' ),
+							'nonce'          => wp_create_nonce( 'wp_rest' ),
+							'orderEndpoint'  => tribe( Order_Endpoint::class )->get_route_url(),
+							'paymentElement' => tribe( Stripe_Elements::class )->include_payment_element(),
+							'paymentIntentEndpoint'  => tribe( Payment_Intent_Secret_Endpoint::class )->get_route_url(),
 							'publishableKey' => tribe( Merchant::class )->get_publishable_key(),
 						];
 					},

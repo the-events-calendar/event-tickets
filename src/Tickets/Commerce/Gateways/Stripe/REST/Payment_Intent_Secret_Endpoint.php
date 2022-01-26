@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 
+use TEC\Tickets\Commerce\Gateways\Stripe\Client;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 use TEC\Tickets\Commerce\Gateways\Stripe\Refresh_Token;
 
@@ -20,7 +21,7 @@ use WP_REST_Server;
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\REST
  */
-class Publishable_Key_Endpoint implements Tribe__Documentation__Swagger__Provider_Interface {
+class Payment_Intent_Secret_Endpoint implements Tribe__Documentation__Swagger__Provider_Interface {
 
 	/**
 	 * The REST API endpoint path.
@@ -29,7 +30,7 @@ class Publishable_Key_Endpoint implements Tribe__Documentation__Swagger__Provide
 	 *
 	 * @var string
 	 */
-	protected $path = '/commerce/stripe/key';
+	protected $path = '/commerce/stripe/paymentintent';
 
 	/**
 	 * Register the actual endpoint on WP Rest API.
@@ -45,7 +46,7 @@ class Publishable_Key_Endpoint implements Tribe__Documentation__Swagger__Provide
 			$this->get_endpoint_path(),
 			[
 				'methods'             => WP_REST_Server::CREATABLE,
-				'callback'            => [ $this, 'get_key' ],
+				'callback'            => [ $this, 'get_secret' ],
 				'permission_callback' => '__return_true',
 			]
 		);
@@ -56,15 +57,13 @@ class Publishable_Key_Endpoint implements Tribe__Documentation__Swagger__Provide
 	/**
 	 * Fetch the key requested
 	 *
-	 * @todo this needs to differentiate between sandbox and live keys based on test mode
-	 *
 	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request
 	 *
 	 * @return mixed
 	 */
-	public function get_key( WP_REST_Request $request ) {
+	public function get_secret( WP_REST_Request $request ) {
 
 		$params = $request->get_json_params();
 
@@ -74,9 +73,13 @@ class Publishable_Key_Endpoint implements Tribe__Documentation__Swagger__Provide
 		}
 		*/
 
-		$keys = get_option( tribe( Merchant::class )->get_signup_data_key() );
+		$payment_intent = tribe( Client::class )->create_payment_intent();
 
-		return $keys['sandbox']->publishable_key;
+		if ( ! empty( $payment_intent['client_secret'] ) ) {
+			return $payment_intent['client_secret'];
+		}
+
+		return false;
 	}
 
 	/**
