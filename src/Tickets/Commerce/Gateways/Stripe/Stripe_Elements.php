@@ -30,7 +30,6 @@ class Stripe_Elements {
 		$template->template( 'gateway/stripe/form', [
 			'must_login' => $this->must_login(),
 			'payment_element' => $this->include_payment_element(),
-			'card_element' => $this->include_card_element(),
 		] );
 	}
 
@@ -39,12 +38,10 @@ class Stripe_Elements {
 	 *
 	 * @since TBD
 	 *
-	 * @param string           $file     Which file we are loading.
-	 * @param string           $name     Name of file file
-	 * @param \Tribe__Template $template Which Template object is being used.
+	 * @return bool
 	 */
 	public function include_payment_element() {
-		return true;
+		return tribe_get_option( Settings::$option_checkout_element ) === Settings::PAYMENT_ELEMENT_SLUG;
 	}
 
 	/**
@@ -52,12 +49,10 @@ class Stripe_Elements {
 	 *
 	 * @since TBD
 	 *
-	 * @param string           $file     Which file we are loading.
-	 * @param string           $name     Name of file file
-	 * @param \Tribe__Template $template Which Template object is being used.
+	 * @return string
 	 */
-	public function include_card_element() {
-		return true;
+	public function card_element_type() {
+		return tribe_get_option( Settings::$option_checkout_element_card_fields );
 	}
 
 }

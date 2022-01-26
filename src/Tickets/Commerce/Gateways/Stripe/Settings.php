@@ -132,7 +132,7 @@ class Settings extends Abstract_Settings {
 				'type'            => 'select',
 				'label'           => esc_html__( 'Credit Card Fields (Card Element)', 'event-tickets' ),
 				'tooltip'         => esc_html( 'Tooltip missing' ), // @todo add proper tooltip
-				'default'         => 'compact', // @todo add proper defaults
+				'default'         => 'compact',
 				'conditional'     => tribe_get_option( static::$option_checkout_element ) === self::CARD_ELEMENT_SLUG,
 				'validation_type' => 'options',
 				'options'         => [

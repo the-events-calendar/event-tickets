@@ -29,6 +29,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	protected function add_actions() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
 		add_action( 'plugins_loaded', [ $this, 'handle_action_connected' ] );
+		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout', [ $this, 'maybe_create_stripe_payment_intent' ] );
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
 
 		add_action( 'admin_init', [ $this, 'handle_stripe_errors' ] );
@@ -118,5 +119,20 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function include_payment_buttons( $file, $name, $template ) {
 		$this->container->make( Stripe_Elements::class )->include_form( $file, $name, $template );
+	}
+
+	/**
+	 * Checks if Stripe is active and can be used to check out in the current cart and, if so,
+	 * generates a payment intent
+	 *
+	 * @since TBD
+	 */
+	public function maybe_create_stripe_payment_intent() {
+
+		if ( ! tribe( Merchant::class )->is_active() || ! tribe( Merchant::class )->is_connected() ) {
+			return;
+		}
+
+		tribe( Client::class )->create_payment_intent();
 	}
 }

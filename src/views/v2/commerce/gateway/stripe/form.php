@@ -13,6 +13,7 @@
  *
  * @version TBD
  * @var bool $must_login [Global] Whether login is required to buy tickets or not.
+ * @var bool $payment_element [Global] Whether to load the Stripe Payment Element.
  */
 
 if ( $must_login ) {
@@ -21,8 +22,10 @@ if ( $must_login ) {
 ?>
 <form id="payment-form">
 
-	<?php $this->template( 'gateway/stripe/payment_element' ); ?>
-
-	<?php $this->template( 'gateway/stripe/card_element' ); ?>
+	<?php if ( $payment_element ) : ?>
+		<?php $this->template( 'gateway/stripe/payment_element' ); ?>
+	<?php else: ?>
+		<?php $this->template( 'gateway/stripe/card_element' ); ?>
+	<?php endif; ?>
 
 </form>

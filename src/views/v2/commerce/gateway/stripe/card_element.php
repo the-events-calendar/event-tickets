@@ -13,11 +13,9 @@
  *
  * @version TBD
  * @var bool $must_login [Global] Whether login is required to buy tickets or not.
- * @var bool $payment_element [Global] Whether to load the Stripe Payment Element.
- * @var bool $card_element [Global] Whether to load the Stripe Card Element.
  */
 
-if ( $must_login || ! $card_element ) {
+if ( $must_login ) {
 	return;
 }
 ?>

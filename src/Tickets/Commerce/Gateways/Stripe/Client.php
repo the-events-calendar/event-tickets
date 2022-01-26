@@ -2,6 +2,9 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
+use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Ticket;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -12,6 +15,16 @@ use Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
 class Client {
+
+	/**
+	 * Base string to use when composing payment intent transient names
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $payment_intent_transient_prefix = 'paymentintent-';
+
 	/**
 	 * Get environment base URL.
 	 *
@@ -57,11 +70,40 @@ class Client {
 	 *
 	 * @return array|\WP_Error
 	 */
-	public function create_payment_intent( $currency, $value ) {
+	public function create_payment_intent() {
+
+		$stored_intent = $this->get_payment_intent_transient();
+
+		if ( $stored_intent ) {
+			return $stored_intent;
+		}
+
+		$cart = tribe( Cart::class );
+
+		$items = $cart->get_items_in_cart();
+
+		$items = array_map(
+			static function ( $item ) {
+				/** @var Value $ticket_value */
+				$ticket_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
+
+				if ( null === $ticket_value ) {
+					return null;
+				}
+
+				$item['price']     = $ticket_value->get_decimal();
+				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
+
+				return $item;
+			},
+			$items
+		);
+		$value = tribe( Order::class )->get_value_total( array_filter( $items ) );
+
 		$query_args = [];
 		$body       = [
-			'currency' => $currency,
-			'amount'   => $value,
+			'currency' => $value->get_currency_code(),
+			'amount'   => $value->get_integer(),
 		];
 		$args       = [
 			'body' => $body,
@@ -69,7 +111,44 @@ class Client {
 
 		$url = 'payment_intents';
 
-		return $this->post( $url, $query_args, $args );
+		$payment_intent = $this->post( $url, $query_args, $args );
+
+		$this->store_payment_intent( $payment_intent );
+	}
+
+	/**
+	 * Compose the transient name used for payment intent transients
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_payment_intent_transient_name() {
+		return $this->payment_intent_transient_prefix . tribe( Cart::class )->get_cart_hash();
+	}
+
+	/**
+	 * Retrieve a stored payment intent referring to the current cart
+	 *
+	 * @since TBD
+	 *
+	 * @return array|false
+	 */
+	public function get_payment_intent_transient() {
+		return get_transient( $this->get_payment_intent_transient_name() );
+	}
+
+	/**
+	 * Store a payment intent array in a transient
+	 *
+	 * @since TBD
+	 *
+	 * @param array $payment_intent
+	 */
+	public function store_payment_intent( $payment_intent ) {
+		if ( ! empty( $payment_intent['client_secret'] ) ) {
+			set_transient( $this->get_payment_intent_transient_name(), $payment_intent, 6 * HOUR_IN_SECONDS );
+		}
 	}
 
 	/**
@@ -126,7 +205,7 @@ class Client {
 		$default_arguments = [
 			'headers' => [
 				'Authorization' => 'Bearer ' . tribe( Merchant::class )->get_client_secret(),
-			]
+			],
 		];
 
 		// By default, it's important that we have a body set for any method that is not the GET method.
