@@ -241,7 +241,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 							</div>',
 
 			];
-			$top_level_settings[ 'tickets-commerce-description' ] = [
+			$top_level_settings['tickets-commerce-description'] = [
 				'type' => 'html',
 				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-description">' . $plus_message . '</div>',
 			];
