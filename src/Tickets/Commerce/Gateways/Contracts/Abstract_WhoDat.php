@@ -14,10 +14,46 @@ use Tribe__Utils__Array as Arr;
 abstract class Abstract_WhoDat implements WhoDat_Interface {
 
 	/**
+	 * Public WhoDat URL, used to authenticate accounts with gateway payment providers
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private $api_base_url = 'https://whodat.theeventscalendar.com/commerce/v1';
+
+	/**
+	 * Returns the gateway-specific endpoint to use
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	private function get_gateway_endpoint() {
+		return $this->api_endpoint;
+	}
+
+	/**
+	 * Returns the WhoDat URL to use.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	private function get_api_base_url() {
+
+		if ( defined( 'TEC_TC_WHODAT_DEV_URL' ) && TEC_TC_WHODAT_DEV_URL ) {
+			return TEC_TC_WHODAT_DEV_URL;
+		}
+
+		return $this->api_base_url;
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function get_api_url( $endpoint, array $query_args = [] ) {
-		return add_query_arg( $query_args, "{$this->api_url}/{$endpoint}" );
+		return add_query_arg( $query_args, "{$this->get_api_base_url()}/{$this->get_gateway_endpoint()}/{$endpoint}" );
 	}
 
 	/**

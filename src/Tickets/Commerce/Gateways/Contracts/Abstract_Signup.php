@@ -91,7 +91,7 @@ abstract class Abstract_Signup implements Signup_Interface {
 	 */
 	public function get_link_html() {
 		$template_vars = [
-			'url'          => $this->generate_url(),
+			'url' => $this->generate_url(),
 		];
 
 		return $this->get_template()->template( 'signup-link', $template_vars, false );

@@ -1,6 +1,6 @@
 <?php
 /**
- * The Template for displaying the Tickets Commerce PayPal help links (configuring).
+ * The Template for displaying the Tickets Commerce Stripe help links (configuring).
  *
  * @version 5.2.0
  *
@@ -26,5 +26,5 @@ if ( ! empty( $is_merchant_connected ) ) {
 		target="_blank"
 		rel="noopener noreferrer"
 		class="tec-tickets__admin-settings-tickets-commerce-stripe-help-link-url"
-	><?php esc_html_e( 'Learn more about configuring PayPal payments', 'event-tickets' ); ?></a>
+	><?php esc_html_e( 'Learn more about configuring Stripe payments', 'event-tickets' ); ?></a>
 </div>

@@ -4,6 +4,13 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Notice_Handler;
 
+/**
+ * Class Hooks
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Stripe
+ */
 class Hooks extends \tad_DI52_ServiceProvider {
 
 	/**
@@ -15,17 +22,20 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
+	 * Adds the actions required by each Stripe component.
+	 *
 	 * @since TBD
-	 * @return mixed
 	 */
 	protected function add_actions() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
 		add_action( 'plugins_loaded', [ $this, 'handle_action_connected' ] );
+		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
+
 		add_action( 'admin_init', [ $this, 'handle_stripe_errors' ] );
 	}
 
 	/**
-	 * Adds the filters required by each Tickets Commerce component.
+	 * Adds the filters required by each Stripe component.
 	 *
 	 * @since TBD
 	 */
@@ -63,21 +73,25 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function handle_action_connected() {
 
-		if ( empty( $_GET['stripe'] ) ) {
+		if ( empty( tribe_get_request_var( 'stripe' ) ) ) {
 			return;
 		}
 
 		tribe( Signup::class )->handle_connection_established();
 	}
 
+	/**
+	 * Handle stripe errors into the admin UI.
+	 *
+	 * @since TBD
+	 */
 	public function handle_stripe_errors() {
 
-		if ( empty( $_GET['tc-stripe-error'] ) ) {
+		if ( empty( tribe_get_request_var( 'tc-stripe-error' ) ) ) {
 			return;
 		}
 
-		tribe( Notice_Handler::class )->trigger_admin( $_GET[ 'tc-stripe-error' ] );
-
+		tribe( Notice_Handler::class )->trigger_admin( tribe_get_request_var( 'tc-stripe-error' ) );
 	}
 
 	/**
@@ -91,5 +105,18 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function include_admin_notices( $messages ) {
 		return array_merge( $messages, $this->container->make( Gateway::class )->get_admin_notices() );
+	}
+
+	/**
+	 * Include the payment element from Stripe into the Checkout page.
+	 *
+	 * @since TBD
+	 *
+	 * @param string           $file     Which file we are loading.
+	 * @param string           $name     Name of file file
+	 * @param \Tribe__Template $template Which Template object is being used.
+	 */
+	public function include_payment_buttons( $file, $name, $template ) {
+		$this->container->make( Payment_Element::class )->include_payment_element( $file, $name, $template );
 	}
 }
