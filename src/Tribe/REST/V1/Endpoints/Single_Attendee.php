@@ -153,7 +153,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			],
 			'attendee_status'       => [
 				'required'          => false,
-				'validate_callback' => 'is_string',
 				'type'              => 'string',
 				'description'       => __( 'Order Status for the attendee.', 'event-tickets' ),
 			],
@@ -234,6 +233,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 
 		$attendee_data = $request->get_params();
 		$attendee_data[ 'attendee_source' ] = 'rest-api';
+		$validate_status = $this->validate_attendee_status( $attendee_data, $provider );
+
+		if ( is_wp_error( $validate_status ) ) {
+			return $validate_status;
+		}
 
 		/**
 		 * Filter REST API attendee data before creating an attendee.
@@ -278,14 +282,12 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			return new WP_Error( 'invalid-attendee-provider', __( 'Attendee provider not found.', 'event-tickets' ) );
 		}
 
-		$attendee     = $provider->get_attendee( $attendee_id );
-		$updated_data = $request->get_params();
+		$attendee        = $provider->get_attendee( $attendee_id );
+		$updated_data    = $request->get_params();
+		$validate_status = $this->validate_attendee_status( $updated_data, $provider );
 
-		if ( isset( $updated_data['attendee_status'] ) ) {
-			$statuses = tribe( 'tickets.status' )->get_statuses_by_action( 'all', $provider );
-			if ( ! in_array( $updated_data['attendee_status'], $statuses, true ) ) {
-				return new WP_Error( 'invalid-attendee-status', sprintf( __( 'Supported statuses for this attendee are: %s', 'event-tickets' ), implode( $statuses, ' | ' ) ), [ 'status' => 400 ] );
-			}
+		if ( is_wp_error( $validate_status ) ) {
+			return $validate_status;
 		}
 
 		/**
@@ -308,5 +310,26 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			'attendee'    => $attendee,
 			'data'        => $attendee_data,
 		];
+	}
+
+	/**
+	 * Validate Attendee status if available.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data Attendee data.
+	 * @param Tribe__Tickets__Tickets $provider Provider for the selected ticket.
+	 *
+	 * @return array | WP_Error
+	 */
+	public function validate_attendee_status( $data, $provider ) {
+		if ( isset( $data['attendee_status'] ) ) {
+			$statuses = tribe( 'tickets.status' )->get_statuses_by_action( 'all', $provider );
+			if ( ! in_array( $data['attendee_status'], $statuses, true ) ) {
+				return new WP_Error( 'invalid-attendee-status', sprintf( __( 'Supported statuses for this attendee are: %s', 'event-tickets' ), implode( $statuses, ' | ' ) ), [ 'status' => 400 ] );
+			}
+		}
+
+		return $data;
 	}
 }
