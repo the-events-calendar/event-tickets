@@ -129,15 +129,15 @@ class Settings extends Abstract_Settings {
 				'tooltip_first'   => true,
 			],
 			static::$option_checkout_element_card_fields        => [
-				'type'            => 'checkbox_list',
+				'type'            => 'select',
 				'label'           => esc_html__( 'Credit Card Fields (Card Element)', 'event-tickets' ),
 				'tooltip'         => esc_html( 'Tooltip missing' ), // @todo add proper tooltip
-				'default'         => 'a', // @todo add proper defaults
+				'default'         => 'compact', // @todo add proper defaults
 				'conditional'     => tribe_get_option( static::$option_checkout_element ) === self::CARD_ELEMENT_SLUG,
 				'validation_type' => 'options',
 				'options'         => [
-					'a' => 'A', // @todo fetch proper card field options
-					'b' => 'B',
+					'compact' => 'Compact Field. All CC fields in a single line.',
+					'separate' => 'Separate Fields for each CC information.',
 				],
 				'tooltip_first'   => true,
 			],
