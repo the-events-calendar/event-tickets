@@ -210,12 +210,12 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		
 		// If valid section not posted, bail.
 		$current_section_key = Payments_Tab::$key_current_section;
-		if ( empty( $_POST[$current_section_key] ) || 'main' === $_POST[$current_section_key] ) {
+		if ( empty( $_POST[ $current_section_key ] ) || 'main' === $_POST[ $current_section_key ] ) {
 			return $url;
 		}
 		
 		// Add section info to URL before redirecting.
-		$current_section = $_POST[$current_section_key];
+		$current_section = $_POST[ $current_section_key ];
 		return add_query_arg( static::$key_current_section_get_var, esc_attr( $current_section ), $url );
 	}
 	
