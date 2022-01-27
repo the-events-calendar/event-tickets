@@ -137,7 +137,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @return string
 	 */
-	public function filter_redirect_url( $url ){
+	public function filter_redirect_url( $url ) {
 		return tribe( Payments_Tab::class )->filter_redirect_url( $url );
 	}
 
