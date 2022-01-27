@@ -50,7 +50,13 @@ class FilterTest extends EventsTestCase {
 		 *
 		 * @see \Tribe__Repository::get_ids()
 		 */
-		$this->assertEquals( $assertions['get_ids'], $events->get_ids(), $method );
+		
+		// Sorting arrays by ID ensures that arrays with the same numbers return as a success.
+		$event_ids = $events->get_ids();
+		sort( $event_ids, SORT_NUMERIC );
+		sort( $assertions['get_ids'], SORT_NUMERIC );
+		
+		$this->assertEquals( $assertions['get_ids'], $event_ids, $method );
 
 		/**
 		 * The total number of posts found matching the current query parameters.
