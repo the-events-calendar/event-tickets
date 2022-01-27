@@ -4,17 +4,21 @@
  *
  * @since TBD
  *
- * @var Tribe__Tickets__Admin__Views $this              Template object.
- * @var Gateway_Abstract             $gateway           Gateway object.
+ * @var Tribe__Template  $this              Template object.
+ * @var Gateway_Abstract $gateway           Gateway object.
  */
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 
-if ( 
-    empty( $gateway ) || 
-    ! ( $gateway instanceof Abstract_Gateway ) || 
-    ! $gateway::should_show() 
-) {
+if ( empty( $gateway ) ) {
+    return;
+}
+
+if ( ! (  $gateway instanceof Abstract_Gateway  ) ) {
+    return;
+}
+
+if ( ! $gateway::should_show() ) {
     return;
 }
 

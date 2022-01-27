@@ -35,7 +35,6 @@ class Featured_Settings {
 			$this->template->set_template_origin( \Tribe__Tickets__Main::instance() );
 			$this->template->set_template_folder( 'src/admin-views/settings/featured' );
 			$this->template->set_template_context_extract( true );
-			$this->template->set_template_folder_lookup( true );
 		}
 
 		return $this->template;

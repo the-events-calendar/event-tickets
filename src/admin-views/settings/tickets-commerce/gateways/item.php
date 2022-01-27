@@ -4,19 +4,23 @@
  *
  * @since TBD
  *
- * @var Tribe__Tickets__Admin__Views $this              Template object.
- * @var Gateway_Abstract             $gateway           Gateway object.
- * @var Manager                      $manager           Gateway Manager object.
+ * @var Tribe__Template  $this              Template object.
+ * @var Gateway_Abstract $gateway           Gateway object.
+ * @var Manager          $manager           Gateway Manager object.
  */
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Manager;
 
-if ( 
-    empty( $gateway ) || 
-    ! ( $gateway instanceof Abstract_Gateway ) || 
-    ! $gateway::should_show() 
-) {
+if ( empty( $gateway ) ) {
+    return;
+}
+
+if ( ! (  $gateway instanceof Abstract_Gateway  ) ) {
+    return;
+}
+
+if ( ! $gateway::should_show() ) {
     return;
 }
 
@@ -25,7 +29,7 @@ $enabled = $manager->is_gateway_enabled( $gateway );
 
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateways-item">
-    <?php $this->template( 'settings/tickets-commerce/gateways/toggle', ['checked' => $enabled] ); ?>
-    <?php $this->template( 'settings/tickets-commerce/gateways/brand' ); ?>
-    <?php $this->template( 'settings/tickets-commerce/gateways/button' ); ?>
+    <?php $this->template( 'gateways/toggle', ['checked' => $enabled] ); ?>
+    <?php $this->template( 'gateways/brand' ); ?>
+    <?php $this->template( 'gateways/button' ); ?>
 </div>

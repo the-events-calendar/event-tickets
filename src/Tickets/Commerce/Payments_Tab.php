@@ -10,6 +10,7 @@ use TEC\Tickets\Settings as Tickets_Settings;
 use \Tribe__Settings;
 use \tad_DI52_ServiceProvider;
 use \Tribe__Template;
+use Tribe__Tickets__Main;
 
 /**
  * Class Payments_Tab
@@ -73,6 +74,15 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 * @var string
 	 */
 	public static $key_section_menu = 'tec_tc_section_menu';
+	
+	/**
+	 * Stores the instance of the template engine that we will use for rendering differentelements.
+	 *
+	 * @since TBD
+	 *
+	 * @var Tribe__Template
+	 */
+	protected $template;
 
 
 	/**
@@ -97,6 +107,24 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		$tab_settings = apply_filters( 'tec_tickets_commerce_payments_tab_settings', $tab_settings );
 
 		new \Tribe__Settings_Tab( static::$slug, esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
+	}
+	
+	/**
+	 * Gets the template instance used to setup the rendering html.
+	 *
+	 * @since TBD
+	 *
+	 * @return Tribe__Template
+	 */
+	public function get_template() {
+		if ( empty( $this->template ) ) {
+			$this->template = new Tribe__Template();
+			$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
+			$this->template->set_template_folder( 'src/admin-views/settings' );
+			$this->template->set_template_context_extract( true );
+		}
+
+		return $this->template;
 	}
 	
 	/**
@@ -138,14 +166,8 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			$sections[] = $new_section;
 		}
 		
-		$admin_views = tribe( Tribe__Template::class );
-		$admin_views->set_template_folder( 'src/admin-views/settings/tickets-commerce/section' );
-		$admin_views->set_template_context_extract( true );
-		
-		$manager = tribe( Manager::class );
-		$gateways = $manager->get_gateways();
-		
-		$menu_html = $admin_views->template( 'menu', [ 'sections' => $sections ], false );
+		$template = $this->get_template();
+		$menu_html = $template->template( 'section/menu', [ 'sections' => $sections ], false );
 		
 		// Add hidden input field to determine what section we're in.
 		if ( ! empty( $selected_section ) ) {

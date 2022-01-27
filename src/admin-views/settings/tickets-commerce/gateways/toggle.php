@@ -4,8 +4,8 @@
  *
  * @since TBD
  *
- * @var Tribe__Tickets__Admin__Views $this              Template object.
- * @var boolean                      $checked           Toggle checked or not.
+ * @var Tribe__Template  $this              Template object.
+ * @var boolean          $checked           Toggle checked or not.
  */
 
 ?>

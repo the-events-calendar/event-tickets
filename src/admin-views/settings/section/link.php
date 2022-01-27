@@ -10,13 +10,13 @@
  * @var string                       $text              Link text.
  */
 
- if ( empty( $text ) || empty( $url ) ) {
-     return;
- }
- 
- $classes[] = 'tec-tickets__admin-settings-tickets-commerce-section-menu-link';
+if ( empty( $text ) || empty( $url ) ) {
+	return;
+}
+
+$classes[] = 'tec-tickets__admin-settings-tickets-commerce-section-menu-link';
 
 ?>
 <a <?php tribe_classes( $classes ); ?> href="<?php echo esc_attr( $url ); ?>">
-    <?php echo esc_html( $text ); ?>
+	<?php echo esc_html( $text ); ?>
 </a>
