@@ -9,6 +9,8 @@
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 use TEC\Tickets\Commerce;
+use TEC\Tickets\Commerce\Payments_Tab;
+use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -125,6 +127,16 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * @inheritDoc
 	 */
+	public function get_settings_url() {
+		return Tribe__Settings::instance()->get_url( [ 
+			'tab' => Payments_Tab::$slug, 
+			Payments_Tab::$key_current_section_get_var => $this->get_key() 
+		] );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function handle_invalid_response( $response, $message, $slug = 'error' ) {
 
 		$notices = tribe( Notice_Handler::class );
@@ -166,5 +178,27 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 
 		// Always limit it to 127 chars.
 		return substr( (string) $url, 0, 127 );
+	}
+	
+	/**
+	 * Get URL for the display logo.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_logo_url() {
+		return '';
+	}
+	
+	/**
+	 * Get text to use a subtitle when listing gateways.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_subtitle() {
+		return '';
 	}
 }

@@ -23,7 +23,7 @@ class FilterTest extends EventsTestCase {
 		$events = tribe_events();
 
 		// Always return consistent list of IDs.
-		$events->order_by( 'id' );
+		$events->order_by( 'id', 'ASC' );
 
 		// Enable found() calculations.
 		$events->set_found_rows( true );
@@ -49,7 +49,7 @@ class FilterTest extends EventsTestCase {
 		 * Is affected by pagination, but ORM defaults to unlimited.
 		 *
 		 * @see \Tribe__Repository::get_ids()
-		 */
+		 */		
 		$this->assertEquals( $assertions['get_ids'], $events->get_ids(), $method );
 
 		/**
