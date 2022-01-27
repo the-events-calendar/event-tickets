@@ -14,5 +14,5 @@ if ( empty( $description ) ) {
 
 ?>
 <div class="tec-tickets__admin-settings-featured-description">
-    <?php echo $description; ?>
+    <?php echo $description; // phpcs:ignore ?>
 </div>
