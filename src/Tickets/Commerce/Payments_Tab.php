@@ -123,7 +123,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		
 		$gateways = tribe( Manager::class )->get_gateways();
 		
-        foreach ( $gateways as $gateway_key => $gateway ) {
+		foreach ( $gateways as $gateway_key => $gateway ) {
 			if ( ! $gateway::should_show() ) {
 				continue;
 			}
@@ -136,7 +136,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 				$new_section['classes'][] = 'active';
 			}
 			$sections[] = $new_section;
-        }
+		}
 		
 		$admin_views = tribe( Tribe__Tickets__Admin__Views::class );
 		$admin_views->set_template_folder( 'src/admin-views/settings/tickets-commerce/section' );
