@@ -148,40 +148,4 @@ class Manager {
 
 		return (bool) tribe_get_option( $this->get_enabled_option_by_key( $key ) );
 	}
-
-	/**
-	 * Get gateway enabled option by key.
-	 *
-	 * @since TBD
-	 *
-	 * @param Abstract_Gateway|string $gateway Key or Gateway object for gateway.
-	 *
-	 * @return string
-	 */
-	public static function get_enabled_option_by_key( $gateway ) {
-		$key = $gateway;
-		if ( $gateway instanceof Abstract_Gateway ) {
-			$key = $gateway->get_key();
-		}
-
-		return self::$option_gateway_enabled_prefix . $key;
-	}
-
-	/**
-	 * Return if gateway is enabled.
-	 *
-	 * @since TBD
-	 *
-	 * @param Abstract_Gateway|string $gateway Key or Gateway object for gateway.
-	 *
-	 * @return boolean 
-	 */
-	public function is_gateway_enabled( $gateway ) {
-		$key = $gateway;
-		if ( $gateway instanceof Abstract_Gateway ) {
-			$key = $gateway->get_key();
-		}
-
-		return (bool) tribe_get_option( $this->get_enabled_option_by_key( $key ) );
-	}
 }
