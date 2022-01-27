@@ -131,7 +131,7 @@ class Manager {
 	public static function get_enabled_option_by_key( $gateway ) {
 		$key = $gateway instanceof Abstract_Gateway ? $gateway->get_key() : $gateway;
 
-		return self::$option_gateway_enabled_prefix . $key;
+		return static::$option_gateway_enabled_prefix . $key;
 	}
 
 	/**
