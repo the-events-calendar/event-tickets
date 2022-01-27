@@ -4,7 +4,7 @@
  *
  * @since TBD
  *
- * @var Tribe__Template              $this              Template object.
+ * @var Tribe__Tickets__Admin__Views $this              Template object.
  * @var Abstract_Gateway[]           $gateways          Array of gateway objects.
  * @var Manager                      $manager           Gateway Manager object.
  */
@@ -20,7 +20,7 @@ if ( empty( $gateways ) ) {
 <div class="tec-tickets__admin-settings-tickets-commerce-gateways">
     <?php 
     foreach ( $gateways as $gateway ) {
-        $this->template( 'item', [ 'gateway' => $gateway ] );
+        $this->template( 'settings/tickets-commerce/gateways/item', [ 'gateway' => $gateway ] );
     } 
     ?>
 </div>

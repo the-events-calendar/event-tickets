@@ -4,7 +4,7 @@
  *
  * @since TBD
  *
- * @var Tribe__Template              $this              Template object.
+ * @var Tribe__Tickets__Admin__Views $this              Template object.
  * @var Gateway_Abstract             $gateway           Gateway object.
  * @var Manager                      $manager           Gateway Manager object.
  */
@@ -25,7 +25,7 @@ $enabled = $manager->is_gateway_enabled( $gateway );
 
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateways-item">
-    <?php $this->template( 'toggle', ['checked' => $enabled] ); ?>
-    <?php $this->template( 'brand' ); ?>
-    <?php $this->template( 'button' ); ?>
+    <?php $this->template( 'settings/tickets-commerce/gateways/toggle', ['checked' => $enabled] ); ?>
+    <?php $this->template( 'settings/tickets-commerce/gateways/brand' ); ?>
+    <?php $this->template( 'settings/tickets-commerce/gateways/button' ); ?>
 </div>
