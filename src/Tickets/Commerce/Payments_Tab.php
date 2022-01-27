@@ -136,7 +136,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 */
 	public function get_section_menu() {
 		
-		$selected_section = tribe_get_request_var( self::$key_current_section_get_var );
+		$selected_section = tribe_get_request_var( static::$key_current_section_get_var );
 		
 		$sections = [
 			[
@@ -171,13 +171,13 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		
 		// Add hidden input field to determine what section we're in.
 		if ( ! empty( $selected_section ) ) {
-			$current_section_key = self::$key_current_section;
+			$current_section_key = static::$key_current_section;
 			$menu_html .= '<input type="hidden" name="' . esc_attr( $current_section_key ) . '" ' . 
 				'id="' . esc_attr( $current_section_key ) . '" value="' . esc_attr( $selected_section ) . '" />';
 		}
 		
 		return [
-			self::$key_section_menu => [
+			static::$key_section_menu => [
 				'type' => 'html',
 				'html' => $menu_html,
 			]
@@ -203,7 +203,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		// If not on the TEC Payments tab, bail.
 		if ( 
 			( empty( $args['page'] ) || Tribe__Settings::$parent_slug !== $args['page'] ) || 
-			( empty( $args['tab'] )  || self::$slug !== $args['tab'] ) 
+			( empty( $args['tab'] )  || static::$slug !== $args['tab'] ) 
 		) {
 			return $url;
 		}
@@ -216,7 +216,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		
 		// Add section info to URL before redirecting.
 		$current_section = $_POST[$current_section_key];
-		return add_query_arg( self::$key_current_section_get_var, esc_attr( $current_section ), $url );
+		return add_query_arg( static::$key_current_section_get_var, esc_attr( $current_section ), $url );
 	}
 	
 	/**
@@ -227,7 +227,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 * @return Gateway | null
 	 */
 	public function get_section_gateway() {
-		$selected_section = tribe_get_request_var( self::$key_current_section_get_var );
+		$selected_section = tribe_get_request_var( static::$key_current_section_get_var );
 		return tribe( Manager::class )->get_gateway_by_key( $selected_section );
 	}
 	
