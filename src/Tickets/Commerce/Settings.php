@@ -17,7 +17,6 @@ use TEC\Tickets\Commerce\Traits\Has_Mode;
 use TEC\Tickets\Settings as Tickets_Settings;
 use \Tribe__Template;
 use Tribe__Field_Conditional;
-use Tribe__Tickets__Main;
 use WP_Admin_Bar;
 
 /**
