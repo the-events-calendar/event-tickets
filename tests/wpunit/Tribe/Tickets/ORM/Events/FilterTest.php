@@ -53,10 +53,11 @@ class FilterTest extends EventsTestCase {
 		
 		// Sorting arrays by ID ensures that arrays with the same numbers return as a success.
 		$event_ids = $events->get_ids();
+		$assertion_ids = $assertions['get_ids'];
 		sort( $event_ids, SORT_NUMERIC );
-		sort( $assertions['get_ids'], SORT_NUMERIC );
+		sort( $assertion_ids, SORT_NUMERIC );
 		
-		$this->assertEquals( $assertions['get_ids'], $event_ids, $method );
+		$this->assertEquals( $assertion_ids, $event_ids, $method );
 
 		/**
 		 * The total number of posts found matching the current query parameters.
