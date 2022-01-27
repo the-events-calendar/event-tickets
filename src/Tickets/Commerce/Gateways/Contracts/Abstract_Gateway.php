@@ -9,6 +9,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 use TEC\Tickets\Commerce;
+use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Payments_Tab;
 use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
@@ -200,5 +201,27 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 */
 	public function get_subtitle() {
 		return '';
+	}
+	
+	/**
+	 * Get status text to use when listing gateways.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_status_text() {
+		return '';
+	}
+	
+	/**
+	 * Returns if gateway is enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @return boolean
+	 */
+	public static function is_enabled() {
+		return (bool) tribe_get_option( tribe( Manager::class )->get_enabled_option_by_key( self::$key ) );
 	}
 }
