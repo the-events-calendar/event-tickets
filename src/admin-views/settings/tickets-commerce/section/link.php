@@ -4,7 +4,7 @@
  *
  * @since TBD
  *
- * @var Tribe__Tickets__Admin__Views $this              Template object.
+ * @var Tribe__Template              $this              Template object.
  * @var array                        $classes           Array of classes.
  * @var string                       $url               Link URL.
  * @var string                       $text              Link text.

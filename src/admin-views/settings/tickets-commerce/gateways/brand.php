@@ -4,9 +4,8 @@
  *
  * @since TBD
  *
- * @var Tribe__Tickets__Admin__Views $this              Template object.
+ * @var Tribe__Template              $this              Template object.
  * @var Gateway_Abstract             $gateway           Gateway object.
- * @var Manager                      $manager           Gateway Manager object.
  */
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;

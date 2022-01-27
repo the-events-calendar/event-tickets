@@ -125,7 +125,20 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		add_filter( 'tec_tickets_commerce_payments_tab_settings', [ $this, 'filter_payments_tab_settings' ] );
 		
-		add_filter( 'wp_redirect', [ tribe( Payments_Tab::class ), 'filter_redirect_url' ] );
+		add_filter( 'wp_redirect', [ $this, 'filter_redirect_url' ] );
+	}
+	
+	/**
+	 * Filters the redirect URL to determine whether or not section key needs to be added.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url Redirect URL.
+	 *
+	 * @return string
+	 */
+	public function filter_redirect_url( $url ){
+		return tribe( Payments_Tab::class )->filter_redirect_url( $url );
 	}
 
 	/**

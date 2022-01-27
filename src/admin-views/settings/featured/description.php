@@ -4,7 +4,7 @@
  *
  * @since TBD
  *
- * @var Tribe__Tickets__Admin__Views $this           Template object.
+ * @var Tribe__Template              $this           Template object.
  * @var string                       $description    Featured settings description.
  */
 

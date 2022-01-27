@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway as Gateway;
 use TEC\Tickets\Settings as Tickets_Settings;
 use \Tribe__Settings;
 use \tad_DI52_ServiceProvider;
-use \Tribe__Tickets__Admin__Views;
+use \Tribe__Template;
 
 /**
  * Class Payments_Tab
@@ -129,7 +129,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			}
 			$new_section = [
 				'classes' => [],
-				'url' => Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', self::$key_current_section_get_var => $gateway->get_key() ] ),
+				'url' => $gateway->get_settings_url(),
 				'text' => $gateway->get_label(),
 			];
 			if ( $selected_section === $gateway->get_key() ) {
@@ -138,7 +138,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			$sections[] = $new_section;
 		}
 		
-		$admin_views = tribe( Tribe__Tickets__Admin__Views::class );
+		$admin_views = tribe( Tribe__Template::class );
 		$admin_views->set_template_folder( 'src/admin-views/settings/tickets-commerce/section' );
 		
 		$manager = tribe( Manager::class );

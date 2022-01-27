@@ -128,7 +128,10 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * @inheritDoc
 	 */
 	public function get_settings_url() {
-		return Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', Payments_Tab::$key_current_section_get_var => $this->get_key() ] );
+		return Tribe__Settings::instance()->get_url( [ 
+			'tab' => Payments_Tab::$slug, 
+			Payments_Tab::$key_current_section_get_var => $this->get_key() 
+		] );
 	}
 
 	/**

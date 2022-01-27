@@ -45,6 +45,9 @@ class Featured_Settings {
 	 * Returns html of the featured settings block.
 	 *
 	 * @since TBD
+	 * 
+	 * @param array   $context Context of template.
+	 * @param boolean $echo    Whether or not to output the HTML or just return it.
 	 *
 	 * @return Tribe__Template
 	 */

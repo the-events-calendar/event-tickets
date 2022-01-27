@@ -4,7 +4,7 @@
  *
  * @since TBD
  *
- * @var Tribe__Tickets__Admin__Views $this              Template object.
+ * @var Tribe__Template              $this              Template object.
  * @var Gateway_Abstract             $gateway           Gateway object.
  */
 
@@ -22,7 +22,7 @@ $key         = $gateway->get_key();
 $enabled     = $manager->is_gateway_enabled( $gateway );
 $button_text = sprintf(
     // Translators: %s: Name of payment gateway.
-    __( 'Connect to %s' ),
+    __( 'Connect to %s', 'event-tickets' ),
     $gateway->get_label()
 );
 

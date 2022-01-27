@@ -15,7 +15,7 @@ use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Traits\Has_Mode;
 use TEC\Tickets\Settings as Tickets_Settings;
-use \Tribe__Tickets__Admin__Views;
+use \Tribe__Template;
 use Tribe__Field_Conditional;
 use WP_Admin_Bar;
 
@@ -383,7 +383,7 @@ class Settings {
 	 * @return string
 	 */
 	public function get_featured_gateways_html() {
-		$admin_views = tribe( Tribe__Tickets__Admin__Views::class );
+		$admin_views = tribe( Tribe__Template::class );
 		$admin_views->set_template_folder( 'src/admin-views/settings/tickets-commerce/gateways' );
 		
 		$manager = tribe( Manager::class );
