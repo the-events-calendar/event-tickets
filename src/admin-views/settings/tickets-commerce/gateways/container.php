@@ -12,11 +12,15 @@
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Manager;
 
+if ( empty( $gateways ) ) {
+    return;
+}
+
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateways">
     <?php 
     foreach ( $gateways as $gateway ) {
-        $this->template( 'item', [ 'gateway' => $gateway, 'manager' => $manager ] );
+        $this->template( 'item', [ 'gateway' => $gateway ] );
     } 
     ?>
 </div>

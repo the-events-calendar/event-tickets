@@ -15,7 +15,7 @@
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-section-menu">
     <?php 
-    foreach ($sections as $section) {
+    foreach ( $sections as $section ) {
         $this->template( 'link', $section );
     } 
     ?>

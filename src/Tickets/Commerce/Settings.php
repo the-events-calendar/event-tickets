@@ -17,6 +17,7 @@ use TEC\Tickets\Commerce\Traits\Has_Mode;
 use TEC\Tickets\Settings as Tickets_Settings;
 use \Tribe__Template;
 use Tribe__Field_Conditional;
+use Tribe__Tickets__Main;
 use WP_Admin_Bar;
 
 /**
@@ -385,6 +386,7 @@ class Settings {
 	public function get_featured_gateways_html() {
 		$admin_views = tribe( Tribe__Template::class );
 		$admin_views->set_template_folder( 'src/admin-views/settings/tickets-commerce/gateways' );
+		$admin_views->set_template_context_extract( true );
 		
 		$manager = tribe( Manager::class );
 		$gateways = $manager->get_gateways();

@@ -118,7 +118,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			]
 		];
 		if ( empty( $selected_section ) ) {
-			$sections[0]['classes'][] = 'active';
+			$sections[0]['classes'][] = 'tec-tickets__admin-settings-tickets-commerce-section-menu-link--active';
 		}
 		
 		$gateways = tribe( Manager::class )->get_gateways();
@@ -133,13 +133,14 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 				'text' => $gateway->get_label(),
 			];
 			if ( $selected_section === $gateway->get_key() ) {
-				$new_section['classes'][] = 'active';
+				$new_section['classes'][] = 'tec-tickets__admin-settings-tickets-commerce-section-menu-link--active';
 			}
 			$sections[] = $new_section;
 		}
 		
 		$admin_views = tribe( Tribe__Template::class );
 		$admin_views->set_template_folder( 'src/admin-views/settings/tickets-commerce/section' );
+		$admin_views->set_template_context_extract( true );
 		
 		$manager = tribe( Manager::class );
 		$gateways = $manager->get_gateways();
