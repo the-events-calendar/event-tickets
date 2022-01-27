@@ -4,13 +4,15 @@
  *
  * @since TBD
  *
- * @var Tribe__Tickets__Admin__Views $this           Template object.
+ * @var Tribe__Template              $this           Template object.
  * @var string                       $description    Featured settings description.
  */
 
-if( empty( $description ) ) {
+if ( empty( $description ) ) {
     return;
 }
 
 ?>
-<div class="tec-tickets__admin-settings-featured-description"><?php echo esc_html( $description ); ?></div>
+<div class="tec-tickets__admin-settings-featured-description">
+    <?php echo $description; // phpcs:ignore ?>
+</div>

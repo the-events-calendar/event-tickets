@@ -107,9 +107,46 @@ class Manager {
 	 * @return Abstract_Gateway
 	 */
 	public function get_gateway_by_key( $key ) {
+		if ( empty( $key ) ) {
+			return;
+		}
+		
 		$gateways = $this->get_gateways();
+		if ( ! isset( $gateways[ $key ] ) ) {
+			return;
+		}
 
-		return isset( $gateways[ $key ] ) ? $gateways[ $key ] : null;
+		return $gateways[ $key ];
+	}
+
+	/**
+	 * Get gateway enabled option by key.
+	 *
+	 * @since TBD
+	 *
+	 * @param Abstract_Gateway|string $gateway Key or Gateway object for gateway.
+	 *
+	 * @return string
+	 */
+	public static function get_enabled_option_by_key( $gateway ) {
+		$key = $gateway instanceof Abstract_Gateway ? $gateway->get_key() : $gateway;
+
+		return static::$option_gateway_enabled_prefix . $key;
+	}
+
+	/**
+	 * Return if gateway is enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @param Abstract_Gateway|string $gateway Key or Gateway object for gateway.
+	 *
+	 * @return boolean 
+	 */
+	public function is_gateway_enabled( $gateway ) {
+		$key = $gateway instanceof Abstract_Gateway ? $gateway->get_key() : $gateway;
+
+		return (bool) tribe_get_option( $this->get_enabled_option_by_key( $key ) );
 	}
 
 	/**

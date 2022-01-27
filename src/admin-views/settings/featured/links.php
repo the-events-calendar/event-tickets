@@ -4,11 +4,11 @@
  *
  * @since TBD
  *
- * @var Tribe__Tickets__Admin__Views $this   Template object.
+ * @var Tribe__Template              $this   Template object.
  * @var array                        $links  Array of links.
  */
 
-if( empty( $links ) ) {
+if ( empty( $links ) ) {
     return;
 }
  
@@ -17,7 +17,7 @@ if( empty( $links ) ) {
 <div class="tec-tickets__admin-settings-featured-links">
 	<?php 
 	foreach ( $links as $link ) {
-		$this->template( 'settings/featured/link', [ 'link' => $link ] ); 
+		$this->template( 'link', [ 'link' => $link ] ); 
 	}
 	?>
 </div>

@@ -15,7 +15,9 @@ use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Traits\Has_Mode;
 use TEC\Tickets\Settings as Tickets_Settings;
+use \Tribe__Template;
 use Tribe__Field_Conditional;
+use Tribe__Tickets__Main;
 use WP_Admin_Bar;
 
 /**
@@ -101,6 +103,15 @@ class Settings {
 	 * @var string
 	 */
 	public static $option_confirmation_email_subject = 'tickets-commerce-confirmation-email-subject';
+	
+	/**
+	 * Stores the instance of the template engine that we will use for rendering differentelements.
+	 *
+	 * @since TBD
+	 *
+	 * @var Tribe__Template
+	 */
+	protected $template;
 
 	/**
 	 * Settings constructor.
@@ -110,6 +121,24 @@ class Settings {
 	public function __construct() {
 		// Configure which mode we are in.
 		$this->set_mode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' );
+	}
+	
+	/**
+	 * Gets the template instance used to setup the rendering html.
+	 *
+	 * @since TBD
+	 *
+	 * @return Tribe__Template
+	 */
+	public function get_template() {
+		if ( empty( $this->template ) ) {
+			$this->template = new Tribe__Template();
+			$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
+			$this->template->set_template_folder( 'src/admin-views/settings/tickets-commerce' );
+			$this->template->set_template_context_extract( true );
+		}
+
+		return $this->template;
 	}
 
 	/**
@@ -171,7 +200,7 @@ class Settings {
 	public function get_settings() {
 		
 		$section_gateway = tribe( Payments_Tab::class )->get_section_gateway();
-		if( ! empty( $section_gateway ) ) {
+		if ( ! empty( $section_gateway ) ) {
 			return $section_gateway->get_settings();
 		}
 
@@ -337,26 +366,26 @@ class Settings {
 		$featured_settings = [
 			'tc_featured_settings' => [
 				'type' => 'html',
-				'html' => tribe( Featured_Settings::class )->get_html([
+				'html' => tribe( Featured_Settings::class )->get_html( [
 					'title'            => __( 'Payment Gateways', 'event-tickets' ),
 					'description'      => __( 
 						'Set up a payment gateway to get started with Tickets Commerce. Enable multiple ' .
 						'gateways for providing users additional options for users when purchasing tickets.', 
 						'event-tickets' 
 					),
-					'content_template' => 'settings/tickets-commerce/gateways',
+					'content_template' => $this->get_featured_gateways_html(),
 					'links'            => [
 						[
 							'slug'         => 'help-1',
 							'priority'     => 10,
-							'link'         => esc_url( '#' ),
-							'html'         => __('Learn more about configuring payment options with Tickets Commerce'),
+							'link'         => esc_url( '#' ), // @todo Get a URL for this link.
+							'html'         => __( 'Learn more about configuring payment options with Tickets Commerce', 'event-tickets' ),
 							'target'       => '_blank',
 							'classes'      => [],
 						]
 					],
 					'classes'          => [],
-				]),
+				] ),
 			]
 		];
 		$settings = array_merge( $featured_settings, $settings );
@@ -373,6 +402,21 @@ class Settings {
 
 		return array_merge( tribe( Payments_Tab::class )->get_top_level_settings(), $this->apply_commerce_enabled_conditional( $settings ) );
 	}
+	
+	/**
+	 * Returns the content for the main featured settings which displays the list of gateways.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_featured_gateways_html() {		
+		$manager = tribe( Manager::class );
+		$gateways = $manager->get_gateways();
+		
+		$template = $this->get_template();
+		return $template->template( 'gateways/container', [ 'gateways' => $gateways, 'manager' => $manager ], false );
+    }
 
 	/**
 	 * Handle setting up dependencies for all of the fields.

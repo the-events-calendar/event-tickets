@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
+use \Tribe__Tickets__Main;
 
 /**
  * Class Gateway
@@ -65,4 +66,19 @@ class Gateway extends Abstract_Gateway {
 
 		return $notices;
 	}
+  
+	/**
+	 * @inheritDoc
+	 */
+	public function get_logo_url() {
+		return Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/images/admin/stripe-logo.png';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get_subtitle() {
+		return __( 'Enable credit card payment and afterpay', 'event-tickets' );
+	}
+  
 }

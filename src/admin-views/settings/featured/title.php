@@ -4,11 +4,11 @@
  *
  * @since TBD
  *
- * @var Tribe__Tickets__Admin__Views $this           Template object.
+ * @var Tribe__Template              $this           Template object.
  * @var string                       $title          Featured settings title.
  */
 
-if( empty( $title ) ) {
+if ( empty( $title ) ) {
     return;
 }
 
