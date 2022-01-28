@@ -170,7 +170,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Submit the payment to stripe code.
 	 *
-	 * @param {String} secret Which secret we need to use to confirm the Payment.
+	 * @param {String} order The order object returned from the server.
 	 *
 	 * @return {Promise<*>}
 	 */
@@ -186,11 +186,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	/**
-	 * Submit the payment to stripe code.
+	 * Submit the Card Element payment to stripe.
 	 *
-	 * @param {String} secret Which secret we need to use to confirm the Payment.
-	 *
-	 * @return {Promise<*>}
+	 * @returns {Promise<void>}
 	 */
 	obj.submitCardPayment = async () => {
 		var elements = obj.stripeElements;
@@ -224,7 +222,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.handleCreateOrder = async () => {
 		const args = {
 			json: {
-				billing_details: billing.getDetails()
+				billing_details: billing.getDetails(),
+				payment_intent: obj.checkout.paymentIntentData
 			},
 			headers: {
 				'X-WP-Nonce': obj.checkout.nonce
@@ -234,28 +233,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		let response = await ky.post( obj.checkout.orderEndpoint, args ).json();
 
 		tribe.tickets.debug.log( 'stripe', 'createOrder', response );
-
-		return response;
-	};
-
-	/**
-	 * Create an order and start the payment process.
-	 *
-	 * @since TBD
-	 *
-	 * @return {Promise<*>}
-	 */
-	obj.getClientSecret = async () => {
-		const args = {
-			json: {},
-			headers: {
-				'X-WP-Nonce': obj.checkout.nonce
-			}
-		};
-		// Fetch Publishable API Key and Initialize Stripe Elements on Ready
-		let response = await ky.post( obj.checkout.paymentIntentEndpoint, args ).json();
-
-		tribe.tickets.debug.log( 'stripe', 'getClientSecret', response );
 
 		return response;
 	};
@@ -289,9 +266,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {Promise<void>}
 	 */
 	obj.setupStripe = async () => {
-		var response = await obj.getClientSecret();
-		obj.secret = { clientSecret: response };
-		obj.stripeElements = obj.stripeLib.elements( obj.secret );
+		obj.stripeElements = obj.stripeLib.elements( { clientSecret: obj.checkout.paymentIntentData.key } );
 
 		if ( obj.checkout.paymentElement ) {
 			// Instantiate the PaymentElement

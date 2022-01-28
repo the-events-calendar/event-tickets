@@ -25,6 +25,8 @@ class Client {
 	 */
 	public $payment_intent_transient_prefix = 'paymentintent-';
 
+	public $payment_intent_transient_name;
+
 	/**
 	 * Get environment base URL.
 	 *
@@ -72,11 +74,7 @@ class Client {
 	 */
 	public function create_payment_intent() {
 
-		$stored_intent = $this->get_payment_intent_transient();
-
-		if ( $stored_intent ) {
-			return $stored_intent;
-		}
+		$this->set_payment_intent_transient_name();
 
 		$cart = tribe( Cart::class );
 
@@ -108,12 +106,7 @@ class Client {
 			'application_fee_amount' => 0,
 		];
 
-		$stripe_receipt_emails       = tribe_get_option( Settings::$option_stripe_receipt_emails );
 		$stripe_statement_descriptor = tribe_get_option( Settings::$option_statement_descriptor );
-
-		if ( $stripe_receipt_emails ) {
-			$body['receipt_email'] = 'test@email.com';  // @todo apply only when updating a paymentintent
-		}
 
 		if ( empty( $stripe_statement_descriptor ) ) {
 			$body['statement_descriptor'] = substr( $stripe_statement_descriptor, 0, 22 );
@@ -131,14 +124,86 @@ class Client {
 	}
 
 	/**
+	 * Updates an existing payment intent to add any necessary data before confirming the purchase.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data the purchase data received from the front-end
+	 *
+	 * @return array|\WP_Error|null
+	 */
+	public function update_payment_intent( $data ) {
+
+		$payment_intent = $this->get_payment_intent( $data['payment_intent']['id'] );
+
+		$stripe_receipt_emails = tribe_get_option( Settings::$option_stripe_receipt_emails );
+
+		// Currently this method is only used to add an email recipient for Stripe receipts. If this is not
+		// required, only return the payment intent object to store.
+		if ( ! $stripe_receipt_emails ) {
+			return;
+		}
+
+		if ( $stripe_receipt_emails && ! empty( $data['billing_details']['email'] ) ) {
+			$body['receipt_email'] = $data['billing_details']['email'];
+		}
+
+		$query_args = [];
+		$args       = [
+			'body' => $body,
+		];
+
+		$payment_intent_id = urlencode( $payment_intent['id'] );
+		$url               = '/payment_intents/{payment_intent_id}';
+		$url               = str_replace( '{payment_intent_id}', $payment_intent_id, $url );
+
+		return $this->post( $url, $query_args, $args );
+	}
+
+	/**
+	 * Assembles basic data about the payment intent created at page-load to use in javascript
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_publishable_payment_intent_data() {
+		$pi = $this->get_payment_intent_transient();
+
+		if ( empty( $pi ) ) {
+			return [];
+		}
+
+		return [
+			'id'   => $pi['id'],
+			'key'  => $pi['client_secret'],
+			'name' => $this->get_payment_intent_transient_name(),
+		];
+	}
+
+	/**
 	 * Compose the transient name used for payment intent transients
+	 *
+	 * @since TBD
+	 */
+	public function set_payment_intent_transient_name() {
+		$this->payment_intent_transient_name = $this->payment_intent_transient_prefix . md5( tribe( Cart::class )->get_cart_hash() );
+	}
+
+	/**
+	 * Returns the transient name used for payment intent transients
 	 *
 	 * @since TBD
 	 *
 	 * @return string
 	 */
 	public function get_payment_intent_transient_name() {
-		return $this->payment_intent_transient_prefix . tribe( Cart::class )->get_cart_hash();
+
+		if ( empty( $this->payment_intent_transient_name ) ) {
+			$this->set_payment_intent_transient_name();
+		}
+
+		return $this->payment_intent_transient_name;
 	}
 
 	/**
@@ -175,10 +240,8 @@ class Client {
 	 *
 	 * @return array|\WP_Error
 	 */
-	public function get_payment_intent( $payment_intent_id, $client_secret ) {
-		$query_args = [
-//			'client_secret' => $client_secret,
-		];
+	public function get_payment_intent( $payment_intent_id ) {
+		$query_args = [];
 		$body       = [
 		];
 		$args       = [

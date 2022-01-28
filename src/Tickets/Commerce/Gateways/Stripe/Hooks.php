@@ -29,7 +29,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	protected function add_actions() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
 		add_action( 'plugins_loaded', [ $this, 'handle_action_connected' ] );
-		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout', [ $this, 'maybe_create_stripe_payment_intent' ] );
+		add_action( 'wp', [ $this, 'maybe_create_stripe_payment_intent' ] );
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
 
 		add_action( 'admin_init', [ $this, 'handle_stripe_errors' ] );

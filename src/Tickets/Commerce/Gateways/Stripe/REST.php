@@ -15,7 +15,6 @@ class REST extends \tad_DI52_ServiceProvider {
 	 * @inheritDoc
 	 */
 	public function register() {
-		$this->container->singleton( REST\Payment_Intent_Secret_Endpoint::class );
 		$this->container->singleton( REST\Order_Endpoint::class );
 	}
 
@@ -25,7 +24,6 @@ class REST extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	public function register_endpoints() {
-		$this->container->make( REST\Payment_Intent_Secret_Endpoint::class )->register();
 		$this->container->make( REST\Order_Endpoint::class )->register();
 	}
 }
