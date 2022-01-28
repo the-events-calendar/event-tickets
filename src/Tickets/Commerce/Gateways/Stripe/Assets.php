@@ -69,6 +69,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 							'nonce'          => wp_create_nonce( 'wp_rest' ),
 							'orderEndpoint'  => tribe( Order_Endpoint::class )->get_route_url(),
 							'paymentElement' => tribe( Stripe_Elements::class )->include_payment_element(),
+							'cardElementType' => tribe( Stripe_Elements::class )->card_element_type(),
 							'paymentIntentEndpoint'  => tribe( Payment_Intent_Secret_Endpoint::class )->get_route_url(),
 							'publishableKey' => tribe( Merchant::class )->get_publishable_key(),
 						];

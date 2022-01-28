@@ -28,10 +28,13 @@ tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe ||
  */
 tribe.tickets.commerce.gateway.stripe.checkout = {};
 
-(( $, obj, Stripe, ky ) => {
+(( $, tc, Stripe, ky ) => {
 	'use strict';
 	const $document = $( document );
 
+	const obj = tc.gateway.stripe;
+
+	const billing = tc.billing;
 	/**
 	 * Pull the variables from the PHP backend.
 	 *
@@ -49,6 +52,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @type {Object}
 	 */
 	obj.selectors = {
+		cardNumber: '#tec-tc-gateway-stripe-card-number',
+		cardExpiry: '#tec-tc-gateway-stripe-card-expiry',
+		cardCvc: '#tec-tc-gateway-stripe-card-cvc',
+		cardZipWrapper: '#tec-tc-gateway-stripe-card-zip',
 		cardElement: '#tec-tc-gateway-stripe-card-element',
 		cardErrors: '#tec-tc-gateway-stripe-card-errors',
 		paymentElement: '#tec-tc-gateway-stripe-payment-element',
@@ -64,14 +71,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @type {Object|null}
 	 */
 	obj.stripeLib = Stripe( obj.checkout.publishableKey );
-
-	/**
-	 * Stripe JS library elements.
-	 *
-	 * @since TBD
-	 *
-	 * @type {Object|null}
-	 */
 
 	/**
 	 * Settings for the Card Element from Stripe.
@@ -212,13 +211,12 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.submitCardPayment = async () => {
 		var elements = obj.stripeElements;
+		var billing_details = billing.getDetails();
 
 		obj.stripeLib.confirmCardPayment( obj.secret.clientSecret, {
 			payment_method: {
-				card: obj.cardElement,
-				billing_details: {
-					name: 'John Doe'
-				}
+				card: elements,
+				billing_details: billing_details
 			}
 		} ).then( function( result ) {
 			if ( result.error ) {
@@ -227,7 +225,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			} else {
 				// The payment has been processed!
 				if ( result.paymentIntent.status === 'succeeded' ) {
-					obj.handlePaymentSuccess();
+					obj.handlePaymentSuccess( result );
 					// Show a success message to your customer
 					// There's a risk of the customer closing the window before callback
 					// execution. Set up a webhook or plugin to listen for the
@@ -247,7 +245,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.handleCreateOrder = async () => {
 		const args = {
-			json: {},
+			json: {
+				billing_details: billing.getDetails()
+			},
 			headers: {
 				'X-WP-Nonce': obj.checkout.nonce
 			}
@@ -316,11 +316,28 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		obj.stripeElements = obj.stripeLib.elements( obj.secret );
 
 		if ( obj.checkout.paymentElement ) {
+			// Instantiate the PaymentElement
 			obj.paymentElement = obj.stripeElements.create( 'payment', obj.getOptions() );
 			obj.paymentElement.mount( obj.selectors.paymentElement );
 			return false;
 		}
 
+		if ( obj.checkout.cardElementType !== 'compact' ) {
+			// Instantiate the CardElement with individual fields
+			obj.cardElement = obj.stripeElements.create( 'cardNumber', { showIcon: true, iconStyle: 'default' } );
+			obj.cardElement.mount( obj.selectors.cardNumber );
+			obj.cardExpiry = obj.stripeElements.create( 'cardExpiry' );
+			obj.cardExpiry.mount( obj.selectors.cardExpiry );
+			obj.cardCvc = obj.stripeElements.create( 'cardCvc' );
+			obj.cardCvc.mount( obj.selectors.cardCvc );
+			var cardZipWrapper = document.querySelector( obj.selectors.cardZipWrapper );
+			var zipField = document.createElement( 'input' );
+			cardZipWrapper.append(zipField);
+
+			return false;
+		}
+
+		// Instantiate the CardElement with a single field combo
 		obj.cardElement = obj.stripeElements.create( 'card', obj.getOptions() );
 		obj.cardElement.mount( obj.selectors.cardElement );
 		obj.cardElement.on( 'change', obj.onCardChange );
@@ -346,4 +363,4 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	$( obj.ready );
-})( jQuery, tribe.tickets.commerce.gateway.stripe, Stripe, ky );
+})( jQuery, tribe.tickets.commerce, Stripe, ky );

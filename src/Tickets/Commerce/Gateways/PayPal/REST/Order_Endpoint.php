@@ -99,8 +99,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		];
 
 		$messages = $this->get_error_messages();
-
-		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ) );
+		$data = $request->get_json_params();
+		$purchaser = tribe( Order::class )->prepare_purchaser_data( $data );
+		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 
 		$unit = [
 			'reference_id' => $order->ID,
