@@ -28,7 +28,7 @@ class Stripe_Elements {
 	 */
 	public function include_form( $file, $name, $template ) {
 		$template->template( 'gateway/stripe/form', [
-			'must_login' => $this->must_login(),
+			'must_login'      => $this->must_login(),
 			'payment_element' => $this->include_payment_element(),
 		] );
 	}

@@ -16,7 +16,7 @@
  * @var bool $payment_element [Global] Whether to load the Stripe Payment Element.
  */
 
-if ( $must_login ) {
+if ( ! empty( $must_login ) ) {
 	return;
 }
 ?>
