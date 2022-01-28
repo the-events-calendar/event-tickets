@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Settings;
+use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe__Tickets__Main;
 
 /**
@@ -136,22 +137,19 @@ class Settings extends Abstract_Settings {
 				'conditional'     => tribe_get_option( static::$option_checkout_element ) === self::CARD_ELEMENT_SLUG,
 				'validation_type' => 'options',
 				'options'         => [
-					'compact' => 'Compact Field. All CC fields in a single line using default Stripe styles.',
+					'compact'  => 'Compact Field. All CC fields in a single line using default Stripe styles.',
 					'separate' => 'Separate Fields for each CC information, unstyled.',
 				],
 				'tooltip_first'   => true,
 			],
-			static::$option_checkout_element_payment_methods        => [
+			static::$option_checkout_element_payment_methods    => [
 				'type'            => 'checkbox_list',
 				'label'           => esc_html__( 'Payment Methods (Payment Element)', 'event-tickets' ),
-				'tooltip'         => esc_html( 'Tooltip missing' ), // @todo add proper tooltip
-				'default'         => 'a', // @todo add proper defaults
+				'tooltip'         => esc_html__( 'Which payment methods should be offered to your customers? Only select methods previously enabled in your Stripe account.' ), // @todo add proper tooltip
+				'default'         => 'card',
 				'conditional'     => tribe_get_option( static::$option_checkout_element ) === self::PAYMENT_ELEMENT_SLUG,
-				'validation_type' => 'options',
-				'options'         => [
-					'a' => 'A', // @todo fetch proper payment method options
-					'b' => 'B',
-				],
+				'validation_type' => 'options_multi',
+				'options'         => $this->get_payment_methods_available_by_currency(),
 				'tooltip_first'   => true,
 			],
 		];
@@ -164,6 +162,141 @@ class Settings extends Abstract_Settings {
 		 * @param array $settings The list of Stripe Commerce settings.
 		 */
 		return apply_filters( 'tribe_tickets_commerce_stripe_settings', $settings );
+	}
+
+	/**
+	 * Filters the general list of payment methods to grab only those available to the currency configured in Tickets
+	 * Commerce.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_payment_methods_available_by_currency() {
+		$currency          = Currency::get_currency_code();
+		$payment_methods   = $this->get_payment_methods_available();
+		$available_methods = [];
+
+		foreach ( $payment_methods as $method => $configs ) {
+			if ( ! in_array( $currency, $configs['currencies'], true ) ) {
+				continue;
+			}
+
+			$available_methods[ $method ] = $configs['label'];
+		}
+
+		$available_methods['card'] = esc_html__( 'Credit Cards', 'event-tickets' );
+
+		/**
+		 * Allows filtering the list of available Payment Methods
+		 *
+		 * @since TBD
+		 *
+		 * @param array   $available_methods the list of payment methods available to the current currency
+		 * @param string  $currency          the currency configured for Tickets Commerce
+		 * @param array[] $payment_methods   the complete list of available Payment Methods in Stripe
+		 */
+		return apply_filters( 'tribe_tickets_commerce_stripe_payment_methods_available', $available_methods, $currency, $payment_methods );
+	}
+
+	/**
+	 * Returns the list of available Payment Methods.
+	 * Methods and currencies sourced from
+	 * https://stripe.com/docs/payments/payment-methods/integration-options#payment-method-product-support
+	 *
+	 * @since TBD
+	 *
+	 * @return array[]
+	 */
+	private function get_payment_methods_available() {
+		return [
+			'afterpay_clearpay' => [
+				'currencies' => [ 'AUD', 'CAD', 'GBP', 'NZD' ],
+				'label'      => esc_html__( 'AfterPay and ClearPay', 'event-tickets' ),
+			],
+			'alipay'            => [
+				'currencies' => [ 'AUD', 'CAD', 'CNY', 'EUR', 'GBP', 'HKD', 'JPY', 'MYR', 'NZD', 'SGD', 'USD' ],
+				'label'      => esc_html__( 'Alipay', 'event-tickets' ),
+			],
+			'bacs_debit'        => [
+				'currencies' => [ 'GBP' ],
+				'label'      => esc_html__( 'Bacs Direct Debit', 'event-tickets' ),
+			],
+			'bancontact'        => [
+				'currencies' => [ 'EUR' ],
+				'label'      => esc_html__( 'Bancontact', 'event-tickets' ),
+			],
+			'au_becs_debit'     => [
+				'currencies' => [ 'AUD' ],
+				'label'      => esc_html__( 'BECS Direct Debit', 'event-tickets' ),
+			],
+			'boleto'            => [
+				'currencies' => [ 'BRL' ],
+				'label'      => esc_html__( 'Boleto', 'event-tickets' ),
+			],
+			'eps'               => [
+				'currencies' => [ 'EUR' ],
+				'label'      => esc_html__( 'EPS', 'event-tickets' ),
+			],
+			'fpx'               => [
+				'currencies' => [ 'MYR' ],
+				'label'      => esc_html__( 'FPX', 'event-tickets' ),
+			],
+			'giropay'           => [
+				'currencies' => [ 'EUR' ],
+				'label'      => esc_html__( 'Giropay', 'event-tickets' ),
+			],
+			'grabpay'           => [
+				'currencies' => [ 'MYR', 'SGD' ],
+				'label'      => esc_html__( 'GrabPay', 'event-tickets' ),
+			],
+			'ideal'             => [
+				'currencies' => [ 'EUR' ],
+				'label'      => esc_html__( 'iDEAL', 'event-tickets' ),
+			],
+			'klarna'            => [
+				'currencies' => [ 'DKK', 'EUR', 'GBP', 'NOK', 'SEK', 'USD' ],
+				'label'      => esc_html__( 'Klarna', 'event-tickets' ),
+			],
+			'oxxo'              => [
+				'currencies' => [ 'MXN' ],
+				'label'      => esc_html__( 'OXXO', 'event-tickets' ),
+			],
+			'p24'               => [
+				'currencies' => [ 'EUR', 'PLN' ],
+				'label'      => esc_html__( 'P24', 'event-tickets' ),
+			],
+			'acss_debit'        => [
+				'currencies' => [ 'CAD', 'USD' ],
+				'label'      => esc_html__( 'Pre-authorized debit in Canada', 'event-tickets' ),
+			],
+			'sepa_debit'        => [
+				'currencies' => [ 'EUR' ],
+				'label'      => esc_html__( 'SEPA debit', 'event-tickets' ),
+			],
+			'sofort'            => [
+				'currencies' => [ 'EUR' ],
+				'label'      => esc_html__( 'Sofort', 'event-tickets' ),
+			],
+			'wechat_pay'        => [
+				'currencies' => [
+					'AUD',
+					'CAD',
+					'CHF',
+					'CNY',
+					'DKK',
+					'EUR',
+					'GBP',
+					'HKD',
+					'JPY',
+					'NOK',
+					'SEK',
+					'SGD',
+					'USD',
+				],
+				'label'      => esc_html__( 'WeChat Pay', 'event-tickets' ),
+			],
+		];
 	}
 
 	/**

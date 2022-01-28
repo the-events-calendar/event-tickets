@@ -73,23 +73,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.stripeLib = Stripe( obj.checkout.publishableKey );
 
 	/**
-	 * Settings for the Card Element from Stripe.
-	 *
-	 * @since TBD
-	 *
-	 * @return {{style: {base: {color: string}}}}
-	 */
-	obj.getOptions = () => {
-		return {
-			style: {
-				base: {
-					color: "#32325d"
-				}
-			}
-		};
-	};
-
-	/**
 	 * Handles the changing of the card field.
 	 *
 	 * @since TBD
@@ -226,11 +209,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 				// The payment has been processed!
 				if ( result.paymentIntent.status === 'succeeded' ) {
 					obj.handlePaymentSuccess( result );
-					// Show a success message to your customer
-					// There's a risk of the customer closing the window before callback
-					// execution. Set up a webhook or plugin to listen for the
-					// payment_intent.succeeded event that handles any business critical
-					// post-payment actions.
 				}
 			}
 		} );
@@ -317,7 +295,16 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 
 		if ( obj.checkout.paymentElement ) {
 			// Instantiate the PaymentElement
-			obj.paymentElement = obj.stripeElements.create( 'payment', obj.getOptions() );
+			obj.paymentElement = obj.stripeElements.create( 'payment', {
+				fields: {
+					// We're collecting names and emails separately and sending them in confirmPayment
+					// no need to duplicate it here
+					name: 'never',
+					email: 'never',
+					phone: 'auto',
+					address: 'auto'
+				}
+			} );
 			obj.paymentElement.mount( obj.selectors.paymentElement );
 			return false;
 		}
@@ -338,7 +325,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		}
 
 		// Instantiate the CardElement with a single field combo
-		obj.cardElement = obj.stripeElements.create( 'card', obj.getOptions() );
+		obj.cardElement = obj.stripeElements.create( 'card' );
 		obj.cardElement.mount( obj.selectors.cardElement );
 		obj.cardElement.on( 'change', obj.onCardChange );
 	};

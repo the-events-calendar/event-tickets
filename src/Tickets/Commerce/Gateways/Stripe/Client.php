@@ -102,10 +102,24 @@ class Client {
 
 		$query_args = [];
 		$body       = [
-			'currency' => $value->get_currency_code(),
-			'amount'   => $value->get_integer(),
+			'currency'               => $value->get_currency_code(),
+			'amount'                 => $value->get_integer(),
+			'payment_method_types'   => tribe_get_option( Settings::$option_checkout_element_payment_methods ),
+			'application_fee_amount' => 0,
 		];
-		$args       = [
+
+		$stripe_receipt_emails       = tribe_get_option( Settings::$option_stripe_receipt_emails );
+		$stripe_statement_descriptor = tribe_get_option( Settings::$option_statement_descriptor );
+
+		if ( $stripe_receipt_emails ) {
+			$body['receipt_email'] = 'test@email.com';  // @todo apply only when updating a paymentintent
+		}
+
+		if ( empty( $stripe_statement_descriptor ) ) {
+			$body['statement_descriptor'] = substr( $stripe_statement_descriptor, 0, 22 );
+		}
+
+		$args = [
 			'body' => $body,
 		];
 
