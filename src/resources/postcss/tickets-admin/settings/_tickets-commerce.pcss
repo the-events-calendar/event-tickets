@@ -495,6 +495,7 @@
 	background-color: var(--tec-color-background);
 	border: solid 1px var(--tec-color-border-default);
 	border-radius: 8px;
+	margin-bottom: var(--tec-spacer-7);
 	padding: var(--tec-spacer-8);
 }
 
@@ -555,13 +556,25 @@
 	text-align: center;
 	text-decoration: none;
 	width: 233px;
+	
+	&:hover {
+		background-color: var(--tec-color-button-primary-hover);
+		color: #fff;
+	}
 }
+
 .tec-tickets__admin-settings-tickets-commerce-gateways-item-button-link--active {
 	background-color: #fff;
 	border-color: #3c434a;
 	border-style: solid;
 	border-width: 1px;
 	color: #3c434a;
+	
+	&:hover {
+		background-color: #fff;
+		border-color: var(--tec-color-accent-primary);
+		color: var(--tec-color-accent-primary);
+	}
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateways-item-toggle .tec-tickets__admin-settings-tickets-commerce-toggle-checkbox:checked + .tec-tickets__admin-settings-tickets-commerce-toggle-switch {
