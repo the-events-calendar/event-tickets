@@ -522,10 +522,19 @@
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateways-item {
-	align-items: center;
-	display: flex;
 	margin-bottom: var(--tec-spacer-7);
 	padding-bottom: var(--tec-spacer-0);
+	text-align: center;
+	
+	& > div {
+		padding: var(--tec-spacer-0) 0;
+	}
+	
+	@media (--viewport-medium) {
+		text-align: left;
+		align-items: center;
+		display: flex;
+	}
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateways-item-toggle {
@@ -597,7 +606,7 @@
 	font-size: var(--tec-font-size-2);
 	font-style: italic;
 	font-weight: var(--tec-font-weight-normal);
-	padding: 0px var(--tec-spacer-8);
+	margin: 0px var(--tec-spacer-8);
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateways-item-status--enabled {
