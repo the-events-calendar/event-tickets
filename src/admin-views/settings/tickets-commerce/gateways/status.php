@@ -6,28 +6,30 @@
  *
  * @var Tribe__Template  $this              Template object.
  * @var Gateway_Abstract $gateway           Gateway object.
- * @var Manager          $manager           Gateway Manager object.
  */
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
-use TEC\Tickets\Commerce\Gateways\Manager;
 
 if ( empty( $gateway ) ) {
-    return;
+	return;
 }
 
 if ( ! (  $gateway instanceof Abstract_Gateway  ) ) {
-    return;
+	return;
 }
 
 if ( ! $gateway::should_show() ) {
-    return;
+	return;
 }
 
-$key     = $gateway->get_key();
-$enabled = $manager->is_gateway_enabled( $gateway );
+$classes = [
+	'tec-tickets__admin-settings-tickets-commerce-gateways-item-status'
+];
+if ( $gateway->is_enabled() && $gateway->is_active() ) {
+	$classes[] = 'tec-tickets__admin-settings-tickets-commerce-gateways-item-status--enabled';
+}
 
 ?>
-<div class="tec-tickets__admin-settings-tickets-commerce-gateways-item-status">
-    <?php echo $gateway->get_status_text(); ?>
+<div <?php tribe_classes( $classes ); ?>>
+	<?php echo $gateway->get_status_text(); ?>
 </div>

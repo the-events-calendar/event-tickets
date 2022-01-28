@@ -25,10 +25,10 @@ if ( ! $gateway::should_show() ) {
 }
 
 $key     = $gateway->get_key();
-$enabled = $manager->is_gateway_enabled( $gateway );
 
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateways-item">
     <?php $this->template( 'gateways/brand' ); ?>
+    <?php $this->template( 'gateways/status' ); ?>
     <?php $this->template( 'gateways/button' ); ?>
 </div>

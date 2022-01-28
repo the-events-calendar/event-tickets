@@ -47,6 +47,16 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * @var string
 	 */
 	protected static $merchant;
+	
+	/**
+	 * The option name prefix that configured whether or not a gateway is enabled. 
+	 * It is followed by the gateway 'key'
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_enabled_prefix = '_tickets_commerce_gateway_enabled_';
 
 	/**
 	 * @inheritDoc
@@ -204,14 +214,14 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	}
 	
 	/**
-	 * Get status text to use when listing gateways.
+	 * Returns the enabled option key.
 	 *
 	 * @since TBD
 	 *
 	 * @return string
 	 */
-	public function get_status_text() {
-		return '';
+	public static function get_enabled_option_key() {
+		return static::$option_enabled_prefix . self::$key;
 	}
 	
 	/**
@@ -222,6 +232,29 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * @return boolean
 	 */
 	public static function is_enabled() {
-		return (bool) tribe_get_option( tribe( Manager::class )->get_enabled_option_by_key( self::$key ) );
+		if ( ! static::should_show() ) {
+			return false;
+		}
+		
+		return (bool) tribe_get_option( static::get_enabled_option_key() );
+	}
+	
+	/**
+	 * Returns status text.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_status_text() {		
+		if ( ! static::is_enabled() ) {
+			return '';
+		}
+		
+		if ( ! static::is_active() ) {
+			return __( 'Enabled, but not active', 'event-tickets' );
+		}
+		
+		return __( 'Enabled for Checkout', 'event-tickets' );
 	}
 }
