@@ -3,7 +3,6 @@
 >
 	<div class="tec-tickets__admin-settings-tickets-commerce-stripe-connect-button">
 		<a
-			target="_blank"
 			data-stripe-onboard-complete="tecTicketsCommerceGatewayStripeSignupCallback"
 			href="<?php echo esc_url( $url ) ?>"
 			data-stripe-button="true"
