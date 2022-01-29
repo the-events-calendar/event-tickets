@@ -309,7 +309,7 @@ class Settings extends Abstract_Settings {
 		$context = [
 			'plugin_url' => Tribe__Tickets__Main::instance()->plugin_url,
 //			'merchant'              => $merchant,
-//			'is_merchant_connected' => $merchant->is_connected(),
+			'is_merchant_connected' => tribe( Merchant::class )->is_connected( true ),
 //			'is_merchant_active'    => $merchant->is_active(),
 			'signup'     => tribe( Signup::class ),
 		];

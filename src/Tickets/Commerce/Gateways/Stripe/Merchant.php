@@ -14,24 +14,31 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 class Merchant extends Abstract_Merchant {
 
 	/**
-	 * Determines if the Merchant is active.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	public function is_active( $recheck = false ) {
-		return true;
-	}
-
-	/**
 	 * Determines if the Merchant is connected.
 	 *
 	 * @since TBD
 	 *
 	 * @return bool
 	 */
-	public function is_connected() {
+	public function is_connected( $recheck = false ) {
+		$client_data = $this->to_array();
+
+		if ( empty( $client_data['client_id'] )
+			 || empty( $client_data['client_secret'] )
+			 || empty( $client_data['publishable_key'] )
+		) {
+			return false;
+		}
+
+		if ( $recheck ) {
+			$active = tribe( Client::class )->check_account_status( $client_data );
+
+			if ( ! $active ) {
+				$this->save_signup_data([]);
+				return false;
+			}
+		}
+
 		return true;
 	}
 

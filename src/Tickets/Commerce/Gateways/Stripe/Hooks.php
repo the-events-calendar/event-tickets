@@ -137,7 +137,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function maybe_create_stripe_payment_intent() {
 
-		if ( ! tribe( Merchant::class )->is_active() || ! tribe( Merchant::class )->is_connected() ) {
+		if ( ! tribe( Merchant::class )->is_connected() ) {
 			return;
 		}
 

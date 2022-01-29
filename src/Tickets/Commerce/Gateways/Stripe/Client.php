@@ -255,6 +255,56 @@ class Client {
 		return $this->get( $url, $query_args, $args );
 	}
 
+	public function check_account_status( $client_data ) {
+		$query_args = [];
+		$args       = [];
+
+		$account_id = urlencode( $client_data['client_id'] );
+		$url        = '/accounts/{account_id}';
+		$url        = str_replace( '{account_id}', $account_id, $url );
+
+		$response = $this->get( $url, $query_args, $args );
+
+		$return = [
+			'connected'       => false,
+			'charges_enabled' => false,
+			'errors'          => [],
+			'capabilities'    => [],
+		];
+
+		if ( ! empty( $response['account'] ) ) {
+			$return['connected'] = true;
+
+			if ( $response['charges_enabled'] ) {
+				$return['charges_enabled'] = true;
+			}
+
+			if ( ! empty( $response['capabilities'] ) ) {
+				$return['capabilities'] = $response['capabilities'];
+			}
+
+			if ( ! empty( $response['requirements']['errors'] ) ) {
+				$return['errors']['requirements'] = $response['requirements']['errors'];
+			}
+
+			if ( ! empty( $response['future_requirements']['errors'] ) ) {
+				$return['errors']['future_requirements'] = $response['future_requirements']['errors'];
+			}
+		}
+
+		if ( ! empty( $response['type'] ) && in_array( $response['type'], [
+				'api_error',
+				'card_error',
+				'idempotency_error',
+				'invalid_request_error',
+			], true ) ) {
+
+			$return['request_error'] = $response;
+		}
+
+		return $return;
+	}
+
 	/**
 	 * Send a given method request to a given URL in the Stripe API.
 	 *
