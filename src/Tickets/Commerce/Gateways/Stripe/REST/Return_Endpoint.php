@@ -80,6 +80,10 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 				$this->handle_connection_error( $response );
 			}
 
+			if ( ! empty( $response->stripe_disconnected ) && $response->stripe_disconnected ) {
+				$this->handle_connection_terminated();
+			}
+
 			$this->handle_connection_established( $response );
 		}
 
@@ -116,9 +120,9 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	public function handle_connection_established( $payload ) {
 
 		$tracking_id = tribe( Gateway::class )->generate_unique_tracking_id();
-		$whodat_identifier_hash = explode( 'v=', $tracking_id );
+		$url = parse_url( $tracking_id );
 
-		if ( $payload->whodat !== md5( $whodat_identifier_hash[0] ) ) {
+		if ( $payload->whodat !== md5( $url['path'] ) ) {
 			return;
 		}
 

@@ -276,7 +276,7 @@ class Client {
 
 		$response = $this->get( $url, [], [] );
 
-		if ( ! empty( $response['object'] && 'account' === $response['object'] )  ) {
+		if ( ! empty( $response['object'] ) && 'account' === $response['object'] ) {
 			$return['connected'] = true;
 
 			if ( $response['charges_enabled'] ) {
