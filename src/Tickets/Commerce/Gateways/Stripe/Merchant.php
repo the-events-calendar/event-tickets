@@ -31,15 +31,19 @@ class Merchant extends Abstract_Merchant {
 		}
 
 		if ( $recheck ) {
-			$active = tribe( Client::class )->check_account_status( $client_data );
+			$status = tribe( Client::class )->check_account_status( $client_data );
 
-			if ( ! $active ) {
-				$this->save_signup_data([]);
+			if ( false === $status['connected'] ) {
 				return false;
 			}
 		}
 
 		return true;
+	}
+
+	public function get_connection_status() {
+		$client_data = $this->to_array();
+		return tribe( Client::class )->check_account_status( $client_data );
 	}
 
 	/**

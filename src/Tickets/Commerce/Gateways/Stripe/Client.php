@@ -256,15 +256,6 @@ class Client {
 	}
 
 	public function check_account_status( $client_data ) {
-		$query_args = [];
-		$args       = [];
-
-		$account_id = urlencode( $client_data['client_id'] );
-		$url        = '/accounts/{account_id}';
-		$url        = str_replace( '{account_id}', $account_id, $url );
-
-		$response = $this->get( $url, $query_args, $args );
-
 		$return = [
 			'connected'       => false,
 			'charges_enabled' => false,
@@ -272,7 +263,20 @@ class Client {
 			'capabilities'    => [],
 		];
 
-		if ( ! empty( $response['account'] ) ) {
+		if ( empty( $client_data['client_id'] )
+			 || empty( $client_data['client_secret'] )
+			 || empty( $client_data['publishable_key'] )
+		) {
+			return $return;
+		}
+
+		$account_id = urlencode( $client_data['client_id'] );
+		$url        = '/accounts/{account_id}';
+		$url        = str_replace( '{account_id}', $account_id, $url );
+
+		$response = $this->get( $url, [], [] );
+
+		if ( ! empty( $response['object'] && 'account' === $response['object'] )  ) {
 			$return['connected'] = true;
 
 			if ( $response['charges_enabled'] ) {

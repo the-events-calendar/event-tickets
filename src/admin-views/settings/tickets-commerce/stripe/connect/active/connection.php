@@ -1,25 +1,23 @@
 <?php
 /**
- * The Template for displaying the Tickets Commerce PayPal connection details.
+ * The Template for displaying the Tickets Commerce Stripe connection details.
  *
- * @version 5.1.10
+ * @since   TBD
  *
- * @since 5.1.10
+ * @version TBD
  *
- * @var Tribe__Tickets__Admin__Views                  $this               [Global] Template object.
- * @var string                                        $plugin_url         [Global] The plugin URL.
- * @var TEC\Tickets\Commerce\Gateways\PayPal\Merchant $merchant           [Global] The merchant class.
- * @var TEC\Tickets\Commerce\Gateways\PayPal\Signup   $signup             [Global] The Signup class.
- * @var bool                                          $is_merchant_active    [Global] Whether the merchant is active or not.
- * @var bool                                          $is_merchant_connected [Global] Whether the merchant is connected or not.
+ * @var string                                        $plugin_url      [Global] The plugin URL.
+ * @var TEC\Tickets\Commerce\Gateways\Stripe\Signup   $signup          [Global] The Signup class.
+ * @var TEC\Tickets\Commerce\Gateways\Stripe\Merchant $merchant        [Global] The Signup class.
+ * @var array                                         $merchant_status [Global] Merchant Status data.
  */
 
-if ( empty( $is_merchant_connected ) ) {
+if ( false === $merchant_status['connected'] ) {
 	return;
 }
 
-$name           = $merchant->get_merchant_id();
-$disconnect_url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-action' => 'stripe-disconnect' ] );
+$name           = $merchant->get_client_id();
+$disconnect_url = $signup->generate_disconnect_url();
 
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-stripe-connected-row">
@@ -31,8 +29,8 @@ $disconnect_url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', '
 			<?php echo esc_html( $name ); ?>
 		</span>
 		<a
-			href="<?php echo esc_url( $disconnect_url ); ?>"
-			class="tec-tickets__admin-settings-tickets-commerce-stripe-connected-text-disconnect-link"
+				href="<?php echo esc_url( $disconnect_url ); ?>"
+				class="tec-tickets__admin-settings-tickets-commerce-stripe-connected-text-disconnect-link"
 		>
 			<?php esc_html_e( 'Disconnect', 'event-tickets' ); ?>
 		</a>

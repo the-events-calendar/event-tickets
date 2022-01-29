@@ -307,14 +307,11 @@ class Settings extends Abstract_Settings {
 		$admin_views = tribe( 'tickets.admin.views' );
 
 		$context = [
-			'plugin_url' => Tribe__Tickets__Main::instance()->plugin_url,
-//			'merchant'              => $merchant,
-			'is_merchant_connected' => tribe( Merchant::class )->is_connected( true ),
-//			'is_merchant_active'    => $merchant->is_active(),
-			'signup'     => tribe( Signup::class ),
+			'plugin_url'      => Tribe__Tickets__Main::instance()->plugin_url,
+			'merchant_status' => tribe( Merchant::class )->get_connection_status(),
+			'signup'          => tribe( Signup::class ),
+			'merchant'          => tribe( Merchant::class ),
 		];
-
-		// $admin_views->add_template_globals( $context );
 
 		return $admin_views->template( 'settings/tickets-commerce/stripe/main', $context, false );
 	}

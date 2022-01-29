@@ -74,7 +74,6 @@ class Signup extends Abstract_Signup {
 	public function get_link_html() {
 		$template_vars = [
 			'url' => $this->generate_signup_url(),
-			'disconnect_url' => $this->generate_disconnect_url(),
 		];
 
 		$this->get_template()->template( 'signup-link', $template_vars );
