@@ -31,7 +31,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return bool
 	 */
-	public function is_connected( $recheck = false ) {
+	public function is_connected() {
 		return true;
 	}
 
@@ -73,6 +73,10 @@ class Merchant extends Abstract_Merchant {
 	public function get_client_secret() {
 		$keys = get_option( $this->get_signup_data_key() );
 
+		if ( empty( $keys[ $this->get_mode() ]->access_token ) ) {
+			return '';
+		}
+
 		return $keys[ $this->get_mode() ]->access_token;
 	}
 
@@ -86,6 +90,10 @@ class Merchant extends Abstract_Merchant {
 	public function get_publishable_key() {
 		$keys = get_option( $this->get_signup_data_key() );
 
+		if ( empty( $keys[ $this->get_mode() ]->publishable_key ) ) {
+			return '';
+		}
+
 		return $keys[ $this->get_mode() ]->publishable_key;
 	}
 
@@ -98,6 +106,10 @@ class Merchant extends Abstract_Merchant {
 	 */
 	public function get_client_id() {
 		$keys = get_option( $this->get_signup_data_key() );
+
+		if ( empty( $keys['stripe_user_id'] ) ) {
+			return '';
+		}
 
 		return $keys['stripe_user_id'];
 	}

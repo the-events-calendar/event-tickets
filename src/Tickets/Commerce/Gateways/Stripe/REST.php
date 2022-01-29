@@ -16,6 +16,7 @@ class REST extends \tad_DI52_ServiceProvider {
 	 */
 	public function register() {
 		$this->container->singleton( REST\Order_Endpoint::class );
+		$this->container->singleton( REST\Return_Endpoint::class );
 	}
 
 	/**
@@ -25,5 +26,6 @@ class REST extends \tad_DI52_ServiceProvider {
 	 */
 	public function register_endpoints() {
 		$this->container->make( REST\Order_Endpoint::class )->register();
+		$this->container->make( REST\Return_Endpoint::class )->register();
 	}
 }

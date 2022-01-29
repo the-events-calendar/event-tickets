@@ -62,11 +62,16 @@ class Gateway extends Abstract_Gateway {
 				'content' => __( 'Stripe signup was successful but the authentication tokens could not be retrieved. Try refreshing the tokens. Try again.', 'event-tickets' ),
 				'type'    => 'error',
 			],
+			[
+				'slug'    => 'tc-stripe-disconnect-error',
+				'content' => __( 'Disconnecting from Stripe failed. Please try again.', 'event-tickets' ),
+				'type'    => 'error',
+			],
 		];
 
 		return $notices;
 	}
-  
+
 	/**
 	 * @inheritDoc
 	 */
@@ -80,5 +85,5 @@ class Gateway extends Abstract_Gateway {
 	public function get_subtitle() {
 		return __( 'Enable credit card payment and afterpay', 'event-tickets' );
 	}
-  
+
 }

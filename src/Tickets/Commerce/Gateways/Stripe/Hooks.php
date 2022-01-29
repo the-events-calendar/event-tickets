@@ -28,7 +28,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	protected function add_actions() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
-		add_action( 'plugins_loaded', [ $this, 'handle_action_connected' ] );
+		add_action( 'wp', [ $this, 'handle_action_stripe_return' ] );
 		add_action( 'wp', [ $this, 'maybe_create_stripe_payment_intent' ] );
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
 
@@ -68,17 +68,25 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Receive data after a connection to stripe has been established
+	 * Receive data after a connection to stripe has been attempted
 	 *
 	 * @since TBD
 	 */
-	public function handle_action_connected() {
+	public function handle_action_stripe_return() {
 
-		if ( empty( tribe_get_request_var( 'stripe' ) ) ) {
+		$query_args = tribe_get_request_var( 'stripe' );
+
+		if ( empty( $query_args ) || ( defined('REST_REQUEST') && REST_REQUEST ) ) {
 			return;
 		}
 
-		tribe( Signup::class )->handle_connection_established();
+		$url = add_query_arg(
+			[ 'stripe' => $query_args ],
+			rest_url( tribe( Signup::class )->signup_return_path )
+		);
+
+		wp_safe_redirect( $url );
+		exit();
 	}
 
 	/**
