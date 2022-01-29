@@ -34,7 +34,7 @@ tribe.tickets.commerce.billing.selectors = {
 	cardZip: '#tec-tc-gateway-stripe-card-zip > input',
 }
 
-tribe.tickets.commerce.billing.getDetails = function() {
+tribe.tickets.commerce.billing.getDetails = function( long ) {
 	var billing_details = {}
 	var selectors = tribe.tickets.commerce.billing.selectors;
 	var zipCode = document.querySelector( selectors.cardZip );
@@ -50,6 +50,11 @@ tribe.tickets.commerce.billing.getDetails = function() {
 
 	billing_details.name = billing_details.firstName+' '+billing_details.lastName;
 	billing_details.name.trim();
+
+	if ( false === long ) {
+		delete billing_details.firstName;
+		delete billing_details.lastName;
+	}
 
 	return billing_details;
 };

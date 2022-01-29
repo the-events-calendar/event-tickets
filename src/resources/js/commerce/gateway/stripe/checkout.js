@@ -118,6 +118,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {boolean}
 	 */
 	obj.handlePaymentError = ( data ) => {
+		console.log( data.error.message );
 		tribe.tickets.debug.log( 'stripe', 'handlePaymentError', data );
 		return false;
 	};
@@ -176,19 +177,21 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.submitMultiPayment = async ( order ) => {
 		var elements = obj.stripeElements;
+		var billing_details = billing.getDetails(false);
 		var order = order;
 		return obj.stripeLib.confirmPayment( {
 			elements,
 			redirect: 'if_required',
 			confirmParams: {
-				return_url: order.redirect_url
+				return_url: order.redirect_url,
+				payment_method_data: {
+					billing_details: billing_details
+				}
 			}
 		} ).then( function( result ) {
 			if ( result.error ) {
-				// Show error to your customer (for example, insufficient funds)
-				console.log( result.error.message );
+				obj.handlePaymentError( result );
 			} else {
-				// The payment has been processed!
 				if ( result.paymentIntent.status === 'succeeded' ) {
 					obj.handlePaymentSuccess( result );
 				}
@@ -202,20 +205,17 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @returns {Promise<void>}
 	 */
 	obj.submitCardPayment = async () => {
-		var elements = obj.stripeElements;
-		var billing_details = billing.getDetails();
+		var billing_details = billing.getDetails(false);
 
-		obj.stripeLib.confirmCardPayment( obj.secret.clientSecret, {
+		obj.stripeLib.confirmCardPayment( obj.checkout.paymentIntentData.key, {
 			payment_method: {
-				card: elements,
+				card: obj.cardElement,
 				billing_details: billing_details
 			}
 		} ).then( function( result ) {
 			if ( result.error ) {
-				// Show error to your customer (for example, insufficient funds)
-				console.log( result.error.message );
+				obj.handlePaymentError( result );
 			} else {
-				// The payment has been processed!
 				if ( result.paymentIntent.status === 'succeeded' ) {
 					obj.handlePaymentSuccess( result );
 				}
