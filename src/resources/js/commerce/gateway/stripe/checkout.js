@@ -179,8 +179,19 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		var order = order;
 		return obj.stripeLib.confirmPayment( {
 			elements,
+			redirect: 'if_required',
 			confirmParams: {
 				return_url: order.redirect_url
+			}
+		} ).then( function( result ) {
+			if ( result.error ) {
+				// Show error to your customer (for example, insufficient funds)
+				console.log( result.error.message );
+			} else {
+				// The payment has been processed!
+				if ( result.paymentIntent.status === 'succeeded' ) {
+					obj.handlePaymentSuccess( result );
+				}
 			}
 		} );
 	};
