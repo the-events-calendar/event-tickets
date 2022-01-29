@@ -57,7 +57,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		cardCvc: '#tec-tc-gateway-stripe-card-cvc',
 		cardZipWrapper: '#tec-tc-gateway-stripe-card-zip',
 		cardElement: '#tec-tc-gateway-stripe-card-element',
-		cardErrors: '#tec-tc-gateway-stripe-card-errors',
+		cardErrors: '#tec-tc-gateway-stripe-errors',
 		paymentElement: '#tec-tc-gateway-stripe-payment-element',
 		paymentMessage: '#tec-tc-gateway-stripe-payment-message',
 		submitButton: '#tec-tc-gateway-stripe-checkout-button'
@@ -119,6 +119,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.handlePaymentError = ( data ) => {
 		console.log( data.error.message );
+
+		var errorEl = document.querySelector( obj.selectors.cardErrors );
+		errorEl.value = data.error.message;
+
 		tribe.tickets.debug.log( 'stripe', 'handlePaymentError', data );
 		return false;
 	};

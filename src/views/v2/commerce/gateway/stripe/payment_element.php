@@ -26,3 +26,4 @@ if ( $must_login || ! $payment_element ) {
 	<span id="button-text">Pay now</span>
 </button>
 <div id="tec-tc-gateway-stripe-payment-message" class="hidden"></div>
+<div id="tec-tc-gateway-stripe-errors" role="alert"></div>

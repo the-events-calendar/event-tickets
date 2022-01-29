@@ -27,7 +27,7 @@ if ( $must_login || $payment_element ) {
 	<span id="tec-tc-gateway-stripe-card-zip"></span>
 </div>
 
-<div id="tec-tc-gateway-stripe-card-errors" role="alert"></div>
+<div id="tec-tc-gateway-stripe-errors" role="alert"></div>
 
 <button id="tec-tc-gateway-stripe-checkout-button"
 		class="tribe-common-c-btn">
