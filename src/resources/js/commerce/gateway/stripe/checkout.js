@@ -89,6 +89,16 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	/**
+	 * Toggle the submit button enabled/disabled
+	 *
+	 * @param enable
+	 */
+	obj.submitButton = ( enable ) => {
+		let submitButton = document.querySelector( obj.selectors.submitButton );
+		submitButton.disabled = ! enable;
+	}
+
+	/**
 	 * Receive the Payment from Stripe.
 	 *
 	 * @since TBD
@@ -193,6 +203,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 				}
 			}
 		} ).then( function( result ) {
+			obj.submitButton(true);
 			if ( result.error ) {
 				obj.handlePaymentError( result );
 			} else {
@@ -217,6 +228,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 				billing_details: billing_details
 			}
 		} ).then( function( result ) {
+			obj.submitButton(true);
 			if ( result.error ) {
 				obj.handlePaymentError( result );
 			} else {
@@ -263,6 +275,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		event.preventDefault();
 
 		let order = await obj.handleCreateOrder();
+		obj.submitButton(false);
 
 		if ( order.success ) {
 			if ( obj.checkout.paymentElement ) {
