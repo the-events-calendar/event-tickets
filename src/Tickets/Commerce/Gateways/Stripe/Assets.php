@@ -4,7 +4,6 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Order_Endpoint;
-use TEC\Tickets\Commerce\Gateways\Stripe\REST\Payment_Intent_Secret_Endpoint;
 
 /**
  * Class Assets.
@@ -47,7 +46,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 			[
 				'jquery',
 				'tribe-common',
-//				'tec-ky',
+//				'tec-ky', @todo add this as a module and remove it from checkout.js
 				'tribe-query-string',
 				'tec-tickets-commerce-gateway-stripe-base',
 				'tribe-tickets-loader',

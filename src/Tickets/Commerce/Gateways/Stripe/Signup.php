@@ -62,8 +62,8 @@ class Signup extends Abstract_Signup {
 		return tribe( WhoDat::class )->get_api_url(
 			'disconnect',
 			[
-				'stripe_user_id'      => tribe( Merchant::class )->get_client_id(),
-				'return_url' => \rest_url( $this->signup_return_path ),
+				'stripe_user_id' => tribe( Merchant::class )->get_client_id(),
+				'return_url'     => rest_url( $this->signup_return_path ),
 			]
 		);
 	}
@@ -102,7 +102,7 @@ class Signup extends Abstract_Signup {
 	public function is_success( $data ) {
 
 		return ! empty( $data->stripe_user_id )
-			&& ! empty( $data->live->access_token )
-			&& ! empty( $data->sandbox->access_token );
+			   && ! empty( $data->live->access_token )
+			   && ! empty( $data->sandbox->access_token );
 	}
 }

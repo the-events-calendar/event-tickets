@@ -24,6 +24,15 @@ abstract class Abstract_Order {
 		return $total_value->total( $sub_totals );
 	}
 
+	/**
+	 * Prepare purchaser data received from the checkout page to include in orders.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data user data input in the checkout page
+	 *
+	 * @return array
+	 */
 	public function prepare_purchaser_data( $data ) {
 		$purchaser = [
 			'purchaser_user_id' => 0,
@@ -44,16 +53,16 @@ abstract class Abstract_Order {
 		}
 
 		if ( ! empty( $data['billing_details']['firstName'] ) ) {
-			$purchaser['purchaser_first_name'] = $data['billing_details']['firstName'];
+			$purchaser['purchaser_first_name'] = sanitize_text_field( $data['billing_details']['firstName'] );
 		}
 		if ( ! empty( $data['billing_details']['lastName'] ) ) {
-			$purchaser['purchaser_last_name'] = $data['billing_details']['lastName'];
+			$purchaser['purchaser_last_name'] = sanitize_text_field( $data['billing_details']['lastName'] );
 		}
 		if ( ! empty( $data['billing_details']['name'] ) ) {
-			$purchaser['purchaser_full_name'] = $data['billing_details']['name'];
+			$purchaser['purchaser_full_name'] = sanitize_text_field( $data['billing_details']['name'] );
 		}
 		if ( ! empty( $data['billing_details']['email'] ) ) {
-			$purchaser['purchaser_email'] = $data['billing_details']['email'];
+			$purchaser['purchaser_email'] = sanitize_email( $data['billing_details']['email'] );
 		}
 
 		return $purchaser;

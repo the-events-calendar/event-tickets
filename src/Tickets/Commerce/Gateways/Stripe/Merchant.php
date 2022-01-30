@@ -41,6 +41,13 @@ class Merchant extends Abstract_Merchant {
 		return true;
 	}
 
+	/**
+	 * Gather connections status from the Stripe API
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
 	public function get_connection_status() {
 		$client_data = $this->to_array();
 		return tribe( Client::class )->check_account_status( $client_data );

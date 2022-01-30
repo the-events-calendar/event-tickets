@@ -13,6 +13,13 @@ use TEC\Tickets\Commerce\Module;
  */
 class Stripe_Elements {
 
+	/**
+	 * Are we forcing users to log in before checking out?
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
 	public function must_login() {
 		return ! is_user_logged_in() && tribe( Module::class )->login_required();
 	}

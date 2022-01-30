@@ -25,6 +25,13 @@ class Client {
 	 */
 	public $payment_intent_transient_prefix = 'paymentintent-';
 
+	/**
+	 * Transient name to store payment intents
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	public $payment_intent_transient_name;
 
 	/**
@@ -222,7 +229,7 @@ class Client {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $payment_intent
+	 * @param array $payment_intent payment intent data from Stripe
 	 */
 	public function store_payment_intent( $payment_intent ) {
 		if ( ! empty( $payment_intent['client_secret'] ) ) {
@@ -255,6 +262,14 @@ class Client {
 		return $this->get( $url, $query_args, $args );
 	}
 
+	/**
+	 * Query the Stripe API to gather information about the current connected account.
+	 *
+	 * @since TBD
+	 * @param array $client_data connection data from the database
+	 *
+	 * @return array
+	 */
 	public function check_account_status( $client_data ) {
 		$return = [
 			'connected'       => false,

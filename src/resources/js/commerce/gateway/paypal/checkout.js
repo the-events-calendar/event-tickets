@@ -29,10 +29,32 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
  */
 ( function ( $, tc ) {
 	'use strict';
+
+	/**
+	 * The document element
+	 *
+	 * @since TBD
+	 *
+	 * @type {jQuery|HTMLElement}
+	 */
 	const $document = $( document );
 
+	/**
+	 * The gateway.paypal object from the global tribe object
+	 *
+	 * @since TBD
+	 *
+	 * @type {Object}
+	 */
 	const obj = tc.gateway.paypal;
 
+	/**
+	 * The billing object from the global tribe object
+	 *
+	 * @since TBD
+	 *
+	 * @type {Object}
+	 */
 	const billing = tc.billing;
 
 	/**

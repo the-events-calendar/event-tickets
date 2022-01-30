@@ -25,8 +25,22 @@ tribe.tickets.commerce = tribe.tickets.commerce || {};
  */
 tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 
+/**
+ * Path to the billing information in the global tribe Object
+ *
+ * @since TBD
+ *
+ * @type {Object}
+ */
 tribe.tickets.commerce.billing = {};
 
+/**
+ * Selectors used to store billing information
+ *
+ * @since TBD
+ *
+ * @type {{billingLastName: string, billingEmail: string, cardZip: string, billingFirstName: string}}
+ */
 tribe.tickets.commerce.billing.selectors = {
 	billingFirstName: '#tec-tc-gateway-stripe-billing-first-name > input',
 	billingLastName: '#tec-tc-gateway-stripe-billing-last-name > input',
@@ -34,6 +48,13 @@ tribe.tickets.commerce.billing.selectors = {
 	cardZip: '#tec-tc-gateway-stripe-card-zip > input',
 }
 
+/**
+ * Retrieve billing information from the inputs on the checkout page
+ *
+ * @param bool long retrieve information in the long form (true) or short form (false)
+ *
+ * @returns {Object}
+ */
 tribe.tickets.commerce.billing.getDetails = function( long ) {
 	var billing_details = {}
 	var selectors = tribe.tickets.commerce.billing.selectors;

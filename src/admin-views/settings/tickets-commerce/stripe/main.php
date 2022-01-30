@@ -4,6 +4,8 @@
  *
  * @since   TBD
  *
+ * @todo FrontEnd needs to revisit all of these templates to make sure we're not missing anything
+ *
  * @version TBD
  *
  * @var string                                        $plugin_url      [Global] The plugin URL.

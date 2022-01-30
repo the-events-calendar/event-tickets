@@ -14,7 +14,18 @@ use Tribe__Tickets__Main;
  */
 class Settings extends Abstract_Settings {
 
+	/**
+	 * DB identifier for the Payment Element selection
+	 *
+	 * @var string
+	 */
 	const PAYMENT_ELEMENT_SLUG = 'payment';
+
+	/**
+	 * DB identifier for the Card Element selection
+	 *
+	 * @var string
+	 */
 	const CARD_ELEMENT_SLUG = 'card';
 
 	/**
@@ -145,7 +156,8 @@ class Settings extends Abstract_Settings {
 			static::$option_checkout_element_payment_methods    => [
 				'type'            => 'checkbox_list',
 				'label'           => esc_html__( 'Payment Methods (Payment Element)', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Which payment methods should be offered to your customers? Only select methods previously enabled in your Stripe account.' ), // @todo add proper tooltip
+				'tooltip'         => esc_html__( 'Which payment methods should be offered to your customers? Only select methods previously enabled in your Stripe account.' ),
+				// @todo add proper tooltip
 				'default'         => 'card',
 				'conditional'     => tribe_get_option( static::$option_checkout_element ) === self::PAYMENT_ELEMENT_SLUG,
 				'validation_type' => 'options_multi',
@@ -310,7 +322,7 @@ class Settings extends Abstract_Settings {
 			'plugin_url'      => Tribe__Tickets__Main::instance()->plugin_url,
 			'merchant_status' => tribe( Merchant::class )->get_connection_status(),
 			'signup'          => tribe( Signup::class ),
-			'merchant'          => tribe( Merchant::class ),
+			'merchant'        => tribe( Merchant::class ),
 		];
 
 		return $admin_views->template( 'settings/tickets-commerce/stripe/main', $context, false );

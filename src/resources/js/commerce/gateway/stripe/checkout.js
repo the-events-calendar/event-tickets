@@ -30,11 +30,34 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 
 (( $, tc, Stripe, ky ) => {
 	'use strict';
+
+	/**
+	 * The document element
+	 *
+	 * @since TBD
+	 *
+	 * @type {jQuery|HTMLElement}
+	 */
 	const $document = $( document );
 
+	/**
+	 * The gateway.stripe object from the global tribe object
+	 *
+	 * @since TBD
+	 *
+	 * @type {Object}
+	 */
 	const obj = tc.gateway.stripe;
 
+	/**
+	 * The billing object from the global tribe object
+	 *
+	 * @since TBD
+	 *
+	 * @type {Object}
+	 */
 	const billing = tc.billing;
+
 	/**
 	 * Pull the variables from the PHP backend.
 	 *

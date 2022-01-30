@@ -9,6 +9,8 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
+ * @todo FrontEnd needs to revisit all of these templates to make sure we're not missing anything
+ *
  * @since   TBD
  *
  * @version TBD
