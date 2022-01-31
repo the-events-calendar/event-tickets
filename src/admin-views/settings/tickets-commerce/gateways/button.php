@@ -23,7 +23,8 @@ if ( ! $gateway::should_show() ) {
 }
 
 $classes = [
-    'tec-tickets__admin-settings-tickets-commerce-gateways-item-button-link'
+    'tec-tickets__admin-settings-tickets-commerce-gateways-item-button-link',
+    'tec-tickets__admin-settings-tickets-commerce-gateways-item-button-link--active' => $gateway->is_active(),
 ];
 
 $button_text = sprintf(
@@ -38,7 +39,6 @@ if ( $gateway->is_active() ) {
         __( 'Edit %s Connection', 'event-tickets' ),
         $gateway->get_label()
     );
-    $classes[] = 'tec-tickets__admin-settings-tickets-commerce-gateways-item-button-link--active';
 }
 
 ?>

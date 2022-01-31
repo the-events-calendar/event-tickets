@@ -23,11 +23,9 @@ if ( ! $gateway::should_show() ) {
 }
 
 $classes = [
-	'tec-tickets__admin-settings-tickets-commerce-gateways-item-status'
+	'tec-tickets__admin-settings-tickets-commerce-gateways-item-status',
+	'tec-tickets__admin-settings-tickets-commerce-gateways-item-status--enabled' => $gateway->is_enabled() && $gateway->is_active(),
 ];
-if ( $gateway->is_enabled() && $gateway->is_active() ) {
-	$classes[] = 'tec-tickets__admin-settings-tickets-commerce-gateways-item-status--enabled';
-}
 
 ?>
 <div <?php tribe_classes( $classes ); ?>>
