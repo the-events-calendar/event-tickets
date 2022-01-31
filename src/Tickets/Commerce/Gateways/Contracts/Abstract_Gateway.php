@@ -221,7 +221,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * @return string
 	 */
 	public static function get_enabled_option_key() {
-		return static::$option_enabled_prefix . self::$key;
+		return static::$option_enabled_prefix . self::get_key();
 	}
 	
 	/**
