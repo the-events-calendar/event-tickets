@@ -18,16 +18,16 @@ if ( true === $merchant_status['connected'] ) {
 
 ?>
 
-<h2 class="tec-tickets__admin-settings-tickets-commerce-stripe-title">
+<h2 class="tec-tickets__admin-settings-tickets-commerce-gateway-title">
 	<?php esc_html_e( 'Accept online payments with Stripe!', 'event-tickets' ); ?>
 </h2>
 
-<div class="tec-tickets__admin-settings-tickets-commerce-stripe-description">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway-description">
 	<p>
 		<?php esc_html_e( 'Start selling tickets to your events today with Stripe. Attendees can purchase tickets directly on your site using debit or credit cards with no additional fees.', 'event-tickets' ); ?>
 	</p>
 
-	<div class="tec-tickets__admin-settings-tickets-commerce-stripe-signup-links">
+	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-signup-links">
 		<?php $signup->get_link_html(); ?>
 	</div>
 

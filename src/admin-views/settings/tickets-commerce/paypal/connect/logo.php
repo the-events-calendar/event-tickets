@@ -16,7 +16,7 @@
 
 ?>
 
-<div class="tec-tickets__admin-settings-tickets-commerce-paypal-logo">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway-logo">
 
 	<?php $this->template( 'settings/tickets-commerce/paypal/connect/logo/image' ); ?>
 

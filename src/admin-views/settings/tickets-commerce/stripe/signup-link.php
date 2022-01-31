@@ -1,13 +1,13 @@
 <div
-	class="tec-tickets__admin-settings-tickets-commerce-stripe-signup-settings"
+	class="tec-tickets__admin-settings-tickets-commerce-gateway-signup-settings"
 >
-	<div class="tec-tickets__admin-settings-tickets-commerce-stripe-connect-button">
+	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button">
 		<a
-			data-stripe-onboard-complete="tecTicketsCommerceGatewayStripeSignupCallback"
+			data-gateway-onboard-complete="tecTicketsCommerceGatewayStripeSignupCallback"
 			href="<?php echo esc_url( $url ) ?>"
-			data-stripe-button="true"
+			data-gateway-button="true"
 			id="connect_to_stripe"
-			class="tec-tickets__admin-settings-tickets-commerce-stripe-connect-button-link"
+			class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link"
 		>
 			<?php echo wp_kses( __( 'Connect with <i>Stripe</i>', 'event-tickets' ), 'post' ); ?>
 		</a>

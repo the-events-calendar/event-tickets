@@ -17,7 +17,7 @@ if ( false === $merchant_status['connected'] ) {
 }
 ?>
 
-<div class="tec-tickets__admin-settings-tickets-commerce-stripe-connected">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected">
 
 	<?php $this->template( 'settings/tickets-commerce/stripe/connect/active/stripe-status' ); ?>
 

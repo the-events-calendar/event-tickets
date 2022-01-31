@@ -14,7 +14,7 @@
 
 ?>
 
-<div class="tec-tickets__admin-settings-tickets-commerce-stripe-help-links">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-links">
 
 	<?php $this->template( 'settings/tickets-commerce/stripe/connect/help-links/configuring' ); ?>
 

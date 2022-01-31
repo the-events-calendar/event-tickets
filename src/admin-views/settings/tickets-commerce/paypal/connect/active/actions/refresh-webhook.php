@@ -25,5 +25,5 @@ $url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-action' 
 
 <a
 	href="<?php echo esc_url( $url ); ?>"
-	class="tec-tickets__admin-settings-tickets-commerce-paypal-refresh-link"
+	class="tec-tickets__admin-settings-tickets-commerce-gateway-refresh-link"
 ><?php esc_html_e( 'Refresh Webhook', 'event-tickets' ); ?></a>

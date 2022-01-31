@@ -19,12 +19,12 @@ if ( ! empty( $is_merchant_connected ) ) {
 }
 
 ?>
-<div class="tec-tickets__admin-settings-tickets-commerce-paypal-help-link">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link">
 	<?php $this->template( 'components/icons/lightbulb' ); ?>
 	<a
 		href="https://evnt.is/1axt"
 		target="_blank"
 		rel="noopener noreferrer"
-		class="tec-tickets__admin-settings-tickets-commerce-paypal-help-link-url"
+		class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link-url"
 	><?php esc_html_e( 'Learn more about configuring PayPal payments', 'event-tickets' ); ?></a>
 </div>

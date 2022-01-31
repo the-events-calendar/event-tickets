@@ -19,10 +19,10 @@ if ( empty( $is_merchant_connected ) ) {
 }
 ?>
 
-<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-actions">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-actions">
 	<?php $this->template( 'settings/tickets-commerce/paypal/connect/active/actions/refresh-connection' ); ?>
 
-	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-actions-debug">
+	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-actions-debug">
 		<?php $this->template( 'settings/tickets-commerce/paypal/connect/active/actions/refresh-access-token' ); ?>
 
 		<?php $this->template( 'settings/tickets-commerce/paypal/connect/active/actions/refresh-user-info' ); ?>

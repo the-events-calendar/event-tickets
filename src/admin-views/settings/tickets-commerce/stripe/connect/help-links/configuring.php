@@ -17,12 +17,12 @@ if ( false === $merchant_status['connected'] ) {
 }
 
 ?>
-<div class="tec-tickets__admin-settings-tickets-commerce-stripe-help-link">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link">
 	<?php $this->template( 'components/icons/lightbulb' ); ?>
 	<a
 		href="https://evnt.is/1axt"
 		target="_blank"
 		rel="noopener noreferrer"
-		class="tec-tickets__admin-settings-tickets-commerce-stripe-help-link-url"
+		class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link-url"
 	><?php esc_html_e( 'Learn more about configuring Stripe payments', 'event-tickets' ); ?></a>
 </div>

@@ -14,7 +14,7 @@
 
 ?>
 
-<div class="tec-tickets__admin-settings-tickets-commerce-stripe-logo">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway-logo">
 
 	<?php $this->template( 'settings/tickets-commerce/stripe/connect/logo/image' ); ?>
 

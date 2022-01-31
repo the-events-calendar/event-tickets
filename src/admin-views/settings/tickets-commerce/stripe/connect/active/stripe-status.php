@@ -25,15 +25,15 @@ if ( ! $merchant_status['charges_enabled'] ) {
 }
 
 ?>
-<div class="tec-tickets__admin-settings-tickets-commerce-stripe-connected-row">
-	<div class="tec-tickets__admin-settings-tickets-commerce-stripe-connected-col1">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
+	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-col1">
 		<?php esc_html_e( 'Stripe Status:', 'event-tickets' ); ?>
 	</div>
-	<div class="tec-tickets__admin-settings-tickets-commerce-stripe-connected-col2">
-		<span class="tec-tickets__admin-settings-tickets-commerce-stripe-connect-text--connected">
+	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-col2">
+		<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-text--connected">
 			<?php esc_html_e( 'Connected' ); ?> <span class="dashicons dashicons-saved"></span>
 		</span><br>
-		<span class="tec-tickets__admin-settings-tickets-commerce-stripe-connect-text--connected">
+		<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-text--connected">
 			<?php esc_html_e( 'Charges Enabled' ); ?><span
 					class="dashicons <?php echo esc_attr( $charges_class ); ?>"></span>
 		</span>
