@@ -9,6 +9,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 use TEC\Tickets\Commerce;
+use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Payments_Tab;
 use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
@@ -46,6 +47,16 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * @var string
 	 */
 	protected static $merchant;
+	
+	/**
+	 * The option name prefix that configured whether or not a gateway is enabled. 
+	 * It is followed by the gateway 'key'
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_enabled_prefix = '_tickets_commerce_gateway_enabled_';
 
 	/**
 	 * @inheritDoc
@@ -200,5 +211,50 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 */
 	public function get_subtitle() {
 		return '';
+	}
+	
+	/**
+	 * Returns the enabled option key.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_enabled_option_key() {
+		return static::$option_enabled_prefix . self::get_key();
+	}
+	
+	/**
+	 * Returns if gateway is enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @return boolean
+	 */
+	public static function is_enabled() {
+		if ( ! static::should_show() ) {
+			return false;
+		}
+		
+		return (bool) tribe_get_option( static::get_enabled_option_key() );
+	}
+	
+	/**
+	 * Returns status text.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_status_text() {		
+		if ( ! static::is_enabled() ) {
+			return '';
+		}
+		
+		if ( ! static::is_active() ) {
+			return __( 'Enabled, but not active', 'event-tickets' );
+		}
+		
+		return __( 'Enabled for Checkout', 'event-tickets' );
 	}
 }

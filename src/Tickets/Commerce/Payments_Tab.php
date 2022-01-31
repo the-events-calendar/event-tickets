@@ -296,8 +296,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		}
 		
 		// Show the switch to enable/disable gateway at the top.
-		$manager = tribe( Manager::class );
-		$option_key = $manager->get_enabled_option_by_key( $section_gateway );
+		$option_key = $section_gateway->get_enabled_option_key();
 		$enable_label = sprintf(
 			// Translators: %s: Name of payment gateway
 			esc_html__( 'Enable %s', 'event-tickets' ),
@@ -311,7 +310,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 								<input
 									type="checkbox"
 									name="' . $option_key . '"
-									' . checked( $manager->is_gateway_enabled( $section_gateway ), true, false ) . '
+									' . checked( $section_gateway->is_enabled(), true, false ) . '
 									id="tickets-commerce-enable-input"
 									class="tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified">
 									<span class="tec-tickets__admin-settings-tickets-commerce-toggle-switch"></span>

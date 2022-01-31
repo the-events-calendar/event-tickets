@@ -22,19 +22,30 @@ if ( ! $gateway::should_show() ) {
     return;
 }
 
-$key         = $gateway->get_key();
-$enabled     = $manager->is_gateway_enabled( $gateway );
+$classes = [
+    'tec-tickets__admin-settings-tickets-commerce-gateways-item-button-link',
+    'tec-tickets__admin-settings-tickets-commerce-gateways-item-button-link--active' => $gateway->is_active(),
+];
+
 $button_text = sprintf(
     // Translators: %s: Name of payment gateway.
     __( 'Connect to %s', 'event-tickets' ),
     $gateway->get_label()
 );
 
+if ( $gateway->is_active() ) {
+    $button_text = sprintf(
+        // Translators: %s: Name of payment gateway.
+        __( 'Edit %s Connection', 'event-tickets' ),
+        $gateway->get_label()
+    );
+}
+
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateways-item-button">
     <a 
-        class="tec-tickets__admin-settings-tickets-commerce-gateways-item-button-link" 
-        href="<?php echo esc_url( $gateway->get_settings_url() ); ?>"
+        <?php tribe_classes( $classes ); ?> 
+        href="<?php echo esc_attr( $gateway->get_settings_url() ); ?>"
     >
         <?php echo esc_html( $button_text ); ?>
     </a>
