@@ -20,7 +20,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 		$this->container->singleton( REST::class );
 		$this->container->singleton( Settings::class );
 		$this->container->singleton( Signup::class );
-		$this->container->singleton( Stripe_Elements::class );
+		$this->container->singleton( Payment_Element::class );
 		$this->container->singleton( Status::class );
 		$this->container->singleton( WhoDat::class );
 

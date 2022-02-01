@@ -46,7 +46,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 			[
 				'jquery',
 				'tribe-common',
-//				'tec-ky', @todo add this as a module and remove it from checkout.js
+				'tec-ky',
 				'tribe-query-string',
 				'tec-tickets-commerce-gateway-stripe-base',
 				'tribe-tickets-loader',
@@ -65,12 +65,9 @@ class Assets extends \tad_DI52_ServiceProvider {
 					'name' => 'tecTicketsCommerceGatewayStripeCheckout',
 					'data' => static function () {
 						return [
-							'nonce'          => wp_create_nonce( 'wp_rest' ),
-							'orderEndpoint'  => tribe( Order_Endpoint::class )->get_route_url(),
-							'paymentElement' => tribe( Stripe_Elements::class )->include_payment_element(),
-							'cardElementType' => tribe( Stripe_Elements::class )->card_element_type(),
+							'orderEndpoint' => tribe( Order_Endpoint::class )->get_route_url(),
+							'nonce'    => wp_create_nonce( 'wp_rest' ),
 							'publishableKey' => tribe( Merchant::class )->get_publishable_key(),
-							'paymentIntentData' => tribe( Client::class )->get_publishable_payment_intent_data(),
 						];
 					},
 				],
