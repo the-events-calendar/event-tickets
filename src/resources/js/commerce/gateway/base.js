@@ -66,15 +66,15 @@ tribe.tickets.commerce.billing.getDetails = function( long ) {
 	if ( zipCode && zipCode.value.length > 0 ) { billing_details.address.postal_code = zipCode.value; }
 	if ( email && email.value.length > 0 ) { billing_details.email = email.value; }
 
-	billing_details.firstName = firstName.value || '';
-	billing_details.lastName = lastName.value || '';
+	billing_details.first_name = firstName.value || '';
+	billing_details.last_name = lastName.value || '';
 
-	billing_details.name = billing_details.firstName+' '+billing_details.lastName;
+	billing_details.name = billing_details.first_name+' '+billing_details.last_name;
 	billing_details.name.trim();
 
 	if ( false === long ) {
-		delete billing_details.firstName;
-		delete billing_details.lastName;
+		delete billing_details.first_name;
+		delete billing_details.last_name;
 	}
 
 	return billing_details;
