@@ -182,7 +182,7 @@ class Settings extends Abstract_Settings {
 		 *
 		 * @param array $settings The list of Stripe Commerce settings.
 		 */
-		return apply_filters( 'tec_tickets_commerce_stripe_settings', $settings );
+		return apply_filters( 'tribe_tickets_commerce_stripe_settings', $settings );
 	}
 
 	/**
@@ -217,7 +217,7 @@ class Settings extends Abstract_Settings {
 		 * @param string  $currency          the currency configured for Tickets Commerce
 		 * @param array[] $payment_methods   the complete list of available Payment Methods in Stripe
 		 */
-		return apply_filters( 'tec_tickets_commerce_stripe_payment_methods_available', $available_methods, $currency, $payment_methods );
+		return apply_filters( 'tribe_tickets_commerce_stripe_payment_methods_available', $available_methods, $currency, $payment_methods );
 	}
 
 	/**
