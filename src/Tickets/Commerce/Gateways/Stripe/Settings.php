@@ -101,6 +101,10 @@ class Settings extends Abstract_Settings {
 				'type' => 'html',
 				'html' => '<h3 class="tribe-dependent -input">' . __( 'Stripe Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
 			],
+			'tickets-commerce-gateway-settings-group-header-general'          => [
+				'type' => 'html',
+				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . __( 'General', 'event-tickets' ) . '</h4><div class="clear"></div>',
+			],
 			static::$option_statement_descriptor                => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Statement Descriptor', 'event-tickets' ),
@@ -127,6 +131,11 @@ class Settings extends Abstract_Settings {
 			'tickets-commerce-stripe-checkout-settings-heading' => [
 				'type' => 'html',
 				'html' => '<h3 class="tribe-dependent -input">' . __( 'Checkout Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
+			],
+			
+			'tickets-commerce-gateway-settings-group-header-checkout'          => [
+				'type' => 'html',
+				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . __( 'Checkout', 'event-tickets' ) . '</h4><div class="clear"></div>',
 			],
 			static::$option_checkout_element                    => [
 				'type'            => 'radio',
