@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @since 5.1.6
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways
  */
@@ -15,7 +15,7 @@ use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
 
 /**
- * Abstract Gateway Contract
+ * Abstract Gateway Contract.
  *
  * @since   TBD
  *
@@ -26,7 +26,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * The Gateway key.
 	 *
-	 * @since 5.1.6
+	 * @since TBD
 	 */
 	protected static $key;
 

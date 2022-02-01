@@ -86,8 +86,7 @@ class Client {
 		$query_args = [
 //			'client_secret' => $client_secret,
 		];
-		$body       = [
-		];
+		$body       = [];
 		$args       = [
 			'body' => $body,
 		];

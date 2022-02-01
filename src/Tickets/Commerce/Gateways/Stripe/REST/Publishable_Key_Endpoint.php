@@ -54,7 +54,7 @@ class Publishable_Key_Endpoint implements Tribe__Documentation__Swagger__Provide
 	}
 
 	/**
-	 * Fetch the key requested
+	 * Fetch the key requested.
 	 *
 	 * @todo this needs to differentiate between sandbox and live keys based on test mode
 	 *

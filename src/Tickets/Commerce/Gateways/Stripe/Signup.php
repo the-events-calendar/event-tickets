@@ -6,7 +6,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Signup;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\On_Boarding_Endpoint;
 
 /**
- * Class Signuo.
+ * Class Signup.
  *
  * @since   TBD
  *
