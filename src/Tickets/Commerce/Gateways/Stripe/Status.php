@@ -97,11 +97,11 @@ class Status {
 	}
 
 	/**
-	 * Checks if a given PayPal status is valid.
+	 * Checks if a given Stripe status is valid.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $status Status from PayPal.
+	 * @param string $status Status from Stripe.
 	 *
 	 * @return bool
 	 */
@@ -111,20 +111,20 @@ class Status {
 	}
 
 	/**
-	 * Converts a valid PayPal status into a commerce status object.
+	 * Converts a valid Stripe status into a commerce status object.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $paypal_status A PayPal status string.
+	 * @param string $stripe_status A Stripe status string.
 	 *
 	 * @return false|Commerce_Status\Status_Interface|null
 	 */
-	public function convert_to_commerce_status( $paypal_status ) {
-		if ( ! $this->is_valid_status( $paypal_status ) ) {
+	public function convert_to_commerce_status( $stripe_status ) {
+		if ( ! $this->is_valid_status( $stripe_status ) ) {
 			return false;
 		}
 		$statuses = $this->get_valid_statuses();
 
-		return tribe( Commerce_Status\Status_Handler::class )->get_by_slug( $statuses[ $paypal_status ] );
+		return tribe( Commerce_Status\Status_Handler::class )->get_by_slug( $statuses[ $stripe_status ] );
 	}
 }

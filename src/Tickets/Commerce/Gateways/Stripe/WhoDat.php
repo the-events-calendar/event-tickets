@@ -6,7 +6,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_WhoDat;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\On_Boarding_Endpoint;
 
 /**
- * Class WhoDat. Handles connection to Stripe when the platform keys are needed
+ * Class WhoDat. Handles connection to Stripe when the platform keys are needed.
  *
  * @since   TBD
  *
@@ -43,7 +43,7 @@ class WhoDat extends Abstract_WhoDat {
 	}
 
 	/**
-	 * De-authorize the current seller account in Stripe oAuth
+	 * De-authorize the current seller account in Stripe oAuth.
 	 *
 	 * @since TBD
 	 *
@@ -62,11 +62,11 @@ class WhoDat extends Abstract_WhoDat {
 	}
 
 	/**
-	 * Register a newly connected stripe account to the website
+	 * Register a newly connected stripe account to the website.
 	 *
 	 * @since TBD
 	 *
-	 * @param array $account_data array of data returned from stripe after a successful connection
+	 * @param array $account_data array of data returned from stripe after a successful connection.
 	 */
 	public function onboard_account( $account_data ) {
 
@@ -79,7 +79,7 @@ class WhoDat extends Abstract_WhoDat {
 	}
 
 	/**
-	 * Requests WhoDat to refresh the oAuth tokens
+	 * Requests WhoDat to refresh the oAuth tokens.
 	 *
 	 * @since TBD
 	 *

@@ -20,7 +20,7 @@ $classes = [
 ]
 ?>
 
-<div <?php tribe_classes( $classes ); ?> style="border: 1px solid black;">
+<div <?php tribe_classes( $classes ); ?> style="border: 1px solid black;"> <!-- @todo: We need to move this to the stylesheet. -->
 	<div id="tec-tickets__admin-settings-tickets-commerce-stripe-connect"
 		 class="tec-tickets__admin-settings-tickets-commerce-stripe-connect">
 
