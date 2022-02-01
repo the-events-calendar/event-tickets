@@ -330,18 +330,28 @@ class Order extends Abstract_Order {
 		$total = $this->get_value_total( array_filter( $items ) );
 
 		$order_args = [
-			'title'                => $this->generate_order_title( $items, $cart->get_cart_hash() ),
-			'total_value'          => $total->get_decimal(),
-			'items'                => $items,
-			'gateway'              => $gateway::get_key(),
-			'hash'                 => $cart->get_cart_hash(),
-			'currency'             => Utils\Currency::get_currency_code(),
-			'purchaser_user_id'    => $purchaser['purchaser_user_id'],
-			'purchaser_full_name'  => $purchaser['purchaser_full_name'],
-			'purchaser_first_name' => $purchaser['purchaser_first_name'],
-			'purchaser_last_name'  => $purchaser['purchaser_last_name'],
-			'purchaser_email'      => $purchaser['purchaser_email'],
+			'title'       => $this->generate_order_title( $items, $cart->get_cart_hash() ),
+			'total_value' => $total->get_decimal(),
+			'items'       => $items,
+			'gateway'     => $gateway::get_key(),
+			'hash'        => $cart->get_cart_hash(),
+			'currency'    => Utils\Currency::get_currency_code(),
 		];
+
+		// When purchaser data-set is not passed we pull from the current user.
+		if ( empty( $purchaser ) && is_user_logged_in() && $user = wp_get_current_user() ) {
+			$order_args['purchaser_user_id']    = $user->ID;
+			$order_args['purchaser_full_name']  = $user->first_name . ' ' . $user->last_name;
+			$order_args['purchaser_first_name'] = $user->first_name;
+			$order_args['purchaser_last_name']  = $user->last_name;
+			$order_args['purchaser_email']      = $user->user_email;
+		} elseif ( empty( $purchaser ) ) {
+			$order_args['purchaser_user_id']    = 0;
+			$order_args['purchaser_full_name']  = static::$placeholder_name;
+			$order_args['purchaser_first_name'] = static::$placeholder_name;
+			$order_args['purchaser_last_name']  = static::$placeholder_name;
+			$order_args['purchaser_email']      = '';
+		}
 
 		$order = $this->create( $gateway, $order_args );
 

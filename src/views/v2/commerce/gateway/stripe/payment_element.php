@@ -1,9 +1,9 @@
 <?php
 /**
- * Tickets Commerce: Payment Element Checkout for Stripe
+ * Tickets Commerce: Checkout Buttons for Stripe
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/gateway/stripe/payment_element.php
+ * [your-theme]/tribe/tickets/v2/commerce/gateway/stripe/buttons.php
  *
  * See more documentation about our views templating system.
  *
@@ -12,18 +12,20 @@
  * @since   TBD
  *
  * @version TBD
- * @var bool $must_login      [Global] Whether login is required to buy tickets or not.
- * @var bool $payment_element [Global] Whether to load the Stripe Payment Element.
+ * @var bool $must_login [Global] Whether login is required to buy tickets or not.
  */
 
-if ( $must_login || ! $payment_element ) {
+if ( $must_login ) {
 	return;
 }
 ?>
-<div id="tec-tc-gateway-stripe-payment-element"></div>
-<button id="tec-tc-gateway-stripe-checkout-button" class="tribe-common-c-btn">
-	<div class="spinner hidden" id="spinner"></div>
-	<span id="button-text"><?php esc_html_e( 'Pay now', 'event-tickets' ); ?></span>
-</button>
-<div id="tec-tc-gateway-stripe-payment-message" class="hidden"></div>
-<div id="tec-tc-gateway-stripe-errors" role="alert"></div>
+<form id="payment-form">
+	<div id="tec-tc-gateway-stripe-card-element">
+		<!-- Elements will create input elements here -->
+	</div>
+
+	<!-- We'll put the error messages in this element -->
+	<div id="tec-tc-gateway-stripe-card-errors" role="alert"></div>
+
+	<button id="tec-tc-gateway-stripe-checkout-button" class="tribe-common-c-btn"><?php esc_html_e( 'Submit Payment', 'events-tickets' ) ?></button>
+</form>
