@@ -15,7 +15,7 @@
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link">
 	<?php $this->template( 'components/icons/lightbulb' ); ?>
 	<a
-		href="https://evnt.is/1axw"
+		href="https://evnt.is/1axw" <!-- @todo: We need to update this link. -->
 		target="_blank"
 		rel="noopener noreferrer"
 		class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link-url"

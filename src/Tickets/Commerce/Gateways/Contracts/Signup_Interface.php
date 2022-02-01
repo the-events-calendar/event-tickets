@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 /**
- * Signup Interface
+ * Signup Interface.
  *
  * @since   TBD
  *
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 interface Signup_Interface {
 
 	/**
-	 * Gets the content for the template used for the sign up link
+	 * Gets the content for the template used for the sign-up link.
 	 *
 	 * @since TBD
 	 *

@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Signup;
 
 /**
- * Class Signuo.
+ * Class Signup.
  *
  * @since   TBD
  *

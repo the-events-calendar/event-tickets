@@ -85,7 +85,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * Arguments used for the endpoint
+	 * Arguments used for the endpoint.
 	 *
 	 * @since TBD
 	 *
