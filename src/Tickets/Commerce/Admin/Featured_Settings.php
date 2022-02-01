@@ -12,7 +12,7 @@ use \Tribe__Template;
  * @package TEC\Tickets\Commerce\Admin
  */
 class Featured_Settings {
-	
+
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the elements.
 	 *
@@ -21,7 +21,7 @@ class Featured_Settings {
 	 * @var Tribe__Template
 	 */
 	protected $template;
-	
+
 	/**
 	 * Gets the template instance used to setup the rendering html.
 	 *
@@ -39,12 +39,12 @@ class Featured_Settings {
 
 		return $this->template;
 	}
-	
+
 	/**
 	 * Returns html of the featured settings block.
 	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @param array   $context Context of template.
 	 * @param boolean $echo    Whether or not to output the HTML or just return it.
 	 *
@@ -59,7 +59,7 @@ class Featured_Settings {
 			'classes'          => [],
 		];
 		$template = $this->get_template();
-		
+
 		return $template->template( 'container', wp_parse_args( $context, $defaults ), $echo );
 	}
 }

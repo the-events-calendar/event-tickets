@@ -19,8 +19,62 @@ abstract class Abstract_Order {
 	 * @return Value;
 	 */
 	public function get_value_total( $items ) {
-		$sub_totals = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
+		$sub_totals  = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
 		$total_value = Value::create();
+
 		return $total_value->total( $sub_totals );
+	}
+
+	/**
+	 * Prepare purchaser data received from the checkout page to include in orders.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data user data input in the checkout page
+	 *
+	 * @return array
+	 */
+	public function prepare_purchaser_data( $data ) {
+		$purchaser = [
+			'purchaser_user_id'    => 0,
+			'purchaser_full_name'  => static::$placeholder_name,
+			'purchaser_first_name' => static::$placeholder_name,
+			'purchaser_last_name'  => static::$placeholder_name,
+			'purchaser_email'      => '',
+		];
+
+		if ( empty( $data['billing_details'] ) && is_user_logged_in() ) {
+			$user                              = wp_get_current_user();
+			$purchaser['purchaser_user_id']    = $user->ID;
+			$purchaser['purchaser_full_name']  = $user->first_name . ' ' . $user->last_name;
+			$purchaser['purchaser_first_name'] = $user->first_name;
+			$purchaser['purchaser_last_name']  = $user->last_name;
+			$purchaser['purchaser_email']      = $user->user_email;
+
+			return $purchaser;
+		}
+
+		if ( ! empty( $data['billing_details']['first_name'] ) ) {
+			$purchaser['purchaser_first_name'] = sanitize_text_field( $data['billing_details']['first_name'] );
+		}
+		if ( ! empty( $data['billing_details']['last_name'] ) ) {
+			$purchaser['purchaser_last_name'] = sanitize_text_field( $data['billing_details']['last_name'] );
+		}
+		if ( ! empty( $data['billing_details']['name'] ) ) {
+			$purchaser['purchaser_full_name'] = sanitize_text_field( $data['billing_details']['name'] );
+		}
+		if ( ! empty( $data['billing_details']['email'] ) ) {
+			$purchaser['purchaser_email'] = sanitize_email( $data['billing_details']['email'] );
+		}
+
+		/**
+		 * Allows filtering the billing details gathered before creating an order
+		 *
+		 * @since TBD
+		 *
+		 * @param array $purchaser the list of billing details gathered from the front-end and/or logged-in users
+		 * @param array $data      the entire data array received from the checkout page
+		 */
+		return apply_filters( 'tec_tickets_commerce_order_purchaser_data', $purchaser, $data );
 	}
 }

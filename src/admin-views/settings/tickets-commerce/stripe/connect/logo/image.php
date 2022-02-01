@@ -1,16 +1,15 @@
 <?php
 /**
- * The Template for displaying the Tickets Commerce Stripe Settings, the Stripe logo specifically.
+ * The Template for displaying the Tickets Commerce Stripe Settings, the PayPal logo specifically.
+ *
+ * @since   TBD
  *
  * @version TBD
  *
- * @since TBD
- *
- * @var Tribe__Tickets__Admin__Views                  $this               [Global] Template object.
- * @var string                                        $plugin_url         [Global] The plugin URL.
- * @var TEC\Tickets\Commerce\Gateways\Stripe\Merchant $merchant           [Global] The merchant class.
- * @var TEC\Tickets\Commerce\Gateways\Stripe\Signup   $signup             [Global] The Signup class.
- * @var bool                                          $is_merchant_active [Global] Whether the merchant is active or not.
+ * @var string                                        $plugin_url      [Global] The plugin URL.
+ * @var TEC\Tickets\Commerce\Gateways\Stripe\Signup   $signup          [Global] The Signup class.
+ * @var TEC\Tickets\Commerce\Gateways\Stripe\Merchant $merchant        [Global] The Signup class.
+ * @var array                                         $merchant_status [Global] Merchant Status data.
  */
 
 $image_src = tribe_resource_url( 'images/admin/stripe-logo.png', false, null, Tribe__Tickets__Main::instance() );

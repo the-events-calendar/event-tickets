@@ -2,6 +2,9 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
+use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Ticket;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -12,6 +15,25 @@ use Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
 class Client {
+
+	/**
+	 * Base string to use when composing payment intent transient names
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $payment_intent_transient_prefix = 'paymentintent-';
+
+	/**
+	 * Transient name to store payment intents
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $payment_intent_transient_name;
+
 	/**
 	 * Get environment base URL.
 	 *
@@ -57,19 +79,162 @@ class Client {
 	 *
 	 * @return array|\WP_Error
 	 */
-	public function create_payment_intent( $currency, $value ) {
+	public function create_payment_intent() {
+
+		$this->set_payment_intent_transient_name();
+
+		$cart = tribe( Cart::class );
+
+		$items = $cart->get_items_in_cart();
+
+		$items = array_map(
+			static function ( $item ) {
+				/** @var Value $ticket_value */
+				$ticket_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
+
+				if ( null === $ticket_value ) {
+					return null;
+				}
+
+				$item['price']     = $ticket_value->get_decimal();
+				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
+
+				return $item;
+			},
+			$items
+		);
+		$value = tribe( Order::class )->get_value_total( array_filter( $items ) );
+
 		$query_args = [];
 		$body       = [
-			'currency' => $currency,
-			'amount'   => $value,
+			'currency'               => $value->get_currency_code(),
+			'amount'                 => $value->get_integer(),
+			'payment_method_types'   => tribe_get_option( Settings::$option_checkout_element_payment_methods ),
+			'application_fee_amount' => 0,
 		];
-		$args       = [
+
+		$stripe_statement_descriptor = tribe_get_option( Settings::$option_statement_descriptor );
+
+		if ( empty( $stripe_statement_descriptor ) ) {
+			$body['statement_descriptor'] = substr( $stripe_statement_descriptor, 0, 22 );
+		}
+
+		$args = [
 			'body' => $body,
 		];
 
 		$url = 'payment_intents';
 
+		$payment_intent = $this->post( $url, $query_args, $args );
+
+		$this->store_payment_intent( $payment_intent );
+	}
+
+	/**
+	 * Updates an existing payment intent to add any necessary data before confirming the purchase.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data the purchase data received from the front-end
+	 *
+	 * @return array|\WP_Error|null
+	 */
+	public function update_payment_intent( $data ) {
+
+		$payment_intent = $this->get_payment_intent( $data['payment_intent']['id'] );
+
+		$stripe_receipt_emails = tribe_get_option( Settings::$option_stripe_receipt_emails );
+
+		// Currently this method is only used to add an email recipient for Stripe receipts. If this is not
+		// required, only return the payment intent object to store.
+		if ( ! $stripe_receipt_emails ) {
+			return;
+		}
+
+		if ( $stripe_receipt_emails && ! empty( $data['billing_details']['email'] ) ) {
+			$body['receipt_email'] = $data['billing_details']['email'];
+		}
+
+		$query_args = [];
+		$args       = [
+			'body' => $body,
+		];
+
+		$payment_intent_id = urlencode( $payment_intent['id'] );
+		$url               = '/payment_intents/{payment_intent_id}';
+		$url               = str_replace( '{payment_intent_id}', $payment_intent_id, $url );
+
 		return $this->post( $url, $query_args, $args );
+	}
+
+	/**
+	 * Assembles basic data about the payment intent created at page-load to use in javascript
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_publishable_payment_intent_data() {
+		$pi = $this->get_payment_intent_transient();
+
+		if ( empty( $pi ) ) {
+			return [];
+		}
+
+		return [
+			'id'   => $pi['id'],
+			'key'  => $pi['client_secret'],
+			'name' => $this->get_payment_intent_transient_name(),
+		];
+	}
+
+	/**
+	 * Compose the transient name used for payment intent transients
+	 *
+	 * @since TBD
+	 */
+	public function set_payment_intent_transient_name() {
+		$this->payment_intent_transient_name = $this->payment_intent_transient_prefix . md5( tribe( Cart::class )->get_cart_hash() );
+	}
+
+	/**
+	 * Returns the transient name used for payment intent transients
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_payment_intent_transient_name() {
+
+		if ( empty( $this->payment_intent_transient_name ) ) {
+			$this->set_payment_intent_transient_name();
+		}
+
+		return $this->payment_intent_transient_name;
+	}
+
+	/**
+	 * Retrieve a stored payment intent referring to the current cart
+	 *
+	 * @since TBD
+	 *
+	 * @return array|false
+	 */
+	public function get_payment_intent_transient() {
+		return get_transient( $this->get_payment_intent_transient_name() );
+	}
+
+	/**
+	 * Store a payment intent array in a transient
+	 *
+	 * @since TBD
+	 *
+	 * @param array $payment_intent payment intent data from Stripe
+	 */
+	public function store_payment_intent( $payment_intent ) {
+		if ( ! empty( $payment_intent['client_secret'] ) ) {
+			set_transient( $this->get_payment_intent_transient_name(), $payment_intent, 6 * HOUR_IN_SECONDS );
+		}
 	}
 
 	/**
@@ -82,11 +247,10 @@ class Client {
 	 *
 	 * @return array|\WP_Error
 	 */
-	public function get_payment_intent( $payment_intent_id, $client_secret ) {
-		$query_args = [
-//			'client_secret' => $client_secret,
+	public function get_payment_intent( $payment_intent_id ) {
+		$query_args = [];
+		$body       = [
 		];
-		$body       = [];
 		$args       = [
 			'body' => $body,
 		];
@@ -96,6 +260,68 @@ class Client {
 		$url               = str_replace( '{payment_intent_id}', $payment_intent_id, $url );
 
 		return $this->get( $url, $query_args, $args );
+	}
+
+	/**
+	 * Query the Stripe API to gather information about the current connected account.
+	 *
+	 * @since TBD
+	 * @param array $client_data connection data from the database
+	 *
+	 * @return array
+	 */
+	public function check_account_status( $client_data ) {
+		$return = [
+			'connected'       => false,
+			'charges_enabled' => false,
+			'errors'          => [],
+			'capabilities'    => [],
+		];
+
+		if ( empty( $client_data['client_id'] )
+			 || empty( $client_data['client_secret'] )
+			 || empty( $client_data['publishable_key'] )
+		) {
+			return $return;
+		}
+
+		$account_id = urlencode( $client_data['client_id'] );
+		$url        = '/accounts/{account_id}';
+		$url        = str_replace( '{account_id}', $account_id, $url );
+
+		$response = $this->get( $url, [], [] );
+
+		if ( ! empty( $response['object'] ) && 'account' === $response['object'] ) {
+			$return['connected'] = true;
+
+			if ( $response['charges_enabled'] ) {
+				$return['charges_enabled'] = true;
+			}
+
+			if ( ! empty( $response['capabilities'] ) ) {
+				$return['capabilities'] = $response['capabilities'];
+			}
+
+			if ( ! empty( $response['requirements']['errors'] ) ) {
+				$return['errors']['requirements'] = $response['requirements']['errors'];
+			}
+
+			if ( ! empty( $response['future_requirements']['errors'] ) ) {
+				$return['errors']['future_requirements'] = $response['future_requirements']['errors'];
+			}
+		}
+
+		if ( ! empty( $response['type'] ) && in_array( $response['type'], [
+				'api_error',
+				'card_error',
+				'idempotency_error',
+				'invalid_request_error',
+			], true ) ) {
+
+			$return['request_error'] = $response;
+		}
+
+		return $return;
 	}
 
 	/**
@@ -125,7 +351,7 @@ class Client {
 		$default_arguments = [
 			'headers' => [
 				'Authorization' => 'Bearer ' . tribe( Merchant::class )->get_client_secret(),
-			]
+			],
 		];
 
 		// By default, it's important that we have a body set for any method that is not the GET method.

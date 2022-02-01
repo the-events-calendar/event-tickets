@@ -14,14 +14,14 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 class Merchant extends Abstract_Merchant {
 
 	/**
-	 * Determines if the Merchant is active.
+	 * Determines if Merchant is active. For Stripe this is the same as being connected.
 	 *
 	 * @since TBD
 	 *
 	 * @return bool
 	 */
-	public function is_active( $recheck = false ) {
-		return true;
+	public function is_active() {
+		return $this->is_connected();
 	}
 
 	/**
@@ -32,7 +32,36 @@ class Merchant extends Abstract_Merchant {
 	 * @return bool
 	 */
 	public function is_connected( $recheck = false ) {
+		$client_data = $this->to_array();
+
+		if ( empty( $client_data['client_id'] )
+			 || empty( $client_data['client_secret'] )
+			 || empty( $client_data['publishable_key'] )
+		) {
+			return false;
+		}
+
+		if ( $recheck ) {
+			$status = tribe( Client::class )->check_account_status( $client_data );
+
+			if ( false === $status['connected'] ) {
+				return false;
+			}
+		}
+
 		return true;
+	}
+
+	/**
+	 * Gather connections status from the Stripe API
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_connection_status() {
+		$client_data = $this->to_array();
+		return tribe( Client::class )->check_account_status( $client_data );
 	}
 
 	/**
@@ -73,6 +102,10 @@ class Merchant extends Abstract_Merchant {
 	public function get_client_secret() {
 		$keys = get_option( $this->get_signup_data_key() );
 
+		if ( empty( $keys[ $this->get_mode() ]->access_token ) ) {
+			return '';
+		}
+
 		return $keys[ $this->get_mode() ]->access_token;
 	}
 
@@ -86,6 +119,10 @@ class Merchant extends Abstract_Merchant {
 	public function get_publishable_key() {
 		$keys = get_option( $this->get_signup_data_key() );
 
+		if ( empty( $keys[ $this->get_mode() ]->publishable_key ) ) {
+			return '';
+		}
+
 		return $keys[ $this->get_mode() ]->publishable_key;
 	}
 
@@ -98,6 +135,10 @@ class Merchant extends Abstract_Merchant {
 	 */
 	public function get_client_id() {
 		$keys = get_option( $this->get_signup_data_key() );
+
+		if ( empty( $keys['stripe_user_id'] ) ) {
+			return '';
+		}
 
 		return $keys['stripe_user_id'];
 	}

@@ -132,7 +132,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 *
-	 * @return array[]
+	 * @return []
 	 */
 	public function get_section_menu() {
 		
