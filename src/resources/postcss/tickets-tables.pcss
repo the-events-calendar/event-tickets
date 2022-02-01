@@ -119,12 +119,18 @@
 	}
 
 	.ticket_edit {
-		width: 60px;
+		white-space: normal;
+		width: 84px;
+
+		@media screen and (--viewport-wpadmin) {
+			white-space: nowrap;
+		}
 	}
 
 	/* Edit button styles - separate for portability */
 	.ticket_edit_button,
 	.ticket_delete,
+	.ticket_duplicate,
 	.global_capacity_edit_button {
 		background: none;
 		border: 0;
@@ -138,7 +144,8 @@
 
 		.ticket_edit_text,
 		.global_capacity_edit_text,
-		.ticket_delete_text {
+		.ticket_delete_text,
+		.ticket_duplicate_text {
 			font-size: 0;
 
 			&:before {
@@ -154,10 +161,30 @@
 				content: '\f182';
 			}
 		}
+
+		.ticket_duplicate_text {
+			&:before {
+				background-color: #ccc;
+				content: '';
+				display: inline-block;
+				height: 22px;
+				mask-image: url("../icons/ticket-copy.svg");
+				mask-position: center;
+				mask-repeat: no-repeat;
+				width: 20px;
+			}
+		}
 	}
 
-	.ticket_delete {
+	.ticket_delete,
+	.ticket_duplicate {
 		margin-left: 12px;
+	}
+
+	.ticket_duplicate:hover {
+		.ticket_duplicate_text:before {
+			background-color: #727272;
+		}
 	}
 
 	.global_capacity_edit_button {
