@@ -9,9 +9,10 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.10
+ * @since    5.2.2   enforcing proper currency formatting
+ * @since    5.1.10
  *
- * @version 5.1.10
+ * @version 5.2.2
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.
@@ -21,6 +22,7 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
+/** @var \TEC\Tickets\Commerce\Utils\Value $total_value */
 if ( empty( $order->total_value ) ) {
 	return;
 }
@@ -31,6 +33,6 @@ if ( empty( $order->total_value ) ) {
 		<?php esc_html_e( 'Total:', 'event-tickets' ); ?>
 	</div>
 	<div class="tribe-tickets__commerce-order-details-col2">
-		<?php echo esc_html( $order->formatted_total ); ?>
+		<?php echo esc_html( $order->total_value->get_currency() ); ?>
 	</div>
 </div>

@@ -7,7 +7,7 @@
 			 * Fires before the individual panels within the attendee screen summary
 			 * are rendered.
 			 *
-			 * @since TBD
+			 * @since 5.2.0
 			 *
 			 * @param int $post_id
 			 */
@@ -32,7 +32,7 @@
 					 * Provides an action that allows for the injections of fields at the top of the event details meta
 					 * ul
 					 *
-					 * @since TBD
+					 * @since 5.2.0
 					 *
 					 * @var $post_id
 					 */
@@ -42,7 +42,7 @@
 					 * Provides an action that allows for the injections of fields at the bottom of the event details
 					 * meta ul
 					 *
-					 * @since TBD
+					 * @since 5.2.0
 					 *
 					 * @var $post_id
 					 */
@@ -54,7 +54,7 @@
 				 * Provides an opportunity for various action links to be added below
 				 * the event name, within the attendee screen.
 				 *
-				 * @since TBD
+				 * @since 5.2.0
 				 *
 				 * @param int $post_id
 				 */
@@ -64,7 +64,7 @@
 				 * Provides an opportunity for various action links to be added below
 				 * the action links
 				 *
-				 * @since TBD
+				 * @since 5.2.0
 				 *
 				 * @param int $post_id
 				 */
@@ -105,7 +105,7 @@
 				/**
 				 * Fires before the main body of attendee totals are rendered.
 				 *
-				 * @since TBD
+				 * @since 5.2.0
 				 *
 				 * @param int $post_id
 				 */
@@ -115,7 +115,7 @@
 				 * Trigger for the creation of attendee totals within the attendee
 				 * screen summary box.
 				 *
-				 * @since TBD
+				 * @since 5.2.0
 				 *
 				 * @param int $post_id
 				 */
@@ -124,7 +124,7 @@
 				/**
 				 * Fires after the main body of attendee totals are rendered.
 				 *
-				 * @since TBD
+				 * @since 5.2.0
 				 *
 				 * @param int $post_id
 				 */

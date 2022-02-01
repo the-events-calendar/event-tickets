@@ -4,7 +4,6 @@ namespace TEC\Tickets\Commerce\Reports;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Utils\Price;
 use WP_Post;
 
 use Tribe__Tickets__Main as Plugin;
@@ -14,7 +13,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Orders Report.
  *
- * @since   TBD
+ * @since   5.2.0
  *
  * @package TEC\Tickets\Commerce\Reports
  */
@@ -22,7 +21,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Slug of the admin page for orders
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string
 	 */
@@ -31,7 +30,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Order Pages ID on the menu.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string The menu slug of the orders page
 	 */
@@ -40,7 +39,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Gets the Orders Report.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return string
 	 */
@@ -51,7 +50,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Links to sales report for all tickets in Tickets Commerce for this event.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param int  $event_id
 	 * @param bool $url_only
@@ -77,7 +76,7 @@ class Orders extends Report_Abstract {
 		/**
 		 * Filter the Reports Events Orders Report URL.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @var string $report_url Report URL
 		 * @var int    $event_id   The post ID
@@ -95,7 +94,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Links to the sales report for a given ticket.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param int|string $event_id
 	 * @param int|string $ticket_id
@@ -120,7 +119,7 @@ class Orders extends Report_Abstract {
 		/**
 		 * Filter the Reports Tickets Orders Report URL.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @var string $report_url Report URL
 		 * @var int    $event_id   The post ID
@@ -136,7 +135,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Returns the link to the "Orders" report for this post.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param WP_Post $post
 	 *
@@ -149,7 +148,7 @@ class Orders extends Report_Abstract {
 				'page'      => static::$page_slug,
 				'post_id'   => $post->ID,
 			],
-			admin_url( 'edit.php' ) 
+			admin_url( 'edit.php' )
 		);
 
 		return $url;
@@ -158,7 +157,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Hooks the actions and filter required by the class.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function hook() {
 		add_filter( 'post_row_actions', [ $this, 'add_orders_row_action' ], 10, 2 );
@@ -168,7 +167,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Adds order related actions to the available row actions for the post.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array $actions
 	 * @param       $post
@@ -206,7 +205,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Registers the Tickets Commerce orders page as a plugin options page.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function register_orders_page() {
 		$candidate_post_id = tribe_get_request_var( 'post_id', 0 );
@@ -247,7 +246,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Filter the page slugs that the attendee resources will load to add the order page
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param $slugs
 	 *
@@ -262,7 +261,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Sets up the attendees page screen.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function attendees_page_screen_setup() {
 		$orders_table = tribe( Commerce\Admin_Tables\Orders::class );
@@ -276,7 +275,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Sets the browser title for the Orders admin page.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $admin_title
 	 *
@@ -294,7 +293,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Renders the order page
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function render_page() {
 		$this->get_template()->template( 'orders', $this->get_template_vars() );
@@ -303,7 +302,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Sets up the template variables used to render the Orders Report Page.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array
 	 */
@@ -324,7 +323,7 @@ class Orders extends Report_Abstract {
 				$ticket_ids,
 				static function ( $ticket_id ) {
 					return get_post_type( $ticket_id ) === Commerce\Ticket::POSTTYPE;
-				} 
+				}
 			);
 			$tickets    = array_map( [ tribe( Commerce\Ticket::class ), 'get_ticket' ], $ticket_ids );
 		}
@@ -333,11 +332,12 @@ class Orders extends Report_Abstract {
 			$tickets,
 			static function ( $ticket ) {
 				return Module::class === $ticket->provider_class;
-			} 
+			}
 		);
 
-		$event_data   = [];
-		$tickets_data = [];
+		$event_data    = [];
+		$tickets_data  = [];
+		$thousands_sep = tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'thousands_sep' );
 
 		foreach ( $tickets as $ticket ) {
 			$quantities      = tribe( Commerce\Ticket::class )->get_status_quantity( $ticket->ID );
@@ -350,7 +350,8 @@ class Orders extends Report_Abstract {
 					$event_data['total_by_status'][ $status_slug ] = [];
 				}
 
-				$event_data['total_by_status'][ $status_slug ][] = $total_by_status[ $status_slug ] = Price::sub_total( $ticket->price, $status_count );
+				$status_value = Commerce\Utils\Value::create( $ticket->price );
+				$event_data['total_by_status'][ $status_slug ][] = $total_by_status[ $status_slug ] = $status_value->sub_total( $status_count );
 
 				$event_data['qty_by_status'][ $status_slug ] += (int) $status_count;
 			}
@@ -362,9 +363,11 @@ class Orders extends Report_Abstract {
 
 		$event_data['total_by_status'] = array_map(
 			static function ( $sub_totals ) {
-				return Price::total( $sub_totals );
+				$status_grand_total = Commerce\Utils\Value::create();
+				$status_grand_total->total( $sub_totals );
+				return $status_grand_total->get_currency();
 			},
-			$event_data['total_by_status'] 
+			$event_data['total_by_status']
 		);
 
 
@@ -379,6 +382,7 @@ class Orders extends Report_Abstract {
 			'tickets_data'        => $tickets_data,
 			'event_data'          => $event_data,
 			'tooltip'             => tribe( 'tooltip.view' ),
+			'thousands_sep'       => $thousands_sep,
 		];
 
 		return $this->template_vars;
@@ -387,7 +391,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Filters the Order Link to Ticket Orders in the ticket editor.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $url     Url for the order page for ticketed event/post.
 	 * @param int    $post_id The post ID for the current event/post.
@@ -400,6 +404,7 @@ class Orders extends Report_Abstract {
 		if ( Module::class !== $provider ) {
 			return $url;
 		}
+
 		return add_query_arg( [ 'page' => static::get_page_slug() ], $url );
 	}
 }

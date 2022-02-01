@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Manual;
 /**
  * Service provider for the Tickets Commerce: Manual Gateway.
  *
- * @since   TBD
+ * @since   5.2.0
  * @package TEC\Tickets\Commerce\Gateways\Manual
  */
 class Provider extends \tad_DI52_ServiceProvider {
@@ -13,7 +13,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Register the provider singletons.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function register() {
 		$this->container->singleton( Gateway::class );
@@ -26,7 +26,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for this Service Provider
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	protected function register_assets() {
 		$assets = new Assets( $this->container );
@@ -38,7 +38,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for this Service Provider.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	protected function register_hooks() {
 		$hooks = new Hooks( $this->container );

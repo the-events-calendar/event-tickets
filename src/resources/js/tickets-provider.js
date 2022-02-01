@@ -24,7 +24,7 @@ tribe.tickets = tribe.tickets || {};
 	/**
 	 * Ticket Commerce debug settings.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	obj.settings = tecTicketsSettings;
 

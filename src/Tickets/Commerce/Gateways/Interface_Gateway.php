@@ -49,7 +49,7 @@ interface Interface_Gateway {
 	/**
 	 * Determine whether the gateway is connected.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return bool Whether the gateway is connected.
 	 */

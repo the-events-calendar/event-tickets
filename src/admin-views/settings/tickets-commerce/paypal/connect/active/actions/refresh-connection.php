@@ -2,9 +2,9 @@
 /**
  * The Template for displaying the Tickets Commerce refresh connection action button.
  *
- * @version TBD
+ * @version 5.2.0
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @var Tribe__Tickets__Admin__Views                  $this               [Global] Template object.
  * @var string                                        $plugin_url         [Global] The plugin URL.
@@ -20,11 +20,16 @@ if ( empty( $is_merchant_connected ) ) {
 
 $resync_connection_url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-action' => 'paypal-resync-connection' ] );
 ?>
+<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-row">
+	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-col1"></div>
+	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-col2">
+	<a
+		href="<?php echo esc_url( $resync_connection_url ); ?>"
+		class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-resync-button"
+	>
+		<?php tribe( 'tickets.editor.template' )->template( 'v2/components/icons/reset', [ 'classes' => [ 'tec-tickets__admin-settings-tickets-commerce-paypal-connected-resync-button-icon' ] ] ); ?>
+		<?php esc_html_e( 'Resync payment connection', 'event-tickets' ); ?>
+	</a>
+	</div>
+</div>
 
-<a
-	href="<?php echo esc_url( $resync_connection_url ); ?>"
-	class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-resync-button"
->
-	<?php tribe( 'tickets.editor.template' )->template( 'v2/components/icons/reset', [ 'classes' => [ 'tec-tickets__admin-settings-tickets-commerce-paypal-connected-resync-button-icon' ] ] ); ?>
-	<?php esc_html_e( 'Resync payment connection', 'event-tickets' ); ?>
-</a>

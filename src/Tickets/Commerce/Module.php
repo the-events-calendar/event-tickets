@@ -359,7 +359,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * This overrides the parent method because Tickets Commerce stores the order ID in the post_parent.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param int|string $order_id  Order ID.
 	 * @param null|int   $ticket_id (optional) Ticket ID.
@@ -430,52 +430,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Update an attendee for the Commerce provider.
-	 *
-	 * @since 5.1.0
-	 *
-	 * @param array|int $attendee      The attendee data or ID for the attendee to update.
-	 * @param array     $attendee_data The attendee data to update to.
-	 *
-	 * @return WP_Post|false The updated post object or false if unsuccessful.
-	 */
-	public function update_attendee( $attendee, $attendee_data ) {
-		if ( is_numeric( $attendee ) ) {
-			$attendee_id = (int) $attendee;
-		} elseif ( is_array( $attendee ) && isset( $attendee['attendee_id'] ) ) {
-			$attendee_id = (int) $attendee['attendee_id'];
-		} else {
-			return false;
-		}
-
-		/** @var Tribe__Tickets__Attendee_Repository $orm */
-		$attendee = tec_tc_attendees( $this->orm_provider )
-			->where( 'ID', $attendee_id );
-
-		try {
-			if ( ! empty( $attendee_data['attendee_meta'] ) ) {
-				$attendee->set( 'fields', $attendee_data['attendee_meta'] );
-			}
-
-			if ( ! empty( $attendee_data['full_name'] ) ) {
-				$attendee->set( 'full_name', $attendee_data['full_name'] );
-			}
-
-			if ( ! empty( $attendee_data['email'] ) && filter_var( $attendee_data['email'], FILTER_VALIDATE_EMAIL ) ) {
-				$attendee->set( 'email', $attendee_data['email'] );
-			}
-
-			$attendee->save();
-		} catch ( \Tribe__Repository__Usage_Error $e ) {
-			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
-
-			return false;
-		}
-
-		return $attendee;
-	}
-
-	/**
 	 * All the methods below here were created merely as a backwards compatibility piece for our old Code that
 	 * depends so much on the concept of a Main class handling all kinds of integration pieces.
 	 *
@@ -485,7 +439,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 */
 
 	/**
-	 * Get's the product price html
+	 * Returns the ticket price html template.
 	 *
 	 * @since 5.1.9
 	 *
@@ -495,7 +449,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return string
 	 */
 	public function get_price_html( $product, $attendee = false ) {
-		return tribe( Ticket::class )->get_price_html( $product, $attendee );
+		return tribe( Ticket::class )->get_price_html( $product );
 	}
 
 	/**
@@ -578,7 +532,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Maps to the Checkout Class method to get the checkout.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return string
 	 */
@@ -590,13 +544,13 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * Generate and store all the attendees information for a new order.
 	 *
 	 * @since      5.1.9
-	 * @deprecated TBD
+	 * @deprecated 5.2.0
 	 *
 	 * @param string $payment_status The tickets payment status, defaults to completed.
 	 * @param bool   $redirect       Whether the client should be redirected or not.
 	 */
 	public function generate_tickets( $payment_status = 'completed', $redirect = true ) {
-		_deprecated_function( __METHOD__, 'TBD' );
+		_deprecated_function( __METHOD__, '5.2.0' );
 	}
 
 	/**
@@ -728,7 +682,7 @@ class Module extends \Tribe__Tickets__Tickets {
 				'meta' => Arr::get( $attendee_data, 'attendee_meta', [] )
 			]
 		];
-		$extra['optout']    = Arr::get( $attendee_data, 'send_ticket_email', true );
+		$extra['optout']    = ! Arr::get( $attendee_data, 'send_ticket_email', true );
 		$extra['iac']       = false;
 
 		// The Manual Order takes the same format as the cart items.
@@ -770,4 +724,66 @@ class Module extends \Tribe__Tickets__Tickets {
 
 		return $attendee;
 	}
+
+	/**
+	 * Update an attendee for the Commerce provider.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @todo TribeLegacyCommerce We need to move this into the Attendee class.
+	 *
+	 * @param array|int $attendee      The attendee data or ID for the attendee to update.
+	 * @param array     $attendee_data The attendee data to update to.
+	 *
+	 * @return \WP_Post|false The updated post object or false if unsuccessful.
+	 */
+	public function update_attendee( $attendee, $attendee_data ) {
+		if ( is_numeric( $attendee ) ) {
+			$attendee_id = (int) $attendee;
+		} elseif ( is_array( $attendee ) && isset( $attendee['attendee_id'] ) ) {
+			$attendee_id = (int) $attendee['attendee_id'];
+		} else {
+			return false;
+		}
+
+		$attendee = tec_tc_attendees( $this->orm_provider )
+			->where( 'ID', $attendee_id );
+
+		try {
+			if ( ! empty( $attendee_data['attendee_meta'] ) ) {
+				$attendee->set( 'fields', $attendee_data['attendee_meta'] );
+			}
+
+			if ( ! empty( $attendee_data['full_name'] ) ) {
+				$attendee->set( 'full_name', $attendee_data['full_name'] );
+			}
+
+			if ( ! empty( $attendee_data['email'] ) && filter_var( $attendee_data['email'], FILTER_VALIDATE_EMAIL ) ) {
+				$attendee->set( 'email', $attendee_data['email'] );
+			}
+
+			$attendee->save();
+
+			// Send attendee email.
+			$send_ticket_email      = (bool) Arr::get( $attendee_data, 'send_ticket_email', false );
+			$send_ticket_email_args = (array) Arr::get( $attendee_data, 'send_ticket_email_args', [] );
+
+			// Check if we need to send the ticket email.
+			if ( $send_ticket_email ) {
+				$attendee_tickets = [
+					$attendee_id,
+				];
+
+				// Maybe send the attendee email.
+				$this->send_tickets_email_for_attendees( $attendee_tickets, $send_ticket_email_args );
+			}
+		} catch ( \Tribe__Repository__Usage_Error $e ) {
+			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
+
+			return false;
+		}
+
+		return $attendee;
+	}
+
 }

@@ -93,7 +93,7 @@ class Metabox {
 	 * Using the method, providers can add as many fields as
 	 * they want, specific to their implementation.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param int $post_id
 	 * @param int $ticket_id
@@ -142,7 +142,7 @@ class Metabox {
 		/**
 		 * Filters the absolute path to the file containing the metabox capacity HTML.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param string     $file The absolute path to the file containing the metabox capacity HTML
 		 * @param int|string $ticket_capacity

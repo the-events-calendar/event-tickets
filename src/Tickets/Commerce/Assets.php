@@ -53,6 +53,7 @@ class Assets extends tad_DI52_ServiceProvider {
 					'tribe-tickets-commerce',
 					'tribe-tickets-commerce-checkout',
 				],
+				'print'  => true,
 			]
 		);
 

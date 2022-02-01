@@ -40,7 +40,7 @@ function tec_tickets_commerce_is_enabled() {
  * Determine whether Tickets Commerce is in sandbox mode.
  *
  * @since 5.1.6
- * @since TBD Modified the name of the method to `tec_tickets_commerce_is_sandbox_mode`
+ * @since 5.2.0 Modified the name of the method to `tec_tickets_commerce_is_sandbox_mode`
  *
  * @return bool Whether Tickets Commerce is in test mode.
  */
@@ -50,7 +50,7 @@ function tec_tickets_commerce_is_sandbox_mode() {
 	/**
 	 * Filter whether we should disable TribeCommerce PayPal or not.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param boolean $sandbox_mode should be available or not.
 	 */
@@ -65,12 +65,6 @@ function tec_tickets_commerce_is_sandbox_mode() {
  * @return boolean
  */
 function tec_tribe_commerce_is_available() {
-	/**
-	 * @todo Before launch of Tickets Commerce remove this conditional from here.
-	 */
-	if ( ! tec_tickets_commerce_is_enabled() ) {
-		return true;
-	}
 
 	if ( defined( 'TEC_TRIBE_COMMERCE_AVAILABLE' ) ) {
 		return (bool) TEC_TRIBE_COMMERCE_AVAILABLE;
@@ -92,6 +86,7 @@ function tec_tribe_commerce_is_available() {
 			'5.1.10'
 		);
 	}
+	$should_be_available = $available && tec_tribe_commerce_has_active_tickets();
 
 	/**
 	 * Filter whether we should disable TribeCommerce PayPal or not.
@@ -100,5 +95,53 @@ function tec_tribe_commerce_is_available() {
 	 *
 	 * @param boolean $available should be available or not.
 	 */
-	return apply_filters( 'tec_tribe_commerce_is_available', $available );
+	return apply_filters( 'tec_tribe_commerce_is_available', $should_be_available );
+}
+
+/**
+ * Check if the site has created tickets using TribeCommerce.
+ *
+ * @since 5.2.0
+ *
+ * @return bool
+ */
+function tec_tribe_commerce_has_active_tickets() {
+	if ( defined( 'TEC_TRIBE_COMMERCE_HAS_ACTIVE_TICKETS' ) ) {
+		return (bool) TEC_TRIBE_COMMERCE_HAS_ACTIVE_TICKETS;
+	}
+
+	$env_var = getenv( 'TEC_TRIBE_COMMERCE_HAS_ACTIVE_TICKETS' );
+
+	if ( false !== $env_var ) {
+		return (bool) $env_var;
+	}
+
+	$cache_key = 'tec_tribe_commerce_has_active_tickets';
+	$cached    = (bool) get_transient( $cache_key );
+
+	if ( $cached ) {
+		/**
+		 * Filter whether we should disable TribeCommerce PayPal or not.
+		 *
+		 * @since 5.2.0
+		 *
+		 * @param boolean $available should be available or not.
+		 */
+		return apply_filters( 'tec_tribe_commerce_has_active_tickets', $cached );
+	}
+
+	$has_active_tickets = (bool) tribe_tickets()->by( 'post_type', 'tribe_tpp_tickets' )->where( 'is_active' )->count();
+
+	// Cache the data.
+	set_transient( $cache_key, $has_active_tickets, 24 * HOUR_IN_SECONDS );
+
+	/**
+	 * Filter whether we should disable TribeCommerce PayPal or not.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param boolean $available should be available or not.
+	 */
+	return apply_filters( 'tec_tribe_commerce_has_active_tickets', $has_active_tickets );
+
 }

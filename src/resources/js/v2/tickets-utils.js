@@ -225,4 +225,26 @@ tribe.tickets.utils = {};
 		// Return the post id for the first ticket block.
 		return $ticketsBlock.getAttribute( 'data-post-id' ) || false;
 	};
+
+	/**
+	 * Get the price of the ticket from the ticket item element.
+	 *
+	 * @since 5.2.1
+	 *
+	 * @return {float|int} The ticket price.
+	 */
+	obj.getPrice = function( $ticketItem, provider ) {
+		if ( ! $ticketItem ) {
+			return 0;
+		}
+		const realPrice = $ticketItem.data( 'ticket-price' );
+		const formattedPrice = $ticketItem
+			.find( '.tribe-tickets__tickets-sale-price .tribe-amount' )
+			.text();
+		const priceString = isNaN( realPrice )
+			? obj.cleanNumber( formattedPrice, provider )
+			: realPrice;
+			return parseFloat( priceString );
+	};
+
 } )( jQuery, tribe.tickets.utils );

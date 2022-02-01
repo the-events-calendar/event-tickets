@@ -20,7 +20,7 @@ use WP_List_Table;
 /**
  * Class Admin Tables for Attendees
  *
- * @since TBD
+ * @since 5.2.0
  */
 class Attendees extends WP_List_Table {
 
@@ -41,7 +41,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 *  Documented in WP_List_Table
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array|string $args Array or string of arguments.
 	 */
@@ -91,7 +91,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Enqueues the JS and CSS for the attendees page in the admin
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $hook The current admin page.
 	 */
@@ -164,7 +164,7 @@ class Attendees extends WP_List_Table {
 		/**
 		 * Allow filtering the configuration data for the Attendee objects on Attendees report page.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array $config_data List of configuration data to be localized.
 		 */
@@ -176,7 +176,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Loads the WP-Pointer for the Attendees screen
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $hook The current admin page.
 	 */
@@ -207,7 +207,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Returns the  list of columns.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 * @return array An associative array in the format [ <slug> => <title> ]
 	 */
 	public function get_columns() {
@@ -227,7 +227,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Prepares the list of items for displaying.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function prepare_items() {
 		$this->legacy_attendees_table->process_actions();
@@ -254,8 +254,8 @@ class Attendees extends WP_List_Table {
 			/**
 			 * Filters the item keys that can be used to filter attendees while searching them.
 			 *
-			 * @since TBD
-			 * @since TBD
+			 * @since 5.2.0
+			 * @since 5.2.0
 			 *
 			 * @param array  $search_keys The keys that can be used to search attendees.
 			 * @param array  $items       (deprecated) The attendees list.
@@ -285,7 +285,7 @@ class Attendees extends WP_List_Table {
 			/**
 			 * Filters the item keys that support LIKE matching to filter attendees while searching them.
 			 *
-			 * @since TBD
+			 * @since 5.2.0
 			 *
 			 * @param array  $search_like_keys The keys that support LIKE matching.
 			 * @param array  $search_keys      The keys that can be used to search attendees.
@@ -341,7 +341,7 @@ class Attendees extends WP_List_Table {
 	 *
 	 * @see   \Tribe__Tickets__Attendee_Repository::__construct() List of valid ORM args.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array
 	 */
@@ -363,7 +363,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Generates content for a single row of the table
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $item row object.
 	 */
@@ -407,7 +407,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Content for the ticket column
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $item row object.
 	 *
@@ -447,7 +447,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Content for the primary info column
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $item row object.
 	 *
@@ -455,8 +455,8 @@ class Attendees extends WP_List_Table {
 	 */
 	public function column_primary_info( $item ) {
 
-		$name  = $item->holder_name ?? '';
-		$email = $item->holder_email ?? '';
+		$name  = $item->holder_name ? $item->holder_name : '';
+		$email = $item->holder_email ? $item->holder_email : '';
 
 		return sprintf(
 			'
@@ -471,7 +471,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Content for the security code column
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $item row object.
 	 *
@@ -486,7 +486,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Content for the status column
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $item row object.
 	 *
@@ -503,7 +503,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Content for the check in column
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $item row object.
 	 *
@@ -516,7 +516,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Content for the checkbox column
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $item row object.
 	 *
@@ -531,7 +531,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Adds a set of default row actions to each item in the attendee list table.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $item row object.
 	 *
@@ -590,7 +590,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Displays the search box.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $text     The 'submit' button label.
 	 * @param string $input_id ID attribute value for the search input field.
@@ -602,7 +602,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Retrieves the list of bulk actions available for this table.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array
 	 */
@@ -613,7 +613,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Extra controls to be displayed between bulk actions and pagination.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $which the control name.
 	 */
@@ -624,7 +624,7 @@ class Attendees extends WP_List_Table {
 	/**
 	 * Message to be displayed when there are no items
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function no_items() {
 		esc_html_e( 'No matching attendees found.', 'event-tickets' );
@@ -634,7 +634,7 @@ class Attendees extends WP_List_Table {
 	 * Overrides the list of CSS classes for the WP_List_Table table tag.
 	 * This function is not hookable in core, so it needs to be overridden!
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array List of CSS classes for the table tag.
 	 */

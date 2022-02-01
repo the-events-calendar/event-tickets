@@ -2,7 +2,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @type   {Object}
  */
@@ -11,7 +11,7 @@ tribe.tickets = tribe.tickets || {};
 /**
  * Path to this script in the global tribe Object.
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @type   {Object}
  */
@@ -20,7 +20,7 @@ tribe.tickets.commerce = tribe.tickets.commerce || {};
 /**
  * Path to this script in the global tribe Object.
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @type   {Object}
  */
@@ -29,7 +29,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 /**
  * Path to this script in the global tribe Object.
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @type   {Object}
  */
@@ -38,7 +38,7 @@ tribe.tickets.commerce.gateway.paypal = tribe.tickets.commerce.gateway.paypal ||
 /**
  * This script Object for public usage of the methods.
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @type   {Object}
  */
@@ -47,7 +47,7 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
 /**
  * Initializes in a Strict env the code that manages the checkout for PayPal.
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @param  {Object} $   jQuery
  * @param  {Object} obj tribe.tickets.commerce.gateway.paypal.checkout
@@ -61,7 +61,7 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
 	/**
 	 * PayPal Signup nonce.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @type {string}
 	 */
@@ -70,7 +70,7 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
 	/**
 	 * PayPal Refresh Connect URL nonce.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @type {string}
 	 */
@@ -79,7 +79,7 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
 	/**
 	 * PayPal Signup handling endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @type {string}
 	 */
@@ -88,7 +88,7 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
 	/**
 	 * PayPal Signup Selectors.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @type {Object}
 	 */
@@ -100,7 +100,7 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
 	/**
 	 * Handles the singup onboarding of customers to PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param {string} authCode PayPal data passed to this method.
 	 * @param {string} sharedId jQuery object of the tickets container.
@@ -124,7 +124,7 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
 	/**
 	 * When the country field changes we need to refresh the link.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param event {Event}
 	 *
@@ -160,7 +160,7 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
 	/**
 	 * Setup the triggers for Ticket Commerce loader view.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return {void}
 	 */
@@ -172,7 +172,7 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
 	/**
 	 * Handles the initialization of the tickets commerce events when Document is ready.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return {void}
 	 */
@@ -189,6 +189,6 @@ tribe.tickets.commerce.gateway.paypal.signup = {};
  *
  * @type {tribe.tickets.commerce.gateway.paypal.signup.onboardedCallback}
  *
- * @since TBD
+ * @since 5.2.0
  */
 tecTicketsCommerceGatewayPayPalSignupCallback = tribe.tickets.commerce.gateway.paypal.signup.onboardedCallback;

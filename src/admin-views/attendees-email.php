@@ -39,6 +39,7 @@ $referer    = ! empty( $_SERVER['HTTP_REFERER'] ) ? "action='" . esc_url( $_SERV
 			<span><?php esc_html_e( 'Email Address:', 'event-tickets' ); ?></span>
 			<input type="text" name="email_to_address" id="email_to_address" value="">
 		</label>
+		<input type="hidden" value="email" name="action" />
 	</div>
 		<div id="plugin-information-footer">
 		<?php

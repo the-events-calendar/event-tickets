@@ -19,6 +19,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Notice_Handler;
+use TEC\Tickets\Commerce\Settings;
 use TEC\Tickets\Commerce\Shortcodes\Shortcode_Abstract;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Status\Completed;
@@ -59,9 +60,9 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-webhook', [ $this, 'handle_action_refresh_webhook' ] );
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-resync-connection', [ $this, 'handle_action_refresh_connection' ] );
 
-		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_client_js_sdk_script' ], 30, 3 );
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
 		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_advanced_payments' ], 20, 3 );
+		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_client_js_sdk_script' ], 30, 3 );
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_paypal_refresh_connect_url', [ $this, 'ajax_refresh_connect_url' ] );
 		add_action( 'admin_init', [ $this, 'render_ssl_notice' ] );
 
@@ -78,12 +79,13 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_commerce_success_shortcode_checkout_page_paypal_template_vars', [ $this, 'include_checkout_page_vars' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_success_shortcode_success_page_paypal_template_vars', [ $this, 'include_success_page_vars' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_notice_messages', [ $this, 'include_admin_notices' ] );
+		add_filter( 'tribe-events-save-options', [ $this, 'flush_transients_when_toggling_sandbox_mode' ] );
 	}
 
 	/**
 	 * Resolve the refresh of the URL when the coutry changes.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 *
 	 * @return false|string
@@ -154,7 +156,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Include the advanced payment fields from PayPal in the Checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string           $file     Which file we are loading.
 	 * @param string           $name     Name of file file
@@ -169,7 +171,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @since TBD Display info on disconnect.
+	 * @since 5.2.0 Display info on disconnect.
 	 */
 	public function handle_action_disconnect() {
 		$disconnected = $this->container->make( Merchant::class )->disconnect();
@@ -242,7 +244,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.1.10
 	 *
-	 * @since TBD Display error|success messages.
+	 * @since 5.2.0 Display error|success messages.
 	 */
 	public function handle_action_refresh_webhook() {
 		$updated = $this->container->make( Webhooks::class )->create_or_update_existing();
@@ -268,7 +270,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Handles the refreshing the entire connection with PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function handle_action_refresh_connection() {
 		$this->handle_action_refresh_token();
@@ -301,7 +303,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Render SSL requirement notice.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function render_ssl_notice() {
 		$page = tribe_get_request_var( 'page' );
@@ -317,7 +319,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Include PayPal admin notices for Ticket Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array $messages Array of messages.
 	 *
@@ -330,7 +332,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Includes the Capture ID in the success page of the PayPal Gateway orders.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string           $file     Which file we are loading.
 	 * @param string           $name     The name of the file.
@@ -353,5 +355,18 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		}
 
 		$template->template( 'gateway/paypal/order/details/capture-id', [ 'capture_id' => $capture_id ] );
+	}
+
+	/**
+	 * Checks if the transient data needs to be flushed when saving options and deletes it if appropriate
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param array $options the list of plugin options set for saving
+	 *
+	 * @return array
+	 */
+	public function flush_transients_when_toggling_sandbox_mode( $options ) {
+		return $this->container->make( Signup::class )->maybe_delete_transient_data( $options );
 	}
 }

@@ -27,11 +27,6 @@ class Provider extends tad_DI52_ServiceProvider {
 	public function register() {
 		require_once Tickets_Plugin::instance()->plugin_path . 'src/functions/commerce/provider.php';
 
-		// Specifically prevents anything else from loading.
-		if ( ! tec_tickets_commerce_is_enabled() ) {
-			return;
-		}
-
 		$this->register_hooks();
 		$this->register_assets();
 

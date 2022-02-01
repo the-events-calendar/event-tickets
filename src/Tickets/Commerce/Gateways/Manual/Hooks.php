@@ -10,7 +10,7 @@
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Commerce\Gateways\Manual\Hooks::class ), 'some_method' ] );
  * remove_action( 'some_action', [ tribe( 'tickets.commerce.gateways.manual.hooks' ), 'some_method' ] );
  *
- * @since   TBD
+ * @since   5.2.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Manual
  */
@@ -25,7 +25,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Hooks.
  *
- * @since   TBD
+ * @since   5.2.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Manual
  */
@@ -34,7 +34,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function register() {
 		$this->add_actions();
@@ -44,7 +44,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Adds the actions required by each Tickets Commerce component.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	protected function add_actions() {
 
@@ -53,7 +53,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Adds the filters required by each Tickets Commerce component.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	protected function add_filters() {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 10, 2 );
@@ -62,7 +62,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Add this gateway to the list of available.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array $gateways List of available gateways.
 	 *

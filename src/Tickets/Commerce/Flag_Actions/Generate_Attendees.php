@@ -111,7 +111,7 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				/**
 				 * Filters the attendee data before it is saved.
 				 *
-				 * @since TBD
+				 * @since 5.2.0
 				 *
 				 * @param array<mixed>             $args       The attendee creation args.
 				 * @param \Tribe__Tickets__Tickets $ticket     The ticket the attendee is generated for.
@@ -128,7 +128,7 @@ class Generate_Attendees extends Flag_Action_Abstract {
 				/**
 				 * Fires after an attendee is generated for an order.
 				 *
-				 * @since TBD
+				 * @since 5.2.0
 				 *
 				 * @param Attendee                 $attendee   The generated attendee.
 				 * @param \Tribe__Tickets__Tickets $ticket     The ticket the attendee is generated for.
@@ -146,7 +146,7 @@ class Generate_Attendees extends Flag_Action_Abstract {
 			/**
 			 * Fires after all attendees are generated for an order.
 			 *
-			 * @since TBD
+			 * @since 5.2.0
 			 *
 			 * @param array<Attendee>          $attendees  The generated attendees.
 			 * @param \Tribe__Tickets__Tickets $ticket     The ticket the attendee is generated for.

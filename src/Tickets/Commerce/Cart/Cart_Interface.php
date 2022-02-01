@@ -15,7 +15,7 @@ interface Cart_Interface {
 	 * Sets the cart hash.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Renamed to set_hash instead of set_id
+	 * @since 5.2.0 Renamed to set_hash instead of set_id
 	 *
 	 * @param string $hash
 	 */
@@ -24,7 +24,7 @@ interface Cart_Interface {
 	/**
 	 * Gets the cart hash.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return string
 	 */

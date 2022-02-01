@@ -4,9 +4,9 @@
  *
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-tc-tickets.php
  *
- * @since TBD
+ * @since 5.2.0
  *
- * @version TBD
+ * @version 5.2.0
  */
 
 $view      = Tribe__Tickets__Tickets_View::instance();

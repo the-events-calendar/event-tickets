@@ -2,9 +2,8 @@
 
 namespace TEC\Tickets\Commerce;
 
-use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Interface_Gateway;
-use TEC\Tickets\Commerce\Utils\Price;
+use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Date_Utils as Dates;
 
 /**
@@ -14,7 +13,7 @@ use Tribe__Date_Utils as Dates;
  *
  * @package TEC\Tickets\Commerce
  */
-class Order {
+class Order extends Abstract_Order {
 
 	/**
 	 * Tickets Commerce Order Post Type slug.
@@ -57,7 +56,7 @@ class Order {
 	 * Which meta holds the items used to setup this order.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Updated to use `_tec_tc_order_items` instead of `_tec_tc_order_items`.
+	 * @since 5.2.0 Updated to use `_tec_tc_order_items` instead of `_tec_tc_order_items`.
 	 *
 	 * @var string
 	 */
@@ -167,7 +166,7 @@ class Order {
 	/**
 	 * Meta that holds the hash for this order, which at the time of purchase was unique.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string
 	 */
@@ -176,7 +175,7 @@ class Order {
 	/**
 	 * Meta value for placeholder names.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string
 	 */
@@ -314,28 +313,29 @@ class Order {
 		$items      = $cart->get_items_in_cart();
 		$items      = array_map(
 			static function ( $item ) {
-				$ticket = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
-				if ( null === $ticket ) {
+				/** @var Value $ticket_value */
+				$ticket_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
+
+				if ( null === $ticket_value ) {
 					return null;
 				}
 
-				$item['sub_total'] = Price::sub_total( $ticket->price, $item['quantity'] );
-				$item['price']     = $ticket->price;
+				$item['price']     = $ticket_value->get_decimal();
+				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
 
 				return $item;
 			},
 			$items
 		);
-		$items      = array_filter( $items );
-		$sub_totals = array_filter( wp_list_pluck( $items, 'sub_total' ) );
-		$total      = Price::total( $sub_totals );
+		$total = $this->get_value_total( array_filter( $items ) );
 
 		$order_args = [
 			'title'       => $this->generate_order_title( $items, $cart->get_cart_hash() ),
-			'total_value' => $total,
+			'total_value' => $total->get_decimal(),
 			'items'       => $items,
 			'gateway'     => $gateway::get_key(),
 			'hash'        => $cart->get_cart_hash(),
+			'currency'    => Utils\Currency::get_currency_code(),
 		];
 
 		// When purchaser data-set is not passed we pull from the current user.
@@ -366,7 +366,7 @@ class Order {
 	/**
 	 * Filters the values and creates a new Order with Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
@@ -381,7 +381,7 @@ class Order {
 		/**
 		 * Allows filtering of the order creation arguments for all orders created via Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array             $args
 		 * @param Interface_Gateway $gateway
@@ -391,7 +391,7 @@ class Order {
 		/**
 		 * Allows filtering of the order creation arguments for all orders created via Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array             $args
 		 * @param Interface_Gateway $gateway
@@ -426,7 +426,7 @@ class Order {
 	/**
 	 * Return payment method label for the order.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param int|\WP_Post $order Order Object.
 	 *
@@ -473,7 +473,7 @@ class Order {
 	/**
 	 * Loads an order object with information about its attendees
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $order the order object.
 	 *
@@ -498,7 +498,7 @@ class Order {
 	/**
 	 * Returns the Ticket ID that is associated with the attendee
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param \WP_Post $attendee the attendee object.
 	 *
@@ -511,7 +511,7 @@ class Order {
 	/**
 	 * Check if the order is of valid type.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param int|\WP_Post $order The Order object to check.
 	 *

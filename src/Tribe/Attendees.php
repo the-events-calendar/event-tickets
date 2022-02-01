@@ -161,11 +161,6 @@ class Tribe__Tickets__Attendees {
 			'event_id'  => $post->ID,
 		);
 
-		// Remove the post type from the admin URL as ?post_type=post is the same as edit.php and is not required for posts.
-		if ( 'post' === $post->post_type ) {
-			unset( $args['post_type'] );
-		}
-
 		$url = add_query_arg( $args, admin_url( 'edit.php' ) );
 
 		/**
@@ -384,7 +379,6 @@ class Tribe__Tickets__Attendees {
 		if ( is_admin() && $this->slug() !== $page ) {
 			return;
 		}
-
 
 		if ( 'email' === $action ) {
 			define( 'IFRAME_REQUEST', true );

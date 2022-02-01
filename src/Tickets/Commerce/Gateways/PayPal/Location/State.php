@@ -6,13 +6,13 @@
  * Currently this file is not in use for PayPal yet, but we might implement in the near future, this is code ported from
  * GiveWP that we modified, but it's not in use. Modifications and usage should be verified.
  *
- * @since TBD
+ * @since 5.2.0
  */
 class State {
 	/**
 	 * Get Turkey States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -108,7 +108,7 @@ class State {
 	/**
 	 * Get Romania States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -165,7 +165,7 @@ class State {
 	/**
 	 * Get Pakistan States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -188,7 +188,7 @@ class State {
 	/**
 	 * Get Philippines States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -285,7 +285,7 @@ class State {
 	/**
 	 * Get Peru States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -326,7 +326,7 @@ class State {
 	/**
 	 * Get Nepal States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -355,7 +355,7 @@ class State {
 	/**
 	 * Get Nigerian States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -407,7 +407,7 @@ class State {
 	/**
 	 * Get Mexico States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -454,7 +454,7 @@ class State {
 	/**
 	 * Get Japan States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -516,7 +516,7 @@ class State {
 	/**
 	 * Get Italy States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -641,7 +641,7 @@ class State {
 	/**
 	 * Get Iran States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -687,7 +687,7 @@ class State {
 	/**
 	 * Get Ireland States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -734,7 +734,7 @@ class State {
 	/**
 	 * Get Greek States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -762,7 +762,7 @@ class State {
 	/**
 	 * Get bolivian States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -786,7 +786,7 @@ class State {
 	/**
 	 * Get Bulgarian States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -829,7 +829,7 @@ class State {
 	/**
 	 * Get Bangladeshi States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -908,7 +908,7 @@ class State {
 	/**
 	 * Get Argentina States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -947,7 +947,7 @@ class State {
 	/**
 	 * Get States List
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return      array
 	 */
@@ -1028,7 +1028,7 @@ class State {
 	/**
 	 * Get Provinces List
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return      array
 	 */
@@ -1056,7 +1056,7 @@ class State {
 	/**
 	 * Get Australian States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -1079,7 +1079,7 @@ class State {
 	/**
 	 * Get Brazil States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -1121,7 +1121,7 @@ class State {
 	/**
 	 * Get Hong Kong States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -1139,7 +1139,7 @@ class State {
 	/**
 	 * Get Hungary States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -1174,7 +1174,7 @@ class State {
 	/**
 	 * Get Chinese States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -1221,7 +1221,7 @@ class State {
 	/**
 	 * Get New Zealand States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -1251,7 +1251,7 @@ class State {
 	/**
 	 * Get Indonesian States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -1300,7 +1300,7 @@ class State {
 	/**
 	 * Get Indian States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 *
 	 * @return array $states A list of states
@@ -1352,7 +1352,7 @@ class State {
 	/**
 	 * Get Malaysian States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -1383,7 +1383,7 @@ class State {
 	/**
 	 * Get South African States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -1407,7 +1407,7 @@ class State {
 	/**
 	 * Get Thailand States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -1499,7 +1499,7 @@ class State {
 	/**
 	 * Get Spain States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of states
 	 */
@@ -1567,7 +1567,7 @@ class State {
 	/**
 	 * Get the label that need to show as an placeholder.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $country_states_label
 	 */
@@ -1586,7 +1586,7 @@ class State {
 		/**
 		 * Filter can be used to add or remove the Country that does not have states init.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array $country Contain key as there country code & value as there country name.
 		 */
@@ -1596,7 +1596,7 @@ class State {
 	/**
 	 * Get Site Base State
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return string $state The site's base state name
 	 */
@@ -1609,7 +1609,7 @@ class State {
 	/**
 	 * Get Site States
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param null $country
 	 *
@@ -1636,7 +1636,7 @@ class State {
 		/**
 		 * Filter the query in case tables are non-standard.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param string $query Database count query
 		 */
@@ -1646,7 +1646,7 @@ class State {
 	/**
 	 * Get States List.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array $states A list of the available states as in array key format.
 	 */
@@ -1690,7 +1690,7 @@ class State {
 		 *
 		 * Filters can be use to add states inside the country all the states will be in array format ans the array key will be country code.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array $states Contain the list of states in array key format where key of the array is there respected country code.
 		 */

@@ -63,16 +63,21 @@ class Buttons {
 			return;
 		}
 
-		$client            = tribe( Client::class );
-		$client_token_data = $client->get_client_token();
-		$must_login        = ! is_user_logged_in() && tribe( Module::class )->login_required();
-		$template_vars     = [
-			'url'                     => $client->get_js_sdk_url(),
-			'attribution_id'          => Gateway::ATTRIBUTION_ID,
-			'client_token'            => Arr::get( $client_token_data, 'client_token' ),
-			'client_token_expires_in' => Arr::get( $client_token_data, 'expires_in' ) - 60,
-			'must_login'              => $must_login,
+		$client        = tribe( Client::class );
+		$must_login    = ! is_user_logged_in() && tribe( Module::class )->login_required();
+		$template_vars = [
+			'url'            => $client->get_js_sdk_url(),
+			'attribution_id' => Gateway::ATTRIBUTION_ID,
+			'must_login'     => $must_login,
 		];
+
+		$client_token_data       = $client->get_client_token();
+		$client_token            = Arr::get( $client_token_data, 'client_token' );
+		$client_token_expires_in = Arr::get( $client_token_data, 'expires_in' );
+		if ( ! empty( $client_token ) && ! empty( $client_token_expires_in ) ) {
+			$template_vars['client_token'] = $client_token;
+			$template_vars['client_token_expires_in'] = $client_token_expires_in - 60;
+		}
 
 		$html = $this->get_template()->template( 'checkout-script', $template_vars, false );
 
@@ -85,7 +90,7 @@ class Buttons {
 	/**
 	 * Include the payment buttons from PayPal into the Checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string           $file     Which file we are loading.
 	 * @param string           $name     Name of file file
@@ -102,7 +107,7 @@ class Buttons {
 	/**
 	 * Include the advanced payment fields from PayPal into the Checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string           $file     Which file we are loading.
 	 * @param string           $name     Name of file file

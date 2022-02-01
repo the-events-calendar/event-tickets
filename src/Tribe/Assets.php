@@ -211,10 +211,11 @@ class Tribe__Tickets__Assets {
 		];
 
 		$nonces = [
-			'add_ticket_nonce'    => wp_create_nonce( 'add_ticket_nonce' ),
-			'edit_ticket_nonce'   => wp_create_nonce( 'edit_ticket_nonce' ),
-			'remove_ticket_nonce' => wp_create_nonce( 'remove_ticket_nonce' ),
-			'ajaxurl'             => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+			'add_ticket_nonce'       => wp_create_nonce( 'add_ticket_nonce' ),
+			'edit_ticket_nonce'      => wp_create_nonce( 'edit_ticket_nonce' ),
+			'remove_ticket_nonce'    => wp_create_nonce( 'remove_ticket_nonce' ),
+			'duplicate_ticket_nonce' => wp_create_nonce( 'duplicate_ticket_nonce' ),
+			'ajaxurl'                => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 		];
 
 		$ticket_js_deps = [ 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'tribe-moment', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'tribe-timepicker' ];
@@ -326,7 +327,16 @@ class Tribe__Tickets__Assets {
 
 		// Register Ticket Admin Settings page assets.
 		$settings_assets = [
-			[ 'event-tickets-admin-settings-css', 'tickets-admin-settings.css', [ 'tribe-common-admin' ] ],
+			[
+				'event-tickets-admin-settings-css',
+				'tickets-admin-settings.css',
+				[
+					'tribe-common-admin',
+					'tribe-common-full-style',
+					'tribe-common-responsive',
+					'tribe-dialog',
+				],
+			],
 		];
 
 		tribe_assets(
@@ -345,10 +355,17 @@ class Tribe__Tickets__Assets {
 	 *
 	 * @since  4.6
 	 *
+	 * @since 5.2.1 Always enqueue scripts for Ticket settings page.
+	 *
 	 * @return bool
 	 */
 	public function should_enqueue_admin() {
 		global $post;
+
+		// Should enqueue if Ticket settings page.
+		if ( 'tribe-common' === tribe_get_request_var( 'page' ) && 'event-tickets' === tribe_get_request_var( 'tab' ) ) {
+			return true;
+		}
 
 		/**
 		 * Filter the array of module names.

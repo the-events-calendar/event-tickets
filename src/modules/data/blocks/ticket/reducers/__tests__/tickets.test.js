@@ -5,7 +5,7 @@ import tickets, { byClientId, allClientIds } from '../tickets';
 import { actions } from '@moderntribe/tickets/data/blocks/ticket';
 
 jest.mock( 'moment', () => () => {
-	const moment = require.requireActual( 'moment' );
+	const moment = jest.requireActual( 'moment' );
 	return moment( 'January 10, 2018 5:30 pm', 'MMMM D, Y h:mm a' );
 } );
 

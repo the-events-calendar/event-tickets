@@ -10,19 +10,18 @@ namespace TEC\Tickets\Commerce\Reports;
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Admin_Tables;
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Utils\Price;
 
 /**
  * Class Reports for Attendees
  *
- * @since TBD
+ * @since 5.2.0
  */
 class Attendees extends Report_Abstract {
 
 	/**
 	 * Slug of the admin page for attendees
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string
 	 */
@@ -31,7 +30,7 @@ class Attendees extends Report_Abstract {
 	/**
 	 * Order Pages ID on the menu.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string The menu slug of the orders page
 	 */
@@ -40,7 +39,7 @@ class Attendees extends Report_Abstract {
 	/**
 	 * Gets the Orders Report.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 * @return string
 	 */
 	public function get_title() {
@@ -53,7 +52,7 @@ class Attendees extends Report_Abstract {
 	/**
 	 * Hooks the actions and filter required by the class.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function hook() {
 		add_action( 'admin_menu', [ $this, 'register_attendees_page' ] );
@@ -62,7 +61,7 @@ class Attendees extends Report_Abstract {
 	/**
 	 * Registers the Tickets Commerce orders page as a plugin options page.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function register_attendees_page() {
 		$candidate_post_id = tribe_get_request_var( 'post_id', 0 );
@@ -104,7 +103,7 @@ class Attendees extends Report_Abstract {
 	 * Sets the browser title for the Attendees admin page.
 	 * Uses the event title.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $admin_title The page title in the admin.
 	 *
@@ -123,7 +122,7 @@ class Attendees extends Report_Abstract {
 	/**
 	 * Filter the page slugs that the attendee resources will load to add the order page
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array $slugs an array of admin slugs.
 	 *
@@ -138,7 +137,7 @@ class Attendees extends Report_Abstract {
 	/**
 	 * Sets up the attendees page screen.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function attendees_page_screen_setup() {
 		$action = tribe_get_request_var( 'tribe-send-email', false );
@@ -179,7 +178,7 @@ class Attendees extends Report_Abstract {
 	/**
 	 * Renders the order page
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function render_page() {
 
@@ -191,7 +190,7 @@ class Attendees extends Report_Abstract {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function setup_template_vars() {
 		$post_id = tribe_get_request_var( 'post_id' );
@@ -229,7 +228,8 @@ class Attendees extends Report_Abstract {
 					$event_data['total_by_status'][ $status_slug ] = [];
 				}
 
-				$total_by_status[ $status_slug ]                 = Price::sub_total( $ticket->price, $status_count );
+				$status_value = Commerce\Utils\Value::create( $ticket->price );
+				$total_by_status[ $status_slug ]                 = $status_value->sub_total( $status_count );
 				$event_data['total_by_status'][ $status_slug ][] = $total_by_status[ $status_slug ];
 
 				$event_data['qty_by_status'][ $status_slug ] += (int) $status_count;
@@ -242,7 +242,7 @@ class Attendees extends Report_Abstract {
 
 		$event_data['total_by_status'] = array_map(
 			static function ( $sub_totals ) {
-				return Price::total( $sub_totals );
+				return $sub_totals->get_decimal();
 			},
 			$event_data['total_by_status']
 		);
@@ -268,7 +268,7 @@ class Attendees extends Report_Abstract {
 	/**
 	 * Determines if the "export" button will be displayed by the the title
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param int $event_id The event whose attendees may be exported.
 	 *
@@ -299,7 +299,7 @@ class Attendees extends Report_Abstract {
 	 * @param string $event_id Optional. The ID of the event the user is managing.
 	 *
 	 * @return boolean
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function user_can_manage_attendees( $user_id = 0, $event_id = '' ) {
 		$user_id  = 0 === $user_id ? get_current_user_id() : $user_id;
@@ -313,7 +313,7 @@ class Attendees extends Report_Abstract {
 		/**
 		 * Allows customizing the caps a user must have to be allowed to manage attendees.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param int   $user_id      The ID of the user whose capabilities are being checked.
 		 *
@@ -339,7 +339,7 @@ class Attendees extends Report_Abstract {
 		/**
 		 * Filter our return value to let other plugins hook in and alter things
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param bool $user_can return value, user can or can't
 		 * @param int  $user_id  id of the user we're checking
@@ -354,7 +354,7 @@ class Attendees extends Report_Abstract {
 	 * Checks if the user requested a CSV export from the attendees list.
 	 * If so, generates the download and finishes the execution.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public function maybe_generate_csv() {
 		if ( empty( $_GET['attendees_csv'] ) || empty( $_GET['attendees_csv_nonce'] ) || empty( $_GET['event_id'] ) ) {
@@ -387,7 +387,7 @@ class Attendees extends Report_Abstract {
 		/**
 		 * Allow for filtering and modifying the list of attendees that will be exported via CSV for a given event.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array $items    The array of attendees that will be exported in this CSV file.
 		 * @param int   $event_id The ID of the event these attendees are associated with.
@@ -428,7 +428,7 @@ class Attendees extends Report_Abstract {
 	 * Generates a list of attendees taking into account the Screen Options.
 	 * It's used both for the Email functionality, as well as the CSV export.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param int $event_id The Event ID.
 	 *
@@ -439,7 +439,7 @@ class Attendees extends Report_Abstract {
 		/**
 		 * Fire immediately prior to the generation of a filtered (exportable) attendee list.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param int $event_id
 		 */
@@ -453,7 +453,8 @@ class Attendees extends Report_Abstract {
 		$filter_name = "manage_{$this->page_id}_columns";
 		add_filter( $filter_name, [ $this->attendees_table, 'get_columns' ], 15 );
 
-		$items = tribe( \Tribe__Tickets__Tickets::class )::get_event_attendees( $event_id );
+		$tickets_class = tribe( \Tribe__Tickets__Tickets::class );
+		$items = $tickets_class::get_event_attendees( $event_id );
 
 		// Add Handler for Community Tickets to Prevent Notices in Exports.
 		if ( ! is_admin() ) {
@@ -492,7 +493,7 @@ class Attendees extends Report_Abstract {
 		 * Used to modify what columns should be shown on the CSV export
 		 * The column name should be the Array Index and the Header is the array Value
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array Columns, associative array
 		 * @param array Items to be exported
@@ -548,7 +549,7 @@ class Attendees extends Report_Abstract {
 	/**
 	 * Sanitize rows for CSV usage.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array $rows Rows to be sanitized.
 	 *
@@ -565,7 +566,7 @@ class Attendees extends Report_Abstract {
 	/**
 	 * Sanitize a value for CSV usage.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param mixed $value Value to be sanitized.
 	 *

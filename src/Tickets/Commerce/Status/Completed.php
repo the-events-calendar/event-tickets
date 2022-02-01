@@ -41,6 +41,8 @@ class Completed extends Status_Abstract {
 		'count_attendee',
 		'count_completed',
 		'count_sales',
+		'increase_sales',
+		'end_duplicated_pending_orders',
 	];
 
 	/**

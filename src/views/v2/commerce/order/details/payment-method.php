@@ -11,7 +11,7 @@
  *
  * @since   5.1.10
  *
- * @since TBD Added Payment method label.
+ * @since 5.2.0 Added Payment method label.
  *
  * @version 5.1.10
  *

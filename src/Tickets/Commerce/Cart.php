@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
-use TEC\Tickets\Commerce\Utils\Price;
 use \Tribe__Utils__Array as Arr;
 
 /**
@@ -199,7 +198,7 @@ class Cart {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @return string|bool The cart hash or `false` if not found.
+	 * @return string|null The cart hash or `null` if not found.
 	 */
 	public function get_cart_hash( $generate = false ) {
 		$cart_hash_length = 12;
@@ -215,13 +214,15 @@ class Cart {
 			$cart_hash_transient = get_transient( static::get_transient_name( $cart_hash ) );
 
 			if ( empty( $cart_hash_transient ) ) {
-				$cart_hash = false;
+				$cart_hash = null;
 			}
 		}
 
 		if ( empty( $cart_hash ) && $generate ) {
 			$tries     = 1;
 			$max_tries = 20;
+
+			$this->clear_cart();
 			// While we dont find an empty transient to store this cart we loop, but avoid more than 20 tries.
 			while (
 				( ! empty( $cart_hash_transient ) || empty( $cart_hash ) )
@@ -243,7 +244,7 @@ class Cart {
 	/**
 	 * Configures the Cart hash on the class object
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $cart_hash Cart hash value.
 	 *
@@ -257,18 +258,15 @@ class Cart {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @return false
+	 * @return bool
 	 */
 	public function clear_cart() {
 		$this->set_cart_hash_cookie( null );
 		$this->get_repository()->clear();
 
-		if ( isset( $_COOKIE[ static::$cart_hash_cookie_name ] ) ) {
-			$cart_hash = $_COOKIE[ static::$cart_hash_cookie_name ];
-			unset( $_COOKIE[ static::$cart_hash_cookie_name ] );
+		unset( $_COOKIE[ static::$cart_hash_cookie_name ] );
 
-			return delete_transient( static::get_transient_name( $cart_hash ) );
-		}
+		return delete_transient( static::get_current_cart_transient() );
 	}
 
 	/**
@@ -335,14 +333,22 @@ class Cart {
 		if ( $full_item_params ) {
 			$items = array_map( static function ( $item ) {
 				$item['obj']       = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+				// If it's an invalid ticket we just remove it.
+				if ( ! $item['obj'] instanceof \Tribe__Tickets__Ticket_Object ) {
+					return null;
+				}
+
+				$sub_total_value = Commerce\Utils\Value::create();
+				$sub_total_value->set_value( $item['obj']->price );
+
 				$item['event_id']  = $item['obj']->get_event_id();
-				$item['sub_total'] = Price::sub_total( $item['obj']->price, $item['quantity'] );
+				$item['sub_total'] = $sub_total_value->sub_total( $item['quantity'] );
 
 				return $item;
 			}, $items );
 		}
 
-		return $items;
+		return array_filter( $items );
 	}
 
 	/**
@@ -584,7 +590,7 @@ class Cart {
 			/**
 			 * Filter the base redirect URL for cart to checkout.
 			 *
-			 * @since TBD
+			 * @since 5.2.0
 			 *
 			 * @param string $redirect_url Redirect URL.
 			 * @param array  $data         Data that we just processed on the cart.

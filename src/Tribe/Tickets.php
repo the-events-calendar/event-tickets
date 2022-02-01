@@ -993,6 +993,32 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Handles if email sending is allowed.
+		 *
+		 * @since 5.2.1
+		 *
+		 * @param WP_Post|null $ticket   The ticket post object if available, otherwise null.
+		 * @param array|null   $attendee The attendee information if available, otherwise null.
+		 *
+		 *  @return boolean
+		 */
+		public function allow_resending_email( $ticket = null, $attendee = null ) {
+			/**
+			 *
+			 * Shared filter between Woo, EDD, and the default logic.
+			 * This filter allows the admin to control the re-send email option when an attendee's email is updated per a payment type (EDD, Woo, etc).
+			 * True means allow email resend, false means disallow email resend.
+			 *
+			 * @since 5.2.1
+			 *
+			 * @param WP_Post|null $ticket The ticket post object if available, otherwise null.
+			 * @param array|null $attendee The attendee information if available, otherwise null.
+			 *
+			 */
+			return (bool) apply_filters( 'tribe_tickets_my_tickets_allow_email_resend_on_attendee_email_update', true, $ticket, $attendee );
+		}
+
+		/**
 		 * Mark an attendee as checked in
 		 *
 		 * @abstract
@@ -1134,6 +1160,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_action( 'event_tickets_checkin', [ $this, 'purge_attendees_transient' ] );
 			add_action( 'event_tickets_uncheckin', [ $this, 'purge_attendees_transient' ] );
 			add_action( 'template_redirect', [ $this, 'maybe_redirect_to_attendees_registration_screen' ], 0 );
+
+			// Event cost may need to be formatted to the provider's currency settings.
+			add_filter( 'tribe_currency_cost', [ $this, 'maybe_format_event_cost' ], 10, 2 );
 		}
 
 		/**
@@ -2258,10 +2287,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				// If the attendee data is not provided, get it from the provider.
 				if ( ! is_array( $attendee ) ) {
 					$attendee = $this->get_attendee( $attendee );
-
-					if ( Attendee::POSTTYPE === $attendee['post_type'] ) {
-						$attendee = (array) tribe( Attendee::class )->get_attendee( get_post( $attendee['ID'] ) );
-					}
 				}
 
 				// If invalid attendee is set, skip it.
@@ -2669,6 +2694,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return apply_filters( 'tribe_events_tickets_template_' . $template, $file );
+		}
+
+		/**
+		 * Formats the cost based on the provider of a ticket of an event.
+		 *
+		 * @param  float|string $cost
+		 * @param  int   		$post_id
+		 *
+		 * @return string
+		 */
+		public function maybe_format_event_cost( $cost, $post_id ) {
+			$tickets = self::get_all_event_tickets( $post_id );
+			// If $cost isn't a number or there are no tickets, no filter needed.
+			if ( ! is_numeric( $cost ) || empty( $tickets ) ) {
+				return $cost;
+			}
+			$currency = tribe( 'tickets.commerce.currency' );
+			// We will convert to the format of the first ticket's provider class.
+			return $currency->get_formatted_currency( $cost, null, $tickets[0]->provider_class );
 		}
 
 		/**
@@ -3578,6 +3622,86 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return $ticket_form_hook;
+		}
+
+		/**
+		 * Creates a duplicate ticket based on post id and ticket id.
+		 *
+		 * @since 5.2.3
+		 *
+		 * @param int $post_id   ID of parent "event" post.
+		 * @param int $ticket_id ID of ticket to duplicate.
+		 *
+		 * @return int|boolean $duplicate_ticket_id New ticket ID or false, if unable to create duplicate.
+		 */
+		public function duplicate_ticket( $post_id, $ticket_id ) {
+
+			// Get ticket data.
+			$ticket = $this->get_ticket( $post_id, $ticket_id );
+
+			if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+				return false;
+			}
+
+			// Create data for duplicate ticket.
+			$data = [
+				'ticket_name'             => $ticket->name . __( '(copy)', 'event-tickets' ),
+				'ticket_description'      => $ticket->description,
+				'ticket_price'            => $ticket->price,
+				'ticket_show_description' => $ticket->show_description,
+				'ticket_start_date'       => $ticket->start_date,
+				'ticket_start_time'       => $ticket->start_time,
+				'ticket_end_date'         => $ticket->end_date,
+				'ticket_end_time'         => $ticket->end_time,
+				'tribe-ticket'            => [
+					'capacity' => $ticket->capacity(),
+					'mode'     => $ticket->global_stock_mode(),
+				]
+			];
+
+			// Add the ticket.
+			$duplicate_ticket_id = $this->ticket_add( $post_id, $data );
+
+			if ( ! $duplicate_ticket_id ) {
+				return false;
+			}
+
+			// Copy ticket meta from old ticket to new ticket.
+			$ignore_meta = [
+				'_sku',
+				'_tribe_ticket_manual_updated',
+				'_wp_old_slug',
+				'total_sales',
+			];
+			$ticket_meta = get_post_meta( $ticket->ID );
+
+			if ( $ticket_meta ) {
+				foreach ( $ticket_meta as $meta_key => $meta_values ) {
+					// Skip meta we don't want to duplicate.
+					if ( false !== strpos( $meta_key, '_tec_tc_ticket_status_count' ) ){
+						continue;
+					}
+					if ( in_array( $meta_key, $ignore_meta ) ) {
+						continue;
+					}
+
+					// Delete duplicate tickets meta before adding new meta.
+					delete_post_meta( $duplicate_ticket_id, $meta_key );
+
+					foreach ( $meta_values as $meta_value ) {
+						// Maybe convert to object, in case meta is serialized.
+						$meta_value_obj = maybe_unserialize( $meta_value );
+						add_post_meta( $duplicate_ticket_id, $meta_key, $meta_value_obj );
+					}
+				}
+			}
+
+			// Update SKU of new ticket to remove '(COPY)'.
+			$old_sku = get_post_meta( $duplicate_ticket_id, '_sku', true );
+			$new_sku = str_replace( '(COPY)', '', $old_sku );
+			update_post_meta( $duplicate_ticket_id, '_sku', $new_sku, $old_sku );
+
+			return $duplicate_ticket_id;
 		}
 
 		/**

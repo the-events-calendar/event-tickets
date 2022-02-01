@@ -7,21 +7,21 @@ use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
 /**
  * Class Manual Gateway.
  *
- * @since   TBD
+ * @since   5.2.0
  * @package TEC\Tickets\Commerce\Gateways\Manual
  */
 class Gateway extends Abstract_Gateway {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	protected static $key = 'manual';
 
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public static function get_label() {
 		return __( 'Manually Generated', 'event-tickets' );
@@ -30,7 +30,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public static function is_connected() {
 		return true;
@@ -39,7 +39,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public static function is_active() {
 		return true;
@@ -48,7 +48,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	public static function should_show() {
 		return false;

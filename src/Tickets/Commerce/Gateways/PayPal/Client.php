@@ -17,7 +17,7 @@ class Client {
 	/**
 	 * Debug ID from PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @var string
 	 */
@@ -125,7 +125,7 @@ class Client {
 	/**
 	 * Stores the debug header from a given PayPal request, which allows for us to store it with the gateway payload.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $id Which ID we are storing.
 	 *
@@ -137,7 +137,7 @@ class Client {
 	/**
 	 * Fetches the last stored debug id from PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return string|null
 	 */
@@ -149,7 +149,7 @@ class Client {
 	 * Send a given method request to a given URL in the PayPal API.
 	 *
 	 * @since 5.1.10
-	 * @since TBD Included $retries param.
+	 * @since 5.2.0 Included $retries param.
 	 *
 	 * @param string $method
 	 * @param string $url
@@ -164,7 +164,7 @@ class Client {
 		$method = strtoupper( $method );
 
 		// If the endpoint passed is a full URL don't try to append anything.
-		$url = 0 !== strpos( 'https://', $url )
+		$url = 0 !== strpos( $url, 'https://' )
 			? $this->get_api_url( $url, $query_args )
 			: add_query_arg( $query_args, $url );
 
@@ -410,12 +410,7 @@ class Client {
 	public function get_client_token() {
 		$query_args = [];
 		$args       = [
-			'headers' => [
-				'Accept'          => 'application/json',
-				'Accept-Language' => 'en_US',
-				'Authorization'   => sprintf( 'Bearer %1$s', $this->get_access_token() ),
-				'Content-Type'    => 'application/json',
-			],
+			'headers' => [],
 			'body'    => [],
 		];
 
@@ -502,13 +497,6 @@ class Client {
 						'currency_code' => Arr::get( $unit, 'currency' ),
 					],
 				];
-			}
-
-			/**
-			 * @todo Need to figure out how to get this email address still.
-			 */
-			if ( ! $merchant->is_sandbox() ) {
-				$purchase_unit['payee']['email_address'] = Arr::get( $unit, 'merchant_id', $merchant->get_merchant_id() );
 			}
 
 			if ( ! empty( $unit['tax_id'] ) ) {

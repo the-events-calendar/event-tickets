@@ -28,13 +28,15 @@ class Provider extends tad_DI52_ServiceProvider {
 	 */
 	public function register() {
 
+		$this->container->register( Payments_Tab::class );
+		$this->register_assets();
+
 		// Specifically prevents anything else from loading.
 		if ( ! tec_tickets_commerce_is_enabled() ) {
 			return;
 		}
 
 		$this->register_hooks();
-		$this->register_assets();
 
 		$this->load_functions();
 
@@ -76,6 +78,9 @@ class Provider extends tad_DI52_ServiceProvider {
 		// Load any external SPs we might need.
 		$this->container->register( Gateways\PayPal\Provider::class );
 		$this->container->register( Gateways\Manual\Provider::class );
+
+		// Register and add hooks for admin notices.
+		$this->container->register( Admin\Notices::class );
 	}
 
 	/**

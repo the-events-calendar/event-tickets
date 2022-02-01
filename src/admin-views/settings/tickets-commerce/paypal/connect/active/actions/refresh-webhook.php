@@ -2,9 +2,9 @@
 /**
  * The Template for displaying the Tickets Commerce refresh webhook action button.
  *
- * @version TBD
+ * @version 5.2.0
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @var Tribe__Tickets__Admin__Views                  $this               [Global] Template object.
  * @var string                                        $plugin_url         [Global] The plugin URL.
@@ -23,4 +23,7 @@ if ( empty( $is_merchant_connected ) || ! $debug ) {
 $url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-action' => 'paypal-refresh-webhook' ] );
 ?>
 
-<a href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'Refresh Webhook', 'event-tickets' ); ?></a>
+<a
+	href="<?php echo esc_url( $url ); ?>"
+	class="tec-tickets__admin-settings-tickets-commerce-paypal-refresh-link"
+><?php esc_html_e( 'Refresh Webhook', 'event-tickets' ); ?></a>

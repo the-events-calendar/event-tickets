@@ -58,6 +58,10 @@ class Tickets_Repository extends Tribe__Repository {
 				'price'            => Ticket::$price_meta_key,
 			]
 		);
+
+		$this->schema = array_merge( $this->schema, [
+			'event' => [ $this, 'filter_by_event' ],
+		] );
 	}
 
 	/**
@@ -120,5 +124,15 @@ class Tickets_Repository extends Tribe__Repository {
 //		}
 
 		return $postarr;
+	}
+	/**
+	 * Filters tickets by a specific event.
+	 *
+	 * @since 5.2.2
+	 *
+	 * @param int|array $event_id
+	 */
+	public function filter_by_event( $event_id ) {
+		$this->by( 'meta_in', Ticket::$event_relation_meta_key, $event_id );
 	}
 }

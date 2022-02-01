@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce;
 /**
  * Notice Handler for managing Admin view notices.
  *
- * @since TBD
+ * @since 5.2.0
  *
  * @package TEC\Tickets\Commerce
  */
@@ -16,7 +16,7 @@ class Notice_Handler {
 	 *
 	 * This is here because of a possible bug in common.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 */
 	private function clear_request_cache() {
 		// Clear the existing notices cache.
@@ -29,7 +29,7 @@ class Notice_Handler {
 	 *
 	 * @see   tribe_transient_notice()
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $slug Slug for the notice.
 	 *
@@ -39,7 +39,7 @@ class Notice_Handler {
 		/**
 		 * Filters the available notice messages.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param int    $duration Duration in seconds to expire.
 		 * @param string $slug     Slug for the notice to display.
@@ -50,7 +50,7 @@ class Notice_Handler {
 	/**
 	 * Fetches the array of all messages available to display.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @return array[]
 	 */
@@ -60,7 +60,7 @@ class Notice_Handler {
 		/**
 		 * Filters the available notice messages.
 		 *
-		 * @since TBD
+		 * @since 5.2.0
 		 *
 		 * @param array $messages Array of notice messages.
 		 */
@@ -70,7 +70,7 @@ class Notice_Handler {
 	/**
 	 * Determines if a message exists with a given slug.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $slug
 	 *
@@ -87,7 +87,7 @@ class Notice_Handler {
 	/**
 	 * Gets a given message data by it's slug.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $slug Slug to retrieve the message data.
 	 *
@@ -117,7 +117,7 @@ class Notice_Handler {
 	/**
 	 * Merges the content of a given set of Notice slugs.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param array $slugs Array of slugs that will be merged.
 	 *
@@ -141,7 +141,7 @@ class Notice_Handler {
 	/**
 	 * Add an admin notice that should only show once.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $slug Slug to store the notice.
 	 * @param array  $args Arguments to set up a notice.

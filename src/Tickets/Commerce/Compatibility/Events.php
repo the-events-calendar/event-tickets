@@ -2,7 +2,7 @@
 /**
  * Handles Tickets Commerce compatibility with The Events Calendar.
  *
- * @since   TBD
+ * @since   5.2.0
  *
  * @package TEC\Tickets\Commerce\Compatibility
  */
@@ -14,7 +14,7 @@ use TEC\Tickets\Commerce\Checkout;
 /**
  * Class Events.
  *
- * @since   TBD
+ * @since   5.2.0
  *
  * @package TEC\Tickets\Commerce\Compatibility
  */
@@ -26,7 +26,7 @@ class Events {
 	 * We don't need those checks to run when redirecting to the Cart page in Tickets Commerce so we
 	 * short-circuit the context.
 	 *
-	 * @since TBD
+	 * @since 5.2.0
 	 *
 	 * @param string $location the URL we're redirecting to.
 	 * @param int    $status   The redirect status code.
