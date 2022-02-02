@@ -11,7 +11,7 @@
  $defaults = [
     'slug'     => 'help-1',
     'priority' => 10,
-    'link'     => '',
+    'link'     => '', // @todo: We need to add the link here.
     'html'     => '',
     'target'   => '_blank',
     'classes'  => [],
@@ -30,5 +30,5 @@
 		target="<?php echo esc_attr( $link['target'] ); ?>"
 		rel="noopener noreferrer"
 		class="tec-tickets__admin-settings-featured-link-url"
-	><?php esc_html_e( 'Learn more about configuring PayPal payments', 'event-tickets' ); ?></a>
+	><?php esc_html_e( 'Learn more about configuring payment options with Tickets Commerce', 'event-tickets' ); ?></a>
 </div>

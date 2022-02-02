@@ -23,16 +23,6 @@ class Manager {
 	public static $option_gateway = '_tickets_commerce_gateway';
 	
 	/**
-	 * The option name prefix that configured whether or not a gateway is enabled. 
-	 * It is followed by the gateway 'key'
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public static $option_gateway_enabled_prefix = '_tickets_commerce_gateway_enabled_';
-
-	/**
 	 * Get the list of registered Tickets Commerce gateways.
 	 *
 	 * @since 5.1.6
@@ -117,35 +107,5 @@ class Manager {
 		}
 
 		return $gateways[ $key ];
-	}
-
-	/**
-	 * Get gateway enabled option by key.
-	 *
-	 * @since TBD
-	 *
-	 * @param Abstract_Gateway|string $gateway Key or Gateway object for gateway.
-	 *
-	 * @return string
-	 */
-	public static function get_enabled_option_by_key( $gateway ) {
-		$key = $gateway instanceof Abstract_Gateway ? $gateway->get_key() : $gateway;
-
-		return static::$option_gateway_enabled_prefix . $key;
-	}
-
-	/**
-	 * Return if gateway is enabled.
-	 *
-	 * @since TBD
-	 *
-	 * @param Abstract_Gateway|string $gateway Key or Gateway object for gateway.
-	 *
-	 * @return boolean 
-	 */
-	public function is_gateway_enabled( $gateway ) {
-		$key = $gateway instanceof Abstract_Gateway ? $gateway->get_key() : $gateway;
-
-		return (bool) tribe_get_option( $this->get_enabled_option_by_key( $key ) );
 	}
 }

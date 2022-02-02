@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 use TEC\Tickets\Commerce\Traits\Has_Mode;
 
 /**
- * Abstract Merchant Contract
+ * Abstract Merchant Contract.
  *
  * @since   TBD
  *
