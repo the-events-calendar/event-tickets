@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use TEC\Tickets\Commerce\Abstract_Settings;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Settings;
 
 use Tribe__Languages__Locations;
 use Tribe__Tickets__Admin__Views;
@@ -15,12 +15,14 @@ use Tribe__Tickets__Main;
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class Settings extends Abstract_Settings {
+
 	/**
-	 * Get the list of settings for the gateway.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @return array The list of settings for the gateway.
+	 * @inheritDoc
+	 */
+	public static $option_sandbox = 'tickets-commerce-paypal-sandbox';
+
+	/**
+	 * @inheritDoc
 	 */
 	public function get_settings() {
 		$home_url = home_url();
@@ -52,7 +54,7 @@ class Settings extends Abstract_Settings {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 		$merchant    = tribe( Merchant::class );
-		$signup      = tribe( SignUp::class );
+		$signup      = tribe( Signup::class );
 
 		$context = [
 			'plugin_url'            => Tribe__Tickets__Main::instance()->plugin_url,
@@ -64,7 +66,7 @@ class Settings extends Abstract_Settings {
 
 		$admin_views->add_template_globals( $context );
 
-		return $admin_views->template( 'settings/tickets-commerce/paypal/main', [], false );
+		return $admin_views->template( 'settings/tickets-commerce/paypal/main', $context, false );
 	}
 
 	/**

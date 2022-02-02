@@ -15,13 +15,13 @@
  */
 
 $classes = [
-	'tec-tickets__admin-settings-tickets-commerce-paypal',
-	'tec-tickets__admin-settings-tickets-commerce-paypal--connected' => $is_merchant_connected,
+	'tec-tickets__admin-settings-tickets-commerce-gateway',
+	'tec-tickets__admin-settings-tickets-commerce-gateway--connected' => $is_merchant_connected,
 ]
 ?>
 
 <div <?php tribe_classes( $classes ); ?>>
-	<div id="tec-tickets__admin-settings-tickets-commerce-paypal-connect" class="tec-tickets__admin-settings-tickets-commerce-paypal-connect">
+	<div id="tec-tickets__admin-settings-tickets-commerce-gateway-connect" class="tec-tickets__admin-settings-tickets-commerce-gateway-connect">
 
 		<?php $this->template( 'settings/tickets-commerce/paypal/connect/inactive' ); ?>
 

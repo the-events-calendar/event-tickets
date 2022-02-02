@@ -35,7 +35,7 @@
 
 		<div
 	id="tribe-block-tickets-item-[TICKET_ID_1]"
-	 class="tribe-tickets__tickets-item post-[TICKET_ID_1] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	 data-ticket-id="[TICKET_ID_1]" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
+	 class="tribe-tickets__tickets-item post-[TICKET_ID_1] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="[TICKET_ID_1]" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
 		Test ticket for [EVENT_ID]</div>
@@ -82,7 +82,7 @@
 </div>
 <div
 	id="tribe-block-tickets-item-[TICKET_ID_2]"
-	 class="tribe-tickets__tickets-item post-[TICKET_ID_2] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	 data-ticket-id="[TICKET_ID_2]" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
+	 class="tribe-tickets__tickets-item post-[TICKET_ID_2] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="[TICKET_ID_2]" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
 		Test ticket for [EVENT_ID]</div>

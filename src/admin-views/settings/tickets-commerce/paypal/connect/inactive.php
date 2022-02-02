@@ -20,16 +20,16 @@ if ( ! empty( $is_merchant_connected ) ) {
 
 ?>
 
-<h2 class="tec-tickets__admin-settings-tickets-commerce-paypal-title">
+<h2 class="tec-tickets__admin-settings-tickets-commerce-gateway-title">
 	<?php esc_html_e( 'Accept online payments with PayPal!', 'event-tickets' ); ?>
 </h2>
 
-<div class="tec-tickets__admin-settings-tickets-commerce-paypal-description">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway-description">
 	<p>
 		<?php esc_html_e( 'Start selling tickets to your events today with PayPal. Attendees can purchase tickets directly on your site using debit or credit cards with no additional fees.', 'event-tickets' ); ?>
 	</p>
 
-	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-signup-links">
+	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-signup-links">
 		<?php echo $signup->get_link_html(); // phpcs:ignore ?>
 	</div>
 

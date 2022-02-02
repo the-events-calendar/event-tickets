@@ -1,32 +1,5 @@
 /* global tribe, jQuery, paypal, ajaxurl */
 /**
- * Makes sure we have all the required levels on the Tribe Object
- *
- * @since 5.1.9
- *
- * @type   {Object}
- */
-tribe.tickets = tribe.tickets || {};
-
-/**
- * Path to this script in the global tribe Object.
- *
- * @since 5.1.9
- *
- * @type   {Object}
- */
-tribe.tickets.commerce = tribe.tickets.commerce || {};
-
-/**
- * Path to this script in the global tribe Object.
- *
- * @since 5.1.9
- *
- * @type   {Object}
- */
-tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
-
-/**
  * Path to this script in the global tribe Object.
  *
  * @since 5.1.9
@@ -54,9 +27,35 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
  *
  * @return {void}
  */
-( function ( $, obj ) {
+( function ( $, tc ) {
 	'use strict';
+
+	/**
+	 * The document element
+	 *
+	 * @since TBD
+	 *
+	 * @type {jQuery|HTMLElement}
+	 */
 	const $document = $( document );
+
+	/**
+	 * The gateway.paypal object from the global tribe object
+	 *
+	 * @since TBD
+	 *
+	 * @type {Object}
+	 */
+	const obj = tc.gateway.paypal;
+
+	/**
+	 * The billing object from the global tribe object
+	 *
+	 * @since TBD
+	 *
+	 * @type {Object}
+	 */
+	const billing = tc.billing;
 
 	/**
 	 * PayPal Order handling endpoint.
@@ -171,8 +170,12 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			obj.orderEndpointUrl,
 			{
 				method: 'POST',
+				body: JSON.stringify( {
+					billing_details: billing.getDetails()
+				} ),
 				headers: {
 					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+					'Content-Type': 'application/json',
 				}
 			}
 		)
@@ -843,4 +846,4 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 	$( obj.ready );
 
-} )( jQuery, tribe.tickets.commerce.gateway.paypal.checkout );
+} )( jQuery, tribe.tickets.commerce );

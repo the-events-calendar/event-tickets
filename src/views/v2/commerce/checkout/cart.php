@@ -35,6 +35,8 @@ $post = get_post( $section );
 
 	<?php $this->template( 'checkout/cart/items', [ 'post' => $post ] ); ?>
 
+	<?php $this->template( 'checkout/cart/billing_identification' ); ?>
+
 	<?php $this->template( 'checkout/cart/footer' ); ?>
 
 </div>

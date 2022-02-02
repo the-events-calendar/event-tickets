@@ -21,7 +21,7 @@
 <input name="provider" value="Tribe__Tickets__Commerce__PayPal__Main" class="tribe-tickets-provider" type="hidden">
 <div
 	id="tribe-block-tickets-item-[TICKET_ID]"
-	 class="tribe-tickets__item post-[TICKET_ID] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	data-ticket-id="[TICKET_ID]"
+	 class="tribe-tickets__item post-[TICKET_ID] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	data-ticket-id="[TICKET_ID]"
 	data-available="false"
 	data-has-shared-cap="true"
 			data-shared-cap="15"
