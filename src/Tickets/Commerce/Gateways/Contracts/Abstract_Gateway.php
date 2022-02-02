@@ -236,7 +236,13 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 			return false;
 		}
 		
-		return (bool) tribe_get_option( static::get_enabled_option_key() );
+		$option_value = tribe_get_option( static::get_enabled_option_key() );
+		if ( '' !== $option_value ) {
+			return (bool) $option_value;
+		}
+		
+		// If option is not explicitly set, the default will be if gateway is connected.
+		return self::is_connected();
 	}
 	
 	/**
