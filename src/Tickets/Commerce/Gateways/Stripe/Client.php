@@ -34,8 +34,6 @@ class Client {
 	 */
 	public $payment_intent_transient_name;
 
-	public $account_status;
-
 	/**
 	 * Get environment base URL.
 	 *
@@ -322,8 +320,6 @@ class Client {
 
 			$return['request_error'] = $response;
 		}
-
-		$this->account_status = $return;
 
 		return $return;
 	}
