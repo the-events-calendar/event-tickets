@@ -541,11 +541,13 @@ class Client {
 	public function prepare_errors_to_display( \WP_Error $errors ) {
 		$error = $errors->get_error_data();
 
-		return [
-			'errors' => [
-				[ $error->code, $error->message ],
-			],
-		];
+		if ( ! $error ) {
+			$return[] = [ $error->get_error_code, $errors->get_error_message() ];
+		} else {
+			$return[] = [ $error->code, $error->message ];
+		}
+
+		return [ 'errors' => $return ];
 	}
 
 	/**
