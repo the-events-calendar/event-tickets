@@ -22,17 +22,17 @@ $name           = $merchant->get_merchant_id();
 $disconnect_url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-action' => 'paypal-disconnect' ] );
 
 ?>
-<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-row">
-	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-col1">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
+	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-col1">
 		<?php esc_html_e( 'Connected as:', 'event-tickets' ); ?>
 	</div>
-	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-col2">
-		<span class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-text-name">
+	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-col2">
+		<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-text-name">
 			<?php echo esc_html( $name ); ?>
 		</span>
 		<a
 			href="<?php echo esc_url( $disconnect_url ); ?>"
-			class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-text-disconnect-link"
+			class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-text-disconnect-link"
 		>
 			<?php esc_html_e( 'Disconnect', 'event-tickets' ); ?>
 		</a>

@@ -29,25 +29,25 @@ if ( ! empty( $webhook_data['event_types'] ) ) {
 }
 
 ?>
-<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-row">
-	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-col1">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
+	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-col1">
 		<?php esc_html_e( 'Webhooks:', 'event-tickets' ); ?>
 	</div>
-	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-col2">
+	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-col2">
 		<?php
 		foreach ( $webhooks_events->get_registered_events() as $event_name ) :
 			$webhook_label = $webhooks_events->get_webhook_label( $event_name );
 			$is_active = in_array( $event_name, $event_types_active, true );
 			$classes = [
-				'tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook',
-				'tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook--active' => $is_active,
+				'tec-tickets__admin-settings-tickets-commerce-gateway-connected-webhook',
+				'tec-tickets__admin-settings-tickets-commerce-gateway-connected-webhook--active' => $is_active,
 			]
 			?>
 			<div <?php tribe_classes( $classes ); ?>>
-				<span class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook-name">
+				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-webhook-name">
 					<?php echo esc_html( $webhook_label ); ?>
 				</span>
-				<span class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-webhook-error">
+				<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-webhook-error">
 					<?php esc_html_e( 'payment connection error', 'event-tickets' ); ?>
 				</span>
 			</div>

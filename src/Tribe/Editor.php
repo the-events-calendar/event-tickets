@@ -205,8 +205,9 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 			$categories,
 			array(
 				array(
-					'slug' => 'tribe-tickets',
+					'slug'  => 'tribe-tickets',
 					'title' => __( 'Tickets Blocks', 'event-tickets' ),
+					'icon'  => 'tec-tickets',
 				),
 			)
 		);

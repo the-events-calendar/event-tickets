@@ -20,5 +20,5 @@ $image_src = tribe_resource_url( 'images/admin/paypal-logo.png', false, null, Tr
 <img
 	src="<?php echo esc_url( $image_src ); ?>"
 	alt="<?php esc_attr_e( 'PayPal Logo Image', 'event-tickets' ); ?>"
-	class="tec-tickets__admin-settings-tickets-commerce-paypal-logo-image"
+	class="tec-tickets__admin-settings-tickets-commerce-gateway-logo-image"
 >

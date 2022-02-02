@@ -15,7 +15,7 @@
 
 ?>
 
-<div class="tec-tickets__admin-settings-tickets-commerce-paypal-help-links">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-links">
 
 	<?php $this->template( 'settings/tickets-commerce/paypal/connect/help-links/configuring' ); ?>
 
