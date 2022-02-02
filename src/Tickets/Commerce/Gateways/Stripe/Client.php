@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -33,6 +34,15 @@ class Client {
 	 * @var string
 	 */
 	public $payment_intent_transient_name;
+
+	/**
+	 * The percentage applied to Stripe transactions. Currently set at 2%.
+	 *
+	 * @since TBD
+	 *
+	 * @var float
+	 */
+	public $application_fee_percentage = 0.02;
 
 	/**
 	 * Get environment base URL.
@@ -104,13 +114,14 @@ class Client {
 			$items
 		);
 		$value = tribe( Order::class )->get_value_total( array_filter( $items ) );
+		$fee = Value::create( $value->get_decimal() * $this->application_fee_percentage );
 
 		$query_args = [];
 		$body       = [
 			'currency'               => $value->get_currency_code(),
 			'amount'                 => $value->get_integer(),
 			'payment_method_types'   => tribe_get_option( Settings::$option_checkout_element_payment_methods ),
-			'application_fee_amount' => 0,
+			'application_fee_amount' => $fee->get_integer(),
 		];
 
 		$stripe_statement_descriptor = tribe_get_option( Settings::$option_statement_descriptor );
