@@ -192,7 +192,7 @@ class Client {
 			return [];
 		}
 
-		if ( is_wp_error( $pi ) ) {
+		if ( ! empty( $pi['errors'] ) ) {
 			return $pi;
 		}
 
@@ -404,7 +404,7 @@ class Client {
 		$response = $this->process_response( $response );
 
 		if ( is_wp_error( $response ) ) {
-			return $response;
+			return $this->prepare_errors_to_display( $response );
 		}
 
 		// When raw is true means we dont do any logic.
@@ -536,6 +536,19 @@ class Client {
 		}
 
 		return $response;
+	}
+
+	public function prepare_errors_to_display( \WP_Error $errors ) {
+		$codes = $errors->get_error_codes();
+
+		foreach( $codes as $code ) {
+			$msgs = $errors->get_error_messages( $code );
+			foreach ( $msgs as $msg ) {
+				$return[] = [ $code, $msg ];
+			}
+		}
+
+		return [ 'errors' => $return ];
 	}
 
 	/**

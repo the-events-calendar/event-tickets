@@ -348,24 +348,17 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.handleErrorDisplay = ( errors ) => {
 		var errorEl = document.querySelector( obj.selectors.cardErrors );
 		var documentFragment = new DocumentFragment();
-		var el;
 
-		if ( errors[ 400 ] ) {
-			for ( var i = 0; i < errors[ 400 ].length; i++ ) {
-				el = document.createElement( 'p' );
-				el.innerText += errors[ 400 ][ i ];
-				documentFragment.appendChild( el );
-			}
+		for ( var i = 0; i < errors.length; i++ ) {
+			var elp = document.createElement( 'p' );
+			var els = document.createElement( 'span' );
+			els.innerText = errors[i][0];
+			elp.innerText = errors[i][1]
+			documentFragment.appendChild( els );
+			documentFragment.appendChild( elp );
 		}
 
-		if ( errors[ 500 ] ) {
-			for ( var i = 0; i < errors[ 500 ].length; i++ ) {
-				el = document.createElement( 'p' );
-				el.innerText += errors[ 500 ][ i ];
-				documentFragment.appendChild( el );
-			}
-		}
-
+		errorEl.innerHTML = '';
 		errorEl.append( documentFragment );
 
 	}
@@ -436,12 +429,13 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.handlePaymentError = ( data ) => {
 		console.log( data.error.message );
-
-		var errorEl = document.querySelector( obj.selectors.cardErrors );
-		errorEl.value = data.error.message;
-
 		tribe.tickets.debug.log( 'stripe', 'handlePaymentError', data );
-		return false;
+
+		return obj.handleErrorDisplay(
+			[
+				[ data.error.code, data.error.message ]
+			]
+		);
 	};
 
 	/**
