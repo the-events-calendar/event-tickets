@@ -29,5 +29,5 @@ $classes = [
 
 ?>
 <div <?php tribe_classes( $classes ); ?>>
-	<?php echo $gateway->get_status_text(); ?>
+	<?php echo $gateway->get_status_text(); // phpcs:ignore ?>
 </div>
