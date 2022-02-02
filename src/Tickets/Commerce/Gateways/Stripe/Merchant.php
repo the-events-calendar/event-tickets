@@ -14,6 +14,17 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 class Merchant extends Abstract_Merchant {
 
 	/**
+	 * Alias of is_connected
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_active( $recheck = false ) {
+		return $this->is_connected( $recheck );
+	}
+
+	/**
 	 * Determines if the Merchant is connected.
 	 *
 	 * @since TBD

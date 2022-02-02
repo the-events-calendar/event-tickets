@@ -57,6 +57,7 @@ tribe.tickets.commerce.billing.selectors = {
  */
 tribe.tickets.commerce.billing.getDetails = function( long ) {
 	var billing_details = {}
+	billing_details.address = {};
 	var selectors = tribe.tickets.commerce.billing.selectors;
 	var zipCode = document.querySelector( selectors.cardZip );
 	var firstName = document.querySelector( selectors.billingFirstName );
