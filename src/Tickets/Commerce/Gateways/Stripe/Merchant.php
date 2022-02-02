@@ -14,14 +14,14 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 class Merchant extends Abstract_Merchant {
 
 	/**
-	 * Determines if Merchant is active. For Stripe this is the same as being connected.
+	 * Alias of is_connected
 	 *
 	 * @since TBD
 	 *
 	 * @return bool
 	 */
-	public function is_active() {
-		return $this->is_connected();
+	public function is_active( $recheck = false ) {
+		return $this->is_connected( $recheck );
 	}
 
 	/**
