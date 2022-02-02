@@ -132,7 +132,7 @@ class Settings extends Abstract_Settings {
 				'type' => 'html',
 				'html' => '<h3 class="tribe-dependent -input">' . __( 'Checkout Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
 			],
-			
+
 			'tickets-commerce-gateway-settings-group-header-checkout'          => [
 				'type' => 'html',
 				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . __( 'Checkout', 'event-tickets' ) . '</h4><div class="clear"></div>',
