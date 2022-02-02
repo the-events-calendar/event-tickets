@@ -414,8 +414,7 @@
 											<tr>
 												<td valign="top" align="center" width="100%" style="padding: 0 !important; margin:0 !important;">
 													<h2 style="color:#0a0a0e; margin:0 0 10px 0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:28px; letter-spacing:normal; text-align:left;line-height: 100%;">
-														<a style="color:#0a0a0e !important" href="<?php echo esc_url( $event_link ); ?>">
-															<?php echo $event->post_title; ?></a>
+														<a style="color:#0a0a0e !important" href="<?php echo esc_url( $event_link ); ?>"><?php echo $event->post_title; ?></a>
 													</h2>
 													<?php if ( ! empty( $event_date ) ) : ?>
 														<h4 style="color:#0a0a0e; margin:0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:15px; letter-spacing:normal; text-align:left;line-height: 100%;">
