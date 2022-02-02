@@ -114,13 +114,13 @@ class Client {
 			$items
 		);
 		$value = tribe( Order::class )->get_value_total( array_filter( $items ) );
-		$fee = Value::create( $value->get_decimal() * $this->application_fee_percentage );
+		$fee = $this->calculate_application_fee_value( $value );
 
 		$query_args = [];
 		$body       = [
 			'currency'               => $value->get_currency_code(),
 			'amount'                 => $value->get_integer(),
-			'payment_method_types'   => tribe_get_option( Settings::$option_checkout_element_payment_methods ),
+			'payment_method_types'   => $this->get_payment_method_types(),
 			'application_fee_amount' => $fee->get_integer(),
 		];
 
@@ -536,5 +536,41 @@ class Client {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Calculate the fee value that needs to be applied to the PaymentIntent.
+	 *
+	 * @since TBD
+	 *
+	 * @param Value $value
+	 *
+	 * @return Value;
+	 */
+	public function calculate_application_fee_value( Value $value ) {
+
+		if ( false ) {
+			return Value::create();
+		}
+
+		// otherwise, calculate it over the cart total
+		return Value::create( $value->get_decimal() * $this->application_fee_percentage );
+	}
+
+	/**
+	 * Returns the list of enabled payment method types for the Payment Element, or the Card type
+	 * for the Card Element.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public function get_payment_method_types() {
+
+		if ( Settings::CARD_ELEMENT_SLUG === tribe_get_option( Settings::$option_checkout_element ) ) {
+			return ['card'];
+		}
+
+		return tribe_get_option( Settings::$option_checkout_element_payment_methods, ['card'] );
 	}
 }
