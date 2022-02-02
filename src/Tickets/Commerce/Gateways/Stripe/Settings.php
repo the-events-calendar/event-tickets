@@ -306,7 +306,6 @@ class Settings extends Abstract_Settings {
 					'CHF',
 					'CNY',
 					'DKK',
-					'EUR',
 					'GBP',
 					'HKD',
 					'JPY',

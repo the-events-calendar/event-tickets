@@ -172,13 +172,17 @@ class Client {
 	 *
 	 * @since TBD
 	 *
-	 * @return array
+	 * @return array|\WP_Error
 	 */
 	public function get_publishable_payment_intent_data() {
 		$pi = $this->get_payment_intent_transient();
 
 		if ( empty( $pi ) ) {
 			return [];
+		}
+
+		if ( is_wp_error( $pi ) ) {
+			return $pi;
 		}
 
 		return [
@@ -232,9 +236,7 @@ class Client {
 	 * @param array $payment_intent payment intent data from Stripe
 	 */
 	public function store_payment_intent( $payment_intent ) {
-		if ( ! empty( $payment_intent['client_secret'] ) ) {
-			set_transient( $this->get_payment_intent_transient_name(), $payment_intent, 6 * HOUR_IN_SECONDS );
-		}
+		set_transient( $this->get_payment_intent_transient_name(), $payment_intent, 6 * HOUR_IN_SECONDS );
 	}
 
 	/**
@@ -266,6 +268,7 @@ class Client {
 	 * Query the Stripe API to gather information about the current connected account.
 	 *
 	 * @since TBD
+	 *
 	 * @param array $client_data connection data from the database
 	 *
 	 * @return array
@@ -387,14 +390,9 @@ class Client {
 			$response                    = wp_remote_request( $url, $request_arguments );
 		}
 
-		if ( is_wp_error( $response ) ) {
-			tribe( 'logger' )->log_error( sprintf(
-				'[%s] Stripe "%s" request error: %s',
-				$method,
-				$url,
-				$response->get_error_message()
-			), 'tickets-commerce' );
+		$response = $this->process_response( $response );
 
+		if ( is_wp_error( $response ) ) {
 			return $response;
 		}
 
@@ -499,4 +497,33 @@ class Client {
 		return $this->request( 'DELETE', $endpoint, $query_args, $request_arguments, $raw );
 	}
 
+	/**
+	 * Process Request responses to catch any error code and transform in a WP_Error.
+	 * Returns the request array if no errors are found. Or a WP_Error object.
+	 *
+	 * @since TBD
+	 *
+	 * @param array|\WP_Error $response an array of server data
+	 *
+	 * @return array|\WP_Error
+	 */
+	public function process_response( $response ) {
+
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
+
+		if ( ! empty( $response['response']['code'] )
+			 && 200 !== $response['response']['code'] ) {
+			if ( ! empty( $response['body'] ) ) {
+				$body = json_decode( $response['body'] );
+
+				if ( ! empty( $body->error ) ) {
+					return new \WP_Error( $response['response']['code'], $body->error->message, $body->error );
+				}
+			}
+		}
+
+		return $response;
+	}
 }

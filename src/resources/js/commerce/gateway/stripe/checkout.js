@@ -317,6 +317,28 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {Promise<void>}
 	 */
 	obj.setupStripe = async () => {
+
+		if ( obj.checkout.paymentIntentData.errors ) {
+			console.log( obj.checkout.paymentIntentData );
+
+			var errors = obj.checkout.paymentIntentData.errors;
+			var errorEl = document.querySelector( obj.selectors.cardErrors );
+			var documentFragment = new DocumentFragment();
+			var el;
+
+			if ( errors[400] ) {
+				for ( var i = 0; i < errors[400].length; i++ ) {
+					el = document.createElement('p');
+					el.innerText += errors[400][i];
+					documentFragment.appendChild(el);
+				}
+			}
+
+			errorEl.append(documentFragment);
+
+			return false;
+		}
+
 		obj.stripeElements = obj.stripeLib.elements( { clientSecret: obj.checkout.paymentIntentData.key } );
 
 		if ( obj.checkout.paymentElement ) {
