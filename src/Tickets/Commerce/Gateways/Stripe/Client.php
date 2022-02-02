@@ -114,7 +114,7 @@ class Client {
 			$items
 		);
 		$value = tribe( Order::class )->get_value_total( array_filter( $items ) );
-		$fee = $this->calculate_application_fee_value( $value );
+		$fee   = $this->calculate_application_fee_value( $value );
 
 		$query_args = [];
 		$body       = [
@@ -183,7 +183,7 @@ class Client {
 	 *
 	 * @since TBD
 	 *
-	 * @return array|\WP_Error
+	 * @return array
 	 */
 	public function get_publishable_payment_intent_data() {
 		$pi = $this->get_payment_intent_transient();
@@ -539,16 +539,13 @@ class Client {
 	}
 
 	public function prepare_errors_to_display( \WP_Error $errors ) {
-		$codes = $errors->get_error_codes();
+		$error = $errors->get_error_data();
 
-		foreach( $codes as $code ) {
-			$msgs = $errors->get_error_messages( $code );
-			foreach ( $msgs as $msg ) {
-				$return[] = [ $code, $msg ];
-			}
-		}
-
-		return [ 'errors' => $return ];
+		return [
+			'errors' => [
+				[ $error->code, $error->message ],
+			],
+		];
 	}
 
 	/**
@@ -581,9 +578,9 @@ class Client {
 	public function get_payment_method_types() {
 
 		if ( Settings::CARD_ELEMENT_SLUG === tribe_get_option( Settings::$option_checkout_element ) ) {
-			return ['card'];
+			return [ 'card' ];
 		}
 
-		return tribe_get_option( Settings::$option_checkout_element_payment_methods, ['card'] );
+		return tribe_get_option( Settings::$option_checkout_element_payment_methods, [ 'card' ] );
 	}
 }
