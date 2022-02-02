@@ -20,6 +20,7 @@ if ( $must_login ) {
 	return;
 }
 
+// @todo We're using $username for both first and last name. Is there a better way?
 $username  = ! empty( $user->display_name ) ? $user->display_name : '';
 $useremail = ! empty( $user->user_email ) ? $user->user_email : '';
 

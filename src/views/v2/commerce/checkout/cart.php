@@ -27,7 +27,7 @@
  */
 
 $post = get_post( $section );
-$user = wp_get_current_user();
+$user = wp_get_current_user(); // @todo Move this out, because it will not be used.
 ?>
 
 <div class="tribe-tickets__commerce-checkout-cart">
@@ -36,7 +36,7 @@ $user = wp_get_current_user();
 
 	<?php $this->template( 'checkout/cart/items', [ 'post' => $post ] ); ?>
 
-	<?php $this->template( 'checkout/cart/billing-details', [ 'user' => $user ] ); ?>
+	<?php $this->template( 'checkout/cart/billing-details', [ 'user' => $user ] ); // @todo Move this outside of the cart. ?>
 
 	<?php $this->template( 'checkout/cart/footer' ); ?>
 
