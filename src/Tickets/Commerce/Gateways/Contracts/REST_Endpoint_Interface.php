@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 /**
- * REST Endpoint Interface
+ * REST Endpoint Interface.
  *
  * @since   TBD
  *
@@ -20,7 +20,7 @@ interface REST_Endpoint_Interface {
 	public function register();
 
 	/**
-	 * Gets the Endpoint path for this route
+	 * Gets the Endpoint path for this route.
 	 *
 	 * @since TBD moved to Abstract_REST_Endpoint
 	 * @since 5.1.9

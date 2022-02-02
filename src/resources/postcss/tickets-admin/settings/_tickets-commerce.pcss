@@ -436,6 +436,7 @@
 	background-color: var(--tec-color-background);
 	border: solid 1px var(--tec-color-border-default);
 	border-radius: 8px;
+	margin-bottom: var(--tec-spacer-7);
 	padding: var(--tec-spacer-8);
 }
 
@@ -462,10 +463,19 @@
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateways-item {
-	align-items: center;
-	display: flex;
 	margin-bottom: var(--tec-spacer-7);
 	padding-bottom: var(--tec-spacer-0);
+	text-align: center;
+
+	& > div {
+		padding: var(--tec-spacer-0) 0;
+	}
+
+	@media (--viewport-medium) {
+		align-items: center;
+		display: flex;
+		text-align: left;
+	}
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateways-item-toggle {
@@ -496,6 +506,36 @@
 	text-align: center;
 	text-decoration: none;
 	width: 233px;
+
+	&:active,
+	&:hover {
+		background-color: var(--tec-color-button-primary-hover);
+		color: #fff;
+	}
+
+	&:active {
+		background-color: var(--tec-color-button-primary-active);
+	}
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateways-item-button-link--active {
+	background-color: #fff;
+	border-color: #3c434a;
+	border-style: solid;
+	border-width: 1px;
+	color: #3c434a;
+
+	&:active,
+	&:hover {
+		background-color: var(--tec-color-button-primary-hover);
+		border-color: var(--tec-color-button-primary-hover);
+		color: #fff;
+	}
+
+	&:active {
+		background-color: var(--tec-color-button-primary-active);
+		border-color: var(--tec-color-button-primary-active);
+	}
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateways-item-toggle .tec-tickets__admin-settings-tickets-commerce-toggle-checkbox:checked + .tec-tickets__admin-settings-tickets-commerce-toggle-switch {
@@ -508,4 +548,17 @@
 	font-size: var(--tec-font-size-4);
 	font-weight: var(--tec-font-weight-bold);
 	padding: var(--tec-spacer-1) var(--tec-spacer-2);
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateways-item-status {
+	color: var(--tec-color-text-disabled);
+	font-size: var(--tec-font-size-2);
+	font-style: italic;
+	font-weight: var(--tec-font-weight-normal);
+	margin: 0 var(--tec-spacer-8);
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateways-item-status--enabled {
+	color: #50b078;
+	font-weight: var(--tec-font-weight-bold);
 }

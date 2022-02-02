@@ -56,7 +56,7 @@ class Gateway extends Abstract_Gateway {
 		$notices = [
 			[
 				'slug'    => 'tc-stripe-signup-error',
-				'content' => __( 'Stripe wasn\'t able to complete your connection request. Try again.', 'event-tickets' ),
+				'content' => __( "Stripe wasn't able to complete your connection request. Try again.", 'event-tickets' ),
 				'type'    => 'error',
 			],
 			[

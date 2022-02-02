@@ -14,5 +14,5 @@ if ( empty( $content_template ) ) {
 
 ?>
 <div class="tec-tickets__admin-settings-featured-content">
-    <?php echo $content_template; ?>
+    <?php echo $content_template; // phpcs:ignore ?>
 </div>
