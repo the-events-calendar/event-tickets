@@ -120,11 +120,6 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	public function handle_connection_established( $payload ) {
 
 		$tracking_id = tribe( Gateway::class )->generate_unique_tracking_id();
-		$url = parse_url( $tracking_id );
-
-		if ( $payload->whodat !== md5( $url['path'] ) ) {
-			return;
-		}
 
 		tribe( Merchant::class )->save_signup_data( (array) $payload );
 
