@@ -128,4 +128,21 @@ class Gateway extends Abstract_Gateway {
 	public function get_subtitle() {
 		return __( 'Enable payments through PayPal, Venmo, and credit card', 'event-tickets' );
 	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public static function is_enabled() {
+		if ( ! static::should_show() ) {
+			return false;
+		}
+		
+		$option_value = tribe_get_option( static::get_enabled_option_key() );
+		if ( '' !== $option_value ) {
+			return (bool) $option_value;
+		}
+		
+		// If option is not explicitly set, the default will be if PayPal is connected.
+		return self::is_connected();
+	}
 }
