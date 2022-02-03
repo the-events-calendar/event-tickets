@@ -14,7 +14,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 class Merchant extends Abstract_Merchant {
 
 	/**
-	 * Alias of is_connected
+	 * Alias of is_connected.
 	 *
 	 * @since TBD
 	 *
