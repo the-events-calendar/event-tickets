@@ -110,8 +110,8 @@ class Client {
 					return null;
 				}
 
-				$item['price']     = $ticket_value->get_decimal();
-				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
+				$item['price']     = (string) $ticket_value->get_decimal();
+				$item['sub_total'] = (string) $ticket_value->sub_total( $item['quantity'] )->get_decimal();
 
 				return $item;
 			},
@@ -123,9 +123,9 @@ class Client {
 		$query_args = [];
 		$body       = [
 			'currency'               => $value->get_currency_code(),
-			'amount'                 => $value->get_integer(),
+			'amount'                 => (string) $value->get_integer(),
 			'payment_method_types'   => $this->get_payment_method_types(),
-			'application_fee_amount' => $fee->get_integer(),
+			'application_fee_amount' => (string) $fee->get_integer(),
 		];
 
 		$stripe_statement_descriptor = tribe_get_option( Settings::$option_statement_descriptor );
