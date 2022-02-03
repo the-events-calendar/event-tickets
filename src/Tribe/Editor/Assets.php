@@ -110,5 +110,19 @@ class Tribe__Tickets__Editor__Assets {
 				'priority'     => 15,
 			]
 		);
+		
+		tribe_asset(
+			$plugin,
+			'tec-tickets-blocks-category-icon-styles',
+			'tickets-admin-blocks.css',
+			[],
+			'enqueue_block_editor_assets',
+			[
+				'in_footer'    => false,
+				'localize'     => [],
+				'conditionals' => tribe_callback( 'tickets.editor', 'current_type_support_tickets' ),
+				'priority'     => 16,
+			]
+		);
 	}
 }
