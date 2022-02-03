@@ -47,7 +47,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 			[
 				'jquery',
 				'tribe-common',
-//				'tec-ky', @todo add this as a module and remove it from checkout.js
+				'tec-ky',
 				'tribe-query-string',
 				'tec-tickets-commerce-gateway-stripe-base',
 				'tribe-tickets-loader',
