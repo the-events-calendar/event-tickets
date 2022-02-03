@@ -71,9 +71,6 @@ class Assets extends \tad_DI52_ServiceProvider {
 							'cardElementType' => tribe( Stripe_Elements::class )->card_element_type(),
 							'publishableKey' => tribe( Merchant::class )->get_publishable_key(),
 							'paymentIntentData' => tribe( Client::class )->get_publishable_payment_intent_data(),
-							'i18n' => array(
-								'zip_code' => __( 'Zip Code', 'event-tickets' ),
-							)
 						];
 					},
 				],
