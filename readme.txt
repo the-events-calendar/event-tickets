@@ -179,6 +179,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.3.1] TBD =
+
+* Fix - Fixed a warning message when creating an event via Community Events. [CT-51]
+
 = [5.2.2] 2021-12-15 =
 
 * Feature - Included Price, Currency and Value classes to improve monetary handling for Tickets Commerce [ET-1331]
