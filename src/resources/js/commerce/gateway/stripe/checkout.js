@@ -18,35 +18,8 @@ tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe ||
  */
 tribe.tickets.commerce.gateway.stripe.checkout = {};
 
-(( $, tc, Stripe, ky ) => {
+(( $, obj, billing, Stripe, ky ) => {
 	'use strict';
-
-	/**
-	 * The document element
-	 *
-	 * @since TBD
-	 *
-	 * @type {jQuery|HTMLElement}
-	 */
-	const $document = $( document );
-
-	/**
-	 * The gateway.stripe object from the global tribe object
-	 *
-	 * @since TBD
-	 *
-	 * @type {Object}
-	 */
-	const obj = tc.gateway.stripe;
-
-	/**
-	 * The billing object from the global tribe object
-	 *
-	 * @since TBD
-	 *
-	 * @type {Object}
-	 */
-	const billing = tc.billing;
 
 	/**
 	 * Pull the variables from the PHP backend.
@@ -397,4 +370,4 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	$( obj.ready );
-})( jQuery, tribe.tickets.commerce, Stripe, tribe.ky );
+})( jQuery, tribe.tickets.commerce.gateway.stripe, tribe.tickets.commerce.billing, Stripe, tribe.ky );
