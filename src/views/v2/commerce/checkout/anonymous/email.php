@@ -18,13 +18,12 @@
 
 $label_classes = [
 	'tribe-common-b3',
-	'tribe-tickets__commerce-checkout-anonymous-purchaser-name-field-label',
+	'tribe-tickets__commerce-checkout-anonymous-purchaser-email-field-label',
 ];
 
 $field_classes = [
-	'card_field',
-	'tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field',
-	'tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field--card-name',
+	'tribe-tickets__commerce-checkout-purchaser-info-form-field',
+	'tribe-tickets__commerce-checkout-purchaser-info-form-field--email',
 ];
 ?>
 <div class="tribe-tickets__commerce-checkout-anonymous-purchaser-field">

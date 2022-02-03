@@ -23,9 +23,8 @@ $label_classes = [
 ];
 
 $field_classes = [
-	'card_field',
-	'tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field',
-	'tribe-tickets__commerce-checkout-paypal-advanced-payments-form-field--card-name',
+	'tribe-tickets__commerce-checkout-purchaser-info-form-field',
+	'tribe-tickets__commerce-checkout-purchaser-info-form-field--name',
 ];
 ?>
 <div class="tribe-tickets__commerce-checkout-anonymous-purchaser-field">

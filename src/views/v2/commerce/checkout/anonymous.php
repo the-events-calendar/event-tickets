@@ -26,7 +26,7 @@ $classes = [];
 ?>
 
 <div class="tribe-tickets__commerce-checkout-anonymous-purchaser-field-wrapper">
-	<p class="tribe-common tribe-field-text"><?php echo esc_html( $title ); ?><p/>
+	<p class="tribe-common tribe-field-text"><?php echo esc_html( $title ); ?></p>
 	<?php $this->template( 'checkout/anonymous/name' ) ?>
 	<?php $this->template( 'checkout/anonymous/email' ) ?>
 </div>
