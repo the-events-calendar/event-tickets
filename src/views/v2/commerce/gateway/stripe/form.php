@@ -24,8 +24,8 @@ if ( ! empty( $must_login ) ) {
 ?>
 <form id="payment-form">
 
-	<?php $this->template( 'gateway/stripe/payment_element' ); ?>
+	<?php $this->template( 'gateway/stripe/payment-element' ); ?>
 
-	<?php $this->template( 'gateway/stripe/card_element' ); ?>
+	<?php $this->template( 'gateway/stripe/card-element' ); ?>
 
 </form>

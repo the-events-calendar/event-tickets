@@ -83,6 +83,15 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.stripeLib = Stripe( obj.checkout.publishableKey );
 
 	/**
+	 * Stripe Elements API instance.
+	 *
+	 * @since TBD
+	 *
+	 * @type {Object|null}
+	 */
+	obj.stripeElements = null;
+
+	/**
 	 * Handles the changing of the card field.
 	 *
 	 * @since TBD
@@ -90,6 +99,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @param {Object} error Which error we are dealing with.
 	 */
 	obj.onCardChange = ( { error } ) => {
+		tribe.tickets.debug.log( 'stripe', 'cardChange', error );
 		let displayError = $( obj.selectors.cardErrors );
 		if ( error ) {
 			displayError.text( error.message );
@@ -104,9 +114,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @param enable
 	 */
 	obj.submitButton = ( enable ) => {
-		let submitButton = document.querySelector( obj.selectors.submitButton );
-		submitButton.disabled = !enable;
-	}
+		$( obj.selectors.submitButton ).prop( 'disabled', ! enable );
+	};
 
 	/**
 	 * Receive the Payment from Stripe.
@@ -138,7 +147,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {boolean}
 	 */
 	obj.handlePaymentError = ( data ) => {
-		console.log( data.error.message );
+		$( obj.selectors.cardErrors ).val( data.error.message );
 		tribe.tickets.debug.log( 'stripe', 'handlePaymentError', data );
 
 		return obj.handleErrorDisplay(
@@ -194,60 +203,84 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	/**
-	 * Submit the payment to stripe code.
+	 * Submit the payment to Stripe for Payment Element.
+	 *
+	 * @since TBD
 	 *
 	 * @param {String} order The order object returned from the server.
 	 *
 	 * @return {Promise<*>}
 	 */
 	obj.submitMultiPayment = async ( order ) => {
-		var elements = obj.stripeElements;
-		var billing_details = billing.getDetails( false );
-		var order = order;
+		const billingDetails = billing.getDetails( false );
+
 		return obj.stripeLib.confirmPayment( {
-			elements,
+			elements: obj.stripeElements,
 			redirect: 'if_required',
 			confirmParams: {
 				return_url: order.redirect_url,
 				payment_method_data: {
-					billing_details: billing_details
+					billing_details: billingDetails
 				}
 			}
-		} ).then( function( result ) {
-			obj.submitButton( true );
-			if ( result.error ) {
-				obj.handlePaymentError( result );
-			} else {
-				if ( result.paymentIntent.status === 'succeeded' ) {
-					obj.handlePaymentSuccess( result );
-				}
-			}
-		} );
+		} ).then( obj.handleConfirmPayment );
 	};
 
 	/**
-	 * Submit the Card Element payment to stripe.
+	 * Handle the confirmation of the Payment on PaymentElement.
 	 *
-	 * @returns {Promise<void>}
+	 * @since TBD
+	 *
+	 * @param result
+	 */
+	obj.handleConfirmPayment = ( result ) => {
+		obj.submitButton( true );
+		if ( result.error ) {
+			obj.handlePaymentError( result );
+		} else {
+			// @todo feels like we are missing a error handling here.
+			if ( 'succeeded' === result.paymentIntent.status ) {
+				obj.handlePaymentSuccess( result );
+			}
+		}
+	};
+
+	/**
+	 * Submit the Card Element payment to Stripe.
+	 *
+	 * @since TBD
+	 *
+	 * @returns {Promise<*>}
 	 */
 	obj.submitCardPayment = async () => {
-		var billing_details = billing.getDetails( false );
+		const billingDetails = billing.getDetails( false );
 
-		obj.stripeLib.confirmCardPayment( obj.checkout.paymentIntentData.key, {
+		return obj.stripeLib.confirmCardPayment( obj.checkout.paymentIntentData.key, {
 			payment_method: {
 				card: obj.cardElement,
-				billing_details: billing_details
+				billing_details: billingDetails
 			}
-		} ).then( function( result ) {
-			obj.submitButton( true );
-			if ( result.error ) {
-				obj.handlePaymentError( result );
-			} else {
-				if ( result.paymentIntent.status === 'succeeded' ) {
-					obj.handlePaymentSuccess( result );
-				}
+		} ).then( obj.handleConfirmCardPayment );
+	};
+
+
+	/**
+	 * Handle the confirmation of the Payment on CardElement.
+	 *
+	 * @since TBD
+	 *
+	 * @param result
+	 */
+	obj.handleConfirmCardPayment = ( result ) => {
+		obj.submitButton( true );
+		if ( result.error ) {
+			obj.handlePaymentError( result );
+		} else {
+			// @todo feels like we are missing a error handling here.
+			if ( 'succeeded' === result.paymentIntent.status ) {
+				obj.handlePaymentSuccess( result );
 			}
-		} );
+		}
 	};
 
 	/**
@@ -298,6 +331,59 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	/**
+	 * Configure the CardElement with separate fields.
+	 *
+	 * @link https://stripe.com/docs/js/elements_object/create_element?type=cardNumber#elements_create-options
+	 *
+	 * @since TBD
+	 */
+	obj.setupSeparateCardElement = () => {
+		// Instantiate the CardElement with individual fields
+		obj.cardElement = obj.stripeElements.create( 'cardNumber', { showIcon: true, iconStyle: 'default' } );
+		obj.cardElement.mount( obj.selectors.cardNumber );
+		obj.cardExpiry = obj.stripeElements.create( 'cardExpiry' );
+		obj.cardExpiry.mount( obj.selectors.cardExpiry );
+		obj.cardCvc = obj.stripeElements.create( 'cardCvc' );
+		obj.cardCvc.mount( obj.selectors.cardCvc );
+	};
+
+	/**
+	 * Configure the CardElement with compact fields.
+	 *
+	 * @link https://stripe.com/docs/js/elements_object/create_element?type=card#elements_create-options
+	 *
+	 * @since TBD
+	 */
+	obj.setupCompactCardElement = () => {
+		// Instantiate the CardElement with a single field combo
+		obj.cardElement = obj.stripeElements.create( 'card' );
+		obj.cardElement.mount( obj.selectors.cardElement );
+		obj.cardElement.on( 'change', obj.onCardChange );
+	};
+
+	/**
+	 * Configure the PaymentElement with separate fields.
+	 *
+	 * @link https://stripe.com/docs/js/element/payment_element
+	 *
+	 * @since TBD
+	 */
+	obj.setupPaymentElement = () => {
+		// Instantiate the PaymentElement
+		obj.paymentElement = obj.stripeElements.create( 'payment', {
+			fields: {
+				// We're collecting names and emails separately and sending them in confirmPayment
+				// no need to duplicate it here
+				name: 'never',
+				email: 'never',
+				phone: 'auto',
+				address: 'auto'
+			}
+		} );
+		obj.paymentElement.mount( obj.selectors.paymentElement );
+	};
+
+	/**
 	 * Setup and initialize Stripe API.
 	 *
 	 * @since TBD
@@ -313,41 +399,15 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		obj.stripeElements = obj.stripeLib.elements( { clientSecret: obj.checkout.paymentIntentData.key } );
 
 		if ( obj.checkout.paymentElement ) {
-			// Instantiate the PaymentElement
-			obj.paymentElement = obj.stripeElements.create( 'payment', {
-				fields: {
-					// We're collecting names and emails separately and sending them in confirmPayment
-					// no need to duplicate it here
-					name: 'never',
-					email: 'never',
-					phone: 'auto',
-					address: 'auto'
-				}
-			} );
-			obj.paymentElement.mount( obj.selectors.paymentElement );
-			return false;
+			obj.setupPaymentElement();
+			return;
 		}
 
-		if ( obj.checkout.cardElementType !== 'compact' ) {
-			// Instantiate the CardElement with individual fields
-			obj.cardElement = obj.stripeElements.create( 'cardNumber', { showIcon: true, iconStyle: 'default' } );
-			obj.cardElement.mount( obj.selectors.cardNumber );
-			obj.cardExpiry = obj.stripeElements.create( 'cardExpiry' );
-			obj.cardExpiry.mount( obj.selectors.cardExpiry );
-			obj.cardCvc = obj.stripeElements.create( 'cardCvc' );
-			obj.cardCvc.mount( obj.selectors.cardCvc );
-			var cardZipWrapper = document.querySelector( obj.selectors.cardZipWrapper );
-			var zipField = document.createElement( 'input' );
-			zipField.placeholder = obj.checkout.i18n.zip_code;
-			cardZipWrapper.append(zipField);
-
-			return false;
+		if ( 'separate' === obj.checkout.cardElementType ) {
+			obj.setupSeparateCardElement();
+		} else if ( 'compact' === obj.checkout.cardElementType ) {
+			obj.setupCompactCardElement();
 		}
-
-		// Instantiate the CardElement with a single field combo
-		obj.cardElement = obj.stripeElements.create( 'card' );
-		obj.cardElement.mount( obj.selectors.cardElement );
-		obj.cardElement.on( 'change', obj.onCardChange );
 	};
 
 	/**
