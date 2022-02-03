@@ -397,4 +397,4 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	$( obj.ready );
-})( jQuery, tribe.tickets.commerce, Stripe, ky );
+})( jQuery, tribe.tickets.commerce, Stripe, tribe.ky );
