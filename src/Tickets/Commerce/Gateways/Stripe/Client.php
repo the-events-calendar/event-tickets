@@ -321,8 +321,6 @@ class Client {
 			$return['request_error'] = $response;
 		}
 
-		$this->account_status = $return;
-
 		return $return;
 	}
 
