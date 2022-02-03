@@ -294,9 +294,7 @@ class Client {
 		if ( ! empty( $response['object'] ) && 'account' === $response['object'] ) {
 			$return['connected'] = true;
 
-			if ( $response['charges_enabled'] ) {
-				$return['charges_enabled'] = true;
-			}
+			$return['charges_enabled'] = tribe_is_truthy( Arr::get( $response, 'charges_enabled', false ) );
 
 			if ( ! empty( $response['capabilities'] ) ) {
 				$return['capabilities'] = $response['capabilities'];
