@@ -553,7 +553,7 @@ class Client {
 		$error = $errors->get_error_data();
 
 		if ( ! $error ) {
-			$return[] = [ $error->get_error_code, $errors->get_error_message() ];
+			$return[] = [ $errors->get_error_code(), $errors->get_error_message() ];
 		} else {
 			$return[] = [ $error->code, $error->message ];
 		}

@@ -238,10 +238,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		if ( result.error ) {
 			obj.handlePaymentError( result );
 		} else {
-			// @todo feels like we are missing a error handling here.
-			if ( 'succeeded' === result.paymentIntent.status ) {
-				obj.handlePaymentSuccess( result );
-			}
+			obj.handlePaymentSuccess( result );
 		}
 	};
 
@@ -276,10 +273,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		if ( result.error ) {
 			obj.handlePaymentError( result );
 		} else {
-			// @todo feels like we are missing a error handling here.
-			if ( 'succeeded' === result.paymentIntent.status ) {
-				obj.handlePaymentSuccess( result );
-			}
+			obj.handlePaymentSuccess( result );
 		}
 	};
 
