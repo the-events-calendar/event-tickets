@@ -42,7 +42,16 @@ class Client {
 	 *
 	 * @var float
 	 */
-	public $application_fee_percentage = 0.02;
+	private static $application_fee_percentage = 0.02;
+
+	/**
+	 * The Stripe API base URL
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private static $api_base_url = 'https://api.stripe.com/v1';
 
 	/**
 	 * Get environment base URL.
@@ -51,13 +60,8 @@ class Client {
 	 *
 	 * @return string
 	 */
-	public function get_environment_url() {
-		$merchant = tribe( Merchant::class );
-
-		// @todo determine if the sandbox of stripe has a diff URL.
-		return $merchant->is_sandbox() ?
-			'https://api.stripe.com/v1' :
-			'https://api.stripe.com/v1';
+	public static function get_environment_url() {
+		return static::$api_base_url;
 	}
 
 	/**
@@ -72,7 +76,7 @@ class Client {
 	 *
 	 */
 	public function get_api_url( $endpoint, array $query_args = [] ) {
-		$base_url = $this->get_environment_url();
+		$base_url = static::get_environment_url();
 		$endpoint = ltrim( $endpoint, '/' );
 
 		return add_query_arg( $query_args, "{$base_url}/{$endpoint}" );
@@ -538,6 +542,15 @@ class Client {
 		return $response;
 	}
 
+	/**
+	 * Format user-facing errors to the list structure expected in the checkout script.
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Error $errors any WP_Error instance
+	 *
+	 * @return array[]
+	 */
 	public function prepare_errors_to_display( \WP_Error $errors ) {
 		$error = $errors->get_error_data();
 
@@ -566,7 +579,7 @@ class Client {
 		}
 
 		// otherwise, calculate it over the cart total
-		return Value::create( $value->get_decimal() * $this->application_fee_percentage );
+		return Value::create( $value->get_decimal() * static::get_application_fee_percentage() );
 	}
 
 	/**
@@ -584,5 +597,16 @@ class Client {
 		}
 
 		return tribe_get_option( Settings::$option_checkout_element_payment_methods, [ 'card' ] );
+	}
+
+	/**
+	 * Returns the application fee percentage value
+	 *
+	 * @since TBD
+	 *
+	 * @return float
+	 */
+	private static function get_application_fee_percentage() {
+		return static::$application_fee_percentage;
 	}
 }
