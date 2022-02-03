@@ -115,7 +115,7 @@ class Client {
 
 		$stripe_statement_descriptor = tribe_get_option( Settings::$option_statement_descriptor );
 
-		if ( empty( $stripe_statement_descriptor ) ) {
+		if ( ! empty( $stripe_statement_descriptor ) ) {
 			$body['statement_descriptor'] = substr( $stripe_statement_descriptor, 0, 22 );
 		}
 
@@ -148,7 +148,7 @@ class Client {
 		// Currently this method is only used to add an email recipient for Stripe receipts. If this is not
 		// required, only return the payment intent object to store.
 		if ( ! $stripe_receipt_emails ) {
-			return;
+			return $payment_intent;
 		}
 
 		if ( $stripe_receipt_emails && ! empty( $data['billing_details']['email'] ) ) {

@@ -3,7 +3,9 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
+use TEC\Tickets\Commerce\Gateways\Stripe\REST\Return_Endpoint;
 use \Tribe__Tickets__Main;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Gateway
@@ -86,4 +88,12 @@ class Gateway extends Abstract_Gateway {
 		return __( 'Enable credit card payment and afterpay', 'event-tickets' );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function generate_unique_tracking_id() {
+		$return_url = tribe( Return_Endpoint::class )->get_route_url();
+
+		return $return_url;
+	}
 }

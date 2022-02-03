@@ -20,8 +20,8 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @return bool
 	 */
-	public function is_active() {
-		return $this->is_connected();
+	public function is_active( $recheck = false ) {
+		return $this->is_connected( $recheck );
 	}
 
 	/**
