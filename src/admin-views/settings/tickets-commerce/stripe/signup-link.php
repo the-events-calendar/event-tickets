@@ -9,7 +9,7 @@
 			id="connect_to_stripe"
 			class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link"
 		>
-			<?php echo wp_kses( __( 'Get Connected with <i>Stripe</i>', 'event-tickets' ), 'post' ); ?>
+			<?php echo wp_kses_post( __( 'Get Connected with <i>Stripe</i>', 'event-tickets' ) ); ?>
 		</a>
 	</div>
 </div>
