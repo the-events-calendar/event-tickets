@@ -18,35 +18,8 @@ tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe ||
  */
 tribe.tickets.commerce.gateway.stripe.checkout = {};
 
-(( $, tc, Stripe, ky ) => {
+(( $, obj, billing, Stripe, ky ) => {
 	'use strict';
-
-	/**
-	 * The document element
-	 *
-	 * @since TBD
-	 *
-	 * @type {jQuery|HTMLElement}
-	 */
-	const $document = $( document );
-
-	/**
-	 * The gateway.stripe object from the global tribe object
-	 *
-	 * @since TBD
-	 *
-	 * @type {Object}
-	 */
-	const obj = tc.gateway.stripe;
-
-	/**
-	 * The billing object from the global tribe object
-	 *
-	 * @since TBD
-	 *
-	 * @type {Object}
-	 */
-	const billing = tc.billing;
 
 	/**
 	 * Pull the variables from the PHP backend.
@@ -75,6 +48,30 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		paymentMessage: '#tec-tc-gateway-stripe-payment-message',
 		submitButton: '#tec-tc-gateway-stripe-checkout-button'
 	};
+
+	/**
+	 * Handle displaying errors to the end user in the cardErrors field
+	 *
+	 * @param array errors an array of arrays. Each base array is keyed with the error code and cotains a list of error
+	 *     messages.
+	 */
+	obj.handleErrorDisplay = ( errors ) => {
+		var errorEl = document.querySelector( obj.selectors.cardErrors );
+		var documentFragment = new DocumentFragment();
+
+		for ( var i = 0; i < errors.length; i++ ) {
+			var elp = document.createElement( 'p' );
+			var els = document.createElement( 'span' );
+			els.innerText = errors[i][0];
+			elp.innerText = errors[i][1]
+			documentFragment.appendChild( els );
+			documentFragment.appendChild( elp );
+		}
+
+		errorEl.innerHTML = '';
+		errorEl.append( documentFragment );
+
+	}
 
 	/**
 	 * Stripe JS library.
@@ -151,9 +148,13 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.handlePaymentError = ( data ) => {
 		$( obj.selectors.cardErrors ).val( data.error.message );
-
 		tribe.tickets.debug.log( 'stripe', 'handlePaymentError', data );
-		return false;
+
+		return obj.handleErrorDisplay(
+			[
+				[ data.error.code, data.error.message ]
+			]
+		);
 	};
 
 	/**
@@ -318,7 +319,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		event.preventDefault();
 
 		let order = await obj.handleCreateOrder();
-		obj.submitButton(false);
+		obj.submitButton( false );
 
 		if ( order.success ) {
 			if ( obj.checkout.paymentElement ) {
@@ -390,6 +391,11 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {Promise<void>}
 	 */
 	obj.setupStripe = async () => {
+
+		if ( obj.checkout.paymentIntentData.errors ) {
+			return obj.handleErrorDisplay( obj.checkout.paymentIntentData.errors );
+		}
+
 		obj.stripeElements = obj.stripeLib.elements( { clientSecret: obj.checkout.paymentIntentData.key } );
 
 		if ( obj.checkout.paymentElement ) {
@@ -424,4 +430,4 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	$( obj.ready );
-})( jQuery, tribe.tickets.commerce, Stripe, tribe.ky );
+})( jQuery, tribe.tickets.commerce.gateway.stripe, tribe.tickets.commerce.billing, Stripe, tribe.ky );
