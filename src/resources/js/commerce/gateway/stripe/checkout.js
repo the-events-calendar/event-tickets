@@ -628,8 +628,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			obj.cardCvc.mount( obj.selectors.cardCvc );
 			var cardZipWrapper = document.querySelector( obj.selectors.cardZipWrapper );
 			var zipField = document.createElement( 'input' );
-			zipField.placeholder = 'Zip Code';
-			cardZipWrapper.append( zipField );
+			zipField.placeholder = obj.checkout.i18n.zip_code;
+			cardZipWrapper.append(zipField);
 
 			return false;
 		}
