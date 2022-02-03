@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\REST\Order_Endpoint;
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
 class Assets extends \tad_DI52_ServiceProvider {
+
 	/**
 	 * The nonce action to use when requesting the creation of a new order
 	 *
@@ -46,7 +47,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 			[
 				'jquery',
 				'tribe-common',
-//				'tec-ky', @todo add this as a module and remove it from checkout.js
+				'tec-ky',
 				'tribe-query-string',
 				'tec-tickets-commerce-gateway-stripe-base',
 				'tribe-tickets-loader',
@@ -56,20 +57,20 @@ class Assets extends \tad_DI52_ServiceProvider {
 			],
 			'wp_enqueue_scripts',
 			[
-				'module'   => true,
-				'groups'   => [
+				'module'       => true,
+				'groups'       => [
 					'tec-tickets-commerce-gateway-stripe',
 				],
 				'conditionals' => [ $this, 'should_enqueue_assets' ],
-				'localize' => [
+				'localize'     => [
 					'name' => 'tecTicketsCommerceGatewayStripeCheckout',
 					'data' => static function () {
 						return [
-							'nonce'          => wp_create_nonce( 'wp_rest' ),
-							'orderEndpoint'  => tribe( Order_Endpoint::class )->get_route_url(),
-							'paymentElement' => tribe( Stripe_Elements::class )->include_payment_element(),
-							'cardElementType' => tribe( Stripe_Elements::class )->card_element_type(),
-							'publishableKey' => tribe( Merchant::class )->get_publishable_key(),
+							'nonce'             => wp_create_nonce( 'wp_rest' ),
+							'orderEndpoint'     => tribe( Order_Endpoint::class )->get_route_url(),
+							'paymentElement'    => tribe( Stripe_Elements::class )->include_payment_element(),
+							'cardElementType'   => tribe( Stripe_Elements::class )->card_element_type(),
+							'publishableKey'    => tribe( Merchant::class )->get_publishable_key(),
 							'paymentIntentData' => tribe( Client::class )->get_publishable_payment_intent_data(),
 						];
 					},
