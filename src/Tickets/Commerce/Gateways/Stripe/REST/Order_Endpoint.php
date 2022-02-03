@@ -143,8 +143,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		// Respond with the client_secret for Stripe Usage.
 		$response['success']       = true;
+		$response['order_id']      = $order->ID;
 		$response['client_secret'] = $payment_intent['client_secret'];
-		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
+		$response['redirect_url']  = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
 
 		return new WP_REST_Response( $response );
 	}
@@ -205,7 +206,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$gateway_order_id = $request->get_param( 'order_id' );
 
 		$order = tec_tc_orders()->by_args( [
-			'status'           => tribe( Pending::class )->get_wp_slug(),
 			'gateway_order_id' => $gateway_order_id,
 		] )->first();
 

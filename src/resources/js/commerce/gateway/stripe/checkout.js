@@ -177,6 +177,23 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	/**
+	 * Handle payments in cases other than an automatic confirmation
+	 *
+	 * @param data
+	 *
+	 * @returns {Promise<boolean>}
+	 */
+	obj.handlePaymentDelayed = async ( data ) => {
+		tribe.tickets.debug.log( 'stripe', 'handlePaymentDelayed', data );
+
+		const response = await obj.handleUpdateOrder( data.paymentIntent );
+
+		// Redirect the user to the success page.
+		window.location.replace( response.redirect_url );
+		return true;
+	};
+
+	/**
 	 * Updates the Order based on a paymentIntent from Stripe.
 	 *
 	 * @since TBD
@@ -236,9 +253,14 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.handleConfirmPayment = ( result ) => {
 		obj.submitButton( true );
 		if ( result.error ) {
-			obj.handlePaymentError( result );
+			return obj.handlePaymentError( result );
 		} else {
-			obj.handlePaymentSuccess( result );
+
+			if ( result.paymentIntent.status === 'succeeded' ) {
+				return obj.handlePaymentSuccess( result );
+			}
+
+			return obj.handlePaymentDelayed( result );
 		}
 	};
 
@@ -273,7 +295,11 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		if ( result.error ) {
 			obj.handlePaymentError( result );
 		} else {
-			obj.handlePaymentSuccess( result );
+			if ( result.paymentIntent.status === 'succeeded' ) {
+				return obj.handlePaymentSuccess( result );
+			}
+
+			return obj.handlePaymentDelayed( result );
 		}
 	};
 
