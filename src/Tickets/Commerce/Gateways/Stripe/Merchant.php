@@ -14,7 +14,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 class Merchant extends Abstract_Merchant {
 
 	/**
-	 * Determines if Merchant is active. For Stripe this is the same as being connected.
+	 * Alias of is_connected.
 	 *
 	 * @since TBD
 	 *
