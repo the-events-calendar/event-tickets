@@ -27,7 +27,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
  *
  * @return {void}
  */
-( function ( $, tc ) {
+( function ( $, obj, billing ) {
 	'use strict';
 
 	/**
@@ -38,24 +38,6 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @type {jQuery|HTMLElement}
 	 */
 	const $document = $( document );
-
-	/**
-	 * The gateway.paypal object from the global tribe object
-	 *
-	 * @since TBD
-	 *
-	 * @type {Object}
-	 */
-	const obj = tc.gateway.paypal;
-
-	/**
-	 * The billing object from the global tribe object
-	 *
-	 * @since TBD
-	 *
-	 * @type {Object}
-	 */
-	const billing = tc.billing;
 
 	/**
 	 * PayPal Order handling endpoint.
@@ -846,4 +828,4 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 	$( obj.ready );
 
-} )( jQuery, tribe.tickets.commerce );
+} )( jQuery, tribe.tickets.commerce.gateway.paypal, tribe.tickets.commerce.billing );

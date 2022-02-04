@@ -3,7 +3,7 @@
  * Tickets Commerce: Card Element Checkout for Stripe
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/gateway/stripe/card_element.php
+ * [your-theme]/tribe/tickets/v2/commerce/gateway/stripe/card-element.php
  *
  * See more documentation about our views templating system.
  *
@@ -24,12 +24,18 @@ if ( $must_login || $payment_element ) {
 	<span id="tec-tc-gateway-stripe-card-number"></span>
 	<span id="tec-tc-gateway-stripe-card-expiry"></span>
 	<span id="tec-tc-gateway-stripe-card-cvc"></span>
-	<span id="tec-tc-gateway-stripe-card-zip"></span>
+	<span id="tec-tc-gateway-stripe-card-zip">
+		<input
+			placeholder="<?php esc_attr_e( 'Zip Code', 'event-tickets' ); ?>"
+		/>
+	</span>
 </div>
 
 <div id="tec-tc-gateway-stripe-errors" role="alert"></div>
 
-<button id="tec-tc-gateway-stripe-checkout-button"
-		class="tribe-common-c-btn">
+<button
+	id="tec-tc-gateway-stripe-checkout-button"
+	class="tribe-common-c-btn"
+>
 	<?php esc_html_e( 'Submit Payment', 'events-tickets' ) ?>
 </button>

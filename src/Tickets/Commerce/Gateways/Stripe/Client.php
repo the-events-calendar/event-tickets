@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -35,19 +36,32 @@ class Client {
 	public $payment_intent_transient_name;
 
 	/**
+	 * The percentage applied to Stripe transactions. Currently set at 2%.
+	 *
+	 * @since TBD
+	 *
+	 * @var float
+	 */
+	private static $application_fee_percentage = 0.02;
+
+	/**
+	 * The Stripe API base URL
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private static $api_base_url = 'https://api.stripe.com/v1';
+
+	/**
 	 * Get environment base URL.
 	 *
 	 * @since TBD
 	 *
 	 * @return string
 	 */
-	public function get_environment_url() {
-		$merchant = tribe( Merchant::class );
-
-		// @todo determine if the sandbox of stripe has a diff URL.
-		return $merchant->is_sandbox() ?
-			'https://api.stripe.com/v1' :
-			'https://api.stripe.com/v1';
+	public static function get_environment_url() {
+		return static::$api_base_url;
 	}
 
 	/**
@@ -62,7 +76,7 @@ class Client {
 	 *
 	 */
 	public function get_api_url( $endpoint, array $query_args = [] ) {
-		$base_url = $this->get_environment_url();
+		$base_url = static::get_environment_url();
 		$endpoint = ltrim( $endpoint, '/' );
 
 		return add_query_arg( $query_args, "{$base_url}/{$endpoint}" );
@@ -96,21 +110,22 @@ class Client {
 					return null;
 				}
 
-				$item['price']     = $ticket_value->get_decimal();
-				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
+				$item['price']     = (string) $ticket_value->get_decimal();
+				$item['sub_total'] = (string) $ticket_value->sub_total( $item['quantity'] )->get_decimal();
 
 				return $item;
 			},
 			$items
 		);
 		$value = tribe( Order::class )->get_value_total( array_filter( $items ) );
+		$fee   = $this->calculate_application_fee_value( $value );
 
 		$query_args = [];
 		$body       = [
 			'currency'               => $value->get_currency_code(),
-			'amount'                 => $value->get_integer(),
-			'payment_method_types'   => tribe_get_option( Settings::$option_checkout_element_payment_methods ),
-			'application_fee_amount' => 0,
+			'amount'                 => (string) $value->get_integer(),
+			'payment_method_types'   => $this->get_payment_method_types(),
+			'application_fee_amount' => (string) $fee->get_integer(),
 		];
 
 		$stripe_statement_descriptor = tribe_get_option( Settings::$option_statement_descriptor );
@@ -181,6 +196,10 @@ class Client {
 			return [];
 		}
 
+		if ( ! empty( $pi['errors'] ) ) {
+			return $pi;
+		}
+
 		return [
 			'id'   => $pi['id'],
 			'key'  => $pi['client_secret'],
@@ -232,9 +251,7 @@ class Client {
 	 * @param array $payment_intent payment intent data from Stripe
 	 */
 	public function store_payment_intent( $payment_intent ) {
-		if ( ! empty( $payment_intent['client_secret'] ) ) {
-			set_transient( $this->get_payment_intent_transient_name(), $payment_intent, 6 * HOUR_IN_SECONDS );
-		}
+		set_transient( $this->get_payment_intent_transient_name(), $payment_intent, 6 * HOUR_IN_SECONDS );
 	}
 
 	/**
@@ -266,6 +283,7 @@ class Client {
 	 * Query the Stripe API to gather information about the current connected account.
 	 *
 	 * @since TBD
+	 *
 	 * @param array $client_data connection data from the database
 	 *
 	 * @return array
@@ -294,9 +312,7 @@ class Client {
 		if ( ! empty( $response['object'] ) && 'account' === $response['object'] ) {
 			$return['connected'] = true;
 
-			if ( $response['charges_enabled'] ) {
-				$return['charges_enabled'] = true;
-			}
+			$return['charges_enabled'] = tribe_is_truthy( Arr::get( $response, 'charges_enabled', false ) );
 
 			if ( ! empty( $response['capabilities'] ) ) {
 				$return['capabilities'] = $response['capabilities'];
@@ -387,15 +403,10 @@ class Client {
 			$response                    = wp_remote_request( $url, $request_arguments );
 		}
 
-		if ( is_wp_error( $response ) ) {
-			tribe( 'logger' )->log_error( sprintf(
-				'[%s] Stripe "%s" request error: %s',
-				$method,
-				$url,
-				$response->get_error_message()
-			), 'tickets-commerce' );
+		$response = $this->process_response( $response );
 
-			return $response;
+		if ( is_wp_error( $response ) ) {
+			return $this->prepare_errors_to_display( $response );
 		}
 
 		// When raw is true means we dont do any logic.
@@ -499,4 +510,101 @@ class Client {
 		return $this->request( 'DELETE', $endpoint, $query_args, $request_arguments, $raw );
 	}
 
+	/**
+	 * Process Request responses to catch any error code and transform in a WP_Error.
+	 * Returns the request array if no errors are found. Or a WP_Error object.
+	 *
+	 * @since TBD
+	 *
+	 * @param array|\WP_Error $response an array of server data
+	 *
+	 * @return array|\WP_Error
+	 */
+	public function process_response( $response ) {
+
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
+
+		if ( ! empty( $response['response']['code'] )
+			 && 200 !== $response['response']['code'] ) {
+			if ( ! empty( $response['body'] ) ) {
+				$body = json_decode( $response['body'] );
+
+				if ( ! empty( $body->error ) ) {
+					return new \WP_Error( $response['response']['code'], $body->error->message, $body->error );
+				}
+			}
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Format user-facing errors to the list structure expected in the checkout script.
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Error $errors any WP_Error instance
+	 *
+	 * @return array[]
+	 */
+	public function prepare_errors_to_display( \WP_Error $errors ) {
+		$error = $errors->get_error_data();
+
+		if ( ! $error ) {
+			$return[] = [ $error->get_error_code, $errors->get_error_message() ];
+		} else {
+			$return[] = [ $error->code, $error->message ];
+		}
+
+		return [ 'errors' => $return ];
+	}
+
+	/**
+	 * Calculate the fee value that needs to be applied to the PaymentIntent.
+	 *
+	 * @since TBD
+	 *
+	 * @param Value $value
+	 *
+	 * @return Value;
+	 */
+	public function calculate_application_fee_value( Value $value ) {
+
+		if ( false ) {
+			return Value::create();
+		}
+
+		// otherwise, calculate it over the cart total
+		return Value::create( $value->get_decimal() * static::get_application_fee_percentage() );
+	}
+
+	/**
+	 * Returns the list of enabled payment method types for the Payment Element, or the Card type
+	 * for the Card Element.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public function get_payment_method_types() {
+
+		if ( Settings::CARD_ELEMENT_SLUG === tribe_get_option( Settings::$option_checkout_element ) ) {
+			return [ 'card' ];
+		}
+
+		return tribe_get_option( Settings::$option_checkout_element_payment_methods, [ 'card' ] );
+	}
+
+	/**
+	 * Returns the application fee percentage value
+	 *
+	 * @since TBD
+	 *
+	 * @return float
+	 */
+	private static function get_application_fee_percentage() {
+		return static::$application_fee_percentage;
+	}
 }
