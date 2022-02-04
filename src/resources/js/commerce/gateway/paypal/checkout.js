@@ -85,6 +85,15 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.timeouts = [];
 
 	/**
+	 * Flag to check if the current error is generic or not.
+	 *
+	 * @since TBD
+	 *
+	 * @type {boolean}
+	 */
+	obj.isGenericError = true;
+
+	/**
 	 * PayPal Checkout Selectors.
 	 *
 	 * @since 5.1.9
@@ -132,6 +141,13 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleGenericError = function ( error, $container ) {
+
+		// Bail out if there were other errors.
+		if ( ! obj.isGenericError ) {
+			// reset the flag.
+			obj.isGenericError = true;
+			return;
+		}
 		tribe.tickets.debug.log( 'handleGenericError', arguments );
 		$container.removeClass( obj.selectors.activePayment.className() );
 
@@ -227,6 +243,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.handleCreateOrderFail = function ( $container, data ) {
 		tribe.tickets.debug.log( 'handleCreateOrderFail', arguments );
 		obj.showNotice( $container, data.message, '' );
+		obj.isGenericError = false;
 	};
 
 	/**
