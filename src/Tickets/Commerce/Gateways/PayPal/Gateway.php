@@ -128,4 +128,11 @@ class Gateway extends Abstract_Gateway {
 	public function get_subtitle() {
 		return __( 'Enable payments through PayPal, Venmo, and credit card', 'event-tickets' );
 	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public static function get_checkout_template_vars() {		
+		return tribe( Buttons::class )->get_checkout_template_vars();
+	}
 }
