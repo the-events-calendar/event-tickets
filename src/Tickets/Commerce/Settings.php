@@ -103,7 +103,7 @@ class Settings {
 	 * @var string
 	 */
 	public static $option_confirmation_email_subject = 'tickets-commerce-confirmation-email-subject';
-	
+
 	/**
 	 * Stores the instance of the template engine that we will use for rendering differentelements.
 	 *
@@ -122,7 +122,7 @@ class Settings {
 		// Configure which mode we are in.
 		$this->set_mode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' );
 	}
-	
+
 	/**
 	 * Gets the template instance used to setup the rendering html.
 	 *
@@ -198,7 +198,7 @@ class Settings {
 	 * @return array The list of settings for Tickets Commerce.
 	 */
 	public function get_settings() {
-		
+
 		$section_gateway = tribe( Payments_Tab::class )->get_section_gateway();
 		if ( ! empty( $section_gateway ) ) {
 			return $section_gateway->get_settings();
@@ -361,17 +361,17 @@ class Settings {
 				'validation_type'     => 'textarea',
 			],
 		];
-		
+
 		// Add featured settings to top of other settings.
 		$featured_settings = [
 			'tc_featured_settings' => [
 				'type' => 'html',
 				'html' => tribe( Featured_Settings::class )->get_html( [
 					'title'            => __( 'Payment Gateways', 'event-tickets' ),
-					'description'      => __( 
+					'description'      => __(
 						'Set up a payment gateway to get started with Tickets Commerce. Enable multiple ' .
-						'gateways for providing users additional options for users when purchasing tickets.', 
-						'event-tickets' 
+						'gateways for providing users additional options for users when purchasing tickets.',
+						'event-tickets'
 					),
 					'content_template' => $this->get_featured_gateways_html(),
 					'links'            => [
@@ -402,7 +402,7 @@ class Settings {
 
 		return array_merge( tribe( Payments_Tab::class )->get_top_level_settings(), $this->apply_commerce_enabled_conditional( $settings ) );
 	}
-	
+
 	/**
 	 * Returns the content for the main featured settings which displays the list of gateways.
 	 *
@@ -410,10 +410,10 @@ class Settings {
 	 *
 	 * @return string
 	 */
-	public function get_featured_gateways_html() {		
+	public function get_featured_gateways_html() {
 		$manager = tribe( Manager::class );
 		$gateways = $manager->get_gateways();
-		
+
 		$template = $this->get_template();
 		return $template->template( 'gateways/container', [ 'gateways' => $gateways, 'manager' => $manager ], false );
     }
@@ -470,4 +470,23 @@ class Settings {
 		return $meta_value;
 	}
 
+	/**
+	 * Is a valid license of Event Tickets Plus available?
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $revalidate whether to submit a new validation API request
+	 *
+	 * @return bool
+	 */
+	public static function is_licensed_plugin( $revalidate = false ) {
+
+		if ( class_exists( 'Tribe__Tickets_Plus__PUE' ) ) {
+			if ( tribe( \Tribe__Tickets_Plus__PUE::class )->is_current_license_valid( $revalidate ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

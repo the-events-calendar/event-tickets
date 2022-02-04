@@ -286,23 +286,4 @@ class Settings extends Abstract_Settings {
 		return $admin_views->template( 'settings/tickets-commerce/stripe/main', $context, false );
 	}
 
-	/**
-	 * Should the processor fee be applied to this site's transactions?
-	 *
-	 * @since TBD
-	 *
-	 * @param bool $revalidate whether to submit a new validation API request
-	 *
-	 * @return bool
-	 */
-	public function is_licensed_plugin( $revalidate = false ) {
-
-		if ( class_exists( 'Tribe__Tickets_Plus__PUE' ) ) {
-			if ( tribe( \Tribe__Tickets_Plus__PUE::class )->is_current_license_valid( $revalidate ) ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
 }

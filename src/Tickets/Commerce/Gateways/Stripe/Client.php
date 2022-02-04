@@ -572,7 +572,7 @@ class Client {
 	 */
 	public function calculate_application_fee_value( Value $value ) {
 
-		if ( tribe( Settings::class )->is_licensed_plugin() ) {
+		if ( \TEC\Tickets\Commerce\Settings::is_licensed_plugin() ) {
 			return Value::create();
 		}
 
