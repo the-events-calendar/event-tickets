@@ -226,7 +226,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleCreateOrderFail = function ( $container, data ) {
 		tribe.tickets.debug.log( 'handleCreateOrderFail', arguments );
-		obj.showNotice( $container, data.title, data.content );
+		obj.showNotice( $container, data.message, '' );
 	};
 
 	/**
