@@ -16,7 +16,7 @@ use TEC\Tickets\Commerce\Status as Commerce_Status;
 class Status {
 
 	/**
-	 * Order Status in Stripe for created.
+	 * Order Status in Stripe for when the payment intent is first created or when payment is denied.
 	 *
 	 * @since TBD
 	 *
@@ -25,7 +25,7 @@ class Status {
 	CONST REQUIRES_PAYMENT_METHOD = 'requires_payment_method';
 
 	/**
-	 * Order Status in Stripe for saved.
+	 * Order Status in Stripe for created and waiting for automatic confirmation to start processing.
 	 *
 	 * @since TBD
 	 *
@@ -34,7 +34,7 @@ class Status {
 	CONST REQUIRES_CONFIRMATION = 'requires_confirmation';
 
 	/**
-	 * Order Status in Stripe for saved.
+	 * Order Status in Stripe for created and waiting for user confirmation to start processing.
 	 *
 	 * @since TBD
 	 *
@@ -43,7 +43,7 @@ class Status {
 	CONST REQUIRES_ACTION = 'requires_action';
 
 	/**
-	 * Order Status in Stripe for approved.
+	 * Order Status in Stripe for processing.
 	 *
 	 * @since TBD
 	 *
@@ -52,7 +52,17 @@ class Status {
 	CONST PROCESSING = 'processing';
 
 	/**
-	 * Order Status in Stripe for completed.
+	 * Order Status in Stripe for a successful hold on funds, waiting for settlement.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	CONST REQUIRES_CAPTURE = 'requires_capture';
+
+
+	/**
+	 * Order Status in Stripe for completed with success.
 	 *
 	 * @since TBD
 	 *
@@ -61,7 +71,7 @@ class Status {
 	CONST SUCCEEDED = 'succeeded';
 
 	/**
-	 * Order Status in Stripe for payer action required.
+	 * Order Status in Stripe for manually cancelled and invalidated.
 	 *
 	 * @since TBD
 	 *
@@ -80,6 +90,7 @@ class Status {
 		self::REQUIRES_PAYMENT_METHOD => Commerce_Status\Created::SLUG,
 		self::REQUIRES_CONFIRMATION => Commerce_Status\Action_Required::SLUG,
 		self::REQUIRES_ACTION => Commerce_Status\Action_Required::SLUG,
+		self::REQUIRES_CAPTURE => Commerce_Status\Action_Required::SLUG,
 		self::PROCESSING => Commerce_Status\Pending::SLUG,
 		self::SUCCEEDED => Commerce_Status\Completed::SLUG,
 		self::CANCELED => Commerce_Status\Denied::SLUG,
