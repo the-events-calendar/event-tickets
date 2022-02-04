@@ -230,7 +230,7 @@ class Settings extends Abstract_Settings {
 	 * @return array[]
 	 */
 	private function get_payment_methods_available() {
-		return [
+		$available_methods = [
 			'afterpay_clearpay' => [
 				'currencies' => [ 'AUD', 'CAD', 'GBP', 'NZD' ],
 				'label'      => esc_html__( 'AfterPay and ClearPay', 'event-tickets' ),
@@ -243,80 +243,29 @@ class Settings extends Abstract_Settings {
 				'currencies' => [ 'GBP' ],
 				'label'      => esc_html__( 'Bacs Direct Debit', 'event-tickets' ),
 			],
-			'bancontact'        => [
-				'currencies' => [ 'EUR' ],
-				'label'      => esc_html__( 'Bancontact', 'event-tickets' ),
-			],
-			'au_becs_debit'     => [
-				'currencies' => [ 'AUD' ],
-				'label'      => esc_html__( 'BECS Direct Debit', 'event-tickets' ),
-			],
-			'boleto'            => [
-				'currencies' => [ 'BRL' ],
-				'label'      => esc_html__( 'Boleto', 'event-tickets' ),
-			],
-			'eps'               => [
-				'currencies' => [ 'EUR' ],
-				'label'      => esc_html__( 'EPS', 'event-tickets' ),
-			],
-			'fpx'               => [
-				'currencies' => [ 'MYR' ],
-				'label'      => esc_html__( 'FPX', 'event-tickets' ),
-			],
 			'giropay'           => [
 				'currencies' => [ 'EUR' ],
 				'label'      => esc_html__( 'Giropay', 'event-tickets' ),
-			],
-			'grabpay'           => [
-				'currencies' => [ 'MYR', 'SGD' ],
-				'label'      => esc_html__( 'GrabPay', 'event-tickets' ),
-			],
-			'ideal'             => [
-				'currencies' => [ 'EUR' ],
-				'label'      => esc_html__( 'iDEAL', 'event-tickets' ),
 			],
 			'klarna'            => [
 				'currencies' => [ 'DKK', 'EUR', 'GBP', 'NOK', 'SEK', 'USD' ],
 				'label'      => esc_html__( 'Klarna', 'event-tickets' ),
 			],
-			'oxxo'              => [
-				'currencies' => [ 'MXN' ],
-				'label'      => esc_html__( 'OXXO', 'event-tickets' ),
-			],
-			'p24'               => [
-				'currencies' => [ 'EUR', 'PLN' ],
-				'label'      => esc_html__( 'P24', 'event-tickets' ),
-			],
 			'acss_debit'        => [
 				'currencies' => [ 'CAD', 'USD' ],
 				'label'      => esc_html__( 'Pre-authorized debit in Canada', 'event-tickets' ),
 			],
-			'sepa_debit'        => [
-				'currencies' => [ 'EUR' ],
-				'label'      => esc_html__( 'SEPA debit', 'event-tickets' ),
-			],
-			'sofort'            => [
-				'currencies' => [ 'EUR' ],
-				'label'      => esc_html__( 'Sofort', 'event-tickets' ),
-			],
-			'wechat_pay'        => [
-				'currencies' => [
-					'AUD',
-					'CAD',
-					'CHF',
-					'CNY',
-					'DKK',
-					'GBP',
-					'HKD',
-					'JPY',
-					'NOK',
-					'SEK',
-					'SGD',
-					'USD',
-				],
-				'label'      => esc_html__( 'WeChat Pay', 'event-tickets' ),
-			],
 		];
+
+		$tickets_plus_methods = [];
+
+		if ( $this->is_licensed_plugin() ) {
+			if ( class_exists( 'TEC\Tickets_Plus\Commerce\Gateways\Stripe\Settings' ) ) {
+				$tickets_plus_methods = tribe( \TEC\Tickets_Plus\Commerce\Gateways\Stripe\Settings::class )->get_payment_methods_available();
+			}
+		}
+
+		return array_merge( $available_methods, $tickets_plus_methods );
 	}
 
 	/**
@@ -331,7 +280,7 @@ class Settings extends Abstract_Settings {
 			'merchant_status' => tribe( Merchant::class )->get_connection_status(),
 			'signup'          => tribe( Signup::class ),
 			'merchant'        => tribe( Merchant::class ),
-			'fee_is_applied'  => $this->should_apply_stripe_fee( true ),
+			'fee_is_applied'  => ! $this->is_licensed_plugin( true ),
 		];
 
 		return $admin_views->template( 'settings/tickets-commerce/stripe/main', $context, false );
@@ -346,14 +295,14 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @return bool
 	 */
-	public function should_apply_stripe_fee( $revalidate = false ) {
+	public function is_licensed_plugin( $revalidate = false ) {
 
 		if ( class_exists( 'Tribe__Tickets_Plus__PUE' ) ) {
 			if ( tribe( \Tribe__Tickets_Plus__PUE::class )->is_current_license_valid( $revalidate ) ) {
-				return false;
+				return true;
 			}
 		}
 
-		return true;
+		return false;
 	}
 }
