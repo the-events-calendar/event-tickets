@@ -572,7 +572,7 @@ class Client {
 	 */
 	public function calculate_application_fee_value( Value $value ) {
 
-		if ( false ) {
+		if ( ! tribe( Settings::class )->should_apply_stripe_fee() ) {
 			return Value::create();
 		}
 

@@ -92,20 +92,20 @@ class Settings extends Abstract_Settings {
 	 */
 	public function get_settings() {
 		$settings = [
-			'tickets-commerce-stripe-commerce-configure'        => [
+			'tickets-commerce-stripe-commerce-configure'             => [
 				'type'            => 'wrapped_html',
 				'html'            => $this->get_connection_settings_html(),
 				'validation_type' => 'html',
 			],
-			'tickets-commerce-stripe-settings-heading'          => [
+			'tickets-commerce-stripe-settings-heading'               => [
 				'type' => 'html',
 				'html' => '<h3 class="tribe-dependent -input">' . __( 'Stripe Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
 			],
-			'tickets-commerce-gateway-settings-group-header-general'          => [
+			'tickets-commerce-gateway-settings-group-header-general' => [
 				'type' => 'html',
 				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . __( 'General', 'event-tickets' ) . '</h4><div class="clear"></div>',
 			],
-			static::$option_statement_descriptor                => [
+			static::$option_statement_descriptor                     => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Statement Descriptor', 'event-tickets' ),
 				'tooltip'             => esc_html( 'This is the text that appears on the ticket purchaser bank statements. If left blank, the default settings from the Stripe account will be used.', 'event-tickets' ),
@@ -114,30 +114,30 @@ class Settings extends Abstract_Settings {
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
 			],
-			static::$option_collect_billing_details             => [
+			static::$option_collect_billing_details                  => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html__( 'Collect Billing Details', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Enables sending billing details to Stripe. This is not required, but may be necessary in some cases.', 'event-tickets' ),
 				'default'         => false,
 				'validation_type' => 'boolean',
 			],
-			static::$option_stripe_receipt_emails               => [
+			static::$option_stripe_receipt_emails                    => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html__( 'Enable Stripe Receipt Emails', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'If this option is selected, ticket buyers will get stripe receipts, as well as Event Tickets confirmation emails.', 'event-tickets' ),
 				'default'         => false,
 				'validation_type' => 'boolean',
 			],
-			'tickets-commerce-stripe-checkout-settings-heading' => [
+			'tickets-commerce-stripe-checkout-settings-heading'      => [
 				'type' => 'html',
 				'html' => '<h3 class="tribe-dependent -input">' . __( 'Checkout Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
 			],
 
-			'tickets-commerce-gateway-settings-group-header-checkout'          => [
+			'tickets-commerce-gateway-settings-group-header-checkout' => [
 				'type' => 'html',
 				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . __( 'Checkout', 'event-tickets' ) . '</h4><div class="clear"></div>',
 			],
-			static::$option_checkout_element                    => [
+			static::$option_checkout_element                          => [
 				'type'            => 'radio',
 				'label'           => esc_html__( 'Checkout Type', 'event-tickets' ),
 				'tooltip'         => esc_html( 'Stripe offers two main ways to pay at checkout. Card Element and Payment Element. You can read about them here.' ),
@@ -149,7 +149,7 @@ class Settings extends Abstract_Settings {
 				],
 				'tooltip_first'   => true,
 			],
-			static::$option_checkout_element_card_fields        => [
+			static::$option_checkout_element_card_fields              => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Credit Card Fields (Card Element)', 'event-tickets' ),
 				'tooltip'         => esc_html( 'Tooltip missing' ), // @todo add proper tooltip
@@ -162,7 +162,7 @@ class Settings extends Abstract_Settings {
 				],
 				'tooltip_first'   => true,
 			],
-			static::$option_checkout_element_payment_methods    => [
+			static::$option_checkout_element_payment_methods          => [
 				'type'            => 'checkbox_list',
 				'label'           => esc_html__( 'Payment Methods (Payment Element)', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Which payment methods should be offered to your customers? Only select methods previously enabled in your Stripe account.' ),
@@ -331,8 +331,29 @@ class Settings extends Abstract_Settings {
 			'merchant_status' => tribe( Merchant::class )->get_connection_status(),
 			'signup'          => tribe( Signup::class ),
 			'merchant'        => tribe( Merchant::class ),
+			'fee_is_applied'  => $this->should_apply_stripe_fee( true ),
 		];
 
 		return $admin_views->template( 'settings/tickets-commerce/stripe/main', $context, false );
+	}
+
+	/**
+	 * Should the processor fee be applied to this site's transactions?
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $revalidate whether to submit a new validation API request
+	 *
+	 * @return bool
+	 */
+	public function should_apply_stripe_fee( $revalidate = false ) {
+
+		if ( class_exists( 'Tribe__Tickets_Plus__PUE' ) ) {
+			if ( tribe( \Tribe__Tickets_Plus__PUE::class )->is_current_license_valid( $revalidate ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
