@@ -54,6 +54,9 @@ tribe.tickets.commerce = {};
 		checkoutItemDescriptionButtonLess: '.tribe-tickets__commerce-checkout-cart-item-details-button--less', // eslint-disable-line max-len
 		hiddenElement: '.tribe-common-a11y-hidden',
 		nonce: '#tec-tc-checkout-nonce',
+		purchaserFormContainer: '.tribe-tickets__commerce-checkout-anonymous-purchaser-field-wrapper',
+		purchaserName: '#tec-tc-purchaser-name',
+		purchaserEmail: '#tec-tc-purchaser-email',
 	};
 
 	/**
@@ -179,6 +182,30 @@ tribe.tickets.commerce = {};
 
 		$document.trigger( 'afterSetup.tecTicketsCommerce', [ $container ] );
 	};
+
+	/**
+	 * Get purchaser data if available.
+	 *
+	 * @since TBD
+	 *
+	 * @param $container
+	 *
+	 * @return {{}}
+	 */
+	obj.getPurchaserData = function ( selector ) {
+		let purchaser = {};
+
+		let $container = $document.find( selector );
+
+		if ( ! $container.length ) {
+			return purchaser;
+		}
+
+		purchaser.name  = $container.find( obj.selectors.purchaserName ).val();
+		purchaser.email = $container.find( obj.selectors.purchaserEmail ).val();
+
+		return purchaser;
+	}
 
 	/**
 	 * Handles the initialization of the tickets commerce events when Document is ready.

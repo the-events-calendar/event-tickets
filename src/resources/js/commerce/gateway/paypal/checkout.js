@@ -166,12 +166,16 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleCreateOrder = function ( data, actions, $container ) {
 		tribe.tickets.debug.log( 'handleCreateOrder', arguments );
+
+		let purchaser_data = tc.getPurchaserData( tc.selectors.purchaserFormContainer );
+
 		return fetch(
 			obj.orderEndpointUrl,
 			{
 				method: 'POST',
 				body: JSON.stringify( {
-					billing_details: billing.getDetails()
+					billing_details: billing.getDetails(),
+					purchaser: purchaser_data
 				} ),
 				headers: {
 					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
