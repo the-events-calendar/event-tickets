@@ -10,6 +10,7 @@ use TEC\Tickets\Commerce\Order;
 
 use TEC\Tickets\Commerce\Gateways\Stripe\Client;
 use TEC\Tickets\Commerce\Status\Completed;
+use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Pending;
 
 use TEC\Tickets\Commerce\Success;
@@ -124,7 +125,14 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-order', $messages['failed-creating-order'], $order );
 		}
 
-		$updated = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG, [
+		$payment_intent_status = Arr::get( $payment_intent, [ 'status' ] );
+		$status                = tribe( Status::class )->convert_to_commerce_status( $payment_intent_status );
+
+		if ( ! $status ) {
+			return new WP_Error( 'tec-tc-gateway-stripe-invalid-payment-intent-status', $messages['invalid-payment-intent-status'], $payment_intent_status );
+		}
+
+		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
 			'gateway_payload'  => $payment_intent,
 			'gateway_order_id' => $payment_intent['id'],
 		] );
@@ -135,8 +143,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		// Respond with the client_secret for Stripe Usage.
 		$response['success']       = true;
+		$response['order_id']      = $order->ID;
 		$response['client_secret'] = $payment_intent['client_secret'];
-		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
+		$response['redirect_url']  = add_query_arg( [ 'tc-order-id' => $payment_intent['id'] ], tribe( Success::class )->get_url() );
 
 		return new WP_REST_Response( $response );
 	}
@@ -197,7 +206,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$gateway_order_id = $request->get_param( 'order_id' );
 
 		$order = tec_tc_orders()->by_args( [
-			'status'           => tribe( Pending::class )->get_wp_slug(),
 			'gateway_order_id' => $gateway_order_id,
 		] )->first();
 
@@ -206,7 +214,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		$client_secret  = $request->get_param( 'client_secret' );
-		$payment_intent = tribe( Client::class )->get_payment_intent( $gateway_order_id, $client_secret );
+		$payment_intent = tribe( Client::class )->get_payment_intent( $gateway_order_id );
 
 		if ( is_wp_error( $payment_intent ) ) {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-getting-payment-intent', $messages['failed-getting-payment-intent'], $order );
