@@ -188,7 +188,7 @@ tribe.tickets.commerce = {};
 	 *
 	 * @since TBD
 	 *
-	 * @param $container
+	 * @param {string} selector for the container.
 	 *
 	 * @return {{}}
 	 */
