@@ -24,15 +24,19 @@
  * @var Abstract_Gateway[] $gateways           [Global] An array with the gateways.
  * @var int                $gateways_active    [Global] The number of active gateways.
  * @var int                $gateways_connected [Global] The number of connected gateways.
+ * @var int                $gateways_enabled   [Global] The number of enabled gateways.
  */
 
 // Bail if user needs to login, the cart is empty or if there are no active gateways.
-if ( $must_login || empty( $items ) || ! tribe_is_truthy( $gateways_active ) ) {
+if ( $must_login || empty( $items ) || ! tribe_is_truthy( $gateways_active ) || ! tribe_is_truthy( $gateways_enabled ) ) {
 	return;
 }
 
 ?>
 <div class="tribe-tickets__commerce-checkout-gateways">
+    <h4 class="tribe-tickets__commerce-checkout-section-header">
+		<?php esc_html_e( 'Choose Payment', 'event-tickets' ); ?>
+    </h4>
 <?php
 foreach ( $gateways as $gateway ) {
     if ( ! $gateway->is_enabled() || ! $gateway->is_active() ) {
