@@ -22,7 +22,7 @@ if ( ! empty( $must_login ) ) {
 	return;
 }
 ?>
-<div class="tribe-tickets__commerce-checkout-cart-gateway tribe-tickets__commerce-checkout-cart-stripe">
+<div class="tribe-tickets__commerce-checkout-gateway tribe-tickets__commerce-checkout-stripe">
 	<form id="payment-form">
 
 		<?php $this->template( 'gateway/stripe/payment-element' ); ?>

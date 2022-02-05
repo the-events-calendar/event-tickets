@@ -27,7 +27,7 @@ if ( $must_login ) {
 }
 
 ?>
-<div class="tribe-tickets__commerce-checkout-cart-gateway tribe-tickets__commerce-checkout-cart-paypal">
+<div class="tribe-tickets__commerce-checkout-gateway tribe-tickets__commerce-checkout-paypal">
 	<?php $this->template( 'gateway/paypal/buttons' ); ?>
 	<?php $this->template( 'gateway/paypal/advanced-payments' ); ?>
 	<?php $this->template( 'gateway/paypal/checkout-script' ); ?>
