@@ -216,13 +216,15 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		var elements = obj.stripeElements;
 		var billing_details = billing.getDetails(false);
 		var order = order;
+		let purchaser_data = tc.getPurchaserData( tc.selectors.purchaserFormContainer );
 		return obj.stripeLib.confirmPayment( {
 			elements,
 			redirect: 'if_required',
 			confirmParams: {
 				return_url: order.redirect_url,
 				payment_method_data: {
-					billing_details: billing_details
+					billing_details: billing_details,
+					purchaser: purchaser_data
 				}
 			}
 		} ).then( function( result ) {
@@ -244,11 +246,13 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.submitCardPayment = async () => {
 		var billing_details = billing.getDetails(false);
+		let purchaser_data = tc.getPurchaserData( tc.selectors.purchaserFormContainer );
 
 		obj.stripeLib.confirmCardPayment( obj.checkout.paymentIntentData.key, {
 			payment_method: {
 				card: obj.cardElement,
-				billing_details: billing_details
+				billing_details: billing_details,
+				purchaser: purchaser_data
 			}
 		} ).then( function( result ) {
 			obj.submitButton(true);
@@ -270,10 +274,12 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {Promise<*>}
 	 */
 	obj.handleCreateOrder = async () => {
+		let purchaser_data = tc.getPurchaserData( tc.selectors.purchaserFormContainer );
 		const args = {
 			json: {
 				billing_details: billing.getDetails(),
-				payment_intent: obj.checkout.paymentIntentData
+				payment_intent: obj.checkout.paymentIntentData,
+				purchaser: purchaser_data
 			},
 			headers: {
 				'X-WP-Nonce': obj.checkout.nonce
