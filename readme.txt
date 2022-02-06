@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 5.6
-Tested up to: 5.8.2
+Tested up to: 5.9.0
 Stable tag: 5.2.4
 Requires PHP: 7.1
 License: GPLv2 or later
@@ -178,6 +178,10 @@ We've got a [LoopedIn](https://app.loopedin.io/the-events-calendar-suite-roadmap
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.2.4] TBD =
+
+* Tweak - Compatibility with the Common Abstract for editor blocks registration.
 
 = [5.2.3] 2022-01-19 =
 
