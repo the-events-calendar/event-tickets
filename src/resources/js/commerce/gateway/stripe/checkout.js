@@ -419,10 +419,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		// Instantiate the PaymentElement
 		obj.paymentElement = obj.stripeElements.create( 'payment', {
 			fields: {
-				// We're collecting names and emails separately and sending them in confirmPayment
-				// no need to duplicate it here
-				name: 'never',
-				email: 'never',
+				name: 'auto',
+				email: 'auto',
 				phone: 'auto',
 				address: 'auto'
 			},
