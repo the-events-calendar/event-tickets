@@ -54,6 +54,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 				'tribe-tickets-commerce-js',
 				'tribe-tickets-commerce-notice-js',
 				'tribe-tickets-commerce-base-gateway-checkout-js',
+				'tribe-tickets-commerce-base-gateway-checkout-toggler',
 			],
 			'wp_enqueue_scripts',
 			[
