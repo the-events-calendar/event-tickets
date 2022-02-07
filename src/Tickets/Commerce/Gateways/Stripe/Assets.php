@@ -66,14 +66,14 @@ class Assets extends \tad_DI52_ServiceProvider {
 				'localize'     => [
 					'name' => 'tecTicketsCommerceGatewayStripeCheckout',
 					'data' => static function () {
-						return [
+						return apply_filters( 'tec_tickets_commerce_stripe_checkout_localized_data', [
 							'nonce'             => wp_create_nonce( 'wp_rest' ),
 							'orderEndpoint'     => tribe( Order_Endpoint::class )->get_route_url(),
 							'paymentElement'    => tribe( Stripe_Elements::class )->include_payment_element(),
 							'cardElementType'   => tribe( Stripe_Elements::class )->card_element_type(),
 							'publishableKey'    => tribe( Merchant::class )->get_publishable_key(),
 							'paymentIntentData' => tribe( Client::class )->get_publishable_payment_intent_data(),
-						];
+						] );
 					},
 				],
 			]
