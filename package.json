@@ -98,7 +98,7 @@
     "mt-a11y-dialog": "^5.1.1",
     "prop-types": "^15.6.2",
     "querystringify": "^2.0.0",
-    "react": "16.3.0",
+    "react": "16.3.1",
     "react-day-picker": "^7.2.4",
     "react-dom": "16.3.3",
     "react-input-autosize": "^2.2.1",

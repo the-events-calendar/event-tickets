@@ -179,6 +179,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Tweak - Remove the `wp.editor.InnerBlocks` gutenberg component in favor of `wp.blockEditor.InnerBlocks` which was deprecated since version 5.3. [ET-1367]
+
 = [5.2.3] 2022-01-19 =
 
 * Feature - Allow duplicating a ticket when using the Classic Editor. [ET-1349]
