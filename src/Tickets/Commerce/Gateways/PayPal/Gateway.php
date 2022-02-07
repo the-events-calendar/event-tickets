@@ -147,5 +147,5 @@ class Gateway extends Abstract_Gateway {
 	 */
 	public static function get_checkout_template_vars() {		
 		return tribe( Buttons::class )->get_checkout_template_vars();
-  }
+	}
 }
