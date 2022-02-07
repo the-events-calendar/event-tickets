@@ -486,6 +486,6 @@ class Settings {
 			return false;
 		}
 
-		return tribe( \Tribe__Tickets_Plus__PUE::class )->is_current_license_valid( $revalidate ) );
+		return tribe( \Tribe__Tickets_Plus__PUE::class )->is_current_license_valid( $revalidate );
 	}
 }
