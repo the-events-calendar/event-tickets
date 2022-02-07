@@ -259,7 +259,7 @@ class Settings extends Abstract_Settings {
 
 		$tickets_plus_methods = [];
 
-		if ( $this->is_licensed_plugin() ) {
+		if ( \TEC\Tickets\Commerce\Settings::is_licensed_plugin() ) {
 			if ( class_exists( 'TEC\Tickets_Plus\Commerce\Gateways\Stripe\Settings' ) ) {
 				$tickets_plus_methods = tribe( \TEC\Tickets_Plus\Commerce\Gateways\Stripe\Settings::class )->get_payment_methods_available();
 			}
@@ -280,7 +280,7 @@ class Settings extends Abstract_Settings {
 			'merchant_status' => tribe( Merchant::class )->get_connection_status(),
 			'signup'          => tribe( Signup::class ),
 			'merchant'        => tribe( Merchant::class ),
-			'fee_is_applied'  => ! $this->is_licensed_plugin( true ),
+			'fee_is_applied'  => ! \TEC\Tickets\Commerce\Settings::is_licensed_plugin( true ),
 		];
 
 		return $admin_views->template( 'settings/tickets-commerce/stripe/main', $context, false );
