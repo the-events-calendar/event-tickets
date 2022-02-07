@@ -217,7 +217,7 @@ class Settings extends Abstract_Settings {
 		 * @param string  $currency          the currency configured for Tickets Commerce
 		 * @param array[] $payment_methods   the complete list of available Payment Methods in Stripe
 		 */
-		return apply_filters( 'tec_tickets_commerce_stripe_payment_methods_available', $available_methods, $currency, $payment_methods );
+		return apply_filters( 'tec_tickets_commerce_stripe_payment_methods_by_currency', $available_methods, $currency, $payment_methods );
 	}
 
 	/**
@@ -257,15 +257,14 @@ class Settings extends Abstract_Settings {
 			],
 		];
 
-		$tickets_plus_methods = [];
-
-		if ( \TEC\Tickets\Commerce\Settings::is_licensed_plugin() ) {
-			if ( class_exists( 'TEC\Tickets_Plus\Commerce\Gateways\Stripe\Settings' ) ) {
-				$tickets_plus_methods = tribe( \TEC\Tickets_Plus\Commerce\Gateways\Stripe\Settings::class )->get_payment_methods_available();
-			}
-		}
-
-		return array_merge( $available_methods, $tickets_plus_methods );
+		/**
+		 * Allows for filtering the list of available payment methods.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $available_methods the list of payment methods available.
+		 */
+		return apply_filters( 'tec_tickets_commerce_stripe_payment_methods_available', $available_methods );
 	}
 
 	/**
@@ -280,7 +279,7 @@ class Settings extends Abstract_Settings {
 			'merchant_status' => tribe( Merchant::class )->get_connection_status(),
 			'signup'          => tribe( Signup::class ),
 			'merchant'        => tribe( Merchant::class ),
-			'fee_is_applied'  => ! \TEC\Tickets\Commerce\Settings::is_licensed_plugin( true ),
+			'fee_is_applied'  => apply_filters( 'tec_tickets_commerce_stripe_fee_is_applied_notice', true ),
 		];
 
 		return $admin_views->template( 'settings/tickets-commerce/stripe/main', $context, false );

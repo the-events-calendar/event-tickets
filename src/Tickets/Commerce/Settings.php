@@ -30,6 +30,7 @@ use WP_Admin_Bar;
  * @package Tribe\Tickets\Commerce\Tickets_Commerce
  */
 class Settings {
+
 	use Has_Mode;
 
 	/**
@@ -376,19 +377,19 @@ class Settings {
 					'content_template' => $this->get_featured_gateways_html(),
 					'links'            => [
 						[
-							'slug'         => 'help-1',
-							'priority'     => 10,
-							'link'         => esc_url( '#' ), // @todo Get a URL for this link.
-							'html'         => __( 'Learn more about configuring payment options with Tickets Commerce', 'event-tickets' ),
-							'target'       => '_blank',
-							'classes'      => [],
-						]
+							'slug'     => 'help-1',
+							'priority' => 10,
+							'link'     => esc_url( '#' ), // @todo Get a URL for this link.
+							'html'     => __( 'Learn more about configuring payment options with Tickets Commerce', 'event-tickets' ),
+							'target'   => '_blank',
+							'classes'  => [],
+						],
 					],
 					'classes'          => [],
 				] ),
-			]
+			],
 		];
-		$settings = array_merge( $featured_settings, $settings );
+		$settings          = array_merge( $featured_settings, $settings );
 
 		/**
 		 * Allow filtering the list of Tickets Commerce settings.
@@ -398,7 +399,6 @@ class Settings {
 		 * @param array $settings The list of Tickets Commerce settings.
 		 */
 		$settings = apply_filters( 'tribe_tickets_commerce_settings', $settings );
-
 
 		return array_merge( tribe( Payments_Tab::class )->get_top_level_settings(), $this->apply_commerce_enabled_conditional( $settings ) );
 	}
@@ -411,12 +411,13 @@ class Settings {
 	 * @return string
 	 */
 	public function get_featured_gateways_html() {
-		$manager = tribe( Manager::class );
+		$manager  = tribe( Manager::class );
 		$gateways = $manager->get_gateways();
 
 		$template = $this->get_template();
+
 		return $template->template( 'gateways/container', [ 'gateways' => $gateways, 'manager' => $manager ], false );
-    }
+	}
 
 	/**
 	 * Handle setting up dependencies for all of the fields.
@@ -481,12 +482,10 @@ class Settings {
 	 */
 	public static function is_licensed_plugin( $revalidate = false ) {
 
-		if ( class_exists( 'Tribe__Tickets_Plus__PUE' ) ) {
-			if ( tribe( \Tribe__Tickets_Plus__PUE::class )->is_current_license_valid( $revalidate ) ) {
-				return true;
-			}
+		if ( ! class_exists( 'Tribe__Tickets_Plus__PUE' ) ) {
+			return false;
 		}
 
-		return false;
+		return tribe( \Tribe__Tickets_Plus__PUE::class )->is_current_license_valid( $revalidate ) );
 	}
 }
