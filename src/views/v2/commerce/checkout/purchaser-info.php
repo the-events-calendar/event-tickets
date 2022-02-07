@@ -15,18 +15,18 @@
  *
  * @var \Tribe__Template $this [Global] Template object.
  * @var bool $is_logged_out [Global] If the user is logged out.
+ * @var bool $must_login Global] Whether login is required to buy tickets or not.
  */
 
-if ( ! $is_logged_out ) {
+if ( ! $is_logged_out || $must_login ) {
 	return;
 }
 
 $title = __( 'Purchaser info', 'event-tickets' );
 ?>
 
-<div class="tribe-tickets__commerce-checkout-purchaser-info-field-wrapper">
+<div class="tribe-tickets__form tribe-tickets__commerce-checkout-purchaser-info-field-wrapper">
 	<p class="tribe-common tribe-field-text"><?php echo esc_html( $title ); ?></p>
 	<?php $this->template( 'checkout/purchaser-info/name' ) ?>
 	<?php $this->template( 'checkout/purchaser-info/email' ) ?>
 </div>
-

@@ -55,7 +55,7 @@ $attributes = [
 			]
 		);
 		?>
-		<?php $this->template( 'checkout/anonymous' ); ?>
+		<?php $this->template( 'checkout/purchaser-info' ); ?>
 		<?php $this->template( 'checkout/cart/empty' ); ?>
 		<?php $this->template( 'checkout/footer' ); ?>
 		<?php $this->template( 'checkout/must-login' ); ?>
