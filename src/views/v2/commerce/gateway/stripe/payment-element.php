@@ -20,7 +20,7 @@ if ( $must_login || ! $payment_element ) {
 	return;
 }
 ?>
-<div id="tec-tc-gateway-stripe-payment-element"></div>
+<div id="tec-tc-gateway-stripe-payment-element" class="tribe-tickets__commerce-checkout-stripe-payment-element"></div>
 <button id="tec-tc-gateway-stripe-checkout-button" class="tribe-common-c-btn">
 	<div class="spinner hidden" id="spinner"></div>
 	<span id="button-text"><?php esc_html_e( 'Pay now', 'event-tickets' ); ?></span>
