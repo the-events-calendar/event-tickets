@@ -29,6 +29,15 @@ class Settings extends Abstract_Settings {
 	const CARD_ELEMENT_SLUG = 'card';
 
 	/**
+	 * Connection details fetched from the Stripe API on page-load
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
+	public $connection_status;
+
+	/**
 	 * @inheritDoc
 	 */
 	public static $option_sandbox = 'tickets-commerce-stripe-sandbox';
@@ -88,6 +97,13 @@ class Settings extends Abstract_Settings {
 	public static $option_checkout_element_payment_methods = 'tickets-commerce-stripe-checkout-element-payment-methods';
 
 	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$this->connection_status = tribe( Merchant::class )->get_connection_status();
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function get_settings() {
@@ -108,11 +124,12 @@ class Settings extends Abstract_Settings {
 			static::$option_statement_descriptor                     => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Statement Descriptor', 'event-tickets' ),
-				'tooltip'             => esc_html( 'This is the text that appears on the ticket purchaser bank statements. If left blank, the default settings from the Stripe account will be used.', 'event-tickets' ),
+				'tooltip'             => esc_html__( 'This is the text that appears on the ticket purchaser bank statements. If left blank, the descriptor set in Stripe will be used.', 'event-tickets' ),
 				'size'                => 'medium',
 				'default'             => '',
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
+				'placeholder'         => ! empty( $this->connection_status['statement_descriptor'] ) ? esc_textarea( $this->connection_status['statement_descriptor'] ) : '',
 			],
 			static::$option_collect_billing_details                  => [
 				'type'            => 'checkbox_bool',
@@ -276,7 +293,7 @@ class Settings extends Abstract_Settings {
 
 		$context = [
 			'plugin_url'      => Tribe__Tickets__Main::instance()->plugin_url,
-			'merchant_status' => tribe( Merchant::class )->get_connection_status(),
+			'merchant_status' => $this->connection_status,
 			'signup'          => tribe( Signup::class ),
 			'merchant'        => tribe( Merchant::class ),
 			'fee_is_applied'  => apply_filters( 'tec_tickets_commerce_stripe_fee_is_applied_notice', true ),
