@@ -237,7 +237,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			confirmParams: {
 				return_url: order.redirect_url,
 				payment_method_data: {
-					billing_details: billingDetails
+					billing_details: billingDetails,
+					purchaser: obj.getPuchaserInfo()
 				}
 			}
 		} ).then( obj.handleConfirmPayment );
@@ -277,7 +278,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		return obj.stripeLib.confirmCardPayment( obj.checkout.paymentIntentData.key, {
 			payment_method: {
 				card: obj.cardElement,
-				billing_details: billingDetails
+				billing_details: billingDetails,
+				purchaser: obj.getPuchaserInfo()
 			}
 		} ).then( obj.handleConfirmCardPayment );
 	};
@@ -314,6 +316,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		const args = {
 			json: {
 				billing_details: billing.getDetails(),
+				purchaser: obj.getPuchaserInfo(),
 				payment_intent: obj.checkout.paymentIntentData
 			},
 			headers: {
@@ -429,6 +432,15 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			obj.setupCompactCardElement();
 		}
 	};
+
+	/**
+	 * Get purchaser form data.
+	 *
+	 * @since TBD
+	 *
+	 * @return {{}}
+	 */
+	obj.getPuchaserInfo = () => tribe.tickets.commerce.getPurchaserData( tribe.tickets.commerce.selectors.purchaserFormContainer );
 
 	/**
 	 * Bind script loader to trigger script dependent methods.
