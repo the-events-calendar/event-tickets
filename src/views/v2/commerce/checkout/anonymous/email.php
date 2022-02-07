@@ -31,7 +31,7 @@ $field_classes = [
 		<?php esc_html_e( 'Purchaser Email', 'event-tickets' ); ?>
 	</label>
 	<input
-		type="text"
+		type="email"
 		id="tec-tc-purchaser-email"
 		name="purchaser-email"
 		autocomplete="off"
