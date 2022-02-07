@@ -24,7 +24,7 @@ if ( true === $merchant_status['connected'] ) {
 
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-description">
 	<p>
-		<?php esc_html_e( 'Start selling tickets to your events today with Stripe. Attendees can purchase tickets directly on your site using debit or credit cards with no additional fees.', 'event-tickets' ); ?>
+		<?php echo wp_kses( __( 'Start selling tickets to your events today with Stripe integration for Tickets Commerce. Enable highly-configurable credit and debit card checkout with enhanced features like Afterpay.<br><br>Stripe charges a 3% fee for all transactions.', 'event-tickets' ), [ 'br' => [] ] ); ?>
 	</p>
 
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-signup-links">
