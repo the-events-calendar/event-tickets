@@ -404,6 +404,36 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	/**
+	 * Config for Stripe styling.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Promise<void>}
+	 */
+	 obj.stripeAppearance = {
+		variables: {
+			borderRadius: '4px',
+			colorPrimary: '#334aff',
+			fontFamily: 'Helvetica Neue, Helvetica, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif',
+		},
+		rules: {
+			'.Tab': {
+				borderColor: '#d5d5d5',
+				boxShadow: 'none'
+			},
+			'.Tab--selected': {
+				borderWidth: '2px'
+			},
+			'.TabLabel': {
+				paddingTop: '6px'
+			},
+			'.Input': {
+				boxShadow: 'none'
+			}
+		}
+	};
+
+	/**
 	 * Setup and initialize Stripe API.
 	 *
 	 * @since TBD
@@ -416,7 +446,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			return obj.handleErrorDisplay( obj.checkout.paymentIntentData.errors );
 		}
 
-		obj.stripeElements = obj.stripeLib.elements( { clientSecret: obj.checkout.paymentIntentData.key } );
+		obj.stripeElements = obj.stripeLib.elements( { clientSecret: obj.checkout.paymentIntentData.key, appearance: obj.stripeAppearance } );
 
 		if ( obj.checkout.paymentElement ) {
 			obj.setupPaymentElement();
