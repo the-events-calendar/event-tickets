@@ -26,7 +26,7 @@ $title = __( 'Purchaser info', 'event-tickets' );
 ?>
 
 <div class="tribe-tickets__form tribe-tickets__commerce-checkout-purchaser-info-field-wrapper">
-	<p class="tribe-common tribe-field-text"><?php echo esc_html( $title ); ?></p>
+	<h5 class="tribe-common tribe-common-h5--min-medium tribe-field-text"><?php echo esc_html( $title ); ?></h5>
 	<?php $this->template( 'checkout/purchaser-info/name' ) ?>
 	<?php $this->template( 'checkout/purchaser-info/email' ) ?>
 </div>
