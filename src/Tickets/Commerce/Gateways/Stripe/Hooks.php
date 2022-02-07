@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Notice_Handler;
 
 /**
@@ -114,7 +115,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function maybe_create_stripe_payment_intent() {
 
-		if ( ! tribe( Merchant::class )->is_connected() ) {
+		if ( ! tribe( Merchant::class )->is_connected() && tribe( Module::class )->is_checkout_page() ) {
 			return;
 		}
 

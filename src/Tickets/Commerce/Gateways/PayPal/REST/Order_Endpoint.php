@@ -110,7 +110,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$unit = [
 			'reference_id' => $order->ID,
-			'value'        => $order->total_value->get_decimal(),
+			'value'        => (string) $order->total_value->get_decimal(),
 			'currency'     => $order->currency,
 			'first_name'   => $order->purchaser['first_name'],
 			'last_name'    => $order->purchaser['last_name'],
@@ -121,9 +121,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			$ticket          = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 			$unit['items'][] = [
 				'name'        => $ticket->name,
-				'unit_amount' => [ 'value' => $item['price'], 'currency_code' => $order->currency ],
+				'unit_amount' => [ 'value' => (string) $item['price'], 'currency_code' => $order->currency ],
 				'quantity'    => $item['quantity'],
-				'item_total'  => [ 'value' => $item['sub_total'], 'currency_code' => $order->currency ],
+				'item_total'  => [ 'value' => (string) $item['sub_total'], 'currency_code' => $order->currency ],
 				'sku'         => $ticket->sku,
 			];
 		}

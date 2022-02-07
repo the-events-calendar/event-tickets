@@ -3,7 +3,7 @@
  * Tickets Commerce: Payment Element Checkout for Stripe
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/gateway/stripe/payment_element.php
+ * [your-theme]/tribe/tickets/v2/commerce/gateway/stripe/payment-element.php
  *
  * See more documentation about our views templating system.
  *
