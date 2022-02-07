@@ -17,16 +17,17 @@
  */
 
 $label_classes = [
-	'tribe-common-b3',
+	'tribe-tickets__form-field-label',
 	'tribe-tickets__commerce-checkout-purchaser-info-email-field-label',
 ];
 
 $field_classes = [
 	'tribe-tickets__commerce-checkout-purchaser-info-form-field',
 	'tribe-tickets__commerce-checkout-purchaser-info-form-field-email',
+	'tribe-common-form-control-text__input tribe-tickets__form-field-input',
 ];
 ?>
-<div class="tribe-tickets__commerce-checkout-purchaser-info-field">
+<div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field-input-wrapper">
 	<label for="tec-tc-purchaser-email" <?php tribe_classes( $label_classes ); ?>>
 		<?php esc_html_e( 'Purchaser Email', 'event-tickets' ); ?>
 	</label>
