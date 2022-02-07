@@ -55,8 +55,8 @@ tribe.tickets.commerce = {};
 		hiddenElement: '.tribe-common-a11y-hidden',
 		nonce: '#tec-tc-checkout-nonce',
 		purchaserFormContainer: '.tribe-tickets__commerce-checkout-anonymous-purchaser-field-wrapper',
-		purchaserName: '#tec-tc-purchaser-name',
-		purchaserEmail: '#tec-tc-purchaser-email',
+		purchaserName: '.tribe-tickets__commerce-checkout-purchaser-info-form-field-name',
+		purchaserEmail: '.tribe-tickets__commerce-checkout-purchaser-info-form-field-email',
 	};
 
 	/**

@@ -1,9 +1,9 @@
 <?php
 /**
- * Tickets Commerce: Checkout Page Anonymous Email Field
+ * Tickets Commerce: Checkout Page Purchaser Info Email Field
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/checkout/anonymous/email.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/purchaser-info/email.php
  *
  * See more documentation about our views templating system.
  *
@@ -18,15 +18,15 @@
 
 $label_classes = [
 	'tribe-common-b3',
-	'tribe-tickets__commerce-checkout-anonymous-purchaser-email-field-label',
+	'tribe-tickets__commerce-checkout-purchaser-info-email-field-label',
 ];
 
 $field_classes = [
 	'tribe-tickets__commerce-checkout-purchaser-info-form-field',
-	'tribe-tickets__commerce-checkout-purchaser-info-form-field--email',
+	'tribe-tickets__commerce-checkout-purchaser-info-form-field-email',
 ];
 ?>
-<div class="tribe-tickets__commerce-checkout-anonymous-purchaser-field">
+<div class="tribe-tickets__commerce-checkout-purchaser-info-field">
 	<label for="tec-tc-purchaser-email" <?php tribe_classes( $label_classes ); ?>>
 		<?php esc_html_e( 'Purchaser Email', 'event-tickets' ); ?>
 	</label>
