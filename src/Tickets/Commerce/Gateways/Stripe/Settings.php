@@ -164,11 +164,6 @@ class Settings extends Abstract_Settings {
 			'</a>'
 		);
 
-		$plus_link      = sprintf(
-			'<a href="https://evnt.is/19zl" target="_blank" rel="noopener noreferrer">%s</a>',
-			esc_html__( 'Learn more', 'event-tickets' )
-		);
-
 		$stripe_message = sprintf(
 			// Translators: %1$s: The Event Tickets Plus link.
 			esc_html__( 'You are using the free Stripe payment gateway integration. This includes an additional 2%% fee for processing ticket sales. This fee is removed by activating Event Tickets Plus. %1$s.', 'event-tickets' ),
