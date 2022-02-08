@@ -56,7 +56,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 * @var string
 	 */
 	public static $key_current_section = 'tec_tc_payments_current_section';
-	
+
 	/**
 	 * Key to use in GET variable for currently selected section.
 	 *
@@ -74,7 +74,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 * @var string
 	 */
 	public static $key_section_menu = 'tec_tc_section_menu';
-	
+
 	/**
 	 * Stores the instance of the template engine that we will use for rendering differentelements.
 	 *
@@ -108,7 +108,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 
 		new \Tribe__Settings_Tab( static::$slug, esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
 	}
-	
+
 	/**
 	 * Gets the template instance used to setup the rendering html.
 	 *
@@ -126,7 +126,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 
 		return $this->template;
 	}
-	
+
 	/**
 	 * Returns the settings item for the section menu at the top of the Payments settings tab.
 	 *
@@ -135,22 +135,22 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 * @return []
 	 */
 	public function get_section_menu() {
-		
+
 		$selected_section = tribe_get_request_var( static::$key_current_section_get_var );
-		
+
 		$sections = [
 			[
 				'classes' => [],
-				'url' => Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] ),
-				'text' => __( 'Tickets Commerce', 'event-tickets' )
-			]
+				'url'     => Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] ),
+				'text'    => __( 'Tickets Commerce', 'event-tickets' ),
+			],
 		];
 		if ( empty( $selected_section ) ) {
 			$sections[0]['classes'][] = 'tec-tickets__admin-settings-tickets-commerce-section-menu-link--active';
 		}
-		
+
 		$gateways = tribe( Manager::class )->get_gateways();
-		
+
 		foreach ( $gateways as $gateway_key => $gateway ) {
 			if ( ! $gateway::should_show() ) {
 				continue;
@@ -165,26 +165,26 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			}
 			$sections[] = $new_section;
 		}
-		
+
 		$template = $this->get_template();
 		$menu_html = $template->template( 'section/menu', [ 'sections' => $sections ], false );
-		
+
 		// Add hidden input field to determine what section we're in.
 		if ( ! empty( $selected_section ) ) {
 			$current_section_key = static::$key_current_section;
-			$menu_html .= '<input type="hidden" name="' . esc_attr( $current_section_key ) . '" ' . 
+			$menu_html .= '<input type="hidden" name="' . esc_attr( $current_section_key ) . '" ' .
 				'id="' . esc_attr( $current_section_key ) . '" value="' . esc_attr( $selected_section ) . '" />';
 		}
-		
+
 		return [
 			static::$key_section_menu => [
 				'type' => 'html',
 				'html' => $menu_html,
-			]
+			],
 		];
-		
+
 	}
-	
+
 	/**
 	 * Filters the redirect URL to include section, if applicable.
 	 *
@@ -195,30 +195,30 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 * @return string
 	 */
 	public function filter_redirect_url( $url ) {
-		
+
 		// Parse URL to get query string info.
 		$url_query = wp_parse_url( $url, PHP_URL_QUERY );
 		wp_parse_str( $url_query, $args );
-		
+
 		// If not on the TEC Payments tab, bail.
-		if ( 
-			( empty( $args['page'] ) || Tribe__Settings::$parent_slug !== $args['page'] ) || 
-			( empty( $args['tab'] )  || static::$slug !== $args['tab'] ) 
+		if (
+			( empty( $args['page'] ) || Tribe__Settings::$parent_slug !== $args['page'] ) ||
+			( empty( $args['tab'] )  || static::$slug !== $args['tab'] )
 		) {
 			return $url;
 		}
-		
+
 		// If valid section not posted, bail.
 		$current_section_key = Payments_Tab::$key_current_section;
 		if ( empty( $_POST[ $current_section_key ] ) || 'main' === $_POST[ $current_section_key ] ) {
 			return $url;
 		}
-		
+
 		// Add section info to URL before redirecting.
 		$current_section = $_POST[ $current_section_key ];
 		return add_query_arg( static::$key_current_section_get_var, esc_attr( $current_section ), $url );
 	}
-	
+
 	/**
 	 * Returns the settings item for the section menu at the top of the Payments settings tab.
 	 *
@@ -230,7 +230,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		$selected_section = tribe_get_request_var( static::$key_current_section_get_var );
 		return tribe( Manager::class )->get_gateway_by_key( $selected_section );
 	}
-	
+
 	/**
 	 * Get selected section top level menu.
 	 *
@@ -239,16 +239,16 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 * @return array[]
 	 */
 	public function get_section_top_level_menu() {
-		
+
 		$section_gateway = $this->get_section_gateway();
-		
+
 		$top_level_settings = [
-			'tribe-form-content-start'     => [
+			'tribe-form-content-start' => [
 				'type' => 'html',
 				'html' => '<div class="tribe-settings-form-wrap">',
-			]
+			],
 		];
-		
+
 		if ( empty( $section_gateway ) ) {
 			// If no gateway section is selected, show main settings.
 			$plus_link    = sprintf(
@@ -266,8 +266,8 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 				esc_html( tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_about_tribe_commerce' ) ),
 				$plus_link_2
 			);
-			$is_tickets_commerce_enabled = tec_tickets_commerce_is_enabled();
-			$top_level_settings[ 'tickets-commerce-header' ] = [
+			$is_tickets_commerce_enabled                   = tec_tickets_commerce_is_enabled();
+			$top_level_settings['tickets-commerce-header'] = [
 				'type' => 'html',
 				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-toggle-wrapper">
 								<label class="tec-tickets__admin-settings-tickets-commerce-toggle">
@@ -291,19 +291,19 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 				'type'            => 'hidden',
 				'validation_type' => 'boolean',
 			];
-			
+
 			return $top_level_settings;
 		}
-		
+
 		// Show the switch to enable/disable gateway at the top.
-		$option_key = $section_gateway->get_enabled_option_key();
+		$option_key   = $section_gateway->get_enabled_option_key();
 		$enable_label = sprintf(
-			// Translators: %s: Name of payment gateway
+			// Translators: %s: Name of payment gateway.
 			esc_html__( 'Enable %s', 'event-tickets' ),
 			$section_gateway->get_label()
 		);
-		
-		$top_level_settings[ 'tickets-commerce-header' ] = [
+
+		$top_level_settings['tickets-commerce-header'] = [
 			'type' => 'html',
 			'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-toggle-wrapper">
 							<label class="tec-tickets__admin-settings-tickets-commerce-toggle">
@@ -323,9 +323,8 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			'type'            => 'hidden',
 			'validation_type' => 'boolean',
 		];
-		
+
 		return $top_level_settings;
-		
 	}
 
 
