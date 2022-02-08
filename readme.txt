@@ -182,6 +182,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.2.4] TBD =
 
 * Tweak - Compatibility with the Common Abstract for editor blocks registration.
+* Tweak - Remove the `wp.editor.InnerBlocks` gutenberg component in favor of `wp.blockEditor.InnerBlocks` which was deprecated since version 5.3. [ET-1367]
 
 = [5.2.3] 2022-01-19 =
 
