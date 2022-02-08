@@ -18,7 +18,7 @@ tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe ||
  */
 tribe.tickets.commerce.gateway.stripe.checkout = {};
 
-(( $, obj, billing, Stripe, ky ) => {
+(( $, obj, Stripe, ky ) => {
 	'use strict';
 
 	/**
@@ -255,7 +255,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {Promise<*>}
 	 */
 	obj.submitMultiPayment = async ( order ) => {
-		const billingDetails = billing.getDetails( false );
 
 		return obj.stripeLib.confirmPayment( {
 			elements: obj.stripeElements,
@@ -263,7 +262,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			confirmParams: {
 				return_url: order.redirect_url,
 				payment_method_data: {
-					billing_details: billingDetails,
 					purchaser: obj.getPuchaserInfo()
 				}
 			}
@@ -299,12 +297,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @returns {Promise<*>}
 	 */
 	obj.submitCardPayment = async () => {
-		const billingDetails = billing.getDetails( false );
 
 		return obj.stripeLib.confirmCardPayment( obj.checkout.paymentIntentData.key, {
 			payment_method: {
 				card: obj.cardElement,
-				billing_details: billingDetails,
 				purchaser: obj.getPuchaserInfo()
 			}
 		} ).then( obj.handleConfirmCardPayment );
@@ -341,7 +337,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.handleCreateOrder = async () => {
 		const args = {
 			json: {
-				billing_details: billing.getDetails(),
 				purchaser: obj.getPuchaserInfo(),
 				payment_intent: obj.checkout.paymentIntentData
 			},
@@ -464,7 +459,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @since TBD
 	 *
-	 * @return {{}}
+	 * @return {Object}
 	 */
 	obj.getPuchaserInfo = () => tribe.tickets.commerce.getPurchaserData( $( tribe.tickets.commerce.selectors.purchaserFormContainer ) );
 
@@ -488,4 +483,4 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	$( obj.ready );
-})( jQuery, tribe.tickets.commerce.gateway.stripe, tribe.tickets.commerce.billing, Stripe, tribe.ky );
+})( jQuery, tribe.tickets.commerce.gateway.stripe, Stripe, tribe.ky );

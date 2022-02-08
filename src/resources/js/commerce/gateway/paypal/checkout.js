@@ -27,7 +27,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
  *
  * @return {void}
  */
-( function ( $, obj, billing ) {
+( function ( $, obj ) {
 	'use strict';
 
 	/**
@@ -172,7 +172,6 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			{
 				method: 'POST',
 				body: JSON.stringify( {
-					billing_details: billing.getDetails(),
 					purchaser: purchaser_data
 				} ),
 				headers: {
@@ -849,4 +848,4 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 	$( obj.ready );
 
-} )( jQuery, tribe.tickets.commerce.gateway.paypal, tribe.tickets.commerce.billing );
+} )( jQuery, tribe.tickets.commerce.gateway.paypal );
