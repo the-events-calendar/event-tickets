@@ -20,13 +20,13 @@ if ( false === $merchant_status['connected'] ) {
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-col1"></div>
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-col2">
-        <div class="tec-tickets__admin-settings-tickets-commerce-gateways-item-button">
-            
-        </div>
+		<div class="tec-tickets__admin-settings-tickets-commerce-gateways-item-button">
+			
+		</div>
 		<a
-            class="tec-tickets__admin-settings-tickets-commerce-gateways-item-button-link"
-            href="<?php echo esc_attr( 'https://dashboard.stripe.com/' ); ?>"
-            target="_blank"
+			class="tec-tickets__admin-settings-tickets-commerce-gateways-item-button-link"
+			href="<?php echo esc_url( 'https://dashboard.stripe.com/' ); ?>"
+			target="_blank"
 		>
 			<?php esc_html_e( 'Edit Your Stripe Settings', 'event-tickets' ); ?>
 		</a>

@@ -93,7 +93,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 				'tribe-tickets-commerce-notice-js',
 				'tribe-tickets-commerce-base-gateway-checkout-js',
 			],
-			null,
+			'wp_enqueue_scripts',
 			[
 				'groups'       => [
 					'tec-tickets-commerce-gateway-paypal',
