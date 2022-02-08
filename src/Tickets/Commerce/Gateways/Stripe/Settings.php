@@ -17,6 +17,8 @@ class Settings extends Abstract_Settings {
 	/**
 	 * DB identifier for the Payment Element selection
 	 *
+	 * @since TBD
+	 *
 	 * @var string
 	 */
 	const PAYMENT_ELEMENT_SLUG = 'payment';
@@ -24,9 +26,47 @@ class Settings extends Abstract_Settings {
 	/**
 	 * DB identifier for the Card Element selection
 	 *
+	 * @since TBD
+	 *
 	 * @var string
 	 */
 	const CARD_ELEMENT_SLUG = 'card';
+
+	/**
+	 * DB identifier for the Card Element Compact Layout
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const COMPACT_CARD_ELEMENT_SLUG = 'compact';
+
+	/**
+	 * DB identifier for the Card Element Separate Layout
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const SEPARATE_CARD_ELEMENT_SLUG = 'separate';
+
+	/**
+	 * DB identifier for the default methods set for the Payment Element
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
+	const DEFAULT_PAYMENT_ELEMENT_METHODS = [ 'card' ];
+
+	/**
+	 * Connection details fetched from the Stripe API on page-load
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
+	public $connection_status;
 
 	/**
 	 * @inheritDoc
@@ -88,56 +128,66 @@ class Settings extends Abstract_Settings {
 	public static $option_checkout_element_payment_methods = 'tickets-commerce-stripe-checkout-element-payment-methods';
 
 	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$this->set_connection_status();
+	}
+
+	/**
+	 * Set the internal parameter w/ account details received from the Stripe API
+	 *
+	 * @since TBD
+	 */
+	private function set_connection_status() {
+		$this->connection_status = tribe( Merchant::class )->get_connection_status();
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function get_settings() {
 		$settings = [
-			'tickets-commerce-stripe-commerce-configure'        => [
+			'tickets-commerce-stripe-commerce-configure'             => [
 				'type'            => 'wrapped_html',
 				'html'            => $this->get_connection_settings_html(),
 				'validation_type' => 'html',
 			],
-			'tickets-commerce-stripe-settings-heading'          => [
+			'tickets-commerce-stripe-settings-heading'               => [
 				'type' => 'html',
 				'html' => '<h3 class="tribe-dependent -input">' . __( 'Stripe Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
 			],
-			'tickets-commerce-gateway-settings-group-header-general'          => [
+			'tickets-commerce-gateway-settings-group-header-general' => [
 				'type' => 'html',
 				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . __( 'General', 'event-tickets' ) . '</h4><div class="clear"></div>',
 			],
-			static::$option_statement_descriptor                => [
+			static::$option_statement_descriptor                     => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Statement Descriptor', 'event-tickets' ),
-				'tooltip'             => esc_html( 'This is the text that appears on the ticket purchaser bank statements. If left blank, the default settings from the Stripe account will be used.', 'event-tickets' ),
+				'tooltip'             => esc_html__( 'This is the text that appears on the ticket purchaser bank statements. If left blank, the descriptor set in Stripe will be used.', 'event-tickets' ),
 				'size'                => 'medium',
 				'default'             => '',
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
+				'placeholder'         => ! empty( $this->connection_status['statement_descriptor'] ) ? esc_textarea( $this->connection_status['statement_descriptor'] ) : '',
 			],
-			static::$option_collect_billing_details             => [
-				'type'            => 'checkbox_bool',
-				'label'           => esc_html__( 'Collect Billing Details', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Enables sending billing details to Stripe. This is not required, but may be necessary in some cases.', 'event-tickets' ),
-				'default'         => false,
-				'validation_type' => 'boolean',
-			],
-			static::$option_stripe_receipt_emails               => [
+			static::$option_stripe_receipt_emails                    => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html__( 'Enable Stripe Receipt Emails', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'If this option is selected, ticket buyers will get stripe receipts, as well as Event Tickets confirmation emails.', 'event-tickets' ),
 				'default'         => false,
 				'validation_type' => 'boolean',
 			],
-			'tickets-commerce-stripe-checkout-settings-heading' => [
+			'tickets-commerce-stripe-checkout-settings-heading'      => [
 				'type' => 'html',
 				'html' => '<h3 class="tribe-dependent -input">' . __( 'Checkout Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
 			],
 
-			'tickets-commerce-gateway-settings-group-header-checkout'          => [
+			'tickets-commerce-gateway-settings-group-header-checkout' => [
 				'type' => 'html',
 				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . __( 'Checkout', 'event-tickets' ) . '</h4><div class="clear"></div>',
 			],
-			static::$option_checkout_element                    => [
+			static::$option_checkout_element                          => [
 				'type'            => 'radio',
 				'label'           => esc_html__( 'Checkout Type', 'event-tickets' ),
 				'tooltip'         => esc_html( 'Stripe offers two main ways to pay at checkout. Card Element and Payment Element. You can read about them here.' ),
@@ -149,25 +199,25 @@ class Settings extends Abstract_Settings {
 				],
 				'tooltip_first'   => true,
 			],
-			static::$option_checkout_element_card_fields        => [
+			static::$option_checkout_element_card_fields              => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Credit Card Fields (Card Element)', 'event-tickets' ),
 				'tooltip'         => esc_html( 'Tooltip missing' ), // @todo add proper tooltip
-				'default'         => 'compact',
+				'default'         => self::COMPACT_CARD_ELEMENT_SLUG,
 				'conditional'     => tribe_get_option( static::$option_checkout_element ) === self::CARD_ELEMENT_SLUG,
 				'validation_type' => 'options',
 				'options'         => [
-					'compact'  => 'Compact Field. All CC fields in a single line using default Stripe styles.',
-					'separate' => 'Separate Fields for each CC information, unstyled.',
+					self::COMPACT_CARD_ELEMENT_SLUG  => esc_html__( 'Compact Field. All CC fields in a single line using default Stripe styles.', 'event-tickets' ),
+					self::SEPARATE_CARD_ELEMENT_SLUG => esc_html__( 'Separate Fields for each CC information, unstyled.', 'event-tickets' ),
 				],
 				'tooltip_first'   => true,
 			],
-			static::$option_checkout_element_payment_methods    => [
+			static::$option_checkout_element_payment_methods          => [
 				'type'            => 'checkbox_list',
 				'label'           => esc_html__( 'Payment Methods (Payment Element)', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Which payment methods should be offered to your customers? Only select methods previously enabled in your Stripe account.' ),
 				// @todo add proper tooltip
-				'default'         => 'card',
+				'default'         => self::DEFAULT_PAYMENT_ELEMENT_METHODS,
 				'conditional'     => tribe_get_option( static::$option_checkout_element ) === self::PAYMENT_ELEMENT_SLUG,
 				'validation_type' => 'options_multi',
 				'options'         => $this->get_payment_methods_available_by_currency(),
@@ -217,7 +267,7 @@ class Settings extends Abstract_Settings {
 		 * @param string  $currency          the currency configured for Tickets Commerce
 		 * @param array[] $payment_methods   the complete list of available Payment Methods in Stripe
 		 */
-		return apply_filters( 'tec_tickets_commerce_stripe_payment_methods_available', $available_methods, $currency, $payment_methods );
+		return apply_filters( 'tec_tickets_commerce_stripe_payment_methods_by_currency', $available_methods, $currency, $payment_methods );
 	}
 
 	/**
@@ -230,7 +280,7 @@ class Settings extends Abstract_Settings {
 	 * @return array[]
 	 */
 	private function get_payment_methods_available() {
-		return [
+		$available_methods = [
 			'afterpay_clearpay' => [
 				'currencies' => [ 'AUD', 'CAD', 'GBP', 'NZD' ],
 				'label'      => esc_html__( 'AfterPay and ClearPay', 'event-tickets' ),
@@ -243,80 +293,51 @@ class Settings extends Abstract_Settings {
 				'currencies' => [ 'GBP' ],
 				'label'      => esc_html__( 'Bacs Direct Debit', 'event-tickets' ),
 			],
-			'bancontact'        => [
-				'currencies' => [ 'EUR' ],
-				'label'      => esc_html__( 'Bancontact', 'event-tickets' ),
-			],
-			'au_becs_debit'     => [
-				'currencies' => [ 'AUD' ],
-				'label'      => esc_html__( 'BECS Direct Debit', 'event-tickets' ),
-			],
-			'boleto'            => [
-				'currencies' => [ 'BRL' ],
-				'label'      => esc_html__( 'Boleto', 'event-tickets' ),
-			],
-			'eps'               => [
-				'currencies' => [ 'EUR' ],
-				'label'      => esc_html__( 'EPS', 'event-tickets' ),
-			],
-			'fpx'               => [
-				'currencies' => [ 'MYR' ],
-				'label'      => esc_html__( 'FPX', 'event-tickets' ),
-			],
 			'giropay'           => [
 				'currencies' => [ 'EUR' ],
 				'label'      => esc_html__( 'Giropay', 'event-tickets' ),
-			],
-			'grabpay'           => [
-				'currencies' => [ 'MYR', 'SGD' ],
-				'label'      => esc_html__( 'GrabPay', 'event-tickets' ),
-			],
-			'ideal'             => [
-				'currencies' => [ 'EUR' ],
-				'label'      => esc_html__( 'iDEAL', 'event-tickets' ),
 			],
 			'klarna'            => [
 				'currencies' => [ 'DKK', 'EUR', 'GBP', 'NOK', 'SEK', 'USD' ],
 				'label'      => esc_html__( 'Klarna', 'event-tickets' ),
 			],
-			'oxxo'              => [
-				'currencies' => [ 'MXN' ],
-				'label'      => esc_html__( 'OXXO', 'event-tickets' ),
-			],
-			'p24'               => [
-				'currencies' => [ 'EUR', 'PLN' ],
-				'label'      => esc_html__( 'P24', 'event-tickets' ),
-			],
 			'acss_debit'        => [
 				'currencies' => [ 'CAD', 'USD' ],
 				'label'      => esc_html__( 'Pre-authorized debit in Canada', 'event-tickets' ),
 			],
-			'sepa_debit'        => [
-				'currencies' => [ 'EUR' ],
-				'label'      => esc_html__( 'SEPA debit', 'event-tickets' ),
-			],
-			'sofort'            => [
-				'currencies' => [ 'EUR' ],
-				'label'      => esc_html__( 'Sofort', 'event-tickets' ),
-			],
-			'wechat_pay'        => [
-				'currencies' => [
-					'AUD',
-					'CAD',
-					'CHF',
-					'CNY',
-					'DKK',
-					'GBP',
-					'HKD',
-					'JPY',
-					'NOK',
-					'SEK',
-					'SGD',
-					'USD',
-				],
-				'label'      => esc_html__( 'WeChat Pay', 'event-tickets' ),
-			],
 		];
+
+		/**
+		 * Allows for filtering the list of available payment methods.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $available_methods the list of payment methods available.
+		 */
+		return apply_filters( 'tec_tickets_commerce_stripe_payment_methods_available', $available_methods );
+	}
+
+	/**
+	 * Setup basic defaults once a new account is onboarded.
+	 *
+	 * @since TBD
+	 */
+	public function setup_account_defaults() {
+		if ( empty( $this->connection_status ) ) {
+			$this->set_connection_status();
+		}
+
+		if ( empty( tribe_get_option( static::$option_checkout_element ) ) ) {
+			tribe_update_option( static::$option_checkout_element, static::PAYMENT_ELEMENT_SLUG );
+		}
+
+		if ( empty( tribe_get_option( static::$option_checkout_element_card_fields ) ) ) {
+			tribe_update_option( static::$option_checkout_element_card_fields, static::COMPACT_CARD_ELEMENT_SLUG );
+		}
+
+		if ( empty( tribe_get_option( static::$option_checkout_element_payment_methods ) ) ) {
+			tribe_update_option( static::$option_checkout_element_payment_methods, static::DEFAULT_PAYMENT_ELEMENT_METHODS );
+		}
 	}
 
 	/**
@@ -328,11 +349,13 @@ class Settings extends Abstract_Settings {
 
 		$context = [
 			'plugin_url'      => Tribe__Tickets__Main::instance()->plugin_url,
-			'merchant_status' => tribe( Merchant::class )->get_connection_status(),
+			'merchant_status' => $this->connection_status,
 			'signup'          => tribe( Signup::class ),
 			'merchant'        => tribe( Merchant::class ),
+			'fee_is_applied'  => apply_filters( 'tec_tickets_commerce_stripe_fee_is_applied_notice', true ),
 		];
 
 		return $admin_views->template( 'settings/tickets-commerce/stripe/main', $context, false );
 	}
+
 }
