@@ -37,5 +37,5 @@ if ( $must_login || $payment_element ) {
 	id="tec-tc-gateway-stripe-checkout-button"
 	class="tribe-common-c-btn"
 >
-	<?php esc_html_e( 'Submit Payment', 'events-tickets' ) ?>
+	<?php esc_html_e( 'Submit Payment', 'events-tickets' ); ?>
 </button>
