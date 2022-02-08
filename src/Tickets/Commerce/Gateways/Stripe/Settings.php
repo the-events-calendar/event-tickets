@@ -220,8 +220,8 @@ class Settings extends Abstract_Settings {
 				'default'         => self::PAYMENT_ELEMENT_SLUG,
 				'validation_type' => 'options',
 				'options'         => [
-					self::PAYMENT_ELEMENT_SLUG => esc_html__( 'Accept payments with one or multiple payment methods, including cards.', 'event-tickets' ),
-					self::CARD_ELEMENT_SLUG    => esc_html__( 'Accept only card payments', 'event-tickets' ),
+					self::PAYMENT_ELEMENT_SLUG => esc_html__( 'Accept payments with one or multiple payment methods, including credit cards.', 'event-tickets' ),
+					self::CARD_ELEMENT_SLUG    => esc_html__( 'Accept only credit card payments.', 'event-tickets' ),
 				],
 				'tooltip_first'   => true,
 			],
