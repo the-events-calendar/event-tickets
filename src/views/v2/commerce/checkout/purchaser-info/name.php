@@ -14,7 +14,7 @@
  * @version TBD
  *
  * @var \Tribe__Template $this [Global] Template object.
-s */
+ */
 
 
 $label_classes = [
@@ -28,17 +28,18 @@ $field_classes = [
 	'tribe-common-form-control-text__input tribe-tickets__form-field-input',
 ];
 ?>
-<div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field-input-wrapper">
+<div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field tribe-tickets__form-field--text">
 	<label for="tec-tc-purchaser-name" <?php tribe_classes( $label_classes ); ?>>
-		<?php esc_html_e( 'Purchaser Name', 'event-tickets' ); ?>
+		<?php esc_html_e( 'Person purchasing tickets:', 'event-tickets' ); ?>
 	</label>
-	<input
-		type="text"
-		id="tec-tc-purchaser-name"
-		name="purchaser-name"
-		autocomplete="off"
-		<?php tribe_classes( $field_classes ); ?>
-		placeholder="<?php esc_attr_e( 'Name', 'event-tickets' ); ?>"
-		required
-	/>
+	<div class="tribe-tickets__form-field-input-wrapper">
+		<input
+			type="text"
+			id="tec-tc-purchaser-name"
+			name="purchaser-name"
+			autocomplete="off"
+			<?php tribe_classes( $field_classes ); ?>
+			required
+		/>
+	</div>
 </div>

@@ -27,17 +27,22 @@ $field_classes = [
 	'tribe-common-form-control-text__input tribe-tickets__form-field-input',
 ];
 ?>
-<div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field-input-wrapper">
+<div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field tribe-tickets__form-field--email">
 	<label for="tec-tc-purchaser-email" <?php tribe_classes( $label_classes ); ?>>
-		<?php esc_html_e( 'Purchaser Email', 'event-tickets' ); ?>
+		<?php esc_html_e( 'Email address:', 'event-tickets' ); ?>
 	</label>
-	<input
-		type="email"
-		id="tec-tc-purchaser-email"
-		name="purchaser-email"
-		autocomplete="off"
-		<?php tribe_classes( $field_classes ); ?>
-		placeholder="<?php esc_attr_e( 'Email', 'event-tickets' ); ?>"
-		required
-	/>
+
+	<div class="tribe-tickets__form-field-input-wrapper">
+		<input
+			type="email"
+			id="tec-tc-purchaser-email"
+			name="purchaser-email"
+			autocomplete="off"
+			<?php tribe_classes( $field_classes ); ?>
+			required
+		/>
+		<div class="tribe-common-b3 tribe-tickets__form-field-description">
+			<?php echo wp_kses_post( __( 'Your tickets will be sent to this address.', 'event-tickets' ) ); ?>
+		</div>
+	</div>
 </div>
