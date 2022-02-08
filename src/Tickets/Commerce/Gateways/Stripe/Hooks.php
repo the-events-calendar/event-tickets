@@ -30,7 +30,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	protected function add_actions() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
 		add_action( 'wp', [ $this, 'maybe_create_stripe_payment_intent' ] );
-		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
 
 		add_action( 'admin_init', [ $this, 'handle_stripe_errors' ] );
 	}
@@ -41,7 +40,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function add_filters() {
-		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 5, 2 );
 		add_filter( 'tec_tickets_commerce_notice_messages', [ $this, 'include_admin_notices' ] );
 	}
 
@@ -92,19 +91,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function include_admin_notices( $messages ) {
 		return array_merge( $messages, $this->container->make( Gateway::class )->get_admin_notices() );
-	}
-
-	/**
-	 * Include the payment element from Stripe into the Checkout page.
-	 *
-	 * @since TBD
-	 *
-	 * @param string           $file     Which file we are loading.
-	 * @param string           $name     Name of file file
-	 * @param \Tribe__Template $template Which Template object is being used.
-	 */
-	public function include_payment_buttons( $file, $name, $template ) {
-		$this->container->make( Stripe_Elements::class )->include_form( $file, $name, $template );
 	}
 
 	/**

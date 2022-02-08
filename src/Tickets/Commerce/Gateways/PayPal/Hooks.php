@@ -60,9 +60,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-webhook', [ $this, 'handle_action_refresh_webhook' ] );
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-resync-connection', [ $this, 'handle_action_refresh_connection' ] );
 
-		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
-		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_advanced_payments' ], 20, 3 );
-		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_client_js_sdk_script' ], 30, 3 );
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_paypal_refresh_connect_url', [ $this, 'ajax_refresh_connect_url' ] );
 		add_action( 'admin_init', [ $this, 'render_ssl_notice' ] );
 
@@ -124,46 +121,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		$template_vars['merchant'] = tribe( Merchant::class );
 
 		return $template_vars;
-	}
-
-	/**
-	 * Include the Client JS SDK script into checkout.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @param string           $file     Which file we are loading.
-	 * @param string           $name     Name of file file
-	 * @param \Tribe__Template $template Which Template object is being used.
-	 *
-	 */
-	public function include_client_js_sdk_script( $file, $name, $template ) {
-		echo tribe( Buttons::class )->get_checkout_script();
-	}
-
-	/**
-	 * Include the payment buttons from PayPal into the Checkout page.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @param string           $file     Which file we are loading.
-	 * @param string           $name     Name of file file
-	 * @param \Tribe__Template $template Which Template object is being used.
-	 */
-	public function include_payment_buttons( $file, $name, $template ) {
-		$this->container->make( Buttons::class )->include_payment_buttons( $file, $name, $template );
-	}
-
-	/**
-	 * Include the advanced payment fields from PayPal in the Checkout page.
-	 *
-	 * @since 5.2.0
-	 *
-	 * @param string           $file     Which file we are loading.
-	 * @param string           $name     Name of file file
-	 * @param \Tribe__Template $template Which Template object is being used.
-	 */
-	public function include_advanced_payments( $file, $name, $template ) {
-		$this->container->make( Buttons::class )->include_advanced_payments( $file, $name, $template );
 	}
 
 	/**

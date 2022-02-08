@@ -96,4 +96,11 @@ class Gateway extends Abstract_Gateway {
 
 		return $return_url;
 	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public static function get_checkout_template_vars() {		
+		return tribe( Stripe_Elements::class )->get_checkout_template_vars();
+	}
 }
