@@ -174,7 +174,7 @@ class Settings extends Abstract_Settings {
 			],
 			static::$option_checkout_element_payment_methods          => [
 				'type'            => 'checkbox_list',
-				'label'           => esc_html__( 'Payment Accepted', 'event-tickets' ),
+				'label'           => esc_html__( 'Payments accepted', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Which payment methods should be offered to your customers? Only select methods previously enabled in your Stripe account.', 'event-tickets' ),
 				// @todo add proper tooltip
 				'default'         => 'card',
@@ -182,14 +182,6 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'options_multi',
 				'options'         => $this->get_payment_methods_available_by_currency(),
 				'tooltip_first'   => true,
-			],
-			static::$option_collect_billing_details      => [
-				'type'            => 'checkbox_bool',
-				'label'           => esc_html__( 'Collect Billing Details', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Enables sending billing details to Stripe. This is not required, but may be necessary in some cases.', 'event-tickets' ),
-				'conditional'     => tribe_get_option( static::$option_checkout_element ) === self::PAYMENT_ELEMENT_SLUG,
-				'default'         => false,
-				'validation_type' => 'boolean',
 			],
 		];
 

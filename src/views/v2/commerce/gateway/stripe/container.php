@@ -31,4 +31,3 @@ if ( ! empty( $must_login ) ) {
 
 	</form>
 </div>
-
