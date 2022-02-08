@@ -25,6 +25,15 @@ class Status {
 	CONST REQUIRES_PAYMENT_METHOD = 'requires_payment_method';
 
 	/**
+	 * Order Status in Stripe for when the payment intent is first created or when payment is denied.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	CONST REQUIRES_SOURCE = 'requires_source';
+
+	/**
 	 * Order Status in Stripe for created and waiting for automatic confirmation to start processing.
 	 *
 	 * @since TBD
@@ -88,12 +97,13 @@ class Status {
 	 */
 	protected $default_map = [
 		self::REQUIRES_PAYMENT_METHOD => Commerce_Status\Created::SLUG,
-		self::REQUIRES_CONFIRMATION => Commerce_Status\Action_Required::SLUG,
-		self::REQUIRES_ACTION => Commerce_Status\Action_Required::SLUG,
-		self::REQUIRES_CAPTURE => Commerce_Status\Action_Required::SLUG,
-		self::PROCESSING => Commerce_Status\Pending::SLUG,
-		self::SUCCEEDED => Commerce_Status\Completed::SLUG,
-		self::CANCELED => Commerce_Status\Denied::SLUG,
+		self::REQUIRES_SOURCE         => Commerce_Status\Created::SLUG,
+		self::REQUIRES_CONFIRMATION   => Commerce_Status\Action_Required::SLUG,
+		self::REQUIRES_ACTION         => Commerce_Status\Action_Required::SLUG,
+		self::REQUIRES_CAPTURE        => Commerce_Status\Action_Required::SLUG,
+		self::PROCESSING              => Commerce_Status\Pending::SLUG,
+		self::SUCCEEDED               => Commerce_Status\Completed::SLUG,
+		self::CANCELED                => Commerce_Status\Denied::SLUG,
 	];
 
 	/**
