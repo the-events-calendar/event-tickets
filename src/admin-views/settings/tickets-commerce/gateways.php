@@ -29,7 +29,7 @@ $gateways = $manager->get_gateways();
 		if ( ! $gateway::should_show() ) {
 			continue;
 		}
-		$key = $gateway->get_key();
+		$key        = $gateway->get_key();
 		$button_url = \Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-section' => $key ] );
 		?>
 		<div class="tec-tickets__admin-settings-tickets-commerce-gateways-item">
@@ -47,14 +47,22 @@ $gateways = $manager->get_gateways();
 			</div>
 			<div class="tec-tickets__admin-settings-tickets-commerce-gateways-item-brand">
 				<div class="tec-tickets__admin-settings-tickets-commerce-gateways-item-brand-logo">
-					<img src="<?php echo esc_attr( $brand_info[$key]['logo_url'] ); ?>" alt="<?php echo esc_attr( $gateway->get_label() ); ?>" />
+					<img src="<?php echo esc_attr( $brand_info[ $key ]['logo_url'] ); ?>" alt="<?php echo esc_attr( $gateway->get_label() ); ?>" />
 				</div>
 				<div class="tec-tickets__admin-settings-tickets-commerce-gateways-item-brand-subtitle">
 					<?php echo esc_html( $brand_info[ $key ]['subtitle'] ); ?>
 				</div>
 			</div>
 			<div class="tec-tickets__admin-settings-tickets-commerce-gateways-item-button">
-				<a href="<?php echo esc_url( $button_url ); ?>">Connect to <?php echo esc_html( $gateway->get_label() ); ?></a>
+				<a href="<?php echo esc_url( $button_url ); ?>">
+					<?php
+					printf(
+						// Translators: %1$s: Gateway label.
+						esc_html__( 'Connect to %1$s', 'event-tickets' ),
+						$gateway->get_label() // phpcs:ignore
+					);
+					?>
+				</a>
 			</div>
 		</div>
 		<?php
