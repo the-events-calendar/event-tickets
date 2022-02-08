@@ -131,13 +131,6 @@ class Settings extends Abstract_Settings {
 				'validation_type'     => 'textarea',
 				'placeholder'         => ! empty( $this->connection_status['statement_descriptor'] ) ? esc_textarea( $this->connection_status['statement_descriptor'] ) : '',
 			],
-			static::$option_collect_billing_details                  => [
-				'type'            => 'checkbox_bool',
-				'label'           => esc_html__( 'Collect Billing Details', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Enables sending billing details to Stripe. This is not required, but may be necessary in some cases.', 'event-tickets' ),
-				'default'         => false,
-				'validation_type' => 'boolean',
-			],
 			static::$option_stripe_receipt_emails                    => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html__( 'Enable Stripe Receipt Emails', 'event-tickets' ),
