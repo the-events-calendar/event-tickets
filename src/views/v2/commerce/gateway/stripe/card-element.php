@@ -20,7 +20,7 @@ if ( $must_login || $payment_element ) {
 	return;
 }
 ?>
-<div id="tec-tc-gateway-stripe-card-element">
+<div id="tec-tc-gateway-stripe-card-element" class="tribe-tickets__commerce-checkout-stripe-card-element">
 	<span id="tec-tc-gateway-stripe-card-number"></span>
 	<span id="tec-tc-gateway-stripe-card-expiry"></span>
 	<span id="tec-tc-gateway-stripe-card-cvc"></span>

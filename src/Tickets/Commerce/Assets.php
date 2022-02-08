@@ -94,5 +94,24 @@ class Assets extends tad_DI52_ServiceProvider {
 			[],
 			null
 		);
+
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-commerce-base-gateway-checkout-toggler',
+			'commerce/gateway/toggler.js',
+			[],
+			null,
+			[
+				'localize' => [
+					'name' => 'tecTicketsCommerceCheckoutToggleText',
+					'data' => static function () {
+						return [
+							'default'    => __( 'Default checkout', 'event-tickets' ),
+							'additional' => __( 'Additional payment options', 'event-tickets' ),
+						];
+					}
+				]
+			]
+		);
 	}
 }

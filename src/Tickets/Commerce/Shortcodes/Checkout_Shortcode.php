@@ -45,6 +45,8 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		$sections   = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
 		$sub_totals = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
 		$total_value = Value::create();
+		
+		$gateways = tribe( Manager::class )->get_gateways();
 
 		$args = [
 			'provider_id'        => Module::class,
@@ -56,10 +58,17 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			'login_url'          => tribe( Checkout::class )->get_login_url(),
 			'registration_url'   => tribe( Checkout::class )->get_registration_url(),
 			'is_tec_active'      => defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'Tribe__Events__Main' ),
-			'gateways'           => tribe( Manager::class )->get_gateways(),
+			'gateways'           => $gateways,
 			'gateways_active'    => $this->get_gateways_active(),
 			'gateways_connected' => $this->get_gateways_connected(),
+			'gateways_enabled' => 0,
 		];
+		
+		foreach ( $gateways as $gateway ) {
+			if ( $gateway->is_enabled() ) {
+				$args['gateways_enabled']++;
+			}
+		}
 
 		$this->template_vars = $args;
 	}
