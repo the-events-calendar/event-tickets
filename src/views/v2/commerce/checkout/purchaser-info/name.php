@@ -25,7 +25,8 @@ $label_classes = [
 $field_classes = [
 	'tribe-tickets__commerce-checkout-purchaser-info-form-field',
 	'tribe-tickets__commerce-checkout-purchaser-info-form-field-name',
-	'tribe-common-form-control-text__input tribe-tickets__form-field-input',
+	'tribe-common-form-control-text__input', 
+	'tribe-tickets__form-field-input',
 ];
 ?>
 <div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field tribe-tickets__form-field--text">
