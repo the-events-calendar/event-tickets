@@ -17,6 +17,8 @@ class Settings extends Abstract_Settings {
 	/**
 	 * DB identifier for the Payment Element selection
 	 *
+	 * @since TBD
+	 *
 	 * @var string
 	 */
 	const PAYMENT_ELEMENT_SLUG = 'payment';
@@ -24,9 +26,38 @@ class Settings extends Abstract_Settings {
 	/**
 	 * DB identifier for the Card Element selection
 	 *
+	 * @since TBD
+	 *
 	 * @var string
 	 */
 	const CARD_ELEMENT_SLUG = 'card';
+
+	/**
+	 * DB identifier for the Card Element Compact Layout
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const COMPACT_CARD_ELEMENT_SLUG = 'compact';
+
+	/**
+	 * DB identifier for the Card Element Separate Layout
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const SEPARATE_CARD_ELEMENT_SLUG = 'separate';
+
+	/**
+	 * DB identifier for the default methods set for the Payment Element
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
+	const DEFAULT_PAYMENT_ELEMENT_METHODS = [ 'card' ];
 
 	/**
 	 * Connection details fetched from the Stripe API on page-load
@@ -100,6 +131,15 @@ class Settings extends Abstract_Settings {
 	 * Constructor
 	 */
 	public function __construct() {
+		$this->set_connection_status();
+	}
+
+	/**
+	 * Set the internal parameter w/ account details received from the Stripe API
+	 *
+	 * @since TBD
+	 */
+	private function set_connection_status() {
 		$this->connection_status = tribe( Merchant::class )->get_connection_status();
 	}
 
@@ -163,12 +203,12 @@ class Settings extends Abstract_Settings {
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Credit Card Fields (Card Element)', 'event-tickets' ),
 				'tooltip'         => esc_html( 'Tooltip missing' ), // @todo add proper tooltip
-				'default'         => 'compact',
+				'default'         => self::COMPACT_CARD_ELEMENT_SLUG,
 				'conditional'     => tribe_get_option( static::$option_checkout_element ) === self::CARD_ELEMENT_SLUG,
 				'validation_type' => 'options',
 				'options'         => [
-					'compact'  => 'Compact Field. All CC fields in a single line using default Stripe styles.',
-					'separate' => 'Separate Fields for each CC information, unstyled.',
+					self::COMPACT_CARD_ELEMENT_SLUG  => esc_html__( 'Compact Field. All CC fields in a single line using default Stripe styles.', 'event-tickets' ),
+					self::SEPARATE_CARD_ELEMENT_SLUG => esc_html__( 'Separate Fields for each CC information, unstyled.', 'event-tickets' ),
 				],
 				'tooltip_first'   => true,
 			],
@@ -177,7 +217,7 @@ class Settings extends Abstract_Settings {
 				'label'           => esc_html__( 'Payment Methods (Payment Element)', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Which payment methods should be offered to your customers? Only select methods previously enabled in your Stripe account.' ),
 				// @todo add proper tooltip
-				'default'         => 'card',
+				'default'         => self::DEFAULT_PAYMENT_ELEMENT_METHODS,
 				'conditional'     => tribe_get_option( static::$option_checkout_element ) === self::PAYMENT_ELEMENT_SLUG,
 				'validation_type' => 'options_multi',
 				'options'         => $this->get_payment_methods_available_by_currency(),
@@ -275,6 +315,29 @@ class Settings extends Abstract_Settings {
 		 * @param array $available_methods the list of payment methods available.
 		 */
 		return apply_filters( 'tec_tickets_commerce_stripe_payment_methods_available', $available_methods );
+	}
+
+	/**
+	 * Setup basic defaults once a new account is onboarded.
+	 *
+	 * @since TBD
+	 */
+	public function setup_account_defaults() {
+		if ( empty( $this->connection_status ) ) {
+			$this->set_connection_status();
+		}
+
+		if ( empty( tribe_get_option( static::$option_checkout_element ) ) ) {
+			tribe_update_option( static::$option_checkout_element, static::PAYMENT_ELEMENT_SLUG );
+		}
+
+		if ( empty( tribe_get_option( static::$option_checkout_element_card_fields ) ) ) {
+			tribe_update_option( static::$option_checkout_element_card_fields, static::COMPACT_CARD_ELEMENT_SLUG );
+		}
+
+		if ( empty( tribe_get_option( static::$option_checkout_element_payment_methods ) ) ) {
+			tribe_update_option( static::$option_checkout_element_payment_methods, static::DEFAULT_PAYMENT_ELEMENT_METHODS );
+		}
 	}
 
 	/**
