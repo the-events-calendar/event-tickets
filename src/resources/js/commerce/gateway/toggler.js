@@ -62,15 +62,6 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	obj.toggler.toggles = {};
 
 	/**
-	 * Delay used for toggle show/hide effect.
-	 *
-	 * @since TBD
-	 *
-	 * @type {Object}
-	 */
-	obj.toggler.toggleDuration = 250;
-
-	/**
 	 * Toggler classes to be added/removed from different elements.
 	 *
 	 * @since TBD
@@ -122,7 +113,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	 * @param {Element} gateway Gateway element to show.
 	 */
 	obj.toggler.showGateway = gateway => {
-		$( gateway ).show( obj.toggler.toggleDuration );
+		$( gateway ).show().attr('aria-expanded', 'true');
 	};
 
 	/**
@@ -133,7 +124,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	 * @param {Element} gateway Gateway element to hide.
 	 */
 	obj.toggler.hideGateway = gateway => {
-		$( gateway ).hide( obj.toggler.toggleDuration );
+		$( gateway ).hide().attr('aria-expanded', 'false');
 	};
 
 	/**
@@ -149,7 +140,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 			}
 			obj.toggler.hideGateway( gateway );
 		});
-		obj.toggler.toggles.default.addClass(obj.toggler.classes.toggleOpen).hide();
+		obj.toggler.toggles.default.addClass(obj.toggler.classes.toggleOpen).hide().attr('aria-hidden', 'true');
 		obj.toggler.toggles.additional.removeClass(obj.toggler.classes.toggleOpen);
 	};
 
@@ -167,7 +158,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 			obj.toggler.showGateway( gateway );
 		});
 		obj.toggler.toggles.additional.addClass(obj.toggler.classes.toggleOpen);
-		obj.toggler.toggles.default.removeClass(obj.toggler.classes.toggleOpen).show();
+		obj.toggler.toggles.default.removeClass(obj.toggler.classes.toggleOpen).show().attr('aria-hidden', 'false');
 	};
 
 	/**
