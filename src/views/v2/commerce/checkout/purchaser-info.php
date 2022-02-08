@@ -9,24 +9,24 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   TBD
+ * @since TBD
  *
  * @version TBD
  *
  * @var \Tribe__Template $this [Global] Template object.
- * @var bool $is_logged_out [Global] If the user is logged out.
+ * @var array[] $items [Global] List of Items on the cart to be checked out.
  * @var bool $must_login Global] Whether login is required to buy tickets or not.
  */
 
-if ( ! $is_logged_out || $must_login ) {
+if ( is_user_logged_in() || $must_login || empty( $items ) ) {
 	return;
 }
 
 $title = __( 'Purchaser info', 'event-tickets' );
 ?>
 
-<div class="tribe-tickets__form tribe-tickets__commerce-checkout-purchaser-info-field-wrapper">
-	<h5 class="tribe-common tribe-common-h5--min-medium tribe-field-text"><?php echo esc_html( $title ); ?></h5>
+<div class="tribe-tickets__form tribe-tickets__commerce-checkout-purchaser-info-wrapper">
+	<h4 class="tribe-common-h5"><?php echo esc_html( $title ); ?></h4>
 	<?php $this->template( 'checkout/purchaser-info/name' ) ?>
 	<?php $this->template( 'checkout/purchaser-info/email' ) ?>
 </div>

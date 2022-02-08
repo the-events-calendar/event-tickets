@@ -59,7 +59,6 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			'gateways'           => tribe( Manager::class )->get_gateways(),
 			'gateways_active'    => $this->get_gateways_active(),
 			'gateways_connected' => $this->get_gateways_connected(),
-			'is_logged_out'      => ! is_user_logged_in(),
 		];
 
 		$this->template_vars = $args;
