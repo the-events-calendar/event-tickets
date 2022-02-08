@@ -115,7 +115,7 @@ class Currency {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $code the currency 3-letter code.
+	 * @param string $code The currency 3-letter code.
 	 *
 	 * @return string
 	 */

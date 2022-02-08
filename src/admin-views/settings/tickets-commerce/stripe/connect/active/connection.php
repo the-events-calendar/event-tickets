@@ -28,10 +28,10 @@ $disconnect_url = $signup->generate_disconnect_url();
 		<span class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-text-name">
 			<?php echo esc_html( $name ); ?>
 		</span>
-			<a
-				href="<?php echo esc_url( $disconnect_url ); ?>"
-				class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-text-disconnect-link"
-			>
+		<a
+			href="<?php echo esc_url( $disconnect_url ); ?>"
+			class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-text-disconnect-link"
+		>
 			<?php esc_html_e( 'Disconnect', 'event-tickets' ); ?>
 		</a>
 	</div>
