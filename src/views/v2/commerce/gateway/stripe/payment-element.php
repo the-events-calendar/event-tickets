@@ -21,7 +21,7 @@ if ( $must_login || ! $payment_element ) {
 }
 ?>
 <div id="tec-tc-gateway-stripe-payment-element" class="tribe-tickets__commerce-checkout-stripe-payment-element"></div>
-<button id="tec-tc-gateway-stripe-checkout-button" class="tribe-common-c-btn">
+<button id="tec-tc-gateway-stripe-checkout-button" class="tribe-common-c-btn tribe-tickets__commerce-checkout-form-submit-button">
 	<div class="spinner hidden" id="spinner"></div>
 	<span id="button-text">
 		<?php

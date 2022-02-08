@@ -35,7 +35,7 @@ if ( $must_login || $payment_element ) {
 
 <button
 	id="tec-tc-gateway-stripe-checkout-button"
-	class="tribe-common-c-btn"
+	class="tribe-common-c-btn tribe-tickets__commerce-checkout-form-submit-button"
 >
 	<?php
 	printf(
