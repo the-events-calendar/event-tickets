@@ -39,12 +39,11 @@ tribe.tickets.commerce.billing = {};
  *
  * @since TBD
  *
- * @type {{billingLastName: string, billingEmail: string, cardZip: string, billingFirstName: string}}
+ * @type {{billingEmail: string, cardZip: string, billingName: string}}
  */
 tribe.tickets.commerce.billing.selectors = {
-	billingFirstName: '#tec-tc-gateway-stripe-billing-first-name > input',
-	billingLastName: '#tec-tc-gateway-stripe-billing-last-name > input',
-	billingEmail: '#tec-tc-gateway-stripe-billing-email > input',
+	billingName: '#tec-tc-gateway-stripe-billing-name-input',
+	billingEmail: '#tec-tc-gateway-stripe-billing-email-input',
 	cardZip: '#tec-tc-gateway-stripe-card-zip > input',
 }
 
@@ -60,8 +59,10 @@ tribe.tickets.commerce.billing.getDetails = function( long ) {
 	billing_details.address = {};
 	var selectors = tribe.tickets.commerce.billing.selectors;
 	var zipCode = document.querySelector( selectors.cardZip );
-	var firstName = document.querySelector( selectors.billingFirstName );
-	var lastName = document.querySelector( selectors.billingLastName );
+	var name = document.querySelector( selectors.billingName );
+	var nameParts = name.split(' ');
+	var firstName = nameParts.shift();
+	var lastName = nameParts.join(' ');
 	var email = document.querySelector( selectors.billingEmail );
 
 	if ( zipCode && zipCode.value.length > 0 ) { billing_details.address.postal_code = zipCode.value; }
@@ -80,3 +81,4 @@ tribe.tickets.commerce.billing.getDetails = function( long ) {
 
 	return billing_details;
 };
+

@@ -54,6 +54,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 				'tribe-tickets-commerce-js',
 				'tribe-tickets-commerce-notice-js',
 				'tribe-tickets-commerce-base-gateway-checkout-js',
+				'tribe-tickets-commerce-base-gateway-checkout-toggler',
 			],
 			'wp_enqueue_scripts',
 			[
@@ -75,6 +76,25 @@ class Assets extends \tad_DI52_ServiceProvider {
 						] );
 					},
 				],
+			]
+		);
+		
+		// Tickets Commerce PayPal main frontend styles.
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-commerce-stripe-style',
+			'tickets-commerce/gateway/stripe.css',
+			[
+				'tribe-common-skeleton-style',
+				'tribe-common-full-style',
+			],
+			null,
+			[
+				'groups' => [
+					'tribe-tickets-commerce',
+					'tribe-tickets-commerce-checkout',
+				],
+				'print'  => true,
 			]
 		);
 	}
