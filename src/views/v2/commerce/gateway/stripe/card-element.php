@@ -37,5 +37,11 @@ if ( $must_login || $payment_element ) {
 	id="tec-tc-gateway-stripe-checkout-button"
 	class="tribe-common-c-btn"
 >
-	<?php esc_html_e( 'Submit Payment', 'events-tickets' ); ?>
+	<?php
+	printf(
+		// Translators: %1$s: Plural `Tickets` label.
+		esc_html__( 'Purchase %1$s', 'event-tickets' ),
+		tribe_get_ticket_label_plural( 'tickets_commerce_checkout_title' ) // phpcs:ignore
+	);
+	?>
 </button>
