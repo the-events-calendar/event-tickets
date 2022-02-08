@@ -47,7 +47,7 @@ $gateways = $manager->get_gateways();
 			</div>
 			<div class="tec-tickets__admin-settings-tickets-commerce-gateways-item-brand">
 				<div class="tec-tickets__admin-settings-tickets-commerce-gateways-item-brand-logo">
-					<img src="<?php echo esc_attr( $brand_info[ $key ]['logo_url'] ); ?>" alt="<?php echo esc_attr( $gateway->get_label() ); ?>" />
+					<img src="<?php echo esc_url( $brand_info[ $key ]['logo_url'] ); ?>" alt="<?php echo esc_attr( $gateway->get_label() ); ?>" />
 				</div>
 				<div class="tec-tickets__admin-settings-tickets-commerce-gateways-item-brand-subtitle">
 					<?php echo esc_html( $brand_info[ $key ]['subtitle'] ); ?>
