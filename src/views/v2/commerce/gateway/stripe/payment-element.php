@@ -21,9 +21,17 @@ if ( $must_login || ! $payment_element ) {
 }
 ?>
 <div id="tec-tc-gateway-stripe-payment-element" class="tribe-tickets__commerce-checkout-stripe-payment-element"></div>
-<button id="tec-tc-gateway-stripe-checkout-button" class="tribe-common-c-btn">
+<button id="tec-tc-gateway-stripe-checkout-button" class="tribe-common-c-btn tribe-tickets__commerce-checkout-form-submit-button">
 	<div class="spinner hidden" id="spinner"></div>
-	<span id="button-text"><?php esc_html_e( 'Pay now', 'event-tickets' ); ?></span>
+	<span id="button-text">
+		<?php
+		printf(
+			// Translators: %1$s: Plural `Tickets` label.
+			esc_html__( 'Purchase %1$s', 'event-tickets' ),
+			tribe_get_ticket_label_plural( 'tickets_commerce_checkout_title' ) // phpcs:ignore
+		);
+		?>
+	</span>
 </button>
 <div id="tec-tc-gateway-stripe-payment-message" class="hidden"></div>
 <div id="tec-tc-gateway-stripe-errors" role="alert"></div>
