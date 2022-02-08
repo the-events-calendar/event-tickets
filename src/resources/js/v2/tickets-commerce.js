@@ -195,7 +195,7 @@ tribe.tickets.commerce = {};
 	obj.getPurchaserData = function ( selector ) {
 		let purchaser = {};
 
-		let $container = $document.find( selector );
+		const $container = $document.find( selector );
 
 		if ( ! $container.length ) {
 			return purchaser;
