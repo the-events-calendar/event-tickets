@@ -318,6 +318,10 @@ class Client {
 				$return['capabilities'] = $response['capabilities'];
 			}
 
+			if ( ! empty( $response['settings']['payments']['statement_descriptor'] ) ) {
+				$return['statement_descriptor'] = $response['settings']['payments']['statement_descriptor'];
+			}
+
 			if ( ! empty( $response['requirements']['errors'] ) ) {
 				$return['errors']['requirements'] = $response['requirements']['errors'];
 			}
@@ -572,7 +576,7 @@ class Client {
 	 */
 	public function calculate_application_fee_value( Value $value ) {
 
-		if ( false ) {
+		if ( \TEC\Tickets\Commerce\Settings::is_licensed_plugin() ) {
 			return Value::create();
 		}
 
