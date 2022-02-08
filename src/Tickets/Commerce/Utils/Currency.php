@@ -111,6 +111,46 @@ class Currency {
 	}
 
 	/**
+	 * Return the currency name to use as defined in the currency map.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $code the currency 3-letter code.
+	 *
+	 * @return string
+	 */
+	public static function get_currency_name( $code ) {
+		$map    = static::get_default_currency_map();
+		$name = '';
+
+		if ( isset( $map[ $code ] ) ) {
+			$name = $map[ $code ]['name'];
+		}
+
+		/**
+		 * Filter the specific currency symbol before returning. $code is the 3-letter currency code.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $name The currency name.
+		 *
+		 * @return string
+		 */
+		$name = apply_filters( "tec_tickets_commerce_currency_{$code}_name", $name );
+
+		/**
+		 * Filter all currency symbols before returning.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $name The currency name.
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_commerce_currency_name', $name );
+	}
+
+	/**
 	 * Return the currency decimal separator character to use as defined in the currency map.
 	 *
 	 * @since 5.2.3
