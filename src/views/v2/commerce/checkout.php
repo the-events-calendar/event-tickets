@@ -40,10 +40,10 @@ $attributes = [
 		<?php foreach ( $sections as $section ) : ?>
 			<?php $this->template( 'checkout/cart', [ 'section' => $section ] ); ?>
 		<?php endforeach; ?>
-		<?php $this->template( 'gateway/gateways' ); ?>
 		<?php tribe( 'tickets.editor.template' )->template( 'v2/components/loader/loader' ); ?>
 		<?php $this->template( 'checkout/cart/empty' ); ?>
 		<?php $this->template( 'checkout/purchaser-info' ); ?>
+		<?php $this->template( 'gateway/gateways' ); ?>
 		<?php $this->template( 'checkout/footer' ); ?>
 		<?php $this->template( 'checkout/must-login' ); ?>
 	</section>
