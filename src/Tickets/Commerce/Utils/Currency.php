@@ -128,7 +128,7 @@ class Currency {
 		}
 
 		/**
-		 * Filter the specific currency symbol before returning. $code is the 3-letter currency code.
+		 * Filter the specific currency name before returning. $code is the 3-letter currency code.
 		 *
 		 * @since TBD
 		 *
