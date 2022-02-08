@@ -91,7 +91,6 @@ class Assets extends \tad_DI52_ServiceProvider {
 				'tribe-tickets-loader',
 				'tribe-tickets-commerce-js',
 				'tribe-tickets-commerce-notice-js',
-				'tribe-tickets-commerce-base-gateway-checkout-js',
 				'tribe-tickets-commerce-base-gateway-checkout-toggler',
 			],
 			null,
