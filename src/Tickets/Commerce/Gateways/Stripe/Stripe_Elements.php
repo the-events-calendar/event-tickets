@@ -34,7 +34,8 @@ class Stripe_Elements {
 	 */
 	public function get_checkout_template_vars() {
 		return [
-			'payment_element' => $this->include_payment_element(),
+			'payment_element'   => $this->include_payment_element(),
+			'card_element_type' => $this->card_element_type(),
 		];
 	}
 
