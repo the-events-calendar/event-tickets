@@ -42,7 +42,7 @@ $field_classes = [
 			required
 		/>
 		<div class="tribe-common-b3 tribe-tickets__form-field-description">
-			<?php echo wp_kses_post( __( 'Your tickets will be sent to this address.', 'event-tickets' ) ); ?>
+			<?php echo wp_kses_post( __( 'Your tickets will be sent to this address', 'event-tickets' ) ); ?>
 		</div>
 	</div>
 </div>
