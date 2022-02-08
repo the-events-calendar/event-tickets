@@ -38,6 +38,4 @@ $post = get_post( $section );
 
 	<?php $this->template( 'checkout/cart/footer' ); ?>
 
-	<?php $this->template( 'checkout/cart/billing-details' ); // @todo Move this outside of the cart. ?>
-
 </div>
