@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
+use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
 
 /**
@@ -25,19 +26,16 @@ class Stripe_Elements {
 	}
 
 	/**
-	 * Include the Stripe Payment form.
+	 * Returns the variables for gateway's checkout template.
 	 *
 	 * @since TBD
 	 *
-	 * @param string           $file     Which file we are loading.
-	 * @param string           $name     Name of file file
-	 * @param \Tribe__Template $template Which Template object is being used.
+	 * @return []
 	 */
-	public function include_form( $file, $name, $template ) {
-		$template->template( 'gateway/stripe/form', [
-			'must_login'      => $this->must_login(),
+	public function get_checkout_template_vars() {
+		return [
 			'payment_element' => $this->include_payment_element(),
-		] );
+		];
 	}
 
 	/**

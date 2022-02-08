@@ -21,23 +21,43 @@ if ( $must_login ) {
 }
 
 // @todo We're using $username for both first and last name. Is there a better way?
-$username  = ! empty( $user->display_name ) ? $user->display_name : '';
-$useremail = ! empty( $user->user_email ) ? $user->user_email : '';
+$user       = wp_get_current_user();
+$username   = ! empty( $user->display_name ) ? $user->display_name : '';
+$name_parts = explode( ' ', $username );
+$first_name = array_shift( $name_parts );
+$last_name  = implode( ' ', $name_parts);
+$useremail  = ! empty( $user->user_email ) ? $user->user_email : '';
 
 ?>
 
-<div id="tec-tc-gateway-stripe-billing-identification">
-	<h4><?php esc_html_e( 'Billing Information', 'event-tickets' ); ?></h4>
-	<span id="tec-tc-gateway-stripe-billing-first-name">
-		<input type="text" value="<?php echo esc_attr( $username ); ?>"
-			   placeholder="<?php esc_html_e( 'First Name', 'event-tickets' ); ?>"/>
-	</span>
-	<span id="tec-tc-gateway-stripe-billing-last-name">
-		<input type="text" value="<?php echo esc_attr( $username ); ?>"
-			   placeholder="<?php esc_html_e( 'Last Name', 'event-tickets' ); ?>"/>
-	</span>
-	<span id="tec-tc-gateway-stripe-billing-email">
-		<input type="email" value="<?php echo esc_attr( $useremail ); ?>"
-			   placeholder="<?php esc_html_e( 'Billing Email', 'event-tickets' ); ?>"/>
-	</span>
+<div class="tribe-tickets__commerce-checkout-purchaser">
+	<h4 class="tribe-tickets__commerce-checkout-section-header">
+		<?php esc_html_e( 'Purchaser Info', 'event-tickets' ); ?>
+	</h4>
+	<div class="tribe-tickets__commerce-checkout-field-group">
+		<label 
+			class="tribe-tickets__commerce-checkout-field-group-label" 
+			for="tec-tc-gateway-stripe-billing-name-input">
+			<?php esc_html_e( 'Person purchasing tickets:', 'event-tickets' ); ?>
+		</label>
+		<input 
+			class="tribe-tickets__commerce-checkout-field-group-input"
+			id="tec-tc-gateway-stripe-billing-name-input"
+			type="text" value="<?php echo esc_attr( $username ); ?>" />
+	</div>
+	<div class="tribe-tickets__commerce-checkout-field-group">
+		<label 
+			class="tribe-tickets__commerce-checkout-field-group-label" 
+			for="tec-tc-gateway-stripe-billing-email-input">
+			<?php esc_html_e( 'Email address:', 'event-tickets' ); ?>
+		</label>
+		<input 
+			class="tribe-tickets__commerce-checkout-field-group-input"
+			id="tec-tc-gateway-stripe-billing-email-input"
+			type="email" 
+			value="<?php echo esc_attr( $useremail ); ?>" />
+		<div class="tribe-tickets__commerce-checkout-field-group-help">
+			<?php esc_html_e( 'Your tickets will be sent to this address.', 'event-tickets' ); ?>
+		</div>
+	</div>
 </div>
