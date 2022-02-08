@@ -38,7 +38,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			$namespace,
 			$this->get_endpoint_path(),
 			[
-				'methods'             => WP_REST_Server::READABLE,
+				'methods'             => WP_REST_Server::CREATABLE,
 				'args'                => $this->create_order_args(),
 				'callback'            => [ $this, 'handle_incoming_request' ],
 				'permission_callback' => '__return_true',
@@ -46,6 +46,10 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		);
 
 		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
+	}
+
+	public function create_order_args() {
+		return [];
 	}
 
 	/**
@@ -56,6 +60,44 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * @param WP_REST_Request $request The request object.
 	 */
 	public function handle_incoming_request( WP_REST_Request $request ) {
-		return '';
+
+		if ( ! $this->verify_signature( $request->get_header( 'Stripe-Signature' ), $request->get_body() ) ) {
+			return;
+		}
+
+		$params = $request->get_json_params();
+		wp_send_json( $params );
+	}
+
+	private function verify_signature( $header, $body ) {
+
+		if ( ! $header || ! is_string( $body ) ) {
+			return false;
+		}
+
+		$header_parts    = explode( ',', $header );
+		$signing_secret  = 'whsec_s2SFmILd8auKsnvf3JGb2qsVZuSPDD1M'; // @todo move to database and settings field
+		$signature_parts = [];
+
+		if ( empty( $signing_secret ) ) {
+			return false;
+		}
+
+		foreach ( $header_parts as $part ) {
+			$pair = explode( '=', $part );
+
+			if ( in_array( $pair[0], [ 't', 'v1' ], true ) ) {
+				$signature_parts[ $pair[0] ] = $pair[1];
+			}
+		}
+
+		if ( empty( $signature_parts['t'] ) || empty( $signature_parts['v1'] ) ) {
+			return false;
+		}
+
+		$signed_payload = implode( '', [ $signature_parts['t'], '.', $body ] );
+		$hmac_signature = hash_hmac( 'sha256', $signed_payload, $signing_secret );
+
+		return hash_equals( $signature_parts['v1'], $hmac_signature );
 	}
 }
