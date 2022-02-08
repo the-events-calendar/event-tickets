@@ -21,12 +21,10 @@
 if ( is_user_logged_in() || $must_login || empty( $items ) ) {
 	return;
 }
-
-$title = __( 'Purchaser info', 'event-tickets' );
 ?>
 
 <div class="tribe-tickets__form tribe-tickets__commerce-checkout-purchaser-info-wrapper">
-	<h4 class="tribe-common-h5"><?php echo esc_html( $title ); ?></h4>
+	<h4 class="tribe-common-h5"><?php esc_html_e( 'Purchaser info', 'event-tickets' ); ?></h4>
 	<?php $this->template( 'checkout/purchaser-info/name' ) ?>
 	<?php $this->template( 'checkout/purchaser-info/email' ) ?>
 </div>

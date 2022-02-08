@@ -22,9 +22,10 @@ $label_classes = [
 ];
 
 $field_classes = [
+	'tribe-common-b2',
 	'tribe-tickets__commerce-checkout-purchaser-info-form-field',
 	'tribe-tickets__commerce-checkout-purchaser-info-form-field-email',
-	'tribe-common-form-control-text__input', 
+	'tribe-common-form-control-text__input',
 	'tribe-tickets__form-field-input',
 ];
 ?>
@@ -43,7 +44,7 @@ $field_classes = [
 			required
 		/>
 		<div class="tribe-common-b3 tribe-tickets__form-field-description">
-			<?php echo wp_kses_post( __( 'Your tickets will be sent to this address', 'event-tickets' ) ); ?>
+			<?php esc_html_e( 'Your tickets will be sent to this address', 'event-tickets' ); ?>
 		</div>
 	</div>
 </div>

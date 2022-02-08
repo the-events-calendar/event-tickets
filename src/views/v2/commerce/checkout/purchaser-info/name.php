@@ -18,6 +18,7 @@
 
 
 $label_classes = [
+	'tribe-common-b2',
 	'tribe-tickets__form-field-label',
 	'tribe-tickets__commerce-checkout-purchaser-info-name-field-label',
 ];
@@ -25,7 +26,7 @@ $label_classes = [
 $field_classes = [
 	'tribe-tickets__commerce-checkout-purchaser-info-form-field',
 	'tribe-tickets__commerce-checkout-purchaser-info-form-field-name',
-	'tribe-common-form-control-text__input', 
+	'tribe-common-form-control-text__input',
 	'tribe-tickets__form-field-input',
 ];
 ?>
