@@ -13,11 +13,11 @@ $manager = tribe( TEC\Tickets\Commerce\Gateways\Manager::class );
 $brand_info = [
 	'paypal' => [
 		'logo_url' =>  Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/images/admin/paypal_logo.png',
-		'subtitle' => esc_html__( 'Enable payments through PayPal, Venmo, and credit card', 'event-tickets' ),
+		'subtitle' => __( 'Enable payments through PayPal, Venmo, and credit card.', 'event-tickets' ),
 	],
 	'stripe' => [
 		'logo_url' =>  Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/images/admin/stripe-logo.png',
-		'subtitle' => esc_html__( 'Enable credit card payments, Afterpay, AliPay, Giropay, Klarna and more.', 'event-tickets' ),
+		'subtitle' => __( 'Enable credit card payments, Afterpay, AliPay, Giropay, Klarna and more.', 'event-tickets' ),
 	],
 ];
 
