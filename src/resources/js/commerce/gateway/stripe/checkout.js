@@ -466,7 +466,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @return {{}}
 	 */
-	obj.getPuchaserInfo = () => tribe.tickets.commerce.getPurchaserData( tribe.tickets.commerce.selectors.purchaserFormContainer );
+	obj.getPuchaserInfo = () => tribe.tickets.commerce.getPurchaserData( $( tribe.tickets.commerce.selectors.purchaserFormContainer ) );
 
 	/**
 	 * Bind script loader to trigger script dependent methods.

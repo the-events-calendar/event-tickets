@@ -165,7 +165,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.handleCreateOrder = function ( data, actions, $container ) {
 		tribe.tickets.debug.log( 'handleCreateOrder', arguments );
 
-		let purchaser_data = tribe.tickets.commerce.getPurchaserData( tribe.tickets.commerce.selectors.purchaserFormContainer );
+		let purchaser_data = tribe.tickets.commerce.getPurchaserData( $( tribe.tickets.commerce.selectors.purchaserFormContainer ) );
 
 		return fetch(
 			obj.orderEndpointUrl,

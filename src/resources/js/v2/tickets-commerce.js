@@ -188,14 +188,12 @@ tribe.tickets.commerce = {};
 	 *
 	 * @since TBD
 	 *
-	 * @param {string} selector for the container.
+	 * @param {jQuery} $container Container for the purchaser info fields.
 	 *
-	 * @return {{}}
+	 * @return {Object}
 	 */
-	obj.getPurchaserData = function ( selector ) {
+	obj.getPurchaserData = function ( $container ) {
 		let purchaser = {};
-
-		const $container = $document.find( selector );
 
 		if ( ! $container.length ) {
 			return purchaser;
