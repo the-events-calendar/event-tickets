@@ -72,6 +72,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 		toggle: 'tribe-tickets__commerce-checkout-gateway-toggle',
 		toggleOpen: 'tribe-tickets__commerce-checkout-gateway-toggle--open',
 		toggleButton: 'tribe-tickets__commerce-checkout-gateway-toggle-button',
+		toggleHidden: 'tribe-common-a11y-hidden',
 	};
 
 	/**
@@ -113,7 +114,10 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	 * @param {Element} gateway Gateway element to show.
 	 */
 	obj.toggler.showGateway = gateway => {
-		$( gateway ).show().attr( 'aria-expanded', 'true' );
+		$( gateway )
+			.show()
+			.attr( 'aria-expanded', 'true' )
+			.removeClass(obj.toggler.classes.toggleHidden);
 	};
 
 	/**
@@ -124,7 +128,10 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	 * @param {Element} gateway Gateway element to hide.
 	 */
 	obj.toggler.hideGateway = gateway => {
-		$( gateway ).hide().attr( 'aria-expanded', 'false' );
+		$( gateway )
+			.hide()
+			.attr( 'aria-expanded', 'false' )
+			.addClass(obj.toggler.classes.toggleHidden);
 	};
 
 	/**
@@ -141,7 +148,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 			obj.toggler.hideGateway( gateway );
 		});
 		obj.toggler.toggles.default.addClass(obj.toggler.classes.toggleOpen).hide().attr( 'aria-hidden', 'true' );
-		obj.toggler.toggles.additional.removeClass(obj.toggler.classes.toggleOpen);
+		obj.toggler.toggles.additional.removeClass(obj.toggler.classes.toggleOpen).attr( 'aria-selected', 'false' );
 	};
 
 	/**
@@ -157,7 +164,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 			}
 			obj.toggler.showGateway( gateway );
 		});
-		obj.toggler.toggles.additional.addClass(obj.toggler.classes.toggleOpen);
+		obj.toggler.toggles.additional.addClass(obj.toggler.classes.toggleOpen).attr( 'aria-selected', 'true' );
 		obj.toggler.toggles.default.removeClass(obj.toggler.classes.toggleOpen).show().attr( 'aria-hidden', 'false' );
 	};
 
