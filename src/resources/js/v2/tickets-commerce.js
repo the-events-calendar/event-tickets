@@ -203,7 +203,7 @@ tribe.tickets.commerce = {};
 		purchaser.email = $container.find( obj.selectors.purchaserEmail ).val();
 
 		return purchaser;
-	}
+	};
 
 	/**
 	 * Handles the initialization of the tickets commerce events when Document is ready.
