@@ -325,7 +325,7 @@ class Settings extends Abstract_Settings {
 				'label'      => esc_html__( 'AfterPay and ClearPay', 'event-tickets' ),
 			],
 			'alipay'            => [
-				'currencies' => [ 'CNY', 'EUR', ],
+				'currencies' => [ 'CNY', 'EUR' ],
 				'label'      => esc_html__( 'Alipay', 'event-tickets' ),
 			],
 			'bacs_debit'        => [
