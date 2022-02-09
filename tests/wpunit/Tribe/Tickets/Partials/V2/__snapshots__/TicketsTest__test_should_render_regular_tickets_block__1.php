@@ -35,7 +35,7 @@
 
 		<div
 	id="tribe-block-tickets-item-[TICKET_ID_1]"
-	 class="tribe-tickets__tickets-item post-[TICKET_ID_1] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	 data-ticket-id="[TICKET_ID_1]" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
+	 class="tribe-tickets__tickets-item post-[TICKET_ID_1] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="[TICKET_ID_1]" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
 		Test ticket for [EVENT_ID]</div>
@@ -82,7 +82,7 @@
 </div>
 <div
 	id="tribe-block-tickets-item-[TICKET_ID_2]"
-	 class="tribe-tickets__tickets-item post-[TICKET_ID_2] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry entry" 	 data-ticket-id="[TICKET_ID_2]" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
+	 class="tribe-tickets__tickets-item post-[TICKET_ID_2] tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="[TICKET_ID_2]" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
 		Test ticket for [EVENT_ID]</div>
@@ -159,10 +159,10 @@
 </div>
 
 		
-		<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden tribe-tickets__rsvp-message--success-icon" >
-	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--first"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
-	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--second"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
-	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--third"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
+		<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
+	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--first"  viewBox="0 0 [TICKET_ID_2] [TICKET_ID_2]" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
+	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--second"  viewBox="0 0 [TICKET_ID_2] [TICKET_ID_2]" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
+	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--third"  viewBox="0 0 [TICKET_ID_2] [TICKET_ID_2]" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 </div>
 
 	</form>
