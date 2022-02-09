@@ -56,6 +56,10 @@
 		display: flex;
 		flex-wrap: wrap;
 		padding: var(--tec-spacer-4) 0;
+
+		&.entry {
+			padding: var(--tec-spacer-4) 0;
+		}
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item-details {
@@ -232,6 +236,85 @@
 		.tribe-tickets__commerce-checkout-footer-notice-error--no-gateway {
 			display: block;
 		}
+	}
+
+	.tribe-tickets__commerce-checkout-purchaser {
+		padding-bottom: var(--tec-spacer-7);
+		padding-top: var(--tec-spacer-7);
+	}
+
+	.tribe-tickets__commerce-checkout-section-header {
+		font-size: var(--tec-font-size-4);
+		font-weight: var(--tec-font-weight-bold);
+		margin-bottom: var(--tec-spacer-3);
+	}
+
+	.tribe-tickets__commerce-checkout-field-group {
+		margin-bottom: var(--tec-spacer-3);
+
+		input {
+			width: 100%;
+		}
+	}
+
+	.tribe-tickets__commerce-checkout-field-group-label {
+		display: block;
+		font-family: var(--tec-font-family-sans-serif);
+		font-size: var(--tec-font-size-2);
+	}
+
+	.tribe-tickets__commerce-checkout-field-group-input {
+		display: block;
+		font-size: var(--tec-font-size-4);
+	}
+
+	.tribe-tickets__commerce-checkout-field-group-help {
+		color: #727272;
+		font-family: var(--tec-font-family-sans-serif);
+		font-size: var(--tec-font-size-1);
+	}
+
+	.tribe-tickets__commerce-checkout-gateway {
+		display: none;
+	}
+
+	.tribe-tickets__commerce-checkout-gateway-toggle {
+		margin-bottom: var(--tec-spacer-7);
+	}
+
+	.tribe-tickets__commerce-checkout-gateway-toggle-button {
+		color: var(--tec-color-text-primary-light);
+		font-family: var(--tec-font-family-sans-serif);
+		font-size: var(--tec-font-size-3);
+
+		&:after {
+			border: 7px solid var(--tec-color-background-transparent);
+			border-bottom-width: 0;
+			border-top-color: var(--tec-color-text-primary-light);
+			border-top-width: 10px;
+			content: "";
+			display: inline-block;
+			margin-left: 5px;
+		}
+	}
+
+	.tribe-tickets__commerce-checkout-gateway-toggle--open {
+		.tribe-tickets__commerce-checkout-gateway-toggle-button {
+			color: #23282d;
+
+			&:after {
+				border: 7px solid var(--tec-color-background-transparent);
+				border-bottom-color: #23282d;
+				border-bottom-width: 10px;
+				border-top-width: 0;
+			}
+		}
+	}
+
+	.tribe-tickets__commerce-checkout-form-submit-button {
+		height: 55px;
+		margin-top: 24px;
+		width: 100%;
 	}
 
 	/* -------------------------------------------------------------------------

@@ -39,12 +39,11 @@ tribe.tickets.commerce.billing = {};
  *
  * @since TBD
  *
- * @type {{billingLastName: string, billingEmail: string, cardZip: string, billingFirstName: string}}
+ * @type {{billingEmail: string, cardZip: string, billingName: string}}
  */
 tribe.tickets.commerce.billing.selectors = {
-	billingFirstName: '#tec-tc-gateway-stripe-billing-first-name > input',
-	billingLastName: '#tec-tc-gateway-stripe-billing-last-name > input',
-	billingEmail: '#tec-tc-gateway-stripe-billing-email > input',
+	billingName: '#tec-tc-gateway-stripe-billing-name-input',
+	billingEmail: '#tec-tc-gateway-stripe-billing-email-input',
 	cardZip: '#tec-tc-gateway-stripe-card-zip > input',
 }
 
@@ -60,15 +59,17 @@ tribe.tickets.commerce.billing.getDetails = function( long ) {
 	billing_details.address = {};
 	var selectors = tribe.tickets.commerce.billing.selectors;
 	var zipCode = document.querySelector( selectors.cardZip );
-	var firstName = document.querySelector( selectors.billingFirstName );
-	var lastName = document.querySelector( selectors.billingLastName );
+	var name = document.querySelector( selectors.billingName );
+	var nameParts = name.value.split(' ');
+	var firstName = nameParts.shift();
+	var lastName = nameParts.join(' ');
 	var email = document.querySelector( selectors.billingEmail );
 
 	if ( zipCode && zipCode.value.length > 0 ) { billing_details.address.postal_code = zipCode.value; }
 	if ( email && email.value.length > 0 ) { billing_details.email = email.value; }
 
-	billing_details.first_name = firstName.value || '';
-	billing_details.last_name = lastName.value || '';
+	billing_details.first_name = firstName || '';
+	billing_details.last_name = lastName || '';
 
 	billing_details.name = billing_details.first_name+' '+billing_details.last_name;
 	billing_details.name.trim();
@@ -80,3 +81,4 @@ tribe.tickets.commerce.billing.getDetails = function( long ) {
 
 	return billing_details;
 };
+

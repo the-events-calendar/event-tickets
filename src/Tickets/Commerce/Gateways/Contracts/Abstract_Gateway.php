@@ -57,6 +57,15 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * @var string
 	 */
 	public static $option_enabled_prefix = '_tickets_commerce_gateway_enabled_';
+	
+	/**
+	 * Default name for the checkout template.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $checkout_container_template_name = 'container';
 
 	/**
 	 * @inheritDoc
@@ -256,5 +265,27 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 		}
 		
 		return __( 'Enabled for Checkout', 'event-tickets' );
+	}
+	
+	/**
+	 * Returns name of the container template within the `views/v2/commerce/gateway/{key}/` folder.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_checkout_container_template_name() {		
+		return self::$checkout_container_template_name;
+	}
+	
+	/**
+	 * Returns variables to be included in the gateway's checkout template.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_checkout_template_vars() {		
+		return [];
 	}
 }

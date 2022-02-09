@@ -20,5 +20,5 @@ $image_src = tribe_resource_url( 'images/admin/stripe-logo.png', false, null, Tr
 	width="200" <?php // @todo remove this to style properly ?>
 	src="<?php echo esc_url( $image_src ); ?>"
 	alt="<?php esc_attr_e( 'Stripe Logo Image', 'event-tickets' ); ?>"
-	class="tec-tickets__admin-settings-tickets-commerce-gateway-logo-image"
+	class="tec-tickets__admin-settings-tickets-commerce-gateway-logo-image tec-tickets__admin-settings-tickets-commerce-gateway-logo-image--stripe"
 >

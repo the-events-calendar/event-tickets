@@ -85,7 +85,7 @@ class Gateway extends Abstract_Gateway {
 	 * @inheritDoc
 	 */
 	public function get_subtitle() {
-		return __( 'Enable credit card payment and afterpay', 'event-tickets' );
+		return __( 'Enable credit card payments, Afterpay, AliPay, Giropay, Klarna and more.', 'event-tickets' );
 	}
 
 	/**
@@ -95,5 +95,12 @@ class Gateway extends Abstract_Gateway {
 		$return_url = tribe( Return_Endpoint::class )->get_route_url();
 
 		return $return_url;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static function get_checkout_template_vars() {
+		return tribe( Stripe_Elements::class )->get_checkout_template_vars();
 	}
 }

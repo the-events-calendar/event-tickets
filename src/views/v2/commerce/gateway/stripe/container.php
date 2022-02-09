@@ -22,10 +22,12 @@ if ( ! empty( $must_login ) ) {
 	return;
 }
 ?>
-<form id="payment-form">
+<div class="tribe-tickets__commerce-checkout-gateway tribe-tickets__commerce-checkout-stripe">
+	<form id="payment-form">
 
-	<?php $this->template( 'gateway/stripe/payment-element' ); ?>
+		<?php $this->template( 'gateway/stripe/payment-element' ); ?>
 
-	<?php $this->template( 'gateway/stripe/card-element' ); ?>
+		<?php $this->template( 'gateway/stripe/card-element' ); ?>
 
-</form>
+	</form>
+</div>
