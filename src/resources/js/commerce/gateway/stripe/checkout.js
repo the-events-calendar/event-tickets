@@ -442,7 +442,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			return obj.handleErrorDisplay( obj.checkout.paymentIntentData.errors );
 		}
 
-		obj.stripeElements = obj.stripeLib.elements( { clientSecret: obj.checkout.paymentIntentData.key } );
+		obj.stripeElements = obj.stripeLib.elements( { 
+			clientSecret: obj.checkout.paymentIntentData.key, 
+			appearance: obj.checkout.elementsAppearance, 
+		} );
 
 		if ( obj.checkout.paymentElement ) {
 			obj.setupPaymentElement();
