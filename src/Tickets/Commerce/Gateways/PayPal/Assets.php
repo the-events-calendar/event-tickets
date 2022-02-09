@@ -95,9 +95,10 @@ class Assets extends \tad_DI52_ServiceProvider {
 				'tribe-tickets-commerce-base-gateway-checkout-js',
 				'tribe-tickets-commerce-base-gateway-checkout-toggler',
 			],
-			'wp_enqueue_scripts',
+			null,
 			[
 				'groups'       => [
+					'tribe-tickets-commerce-checkout',
 					'tec-tickets-commerce-gateway-paypal',
 				],
 				'conditionals' => [ $this, 'should_enqueue_assets' ],
