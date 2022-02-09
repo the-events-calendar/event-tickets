@@ -89,14 +89,6 @@ class Assets extends tad_DI52_ServiceProvider {
 
 		tribe_asset(
 			$tickets_main,
-			'tribe-tickets-commerce-base-gateway-checkout-js',
-			'commerce/gateway/base.js',
-			[],
-			null
-		);
-
-		tribe_asset(
-			$tickets_main,
 			'tribe-tickets-commerce-base-gateway-checkout-toggler',
 			'commerce/gateway/toggler.js',
 			[],

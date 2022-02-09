@@ -18,7 +18,7 @@ tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe ||
  */
 tribe.tickets.commerce.gateway.stripe.checkout = {};
 
-(( $, obj, billing, Stripe, ky ) => {
+(( $, obj, Stripe, ky ) => {
 	'use strict';
 
 	/**
@@ -255,7 +255,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {Promise<*>}
 	 */
 	obj.submitMultiPayment = async ( order ) => {
-		const billingDetails = billing.getDetails( false );
 
 		return obj.stripeLib.confirmPayment( {
 			elements: obj.stripeElements,
@@ -263,7 +262,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			confirmParams: {
 				return_url: order.redirect_url,
 				payment_method_data: {
-					billing_details: billingDetails
+					purchaser: obj.getPurchaserData()
 				}
 			}
 		} ).then( obj.handleConfirmPayment );
@@ -298,12 +297,11 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @returns {Promise<*>}
 	 */
 	obj.submitCardPayment = async () => {
-		const billingDetails = billing.getDetails( false );
 
 		return obj.stripeLib.confirmCardPayment( obj.checkout.paymentIntentData.key, {
 			payment_method: {
 				card: obj.cardElement,
-				billing_details: billingDetails
+				purchaser: obj.getPurchaserData()
 			}
 		} ).then( obj.handleConfirmCardPayment );
 	};
@@ -339,7 +337,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.handleCreateOrder = async () => {
 		const args = {
 			json: {
-				billing_details: billing.getDetails(),
+				purchaser: obj.getPurchaserData(),
 				payment_intent: obj.checkout.paymentIntentData
 			},
 			headers: {
@@ -442,7 +440,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			return obj.handleErrorDisplay( obj.checkout.paymentIntentData.errors );
 		}
 
-		obj.stripeElements = obj.stripeLib.elements( { clientSecret: obj.checkout.paymentIntentData.key } );
+		obj.stripeElements = obj.stripeLib.elements( { 
+			clientSecret: obj.checkout.paymentIntentData.key, 
+			appearance: obj.checkout.elementsAppearance, 
+		} );
 
 		if ( obj.checkout.paymentElement ) {
 			obj.setupPaymentElement();
@@ -455,6 +456,15 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			obj.setupCompactCardElement();
 		}
 	};
+
+	/**
+	 * Get purchaser form data.
+	 *
+	 * @since TBD
+	 *
+	 * @return {Object}
+	 */
+	obj.getPurchaserData = () => tribe.tickets.commerce.getPurchaserData( $( tribe.tickets.commerce.selectors.purchaserFormContainer ) );
 
 	/**
 	 * Bind script loader to trigger script dependent methods.
@@ -476,4 +486,4 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	$( obj.ready );
-})( jQuery, tribe.tickets.commerce.gateway.stripe, tribe.tickets.commerce.billing, Stripe, tribe.ky );
+})( jQuery, tribe.tickets.commerce.gateway.stripe, Stripe, tribe.ky );
