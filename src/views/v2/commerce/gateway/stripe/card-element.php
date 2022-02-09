@@ -12,23 +12,35 @@
  * @since   TBD
  *
  * @version TBD
- * @var bool $must_login [Global] Whether login is required to buy tickets or not.
- * @var bool $payment_element [Global] Whether to load the Stripe Payment Element.
+ * @var bool   $must_login        [Global] Whether login is required to buy tickets or not.
+ * @var bool   $payment_element   [Global] Whether to load the Stripe Payment Element.
+ * @var string $card_element_type [Global] Card element type. Either 'compact' or 'separate'.
  */
 
 if ( $must_login || $payment_element ) {
 	return;
 }
+
+$classes = [
+	'tribe-tickets__commerce-checkout-stripe-card-element',
+	'tribe-tickets__commerce-checkout-stripe-card-element--' . esc_attr( $card_element_type ),
+];
+
 ?>
-<div id="tec-tc-gateway-stripe-card-element" class="tribe-tickets__commerce-checkout-stripe-card-element">
-	<span id="tec-tc-gateway-stripe-card-number"></span>
-	<span id="tec-tc-gateway-stripe-card-expiry"></span>
-	<span id="tec-tc-gateway-stripe-card-cvc"></span>
-	<span id="tec-tc-gateway-stripe-card-zip">
-		<input
-			placeholder="<?php esc_attr_e( 'Zip Code', 'event-tickets' ); ?>"
-		/>
-	</span>
+<div id="tec-tc-gateway-stripe-card-element" <?php tribe_classes( $classes ); ?>>
+	<div class="tribe-tickets__commerce-checkout-stripe-card-element-row">
+		<span id="tec-tc-gateway-stripe-card-number" class="tribe-tickets__commerce-checkout-stripe-card-element-number"></span>
+		<span id="tec-tc-gateway-stripe-card-expiry" class="tribe-tickets__commerce-checkout-stripe-card-element-expiry"></span>
+	</div>
+	<div class="tribe-tickets__commerce-checkout-stripe-card-element-row">
+		<span id="tec-tc-gateway-stripe-card-cvc" class="tribe-tickets__commerce-checkout-stripe-card-element-cvc"></span>
+		<span id="tec-tc-gateway-stripe-card-zip" class="tribe-tickets__commerce-checkout-stripe-card-element-zip">
+			<input
+				class="tribe-tickets__commerce-checkout-stripe-card-element-zip-input"
+				placeholder="<?php esc_attr_e( 'Zip Code', 'event-tickets' ); ?>"
+			/>
+		</span>
+	</div>
 </div>
 
 <div id="tec-tc-gateway-stripe-errors" role="alert"></div>
