@@ -444,7 +444,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 
 		obj.stripeElements = obj.stripeLib.elements( { 
 			clientSecret: obj.checkout.paymentIntentData.key, 
-			appearance: tecTicketsCommerceGatewayStripeCheckout.elementsAppearance, 
+			appearance: obj.checkout.elementsAppearance, 
 		} );
 
 		if ( obj.checkout.paymentElement ) {
