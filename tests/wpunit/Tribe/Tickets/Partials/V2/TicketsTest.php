@@ -161,6 +161,22 @@ class TicketsTest extends V2TestCase {
 		$driver = $this->get_html_output_driver();
 		$driver->setTolerableDifferences( [ $this->tolerables ] );
 
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'Test ticket for ',
+				'tribe-block-tickets-item-',
+				'tribe__details__content--',
+			]
+		);
+
+		$driver->setTimeDependentAttributes(
+			[
+				'data-ticket-price',
+				'data-ticket-id',
+				'data-post-id',
+			]
+		);
+
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
@@ -181,6 +197,22 @@ class TicketsTest extends V2TestCase {
 		$driver = $this->get_html_output_driver();
 		$driver->setTolerableDifferences( [ $this->tolerables ] );
 
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'Test ticket for ',
+				'tribe-block-tickets-item-',
+				'tribe__details__content--',
+			]
+		);
+
+		$driver->setTimeDependentAttributes(
+			[
+				'data-ticket-price',
+				'data-ticket-id',
+				'data-post-id',
+			]
+		);
+
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
@@ -200,6 +232,22 @@ class TicketsTest extends V2TestCase {
 
 		$driver = $this->get_html_output_driver();
 		$driver->setTolerableDifferences( [ $this->tolerables ] );
+
+		$driver->setTolerableDifferencesPrefixes(
+			[
+				'Test ticket for ',
+				'tribe-block-tickets-item-',
+				'tribe__details__content--',
+			]
+		);
+
+		$driver->setTimeDependentAttributes(
+			[
+				'data-ticket-price',
+				'data-ticket-id',
+				'data-post-id',
+			]
+		);
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
