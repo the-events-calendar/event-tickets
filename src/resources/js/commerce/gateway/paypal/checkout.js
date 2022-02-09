@@ -27,7 +27,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
  *
  * @return {void}
  */
-( function ( $, obj, billing ) {
+( function ( $, obj ) {
 	'use strict';
 
 	/**
@@ -65,6 +65,15 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @type {Array}
 	 */
 	obj.timeouts = [];
+
+	/**
+	 * Flag to check if the current error is generic or not.
+	 *
+	 * @since TBD
+	 *
+	 * @type {boolean}
+	 */
+	obj.isGenericError = true;
 
 	/**
 	 * PayPal Checkout Selectors.
@@ -114,6 +123,13 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleGenericError = function ( error, $container ) {
+
+		// Bail out if there were other errors.
+		if ( ! obj.isGenericError ) {
+			// reset the flag.
+			obj.isGenericError = true;
+			return;
+		}
 		tribe.tickets.debug.log( 'handleGenericError', arguments );
 		$container.removeClass( obj.selectors.activePayment.className() );
 
@@ -148,12 +164,13 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleCreateOrder = function ( data, actions, $container ) {
 		tribe.tickets.debug.log( 'handleCreateOrder', arguments );
+
 		return fetch(
 			obj.orderEndpointUrl,
 			{
 				method: 'POST',
 				body: JSON.stringify( {
-					billing_details: billing.getDetails()
+					purchaser: tribe.tickets.commerce.getPurchaserData( $container )
 				} ),
 				headers: {
 					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
@@ -204,7 +221,8 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleCreateOrderFail = function ( $container, data ) {
 		tribe.tickets.debug.log( 'handleCreateOrderFail', arguments );
-		obj.showNotice( $container, data.title, data.content );
+		obj.showNotice( $container, data.message, '' );
+		obj.isGenericError = false;
 	};
 
 	/**
@@ -828,4 +846,4 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 	$( obj.ready );
 
-} )( jQuery, tribe.tickets.commerce.gateway.paypal, tribe.tickets.commerce.billing );
+} )( jQuery, tribe.tickets.commerce.gateway.paypal );
