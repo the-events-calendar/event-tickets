@@ -3,8 +3,8 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 5.6
-Tested up to: 5.8.1
-Stable tag: 5.2.2
+Tested up to: 5.8.2
+Stable tag: 5.2.3
 Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -178,6 +178,15 @@ We've got a [LoopedIn](https://app.loopedin.io/the-events-calendar-suite-roadmap
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.2.3] 2022-01-19 =
+
+* Feature - Allow duplicating a ticket when using the Classic Editor. [ET-1349]
+* Feature - Added the TEC Tickets icon in the block editor Tickets category section. [ET-1350]
+* Enhancement - Added a warning when Tickets Commerce is enabled, but users aren't required to log in before purchasing tickets. [ET-1352
+* Fix - Added the post_type to the attendee page on Posts/Pages so that additional logic would function correctly. [ET-1319]
+* Fix - Fixed toggling of shared capacity data for tickets. [ETP-497]
+* Language - 7 new strings added, 99 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.2.2] 2021-12-15 =
 

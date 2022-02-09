@@ -24,6 +24,7 @@ class Tribe__Tickets__Metabox {
 		add_action( 'wp_ajax_tribe-ticket-add', array( $this, 'ajax_ticket_add' ) );
 		add_action( 'wp_ajax_tribe-ticket-edit', array( $this, 'ajax_ticket_edit' ) );
 		add_action( 'wp_ajax_tribe-ticket-delete', array( $this, 'ajax_ticket_delete' ) );
+		add_action( 'wp_ajax_tribe-ticket-duplicate', array( $this, 'ajax_ticket_duplicate' ) );
 
 		add_action( 'wp_ajax_tribe-ticket-checkin', array( $this, 'ajax_attendee_checkin' ) );
 		add_action( 'wp_ajax_tribe-ticket-uncheckin', array( $this, 'ajax_attendee_uncheckin' ) );
@@ -341,6 +342,76 @@ class Tribe__Tickets__Metabox {
 			 */
 			do_action( 'tribe_tickets_ticket_deleted', $post_id );
 		}
+
+		wp_send_json_success( $return );
+	}
+
+	/**
+	 * Sanitizes the data for the duplicate ticket ajax call, then duplicates the ticket and meta.
+	 *
+	 * @since 5.2.3.
+	 */
+	public function ajax_ticket_duplicate() {
+		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
+
+		if ( ! $post_id ) {
+			wp_send_json_error( esc_html__( 'Invalid parent Post', 'event-tickets' ) );
+		}
+
+		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
+
+		if ( ! $ticket_id ) {
+			wp_send_json_error( esc_html( sprintf(
+				// Translators: %s: dynamic "ticket" text.
+				__( 'Invalid %s', 'event-tickets' ),
+				tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' )
+			) ) );
+		}
+
+		if ( ! $this->has_permission( $post_id, $_POST, 'duplicate_ticket_nonce' ) ) {
+			wp_send_json_error( esc_html( sprintf(
+				// Translators: %s: dynamic "ticket" text.
+				__( 'Failed to duplicate the %s. Refresh the page to try again.', 'event-tickets' ),
+				tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' )
+			) ) );
+		}
+
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+
+		if ( empty( $provider ) || ! $provider instanceof Tribe__Tickets__Tickets ) {
+			return new WP_Error(
+				'bad_request',
+				__( 'Commerce Module invalid', 'event-tickets' ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		$duplicate_ticket_id = $provider->duplicate_ticket( $post_id, $ticket_id );
+
+		// Successful?
+		if ( $duplicate_ticket_id ) {
+			/**
+			 * Fire action when a ticket has been added.
+			 *
+			 * @param int $post_id ID of parent "event" post.
+			 */
+			do_action( 'tribe_tickets_ticket_added', $post_id );
+		} else {
+			wp_send_json_error( esc_html( sprintf( __( 'Failed to duplicate the %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' ) ) ) );
+		}
+
+		$return = $this->get_panels( $post_id );
+		$return['notice'] = $this->notice( 'ticket-duplicate' );
+
+		/**
+		 * Filters the return data for ticket duplicate.
+		 *
+		 * @since 5.2.3
+		 *
+		 * @param array $return  Array of data to return to the ajax call.
+		 * @param int   $post_id ID of parent "event" post.
+		 */
+		$return = apply_filters( 'event_tickets_ajax_ticket_duplicate_data', $return, $post_id );
 
 		wp_send_json_success( $return );
 	}
