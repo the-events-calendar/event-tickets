@@ -192,8 +192,8 @@ tribe.tickets.commerce = {};
 	 *
 	 * @return {Object}
 	 */
-	obj.getPurchaserData = function ( $container ) {
-		let purchaser = {};
+	obj.getPurchaserData = ( $container ) => {
+		const purchaser = {};
 
 		if ( ! $container.length ) {
 			return purchaser;
