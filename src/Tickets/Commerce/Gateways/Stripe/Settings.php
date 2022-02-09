@@ -337,7 +337,7 @@ class Settings extends Abstract_Settings {
 				'label'      => esc_html__( 'Giropay', 'event-tickets' ),
 			],
 			'klarna'            => [
-				'currencies' => [ 'DKK', 'EUR', 'GBP', 'NOK', 'SEK', 'USD' ],
+				'currencies' => [ 'DKK', 'EUR', 'GBP', 'NOK', 'SEK' ],
 				'label'      => esc_html__( 'Klarna', 'event-tickets' ),
 			],
 			'acss_debit'        => [
