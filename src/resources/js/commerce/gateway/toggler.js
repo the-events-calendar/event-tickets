@@ -26,6 +26,15 @@ tribe.tickets.commerce = tribe.tickets.commerce || {};
 tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 
 /**
+ * Path to this script in the global tribe Object.
+ *
+ * @since TBD
+ *
+ * @type   {Object}
+ */
+tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler || {};
+
+/**
  * This script Object for public usage of the methods.
  *
  * @since TBD
@@ -35,13 +44,13 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 (( $, obj ) => {
 
 	/**
-	 * Add the toggler object.
+	 * Pull the variables from the PHP backend.
 	 *
 	 * @since TBD
 	 *
 	 * @type {Object}
 	 */
-	obj.toggler = {};
+	obj.text = tecTicketsCommerceCheckoutToggleText;
 
 	/**
 	 * Array of gateway elements.
@@ -50,7 +59,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	 *
 	 * @type {Object}
 	 */
-	obj.toggler.gateways = [];
+	obj.gateways = [];
 
 	/**
 	 * Object to store the toggle elements.
@@ -59,21 +68,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	 *
 	 * @type {Object}
 	 */
-	obj.toggler.toggles = {};
-
-	/**
-	 * Toggler classes to be added/removed from different elements.
-	 *
-	 * @since TBD
-	 *
-	 * @type {Object}
-	 */
-	obj.toggler.classes = {
-		toggle: 'tribe-tickets__commerce-checkout-gateway-toggle',
-		toggleOpen: 'tribe-tickets__commerce-checkout-gateway-toggle--open',
-		toggleButton: 'tribe-tickets__commerce-checkout-gateway-toggle-button',
-		toggleHidden: 'tribe-common-a11y-hidden',
-	};
+	obj.toggles = {};
 
 	/**
 	 * Toggler selectors.
@@ -82,9 +77,12 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	 *
 	 * @type {Object}
 	 */
-	obj.toggler.selectors = {
+	obj.selectors = {
 		gatewayDiv: '.tribe-tickets__commerce-checkout-gateway',
-		toggleButton: '.' + obj.toggler.classes.toggle + ' button',
+		toggleButton: '.tribe-tickets__commerce-checkout-gateway-toggle-button',
+		toggle: '.tribe-tickets__commerce-checkout-gateway-toggle',
+		toggleOpen: '.tribe-tickets__commerce-checkout-gateway-toggle--open',
+		toggleHidden: '.tribe-common-a11y-hidden',
 	};
 
 	/**
@@ -94,16 +92,16 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	 *
 	 * @return 
 	 */
-	obj.toggler.init = () => {
-		obj.toggler.gateways = $( obj.toggler.selectors.gatewayDiv );
+	obj.init = () => {
+		obj.gateways = $( obj.selectors.gatewayDiv );
 		
 		// If one or less gateways, go ahead and show and not add toggles.
-		if( obj.toggler.gateways.length < 2 ){
-			obj.toggler.gateways.show();
+		if( obj.gateways.length < 2 ){
+			obj.gateways.show();
 			return;
 		}
-		obj.toggler.addToggles();
-		obj.toggler.showDefault();
+		obj.addToggles();
+		obj.showDefault();
 	};
 
 	/**
@@ -113,11 +111,11 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	 *
 	 * @param {Element} gateway Gateway element to show.
 	 */
-	obj.toggler.showGateway = gateway => {
+	obj.showGateway = gateway => {
 		$( gateway )
 			.show()
 			.attr( 'aria-expanded', 'true' )
-			.removeClass( obj.toggler.classes.toggleHidden );
+			.removeClass( obj.selectors.toggleHidden.className() );
 	};
 
 	/**
@@ -127,11 +125,11 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	 *
 	 * @param {Element} gateway Gateway element to hide.
 	 */
-	obj.toggler.hideGateway = gateway => {
+	obj.hideGateway = gateway => {
 		$( gateway )
 			.hide()
 			.attr( 'aria-expanded', 'false' )
-			.addClass( obj.toggler.classes.toggleHidden );
+			.addClass( obj.selectors.toggleHidden.className() );
 	};
 
 	/**
@@ -139,16 +137,16 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	 *
 	 * @since TBD
 	 */
-	obj.toggler.showDefault = () => {
-		obj.toggler.showGateway( obj.toggler.gateways[0] );
-		obj.toggler.gateways.each( ( x, gateway ) => {
+	obj.showDefault = () => {
+		obj.showGateway( obj.gateways[0] );
+		obj.gateways.each( ( x, gateway ) => {
 			if( 0 === x ){
 				return;
 			}
-			obj.toggler.hideGateway( gateway );
+			obj.hideGateway( gateway );
 		});
-		obj.toggler.toggles.default.addClass( obj.toggler.classes.toggleOpen ).hide().attr( 'aria-hidden', 'true' );
-		obj.toggler.toggles.additional.removeClass( obj.toggler.classes.toggleOpen ).attr( 'aria-selected', 'false' );
+		obj.toggles.default.addClass( obj.selectors.toggleOpen.className() ).hide().attr( 'aria-hidden', 'true' );
+		obj.toggles.additional.removeClass( obj.selectors.toggleOpen.className() ).attr( 'aria-selected', 'false' );
 	};
 
 	/**
@@ -156,16 +154,16 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	 *
 	 * @since TBD
 	 */
-	obj.toggler.showAdditional = () => {
-		obj.toggler.hideGateway( obj.toggler.gateways[0] );
-		obj.toggler.gateways.each( ( x, gateway ) => {
+	obj.showAdditional = () => {
+		obj.hideGateway( obj.gateways[0] );
+		obj.gateways.each( ( x, gateway ) => {
 			if( 0 === x ){
 				return;
 			}
-			obj.toggler.showGateway( gateway );
+			obj.showGateway( gateway );
 		});
-		obj.toggler.toggles.additional.addClass( obj.toggler.classes.toggleOpen ).attr( 'aria-selected', 'true' );
-		obj.toggler.toggles.default.removeClass( obj.toggler.classes.toggleOpen ).show().attr( 'aria-hidden', 'false' );
+		obj.toggles.additional.addClass( obj.selectors.toggleOpen.className() ).attr( 'aria-selected', 'true' );
+		obj.toggles.default.removeClass( obj.selectors.toggleOpen.className() ).show().attr( 'aria-hidden', 'false' );
 	};
 
 	/**
@@ -173,12 +171,12 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	 *
 	 * @since TBD
 	 */
-	obj.toggler.addToggles = () => {
-		obj.toggler.toggles.default = $( obj.toggler.getDefaultToggleHTML() );
-		obj.toggler.toggles.additional = $( obj.toggler.getAdditionalToggleHTML() );
-		obj.toggler.toggles.default.insertBefore( obj.toggler.gateways[0] );
-		obj.toggler.toggles.additional.insertBefore( obj.toggler.gateways[1] );
-		obj.toggler.toggleEvents();
+	obj.addToggles = () => {
+		obj.toggles.default = $( obj.getDefaultToggleHTML() );
+		obj.toggles.additional = $( obj.getAdditionalToggleHTML() );
+		obj.toggles.default.insertBefore( obj.gateways[0] );
+		obj.toggles.additional.insertBefore( obj.gateways[1] );
+		obj.toggleEvents();
 	};
 
 	/**
@@ -188,10 +186,10 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
      * 
      * @return string HTML for toggle.
 	 */
-	obj.toggler.getDefaultToggleHTML = () => {
-		return `<div class="${obj.toggler.classes.toggle}">` + 
-			`<button class="${obj.toggler.classes.toggleButton}">` + 
-			`${tecTicketsCommerceCheckoutToggleText.default}` + 
+	obj.getDefaultToggleHTML = () => {
+		return `<div class="${obj.selectors.toggle.className()}">` + 
+			`<button class="${obj.selectors.toggleButton.className()}">` + 
+			`${obj.text.default}` + 
 			`</button></div>`;
 	};
 
@@ -202,10 +200,10 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
      * 
      * @return string HTML for toggle.
 	 */
-	obj.toggler.getAdditionalToggleHTML = () => {
-		return `<div class="${obj.toggler.classes.toggle}">` + 
-			`<button class="${obj.toggler.classes.toggleButton}">` + 
-			`${tecTicketsCommerceCheckoutToggleText.additional}` + 
+	obj.getAdditionalToggleHTML = () => {
+		return `<div class="${obj.selectors.toggle.className()}">` + 
+			`<button class="${obj.selectors.toggleButton.className()}">` + 
+			`${obj.text.additional}` + 
 			`</button></div>`;
 	};
 
@@ -214,11 +212,11 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	 *
 	 * @since TBD
 	 */
-	obj.toggler.toggleEvents = () => {
-		obj.toggler.toggles.default.find( 'button' ).on( 'click', obj.toggler.showDefault );
-		obj.toggler.toggles.additional.find( 'button' ).on( 'click', obj.toggler.showAdditional );
+	obj.toggleEvents = () => {
+		obj.toggles.default.find( 'button' ).on( 'click', obj.showDefault );
+		obj.toggles.additional.find( 'button' ).on( 'click', obj.showAdditional );
 	}
 
     // Initiate the toggles.
-	obj.toggler.init();
-})( jQuery, tribe.tickets.commerce.gateway );
+	obj.init();
+})( jQuery, tribe.tickets.commerce.gateway.toggler );
