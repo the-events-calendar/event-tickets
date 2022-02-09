@@ -36,6 +36,33 @@ class Client {
 	public $payment_intent_transient_name;
 
 	/**
+	 * Flag to activate fallback mode for the Payment Element
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	private $payment_element_fallback_mode = false;
+
+	/**
+	 * Counter for how many times we've re-tried creating a PaymentIntent
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	private $payment_element_fallback_retries = 0;
+
+	/**
+	 * Counter for how many times we've re-tried creating a PaymentIntent
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	private $payment_intent_max_retries = 3;
+
+	/**
 	 * The percentage applied to Stripe transactions. Currently set at 2%.
 	 *
 	 * @since TBD
@@ -65,6 +92,39 @@ class Client {
 	}
 
 	/**
+	 * Set the fallback_mode flag to true
+	 *
+	 * @since TBD
+	 */
+	public function start_fallback_mode() {
+		$this->payment_element_fallback_mode = true;
+	}
+
+	/**
+	 * Set the fallback_mode flag to false
+	 *
+	 * @since TBD
+	 */
+	public function stop_fallback_mode() {
+		$this->payment_element_fallback_mode = false;
+	}
+
+	/**
+	 * Increment the retry counter if under max_retries
+	 *
+	 * @return bool true if incremented, false if no more retries are allowed
+	 */
+	public function count_retries() {
+		if ( $this->payment_intent_max_retries <= $this->payment_element_fallback_retries ) {
+			return false;
+		}
+
+		$this->payment_element_fallback_retries ++;
+
+		return true;
+	}
+
+	/**
 	 * Get REST API endpoint URL for requests.
 	 *
 	 * @since TBD
@@ -90,8 +150,6 @@ class Client {
 	 *
 	 * @param string $currency 3-letter ISO code for the desired currency. Not all currencies are supported.
 	 * @param int    $value    the payment value in the smallest currency unit (e.g: cents, if the purchase is in USD)
-	 *
-	 * @return array|\WP_Error
 	 */
 	public function create_payment_intent() {
 
@@ -142,7 +200,51 @@ class Client {
 
 		$payment_intent = $this->post( $url, $query_args, $args );
 
-		$this->store_payment_intent( $payment_intent );
+		if ( ! isset( $payment_intent['id'] ) && ! empty( $payment_intent['errors'] ) ) {
+
+			if ( $this->count_retries() ) {
+				$this->delete_payment_intent_transient();
+				$this->start_fallback_mode();
+				$this->log_stripe_errors( $payment_intent );
+
+				return $this->create_payment_intent();
+			}
+
+			$this->log_stripe_errors( $payment_intent, false );
+
+			$payment_intent['errors'][0] = [
+				'et_could_not_create_stripe_order',
+				__( 'There was an error enabling Stripe on your cart. More information is available in the Event Tickets settings dashboard. Please contact the site administrator for support.', 'event-tickets' ),
+			];
+
+			return $this->store_payment_intent( $payment_intent );
+		}
+
+		$this->stop_fallback_mode();
+
+		return $this->store_payment_intent( $payment_intent );
+	}
+
+	/**
+	 * Store Payment Intent creation errors for admins to resolve
+	 *
+	 * @since TBD
+	 *
+	 * @param array $payload returned payload from failed attempts to create a PaymentIntent object
+	 */
+	private function log_stripe_errors( $payload, $recoverable = true ) {
+		$payload = array_shift( $payload );
+
+		foreach ( $payload as $logs ) {
+			$error['type']        = $logs[0];
+			$error['message']     = $logs[1];
+			$error['time']        = gmdate( 'c', time() );
+			$error['cart']        = tribe_get_request_var( 'tec-tc-cookie' );
+			$error['recoverable'] = $recoverable;
+
+			tribe( Settings::class )->log_errors( $error );
+		}
+
 	}
 
 	/**
@@ -241,6 +343,17 @@ class Client {
 	 */
 	public function get_payment_intent_transient() {
 		return get_transient( $this->get_payment_intent_transient_name() );
+	}
+
+	/**
+	 * Delete the payment intent transient
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function delete_payment_intent_transient() {
+		return delete_transient( $this->get_payment_intent_transient_name() );
 	}
 
 	/**
@@ -598,7 +711,7 @@ class Client {
 	 */
 	public function get_payment_method_types() {
 
-		if ( Settings::CARD_ELEMENT_SLUG === tribe_get_option( Settings::$option_checkout_element ) ) {
+		if ( $this->payment_element_fallback_mode || Settings::CARD_ELEMENT_SLUG === tribe_get_option( Settings::$option_checkout_element ) ) {
 			return [ 'card' ];
 		}
 

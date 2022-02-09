@@ -60,6 +60,15 @@ class Settings extends Abstract_Settings {
 	const DEFAULT_PAYMENT_ELEMENT_METHODS = [ 'card' ];
 
 	/**
+	 * Maximum number of error log entries to keep
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	const MAX_LOG_SIZE = 100;
+
+	/**
 	 * Connection details fetched from the Stripe API on page-load
 	 *
 	 * @since TBD
@@ -126,6 +135,15 @@ class Settings extends Abstract_Settings {
 	 * @var string
 	 */
 	public static $option_checkout_element_payment_methods = 'tickets-commerce-stripe-checkout-element-payment-methods';
+
+	/**
+	 * Option name for the error log option
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $stripe_error_log_option = 'tickets-commerce-stripe-error-log';
 
 	/**
 	 * Constructor
@@ -354,6 +372,28 @@ class Settings extends Abstract_Settings {
 		 * @param array $available_methods the list of payment methods available.
 		 */
 		return apply_filters( 'tec_tickets_commerce_stripe_payment_methods_available', $available_methods );
+	}
+
+	/**
+	 * Logs errors to the Stripe error log
+	 *
+	 * @since TBD
+	 *
+	 * @param array $error array of error information
+	 */
+	public function log_errors( $error ) {
+		$error_log = get_option( static::$stripe_error_log_option );
+
+		$error_log[] = $error;
+
+		$size = count( $error_log );
+
+		// If we're over the max log size, roll over the older log entries.
+		if ( $size > self::MAX_LOG_SIZE ) {
+			$error_log = array_slice( $error_log, $size - self::MAX_LOG_SIZE );
+		}
+
+		update_option( static::$stripe_error_log_option, $error_log );
 	}
 
 	/**
