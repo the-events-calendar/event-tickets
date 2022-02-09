@@ -15,14 +15,16 @@
  */
 
 $classes = [
-		'tec-tickets__admin-settings-tickets-commerce-gateway',
-		'tec-tickets__admin-settings-tickets-commerce-gateway--connected' => $merchant_status['connected'],
+	'tec-tickets__admin-settings-tickets-commerce-gateway',
+	'tec-tickets__admin-settings-tickets-commerce-gateway--connected' => $merchant_status['connected'],
 ]
 ?>
 
 <div <?php tribe_classes( $classes ); ?>>
-	<div id="tec-tickets__admin-settings-tickets-commerce-gateway-connect"
-		 class="tec-tickets__admin-settings-tickets-commerce-gateway-connect">
+	<div
+		id="tec-tickets__admin-settings-tickets-commerce-gateway-connect"
+		class="tec-tickets__admin-settings-tickets-commerce-gateway-connect"
+	>
 
 		<?php $this->template( 'settings/tickets-commerce/stripe/connect/inactive' ); ?>
 
@@ -33,5 +35,3 @@ $classes = [
 	<?php $this->template( 'settings/tickets-commerce/stripe/connect/logo' ); ?>
 
 </div>
-
-<?php $this->template( 'settings/tickets-commerce/stripe/modal/signup-complete' ); ?>
