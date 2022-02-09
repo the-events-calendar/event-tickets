@@ -49,7 +49,7 @@ class Tribe__Tickets__Editor__Blocks__Tickets
 	 */
 	public function assets() {
 		global $wp_version;
-		$plugin = Tribe__Tickets__Main::instance();
+		$plugin       = Tribe__Tickets__Main::instance();
 		$block_object = $this;
 
 		tribe_asset(
@@ -85,32 +85,30 @@ class Tribe__Tickets__Editor__Blocks__Tickets
 			[
 				'type'     => 'js',
 				'groups'   => [ 'tribe-tickets-block-assets' ],
-				'localize' => static function() use ( $block_object ) {
-					return [
-						[
-							'name' => 'TribeTicketOptions',
-							'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_ticket_options' ],
-						],
-						[
-							'name' => 'TribeCurrency',
-							'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_currencies' ],
-						],
-						[
-							'name' => 'TribeCartEndpoint',
-							'data' => [
-								'url' => tribe_tickets_rest_url( '/cart/' ),
-							],
-						],
-						[
-							'name' => 'TribeMessages',
-							'data' => $block_object->set_messages(),
-						],
-						[
-							'name' => 'TribeTicketsURLs',
-							'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_cart_checkout_urls' ],
-						],
-					];
-				},
+				'localize' => [
+					[
+						'name' => 'TribeTicketOptions',
+						'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_ticket_options' ],
+					],
+					[
+						'name' => 'TribeCurrency',
+						'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_currencies' ],
+					],
+					[
+						'name' => 'TribeCartEndpoint',
+						'data' => static function() {
+							return [ 'url' => tribe_tickets_rest_url( '/cart/' ) ];
+						}
+					],
+					[
+						'name' => 'TribeMessages',
+						'data' => [ $block_object, 'set_messages' ],
+					],
+					[
+						'name' => 'TribeTicketsURLs',
+						'data' => [ 'Tribe__Tickets__Tickets', 'get_asset_localize_data_for_cart_checkout_urls' ],
+					],
+				],
 			]
 		);
 
