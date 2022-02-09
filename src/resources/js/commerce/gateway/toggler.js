@@ -117,7 +117,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 		$( gateway )
 			.show()
 			.attr( 'aria-expanded', 'true' )
-			.removeClass(obj.toggler.classes.toggleHidden);
+			.removeClass( obj.toggler.classes.toggleHidden );
 	};
 
 	/**
@@ -131,7 +131,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 		$( gateway )
 			.hide()
 			.attr( 'aria-expanded', 'false' )
-			.addClass(obj.toggler.classes.toggleHidden);
+			.addClass( obj.toggler.classes.toggleHidden );
 	};
 
 	/**
@@ -147,8 +147,8 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 			}
 			obj.toggler.hideGateway( gateway );
 		});
-		obj.toggler.toggles.default.addClass(obj.toggler.classes.toggleOpen).hide().attr( 'aria-hidden', 'true' );
-		obj.toggler.toggles.additional.removeClass(obj.toggler.classes.toggleOpen).attr( 'aria-selected', 'false' );
+		obj.toggler.toggles.default.addClass( obj.toggler.classes.toggleOpen ).hide().attr( 'aria-hidden', 'true' );
+		obj.toggler.toggles.additional.removeClass( obj.toggler.classes.toggleOpen ).attr( 'aria-selected', 'false' );
 	};
 
 	/**
@@ -164,8 +164,8 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 			}
 			obj.toggler.showGateway( gateway );
 		});
-		obj.toggler.toggles.additional.addClass(obj.toggler.classes.toggleOpen).attr( 'aria-selected', 'true' );
-		obj.toggler.toggles.default.removeClass(obj.toggler.classes.toggleOpen).show().attr( 'aria-hidden', 'false' );
+		obj.toggler.toggles.additional.addClass( obj.toggler.classes.toggleOpen ).attr( 'aria-selected', 'true' );
+		obj.toggler.toggles.default.removeClass( obj.toggler.classes.toggleOpen ).show().attr( 'aria-hidden', 'false' );
 	};
 
 	/**
@@ -174,8 +174,8 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	 * @since TBD
 	 */
 	obj.toggler.addToggles = () => {
-		obj.toggler.toggles.default = $(obj.toggler.getDefaultToggleHTML());
-		obj.toggler.toggles.additional = $(obj.toggler.getAdditionalToggleHTML());
+		obj.toggler.toggles.default = $( obj.toggler.getDefaultToggleHTML() );
+		obj.toggler.toggles.additional = $( obj.toggler.getAdditionalToggleHTML() );
 		obj.toggler.toggles.default.insertBefore( obj.toggler.gateways[0] );
 		obj.toggler.toggles.additional.insertBefore( obj.toggler.gateways[1] );
 		obj.toggler.toggleEvents();
@@ -215,8 +215,8 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 	 * @since TBD
 	 */
 	obj.toggler.toggleEvents = () => {
-		obj.toggler.toggles.default.find('button').on( 'click', obj.toggler.showDefault );
-		obj.toggler.toggles.additional.find('button').on( 'click', obj.toggler.showAdditional );
+		obj.toggler.toggles.default.find( 'button' ).on( 'click', obj.toggler.showDefault );
+		obj.toggler.toggles.additional.find( 'button' ).on( 'click', obj.toggler.showAdditional );
 	}
 
     // Initiate the toggles.
