@@ -128,6 +128,24 @@ class Settings extends Abstract_Settings {
 	public static $option_checkout_element_payment_methods = 'tickets-commerce-stripe-checkout-element-payment-methods';
 
 	/**
+	 * Option name for the option to enable order updates via webhooks
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_enable_webhooks = 'tickets-commerce-stripe-enable-webhooks';
+
+	/**
+	 * Option name for the option to store the webhook signing key
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_webhooks_signing_key = 'tickets-commerce-stripe-webhooks-signing-key';
+
+	/**
 	 * Constructor
 	 */
 	public function __construct() {
@@ -155,7 +173,7 @@ class Settings extends Abstract_Settings {
 		);
 
 		$payment_methods_tooltip = sprintf(
-			// Translators: %1$s: Opening `<strong>` tag. %2$s: The currency name. %3$s: Closing `</strong>` tag. %4$s: Opening `<a>` tag for Stripe link. %5$s: Closing `</a>` tag.
+		// Translators: %1$s: Opening `<strong>` tag. %2$s: The currency name. %3$s: Closing `</strong>` tag. %4$s: Opening `<a>` tag for Stripe link. %5$s: Closing `</a>` tag.
 			__( 'Payment methods available for %1$s%2$s%3$s.<br /><br /> The payment methods listed here are dependent on the currency selected for Tickets Commerce and the currency each payment method support. You can review the payment methods and their availablity for each currency on %4$sStripe\'s documentation%5$s.<br /><br />', 'event-tickets' ),
 			'<strong>',
 			$currency_name,
@@ -165,21 +183,21 @@ class Settings extends Abstract_Settings {
 		);
 
 		$stripe_message = sprintf(
-			// Translators: %1$s: The Event Tickets Plus link.
+		// Translators: %1$s: The Event Tickets Plus link.
 			esc_html__( 'You are using the free Stripe payment gateway integration. This includes an additional 2%% fee for processing ticket sales. This fee is removed by activating Event Tickets Plus. %1$s.', 'event-tickets' ),
 			$plus_link,
 		);
-		$settings = [
-			'tickets-commerce-stripe-commerce-description' => [
+		$settings       = [
+			'tickets-commerce-stripe-commerce-description'           => [
 				'type' => 'html',
 				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-description">' . $stripe_message . '</div>',
 			],
-			'tickets-commerce-stripe-commerce-configure'   => [
+			'tickets-commerce-stripe-commerce-configure'             => [
 				'type'            => 'wrapped_html',
 				'html'            => $this->get_connection_settings_html(),
 				'validation_type' => 'html',
 			],
-			'tickets-commerce-stripe-settings-heading'     => [
+			'tickets-commerce-stripe-settings-heading'               => [
 				'type' => 'html',
 				'html' => '<h3 class="tribe-dependent -input">' . __( 'Stripe Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
 			],
@@ -187,7 +205,7 @@ class Settings extends Abstract_Settings {
 				'type' => 'html',
 				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . __( 'General', 'event-tickets' ) . '</h4><div class="clear"></div>',
 			],
-			static::$option_statement_descriptor           => [
+			static::$option_statement_descriptor                     => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Statement Descriptor', 'event-tickets' ),
 				'tooltip'             => esc_html__( 'This is the text that appears on the ticket purchaser bank statements. If left blank, the descriptor set in Stripe will be used.', 'event-tickets' ),
@@ -197,14 +215,14 @@ class Settings extends Abstract_Settings {
 				'validation_type'     => 'textarea',
 				'placeholder'         => ! empty( $this->connection_status['statement_descriptor'] ) ? esc_textarea( $this->connection_status['statement_descriptor'] ) : '',
 			],
-			static::$option_stripe_receipt_emails          => [
+			static::$option_stripe_receipt_emails                    => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html__( 'Enable Stripe Receipt Emails', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'If this option is selected, ticket buyers will get stripe receipts, as well as Event Tickets confirmation emails.', 'event-tickets' ),
 				'default'         => false,
 				'validation_type' => 'boolean',
 			],
-			'tickets-commerce-stripe-checkout-settings-heading' => [
+			'tickets-commerce-stripe-checkout-settings-heading'      => [
 				'type' => 'html',
 				'html' => '<h3 class="tribe-dependent -input">' . __( 'Checkout Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
 			],
@@ -213,7 +231,7 @@ class Settings extends Abstract_Settings {
 				'type' => 'html',
 				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . __( 'Checkout', 'event-tickets' ) . '</h4><div class="clear"></div>',
 			],
-			static::$option_checkout_element               => [
+			static::$option_checkout_element                          => [
 				'type'            => 'radio',
 				'label'           => esc_html__( 'Checkout Type', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Choose if you want to process payments with credit cards only, or if you also want to include other payment methods.', 'event-tickets' ),
@@ -225,7 +243,7 @@ class Settings extends Abstract_Settings {
 				],
 				'tooltip_first'   => true,
 			],
-			static::$option_checkout_element_card_fields   => [
+			static::$option_checkout_element_card_fields              => [
 				'type'            => 'radio',
 				'label'           => esc_html__( 'Credit Card Fields', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Stripe offers two different types of credit card fields. A consolidated single field or a more traditional multi-fields format.', 'event-tickets' ) . '<br /><br />',
@@ -234,7 +252,7 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'options',
 				'options'         => [
 					self::COMPACT_CARD_ELEMENT_SLUG  => sprintf(
-						// Translators: %1$s: Opening `<strong>` tag. %2$s: Closing `</strong>` tag. %3$s: Opening `<span>` tag. %4$s: Closing `</span>` tag.
+					// Translators: %1$s: Opening `<strong>` tag. %2$s: Closing `</strong>` tag. %3$s: Opening `<span>` tag. %4$s: Closing `</span>` tag.
 						__( '%1$sSingle field%2$s. %3$sIt combines the card number, expiration date, CVC, and zip / postal code (if enabled) fields into one intuitive field.%4$s', 'event-tickets' ),
 						'<strong>',
 						'</strong>',
@@ -242,7 +260,7 @@ class Settings extends Abstract_Settings {
 						'</span>'
 					),
 					self::SEPARATE_CARD_ELEMENT_SLUG => sprintf(
-						// Translators: %1$s: Opening `<strong>` tag. %2$s: Closing `</strong>` tag. %3$s: Opening `<span>` tag. %4$s: Closing `</span>` tag.
+					// Translators: %1$s: Opening `<strong>` tag. %2$s: Closing `</strong>` tag. %3$s: Opening `<span>` tag. %4$s: Closing `</span>` tag.
 						__( '%1$sMultiple fields.%2$s %3$sAll fields are separate from one another. This is the more traditional credit card fieldset format that many are familiar with.%4$s', 'event-tickets' ),
 						'<strong>',
 						'</strong>',
@@ -252,7 +270,7 @@ class Settings extends Abstract_Settings {
 				],
 				'tooltip_first'   => true,
 			],
-			static::$option_checkout_element_payment_methods => [
+			static::$option_checkout_element_payment_methods          => [
 				'type'            => 'checkbox_list',
 				'label'           => esc_html__( 'Payment methods accepted', 'event-tickets' ),
 				'tooltip'         => $payment_methods_tooltip,
@@ -261,6 +279,31 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'options_multi',
 				'options'         => $this->get_payment_methods_available_by_currency(),
 				'tooltip_first'   => true,
+			],
+			'tickets-commerce-stripe-webhook-settings-heading'        => [
+				'type' => 'html',
+				'html' => '<h3 class="tribe-dependent -input">' . __( 'Webhook Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
+			],
+			'tickets-commerce-gateway-settings-group-header-webhook'  => [
+				'type' => 'html',
+				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . __( 'Webhooks', 'event-tickets' ) . '</h4><div class="clear"></div>',
+			],
+			static::$option_enable_webhooks                           => [
+				'type'            => 'checkbox_bool',
+				'label'           => esc_html__( 'Enable Stripe Webhook Updates', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'Enables your site to listen to events coming from Stripe to update the order statuses and other details. Before checking this box, make sure you have configured Webhooks in your Stripe Account.', 'event-tickets' ),
+				'default'         => false,
+				'validation_type' => 'boolean',
+			],
+			static::$option_webhooks_signing_key                      => [
+				'type'                => 'text',
+				'label'               => esc_html__( 'Signing Secret', 'event-tickets' ),
+				'tooltip'             => esc_html__( 'To find your signing secret, head to https://dashboard.stripe.com/webhooks, click on the endpoint desired, and click to Reveal the Signing Secret', 'event-tickets' ),
+				'size'                => 'medium',
+				'default'             => '',
+				'validation_callback' => 'is_string',
+				'validation_type'     => 'textarea',
+				'conditional'         => true === tribe_get_option( static::$option_enable_webhooks ),
 			],
 		];
 
