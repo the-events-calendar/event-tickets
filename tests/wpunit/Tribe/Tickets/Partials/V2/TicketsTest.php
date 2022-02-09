@@ -159,18 +159,7 @@ class TicketsTest extends V2TestCase {
 		$html = $template->template( $this->partial_path, $args, false );
 
 		$driver = $this->get_html_output_driver();
-		$driver->setTolerableDifferences( $this->tolerables );
-
-		// Handle variations that tolerances won't handle.
-		$html = str_replace(
-			$this->tolerables,
-			[
-				'[EVENT_ID]',
-				'[TICKET_ID_1]',
-				'[TICKET_ID_2]',
-			],
-			$html
-		);
+		$driver->setTolerableDifferences( [ $this->tolerables ] );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -190,18 +179,7 @@ class TicketsTest extends V2TestCase {
 		$html = $template->template( $this->partial_path, $args, false );
 
 		$driver = $this->get_html_output_driver();
-		$driver->setTolerableDifferences( $this->tolerables );
-
-		// Handle variations that tolerances won't handle.
-		$html = str_replace(
-			$this->tolerables,
-			[
-				'[EVENT_ID]',
-				'[TICKET_ID_1]',
-				'[TICKET_ID_2]',
-			],
-			$html
-		);
+		$driver->setTolerableDifferences( [ $this->tolerables ] );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
@@ -221,18 +199,7 @@ class TicketsTest extends V2TestCase {
 		$html = $template->template( $this->partial_path, $args, false );
 
 		$driver = $this->get_html_output_driver();
-		$driver->setTolerableDifferences( $this->tolerables );
-
-		// Handle variations that tolerances won't handle.
-		$html = str_replace(
-			$this->tolerables,
-			[
-				'[EVENT_ID]',
-				'[TICKET_ID_1]',
-				'[TICKET_ID_2]',
-			],
-			$html
-		);
+		$driver->setTolerableDifferences( [ $this->tolerables ] );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}
