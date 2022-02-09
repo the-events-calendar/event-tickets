@@ -35,16 +35,11 @@ if ( ! $merchant_status['charges_enabled'] ) {
 				<?php foreach ( $capabilities as $capability => $status ) :
 					$capability_classes = [
 						'dashicons',
-						'dashicons-yes',
-						'tec-tickets__admin-settings-tickets-commerce-gateway-capability--yes',
+						'dashicons-yes' => 'inactive' !== $status,
+						'tec-tickets__admin-settings-tickets-commerce-gateway-capability--yes' => 'inactive' !== $status,
+						'dashicons-no' => 'inactive' === $status,
+						'tec-tickets__admin-settings-tickets-commerce-gateway-capability--no' => 'inactive' === $status,
 					];
-					if ( 'inactive' === $status ) {
-						$capability_classes = [
-							'dashicons',
-							'dashicons-no',
-							'tec-tickets__admin-settings-tickets-commerce-gateway-capability--no',
-						];
-					}
 					?>
 					<li>
 						<span <?php tribe_classes( $capability_classes ); ?>></span>
