@@ -100,7 +100,12 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$messages = $this->get_error_messages();
 		$data = $request->get_json_params();
-		$purchaser = tribe( Order::class )->prepare_purchaser_data( $data );
+		$purchaser = tribe( Order::class )->get_purchaser_data( $data );
+
+		if ( is_wp_error( $purchaser ) ) {
+			return $purchaser;
+		}
+
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 
 		$unit = [
