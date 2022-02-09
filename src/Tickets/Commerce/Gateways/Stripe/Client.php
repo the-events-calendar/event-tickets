@@ -318,7 +318,11 @@ class Client {
 				$return['capabilities'] = $response['capabilities'];
 			}
 
-			if ( ! empty( $response['settings']['payments']['statement_descriptor'] ) ) {
+			if ( ! empty( $response['statement_descriptor'] ) ) {
+				$return['statement_descriptor'] = $response['statement_descriptor'];
+			}
+
+			if ( empty( $return['statement_descriptor'] ) && ! empty( $response['settings']['payments']['statement_descriptor'] ) ) {
 				$return['statement_descriptor'] = $response['settings']['payments']['statement_descriptor'];
 			}
 
