@@ -1,10 +1,21 @@
+<?php
+/**
+ * Template to display the Stripe signup link.
+ *
+ * @since TBD
+ *
+ * @var Tribe__Tickets__Admin__Views $this     Template object.
+ * @var array                        $gateways Array of gateway objects.
+ */
+
+?>
 <div
 	class="tec-tickets__admin-settings-tickets-commerce-gateway-signup-settings"
 >
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button">
 		<a
 			data-gateway-onboard-complete="tecTicketsCommerceGatewayStripeSignupCallback"
-			href="<?php echo esc_attr( $url ) ?>"
+			href="<?php echo esc_url( $url ); ?>"
 			data-gateway-button="true"
 			id="connect_to_stripe"
 			class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link"

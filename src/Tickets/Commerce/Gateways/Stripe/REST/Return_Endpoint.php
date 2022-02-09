@@ -3,8 +3,8 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
-use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
+use TEC\Tickets\Commerce\Gateways\Stripe\Settings;
 use Tribe__Settings;
 
 use WP_REST_Server;
@@ -119,9 +119,8 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 */
 	public function handle_connection_established( $payload ) {
 
-		$tracking_id = tribe( Gateway::class )->generate_unique_tracking_id();
-
 		tribe( Merchant::class )->save_signup_data( (array) $payload );
+		tribe( Settings::class )->setup_account_defaults();
 
 		$url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-section' => 'stripe' ] );
 
