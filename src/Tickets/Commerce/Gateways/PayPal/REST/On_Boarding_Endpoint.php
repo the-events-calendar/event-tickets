@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal\REST;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\PayPal\Client;
+use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Refresh_Token;
 
@@ -122,7 +123,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		$signup        = tribe( Signup::class );
 		$existing_hash = $signup->get_transient_hash();
 		$request_hash  = $request->get_param( 'hash' );
-		$return_url    = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] );
+		$return_url    = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-section' => tribe( Gateway::class )->get_key() ] );
 
 		if ( $request_hash !== $existing_hash ) {
 			$this->redirect_with( 'invalid-paypal-signup-hash', $return_url );
