@@ -24,7 +24,7 @@ if ( empty( $is_merchant_connected ) || ! $debug ) {
 }
 
 $url = Tribe__Settings::instance()->get_url( [
-	'tab' => 'payments',
+	'tab' => Payments_Tab::$slug,
 	tribe( Payments_Tab::class )::$key_current_section_get_var => $gateway_key,
 	'tc-action' => 'paypal-refresh-user-info',
 ] );
