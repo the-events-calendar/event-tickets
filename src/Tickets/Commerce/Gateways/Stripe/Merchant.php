@@ -173,4 +173,34 @@ class Merchant extends Abstract_Merchant {
 
 		return update_option( $this->get_signup_data_key(), $signup_data );
 	}
+
+	public function validate_account_permissions() {
+		$status = tribe( Settings::class )->connection_status;
+		if ( empty( $status ) ) {
+			tribe( Settings::class )->set_connection_status();
+			$status = tribe( Settings::class )->connection_status;
+		}
+
+		$is_licensed = \TEC\Tickets\Commerce\Settings::is_licensed_plugin();
+
+		if ( $is_licensed ) {
+		//	return true;
+		}
+
+		if ( ! $this->country_is_permitted( $status ) ) {
+			return false;
+		}
+
+		if ( ! $this->currency_is_permitted( $status )  ) {
+			return false;
+		}
+	}
+
+	public function country_is_permitted( $status ) {
+		return 'BR' !== $status['country'];
+	}
+
+	public function currency_is_permitted() {
+		return true;
+	}
 }

@@ -70,7 +70,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 * @param WP_REST_Request $request The request object.
 	 */
 	public function handle_stripe_return( WP_REST_Request $request ) {
-		$stripe_obj = tribe_get_request_var( 'stripe' );
+		$stripe_obj   = tribe_get_request_var( 'stripe' );
 		$disconnected = tribe_get_request_var( 'stripe_disconnected' );
 
 		if ( ! empty( $stripe_obj ) ) {
@@ -122,6 +122,10 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 		tribe( Merchant::class )->save_signup_data( (array) $payload );
 		tribe( Settings::class )->setup_account_defaults();
 
+		if ( ! tribe( Merchant::class )->validate_account_permissions() ) {
+			return $this->handle_connection_terminated( [ 'tc-connection-terminated' => 'invalid-account' ] );
+		}
+
 		$url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-section' => 'stripe' ] );
 
 		wp_safe_redirect( $url );
@@ -136,7 +140,11 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 * @param object $payload data returned from WhoDat
 	 */
 	public function handle_connection_error( $payload ) {
-		$url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-section' => 'stripe', 'tc-stripe-error' => $payload->{'tc-stripe-error'} ] );
+		$url = Tribe__Settings::instance()->get_url( [
+			'tab'             => 'payments',
+			'tc-section'      => 'stripe',
+			'tc-stripe-error' => $payload->{'tc-stripe-error'},
+		] );
 
 		wp_safe_redirect( $url );
 		exit();
@@ -147,10 +155,18 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since TBD
 	 */
-	public function handle_connection_terminated() {
-		tribe( Merchant::class )->save_signup_data([]);
+	public function handle_connection_terminated( $reason = [] ) {
+		tribe( Merchant::class )->save_signup_data( [] );
 
-		$url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-section' => 'stripe', 'stripe_disconnected' => 1 ] );
+		$query_args = [
+			'tab'                 => 'payments',
+			'tc-section'          => 'stripe',
+			'stripe_disconnected' => 1,
+		];
+
+		$url_args = array_merge( $query_args, $reason );
+
+		$url = Tribe__Settings::instance()->get_url( $url_args );
 
 		wp_safe_redirect( $url );
 		exit();
