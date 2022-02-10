@@ -166,12 +166,6 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			$sections[] = $new_section;
 		}
 
-		$sections[] = [
-			'classes' => [],
-			'url' => Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-section' => 'error_log' ] ),
-			'text' => __( 'Gateway Error Logs', 'event-tickets' ),
-		];
-
 		$template = $this->get_template();
 		$menu_html = $template->template( 'section/menu', [ 'sections' => $sections ], false );
 
