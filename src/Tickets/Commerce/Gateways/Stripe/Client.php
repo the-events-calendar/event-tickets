@@ -63,15 +63,6 @@ class Client {
 	private $payment_intent_max_retries = 3;
 
 	/**
-	 * The percentage applied to Stripe transactions. Currently set at 2%.
-	 *
-	 * @since TBD
-	 *
-	 * @var float
-	 */
-	private static $application_fee_percentage = 0.02;
-
-	/**
 	 * The Stripe API base URL
 	 *
 	 * @since TBD
@@ -176,7 +167,7 @@ class Client {
 			$items
 		);
 		$value = tribe( Order::class )->get_value_total( array_filter( $items ) );
-		$fee   = $this->calculate_application_fee_value( $value );
+		$fee   = Application_Fee::calculate( $value );
 
 		$query_args = [];
 		$body       = [
@@ -683,25 +674,6 @@ class Client {
 	}
 
 	/**
-	 * Calculate the fee value that needs to be applied to the PaymentIntent.
-	 *
-	 * @since TBD
-	 *
-	 * @param Value $value
-	 *
-	 * @return Value;
-	 */
-	public function calculate_application_fee_value( Value $value ) {
-
-		if ( \TEC\Tickets\Commerce\Settings::is_licensed_plugin() ) {
-			return Value::create();
-		}
-
-		// otherwise, calculate it over the cart total
-		return Value::create( $value->get_decimal() * static::get_application_fee_percentage() );
-	}
-
-	/**
 	 * Returns the list of enabled payment method types for the Payment Element, or the Card type
 	 * for the Card Element.
 	 *
@@ -716,16 +688,5 @@ class Client {
 		}
 
 		return tribe_get_option( Settings::$option_checkout_element_payment_methods, [ 'card' ] );
-	}
-
-	/**
-	 * Returns the application fee percentage value
-	 *
-	 * @since TBD
-	 *
-	 * @return float
-	 */
-	private static function get_application_fee_percentage() {
-		return static::$application_fee_percentage;
 	}
 }
