@@ -256,12 +256,8 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * @return string
 	 */
 	public static function get_status_text() {		
-		if ( ! static::is_enabled() ) {
+		if ( ! static::is_enabled() || ! static::is_active() ) {
 			return '';
-		}
-		
-		if ( ! static::is_active() ) {
-			return __( 'Enabled, but not active', 'event-tickets' );
 		}
 		
 		return __( 'Enabled for Checkout', 'event-tickets' );

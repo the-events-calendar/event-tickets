@@ -259,6 +259,8 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 				'<a href="https://evnt.is/19zl" target="_blank" rel="noopener noreferrer">%s</a>',
 				esc_html__( 'Check it out!', 'event-tickets' )
 			);
+			
+			// @todo @fe @juanfra: Adjust text below.
 			$plus_message = sprintf(
 				// Translators: %1$s: The Event Tickets Plus link, %2$s: The word "ticket" in lowercase, %3$s: The "Check it out!" link.
 				esc_html_x( 'Tickets Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check attendees in via QR codes, and share stock between %2$s. %3$s', 'about Tickets Commerce', 'event-tickets' ),
@@ -302,19 +304,21 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			esc_html__( 'Enable %s', 'event-tickets' ),
 			$section_gateway->get_label()
 		);
-
+		$attributes = tribe_get_attributes( [
+			'type'     => 'checkbox',
+			'name'     => $option_key,
+			'id'       => 'tickets-commerce-enable-input',
+			'class'    => 'tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified',
+			'disabled' => ! $section_gateway->is_active(),
+			'checked'  => $section_gateway->is_enabled(),
+		] );
 		$top_level_settings['tickets-commerce-header'] = [
 			'type' => 'html',
 			'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-toggle-wrapper">
 							<label class="tec-tickets__admin-settings-tickets-commerce-toggle">
-								<input
-									type="checkbox"
-									name="' . $option_key . '"
-									' . checked( $section_gateway->is_enabled(), true, false ) . '
-									id="tickets-commerce-enable-input"
-									class="tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified">
-									<span class="tec-tickets__admin-settings-tickets-commerce-toggle-switch"></span>
-									<span class="tec-tickets__admin-settings-tickets-commerce-toggle-label">' . $enable_label . '</span>
+								<input ' . implode( ' ', $attributes ) . ' />
+								<span class="tec-tickets__admin-settings-tickets-commerce-toggle-switch"></span>
+								<span class="tec-tickets__admin-settings-tickets-commerce-toggle-label">' . $enable_label . '</span>
 							</label>
 						</div>',
 
