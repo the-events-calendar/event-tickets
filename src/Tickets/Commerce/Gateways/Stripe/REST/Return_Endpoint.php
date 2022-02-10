@@ -3,9 +3,11 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
+use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 use TEC\Tickets\Commerce\Gateways\Stripe\Settings;
 use TEC\Tickets\Commerce\Gateways\Stripe\Signup;
+use TEC\Tickets\Commerce\Payments_Tab;
 use Tribe__Settings;
 
 use WP_REST_Server;
@@ -53,7 +55,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * Arguments used for the endpoint
+	 * Arguments used for the endpoint.
 	 *
 	 * @since TBD
 	 *
@@ -94,11 +96,11 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * Decode the payload received from WhoDat
+	 * Decode the payload received from WhoDat.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $payload
+	 * @param string $payload json payload.
 	 *
 	 * @return object
 	 */
@@ -112,11 +114,11 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * Handle successful account connections
+	 * Handle successful account connections.
 	 *
 	 * @since TBD
 	 *
-	 * @param object $payload data returned from WhoDat
+	 * @param object $payload data returned from WhoDat.
 	 */
 	public function handle_connection_established( $payload ) {
 
@@ -126,7 +128,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 		$validate = tribe( Merchant::class )->validate_account_is_permitted();
 
 		if ( 'valid' !== $validate ) {
-			tribe( Merchant::class )->set_merchant_denied( $validate );
+			tribe( Merchant::class )->set_merchant_unauthorized( $validate );
 			$disconnect_url = tribe( Signup::class )->generate_disconnect_url();
 
 			tribe( Merchant::class )->delete_signup_data();
@@ -134,7 +136,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 			exit();
 		}
 
-		tribe( Merchant::class )->unset_merchant_denied();
+		tribe( Merchant::class )->unset_merchant_unauthorized();
 		$url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-section' => 'stripe' ] );
 
 		wp_safe_redirect( $url );
@@ -142,16 +144,16 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * Handle unsuccessful account connections
+	 * Handle unsuccessful account connections.
 	 *
 	 * @since TBD
 	 *
-	 * @param object $payload data returned from WhoDat
+	 * @param object $payload data returned from WhoDat.
 	 */
 	public function handle_connection_error( $payload ) {
 		$url = Tribe__Settings::instance()->get_url( [
-			'tab'             => 'payments',
-			'tc-section'      => 'stripe',
+			'tab'             => Payments_Tab::$slug,
+			'tc-section'      => Gateway::get_key(),
 			'tc-stripe-error' => $payload->{'tc-stripe-error'},
 		] );
 
@@ -160,7 +162,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	}
 
 	/**
-	 * Handle account disconnections
+	 * Handle account disconnections.
 	 *
 	 * @since TBD
 	 */
@@ -168,8 +170,8 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 		tribe( Merchant::class )->delete_signup_data();
 
 		$query_args = [
-			'tab'                 => 'payments',
-			'tc-section'          => 'stripe',
+			'tab'                 => Payments_Tab::$slug,
+			'tc-section'          => Gateway::get_key(),
 			'stripe_disconnected' => 1,
 		];
 

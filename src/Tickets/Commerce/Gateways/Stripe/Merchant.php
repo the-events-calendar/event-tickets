@@ -14,13 +14,22 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 class Merchant extends Abstract_Merchant {
 
 	/**
-	 * Option key to save the information regarding merchant status
+	 * List of countries that are unauthorized to work with the TEC Provider for regulatory reasons.
+	 *
+	 * @var array
+	 */
+	const UNAUTHORIZED_COUNTRIES = [
+		'BR'
+	];
+
+	/**
+	 * Option key to save the information regarding merchant status.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $merchant_denied_option_key = 'tickets-commerce-merchant-denied';
+	public static $merchant_unauthorized_option_key = 'tickets-commerce-merchant-unauthorized';
 
 	/**
 	 * Determines if Merchant is active. For Stripe this is the same as being connected.
@@ -184,7 +193,7 @@ class Merchant extends Abstract_Merchant {
 	}
 
 	/**
-	 * Empty the signup data option and void the connection
+	 * Empty the signup data option and void the connection.
 	 *
 	 * @since TBD
 	 *
@@ -195,11 +204,11 @@ class Merchant extends Abstract_Merchant {
 	}
 
 	/**
-	 * Validate if this Merchant is allowed to connect to the TEC Provider
+	 * Validate if this Merchant is allowed to connect to the TEC Provider.
 	 *
 	 * @since TBD
 	 *
-	 * @return string 'valid' if the account is permitted, or a string with the notice slug if not
+	 * @return string 'valid' if the account is permitted, or a string with the notice slug if not.
 	 */
 	public function validate_account_is_permitted() {
 		$status = tribe( Settings::class )->connection_status;
@@ -214,7 +223,7 @@ class Merchant extends Abstract_Merchant {
 			return 'valid';
 		}
 
-		if ( ! $this->country_is_permitted( $status ) ) {
+		if ( $this->country_is_unauthorized( $status ) ) {
 			return 'tc-stripe-country-denied';
 		}
 
@@ -222,48 +231,47 @@ class Merchant extends Abstract_Merchant {
 	}
 
 	/**
-	 * Determine if a stripe account is listed in a permitted country
+	 * Determine if a stripe account is listed in an unauthorized country.
 	 *
 	 * @since TBD
 	 *
-	 * @param array $status the connection status array
+	 * @param array $status the connection status array.
 	 *
 	 * @return bool
 	 */
-	public function country_is_permitted( $status ) {
-		// @todo figure out any other exclusions
-		return 'BR' !== $status['country'];
+	public function country_is_unauthorized( $status ) {
+		return in_array( $status['country'], static::UNAUTHORIZED_COUNTRIES, true );
 	}
 
 	/**
-	 * Check if merchant is set as denied
+	 * Check if merchant is set as unauthorized.
 	 *
 	 * @since TBD
 	 *
 	 * @return bool
 	 */
-	public function is_merchant_denied() {
-		return get_option( static::$merchant_denied_option_key, false );
+	public function is_merchant_unauthorized() {
+		return get_option( static::$merchant_unauthorized_option_key, false );
 	}
 
 	/**
-	 * Set merchant as denied
+	 * Set merchant as unauthorized.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $validation_key refusal reason, must be the same as the notice slug for the corresponding error
+	 * @param string $validation_key refusal reason, must be the same as the notice slug for the corresponding error.
 	 */
-	public function set_merchant_denied( $validation_key ) {
+	public function set_merchant_unauthorized( $validation_key ) {
 		\Tribe__Admin__Notices::instance()->undismiss_for_all( $validation_key );
-		update_option( static::$merchant_denied_option_key, $validation_key );
+		update_option( static::$merchant_unauthorized_option_key, $validation_key );
 	}
 
 	/**
-	 * Unset merchant as denied
+	 * Unset merchant as unauthorized.
 	 *
 	 * @since TBD
 	 */
-	public function unset_merchant_denied() {
-		delete_option( static::$merchant_denied_option_key );
+	public function unset_merchant_unauthorized() {
+		delete_option( static::$merchant_unauthorized_option_key );
 	}
 }

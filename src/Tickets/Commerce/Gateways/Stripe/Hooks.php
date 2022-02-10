@@ -73,7 +73,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function handle_stripe_errors() {
 
-		$merchant_denied = tribe( Merchant::class )->is_merchant_denied();
+		$merchant_denied = tribe( Merchant::class )->is_merchant_unauthorized();
 
 		if ( $merchant_denied ) {
 			return tribe( Notice_Handler::class )->trigger_admin( $merchant_denied );

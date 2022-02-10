@@ -61,8 +61,7 @@ class Gateway extends Abstract_Gateway {
 			],
 			[
 				'slug'    => 'tc-stripe-token-error',
-				'content' => __( 'Stripe signup was successful but the authentication tokens could not be retrieved.
-				 Try refreshing the tokens.', 'event-tickets' ),
+				'content' => __( 'Stripe signup was successful but the authentication tokens could not be retrieved. Try refreshing the tokens.', 'event-tickets' ),
 				'type'    => 'error',
 			],
 			[
@@ -72,9 +71,7 @@ class Gateway extends Abstract_Gateway {
 			],
 			[
 				'slug'    => 'tc-stripe-country-denied',
-				'content' => __( 'Due to Regulatory Issues between Stripe and the country listed in your Stripe account,
-				the free version of Event Tickets cannot accept connections from accounts in your country. Please use a
-				Stripe account from a different country or purchase Event Tickets Plus to continue.', 'event-tickets' ),
+				'content' => __( 'Due to Regulatory Issues between Stripe and the country listed in your Stripe account, the free version of Event Tickets cannot accept connections from accounts in your country. Please use a Stripe account from a different country or purchase Event Tickets Plus to continue.', 'event-tickets' ),
 				'type'    => 'error',
 				'dismiss' => true,
 			],
