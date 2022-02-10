@@ -12,6 +12,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Signup;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
 use TEC\Tickets\Commerce\Notice_Handler;
+use TEC\Tickets\Commerce\Payments_Tab;
 use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
 
@@ -123,7 +124,10 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		$signup        = tribe( Signup::class );
 		$existing_hash = $signup->get_transient_hash();
 		$request_hash  = $request->get_param( 'hash' );
-		$return_url    = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-section' => tribe( Gateway::class )->get_key() ] );
+		$return_url    = Tribe__Settings::instance()->get_url( [
+			'tab' => 'payments',
+			tribe( Payments_Tab::class)::$key_current_section_get_var => tribe( Gateway::class )->get_key(),
+		] );
 
 		if ( $request_hash !== $existing_hash ) {
 			$this->redirect_with( 'invalid-paypal-signup-hash', $return_url );
