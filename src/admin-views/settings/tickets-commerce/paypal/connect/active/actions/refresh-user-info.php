@@ -2,9 +2,10 @@
 /**
  * The Template for displaying the Tickets Commerce refresh user info action button.
  *
- * @version 5.2.0
+ * @version TBD
  *
  * @since   5.2.0
+ * @since TBD Added section param to URL.
  *
  * @var Tribe__Tickets__Admin__Views                  $this                  [Global] Template object.
  * @var string                                        $plugin_url            [Global] The plugin URL.
