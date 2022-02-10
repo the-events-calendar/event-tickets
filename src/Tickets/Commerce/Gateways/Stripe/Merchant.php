@@ -14,6 +14,15 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 class Merchant extends Abstract_Merchant {
 
 	/**
+	 * Option key to save the information regarding merchant status
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $merchant_denied_option_key = 'tickets-commerce-merchant-denied';
+
+	/**
 	 * Determines if Merchant is active. For Stripe this is the same as being connected.
 	 *
 	 * @since TBD
@@ -174,7 +183,25 @@ class Merchant extends Abstract_Merchant {
 		return update_option( $this->get_signup_data_key(), $signup_data );
 	}
 
-	public function validate_account_permissions() {
+	/**
+	 * Empty the signup data option and void the connection
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function delete_signup_data() {
+		return update_option( $this->get_signup_data_key(), [] );
+	}
+
+	/**
+	 * Validate if this Merchant is allowed to connect to the TEC Provider
+	 *
+	 * @since TBD
+	 *
+	 * @return string 'valid' if the account is permitted, or a string with the notice slug if not
+	 */
+	public function validate_account_is_permitted() {
 		$status = tribe( Settings::class )->connection_status;
 		if ( empty( $status ) ) {
 			tribe( Settings::class )->set_connection_status();
@@ -184,23 +211,59 @@ class Merchant extends Abstract_Merchant {
 		$is_licensed = \TEC\Tickets\Commerce\Settings::is_licensed_plugin();
 
 		if ( $is_licensed ) {
-		//	return true;
+			return 'valid';
 		}
 
 		if ( ! $this->country_is_permitted( $status ) ) {
-			return false;
+			return 'tc-stripe-country-denied';
 		}
 
-		if ( ! $this->currency_is_permitted( $status )  ) {
-			return false;
-		}
+		return 'valid';
 	}
 
+	/**
+	 * Determine if a stripe account is listed in a permitted country
+	 *
+	 * @since TBD
+	 *
+	 * @param array $status the connection status array
+	 *
+	 * @return bool
+	 */
 	public function country_is_permitted( $status ) {
+		// @todo figure out any other exclusions
 		return 'BR' !== $status['country'];
 	}
 
-	public function currency_is_permitted() {
-		return true;
+	/**
+	 * Check if merchant is set as denied
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_merchant_denied() {
+		return get_option( static::$merchant_denied_option_key, false );
+	}
+
+	/**
+	 * Set merchant as denied
+	 *
+	 * @since TBD
+	 *
+	 * @param string $validation_key refusal reason, must be the same as the notice slug for the corresponding error
+	 */
+	public function set_merchant_denied( $validation_key ) {
+		\Tribe__Admin__Notices::instance()->undismiss_for_all( $validation_key );
+		update_option( static::$merchant_denied_option_key, $validation_key );
+	}
+
+	/**
+	 * Unset merchant as denied
+	 *
+	 * @since TBD
+	 */
+	public function unset_merchant_denied() {
+		delete_option( static::$merchant_denied_option_key );
 	}
 }

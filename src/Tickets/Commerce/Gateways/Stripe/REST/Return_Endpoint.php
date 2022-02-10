@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 use TEC\Tickets\Commerce\Gateways\Stripe\Settings;
+use TEC\Tickets\Commerce\Gateways\Stripe\Signup;
 use Tribe__Settings;
 
 use WP_REST_Server;
@@ -122,10 +123,18 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 		tribe( Merchant::class )->save_signup_data( (array) $payload );
 		tribe( Settings::class )->setup_account_defaults();
 
-		if ( ! tribe( Merchant::class )->validate_account_permissions() ) {
-			return $this->handle_connection_terminated( [ 'tc-connection-terminated' => 'invalid-account' ] );
+		$validate = tribe( Merchant::class )->validate_account_is_permitted();
+
+		if ( 'valid' !== $validate ) {
+			tribe( Merchant::class )->set_merchant_denied( $validate );
+			$disconnect_url = tribe( Signup::class )->generate_disconnect_url();
+
+			tribe( Merchant::class )->delete_signup_data();
+			wp_redirect( $disconnect_url );
+			exit();
 		}
 
+		tribe( Merchant::class )->unset_merchant_denied();
 		$url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-section' => 'stripe' ] );
 
 		wp_safe_redirect( $url );
@@ -156,7 +165,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 * @since TBD
 	 */
 	public function handle_connection_terminated( $reason = [] ) {
-		tribe( Merchant::class )->save_signup_data( [] );
+		tribe( Merchant::class )->delete_signup_data();
 
 		$query_args = [
 			'tab'                 => 'payments',
