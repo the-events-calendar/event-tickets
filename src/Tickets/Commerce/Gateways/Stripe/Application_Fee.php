@@ -5,6 +5,11 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 use TEC\Tickets\Commerce\Settings;
 use TEC\Tickets\Commerce\Utils\Value;
 
+/**
+ * The Stripe Application_Fee class
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Stripe
+ */
 class Application_Fee {
 
 	/**
@@ -21,7 +26,7 @@ class Application_Fee {
 	 *
 	 * @since TBD
 	 *
-	 * @param Value $value
+	 * @param Value $value the value over which to calculate the fee.
 	 *
 	 * @return Value;
 	 */
@@ -31,12 +36,12 @@ class Application_Fee {
 			return Value::create();
 		}
 
-		// otherwise, calculate it over the cart total
+		// otherwise, calculate it over the cart total.
 		return Value::create( $value->get_decimal() * static::get_application_fee_percentage() );
 	}
 
 	/**
-	 * Returns the application fee percentage value
+	 * Returns the application fee percentage value.
 	 *
 	 * @since TBD
 	 *
