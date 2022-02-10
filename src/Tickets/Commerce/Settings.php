@@ -367,26 +367,28 @@ class Settings {
 		$featured_settings = [
 			'tc_featured_settings' => [
 				'type' => 'html',
-				'html' => tribe( Featured_Settings::class )->get_html( [
-					'title'            => __( 'Payment Gateways', 'event-tickets' ),
-					'description'      => __(
-						'Set up a payment gateway to get started with Tickets Commerce. Enable multiple ' .
-						'gateways for providing users additional options for users when purchasing tickets.',
-						'event-tickets'
-					),
-					'content_template' => $this->get_featured_gateways_html(),
-					'links'            => [
-						[
-							'slug'     => 'help-1',
-							'priority' => 10,
-							'link'     => esc_url( '#' ), // @todo Get a URL for this link.
-							'html'     => __( 'Learn more about configuring payment options with Tickets Commerce', 'event-tickets' ),
-							'target'   => '_blank',
-							'classes'  => [],
+				'html' => tribe( Featured_Settings::class )->get_html(
+					[
+						'title'            => __( 'Payment Gateways', 'event-tickets' ),
+						'description'      => __(
+							'Set up a payment gateway to get started with Tickets Commerce. Enable multiple ' .
+							'gateways for providing users additional options for users when purchasing tickets.',
+							'event-tickets'
+						),
+						'content_template' => $this->get_featured_gateways_html(),
+						'links'            => [
+							[
+								'slug'     => 'help-1',
+								'priority' => 10,
+								'link'     => 'https://evnt.is/1axt',
+								'html'     => __( 'Learn more about configuring payment options with Tickets Commerce', 'event-tickets' ),
+								'target'   => '_blank',
+								'classes'  => [],
+							],
 						],
-					],
-					'classes'          => [],
-				] ),
+						'classes'          => [],
+					]
+				),
 			],
 		];
 		$settings          = array_merge( $featured_settings, $settings );
