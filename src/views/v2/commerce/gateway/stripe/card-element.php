@@ -43,7 +43,10 @@ $classes = [
 	</div>
 </div>
 
-<div id="tec-tc-gateway-stripe-errors" role="alert"></div>
+<div
+	id="tec-tc-gateway-stripe-errors"
+	class="tribe-common-b2"
+	role="alert"></div>
 
 <button
 	id="tec-tc-gateway-stripe-checkout-button"
