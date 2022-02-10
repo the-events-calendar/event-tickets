@@ -35,8 +35,8 @@ class Merchant extends Abstract_Merchant {
 		$client_data = $this->to_array();
 
 		if ( empty( $client_data['client_id'] )
-			 || empty( $client_data['client_secret'] )
-			 || empty( $client_data['publishable_key'] )
+			|| empty( $client_data['client_secret'] )
+			|| empty( $client_data['publishable_key'] )
 		) {
 			return false;
 		}
