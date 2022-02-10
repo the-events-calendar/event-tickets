@@ -4,9 +4,31 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Utils\Value;
 
+/**
+ * Stripe orders aka Payment Intents class.
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Stripe
+ */
 class Payment_Intent {
 
+	/**
+	 * Create a simple payment intent with the designated payment methods to check for errors.
+	 *
+	 * If the payment intent succeeds it is cancelled. If it fails we display a notice to the user and not apply their
+	 * settings.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $payment_methods a list of payment_methods to allow in the Payment Intent.
+	 *
+	 * @return bool|\WP_Error
+	 */
 	public static function test_payment_intent_creation( $payment_methods ) {
+
+		// Payment Intents for cards only are always valid.
+		if ( 1 === count( $payment_methods ) && in_array( 'card', $payment_methods, true ) ) {
+			return true;
+		}
 
 		$value = Value::create( 10 );
 		$fee   = Application_Fee::calculate( $value );
@@ -18,12 +40,6 @@ class Payment_Intent {
 			'payment_method_types'   => $payment_methods,
 			'application_fee_amount' => (string) $fee->get_integer(),
 		];
-
-		$stripe_statement_descriptor = tribe_get_option( Settings::$option_statement_descriptor );
-
-		if ( ! empty( $stripe_statement_descriptor ) ) {
-			$body['statement_descriptor'] = substr( $stripe_statement_descriptor, 0, 22 );
-		}
 
 		$args = [
 			'body' => $body,
@@ -44,10 +60,16 @@ class Payment_Intent {
 
 		static::cancel_payment_intent( $payment_intent['id'] );
 
-
 		return true;
 	}
 
+	/**
+	 * Issue an API request to cancel a Payment Intent.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $payment_intent_id the payment intent to cancel.
+	 */
 	public static function cancel_payment_intent( $payment_intent_id ) {
 		$query_args = [];
 		$body       = [
@@ -60,9 +82,18 @@ class Payment_Intent {
 		$url               = '/payment_intents/{payment_intent_id}/cancel';
 		$url               = str_replace( '{payment_intent_id}', $payment_intent_id, $url );
 
-		return Requests::post( $url, $query_args, $args );
+		Requests::post( $url, $query_args, $args );
 	}
 
+	/**
+	 * Compile errors caught when creating a Payment Intent into a proper html notice for the admin.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $errors list of errors returned from Stripe.
+	 *
+	 * @return string
+	 */
 	public static function compile_errors( $errors ) {
 		$compiled = '';
 
