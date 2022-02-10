@@ -242,7 +242,7 @@ class Client {
 			$error['cart']        = tribe_get_request_var( 'tec-tc-cookie' );
 			$error['recoverable'] = $recoverable;
 
-			tribe( Settings::class )->log_errors( $error );
+			Logger::log( $error['cart'], $error );
 		}
 
 	}

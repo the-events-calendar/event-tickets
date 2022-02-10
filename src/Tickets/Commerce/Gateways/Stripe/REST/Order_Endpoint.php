@@ -5,13 +5,11 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
+use TEC\Tickets\Commerce\Gateways\Stripe\Logger;
 use TEC\Tickets\Commerce\Gateways\Stripe\Status;
 use TEC\Tickets\Commerce\Order;
 
 use TEC\Tickets\Commerce\Gateways\Stripe\Client;
-use TEC\Tickets\Commerce\Status\Completed;
-use TEC\Tickets\Commerce\Status\Created;
-use TEC\Tickets\Commerce\Status\Pending;
 
 use TEC\Tickets\Commerce\Success;
 
@@ -110,10 +108,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'success' => false,
 		];
 
-		$messages = $this->get_error_messages();
-		$data = $request->get_json_params();
+		$messages  = $this->get_error_messages();
+		$data      = $request->get_json_params();
 		$purchaser = tribe( Order::class )->get_purchaser_data( $data );
-		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
+		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 
 		$payment_intent = tribe( Client::class )->update_payment_intent( $data );
 
@@ -135,6 +133,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
 			'gateway_payload'  => $payment_intent,
 			'gateway_order_id' => $payment_intent['id'],
+			'gateway_errors'   => Logger::get( $order->hash, 'cart' ),
 		] );
 
 		if ( is_wp_error( $updated ) ) {
@@ -202,7 +201,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'success' => false,
 		];
 
-		$messages = $this->get_error_messages();
+		$messages         = $this->get_error_messages();
 		$gateway_order_id = $request->get_param( 'order_id' );
 
 		$order = tec_tc_orders()->by_args( [
@@ -238,11 +237,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
 			'gateway_payload'  => $payment_intent,
 			'gateway_order_id' => $payment_intent['id'],
+			'gateway_errors'   => Logger::get( $order->hash, 'cart' ),
 		] );
 
 		if ( is_wp_error( $updated ) ) {
 			return $updated;
 		}
+
 
 		// Respond with the client_secret for Stripe Usage.
 		$response['success']          = true;
@@ -250,8 +251,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$response['order_id']         = $order->ID;
 		$response['gateway_order_id'] = $gateway_order_id;
 
-		// When we have success we clear the cart.
+		// When we have success we clear the cart and logs.
 		tribe( Cart::class )->clear_cart();
+		Logger::delete( $order->hash );
 
 		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $gateway_order_id ], tribe( Success::class )->get_url() );
 
