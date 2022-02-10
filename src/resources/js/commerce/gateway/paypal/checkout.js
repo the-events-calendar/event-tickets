@@ -83,6 +83,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @type {Object}
 	 */
 	obj.selectors = {
+		paypalGatewayContainer: '.tribe-tickets__commerce-checkout-paypal',
 		checkoutScript: '.tec-tc-gateway-paypal-checkout-script',
 		activePayment: '.tec-tc-gateway-paypal-payment-active',
 		buttons: '#tec-tc-gateway-paypal-checkout-buttons',
@@ -560,6 +561,13 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.bindScriptLoader = function () {
 
 		const $script = $( obj.selectors.checkoutScript );
+		const $paypalGateway = $( obj.selectors.paypalGatewayContainer );
+		
+		// Check to see if PayPal gateway is present.
+		if ( $paypalGateway.length === 0 ) {
+			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
+			return;
+		}
 
 		if ( ! $script.length ) {
 			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
