@@ -308,6 +308,34 @@ class Order extends Abstract_Order {
 	}
 
 	/**
+	 * Prepares an array of cart items ready to go into an Order.
+	 *
+	 * @since TBD
+	 *
+	 * @param Cart $cart the cart instance to get items from.
+	 *
+	 * @return array
+	 */
+	public function prepare_cart_items_for_order( Cart $cart ) {
+		return array_map(
+			static function ( $item ) {
+				/** @var Value $ticket_value */
+				$ticket_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
+
+				if ( null === $ticket_value ) {
+					return null;
+				}
+
+				$item['price']     = (string) $ticket_value->get_decimal();
+				$item['sub_total'] = (string) $ticket_value->sub_total( $item['quantity'] )->get_decimal();
+
+				return $item;
+			},
+			$cart->get_items_in_cart()
+		);
+	}
+
+	/**
 	 * Creates a order from the items in the cart.
 	 *
 	 * @since 5.1.9

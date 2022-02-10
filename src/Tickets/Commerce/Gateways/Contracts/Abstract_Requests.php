@@ -23,9 +23,55 @@ class Abstract_Requests implements Requests_Interface {
 	}
 
 	/**
-	 * Send a given method request to a given URL in the Stripe API.
+	 * Send a GET request to the Stripe API.
 	 *
-	 * @todo  For later we need to build a Contract for Requests in general.
+	 * @since TBD
+	 *
+	 * @param string $endpoint
+	 * @param array  $query_args
+	 * @param array  $request_arguments
+	 * @param bool   $raw
+	 *
+	 * @return array|null
+	 */
+	public static function get( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ) {
+		return static::request( 'GET', $endpoint, $query_args, $request_arguments, $raw );
+	}
+
+	/**
+	 * Send a PATCH request to the Stripe API.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $endpoint
+	 * @param array  $query_args
+	 * @param array  $request_arguments
+	 * @param bool   $raw
+	 *
+	 * @return array|null
+	 */
+	public static function patch( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ) {
+		return static::request( 'PATCH', $endpoint, $query_args, $request_arguments, $raw );
+	}
+
+	/**
+	 * Send a DELETE request to the Stripe API.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $endpoint
+	 * @param array  $query_args
+	 * @param array  $request_arguments
+	 * @param bool   $raw
+	 *
+	 * @return array|null
+	 */
+	public static function delete( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ) {
+		return static::request( 'DELETE', $endpoint, $query_args, $request_arguments, $raw );
+	}
+
+	/**
+	 * Send a given method request to a given URL in the Stripe API.
 	 *
 	 * @since TBD
 	 *

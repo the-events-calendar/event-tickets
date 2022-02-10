@@ -6,6 +6,7 @@ use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Logger;
+use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Gateways\Stripe\Status;
 use TEC\Tickets\Commerce\Order;
 
@@ -213,7 +214,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		$client_secret  = $request->get_param( 'client_secret' );
-		$payment_intent = tribe( Client::class )->get_payment_intent( $gateway_order_id );
+		$payment_intent = Payment_Intent::get( $gateway_order_id );
 
 		if ( is_wp_error( $payment_intent ) ) {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-getting-payment-intent', $messages['failed-getting-payment-intent'], $order );

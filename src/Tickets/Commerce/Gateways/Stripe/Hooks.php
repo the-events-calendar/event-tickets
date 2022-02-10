@@ -107,7 +107,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 			return;
 		}
 
-		tribe( Client::class )->create_payment_intent();
+		tribe( Client::class )->create_payment_intent_for_cart();
 	}
 
 	public function validate_settings( $value, $field_id, $validated_field ) {
@@ -125,7 +125,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		}
 
 		$payment_methods     = tribe_get_request_var( $field_id );
-		$payment_intent_test = tribe( Payment_Intent::class )->test_payment_intent_creation( $payment_methods );
+		$payment_intent_test = tribe( Payment_Intent::class )->test_creation( $payment_methods );
 
 		if ( ! is_wp_error( $payment_intent_test ) ) {
 			// Payment Settings are working, great!

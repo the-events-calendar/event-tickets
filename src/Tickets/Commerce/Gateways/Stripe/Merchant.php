@@ -173,4 +173,21 @@ class Merchant extends Abstract_Merchant {
 
 		return update_option( $this->get_signup_data_key(), $signup_data );
 	}
+
+	/**
+	 * Returns the list of enabled payment method types for the Payment Element, or the Card type
+	 * for the Card Element.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public function get_payment_method_types( $fallback = false ) {
+
+		if ( $fallback || Settings::CARD_ELEMENT_SLUG === tribe_get_option( Settings::$option_checkout_element ) ) {
+			return [ 'card' ];
+		}
+
+		return tribe_get_option( Settings::$option_checkout_element_payment_methods, [ 'card' ] );
+	}
 }
