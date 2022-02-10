@@ -379,7 +379,7 @@ class Settings {
 						[
 							'slug'     => 'help-1',
 							'priority' => 10,
-							'link'     => esc_url( '#' ), // @todo Get a URL for this link.
+							'link'     => esc_url( '#' ), // @todo @fe @juanfra Get a URL for this link.
 							'html'     => __( 'Learn more about configuring payment options with Tickets Commerce', 'event-tickets' ),
 							'target'   => '_blank',
 							'classes'  => [],
