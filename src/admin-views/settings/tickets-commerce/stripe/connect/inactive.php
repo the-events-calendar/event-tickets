@@ -23,7 +23,7 @@ if ( true === $merchant_status['connected'] ) {
 </h2>
 
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-description">
-	<p>
+	<p class="tec-tickets__admin-settings-tickets-commerce-gateway-description-text">
 		<?php echo wp_kses( __( 'Start selling tickets to your events today with Stripe integration for Tickets Commerce. Enable highly-configurable credit and debit card checkout with enhanced features like Afterpay, AliPay, Degiro, Klarna and more.<br>', 'event-tickets' ), [ 'br' => [] ] ); ?>
 	</p>
 
