@@ -53,6 +53,15 @@ class Order extends Abstract_Order {
 	public static $gateway_payload_meta_key = '_tec_tc_order_gateway_payload';
 
 	/**
+	 * If any gateway errors are generated during checkout, they should be logged to the order.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $gateway_errors_meta_key = '_tec_tc_order_gateway_errors';
+
+	/**
 	 * Which meta holds the items used to setup this order.
 	 *
 	 * @since 5.1.9

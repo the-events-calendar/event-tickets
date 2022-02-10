@@ -72,8 +72,8 @@ class Logger {
 			return (array) $logs;
 		}
 
-		return array_filter( (array) $logs, function ( $item ) use ( $type ) {
-			return $item['type'] === $type;
+		return array_filter( (array) $logs, function ( $item ) use ( $reference, $type ) {
+			return $item[ $type ] === $reference;
 		} );
 	}
 

@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Admin_Tables;
 
 use TEC\Tickets\Commerce\Gateways\Manager;
+use TEC\Tickets\Commerce\Gateways\Stripe\Logger;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Status_Handler;
@@ -107,6 +108,7 @@ class Orders extends WP_List_Table {
 			'gateway_order_id' => __( 'Gateway ID', 'event-tickets' ),
 			'status'           => __( 'Status', 'event-tickets' ),
 			'total'            => __( 'Total', 'event-tickets' ),
+			'errors'           => __( 'Errors', 'event-tickets' ),
 		];
 
 		return $columns;
@@ -332,6 +334,34 @@ class Orders extends WP_List_Table {
 		if ( ! $gateway ) {
 			return $item->gateway;
 		}
+
 		return $gateway::get_label();
+	}
+
+	/**
+	 * Handler for the errors column
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $item
+	 *
+	 * @return string
+	 */
+	public function column_errors( $item ) {
+		$logs = $item->gateway_errors;
+
+		if ( empty( $logs ) ) {
+			return '';
+		}
+
+		if ( ! is_array( $logs ) ) {
+			$logs = unserialize( $logs );
+		}
+
+		$count = count( $logs );
+
+		// @todo figure out how we should present these errors to the site admin.
+		// the errors are in $item->gateway_errors
+		return esc_html__( sprintf( '%d errors', $count ), 'event-tickets' );
 	}
 }
