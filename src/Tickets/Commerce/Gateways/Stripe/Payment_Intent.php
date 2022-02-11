@@ -14,6 +14,15 @@ use TEC\Tickets\Commerce\Utils\Value;
 class Payment_Intent {
 
 	/**
+	 * Value to use when creating test payment intents.
+	 *
+	 * @since TBD
+	 *
+	 * @var float
+	 */
+	const TEST_VALUE = 1.28;
+
+	/**
 	 * Create a simple payment intent with the designated payment methods to check for errors.
 	 *
 	 * If the payment intent succeeds it is cancelled. If it fails we display a notice to the user and not apply their
@@ -32,7 +41,7 @@ class Payment_Intent {
 			return true;
 		}
 
-		$value = Value::create( 10 );
+		$value = Value::create( static::TEST_VALUE );
 		$fee   = Application_Fee::calculate( $value );
 
 		$query_args = [];
@@ -55,7 +64,7 @@ class Payment_Intent {
 			$compiled_errors = static::compile_errors( $payment_intent );
 
 			return new \WP_Error(
-				'test-payment-intent-failed',
+				'tec-tc-stripe-test-payment-intent-failed',
 				__( sprintf( 'Stripe reports that it is unable to process charges with the selected Payment Methods. Usually this means that one of the methods selected is not available or not configured in your Stripe account. The errors you see below were returned from Stripe, please correct any inconsistencies or contact Stripe support, then try again: <div class="stripe-errors">%s</div>', $compiled_errors ), 'event-tickets' )
 			);
 		}
@@ -72,12 +81,12 @@ class Payment_Intent {
 	 * @since TBD
 	 *
 	 * @param Value $value the value object to create a payment intent for.
-	 * @param bool $retry is this a retry?
+	 * @param bool  $retry is this a retry?
 	 *
 	 * @return mixed
 	 */
 	public static function create( Value $value, $retry = false ) {
-		$fee   = Application_Fee::calculate( $value );
+		$fee = Application_Fee::calculate( $value );
 
 		$query_args = [];
 		$body       = [
