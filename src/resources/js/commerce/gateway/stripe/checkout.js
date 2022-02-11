@@ -342,10 +342,14 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			},
 			headers: {
 				'X-WP-Nonce': obj.checkout.nonce
-			}
+			},
+			throwHttpErrors: false
 		};
 		// Fetch Publishable API Key and Initialize Stripe Elements on Ready
-		let response = await ky.post( obj.checkout.orderEndpoint, args ).json();
+		let response = await ky.post( obj.checkout.orderEndpoint, args )
+			.then( response => response.json() )
+			.then( data => data )
+			.catch( () => tribe.tickets.loader.hide( $container ) );
 
 		tribe.tickets.debug.log( 'stripe', 'createOrder', response );
 
