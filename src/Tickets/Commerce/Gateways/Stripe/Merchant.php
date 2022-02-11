@@ -243,20 +243,12 @@ class Merchant extends Abstract_Merchant {
 		$response = Requests::get( $url, [], [] );
 
 		if ( ! empty( $response['object'] ) && 'account' === $response['object'] ) {
-			$return['connected'] = true;
-
-			$return['charges_enabled'] = tribe_is_truthy( Arr::get( $response, 'charges_enabled', false ) );
-
-			$return['country'] = Arr::get( $response, 'country', false );
-			$return['default_currency'] = Arr::get( $response, 'default_currency', false );
-
-			if ( ! empty( $response['capabilities'] ) ) {
-				$return['capabilities'] = $response['capabilities'];
-			}
-
-			if ( ! empty( $response['statement_descriptor'] ) ) {
-				$return['statement_descriptor'] = $response['statement_descriptor'];
-			}
+			$return['connected']            = true;
+			$return['charges_enabled']      = tribe_is_truthy( Arr::get( $response, 'charges_enabled', false ) );
+			$return['country']              = Arr::get( $response, 'country', false );
+			$return['default_currency']     = Arr::get( $response, 'default_currency', false );
+			$return['capabilities']         = Arr::get( $response, 'capabilities', false );
+			$return['statement_descriptor'] = Arr::get( $response, 'statement_descriptor', false );
 
 			if ( empty( $return['statement_descriptor'] ) && ! empty( $response['settings']['payments']['statement_descriptor'] ) ) {
 				$return['statement_descriptor'] = $response['settings']['payments']['statement_descriptor'];
