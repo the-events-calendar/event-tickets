@@ -33,7 +33,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_action( 'wp', [ $this, 'maybe_create_stripe_payment_intent' ] );
 
 		add_action( 'admin_init', [ $this, 'handle_stripe_errors' ] );
-		add_action( 'tribe_settings_content_tab_' . Payments_Tab::$slug, [ $this, 'alert_currency_mismatch' ] );
 	}
 
 	/**
@@ -76,23 +75,17 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function handle_stripe_errors() {
 
+		$merchant_denied = tribe( Merchant::class )->is_merchant_unauthorized();
+
+		if ( $merchant_denied ) {
+			return tribe( Notice_Handler::class )->trigger_admin( $merchant_denied );
+		}
+
 		if ( empty( tribe_get_request_var( 'tc-stripe-error' ) ) ) {
 			return;
 		}
 
-		tribe( Notice_Handler::class )->trigger_admin( tribe_get_request_var( 'tc-stripe-error' ) );
-	}
-
-	/**
-	 * Handle stripe errors into the admin UI.
-	 *
-	 * @since TBD
-	 */
-	public function alert_currency_mismatch() {
-		$this->connection_status = tribe( Merchant::class )->check_account_status();
-
-
-		tribe( Notice_Handler::class )->trigger_admin( tribe_get_request_var( 'tc-stripe-error' ) );
+		return tribe( Notice_Handler::class )->trigger_admin( tribe_get_request_var( 'tc-stripe-error' ) );
 	}
 
 	/**

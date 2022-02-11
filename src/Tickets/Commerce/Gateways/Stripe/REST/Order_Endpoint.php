@@ -133,7 +133,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
 			'gateway_payload'  => $payment_intent,
 			'gateway_order_id' => $payment_intent['id'],
-			'gateway_errors'   => Logger::get( $order->hash, 'cart' ),
 		] );
 
 		if ( is_wp_error( $updated ) ) {
@@ -237,7 +236,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
 			'gateway_payload'  => $payment_intent,
 			'gateway_order_id' => $payment_intent['id'],
-			'gateway_errors'   => Logger::get( $order->hash, 'cart' ),
 		] );
 
 		if ( is_wp_error( $updated ) ) {
