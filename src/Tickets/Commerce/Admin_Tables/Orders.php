@@ -332,7 +332,6 @@ class Orders extends WP_List_Table {
 		if ( ! $gateway ) {
 			return $item->gateway;
 		}
-
 		return $gateway::get_label();
 	}
 }

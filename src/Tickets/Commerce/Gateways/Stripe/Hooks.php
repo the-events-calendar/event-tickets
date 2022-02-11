@@ -4,7 +4,6 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Notice_Handler;
-use TEC\Tickets\Commerce\Payments_Tab;
 
 /**
  * Class Hooks
@@ -43,7 +42,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	protected function add_filters() {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 5, 2 );
 		add_filter( 'tec_tickets_commerce_notice_messages', [ $this, 'include_admin_notices' ] );
-		add_filter( 'tribe_settings_save_field_value', [ $this, 'validate_payment_methods' ], 10, 3 );
+		add_filter( 'tribe_settings_save_field_value', [ $this, 'validate_payment_methods' ], 10, 2 );
 	}
 
 	/**
@@ -116,7 +115,17 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		tribe( Payment_Intent_Handler::class )->create_payment_intent_for_cart();
 	}
 
-	public function validate_payment_methods( $value, $field_id, $validated_field ) {
+	/**
+	 * Intercept saving settings to check if any new payment methods would break Stripe payment intents.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $value    the new value.
+	 * @param string $field_id the field id in the options.
+	 *
+	 * @return mixed
+	 */
+	public function validate_payment_methods( $value, $field_id ) {
 
 		if ( $field_id !== Settings::$option_checkout_element_payment_methods ) {
 			return $value;
@@ -138,7 +147,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 			return $value;
 		}
 
-		// Provide a notice in the Dashboard
+		// Payment attempt failed. Provide an alert in the Dashboard
 		\Tribe__Settings::instance()->errors[] = $payment_intent_test->get_error_message();
 
 		// Revert value to the previous configuration
