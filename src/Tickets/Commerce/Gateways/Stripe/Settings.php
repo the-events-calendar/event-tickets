@@ -341,8 +341,8 @@ class Settings extends Abstract_Settings {
 
 	/**
 	 * Returns the list of available Payment Methods.
-	 * Methods and currencies sourced from
-	 * https://stripe.com/docs/payments/payment-methods/integration-options#payment-method-product-support
+	 *
+	 * @link https://stripe.com/docs/payments/payment-methods/integration-options#payment-method-product-support
 	 *
 	 * @since TBD
 	 *
@@ -351,28 +351,20 @@ class Settings extends Abstract_Settings {
 	private function get_payment_methods_available() {
 		$available_methods = [
 			'afterpay_clearpay' => [
-				'currencies' => [ 'AUD', 'CAD', 'GBP', 'NZD' ],
+				'currencies' => [ 'AUD', 'CAD', 'GBP', 'NZD', 'USD' ],
 				'label'      => esc_html__( 'AfterPay and ClearPay', 'event-tickets' ),
 			],
 			'alipay'            => [
 				'currencies' => [ 'AUD', 'CAD', 'CNY', 'EUR', 'GBP', 'HKD', 'JPY', 'MYR', 'NZD', 'SGD', 'USD' ],
 				'label'      => esc_html__( 'Alipay', 'event-tickets' ),
 			],
-			'bacs_debit'        => [
-				'currencies' => [ 'GBP' ],
-				'label'      => esc_html__( 'Bacs Direct Debit', 'event-tickets' ),
-			],
 			'giropay'           => [
 				'currencies' => [ 'EUR' ],
 				'label'      => esc_html__( 'Giropay', 'event-tickets' ),
 			],
 			'klarna'            => [
-				'currencies' => [ 'DKK', 'EUR', 'GBP', 'NOK', 'SEK' ],
+				'currencies' => [ 'DKK', 'EUR', 'GBP', 'NOK', 'SEK', 'USD' ],
 				'label'      => esc_html__( 'Klarna', 'event-tickets' ),
-			],
-			'acss_debit'        => [
-				'currencies' => [ 'CAD', 'USD' ],
-				'label'      => esc_html__( 'Pre-authorized debit in Canada', 'event-tickets' ),
 			],
 		];
 
