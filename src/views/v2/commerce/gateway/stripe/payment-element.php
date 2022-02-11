@@ -34,4 +34,7 @@ if ( $must_login || ! $payment_element ) {
 	</span>
 </button>
 <div id="tec-tc-gateway-stripe-payment-message" class="hidden"></div>
-<div id="tec-tc-gateway-stripe-errors" role="alert"></div>
+<div
+	id="tec-tc-gateway-stripe-errors"
+	class="tribe-common-b2"
+	role="alert"></div>

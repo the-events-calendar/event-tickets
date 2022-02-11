@@ -16,7 +16,6 @@
  * @var \Tribe__Template $this [Global] Template object.
  */
 
-
 $label_classes = [
 	'tribe-common-b2',
 	'tribe-tickets__form-field-label',

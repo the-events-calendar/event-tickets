@@ -4,20 +4,20 @@
  *
  * @since TBD
  *
- * @var Tribe__Template              $this   Template object.
- * @var array                        $links  Array of links.
+ * @var Tribe__Template $this  Template object.
+ * @var array           $links Array of links.
  */
 
 if ( empty( $links ) ) {
-    return;
+	return;
 }
- 
+
 ?>
 
 <div class="tec-tickets__admin-settings-featured-links">
-	<?php 
+	<?php
 	foreach ( $links as $link ) {
-		$this->template( 'link', [ 'link' => $link ] ); 
+		$this->template( 'link', [ 'link' => $link ] );
 	}
 	?>
 </div>
