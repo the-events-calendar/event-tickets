@@ -171,6 +171,7 @@ class Settings extends Abstract_Settings {
 			'</a>'
 		);
 
+		// @todo @fe @juanfra DQA note: Need adjustment on the wording.
 		$stripe_message = sprintf(
 			// Translators: %1$s: The Event Tickets Plus link.
 			esc_html__( 'You are using the free Stripe payment gateway integration. This includes an additional 2%% fee for processing ticket sales. This fee is removed by activating Event Tickets Plus. %1$s.', 'event-tickets' ),
@@ -235,7 +236,11 @@ class Settings extends Abstract_Settings {
 				'type'            => 'radio',
 				'label'           => esc_html__( 'Credit Card field format', 'event-tickets' ),
 				'default'         => self::COMPACT_CARD_ELEMENT_SLUG,
-				'conditional'     => tribe_get_option( static::$option_checkout_element ) === self::CARD_ELEMENT_SLUG,
+				'fieldset_attributes' => [
+					'data-depends'              => '#tribe-field-' . static::$option_checkout_element . '-' . self::CARD_ELEMENT_SLUG,
+					'data-condition-is-checked' => true,
+				],
+				'class'           => 'tribe-dependent',
 				'validation_type' => 'options',
 				'options'         => [
 					self::COMPACT_CARD_ELEMENT_SLUG  => sprintf(
@@ -257,7 +262,11 @@ class Settings extends Abstract_Settings {
 				'label'           => esc_html__( 'Payment methods accepted', 'event-tickets' ),
 				'tooltip'         => $payment_methods_tooltip,
 				'default'         => self::DEFAULT_PAYMENT_ELEMENT_METHODS,
-				'conditional'     => tribe_get_option( static::$option_checkout_element ) === self::PAYMENT_ELEMENT_SLUG,
+				'fieldset_attributes' => [
+					'data-depends'              => '#tribe-field-' . static::$option_checkout_element . '-' . self::PAYMENT_ELEMENT_SLUG,
+					'data-condition-is-checked' => true,
+				],
+				'class'           => 'tribe-dependent',
 				'validation_type' => 'options_multi',
 				'options'         => $this->get_payment_methods_available_by_currency(),
 				'tooltip_first'   => true,

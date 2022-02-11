@@ -297,19 +297,21 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			esc_html__( 'Enable %s', 'event-tickets' ),
 			$section_gateway->get_label()
 		);
-
+		$attributes = tribe_get_attributes( [
+			'type'     => 'checkbox',
+			'name'     => $option_key,
+			'id'       => 'tickets-commerce-enable-input',
+			'class'    => 'tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified',
+			'disabled' => ! $section_gateway->is_active(),
+			'checked'  => $section_gateway->is_enabled(),
+		] );
 		$top_level_settings['tickets-commerce-header'] = [
 			'type' => 'html',
 			'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-toggle-wrapper">
 							<label class="tec-tickets__admin-settings-tickets-commerce-toggle">
-								<input
-									type="checkbox"
-									name="' . $option_key . '"
-									' . checked( $section_gateway->is_enabled(), true, false ) . '
-									id="tickets-commerce-enable-input"
-									class="tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified">
-									<span class="tec-tickets__admin-settings-tickets-commerce-toggle-switch"></span>
-									<span class="tec-tickets__admin-settings-tickets-commerce-toggle-label">' . $enable_label . '</span>
+								<input ' . implode( ' ', $attributes ) . ' />
+								<span class="tec-tickets__admin-settings-tickets-commerce-toggle-switch"></span>
+								<span class="tec-tickets__admin-settings-tickets-commerce-toggle-label">' . $enable_label . '</span>
 							</label>
 						</div>',
 

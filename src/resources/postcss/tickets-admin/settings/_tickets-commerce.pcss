@@ -102,6 +102,7 @@
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
+	margin-bottom: var(--tec-spacer-3);
 	padding: 45px 32px 20px 32px;
 
 	@media (--viewport-medium) {
@@ -117,6 +118,10 @@
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-description {
+	align-items: start;
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
 	margin-bottom: 20px;
 
 	p {
@@ -125,6 +130,7 @@
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-signup-links {
+	flex-grow: 1;
 	margin-top: var(--tec-spacer-8);
 }
 
@@ -461,6 +467,7 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 
 .tec-tickets__admin-settings-featured-description {
 	margin-bottom: var(--tec-spacer-4);
+	max-width: 720px;
 }
 
 .tec-tickets__admin-settings-featured-link {
@@ -559,6 +566,11 @@ a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 	font-size: var(--tec-font-size-4);
 	font-weight: var(--tec-font-weight-bold);
 	padding: var(--tec-spacer-1) var(--tec-spacer-2);
+	width: 100%;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-group-header:first-of-type {
+	margin-top: 0;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateways-item-status {

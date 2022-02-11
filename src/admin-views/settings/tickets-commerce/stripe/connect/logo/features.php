@@ -12,6 +12,8 @@
  * @var array                                         $merchant_status [Global] Merchant Status data.
  */
 
+ // @todo @fe @juanfra: DQA note: Update language for features.
+ 
 ?>
 <ul>
 	<li>

@@ -391,7 +391,8 @@ class Settings {
 				),
 			],
 		];
-		$settings          = array_merge( $featured_settings, $settings );
+
+		$settings = array_merge( $featured_settings, $settings );
 
 		/**
 		 * Allow filtering the list of Tickets Commerce settings.
