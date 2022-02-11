@@ -4,9 +4,9 @@
  *
  * @since TBD
  *
- * @var Tribe__Template    $this              Template object.
- * @var Abstract_Gateway[] $gateways          Array of gateway objects.
- * @var Manager            $manager           Gateway Manager object.
+ * @var Tribe__Template    $this     Template object.
+ * @var Abstract_Gateway[] $gateways Array of gateway objects.
+ * @var Manager            $manager  Gateway Manager object.
  */
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
@@ -18,9 +18,9 @@ if ( empty( $gateways ) ) {
 
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateways">
-	<?php 
+	<?php
 	foreach ( $gateways as $gateway ) {
 		$this->template( 'gateways/item', [ 'gateway' => $gateway ] );
-	} 
+	}
 	?>
 </div>

@@ -22,7 +22,7 @@ if ( false === $merchant_status['connected'] ) {
 	<?php $this->template( 'settings/tickets-commerce/stripe/connect/active/connection' ); ?>
 
 	<?php $this->template( 'settings/tickets-commerce/stripe/connect/active/stripe-status' ); ?>
-	
+
 	<?php $this->template( 'settings/tickets-commerce/stripe/connect/active/button' ); ?>
 
 	<?php $this->template( 'settings/tickets-commerce/stripe/connect/help-links' ); ?>
