@@ -56,7 +56,7 @@ class Payment_Intent {
 
 			return new \WP_Error(
 				'test-payment-intent-failed',
-				__( sprintf( 'Your changes to payment methods accepted were not saved: It was not possible to create a Stripe PaymentIntent with the current configuration. The errors you see below were returned from Stripe, please check for any inconsistencies, or contact Stripe support to fix them and try again: %s', $compiled_errors ), 'event-tickets' )
+				__( sprintf( 'Stripe reports that it is unable to process charges with the selected Payment Methods. Usually this means that one of the methods selected is not available or not configured in your Stripe account. The errors you see below were returned from Stripe, please correct any inconsistencies or contact Stripe support, then try again: <div class="stripe-errors">%s</div>', $compiled_errors ), 'event-tickets' )
 			);
 		}
 
@@ -213,7 +213,7 @@ class Payment_Intent {
 		}
 
 		foreach ( $errors['errors'] as $error ) {
-			$compiled .= sprintf( '<div>%s<p>%s</p></div>', $error[0], $error[1] );
+			$compiled .= sprintf( '<p><em>%s</em></p>', esc_html( $error[1] ) );
 		}
 
 		return $compiled;
