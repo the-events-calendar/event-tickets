@@ -253,7 +253,6 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		// When we have success we clear the cart and logs.
 		tribe( Cart::class )->clear_cart();
-		Logger::delete( $order->hash );
 
 		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $gateway_order_id ], tribe( Success::class )->get_url() );
 
