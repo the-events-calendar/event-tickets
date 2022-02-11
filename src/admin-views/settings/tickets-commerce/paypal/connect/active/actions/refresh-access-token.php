@@ -6,6 +6,7 @@
  *
  * @since 5.2.0
  * @since TBD Added section param to URL.
+ * @since TBD Using generic CSS classes for gateway instead of PayPal.
  *
  * @var Tribe__Tickets__Admin__Views                  $this               [Global] Template object.
  * @var string                                        $plugin_url         [Global] The plugin URL.
@@ -23,7 +24,7 @@ if ( empty( $is_merchant_connected ) || ! $debug ) {
 	return;
 }
 
-$url = Tribe__Settings::instance()->get_url( [ 
+$url = Tribe__Settings::instance()->get_url( [
 	'tab' => Payments_Tab::$slug,
 	tribe( Payments_Tab::class )::$key_current_section_get_var => $gateway_key,
 	'tc-action' => 'paypal-refresh-access-token',

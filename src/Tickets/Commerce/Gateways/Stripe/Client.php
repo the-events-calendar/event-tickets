@@ -284,7 +284,7 @@ class Client {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $client_data connection data from the database
+	 * @param array $client_data Connection data from the database.
 	 *
 	 * @return array
 	 */
@@ -297,8 +297,8 @@ class Client {
 		];
 
 		if ( empty( $client_data['client_id'] )
-			 || empty( $client_data['client_secret'] )
-			 || empty( $client_data['publishable_key'] )
+			|| empty( $client_data['client_secret'] )
+			|| empty( $client_data['publishable_key'] )
 		) {
 			return $return;
 		}
