@@ -107,7 +107,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 			return;
 		}
 
-		tribe( Client::class )->create_payment_intent_for_cart();
+		tribe( Payment_Intent_Handler::class )->create_payment_intent_for_cart();
 	}
 
 	public function validate_settings( $value, $field_id, $validated_field ) {

@@ -12,7 +12,7 @@ use Tribe__Utils__Array as Arr;
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
-class Client {
+class Payment_Intent_Handler {
 
 	/**
 	 * Base string to use when composing payment intent transient names

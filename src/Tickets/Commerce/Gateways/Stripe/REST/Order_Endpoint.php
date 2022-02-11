@@ -7,10 +7,9 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Logger;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
+use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent_Handler;
 use TEC\Tickets\Commerce\Gateways\Stripe\Status;
 use TEC\Tickets\Commerce\Order;
-
-use TEC\Tickets\Commerce\Gateways\Stripe\Client;
 
 use TEC\Tickets\Commerce\Success;
 
@@ -114,7 +113,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$purchaser = tribe( Order::class )->get_purchaser_data( $data );
 		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 
-		$payment_intent = tribe( Client::class )->update_payment_intent( $data );
+		$payment_intent = tribe( Payment_Intent_Handler::class )->update_payment_intent( $data );
 
 		if ( is_wp_error( $payment_intent ) ) {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-payment-intent', $messages['failed-creating-payment-intent'], $order );
