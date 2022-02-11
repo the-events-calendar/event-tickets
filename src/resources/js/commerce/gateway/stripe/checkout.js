@@ -107,11 +107,11 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 
 		const wallet = obj.checkout.wallet_settings;
 
-		if ( wallet.disable_apple_pay === false ) {
+		if ( wallet.apple_pay === true ) {
 			settings.apple_pay = 'auto';
 		}
 
-		if ( wallet.disable_google_pay === false ) {
+		if ( wallet.google_pay === true ) {
 			settings.google_pay = 'auto';
 		}
 
@@ -446,9 +446,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			return obj.handleErrorDisplay( obj.checkout.paymentIntentData.errors );
 		}
 
-		obj.stripeElements = obj.stripeLib.elements( { 
-			clientSecret: obj.checkout.paymentIntentData.key, 
-			appearance: obj.checkout.elementsAppearance, 
+		obj.stripeElements = obj.stripeLib.elements( {
+			clientSecret: obj.checkout.paymentIntentData.key,
+			appearance: obj.checkout.elementsAppearance,
 		} );
 
 		if ( obj.checkout.paymentElement ) {
