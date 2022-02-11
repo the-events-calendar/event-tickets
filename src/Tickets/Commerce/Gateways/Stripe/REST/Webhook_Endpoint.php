@@ -41,7 +41,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since TBD
 	 */
-	public function register() {
+	public function register(): void {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
 		$documentation = tribe( 'tickets.rest-v1.endpoints.documentation' );
 
@@ -52,7 +52,6 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 				'methods'             => WP_REST_Server::CREATABLE,
 				'args'                => $this->incoming_request_args(),
 				'callback'            => [ $this, 'handle_incoming_request' ],
-//				'permission_callback' => '__return_true',
 				'permission_callback' => [ $this, 'verify_incoming_request_permission' ],
 			]
 		);
@@ -80,12 +79,13 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @return WP_REST_Response
 	 */
-	public function handle_incoming_request( WP_REST_Request $request ) : WP_REST_Response {
+	public function handle_incoming_request( WP_REST_Request $request ): WP_REST_Response {
 		$params   = $request->get_json_params();
 		$response = new WP_REST_Response( null, 200 );
 
 		if ( 'event' !== $params['object'] || ! in_array( $params['type'], static::WATCHED_EVENTS, true ) ) {
 			$response->set_data( sprintf( '%s Webhook Event is not currently supported', esc_html( $params['type'] ) ) );
+
 			return $response;
 		}
 
@@ -112,7 +112,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles the modification of the order based on the values received from the webhook.
 	 *
-	 * @todo this is not yet handled.
+	 * @todo  this is not yet handled.
 	 *
 	 * @since TBD
 	 *
@@ -121,8 +121,10 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @return WP_REST_Response
 	 */
-	protected function process_webhook_response( WP_REST_Request $request, WP_REST_Response $response ) : WP_REST_Response {
+	protected function process_webhook_response( WP_REST_Request $request, WP_REST_Response $response ): WP_REST_Response {
 		if ( empty( $event['data']['object']['payment_intent'] ) ) {
+			$response->set_status( 401 );
+
 			return $response;
 		}
 
