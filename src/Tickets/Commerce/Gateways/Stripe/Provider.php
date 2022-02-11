@@ -23,6 +23,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 		$this->container->singleton( Stripe_Elements::class );
 		$this->container->singleton( Status::class );
 		$this->container->singleton( WhoDat::class );
+		$this->container->singleton( Webhooks::class );
 
 		$this->register_hooks();
 		$this->register_assets();

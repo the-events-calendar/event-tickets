@@ -128,24 +128,6 @@ class Settings extends Abstract_Settings {
 	public static $option_checkout_element_payment_methods = 'tickets-commerce-stripe-checkout-element-payment-methods';
 
 	/**
-	 * Option name for the option to enable order updates via webhooks
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public static $option_enable_webhooks = 'tickets-commerce-stripe-enable-webhooks';
-
-	/**
-	 * Option name for the option to store the webhook signing key
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public static $option_webhooks_signing_key = 'tickets-commerce-stripe-webhooks-signing-key';
-
-	/**
 	 * Constructor
 	 */
 	public function __construct() {
@@ -187,6 +169,7 @@ class Settings extends Abstract_Settings {
 			esc_html__( 'You are using the free Stripe payment gateway integration. This includes an additional 2%% fee for processing ticket sales. This fee is removed by activating Event Tickets Plus. %1$s.', 'event-tickets' ),
 			$plus_link
 		);
+
 		$settings       = [
 			'tickets-commerce-stripe-commerce-description'           => [
 				'type' => 'html',
@@ -280,32 +263,9 @@ class Settings extends Abstract_Settings {
 				'options'         => $this->get_payment_methods_available_by_currency(),
 				'tooltip_first'   => true,
 			],
-			'tickets-commerce-stripe-webhook-settings-heading'        => [
-				'type' => 'html',
-				'html' => '<h3 class="tribe-dependent -input">' . __( 'Webhook Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
-			],
-			'tickets-commerce-gateway-settings-group-header-webhook'  => [
-				'type' => 'html',
-				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . __( 'Webhooks', 'event-tickets' ) . '</h4><div class="clear"></div>',
-			],
-			static::$option_enable_webhooks                           => [
-				'type'            => 'checkbox_bool',
-				'label'           => esc_html__( 'Enable Stripe Webhook Updates', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Enables your site to listen to events coming from Stripe to update the order statuses and other details. Before checking this box, make sure you have configured Webhooks in your Stripe Account.', 'event-tickets' ),
-				'default'         => false,
-				'validation_type' => 'boolean',
-			],
-			static::$option_webhooks_signing_key                      => [
-				'type'                => 'text',
-				'label'               => esc_html__( 'Signing Secret', 'event-tickets' ),
-				'tooltip'             => esc_html__( 'To find your signing secret, head to https://dashboard.stripe.com/webhooks, click on the endpoint desired, and click to Reveal the Signing Secret', 'event-tickets' ),
-				'size'                => 'medium',
-				'default'             => '',
-				'validation_callback' => 'is_string',
-				'validation_type'     => 'textarea',
-				'conditional'         => true === tribe_get_option( static::$option_enable_webhooks ),
-			],
 		];
+
+		$settings = array_merge( $settings, tribe( Webhooks::class )->get_fields() );
 
 		/**
 		 * Allow filtering the list of Stripe settings.

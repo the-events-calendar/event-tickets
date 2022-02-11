@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Order_Endpoint;
+use TEC\Tickets\Commerce\Payments_Tab;
 
 /**
  * Class Assets.
@@ -79,8 +80,8 @@ class Assets extends \tad_DI52_ServiceProvider {
 				],
 			]
 		);
-		
-		// Tickets Commerce PayPal main frontend styles.
+
+		// Tickets Commerce stripe main frontend styles.
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-commerce-stripe-style',
@@ -98,6 +99,46 @@ class Assets extends \tad_DI52_ServiceProvider {
 				'print'  => true,
 			]
 		);
+
+		// Administration JS for Webhooks
+		tribe_asset(
+			$plugin,
+			'tec-tickets-commerce-gateway-stripe-admin-webhooks',
+			'admin/gateway/stripe/webhooks.js',
+			[
+				'tribe-clipboard',
+				'tribe-common',
+				'tec-ky',
+			],
+			'admin_enqueue_scripts',
+			[
+				'conditionals' => [ $this, 'is_stripe_section' ]
+			]
+		);
+
+		// Administration JS for Webhooks
+		tribe_asset(
+			$plugin,
+			'tec-tickets-commerce-gateway-stripe-admin-webhooks-styles',
+			'tickets-commerce/admin/gateway/stripe/webhooks.css',
+			[
+			],
+			'admin_enqueue_scripts',
+			[
+				'conditionals' => [ $this, 'is_stripe_section' ]
+			]
+		);
+	}
+
+	/**
+	 * Determines if we are currently on the stripe section of the settings.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_stripe_section() : bool {
+		return Gateway::get_key() === tribe_get_request_var( Payments_Tab::$key_current_section_get_var );
 	}
 
 	/**

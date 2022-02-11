@@ -6,8 +6,10 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Stripe\Settings;
 
 use TEC\Tickets\Commerce\Gateways\Stripe\Status;
+use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 use WP_REST_Server;
 use WP_REST_Request;
+use WP_REST_Response;
 
 use Tribe__Utils__Array as Arr;
 
@@ -22,6 +24,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 
 	const WATCHED_EVENTS = [
 		'charge.succeeded',
+		'account.updated',
 	];
 
 	/**
@@ -47,16 +50,24 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			$this->get_endpoint_path(),
 			[
 				'methods'             => WP_REST_Server::CREATABLE,
-				'args'                => $this->create_order_args(),
+				'args'                => $this->incoming_request_args(),
 				'callback'            => [ $this, 'handle_incoming_request' ],
-				'permission_callback' => '__return_true',
+//				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'verify_incoming_request_permission' ],
 			]
 		);
 
 		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
 	}
 
-	public function create_order_args() {
+	/**
+	 * Arguments for the incoming request endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function incoming_request_args(): array {
 		return [];
 	}
 
@@ -66,36 +77,53 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return WP_REST_Response
 	 */
-	public function handle_incoming_request( WP_REST_Request $request ) {
-
-		if ( ! $this->signature_is_valid( $request->get_header( 'Stripe-Signature' ), $request->get_body() ) ) {
-			wp_send_json_error( 'Invalid Stripe Signature', 403 );
-			exit();
-		}
-
-		$params = $request->get_json_params();
+	public function handle_incoming_request( WP_REST_Request $request ) : WP_REST_Response {
+		$params   = $request->get_json_params();
+		$response = new WP_REST_Response( null, 200 );
 
 		if ( 'event' !== $params['object'] || ! in_array( $params['type'], static::WATCHED_EVENTS, true ) ) {
-			wp_send_json_success( sprintf( '%s Webhook Event is not currently supported', esc_html( $params['type'] ) ), 200 );
-			exit();
+			$response->set_data( sprintf( '%s Webhook Event is not currently supported', esc_html( $params['type'] ) ) );
+			return $response;
 		}
 
-		$handling_method = 'handle_' . str_replace( '.', '_', $params['type'] );
+		// Flag that the webhooks are working as expected.
+		tribe_update_option( Webhooks::$option_is_valid_webhooks, true );
 
-		if ( ! $this->{$handling_method}( $params ) ) {
-			wp_send_json_error( '', 500 );
-			exit();
-		}
-
-		wp_send_json_success( '', 200 );
-		exit();
+		// After this point we are ready to do individual modifications based on the Webhook value.
+		return $this->process_webhook_response( $request, $response );
 	}
 
-	private function handle_charge_succeeded( $event ) {
+	/**
+	 * Given a WP Rest request we determine if it has the correct Stripe signature.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request $request Which request we are validating.
+	 *
+	 * @return bool
+	 */
+	public function verify_incoming_request_permission( WP_REST_Request $request ): bool {
+		return $this->signature_is_valid( $request->get_header( 'Stripe-Signature' ), $request->get_body() );
+	}
 
+	/**
+	 * Handles the modification of the order based on the values received from the webhook.
+	 *
+	 * @todo this is not yet handled.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Request  $request
+	 * @param WP_REST_Response $response
+	 *
+	 * @return WP_REST_Response
+	 */
+	protected function process_webhook_response( WP_REST_Request $request, WP_REST_Response $response ) : WP_REST_Response {
 		if ( empty( $event['data']['object']['payment_intent'] ) ) {
-			return false;
+			return $response;
 		}
 
 		$payment_intent = $event['data']['object']['payment_intent'];
@@ -106,11 +134,13 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 
 		// $this->maybe_update_order_status( $order, $status );
 
-		return true;
+		return $response;
 	}
 
 	/**
 	 * Verifies the Stripe-Signature against the stored Webhook Signing Secret to make sure it's authentic.
+	 *
+	 * @link  https://stripe.com/docs/webhooks/signatures
 	 *
 	 * @since TBD
 	 *
@@ -119,20 +149,20 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @return bool
 	 */
-	private function signature_is_valid( $header, $body ) {
-		$time = time();
-
-		if ( ! $header || ! is_string( $body ) ) {
+	protected function signature_is_valid( string $header, string $body ): bool {
+		if ( ! $header || ! $body ) {
 			return false;
 		}
 
-		$header_parts    = explode( ',', $header );
-		$signing_secret  = tribe_get_option( Settings::$option_webhooks_signing_key );
-		$signature_parts = [];
+		$signing_secret = tribe_get_option( Webhooks::$option_webhooks_signing_key );
 
 		if ( empty( $signing_secret ) ) {
 			return false;
 		}
+
+		$time            = time();
+		$header_parts    = explode( ',', $header );
+		$signature_parts = [];
 
 		foreach ( $header_parts as $part ) {
 			$pair = explode( '=', $part );
@@ -146,7 +176,8 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return false;
 		}
 
-		if ( $time - (int) $signature_parts['t'] > 1 * MINUTE_IN_SECONDS ) { // @todo figure out the appropriate threshold here
+		// By default, we are using the same 5 minutes threshold that the official Stripe libs do.
+		if ( ( $time - (int) $signature_parts['t'] ) > 5 * MINUTE_IN_SECONDS ) {
 			return false;
 		}
 

@@ -51,7 +51,7 @@ class Client {
 	 *
 	 * @var string
 	 */
-	private static $api_base_url = 'https://api.stripe.com/v1';
+	protected static $api_base_url = 'https://api.stripe.com/v1';
 
 	/**
 	 * Get environment base URL.
@@ -83,13 +83,35 @@ class Client {
 	}
 
 	/**
+	 * Updates the account on Stripe.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $account_id
+	 * @param array  $data Which data we are using ot update the account.
+	 *
+	 * @return array|array[]|\WP_Error|null
+	 */
+	public function update_account( string $account_id, array $data = [] ) {
+		$query_args = [];
+		$body       = $data;
+		$args       = [
+			'body'    => $body,
+		];
+
+		$account_id = urlencode( $account_id );
+		$url        = 'accounts/{account_id}';
+		$url        = str_replace( '{account_id}', $account_id, $url );
+		$response   = $this->post( $url, $query_args, $args );
+
+		return $response;
+	}
+
+	/**
 	 * Calls the Stripe API and returns a new PaymentIntent object, used to authenticate
 	 * front-end payment requests.
 	 *
 	 * @since TBD
-	 *
-	 * @param string $currency 3-letter ISO code for the desired currency. Not all currencies are supported.
-	 * @param int    $value    the payment value in the smallest currency unit (e.g: cents, if the purchase is in USD)
 	 *
 	 * @return array|\WP_Error
 	 */
@@ -160,7 +182,7 @@ class Client {
 
 		$stripe_receipt_emails = tribe_get_option( Settings::$option_stripe_receipt_emails );
 
-		// Currently this method is only used to add an email recipient for Stripe receipts. If this is not
+		// Currently, this method is only used to add an email recipient for Stripe receipts. If this is not
 		// required, only return the payment intent object to store.
 		if ( ! $stripe_receipt_emails ) {
 			return $payment_intent;
@@ -260,11 +282,10 @@ class Client {
 	 * @since TBD
 	 *
 	 * @param string $payment_intent_id Payment Intent ID formatted from client `pi_*`
-	 * @param string $client_secret     Client Secret formatted from client `pi_*`
 	 *
 	 * @return array|\WP_Error
 	 */
-	public function get_payment_intent( $payment_intent_id ) {
+	public function get_payment_intent( string $payment_intent_id ) {
 		$query_args = [];
 		$body       = [
 		];
@@ -297,8 +318,8 @@ class Client {
 		];
 
 		if ( empty( $client_data['client_id'] )
-			 || empty( $client_data['client_secret'] )
-			 || empty( $client_data['publishable_key'] )
+		     || empty( $client_data['client_secret'] )
+		     || empty( $client_data['publishable_key'] )
 		) {
 			return $return;
 		}
@@ -535,7 +556,7 @@ class Client {
 		}
 
 		if ( ! empty( $response['response']['code'] )
-			 && 200 !== $response['response']['code'] ) {
+		     && 200 !== $response['response']['code'] ) {
 			if ( ! empty( $response['body'] ) ) {
 				$body = json_decode( $response['body'] );
 
