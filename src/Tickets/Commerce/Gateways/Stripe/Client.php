@@ -335,14 +335,6 @@ class Client {
 			if ( ! empty( $response['future_requirements']['errors'] ) ) {
 				$return['errors']['future_requirements'] = $response['future_requirements']['errors'];
 			}
-
-			if ( ! empty( $response['country'] ) ) {
-				$return['country'] = $response['country'];
-			}
-
-			if ( ! empty( $response['default_currency'] ) ) {
-				$return['default_currency'] = $response['default_currency'];
-			}
 		}
 
 		if ( ! empty( $response['type'] ) && in_array( $response['type'], [
