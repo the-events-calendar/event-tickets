@@ -158,9 +158,11 @@ class Settings extends Abstract_Settings {
 		}
 
 		tribe( Notice_Handler::class )->trigger_admin( 'tc-stripe-currency-mismatch', [
-			'content' => esc_html__(
-				sprintf( 'Tickets Commerce is configured to use %s as its currency but the default currency for the connected stripe account is %s. If you believe this is an error, you can modify the Tickets Commerce currency in the main Payments tab. Using different currencies for Tickets Commerce and Stripe may result in exchange rates and conversions being handled by Stripe.',
-					$site_currency, $stripe_currency ), 'event-tickets' )
+			'content' => 
+				sprintf( 
+					// Translators: %1$s The tickets commerce currency. %2$s: The currency from the Stripe account.
+					__( 'Tickets Commerce is configured to use %1$s as its currency but the default currency for the connected stripe account is %2$s. If you believe this is an error, you can modify the Tickets Commerce currency in the main Payments tab. Using different currencies for Tickets Commerce and Stripe may result in exchange rates and conversions being handled by Stripe.', 'event-tickets' )
+					$site_currency, $stripe_currency ),
 		] );
 	}
 
