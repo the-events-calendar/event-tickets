@@ -334,6 +334,8 @@ class Client {
 			$return['connected'] = true;
 
 			$return['charges_enabled'] = tribe_is_truthy( Arr::get( $response, 'charges_enabled', false ) );
+			$return['country'] = Arr::get( $response, 'country' );
+			$return['default_currency'] = Arr::get( $response, 'default_currency' );
 
 			if ( ! empty( $response['capabilities'] ) ) {
 				$return['capabilities'] = $response['capabilities'];

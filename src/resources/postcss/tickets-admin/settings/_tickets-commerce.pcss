@@ -102,6 +102,7 @@
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
+	margin-bottom: var(--tec-spacer-3);
 	padding: 45px 32px 20px 32px;
 
 	@media (--viewport-medium) {
@@ -117,6 +118,10 @@
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-description {
+	align-items: start;
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
 	margin-bottom: 20px;
 
 	p {
@@ -125,6 +130,7 @@
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-signup-links {
+	flex-grow: 1;
 	margin-top: var(--tec-spacer-8);
 }
 
@@ -252,7 +258,7 @@
 	flex-direction: column;
 }
 
-.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
+a.tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link {
 	background: #405bfb;
 	border-radius: 4px;
 	color: #fff;
@@ -297,6 +303,15 @@
 	&:focus {
 		color: #405bfb;
 	}
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-capability--no {
+	color: var(--tec-color-icon-error);
+}
+
+/* @todo: Add following green color as variable in common? */
+.tec-tickets__admin-settings-tickets-commerce-gateway-capability--yes {
+	color: #1eb056;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateway-signup-settings {
@@ -452,6 +467,7 @@
 
 .tec-tickets__admin-settings-featured-description {
 	margin-bottom: var(--tec-spacer-4);
+	max-width: 720px;
 }
 
 .tec-tickets__admin-settings-featured-link {
@@ -550,6 +566,11 @@
 	font-size: var(--tec-font-size-4);
 	font-weight: var(--tec-font-weight-bold);
 	padding: var(--tec-spacer-1) var(--tec-spacer-2);
+	width: 100%;
+}
+
+.tec-tickets__admin-settings-tickets-commerce-gateway-group-header:first-of-type {
+	margin-top: 0;
 }
 
 .tec-tickets__admin-settings-tickets-commerce-gateways-item-status {

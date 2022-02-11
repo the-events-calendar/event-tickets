@@ -27,7 +27,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
  *
  * @return {void}
  */
-( function ( $, obj, billing ) {
+( function ( $, obj ) {
 	'use strict';
 
 	/**
@@ -67,6 +67,15 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.timeouts = [];
 
 	/**
+	 * Flag to check if the current error is generic or not.
+	 *
+	 * @since TBD
+	 *
+	 * @type {boolean}
+	 */
+	obj.isGenericError = true;
+
+	/**
 	 * PayPal Checkout Selectors.
 	 *
 	 * @since 5.1.9
@@ -74,6 +83,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @type {Object}
 	 */
 	obj.selectors = {
+		paypalGatewayContainer: '.tribe-tickets__commerce-checkout-paypal',
 		checkoutScript: '.tec-tc-gateway-paypal-checkout-script',
 		activePayment: '.tec-tc-gateway-paypal-payment-active',
 		buttons: '#tec-tc-gateway-paypal-checkout-buttons',
@@ -114,6 +124,13 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleGenericError = function ( error, $container ) {
+
+		// Bail out if there were other errors.
+		if ( ! obj.isGenericError ) {
+			// reset the flag.
+			obj.isGenericError = true;
+			return;
+		}
 		tribe.tickets.debug.log( 'handleGenericError', arguments );
 		$container.removeClass( obj.selectors.activePayment.className() );
 
@@ -148,12 +165,13 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleCreateOrder = function ( data, actions, $container ) {
 		tribe.tickets.debug.log( 'handleCreateOrder', arguments );
+
 		return fetch(
 			obj.orderEndpointUrl,
 			{
 				method: 'POST',
 				body: JSON.stringify( {
-					billing_details: billing.getDetails()
+					purchaser: tribe.tickets.commerce.getPurchaserData( $container )
 				} ),
 				headers: {
 					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
@@ -204,7 +222,8 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleCreateOrderFail = function ( $container, data ) {
 		tribe.tickets.debug.log( 'handleCreateOrderFail', arguments );
-		obj.showNotice( $container, data.title, data.content );
+		obj.showNotice( $container, data.message, '' );
+		obj.isGenericError = false;
 	};
 
 	/**
@@ -542,6 +561,13 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.bindScriptLoader = function () {
 
 		const $script = $( obj.selectors.checkoutScript );
+		const $paypalGateway = $( obj.selectors.paypalGatewayContainer );
+		
+		// Check to see if PayPal gateway is present.
+		if ( $paypalGateway.length === 0 ) {
+			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
+			return;
+		}
 
 		if ( ! $script.length ) {
 			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
@@ -828,4 +854,4 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 	$( obj.ready );
 
-} )( jQuery, tribe.tickets.commerce.gateway.paypal, tribe.tickets.commerce.billing );
+} )( jQuery, tribe.tickets.commerce.gateway.paypal );

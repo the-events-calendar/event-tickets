@@ -54,7 +54,6 @@ class Assets extends \tad_DI52_ServiceProvider {
 				'tribe-tickets-loader',
 				'tribe-tickets-commerce-js',
 				'tribe-tickets-commerce-notice-js',
-				'tribe-tickets-commerce-base-gateway-checkout-js',
 				'tribe-tickets-commerce-base-gateway-checkout-toggler',
 			],
 			null,
@@ -75,6 +74,28 @@ class Assets extends \tad_DI52_ServiceProvider {
 							'cardElementType'   => tribe( Stripe_Elements::class )->card_element_type(),
 							'publishableKey'    => tribe( Merchant::class )->get_publishable_key(),
 							'paymentIntentData' => tribe( Client::class )->get_publishable_payment_intent_data(),
+							'elementsAppearance' => [
+								'variables' => [
+									'borderRadius'   => '4px',
+									'colorPrimary'   => '#334aff',
+									'fontFamily'     => 'Helvetica Neue, Helvetica, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif',
+								],
+								'rules' => [
+									'.Tab'           => [
+										'borderColor' => '#d5d5d5',
+										'boxShadow'   => 'none'
+									],
+									'.Tab--selected' => [
+										'borderWidth' => '2px'
+									],
+									'.TabLabel'      => [
+										'paddingTop'  => '6px'
+									],
+									'.Input'         => [
+										'boxShadow'   => 'none'
+									]
+								]
+							],
 						] );
 					},
 				],

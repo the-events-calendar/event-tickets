@@ -112,7 +112,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		$messages = $this->get_error_messages();
 		$data = $request->get_json_params();
-		$purchaser = tribe( Order::class )->prepare_purchaser_data( $data );
+		$purchaser = tribe( Order::class )->get_purchaser_data( $data );
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 
 		$payment_intent = tribe( Client::class )->update_payment_intent( $data );
