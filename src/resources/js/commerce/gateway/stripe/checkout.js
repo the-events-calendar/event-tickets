@@ -368,6 +368,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 
 		const $container = $( event.target ).closest( tribe.tickets.commerce.selectors.checkoutContainer );
 
+		obj.hideNotice( $container );
+
 		tribe.tickets.loader.show( $container );
 
 		let order = await obj.handleCreateOrder();
@@ -379,9 +381,12 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			} else {
 				obj.submitCardPayment();
 			}
+		} else {
+			obj.showNotice( {}, order.message, '' );
 		}
 
 		tribe.tickets.loader.hide( $container );
+		obj.submitButton( true );
 	};
 
 	/**
