@@ -4,85 +4,45 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 use Tribe__Utils__Array as Arr;
 
-class Abstract_Requests implements Requests_Interface {
+/**
+ * Abstract Requests Contract
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Contracts
+ */
+abstract class Abstract_Requests implements Requests_Interface {
 
 	/**
-	 * Send a POST request
-	 *
-	 * @since TBD
-	 *
-	 * @param string $endpoint
-	 * @param array  $query_args
-	 * @param array  $request_arguments
-	 * @param bool   $raw
-	 *
-	 * @return array|null
+	 * @inheritDoc
 	 */
 	public static function post( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ) {
 		return static::request( 'POST', $endpoint, $query_args, $request_arguments, $raw );
 	}
 
 	/**
-	 * Send a GET request to the Stripe API.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $endpoint
-	 * @param array  $query_args
-	 * @param array  $request_arguments
-	 * @param bool   $raw
-	 *
-	 * @return array|null
+	 * @inheritDoc
 	 */
 	public static function get( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ) {
 		return static::request( 'GET', $endpoint, $query_args, $request_arguments, $raw );
 	}
 
 	/**
-	 * Send a PATCH request to the Stripe API.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $endpoint
-	 * @param array  $query_args
-	 * @param array  $request_arguments
-	 * @param bool   $raw
-	 *
-	 * @return array|null
+	 * @inheritDoc
 	 */
 	public static function patch( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ) {
 		return static::request( 'PATCH', $endpoint, $query_args, $request_arguments, $raw );
 	}
 
 	/**
-	 * Send a DELETE request to the Stripe API.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $endpoint
-	 * @param array  $query_args
-	 * @param array  $request_arguments
-	 * @param bool   $raw
-	 *
-	 * @return array|null
+	 * @inheritDoc
 	 */
 	public static function delete( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false ) {
 		return static::request( 'DELETE', $endpoint, $query_args, $request_arguments, $raw );
 	}
 
 	/**
-	 * Send a given method request to a given URL in the Stripe API.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $method
-	 * @param string $url
-	 * @param array  $query_args
-	 * @param array  $request_arguments
-	 * @param bool   $raw
-	 * @param int    $retries Param used to determine the amount of time this particular request was retried.
-	 *
-	 * @return array|\WP_Error
+	 * @inheritDoc
 	 */
 	public static function request( $method, $url, array $query_args = [], array $request_arguments = [], $raw = false, $retries = 0 ) {
 		$method = strtoupper( $method );
@@ -171,14 +131,7 @@ class Abstract_Requests implements Requests_Interface {
 	}
 
 	/**
-	 * Process Request responses to catch any error code and transform in a WP_Error.
-	 * Returns the request array if no errors are found. Or a WP_Error object.
-	 *
-	 * @since TBD
-	 *
-	 * @param array|\WP_Error $response an array of server data
-	 *
-	 * @return array|\WP_Error
+	 * @inheritDoc
 	 */
 	public static function process_response( $response ) {
 
@@ -201,13 +154,7 @@ class Abstract_Requests implements Requests_Interface {
 	}
 
 	/**
-	 * Format user-facing errors to the list structure expected in the checkout script.
-	 *
-	 * @since TBD
-	 *
-	 * @param \WP_Error $errors any WP_Error instance
-	 *
-	 * @return array[]
+	 * @inheritDoc
 	 */
 	public static function prepare_errors_to_display( \WP_Error $errors ) {
 		$error = $errors->get_error_data();

@@ -4,12 +4,24 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Requests;
 
+/**
+ * Stripe Requests
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Stripe;
+ */
 class Requests extends Abstract_Requests {
 
+	/**
+	 * The Merchant class reference to use.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	public static $merchant = Merchant::class;
 
 	/**
-	 * The Stripe API base URL
+	 * The Stripe API base URL.
 	 *
 	 * @since TBD
 	 *
@@ -18,15 +30,7 @@ class Requests extends Abstract_Requests {
 	private static $api_base_url = 'https://api.stripe.com/v1';
 
 	/**
-	 * Get REST API endpoint URL for requests.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $endpoint   The endpoint path.
-	 * @param array  $query_args Query args appended to the URL.
-	 *
-	 * @return string The API URL.
-	 *
+	 * @inheritDoc
 	 */
 	public static function get_api_url( $endpoint, array $query_args = [] ) {
 		$base_url = static::get_environment_url();
