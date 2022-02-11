@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Notice_Handler;
 /**
  * Class Hooks
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -73,11 +73,17 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function handle_stripe_errors() {
 
+		$merchant_denied = tribe( Merchant::class )->is_merchant_unauthorized();
+
+		if ( $merchant_denied ) {
+			return tribe( Notice_Handler::class )->trigger_admin( $merchant_denied );
+		}
+
 		if ( empty( tribe_get_request_var( 'tc-stripe-error' ) ) ) {
 			return;
 		}
 
-		tribe( Notice_Handler::class )->trigger_admin( tribe_get_request_var( 'tc-stripe-error' ) );
+		return tribe( Notice_Handler::class )->trigger_admin( tribe_get_request_var( 'tc-stripe-error' ) );
 	}
 
 	/**
