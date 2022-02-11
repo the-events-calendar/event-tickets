@@ -175,6 +175,13 @@ class Settings extends Abstract_Settings {
 			esc_html__( 'Learn more', 'event-tickets' )
 		);
 
+		$checkout_type_tooltip = sprintf(
+			// Translators: %1$s: Opening `<a>` tag for Stripe docs link. %2$s: Closing `<a>` tag for Stripe docs link.
+			__( 'Additional payment methods are available based on currency and location and must be enabled individually within your Stripe account.  Learn more about Stripe checkout and payment configuration %1$shere%2$s.', 'event-tickets' ),
+			'<a href="https://stripe.com/docs/payments/checkout/web#checkout-payment-method-options" target="_blank" rel="noopener noreferrer">', // @todo: @juanfra: Update this link with our KB article.
+			'</a>'
+		);
+
 		$payment_methods_tooltip = sprintf(
 			// Translators: %1$s: Opening `<strong>` tag. %2$s: The currency name. %3$s: Closing `</strong>` tag. %4$s: Opening `<a>` tag for Stripe link. %5$s: Closing `</a>` tag.
 			__( 'Payment methods available for %1$s%2$s%3$s.<br /><br /> The payment methods listed here are dependent on the currency selected for Tickets Commerce and the currency each payment method support. You can review the payment methods and their availablity for each currency on %4$sStripe\'s documentation%5$s.<br /><br />', 'event-tickets' ),
@@ -238,19 +245,17 @@ class Settings extends Abstract_Settings {
 			static::$option_checkout_element               => [
 				'type'            => 'radio',
 				'label'           => esc_html__( 'Checkout Type', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Choose if you want to process payments with credit cards only, or if you also want to include other payment methods.', 'event-tickets' ),
-				'default'         => self::PAYMENT_ELEMENT_SLUG,
+				'tooltip'         => $checkout_type_tooltip,
+				'default'         => self::CARD_ELEMENT_SLUG,
 				'validation_type' => 'options',
 				'options'         => [
-					self::PAYMENT_ELEMENT_SLUG => esc_html__( 'Accept payments with one or multiple payment methods, including credit cards.', 'event-tickets' ),
 					self::CARD_ELEMENT_SLUG    => esc_html__( 'Accept only credit card payments.', 'event-tickets' ),
+					self::PAYMENT_ELEMENT_SLUG => esc_html__( 'Accept credit card payments and additional payment methods configured in Stripe.', 'event-tickets' ),
 				],
-				'tooltip_first'   => true,
 			],
 			static::$option_checkout_element_card_fields   => [
 				'type'            => 'radio',
-				'label'           => esc_html__( 'Credit Card Fields', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Stripe offers two different types of credit card fields. A consolidated single field or a more traditional multi-fields format.', 'event-tickets' ) . '<br /><br />',
+				'label'           => esc_html__( 'Credit Card field format', 'event-tickets' ),
 				'default'         => self::COMPACT_CARD_ELEMENT_SLUG,
 				'fieldset_attributes' => [
 					'data-depends'              => '#tribe-field-' . static::$option_checkout_element . '-' . self::CARD_ELEMENT_SLUG,
@@ -260,23 +265,18 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'options',
 				'options'         => [
 					self::COMPACT_CARD_ELEMENT_SLUG  => sprintf(
-						// Translators: %1$s: Opening `<strong>` tag. %2$s: Closing `</strong>` tag. %3$s: Opening `<span>` tag. %4$s: Closing `</span>` tag.
-						__( '%1$sSingle field%2$s. %3$sIt combines the card number, expiration date, CVC, and zip / postal code (if enabled) fields into one intuitive field.%4$s', 'event-tickets' ),
-						'<strong>',
-						'</strong>',
+						// Translators: %1$s: Opening `<span>` tag. %2$s: Closing `</span>` tag.
+						__( 'Single field. %1$sFor streamlined checkout.%2$s', 'event-tickets' ),
 						'<span class="tribe_soft_note">',
 						'</span>'
 					),
 					self::SEPARATE_CARD_ELEMENT_SLUG => sprintf(
-						// Translators: %1$s: Opening `<strong>` tag. %2$s: Closing `</strong>` tag. %3$s: Opening `<span>` tag. %4$s: Closing `</span>` tag.
-						__( '%1$sMultiple fields.%2$s %3$sAll fields are separate from one another. This is the more traditional credit card fieldset format that many are familiar with.%4$s', 'event-tickets' ),
-						'<strong>',
-						'</strong>',
+						// Translators: %1$s: Opening `<span>` tag. %2$s: Closing `</span>` tag.
+						__( 'Multiple fields. %1$sFor standard checkout.%2$s', 'event-tickets' ),
 						'<span class="tribe_soft_note">',
 						'</span>'
 					),
 				],
-				'tooltip_first'   => true,
 			],
 			static::$option_checkout_element_payment_methods => [
 				'type'            => 'checkbox_list',
