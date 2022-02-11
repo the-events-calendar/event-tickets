@@ -133,7 +133,6 @@ class Settings extends Abstract_Settings {
 	 */
 	public function __construct() {
 		$this->set_connection_status();
-		$this->alert_currency_mismatch();
 	}
 
 	/**
@@ -151,7 +150,7 @@ class Settings extends Abstract_Settings {
 	 * @since TBD
 	 */
 	public function alert_currency_mismatch() {
-		$stripe_currency = strtoupper( $this->connection_status['default_currency'] );
+		$stripe_currency = strtoupper( tribe( Merchant::class )->get_merchant_currency() );
 		$site_currency = strtoupper( Currency::get_currency_code() );
 
 		if ( $site_currency === $stripe_currency ) {
@@ -396,6 +395,8 @@ class Settings extends Abstract_Settings {
 		if ( empty( $this->connection_status ) ) {
 			$this->set_connection_status();
 		}
+
+		update_option( Merchant::$merchant_default_currency_option_key, $this->connection_status['default_currency'] );
 
 		if ( empty( tribe_get_option( static::$option_checkout_element ) ) ) {
 			tribe_update_option( static::$option_checkout_element, static::PAYMENT_ELEMENT_SLUG );

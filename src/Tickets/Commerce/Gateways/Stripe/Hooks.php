@@ -80,6 +80,8 @@ class Hooks extends \tad_DI52_ServiceProvider {
 			return tribe( Notice_Handler::class )->trigger_admin( $merchant_denied );
 		}
 
+		tribe( Settings::class )->alert_currency_mismatch();
+
 		if ( empty( tribe_get_request_var( 'tc-stripe-error' ) ) ) {
 			return;
 		}

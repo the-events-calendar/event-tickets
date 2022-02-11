@@ -33,6 +33,15 @@ class Merchant extends Abstract_Merchant {
 	public static $merchant_unauthorized_option_key = 'tickets-commerce-merchant-unauthorized';
 
 	/**
+	 * Option key to save the information regarding merchant default currency.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $merchant_default_currency_option_key = 'tickets-commerce-merchant-currency';
+
+	/**
 	 * Determines if Merchant is active. For Stripe this is the same as being connected.
 	 *
 	 * @since TBD
@@ -238,6 +247,7 @@ class Merchant extends Abstract_Merchant {
 
 			$return['charges_enabled'] = tribe_is_truthy( Arr::get( $response, 'charges_enabled', false ) );
 
+			$return['country'] = Arr::get( $response, 'country', false );
 			$return['default_currency'] = Arr::get( $response, 'default_currency', false );
 
 			if ( ! empty( $response['capabilities'] ) ) {
@@ -355,5 +365,16 @@ class Merchant extends Abstract_Merchant {
 	 */
 	public function unset_merchant_unauthorized() {
 		delete_option( static::$merchant_unauthorized_option_key );
+	}
+
+	/**
+	 * Get the merchant default currency.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_merchant_currency() {
+		return get_option( static::$merchant_default_currency_option_key );
 	}
 }
