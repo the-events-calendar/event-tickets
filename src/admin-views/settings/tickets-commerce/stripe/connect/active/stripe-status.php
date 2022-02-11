@@ -32,7 +32,8 @@ if ( ! $merchant_status['charges_enabled'] ) {
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-col2">
 		<?php if ( ! empty( $capabilities ) && is_array( $capabilities ) ) : ?>
 			<ul>
-				<?php foreach ( $capabilities as $capability => $status ) :
+				<?php
+				foreach ( $capabilities as $capability => $status ) :
 					$capability_classes = [
 						'dashicons',
 						'dashicons-yes' => 'inactive' !== $status,
@@ -40,9 +41,11 @@ if ( ! $merchant_status['charges_enabled'] ) {
 						'dashicons-no' => 'inactive' === $status,
 						'tec-tickets__admin-settings-tickets-commerce-gateway-capability--no' => 'inactive' === $status,
 					];
+
+					$capability_title = 'inactive' === $status ? esc_( 'Disabled', 'event-tickets' ) : __( 'Enabled', 'event-tickets' );
 					?>
 					<li>
-						<span <?php tribe_classes( $capability_classes ); ?>></span>
+						<span <?php tribe_classes( $capability_classes ); ?> title="<?php echo esc_attr( $capability_title ); ?>"></span>
 						<?php echo esc_html( $capability ); ?>
 					</li>
 				<?php endforeach; ?>
