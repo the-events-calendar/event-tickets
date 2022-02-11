@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Cart;
-use Tribe__Utils__Array as Arr;
 
 /**
  * Class Client
@@ -39,7 +38,7 @@ class Payment_Intent_Handler {
 	 *
 	 * @var int
 	 */
-	private $payment_element_fallback_retries = 0;
+	protected $payment_element_fallback_retries = 0;
 
 	/**
 	 * Counter for how many times we've re-tried creating a PaymentIntent
@@ -48,7 +47,7 @@ class Payment_Intent_Handler {
 	 *
 	 * @var int
 	 */
-	private $payment_intent_max_retries = 2;
+	protected $payment_intent_max_retries = 2;
 
 	/**
 	 * Increment the retry counter if under max_retries
