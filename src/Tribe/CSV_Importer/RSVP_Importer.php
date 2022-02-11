@@ -95,7 +95,11 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 
 		$ticket = $this->rsvp_tickets->get_ticket( $event->ID, $ticket_post->ID );
 
-		$match = $ticket->get_event() == $event ? true : false;
+		$match = false;
+
+		if ( $ticket instanceof Tribe__Tickets__Ticket_Object && $ticket->get_event() == $event ) {
+			$match = true;
+		}
 
 		self::$ticket_name_cache[ $cache_key ] = $match;
 
