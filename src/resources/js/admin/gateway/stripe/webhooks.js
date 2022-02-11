@@ -107,7 +107,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 
 		const params = new URLSearchParams();
 		params.set( 'signing_key', $field.val() );
-		params.set( 'action', 'tec_tickets_commerce_gateway_stripe_test_webhooks' );
+		params.set( 'action', $field.data( 'ajaxAction' ) );
 
 		$field.prop( 'disabled', true );
 
@@ -150,4 +150,4 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	};
 
 	$( document ).ready( obj.ready );
-} )( jQuery, {}, window.ajaxurl );
+} )( jQuery, tribe.tickets.commerce.gateway.stripe.webhooks, window.ajaxurl );

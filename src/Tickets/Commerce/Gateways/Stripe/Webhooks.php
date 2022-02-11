@@ -178,6 +178,7 @@ class Webhooks extends Abstract_Webhooks {
 				'attributes'          => [
 					'data-ajax-nonce'   => wp_create_nonce( 'developer' ),
 					'data-loading-text' => esc_attr__( 'Validating signing key with Stripe, please wait.' ),
+					'data-ajax-action'  => 'tec_tickets_commerce_gateway_stripe_test_webhooks',
 				]
 			],
 			'tickets-commerce-gateway-settings-group-end-webhook'         => [

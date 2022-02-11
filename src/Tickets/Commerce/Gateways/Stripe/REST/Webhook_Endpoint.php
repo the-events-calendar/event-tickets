@@ -22,11 +22,6 @@ use Tribe__Utils__Array as Arr;
  */
 class Webhook_Endpoint extends Abstract_REST_Endpoint {
 
-	const WATCHED_EVENTS = [
-		'charge.succeeded',
-		'account.updated',
-	];
-
 	/**
 	 * The REST API endpoint path.
 	 *
@@ -73,6 +68,9 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles the request that creates an order with Tickets Commerce and the Stripe gateway.
 	 *
+	 * If there is any request related error handling it should happen here, webhook related ones should go in
+	 * the Handler methods.
+	 *
 	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request The request object.
@@ -80,20 +78,14 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * @return WP_REST_Response
 	 */
 	public function handle_incoming_request( WP_REST_Request $request ): WP_REST_Response {
-		$params   = $request->get_json_params();
+		// Setup a base response.
 		$response = new WP_REST_Response( null, 200 );
-
-		if ( 'event' !== $params['object'] || ! in_array( $params['type'], static::WATCHED_EVENTS, true ) ) {
-			$response->set_data( sprintf( '%s Webhook Event is not currently supported', esc_html( $params['type'] ) ) );
-
-			return $response;
-		}
 
 		// Flag that the webhooks are working as expected.
 		tribe_update_option( Webhooks::$option_is_valid_webhooks, true );
 
 		// After this point we are ready to do individual modifications based on the Webhook value.
-		return $this->process_webhook_response( $request, $response );
+		return Webhooks\Handler::process_webhook_response( $request, $response );
 	}
 
 	/**
@@ -107,36 +99,6 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 */
 	public function verify_incoming_request_permission( WP_REST_Request $request ): bool {
 		return $this->signature_is_valid( $request->get_header( 'Stripe-Signature' ), $request->get_body() );
-	}
-
-	/**
-	 * Handles the modification of the order based on the values received from the webhook.
-	 *
-	 * @todo  this is not yet handled.
-	 *
-	 * @since TBD
-	 *
-	 * @param WP_REST_Request  $request
-	 * @param WP_REST_Response $response
-	 *
-	 * @return WP_REST_Response
-	 */
-	protected function process_webhook_response( WP_REST_Request $request, WP_REST_Response $response ): WP_REST_Response {
-		if ( empty( $event['data']['object']['payment_intent'] ) ) {
-			$response->set_status( 401 );
-
-			return $response;
-		}
-
-		$payment_intent = $event['data']['object']['payment_intent'];
-		$status         = $event['data']['object']['status'];
-		$order          = tec_tc_orders()->by_args( [
-			'gateway_order_id' => $payment_intent,
-		] )->first();
-
-		// $this->maybe_update_order_status( $order, $status );
-
-		return $response;
 	}
 
 	/**
