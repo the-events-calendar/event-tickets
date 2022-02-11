@@ -260,10 +260,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			elements: obj.stripeElements,
 			redirect: 'if_required',
 			confirmParams: {
-				return_url: order.redirect_url,
-				payment_method_data: {
-					purchaser: obj.getPurchaserData()
-				}
+				return_url: order.redirect_url
 			}
 		} ).then( obj.handleConfirmPayment );
 	};
@@ -455,9 +452,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			return obj.handleErrorDisplay( obj.checkout.paymentIntentData.errors );
 		}
 
-		obj.stripeElements = obj.stripeLib.elements( { 
-			clientSecret: obj.checkout.paymentIntentData.key, 
-			appearance: obj.checkout.elementsAppearance, 
+		obj.stripeElements = obj.stripeLib.elements( {
+			clientSecret: obj.checkout.paymentIntentData.key,
+			appearance: obj.checkout.elementsAppearance,
 		} );
 
 		if ( obj.checkout.paymentElement ) {
