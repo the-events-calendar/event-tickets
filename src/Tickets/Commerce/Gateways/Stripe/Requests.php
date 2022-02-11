@@ -21,6 +21,15 @@ class Requests extends Abstract_Requests {
 	public static $merchant = Merchant::class;
 
 	/**
+	 * The Gateway class reference to use.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $gateway = Gateway::class;
+
+	/**
 	 * The Stripe API base URL.
 	 *
 	 * @since TBD

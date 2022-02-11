@@ -116,14 +116,15 @@ abstract class Abstract_Requests implements Requests_Interface {
 		}
 
 		if ( ! is_array( $response_body ) ) {
-			tribe( 'logger' )->log_error( sprintf( '[%s] Unexpected Stripe %s response', $url, $method ), 'tickets-commerce' );
+			tribe( 'logger' )->log_error( sprintf( '[%s] Unexpected Gateway %s response', $url, $method ), 'tickets-commerce' );
 
-			return new \WP_Error( 'tec-tickets-commerce-gateway-stripe-client-unexpected', null, [
+			return new \WP_Error( 'tec-tickets-commerce-gateway-client-unexpected', null, [
 				'method'            => $method,
 				'url'               => $url,
 				'query_args'        => $query_args,
 				'request_arguments' => $request_arguments,
 				'response'          => $response,
+				'gateway'           => static::$gateway::$key,
 			] );
 		}
 
