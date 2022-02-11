@@ -5,7 +5,6 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
-use TEC\Tickets\Commerce\Gateways\Stripe\Logger;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent_Handler;
 use TEC\Tickets\Commerce\Gateways\Stripe\Status;
@@ -242,14 +241,13 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return $updated;
 		}
 
-
 		// Respond with the client_secret for Stripe Usage.
 		$response['success']          = true;
 		$response['status']           = $status->get_slug();
 		$response['order_id']         = $order->ID;
 		$response['gateway_order_id'] = $gateway_order_id;
 
-		// When we have success we clear the cart and logs.
+		// When we have success we clear the cart.
 		tribe( Cart::class )->clear_cart();
 
 		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $gateway_order_id ], tribe( Success::class )->get_url() );
