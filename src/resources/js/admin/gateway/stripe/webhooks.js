@@ -108,15 +108,13 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 		const params = new URLSearchParams();
 		params.set( 'signing_key', $field.val() );
 		params.set( 'action', $field.data( 'ajaxAction' ) );
+		params.set( 'tc_nonce', $field.data( 'ajaxNonce' ) );
 
 		$field.prop( 'disabled', true );
 
 		const args = {
 			timeout: 30000,
 			body: params,
-			headers: {
-				'X-WP-Nonce': $field.data( 'ajaxNonce' ),
-			},
 			hooks: {
 				beforeRequest: [
 					request => {

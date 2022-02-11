@@ -25,6 +25,15 @@ class Webhooks extends Abstract_Webhooks {
 	public static $option_is_valid_webhooks = 'tickets-commerce-stripe-is-valid-webhooks';
 
 	/**
+	 * Option key that determines if the webhooks are valid.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $nonce_key_handle_validation = 'tickets-commerce-stripe-webhook-handle_validation';
+
+	/**
 	 * Option key that we use to allow customers to copy.
 	 *
 	 * @since TBD
@@ -64,9 +73,16 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return void
 	 */
 	public function handle_validation(): void {
+		$nonce = tribe_get_request_var( 'tc_nonce' );
+		$status      = esc_html__( 'Webhooks not validated yet.', 'event-tickets' );
+
+		if ( ! wp_verify_nonce( $nonce, static::$nonce_key_handle_validation ) ) {
+			wp_send_json_error( [ 'updated' => false, 'status' => $status ] );
+			exit;
+		}
+
 		$signing_key = tribe_get_request_var( 'signing_key' );
 		$updated     = tribe_update_option( static::$option_webhooks_signing_key, $signing_key );
-		$status      = esc_html__( 'Webhooks not validated yet.', 'event-tickets' );
 
 		if ( empty( $signing_key ) ) {
 			// If we updated and the value was empty we need to reset the validity of the key.
@@ -176,7 +192,7 @@ class Webhooks extends Abstract_Webhooks {
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
 				'attributes'          => [
-					'data-ajax-nonce'   => wp_create_nonce( 'developer' ),
+					'data-ajax-nonce'   => wp_create_nonce( static::$nonce_key_handle_validation ),
 					'data-loading-text' => esc_attr__( 'Validating signing key with Stripe, please wait.' ),
 					'data-ajax-action'  => 'tec_tickets_commerce_gateway_stripe_test_webhooks',
 				]
