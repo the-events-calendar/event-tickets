@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 use Tribe__Utils__Array as Arr;
 
 /**
- * Class Abstract_Webhooks
+ * Class Abstract_Webhooks.
  *
  * @since   TBD
  *

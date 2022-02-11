@@ -164,7 +164,7 @@ class Webhooks extends Abstract_Webhooks {
 			],
 			'tickets-commerce-gateway-settings-group-header-webhook'      => [
 				'type' => 'html',
-				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . __( 'Webhooks', 'event-tickets' ) . '</h4><div class="clear"></div>',
+				'html' => '<h4 class="tec-tickets__admin-settings-tickets-commerce-gateway-group-header">' . esc_html__( 'Webhooks', 'event-tickets' ) . '</h4><div class="clear"></div>',
 			],
 			'tickets-commerce-gateway-settings-group-description-webhook' => [
 				'type' => 'html',
@@ -193,7 +193,7 @@ class Webhooks extends Abstract_Webhooks {
 				'validation_type'     => 'textarea',
 				'attributes'          => [
 					'data-ajax-nonce'   => wp_create_nonce( static::$nonce_key_handle_validation ),
-					'data-loading-text' => esc_attr__( 'Validating signing key with Stripe, please wait.' ),
+					'data-loading-text' => esc_attr__( 'Validating signing key with Stripe, please wait.', 'event-tickets' ),
 					'data-ajax-action'  => 'tec_tickets_commerce_gateway_stripe_test_webhooks',
 				]
 			],

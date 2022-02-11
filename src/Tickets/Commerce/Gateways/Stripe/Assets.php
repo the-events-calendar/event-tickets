@@ -121,7 +121,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 			]
 		);
 
-		// Administration JS for Webhooks
+		// Administration JS for Webhooks.
 		tribe_asset(
 			$plugin,
 			'tec-tickets-commerce-gateway-stripe-admin-webhooks',
@@ -137,7 +137,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 			]
 		);
 
-		// Administration JS for Webhooks
+		// Administration JS for Webhooks.
 		tribe_asset(
 			$plugin,
 			'tec-tickets-commerce-gateway-stripe-admin-webhooks-styles',

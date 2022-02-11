@@ -362,6 +362,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.handlePayment = async ( event ) => {
 		event.preventDefault();
 
+		const $container = $( event.target ).closest( tribe.tickets.commerce.selectors.checkoutContainer );
+
+		tribe.tickets.loader.show( $container );
+
 		let order = await obj.handleCreateOrder();
 		obj.submitButton( false );
 
@@ -372,6 +376,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 				obj.submitCardPayment();
 			}
 		}
+
+		tribe.tickets.loader.hide( $container );
 	};
 
 	/**
