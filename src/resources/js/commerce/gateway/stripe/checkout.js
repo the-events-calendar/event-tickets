@@ -477,6 +477,41 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.getPurchaserData = () => tribe.tickets.commerce.getPurchaserData( $( tribe.tickets.commerce.selectors.purchaserFormContainer ) );
 
 	/**
+	 * Shows the notice for the checkout container for Stripe.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container Parent container of notice element.
+	 * @param {string} title Notice Title.
+	 * @param {string} content Notice message content.
+	 */
+	obj.showNotice = ( $container, title, content ) => {
+		if ( ! $container || ! $container.length ) {
+			$container = $( tribe.tickets.commerce.selectors.checkoutContainer );
+		}
+		const notice = tribe.tickets.commerce.notice;
+		const $item = $container.find( notice.selectors.item );
+		notice.populate( $item, title, content );
+		notice.show( $item );
+	};
+
+	/**
+	 * Hides the notice for the checkout container for Stripe.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container Parent container of notice element.
+	 */
+	obj.hideNotice = ( $container ) => {
+		if ( ! $container.length ) {
+			$container = $( tribe.tickets.commerce.selectors.checkoutContainer );
+		}
+
+		const notice = tribe.tickets.commerce.notice;
+		const $item = $container.find( notice.selectors.item );
+		notice.hide( $item );
+	};
+	/**
 	 * Bind script loader to trigger script dependent methods.
 	 *
 	 * @since TBD
