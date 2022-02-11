@@ -69,6 +69,11 @@ class Gateway extends Abstract_Gateway {
 				'content' => __( 'Disconnecting from Stripe failed. Please try again.', 'event-tickets' ),
 				'type'    => 'error',
 			],
+			[
+				'slug'    => 'tc-stripe-currency-mismatch',
+				'type'    => 'notice',
+				'dismiss' => true,
+			],
 		];
 
 		return $notices;

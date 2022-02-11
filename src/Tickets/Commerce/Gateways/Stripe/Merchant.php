@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Merchant
@@ -218,6 +219,8 @@ class Merchant extends Abstract_Merchant {
 			$return['connected'] = true;
 
 			$return['charges_enabled'] = tribe_is_truthy( Arr::get( $response, 'charges_enabled', false ) );
+
+			$return['default_currency'] = Arr::get( $response, 'default_currency', false );
 
 			if ( ! empty( $response['capabilities'] ) ) {
 				$return['capabilities'] = $response['capabilities'];

@@ -33,6 +33,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_action( 'wp', [ $this, 'maybe_create_stripe_payment_intent' ] );
 
 		add_action( 'admin_init', [ $this, 'handle_stripe_errors' ] );
+		add_action( 'tribe_settings_content_tab_' . Payments_Tab::$slug, [ $this, 'alert_currency_mismatch' ] );
 	}
 
 	/**
@@ -43,7 +44,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	protected function add_filters() {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 5, 2 );
 		add_filter( 'tec_tickets_commerce_notice_messages', [ $this, 'include_admin_notices' ] );
-		add_filter( 'tribe_settings_save_field_value', [ $this, 'validate_settings' ], 10, 3 );
+		add_filter( 'tribe_settings_save_field_value', [ $this, 'validate_payment_methods' ], 10, 3 );
 	}
 
 	/**
@@ -83,6 +84,18 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
+	 * Handle stripe errors into the admin UI.
+	 *
+	 * @since TBD
+	 */
+	public function alert_currency_mismatch() {
+		$this->connection_status = tribe( Merchant::class )->check_account_status();
+
+
+		tribe( Notice_Handler::class )->trigger_admin( tribe_get_request_var( 'tc-stripe-error' ) );
+	}
+
+	/**
 	 * Include Stripe admin notices for Ticket Commerce.
 	 *
 	 * @since TBD
@@ -110,7 +123,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		tribe( Payment_Intent_Handler::class )->create_payment_intent_for_cart();
 	}
 
-	public function validate_settings( $value, $field_id, $validated_field ) {
+	public function validate_payment_methods( $value, $field_id, $validated_field ) {
 
 		if ( $field_id !== Settings::$option_checkout_element_payment_methods ) {
 			return $value;

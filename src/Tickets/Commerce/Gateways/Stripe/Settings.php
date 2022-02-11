@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Settings;
+use TEC\Tickets\Commerce\Notice_Handler;
 use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe__Tickets__Main;
 
@@ -132,6 +133,7 @@ class Settings extends Abstract_Settings {
 	 */
 	public function __construct() {
 		$this->set_connection_status();
+		$this->alert_currency_mismatch();
 	}
 
 	/**
@@ -141,6 +143,26 @@ class Settings extends Abstract_Settings {
 	 */
 	private function set_connection_status() {
 		$this->connection_status = tribe( Merchant::class )->check_account_status();
+	}
+
+	/**
+	 * Trigger a dismissable admin notice if Tickets Commerce and Stripe currencies are not the same.
+	 *
+	 * @since TBD
+	 */
+	public function alert_currency_mismatch() {
+		$stripe_currency = strtoupper( $this->connection_status['default_currency'] );
+		$site_currency = strtoupper( Currency::get_currency_code() );
+
+		if ( $site_currency === $stripe_currency ) {
+			return;
+		}
+
+		tribe( Notice_Handler::class )->trigger_admin( 'tc-stripe-currency-mismatch', [
+			'content' => esc_html__(
+				sprintf( 'Tickets Commerce is configured to use %s as its currency but the default currency for the connected stripe account is %s. If you believe this is an error, you can modify the Tickets Commerce currency in the main Payments tab. Using different currencies for Tickets Commerce and Stripe may result in exchange rates and conversions being handled by Stripe.',
+					$site_currency, $stripe_currency ), 'event-tickets' )
+		] );
 	}
 
 	/**
