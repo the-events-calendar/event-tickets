@@ -19,11 +19,6 @@ if ( false === $merchant_status['connected'] ) {
 $errors       = $merchant_status['errors'];
 $capabilities = $merchant_status['capabilities'];
 
-$charges_class = 'dashicons-yes';
-if ( ! $merchant_status['charges_enabled'] ) {
-	$charges_class = 'dashicons-no';
-}
-
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-col1">
