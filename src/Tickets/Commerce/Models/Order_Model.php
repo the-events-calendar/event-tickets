@@ -43,7 +43,6 @@ class Order_Model extends Base {
 			$currency            = Arr::get( $post_meta, [ Order::$currency_meta_key, 0 ], 'USD' );
 			$gateway_slug        = Arr::get( $post_meta, [ Order::$gateway_meta_key, 0 ] );
 			$gateway_order_id    = Arr::get( $post_meta, [ Order::$gateway_order_id_meta_key, 0 ] );
-			$gateway_errors      = Arr::get( $post_meta, [ Order::$gateway_errors_meta_key, 0 ] );
 			$gateway_payload     = $this->get_gateway_payloads( $post_meta );
 			$status_log          = $this->get_status_log( $post_meta );
 			$status              = tribe( Status_Handler::class )->get_by_wp_slug( $this->post->post_status );
@@ -67,7 +66,6 @@ class Order_Model extends Base {
 				'gateway'             => $gateway_slug,
 				'gateway_order_id'    => $gateway_order_id,
 				'gateway_payload'     => $gateway_payload,
-				'gateway_errors'      => $gateway_errors,
 				'total_value'         => Commerce\Utils\Value::create( $total_value ),
 				'currency'            => $currency,
 				'purchaser'           => [
