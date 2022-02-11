@@ -14,7 +14,7 @@ if ( empty( $gateway ) ) {
 	return;
 }
 
-if ( ! (  $gateway instanceof Abstract_Gateway  ) ) {
+if ( ! ( $gateway instanceof Abstract_Gateway ) ) {
 	return;
 }
 

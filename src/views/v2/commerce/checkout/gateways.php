@@ -1,17 +1,17 @@
 <?php
 /**
- * Tickets Commerce: Checkout Page Footer > Gateway error
+ * Tickets Commerce: Checkout Page Gateways.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/checkout/footer/gateway-error.php
+ * [your-theme]/tribe/tickets/v2/commerce/checkout/gateways.php
  *
  * See more documentation about our views templating system.
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.10
+ * @since   TBD
  *
- * @version 5.1.10
+ * @version TBD
  *
  * @var \Tribe__Template   $this               [Global] Template object.
  * @var Module             $provider           [Global] The tickets provider instance.
@@ -34,16 +34,16 @@ if ( $must_login || empty( $items ) || ! tribe_is_truthy( $gateways_active ) || 
 
 ?>
 <div class="tribe-tickets__commerce-checkout-gateways">
-    <h4 class="tribe-tickets__commerce-checkout-section-header">
-		<?php esc_html_e( 'Choose Payment', 'event-tickets' ); ?>
-    </h4>
+	<h4 class="tribe-common-h5 tribe-tickets__commerce-checkout-section-header">
+		<?php esc_html_e( 'Payment', 'event-tickets' ); ?>
+	</h4>
 <?php
 foreach ( $gateways as $gateway ) {
-    if ( ! $gateway->is_enabled() || ! $gateway->is_active() ) {
-        continue;
-    }
-    $template_path = 'gateway/' . $gateway->get_key() . '/' . $gateway->get_checkout_container_template_name();
-    $this->template( $template_path, $gateway->get_checkout_template_vars() );
+	if ( ! $gateway->is_enabled() || ! $gateway->is_active() ) {
+		continue;
+	}
+	$template_path = 'gateway/' . $gateway->get_key() . '/' . $gateway->get_checkout_container_template_name();
+	$this->template( $template_path, $gateway->get_checkout_template_vars() );
 }
 ?>
 </div>
