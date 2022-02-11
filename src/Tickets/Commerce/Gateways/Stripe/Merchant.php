@@ -42,7 +42,7 @@ class Merchant extends Abstract_Merchant {
 		}
 
 		if ( $recheck ) {
-			$status = tribe( Client::class )->check_account_status( $client_data );
+			$status = $this->check_account_status( $client_data );
 
 			if ( false === $status['connected'] ) {
 				return false;
@@ -50,18 +50,6 @@ class Merchant extends Abstract_Merchant {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Gather connections status from the Stripe API
-	 *
-	 * @since TBD
-	 *
-	 * @return array
-	 */
-	public function get_connection_status() {
-		$client_data = $this->to_array();
-		return tribe( Client::class )->check_account_status( $client_data );
 	}
 
 	/**
@@ -189,5 +177,79 @@ class Merchant extends Abstract_Merchant {
 		}
 
 		return tribe_get_option( Settings::$option_checkout_element_payment_methods, [ 'card' ] );
+	}
+
+	/**
+	 * Query the Stripe API to gather information about the current connected account.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $client_data connection data from the database
+	 *
+	 * @return array
+	 */
+	public function check_account_status( $client_data = [] ) {
+
+		if ( empty( $client_data ) ) {
+			$client_data = $this->to_array();
+		}
+
+		$return = [
+			'connected'       => false,
+			'charges_enabled' => false,
+			'errors'          => [],
+			'capabilities'    => [],
+		];
+
+		if ( empty( $client_data['client_id'] )
+			 || empty( $client_data['client_secret'] )
+			 || empty( $client_data['publishable_key'] )
+		) {
+			return $return;
+		}
+
+		$account_id = urlencode( $client_data['client_id'] );
+		$url        = '/accounts/{account_id}';
+		$url        = str_replace( '{account_id}', $account_id, $url );
+
+		$response = Requests::get( $url, [], [] );
+
+		if ( ! empty( $response['object'] ) && 'account' === $response['object'] ) {
+			$return['connected'] = true;
+
+			$return['charges_enabled'] = tribe_is_truthy( Arr::get( $response, 'charges_enabled', false ) );
+
+			if ( ! empty( $response['capabilities'] ) ) {
+				$return['capabilities'] = $response['capabilities'];
+			}
+
+			if ( ! empty( $response['statement_descriptor'] ) ) {
+				$return['statement_descriptor'] = $response['statement_descriptor'];
+			}
+
+			if ( empty( $return['statement_descriptor'] ) && ! empty( $response['settings']['payments']['statement_descriptor'] ) ) {
+				$return['statement_descriptor'] = $response['settings']['payments']['statement_descriptor'];
+			}
+
+			if ( ! empty( $response['requirements']['errors'] ) ) {
+				$return['errors']['requirements'] = $response['requirements']['errors'];
+			}
+
+			if ( ! empty( $response['future_requirements']['errors'] ) ) {
+				$return['errors']['future_requirements'] = $response['future_requirements']['errors'];
+			}
+		}
+
+		if ( ! empty( $response['type'] ) && in_array( $response['type'], [
+				'api_error',
+				'card_error',
+				'idempotency_error',
+				'invalid_request_error',
+			], true ) ) {
+
+			$return['request_error'] = $response;
+		}
+
+		return $return;
 	}
 }

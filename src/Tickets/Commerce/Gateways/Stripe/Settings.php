@@ -140,7 +140,7 @@ class Settings extends Abstract_Settings {
 	 * @since TBD
 	 */
 	private function set_connection_status() {
-		$this->connection_status = tribe( Merchant::class )->get_connection_status();
+		$this->connection_status = tribe( Merchant::class )->check_account_status();
 	}
 
 	/**

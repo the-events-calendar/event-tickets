@@ -33,15 +33,6 @@ class Client {
 	public $payment_intent_transient_name;
 
 	/**
-	 * Flag to activate fallback mode for the Payment Element
-	 *
-	 * @since TBD
-	 *
-	 * @var bool
-	 */
-	private $payment_element_fallback_mode = false;
-
-	/**
 	 * Counter for how many times we've re-tried creating a PaymentIntent
 	 *
 	 * @since TBD
@@ -58,24 +49,6 @@ class Client {
 	 * @var int
 	 */
 	private $payment_intent_max_retries = 2;
-
-	/**
-	 * Set the fallback_mode flag to true
-	 *
-	 * @since TBD
-	 */
-	public function start_fallback_mode() {
-		$this->payment_element_fallback_mode = true;
-	}
-
-	/**
-	 * Set the fallback_mode flag to false
-	 *
-	 * @since TBD
-	 */
-	public function stop_fallback_mode() {
-		$this->payment_element_fallback_mode = false;
-	}
 
 	/**
 	 * Increment the retry counter if under max_retries
