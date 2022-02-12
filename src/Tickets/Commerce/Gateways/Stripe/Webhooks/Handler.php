@@ -62,7 +62,7 @@ class Handler {
 		if ( ! $new_status instanceof Commerce_Status\Status_Interface ) {
 			$events_map = Events::get_events();
 
-			return $events_map[ $type ]( $event );
+			return $events_map[ $type ]( $request, $response );
 		}
 
 		/**
