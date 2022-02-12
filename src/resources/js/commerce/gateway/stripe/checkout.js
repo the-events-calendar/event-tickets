@@ -343,10 +343,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			throwHttpErrors: false
 		};
 		// Fetch Publishable API Key and Initialize Stripe Elements on Ready
-		let response = await ky.post( obj.checkout.orderEndpoint, args )
-			.then( response => response.json() )
-			.then( data => data )
-			.catch( () => tribe.tickets.loader.hide( $container ) );
+		let response = await ky.post( obj.checkout.orderEndpoint, args ).json();
 
 		tribe.tickets.debug.log( 'stripe', 'createOrder', response );
 
