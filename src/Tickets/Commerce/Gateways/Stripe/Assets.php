@@ -95,6 +95,11 @@ class Assets extends \tad_DI52_ServiceProvider {
 									]
 								]
 							],
+							'cardElementStyle' => [
+								'base' => [
+									'color' => '#23282d'
+								]
+							]
 						] );
 					},
 				],

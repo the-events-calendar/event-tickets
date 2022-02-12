@@ -392,11 +392,11 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.setupSeparateCardElement = () => {
 		// Instantiate the CardElement with individual fields
-		obj.cardElement = obj.stripeElements.create( 'cardNumber', { showIcon: true, iconStyle: 'default' } );
+		obj.cardElement = obj.stripeElements.create( 'cardNumber', { showIcon: true, iconStyle: 'default', style: obj.checkout.cardElementStyle } );
 		obj.cardElement.mount( obj.selectors.cardNumber );
-		obj.cardExpiry = obj.stripeElements.create( 'cardExpiry' );
+		obj.cardExpiry = obj.stripeElements.create( 'cardExpiry', { style: obj.checkout.cardElementStyle } );
 		obj.cardExpiry.mount( obj.selectors.cardExpiry );
-		obj.cardCvc = obj.stripeElements.create( 'cardCvc' );
+		obj.cardCvc = obj.stripeElements.create( 'cardCvc', { style: obj.checkout.cardElementStyle } );
 		obj.cardCvc.mount( obj.selectors.cardCvc );
 	};
 
@@ -409,7 +409,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.setupCompactCardElement = () => {
 		// Instantiate the CardElement with a single field combo
-		obj.cardElement = obj.stripeElements.create( 'card' );
+		obj.cardElement = obj.stripeElements.create( 'card', { style: obj.checkout.cardElementStyle } );
 		obj.cardElement.mount( obj.selectors.cardElement );
 		obj.cardElement.on( 'change', obj.onCardChange );
 	};
