@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 use Tribe__Utils__Array as Arr;
 
 /**
- * Abstract Requests Contract
+ * Abstract Requests Contract.
  *
  * @since   TBD
  *
