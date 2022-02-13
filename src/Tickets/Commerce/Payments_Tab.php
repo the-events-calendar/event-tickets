@@ -261,6 +261,13 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		return tribe( Manager::class )->get_gateway_by_key( $selected_section );
 	}
 
+	/**
+	 * Gets the fields for the Tickets Commerce top level fields.
+	 *
+	 * @since TBD
+	 *
+	 * @return array[]
+	 */
 	public function get_tickets_commerce_section_fields() {
 		$fields = [];
 
@@ -335,6 +342,9 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			'checked'  => $section_gateway::is_enabled(),
 		] );
 
+		/**
+		 * @todo this needs to move into a template
+		 */
 		$fields['tickets-commerce-header'] = [
 			'type' => 'html',
 			'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-toggle-wrapper">
