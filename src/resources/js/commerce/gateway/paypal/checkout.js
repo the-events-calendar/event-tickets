@@ -826,6 +826,8 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			} else {
 				obj.showNotice( $container, '', data.message );
 			}
+		} else {
+			obj.showNotice( $container, '', data.message );
 		}
 
 		tribe.tickets.loader.hide( $container );
