@@ -83,14 +83,14 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_logo_url() {
+	public function get_logo_url(): string {
 		return Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/images/admin/stripe-logo.png';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function get_subtitle() {
+	public function get_subtitle(): string {
 		return __( 'Enable credit card payments, Afterpay, AliPay, Giropay, Klarna and more.', 'event-tickets' );
 	}
 
@@ -98,15 +98,16 @@ class Gateway extends Abstract_Gateway {
 	 * @inheritDoc
 	 */
 	public function generate_unique_tracking_id() {
-		$return_url = tribe( Return_Endpoint::class )->get_route_url();
-
-		return $return_url;
+		return tribe( Return_Endpoint::class )->get_route_url();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static function get_checkout_template_vars() {
-		return tribe( Stripe_Elements::class )->get_checkout_template_vars();
+	public function render_checkout_template( \Tribe__Template $template ): string {
+		$gateway_key   = static::get_key();
+		$template_path = "gateway/{$gateway_key}/container";
+
+		return $template->template( $template_path, tribe( Stripe_Elements::class )->get_checkout_template_vars() );
 	}
 }
