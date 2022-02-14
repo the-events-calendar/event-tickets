@@ -37,7 +37,7 @@ $capabilities = $merchant_status['capabilities'];
 						'tec-tickets__admin-settings-tickets-commerce-gateway-capability--no' => 'inactive' === $status,
 					];
 
-					$capability_title = 'inactive' === $status ? esc_( 'Disabled', 'event-tickets' ) : __( 'Enabled', 'event-tickets' );
+					$capability_title = 'inactive' === $status ? __( 'Disabled', 'event-tickets' ) : __( 'Enabled', 'event-tickets' );
 					?>
 					<li>
 						<span <?php tribe_classes( $capability_classes ); ?> title="<?php echo esc_attr( $capability_title ); ?>"></span>
