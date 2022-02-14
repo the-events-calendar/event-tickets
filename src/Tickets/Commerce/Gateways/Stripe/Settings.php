@@ -209,9 +209,9 @@ class Settings extends Abstract_Settings {
 				'type'            => 'wrapped_html',
 				'html'            => $this->get_connection_settings_html(),
 				'validation_type' => 'html',
-			]
+			],
 		];
-		
+
 		// If gateway isn't connected/active, only show the connection settings.
 		$is_connected = tribe( Gateway::class )->is_active();
 		if ( ! $is_connected ) {
@@ -225,7 +225,7 @@ class Settings extends Abstract_Settings {
 			 */
 			return apply_filters( 'tec_tickets_commerce_stripe_settings', $main_settings, $is_connected );
 		}
-		
+
 		$connected_settings = [
 			'tickets-commerce-stripe-settings-heading'     => [
 				'type' => 'html',
