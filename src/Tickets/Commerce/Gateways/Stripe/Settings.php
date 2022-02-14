@@ -230,7 +230,7 @@ class Settings extends Abstract_Settings {
 		];
 
 		// If gateway isn't connected/active, only show the connection settings.
-		$is_connected = tribe( Gateway::class )->is_active();
+		$is_connected = tribe( Merchant::class )->is_connected();
 		if ( ! $is_connected ) {
 			/**
 			 * Allow filtering the list of Stripe settings.
