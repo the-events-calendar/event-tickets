@@ -20,6 +20,7 @@ use WP_REST_Response;
  * @package TEC\Tickets\Commerce\Gateways\Stripe\Webhooks
  */
 class Handler {
+
 	/**
 	 * Process a given Stripe Webhook event, possibly updating the local order with the status sent by the request.
 	 *
@@ -34,8 +35,7 @@ class Handler {
 	 */
 	public static function process_webhook_response( WP_REST_Request $request, WP_REST_Response $response ) {
 		$event = $request->get_json_params();
-		$type = Arr::get( $event, 'type' );
-
+		$type  = Arr::get( $event, 'type' );
 
 		// Invalid event.
 		if ( empty( $type ) || 'event' !== $event['object'] ) {
@@ -65,9 +65,15 @@ class Handler {
 			return $events_map[ $type ]( $request, $response );
 		}
 
-		/**
-		 * @todo @moraleida We need to modify the order here based on the Payment Intent.
-		 */
+		// Define where this request should be processed and call that method
+		$handler = static::get_handler_method( $type );
+		$success = call_user_func( $handler, $event, $new_status, $request );
+
+		// Stripe webhooks don't care for anything other than our response codes
+		// 200 we're good. Anything else we're not.
+		if ( ! $success ) {
+			$response->set_status( 400 );
+		}
 
 		return $response;
 	}
@@ -89,7 +95,7 @@ class Handler {
 	}
 
 	/**
-	 * @todo We need to figure out what happens when this is the case.
+	 * @todo  We need to figure out what happens when this is the case.
 	 *
 	 * These will be directly sent to the Rest API.
 	 *
@@ -102,5 +108,47 @@ class Handler {
 	 */
 	public static function handle_account_deauthorized( WP_REST_Request $request, WP_REST_Response $response ): WP_REST_Response {
 		return $response;
+	}
+
+	/**
+	 * Get the class and method to call to handle this event.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $type The event type from Stripe.
+	 *
+	 * @return string
+	 */
+	public static function get_handler_method( $type ) {
+		$parts  = explode( '.', $type );
+		$class  = implode( '_', array_map( 'ucwords', explode( '_', $parts[0] ) ) );
+		$method = $parts[1];
+
+		// If we have a Class::method named specific to the event, call it.
+		$name = __NAMESPACE__ . "\\{$class}::{$method}";
+
+		if ( ! function_exists( $name ) ) {
+			// If not, we fallback to the generic handle method available to all events.
+			$name = __NAMESPACE__ . "\\{$class}::handle";
+		}
+
+		return $name;
+	}
+
+	/**
+	 * Generic handler to update order statuses to a defined Status.
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Post                         $order    The order to update.
+	 * @param Commerce_Status\Status_Interface $status   The new status to use.
+	 * @param array                            $metadata Any new meta to save with the order.
+	 *
+	 * @throws \Tribe__Repository__Usage_Error
+	 *
+	 * @return bool|WP_Error|null
+	 */
+	public static function update_order_status( \WP_Post $order, Commerce_Status\Status_Interface $status, array $metadata = [] ) {
+		return tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), $metadata );
 	}
 }
