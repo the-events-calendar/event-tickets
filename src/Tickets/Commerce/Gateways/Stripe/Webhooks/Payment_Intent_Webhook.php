@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
+use TEC\Tickets\Commerce\Gateways\Contracts\Webhook_Event_Interface;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 
 /**
@@ -11,7 +12,7 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\Webhooks
  */
-class Payment_Intent {
+class Payment_Intent_Webhook implements Webhook_Event_Interface {
 
 	/**
 	 * Handler for Stripe webhook events in the payment_intent family.
