@@ -217,7 +217,7 @@ class Settings extends Abstract_Settings {
 			esc_html__( 'You are using the free Stripe payment gateway integration. This includes an additional 2%% fee for processing ticket sales. This fee is removed by activating Event Tickets Plus. %1$s.', 'event-tickets' ),
 			$plus_link
 		);
-		$settings = [
+		$main_settings = [
 			'tickets-commerce-stripe-commerce-description' => [
 				'type' => 'html',
 				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-description">' . $stripe_message . '</div>',
@@ -227,6 +227,23 @@ class Settings extends Abstract_Settings {
 				'html'            => $this->get_connection_settings_html(),
 				'validation_type' => 'html',
 			],
+		];
+
+		// If gateway isn't connected/active, only show the connection settings.
+		$is_connected = tribe( Merchant::class )->is_connected();
+		if ( ! $is_connected ) {
+			/**
+			 * Allow filtering the list of Stripe settings.
+			 *
+			 * @since TBD
+			 *
+			 * @param array $settings     The list of Stripe Commerce settings.
+			 * @param bool  $is_connected Whether or not gateway is connected.
+			 */
+			return apply_filters( 'tec_tickets_commerce_stripe_settings', $main_settings, $is_connected );
+		}
+
+		$connected_settings = [
 			'tickets-commerce-stripe-settings-heading'     => [
 				'type' => 'html',
 				'html' => '<h3 class="tribe-dependent -input">' . __( 'Stripe Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
@@ -317,9 +334,10 @@ class Settings extends Abstract_Settings {
 		 *
 		 * @since TBD
 		 *
-		 * @param array $settings The list of Stripe Commerce settings.
+		 * @param array $settings     The list of Stripe Commerce settings.
+		 * @param bool  $is_connected Whether or not gateway is connected.
 		 */
-		return apply_filters( 'tec_tickets_commerce_stripe_settings', $settings );
+		return apply_filters( 'tec_tickets_commerce_stripe_settings', array_merge( $main_settings, $connected_settings ), $is_connected );
 	}
 
 	/**

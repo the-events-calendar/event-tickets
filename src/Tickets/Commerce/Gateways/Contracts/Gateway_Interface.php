@@ -21,7 +21,7 @@ interface Gateway_Interface {
 	public static function get_key();
 
 	/**
-	 * Get's the provider key for this Commerce Gateway.
+	 * Get the provider key for this Commerce Gateway.
 	 *
 	 * @since 5.1.9
 	 *
@@ -30,13 +30,22 @@ interface Gateway_Interface {
 	public static function get_provider_key();
 
 	/**
-	 * Get's the label for this Commerce Gateway.
+	 * Get the label for this Commerce Gateway.
 	 *
 	 * @since 5.1.6
 	 *
 	 * @return string What label we are using for this gateway.
 	 */
 	public static function get_label();
+
+	/**
+	 * Get the settings url for this Commerce Gateway section.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_settings_url();
 
 	/**
 	 * Get the list of settings for the gateway.
@@ -104,4 +113,15 @@ interface Gateway_Interface {
 	 * @param string $slug     Slug for notice container.
 	 */
 	public function handle_invalid_response( $response, $message, $slug = 'error' );
+
+	/**
+	 * Renders the template for the checkout.
+	 *
+	 * @since TBD
+	 *
+	 * @param \Tribe__Template $template Template used to render the checkout.
+	 *
+	 * @return string
+	 */
+	public function render_checkout_template( \Tribe__Template $template ): string;
 }
